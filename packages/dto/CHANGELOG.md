@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.47.0](https://github.com/betagouv/datasubvention/compare/v0.46.5...v0.47.0) (2024-03-14)
+
+### Features
+
+-   **api:** 1210 search pagination ([#2205](https://github.com/betagouv/datasubvention/issues/2205)) ([ebc13b8](https://github.com/betagouv/datasubvention/commit/ebc13b8e3d72735b15fb11d0245a0ee2176ab1e6))
+
 # [0.46.0](https://github.com/betagouv/datasubvention/compare/v0.45.4...v0.46.0) (2024-02-19)
 
 ### Features

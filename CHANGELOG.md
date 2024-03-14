@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.47.0](https://github.com/betagouv/api-subventions-asso/compare/v0.46.5...v0.47.0) (2024-03-14)
+
+### Bug Fixes
+
+-   **front:** establishments do not display on first load ([#2254](https://github.com/betagouv/api-subventions-asso/issues/2254)) ([f31dd3e](https://github.com/betagouv/api-subventions-asso/commit/f31dd3e35295c48bf6a135b1fcf0edab65db2f66))
+-   **front:** identifier hint placed _after_ search bar ([fc26f99](https://github.com/betagouv/api-subventions-asso/commit/fc26f995ba25453efd88c28557fbcb872f84cbba))
+
+### Features
+
+-   **api:** [#2186](https://github.com/betagouv/api-subventions-asso/issues/2186) more DS schemas ([#2253](https://github.com/betagouv/api-subventions-asso/issues/2253)) and no drafts ([12cf2de](https://github.com/betagouv/api-subventions-asso/commit/12cf2defba4f7f9a84fea804338f38828dfceedb))
+-   **api:** 1210 search pagination ([#2205](https://github.com/betagouv/api-subventions-asso/issues/2205)) ([ebc13b8](https://github.com/betagouv/api-subventions-asso/commit/ebc13b8e3d72735b15fb11d0245a0ee2176ab1e6))
+-   **api:** scdl tweaks to be more resilient ([a4ff86d](https://github.com/betagouv/api-subventions-asso/commit/a4ff86d0e9adc3cf3637144cd7f025e2f5e98b9b))
+-   **ci:** also run ci on PR to PROD ([#2243](https://github.com/betagouv/api-subventions-asso/issues/2243)) ([3581fa7](https://github.com/betagouv/api-subventions-asso/commit/3581fa7775f00d16e2af316d6d12eaa5799ad48b))
+-   **front:** [#2201](https://github.com/betagouv/api-subventions-asso/issues/2201) incomplete profile banner ([#2212](https://github.com/betagouv/api-subventions-asso/issues/2212)) ([752cec7](https://github.com/betagouv/api-subventions-asso/commit/752cec783774cf345a785dd1fe989b7eb88c9efe))
+-   **front:** [#2203](https://github.com/betagouv/api-subventions-asso/issues/2203) download docs front ([#2240](https://github.com/betagouv/api-subventions-asso/issues/2240)) ([308bb0d](https://github.com/betagouv/api-subventions-asso/commit/308bb0d5701827a7494f931af68f255df36e29c0))
+-   **front:** [#2222](https://github.com/betagouv/api-subventions-asso/issues/2222) [#2223](https://github.com/betagouv/api-subventions-asso/issues/2223) promote identifiers ([#2244](https://github.com/betagouv/api-subventions-asso/issues/2244)) ([063fcc4](https://github.com/betagouv/api-subventions-asso/commit/063fcc4c7368b0c4fb354f54edc9d8d816ba768a))
+-   **front:** [#2225](https://github.com/betagouv/api-subventions-asso/issues/2225) give min height to title card with ellipsis ([#2266](https://github.com/betagouv/api-subventions-asso/issues/2266)) ([4a2b01f](https://github.com/betagouv/api-subventions-asso/commit/4a2b01f735c1add920cccba7650b58c6bbad5e5d))
+-   **front:** [#2229](https://github.com/betagouv/api-subventions-asso/issues/2229) truncate pagination ([#2231](https://github.com/betagouv/api-subventions-asso/issues/2231)) ([1472ef4](https://github.com/betagouv/api-subventions-asso/commit/1472ef47e7d3b4b179cfe7f70fe7275f113b8545))
+-   **front:** 2065 search pagination front ([#2232](https://github.com/betagouv/api-subventions-asso/issues/2232)) ([a568a69](https://github.com/betagouv/api-subventions-asso/commit/a568a69494d95abd6aea0d030d4cc368d07941bc))
+-   **front:** display alert if search concerns a company ([#2261](https://github.com/betagouv/api-subventions-asso/issues/2261)) ([bcadd96](https://github.com/betagouv/api-subventions-asso/commit/bcadd962d624160aaec2423c7c1421992e5a3991))
+
 ## [0.46.5](https://github.com/betagouv/api-subventions-asso/compare/v0.46.4...v0.46.5) (2024-03-08)
 
 ### Bug Fixes
