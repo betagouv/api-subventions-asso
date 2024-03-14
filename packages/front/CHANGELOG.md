@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.46.5](https://github.com/betagouv/datasubvention/compare/v0.46.4...v0.46.5) (2024-03-08)
+
+### Bug Fixes
+
+-   **front:** adapt csp header for crisp ([cca8bdd](https://github.com/betagouv/datasubvention/commit/cca8bdd592afc5d7c8d2291a564f3f5faa02b75f))
+
 # [0.46.0](https://github.com/betagouv/datasubvention/compare/v0.45.4...v0.46.0) (2024-02-19)
 
 ### Bug Fixes
