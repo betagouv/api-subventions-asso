@@ -3,6 +3,7 @@ import childProcess from "child_process";
 import { IncomingMessage } from "http";
 import { Rna, Siren, Siret, Document } from "dto";
 import * as Sentry from "@sentry/node";
+import mime = require("mime-types");
 import providers, { providersById } from "../providers";
 import { StructureIdentifiers } from "../../@types";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
@@ -88,24 +89,22 @@ export class DocumentsService {
     }
 
     async getGenericDocumentStream(http: ProviderRequestService, url: string): Promise<IncomingMessage> {
-        return (
-            await http.get(url, {
-                responseType: "stream",
-                headers: {
-                    accept: "application/json, text/plain, */*",
-                    "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
-                    "mg-authentication": "true",
-                    "Referrer-Policy": "strict-origin-when-cross-origin",
-                },
-            })
-        ).data;
+        const res = await http.get(url, {
+            responseType: "stream",
+            headers: {
+                "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+                "mg-authentication": "true",
+                "Referrer-Policy": "strict-origin-when-cross-origin",
+            },
+        });
+        return res.data;
     }
     async getDocumentsFiles(identifier: StructureIdentifiers) {
         const type = getIdentifierType(identifier);
 
         if (!type) throw new Error("You must provide a valid SIREN or RNA or SIRET");
 
-        const documents = (await (await this.aggregateDocuments(identifier)).filter(d => d)) as Document[];
+        const documents = (await this.aggregateDocuments(identifier)).filter(d => d) as Document[];
 
         if (!documents || documents.length == 0) throw new Error("No document found");
 
@@ -133,16 +132,16 @@ export class DocumentsService {
 
     private async downloadDocument(folderName: string, document: Document): Promise<string | null> {
         try {
-            const documentPath = `/tmp/${folderName}/${document.type.value}-${document.nom.value}`;
-            const stream = (await this.getDocumentStreamByUrl(document.url.value)).pipe(
-                fs.createWriteStream(documentPath),
-            );
+            const readStream = await this.getDocumentStreamByUrl(document.url.value);
+            const extension = mime.extension(readStream.headers["content-type"] || "pdf");
+            const documentPath = `/tmp/${folderName}/${document.type.value}-${document.nom.value}.${extension}`; // TODO extension
+            const writeStream = readStream.pipe(fs.createWriteStream(documentPath));
             return new Promise((resolve, reject) => {
                 // finish event is same event of end but for write stream
-                stream.on("finish", () => {
+                writeStream.on("finish", () => {
                     resolve(documentPath);
                 });
-                stream.on("error", reject);
+                writeStream.on("error", reject);
             });
         } catch (e) {
             console.error(e);
