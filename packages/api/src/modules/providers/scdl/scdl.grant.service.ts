@@ -1,6 +1,5 @@
 import { DemandeSubvention, Rna, Siren, Siret } from "dto";
 import * as Sentry from "@sentry/node";
-import GrantProvider from "../../grant/@types/GrantProvider";
 import { RawGrant } from "../../grant/@types/rawGrant";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
@@ -8,7 +7,7 @@ import MiscScdlGrantProducerEntity from "./entities/MiscScdlGrantProducerEntity"
 import miscScdlJoiner from "./repositories/miscScdl.joiner";
 import MiscScdlAdapter from "./MiscScdl.adapter";
 
-export class ScdlGrantService implements GrantProvider, DemandesSubventionsProvider {
+export class ScdlGrantService implements DemandesSubventionsProvider {
     isGrantProvider = true;
     isDemandesSubventionsProvider = true;
     provider = {
@@ -49,7 +48,7 @@ export class ScdlGrantService implements GrantProvider, DemandesSubventionsProvi
             (grant: MiscScdlGrantProducerEntity) =>
                 ({
                     provider: this.provider.id,
-                    type: "fullGrant",
+                    type: "application",
                     data: grant,
                 } as RawGrant),
         );

@@ -1,4 +1,4 @@
-import { ApplicationStatus, DemandeSubvention, FullGrantDto } from "dto";
+import { ApplicationStatus, DemandeSubvention, ApplicationDto } from "dto";
 import ProviderValueFactory from "../../../shared/ProviderValueFactory";
 import { sameDateNextYear } from "../../../shared/helpers/DateHelper";
 import MiscScdlGrantProducerEntity from "./entities/MiscScdlGrantProducerEntity";
@@ -26,14 +26,11 @@ export default class MiscScdlAdapter {
         };
     }
 
-    public static toCommon(entity: ScdlGrantEntity): FullGrantDto {
+    public static toCommon(entity: ScdlGrantEntity): ApplicationDto {
         return {
             exercice: entity.conventionDate?.getFullYear(),
-            bop: "",
-            date_debut: entity.paymentStartDate,
             dispositif: "",
             montant_accorde: entity.amount,
-            montant_verse: entity.amount,
             objet: entity.object || "",
             service_instructeur: entity.allocatorName,
             siret: entity.allocatorSiret,
