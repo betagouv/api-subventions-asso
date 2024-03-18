@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.46.6](https://github.com/betagouv/api-subventions-asso/compare/v0.46.5...v0.46.6) (2024-03-18)
+
+### Bug Fixes
+
+-   **api:** transmit content-disposition header ([8251274](https://github.com/betagouv/api-subventions-asso/commit/82512748f81ffde568288e08d1c4b56eb3cb7555))
+
 ## [0.46.5](https://github.com/betagouv/api-subventions-asso/compare/v0.46.4...v0.46.5) (2024-03-08)
 
 **Note:** Version bump only for package api
