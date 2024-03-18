@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.47.2](https://github.com/betagouv/api-subventions-asso/compare/v0.46.6...v0.47.2) (2024-03-18)
+
+### Bug Fixes
+
+-   **api:** infer doc type in zip ([8749e50](https://github.com/betagouv/api-subventions-asso/commit/8749e5031bd88b4ed37e590791d5dcb381a90aa1))
+-   **api:** remove break loop from debug session ([#2273](https://github.com/betagouv/api-subventions-asso/issues/2273)) ([d923e1d](https://github.com/betagouv/api-subventions-asso/commit/d923e1dbce76efae8e0e3935e466a9d94690dd51))
+-   multiples fixes on search page, download batch zip and profile banner ([#2269](https://github.com/betagouv/api-subventions-asso/issues/2269)) ([fd58b73](https://github.com/betagouv/api-subventions-asso/commit/fd58b73c9ef2fe62c59be45b5b3a81ca5afb8d47))
+
+# [0.47.0](https://github.com/betagouv/api-subventions-asso/compare/v0.46.5...v0.47.0) (2024-03-14)
+
+### Features
+
+-   **api:** [#2186](https://github.com/betagouv/api-subventions-asso/issues/2186) more DS schemas ([#2253](https://github.com/betagouv/api-subventions-asso/issues/2253)) and no drafts ([12cf2de](https://github.com/betagouv/api-subventions-asso/commit/12cf2defba4f7f9a84fea804338f38828dfceedb))
+-   **api:** 1210 search pagination ([#2205](https://github.com/betagouv/api-subventions-asso/issues/2205)) ([ebc13b8](https://github.com/betagouv/api-subventions-asso/commit/ebc13b8e3d72735b15fb11d0245a0ee2176ab1e6))
+-   **api:** scdl tweaks to be more resilient ([a4ff86d](https://github.com/betagouv/api-subventions-asso/commit/a4ff86d0e9adc3cf3637144cd7f025e2f5e98b9b))
+
 ## [0.47.1](https://github.com/betagouv/api-subventions-asso/compare/v0.47.0...v0.47.1) (2024-03-14)
 
 ### Bug Fixes

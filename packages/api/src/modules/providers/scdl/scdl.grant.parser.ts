@@ -30,14 +30,17 @@ export default class ScdlGrantParser {
         });
 
         const storableChunk: ScdlStorableGrant[] = [];
+        const invalidEntities: Partial<ScdlStorableGrant>[] = [];
 
         for (const parsedData of parsedChunk) {
             const entity = ParserHelper.indexDataByPathObject(SCDL_MAPPER, parsedData) as unknown as ScdlParsedGrant;
             if (this.isGrantValid(entity)) storableChunk.push({ ...entity, __data__: parsedData });
             else {
-                break;
+                invalidEntities.push(entity);
             }
         }
+
+        console.log(`WARNING : ${invalidEntities.length} entities invalid`);
 
         return storableChunk;
     }
