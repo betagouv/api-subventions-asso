@@ -38,8 +38,13 @@ export default class ScdlCli {
             if (!(e instanceof DuplicateIndexError)) throw e;
             duplicates = (e as DuplicateIndexError<MiscScdlGrantEntity[]>).duplicates;
         }
-        console.log(`${duplicates.length} duplicated entries. Here are some of them: `);
-        console.log(duplicates.slice(0, 5));
+
+        if (duplicates.length) {
+            console.log(`${duplicates.length} duplicated entries. Here are some of them: `);
+            console.log(duplicates.slice(0, 5));
+        } else {
+            console.log(`No duplicates detected`);
+        }
         console.log("Updating producer's last update date");
         await scdlService.updateProducer(producerId, { lastUpdate: exportDate });
         console.log("Parsing ended successfuly !");
