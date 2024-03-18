@@ -28,6 +28,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   **front:** 2065 search pagination front ([#2232](https://github.com/betagouv/datasubvention/issues/2232)) ([a568a69](https://github.com/betagouv/datasubvention/commit/a568a69494d95abd6aea0d030d4cc368d07941bc))
 -   **front:** display alert if search concerns a company ([#2261](https://github.com/betagouv/datasubvention/issues/2261)) ([bcadd96](https://github.com/betagouv/datasubvention/commit/bcadd962d624160aaec2423c7c1421992e5a3991))
 
+## [0.46.6](https://github.com/betagouv/datasubvention/compare/v0.46.5...v0.46.6) (2024-03-18)
+
+**Note:** Version bump only for package front
+
 ## [0.46.5](https://github.com/betagouv/datasubvention/compare/v0.46.4...v0.46.5) (2024-03-08)
 
 ### Bug Fixes

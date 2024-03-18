@@ -17,6 +17,12 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   **api:** 1210 search pagination ([#2205](https://github.com/betagouv/api-subventions-asso/issues/2205)) ([ebc13b8](https://github.com/betagouv/api-subventions-asso/commit/ebc13b8e3d72735b15fb11d0245a0ee2176ab1e6))
 -   **api:** scdl tweaks to be more resilient ([a4ff86d](https://github.com/betagouv/api-subventions-asso/commit/a4ff86d0e9adc3cf3637144cd7f025e2f5e98b9b))
 
+## [0.46.6](https://github.com/betagouv/api-subventions-asso/compare/v0.46.5...v0.46.6) (2024-03-18)
+
+### Bug Fixes
+
+-   **api:** transmit content-disposition header ([8251274](https://github.com/betagouv/api-subventions-asso/commit/82512748f81ffde568288e08d1c4b56eb3cb7555))
+
 ## [0.46.5](https://github.com/betagouv/api-subventions-asso/compare/v0.46.4...v0.46.5) (2024-03-08)
 
 **Note:** Version bump only for package api

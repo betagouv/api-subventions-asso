@@ -26,7 +26,7 @@ export class DocumentHttp extends Controller {
     public async getDocumentStream(@Path() providerId: string, @Query() url: string): Promise<unknown> {
         const stream = await documentService.getDocumentStream(providerId, decodeURIComponent(url));
         this.setHeader("Content-Type", stream.headers["content-type"] || "application/octet-stream");
-        this.setHeader("Content-Disposition", "inline");
+        this.setHeader("Content-Disposition", stream.headers["content-disposition"]);
         return stream;
     }
 }
