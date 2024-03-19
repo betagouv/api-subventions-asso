@@ -133,8 +133,13 @@ export class DocumentsService {
     private async downloadDocument(folderName: string, document: Document): Promise<string | null> {
         try {
             const readStream = await this.getDocumentStreamByUrl(document.url.value);
-            const extension = mime.extension(readStream.headers["content-type"] || "pdf");
-            const documentPath = `/tmp/${folderName}/${document.type.value}-${document.nom.value}.${extension}`; // TODO extension
+            const sourceFileName =
+                readStream.headers["content-disposition"]?.match(/attachment;filename="(.*)"/)?.[1] ||
+                document.nom.value;
+            const extension = /\.[^/]+$/.test(sourceFileName)
+                ? ""
+                : "." + (mime.extension(readStream.headers["content-type"]) || "pdf");
+            const documentPath = `/tmp/${folderName}/${document.type.value}-${sourceFileName}${extension}`;
             const writeStream = readStream.pipe(fs.createWriteStream(documentPath));
             return new Promise((resolve, reject) => {
                 // finish event is same event of end but for write stream

@@ -20,7 +20,7 @@
             <b>RNA</b>
             : {valueOrNotFound(simplifiedAsso.rna)}
         </p>
-        <span class="circle-separator text-center fr-px-2v">●</span>
+        <span class="circle-separator text-center fr-px-1v">●</span>
         <p>
             <b>SIREN</b>
             : {valueOrNotFound(simplifiedAsso.siren)}
