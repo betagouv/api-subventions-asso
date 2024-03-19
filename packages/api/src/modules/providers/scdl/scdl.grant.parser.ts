@@ -41,7 +41,10 @@ export default class ScdlGrantParser {
             }
         }
 
-        console.log(`WARNING : ${invalidEntities.length} entities invalid`);
+        if (invalidEntities.length) {
+            console.log(`WARNING : ${invalidEntities.length} entities invalid`);
+            console.log(`Here some of them: `, invalidEntities.slice(0, 3));
+        }
 
         return storableChunk;
     }

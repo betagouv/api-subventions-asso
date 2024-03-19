@@ -100,7 +100,7 @@ describe("ScdlGrantService", () => {
                 Object {
                   "data": "value",
                   "provider": "miscScdl",
-                  "type": "fullGrant",
+                  "type": "application",
                 }
             `);
         });
