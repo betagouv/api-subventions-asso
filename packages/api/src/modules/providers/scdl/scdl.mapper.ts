@@ -1,9 +1,7 @@
-import { DefaultObject, ParserInfo, ParserPath } from "../../../@types";
 import { shortISORegExp } from "../../../shared/helpers/DateHelper";
+import { ScdlGrantSchema } from "./@types/ScdlGrantSchema";
 
 const OFFICIAL_MAPPER = {
-    // we did remove allocatorName from mapper because we chose to define it from MiscScdlProducerEntity
-    allocatorSiret: "idAttribuant",
     conventionDate: "dateConvention",
     decisionReference: "referenceDecision",
     associationName: "nomBeneficiaire",
@@ -33,8 +31,7 @@ const expandedShortISOPeriodRegExp = /\d{4}-[01]\d-[0-3]\d[/_]\d{4}-[01]\d-[0-3]
 // Many times conventionDate is not used and another column is used to give the year of exercice
 const OVERRIDE_CONVENTION_DATE = ["Année budgétaire", "annee", "exercice", "dateDecision_Tri"];
 
-export const SCDL_MAPPER: DefaultObject<ParserPath | ParserInfo> = {
-    allocatorSiret: [[...getMapperVariants("allocatorSiret"), "Identification de l'attributaire*"]],
+export const SCDL_MAPPER: ScdlGrantSchema = {
     conventionDate: {
         path: [
             [

@@ -6,7 +6,7 @@ import { ScdlGrantDbo } from "../dbo/ScdlGrantDbo";
 export class MiscScdlGrantRepository extends MongoRepository<ScdlGrantDbo> {
     readonly collectionName = "misc-scdl-grant";
     readonly joinIndexes = {
-        miscScdlProducer: "producerId",
+        miscScdlProducer: "id",
     };
 
     public async findAll() {
@@ -22,7 +22,7 @@ export class MiscScdlGrantRepository extends MongoRepository<ScdlGrantDbo> {
     }
 
     async createIndexes() {
-        await this.collection.createIndex({ producerId: 1 });
+        await this.collection.createIndex({ id: 1 });
         await this.collection.createIndex({ associationSiret: 1 });
         await this.collection.createIndex({ associationRna: 1 });
     }

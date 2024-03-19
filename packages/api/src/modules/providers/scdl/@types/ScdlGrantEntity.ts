@@ -19,3 +19,5 @@ export type ScdlGrantEntity = {
     grantPercentage?: number;
     aidSystem: string;
 };
+
+export type EnhancedScdlGrantEntity = ScdlGrantEntity & { exercice: string };

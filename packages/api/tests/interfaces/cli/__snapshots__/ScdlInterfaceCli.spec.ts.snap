@@ -3,9 +3,10 @@
 exports[`SCDL CLI addProducer() should create MiscScdlProducerEntity 1`] = `
 Object {
   "_id": Any<ObjectId>,
+  "id": "52qdju982jduh93912kjdnaaa0",
   "lastUpdate": Any<Date>,
-  "producerId": "52qdju982jduh93912kjdnaaa0",
-  "producerName": "Région Bretagne",
+  "name": "Région Bretagne",
+  "siret": "23350001600040",
 }
 `;
 
@@ -34,7 +35,7 @@ Array [
     "_id": Any<String>,
     "aidSystem": "65d5b6c7-102c-4440-ac3b-768f708edc0a",
     "allocatorName": "Région Bretagne",
-    "allocatorSiret": "12000123400023",
+    "allocatorSiret": "23350001600040",
     "amount": 45000,
     "associationName": "ANNO_1",
     "associationRna": "W123456789",
@@ -73,7 +74,7 @@ Array [
     "_id": Any<String>,
     "aidSystem": "65d5b6c7-102c-4440-ac3b-768f708edz27",
     "allocatorName": "Région Bretagne",
-    "allocatorSiret": "12000123400023",
+    "allocatorSiret": "23350001600040",
     "amount": 50000,
     "associationName": "ANNO_2",
     "associationRna": "W123456974",
@@ -112,7 +113,7 @@ Array [
     "_id": Any<String>,
     "aidSystem": "65d5b6c7-102c-4440-ac3b-768f708endyu",
     "allocatorName": "Région Bretagne",
-    "allocatorSiret": "12000123400023",
+    "allocatorSiret": "23350001600040",
     "amount": 5000,
     "associationName": "ANNO_1",
     "associationRna": "W123158569",
@@ -151,7 +152,7 @@ Array [
     "_id": Any<String>,
     "aidSystem": "65d5b6c7-102c-4440-ac3b-768f708mpo8i",
     "allocatorName": "Région Bretagne",
-    "allocatorSiret": "12000123400023",
+    "allocatorSiret": "23350001600040",
     "amount": 10000,
     "associationName": "ANNO_3",
     "associationRna": "W123111256",

@@ -14,8 +14,8 @@ describe("SCDL CLI", () => {
     });
     describe("addProducer()", () => {
         it("should create MiscScdlProducerEntity", async () => {
-            await cli.addProducer(MiscScdlProducer.producerId, MiscScdlProducer.producerName);
-            const document = await miscScdlProducersRepository.findByProducerId(MiscScdlProducer.producerId);
+            await cli.addProducer(MiscScdlProducer.id, MiscScdlProducer.name, MiscScdlProducer.siret);
+            const document = await miscScdlProducersRepository.findById(MiscScdlProducer.id);
             expect(document).toMatchSnapshot({ _id: expect.any(ObjectId), lastUpdate: expect.any(Date) });
         });
     });
@@ -32,10 +32,10 @@ describe("SCDL CLI", () => {
         });
 
         it("should add grants", async () => {
-            await cli.addProducer(MiscScdlProducer.producerId, MiscScdlProducer.producerName);
+            await cli.addProducer(MiscScdlProducer.id, MiscScdlProducer.name, MiscScdlProducer.siret);
             await cli.parse(
                 path.resolve(__dirname, "../../../src/modules/providers/scdl/__fixtures__/SCDL.csv"),
-                MiscScdlProducer.producerId,
+                MiscScdlProducer.id,
                 new Date(),
             );
             const grants = await miscScdlGrantRepository.findAll();
@@ -48,13 +48,13 @@ describe("SCDL CLI", () => {
         it("should update producer lastUpdate", async () => {
             const EXPORT_DATE = new Date("2023-01-01");
             const expected = EXPORT_DATE;
-            await cli.addProducer(MiscScdlProducer.producerId, MiscScdlProducer.producerName);
+            await cli.addProducer(MiscScdlProducer.id, MiscScdlProducer.name, MiscScdlProducer.siret);
             await cli.parse(
                 path.resolve(__dirname, "../../../src/modules/providers/scdl/__fixtures__/SCDL.csv"),
-                MiscScdlProducer.producerId,
+                MiscScdlProducer.id,
                 EXPORT_DATE,
             );
-            const actual = (await scdlService.getProducer(MiscScdlProducer.producerId))?.lastUpdate;
+            const actual = (await scdlService.getProducer(MiscScdlProducer.id))?.lastUpdate;
             expect(actual).toEqual(expected);
         });
     });

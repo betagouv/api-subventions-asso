@@ -7,7 +7,7 @@ import { ScdlGrantEntity } from "./@types/ScdlGrantEntity";
 export default class MiscScdlAdapter {
     public static toDemandeSubvention(entity: MiscScdlGrantProducerEntity): DemandeSubvention {
         const lastUpdateDate = new Date(entity.producer.lastUpdate);
-        const toPV = ProviderValueFactory.buildProviderValueAdapter(entity.producer.producerName, lastUpdateDate);
+        const toPV = ProviderValueFactory.buildProviderValueAdapter(entity.producer.name, lastUpdateDate);
         const amount = toPV(entity.amount);
 
         return {
