@@ -31,10 +31,24 @@ describe("SCDL CLI", () => {
             ).rejects.toThrowError(Error);
         });
 
-        it("should add grants", async () => {
+        it("should add grants with exercice from conventionDate", async () => {
             await cli.addProducer(MiscScdlProducer.id, MiscScdlProducer.name, MiscScdlProducer.siret);
             await cli.parse(
                 path.resolve(__dirname, "../../../src/modules/providers/scdl/__fixtures__/SCDL.csv"),
+                MiscScdlProducer.id,
+                new Date(),
+            );
+            const grants = await miscScdlGrantRepository.findAll();
+            const expectedAny = grants.map(grant => ({
+                _id: expect.any(String),
+            }));
+            expect(grants).toMatchSnapshot(expectedAny);
+        });
+
+        it("should add grants with exercice from its own column", async () => {
+            await cli.addProducer(MiscScdlProducer.id, MiscScdlProducer.name, MiscScdlProducer.siret);
+            await cli.parse(
+                path.resolve(__dirname, "../../../src/modules/providers/scdl/__fixtures__/SCDL_WITH_EXERCICE.csv"),
                 MiscScdlProducer.id,
                 new Date(),
             );

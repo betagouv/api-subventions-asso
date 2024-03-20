@@ -1,9 +1,10 @@
 import MiscScdlProducer from "./MiscScdlProducer";
 
 export default {
-    id: "62d6c07847d8d078053b48e1",
+    producerId: MiscScdlProducer.id,
     allocatorName: MiscScdlProducer.name,
-    allocatorSiret: "23350001600040",
+    allocatorSiret: MiscScdlProducer.siret,
+    exercice: 2023,
     conventionDate: new Date("2017-06-27"),
     decisionReference: "2017-03-103",
     associationName: "Association Les Petits Débrouillards Bretagne",

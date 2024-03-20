@@ -6,6 +6,7 @@ import { ParserScheme } from "../../../../@types";
  */
 
 export type ScdlGrantSchema = {
+    exercice: ParserScheme;
     conventionDate?: ParserScheme;
     decisionReference?: ParserScheme;
     associationName?: ParserScheme;
@@ -20,5 +21,5 @@ export type ScdlGrantSchema = {
     idRAE?: ParserScheme;
     UeNotification?: ParserScheme;
     grantPercentage?: ParserScheme;
-    aidSystem: ParserScheme;
+    aidSystem?: ParserScheme;
 };
