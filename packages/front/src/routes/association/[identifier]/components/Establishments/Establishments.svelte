@@ -20,7 +20,7 @@
                     on:submit={e => controller.onFilter(e.detail)}
                     on:reset={() => controller.resetFilter()}
                     large={false}
-                    placeholder="Rechercher un code postal, un SIRET"
+                    placeholder="Rechercher un code postal ou un SIRET"
                     disableIfEmpty={false} />
             </div>
         </div>
