@@ -2,12 +2,9 @@
 
 exports[`MiscScdlAdapter toCommon adapts properly 1`] = `
 Object {
-  "bop": "",
-  "date_debut": 2017-03-14T00:00:00.000Z,
   "dispositif": "",
   "exercice": 2017,
   "montant_accorde": 47800.2,
-  "montant_verse": 47800.2,
   "objet": "Animations climat-énergie dans les lycées de la région",
   "service_instructeur": "Région Bretagne",
   "siret": "23350001600040",

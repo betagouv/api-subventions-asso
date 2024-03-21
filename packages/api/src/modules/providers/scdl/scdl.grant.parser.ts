@@ -12,7 +12,8 @@ export default class ScdlGrantParser {
         if (!isSiret(grant.associationSiret)) return false;
         if (!isValidDate(grant.conventionDate)) return false;
         if (!isNumberValid(grant.amount)) return false;
-        if (!isValidDate(grant.paymentStartDate)) return false;
+        // accept undefined and null as values as it is an optionnal field
+        if (grant.paymentStartDate && !isValidDate(grant.paymentStartDate)) return false;
 
         // optional fields
         if (!isRna(grant.associationRna) && grant.associationRna !== undefined) grant.associationRna = undefined;
@@ -40,7 +41,10 @@ export default class ScdlGrantParser {
             }
         }
 
-        console.log(`WARNING : ${invalidEntities.length} entities invalid`);
+        if (invalidEntities.length) {
+            console.log(`WARNING : ${invalidEntities.length} entities invalid`);
+            console.log(`Here some of them: `, invalidEntities.slice(0, 3));
+        }
 
         return storableChunk;
     }

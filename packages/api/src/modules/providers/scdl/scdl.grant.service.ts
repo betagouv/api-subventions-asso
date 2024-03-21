@@ -49,7 +49,7 @@ export class ScdlGrantService implements GrantProvider, DemandesSubventionsProvi
             (grant: MiscScdlGrantProducerEntity) =>
                 ({
                     provider: this.provider.id,
-                    type: "fullGrant",
+                    type: "application",
                     data: grant,
                 } as RawGrant),
         );
