@@ -12,7 +12,7 @@ export type ScdlGrantEntity = {
     amount: number;
     paymentNature: string;
     paymentConditions?: string;
-    paymentStartDate: Date;
+    paymentStartDate?: Date;
     paymentEndDate?: Date;
     idRAE?: string;
     UeNotification?: boolean;
