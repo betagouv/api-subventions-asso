@@ -4,24 +4,26 @@ import MiscScdlProducerEntity from "../entities/MiscScdlProducerEntity";
 export class MiscScdlProducersRepository extends MongoRepository<MiscScdlProducerEntity> {
     readonly collectionName = "misc-scdl-producers";
     readonly joinIndexes = {
-        miscScdlGrant: "id",
+        miscScdlGrant: "producerSlug",
     };
 
-    public async findById(id: string) {
-        return this.collection.findOne({ id });
+    public async findBySlug(slug: string) {
+        return this.collection.findOne({ slug });
     }
 
     public async create(entity: MiscScdlProducerEntity) {
         return this.collection.insertOne(entity);
     }
 
-    public async update(id: string, set: Partial<MiscScdlProducerEntity>) {
-        return this.collection.updateOne({ id }, { $set: set });
+    public async update(slug: string, set: Partial<MiscScdlProducerEntity>) {
+        return this.collection.updateOne({ slug }, { $set: set });
     }
 
     async createIndexes() {
-        await this.collection.createIndex({ id: 1 }, { unique: true });
+        await this.collection.createIndex({ slug: 1 }, { unique: true });
         await this.collection.createIndex({ name: 1 }, { unique: true });
+        // uncomment this after adding SIRET in producers manually
+        // await this.collection.createIndex({ siret: 1 }, { unique: true });
     }
 }
 

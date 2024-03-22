@@ -1,7 +1,7 @@
 import MiscScdlProducer from "./MiscScdlProducer";
 
 export default {
-    producerId: MiscScdlProducer.id,
+    producerSlug: MiscScdlProducer.slug,
     allocatorName: MiscScdlProducer.name,
     allocatorSiret: MiscScdlProducer.siret,
     exercice: 2017,

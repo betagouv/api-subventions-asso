@@ -44,9 +44,9 @@ describe("ScdlCli", () => {
     describe("addProducer()", () => {
         it("should call scdlService.createProducer()", async () => {
             mockedScdlService.getProducer.mockResolvedValue(null);
-            await cli.addProducer(PRODUCER_ENTITY.id, PRODUCER_ENTITY.name, PRODUCER_ENTITY.siret);
+            await cli.addProducer(PRODUCER_ENTITY.slug, PRODUCER_ENTITY.name, PRODUCER_ENTITY.siret);
             expect(scdlService.createProducer).toHaveBeenCalledWith({
-                id: PRODUCER_ENTITY.id,
+                slug: PRODUCER_ENTITY.slug,
                 name: PRODUCER_ENTITY.name,
                 siret: PRODUCER_ENTITY.siret,
                 lastUpdate: expect.any(Date),
@@ -63,26 +63,26 @@ describe("ScdlCli", () => {
         it("should throw Error if no NAME", () => {
             expect(() =>
                 // @ts-expect-error: test purpose
-                cli.addProducer(PRODUCER_ENTITY.id),
+                cli.addProducer(PRODUCER_ENTITY.slug),
             ).rejects.toThrowError("producer NAME is mandatory");
         });
 
         it("should throw Error if no SIRET", () => {
             expect(() =>
                 // @ts-expect-error: test purpose
-                cli.addProducer(PRODUCER_ENTITY.id, PRODUCER_ENTITY.name),
+                cli.addProducer(PRODUCER_ENTITY.slug, PRODUCER_ENTITY.name),
             ).rejects.toThrowError("producer SIRET is mandatory");
         });
 
         it("should throw Error if SIRET is not valid", () => {
-            expect(() => cli.addProducer(PRODUCER_ENTITY.id, PRODUCER_ENTITY.name, "1234")).rejects.toThrowError(
+            expect(() => cli.addProducer(PRODUCER_ENTITY.slug, PRODUCER_ENTITY.name, "1234")).rejects.toThrowError(
                 "SIRET is not valid",
             );
         });
 
         it("should throw Error if producer already exists", () => {
             expect(() =>
-                cli.addProducer(PRODUCER_ENTITY.id, PRODUCER_ENTITY.name, PRODUCER_ENTITY.siret),
+                cli.addProducer(PRODUCER_ENTITY.slug, PRODUCER_ENTITY.name, PRODUCER_ENTITY.siret),
             ).rejects.toThrowError("Producer already exists");
         });
     });
@@ -94,7 +94,7 @@ describe("ScdlCli", () => {
         });
 
         it("should throw ExportDateError", async () => {
-            expect(() => cli.parse(FILE_PATH, PRODUCER_ENTITY.id)).rejects.toThrowError(ExportDateError);
+            expect(() => cli.parse(FILE_PATH, PRODUCER_ENTITY.slug)).rejects.toThrowError(ExportDateError);
         });
 
         it("should throw Error when providerId does not match any provider in database", async () => {
@@ -105,32 +105,32 @@ describe("ScdlCli", () => {
         it("should call ScdlGrantParser.parseCsv()", async () => {
             const EXPORT_DATE = new Date();
             const DELIMETER = "%";
-            await cli.parse(FILE_PATH, PRODUCER_ENTITY.id, EXPORT_DATE, DELIMETER);
+            await cli.parse(FILE_PATH, PRODUCER_ENTITY.slug, EXPORT_DATE, DELIMETER);
             expect(ScdlGrantParser.parseCsv).toHaveBeenLastCalledWith(CSV_CONTENT, DELIMETER);
         });
 
         it("should call scdlService.createManyGrants()", async () => {
-            await cli.parse(FILE_PATH, PRODUCER_ENTITY.id, new Date());
-            expect(scdlService.createManyGrants).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.id);
+            await cli.parse(FILE_PATH, PRODUCER_ENTITY.slug, new Date());
+            expect(scdlService.createManyGrants).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug);
         });
 
         it("if DuplicateIndexError arises, doesn't fail and logs", async () => {
             mockedScdlService.createManyGrants.mockRejectedValueOnce(
                 new DuplicateIndexError("error", [1, 2, 3, 4, 5, 6]),
             );
-            await cli.parse(FILE_PATH, PRODUCER_ENTITY.id, new Date());
+            await cli.parse(FILE_PATH, PRODUCER_ENTITY.slug, new Date());
         });
 
         it("if another error arises, fail and throw it again", async () => {
             const ERROR = new Error("error");
             mockedScdlService.createManyGrants.mockRejectedValueOnce(ERROR);
-            const test = () => cli.parse(FILE_PATH, PRODUCER_ENTITY.id, new Date());
+            const test = () => cli.parse(FILE_PATH, PRODUCER_ENTITY.slug, new Date());
             await expect(test).rejects.toThrowError(ERROR);
         });
 
         it("should call scdlService.updateProducer()", async () => {
-            await cli.parse(FILE_PATH, PRODUCER_ENTITY.id, EXPORT_DATE);
-            expect(scdlService.updateProducer).toHaveBeenCalledWith(PRODUCER_ENTITY.id, { lastUpdate: EXPORT_DATE });
+            await cli.parse(FILE_PATH, PRODUCER_ENTITY.slug, EXPORT_DATE);
+            expect(scdlService.updateProducer).toHaveBeenCalledWith(PRODUCER_ENTITY.slug, { lastUpdate: EXPORT_DATE });
         });
     });
 });

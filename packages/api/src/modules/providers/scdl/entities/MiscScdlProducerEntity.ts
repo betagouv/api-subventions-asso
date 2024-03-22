@@ -1,7 +1,7 @@
 import { Siret } from "dto";
 
 export default interface MiscScdlProducerEntity {
-    id: string;
+    slug: string;
     name: string;
     siret: Siret;
     lastUpdate: Date;

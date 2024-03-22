@@ -6,22 +6,23 @@ import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
 
 export class ScdlService {
-    getProducer(id: string) {
-        return miscScdlProducersRepository.findById(id);
+    getProducer(slug: string) {
+        return miscScdlProducersRepository.findBySlug(slug);
     }
 
     createProducer(entity: MiscScdlProducerEntity) {
         return miscScdlProducersRepository.create(entity);
     }
 
-    private _buildGrantUniqueId(grant: ScdlStorableGrant, id: string) {
-        return getMD5(`${id}-${JSON.stringify(grant.__data__)}`);
+    private _buildGrantUniqueId(grant: ScdlStorableGrant, producerSlug: string) {
+        return getMD5(`${producerSlug}-${JSON.stringify(grant.__data__)}`);
     }
 
-    async createManyGrants(grants: ScdlStorableGrant[], id: string) {
-        if (!id || typeof id !== "string") throw new Error("Could not save SCDL grants without a producer ID");
+    async createManyGrants(grants: ScdlStorableGrant[], producerSlug: string) {
+        if (!producerSlug || typeof producerSlug !== "string")
+            throw new Error("Could not save SCDL grants without a producer slug");
 
-        const producer = await this.getProducer(id);
+        const producer = await this.getProducer(producerSlug);
 
         if (!producer) throw new Error("Provider does not exists");
 
@@ -31,18 +32,18 @@ export class ScdlService {
         const dboArray = grants.map(grant => {
             return {
                 ...grant,
-                producerId: producer.id,
+                producerSlug: producer.slug,
                 allocatorName: producer.name,
                 allocatorSiret: producer.siret,
-                _id: this._buildGrantUniqueId(grant, id),
+                _id: this._buildGrantUniqueId(grant, producerSlug),
             } as ScdlGrantDbo;
         });
 
         return miscScdlGrantRepository.createMany(dboArray);
     }
 
-    updateProducer(id, setObject) {
-        return miscScdlProducersRepository.update(id, setObject);
+    updateProducer(slug, setObject) {
+        return miscScdlProducersRepository.update(slug, setObject);
     }
 }
 

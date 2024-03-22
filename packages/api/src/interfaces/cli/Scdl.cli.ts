@@ -10,19 +10,19 @@ import { isSiret } from "../../shared/Validators";
 export default class ScdlCli {
     static cmdName = "scdl";
 
-    public async addProducer(id: string, name: string, siret: Siret) {
-        if (!id) throw Error("producer ID is mandatory");
+    public async addProducer(slug: string, name: string, siret: Siret) {
+        if (!slug) throw Error("producer ID is mandatory");
         if (!name) throw Error("producer NAME is mandatory");
         if (!siret) throw Error("producer SIRET is mandatory");
         if (!isSiret(siret)) throw Error("SIRET is not valid");
-        if (await scdlService.getProducer(id)) throw new Error("Producer already exists");
-        await scdlService.createProducer({ id, name, siret, lastUpdate: new Date() });
+        if (await scdlService.getProducer(slug)) throw new Error("Producer already exists");
+        await scdlService.createProducer({ slug, name, siret, lastUpdate: new Date() });
     }
 
-    public async parse(file: string, id: string, exportDate?: Date | undefined, delimeter = ";") {
+    public async parse(file: string, slug: string, exportDate?: Date | undefined, delimeter = ";") {
         if (!exportDate) throw new ExportDateError();
         exportDate = new Date(exportDate);
-        if (!(await scdlService.getProducer(id)))
+        if (!(await scdlService.getProducer(slug)))
             throw new Error("Producer ID does not match any producer in database");
 
         const fileContent = fs.readFileSync(file);
@@ -37,7 +37,7 @@ export default class ScdlCli {
         let duplicates: MiscScdlGrantEntity[] = [];
 
         try {
-            await scdlService.createManyGrants(entities, id);
+            await scdlService.createManyGrants(entities, slug);
         } catch (e) {
             if (!(e instanceof DuplicateIndexError)) throw e;
             duplicates = (e as DuplicateIndexError<MiscScdlGrantEntity[]>).duplicates;
@@ -51,7 +51,7 @@ export default class ScdlCli {
         }
 
         console.log("Updating producer's last update date");
-        await scdlService.updateProducer(id, { lastUpdate: exportDate });
+        await scdlService.updateProducer(slug, { lastUpdate: exportDate });
         console.log("Parsing ended successfuly !");
     }
 }

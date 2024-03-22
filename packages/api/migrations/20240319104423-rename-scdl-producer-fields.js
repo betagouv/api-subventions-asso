@@ -4,7 +4,7 @@ module.exports = {
             {},
             {
                 $rename: {
-                    producerId: "id",
+                    producerId: "slug",
                     producerName: "name",
                 },
             },
