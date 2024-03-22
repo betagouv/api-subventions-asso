@@ -22,8 +22,7 @@ export class MiscScdlProducersRepository extends MongoRepository<MiscScdlProduce
     async createIndexes() {
         await this.collection.createIndex({ slug: 1 }, { unique: true });
         await this.collection.createIndex({ name: 1 }, { unique: true });
-        // uncomment this after adding SIRET in producers manually
-        // await this.collection.createIndex({ siret: 1 }, { unique: true });
+        await this.collection.createIndex({ siret: 1 }, { unique: true });
     }
 }
 

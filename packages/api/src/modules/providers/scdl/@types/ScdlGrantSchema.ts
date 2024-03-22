@@ -2,7 +2,7 @@ import { ParserScheme } from "../../../../@types";
 
 /**
  * Schema has allocatorName and allocatorSiret missing from SCDL fromat
- * This is a choise we made because we wanted to fill it manually from CLI addProducer
+ * This is a choice we made because we wanted to fill it manually from CLI addProducer
  */
 
 export type ScdlGrantSchema = {
