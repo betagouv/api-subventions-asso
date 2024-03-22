@@ -28,7 +28,7 @@ export default class MiscScdlAdapter {
 
     public static toCommon(entity: ScdlGrantEntity): ApplicationDto {
         return {
-            exercice: entity.conventionDate?.getFullYear(),
+            exercice: entity.exercice,
             dispositif: "",
             montant_accorde: entity.amount,
             objet: entity.object || "",
