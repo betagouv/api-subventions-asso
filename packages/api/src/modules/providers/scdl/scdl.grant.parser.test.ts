@@ -74,7 +74,7 @@ describe("ScdlGrantParser", () => {
         });
 
         it("should return false if exercise is defined but not valid", () => {
-            mockedDateHelper.isValidDate.mockReturnValueOnce(false);
+            mockedValidators.isNumberValid.mockReturnValueOnce(false);
             const expected = false;
             // @ts-expect-error: protected method
             const actual = ScdlGrantParser.isGrantValid(GRANT);
@@ -82,7 +82,6 @@ describe("ScdlGrantParser", () => {
         });
 
         it("should return false if paymentStartDate is not valid ", () => {
-            mockedDateHelper.isValidDate.mockReturnValueOnce(true);
             mockedDateHelper.isValidDate.mockReturnValueOnce(false);
             const expected = false;
             // @ts-expect-error: protected method
@@ -99,7 +98,7 @@ describe("ScdlGrantParser", () => {
             // mock validators to get to the optionnal part of isGrantValid()
             mockedValidators.isSiret.mockReturnValueOnce(true);
             mockedDateHelper.isValidDate.mockReturnValueOnce(true);
-            mockedDateHelper.isValidDate.mockReturnValueOnce(true);
+            mockedValidators.isNumberValid.mockReturnValueOnce(true);
             mockedValidators.isNumberValid.mockReturnValueOnce(true);
 
             for (let i = 0; i < nbFalseMock; i++) mockValidator.mockReturnValueOnce(false);
