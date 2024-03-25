@@ -73,7 +73,7 @@ describe("ScdlGrantParser", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should return false if convention date is defined but not valid", () => {
+        it("should return false if exercice is defined but not valid", () => {
             mockedDateHelper.isValidDate.mockReturnValueOnce(false);
             const expected = false;
             // @ts-expect-error: protected method
@@ -82,6 +82,7 @@ describe("ScdlGrantParser", () => {
         });
 
         it("should return false if paymentStartDate is not valid ", () => {
+            mockedDateHelper.isValidDate.mockReturnValueOnce(true);
             mockedDateHelper.isValidDate.mockReturnValueOnce(false);
             const expected = false;
             // @ts-expect-error: protected method
@@ -97,6 +98,7 @@ describe("ScdlGrantParser", () => {
         `("it sets '$param' to undefined if set but invalid", ({ param, mockValidator, nbFalseMock }) => {
             // mock validators to get to the optionnal part of isGrantValid()
             mockedValidators.isSiret.mockReturnValueOnce(true);
+            mockedDateHelper.isValidDate.mockReturnValueOnce(true);
             mockedDateHelper.isValidDate.mockReturnValueOnce(true);
             mockedValidators.isNumberValid.mockReturnValueOnce(true);
 

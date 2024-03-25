@@ -11,6 +11,7 @@ export default class ScdlGrantParser {
         // mandatory fields
         if (!isSiret(grant.associationSiret)) return false;
         if (!isNumberValid(grant.amount)) return false;
+        if (!isValidDate(new Date(grant.exercice))) return false;
         // accept undefined and null as values as it is an optionnal field
         if (grant.paymentStartDate && !isValidDate(grant.paymentStartDate)) return false;
 
