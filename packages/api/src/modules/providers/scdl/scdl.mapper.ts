@@ -31,7 +31,7 @@ const CONVENTION_DATE_PATHS = [...getMapperVariants("conventionDate"), "datedeco
 
 export const SCDL_MAPPER: ScdlGrantSchema = {
     exercice: {
-        // for now if no exercice column we will use conventionDate as default
+        // for now if no exercise column we will use conventionDate as default
         path: [
             [
                 ...getMapperVariants("exercice"),

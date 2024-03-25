@@ -11,7 +11,7 @@ export default class ScdlCli {
     static cmdName = "scdl";
 
     public async addProducer(slug: string, name: string, siret: Siret) {
-        if (!slug) throw Error("producer ID is mandatory");
+        if (!slug) throw Error("producer SLUG is mandatory");
         if (!name) throw Error("producer NAME is mandatory");
         if (!siret) throw Error("producer SIRET is mandatory");
         if (!isSiret(siret)) throw Error("SIRET is not valid");

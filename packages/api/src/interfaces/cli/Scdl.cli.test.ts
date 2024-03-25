@@ -57,7 +57,7 @@ describe("ScdlCli", () => {
             expect(() =>
                 // @ts-expect-error: test purpose
                 cli.addProducer(),
-            ).rejects.toThrowError("producer ID is mandatory");
+            ).rejects.toThrowError("producer SLUG is mandatory");
         });
 
         it("should throw Error if no NAME", () => {
