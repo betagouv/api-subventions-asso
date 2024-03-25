@@ -10,7 +10,7 @@ export default class MiscScdlAdapter {
         const toPV = ProviderValueFactory.buildProviderValueAdapter(entity.producer.name, lastUpdateDate);
         const amount = toPV(entity.amount);
 
-        const dateCommision = entity.conventionDate ? toPV(entity.conventionDate) : toPV(new Date(entity.exercice));
+        const commisionDate = entity.conventionDate ? toPV(entity.conventionDate) : toPV(new Date(entity.exercice));
 
         return {
             siret: toPV(entity.associationSiret),
@@ -21,7 +21,7 @@ export default class MiscScdlAdapter {
             montants: {
                 accorde: amount,
             },
-            date_commision: dateCommision, // doubt
+            date_commision: commisionDate, // doubt
             financeur_principal: toPV(entity.allocatorName),
             annee_demande: toPV(entity.exercice), // doubt
             pluriannualite: toPV(MiscScdlAdapter._multiannuality(entity)),

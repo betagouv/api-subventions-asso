@@ -16,9 +16,9 @@ export default class ScdlGrantParser {
         if (grant.paymentStartDate && !isValidDate(grant.paymentStartDate)) return false;
 
         // optional fields
-        if (grant.conventionDate !== undefined && !isValidDate(grant.conventionDate)) grant.conventionDate = undefined;
-        if (grant.associationRna !== undefined && !isRna(grant.associationRna)) grant.associationRna = undefined;
-        if (grant.paymentEndDate !== undefined && !isValidDate(grant.paymentEndDate)) grant.paymentEndDate = undefined;
+        if (grant.conventionDate && !isValidDate(grant.conventionDate)) grant.conventionDate = undefined;
+        if (grant.associationRna && !isRna(grant.associationRna)) grant.associationRna = undefined;
+        if (grant.paymentEndDate && !isValidDate(grant.paymentEndDate)) grant.paymentEndDate = undefined;
 
         return true;
     }
