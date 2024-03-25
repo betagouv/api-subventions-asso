@@ -15,7 +15,7 @@ describe("SCDL CLI", () => {
     describe("addProducer()", () => {
         it("should create MiscScdlProducerEntity", async () => {
             await cli.addProducer(MiscScdlProducer.slug, MiscScdlProducer.name, MiscScdlProducer.siret);
-            const document = await miscScdlProducersRepository.findById(MiscScdlProducer.slug);
+            const document = await miscScdlProducersRepository.findBySlug(MiscScdlProducer.slug);
             expect(document).toMatchSnapshot({ _id: expect.any(ObjectId), lastUpdate: expect.any(Date) });
         });
     });
