@@ -1,7 +1,7 @@
 import { DemandeSubvention, Rna, Siren, Siret } from "dto";
 import * as Sentry from "@sentry/node";
-import GrantProvider from "../../grant/@types/GrantProvider";
 import { RawGrant } from "../../grant/@types/rawGrant";
+import GrantProvider from "../../grant/@types/GrantProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import MiscScdlGrantProducerEntity from "./entities/MiscScdlGrantProducerEntity";

@@ -1,7 +1,8 @@
+import { Siret } from "dto";
+
 export default interface MiscScdlProducerEntity {
-    // Data.Gouv data producer ID
-    producerId: string;
-    // Data.Gouv data producer name
-    producerName: string;
+    slug: string;
+    name: string;
+    siret: Siret;
     lastUpdate: Date;
 }
