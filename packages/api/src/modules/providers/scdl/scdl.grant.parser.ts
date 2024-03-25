@@ -10,14 +10,14 @@ export default class ScdlGrantParser {
     protected static isGrantValid(grant: ScdlParsedGrant) {
         // mandatory fields
         if (!isSiret(grant.associationSiret)) return false;
-        if (!isValidDate(grant.conventionDate)) return false;
         if (!isNumberValid(grant.amount)) return false;
         // accept undefined and null as values as it is an optionnal field
         if (grant.paymentStartDate && !isValidDate(grant.paymentStartDate)) return false;
 
         // optional fields
-        if (!isRna(grant.associationRna) && grant.associationRna !== undefined) grant.associationRna = undefined;
-        if (!isValidDate(grant.paymentEndDate) && grant.paymentEndDate !== undefined) grant.paymentEndDate = undefined;
+        if (grant.conventionDate !== undefined && !isValidDate(grant.conventionDate)) grant.conventionDate = undefined;
+        if (grant.associationRna !== undefined && !isRna(grant.associationRna)) grant.associationRna = undefined;
+        if (grant.paymentEndDate !== undefined && !isValidDate(grant.paymentEndDate)) grant.paymentEndDate = undefined;
 
         return true;
     }

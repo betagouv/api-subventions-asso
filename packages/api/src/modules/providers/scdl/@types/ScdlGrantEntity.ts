@@ -4,7 +4,7 @@ export type ScdlGrantEntity = {
     allocatorName: string;
     allocatorSiret: Siret;
     exercice: number;
-    conventionDate: Date;
+    conventionDate?: Date;
     decisionReference?: string;
     associationName?: string;
     associationSiret: string;
