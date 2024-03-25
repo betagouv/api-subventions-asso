@@ -1,9 +1,8 @@
-import { DefaultObject, ParserInfo, ParserPath } from "../../../@types";
 import { shortISORegExp } from "../../../shared/helpers/DateHelper";
+import { ScdlGrantSchema } from "./@types/ScdlGrantSchema";
 
 const OFFICIAL_MAPPER = {
-    // we did remove allocatorName from mapper because we chose to define it from MiscScdlProducerEntity
-    allocatorSiret: "idAttribuant",
+    exercice: "exercice",
     conventionDate: "dateConvention",
     decisionReference: "referenceDecision",
     associationName: "nomBeneficiaire",
@@ -28,22 +27,24 @@ function getMapperVariants(prop): string[] {
 
 const expandedShortISOPeriodRegExp = /\d{4}-[01]\d-[0-3]\d[/_]\d{4}-[01]\d-[0-3]\d/;
 
-// THIS IS A QUICK WIN
-// TODO #2247 : refactor the process to make mapper customizable by producer
-// Many times conventionDate is not used and another column is used to give the year of exercice
-const OVERRIDE_CONVENTION_DATE = ["Année budgétaire", "annee", "exercice", "dateDecision_Tri"];
+const CONVENTION_DATE_PATHS = [...getMapperVariants("conventionDate"), "datedeconvention", "Date de convention*"];
 
-export const SCDL_MAPPER: DefaultObject<ParserPath | ParserInfo> = {
-    allocatorSiret: [[...getMapperVariants("allocatorSiret"), "Identification de l'attributaire*"]],
-    conventionDate: {
+export const SCDL_MAPPER: ScdlGrantSchema = {
+    exercice: {
+        // for now if no exercise column we will use conventionDate as default
         path: [
             [
-                ...OVERRIDE_CONVENTION_DATE,
-                ...getMapperVariants("conventionDate"),
-                "datedeconvention",
-                "Date de convention*",
+                ...getMapperVariants("exercice"),
+                "dateDecision_Tri",
+                "annee",
+                "Année budgétaire",
+                ...CONVENTION_DATE_PATHS,
             ],
         ],
+        adapter: value => (value ? new Date(value).getFullYear() : value),
+    },
+    conventionDate: {
+        path: [[...CONVENTION_DATE_PATHS]],
         adapter: value => (value ? new Date(value) : value),
     },
     decisionReference: [[...getMapperVariants("decisionReference"), "Référence de la décision"]],

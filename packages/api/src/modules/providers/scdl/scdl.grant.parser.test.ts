@@ -58,6 +58,13 @@ describe("ScdlGrantParser", () => {
             mockedValidators.isNumberValid.mockReturnValue(true);
         });
 
+        it("should return true with a well formatted grant", () => {
+            const expected = true;
+            // @ts-expect-error: protected method
+            const actual = ScdlGrantParser.isGrantValid(GRANT);
+            expect(actual).toEqual(expected);
+        });
+
         it("should return false if siret not valid", () => {
             mockedValidators.isSiret.mockReturnValueOnce(false);
             const expected = false;
@@ -66,16 +73,15 @@ describe("ScdlGrantParser", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should return false if convention date not valid", () => {
-            mockedDateHelper.isValidDate.mockReturnValueOnce(false);
+        it("should return false if exercise is defined but not valid", () => {
+            mockedValidators.isNumberValid.mockReturnValueOnce(false);
             const expected = false;
             // @ts-expect-error: protected method
             const actual = ScdlGrantParser.isGrantValid(GRANT);
             expect(actual).toEqual(expected);
         });
 
-        it("should return false if paymentStartDate is not valid not valid", () => {
-            mockedDateHelper.isValidDate.mockReturnValueOnce(true);
+        it("should return false if paymentStartDate is not valid ", () => {
             mockedDateHelper.isValidDate.mockReturnValueOnce(false);
             const expected = false;
             // @ts-expect-error: protected method
@@ -85,13 +91,16 @@ describe("ScdlGrantParser", () => {
 
         it.each`
             param               | mockValidator                   | nbFalseMock
+            ${"conventionDate"} | ${mockedDateHelper.isValidDate} | ${1}
             ${"associationRna"} | ${mockedValidators.isRna}       | ${1}
-            ${"paymentEndDate"} | ${mockedDateHelper.isValidDate} | ${1}
+            ${"paymentEndDate"} | ${mockedDateHelper.isValidDate} | ${2}
         `("it sets '$param' to undefined if set but invalid", ({ param, mockValidator, nbFalseMock }) => {
+            // mock validators to get to the optionnal part of isGrantValid()
             mockedValidators.isSiret.mockReturnValueOnce(true);
             mockedDateHelper.isValidDate.mockReturnValueOnce(true);
-            mockedDateHelper.isValidDate.mockReturnValueOnce(true);
             mockedValidators.isNumberValid.mockReturnValueOnce(true);
+            mockedValidators.isNumberValid.mockReturnValueOnce(true);
+
             for (let i = 0; i < nbFalseMock; i++) mockValidator.mockReturnValueOnce(false);
 
             const expected = { [param]: undefined };

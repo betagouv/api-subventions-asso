@@ -7,8 +7,10 @@ import { ScdlGrantEntity } from "./@types/ScdlGrantEntity";
 export default class MiscScdlAdapter {
     public static toDemandeSubvention(entity: MiscScdlGrantProducerEntity): DemandeSubvention {
         const lastUpdateDate = new Date(entity.producer.lastUpdate);
-        const toPV = ProviderValueFactory.buildProviderValueAdapter(entity.producer.producerName, lastUpdateDate);
+        const toPV = ProviderValueFactory.buildProviderValueAdapter(entity.producer.name, lastUpdateDate);
         const amount = toPV(entity.amount);
+
+        const commisionDate = entity.conventionDate ? toPV(entity.conventionDate) : toPV(new Date(entity.exercice));
 
         return {
             siret: toPV(entity.associationSiret),
@@ -19,16 +21,16 @@ export default class MiscScdlAdapter {
             montants: {
                 accorde: amount,
             },
-            date_commision: toPV(entity.conventionDate), // doubt
+            date_commision: commisionDate, // doubt
             financeur_principal: toPV(entity.allocatorName),
-            annee_demande: toPV(entity.conventionDate?.getFullYear()), // doubt
+            annee_demande: toPV(entity.exercice), // doubt
             pluriannualite: toPV(MiscScdlAdapter._multiannuality(entity)),
         };
     }
 
     public static toCommon(entity: ScdlGrantEntity): ApplicationDto {
         return {
-            exercice: entity.conventionDate?.getFullYear(),
+            exercice: entity.exercice,
             dispositif: "",
             montant_accorde: entity.amount,
             objet: entity.object || "",
