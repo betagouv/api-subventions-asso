@@ -73,7 +73,7 @@ describe("ScdlGrantParser", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should return false if exercice is defined but not valid", () => {
+        it("should return false if exercise is defined but not valid", () => {
             mockedDateHelper.isValidDate.mockReturnValueOnce(false);
             const expected = false;
             // @ts-expect-error: protected method
