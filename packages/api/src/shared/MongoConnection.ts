@@ -39,4 +39,9 @@ if (ENV !== "test") {
     }
 
     client.on("serverHeartbeatFailed", data => Sentry.captureException(new Error("mongo failed heartbeat"), { data }));
+
+    client.on("topologyClosed", data => {
+        connectDB().then(_r => console.log("connexion re-established"));
+        Sentry.captureException(new Error("mongo closed and connexion attempted api-side"), { data });
+    });
 }
