@@ -9,10 +9,19 @@ module.exports = {
                 },
             },
         );
-        console.log("MIGRATION OK !");
-        // TODO write your migration here.
-        // See https://github.com/seppevs/migrate-mongo/#creating-a-new-migration-script
-        // Example:
-        // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: true}});
+
+        const producersCursor = await db.collection("misc-scdl-producers").find({});
+
+        while (await producersCursor.hasNext()) {
+            const producer = await producersCursor.next();
+            if (!producer.siret) throw Error("You must define a SIRET for producers before applying this migration");
+            await db.collection("misc-scdl-grant").updateMany(
+                { producerId: producer.slug },
+                {
+                    $rename: { producerId: "producerSlug" },
+                    $set: { allocatorName: producer.name, allocatorSiret: producer.siret },
+                },
+            );
+        }
     },
 };
