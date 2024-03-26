@@ -14,6 +14,7 @@ export class StructureTitleController {
         } else this.title = `Association : ${associationName}`;
         this.rna = valueOrHyphen(association.rna);
         this.siren = valueOrHyphen(association.siren);
+        this.rup = Boolean(association.rup);
     }
 
     get hasActionButton() {
