@@ -1,4 +1,5 @@
 import { Etablissement, Association, Document } from "dto";
+import { AssociationNature } from "dto/build/associations/AssociationNature";
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import {
@@ -64,7 +65,7 @@ export default class ApiAssoDtoAdapter {
 
         // structure.identite.util_publique seems not to be implemented yet
         // a workarround is to use the nature field that can be read to determine if the association is RUP
-        if (structure.identite.nature === "Reconnue d'utilité publique") {
+        if (structure.identite?.nature === "Reconnue d'utilité publique") {
             structure.identite.util_publique = true;
         }
 
@@ -84,6 +85,7 @@ export default class ApiAssoDtoAdapter {
                 code_postal: structure.coordonnees.adresse_siege.cp?.toString(),
                 commune: structure.coordonnees.adresse_siege.commune,
             }),
+            nature: toPVs(structure.identite.nature as AssociationNature),
             rup: structure.identite.util_publique ? toPVs(structure.identite.util_publique) : undefined,
             date_rup: structure.identite.date_publication_util_publique
                 ? toPVs(structure.identite.date_publication_util_publique)

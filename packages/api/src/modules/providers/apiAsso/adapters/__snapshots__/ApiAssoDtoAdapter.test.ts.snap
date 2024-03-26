@@ -56,6 +56,14 @@ Object {
       "value": "Asso qui n'existe pas",
     },
   ],
+  "nature": Array [
+    Object {
+      "last_update": 2023-01-12T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "string",
+      "value": "Simplement déclarée",
+    },
+  ],
   "objet_social": Array [
     Object {
       "last_update": 2023-01-12T00:00:00.000Z,
