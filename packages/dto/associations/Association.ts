@@ -8,6 +8,7 @@ import { Etablissement } from "../etablissements/Etablissement";
 import { Versement } from "../versements/Versement";
 import { ExtraitRcsDto } from "./ExtraitRcsDto";
 import { BodaccRecordDto } from "./BodaccRecordDto";
+import { AssociationNature } from "./AssociationNature";
 
 export interface Association {
     siren?: ProviderValues<Siren>;
@@ -26,6 +27,11 @@ export interface Association {
     etablisements_siret?: ProviderValues<Siret[]>;
     adresse_siege_rna?: ProviderValues<Adresse>;
     adresse_siege_siren?: ProviderValues<Adresse>;
+    nature?: ProviderValues<AssociationNature>;
+    // Association reconnue d'utilité publique (RUP)
+    rup?: ProviderValues<boolean>;
+    // Date de reconnaissance
+    date_rup?: ProviderValues<string>;
     federation?: ProviderValues<string>;
     licencies?: {
         // Uniquement les asso sportive
