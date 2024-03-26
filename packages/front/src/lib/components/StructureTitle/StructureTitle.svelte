@@ -21,6 +21,9 @@
             </p>
             {#if controller.rup}
                 <Badge label="Association reconnue d'utilité publique" noIcon={true} type="purple-glycine" />
+                <p class="nb-estab fr-icon-info-fill fr-text--sm">
+                    {controller.nbEstabLabel}
+                </p>
             {/if}
         </div>
     </div>
@@ -40,5 +43,13 @@
 
     .structure-info > p {
         margin-bottom: 0;
+    }
+
+    .structure-info > p.nb-estab {
+        color: var(--text-default-info);
+    }
+
+    .structure-info > p.fr-icon-info-fill::before {
+        margin-right: 0.5em;
     }
 </style>
