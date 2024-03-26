@@ -85,7 +85,9 @@ export default class ApiAssoDtoAdapter {
                 commune: structure.coordonnees.adresse_siege.commune,
             }),
             rup: toPVs(structure.identite.util_publique),
-            date_rup: toPVs(structure.identite.date_publication_util_publique),
+            date_rup: structure.identite.date_publication_util_publique
+                ? toPVs(structure.identite.date_publication_util_publique)
+                : undefined,
         };
     }
 
