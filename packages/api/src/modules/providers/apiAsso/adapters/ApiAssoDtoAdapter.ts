@@ -84,7 +84,7 @@ export default class ApiAssoDtoAdapter {
                 code_postal: structure.coordonnees.adresse_siege.cp?.toString(),
                 commune: structure.coordonnees.adresse_siege.commune,
             }),
-            rup: toPVs(structure.identite.util_publique),
+            rup: structure.identite.util_publique ? toPVs(structure.identite.util_publique) : undefined,
             date_rup: structure.identite.date_publication_util_publique
                 ? toPVs(structure.identite.date_publication_util_publique)
                 : undefined,
