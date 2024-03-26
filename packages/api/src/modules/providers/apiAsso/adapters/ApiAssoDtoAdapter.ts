@@ -62,6 +62,12 @@ export default class ApiAssoDtoAdapter {
             ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_modif_rna),
         );
 
+        // structure.identite.util_publique seems not to be implemented yet
+        // a workarround is to use the nature field that can be read to determine if the association is RUP
+        if (structure.identite.nature === "Reconnue d'utilité publique") {
+            structure.identite.util_publique = true;
+        }
+
         return {
             rna: toPVs(structure.identite.id_rna),
             denomination_rna: toPVs(structure.identite.nom),
@@ -78,6 +84,8 @@ export default class ApiAssoDtoAdapter {
                 code_postal: structure.coordonnees.adresse_siege.cp?.toString(),
                 commune: structure.coordonnees.adresse_siege.commune,
             }),
+            rup: toPVs(structure.identite.util_publique),
+            date_rup: toPVs(structure.identite.date_publication_util_publique),
         };
     }
 

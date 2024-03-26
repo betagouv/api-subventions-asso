@@ -40,6 +40,14 @@ Object {
       "value": 2023-01-12T00:00:00.000Z,
     },
   ],
+  "date_rup": Array [
+    Object {
+      "last_update": 2023-01-12T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "string",
+      "value": "2018-05-13",
+    },
+  ],
   "denomination_rna": Array [
     Object {
       "last_update": 2023-01-12T00:00:00.000Z,
@@ -62,6 +70,14 @@ Object {
       "provider": "RNA",
       "type": "string",
       "value": "W000000000",
+    },
+  ],
+  "rup": Array [
+    Object {
+      "last_update": 2023-01-12T00:00:00.000Z,
+      "provider": "RNA",
+      "type": "boolean",
+      "value": true,
     },
   ],
 }
