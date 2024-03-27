@@ -1,6 +1,7 @@
 <script>
     import { StructureTitleController } from "./StructureTitle.controller";
     import { currentAssociation } from "$lib/store/association.store";
+    import Badge from "$lib/dsfr/Badge.svelte";
     export let siret = undefined;
 
     const controller = new StructureTitleController($currentAssociation, siret);
@@ -12,11 +13,16 @@
         {#if controller.subtitle}
             <div class="fr-h4">{controller.subtitle}</div>
         {/if}
-        <p class="fr-text--lg">
-            RNA : <span class="fr-text--bold">{controller.rna}</span>
-            - SIREN :
-            <span class="fr-text--bold">{controller.siren}</span>
-        </p>
+        <div class="structure-info fr-grid-row">
+            <p class="fr-text--lg">
+                RNA : <span class="fr-text--bold">{controller.rna}</span>
+                - SIREN :
+                <span class="fr-text--bold">{controller.siren}</span>
+            </p>
+            {#if controller.rup}
+                <Badge label="Association reconnue d'utilité publique" noIcon={true} type="purple-glycine" />
+            {/if}
+        </div>
     </div>
     {#if controller.hasActionButton}
         <div class="fr-col-2 fr-pt-1w">
@@ -26,3 +32,13 @@
         </div>
     {/if}
 </div>
+
+<style>
+    .structure-info {
+        gap: 1em;
+    }
+
+    .structure-info > p {
+        margin-bottom: 0;
+    }
+</style>
