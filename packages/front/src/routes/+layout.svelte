@@ -76,8 +76,8 @@
         flex-direction: column;
         background-image: linear-gradient(
             to bottom,
-            var(--background-action-low-blue-france) 0 30em,
-            var(--background-alt-grey) 30em
+            var(--background-action-low-blue-france) 0 40em,
+            var(--background-alt-grey) 40em
         );
     }
 </style>

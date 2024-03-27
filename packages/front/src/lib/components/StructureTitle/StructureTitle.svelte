@@ -1,6 +1,7 @@
 <script>
     import { StructureTitleController } from "./StructureTitle.controller";
     import { currentAssociation } from "$lib/store/association.store";
+    import Badge from "$lib/dsfr/Badge.svelte";
     export let siret = undefined;
 
     const controller = new StructureTitleController($currentAssociation, siret);
@@ -12,11 +13,19 @@
         {#if controller.subtitle}
             <div class="fr-h4">{controller.subtitle}</div>
         {/if}
-        <p class="fr-text--lg">
-            RNA : <span class="fr-text--bold">{controller.rna}</span>
-            - SIREN :
-            <span class="fr-text--bold">{controller.siren}</span>
-        </p>
+        <div class="structure-info fr-grid-row">
+            <p class="fr-text--lg">
+                RNA : <span class="fr-text--bold">{controller.rna}</span>
+                - SIREN :
+                <span class="fr-text--bold">{controller.siren}</span>
+            </p>
+            {#if controller.rup}
+                <Badge label="Association reconnue d'utilité publique" noIcon={true} type="purple-glycine" />
+                <p class="nb-estab fr-icon-info-fill fr-text--sm">
+                    {controller.nbEstabLabel}
+                </p>
+            {/if}
+        </div>
     </div>
     {#if controller.hasActionButton}
         <div class="fr-col-2 fr-pt-1w">
@@ -26,3 +35,21 @@
         </div>
     {/if}
 </div>
+
+<style>
+    .structure-info {
+        gap: 1em;
+    }
+
+    .structure-info > p {
+        margin-bottom: 0;
+    }
+
+    .structure-info > p.nb-estab {
+        color: var(--text-default-info);
+    }
+
+    .structure-info > p.fr-icon-info-fill::before {
+        margin-right: 0.5em;
+    }
+</style>

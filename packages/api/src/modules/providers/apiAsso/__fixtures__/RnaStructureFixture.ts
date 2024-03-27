@@ -9,6 +9,8 @@ export const rnaStructureFixture: RnaStructureDto = {
         date_modif_rna: "2023-01-12",
         active: true,
         nature: "Simplement déclarée",
+        util_publique: true,
+        date_publication_util_publique: "2018-05-13",
     },
     activites: {
         objet: "Object social !",

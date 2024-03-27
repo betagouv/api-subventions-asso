@@ -7,6 +7,8 @@ export interface RnaStructureDto {
         date_modif_rna: string;
         active: boolean;
         nature: string;
+        util_publique: boolean;
+        date_publication_util_publique: string;
     };
     activites: {
         objet: string;
