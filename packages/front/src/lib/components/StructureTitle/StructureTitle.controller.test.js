@@ -17,11 +17,27 @@ describe("StructureTitleController", () => {
 
     beforeAll(() => mockBuildSiret.mockReturnValue(ETAB_SIRET));
 
-    it("should set rup to false if undefined", () => {
-        const controller = new StructureTitleController({ ...ASSO, rup: undefined });
-        const expected = false;
-        const actual = controller.rup;
-        expect(actual).toEqual(expected);
+    describe("specific cases with asso", () => {
+        it("should set rup to false if undefined", () => {
+            const controller = new StructureTitleController({ ...ASSO, rup: undefined });
+            const expected = false;
+            const actual = controller.rup;
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return singular estab label", () => {
+            const controller = new StructureTitleController({ ...ASSO, etablisements_siret: [""] });
+            const expected = "1 établissement rattaché";
+            const actual = controller.nbEstabLabel;
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return plural estab label", () => {
+            const controller = new StructureTitleController({ ...ASSO, etablisements_siret: ["", ""] });
+            const expected = "2 établissements rattachés";
+            const actual = controller.nbEstabLabel;
+            expect(actual).toEqual(expected);
+        });
     });
 
     describe.each`
