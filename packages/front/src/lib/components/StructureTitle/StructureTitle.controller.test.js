@@ -8,6 +8,7 @@ describe("StructureTitleController", () => {
         denomination_rna: "nom_rna",
         denomination_siren: "nom_siren",
         nic_siege: "00000",
+        rup: true,
     };
     const ETAB_SIRET = "10000000000000";
     const controllerAsso = new StructureTitleController(ASSO);
@@ -15,6 +16,13 @@ describe("StructureTitleController", () => {
     const mockBuildSiret = vi.spyOn(associationHelper, "getSiegeSiret");
 
     beforeAll(() => mockBuildSiret.mockReturnValue(ETAB_SIRET));
+
+    it("should set rup to false if undefined", () => {
+        const controller = new StructureTitleController({ ...ASSO, rup: undefined });
+        const expected = false;
+        const actual = controller.rup;
+        expect(actual).toEqual(expected);
+    });
 
     describe.each`
         controller        | isEtab
@@ -24,6 +32,12 @@ describe("StructureTitleController", () => {
         it("should have proper identifiers", () => {
             const expected = { rna: "W000000000", siren: "100000000" };
             const actual = { rna: controller.rna, siren: controller.siren };
+            expect(actual).toEqual(expected);
+        });
+
+        it("should set rup", () => {
+            const expected = true;
+            const actual = controller.rup;
             expect(actual).toEqual(expected);
         });
 
