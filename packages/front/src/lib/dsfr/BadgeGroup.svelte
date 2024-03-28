@@ -2,6 +2,7 @@
     import Badge from "$lib/dsfr/Badge.svelte";
 
     export let badges = [];
+    console.log(badges);
 </script>
 
 {#each badges as badge}

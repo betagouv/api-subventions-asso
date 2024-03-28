@@ -1,6 +1,7 @@
 <script>
     import InfosLegalesController from "./InfosLegales.controller";
     import Button from "$lib/dsfr/Button.svelte";
+    import Badge from "$lib/dsfr/Badge.svelte";
 
     export let association;
     export let establishment = undefined;
@@ -30,19 +31,19 @@
                 {controller.address.value}
             </div>
         </div>
-        <div class="fr-grid-row">
-            <div class="fr-col-6 fr-text--lg fr-text--bold">Date d'immatriculation :</div>
-            <div class="fr-col-6 fr-text--md">
-                {controller.immatriculation}
-            </div>
-        </div>
-        <div class="fr-grid-row">
-            <div class="fr-col-6 fr-text--lg fr-text--bold">Date de modification :</div>
-            <div class="fr-col-6 fr-text--md">
-                {controller.modification}
-            </div>
-        </div>
         {#if !establishment}
+            <div class="fr-grid-row">
+                <div class="fr-col-6 fr-text--lg fr-text--bold">Date d'immatriculation :</div>
+                <div class="fr-col-6 fr-text--md">
+                    {controller.immatriculation}
+                </div>
+            </div>
+            <div class="fr-grid-row">
+                <div class="fr-col-6 fr-text--lg fr-text--bold">Date de modification :</div>
+                <div class="fr-col-6 fr-text--md">
+                    {controller.modification}
+                </div>
+            </div>
             <!-- <div> -->
             <div class="underline-button">
                 <Button
@@ -57,6 +58,19 @@
                 </Button>
             </div>
             <!-- </div> -->
+        {:else}
+            <div class="fr-grid-row">
+                <div class="fr-col-6 fr-text--lg fr-text--bold">NIC :</div>
+                <div class="fr-col-6 fr-text--md">
+                    {controller.nic}
+                </div>
+            </div>
+            <div class="fr-grid-row">
+                <div class="fr-col-6 fr-text--lg fr-text--bold">État administratif :</div>
+                <div class="fr-col-6 fr-text--md">
+                    <Badge {...controller.estabStatusBadgeOptions} />
+                </div>
+            </div>
         {/if}
     </div>
 </div>
