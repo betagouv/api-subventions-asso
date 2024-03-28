@@ -27,6 +27,10 @@ export default class ContactEtabController {
         this._filter();
     }
 
+    get hasContact() {
+        return this._contacts.length > 0;
+    }
+
     filterByRole(index) {
         this._selectedRoleIndex = index;
         this._filter();

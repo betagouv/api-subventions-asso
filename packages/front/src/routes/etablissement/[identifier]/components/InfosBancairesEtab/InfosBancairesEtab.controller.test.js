@@ -63,6 +63,17 @@ describe("InfosBancairesEtabController", () => {
         expect(actual).toStrictEqual(expected);
     };
 
+    describe("hasInfo", () => {
+        it("should return true", () => {
+            expect(controller.hasInfo).toBe(true);
+        });
+
+        it("should return false", () => {
+            controller = new InfosBancairesEtabController([]);
+            expect(controller.hasInfo).toBe(false);
+        });
+    });
+
     describe("_formatBankElement()", () => {
         /* eslint-disable vitest/expect-expect -- use helper */
         it("should format bank element", () => {
