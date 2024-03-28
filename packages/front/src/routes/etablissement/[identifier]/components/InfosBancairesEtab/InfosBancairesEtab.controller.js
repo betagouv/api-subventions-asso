@@ -7,6 +7,10 @@ export class InfosBancairesEtabController {
         this.headers = ["BIC", "IBAN", "Date de dépôt", "Source de dépôt"];
     }
 
+    get hasInfo() {
+        return this.infosBancaires.length > 0;
+    }
+
     _formatBankElement(informationBancaireEtab) {
         return (
             informationBancaireEtab?.map(infoBancaireSourced => ({

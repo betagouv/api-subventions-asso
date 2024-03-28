@@ -18,59 +18,65 @@
         <h2>Contacts et représentants légaux</h2>
     </svelte:fragment>
     <svelte:fragment slot="action">
-        <Button
-            on:click={() => controller.download()}
-            type="secondary"
-            trackerName="etablissements.contacts.download-csv">
-            Télécharger au format CSV
-        </Button>
+        {#if controller.hasContact}
+            <Button
+                on:click={() => controller.download()}
+                type="secondary"
+                trackerName="etablissements.contacts.download-csv">
+                Télécharger au format CSV
+            </Button>
+        {/if}
     </svelte:fragment>
 </ActionGroup>
-<div class="fr-grid-row fr-grid-row--gutters">
-    <div class="fr-col-6">
-        <Input label="Rechercher un nom, un prénom" bind:value={controller.inputName} />
+{#if controller.hasContact}
+    <div class="fr-grid-row fr-grid-row--gutters">
+        <div class="fr-col-6">
+            <Input label="Rechercher un nom, un prénom" bind:value={controller.inputName} />
+        </div>
+        <div class="fr-col-6">
+            <Select on:change={e => controller.filterByRole(e.detail)} label="Rôle" options={controller.roles} />
+        </div>
     </div>
-    <div class="fr-col-6">
-        <Select on:change={e => controller.filterByRole(e.detail)} label="Rôle" options={controller.roles} />
-    </div>
-</div>
-<Table title="Tableau des contacts de l'établissement">
-    <svelte:fragment slot="colgroup">
-        <col class="small" />
-        <col span="3" class="medium" />
-        <col class="large" />
-        <col span="1" class="medium" />
-    </svelte:fragment>
-    <svelte:fragment slot="head">
-        {#each controller.getHeaders() as header}
-            <th scope="col">{header}</th>
-        {/each}
-    </svelte:fragment>
-    <svelte:fragment slot="body">
-        {#each $_contacts as contact}
-            <tr>
-                <td>
-                    {contact.civilite}
-                </td>
-                <td>
-                    {contact.nom}
-                </td>
-                <td>
-                    {contact.prenom}
-                </td>
-                <td>
-                    {contact.telephone}
-                </td>
-                <td>
-                    {contact.email}
-                </td>
-                <td>
-                    {contact.role}
-                </td>
-            </tr>
-        {/each}
-    </svelte:fragment>
-</Table>
+    <Table title="Tableau des contacts de l'établissement">
+        <svelte:fragment slot="colgroup">
+            <col class="small" />
+            <col span="3" class="medium" />
+            <col class="large" />
+            <col span="1" class="medium" />
+        </svelte:fragment>
+        <svelte:fragment slot="head">
+            {#each controller.getHeaders() as header}
+                <th scope="col">{header}</th>
+            {/each}
+        </svelte:fragment>
+        <svelte:fragment slot="body">
+            {#each $_contacts as contact}
+                <tr>
+                    <td>
+                        {contact.civilite}
+                    </td>
+                    <td>
+                        {contact.nom}
+                    </td>
+                    <td>
+                        {contact.prenom}
+                    </td>
+                    <td>
+                        {contact.telephone}
+                    </td>
+                    <td>
+                        {contact.email}
+                    </td>
+                    <td>
+                        {contact.role}
+                    </td>
+                </tr>
+            {/each}
+        </svelte:fragment>
+    </Table>
+{:else}
+    <p>Nous sommes désolés, nous n'avons trouvé aucune donnée pour cet établissement</p>
+{/if}
 
 <style>
     .small {

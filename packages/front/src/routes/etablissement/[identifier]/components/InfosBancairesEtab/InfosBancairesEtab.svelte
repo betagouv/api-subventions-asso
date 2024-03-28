@@ -9,32 +9,35 @@
 </script>
 
 <h2>Informations bancaires</h2>
-
-<Table title="Informations bancaires">
-    <svelte:fragment slot="colgroup">
-        <colgroup>
-            <col class="col-8" />
-            <col class="col-15" />
-            <col class="col-10" />
-            <col class="col-10" />
-        </colgroup>
-    </svelte:fragment>
-    <svelte:fragment slot="head">
-        {#each headers as title}
-            <td>{title}</td>
-        {/each}
-    </svelte:fragment>
-    <svelte:fragment slot="body">
-        {#each infosBancaires as element}
-            <tr>
-                <td>{element.bic}</td>
-                <td>{element.iban}</td>
-                <td>{element.date}</td>
-                <td>{element.provider}</td>
-            </tr>
-        {/each}
-    </svelte:fragment>
-</Table>
+{#if controller.hasInfo}
+    <Table title="Informations bancaires">
+        <svelte:fragment slot="colgroup">
+            <colgroup>
+                <col class="col-8" />
+                <col class="col-15" />
+                <col class="col-10" />
+                <col class="col-10" />
+            </colgroup>
+        </svelte:fragment>
+        <svelte:fragment slot="head">
+            {#each headers as title}
+                <td>{title}</td>
+            {/each}
+        </svelte:fragment>
+        <svelte:fragment slot="body">
+            {#each infosBancaires as element}
+                <tr>
+                    <td>{element.bic}</td>
+                    <td>{element.iban}</td>
+                    <td>{element.date}</td>
+                    <td>{element.provider}</td>
+                </tr>
+            {/each}
+        </svelte:fragment>
+    </Table>
+{:else}
+    <p>Nous sommes désolés, nous n'avons trouvé aucune donnée pour cet établissement</p>
+{/if}
 
 <style>
     .col-8 {

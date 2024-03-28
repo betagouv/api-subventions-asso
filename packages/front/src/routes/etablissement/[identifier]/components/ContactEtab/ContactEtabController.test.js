@@ -51,6 +51,17 @@ describe("ContactEtabController", () => {
         vi.clearAllMocks();
     });
 
+    describe("hasContact", () => {
+        it("should return true", () => {
+            expect(controller.hasContact).toBe(true);
+        });
+
+        it("should return false", () => {
+            controller = new ContactEtabController([]);
+            expect(controller.hasContact).toBe(false);
+        });
+    });
+
     describe("_containsRole()", () => {
         it("should return true with role selected", () => {
             const expected = true;
