@@ -12,6 +12,7 @@ vi.mock("$lib/resources/associations/association.helper", async () => {
         getAddress: () => ASSOCIATION.default.adresse_siege_rna,
         getImmatriculation: vi.fn(),
         getModification: vi.fn(),
+        getEstabStatusBadgeOptions: vi.fn(),
     };
 });
 
@@ -23,9 +24,25 @@ function buildPartialEstablishment() {
     return { ...DEFAULT_ESTABLISHMENT };
 }
 
+const mockPerformEstabTasks = vi.spyOn(InfosLegalesController.prototype, "_performEstabTasks");
+
 describe("InfosLegales Controller", () => {
     describe("Association view", () => {
-        const controller = new InfosLegalesController(buildPartialAssociation(), undefined);
+        let controller;
+        beforeAll(() => {
+            mockPerformEstabTasks.mockImplementation(vi.fn());
+            controller = new InfosLegalesController(buildPartialAssociation(), undefined);
+        });
+
+        afterAll(() => {
+            mockPerformEstabTasks.mockReset();
+        });
+
+        describe("constructor", () => {
+            it("should not call _performEstabTasks", () => {
+                expect(mockPerformEstabTasks).not.toHaveBeenCalled();
+            });
+        });
 
         describe("_buildModalData", () => {
             it("should return data", () => {
@@ -75,7 +92,26 @@ describe("InfosLegales Controller", () => {
     });
 
     describe("Establishment view", () => {
+        beforeEach(() => {
+            mockPerformEstabTasks.mockImplementation(vi.fn());
+        });
+
+        afterEach(() => {
+            mockPerformEstabTasks.mockReset();
+        });
+
+        afterAll(() => {
+            mockPerformEstabTasks.mockRestore();
+        });
+
         const controller = new InfosLegalesController(buildPartialAssociation(), buildPartialEstablishment());
+
+        describe("constructor", () => {
+            it("should call _performEstabTasks", () => {
+                new InfosLegalesController(buildPartialAssociation(), buildPartialEstablishment());
+                expect(mockPerformEstabTasks).toHaveBeenCalled();
+            });
+        });
 
         describe("getter siret()", () => {
             it("should return establishment siret object", () => {
