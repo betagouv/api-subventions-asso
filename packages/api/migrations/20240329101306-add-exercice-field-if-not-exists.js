@@ -5,18 +5,11 @@ module.exports = {
         await db
             .collection(COLLECTION)
             .aggregate([
-                { $match: { exercice: { $exists: false } } },
                 {
-                    $addFields: {
-                        exercice: { $year: "$conventionDate" },
-                    },
+                    $addFields: { exercice: { $ifNull: ["$exercice", { $year: "$conventionDate" }] } },
                 },
                 {
-                    $merge: {
-                        into: COLLECTION,
-                        on: "_id",
-                        whenMatched: "replace",
-                    },
+                    $out: COLLECTION,
                 },
             ])
             .toArray();
