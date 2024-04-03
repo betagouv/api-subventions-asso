@@ -7,7 +7,6 @@ export class EstablishmentCardController {
     }
 
     get badgesProps() {
-        console.log(this.estabStatusBadgeOptions);
         return this.estabStatusBadgeOptions;
     }
 }
