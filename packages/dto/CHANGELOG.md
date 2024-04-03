@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.48.0](https://github.com/betagouv/datasubvention/compare/v0.47.2...v0.48.0) (2024-04-03)
+
+### Features
+
+-   **api:** retrieve association public utility from api asso ([#2287](https://github.com/betagouv/datasubvention/issues/2287)) ([958d515](https://github.com/betagouv/datasubvention/commit/958d51528bc83f7465113251e5e800697349a71d))
+
 # [0.47.0](https://github.com/betagouv/datasubvention/compare/v0.46.5...v0.47.0) (2024-03-14)
 
 ### Features

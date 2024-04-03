@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.48.0](https://github.com/betagouv/datasubvention/compare/v0.47.2...v0.48.0) (2024-04-03)
+
+### Features
+
+-   **front:** add estab status in structure page ([#2295](https://github.com/betagouv/datasubvention/issues/2295)) ([2451acd](https://github.com/betagouv/datasubvention/commit/2451acd2aad48ad30e94e1a98877a9df4fcf64a3))
+-   **front:** display asso is public utility ([#2290](https://github.com/betagouv/datasubvention/issues/2290)) ([f74b3e7](https://github.com/betagouv/datasubvention/commit/f74b3e72ceded5e976815b1e9951465a4439e950))
+-   **front:** display nb estabs in asso page ([#2293](https://github.com/betagouv/datasubvention/issues/2293)) ([2d2616d](https://github.com/betagouv/datasubvention/commit/2d2616d9e0ff1ae3bc3ba7ae0f86b4ba6f2304da))
+-   **front:** hide tables and display message in empty data tabs ([18d92c1](https://github.com/betagouv/datasubvention/commit/18d92c1068829ccf89f75ab1466771cfb5c9d8ff))
+
 ## [0.47.2](https://github.com/betagouv/datasubvention/compare/v0.46.6...v0.47.2) (2024-03-18)
 
 ### Bug Fixes

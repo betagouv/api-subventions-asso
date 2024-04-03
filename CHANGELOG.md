@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.48.0](https://github.com/betagouv/api-subventions-asso/compare/v0.47.2...v0.48.0) (2024-04-03)
+
+### Features
+
+-   **api:** [#2297](https://github.com/betagouv/api-subventions-asso/issues/2297) add exercice field if not exists ([#2298](https://github.com/betagouv/api-subventions-asso/issues/2298)) ([efb9f1f](https://github.com/betagouv/api-subventions-asso/commit/efb9f1fab6ba6494c75a7cc5be2770233d987b53))
+-   **api:** retrieve association public utility from api asso ([#2287](https://github.com/betagouv/api-subventions-asso/issues/2287)) ([958d515](https://github.com/betagouv/api-subventions-asso/commit/958d51528bc83f7465113251e5e800697349a71d))
+-   **front:** add estab status in structure page ([#2295](https://github.com/betagouv/api-subventions-asso/issues/2295)) ([2451acd](https://github.com/betagouv/api-subventions-asso/commit/2451acd2aad48ad30e94e1a98877a9df4fcf64a3))
+-   **front:** display asso is public utility ([#2290](https://github.com/betagouv/api-subventions-asso/issues/2290)) ([f74b3e7](https://github.com/betagouv/api-subventions-asso/commit/f74b3e72ceded5e976815b1e9951465a4439e950))
+-   **front:** display nb estabs in asso page ([#2293](https://github.com/betagouv/api-subventions-asso/issues/2293)) ([2d2616d](https://github.com/betagouv/api-subventions-asso/commit/2d2616d9e0ff1ae3bc3ba7ae0f86b4ba6f2304da))
+-   **front:** hide tables and display message in empty data tabs ([18d92c1](https://github.com/betagouv/api-subventions-asso/commit/18d92c1068829ccf89f75ab1466771cfb5c9d8ff))
+
 ## [0.47.2](https://github.com/betagouv/api-subventions-asso/compare/v0.46.6...v0.47.2) (2024-03-18)
 
 ### Bug Fixes
