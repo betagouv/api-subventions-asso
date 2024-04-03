@@ -115,24 +115,4 @@ describe("Association Helper", () => {
             expect(actual).toEqual(expected);
         });
     });
-
-    describe("getEstabStatusBadgeOptions", () => {
-        it("should return null", () => {
-            const actual = AssociationHelper.getEstabStatusBadgeOptions({});
-            const expected = null;
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return open option", () => {
-            const actual = AssociationHelper.getEstabStatusBadgeOptions({ ouvert: true });
-            const expected = { label: "Ouvert", type: "success" };
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return close option", () => {
-            const actual = AssociationHelper.getEstabStatusBadgeOptions({ ouvert: false });
-            const expected = { label: "Fermé", type: "error" };
-            expect(actual).toEqual(expected);
-        });
-    });
 });

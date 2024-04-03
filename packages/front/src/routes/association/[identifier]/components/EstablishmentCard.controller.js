@@ -1,9 +1,9 @@
-import { getEstabStatusBadgeOptions } from "$lib/resources/associations/association.helper";
+import { getStatusBadgeOptions } from "$lib/resources/establishments/establishment.helper";
 
 export class EstablishmentCardController {
     constructor(establishment) {
         this.establishment = establishment;
-        this.estabStatusBadgeOptions = getEstabStatusBadgeOptions(this.establishment);
+        this.estabStatusBadgeOptions = getStatusBadgeOptions(this.establishment);
     }
 
     get badgesProps() {

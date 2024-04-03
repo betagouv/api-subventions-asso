@@ -2,7 +2,8 @@ import InfosLegalesController from "./InfosLegales.controller";
 import DEFAULT_ASSOCIATION from "$lib/resources/associations/__fixtures__/Association";
 import DEFAULT_ESTABLISHMENT from "$lib/resources/establishments/__fixtures__/Etablissement";
 import { dateToDDMMYYYY } from "$lib/helpers/dateHelper";
-
+import { getStatusBadgeOptions } from "$lib/resources/establishments/establishment.helper";
+vi.mock("$lib/resources/establishments/establishment.helper");
 vi.mock("$lib/resources/associations/association.helper", async () => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const ASSOCIATION = await import("$lib/resources/associations/__fixtures__/Association");
@@ -12,7 +13,6 @@ vi.mock("$lib/resources/associations/association.helper", async () => {
         getAddress: () => ASSOCIATION.default.adresse_siege_rna,
         getImmatriculation: vi.fn(),
         getModification: vi.fn(),
-        getEstabStatusBadgeOptions: vi.fn(),
     };
 });
 
@@ -25,7 +25,6 @@ function buildPartialEstablishment() {
 }
 
 const mockPerformEstabTasks = vi.spyOn(InfosLegalesController.prototype, "_performEstabTasks");
-
 describe("InfosLegales Controller", () => {
     describe("Association view", () => {
         let controller;
@@ -100,10 +99,6 @@ describe("InfosLegales Controller", () => {
             mockPerformEstabTasks.mockReset();
         });
 
-        afterAll(() => {
-            mockPerformEstabTasks.mockRestore();
-        });
-
         const controller = new InfosLegalesController(buildPartialAssociation(), buildPartialEstablishment());
 
         describe("constructor", () => {
@@ -125,6 +120,21 @@ describe("InfosLegales Controller", () => {
                 const expected = { title: "Adresse établissement", value: DEFAULT_ESTABLISHMENT.adresse };
                 const actual = controller.address;
                 expect(actual).toEqual(expected);
+            });
+        });
+
+        describe("_performEstabTasks", () => {
+            beforeAll(() => {
+                mockPerformEstabTasks.mockRestore();
+            });
+
+            afterAll(() => {
+                mockPerformEstabTasks.mockImplementation(vi.fn());
+            });
+
+            it("should call EstablishmentHelper.getStatusBadgeOptions", () => {
+                controller._performEstabTasks();
+                expect(vi.mocked(getStatusBadgeOptions)).toHaveBeenCalledWith(controller.establishment);
             });
         });
     });

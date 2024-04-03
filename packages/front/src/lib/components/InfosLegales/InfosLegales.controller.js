@@ -5,8 +5,8 @@ import {
     getImmatriculation,
     getModification,
     getSiegeSiret,
-    getEstabStatusBadgeOptions,
 } from "$lib/resources/associations/association.helper";
+import { getStatusBadgeOptions } from "$lib/resources/establishments/establishment.helper";
 import { modal, data } from "$lib/store/modal.store";
 import { valueOrHyphen } from "$lib/helpers/dataHelper";
 import { dateToDDMMYYYY } from "$lib/helpers/dateHelper";
@@ -71,7 +71,7 @@ export default class InfosLegalesController {
     }
 
     _performEstabTasks() {
-        this.estabStatusBadgeOptions = getEstabStatusBadgeOptions(this.establishment);
+        this.estabStatusBadgeOptions = getStatusBadgeOptions(this.establishment);
     }
 
     _buildModalData() {

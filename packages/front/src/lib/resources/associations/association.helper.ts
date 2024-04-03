@@ -1,4 +1,3 @@
-import type { SimplifiedEtablissement } from "dto";
 import { isAssoCategory } from "$lib/helpers/entrepriseHelper";
 
 export const addressToOneLineString = address => {
@@ -45,8 +44,3 @@ export const getModification = association => {
 export const getSiegeSiret = association => association.siren + association.nic_siege;
 
 export const isAssociation = association => !!association?.rna || isAssoCategory(association?.categorie_juridique);
-
-export const getEstabStatusBadgeOptions = estab => {
-    if (!Object.hasOwn(estab, "ouvert")) return null;
-    return estab.ouvert ? { label: "Ouvert", type: "success" } : { label: "Fermé", type: "error" };
-};
