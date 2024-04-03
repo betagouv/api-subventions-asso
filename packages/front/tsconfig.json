@@ -10,7 +10,7 @@
         "skipLibCheck": true,
         "sourceMap": true,
         "strict": true,
-        "lib": ["es5", "dom"],
+        "lib": ["ES2023", "dom"],
         "types": ["vitest/globals"],
         "noImplicitAny": false
     }

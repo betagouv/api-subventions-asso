@@ -2,7 +2,8 @@ import InfosLegalesController from "./InfosLegales.controller";
 import DEFAULT_ASSOCIATION from "$lib/resources/associations/__fixtures__/Association";
 import DEFAULT_ESTABLISHMENT from "$lib/resources/establishments/__fixtures__/Etablissement";
 import { dateToDDMMYYYY } from "$lib/helpers/dateHelper";
-
+import { getStatusBadgeOptions } from "$lib/resources/establishments/establishment.helper";
+vi.mock("$lib/resources/establishments/establishment.helper");
 vi.mock("$lib/resources/associations/association.helper", async () => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const ASSOCIATION = await import("$lib/resources/associations/__fixtures__/Association");
@@ -23,9 +24,24 @@ function buildPartialEstablishment() {
     return { ...DEFAULT_ESTABLISHMENT };
 }
 
+const mockPerformEstabTasks = vi.spyOn(InfosLegalesController.prototype, "_performEstabTasks");
 describe("InfosLegales Controller", () => {
     describe("Association view", () => {
-        const controller = new InfosLegalesController(buildPartialAssociation(), undefined);
+        let controller;
+        beforeAll(() => {
+            mockPerformEstabTasks.mockImplementation(vi.fn());
+            controller = new InfosLegalesController(buildPartialAssociation(), undefined);
+        });
+
+        afterAll(() => {
+            mockPerformEstabTasks.mockReset();
+        });
+
+        describe("constructor", () => {
+            it("should not call _performEstabTasks", () => {
+                expect(mockPerformEstabTasks).not.toHaveBeenCalled();
+            });
+        });
 
         describe("_buildModalData", () => {
             it("should return data", () => {
@@ -75,7 +91,22 @@ describe("InfosLegales Controller", () => {
     });
 
     describe("Establishment view", () => {
+        beforeEach(() => {
+            mockPerformEstabTasks.mockImplementation(vi.fn());
+        });
+
+        afterEach(() => {
+            mockPerformEstabTasks.mockReset();
+        });
+
         const controller = new InfosLegalesController(buildPartialAssociation(), buildPartialEstablishment());
+
+        describe("constructor", () => {
+            it("should call _performEstabTasks", () => {
+                new InfosLegalesController(buildPartialAssociation(), buildPartialEstablishment());
+                expect(mockPerformEstabTasks).toHaveBeenCalled();
+            });
+        });
 
         describe("getter siret()", () => {
             it("should return establishment siret object", () => {
@@ -89,6 +120,21 @@ describe("InfosLegales Controller", () => {
                 const expected = { title: "Adresse établissement", value: DEFAULT_ESTABLISHMENT.adresse };
                 const actual = controller.address;
                 expect(actual).toEqual(expected);
+            });
+        });
+
+        describe("_performEstabTasks", () => {
+            beforeAll(() => {
+                mockPerformEstabTasks.mockRestore();
+            });
+
+            afterAll(() => {
+                mockPerformEstabTasks.mockImplementation(vi.fn());
+            });
+
+            it("should call EstablishmentHelper.getStatusBadgeOptions", () => {
+                controller._performEstabTasks();
+                expect(vi.mocked(getStatusBadgeOptions)).toHaveBeenCalledWith(controller.establishment);
             });
         });
     });
