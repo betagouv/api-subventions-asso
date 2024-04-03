@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import express, { NextFunction, Response } from "express";
+import session from "express-session";
 import passport from "passport";
 import cookieParser from "cookie-parser";
 import * as Sentry from "@sentry/node";
 
 import cors from "cors";
 
+import MongoStoreBuilder = require("connect-mongodb-session");
 import { RegisterRoutes } from "../tsoa/routes";
 import { authMocks } from "./authentication/express.auth.hooks";
 import { expressLogger } from "./middlewares/LogMiddleware";
@@ -22,6 +24,7 @@ import { headersMiddleware } from "./middlewares/headersMiddleware";
 import { ENV } from "./configurations/env.conf";
 
 const appName = "api-subventions-asso";
+const MongoStore = MongoStoreBuilder(session);
 
 async function factoryEndMiddleware(
     req: IdentifiedRequest,
@@ -40,6 +43,15 @@ export async function startServer(port = "8080", isTest = false) {
     if (ENV !== "dev" && ENV !== "test") Sentry.init({ release: process.env.npm_package_version });
     app.use(Sentry.Handlers.requestHandler());
     app.use(cookieParser());
+    app.use(
+        session({
+            pauseStream: false,
+            secret: "keyboard cat",
+            resave: false, // don't save session if unmodified
+            saveUninitialized: false, // don't create session until something stored
+            store: new MongoStore({ db: "sessions.db", dir: "var/db" }),
+        }),
+    );
     app.use(
         cors({
             credentials: true,
