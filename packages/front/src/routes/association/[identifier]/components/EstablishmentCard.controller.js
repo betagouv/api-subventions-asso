@@ -1,7 +1,12 @@
+import { getStatusBadgeOptions } from "$lib/resources/establishments/establishment.helper";
+
 export class EstablishmentCardController {
     constructor(establishment) {
-        this.badgesProps = establishment.ouvert
-            ? { label: "Ouvert", type: "success" }
-            : { label: "Fermé", type: "error" };
+        this.establishment = establishment;
+        this.estabStatusBadgeOptions = getStatusBadgeOptions(this.establishment);
+    }
+
+    get badgesProps() {
+        return this.estabStatusBadgeOptions;
     }
 }

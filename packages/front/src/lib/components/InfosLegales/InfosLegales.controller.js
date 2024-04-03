@@ -6,6 +6,7 @@ import {
     getModification,
     getSiegeSiret,
 } from "$lib/resources/associations/association.helper";
+import { getStatusBadgeOptions } from "$lib/resources/establishments/establishment.helper";
 import { modal, data } from "$lib/store/modal.store";
 import { valueOrHyphen } from "$lib/helpers/dataHelper";
 import { dateToDDMMYYYY } from "$lib/helpers/dateHelper";
@@ -14,9 +15,12 @@ export default class InfosLegalesController {
     constructor(association, establishment = undefined) {
         this.association = { ...association };
         this.establishment = establishment ? { ...establishment } : undefined;
+        this.estabStatusBadgeOptions = [];
         this._immatriculation = getImmatriculation(this.association);
         this._modification = getModification(this.association);
         this._modalData = this._buildModalData();
+
+        if (this.establishment) this._performEstabTasks();
     }
 
     get objetSocial() {
@@ -34,6 +38,11 @@ export default class InfosLegalesController {
             value = isNaN(siretSiege) ? "-" : siretSiege;
         }
         return { title, value };
+    }
+
+    get nic() {
+        const siret = this.establishment.siret;
+        return siret.substring(9);
     }
 
     get address() {
@@ -59,6 +68,10 @@ export default class InfosLegalesController {
     displayModal() {
         data.set(this._modalData);
         modal.set(MoreInfosLegalesModal);
+    }
+
+    _performEstabTasks() {
+        this.estabStatusBadgeOptions = getStatusBadgeOptions(this.establishment);
     }
 
     _buildModalData() {
