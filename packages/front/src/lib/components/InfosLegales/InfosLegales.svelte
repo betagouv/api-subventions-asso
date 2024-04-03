@@ -44,20 +44,16 @@
                     {controller.modification}
                 </div>
             </div>
-            <!-- <div> -->
-            <div class="underline-button">
-                <Button
-                    type="tertiary"
-                    size="small"
-                    icon="information-line"
-                    iconPosition="left"
-                    outline={false}
-                    ariaControls="fr-modal"
-                    on:click={() => controller.displayModal()}>
-                    Plus de détails
-                </Button>
-            </div>
-            <!-- </div> -->
+            <Button
+                type="tertiary"
+                size="small"
+                icon="information-line"
+                iconPosition="left"
+                outline={false}
+                ariaControls="fr-modal"
+                on:click={() => controller.displayModal()}>
+                Plus de détails
+            </Button>
         {:else}
             <div class="fr-grid-row">
                 <div class="fr-col-6 fr-text--lg fr-text--bold">NIC :</div>
@@ -74,10 +70,3 @@
         {/if}
     </div>
 </div>
-
-<style>
-    .underline-button {
-        max-width: fit-content;
-        border-bottom: 1px blue solid;
-    }
-</style>
