@@ -1,4 +1,3 @@
-// @ts-expect-error -- $crisp
 declare const $crisp;
 
 export class CrispService {
@@ -8,6 +7,10 @@ export class CrispService {
 
     resetSession() {
         $crisp.push(["do", "session:reset"]);
+    }
+
+    seenBodacc() {
+        $crisp.push(["set", "session:data", ["seen_bodacc", "seen"]]);
     }
 }
 
