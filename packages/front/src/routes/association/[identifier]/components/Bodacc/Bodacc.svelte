@@ -1,14 +1,18 @@
 <script>
+    import { onMount } from "svelte";
     import Announcement from "./Announcement.svelte";
     import BodaccController from "./Bodacc.controller";
     import Alert from "$lib/dsfr/Alert.svelte";
 
     export let bodacc;
+    let element;
 
-    const { announcements } = new BodaccController(bodacc);
+    const ctrl = new BodaccController(bodacc);
+    const { announcements } = ctrl;
+    onMount(() => ctrl.onMount(element));
 </script>
 
-<div class="bodacc">
+<div class="bodacc" bind:this={element}>
     <h2>Historique des publications</h2>
     <Alert type="info" title="Qu’est-ce que le BODACC ?">
         Le Bulletin officiel des annonces civiles et commerciales (BODACC) est le journal d'annonces légales qui
