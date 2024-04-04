@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.47.3](https://github.com/betagouv/datasubvention/compare/v0.47.2...v0.47.3) (2024-04-04)
+
+### Bug Fixes
+
+-   **front:** check if user agent is defined in isProfileFullyCompleted ([11d67c7](https://github.com/betagouv/datasubvention/commit/11d67c7b9328218ead1c80cc983b54075dcb9968))
+-   **front:** check is address is valid before rendering ([f1ab730](https://github.com/betagouv/datasubvention/commit/f1ab730851c1d2a8f18f68b05459bc289a778325))
+
 ## [0.47.2](https://github.com/betagouv/datasubvention/compare/v0.46.6...v0.47.2) (2024-03-18)
 
 ### Bug Fixes
