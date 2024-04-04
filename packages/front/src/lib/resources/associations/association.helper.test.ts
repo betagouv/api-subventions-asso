@@ -1,10 +1,36 @@
 import DEFAULT_ASSOCIATION from "./__fixtures__/Association";
+import Association from "./__fixtures__/Association";
 import * as AssociationHelper from "./association.helper";
 import * as EntrepriseHelper from "$lib/helpers/entrepriseHelper";
 vi.mock("$lib/helpers/entrepriseHelper.js");
 const mockedEntrepriseHelper = vi.mocked(EntrepriseHelper);
 
 describe("Association Helper", () => {
+    const ADDRESS = Association.adresse_siege_rna;
+
+    describe("isAddressValid", () => {
+        it.each`
+            address
+            ${undefined}
+            ${{}}
+            ${{ ...ADDRESS, numero: undefined }}
+            ${{ ...ADDRESS, type_voie: undefined }}
+            ${{ ...ADDRESS, voie: undefined }}
+            ${{ ...ADDRESS, code_postal: undefined }}
+            ${{ ...ADDRESS, commune: undefined }}
+        `("should return false with one field missing", ({ address }) => {
+            const expected = false;
+            const actual = AssociationHelper.isAddressValid(address);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return true", () => {
+            const expected = true;
+            const actual = AssociationHelper.isAddressValid(ADDRESS);
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("getAddress", () => {
         it("should return address from RNA", () => {
             const expected = DEFAULT_ASSOCIATION.adresse_siege_rna;

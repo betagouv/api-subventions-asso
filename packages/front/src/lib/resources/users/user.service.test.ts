@@ -51,6 +51,15 @@ describe("UsersService", () => {
     });
 
     describe("isProfileFullyCompleted()", () => {
+        describe("with no agentType", () => {
+            it("should return false", () => {
+                const expected = false;
+                // @ts-expect-error: edge case
+                const actual = userService.isProfileFullyCompleted({ ...USER, agentType: undefined });
+                expect(actual).toEqual(expected);
+            });
+        });
+
         describe(`with ${AgentTypeEnum.OPERATOR} agent`, () => {
             const OPERATOR_USER = { ...USER, region: "REGION" };
 
