@@ -1,5 +1,6 @@
 import MiscScdlAdapter from "./MiscScdl.adapter";
 import ENTITY from "./__fixtures__/MiscScdlGrantProducer";
+import { ApplicationStatus } from "dto";
 
 describe("MiscScdlAdapter", () => {
     describe("_multiannuality", () => {
@@ -36,6 +37,18 @@ describe("MiscScdlAdapter", () => {
                 paymentStartDate: new Date("2023-06-01"),
                 paymentEndDate: new Date("2024-05-01"),
             });
+            expect(actual).toBe(expected);
+        });
+    });
+
+    describe("_status", () => {
+        it.each`
+            amount | status
+            ${0}   | ${ApplicationStatus.REFUSED}
+            ${42}  | ${ApplicationStatus.GRANTED}
+        `("sets status: $status", ({ amount, status: expected }) => {
+            // @ts-expect-error - private method
+            const actual = MiscScdlAdapter._status({ ...ENTITY, amount });
             expect(actual).toBe(expected);
         });
     });
