@@ -22,6 +22,10 @@ export class UsersService {
     }
 
     isProfileFullyCompleted(user: UserDto) {
+        // old users may not have agentType defined
+        // TODO(maxime) : update UserDto to make it optionnal in code ??
+        if (!user.agentType) return false;
+
         const sharedMandatoryFields = ["jobType", "service", "structure"];
         const mandatoryFieldsByAgentType = {
             [AgentTypeEnum.CENTRAL_ADMIN]: sharedMandatoryFields,

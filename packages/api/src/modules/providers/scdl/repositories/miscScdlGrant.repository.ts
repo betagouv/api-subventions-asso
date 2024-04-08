@@ -6,7 +6,7 @@ import { ScdlGrantDbo } from "../dbo/ScdlGrantDbo";
 export class MiscScdlGrantRepository extends MongoRepository<ScdlGrantDbo> {
     readonly collectionName = "misc-scdl-grant";
     readonly joinIndexes = {
-        miscScdlProducer: "slug",
+        miscScdlProducer: "producerSlug",
     };
 
     public async findAll() {

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.48.1](https://github.com/betagouv/api-subventions-asso/compare/v0.48.0...v0.48.1) (2024-04-08)
+
+### Features
+
+-   **front:** crisp event on visiting bodacc tab ([1ffc9da](https://github.com/betagouv/api-subventions-asso/commit/1ffc9da542ab1b10ee4efc1f02e6be10b787f768))
+
 # [0.48.0](https://github.com/betagouv/api-subventions-asso/compare/v0.47.2...v0.48.0) (2024-04-03)
 
 ### Features
@@ -13,6 +19,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   **front:** display asso is public utility ([#2290](https://github.com/betagouv/api-subventions-asso/issues/2290)) ([f74b3e7](https://github.com/betagouv/api-subventions-asso/commit/f74b3e72ceded5e976815b1e9951465a4439e950))
 -   **front:** display nb estabs in asso page ([#2293](https://github.com/betagouv/api-subventions-asso/issues/2293)) ([2d2616d](https://github.com/betagouv/api-subventions-asso/commit/2d2616d9e0ff1ae3bc3ba7ae0f86b4ba6f2304da))
 -   **front:** hide tables and display message in empty data tabs ([18d92c1](https://github.com/betagouv/api-subventions-asso/commit/18d92c1068829ccf89f75ab1466771cfb5c9d8ff))
+
+## [0.47.3](https://github.com/betagouv/api-subventions-asso/compare/v0.47.2...v0.47.3) (2024-04-04)
+
+### Bug Fixes
+
+-   **front:** check if user agent is defined in isProfileFullyCompleted ([11d67c7](https://github.com/betagouv/api-subventions-asso/commit/11d67c7b9328218ead1c80cc983b54075dcb9968))
+-   **front:** check is address is valid before rendering ([f1ab730](https://github.com/betagouv/api-subventions-asso/commit/f1ab730851c1d2a8f18f68b05459bc289a778325))
 
 ## [0.47.2](https://github.com/betagouv/api-subventions-asso/compare/v0.46.6...v0.47.2) (2024-03-18)
 

@@ -3,12 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.48.1](https://github.com/betagouv/api-subventions-asso/compare/v0.48.0...v0.48.1) (2024-04-08)
+
+**Note:** Version bump only for package api
+
 # [0.48.0](https://github.com/betagouv/api-subventions-asso/compare/v0.47.2...v0.48.0) (2024-04-03)
 
 ### Features
 
 -   **api:** [#2297](https://github.com/betagouv/api-subventions-asso/issues/2297) add exercice field if not exists ([#2298](https://github.com/betagouv/api-subventions-asso/issues/2298)) ([efb9f1f](https://github.com/betagouv/api-subventions-asso/commit/efb9f1fab6ba6494c75a7cc5be2770233d987b53))
 -   **api:** retrieve association public utility from api asso ([#2287](https://github.com/betagouv/api-subventions-asso/issues/2287)) ([958d515](https://github.com/betagouv/api-subventions-asso/commit/958d51528bc83f7465113251e5e800697349a71d))
+
+## [0.47.3](https://github.com/betagouv/api-subventions-asso/compare/v0.47.2...v0.47.3) (2024-04-04)
+
+**Note:** Version bump only for package api
 
 ## [0.47.2](https://github.com/betagouv/api-subventions-asso/compare/v0.46.6...v0.47.2) (2024-03-18)
 
