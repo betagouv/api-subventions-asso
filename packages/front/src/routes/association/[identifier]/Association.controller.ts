@@ -12,7 +12,7 @@ export class AssociationController {
         /**, "Statistiques",*/
         "Pièces administratives",
         "Établissements",
-        "Bodacc",
+        "BODACC",
     ];
 
     duplicatesFromRna: Store<null | Siren[]>;

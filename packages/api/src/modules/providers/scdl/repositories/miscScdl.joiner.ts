@@ -4,15 +4,11 @@ import MiscScdlGrantProducerEntity from "../entities/MiscScdlGrantProducerEntity
 import miscScdlGrantRepository from "./miscScdlGrant.repository";
 import miscScdlProducerRepository from "./miscScdlProducer.repository";
 
-const MONGO_TYPE_DATE = 9;
-
 export class MiscScdlJoiner {
     applicationCollection = db.collection(miscScdlGrantRepository.collectionName);
 
     private get joinPipeline() {
         return [
-            // conventionDate is filled correctly so that we can take the year
-            { $match: { conventionDate: { $type: MONGO_TYPE_DATE } } },
             {
                 $lookup: {
                     from: miscScdlProducerRepository.collectionName,

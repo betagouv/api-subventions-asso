@@ -16,8 +16,8 @@ export default class MiscScdlAdapter {
             siret: toPV(entity.associationSiret),
             service_instructeur: toPV(entity.allocatorName),
             actions_proposee: [{ intitule: toPV(entity.object || "") }],
-            statut_label: toPV(ApplicationStatus.GRANTED),
-            status: toPV(ApplicationStatus.GRANTED), // not given by provider
+            statut_label: toPV(MiscScdlAdapter._status(entity)),
+            status: toPV(MiscScdlAdapter._status(entity)),
             montants: {
                 accorde: amount,
             },
@@ -36,7 +36,7 @@ export default class MiscScdlAdapter {
             objet: entity.object || "",
             service_instructeur: entity.allocatorName,
             siret: entity.allocatorSiret,
-            statut: ApplicationStatus.GRANTED,
+            statut: MiscScdlAdapter._status(entity),
         };
     }
 
@@ -44,5 +44,10 @@ export default class MiscScdlAdapter {
         if (!entity.paymentEndDate || !entity.paymentStartDate) return "Non";
         const startNextYear = sameDateNextYear(entity.paymentStartDate);
         return entity.paymentEndDate >= startNextYear ? "Oui" : "Non";
+    }
+
+    private static _status(entity: MiscScdlGrantProducerEntity | ScdlGrantEntity) {
+        // not given by provider but this is the rule from Paris
+        return entity.amount > 0 ? ApplicationStatus.GRANTED : ApplicationStatus.REFUSED;
     }
 }

@@ -4,7 +4,7 @@ import MiscScdlProducerEntity from "../entities/MiscScdlProducerEntity";
 export class MiscScdlProducersRepository extends MongoRepository<MiscScdlProducerEntity> {
     readonly collectionName = "misc-scdl-producers";
     readonly joinIndexes = {
-        miscScdlGrant: "producerSlug",
+        miscScdlGrant: "slug",
     };
 
     public async findBySlug(slug: string) {
