@@ -9,7 +9,7 @@
             <AgentConnectButton link={DATASUB_URL + `/auth/ac/login`} />
         </div>
     </div>
-    <div class="fr-grid-row or fr-my-4w fr-px-5w">
+    <div class="fr-grid-row or fr-my-4w fr-px-11v">
         <div class="text-separator" />
         <div class="fr-mx-3w">OU</div>
         <div class="text-separator" />
