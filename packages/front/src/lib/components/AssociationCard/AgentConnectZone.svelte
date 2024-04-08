@@ -3,7 +3,7 @@
     import { AGENT_CONNECT_ENABLED, DATASUB_URL } from "$env/static/public";
 </script>
 
-{#if AGENT_CONNECT_ENABLED}
+{#if AGENT_CONNECT_ENABLED === "true"}
     <div class="fr-grid-row">
         <div class="fr-mx-auto">
             <AgentConnectButton link={DATASUB_URL + `/auth/ac/login`} />
