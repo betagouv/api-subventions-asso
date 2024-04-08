@@ -2,7 +2,7 @@ import { UserDto } from "dto";
 
 export default interface UserDbo extends UserDto {
     jwt: JWT | null;
-    hashPassword: string;
+    hashPassword: string | null;
 }
 
 export interface JWT {

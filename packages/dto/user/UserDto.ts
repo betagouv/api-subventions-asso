@@ -8,6 +8,7 @@ export interface FutureUserDto {
     roles?: string[];
     firstName?: string;
     lastName?: string;
+    agentConnectId?: string;
 }
 
 export interface UserDto extends FutureUserDto, Omit<UserActivationInfoDto, "password"> {
@@ -18,6 +19,7 @@ export interface UserDto extends FutureUserDto, Omit<UserActivationInfoDto, "pas
     profileToComplete: boolean;
     disable?: boolean;
     lastActivityDate: Date | null;
+    agentConnectId?: string;
 }
 
 export interface UserActivationInfoDto {

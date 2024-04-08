@@ -1,5 +1,5 @@
 import { UserDto } from "dto";
-import { Filter, InsertOneResult, ObjectId } from "mongodb";
+import { Filter, ObjectId } from "mongodb";
 import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../shared/helpers/MongoHelper";
 import MongoRepository from "../../../shared/MongoRepository";
 import { removeHashPassword, removeSecrets } from "../../../shared/helpers/RepositoryHelper";
@@ -80,17 +80,19 @@ export class UserRepository extends MongoRepository<UserDbo> {
     }
 
     async create(user: UserNotPersisted): Promise<UserDto> {
+        return removeSecrets(await this.createAndReturnWithJWT(user));
+    }
+
+    async createAndReturnWithJWT(user: UserNotPersisted): Promise<Omit<UserDbo, "hashPassword">> {
         const userDbo: UserDbo = { ...user, _id: new ObjectId() };
-        let result: InsertOneResult<UserDbo>;
 
         try {
-            result = await this.collection.insertOne(userDbo);
+            await this.collection.insertOne(userDbo);
         } catch (error) {
             if (isMongoDuplicateError(error)) throw buildDuplicateIndexError<UserDbo>(error);
             throw error;
         }
-
-        return removeSecrets({ ...user, _id: result.insertedId });
+        return removeHashPassword(userDbo);
     }
 
     async getUserWithSecretsByEmail(email: string): Promise<UserDbo | null> {
