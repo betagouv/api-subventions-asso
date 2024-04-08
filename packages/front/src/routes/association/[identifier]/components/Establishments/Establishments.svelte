@@ -15,7 +15,7 @@
     {#if $establishmentsStore.length && $associationStore}
         <h2>{controller.title}</h2>
         <div class="fr-grid-row fr-mb-8v">
-            <div class="fr-col-4">
+            <div class="fr-col-5">
                 <SearchBar
                     on:submit={e => controller.onFilter(e.detail)}
                     on:reset={() => controller.resetFilter()}
