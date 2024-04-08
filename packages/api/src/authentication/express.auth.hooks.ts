@@ -1,3 +1,4 @@
+import crypto = require("crypto");
 import passport from "passport";
 import { Express, Request } from "express";
 import { Strategy as JwtStrategy } from "passport-jwt";
@@ -46,7 +47,10 @@ export function authMocks(app: Express) {
                     userInfoURL: `${AGENT_CONNECT_URL}/userinfo`,
                     clientID: AGENT_CONNECT_CLIENT_ID,
                     clientSecret: AGENT_CONNECT_CLIENT_SECRET,
-                    callbackURL: `${FRONT_OFFICE_URL}/auth/login?sucess=true`,
+                    callbackURL: `${FRONT_OFFICE_URL}/auth/login`, // TODO contact them to add "?sucess=true",
+                    nonce: crypto.randomBytes(64).toString("hex").substring(0, 20),
+                    scope: "openid given_name family_name preferred_username birthdate email",
+                    acrValues: "eidas1",
                     passReqToCallback: true, // TODO check behaviour in this context
                     // TODO claims:
                 },
