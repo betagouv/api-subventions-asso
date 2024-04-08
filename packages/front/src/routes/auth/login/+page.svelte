@@ -4,6 +4,7 @@
     import Button from "$lib/dsfr/Button.svelte";
     import PasswordInput from "$lib/dsfr/PasswordInput.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
+    import AgentConnectZone from "$lib/components/AssociationCard/AgentConnectZone.svelte";
 
     let form;
     export let data;
@@ -27,7 +28,9 @@
         {successMessage}
     </Alert>
 {/if}
+
 <div class="bordered-frame fr-col-6 fr-col-offset-3 fr-p-8v fr-mt-12v">
+    <AgentConnectZone />
     <form on:submit|preventDefault={() => controller.submit()}>
         <fieldset class="fr-fieldset fr-mb-5w">
             <legend class="fr-fieldset__legend fr-h5" id="login-legend">Se connecter à son compte</legend>
