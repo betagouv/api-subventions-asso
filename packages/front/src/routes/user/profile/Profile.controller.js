@@ -44,6 +44,7 @@ export class ProfileController {
 
     async init() {
         this.user.set(await userService.getSelfUser());
+        this.isAgentConnectUser = !!this.user.value.agentConnectId;
     }
 
     showAlert() {

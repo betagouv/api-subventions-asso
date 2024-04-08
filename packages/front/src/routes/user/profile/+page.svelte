@@ -47,7 +47,10 @@
                         {/if}
                     </div>
                     <fieldset class="fr-fieldset fr-mt-6w">
-                        <SignupModule bind:user={$user} on:change={() => controller.onChange()} />
+                        <SignupModule
+                            bind:user={$user}
+                            on:change={() => controller.onChange()}
+                            displayOnly={$user.agentConnectId} />
                         <!--<div class="fr-fieldset__element fr-mt-4v">
                             <ResetPwdModule email={$user.email} />
                             TODO le user est pas réactif dans le composant. Il faudrait passer un store mais ça va être
