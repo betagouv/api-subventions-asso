@@ -17,18 +17,16 @@ export class OsirisRequestRepository extends MongoRepository<OsirisRequestEntity
     }
 
     public async update(osirisRequest: OsirisRequestEntity) {
-        const options = { returnNewDocument: true } as FindOneAndUpdateOptions;
+        const options: FindOneAndUpdateOptions = { returnDocument: "after" };
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { _id, ...requestWithoutId } = osirisRequest;
-        return (
-            await this.collection.findOneAndUpdate(
-                {
-                    "providerInformations.osirisId": osirisRequest.providerInformations.osirisId,
-                },
-                { $set: requestWithoutId },
-                options,
-            )
-        ).value as OsirisRequestEntity;
+        return (await this.collection.findOneAndUpdate(
+            {
+                "providerInformations.osirisId": osirisRequest.providerInformations.osirisId,
+            },
+            { $set: requestWithoutId },
+            options,
+        )) as OsirisRequestEntity;
     }
 
     public async findByMongoId(id: string): Promise<OsirisRequestEntity | null> {

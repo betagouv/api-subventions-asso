@@ -22,18 +22,16 @@ export class OsirisActionRepository extends MongoRepository<OsirisActionEntityDb
     }
 
     public async update(osirisAction: OsirisActionEntity) {
-        const options = { returnNewDocument: true } as FindOneAndUpdateOptions;
+        const options: FindOneAndUpdateOptions = { returnDocument: "after" };
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { _id, ...actionWithoutId } = OsirisActionAdapter.toDbo(osirisAction);
-        const dbo = (
-            await this.collection.findOneAndUpdate(
-                {
-                    "indexedInformations.osirisActionId": osirisAction.indexedInformations.osirisActionId,
-                },
-                { $set: actionWithoutId },
-                options,
-            )
-        ).value;
+        const dbo = await this.collection.findOneAndUpdate(
+            {
+                "indexedInformations.osirisActionId": osirisAction.indexedInformations.osirisActionId,
+            },
+            { $set: actionWithoutId },
+            options,
+        );
         if (!dbo) throw new MongoCnxError();
         return OsirisActionAdapter.toEntity(dbo);
     }

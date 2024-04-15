@@ -82,7 +82,7 @@
         "migrate-mongo": "^8.2.3",
         "mime-types": "^2.1.35",
         "moment": "^2.29.4",
-        "mongodb": "^4.17.2",
+        "mongodb": "^6",
         "node-xlsx": "^0.23.0",
         "passport": "^0.6.0",
         "passport-jwt": "^4.0.1",

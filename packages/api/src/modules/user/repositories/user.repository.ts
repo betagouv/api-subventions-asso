@@ -70,8 +70,8 @@ export class UserRepository extends MongoRepository<UserDbo> {
                   { returnDocument: "after" },
               );
 
-        if (!res.value) throw new InternalServerError("User update failed");
-        return withJwt ? removeHashPassword(res.value) : removeSecrets(res.value);
+        if (!res) throw new InternalServerError("User update failed");
+        return withJwt ? removeHashPassword(res) : removeSecrets(res);
     }
 
     async delete(user: UserDto): Promise<boolean> {
