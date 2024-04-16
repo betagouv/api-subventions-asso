@@ -35,6 +35,11 @@ export class AuthService {
         return this.loginByUser(user);
     }
 
+    async loginAgentConnect(rawSearchQueries) {
+        const user = await authPort.loginAgentConnect(rawSearchQueries);
+        return this.loginByUser(user);
+    }
+
     loginByUser(user) {
         checkOrDropSearchHistory(user._id);
         localStorageService.removeItem("hide-main-info-banner");
