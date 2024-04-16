@@ -91,7 +91,7 @@ export class UserCrudService {
         const user = {
             ...partialUser,
             jwt: jwtParams,
-            active: !userObject.agentConnectId,
+            active: !!userObject.agentConnectId,
         } as UserNotPersisted;
 
         const createdUser = withJWT
