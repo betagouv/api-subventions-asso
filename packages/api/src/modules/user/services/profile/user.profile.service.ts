@@ -25,16 +25,17 @@ import UserDbo from "../../repositories/dbo/UserDbo";
 import userActivationService from "../activation/user.activation.service";
 import userCrudService from "../crud/user.crud.service";
 import geoService from "../../../providers/geoApi/geo.service";
+import { applyValidations, ValidationCriterias, ValidationResult } from "../../../../shared/helpers/validation.helper";
 
 export class UserProfileService {
     validateUserProfileData(
         userInfo: Partial<UpdatableUser> | UserActivationInfoDto,
         withPassword = true,
-    ): { valid: false; error: Error } | { valid: true } {
+    ): ValidationResult {
         const { agentType, jobType, structure, region } = userInfo;
         let password = "";
         if (withPassword && "password" in userInfo) password = userInfo?.password;
-        const validations = [
+        const validations: ValidationCriterias = [
             {
                 value: agentType,
                 method: value => isInObjectValues(AgentTypeEnum, value),
@@ -95,14 +96,7 @@ export class UserProfileService {
                 Les valeurs possibles sont ${joinEnum(AdminTerritorialLevel)}`),
             });
 
-        let error: Error | undefined;
-        for (const validation of validations) {
-            if (!validation.method(validation.value)) {
-                error = validation.error;
-                break;
-            }
-        }
-        return error ? { valid: false, error: error as BadRequestError } : { valid: true };
+        return applyValidations(validations);
     }
 
     sanitizeUserProfileData(unsafeUserInfo: Partial<UpdatableUser> | UserActivationInfoDto) {
