@@ -57,7 +57,7 @@ export class ConfigurationsService {
         return REGEX_MAIL_DOMAIN.test(domain);
     }
 
-    async addEmailDomain(domain: string) {
+    async addEmailDomain(domain: string, throwOnConflict = true) {
         if (!this.isDomainValid(domain)) throw new BadRequestError();
         const document = await configurationsRepository.getByName<string[]>(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS);
         if (!document) {
@@ -67,7 +67,11 @@ export class ConfigurationsService {
             );
             return domain;
         }
-        if (document.data.includes(domain)) throw new ConflictError(ConfigurationsService.conflictErrorMessage);
+        if (document.data.includes(domain)) {
+            if (throwOnConflict) throw new ConflictError(ConfigurationsService.conflictErrorMessage);
+            return domain;
+        }
+
         await configurationsRepository.upsert(
             CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS,
             this.generateConfiguationEntity(document, [...document.data, domain]),
