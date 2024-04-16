@@ -67,7 +67,7 @@ export async function startServer(port = "8080", isTest = false) {
 
     app.use(passport.initialize());
 
-    authMocks(app); // Passport Part
+    await authMocks(app); // Passport Part
 
     StatsAssoVisitRoutesRegex.forEach(route =>
         app.use(route, (req, res, next) =>

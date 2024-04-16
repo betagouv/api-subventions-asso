@@ -1,8 +1,7 @@
-import crypto = require("crypto");
 import passport from "passport";
+import { generators, Issuer, Strategy as OpenIdClientStrategy } from "openid-client";
 import { Express, Request } from "express";
 import { Strategy as JwtStrategy } from "passport-jwt";
-import OpenIDConnectStrategy = require("passport-openidconnect");
 import { UserDto } from "dto";
 import { IVerifyOptions, Strategy as LocalStrategy } from "passport-local";
 import { JWT_SECRET } from "../configurations/jwt.conf";
@@ -16,8 +15,10 @@ import {
 } from "../configurations/agentConnect.conf";
 import { FRONT_OFFICE_URL } from "../configurations/front.conf";
 import userAgentConnectService from "../modules/user/services/agentConnect/user.agentConnect.service";
+import { AgentConnectUser } from "../modules/user/@types/AgentConnectUser";
+import nonce = generators.nonce;
 
-export function authMocks(app: Express) {
+export async function authMocks(app: Express) {
     // A passport middleware to handle User login
     passport.use(
         "login",
@@ -36,35 +37,6 @@ export function authMocks(app: Express) {
             },
         ),
     );
-
-    if (AGENT_CONNECT_ENABLED) {
-        passport.use(
-            new OpenIDConnectStrategy(
-                {
-                    issuer: AGENT_CONNECT_URL,
-                    authorizationURL: `${AGENT_CONNECT_URL}/authorize`,
-                    tokenURL: `${AGENT_CONNECT_URL}/token`,
-                    userInfoURL: `${AGENT_CONNECT_URL}/userinfo`,
-                    clientID: AGENT_CONNECT_CLIENT_ID,
-                    clientSecret: AGENT_CONNECT_CLIENT_SECRET,
-                    callbackURL: `${FRONT_OFFICE_URL}/auth/login`, // TODO contact them to add "?sucess=true",
-                    nonce: crypto.randomBytes(64).toString("hex").substring(0, 20),
-                    scope: "openid given_name family_name preferred_username birthdate email",
-                    acrValues: "eidas1",
-                    passReqToCallback: true, // TODO check behaviour in this context
-                    // TODO claims:
-                },
-                async function verify(_issuer, profile, done) {
-                    try {
-                        const user = await userAgentConnectService.login(profile);
-                        done(null, user, { message: "Logged in Successfully" });
-                    } catch (e) {
-                        done(e);
-                    }
-                },
-            ),
-        );
-    }
 
     // This verifies that the token sent by the user is valid
     passport.use(
@@ -85,6 +57,47 @@ export function authMocks(app: Express) {
             },
         ),
     );
+    if (AGENT_CONNECT_ENABLED) {
+        const agentConnectIssuer = await Issuer.discover(AGENT_CONNECT_URL);
+
+        const client = new agentConnectIssuer.Client({
+            client_id: AGENT_CONNECT_CLIENT_ID,
+            client_secret: AGENT_CONNECT_CLIENT_SECRET,
+            redirect_uris: [`${FRONT_OFFICE_URL}/auth/login`], // TODO contact them to add "?sucess=true",
+            response_types: ["code"],
+            scope: "openid given_name family_name preferred_username birthdate email",
+            id_token_signed_response_alg: "ES256",
+            userinfo_signed_response_alg: "ES256",
+            // token_endpoint_auth_method (default "client_secret_basic")
+        }); // => Client
+        passport.use(
+            "oidc",
+            new OpenIdClientStrategy(
+                {
+                    client,
+                    params: {
+                        acr_values: "eidas1",
+                        scope: "openid uid given_name email phone organizational_unit siret usual_name belonging_population",
+                    },
+                    usePKCE: false,
+                    passReqToCallback: true,
+                },
+                // @ts-expect-error -- typing from module does not include express
+                async (req: Request, _tokenset, profile: AgentConnectUser, done) => {
+                    try {
+                        const user = await userAgentConnectService.login(profile);
+                        if (user) {
+                            req.user = user;
+                            req.authInfo = { message: "Logged in Successfully" };
+                        }
+                        done(null, user);
+                    } catch (e) {
+                        done(e as Error);
+                    }
+                },
+            ),
+        );
+    }
 
     passport.serializeUser((user, done) => {
         done(null, user);
@@ -106,15 +119,10 @@ export function authMocks(app: Express) {
         })(req, res, next);
     });
 
-    app.get("/auth/ac/login", passport.authenticate("openidconnect"));
+    // @ts-expect-error -- typing
+    app.get("/auth/ac/login", passport.authenticate("oidc", { nonce: nonce() }));
 
-    app.get(
-        "/auth/ac/redirect",
-        passport.authenticate("openidconnect", {
-            successReturnToOrRedirect: "/",
-            failureRedirect: "/login",
-        }),
-    );
+    app.get("/auth/ac/redirect", passport.authenticate("oidc"));
 
     app.use((req, res, next) => {
         if (req.authInfo) return next(); // if authInfo is not empty then the authentication is already check

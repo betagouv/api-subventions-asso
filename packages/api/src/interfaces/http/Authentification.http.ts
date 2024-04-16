@@ -37,15 +37,7 @@ export class AuthentificationHttp extends Controller {
         };
     }
 
-    @Post("/login")
-    @SuccessResponse("200", "Login successfully")
-    public login(
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        @Body() body: { email: string; password: string }, // Just for docs
-        @Request() req: LoginRequest,
-    ): LoginDtoResponse {
-        // If you change the route please change in express.auth.hooks.ts
-
+    private _login(req) {
         if (req.user) {
             const cookieOption: CookieOptions = {
                 secure: true,
@@ -68,6 +60,23 @@ export class AuthentificationHttp extends Controller {
         }
 
         throw new InternalServerError();
+    }
+
+    @Post("/login")
+    @SuccessResponse("200", "Login successfully")
+    public login(
+        @Body() _body: { email: string; password: string }, // Just for docs
+        @Request() req: LoginRequest,
+    ): LoginDtoResponse {
+        // If you change the route please change in express.auth.hooks.ts
+        return this._login(req);
+    }
+
+    @Get("/ac/login")
+    @SuccessResponse("200", "Login successfully")
+    public agentConnectLogin(@Request() req: Request): LoginDtoResponse {
+        // If you change the route please change in express.auth.hooks.ts
+        return this._login(req);
     }
 
     @Post("/signup")
