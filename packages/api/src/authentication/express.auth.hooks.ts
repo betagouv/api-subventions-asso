@@ -38,6 +38,18 @@ export async function authMocks(app: Express) {
         ),
     );
 
+    app.post("/auth/login", (req, res, next) => {
+        passport.authenticate("login", (error, user, info: IVerifyOptions) => {
+            if (error) return next(error);
+            if (user) {
+                req.user = user;
+            }
+            req.authInfo = info;
+
+            next();
+        })(req, res, next);
+    });
+
     // This verifies that the token sent by the user is valid
     passport.use(
         new JwtStrategy(
@@ -59,6 +71,7 @@ export async function authMocks(app: Express) {
     );
     if (AGENT_CONNECT_ENABLED) {
         const agentConnectIssuer = await Issuer.discover(AGENT_CONNECT_URL);
+        console.log("Discovered issuer %s %O", agentConnectIssuer.issuer, agentConnectIssuer.metadata);
 
         const client = new agentConnectIssuer.Client({
             client_id: AGENT_CONNECT_CLIENT_ID,
@@ -99,6 +112,11 @@ export async function authMocks(app: Express) {
         );
     }
 
+    // @ts-expect-error -- typing
+    app.get("/auth/ac/login", passport.authenticate("oidc", { nonce: nonce() }));
+
+    app.get("/auth/ac/redirect", passport.authenticate("oidc"));
+
     passport.serializeUser((user, done) => {
         done(null, user);
     });
@@ -106,23 +124,6 @@ export async function authMocks(app: Express) {
     passport.deserializeUser((user: UserDto, done) => {
         done(null, user);
     });
-
-    app.post("/auth/login", (req, res, next) => {
-        passport.authenticate("login", (error, user, info: IVerifyOptions) => {
-            if (error) return next(error);
-            if (user) {
-                req.user = user;
-            }
-            req.authInfo = info;
-
-            next();
-        })(req, res, next);
-    });
-
-    // @ts-expect-error -- typing
-    app.get("/auth/ac/login", passport.authenticate("oidc", { nonce: nonce() }));
-
-    app.get("/auth/ac/redirect", passport.authenticate("oidc"));
 
     app.use((req, res, next) => {
         if (req.authInfo) return next(); // if authInfo is not empty then the authentication is already check
