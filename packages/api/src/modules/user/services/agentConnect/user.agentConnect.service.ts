@@ -10,20 +10,23 @@ import { RoleEnum } from "../../../../@enums/Roles";
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 import { InternalServerError } from "../../../../shared/errors/httpErrors";
 import { removeHashPassword } from "../../../../shared/helpers/RepositoryHelper";
+import configurationsService from "../../../configurations/configurations.service";
 
 export class UserAgentConnectService {
     async login(agentConnectUser: AgentConnectUser): Promise<UserWithJWTDto> {
+        // TODO fix uid vs agentConnectID
+        if (!agentConnectUser.email) throw new InternalServerError("nope");
         const userWithSecrets: UserDbo | null = await userRepository.getUserWithSecretsByEmail(agentConnectUser.email);
-        const isNewUser = !!userWithSecrets;
+        const isNewUser = !userWithSecrets;
 
         let user: Omit<UserDbo, "hashPassword"> = isNewUser
-            ? removeHashPassword(userWithSecrets)
-            : await this.createUserFromAgentConnect(agentConnectUser);
+            ? await this.createUserFromAgentConnect(agentConnectUser)
+            : removeHashPassword(userWithSecrets);
 
         if (!user.agentConnectId) user = await this.convertToAgentConnectUser(user, agentConnectUser);
 
-        if (!isNewUser) user = await userAuthService.updateJwt(user);
-        // TODO ensure it's ok to  keep user logged in longer
+        user = await userAuthService.updateJwt(user);
+        // TODO ensure it's ok to keep user logged in longer
 
         notifyService.notify(NotificationType.USER_LOGGED, {
             email: user.email,
@@ -47,13 +50,18 @@ export class UserAgentConnectService {
     async createUserFromAgentConnect(agentConnectUser: AgentConnectUser): Promise<Omit<UserDbo, "hashPassword">> {
         const userObject = this.acUserToFutureUser(agentConnectUser);
 
-        return (await userCrudService.createUser(userObject, true).catch(e => {
+        const domain = userObject.email.match(/.*@(.*)/)?.[1];
+        if (!domain) throw new InternalServerError("email from AgentConnect invalid");
+        await configurationsService.addEmailDomain(domain);
+
+        return userCrudService.createUser(userObject, true).catch(e => {
             if (e instanceof DuplicateIndexError) {
                 // should not happen but caught for extra safety
                 notifyService.notify(NotificationType.USER_CONFLICT, userObject);
                 throw new InternalServerError("An error has occurred");
             }
-        })) as Omit<UserDbo, "hashPassword">;
+            throw e;
+        }) as Promise<Omit<UserDbo, "hashPassword">>;
     }
 
     async convertToAgentConnectUser(user: Omit<UserDbo, "hashPassword">, agentConnectUser: AgentConnectUser) {
