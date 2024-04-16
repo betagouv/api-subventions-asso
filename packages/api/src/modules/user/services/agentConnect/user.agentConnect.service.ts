@@ -1,4 +1,4 @@
-import { FutureUserDto, UserWithJWTDto } from "dto";
+import { FutureUserDto, UpdatableUser, UserDto, UserWithJWTDto } from "dto";
 import userRepository from "../../repositories/user.repository";
 import userAuthService from "../auth/user.auth.service";
 import notifyService from "../../../notify/notify.service";
@@ -9,7 +9,7 @@ import userCrudService from "../crud/user.crud.service";
 import { RoleEnum } from "../../../../@enums/Roles";
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
-import { removeHashPassword } from "../../../../shared/helpers/RepositoryHelper";
+import { removeHashPassword, removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
 import configurationsService from "../../../configurations/configurations.service";
 import { applyValidations, ValidationResult } from "../../../../shared/helpers/validation.helper";
 
@@ -24,15 +24,17 @@ export class UserAgentConnectService {
             ? await this.createUserFromAgentConnect(agentConnectUser)
             : removeHashPassword(userWithSecrets);
 
-        if (!user.agentConnectId) user = await this.convertToAgentConnectUser(user, agentConnectUser);
+        if (!isNewUser)
+            user = {
+                ...user,
+                ...this.acUserToFutureUser(agentConnectUser),
+                active: true,
+            };
 
         user = await userAuthService.updateJwt(user);
-        // TODO ensure it's ok to keep user logged in longer
 
-        notifyService.notify(NotificationType.USER_LOGGED, {
-            email: user.email,
-            date: new Date(),
-        });
+        notifyService.notify(NotificationType.USER_LOGGED, { email: user.email, date: new Date() });
+        if (!isNewUser) notifyService.notify(NotificationType.USER_UPDATED, removeSecrets(user));
 
         return user as UserWithJWTDto;
     }
@@ -88,18 +90,6 @@ export class UserAgentConnectService {
                 ),
             },
         ]);
-    }
-
-    async convertToAgentConnectUser(user: Omit<UserDbo, "hashPassword">, agentConnectUser: AgentConnectUser) {
-        const userFromAgentConnect = this.acUserToFutureUser(agentConnectUser);
-        return userRepository.update(
-            {
-                ...user,
-                ...userFromAgentConnect,
-                active: true,
-            },
-            true,
-        ) as Promise<UserWithJWTDto>;
     }
 }
 
