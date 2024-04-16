@@ -106,7 +106,11 @@ export class UserAuthService {
         const user = await userRepository.getUserWithSecretsByEmail(email);
 
         if (!user) throw new LoginError();
-        if (!user.hashPassword) throw new LoginError(); // TODO better failing
+        if (!user.hashPassword)
+            throw new UnauthorizedError(
+                "User has not set a password so they can't login this way",
+                LoginDtoErrorCodes.PASSWORD_UNSET,
+            );
         const validPassword = await bcrypt.compare(password, user.hashPassword);
         if (!validPassword) throw new LoginError();
         if (!user.active) throw new UnauthorizedError("User is not active", LoginDtoErrorCodes.USER_NOT_ACTIVE);
