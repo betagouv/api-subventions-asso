@@ -65,7 +65,7 @@ export class AuthentificationHttp extends Controller {
     @Post("/login")
     @SuccessResponse("200", "Login successfully")
     public login(
-        @Body() _body: { email: string; password: string }, // Just for docs
+        @Body() _body: { email: string; password: string }, // For docs and validation
         @Request() req: LoginRequest,
     ): LoginDtoResponse {
         // If you change the route please change in express.auth.hooks.ts
