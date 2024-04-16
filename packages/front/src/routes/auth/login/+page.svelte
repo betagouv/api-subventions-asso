@@ -4,7 +4,7 @@
     import Button from "$lib/dsfr/Button.svelte";
     import PasswordInput from "$lib/dsfr/PasswordInput.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
-    import AgentConnectZone from "$lib/components/AssociationCard/AgentConnectZone.svelte";
+    import AgentConnectZone from "$lib/components/AgentConnectZone.svelte";
 
     let form;
     export let data;

@@ -4,7 +4,7 @@
     import Input from "$lib/dsfr/Input.svelte";
     import Button from "$lib/dsfr/Button.svelte";
     import Spinner from "$lib/components/Spinner.svelte";
-    import AgentConnectZone from "$lib/components/AssociationCard/AgentConnectZone.svelte";
+    import AgentConnectZone from "$lib/components/AgentConnectZone.svelte";
 
     const ctrl = new SignupController();
     const { signupUser, signupPromise, firstSubmitted } = ctrl;
