@@ -8,9 +8,10 @@ import { AgentConnectUser } from "../../@types/AgentConnectUser";
 import userCrudService from "../crud/user.crud.service";
 import { RoleEnum } from "../../../../@enums/Roles";
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
-import { InternalServerError } from "../../../../shared/errors/httpErrors";
+import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
 import { removeHashPassword } from "../../../../shared/helpers/RepositoryHelper";
 import configurationsService from "../../../configurations/configurations.service";
+import { applyValidations, ValidationResult } from "../../../../shared/helpers/validation.helper";
 
 export class UserAgentConnectService {
     async login(agentConnectUser: AgentConnectUser): Promise<UserWithJWTDto> {
@@ -62,6 +63,31 @@ export class UserAgentConnectService {
             }
             throw e;
         }) as Promise<Omit<UserDbo, "hashPassword">>;
+    }
+
+    /**
+     * users linked to agentConnet cannot change all properties of their profile
+     * @param user initial user data
+     * @param data new user data to save
+     */
+    agentConnectUpdateValidations(user: UserDto, data: Partial<UpdatableUser>): ValidationResult {
+        if (!user.agentConnectId) return { valid: true };
+        return applyValidations([
+            {
+                value: data.firstName,
+                method: (value: string | undefined | null) => value === undefined,
+                error: new BadRequestError(
+                    "Un utilisateur lié à AgentConnect ne peut pas changer de prénom sur l'application",
+                ),
+            },
+            {
+                value: data.lastName,
+                method: (value: string | undefined | null) => value === undefined,
+                error: new BadRequestError(
+                    "Un utilisateur lié à AgentConnect ne peut pas changer de nom de famille sur l'application",
+                ),
+            },
+        ]);
     }
 
     async convertToAgentConnectUser(user: Omit<UserDbo, "hashPassword">, agentConnectUser: AgentConnectUser) {

@@ -26,6 +26,7 @@ import userActivationService from "../activation/user.activation.service";
 import userCrudService from "../crud/user.crud.service";
 import geoService from "../../../providers/geoApi/geo.service";
 import { applyValidations, ValidationCriterias, ValidationResult } from "../../../../shared/helpers/validation.helper";
+import userAgentConnectService from "../agentConnect/user.agentConnect.service";
 
 export class UserProfileService {
     validateUserProfileData(
@@ -121,6 +122,9 @@ export class UserProfileService {
 
         const userInfoValidation = userProfileService.validateUserProfileData(toBeUpdatedUser, false);
         if (!userInfoValidation.valid) throw userInfoValidation.error;
+
+        const validationAgentConnect = userAgentConnectService.agentConnectUpdateValidations(user, toBeUpdatedUser);
+        if (!validationAgentConnect.valid) throw validationAgentConnect.error;
 
         const safeUserInfo = userProfileService.sanitizeUserProfileData(data);
         await this.deduceRegion(safeUserInfo);
