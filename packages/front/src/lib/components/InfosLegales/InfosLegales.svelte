@@ -52,7 +52,7 @@
                 outline={false}
                 ariaControls="fr-modal"
                 on:click={() => controller.displayModal()}>
-                Plus de détails
+                Voir les informations du RNA / Siren
             </Button>
         {:else}
             <div class="fr-grid-row">
