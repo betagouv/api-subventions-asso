@@ -1,4 +1,6 @@
 import { FutureUserDto, UpdatableUser, UserDto, UserWithJWTDto } from "dto";
+import { Client, Issuer, TokenSet } from "openid-client";
+import { ObjectId } from "mongodb";
 import userRepository from "../../repositories/user.repository";
 import userAuthService from "../auth/user.auth.service";
 import notifyService from "../../../notify/notify.service";
@@ -12,8 +14,34 @@ import { BadRequestError, InternalServerError } from "../../../../shared/errors/
 import { removeHashPassword, removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
 import configurationsService from "../../../configurations/configurations.service";
 import { applyValidations, ValidationResult } from "../../../../shared/helpers/validation.helper";
+import agentConnectTokenRepository from "../../repositories/acToken.repository";
+import {
+    AGENT_CONNECT_CLIENT_ID,
+    AGENT_CONNECT_CLIENT_SECRET,
+    AGENT_CONNECT_URL,
+} from "../../../../configurations/agentConnect.conf";
+import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 
 export class UserAgentConnectService {
+    private _client?: Client;
+
+    get client() {
+        return this._client;
+    }
+
+    async initClient() {
+        const agentConnectIssuer = await Issuer.discover(AGENT_CONNECT_URL);
+        this._client = new agentConnectIssuer.Client({
+            client_id: AGENT_CONNECT_CLIENT_ID,
+            client_secret: AGENT_CONNECT_CLIENT_SECRET,
+            redirect_uris: [`${FRONT_OFFICE_URL}/auth/login`], // TODO contact them to add "?sucess=true",
+            response_types: ["code"],
+            scope: "openid given_name family_name preferred_username birthdate email",
+            id_token_signed_response_alg: "ES256",
+            userinfo_signed_response_alg: "ES256",
+        }); // => Client
+    }
+
     async login(agentConnectUser: AgentConnectUser): Promise<UserWithJWTDto> {
         // TODO fix uid vs agentConnectID
         if (!agentConnectUser.email) throw new InternalServerError("nope");
@@ -68,7 +96,7 @@ export class UserAgentConnectService {
     }
 
     /**
-     * users linked to agentConnet cannot change all properties of their profile
+     * users linked to agentConnect cannot change all properties of their profile
      * @param user initial user data
      * @param data new user data to save
      */

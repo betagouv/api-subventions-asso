@@ -1,5 +1,5 @@
 import passport from "passport";
-import { generators, Issuer, Strategy as OpenIdClientStrategy } from "openid-client";
+import { Client, generators, Strategy as OpenIdClientStrategy } from "openid-client";
 import { Express, Request } from "express";
 import { Strategy as JwtStrategy } from "passport-jwt";
 import { UserDto } from "dto";
@@ -7,13 +7,7 @@ import { IVerifyOptions, Strategy as LocalStrategy } from "passport-local";
 import { JWT_SECRET } from "../configurations/jwt.conf";
 import { getJtwTokenFromRequest } from "../shared/helpers/HttpHelper";
 import userAuthService from "../modules/user/services/auth/user.auth.service";
-import {
-    AGENT_CONNECT_CLIENT_ID,
-    AGENT_CONNECT_CLIENT_SECRET,
-    AGENT_CONNECT_ENABLED,
-    AGENT_CONNECT_URL,
-} from "../configurations/agentConnect.conf";
-import { FRONT_OFFICE_URL } from "../configurations/front.conf";
+import { AGENT_CONNECT_ENABLED } from "../configurations/agentConnect.conf";
 import userAgentConnectService from "../modules/user/services/agentConnect/user.agentConnect.service";
 import { AgentConnectUser } from "../modules/user/@types/AgentConnectUser";
 import nonce = generators.nonce;
@@ -70,24 +64,13 @@ export async function authMocks(app: Express) {
         ),
     );
     if (AGENT_CONNECT_ENABLED) {
-        const agentConnectIssuer = await Issuer.discover(AGENT_CONNECT_URL);
-        console.log("Discovered issuer %s %O", agentConnectIssuer.issuer, agentConnectIssuer.metadata);
+        await userAgentConnectService.initClient();
 
-        const client = new agentConnectIssuer.Client({
-            client_id: AGENT_CONNECT_CLIENT_ID,
-            client_secret: AGENT_CONNECT_CLIENT_SECRET,
-            redirect_uris: [`${FRONT_OFFICE_URL}/auth/login`], // TODO contact them to add "?sucess=true",
-            response_types: ["code"],
-            scope: "openid given_name family_name preferred_username birthdate email",
-            id_token_signed_response_alg: "ES256",
-            userinfo_signed_response_alg: "ES256",
-            // token_endpoint_auth_method (default "client_secret_basic")
-        }); // => Client
         passport.use(
             "oidc",
             new OpenIdClientStrategy(
                 {
-                    client,
+                    client: userAgentConnectService.client as Client,
                     params: {
                         acr_values: "eidas1",
                         scope: "openid uid given_name email phone organizational_unit siret usual_name belonging_population",
