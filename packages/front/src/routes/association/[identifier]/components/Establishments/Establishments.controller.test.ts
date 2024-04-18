@@ -13,6 +13,27 @@ describe("EstablishmentsController", () => {
         controller = new EstablishmentsController();
     });
 
+    describe("nbEstabInActivity", () => {
+        const ESTABLISHMENTS = [{ ouvert: true }, { ouvert: false }, { ouvert: true }];
+        let mockGetter: SpyInstance;
+
+        beforeEach(() => {
+            mockGetter = vi.spyOn(Store.prototype, "value", "get").mockReturnValue(ESTABLISHMENTS);
+            // @ts-expect-error: mock
+            controller.establishmentsStore = new Store();
+        });
+
+        afterAll(() => {
+            mockGetter.mockRestore();
+        });
+
+        it("should return a number", () => {
+            const expected = 2;
+            const actual = controller.nbEstabInActivity;
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("onFilter()", () => {
         const FILTER = "FILTER";
         const FILTERED_ESTABLISHMENTS = [] as SimplifiedEstablishment[];
