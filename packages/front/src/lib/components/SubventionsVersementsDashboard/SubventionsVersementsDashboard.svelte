@@ -8,10 +8,8 @@
     import SubventionsVersementsStatistique from "./SubventionsVersementsStatistique/SubventionsVersementsStatistique.svelte";
     import SubventionTable from "./SubventionTable/SubventionTable.svelte";
     import VersementTable from "./VersementTable/VersementTable.svelte";
-    import ProviderModal from "./Modals/ProviderModal/ProviderModal.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
     import Select from "$lib/dsfr/Select.svelte";
-    import { modal } from "$lib/store/modal.store";
     import Button from "$lib/dsfr/Button.svelte";
 
     export let identifier;
@@ -22,10 +20,6 @@
 
     const { loaderStateStore, elements, exercicesOptions, selectedExercice, selectedYear, sortDirection, sortColumn } =
         controller;
-
-    const displayModal = () => {
-        modal.update(() => ProviderModal);
-    };
 </script>
 
 {#await promise}
@@ -55,14 +49,16 @@
                     options={$exercicesOptions} />
             {/if}
         </div>
-        <Button
-            type="tertiary"
-            outline={false}
-            ariaControls="fr-modal"
-            on:click={displayModal}
-            trackerName="association-etablissement.dashboard.display-provider-modal">
-            Voir la liste des fournisseurs de données
-        </Button>
+        <div class="align-bottom">
+            <a
+                on:click={controller.clickProviderLink}
+                class="fr-link"
+                href={controller.providerBlogUrl}
+                target="_blank"
+                rel="noopener external">
+                Quelles données retrouver dans Data.Subvention ?
+            </a>
+        </div>
     </div>
     <div class="fr-mt-6w compact-columns">
         {#if $elements?.length}
@@ -103,6 +99,10 @@
 {/await}
 
 <style>
+    .align-bottom {
+        margin-top: auto;
+    }
+
     .baseline {
         align-self: baseline;
     }
