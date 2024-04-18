@@ -35,10 +35,11 @@ export default class ChorusAdapter {
     }
 
     public static toCommon(entity: ChorusLineEntity): PaymentDto {
+        const bop = entity.indexedInformations.codeDomaineFonctionnel.slice(0, 4);
         return {
             montant_verse: entity.indexedInformations.amount,
             date_debut: entity.indexedInformations.dateOperation,
-            bop: entity.indexedInformations.codeDomaineFonctionnel.slice(0, 4),
+            bop: bop,
             exercice: entity.indexedInformations.dateOperation.getFullYear(),
         };
     }

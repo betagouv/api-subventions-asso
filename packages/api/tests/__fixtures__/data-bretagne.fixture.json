@@ -1,0 +1,79 @@
+{
+    "items": [
+        {
+            "label_theme": "Justice",
+            "label": "Accès au droit et à la justice",
+            "code_ministere": "MIN10",
+            "description": null,
+            "code": "101"
+        },
+        {
+            "label_theme": "Travail et emploi",
+            "label": "Accès et retour à l'emploi",
+            "code_ministere": "MIN35",
+            "description": null,
+            "code": "102"
+        },
+        {
+            "label_theme": "Travail et emploi",
+            "label": "Accompagnement des mutations économiques et développement de l'emploi",
+            "code_ministere": "MIN35",
+            "description": null,
+            "code": "103"
+        },
+        {
+            "label_theme": "Immigration, asile et intégration",
+            "label": "Intégration et accès à la nationalité française",
+            "code_ministere": "MIN09",
+            "description": null,
+            "code": "104"
+        },
+        {
+            "label_theme": "Action extérieure de l'Etat",
+            "label": "Action de la France en Europe et dans le monde",
+            "code_ministere": "MIN01",
+            "description": null,
+            "code": "105"
+        },
+        {
+            "label_theme": null,
+            "label": "ActionFranceEurope_Monde",
+            "code_ministere": "MIN56",
+            "description": null,
+            "code": "106"
+        },
+        {
+            "label_theme": "Justice",
+            "label": "Administration pénitentiaire",
+            "code_ministere": "MIN10",
+            "description": null,
+            "code": "107"
+        },
+        {
+            "label_theme": null,
+            "label": "Adm.pénitentiaire",
+            "code_ministere": "MIN09",
+            "description": null,
+            "code": "108"
+        },
+        {
+            "label_theme": "Cohésion des territoires",
+            "label": "Aide à l'accès au logement",
+            "code_ministere": "MIN23",
+            "description": null,
+            "code": "109"
+        },
+        {
+            "label_theme": "Aide publique au développement",
+            "label": "Aide économique et financière au développement",
+            "code_ministere": "MIN07",
+            "description": null,
+            "code": "110"
+        }
+    ],
+    "pageInfo": {
+        "totalRows": 334,
+        "page": 1,
+        "pageSize": 10
+    }
+}

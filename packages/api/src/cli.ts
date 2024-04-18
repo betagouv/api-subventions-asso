@@ -23,6 +23,7 @@ import ScdlCli from "./interfaces/cli/Scdl.cli";
 import HistoryUniteLegalCli from "./interfaces/cli/HistoryUniteLegal.cli";
 import { initIndexes } from "./shared/MongoInit";
 import GeoCli from "./interfaces/cli/Geo.cli";
+import DataBretagneCli from "./interfaces/cli/DataBretagne.cli";
 
 async function main() {
     await connectDB();
@@ -49,6 +50,7 @@ async function main() {
         ScdlCli,
         HistoryUniteLegalCli,
         GeoCli,
+        DataBretagneCli,
     ];
 
     const args = process.argv.slice(2);
@@ -63,7 +65,6 @@ async function main() {
     const instance = new Controller() as any;
 
     if (!instance[args[1]]) {
-        console.log(instance);
         throw new Error(`Method ${args[1]} not found in controller ${args[0]}`);
     }
 

@@ -97,9 +97,11 @@ export class GrantService {
 
     async getCommonGrants(id: StructureIdentifiers, publishable = false): Promise<GrantDto[]> {
         const raws = await this.getGrants(id);
-        return raws
-            .map(raw => commonGrantService.rawToCommon(raw, publishable))
-            .filter(adapted => !!adapted) as GrantDto[];
+
+        const commonGrants = await Promise.all(
+            raws.map(async raw => await commonGrantService.rawToCommon(raw, publishable)),
+        );
+        return commonGrants.filter(adapted => !!adapted) as GrantDto[];
     }
 }
 
