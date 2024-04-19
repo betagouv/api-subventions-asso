@@ -22,11 +22,15 @@ export class EstablishmentsController {
         this.subscribeStores();
     }
 
+    get nbEstabInActivity() {
+        return this.establishmentsStore.value.filter(estab => estab.ouvert).length;
+    }
+
     get title() {
         const nbEstablishments = this.establishmentsStore.value.length;
-        let specificity = "établissement rattaché";
-        if (nbEstablishments > 1) specificity = "établissements rattachés";
-        return `${nbEstablishments} ${specificity} à cette association`;
+        let specificity = "établissement";
+        if (nbEstablishments > 1) specificity = "établissements";
+        return `Cette association possède ${nbEstablishments} ${specificity} dont ${this.nbEstabInActivity} en activité`;
     }
 
     subscribeStores() {
