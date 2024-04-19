@@ -15,6 +15,7 @@ vi.mock("$lib/resources/subventions/subventions.adapter", () => ({
     },
 }));
 
+import { ApplicationStatus } from "dto";
 import SubventionTableController from "./SubventionTable.controller";
 import * as modalStore from "$lib/store/modal.store";
 import SubventionInfoModal from "$lib/components/SubventionsVersementsDashboard/Modals/SubventionInfoModal.svelte";
@@ -61,6 +62,24 @@ describe("SubventionTableController", () => {
             controller.onRowClick(elementData);
             // eslint-disable-next-line import/namespace
             const actual = modalStore[variableName].update.mock.calls[0][0]();
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("isAccepted", () => {
+        const controller = new SubventionTableController(() => 0);
+
+        it.each`
+            expected | status
+            ${true}  | ${ApplicationStatus.GRANTED}
+            ${false} | ${ApplicationStatus.INELIGIBLE}
+            ${false} | ${ApplicationStatus.PENDING}
+            ${false} | ${ApplicationStatus.REFUSED}
+            ${false} | ${ApplicationStatus.UNKNWON}
+            ${false} | ${undefined}
+            ${false} | ${null}
+        `("should return boolean", ({ expected, status }) => {
+            const actual = controller.isAccepted(status);
             expect(actual).toEqual(expected);
         });
     });

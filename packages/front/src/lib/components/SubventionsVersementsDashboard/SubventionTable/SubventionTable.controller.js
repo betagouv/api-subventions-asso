@@ -1,3 +1,4 @@
+import { ApplicationStatus } from "dto";
 import Store from "../../../core/Store";
 
 import { modal, data } from "$lib/store/modal.store";
@@ -105,5 +106,9 @@ export default class SubventionTableController {
             montantAccorde: elementData.montantsAccorde,
         }));
         modal.update(() => SubventionInfoModal);
+    }
+
+    isAccepted(status) {
+        return status === ApplicationStatus.GRANTED;
     }
 }
