@@ -24,6 +24,7 @@ export class MiscScdlGrantRepository extends MongoRepository<ScdlGrantDbo> {
     async createIndexes() {
         await this.collection.createIndex({ associationSiret: 1 });
         await this.collection.createIndex({ associationRna: 1 });
+        await this.collection.createIndex({ producerSlug: 1 });
     }
 }
 
