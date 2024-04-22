@@ -1,4 +1,4 @@
-import { GrantDto, Siret } from "dto";
+import { CommonGrantDto, Siret } from "dto";
 import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import providers from "../providers";
@@ -95,13 +95,12 @@ export class GrantService {
         return [...Object.values(byKey), ...lonelyGrants];
     }
 
-    async getCommonGrants(id: StructureIdentifiers, publishable = false): Promise<GrantDto[]> {
+    async getCommonGrants(id: StructureIdentifiers, publishable = false): Promise<CommonGrantDto[]> {
         const raws = await this.getGrants(id);
 
-        const commonGrants = await Promise.all(
-            raws.map(async raw => await commonGrantService.rawToCommon(raw, publishable)),
-        );
-        return commonGrants.filter(adapted => !!adapted) as GrantDto[];
+        return raws
+            .map(raw => commonGrantService.rawToCommon(raw, publishable))
+            .filter(adapted => !!adapted) as CommonGrantDto[];
     }
 }
 

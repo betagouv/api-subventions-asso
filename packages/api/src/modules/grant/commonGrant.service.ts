@@ -1,4 +1,4 @@
-import { ApplicationDto, ApplicationStatus, GrantDto, PaymentDto } from "dto";
+import { CommonApplicationDto, ApplicationStatus, CommonGrantDto, CommonPaymentDto } from "dto";
 import providers from "../providers";
 import { JoinedRawGrant, RawGrant } from "./@types/rawGrant";
 import GrantProvider from "./@types/GrantProvider";
@@ -31,8 +31,8 @@ export class CommonGrantService {
         return adaptedGrant;
     }
 
-    private aggregatePayments(payments): PaymentDto {
-        const result: PaymentDto = payments[0];
+    private aggregatePayments(payments): CommonPaymentDto {
+        const result: CommonPaymentDto = payments[0];
         for (const payment of payments.slice(1)) {
             result.montant_verse += payment.montant_verse;
             if (payment.date_debut < result.date_debut) result.date_debut = payment.date_debut;
@@ -53,10 +53,10 @@ export class CommonGrantService {
         return rawApplications[0];
     }
 
-    rawToCommon(joinedRawGrant: JoinedRawGrant, publishable = false): GrantDto | null {
+    rawToCommon(joinedRawGrant: JoinedRawGrant, publishable = false): CommonGrantDto | null {
         const rawFullGrants = this.filterAdaptable(joinedRawGrant?.fullGrants);
 
-        let application: ApplicationDto | undefined = undefined;
+        let application: CommonApplicationDto | undefined = undefined;
         const rawApplications = [...this.filterAdaptable(joinedRawGrant?.applications), ...rawFullGrants];
         if (rawApplications.length) {
             const chosenRawApplication = this.chooseRawApplication(rawApplications);
@@ -64,7 +64,7 @@ export class CommonGrantService {
         }
         if (publishable && application?.statut !== ApplicationStatus.GRANTED) application = undefined;
 
-        let payment: PaymentDto | undefined = undefined;
+        let payment: CommonPaymentDto | undefined = undefined;
         const rawPayments = [...this.filterAdaptable(joinedRawGrant?.payments), ...rawFullGrants];
         if (rawPayments.length) {
             const payments = rawPayments.map(rawData => this.rawToCommonFragment(rawData, publishable));
@@ -72,7 +72,7 @@ export class CommonGrantService {
         }
 
         if (!application && !payment) return null;
-        return { ...(payment || {}), ...(application || {}) } as GrantDto;
+        return { ...(payment || {}), ...(application || {}) } as CommonGrantDto;
     }
 }
 

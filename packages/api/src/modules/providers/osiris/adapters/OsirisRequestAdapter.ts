@@ -1,5 +1,5 @@
 import {
-    ApplicationDto,
+    CommonApplicationDto,
     ApplicationStatus,
     Association,
     DemandeSubvention,
@@ -241,7 +241,7 @@ export default class OsirisRequestAdapter {
         return data;
     }
 
-    static toCommon(entity: OsirisRequestEntity): ApplicationDto {
+    static toCommon(entity: OsirisRequestEntity): CommonApplicationDto {
         return {
             dispositif: entity.providerInformations.dispositif,
             exercice: entity.providerInformations.extractYear,
