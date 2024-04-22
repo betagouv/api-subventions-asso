@@ -1,4 +1,4 @@
-import { ApplicationDto, ApplicationStatus, DemandeSubvention, ProviderValue, DocumentDto } from "dto";
+import { CommonApplicationDto, ApplicationStatus, DemandeSubvention, ProviderValue, DocumentDto } from "dto";
 import DauphinSubventionDto from "../dto/DauphinSubventionDto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import dauphinService from "../dauphin.service";
@@ -139,7 +139,7 @@ export default class DauphinDtoAdapter {
         return resultArray;
     }
 
-    public static toCommon(dbo: DauphinGisproDbo): ApplicationDto {
+    public static toCommon(dbo: DauphinGisproDbo): CommonApplicationDto {
         const dauphinData = dbo.dauphin;
         return {
             dispositif: DauphinDtoAdapter.getDispositif(dauphinData),

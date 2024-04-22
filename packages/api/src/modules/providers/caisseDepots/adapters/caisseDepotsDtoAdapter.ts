@@ -1,4 +1,4 @@
-import { ApplicationStatus, DemandeSubvention, FullGrantDto } from "dto";
+import { ApplicationStatus, DemandeSubvention, CommonFullGrantDto } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import caisseDepotsService from "../caisseDepots.service";
 import { CaisseDepotsSubventionDto } from "../dto/CaisseDepotsDto";
@@ -37,7 +37,7 @@ export default class CaisseDepotsDtoAdapter {
         };
     }
 
-    public static toCommon(dto: CaisseDepotsSubventionDto): FullGrantDto {
+    public static toCommon(dto: CaisseDepotsSubventionDto): CommonFullGrantDto {
         return {
             exercice: new Date(dto.fields.dateconvention).getFullYear(),
             bop: "",

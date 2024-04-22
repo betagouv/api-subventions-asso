@@ -1,4 +1,4 @@
-import { ApplicationStatus, DemandeSubvention, ApplicationDto } from "dto";
+import { ApplicationStatus, DemandeSubvention, CommonApplicationDto } from "dto";
 import ProviderValueFactory from "../../../shared/ProviderValueFactory";
 import { sameDateNextYear } from "../../../shared/helpers/DateHelper";
 import MiscScdlGrantProducerEntity from "./entities/MiscScdlGrantProducerEntity";
@@ -28,7 +28,7 @@ export default class MiscScdlAdapter {
         };
     }
 
-    public static toCommon(entity: ScdlGrantEntity): ApplicationDto {
+    public static toCommon(entity: ScdlGrantEntity): CommonApplicationDto {
         return {
             exercice: entity.exercice,
             dispositif: "",

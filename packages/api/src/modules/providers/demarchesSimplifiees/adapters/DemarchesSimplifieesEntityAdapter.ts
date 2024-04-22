@@ -1,6 +1,6 @@
 import moment from "moment";
 import * as lodash from "lodash";
-import { ApplicationDto, DemandeSubvention } from "dto";
+import { CommonApplicationDto, DemandeSubvention } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import demarchesSimplifieesService from "../demarchesSimplifiees.service";
 import DemarchesSimplifieesDataEntity from "../entities/DemarchesSimplifieesDataEntity";
@@ -56,7 +56,10 @@ export class DemarchesSimplifieesEntityAdapter {
         return subvention as unknown as DemandeSubvention;
     }
 
-    static toCommon(entity: DemarchesSimplifieesDataEntity, mapper: DemarchesSimplifieesMapperEntity): ApplicationDto {
+    static toCommon(
+        entity: DemarchesSimplifieesDataEntity,
+        mapper: DemarchesSimplifieesMapperEntity,
+    ): CommonApplicationDto {
         const application: DefaultObject = DemarchesSimplifieesEntityAdapter.mapSchema(entity, mapper, "commonSchema");
 
         if (!application.exercice && application.dateTransmitted)
@@ -66,6 +69,6 @@ export class DemarchesSimplifieesEntityAdapter {
         // TODO transform status: missing business logic
         delete application.providerStatus;
 
-        return application as unknown as ApplicationDto;
+        return application as unknown as CommonApplicationDto;
     }
 }

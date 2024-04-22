@@ -1,6 +1,6 @@
 import { IncomingMessage } from "http";
 import qs from "qs";
-import { ApplicationDto, DemandeSubvention, Rna, Siren, Siret, DocumentDto } from "dto";
+import { CommonApplicationDto, DemandeSubvention, Rna, Siren, Siret, DocumentDto } from "dto";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DAUPHIN_PASSWORD, DAUPHIN_USERNAME } from "../../../configurations/apis.conf";
@@ -89,7 +89,7 @@ export class DauphinService
         return Promise.resolve(null);
     }
 
-    rawToCommon(rawGrant: RawGrant): ApplicationDto {
+    rawToCommon(rawGrant: RawGrant): CommonApplicationDto {
         return DauphinDtoAdapter.toCommon(rawGrant.data as DauphinGisproDbo);
     }
 
