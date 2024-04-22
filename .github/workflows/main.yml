@@ -11,6 +11,7 @@ on:
 env:
   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
   ENV: test
+  AGENT_CONNECT_ENABLED: false
 
 jobs:
     build:
