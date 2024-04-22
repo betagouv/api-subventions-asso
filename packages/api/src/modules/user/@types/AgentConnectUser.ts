@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { Siren, Siret } from "dto";
 
 // cf https://github.com/france-connect/Documentation-AgentConnect/blob/main/doc_fs/projet_fca/projet_fca_donnees.md
@@ -14,4 +15,11 @@ export type AgentConnectUser = {
     belonging_population?: string;
     phone?: string; // unclear type, TODO test
     chorusdt?: string;
+};
+
+export type AgentConnectTokenDbo = {
+    _id: ObjectId;
+    token: string;
+    creationDate: Date;
+    userId: ObjectId;
 };

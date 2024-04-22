@@ -17,6 +17,8 @@ import userActivationService from "../../modules/user/services/activation/user.a
 import userCrudService from "../../modules/user/services/crud/user.crud.service";
 import { DOMAIN } from "../../configurations/domain.conf";
 import { DEV } from "../../configurations/env.conf";
+import userAgentConnectService from "../../modules/user/services/agentConnect/user.agentConnect.service";
+import { AGENT_CONNECT_ENABLED } from "../../configurations/agentConnect.conf";
 
 @Route("/auth")
 @Tags("Authentification Controller")
@@ -101,9 +103,12 @@ export class AuthentificationHttp extends Controller {
 
     @Get("/logout")
     @Security("jwt")
-    public async logout(@Request() req: IdentifiedRequest) {
+    public async logout(@Request() req: IdentifiedRequest): Promise<string | null> {
+        let url: null | string = null;
         if (!req.user) throw new BadRequestError();
+        if (AGENT_CONNECT_ENABLED) url = await userAgentConnectService.getLogoutUrl(req.user);
         await userAuthService.logout(req.user);
+        return url;
     }
 
     @Post("/validate-token")

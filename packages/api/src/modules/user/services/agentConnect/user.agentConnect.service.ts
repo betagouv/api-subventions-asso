@@ -1,5 +1,5 @@
 import { FutureUserDto, UpdatableUser, UserDto, UserWithJWTDto } from "dto";
-import { Client, Issuer, TokenSet } from "openid-client";
+import { Client, generators, Issuer, TokenSet } from "openid-client";
 import { ObjectId } from "mongodb";
 import userRepository from "../../repositories/user.repository";
 import userAuthService from "../auth/user.auth.service";
@@ -42,7 +42,7 @@ export class UserAgentConnectService {
         }); // => Client
     }
 
-    async login(agentConnectUser: AgentConnectUser): Promise<UserWithJWTDto> {
+    async login(agentConnectUser: AgentConnectUser, tokenSet: TokenSet): Promise<UserWithJWTDto> {
         // TODO fix uid vs agentConnectID
         if (!agentConnectUser.email) throw new InternalServerError("nope");
         const userWithSecrets: UserDbo | null = await userRepository.getUserWithSecretsByEmail(agentConnectUser.email);
@@ -59,12 +59,24 @@ export class UserAgentConnectService {
                 active: true,
             };
 
-        user = await userAuthService.updateJwt(user);
+        user = (await Promise.all([userAuthService.updateJwt(user), this.saveTokenSet(user._id, tokenSet)]))[0];
 
         notifyService.notify(NotificationType.USER_LOGGED, { email: user.email, date: new Date() });
         if (!isNewUser) notifyService.notify(NotificationType.USER_UPDATED, removeSecrets(user));
 
         return user as UserWithJWTDto;
+    }
+
+    async getLogoutUrl(user: UserDto) {
+        if (!this.client) throw new InternalServerError("AgentConnect client is not initialized");
+        const tokenDbo = await agentConnectTokenRepository.findLastActive(user._id);
+        agentConnectTokenRepository.deleteAllByUserId(user._id);
+        if (!tokenDbo) return null;
+        return this.client.endSessionUrl({
+            id_token_hint: tokenDbo.token,
+            state: generators.state(),
+            post_logout_redirect_uri: `${FRONT_OFFICE_URL}/`,
+        });
     }
 
     private acUserToFutureUser(agentConnectUser: AgentConnectUser): FutureUserDto {
@@ -118,6 +130,15 @@ export class UserAgentConnectService {
                 ),
             },
         ]);
+    }
+
+    private async saveTokenSet(userId: ObjectId, tokenSet: TokenSet) {
+        if (!tokenSet.id_token || !tokenSet.expires_at) throw new InternalServerError("invalid tokenSet to save");
+        return agentConnectTokenRepository.upsert({
+            userId,
+            token: tokenSet.id_token,
+            creationDate: new Date(),
+        });
     }
 }
 

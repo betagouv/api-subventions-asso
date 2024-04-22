@@ -79,9 +79,9 @@ export async function authMocks(app: Express) {
                     passReqToCallback: true,
                 },
                 // @ts-expect-error -- typing from module does not include express
-                async (req: Request, _tokenset, profile: AgentConnectUser, done) => {
+                async (req: Request, tokenset, profile: AgentConnectUser, done) => {
                     try {
-                        const user = await userAgentConnectService.login(profile);
+                        const user = await userAgentConnectService.login(profile, tokenset);
                         if (user) {
                             req.user = user;
                             req.authInfo = { message: "Logged in Successfully" };

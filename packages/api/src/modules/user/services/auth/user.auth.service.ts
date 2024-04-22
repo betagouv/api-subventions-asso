@@ -82,9 +82,6 @@ export class UserAuthService {
             return user;
         }
 
-        // TODO if user from agentconnect generate redirection link and send to controller
-        //     so also adapt return type
-
         return userRepository.update({ ...user, jwt: null });
     }
 
