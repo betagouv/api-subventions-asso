@@ -12,7 +12,7 @@ class DataBretagneService {
         await dataBretagnePort.login();
         const programmes = await dataBretagnePort.getProgrammes();
         // do not replace programmes if empty
-        if (!programmes || programmes.length) throw new Error("Unhandled error from API Data Bretagne");
+        if (!programmes || !programmes.length) throw new Error("Unhandled error from API Data Bretagne");
         return bopPort.replace(programmes.map(programme => BopAdapter.toDbo(programme)));
     }
 }

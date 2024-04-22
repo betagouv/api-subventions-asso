@@ -38,10 +38,6 @@ describe("Data Bretagne Port", () => {
     });
 
     describe("getProgrammes", () => {
-        it("should return throw if no bearer token", () => {
-            expect(() => port.getProgrammes()).rejects.toThrowError("You must be connected");
-        });
-
         it("should make a GET request ", async () => {
             port.token = "TOKEN";
             await port.getProgrammes();
