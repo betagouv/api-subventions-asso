@@ -44,7 +44,7 @@ export class UserAgentConnectService {
 
     async login(agentConnectUser: AgentConnectUser, tokenSet: TokenSet): Promise<UserWithJWTDto> {
         // TODO fix uid vs agentConnectID
-        if (!agentConnectUser.email) throw new InternalServerError("nope");
+        if (!agentConnectUser.email) throw new InternalServerError("email not contained in agent connect profile");
         const userWithSecrets: UserDbo | null = await userRepository.getUserWithSecretsByEmail(agentConnectUser.email);
         const isNewUser = !userWithSecrets;
 
@@ -99,7 +99,7 @@ export class UserAgentConnectService {
 
         return userCrudService.createUser(userObject, true).catch(e => {
             if (e instanceof DuplicateIndexError) {
-                // should not happen but caught for extra safety
+                // can happen if same person changed email but same agentConnectId
                 notifyService.notify(NotificationType.USER_CONFLICT, userObject);
                 throw new InternalServerError("An error has occurred");
             }
