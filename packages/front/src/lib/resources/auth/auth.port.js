@@ -30,7 +30,7 @@ export class AuthPort {
     logout() {
         return requestsService
             .get("/auth/logout")
-            .then(_value => true)
+            .then(res => res.data)
             .catch(_error => false);
     }
 

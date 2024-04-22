@@ -7,6 +7,7 @@ import { checkOrDropSearchHistory } from "$lib/services/searchHistory.service";
 import userService from "$lib/resources/users/user.service";
 import localStorageService from "$lib/services/localStorage.service";
 import { connectedUser } from "$lib/store/user.store";
+import { AGENT_CONNECT_ENABLED } from "$env/static/public";
 
 export class AuthService {
     constructor() {
@@ -68,10 +69,11 @@ export class AuthService {
     }
 
     async logout(reload = true) {
-        await authPort.logout();
+        const url = await authPort.logout();
         this.connectedUser.set(null);
         crispService.resetSession();
-        if (reload) goToUrl("/auth/login", false, true);
+        if (AGENT_CONNECT_ENABLED && url) return goToUrl(url);
+        if (reload) return goToUrl("/auth/login", false, true);
     }
 
     getCurrentUser() {
@@ -96,6 +98,7 @@ export class AuthService {
     }
 
     redirectToLogin() {
+        // TODO save url in localStorage
         const queryUrl = encodeURIComponent(location.pathname);
         return goToUrl(`/auth/login?url=${queryUrl}`);
     }
