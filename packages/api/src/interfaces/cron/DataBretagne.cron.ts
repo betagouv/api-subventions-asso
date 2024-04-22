@@ -8,6 +8,6 @@ export class DataBretagneCron implements CronController {
     // every month on day 3 (00:00)
     @AsyncCron({ cronExpression: "0 0 3 * *" })
     async saveProgrammes() {
-        await dataBretagneService.update();
+        return dataBretagneService.update();
     }
 }

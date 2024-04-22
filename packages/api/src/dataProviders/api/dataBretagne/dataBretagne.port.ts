@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { DATA_BRETAGNE_PASSWORD, DATA_BRETAGNE_USERNAME } from "../../../configurations/apis.conf";
 import ProviderRequestFactory, {
     ProviderRequestService,
@@ -13,12 +14,17 @@ export class DataBretagnePort {
     }
 
     async login() {
-        this.token = (
-            await this.http.post<string>(`${this.basepath}/auth/login`, {
-                email: DATA_BRETAGNE_USERNAME,
-                password: DATA_BRETAGNE_PASSWORD,
-            })
-        )?.data;
+        try {
+            this.token = (
+                await this.http.post<string>(`${this.basepath}/auth/login`, {
+                    email: DATA_BRETAGNE_USERNAME,
+                    password: DATA_BRETAGNE_PASSWORD,
+                })
+            )?.data;
+        } catch (e) {
+            if ((e as AxiosError).status === 403) throw new Error("Connection to API Data Bretagne failed");
+            throw e;
+        }
     }
 
     async getProgramme(bop) {
@@ -26,19 +32,13 @@ export class DataBretagnePort {
     }
 
     async getProgrammes() {
-        if (this.token) {
-            // limit 400 to get ALL programme one shot. 334 programmes as of today
-            // TODO (maxime): make one request with limit 1 and another with limit = total rows returned ?
-            return (
-                await this.http.get<{ items: DataBretagneDto[] }>(`${this.basepath}/programme?limit=400`, {
-                    headers: {
-                        Authorization: this.token,
-                    },
-                })
-            )?.data?.items;
-        } else {
-            throw new Error("You must be connected");
-        }
+        return (
+            await this.http.get<{ items: DataBretagneDto[] }>(`${this.basepath}/programme?limit=400`, {
+                headers: {
+                    Authorization: this.token,
+                },
+            })
+        )?.data?.items;
     }
 }
 
