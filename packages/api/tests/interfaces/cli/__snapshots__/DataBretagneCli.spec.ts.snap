@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DataBretagneCli update() should persist bops 1`] = `
+Array [
+  Object {
+    "_id": Any<ObjectId>,
+    "code": "101",
+    "label": "Accès au droit et à la justice",
+  },
+  Object {
+    "_id": Any<ObjectId>,
+    "code": "102",
+    "label": "Accès et retour à l'emploi",
+  },
+  Object {
+    "_id": Any<ObjectId>,
+    "code": "103",
+    "label": "Accompagnement des mutations économiques et développement de l'emploi",
+  },
+  Object {
+    "_id": Any<ObjectId>,
+    "code": "104",
+    "label": "Intégration et accès à la nationalité française",
+  },
+  Object {
+    "_id": Any<ObjectId>,
+    "code": "105",
+    "label": "Action de la France en Europe et dans le monde",
+  },
+  Object {
+    "_id": Any<ObjectId>,
+    "code": "106",
+    "label": "ActionFranceEurope_Monde",
+  },
+  Object {
+    "_id": Any<ObjectId>,
+    "code": "107",
+    "label": "Administration pénitentiaire",
+  },
+  Object {
+    "_id": Any<ObjectId>,
+    "code": "108",
+    "label": "Adm.pénitentiaire",
+  },
+  Object {
+    "_id": Any<ObjectId>,
+    "code": "109",
+    "label": "Aide à l'accès au logement",
+  },
+  Object {
+    "_id": Any<ObjectId>,
+    "code": "110",
+    "label": "Aide économique et financière au développement",
+  },
+]
+`;

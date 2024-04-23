@@ -1,4 +1,4 @@
-import { MongoServerError } from "mongodb";
+import { MongoServerError, ObjectId } from "mongodb";
 import { DuplicateIndexError } from "../errors/dbError/DuplicateIndexError";
 
 export function isMongoDuplicateError(error: unknown): error is MongoServerError {
@@ -15,4 +15,8 @@ export const buildDuplicateIndexError = <T>(error: MongoServerError): DuplicateI
         error.message,
         error?.writeErrors?.map(writeError => writeError.err.op as T) || error.keyValue || [],
     );
+};
+
+export const buildId = () => {
+    return new ObjectId();
 };
