@@ -34,6 +34,12 @@ export class AssociationsService {
         [LeCompteAssoRequestAdapter.PROVIDER_NAME]: 0.5,
     };
 
+    /**
+     *
+     * ASSOCIATION INFO
+     *
+     */
+
     async getAssociation(id: StructureIdentifiers): Promise<Association> {
         const type = IdentifierHelper.getIdentifierType(id);
         let association;
@@ -82,37 +88,6 @@ export class AssociationsService {
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
     }
 
-    getSubventions(identifier: AssociationIdentifiers) {
-        return subventionsService.getDemandesByAssociation(identifier);
-    }
-
-    getPayments(identifier: AssociationIdentifiers) {
-        return paymentService.getPaymentsByAssociation(identifier);
-    }
-
-    async getDocuments(identifier: AssociationIdentifiers) {
-        const type = IdentifierHelper.getIdentifierType(identifier);
-        if (type === StructureIdentifiersEnum.rna) return documentsService.getDocumentByRna(identifier);
-        if (type === StructureIdentifiersEnum.siren) return documentsService.getDocumentBySiren(identifier);
-
-        throw new AssociationIdentifierError();
-    }
-
-    async getEtablissements(identifier: AssociationIdentifiers) {
-        const type = IdentifierHelper.getIdentifierType(identifier);
-
-        if (!type || type === StructureIdentifiersEnum.siret) {
-            throw new Error("You must provide a valid SIREN or RNA");
-        }
-        if (type === StructureIdentifiersEnum.rna) {
-            const rnaSirenEntities = await rnaSirenService.find(identifier);
-            if (!rnaSirenEntities?.length) return [];
-
-            identifier = rnaSirenEntities[0].siren;
-        }
-        return await etablissementService.getEtablissementsBySiren(identifier);
-    }
-
     private async aggregate(id: StructureIdentifiers) {
         const idType = IdentifierHelper.getIdentifierType(id);
         if (!idType) throw new StructureIdentifiersError();
@@ -148,6 +123,53 @@ export class AssociationsService {
         const asso = await apiAssoService.findAssociationBySiren(siren);
         if (!asso?.categorie_juridique?.[0]?.value) return false;
         return LEGAL_CATEGORIES_ACCEPTED.includes(asso.categorie_juridique[0].value);
+    }
+
+    /**
+     * ESTABLISHMENTS INFO
+     */
+
+    async getEtablissements(identifier: AssociationIdentifiers) {
+        const type = IdentifierHelper.getIdentifierType(identifier);
+
+        if (!type || type === StructureIdentifiersEnum.siret) {
+            throw new Error("You must provide a valid SIREN or RNA");
+        }
+        if (type === StructureIdentifiersEnum.rna) {
+            const rnaSirenEntities = await rnaSirenService.find(identifier);
+            if (!rnaSirenEntities?.length) return [];
+
+            identifier = rnaSirenEntities[0].siren;
+        }
+        return await etablissementService.getEtablissementsBySiren(identifier);
+    }
+
+    /**
+     *
+     * GRANTS, APPLICATIONS AND PAYMENTS INFO
+     *
+     */
+
+    getSubventions(identifier: AssociationIdentifiers) {
+        return subventionsService.getDemandesByAssociation(identifier);
+    }
+
+    getPayments(identifier: AssociationIdentifiers) {
+        return paymentService.getPaymentsByAssociation(identifier);
+    }
+
+    /**
+     *
+     * DOCUMENTS INFO
+     *
+     */
+
+    async getDocuments(identifier: AssociationIdentifiers) {
+        const type = IdentifierHelper.getIdentifierType(identifier);
+        if (type === StructureIdentifiersEnum.rna) return documentsService.getDocumentByRna(identifier);
+        if (type === StructureIdentifiersEnum.siren) return documentsService.getDocumentBySiren(identifier);
+
+        throw new AssociationIdentifierError();
     }
 }
 
