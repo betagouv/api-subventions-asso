@@ -27,7 +27,9 @@ vi.mock("$lib/helpers/identifierHelper", () => {
     };
 });
 import * as identifierHelper from "$lib/helpers/identifierHelper";
-
+import trackerService from "$lib/services/tracker.service";
+import { PROVIDER_BLOG_URL } from "$env/static/public";
+vi.mock("$lib/services/tracker.service");
 describe("SubventionsVersementsDashboardController", () => {
     const SIREN = "123456789";
     const SIRET = SIREN + "00012";
@@ -37,6 +39,15 @@ describe("SubventionsVersementsDashboardController", () => {
             const ctrl = new SubventionsVersementsDashboardController(SIREN);
             ctrl.isEtab();
             expect(identifierHelper.isSiret).toHaveBeenCalledWith(SIREN);
+        });
+    });
+
+    describe("providerBlogUrl", () => {
+        it("should return URL", () => {
+            const expected = PROVIDER_BLOG_URL;
+            const controller = new SubventionsVersementsDashboardController();
+            const actual = controller.providerBlogUrl;
+            expect(actual).toEqual(expected);
         });
     });
 
@@ -216,6 +227,20 @@ describe("SubventionsVersementsDashboardController", () => {
             const actual = _filterElementsBySelectedExerciceMock.mock.calls.length;
 
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("clickProviderLink", () => {
+        let controller;
+        beforeEach(() => {
+            controller = new SubventionsVersementsDashboardController();
+        });
+
+        it("should call trackerService.trackEvent", () => {
+            controller.clickProviderLink();
+            expect(vi.mocked(trackerService.trackEvent)).toHaveBeenCalledWith(
+                "association-etablissement.dashboard.display-provider-modal",
+            );
         });
     });
 

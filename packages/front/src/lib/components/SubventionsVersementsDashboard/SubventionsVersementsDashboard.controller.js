@@ -9,6 +9,7 @@ import { buildCsv, downloadCsv } from "$lib/helpers/csvHelper";
 import establishmentService from "$lib/resources/establishments/establishment.service";
 import associationService from "$lib/resources/associations/association.service";
 import trackerService from "$lib/services/tracker.service";
+import { PROVIDER_BLOG_URL } from "$env/static/public";
 
 export default class SubventionsVersementsDashboardController {
     constructor(identifier) {
@@ -31,6 +32,10 @@ export default class SubventionsVersementsDashboardController {
         this.elements = new Store([]);
         this.sortDirection = new Store("asc");
         this.sortColumn = new Store(null);
+    }
+
+    get providerBlogUrl() {
+        return PROVIDER_BLOG_URL;
     }
 
     get notFoundMessage() {
@@ -78,6 +83,10 @@ export default class SubventionsVersementsDashboardController {
         this.selectedExercice.set(selectedExercice);
         this.selectedYear.set(this.exercices[selectedExercice]);
         this._filterElementsBySelectedExercice();
+    }
+
+    clickProviderLink() {
+        trackerService.trackEvent("association-etablissement.dashboard.display-provider-modal");
     }
 
     download() {
