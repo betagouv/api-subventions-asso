@@ -69,7 +69,7 @@ export class AuthService {
     }
 
     async logout(reload = true) {
-        const url = await authPort.logout();
+        const { url, _success } = await authPort.logout();
         this.connectedUser.set(null);
         crispService.resetSession();
         if (AGENT_CONNECT_ENABLED && url) return goToUrl(url);
