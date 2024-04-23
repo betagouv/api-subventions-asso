@@ -9,7 +9,7 @@ import cors from "cors";
 
 import MongoStoreBuilder = require("connect-mongodb-session");
 import { RegisterRoutes } from "../tsoa/routes";
-import { authMocks } from "./authentication/express.auth.hooks";
+import { registerAuthMiddlewares } from "./authentication/express.auth.hooks";
 import { expressLogger } from "./middlewares/LogMiddleware";
 import { AssetsMiddleware } from "./middlewares/AssetsMiddleware";
 import { BodyParserJSON, BodyParserUrlEncoded } from "./middlewares/BodyParserMiddleware";
@@ -67,7 +67,7 @@ export async function startServer(port = "8080", isTest = false) {
 
     app.use(passport.initialize());
 
-    await authMocks(app); // Passport Part
+    await registerAuthMiddlewares(app); // Passport Part
 
     StatsAssoVisitRoutesRegex.forEach(route =>
         app.use(route, (req, res, next) =>

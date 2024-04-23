@@ -12,7 +12,7 @@ import userAgentConnectService from "../modules/user/services/agentConnect/user.
 import { AgentConnectUser } from "../modules/user/@types/AgentConnectUser";
 import nonce = generators.nonce;
 
-export async function authMocks(app: Express) {
+export async function registerAuthMiddlewares(app: Express) {
     // A passport middleware to handle User login
     passport.use(
         "login",

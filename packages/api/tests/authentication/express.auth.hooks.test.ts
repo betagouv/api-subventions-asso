@@ -2,7 +2,7 @@ import passport = require("passport");
 import { Express } from "express";
 import passportLocal = require("passport-local");
 import passportJwt = require("passport-jwt");
-import { authMocks } from "../../src/authentication/express.auth.hooks";
+import { registerAuthMiddlewares } from "../../src/authentication/express.auth.hooks";
 import { ObjectId } from "mongodb";
 import userAuthService from "../../src/modules/user/services/auth/user.auth.service";
 
@@ -56,7 +56,7 @@ describe("express.auth.hooks", () => {
                 });
             });
 
-            authMocks({ post: jest.fn(), use: jest.fn() } as unknown as Express);
+            registerAuthMiddlewares({ post: jest.fn(), use: jest.fn() } as unknown as Express);
         });
 
         it("Should not log user in", done => {
@@ -77,7 +77,7 @@ describe("express.auth.hooks", () => {
                     done();
                 });
             });
-            authMocks({ post: jest.fn(), use: jest.fn() } as unknown as Express);
+            registerAuthMiddlewares({ post: jest.fn(), use: jest.fn() } as unknown as Express);
         });
     });
 
@@ -116,7 +116,7 @@ describe("express.auth.hooks", () => {
                 );
             });
 
-            authMocks({ post: jest.fn(), use: jest.fn() } as unknown as Express);
+            registerAuthMiddlewares({ post: jest.fn(), use: jest.fn() } as unknown as Express);
         });
 
         it("Should not log user in", done => {
@@ -141,7 +141,7 @@ describe("express.auth.hooks", () => {
                     },
                 );
             });
-            authMocks({ post: jest.fn(), use: jest.fn() } as unknown as Express);
+            registerAuthMiddlewares({ post: jest.fn(), use: jest.fn() } as unknown as Express);
         });
     });
 });
