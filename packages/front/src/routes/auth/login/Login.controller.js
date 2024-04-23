@@ -25,7 +25,7 @@ export default class LoginController {
     async submit() {
         try {
             await authService.login(this.email, this.password);
-            const urlToGo = decodeURIComponent(this._query.url);
+            const urlToGo = decodeURIComponent(this._query.url || "/");
             await goToUrl(urlToGo, true, true);
         } catch (e) {
             const message = this._getErrorMessage(e.data?.code);
