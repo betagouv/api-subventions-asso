@@ -156,7 +156,7 @@ describe("Rgpd Cron", () => {
                 ],
             ]);
             const actualLink = actual[0][0].params.activationLink;
-            const actualToken = actualLink.match(/^http:\/\/localhost:5173\/auth\/reset-password\/(.*)/)[1];
+            const actualToken = actualLink.match(/^http:\/\/dev\.local:5173\/auth\/reset-password\/(.*)/)[1];
             const foundReset = await userResetRepository.findByToken(actualToken);
             expect(foundReset).not.toBeNull();
         });
