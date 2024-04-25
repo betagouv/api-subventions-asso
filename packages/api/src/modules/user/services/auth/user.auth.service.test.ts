@@ -15,11 +15,13 @@ import { LoginDtoErrorCodes, UserDto, UserErrorCodes } from "dto";
 import { ObjectId } from "mongodb";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import bcrypt from "bcrypt";
-jest.mock("bcrypt");
-const mockedBcrypt = jest.mocked(bcrypt);
 import jwt from "jsonwebtoken";
 
+jest.mock("bcrypt");
+const mockedBcrypt = jest.mocked(bcrypt);
+
 import userRepository from "../../repositories/user.repository";
+
 jest.mock("../../repositories/user.repository");
 const mockedUserRepository = jest.mocked(userRepository);
 import {
@@ -29,9 +31,11 @@ import {
     USER_SECRETS,
     USER_WITHOUT_SECRET,
 } from "../../__fixtures__/user.fixture";
-import { BadRequestError } from "../../../../shared/errors/httpErrors";
+import { BadRequestError, UnauthorizedError } from "../../../../shared/errors/httpErrors";
+
 jest.mock("../../repositories/user.repository");
 import * as repositoryHelper from "../../../../shared/helpers/RepositoryHelper";
+
 jest.mock("../../../../shared/helpers/RepositoryHelper", () => ({
     removeSecrets: jest.fn(user => user),
     uniformizeId: jest.fn(token => token),
@@ -39,20 +43,24 @@ jest.mock("../../../../shared/helpers/RepositoryHelper", () => ({
 import userCheckService, { UserCheckService } from "../check/user.check.service";
 import LoginError from "../../../../shared/errors/LoginError";
 import UserReset from "../../entities/UserReset";
+
 jest.mock("../check/user.check.service");
 const mockedUserCheckService = jest.mocked(userCheckService);
 import userCrudService from "../crud/user.crud.service";
+
 jest.mock("../crud/user.crud.service");
 const mockedUserCrudService = jest.mocked(userCrudService);
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import notifyService from "../../../notify/notify.service";
 import UserDbo from "../../repositories/dbo/UserDbo";
+
 jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),
 }));
 const mockedNotifyService = jest.mocked(notifyService);
 import userActivationService from "../activation/user.activation.service";
 import { UserServiceErrors } from "../../user.enum";
+
 jest.mock("../activation/user.activation.service");
 const mockedUserActivationService = jest.mocked(userActivationService);
 
@@ -198,6 +206,19 @@ describe("user auth service", () => {
         it("should throw an Error if user not found", async () => {
             mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(async () => null);
             const expected = new LoginError();
+            const test = async () => await userAuthService.login(USER_DBO.email, "PASSWORD");
+            await expect(test).rejects.toMatchObject(expected);
+        });
+
+        it("should throw UnauthorizedError if user does not have a password set", async () => {
+            mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(async () => ({
+                ...USER_DBO,
+                hashPassword: null,
+            }));
+            const expected = new UnauthorizedError(
+                "User has not set a password so they can't login this way",
+                LoginDtoErrorCodes.PASSWORD_UNSET,
+            );
             const test = async () => await userAuthService.login(USER_DBO.email, "PASSWORD");
             await expect(test).rejects.toMatchObject(expected);
         });

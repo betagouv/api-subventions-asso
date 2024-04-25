@@ -31,6 +31,7 @@ jest.mock("@getbrevo/brevo", () => {
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 process.env.JWT_SECRET = require("crypto").randomBytes(256).toString("base64");
 process.env.BETA_GOUV_DOMAIN = "beta.gouv.fr";
+process.env.AGENT_CONNECT_ENABLED = "true";
 
 import { existsSync, mkdirSync } from "fs";
 import { Server } from "http";

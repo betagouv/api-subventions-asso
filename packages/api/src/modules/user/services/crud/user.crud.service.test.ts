@@ -155,6 +155,10 @@ describe("user crud service", () => {
         beforeAll(() => {
             mockCreateUser = jest.spyOn(userCrudService, "createUser");
             jest.mocked(mockedUserRepository.create).mockResolvedValue(USER_WITHOUT_SECRET);
+            jest.mocked(mockedUserRepository.createAndReturnWithJWT).mockResolvedValue({
+                ...USER_WITHOUT_SECRET,
+                jwt: USER_DBO.jwt,
+            });
             // @ts-expect-error - mock
             jest.mocked(bcrypt.hash).mockResolvedValue("hashedPassword");
             mockedUserCheckService.validateSanitizeUser.mockImplementation(async user => user);
@@ -192,6 +196,24 @@ describe("user crud service", () => {
             const expected = FUTURE_USER;
             const actual = jest.mocked(mockedUserRepository.create).mock.calls[0][0];
             expect(actual).toMatchObject(expected);
+        });
+
+        it("sets profileToComplete and active according to saved agentConnectId", async () => {
+            await userCrudService.createUser({ ...FUTURE_USER, agentConnectId: "something" });
+            const expected = {
+                agentConnectId: "something",
+                profileToComplete: false,
+                active: true,
+            };
+            const actual = jest.mocked(mockedUserRepository.create).mock.calls[0][0];
+            expect(actual).toMatchObject(expected);
+        });
+
+        it("calls alternate repo if jwt needed", async () => {
+            mockedUserCheckService.validateSanitizeUser.mockImplementation(async user => user);
+            await userCrudService.createUser({ ...FUTURE_USER }, true);
+            expect(mockedUserRepository.createAndReturnWithJWT).toHaveBeenCalledTimes(1);
+            expect(mockedUserRepository.create).not.toHaveBeenCalled();
         });
     });
 

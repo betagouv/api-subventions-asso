@@ -34,7 +34,7 @@ export class UserAgentConnectService {
         this._client = new agentConnectIssuer.Client({
             client_id: AGENT_CONNECT_CLIENT_ID,
             client_secret: AGENT_CONNECT_CLIENT_SECRET,
-            redirect_uris: [`${FRONT_OFFICE_URL}/auth/login`], // TODO contact them to add "?sucess=true",
+            redirect_uris: [`${FRONT_OFFICE_URL}/auth/login`],
             response_types: ["code"],
             scope: "openid given_name family_name preferred_username birthdate email",
             id_token_signed_response_alg: "ES256",
@@ -43,7 +43,7 @@ export class UserAgentConnectService {
     }
 
     async login(agentConnectUser: AgentConnectUser, tokenSet: TokenSet): Promise<UserWithJWTDto> {
-        // TODO fix uid vs agentConnectID
+        // TODO for more resilience try to get by agentConnectId first
         if (!agentConnectUser.email) throw new InternalServerError("email not contained in agent connect profile");
         const userWithSecrets: UserDbo | null = await userRepository.getUserWithSecretsByEmail(agentConnectUser.email);
         const isNewUser = !userWithSecrets;
@@ -99,7 +99,6 @@ export class UserAgentConnectService {
 
         return userCrudService.createUser(userObject, true).catch(e => {
             if (e instanceof DuplicateIndexError) {
-                // can happen if same person changed email but same agentConnectId
                 notifyService.notify(NotificationType.USER_CONFLICT, userObject);
                 throw new InternalServerError("An error has occurred");
             }
@@ -133,7 +132,7 @@ export class UserAgentConnectService {
     }
 
     private async saveTokenSet(userId: ObjectId, tokenSet: TokenSet) {
-        if (!tokenSet.id_token || !tokenSet.expires_at) throw new InternalServerError("invalid tokenSet to save");
+        if (!tokenSet.id_token) throw new InternalServerError("invalid tokenSet to save");
         return agentConnectTokenRepository.upsert({
             userId,
             token: tokenSet.id_token,
