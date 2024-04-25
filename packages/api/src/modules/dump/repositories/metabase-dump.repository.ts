@@ -1,5 +1,7 @@
 import * as mongoDB from "mongodb";
 import { AgentTypeEnum, TerritorialScopeEnum } from "dto";
+import { AnyBulkWriteOperation } from "mongodb";
+
 import {
     MONGO_METABASE_DBNAME,
     MONGO_METABASE_PASSWORD,
@@ -124,7 +126,17 @@ export class MetabaseDumpRepository {
     }
 
     public savePipedrive(users) {
-        return this.db.collection("users-pipedrive").insertMany(users as Document[]);
+        const operations: AnyBulkWriteOperation[] = [];
+        for (const user of users) {
+            operations.push({
+                updateOne: {
+                    filter: { email: user.email },
+                    update: { $set: user },
+                    upsert: true,
+                },
+            });
+        }
+        return this.db.collection("users-pipedrive").bulkWrite(operations);
     }
 }
 
