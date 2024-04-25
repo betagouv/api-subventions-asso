@@ -324,13 +324,11 @@ describe("userAgentConnectService", () => {
             // @ts-expect-error -- private method
             await userAgentConnectService.saveTokenSet("ID" as ObjectId, { id_token: "TOKEN" });
             const actual = jest.mocked(agentConnectTokenRepository.upsert).mock.calls[0][0];
-            expect(actual).toMatchInlineSnapshot(`
-                Object {
-                  "creationDate": 2024-04-25T15:17:49.645Z,
-                  "token": "TOKEN",
-                  "userId": "ID",
-                }
-            `);
+            expect(actual).toMatchObject({
+                creationDate: expect.any(Date),
+                token: "TOKEN",
+                userId: "ID",
+            });
         });
     });
 });
