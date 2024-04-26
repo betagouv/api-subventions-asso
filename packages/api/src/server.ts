@@ -22,6 +22,8 @@ import { IdentifiedRequest } from "./@types";
 import { initCron } from "./cron";
 import { headersMiddleware } from "./middlewares/headersMiddleware";
 import { ENV } from "./configurations/env.conf";
+import { SESSION_SECRET } from "./configurations/agentConnect.conf";
+import { mongoSessionStoreConfig } from "./shared/MongoConnection";
 
 const appName = "api-subventions-asso";
 const MongoStore = MongoStoreBuilder(session);
@@ -46,10 +48,10 @@ export async function startServer(port = "8080", isTest = false) {
     app.use(
         session({
             pauseStream: false,
-            secret: "keyboard cat",
+            secret: SESSION_SECRET,
             resave: false, // don't save session if unmodified
             saveUninitialized: false, // don't create session until something stored
-            store: new MongoStore({ db: "sessions.db", dir: "var/db" }),
+            store: new MongoStore(mongoSessionStoreConfig),
         }),
     );
     app.use(

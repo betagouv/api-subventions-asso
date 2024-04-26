@@ -3,7 +3,7 @@ import * as Sentry from "@sentry/node";
 import { MONGO_DBNAME, MONGO_URL, MONGO_PASSWORD, MONGO_USER } from "../configurations/mongo.conf";
 import { ENV } from "../configurations/env.conf";
 
-const mongoClient: mongoDB.MongoClient = new mongoDB.MongoClient(MONGO_URL, {
+const connectionOptions = {
     auth:
         MONGO_USER && MONGO_PASSWORD
             ? {
@@ -11,7 +11,9 @@ const mongoClient: mongoDB.MongoClient = new mongoDB.MongoClient(MONGO_URL, {
                   password: MONGO_PASSWORD,
               }
             : undefined,
-});
+};
+
+const mongoClient: mongoDB.MongoClient = new mongoDB.MongoClient(MONGO_URL, connectionOptions);
 
 export const connectDB = () =>
     mongoClient.connect().catch(reason => {
@@ -22,7 +24,9 @@ export const connectDB = () =>
 
 export const client = mongoClient;
 
-export default mongoClient.db(MONGO_DBNAME);
+export const mongoSessionStoreConfig = { uri: MONGO_URL, collection: "sessions", connectionOptions };
+
+export default mongoClient.db(MONGO_DBNAME, { ignoreUndefined: true });
 
 if (ENV !== "test") {
     const events: string[] = [
