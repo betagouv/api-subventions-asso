@@ -19,8 +19,8 @@ export class LeCompteAssoRepository extends MongoRepository<LeCompteAssoRequestE
             },
             { $set: requestWithoutId },
             options,
+            //@ts-expect-error -- mongo typing expects no metadata
         ))!.value as LeCompteAssoRequestEntity;
-        //@ts-expect-error -- mongo typing expects no metadata
     }
 
     public findByCompteAssoId(compteAssoId: string) {

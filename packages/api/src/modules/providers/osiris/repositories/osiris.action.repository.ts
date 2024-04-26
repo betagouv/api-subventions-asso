@@ -30,6 +30,7 @@ export class OsirisActionRepository extends MongoRepository<OsirisActionEntityDb
             },
             { $set: actionWithoutId },
             options,
+            //@ts-expect-error -- mongo typing expects no metadata
         ))!.value;
         if (!dbo) throw new MongoCnxError();
         return OsirisActionAdapter.toEntity(dbo);

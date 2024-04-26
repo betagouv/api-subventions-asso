@@ -25,8 +25,8 @@ export class OsirisRequestRepository extends MongoRepository<OsirisRequestEntity
             },
             { $set: requestWithoutId },
             options,
+            //@ts-expect-error -- mongo typing expects no metadata
         ))!.value as OsirisRequestEntity;
-        //@ts-expect-error -- mongo typing expects no metadata
     }
 
     public async findByMongoId(id: string): Promise<OsirisRequestEntity | null> {

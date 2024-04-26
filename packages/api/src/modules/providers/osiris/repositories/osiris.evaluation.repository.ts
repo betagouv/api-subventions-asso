@@ -24,6 +24,7 @@ export class OsirisEvaluationRepository extends MongoRepository<OsirisEvaluation
             { "indexedInformations.osirisActionId": request.indexedInformations.osirisActionId },
             { $set: requestWithoutId },
             options,
+            //@ts-expect-error -- mongo typing expects no metadata
         ))!.value as OsirisEvaluationEntity;
     }
 
