@@ -17,8 +17,7 @@ export class OsirisRequestRepository extends MongoRepository<OsirisRequestEntity
     }
 
     public async update(osirisRequest: OsirisRequestEntity) {
-        const options: FindOneAndUpdateOptions = { returnDocument: "after" };
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const options = { returnDocument: "after", includeResultMetadata: true } as FindOneAndUpdateOptions;
         const { _id, ...requestWithoutId } = osirisRequest;
         return (await this.collection.findOneAndUpdate(
             {
@@ -26,7 +25,8 @@ export class OsirisRequestRepository extends MongoRepository<OsirisRequestEntity
             },
             { $set: requestWithoutId },
             options,
-        )) as OsirisRequestEntity;
+        ))!.value as OsirisRequestEntity;
+        //@ts-expect-error -- mongo typing expects no metadata
     }
 
     public async findByMongoId(id: string): Promise<OsirisRequestEntity | null> {

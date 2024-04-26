@@ -18,14 +18,13 @@ export class OsirisEvaluationRepository extends MongoRepository<OsirisEvaluation
     }
 
     public async update(request: OsirisEvaluationEntity) {
-        const options: FindOneAndUpdateOptions = { returnDocument: "after" };
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const options = { returnNewDocument: true, includeResultMetadata: true } as FindOneAndUpdateOptions;
         const { _id, ...requestWithoutId } = request;
         return (await this.collection.findOneAndUpdate(
             { "indexedInformations.osirisActionId": request.indexedInformations.osirisActionId },
             { $set: requestWithoutId },
             options,
-        )) as OsirisEvaluationEntity;
+        ))!.value as OsirisEvaluationEntity;
     }
 
     public findsBySiret(siret: Siret) {

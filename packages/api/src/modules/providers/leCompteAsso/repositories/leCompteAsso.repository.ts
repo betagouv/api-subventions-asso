@@ -2,7 +2,6 @@ import { FindOneAndUpdateOptions } from "mongodb";
 import { Rna, Siret, Siren } from "dto";
 import LeCompteAssoRequestEntity from "../entities/LeCompteAssoRequestEntity";
 import MongoRepository from "../../../../shared/MongoRepository";
-import { InternalServerError } from "../../../../shared/errors/httpErrors";
 
 export class LeCompteAssoRepository extends MongoRepository<LeCompteAssoRequestEntity> {
     readonly collectionName = "lecompteasso-requests";
@@ -12,16 +11,16 @@ export class LeCompteAssoRepository extends MongoRepository<LeCompteAssoRequestE
     }
 
     public async update(request: LeCompteAssoRequestEntity) {
-        const options: FindOneAndUpdateOptions = { returnDocument: "after" };
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const options = { returnDocument: "after", includeResultMetadata: true } as FindOneAndUpdateOptions;
         const { _id, ...requestWithoutId } = request;
-        const res = await this.collection.findOneAndUpdate(
-            { "providerInformations.compteAssoId": request.providerInformations.compteAssoId },
+        return (await this.collection.findOneAndUpdate(
+            {
+                "providerInformations.compteAssoId": request.providerInformations.compteAssoId,
+            },
             { $set: requestWithoutId },
             options,
-        );
-        if (!res) throw new InternalServerError("entity to update not found");
-        return res;
+        ))!.value as LeCompteAssoRequestEntity;
+        //@ts-expect-error -- mongo typing expects no metadata
     }
 
     public findByCompteAssoId(compteAssoId: string) {
