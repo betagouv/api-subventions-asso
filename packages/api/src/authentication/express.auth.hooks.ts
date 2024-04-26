@@ -95,7 +95,7 @@ export async function registerAuthMiddlewares(app: Express) {
         );
     }
 
-    // @ts-expect-error -- typing
+    // @ts-expect-error -- atypical typing of second argument of strategy
     app.get("/auth/ac/login", passport.authenticate("oidc", { nonce: nonce() }));
 
     app.get("/auth/ac/redirect", passport.authenticate("oidc"));

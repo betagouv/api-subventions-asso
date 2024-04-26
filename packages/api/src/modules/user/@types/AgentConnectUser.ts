@@ -13,7 +13,7 @@ export type AgentConnectUser = {
     siret?: Siret;
     organizational_unit?: string;
     belonging_population?: string;
-    phone?: string; // unclear type, TODO test
+    phone?: string; // unclear type, TODO test type in real environment
     chorusdt?: string;
 };
 
