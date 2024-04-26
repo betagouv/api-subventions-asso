@@ -213,7 +213,7 @@ describe("user auth service", () => {
         it("should throw UnauthorizedError if user does not have a password set", async () => {
             mockedUserRepository.getUserWithSecretsByEmail.mockImplementationOnce(async () => ({
                 ...USER_DBO,
-                hashPassword: null,
+                hashPassword: undefined,
             }));
             const expected = new UnauthorizedError(
                 "User has not set a password so they can't login this way",
