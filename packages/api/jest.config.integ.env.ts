@@ -3,6 +3,15 @@
 jest.spyOn(console, "info").mockImplementation(() => {});
 jest.mock("axios");
 jest.mock("./src/configurations/env.conf", () => ({ ENV: "test" }))
+jest.mock("openid-client")
+jest.mock("express-session", () => ({
+    __esModule: true,
+    default: () => ((_req, _res, next) => next())
+})) // TODO should be better mocked in order to actually test session managment
+jest.mock("connect-mongodb-session", () => {
+    class MongoStore {}
+    return jest.fn(() => MongoStore)
+})
 jest.mock("@getbrevo/brevo", () => {
     class ContactsApi {
         createContact = jest.fn().mockResolvedValue(true);
@@ -35,6 +44,7 @@ process.env.AGENT_CONNECT_ENABLED = "true";
 
 import { existsSync, mkdirSync } from "fs";
 import { Server } from "http";
+import { Issuer } from "openid-client";
 
 import db, { connectDB, client } from "./src/shared/MongoConnection";
 import { initIndexes } from "./src/shared/MongoInit";
@@ -52,6 +62,15 @@ const addBetaGouvEmailDomain = async () => {
 };
 
 beforeAll(async () => {
+        const mockIssuer = {
+            Client: class Client {
+                endSessionUrl(...args) {
+                    return jest.fn((..._args) => {})(...args);
+                }
+            },
+        } as unknown as Issuer;
+        jest.spyOn(Issuer, "discover").mockResolvedValue(mockIssuer);
+
     await connectDB();
     if (!existsSync("./logs")) {
         // Create folders for logs

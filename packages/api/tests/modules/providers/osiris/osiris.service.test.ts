@@ -193,7 +193,7 @@ describe("OsirisService", () => {
                 );
                 await osirisService.addAction(entity);
                 const expected = await osirisService.addAction(entity);
-                expect(entity).toMatchObject(expected.result);
+                expect(entity).toMatchObject({ ...expected.result, _id: undefined });
                 expect(expected.state).toBe("updated");
             });
         });

@@ -114,14 +114,14 @@ describe("userAgentConnectService", () => {
 
         it("updates user's jwt", async () => {
             await userAgentConnectService.login(AC_USER, TOKENSET);
-            expect(userAuthService.updateJwt).toHaveBeenCalled(); // TODO distinguish
+            expect(userAuthService.updateJwt).toHaveBeenCalled();
         });
 
         it("saves agentConnect token", async () => {
             // @ts-expect-error -- spy private
             const saveTokenSpy = jest.spyOn(userAgentConnectService, "saveTokenSet");
             await userAgentConnectService.login(AC_USER, TOKENSET);
-            expect(saveTokenSpy).toHaveBeenCalledWith(USER_DBO._id, TOKENSET); // TODO manage userId / distinguish
+            expect(saveTokenSpy).toHaveBeenCalledWith(USER_DBO._id, TOKENSET);
         });
 
         it("notifies user login", async () => {
@@ -175,7 +175,7 @@ describe("userAgentConnectService", () => {
             creationDate: new Date(),
             token: "TOKEN",
             userId: USER_WITHOUT_SECRET._id,
-        }; // TODO token; here ?
+        };
 
         it("fails if client not initialized", async () => {
             const service = new UserAgentConnectService();
