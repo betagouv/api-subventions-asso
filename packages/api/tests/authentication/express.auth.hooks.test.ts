@@ -2,13 +2,14 @@ import passport = require("passport");
 import { Express } from "express";
 import passportLocal = require("passport-local");
 import passportJwt = require("passport-jwt");
-import { authMocks } from "../../src/authentication/express.auth.hooks";
+import { registerAuthMiddlewares } from "../../src/authentication/express.auth.hooks";
 import { ObjectId } from "mongodb";
 import userAuthService from "../../src/modules/user/services/auth/user.auth.service";
 
 describe("express.auth.hooks", () => {
     let passportMock: jest.SpyInstance;
     const ERROR = { message: "ERROR", code: 1 };
+    const APP = { post: jest.fn(), use: jest.fn(), get: jest.fn() } as unknown as Express;
 
     beforeEach(() => {
         passportMock = jest.spyOn(passport, "use");
@@ -56,7 +57,7 @@ describe("express.auth.hooks", () => {
                 });
             });
 
-            authMocks({ post: jest.fn(), use: jest.fn() } as unknown as Express);
+            registerAuthMiddlewares(APP);
         });
 
         it("Should not log user in", done => {
@@ -77,7 +78,7 @@ describe("express.auth.hooks", () => {
                     done();
                 });
             });
-            authMocks({ post: jest.fn(), use: jest.fn() } as unknown as Express);
+            registerAuthMiddlewares(APP);
         });
     });
 
@@ -116,7 +117,7 @@ describe("express.auth.hooks", () => {
                 );
             });
 
-            authMocks({ post: jest.fn(), use: jest.fn() } as unknown as Express);
+            registerAuthMiddlewares(APP);
         });
 
         it("Should not log user in", done => {
@@ -141,7 +142,7 @@ describe("express.auth.hooks", () => {
                     },
                 );
             });
-            authMocks({ post: jest.fn(), use: jest.fn() } as unknown as Express);
+            registerAuthMiddlewares(APP);
         });
     });
 });

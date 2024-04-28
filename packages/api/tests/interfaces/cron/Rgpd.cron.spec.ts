@@ -61,23 +61,24 @@ describe("Rgpd Cron", () => {
                     disable: true,
                 },
                 {
-                    firstName: "Prénom",
-                    lastName: "NOM",
-                    active: true,
-                },
-                {
-                    firstName: "Prénom",
-                    lastName: "NOM",
-                    active: true,
-                },
-                {
                     firstName: "",
                     lastName: "",
                     active: false,
                     disable: true,
                 },
+                {
+                    firstName: "Prénom",
+                    lastName: "NOM",
+                    active: true,
+                },
+                {
+                    firstName: "Prénom",
+                    lastName: "NOM",
+                    active: true,
+                },
             ];
-            expect(users).toMatchObject(expected);
+            (users as { firstName: string }[]).sort((u1, u2) => u1.firstName.localeCompare(u2.firstName));
+            expect(users.sort()).toMatchObject(expected);
             users.map(user =>
                 expect(!user.disable || user.email === `${user._id}@deleted.datasubvention.beta.gouv.fr`),
             );
@@ -156,7 +157,7 @@ describe("Rgpd Cron", () => {
                 ],
             ]);
             const actualLink = actual[0][0].params.activationLink;
-            const actualToken = actualLink.match(/^http:\/\/localhost:5173\/auth\/reset-password\/(.*)/)[1];
+            const actualToken = actualLink.match(/^http:\/\/dev\.local:5173\/auth\/reset-password\/(.*)/)[1];
             const foundReset = await userResetRepository.findByToken(actualToken);
             expect(foundReset).not.toBeNull();
         });

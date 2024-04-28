@@ -1,6 +1,7 @@
 import type { LayoutLoad } from "./$types";
 import { buildBreadcrumbs } from "$lib/services/router.service";
 import AuthLevels from "$lib/resources/auth/authLevels";
+import { getQueryParams } from "$lib/helpers/urlHelper";
 
 export const ssr = false;
 
@@ -12,8 +13,3 @@ export const load = (({ url, params }) => {
         authLevel: AuthLevels.USER,
     };
 }) satisfies LayoutLoad;
-
-function getQueryParams(searchQuery: URLSearchParams | string) {
-    const urlParams = new URLSearchParams(searchQuery);
-    return Object.fromEntries(urlParams.entries());
-}

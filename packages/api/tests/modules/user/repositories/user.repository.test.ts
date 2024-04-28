@@ -61,7 +61,6 @@ describe("UserRepository", () => {
             expect(actual).toMatchSnapshot({
                 _id: expect.any(ObjectId),
                 signupAt: expect.any(Date),
-                hashPassword: expect.any(String),
                 jwt: { expirateDate: expect.any(Date), token: expect.any(String) },
             });
         });

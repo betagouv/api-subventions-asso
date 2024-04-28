@@ -7,6 +7,7 @@ import AuthLevels from "$lib/resources/auth/authLevels";
 import { goToUrl } from "$lib/services/router.service";
 import userService from "$lib/resources/users/user.service";
 import localStorageService from "$lib/services/localStorage.service";
+import * as env from "$env/static/public";
 
 const mocks = vi.hoisted(() => {
     return {
@@ -146,10 +147,37 @@ describe("authService", () => {
         });
 
         it("should call front login with given user", async () => {
-            const expected = ["test@datasubvention.beta.gouv.fr", "fake-password"];
-            authPort.login.mockResolvedValueOnce({});
-            await authService.login(...expected);
-            expect(authPort.login).toHaveBeenCalledWith(...expected);
+            const USER = { some: "thing" };
+            const expected = USER;
+            const args = ["test@datasubvention.beta.gouv.fr", "fake-password"];
+            authPort.login.mockResolvedValueOnce(USER);
+            await authService.login(...args);
+            expect(mockServiceLogin).toHaveBeenCalledWith(expected);
+        });
+    });
+
+    describe("loginAgentConnect()", () => {
+        let mockServiceLogin;
+        const SEARCH_QUERY = "?some=thing";
+
+        beforeAll(() => {
+            mockServiceLogin = vi.spyOn(authService, "loginByUser").mockImplementation(vi.fn());
+        });
+        afterAll(() => mockServiceLogin.mockRestore());
+
+        it("should call port", async () => {
+            const expected = SEARCH_QUERY;
+            authPort.loginAgentConnect.mockResolvedValueOnce({});
+            await authService.loginAgentConnect(SEARCH_QUERY);
+            expect(authPort.loginAgentConnect).toHaveBeenCalledWith(expected);
+        });
+
+        it("should call front login with given user", async () => {
+            const USER = { some: "thing" };
+            const expected = USER;
+            authPort.loginAgentConnect.mockResolvedValueOnce(USER);
+            await authService.loginAgentConnect(SEARCH_QUERY);
+            expect(mockServiceLogin).toHaveBeenCalledWith(expected);
         });
     });
 
@@ -304,6 +332,14 @@ describe("authService", () => {
     });
 
     describe("logout", () => {
+        beforeAll(() => {
+            authPort.logout.mockResolvedValue({ success: true });
+        });
+
+        afterAll(() => {
+            authPort.logout.mockRestore();
+        });
+
         it("should call authPort.logout", async () => {
             await authService.logout();
             expect(authPort.logout).toHaveBeenCalled();
@@ -311,12 +347,38 @@ describe("authService", () => {
 
         it("should call remove user from store", async () => {
             await authService.logout();
-            expect(connectedUserStoreSpy.set).toBeCalledWith(null);
+            expect(connectedUserStoreSpy.set).toHaveBeenCalledWith(null);
         });
 
         it("resets crisp session", async () => {
             await authService.logout();
-            expect(crispService.resetSession).toBeCalled();
+            expect(crispService.resetSession).toHaveBeenCalled();
+        });
+
+        it("redirects to login page", async () => {
+            await authService.logout();
+            expect(goToUrl).toHaveBeenCalledWith("/auth/login", false, true);
+        });
+
+        it("does not redirect to login page according to arg", async () => {
+            await authService.logout(false);
+            expect(goToUrl).not.toHaveBeenCalled();
+        });
+
+        it("does not redirect to received URL if AGENT_CONNECT_ENABLED is off", async () => {
+            const URL = "go.somewhere";
+            authPort.logout.mockResolvedValue({ success: true, url: URL });
+            vi.spyOn(env, "AGENT_CONNECT_ENABLED", "get").mockReturnValueOnce(false);
+            await authService.logout();
+            expect(goToUrl).not.toHaveBeenCalledWith(URL);
+        });
+
+        it("redirects to received URL if AGENT_CONNECT_ENABLED is on", async () => {
+            const URL = "go.somewhere";
+            authPort.logout.mockResolvedValue({ success: true, url: URL });
+            vi.spyOn(env, "AGENT_CONNECT_ENABLED", "get").mockReturnValueOnce(true);
+            await authService.logout();
+            expect(goToUrl).toHaveBeenCalledWith(URL);
         });
     });
 
@@ -327,4 +389,6 @@ describe("authService", () => {
             expect(connectedUserStoreSpy.value).toHaveBeenCalled();
         });
     });
+
+    // TODO redirectToLogin
 });

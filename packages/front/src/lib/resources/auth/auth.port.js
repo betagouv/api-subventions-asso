@@ -15,6 +15,12 @@ export class AuthPort {
         return (await requestsService.post(path, { token, password })).data.user;
     }
 
+    loginAgentConnect(rawSearchQueries) {
+        return requestsService.get(`/auth/ac/login${rawSearchQueries}`).then(res => {
+            return res.data.user;
+        });
+    }
+
     login(email, password) {
         return requestsService.post("/auth/login", { email, password }).then(value => {
             return value.data.user;
@@ -24,8 +30,8 @@ export class AuthPort {
     logout() {
         return requestsService
             .get("/auth/logout")
-            .then(_value => true)
-            .catch(_error => false);
+            .then(res => ({ url: res.data || undefined, success: true }))
+            .catch(_error => ({ success: false }));
     }
 
     forgetPassword(email) {

@@ -41,6 +41,19 @@ Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les c
 `sudo docker pull mongo:4.0.3`  
 `sudo docker run -d -p 27017:27017 mongo`
 
+### Pour AgentConnect
+AgentConnect ne fonctionne pas avec l'url `localhost`. Pour qu'AgentConnect fonctionne, il faut
+1. définir les variables d'environnements 
+   - AGENT_CONNECT_ENABLED -> `true`
+   - AGENT_CONNECT_CLIENT_ID
+   - AGENT_CONNECT_CLIENT_SECRET
+   - AGENT_CONNECT_URL : https://fca.integ01.dev-agentconnect.fr/api/v2 en local et préprod
+2. mettre en place un alias qui redirige `dev.local` vers `localhost`. Pour cela, ajouter au fichier `/etc/hosts` la ligne 
+   ``` 
+   127.0.0.1 dev.local
+   ```
+Dans l'absolu il faut que l'alias corresponde à ce qui a été renseigné lors de la demande des client_id et client_secret utilisés.
+
 ## Démarrer l'api en local
 
 1. Run `npm run dev`

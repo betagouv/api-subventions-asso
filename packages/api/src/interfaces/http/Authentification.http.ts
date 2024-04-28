@@ -17,6 +17,8 @@ import userActivationService from "../../modules/user/services/activation/user.a
 import userCrudService from "../../modules/user/services/crud/user.crud.service";
 import { DOMAIN } from "../../configurations/domain.conf";
 import { DEV } from "../../configurations/env.conf";
+import userAgentConnectService from "../../modules/user/services/agentConnect/user.agentConnect.service";
+import { AGENT_CONNECT_ENABLED } from "../../configurations/agentConnect.conf";
 
 @Route("/auth")
 @Tags("Authentification Controller")
@@ -37,15 +39,7 @@ export class AuthentificationHttp extends Controller {
         };
     }
 
-    @Post("/login")
-    @SuccessResponse("200", "Login successfully")
-    public login(
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        @Body() body: { email: string; password: string }, // Just for docs
-        @Request() req: LoginRequest,
-    ): LoginDtoResponse {
-        // If you change the route please change in express.auth.hooks.ts
-
+    private _login(req) {
         if (req.user) {
             const cookieOption: CookieOptions = {
                 secure: true,
@@ -70,6 +64,23 @@ export class AuthentificationHttp extends Controller {
         throw new InternalServerError();
     }
 
+    @Post("/login")
+    @SuccessResponse("200", "Login successfully")
+    public login(
+        @Body() _body: { email: string; password: string }, // For docs and validation
+        @Request() req: LoginRequest,
+    ): LoginDtoResponse {
+        // If you change the route please change in express.auth.hooks.ts
+        return this._login(req);
+    }
+
+    @Get("/ac/login")
+    @SuccessResponse("200", "Login successfully")
+    public agentConnectLogin(@Request() req: Request): LoginDtoResponse {
+        // If you change the route please change in express.auth.hooks.ts
+        return this._login(req);
+    }
+
     @Post("/signup")
     @SuccessResponse("201", "Signup successfully")
     public async signup(@Body() body: FutureUserDto): Promise<SignupDtoResponse> {
@@ -92,9 +103,12 @@ export class AuthentificationHttp extends Controller {
 
     @Get("/logout")
     @Security("jwt")
-    public async logout(@Request() req: IdentifiedRequest) {
+    public async logout(@Request() req: IdentifiedRequest): Promise<string | null> {
+        let url: null | string = null;
         if (!req.user) throw new BadRequestError();
+        if (AGENT_CONNECT_ENABLED) url = await userAgentConnectService.getLogoutUrl(req.user);
         await userAuthService.logout(req.user);
+        return url;
     }
 
     @Post("/validate-token")

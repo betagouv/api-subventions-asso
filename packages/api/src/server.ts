@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import express, { NextFunction, Response } from "express";
+import session from "express-session";
 import passport from "passport";
 import cookieParser from "cookie-parser";
 import * as Sentry from "@sentry/node";
 
 import cors from "cors";
 
+import MongoStoreBuilder = require("connect-mongodb-session");
 import { RegisterRoutes } from "../tsoa/routes";
-import { authMocks } from "./authentication/express.auth.hooks";
+import { registerAuthMiddlewares } from "./authentication/express.auth.hooks";
 import { expressLogger } from "./middlewares/LogMiddleware";
 import { AssetsMiddleware } from "./middlewares/AssetsMiddleware";
 import { BodyParserJSON, BodyParserUrlEncoded } from "./middlewares/BodyParserMiddleware";
@@ -20,8 +22,11 @@ import { IdentifiedRequest } from "./@types";
 import { initCron } from "./cron";
 import { headersMiddleware } from "./middlewares/headersMiddleware";
 import { ENV } from "./configurations/env.conf";
+import { SESSION_SECRET } from "./configurations/agentConnect.conf";
+import { mongoSessionStoreConfig } from "./shared/MongoConnection";
 
 const appName = "api-subventions-asso";
+const MongoStore = MongoStoreBuilder(session);
 
 async function factoryEndMiddleware(
     req: IdentifiedRequest,
@@ -41,6 +46,15 @@ export async function startServer(port = "8080", isTest = false) {
     app.use(Sentry.Handlers.requestHandler());
     app.use(cookieParser());
     app.use(
+        session({
+            pauseStream: false,
+            secret: SESSION_SECRET,
+            resave: false, // don't save session if unmodified
+            saveUninitialized: false, // don't create session until something stored
+            store: new MongoStore(mongoSessionStoreConfig),
+        }),
+    );
+    app.use(
         cors({
             credentials: true,
             origin: true,
@@ -55,7 +69,7 @@ export async function startServer(port = "8080", isTest = false) {
 
     app.use(passport.initialize());
 
-    authMocks(app); // Passport Part
+    await registerAuthMiddlewares(app); // Passport Part
 
     StatsAssoVisitRoutesRegex.forEach(route =>
         app.use(route, (req, res, next) =>

@@ -1,4 +1,4 @@
-import { FutureUserDto, SignupErrorCodes, UserDto, UserWithResetTokenDto } from "dto";
+import { FutureUserDto, SignupErrorCodes, UserDto, UserWithJWTDto, UserWithResetTokenDto } from "dto";
 import { DefaultObject } from "../../../../@types";
 import userRepository from "../../repositories/user.repository";
 import userCheckService from "../check/user.check.service";
@@ -9,8 +9,6 @@ import { NotificationType } from "../../../notify/@types/NotificationType";
 import userStatsService from "../stats/user.stats.service";
 import { RoleEnum } from "../../../../@enums/Roles";
 import userAuthService from "../auth/user.auth.service";
-import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
-import { DEFAULT_PWD } from "../../user.constant";
 import { UserNotPersisted } from "../../repositories/dbo/UserDbo";
 import { BadRequestError, InternalServerError, NotFoundError } from "../../../../shared/errors/httpErrors";
 import userConsumerService from "../consumer/user.consumer.service";
@@ -68,7 +66,7 @@ export class UserCrudService {
         );
     }
 
-    async createUser(userObject: FutureUserDto): Promise<UserDto> {
+    async createUser(userObject: FutureUserDto, withJWT = false): Promise<UserDto | UserWithJWTDto> {
         // default values and ensures format
         if (!userObject.roles) userObject.roles = [RoleEnum.user];
 
@@ -80,8 +78,9 @@ export class UserCrudService {
             roles: sanitizedUser.roles,
             firstName: sanitizedUser.firstName || null,
             lastName: sanitizedUser.lastName || null,
-            profileToComplete: true,
+            profileToComplete: !userObject.agentConnectId,
             lastActivityDate: null,
+            agentConnectId: userObject.agentConnectId,
         };
 
         const jwtParams = {
@@ -92,11 +91,12 @@ export class UserCrudService {
         const user = {
             ...partialUser,
             jwt: jwtParams,
-            hashPassword: await userAuthService.getHashPassword(DEFAULT_PWD),
-            active: false,
+            active: !!userObject.agentConnectId,
         } as UserNotPersisted;
 
-        const createdUser = await userRepository.create(user);
+        const createdUser = withJWT
+            ? await userRepository.createAndReturnWithJWT(user)
+            : await userRepository.create(user);
 
         if (!createdUser)
             throw new InternalServerError("The user could not be created", UserServiceErrors.CREATE_USER_WRONG);

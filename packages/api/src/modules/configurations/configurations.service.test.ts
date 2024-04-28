@@ -185,6 +185,12 @@ describe("ConfigurationService", () => {
                 }
                 expect(actual).toEqual(expected);
             });
+
+            it("should return domain already added without throwing according to arg", async () => {
+                const expected = PERSISTED_DOMAINS[0];
+                const actual = await configurationsService.addEmailDomain(PERSISTED_DOMAINS[0], false);
+                expect(actual).toEqual(expected);
+            });
         });
 
         describe("getEmailDomains()", () => {

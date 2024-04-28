@@ -5,3 +5,8 @@ export function encodeQuerySearch(uri: string) {
 export function decodeQuerySearch(uri: string) {
     return decodeURIComponent(uri);
 }
+
+export function getQueryParams(searchQuery: URLSearchParams | string) {
+    const urlParams = new URLSearchParams(searchQuery);
+    return Object.fromEntries(urlParams.entries());
+}

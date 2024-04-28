@@ -71,7 +71,25 @@ describe("AuthPort", () => {
         });
     });
 
-    // TODO new tests login
+    describe("loginAgentConnect()", () => {
+        const SEARCH_QUERIES = "?some=thing";
+
+        it("calls signup route", async () => {
+            const BASE_PATH = "/auth/ac/login";
+            const expected = BASE_PATH + SEARCH_QUERIES;
+            vi.mocked(requestsService.get).mockResolvedValueOnce({ data: {} });
+            await authPort.loginAgentConnect(SEARCH_QUERIES);
+            expect(requestsService.get).toBeCalledWith(expected);
+        });
+
+        it("returns user if success", async () => {
+            const USER = "USER";
+            vi.mocked(requestsService.get).mockResolvedValueOnce({ data: { user: USER } });
+            const expected = USER;
+            const actual = await authPort.loginAgentConnect(SEARCH_QUERIES);
+            expect(actual).toBe(expected);
+        });
+    });
 
     describe("forgetPassword()", () => {
         const RES = true;
@@ -100,18 +118,26 @@ describe("AuthPort", () => {
             expect(requestsService.get).toBeCalledWith(PATH);
         });
 
-        it("returns true if success", async () => {
-            vi.mocked(requestsService.get).mockResolvedValueOnce("anything");
-            const expected = true;
+        it("returns true if success but no url", async () => {
+            vi.mocked(requestsService.get).mockResolvedValueOnce({ data: "" });
+            const expected = { success: true };
             const actual = await authPort.logout();
-            expect(actual).toBe(expected);
+            expect(actual).toEqual(expected);
+        });
+
+        it("returns true if success with url", async () => {
+            const URL = "somewhere.to.go";
+            vi.mocked(requestsService.get).mockResolvedValueOnce({ data: URL });
+            const expected = { success: true, url: "somewhere.to.go" };
+            const actual = await authPort.logout();
+            expect(actual).toEqual(expected);
         });
 
         it("returns false if failed", async () => {
             vi.mocked(requestsService.get).mockRejectedValueOnce(new Error("anything"));
-            const expected = false;
+            const expected = { success: false };
             const actual = await authPort.logout();
-            expect(actual).toBe(expected);
+            expect(actual).toEqual(expected);
         });
     });
 

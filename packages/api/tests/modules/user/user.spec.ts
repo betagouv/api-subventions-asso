@@ -127,7 +127,7 @@ describe("UserController, /user", () => {
             expect(response.statusCode).toBe(200);
             const userUpdated = await userCrudService.findByEmail("user@beta.gouv.fr");
 
-            expect(userUpdated).toMatchObject({ ...user, lastActivityDate: expect.any(Date) });
+            expect(userUpdated).toEqual({ ...user, lastActivityDate: expect.any(Date) });
         });
 
         it("should reject because password is too weak", async () => {

@@ -19,8 +19,10 @@ import userResetRepository from "../../repositories/user-reset.repository";
 import notifyService from "../../../notify/notify.service";
 import { ObjectId } from "mongodb";
 import geoService from "../../../providers/geoApi/geo.service";
+import userAgentConnectService from "../agentConnect/user.agentConnect.service";
 
 jest.mock("../../../providers/geoApi/geo.service");
+jest.mock("../agentConnect/user.agentConnect.service");
 
 jest.mock("../../../../shared/helpers/StringHelper");
 const mockedStringHelper = jest.mocked(stringHelper);
@@ -152,6 +154,7 @@ describe("user profile service", () => {
                 const actual = userProfileService.validateUserProfileData(validInput);
                 expect(actual).toEqual(expected);
             });
+            // TODO question : laisser le test comme ça ou extraire des tests ?
         });
     });
 
@@ -179,6 +182,7 @@ describe("user profile service", () => {
             mockValidateUserProfileData = jest.spyOn(userProfileService, "validateUserProfileData");
             mockSanitizeUserProfileData = jest.spyOn(userProfileService, "sanitizeUserProfileData");
             mockValidateUserProfileData.mockReturnValue({ valid: true });
+            jest.mocked(userAgentConnectService.agentConnectUpdateValidations).mockReturnValue({ valid: true });
             mockSanitizeUserProfileData.mockImplementation(userInfo => userInfo);
             mockedUserRepository.update.mockResolvedValue({ ...USER_DBO, ...USER_ACTIVATION_INFO });
         });
@@ -193,6 +197,17 @@ describe("user profile service", () => {
             const expected = { ...USER_WITHOUT_SECRET, ...USER_ACTIVATION_INFO };
             await userProfileService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
             expect(mockValidateUserProfileData).toHaveBeenCalledWith(expected, false);
+        });
+
+        it("throws if agentConnectUpdate validation is falsy", async () => {
+            const expected = { ...USER_WITHOUT_SECRET, ...USER_ACTIVATION_INFO };
+            const ERROR = new Error("test");
+            jest.mocked(userAgentConnectService.agentConnectUpdateValidations).mockReturnValueOnce({
+                valid: false,
+                error: ERROR,
+            });
+            const test = userProfileService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
+            await expect(test).rejects.toMatchObject(ERROR);
         });
 
         it("should call sanitizeUserProfileData()", async () => {
@@ -241,6 +256,7 @@ describe("user profile service", () => {
         ];
 
         beforeAll(() => {
+            // TODO mock deduceRegion
             mockValidateUserProfileData = jest.spyOn(userProfileService, "validateUserProfileData");
             mockSanitizeUserProfileData = jest.spyOn(userProfileService, "sanitizeUserProfileData");
             mockValidateUserProfileData.mockReturnValue({ valid: true });
@@ -265,28 +281,27 @@ describe("user profile service", () => {
         });
 
         it("should call userRepository.update()", async () => {
-            await userProfileService.activate("token", USER_ACTIVATION_INFO);
+            await userProfileService.activate("token", { ...USER_ACTIVATION_INFO });
             expect(userRepository.update).toHaveBeenCalledTimes(1);
         });
 
         it("should notify user updated", async () => {
-            await userProfileService.activate("token", USER_ACTIVATION_INFO);
+            await userProfileService.activate("token", { ...USER_ACTIVATION_INFO });
             expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_UPDATED, {
                 ...USER_WITHOUT_SECRET,
                 ...USER_ACTIVATION_INFO,
-                jwt: USER_SECRETS.jwt,
             });
         });
 
         it("should notify user activated", async () => {
-            await userProfileService.activate("token", USER_ACTIVATION_INFO);
+            await userProfileService.activate("token", { ...USER_ACTIVATION_INFO });
             expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_ACTIVATED, {
                 email: USER_WITHOUT_SECRET.email,
             });
         });
 
         it("should notify user logged in", async () => {
-            await userProfileService.activate("token", USER_ACTIVATION_INFO);
+            await userProfileService.activate("token", { ...USER_ACTIVATION_INFO });
             expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_LOGGED, {
                 email: USER_WITHOUT_SECRET.email,
                 date: expect.any(Date),
@@ -397,4 +412,6 @@ describe("user profile service", () => {
             expect(actual).toBe(expected);
         });
     });
+
+    // TODO sanitizeUserProfileData also calls agentConnectUpdateValidations and removeSecrets
 });

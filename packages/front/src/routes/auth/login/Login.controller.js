@@ -13,6 +13,9 @@ export default class LoginController {
         this.successMessage = this._getSuccessMessage();
         this.pageTitle = `Se connecter à Data.Subvention`;
         this.forgetPasswordUrl = "/auth/forget-password";
+        this.agentConnectPromise = query.code
+            ? this._proceedWithAgentConnect(window.location.search)
+            : Promise.resolve();
     }
 
     signup() {
@@ -22,8 +25,19 @@ export default class LoginController {
     async submit() {
         try {
             await authService.login(this.email, this.password);
-            const urlToGo = decodeURIComponent(location.search.match(/(\?|&)url=([^&]*)/)?.[2] || "/");
+            const urlToGo = decodeURIComponent(this._query.url || "/");
             await goToUrl(urlToGo, true, true);
+        } catch (e) {
+            const message = this._getErrorMessage(e.data?.code);
+            this.error.set(message);
+        }
+    }
+
+    async _proceedWithAgentConnect(rawStringQuery) {
+        try {
+            await authService.loginAgentConnect(rawStringQuery);
+            // TODO handle redirection
+            await goToUrl("/", true, true);
         } catch (e) {
             const message = this._getErrorMessage(e.data?.code);
             this.error.set(message);

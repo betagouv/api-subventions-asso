@@ -1,6 +1,7 @@
 import { Siren, Siret } from "dto";
-import { UpdateFilter } from "mongodb";
+import { Collection } from "mongodb";
 import MongoRepository from "../../../../shared/MongoRepository";
+import DauphinSubventionDto from "../dto/DauphinSubventionDto";
 import DauphinGisproDbo from "./dbo/DauphinGisproDbo";
 
 export class DauphinGisproRepository extends MongoRepository<DauphinGisproDbo> {
@@ -74,7 +75,7 @@ export class DauphinGisproRepository extends MongoRepository<DauphinGisproDbo> {
     }
 
     async migrateDauphinCacheToDauphinGispro(logger: (message: string, writeOnSameLine?: boolean) => void) {
-        const collection = this.db.collection("dauphin-caches");
+        const collection: Collection<DauphinGisproDbo> = this.db.collection("dauphin-caches");
         await collection.dropIndexes();
 
         logger("Start update all entities");
@@ -90,10 +91,10 @@ export class DauphinGisproRepository extends MongoRepository<DauphinGisproDbo> {
                         return acc;
                     }, {}),
                 },
-                $set: { dauphin: entity },
+                $set: { dauphin: entity as unknown as DauphinSubventionDto },
             };
 
-            await collection.updateOne({ _id: entity._id }, updateQuery as unknown as UpdateFilter<DauphinGisproDbo>);
+            await collection.updateOne({ _id: entity._id }, updateQuery);
             i++;
             logger(i + " entites saved", true);
         }

@@ -4,6 +4,7 @@
     import Input from "$lib/dsfr/Input.svelte";
     import Button from "$lib/dsfr/Button.svelte";
     import Spinner from "$lib/components/Spinner.svelte";
+    import AgentConnectZone from "$lib/components/AgentConnectZone.svelte";
 
     const ctrl = new SignupController();
     const { signupUser, signupPromise, firstSubmitted } = ctrl;
@@ -46,6 +47,7 @@
     type="info" />
 
 <div class="bordered-frame fr-col-6 fr-col-offset-3 fr-p-8v fr-mt-12v">
+    <AgentConnectZone />
     <form on:submit|preventDefault={() => ctrl.signup()}>
         <fieldset class="fr-fieldset fr-mt-3w fr-mb-5w">
             <legend class="fr-fieldset__legend">

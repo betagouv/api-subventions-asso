@@ -11,18 +11,16 @@ export class LeCompteAssoRepository extends MongoRepository<LeCompteAssoRequestE
     }
 
     public async update(request: LeCompteAssoRequestEntity) {
-        const options = { returnNewDocument: true } as FindOneAndUpdateOptions;
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const options = { returnDocument: "after", includeResultMetadata: true } as FindOneAndUpdateOptions;
         const { _id, ...requestWithoutId } = request;
-        return (
-            await this.collection.findOneAndUpdate(
-                {
-                    "providerInformations.compteAssoId": request.providerInformations.compteAssoId,
-                },
-                { $set: requestWithoutId },
-                options,
-            )
-        ).value as LeCompteAssoRequestEntity;
+        return (await this.collection.findOneAndUpdate(
+            {
+                "providerInformations.compteAssoId": request.providerInformations.compteAssoId,
+            },
+            { $set: requestWithoutId },
+            options,
+            //@ts-expect-error -- mongo typing expects no metadata
+        ))!.value as LeCompteAssoRequestEntity;
     }
 
     public findByCompteAssoId(compteAssoId: string) {

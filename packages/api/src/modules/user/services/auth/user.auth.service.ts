@@ -68,7 +68,7 @@ export class UserAuthService {
 
         const userUpdated = await userRepository.update({
             ...user,
-            hashPassword: await userAuthService.getHashPassword(password),
+            hashPassword: await this.getHashPassword(password),
             active: true,
         });
         return { user: userUpdated };
@@ -86,11 +86,8 @@ export class UserAuthService {
     }
 
     async updateJwt(user: Omit<UserDbo, "hashPassword">): Promise<UserWithJWTDto> {
-        // Generate new JTW Token
-        const now = new Date();
-
         const updatedJwt = {
-            token: userAuthService.buildJWTToken(user),
+            token: this.buildJWTToken(user),
             expirateDate: getNewJwtExpireDate(),
         };
 
@@ -106,11 +103,16 @@ export class UserAuthService {
         const user = await userRepository.getUserWithSecretsByEmail(email);
 
         if (!user) throw new LoginError();
+        if (!user.hashPassword)
+            throw new UnauthorizedError(
+                "User has not set a password so they can't login this way",
+                LoginDtoErrorCodes.PASSWORD_UNSET,
+            );
         const validPassword = await bcrypt.compare(password, user.hashPassword);
         if (!validPassword) throw new LoginError();
         if (!user.active) throw new UnauthorizedError("User is not active", LoginDtoErrorCodes.USER_NOT_ACTIVE);
 
-        const updatedUser = await userAuthService.updateJwt(user);
+        const updatedUser = await this.updateJwt(user);
 
         notifyService.notify(NotificationType.USER_LOGGED, {
             email,

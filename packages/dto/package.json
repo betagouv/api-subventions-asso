@@ -49,6 +49,6 @@
         "lint-staged": "^13.3.0"
     },
     "dependencies": {
-        "mongodb": "^4.17.2"
+        "mongodb": "^6"
     }
 }

@@ -6,7 +6,6 @@ Object {
   "active": false,
   "email": "test@beta.gouv.fr",
   "firstName": null,
-  "hashPassword": Any<String>,
   "jwt": Object {
     "expirateDate": Any<Date>,
     "token": Any<String>,

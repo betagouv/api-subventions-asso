@@ -25,16 +25,18 @@ import UserDbo from "../../repositories/dbo/UserDbo";
 import userActivationService from "../activation/user.activation.service";
 import userCrudService from "../crud/user.crud.service";
 import geoService from "../../../providers/geoApi/geo.service";
+import { applyValidations, ValidationCriterias, ValidationResult } from "../../../../shared/helpers/validation.helper";
+import userAgentConnectService from "../agentConnect/user.agentConnect.service";
 
 export class UserProfileService {
     validateUserProfileData(
         userInfo: Partial<UpdatableUser> | UserActivationInfoDto,
         withPassword = true,
-    ): { valid: false; error: Error } | { valid: true } {
+    ): ValidationResult {
         const { agentType, jobType, structure, region } = userInfo;
         let password = "";
         if (withPassword && "password" in userInfo) password = userInfo?.password;
-        const validations = [
+        const validations: ValidationCriterias = [
             {
                 value: agentType,
                 method: value => isInObjectValues(AgentTypeEnum, value),
@@ -95,14 +97,7 @@ export class UserProfileService {
                 Les valeurs possibles sont ${joinEnum(AdminTerritorialLevel)}`),
             });
 
-        let error: Error | undefined;
-        for (const validation of validations) {
-            if (!validation.method(validation.value)) {
-                error = validation.error;
-                break;
-            }
-        }
-        return error ? { valid: false, error: error as BadRequestError } : { valid: true };
+        return applyValidations(validations);
     }
 
     sanitizeUserProfileData(unsafeUserInfo: Partial<UpdatableUser> | UserActivationInfoDto) {
@@ -127,6 +122,9 @@ export class UserProfileService {
 
         const userInfoValidation = userProfileService.validateUserProfileData(toBeUpdatedUser, false);
         if (!userInfoValidation.valid) throw userInfoValidation.error;
+
+        const validationAgentConnect = userAgentConnectService.agentConnectUpdateValidations(user, toBeUpdatedUser);
+        if (!validationAgentConnect.valid) throw validationAgentConnect.error;
 
         const safeUserInfo = userProfileService.sanitizeUserProfileData(data);
         await this.deduceRegion(safeUserInfo);
@@ -173,7 +171,7 @@ export class UserProfileService {
 
         const userWithJwt = await userAuthService.updateJwt(activeUser);
 
-        notifyService.notify(NotificationType.USER_UPDATED, userWithJwt);
+        notifyService.notify(NotificationType.USER_UPDATED, removeSecrets(userWithJwt));
         notifyService.notify(NotificationType.USER_ACTIVATED, { email: user.email });
         notifyService.notify(NotificationType.USER_LOGGED, {
             email: user.email,
