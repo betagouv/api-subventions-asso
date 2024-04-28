@@ -7,6 +7,7 @@ import AuthLevels from "$lib/resources/auth/authLevels";
 import { goToUrl } from "$lib/services/router.service";
 import userService from "$lib/resources/users/user.service";
 import localStorageService from "$lib/services/localStorage.service";
+import * as env from "$env/static/public";
 
 const mocks = vi.hoisted(() => {
     return {
@@ -364,18 +365,20 @@ describe("authService", () => {
             expect(goToUrl).not.toHaveBeenCalled();
         });
 
+        it("does not redirect to received URL if AGENT_CONNECT_ENABLED is off", async () => {
+            const URL = "go.somewhere";
+            authPort.logout.mockResolvedValue({ success: true, url: URL });
+            vi.spyOn(env, "AGENT_CONNECT_ENABLED", "get").mockReturnValueOnce(false);
+            await authService.logout();
+            expect(goToUrl).not.toHaveBeenCalledWith(URL);
+        });
+
         it("redirects to received URL if AGENT_CONNECT_ENABLED is on", async () => {
             const URL = "go.somewhere";
-            // we need to reimport service so that local mock takes effect
-            vi.doMock("$env/static/public", () => ({
-                DATASUB_URL: "",
-                AGENT_CONNECT_ENABLED: true,
-            }));
-            const authServiceOtherEnv = await import("$lib/resources/auth/auth.service");
             authPort.logout.mockResolvedValue({ success: true, url: URL });
-            await authServiceOtherEnv.default.logout();
+            vi.spyOn(env, "AGENT_CONNECT_ENABLED", "get").mockReturnValueOnce(true);
+            await authService.logout();
             expect(goToUrl).toHaveBeenCalledWith(URL);
-            vi.doUnmock("$env/static/public");
         });
     });
 
@@ -386,4 +389,6 @@ describe("authService", () => {
             expect(connectedUserStoreSpy.value).toHaveBeenCalled();
         });
     });
+
+    // TODO redirectToLogin
 });
