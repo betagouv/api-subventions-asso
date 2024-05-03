@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { EstablishmentPreviewController } from "$lib/components/EstablishmentPreview/EstablishmentPreviewController";
 
     export let establishment;
