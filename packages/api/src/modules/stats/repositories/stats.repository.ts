@@ -5,6 +5,14 @@ import MongoRepository from "../../../shared/MongoRepository";
 export class StatsRepository extends MongoRepository<any> {
     collectionName = "log";
 
+    async createIndexes() {
+        // await this.collection.createIndex({ timestamp: -1 });
+        await this.collection.createIndex({ "meta.req.user.email": 1 });
+        await this.collection.createIndex({ "meta.req.user._id": 1 });
+        // to handle in #1874
+        // await this.collection.createIndex({ "meta.req.url": 1 });
+    }
+
     public async countMedianRequestsOnPeriod(start: Date, end: Date, includesAdmin: boolean): Promise<number> {
         const buildQuery = () => {
             const matchQuery: { $match: DefaultObject } = {
@@ -83,13 +91,6 @@ export class StatsRepository extends MongoRepository<any> {
                 $lte: end,
             },
         });
-    }
-
-    async createIndexes() {
-        // await this.collection.createIndex({ timestamp: -1 });
-        await this.collection.createIndex({ "meta.req.user.email": 1 });
-        // to handle in #1874
-        // await this.collection.createIndex({ "meta.req.url": 1 });
     }
 }
 
