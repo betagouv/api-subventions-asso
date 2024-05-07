@@ -290,20 +290,43 @@ describe("userAgentConnectService", () => {
         });
 
         it("rejects firstName modification", () => {
-            const actual = userAgentConnectService.agentConnectUpdateValidations({} as UserDto, {
+            const actual = userAgentConnectService.agentConnectUpdateValidations({ agentConnectId: "1" } as UserDto, {
                 firstName: "something",
             });
             expect(actual).toMatchInlineSnapshot(`
                 Object {
-                  "valid": true,
+                  "error": [Error: Un utilisateur lié à AgentConnect ne peut pas changer de prénom sur l'application],
+                  "valid": false,
                 }
             `);
         });
 
         it("rejects lastName modification", () => {
-            const actual = userAgentConnectService.agentConnectUpdateValidations({} as UserDto, {
+            const actual = userAgentConnectService.agentConnectUpdateValidations({ agentConnectId: "1" } as UserDto, {
                 lastName: "something",
             });
+            expect(actual).toMatchInlineSnapshot(`
+                Object {
+                  "error": [Error: Un utilisateur lié à AgentConnect ne peut pas changer de nom de famille sur l'application],
+                  "valid": false,
+                }
+            `);
+        });
+
+        it.each`
+            property
+            ${"firstName"}
+            ${"lastName"}
+        `("accepts reaffirmed $property", ({ property }) => {
+            const actual = userAgentConnectService.agentConnectUpdateValidations(
+                {
+                    [property]: "something",
+                    agentConnectId: "1",
+                } as unknown as UserDto,
+                {
+                    [property]: "something",
+                },
+            );
             expect(actual).toMatchInlineSnapshot(`
                 Object {
                   "valid": true,
