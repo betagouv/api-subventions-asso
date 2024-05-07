@@ -1,3 +1,4 @@
+import { UserDto } from "dto";
 import { RoleEnum } from "../../../@enums/Roles";
 import { DefaultObject } from "../../../@types";
 import MongoRepository from "../../../shared/MongoRepository";
@@ -91,6 +92,14 @@ export class StatsRepository extends MongoRepository<any> {
                 $lte: end,
             },
         });
+    }
+
+    public async anonymizeLogsByUser(initialUser: UserDto, disabledUser: UserDto) {
+        await this.collection.updateMany(
+            { "meta.req.user.email": initialUser.email },
+            { $set: { "meta.req.email": disabledUser.email } },
+        );
+        return true;
     }
 }
 
