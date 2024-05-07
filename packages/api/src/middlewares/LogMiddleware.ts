@@ -3,7 +3,7 @@ import expressWinston from "express-winston";
 import "winston-mongodb";
 import { client } from "../shared/MongoConnection";
 
-const LOGGER_SECRET_FIELDS = ["password", "token"];
+const LOGGER_SECRET_FIELDS = ["password", "token", "email", "phoneNumber", "firstName", "lastName", "hashPassword"];
 
 const LOGGER_IGNORED_ROUTES = [/^\/docs/, /^\/assets/];
 
@@ -52,7 +52,7 @@ export const expressLogger = () =>
             // we convert _id into string as a workaround to winston-mongodb bug that serializes them to {}
             if (propName === "user" && req[propName]?._id)
                 // @ts-expect-error strange express-winston types
-                return { ...req[propName], _id: req[propName]._id.toString() };
+                return recursiveFilter({ ...req[propName], _id: req[propName]._id.toString() });
 
             return LOGGER_SECRET_FIELDS.includes(propName) ? "**********" : req[propName];
         },
