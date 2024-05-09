@@ -100,11 +100,11 @@ describe("AssociationHttp", () => {
         });
     });
 
-    describe("getEtablissements", () => {
-        const getEtablissementSpy = jest.spyOn(associationsService, "getEtablissements");
+    describe("getEstablishments", () => {
+        const getEtablissementSpy = jest.spyOn(associationsService, "getEstablishments");
         it("should call service with args", async () => {
             getEtablissementSpy.mockImplementationOnce(jest.fn());
-            await controller.getEtablissements(IDENTIFIER);
+            await controller.getEstablishments(IDENTIFIER);
             expect(getEtablissementSpy).toHaveBeenCalledWith(IDENTIFIER);
         });
 
@@ -113,7 +113,7 @@ describe("AssociationHttp", () => {
             getEtablissementSpy.mockImplementationOnce(() => etablissements);
             const etablissements = [{}];
             const expected = { etablissements };
-            const actual = await controller.getEtablissements(IDENTIFIER);
+            const actual = await controller.getEstablishments(IDENTIFIER);
             expect(actual).toEqual(expected);
         });
     });
