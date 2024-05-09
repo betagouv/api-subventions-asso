@@ -21,7 +21,7 @@ export class GrantService {
         [StructureIdentifiersEnum.rna]: "getRawGrantsByRna",
     };
 
-    async getGrants(id: StructureIdentifiers): Promise<JoinedRawGrant[]> {
+    async getRawGrants(id: StructureIdentifiers): Promise<JoinedRawGrant[]> {
         let idType = getIdentifierType(id);
         if (!idType) throw new StructureIdentifiersError();
 
@@ -50,12 +50,12 @@ export class GrantService {
 
     async getGrantsByAssociation(id: AssociationIdentifiers): Promise<JoinedRawGrant[]> {
         if (isSiret(id)) throw new AssociationIdentifierError();
-        return this.getGrants(id);
+        return this.getRawGrants(id);
     }
 
     async getGrantsByEstablishment(siret: Siret): Promise<JoinedRawGrant[]> {
         if (!isSiret(siret)) throw new StructureIdentifiersError("SIRET expected");
-        return this.getGrants(siret);
+        return this.getRawGrants(siret);
     }
 
     private async getRawGrantsByMethod(id: StructureIdentifiers, idType): Promise<RawGrant[]> {
@@ -96,7 +96,7 @@ export class GrantService {
     }
 
     async getCommonGrants(id: StructureIdentifiers, publishable = false): Promise<CommonGrantDto[]> {
-        const raws = await this.getGrants(id);
+        const raws = await this.getRawGrants(id);
 
         return raws
             .map(raw => commonGrantService.rawToCommon(raw, publishable))
