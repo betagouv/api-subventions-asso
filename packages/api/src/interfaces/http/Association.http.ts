@@ -66,10 +66,10 @@ export class AssociationHttp extends Controller {
      * @summary Recherche les subventions liées à une association, format brut
      * @param identifier Identifiant Siren ou Rna
      */
-    @Get("/{identifier}/grants")
+    @Get("/{identifier}/raw-grants")
     @Security("jwt", ["admin"])
     @Response<HttpErrorInterface>("404")
-    public getGrants(identifier: AssociationIdentifiers): Promise<JoinedRawGrant[]> {
+    public getRawGrants(identifier: AssociationIdentifiers): Promise<JoinedRawGrant[]> {
         return grantService.getGrantsByAssociation(identifier);
     }
 
@@ -90,8 +90,8 @@ export class AssociationHttp extends Controller {
      * @param identifier Identifiant Siren ou Rna
      */
     @Get("/{identifier}/etablissements")
-    public async getEtablissements(identifier: AssociationIdentifiers): Promise<GetEtablissementsResponseDto> {
-        const etablissements = await associationService.getEtablissements(identifier);
+    public async getEstablishments(identifier: AssociationIdentifiers): Promise<GetEtablissementsResponseDto> {
+        const etablissements = await associationService.getEstablishments(identifier);
         return { etablissements };
     }
 

@@ -129,7 +129,7 @@ export class AssociationsService {
      * ESTABLISHMENTS INFO
      */
 
-    async getEtablissements(identifier: AssociationIdentifiers) {
+    async getEstablishments(identifier: AssociationIdentifiers) {
         const type = IdentifierHelper.getIdentifierType(identifier);
 
         if (!type || type === StructureIdentifiersEnum.siret) {
