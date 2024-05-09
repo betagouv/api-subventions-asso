@@ -1,7 +1,8 @@
-<script>
+<script lang="ts">
     import { createEventDispatcher } from "svelte";
     import { getIconClass } from "./helper";
     import trackerService from "$lib/services/tracker.service";
+    import { HTML_BUTTON_TYPES, isValidButtonType } from "$lib/helpers/htmlHelper";
 
     export let trackerName;
     export let trackingDisable = false;
@@ -14,7 +15,12 @@
     export let icon = "";
     export let iconPosition = "";
     export let ariaControls = "";
-    export let htmlType = "";
+    export let htmlType: (typeof HTML_BUTTON_TYPES)[number] = "button";
+
+    if (!isValidButtonType(htmlType)) {
+        console.warn(`${htmlType} is not a valid button type. Use default button type instead`);
+        htmlType = "button";
+    }
 
     if (!trackerName && !trackingDisable) console.error("Please add tracker name on button");
 

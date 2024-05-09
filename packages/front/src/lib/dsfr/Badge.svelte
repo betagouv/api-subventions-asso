@@ -1,9 +1,9 @@
 <script>
-    export let type = false; // "success" | "error" | "info" | "warning" | "new"
-    export let noIcon = false;
-    export let small = false;
-    export let color = false;
+    export let type = undefined; // "success" | "error" | "info" | "warning" | "new"
     export let label = "";
+    export let color = undefined;
+    export let small = false;
+    export let noIcon = false;
 
     let otherClasses = "fr-badge ";
 

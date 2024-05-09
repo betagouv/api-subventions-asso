@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { data } from "$lib/store/modal.store";
 
     import Alert from "$lib/dsfr/Alert.svelte";
