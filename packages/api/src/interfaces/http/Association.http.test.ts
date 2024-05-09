@@ -2,6 +2,8 @@ import { DemandeSubvention } from "dto";
 import Flux from "../../shared/Flux";
 import associationsService from "../../modules/associations/associations.service";
 import { AssociationHttp } from "./Association.http";
+import grantService from "../../modules/grant/grant.service";
+jest.mock("../../modules/grant/grant.service");
 
 const controller = new AssociationHttp();
 
@@ -31,6 +33,12 @@ describe("AssociationHttp", () => {
             flux.close();
 
             expect(await promise).toEqual(expected);
+        });
+    });
+    describe("getGrants", () => {
+        it("should call grantService.getGrants()", async () => {
+            await controller.getGrants(IDENTIFIER);
+            expect(grantService.getGrants).toHaveBeenCalledWith(IDENTIFIER);
         });
     });
 

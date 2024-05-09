@@ -21,6 +21,10 @@ export class GrantService {
         [StructureIdentifiersEnum.rna]: "getRawGrantsByRna",
     };
 
+    async getGrants(id: StructureIdentifiers) {
+        console.log("Not implemented");
+    }
+
     async getRawGrants(id: StructureIdentifiers): Promise<JoinedRawGrant[]> {
         let idType = getIdentifierType(id);
         if (!idType) throw new StructureIdentifiersError();
