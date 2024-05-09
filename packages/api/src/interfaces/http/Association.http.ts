@@ -60,6 +60,15 @@ export class AssociationHttp extends Controller {
     }
 
     /**
+     * @summary Recherche toutes les informations des subventions d'un association (demandes ET versements)
+     * @param identifier
+     */
+    @Get("/{identifier}/grants")
+    public getGrants(identifier: AssociationIdentifiers) {
+        return grantService.getGrants(identifier);
+    }
+
+    /**
      * Recherche les subventions liées à une association, format brut
      *
      * @deprecated test purposes
@@ -70,7 +79,7 @@ export class AssociationHttp extends Controller {
     @Security("jwt", ["admin"])
     @Response<HttpErrorInterface>("404")
     public getRawGrants(identifier: AssociationIdentifiers): Promise<JoinedRawGrant[]> {
-        return grantService.getGrantsByAssociation(identifier);
+        return grantService.getRawGrantsByAssociation(identifier);
     }
 
     /**
