@@ -140,9 +140,9 @@ describe("GrantService", () => {
     });
 
     describe.each`
-        testedMethod                  | siret    | not
-        ${"getGrantsByAssociation"}   | ${false} | ${""}
-        ${"getGrantsByEstablishment"} | ${true}  | ${" not"}
+        testedMethod                     | siret    | not
+        ${"getRawGrantsByAssociation"}   | ${false} | ${""}
+        ${"getRawGrantsByEstablishment"} | ${true}  | ${" not"}
     `("$testedMethod", ({ testedMethod, siret }) => {
         let getGrantMock;
         const SIRET = "12345678901234";

@@ -48,24 +48,14 @@ export class GrantService {
         return this.joinGrants(rawGrants);
     }
 
-    async getGrantsByAssociation(id: AssociationIdentifiers): Promise<JoinedRawGrant[]> {
+    async getRawGrantsByAssociation(id: AssociationIdentifiers): Promise<JoinedRawGrant[]> {
         if (isSiret(id)) throw new AssociationIdentifierError();
         return this.getRawGrants(id);
     }
 
-    async getGrantsByEstablishment(siret: Siret): Promise<JoinedRawGrant[]> {
+    async getRawGrantsByEstablishment(siret: Siret): Promise<JoinedRawGrant[]> {
         if (!isSiret(siret)) throw new StructureIdentifiersError("SIRET expected");
         return this.getRawGrants(siret);
-    }
-
-    private async getRawGrantsByMethod(id: StructureIdentifiers, idType): Promise<RawGrant[]> {
-        const providers = this.getGrantProviders();
-        const methodName = GrantService.getRawMethodNameByIdType[idType];
-        return [
-            ...(
-                await Promise.all(providers.map(p => p[methodName](id).then(g => (g || []) as RawGrant[]) || []))
-            ).flat(),
-        ];
     }
 
     private getGrantProviders(): GrantProvider[] {
