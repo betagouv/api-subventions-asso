@@ -30,6 +30,28 @@ module.exports = {
             },
         });
 
+        // delete token in headers
+        bulkWriteOps.push({
+            updateMany: {
+                filter: { "meta.req.headers.cookie": { $exists: true } },
+                update: {
+                    $set: {
+                        "meta.req.headers.cookie": censoredField,
+                    },
+                },
+            },
+        });
+        bulkWriteOps.push({
+            updateMany: {
+                filter: { "meta.req.headers.x-access-token": { $exists: true } },
+                update: {
+                    $set: {
+                        "meta.req.headers.x-access-token": censoredField,
+                    },
+                },
+            },
+        });
+
         // delete data from all authenticated user
         bulkWriteOps.push({
             updateMany: {

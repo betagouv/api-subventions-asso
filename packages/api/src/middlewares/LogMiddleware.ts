@@ -7,9 +7,11 @@ const LOGGER_SECRET_FIELDS = ["password", "token", "email", "phoneNumber", "firs
 
 const LOGGER_IGNORED_ROUTES = [/^\/docs/, /^\/assets/];
 
+const CENSORED_VALUE = "**********";
+
 function recursiveFilter(obj: object) {
     Object.entries(obj).forEach(([key, value]) => {
-        if (LOGGER_SECRET_FIELDS.includes(key)) obj[key] = "**********";
+        if (LOGGER_SECRET_FIELDS.includes(key)) obj[key] = CENSORED_VALUE;
         else if (typeof value === "object" && value) recursiveFilter(obj[key]);
     });
 }
@@ -54,11 +56,19 @@ export const expressLogger = () =>
                 // @ts-expect-error strange express-winston types
                 return recursiveFilter({ ...req[propName], _id: req[propName]._id.toString() });
 
-            return LOGGER_SECRET_FIELDS.includes(propName) ? "**********" : req[propName];
+            if (propName === "headers" && req[propName]?.["x-access-token"])
+                req[propName]["x-access-token"] = CENSORED_VALUE;
+            if (propName === "headers" && req[propName]?.["cookie"])
+                req[propName]["cookie"] = (req[propName]["cookie"] as string).replaceAll(
+                    /token=([^;]*)(; )?/g,
+                    `token=${CENSORED_VALUE}$2`,
+                );
+
+            return LOGGER_SECRET_FIELDS.includes(propName) ? CENSORED_VALUE : req[propName];
         },
         responseFilter: (req, propName) => {
             if (propName === "body" && typeof req[propName] === "object" && req[propName])
                 recursiveFilter(req[propName]);
-            return LOGGER_SECRET_FIELDS.includes(propName) ? "**********" : req[propName];
+            return LOGGER_SECRET_FIELDS.includes(propName) ? CENSORED_VALUE : req[propName];
         },
     });
