@@ -1,20 +1,20 @@
-const { ObjectId } = require("mongodb");
-
 module.exports = {
     async up(db) {
         const censoredField = "**********";
 
-        const expandProps2Clean = rootPath =>
-            ["firstName", "lastName", "phoneNumber", "email"].map(path => rootPath + path);
+        const expandProps = fields => rootPath => fields.map(path => `${rootPath}.${path}`);
+
+        const expandProps2Clean = expandProps(["firstName", "lastName", "phoneNumber", "email"]);
+        const expandAuthProps2Clean = expandProps(["firstName", "lastName", "phoneNumber", "email", "jwt"]);
 
         const thingsToCleanByUrl = {
             "/auth/forget-password": ["meta.req.body.email"],
             "/auth/login": ["meta.req.body.email"],
-            "/auth/signup": ["meta.req.body.email", ...expandProps2Clean("meta.req.body")],
+            "/auth/signup": expandProps2Clean("meta.req.body"),
             "/auth/activate": ["meta.req.body.data.phoneNumber"],
             "/user/admin/roles": ["meta.req.body.email"],
             "/user/admin/create-user": ["meta.req.body.email", "meta.req.body.firstName", "meta.req.body.lastName"],
-            "/user": [...expandProps2Clean("meta.req.body")],
+            "/user": expandAuthProps2Clean("meta.req.body"),
         };
         const bulkWriteOps = [];
 
@@ -61,7 +61,7 @@ module.exports = {
                         "meta.req.user.phoneNumber": "",
                         "meta.req.user.firstName": "",
                         "meta.req.user.lastName": "",
-                        "meta.req.user.jwt.token": "",
+                        "meta.req.user.jwt": "",
                         "meta.req.user.hashPassword": "",
                     },
                 },
@@ -69,7 +69,7 @@ module.exports = {
         });
 
         // delete data in specific routes' req bodies
-        for (const [route, toClean] of thingsToCleanByUrl) {
+        for (const [route, toClean] of Object.entries(thingsToCleanByUrl)) {
             bulkWriteOps.push({
                 updateMany: {
                     filter: { "meta.req.url": { $regex: "^" + route } },
@@ -77,17 +77,16 @@ module.exports = {
                         $set: toClean.reduce((propsToSet, prop) => {
                             propsToSet[prop] = censoredField;
                             return propsToSet;
-                        }),
+                        }, {}),
                     },
                 },
             });
         }
-
-        const deletedUserIds = await db.collection("users").find({ disable: true }, { _id: 1, email: 1 });
-        deletedUserIds.forEach(({ _id: userId, email }) => {
+        const deletedUserIds = db.collection("users").find({ disable: true }, { _id: 1, email: 1 });
+        await deletedUserIds.forEach(({ _id: userId, email }) => {
             bulkWriteOps.push({
                 updateMany: {
-                    filter: { "meta.req.user._id": new ObjectId(userId) },
+                    filter: { "meta.req.user._id": userId.toString() },
                     update: {
                         $set: { "meta.req.user.email": email },
                     },
