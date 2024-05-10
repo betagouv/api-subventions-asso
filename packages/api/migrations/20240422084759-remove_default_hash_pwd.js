@@ -10,7 +10,7 @@ module.exports = {
                 agentConnectId: { $ne: undefined },
                 lastActivityDate: undefined,
             },
-            { $unset: "hashPassword" },
+            { $unset: { hashPassword: 1 } },
         );
     },
 
