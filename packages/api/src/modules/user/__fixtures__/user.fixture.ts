@@ -33,6 +33,7 @@ export const ANONYMIZED_USER = {
     firstName: "",
     lastName: "",
     disable: true,
+    phoneNumber: "",
 };
 
 export const USER_ACTIVATION_INFO = {

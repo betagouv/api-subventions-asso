@@ -41,11 +41,15 @@ import * as repositoryHelper from "../../../../shared/helpers/RepositoryHelper";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import userActivationService from "../activation/user.activation.service";
 import { STALL_RGPD_CRON_6_MONTHS_DELETION } from "../../../../configurations/mail.conf";
+import { UserDto } from "dto";
 
 jest.mock("../../../../shared/helpers/RepositoryHelper", () => ({
     removeSecrets: jest.fn(user => user),
     uniformizeId: jest.fn(token => token),
 }));
+
+import statsRepository from "../../../stats/repositories/stats.repository";
+jest.mock("../../../stats/repositories/stats.repository");
 
 describe("user rgpd service", () => {
     describe("getAllData", () => {
@@ -131,6 +135,10 @@ describe("user rgpd service", () => {
     describe("disable", () => {
         const USER = USER_WITHOUT_SECRET;
 
+        beforeEach(() => {
+            mockedUserRepository.update.mockResolvedValue({} as UserDto);
+        });
+
         afterEach(() => {
             mockedUserRepository.update.mockReset();
         });
@@ -148,6 +156,7 @@ describe("user rgpd service", () => {
 
         it("should return true if update succeed", async () => {
             mockedUserRepository.update.mockResolvedValueOnce(ANONYMIZED_USER);
+            jest.mocked(statsRepository.anonymizeLogsByUser).mockResolvedValue(true);
             const expected = true;
             const actual = await userRgpdService.disable(USER);
             expect(actual).toEqual(expected);
@@ -172,6 +181,11 @@ describe("user rgpd service", () => {
         it("does not notify USER_DELETED if whileBatch", async () => {
             await userRgpdService.disable(USER, false, true);
             expect(mockedNotifyService.notify).not.toHaveBeenCalled();
+        });
+
+        it("should anonymize logs too", async () => {
+            await userRgpdService.disable(USER);
+            expect(jest.mocked(statsRepository.anonymizeLogsByUser)).toHaveBeenCalledWith(USER, ANONYMIZED_USER);
         });
     });
 
