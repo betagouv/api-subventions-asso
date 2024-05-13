@@ -120,11 +120,23 @@ export class ChorusService extends ProviderCore implements PaymentProvider, Gran
 
     /**
      * |-------------------------|
-     * |   Raw Grant Part        |
+     * |   Grant Part            |
      * |-------------------------|
      */
 
     isGrantProvider = true;
+
+    async getGrantsByRna(rna: string): Promise<[] | null> {
+        return null;
+    }
+
+    async getGrantsBySiren(siren: string): Promise<[] | null> {
+        return null;
+    }
+
+    async getGrantsBySiret(siret: string): Promise<[] | null> {
+        return null;
+    }
 
     async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
         return (await chorusLineRepository.findBySiret(siret)).map(grant => ({

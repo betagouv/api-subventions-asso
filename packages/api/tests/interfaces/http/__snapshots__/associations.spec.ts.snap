@@ -2294,6 +2294,162 @@ Array [
 ]
 `;
 
+exports[`/association /{identifier}/raw-grants should return grants with siren 1`] = `
+Array [
+  Object {
+    "applications": Array [
+      Object {
+        "data": Object {
+          "_id": Any<String>,
+          "actions": Array [],
+          "data": Object {},
+          "legalInformations": Object {
+            "name": "OSIRIS_ENTITY_FIXTURE",
+            "rna": "W000000001",
+            "siret": "00000000000001",
+          },
+          "provider": "Osiris",
+          "providerInformations": Object {
+            "amountAwarded": 0,
+            "compteAssoId": "LE_COMPTE_ASSO_ID",
+            "dateCommission": "2022-01-01T00:00:00.000Z",
+            "ej": "EJ00001",
+            "extractYear": 2022,
+            "osirisId": "OSIRIS_ID",
+          },
+          "providerMatchingKeys": Array [
+            "osirisId",
+            "compteAssoId",
+            "ej",
+          ],
+        },
+        "joinKey": "EJ00001",
+        "provider": "osiris",
+        "type": "application",
+      },
+    ],
+    "fullGrants": Array [],
+    "payments": Array [],
+  },
+  Object {
+    "applications": Array [],
+    "fullGrants": Array [
+      Object {
+        "data": Object {
+          "_id": Any<String>,
+          "data": Object {},
+          "indexedInformations": Object {
+            "annee_demande": 2022,
+            "code_postal": "75000",
+            "code_poste": "D00000",
+            "contact": "contact@beta.gouv.fr",
+            "date_fin_triennale": "2022-01-03T00:00:00.000Z",
+            "dispositif": "Dispositif",
+            "montant_paye": 500,
+            "plein_temps": "Oui",
+            "raison": "Reconduction",
+            "service_instructeur": "XXX",
+            "status": "Attribué",
+            "type_post": "POSTE",
+            "unique_id": "unique_id",
+            "updated_at": "2022-01-02T00:00:00.000Z",
+            "ville": "Paris",
+          },
+          "legalInformations": Object {
+            "name": "FONJET_ENTITY_FIXTURE",
+            "siret": "00000000000002",
+          },
+          "payments": Array [],
+        },
+        "joinKey": "D00000 - 2022",
+        "provider": "fonjep",
+        "type": "fullGrant",
+      },
+    ],
+    "payments": Array [],
+  },
+]
+`;
+
+exports[`/association /{identifier}/raw-grants should return raw grants with rna 1`] = `Array []`;
+
+exports[`/association /{identifier}/raw-grants should return raw grants with siren 1`] = `
+Array [
+  Object {
+    "applications": Array [
+      Object {
+        "data": Object {
+          "_id": Any<String>,
+          "actions": Array [],
+          "data": Object {},
+          "legalInformations": Object {
+            "name": "OSIRIS_ENTITY_FIXTURE",
+            "rna": "W000000001",
+            "siret": "00000000000001",
+          },
+          "provider": "Osiris",
+          "providerInformations": Object {
+            "amountAwarded": 0,
+            "compteAssoId": "LE_COMPTE_ASSO_ID",
+            "dateCommission": "2022-01-01T00:00:00.000Z",
+            "ej": "EJ00001",
+            "extractYear": 2022,
+            "osirisId": "OSIRIS_ID",
+          },
+          "providerMatchingKeys": Array [
+            "osirisId",
+            "compteAssoId",
+            "ej",
+          ],
+        },
+        "joinKey": "EJ00001",
+        "provider": "osiris",
+        "type": "application",
+      },
+    ],
+    "fullGrants": Array [],
+    "payments": Array [],
+  },
+  Object {
+    "applications": Array [],
+    "fullGrants": Array [
+      Object {
+        "data": Object {
+          "_id": Any<String>,
+          "data": Object {},
+          "indexedInformations": Object {
+            "annee_demande": 2022,
+            "code_postal": "75000",
+            "code_poste": "D00000",
+            "contact": "contact@beta.gouv.fr",
+            "date_fin_triennale": "2022-01-03T00:00:00.000Z",
+            "dispositif": "Dispositif",
+            "montant_paye": 500,
+            "plein_temps": "Oui",
+            "raison": "Reconduction",
+            "service_instructeur": "XXX",
+            "status": "Attribué",
+            "type_post": "POSTE",
+            "unique_id": "unique_id",
+            "updated_at": "2022-01-02T00:00:00.000Z",
+            "ville": "Paris",
+          },
+          "legalInformations": Object {
+            "name": "FONJET_ENTITY_FIXTURE",
+            "siret": "00000000000002",
+          },
+          "payments": Array [],
+        },
+        "joinKey": "D00000 - 2022",
+        "provider": "fonjep",
+        "type": "fullGrant",
+      },
+    ],
+    "payments": Array [],
+  },
+]
+`;
+
 exports[`/association /{structure_identifier} should return an association 1`] = `
 Object {
   "association": Object {

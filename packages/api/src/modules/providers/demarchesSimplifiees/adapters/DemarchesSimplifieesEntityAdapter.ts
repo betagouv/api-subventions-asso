@@ -8,6 +8,7 @@ import DemarchesSimplifieesMapperEntity from "../entities/DemarchesSimplifieesMa
 import { isValidDate } from "../../../../shared/helpers/DateHelper";
 import { stringIsFloat } from "../../../../shared/helpers/StringHelper";
 import { DefaultObject } from "../../../../@types";
+import { RawGrant } from "../../../grant/@types/rawGrant";
 
 export class DemarchesSimplifieesEntityAdapter {
     private static mapSchema<T>(
@@ -54,6 +55,14 @@ export class DemarchesSimplifieesEntityAdapter {
         Object.keys(subvention).map(key => (subvention[key] = toPv(subvention[key])));
 
         return subvention as unknown as DemandeSubvention;
+    }
+
+    static toRawGrant(entity: DemarchesSimplifieesEntityAdapter, schema: DemarchesSimplifieesMapperEntity): RawGrant {
+        return {
+            provider: demarchesSimplifieesService.provider.id,
+            type: "application",
+            data: { entity, schema },
+        };
     }
 
     static toCommon(

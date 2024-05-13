@@ -38,21 +38,30 @@ export class DemarchesSimplifieesService extends ProviderCore implements Demande
         return schemas.reduce((acc, schema) => {
             acc[schema.demarcheId] = schema;
             return acc;
-        }, {});
+        }, {} as Record<string, DemarchesSimplifieesMapperEntity>);
+    }
+
+    private isDraft(entity: DemarchesSimplifieesDataEntity) {
+        return entity && entity?.demande?.state === "en_construction";
+    }
+
+    private async filterAndAdaptEntities(
+        entities: DemarchesSimplifieesDataEntity[],
+        adapter: (entity: DemarchesSimplifieesDataEntity, mapper: DemarchesSimplifieesMapperEntity) => unknown,
+    ) {
+        // TODO: I think we use schema and mapper to talk about the same thing here and we choose only one term
+        const schemasByIds = await this.getSchemasByIds();
+        const reduceToValidEntities = (acc, entity) => {
+            const schema = schemasByIds[entity.demarcheId];
+            if (!schema || this.isDraft(entity)) return acc;
+            acc.push(adapter(entity, schema));
+            return acc;
+        };
+        return entities.reduce(reduceToValidEntities, []);
     }
 
     private async entitiesToSubventions(entities: DemarchesSimplifieesDataEntity[]) {
-        const schemasByIds = await this.getSchemasByIds();
-
-        return entities
-            .map((demande: DemarchesSimplifieesDataEntity) => {
-                const schema = schemasByIds[demande.demarcheId];
-
-                if (!schema) return null;
-
-                return DemarchesSimplifieesEntityAdapter.toSubvention(demande, schema);
-            })
-            .filter(sub => sub && sub?.status?.value !== "en_construction") as DemandeSubvention[]; //remove drafts
+        return await this.filterAndAdaptEntities(entities, DemarchesSimplifieesEntityAdapter.toSubvention);
     }
 
     async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
@@ -60,9 +69,29 @@ export class DemarchesSimplifieesService extends ProviderCore implements Demande
         return this.entitiesToSubventions(demandes);
     }
 
+    async getGrantBySiren(siren: Siren) {
+        const grants = await this.getDemandeSubventionBySiren(siren);
+        return grants?.map(grant => ({
+            provider: this.provider.id,
+            type: "application",
+            // TODO?: add schema ? see toRawGrants
+            data: grant,
+        }));
+    }
+
     async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
         const demandes = await demarchesSimplifieesDataRepository.findBySiret(siret);
         return this.entitiesToSubventions(demandes);
+    }
+
+    async getGrantBySiret(siret: Siret) {
+        const grants = await this.getDemandeSubventionBySiret(siret);
+        return grants?.map(grant => ({
+            provider: this.provider.id,
+            type: "application",
+            // TODO?: add schema ? see toRawGrants
+            data: grant,
+        }));
     }
 
     /**
@@ -152,16 +181,7 @@ export class DemarchesSimplifieesService extends ProviderCore implements Demande
     isGrantProvider = true;
 
     private async toRawGrants(providerGrants: DemarchesSimplifieesDataEntity[]): Promise<RawGrant[]> {
-        const schemasById = await this.getSchemasByIds();
-        const rawGrants = providerGrants.map(grant => {
-            if (!schemasById?.[grant.demarcheId]) return null;
-            return {
-                provider: this.provider.id,
-                type: "application",
-                data: { grant, schema: schemasById[grant.demarcheId] },
-            };
-        });
-        return rawGrants.filter(g => !!g) as RawGrant[];
+        return await this.filterAndAdaptEntities(providerGrants, DemarchesSimplifieesEntityAdapter.toRawGrant);
     }
 
     async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
