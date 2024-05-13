@@ -153,14 +153,14 @@ describe("/association", () => {
         });
     });
 
-    describe("/{identifier}/grants", () => {
-        it("should return grants with siren", async () => {
+    describe("/{identifier}/raw-grants", () => {
+        it("should return raw grants with siren", async () => {
             // SIREN must be from an association
             const SIREN = siretToSiren(OsirisRequestEntityFixture.legalInformations.siret);
             await rnaSirenPort.insert({ siren: SIREN, rna: OsirisRequestEntityFixture.legalInformations.rna as Rna });
 
             const response = await request(g.app)
-                .get(`/association/${SIREN}/grants`)
+                .get(`/association/${SIREN}/raw-grants`)
                 .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
@@ -179,11 +179,11 @@ describe("/association", () => {
             expect(withoutIdGrants).toMatchSnapshot();
         });
 
-        it("should return grants with rna", async () => {
+        it("should return raw grants with rna", async () => {
             const RNA = OsirisRequestEntityFixture.legalInformations.rna as Rna;
 
             const response = await request(g.app)
-                .get(`/association/${RNA}/grants`)
+                .get(`/association/${RNA}/raw-grants`)
                 .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);

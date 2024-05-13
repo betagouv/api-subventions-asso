@@ -10,8 +10,8 @@ import DemarchesSimplifieesMapperEntity from "./entities/DemarchesSimplifieesMap
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import demarchesSimplifieesDataRepository from "./repositories/demarchesSimplifieesData.repository";
 import demarchesSimplifieesMapperRepository from "./repositories/demarchesSimplifieesMapper.repository";
-import providerRequestService from "../../provider-request/providerRequest.service";
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
+import { DATA_ENTITIES, SCHEMAS } from "./__fixtures__/DemarchesSimplifieesFixture";
 
 describe("DemarchesSimplifieesService", () => {
     describe("getSchemasByIds", () => {
@@ -47,105 +47,90 @@ describe("DemarchesSimplifieesService", () => {
         });
     });
 
-    describe("entitiesToSubventions", () => {
-        let getSchemasByIdsMock: jest.SpyInstance;
+    describe("isDraft", () => {
+        it("should return false", () => {
+            const entity = { ...DATA_ENTITIES[0] };
+            entity.demande.state = "accepte";
+            const expected = false;
+            // @ts-expect-error: test private method
+            const actual = demarchesSimplifieesService.isDraft(DATA_ENTITIES[0]);
+            expect(actual).toEqual(expected);
+        });
 
+        it("should return true", () => {
+            const entity = { ...DATA_ENTITIES[0] };
+            entity.demande.state = "en_construction";
+            const expected = true;
+            // @ts-expect-error: test private method
+            const actual = demarchesSimplifieesService.isDraft(DATA_ENTITIES[0]);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("filterAndAdaptEntities", () => {
+        let mockGetSchemasByIds: jest.SpyInstance;
+        let mockIsDraft: jest.SpyInstance;
         beforeAll(() => {
-            // @ts-ignore getSchemasByIds is private method
-            getSchemasByIdsMock = jest.spyOn(demarchesSimplifieesService, "getSchemasByIds").mockResolvedValue({});
-            // @ts-expect-error mock
-            DemarchesSimplifieesEntityAdapter.toSubvention.mockImplementation(
-                data => data as unknown as DemandeSubvention,
-            );
+            // @ts-expect-error: mock private method
+            mockGetSchemasByIds = jest.spyOn(demarchesSimplifieesService, "getSchemasByIds");
+            mockGetSchemasByIds.mockResolvedValue(SCHEMAS);
+            // @ts-expect-error: mock private method
+            mockIsDraft = jest.spyOn(demarchesSimplifieesService, "isDraft");
+            mockIsDraft.mockReturnValue(false);
         });
 
         afterAll(() => {
-            getSchemasByIdsMock.mockRestore();
-            // @ts-expect-error mock
-            demarchesSimplifieesMapperRepository.upsert.mockRestore();
+            mockGetSchemasByIds.mockRestore();
+            mockIsDraft.mockRestore();
         });
 
-        it("should call getSchemasByIds", async () => {
-            // @ts-expect-error entitiesToSubventions is private method
+        it("should get schemaByIds", async () => {
+            // @ts-expect-error: test private method
+            await demarchesSimplifieesService.filterAndAdaptEntities([], jest.fn());
+            expect(mockGetSchemasByIds).toHaveBeenCalledTimes(1);
+        });
+
+        it("should call isDraft()", async () => {
+            // @ts-expect-error: test private method
+            await demarchesSimplifieesService.filterAndAdaptEntities(DATA_ENTITIES, jest.fn());
+            expect(mockIsDraft).toHaveBeenCalledTimes(2);
+        });
+
+        it("should exclude drafts", async () => {
+            mockIsDraft.mockReturnValueOnce(true);
+            const expected = [DATA_ENTITIES[1]];
+            // @ts-expect-error: test private method
+            const actual = await demarchesSimplifieesService.filterAndAdaptEntities(
+                DATA_ENTITIES,
+                jest.fn(entity => entity),
+            );
+            expect(actual).toEqual(expected);
+        });
+
+        it("should call adapter", async () => {
+            const spyAdapter = jest.fn(entity => entity);
+            // @ts-expect-error: test private method
+            await demarchesSimplifieesService.filterAndAdaptEntities(DATA_ENTITIES, spyAdapter);
+            expect(spyAdapter).toHaveBeenCalledTimes(DATA_ENTITIES.length);
+        });
+    });
+
+    describe("entitiesToSubventions", () => {
+        let mockFilterAndAdaptEntities: jest.SpyInstance;
+        beforeAll(() => {
+            // @ts-expect-error: mock private method
+            mockFilterAndAdaptEntities = jest.spyOn(demarchesSimplifieesService, "filterAndAdaptEntities");
+            mockFilterAndAdaptEntities.mockImplementation(jest.fn());
+        });
+
+        afterAll(() => {
+            mockFilterAndAdaptEntities.mockRestore();
+        });
+
+        it("should call filterAndAdaptEntities()", async () => {
+            // @ts-expect-error: test private method
             await demarchesSimplifieesService.entitiesToSubventions([]);
-
-            expect(getSchemasByIdsMock).toBeCalledTimes(1);
-        });
-
-        it("should call toSubvention with good schema", async () => {
-            const DEMARCHE_ID = 12345;
-            const expected = [
-                {
-                    demarcheId: DEMARCHE_ID,
-                },
-                {
-                    id: DEMARCHE_ID,
-                },
-            ];
-
-            getSchemasByIdsMock.mockResolvedValue({
-                [DEMARCHE_ID]: expected[1],
-            });
-
-            // @ts-expect-error entitiesToSubventions is private method
-            await demarchesSimplifieesService.entitiesToSubventions([expected[0]]);
-
-            expect(DemarchesSimplifieesEntityAdapter.toSubvention).toBeCalledWith(...expected);
-        });
-
-        it("should return one sub", async () => {
-            const DEMARCHE_ID = 12345;
-            const expected = {
-                demarcheId: DEMARCHE_ID,
-            };
-
-            getSchemasByIdsMock.mockResolvedValue({
-                [DEMARCHE_ID]: {
-                    id: DEMARCHE_ID,
-                },
-            });
-
-            // @ts-expect-error entitiesToSubventions is private method
-            const actual = await demarchesSimplifieesService.entitiesToSubventions([expected]);
-
-            expect(actual).toEqual([expected]);
-        });
-
-        it("should not return sub because no schema match", async () => {
-            const DEMARCHE_ID = 12345;
-            const expected = {
-                demarcheId: 12346,
-            };
-
-            getSchemasByIdsMock.mockResolvedValue({
-                [DEMARCHE_ID]: {
-                    id: DEMARCHE_ID,
-                },
-            });
-
-            // @ts-expect-error entitiesToSubventions is private method
-            const actual = await demarchesSimplifieesService.entitiesToSubventions([expected]);
-
-            expect(actual).toHaveLength(0);
-        });
-
-        it("should not return drafts", async () => {
-            const DEMARCHE_ID = 12345;
-            const expected = { demarcheId: DEMARCHE_ID };
-
-            getSchemasByIdsMock.mockResolvedValue({
-                [DEMARCHE_ID]: { id: DEMARCHE_ID },
-            });
-
-            jest.mocked(DemarchesSimplifieesEntityAdapter.toSubvention).mockReturnValueOnce({
-                // @ts-expect-error -- mock
-                status: { value: "en_construction" },
-            });
-
-            // @ts-expect-error entitiesToSubventions is private method
-            const actual = await demarchesSimplifieesService.entitiesToSubventions([expected]);
-
-            expect(actual).toHaveLength(0);
+            expect(mockFilterAndAdaptEntities).toHaveBeenCalledWith([], DemarchesSimplifieesEntityAdapter.toSubvention);
         });
     });
 
@@ -408,45 +393,20 @@ describe("DemarchesSimplifieesService", () => {
     });
 
     describe("toRawGrants", () => {
-        const GRANTS = [
-            { demarcheId: 1, value: "a" },
-            { demarcheId: 2, value: "b" },
-        ];
-        let getSchemasMock;
-        beforeAll(
-            () =>
-                (getSchemasMock = jest
-                    // @ts-expect-error mock private
-                    .spyOn(demarchesSimplifieesService, "getSchemasByIds")
-                    // @ts-expect-error mock
-                    .mockResolvedValue({ 1: "s1" })),
-        );
-        afterAll(() => getSchemasMock.mockRestore());
+        let mockFilterAndAdaptEntities: jest.SpyInstance;
 
-        it("gets schemas", async () => {
-            // @ts-expect-error mock
-            await demarchesSimplifieesService.toRawGrants(GRANTS);
-            expect(getSchemasMock).toHaveBeenCalled();
+        beforeAll(() => {
+            // @ts-expect-error: mock private method
+            mockFilterAndAdaptEntities = jest.spyOn(demarchesSimplifieesService, "filterAndAdaptEntities");
+            mockFilterAndAdaptEntities.mockResolvedValue(DATA_ENTITIES);
         });
-
-        it("filter out grants if no schema to adapt it and add metadata", async () => {
-            // @ts-expect-error mock
-            const actual = await demarchesSimplifieesService.toRawGrants(GRANTS);
-            expect(actual).toMatchInlineSnapshot(`
-                Array [
-                  Object {
-                    "data": Object {
-                      "grant": Object {
-                        "demarcheId": 1,
-                        "value": "a",
-                      },
-                      "schema": "s1",
-                    },
-                    "provider": "demarchesSimplifiees",
-                    "type": "application",
-                  },
-                ]
-            `);
+        it("call filterAndAdaptEntities()", async () => {
+            // @ts-expect-error: test private method
+            await demarchesSimplifieesService.toRawGrants(DATA_ENTITIES);
+            expect(mockFilterAndAdaptEntities).toHaveBeenCalledWith(
+                DATA_ENTITIES,
+                DemarchesSimplifieesEntityAdapter.toRawGrant,
+            );
         });
     });
 

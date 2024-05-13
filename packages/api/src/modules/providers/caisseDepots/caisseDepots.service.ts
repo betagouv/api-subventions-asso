@@ -63,7 +63,23 @@ export class CaisseDepotsService extends ProviderCore implements DemandesSubvent
         return this.getCaisseDepotsSubventions(siret);
     }
 
-    // raw grant service
+    /**
+     * |-------------------------|
+     * |   Grant Part            |
+     * |-------------------------|
+     */
+
+    async getGrantsByRna(rna: string): Promise<[] | null> {
+        return null;
+    }
+
+    async getGrantsBySiren(siren: string): Promise<[] | null> {
+        return null;
+    }
+
+    async getGrantsBySiret(siret: string): Promise<[] | null> {
+        return null;
+    }
 
     async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
         return (await this.getRawCaisseDepotsSubventions(siret)).map(grant => ({

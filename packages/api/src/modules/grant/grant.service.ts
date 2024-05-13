@@ -1,4 +1,4 @@
-import { CommonGrantDto, Siret } from "dto";
+import { CommonGrantDto, Rna, Siret } from "dto";
 import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import providers from "../providers";
@@ -21,35 +21,67 @@ export class GrantService {
         [StructureIdentifiersEnum.rna]: "getRawGrantsByRna",
     };
 
-    async getGrants(id: StructureIdentifiers) {
-        console.log("Not implemented");
-    }
+    static getDefaultMethodNameByIdType = {
+        [StructureIdentifiersEnum.siret]: "getGrantsBySiret",
+        [StructureIdentifiersEnum.siren]: "getGrantsBySiren",
+        [StructureIdentifiersEnum.rna]: "getGrantsByRna",
+    };
 
-    async getRawGrants(id: StructureIdentifiers): Promise<JoinedRawGrant[]> {
-        let idType = getIdentifierType(id);
+    private validateAndGetStructureType(id: StructureIdentifiers) {
+        const idType = getIdentifierType(id);
         if (!idType) throw new StructureIdentifiersError();
 
-        let isReallyAsso;
-        if (idType === StructureIdentifiersEnum.rna) {
-            isReallyAsso = true;
-            const rnaSirenEntities = await rnaSirenService.find(id);
-            if (rnaSirenEntities && rnaSirenEntities.length) {
-                id = rnaSirenEntities[0].siren;
-                idType = StructureIdentifiersEnum.siren;
-            }
-        }
-        if (!isReallyAsso) isReallyAsso = await associationsService.isSirenFromAsso(siretToSiren(id));
-        if (!isReallyAsso) throw new BadRequestError("identifier does not represent an association");
+        return idType;
+    }
 
+    private async validateIsAssociation(id: StructureIdentifiers) {
+        const siren = await associationsService.isSirenFromAsso(siretToSiren(id));
+        if (!siren) throw new BadRequestError("identifier does not represent an association");
+    }
+
+    private async getSirenValues(rna: Rna) {
+        const rnaSirenEntities = await rnaSirenService.find(rna);
+        if (rnaSirenEntities && rnaSirenEntities.length) {
+            return { identifier: rnaSirenEntities[0].siren, type: StructureIdentifiersEnum.siren };
+        }
+        return null;
+    }
+
+    buildGrantFetcher = method => async identifier => {
         const providers = this.getGrantProviders();
-        const methodName = GrantService.getRawMethodNameByIdType[idType];
-        const rawGrants = [
+        return [
             ...(
-                await Promise.all(providers.map(p => p[methodName](id).then(g => (g || []) as RawGrant[]) || []))
+                await Promise.all(providers.map(p => p[method](identifier).then(g => (g || []) as RawGrant[]) || []))
             ).flat(),
         ];
+    };
 
-        return this.joinGrants(rawGrants);
+    async getGrants(identifier: StructureIdentifiers) {
+        const type = this.validateAndGetStructureType(identifier);
+        // TODO: if RNA take SIREN is found ?
+        const method = GrantService.getDefaultMethodNameByIdType[type];
+        const grantFetcher = this.buildGrantFetcher(method);
+        return this.joinGrants(await grantFetcher(identifier));
+    }
+
+    async getRawGrants(identifier: StructureIdentifiers): Promise<JoinedRawGrant[]> {
+        let type = this.validateAndGetStructureType(identifier);
+
+        if (type === StructureIdentifiersEnum.rna) {
+            const sirenValues = await this.getSirenValues(identifier);
+            // Why do we want siren over rna in this case ?
+            if (sirenValues) {
+                type = sirenValues.type;
+                identifier = sirenValues.identifier;
+            }
+        } else {
+            await this.validateIsAssociation(identifier);
+        }
+
+        const method = GrantService.getRawMethodNameByIdType[type];
+        const rawGrantFetcher = this.buildGrantFetcher(method);
+
+        return this.joinGrants(await rawGrantFetcher(identifier));
     }
 
     async getRawGrantsByAssociation(id: AssociationIdentifiers): Promise<JoinedRawGrant[]> {

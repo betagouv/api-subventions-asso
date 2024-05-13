@@ -60,9 +60,21 @@ export class DauphinService
         return Promise.resolve(null);
     }
 
+    async getGrantsByRna(rna: string): Promise<[] | null> {
+        return null;
+    }
+
+    async getGrantsBySiren(siren: string): Promise<[] | null> {
+        return null;
+    }
+
+    async getGrantsBySiret(siret: string): Promise<[] | null> {
+        return null;
+    }
+
     /**
      * |-------------------------|
-     * |   Raw Grant Part        |
+     * |   Grant Part            |
      * |-------------------------|
      */
 

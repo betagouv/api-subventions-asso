@@ -55,6 +55,18 @@ export class ScdlGrantService implements GrantProvider, DemandesSubventionsProvi
         );
     }
 
+    async getGrantsByRna(rna: string): Promise<[] | null> {
+        return null;
+    }
+
+    async getGrantsBySiren(siren: string): Promise<[] | null> {
+        return null;
+    }
+
+    async getGrantsBySiret(siret: string): Promise<[] | null> {
+        return null;
+    }
+
     getRawGrantsByRna(rna: Rna): Promise<RawGrant[] | null> {
         return this.getRawGrantSubventionByPromise(miscScdlJoiner.findByRna(rna));
     }

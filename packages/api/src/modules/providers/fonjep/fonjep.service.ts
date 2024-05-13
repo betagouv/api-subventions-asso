@@ -226,11 +226,23 @@ export class FonjepService
 
     /**
      * |----------------------------|
-     * |  Grant Part                |
+     * |    Grant Part              |
      * |----------------------------|
      */
 
     isGrantProvider = true;
+
+    async getGrantsByRna(rna: string): Promise<[] | null> {
+        return null;
+    }
+
+    async getGrantsBySiren(siren: string): Promise<[] | null> {
+        return null;
+    }
+
+    async getGrantsBySiret(siret: string): Promise<[] | null> {
+        return null;
+    }
 
     getRawGrantsByRna(_rna: Rna): Promise<RawGrant[] | null> {
         return Promise.resolve(null);
