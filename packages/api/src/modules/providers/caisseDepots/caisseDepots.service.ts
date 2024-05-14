@@ -35,6 +35,8 @@ export class CaisseDepotsService extends ProviderCore implements DemandesSubvent
                 `${this.apiUrl}catalog/datasets/subventions-attribuees-par-la-caisse-des-depots-depuis-01012018/records?where=search(idbeneficiaire, "${identifier}")`,
             );
 
+            if (!result?.data?.records) return [];
+
             return result.data.records.map(({ record }) => record);
         } catch (e) {
             Sentry.captureException(e);

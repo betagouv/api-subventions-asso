@@ -10,6 +10,9 @@ import statsService from "../../../src/modules/stats/stats.service";
 import { siretToSiren } from "../../../src/shared/helpers/SirenHelper";
 import { BadRequestError } from "../../../src/shared/errors/httpErrors";
 import associationsService from "../../../src/modules/associations/associations.service";
+import rnaSirenPort from "../../../src/dataProviders/db/rnaSiren/rnaSiren.port";
+import { Rna } from "dto";
+import { JoinedRawGrant, RawGrant } from "../../../src/modules/grant/@types/rawGrant";
 
 const g = global as unknown as { app: unknown };
 
@@ -104,6 +107,44 @@ describe("/association", () => {
             const response = await request(g.app)
                 .get(`/association/${siretToSiren(OsirisRequestEntityFixture.legalInformations.siret)}/etablissements`)
                 .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "application/json");
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toMatchSnapshot();
+        });
+    });
+
+    describe("/{identifier}/grants", () => {
+        it("should return grants with siren", async () => {
+            // SIREN must be from an association
+            const SIREN = siretToSiren(OsirisRequestEntityFixture.legalInformations.siret);
+            await rnaSirenPort.insert({ siren: SIREN, rna: "W0000000" });
+
+            const response = await request(g.app)
+                .get(`/association/${SIREN}/grants`)
+                .set("x-access-token", await createAndGetAdminToken())
+                .set("Accept", "application/json");
+            expect(response.statusCode).toBe(200);
+
+            const expectAnyRawGrantId = (rawGrant: RawGrant) => ({
+                ...rawGrant,
+                data: { ...rawGrant.data, _id: expect.any(String) },
+            });
+
+            const withoutIdGrants = (response.body as JoinedRawGrant[]).map(joinedRawGrant => ({
+                fullGrants: joinedRawGrant.fullGrants?.map(expectAnyRawGrantId),
+                applications: joinedRawGrant.applications?.map(expectAnyRawGrantId),
+                payments: joinedRawGrant.payments?.map(expectAnyRawGrantId),
+            }));
+
+            expect(withoutIdGrants).toMatchSnapshot();
+        });
+
+        it("should return grants with rna", async () => {
+            const RNA = OsirisRequestEntityFixture.legalInformations.rna as Rna;
+
+            const response = await request(g.app)
+                .get(`/association/${RNA}/grants`)
+                .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchSnapshot();

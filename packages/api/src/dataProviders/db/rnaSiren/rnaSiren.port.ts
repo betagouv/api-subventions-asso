@@ -1,5 +1,5 @@
 import { Rna, Siren } from "dto";
-import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../shared/helpers/MongoHelper";
+import { isMongoDuplicateError } from "../../../shared/helpers/MongoHelper";
 import RnaSirenEntity from "../../../entities/RnaSirenEntity";
 import MongoRepository from "../../../shared/MongoRepository";
 import { isRna } from "../../../shared/Validators";
