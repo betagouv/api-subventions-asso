@@ -1,15 +1,15 @@
 import request from "supertest";
-import { createAndGetAdminToken, createAndGetUserToken } from "../__helpers__/tokenHelper";
-import osirisRequestRepository from "../../src/modules/providers/osiris/repositories/osiris.request.repository";
-import fonjepSubventionRepository from "../../src/modules/providers/fonjep/repositories/fonjep.subvention.repository";
-import { SubventionEntity as FonjepEntityFixture } from "./providers/fonjep/__fixtures__/entity";
-import OsirisRequestEntityFixture from "./providers/osiris/__fixtures__/entity";
-import dauphinService from "../../src/modules/providers/dauphin/dauphin.service";
-import { compareByValueBuilder } from "../../src/shared/helpers/ArrayHelper";
-import statsService from "../../src/modules/stats/stats.service";
-import { siretToSiren } from "../../src/shared/helpers/SirenHelper";
-import { BadRequestError } from "../../src/shared/errors/httpErrors";
-import associationsService from "../../src/modules/associations/associations.service";
+import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
+import osirisRequestRepository from "../../../src/modules/providers/osiris/repositories/osiris.request.repository";
+import fonjepSubventionRepository from "../../../src/modules/providers/fonjep/repositories/fonjep.subvention.repository";
+import { SubventionEntity as FonjepEntityFixture } from "../../modules/providers/fonjep/__fixtures__/entity";
+import OsirisRequestEntityFixture from "../../modules/providers/osiris/__fixtures__/entity";
+import dauphinService from "../../../src/modules/providers/dauphin/dauphin.service";
+import { compareByValueBuilder } from "../../../src/shared/helpers/ArrayHelper";
+import statsService from "../../../src/modules/stats/stats.service";
+import { siretToSiren } from "../../../src/shared/helpers/SirenHelper";
+import { BadRequestError } from "../../../src/shared/errors/httpErrors";
+import associationsService from "../../../src/modules/associations/associations.service";
 
 const g = global as unknown as { app: unknown };
 
