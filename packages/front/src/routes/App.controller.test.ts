@@ -2,6 +2,8 @@ import { setContext } from "svelte";
 vi.mock("svelte");
 import type { SpyInstance } from "vitest";
 import { AppController } from "./App.controller";
+import AppContext from "./AppContext";
+vi.mock("./AppContext");
 import * as Store from "$lib/core/Store";
 vi.mock("$lib/core/Store");
 import trackerService from "$lib/services/tracker.service";
@@ -91,6 +93,17 @@ describe("AppController", () => {
             vi.mocked(localStorageService).getItem.mockReturnValueOnce({ value: "true" });
             controller.handleBannerDisplay("/", USER);
             expect(mockSetter).toHaveBeenCalledWith(false);
+        });
+    });
+
+    describe("initContext", () => {
+        beforeEach(() => {
+            controller = new AppController();
+        });
+
+        it("should call svelte setContext", () => {
+            controller.initContext();
+            expect(vi.mocked(setContext)).toHaveBeenCalledWith("app", vi.mocked(AppContext));
         });
     });
 });

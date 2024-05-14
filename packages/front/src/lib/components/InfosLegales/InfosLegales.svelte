@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import InfosLegalesController from "./InfosLegales.controller";
     import Button from "$lib/dsfr/Button.svelte";
     import Badge from "$lib/dsfr/Badge.svelte";
@@ -51,6 +51,7 @@
                 iconPosition="left"
                 outline={false}
                 ariaControls="fr-modal"
+                trackerName="association-etablissement.more-legal-info-modal"
                 on:click={() => controller.displayModal()}>
                 Voir les informations du RNA / Siren
             </Button>

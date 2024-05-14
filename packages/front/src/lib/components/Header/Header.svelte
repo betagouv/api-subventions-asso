@@ -1,12 +1,13 @@
-<script>
+<script lang="ts">
     import { getContext } from "svelte";
+    import type AppContext from "../../../routes/AppContext";
     import HeaderController from "./Header.controller";
     import authService from "$lib/resources/auth/auth.service";
     import Button from "$lib/dsfr/Button.svelte";
     import { version } from "$app/environment";
 
     const user = authService.getCurrentUser();
-    const { getName, getDescription, getEnv } = getContext("app");
+    const { getName, getDescription, getEnv } = getContext<typeof AppContext>("app");
     const name = getName();
     const description = getDescription();
     const env = getEnv();

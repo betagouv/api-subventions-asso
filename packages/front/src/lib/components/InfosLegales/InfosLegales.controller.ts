@@ -1,3 +1,4 @@
+import type { Siret } from "dto";
 import MoreInfosLegalesModal from "./MoreInfosLegalesModal.svelte";
 import {
     getAddress,
@@ -6,16 +7,22 @@ import {
     getModification,
     getSiegeSiret,
 } from "$lib/resources/associations/association.helper";
+import type { BadgeOption } from "$lib/dsfr/Badge.types";
 import { getStatusBadgeOptions } from "$lib/resources/establishments/establishment.helper";
 import { modal, data } from "$lib/store/modal.store";
 import { valueOrHyphen } from "$lib/helpers/dataHelper";
 import { dateToDDMMYYYY } from "$lib/helpers/dateHelper";
 
 export default class InfosLegalesController {
-    constructor(association, establishment = undefined) {
+    public estabStatusBadgeOptions: Partial<BadgeOption> | null = null;
+    private _immatriculation: string;
+    private _modification: string;
+    private _modalData = {};
+
+    // TODO: create EstablishmentEntity / FlatenProviderValueEstablishment
+    constructor(public association, public establishment: { siret: Siret; adresse: unknown } | undefined = undefined) {
         this.association = { ...association };
         this.establishment = establishment ? { ...establishment } : undefined;
-        this.estabStatusBadgeOptions = [];
         this._immatriculation = getImmatriculation(this.association);
         this._modification = getModification(this.association);
         this._modalData = this._buildModalData();
@@ -41,8 +48,10 @@ export default class InfosLegalesController {
     }
 
     get nic() {
-        const siret = this.establishment.siret;
-        return siret.substring(9);
+        if (this.establishment) {
+            const siret = this.establishment.siret;
+            return siret.substring(9);
+        } else return null;
     }
 
     get address() {
