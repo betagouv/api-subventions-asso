@@ -30,7 +30,7 @@ export default interface DemarchesSimplifieesDataEntity {
             filename: string;
             contentType: string;
         };
-        champs: DefaultObject<string>;
+        champs: Record<string, Record<string, DemarchesSimplifieesField>>;
         annotations: DefaultObject<string>;
     };
     service: {
@@ -38,3 +38,5 @@ export default interface DemarchesSimplifieesDataEntity {
         organisme: string;
     };
 }
+
+export type DemarchesSimplifieesField = { value: string; label: string };

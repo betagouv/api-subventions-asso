@@ -13,15 +13,25 @@ import associationsService from "../../../src/modules/associations/associations.
 import rnaSirenPort from "../../../src/dataProviders/db/rnaSiren/rnaSiren.port";
 import { Rna } from "dto";
 import { JoinedRawGrant, RawGrant } from "../../../src/modules/grant/@types/rawGrant";
+import demarchesSimplifieesDataRepository from "../../../src/modules/providers/demarchesSimplifiees/repositories/demarchesSimplifieesData.repository";
+import {
+    DATA_ENTITIES as DS_DATA_ENTITIES,
+    SCHEMAS as DS_SCHEMAS,
+} from "../../dataProviders/db/__fixtures__/demarchesSimplifiees.fixtures";
+import demarchesSimplifieesMapperRepository from "../../../src/modules/providers/demarchesSimplifiees/repositories/demarchesSimplifieesMapper.repository";
 
 const g = global as unknown as { app: unknown };
+
+const insertData = async () => {
+    await osirisRequestRepository.add(OsirisRequestEntityFixture);
+    await fonjepSubventionRepository.create(FonjepEntityFixture);
+    await demarchesSimplifieesMapperRepository.upsert(DS_SCHEMAS[0]);
+    await demarchesSimplifieesDataRepository.upsert(DS_DATA_ENTITIES[0]);
+};
 
 describe("/association", () => {
     beforeEach(async () => {
         jest.spyOn(dauphinService, "getDemandeSubventionBySiren").mockImplementationOnce(async () => []);
-        await osirisRequestRepository.add(OsirisRequestEntityFixture);
-
-        await fonjepSubventionRepository.create(FonjepEntityFixture);
     });
 
     describe("/{structure_identifier}/subventions", () => {
