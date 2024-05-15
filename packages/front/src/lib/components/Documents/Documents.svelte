@@ -54,7 +54,7 @@
 
             <!-- Asso documents -->
             {#if documents.assoDocs.length}
-                <h3 class="fr-h2 fr-mt-3w fr-mb-6w">Pièces provenant de l’INSEE et du RNA</h3>
+                <h3 class="fr-h2 fr-mb-4w">Pièces provenant de l’INSEE et du RNA</h3>
                 <!-- change top margin when we have download all button -->
                 <div class="fr-grid-row">
                     {#each documents.assoDocs as document}
@@ -65,7 +65,7 @@
 
             {#if documents.estabDocs.length}
                 <!-- Etab documents -->
-                <h3 class="fr-h2 fr-mt-3w fr-mb-6w">
+                <h3 class="fr-h2 fr-mt-6w fr-mb-4w">
                     {controller.estabDocsTitle}
                 </h3>
                 <div class="fr-grid-row">
