@@ -56,7 +56,7 @@
             {#if documents.assoDocs.length}
                 <h3 class="fr-h2 fr-mt-3w fr-mb-6w">Pièces provenant de l’INSEE et du RNA</h3>
                 <!-- change top margin when we have download all button -->
-                <div class="fr-grid-row fr-grid-row--gutters">
+                <div class="fr-grid-row">
                     {#each documents.assoDocs as document}
                         <DocumentCard {document} />
                     {/each}
@@ -68,7 +68,7 @@
                 <h3 class="fr-h2 fr-mt-3w fr-mb-6w">
                     {controller.estabDocsTitle}
                 </h3>
-                <div class="fr-grid-row fr-grid-row--gutters">
+                <div class="fr-grid-row">
                     {#each documents.estabDocs as document}
                         <DocumentCard {document} />
                     {/each}
