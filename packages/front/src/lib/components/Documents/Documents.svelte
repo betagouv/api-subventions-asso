@@ -30,8 +30,17 @@
         <Spinner description="Chargement des pièces administratives en cours ..." />
     {:then documents}
         {#if documents?.some}
-            <div class="fr-grid-row">
-                <div class="fr-ml-auto fr-mb-3w">
+            <Alert type="info" title="État des fichiers">
+                Certains fichiers peuvent être erronés selon la manière dont ils ont été renseignés auprès de nos
+                fournisseurs de données.
+            </Alert>
+
+            {#await $zipPromise}
+                <Alert type="info" title="Le téléchargement des fichiers va démarrer d’ici à 8 secondes." />
+            {/await}
+
+            <div class="fr-grid-row fr-mb-4w fr-mt-6w">
+                <div class="fr-ml-auto">
                     <Button
                         iconPosition="right"
                         icon="download-line"
@@ -42,15 +51,6 @@
                     </Button>
                 </div>
             </div>
-
-            <Alert type="info" title="État des fichiers">
-                Certains fichiers peuvent être erronés selon la manière dont ils ont été renseignés auprès de nos
-                fournisseurs de données.
-            </Alert>
-
-            {#await $zipPromise}
-                <Alert type="info" title="Le téléchargement des fichiers va démarrer d’ici à 8 secondes." />
-            {/await}
 
             <!-- Asso documents -->
             {#if documents.assoDocs.length}
