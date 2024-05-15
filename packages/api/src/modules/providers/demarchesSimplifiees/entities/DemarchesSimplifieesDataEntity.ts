@@ -1,5 +1,4 @@
 import { Rna, Siret } from "dto";
-import { DefaultObject } from "../../../../@types";
 
 export default interface DemarchesSimplifieesDataEntity {
     siret: Siret;
@@ -30,8 +29,8 @@ export default interface DemarchesSimplifieesDataEntity {
             filename: string;
             contentType: string;
         };
-        champs: Record<string, Record<string, DemarchesSimplifieesField>>;
-        annotations: DefaultObject<string>;
+        champs: Record<string, DemarchesSimplifieesField>;
+        annotations: Record<string, DemarchesSimplifieesField>;
     };
     service: {
         nom: string;

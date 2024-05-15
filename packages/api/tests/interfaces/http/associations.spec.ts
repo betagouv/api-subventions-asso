@@ -32,6 +32,7 @@ const insertData = async () => {
 describe("/association", () => {
     beforeEach(async () => {
         jest.spyOn(dauphinService, "getDemandeSubventionBySiren").mockImplementationOnce(async () => []);
+        await insertData();
     });
 
     describe("/{structure_identifier}/subventions", () => {
@@ -127,7 +128,7 @@ describe("/association", () => {
         it("should return grants with siren", async () => {
             // SIREN must be from an association
             const SIREN = siretToSiren(OsirisRequestEntityFixture.legalInformations.siret);
-            await rnaSirenPort.insert({ siren: SIREN, rna: "W0000000" });
+            await rnaSirenPort.insert({ siren: SIREN, rna: OsirisRequestEntityFixture.legalInformations.rna as Rna });
 
             const response = await request(g.app)
                 .get(`/association/${SIREN}/grants`)

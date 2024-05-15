@@ -1,15 +1,13 @@
 import DemarchesSimplifieesDataEntity from "../../../../src/modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesDataEntity";
+import DemarchesSimplifieesMapperEntity from "../../../../src/modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesMapperEntity";
 
 export const DATA_ENTITIES: DemarchesSimplifieesDataEntity[] = [
     {
-        _id: {
-            $oid: "641ac78b9f35c7990e00a641",
-        },
         demande: {
             id: "RG9zc2llci0xMDE0ODcxNw==",
             demandeur: {
-                siret: "11111111100012",
-                association: { rna: "W00000001", titre: "DEMARCHE_1" },
+                siret: "00000000000001",
+                association: { rna: "W000000001", titre: "DEMARCHE_1" },
             },
             demarche: {
                 title: "Aide au projet ou au fonctionnement - Transmission culturelle (2023)",
@@ -323,7 +321,7 @@ export const DATA_ENTITIES: DemarchesSimplifieesDataEntity[] = [
             },
         },
         demarcheId: 62746,
-        siret: "21380169900017",
+        siret: "00000000000001",
         service: {
             nom: "--",
             organisme: "Ministère de la Culture",
@@ -331,11 +329,8 @@ export const DATA_ENTITIES: DemarchesSimplifieesDataEntity[] = [
     },
 ];
 
-export const SCHEMAS = [
+export const SCHEMAS: DemarchesSimplifieesMapperEntity[] = [
     {
-        _id: {
-            $oid: "641ac7719f35c7990e00a4e8",
-        },
         demarcheId: 62746,
         schema: [
             {
