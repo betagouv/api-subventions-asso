@@ -67,8 +67,6 @@ export const expressLogger = () =>
             return LOGGER_SECRET_FIELDS.includes(propName) ? CENSORED_VALUE : req[propName];
         },
         responseFilter: (req, propName) => {
-            if (propName === "body" && typeof req[propName] === "object" && req[propName])
-                recursiveFilter(req[propName]);
             return LOGGER_SECRET_FIELDS.includes(propName) ? CENSORED_VALUE : req[propName];
         },
     });
