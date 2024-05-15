@@ -69,7 +69,7 @@ html {
 }
 
 .overflow-ellipsis-3 {
-    display: -webkit-box;
+    display: -webkit-inline-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
     overflow: hidden;
