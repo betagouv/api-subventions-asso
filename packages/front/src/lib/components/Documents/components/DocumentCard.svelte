@@ -4,7 +4,6 @@
     export let document;
     export let isSelected = false;
     const controller = new DocumentCardController();
-    // TODO download button
 </script>
 
 <div class="fr-col-12">
@@ -21,7 +20,9 @@
                     </p>
                 </div>
                 <div class="fr-ml-auto fr-my-auto">
-                    <a class="fr-link fr-link--lg" href={document.url}><span class=" fr-icon-download-line" /></a>
+                    <a class="button-link" href={document.url}>
+                        <button class="fr-button fr-btn--tertiary fr-p-1w fr-icon-file-download-line" />
+                    </a>
                 </div>
             </div>
         </div>
@@ -48,5 +49,9 @@
 
     .fr-card.--active {
         background-color: var(--background-contrast-blue-france);
+    }
+
+    .button-link {
+        --underline-img: none !important;
     }
 </style>
