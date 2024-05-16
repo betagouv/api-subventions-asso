@@ -20,7 +20,7 @@
                     </p>
                 </div>
                 <div class="fr-ml-auto fr-my-auto">
-                    <a class="button-link" href={document.url}>
+                    <a class="button-link" href={document.url} title="Télécharger">
                         <button class="fr-button fr-btn--tertiary fr-p-1w fr-icon-file-download-line" />
                     </a>
                 </div>
