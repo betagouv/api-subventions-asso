@@ -33,6 +33,35 @@ Ensuite, il vous faudra créer un fichier .env à la racine du projet, avec au m
 -   MAIL_USER
 -   MAIL_PASSWORD
 
+Les autres variables utilisées sont :
+
+-   API_ASSO_URL
+-   API_ASSO_TOKEN
+
+Pour se connecter à l'API Association
+
+-   MONGO_DBNAME=datasubvention
+
+Pour spécifier le nom de la base de donnée
+
+-   API_ENTREPRISE_TOKEN
+
+Pour se connecter à l'API Entreprise
+
+-   API_SENDINBLUE_TOKEN
+-   API_SENDINBLUE_CONTACT_LIST
+
+Pour utiliser les services Brevo (envoi de mail)
+
+-   DAUPHIN_USERNAME
+-   DAUPHIN_PASSWORD
+
+Pour se connecter à DAUPHIN
+
+-   SENTRY_AUTH_TOKEN
+
+Pour utiliser le reporting de bug Sentry
+
 Pour fonctionner l'api doit pouvoir se connecter à une base de données mongoDB v4.0 .  
 Par défaut, elle se connecte à l'url `mongodb://localhost:27017/api-subventions-asso`.  
 Il est possible de paramétrer ces informations dans le fichier .env. Le nom des variables se trouve dans `configurations/mongo.conf.ts`.
@@ -42,17 +71,19 @@ Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les c
 `sudo docker run -d -p 27017:27017 mongo`
 
 ### Pour AgentConnect
+
 AgentConnect ne fonctionne pas avec l'url `localhost`. Pour qu'AgentConnect fonctionne, il faut
-1. définir les variables d'environnements 
-   - AGENT_CONNECT_ENABLED -> `true`
-   - AGENT_CONNECT_CLIENT_ID
-   - AGENT_CONNECT_CLIENT_SECRET
-   - AGENT_CONNECT_URL : https://fca.integ01.dev-agentconnect.fr/api/v2 en local et préprod
-2. mettre en place un alias qui redirige `dev.local` vers `localhost`. Pour cela, ajouter au fichier `/etc/hosts` la ligne 
-   ``` 
-   127.0.0.1 dev.local
-   ```
-Dans l'absolu il faut que l'alias corresponde à ce qui a été renseigné lors de la demande des client_id et client_secret utilisés.
+
+1. définir les variables d'environnements
+    - AGENT_CONNECT_ENABLED -> `true`
+    - AGENT_CONNECT_CLIENT_ID
+    - AGENT_CONNECT_CLIENT_SECRET
+    - AGENT_CONNECT_URL : https://fca.integ01.dev-agentconnect.fr/api/v2 en local et préprod
+2. mettre en place un alias qui redirige `dev.local` vers `localhost`. Pour cela, ajouter au fichier `/etc/hosts` la ligne
+    ```
+    127.0.0.1 dev.local
+    ```
+    Dans l'absolu il faut que l'alias corresponde à ce qui a été renseigné lors de la demande des client_id et client_secret utilisés.
 
 ## Démarrer l'api en local
 
@@ -73,28 +104,31 @@ Dans l'absolu il faut que l'alias corresponde à ce qui a été renseigné lors 
 
 ## Mettre en place une tâche récurrente
 
-Les tâches récurrentes se basent sur le module [toad-scheduler](https://github.com/kibertoad/toad-scheduler). Il existe deux types de façon de programmer les tâches : 
-- par un intervalle (*ex* : `{ minutes: 3 }`"toutes le 3 minutes")
-- par une expression cron (*ex* : `"0 0 1 * *"` tous les premiers du mois) 
+Les tâches récurrentes se basent sur le module [toad-scheduler](https://github.com/kibertoad/toad-scheduler). Il existe deux types de façon de programmer les tâches :
+
+-   par un intervalle (_ex_ : `{ minutes: 3 }`"toutes le 3 minutes")
+-   par une expression cron (_ex_ : `"0 0 1 * *"` tous les premiers du mois)
 
 Pour ajouter une tâche récurrente, il faut :
 
 1. Créer un contrôleur `src/modules/[nom-module]/interfaces/cron/[controller-namer].cron.controller.ts` sur le modèle du fichier `example.cron.controller.ts`. Le contrôleur doit exporter une classe avec
     - un attribut `name` qui l'identifie
-    - autant de méthodes que de tâches. Ces méthodes devront être munies d'un décorateur parmi 
-      - `Cron`
-      - `AsyncCron` 
-      - `Cron`
-      - `AsyncIntervalCron`
-      en fonction de si la tâche est asynchrone ou non et du type de programmation donnée. Le décorateur prend deux attributs : 
-      - la programmation de la tâche (intervalle ou expression cron)
-      - dans le cas `Interval` : un booléen indiquant si cet intervalle est "long" ou non, c'est-à-dire s'il fait + de 24,85 jours. Ce critère qui semble arbitraire permet d'arbitrer entre deux objets techniques différents pour éviter un problème potentiel d'overflow d'entier.
+    - autant de méthodes que de tâches. Ces méthodes devront être munies d'un décorateur parmi
+        - `Cron`
+        - `AsyncCron`
+        - `Cron`
+        - `AsyncIntervalCron`
+          en fonction de si la tâche est asynchrone ou non et du type de programmation donnée. Le décorateur prend deux attributs :
+        - la programmation de la tâche (intervalle ou expression cron)
+        - dans le cas `Interval` : un booléen indiquant si cet intervalle est "long" ou non, c'est-à-dire s'il fait + de 24,85 jours. Ce critère qui semble arbitraire permet d'arbitrer entre deux objets techniques différents pour éviter un problème potentiel d'overflow d'entier.
 2. Enregistrer le contrôleur dans `src/cron.ts`
 
 ### En cas d'erreur
-Un message mattermost est envoyé automatiquement, avec la stacktrace en détail (cliquer sur le `i` à droite du nom d'utilisateur) 
+
+Un message mattermost est envoyé automatiquement, avec la stacktrace en détail (cliquer sur le `i` à droite du nom d'utilisateur)
 
 ### Option `runImmediately` de l'intervalle
+
 Le paramètre `schedule` des contrôleurs supporte un attribut qui précise si la tâche doit se lancer une première fois au lancement de l'application ou non. Contrairement au comportement par défaut du module, ce paramètre est activé par défaut.
 Attention, s'il est désactivé, l'intervalle sera réinitialisé à chaque redémarrage de l'application (donc au moins à chaque mise en prod et crash de l'api)
 
@@ -121,7 +155,7 @@ Exemple : `const establishment = association.etablissement // retour API en fran
 ### MERGE vs REBASE
 
 `rebase` uniquement dans des branches qui n'ont pas encore été mergées dans aucune des trois branches `develop`, `main` ni `PROD`
-`merge` pour fusionner `develop` dans `main` et `main` dans `PROD` mais aussi pour les `hotfix`.  Dans le cas de branches filles vers branche mère, penser à utiliser l'option git `--ff-only` pour mettre en lumière des potentielles incohérences d'historique.
+`merge` pour fusionner `develop` dans `main` et `main` dans `PROD` mais aussi pour les `hotfix`. Dans le cas de branches filles vers branche mère, penser à utiliser l'option git `--ff-only` pour mettre en lumière des potentielles incohérences d'historique.
 Les `hotfix` sont à merger sur la branche mère `PROD` ou `main`. Il faut esnuite merge successivement des branches mères vers les branches filles (`PROD` vers `main` puis `main` vers `dev`)
 
 ### Hooks
@@ -186,8 +220,7 @@ Les tests d'intégration sont présents dans le dosser `test` à la racine du pr
 
 Pour ce faire, nous avons décidé d'utiliser le snapshot de Jest pour garder ces tests simples et concis. Dans l'exemple type d'un test d'intégration présent dans `/tests/example.spec.ts` on y voit l'utilisation de `.toMatchSnapshot()` qui crée un snapshot à la première exécution et qui valide le test. Il faut dans un premier temps s'assurer via un test manuel que la fonctionnalité fonctionne bien correctement. Les autres exécutions de `.toMatchSnapshot()` vont ensuite comparer le snapshot présent (et versionné sur Github) à celui re-généré. Si le nouveau snapshot ne "match" pas le premier, et que c'est lié à une modification de la fonctionnalité, il est nécessaire de mettre à jour le snapshot. Pour ce faire, il faut utiliser l'option `--updateSnapshot` (ou `-u`) de Jest. La commande pour mettre à jour tout un fichier de test est la suivante : `npm run test:integ -- -u nom-du-fichier.spec`. Mais il est également possible de mettre à jour tous les fichiers tests en même temps (`npm run test:integ -- -u`) ou de mettre à jour le snapshot d'un seul test (a.k.a `describe`) au sein d'un fichier (`npm run test:integ -- nom-du-fichier.spec -u -t test-name`).
 
-
 ### Package UNIX nécessaire
 
-- zip 
-- tar 
+-   zip
+-   tar
