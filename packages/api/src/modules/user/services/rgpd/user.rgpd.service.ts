@@ -15,6 +15,7 @@ import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import configurationsRepository from "../../../configurations/repositories/configurations.repository";
 import configurationsService, { CONFIGURATION_NAMES } from "../../../configurations/configurations.service";
 import { STALL_RGPD_CRON_6_MONTHS_DELETION } from "../../../../configurations/mail.conf";
+import statsRepository from "../../../stats/repositories/stats.repository";
 
 export class UserRgpdService {
     public async getAllData(userId: string): Promise<UserDataDto> {
@@ -62,11 +63,16 @@ export class UserRgpdService {
             disable: true,
             firstName: "",
             lastName: "",
+            phoneNumber: "",
         };
+        const promises = Promise.all([
+            statsRepository.anonymizeLogsByUser(user, disabledUser),
+            userRepository.update(disabledUser).then(r => !!r),
+        ]);
 
         if (!whileBatch) notifyService.notify(NotificationType.USER_DELETED, { email: user.email, selfDeleted: self });
 
-        return !!(await userRepository.update(disabledUser));
+        return (await promises).every(r => r);
     }
 
     /*
