@@ -13,9 +13,7 @@ export default class LoginController {
         this.successMessage = this._getSuccessMessage();
         this.pageTitle = `Se connecter à Data.Subvention`;
         this.forgetPasswordUrl = "/auth/forget-password";
-        this.agentConnectPromise = query.code
-            ? this._proceedWithAgentConnect(window.location.search)
-            : Promise.resolve();
+        if (query.code) this._proceedWithAgentConnect(window.location.search);
     }
 
     signup() {
