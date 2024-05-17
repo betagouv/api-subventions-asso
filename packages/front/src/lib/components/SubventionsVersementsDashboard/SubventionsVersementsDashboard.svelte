@@ -35,7 +35,7 @@
                     icon="download-line"
                     trackingDisable={true}
                     iconPosition="right">
-                    Télécharger les données - (BÊTA)
+                    Télécharger les données
                 </Button>
             {/if}
         </div>
