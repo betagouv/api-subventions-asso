@@ -30,8 +30,17 @@
         <Spinner description="Chargement des pièces administratives en cours ..." />
     {:then documents}
         {#if documents?.some}
-            <div class="fr-grid-row">
-                <div class="fr-ml-auto fr-mb-3w">
+            <Alert type="info" title="État des fichiers">
+                Certains fichiers peuvent être erronés selon la manière dont ils ont été renseignés auprès de nos
+                fournisseurs de données.
+            </Alert>
+
+            {#await $zipPromise}
+                <Alert type="info" title="Le téléchargement des fichiers va démarrer d’ici à 8 secondes." />
+            {/await}
+
+            <div class="fr-grid-row fr-mb-4w fr-mt-6w">
+                <div class="fr-ml-auto">
                     <Button
                         iconPosition="right"
                         icon="download-line"
@@ -43,20 +52,11 @@
                 </div>
             </div>
 
-            <Alert type="info" title="État des fichiers">
-                Certains fichiers peuvent être erronés selon la manière dont ils ont été renseignés auprès de nos
-                fournisseurs de données.
-            </Alert>
-
-            {#await $zipPromise}
-                <Alert type="info" title="Le téléchargement des fichiers va démarrer d’ici à 8 secondes." />
-            {/await}
-
             <!-- Asso documents -->
             {#if documents.assoDocs.length}
-                <h3 class="fr-h2 fr-mt-3w fr-mb-6w">Pièces provenant de l’INSEE et du RNA</h3>
+                <h3 class="fr-h2 fr-mb-4w">Pièces provenant de l’INSEE et du RNA</h3>
                 <!-- change top margin when we have download all button -->
-                <div class="fr-grid-row fr-grid-row--gutters">
+                <div class="fr-grid-row">
                     {#each documents.assoDocs as document}
                         <DocumentCard {document} />
                     {/each}
@@ -65,10 +65,10 @@
 
             {#if documents.estabDocs.length}
                 <!-- Etab documents -->
-                <h3 class="fr-h2 fr-mt-3w fr-mb-6w">
+                <h3 class="fr-h2 fr-mt-6w fr-mb-4w">
                     {controller.estabDocsTitle}
                 </h3>
-                <div class="fr-grid-row fr-grid-row--gutters">
+                <div class="fr-grid-row">
                     {#each documents.estabDocs as document}
                         <DocumentCard {document} />
                     {/each}
