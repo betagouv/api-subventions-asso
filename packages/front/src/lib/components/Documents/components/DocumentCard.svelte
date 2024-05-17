@@ -20,8 +20,8 @@
                     </p>
                 </div>
                 <div class="fr-ml-auto fr-my-auto">
-                    <a class="button-link" href={document.url} title="Télécharger">
-                        <button class="fr-button fr-btn--tertiary fr-p-1w fr-icon-file-download-line" />
+                    <a class="fr-link fr-links-group__title" href={document.url} title="Télécharger">
+                        <span class="fr-icon-file-download-line" />
                     </a>
                 </div>
             </div>
@@ -51,7 +51,7 @@
         background-color: var(--background-contrast-blue-france);
     }
 
-    .button-link {
-        --underline-img: none !important;
+    .fr-card__desc {
+        min-height: unset;
     }
 </style>
