@@ -1,6 +1,6 @@
 import { SignupErrorCodes } from "dto";
 import { getContext } from "svelte";
-import { PRIVACY_POLICY_URL } from "$env/static/public";
+import { PRIVACY_POLICY_URL, CGU_URL } from "$env/static/public";
 import Store from "$lib/core/Store";
 import authService from "$lib/resources/auth/auth.service";
 import { goToUrl } from "$lib/services/router.service";
@@ -30,7 +30,7 @@ export default class SignupController {
     }
 
     get cguUrl() {
-        return "/cgu";
+        return CGU_URL;
     }
 
     signup() {

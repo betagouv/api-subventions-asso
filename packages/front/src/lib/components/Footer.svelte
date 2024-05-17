@@ -1,6 +1,6 @@
 <script>
     import { getContext } from "svelte";
-    import { STATS_URL, PRIVACY_POLICY_URL } from "$env/static/public";
+    import { STATS_URL, PRIVACY_POLICY_URL, CGU_URL } from "$env/static/public";
 
     const { getDescription, getRepo } = getContext("app");
 </script>
@@ -103,7 +103,7 @@
                     <a class="fr-footer__bottom-link" href="/mentions-legales">Mentions légales</a>
                 </li>
                 <li class="fr-footer__bottom-item">
-                    <a class="fr-footer__bottom-link" href="/cgu">Conditions générales d’utilisation</a>
+                    <a class="fr-footer__bottom-link" href={CGU_URL}>Conditions générales d’utilisation</a>
                 </li>
                 <li class="fr-footer__bottom-item">
                     <a class="fr-footer__bottom-link" href="/contact">Contactez-nous</a>
