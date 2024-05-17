@@ -98,9 +98,21 @@ export class AuthService {
     }
 
     redirectToLogin() {
-        // TODO save url in localStorage
-        const queryUrl = encodeURIComponent(location.pathname);
-        return goToUrl(`/auth/login?url=${queryUrl}`);
+        localStorageService.setItem("redirectUrl", JSON.stringify({ url: location.pathname, setDate: new Date() }));
+        return goToUrl("/auth/login");
+    }
+
+    redirectAfterLogin() {
+        const redirection = JSON.parse(localStorageService.getItem("redirectUrl").value);
+        localStorageService.removeItem("redirectUrl");
+
+        if (!redirection) return goToUrl("/", true, true);
+        const { url, setDate } = redirection;
+        const soonBefore = new Date();
+        soonBefore.setHours(soonBefore.getHours() - 1);
+
+        if (new Date(setDate) < soonBefore) return goToUrl("/", true, true);
+        return goToUrl(url, true, true);
     }
 
     validateToken(token) {
