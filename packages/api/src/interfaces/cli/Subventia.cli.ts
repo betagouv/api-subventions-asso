@@ -3,33 +3,43 @@ import fs from "fs";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../@types";
 
+//import SubventiaParser from "../../modules/providers/subventia/subventia.parser";
+
 import * as CliHelper from "../../shared/helpers/CliHelper";
 
 import CliController from "../../shared/CliController";
+import subventiaService from "../../modules/providers/subventia/subventia.service";
 import SubventiaParser from "../../modules/providers/subventia/subventia.parser";
-import subventiaService, {
+/*import subventiaService, {
     AcceptedRequest,
     RejectedRequest,
 } from "../../modules/providers/subventia/subventia.service";
 import { SubventiaRequestEntity } from "../../modules/providers/subventia/entities/SubventiaRequestEntity";
-
+*/
 @StaticImplements<CliStaticInterface>()
 export default class SubventiaCli extends CliController {
     static cmdName = "subventia";
 
     protected logFileParsePath = "./logs/subventia.parse.log.txt";
 
-    protected async _parse(file: string) {
-        this.logger.log(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
-        this.logger.logIC("\nStart parse file: ", file);
+    protected async _parse(file: string, logs, exportDate) {
+        if (typeof file !== "string") {
+            throw new Error("Parse command need file args");
+        }
+
+        if (!fs.existsSync(file)) {
+            throw new Error(`File not found ${file}`);
+        }
+
+        console.info("\nStart parse file: ", file);
 
         const fileContent = fs.readFileSync(file);
+        console.log(SubventiaParser.parse(fileContent));
 
-        const entities = SubventiaParser.parse(fileContent);
+        //     const entities = SubventiaParser.parse(fileContent);
+        //   const totalEntities = entities.length;
 
-        this.logger.logIC("Start register in database ...");
-
-        const saveEntities = async (
+        /*       const saveEntities = async (
             acc: Promise<(RejectedRequest | AcceptedRequest)[]>,
             entity: SubventiaRequestEntity,
             index: number,
@@ -57,5 +67,6 @@ export default class SubventiaCli extends CliController {
                 JSON.stringify(result.data, null, "\t"),
             );
         });
+        */
     }
 }
