@@ -27,8 +27,8 @@ export class DataBretagnePort {
         }
     }
 
-    async getProgramme(bop) {
-        return (await this.http.get<DataBretagneDto>(`${this.basepath}/programme/${bop}`)).data;
+    async getProgramme(code) {
+        return (await this.http.get<DataBretagneDto>(`${this.basepath}/programme/${code}`)).data;
     }
 
     async getProgrammes() {

@@ -1,7 +1,6 @@
-import { AxiosError } from "axios";
 import dataBretagnePort from "../../../dataProviders/api/dataBretagne/dataBretagne.port";
-import BopAdapter from "../../../dataProviders/db/bop/bop.adapter";
-import bopPort from "../../../dataProviders/db/bop/bop.port";
+import ProgrammeAdapter from "../../../dataProviders/db/programme/programme.adapter";
+import programmePort from "../../../dataProviders/db/programme/programme.port";
 
 class DataBretagneService {
     async login() {
@@ -13,7 +12,7 @@ class DataBretagneService {
         const programmes = await dataBretagnePort.getProgrammes();
         // do not replace programmes if empty
         if (!programmes || !programmes.length) throw new Error("Unhandled error from API Data Bretagne");
-        return bopPort.replace(programmes.map(programme => BopAdapter.toDbo(programme)));
+        return programmePort.replace(programmes.map(programme => ProgrammeAdapter.toDbo(programme)));
     }
 }
 

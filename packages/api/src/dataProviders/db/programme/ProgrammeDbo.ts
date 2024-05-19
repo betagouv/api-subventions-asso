@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 
-export default interface BopDbo {
+export default interface ProgrammeDbo {
     _id: ObjectId;
     label: string;
     code: string;

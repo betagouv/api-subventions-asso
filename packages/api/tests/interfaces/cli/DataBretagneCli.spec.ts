@@ -1,7 +1,7 @@
 import axios from "axios";
 import DataBretagneCli from "../../../src/interfaces/cli/DataBretagne.cli";
 import DataBretagneFixture from "../../__fixtures__/data-bretagne.fixture.json";
-import bopPort from "../../../src/dataProviders/db/bop/bop.port";
+import bopPort from "../../../src/dataProviders/db/programme/programme.port";
 import { ObjectId } from "mongodb";
 
 describe("DataBretagneCli", () => {

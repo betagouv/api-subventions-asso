@@ -1,11 +1,11 @@
 import dataBretagneService from "./dataBretagne.service";
 import dataBretagnePort from "../../../dataProviders/api/dataBretagne/dataBretagne.port";
 jest.mock("../../../dataProviders/api/dataBretagne/dataBretagne.port");
-import bopPort from "../../../dataProviders/db/bop/bop.port";
-jest.mock("../../../dataProviders/db/bop/bop.port");
+import programmePort from "../../../dataProviders/db/programme/programme.port";
+jest.mock("../../../dataProviders/db/programme/programme.port");
 import { PROGRAMMES } from "../../../dataProviders/api/dataBretagne/__fixtures__/DataBretagneProgrammes";
-import BopAdapter from "../../../dataProviders/db/bop/bop.adapter";
-jest.mock("../../../dataProviders/db/bop/bop.adapter");
+import ProgrammeAdapter from "../../../dataProviders/db/programme/programme.adapter";
+jest.mock("../../../dataProviders/db/programme/programme.adapter");
 
 describe("Data Bretagne Service", () => {
     beforeAll(() => {
@@ -18,14 +18,14 @@ describe("Data Bretagne Service", () => {
             expect(jest.mocked(dataBretagnePort.getProgrammes)).toHaveBeenCalledTimes(1);
         });
 
-        it("should call bopPort.replace", async () => {
+        it("should call programmePort.replace", async () => {
             await dataBretagneService.update();
-            expect(jest.mocked(bopPort).replace).toHaveBeenCalledTimes(1);
+            expect(jest.mocked(programmePort).replace).toHaveBeenCalledTimes(1);
         });
 
-        it("should call BopAdapter.toDbo", async () => {
+        it("should call ProgrammerAdapter.toDbo", async () => {
             await dataBretagneService.update();
-            expect(jest.mocked(BopAdapter).toDbo).toHaveBeenCalledTimes(PROGRAMMES.length);
+            expect(jest.mocked(ProgrammeAdapter).toDbo).toHaveBeenCalledTimes(PROGRAMMES.length);
         });
 
         it("should throw error if no programmes", async () => {

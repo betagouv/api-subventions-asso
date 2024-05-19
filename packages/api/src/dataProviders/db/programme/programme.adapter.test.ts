@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
-import BopAdapter from "./bop.adapter";
+import ProgrammeAdapter from "./programme.adapter";
 
-describe("Bop Adapter", () => {
+describe("Programme Adapter", () => {
     const PROGRAMME = {
         label_theme: "Justice",
         label: "Accès au droit et à la justice",
@@ -11,9 +11,9 @@ describe("Bop Adapter", () => {
     };
 
     describe("toDbo()", () => {
-        it("should return BopDbo", () => {
-            const expected = { _id: expect.any(ObjectId), label: PROGRAMME.label, code: PROGRAMME.code };
-            const actual = BopAdapter.toDbo(PROGRAMME);
+        it("should return ProgrammeDbo", () => {
+            const expected = { _id: expect.any(ObjectId), ...PROGRAMME };
+            const actual = ProgrammeAdapter.toDbo(PROGRAMME);
             expect(actual).toEqual(expected);
         });
     });
