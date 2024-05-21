@@ -1,4 +1,4 @@
-export const PROGRAMMES = [
+export const PROGRAMS = [
     {
         label_theme: "",
         label: "",

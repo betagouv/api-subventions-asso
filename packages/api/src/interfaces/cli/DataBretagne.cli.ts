@@ -6,7 +6,7 @@ import dataBretagneService from "../../modules/providers/dataBretagne/dataBretag
 export default class DataBretagneCli {
     static cmdName = "data-bretagne";
 
-    async update() {
-        await dataBretagneService.update();
+    async resync() {
+        await dataBretagneService.resyncPrograms();
     }
 }

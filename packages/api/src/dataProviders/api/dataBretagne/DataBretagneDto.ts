@@ -1,4 +1,4 @@
-export interface DataBretagneDto {
+export interface DataBretagneProgrammeDto {
     label_theme: string;
     label: string;
     code_ministere: string;

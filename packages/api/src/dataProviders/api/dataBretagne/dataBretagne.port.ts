@@ -3,7 +3,7 @@ import { DATA_BRETAGNE_PASSWORD, DATA_BRETAGNE_USERNAME } from "../../../configu
 import ProviderRequestFactory, {
     ProviderRequestService,
 } from "../../../modules/provider-request/providerRequest.service";
-import { DataBretagneDto } from "./DataBretagneDto";
+import { DataBretagneProgrammeDto } from "./DataBretagneDto";
 
 export class DataBretagnePort {
     private basepath = "https://api.databretagne.fr/budget/api/v1";
@@ -27,13 +27,9 @@ export class DataBretagnePort {
         }
     }
 
-    async getProgramme(code) {
-        return (await this.http.get<DataBretagneDto>(`${this.basepath}/programme/${code}`)).data;
-    }
-
-    async getProgrammes() {
+    async getStateBudgetPrograms() {
         return (
-            await this.http.get<{ items: DataBretagneDto[] }>(`${this.basepath}/programme?limit=400`, {
+            await this.http.get<{ items: DataBretagneProgrammeDto[] }>(`${this.basepath}/programme?limit=400`, {
                 headers: {
                     Authorization: this.token,
                 },

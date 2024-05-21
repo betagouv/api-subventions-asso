@@ -19,7 +19,7 @@ export class DemarchesSimplifieesMapperRepository extends MongoRepository<Demarc
     }
 
     findAll() {
-        return this.collection.find({}).toArray();
+        return this.collection.find({}, { projection: { _id: 0 } }).toArray();
     }
 
     getAcceptedDemarcheIds(): Promise<number[]> {

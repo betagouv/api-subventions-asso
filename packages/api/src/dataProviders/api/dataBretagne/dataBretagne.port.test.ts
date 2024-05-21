@@ -37,10 +37,10 @@ describe("Data Bretagne Port", () => {
         });
     });
 
-    describe("getProgrammes", () => {
+    describe("getStateBudgetPrograms", () => {
         it("should make a GET request ", async () => {
             port.token = "TOKEN";
-            await port.getProgrammes();
+            await port.getStateBudgetPrograms();
             expect(port.http.get).toHaveBeenCalledWith(
                 "https://api.databretagne.fr/budget/api/v1/programme?limit=400",
                 { headers: { Authorization: "TOKEN" } },

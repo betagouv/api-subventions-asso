@@ -40,6 +40,14 @@ describe("CaisseDepotsService", () => {
             const actual = await caisseDepotsService.getRawCaisseDepotsSubventions(IDENTIFIER);
             expect(actual).toEqual(expected);
         });
+
+        it("return empty array if no records", async () => {
+            httpGetSpy.mockResolvedValueOnce({ data: null });
+            const expected = [];
+            // @ts-expect-error: mock
+            const actual = await caisseDepotsService.getRawCaisseDepotsSubventions(IDENTIFIER);
+            expect(actual).toEqual(expected);
+        });
     });
 
     describe("getCaisseDepotsSubventions", () => {

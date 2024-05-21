@@ -1,5 +1,5 @@
-import { PROGRAMME_DBOS } from "./__fixtures__/ProgrammeDbo.fixture";
-import programmePort from "./programme.port";
+import { STATE_BUDGET_PROGRAM_DBOS } from "./__fixtures__/StateBudgetProgramDbo.fixture";
+import stateBudgetProgramPort from "./stateBudgetProgram.port";
 
 const mockDeleteMany = jest.fn();
 
@@ -12,18 +12,16 @@ jest.mock("../../../shared/MongoConnection", () => ({
     }),
 }));
 
-describe("Programme Port", () => {
+describe("StateBudgetProgram Port", () => {
     describe("replace()", () => {
         it("should call deleteMany", async () => {
-            // @ts-expect-error: fixtures
-            await programmePort.replace(PROGRAMME_DBOS);
+            await stateBudgetProgramPort.replace(STATE_BUDGET_PROGRAM_DBOS);
             expect(mockDeleteMany).toHaveBeenCalledWith({});
         });
 
         it("should call replace", async () => {
-            // @ts-expect-error: fixtures
-            await programmePort.replace(PROGRAMME_DBOS);
-            expect(mockInsertMany).toHaveBeenCalledWith(PROGRAMME_DBOS);
+            await stateBudgetProgramPort.replace(STATE_BUDGET_PROGRAM_DBOS);
+            expect(mockInsertMany).toHaveBeenCalledWith(STATE_BUDGET_PROGRAM_DBOS);
         });
     });
 });
