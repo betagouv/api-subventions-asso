@@ -55,14 +55,14 @@ describe("DocumentController", () => {
         });
 
         it("should set headers", async () => {
-            await documentController.downloadDocuments("test");
+            await documentController.downloadDocumentsByIdentifier("test");
             expect(setHeaderMock).toHaveBeenCalledWith("Content-Type", "application/zip");
             expect(setHeaderMock).toHaveBeenCalledWith("Content-Disposition", "inline");
         });
 
         it("should return stream", async () => {
             const expected = stream;
-            const actual = await documentController.downloadDocuments("test");
+            const actual = await documentController.downloadDocumentsByIdentifier("test");
             expect(actual).toEqual(expected);
         });
     });

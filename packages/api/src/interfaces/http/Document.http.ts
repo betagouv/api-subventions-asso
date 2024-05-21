@@ -8,7 +8,7 @@ import { StructureIdentifiers } from "../../@types";
 @Tags("Document Controller")
 export class DocumentHttp extends Controller {
     @Get("/downloads/{identifier}")
-    public async downloadDocuments(@Path() identifier: StructureIdentifiers) {
+    public async downloadDocumentsByIdentifier(@Path() identifier: StructureIdentifiers) {
         const stream = await documentService.getDocumentsFilesByIdentifier(identifier);
         this.setHeader("Content-Type", "application/zip");
         this.setHeader("Content-Disposition", "inline");
