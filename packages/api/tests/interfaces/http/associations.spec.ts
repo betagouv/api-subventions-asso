@@ -49,6 +49,7 @@ describe("/association", () => {
             subventions.sort(compareByValueBuilder("siret.provider"));
 
             // replace date in Démarches Simplifiees
+            // avoid timezone date test failure
             // use siret.provider to check on provider name by default
             subventions.forEach(subvention => {
                 if (subvention.siret.provider === demarchesSimplifieesService.provider.name) {
