@@ -1,7 +1,8 @@
-import { Route, Get, Controller, Tags, Security, Response, Query, Path } from "tsoa";
+import { Route, Get, Controller, Tags, Security, Response, Query, Path, Post, Body, Request } from "tsoa";
+import { Document } from "dto";
 import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
 import documentService from "../../modules/documents/documents.service";
-import { StructureIdentifiers } from "../../@types";
+import { IdentifiedRequest, StructureIdentifiers } from "../../@types";
 
 @Route("document")
 @Security("jwt")
@@ -10,6 +11,14 @@ export class DocumentHttp extends Controller {
     @Get("/downloads/{identifier}")
     public async downloadDocumentsByIdentifier(@Path() identifier: StructureIdentifiers) {
         const stream = await documentService.getDocumentsFilesByIdentifier(identifier);
+        this.setHeader("Content-Type", "application/zip");
+        this.setHeader("Content-Disposition", "inline");
+        return stream;
+    }
+
+    @Post("/downloads")
+    public async downloadRequiredDocuments(@Body() requiredDocs: Document[], @Request() req: IdentifiedRequest) {
+        const stream = await documentService.getRequestedDocumentsFiles(requiredDocs, req.user._id.toString());
         this.setHeader("Content-Type", "application/zip");
         this.setHeader("Content-Disposition", "inline");
         return stream;
