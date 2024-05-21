@@ -274,6 +274,14 @@ describe("userAgentConnectService", () => {
             expect(actual).toEqual(expected);
         });
 
+        it("notifies USER_CREATED", async () => {
+            await userAgentConnectService.createUserFromAgentConnect(AC_USER);
+            expect(notifyService.notify).toHaveBeenCalledWith(
+                NotificationType.USER_CREATED,
+                expect.objectContaining({ email: FUTURE_AC_USER.email, isAgentConnect: true }),
+            );
+        });
+
         it("catches DuplicateIndexError", async () => {
             const expected = new InternalServerError("An error has occurred");
             jest.mocked(userCrudService.createUser).mockRejectedValueOnce(new DuplicateIndexError("", ""));
