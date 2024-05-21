@@ -1,17 +1,50 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
+/**
+ *
+ *      ENVIRONMENT VARIABLES
+ *
+ */
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+process.env.JWT_SECRET = require("crypto").randomBytes(256).toString("base64");
+process.env.BETA_GOUV_DOMAIN = "beta.gouv.fr";
+process.env.AGENT_CONNECT_ENABLED = "true";
+
+/**
+ *
+ *      MODULE IMPORTATION
+ *
+ */
+
+import { existsSync, mkdirSync } from "fs";
+import { Server } from "http";
+import axios from "axios";
+import { Issuer } from "openid-client";
+import db, { connectDB, client } from "./src/shared/MongoConnection";
+import { initIndexes } from "./src/shared/MongoInit";
+import { startServer } from "./src/server";
+import { scheduler } from "./src/cron";
+import configurationsRepository from "./src/modules/configurations/repositories/configurations.repository";
+import { CONFIGURATION_NAMES } from "./src/modules/configurations/configurations.service";
+
+/**
+ *
+ *      JEST MOCKING
+ *
+ */
+
+/* eslint-disable @typescript-eslint/no-empty-function */
 jest.spyOn(console, "info").mockImplementation(() => {});
 jest.mock("axios");
-jest.mock("./src/configurations/env.conf", () => ({ ENV: "test" }))
-jest.mock("openid-client")
+jest.mock("./src/configurations/env.conf", () => ({ ENV: "test" }));
+jest.mock("openid-client");
 jest.mock("express-session", () => ({
     __esModule: true,
-    default: () => ((_req, _res, next) => next())
-})) // TODO should be better mocked in order to actually test session managment
+    default: () => (_req, _res, next) => next(),
+})); // TODO should be better mocked in order to actually test session managment
 jest.mock("connect-mongodb-session", () => {
     class MongoStore {}
-    return jest.fn(() => MongoStore)
-})
+    return jest.fn(() => MongoStore);
+});
 jest.mock("@getbrevo/brevo", () => {
     class ContactsApi {
         createContact = jest.fn().mockResolvedValue(true);
@@ -37,22 +70,6 @@ jest.mock("@getbrevo/brevo", () => {
     };
 });
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-process.env.JWT_SECRET = require("crypto").randomBytes(256).toString("base64");
-process.env.BETA_GOUV_DOMAIN = "beta.gouv.fr";
-process.env.AGENT_CONNECT_ENABLED = "true";
-
-import { existsSync, mkdirSync } from "fs";
-import { Server } from "http";
-import { Issuer } from "openid-client";
-
-import db, { connectDB, client } from "./src/shared/MongoConnection";
-import { initIndexes } from "./src/shared/MongoInit";
-import { startServer } from "./src/server";
-import { scheduler } from "./src/cron";
-import configurationsRepository from "./src/modules/configurations/repositories/configurations.repository";
-import { CONFIGURATION_NAMES } from "./src/modules/configurations/configurations.service";
-
 const g = global as unknown as { app?: Server };
 
 const addBetaGouvEmailDomain = async () => {
@@ -62,14 +79,16 @@ const addBetaGouvEmailDomain = async () => {
 };
 
 beforeAll(async () => {
-        const mockIssuer = {
-            Client: class Client {
-                endSessionUrl(...args) {
-                    return jest.fn((..._args) => {})(...args);
-                }
-            },
-        } as unknown as Issuer;
-        jest.spyOn(Issuer, "discover").mockResolvedValue(mockIssuer);
+    jest.mocked(axios.request).mockResolvedValue({ data: null });
+
+    const mockIssuer = {
+        Client: class Client {
+            endSessionUrl(...args) {
+                return jest.fn((..._args) => {})(...args);
+            }
+        },
+    } as unknown as Issuer;
+    jest.spyOn(Issuer, "discover").mockResolvedValue(mockIssuer);
 
     await connectDB();
     if (!existsSync("./logs")) {

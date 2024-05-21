@@ -25,7 +25,7 @@ export class DemarchesSimplifieesDataRepository extends MongoRepository<Demarche
     }
 
     findBySiren(siren: Siren) {
-        return this.collection.find({ siret: new RegExp(`^${siren}\\d{5}`) }).toArray();
+        return this.collection.find({ siret: new RegExp(`^${siren}\\d{5}`) }, { projection: { _id: 0 } }).toArray();
     }
 }
 

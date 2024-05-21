@@ -1,4 +1,8 @@
 export default interface DemarchesSimplifieesMapperEntity {
     demarcheId: number;
-    schema: { from: string; to: string }[];
+    schema: DemarchesSimplifieesMapperObject[];
+    // TODO: should we make this mandatory ?
+    commonSchema?: DemarchesSimplifieesMapperObject[];
 }
+
+export type DemarchesSimplifieesMapperObject = { from: string; to: string };

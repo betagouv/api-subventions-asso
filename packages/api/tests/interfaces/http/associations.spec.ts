@@ -1,24 +1,39 @@
+import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
+import osirisRequestRepository from "../../../src/modules/providers/osiris/repositories/osiris.request.repository";
+import fonjepSubventionRepository from "../../../src/modules/providers/fonjep/repositories/fonjep.subvention.repository";
+import { SubventionEntity as FonjepEntityFixture } from "../../modules/providers/fonjep/__fixtures__/entity";
 import request from "supertest";
-import { createAndGetAdminToken, createAndGetUserToken } from "../__helpers__/tokenHelper";
-import osirisRequestRepository from "../../src/modules/providers/osiris/repositories/osiris.request.repository";
-import fonjepSubventionRepository from "../../src/modules/providers/fonjep/repositories/fonjep.subvention.repository";
-import { SubventionEntity as FonjepEntityFixture } from "./providers/fonjep/__fixtures__/entity";
-import OsirisRequestEntityFixture from "./providers/osiris/__fixtures__/entity";
-import dauphinService from "../../src/modules/providers/dauphin/dauphin.service";
-import { compareByValueBuilder } from "../../src/shared/helpers/ArrayHelper";
-import statsService from "../../src/modules/stats/stats.service";
-import { siretToSiren } from "../../src/shared/helpers/SirenHelper";
-import { BadRequestError } from "../../src/shared/errors/httpErrors";
-import associationsService from "../../src/modules/associations/associations.service";
+import OsirisRequestEntityFixture from "../../modules/providers/osiris/__fixtures__/entity";
+import dauphinService from "../../../src/modules/providers/dauphin/dauphin.service";
+import { compareByValueBuilder } from "../../../src/shared/helpers/ArrayHelper";
+import statsService from "../../../src/modules/stats/stats.service";
+import { siretToSiren } from "../../../src/shared/helpers/SirenHelper";
+import { BadRequestError } from "../../../src/shared/errors/httpErrors";
+import associationsService from "../../../src/modules/associations/associations.service";
+import rnaSirenPort from "../../../src/dataProviders/db/rnaSiren/rnaSiren.port";
+import { Rna } from "dto";
+import { JoinedRawGrant, RawGrant } from "../../../src/modules/grant/@types/rawGrant";
+import demarchesSimplifieesDataRepository from "../../../src/modules/providers/demarchesSimplifiees/repositories/demarchesSimplifieesData.repository";
+import {
+    DATA_ENTITIES as DS_DATA_ENTITIES,
+    SCHEMAS as DS_SCHEMAS,
+} from "../../dataProviders/db/__fixtures__/demarchesSimplifiees.fixtures";
+import demarchesSimplifieesMapperRepository from "../../../src/modules/providers/demarchesSimplifiees/repositories/demarchesSimplifieesMapper.repository";
+import demarchesSimplifieesService from "../../../src/modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
 
 const g = global as unknown as { app: unknown };
+
+const insertData = async () => {
+    await osirisRequestRepository.add(OsirisRequestEntityFixture);
+    await fonjepSubventionRepository.create(FonjepEntityFixture);
+    await demarchesSimplifieesMapperRepository.upsert(DS_SCHEMAS[0]);
+    await demarchesSimplifieesDataRepository.upsert(DS_DATA_ENTITIES[0]);
+};
 
 describe("/association", () => {
     beforeEach(async () => {
         jest.spyOn(dauphinService, "getDemandeSubventionBySiren").mockImplementationOnce(async () => []);
-        await osirisRequestRepository.add(OsirisRequestEntityFixture);
-
-        await fonjepSubventionRepository.create(FonjepEntityFixture);
+        await insertData();
     });
 
     describe("/{structure_identifier}/subventions", () => {
@@ -32,6 +47,16 @@ describe("/association", () => {
             const subventions = response.body.subventions;
             // Sort subventions (OSIRIS first) to avoid race test failure
             subventions.sort(compareByValueBuilder("siret.provider"));
+
+            // replace date in Démarches Simplifiees
+            // avoid timezone date test failure
+            // use siret.provider to check on provider name by default
+            subventions.forEach(subvention => {
+                if (subvention.siret.provider === demarchesSimplifieesService.provider.name) {
+                    subvention.date_debut.value = expect.any(Date);
+                    subvention.date_fin.value = expect.any(Date);
+                }
+            });
 
             expect(subventions).toMatchSnapshot();
         });
@@ -104,6 +129,44 @@ describe("/association", () => {
             const response = await request(g.app)
                 .get(`/association/${siretToSiren(OsirisRequestEntityFixture.legalInformations.siret)}/etablissements`)
                 .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "application/json");
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toMatchSnapshot();
+        });
+    });
+
+    describe("/{identifier}/grants", () => {
+        it("should return grants with siren", async () => {
+            // SIREN must be from an association
+            const SIREN = siretToSiren(OsirisRequestEntityFixture.legalInformations.siret);
+            await rnaSirenPort.insert({ siren: SIREN, rna: OsirisRequestEntityFixture.legalInformations.rna as Rna });
+
+            const response = await request(g.app)
+                .get(`/association/${SIREN}/grants`)
+                .set("x-access-token", await createAndGetAdminToken())
+                .set("Accept", "application/json");
+            expect(response.statusCode).toBe(200);
+
+            const expectAnyRawGrantId = (rawGrant: RawGrant) => ({
+                ...rawGrant,
+                data: { ...rawGrant.data, _id: expect.any(String) },
+            });
+
+            const withoutIdGrants = (response.body as JoinedRawGrant[]).map(joinedRawGrant => ({
+                fullGrants: joinedRawGrant.fullGrants?.map(expectAnyRawGrantId),
+                applications: joinedRawGrant.applications?.map(expectAnyRawGrantId),
+                payments: joinedRawGrant.payments?.map(expectAnyRawGrantId),
+            }));
+
+            expect(withoutIdGrants).toMatchSnapshot();
+        });
+
+        it("should return grants with rna", async () => {
+            const RNA = OsirisRequestEntityFixture.legalInformations.rna as Rna;
+
+            const response = await request(g.app)
+                .get(`/association/${RNA}/grants`)
+                .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchSnapshot();
