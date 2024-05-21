@@ -393,11 +393,11 @@ describe("authService", () => {
     describe("redirectToLogin", () => {
         it("saves stringified object", () => {
             authService.redirectToLogin();
-            const actuals = vi.mocked(localStorageService.setItem).mock.calls[0];
-            expect(actuals[0]).toBe("redirectUrl");
-            const actualParsed = JSON.parse(actuals[1]);
-            expect(actualParsed.url).toBe("/");
-            expect(new Date(actualParsed.setDate)).toEqual(expect.any(Date));
+            const actual = vi.mocked(localStorageService.setItem).mock.calls[0][0];
+            expect(actual).toMatchObject({
+                redirectUrl: "/",
+                setDate: expect.any(Date),
+            });
         });
 
         it("redirects to login", () => {
@@ -408,14 +408,14 @@ describe("authService", () => {
 
     describe("redirectAfterLogin", () => {
         beforeAll(() => {
-            vi.mocked(localStorageService.getItem).mockReturnValue({ value: "null" });
+            vi.mocked(localStorageService.getItem).mockReturnValue({ value: null });
         });
         afterAll(() => {
             vi.mocked(localStorageService.getItem).mockRestore();
         });
-        it("gets saved redirect url", () => {
+        it("gets saved redirect url with default arg", () => {
             authService.redirectAfterLogin();
-            expect(vi.mocked(localStorageService.getItem)).toHaveBeenCalledWith("redirectUrl");
+            expect(vi.mocked(localStorageService.getItem)).toHaveBeenCalledWith("redirectUrl", null);
         });
 
         it("removes saved redirect url", () => {
@@ -429,7 +429,7 @@ describe("authService", () => {
         });
 
         it("if too old url return to /", () => {
-            vi.mocked(localStorageService.getItem).mockReturnValueOnce({ value: '{"setDate": "2022-02-02"}' });
+            vi.mocked(localStorageService.getItem).mockReturnValueOnce({ value: { setDate: "2022-02-02" } });
             authService.redirectAfterLogin();
             expect(vi.mocked(goToUrl)).toHaveBeenCalledWith("/", true, true);
         });
@@ -437,7 +437,7 @@ describe("authService", () => {
         it("if recent enough url return to url", () => {
             const URL = "/somewhere";
             vi.mocked(localStorageService.getItem).mockReturnValueOnce({
-                value: JSON.stringify({ setDate: new Date(), url: URL }),
+                value: { setDate: new Date(), url: URL },
             });
             authService.redirectAfterLogin();
             expect(vi.mocked(goToUrl)).toHaveBeenCalledWith(URL, true, true);

@@ -98,12 +98,12 @@ export class AuthService {
     }
 
     redirectToLogin() {
-        localStorageService.setItem("redirectUrl", JSON.stringify({ url: location.pathname, setDate: new Date() }));
+        localStorageService.setItem("redirectUrl", { url: location.pathname, setDate: new Date() });
         return goToUrl("/auth/login");
     }
 
     redirectAfterLogin() {
-        const redirection = JSON.parse(localStorageService.getItem("redirectUrl").value);
+        const redirection = localStorageService.getItem("redirectUrl", null).value;
         localStorageService.removeItem("redirectUrl");
 
         if (!redirection) return goToUrl("/", true, true);
