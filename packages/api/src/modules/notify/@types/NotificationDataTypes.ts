@@ -14,9 +14,10 @@ export interface NotificationDataTypes {
         email: string;
         firstname?: string;
         lastname?: string;
-        url: string;
+        url: string | null;
         signupAt: Date;
         active: boolean;
+        isAgentConnect: boolean;
     };
     [NotificationType.USER_DELETED]: {
         email: string;

@@ -133,6 +133,7 @@ export class UserCrudService {
             url: `${FRONT_OFFICE_URL}/auth/activate/${resetResult.token}`,
             active: user.active,
             signupAt: user.signupAt,
+            isAgentConnect: false,
         });
 
         return user;
