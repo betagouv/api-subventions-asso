@@ -34,9 +34,8 @@ export default class SubventiaCli extends CliController {
         console.info("\nStart parse file: ", file);
 
         const fileContent = fs.readFileSync(file);
-        console.log(SubventiaParser.parse(fileContent));
 
-        //     const entities = SubventiaParser.parse(fileContent);
+        const entities = SubventiaParser.parse(fileContent);
         //   const totalEntities = entities.length;
 
         /*       const saveEntities = async (

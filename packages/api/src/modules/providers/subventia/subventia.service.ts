@@ -1,5 +1,5 @@
 import { isAssociationName, areNumbersValid, isSiret, areStringsValid } from "../../../shared/Validators";
-import { SubventiaRequestEntity } from "./entities/SubventiaRequestEntity";
+import { SubventiaRequestEntity } from "./entities/SubventiaLineEntity";
 
 export enum SUBVENTIA_SERVICE_ERROR {
     INVALID_ENTITY = 1,

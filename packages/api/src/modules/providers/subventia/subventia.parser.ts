@@ -1,18 +1,20 @@
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 
-//import ILegalInformations from "../../search/@types/ILegalInformations";
-//import { SubventiaRequestEntity } from "./entities/SubventiaRequestEntity";
+import { isSiret } from "../../../shared/Validators";
+
+import { ExcelDateToJSDate } from "../../../shared/helpers/ParserHelper";
+import SubventiaLineEntity from "./entities/SubventiaLineEntity";
+
 //import ISubventiaIndexedInformation from "./@types/ISubventiaIndexedInformation";
 
-// Ici dans mon parse je ne spécifie pas le type de retour de la fonction parse, je laisse typescript inférer le type de retour
+/* still to do :
+ 0) Est-ce que les valeurs associés à un status sont uniformisé entre les differentes sources de données ?
+ 1) validate application in
+ 2) validate indexed informations
 
-/* Traitements à faire : 
-        - group by par Référence administrative - Demande
-        - renommer Financeur Principal en service instructeur
-        - 
 
-        */
 
+*/
 export default class SubventiaParser {
     static parse(fileContent: Buffer) {
         console.log("Open and read file ...");
@@ -22,16 +24,17 @@ export default class SubventiaParser {
 
         const parsedData = data.slice(1).map(row => ParseHelper.linkHeaderToData(headers, row));
 
-        return this.getApplications(parsedData);
+        const applications = this.getApplications(parsedData);
+        return applications;
     }
 
     protected static groupByApplication<T>(parsedData: T[]) {
         const groupKey = "Référence administrative - Demande";
         return parsedData.reduce((acc, currentLine: T) => {
-            if (!acc[groupKey]) {
-                acc[groupKey] = [];
+            if (!acc[currentLine[groupKey]]) {
+                acc[currentLine[groupKey]] = [];
             }
-            acc[groupKey].push(currentLine);
+            acc[currentLine[groupKey]].push(currentLine);
             return acc;
         }, {});
     }
@@ -45,36 +48,72 @@ export default class SubventiaParser {
     }
 
     protected static getApplications(parsedData) {
+        // expliquer comment ça marche
         const grouped = this.groupByApplication(parsedData);
 
         const groupedLinesArr: any[][] = Object.values(grouped);
         const applications = groupedLinesArr.map((groupedLine: any[]) => {
-            return this.mergeToApplication(groupedLine);
+            const application = this.mergeToApplication(groupedLine);
+            const entity = this.applicationToEntity(application);
+            return {
+                ...entity,
+                __data__: groupedLine,
+            }; //
         });
         return applications;
     }
-}
 
-/* Interrogation à aborder! Comment on stock les données cette fois compte tenu que nous avons pas le
-même nombre de lignes dans les données brutes et les données traitées ? 
-*/
-/*
-    protected static rowsToEntities(headers, rows) {
-        return rows.reduce((entities, row, index, array) => {
-            const data = ParseHelper.linkHeaderToData(headers, row);
-            const indexedInformations = ParseHelper.indexDataByPathObject(
-                ChorusLineEntity.indexedInformationsPath,
-                data,
-            ) as unknown as IChorusIndexedInformations;
-
-            if (!this.isIndexedInformationsValid(indexedInformations)) return entities;
-
-            const uniqueId = this.buildUniqueId(indexedInformations);
-            entities.push(new ChorusLineEntity(uniqueId, indexedInformations, data));
-
-            CliHelper.printAtSameLine(`${index} entities parsed of ${array.length}`);
-
-            return entities;
-        }, []);
+    protected static applicationToEntity(application) {
+        return ParseHelper.indexDataByPathObject(
+            SubventiaLineEntity.indexedInformationsPath,
+            application,
+        ) as unknown as SubventiaLineEntity;
     }
-   */
+
+    protected static validateEntityInformations(entity) {
+        if (!entity.reference_demande) {
+            throw new Error(`Reference demande null is not accepted in data`);
+        }
+
+        if (entity.date_commision) {
+            if (entity.annee_commision.getFullYear() < parseInt(entity.annee_demande, 10)) {
+                throw new Error(`The year of the decision cannot be lower than the year of the request`);
+            }
+        }
+
+        if (!isSiret(entity.siret)) {
+            throw new Error(`INVALID SIRET FOR ${entity.siret}`);
+        }
+
+        if (entity.annee_commision) {
+            if (!(entity.annee_commision instanceof Date)) {
+                throw new Error(`anne_commision is not a valid date`);
+            }
+        }
+
+        if (entity.montants_accorde) {
+            if (isNaN(entity.montants_accorde)) {
+                throw new Error(`montants_accorde is not a number`);
+            }
+        }
+
+        if (entity.montants_demande) {
+            if (isNaN(entity.montants_demande)) {
+                throw new Error(`montants_demande is not a number`);
+            }
+        }
+        return true;
+    }
+
+    protected static isEntityInformationsValid(EntityInformations: SubventiaLineEntity) {
+        try {
+            return this.validateEntityInformations(EntityInformations);
+        } catch (e) {
+            console.log(
+                `\n\nThis request is not registered because: ${(e as Error).message}\n`,
+                JSON.stringify(EntityInformations, null, "\t"),
+            );
+            return false;
+        }
+    }
+}

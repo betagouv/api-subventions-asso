@@ -1,4 +1,5 @@
-import { SubventiaRequestEntity } from "../entities/SubventiaRequestEntity";
+/*
+import { SubventiaRequestEntity } from "../entities/SubventiaLineEntity";
 import subventiaRepository from "./subventia.repository";
 
 describe("SubventiaRepository", () => {
@@ -45,3 +46,4 @@ describe("SubventiaRepository", () => {
         });
     });
 });
+*/

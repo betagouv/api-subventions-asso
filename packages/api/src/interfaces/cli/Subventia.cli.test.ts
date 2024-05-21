@@ -1,6 +1,6 @@
 import fs from "fs";
 import * as CliHelper from "../../shared/helpers/CliHelper";
-import { SubventiaRequestEntity } from "../../modules/providers/subventia/entities/SubventiaRequestEntity";
+import { SubventiaRequestEntity } from "../../modules/providers/subventia/entities/SubventiaLineEntity";
 
 import SubventiaParser from "../../modules/providers/subventia/subventia.parser";
 import subventiaService, {
