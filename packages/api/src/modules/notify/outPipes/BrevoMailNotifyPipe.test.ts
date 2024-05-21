@@ -26,15 +26,15 @@ describe("BrevoMailNotify", () => {
         provider = new BrevoMailNotifyPipe();
     });
 
-    describe.each`
-        method                      | templateId
-        ${"sendCreationMail"}       | ${TemplateEnum.creation}
-        ${"sendForgetPasswordMail"} | ${TemplateEnum.forgetPassword}
-        ${"greetActivated"}         | ${TemplateEnum.activated}
-    `("BrevoMailNotifyPipe custom template methods", ({ method, templateId }) => {
+    describe("BrevoMailNotifyPipe custom template methods", () => {
         beforeEach(() => (provider.sendMail = mockSendMail));
 
-        it("should call sendMail with templateId", async () => {
+        it.each`
+            method                      | templateId
+            ${"sendCreationMail"}       | ${TemplateEnum.creation}
+            ${"sendForgetPasswordMail"} | ${TemplateEnum.forgetPassword}
+            ${"greetActivated"}         | ${TemplateEnum.activated}
+        `("should call sendMail with templateId", async ({ method, templateId }) => {
             const expected = [EMAIL, expect.any(Object), templateId];
             await provider[method]({ email: EMAIL });
             expect(mockSendMail).toHaveBeenCalledWith(...expected);
