@@ -78,8 +78,7 @@ export class DocumentsService {
                 ? "getDocumentsBySiren"
                 : "getDocumentsBySiret";
 
-        const result = await this.aggregate(documentProviders, method, id);
-        return result;
+        return this.aggregate(documentProviders, method, id);
     }
 
     getDocumentStream(providerId: string, docId: string): Promise<IncomingMessage> {
@@ -109,7 +108,11 @@ export class DocumentsService {
 
         if (!documents || documents.length == 0) throw new Error("No document found");
 
-        const folderName = `${identifier}-${new Date().getTime()}`;
+        return this.getRequestedDocumentsFiles(documents, identifier);
+    }
+
+    async getRequestedDocumentsFiles(documents: Document[], baseFolderName = "docs") {
+        const folderName = `${baseFolderName}-${new Date().getTime()}`;
 
         fs.mkdirSync("/tmp/" + folderName);
 

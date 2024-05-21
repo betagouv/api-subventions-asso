@@ -4,6 +4,7 @@ import documentsService from "./documents.service";
 
 jest.mock("../providers");
 
+import { Document } from "dto";
 import providers from "../providers";
 import Provider from "../providers/@types/IProvider";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
@@ -461,36 +462,21 @@ describe("Documents Service", () => {
         });
     });
 
-    describe("getDocumentsFiles", () => {
+    describe("getDocumentsFilesByIdentifier", () => {
         let aggregateDocumentsSpy: jest.SpyInstance;
-        let downloadDocumentSpy: jest.SpyInstance;
-        let mkdirSyncSpy: jest.SpyInstance;
-        let rmSyncSpy: jest.SpyInstance;
-        let createReadStreamSpy: jest.SpyInstance;
-        let execSyncSpy: jest.SpyInstance;
-
+        let getRequestedDocumentsFilesSpy: jest.SpyInstance;
         const FAKE_DOCUMENT = "FAKE_DOCUMENT";
-        const FAKE_STREAM = {
-            on: jest.fn(),
-        };
 
         beforeAll(() => {
             // @ts-expect-error aggregateDocument is private
             aggregateDocumentsSpy = jest.spyOn(documentsService, "aggregateDocuments");
-            // @ts-ignore downloadDocument
-            downloadDocumentSpy = jest.spyOn(documentsService, "downloadDocument");
+            getRequestedDocumentsFilesSpy = jest
+                .spyOn(documentsService, "getRequestedDocumentsFiles")
+                .mockImplementation(jest.fn());
+        });
 
-            // FS
-            mkdirSyncSpy = jest.spyOn(fs, "mkdirSync");
-            mkdirSyncSpy.mockImplementation(jest.fn());
-            rmSyncSpy = jest.spyOn(fs, "rmSync");
-            rmSyncSpy.mockImplementation(jest.fn());
-            createReadStreamSpy = jest.spyOn(fs, "createReadStream");
-            createReadStreamSpy.mockReturnValue(FAKE_STREAM);
-
-            // childProcess (zip)
-            execSyncSpy = jest.spyOn(childProcess, "execSync");
-            execSyncSpy.mockImplementation(jest.fn());
+        afterAll(() => {
+            getRequestedDocumentsFilesSpy.mockRestore();
         });
 
         it("should call aggregateDocuments", async () => {
@@ -517,43 +503,82 @@ describe("Documents Service", () => {
             await expect(documentsService.getDocumentsFilesByIdentifier(SIRET)).rejects.toThrow();
         });
 
+        it("should call getRequestedDocumentsFiles", async () => {
+            const RNA = "W00000000";
+            const DOCS = [FAKE_DOCUMENT];
+            // @ts-expect-error: mock
+            IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.rna);
+            aggregateDocumentsSpy.mockResolvedValueOnce(DOCS);
+            await documentsService.getDocumentsFilesByIdentifier(RNA);
+
+            expect(getRequestedDocumentsFilesSpy).toHaveBeenCalledWith(DOCS, RNA);
+        });
+    });
+
+    describe("getRequestedDocumentsFiles", () => {
+        let downloadDocumentSpy: jest.SpyInstance;
+        let mkdirSyncSpy: jest.SpyInstance;
+        let rmSyncSpy: jest.SpyInstance;
+        let createReadStreamSpy: jest.SpyInstance;
+        let execSyncSpy: jest.SpyInstance;
+
+        const FAKE_DOCUMENT = "FAKE_DOCUMENT" as unknown as Document;
+        const FAKE_STREAM = {
+            on: jest.fn(),
+        };
+        const REQUESTED_DOCS = [FAKE_DOCUMENT] as Document[];
+        const IDENTIFIER = "12345678912345";
+
+        beforeAll(() => {
+            // @ts-ignore downloadDocument
+            downloadDocumentSpy = jest.spyOn(documentsService, "downloadDocument").mockImplementation(jest.fn());
+
+            // FS
+            mkdirSyncSpy = jest.spyOn(fs, "mkdirSync");
+            mkdirSyncSpy.mockImplementation(jest.fn());
+            rmSyncSpy = jest.spyOn(fs, "rmSync");
+            rmSyncSpy.mockImplementation(jest.fn());
+            createReadStreamSpy = jest.spyOn(fs, "createReadStream");
+            createReadStreamSpy.mockReturnValue(FAKE_STREAM);
+
+            // childProcess (zip)
+            execSyncSpy = jest.spyOn(childProcess, "execSync");
+            execSyncSpy.mockImplementation(jest.fn());
+        });
+
+        afterAll(() => {
+            downloadDocumentSpy.mockRestore();
+        });
+
         it("should call mkdir", async () => {
-            const SIRET = "12345678912345";
             // @ts-expect-error: mock
             IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
-            aggregateDocumentsSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
-            await documentsService.getDocumentsFilesByIdentifier(SIRET);
+            await documentsService.getRequestedDocumentsFiles(REQUESTED_DOCS, IDENTIFIER);
             expect(mkdirSyncSpy).toBeCalled();
         });
 
         it("should call downloadDocument", async () => {
-            const SIRET = "12345678912345";
             // @ts-expect-error: mock
             IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
-            aggregateDocumentsSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
-            await documentsService.getDocumentsFilesByIdentifier(SIRET);
+            await documentsService.getRequestedDocumentsFiles(REQUESTED_DOCS, IDENTIFIER);
             expect(downloadDocumentSpy).toBeCalledWith(expect.any(String), FAKE_DOCUMENT);
         });
 
         it("should call execSync", async () => {
-            const SIRET = "12345678912345";
             // @ts-expect-error: mock
             IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
-            aggregateDocumentsSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
             downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
-            await documentsService.getDocumentsFilesByIdentifier(SIRET);
+            await documentsService.getRequestedDocumentsFiles(REQUESTED_DOCS, IDENTIFIER);
             expect(execSyncSpy).toBeCalledWith(
                 expect.stringMatching('zip -j /tmp/12345678912345-([0-9]+).zip "/fake/path"'),
             );
         });
 
         it("should call rmSync", async () => {
-            const SIRET = "12345678912345";
             // @ts-expect-error: mock
             IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
-            aggregateDocumentsSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
             downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
-            await documentsService.getDocumentsFilesByIdentifier(SIRET);
+            await documentsService.getRequestedDocumentsFiles(REQUESTED_DOCS, IDENTIFIER);
             expect(rmSyncSpy).toBeCalledWith(expect.stringMatching("/tmp/12345678912345-([0-9]+)"), {
                 recursive: true,
                 force: true,
@@ -561,23 +586,19 @@ describe("Documents Service", () => {
         });
 
         it("should call createReadStream and return stream", async () => {
-            const SIRET = "12345678912345";
             // @ts-expect-error: mock
             IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
-            aggregateDocumentsSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
             downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
-            const actual = await documentsService.getDocumentsFilesByIdentifier(SIRET);
+            const actual = await documentsService.getRequestedDocumentsFiles(REQUESTED_DOCS, IDENTIFIER);
             expect(createReadStreamSpy).toBeCalledWith(expect.stringMatching("/tmp/12345678912345-([0-9]+).zip"));
             expect(actual).toBe(FAKE_STREAM);
         });
 
         it("should call remove file after end of stream", async () => {
-            const SIRET = "12345678912345";
             // @ts-expect-error: mock
             IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
-            aggregateDocumentsSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
             downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
-            await documentsService.getDocumentsFilesByIdentifier(SIRET);
+            await documentsService.getRequestedDocumentsFiles(REQUESTED_DOCS, IDENTIFIER);
 
             const lastStreamOnCall = FAKE_STREAM.on.mock.lastCall;
 
