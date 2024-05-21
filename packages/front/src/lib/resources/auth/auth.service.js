@@ -104,9 +104,9 @@ export class AuthService {
 
     redirectAfterLogin() {
         const redirection = localStorageService.getItem("redirectUrl", null).value;
-        localStorageService.removeItem("redirectUrl");
 
         if (!redirection) return goToUrl("/", true, true);
+        localStorageService.removeItem("redirectUrl");
         const { url, setDate } = redirection;
         const soonBefore = new Date();
         soonBefore.setHours(soonBefore.getHours() - 1);
