@@ -48,7 +48,7 @@ describe("DocumentController", () => {
         const stream = {};
 
         beforeAll(() => {
-            getDocumentsFilesSpy = jest.spyOn(documentsService, "getDocumentsFiles");
+            getDocumentsFilesSpy = jest.spyOn(documentsService, "getDocumentsFilesByIdentifier");
             getDocumentsFilesSpy.mockResolvedValue(stream);
             documentController = new DocumentHttp();
             setHeaderMock = jest.spyOn(documentController, "setHeader").mockImplementation(jest.fn());

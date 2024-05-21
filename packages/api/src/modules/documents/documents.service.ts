@@ -99,7 +99,8 @@ export class DocumentsService {
         });
         return res.data;
     }
-    async getDocumentsFiles(identifier: StructureIdentifiers) {
+
+    async getDocumentsFilesByIdentifier(identifier: StructureIdentifiers) {
         const type = getIdentifierType(identifier);
 
         if (!type) throw new Error("You must provide a valid SIREN or RNA or SIRET");

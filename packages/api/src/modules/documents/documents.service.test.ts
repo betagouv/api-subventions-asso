@@ -498,7 +498,7 @@ describe("Documents Service", () => {
             // @ts-expect-error: mock
             IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.rna);
             aggregateDocumentsSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
-            await documentsService.getDocumentsFiles(RNA);
+            await documentsService.getDocumentsFilesByIdentifier(RNA);
 
             expect(aggregateDocumentsSpy).toHaveBeenCalledWith(RNA);
         });
@@ -506,7 +506,7 @@ describe("Documents Service", () => {
         it("should throw an error when identifier type is unknown", async () => {
             // @ts-expect-error: mock
             IdentifierHelper.getIdentifierType.mockReturnValueOnce(undefined);
-            await expect(documentsService.getDocumentsFiles("SIRET")).rejects.toThrow();
+            await expect(documentsService.getDocumentsFilesByIdentifier("SIRET")).rejects.toThrow();
         });
 
         it("should throw an error no documents found", async () => {
@@ -514,7 +514,7 @@ describe("Documents Service", () => {
             // @ts-expect-error: mock
             IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
             aggregateDocumentsSpy.mockResolvedValueOnce([]);
-            await expect(documentsService.getDocumentsFiles(SIRET)).rejects.toThrow();
+            await expect(documentsService.getDocumentsFilesByIdentifier(SIRET)).rejects.toThrow();
         });
 
         it("should call mkdir", async () => {
@@ -522,7 +522,7 @@ describe("Documents Service", () => {
             // @ts-expect-error: mock
             IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
             aggregateDocumentsSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
-            await documentsService.getDocumentsFiles(SIRET);
+            await documentsService.getDocumentsFilesByIdentifier(SIRET);
             expect(mkdirSyncSpy).toBeCalled();
         });
 
@@ -531,7 +531,7 @@ describe("Documents Service", () => {
             // @ts-expect-error: mock
             IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
             aggregateDocumentsSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
-            await documentsService.getDocumentsFiles(SIRET);
+            await documentsService.getDocumentsFilesByIdentifier(SIRET);
             expect(downloadDocumentSpy).toBeCalledWith(expect.any(String), FAKE_DOCUMENT);
         });
 
@@ -541,7 +541,7 @@ describe("Documents Service", () => {
             IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
             aggregateDocumentsSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
             downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
-            await documentsService.getDocumentsFiles(SIRET);
+            await documentsService.getDocumentsFilesByIdentifier(SIRET);
             expect(execSyncSpy).toBeCalledWith(
                 expect.stringMatching('zip -j /tmp/12345678912345-([0-9]+).zip "/fake/path"'),
             );
@@ -553,7 +553,7 @@ describe("Documents Service", () => {
             IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
             aggregateDocumentsSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
             downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
-            await documentsService.getDocumentsFiles(SIRET);
+            await documentsService.getDocumentsFilesByIdentifier(SIRET);
             expect(rmSyncSpy).toBeCalledWith(expect.stringMatching("/tmp/12345678912345-([0-9]+)"), {
                 recursive: true,
                 force: true,
@@ -566,7 +566,7 @@ describe("Documents Service", () => {
             IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
             aggregateDocumentsSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
             downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
-            const actual = await documentsService.getDocumentsFiles(SIRET);
+            const actual = await documentsService.getDocumentsFilesByIdentifier(SIRET);
             expect(createReadStreamSpy).toBeCalledWith(expect.stringMatching("/tmp/12345678912345-([0-9]+).zip"));
             expect(actual).toBe(FAKE_STREAM);
         });
@@ -577,7 +577,7 @@ describe("Documents Service", () => {
             IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
             aggregateDocumentsSpy.mockResolvedValueOnce([FAKE_DOCUMENT]);
             downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
-            await documentsService.getDocumentsFiles(SIRET);
+            await documentsService.getDocumentsFilesByIdentifier(SIRET);
 
             const lastStreamOnCall = FAKE_STREAM.on.mock.lastCall;
 
