@@ -391,13 +391,10 @@ describe("authService", () => {
     });
 
     describe("redirectToLogin", () => {
-        it("saves stringified object", () => {
+        it("saves object", () => {
             authService.redirectToLogin();
-            const actual = vi.mocked(localStorageService.setItem).mock.calls[0][0];
-            expect(actual).toMatchObject({
-                redirectUrl: "/",
-                setDate: expect.any(Date),
-            });
+            const actual = vi.mocked(localStorageService.setItem).mock.calls[0];
+            expect(actual).toMatchObject(["redirectUrl", { url: "/", setDate: expect.any(Date) }]);
         });
 
         it("redirects to login", () => {
@@ -418,14 +415,15 @@ describe("authService", () => {
             expect(vi.mocked(localStorageService.getItem)).toHaveBeenCalledWith("redirectUrl", null);
         });
 
-        it("removes saved redirect url", () => {
-            authService.redirectAfterLogin();
-            expect(vi.mocked(localStorageService.removeItem)).toHaveBeenCalledWith("redirectUrl");
-        });
-
         it("if no redirect url return to /", () => {
             authService.redirectAfterLogin();
             expect(vi.mocked(goToUrl)).toHaveBeenCalledWith("/", true, true);
+        });
+
+        it("removes saved redirect url", () => {
+            vi.mocked(localStorageService.getItem).mockReturnValueOnce({ value: "something" });
+            authService.redirectAfterLogin();
+            expect(vi.mocked(localStorageService.removeItem)).toHaveBeenCalledWith("redirectUrl");
         });
 
         it("if too old url return to /", () => {
