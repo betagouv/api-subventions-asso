@@ -1,8 +1,8 @@
-import request from "supertest";
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import osirisRequestRepository from "../../../src/modules/providers/osiris/repositories/osiris.request.repository";
 import fonjepSubventionRepository from "../../../src/modules/providers/fonjep/repositories/fonjep.subvention.repository";
 import { SubventionEntity as FonjepEntityFixture } from "../../modules/providers/fonjep/__fixtures__/entity";
+import request from "supertest";
 import OsirisRequestEntityFixture from "../../modules/providers/osiris/__fixtures__/entity";
 import dauphinService from "../../../src/modules/providers/dauphin/dauphin.service";
 import { compareByValueBuilder } from "../../../src/shared/helpers/ArrayHelper";
@@ -19,6 +19,7 @@ import {
     SCHEMAS as DS_SCHEMAS,
 } from "../../dataProviders/db/__fixtures__/demarchesSimplifiees.fixtures";
 import demarchesSimplifieesMapperRepository from "../../../src/modules/providers/demarchesSimplifiees/repositories/demarchesSimplifieesMapper.repository";
+import demarchesSimplifieesService from "../../../src/modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
 
 const g = global as unknown as { app: unknown };
 
@@ -46,6 +47,15 @@ describe("/association", () => {
             const subventions = response.body.subventions;
             // Sort subventions (OSIRIS first) to avoid race test failure
             subventions.sort(compareByValueBuilder("siret.provider"));
+
+            // replace date in Démarches Simplifiees
+            // use siret.provider to check on provider name by default
+            subventions.forEach(subvention => {
+                if (subvention.siret.provider === demarchesSimplifieesService.provider.name) {
+                    subvention.date_debut.value = expect.any(Date);
+                    subvention.date_fin.value = expect.any(Date);
+                }
+            });
 
             expect(subventions).toMatchSnapshot();
         });
