@@ -1,4 +1,4 @@
-import { Rna, Siren, Siret, Association, Etablissement, Document } from "dto";
+import { Rna, Siren, Siret, Association, Etablissement, DocumentDto } from "dto";
 import { XMLParser } from "fast-xml-parser";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
@@ -239,7 +239,7 @@ export class ApiAssoService
         return ribs.map(rib => ApiAssoDtoAdapter.dacDocumentToRib(rib));
     }
 
-    private async findDocuments(identifier: AssociationIdentifiers): Promise<Document[]> {
+    private async findDocuments(identifier: AssociationIdentifiers): Promise<DocumentDto[]> {
         const documents = await this.fetchDocuments(identifier);
 
         if (!documents) return [];

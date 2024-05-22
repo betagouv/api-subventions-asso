@@ -1,4 +1,4 @@
-import { Etablissement, Association, Document } from "dto";
+import { Etablissement, Association, DocumentDto } from "dto";
 import { AssociationNature } from "dto/build/associations/AssociationNature";
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
@@ -145,7 +145,7 @@ export default class ApiAssoDtoAdapter {
         };
     }
 
-    static rnaDocumentToDocument(rnaDocument: StructureRnaDocumentDto): Document {
+    static rnaDocumentToDocument(rnaDocument: StructureRnaDocumentDto): DocumentDto {
         let date = new Date(Date.UTC(rnaDocument.annee as number, 0));
         // DTO expect date, so we use 1970 as a hack to know that the date is not defined
         if (!isValidDate(date)) date = new Date(Date.UTC(1970, 0));
@@ -160,7 +160,7 @@ export default class ApiAssoDtoAdapter {
         };
     }
 
-    static dacDocumentToDocument(dacDocument: StructureDacDocumentDto): Document {
+    static dacDocumentToDocument(dacDocument: StructureDacDocumentDto): DocumentDto {
         const isoDate = new Date(dacDocument.time_depot);
         const toLCAPv = ProviderValueFactory.buildProviderValueAdapter(
             this.providerNameLcaDocument,
@@ -185,7 +185,7 @@ export default class ApiAssoDtoAdapter {
         };
     }
 
-    static dacDocumentToRib(rib: StructureDacDocumentDto): Document {
+    static dacDocumentToRib(rib: StructureDacDocumentDto): DocumentDto {
         const isoDate = new Date(rib.time_depot);
 
         const toLCAPv = ProviderValueFactory.buildProviderValueAdapter(this.providerNameLcaDocument, isoDate);

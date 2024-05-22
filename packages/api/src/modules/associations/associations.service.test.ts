@@ -4,7 +4,7 @@ import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import * as IdentifierHelper from "../../shared/helpers/IdentifierHelper";
 import * as StringHelper from "../../shared/helpers/StringHelper";
 import associationsService from "./associations.service";
-import { Etablissement, Versement, Document } from "dto";
+import { Etablissement, Versement, DocumentDto } from "dto";
 import subventionService from "../subventions/subventions.service";
 import * as providers from "../providers";
 import etablissementService from "../etablissements/etablissements.service";
@@ -229,14 +229,14 @@ describe("associationsService", () => {
     describe("getDocuments()", () => {
         it("should call documentService.getDocumentBySiren()", async () => {
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
-            getDocumentBySirenMock.mockImplementationOnce(() => Promise.resolve([{}] as Document[]));
+            getDocumentBySirenMock.mockImplementationOnce(() => Promise.resolve([{}] as DocumentDto[]));
             await associationsService.getDocuments(SIREN);
             expect(getDocumentBySirenMock).toHaveBeenCalledWith(SIREN);
         });
 
         it("should call documentService.getDocumentByRna()", async () => {
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
-            getDocumentByRnaMock.mockImplementationOnce(() => Promise.resolve([{}] as Document[]));
+            getDocumentByRnaMock.mockImplementationOnce(() => Promise.resolve([{}] as DocumentDto[]));
             await associationsService.getDocuments(RNA);
             expect(getDocumentByRnaMock).toHaveBeenCalledWith(RNA);
         });

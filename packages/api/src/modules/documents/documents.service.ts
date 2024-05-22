@@ -1,7 +1,7 @@
 import fs from "fs";
 import childProcess from "child_process";
 import { IncomingMessage } from "http";
-import { Rna, Siren, Siret, Document } from "dto";
+import { Rna, Siren, Siret, DocumentDto } from "dto";
 import * as Sentry from "@sentry/node";
 import mime = require("mime-types");
 import providers, { providersById } from "../providers";
@@ -16,19 +16,19 @@ export class DocumentsService {
     public async getDocumentBySiren(siren: Siren) {
         const result = await this.aggregateDocuments(siren);
 
-        return result.filter(d => d) as Document[];
+        return result.filter(d => d) as DocumentDto[];
     }
 
     public async getDocumentByRna(rna: Rna) {
         const result = await this.aggregateDocuments(rna);
 
-        return result.filter(d => d) as Document[];
+        return result.filter(d => d) as DocumentDto[];
     }
 
     public async getDocumentBySiret(siret: Siret) {
         const result = await this.aggregateDocuments(siret);
 
-        return result.filter(d => d) as Document[];
+        return result.filter(d => d) as DocumentDto[];
     }
 
     public async getRibsBySiret(siret: Siret) {
@@ -62,10 +62,10 @@ export class DocumentsService {
             ),
         );
 
-        return result.flat() as Document[];
+        return result.flat() as DocumentDto[];
     }
 
-    private async aggregateDocuments(id: StructureIdentifiers): Promise<(Document | null)[]> {
+    private async aggregateDocuments(id: StructureIdentifiers): Promise<(DocumentDto | null)[]> {
         const documentProviders = this.getDocumentProviders();
 
         const type = getIdentifierType(id);
@@ -104,14 +104,14 @@ export class DocumentsService {
 
         if (!type) throw new Error("You must provide a valid SIREN or RNA or SIRET");
 
-        const documents = (await this.aggregateDocuments(identifier)).filter(d => d) as Document[];
+        const documents = (await this.aggregateDocuments(identifier)).filter(d => d) as DocumentDto[];
 
         if (!documents || documents.length == 0) throw new Error("No document found");
 
         return this.getRequestedDocumentsFiles(documents, identifier);
     }
 
-    async getRequestedDocumentsFiles(documents: Document[], baseFolderName = "docs") {
+    async getRequestedDocumentsFiles(documents: DocumentDto[], baseFolderName = "docs") {
         const folderName = `${baseFolderName}-${new Date().getTime()}`;
 
         fs.mkdirSync("/tmp/" + folderName);
@@ -134,7 +134,7 @@ export class DocumentsService {
         return stream;
     }
 
-    private async downloadDocument(folderName: string, document: Document): Promise<string | null> {
+    private async downloadDocument(folderName: string, document: DocumentDto): Promise<string | null> {
         try {
             const readStream = await this.getDocumentStreamByUrl(document.url.value);
             const sourceFileName =

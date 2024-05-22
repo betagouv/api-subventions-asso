@@ -1,7 +1,7 @@
-import { Document } from "../search/Document";
+import { DocumentDto } from "./DocumentDto";
 
 export interface GetDocumentsSuccessResponseDto {
-    documents: Document[];
+    documents: DocumentDto[];
 }
 
 export type GetDocumentsResponseDto = GetDocumentsSuccessResponseDto;

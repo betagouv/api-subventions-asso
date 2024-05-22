@@ -4,7 +4,7 @@ import documentsService from "./documents.service";
 
 jest.mock("../providers");
 
-import { Document } from "dto";
+import { DocumentDto } from "dto";
 import providers from "../providers";
 import Provider from "../providers/@types/IProvider";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
@@ -522,11 +522,11 @@ describe("Documents Service", () => {
         let createReadStreamSpy: jest.SpyInstance;
         let execSyncSpy: jest.SpyInstance;
 
-        const FAKE_DOCUMENT = "FAKE_DOCUMENT" as unknown as Document;
+        const FAKE_DOCUMENT = "FAKE_DOCUMENT" as unknown as DocumentDto;
         const FAKE_STREAM = {
             on: jest.fn(),
         };
-        const REQUESTED_DOCS = [FAKE_DOCUMENT] as Document[];
+        const REQUESTED_DOCS = [FAKE_DOCUMENT] as DocumentDto[];
         const IDENTIFIER = "12345678912345";
 
         beforeAll(() => {
