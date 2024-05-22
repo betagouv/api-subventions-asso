@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.49.0](https://github.com/betagouv/datasubvention/compare/v0.47.3...v0.49.0) (2024-05-22)
+
+### Features
+
+-   **api,dto:** first draft implementing agent connect routine ([ec1807b](https://github.com/betagouv/datasubvention/commit/ec1807b07fa7674d3fd035c09cd296b2232adb34))
+-   **api,dto:** update mongo version to match mongo session store module ([2b651c3](https://github.com/betagouv/datasubvention/commit/2b651c3ee01678b6411a07c8d23b7b9a9da56e79))
+-   **api:** clarify error message if login without password ([a4c0a98](https://github.com/betagouv/datasubvention/commit/a4c0a983e3e855899c209a0c1a087998202fc900))
+
+# [0.48.0](https://github.com/betagouv/datasubvention/compare/v0.47.2...v0.48.0) (2024-04-03)
+
+### Features
+
+-   **api:** retrieve association public utility from api asso ([#2287](https://github.com/betagouv/datasubvention/issues/2287)) ([958d515](https://github.com/betagouv/datasubvention/commit/958d51528bc83f7465113251e5e800697349a71d))
+
 # [0.48.0](https://github.com/betagouv/datasubvention/compare/v0.47.2...v0.48.0) (2024-04-03)
 
 ### Features

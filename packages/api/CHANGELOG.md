@@ -3,6 +3,43 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.49.0](https://github.com/betagouv/api-subventions-asso/compare/v0.47.3...v0.49.0) (2024-05-22)
+
+### Bug Fixes
+
+-   **api:** [#2300](https://github.com/betagouv/api-subventions-asso/issues/2300) fix rgpd anonymization ([#2371](https://github.com/betagouv/api-subventions-asso/issues/2371)) ([ae93451](https://github.com/betagouv/api-subventions-asso/commit/ae93451f0a80907e7ccac02a5538db90bd2df1d5))
+-   **api:** adapt update to new mongo interface ([aa6fbcd](https://github.com/betagouv/api-subventions-asso/commit/aa6fbcd1708dc125de9fb869714e6ac763be5166))
+-   **api:** agentConnectUsers are active by default, not the reverse ([17ed2db](https://github.com/betagouv/api-subventions-asso/commit/17ed2db548f8c6aaf536b0e3b8ed8443fd8256e2))
+-   **api:** align hashPassword type ([11789eb](https://github.com/betagouv/api-subventions-asso/commit/11789eb8f64ba20f9658f95b9658ad0a906e0b6b))
+-   **api:** clean misc scdl grant indexes ([#2333](https://github.com/betagouv/api-subventions-asso/issues/2333)) ([a5accb7](https://github.com/betagouv/api-subventions-asso/commit/a5accb7658dfe6da87fbfd893f1c13452050f097))
+-   **api:** correctly setup openID passport strategy ([552e1a4](https://github.com/betagouv/api-subventions-asso/commit/552e1a483dd5356c33f47765688fc69e61f78d69))
+-   **api:** fix unset syntax in migration ([9bddff2](https://github.com/betagouv/api-subventions-asso/commit/9bddff25ce724b439ee8f41da9b75c75f7ec3b55))
+-   **api:** openid-client rather than passport-openidconnect ([7b18ac8](https://github.com/betagouv/api-subventions-asso/commit/7b18ac83c1933b0fc15a42dad9b804a53c40d9f1))
+-   **api:** remove finally unused passport strategy ([fedfab1](https://github.com/betagouv/api-subventions-asso/commit/fedfab1bee1e8db38bc1cc1ecd3488ddaaf7bc49))
+-   **api:** tests and mongo interface ([be644a4](https://github.com/betagouv/api-subventions-asso/commit/be644a48395fdad8437d92e40fadaf38653340ae))
+-   **api:** typing exception rules ([78a13be](https://github.com/betagouv/api-subventions-asso/commit/78a13bee0fe0286d9d80997a2fe107d040f2ff5a))
+-   **front,api:** adapt test to string-typed env var ([9228abd](https://github.com/betagouv/api-subventions-asso/commit/9228abd1160c73646b6ca66b32820df658e115d1))
+
+### Features
+
+-   **api,dto:** first draft implementing agent connect routine ([ec1807b](https://github.com/betagouv/api-subventions-asso/commit/ec1807b07fa7674d3fd035c09cd296b2232adb34))
+-   **api,dto:** update mongo version to match mongo session store module ([2b651c3](https://github.com/betagouv/api-subventions-asso/commit/2b651c3ee01678b6411a07c8d23b7b9a9da56e79))
+-   **api:** [#2265](https://github.com/betagouv/api-subventions-asso/issues/2265) persist api bretagne for bop label ([#2345](https://github.com/betagouv/api-subventions-asso/issues/2345)) ([bedeeea](https://github.com/betagouv/api-subventions-asso/commit/bedeeea5a34ef5bafe2f6150902855c946fe7327))
+-   **api:** [#2297](https://github.com/betagouv/api-subventions-asso/issues/2297) add exercice field if not exists ([#2298](https://github.com/betagouv/api-subventions-asso/issues/2298)) ([ec79de6](https://github.com/betagouv/api-subventions-asso/commit/ec79de677a9fa80a072efbbe2d650026e1840a4c))
+-   **api:** accept any domain from agent-connect ([eecf43e](https://github.com/betagouv/api-subventions-asso/commit/eecf43eda8aa5626d48712eb312f28b11517b0a5))
+-   **api:** actual session managment in db with secret ([89c3f61](https://github.com/betagouv/api-subventions-asso/commit/89c3f61f3edc8509bb2c46a8b7a9cfdfe4bbd2d5))
+-   **api:** allow adding domain that already exists without throwing ([131136e](https://github.com/betagouv/api-subventions-asso/commit/131136e55bb8ddee5b62c8bbbc4a4ca416a14d49))
+-   **api:** basic setup sessions ([3614278](https://github.com/betagouv/api-subventions-asso/commit/36142782948a8352b90a8b1f782bed81baca079f))
+-   **api:** check agentConnect enabled from ENV var ([2a27b67](https://github.com/betagouv/api-subventions-asso/commit/2a27b67cb7eb85d2b7991f6115347626579aba05))
+-   **api:** clarify error message if login without password ([a4c0a98](https://github.com/betagouv/api-subventions-asso/commit/a4c0a983e3e855899c209a0c1a087998202fc900))
+-   **api:** expect localhost alias ([8465dd9](https://github.com/betagouv/api-subventions-asso/commit/8465dd952af4f0576b6c08d5e91d70752c7b46e0))
+-   **api:** handle agent connect logout ([4cf8a84](https://github.com/betagouv/api-subventions-asso/commit/4cf8a849061b6f0443904eaf348b51959d6832ae))
+-   **api:** keep agent connect user data up to date ([b770fdc](https://github.com/betagouv/api-subventions-asso/commit/b770fdcdfa5d0f1f63108b93743777e86b820511))
+-   **api:** no default password ([da4cedf](https://github.com/betagouv/api-subventions-asso/commit/da4cedf849bec46f9575b2521df40ea255321417))
+-   **api:** prevent agentConnectUsers to change name ([2a7152a](https://github.com/betagouv/api-subventions-asso/commit/2a7152a519e60c2f267a69bf001eb56ec538a21b))
+-   **api:** retrieve association public utility from api asso ([#2287](https://github.com/betagouv/api-subventions-asso/issues/2287)) ([e324bfc](https://github.com/betagouv/api-subventions-asso/commit/e324bfc33be1f20d8c85d72241526301e06cb5bd))
+-   **front:** pipedrive upserts itself ([2246fa2](https://github.com/betagouv/api-subventions-asso/commit/2246fa229facaf8732217ec073294cde318f8d8b))
+
 ## [0.48.1](https://github.com/betagouv/api-subventions-asso/compare/v0.48.0...v0.48.1) (2024-04-08)
 
 **Note:** Version bump only for package api

@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.49.0](https://github.com/betagouv/datasubvention/compare/v0.47.3...v0.49.0) (2024-05-22)
+
+### Bug Fixes
+
+-   **front,api:** adapt test to string-typed env var ([9228abd](https://github.com/betagouv/datasubvention/commit/9228abd1160c73646b6ca66b32820df658e115d1))
+-   **front:** move component to relevant folder ([16e7bc4](https://github.com/betagouv/datasubvention/commit/16e7bc4ce71ac725d4e34a477693c0288386b7b1))
+-   **front:** rna/siren wording ([997ad22](https://github.com/betagouv/datasubvention/commit/997ad225c51383d9fe8ce594e900b3648d1521c4))
+
+### Features
+
+-   **api:** [#2234](https://github.com/betagouv/datasubvention/issues/2234) replace provider modal to blog redirection ([#2348](https://github.com/betagouv/datasubvention/issues/2348)) ([0b0bfad](https://github.com/betagouv/datasubvention/commit/0b0bfad3657bd1e0b4d00c857ac74d13d8a2d7b1))
+-   **api:** agent connect login in XHR rather than redirect ([066abf8](https://github.com/betagouv/datasubvention/commit/066abf8ea10333fcfcbaf52c76e88aa00947f73c))
+-   **front:** add estab status in structure page ([#2295](https://github.com/betagouv/datasubvention/issues/2295)) ([28fa3bd](https://github.com/betagouv/datasubvention/commit/28fa3bdc849c2e51c3c9770d38b492683fc76b92))
+-   **front:** [#2303](https://github.com/betagouv/datasubvention/issues/2303) display amount if status is granted (PR [#2347](https://github.com/betagouv/datasubvention/issues/2347)) ([927f807](https://github.com/betagouv/datasubvention/commit/927f807d05cea0d10f5cc3caa3724f0edeb3739a))
+-   **front:** [#2307](https://github.com/betagouv/datasubvention/issues/2307) new document design ([#2379](https://github.com/betagouv/datasubvention/issues/2379)) ([ad4c136](https://github.com/betagouv/datasubvention/commit/ad4c136ca0fb7b9523f5f17b9f6758e99e549c4f))
+-   **front:** [#2310](https://github.com/betagouv/datasubvention/issues/2310) display nb estab in activity in estabs tab ([#2346](https://github.com/betagouv/datasubvention/issues/2346)) ([9d9d87b](https://github.com/betagouv/datasubvention/commit/9d9d87b87d2ba13cb1f366fb2de532e00aa4bc7a))
+-   **front:** [#2385](https://github.com/betagouv/datasubvention/issues/2385) csv extract no beta ([dcbf3d5](https://github.com/betagouv/datasubvention/commit/dcbf3d5cbff422cabe6d9a6cabb7371aced1e824))
+-   **front:** add agentConnect button ([a60ce88](https://github.com/betagouv/datasubvention/commit/a60ce885f690072991c8aef0aef3e0c3c6474eb0))
+-   **front:** crisp event on visiting bodacc tab ([d6947d3](https://github.com/betagouv/datasubvention/commit/d6947d3f31d4e5fa8a19de436295e1cc224407b0))
+-   **front:** disable agent connect users to change name ([77e84b4](https://github.com/betagouv/datasubvention/commit/77e84b494996b91a0f27dc75b2f56dcc9ce66e10))
+-   **front:** display asso is public utility ([#2290](https://github.com/betagouv/datasubvention/issues/2290)) ([016c25d](https://github.com/betagouv/datasubvention/commit/016c25d83e1bd110ff64b4fe40e8cb4609038035))
+-   **front:** display nb estabs in asso page ([#2293](https://github.com/betagouv/datasubvention/issues/2293)) ([4fb2cdc](https://github.com/betagouv/datasubvention/commit/4fb2cdc00fffb007ffe0281c5db2b6edf92aafb0))
+-   **front:** hide tables and display message in empty data tabs ([8a7825d](https://github.com/betagouv/datasubvention/commit/8a7825d38ac24b95777386929b07bfe4da354dbf))
+-   **front:** redirect for agent connect logout ([97cd058](https://github.com/betagouv/datasubvention/commit/97cd058e0c1b51bc6febcba7920d04b90d5fa481))
+-   **front:** redirect to blog for CGU ([#2375](https://github.com/betagouv/datasubvention/issues/2375)) ([64a0460](https://github.com/betagouv/datasubvention/commit/64a0460c9d1b6671ae8368393099e9bc10c7dc15))
+
 ## [0.48.1](https://github.com/betagouv/datasubvention/compare/v0.48.0...v0.48.1) (2024-04-08)
 
 ### Features
