@@ -1,4 +1,4 @@
-import CaisseDepotsSubventionDto from "../../../../src/modules/providers/caisseDepots/dto/CaisseDepotsSubventionDto";
+import CaisseDepotsSubventionDto from "../../../../src/modules/providers/caisseDepots/dto/CaisseDepotsDto";
 
 export default {
     id: "e2594e5c6e0630fa6ca88abd1ed74bfd297e65e7",

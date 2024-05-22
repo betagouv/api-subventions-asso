@@ -7,7 +7,7 @@ import GrantProvider from "../../grant/@types/GrantProvider";
 import ProviderCore from "../ProviderCore";
 import { RawGrant } from "../../grant/@types/rawGrant";
 import CaisseDepotsDtoAdapter from "./adapters/caisseDepotsDtoAdapter";
-import CaisseDepotsSubventionDto from "./dto/CaisseDepotsSubventionDto";
+import { CaisseDepotsSubventionDto } from "./dto/CaisseDepotsDto";
 
 export class CaisseDepotsService extends ProviderCore implements DemandesSubventionsProvider, GrantProvider {
     isDemandesSubventionsProvider = true;
@@ -34,6 +34,8 @@ export class CaisseDepotsService extends ProviderCore implements DemandesSubvent
             const result = await this.http.get(
                 `${this.apiUrl}catalog/datasets/subventions-attribuees-par-la-caisse-des-depots-depuis-01012018/records?where=search(idbeneficiaire, "${identifier}")`,
             );
+
+            console.log(result.data);
 
             if (!result?.data?.records) return [];
 
