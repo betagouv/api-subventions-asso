@@ -107,6 +107,9 @@ dist
 build/
 tsoa/
 
+# New NX build location
+.nx
+
 # Osiris Extract folder
 extract/
 current-posibilities*.json
