@@ -4,16 +4,18 @@ import documentsService from "./documents.service";
 
 jest.mock("../providers");
 
-import { DocumentDto } from "dto";
+import { DocumentDto, DocumentRequestDto } from "dto";
 import providers from "../providers";
 import Provider from "../providers/@types/IProvider";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import * as IdentifierHelper from "../../shared/helpers/IdentifierHelper";
 import { ProviderRequestService } from "../provider-request/providerRequest.service";
+import { documentToDocumentRequest } from "./document.adapter";
 
 jest.mock("../../shared/helpers/IdentifierHelper", () => ({
     getIdentifierType: jest.fn(() => StructureIdentifiersEnum.siren) as jest.SpyInstance,
 }));
+jest.mock("./document.adapter");
 
 describe("Documents Service", () => {
     const SIREN = "123456789";
@@ -503,15 +505,23 @@ describe("Documents Service", () => {
             await expect(documentsService.getDocumentsFilesByIdentifier(SIRET)).rejects.toThrow();
         });
 
-        it("should call getRequestedDocumentsFiles", async () => {
-            const RNA = "W00000000";
-            const DOCS = [FAKE_DOCUMENT];
+        it("should adapt document", async () => {
             // @ts-expect-error: mock
-            IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.rna);
-            aggregateDocumentsSpy.mockResolvedValueOnce(DOCS);
-            await documentsService.getDocumentsFilesByIdentifier(RNA);
+            IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
+            aggregateDocumentsSpy.mockResolvedValueOnce([FAKE_DOCUMENT, FAKE_DOCUMENT]);
+            await documentsService.getDocumentsFilesByIdentifier(SIRET);
+            expect(documentToDocumentRequest).toHaveBeenCalledTimes(2);
+        });
 
-            expect(getRequestedDocumentsFilesSpy).toHaveBeenCalledWith(DOCS, RNA);
+        it("should call downloadDocument with adapted ", async () => {
+            const ADAPTED = "ADAPTED";
+            // @ts-expect-error: mock
+            IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
+            aggregateDocumentsSpy.mockResolvedValueOnce([FAKE_DOCUMENT, FAKE_DOCUMENT]);
+            jest.mocked(documentToDocumentRequest).mockReturnValue(ADAPTED as unknown as DocumentRequestDto);
+            await documentsService.getDocumentsFilesByIdentifier(SIRET);
+            jest.mocked(documentToDocumentRequest).mockRestore();
+            expect(getRequestedDocumentsFilesSpy).toBeCalledWith([ADAPTED, ADAPTED], SIRET);
         });
     });
 
@@ -522,15 +532,15 @@ describe("Documents Service", () => {
         let createReadStreamSpy: jest.SpyInstance;
         let execSyncSpy: jest.SpyInstance;
 
-        const FAKE_DOCUMENT = "FAKE_DOCUMENT" as unknown as DocumentDto;
+        const FAKE_DOCUMENT = "FAKE_DOCUMENT" as unknown as DocumentRequestDto;
         const FAKE_STREAM = {
             on: jest.fn(),
         };
-        const REQUESTED_DOCS = [FAKE_DOCUMENT] as DocumentDto[];
+        const REQUESTED_DOCS = [FAKE_DOCUMENT] as DocumentRequestDto[];
         const IDENTIFIER = "12345678912345";
 
         beforeAll(() => {
-            // @ts-ignore downloadDocument
+            // @ts-expect-error downloadDocument
             downloadDocumentSpy = jest.spyOn(documentsService, "downloadDocument").mockImplementation(jest.fn());
 
             // FS
@@ -558,8 +568,6 @@ describe("Documents Service", () => {
         });
 
         it("should call downloadDocument", async () => {
-            // @ts-expect-error: mock
-            IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
             await documentsService.getRequestedDocumentsFiles(REQUESTED_DOCS, IDENTIFIER);
             expect(downloadDocumentSpy).toBeCalledWith(expect.any(String), FAKE_DOCUMENT);
         });
@@ -607,6 +615,27 @@ describe("Documents Service", () => {
             callbackOnLastStream();
 
             expect(rmSyncSpy).toBeCalledWith(expect.stringMatching("/tmp/12345678912345-([0-9]+).zip"));
+        });
+    });
+
+    describe("downloadDocument", () => {
+        let getDocStream: jest.SpyInstance;
+
+        beforeAll(() => {
+            const pipeMock = { headers: {}, pipe: () => ({ on: jest.fn() }) };
+            // @ts-expect-error downloadDocument
+            getDocStream = jest.spyOn(documentsService, "getDocumentStreamByUrl").mockResolvedValue(pipeMock);
+        });
+
+        afterAll(() => {
+            getDocStream.mockRestore();
+        });
+
+        it("calls getDocumentStreamByUrl", () => {
+            const DOC = { url: "url", nom: "nom", type: "type" };
+            // @ts-expect-error test private
+            documentsService.downloadDocument("folder/name", DOC);
+            expect(getDocStream).toHaveBeenCalledWith("url");
         });
     });
 });

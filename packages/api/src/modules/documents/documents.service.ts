@@ -1,7 +1,7 @@
 import fs from "fs";
 import childProcess from "child_process";
 import { IncomingMessage } from "http";
-import { Rna, Siren, Siret, DocumentDto } from "dto";
+import { Rna, Siren, Siret, DocumentDto, DocumentRequestDto } from "dto";
 import * as Sentry from "@sentry/node";
 import mime = require("mime-types");
 import providers, { providersById } from "../providers";
@@ -11,6 +11,7 @@ import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum"
 import { ProviderRequestService } from "../provider-request/providerRequest.service";
 import { FRONT_OFFICE_URL } from "../../configurations/front.conf";
 import DocumentProvider from "./@types/DocumentsProvider";
+import { documentToDocumentRequest } from "./document.adapter";
 
 export class DocumentsService {
     public async getDocumentBySiren(siren: Siren) {
@@ -108,10 +109,10 @@ export class DocumentsService {
 
         if (!documents || documents.length == 0) throw new Error("No document found");
 
-        return this.getRequestedDocumentsFiles(documents, identifier);
+        return this.getRequestedDocumentsFiles(documents.map(documentToDocumentRequest), identifier);
     }
 
-    async getRequestedDocumentsFiles(documents: DocumentDto[], baseFolderName = "docs") {
+    async getRequestedDocumentsFiles(documents: DocumentRequestDto[], baseFolderName = "docs") {
         const folderName = `${baseFolderName}-${new Date().getTime()}`;
 
         fs.mkdirSync("/tmp/" + folderName);
@@ -134,16 +135,15 @@ export class DocumentsService {
         return stream;
     }
 
-    private async downloadDocument(folderName: string, document: DocumentDto): Promise<string | null> {
+    private async downloadDocument(folderName: string, document: DocumentRequestDto): Promise<string | null> {
         try {
-            const readStream = await this.getDocumentStreamByUrl(document.url.value);
+            const readStream = await this.getDocumentStreamByUrl(document.url);
             const sourceFileName =
-                readStream.headers["content-disposition"]?.match(/attachment;filename="(.*)"/)?.[1] ||
-                document.nom.value;
+                readStream.headers["content-disposition"]?.match(/attachment;filename="(.*)"/)?.[1] || document.nom;
             const extension = /\.[^/]+$/.test(sourceFileName)
                 ? ""
                 : "." + (mime.extension(readStream.headers["content-type"]) || "pdf");
-            const documentPath = `/tmp/${folderName}/${document.type.value}-${sourceFileName}${extension}`;
+            const documentPath = `/tmp/${folderName}/${document.type}-${sourceFileName}${extension}`;
             const writeStream = readStream.pipe(fs.createWriteStream(documentPath));
             return new Promise((resolve, reject) => {
                 // finish event is same event of end but for write stream

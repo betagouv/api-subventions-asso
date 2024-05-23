@@ -1,5 +1,5 @@
 import { Route, Get, Controller, Tags, Security, Response, Query, Path, Post, Body, Request } from "tsoa";
-import { DocumentDto } from "dto";
+import { DocumentRequestDto } from "dto";
 import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
 import documentService from "../../modules/documents/documents.service";
 import { IdentifiedRequest, StructureIdentifiers } from "../../@types";
@@ -16,8 +16,9 @@ export class DocumentHttp extends Controller {
         return stream;
     }
 
+    // TODO tests unit & integ & provider value type
     @Post("/downloads")
-    public async downloadRequiredDocuments(@Body() requiredDocs: DocumentDto[], @Request() req: IdentifiedRequest) {
+    public async downloadRequiredDocuments(@Body() requiredDocs: DocumentRequestDto[], @Request() req: IdentifiedRequest) {
         const stream = await documentService.getRequestedDocumentsFiles(requiredDocs, req.user._id.toString());
         this.setHeader("Content-Type", "application/zip");
         this.setHeader("Content-Disposition", "inline");
