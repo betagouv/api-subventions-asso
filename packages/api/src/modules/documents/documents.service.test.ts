@@ -16,6 +16,7 @@ jest.mock("../../shared/helpers/IdentifierHelper", () => ({
     getIdentifierType: jest.fn(() => StructureIdentifiersEnum.siren) as jest.SpyInstance,
 }));
 jest.mock("./document.adapter");
+jest.mock("fs");
 
 describe("Documents Service", () => {
     const SIREN = "123456789";
