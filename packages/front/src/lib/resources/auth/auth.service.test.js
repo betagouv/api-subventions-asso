@@ -390,5 +390,55 @@ describe("authService", () => {
         });
     });
 
-    // TODO redirectToLogin
+    describe("redirectToLogin", () => {
+        it("saves object", () => {
+            authService.redirectToLogin();
+            const actual = vi.mocked(localStorageService.setItem).mock.calls[0];
+            expect(actual).toMatchObject(["redirectUrl", { url: "/", setDate: expect.any(Date) }]);
+        });
+
+        it("redirects to login", () => {
+            authService.redirectToLogin();
+            expect(goToUrl).toHaveBeenCalledWith("/auth/login");
+        });
+    });
+
+    describe("redirectAfterLogin", () => {
+        beforeAll(() => {
+            vi.mocked(localStorageService.getItem).mockReturnValue({ value: null });
+        });
+        afterAll(() => {
+            vi.mocked(localStorageService.getItem).mockRestore();
+        });
+        it("gets saved redirect url with default arg", () => {
+            authService.redirectAfterLogin();
+            expect(vi.mocked(localStorageService.getItem)).toHaveBeenCalledWith("redirectUrl", null);
+        });
+
+        it("if no redirect url return to /", () => {
+            authService.redirectAfterLogin();
+            expect(vi.mocked(goToUrl)).toHaveBeenCalledWith("/", true, true);
+        });
+
+        it("removes saved redirect url", () => {
+            vi.mocked(localStorageService.getItem).mockReturnValueOnce({ value: "something" });
+            authService.redirectAfterLogin();
+            expect(vi.mocked(localStorageService.removeItem)).toHaveBeenCalledWith("redirectUrl");
+        });
+
+        it("if too old url return to /", () => {
+            vi.mocked(localStorageService.getItem).mockReturnValueOnce({ value: { setDate: "2022-02-02" } });
+            authService.redirectAfterLogin();
+            expect(vi.mocked(goToUrl)).toHaveBeenCalledWith("/", true, true);
+        });
+
+        it("if recent enough url return to url", () => {
+            const URL = "/somewhere";
+            vi.mocked(localStorageService.getItem).mockReturnValueOnce({
+                value: { setDate: new Date(), url: URL },
+            });
+            authService.redirectAfterLogin();
+            expect(vi.mocked(goToUrl)).toHaveBeenCalledWith(URL, true, true);
+        });
+    });
 });

@@ -13,9 +13,7 @@ export default class LoginController {
         this.successMessage = this._getSuccessMessage();
         this.pageTitle = `Se connecter à Data.Subvention`;
         this.forgetPasswordUrl = "/auth/forget-password";
-        this.agentConnectPromise = query.code
-            ? this._proceedWithAgentConnect(window.location.search)
-            : Promise.resolve();
+        if (query.code) this._proceedWithAgentConnect(window.location.search);
     }
 
     signup() {
@@ -25,8 +23,7 @@ export default class LoginController {
     async submit() {
         try {
             await authService.login(this.email, this.password);
-            const urlToGo = decodeURIComponent(this._query.url || "/");
-            await goToUrl(urlToGo, true, true);
+            return authService.redirectAfterLogin();
         } catch (e) {
             const message = this._getErrorMessage(e.data?.code);
             this.error.set(message);
@@ -37,8 +34,7 @@ export default class LoginController {
     async _proceedWithAgentConnect(rawStringQuery) {
         try {
             await authService.loginAgentConnect(rawStringQuery);
-            // TODO handle redirection
-            await goToUrl("/", true, true);
+            return authService.redirectAfterLogin();
         } catch (e) {
             const message = this._getErrorMessage(e.data?.code);
             this.error.set(message);
