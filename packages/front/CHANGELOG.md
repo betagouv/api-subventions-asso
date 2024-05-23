@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.49.1](https://github.com/betagouv/datasubvention/compare/v0.49.0...v0.49.1) (2024-05-23)
+
+### Bug Fixes
+
+-   **front:** v0.49 before mep ([#2401](https://github.com/betagouv/datasubvention/issues/2401)) ([810594b](https://github.com/betagouv/datasubvention/commit/810594b730a5bd180f637f8622b254e315d263a6)), closes [#2400](https://github.com/betagouv/datasubvention/issues/2400)
+
 # [0.49.0](https://github.com/betagouv/datasubvention/compare/v0.47.3...v0.49.0) (2024-05-22)
 
 ### Bug Fixes
