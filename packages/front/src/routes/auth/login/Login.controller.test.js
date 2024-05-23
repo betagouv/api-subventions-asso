@@ -33,17 +33,7 @@ describe("LoginController", () => {
         it("should call goToUrl", async () => {
             authService.login.mockResolvedValueOnce({});
             await controller.submit();
-            expect(goToUrl).toHaveBeenCalledWith("/", true, true);
-        });
-
-        it("should call goToUrl with url from query", async () => {
-            authService.login.mockResolvedValueOnce({});
-            const url = "/tada";
-            const encodedUrl = "%2Ftada";
-
-            controller._query = { url: encodedUrl };
-            await controller.submit();
-            expect(goToUrl).toHaveBeenCalledWith(url, true, true);
+            expect(authService.redirectAfterLogin).toHaveBeenCalled();
         });
 
         it("should call getErrorMessage", async () => {
@@ -115,7 +105,7 @@ describe("LoginController", () => {
 
         it("redirects to home", async () => {
             await controller._proceedWithAgentConnect(QUERY_STRING);
-            expect(goToUrl).toHaveBeenCalledWith("/", true, true);
+            expect(authService.redirectAfterLogin).toHaveBeenCalled();
         });
 
         it("sets retrieved error message", async () => {
