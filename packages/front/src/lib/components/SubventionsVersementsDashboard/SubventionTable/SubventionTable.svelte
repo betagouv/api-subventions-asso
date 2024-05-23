@@ -3,6 +3,7 @@
     import TableHead from "../../Tables/TableHead.svelte";
     import SubventionTableController from "./SubventionTable.controller";
     import Table from "$lib/dsfr/Table.svelte";
+    import Badge from "$lib/dsfr/Badge.svelte";
 
     import StatusLabel from "$lib/components/SubventionsVersementsDashboard/SubventionTable/StatutLabel/StatusLabel.svelte";
 
@@ -62,7 +63,7 @@
                         <!-- We need #key because StatusLabelController does not see that elementData changes and StatusLabel is not natively rebuilt -->
                         {#key elementData.status}
                             {#if controller.isAccepted(elementData.status)}
-                                {elementData.montantsAccorde}
+                                <Badge type="success" label={elementData.montantsAccorde} />
                             {:else}
                                 <StatusLabel status={elementData.status} />
                             {/if}

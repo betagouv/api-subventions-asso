@@ -103,7 +103,13 @@
                     <a class="fr-footer__bottom-link" href="/mentions-legales">Mentions légales</a>
                 </li>
                 <li class="fr-footer__bottom-item">
-                    <a class="fr-footer__bottom-link" href={CGU_URL}>Conditions générales d’utilisation</a>
+                    <a
+                        class="fr-footer__bottom-link"
+                        href={CGU_URL}
+                        target="_blank"
+                        title="Conditions générales d'utilisation - nouvelle fenêtre">
+                        Conditions générales d’utilisation
+                    </a>
                 </li>
                 <li class="fr-footer__bottom-item">
                     <a class="fr-footer__bottom-link" href="/contact">Contactez-nous</a>
