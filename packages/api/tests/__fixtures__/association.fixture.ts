@@ -7,6 +7,7 @@ const DEFAULT_ASSOCIATION = {
     siren: SIREN,
     siret: SIRET,
     rna: RNA,
+    name: "DEFAULT_ASSOCIATION",
 };
 
 export default DEFAULT_ASSOCIATION;

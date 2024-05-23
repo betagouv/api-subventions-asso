@@ -1,13 +1,14 @@
 import DemarchesSimplifieesDataEntity from "../../../../src/modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesDataEntity";
 import DemarchesSimplifieesMapperEntity from "../../../../src/modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesMapperEntity";
+import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
 
 export const DATA_ENTITIES: DemarchesSimplifieesDataEntity[] = [
     {
         demande: {
             id: "RG9zc2llci0xMDE0ODcxNw==",
             demandeur: {
-                siret: "00000000000001",
-                association: { rna: "W000000001", titre: "DEMARCHE_1" },
+                siret: DEFAULT_ASSOCIATION.siret,
+                association: { rna: DEFAULT_ASSOCIATION.rna, titre: "DEMARCHE_1" },
             },
             demarche: {
                 title: "Aide au projet ou au fonctionnement - Transmission culturelle (2023)",
@@ -16,7 +17,7 @@ export const DATA_ENTITIES: DemarchesSimplifieesDataEntity[] = [
                 label: "Auvergne-Rhône-Alpes",
             },
             motivation:
-                "Bonjour, \r\nVotre subvention 2023 a été mise en paiement. Veuillez trouver, ci-joint, l'acte attributif de subvention. Cet envoi constitue la notification officielle.",
+                "Bonjour, votre subvention 2023 a été mise en paiement. Veuillez trouver, ci-joint, l'acte attributif de subvention. Cet envoi constitue la notification officielle.",
             state: "accepte",
             dateDepot: "2022-10-07T17:02:34+02:00",
             datePassageEnInstruction: "2022-11-17T15:13:52+01:00",
@@ -321,7 +322,7 @@ export const DATA_ENTITIES: DemarchesSimplifieesDataEntity[] = [
             },
         },
         demarcheId: 62746,
-        siret: "00000000000001",
+        siret: DEFAULT_ASSOCIATION.siret,
         service: {
             nom: "--",
             organisme: "Ministère de la Culture",

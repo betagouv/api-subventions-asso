@@ -18,7 +18,7 @@ export type ScdlGrantEntity = {
     idRAE?: string;
     UeNotification?: boolean;
     grantPercentage?: number;
-    aidSystem: string;
+    aidSystem?: string;
 };
 
 export type EnhancedScdlGrantEntity = ScdlGrantEntity & { exercice: string };

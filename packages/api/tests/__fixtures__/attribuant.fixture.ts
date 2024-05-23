@@ -1,1 +1,0 @@
-export const ATTRIBUANT_SIRET = "99000000000001";

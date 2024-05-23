@@ -1,8 +1,9 @@
 import IOsirisRequestInformations from "../../../../../src/modules/providers/osiris/@types/IOsirisRequestInformations";
 import OsirisRequestEntity from "../../../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
+import DEFAULT_ASSOCIATION from "../../../../__fixtures__/association.fixture";
 
 export default new OsirisRequestEntity(
-    { siret: "00000000000001", rna: "W000000001", name: "OSIRIS_ENTITY_FIXTURE" },
+    { siret: DEFAULT_ASSOCIATION.siret, rna: DEFAULT_ASSOCIATION.rna, name: DEFAULT_ASSOCIATION.name },
     {
         osirisId: "OSIRIS_ID",
         compteAssoId: "LE_COMPTE_ASSO_ID",
