@@ -58,9 +58,7 @@ export class DocumentsController {
 
     async _getAssociationDocuments(association: AssociationEntity) {
         const associationDocuments = await associationService.getDocuments(association.rna || association.siren);
-        return associationDocuments.filter(
-            doc => !doc.__meta__.siret || doc.__meta__.siret === getSiegeSiret(association),
-        );
+        return documentService.filterAssoDocsBySiret(associationDocuments, getSiegeSiret(association));
     }
 
     _removeDuplicates(docs: DocumentEntity[]) {
@@ -77,7 +75,7 @@ export class DocumentsController {
         const estabDocsPromise = establishmentService.getDocuments(establishment.siret);
         const assoDocsPromise = associationService
             .getDocuments(association.rna || association.siren)
-            .then(docs => docs.filter(doc => !doc.__meta__.siret || doc.__meta__.siret === establishment.siret));
+            .then(docs => documentService.filterAssoDocsBySiret(docs, establishment.siret));
         const [estabDocs, assoDocs] = await Promise.all([estabDocsPromise, assoDocsPromise]);
         return this._removeDuplicates([...estabDocs, ...assoDocs]);
     }
