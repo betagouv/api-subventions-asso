@@ -3,6 +3,10 @@ import fs from "fs";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../@types";
 
+import { asyncForEach } from "../../shared/helpers/ArrayHelper";
+
+import { SubventiaDbo } from "../../modules/providers/subventia/@types/ISubventiaIndexedInformation";
+
 //import SubventiaParser from "../../modules/providers/subventia/subventia.parser";
 
 import * as CliHelper from "../../shared/helpers/CliHelper";
@@ -10,12 +14,9 @@ import * as CliHelper from "../../shared/helpers/CliHelper";
 import CliController from "../../shared/CliController";
 import subventiaService from "../../modules/providers/subventia/subventia.service";
 import SubventiaParser from "../../modules/providers/subventia/subventia.parser";
-/*import subventiaService, {
-    AcceptedRequest,
-    RejectedRequest,
-} from "../../modules/providers/subventia/subventia.service";
-import { SubventiaRequestEntity } from "../../modules/providers/subventia/entities/SubventiaRequestEntity";
-*/
+import SubventiaValidator from "../../modules/providers/subventia/validators/subventia.validator";
+import SubventiaAdapter from "../../modules/providers/subventia/adapters/subventiaAdapter";
+
 @StaticImplements<CliStaticInterface>()
 export default class SubventiaCli extends CliController {
     static cmdName = "subventia";
@@ -33,39 +34,26 @@ export default class SubventiaCli extends CliController {
 
         console.info("\nStart parse file: ", file);
 
-        const fileContent = fs.readFileSync(file);
+        // mettre la partie dessus -> dans parse
 
-        const entities = SubventiaParser.parse(fileContent);
-        //   const totalEntities = entities.length;
+        const parsedData = SubventiaParser.parse(file);
 
-        /*       const saveEntities = async (
-            acc: Promise<(RejectedRequest | AcceptedRequest)[]>,
-            entity: SubventiaRequestEntity,
-            index: number,
-        ) => {
-            const data = await acc;
-            CliHelper.printProgress(index + 1, entities.length);
-            data.push(await subventiaService.createEntity(entity));
-            return data;
-        };
+        const sortedData = SubventiaValidator.sortDataByValidity(parsedData);
+        /*
+        const entities = SubventiaAdapter.getApplications(sortedData['valids']);
 
-        const results = await entities.reduce(saveEntities, Promise.resolve([]));
+        const totalEntities = entities.length;
 
-        const created = results.filter(result => (result as AcceptedRequest).state === "created") as AcceptedRequest[];
-        const rejected = results.filter(result => (result as RejectedRequest).message) as RejectedRequest[];
 
-        this.logger.logIC(`
-            ${results.length}/${entities.length}
-            ${created.length} requests created
-            ${rejected.length} requests not valid
-        `);
+    
 
-        rejected.forEach(result => {
-            this.logger.log(
-                `\n\nThis request is not registered because: ${result.message}\n`,
-                JSON.stringify(result.data, null, "\t"),
-            );
+        await asyncForEach(entities, async (entity, index) => {
+            CliHelper.printProgress(index * 1000, totalEntities);
+            await subventiaService.createEntity(entity);
+      
         });
+        
+        
         */
     }
 }

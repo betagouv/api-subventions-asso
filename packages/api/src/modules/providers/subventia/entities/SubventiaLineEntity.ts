@@ -17,11 +17,6 @@ export default class SubventiaLineEntity {
             path: ["Date - Décision"],
             adapter: value => {
                 if (!value) return value;
-                if (value != parseFloat(value).toString()) {
-                    const [day, month, year] = value.split(/[/.]/).map(v => parseInt(v, 10));
-                    return new Date(Date.UTC(year, month - 1, day));
-                }
-
                 return ExcelDateToJSDate(parseInt(value, 10));
             },
         },
@@ -33,6 +28,7 @@ export default class SubventiaLineEntity {
             path: ["Statut - Dossier de financement"],
             adapter: value => {
                 if (!value) return "Refused";
+                return value;
             },
         },
     };
