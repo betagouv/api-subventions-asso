@@ -1,15 +1,14 @@
 import MongoRepository from "../../../../shared/MongoRepository";
-import { SubventiaRequestEntity } from "../entities/SubventiaRequestEntity";
+import SubventiaLineEntity from "../entities/SubventiaLineEntity";
 
-export class SubventiaRepository extends MongoRepository<SubventiaRequestEntity> {
-    public collectionName = "subventia";
+export class SubventiaRepository extends MongoRepository<SubventiaLineEntity> {
+    readonly collectionName = "subventia";
 
     public createIndexes(): void {
-        // no indexes needed
         return;
     }
 
-    async create(entity: SubventiaRequestEntity) {
+    public async create(entity: SubventiaLineEntity) {
         return await this.collection.insertOne(entity);
     }
 }
