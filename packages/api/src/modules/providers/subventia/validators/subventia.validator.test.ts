@@ -163,8 +163,8 @@ describe("SubventiaValidator", () => {
         beforeEach(() => {
             //@ts-expect-error : test protected method
             mockIsDataRowTypesValid = jest.spyOn(SubventiaValidator, "isDataRowTypesValid").mockReturnValue(true);
-            //@ts-expect-error : test protected method
-            mockIsDataRowCoherenceValid = jest
+
+            mockIsDataRowCoherenceValid = jest //@ts-expect-error : test protected method
                 .spyOn(SubventiaValidator, "isDataRowCoherenceValid")
                 .mockReturnValue(true);
         });
