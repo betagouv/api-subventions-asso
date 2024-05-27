@@ -2,7 +2,6 @@ import SubventiaParser from "./subventia.parser";
 import SubventiaValidator from "./validators/subventia.validator";
 import SubventiaAdapter from "./adapters/subventiaAdapter";
 import SubventiaLineEntity from "./entities/SubventiaLineEntity";
-import { SubventiaDbo } from "./@types/ISubventiaIndexedInformation";
 import subventiaRepository from "./repositories/subventia.repository";
 
 export class SubventiaService {
@@ -28,7 +27,7 @@ export class SubventiaService {
                 provider: "Subventia",
                 /*
                 provider en théorie devrait être définit lorsque
-                l'on construit la classe SubventiaLineEntity mais 
+                l'on construit une instance de la classe SubventiaLineEntity mais 
                 ici on le fait jamais! Preneuse de retours éventuelles pour faire la chose
                 plus proprement
                 */

@@ -1,4 +1,3 @@
-import { createEmitAndSemanticDiagnosticsBuilderProgram } from "typescript";
 import SubventiaValidator from "./subventia.validator";
 
 const PARSEDDATAROW = {

@@ -3,7 +3,6 @@ import SubventiaParser from "./subventia.parser";
 import SubventiaValidator from "./validators/subventia.validator";
 import SubventiaAdapter from "./adapters/subventiaAdapter";
 import SubventiaRepository from "./repositories/subventia.repository";
-import { SubventiaDbo } from "./@types/ISubventiaIndexedInformation";
 import SubventiaLineEntity from "./entities/SubventiaLineEntity";
 
 const filePath = "path/to/file";
@@ -23,33 +22,6 @@ describe("SubventiaService", () => {
         ref1: [ref1_value1, ref1_value2],
         ref2: [ref2_value1],
     };
-
-    const entities = [
-        {
-            reference_demande: "ref1",
-            service_instructeur: "CIPDR",
-            annee_demande: 2023,
-            siret: "123456789",
-            date_commision: "12/07/2023",
-            montants_accorde: 100,
-            montants_demande: 400,
-            dispositif: "FIPDR",
-            sous_dispositif: "",
-            status: "Refused",
-        },
-        {
-            reference_demande: "ref2",
-            service_instructeur: "CIPDR",
-            annee_demande: 2023,
-            siret: "123456789",
-            date_commision: "12/07/2023",
-            montants_accorde: 100,
-            montants_demande: 200,
-            dispositif: "FIPDR",
-            sous_dispositif: "",
-            status: "Refused",
-        },
-    ];
 
     const sortedData = { valids: parsedData, invalids: [] };
 

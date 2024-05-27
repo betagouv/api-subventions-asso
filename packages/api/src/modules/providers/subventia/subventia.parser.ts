@@ -1,19 +1,6 @@
 import fs from "fs";
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
-//import { isSiret } from "../../../shared/Validators";
 
-//import SubventiaLineEntity from "./entities/SubventiaLineEntity";
-
-//import ISubventiaIndexedInformation from "./@types/ISubventiaIndexedInformation";
-
-/* still to do :
- 0) Est-ce que les valeurs associés à un status sont uniformisé entre les differentes sources de données ?
- 1) validate application in
- 2) validate indexed informations
-
-
-
-*/
 export default class SubventiaParser {
     static parse(filePath: string) {
         this.filePathValidator(filePath);
