@@ -1,4 +1,4 @@
-import { SubventiaRequestEntity } from "../entities/SubventiaLineEntity";
+import { SubventiaRequestEntity } from "../entities/SubventiaRequestEntity";
 
 const entity = new SubventiaRequestEntity(
     {

@@ -1,114 +1,99 @@
-import fs from "fs";
-jest.mock("fs");
+import * as ParseHelper from "../../../shared/helpers/ParserHelper";
+import { SubventiaRequestEntity } from "./entities/SubventiaRequestEntity";
 import SubventiaParser from "./subventia.parser";
 
-import * as ParseHelper from "../../../shared/helpers/ParserHelper";
-
-const BUFFER = Buffer.from("fileContent");
-const FILEPATH = "filePath";
 describe("SubventiaParser", () => {
-    beforeEach(() => {
-        jest.mocked(fs.existsSync).mockReturnValue(true);
-        jest.mocked(fs.readFileSync).mockReturnValue(BUFFER);
-    });
-
-    describe("filePathValidator", () => {
-        it("should throw an error if the file is not a string", () => {
-            //@ts-expect-error : test private method
-            expect(() => SubventiaParser.filePathValidator()).toThrowError("Parse command need file args");
-        });
-
-        it("should throw an error if the file does not exist", () => {
-            jest.mocked(fs.existsSync).mockReturnValueOnce(false);
-            //@ts-expect-error : test private method
-            expect(() => SubventiaParser.filePathValidator(FILEPATH)).toThrowError("File not found ");
-        });
-
-        it("should return true if the file exists", () => {
-            //morckReturnValue VS MockResolved for async or mockReturnvlalue Once
-            const expected = true;
-            //@ts-expect-error : test private method
-            const actual = SubventiaParser.filePathValidator(FILEPATH);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("getBuffer", () => {
-        let mockFilePathValidator: jest.Mock;
-        beforeEach(() => {
-            //@ts-expect-error : test private method
-            mockFilePathValidator = jest.spyOn(SubventiaParser, "filePathValidator").mockReturnValue(true);
-            // pourquoi ci-dessus ça me donne pas une erreur quand j'attribue
-            // une spyInstance à un type Mock ?
-        });
-
-        afterAll(() => {
-            mockFilePathValidator.mockRestore();
-        });
-
-        it("should return the buffer of the file", () => {
-            const expected = BUFFER;
-            //@ts-expect-error : test private method
-            const actual = SubventiaParser.getBuffer(FILEPATH);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should call filePathValidator", () => {
-            //@ts-expect-error : test private method
-            SubventiaParser.getBuffer(FILEPATH);
-            expect(mockFilePathValidator).toHaveBeenCalledWith(FILEPATH);
-        });
-    });
-
     describe("parse", () => {
-        let mockFilePathValidator: jest.Mock;
-        let mockGetBuffer: jest.Mock;
-        let mockXlsParse: jest.Mock;
+        const header = ["A", "B", "C"];
+        const data = [
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9],
+        ];
 
-        beforeEach(() => {
-            //@ts-expect-error : test private method
-            mockFilePathValidator = jest.spyOn(SubventiaParser, "filePathValidator").mockReturnValue(true);
-            //@ts-expect-error : test private method
-            mockGetBuffer = jest.spyOn(SubventiaParser, "getBuffer").mockReturnValue(BUFFER);
-            //@ts-expect-error : test private method
-            mockXlsParse = jest.spyOn(ParseHelper, "xlsParse").mockReturnValue([
-                [
-                    ["header1", "header2"],
-                    ["value1", "value2"],
-                    ["value3", "value4"],
-                ],
-            ]);
+        const fileContentData = [[header, ...data]];
+
+        const buffer = Buffer.from("TEST-BUFFER");
+
+        const xlsParseMock = jest.spyOn(ParseHelper, "xlsParse");
+        const linkHeaderToDataMock = jest.spyOn(ParseHelper, "linkHeaderToData");
+        const indexDataByPathObjectMock = jest.spyOn(ParseHelper, "indexDataByPathObject");
+
+        it("should call xls parser", () => {
+            xlsParseMock.mockImplementationOnce(() => [[header]]);
+
+            const expected = "STRING" as unknown as Buffer;
+
+            SubventiaParser.parse(expected);
+
+            expect(xlsParseMock).toHaveBeenCalledWith(expected);
         });
 
-        afterAll(() => {
-            mockFilePathValidator.mockRestore();
-            mockGetBuffer.mockRestore();
-            mockXlsParse.mockRestore();
+        it("should not return data (empty file)", () => {
+            xlsParseMock.mockImplementationOnce(() => [[header]]);
+
+            const expected = 0;
+
+            const actual = SubventiaParser.parse(buffer);
+
+            expect(actual).toHaveLength(expected);
         });
 
-        it("should call filePathValidator", () => {
-            SubventiaParser.parse("file");
-            expect(mockFilePathValidator).toHaveBeenCalledWith("file");
-        });
+        it("should call linkHeaderToData with headers and data", () => {
+            xlsParseMock.mockImplementationOnce(() => fileContentData);
+            linkHeaderToDataMock.mockImplementationOnce(() => ({}));
+            indexDataByPathObjectMock.mockImplementation(() => ({}));
 
-        it("should call getBuffer", () => {
-            SubventiaParser.parse("file");
-            expect(mockGetBuffer).toHaveBeenCalledWith("file");
-        });
-
-        it("should call xlsParse", () => {
-            SubventiaParser.parse("file");
-            expect(mockXlsParse).toHaveBeenCalledWith(BUFFER);
-        });
-
-        it("should return parsed data", () => {
             const expected = [
-                { header1: "value1", header2: "value2" },
-                { header1: "value3", header2: "value4" },
+                [header, data[0]],
+                [header, data[1]],
+                [header, data[2]],
             ];
 
-            const actual = SubventiaParser.parse("file");
+            SubventiaParser.parse(buffer);
+
+            const actual = linkHeaderToDataMock.mock.calls;
+
             expect(actual).toEqual(expected);
+
+            indexDataByPathObjectMock.mockReset();
+        });
+
+        it("should call indexDataByPathObject with parsed data", () => {
+            xlsParseMock.mockImplementationOnce(() => fileContentData);
+            const expected = {
+                A: 1,
+                B: 2,
+                C: 3,
+            };
+            linkHeaderToDataMock.mockImplementationOnce(() => expected);
+            indexDataByPathObjectMock.mockImplementation(() => ({}));
+
+            SubventiaParser.parse(buffer);
+
+            expect(indexDataByPathObjectMock).toHaveBeenCalledWith(
+                SubventiaRequestEntity.indexedProviderInformationsPath,
+                expected,
+            );
+            expect(indexDataByPathObjectMock).toHaveBeenCalledWith(
+                SubventiaRequestEntity.indexedLegalInformationsPath,
+                expected,
+            );
+
+            indexDataByPathObjectMock.mockReset();
+        });
+
+        it("should return entities", () => {
+            xlsParseMock.mockImplementationOnce(() => fileContentData);
+            linkHeaderToDataMock.mockImplementationOnce(() => ({}));
+            indexDataByPathObjectMock.mockImplementation(() => ({}));
+
+            const expected = 3;
+            const actual = SubventiaParser.parse(buffer);
+
+            expect(actual).toHaveLength(expected);
+
+            indexDataByPathObjectMock.mockReset();
         });
     });
 });

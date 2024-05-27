@@ -1,4 +1,4 @@
-import SubventiaLineEntity from "../entities/SubventiaLineEntity";
+import { SubventiaRequestEntity } from "../entities/SubventiaRequestEntity";
 import subventiaRepository from "./subventia.repository";
 
 describe("SubventiaRepository", () => {
@@ -27,21 +27,21 @@ describe("SubventiaRepository", () => {
         });
 
         it("should send create request to mongo", async () => {
-            const entity = {
+            const expected = {
                 name: "I'm subventia entity",
-            } as unknown as SubventiaLineEntity;
+            } as unknown as SubventiaRequestEntity;
 
             collection.insertOne.mockImplementationOnce(() => ({
                 insertedId: "FAKE_ID",
             }));
             collection.findOne.mockImplementationOnce(() => ({
                 _id: "FAKE_ID",
-                ...entity,
+                ...expected,
             }));
 
-            await subventiaRepository.create(entity);
+            await subventiaRepository.create(expected);
 
-            expect(collection.insertOne).toHaveBeenCalledWith(entity);
+            expect(collection.insertOne).toHaveBeenCalledWith(expected);
         });
     });
 });

@@ -1,36 +1,26 @@
-import fs from "fs";
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
+import ILegalInformations from "../../search/@types/ILegalInformations";
+import { SubventiaRequestEntity } from "./entities/SubventiaRequestEntity";
+import ISubventiaIndexedInformation from "./@types/ISubventiaIndexedInformation";
 
 export default class SubventiaParser {
-    static parse(filePath: string) {
-        this.filePathValidator(filePath);
-        const fileContent = this.getBuffer(filePath);
-
-        console.info("\nStart parse file: ", filePath);
-
+    static parse(fileContent: Buffer): SubventiaRequestEntity[] {
         const data = ParseHelper.xlsParse(fileContent)[0];
         const headers = data[0] as string[];
-        const parsedData = data.slice(1).map(row => ParseHelper.linkHeaderToData(headers, row));
+        const rows = data.slice(1) as unknown[][];
 
-        return parsedData;
-    }
+        return rows.map(row => {
+            const parsedData = ParseHelper.linkHeaderToData(headers, row);
+            const indexedInformations = ParseHelper.indexDataByPathObject(
+                SubventiaRequestEntity.indexedProviderInformationsPath,
+                parsedData,
+            ) as unknown as ISubventiaIndexedInformation;
+            const legalInformations = ParseHelper.indexDataByPathObject(
+                SubventiaRequestEntity.indexedLegalInformationsPath,
+                parsedData,
+            ) as unknown as ILegalInformations;
 
-    protected static getBuffer(file: string) {
-        this.filePathValidator(file);
-
-        console.log("Open and read file ...");
-
-        return fs.readFileSync(file);
-    }
-
-    protected static filePathValidator(file: string) {
-        if (!file) {
-            throw new Error("Parse command need file args");
-        }
-
-        if (!fs.existsSync(file)) {
-            throw new Error(`File not found ${file}`);
-        }
-        return true;
+            return new SubventiaRequestEntity(legalInformations, indexedInformations, parsedData);
+        });
     }
 }
