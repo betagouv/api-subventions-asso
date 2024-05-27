@@ -26,6 +26,8 @@ import miscScdlProducersRepository from "../../../src/modules/providers/scdl/rep
 import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
 import miscScdlGrantRepository from "../../../src/modules/providers/scdl/repositories/miscScdlGrant.repository";
 import DEFAULT_ASSOCIATION from "../../__fixtures__/association.fixture";
+import dauphinGisproRepository from "../../../src/modules/providers/dauphin/repositories/dauphin-gispro.repository";
+import { DAUPHIN_GISPRO_DBOS } from "../../dataProviders/db/__fixtures__/dauphinGispro.fixtures";
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
 
 const g = global as unknown as { app: unknown };
@@ -36,6 +38,8 @@ const mockExternalData = async () => {
 };
 
 const insertData = async () => {
+    // @ts-expect-error: DBO not fully mocked
+    await dauphinGisproRepository.upsert(DAUPHIN_GISPRO_DBOS[0]);
     await osirisRequestRepository.add(OsirisRequestEntityFixture);
     await fonjepSubventionRepository.create(FonjepEntityFixture);
     await demarchesSimplifieesMapperRepository.upsert(DS_SCHEMAS[0]);
@@ -46,7 +50,6 @@ const insertData = async () => {
 
 describe("/association", () => {
     beforeEach(async () => {
-        jest.spyOn(dauphinService, "getDemandeSubventionBySiren").mockImplementationOnce(async () => []);
         await insertData();
         mockExternalData();
     });
