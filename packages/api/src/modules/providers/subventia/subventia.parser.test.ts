@@ -42,6 +42,8 @@ describe("SubventiaParser", () => {
         beforeEach(() => {
             //@ts-expect-error : test private method
             mockFilePathValidator = jest.spyOn(SubventiaParser, "filePathValidator").mockReturnValue(true);
+            // pourquoi ci-dessus ça me donne pas une erreur quand j'attribue
+            // une spyInstance à un type Mock ?
         });
 
         afterAll(() => {

@@ -14,7 +14,6 @@ export default class SubventiaValidator {
             },
             { valids: [], invalids: [] },
         );
-        console.log(sortedData);
         return sortedData;
     }
 

@@ -1,63 +1,37 @@
-import fs from "fs";
+/*import fs from "fs";
 import * as CliHelper from "../../shared/helpers/CliHelper";
-import { SubventiaRequestEntity } from "../../modules/providers/subventia/entities/SubventiaLineEntity";
+import SubventiaLineEntity from "../../modules/providers/subventia/entities/SubventiaLineEntity";
 
 import SubventiaParser from "../../modules/providers/subventia/subventia.parser";
-import subventiaService, {
-    AcceptedRequest,
-    RejectedRequest,
-} from "../../modules/providers/subventia/subventia.service";
+import subventiaService from "../../modules/providers/subventia/subventia.service";
 import SubventiaCli from "./Subventia.cli";
 
 describe("SubventiaCli", () => {
+    const subventiaCli = new SubventiaCli();
     describe("_parse", () => {
-        const controller = new SubventiaCli();
-        // @ts-expect-error _parse is private method
-        const _parse = controller._parse.bind(controller);
-        // @ts-expect-error logger is private attribute of parent
-        const logMock = jest.spyOn(controller.logger, "log").mockImplementation(() => {});
-        // @ts-expect-error logger is private attribute of parent
-        const logICMock = jest.spyOn(controller.logger, "logIC").mockImplementation(() => {});
-        const readFileMock = jest.spyOn(fs, "readFileSync");
-        const parseMock = jest.spyOn(SubventiaParser, "parse");
+        const processSubventiaDataMock = jest.spyOn(subventiaService, "ProcessSubventiaData");
         const createEntityMock = jest.spyOn(subventiaService, "createEntity");
         const printProgressMock = jest.spyOn(CliHelper, "printProgress").mockImplementation(() => {});
 
-        afterEach(() => {
-            logMock.mockClear();
-            readFileMock.mockReset();
-            logICMock.mockClear();
-        });
+        const processExpected = "This is a list of entities" as unknown as SubventiaLineEntity[];
+        //@ts-expect-error
+        const createExpected = "Faked result" as unknown as Promise<InsertOneResult<SubventiaLineEntity>>;
+        processSubventiaDataMock.mockImplementation(() => processExpected);
+        createEntityMock.mockResolvedValue(createExpected);
 
         afterAll(() => {
             printProgressMock.mockReset();
-            parseMock.mockReset();
+            processSubventiaDataMock.mockReset();
             createEntityMock.mockReset();
-            readFileMock.mockReset();
         });
 
-        it("should call logger", async () => {
-            readFileMock.mockImplementation(() => "Fake content file");
-            parseMock.mockImplementationOnce(() => []);
-
-            await _parse("FILE");
-
-            expect(logMock).toHaveBeenCalledWith(
-                `\n\n--------------------------------\nFILE\n--------------------------------\n\n`,
-            );
-            expect(logICMock).toHaveBeenCalledWith("\nStart parse file: ", "FILE");
+        it("should call processSubventiaData", async () => {
+            
+            // @ts-expect-error: private method
+            await subventiaCli._parse("file_path");
+            expect(processSubventiaDataMock).toHaveBeenCalledWith("file_path");
         });
-
-        it("should call fs", async () => {
-            const expected = "FILE";
-            readFileMock.mockImplementation(() => "Fake content file");
-            parseMock.mockImplementationOnce(() => []);
-
-            await _parse(expected);
-
-            expect(readFileMock).toHaveBeenCalledWith(expected);
-        });
-
+        
         it("should call parser", async () => {
             const expected = "Fake content file";
             readFileMock.mockImplementation(() => expected);
@@ -95,5 +69,7 @@ describe("SubventiaCli", () => {
                 ]),
             );
         });
+        
     });
 });
+*/

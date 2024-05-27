@@ -1,25 +1,20 @@
-import { isAssociationName, areNumbersValid, isSiret, areStringsValid } from "../../../shared/Validators";
+import SubventiaParser from "./subventia.parser";
+import SubventiaValidator from "./validators/subventia.validator";
+import SubventiaAdapter from "./adapters/subventiaAdapter";
 import SubventiaLineEntity from "./entities/SubventiaLineEntity";
-import SubventiaRepository from "./repositories/subventia.repository";
 import { SubventiaDbo } from "./@types/ISubventiaIndexedInformation";
-/*
-export enum SUBVENTIA_SERVICE_ERROR {
-    INVALID_ENTITY = 1,
-}
-*/
-/*
-export interface RejectedRequest {
-    state: "rejected";
-    result: { message: string; data: unknown };
-}
-
-export interface AcceptedRequest {
-    state: "created";
-}
-*/
+import subventiaRepository from "./repositories/subventia.repository";
 
 export class SubventiaService {
-    static getApplications(validData) {
+    public ProcessSubventiaData(filePath: string) {
+        const parsedData = SubventiaParser.parse(filePath);
+        const sortedData = SubventiaValidator.sortDataByValidity(parsedData);
+        const applications = this.getApplications(sortedData["valids"]);
+
+        return applications;
+    }
+
+    public getApplications(validData) {
         /* to each application is associated in raw date a list of 12 lines
             corresponding to 12 items of expenditures
         */
@@ -27,17 +22,24 @@ export class SubventiaService {
         const groupedLinesArr: any[][] = Object.values(grouped);
         const applications = groupedLinesArr.map(groupedLine => {
             const application = this.mergeToApplication(groupedLine);
-            const entity = this.applicationToEntity(application);
+            const entity = SubventiaAdapter.applicationToEntity(application);
             return {
                 ...entity,
+                provider: "Subventia",
+                /*
+                provider en théorie devrait être définit lorsque
+                l'on construit la classe SubventiaLineEntity mais 
+                ici on le fait jamais! Preneuse de retours éventuelles pour faire la chose
+                plus proprement
+                */
                 __data__: groupedLine,
-            };
+            } as unknown as SubventiaLineEntity;
         });
 
         return applications;
     }
 
-    protected static groupByApplication<T>(validData: T[]) {
+    public groupByApplication<T>(validData: T[]) {
         const groupKey = "Référence administrative - Demande";
         return validData.reduce((acc, currentLine: T) => {
             if (!acc[currentLine[groupKey]]) {
@@ -48,16 +50,19 @@ export class SubventiaService {
         }, {});
     }
 
-    protected static mergeToApplication(applicationLines: any[]) {
+    public mergeToApplication(applicationLines: any[]) {
         const amountKey = "Montant Ttc";
-        return applicationLines.reduce((mainLine: Record<string, any>, currentLine: Record<string, any>) => {
-            mainLine[amountKey] = Number(mainLine[amountKey]) + Number(currentLine[amountKey]);
-            return mainLine;
-        });
+        return applicationLines.slice(1).reduce(
+            (mainLine: Record<string, any>, currentLine: Record<string, any>) => {
+                mainLine[amountKey] = Number(mainLine[amountKey]) + Number(currentLine[amountKey]);
+                return mainLine;
+            },
+            { ...applicationLines[0] },
+        );
     }
 
     async createEntity(entity: SubventiaLineEntity) {
-        return SubventiaRepository.create(entity);
+        return subventiaRepository.create(entity);
     }
 }
 

@@ -11,6 +11,7 @@ export default interface SubventiaLineEntity {
     sous_dispositif: string;
     status: string;
     reference_demande: string;
+    provider: string;
 }
 
 export type SubventiaDbo = SubventiaLineEntity & { __data__: Record<string, unknown> };
