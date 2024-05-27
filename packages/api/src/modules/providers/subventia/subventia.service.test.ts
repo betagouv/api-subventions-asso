@@ -124,11 +124,13 @@ describe("SubventiaService", () => {
                 {
                     reference_demande: "ref1",
                     montants_demande: 400,
+                    provider: "Subventia",
                     __data__: [ref1_value1, ref1_value2],
                 },
                 {
                     reference_demande: "ref2",
                     montants_demande: 200,
+                    provider: "Subventia",
                     __data__: [ref2_value1],
                 },
             ];
