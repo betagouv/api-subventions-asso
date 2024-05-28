@@ -5,9 +5,9 @@ import SubventiaAdapter from "./adapters/subventiaAdapter";
 import SubventiaRepository from "./repositories/subventia.repository";
 import SubventiaLineEntity from "./entities/SubventiaLineEntity";
 
-const filePath = "path/to/file";
-
 describe("SubventiaService", () => {
+    const filePath = "path/to/file";
+
     const ref1_value1 = { "Montant Ttc": 100, "Référence administrative - Demande": "ref1" };
     const ref1_value2 = { "Montant Ttc": 300, "Référence administrative - Demande": "ref1" };
     const ref1_value3 = { "Montant Ttc": 200, "Référence administrative - Demande": "ref1" };
