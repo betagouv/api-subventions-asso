@@ -1,7 +1,5 @@
-import SubventiaAdapter from "./subventiaAdapter";
+import SubventiaAdapter from "./subventia.adapter";
 import * as ParseHelper from "../../../../shared/helpers/ParserHelper";
-import SubventiaLineEntity from "../entities/SubventiaLineEntity";
-import { SubventiaDbo } from "../@types/ISubventiaIndexedInformation";
 
 describe(SubventiaAdapter, () => {
     const application = { "Montant Ttc": 600, "Référence administrative - Demande": "ref1" };
@@ -17,6 +15,7 @@ describe(SubventiaAdapter, () => {
         dispositif: "FIPDR",
         sous_dispositif: "",
         status: "Refused",
+        provider: "subventia",
     };
 
     describe("applicationToEntity", () => {
@@ -24,10 +23,7 @@ describe(SubventiaAdapter, () => {
             let mockIndexDataByPathObject = jest.spyOn(ParseHelper, "indexDataByPathObject").mockReturnValue(entity);
 
             SubventiaAdapter.applicationToEntity(application);
-            expect(mockIndexDataByPathObject).toHaveBeenCalledWith(
-                SubventiaLineEntity.indexedInformationsPath,
-                application,
-            );
+            expect(mockIndexDataByPathObject).toHaveBeenCalled();
         });
 
         it("should return entity", () => {

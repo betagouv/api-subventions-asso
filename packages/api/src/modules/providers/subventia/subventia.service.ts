@@ -1,10 +1,19 @@
+import Provider from "../@types/IProvider";
+import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import SubventiaParser from "./subventia.parser";
 import SubventiaValidator from "./validators/subventia.validator";
-import SubventiaAdapter from "./adapters/subventiaAdapter";
-import SubventiaLineEntity from "./entities/SubventiaLineEntity";
+import SubventiaAdapter from "./adapters/subventia.adapter";
 import subventiaRepository from "./repositories/subventia.repository";
+import { SubventiaDbo } from "./@types/subventia.entity";
 
-export class SubventiaService {
+export class SubventiaService implements Provider {
+    provider = {
+        name: "Subventia",
+        type: ProviderEnum.raw,
+        description: "CIPDR",
+        id: "subventia",
+    };
+
     public ProcessSubventiaData(filePath: string) {
         const parsedData = SubventiaParser.parse(filePath);
         const sortedData = SubventiaValidator.sortDataByValidity(parsedData);
@@ -24,15 +33,8 @@ export class SubventiaService {
             const entity = SubventiaAdapter.applicationToEntity(application);
             return {
                 ...entity,
-                provider: "Subventia",
-                /*
-                provider en théorie devrait être définit lorsque
-                l'on construit une instance de la classe SubventiaLineEntity mais 
-                ici on le fait jamais! Preneuse de retours éventuelles pour faire la chose
-                plus proprement
-                */
                 __data__: groupedLine,
-            } as unknown as SubventiaLineEntity;
+            } as Omit<SubventiaDbo, "_id">;
         });
 
         return applications;
@@ -60,7 +62,7 @@ export class SubventiaService {
         );
     }
 
-    async createEntity(entity: SubventiaLineEntity) {
+    async createEntity(entity: Omit<SubventiaDbo, "_id">) {
         return subventiaRepository.create(entity);
     }
 }

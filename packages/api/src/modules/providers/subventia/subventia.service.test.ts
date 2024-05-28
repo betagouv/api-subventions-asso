@@ -1,9 +1,9 @@
 import SubventiaService from "./subventia.service";
 import SubventiaParser from "./subventia.parser";
 import SubventiaValidator from "./validators/subventia.validator";
-import SubventiaAdapter from "./adapters/subventiaAdapter";
+import SubventiaAdapter from "./adapters/subventia.adapter";
 import SubventiaRepository from "./repositories/subventia.repository";
-import SubventiaLineEntity from "./entities/SubventiaLineEntity";
+import { SubventiaDbo } from "./@types/subventia.entity";
 
 describe("SubventiaService", () => {
     const filePath = "path/to/file";
@@ -86,9 +86,9 @@ describe("SubventiaService", () => {
         it("should return applications", () => {
             mockApplicationToEntity.mockImplementation(() => {
                 if (mockApplicationToEntity.mock.calls.length === 1) {
-                    return { reference_demande: "ref1", montants_demande: 400 };
+                    return { reference_demande: "ref1", montants_demande: 400, provider: "subventia" };
                 } else {
-                    return { reference_demande: "ref2", montants_demande: 200 };
+                    return { reference_demande: "ref2", montants_demande: 200, provider: "subventia" };
                 }
             });
 
@@ -96,13 +96,13 @@ describe("SubventiaService", () => {
                 {
                     reference_demande: "ref1",
                     montants_demande: 400,
-                    provider: "Subventia",
+                    provider: "subventia",
                     __data__: [ref1_value1, ref1_value2],
                 },
                 {
                     reference_demande: "ref2",
                     montants_demande: 200,
-                    provider: "Subventia",
+                    provider: "subventia",
                     __data__: [ref2_value1],
                 },
             ];
@@ -152,7 +152,7 @@ describe("SubventiaService", () => {
 
         const entity = {
             name: "I'm subventia entity",
-        } as unknown as SubventiaLineEntity;
+        } as unknown as SubventiaDbo;
 
         //@ts-expect-error : test private method
         mockCreate = jest.spyOn(SubventiaRepository, "create").mockResolvedValue("FAKE_ID");

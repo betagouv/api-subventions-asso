@@ -1,4 +1,4 @@
-import SubventiaLineEntity from "../entities/SubventiaLineEntity";
+import { SubventiaDbo } from "../@types/subventia.entity";
 import subventiaRepository from "./subventia.repository";
 
 describe("SubventiaRepository", () => {
@@ -29,7 +29,7 @@ describe("SubventiaRepository", () => {
         it("should send create request to mongo", async () => {
             const entity = {
                 name: "I'm subventia entity",
-            } as unknown as SubventiaLineEntity;
+            } as unknown as Omit<SubventiaDbo, "_id">;
 
             collection.insertOne.mockImplementationOnce(() => ({
                 insertedId: "FAKE_ID",

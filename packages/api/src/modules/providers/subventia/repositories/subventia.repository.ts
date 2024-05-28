@@ -1,14 +1,14 @@
 import MongoRepository from "../../../../shared/MongoRepository";
-import SubventiaLineEntity from "../entities/SubventiaLineEntity";
+import { SubventiaDbo } from "../@types/subventia.entity";
 
-export class SubventiaRepository extends MongoRepository<SubventiaLineEntity> {
+export class SubventiaRepository extends MongoRepository<Omit<SubventiaDbo, "_id">> {
     readonly collectionName = "subventia";
 
     public createIndexes(): void {
         return;
     }
 
-    public async create(entity: SubventiaLineEntity) {
+    public async create(entity: Omit<SubventiaDbo, "_id">) {
         return await this.collection.insertOne(entity);
     }
 }
