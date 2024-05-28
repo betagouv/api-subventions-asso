@@ -20,5 +20,3 @@ export default interface SubventiaEntity {
     (voir README.md pour plus de détails)
 */
 export type SubventiaDbo = SubventiaEntity & { _id: ObjectId; __data__: SubventiaDto[] };
-
-// renomme suventiaLineEntity
