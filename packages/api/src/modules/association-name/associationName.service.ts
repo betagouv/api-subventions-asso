@@ -38,7 +38,7 @@ export class AssociationNameService {
         } else {
             // Siret Or Name
             associationNames = [
-                ...(await uniteLegalNameService.searchBySirenSiretName(lowerCaseValue)),
+                // ...(await uniteLegalNameService.searchBySirenSiretName(lowerCaseValue)),
                 ...(await rechercheEntreprises.search(value)),
             ].flat();
         }
@@ -54,6 +54,9 @@ export class AssociationNameService {
             );
             return acc;
         }, {} as Record<string, AssociationNameEntity>);
+
+        console.log("AssociationName", Object.values(mergedAssociationName));
+
         return Object.values(mergedAssociationName);
     }
 }
