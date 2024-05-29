@@ -35,7 +35,7 @@ export default class SignupController {
 
     signup() {
         // TODO: check what format the new API create user is waiting for
-        this.signupPromise.set(authService.signup(this.signupUser.value));
+        this.signupPromise.set(authService.signup(this.signupUser.value).finally(() => this._showAlert()));
         this.firstSubmitted.set(true);
     }
 
@@ -49,5 +49,13 @@ export default class SignupController {
 
     get contactEmail() {
         return this.app.getContact();
+    }
+
+    _showAlert() {
+        if (this.alertElement) this.alertElement.scrollIntoView({ behavior: "smooth", inline: "nearest" });
+    }
+
+    onMount(alertElement) {
+        this.alertElement = alertElement;
     }
 }
