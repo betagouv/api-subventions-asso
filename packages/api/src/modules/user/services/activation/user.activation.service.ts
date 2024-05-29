@@ -89,6 +89,7 @@ export class UserActivationService {
         await userResetRepository.remove(reset as UserReset);
         const date = new Date();
 
+        // TODO maybe send another signal with another email, the one from USER_ACTIVATED sounds weird
         notifyService.notify(NotificationType.USER_ACTIVATED, { email: user.email });
         notifyService.notify(NotificationType.USER_LOGGED, { email: user.email, date });
 
