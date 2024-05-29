@@ -89,14 +89,6 @@ describe("Dauphin Service", () => {
         });
     });
 
-    describe("getDemandeSubventionByRna", () => {
-        it("should return null", async () => {
-            const expected = null;
-            const actual = await dauphinService.getDemandeSubventionByRna();
-            expect(expected).toBe(actual);
-        });
-    });
-
     /**
      * |-------------------------|
      * |   Raw Grant Part        |

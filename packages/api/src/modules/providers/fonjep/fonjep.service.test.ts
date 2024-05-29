@@ -190,14 +190,6 @@ describe("FonjepService", () => {
         });
     });
 
-    describe("getDemandeSubventionByRna", () => {
-        it("should return null", async () => {
-            const expected = null;
-            const actual = await fonjepService.getDemandeSubventionByRna("FAKE_RNA");
-            expect(actual).toEqual(expected);
-        });
-    });
-
     describe("getDemandeSubventionBySiret", () => {
         it("should map FonjepEntity to DemandeSubvention", async () => {
             // @ts-expect-error: mock;

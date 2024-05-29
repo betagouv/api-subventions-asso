@@ -19,7 +19,6 @@ const providers = {
         getAssociationsByRna: () => [{}],
         getDemandeSubventionBySiret: async () => [{}],
         getDemandeSubventionBySiren: async () => [{}],
-        getDemandeSubventionByRna: async () => [{}],
         http: new ProviderRequestService("prov-A"),
     },
     // API service AssociationProvider + DemandeSubventionProvider
@@ -37,7 +36,6 @@ const providers = {
         getAssociationsByRna: () => [{}],
         getDemandeSubventionBySiret: async () => [{}],
         getDemandeSubventionBySiren: async () => [{}],
-        getDemandeSubventionByRna: async () => [{}],
     },
     // API service AssociationProvider that returns null for all getAssociations()
     serviceC: {

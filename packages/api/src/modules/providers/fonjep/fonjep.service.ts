@@ -168,11 +168,6 @@ export class FonjepService
         return entities.map(e => FonjepEntityAdapter.toDemandeSubvention(e));
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async getDemandeSubventionByRna(rna: string): Promise<DemandeSubvention[] | null> {
-        return null;
-    }
-
     /**
      * |----------------------|
      * |  Etablissement Part  |

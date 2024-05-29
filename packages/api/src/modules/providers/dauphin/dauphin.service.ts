@@ -56,19 +56,13 @@ export class DauphinService
         return applications.map(dto => DauphinDtoAdapter.toDemandeSubvention(dto));
     }
 
-    getDemandeSubventionByRna(): Promise<DemandeSubvention[] | null> {
-        return Promise.resolve(null);
-    }
-
-    async getGrantsByRna(rna: string): Promise<[] | null> {
-        return null;
-    }
-
     async getGrantsBySiren(siren: string): Promise<[] | null> {
+        // TODO
         return null;
     }
 
     async getGrantsBySiret(siret: string): Promise<[] | null> {
+        // TODO
         return null;
     }
 

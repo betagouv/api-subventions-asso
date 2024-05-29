@@ -88,13 +88,6 @@ describe("CaisseDepotsService", () => {
         });
     });
 
-    describe("getDemandeSubventionByRna", () => {
-        it("returns null", async () => {
-            const actual = await caisseDepotsService.getDemandeSubventionByRna("");
-            expect(actual).toBeNull();
-        });
-    });
-
     describe.each`
         identifierType | identifierCalled    | identifierGiven
         ${"Siren"}     | ${"120001011"}      | ${"120001011*"}

@@ -7,9 +7,7 @@ export default interface GrantProvider extends Provider {
 
     getGrantsBySiret(siret: Siret): Promise<[] | null>;
     getGrantsBySiren(siren: Siren): Promise<[] | null>;
-    getGrantsByRna(rna: Rna): Promise<[] | null>;
 
     getRawGrantsBySiret(siret: Siret): Promise<RawGrant[] | null>;
     getRawGrantsBySiren(siren: Siren): Promise<RawGrant[] | null>;
-    getRawGrantsByRna(rna: Rna): Promise<RawGrant[] | null>;
 }

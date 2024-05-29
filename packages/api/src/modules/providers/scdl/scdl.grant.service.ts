@@ -31,10 +31,6 @@ export class ScdlGrantService implements GrantProvider, DemandesSubventionsProvi
         }
     }
 
-    getDemandeSubventionByRna(rna: Rna): Promise<DemandeSubvention[] | null> {
-        return this.getEntityByPromiseAndAdapt(miscScdlJoiner.findByRna(rna), MiscScdlAdapter.toDemandeSubvention);
-    }
-
     getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
         return this.getEntityByPromiseAndAdapt(miscScdlJoiner.findBySiren(siren), MiscScdlAdapter.toDemandeSubvention);
     }

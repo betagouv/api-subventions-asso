@@ -51,10 +51,6 @@ export class CaisseDepotsService extends ProviderCore implements DemandesSubvent
         );
     }
 
-    async getDemandeSubventionByRna(_rna: Rna): Promise<DemandeSubvention[] | null> {
-        return null;
-    }
-
     getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
         return this.getCaisseDepotsSubventions(`${siren}*`);
     }
@@ -68,10 +64,6 @@ export class CaisseDepotsService extends ProviderCore implements DemandesSubvent
      * |   Grant Part            |
      * |-------------------------|
      */
-
-    async getGrantsByRna(rna: string): Promise<[] | null> {
-        return null;
-    }
 
     async getGrantsBySiren(siren: string): Promise<[] | null> {
         return null;
