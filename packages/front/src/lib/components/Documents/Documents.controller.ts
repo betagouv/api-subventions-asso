@@ -20,8 +20,8 @@ const estabDocsTitleByType = {
     establishment: "Pièces complémentaires déposées par l'établissement (via Le Compte Asso ou Dauphin)",
 };
 
-const sortLabeledDocs = docs =>
-    (docs as LabeledDoc[]).sort((docA, docB) => Number(docB.showByDefault) - Number(docA.showByDefault));
+const sortLabeledDocs = (docs: LabeledDoc[]) =>
+    docs.sort((docA, docB) => Number(docB.showByDefault) - Number(docA.showByDefault));
 
 type GroupedDocs = null | {
     assoDocs: LabeledDoc[];
@@ -73,15 +73,15 @@ export class DocumentsController {
         return documentService.labelAssoDocsBySiret(associationDocuments, getSiegeSiret(association));
     }
 
-    _removeDuplicates(docs: DocumentEntity[]) {
+    _removeDuplicates(docs: DocumentEntity[] | LabeledDoc[]): DocumentEntity[] | LabeledDoc[] {
         const docsByUrl = {};
         for (const doc of docs) {
             docsByUrl[doc.url] = doc;
         }
-        return Object.values(docsByUrl) as DocumentEntity[];
+        return Object.values(docsByUrl);
     }
 
-    async _getEstablishmentDocuments(establishment) {
+    async _getEstablishmentDocuments(establishment): Promise<LabeledDoc[]> {
         const association = currentAssociation.value;
         if (!association) return [];
         const estabDocsPromise: Promise<LabeledDoc[]> = establishmentService
@@ -91,7 +91,7 @@ export class DocumentsController {
             .getDocuments(association.rna || association.siren)
             .then(docs => documentService.labelAssoDocsBySiret(docs, establishment.siret));
         const [estabDocs, assoDocs] = await Promise.all([estabDocsPromise, assoDocsPromise]);
-        return this._removeDuplicates([...estabDocs, ...assoDocs]);
+        return this._removeDuplicates([...estabDocs, ...assoDocs]) as LabeledDoc[];
     }
 
     _organizeDocuments(miscDocs: LabeledDoc[]): GroupedDocs {
