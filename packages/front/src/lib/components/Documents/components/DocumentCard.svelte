@@ -20,7 +20,12 @@
                     </p>
                 </div>
                 <div class="fr-ml-auto fr-my-auto">
-                    <a class="fr-link fr-links-group__title" href={document.url} title="Télécharger">
+                    <a
+                        class="fr-link fr-links-group__title"
+                        href={document.url}
+                        title="Télécharger "
+                        target="_blank"
+                        rel="noopener noreferrer">
                         <span class="fr-icon-file-download-line" />
                     </a>
                 </div>
