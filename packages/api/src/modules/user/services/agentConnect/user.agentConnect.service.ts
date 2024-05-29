@@ -109,7 +109,7 @@ export class UserAgentConnectService {
             email: userObject.email,
             firstname: userObject.firstName,
             lastname: userObject.lastName,
-            url: null, // `${FRONT_OFFICE_URL}/auth/activate/${resetResult.token}`, agent connect automatically active
+            url: null, // no activation link, agent connect users are automatically active
             active: true, // agent connect users automatically active
             signupAt: createdUser.signupAt,
             isAgentConnect: true,
