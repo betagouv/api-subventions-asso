@@ -20,6 +20,7 @@ export class EstablishmentController {
 
         this.promises = Promise.all([associationPromise, establishmentPromise, simplifiedEstablishmentPromise]).then(
             result => ({
+                association: result[0],
                 establishment: result[1],
             }),
         );
