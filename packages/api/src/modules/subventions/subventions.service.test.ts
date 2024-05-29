@@ -2,10 +2,13 @@ import subventionsService from "./subventions.service";
 import * as IdentifierHelper from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import * as providers from "../providers";
+jest.mock("../providers/index");
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
-
-jest.mock("../providers/index");
+import Flux from "../../shared/Flux";
+import { SubventionsFlux } from "./@types/SubventionsFlux";
+import rnaSirenService from "../rna-siren/rnaSiren.service";
+jest.mock("../rna-siren/rnaSiren.service");
 
 const PROVIDERS_DEFAULT = providers.default;
 
@@ -30,8 +33,16 @@ describe("SubventionsService", () => {
         it("should return DemandeSubvention[]", async () => {
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
             const expected = [{}, {}];
-            const flux = await subventionsService.getDemandesByAssociation(IDENTIFIER);
+            const flux = (await subventionsService.getDemandesByAssociation(IDENTIFIER)) as Flux<SubventionsFlux>;
             const actual = (await flux.toPromise()).map(fs => fs.subventions || []).flat();
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return null if identifier is RNA and no SIREN is matched", async () => {
+            getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
+            jest.mocked(rnaSirenService.find).mockResolvedValueOnce(null);
+            const expected = null;
+            const actual = await subventionsService.getDemandesByAssociation(IDENTIFIER);
             expect(actual).toEqual(expected);
         });
     });

@@ -25,7 +25,7 @@ import { CAISSE_DES_DEPOTS_DTO } from "../../dataProviders/api/caisseDepots.fixt
 import miscScdlProducersRepository from "../../../src/modules/providers/scdl/repositories/miscScdlProducer.repository";
 import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
 import miscScdlGrantRepository from "../../../src/modules/providers/scdl/repositories/miscScdlGrant.repository";
-import DEFAULT_ASSOCIATION from "../../__fixtures__/association.fixture";
+import DEFAULT_ASSOCIATION, { LONELY_RNA } from "../../__fixtures__/association.fixture";
 import dauphinGisproRepository from "../../../src/modules/providers/dauphin/repositories/dauphin-gispro.repository";
 import { DAUPHIN_GISPRO_DBOS } from "../../dataProviders/db/__fixtures__/dauphinGispro.fixtures";
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
@@ -77,6 +77,18 @@ describe("/association", () => {
             });
 
             expect(subventions).toMatchSnapshot();
+        });
+
+        it("should return null if RNA does not match a SIREN", async () => {
+            const expected = null;
+            const response = await request(g.app)
+                .get(`/association/${LONELY_RNA}/subventions`)
+                .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "application/json");
+            expect(response.statusCode).toBe(200);
+
+            const actual = response.body.subventions;
+            expect(actual).toEqual(expected);
         });
     });
 
