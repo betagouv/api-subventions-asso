@@ -49,7 +49,6 @@
                 size="small"
                 icon="information-line"
                 iconPosition="left"
-                outline={false}
                 ariaControls="fr-modal"
                 trackerName="association-etablissement.more-legal-info-modal"
                 on:click={() => controller.displayModal()}>
