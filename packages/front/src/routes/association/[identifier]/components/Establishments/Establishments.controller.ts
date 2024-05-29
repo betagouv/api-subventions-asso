@@ -29,9 +29,11 @@ export class EstablishmentsController {
     get title() {
         const nbEstablishments = this.establishmentsStore.value.length;
         let specificityEtab = "établissement";
-        if (nbEstablishments > 1) specificityEtab = "établissements";
         let specificityOpen = "ouvert";
-        if (nbEstablishments > 1) specificityOpen = "ouverts";
+        if (nbEstablishments > 1) {
+            specificityEtab = "établissements";
+            specificityOpen = "ouverts";
+        }
         return `Cette association possède ${nbEstablishments} ${specificityEtab} dont ${this.nbEstabInActivity} ${specificityOpen}`;
     }
 
