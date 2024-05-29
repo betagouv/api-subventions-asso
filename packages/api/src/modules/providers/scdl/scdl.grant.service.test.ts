@@ -57,7 +57,6 @@ describe("ScdlGrantService", () => {
 
     describe.each`
         joinerMethod                  | identifierType | serviceMethodName
-        ${miscScdlJoiner.findByRna}   | ${"Rna"}       | ${"getDemandeSubventionByRna"}
         ${miscScdlJoiner.findBySiret} | ${"Siret"}     | ${"getDemandeSubventionBySiret"}
         ${miscScdlJoiner.findBySiren} | ${"Siren"}     | ${"getDemandeSubventionBySiren"}
     `("getDemandeSubventionBy$identifierType", ({ joinerMethod, serviceMethodName }) => {

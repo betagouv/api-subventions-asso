@@ -335,15 +335,6 @@ export class OsirisService
         return requests.map(r => OsirisRequestAdapter.toDemandeSubvention(r));
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async getDemandeSubventionByRna(rna: string): Promise<DemandeSubvention[] | null> {
-        return null;
-    }
-
-    async getGrantsByRna(rna: string): Promise<[] | null> {
-        return null;
-    }
-
     async getGrantsBySiren(siren: string): Promise<[] | null> {
         return null;
     }

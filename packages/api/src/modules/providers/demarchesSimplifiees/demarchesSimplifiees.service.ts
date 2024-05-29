@@ -28,10 +28,6 @@ export class DemarchesSimplifieesService extends ProviderCore implements Demande
         });
     }
 
-    getDemandeSubventionByRna(_rna: Rna): Promise<DemandeSubvention[] | null> {
-        return Promise.resolve(null);
-    }
-
     private async getSchemasByIds() {
         const schemas = await demarchesSimplifieesMapperRepository.findAll();
 

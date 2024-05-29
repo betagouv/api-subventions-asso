@@ -50,8 +50,7 @@ export class SubventionsService {
     private aggregateByType(id: StructureIdentifiers, type: StructureIdentifiersEnum): Flux<SubventionsFlux> {
         const functionName = `getDemandeSubventionBy${capitalizeFirstLetter(type)}` as
             | "getDemandeSubventionBySiret"
-            | "getDemandeSubventionBySiren"
-            | "getDemandeSubventionByRna";
+            | "getDemandeSubventionBySiren";
         const subventionsFlux = new Flux<SubventionsFlux>();
         const providers = this.getDemandesSubventionsProviders();
 
