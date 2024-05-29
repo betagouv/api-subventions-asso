@@ -23,6 +23,23 @@ import { AGENT_CONNECT_ENABLED } from "../../configurations/agentConnect.conf";
 @Route("/auth")
 @Tags("Authentification Controller")
 export class AuthentificationHttp extends Controller {
+    private setCookie(req, user) {
+        const cookieOption: CookieOptions = {
+            secure: true,
+            sameSite: "none",
+            domain: DOMAIN,
+            expires: user.jwt.expirateDate,
+            httpOnly: true,
+        };
+
+        if (DEV) {
+            cookieOption.domain = undefined;
+            cookieOption.secure = false;
+        }
+
+        req.res?.cookie("token", user.jwt.token, cookieOption);
+    }
+
     @Post("/forget-password")
     public async forgetPassword(@Body() body: { email: string }): Promise<{ success: boolean }> {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -31,34 +48,19 @@ export class AuthentificationHttp extends Controller {
     }
 
     @Post("/reset-password")
-    public async resetPassword(@Body() body: { password: string; token: string }): Promise<ResetPasswordDtoResponse> {
+    public async resetPassword(
+        @Body() body: { password: string; token: string },
+        @Request() req,
+    ): Promise<ResetPasswordDtoResponse> {
         const user = await userActivationService.resetPassword(body.password, body.token);
-
-        return {
-            user,
-        };
+        this.setCookie(req, user);
+        return { user };
     }
 
     private _login(req) {
         if (req.user) {
-            const cookieOption: CookieOptions = {
-                secure: true,
-                sameSite: "none",
-                domain: DOMAIN,
-                expires: req.user.jwt.expirateDate,
-                httpOnly: true,
-            };
-
-            if (DEV) {
-                cookieOption.domain = undefined;
-                cookieOption.secure = false;
-            }
-
-            req.res?.cookie("token", req.user.jwt.token, cookieOption);
-
-            return {
-                user: req.user,
-            };
+            this.setCookie(req, req.user);
+            return { user: req.user };
         }
 
         throw new InternalServerError();
@@ -95,8 +97,12 @@ export class AuthentificationHttp extends Controller {
 
     @Post("/activate")
     @SuccessResponse("200", "Account activation successfully")
-    public async activate(@Body() body: { token: string; data: UserActivationInfoDto }): Promise<ActivateDtoResponse> {
+    public async activate(
+        @Body() body: { token: string; data: UserActivationInfoDto },
+        @Request() req,
+    ): Promise<ActivateDtoResponse> {
         const user = await userProfileService.activate(body.token, body.data);
+        this.setCookie(req, user);
         this.setStatus(200);
         return { user };
     }
