@@ -11,12 +11,14 @@ import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum"
 import * as IdentifierHelper from "../../shared/helpers/IdentifierHelper";
 import { ProviderRequestService } from "../provider-request/providerRequest.service";
 import { documentToDocumentRequest } from "./document.adapter";
+import { ReadStream } from "node:fs";
 
 jest.mock("../../shared/helpers/IdentifierHelper", () => ({
     getIdentifierType: jest.fn(() => StructureIdentifiersEnum.siren) as jest.SpyInstance,
 }));
 jest.mock("./document.adapter");
 jest.mock("fs");
+jest.mock("child_process");
 
 describe("Documents Service", () => {
     const SIREN = "123456789";
@@ -528,10 +530,6 @@ describe("Documents Service", () => {
 
     describe("getRequestedDocumentsFiles", () => {
         let downloadDocumentSpy: jest.SpyInstance;
-        let mkdirSyncSpy: jest.SpyInstance;
-        let rmSyncSpy: jest.SpyInstance;
-        let createReadStreamSpy: jest.SpyInstance;
-        let execSyncSpy: jest.SpyInstance;
 
         const FAKE_DOCUMENT = "FAKE_DOCUMENT" as unknown as DocumentRequestDto;
         const FAKE_STREAM = {
@@ -545,16 +543,12 @@ describe("Documents Service", () => {
             downloadDocumentSpy = jest.spyOn(documentsService, "downloadDocument").mockImplementation(jest.fn());
 
             // FS
-            mkdirSyncSpy = jest.spyOn(fs, "mkdirSync");
-            mkdirSyncSpy.mockImplementation(jest.fn());
-            rmSyncSpy = jest.spyOn(fs, "rmSync");
-            rmSyncSpy.mockImplementation(jest.fn());
-            createReadStreamSpy = jest.spyOn(fs, "createReadStream");
-            createReadStreamSpy.mockReturnValue(FAKE_STREAM);
+            jest.mocked(fs.mkdirSync).mockImplementation(jest.fn());
+            jest.mocked(fs.rmSync).mockImplementation(jest.fn());
+            jest.mocked(fs.createReadStream).mockReturnValue(FAKE_STREAM as unknown as ReadStream);
 
             // childProcess (zip)
-            execSyncSpy = jest.spyOn(childProcess, "execSync");
-            execSyncSpy.mockImplementation(jest.fn());
+            jest.mocked(childProcess.execSync).mockImplementation(jest.fn());
         });
 
         afterAll(() => {
@@ -565,7 +559,7 @@ describe("Documents Service", () => {
             // @ts-expect-error: mock
             IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
             await documentsService.getRequestedDocumentsFiles(REQUESTED_DOCS, IDENTIFIER);
-            expect(mkdirSyncSpy).toBeCalled();
+            expect(fs.mkdirSync).toBeCalled();
         });
 
         it("should call downloadDocument", async () => {
@@ -578,7 +572,7 @@ describe("Documents Service", () => {
             IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
             downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
             await documentsService.getRequestedDocumentsFiles(REQUESTED_DOCS, IDENTIFIER);
-            expect(execSyncSpy).toBeCalledWith(
+            expect(childProcess.execSync).toBeCalledWith(
                 expect.stringMatching('zip -j /tmp/12345678912345-([0-9]+).zip "/fake/path"'),
             );
         });
@@ -588,7 +582,7 @@ describe("Documents Service", () => {
             IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
             downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
             await documentsService.getRequestedDocumentsFiles(REQUESTED_DOCS, IDENTIFIER);
-            expect(rmSyncSpy).toBeCalledWith(expect.stringMatching("/tmp/12345678912345-([0-9]+)"), {
+            expect(fs.rmSync).toBeCalledWith(expect.stringMatching("/tmp/12345678912345-([0-9]+)"), {
                 recursive: true,
                 force: true,
             });
@@ -599,7 +593,7 @@ describe("Documents Service", () => {
             IdentifierHelper.getIdentifierType.mockReturnValueOnce(StructureIdentifiersEnum.siret);
             downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
             const actual = await documentsService.getRequestedDocumentsFiles(REQUESTED_DOCS, IDENTIFIER);
-            expect(createReadStreamSpy).toBeCalledWith(expect.stringMatching("/tmp/12345678912345-([0-9]+).zip"));
+            expect(fs.createReadStream).toBeCalledWith(expect.stringMatching("/tmp/12345678912345-([0-9]+).zip"));
             expect(actual).toBe(FAKE_STREAM);
         });
 
@@ -615,7 +609,7 @@ describe("Documents Service", () => {
 
             callbackOnLastStream();
 
-            expect(rmSyncSpy).toBeCalledWith(expect.stringMatching("/tmp/12345678912345-([0-9]+).zip"));
+            expect(fs.rmSync).toBeCalledWith(expect.stringMatching("/tmp/12345678912345-([0-9]+).zip"));
         });
     });
 
