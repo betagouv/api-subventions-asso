@@ -1,8 +1,17 @@
 import { Siret } from "dto";
 
-export default interface CaisseDepotsSubventionDto {
+export type OpenDataSoftLinks = { rel: string; href: string };
+
+export interface CaisseDepotsDatasetDto {
+    total_count: number;
+    links: OpenDataSoftLinks[];
+    records: { links: OpenDataSoftLinks[]; record: CaisseDepotsSubventionDto }[];
+}
+
+export type CaisseDepotsSubventionDto = {
     id: string;
     timestamp: string;
+    size: number;
     fields: {
         montant: number;
         notificationue: "Oui" | "Non";
@@ -18,5 +27,6 @@ export default interface CaisseDepotsSubventionDto {
         conditionsversement: "UNIQUE" | "ECHELONNE";
         idattribuant: Siret;
         referencedecision: string | null; // often null
+        idrae: string | null; // often null
     };
-}
+};

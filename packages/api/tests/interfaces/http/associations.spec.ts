@@ -20,26 +20,44 @@ import {
 } from "../../dataProviders/db/__fixtures__/demarchesSimplifiees.fixtures";
 import demarchesSimplifieesMapperRepository from "../../../src/modules/providers/demarchesSimplifiees/repositories/demarchesSimplifieesMapper.repository";
 import demarchesSimplifieesService from "../../../src/modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
+import caisseDepotsService from "../../../src/modules/providers/caisseDepots/caisseDepots.service";
+import { CAISSE_DES_DEPOTS_DTO } from "../../dataProviders/api/caisseDepots.fixtures";
+import miscScdlProducersRepository from "../../../src/modules/providers/scdl/repositories/miscScdlProducer.repository";
+import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
+import miscScdlGrantRepository from "../../../src/modules/providers/scdl/repositories/miscScdlGrant.repository";
+import DEFAULT_ASSOCIATION from "../../__fixtures__/association.fixture";
+import dauphinGisproRepository from "../../../src/modules/providers/dauphin/repositories/dauphin-gispro.repository";
+import { DAUPHIN_GISPRO_DBOS } from "../../dataProviders/db/__fixtures__/dauphinGispro.fixtures";
+jest.mock("../../../src/modules/provider-request/providerRequest.service");
 
 const g = global as unknown as { app: unknown };
 
+const mockExternalData = async () => {
+    // @ts-expect-error: mock protected http ProviderServiceRequest
+    caisseDepotsService.http = { get: () => ({ data: CAISSE_DES_DEPOTS_DTO }) };
+};
+
 const insertData = async () => {
+    // @ts-expect-error: DBO not fully mocked
+    await dauphinGisproRepository.upsert(DAUPHIN_GISPRO_DBOS[0]);
     await osirisRequestRepository.add(OsirisRequestEntityFixture);
     await fonjepSubventionRepository.create(FonjepEntityFixture);
     await demarchesSimplifieesMapperRepository.upsert(DS_SCHEMAS[0]);
     await demarchesSimplifieesDataRepository.upsert(DS_DATA_ENTITIES[0]);
+    await miscScdlProducersRepository.create(LOCAL_AUTHORITIES[0]);
+    await miscScdlGrantRepository.createMany(SCDL_GRANT_DBOS);
 };
 
 describe("/association", () => {
     beforeEach(async () => {
-        jest.spyOn(dauphinService, "getDemandeSubventionBySiren").mockImplementationOnce(async () => []);
         await insertData();
+        mockExternalData();
     });
 
     describe("/{structure_identifier}/subventions", () => {
         it("should return a list of subventions", async () => {
             const response = await request(g.app)
-                .get(`/association/${OsirisRequestEntityFixture.legalInformations.siret}/subventions`)
+                .get(`/association/${DEFAULT_ASSOCIATION.siret}/subventions`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);

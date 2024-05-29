@@ -7,7 +7,7 @@ import GrantProvider from "../../grant/@types/GrantProvider";
 import ProviderCore from "../ProviderCore";
 import { RawGrant } from "../../grant/@types/rawGrant";
 import CaisseDepotsDtoAdapter from "./adapters/caisseDepotsDtoAdapter";
-import CaisseDepotsSubventionDto from "./dto/CaisseDepotsSubventionDto";
+import { CaisseDepotsSubventionDto } from "./dto/CaisseDepotsDto";
 
 export class CaisseDepotsService extends ProviderCore implements DemandesSubventionsProvider, GrantProvider {
     isDemandesSubventionsProvider = true;

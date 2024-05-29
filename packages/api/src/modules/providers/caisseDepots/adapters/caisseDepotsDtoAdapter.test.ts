@@ -1,4 +1,4 @@
-import caisseDepotsEntity from "../../../../../tests/modules/providers/caisseDepots/entity";
+import { CAISSE_DES_DEPOTS_RECORDS } from "../../../../../tests/dataProviders/api/caisseDepots.fixtures";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import CaisseDepotsDtoAdapter from "./caisseDepotsDtoAdapter";
 
@@ -47,7 +47,7 @@ describe("CaisseDepotsDtoAdapter", () => {
     });
 
     describe("toDemandeSubvention", () => {
-        const INPUT = caisseDepotsEntity;
+        const INPUT = CAISSE_DES_DEPOTS_RECORDS[0];
         const DATE = new Date(INPUT.timestamp);
         const toPvSpy = jest
             .spyOn(ProviderValueFactory, "buildProviderValueAdapter")
@@ -69,7 +69,7 @@ describe("CaisseDepotsDtoAdapter", () => {
 
     describe("toCommon", () => {
         it("returns proper result", () => {
-            const INPUT = caisseDepotsEntity;
+            const INPUT = CAISSE_DES_DEPOTS_RECORDS[0];
             const actual = CaisseDepotsDtoAdapter.toCommon(INPUT);
             expect(actual).toMatchSnapshot();
         });

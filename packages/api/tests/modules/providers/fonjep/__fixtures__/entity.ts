@@ -1,10 +1,11 @@
 import FonjepEntity from "../../../../../src/modules/providers/fonjep/entities/FonjepSubventionEntity";
 import FonjepVersementEntity from "../../../../../src/modules/providers/fonjep/entities/FonjepVersementEntity";
+import DEFAULT_ASSOCIATION from "../../../../__fixtures__/association.fixture";
 
 export const SubventionEntity = new FonjepEntity(
     {
-        siret: "00000000000002",
-        name: "FONJET_ENTITY_FIXTURE",
+        siret: DEFAULT_ASSOCIATION.siret,
+        name: DEFAULT_ASSOCIATION.name,
     },
     {
         unique_id: "unique_id",
@@ -28,7 +29,7 @@ export const SubventionEntity = new FonjepEntity(
 
 export const VersementEntity = new FonjepVersementEntity(
     {
-        siret: "00000000000002",
+        siret: DEFAULT_ASSOCIATION.siret,
     },
     {
         unique_id: "unique_id",
