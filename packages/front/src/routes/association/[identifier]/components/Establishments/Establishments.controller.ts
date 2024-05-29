@@ -28,9 +28,13 @@ export class EstablishmentsController {
 
     get title() {
         const nbEstablishments = this.establishmentsStore.value.length;
-        let specificity = "établissement";
-        if (nbEstablishments > 1) specificity = "établissements";
-        return `Cette association possède ${nbEstablishments} ${specificity} dont ${this.nbEstabInActivity} en activité`;
+        let specificityEtab = "établissement";
+        let specificityOpen = "ouvert";
+        if (nbEstablishments > 1) {
+            specificityEtab = "établissements";
+            specificityOpen = "ouverts";
+        }
+        return `Cette association possède ${nbEstablishments} ${specificityEtab} dont ${this.nbEstabInActivity} ${specificityOpen}`;
     }
 
     subscribeStores() {

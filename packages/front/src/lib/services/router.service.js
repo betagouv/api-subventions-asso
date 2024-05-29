@@ -19,6 +19,7 @@ export const buildBreadcrumbs = path => {
     if (path.includes("contact")) crumbs.push({ label: "Contactez-nous" });
     if (path.includes("association")) crumbs.push({ label: `Association (${path.split("/").at(-1)})` });
     if (path.includes("etablissement")) crumbs.push({ label: `Établissement (${path.split("/").at(-1)})` });
+    if (path.includes("user/profile")) crumbs.push({ label: "Profil" });
     else if (path.includes("admin")) {
         crumbs.push({ label: "Admin", url: "/admin" });
         if (path.includes("users/list")) crumbs.push({ label: PAGE_ADMIN_USERS_ACCOUNT_NAME });

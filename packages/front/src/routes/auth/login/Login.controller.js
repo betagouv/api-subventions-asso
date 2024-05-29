@@ -31,6 +31,7 @@ export default class LoginController {
             const message = this._getErrorMessage(e.data?.code);
             this.error.set(message);
         }
+        this._showAlert();
     }
 
     async _proceedWithAgentConnect(rawStringQuery) {
@@ -60,5 +61,13 @@ export default class LoginController {
         return this._query.success === "ACCOUNT_ACTIVATED"
             ? "Votre compte a bien été activé, vous pouvez maintenant vous connecter"
             : "Votre mot de passe a bien été changé";
+    }
+
+    _showAlert() {
+        if (this.alertElement) this.alertElement.scrollIntoView({ behavior: "smooth", inline: "nearest" });
+    }
+
+    onMount(alertElement) {
+        this.alertElement = alertElement;
     }
 }

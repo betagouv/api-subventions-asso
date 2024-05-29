@@ -1,4 +1,5 @@
 <script>
+    import { onMount } from "svelte";
     import LoginController from "./Login.controller";
     import Input from "$lib/dsfr/Input.svelte";
     import Button from "$lib/dsfr/Button.svelte";
@@ -7,27 +8,31 @@
     import AgentConnectZone from "$lib/components/AgentConnectZone.svelte";
 
     let form;
+    let alertElement;
     export let data;
     const { query } = data;
     const controller = new LoginController(query);
 
     const { error, showSuccessMessage, successMessage } = controller;
+    onMount(() => controller.onMount(alertElement));
     $: controller.formElt = form;
 </script>
 
 <h1 class="fr-mb-6w fr-h2">
     {controller.pageTitle}
 </h1>
-{#if $error != null}
-    <Alert title="Attention">
-        {$error}
-    </Alert>
-{/if}
-{#if showSuccessMessage}
-    <Alert type="success">
-        {successMessage}
-    </Alert>
-{/if}
+<div bind:this={alertElement}>
+    {#if $error != null}
+        <Alert title="Attention">
+            {$error}
+        </Alert>
+    {/if}
+    {#if showSuccessMessage}
+        <Alert type="success">
+            {successMessage}
+        </Alert>
+    {/if}
+</div>
 
 <div class="bordered-frame fr-col-6 fr-col-offset-3 fr-p-8v fr-mt-12v">
     <AgentConnectZone />
