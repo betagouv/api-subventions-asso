@@ -57,13 +57,10 @@
             <!-- Asso documents -->
             {#if documents.someAsso}
                 <h3 class="fr-h2 fr-mb-4w">Pièces provenant de l’INSEE et du RNA</h3>
-                <!-- TODO change top margin when we have download all button -->
                 <div class="fr-grid-row">
-                    {#key $showMoreAsso}
-                        {#each controller.docsToShow(documents, "association", false) as document}
-                            <DocumentCard {document} />
-                        {/each}
-                    {/key}
+                    {#each documents.assoDocs as document}
+                        <DocumentCard {document} />
+                    {/each}
                 </div>
                 {#if documents.moreAssoDocs.length}
                     <div class="fr-col-12">
@@ -72,7 +69,7 @@
                             expanded={$showMoreAsso}
                             buttonAfter={true}>
                             <div class="inner fr-grid-row extra-docs-container">
-                                {#each controller.docsToShow(documents, "association", true) as document}
+                                {#each documents.moreAssoDocs as document}
                                     <DocumentCard {document} />
                                 {/each}
                             </div>
@@ -87,11 +84,9 @@
                     {controller.estabDocsTitle}
                 </h3>
                 <div class="fr-grid-row">
-                    {#key $showMoreEstab}
-                        {#each controller.docsToShow(documents, "establishment", false) as document}
-                            <DocumentCard {document} />
-                        {/each}
-                    {/key}
+                    {#each documents.estabDocs as document}
+                        <DocumentCard {document} />
+                    {/each}
                 </div>
                 {#if documents.moreEstabDocs.length}
                     <div class="fr-col-12">
@@ -100,7 +95,7 @@
                             expanded={$showMoreEstab}
                             buttonAfter={true}>
                             <div class="inner fr-grid-row extra-docs-container">
-                                {#each controller.docsToShow(documents, "establishment", true) as document}
+                                {#each documents.moreEstabDocs as document}
                                     <DocumentCard {document} />
                                 {/each}
                             </div>

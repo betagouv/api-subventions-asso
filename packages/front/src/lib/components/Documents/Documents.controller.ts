@@ -120,13 +120,6 @@ export class DocumentsController {
         };
     }
 
-    docsToShow(docs: GroupedDocs, structureType: "association" | "establishment", more = false) {
-        if (docs === null) return [];
-        if (structureType === "establishment") return more ? docs.moreEstabDocs : docs.estabDocs;
-        if (structureType === "association") return more ? docs.moreAssoDocs : docs.assoDocs;
-        return [];
-    }
-
     async onMount() {
         // Svelte component mounted so bind:this replaced this.element with current node element
         await waitElementIsVisible(this.element as HTMLElement);
