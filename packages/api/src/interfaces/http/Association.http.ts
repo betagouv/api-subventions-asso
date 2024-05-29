@@ -39,6 +39,9 @@ export class AssociationHttp extends Controller {
     @Response<HttpErrorInterface>("404")
     public async getDemandeSubventions(identifier: AssociationIdentifiers): Promise<GetSubventionsResponseDto> {
         const flux = await associationService.getSubventions(identifier);
+
+        if (!flux) return { subventions: null };
+
         const result = await flux.toPromise();
         const subventions = result
             .map(fluxSub => fluxSub.subventions)
