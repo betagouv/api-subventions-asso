@@ -143,4 +143,8 @@ export class DocumentsController {
         }, 750); // weird if message appears and leaves right ahead ; quite arbitrary value
         await promise;
     }
+
+    switchDisplay(show: Store<boolean>) {
+        show.set(!show.value);
+    }
 }
