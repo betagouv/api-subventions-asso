@@ -50,15 +50,6 @@ describe("Documents.controller", () => {
             expect(associationService.getDocuments).toHaveBeenCalledWith(ASSOCIATION.siren);
         });
 
-        it.skip("filter out docs with siret that are not from siege", async () => {
-            const DOCS = [{ __meta__: { siret: "OTHER_SIRET" } }];
-            // @ts-expect-error: use mock
-            vi.mocked(associationService).getDocuments.mockResolvedValueOnce(DOCS);
-            // @ts-expect-error: use mock
-            vi.mocked(documentService).labelAssoDocsBySiret.mockResolvedValueOnce(vi.fn(d => d as LabeledDoc[]));
-            expect(documentService.labelAssoDocsBySiret).toHaveBeenCalledWith(DOCS);
-        });
-
         it("make doc service label docs", async () => {
             const DOCS = [{ __meta__: { siret: "OTHER_SIRET" } }];
             // @ts-expect-error: use mock
@@ -76,22 +67,6 @@ describe("Documents.controller", () => {
             vi.mocked(documentService).labelAssoDocsBySiret.mockResolvedValueOnce(expected as LabeledDoc[]);
             const actual = await ctrl._getAssociationDocuments(ASSOCIATION);
             expect(actual).toEqual(expected);
-        });
-
-        it.skip("keep docs with no siret", async () => {
-            // @ts-expect-error: use mock
-            vi.mocked(associationService).getDocuments.mockResolvedValueOnce([{ __meta__: { siret: undefined } }]);
-            const expected = 1;
-            const actual = (await ctrl._getAssociationDocuments(ASSOCIATION)).length;
-            expect(actual).toBe(expected);
-        });
-
-        it.skip("keep docs with siege siret", async () => {
-            // @ts-expect-error: use mock
-            vi.mocked(associationService).getDocuments.mockResolvedValueOnce([{ __meta__: { siret: "SIRENNIC" } }]);
-            const expected = 1;
-            const actual = (await ctrl._getAssociationDocuments(ASSOCIATION)).length;
-            expect(actual).toBe(expected);
         });
     });
 
