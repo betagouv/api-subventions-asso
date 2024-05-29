@@ -95,19 +95,24 @@ export class DocumentsController {
     }
 
     _organizeDocuments(miscDocs: LabeledDoc[]): GroupedDocs {
+        const partition = (docs: LabeledDoc[]) => {
+            const more: LabeledDoc[] = [];
+            const defaultShown: LabeledDoc[] = [];
+            for (const doc of docs) (doc.showByDefault ? defaultShown : more).push(doc);
+            return { more, defaultShown };
+        };
+
         const fullAssoDocs: LabeledDoc[] = [];
         const fullEstabDocs: LabeledDoc[] = [];
         for (const doc of miscDocs) {
             if (["Le Compte Asso", "Dauphin"].includes(doc.provider)) fullEstabDocs.push(doc);
             if (["RNA", "Avis de Situation Insee"].includes(doc.provider)) fullAssoDocs.push(doc);
-            // TODO where to put others ?
+            // TODO where to put eventual others?
         }
         sortLabeledDocs(fullAssoDocs);
         sortLabeledDocs(fullEstabDocs);
-        const assoDocs = fullAssoDocs.filter(doc => doc.showByDefault);
-        const estabDocs = fullEstabDocs.filter(doc => doc.showByDefault);
-        const moreAssoDocs = fullAssoDocs.filter(doc => !doc.showByDefault);
-        const moreEstabDocs = fullEstabDocs.filter(doc => !doc.showByDefault);
+        const { defaultShown: assoDocs, more: moreAssoDocs } = partition(fullAssoDocs);
+        const { defaultShown: estabDocs, more: moreEstabDocs } = partition(fullEstabDocs);
         return {
             moreAssoDocs,
             moreEstabDocs,
