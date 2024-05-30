@@ -1,5 +1,5 @@
 export type DocumentRequestDto = {
-    type: string;
+    type: string; // RIB, attestation, insee status...
     url: string;
     nom: string;
-}
+};
