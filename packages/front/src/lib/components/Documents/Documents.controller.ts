@@ -107,7 +107,7 @@ export class DocumentsController {
         for (const doc of miscDocs) {
             if (["Le Compte Asso", "Dauphin"].includes(doc.provider)) fullEstabDocs.push(doc);
             if (["RNA", "Avis de Situation Insee"].includes(doc.provider)) fullAssoDocs.push(doc);
-            // TODO where to put eventual others?
+            // careful: no default case
         }
         sortLabeledDocs(fullAssoDocs);
         sortLabeledDocs(fullEstabDocs);
