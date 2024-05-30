@@ -7,7 +7,7 @@ import { currentAssociation } from "$lib/store/association.store";
 import type { ResourceType } from "$lib/types/ResourceType";
 import type { DocumentEntity } from "$lib/entities/DocumentEntity";
 import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
-import documentService from "$lib/resources/document/document.service";
+import documentService, { type LabeledDoc } from "$lib/resources/document/document.service";
 import documentHelper from "$lib/helpers/document.helper";
 import { returnInfinitePromise } from "$lib/helpers/promiseHelper";
 
@@ -20,16 +20,26 @@ const estabDocsTitleByType = {
     establishment: "Pièces complémentaires déposées par l'établissement",
 };
 
+const sortLabeledDocs = (docs: LabeledDoc[]) =>
+    docs.sort((docA, docB) => Number(docB.showByDefault) - Number(docA.showByDefault));
+
+type GroupedDocs = null | {
+    assoDocs: LabeledDoc[];
+    estabDocs: LabeledDoc[];
+    moreAssoDocs: LabeledDoc[];
+    moreEstabDocs: LabeledDoc[];
+    someAsso: boolean;
+    someEstab: boolean;
+    some: boolean;
+    fullSome: boolean;
+};
+
 export class DocumentsController {
-    documentsPromise: Store<
-        Promise<null | {
-            assoDocs: DocumentEntity[];
-            estabDocs: DocumentEntity[];
-            some: boolean;
-        }>
-    >;
+    documentsPromise;
     element?: HTMLElement;
     zipPromise: Store<Promise<void | null>>;
+    public showMoreAsso: Store<boolean>;
+    public showMoreEstab: Store<boolean>;
 
     constructor(
         public resourceType: ResourceType,
@@ -40,6 +50,8 @@ export class DocumentsController {
         this.documentsPromise = new Store(returnInfinitePromise());
         this.zipPromise = new Store(Promise.resolve(null));
         this.resource = resource;
+        this.showMoreAsso = new Store(false);
+        this.showMoreEstab = new Store(false);
     }
 
     get resourceNameWithDemonstrative() {
@@ -58,38 +70,59 @@ export class DocumentsController {
 
     async _getAssociationDocuments(association: AssociationEntity) {
         const associationDocuments = await associationService.getDocuments(association.rna || association.siren);
-        return associationDocuments.filter(
-            doc => !doc.__meta__.siret || doc.__meta__.siret === getSiegeSiret(association),
-        );
+        return documentService.labelAssoDocsBySiret(associationDocuments, getSiegeSiret(association));
     }
 
-    _removeDuplicates(docs: DocumentEntity[]) {
+    _removeDuplicates(docs: DocumentEntity[] | LabeledDoc[]): DocumentEntity[] | LabeledDoc[] {
         const docsByUrl = {};
         for (const doc of docs) {
             docsByUrl[doc.url] = doc;
         }
-        return Object.values(docsByUrl) as DocumentEntity[];
+        return Object.values(docsByUrl);
     }
 
-    async _getEstablishmentDocuments(establishment) {
+    async _getEstablishmentDocuments(establishment): Promise<LabeledDoc[]> {
         const association = currentAssociation.value;
         if (!association) return [];
-        const estabDocsPromise = establishmentService.getDocuments(establishment.siret);
+        const estabDocsPromise: Promise<LabeledDoc[]> = establishmentService
+            .getDocuments(establishment.siret)
+            .then(docs => docs.map(doc => ({ ...doc, showByDefault: true } as LabeledDoc)));
         const assoDocsPromise = associationService
             .getDocuments(association.rna || association.siren)
-            .then(docs => docs.filter(doc => !doc.__meta__.siret || doc.__meta__.siret === establishment.siret));
+            .then(docs => documentService.labelAssoDocsBySiret(docs, establishment.siret));
         const [estabDocs, assoDocs] = await Promise.all([estabDocsPromise, assoDocsPromise]);
-        return this._removeDuplicates([...estabDocs, ...assoDocs]);
+        return this._removeDuplicates([...estabDocs, ...assoDocs]) as LabeledDoc[];
     }
 
-    _organizeDocuments(miscDocs: DocumentEntity[]) {
-        const assoDocs: DocumentEntity[] = [];
-        const estabDocs: DocumentEntity[] = [];
+    _organizeDocuments(miscDocs: LabeledDoc[]): GroupedDocs {
+        const partition = (docs: LabeledDoc[]) => {
+            const more: LabeledDoc[] = [];
+            const defaultShown: LabeledDoc[] = [];
+            for (const doc of docs) (doc.showByDefault ? defaultShown : more).push(doc);
+            return { more, defaultShown };
+        };
+
+        const fullAssoDocs: LabeledDoc[] = [];
+        const fullEstabDocs: LabeledDoc[] = [];
         for (const doc of miscDocs) {
-            if (["Le Compte Asso", "Dauphin"].includes(doc.provider)) estabDocs.push(doc);
-            if (["RNA", "Avis de Situation Insee"].includes(doc.provider)) assoDocs.push(doc);
+            if (["Le Compte Asso", "Dauphin"].includes(doc.provider)) fullEstabDocs.push(doc);
+            if (["RNA", "Avis de Situation Insee"].includes(doc.provider)) fullAssoDocs.push(doc);
+            // careful: no default case
         }
-        return { assoDocs, estabDocs, some: !!(assoDocs.length + estabDocs.length) };
+        sortLabeledDocs(fullAssoDocs);
+        sortLabeledDocs(fullEstabDocs);
+        const { defaultShown: assoDocs, more: moreAssoDocs } = partition(fullAssoDocs);
+        const { defaultShown: estabDocs, more: moreEstabDocs } = partition(fullEstabDocs);
+        return {
+            moreAssoDocs,
+            moreEstabDocs,
+            assoDocs,
+            estabDocs,
+            someAsso: !!fullAssoDocs.length,
+            someEstab: !!fullEstabDocs.length,
+            some: !!(assoDocs.length + estabDocs.length),
+            fullSome: !!(fullAssoDocs.length + fullEstabDocs.length),
+        };
     }
 
     async onMount() {
@@ -109,5 +142,9 @@ export class DocumentsController {
             this.zipPromise.set(promise);
         }, 750); // weird if message appears and leaves right ahead ; quite arbitrary value
         await promise;
+    }
+
+    switchDisplay(show: Store<boolean>) {
+        show.set(!show.value);
     }
 }

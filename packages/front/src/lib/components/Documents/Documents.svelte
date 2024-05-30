@@ -10,6 +10,7 @@
     import type { ResourceType } from "$lib/types/ResourceType";
     import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
     import Button from "$lib/dsfr/Button.svelte";
+    import OpenCloseButton from "$lib/components/Documents/components/OpenCloseButton.svelte";
 
     // TODO: replace unknown with EstablishmentEntity when created
     export let resource: AssociationEntity | unknown;
@@ -18,6 +19,7 @@
     const controller = new DocumentsController(resourceType, resource);
     const documentsPromise = controller.documentsPromise;
     const zipPromise = controller.zipPromise;
+    const { showMoreAsso, showMoreEstab } = controller;
 
     onMount(() => {
         controller.onMount();
@@ -29,7 +31,7 @@
     {#await $documentsPromise}
         <Spinner description="Chargement des pièces administratives en cours ..." />
     {:then documents}
-        {#if documents?.some}
+        {#if documents?.fullSome}
             <Alert type="info" title="État des fichiers">
                 Certains fichiers peuvent être erronés selon la manière dont ils ont été renseignés auprès de nos
                 fournisseurs de données.
@@ -53,17 +55,29 @@
             </div>
 
             <!-- Asso documents -->
-            {#if documents.assoDocs.length}
+            {#if documents.someAsso}
                 <h3 class="fr-h2 fr-mb-4w">Pièces provenant de l’INSEE et du RNA</h3>
-                <!-- change top margin when we have download all button -->
                 <div class="fr-grid-row">
                     {#each documents.assoDocs as document}
                         <DocumentCard {document} />
                     {/each}
                 </div>
+                {#if documents.moreAssoDocs.length}
+                    <div class="fr-col-12">
+                        <OpenCloseButton
+                            on:click={() => controller.switchDisplay(showMoreAsso)}
+                            expanded={$showMoreAsso}>
+                            <div class="inner fr-grid-row extra-docs-container">
+                                {#each documents.moreAssoDocs as document}
+                                    <DocumentCard {document} />
+                                {/each}
+                            </div>
+                        </OpenCloseButton>
+                    </div>
+                {/if}
             {/if}
 
-            {#if documents.estabDocs.length}
+            {#if documents.someEstab}
                 <!-- Etab documents -->
                 <h3 class="fr-h2 fr-mt-6w fr-mb-4w">
                     {controller.estabDocsTitle}
@@ -73,6 +87,19 @@
                         <DocumentCard {document} />
                     {/each}
                 </div>
+                {#if documents.moreEstabDocs.length}
+                    <div class="fr-col-12">
+                        <OpenCloseButton
+                            on:click={() => controller.switchDisplay(showMoreEstab)}
+                            expanded={$showMoreEstab}>
+                            <div class="inner fr-grid-row extra-docs-container">
+                                {#each documents.moreEstabDocs as document}
+                                    <DocumentCard {document} />
+                                {/each}
+                            </div>
+                        </OpenCloseButton>
+                    </div>
+                {/if}
             {/if}
         {:else}
             <DataNotFound
