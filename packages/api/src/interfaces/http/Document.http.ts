@@ -16,9 +16,11 @@ export class DocumentHttp extends Controller {
         return stream;
     }
 
-    // TODO tests unit & integ & provider value type
     @Post("/downloads")
-    public async downloadRequiredDocuments(@Body() requiredDocs: DocumentRequestDto[], @Request() req: IdentifiedRequest) {
+    public async downloadRequiredDocuments(
+        @Body() requiredDocs: DocumentRequestDto[],
+        @Request() req: IdentifiedRequest,
+    ) {
         const stream = await documentService.getRequestedDocumentsFiles(requiredDocs, req.user._id.toString());
         this.setHeader("Content-Type", "application/zip");
         this.setHeader("Content-Disposition", "inline");
