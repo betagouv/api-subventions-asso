@@ -66,8 +66,7 @@
                     <div class="fr-col-12">
                         <OpenCloseButton
                             on:click={() => controller.switchDisplay(showMoreAsso)}
-                            expanded={$showMoreAsso}
-                            buttonAfter={true}>
+                            expanded={$showMoreAsso}>
                             <div class="inner fr-grid-row extra-docs-container">
                                 {#each documents.moreAssoDocs as document}
                                     <DocumentCard {document} />
@@ -92,8 +91,7 @@
                     <div class="fr-col-12">
                         <OpenCloseButton
                             on:click={() => controller.switchDisplay(showMoreEstab)}
-                            expanded={$showMoreEstab}
-                            buttonAfter={true}>
+                            expanded={$showMoreEstab}>
                             <div class="inner fr-grid-row extra-docs-container">
                                 {#each documents.moreEstabDocs as document}
                                     <DocumentCard {document} />

@@ -5,15 +5,12 @@
     export let id = nanoid(7);
     export let toCloseLabel = "Masquer";
     export let toOpenLabel = "Afficher plus";
-    export let buttonAfter = false;
 </script>
 
 <section class="fr-accordion">
-    {#if $$slots["default"] && buttonAfter}
-        <div class="fr-collapse fr-p-0" id="accordion-{id}">
-            <slot />
-        </div>
-    {/if}
+    <div class="fr-collapse fr-p-0" id="accordion-{id}">
+        <slot />
+    </div>
     <h3 class="fr-accordion__title">
         <button class="fr-accordion__btn" aria-expanded={expanded} aria-controls="accordion-{id}" on:click>
             <div class="fr-ml-auto">
@@ -25,11 +22,6 @@
             </div>
         </button>
     </h3>
-    {#if $$slots["default"] && !buttonAfter}
-        <div class="fr-collapse" id="accordion-{id}">
-            <slot />
-        </div>
-    {/if}
 </section>
 
 <style>
