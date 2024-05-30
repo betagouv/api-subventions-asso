@@ -13,6 +13,7 @@ export enum TemplateEnum {
     autoDeletion = 156,
     warnDeletion = 155,
     activated = 135,
+    creationAgentConnect = 171,
 }
 
 export class BrevoMailNotifyPipe extends BrevoNotifyPipe implements NotifyOutPipe {
@@ -49,6 +50,7 @@ export class BrevoMailNotifyPipe extends BrevoNotifyPipe implements NotifyOutPip
     }
 
     private async sendCreationMail(data: NotificationDataTypes[NotificationType.USER_CREATED]) {
+        if (data.isAgentConnect) return this.sendMail(data.email, { url: data.url }, TemplateEnum.creationAgentConnect);
         return this.sendMail(data.email, { url: data.url }, TemplateEnum.creation);
     }
 

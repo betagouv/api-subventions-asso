@@ -97,13 +97,25 @@ export class UserAgentConnectService {
         if (!domain) throw new InternalServerError("email from AgentConnect invalid");
         await configurationsService.addEmailDomain(domain, false);
 
-        return userCrudService.createUser(userObject, true).catch(e => {
+        const createdUser = (await userCrudService.createUser(userObject, true).catch(e => {
             if (e instanceof DuplicateIndexError) {
                 notifyService.notify(NotificationType.USER_CONFLICT, userObject);
                 throw new InternalServerError("An error has occurred");
             }
             throw e;
-        }) as Promise<Omit<UserDbo, "hashPassword">>;
+        })) as Omit<UserDbo, "hashPassword">;
+
+        notifyService.notify(NotificationType.USER_CREATED, {
+            email: userObject.email,
+            firstname: userObject.firstName,
+            lastname: userObject.lastName,
+            url: null, // no activation link, agent connect users are automatically active
+            active: true, // agent connect users automatically active
+            signupAt: createdUser.signupAt,
+            isAgentConnect: true,
+        });
+
+        return createdUser;
     }
 
     /**

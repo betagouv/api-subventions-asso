@@ -52,6 +52,7 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
                 LIEN_ACTIVATION: data.url,
                 PRENOM: data.firstname,
                 NOM: data.lastname,
+                IS_AGENT_CONNECT: data.isAgentConnect,
             },
             listIds: SENDIND_BLUE_CONTACT_LISTS,
         };

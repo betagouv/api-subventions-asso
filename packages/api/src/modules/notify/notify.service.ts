@@ -14,6 +14,7 @@ export class NotifyService {
                     return false;
                 });
             });
+            // careful: the result means nothing since pipes not concerned return false anyway
             return Promise.all(pipesPromise).then(values => values.every(value => value === true));
         };
     }
