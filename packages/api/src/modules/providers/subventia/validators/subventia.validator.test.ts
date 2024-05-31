@@ -1,4 +1,3 @@
-import { mock } from "node:test";
 import SubventiaDto from "../@types/subventia.dto";
 import SubventiaValidator from "./subventia.validator";
 
@@ -112,7 +111,10 @@ describe("SubventiaValidator", () => {
         });
 
         it("should return false if validateDataRowTypes throw an error", () => {
-            mockValidateDataRowTypes.mockRejectedValueOnce(new Error("error"));
+            mockValidateDataRowTypes.mockImplementationOnce(() => {
+                throw new Error("error");
+            });
+
             //@ts-expect-error : test protected method
             const actual = SubventiaValidator.isDataRowTypesValid(PARSED_DATA_ROW);
             expect(actual).toEqual(false);
@@ -144,8 +146,9 @@ describe("SubventiaValidator", () => {
         });
 
         it("should return false if validateDataRowCoherence throw an error", () => {
-            mockValidateDataRowCoherence.mockRejectedValueOnce(new Error("error"));
-
+            mockValidateDataRowCoherence.mockImplementationOnce(() => {
+                throw new Error("error");
+            });
             //@ts-expect-error : test protected method
             const actual = SubventiaValidator.isDataRowCoherenceValid(PARSED_DATA_ROW);
             expect(actual).toEqual(false);
