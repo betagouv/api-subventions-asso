@@ -5,6 +5,7 @@ import SubventiaValidator from "./validators/subventia.validator";
 import SubventiaAdapter from "./adapters/subventia.adapter";
 import subventiaRepository from "./repositories/subventia.repository";
 import { SubventiaDbo } from "./@types/subventia.entity";
+import SubventiaDto from "./@types/subventia.dto";
 
 export class SubventiaService implements Provider {
     provider = {
@@ -14,7 +15,7 @@ export class SubventiaService implements Provider {
         id: "subventia",
     };
 
-    public ProcessSubventiaData(filePath: string) {
+    public processSubventiaData(filePath: string) {
         const parsedData = SubventiaParser.parse(filePath);
         const sortedData = SubventiaValidator.sortDataByValidity(parsedData);
         const applications = this.getApplications(sortedData["valids"]);
@@ -22,12 +23,12 @@ export class SubventiaService implements Provider {
         return applications;
     }
 
-    public getApplications(validData) {
+    private getApplications(validData) {
         /* to each application is associated in raw date a list of 12 lines
             corresponding to 12 items of expenditures
         */
         const grouped = this.groupByApplication(validData);
-        const groupedLinesArr: any[][] = Object.values(grouped);
+        const groupedLinesArr: SubventiaDto[][] = Object.values(grouped);
         const applications = groupedLinesArr.map(groupedLine => {
             const application = this.mergeToApplication(groupedLine);
             const entity = SubventiaAdapter.applicationToEntity(application);
@@ -40,9 +41,9 @@ export class SubventiaService implements Provider {
         return applications;
     }
 
-    public groupByApplication<T>(validData: T[]) {
+    private groupByApplication(validData: SubventiaDto[]) {
         const groupKey = "Référence administrative - Demande";
-        return validData.reduce((acc, currentLine: T) => {
+        return validData.reduce((acc, currentLine: SubventiaDto) => {
             if (!acc[currentLine[groupKey]]) {
                 acc[currentLine[groupKey]] = [];
             }
@@ -51,10 +52,10 @@ export class SubventiaService implements Provider {
         }, {});
     }
 
-    public mergeToApplication(applicationLines: any[]) {
+    private mergeToApplication(applicationLines: SubventiaDto[]) {
         const amountKey = "Montant Ttc";
         return applicationLines.slice(1).reduce(
-            (mainLine: Record<string, any>, currentLine: Record<string, any>) => {
+            (mainLine, currentLine) => {
                 mainLine[amountKey] = Number(mainLine[amountKey]) + Number(currentLine[amountKey]);
                 return mainLine;
             },

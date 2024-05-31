@@ -4,7 +4,7 @@ import SubventiaDto from "./subventia.dto";
 
 export default interface SubventiaEntity {
     service_instructeur: string;
-    anne_demande: number;
+    annee_demande: number;
     siret: Siret;
     date_commision: Date;
     montants_accorde: number;

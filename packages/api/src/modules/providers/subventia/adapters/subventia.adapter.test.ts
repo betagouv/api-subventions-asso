@@ -1,8 +1,9 @@
 import SubventiaAdapter from "./subventia.adapter";
 import * as ParseHelper from "../../../../shared/helpers/ParserHelper";
+import SubventiaDto from "../@types/subventia.dto";
 
 describe(SubventiaAdapter, () => {
-    const application = { "Montant Ttc": 600, "Référence administrative - Demande": "ref1" };
+    const application = { "Montant Ttc": 600, "Référence administrative - Demande": "ref1" } as SubventiaDto;
 
     const entity = {
         reference_demande: "ref1",

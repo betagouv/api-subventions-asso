@@ -3,13 +3,15 @@ import * as ParseHelper from "../../../../shared/helpers/ParserHelper";
 import { ExcelDateToJSDate } from "../../../../shared/helpers/ParserHelper";
 
 import subventiaService from "../subventia.service";
+import SubventiaDto from "../@types/subventia.dto";
+import SubventiaEntity from "../@types/subventia.entity";
 
 export default class SubventiaAdapter {
-    static applicationToEntity(application) {
+    static applicationToEntity(application: SubventiaDto): SubventiaEntity {
         return {
             ...ParseHelper.indexDataByPathObject(subventiaMapper, application),
             provider: subventiaService.provider.id,
-        };
+        } as SubventiaEntity;
     }
 }
 
@@ -39,7 +41,7 @@ const subventiaMapper = {
     status: {
         path: ["Statut - Dossier de financement"],
         adapter: value => {
-            if (!value) return "REFUSED";
+            if (!value) return ApplicationStatus.REFUSED;
             return statusMapper[value];
         },
     },

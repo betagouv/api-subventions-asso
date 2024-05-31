@@ -5,6 +5,7 @@ export class SubventiaRepository extends MongoRepository<Omit<SubventiaDbo, "_id
     readonly collectionName = "subventia";
 
     public createIndexes(): void {
+        this.collection.createIndex({ siret: 1 });
         return;
     }
 

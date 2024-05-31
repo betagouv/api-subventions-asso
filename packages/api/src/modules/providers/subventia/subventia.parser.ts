@@ -1,8 +1,9 @@
 import fs from "fs";
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
+import SubventiaDto from "./@types/subventia.dto";
 
 export default class SubventiaParser {
-    static parse(filePath: string) {
+    static parse(filePath: string): SubventiaDto[] {
         this.filePathValidator(filePath);
         const fileContent = this.getBuffer(filePath);
 
@@ -10,7 +11,7 @@ export default class SubventiaParser {
 
         const data = ParseHelper.xlsParse(fileContent)[0];
         const headers = data[0] as string[];
-        const parsedData = data.slice(1).map(row => ParseHelper.linkHeaderToData(headers, row));
+        const parsedData = data.slice(1).map(row => ParseHelper.linkHeaderToData(headers, row)) as SubventiaDto[];
 
         return parsedData;
     }

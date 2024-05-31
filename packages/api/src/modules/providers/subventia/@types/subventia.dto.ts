@@ -1,14 +1,16 @@
-import { ApplicationStatus, Siret } from "dto";
+import { Siret } from "dto";
 
 export default interface SubventiaDto {
+    [key: string]: unknown;
+
     "Financeur Principal": string;
     "Référence administrative - Demande": string;
-    anne_demande: number;
+    annee_demande: string;
     "SIRET - Demandeur": Siret;
     "Date - Décision": string;
     "Montant voté TTC - Décision": number;
     "Montant Ttc": number;
     "Dispositif - Dossier de financement": string;
     "Thematique Title": string;
-    "Statut - Dossier de financement": ApplicationStatus;
+    "Statut - Dossier de financement": string;
 }

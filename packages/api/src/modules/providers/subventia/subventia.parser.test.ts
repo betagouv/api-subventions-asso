@@ -25,7 +25,6 @@ describe("SubventiaParser", () => {
         });
 
         it("should return true if the file exists", () => {
-            //morckReturnValue VS MockResolved for async or mockReturnvlalue Once
             const expected = true;
             //@ts-expect-error : test private method
             const actual = SubventiaParser.filePathValidator(FILEPATH);
@@ -34,12 +33,10 @@ describe("SubventiaParser", () => {
     });
 
     describe("getBuffer", () => {
-        let mockFilePathValidator: jest.Mock;
-        beforeEach(() => {
+        let mockFilePathValidator: jest.SpyInstance;
+        beforeAll(() => {
             //@ts-expect-error : test private method
             mockFilePathValidator = jest.spyOn(SubventiaParser, "filePathValidator").mockReturnValue(true);
-            // pourquoi ci-dessus ça me donne pas une erreur quand j'attribue
-            // une spyInstance à un type Mock ?
         });
 
         afterAll(() => {
@@ -61,16 +58,15 @@ describe("SubventiaParser", () => {
     });
 
     describe("parse", () => {
-        let mockFilePathValidator: jest.Mock;
-        let mockGetBuffer: jest.Mock;
-        let mockXlsParse: jest.Mock;
+        let mockFilePathValidator: jest.SpyInstance;
+        let mockGetBuffer: jest.SpyInstance;
+        let mockXlsParse: jest.SpyInstance;
 
-        beforeEach(() => {
+        beforeAll(() => {
             //@ts-expect-error : test private method
             mockFilePathValidator = jest.spyOn(SubventiaParser, "filePathValidator").mockReturnValue(true);
             //@ts-expect-error : test private method
             mockGetBuffer = jest.spyOn(SubventiaParser, "getBuffer").mockReturnValue(BUFFER);
-            //@ts-expect-error : test private method
             mockXlsParse = jest.spyOn(ParseHelper, "xlsParse").mockReturnValue([
                 [
                     ["header1", "header2"],

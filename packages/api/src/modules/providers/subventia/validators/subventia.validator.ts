@@ -1,10 +1,11 @@
 import { ApplicationStatus } from "dto";
 import { isSiret } from "../../../../shared/Validators";
 import { ExcelDateToJSDate } from "../../../../shared/helpers/ParserHelper";
+import SubventiaDto from "../@types/subventia.dto";
 
 export default class SubventiaValidator {
-    static sortDataByValidity(parsedData: object[]) {
-        const sortedData = parsedData.reduce(
+    static sortDataByValidity(parsedData: SubventiaDto[]) {
+        const sortedData = parsedData.reduce<{ valids: SubventiaDto[]; invalids: SubventiaDto[] }>(
             (acc, currentLine) => {
                 if (this.isDataRowTypesValid(currentLine) && this.isDataRowCoherenceValid(currentLine)) {
                     acc["valids"].push(currentLine);
@@ -18,7 +19,7 @@ export default class SubventiaValidator {
         return sortedData;
     }
 
-    static validateDataRowTypes(parsedDataRow: object) {
+    static validateDataRowTypes(parsedDataRow: SubventiaDto) {
         if (!isSiret(parsedDataRow["SIRET - Demandeur"])) {
             throw new Error(`INVALID SIRET FOR ${parsedDataRow["SIRET - Demandeur"]}`);
         }
@@ -46,15 +47,15 @@ export default class SubventiaValidator {
         return true;
     }
 
-    static validateDataRowCoherence(parsedDataRow: object) {
+    static validateDataRowCoherence(parsedDataRow: SubventiaDto) {
         if (!parsedDataRow["Référence administrative - Demande"]) {
             throw new Error(`Référence demande null is not accepted in data`);
         }
 
         if (parsedDataRow["Date - Décision"]) {
             if (
-                ExcelDateToJSDate(parseInt(parsedDataRow["Date - Décision"], 10)).getUTCFullYear() <
-                parseInt(parsedDataRow["annee_demande"], 10)
+                ExcelDateToJSDate(parseInt(parsedDataRow["Date - Décision"])).getUTCFullYear() <
+                parseInt(parsedDataRow["annee_demande"])
             ) {
                 throw new Error(`The year of the decision cannot be lower than the year of the request`);
             }
@@ -63,7 +64,7 @@ export default class SubventiaValidator {
         return true;
     }
 
-    protected static isDataRowTypesValid(parsedDataRow: object) {
+    protected static isDataRowTypesValid(parsedDataRow: SubventiaDto) {
         try {
             return this.validateDataRowTypes(parsedDataRow);
         } catch (e) {
@@ -75,7 +76,7 @@ export default class SubventiaValidator {
         }
     }
 
-    protected static isDataRowCoherenceValid(parsedDataRow: object) {
+    protected static isDataRowCoherenceValid(parsedDataRow: SubventiaDto) {
         try {
             return this.validateDataRowCoherence(parsedDataRow);
         } catch (e) {
