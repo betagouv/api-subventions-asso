@@ -15,15 +15,15 @@ export class SubventiaService implements Provider {
         id: "subventia",
     };
 
-    public processSubventiaData(filePath: string) {
+    public processSubventiaData(filePath: string, exportDate: Date) {
         const parsedData = SubventiaParser.parse(filePath);
         const sortedData = SubventiaValidator.sortDataByValidity(parsedData);
-        const applications = this.getApplications(sortedData["valids"]);
+        const applications = this.getApplications(sortedData["valids"], exportDate);
 
         return applications;
     }
 
-    private getApplications(validData) {
+    private getApplications(validData: SubventiaDto[], exportDate: Date) {
         /* to each application is associated in raw date a list of 12 lines
             corresponding to 12 items of expenditures
         */
@@ -31,7 +31,7 @@ export class SubventiaService implements Provider {
         const groupedLinesArr: SubventiaDto[][] = Object.values(grouped);
         const applications = groupedLinesArr.map(groupedLine => {
             const application = this.mergeToApplication(groupedLine);
-            const entity = SubventiaAdapter.applicationToEntity(application);
+            const entity = SubventiaAdapter.applicationToEntity(application, exportDate);
             return {
                 ...entity,
                 __data__: groupedLine,
