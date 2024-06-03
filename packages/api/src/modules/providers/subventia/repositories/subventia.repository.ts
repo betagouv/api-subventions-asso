@@ -9,6 +9,10 @@ export class SubventiaRepository extends MongoRepository<Omit<SubventiaDbo, "_id
         return;
     }
 
+    public async findAll() {
+        return await this.collection.find({}).toArray();
+    }
+
     public async create(entity: Omit<SubventiaDbo, "_id">) {
         return await this.collection.insertOne(entity);
     }
