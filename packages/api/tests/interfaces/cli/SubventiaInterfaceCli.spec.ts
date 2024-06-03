@@ -17,7 +17,6 @@ describe("Subventia Cli", () => {
                 path.resolve(__dirname, "../../../src/modules/providers/subventia/__fixtures__/SUBVENTIA.xlsx"),
             );
             const entities = await subventiaRepository.findAll();
-            console.log(typeof entities[0]._id);
             const expectedAny = entities.map(_entity => ({
                 _id: expect.any(ObjectId),
             }));
