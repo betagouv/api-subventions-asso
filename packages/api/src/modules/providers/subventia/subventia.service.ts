@@ -1,73 +1,70 @@
-import { isAssociationName, areNumbersValid, isSiret, areStringsValid } from "../../../shared/Validators";
-import { SubventiaRequestEntity } from "./entities/SubventiaRequestEntity";
+import Provider from "../@types/IProvider";
+import { ProviderEnum } from "../../../@enums/ProviderEnum";
+import SubventiaParser from "./subventia.parser";
+import SubventiaValidator from "./validators/subventia.validator";
+import SubventiaAdapter from "./adapters/subventia.adapter";
+import subventiaRepository from "./repositories/subventia.repository";
+import { SubventiaDbo } from "./@types/subventia.entity";
+import SubventiaDto from "./@types/subventia.dto";
 
-export enum SUBVENTIA_SERVICE_ERROR {
-    INVALID_ENTITY = 1,
-}
+export class SubventiaService implements Provider {
+    provider = {
+        name: "Subventia",
+        type: ProviderEnum.raw,
+        description: "CIPDR",
+        id: "subventia",
+    };
 
-export interface RejectedRequest {
-    message: string;
-    code: SUBVENTIA_SERVICE_ERROR;
-    data?: unknown;
-}
+    public processSubventiaData(filePath: string) {
+        const parsedData = SubventiaParser.parse(filePath);
+        const sortedData = SubventiaValidator.sortDataByValidity(parsedData);
+        const applications = this.getApplications(sortedData["valids"]);
 
-export interface AcceptedRequest {
-    state: "created";
-}
-
-export class SubventiaService {
-    validateEntity(entity: SubventiaRequestEntity): true | RejectedRequest {
-        if (!isSiret(entity.legalInformations.siret)) {
-            return {
-                message: `INVALID SIRET FOR ${entity.legalInformations.siret}`,
-                data: entity,
-                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY,
-            };
-        }
-
-        if (!isAssociationName(entity.legalInformations.name)) {
-            return {
-                message: `INVALID NAME FOR ${entity.legalInformations.siret}`,
-                data: entity,
-                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY,
-            };
-        }
-
-        const strings = [
-            entity.indexedInformations.status,
-            entity.indexedInformations.description,
-            entity.indexedInformations.financeurs,
-        ];
-
-        if (!areStringsValid(strings)) {
-            return {
-                message: `INVALID STRING FOR ${entity.legalInformations.siret}`,
-                data: entity,
-                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY,
-            };
-        }
-
-        const numbers = [entity.indexedInformations.exerciceBudgetaire, entity.indexedInformations.budgetGlobal];
-
-        if (!areNumbersValid(numbers)) {
-            return {
-                message: `INVALID NUMBER FOR ${entity.legalInformations.siret}`,
-                data: entity,
-                code: SUBVENTIA_SERVICE_ERROR.INVALID_ENTITY,
-            };
-        }
-
-        return true;
+        return applications;
     }
 
-    async createEntity(entity: SubventiaRequestEntity): Promise<RejectedRequest | AcceptedRequest> {
-        const valid = this.validateEntity(entity);
+    private getApplications(validData) {
+        /* to each application is associated in raw date a list of 12 lines
+            corresponding to 12 items of expenditures
+        */
+        const grouped = this.groupByApplication(validData);
+        const groupedLinesArr: SubventiaDto[][] = Object.values(grouped);
+        const applications = groupedLinesArr.map(groupedLine => {
+            const application = this.mergeToApplication(groupedLine);
+            const entity = SubventiaAdapter.applicationToEntity(application);
+            return {
+                ...entity,
+                __data__: groupedLine,
+            } as Omit<SubventiaDbo, "_id">;
+        });
 
-        if (valid !== true) return valid;
+        return applications;
+    }
 
-        return {
-            state: "created",
-        };
+    private groupByApplication(validData: SubventiaDto[]) {
+        const groupKey = "Référence administrative - Demande";
+        return validData.reduce((acc, currentLine: SubventiaDto) => {
+            if (!acc[currentLine[groupKey]]) {
+                acc[currentLine[groupKey]] = [];
+            }
+            acc[currentLine[groupKey]].push(currentLine);
+            return acc;
+        }, {});
+    }
+
+    private mergeToApplication(applicationLines: SubventiaDto[]) {
+        const amountKey = "Montant Ttc";
+        return applicationLines.slice(1).reduce(
+            (mainLine, currentLine) => {
+                mainLine[amountKey] = Number(mainLine[amountKey]) + Number(currentLine[amountKey]);
+                return mainLine;
+            },
+            { ...applicationLines[0] },
+        );
+    }
+
+    async createEntity(entity: Omit<SubventiaDbo, "_id">) {
+        return subventiaRepository.create(entity);
     }
 }
 

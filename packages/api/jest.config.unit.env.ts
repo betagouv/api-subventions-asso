@@ -12,3 +12,8 @@ process.env.AGENT_CONNECT_ENABLED = "true";
 process.env.FRONT_OFFICE_URL = JEST_FRONT_OFFICE_URL;
 
 jest.mock("axios");
+
+// Added to not get error with node v18.20
+Object.defineProperty(global, "performance", {
+    writable: true,
+});

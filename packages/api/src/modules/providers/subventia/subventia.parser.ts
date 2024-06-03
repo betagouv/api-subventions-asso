@@ -1,26 +1,37 @@
+import fs from "fs";
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
-import ILegalInformations from "../../search/@types/ILegalInformations";
-import { SubventiaRequestEntity } from "./entities/SubventiaRequestEntity";
-import ISubventiaIndexedInformation from "./@types/ISubventiaIndexedInformation";
+import SubventiaDto from "./@types/subventia.dto";
 
 export default class SubventiaParser {
-    static parse(fileContent: Buffer): SubventiaRequestEntity[] {
+    static parse(filePath: string): SubventiaDto[] {
+        this.filePathValidator(filePath);
+        const fileContent = this.getBuffer(filePath);
+
+        console.info("\nStart parse file: ", filePath);
+
         const data = ParseHelper.xlsParse(fileContent)[0];
         const headers = data[0] as string[];
-        const rows = data.slice(1) as unknown[][];
+        const parsedData = data.slice(1).map(row => ParseHelper.linkHeaderToData(headers, row)) as SubventiaDto[];
 
-        return rows.map(row => {
-            const parsedData = ParseHelper.linkHeaderToData(headers, row);
-            const indexedInformations = ParseHelper.indexDataByPathObject(
-                SubventiaRequestEntity.indexedProviderInformationsPath,
-                parsedData,
-            ) as unknown as ISubventiaIndexedInformation;
-            const legalInformations = ParseHelper.indexDataByPathObject(
-                SubventiaRequestEntity.indexedLegalInformationsPath,
-                parsedData,
-            ) as unknown as ILegalInformations;
+        return parsedData;
+    }
 
-            return new SubventiaRequestEntity(legalInformations, indexedInformations, parsedData);
-        });
+    protected static getBuffer(file: string) {
+        this.filePathValidator(file);
+
+        console.log("Open and read file ...");
+
+        return fs.readFileSync(file);
+    }
+
+    protected static filePathValidator(file: string) {
+        if (!file) {
+            throw new Error("Parse command need file args");
+        }
+
+        if (!fs.existsSync(file)) {
+            throw new Error(`File not found ${file}`);
+        }
+        return true;
     }
 }
