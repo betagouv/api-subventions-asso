@@ -75,14 +75,35 @@ describe("SignupController", () => {
         const USER = { email: "test@mail.fr", lastName: "", firstName: "" };
         let setPromiseMock;
         let setFirstSubmittedMock;
+        let workEthicMock;
 
         beforeAll(() => {
             serviceMock.mockReturnValue(PROMISE);
             setPromiseMock = vi.spyOn(ctrl.signupPromise, "set");
             setFirstSubmittedMock = vi.spyOn(ctrl.firstSubmitted, "set");
+            workEthicMock = vi.spyOn(ctrl, "checkWorkEthic").mockReturnValue(true);
             ctrl.signupUser.value = USER;
         });
-        afterAll(() => serviceMock.mockRestore());
+        afterAll(() => {
+            serviceMock.mockRestore();
+            workEthicMock.mockRestore();
+        });
+
+        it("registers first submitted state", () => {
+            ctrl.signup();
+            expect(setFirstSubmittedMock).toBeCalledWith(true);
+        });
+
+        it("checks work ethic acceptance", () => {
+            ctrl.signup();
+            expect(workEthicMock).toHaveBeenCalled();
+        });
+
+        it("does not call signup if work ethic not accepted", () => {
+            workEthicMock.mockReturnValueOnce(false);
+            ctrl.signup();
+            expect(serviceMock).not.toHaveBeenCalled();
+        });
 
         it("calls service with value from controller", () => {
             ctrl.signup();
@@ -92,11 +113,6 @@ describe("SignupController", () => {
         it("sets promise with value from service", () => {
             ctrl.signup();
             expect(setPromiseMock).toBeCalledWith(PROMISE);
-        });
-
-        it("registers first submitted state", () => {
-            ctrl.signup();
-            expect(setFirstSubmittedMock).toBeCalledWith(true);
         });
     });
 
@@ -133,6 +149,50 @@ describe("SignupController", () => {
             const expected = MAIL;
             const actual = ctrl.contactEmail;
             expect(actual).toBe(expected);
+        });
+    });
+
+    describe("checkWorkEthic", () => {
+        let ctrl;
+
+        beforeEach(() => {
+            ctrl = new SignupController();
+        });
+
+        describe("if checkbox is ticked", () => {
+            beforeEach(() => {
+                ctrl.acceptWorkEthic.value = ["true"];
+            });
+            it("returns true", () => {
+                const expected = true;
+                const actual = ctrl.checkWorkEthic();
+                expect(actual).toBe(expected);
+            });
+
+            it("sets workEthicError to empty string", () => {
+                const expected = "";
+                ctrl.checkWorkEthic();
+                const actual = ctrl.workEthicError.value;
+                expect(actual).toBe(expected);
+            });
+        });
+
+        describe("if checkbox is not ticked", () => {
+            beforeEach(() => {
+                ctrl.acceptWorkEthic.value = [];
+            });
+            it("returns false", () => {
+                const expected = false;
+                const actual = ctrl.checkWorkEthic();
+                expect(actual).toBe(expected);
+            });
+
+            it("sets workEthicError to error message", () => {
+                const expected = "Champ obligatoire";
+                ctrl.checkWorkEthic();
+                const actual = ctrl.workEthicError.value;
+                expect(actual).toBe(expected);
+            });
         });
     });
 });

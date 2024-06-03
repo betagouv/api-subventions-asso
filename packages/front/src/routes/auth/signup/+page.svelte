@@ -6,10 +6,11 @@
     import Button from "$lib/dsfr/Button.svelte";
     import Spinner from "$lib/components/Spinner.svelte";
     import AgentConnectZone from "$lib/components/AgentConnectZone.svelte";
+    import Checkbox from "$lib/dsfr/Checkbox.svelte";
 
     let alertElement;
     const ctrl = new SignupController();
-    const { signupUser, signupPromise, firstSubmitted } = ctrl;
+    const { signupUser, signupPromise, firstSubmitted, acceptWorkEthic, workEthicError } = ctrl;
     onMount(() => ctrl.onMount(alertElement));
 </script>
 
@@ -71,6 +72,16 @@
                     bind:value={$signupUser.email}
                     required={true} />
             </div>
+            <div class="fr-fieldset__element fr-mt-4v">
+                <Checkbox
+                    options={ctrl.WORK_ETHIC_OPTIONS}
+                    label=""
+                    errorMsg={$workEthicError}
+                    required={true}
+                    on:change={v => ctrl.checkWorkEthic(v)}
+                    bind:value={$acceptWorkEthic} />
+            </div>
+
             <div class="fr-fieldset__element fr-mt-4v">
                 <ul class="fr-btns-group">
                     <li>
