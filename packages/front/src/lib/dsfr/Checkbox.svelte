@@ -5,7 +5,7 @@
     export let value: string[] = [];
 
     export let label: string;
-    export let options: { label: string; value: string; hint?: string }[] = [];
+    export let options: { label: string; value: string; hint?: string; withHtml?: boolean }[] = [];
     export let id = nanoid(7);
     export let name = `checkbox-${id}`;
     export let required = false;
@@ -39,7 +39,11 @@
                     aria-invalid={errorMsg ? "true" : undefined}
                     aria-errormessage={errorMsg ? descErrorElement : undefined} />
                 <label class="fr-label" for="{id}-{i}">
-                    {option.label}
+                    {#if option.withHtml}
+                        {@html option.label}
+                    {:else}
+                        {option.label}
+                    {/if}
                 </label>
                 <div class="fr-messages-group" id="checkboxes-1-messages" aria-live="polite" />
             </div>
