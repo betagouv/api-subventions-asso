@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.50.0](https://github.com/betagouv/api-subventions-asso/compare/v0.49.2...v0.50.0) (2024-06-03)
+
+### Features
+
+-   **api,dto:** [#2309](https://github.com/betagouv/api-subventions-asso/issues/2309) download selected docs ([#2403](https://github.com/betagouv/api-subventions-asso/issues/2403)) ([a793a9e](https://github.com/betagouv/api-subventions-asso/commit/a793a9e149783c9371fe146e11ed83b5518330e2))
+-   **api:** [#2381](https://github.com/betagouv/api-subventions-asso/issues/2381) agent connect creation email ([#2394](https://github.com/betagouv/api-subventions-asso/issues/2394)) ([4575a59](https://github.com/betagouv/api-subventions-asso/commit/4575a597a136219080d9f5cb3b04cb265702bf0d))
+-   **front:** [#2311](https://github.com/betagouv/api-subventions-asso/issues/2311) show all docs button ([#2406](https://github.com/betagouv/api-subventions-asso/issues/2406)) ([90d1215](https://github.com/betagouv/api-subventions-asso/commit/90d1215be5de2f1d493d7a59c8ff6471484820d7)), closes [#2356](https://github.com/betagouv/api-subventions-asso/issues/2356) [#2390](https://github.com/betagouv/api-subventions-asso/issues/2390)
+
 ## [0.49.2](https://github.com/betagouv/api-subventions-asso/compare/v0.49.1...v0.49.2) (2024-05-29)
 
 **Note:** Version bump only for package api-subventions-asso
