@@ -1,7 +1,7 @@
 import fs from "fs";
 import childProcess from "child_process";
 import { IncomingMessage } from "http";
-import { Rna, Siren, Siret, Document } from "dto";
+import { Rna, Siren, Siret, DocumentDto, DocumentRequestDto } from "dto";
 import * as Sentry from "@sentry/node";
 import mime = require("mime-types");
 import providers, { providersById } from "../providers";
@@ -11,24 +11,25 @@ import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum"
 import { ProviderRequestService } from "../provider-request/providerRequest.service";
 import { FRONT_OFFICE_URL } from "../../configurations/front.conf";
 import DocumentProvider from "./@types/DocumentsProvider";
+import { documentToDocumentRequest } from "./document.adapter";
 
 export class DocumentsService {
     public async getDocumentBySiren(siren: Siren) {
         const result = await this.aggregateDocuments(siren);
 
-        return result.filter(d => d) as Document[];
+        return result.filter(d => d) as DocumentDto[];
     }
 
     public async getDocumentByRna(rna: Rna) {
         const result = await this.aggregateDocuments(rna);
 
-        return result.filter(d => d) as Document[];
+        return result.filter(d => d) as DocumentDto[];
     }
 
     public async getDocumentBySiret(siret: Siret) {
         const result = await this.aggregateDocuments(siret);
 
-        return result.filter(d => d) as Document[];
+        return result.filter(d => d) as DocumentDto[];
     }
 
     public async getRibsBySiret(siret: Siret) {
@@ -62,10 +63,10 @@ export class DocumentsService {
             ),
         );
 
-        return result.flat() as Document[];
+        return result.flat() as DocumentDto[];
     }
 
-    private async aggregateDocuments(id: StructureIdentifiers): Promise<(Document | null)[]> {
+    private async aggregateDocuments(id: StructureIdentifiers): Promise<(DocumentDto | null)[]> {
         const documentProviders = this.getDocumentProviders();
 
         const type = getIdentifierType(id);
@@ -78,8 +79,7 @@ export class DocumentsService {
                 ? "getDocumentsBySiren"
                 : "getDocumentsBySiret";
 
-        const result = await this.aggregate(documentProviders, method, id);
-        return result;
+        return this.aggregate(documentProviders, method, id);
     }
 
     getDocumentStream(providerId: string, docId: string): Promise<IncomingMessage> {
@@ -99,16 +99,21 @@ export class DocumentsService {
         });
         return res.data;
     }
-    async getDocumentsFiles(identifier: StructureIdentifiers) {
+
+    async getDocumentsFilesByIdentifier(identifier: StructureIdentifiers) {
         const type = getIdentifierType(identifier);
 
         if (!type) throw new Error("You must provide a valid SIREN or RNA or SIRET");
 
-        const documents = (await this.aggregateDocuments(identifier)).filter(d => d) as Document[];
+        const documents = (await this.aggregateDocuments(identifier)).filter(d => d) as DocumentDto[];
 
         if (!documents || documents.length == 0) throw new Error("No document found");
 
-        const folderName = `${identifier}-${new Date().getTime()}`;
+        return this.getRequestedDocumentsFiles(documents.map(documentToDocumentRequest), identifier);
+    }
+
+    async getRequestedDocumentsFiles(documents: DocumentRequestDto[], baseFolderName = "docs") {
+        const folderName = `${baseFolderName}-${new Date().getTime()}`;
 
         fs.mkdirSync("/tmp/" + folderName);
 
@@ -130,16 +135,15 @@ export class DocumentsService {
         return stream;
     }
 
-    private async downloadDocument(folderName: string, document: Document): Promise<string | null> {
+    private async downloadDocument(folderName: string, document: DocumentRequestDto): Promise<string | null> {
         try {
-            const readStream = await this.getDocumentStreamByUrl(document.url.value);
+            const readStream = await this.getDocumentStreamByUrl(document.url);
             const sourceFileName =
-                readStream.headers["content-disposition"]?.match(/attachment;filename="(.*)"/)?.[1] ||
-                document.nom.value;
+                readStream.headers["content-disposition"]?.match(/attachment;filename="(.*)"/)?.[1] || document.nom;
             const extension = /\.[^/]+$/.test(sourceFileName)
                 ? ""
                 : "." + (mime.extension(readStream.headers["content-type"]) || "pdf");
-            const documentPath = `/tmp/${folderName}/${document.type.value}-${sourceFileName}${extension}`;
+            const documentPath = `/tmp/${folderName}/${document.type}-${sourceFileName}${extension}`;
             const writeStream = readStream.pipe(fs.createWriteStream(documentPath));
             return new Promise((resolve, reject) => {
                 // finish event is same event of end but for write stream

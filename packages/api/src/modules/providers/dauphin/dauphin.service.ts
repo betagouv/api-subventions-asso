@@ -1,6 +1,6 @@
 import { IncomingMessage } from "http";
 import qs from "qs";
-import { ApplicationDto, DemandeSubvention, Rna, Siren, Siret, Document } from "dto";
+import { ApplicationDto, DemandeSubvention, Rna, Siren, Siret, DocumentDto } from "dto";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DAUPHIN_PASSWORD, DAUPHIN_USERNAME } from "../../../configurations/apis.conf";
@@ -229,13 +229,13 @@ export class DauphinService
 
     // no RIB document in dauphin
 
-    async getDocumentsByRna(rna: Rna): Promise<Document[] | null> {
+    async getDocumentsByRna(rna: Rna): Promise<DocumentDto[] | null> {
         const rnaSirenEntities = await rnaSirenService.find(rna);
         if (!rnaSirenEntities || !rnaSirenEntities.length) return null;
         return this.getDocumentsBySiren(rnaSirenEntities[0].siren);
     }
 
-    async getDocumentsBySiren(siren: Siren): Promise<Document[] | null> {
+    async getDocumentsBySiren(siren: Siren): Promise<DocumentDto[] | null> {
         /*
         the only way to get documents through dauphin API is to get them through their internal dauphin ID.
         Because of that, we need a preliminary request to dauphin to get their internal id. cf issue #1004
@@ -254,7 +254,7 @@ export class DauphinService
         return DauphinDtoAdapter.toDocuments(result);
     }
 
-    getDocumentsBySiret(siret: Siret): Promise<Document[] | null> {
+    getDocumentsBySiret(siret: Siret): Promise<DocumentDto[] | null> {
         return this.getDocumentsBySiren(siretToSiren(siret));
     }
 

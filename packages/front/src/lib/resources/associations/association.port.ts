@@ -1,4 +1,4 @@
-import type { Association, Document, PaginatedAssociationNameDto } from "dto";
+import type { Association, DocumentDto, PaginatedAssociationNameDto } from "dto";
 import requestsService from "$lib/services/requests.service";
 
 class AssociationPort {
@@ -17,7 +17,7 @@ class AssociationPort {
         return (await requestsService.get(path))?.data?.etablissements;
     }
 
-    async getDocuments(identifier): Promise<Document[]> {
+    async getDocuments(identifier): Promise<DocumentDto[]> {
         const path = `association/${identifier}/documents`;
         return (await requestsService.get(path))?.data?.documents;
     }

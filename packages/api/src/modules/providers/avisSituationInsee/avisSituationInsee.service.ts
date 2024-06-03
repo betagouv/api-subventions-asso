@@ -1,4 +1,4 @@
-import { Siren, Siret, Rna, Document } from "dto";
+import { Siren, Siret, Rna, DocumentDto } from "dto";
 
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
@@ -56,7 +56,7 @@ export class AvisSituationInseeService extends ProviderCore implements DocumentP
 
     isDocumentProvider = true;
 
-    async getDocumentsBySiren(siren: Siren): Promise<Document[] | null> {
+    async getDocumentsBySiren(siren: Siren): Promise<DocumentDto[] | null> {
         const data = await this.getInseeEtablissementsBySiren(siren);
 
         if (!data) return null;
@@ -86,7 +86,7 @@ export class AvisSituationInseeService extends ProviderCore implements DocumentP
             },
         ];
     }
-    async getDocumentsBySiret(siret: Siret): Promise<Document[] | null> {
+    async getDocumentsBySiret(siret: Siret): Promise<DocumentDto[] | null> {
         return [
             {
                 type: ProviderValueAdapter.toProviderValue("Avis Situation Insee", this.provider.name, new Date()),
@@ -109,7 +109,7 @@ export class AvisSituationInseeService extends ProviderCore implements DocumentP
         ];
     }
 
-    async getDocumentsByRna(rna: Rna): Promise<Document[] | null> {
+    async getDocumentsByRna(rna: Rna): Promise<DocumentDto[] | null> {
         const rnaSirenEntities = await rnaSirenService.find(rna);
 
         if (!rnaSirenEntities || !rnaSirenEntities.length) return null;

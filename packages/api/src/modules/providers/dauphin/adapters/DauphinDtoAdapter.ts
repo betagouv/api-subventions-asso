@@ -1,4 +1,4 @@
-import { ApplicationDto, ApplicationStatus, DemandeSubvention, ProviderValue, Document } from "dto";
+import { ApplicationDto, ApplicationStatus, DemandeSubvention, ProviderValue, DocumentDto } from "dto";
 import DauphinSubventionDto from "../dto/DauphinSubventionDto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import dauphinService from "../dauphin.service";
@@ -118,7 +118,7 @@ export default class DauphinDtoAdapter {
     }
 
     public static toDocuments(documentReferences: DauphinDocumentDto[]) {
-        const resultArray: Document[] = [];
+        const resultArray: DocumentDto[] = [];
         let toPV: <T>(T) => ProviderValue<T>;
         for (const reference of documentReferences) {
             if (!reference.documents?.length) continue;
