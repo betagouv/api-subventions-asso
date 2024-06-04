@@ -1,8 +1,20 @@
+import { Siren, Siret } from "dto";
 import MongoRepository from "../../../../shared/MongoRepository";
 import { SubventiaDbo } from "../@types/subventia.entity";
-
 export class SubventiaRepository extends MongoRepository<Omit<SubventiaDbo, "_id">> {
     readonly collectionName = "subventia";
+
+    public async findBySiren(siren: Siren) {
+        return this.collection
+            .find({
+                siret: new RegExp(`^${siren}\\d{5}`),
+            })
+            .toArray();
+    }
+
+    public async findBySiret(siret: Siret) {
+        return this.collection.find({ siret: siret }).toArray();
+    }
 
     public createIndexes(): void {
         this.collection.createIndex({ siret: 1 });

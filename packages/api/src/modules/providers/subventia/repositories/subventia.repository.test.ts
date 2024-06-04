@@ -69,4 +69,13 @@ describe("SubventiaRepository", () => {
             expect(collection.find).toHaveBeenCalledWith({});
         });
     });
+
+    /*
+    J'ai pas fait les test pour findBySiren et findBySiret car
+     j'ai l'impression qu'ils sont jamais testés dans les autres
+     providers. Est-ce qu'il y a une raison en particulier ? 
+     Pas la peine pour une raison précise ?
+     Et d'ailleurs même createIndexes et findAll j'ai l'impression
+     qu'ils ne sont pas testés en géneral
+    */
 });
