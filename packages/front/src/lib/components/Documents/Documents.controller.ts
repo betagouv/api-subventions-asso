@@ -46,6 +46,8 @@ export class DocumentsController {
         // TODO: replace unknown with EstablishmentEntity when created
         public resource: AssociationEntity | unknown,
     ) {
+        // @ts-expect-error -- missing type
+        this.identifier = resource?.rna || this.resource?.siren || this.resource?.siret;
         this.resourceType = resourceType;
         this.documentsPromise = new Store(returnInfinitePromise());
         this.zipPromise = new Store(Promise.resolve(null));
@@ -62,6 +64,8 @@ export class DocumentsController {
         return estabDocsTitleByType[this.resourceType];
     }
 
+    /* get and organize documents according to resource type */
+
     get _getterByType() {
         return this.resourceType === "establishment"
             ? struct => this._getEstablishmentDocuments(struct)
@@ -71,14 +75,6 @@ export class DocumentsController {
     async _getAssociationDocuments(association: AssociationEntity) {
         const associationDocuments = await associationService.getDocuments(association.rna || association.siren);
         return documentService.labelAssoDocsBySiret(associationDocuments, getSiegeSiret(association));
-    }
-
-    _removeDuplicates(docs: DocumentEntity[] | LabeledDoc[]): DocumentEntity[] | LabeledDoc[] {
-        const docsByUrl = {};
-        for (const doc of docs) {
-            docsByUrl[doc.url] = doc;
-        }
-        return Object.values(docsByUrl);
     }
 
     async _getEstablishmentDocuments(establishment): Promise<LabeledDoc[]> {
@@ -92,6 +88,14 @@ export class DocumentsController {
             .then(docs => documentService.labelAssoDocsBySiret(docs, establishment.siret));
         const [estabDocs, assoDocs] = await Promise.all([estabDocsPromise, assoDocsPromise]);
         return this._removeDuplicates([...estabDocs, ...assoDocs]) as LabeledDoc[];
+    }
+
+    _removeDuplicates(docs: DocumentEntity[] | LabeledDoc[]): DocumentEntity[] | LabeledDoc[] {
+        const docsByUrl = {};
+        for (const doc of docs) {
+            docsByUrl[doc.url] = doc;
+        }
+        return Object.values(docsByUrl);
     }
 
     _organizeDocuments(miscDocs: LabeledDoc[]): GroupedDocs {
@@ -126,25 +130,26 @@ export class DocumentsController {
     }
 
     async onMount() {
+        // get documents on mount
         // Svelte component mounted so bind:this replaced this.element with current node element
         await waitElementIsVisible(this.element as HTMLElement);
         const promise = this._getterByType(this.resource).then(docs => this._organizeDocuments(docs));
         this.documentsPromise.set(promise);
     }
 
+    switchDisplay(show: Store<boolean>) {
+        show.set(!show.value);
+    }
+
+    /* handle group download */
+
     async downloadAll() {
-        // @ts-expect-error -- missing type
-        const identifier = this.resource?.rna || this.resource?.siren || this.resource?.siret;
         const promise = documentService
-            .getAllDocs(identifier)
-            .then(blob => documentHelper.download(blob, `documents_${identifier}.zip`));
+            .getAllDocs(this.identifier)
+            .then(blob => documentHelper.download(blob, `documents_${this.identifier}.zip`));
         setTimeout(() => {
             this.zipPromise.set(promise);
         }, 750); // weird if message appears and leaves right ahead ; quite arbitrary value
         await promise;
-    }
-
-    switchDisplay(show: Store<boolean>) {
-        show.set(!show.value);
     }
 }
