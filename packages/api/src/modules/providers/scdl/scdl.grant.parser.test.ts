@@ -42,7 +42,6 @@ describe("ScdlGrantParser", () => {
         });
 
         it("should return storableChunk", () => {
-            // @ts-expect-error: mock
             mockedParserHelper.indexDataByPathObject.mockImplementation((mapper, row) => row);
             const actual = ScdlGrantParser.parseCsv(BUFFER);
             expect(actual).toMatchSnapshot();
