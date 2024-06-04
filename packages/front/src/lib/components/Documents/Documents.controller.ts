@@ -1,5 +1,5 @@
 import { getSiegeSiret } from "$lib/resources/associations/association.helper";
-import Store from "$lib/core/Store";
+import Store, { derived, ReadStore } from "$lib/core/Store";
 import associationService from "$lib/resources/associations/association.service";
 import establishmentService from "$lib/resources/establishments/establishment.service";
 import { waitElementIsVisible } from "$lib/helpers/visibilityHelper";
@@ -40,6 +40,15 @@ export class DocumentsController {
     zipPromise: Store<Promise<void | null>>;
     public showMoreAsso: Store<boolean>;
     public showMoreEstab: Store<boolean>;
+    public selectedDocsOrNull: Store<{
+        assoDocs: (DocumentEntity | undefined)[];
+        estabDocs: (DocumentEntity | undefined)[];
+        moreAssoDocs: (DocumentEntity | undefined)[];
+        moreEstabDocs: (DocumentEntity | undefined)[];
+    }>;
+    public flatSelectedDocs: ReadStore<DocumentEntity[]>;
+    private identifier: string;
+    public downloadBtnLabel: ReadStore<string>;
 
     constructor(
         public resourceType: ResourceType,
@@ -54,6 +63,21 @@ export class DocumentsController {
         this.resource = resource;
         this.showMoreAsso = new Store(false);
         this.showMoreEstab = new Store(false);
+        this.selectedDocsOrNull = new Store({
+            assoDocs: [],
+            estabDocs: [],
+            moreAssoDocs: [],
+            moreEstabDocs: [],
+        });
+        this.flatSelectedDocs = derived(this.selectedDocsOrNull, nested =>
+            Object.values(nested).reduce(
+                (flatDocs: DocumentEntity[], docs) => [...flatDocs, ...(docs.filter(doc => !!doc) as DocumentEntity[])],
+                [],
+            ),
+        );
+        this.downloadBtnLabel = derived(this.flatSelectedDocs, docs =>
+            docs.length ? `Télécharger la sélection (${docs.length})` : "Tout télécharger",
+        );
     }
 
     get resourceNameWithDemonstrative() {
@@ -143,13 +167,23 @@ export class DocumentsController {
 
     /* handle group download */
 
-    async downloadAll() {
-        const promise = documentService
-            .getAllDocs(this.identifier)
-            .then(blob => documentHelper.download(blob, `documents_${this.identifier}.zip`));
+    async download() {
+        let requestPromise: Promise<Blob>;
+        if (this.flatSelectedDocs.value.length) requestPromise = this.downloadSome();
+        else requestPromise = this.downloadAll();
+        const promise = requestPromise.then(blob => documentHelper.download(blob, `documents_${this.identifier}.zip`));
         setTimeout(() => {
             this.zipPromise.set(promise);
         }, 750); // weird if message appears and leaves right ahead ; quite arbitrary value
         await promise;
+    }
+
+    private async downloadAll() {
+        return documentService.getAllDocs(this.identifier);
+    }
+
+    private async downloadSome() {
+        const docs = this.flatSelectedDocs.value;
+        return documentService.getSomeDocs(docs);
     }
 }

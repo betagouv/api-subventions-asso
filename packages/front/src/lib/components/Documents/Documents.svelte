@@ -19,7 +19,7 @@
     const controller = new DocumentsController(resourceType, resource);
     const documentsPromise = controller.documentsPromise;
     const zipPromise = controller.zipPromise;
-    const { showMoreAsso, showMoreEstab } = controller;
+    const { showMoreAsso, showMoreEstab, selectedDocsOrNull, downloadBtnLabel } = controller;
 
     onMount(() => {
         controller.onMount();
@@ -48,8 +48,8 @@
                         icon="download-line"
                         trackerName="download-zip"
                         title="Tout télécharger"
-                        on:click={() => controller.downloadAll()}>
-                        Tout télécharger
+                        on:click={() => controller.download()}>
+                        {$downloadBtnLabel}
                     </Button>
                 </div>
             </div>
@@ -58,8 +58,8 @@
             {#if documents.someAsso}
                 <h3 class="fr-h2 fr-mb-4w">Pièces provenant de l’INSEE et du RNA</h3>
                 <div class="fr-grid-row">
-                    {#each documents.assoDocs as document}
-                        <DocumentCard {document} />
+                    {#each documents.assoDocs as document, i}
+                        <DocumentCard {document} bind:value={$selectedDocsOrNull.assoDocs[i]} />
                     {/each}
                 </div>
                 {#if documents.moreAssoDocs.length}
@@ -68,8 +68,8 @@
                             on:click={() => controller.switchDisplay(showMoreAsso)}
                             expanded={$showMoreAsso}>
                             <div class="inner fr-grid-row extra-docs-container">
-                                {#each documents.moreAssoDocs as document}
-                                    <DocumentCard {document} />
+                                {#each documents.moreAssoDocs as document, i}
+                                    <DocumentCard {document} bind:value={$selectedDocsOrNull.moreAssoDocs[i]} />
                                 {/each}
                             </div>
                         </OpenCloseButton>
@@ -82,19 +82,17 @@
                 <h3 class="fr-h2 fr-mt-6w fr-mb-4w">
                     {controller.estabDocsTitle}
                 </h3>
-                <div class="fr-grid-row">
-                    {#each documents.estabDocs as document}
-                        <DocumentCard {document} />
-                    {/each}
-                </div>
+                {#each documents.estabDocs as document, i}
+                    <DocumentCard {document} bind:value={$selectedDocsOrNull.estabDocs[i]} />
+                {/each}
                 {#if documents.moreEstabDocs.length}
                     <div class="fr-col-12">
                         <OpenCloseButton
                             on:click={() => controller.switchDisplay(showMoreEstab)}
                             expanded={$showMoreEstab}>
                             <div class="inner fr-grid-row extra-docs-container">
-                                {#each documents.moreEstabDocs as document}
-                                    <DocumentCard {document} />
+                                {#each documents.moreEstabDocs as document, i}
+                                    <DocumentCard {document} bind:value={$selectedDocsOrNull.moreEstabDocs[i]} />
                                 {/each}
                             </div>
                         </OpenCloseButton>
