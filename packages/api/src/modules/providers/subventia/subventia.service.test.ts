@@ -6,6 +6,7 @@ import SubventiaRepository from "./repositories/subventia.repository";
 import { SubventiaDbo } from "./@types/subventia.entity";
 import { ApplicationStatus } from "dto";
 import SubventiaDto from "./@types/subventia.dto";
+import exp from "constants";
 
 describe("SubventiaService", () => {
     const filePath = "path/to/file";
@@ -27,17 +28,21 @@ describe("SubventiaService", () => {
 
     const sortedData = { valids: parsedData, invalids: [] };
 
+    const exportDate = new Date("02/07/2023");
+
     const applications = [
         {
             reference_demande: "ref1",
             montants_demande: 400,
             provider: "subventia",
+            exportDate: exportDate,
             __data__: [ref1_value1, ref1_value2],
         },
         {
             reference_demande: "ref2",
             montants_demande: 200,
             provider: "subventia",
+            exportDate: exportDate,
             __data__: [ref2_value1],
         },
     ];
@@ -88,8 +93,10 @@ describe("SubventiaService", () => {
                 montants_demande: 600,
                 dispositif: "FIPDR",
                 sous_dispositif: "",
-                status: ApplicationStatus.REFUSED,
+                status: "Refused",
+                statut_label: ApplicationStatus.REFUSED,
                 provider: "subventia",
+                exportDate: exportDate,
             });
         });
 
@@ -101,19 +108,19 @@ describe("SubventiaService", () => {
 
         it("should call groupByApplication", () => {
             ///@ts-expect-error : test private method
-            SubventiaService.getApplications(parsedData);
+            SubventiaService.getApplications(parsedData, exportDate);
             expect(mockGroupByApplication).toHaveBeenCalledWith(parsedData);
         });
 
         it("should call mergeToApplication", () => {
             //@ts-expect-error : test private method
-            SubventiaService.getApplications(parsedData);
+            SubventiaService.getApplications(parsedData, exportDate);
             expect(mockMergeToApplication).toHaveBeenCalledTimes(2);
         });
 
         it("should call applicationToEntity", () => {
             //@ts-expect-error : test private method
-            SubventiaService.getApplications(parsedData);
+            SubventiaService.getApplications(parsedData, exportDate);
             expect(mockApplicationToEntity).toHaveBeenCalledTimes(2);
         });
 
@@ -122,16 +129,18 @@ describe("SubventiaService", () => {
                 reference_demande: "ref1",
                 montants_demande: 400,
                 provider: "subventia",
+                exportDate: exportDate,
             });
             mockApplicationToEntity.mockReturnValueOnce({
                 reference_demande: "ref2",
                 montants_demande: 200,
                 provider: "subventia",
+                exportDate: exportDate,
             });
 
             const expected = applications;
             //@ts-expect-error : test private method
-            const actual = SubventiaService.getApplications(parsedData);
+            const actual = SubventiaService.getApplications(parsedData, exportDate);
 
             expect(actual).toEqual(expected);
         });
@@ -158,18 +167,18 @@ describe("SubventiaService", () => {
         });
 
         it("should call parse", () => {
-            SubventiaService.processSubventiaData(filePath);
+            SubventiaService.processSubventiaData(filePath, exportDate);
             expect(mockParse).toHaveBeenCalledWith(filePath);
         });
 
         it("should call sortDataByValidity", () => {
-            SubventiaService.processSubventiaData(filePath);
+            SubventiaService.processSubventiaData(filePath, exportDate);
             expect(mockSortData).toHaveBeenCalledWith(parsedData);
         });
 
         it("should call getApplications", () => {
-            SubventiaService.processSubventiaData(filePath);
-            expect(mockGetApplications).toHaveBeenCalledWith(sortedData["valids"]);
+            SubventiaService.processSubventiaData(filePath, exportDate);
+            expect(mockGetApplications).toHaveBeenCalledWith(sortedData["valids"], exportDate);
         });
     });
 
