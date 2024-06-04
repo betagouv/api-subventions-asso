@@ -16,12 +16,12 @@ export default class SubventiaAdapter {
         } as SubventiaEntity;
     }
 
-    public static toDemandeSubventionDto(dbo: SubventiaDbo): DemandeSubvention {
+    public static toDemandeSubventionDto(dbo: Omit<SubventiaDbo, "_id">): DemandeSubvention {
         const lastUpdateDate = new Date(dbo["exportDate"]);
         const toPV = ProviderValueFactory.buildProviderValueAdapter(subventiaService.provider.name, lastUpdateDate);
 
         return {
-            siret: toPV(dbo.siret),
+            siret: toPV(dbo["siret"]),
             service_instructeur: toPV(dbo["service_instructeur"]),
             status: toPV(dbo["status"]),
             statut_label: toPV(dbo["statut_label"]),
@@ -36,7 +36,7 @@ export default class SubventiaAdapter {
         };
     }
 
-    public static toCommon(dbo: SubventiaDbo): ApplicationDto {
+    public static toCommon(dbo: Omit<SubventiaDbo, "_id">): ApplicationDto {
         return {
             dispositif: dbo["dispositif"],
             exercice: dbo["annee_demande"],
@@ -66,7 +66,7 @@ const subventiaMapper = {
         path: ["Date - Décision"],
         adapter: value => {
             if (!value) return value;
-            return ExcelDateToJSDate(parseInt(value, 10));
+            return ExcelDateToJSDate(parseInt(value));
         },
     },
     montants_accorde: { path: ["Montant voté TTC - Décision"] },
