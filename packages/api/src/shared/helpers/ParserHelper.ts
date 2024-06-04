@@ -43,7 +43,7 @@ export function indexDataByPathObject(
         const tempAcc = acc as { [key: string]: string };
         tempAcc[key] = findByPath(data, pathObject[key]);
         return tempAcc;
-    }, {} as unknown) as DefaultObject<string | number>;
+    }, {} as unknown) as DefaultObject<unknown>;
 }
 
 export function linkHeaderToData(headers: string[], data: unknown[]) {
