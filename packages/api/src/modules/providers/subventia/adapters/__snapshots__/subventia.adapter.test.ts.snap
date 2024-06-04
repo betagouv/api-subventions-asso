@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SubventiaAdapter toDemandeSubventionDto should return DemandeSubvention 1`] = `
+Object {
+  "annee_demande": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "Subventia",
+    "type": "number",
+    "value": 2023,
+  },
+  "date_commision": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "Subventia",
+    "type": "object",
+    "value": 2023-12-06T23:00:00.000Z,
+  },
+  "dispositif": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "Subventia",
+    "type": "string",
+    "value": "FIPDR",
+  },
+  "montants": Object {
+    "accorde": Object {
+      "last_update": 2023-07-12T00:00:00.000Z,
+      "provider": "Subventia",
+      "type": "number",
+      "value": 100,
+    },
+    "demande": Object {
+      "last_update": 2023-07-12T00:00:00.000Z,
+      "provider": "Subventia",
+      "type": "number",
+      "value": 600,
+    },
+  },
+  "service_instructeur": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "Subventia",
+    "type": "string",
+    "value": "CIPDR",
+  },
+  "siret": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "Subventia",
+    "type": "string",
+    "value": "123456789",
+  },
+  "sous_dispositif": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "Subventia",
+    "type": "string",
+    "value": "",
+  },
+  "status": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "Subventia",
+    "type": "string",
+    "value": "Refused",
+  },
+  "statut_label": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "Subventia",
+    "type": "string",
+    "value": "Refusé",
+  },
+}
+`;
