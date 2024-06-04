@@ -1,3 +1,5 @@
+import { ApplicationDto, DemandeSubvention } from "dto";
+import { RawGrant } from "../../grant/@types/rawGrant";
 import Provider from "../@types/IProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import SubventiaParser from "./subventia.parser";
@@ -65,6 +67,56 @@ export class SubventiaService implements Provider {
 
     async createEntity(entity: Omit<SubventiaDbo, "_id">) {
         return subventiaRepository.create(entity);
+    }
+
+    /**
+     * |-------------------------|
+     * |   Demande Part          |
+     * |-------------------------|
+     */
+
+    isDemandeSubventionsProvider = true;
+
+    async getDemandeSubventionBySiret(siret: string) {
+        const applications = await subventiaRepository.findBySiret(siret);
+        return applications.map(dbo => SubventiaAdapter.toDemandeSubventionDto(dbo));
+    }
+
+    async getDemandeSubventionBySiren(siren: string) {
+        const applications = await subventiaRepository.findBySiren(siren);
+        return applications.map(dbo => SubventiaAdapter.toDemandeSubventionDto(dbo));
+    }
+
+    getDemandeSubventionByRna(): Promise<DemandeSubvention[] | null> {
+        return Promise.resolve(null);
+    }
+
+    /**
+     * |-------------------------|
+     * |   Raw Grant Part        |
+     * |-------------------------|
+     */
+
+    isGrantProvider = true;
+
+    async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
+        return (await subventiaRepository.findBySiret(siret)).map(grant => ({
+            provider: this.provider.id,
+            type: "application",
+            data: grant,
+        }));
+    }
+
+    async getRawGrantsBySiren(siren: string): Promise<RawGrant[] | null> {
+        return (await subventiaRepository.findBySiren(siren)).map(grant => ({
+            provider: this.provider.id,
+            type: "application",
+            data: grant,
+        }));
+    }
+
+    rawToCommon(raw: RawGrant): ApplicationDto {
+        return SubventiaAdapter.toCommon(raw.data as SubventiaDbo);
     }
 }
 
