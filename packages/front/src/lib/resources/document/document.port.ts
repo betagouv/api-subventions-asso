@@ -8,7 +8,7 @@ class DocumentPort {
     }
 
     async getSomeDocs(docRequests: DocumentRequestDto[]): Promise<Blob> {
-        const path = `document/downloads}`;
+        const path = `document/downloads`;
         return (await requestsService.post(path, docRequests, { responseType: "blob" }))?.data;
     }
 }
