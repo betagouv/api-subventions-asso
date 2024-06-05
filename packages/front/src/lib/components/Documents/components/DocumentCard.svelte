@@ -98,7 +98,6 @@
     .fr-card,
     .download-wrapper {
         border-bottom: 1px var(--border-default-grey) solid;
-        /*cursor: pointer;*/
     }
 
     .card-container:hover .fr-card {
