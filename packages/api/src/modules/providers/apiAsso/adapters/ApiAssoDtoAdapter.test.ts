@@ -57,6 +57,23 @@ describe("ApiAssoDtoAdapter", () => {
 
             expect(actual).toMatchSnapshot();
         });
+
+        it("should convert contact's phone number to string", () => {
+            const estab = ApiAssoDtoAdapter.toEtablissement(
+                fixtureEtablissements[1],
+                [],
+                [
+                    { telephone: 222, id_siret: fixtureEtablissements[1].id_siret },
+                ] as unknown as StructureRepresentantLegalDto[],
+                fixtureAsso.identite.date_modif_siren,
+            );
+
+            const expected = "222";
+            // @ts-expect-error
+            const actual = estab.contacts[0][0].value.telephone;
+
+            expect(actual).toBe(expected);
+        });
     });
 
     describe("rnaDocumentToDocument", () => {
