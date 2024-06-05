@@ -6,7 +6,7 @@ Array [
     "applications": Array [
       Object {
         "data": Object {
-          "_id": "632d640a5de73e7b04d28268",
+          "_id": Any<String>,
           "dauphin": Object {
             "_document": Object {},
             "active": true,
@@ -1674,7 +1674,7 @@ Array [
     "applications": Array [
       Object {
         "data": Object {
-          "_id": "66602c3066cecdddfc37485d",
+          "_id": Any<String>,
           "actions": Array [],
           "data": Object {},
           "legalInformations": Object {
@@ -1710,7 +1710,7 @@ Array [
     "fullGrants": Array [
       Object {
         "data": Object {
-          "_id": "66602c3066cecdddfc37485e",
+          "_id": Any<String>,
           "data": Object {},
           "indexedInformations": Object {
             "annee_demande": 2022,
@@ -1746,6 +1746,7 @@ Array [
     "applications": Array [
       Object {
         "data": Object {
+          "_id": Any<String>,
           "entity": Object {
             "demande": Object {
               "annotations": Object {
@@ -2165,11 +2166,15 @@ Array [
         "type": "application",
       },
     ],
+    "fullGrants": undefined,
+    "payments": undefined,
   },
   Object {
+    "applications": undefined,
     "fullGrants": Array [
       Object {
         "data": Object {
+          "_id": Any<String>,
           "fields": Object {
             "conditionsversement": "ECHELONNE",
             "dateconvention": "2018-05",
@@ -2195,11 +2200,14 @@ Array [
         "type": "fullGrant",
       },
     ],
+    "payments": undefined,
   },
   Object {
+    "applications": undefined,
     "fullGrants": Array [
       Object {
         "data": Object {
+          "_id": Any<String>,
           "fields": Object {
             "conditionsversement": "UNIQUE",
             "dateconvention": "2021-06",
@@ -2225,6 +2233,7 @@ Array [
         "type": "fullGrant",
       },
     ],
+    "payments": undefined,
   },
   Object {
     "applications": Array [
@@ -2249,8 +2258,7 @@ Array [
             "pourcentagesubvention": 1,
             "referencedecision": "SP 21/01/2019",
           },
-          "_id": "producer-1-
-            {\\"nomattribuant\\":\\"GRANTOR_1\\",\\"idattribuant\\":\\"99000000000001\\",\\"annee\\":2020,\\"numero_complet_engagement\\":\\"2020-000375-0000\\",\\"code_tranche\\":\\"12103O001T14\\",\\"referencedecision\\":\\"SP 21/01/2019\\",\\"dateconvention\\":\\"2019-01-21 00:00:00\\",\\"objet\\":\\"2019-15081 - INSTITUT DE SOUDURE INDUSTRIE\\",\\"nombeneficiaire\\":\\"INSTITUT DE SOUDURE\\",\\"idbeneficiaire\\":\\"10000000000001\\",\\"montant\\":60854,\\"nature\\":\\"aide en numéraire\\",\\"conditionsversement\\":\\"unique\\",\\"datesperiodeversement\\":\\"2019-01-21 00:00:00\\",\\"idrae\\":\\"NULL\\",\\"notificationue\\":\\"NULL\\",\\"pourcentagesubvention\\":1}",
+          "_id": Any<String>,
           "allocatorName": "GRANTOR_1",
           "allocatorSiret": "99000000000001",
           "amount": 60854,
@@ -2278,6 +2286,8 @@ Array [
         "type": "application",
       },
     ],
+    "fullGrants": undefined,
+    "payments": undefined,
   },
 ]
 `;

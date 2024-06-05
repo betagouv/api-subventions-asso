@@ -10,6 +10,7 @@ import associationsService from "../associations/associations.service";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import { siretToSiren } from "../../shared/helpers/SirenHelper";
 import { BadRequestError } from "../../shared/errors/httpErrors";
+import { RnaOnlyError } from "../../shared/errors/GrantError";
 import { RawGrant, JoinedRawGrant } from "./@types/rawGrant";
 import GrantProvider from "./@types/GrantProvider";
 import commonGrantService from "./commonGrant.service";
@@ -30,13 +31,29 @@ export class GrantService {
     private validateAndGetStructureType(id: StructureIdentifiers) {
         const idType = getIdentifierType(id);
         if (!idType) throw new StructureIdentifiersError();
-
         return idType;
     }
 
     private async validateIsAssociation(id: StructureIdentifiers) {
         const siren = await associationsService.isSirenFromAsso(siretToSiren(id));
         if (!siren) throw new BadRequestError("identifier does not represent an association");
+    }
+
+    private async validateAndGetIdentifierInfo(identifier: StructureIdentifiers) {
+        let type = this.validateAndGetStructureType(identifier);
+
+        if (type === StructureIdentifiersEnum.rna) {
+            const sirenValues = await this.getSirenValues(identifier);
+            if (sirenValues) {
+                type = sirenValues.type;
+                identifier = sirenValues.identifier;
+            } else {
+                throw new RnaOnlyError(identifier);
+            }
+        } else {
+            this.validateIsAssociation(identifier);
+        }
+        return { identifier, type };
     }
 
     private async getSirenValues(rna: Rna) {
@@ -56,32 +73,43 @@ export class GrantService {
         ];
     };
 
+    /**
+     * Fetch grants by SIREN or SIRET.
+     * Grants can only be referenced by SIRET.
+     *
+     * If we got an RNA as identifier, we try to get the associated SIREN.
+     * If we find it, we proceed the operation using it.
+     * If not, we stop and return an empty array.
+     *
+     * @param identifier Rna, Siren or Siret
+     * @returns List of grants (application with paiments)
+     */
     async getGrants(identifier: StructureIdentifiers) {
-        const type = this.validateAndGetStructureType(identifier);
-        // TODO: if RNA take SIREN is found ?
-        const method = GrantService.getDefaultMethodNameByIdType[type];
-        const grantFetcher = this.buildGrantFetcher(method);
-        return this.joinGrants(await grantFetcher(identifier));
+        try {
+            const { identifier: sirenOrSiret, type } = await this.validateAndGetIdentifierInfo(identifier);
+            const method = GrantService.getDefaultMethodNameByIdType[type];
+            const grantFetcher = this.buildGrantFetcher(method);
+            return this.joinGrants(await grantFetcher(sirenOrSiret));
+        } catch (e) {
+            // IMPROVE: returning empty array does not inform the user that we could not search for grants
+            // it does not mean that the association does not received any grants
+            if (e instanceof RnaOnlyError) return [] as JoinedRawGrant[];
+            else throw e;
+        }
     }
 
     async getRawGrants(identifier: StructureIdentifiers): Promise<JoinedRawGrant[]> {
-        let type = this.validateAndGetStructureType(identifier);
-
-        if (type === StructureIdentifiersEnum.rna) {
-            const sirenValues = await this.getSirenValues(identifier);
-            // Why do we want siren over rna in this case ?
-            if (sirenValues) {
-                type = sirenValues.type;
-                identifier = sirenValues.identifier;
-            }
-        } else {
-            await this.validateIsAssociation(identifier);
+        try {
+            const { identifier: sirenOrSiret, type } = await this.validateAndGetIdentifierInfo(identifier);
+            const method = GrantService.getRawMethodNameByIdType[type];
+            const rawGrantFetcher = this.buildGrantFetcher(method);
+            return this.joinGrants(await rawGrantFetcher(sirenOrSiret));
+        } catch (e) {
+            // IMPROVE: returning empty array does not inform the user that we could not search for grants
+            // it does not mean that the association does not received any grants
+            if (e instanceof RnaOnlyError) return [] as JoinedRawGrant[];
+            else throw e;
         }
-
-        const method = GrantService.getRawMethodNameByIdType[type];
-        const rawGrantFetcher = this.buildGrantFetcher(method);
-
-        return this.joinGrants(await rawGrantFetcher(identifier));
     }
 
     async getRawGrantsByAssociation(id: AssociationIdentifiers): Promise<JoinedRawGrant[]> {
