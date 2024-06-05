@@ -8,7 +8,7 @@ export class DocumentCardController {
 
     constructor(document: DocumentEntity) {
         this.isSelected = new Store(false);
-        this.checkBoxId = document.nom + document.date;
+        this.checkBoxId = document.nom + document.date.getTime();
     }
 
     getDateString(date) {
