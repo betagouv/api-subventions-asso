@@ -32,6 +32,11 @@ describe("Documents.controller", () => {
         ctrl._getEstablishmentDocuments = vi.spyOn(ctrlNotSpied, "_getEstablishmentDocuments");
         ctrl._organizeDocuments = vi.spyOn(ctrlNotSpied, "_organizeDocuments");
         ctrl.onMount = vi.spyOn(ctrlNotSpied, "onMount");
+        ctrl.download = vi.spyOn(ctrlNotSpied, "download");
+        // @ts-expect-error spy private
+        ctrl.downloadAll = vi.spyOn(ctrlNotSpied, "downloadAll");
+        // @ts-expect-error spy private
+        ctrl.downloadSome = vi.spyOn(ctrlNotSpied, "downloadSome");
 
         vi.mocked(associationService).getDocuments.mockResolvedValue([]);
         vi.mocked(establishmentService).getDocuments.mockResolvedValue([]);
@@ -307,6 +312,65 @@ describe("Documents.controller", () => {
         });
     });
 
+    describe("download", () => {
+        beforeAll(() => {
+            // @ts-expect-error - mock
+            vi.mocked(documentService.getAllDocs).mockResolvedValue("");
+        });
+
+        afterAll(() => {
+            vi.mocked(documentService.getAllDocs).mockReset();
+        });
+
+        describe.each`
+            case               | downloadMethodName | flatSelectedDocs
+            ${"download all"}  | ${"downloadAll"}   | ${[]}
+            ${"download some"} | ${"downloadSome"}  | ${["some"]}
+        `("case $case", ({ downloadMethodName, flatSelectedDocs }) => {
+            it("calls $downloadMethodName", async () => {
+                ctrl.flatSelectedDocs = { value: flatSelectedDocs };
+                const BLOB = "BLOB" as unknown as Blob;
+                vi.mocked(ctrl[downloadMethodName]).mockResolvedValueOnce(BLOB);
+                await ctrl.download();
+                expect(ctrl[downloadMethodName]).toHaveBeenCalled();
+            });
+
+            it("calls documentHelper.download with blob from $downloadMethodName", async () => {
+                ctrl.flatSelectedDocs = { value: flatSelectedDocs };
+                const BLOB = "BLOB" as unknown as Blob;
+                vi.mocked(ctrl[downloadMethodName]).mockResolvedValueOnce(BLOB);
+                await ctrl.download();
+                expect(documentHelper.download).toHaveBeenCalledWith(BLOB, "documents_RNA.zip");
+            });
+        });
+
+        it("if download is quicker than 750 ms, does not set zipPromise", async () => {
+            const zipSetSpy = vi.spyOn(ctrl.zipPromise, "set");
+            vi.useFakeTimers();
+            vi.mocked(ctrl.downloadAll).mockReturnValueOnce(new Promise(resolve => setTimeout(resolve, 500)));
+
+            const test = ctrl.download();
+            vi.advanceTimersByTime(600);
+            expect(zipSetSpy).not.toHaveBeenCalled();
+            vi.runAllTimers();
+            await test;
+            vi.useRealTimers();
+        });
+
+        it("if download is slower than 750 ms, sets zipPromise", async () => {
+            const zipSetSpy = vi.spyOn(ctrl.zipPromise, "set");
+            vi.useFakeTimers();
+            vi.mocked(ctrl.downloadAll).mockReturnValueOnce(new Promise(resolve => setTimeout(resolve, 2000)));
+
+            const test = ctrl.download();
+            vi.advanceTimersByTime(800);
+            expect(zipSetSpy).toHaveBeenCalled();
+            vi.runAllTimers();
+            await test;
+            vi.useRealTimers();
+        });
+    });
+
     describe("downloadAll", () => {
         beforeAll(() => {
             // @ts-expect-error - mock
@@ -318,12 +382,12 @@ describe("Documents.controller", () => {
         });
 
         it.each`
-            identifier | structure
-            ${"RNA"}   | ${ASSOCIATION}
-            ${"SIREN"} | ${{ siren: "SIREN" }}
-            ${"SIRET"} | ${ESTABLISHMENT}
-        `("gets docs by $identifier", ({ identifier, structure }) => {
-            ctrl.resource = structure;
+            identifier
+            ${"RNA"}
+            ${"SIREN"}
+            ${"SIRET"}
+        `("gets docs by $identifier", ({ identifier }) => {
+            ctrl.identifier = identifier;
             ctrl.downloadAll();
             expect(documentService.getAllDocs).toHaveBeenCalledWith(identifier);
 
@@ -331,39 +395,12 @@ describe("Documents.controller", () => {
             ctrl.resource = ASSOCIATION;
         });
 
-        it("calls documentHelper.download with blob from documentService", async () => {
+        it("returns blob from documentService", async () => {
             const BLOB = "BLOB" as unknown as Blob;
             vi.mocked(documentService.getAllDocs).mockResolvedValueOnce(BLOB);
-            await ctrl.downloadAll();
-            expect(documentHelper.download).toHaveBeenCalledWith(BLOB, "documents_RNA.zip");
-        });
-
-        it("if download is quicker than 750 ms, does not set zipPromise", async () => {
-            const zipSetSpy = vi.spyOn(ctrl.zipPromise, "set");
-            vi.useFakeTimers();
-            vi.mocked(documentService.getAllDocs).mockReturnValueOnce(new Promise(resolve => setTimeout(resolve, 500)));
-
-            const test = ctrl.downloadAll();
-            vi.advanceTimersByTime(600);
-            expect(zipSetSpy).not.toHaveBeenCalled();
-            vi.runAllTimers();
-            await test;
-            vi.useRealTimers();
-        });
-
-        it("if download is slower than 750 ms, sets zipPromise", async () => {
-            const zipSetSpy = vi.spyOn(ctrl.zipPromise, "set");
-            vi.useFakeTimers();
-            vi.mocked(documentService.getAllDocs).mockReturnValueOnce(
-                new Promise(resolve => setTimeout(resolve, 2000)),
-            );
-
-            const test = ctrl.downloadAll();
-            vi.advanceTimersByTime(800);
-            expect(zipSetSpy).toHaveBeenCalled();
-            vi.runAllTimers();
-            await test;
-            vi.useRealTimers();
+            const expected = BLOB;
+            const actual = await ctrl.downloadAll();
+            expect(actual).toBe(expected);
         });
     });
 });
