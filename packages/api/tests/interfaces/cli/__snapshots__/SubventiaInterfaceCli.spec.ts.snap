@@ -220,7 +220,8 @@ Array [
     "service_instructeur": "environmental",
     "siret": "89666782366082",
     "sous_dispositif": "religious",
-    "status": "Accordé",
+    "status": "SOLDE",
+    "statut_label": "Accordé",
   },
   Object {
     "__data__": Array [
@@ -440,7 +441,8 @@ Array [
     "service_instructeur": "as",
     "siret": "75672982295629",
     "sous_dispositif": "property",
-    "status": "Accordé",
+    "status": "VOTE",
+    "statut_label": "Accordé",
   },
   Object {
     "__data__": Array [
@@ -660,7 +662,8 @@ Array [
     "service_instructeur": "fight",
     "siret": "63944186840583",
     "sous_dispositif": "where",
-    "status": "Accordé",
+    "status": "SOLDE",
+    "statut_label": "Accordé",
   },
   Object {
     "__data__": Array [
@@ -880,7 +883,8 @@ Array [
     "service_instructeur": "section",
     "siret": "77865718306041",
     "sous_dispositif": "nation",
-    "status": "En instruction",
+    "status": "INSTRUCTION",
+    "statut_label": "En instruction",
   },
 ]
 `;
