@@ -16,7 +16,7 @@ export default class SubventiaAdapter {
         } as SubventiaEntity;
     }
 
-    public static toDemandeSubventionDto(dbo: Omit<SubventiaDbo, "_id">): DemandeSubvention {
+    public static toDemandeSubventionDto(dbo: SubventiaDbo): DemandeSubvention {
         const lastUpdateDate = new Date(dbo["exportDate"]);
         const toPV = ProviderValueFactory.buildProviderValueAdapter(subventiaService.provider.name, lastUpdateDate);
 
@@ -36,7 +36,7 @@ export default class SubventiaAdapter {
         };
     }
 
-    public static toCommon(dbo: Omit<SubventiaDbo, "_id">): ApplicationDto {
+    public static toCommon(dbo: SubventiaDbo): ApplicationDto {
         return {
             dispositif: dbo["dispositif"],
             exercice: dbo["annee_demande"],

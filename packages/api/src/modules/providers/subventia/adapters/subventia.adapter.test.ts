@@ -3,6 +3,8 @@ import * as ParseHelper from "../../../../shared/helpers/ParserHelper";
 import SubventiaDto from "../@types/subventia.dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { ApplicationStatus, ProviderValue } from "dto";
+import _ from "lodash";
+import { ObjectId } from "mongodb";
 
 describe(SubventiaAdapter, () => {
     const application = { "Montant Ttc": 600, "Référence administrative - Demande": "ref1" } as SubventiaDto;
@@ -24,7 +26,7 @@ describe(SubventiaAdapter, () => {
     const exportDate = new Date("2022-08-02T00:00:00.000Z");
     const entity = { ...entityIncomplete, provider: "subventia", exportDate: exportDate };
 
-    const dbo = { ...entity, __data__: [] };
+    const dbo = { ...entity, __data__: [], _id: new ObjectId("123456789") };
 
     describe("applicationToEntity", () => {
         it("should call indexDataByPathObject", () => {
