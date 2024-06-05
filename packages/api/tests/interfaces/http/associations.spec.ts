@@ -28,6 +28,7 @@ import miscScdlGrantRepository from "../../../src/modules/providers/scdl/reposit
 import DEFAULT_ASSOCIATION, { LONELY_RNA } from "../../__fixtures__/association.fixture";
 import dauphinGisproRepository from "../../../src/modules/providers/dauphin/repositories/dauphin-gispro.repository";
 import { DAUPHIN_GISPRO_DBOS } from "../../dataProviders/db/__fixtures__/dauphinGispro.fixtures";
+import rnaSirenService from "../../../src/modules/rna-siren/rnaSiren.service";
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
 
 const g = global as unknown as { app: unknown };
@@ -192,10 +193,9 @@ describe("/association", () => {
         });
 
         it("should return raw grants with rna", async () => {
-            const RNA = OsirisRequestEntityFixture.legalInformations.rna as Rna;
-
+            await rnaSirenService.insert(DEFAULT_ASSOCIATION.rna, DEFAULT_ASSOCIATION.siren);
             const response = await request(g.app)
-                .get(`/association/${RNA}/raw-grants`)
+                .get(`/association/${DEFAULT_ASSOCIATION.rna}/raw-grants`)
                 .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
