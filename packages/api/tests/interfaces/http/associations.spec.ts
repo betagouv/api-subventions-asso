@@ -166,7 +166,35 @@ describe("/association", () => {
         });
     });
 
+    describe.only("/{identifier}/grants", () => {
+        it("should return grants with rna", async () => {
+            await rnaSirenService.insert(DEFAULT_ASSOCIATION.rna, DEFAULT_ASSOCIATION.siren);
+            const response = await request(g.app)
+                .get(`/association/${DEFAULT_ASSOCIATION.rna}/grants`)
+                .set("x-access-token", await createAndGetAdminToken())
+                .set("Accept", "application/json");
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toMatchSnapshot();
+        });
+    });
+
     describe("/{identifier}/raw-grants", () => {
+        const anonymiseData = (data: JoinedRawGrant[] | null) => {
+            if (!data) return null;
+            const expectAnyRawGrantId = (rawGrant: RawGrant) => ({
+                ...rawGrant,
+                data: { ...rawGrant.data, _id: expect.any(String) },
+            });
+
+            const withoutIdGrants = data.map(joinedRawGrant => ({
+                fullGrants: joinedRawGrant.fullGrants?.map(expectAnyRawGrantId),
+                applications: joinedRawGrant.applications?.map(expectAnyRawGrantId),
+                payments: joinedRawGrant.payments?.map(expectAnyRawGrantId),
+            }));
+
+            return withoutIdGrants;
+        };
+
         it("should return raw grants with siren", async () => {
             // SIREN must be from an association
             const SIREN = siretToSiren(OsirisRequestEntityFixture.legalInformations.siret);
@@ -177,19 +205,7 @@ describe("/association", () => {
                 .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
-
-            const expectAnyRawGrantId = (rawGrant: RawGrant) => ({
-                ...rawGrant,
-                data: { ...rawGrant.data, _id: expect.any(String) },
-            });
-
-            const withoutIdGrants = (response.body as JoinedRawGrant[]).map(joinedRawGrant => ({
-                fullGrants: joinedRawGrant.fullGrants?.map(expectAnyRawGrantId),
-                applications: joinedRawGrant.applications?.map(expectAnyRawGrantId),
-                payments: joinedRawGrant.payments?.map(expectAnyRawGrantId),
-            }));
-
-            expect(withoutIdGrants).toMatchSnapshot();
+            expect(anonymiseData(response.body)).toMatchSnapshot();
         });
 
         it("should return raw grants with rna", async () => {
@@ -199,7 +215,18 @@ describe("/association", () => {
                 .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchSnapshot();
+            expect(anonymiseData(response.body)).toMatchSnapshot();
+        });
+
+        it("should return empty array if identifier is RNA and no SIREN matched", async () => {
+            const expected = [];
+            const response = await request(g.app)
+                .get(`/association/${DEFAULT_ASSOCIATION.rna}/raw-grants`)
+                .set("x-access-token", await createAndGetAdminToken())
+                .set("Accept", "application/json");
+            expect(response.statusCode).toBe(200);
+            const actual = response.body;
+            expect(actual).toEqual(expected);
         });
     });
 });

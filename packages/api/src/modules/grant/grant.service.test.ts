@@ -101,11 +101,10 @@ describe("GrantService", () => {
         });
 
         it.each`
-            identifierType                    | methodName               | notFoundSirenFromRna | aboutFindingRna       | id
-            ${StructureIdentifiersEnum.siret} | ${"getRawGrantsBySiret"} | ${false}             | ${""}                 | ${ID}
-            ${StructureIdentifiersEnum.siren} | ${"getRawGrantsBySiren"} | ${false}             | ${""}                 | ${ID}
-            ${StructureIdentifiersEnum.rna}   | ${"getRawGrantsBySiren"} | ${false}             | ${" (siren found)"}   | ${SIREN}
-            ${StructureIdentifiersEnum.rna}   | ${"getRawGrantsByRna"}   | ${true}              | ${"(siren not found"} | ${ID}
+            identifierType                    | methodName               | notFoundSirenFromRna | aboutFindingRna     | id
+            ${StructureIdentifiersEnum.siret} | ${"getRawGrantsBySiret"} | ${false}             | ${""}               | ${ID}
+            ${StructureIdentifiersEnum.siren} | ${"getRawGrantsBySiren"} | ${false}             | ${""}               | ${ID}
+            ${StructureIdentifiersEnum.rna}   | ${"getRawGrantsBySiren"} | ${false}             | ${" (siren found)"} | ${SIREN}
         `(
             "calls appropriate method of provider by $identifierType$aboutFindingRna",
             async ({ identifierType, methodName, notFoundSirenFromRna, id }) => {
