@@ -12,7 +12,7 @@ describe(SubventiaAdapter, () => {
         service_instructeur: "CIPDR",
         annee_demande: 2023,
         siret: "123456789",
-        date_commision: new Date(2023, 7, 12),
+        date_commision: new Date("2023-04-01T00:00:00.000Z"),
         montants_accorde: 100,
         montants_demande: 600,
         dispositif: "FIPDR",
@@ -21,7 +21,7 @@ describe(SubventiaAdapter, () => {
         statut_label: ApplicationStatus.REFUSED,
     };
 
-    const exportDate = new Date(2024, 4, 1);
+    const exportDate = new Date("2022-08-02T00:00:00.000Z");
     const entity = { ...entityIncomplete, provider: "subventia", exportDate: exportDate };
 
     const dbo = { ...entity, __data__: [] };
