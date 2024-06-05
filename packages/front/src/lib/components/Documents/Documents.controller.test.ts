@@ -28,8 +28,8 @@ describe("Documents.controller", () => {
         ctrl = Object.create(Object.getPrototypeOf(ctrlNotSpied), Object.getOwnPropertyDescriptors(ctrlNotSpied));
 
         ctrl._getAssociationDocuments = vi.spyOn(ctrlNotSpied, "_getAssociationDocuments");
-        (ctrl._removeDuplicates = vi.spyOn(ctrlNotSpied, "_removeDuplicates")),
-            (ctrl._getEstablishmentDocuments = vi.spyOn(ctrlNotSpied, "_getEstablishmentDocuments"));
+        ctrl._removeDuplicates = vi.spyOn(ctrlNotSpied, "_removeDuplicates");
+        ctrl._getEstablishmentDocuments = vi.spyOn(ctrlNotSpied, "_getEstablishmentDocuments");
         ctrl._organizeDocuments = vi.spyOn(ctrlNotSpied, "_organizeDocuments");
         ctrl.onMount = vi.spyOn(ctrlNotSpied, "onMount");
 
@@ -237,11 +237,27 @@ describe("Documents.controller", () => {
         });
 
         it.each`
-            property       | structure  | doc                                                                                    | default
-            ${"someAsso"}  | ${"asso"}  | ${{ provider: "RNA", nom: "Document RNA", showByDefault: true }}                       | ${true}
-            ${"someEstab"} | ${"estab"} | ${{ provider: "Le Compte Asso", nom: "Document Le Compte Asso", showByDefault: true }} | ${true}
-            ${"someAsso"}  | ${"asso"}  | ${{ provider: "RNA", nom: "Document RNA", showByDefault: true }}                       | ${false}
-            ${"someEstab"} | ${"estab"} | ${{ provider: "Le Compte Asso", nom: "Document Le Compte Asso", showByDefault: true }} | ${false}
+            property | structure | doc | default
+            ${"someAsso"} | ${"asso"} | ${{
+    provider: "RNA",
+    nom: "Document RNA",
+    showByDefault: true,
+}} | ${true}
+            ${"someEstab"} | ${"estab"} | ${{
+    provider: "Le Compte Asso",
+    nom: "Document Le Compte Asso",
+    showByDefault: true,
+}} | ${true}
+            ${"someAsso"} | ${"asso"} | ${{
+    provider: "RNA",
+    nom: "Document RNA",
+    showByDefault: true,
+}} | ${false}
+            ${"someEstab"} | ${"estab"} | ${{
+    provider: "Le Compte Asso",
+    nom: "Document Le Compte Asso",
+    showByDefault: true,
+}} | ${false}
         `("count in $property' if $structure docs with showByDefault $default", ({ property, doc }) => {
             const actual = ctrl._organizeDocuments([doc])[property];
             expect(actual).toBe(true);
