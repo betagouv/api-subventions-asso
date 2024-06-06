@@ -57,7 +57,7 @@ export class DemarchesSimplifieesEntityAdapter {
         return subvention as unknown as DemandeSubvention;
     }
 
-    static toRawGrant(entity: DemarchesSimplifieesEntityAdapter, schema: DemarchesSimplifieesMapperEntity): RawGrant {
+    static toRawGrant(entity: DemarchesSimplifieesDataEntity, schema: DemarchesSimplifieesMapperEntity): RawGrant {
         return {
             provider: demarchesSimplifieesService.provider.id,
             type: "application",

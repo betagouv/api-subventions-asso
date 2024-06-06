@@ -2,7 +2,6 @@ jest.mock("./repositories/demarchesSimplifieesMapper.repository");
 jest.mock("./repositories/demarchesSimplifieesData.repository");
 jest.mock("./adapters/DemarchesSimplifieesEntityAdapter");
 
-import { DemandeSubvention } from "dto";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
 import demarchesSimplifieesService from "./demarchesSimplifiees.service";
@@ -12,6 +11,13 @@ import demarchesSimplifieesDataRepository from "./repositories/demarchesSimplifi
 import demarchesSimplifieesMapperRepository from "./repositories/demarchesSimplifieesMapper.repository";
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
 import { DATA_ENTITIES, SCHEMAS } from "./__fixtures__/DemarchesSimplifieesFixture";
+import {
+    DATA_ENTITIES as INTEG_DATA_ENTITIES,
+    SCHEMAS as INTEG_SCHEMA,
+} from "../../../../tests/dataProviders/db/__fixtures__/demarchesSimplifiees.fixtures";
+import { DemarchesSimplifieesRawGrant } from "./@types/DemarchesSimplifieesRawGrant";
+import lodash from "lodash";
+jest.mock("lodash");
 
 describe("DemarchesSimplifieesService", () => {
     describe("getSchemasByIds", () => {
@@ -131,6 +137,46 @@ describe("DemarchesSimplifieesService", () => {
             // @ts-expect-error: test private method
             await demarchesSimplifieesService.entitiesToSubventions([]);
             expect(mockFilterAndAdaptEntities).toHaveBeenCalledWith([], DemarchesSimplifieesEntityAdapter.toSubvention);
+        });
+    });
+
+    describe("getJoinKey", () => {
+        it("should call lodash.get", () => {
+            jest.mocked(lodash.get).mockReturnValueOnce("EJ");
+            const RAW_GRANT: DemarchesSimplifieesRawGrant = {
+                provider: demarchesSimplifieesService.provider.id,
+                type: "application",
+                data: { entity: INTEG_DATA_ENTITIES[0], schema: INTEG_SCHEMA[0] },
+            };
+            const expected = [INTEG_DATA_ENTITIES[0], "demande.annotations.Q2hhbXAtMjY3NDMxMA==.value"];
+            // @ts-expect-error: private method
+            const actual = demarchesSimplifieesService.getJoinKey(RAW_GRANT);
+            expect(lodash.get).toHaveBeenCalledWith(...expected);
+        });
+
+        it("should return joinKey", () => {
+            jest.mocked(lodash.get).mockReturnValueOnce("EJ");
+            const RAW_GRANT: DemarchesSimplifieesRawGrant = {
+                provider: demarchesSimplifieesService.provider.id,
+                type: "application",
+                data: { entity: INTEG_DATA_ENTITIES[0], schema: INTEG_SCHEMA[0] },
+            };
+            const expected = "EJ";
+            // @ts-expect-error: private method
+            const actual = demarchesSimplifieesService.getJoinKey(RAW_GRANT);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return undefined if no joinKey field", () => {
+            const RAW_GRANT: DemarchesSimplifieesRawGrant = {
+                provider: demarchesSimplifieesService.provider.id,
+                type: "application",
+                data: { entity: INTEG_DATA_ENTITIES[0], schema: { ...INTEG_SCHEMA[0], schema: [] } },
+            };
+            const expected = undefined;
+            // @ts-expect-error: private method
+            const actual = demarchesSimplifieesService.getJoinKey(RAW_GRANT);
+            expect(actual).toEqual(expected);
         });
     });
 
