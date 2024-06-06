@@ -68,6 +68,7 @@ export class AssociationHttp extends Controller {
      */
     @Get("/{identifier}/grants")
     public getGrants(identifier: AssociationIdentifiers) {
+        // adapter en demandeSub à la fin
         return grantService.getGrants(identifier);
     }
 

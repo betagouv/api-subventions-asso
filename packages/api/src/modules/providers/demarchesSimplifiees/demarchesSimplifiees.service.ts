@@ -16,7 +16,7 @@ import demarchesSimplifieesDataRepository from "./repositories/demarchesSimplifi
 import demarchesSimplifieesMapperRepository from "./repositories/demarchesSimplifieesMapper.repository";
 import DemarchesSimplifieesMapperEntity from "./entities/DemarchesSimplifieesMapperEntity";
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
-import { DemarchesSimplifieesRawGrant } from "./@types/DemarchesSimplifieesRawGrant";
+import { DemarchesSimplifieesRawData, DemarchesSimplifieesRawGrant } from "./@types/DemarchesSimplifieesRawGrant";
 import DemarchesSimplifieesDataEntity from "./entities/DemarchesSimplifieesDataEntity";
 
 export class DemarchesSimplifieesService extends ProviderCore implements DemandesSubventionsProvider, GrantProvider {
@@ -164,17 +164,16 @@ export class DemarchesSimplifieesService extends ProviderCore implements Demande
 
     /** GRANT */
 
-    private getJoinKey(grant: DemarchesSimplifieesRawGrant) {
-        // TODO: rename first schema with mapper
-        const schema = grant.data.schema.schema;
-
+    public getJoinKey(data: DemarchesSimplifieesRawData) {
+        // TODO: rename schema to schemas and sub schema to default ?
+        const schema = data.schema.schema;
         // EJ and versementKey are the same.
         // versementKey abstracts the EJ key that is not always the name of the joiner to match with payments
         // i.e: in Fonjep we use code_poste instead of EJ
         const joinKeyFieldName = schema.find(field => field.to === "ej" || field.to === "versementKey")?.from;
 
-        let joinKey;
-        if (joinKeyFieldName) joinKey = lodash.get(grant.data.entity, joinKeyFieldName);
+        let joinKey: string | undefined;
+        if (joinKeyFieldName) joinKey = lodash.get(data.entity, joinKeyFieldName);
         return joinKey;
     }
 

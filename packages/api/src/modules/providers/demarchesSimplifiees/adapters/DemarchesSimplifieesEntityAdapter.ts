@@ -9,6 +9,7 @@ import { isValidDate } from "../../../../shared/helpers/DateHelper";
 import { stringIsFloat } from "../../../../shared/helpers/StringHelper";
 import { DefaultObject } from "../../../../@types";
 import { RawGrant } from "../../../grant/@types/rawGrant";
+import { DemarchesSimplifieesRawGrant } from "../@types/DemarchesSimplifieesRawGrant";
 
 export class DemarchesSimplifieesEntityAdapter {
     private static mapSchema<T>(
@@ -57,11 +58,17 @@ export class DemarchesSimplifieesEntityAdapter {
         return subvention as unknown as DemandeSubvention;
     }
 
-    static toRawGrant(entity: DemarchesSimplifieesDataEntity, schema: DemarchesSimplifieesMapperEntity): RawGrant {
+    static toRawGrant(
+        entity: DemarchesSimplifieesDataEntity,
+        mapper: DemarchesSimplifieesMapperEntity,
+    ): DemarchesSimplifieesRawGrant {
+        const joinKey = demarchesSimplifieesService.getJoinKey({ entity, schema: mapper });
+
         return {
             provider: demarchesSimplifieesService.provider.id,
             type: "application",
-            data: { entity, schema },
+            data: { entity, schema: mapper },
+            joinKey,
         };
     }
 
