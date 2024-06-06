@@ -112,7 +112,7 @@ export default class ApiAssoDtoAdapter {
             nom: r.nom,
             prenom: r.prenom,
             civilite: r.civilité,
-            telephone: r.telephone.toString(),
+            telephone: r.telephone?.toString(),
             email: r.courriel,
             role: r.fonction,
         });
