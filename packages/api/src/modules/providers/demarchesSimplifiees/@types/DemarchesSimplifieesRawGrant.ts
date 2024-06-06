@@ -3,5 +3,10 @@ import DemarchesSimplifieesDataEntity from "../entities/DemarchesSimplifieesData
 import DemarchesSimplifieesMapperEntity from "../entities/DemarchesSimplifieesMapperEntity";
 
 export interface DemarchesSimplifieesRawGrant extends RawGrant {
-    data: { entity: DemarchesSimplifieesDataEntity; schema: DemarchesSimplifieesMapperEntity };
+    data: DemarchesSimplifieesRawData;
 }
+
+export type DemarchesSimplifieesRawData = {
+    entity: DemarchesSimplifieesDataEntity;
+    schema: DemarchesSimplifieesMapperEntity;
+};

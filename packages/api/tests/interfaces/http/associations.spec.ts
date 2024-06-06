@@ -166,7 +166,7 @@ describe("/association", () => {
         });
     });
 
-    describe.only("/{identifier}/grants", () => {
+    describe("/{identifier}/grants", () => {
         it("should return grants with rna", async () => {
             await rnaSirenService.insert(DEFAULT_ASSOCIATION.rna, DEFAULT_ASSOCIATION.siren);
             const response = await request(g.app)

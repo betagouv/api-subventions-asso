@@ -15,7 +15,7 @@ import {
     DATA_ENTITIES as INTEG_DATA_ENTITIES,
     SCHEMAS as INTEG_SCHEMA,
 } from "../../../../tests/dataProviders/db/__fixtures__/demarchesSimplifiees.fixtures";
-import { DemarchesSimplifieesRawGrant } from "./@types/DemarchesSimplifieesRawGrant";
+import { DemarchesSimplifieesRawData, DemarchesSimplifieesRawGrant } from "./@types/DemarchesSimplifieesRawGrant";
 import lodash from "lodash";
 jest.mock("lodash");
 
@@ -141,41 +141,30 @@ describe("DemarchesSimplifieesService", () => {
     });
 
     describe("getJoinKey", () => {
+        const RAW_DATA: DemarchesSimplifieesRawData = {
+            entity: INTEG_DATA_ENTITIES[0],
+            schema: INTEG_SCHEMA[0],
+        };
         it("should call lodash.get", () => {
             jest.mocked(lodash.get).mockReturnValueOnce("EJ");
-            const RAW_GRANT: DemarchesSimplifieesRawGrant = {
-                provider: demarchesSimplifieesService.provider.id,
-                type: "application",
-                data: { entity: INTEG_DATA_ENTITIES[0], schema: INTEG_SCHEMA[0] },
-            };
             const expected = [INTEG_DATA_ENTITIES[0], "demande.annotations.Q2hhbXAtMjY3NDMxMA==.value"];
-            // @ts-expect-error: private method
-            const actual = demarchesSimplifieesService.getJoinKey(RAW_GRANT);
+            demarchesSimplifieesService.getJoinKey(RAW_DATA);
             expect(lodash.get).toHaveBeenCalledWith(...expected);
         });
 
         it("should return joinKey", () => {
             jest.mocked(lodash.get).mockReturnValueOnce("EJ");
-            const RAW_GRANT: DemarchesSimplifieesRawGrant = {
-                provider: demarchesSimplifieesService.provider.id,
-                type: "application",
-                data: { entity: INTEG_DATA_ENTITIES[0], schema: INTEG_SCHEMA[0] },
-            };
             const expected = "EJ";
-            // @ts-expect-error: private method
-            const actual = demarchesSimplifieesService.getJoinKey(RAW_GRANT);
+            const actual = demarchesSimplifieesService.getJoinKey(RAW_DATA);
             expect(actual).toEqual(expected);
         });
 
         it("should return undefined if no joinKey field", () => {
-            const RAW_GRANT: DemarchesSimplifieesRawGrant = {
-                provider: demarchesSimplifieesService.provider.id,
-                type: "application",
-                data: { entity: INTEG_DATA_ENTITIES[0], schema: { ...INTEG_SCHEMA[0], schema: [] } },
-            };
             const expected = undefined;
-            // @ts-expect-error: private method
-            const actual = demarchesSimplifieesService.getJoinKey(RAW_GRANT);
+            const actual = demarchesSimplifieesService.getJoinKey({
+                ...RAW_DATA,
+                schema: { ...INTEG_SCHEMA[0], schema: [] },
+            });
             expect(actual).toEqual(expected);
         });
     });
