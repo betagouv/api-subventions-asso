@@ -319,6 +319,10 @@ export const DATA_ENTITIES: DemarchesSimplifieesDataEntity[] = [
                     value: "",
                     label: "Montant de la subvention accordé",
                 },
+                "Q2hhbXAtMjY3NDMxMA==": {
+                    value: "EJ",
+                    label: "Engagement Juridique",
+                },
             },
         },
         demarcheId: 62746,
@@ -381,6 +385,14 @@ export const SCHEMAS: DemarchesSimplifieesMapperEntity[] = [
             {
                 from: "demande.demarche.title",
                 to: "dispositif",
+            },
+            {
+                from: "demande.annotations.Q2hhbXAtMjY3NDMxMA==.value",
+                to: "ej",
+            },
+            {
+                from: "demande.annotations.Q2hhbXAtMjY3NDMxMA==.value",
+                to: "versementKey",
             },
         ],
         commonSchema: [
