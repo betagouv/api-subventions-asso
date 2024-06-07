@@ -17,15 +17,18 @@
                 <input
                     name="documents-to-download"
                     id="documents-to-download-{controller.checkBoxId}"
+                    aria-describedby="description-document-{controller.checkBoxId}"
                     type="checkbox"
                     bind:checked={$isSelected} />
-                <label class="fr-label sr-only" for="documents-to-download-{controller.checkBoxId}">
-                    <!-- TODO infos document lecteur d'écran -->
+                <label class="fr-label fr-sr-only" for="documents-to-download-{controller.checkBoxId}">
+                    Sélectionner pour téléchargement groupé
                 </label>
             </div>
         </div>
         <div class="col-11-5">
-            <div class="fr-card fr-card--no-icon fr-card--horizontal fr-card--no-border">
+            <div
+                class="fr-card fr-card--no-icon fr-card--horizontal fr-card--no-border"
+                id="description-document-{controller.checkBoxId}">
                 <div class="fr-card__body">
                     <div class="fr-card__content fr-p-2w">
                         <div>
@@ -48,6 +51,7 @@
             <a
                 class="fr-link fr-links-group__title"
                 href={$isSelected ? undefined : document.url}
+                aria-describedby="description-document-{controller.checkBoxId}"
                 title="Télécharger"
                 target="_blank"
                 rel="noopener noreferrer">

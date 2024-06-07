@@ -47,11 +47,17 @@
                         iconPosition="right"
                         icon="download-line"
                         trackerName="download-zip"
-                        title="Tout télécharger"
+                        title={$downloadBtnLabel}
                         on:click={() => controller.download()}>
                         {$downloadBtnLabel}
                     </Button>
                 </div>
+            </div>
+
+            <div class="fr-sr-only">
+                Ci-dessous une liste de documents liés à {controller.resourceNameWithDemonstrative}. Chaque document est
+                associée à une checbkox qui sélectionne le document pour un téléchargement groupé sous forme de zip, et,
+                si le document n'est pas sélectionné, d'un lien de téléchargement pour le document seul.
             </div>
 
             <!-- Asso documents -->
@@ -99,6 +105,16 @@
                     </div>
                 {/if}
             {/if}
+            <div class="fr-sr-only">
+                <Button
+                    iconPosition="right"
+                    icon="download-line"
+                    trackerName="download-zip"
+                    title={$downloadBtnLabel}
+                    on:click={() => controller.download()}>
+                    {$downloadBtnLabel}
+                </Button>
+            </div>
         {:else}
             <DataNotFound
                 content="Nous sommes désolés, nous n'avons trouvé aucun document sur {controller.resourceNameWithDemonstrative}" />
