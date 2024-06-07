@@ -2,10 +2,10 @@ import Store from "$lib/core/Store";
 
 import { numberToEuro, valueOrHyphen } from "$lib/helpers/dataHelper";
 
-export default class SubventionsVersementsStatistiqueController {
+export default class SubventionsPaymentsStatistiqueController {
     constructor() {
         this.elements = [];
-        this.versementsAmount = new Store("-");
+        this.paymentsAmount = new Store("-");
     }
 
     updateElements(elements) {
@@ -13,13 +13,13 @@ export default class SubventionsVersementsStatistiqueController {
         this.update();
     }
 
-    _computeVersementsAmount() {
+    _computePaymentsAmount() {
         return this.elements.reduce((acc, element) => {
-            return element.versements.reduce((total, versement) => total + versement.amount, acc);
+            return element.payments.reduce((total, payment) => total + payment.amount, acc);
         }, 0);
     }
 
     update() {
-        this.versementsAmount.set(valueOrHyphen(numberToEuro(this._computeVersementsAmount())));
+        this.paymentsAmount.set(valueOrHyphen(numberToEuro(this._computePaymentsAmount())));
     }
 }

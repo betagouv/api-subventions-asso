@@ -1,11 +1,11 @@
 import Store from "../../core/Store";
 import subventionsService from "../../resources/subventions/subventions.service";
-import versementsService from "../../resources/versements/versements.service";
-import SubventionsVersementsDashboardController from "./SubventionsVersementsDashboard.controller";
+import paymentsService from "../../resources/payments/payments.service";
+import SubventionsPaymentsDashboardController from "./SubventionsPaymentsDashboard.controller";
 
 import * as helper from "./helper";
 import SubventionTableController from "./SubventionTable/SubventionTable.controller";
-import VersementTableController from "./VersementTable/VersementTable.controller";
+import PaymentTableController from "./PaymentTable/PaymentTable.controller";
 import associationService from "$lib/resources/associations/association.service";
 vi.mock("$lib/resources/associations/association.service");
 import establishmentService from "$lib/resources/establishments/establishment.service";
@@ -30,13 +30,13 @@ import * as identifierHelper from "$lib/helpers/identifierHelper";
 import trackerService from "$lib/services/tracker.service";
 import { PROVIDER_BLOG_URL } from "$env/static/public";
 vi.mock("$lib/services/tracker.service");
-describe("SubventionsVersementsDashboardController", () => {
+describe("SubventionsPaymentsDashboardController", () => {
     const SIREN = "123456789";
     const SIRET = SIREN + "00012";
 
     describe("isEtab()", () => {
         it("should call isSiret()", () => {
-            const ctrl = new SubventionsVersementsDashboardController(SIREN);
+            const ctrl = new SubventionsPaymentsDashboardController(SIREN);
             ctrl.isEtab();
             expect(identifierHelper.isSiret).toHaveBeenCalledWith(SIREN);
         });
@@ -45,7 +45,7 @@ describe("SubventionsVersementsDashboardController", () => {
     describe("providerBlogUrl", () => {
         it("should return URL", () => {
             const expected = PROVIDER_BLOG_URL;
-            const controller = new SubventionsVersementsDashboardController();
+            const controller = new SubventionsPaymentsDashboardController();
             const actual = controller.providerBlogUrl;
             expect(actual).toEqual(expected);
         });
@@ -53,11 +53,11 @@ describe("SubventionsVersementsDashboardController", () => {
 
     describe("load", () => {
         it("should call method _getSubventionsStoreFactory", async () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
             const methodMock = vi
                 .spyOn(controller, "_getSubventionsStoreFactory")
                 .mockImplementationOnce(() => () => new Store());
-            vi.spyOn(controller, "_getVersementsFactory").mockImplementationOnce(() => vi.fn());
+            vi.spyOn(controller, "_getPaymentsFactory").mockImplementationOnce(() => vi.fn());
             vi.spyOn(controller, "_onSubventionsStoreUpdate").mockImplementationOnce(() => vi.fn());
 
             await controller.load();
@@ -68,9 +68,9 @@ describe("SubventionsVersementsDashboardController", () => {
             expect(expected).toBe(actual);
         });
 
-        it("should call method _getVersementsFactory", async () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
-            const methodMock = vi.spyOn(controller, "_getVersementsFactory").mockImplementationOnce(() => vi.fn());
+        it("should call method _getPaymentsFactory", async () => {
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
+            const methodMock = vi.spyOn(controller, "_getPaymentsFactory").mockImplementationOnce(() => vi.fn());
             vi.spyOn(controller, "_getSubventionsStoreFactory").mockImplementationOnce(() => () => new Store());
             vi.spyOn(controller, "_onSubventionsStoreUpdate").mockImplementationOnce(() => vi.fn());
 
@@ -83,9 +83,9 @@ describe("SubventionsVersementsDashboardController", () => {
         });
 
         it("should call method _onSubventionsStoreUpdate", async () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
             const methodMock = vi.spyOn(controller, "_onSubventionsStoreUpdate").mockImplementationOnce(() => vi.fn());
-            vi.spyOn(controller, "_getVersementsFactory").mockImplementationOnce(() => vi.fn());
+            vi.spyOn(controller, "_getPaymentsFactory").mockImplementationOnce(() => vi.fn());
             vi.spyOn(controller, "_getSubventionsStoreFactory").mockImplementationOnce(() => () => new Store());
 
             await controller.load();
@@ -96,16 +96,16 @@ describe("SubventionsVersementsDashboardController", () => {
             expect(expected).toBe(actual);
         });
 
-        it("should set _versements", async () => {
-            const expected = [{ versement: 1 }, { versement: 2 }];
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+        it("should set _payments", async () => {
+            const expected = [{ payment: 1 }, { payment: 2 }];
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
             vi.spyOn(controller, "_onSubventionsStoreUpdate").mockImplementationOnce(() => vi.fn);
-            vi.spyOn(controller, "_getVersementsFactory").mockImplementationOnce(() => vi.fn(() => expected));
+            vi.spyOn(controller, "_getPaymentsFactory").mockImplementationOnce(() => vi.fn(() => expected));
             vi.spyOn(controller, "_getSubventionsStoreFactory").mockImplementationOnce(() => () => new Store());
 
             await controller.load();
 
-            const actual = controller._versements;
+            const actual = controller._payments;
 
             expect(expected).toBe(actual);
         });
@@ -113,7 +113,7 @@ describe("SubventionsVersementsDashboardController", () => {
 
     describe("sort", () => {
         it("should change direction", () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
             const expected = "desc";
 
             controller.sort(controller.sortColumn.value);
@@ -124,10 +124,10 @@ describe("SubventionsVersementsDashboardController", () => {
         });
 
         it("should revert elements", () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
-            const expected = [{ versement: 2 }, { versement: 1 }];
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
+            const expected = [{ payment: 2 }, { payment: 1 }];
 
-            controller.elements.set([{ versement: 1 }, { versement: 2 }]);
+            controller.elements.set([{ payment: 1 }, { payment: 2 }]);
             controller.sort(controller.sortColumn.value);
 
             const actual = controller.elements.value;
@@ -136,7 +136,7 @@ describe("SubventionsVersementsDashboardController", () => {
         });
 
         it("should change sortColumn", () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
             const expected = "other.column";
 
             vi.spyOn(helper, "sortByPath").mockImplementationOnce(() => []);
@@ -150,7 +150,7 @@ describe("SubventionsVersementsDashboardController", () => {
         });
 
         it("should set sortDirection to asc", () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
             const expected = "asc";
 
             vi.spyOn(helper, "sortByPath").mockImplementationOnce(() => []);
@@ -163,7 +163,7 @@ describe("SubventionsVersementsDashboardController", () => {
         });
 
         it("should call sortByPath", () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
 
             const sortByPathMock = vi.spyOn(helper, "sortByPath").mockImplementationOnce(() => []);
             vi.spyOn(controller, "_buildSortPath").mockImplementationOnce(() => []);
@@ -176,7 +176,7 @@ describe("SubventionsVersementsDashboardController", () => {
         });
 
         it("should call _buildSortPath", () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
 
             vi.spyOn(helper, "sortByPath").mockImplementationOnce(() => []);
             const _buildSortPathMock = vi.spyOn(controller, "_buildSortPath").mockImplementationOnce(() => []);
@@ -191,7 +191,7 @@ describe("SubventionsVersementsDashboardController", () => {
 
     describe("updateSelectedExercice", () => {
         it("should set selectedExercice", () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
 
             vi.spyOn(controller, "_filterElementsBySelectedExercice").mockImplementationOnce(() => []);
 
@@ -203,7 +203,7 @@ describe("SubventionsVersementsDashboardController", () => {
         });
 
         it("should set selectedYear", () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
 
             vi.spyOn(controller, "_filterElementsBySelectedExercice").mockImplementationOnce(() => []);
 
@@ -216,7 +216,7 @@ describe("SubventionsVersementsDashboardController", () => {
         });
 
         it("should call _filterElementsBySelectedExercice", () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
 
             const _filterElementsBySelectedExerciceMock = vi
                 .spyOn(controller, "_filterElementsBySelectedExercice")
@@ -233,7 +233,7 @@ describe("SubventionsVersementsDashboardController", () => {
     describe("clickProviderLink", () => {
         let controller;
         beforeEach(() => {
-            controller = new SubventionsVersementsDashboardController();
+            controller = new SubventionsPaymentsDashboardController();
         });
 
         it("should call trackerService.trackEvent", () => {
@@ -245,14 +245,14 @@ describe("SubventionsVersementsDashboardController", () => {
     });
 
     describe("download()", () => {
-        const mockExtractVersementHeaders = vi.spyOn(VersementTableController, "extractHeaders");
-        const mockExtractVersementRows = vi.spyOn(VersementTableController, "extractRows");
+        const mockExtractPaymentHeaders = vi.spyOn(PaymentTableController, "extractHeaders");
+        const mockExtractPaymentRows = vi.spyOn(PaymentTableController, "extractRows");
         const mockExtractSubventionHeaders = vi.spyOn(SubventionTableController, "extractHeaders");
         const mockExtractSubventionRows = vi.spyOn(SubventionTableController, "extractRows");
 
         const spys = [
-            mockExtractVersementHeaders,
-            mockExtractVersementRows,
+            mockExtractPaymentHeaders,
+            mockExtractPaymentRows,
             mockExtractSubventionHeaders,
             mockExtractSubventionRows,
         ];
@@ -267,18 +267,18 @@ describe("SubventionsVersementsDashboardController", () => {
         const VERSEMENT_ROWS_B = ["CENTRE FINANCIER B"];
 
         beforeEach(() => {
-            ctrl = new SubventionsVersementsDashboardController(SIRET);
+            ctrl = new SubventionsPaymentsDashboardController(SIRET);
             mockExtractSubventionHeaders.mockImplementation(vi.fn(() => SUBVENTION_HEADERS));
             mockExtractSubventionRows.mockImplementation(vi.fn(() => [SUBVENTION_ROWS_A, SUBVENTION_ROWS_B]));
-            mockExtractVersementHeaders.mockImplementation(vi.fn(() => VERSEMENT_HEADERS));
-            mockExtractVersementRows.mockImplementation(vi.fn(() => [VERSEMENT_ROWS_A, VERSEMENT_ROWS_B]));
+            mockExtractPaymentHeaders.mockImplementation(vi.fn(() => VERSEMENT_HEADERS));
+            mockExtractPaymentRows.mockImplementation(vi.fn(() => [VERSEMENT_ROWS_A, VERSEMENT_ROWS_B]));
         });
         afterEach(() => spys.forEach(spy => spy.mockClear()));
 
         it.each`
             mock
-            ${mockExtractVersementHeaders}
-            ${mockExtractVersementRows}
+            ${mockExtractPaymentHeaders}
+            ${mockExtractPaymentRows}
             ${mockExtractSubventionHeaders}
             ${mockExtractSubventionRows}
         `("should call extract methods", ({ mock }) => {
@@ -317,7 +317,7 @@ describe("SubventionsVersementsDashboardController", () => {
 
     describe("_filterElementsBySelectedExercice", () => {
         it("should filter elements with year is 2021", () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
             const element2020 = { year: 2020 };
             const element2021 = { year: 2021 };
 
@@ -335,13 +335,13 @@ describe("SubventionsVersementsDashboardController", () => {
 
     describe("_onSubventionsStoreUpdate", () => {
         it("should set loaderStateStore", () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
 
             const expected = ["value"];
 
             vi.spyOn(controller, "_buildLoadState").mockImplementationOnce(() => expected);
             vi.spyOn(controller, "_updateExercices").mockImplementationOnce(() => null);
-            vi.spyOn(helper, "mapSubventionsAndVersements").mockImplementationOnce(() => []);
+            vi.spyOn(helper, "mapSubventionsAndPayments").mockImplementationOnce(() => []);
 
             controller._onSubventionsStoreUpdate({ subventions: [] });
 
@@ -351,14 +351,14 @@ describe("SubventionsVersementsDashboardController", () => {
         });
 
         it("should update _fullElements", () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
             const element2020 = { year: 2020 };
             const element2021 = { year: 2021 };
             const expected = [element2020, element2021];
 
             vi.spyOn(controller, "_buildLoadState").mockImplementationOnce(() => []);
             vi.spyOn(controller, "_updateExercices").mockImplementationOnce(() => null);
-            vi.spyOn(helper, "mapSubventionsAndVersements").mockImplementationOnce(() => expected);
+            vi.spyOn(helper, "mapSubventionsAndPayments").mockImplementationOnce(() => expected);
 
             controller._onSubventionsStoreUpdate({ subventions: [] });
 
@@ -368,14 +368,14 @@ describe("SubventionsVersementsDashboardController", () => {
         });
 
         it("should call _updateExercices two exercices", () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
             const element2020 = { year: 2020 };
             const element2021 = { year: 2021 };
             const expected = [element2020.year, element2021.year];
 
             const _updateExercicesMock = vi.spyOn(controller, "_updateExercices").mockImplementationOnce(() => null);
             vi.spyOn(controller, "_buildLoadState").mockImplementationOnce(() => []);
-            vi.spyOn(helper, "mapSubventionsAndVersements").mockImplementationOnce(() => [element2020, element2021]);
+            vi.spyOn(helper, "mapSubventionsAndPayments").mockImplementationOnce(() => [element2020, element2021]);
 
             controller._onSubventionsStoreUpdate({ subventions: [] });
 
@@ -384,14 +384,14 @@ describe("SubventionsVersementsDashboardController", () => {
             expect(actual).toEqual(expected);
         });
         it("should call _updateExercices with two sorted exercices", () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
             const element2020 = { year: 2020 };
             const element2021 = { year: 2021 };
             const expected = [element2020.year, element2021.year];
 
             const _updateExercicesMock = vi.spyOn(controller, "_updateExercices").mockImplementationOnce(() => null);
             vi.spyOn(controller, "_buildLoadState").mockImplementationOnce(() => []);
-            vi.spyOn(helper, "mapSubventionsAndVersements").mockImplementationOnce(() => [element2021, element2020]);
+            vi.spyOn(helper, "mapSubventionsAndPayments").mockImplementationOnce(() => [element2021, element2020]);
 
             controller._onSubventionsStoreUpdate({ subventions: [] });
 
@@ -403,7 +403,7 @@ describe("SubventionsVersementsDashboardController", () => {
 
     describe("_updateExercices", () => {
         it("should set exercices", () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
 
             vi.spyOn(controller, "updateSelectedExercice").mockImplementationOnce(() => []);
             vi.spyOn(controller, "_buildExercices").mockImplementationOnce(() => []);
@@ -416,7 +416,7 @@ describe("SubventionsVersementsDashboardController", () => {
         });
 
         it("should set exercicesOptions", () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
             const expected = [{ exercice: 1 }, { exercice: 2 }];
 
             vi.spyOn(controller, "updateSelectedExercice").mockImplementationOnce(() => []);
@@ -429,7 +429,7 @@ describe("SubventionsVersementsDashboardController", () => {
         });
 
         it("should call updateSelectedExercice", () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
             const exercices = [{ exercice: 1 }, { exercice: 2 }];
 
             const updateSelectedExerciceMock = vi
@@ -446,7 +446,7 @@ describe("SubventionsVersementsDashboardController", () => {
 
     describe("_buildExercices", () => {
         it("should return computed exercices data view", () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
             const element2020 = { year: 2020 };
             const element2021 = { year: 2021 };
             controller.exercices = [element2020.year, element2021.year];
@@ -464,7 +464,7 @@ describe("SubventionsVersementsDashboardController", () => {
 
     describe("_buildSortPath", () => {
         it("should return path", () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
             const expected = "object.path.value";
             const actual = controller._buildSortPath(expected);
 
@@ -472,7 +472,7 @@ describe("SubventionsVersementsDashboardController", () => {
         });
 
         it("should return path with specific arguments", () => {
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
             const columnName = "object.date";
             const expected = "object.lastDate";
             const actual = controller._buildSortPath(columnName);
@@ -485,7 +485,7 @@ describe("SubventionsVersementsDashboardController", () => {
         it.skip("should return etablissement method", () => {
             // Skip for hotfix
             identifierHelper.isSiret.mockImplementationOnce(() => true);
-            const controller = new SubventionsVersementsDashboardController(SIRET);
+            const controller = new SubventionsPaymentsDashboardController(SIRET);
             const expected = subventionsService.getEtablissementsSubventionsStore;
 
             const actual = controller._getSubventionsStoreFactory();
@@ -496,7 +496,7 @@ describe("SubventionsVersementsDashboardController", () => {
         it.skip("should return association method", () => {
             // Skip for hotfix
             identifierHelper.isSiret.mockImplementationOnce(() => false);
-            const controller = new SubventionsVersementsDashboardController(SIREN);
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
             const expected = subventionsService.getAssociationsSubventionsStore;
 
             const actual = controller._getSubventionsStoreFactory();
@@ -505,23 +505,23 @@ describe("SubventionsVersementsDashboardController", () => {
         });
     });
 
-    describe("_getVersementsFactory", () => {
+    describe("_getPaymentsFactory", () => {
         it("should return etablissement method", () => {
             identifierHelper.isSiret.mockImplementationOnce(() => true);
-            const controller = new SubventionsVersementsDashboardController(SIRET);
-            const expected = versementsService.getEtablissementVersements;
+            const controller = new SubventionsPaymentsDashboardController(SIRET);
+            const expected = paymentsService.getEtablissementPayments;
 
-            const actual = controller._getVersementsFactory();
+            const actual = controller._getPaymentsFactory();
 
             expect(actual).toBe(expected);
         });
 
         it("should return association method", () => {
             identifierHelper.isSiret.mockImplementationOnce(() => false);
-            const controller = new SubventionsVersementsDashboardController(SIREN);
-            const expected = versementsService.getAssociationVersements;
+            const controller = new SubventionsPaymentsDashboardController(SIREN);
+            const expected = paymentsService.getAssociationPayments;
 
-            const actual = controller._getVersementsFactory();
+            const actual = controller._getPaymentsFactory();
 
             expect(actual).toBe(expected);
         });

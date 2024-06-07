@@ -1,14 +1,14 @@
 import lodash from "lodash";
 import { sortByDateAsc, isValidDate } from "$lib/helpers/dateHelper";
 
-const isVersementValid = versement => {
-    return isValidDate(new Date(versement.dateOperation)) && typeof versement.amount == "number";
+const isPaymentValid = payment => {
+    return isValidDate(new Date(payment.dateOperation)) && typeof payment.amount == "number";
 };
 
-const linkVersementsToSubvention = elements =>
+const linkPaymentsToSubvention = elements =>
     elements.reduce((acc, group) => {
         const subventions = group.filter(element => element.isSub);
-        const versements = group.filter(element => element.isVersement && isVersementValid(element));
+        const payments = group.filter(element => element.isPayment && isPaymentValid(element));
 
         const lastSub = subventions.reduce((lastSub, curr) => {
             if (!lastSub) return curr;
@@ -17,27 +17,27 @@ const linkVersementsToSubvention = elements =>
             return lastSub;
         }, null);
 
-        const siret = lastSub?.siret || versements.find(v => v.siret)?.siret;
+        const siret = lastSub?.siret || payments.find(v => v.siret)?.siret;
 
-        const date = lastSub?.annee_demande ? new Date(lastSub.annee_demande) : getLastVersementsDate(versements);
+        const date = lastSub?.annee_demande ? new Date(lastSub.annee_demande) : getLastPaymentsDate(payments);
         if (!date || isNaN(date)) return acc;
 
         acc.push({
             subvention: lastSub,
-            versements: versements,
+            payments: payments,
             siret,
-            date: lastSub?.annee_demande ? new Date(lastSub.annee_demande) : getLastVersementsDate(versements),
-            year: lastSub?.annee_demande ? lastSub.annee_demande : getLastVersementsDate(versements).getFullYear(),
+            date: lastSub?.annee_demande ? new Date(lastSub.annee_demande) : getLastPaymentsDate(payments),
+            year: lastSub?.annee_demande ? lastSub.annee_demande : getLastPaymentsDate(payments).getFullYear(),
         });
 
         return acc;
     }, []);
 
-export const mapSubventionsAndVersements = ({ subventions, versements }) => {
+export const mapSubventionsAndPayments = ({ subventions, payments }) => {
     const taggedSubventions = subventions.map(s => ({ ...s, isSub: true }));
-    const taggedVersements = versements.map(s => ({ ...s, isVersement: true }));
+    const taggedPayments = payments.map(s => ({ ...s, isPayment: true }));
 
-    const elementsGroupedByVersementKey = [...taggedSubventions, ...taggedVersements].reduce(groupByVersementKey, {
+    const elementsGroupedByVersementKey = [...taggedSubventions, ...taggedPayments].reduce(groupByVersementKey, {
         none: [],
         withKey: {},
     });
@@ -47,21 +47,21 @@ export const mapSubventionsAndVersements = ({ subventions, versements }) => {
         ...elementsGroupedByVersementKey.none,
     ];
 
-    const uniformizedElements = linkVersementsToSubvention(flattenElements);
+    const uniformizedElements = linkPaymentsToSubvention(flattenElements);
     return uniformizedElements.sort(sortByDateAsc);
 };
 
-// Return year of subvention or versement as a string
+// Return year of subvention or payment as a string
 export const getYearOfElement = element => {
     if (element.isSub) return getSubventionYear(element);
-    if (element.isVersement) return getVersementYear(element);
+    if (element.isPayment) return getPaymentYear(element);
 };
 
 export const getSubventionYear = subvention => subvention.annee_demande;
 
-export const getVersementYear = versement => {
-    if (versement.periodeDebut) return new Date(versement.periodeDebut).getFullYear();
-    if (versement.dateOperation) return new Date(versement.dateOperation).getFullYear();
+export const getPaymentYear = payment => {
+    if (payment.periodeDebut) return new Date(payment.periodeDebut).getFullYear();
+    if (payment.dateOperation) return new Date(payment.dateOperation).getFullYear();
 };
 
 const groupByVersementKey = (acc, curr) => {
@@ -82,17 +82,17 @@ const groupByVersementKey = (acc, curr) => {
     return acc;
 };
 
-export const getLastVersementsDate = versements => {
-    const orderedVersements = versements.sort((versementA, versementB) => {
-        const dateA = new Date(versementA.dateOperation);
-        const dateB = new Date(versementB.dateOperation);
+export const getLastPaymentsDate = payments => {
+    const orderedPayments = payments.sort((paymentA, paymentB) => {
+        const dateA = new Date(paymentA.dateOperation);
+        const dateB = new Date(paymentB.dateOperation);
 
         return dateB.getTime() - dateA.getTime();
     });
 
-    if (!orderedVersements.length) return null;
+    if (!orderedPayments.length) return null;
 
-    return new Date(orderedVersements[0].dateOperation);
+    return new Date(orderedPayments[0].dateOperation);
 };
 
 export const sortByPath = (elements, path) => {
@@ -101,11 +101,11 @@ export const sortByPath = (elements, path) => {
         let attributeB;
 
         if (path.includes("lastDate")) {
-            attributeA = getLastVersementsDate(elementA.versements || []);
-            attributeB = getLastVersementsDate(elementB.versements || []);
+            attributeA = getLastPaymentsDate(elementA.payments || []);
+            attributeB = getLastPaymentsDate(elementB.payments || []);
         } else if (path.includes("amount")) {
-            attributeA = elementA.versements?.reduce((acc, versement) => acc + versement.amount, 0);
-            attributeB = elementB.versements?.reduce((acc, versement) => acc + versement.amount, 0);
+            attributeA = elementA.payments?.reduce((acc, payment) => acc + payment.amount, 0);
+            attributeB = elementB.payments?.reduce((acc, payment) => acc + payment.amount, 0);
         } else {
             attributeA = lodash.get(elementA, path);
             attributeB = lodash.get(elementB, path);

@@ -1,12 +1,12 @@
 <script>
-    import SubventionsVersementsStatistiqueController from "./SubventionsVersementsStatistique.controller";
+    import SubventionsPaymentsStatistiqueController from "./SubventionsPaymentsStatistique.controller";
 
     export let elements;
     export let year;
 
-    const controller = new SubventionsVersementsStatistiqueController(elements);
+    const controller = new SubventionsPaymentsStatistiqueController(elements);
 
-    const { versementsAmount } = controller;
+    const { paymentsAmount } = controller;
 
     $: elements, controller.updateElements(elements);
 </script>
@@ -21,11 +21,11 @@
         </p>
     </div>
     <div class="fr-col-4">
-        <h3 class="fr-h4">Versements réalisés</h3>
+        <h3 class="fr-h4">Payments réalisés</h3>
         <p>
-            Total des versements en <b>{year}</b>
+            Total des payments en <b>{year}</b>
             :
-            <b>{$versementsAmount}</b>
+            <b>{$paymentsAmount}</b>
             <br />
             D'après les données récupérées via Chorus et Fonjep.
         </p>

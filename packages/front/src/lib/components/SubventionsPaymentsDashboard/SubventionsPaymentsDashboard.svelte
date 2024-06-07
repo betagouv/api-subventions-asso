@@ -4,17 +4,17 @@
     import DataNotFound from "../DataNotFound.svelte";
     import ErrorAlert from "../ErrorAlert.svelte";
 
-    import SubventionsVersementsDashboardController from "./SubventionsVersementsDashboard.controller";
-    import SubventionsVersementsStatistique from "./SubventionsVersementsStatistique/SubventionsVersementsStatistique.svelte";
+    import SubventionsPaymentsDashboardController from "./SubventionsPaymentsDashboard.controller";
+    import SubventionsPaymentsStatistique from "./SubventionsPaymentsStatistique/SubventionsPaymentsStatistique.svelte";
     import SubventionTable from "./SubventionTable/SubventionTable.svelte";
-    import VersementTable from "./VersementTable/VersementTable.svelte";
+    import PaymentTable from "./PaymentTable/PaymentTable.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
     import Select from "$lib/dsfr/Select.svelte";
     import Button from "$lib/dsfr/Button.svelte";
 
     export let identifier;
 
-    const controller = new SubventionsVersementsDashboardController(identifier);
+    const controller = new SubventionsPaymentsDashboardController(identifier);
 
     const promise = controller.load();
 
@@ -63,7 +63,7 @@
     <div class="fr-mt-6w compact-columns">
         {#if $elements?.length}
             <div class="fr-mb-6w">
-                <SubventionsVersementsStatistique elements={$elements} year={$selectedYear} />
+                <SubventionsPaymentsStatistique elements={$elements} year={$selectedYear} />
             </div>
             {#if $loaderStateStore.status != "end"}
                 <Alert type="info" title="Récupération en cours des subventions chez nos fournisseurs ...">
@@ -79,7 +79,7 @@
                         sortDirection={$sortDirection} />
                 </div>
                 <div class="fr-col-4">
-                    <VersementTable
+                    <PaymentTable
                         elements={$elements}
                         sort={column => controller.sort(column)}
                         currentSort={$sortColumn}

@@ -7,7 +7,7 @@ import type {
     Rna,
     Siren,
     Siret,
-    Versement,
+    Payment,
 } from "dto";
 
 export default class AssociationEntity {
@@ -40,7 +40,7 @@ export default class AssociationEntity {
         emploisAidesETPT: number;
     };
     volontaires: { nombre: number; ETPT: number };
-    versements: Versement[];
+    payments: Payment[];
     etablissements: ({ demandes_subventions: DemandeSubvention[] | null } & Etablissement)[] | null;
     extrait_rcs: ExtraitRcsDto;
     bodacc: BodaccRecordDto;
@@ -67,7 +67,7 @@ export default class AssociationEntity {
         benevoles,
         salaries,
         volontaires,
-        versements,
+        payments,
         etablissements,
         extrait_rcs,
         bodacc,
@@ -93,7 +93,7 @@ export default class AssociationEntity {
         this.benevoles = benevoles;
         this.salaries = salaries;
         this.volontaires = volontaires;
-        this.versements = versements;
+        this.payments = payments;
         this.etablissements = etablissements;
         this.extrait_rcs = extrait_rcs;
         this.bodacc = bodacc;

@@ -1,82 +1,82 @@
 import { NotFoundError } from "../../errors";
-import versementsPort from "./versements.port";
+import paymentsPort from "./payments.port";
 import * as providerValueHelper from "$lib/helpers/providerValueHelper";
 import requestsService from "$lib/services/requests.service";
 
-describe("VersementsPort", () => {
-    describe("getEtablissementVersements", () => {
-        let getVersementsMock;
+describe("PaymentsPort", () => {
+    describe("getEtablissementPayments", () => {
+        let getPaymentsMock;
 
         const SIRET = "12345678900011";
 
         beforeAll(() => {
-            getVersementsMock = vi.spyOn(versementsPort, "_getVersements");
+            getPaymentsMock = vi.spyOn(paymentsPort, "_getPayments");
         });
 
         afterAll(() => {
-            getVersementsMock.mockRestore();
+            getPaymentsMock.mockRestore();
         });
 
-        it('should call _getVersments with id and value of "type" is etablissement', async () => {
+        it('should call _getPayments with id and value of "type" is etablissement', async () => {
             const expected = [SIRET, "etablissement"];
 
-            getVersementsMock.mockImplementationOnce(() => []);
+            getPaymentsMock.mockImplementationOnce(() => []);
 
-            await versementsPort.getEtablissementVersements(SIRET);
+            await paymentsPort.getEtablissementPayments(SIRET);
 
-            const actual = getVersementsMock.mock.calls[0];
+            const actual = getPaymentsMock.mock.calls[0];
 
             expect(actual).toEqual(expected);
         });
 
-        it("should return versements", async () => {
-            const expected = [{ versement: 1 }, { versement: 2 }];
+        it("should return payments", async () => {
+            const expected = [{ payment: 1 }, { payment: 2 }];
 
-            getVersementsMock.mockImplementationOnce(() => expected);
+            getPaymentsMock.mockImplementationOnce(() => expected);
 
-            const actual = await versementsPort.getEtablissementVersements(SIRET);
+            const actual = await paymentsPort.getEtablissementPayments(SIRET);
 
             expect(actual).toBe(expected);
         });
     });
 
-    describe("getAssociationVersements", () => {
-        let getVersementsMock;
+    describe("getAssociationPayments", () => {
+        let getPaymentsMock;
 
         const SIREN = "123456789";
 
         beforeAll(() => {
-            getVersementsMock = vi.spyOn(versementsPort, "_getVersements");
+            getPaymentsMock = vi.spyOn(paymentsPort, "_getPayments");
         });
 
         afterAll(() => {
-            getVersementsMock.mockRestore();
+            getPaymentsMock.mockRestore();
         });
 
-        it('should call _getVersments with id and value of "type" is association', async () => {
+        it('should call _getPayments with id and value of "type" is association', async () => {
             const expected = [SIREN, "association"];
 
-            getVersementsMock.mockImplementationOnce(() => []);
+            getPaymentsMock.mockImplementationOnce(() => []);
 
-            await versementsPort.getAssociationVersements(SIREN);
+            await paymentsPort.getAssociationPayments(SIREN);
 
-            const actual = getVersementsMock.mock.calls[0];
+            const actual = getPaymentsMock.mock.calls[0];
 
             expect(actual).toEqual(expected);
         });
 
-        it("should return versements", async () => {
-            const expected = [{ versement: 1 }, { versement: 2 }];
+        it("should return payments", async () => {
+            const expected = [{ payment: 1 }, { payment: 2 }];
 
-            getVersementsMock.mockImplementationOnce(() => expected);
+            getPaymentsMock.mockImplementationOnce(() => expected);
 
-            const actual = await versementsPort.getAssociationVersements(SIREN);
+            const actual = await paymentsPort.getAssociationPayments(SIREN);
 
             expect(actual).toBe(expected);
         });
     });
 
-    describe("_getVersements", () => {
+    describe("_getPayments", () => {
         let getMock;
         let flatenProviderValueMock;
 
@@ -95,31 +95,31 @@ describe("VersementsPort", () => {
 
             getMock.mockImplementationOnce(async () => ({ data: { versements: [] } }));
 
-            await versementsPort._getVersements("ID", "FAKE");
+            await paymentsPort._getPayments("ID", "FAKE");
             const actual = getMock.mock.calls[0];
 
             expect(actual).toEqual(expected);
         });
 
-        it("should return versements", async () => {
-            const expected = [{ versement: 1 }, { versement: 2 }];
+        it("should return payments", async () => {
+            const expected = [{ payment: 1 }, { payment: 2 }];
 
             getMock.mockImplementationOnce(async () => ({ data: { versements: expected } }));
             flatenProviderValueMock.mockImplementationOnce(v => v);
 
-            const actual = await versementsPort._getVersements("ID", "FAKE");
+            const actual = await paymentsPort._getPayments("ID", "FAKE");
 
             expect(actual).toEqual(expected);
         });
 
-        it("should return empty versements array when api answer return an 404 error", async () => {
+        it("should return empty payments array when api answer return an 404 error", async () => {
             const expected = 0;
 
             getMock.mockImplementationOnce(async () => {
                 throw new NotFoundError("");
             });
 
-            const actual = (await versementsPort._getVersements("ID", "FAKE")).length;
+            const actual = (await paymentsPort._getPayments("ID", "FAKE")).length;
 
             expect(actual).toBe(expected);
         });
@@ -136,7 +136,7 @@ describe("VersementsPort", () => {
                 throw new FakeApiError();
             });
 
-            const actual = versementsPort._getVersements("ID", "FAKE");
+            const actual = paymentsPort._getPayments("ID", "FAKE");
 
             await expect(actual).rejects.toThrow(FakeApiError);
         });

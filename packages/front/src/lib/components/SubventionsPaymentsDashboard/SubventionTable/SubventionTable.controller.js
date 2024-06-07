@@ -2,7 +2,7 @@ import { ApplicationStatus } from "dto";
 import Store from "../../../core/Store";
 
 import { modal, data } from "$lib/store/modal.store";
-import SubventionInfoModal from "$lib/components/SubventionsVersementsDashboard/Modals/SubventionInfoModal.svelte";
+import SubventionInfoModal from "$lib/components/SubventionsPaymentsDashboard/Modals/SubventionInfoModal.svelte";
 import SubventionsAdapter from "$lib/resources/subventions/subventions.adapter";
 import trackerService from "$lib/services/tracker.service";
 

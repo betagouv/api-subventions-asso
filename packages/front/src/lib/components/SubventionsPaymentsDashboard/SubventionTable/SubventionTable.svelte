@@ -5,7 +5,7 @@
     import Table from "$lib/dsfr/Table.svelte";
     import Badge from "$lib/dsfr/Badge.svelte";
 
-    import StatusLabel from "$lib/components/SubventionsVersementsDashboard/SubventionTable/StatutLabel/StatusLabel.svelte";
+    import StatusLabel from "$lib/components/SubventionsPaymentsDashboard/SubventionTable/StatutLabel/StatusLabel.svelte";
 
     export let sort;
     export let elements = [];

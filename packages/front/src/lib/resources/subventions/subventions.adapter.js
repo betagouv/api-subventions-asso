@@ -3,7 +3,7 @@ import { capitalizeFirstLetter } from "$lib/helpers/stringHelper";
 
 export default class SubventionsAdapter {
     /**
-     * @param {siret, subvention, versements} element Object that links an application to its related payments
+     * @param {siret, subvention, payments} element Object that links an application to its related payments
      */
     static toSubvention(element) {
         const subvention = element.subvention;

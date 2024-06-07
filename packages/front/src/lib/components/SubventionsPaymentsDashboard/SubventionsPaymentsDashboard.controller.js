@@ -1,8 +1,8 @@
 import Store from "../../core/Store";
-import { mapSubventionsAndVersements, sortByPath } from "./helper";
+import { mapSubventionsAndPayments, sortByPath } from "./helper";
 import SubventionTableController from "./SubventionTable/SubventionTable.controller";
-import VersementTableController from "./VersementTable/VersementTable.controller";
-import versementsService from "$lib/resources/versements/versements.service";
+import PaymentTableController from "./PaymentTable/PaymentTable.controller";
+import paymentsService from "$lib/resources/payments/payments.service";
 import subventionsService from "$lib/resources/subventions/subventions.service";
 import { isSiret } from "$lib/helpers/identifierHelper";
 import { buildCsv, downloadCsv } from "$lib/helpers/csvHelper";
@@ -11,7 +11,7 @@ import associationService from "$lib/resources/associations/association.service"
 import trackerService from "$lib/services/tracker.service";
 import { PROVIDER_BLOG_URL } from "$env/static/public";
 
-export default class SubventionsVersementsDashboardController {
+export default class SubventionsPaymentsDashboardController {
     constructor(identifier) {
         this.identifier = identifier;
 
@@ -21,7 +21,7 @@ export default class SubventionsVersementsDashboardController {
         });
 
         this._fullElements = [];
-        this._versements = [];
+        this._payments = [];
 
         this.exercices = [];
         this.exercicesOptions = new Store([]);
@@ -50,10 +50,10 @@ export default class SubventionsVersementsDashboardController {
 
     async load() {
         const getSubventionsStore = this._getSubventionsStoreFactory();
-        const getVersements = this._getVersementsFactory();
+        const getPayments = this._getPaymentsFactory();
 
         const subventionsStore = getSubventionsStore(this.identifier);
-        this._versements = await getVersements(this.identifier);
+        this._payments = await getPayments(this.identifier);
 
         subventionsStore.subscribe(state => this._onSubventionsStoreUpdate(state));
     }
@@ -91,18 +91,18 @@ export default class SubventionsVersementsDashboardController {
 
     download() {
         const subvHeader = SubventionTableController.extractHeaders();
-        const versHeader = VersementTableController.extractHeaders();
+        const versHeader = PaymentTableController.extractHeaders();
         const headers = [...subvHeader, ...versHeader];
         const subventions = SubventionTableController.extractRows(this._fullElements);
-        const versements = VersementTableController.extractRows(this._fullElements);
+        const payments = PaymentTableController.extractRows(this._fullElements);
 
         // merge sub and vers
         const datasub = subventions.map((subvention, index) => {
             // empty subvention
             if (!subvention) subvention = Array(subvHeader.length).fill("");
-            // empty versement
-            if (!versements[index]) versements[index] = Array(versHeader.length).fill("");
-            return [...subvention, ...versements[index]];
+            // empty payment
+            if (!payments[index]) payments[index] = Array(versHeader.length).fill("");
+            return [...subvention, ...payments[index]];
         });
 
         const csvString = buildCsv(headers, datasub);
@@ -122,9 +122,9 @@ export default class SubventionsVersementsDashboardController {
 
     _onSubventionsStoreUpdate(state) {
         this.loaderStateStore.set(this._buildLoadState(state));
-        this._fullElements = mapSubventionsAndVersements({
+        this._fullElements = mapSubventionsAndPayments({
             subventions: state.subventions,
-            versements: this._versements || [],
+            payments: this._payments || [],
         });
 
         const computedExercices = [...new Set(this._fullElements.map(element => element.year))].sort((a, b) => a - b);
@@ -173,9 +173,7 @@ export default class SubventionsVersementsDashboardController {
             : subventionsService.getAssociationsSubventionsStore.bind(subventionsService);
     }
 
-    _getVersementsFactory() {
-        return this.isEtab()
-            ? versementsService.getEtablissementVersements
-            : versementsService.getAssociationVersements;
+    _getPaymentsFactory() {
+        return this.isEtab() ? paymentsService.getEtablissementPayments : paymentsService.getAssociationPayments;
     }
 }

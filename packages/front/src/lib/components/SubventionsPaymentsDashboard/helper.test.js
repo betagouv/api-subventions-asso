@@ -13,13 +13,13 @@ const SUBVENTION = {
 };
 
 const FONJEP_VERSEMENT = {
-    isVersement: true,
+    isPayment: true,
     periodDebut: TODAY,
     dateOperation: YESTERDAY,
 };
 
 const CHORUS_VERSEMENT = {
-    isVersement: true,
+    isPayment: true,
     dateOperation: YESTERDAY,
 };
 
@@ -51,18 +51,18 @@ describe("helper", () => {
         });
     });
 
-    describe("getVersementYear()", () => {
+    describe("getPaymentYear()", () => {
         it.each`
-            versement           | expected
+            payment             | expected
             ${FONJEP_VERSEMENT} | ${FONJEP_VERSEMENT.periodDebut.getFullYear()}
             ${CHORUS_VERSEMENT} | ${CHORUS_VERSEMENT.dateOperation.getFullYear()}
-        `("should return a year", ({ versement, expected }) => {
-            const actual = Helper.getVersementYear(versement);
+        `("should return a year", ({ payment, expected }) => {
+            const actual = Helper.getPaymentYear(payment);
             expect(actual).toEqual(expected);
         });
 
         it("should return undefined", () => {
-            const actual = Helper.getVersementYear({
+            const actual = Helper.getPaymentYear({
                 periodDebut: undefined,
                 dateOperation: undefined,
             });

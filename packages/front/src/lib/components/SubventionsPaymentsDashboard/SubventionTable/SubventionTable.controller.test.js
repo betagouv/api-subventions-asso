@@ -18,7 +18,7 @@ vi.mock("$lib/resources/subventions/subventions.adapter", () => ({
 import { ApplicationStatus } from "dto";
 import SubventionTableController from "./SubventionTable.controller";
 import * as modalStore from "$lib/store/modal.store";
-import SubventionInfoModal from "$lib/components/SubventionsVersementsDashboard/Modals/SubventionInfoModal.svelte";
+import SubventionInfoModal from "$lib/components/SubventionsPaymentsDashboard/Modals/SubventionInfoModal.svelte";
 import SubventionsAdapter from "$lib/resources/subventions/subventions.adapter";
 
 describe("SubventionTableController", () => {

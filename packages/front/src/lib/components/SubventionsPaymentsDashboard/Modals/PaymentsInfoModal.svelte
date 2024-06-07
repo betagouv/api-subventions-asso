@@ -6,7 +6,7 @@
     import { data } from "$lib/store/modal.store";
 </script>
 
-{#if $data.versements}
+{#if $data.payments}
     <Table>
         <svelte:fragment slot="head">
             <TableHead>Montant</TableHead>
@@ -17,14 +17,14 @@
             <TableHead>BOP</TableHead>
         </svelte:fragment>
         <svelte:fragment slot="body">
-            {#each $data.versements as versement}
+            {#each $data.payments as payment}
                 <tr>
-                    <StringTableCell primary="true" value={versement.amount} />
-                    <StringTableCell value={versement.domaineFonctionnel} />
-                    <StringTableCell value={versement.activitee} />
-                    <StringTableCell value={versement.centreFinancier} />
-                    <StringTableCell value={versement.date} />
-                    <StringTableCell value={versement.bop} />
+                    <StringTableCell primary="true" value={payment.amount} />
+                    <StringTableCell value={payment.domaineFonctionnel} />
+                    <StringTableCell value={payment.activitee} />
+                    <StringTableCell value={payment.centreFinancier} />
+                    <StringTableCell value={payment.date} />
+                    <StringTableCell value={payment.bop} />
                 </tr>
             {/each}
         </svelte:fragment>

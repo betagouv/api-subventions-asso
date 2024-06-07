@@ -2,9 +2,9 @@
     import TableCell from "../../Tables/TableCell.svelte";
     import TableHead from "../../Tables/TableHead.svelte";
 
-    import VersementsInfoModal from "../Modals/VersementsInfoModal.svelte";
+    import PaymentsInfoModal from "../Modals/PaymentsInfoModal.svelte";
     import NumberTableCell from "../../Tables/NumberTableCell.svelte";
-    import VersementTableController from "./VersementTable.controller";
+    import PaymentTableController from "./PaymentTable.controller";
     import { modal, data } from "$lib/store/modal.store";
     import Table from "$lib/dsfr/Table.svelte";
     import trackerService from "$lib/services/tracker.service";
@@ -14,14 +14,14 @@
     export let currentSort = null;
     export let sortDirection = null;
 
-    const controller = new VersementTableController(sort);
+    const controller = new PaymentTableController(sort);
 
-    const { noVersements, elementsDataViews, columnDataViews } = controller;
+    const { noPayments, elementsDataViews, columnDataViews } = controller;
 
-    const displayModal = versements => {
-        trackerService.buttonClickEvent("association-etablissement.dashbord.versement.more_information");
-        data.update(() => ({ versements }));
-        modal.update(() => VersementsInfoModal);
+    const displayModal = payments => {
+        trackerService.buttonClickEvent("association-etablissement.dashbord.payment.more_information");
+        data.update(() => ({ payments }));
+        modal.update(() => PaymentsInfoModal);
     };
 
     $: elements, controller.updateElements(elements);
@@ -35,7 +35,7 @@
                 action={columnDataView.action}
                 actionActive={columnDataView.active}
                 actionDirection={sortDirection}
-                actionDisable={$noVersements}>
+                actionDisable={$noPayments}>
                 {columnDataView.label}
             </TableHead>
         {/each}
@@ -48,13 +48,13 @@
                 </tr>
             {:else}
                 <tr
-                    on:click={() => displayModal(element.versementsModal)}
+                    on:click={() => displayModal(element.paymentsModal)}
                     aria-controls="fr-modal"
                     data-fr-opened="false"
                     class="clickable">
                     <NumberTableCell primary="true" value={element.totalAmount} />
                     <TableCell>
-                        {element.lastVersementDate}
+                        {element.lastPaymentDate}
                     </TableCell>
                     <TableCell position="end">
                         {element.bop}

@@ -2,14 +2,14 @@ import Store from "../../../core/Store";
 
 import { numberToEuro, valueOrHyphen } from "$lib/helpers/dataHelper";
 import { withTwoDigitYear } from "$lib/helpers/dateHelper";
-import VersementsAdapter from "$lib/resources/versements/versements.adapter";
+import PaymentsAdapter from "$lib/resources/payments/payments.adapter";
 
 const MONTANT_VERSE_LABEL = "Montant versé";
 const CENTRE_FINANCIER_LABEL = "Centre financier";
-const DATE_VERSEMENT_LABEL = "Date du versement";
+const DATE_VERSEMENT_LABEL = "Date du payment";
 const BOP_LABEL = "BOP";
 
-export default class VersementTableController {
+export default class PaymentTableController {
     constructor(sortMethod) {
         this.sortMethod = sortMethod;
         this.elements = [];
@@ -17,26 +17,26 @@ export default class VersementTableController {
 
         this.elementsDataViews = new Store([]);
         this.columnDataViews = new Store([]);
-        this.noVersements = new Store(false);
+        this.noPayments = new Store(false);
 
         this.buildColumnDataViews();
     }
 
-    // extract values from versement table
+    // extract values from payment table
     static extractRows(elements) {
         return elements.map(element =>
-            element.versements ? Object.values(VersementsAdapter.toVersement(element.versements)) : null,
+            element.payments ? Object.values(PaymentsAdapter.toPayment(element.payments)) : null,
         );
     }
 
-    // Order is important to respect VersementsAdapter.toVersement() format
-    // TODO: enhance this and make a mapper header - versement property ?
+    // Order is important to respect PaymentsAdapter.toPayment() format
+    // TODO: enhance this and make a mapper header - payment property ?
     static extractHeaders() {
         return [MONTANT_VERSE_LABEL, CENTRE_FINANCIER_LABEL, DATE_VERSEMENT_LABEL, BOP_LABEL];
     }
 
-    _countVersements() {
-        return this.elements.filter(e => e.versements?.length).length;
+    _countPayments() {
+        return this.elements.filter(e => e.payments?.length).length;
     }
 
     sort(column) {
@@ -48,35 +48,35 @@ export default class VersementTableController {
         this.elements = elements;
 
         const elementsDataViews = this.elements.map(element => {
-            if (element.versements.length === 0) return null;
+            if (element.payments.length === 0) return null;
 
             return {
-                ...VersementsAdapter.toVersement(element.versements),
-                versements: element.versements,
-                versementsModal: element.versements.map(this.buildVersementsModal),
+                ...PaymentsAdapter.toPayment(element.payments),
+                payments: element.payments,
+                paymentsModal: element.payments.map(this.buildPaymentsModal),
             };
         });
 
         this.elementsDataViews.set(elementsDataViews);
-        this.noVersements.set(!this._countVersements());
+        this.noPayments.set(!this._countPayments());
     }
 
-    buildVersementsModal(versement) {
+    buildPaymentsModal(payment) {
         return {
-            amount: numberToEuro(versement.amount),
-            domaineFonctionnel: valueOrHyphen(versement.domaineFonctionnel),
-            activitee: valueOrHyphen(versement.activitee),
-            centreFinancier: valueOrHyphen(versement.centreFinancier),
-            date: withTwoDigitYear(new Date(versement.dateOperation)).slice(0, 8),
-            bop: valueOrHyphen(VersementsAdapter.formatBop(versement.bop)),
+            amount: numberToEuro(payment.amount),
+            domaineFonctionnel: valueOrHyphen(payment.domaineFonctionnel),
+            activitee: valueOrHyphen(payment.activitee),
+            centreFinancier: valueOrHyphen(payment.centreFinancier),
+            date: withTwoDigitYear(new Date(payment.dateOperation)).slice(0, 8),
+            bop: valueOrHyphen(PaymentsAdapter.formatBop(payment.bop)),
         };
     }
 
     buildColumnDataViews() {
         const columnsName = {
-            "versements.montant": MONTANT_VERSE_LABEL,
-            "versements.date": DATE_VERSEMENT_LABEL,
-            "versements.bop": BOP_LABEL,
+            "payments.montant": MONTANT_VERSE_LABEL,
+            "payments.date": DATE_VERSEMENT_LABEL,
+            "payments.bop": BOP_LABEL,
         };
 
         this.columnDataViews.set(
