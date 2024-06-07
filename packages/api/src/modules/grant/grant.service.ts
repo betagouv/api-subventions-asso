@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import { CommonGrantDto, Rna, Siret } from "dto";
 import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
@@ -64,14 +65,28 @@ export class GrantService {
         return null;
     }
 
-    buildGrantFetcher = method => async identifier => {
-        const providers = this.getGrantProviders();
-        return [
-            ...(
-                await Promise.all(providers.map(p => p[method](identifier).then(g => (g || []) as RawGrant[]) || []))
-            ).flat(),
-        ];
-    };
+    // appeler adapter pour chaque joine.application joine.payment et joine.fullGrant
+    // implementer une classe GrantAdapter pour chaque adapter de demande et de paiment
+    async getGrants(identifier: StructureIdentifiers) {
+        const joinedRawGrants = await this.getRawGrants(identifier);
+        // parcours chaque joinedRawGrant
+        // joinedRawGrants.map(joined => {
+        //     // si application ET fullGrants, alors on prend fullGrants
+        //     if (joined.applications?.length && joined.fullGrants?.length) {
+        //         Sentry.captureMessage(
+        //             `A JoinedRawGrant had both applications AND fullGrants with joinKey ${joined.fullGrants[0].joinKey}`,
+        //         );
+        //     }
+        //     if (!joined.payments?.length) {
+        //         joined.fullGrants
+        //     }
+        //     if (joined.fullGrants?.length) {
+
+        //     }
+        // });
+        // TODO: adapte to DemandeSubventionDto
+        return joinedRawGrants;
+    }
 
     /**
      * Fetch grants by SIREN or SIRET.
@@ -84,26 +99,19 @@ export class GrantService {
      * @param identifier Rna, Siren or Siret
      * @returns List of grants (application with paiments)
      */
-    async getGrants(identifier: StructureIdentifiers) {
-        try {
-            const { identifier: sirenOrSiret, type } = await this.validateAndGetIdentifierInfo(identifier);
-            const method = GrantService.getDefaultMethodNameByIdType[type];
-            const grantFetcher = this.buildGrantFetcher(method);
-            return this.joinGrants(await grantFetcher(sirenOrSiret));
-        } catch (e) {
-            // IMPROVE: returning empty array does not inform the user that we could not search for grants
-            // it does not mean that the association does not received any grants
-            if (e instanceof RnaOnlyError) return [] as JoinedRawGrant[];
-            else throw e;
-        }
-    }
-
     async getRawGrants(identifier: StructureIdentifiers): Promise<JoinedRawGrant[]> {
         try {
             const { identifier: sirenOrSiret, type } = await this.validateAndGetIdentifierInfo(identifier);
             const method = GrantService.getRawMethodNameByIdType[type];
-            const rawGrantFetcher = this.buildGrantFetcher(method);
-            return this.joinGrants(await rawGrantFetcher(sirenOrSiret));
+            const providers = this.getGrantProviders();
+            const rawGrants = [
+                ...(
+                    await Promise.all(
+                        providers.map(p => p[method](sirenOrSiret).then(g => (g || []) as RawGrant[]) || []),
+                    )
+                ).flat(),
+            ];
+            return this.joinGrants(rawGrants);
         } catch (e) {
             // IMPROVE: returning empty array does not inform the user that we could not search for grants
             // it does not mean that the association does not received any grants
@@ -128,6 +136,9 @@ export class GrantService {
         ) as unknown as GrantProvider[];
     }
 
+    // on se dit que fullgrant n'a pas de payments => message Sentry
+    // et on a des application avec des payments
+    // pas de doublon application ou fullGrants => message
     private joinGrants(rawGrants: RawGrant[]): JoinedRawGrant[] {
         // TODO maybe think about a more sophisticated system than joinKey to group grants
         //  (specifically for dauphin/osiris joins with fonjep)
