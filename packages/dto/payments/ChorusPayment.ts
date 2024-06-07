@@ -1,7 +1,7 @@
 import { ProviderValue } from "../shared/ProviderValue";
 import { BasePayment } from "./BasePayment";
 
-export interface PaymentChorus extends BasePayment {
+export interface ChorusPayment extends BasePayment {
     centreFinancier: ProviderValue<string>;
     domaineFonctionnel: ProviderValue<string>;
     numeroDemandePayment?: ProviderValue<string>;

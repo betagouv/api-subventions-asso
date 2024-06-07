@@ -1,7 +1,7 @@
-import { PaymentFonjep, PaymentChorus } from "../payments";
+import { FonjepPayment, ChorusPayment } from "../payments";
 
 export interface GetPaymentsSuccessResponseDto {
-    versements: (PaymentChorus | PaymentFonjep)[];
+    versements: (ChorusPayment | FonjepPayment)[];
 }
 
 export type GetPaymentsResponseDto = GetPaymentsSuccessResponseDto;

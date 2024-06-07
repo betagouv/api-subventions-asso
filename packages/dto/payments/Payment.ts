@@ -1,4 +1,4 @@
-import { PaymentChorus } from "./PaymentChorus";
-import { PaymentFonjep } from "./PaymentFonjep";
+import { ChorusPayment } from "./ChorusPayment";
+import { FonjepPayment } from "./FonjepPayment";
 
-export type Payment = PaymentChorus | PaymentFonjep;
+export type Payment = ChorusPayment | FonjepPayment;

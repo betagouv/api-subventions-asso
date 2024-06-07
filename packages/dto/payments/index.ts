@@ -1,4 +1,4 @@
 export * from "./Payment";
 export * from "./BasePayment";
-export * from "./PaymentChorus";
-export * from "./PaymentFonjep";
+export * from "./ChorusPayment";
+export * from "./FonjepPayment";

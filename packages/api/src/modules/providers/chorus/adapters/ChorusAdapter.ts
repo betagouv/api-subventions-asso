@@ -1,12 +1,12 @@
 import { WithId } from "mongodb";
-import { PaymentDto, PaymentChorus } from "dto";
+import { PaymentDto, ChorusPayment } from "dto";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 
 export default class ChorusAdapter {
     static PROVIDER_NAME = "Chorus";
 
-    public static toPayment(entity: WithId<ChorusLineEntity>): PaymentChorus {
+    public static toPayment(entity: WithId<ChorusLineEntity>): ChorusPayment {
         const toPv = value =>
             ProviderValueAdapter.toProviderValue(
                 value,

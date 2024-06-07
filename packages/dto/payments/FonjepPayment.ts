@@ -1,7 +1,7 @@
 import { ProviderValue } from "../shared/ProviderValue";
 import { BasePayment } from "./BasePayment";
 
-export interface PaymentFonjep extends BasePayment {
+export interface FonjepPayment extends BasePayment {
     periodeDebut: ProviderValue<Date>;
     periodeFin: ProviderValue<Date>;
     montantAPayer: ProviderValue<number>;
