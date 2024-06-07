@@ -5,7 +5,7 @@
     export let document: DocumentEntity;
     export let value: DocumentEntity | undefined = undefined;
 
-    const controller = new DocumentCardController(document);
+    const controller = new DocumentCardController();
     const { isSelected } = controller;
     $: value = $isSelected ? document : undefined; // here because it would be very heavy to go through controller
 </script>

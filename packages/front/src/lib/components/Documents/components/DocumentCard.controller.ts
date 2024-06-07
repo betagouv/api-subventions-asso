@@ -1,14 +1,14 @@
+import { nanoid } from "nanoid";
 import trackerService from "$lib/services/tracker.service";
 import Store from "$lib/core/Store";
-import type { DocumentEntity } from "$lib/entities/DocumentEntity";
 
 export class DocumentCardController {
     public isSelected: Store<boolean>;
     public checkBoxId: string;
 
-    constructor(document: DocumentEntity) {
+    constructor() {
         this.isSelected = new Store(false);
-        this.checkBoxId = document.nom + document.date.getTime();
+        this.checkBoxId = nanoid(16);
     }
 
     getDateString(date) {
