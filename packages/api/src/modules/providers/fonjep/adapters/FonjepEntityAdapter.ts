@@ -1,4 +1,4 @@
-import { ApplicationStatus, DemandeSubvention, Etablissement, FullGrantDto, FonjepPayment } from "dto";
+import { ApplicationStatus, CommonFullGrantDto, DemandeSubvention, Etablissement, FonjepPayment } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
@@ -61,7 +61,6 @@ export default class FonjepEntityAdapter {
         const toPV = ProviderValueFactory.buildProviderValueAdapter(fonjepService.provider.name, dataDate);
 
         return {
-            id: entity.indexedInformations.unique_id,
             codePoste: toPV(entity.indexedInformations.code_poste),
             versementKey: toPV(entity.indexedInformations.code_poste),
             siret: toPV(entity.legalInformations.siret),
@@ -76,7 +75,7 @@ export default class FonjepEntityAdapter {
         };
     }
 
-    static toCommon(entity): FullGrantDto {
+    static toCommon(entity): CommonFullGrantDto {
         return {
             bop: "", // TODO business logic
             date_debut: entity.indexedInformations.date_versement,
