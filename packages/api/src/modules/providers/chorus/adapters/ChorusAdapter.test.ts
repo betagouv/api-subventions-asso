@@ -46,7 +46,7 @@ describe("ChorusAdapter", () => {
             "" as unknown as ObjectId,
         );
 
-        const actual = ChorusAdapter.toVersement(entity as WithId<ChorusLineEntity>);
+        const actual = ChorusAdapter.toPayment(entity as WithId<ChorusLineEntity>);
         const expected = {
             codeBranche: toPV("FAKE"),
             branche: toPV("FAKE"),
@@ -85,7 +85,7 @@ describe("ChorusAdapter", () => {
             "" as unknown as ObjectId,
         );
 
-        const actual = ChorusAdapter.toVersement(entity as WithId<ChorusLineEntity>);
+        const actual = ChorusAdapter.toPayment(entity as WithId<ChorusLineEntity>);
         const expected = {
             codeBranche: toPV("FAKE"),
             branche: toPV("FAKE"),

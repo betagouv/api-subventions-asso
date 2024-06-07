@@ -2,7 +2,7 @@ import { InformationBancaire } from "../shared/InformationBancaire";
 import { Personne } from "../shared/Personne";
 import { ProviderValues } from "../shared/ProviderValue";
 import { DemandeSubvention } from "../search/DemandeSubvention";
-import { Versement } from "../versements/Versement";
+import { Payment } from "../payments/Payment";
 import { SimplifiedEtablissement } from "./SimplifiedEtablissement";
 
 export interface Etablissement extends SimplifiedEtablissement {
@@ -10,5 +10,5 @@ export interface Etablissement extends SimplifiedEtablissement {
     representants_legaux?: ProviderValues<Personne>[];
     contacts?: ProviderValues<Personne>[];
     information_banquaire?: ProviderValues<InformationBancaire>[];
-    versements?: Versement[];
+    versements?: Payment[];
 }

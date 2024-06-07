@@ -1,9 +1,9 @@
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
 import fonjepService, { FonjepRejectedRequest, FONJEP_SERVICE_ERRORS } from "./fonjep.service";
 import fonjepSubventionRepository from "./repositories/fonjep.subvention.repository";
-import { SubventionEntity, VersementEntity } from "../../../../tests/modules/providers/fonjep/__fixtures__/entity";
+import { SubventionEntity, PaymentEntity } from "../../../../tests/modules/providers/fonjep/__fixtures__/entity";
 import * as Validators from "../../../shared/Validators";
-import fonjepVersementRepository from "./repositories/fonjep.versement.repository";
+import fonjepPaymentRepository from "./repositories/fonjep.payment.repository";
 import fonjepJoiner from "./joiners/fonjepJoiner";
 
 jest.mock("./adapters/FonjepEntityAdapter");
@@ -30,8 +30,8 @@ describe("FonjepService", () => {
 
     // Mock all date in fixture with fake timer
     // Maybe this should / could be done for all test files (in jest.config ?)
-    for (const prop in VersementEntity.indexedInformations) {
-        VersementEntity.indexedInformations[prop] = replaceDateWithFakeTimer(VersementEntity.indexedInformations[prop]);
+    for (const prop in PaymentEntity.indexedInformations) {
+        PaymentEntity.indexedInformations[prop] = replaceDateWithFakeTimer(PaymentEntity.indexedInformations[prop]);
     }
 
     beforeAll(() => {
@@ -167,26 +167,26 @@ describe("FonjepService", () => {
         });
     });
 
-    describe("createVersementEntity", () => {
+    describe("createPaymentEntity", () => {
         it("should throw error if siret invalid", async () => {
             // copy with spread operator doesn't work for nested object (indexedInformations)
-            const entity = JSON.parse(JSON.stringify(VersementEntity));
+            const entity = JSON.parse(JSON.stringify(PaymentEntity));
             entity.legalInformations.siret = WRONG_SIRET;
             const expected = new FonjepRejectedRequest(
                 `INVALID SIRET FOR ${WRONG_SIRET}`,
                 FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
                 entity,
             );
-            const actual = await fonjepService.createVersementEntity(entity);
+            const actual = await fonjepService.createPaymentEntity(entity);
             expect(actual).toEqual(expected);
         });
 
         it("creates entity", async () => {
-            const createVersementMock = jest.spyOn(fonjepVersementRepository, "create");
-            createVersementMock.mockImplementationOnce(jest.fn());
-            const entity = { ...VersementEntity };
-            await fonjepService.createVersementEntity(entity);
-            expect(createVersementMock).toHaveBeenCalledTimes(1);
+            const createPaymentMock = jest.spyOn(fonjepPaymentRepository, "create");
+            createPaymentMock.mockImplementationOnce(jest.fn());
+            const entity = { ...PaymentEntity };
+            await fonjepService.createPaymentEntity(entity);
+            expect(createPaymentMock).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -216,57 +216,57 @@ describe("FonjepService", () => {
         });
     });
 
-    describe("toVersementArray()", () => {
+    describe("toPaymentArray()", () => {
         it("should call adapter", () => {
-            fonjepService.toVersementArray([VersementEntity, VersementEntity]);
-            expect(FonjepEntityAdapter.toVersement).toHaveBeenCalledTimes(2);
+            fonjepService.toPaymentArray([PaymentEntity, PaymentEntity]);
+            expect(FonjepEntityAdapter.toPayment).toHaveBeenCalledTimes(2);
         });
     });
 
-    describe("getVersementsByKey", () => {
-        const findByCodeMock = jest.spyOn(fonjepVersementRepository, "findByCodePoste");
+    describe("getPaymentsByKey", () => {
+        const findByCodeMock = jest.spyOn(fonjepPaymentRepository, "findByCodePoste");
 
         it("calls adapter", async () => {
             // @ts-expect-error: mock
-            findByCodeMock.mockImplementationOnce(async () => [VersementEntity]);
-            await fonjepService.getVersementsByKey(CODE_POSTE);
-            expect(FonjepEntityAdapter.toVersement).toHaveBeenCalledWith(VersementEntity);
+            findByCodeMock.mockImplementationOnce(async () => [PaymentEntity]);
+            await fonjepService.getPaymentsByKey(CODE_POSTE);
+            expect(FonjepEntityAdapter.toPayment).toHaveBeenCalledWith(PaymentEntity);
         });
     });
 
-    describe("getVersementsBySiret", () => {
-        const findBySiretMock = jest.spyOn(fonjepVersementRepository, "findBySiret");
+    describe("getPaymentsBySiret", () => {
+        const findBySiretMock = jest.spyOn(fonjepPaymentRepository, "findBySiret");
 
         it("calls adapter", async () => {
             // @ts-expect-error: mock
-            findBySiretMock.mockImplementationOnce(async () => [VersementEntity]);
-            await fonjepService.getVersementsBySiret(SIRET);
-            expect(FonjepEntityAdapter.toVersement).toHaveBeenCalledWith(VersementEntity);
+            findBySiretMock.mockImplementationOnce(async () => [PaymentEntity]);
+            await fonjepService.getPaymentsBySiret(SIRET);
+            expect(FonjepEntityAdapter.toPayment).toHaveBeenCalledWith(PaymentEntity);
         });
     });
 
-    describe("getVersementsBySiren", () => {
-        const findBySirenMock = jest.spyOn(fonjepVersementRepository, "findBySiren");
+    describe("getPaymentsBySiren", () => {
+        const findBySirenMock = jest.spyOn(fonjepPaymentRepository, "findBySiren");
         it("calls adapter", async () => {
             // @ts-expect-error: mock
-            findBySirenMock.mockImplementationOnce(async () => [VersementEntity]);
-            await fonjepService.getVersementsBySiren(SIREN);
-            expect(FonjepEntityAdapter.toVersement).toHaveBeenCalledWith(VersementEntity);
+            findBySirenMock.mockImplementationOnce(async () => [PaymentEntity]);
+            await fonjepService.getPaymentsBySiren(SIREN);
+            expect(FonjepEntityAdapter.toPayment).toHaveBeenCalledWith(PaymentEntity);
         });
     });
 
     describe("Database Management", () => {
         describe("applyTemporyCollection()", () => {
-            it("should call applyTemporyCollection() on versement and subvention collection", async () => {
+            it("should call applyTemporyCollection() on payment and subvention collection", async () => {
                 const spySubventionApplyTemporyCollection = jest
                     .spyOn(fonjepSubventionRepository, "applyTemporyCollection")
                     .mockImplementation(jest.fn());
-                const spyVersementApplyTemporyCollection = jest
-                    .spyOn(fonjepVersementRepository, "applyTemporyCollection")
+                const spyPaymentApplyTemporyCollection = jest
+                    .spyOn(fonjepPaymentRepository, "applyTemporyCollection")
                     .mockImplementation(jest.fn());
                 await fonjepService.applyTemporyCollection();
                 expect(spySubventionApplyTemporyCollection).toHaveBeenCalledTimes(1);
-                expect(spyVersementApplyTemporyCollection).toHaveBeenCalledTimes(1);
+                expect(spyPaymentApplyTemporyCollection).toHaveBeenCalledTimes(1);
             });
         });
     });

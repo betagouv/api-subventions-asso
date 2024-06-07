@@ -1,5 +1,5 @@
 import FonjepEntity from "../../../../../src/modules/providers/fonjep/entities/FonjepSubventionEntity";
-import FonjepVersementEntity from "../../../../../src/modules/providers/fonjep/entities/FonjepVersementEntity";
+import FonjepPaymentEntity from "../../../../../src/modules/providers/fonjep/entities/FonjepPaymentEntity";
 import DEFAULT_ASSOCIATION from "../../../../__fixtures__/association.fixture";
 
 export const SubventionEntity = new FonjepEntity(
@@ -27,7 +27,7 @@ export const SubventionEntity = new FonjepEntity(
     {},
 );
 
-export const VersementEntity = new FonjepVersementEntity(
+export const PaymentEntity = new FonjepPaymentEntity(
     {
         siret: DEFAULT_ASSOCIATION.siret,
     },

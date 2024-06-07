@@ -1,8 +1,8 @@
 import { Siren, Siret } from "dto";
-import FonjepVersementEntity from "../entities/FonjepVersementEntity";
+import FonjepPaymentEntity from "../entities/FonjepPaymentEntity";
 import { FonjepCoreRepository } from "./fonjep.core.repository";
 
-export class FonjepVersementRepository extends FonjepCoreRepository<FonjepVersementEntity> {
+export class FonjepPaymentRepository extends FonjepCoreRepository<FonjepPaymentEntity> {
     readonly collectionName = "fonjepVersement";
 
     readonly joinIndexes = {
@@ -17,7 +17,7 @@ export class FonjepVersementRepository extends FonjepCoreRepository<FonjepVersem
         await this.collection.createIndex({ "indexedInformations.code_poste": 1 });
     }
 
-    create(entity: FonjepVersementEntity) {
+    create(entity: FonjepPaymentEntity) {
         return this.collection.insertOne(entity);
     }
 
@@ -38,5 +38,5 @@ export class FonjepVersementRepository extends FonjepCoreRepository<FonjepVersem
     }
 }
 
-const fonjepVersementRepository = new FonjepVersementRepository();
-export default fonjepVersementRepository;
+const fonjepPaymentRepository = new FonjepPaymentRepository();
+export default fonjepPaymentRepository;

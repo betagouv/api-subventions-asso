@@ -52,7 +52,58 @@ Object {
 }
 `;
 
-exports[`FonjepParser parse() should call createVersementFonjep with versement data 1`] = `
+exports[`FonjepParser parse() should call createPaymentFonjep with payment data 1`] = `
+Array [
+  Object {
+    "DateVersement": 43070,
+    "MontantAPayer": 3646,
+    "MontantPaye": 3646,
+    "PeriodeDebut": 42967,
+    "PeriodeFin": 43058,
+    "PosteCode": "D00598",
+    "bop": 147,
+    "id": Any<String>,
+    "siret": "00000000000000",
+    "updated_at": 2022-03-03T00:00:00.000Z,
+  },
+]
+`;
+
+exports[`FonjepParser parse() should call createPaymentFonjep with versement data 1`] = `
+Array [
+  Object {
+    "DateVersement": 43070,
+    "MontantAPayer": 3646,
+    "MontantPaye": 3646,
+    "PeriodeDebut": 42967,
+    "PeriodeFin": 43058,
+    "PosteCode": "D00598",
+    "bop": 147,
+    "id": Any<String>,
+    "siret": "00000000000000",
+    "updated_at": 2022-03-03T00:00:00.000Z,
+  },
+]
+`;
+
+exports[`FonjepParser parse() should not save payments without DateVersement 1`] = `
+Array [
+  Object {
+    "DateVersement": 43070,
+    "MontantAPayer": 3646,
+    "MontantPaye": 3646,
+    "PeriodeDebut": 42967,
+    "PeriodeFin": 43058,
+    "PosteCode": "D00598",
+    "bop": 147,
+    "id": Any<String>,
+    "siret": "00000000000000",
+    "updated_at": 2022-03-03T00:00:00.000Z,
+  },
+]
+`;
+
+exports[`FonjepParser parse() should not save payments without MontantPaye 1`] = `
 Array [
   Object {
     "DateVersement": 43070,

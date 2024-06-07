@@ -1,5 +1,5 @@
 import { Siren, Siret } from "dto";
-import fonjepVersementRepository from "../repositories/fonjep.versement.repository";
+import fonjepPaymentRepository from "../repositories/fonjep.payment.repository";
 import fonjepSubventionRepository from "../repositories/fonjep.subvention.repository";
 import db from "../../../../shared/MongoConnection";
 
@@ -10,16 +10,14 @@ export class FonjepJoiner {
         return [
             {
                 $lookup: {
-                    from: fonjepVersementRepository.collectionName,
-                    let: { joinId: fonjepSubventionRepository.joinIndexes[fonjepVersementRepository.collectionName] },
+                    from: fonjepPaymentRepository.collectionName,
+                    let: { joinId: fonjepSubventionRepository.joinIndexes[fonjepPaymentRepository.collectionName] },
                     pipeline: [
                         {
                             $match: {
                                 $expr: {
                                     $eq: [
-                                        fonjepVersementRepository.joinIndexes[
-                                            fonjepSubventionRepository.collectionName
-                                        ],
+                                        fonjepPaymentRepository.joinIndexes[fonjepSubventionRepository.collectionName],
                                         "$$joinId",
                                     ],
                                 },

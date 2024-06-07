@@ -58,7 +58,7 @@ Object {
 }
 `;
 
-exports[`FonjepEntityAdapter toVersement() should return a Versement 1`] = `
+exports[`FonjepEntityAdapter toPayment() should return a Payment 1`] = `
 Object {
   "amount": 1000,
   "bop": 163,

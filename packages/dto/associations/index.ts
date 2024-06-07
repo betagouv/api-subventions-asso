@@ -6,4 +6,4 @@ export * from "./GetEtablissementResponseDto";
 export * from "./GetEtablissementsResponseDto";
 export * from "./GetSubventionResponseDto";
 export * from "./GetSubventionsResponseDto";
-export * from "./GetVersementsResponseDto";
+export * from "./GetPaymentsResponseDto";

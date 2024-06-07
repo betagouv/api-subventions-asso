@@ -28,7 +28,7 @@ describe("chorusService", () => {
         });
     });
 
-    describe("getVersementsBySiret", () => {
+    describe("getPaymentsBySiret", () => {
         beforeAll(() => {
             mockedChorusLineRepository.findBySiret.mockResolvedValue([
                 ENTITIES[0],
@@ -42,15 +42,15 @@ describe("chorusService", () => {
 
         const SIRET = ENTITIES[0].indexedInformations.siret;
         it("should call chorusLineRepository.findBySiret()", async () => {
-            await chorusService.getVersementsBySiret(SIRET);
+            await chorusService.getPaymentsBySiret(SIRET);
         });
-        it("should call ChorusAdapter.toVersement for each document", async () => {
-            await chorusService.getVersementsBySiret(SIRET);
-            expect(ChorusAdapter.toVersement).toHaveBeenCalledTimes(2);
+        it("should call ChorusAdapter.toPayment for each document", async () => {
+            await chorusService.getPaymentsBySiret(SIRET);
+            expect(ChorusAdapter.toPayment).toHaveBeenCalledTimes(2);
         });
     });
 
-    describe("getVersementsBySiren", () => {
+    describe("getPaymentsBySiren", () => {
         beforeAll(() => {
             mockedChorusLineRepository.findBySiren.mockResolvedValue([
                 ENTITIES[0],
@@ -64,15 +64,15 @@ describe("chorusService", () => {
 
         const SIREN = ENTITIES[0].indexedInformations.siret.substring(0, 9);
         it("should call chorusLineRepository.findBySiren()", async () => {
-            await chorusService.getVersementsBySiren(SIREN);
+            await chorusService.getPaymentsBySiren(SIREN);
         });
-        it("should call ChorusAdapter.toVersement for each document", async () => {
-            await chorusService.getVersementsBySiren(SIREN);
-            expect(ChorusAdapter.toVersement).toHaveBeenCalledTimes(2);
+        it("should call ChorusAdapter.toPayment for each document", async () => {
+            await chorusService.getPaymentsBySiren(SIREN);
+            expect(ChorusAdapter.toPayment).toHaveBeenCalledTimes(2);
         });
     });
 
-    describe("getVersementsByKey", () => {
+    describe("getPaymentsByKey", () => {
         beforeAll(() => {
             mockedChorusLineRepository.findByEJ.mockResolvedValue([
                 ENTITIES[0],
@@ -86,11 +86,11 @@ describe("chorusService", () => {
 
         const EJ = ENTITIES[0].indexedInformations.ej;
         it("should call chorusLineRepository.findByEJ()", async () => {
-            await chorusService.getVersementsByKey(EJ);
+            await chorusService.getPaymentsByKey(EJ);
         });
-        it("should call ChorusAdapter.toVersement for each document", async () => {
-            await chorusService.getVersementsByKey(EJ);
-            expect(ChorusAdapter.toVersement).toHaveBeenCalledTimes(2);
+        it("should call ChorusAdapter.toPayment for each document", async () => {
+            await chorusService.getPaymentsByKey(EJ);
+            expect(ChorusAdapter.toPayment).toHaveBeenCalledTimes(2);
         });
     });
 

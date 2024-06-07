@@ -3,7 +3,7 @@ import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import documentsService from "../documents/documents.service";
 import { SubventionsFlux } from "../subventions/@types/SubventionsFlux";
 import subventionsService from "../subventions/subventions.service";
-import versementsService from "../versements/versements.service";
+import paymentService from "../payments/payments.service";
 import { EtablissementAdapter } from "./EtablissementAdapter";
 import etablissementService from "./etablissements.service";
 import { BadRequestError, NotFoundError } from "../../shared/errors/httpErrors";
@@ -22,7 +22,7 @@ const ETABLISSEMENT_1 = {
         },
     ],
     nic: [],
-    versements: [],
+    payments: [],
     demandes_subventions: [],
 };
 const ETABLISSEMENT_2 = {
@@ -35,7 +35,7 @@ const ETABLISSEMENT_2 = {
         },
     ],
     nic: [],
-    versements: [],
+    payments: [],
     demandes_subventions: [],
 };
 
@@ -79,15 +79,15 @@ describe("EtablissementsService", () => {
         });
     });
 
-    describe("getVersements", () => {
-        const getVersementsBySiretMock = jest.spyOn(versementsService, "getVersementsBySiret");
+    describe("getPayments", () => {
+        const getPaymentsBySiretMock = jest.spyOn(paymentService, "getPaymentsBySiret");
 
-        it("should call versement service", async () => {
-            getVersementsBySiretMock.mockImplementation(async () => []);
+        it("should call payment service", async () => {
+            getPaymentsBySiretMock.mockImplementation(async () => []);
 
-            await etablissementService.getVersements(SIRET);
+            await etablissementService.getPayments(SIRET);
 
-            expect(getVersementsBySiretMock).toHaveBeenCalledWith(SIRET);
+            expect(getPaymentsBySiretMock).toHaveBeenCalledWith(SIRET);
         });
     });
 

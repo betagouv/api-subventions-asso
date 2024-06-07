@@ -1,9 +1,9 @@
 import { Siret } from "dto";
 import { DefaultObject, ParserInfo, ParserPath } from "../../../../@types";
-import IFonjepVersementIndexedInformations from "../@types/IFonjepVersementIndexedInformations";
+import IFonjepVersementIndexedInformations from "../@types/IFonjepPaymentIndexedInformations";
 import * as ParseHelper from "../../../../shared/helpers/ParserHelper";
 
-export default class FonjepVersementEntity {
+export default class FonjepPaymentEntity {
     public static indexedLegalInformationsPath: DefaultObject<ParserPath | ParserInfo> = {
         siret: {
             path: ["siret"],

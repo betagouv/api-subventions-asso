@@ -1,17 +1,17 @@
-import { Siret, Siren, DemandeSubvention, Etablissement, VersementFonjep, Rna } from "dto";
+import { Siret, Siren, DemandeSubvention, Etablissement, PaymentFonjep, Rna } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { isAssociationName, areDates, areNumbersValid, isSiret, areStringsValid } from "../../../shared/Validators";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
-import VersementsProvider from "../../versements/@types/VersementsProvider";
+import PaymentProvider from "../../payments/@types/PaymentProvider";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import { RawGrant } from "../../grant/@types/rawGrant";
 import ProviderCore from "../ProviderCore";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
 import fonjepSubventionRepository from "./repositories/fonjep.subvention.repository";
-import fonjepVersementRepository from "./repositories/fonjep.versement.repository";
-import FonjepVersementEntity from "./entities/FonjepVersementEntity";
+import fonjepPaymentRepository from "./repositories/fonjep.payment.repository";
+import FonjepPaymentEntity from "./entities/FonjepPaymentEntity";
 import fonjepJoiner from "./joiners/fonjepJoiner";
 
 export enum FONJEP_SERVICE_ERRORS {
@@ -44,7 +44,7 @@ export type CreateFonjepResponse = FonjepRejectedRequest | true;
 
 export class FonjepService
     extends ProviderCore
-    implements DemandesSubventionsProvider, EtablissementProvider, VersementsProvider, GrantProvider
+    implements DemandesSubventionsProvider, EtablissementProvider, PaymentProvider, GrantProvider
 {
     constructor() {
         super({
@@ -128,7 +128,7 @@ export class FonjepService
         return FOUNDER_CODE_TO_BOP_MAPPER[code];
     }
 
-    async createVersementEntity(entity: FonjepVersementEntity): Promise<CreateFonjepResponse> {
+    async createPaymentEntity(entity: FonjepPaymentEntity): Promise<CreateFonjepResponse> {
         if (!isSiret(entity.legalInformations.siret)) {
             return new FonjepRejectedRequest(
                 `INVALID SIRET FOR ${entity.legalInformations.siret}`,
@@ -138,7 +138,7 @@ export class FonjepService
         }
 
         // Do not validEntity now because it is only called after Subvention validation (siret as already been validated)
-        await fonjepVersementRepository.create(entity);
+        await fonjepPaymentRepository.create(entity);
 
         return true;
     }
@@ -198,26 +198,26 @@ export class FonjepService
 
     /**
      * |----------------------------|
-     * |  Versements Part  |
+     * |  Payment Part  |
      * |----------------------------|
      */
 
-    isVersementsProvider = true;
+    isPaymentProvider = true;
 
-    toVersementArray(documents): VersementFonjep[] {
-        return documents.map(document => FonjepEntityAdapter.toVersement(document));
+    toPaymentArray(documents): PaymentFonjep[] {
+        return documents.map(document => FonjepEntityAdapter.toPayment(document));
     }
 
-    async getVersementsByKey(codePoste: string) {
-        return this.toVersementArray(await fonjepVersementRepository.findByCodePoste(codePoste));
+    async getPaymentsByKey(codePoste: string) {
+        return this.toPaymentArray(await fonjepPaymentRepository.findByCodePoste(codePoste));
     }
 
-    async getVersementsBySiret(siret: Siret) {
-        return this.toVersementArray(await fonjepVersementRepository.findBySiret(siret));
+    async getPaymentsBySiret(siret: Siret) {
+        return this.toPaymentArray(await fonjepPaymentRepository.findBySiret(siret));
     }
 
-    async getVersementsBySiren(siren: Siren) {
-        return this.toVersementArray(await fonjepVersementRepository.findBySiren(siren));
+    async getPaymentsBySiren(siren: Siren) {
+        return this.toPaymentArray(await fonjepPaymentRepository.findBySiren(siren));
     }
 
     /**
@@ -262,12 +262,12 @@ export class FonjepService
 
     useTemporyCollection(active: boolean) {
         fonjepSubventionRepository.useTemporyCollection(active);
-        fonjepVersementRepository.useTemporyCollection(active);
+        fonjepPaymentRepository.useTemporyCollection(active);
     }
 
     async applyTemporyCollection() {
         await fonjepSubventionRepository.applyTemporyCollection();
-        await fonjepVersementRepository.applyTemporyCollection();
+        await fonjepPaymentRepository.applyTemporyCollection();
     }
 }
 

@@ -2,7 +2,7 @@ import {
     GetAssociationResponseDto,
     GetEtablissementsResponseDto,
     GetSubventionsResponseDto,
-    GetVersementsResponseDto,
+    GetPaymentsResponseDto,
     GetDocumentsResponseDto,
     DemandeSubvention,
 } from "dto";
@@ -48,15 +48,15 @@ export class AssociationHttp extends Controller {
     }
 
     /**
-     * Recherche les versements liés à une association
+     * Recherche les payments liés à une association
      *
-     * @summary Recherche les versements liés à une association
+     * @summary Recherche les payments liés à une association
      * @param identifier Identifiant Siren ou Rna
      */
     @Get("/{identifier}/versements")
-    public async getVersements(identifier: AssociationIdentifiers): Promise<GetVersementsResponseDto> {
-        const result = await associationService.getVersements(identifier);
-        return { versements: result };
+    public async getPayments(identifier: AssociationIdentifiers): Promise<GetPaymentsResponseDto> {
+        const payments = await associationService.getPayments(identifier);
+        return { versements: payments };
     }
 
     /**
