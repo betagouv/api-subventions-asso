@@ -12,7 +12,7 @@
 
 <div class="card-container fr-grid-row fr-col-12" class:--selected={$isSelected}>
     <div class="fr-grid-row fr-col-11 checkbox-wrapper">
-        <div class="fr-col-1 flex">
+        <div class="col-0-5 flex">
             <div class="fr-mt-5v">
                 <div class="fr-checkbox-group document-selector">
                     <input
@@ -26,7 +26,7 @@
                 </div>
             </div>
         </div>
-        <div class="fr-col-11">
+        <div class="col-11-5">
             <div class="fr-card fr-card--no-icon fr-card--horizontal fr-card--no-border">
                 <div class="fr-card__body">
                     <div class="fr-card__content fr-p-2w">
@@ -114,5 +114,18 @@
 
     .fr-card__desc {
         min-height: unset;
+    }
+
+    /* layout */
+    .col-0-5 {
+        flex: 0 0 4.15%;
+        max-width: 4.15%;
+        width: 4.15%;
+    }
+
+    .col-11-5 {
+        flex: 0 0 95.83%;
+        max-width: 95.83%;
+        width: 95.83%;
     }
 </style>
