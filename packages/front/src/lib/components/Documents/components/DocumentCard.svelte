@@ -13,17 +13,15 @@
 <div class="card-container fr-grid-row fr-col-12" class:--selected={$isSelected}>
     <div class="fr-grid-row fr-col-11 checkbox-wrapper">
         <div class="col-0-5 flex">
-            <div class="fr-mt-5v">
-                <div class="fr-checkbox-group document-selector">
-                    <input
-                        name="documents-to-download"
-                        id="documents-to-download-{controller.checkBoxId}"
-                        type="checkbox"
-                        bind:checked={$isSelected} />
-                    <label class="fr-label sr-only" for="documents-to-download-{controller.checkBoxId}">
-                        <!-- TODO infos document lecteur d'écran -->
-                    </label>
-                </div>
+            <div class="fr-checkbox-group document-selector">
+                <input
+                    name="documents-to-download"
+                    id="documents-to-download-{controller.checkBoxId}"
+                    type="checkbox"
+                    bind:checked={$isSelected} />
+                <label class="fr-label sr-only" for="documents-to-download-{controller.checkBoxId}">
+                    <!-- TODO infos document lecteur d'écran -->
+                </label>
             </div>
         </div>
         <div class="col-11-5">
@@ -60,12 +58,26 @@
 </div>
 
 <style>
-    .checkbox-wrapper {
-        position: relative;
+    /* BEGIN - custom checkbox positioning */
+    .checkbox-wrapper .fr-checkbox-group {
+        position: unset;
     }
 
-    .document-selector {
-        opacity: 0;
+    .checkbox-wrapper .fr-checkbox-group input[type="checkbox"] + label {
+        position: unset;
+        margin-left: 0;
+    }
+
+    .checkbox-wrapper .fr-checkbox-group input[type="checkbox"] + label::before {
+        position: absolute;
+        left: 0;
+        top: 1.2rem;
+    }
+    /* END - custom checkbox positioning */
+
+    /* BEGIN - englobe card to select checkbox */
+    .checkbox-wrapper {
+        position: relative;
     }
 
     .document-selector input ~ label::after {
@@ -78,14 +90,21 @@
         right: 0;
         z-index: 10;
     }
+    /* END - englobe card to select checkbox */
+
+    /* BEGIN - dynamic checkbox display */
+    .document-selector {
+        opacity: 0;
+    }
 
     .card-container:hover .document-selector,
     .card-container:focus-within .document-selector,
     .card-container.--selected .document-selector {
         opacity: 1;
     }
+    /* END - dynamic checkbox display */
 
-    /* card style */
+    /* BEGIN - generic card style */
     .fr-card__title {
         color: var(--text-title-blue-france);
     }
@@ -100,23 +119,26 @@
         border-bottom: 1px var(--border-default-grey) solid;
     }
 
-    .card-container:hover .fr-card {
+    .fr-card__desc {
+        min-height: unset;
+    }
+    /* END - generic card style */
+
+    /* BEGIN - dynamic card background */
+    .checkbox-wrapper:hover .fr-card {
         background-color: var(--background-alt-grey);
     }
 
-    .card-container:focus-within .fr-card {
+    .checkbox-wrapper:focus-within .fr-card {
         background-color: var(--background-alt-grey);
     }
 
     .card-container.--selected .fr-card {
         background-color: var(--background-contrast-blue-france);
     }
+    /* END - dynamic card background */
 
-    .fr-card__desc {
-        min-height: unset;
-    }
-
-    /* layout */
+    /* BEGIN - general layout */
     .col-0-5 {
         flex: 0 0 4.15%;
         max-width: 4.15%;
@@ -128,4 +150,5 @@
         max-width: 95.83%;
         width: 95.83%;
     }
+    /* END - general layout */
 </style>
