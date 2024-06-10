@@ -7,7 +7,7 @@ import PaymentsAdapter from "$lib/resources/payments/payments.adapter";
 const MONTANT_VERSE_LABEL = "Montant versé";
 const CENTRE_FINANCIER_LABEL = "Centre financier";
 const DATE_VERSEMENT_LABEL = "Date du payment";
-const BOP_LABEL = "BOP";
+const BOP_LABEL = "Programme";
 
 export default class PaymentTableController {
     constructor(sortMethod) {
