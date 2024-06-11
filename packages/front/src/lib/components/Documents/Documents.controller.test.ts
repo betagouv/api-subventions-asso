@@ -314,12 +314,15 @@ describe("Documents.controller", () => {
 
     describe("download", () => {
         beforeAll(() => {
-            // @ts-expect-error - mock
-            vi.mocked(documentService.getAllDocs).mockResolvedValue("");
+            vi.mocked(ctrl.downloadAll).mockResolvedValue("");
+            vi.mocked(ctrl.downloadSome).mockResolvedValue("");
+            vi.mocked(documentHelper.download).mockResolvedValue("");
         });
 
         afterAll(() => {
-            vi.mocked(documentService.getAllDocs).mockReset();
+            vi.mocked(ctrl.downloadAll).mockRestore("");
+            vi.mocked(ctrl.downloadSome).mockRestore("");
+            vi.mocked(documentHelper.download).mockRestore("");
         });
 
         describe.each`
@@ -378,7 +381,7 @@ describe("Documents.controller", () => {
         });
 
         afterAll(() => {
-            vi.mocked(documentService.getAllDocs).mockReset();
+            vi.mocked(documentService.getAllDocs).mockRestore();
         });
 
         it.each`
@@ -386,9 +389,9 @@ describe("Documents.controller", () => {
             ${"RNA"}
             ${"SIREN"}
             ${"SIRET"}
-        `("gets docs by $identifier", ({ identifier }) => {
+        `("gets docs by $identifier", async ({ identifier }) => {
             ctrl.identifier = identifier;
-            ctrl.downloadAll();
+            await ctrl.downloadAll();
             expect(documentService.getAllDocs).toHaveBeenCalledWith(identifier);
 
             vi.mocked(documentService.getAllDocs).mockClear();

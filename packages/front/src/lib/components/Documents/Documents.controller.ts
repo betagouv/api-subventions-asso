@@ -178,11 +178,11 @@ export class DocumentsController {
         await promise;
     }
 
-    private async downloadAll() {
+    private downloadAll() {
         return documentService.getAllDocs(this.identifier);
     }
 
-    private async downloadSome() {
+    private downloadSome() {
         const docs = this.flatSelectedDocs.value;
         return documentService.getSomeDocs(docs);
     }
