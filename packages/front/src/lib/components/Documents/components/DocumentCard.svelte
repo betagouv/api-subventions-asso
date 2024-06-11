@@ -64,11 +64,11 @@
 <style>
     /* BEGIN - custom checkbox positioning */
     .checkbox-wrapper .fr-checkbox-group {
-        position: unset;
+        position: initial;
     }
 
     .checkbox-wrapper .fr-checkbox-group input[type="checkbox"] + label {
-        position: unset;
+        position: initial;
         margin-left: 0;
     }
 
@@ -124,7 +124,7 @@
     }
 
     .fr-card__desc {
-        min-height: unset;
+        min-height: initial;
     }
     /* END - generic card style */
 
