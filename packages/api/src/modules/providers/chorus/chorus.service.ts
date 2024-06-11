@@ -22,7 +22,7 @@ export interface RejectedRequest {
     result: { message: string; data: unknown };
 }
 
-export class ChorusService extends ProviderCore implements PaymentProvider, GrantProvider {
+export class ChorusService extends ProviderCore implements PaymentProvider<ChorusLineEntity>, GrantProvider {
     constructor() {
         super({
             name: "Chorus",
@@ -32,6 +32,8 @@ export class ChorusService extends ProviderCore implements PaymentProvider, Gran
             id: "chorus",
         });
     }
+
+    rawToPayment = ChorusAdapter.rawToPayment;
 
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
 

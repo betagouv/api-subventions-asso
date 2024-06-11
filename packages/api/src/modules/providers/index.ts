@@ -9,10 +9,10 @@ import dauphinService from "./dauphin/dauphin.service";
 import caisseDepotsService from "./caisseDepots/caisseDepots.service";
 import demarchesSimplifieesService from "./demarchesSimplifiees/demarchesSimplifiees.service";
 import bodaccService from "./bodacc/bodacc.service";
-import Provider from "./@types/IProvider";
+import { AnyProvider } from "./@types/IProvider";
 import scdlGrantService from "./scdl/scdl.grant.service";
 
-const providers: { [key: string]: Provider } = {
+const providers: { [key: string]: AnyProvider } = {
     osirisService,
     leCompteAssoService,
     fonjepService,

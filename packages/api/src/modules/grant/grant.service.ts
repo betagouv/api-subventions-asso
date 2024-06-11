@@ -153,6 +153,7 @@ export class GrantService {
                 continue;
             }
             if (!(rawGrant.joinKey in byKey)) byKey[rawGrant.joinKey] = newJoiningGrant();
+            // @ts-expect-error: INSPECT THIS LATER (occured after rebase #2446)
             byKey[rawGrant.joinKey][`${rawGrant.type}s`]?.push(rawGrant);
         }
 

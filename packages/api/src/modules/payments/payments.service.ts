@@ -6,6 +6,7 @@ import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum"
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 import { NotFoundError } from "../../shared/errors/httpErrors";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
+import { AnyProvider } from "../providers/@types/IProvider";
 import PaymentProvider from "./@types/PaymentProvider";
 
 export class PaymentsService {
@@ -43,12 +44,15 @@ export class PaymentsService {
         return [...(await Promise.all(providers.map(p => p.getPaymentsBySiren(siren)))).flat()];
     }
 
-    private getProviders(): PaymentProvider[] {
-        return Object.values(providers).filter(p => this.isPaymentProvider(p)) as unknown as PaymentProvider[];
+    private getProviders() {
+        return Object.values(providers).filter(p => this.isPaymentProvider(p)) as PaymentProvider<unknown>[];
     }
 
-    private isPaymentProvider(data: unknown): data is PaymentProvider {
-        return (data as PaymentProvider).isPaymentProvider;
+    private isPaymentProvider(data: AnyProvider) {
+        // @ts-expect-error: we want to check if provider type is PaymentProvider
+        // TODO: I did not find anything about type checking solution to avoid using ts-expect-error
+        if (data.isPaymentProvider) return true;
+        else return false;
     }
 }
 
