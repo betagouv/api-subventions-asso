@@ -16,7 +16,7 @@ import StructureIdentifiersError from "../../shared/errors/StructureIdentifierEr
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 
 import documentsService from "../documents/documents.service";
-import versementsService from "../versements/versements.service";
+import paymentService from "../payments/payments.service";
 import subventionsService from "../subventions/subventions.service";
 import etablissementService from "../etablissements/etablissements.service";
 import { NotFoundError } from "../../shared/errors/httpErrors";
@@ -86,8 +86,8 @@ export class AssociationsService {
         return subventionsService.getDemandesByAssociation(identifier);
     }
 
-    getVersements(identifier: AssociationIdentifiers) {
-        return versementsService.getVersementsByAssociation(identifier);
+    getPayments(identifier: AssociationIdentifiers) {
+        return paymentService.getPaymentsByAssociation(identifier);
     }
 
     async getDocuments(identifier: AssociationIdentifiers) {

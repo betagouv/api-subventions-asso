@@ -52,7 +52,7 @@ Object {
 }
 `;
 
-exports[`FonjepParser parse() should call createVersementFonjep with versement data 1`] = `
+exports[`FonjepParser parse() should call createPaymentFonjep with payment data 1`] = `
 Array [
   Object {
     "DateVersement": 43070,
@@ -69,7 +69,7 @@ Array [
 ]
 `;
 
-exports[`FonjepParser parse() should not save versements without DateVersement 1`] = `
+exports[`FonjepParser parse() should not save payments without DateVersement 1`] = `
 Array [
   Object {
     "DateVersement": 43070,
@@ -86,7 +86,7 @@ Array [
 ]
 `;
 
-exports[`FonjepParser parse() should not save versements without MontantPaye 1`] = `
+exports[`FonjepParser parse() should not save payments without MontantPaye 1`] = `
 Array [
   Object {
     "DateVersement": 43070,

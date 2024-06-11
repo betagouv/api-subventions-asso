@@ -1,7 +1,7 @@
 import subventionsPort from "./subventions.port";
 
 describe("SubventionPort", () => {
-    describe("getEtablissementVersements", () => {
+    describe("getEtablissementPayments", () => {
         let getSubventionStoreMock;
 
         const SIRET = "12345678900011";
@@ -37,7 +37,7 @@ describe("SubventionPort", () => {
         });
     });
 
-    describe("getAssociationVersements", () => {
+    describe("getAssociationPayments", () => {
         let getSubventionStoreMock;
 
         const SIREN = "123456789";

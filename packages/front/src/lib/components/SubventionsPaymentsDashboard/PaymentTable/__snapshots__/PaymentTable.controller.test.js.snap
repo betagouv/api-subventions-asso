@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`PaymentTableController > extractHeaders() > return an array of header 1`] = `
+[
+  "Montant versé",
+  "Centre financier",
+  "Date du payment",
+  "BOP",
+]
+`;

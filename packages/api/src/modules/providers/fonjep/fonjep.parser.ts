@@ -2,9 +2,9 @@ import { Siret } from "dto";
 import { DefaultObject } from "../../../@types";
 import * as ParserHelper from "../../../shared/helpers/ParserHelper";
 import IFonjepIndexedInformations from "./@types/IFonjepIndexedInformations";
-import IFonjepVersementIndexedInformations from "./@types/IFonjepVersementIndexedInformations";
+import IFonjepPaymentIndexedInformations from "./@types/IFonjepPaymentIndexedInformations";
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
-import FonjepVersementEntity from "./entities/FonjepVersementEntity";
+import FonjepPaymentEntity from "./entities/FonjepPaymentEntity";
 import fonjepService from "./fonjep.service";
 
 export default class FonjepParser {
@@ -41,53 +41,53 @@ export default class FonjepParser {
         return new FonjepSubventionEntity(legalInformations, indexedInformations, parsedData);
     }
 
-    private static createFonjepVersementEntity(data: DefaultObject<unknown>) {
+    private static createFonjepPaymentEntity(data: DefaultObject<unknown>) {
         const indexedInformations = ParserHelper.indexDataByPathObject(
-            FonjepVersementEntity.indexedProviderInformationsPath,
+            FonjepPaymentEntity.indexedProviderInformationsPath,
             data,
-        ) as unknown as IFonjepVersementIndexedInformations;
+        ) as unknown as IFonjepPaymentIndexedInformations;
         const legalInformations = ParserHelper.indexDataByPathObject(
-            FonjepVersementEntity.indexedLegalInformationsPath,
+            FonjepPaymentEntity.indexedLegalInformationsPath,
             data,
         ) as { siret: Siret };
-        return new FonjepVersementEntity(legalInformations, indexedInformations, data);
+        return new FonjepPaymentEntity(legalInformations, indexedInformations, data);
     }
 
     public static parse(fileContent: Buffer, exportDate: Date) {
         const pages = ParserHelper.xlsParse(fileContent);
         const currentDate = exportDate;
 
-        const [tiers, postes, versements, typePoste, dispositifs] = this.mapHeaderToData(pages);
+        const [tiers, postes, payments, typePoste, dispositifs] = this.mapHeaderToData(pages);
         const findTiers = this.findOnPropFactory(tiers, "Code");
         const findTypePoste = this.findOnPropFactory(typePoste, "Code");
         const findDispositif = this.findOnPropFactory(dispositifs, "ID");
         const findPostes = this.filterOnPropFactory(postes, "Code");
 
-        const createVersements = (versements: FonjepVersementEntity[], versement) => {
-            if (!versement["MontantPaye"] || !versement["DateVersement"]) return versements;
+        const createPayments = (payments: FonjepPaymentEntity[], payment) => {
+            if (!payment["MontantPaye"] || !payment["DateVersement"]) return payments;
 
-            const periodDebut = ParserHelper.ExcelDateToJSDate(Number(versement["PeriodeDebut"]));
+            const periodDebut = ParserHelper.ExcelDateToJSDate(Number(payment["PeriodeDebut"]));
 
             // recupère le poste
-            const postes = findPostes(versement["PosteCode"]);
+            const postes = findPostes(payment["PosteCode"]);
             const poste = postes.find(poste => periodDebut.getFullYear() == poste["Annee"]);
-            if (!poste) return versements;
+            if (!poste) return payments;
 
             const association = findTiers(poste["AssociationBeneficiaireCode"]);
-            if (!association) return versements;
+            if (!association) return payments;
 
-            const versementId = `${association["SiretOuRidet"]}-${versement["PosteCode"]}-${periodDebut.toISOString()}`;
+            const paymentId = `${association["SiretOuRidet"]}-${payment["PosteCode"]}-${periodDebut.toISOString()}`;
 
-            versements.push(
-                this.createFonjepVersementEntity({
-                    ...versement,
+            payments.push(
+                this.createFonjepPaymentEntity({
+                    ...payment,
                     siret: association ? association["SiretOuRidet"] : undefined,
                     bop: fonjepService.getBopFromFounderCode(Number(poste["FinanceurPrincipalCode"])),
                     updated_at: currentDate,
-                    id: versementId,
+                    id: paymentId,
                 }),
             );
-            return versements;
+            return payments;
         };
 
         const createSubventions = (
@@ -119,7 +119,7 @@ export default class FonjepParser {
 
         return {
             subventions: postes.reduce(createSubventions, []),
-            versements: versements.reduce(createVersements, []),
+            payments: payments.reduce(createPayments, []),
         };
     }
 }

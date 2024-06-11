@@ -32,7 +32,7 @@ export default class FonjepCli extends CliController {
 
         const fileContent = fs.readFileSync(file);
 
-        const { subventions, versements } = FonjepParser.parse(fileContent, exportDate);
+        const { subventions, payments } = FonjepParser.parse(fileContent, exportDate);
 
         fonjepService.useTemporyCollection(true);
 
@@ -67,16 +67,16 @@ export default class FonjepCli extends CliController {
             );
         });
 
-        const versementRejected = [] as FonjepRejectedRequest[];
+        const paymentRejected = [] as FonjepRejectedRequest[];
 
-        const versementsResult = await versements.reduce(async (acc, versement, index) => {
+        const paymentsResult = await payments.reduce(async (acc, payment, index) => {
             const result = await acc;
-            const response = await fonjepService.createVersementEntity(versement);
+            const response = await fonjepService.createPaymentEntity(payment);
 
-            CliHelper.printProgress(index + 1, versements.length, "versements");
+            CliHelper.printProgress(index + 1, payments.length, "payments");
 
             if (response instanceof FonjepRejectedRequest) {
-                versementRejected.push(response);
+                paymentRejected.push(response);
                 return result;
             }
             result.push(response);
@@ -84,13 +84,13 @@ export default class FonjepCli extends CliController {
         }, Promise.resolve([]) as Promise<(FonjepRejectedRequest | CreateFonjepResponse)[]>);
 
         this.logger.logIC(`
-            ${versementsResult.length} versements created
-            ${versementRejected.length} versements not valid
+            ${paymentsResult.length} payments created
+            ${paymentRejected.length} payments not valid
         `);
 
-        versementRejected.forEach(result => {
+        paymentRejected.forEach(result => {
             this.logger.log(
-                `\n\nThis versement is not registered because: ${result.message} \n`,
+                `\n\nThis payment is not registered because: ${result.message} \n`,
                 JSON.stringify(result.data, null, "\t"),
             );
         });

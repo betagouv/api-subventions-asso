@@ -4,7 +4,7 @@
     import Tabs from "$lib/dsfr/Tabs.svelte";
     import TabContent from "$lib/dsfr/TabContent.svelte";
     import Documents from "$lib/components/Documents/Documents.svelte";
-    import SubventionsVersementsDashboard from "$lib/components/SubventionsVersementsDashboard/SubventionsVersementsDashboard.svelte";
+    import SubventionsPaymentsDashboard from "$lib/components/SubventionsPaymentsDashboard/SubventionsPaymentsDashboard.svelte";
     import { currentAssociation } from "$lib/store/association.store";
     // import Stats from "./Stats/Stats.svelte";
 
@@ -17,7 +17,7 @@
         {#each titles as _title, index}
             <TabContent selected={index === 0} {index}>
                 {#if index === 0}
-                    <SubventionsVersementsDashboard identifier={associationIdentifier} />
+                    <SubventionsPaymentsDashboard identifier={associationIdentifier} />
                     <!-- {:else if index === 1} // Uncomment when stats are available
                     <Stats /> -->
                 {:else if index === 1}

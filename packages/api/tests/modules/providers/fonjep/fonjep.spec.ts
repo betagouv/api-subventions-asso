@@ -4,7 +4,7 @@ import path from "path";
 import FonjepParser from "../../../../src/modules/providers/fonjep/fonjep.parser";
 import FonjepCli from "../../../../src/interfaces/cli/Fonjep.cli";
 import db from "../../../../src/shared/MongoConnection";
-import fonjepVersementRepository from "../../../../src/modules/providers/fonjep/repositories/fonjep.versement.repository";
+import fonjepVersementRepository from "../../../../src/modules/providers/fonjep/repositories/fonjep.payment.repository";
 import fonjepSubventionRepository from "../../../../src/modules/providers/fonjep/repositories/fonjep.subvention.repository";
 
 const FILE = fs.readFileSync(path.resolve(__dirname, "./__fixtures__/fonjep.xlsx"));

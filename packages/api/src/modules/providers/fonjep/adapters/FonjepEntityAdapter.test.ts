@@ -1,5 +1,5 @@
 import FonjepEntityAdapter from "./FonjepEntityAdapter";
-import { SubventionEntity, VersementEntity } from "../../../../../tests/modules/providers/fonjep/__fixtures__/entity";
+import { SubventionEntity, PaymentEntity } from "../../../../../tests/modules/providers/fonjep/__fixtures__/entity";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 
 describe("FonjepEntityAdapter", () => {
@@ -15,12 +15,12 @@ describe("FonjepEntityAdapter", () => {
         });
     });
 
-    describe("toVersement()", () => {
+    describe("toPayment()", () => {
         const buildProviderValueAdapterMock = jest.spyOn(ProviderValueFactory, "buildProviderValueAdapter");
-        it("should return a Versement", () => {
+        it("should return a Payment", () => {
             // @ts-expect-error: mock
             buildProviderValueAdapterMock.mockImplementationOnce(() => value => value);
-            const actual = FonjepEntityAdapter.toVersement(VersementEntity);
+            const actual = FonjepEntityAdapter.toPayment(PaymentEntity);
             expect(actual).toMatchSnapshot();
         });
     });

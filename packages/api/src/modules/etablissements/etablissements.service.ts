@@ -10,7 +10,7 @@ import FonjepEntityAdapter from "../providers/fonjep/adapters/FonjepEntityAdapte
 import subventionsService from "../subventions/subventions.service";
 import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
 import { isSiren } from "../../shared/Validators";
-import versementsService from "../versements/versements.service";
+import paymentService from "../payments/payments.service";
 import documentsService from "../documents/documents.service";
 import ApiEntrepriseAdapter from "../providers/apiEntreprise/adapters/ApiEntrepriseAdapter";
 import { NotFoundError, BadRequestError } from "../../shared/errors/httpErrors";
@@ -79,8 +79,8 @@ export class EtablissementsService {
         return subventionsService.getDemandesByEtablissement(siret);
     }
 
-    async getVersements(siret: Siret) {
-        return await versementsService.getVersementsBySiret(siret);
+    async getPayments(siret: Siret) {
+        return await paymentService.getPaymentsBySiret(siret);
     }
 
     async getDocuments(siret: Siret) {

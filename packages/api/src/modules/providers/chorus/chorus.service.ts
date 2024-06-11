@@ -4,7 +4,7 @@ import { ASSO_BRANCHE } from "../../../shared/ChorusBrancheAccepted";
 import CacheData from "../../../shared/Cache";
 import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
-import VersementsProvider from "../../versements/@types/VersementsProvider";
+import PaymentProvider from "../../payments/@types/PaymentProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { RawGrant } from "../../grant/@types/rawGrant";
 import GrantProvider from "../../grant/@types/GrantProvider";
@@ -21,7 +21,7 @@ export interface RejectedRequest {
     result: { message: string; data: unknown };
 }
 
-export class ChorusService extends ProviderCore implements VersementsProvider, GrantProvider {
+export class ChorusService extends ProviderCore implements PaymentProvider, GrantProvider {
     constructor() {
         super({
             name: "Chorus",
@@ -84,28 +84,28 @@ export class ChorusService extends ProviderCore implements VersementsProvider, G
 
     /**
      * |-------------------------|
-     * |   Versement Part        |
+     * |     Payment Part        |
      * |-------------------------|
      */
 
-    isVersementsProvider = true;
+    isPaymentProvider = true;
 
-    async getVersementsBySiret(siret: Siret) {
+    async getPaymentsBySiret(siret: Siret) {
         const requests = await chorusLineRepository.findBySiret(siret);
 
-        return requests.map(r => ChorusAdapter.toVersement(r));
+        return requests.map(r => ChorusAdapter.toPayment(r));
     }
 
-    async getVersementsBySiren(siren: Siren) {
+    async getPaymentsBySiren(siren: Siren) {
         const requests = await chorusLineRepository.findBySiren(siren);
 
-        return requests.map(r => ChorusAdapter.toVersement(r));
+        return requests.map(r => ChorusAdapter.toPayment(r));
     }
 
-    async getVersementsByKey(ej: string) {
+    async getPaymentsByKey(ej: string) {
         const requests = await chorusLineRepository.findByEJ(ej);
 
-        return requests.map(r => ChorusAdapter.toVersement(r));
+        return requests.map(r => ChorusAdapter.toPayment(r));
     }
 
     /**

@@ -1,10 +1,10 @@
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
-import FonjepVersementEntity from "./entities/FonjepVersementEntity";
+import FonjepPaymentEntity from "./entities/FonjepPaymentEntity";
 import FonjepParser from "./fonjep.parser";
 import * as ParserHelper from "../../../shared/helpers/ParserHelper";
 import { DATA_WITH_HEADER, DEFAULT_POSTE, DEFAULT_VERSEMENT } from "./__fixtures__/fonjepFileModels";
 jest.mock("./entities/FonjepSubventionEntity");
-jest.mock("./entities/FonjepVersementEntity");
+jest.mock("./entities/FonjepPaymentEntity");
 
 describe("FonjepParser", () => {
     const indexDataByPathObjectMock = jest.spyOn(ParserHelper, "indexDataByPathObject");
@@ -24,7 +24,7 @@ describe("FonjepParser", () => {
     // @ts-expect-error: mock
     (FonjepSubventionEntity as jest.Mock).mockImplementation(jest.fn());
     // @ts-expect-error: mock
-    (FonjepVersementEntity as jest.Mock).mockImplementation(jest.fn());
+    (FonjepPaymentEntity as jest.Mock).mockImplementation(jest.fn());
 
     describe("mapHeaderToData()", () => {
         it("should return a mapped object with header as property name", () => {
@@ -109,7 +109,7 @@ describe("FonjepParser", () => {
         });
     });
 
-    describe("createFonjepVersement()", () => {
+    describe("createFonjepPayment()", () => {
         beforeAll(() => {
             indexDataByPathObjectMock.mockImplementation(jest.fn());
         });
@@ -119,24 +119,24 @@ describe("FonjepParser", () => {
 
         it("should call ParserHelper to build indexed and legal informations", () => {
             // @ts-expect-error: test private method
-            FonjepParser.createFonjepVersementEntity({});
+            FonjepParser.createFonjepPaymentEntity({});
             expect(indexDataByPathObjectMock).toHaveBeenCalledTimes(2);
             expect(indexDataByPathObjectMock).toHaveBeenCalledWith(
-                FonjepVersementEntity.indexedProviderInformationsPath,
+                FonjepPaymentEntity.indexedProviderInformationsPath,
                 {},
             );
             expect(indexDataByPathObjectMock).toHaveBeenCalledWith(
-                FonjepVersementEntity.indexedLegalInformationsPath,
+                FonjepPaymentEntity.indexedLegalInformationsPath,
                 {},
             );
         });
 
         it("should create a FonjepSubventionEntity", () => {
             // @ts-expect-error: test private method;
-            FonjepParser.createFonjepVersementEntity({});
+            FonjepParser.createFonjepPaymentEntity({});
             const expected = 3;
             // @ts-expect-error: mock
-            const actual = (FonjepVersementEntity as jest.Mock).mock.calls[0].length;
+            const actual = (FonjepPaymentEntity as jest.Mock).mock.calls[0].length;
             expect(actual).toEqual(expected);
         });
     });
@@ -148,38 +148,38 @@ describe("FonjepParser", () => {
         // @ts-expect-error: mock private method
         const createFonjepSubventionEntityMock = jest.spyOn(FonjepParser, "createFonjepSubventionEntity");
         // @ts-expect-error: mock private method
-        const createFonjepVersementEntityMock = jest.spyOn(FonjepParser, "createFonjepVersementEntity");
+        const createFonjepPaymentEntityMock = jest.spyOn(FonjepParser, "createFonjepPaymentEntity");
 
         beforeAll(() => {
             createFonjepSubventionEntityMock.mockImplementation(jest.fn());
-            createFonjepVersementEntityMock.mockImplementation(jest.fn());
+            createFonjepPaymentEntityMock.mockImplementation(jest.fn());
         });
 
         afterEach(() => {
             createFonjepSubventionEntityMock.mockClear();
-            createFonjepVersementEntityMock.mockClear();
+            createFonjepPaymentEntityMock.mockClear();
         });
 
-        it("should not save versements without MontantPaye", () => {
+        it("should not save payments without MontantPaye", () => {
             xlsParseMock.mockImplementationOnce(jest.fn());
             const DATA = JSON.parse(JSON.stringify(DATA_WITH_HEADER));
             DATA[2][0]["MontantPaye"] = undefined;
             mapHeaderToDataMock.mockImplementationOnce(() => DATA);
             FonjepParser.parse({} as Buffer, new Date("2022-03-03"));
-            expect(createFonjepVersementEntityMock).toHaveBeenCalledTimes(1);
+            expect(createFonjepPaymentEntityMock).toHaveBeenCalledTimes(1);
             // @ts-expect-error: test
-            expect(createFonjepVersementEntityMock.mock.lastCall).toMatchSnapshot([{ id: expect.any(String) }]);
+            expect(createFonjepPaymentEntityMock.mock.lastCall).toMatchSnapshot([{ id: expect.any(String) }]);
         });
 
-        it("should not save versements without DateVersement", () => {
+        it("should not save payments without DateVersement", () => {
             xlsParseMock.mockImplementationOnce(jest.fn());
             const DATA = JSON.parse(JSON.stringify(DATA_WITH_HEADER));
             DATA[2][0]["DateVersement"] = undefined;
             mapHeaderToDataMock.mockImplementationOnce(() => DATA);
             FonjepParser.parse({} as Buffer, new Date("2022-03-03"));
-            expect(createFonjepVersementEntityMock).toHaveBeenCalledTimes(1);
+            expect(createFonjepPaymentEntityMock).toHaveBeenCalledTimes(1);
             // @ts-expect-error: test
-            expect(createFonjepVersementEntityMock.mock.lastCall).toMatchSnapshot([{ id: expect.any(String) }]);
+            expect(createFonjepPaymentEntityMock.mock.lastCall).toMatchSnapshot([{ id: expect.any(String) }]);
         });
 
         it("should call createFonjepSubventionEntity with parsedData", () => {
@@ -189,13 +189,13 @@ describe("FonjepParser", () => {
             // @ts-expect-error: test
             expect(createFonjepSubventionEntityMock.mock.calls[0][0]).toMatchSnapshot({ id: expect.any(String) });
         });
-        it("should call createVersementFonjep with versement data", () => {
+        it("should call createPaymentFonjep with payment data", () => {
             xlsParseMock.mockImplementationOnce(jest.fn());
             mapHeaderToDataMock.mockImplementationOnce(() => DATA_WITH_HEADER);
             FonjepParser.parse({} as Buffer, new Date("2022-03-03"));
-            expect(createFonjepVersementEntityMock).toHaveBeenCalledTimes(2);
+            expect(createFonjepPaymentEntityMock).toHaveBeenCalledTimes(2);
             // @ts-expect-error: test
-            expect(createFonjepVersementEntityMock.mock.lastCall).toMatchSnapshot([{ id: expect.any(String) }]);
+            expect(createFonjepPaymentEntityMock.mock.lastCall).toMatchSnapshot([{ id: expect.any(String) }]);
         });
     });
 });

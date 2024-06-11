@@ -1,6 +1,6 @@
 import { Siret } from "..";
 import { ProviderValue } from "../shared/ProviderValue";
-import { Versement } from "../versements";
+import { Payment } from "../payments";
 
 export enum ApplicationStatus {
     PENDING = "En instruction",
@@ -81,7 +81,7 @@ export interface DemandeSubvention {
         status: ProviderValue<string>;
         commentaire: ProviderValue<string>;
     }[];
-    versements?: Versement[];
+    versements?: Payment[];
     evaluation?: {
         evaluation_resultat: ProviderValue<string>;
         cout_total_realise: ProviderValue<number>;

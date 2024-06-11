@@ -5,7 +5,7 @@ import { Siren } from "../shared/Siren";
 import { Siret } from "../shared/Siret";
 import { DemandeSubvention } from "../search/DemandeSubvention";
 import { Etablissement } from "../etablissements/Etablissement";
-import { Versement } from "../versements/Versement";
+import { Payment } from "../payments/Payment";
 import { ExtraitRcsDto } from "./ExtraitRcsDto";
 import { BodaccRecordDto } from "./BodaccRecordDto";
 import { AssociationNature } from "./AssociationNature";
@@ -56,7 +56,7 @@ export interface Association {
         nombre?: ProviderValues<number>;
         ETPT?: ProviderValues<number>;
     };
-    versements?: Versement[];
+    versements?: Payment[];
     etablissements?: ({ demandes_subventions: DemandeSubvention[] | null } & Etablissement)[] | null;
     extrait_rcs?: ProviderValues<ExtraitRcsDto> | null;
     bodacc?: ProviderValues<BodaccRecordDto[]>;

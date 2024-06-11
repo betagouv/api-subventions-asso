@@ -4,7 +4,7 @@
     import Tabs from "$lib/dsfr/Tabs.svelte";
     import TabContent from "$lib/dsfr/TabContent.svelte";
     import Documents from "$lib/components/Documents/Documents.svelte";
-    import SubventionsVersementsDashboard from "$lib/components/SubventionsVersementsDashboard/SubventionsVersementsDashboard.svelte";
+    import SubventionsPaymentsDashboard from "$lib/components/SubventionsPaymentsDashboard/SubventionsPaymentsDashboard.svelte";
 
     export let establishment;
     export let titles;
@@ -17,7 +17,7 @@
             {#each titles as _title, index}
                 <TabContent selected={index === 0} {index}>
                     {#if index === 0}
-                        <SubventionsVersementsDashboard {identifier} />
+                        <SubventionsPaymentsDashboard {identifier} />
                     {:else if index === 1}
                         <ContactEtab contacts={establishment.contacts} siret={identifier} />
                     {:else if index === 2}

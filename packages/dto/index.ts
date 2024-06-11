@@ -4,7 +4,7 @@ export * from "./stats";
 export * from "./user";
 export * from "./associations";
 export * from "./etablissements";
-export * from "./versements";
+export * from "./payments";
 export * from "./auth";
 export * from "./shared/ProviderValue";
 export * from "./shared/Rna";

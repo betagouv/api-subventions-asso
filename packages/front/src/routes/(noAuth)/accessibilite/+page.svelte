@@ -40,11 +40,11 @@
 </p>
 <ol class="technical-information accessibility-limitations">
     <li>
-        <strong>La correspondance entre les subventions et les versements dans le tableau de bord</strong>
-        : La navigation au clavier parcourt toutes les subventions puis tous les versements et perd donc l'information de
-        correspondance parce que la structuration de nos données ne permet pas à ce jour de regrouper les informations en
-        un seul tableau. Le design et la structuration des données sont en conception pour permettre de n'avoir qu'un seul
-        tableau.. Merci d’utiliser le formulaire de contact si vous rencontrez un problème.
+        <strong>La correspondance entre les subventions et les paiments dans le tableau de bord</strong>
+        : La navigation au clavier parcourt toutes les subventions puis tous les paiments et perd donc l'information de correspondance
+        parce que la structuration de nos données ne permet pas à ce jour de regrouper les informations en un seul tableau.
+        Le design et la structuration des données sont en conception pour permettre de n'avoir qu'un seul tableau. Merci
+        d’utiliser le formulaire de contact si vous rencontrez un problème.
     </li>
     <li>
         <strong>Focus après fermeture de la modale</strong>

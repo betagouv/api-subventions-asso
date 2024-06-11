@@ -8,7 +8,7 @@ import dauphinGisproRepository from "./providers/dauphin/repositories/dauphin-gi
 import demarchesSimplifieesDataRepository from "./providers/demarchesSimplifiees/repositories/demarchesSimplifieesData.repository";
 import demarchesSimplifieesMapperRepository from "./providers/demarchesSimplifiees/repositories/demarchesSimplifieesMapper.repository";
 import fonjepSubventionRepository from "./providers/fonjep/repositories/fonjep.subvention.repository";
-import fonjepVersementRepository from "./providers/fonjep/repositories/fonjep.versement.repository";
+import fonjepPaymentRepository from "./providers/fonjep/repositories/fonjep.payment.repository";
 import leCompteAssoRepository from "./providers/leCompteAsso/repositories/leCompteAsso.repository";
 import {
     osirisActionRepository,
@@ -30,7 +30,7 @@ export const repositoriesWithIndexes = [
     osirisRequestRepository,
     osirisActionRepository,
     osirisEvaluationRepository,
-    fonjepVersementRepository,
+    fonjepPaymentRepository,
     fonjepSubventionRepository,
     dauphinGisproRepository,
     leCompteAssoRepository,

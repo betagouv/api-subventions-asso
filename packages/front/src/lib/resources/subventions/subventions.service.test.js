@@ -35,22 +35,22 @@ describe("SubventionsService", () => {
         });
     });
 
-    describe("getAssociationVersements", () => {
+    describe("getAssociationPayments", () => {
         const SIREN = "123456789";
 
-        let portGetAssociationVersementsMock;
+        let portGetAssociationPaymentsMock;
 
         beforeAll(() => {
-            portGetAssociationVersementsMock = vi.spyOn(subventionsPort, "getAssociationSubventionsStore");
+            portGetAssociationPaymentsMock = vi.spyOn(subventionsPort, "getAssociationSubventionsStore");
         });
 
         afterAll(() => {
-            portGetAssociationVersementsMock.mockRestore();
+            portGetAssociationPaymentsMock.mockRestore();
         });
 
         it("should return subventions", async () => {
             const expected = [{ subvention: 1 }, { subvention: 2 }];
-            portGetAssociationVersementsMock.mockImplementationOnce(() => new Store({ subventions: expected }));
+            portGetAssociationPaymentsMock.mockImplementationOnce(() => new Store({ subventions: expected }));
 
             const actual = await subventionsService.getAssociationsSubventionsStore(SIREN);
 
@@ -59,7 +59,7 @@ describe("SubventionsService", () => {
 
         it("should return 0 subventions", async () => {
             const expected = [];
-            portGetAssociationVersementsMock.mockImplementationOnce(() => new Store({ subventions: expected }));
+            portGetAssociationPaymentsMock.mockImplementationOnce(() => new Store({ subventions: expected }));
 
             const actual = await subventionsService.getAssociationsSubventionsStore(SIREN);
 

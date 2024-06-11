@@ -34,20 +34,20 @@ describe("AssociationHttp", () => {
         });
     });
 
-    describe("getVersements", () => {
-        const getSubventionsSpy = jest.spyOn(associationsService, "getVersements");
+    describe("getPayments", () => {
+        const getSubventionsSpy = jest.spyOn(associationsService, "getPayments");
         it("should call service with args", async () => {
             getSubventionsSpy.mockImplementationOnce(jest.fn());
-            await controller.getVersements(IDENTIFIER);
+            await controller.getPayments(IDENTIFIER);
             expect(getSubventionsSpy).toHaveBeenCalledWith(IDENTIFIER);
         });
 
         it("should return payments", async () => {
             // @ts-expect-error: mock
-            getSubventionsSpy.mockImplementationOnce(() => versements);
-            const versements = [{}];
-            const expected = { versements };
-            const actual = await controller.getVersements(IDENTIFIER);
+            getSubventionsSpy.mockImplementationOnce(() => payments);
+            const payments = [{}];
+            const expected = { versements: payments };
+            const actual = await controller.getPayments(IDENTIFIER);
             expect(actual).toEqual(expected);
         });
     });

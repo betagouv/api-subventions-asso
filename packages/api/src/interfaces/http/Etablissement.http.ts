@@ -3,7 +3,7 @@ import {
     GetDocumentsResponseDto,
     GetEtablissementResponseDto,
     GetSubventionsResponseDto,
-    GetVersementsResponseDto,
+    GetPaymentsResponseDto,
     Siret,
 } from "dto";
 import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
@@ -47,15 +47,15 @@ export class EtablissementHttp extends Controller {
     }
 
     /**
-     * Recherche les versements liés à un établissement
+     * Recherche les payments liés à un établissement
      *
-     * @summary Recherche les versements liés à un établissement
+     * @summary Recherche les payments liés à un établissement
      * @param siret Identifiant Siret
      */
     @Get("/{siret}/versements")
-    public async getVersements(siret: Siret): Promise<GetVersementsResponseDto> {
-        const versements = await etablissementService.getVersements(siret);
-        return { versements };
+    public async getPayments(siret: Siret): Promise<GetPaymentsResponseDto> {
+        const payments = await etablissementService.getPayments(siret);
+        return { versements: payments };
     }
 
     /**
