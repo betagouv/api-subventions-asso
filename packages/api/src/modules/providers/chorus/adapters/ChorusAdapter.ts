@@ -1,14 +1,18 @@
-import { WithId } from "mongodb";
-import { ChorusPayment, CommonPaymentDto } from "dto";
+import { CommonPaymentDto, ChorusPayment } from "dto";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
+import { RawPayment } from "../../../grant/@types/rawGrant";
 
 export default class ChorusAdapter {
     static PROVIDER_NAME = "Chorus";
 
-    public static toPayment(entity: WithId<ChorusLineEntity>, program: StateBudgetProgramEntity): ChorusPayment {
+    public static rawToPayment(payment: RawPayment<ChorusLineEntity>) {
+        return this.toPayment(payment.data);
+    }
+
+    public static toPayment(entity: ChorusLineEntity, program: StateBudgetProgramEntity): ChorusPayment {
         const toPvChorus = <T>(value: T) =>
             ProviderValueAdapter.toProviderValue<T>(
                 value,
@@ -24,6 +28,7 @@ export default class ChorusAdapter {
             );
 
         const toPvOrUndefined = value => (value ? toPvChorus(value) : undefined);
+
         return {
             ej: toPvChorus(entity.indexedInformations.ej),
             versementKey: toPvChorus(entity.indexedInformations.ej),

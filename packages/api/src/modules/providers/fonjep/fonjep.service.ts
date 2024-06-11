@@ -45,7 +45,7 @@ export type CreateFonjepResponse = FonjepRejectedRequest | true;
 
 export class FonjepService
     extends ProviderCore
-    implements DemandesSubventionsProvider, EtablissementProvider, PaymentProvider, GrantProvider
+    implements DemandesSubventionsProvider, EtablissementProvider, PaymentProvider<FonjepPaymentEntity>, GrantProvider
 {
     constructor() {
         super({
@@ -56,6 +56,8 @@ export class FonjepService
             id: "fonjep",
         });
     }
+
+    rawToPayment = FonjepEntityAdapter.rawToPayment;
 
     async createSubventionEntity(entity: FonjepSubventionEntity): Promise<CreateFonjepResponse> {
         const validation = this.validateEntity(entity);
