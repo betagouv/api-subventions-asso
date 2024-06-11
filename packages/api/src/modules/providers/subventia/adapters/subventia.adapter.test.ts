@@ -33,7 +33,7 @@ describe(SubventiaAdapter, () => {
         "statut_label",
         "montants_accorde",
         "montants_demande",
-        "date_commision",
+        "date_commission",
         "annee_demande",
         "dispositif",
         "sous_dispositif",
@@ -74,7 +74,7 @@ describe(SubventiaAdapter, () => {
             ${"statut_label"}
             ${"montants_accorde"}
             ${"montants_demande"}
-            ${"date_commision"}
+            ${"date_commission"}
             ${"annee_demande"}
             ${"dispositif"}
             ${"sous_dispositif"}
