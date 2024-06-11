@@ -21,18 +21,18 @@ export default class SubventiaAdapter {
         const toPV = ProviderValueFactory.buildProviderValueAdapter(subventiaService.provider.name, lastUpdateDate);
 
         return {
-            siret: toPV(dbo["siret"]),
-            service_instructeur: toPV(dbo["service_instructeur"]),
-            status: toPV(dbo["status"]),
-            statut_label: toPV(dbo["statut_label"]),
+            siret: toPV(dbo.siret),
+            service_instructeur: toPV(dbo.service_instructeur),
+            status: toPV(dbo.status),
+            statut_label: toPV(dbo.statut_label),
             montants: {
-                accorde: toPV(dbo["montants_accorde"]),
-                demande: toPV(dbo["montants_demande"]),
+                accorde: toPV(dbo.montants_accorde),
+                demande: toPV(dbo.montants_demande),
             },
-            date_commision: toPV(dbo["date_commision"]),
-            annee_demande: toPV(dbo["annee_demande"]),
-            dispositif: toPV(dbo["dispositif"]),
-            sous_dispositif: toPV(dbo["sous_dispositif"]),
+            date_commision: toPV(dbo.date_commission),
+            annee_demande: toPV(dbo.annee_demande),
+            dispositif: toPV(dbo.dispositif),
+            sous_dispositif: toPV(dbo.sous_dispositif),
         };
     }
 
@@ -66,7 +66,7 @@ const subventiaMapper = {
         path: ["Date - Décision"],
         adapter: value => {
             if (!value) return value;
-            return ExcelDateToJSDate(parseInt(value));
+            return ExcelDateToJSDate(parseInt(value, 10));
         },
     },
     montants_accorde: { path: ["Montant voté TTC - Décision"] },
@@ -76,6 +76,7 @@ const subventiaMapper = {
     statut_label: {
         path: ["Statut - Dossier de financement"],
         adapter: value => {
+            // an emtpy value of this attribute means the application is refused
             if (!value) return ApplicationStatus.REFUSED;
             return statusMapper[value];
         },

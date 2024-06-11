@@ -14,7 +14,7 @@ describe(SubventiaAdapter, () => {
         service_instructeur: "CIPDR",
         annee_demande: 2023,
         siret: "123456789",
-        date_commision: new Date("2023-04-01T00:00:00.000Z"),
+        date_commission: new Date("2023-04-01T00:00:00.000Z"),
         montants_accorde: 100,
         montants_demande: 600,
         dispositif: "FIPDR",
@@ -25,9 +25,19 @@ describe(SubventiaAdapter, () => {
 
     const exportDate = new Date("2022-08-02T00:00:00.000Z");
     const entity = { ...entityIncomplete, provider: "subventia", exportDate: exportDate };
-
     const dbo = { ...entity, __data__: [], _id: new ObjectId("60d5ec9af682fbd39a1b57a2") };
-
+    const attributs = [
+        "siret",
+        "service_instructeur",
+        "status",
+        "statut_label",
+        "montants_accorde",
+        "montants_demande",
+        "date_commision",
+        "annee_demande",
+        "dispositif",
+        "sous_dispositif",
+    ];
     describe("applicationToEntity", () => {
         it("should call indexDataByPathObject", () => {
             let mockIndexDataByPathObject = jest
@@ -35,7 +45,7 @@ describe(SubventiaAdapter, () => {
                 .mockReturnValue(entityIncomplete);
 
             SubventiaAdapter.applicationToEntity(application, exportDate);
-            expect(mockIndexDataByPathObject).toHaveBeenCalled();
+            expect(mockIndexDataByPathObject).toHaveBeenCalledTimes(1);
         });
 
         it("should return entity", () => {
@@ -56,24 +66,26 @@ describe(SubventiaAdapter, () => {
             expect(mockBuildProviderValueAdapter).toHaveBeenCalledWith("Subventia", exportDate);
         });
 
-        it("should call toPV with ten different attributs", () => {
-            const attributes = [
-                "siret",
-                "service_instructeur",
-                "status",
-                "statut_label",
-                "montants_accorde",
-                "montants_demande",
-                "date_commision",
-                "annee_demande",
-                "dispositif",
-                "sous_dispositif",
-            ];
-
+        it.each`
+            attribut
+            ${"siret"}
+            ${"service_instructeur"}
+            ${"status"}
+            ${"statut_label"}
+            ${"montants_accorde"}
+            ${"montants_demande"}
+            ${"date_commision"}
+            ${"annee_demande"}
+            ${"dispositif"}
+            ${"sous_dispositif"}
+        `("should call toPV with attribut", ({ attribut }) => {
             SubventiaAdapter.toDemandeSubventionDto(dbo);
-            attributes.forEach(attr => {
-                expect(mockToPV).toHaveBeenCalledWith(dbo[attr]);
-            });
+            expect(mockToPV).toHaveBeenCalledWith(dbo[attribut]);
+        });
+
+        it("should call toPV attributes.lenght times", () => {
+            SubventiaAdapter.toDemandeSubventionDto(dbo);
+            expect(mockToPV).toHaveBeenCalledTimes(attributs.length);
         });
 
         it("should return DemandeSubvention", () => {

@@ -1,4 +1,3 @@
-import { ApplicationStatus } from "dto";
 import { isSiret } from "../../../../shared/Validators";
 import { ExcelDateToJSDate } from "../../../../shared/helpers/ParserHelper";
 import SubventiaDto from "../@types/subventia.dto";

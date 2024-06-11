@@ -1,6 +1,7 @@
 import { ApplicationDto, DemandeSubvention } from "dto";
+import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
+import GrantProvider from "../../grant/@types/GrantProvider";
 import { RawGrant } from "../../grant/@types/rawGrant";
-import Provider from "../@types/IProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import SubventiaParser from "./subventia.parser";
 import SubventiaValidator from "./validators/subventia.validator";
@@ -9,7 +10,7 @@ import subventiaRepository from "./repositories/subventia.repository";
 import { SubventiaDbo } from "./@types/subventia.entity";
 import SubventiaDto from "./@types/subventia.dto";
 
-export class SubventiaService implements Provider {
+export class SubventiaService implements DemandesSubventionsProvider, GrantProvider {
     provider = {
         name: "Subventia",
         type: ProviderEnum.raw,
@@ -75,7 +76,7 @@ export class SubventiaService implements Provider {
      * |-------------------------|
      */
 
-    isDemandeSubventionsProvider = true;
+    isDemandesSubventionsProvider = true;
 
     async getDemandeSubventionBySiret(siret: string) {
         const applications = await subventiaRepository.findBySiret(siret);
@@ -113,6 +114,10 @@ export class SubventiaService implements Provider {
             type: "application",
             data: grant,
         }));
+    }
+
+    getRawGrantsByRna(): Promise<RawGrant[] | null> {
+        return Promise.resolve(null);
     }
 
     rawToCommon(raw: RawGrant): ApplicationDto {

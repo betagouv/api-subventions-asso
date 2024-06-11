@@ -6,7 +6,7 @@ export default interface SubventiaEntity {
     service_instructeur: string;
     annee_demande: number;
     siret: Siret;
-    date_commision: Date;
+    date_commission: Date;
     montants_accorde: number;
     montants_demande: number;
     dispositif: string;

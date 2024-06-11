@@ -11,8 +11,8 @@ Object {
   "date_commision": Object {
     "last_update": 2022-08-02T00:00:00.000Z,
     "provider": "Subventia",
-    "type": "object",
-    "value": 2023-04-01T00:00:00.000Z,
+    "type": "undefined",
+    "value": undefined,
   },
   "dispositif": Object {
     "last_update": 2022-08-02T00:00:00.000Z,

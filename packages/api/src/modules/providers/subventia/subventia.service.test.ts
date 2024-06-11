@@ -149,7 +149,7 @@ describe("SubventiaService", () => {
                 service_instructeur: "CIPDR",
                 annee_demande: 2023,
                 siret: "123456789",
-                date_commision: new Date("12/07/2023"),
+                date_commission: new Date("12/07/2023"),
                 montants_accorde: 100,
                 montants_demande: 600,
                 dispositif: "FIPDR",
@@ -268,7 +268,7 @@ describe("SubventiaService", () => {
             expect(mockFindBySiret).toHaveBeenCalledWith(siret);
         });
 
-        it("should call toDemandeSubventionDto twice", async () => {
+        it("should call toDemandeSubventionDto for each result", async () => {
             await SubventiaService.getDemandeSubventionBySiret(siret);
             expect(mockToDemandeSubventionDto).toHaveBeenCalledTimes(2);
         });
@@ -287,7 +287,7 @@ describe("SubventiaService", () => {
             expect(mockFindBySiret).toHaveBeenCalledWith(siren);
         });
 
-        it("should call toDemandeSubventionDto twice", async () => {
+        it("should call toDemandeSubventionDto for each result", async () => {
             await SubventiaService.getDemandeSubventionBySiret(siren);
             expect(mockToDemandeSubventionDto).toHaveBeenCalledTimes(2);
         });
