@@ -1,4 +1,4 @@
-import { ApplicationStatus, DemandeSubvention, Etablissement, FullGrantDto, PaymentFonjep } from "dto";
+import { ApplicationStatus, DemandeSubvention, Etablissement, FullGrantDto, FonjepPayment } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
@@ -55,7 +55,7 @@ export default class FonjepEntityAdapter {
         };
     }
 
-    static toPayment(entity: FonjepPaymentEntity): PaymentFonjep {
+    static toPayment(entity: FonjepPaymentEntity): FonjepPayment {
         const dataDate = entity.indexedInformations.updated_at;
         const toPV = ProviderValueFactory.buildProviderValueAdapter(fonjepService.provider.name, dataDate);
 

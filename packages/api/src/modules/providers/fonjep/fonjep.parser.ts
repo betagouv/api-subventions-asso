@@ -2,7 +2,7 @@ import { Siret } from "dto";
 import { DefaultObject } from "../../../@types";
 import * as ParserHelper from "../../../shared/helpers/ParserHelper";
 import IFonjepIndexedInformations from "./@types/IFonjepIndexedInformations";
-import IFonjepVersementIndexedInformations from "./@types/IFonjepPaymentIndexedInformations";
+import IFonjepPaymentIndexedInformations from "./@types/IFonjepPaymentIndexedInformations";
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
 import FonjepPaymentEntity from "./entities/FonjepPaymentEntity";
 import fonjepService from "./fonjep.service";
@@ -45,7 +45,7 @@ export default class FonjepParser {
         const indexedInformations = ParserHelper.indexDataByPathObject(
             FonjepPaymentEntity.indexedProviderInformationsPath,
             data,
-        ) as unknown as IFonjepVersementIndexedInformations;
+        ) as unknown as IFonjepPaymentIndexedInformations;
         const legalInformations = ParserHelper.indexDataByPathObject(
             FonjepPaymentEntity.indexedLegalInformationsPath,
             data,
@@ -58,7 +58,6 @@ export default class FonjepParser {
         const currentDate = exportDate;
 
         const [tiers, postes, payments, typePoste, dispositifs] = this.mapHeaderToData(pages);
-        console.log(payments);
         const findTiers = this.findOnPropFactory(tiers, "Code");
         const findTypePoste = this.findOnPropFactory(typePoste, "Code");
         const findDispositif = this.findOnPropFactory(dispositifs, "ID");

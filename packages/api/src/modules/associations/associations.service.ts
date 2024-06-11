@@ -87,8 +87,7 @@ export class AssociationsService {
     }
 
     getPayments(identifier: AssociationIdentifiers) {
-        const payments = paymentService.getPaymentsByAssociation(identifier);
-        return payments;
+        return paymentService.getPaymentsByAssociation(identifier);
     }
 
     async getDocuments(identifier: AssociationIdentifiers) {

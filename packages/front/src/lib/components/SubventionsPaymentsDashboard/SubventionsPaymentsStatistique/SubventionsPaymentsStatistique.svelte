@@ -21,9 +21,9 @@
         </p>
     </div>
     <div class="fr-col-4">
-        <h3 class="fr-h4">Payments réalisés</h3>
+        <h3 class="fr-h4">Paiments réalisés</h3>
         <p>
-            Total des payments en <b>{year}</b>
+            Total des paiments en <b>{year}</b>
             :
             <b>{$paymentsAmount}</b>
             <br />

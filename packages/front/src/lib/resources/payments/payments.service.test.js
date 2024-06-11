@@ -24,7 +24,7 @@ describe("PaymentsService", () => {
             expect(actual).toBe(expected);
         });
 
-        it("should return 0 payments", async () => {
+        it("should return 0 payment", async () => {
             const expected = [];
             portGetEtablissementPaymentsMock.mockImplementationOnce(() => expected);
 

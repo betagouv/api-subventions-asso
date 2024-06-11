@@ -1,4 +1,4 @@
-import { Siret, Siren, DemandeSubvention, Etablissement, PaymentFonjep, Rna } from "dto";
+import { Siret, Siren, DemandeSubvention, Etablissement, FonjepPayment, Rna } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { isAssociationName, areDates, areNumbersValid, isSiret, areStringsValid } from "../../../shared/Validators";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
@@ -204,7 +204,7 @@ export class FonjepService
 
     isPaymentProvider = true;
 
-    toPaymentArray(documents): PaymentFonjep[] {
+    toPaymentArray(documents): FonjepPayment[] {
         return documents.map(document => FonjepEntityAdapter.toPayment(document));
     }
 

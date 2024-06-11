@@ -16,7 +16,6 @@ class PaymentsPort {
         return requestsService
             .get(path)
             .then(result => {
-                console.log("PAYMENTS :", result.data.versements);
                 return result.data.versements.map(payment => flattenProviderValue(payment));
             })
             .catch(e => {

@@ -84,7 +84,7 @@ export class ChorusService extends ProviderCore implements PaymentProvider, Gran
 
     /**
      * |-------------------------|
-     * |   Payment Part        |
+     * |     Payment Part        |
      * |-------------------------|
      */
 
