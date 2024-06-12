@@ -1,5 +1,5 @@
 import { getSiegeSiret } from "$lib/resources/associations/association.helper";
-import Store from "$lib/core/Store";
+import Store, { derived, ReadStore } from "$lib/core/Store";
 import associationService from "$lib/resources/associations/association.service";
 import establishmentService from "$lib/resources/establishments/establishment.service";
 import { waitElementIsVisible } from "$lib/helpers/visibilityHelper";
@@ -40,18 +40,44 @@ export class DocumentsController {
     zipPromise: Store<Promise<void | null>>;
     public showMoreAsso: Store<boolean>;
     public showMoreEstab: Store<boolean>;
+    public selectedDocsOrNull: Store<{
+        assoDocs: (DocumentEntity | undefined)[];
+        estabDocs: (DocumentEntity | undefined)[];
+        moreAssoDocs: (DocumentEntity | undefined)[];
+        moreEstabDocs: (DocumentEntity | undefined)[];
+    }>;
+    public flatSelectedDocs: ReadStore<DocumentEntity[]>;
+    private identifier: string;
+    public downloadBtnLabel: ReadStore<string>;
 
     constructor(
         public resourceType: ResourceType,
         // TODO: replace unknown with EstablishmentEntity when created
         public resource: AssociationEntity | unknown,
     ) {
+        // @ts-expect-error -- missing type
+        this.identifier = resource?.rna || resource?.siren || resource?.siret;
         this.resourceType = resourceType;
         this.documentsPromise = new Store(returnInfinitePromise());
         this.zipPromise = new Store(Promise.resolve(null));
         this.resource = resource;
         this.showMoreAsso = new Store(false);
         this.showMoreEstab = new Store(false);
+        this.selectedDocsOrNull = new Store({
+            assoDocs: [],
+            estabDocs: [],
+            moreAssoDocs: [],
+            moreEstabDocs: [],
+        });
+        this.flatSelectedDocs = derived(this.selectedDocsOrNull, nested =>
+            Object.values(nested).reduce(
+                (flatDocs: DocumentEntity[], docs) => [...flatDocs, ...(docs.filter(doc => !!doc) as DocumentEntity[])],
+                [],
+            ),
+        );
+        this.downloadBtnLabel = derived(this.flatSelectedDocs, docs =>
+            docs.length ? `Télécharger la sélection (${docs.length})` : "Tout télécharger",
+        );
     }
 
     get resourceNameWithDemonstrative() {
@@ -62,6 +88,8 @@ export class DocumentsController {
         return estabDocsTitleByType[this.resourceType];
     }
 
+    /* get and organize documents according to resource type */
+
     get _getterByType() {
         return this.resourceType === "establishment"
             ? struct => this._getEstablishmentDocuments(struct)
@@ -71,14 +99,6 @@ export class DocumentsController {
     async _getAssociationDocuments(association: AssociationEntity) {
         const associationDocuments = await associationService.getDocuments(association.rna || association.siren);
         return documentService.labelAssoDocsBySiret(associationDocuments, getSiegeSiret(association));
-    }
-
-    _removeDuplicates(docs: DocumentEntity[] | LabeledDoc[]): DocumentEntity[] | LabeledDoc[] {
-        const docsByUrl = {};
-        for (const doc of docs) {
-            docsByUrl[doc.url] = doc;
-        }
-        return Object.values(docsByUrl);
     }
 
     async _getEstablishmentDocuments(establishment): Promise<LabeledDoc[]> {
@@ -92,6 +112,14 @@ export class DocumentsController {
             .then(docs => documentService.labelAssoDocsBySiret(docs, establishment.siret));
         const [estabDocs, assoDocs] = await Promise.all([estabDocsPromise, assoDocsPromise]);
         return this._removeDuplicates([...estabDocs, ...assoDocs]) as LabeledDoc[];
+    }
+
+    _removeDuplicates(docs: DocumentEntity[] | LabeledDoc[]): DocumentEntity[] | LabeledDoc[] {
+        const docsByUrl = {};
+        for (const doc of docs) {
+            docsByUrl[doc.url] = doc;
+        }
+        return Object.values(docsByUrl);
     }
 
     _organizeDocuments(miscDocs: LabeledDoc[]): GroupedDocs {
@@ -126,25 +154,36 @@ export class DocumentsController {
     }
 
     async onMount() {
+        // get documents on mount
         // Svelte component mounted so bind:this replaced this.element with current node element
         await waitElementIsVisible(this.element as HTMLElement);
         const promise = this._getterByType(this.resource).then(docs => this._organizeDocuments(docs));
         this.documentsPromise.set(promise);
     }
 
-    async downloadAll() {
-        // @ts-expect-error -- missing type
-        const identifier = this.resource?.rna || this.resource?.siren || this.resource?.siret;
-        const promise = documentService
-            .getAllDocs(identifier)
-            .then(blob => documentHelper.download(blob, `documents_${identifier}.zip`));
+    switchDisplay(show: Store<boolean>) {
+        show.set(!show.value);
+    }
+
+    /* handle group download */
+
+    async download() {
+        let requestPromise: Promise<Blob>;
+        if (this.flatSelectedDocs.value.length) requestPromise = this.downloadSome();
+        else requestPromise = this.downloadAll();
+        const promise = requestPromise.then(blob => documentHelper.download(blob, `documents_${this.identifier}.zip`));
         setTimeout(() => {
             this.zipPromise.set(promise);
         }, 750); // weird if message appears and leaves right ahead ; quite arbitrary value
         await promise;
     }
 
-    switchDisplay(show: Store<boolean>) {
-        show.set(!show.value);
+    private downloadAll() {
+        return documentService.getAllDocs(this.identifier);
+    }
+
+    private downloadSome() {
+        const docs = this.flatSelectedDocs.value;
+        return documentService.getSomeDocs(docs);
     }
 }
