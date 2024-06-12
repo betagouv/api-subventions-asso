@@ -58,7 +58,7 @@ export default class FonjepEntityAdapter {
     }
 
     // TODO: rename FonjepPaymentEntity to FonjepPaymentDbo ?
-    static rawToPayment(rawGrant: RawPayment<FonjepPaymentEntity>) {
+    public static rawToPayment(rawGrant: RawPayment<FonjepPaymentEntity>) {
         return this.toPayment(rawGrant.data);
     }
 

@@ -1,3 +1,4 @@
+import { ChorusPayment } from "dto";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 
 export const HEADERS = [
@@ -187,7 +188,7 @@ export const ENTITIES: ChorusLineEntity[] = [
     {
         uniqueId: "11d177d88edbd421e4eef4f2e8d42b28",
         indexedInformations: {
-            ej: "0002822326",
+            ej: "0001821732",
             siret: "77568577900002",
             codeBranche: "Z039",
             branche: "Associations",
@@ -259,5 +260,26 @@ export const ENTITIES: ChorusLineEntity[] = [
         },
         _id: undefined,
         provider: "Chorus",
+    },
+];
+
+const buildProviderValue = value => ({
+    value,
+    provider: "chorus",
+    type: typeof value,
+    last_update: new Date("2022-06-06"),
+});
+
+// TODO: fill this with real data
+export const PAYMENTS: ChorusPayment[] = [
+    {
+        ej: buildProviderValue(ENTITIES[0].indexedInformations.ej),
+        versementKey: buildProviderValue(ENTITIES[0].indexedInformations.ej),
+        siret: buildProviderValue(ENTITIES[0].indexedInformations.siret),
+        amount: buildProviderValue(ENTITIES[0].indexedInformations.amount),
+        dateOperation: buildProviderValue(ENTITIES[0].indexedInformations.dateOperation),
+        centreFinancier: buildProviderValue(ENTITIES[0].indexedInformations.centreFinancier),
+        domaineFonctionnel: buildProviderValue(ENTITIES[0].indexedInformations.domaineFonctionnel),
+        bop: buildProviderValue(ENTITIES[0].indexedInformations.codeDomaineFonctionnel.slice(0, 4)),
     },
 ];

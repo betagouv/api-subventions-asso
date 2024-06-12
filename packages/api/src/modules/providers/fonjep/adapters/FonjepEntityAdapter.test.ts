@@ -2,6 +2,8 @@ import FonjepEntityAdapter from "./FonjepEntityAdapter";
 import { SubventionEntity, PaymentEntity } from "../../../../../tests/modules/providers/fonjep/__fixtures__/entity";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
+import { FONJEP_PAYMENTS, FONJEP_PAYMENT_ENTITIES } from "../__fixtures__/FonjepEntities";
+import { RawPayment } from "../../../grant/@types/rawGrant";
 
 describe("FonjepEntityAdapter", () => {
     beforeAll(() => jest.useFakeTimers().setSystemTime(new Date("2022-01-01")));
@@ -13,6 +15,36 @@ describe("FonjepEntityAdapter", () => {
             buildProviderValueAdapterMock.mockImplementationOnce(() => value => value);
             const actual = FonjepEntityAdapter.toDemandeSubvention(SubventionEntity);
             expect(actual).toMatchSnapshot();
+        });
+    });
+
+    describe("rawToPayment", () => {
+        // @ts-expect-error: parameter type
+        const RAW_PAYMENT: RawPayment = { data: FONJEP_PAYMENT_ENTITIES[0] };
+        let mockToPayment: jest.SpyInstance;
+
+        beforeAll(() => {
+            mockToPayment = jest.spyOn(FonjepEntityAdapter, "toPayment");
+            mockToPayment.mockReturnValue(FONJEP_PAYMENTS[0]);
+        });
+
+        afterEach(() => {
+            mockToPayment.mockClear();
+        });
+
+        afterAll(() => {
+            mockToPayment.mockRestore();
+        });
+
+        it("should call toPayment", () => {
+            FonjepEntityAdapter.rawToPayment(RAW_PAYMENT);
+            expect(FonjepEntityAdapter.toPayment).toHaveBeenCalledWith(RAW_PAYMENT.data);
+        });
+
+        it("should return Payment", () => {
+            const expected = FONJEP_PAYMENTS[0];
+            const actual = FonjepEntityAdapter.rawToPayment(RAW_PAYMENT);
+            expect(actual).toEqual(expected);
         });
     });
 

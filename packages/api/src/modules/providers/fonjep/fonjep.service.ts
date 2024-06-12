@@ -5,7 +5,7 @@ import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubven
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import PaymentProvider from "../../payments/@types/PaymentProvider";
 import GrantProvider from "../../grant/@types/GrantProvider";
-import { RawGrant } from "../../grant/@types/rawGrant";
+import { RawGrant, RawPayment } from "../../grant/@types/rawGrant";
 import ProviderCore from "../ProviderCore";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
@@ -57,7 +57,9 @@ export class FonjepService
         });
     }
 
-    rawToPayment = FonjepEntityAdapter.rawToPayment;
+    rawToPayment(rawGrant: RawPayment<FonjepPaymentEntity>) {
+        return FonjepEntityAdapter.rawToPayment(rawGrant);
+    }
 
     async createSubventionEntity(entity: FonjepSubventionEntity): Promise<CreateFonjepResponse> {
         const validation = this.validateEntity(entity);
