@@ -13,6 +13,14 @@ export default class SignupController {
         [SignupErrorCodes.EMAIL_MUST_BE_END_GOUV]: `Le domaine de votre adresse e-mail n'est pas reconnu. Merci de nous adresser un e-mail à <a href="/contact" target="_blank" rel="noopener noreferrer" title="Contactez-nous - nouvelle fenêtre">contact@datasubvention.beta.gouv.fr</a> pour y remédier.`,
     };
 
+    WORK_ETHIC_OPTIONS = [
+        {
+            label: `J'ai bien conscience que tout usage personnel sans objet avec mes missions professionnelles est proscrit conformément aux <a href="${CGU_URL}" target="_blank">conditions générales d’utilisation</a> du site.`,
+            value: "true",
+            withHtml: true,
+        },
+    ];
+
     constructor() {
         this.app = getContext("app");
         this.pageTitle = `Créer votre compte sur ${this.app.getName()}`;
@@ -23,6 +31,8 @@ export default class SignupController {
         });
         this.signupPromise = new Store(Promise.resolve());
         this.firstSubmitted = new Store(false);
+        this.acceptWorkEthic = new Store([]);
+        this.workEthicError = new Store("");
     }
 
     get privacyPolicyUrl() {
@@ -34,9 +44,10 @@ export default class SignupController {
     }
 
     signup() {
+        this.firstSubmitted.set(true);
+        if (!this.checkWorkEthic()) return;
         // TODO: check what format the new API create user is waiting for
         this.signupPromise.set(authService.signup(this.signupUser.value).finally(() => this._showAlert()));
-        this.firstSubmitted.set(true);
     }
 
     signin() {
@@ -50,6 +61,17 @@ export default class SignupController {
     get contactEmail() {
         return this.app.getContact();
     }
+
+    checkWorkEthic() {
+        if (this.acceptWorkEthic.value[0] !== "true") {
+            this.workEthicError.set("Champ obligatoire");
+            return false;
+        }
+        this.workEthicError.set("");
+        return true;
+    }
+
+    // what follows manages scroll to show alert
 
     _showAlert() {
         if (this.alertElement) this.alertElement.scrollIntoView({ behavior: "smooth", inline: "nearest" });
