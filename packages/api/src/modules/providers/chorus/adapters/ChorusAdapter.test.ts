@@ -4,6 +4,8 @@ import ChorusLineEntity from "../entities/ChorusLineEntity";
 import ChorusAdapter from "./ChorusAdapter";
 import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
+import { ENTITIES, PAYMENTS } from "../__fixtures__/ChorusFixtures";
+import { RawPayment } from "../../../grant/@types/rawGrant";
 
 describe("ChorusAdapter", () => {
     describe("toCommon", () => {
@@ -18,6 +20,36 @@ describe("ChorusAdapter", () => {
             // @ts-expect-error mock
             const actual = ChorusAdapter.toCommon(INPUT);
             expect(actual).toMatchSnapshot();
+        });
+    });
+
+    describe("rawToPayment", () => {
+        //@ts-expect-error: parameter type
+        const RAW_PAYMENT: RawPayment = { data: ENTITIES[0] };
+
+        let mockToPayment: jest.SpyInstance;
+        beforeAll(() => {
+            mockToPayment = jest.spyOn(ChorusAdapter, "toPayment");
+            mockToPayment.mockReturnValue(PAYMENTS[0]);
+        });
+
+        afterEach(() => {
+            mockToPayment.mockClear();
+        });
+
+        afterAll(() => {
+            mockToPayment.mockRestore();
+        });
+
+        it("should call toPayment()", () => {
+            ChorusAdapter.rawToPayment(RAW_PAYMENT);
+            expect(ChorusAdapter.toPayment).toHaveBeenCalledWith(RAW_PAYMENT.data);
+        });
+
+        it("should return Payment", () => {
+            const expected = PAYMENTS[0];
+            const actual = ChorusAdapter.rawToPayment(RAW_PAYMENT);
+            expect(actual).toEqual(expected);
         });
     });
 

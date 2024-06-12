@@ -8,8 +8,8 @@ import { RawPayment } from "../../../grant/@types/rawGrant";
 export default class ChorusAdapter {
     static PROVIDER_NAME = "Chorus";
 
-    public static rawToPayment(payment: RawPayment<ChorusLineEntity>) {
-        return this.toPayment(payment.data);
+    public static rawToPayment(rawPayment: RawPayment<ChorusLineEntity>) {
+        return this.toPayment(rawPayment.data);
     }
 
     public static toPayment(entity: ChorusLineEntity, program: StateBudgetProgramEntity): ChorusPayment {

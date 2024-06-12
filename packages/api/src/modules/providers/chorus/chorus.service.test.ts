@@ -16,7 +16,7 @@ const mockedSirenHelper = jest.mocked(SirenHelper);
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 jest.mock("../../rna-siren/rnaSiren.service");
 const mockedRnaSirenService = jest.mocked(rnaSirenService);
-import { ENTITIES } from "./__fixtures__/ChorusFixtures";
+import { ENTITIES, PAYMENTS } from "./__fixtures__/ChorusFixtures";
 import CacheData from "../../../shared/Cache";
 import { WithId } from "mongodb";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
@@ -34,6 +34,24 @@ describe("chorusService", () => {
     describe("insertMany", () => {
         it("should call repository with entities", async () => {
             await chorusService.insertMany(ENTITIES);
+        });
+    });
+
+    describe("rawToPayment", () => {
+        it("should call ChorusAdapter", () => {
+            // @ts-expect-error: parameter type
+            const rawGrant = { data: ENTITIES[0] } as RawGrant;
+            chorusService.rawToPayment(rawGrant);
+            expect(ChorusAdapter.rawToPayment).toHaveBeenCalledWith(rawGrant);
+        });
+
+        it("should return ChorusPayment", () => {
+            // @ts-expect-error: parameter type
+            const rawGrant = { data: ENTITIES[0] } as RawGrant;
+            jest.mocked(ChorusAdapter.rawToPayment).mockReturnValueOnce(PAYMENTS[0]);
+            const expected = PAYMENTS[0];
+            const actual = chorusService.rawToPayment(rawGrant);
+            expect(actual).toEqual(expected);
         });
     });
 

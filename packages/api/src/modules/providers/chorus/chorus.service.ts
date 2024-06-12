@@ -6,7 +6,7 @@ import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import PaymentProvider from "../../payments/@types/PaymentProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import { RawGrant } from "../../grant/@types/rawGrant";
+import { RawGrant, RawPayment } from "../../grant/@types/rawGrant";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import ProviderCore from "../ProviderCore";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
@@ -33,7 +33,9 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
         });
     }
 
-    rawToPayment = ChorusAdapter.rawToPayment;
+    public rawToPayment(rawGrant: RawPayment<ChorusLineEntity>) {
+        return ChorusAdapter.rawToPayment(rawGrant);
+    }
 
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
 

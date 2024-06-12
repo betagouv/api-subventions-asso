@@ -5,6 +5,8 @@ import { SubventionEntity, PaymentEntity } from "../../../../tests/modules/provi
 import * as Validators from "../../../shared/Validators";
 import fonjepPaymentRepository from "./repositories/fonjep.payment.repository";
 import fonjepJoiner from "./joiners/fonjepJoiner";
+import { FONJEP_PAYMENTS, FONJEP_PAYMENT_ENTITIES } from "./__fixtures__/FonjepEntities";
+import { RawPayment } from "../../grant/@types/rawGrant";
 
 jest.mock("./adapters/FonjepEntityAdapter");
 
@@ -379,6 +381,22 @@ describe("FonjepService", () => {
             const expected = ADAPTED;
             // @ts-expect-error: mock
             const actual = fonjepService.rawToCommon({ data: RAW });
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("rawToPayment", () => {
+        // @ts-expect-error: parameter type
+        const RAW_PAYMENT = { data: FONJEP_PAYMENT_ENTITIES[0] } as RawPayment;
+        it("should call FonjepEntityAdapter.rawToPayment", () => {
+            fonjepService.rawToPayment(RAW_PAYMENT);
+            expect(FonjepEntityAdapter.rawToPayment).toHaveBeenCalledWith(RAW_PAYMENT);
+        });
+
+        it("should return Payment", () => {
+            jest.mocked(FonjepEntityAdapter.rawToPayment).mockReturnValueOnce(FONJEP_PAYMENTS[0]);
+            const expected = FONJEP_PAYMENTS[0];
+            const actual = fonjepService.rawToPayment(RAW_PAYMENT);
             expect(actual).toEqual(expected);
         });
     });
