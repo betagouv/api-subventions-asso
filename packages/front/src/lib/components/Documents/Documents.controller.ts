@@ -16,8 +16,8 @@ const resourceNameWithDemonstrativeByType = {
     establishment: "cet établissement",
 };
 const estabDocsTitleByType = {
-    association: "Pièces complémentaires déposées par le siège social",
-    establishment: "Pièces complémentaires déposées par l'établissement",
+    association: "Pièces complémentaires déposées par un établissement",
+    establishment: "Pièces complémentaires déposées par un établissement",
 };
 
 export class DocumentsController {
