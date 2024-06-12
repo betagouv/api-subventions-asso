@@ -1,3 +1,4 @@
+import type { Siret } from "dto";
 import { getSiegeSiret } from "$lib/resources/associations/association.helper";
 import Store, { derived, ReadStore } from "$lib/core/Store";
 import associationService from "$lib/resources/associations/association.service";
@@ -82,9 +83,11 @@ export class DocumentsController {
 
     async _getAssociationDocuments(association: AssociationEntity) {
         const associationDocuments = await associationService.getDocuments(association.rna || association.siren);
-        return associationDocuments.filter(
-            doc => !doc.__meta__.siret || doc.__meta__.siret === getSiegeSiret(association),
-        );
+        return this._filterDocs(associationDocuments, getSiegeSiret(association));
+    }
+
+    private _filterDocs(docs: DocumentEntity[], siret: Siret) {
+        return docs.filter(doc => doc.type !== "RIB" || !doc.__meta__.siret || doc.__meta__.siret === siret);
     }
 
     _removeDuplicates(docs: DocumentEntity[]) {
@@ -111,7 +114,7 @@ export class DocumentsController {
         const estabDocsPromise = establishmentService.getDocuments(establishment.siret);
         const assoDocsPromise = associationService
             .getDocuments(association.rna || association.siren)
-            .then(docs => docs.filter(doc => !doc.__meta__.siret || doc.__meta__.siret === establishment.siret));
+            .then(docs => this._filterDocs(docs, establishment.siret));
         const [estabDocs, assoDocs] = await Promise.all([estabDocsPromise, assoDocsPromise]);
         return this._removeDuplicates([...estabDocs, ...assoDocs]);
     }
