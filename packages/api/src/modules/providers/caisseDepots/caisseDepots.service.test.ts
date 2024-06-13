@@ -1,12 +1,14 @@
 import caisseDepotsService from "./caisseDepots.service";
 import CaisseDepotsDtoAdapter from "./adapters/caisseDepotsDtoAdapter";
 import providerRequestService from "../../provider-request/providerRequest.service";
+import { RawApplication } from "../../grant/@types/rawGrant";
+import { DemandeSubvention } from "dto";
 
 jest.mock("./adapters/caisseDepotsDtoAdapter");
 
 describe("CaisseDepotsService", () => {
     const TOKEN = "TOKEN";
-    const IDENTIFIER = "toto";
+    const IDENTIFIER = "11000000012013";
     let privateRawGetSpy, privateGetSpy;
 
     beforeAll(() => {
@@ -14,6 +16,25 @@ describe("CaisseDepotsService", () => {
         privateRawGetSpy = jest.spyOn(caisseDepotsService, "getRawCaisseDepotsSubventions");
         // @ts-expect-error: mock
         privateGetSpy = jest.spyOn(caisseDepotsService, "getCaisseDepotsSubventions");
+    });
+
+    describe("rawToApplication", () => {
+        // @ts-expect-error: parameter type
+        const RAW_APPLICATION: CaisseDepotsSubventionDto = {};
+        // @ts-expect-error: parameter type
+        const APPLICATION: DemandeSubvention = { siret: IDENTIFIER };
+
+        it("should call CaisseDepotsDtoAdapter.rawToApplication()", () => {
+            caisseDepotsService.rawToApplication(RAW_APPLICATION);
+            expect(CaisseDepotsDtoAdapter.rawToApplication).toHaveBeenCalledWith(RAW_APPLICATION);
+        });
+
+        it("should return DemandeSubvention", () => {
+            jest.mocked(CaisseDepotsDtoAdapter.rawToApplication).mockReturnValueOnce(APPLICATION);
+            const expected = APPLICATION;
+            const actual = caisseDepotsService.rawToApplication(RAW_APPLICATION);
+            expect(actual).toEqual(expected);
+        });
     });
 
     describe("getRawCaisseDepotsSubventions", () => {
@@ -27,8 +48,7 @@ describe("CaisseDepotsService", () => {
         });
 
         it("calls axios get with proper url", async () => {
-            const URL =
-                'https://opendata.caissedesdepots.fr/api/v2/catalog/datasets/subventions-attribuees-par-la-caisse-des-depots-depuis-01012018/records?where=search(idbeneficiaire, "toto")';
+            const URL = `https://opendata.caissedesdepots.fr/api/v2/catalog/datasets/subventions-attribuees-par-la-caisse-des-depots-depuis-01012018/records?where=search(idbeneficiaire, "${IDENTIFIER}")`;
             // @ts-expect-error: mock
             await caisseDepotsService.getRawCaisseDepotsSubventions(IDENTIFIER);
             expect(httpGetSpy).toBeCalledWith(URL);

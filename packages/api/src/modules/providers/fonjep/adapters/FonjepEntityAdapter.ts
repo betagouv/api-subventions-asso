@@ -5,7 +5,7 @@ import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
 import fonjepService from "../fonjep.service";
 import FonjepPaymentEntity from "../entities/FonjepPaymentEntity";
 import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
-import { RawPayment } from "../../../grant/@types/rawGrant";
+import { RawApplication, RawPayment } from "../../../grant/@types/rawGrant";
 
 export default class FonjepEntityAdapter {
     static PROVIDER_NAME = "Fonjep";
@@ -57,9 +57,13 @@ export default class FonjepEntityAdapter {
         };
     }
 
+    public static rawToApplication(rawApplication: RawApplication<FonjepSubventionEntity>) {
+        return this.toDemandeSubvention(rawApplication.data);
+    }
+
     // TODO: rename FonjepPaymentEntity to FonjepPaymentDbo ?
-    public static rawToPayment(rawGrant: RawPayment<FonjepPaymentEntity>) {
-        return this.toPayment(rawGrant.data);
+    public static rawToPayment(rawPayment: RawPayment<FonjepPaymentEntity>) {
+        return this.toPayment(rawPayment.data);
     }
 
     static toPayment(entity: FonjepPaymentEntity, program: StateBudgetProgramEntity): FonjepPayment {

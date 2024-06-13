@@ -5,7 +5,7 @@ import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubven
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import PaymentProvider from "../../payments/@types/PaymentProvider";
 import GrantProvider from "../../grant/@types/GrantProvider";
-import { RawGrant, RawPayment } from "../../grant/@types/rawGrant";
+import { RawApplication, RawGrant, RawPayment } from "../../grant/@types/rawGrant";
 import ProviderCore from "../ProviderCore";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
@@ -45,7 +45,11 @@ export type CreateFonjepResponse = FonjepRejectedRequest | true;
 
 export class FonjepService
     extends ProviderCore
-    implements DemandesSubventionsProvider, EtablissementProvider, PaymentProvider<FonjepPaymentEntity>, GrantProvider
+    implements
+        DemandesSubventionsProvider<FonjepSubventionEntity>,
+        EtablissementProvider,
+        PaymentProvider<FonjepPaymentEntity>,
+        GrantProvider
 {
     constructor() {
         super({
@@ -55,6 +59,10 @@ export class FonjepService
                 "L'extranet de gestion du Fonjep permet aux services instructeurs d'indiquer les décisions d'attribution des subventions Fonjep et aux associations bénéficiaires de transmettre les informations nécessaires à la mise en paiment des subventions par le Fonjep, il ne gère pas les demandes de subvention qui ne sont pas dématérialisées à ce jour.",
             id: "fonjep",
         });
+    }
+
+    rawToApplication(rawApplication: RawApplication<FonjepSubventionEntity>) {
+        return FonjepEntityAdapter.rawToApplication(rawApplication);
     }
 
     rawToPayment(rawGrant: RawPayment<FonjepPaymentEntity>) {

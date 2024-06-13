@@ -1,10 +1,11 @@
 import miscScdlJoiner from "./repositories/miscScdl.joiner";
 import scdlGrantService from "./scdl.grant.service";
-import MiscScdlAdapter from "./MiscScdl.adapter";
+import MiscScdlAdapter from "./adapters/MiscScdl.adapter";
 import * as Sentry from "@sentry/node";
+import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
 
 jest.mock("./repositories/miscScdl.joiner");
-jest.mock("./MiscScdl.adapter");
+jest.mock("./adapters/MiscScdl.adapter");
 jest.mock("@sentry/node");
 
 describe("ScdlGrantService", () => {
@@ -86,22 +87,35 @@ describe("ScdlGrantService", () => {
     });
 
     describe("getRawGrantSubventionByPromise", () => {
-        it("adapts to RawGrant format", async () => {
-            // @ts-expect-error tests
-            const spy: jest.SpyInstance = jest.spyOn(scdlGrantService, "getEntityByPromiseAndAdapt");
-            // @ts-expect-error tests
-            await scdlGrantService.getRawGrantSubventionByPromise(IDENTIFIER);
-            const adapter = spy.mock.calls[0][1];
-            const DATA = "value";
+        const ENTITIES = [] as MiscScdlGrantEntity[];
+        let mockGetEntityByPromiseAndAdapt: jest.SpyInstance;
+        beforeAll(() => {
+            // @ts-expect-error: private method
+            mockGetEntityByPromiseAndAdapt = jest.spyOn(scdlGrantService, "getEntityByPromiseAndAdapt");
+            mockGetEntityByPromiseAndAdapt.mockResolvedValue(ENTITIES);
+        });
 
-            const actual = adapter(DATA);
-            expect(actual).toMatchInlineSnapshot(`
-                Object {
-                  "data": "value",
-                  "provider": "miscScdl",
-                  "type": "application",
-                }
-            `);
+        afterEach(() => {
+            mockGetEntityByPromiseAndAdapt.mockClear();
+        });
+
+        afterAll(() => {
+            mockGetEntityByPromiseAndAdapt.mockRestore();
+        });
+
+        it("should call getEntityByPromiseAndAdapt", async () => {
+            const dbPromise = async () => ENTITIES;
+            // @ts-expect-error: private method
+            await scdlGrantService.getRawGrantSubventionByPromise(dbPromise);
+            expect(mockGetEntityByPromiseAndAdapt).toHaveBeenCalledWith(dbPromise, MiscScdlAdapter.toRawApplication);
+        });
+
+        it("should return entities", async () => {
+            const dbPromise = async () => ENTITIES;
+            const expected = ENTITIES;
+            // @ts-expect-error: private method
+            const actual = await scdlGrantService.getRawGrantSubventionByPromise(dbPromise);
+            expect(actual).toEqual(expected);
         });
     });
 
@@ -123,6 +137,25 @@ describe("ScdlGrantService", () => {
             jest.mocked(joinerMethod).mockReturnValueOnce(expected);
             await scdlGrantService[serviceMethodName](IDENTIFIER);
             const actual = spy.mock.calls[0][0];
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("rawToApplication", () => {
+        // @ts-expect-error: parameter type
+        const RAW_APPLICATION: RawApplication = { data: { foo: "bar" } };
+        // @ts-expect-error: parameter type
+        const APPLICATION: DemandeSubvention = { foo: "bar" };
+
+        it("should call FonjepEntityAdapter.rawToApplication", () => {
+            scdlGrantService.rawToApplication(RAW_APPLICATION);
+            expect(MiscScdlAdapter.rawToApplication).toHaveBeenCalledWith(RAW_APPLICATION);
+        });
+
+        it("should return DemandeSubvention", () => {
+            jest.mocked(MiscScdlAdapter.rawToApplication).mockReturnValueOnce(APPLICATION);
+            const expected = APPLICATION;
+            const actual = scdlGrantService.rawToApplication(RAW_APPLICATION);
             expect(actual).toEqual(expected);
         });
     });

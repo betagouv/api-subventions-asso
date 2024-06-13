@@ -19,8 +19,8 @@ export class SubventionsService {
 
     private getDemandesSubventionsProviders() {
         return Object.values(providers).filter(
-            p => (p as DemandesSubventionsProvider).isDemandesSubventionsProvider,
-        ) as DemandesSubventionsProvider[];
+            p => (p as DemandesSubventionsProvider<unknown>).isDemandesSubventionsProvider,
+        ) as DemandesSubventionsProvider<unknown>[];
     }
 
     async getDemandesByAssociation(identifier: AssociationIdentifiers) {

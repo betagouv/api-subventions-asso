@@ -12,7 +12,7 @@ import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
-import { RawGrant } from "../../grant/@types/rawGrant";
+import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import ProviderCore from "../ProviderCore";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
@@ -22,7 +22,7 @@ import DauphinGisproDbo from "./repositories/dbo/DauphinGisproDbo";
 
 export class DauphinService
     extends ProviderCore
-    implements DemandesSubventionsProvider, DocumentProvider, GrantProvider
+    implements DemandesSubventionsProvider<DauphinGisproDbo>, DocumentProvider, GrantProvider
 {
     constructor() {
         super({
@@ -44,7 +44,9 @@ export class DauphinService
     isDocumentProvider = false; // only while we no longer have access.
     // when we do again, be careful to skip "liste des dirigeants" because of political insecurities
 
-    // Applications
+    rawToApplication(rawApplication: RawApplication<DauphinGisproDbo>) {
+        return DauphinDtoAdapter.rawToApplication(rawApplication);
+    }
 
     async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
         const applications = await dauphinGisproRepository.findBySiret(siret);

@@ -6,6 +6,7 @@ import { capitalizeFirstLetter } from "../../../../shared/helpers/StringHelper";
 import { toStatusFactory } from "../../helper";
 import DauphinGisproDbo from "../repositories/dbo/DauphinGisproDbo";
 import DauphinDocumentDto from "../dto/DauphinDocumentDto";
+import { RawApplication } from "../../../grant/@types/rawGrant";
 
 export default class DauphinDtoAdapter {
     private static _statusConversionArray: { label: ApplicationStatus; providerStatusList: string[] }[] = [
@@ -59,6 +60,10 @@ export default class DauphinDtoAdapter {
 
     private static getStatus(dauphinData: DauphinSubventionDto) {
         return toStatusFactory(DauphinDtoAdapter._statusConversionArray)(dauphinData.virtualStatusLabel);
+    }
+
+    static rawToApplication(rawApplication: RawApplication<DauphinGisproDbo>) {
+        return this.toDemandeSubvention(rawApplication.data);
     }
 
     public static toDemandeSubvention(dbo: DauphinGisproDbo): DemandeSubvention {

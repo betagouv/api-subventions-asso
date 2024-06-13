@@ -3,7 +3,8 @@ import { SubventionEntity, PaymentEntity } from "../../../../../tests/modules/pr
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
 import { FONJEP_PAYMENTS, FONJEP_PAYMENT_ENTITIES } from "../__fixtures__/FonjepEntities";
-import { RawPayment } from "../../../grant/@types/rawGrant";
+import { RawApplication, RawPayment } from "../../../grant/@types/rawGrant";
+import { DemandeSubvention } from "dto";
 
 describe("FonjepEntityAdapter", () => {
     beforeAll(() => jest.useFakeTimers().setSystemTime(new Date("2022-01-01")));
@@ -15,6 +16,38 @@ describe("FonjepEntityAdapter", () => {
             buildProviderValueAdapterMock.mockImplementationOnce(() => value => value);
             const actual = FonjepEntityAdapter.toDemandeSubvention(SubventionEntity);
             expect(actual).toMatchSnapshot();
+        });
+    });
+
+    describe("rawToApplication", () => {
+        // @ts-expect-error: parameter type
+        const RAW_APPLICATION: RawApplication = { data: { foo: "bar" } };
+        // @ts-expect-error: parameter type
+        const APPLICATION: DemandeSubvention = { foo: "bar" };
+        let mockToDemandeSubvention: jest.SpyInstance;
+
+        beforeAll(() => {
+            mockToDemandeSubvention = jest.spyOn(FonjepEntityAdapter, "toDemandeSubvention");
+            mockToDemandeSubvention.mockReturnValue(APPLICATION);
+        });
+
+        afterEach(() => {
+            mockToDemandeSubvention.mockClear();
+        });
+
+        afterAll(() => {
+            mockToDemandeSubvention.mockRestore();
+        });
+
+        it("should call toDemandeSubvention", () => {
+            FonjepEntityAdapter.rawToApplication(RAW_APPLICATION);
+            expect(mockToDemandeSubvention).toHaveBeenCalledWith(APPLICATION);
+        });
+
+        it("should return DemandeSubvention", () => {
+            const expected = APPLICATION;
+            const actual = FonjepEntityAdapter.rawToApplication(RAW_APPLICATION);
+            expect(actual).toEqual(expected);
         });
     });
 

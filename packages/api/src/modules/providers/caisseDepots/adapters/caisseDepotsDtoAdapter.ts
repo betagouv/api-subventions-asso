@@ -3,6 +3,7 @@ import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import caisseDepotsService from "../caisseDepots.service";
 import { CaisseDepotsSubventionDto } from "../dto/CaisseDepotsDto";
 import { sameDateNextYear } from "../../../../shared/helpers/DateHelper";
+import { RawApplication } from "../../../grant/@types/rawGrant";
 
 export default class CaisseDepotsDtoAdapter {
     private static _multiannuality(dto: CaisseDepotsSubventionDto): "Oui" | "Non" {
@@ -13,6 +14,10 @@ export default class CaisseDepotsDtoAdapter {
         const startNextYear = sameDateNextYear(start);
         if (end > startNextYear) return "Oui";
         return "Non";
+    }
+
+    public static rawToApplication(rawApplication: RawApplication<CaisseDepotsSubventionDto>) {
+        return this.toDemandeSubvention(rawApplication.data);
     }
 
     public static toDemandeSubvention(dto: CaisseDepotsSubventionDto): DemandeSubvention {

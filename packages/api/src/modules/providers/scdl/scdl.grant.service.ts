@@ -1,14 +1,15 @@
 import { DemandeSubvention, Rna, Siren, Siret } from "dto";
 import * as Sentry from "@sentry/node";
-import { RawGrant } from "../../grant/@types/rawGrant";
+import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
-import MiscScdlGrantProducerEntity from "./entities/MiscScdlGrantProducerEntity";
+import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
 import miscScdlJoiner from "./repositories/miscScdl.joiner";
-import MiscScdlAdapter from "./MiscScdl.adapter";
+import MiscScdlAdapter from "./adapters/MiscScdl.adapter";
+import MiscScdlGrantProducerEntity from "./entities/MiscScdlGrantProducerEntity";
 
-export class ScdlGrantService implements GrantProvider, DemandesSubventionsProvider {
+export class ScdlGrantService implements GrantProvider, DemandesSubventionsProvider<MiscScdlGrantProducerEntity> {
     isGrantProvider = true;
     isDemandesSubventionsProvider = true;
     provider = {
@@ -40,15 +41,7 @@ export class ScdlGrantService implements GrantProvider, DemandesSubventionsProvi
     }
 
     private getRawGrantSubventionByPromise(dbRequestPromise: Promise<MiscScdlGrantProducerEntity[]>) {
-        return this.getEntityByPromiseAndAdapt(
-            dbRequestPromise,
-            (grant: MiscScdlGrantProducerEntity) =>
-                ({
-                    provider: this.provider.id,
-                    type: "application",
-                    data: grant,
-                } as RawGrant),
-        );
+        return this.getEntityByPromiseAndAdapt(dbRequestPromise, MiscScdlAdapter.toRawApplication);
     }
 
     async getGrantsByRna(rna: string): Promise<[] | null> {
@@ -63,7 +56,7 @@ export class ScdlGrantService implements GrantProvider, DemandesSubventionsProvi
         return null;
     }
 
-    getRawGrantsByRna(rna: Rna): Promise<RawGrant[] | null> {
+    getRawGrantsByRna(rna: Rna): Promise<RawApplication<MiscScdlGrantProducerEntity>[] | null> {
         return this.getRawGrantSubventionByPromise(miscScdlJoiner.findByRna(rna));
     }
 
@@ -75,8 +68,12 @@ export class ScdlGrantService implements GrantProvider, DemandesSubventionsProvi
         return this.getRawGrantSubventionByPromise(miscScdlJoiner.findBySiret(siret));
     }
 
+    rawToApplication(rawApplication: RawApplication<MiscScdlGrantProducerEntity>) {
+        return MiscScdlAdapter.rawToApplication(rawApplication);
+    }
+
     rawToCommon(rawGrant: RawGrant) {
-        return MiscScdlAdapter.toCommon(rawGrant.data as MiscScdlGrantProducerEntity);
+        return MiscScdlAdapter.toCommon(rawGrant.data as MiscScdlGrantEntity);
     }
 }
 

@@ -482,6 +482,25 @@ describe("DemarchesSimplifieesService", () => {
         });
     });
 
+    describe("rawToApplication", () => {
+        // @ts-expect-error: parameter type
+        const RAW_APPLICATION: RawApplication = { data: { foo: "bar" } };
+        // @ts-expect-error: parameter type
+        const APPLICATION: DemandeSubvention = { foo: "bar" };
+
+        it("should call DemarchesSimplifieesEntityAdapter.rawToApplication", () => {
+            demarchesSimplifieesService.rawToApplication(RAW_APPLICATION);
+            expect(DemarchesSimplifieesEntityAdapter.rawToApplication).toHaveBeenCalledWith(RAW_APPLICATION);
+        });
+
+        it("should return DemandeSubvention", () => {
+            jest.mocked(DemarchesSimplifieesEntityAdapter.rawToApplication).mockReturnValueOnce(APPLICATION);
+            const expected = APPLICATION;
+            const actual = demarchesSimplifieesService.rawToApplication(RAW_APPLICATION);
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("rawToCommon", () => {
         const RAW = { data: { grant: "GRANT", schema: "SCHEMA" } };
         const COMMON = "adapted";
