@@ -13,27 +13,16 @@ import { RawGrant } from "../../grant/@types/rawGrant";
 describe("SubventiaService", () => {
     const filePath = "path/to/file";
 
-    const ref1_value1 = {
+    const DEFAUT_REF = {
         "SIRET - Demandeur": "12345678911234",
         "Montant Ttc": 100,
         "Référence administrative - Demande": "ref1",
     };
-    const ref1_value3 = {
-        "SIRET - Demandeur": "12345678911234",
-        "Montant Ttc": 200,
-        "Référence administrative - Demande": "ref1",
-    };
-    const ref1_value2 = {
-        "SIRET - Demandeur": "12345678911234",
-        "Montant Ttc": 300,
-        "Référence administrative - Demande": "ref1",
-    };
 
-    const ref2_value1 = {
-        "SIRET - Demandeur": "12345678911234",
-        "Montant Ttc": 200,
-        "Référence administrative - Demande": "ref2",
-    };
+    const ref1_value1 = { ...DEFAUT_REF };
+    const ref1_value2 = { ...DEFAUT_REF, "Montant Ttc": 300 };
+    const ref1_value3 = { ...DEFAUT_REF, "Montant Ttc": 200 };
+    const ref2_value1 = { ...DEFAUT_REF, "Référence administrative - Demande": "ref2", "Montant Ttc": 200 };
 
     const parsedData = [ref1_value1, ref2_value1, ref1_value2] as SubventiaDto[];
 

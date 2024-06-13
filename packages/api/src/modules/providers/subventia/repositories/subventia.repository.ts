@@ -7,7 +7,7 @@ export class SubventiaRepository extends MongoRepository<Omit<SubventiaDbo, "_id
     public async findBySiren(siren: Siren) {
         return this.collection
             .find({
-                siret: new RegExp(`^${siren}\\d{5}`),
+                siret: { $regex: new RegExp(`^${siren}\\d{5}`) },
             })
             .toArray();
     }

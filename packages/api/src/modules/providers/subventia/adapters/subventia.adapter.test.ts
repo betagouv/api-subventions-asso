@@ -56,6 +56,7 @@ describe(SubventiaAdapter, () => {
     });
 
     describe("toDemandeSubventionDto", () => {
+        // mets dans beforeAll
         let mockToPV = jest.fn().mockImplementation(value => value);
         let mockBuildProviderValueAdapter = jest
             .spyOn(ProviderValueFactory, "buildProviderValueAdapter")
@@ -89,8 +90,6 @@ describe(SubventiaAdapter, () => {
         });
 
         it("should return DemandeSubvention", () => {
-            mockBuildProviderValueAdapter.mockRestore();
-            mockToPV.mockRestore();
             const actual = SubventiaAdapter.toDemandeSubventionDto(dbo);
             expect(actual).toMatchSnapshot();
         });
