@@ -4,8 +4,9 @@ import { isAssociationName, areDates, areNumbersValid, isSiret, areStringsValid 
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import PaymentProvider from "../../payments/@types/PaymentProvider";
+import { FullGrantProvider } from "../../grant/@types/FullGrantProvider";
 import GrantProvider from "../../grant/@types/GrantProvider";
-import { RawApplication, RawGrant, RawPayment } from "../../grant/@types/rawGrant";
+import { RawApplication, RawFullGrant, RawGrant, RawPayment } from "../../grant/@types/rawGrant";
 import ProviderCore from "../ProviderCore";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
@@ -49,6 +50,7 @@ export class FonjepService
         DemandesSubventionsProvider<FonjepSubventionEntity>,
         EtablissementProvider,
         PaymentProvider<FonjepPaymentEntity>,
+        FullGrantProvider<FonjepSubventionEntity, FonjepPaymentEntity>,
         GrantProvider
 {
     constructor() {
@@ -61,10 +63,16 @@ export class FonjepService
         });
     }
 
+    rawToGrant(rawFullGrant: RawFullGrant<FonjepSubventionEntity, FonjepPaymentEntity>) {
+        return FonjepEntityAdapter.rawToGrant(rawFullGrant);
+    }
+
+    // TODO: this might be never use because of rawToGrant
     rawToApplication(rawApplication: RawApplication<FonjepSubventionEntity>) {
         return FonjepEntityAdapter.rawToApplication(rawApplication);
     }
 
+    // TODO: this might be never use because of rawToGrant
     rawToPayment(rawGrant: RawPayment<FonjepPaymentEntity>) {
         return FonjepEntityAdapter.rawToPayment(rawGrant);
     }
@@ -238,6 +246,7 @@ export class FonjepService
      */
 
     isGrantProvider = true;
+    isFullGrantProvider = true;
 
     async getGrantsByRna(rna: string): Promise<[] | null> {
         return null;

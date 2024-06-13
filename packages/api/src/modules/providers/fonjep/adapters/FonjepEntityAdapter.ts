@@ -1,11 +1,11 @@
-import { ApplicationStatus, CommonFullGrantDto, DemandeSubvention, Etablissement, FonjepPayment } from "dto";
+import { ApplicationStatus, CommonFullGrantDto, DemandeSubvention, Etablissement, FonjepPayment, Grant } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
 import fonjepService from "../fonjep.service";
 import FonjepPaymentEntity from "../entities/FonjepPaymentEntity";
 import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
-import { RawApplication, RawPayment } from "../../../grant/@types/rawGrant";
+import { RawApplication, RawFullGrant, RawPayment } from "../../../grant/@types/rawGrant";
 
 export default class FonjepEntityAdapter {
     static PROVIDER_NAME = "Fonjep";
@@ -54,6 +54,13 @@ export default class FonjepEntityAdapter {
                     email: entity.indexedInformations.contact,
                 }),
             ],
+        };
+    }
+
+    public static rawToGrant(rawFullGrant: RawFullGrant<FonjepSubventionEntity, FonjepPaymentEntity>): Grant {
+        return {
+            application: this.toDemandeSubvention(rawFullGrant.data.application),
+            payments: rawFullGrant.data.payments.map(rawPayment => this.toPayment(rawPayment)),
         };
     }
 

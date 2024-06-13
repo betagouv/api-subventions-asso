@@ -6,7 +6,7 @@ import * as Validators from "../../../shared/Validators";
 import fonjepPaymentRepository from "./repositories/fonjep.payment.repository";
 import fonjepJoiner from "./joiners/fonjepJoiner";
 import { FONJEP_PAYMENTS, FONJEP_PAYMENT_ENTITIES } from "./__fixtures__/FonjepEntities";
-import { RawApplication, RawPayment } from "../../grant/@types/rawGrant";
+import { RawApplication, RawFullGrant, RawPayment } from "../../grant/@types/rawGrant";
 import { DemandeSubvention } from "dto";
 
 jest.mock("./adapters/FonjepEntityAdapter");
@@ -382,6 +382,25 @@ describe("FonjepService", () => {
             const expected = ADAPTED;
             // @ts-expect-error: mock
             const actual = fonjepService.rawToCommon({ data: RAW });
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("rawToGrant", () => {
+        // @ts-expect-error: parameter type
+        const RAW_FULLGRANT: RawFullGrant = { data: { application: { foo: "bar" }, payments: [{ poo: "paz" }] } };
+        // @ts-expect-error: parameter type
+        const GRANT: DemandeSubvention = { application: { foo: "bar" }, payments: [{ poo: "paz" }] };
+
+        it("should call FonjepEntityAdapter.rawToApplication", () => {
+            fonjepService.rawToApplication(RAW_FULLGRANT);
+            expect(FonjepEntityAdapter.rawToApplication).toHaveBeenCalledWith(RAW_FULLGRANT);
+        });
+
+        it("should return DemandeSubvention", () => {
+            jest.mocked(FonjepEntityAdapter.rawToApplication).mockReturnValueOnce(GRANT);
+            const expected = GRANT;
+            const actual = fonjepService.rawToApplication(RAW_FULLGRANT);
             expect(actual).toEqual(expected);
         });
     });

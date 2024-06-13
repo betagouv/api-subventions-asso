@@ -3,8 +3,10 @@ import { SubventionEntity, PaymentEntity } from "../../../../../tests/modules/pr
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
 import { FONJEP_PAYMENTS, FONJEP_PAYMENT_ENTITIES } from "../__fixtures__/FonjepEntities";
-import { RawApplication, RawPayment } from "../../../grant/@types/rawGrant";
-import { DemandeSubvention } from "dto";
+import { RawApplication, RawFullGrant, RawPayment } from "../../../grant/@types/rawGrant";
+import { DemandeSubvention, Grant, Payment } from "dto";
+import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
+import FonjepPaymentEntity from "../entities/FonjepPaymentEntity";
 
 describe("FonjepEntityAdapter", () => {
     beforeAll(() => jest.useFakeTimers().setSystemTime(new Date("2022-01-01")));
@@ -16,6 +18,70 @@ describe("FonjepEntityAdapter", () => {
             buildProviderValueAdapterMock.mockImplementationOnce(() => value => value);
             const actual = FonjepEntityAdapter.toDemandeSubvention(SubventionEntity);
             expect(actual).toMatchSnapshot();
+        });
+    });
+
+    describe("rawToGrant", () => {
+        // @ts-expect-error: parameter type
+        const FONJEP_APPLICATION: FonjepSubventionEntity = { fonjep: "application" };
+        // @ts-expect-error: parameter type
+        const FONJEP_PAYMENTS: FonjepPaymentEntity[] = [{ fonjep: "payment_1" }, { fonjep: "payment_2" }];
+        // @ts-expect-error: parameter type
+        const RAW_FULLGRANT: RawFullGrant<FonjepSubventionEntity, FonjepPaymentEntity> = {
+            data: {
+                application: FONJEP_APPLICATION,
+                payments: FONJEP_PAYMENTS,
+            },
+        };
+        // @ts-expect-error: parameter type
+        const APPLICATION: DemandeSubvention = { foo: "bar" };
+        // @ts-expect-error: parameter type
+        const PAYMENT_1: Payment = { poo: "par" };
+        // @ts-expect-error: parameter type
+        const PAYMENT_2: Payment = { pee: "pez" };
+        const GRANT: Grant = { application: APPLICATION, payments: [PAYMENT_1, PAYMENT_2] };
+
+        let mockToDemandeSubvention: jest.SpyInstance;
+        let mockToPayment: jest.SpyInstance;
+
+        beforeAll(() => {
+            mockToDemandeSubvention = jest.spyOn(FonjepEntityAdapter, "toDemandeSubvention");
+            mockToDemandeSubvention.mockReturnValue(APPLICATION);
+            mockToPayment = jest.spyOn(FonjepEntityAdapter, "toPayment");
+        });
+
+        beforeEach(() => {
+            mockToPayment.mockReturnValueOnce(PAYMENT_1);
+            mockToPayment.mockReturnValueOnce(PAYMENT_2);
+        });
+
+        afterEach(() => {
+            mockToDemandeSubvention.mockClear();
+            mockToPayment.mockClear();
+        });
+
+        afterAll(() => {
+            mockToDemandeSubvention.mockRestore();
+            mockToPayment.mockRestore();
+        });
+
+        it("should call toDemandeSubvention", () => {
+            FonjepEntityAdapter.rawToGrant(RAW_FULLGRANT);
+            expect(mockToDemandeSubvention).toHaveBeenCalledWith(FONJEP_APPLICATION);
+        });
+
+        it("should call toPayment", () => {
+            FonjepEntityAdapter.rawToGrant(RAW_FULLGRANT);
+            expect(mockToPayment).toHaveBeenCalledTimes(FONJEP_PAYMENTS.length);
+            FONJEP_PAYMENTS.forEach((payment, index) => {
+                expect(mockToPayment).toHaveBeenNthCalledWith(index + 1, payment);
+            });
+        });
+
+        it("should return Grant", () => {
+            const expected = GRANT;
+            const actual = FonjepEntityAdapter.rawToGrant(RAW_FULLGRANT);
+            expect(actual).toEqual(expected);
         });
     });
 
