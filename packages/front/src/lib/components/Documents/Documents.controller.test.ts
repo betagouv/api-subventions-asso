@@ -23,7 +23,7 @@ describe("Documents.controller", () => {
     const ASSOCIATION = { rna: "RNA", siren: "SIREN", nic_siege: "NIC" };
     const ESTABLISHMENT = { siret: "SIRET" };
 
-    beforeAll(() => {
+    function resetController() {
         const ctrlNotSpied = new DocumentsController("association", ASSOCIATION);
         ctrl = Object.create(Object.getPrototypeOf(ctrlNotSpied), Object.getOwnPropertyDescriptors(ctrlNotSpied));
 
@@ -44,6 +44,10 @@ describe("Documents.controller", () => {
         vi.mocked(establishmentService).getDocuments.mockResolvedValue([]);
         // @ts-expect-error: partial association
         associationStore["currentAssociation"] = new Store(ASSOCIATION);
+    }
+
+    beforeAll(() => {
+        resetController();
     });
 
     describe("_getAssociationDocument", () => {
@@ -238,12 +242,24 @@ describe("Documents.controller", () => {
         });
 
         describe("documentPromise", () => {
-            it("calls sets documentsPromise _organizeDocuments found docs", async () => {
-                const DOCS = ["DOC1", "DOC2"];
+            const DOCS = ["DOC1", "DOC2"];
+            let documentsPromise;
+
+            beforeEach(async () => {
                 const mockedGetter = vi.fn((..._args) => Promise.resolve(DOCS));
                 getterSpy.mockReturnValueOnce(mockedGetter);
                 await ctrl.onMount();
-                const documentsPromise = ctrl.documentsPromise.value;
+                documentsPromise = ctrl.documentsPromise.value;
+            });
+
+            it("sets allFlatDocs", async () => {
+                await documentsPromise;
+                const expected = DOCS;
+                const actual = ctrl.allFlatDocs;
+                expect(actual).toEqual(DOCS);
+            });
+
+            it("calls sets documentsPromise _organizeDocuments found docs", async () => {
                 await documentsPromise;
                 expect(ctrl._organizeDocuments).toHaveBeenCalledWith(DOCS);
             });
@@ -313,6 +329,8 @@ describe("Documents.controller", () => {
     });
 
     describe("downloadAll", () => {
+        const DOCS = "test" as unknown as DocumentEntity[];
+
         beforeAll(() => {
             // @ts-expect-error - mock
             vi.mocked(documentService.getAllDocs).mockResolvedValue("");
@@ -322,25 +340,46 @@ describe("Documents.controller", () => {
             vi.mocked(documentService.getAllDocs).mockRestore();
         });
 
-        it.each`
-            identifier
-            ${"RNA"}
-            ${"SIREN"}
-            ${"SIRET"}
-        `("gets docs by $identifier", async ({ identifier }) => {
-            ctrl.identifier = identifier;
+        it("gets docs' blob for all docs", async () => {
+            ctrl.allFlatDocs = DOCS;
             await ctrl.downloadAll();
-            expect(documentService.getAllDocs).toHaveBeenCalledWith(identifier);
-
-            vi.mocked(documentService.getAllDocs).mockClear();
-            ctrl.resource = ASSOCIATION;
+            expect(documentService.getSomeDocs).toHaveBeenCalledWith(DOCS);
+            resetController();
         });
 
         it("returns blob from documentService", async () => {
             const BLOB = "BLOB" as unknown as Blob;
-            vi.mocked(documentService.getAllDocs).mockResolvedValueOnce(BLOB);
+            vi.mocked(documentService.getSomeDocs).mockResolvedValueOnce(BLOB);
             const expected = BLOB;
             const actual = await ctrl.downloadAll();
+            expect(actual).toBe(expected);
+        });
+    });
+
+    describe("downloadSome", () => {
+        const DOCS = "test" as unknown as DocumentEntity[];
+
+        beforeAll(() => {
+            // @ts-expect-error - mock
+            vi.mocked(documentService.getAllDocs).mockResolvedValue("");
+        });
+
+        afterAll(() => {
+            vi.mocked(documentService.getAllDocs).mockRestore();
+        });
+
+        it("gets docs' blob for selected docs", async () => {
+            vi.spyOn(ctrl.flatSelectedDocs, "value", "get").mockReturnValueOnce(DOCS);
+            await ctrl.downloadSome();
+            expect(documentService.getSomeDocs).toHaveBeenCalledWith(DOCS);
+            resetController();
+        });
+
+        it("returns blob from documentService", async () => {
+            const BLOB = "BLOB" as unknown as Blob;
+            vi.mocked(documentService.getSomeDocs).mockResolvedValueOnce(BLOB);
+            const expected = BLOB;
+            const actual = await ctrl.downloadSome();
             expect(actual).toBe(expected);
         });
     });

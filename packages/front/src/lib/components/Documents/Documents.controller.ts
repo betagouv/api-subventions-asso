@@ -38,6 +38,7 @@ export class DocumentsController {
     public flatSelectedDocs: ReadStore<DocumentEntity[]>;
     private identifier: string;
     public downloadBtnLabel: ReadStore<string>;
+    private allFlatDocs: DocumentEntity[];
 
     constructor(
         public resourceType: ResourceType,
@@ -50,6 +51,7 @@ export class DocumentsController {
         this.documentsPromise = new Store(returnInfinitePromise());
         this.zipPromise = new Store(Promise.resolve(null));
         this.resource = resource;
+        this.allFlatDocs = [];
         this.selectedDocsOrNull = new Store({
             assoDocs: [],
             estabDocs: [],
@@ -123,7 +125,10 @@ export class DocumentsController {
         // get documents on mount
         // Svelte component mounted so bind:this replaced this.element with current node element
         await waitElementIsVisible(this.element as HTMLElement);
-        const promise = this._getterByType(this.resource).then(docs => this._organizeDocuments(docs));
+        const promise = this._getterByType(this.resource).then(docs => {
+            this.allFlatDocs = docs;
+            return this._organizeDocuments(docs);
+        });
         this.documentsPromise.set(promise);
     }
 
@@ -141,7 +146,7 @@ export class DocumentsController {
     }
 
     private downloadAll() {
-        return documentService.getAllDocs(this.identifier);
+        return documentService.getSomeDocs(this.allFlatDocs);
     }
 
     private downloadSome() {
