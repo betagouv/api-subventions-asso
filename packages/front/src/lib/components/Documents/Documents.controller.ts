@@ -157,4 +157,11 @@ export class DocumentsController {
         const docs = this.flatSelectedDocs.value;
         return documentService.getSomeDocs(docs);
     }
+
+    public resetSelection() {
+        this.selectedDocsOrNull.set({
+            assoDocs: [],
+            estabDocs: [],
+        });
+    }
 }
