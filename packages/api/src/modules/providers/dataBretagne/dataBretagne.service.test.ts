@@ -4,8 +4,8 @@ jest.mock("../../../dataProviders/api/dataBretagne/dataBretagne.port");
 import stateBudgetProgramPort from "../../../dataProviders/db/state-budget-program/stateBudgetProgram.port";
 jest.mock("../../../dataProviders/db/state-budget-program/stateBudgetProgram.port");
 import { PROGRAMS } from "../../../dataProviders/api/dataBretagne/__fixtures__/DataBretagne.fixture";
-import ProgrammeAdapter from "../../../dataProviders/db/state-budget-program/stateBudgetProgram.adapter";
-jest.mock("../../../dataProviders/db/state-budget-program/stateBudgetProgram.adapter");
+import DataBretagneProgrammeAdapter from "./DataBretagneProgrammeAdapter";
+jest.mock("./DataBretagneProgrammeAdapter");
 
 describe("Data Bretagne Service", () => {
     beforeAll(() => {
@@ -25,7 +25,7 @@ describe("Data Bretagne Service", () => {
 
         it("should call StateBudgetProgramAdapter.toDbo", async () => {
             await dataBretagneService.resyncPrograms();
-            expect(jest.mocked(ProgrammeAdapter).toDbo).toHaveBeenCalledTimes(PROGRAMS.length);
+            expect(jest.mocked(DataBretagneProgrammeAdapter).toEntity).toHaveBeenCalledTimes(PROGRAMS.length);
         });
 
         it("should throw error if no program", async () => {
