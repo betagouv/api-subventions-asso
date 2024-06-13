@@ -59,6 +59,7 @@
                                 type="tertiary"
                                 outline={false}
                                 trackerName="reset-docs-selection"
+                                title="Réinitialiser la sélection de documents"
                                 on:click={() => controller.resetSelection()}>
                                 Réinitialiser
                             </Button>
@@ -101,7 +102,10 @@
                     </Button>
                 </li>
                 <li>
-                    <Button trackerName="reset-docs-selection" on:click={() => controller.resetSelection()}>
+                    <Button
+                        trackerName="reset-docs-selection"
+                        on:click={() => controller.resetSelection()}
+                        title="Réinitialiser la sélection de documents">
                         Réinitialiser
                     </Button>
                 </li>
