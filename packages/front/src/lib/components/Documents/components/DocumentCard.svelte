@@ -11,45 +11,41 @@
 </script>
 
 <div class="card-container fr-grid-row fr-col-12" class:--selected={$isSelected}>
-    <div class="fr-grid-row fr-col-11 checkbox-wrapper">
-        <div class="col-0-5 flex">
-            <div class="fr-checkbox-group document-selector">
-                <input
-                    name="documents-to-download"
-                    id="documents-to-download-{controller.checkBoxId}"
-                    aria-describedby="description-document-{controller.checkBoxId}"
-                    type="checkbox"
-                    bind:checked={$isSelected} />
-                <label class="fr-label fr-sr-only" for="documents-to-download-{controller.checkBoxId}">
-                    Sélectionner pour téléchargement groupé
-                </label>
-            </div>
+    <div class="fr-grid-row checkbox-wrapper">
+        <div class="fr-checkbox-group document-selector">
+            <input
+                name="documents-to-download"
+                id="documents-to-download-{controller.checkBoxId}"
+                aria-describedby="description-document-{controller.checkBoxId}"
+                type="checkbox"
+                bind:checked={$isSelected} />
+            <label class="fr-label fr-sr-only" for="documents-to-download-{controller.checkBoxId}">
+                Sélectionner pour téléchargement groupé
+            </label>
         </div>
-        <div class="col-11-5">
-            <div
-                class="fr-card fr-card--no-icon fr-card--horizontal fr-card--no-border"
-                id="description-document-{controller.checkBoxId}">
-                <div class="fr-card__body">
-                    <div class="fr-card__content fr-p-2w">
-                        <div>
-                            <h4 class="fr-card__title fr-h5">{document.label}</h4>
-                            <p class="fr-card__desc fr-hint-text fr-mt-2v fr-mb-0">
-                                {controller.getDateString(document.date)}
-                                ― Fourni par :
-                                <b>{document.provider}</b>
-                                <!-- TODO  ― {document.format} - {document.size} -->
-                            </p>
-                        </div>
+        <div
+            class="fr-card fr-card--no-icon fr-card--horizontal fr-card--no-border"
+            id="description-document-{controller.checkBoxId}">
+            <div class="fr-card__body">
+                <div class="fr-card__content fr-p-2w">
+                    <div>
+                        <h4 class="fr-card__title fr-h5">{document.label}</h4>
+                        <p class="fr-card__desc fr-hint-text fr-mt-2v fr-mb-0">
+                            {controller.getDateString(document.date)}
+                            ― Fourni par :
+                            <b>{document.provider}</b>
+                            <!-- TODO  ― {document.format} - {document.size} -->
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="fr-col-1 flex download-wrapper">
-        <div class="fr-m-auto">
+    <div class="flex download-wrapper">
+        <div class="fr-my-auto fr-mx-2w">
             <a
-                class="fr-link fr-links-group__title"
+                class="fr-link"
                 href={$isSelected ? undefined : document.url}
                 aria-describedby="description-document-{controller.checkBoxId}"
                 title="Télécharger"
@@ -143,16 +139,15 @@
     /* END - dynamic card background */
 
     /* BEGIN - general layout */
-    .col-0-5 {
-        flex: 0 0 4.15%;
-        max-width: 4.15%;
-        width: 4.15%;
+    .checkbox-wrapper,
+    .checkbox-wrapper .fr-card {
+        flex-grow: 1;
     }
 
-    .col-11-5 {
-        flex: 0 0 95.83%;
-        max-width: 95.83%;
-        width: 95.83%;
+    .document-selector {
+        flex: 0 0 2.25rem;
+        max-width: 2.25rem;
+        width: 2.25rem;
     }
     /* END - general layout */
 </style>

@@ -62,10 +62,11 @@
             <!-- Asso documents -->
             {#if documents.assoDocs.length}
                 <h3 class="fr-h2 fr-mb-4w">Pièces provenant de l’INSEE et du RNA</h3>
-                <!-- change top margin when we have download all button -->
-                {#each documents.assoDocs as document, i}
-                    <DocumentCard {document} bind:value={$selectedDocsOrNull.assoDocs[i]} />
-                {/each}
+                <section class="fr-ml-n2w">
+                    {#each documents.assoDocs as document, i}
+                        <DocumentCard {document} bind:value={$selectedDocsOrNull.assoDocs[i]} />
+                    {/each}
+                </section>
             {/if}
 
             {#if documents.estabDocs.length}
@@ -73,9 +74,11 @@
                 <h3 class="fr-h2 fr-mt-6w fr-mb-4w">
                     {controller.estabDocsTitle}
                 </h3>
-                {#each documents.estabDocs as document, i}
-                    <DocumentCard {document} bind:value={$selectedDocsOrNull.estabDocs[i]} />
-                {/each}
+                <section class="fr-ml-n2w">
+                    {#each documents.estabDocs as document, i}
+                        <DocumentCard {document} bind:value={$selectedDocsOrNull.estabDocs[i]} />
+                    {/each}
+                </section>
             {/if}
             <div class="fr-sr-only">
                 <Button
