@@ -27,4 +27,8 @@ export class DocumentCardController {
         if (this.document.__meta__.siret) return `${this.document.label} - ${this.document.__meta__.siret}`;
         return this.document.label;
     }
+
+    newValue() {
+        return this.isSelected.value ? undefined : this.document;
+    }
 }
