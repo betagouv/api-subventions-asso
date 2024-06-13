@@ -6,7 +6,8 @@ import * as Validators from "../../../shared/Validators";
 import fonjepPaymentRepository from "./repositories/fonjep.payment.repository";
 import fonjepJoiner from "./joiners/fonjepJoiner";
 import { FONJEP_PAYMENTS, FONJEP_PAYMENT_ENTITIES } from "./__fixtures__/FonjepEntities";
-import { RawPayment } from "../../grant/@types/rawGrant";
+import { RawApplication, RawPayment } from "../../grant/@types/rawGrant";
+import { DemandeSubvention } from "dto";
 
 jest.mock("./adapters/FonjepEntityAdapter");
 
@@ -385,9 +386,28 @@ describe("FonjepService", () => {
         });
     });
 
+    describe("rawToApplication", () => {
+        // @ts-expect-error: parameter type
+        const RAW_APPLICATION: RawApplication = { data: { foo: "bar" } };
+        // @ts-expect-error: parameter type
+        const APPLICATION: DemandeSubvention = { foo: "bar" };
+
+        it("should call FonjepEntityAdapter.rawToApplication", () => {
+            fonjepService.rawToApplication(RAW_APPLICATION);
+            expect(FonjepEntityAdapter.rawToApplication).toHaveBeenCalledWith(RAW_APPLICATION);
+        });
+
+        it("should return DemandeSubvention", () => {
+            jest.mocked(FonjepEntityAdapter.rawToApplication).mockReturnValueOnce(APPLICATION);
+            const expected = APPLICATION;
+            const actual = fonjepService.rawToApplication(RAW_APPLICATION);
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("rawToPayment", () => {
         // @ts-expect-error: parameter type
-        const RAW_PAYMENT = { data: FONJEP_PAYMENT_ENTITIES[0] } as RawPayment;
+        const RAW_PAYMENT: RawPayment = { data: FONJEP_PAYMENT_ENTITIES[0] };
         it("should call FonjepEntityAdapter.rawToPayment", () => {
             fonjepService.rawToPayment(RAW_PAYMENT);
             expect(FonjepEntityAdapter.rawToPayment).toHaveBeenCalledWith(RAW_PAYMENT);

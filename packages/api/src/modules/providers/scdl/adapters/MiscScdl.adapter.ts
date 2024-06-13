@@ -1,8 +1,9 @@
 import { ApplicationStatus, DemandeSubvention, CommonApplicationDto } from "dto";
-import ProviderValueFactory from "../../../shared/ProviderValueFactory";
-import { sameDateNextYear } from "../../../shared/helpers/DateHelper";
-import MiscScdlGrantProducerEntity from "./entities/MiscScdlGrantProducerEntity";
-import { ScdlGrantEntity } from "./@types/ScdlGrantEntity";
+import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
+import { sameDateNextYear } from "../../../../shared/helpers/DateHelper";
+import MiscScdlGrantProducerEntity from "../entities/MiscScdlGrantProducerEntity";
+import { ScdlGrantEntity } from "../@types/ScdlGrantEntity";
+import { RawApplication } from "../../../grant/@types/rawGrant";
 
 export default class MiscScdlAdapter {
     public static toDemandeSubvention(entity: MiscScdlGrantProducerEntity): DemandeSubvention {
@@ -38,6 +39,20 @@ export default class MiscScdlAdapter {
             siret: entity.allocatorSiret,
             statut: MiscScdlAdapter._status(entity),
         };
+    }
+
+    static rawToApplication(rawApplication: RawApplication<MiscScdlGrantProducerEntity>) {
+        return this.toDemandeSubvention(rawApplication.data);
+    }
+
+    static toRawApplication(entity: MiscScdlGrantProducerEntity) {
+        const rawApplication: RawApplication<MiscScdlGrantProducerEntity> = {
+            provider: entity.producer.name,
+            type: "application",
+            data: entity,
+        };
+
+        return rawApplication;
     }
 
     private static _multiannuality(entity: MiscScdlGrantProducerEntity) {

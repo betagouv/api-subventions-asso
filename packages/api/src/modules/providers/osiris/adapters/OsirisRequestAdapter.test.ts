@@ -45,6 +45,38 @@ describe("OsirisRequestAdapter", () => {
         });
     });
 
+    describe("rawToApplication", () => {
+        // @ts-expect-error: parameter type
+        const RAW_APPLICATION: RawApplication = { data: { foo: "bar" } };
+        // @ts-expect-error: parameter type
+        const APPLICATION: DemandeSubvention = { foo: "bar" };
+        let mockToDemandeSubvention: jest.SpyInstance;
+
+        beforeAll(() => {
+            mockToDemandeSubvention = jest.spyOn(OsirisRequestAdapter, "toDemandeSubvention");
+            mockToDemandeSubvention.mockReturnValue(APPLICATION);
+        });
+
+        afterEach(() => {
+            mockToDemandeSubvention.mockClear();
+        });
+
+        afterAll(() => {
+            mockToDemandeSubvention.mockRestore();
+        });
+
+        it("should call toDemandeSubvention", () => {
+            OsirisRequestAdapter.rawToApplication(RAW_APPLICATION);
+            expect(mockToDemandeSubvention).toHaveBeenCalledWith(APPLICATION);
+        });
+
+        it("should return DemandeSubvention", () => {
+            const expected = APPLICATION;
+            const actual = OsirisRequestAdapter.rawToApplication(RAW_APPLICATION);
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("toCommon", () => {
         it("returns proper result", () => {
             const INPUT = {

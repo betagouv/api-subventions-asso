@@ -5,7 +5,7 @@ import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DEMARCHES_SIMPLIFIEES_TOKEN } from "../../../configurations/apis.conf";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { DefaultObject } from "../../../@types";
-import { RawGrant } from "../../grant/@types/rawGrant";
+import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import { InternalServerError } from "../../../shared/errors/httpErrors";
 import ProviderCore from "../ProviderCore";
 import GrantProvider from "../../grant/@types/GrantProvider";
@@ -16,10 +16,13 @@ import demarchesSimplifieesDataRepository from "./repositories/demarchesSimplifi
 import demarchesSimplifieesMapperRepository from "./repositories/demarchesSimplifieesMapper.repository";
 import DemarchesSimplifieesMapperEntity from "./entities/DemarchesSimplifieesMapperEntity";
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
-import { DemarchesSimplifieesRawData, DemarchesSimplifieesRawGrant } from "./@types/DemarchesSimplifieesRawGrant";
+import { DemarchesSimplifieesRawData } from "./@types/DemarchesSimplifieesRawGrant";
 import DemarchesSimplifieesDataEntity from "./entities/DemarchesSimplifieesDataEntity";
 
-export class DemarchesSimplifieesService extends ProviderCore implements DemandesSubventionsProvider, GrantProvider {
+export class DemarchesSimplifieesService
+    extends ProviderCore
+    implements DemandesSubventionsProvider<DemarchesSimplifieesRawData>, GrantProvider
+{
     isDemandesSubventionsProvider = true;
 
     constructor() {
@@ -203,6 +206,10 @@ export class DemarchesSimplifieesService extends ProviderCore implements Demande
     async getRawGrantsBySiren(siren: string): Promise<RawGrant[]> {
         const grants = await demarchesSimplifieesDataRepository.findBySiren(siren);
         return await this.toRawGrants(grants);
+    }
+
+    rawToApplication(rawApplication: RawApplication<DemarchesSimplifieesRawData>) {
+        return DemarchesSimplifieesEntityAdapter.rawToApplication(rawApplication);
     }
 
     rawToCommon(raw: RawGrant) {

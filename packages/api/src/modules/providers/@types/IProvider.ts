@@ -17,7 +17,7 @@ export default interface Provider {
 
 // TODO: find a way to make a type accept any type that inherit from Provider
 export type AnyProvider =
-    | DemandesSubventionsProvider
+    | DemandesSubventionsProvider<unknown>
     | PaymentProvider<unknown>
     | GrantProvider
     | DocumentProvider

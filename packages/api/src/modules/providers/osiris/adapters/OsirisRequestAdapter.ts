@@ -13,6 +13,7 @@ import OsirisActionEntity from "../entities/OsirisActionEntity";
 import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 import osirisService from "../osiris.service";
 import { toStatusFactory } from "../../helper";
+import { RawApplication } from "../../../grant/@types/rawGrant";
 
 export default class OsirisRequestAdapter {
     static PROVIDER_NAME = "Osiris";
@@ -137,6 +138,10 @@ export default class OsirisRequestAdapter {
                       ]
                     : [],
         };
+    }
+
+    static rawToApplication(rawApplication: RawApplication<OsirisRequestEntity>) {
+        return this.toDemandeSubvention(rawApplication.data);
     }
 
     static toDemandeSubvention(entity: OsirisRequestEntity): DemandeSubvention {

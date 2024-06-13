@@ -8,8 +8,8 @@ import DemarchesSimplifieesMapperEntity from "../entities/DemarchesSimplifieesMa
 import { isValidDate } from "../../../../shared/helpers/DateHelper";
 import { stringIsFloat } from "../../../../shared/helpers/StringHelper";
 import { DefaultObject } from "../../../../@types";
-import { RawGrant } from "../../../grant/@types/rawGrant";
-import { DemarchesSimplifieesRawGrant } from "../@types/DemarchesSimplifieesRawGrant";
+import { DemarchesSimplifieesRawData, DemarchesSimplifieesRawGrant } from "../@types/DemarchesSimplifieesRawGrant";
+import { RawApplication } from "../../../grant/@types/rawGrant";
 
 export class DemarchesSimplifieesEntityAdapter {
     private static mapSchema<T>(
@@ -36,6 +36,11 @@ export class DemarchesSimplifieesEntityAdapter {
         });
 
         return subvention as unknown as T;
+    }
+
+    static rawToApplication(rawApplication: RawApplication<DemarchesSimplifieesRawData>) {
+        const { entity, schema } = rawApplication.data;
+        return this.toSubvention(entity, schema);
     }
 
     static toSubvention(

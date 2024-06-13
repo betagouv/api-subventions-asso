@@ -26,6 +26,39 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
         ],
     };
 
+    describe("rawToApplication", () => {
+        // @ts-expect-error: parameter type
+        const RAW_APPLICATION: RawApplication = { data: { entity: { foo: "bar" }, schema: { boo: "faz" } } };
+        // @ts-expect-error: parameter type
+        const APPLICATION: DemandeSubvention = { foo: "bar" };
+        let mockToSubvention: jest.SpyInstance;
+
+        beforeAll(() => {
+            mockToSubvention = jest.spyOn(DemarchesSimplifieesEntityAdapter, "toSubvention");
+            mockToSubvention.mockReturnValue(APPLICATION);
+        });
+
+        afterEach(() => {
+            mockToSubvention.mockClear();
+        });
+
+        afterAll(() => {
+            mockToSubvention.mockRestore();
+        });
+
+        it("should call toSubvention", () => {
+            DemarchesSimplifieesEntityAdapter.rawToApplication(RAW_APPLICATION);
+            const { entity, schema } = RAW_APPLICATION.data;
+            expect(mockToSubvention).toHaveBeenCalledWith(entity, schema);
+        });
+
+        it("should return DemandeSubvention", () => {
+            const expected = APPLICATION;
+            const actual = DemarchesSimplifieesEntityAdapter.rawToApplication(RAW_APPLICATION);
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("toSubvention", () => {
         it("should return subvention with siret", () => {
             const actual = DemarchesSimplifieesEntityAdapter.toSubvention(DEMANDE, MAPPING);
