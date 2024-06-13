@@ -1,5 +1,5 @@
 import DataBretagneProgrammeAdapter from "./DataBretagneProgrammeAdapter";
-import { DataBretagneProgrammeDto } from "../../../dataProviders/api/dataBretagne/DataBretagneDto";
+import { DataBretagneProgrammeDto } from "./DataBretagneDto";
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
 
 describe("DataBretagneProgrammeAdapter", () => {
@@ -9,7 +9,7 @@ describe("DataBretagneProgrammeAdapter", () => {
                 label_theme: "Theme",
                 label: "Label",
                 code_ministere: "Ministere",
-                code: "Code",
+                code: "163",
             };
 
             const result = DataBretagneProgrammeAdapter.toEntity(dto);
@@ -18,7 +18,7 @@ describe("DataBretagneProgrammeAdapter", () => {
             expect(result.mission).toEqual(dto.label_theme);
             expect(result.label_programme).toEqual(dto.label);
             expect(result.code_ministere).toEqual(dto.code_ministere);
-            expect(result.code_programme).toEqual(dto.code);
+            expect(result.code_programme.toString()).toBe(dto.code);
         });
     });
 });

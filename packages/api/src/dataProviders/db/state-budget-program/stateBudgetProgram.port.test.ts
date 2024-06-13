@@ -30,7 +30,7 @@ describe("StateBudgetProgram Port", () => {
         });
     });
 
-    describe("find()", () => {
+    describe("findAll()", () => {
         it("should return an array of StateBudgetProgramDbo", async () => {
             const expectedPrograms = STATE_BUDGET_PROGRAM_ENTITIES;
             mockFind.mockReturnValueOnce({
@@ -39,7 +39,7 @@ describe("StateBudgetProgram Port", () => {
                 }),
             });
 
-            const programs = await stateBudgetProgramPort.find();
+            const programs = await stateBudgetProgramPort.findAll();
 
             expect(programs).toEqual(expectedPrograms);
             expect(mockFind).toHaveBeenCalled();

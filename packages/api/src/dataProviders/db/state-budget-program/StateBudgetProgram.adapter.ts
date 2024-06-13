@@ -5,7 +5,7 @@ import StateBudgetProgramDbo from "./StateBudgetProgramDbo";
 /**
  * Adapter class for converting between StateBudgetProgramEntity and StateBudgetProgramDbo.
  */
-export default class StateBudgetProgramDtoAdapter {
+export default class StateBudgetProgramAdapter {
     /**
      * Converts a StateBudgetProgramEntity to a StateBudgetProgramDbo.
      * @param entity The StateBudgetProgramEntity to convert.
@@ -13,7 +13,7 @@ export default class StateBudgetProgramDtoAdapter {
      */
     static toDbo(entity: StateBudgetProgramEntity): StateBudgetProgramDbo {
         return {
-            _id: new ObjectId(entity.id),
+            _id: new ObjectId(),
             mission: entity.mission,
             code_ministere: entity.code_ministere,
             code_programme: entity.code_programme,
@@ -32,7 +32,6 @@ export default class StateBudgetProgramDtoAdapter {
             dbo.label_programme,
             dbo.code_ministere,
             dbo.code_programme,
-            dbo._id.toHexString(),
         );
     }
 }

@@ -1,7 +1,7 @@
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
 import MongoRepository from "../../../shared/MongoRepository";
 import StateBudgetProgramDbo from "./StateBudgetProgramDbo";
-import StateBudgetProgramAdapter from "./StateBudgetProgramDto.adapter";
+import StateBudgetProgramAdapter from "./StateBudgetProgram.adapter";
 
 /**
  * Represents a data provider for state budget programs.
@@ -44,7 +44,7 @@ export class StateBudgetProgramPort extends MongoRepository<StateBudgetProgramDb
      * Finds all state budget programs.
      * @returns A promise that resolves to an array of state budget program entities.
      */
-    public async find(): Promise<StateBudgetProgramEntity[]> {
+    public async findAll(): Promise<StateBudgetProgramEntity[]> {
         return this.collection.find().map(StateBudgetProgramAdapter.toEntity).toArray();
     }
 }
