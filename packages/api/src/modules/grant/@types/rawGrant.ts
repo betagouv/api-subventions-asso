@@ -16,8 +16,9 @@ export interface RawPayment<T> extends RawGrant<T> {
     type: "payment";
 }
 
-export interface RawFullGrant<T> extends RawGrant<T> {
+export interface RawFullGrant<T1, T2> extends RawGrant {
     type: "fullGrant";
+    data: { application: T1; payments: T2[] };
 }
 
 export type JoinedRawGrant = {
