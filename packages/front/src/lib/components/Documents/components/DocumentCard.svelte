@@ -51,7 +51,7 @@
                 title="Télécharger"
                 target="_blank"
                 rel="noopener noreferrer">
-                <span class="fr-icon-file-download-line" />
+                Télécharger
             </a>
         </div>
     </div>
