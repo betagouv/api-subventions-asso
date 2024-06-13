@@ -5,7 +5,7 @@
     export let document: DocumentEntity;
     export let value: DocumentEntity | undefined = undefined;
 
-    const controller = new DocumentCardController();
+    const controller = new DocumentCardController(document);
     const { isSelected } = controller;
     $: value = $isSelected ? document : undefined; // here because it would be very heavy to go through controller
 </script>
@@ -29,7 +29,7 @@
             <div class="fr-card__body">
                 <div class="fr-card__content fr-p-2w">
                     <div>
-                        <h4 class="fr-card__title fr-h5">{document.label}</h4>
+                        <h4 class="fr-card__title fr-h5">{controller.documentLabel}</h4>
                         <p class="fr-card__desc fr-hint-text fr-mt-2v fr-mb-0">
                             {controller.getDateString(document.date)}
                             ― Fourni par :
