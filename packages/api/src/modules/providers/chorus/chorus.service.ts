@@ -12,6 +12,7 @@ import ProviderCore from "../ProviderCore";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import uniteLegalEntreprisesService from "../uniteLegalEntreprises/uniteLegal.entreprises.service";
 import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
+import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import chorusLineRepository from "./repositories/chorus.line.repository";
@@ -93,19 +94,29 @@ export class ChorusService extends ProviderCore implements PaymentProvider, Gran
     async getPaymentsBySiret(siret: Siret) {
         const requests = await chorusLineRepository.findBySiret(siret);
 
-        return requests.map(r => ChorusAdapter.toPayment(r));
+        return this.toVersementArray(requests);
     }
 
     async getPaymentsBySiren(siren: Siren) {
         const requests = await chorusLineRepository.findBySiren(siren);
 
-        return requests.map(r => ChorusAdapter.toPayment(r));
+        return this.toVersementArray(requests);
     }
 
     async getPaymentsByKey(ej: string) {
         const requests = await chorusLineRepository.findByEJ(ej);
 
-        return requests.map(r => ChorusAdapter.toPayment(r));
+        return this.toVersementArray(requests);
+    }
+
+    private async toVersementArray(documents: WithId<ChorusLineEntity>[]) {
+        const programs = await dataBretagneService.findProgramsRecord();
+        return documents.map(document =>
+            ChorusAdapter.toPayment(
+                document,
+                programs[parseInt(document.indexedInformations.codeDomaineFonctionnel.slice(0, 4), 10)],
+            ),
+        );
     }
 
     /**

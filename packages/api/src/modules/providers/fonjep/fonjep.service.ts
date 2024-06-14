@@ -7,6 +7,7 @@ import PaymentProvider from "../../payments/@types/PaymentProvider";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import { RawGrant } from "../../grant/@types/rawGrant";
 import ProviderCore from "../ProviderCore";
+import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
 import fonjepSubventionRepository from "./repositories/fonjep.subvention.repository";
@@ -204,8 +205,11 @@ export class FonjepService
 
     isPaymentProvider = true;
 
-    toPaymentArray(documents): FonjepPayment[] {
-        return documents.map(document => FonjepEntityAdapter.toPayment(document));
+    async toPaymentArray(documents: FonjepPaymentEntity[]): Promise<FonjepPayment[]> {
+        const programs = await dataBretagneService.findProgramsRecord();
+        return documents.map(document =>
+            FonjepEntityAdapter.toPayment(document, programs[document.indexedInformations.bop]),
+        );
     }
 
     async getPaymentsByKey(codePoste: string) {
