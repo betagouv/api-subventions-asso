@@ -38,7 +38,7 @@ describe("Documents.controller", () => {
         // @ts-expect-error spy private
         ctrl.downloadSome = vi.spyOn(ctrlNotSpied, "downloadSome");
         // @ts-expect-error spy private
-        ctrl._filterDocs = vi.spyOn(ctrlNotSpied, "_filterDocs");
+        ctrl._filterAssoDocs = vi.spyOn(ctrlNotSpied, "_filterAssoDocs");
 
         vi.mocked(associationService).getDocuments.mockResolvedValue([]);
         vi.mocked(establishmentService).getDocuments.mockResolvedValue([]);
@@ -64,48 +64,48 @@ describe("Documents.controller", () => {
         it("filters association docs", async () => {
             const DOCS = "docs" as unknown as DocumentEntity[];
             vi.mocked(associationService.getDocuments).mockResolvedValueOnce(DOCS);
-            vi.mocked(ctrl._filterDocs).mockResolvedValueOnce([]);
+            vi.mocked(ctrl._filterAssoDocs).mockResolvedValueOnce([]);
             await ctrl._getAssociationDocuments(ASSOCIATION);
-            expect(ctrl._filterDocs).toHaveBeenCalledWith(DOCS, "SIRENNIC");
+            expect(ctrl._filterAssoDocs).toHaveBeenCalledWith(DOCS, "SIRENNIC");
         });
 
         it("returns filtered docs", async () => {
             const DOCS = "docs" as unknown as DocumentEntity[];
             const expected = DOCS;
-            vi.mocked(ctrl._filterDocs).mockResolvedValueOnce(DOCS);
+            vi.mocked(ctrl._filterAssoDocs).mockResolvedValueOnce(DOCS);
             const actual = await ctrl._getAssociationDocuments(ASSOCIATION);
             expect(actual).toBe(expected);
         });
     });
 
-    describe("_filterDocs", () => {
+    describe("_filterAssoDocs", () => {
         const SIRET = ESTABLISHMENT.siret;
 
         it("keep docs with no siret", async () => {
             const DOCS = [{ __meta__: { siret: undefined } }];
             const expected = 1;
-            const actual = ctrl._filterDocs(DOCS, SIRET).length;
+            const actual = ctrl._filterAssoDocs(DOCS, SIRET).length;
             expect(actual).toBe(expected);
         });
 
         it("keeps ribs with given siret", async () => {
             const DOCS = [{ type: "RIB", __meta__: { siret: SIRET } }];
             const expected = 1;
-            const actual = ctrl._filterDocs(DOCS, SIRET).length;
+            const actual = ctrl._filterAssoDocs(DOCS, SIRET).length;
             expect(actual).toBe(expected);
         });
 
         it("skips ribs with other siret", async () => {
             const DOCS = [{ type: "RIB", __meta__: { siret: "OTHER_SIRET" } }];
             const expected = 0;
-            const actual = ctrl._filterDocs(DOCS, SIRET).length;
+            const actual = ctrl._filterAssoDocs(DOCS, SIRET).length;
             expect(actual).toBe(expected);
         });
 
         it("keeps docs other than rib with other siret", async () => {
             const DOCS = [{ type: "anything", __meta__: { siret: "SIRENNIC" } }];
             const expected = 1;
-            const actual = ctrl._filterDocs(DOCS, SIRET).length;
+            const actual = ctrl._filterAssoDocs(DOCS, SIRET).length;
             expect(actual).toBe(expected);
         });
     });
@@ -150,9 +150,9 @@ describe("Documents.controller", () => {
         it("filters association docs", async () => {
             const DOCS = "docs" as unknown as DocumentEntity[];
             vi.mocked(associationService.getDocuments).mockResolvedValueOnce(DOCS);
-            vi.mocked(ctrl._filterDocs).mockResolvedValueOnce([]);
+            vi.mocked(ctrl._filterAssoDocs).mockResolvedValueOnce([]);
             await ctrl._getEstablishmentDocuments(ESTABLISHMENT);
-            expect(ctrl._filterDocs).toHaveBeenCalledWith(DOCS, "SIRET");
+            expect(ctrl._filterAssoDocs).toHaveBeenCalledWith(DOCS, "SIRET");
         });
 
         it("calls _removeDuplicates with filtered results from services", async () => {
@@ -160,7 +160,7 @@ describe("Documents.controller", () => {
             const DOC_ETAB = { __meta__: { siret: "SIRET" }, name: "from etab" } as unknown as DocumentEntity;
 
             vi.mocked(establishmentService).getDocuments.mockResolvedValueOnce([DOC_ETAB]);
-            vi.mocked(ctrl._filterDocs).mockResolvedValueOnce([DOC_ASSO]);
+            vi.mocked(ctrl._filterAssoDocs).mockResolvedValueOnce([DOC_ASSO]);
 
             await ctrl._getEstablishmentDocuments(ESTABLISHMENT);
             expect(ctrl._removeDuplicates).toHaveBeenCalledWith([DOC_ETAB, DOC_ASSO]);
@@ -256,7 +256,7 @@ describe("Documents.controller", () => {
                 await documentsPromise;
                 const expected = DOCS;
                 const actual = ctrl.allFlatDocs;
-                expect(actual).toEqual(DOCS);
+                expect(actual).toEqual(expected);
             });
 
             it("calls sets documentsPromise _organizeDocuments found docs", async () => {

@@ -85,10 +85,10 @@ export class DocumentsController {
 
     async _getAssociationDocuments(association: AssociationEntity) {
         const associationDocuments = await associationService.getDocuments(association.rna || association.siren);
-        return this._filterDocs(associationDocuments, getSiegeSiret(association));
+        return this._filterAssoDocs(associationDocuments, getSiegeSiret(association));
     }
 
-    private _filterDocs(docs: DocumentEntity[], siret: Siret) {
+    private _filterAssoDocs(docs: DocumentEntity[], siret: Siret) {
         // display rules from #2455: we show all docs except RIBs from other establishments than the one looked up
         // or the head establishment of the association that is looked up
         return docs.filter(doc => doc.type !== "RIB" || !doc.__meta__.siret || doc.__meta__.siret === siret);
@@ -119,7 +119,7 @@ export class DocumentsController {
         const estabDocsPromise = establishmentService.getDocuments(establishment.siret);
         const assoDocsPromise = associationService
             .getDocuments(association.rna || association.siren)
-            .then(docs => this._filterDocs(docs, establishment.siret));
+            .then(docs => this._filterAssoDocs(docs, establishment.siret));
         const [estabDocs, assoDocs] = await Promise.all([estabDocsPromise, assoDocsPromise]);
         return this._removeDuplicates([...estabDocs, ...assoDocs]);
     }
