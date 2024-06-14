@@ -57,7 +57,7 @@
                         {element.lastPaymentDate}
                     </TableCell>
                     <TableCell position="end">
-                        {element.bop}
+                        {element.programme}
                         <!--
                             What follows is an a11y trick: users can focus this on keyboard.
                             This button should always be positioned at the end of clickable rows and repeat the on:click event of the row
