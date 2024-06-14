@@ -19,7 +19,7 @@
                 aria-describedby="description-document-{controller.checkBoxId}"
                 type="checkbox"
                 bind:checked={$isSelected}
-                on:change={() => (value = controller.newValue())} />
+                on:change={() => (value = controller.newValueOnCheck())} />
             <label class="fr-label fr-sr-only" for="documents-to-download-{controller.checkBoxId}">
                 Sélectionner pour téléchargement groupé
             </label>

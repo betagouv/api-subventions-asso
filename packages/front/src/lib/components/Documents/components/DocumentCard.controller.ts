@@ -28,7 +28,7 @@ export class DocumentCardController {
         return this.document.label;
     }
 
-    newValue() {
+    newValueOnCheck() {
         return this.isSelected.value ? undefined : this.document;
     }
 }
