@@ -56,11 +56,19 @@ describe(SubventiaAdapter, () => {
     });
 
     describe("toDemandeSubventionDto", () => {
-        // mets dans beforeAll
-        let mockToPV = jest.fn().mockImplementation(value => value);
-        let mockBuildProviderValueAdapter = jest
-            .spyOn(ProviderValueFactory, "buildProviderValueAdapter")
-            .mockReturnValue(mockToPV);
+        let mockToPV: jest.Mock;
+        let mockBuildProviderValueAdapter: jest.SpyInstance;
+        beforeAll(() => {
+            mockToPV = jest.fn().mockImplementation(value => value);
+            mockBuildProviderValueAdapter = jest
+                .spyOn(ProviderValueFactory, "buildProviderValueAdapter")
+                .mockReturnValue(mockToPV);
+        });
+
+        afterAll(() => {
+            mockToPV.mockRestore();
+            mockBuildProviderValueAdapter.mockRestore();
+        });
 
         it("should call ProviderValueFactory.buildProviderValueAdapter once", () => {
             SubventiaAdapter.toDemandeSubventionDto(dbo);
