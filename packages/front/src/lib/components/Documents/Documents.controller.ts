@@ -89,10 +89,13 @@ export class DocumentsController {
     }
 
     private _filterDocs(docs: DocumentEntity[], siret: Siret) {
+        // display rules from #2455: we show all docs except RIBs from other establishments than the one looked up
+        // or the head establishment of the association that is looked up
         return docs.filter(doc => doc.type !== "RIB" || !doc.__meta__.siret || doc.__meta__.siret === siret);
     }
 
     _removeDuplicates(docs: DocumentEntity[]) {
+        // association docs and establishment docs may be redundant
         const docsByUrl = {};
         for (const doc of docs) {
             docsByUrl[doc.url] = doc;
@@ -146,6 +149,7 @@ export class DocumentsController {
     }
 
     private downloadAll() {
+        // this method does not actually downloads all docs available but all those displayed
         return documentService.getSomeDocs(this.allFlatDocs);
     }
 
