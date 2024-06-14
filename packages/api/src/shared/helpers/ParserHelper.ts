@@ -84,12 +84,7 @@ export function xlsParse(content: Buffer) {
 }
 
 export function xlsParseWithPageName(content: Buffer) {
-    const xls = xlsx.parse(content, {
-        raw: true,
-        rawNumbers: true,
-        cellNF: true,
-        dateNF: "165",
-    });
+    const xls = xlsx.parse(content);
     return xls.map(xlsPage => ({
         data: xlsPage.data.filter(row => (row as unknown[]).length),
         name: xlsPage.name,
