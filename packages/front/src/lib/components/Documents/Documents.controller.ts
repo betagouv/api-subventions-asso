@@ -139,7 +139,7 @@ export class DocumentsController {
 
     async download() {
         let requestPromise: Promise<Blob>;
-        if (this.flatSelectedDocs.value.length) requestPromise = this.downloadSome();
+        if (this.flatSelectedDocs.value.length) requestPromise = this.downloadSelected();
         else requestPromise = this.downloadAll();
         const promise = requestPromise.then(blob => documentHelper.download(blob, `documents_${this.identifier}.zip`));
         setTimeout(() => {
@@ -153,7 +153,7 @@ export class DocumentsController {
         return documentService.getSomeDocs(this.allFlatDocs);
     }
 
-    private downloadSome() {
+    private downloadSelected() {
         const docs = this.flatSelectedDocs.value;
         return documentService.getSomeDocs(docs);
     }

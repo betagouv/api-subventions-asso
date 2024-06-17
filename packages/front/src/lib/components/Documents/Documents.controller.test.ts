@@ -36,7 +36,7 @@ describe("Documents.controller", () => {
         // @ts-expect-error spy private
         ctrl.downloadAll = vi.spyOn(ctrlNotSpied, "downloadAll");
         // @ts-expect-error spy private
-        ctrl.downloadSome = vi.spyOn(ctrlNotSpied, "downloadSome");
+        ctrl.downloadSelected = vi.spyOn(ctrlNotSpied, "downloadSelected");
         // @ts-expect-error spy private
         ctrl._filterAssoDocs = vi.spyOn(ctrlNotSpied, "_filterAssoDocs");
 
@@ -269,20 +269,20 @@ describe("Documents.controller", () => {
     describe("download", () => {
         beforeAll(() => {
             vi.mocked(ctrl.downloadAll).mockResolvedValue("");
-            vi.mocked(ctrl.downloadSome).mockResolvedValue("");
+            vi.mocked(ctrl.downloadSelected).mockResolvedValue("");
             vi.mocked(documentHelper.download).mockResolvedValue();
         });
 
         afterAll(() => {
             vi.mocked(ctrl.downloadAll).mockRestore();
-            vi.mocked(ctrl.downloadSome).mockRestore();
+            vi.mocked(ctrl.downloadSelected).mockRestore();
             vi.mocked(documentHelper.download).mockRestore();
         });
 
         describe.each`
-            case               | downloadMethodName | flatSelectedDocs
-            ${"download all"}  | ${"downloadAll"}   | ${[]}
-            ${"download some"} | ${"downloadSome"}  | ${["some"]}
+            case               | downloadMethodName    | flatSelectedDocs
+            ${"download all"}  | ${"downloadAll"}      | ${[]}
+            ${"download some"} | ${"downloadSelected"} | ${["some"]}
         `("case $case", ({ downloadMethodName, flatSelectedDocs }) => {
             it("calls $downloadMethodName", async () => {
                 ctrl.flatSelectedDocs = { value: flatSelectedDocs };
@@ -356,7 +356,7 @@ describe("Documents.controller", () => {
         });
     });
 
-    describe("downloadSome", () => {
+    describe("downloadSelected", () => {
         const DOCS = "test" as unknown as DocumentEntity[];
 
         beforeAll(() => {
@@ -370,7 +370,7 @@ describe("Documents.controller", () => {
 
         it("gets docs' blob for selected docs", async () => {
             vi.spyOn(ctrl.flatSelectedDocs, "value", "get").mockReturnValueOnce(DOCS);
-            await ctrl.downloadSome();
+            await ctrl.downloadSelected();
             expect(documentService.getSomeDocs).toHaveBeenCalledWith(DOCS);
             resetController();
         });
@@ -379,7 +379,7 @@ describe("Documents.controller", () => {
             const BLOB = "BLOB" as unknown as Blob;
             vi.mocked(documentService.getSomeDocs).mockResolvedValueOnce(BLOB);
             const expected = BLOB;
-            const actual = await ctrl.downloadSome();
+            const actual = await ctrl.downloadSelected();
             expect(actual).toBe(expected);
         });
     });
