@@ -1,4 +1,7 @@
-import Provider from "../@types/IProvider";
+import { ApplicationDto, DemandeSubvention } from "dto";
+import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
+import GrantProvider from "../../grant/@types/GrantProvider";
+import { RawGrant } from "../../grant/@types/rawGrant";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import SubventiaParser from "./subventia.parser";
 import SubventiaValidator from "./validators/subventia.validator";
@@ -7,7 +10,7 @@ import subventiaRepository from "./repositories/subventia.repository";
 import { SubventiaDbo } from "./@types/subventia.entity";
 import SubventiaDto from "./@types/subventia.dto";
 
-export class SubventiaService implements Provider {
+export class SubventiaService implements DemandesSubventionsProvider, GrantProvider {
     provider = {
         name: "Subventia",
         type: ProviderEnum.raw,
@@ -15,15 +18,15 @@ export class SubventiaService implements Provider {
         id: "subventia",
     };
 
-    public processSubventiaData(filePath: string) {
+    public processSubventiaData(filePath: string, exportDate: Date) {
         const parsedData = SubventiaParser.parse(filePath);
         const sortedData = SubventiaValidator.sortDataByValidity(parsedData);
-        const applications = this.getApplications(sortedData["valids"]);
+        const applications = this.getApplications(sortedData["valids"], exportDate);
 
         return applications;
     }
 
-    private getApplications(validData) {
+    private getApplications(validData: SubventiaDto[], exportDate: Date) {
         /* to each application is associated in raw date a list of 12 lines
             corresponding to 12 items of expenditures
         */
@@ -31,7 +34,7 @@ export class SubventiaService implements Provider {
         const groupedLinesArr: SubventiaDto[][] = Object.values(grouped);
         const applications = groupedLinesArr.map(groupedLine => {
             const application = this.mergeToApplication(groupedLine);
-            const entity = SubventiaAdapter.applicationToEntity(application);
+            const entity = SubventiaAdapter.applicationToEntity(application, exportDate);
             return {
                 ...entity,
                 __data__: groupedLine,
@@ -65,6 +68,60 @@ export class SubventiaService implements Provider {
 
     async createEntity(entity: Omit<SubventiaDbo, "_id">) {
         return subventiaRepository.create(entity);
+    }
+
+    /**
+     * |-------------------------|
+     * |   Demande Part          |
+     * |-------------------------|
+     */
+
+    isDemandesSubventionsProvider = true;
+
+    async getDemandeSubventionBySiret(siret: string) {
+        const applications = await subventiaRepository.findBySiret(siret);
+        return applications.map(dbo => SubventiaAdapter.toDemandeSubventionDto(dbo));
+    }
+
+    async getDemandeSubventionBySiren(siren: string) {
+        const applications = await subventiaRepository.findBySiren(siren);
+        return applications.map(dbo => SubventiaAdapter.toDemandeSubventionDto(dbo));
+    }
+
+    getDemandeSubventionByRna(): Promise<DemandeSubvention[] | null> {
+        return Promise.resolve(null);
+    }
+
+    /**
+     * |-------------------------|
+     * |   Raw Grant Part        |
+     * |-------------------------|
+     */
+
+    isGrantProvider = true;
+
+    async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
+        return (await subventiaRepository.findBySiret(siret)).map(grant => ({
+            provider: this.provider.id,
+            type: "application",
+            data: grant,
+        }));
+    }
+
+    async getRawGrantsBySiren(siren: string): Promise<RawGrant[] | null> {
+        return (await subventiaRepository.findBySiren(siren)).map(grant => ({
+            provider: this.provider.id,
+            type: "application",
+            data: grant,
+        }));
+    }
+
+    getRawGrantsByRna(): Promise<RawGrant[] | null> {
+        return Promise.resolve(null);
+    }
+
+    rawToCommon(raw: RawGrant): ApplicationDto {
+        return SubventiaAdapter.toCommon(raw.data as SubventiaDbo);
     }
 }
 

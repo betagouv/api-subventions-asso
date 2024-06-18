@@ -6,14 +6,16 @@ export default interface SubventiaEntity {
     service_instructeur: string;
     annee_demande: number;
     siret: Siret;
-    date_commision: Date;
+    date_commission: Date;
     montants_accorde: number;
     montants_demande: number;
     dispositif: string;
     sous_dispositif: string;
-    status: ApplicationStatus;
+    status: string;
+    statut_label: ApplicationStatus;
     reference_demande: string;
     provider: string;
+    exportDate: Date;
 }
 /* __data__ est un tableau de SubventiaDto car dans les données brutes, 
     il y a 12 lignes pour une même subvention. Une ligne par poste de dépense 

@@ -213,6 +213,7 @@ Array [
     "annee_demande": 2022,
     "date_commision": 2022-09-06T00:00:00.000Z,
     "dispositif": "lot",
+    "exportDate": 2024-03-12T00:00:00.000Z,
     "montants_accorde": 7297669,
     "montants_demande": 174938378,
     "provider": "subventia",
@@ -220,7 +221,8 @@ Array [
     "service_instructeur": "environmental",
     "siret": "89666782366082",
     "sous_dispositif": "religious",
-    "status": "Accordé",
+    "status": "SOLDE",
+    "statut_label": "Accordé",
   },
   Object {
     "__data__": Array [
@@ -433,6 +435,7 @@ Array [
     "annee_demande": 2022,
     "date_commision": 2022-02-05T00:00:00.000Z,
     "dispositif": "drive",
+    "exportDate": 2024-03-12T00:00:00.000Z,
     "montants_accorde": 42500,
     "montants_demande": 1935139487,
     "provider": "subventia",
@@ -440,7 +443,8 @@ Array [
     "service_instructeur": "as",
     "siret": "75672982295629",
     "sous_dispositif": "property",
-    "status": "Accordé",
+    "status": "VOTE",
+    "statut_label": "Accordé",
   },
   Object {
     "__data__": Array [
@@ -653,6 +657,7 @@ Array [
     "annee_demande": 2022,
     "date_commision": 2022-05-22T00:00:00.000Z,
     "dispositif": "agency",
+    "exportDate": 2024-03-12T00:00:00.000Z,
     "montants_accorde": 86655,
     "montants_demande": 824957325,
     "provider": "subventia",
@@ -660,7 +665,8 @@ Array [
     "service_instructeur": "fight",
     "siret": "63944186840583",
     "sous_dispositif": "where",
-    "status": "Accordé",
+    "status": "SOLDE",
+    "statut_label": "Accordé",
   },
   Object {
     "__data__": Array [
@@ -873,6 +879,7 @@ Array [
     "annee_demande": 2022,
     "date_commision": 2022-11-13T00:00:00.000Z,
     "dispositif": "lay",
+    "exportDate": 2024-03-12T00:00:00.000Z,
     "montants_accorde": 6653345,
     "montants_demande": 9296405,
     "provider": "subventia",
@@ -880,7 +887,8 @@ Array [
     "service_instructeur": "section",
     "siret": "77865718306041",
     "sous_dispositif": "nation",
-    "status": "En instruction",
+    "status": "INSTRUCTION",
+    "statut_label": "En instruction",
   },
 ]
 `;

@@ -11,14 +11,16 @@ const MOCK_ENTITIES: Omit<SubventiaDbo, "_id">[] = [
         service_instructeur: "Service 1",
         annee_demande: 2022,
         siret: "12345678901234",
-        date_commision: new Date(2022, 1, 1),
+        date_commission: new Date(2022, 1, 1),
         montants_accorde: 1000,
         montants_demande: 2000,
         dispositif: "Dispositif 1",
         sous_dispositif: "Sous-dispositif 1",
-        status: ApplicationStatus.REFUSED,
+        statut_label: ApplicationStatus.REFUSED,
+        status: "Refused",
         reference_demande: "Ref 1",
         provider: "Provider 1",
+        exportDate: new Date("2022-01-01"),
         __data__: [
             {
                 "Financeur Principal": "Financeur 1",
@@ -50,12 +52,14 @@ const MOCK_ENTITIES: Omit<SubventiaDbo, "_id">[] = [
         service_instructeur: "Service 2",
         annee_demande: 2023,
         siret: "23456789012345",
-        date_commision: new Date(2023, 2, 2),
+        date_commission: new Date(2023, 2, 2),
         montants_accorde: 3000,
         montants_demande: 4000,
         dispositif: "Dispositif 2",
         sous_dispositif: "Sous-dispositif 2",
-        status: ApplicationStatus.GRANTED,
+        statut_label: ApplicationStatus.GRANTED,
+        status: "Granted",
+        exportDate: new Date("2023-02-02"),
         reference_demande: "Ref 2",
         provider: "Provider 2",
         __data__: [
@@ -117,7 +121,7 @@ describe("SubventiaCli", () => {
     it("should call ProcessSubventiaData", async () => {
         //@ts-expect-error
         await subventiaCli._parse(mockFile, mockLogs, mockExportDate);
-        expect(subventiaService.processSubventiaData).toHaveBeenCalledWith(mockFile);
+        expect(subventiaService.processSubventiaData).toHaveBeenCalledWith(mockFile, mockExportDate);
     });
 
     it.each`

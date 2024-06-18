@@ -14,7 +14,7 @@ export default class SubventiaCli extends CliController {
     protected logFileParsePath = "./logs/subventia.parse.log.txt";
 
     protected async _parse(file: string, logs, exportDate) {
-        const entities = subventiaService.processSubventiaData(file);
+        const entities = subventiaService.processSubventiaData(file, new Date(exportDate));
 
         const totalEntities = entities.length;
 

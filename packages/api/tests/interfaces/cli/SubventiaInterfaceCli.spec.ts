@@ -15,6 +15,8 @@ describe("Subventia Cli", () => {
             // @ts-expect-error protected method
             await cli._parse(
                 path.resolve(__dirname, "../../../src/modules/providers/subventia/__fixtures__/SUBVENTIA.xlsx"),
+                "",
+                "2024-03-12",
             );
             const entities = await subventiaRepository.findAll();
             const expectedAny = entities.map(_entity => ({
