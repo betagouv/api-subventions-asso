@@ -7,7 +7,7 @@
 
     const controller = new DocumentCardController(document);
     const { isSelected } = controller;
-    $: value = $isSelected ? document : undefined; // here because it would be very heavy to go through controller
+    $: $isSelected = value !== undefined;
 </script>
 
 <div class="card-container fr-grid-row fr-col-12" class:--selected={$isSelected}>
@@ -18,7 +18,8 @@
                 id="documents-to-download-{controller.checkBoxId}"
                 aria-describedby="description-document-{controller.checkBoxId}"
                 type="checkbox"
-                bind:checked={$isSelected} />
+                bind:checked={$isSelected}
+                on:change={() => (value = controller.newValueOnCheck())} />
             <label class="fr-label fr-sr-only" for="documents-to-download-{controller.checkBoxId}">
                 Sélectionner pour téléchargement groupé
             </label>
