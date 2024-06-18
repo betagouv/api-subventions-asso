@@ -1,6 +1,7 @@
 import {
     GetAssociationResponseDto,
     GetEtablissementsResponseDto,
+    GetGrantsResponseDto,
     GetSubventionsResponseDto,
     GetPaymentsResponseDto,
     GetDocumentsResponseDto,
@@ -63,13 +64,15 @@ export class AssociationHttp extends Controller {
     }
 
     /**
-     * @summary Recherche toutes les informations des subventions d'un association (demandes ET versements)
-     * @param identifier
+     *
+     * @summary Recherche toutes les informations des subventions d'une association (demandes ET versements)
+     * @param identifier RNA ou SIREN de l'association
+     * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
      */
     @Get("/{identifier}/grants")
-    public getGrants(identifier: AssociationIdentifiers) {
-        // adapter en demandeSub à la fin
-        return grantService.getGrants(identifier);
+    public async getGrants(identifier: AssociationIdentifiers): Promise<GetGrantsResponseDto> {
+        const grants = await grantService.getGrants(identifier);
+        return { subventions: grants };
     }
 
     /**
