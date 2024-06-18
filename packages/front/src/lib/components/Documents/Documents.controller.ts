@@ -1,3 +1,4 @@
+import type { Siret } from "dto";
 import { getSiegeSiret } from "$lib/resources/associations/association.helper";
 import Store, { derived, ReadStore } from "$lib/core/Store";
 import associationService from "$lib/resources/associations/association.service";
@@ -7,7 +8,7 @@ import { currentAssociation } from "$lib/store/association.store";
 import type { ResourceType } from "$lib/types/ResourceType";
 import type { DocumentEntity } from "$lib/entities/DocumentEntity";
 import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
-import documentService, { type LabeledDoc } from "$lib/resources/document/document.service";
+import documentService from "$lib/resources/document/document.service";
 import documentHelper from "$lib/helpers/document.helper";
 import { returnInfinitePromise } from "$lib/helpers/promiseHelper";
 
@@ -16,39 +17,28 @@ const resourceNameWithDemonstrativeByType = {
     establishment: "cet établissement",
 };
 const estabDocsTitleByType = {
-    association: "Pièces complémentaires déposées par le siège social",
-    establishment: "Pièces complémentaires déposées par l'établissement",
-};
-
-const sortLabeledDocs = (docs: LabeledDoc[]) =>
-    docs.sort((docA, docB) => Number(docB.showByDefault) - Number(docA.showByDefault));
-
-type GroupedDocs = null | {
-    assoDocs: LabeledDoc[];
-    estabDocs: LabeledDoc[];
-    moreAssoDocs: LabeledDoc[];
-    moreEstabDocs: LabeledDoc[];
-    someAsso: boolean;
-    someEstab: boolean;
-    some: boolean;
-    fullSome: boolean;
+    association: "Pièces complémentaires déposées par un établissement",
+    establishment: "Pièces complémentaires déposées par un établissement",
 };
 
 export class DocumentsController {
-    documentsPromise;
+    documentsPromise: Store<
+        Promise<null | {
+            assoDocs: DocumentEntity[];
+            estabDocs: DocumentEntity[];
+            some: boolean;
+        }>
+    >;
     element?: HTMLElement;
     zipPromise: Store<Promise<void | null>>;
-    public showMoreAsso: Store<boolean>;
-    public showMoreEstab: Store<boolean>;
     public selectedDocsOrNull: Store<{
         assoDocs: (DocumentEntity | undefined)[];
         estabDocs: (DocumentEntity | undefined)[];
-        moreAssoDocs: (DocumentEntity | undefined)[];
-        moreEstabDocs: (DocumentEntity | undefined)[];
     }>;
     public flatSelectedDocs: ReadStore<DocumentEntity[]>;
     private identifier: string;
     public downloadBtnLabel: ReadStore<string>;
+    private allFlatDocs: DocumentEntity[];
 
     constructor(
         public resourceType: ResourceType,
@@ -61,13 +51,10 @@ export class DocumentsController {
         this.documentsPromise = new Store(returnInfinitePromise());
         this.zipPromise = new Store(Promise.resolve(null));
         this.resource = resource;
-        this.showMoreAsso = new Store(false);
-        this.showMoreEstab = new Store(false);
+        this.allFlatDocs = [];
         this.selectedDocsOrNull = new Store({
             assoDocs: [],
             estabDocs: [],
-            moreAssoDocs: [],
-            moreEstabDocs: [],
         });
         this.flatSelectedDocs = derived(this.selectedDocsOrNull, nested =>
             Object.values(nested).reduce(
@@ -98,78 +85,61 @@ export class DocumentsController {
 
     async _getAssociationDocuments(association: AssociationEntity) {
         const associationDocuments = await associationService.getDocuments(association.rna || association.siren);
-        return documentService.labelAssoDocsBySiret(associationDocuments, getSiegeSiret(association));
+        return this._filterAssoDocs(associationDocuments, getSiegeSiret(association));
     }
 
-    async _getEstablishmentDocuments(establishment): Promise<LabeledDoc[]> {
-        const association = currentAssociation.value;
-        if (!association) return [];
-        const estabDocsPromise: Promise<LabeledDoc[]> = establishmentService
-            .getDocuments(establishment.siret)
-            .then(docs => docs.map(doc => ({ ...doc, showByDefault: true } as LabeledDoc)));
-        const assoDocsPromise = associationService
-            .getDocuments(association.rna || association.siren)
-            .then(docs => documentService.labelAssoDocsBySiret(docs, establishment.siret));
-        const [estabDocs, assoDocs] = await Promise.all([estabDocsPromise, assoDocsPromise]);
-        return this._removeDuplicates([...estabDocs, ...assoDocs]) as LabeledDoc[];
+    private _filterAssoDocs(docs: DocumentEntity[], siret: Siret) {
+        // display rules from #2455: we show all docs except RIBs from other establishments than the one looked up
+        // or the head establishment of the association that is looked up
+        return docs.filter(doc => doc.type !== "RIB" || !doc.__meta__.siret || doc.__meta__.siret === siret);
     }
 
-    _removeDuplicates(docs: DocumentEntity[] | LabeledDoc[]): DocumentEntity[] | LabeledDoc[] {
+    _removeDuplicates(docs: DocumentEntity[]) {
+        // association docs and establishment docs may be redundant
         const docsByUrl = {};
         for (const doc of docs) {
             docsByUrl[doc.url] = doc;
         }
-        return Object.values(docsByUrl);
+        return Object.values(docsByUrl) as DocumentEntity[];
     }
 
-    _organizeDocuments(miscDocs: LabeledDoc[]): GroupedDocs {
-        const partition = (docs: LabeledDoc[]) => {
-            const more: LabeledDoc[] = [];
-            const defaultShown: LabeledDoc[] = [];
-            for (const doc of docs) (doc.showByDefault ? defaultShown : more).push(doc);
-            return { more, defaultShown };
-        };
-
-        const fullAssoDocs: LabeledDoc[] = [];
-        const fullEstabDocs: LabeledDoc[] = [];
+    _organizeDocuments(miscDocs: DocumentEntity[]) {
+        const assoDocs: DocumentEntity[] = [];
+        const estabDocs: DocumentEntity[] = [];
         for (const doc of miscDocs) {
-            if (["Le Compte Asso", "Dauphin"].includes(doc.provider)) fullEstabDocs.push(doc);
-            if (["RNA", "Avis de Situation Insee"].includes(doc.provider)) fullAssoDocs.push(doc);
-            // careful: no default case
+            if (["Le Compte Asso", "Dauphin"].includes(doc.provider)) estabDocs.push(doc);
+            if (["RNA", "Avis de Situation Insee"].includes(doc.provider)) assoDocs.push(doc);
         }
-        sortLabeledDocs(fullAssoDocs);
-        sortLabeledDocs(fullEstabDocs);
-        const { defaultShown: assoDocs, more: moreAssoDocs } = partition(fullAssoDocs);
-        const { defaultShown: estabDocs, more: moreEstabDocs } = partition(fullEstabDocs);
-        return {
-            moreAssoDocs,
-            moreEstabDocs,
-            assoDocs,
-            estabDocs,
-            someAsso: !!fullAssoDocs.length,
-            someEstab: !!fullEstabDocs.length,
-            some: !!(assoDocs.length + estabDocs.length),
-            fullSome: !!(fullAssoDocs.length + fullEstabDocs.length),
-        };
+        return { assoDocs, estabDocs, some: !!(assoDocs.length + estabDocs.length) };
+    }
+
+    async _getEstablishmentDocuments(establishment) {
+        const association = currentAssociation.value;
+        if (!association) return [];
+        const estabDocsPromise = establishmentService.getDocuments(establishment.siret);
+        const assoDocsPromise = associationService
+            .getDocuments(association.rna || association.siren)
+            .then(docs => this._filterAssoDocs(docs, establishment.siret));
+        const [estabDocs, assoDocs] = await Promise.all([estabDocsPromise, assoDocsPromise]);
+        return this._removeDuplicates([...estabDocs, ...assoDocs]);
     }
 
     async onMount() {
         // get documents on mount
         // Svelte component mounted so bind:this replaced this.element with current node element
         await waitElementIsVisible(this.element as HTMLElement);
-        const promise = this._getterByType(this.resource).then(docs => this._organizeDocuments(docs));
+        const promise = this._getterByType(this.resource).then(docs => {
+            this.allFlatDocs = docs;
+            return this._organizeDocuments(docs);
+        });
         this.documentsPromise.set(promise);
-    }
-
-    switchDisplay(show: Store<boolean>) {
-        show.set(!show.value);
     }
 
     /* handle group download */
 
     async download() {
         let requestPromise: Promise<Blob>;
-        if (this.flatSelectedDocs.value.length) requestPromise = this.downloadSome();
+        if (this.flatSelectedDocs.value.length) requestPromise = this.downloadSelected();
         else requestPromise = this.downloadAll();
         const promise = requestPromise.then(blob => documentHelper.download(blob, `documents_${this.identifier}.zip`));
         setTimeout(() => {
@@ -179,10 +149,11 @@ export class DocumentsController {
     }
 
     private downloadAll() {
-        return documentService.getAllDocs(this.identifier);
+        // this method does not actually downloads all docs available but all those displayed
+        return documentService.getSomeDocs(this.allFlatDocs);
     }
 
-    private downloadSome() {
+    private downloadSelected() {
         const docs = this.flatSelectedDocs.value;
         return documentService.getSomeDocs(docs);
     }
