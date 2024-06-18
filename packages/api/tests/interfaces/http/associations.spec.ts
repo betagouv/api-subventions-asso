@@ -49,6 +49,11 @@ const insertData = async () => {
 };
 
 describe("/association", () => {
+    // SIREN must be from an association
+    const SIREN = siretToSiren(DEFAULT_ASSOCIATION.siret);
+    const SIRET = DEFAULT_ASSOCIATION.siret;
+    const RNA = DEFAULT_ASSOCIATION.rna;
+
     beforeEach(async () => {
         await insertData();
         mockExternalData();
@@ -165,15 +170,19 @@ describe("/association", () => {
         });
     });
 
-    describe.only("/{identifier}/grants", () => {
+    describe("/{identifier}/grants", () => {
         it("should return grants with rna", async () => {
-            await rnaSirenService.insert(DEFAULT_ASSOCIATION.rna, DEFAULT_ASSOCIATION.siren);
+            await rnaSirenService.insert(RNA, SIRET);
             const response = await request(g.app)
-                .get(`/association/${DEFAULT_ASSOCIATION.rna}/grants`)
+                .get(`/association/${RNA}/grants`)
                 .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchSnapshot();
+        });
+
+        it("should return grants with siren", async () => {
+            await rnaSirenPort.insert({ siren: SIREN, rna: OsirisRequestEntityFixture.legalInformations.rna as Rna });
         });
     });
 
@@ -196,8 +205,7 @@ describe("/association", () => {
 
         it("should return raw grants with siren", async () => {
             // SIREN must be from an association
-            const SIREN = siretToSiren(OsirisRequestEntityFixture.legalInformations.siret);
-            await rnaSirenPort.insert({ siren: SIREN, rna: OsirisRequestEntityFixture.legalInformations.rna as Rna });
+            await rnaSirenPort.insert({ siren: SIREN, rna: RNA });
 
             const response = await request(g.app)
                 .get(`/association/${SIREN}/raw-grants`)
@@ -208,9 +216,9 @@ describe("/association", () => {
         });
 
         it("should return raw grants with rna", async () => {
-            await rnaSirenService.insert(DEFAULT_ASSOCIATION.rna, DEFAULT_ASSOCIATION.siren);
+            await rnaSirenService.insert(RNA, SIREN);
             const response = await request(g.app)
-                .get(`/association/${DEFAULT_ASSOCIATION.rna}/raw-grants`)
+                .get(`/association/${RNA}/raw-grants`)
                 .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
@@ -220,7 +228,7 @@ describe("/association", () => {
         it("should return empty array if identifier is RNA and no SIREN matched", async () => {
             const expected = [];
             const response = await request(g.app)
-                .get(`/association/${DEFAULT_ASSOCIATION.rna}/raw-grants`)
+                .get(`/association/${RNA}/raw-grants`)
                 .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);

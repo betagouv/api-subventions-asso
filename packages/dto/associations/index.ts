@@ -8,3 +8,4 @@ export * from "./GetEtablissementsResponseDto";
 export * from "./GetSubventionResponseDto";
 export * from "./GetSubventionsResponseDto";
 export * from "./GetPaymentsResponseDto";
+export * from "./GetGrantsResponseDto";

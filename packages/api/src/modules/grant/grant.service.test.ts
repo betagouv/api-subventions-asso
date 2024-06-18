@@ -9,7 +9,6 @@ import associationsService from "../associations/associations.service";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import RnaSirenEntity from "../../entities/RnaSirenEntity";
 import { JoinedRawGrant, RawApplication, RawFullGrant, RawGrant, RawPayment } from "./@types/rawGrant";
-import { application } from "express";
 import * as Sentry from "@sentry/node";
 jest.mock("@sentry/node");
 
@@ -359,7 +358,6 @@ describe("GrantService", () => {
                 LONELY_PAYMENT,
             ]);
 
-            console.log(actual);
             expect(actual).toEqual(expected);
         });
     });
