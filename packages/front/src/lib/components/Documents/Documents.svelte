@@ -40,16 +40,31 @@
                 <Alert type="info" title="Le téléchargement des fichiers va démarrer d’ici à 8 secondes." />
             {/await}
 
-            <div class="fr-grid-row fr-mb-4w fr-mt-6w">
+            <div class="fr-grid-row fr-mb-1w fr-mt-6w">
                 <div class="fr-ml-auto">
-                    <Button
-                        iconPosition="right"
-                        icon="download-line"
-                        trackerName="download-zip"
-                        title={$downloadBtnLabel}
-                        on:click={() => controller.download()}>
-                        {$downloadBtnLabel}
-                    </Button>
+                    <ul
+                        class="fr-btns-group fr-btns-group--inline-reverse fr-btns-group--inline-sm fr-btns-group--icon-right fr-btns-group--right">
+                        <li>
+                            <Button
+                                iconPosition="right"
+                                icon="download-line"
+                                trackerName="download-zip"
+                                title={$downloadBtnLabel}
+                                on:click={() => controller.download()}>
+                                {$downloadBtnLabel}
+                            </Button>
+                        </li>
+                        <li>
+                            <Button
+                                type="tertiary"
+                                outline={false}
+                                trackerName="reset-docs-selection"
+                                title="Réinitialiser la sélection de documents"
+                                on:click={() => controller.resetSelection()}>
+                                Réinitialiser
+                            </Button>
+                        </li>
+                    </ul>
                 </div>
             </div>
 
@@ -80,16 +95,21 @@
                     {/each}
                 </section>
             {/if}
-            <div class="fr-sr-only">
-                <Button
-                    iconPosition="right"
-                    icon="download-line"
-                    trackerName="download-zip"
-                    title={$downloadBtnLabel}
-                    on:click={() => controller.download()}>
-                    {$downloadBtnLabel}
-                </Button>
-            </div>
+            <ul class="fr-sr-only">
+                <li>
+                    <Button trackerName="download-zip" title={$downloadBtnLabel} on:click={() => controller.download()}>
+                        {$downloadBtnLabel}
+                    </Button>
+                </li>
+                <li>
+                    <Button
+                        trackerName="reset-docs-selection"
+                        on:click={() => controller.resetSelection()}
+                        title="Réinitialiser la sélection de documents">
+                        Réinitialiser
+                    </Button>
+                </li>
+            </ul>
         {:else}
             <DataNotFound
                 content="Nous sommes désolés, nous n'avons trouvé aucun document sur {controller.resourceNameWithDemonstrative}" />
