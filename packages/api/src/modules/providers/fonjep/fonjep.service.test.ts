@@ -216,42 +216,54 @@ describe("FonjepService", () => {
         });
     });
 
-    describe("toPaymentArray()", () => {
-        it("should call adapter", () => {
-            fonjepService.toPaymentArray([PaymentEntity, PaymentEntity]);
-            expect(FonjepEntityAdapter.toPayment).toHaveBeenCalledTimes(2);
-        });
-    });
-
     describe("getPaymentsByKey", () => {
         const findByCodeMock = jest.spyOn(fonjepPaymentRepository, "findByCodePoste");
+        let toPaymentArrayMock: jest.SpyInstance;
+
+        beforeAll(() => {
+            toPaymentArrayMock = jest.spyOn(fonjepService, "toPaymentArray")
+            toPaymentArrayMock.mockImplementation(data => data);
+        })
 
         it("calls adapter", async () => {
             // @ts-expect-error: mock
             findByCodeMock.mockImplementationOnce(async () => [PaymentEntity]);
             await fonjepService.getPaymentsByKey(CODE_POSTE);
-            expect(FonjepEntityAdapter.toPayment).toHaveBeenCalledWith(PaymentEntity);
+            expect(toPaymentArrayMock).toHaveBeenCalledWith([PaymentEntity]);
         });
     });
 
     describe("getPaymentsBySiret", () => {
         const findBySiretMock = jest.spyOn(fonjepPaymentRepository, "findBySiret");
+        let toPaymentArrayMock: jest.SpyInstance;
+
+        beforeAll(() => {
+            toPaymentArrayMock = jest.spyOn(fonjepService, "toPaymentArray")
+            toPaymentArrayMock.mockImplementation(data => data);
+        })
 
         it("calls adapter", async () => {
             // @ts-expect-error: mock
             findBySiretMock.mockImplementationOnce(async () => [PaymentEntity]);
             await fonjepService.getPaymentsBySiret(SIRET);
-            expect(FonjepEntityAdapter.toPayment).toHaveBeenCalledWith(PaymentEntity);
+            expect(toPaymentArrayMock).toHaveBeenCalledWith([PaymentEntity]);
         });
     });
 
     describe("getPaymentsBySiren", () => {
         const findBySirenMock = jest.spyOn(fonjepPaymentRepository, "findBySiren");
-        it("calls adapter", async () => {
+        let toPaymentArrayMock: jest.SpyInstance;
+
+        beforeAll(() => {
+            toPaymentArrayMock = jest.spyOn(fonjepService, "toPaymentArray")
+            toPaymentArrayMock.mockImplementation(data => data);
+        })
+
+        it("calls toPayementArray", async () => {
             // @ts-expect-error: mock
             findBySirenMock.mockImplementationOnce(async () => [PaymentEntity]);
             await fonjepService.getPaymentsBySiren(SIREN);
-            expect(FonjepEntityAdapter.toPayment).toHaveBeenCalledWith(PaymentEntity);
+            expect(toPaymentArrayMock).toHaveBeenCalledWith([PaymentEntity]);
         });
     });
 

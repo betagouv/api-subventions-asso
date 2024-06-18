@@ -94,29 +94,28 @@ export class ChorusService extends ProviderCore implements PaymentProvider, Gran
     async getPaymentsBySiret(siret: Siret) {
         const requests = await chorusLineRepository.findBySiret(siret);
 
-        return this.toVersementArray(requests);
+        return this.toPaymentArray(requests);
     }
 
     async getPaymentsBySiren(siren: Siren) {
         const requests = await chorusLineRepository.findBySiren(siren);
 
-        return this.toVersementArray(requests);
+        return this.toPaymentArray(requests);
     }
 
     async getPaymentsByKey(ej: string) {
         const requests = await chorusLineRepository.findByEJ(ej);
 
-        return this.toVersementArray(requests);
+        return this.toPaymentArray(requests);
     }
 
-    private async toVersementArray(documents: WithId<ChorusLineEntity>[]) {
+    private async toPaymentArray(documents: WithId<ChorusLineEntity>[]) {
         const programs = await dataBretagneService.findProgramsRecord();
-        return documents.map(document =>
-            ChorusAdapter.toPayment(
-                document,
-                programs[parseInt(document.indexedInformations.codeDomaineFonctionnel.slice(0, 4), 10)],
-            ),
-        );
+        return documents.map(document => {
+            const codeProgramme = parseInt(document.indexedInformations.codeDomaineFonctionnel.slice(0, 4), 10); // for exemple codeDomaineFonctionnel = "0143-03-01", codeProgramme = 143
+
+            return ChorusAdapter.toPayment(document, programs[codeProgramme]);
+        });
     }
 
     /**

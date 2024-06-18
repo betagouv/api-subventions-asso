@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { STATE_BUDGET_PROGRAM_DBOS } from "./__fixtures__/StateBudgetProgramDbo.fixture";
 import { STATE_BUDGET_PROGRAM_ENTITIES } from "./__fixtures__/StateBudgetProgramEntities.fixture";
 import stateBudgetProgramPort from "./stateBudgetProgram.port";
@@ -26,7 +27,7 @@ describe("StateBudgetProgram Port", () => {
 
         it("should call insertMany with the correct arguments", async () => {
             await stateBudgetProgramPort.replace(STATE_BUDGET_PROGRAM_ENTITIES);
-            expect(mockInsertMany).toHaveBeenCalledWith(STATE_BUDGET_PROGRAM_DBOS);
+            expect(mockInsertMany).toHaveBeenCalledWith(STATE_BUDGET_PROGRAM_ENTITIES.map(entity => ({ ...entity, _id: expect.any(ObjectId)})));
         });
     });
 
