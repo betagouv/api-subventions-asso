@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/node";
-import { CommonGrantDto, Rna, Siret } from "dto";
+import { CommonGrantDto, Grant, Rna, Siret } from "dto";
 import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import providers from "../providers";
@@ -12,7 +12,7 @@ import rnaSirenService from "../rna-siren/rnaSiren.service";
 import { siretToSiren } from "../../shared/helpers/SirenHelper";
 import { BadRequestError } from "../../shared/errors/httpErrors";
 import { RnaOnlyError } from "../../shared/errors/GrantError";
-import { RawGrant, JoinedRawGrant } from "./@types/rawGrant";
+import { RawGrant, JoinedRawGrant, RawFullGrant, RawApplication, RawPayment, AnyRawGrant } from "./@types/rawGrant";
 import GrantProvider from "./@types/GrantProvider";
 import commonGrantService from "./commonGrant.service";
 
@@ -67,7 +67,7 @@ export class GrantService {
 
     // appeler adapter pour chaque joine.application joine.payment et joine.fullGrant
     // implementer une classe GrantAdapter pour chaque adapter de demande et de paiment
-    async getGrants(identifier: StructureIdentifiers) {
+    async getGrants(identifier: StructureIdentifiers): Promise<Grant[]> {
         const joinedRawGrants = await this.getRawGrants(identifier);
         // parcours chaque joinedRawGrant
         // joinedRawGrants.map(joined => {
@@ -85,7 +85,7 @@ export class GrantService {
         //     }
         // });
         // TODO: adapte to DemandeSubventionDto
-        return joinedRawGrants;
+        return [];
     }
 
     /**
@@ -136,28 +136,81 @@ export class GrantService {
         ) as unknown as GrantProvider[];
     }
 
-    // on se dit que fullgrant n'a pas de payments => message Sentry
-    // et on a des application avec des payments
-    // pas de doublon application ou fullGrants => message
-    private joinGrants(rawGrants: RawGrant[]): JoinedRawGrant[] {
-        // TODO maybe think about a more sophisticated system than joinKey to group grants
-        //  (specifically for dauphin/osiris joins with fonjep)
-        const newJoiningGrant = () => ({ payments: [], applications: [], fullGrants: [] } as JoinedRawGrant);
-        const lonelyGrants: JoinedRawGrant[] = [];
+    // Use to spot grants or applications sharing the same joinKey (EJ or code_poste)
+    // This should not happen and must be investiguated
+    private sendDuplicateMessage(joinKey: string) {
+        Sentry.captureMessage(`Duplicate joinKey found for grants or applications :  ${joinKey}`);
+    }
+
+    private groupRawGrantsByType(rawGrants: AnyRawGrant[]) {
+        return rawGrants.reduce(
+            (acc, curr) => {
+                switch (curr.type) {
+                    case "fullGrant":
+                        acc["fullGrants"].push(curr);
+                        break;
+                    case "application":
+                        acc["applications"].push(curr);
+                        break;
+                    case "payment":
+                        acc["payments"].push(curr);
+                        break;
+                }
+                return acc;
+            },
+            {
+                fullGrants: [] as RawFullGrant[],
+                applications: [] as RawApplication[],
+                payments: [] as RawPayment[],
+            },
+        );
+    }
+
+    private joinGrants(rawGrants: AnyRawGrant[]): JoinedRawGrant[] {
         const byKey: Record<string, JoinedRawGrant> = {};
+        //TODO: improve JoinedRawGrant after investiguating duplicates possibilities
+        // i.e accept only { fullGrant: RawFullGrant , payments: RawPayment[] }
+        // and { application: RawApplication, payments: RawPayment[] }
+        const newJoinedRawGrant = () => ({
+            payments: [],
+            applications: [],
+            fullGrants: [],
+        });
+        const addKey = key => (byKey[key] = newJoinedRawGrant());
+        const lonelyGrants: JoinedRawGrant[] = [];
 
-        // organize results
-        for (const rawGrant of rawGrants) {
-            if (!rawGrant.joinKey) {
-                lonelyGrants.push({ [`${rawGrant.type}s`]: [rawGrant] });
-                continue;
-            }
-            if (!(rawGrant.joinKey in byKey)) byKey[rawGrant.joinKey] = newJoiningGrant();
-            // @ts-expect-error: INSPECT THIS LATER (occured after rebase #2446)
-            byKey[rawGrant.joinKey][`${rawGrant.type}s`]?.push(rawGrant);
-        }
+        const add = prop => (rawGrant: Required<AnyRawGrant>) => {
+            if (!byKey[rawGrant.joinKey]) addKey(rawGrant.joinKey);
+            byKey[rawGrant.joinKey][prop].push(rawGrant);
+        };
+        const addOrSendMessage = type => (rawGrant: Required<RawFullGrant> | Required<RawApplication>) => {
+            if (byKey[rawGrant.joinKey]?.[type]) this.sendDuplicateMessage(rawGrant.joinKey);
+            else add(type)(rawGrant);
+        };
+        const addFullGrant = addOrSendMessage("fullGrants");
+        const addApplication = addOrSendMessage("applications");
+        const addPayment = add("payments");
 
-        // reunite joined, full and lonely grants
+        // TODO: do we want to keep transforming lonely grants into JoinedRawGrant format ?
+        const addLonely = prop => (rawGrant: AnyRawGrant) =>
+            lonelyGrants.push({ ...newJoinedRawGrant(), [prop]: [rawGrant] });
+        const addLonelyFullGrant = addLonely("fullGrants");
+        const addLonelyApplication = addLonely("applications");
+        const addLonelyPayment = addLonely("payments");
+
+        const joiner = (add, addLonely) => grant => {
+            if (grant.joinKey) add(grant);
+            else addLonely(grant);
+        };
+
+        const grantsByType = this.groupRawGrantsByType(rawGrants);
+
+        // order matters if we want fullGrants to be more accurate than applications in case of duplicates
+        // TODO: investiguate if duplicates is something that can happen
+        grantsByType.fullGrants?.forEach(joiner(addFullGrant, addLonelyFullGrant));
+        grantsByType.applications?.forEach(joiner(addApplication, addLonelyApplication));
+        grantsByType.payments?.forEach(joiner(addPayment, addLonelyPayment));
+
         return [...Object.values(byKey), ...lonelyGrants];
     }
 

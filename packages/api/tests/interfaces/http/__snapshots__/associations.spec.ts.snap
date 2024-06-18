@@ -3968,41 +3968,6 @@ Array [
     "payments": Array [],
   },
   Object {
-    "applications": Array [
-      Object {
-        "data": Object {
-          "_id": Any<String>,
-          "actions": Array [],
-          "data": Object {},
-          "legalInformations": Object {
-            "name": "DEFAULT_ASSOCIATION",
-            "rna": "W000000000",
-            "siret": "10000000000001",
-          },
-          "provider": "Osiris",
-          "providerInformations": Object {
-            "amountAwarded": 0,
-            "compteAssoId": "LE_COMPTE_ASSO_ID",
-            "dateCommission": "2022-01-01T00:00:00.000Z",
-            "ej": "EJ00001",
-            "extractYear": 2022,
-            "osirisId": "OSIRIS_ID",
-          },
-          "providerMatchingKeys": Array [
-            "osirisId",
-            "compteAssoId",
-            "ej",
-          ],
-        },
-        "joinKey": "EJ00001",
-        "provider": "osiris",
-        "type": "application",
-      },
-    ],
-    "fullGrants": Array [],
-    "payments": Array [],
-  },
-  Object {
     "applications": Array [],
     "fullGrants": Array [
       Object {
@@ -4037,6 +4002,41 @@ Array [
         "type": "fullGrant",
       },
     ],
+    "payments": Array [],
+  },
+  Object {
+    "applications": Array [
+      Object {
+        "data": Object {
+          "_id": Any<String>,
+          "actions": Array [],
+          "data": Object {},
+          "legalInformations": Object {
+            "name": "DEFAULT_ASSOCIATION",
+            "rna": "W000000000",
+            "siret": "10000000000001",
+          },
+          "provider": "Osiris",
+          "providerInformations": Object {
+            "amountAwarded": 0,
+            "compteAssoId": "LE_COMPTE_ASSO_ID",
+            "dateCommission": "2022-01-01T00:00:00.000Z",
+            "ej": "EJ00001",
+            "extractYear": 2022,
+            "osirisId": "OSIRIS_ID",
+          },
+          "providerMatchingKeys": Array [
+            "osirisId",
+            "compteAssoId",
+            "ej",
+          ],
+        },
+        "joinKey": "EJ00001",
+        "provider": "osiris",
+        "type": "application",
+      },
+    ],
+    "fullGrants": Array [],
     "payments": Array [],
   },
   Object {
@@ -4480,7 +4480,7 @@ Array [
     "payments": Array [],
   },
   Object {
-    "applications": undefined,
+    "applications": Array [],
     "fullGrants": Array [
       Object {
         "data": Object {
@@ -4510,10 +4510,10 @@ Array [
         "type": "fullGrant",
       },
     ],
-    "payments": undefined,
+    "payments": Array [],
   },
   Object {
-    "applications": undefined,
+    "applications": Array [],
     "fullGrants": Array [
       Object {
         "data": Object {
@@ -4543,7 +4543,7 @@ Array [
         "type": "fullGrant",
       },
     ],
-    "payments": undefined,
+    "payments": Array [],
   },
   Object {
     "applications": Array [
@@ -4592,12 +4592,12 @@ Array [
           },
           "producerSlug": "producer-1",
         },
-        "provider": "miscScdl",
+        "provider": "GRANTOR_1",
         "type": "application",
       },
     ],
-    "fullGrants": undefined,
-    "payments": undefined,
+    "fullGrants": Array [],
+    "payments": Array [],
   },
 ]
 `;
@@ -6273,41 +6273,6 @@ Array [
     "payments": Array [],
   },
   Object {
-    "applications": Array [
-      Object {
-        "data": Object {
-          "_id": Any<String>,
-          "actions": Array [],
-          "data": Object {},
-          "legalInformations": Object {
-            "name": "DEFAULT_ASSOCIATION",
-            "rna": "W000000000",
-            "siret": "10000000000001",
-          },
-          "provider": "Osiris",
-          "providerInformations": Object {
-            "amountAwarded": 0,
-            "compteAssoId": "LE_COMPTE_ASSO_ID",
-            "dateCommission": "2022-01-01T00:00:00.000Z",
-            "ej": "EJ00001",
-            "extractYear": 2022,
-            "osirisId": "OSIRIS_ID",
-          },
-          "providerMatchingKeys": Array [
-            "osirisId",
-            "compteAssoId",
-            "ej",
-          ],
-        },
-        "joinKey": "EJ00001",
-        "provider": "osiris",
-        "type": "application",
-      },
-    ],
-    "fullGrants": Array [],
-    "payments": Array [],
-  },
-  Object {
     "applications": Array [],
     "fullGrants": Array [
       Object {
@@ -6342,6 +6307,41 @@ Array [
         "type": "fullGrant",
       },
     ],
+    "payments": Array [],
+  },
+  Object {
+    "applications": Array [
+      Object {
+        "data": Object {
+          "_id": Any<String>,
+          "actions": Array [],
+          "data": Object {},
+          "legalInformations": Object {
+            "name": "DEFAULT_ASSOCIATION",
+            "rna": "W000000000",
+            "siret": "10000000000001",
+          },
+          "provider": "Osiris",
+          "providerInformations": Object {
+            "amountAwarded": 0,
+            "compteAssoId": "LE_COMPTE_ASSO_ID",
+            "dateCommission": "2022-01-01T00:00:00.000Z",
+            "ej": "EJ00001",
+            "extractYear": 2022,
+            "osirisId": "OSIRIS_ID",
+          },
+          "providerMatchingKeys": Array [
+            "osirisId",
+            "compteAssoId",
+            "ej",
+          ],
+        },
+        "joinKey": "EJ00001",
+        "provider": "osiris",
+        "type": "application",
+      },
+    ],
+    "fullGrants": Array [],
     "payments": Array [],
   },
   Object {
@@ -6785,7 +6785,7 @@ Array [
     "payments": Array [],
   },
   Object {
-    "applications": undefined,
+    "applications": Array [],
     "fullGrants": Array [
       Object {
         "data": Object {
@@ -6815,10 +6815,10 @@ Array [
         "type": "fullGrant",
       },
     ],
-    "payments": undefined,
+    "payments": Array [],
   },
   Object {
-    "applications": undefined,
+    "applications": Array [],
     "fullGrants": Array [
       Object {
         "data": Object {
@@ -6848,7 +6848,7 @@ Array [
         "type": "fullGrant",
       },
     ],
-    "payments": undefined,
+    "payments": Array [],
   },
   Object {
     "applications": Array [
@@ -6897,12 +6897,12 @@ Array [
           },
           "producerSlug": "producer-1",
         },
-        "provider": "miscScdl",
+        "provider": "GRANTOR_1",
         "type": "application",
       },
     ],
-    "fullGrants": undefined,
-    "payments": undefined,
+    "fullGrants": Array [],
+    "payments": Array [],
   },
 ]
 `;

@@ -8,6 +8,8 @@ import fonjepJoiner from "./joiners/fonjepJoiner";
 import { FONJEP_PAYMENTS, FONJEP_PAYMENT_ENTITIES } from "./__fixtures__/FonjepEntities";
 import { RawApplication, RawFullGrant, RawPayment } from "../../grant/@types/rawGrant";
 import { DemandeSubvention } from "dto";
+import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
+import FonjepPaymentEntity from "./entities/FonjepPaymentEntity";
 
 jest.mock("./adapters/FonjepEntityAdapter");
 
@@ -388,26 +390,28 @@ describe("FonjepService", () => {
 
     describe("rawToGrant", () => {
         // @ts-expect-error: parameter type
-        const RAW_FULLGRANT: RawFullGrant = { data: { application: { foo: "bar" }, payments: [{ poo: "paz" }] } };
+        const RAW_FULLGRANT: RawFullGrant<FonjepSubventionEntity, FonjepPaymentEntity> = {
+            data: { application: { foo: "bar" }, payments: [{ poo: "paz" }] },
+        };
         // @ts-expect-error: parameter type
-        const GRANT: DemandeSubvention = { application: { foo: "bar" }, payments: [{ poo: "paz" }] };
+        const GRANT: Grant = { application: { foo: "bar" }, payments: [{ poo: "paz" }] };
 
-        it("should call FonjepEntityAdapter.rawToApplication", () => {
-            fonjepService.rawToApplication(RAW_FULLGRANT);
-            expect(FonjepEntityAdapter.rawToApplication).toHaveBeenCalledWith(RAW_FULLGRANT);
+        it("should call FonjepEntityAdapter.rawToGrant", () => {
+            fonjepService.rawToGrant(RAW_FULLGRANT);
+            expect(FonjepEntityAdapter.rawToGrant).toHaveBeenCalledWith(RAW_FULLGRANT);
         });
 
         it("should return DemandeSubvention", () => {
-            jest.mocked(FonjepEntityAdapter.rawToApplication).mockReturnValueOnce(GRANT);
+            jest.mocked(FonjepEntityAdapter.rawToGrant).mockReturnValueOnce(GRANT);
             const expected = GRANT;
-            const actual = fonjepService.rawToApplication(RAW_FULLGRANT);
+            const actual = fonjepService.rawToGrant(RAW_FULLGRANT);
             expect(actual).toEqual(expected);
         });
     });
 
     describe("rawToApplication", () => {
         // @ts-expect-error: parameter type
-        const RAW_APPLICATION: RawApplication = { data: { foo: "bar" } };
+        const RAW_APPLICATION: RawApplication<FonjepSubventionEntity> = { data: { foo: "bar" } };
         // @ts-expect-error: parameter type
         const APPLICATION: DemandeSubvention = { foo: "bar" };
 
@@ -426,7 +430,7 @@ describe("FonjepService", () => {
 
     describe("rawToPayment", () => {
         // @ts-expect-error: parameter type
-        const RAW_PAYMENT: RawPayment = { data: FONJEP_PAYMENT_ENTITIES[0] };
+        const RAW_PAYMENT: RawPayment<FonjepPaymentEntity> = { data: FONJEP_PAYMENT_ENTITIES[0] };
         it("should call FonjepEntityAdapter.rawToPayment", () => {
             fonjepService.rawToPayment(RAW_PAYMENT);
             expect(FonjepEntityAdapter.rawToPayment).toHaveBeenCalledWith(RAW_PAYMENT);

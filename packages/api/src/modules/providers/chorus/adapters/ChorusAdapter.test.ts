@@ -25,7 +25,7 @@ describe("ChorusAdapter", () => {
 
     describe("rawToPayment", () => {
         //@ts-expect-error: parameter type
-        const RAW_PAYMENT: RawPayment = { data: ENTITIES[0] };
+        const RAW_PAYMENT: RawPayment<ChorusLineEntity> = { data: ENTITIES[0] };
 
         let mockToPayment: jest.SpyInstance;
         beforeAll(() => {

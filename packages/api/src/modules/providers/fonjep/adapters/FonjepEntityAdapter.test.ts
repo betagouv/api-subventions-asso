@@ -87,7 +87,7 @@ describe("FonjepEntityAdapter", () => {
 
     describe("rawToApplication", () => {
         // @ts-expect-error: parameter type
-        const RAW_APPLICATION: RawApplication = { data: { foo: "bar" } };
+        const RAW_APPLICATION: RawApplication<FonjepSubventionEntity> = { data: { foo: "bar" } };
         // @ts-expect-error: parameter type
         const APPLICATION: DemandeSubvention = { foo: "bar" };
         let mockToDemandeSubvention: jest.SpyInstance;
@@ -119,7 +119,7 @@ describe("FonjepEntityAdapter", () => {
 
     describe("rawToPayment", () => {
         // @ts-expect-error: parameter type
-        const RAW_PAYMENT: RawPayment = { data: FONJEP_PAYMENT_ENTITIES[0] };
+        const RAW_PAYMENT: RawPayment<FonjepPaymentEntity> = { data: FONJEP_PAYMENT_ENTITIES[0] };
         let mockToPayment: jest.SpyInstance;
 
         beforeAll(() => {
