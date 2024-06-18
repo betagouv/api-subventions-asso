@@ -10,7 +10,6 @@
     import type { ResourceType } from "$lib/types/ResourceType";
     import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
     import Button from "$lib/dsfr/Button.svelte";
-    import OpenCloseButton from "$lib/components/Documents/components/OpenCloseButton.svelte";
 
     // TODO: replace unknown with EstablishmentEntity when created
     export let resource: AssociationEntity | unknown;
@@ -19,7 +18,7 @@
     const controller = new DocumentsController(resourceType, resource);
     const documentsPromise = controller.documentsPromise;
     const zipPromise = controller.zipPromise;
-    const { showMoreAsso, showMoreEstab, selectedDocsOrNull, downloadBtnLabel } = controller;
+    const { selectedDocsOrNull, downloadBtnLabel } = controller;
 
     onMount(() => {
         controller.onMount();
@@ -31,7 +30,7 @@
     {#await $documentsPromise}
         <Spinner description="Chargement des pièces administratives en cours ..." />
     {:then documents}
-        {#if documents?.fullSome}
+        {#if documents?.some}
             <Alert type="info" title="État des fichiers">
                 Certains fichiers peuvent être erronés selon la manière dont ils ont été renseignés auprès de nos
                 fournisseurs de données.
@@ -61,49 +60,25 @@
             </div>
 
             <!-- Asso documents -->
-            {#if documents.someAsso}
+            {#if documents.assoDocs.length}
                 <h3 class="fr-h2 fr-mb-4w">Pièces provenant de l’INSEE et du RNA</h3>
-                <div class="fr-grid-row">
+                <section class="fr-ml-n2w">
                     {#each documents.assoDocs as document, i}
                         <DocumentCard {document} bind:value={$selectedDocsOrNull.assoDocs[i]} />
                     {/each}
-                </div>
-                {#if documents.moreAssoDocs.length}
-                    <div class="fr-col-12">
-                        <OpenCloseButton
-                            on:click={() => controller.switchDisplay(showMoreAsso)}
-                            expanded={$showMoreAsso}>
-                            <div class="inner fr-grid-row extra-docs-container">
-                                {#each documents.moreAssoDocs as document, i}
-                                    <DocumentCard {document} bind:value={$selectedDocsOrNull.moreAssoDocs[i]} />
-                                {/each}
-                            </div>
-                        </OpenCloseButton>
-                    </div>
-                {/if}
+                </section>
             {/if}
 
-            {#if documents.someEstab}
+            {#if documents.estabDocs.length}
                 <!-- Etab documents -->
                 <h3 class="fr-h2 fr-mt-6w fr-mb-4w">
                     {controller.estabDocsTitle}
                 </h3>
-                {#each documents.estabDocs as document, i}
-                    <DocumentCard {document} bind:value={$selectedDocsOrNull.estabDocs[i]} />
-                {/each}
-                {#if documents.moreEstabDocs.length}
-                    <div class="fr-col-12">
-                        <OpenCloseButton
-                            on:click={() => controller.switchDisplay(showMoreEstab)}
-                            expanded={$showMoreEstab}>
-                            <div class="inner fr-grid-row extra-docs-container">
-                                {#each documents.moreEstabDocs as document, i}
-                                    <DocumentCard {document} bind:value={$selectedDocsOrNull.moreEstabDocs[i]} />
-                                {/each}
-                            </div>
-                        </OpenCloseButton>
-                    </div>
-                {/if}
+                <section class="fr-ml-n2w">
+                    {#each documents.estabDocs as document, i}
+                        <DocumentCard {document} bind:value={$selectedDocsOrNull.estabDocs[i]} />
+                    {/each}
+                </section>
             {/if}
             <div class="fr-sr-only">
                 <Button
