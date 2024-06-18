@@ -51,7 +51,7 @@ describe("CaisseDepotsDtoAdapter", () => {
 
     describe("rawToApplication", () => {
         // @ts-expect-error: parameter type
-        const RAW_APPLICATION: RawApplication = { data: { foo: "bar" } as CaisseDepotsSubventionDto };
+        const RAW_APPLICATION: RawApplication<CaisseDepotsSubventionDto> = { data: { foo: "bar" } };
         // @ts-expect-error parameter type
         const APPLICATION: DemandeSubvention = { foo: "bar" };
 

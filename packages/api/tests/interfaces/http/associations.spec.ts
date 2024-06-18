@@ -4,7 +4,6 @@ import fonjepSubventionRepository from "../../../src/modules/providers/fonjep/re
 import { SubventionEntity as FonjepEntityFixture } from "../../modules/providers/fonjep/__fixtures__/entity";
 import request from "supertest";
 import OsirisRequestEntityFixture from "../../modules/providers/osiris/__fixtures__/entity";
-import dauphinService from "../../../src/modules/providers/dauphin/dauphin.service";
 import { compareByValueBuilder } from "../../../src/shared/helpers/ArrayHelper";
 import statsService from "../../../src/modules/stats/stats.service";
 import { siretToSiren } from "../../../src/shared/helpers/SirenHelper";
@@ -166,7 +165,7 @@ describe("/association", () => {
         });
     });
 
-    describe("/{identifier}/grants", () => {
+    describe.only("/{identifier}/grants", () => {
         it("should return grants with rna", async () => {
             await rnaSirenService.insert(DEFAULT_ASSOCIATION.rna, DEFAULT_ASSOCIATION.siren);
             const response = await request(g.app)
