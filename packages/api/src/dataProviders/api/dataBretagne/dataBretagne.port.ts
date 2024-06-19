@@ -4,6 +4,7 @@ import ProviderRequestFactory, {
     ProviderRequestService,
 } from "../../../modules/provider-request/providerRequest.service";
 import { DataBretagneProgrammeDto } from "./DataBretagneDto";
+import DataBretagneProgrammeAdapter from "./DataBretagneProgrammeAdapter";
 
 export class DataBretagnePort {
     private basepath = "https://api.databretagne.fr/budget/api/v1";
@@ -34,7 +35,7 @@ export class DataBretagnePort {
                     Authorization: this.token,
                 },
             })
-        )?.data?.items;
+        )?.data?.items.map(DataBretagneProgrammeAdapter.toEntity);
     }
 }
 

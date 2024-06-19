@@ -1,4 +1,5 @@
 export * from "./Association";
+export * from "./AssociationNature";
 export * from "./BodaccRecordDto";
 export * from "./ExtraitRcsDto";
 export * from "./GetAssociationResponseDto";
