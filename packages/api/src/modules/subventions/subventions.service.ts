@@ -1,27 +1,18 @@
-import { Siren, Siret } from "dto";
+import { Siret } from "dto";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
-import { siretToSiren } from "../../shared/helpers/SirenHelper";
-import { capitalizeFirstLetter } from "../../shared/helpers/StringHelper";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
-import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
-import providers from "../providers";
+import { AssociationIdentifiers } from "../../@types";
 import Flux from "../../shared/Flux";
 import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
-import DemandesSubventionsProvider from "./@types/DemandesSubventionsProvider";
+import { getDemandesSubventionsProviders } from "../providers/helper";
 import { SubventionsFlux } from "./@types/SubventionsFlux";
 
 export class SubventionsService {
-    public providers = this.getDemandesSubventionsProviders();
+    public providers = getDemandesSubventionsProviders();
     public getBySirenMethod = "getDemandeSubventionBySiren";
     public getBySiretMethod = "getDemandeSubventionBySiret";
-
-    private getDemandesSubventionsProviders() {
-        return Object.values(providers).filter(
-            p => (p as DemandesSubventionsProvider<unknown>).isDemandesSubventionsProvider,
-        ) as DemandesSubventionsProvider<unknown>[];
-    }
 
     async getDemandesByAssociation(identifier: AssociationIdentifiers) {
         const type = getIdentifierType(identifier);
