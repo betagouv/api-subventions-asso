@@ -1,8 +1,8 @@
 import { Siren, Siret, DemandeSubvention } from "dto";
-import Provider from "../../providers/@types/IProvider";
 import { RawApplication } from "../../grant/@types/rawGrant";
+import GrantProvider from "../../grant/@types/GrantProvider";
 
-export default interface DemandesSubventionsProvider<T> extends Provider {
+export default interface DemandesSubventionsProvider<T> extends GrantProvider {
     isDemandesSubventionsProvider: boolean;
 
     // TODO: find a way to merge DemandeSubvention and Application...

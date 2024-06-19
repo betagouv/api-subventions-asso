@@ -5,7 +5,6 @@ import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubven
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import PaymentProvider from "../../payments/@types/PaymentProvider";
 import { FullGrantProvider } from "../../grant/@types/FullGrantProvider";
-import GrantProvider from "../../grant/@types/GrantProvider";
 import { RawApplication, RawFullGrant, RawGrant, RawPayment } from "../../grant/@types/rawGrant";
 import ProviderCore from "../ProviderCore";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
@@ -50,8 +49,7 @@ export class FonjepService
         DemandesSubventionsProvider<FonjepSubventionEntity>,
         EtablissementProvider,
         PaymentProvider<FonjepPaymentEntity>,
-        FullGrantProvider<FonjepSubventionEntity, FonjepPaymentEntity>,
-        GrantProvider
+        FullGrantProvider<FonjepSubventionEntity, FonjepPaymentEntity>
 {
     constructor() {
         super({
@@ -247,18 +245,6 @@ export class FonjepService
 
     isGrantProvider = true;
     isFullGrantProvider = true;
-
-    async getGrantsByRna(rna: string): Promise<[] | null> {
-        return null;
-    }
-
-    async getGrantsBySiren(siren: string): Promise<[] | null> {
-        return null;
-    }
-
-    async getGrantsBySiret(siret: string): Promise<[] | null> {
-        return null;
-    }
 
     getRawGrantsByRna(_rna: Rna): Promise<RawGrant[] | null> {
         return Promise.resolve(null);

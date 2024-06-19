@@ -13,7 +13,6 @@ import AssociationsProvider from "../../associations/@types/AssociationsProvider
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import ProviderRequestInterface from "../../search/@types/ProviderRequestInterface";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
-import GrantProvider from "../../grant/@types/GrantProvider";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import ProviderCore from "../ProviderCore";
 import rnaSirenSerivce from "../../rna-siren/rnaSiren.service";
@@ -37,8 +36,7 @@ export class OsirisService
         ProviderRequestInterface,
         AssociationsProvider,
         EtablissementProvider,
-        DemandesSubventionsProvider<OsirisRequestEntity>,
-        GrantProvider
+        DemandesSubventionsProvider<OsirisRequestEntity>
 {
     constructor() {
         super({
@@ -343,14 +341,6 @@ export class OsirisService
         if (requests.length === 0) return null;
 
         return requests.map(r => OsirisRequestAdapter.toDemandeSubvention(r));
-    }
-
-    async getGrantsBySiren(siren: string): Promise<[] | null> {
-        return null;
-    }
-
-    async getGrantsBySiret(siret: string): Promise<[] | null> {
-        return null;
     }
 
     /**

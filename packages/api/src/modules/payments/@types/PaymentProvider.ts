@@ -1,8 +1,8 @@
 import { Payment, Siren, Siret } from "dto";
-import Provider from "../../providers/@types/IProvider";
 import { RawPayment } from "../../grant/@types/rawGrant";
+import GrantProvider from "../../grant/@types/GrantProvider";
 
-export default interface PaymentProvider<T> extends Provider {
+export default interface PaymentProvider<T> extends GrantProvider {
     isPaymentProvider: boolean;
 
     rawToPayment: (rawPayment: RawPayment<T>) => Payment;

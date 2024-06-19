@@ -1,7 +1,6 @@
 import { DemandeSubvention, Rna, Siren, Siret } from "dto";
 import * as Sentry from "@sentry/node";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
-import GrantProvider from "../../grant/@types/GrantProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
@@ -9,7 +8,7 @@ import miscScdlJoiner from "./repositories/miscScdl.joiner";
 import MiscScdlAdapter from "./adapters/MiscScdl.adapter";
 import MiscScdlGrantProducerEntity from "./entities/MiscScdlGrantProducerEntity";
 
-export class ScdlGrantService implements GrantProvider, DemandesSubventionsProvider<MiscScdlGrantProducerEntity> {
+export class ScdlGrantService implements DemandesSubventionsProvider<MiscScdlGrantProducerEntity> {
     isGrantProvider = true;
     isDemandesSubventionsProvider = true;
     provider = {
@@ -42,18 +41,6 @@ export class ScdlGrantService implements GrantProvider, DemandesSubventionsProvi
 
     private getRawGrantSubventionByPromise(dbRequestPromise: Promise<MiscScdlGrantProducerEntity[]>) {
         return this.getEntityByPromiseAndAdapt(dbRequestPromise, MiscScdlAdapter.toRawApplication);
-    }
-
-    async getGrantsByRna(rna: string): Promise<[] | null> {
-        return null;
-    }
-
-    async getGrantsBySiren(siren: string): Promise<[] | null> {
-        return null;
-    }
-
-    async getGrantsBySiret(siret: string): Promise<[] | null> {
-        return null;
     }
 
     getRawGrantsByRna(rna: Rna): Promise<RawApplication<MiscScdlGrantProducerEntity>[] | null> {
