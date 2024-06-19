@@ -10,7 +10,6 @@ import Gispro from "../gispro/@types/Gispro";
 import { formatIntToTwoDigits } from "../../../shared/helpers/StringHelper";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
-import GrantProvider from "../../grant/@types/GrantProvider";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import ProviderCore from "../ProviderCore";
@@ -22,7 +21,7 @@ import DauphinGisproDbo from "./repositories/dbo/DauphinGisproDbo";
 
 export class DauphinService
     extends ProviderCore
-    implements DemandesSubventionsProvider<DauphinGisproDbo>, DocumentProvider, GrantProvider
+    implements DemandesSubventionsProvider<DauphinGisproDbo>, DocumentProvider
 {
     constructor() {
         super({
@@ -56,16 +55,6 @@ export class DauphinService
     async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
         const applications = await dauphinGisproRepository.findBySiren(siren);
         return applications.map(dto => DauphinDtoAdapter.toDemandeSubvention(dto));
-    }
-
-    async getGrantsBySiren(siren: string): Promise<[] | null> {
-        // TODO
-        return null;
-    }
-
-    async getGrantsBySiret(siret: string): Promise<[] | null> {
-        // TODO
-        return null;
     }
 
     /**

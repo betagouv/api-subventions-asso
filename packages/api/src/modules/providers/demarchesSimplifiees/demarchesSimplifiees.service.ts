@@ -8,7 +8,6 @@ import { DefaultObject } from "../../../@types";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import { InternalServerError } from "../../../shared/errors/httpErrors";
 import ProviderCore from "../ProviderCore";
-import GrantProvider from "../../grant/@types/GrantProvider";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import { DemarchesSimplifieesDto } from "./dto/DemarchesSimplifieesDto";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
@@ -21,7 +20,7 @@ import DemarchesSimplifieesDataEntity from "./entities/DemarchesSimplifieesDataE
 
 export class DemarchesSimplifieesService
     extends ProviderCore
-    implements DemandesSubventionsProvider<DemarchesSimplifieesRawData>, GrantProvider
+    implements DemandesSubventionsProvider<DemarchesSimplifieesRawData>
 {
     isDemandesSubventionsProvider = true;
 
@@ -178,14 +177,6 @@ export class DemarchesSimplifieesService
         let joinKey: string | undefined;
         if (joinKeyFieldName) joinKey = lodash.get(data.entity, joinKeyFieldName);
         return joinKey;
-    }
-
-    async getGrantsBySiren(siren: string): Promise<RawGrant[] | null> {
-        return null;
-    }
-
-    async getGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
-        return null;
     }
 
     /** RAW GRANT */

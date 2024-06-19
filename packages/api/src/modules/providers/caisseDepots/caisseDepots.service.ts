@@ -3,7 +3,6 @@ import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
-import GrantProvider from "../../grant/@types/GrantProvider";
 import ProviderCore from "../ProviderCore";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import CaisseDepotsDtoAdapter from "./adapters/caisseDepotsDtoAdapter";
@@ -11,7 +10,7 @@ import { CaisseDepotsSubventionDto } from "./dto/CaisseDepotsDto";
 
 export class CaisseDepotsService
     extends ProviderCore
-    implements DemandesSubventionsProvider<CaisseDepotsSubventionDto>, GrantProvider
+    implements DemandesSubventionsProvider<CaisseDepotsSubventionDto>
 {
     isDemandesSubventionsProvider = true;
     isGrantProvider = true;
@@ -71,14 +70,6 @@ export class CaisseDepotsService
      * |   Grant Part            |
      * |-------------------------|
      */
-
-    async getGrantsBySiren(siren: string): Promise<[] | null> {
-        return null;
-    }
-
-    async getGrantsBySiret(siret: string): Promise<[] | null> {
-        return null;
-    }
 
     async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
         return (await this.getRawCaisseDepotsSubventions(siret)).map(grant => ({

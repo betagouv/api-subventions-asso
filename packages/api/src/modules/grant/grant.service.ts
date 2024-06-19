@@ -23,12 +23,6 @@ export class GrantService {
         [StructureIdentifiersEnum.rna]: "getRawGrantsByRna",
     };
 
-    static getDefaultMethodNameByIdType = {
-        [StructureIdentifiersEnum.siret]: "getGrantsBySiret",
-        [StructureIdentifiersEnum.siren]: "getGrantsBySiren",
-        [StructureIdentifiersEnum.rna]: "getGrantsByRna",
-    };
-
     private validateAndGetStructureType(id: StructureIdentifiers) {
         const idType = getIdentifierType(id);
         if (!idType) throw new StructureIdentifiersError();

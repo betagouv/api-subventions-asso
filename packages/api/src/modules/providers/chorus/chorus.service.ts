@@ -7,7 +7,6 @@ import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import PaymentProvider from "../../payments/@types/PaymentProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { RawGrant, RawPayment } from "../../grant/@types/rawGrant";
-import GrantProvider from "../../grant/@types/GrantProvider";
 import ProviderCore from "../ProviderCore";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import uniteLegalEntreprisesService from "../uniteLegalEntreprises/uniteLegal.entreprises.service";
@@ -22,7 +21,7 @@ export interface RejectedRequest {
     result: { message: string; data: unknown };
 }
 
-export class ChorusService extends ProviderCore implements PaymentProvider<ChorusLineEntity>, GrantProvider {
+export class ChorusService extends ProviderCore implements PaymentProvider<ChorusLineEntity> {
     constructor() {
         super({
             name: "Chorus",
@@ -129,18 +128,6 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
      */
 
     isGrantProvider = true;
-
-    async getGrantsByRna(rna: string): Promise<[] | null> {
-        return null;
-    }
-
-    async getGrantsBySiren(siren: string): Promise<[] | null> {
-        return null;
-    }
-
-    async getGrantsBySiret(siret: string): Promise<[] | null> {
-        return null;
-    }
 
     async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
         return (await chorusLineRepository.findBySiret(siret)).map(grant => ({
