@@ -10,6 +10,8 @@ import rnaSirenService from "../rna-siren/rnaSiren.service";
 import RnaSirenEntity from "../../entities/RnaSirenEntity";
 import { JoinedRawGrant, RawApplication, RawFullGrant, RawGrant, RawPayment } from "./@types/rawGrant";
 import * as Sentry from "@sentry/node";
+import GrantProvider from "./@types/GrantProvider";
+import { ProviderEnum } from "../../@enums/ProviderEnum";
 jest.mock("@sentry/node");
 
 jest.mock("../providers", () => ({
@@ -25,27 +27,40 @@ jest.mock("../associations/associations.service");
 jest.mock("../../shared/helpers/SirenHelper");
 
 describe("GrantService", () => {
+    const mockGrantProvider = provider => ({
+        provider,
+        isGrantProvider: true,
+        getRawGrantsBySiret: jest.fn(),
+        getRawGrantsBySiren: jest.fn(),
+    });
+
+    const PROVIDERS: GrantProvider[] = [
+        mockGrantProvider({ name: "PROVIDER_1", id: "ID_1", description: "", type: ProviderEnum.api }),
+        mockGrantProvider({ name: "PROVIDER_2", id: "ID_2", description: "", type: ProviderEnum.api }),
+        mockGrantProvider({ name: "PROVIDER_3", id: "ID_3", description: "", type: ProviderEnum.raw }),
+    ];
+
     const JOINED = "JOINED";
 
     const JOIN_KEY_1 = "JOIN_KEY_1";
     const JOIN_KEY_2 = "JOIN_KEY_2";
     const FULL_GRANT: RawFullGrant = {
-        provider: "FullGrantProvider",
+        provider: PROVIDERS[0].provider.id,
         data: {},
         type: "fullGrant",
         joinKey: JOIN_KEY_1,
     };
     const APPLICATION: RawApplication = {
-        provider: "DemandesSubventionsProvider",
+        provider: PROVIDERS[1].provider.id,
         data: {},
         type: "application",
         joinKey: JOIN_KEY_2,
     };
     const PAYMENTS: RawPayment[] = [
-        { provider: "PaymentProvider", data: {}, type: "payment", joinKey: JOIN_KEY_1 },
-        { provider: "PaymentProvider", data: {}, type: "payment", joinKey: JOIN_KEY_1 },
-        { provider: "PaymentProvider", data: {}, type: "payment", joinKey: JOIN_KEY_2 },
-        { provider: "PaymentProvider", data: {}, type: "payment", joinKey: JOIN_KEY_2 },
+        { provider: PROVIDERS[2].provider.id, data: {}, type: "payment", joinKey: JOIN_KEY_1 },
+        { provider: PROVIDERS[2].provider.id, data: {}, type: "payment", joinKey: JOIN_KEY_1 },
+        { provider: PROVIDERS[2].provider.id, data: {}, type: "payment", joinKey: JOIN_KEY_2 },
+        { provider: PROVIDERS[2].provider.id, data: {}, type: "payment", joinKey: JOIN_KEY_2 },
     ];
     const RAW_GRANTS: RawGrant[] = [FULL_GRANT, APPLICATION, ...PAYMENTS];
     const GRANTS_BY_TYPE = {
@@ -53,6 +68,73 @@ describe("GrantService", () => {
         applications: [APPLICATION],
         payments: PAYMENTS,
     };
+    describe("reduceToProvidersById", () => {
+        it("should return providers by id", () => {
+            const expected = {
+                [PROVIDERS[0].provider.id]: PROVIDERS[0],
+                [PROVIDERS[1].provider.id]: PROVIDERS[1],
+                [PROVIDERS[2].provider.id]: PROVIDERS[2],
+            };
+            const actual = PROVIDERS.reduce(grantService.reduceToProvidersById, {});
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("adapteRawGrant", () => {
+        //@ts-expect-error: access private property
+        const fullGrantProviders = grantService.fullGrantProviders;
+        //@ts-expect-error: access private property
+        const applicationProviders = grantService.applicationProviders;
+        //@ts-expect-error: access private property
+        const paymentProviders = grantService.paymentProviders;
+        const adapter = jest.fn();
+        beforeAll(() => {
+            //@ts-expect-error: mock private property
+            grantService.fullGrantProviders = { [PROVIDERS[0].provider.id]: { ...PROVIDERS[0], rawToGrant: adapter } };
+            //@ts-expect-error: mock private property
+            grantService.applicationProviders = {
+                [PROVIDERS[1].provider.id]: { ...PROVIDERS[1], rawToApplication: adapter },
+            };
+            //@ts-expect-error: mock private property
+            grantService.paymentProviders = { [PROVIDERS[2].provider.id]: { ...PROVIDERS[2], rawToPayment: adapter } };
+        });
+
+        afterEach(() => adapter.mockClear());
+
+        afterAll(() => {
+            // @ts-expect-error: restore private property
+            grantService.fullGrantProviders = fullGrantProviders;
+            // @ts-expect-error: restore private property
+            grantService.applicationProviders = applicationProviders;
+            // @ts-expect-error: restore private property
+            grantService.paymentProviders = paymentProviders;
+        });
+
+        it.each`
+            grant
+            ${FULL_GRANT}
+            ${APPLICATION}
+            ${PAYMENTS[0]}
+        `("should adapte RawFullGrant", ({ grant }) => {
+            grantService.adapteRawGrant(grant);
+            expect(adapter).toHaveBeenCalledWith(grant);
+        });
+
+        // it("should adapte RawFullGrant", () => {
+        //     grantService.adapteRawGrant(FULL_GRANT);
+        //     expect(adapter).toHaveBeenCalledWith(FULL_GRANT);
+        // });
+
+        // it("should adapte RawApplication", () => {
+        //     grantService.adapteRawGrant(APPLICATION);
+        //     expect(adapter).toHaveBeenCalledWith(FULL_GRANT);
+        // });
+
+        // it("should adapte RawPayment", () => {
+        //     grantService.adapteRawGrant(PAYMENTS[0]);
+        //     expect(adapter).toHaveBeenCalledWith(FULL_GRANT);
+        // });
+    });
 
     describe("getRawGrants", () => {
         const SIREN = "123456789";

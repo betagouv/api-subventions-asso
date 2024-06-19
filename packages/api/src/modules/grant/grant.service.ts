@@ -1,8 +1,10 @@
 import * as Sentry from "@sentry/node";
 import { CommonGrantDto, Grant, Rna, Siret } from "dto";
+import providers from "../providers";
+import DemandesSubventionsProvider from "../subventions/@types/DemandesSubventionsProvider";
+import PaymentProvider from "../payments/@types/PaymentProvider";
 import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
-import providers from "../providers";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
 import { isSiret } from "../../shared/Validators";
@@ -12,11 +14,29 @@ import rnaSirenService from "../rna-siren/rnaSiren.service";
 import { siretToSiren } from "../../shared/helpers/SirenHelper";
 import { BadRequestError } from "../../shared/errors/httpErrors";
 import { RnaOnlyError } from "../../shared/errors/GrantError";
+import { getDemandesSubventionsProviders, getFullGrantProviders, getPaymentProviders } from "../providers/helper";
+import { FullGrantProvider } from "./@types/FullGrantProvider";
 import { RawGrant, JoinedRawGrant, RawFullGrant, RawApplication, RawPayment, AnyRawGrant } from "./@types/rawGrant";
 import GrantProvider from "./@types/GrantProvider";
 import commonGrantService from "./commonGrant.service";
 
 export class GrantService {
+    reduceToProvidersById = (acc, service: GrantProvider) => {
+        acc[service.provider.id] = service;
+        return acc;
+    };
+
+    private fullGrantProviders: Record<string, FullGrantProvider<unknown, unknown>> = getFullGrantProviders().reduce(
+        this.reduceToProvidersById,
+        {},
+    );
+    private applicationProviders: Record<string, DemandesSubventionsProvider<unknown>> =
+        getDemandesSubventionsProviders().reduce(this.reduceToProvidersById, {});
+    private paymentProviders: Record<string, PaymentProvider<unknown>> = getPaymentProviders().reduce(
+        this.reduceToProvidersById,
+        {},
+    );
+
     static getRawMethodNameByIdType = {
         [StructureIdentifiersEnum.siret]: "getRawGrantsBySiret",
         [StructureIdentifiersEnum.siren]: "getRawGrantsBySiren",
@@ -63,23 +83,19 @@ export class GrantService {
     // implementer une classe GrantAdapter pour chaque adapter de demande et de paiment
     async getGrants(identifier: StructureIdentifiers): Promise<Grant[]> {
         const joinedRawGrants = await this.getRawGrants(identifier);
-        // parcours chaque joinedRawGrant
-        // joinedRawGrants.map(joined => {
-        //     // si application ET fullGrants, alors on prend fullGrants
-        //     if (joined.applications?.length && joined.fullGrants?.length) {
-        //         Sentry.captureMessage(
-        //             `A JoinedRawGrant had both applications AND fullGrants with joinKey ${joined.fullGrants[0].joinKey}`,
-        //         );
-        //     }
-        //     if (!joined.payments?.length) {
-        //         joined.fullGrants
-        //     }
-        //     if (joined.fullGrants?.length) {
 
-        //     }
-        // });
-        // TODO: adapte to DemandeSubventionDto
         return [];
+    }
+
+    adapteRawGrant(rawGrant: RawGrant) {
+        switch (rawGrant.type) {
+            case "fullGrant":
+                return this.fullGrantProviders[rawGrant.provider].rawToGrant(rawGrant as RawFullGrant);
+            case "application":
+                return this.applicationProviders[rawGrant.provider].rawToApplication(rawGrant as RawApplication);
+            case "payment":
+                return this.paymentProviders[rawGrant.provider].rawToPayment(rawGrant as RawPayment);
+        }
     }
 
     /**
