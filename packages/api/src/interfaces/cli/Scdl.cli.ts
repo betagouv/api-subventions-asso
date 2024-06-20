@@ -20,22 +20,23 @@ export default class ScdlCli {
     }
 
     public async parseXls(file: string, producerSlug: string, exportDate?: Date, pageName?: string, rowOffset = 0) {
-        await this.genericSantitizeInput(file, producerSlug, exportDate);
+        await this.genericSanitizeInput(file, producerSlug, exportDate);
         const fileContent = fs.readFileSync(file);
         const entities = ScdlGrantParser.parseExcel(fileContent, pageName, rowOffset);
         return this.persistEntities(entities, producerSlug, exportDate);
     }
 
     public async parse(file: string, producerSlug: string, exportDate?: Date | undefined, delimiter = ";") {
-        await this.genericSantitizeInput(file, producerSlug, exportDate);
+        await this.genericSanitizeInput(file, producerSlug, exportDate);
         const fileContent = fs.readFileSync(file);
         const entities = ScdlGrantParser.parseCsv(fileContent, delimiter);
         return this.persistEntities(entities, producerSlug, exportDate);
     }
 
-    private async genericSantitizeInput(file: string, producerSlug: string, exportDate?: Date | undefined) {
+    private async genericSanitizeInput(file: string, producerSlug: string, exportDate?: Date | undefined) {
         if (!exportDate) throw new ExportDateError();
         exportDate = new Date(exportDate);
+        if (isNaN(exportDate.getTime())) throw new ExportDateError();
         if (!(await scdlService.getProducer(producerSlug)))
             throw new Error("Producer ID does not match any producer in database");
     }
@@ -61,7 +62,7 @@ export default class ScdlCli {
         }
 
         console.log("Updating producer's last update date");
-        await scdlService.updateProducer(producerSlug, { lastUpdate: exportDate });
+        await scdlService.updateProducer(producerSlug, { lastUpdate: new Date(exportDate) });
         console.log("Parsing ended successfuly !");
     }
 }
