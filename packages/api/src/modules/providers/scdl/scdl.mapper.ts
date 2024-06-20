@@ -1,4 +1,5 @@
 import { shortISORegExp } from "../../../shared/helpers/DateHelper";
+import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 import { ScdlGrantSchema } from "./@types/ScdlGrantSchema";
 
 const OFFICIAL_MAPPER = {
@@ -29,6 +30,13 @@ const expandedShortISOPeriodRegExp = /\d{4}-[01]\d-[0-3]\d[/_]\d{4}-[01]\d-[0-3]
 
 const CONVENTION_DATE_PATHS = [...getMapperVariants("conventionDate"), "datedeconvention", "Date de convention*"];
 
+const dateAdapter = (date: string | number | Date | undefined | null): Date | undefined => {
+    if (!date) return undefined;
+    if (date instanceof Date && !isNaN(date.getTime())) return date;
+    if (typeof date === "string" || date instanceof String) return new Date(date);
+    return ParseHelper.ExcelDateToJSDate(Number(date));
+};
+
 export const SCDL_MAPPER: ScdlGrantSchema = {
     exercice: {
         // for now if no exercise column we will use conventionDate as default
@@ -42,11 +50,11 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 ...CONVENTION_DATE_PATHS,
             ],
         ],
-        adapter: value => (value ? new Date(value).getFullYear() : value),
+        adapter: value => dateAdapter(value)?.getFullYear(),
     },
     conventionDate: {
         path: [["Date de la convention", ...CONVENTION_DATE_PATHS]],
-        adapter: value => (value ? new Date(value) : value),
+        adapter: dateAdapter,
     },
     decisionReference: [[...getMapperVariants("decisionReference"), "Référence de la décision"]],
     associationName: [
@@ -91,7 +99,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             ],
         ],
         // @ts-expect-error: with undefined it returns false, so we don't need to check it
-        adapter: value => (shortISORegExp.test(value) ? new Date(value.split(/[/_]/)[0].trim()) : null),
+        adapter: value => (shortISORegExp.test(value) ? new Date(value.split(/[/_]/)[0].trim()) : dateAdapter(value)),
     },
     paymentEndDate: {
         path: [[...getMapperVariants("paymentEndDate"), "Date de versement", "dateperiodedversement"]],

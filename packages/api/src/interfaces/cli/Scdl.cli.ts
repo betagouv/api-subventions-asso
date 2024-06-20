@@ -19,25 +19,35 @@ export default class ScdlCli {
         await scdlService.createProducer({ slug, name, siret, lastUpdate: new Date() });
     }
 
-    public async parse(file: string, slug: string, exportDate?: Date | undefined, delimeter = ";") {
+    public async parseXls(file: string, producerSlug: string, exportDate?: Date, pageName?: string, rowOffset = 0) {
+        await this.genericSantitizeInput(file, producerSlug, exportDate);
+        const fileContent = fs.readFileSync(file);
+        const entities = ScdlGrantParser.parseExcel(fileContent, pageName, rowOffset);
+        return this.persistEntities(entities, producerSlug, exportDate);
+    }
+
+    public async parse(file: string, producerSlug: string, exportDate?: Date | undefined, delimiter = ";") {
+        await this.genericSantitizeInput(file, producerSlug, exportDate);
+        const fileContent = fs.readFileSync(file);
+        const entities = ScdlGrantParser.parseCsv(fileContent, delimiter);
+        return this.persistEntities(entities, producerSlug, exportDate);
+    }
+
+    private async genericSantitizeInput(file: string, producerSlug: string, exportDate?: Date | undefined) {
         if (!exportDate) throw new ExportDateError();
         exportDate = new Date(exportDate);
-        if (!(await scdlService.getProducer(slug)))
+        if (!(await scdlService.getProducer(producerSlug)))
             throw new Error("Producer ID does not match any producer in database");
+    }
 
-        const fileContent = fs.readFileSync(file);
-
-        const entities = ScdlGrantParser.parseCsv(fileContent, delimeter);
-
-        if (!entities) {
-            throw new Error("No entities could be created from this files");
-        }
+    private async persistEntities(entities, producerSlug, exportDate) {
+        if (!entities) throw new Error("No entities could be created from this file");
 
         console.log(`start persisting ${entities.length} grants`);
         let duplicates: MiscScdlGrantEntity[] = [];
 
         try {
-            await scdlService.createManyGrants(entities, slug);
+            await scdlService.createManyGrants(entities, producerSlug);
         } catch (e) {
             if (!(e instanceof DuplicateIndexError)) throw e;
             duplicates = (e as DuplicateIndexError<MiscScdlGrantEntity[]>).duplicates;
@@ -51,7 +61,7 @@ export default class ScdlCli {
         }
 
         console.log("Updating producer's last update date");
-        await scdlService.updateProducer(slug, { lastUpdate: exportDate });
+        await scdlService.updateProducer(producerSlug, { lastUpdate: exportDate });
         console.log("Parsing ended successfuly !");
     }
 }
