@@ -35,6 +35,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
         path: [
             [
                 ...getMapperVariants("exercice"),
+                "Date de la convention",
                 "dateDecision_Tri",
                 "annee",
                 "Année budgétaire",
@@ -44,20 +45,41 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
         adapter: value => (value ? new Date(value).getFullYear() : value),
     },
     conventionDate: {
-        path: [[...CONVENTION_DATE_PATHS]],
+        path: [["Date de la convention", ...CONVENTION_DATE_PATHS]],
         adapter: value => (value ? new Date(value) : value),
     },
     decisionReference: [[...getMapperVariants("decisionReference"), "Référence de la décision"]],
-    associationName: [[...getMapperVariants("associationName"), "Nom du bénéficiaire*", "Nom Bénéficiaire"]],
-    associationSiret: [[...getMapperVariants("associationSiret"), "Identification du bénéficiaire*", "Numéro Siret"]],
+    associationName: [
+        [...getMapperVariants("associationName"), "Nom du bénéficiaire*", "Nom Bénéficiaire", "NOM Bénéficiaire"],
+    ],
+    associationSiret: [
+        [...getMapperVariants("associationSiret"), "Identification du bénéficiaire*", "Numéro Siret", "N° SIRET"],
+    ],
     associationRna: [[...getMapperVariants("associationRna")]],
-    object: [[...getMapperVariants("object"), "objet", "Objet de la convention", "Objet du dossier"]],
+    object: [
+        [
+            ...getMapperVariants("object"),
+            "objet",
+            "Objet de la convention",
+            "Objet du dossier",
+            "Objet de la subvention",
+        ],
+    ],
     amount: {
-        path: [[...getMapperVariants("amount"), "Montant total de la subvention*", "Montant voté"]],
+        path: [
+            [
+                ...getMapperVariants("amount"),
+                "Montant total de la subvention*",
+                "Montant total de la subvention",
+                "Montant voté",
+            ],
+        ],
         adapter: value => (value ? parseFloat(value) : value),
     },
     paymentNature: [[...getMapperVariants("paymentNature"), "Nature de la subvention"]],
-    paymentConditions: [[...getMapperVariants("paymentConditions"), "Conditions de versement*"]],
+    paymentConditions: [
+        [...getMapperVariants("paymentConditions"), "Conditions de versement*", "Conditions de versement"],
+    ],
     paymentStartDate: {
         path: [
             [
@@ -65,6 +87,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Date de versement",
                 "dateperiodedeversement",
                 "dateperiodedversement",
+                "Date(s) ou période(s) de versement",
             ],
         ],
         // @ts-expect-error: with undefined it returns false, so we don't need to check it
@@ -81,9 +104,21 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             else return null;
         },
     },
-    idRAE: [[...getMapperVariants("idRAE"), "Numéro de référencement au répertoire des entreprises"]],
+    idRAE: [
+        [
+            ...getMapperVariants("idRAE"),
+            "Numéro de référencement au répertoire des entreprises",
+            "Numéro de référencement au répertoire des entreprises",
+        ],
+    ],
     UeNotification: {
-        path: [[...getMapperVariants("UeNotification"), "Aide notifiée Ã  l'Europe"]],
+        path: [
+            [
+                ...getMapperVariants("UeNotification"),
+                "Aide notifiée Ã  l'Europe",
+                "Aides ne relevant pas d'une aide d'état",
+            ],
+        ],
         adapter: value => {
             if (value?.toLowerCase() === "oui") return true;
             if (value?.toLowerCase() === "non") return false;
@@ -95,6 +130,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             [
                 ...getMapperVariants("grantPercentage"),
                 "Pourcentage du montant de la subvention attribué au bénéficiaire*",
+                "% du mt de la subvention attribuée au bénéficiaire",
             ],
         ],
         adapter: value => (value ? parseFloat(value) : value),
