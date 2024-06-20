@@ -6,6 +6,7 @@ import scdlService from "../../modules/providers/scdl/scdl.service";
 import MiscScdlGrantEntity from "../../modules/providers/scdl/entities/MiscScdlGrantEntity";
 import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
 import { isSiret } from "../../shared/Validators";
+import { ScdlStorableGrant } from "../../modules/providers/scdl/@types/ScdlStorableGrant";
 
 export default class ScdlCli {
     static cmdName = "scdl";
@@ -19,29 +20,29 @@ export default class ScdlCli {
         await scdlService.createProducer({ slug, name, siret, lastUpdate: new Date() });
     }
 
-    public async parseXls(file: string, producerSlug: string, exportDate?: Date, pageName?: string, rowOffset = 0) {
+    public async parseXls(file: string, producerSlug: string, exportDate?: string, pageName?: string, rowOffset = 0) {
         await this.genericSanitizeInput(file, producerSlug, exportDate);
         const fileContent = fs.readFileSync(file);
         const entities = ScdlGrantParser.parseExcel(fileContent, pageName, rowOffset);
-        return this.persistEntities(entities, producerSlug, exportDate);
+        return this.persistEntities(entities, producerSlug, exportDate as string);
     }
 
-    public async parse(file: string, producerSlug: string, exportDate?: Date | undefined, delimiter = ";") {
+    public async parse(file: string, producerSlug: string, exportDate?: string, delimiter = ";") {
         await this.genericSanitizeInput(file, producerSlug, exportDate);
         const fileContent = fs.readFileSync(file);
         const entities = ScdlGrantParser.parseCsv(fileContent, delimiter);
-        return this.persistEntities(entities, producerSlug, exportDate);
+        return this.persistEntities(entities, producerSlug, exportDate as string);
     }
 
-    private async genericSanitizeInput(file: string, producerSlug: string, exportDate?: Date | undefined) {
-        if (!exportDate) throw new ExportDateError();
-        exportDate = new Date(exportDate);
+    private async genericSanitizeInput(file: string, producerSlug: string, exportDateStr?: string) {
+        if (!exportDateStr) throw new ExportDateError();
+        const exportDate = new Date(exportDateStr);
         if (isNaN(exportDate.getTime())) throw new ExportDateError();
         if (!(await scdlService.getProducer(producerSlug)))
             throw new Error("Producer ID does not match any producer in database");
     }
 
-    private async persistEntities(entities, producerSlug, exportDate) {
+    private async persistEntities(entities: ScdlStorableGrant[], producerSlug: string, exportDateStr: string) {
         if (!entities) throw new Error("No entities could be created from this file");
 
         console.log(`start persisting ${entities.length} grants`);
@@ -62,7 +63,7 @@ export default class ScdlCli {
         }
 
         console.log("Updating producer's last update date");
-        await scdlService.updateProducer(producerSlug, { lastUpdate: new Date(exportDate) });
-        console.log("Parsing ended successfuly !");
+        await scdlService.updateProducer(producerSlug, { lastUpdate: new Date(exportDateStr) });
+        console.log("Parsing ended successfully !");
     }
 }

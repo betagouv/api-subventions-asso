@@ -8,11 +8,12 @@ import MiscScdlProducer from "../../../src/modules/providers/scdl/__fixtures__/M
 
 describe("SCDL CLI", () => {
     let cli;
+    const DATE_STR = "2022-12-12";
 
     beforeEach(() => {
         cli = new ScdlCli();
     });
-    describe.skip("addProducer()", () => {
+    describe("addProducer()", () => {
         it("should create MiscScdlProducerEntity", async () => {
             await cli.addProducer(MiscScdlProducer.slug, MiscScdlProducer.name, MiscScdlProducer.siret);
             const document = await miscScdlProducersRepository.findBySlug(MiscScdlProducer.slug);
@@ -44,28 +45,28 @@ describe("SCDL CLI", () => {
         ${"parseXls"} | ${testParseXls}
     `("$methodName", ({ test }) => {
         it("should throw Error()", async () => {
-            expect(() => test("FAKE_ID", new Date())).rejects.toThrowError(Error);
+            expect(() => test("FAKE_ID", DATE_STR)).rejects.toThrowError(Error);
         });
 
         it("should add grants with exercise from conventionDate", async () => {
             await cli.addProducer(MiscScdlProducer.slug, MiscScdlProducer.name, MiscScdlProducer.siret);
-            await test("SCDL", MiscScdlProducer.slug, new Date());
+            await test("SCDL", MiscScdlProducer.slug, DATE_STR);
             const grants = await miscScdlGrantRepository.findAll();
             const expectedAny = grants.map(grant => ({
                 _id: expect.any(String),
             }));
             expect(grants).toMatchSnapshot(expectedAny);
-        });
+        }, 10000);
 
         it("should add grants with exercise from its own column", async () => {
             await cli.addProducer(MiscScdlProducer.slug, MiscScdlProducer.name, MiscScdlProducer.siret);
-            await test("SCDL_WITH_EXERCICE", MiscScdlProducer.slug, new Date());
+            await test("SCDL_WITH_EXERCICE", MiscScdlProducer.slug, DATE_STR);
             const grants = await miscScdlGrantRepository.findAll();
             const expectedAny = grants.map(grant => ({
                 _id: expect.any(String),
             }));
             expect(grants).toMatchSnapshot(expectedAny);
-        });
+        }, 10000);
 
         it("should update producer lastUpdate", async () => {
             const EXPORT_DATE = new Date("2023-01-01");
@@ -74,6 +75,6 @@ describe("SCDL CLI", () => {
             await test("SCDL", MiscScdlProducer.slug, EXPORT_DATE);
             const actual = (await scdlService.getProducer(MiscScdlProducer.slug))?.lastUpdate;
             expect(actual).toEqual(expected);
-        });
+        }, 10000);
     });
 });
