@@ -8,7 +8,7 @@ import { siretToSiren } from "../../shared/helpers/SirenHelper";
 import associationsService from "../associations/associations.service";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import RnaSirenEntity from "../../entities/RnaSirenEntity";
-import { JoinedRawGrant, RawApplication, RawFullGrant, RawGrant, RawPayment } from "./@types/rawGrant";
+import { AnyRawGrant, JoinedRawGrant, RawApplication, RawFullGrant, RawGrant, RawPayment } from "./@types/rawGrant";
 import * as Sentry from "@sentry/node";
 import GrantProvider from "./@types/GrantProvider";
 import { ProviderEnum } from "../../@enums/ProviderEnum";
@@ -46,7 +46,7 @@ describe("GrantService", () => {
     const JOIN_KEY_2 = "JOIN_KEY_2";
     const FULL_GRANT: RawFullGrant = {
         provider: PROVIDERS[0].provider.id,
-        data: {},
+        data: { application: {}, payments: [] },
         type: "fullGrant",
         joinKey: JOIN_KEY_1,
     };
@@ -62,7 +62,7 @@ describe("GrantService", () => {
         { provider: PROVIDERS[2].provider.id, data: {}, type: "payment", joinKey: JOIN_KEY_2 },
         { provider: PROVIDERS[2].provider.id, data: {}, type: "payment", joinKey: JOIN_KEY_2 },
     ];
-    const RAW_GRANTS: RawGrant[] = [FULL_GRANT, APPLICATION, ...PAYMENTS];
+    const RAW_GRANTS: AnyRawGrant[] = [FULL_GRANT, APPLICATION, ...PAYMENTS];
     const GRANTS_BY_TYPE = {
         fullGrants: [FULL_GRANT],
         applications: [APPLICATION],

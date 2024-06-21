@@ -49,7 +49,7 @@ export class FonjepService
         DemandesSubventionsProvider<FonjepSubventionEntity>,
         EtablissementProvider,
         PaymentProvider<FonjepPaymentEntity>,
-        FullGrantProvider<FonjepSubventionEntity, FonjepPaymentEntity>
+        FullGrantProvider<{ application: FonjepSubventionEntity; payments: FonjepPaymentEntity[] }>
 {
     constructor() {
         super({
@@ -61,7 +61,7 @@ export class FonjepService
         });
     }
 
-    rawToGrant(rawFullGrant: RawFullGrant<FonjepSubventionEntity, FonjepPaymentEntity>) {
+    rawToGrant(rawFullGrant: RawFullGrant<{ application: FonjepSubventionEntity; payments: FonjepPaymentEntity[] }>) {
         return FonjepEntityAdapter.rawToGrant(rawFullGrant);
     }
 
@@ -250,12 +250,14 @@ export class FonjepService
         return Promise.resolve(null);
     }
 
-    async getRawGrantsBySiren(siren: Siren): Promise<RawGrant[] | null> {
+    async getRawGrantsBySiren(
+        siren: Siren,
+    ): Promise<RawFullGrant<{ application: FonjepSubventionEntity; payments: FonjepPaymentEntity[] }>[] | null> {
         return (await fonjepJoiner.getFullFonjepGrantsBySiren(siren)).map(grant => ({
             provider: this.provider.id,
             type: "fullGrant",
             data: grant,
-            joinKey: `${grant.indexedInformations.code_poste} - ${grant.indexedInformations.annee_demande}`,
+            joinKey: `${grant.application.indexedInformations.code_poste} - ${grant.application.indexedInformations.annee_demande}`,
         }));
     }
 
@@ -264,7 +266,7 @@ export class FonjepService
             provider: this.provider.id,
             type: "fullGrant",
             data: grant,
-            joinKey: `${grant.indexedInformations.code_poste} - ${grant.indexedInformations.annee_demande}`,
+            joinKey: `${grant.application.indexedInformations.code_poste} - ${grant.application.indexedInformations.annee_demande}`,
         }));
     }
 

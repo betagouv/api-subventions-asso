@@ -27,7 +27,7 @@ describe("FonjepEntityAdapter", () => {
         // @ts-expect-error: parameter type
         const FONJEP_PAYMENTS: FonjepPaymentEntity[] = [{ fonjep: "payment_1" }, { fonjep: "payment_2" }];
         // @ts-expect-error: parameter type
-        const RAW_FULLGRANT: RawFullGrant<FonjepSubventionEntity, FonjepPaymentEntity> = {
+        const RAW_FULLGRANT: RawFullGrant<{ application: FonjepSubventionEntity; payments: FonjepPaymentEntity[] }> = {
             data: {
                 application: FONJEP_APPLICATION,
                 payments: FONJEP_PAYMENTS,

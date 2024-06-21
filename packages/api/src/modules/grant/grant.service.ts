@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/node";
-import { CommonGrantDto, Grant, Rna, Siret } from "dto";
+import { CommonGrantDto, Grant, DemandeSubvention, Payment, Rna, Siret } from "dto";
 import providers from "../providers";
 import DemandesSubventionsProvider from "../subventions/@types/DemandesSubventionsProvider";
 import PaymentProvider from "../payments/@types/PaymentProvider";
@@ -26,12 +26,13 @@ export class GrantService {
         return acc;
     };
 
-    private fullGrantProviders: Record<string, FullGrantProvider<unknown, unknown>> = getFullGrantProviders().reduce(
+    private fullGrantProviders: Record<string, FullGrantProvider<unknown>> = getFullGrantProviders().reduce(
         this.reduceToProvidersById,
         {},
     );
     private applicationProviders: Record<string, DemandesSubventionsProvider<unknown>> =
         getDemandesSubventionsProviders().reduce(this.reduceToProvidersById, {});
+
     private paymentProviders: Record<string, PaymentProvider<unknown>> = getPaymentProviders().reduce(
         this.reduceToProvidersById,
         {},
@@ -79,14 +80,6 @@ export class GrantService {
         return null;
     }
 
-    // appeler adapter pour chaque joine.application joine.payment et joine.fullGrant
-    // implementer une classe GrantAdapter pour chaque adapter de demande et de paiment
-    async getGrants(identifier: StructureIdentifiers): Promise<Grant[]> {
-        const joinedRawGrants = await this.getRawGrants(identifier);
-
-        return [];
-    }
-
     adapteRawGrant(rawGrant: RawGrant) {
         switch (rawGrant.type) {
             case "fullGrant":
@@ -96,6 +89,50 @@ export class GrantService {
             case "payment":
                 return this.paymentProviders[rawGrant.provider].rawToPayment(rawGrant as RawPayment);
         }
+    }
+
+    adapteJoinedRawGrant(joinedRawGrant: JoinedRawGrant) {
+        const payments =
+            (joinedRawGrant.payments?.map(joined => this.adapteRawGrant(joined)) as Payment[]) || ([] as Payment[]);
+        const fullGrants = joinedRawGrant.fullGrants?.map(joined => this.adapteRawGrant(joined)) as
+            | Grant[]
+            | [] as Grant[];
+        const applications = joinedRawGrant.applications?.map(joined => this.adapteRawGrant(joined)) as
+            | DemandeSubvention[]
+            | [] as DemandeSubvention[];
+        return this.toGrant({ fullGrants, applications, payments });
+    }
+
+    // TODO: #2477 only accept one grant or one application in JoinedRawGrants
+    // and only accept lonely grant as it cannot be linked with other payments ?
+    // https://github.com/betagouv/api-subventions-asso/issues/2477
+    toGrant(joinedGrant: { fullGrants: Grant[]; applications: DemandeSubvention[]; payments: Payment[] }) {
+        const { fullGrants: grants, applications, payments } = joinedGrant;
+
+        const hasGrants = Boolean(grants.length);
+        const hasApplications = Boolean(applications.length);
+        const hasPayments = Boolean(payments.length);
+
+        if (!hasGrants && !hasApplications && !hasPayments) return;
+
+        if (hasPayments) {
+            if (!hasGrants && !hasApplications) return { application: null, payments };
+            if (hasGrants) {
+                const grant = grants[0];
+                return { application: grant.application, payments: [...grant.payments, ...payments] };
+            }
+            if (hasApplications) return { application: applications[0], payments };
+        } else if (hasGrants) return grants[0];
+        // only hasApplication
+        else return { application: applications[0] };
+    }
+
+    // appeler adapter pour chaque joine.application joine.payment et joine.fullGrant
+    // implementer une classe GrantAdapter pour chaque adapter de demande et de paiment
+    async getGrants(identifier: StructureIdentifiers): Promise<Grant[]> {
+        const joinedRawGrants = await this.getRawGrants(identifier);
+        const grants = joinedRawGrants.map(this.adapteJoinedRawGrant.bind(this)).filter(grant => grant) as Grant[];
+        return grants;
     }
 
     /**
@@ -193,6 +230,7 @@ export class GrantService {
             if (!byKey[rawGrant.joinKey]) addKey(rawGrant.joinKey);
             byKey[rawGrant.joinKey][prop].push(rawGrant);
         };
+        // TODO: make addApplicationOrSendMessage that will also check if there is already a fullGrant
         const addOrSendMessage = type => (rawGrant: Required<RawFullGrant> | Required<RawApplication>) => {
             if (byKey[rawGrant.joinKey]?.[type]) this.sendDuplicateMessage(rawGrant.joinKey);
             else add(type)(rawGrant);

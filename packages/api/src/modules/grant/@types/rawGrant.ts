@@ -18,7 +18,12 @@ export interface RawPayment<T = DefaultObject> extends RawGrant<T> {
     type: "payment";
 }
 
-export interface RawFullGrant<Type1 = DefaultObject, T2 = DefaultObject> extends RawGrant {
+export type FullGrantData<T1 = DefaultObject, T2 = DefaultObject> = {
+    application: T1;
+    payments: T2[];
+};
+
+export interface RawFullGrant<T = FullGrantData> extends RawGrant<T> {
     type: "fullGrant";
 }
 
