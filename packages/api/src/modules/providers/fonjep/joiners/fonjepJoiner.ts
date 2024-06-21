@@ -2,12 +2,20 @@ import { Siren, Siret } from "dto";
 import fonjepPaymentRepository from "../repositories/fonjep.payment.repository";
 import fonjepSubventionRepository from "../repositories/fonjep.subvention.repository";
 import db from "../../../../shared/MongoConnection";
+import { FullGrantData } from "../../../grant/@types/rawGrant";
+import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
+import FonjepPaymentEntity from "../entities/FonjepPaymentEntity";
 
 export class FonjepJoiner {
     applicationCollection = db.collection(fonjepSubventionRepository.collectionName);
 
     private get joinPipeline() {
         return [
+            {
+                $project: {
+                    application: "$$ROOT",
+                },
+            },
             {
                 $lookup: {
                     from: fonjepPaymentRepository.collectionName,
@@ -39,7 +47,7 @@ export class FonjepJoiner {
     public getFullFonjepGrantsBySiren(siren: Siren) {
         return this.applicationCollection
             .aggregate([{ $match: { "legalInformations.siret": { $regex: `^${siren}\\d{5}` } } }, ...this.joinPipeline])
-            .toArray();
+            .toArray() as unknown as FullGrantData<FonjepSubventionEntity, FonjepPaymentEntity>[];
     }
 }
 

@@ -57,7 +57,9 @@ export default class FonjepEntityAdapter {
         };
     }
 
-    public static rawToGrant(rawFullGrant: RawFullGrant<FonjepSubventionEntity, FonjepPaymentEntity>): Grant {
+    public static rawToGrant(
+        rawFullGrant: RawFullGrant<{ application: FonjepSubventionEntity; payments: FonjepPaymentEntity[] }>,
+    ): Grant {
         return {
             application: this.toDemandeSubvention(rawFullGrant.data.application),
             payments: rawFullGrant.data.payments.map(rawPayment => this.toPayment(rawPayment)),

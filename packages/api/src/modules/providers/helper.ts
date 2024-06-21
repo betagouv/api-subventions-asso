@@ -31,6 +31,6 @@ export function getPaymentProviders() {
 
 export function getFullGrantProviders() {
     return Object.values(providers).filter(
-        p => (p as FullGrantProvider<unknown, unknown>).isFullGrantProvider,
-    ) as FullGrantProvider<unknown, unknown>[];
+        p => (p as FullGrantProvider<unknown>).isFullGrantProvider,
+    ) as FullGrantProvider<unknown>[];
 }

@@ -281,7 +281,7 @@ describe("FonjepService", () => {
     });
 
     describe("raw grant", () => {
-        const DATA = [{ indexedInformations: { code_poste: "EJ", annee_demande: 2042 } }];
+        const DATA = [{ application: { indexedInformations: { code_poste: "EJ", annee_demande: 2042 } } }];
 
         describe("getRawGrantsBySiret", () => {
             const SIRET = "12345678900000";
@@ -306,9 +306,11 @@ describe("FonjepService", () => {
                     Array [
                       Object {
                         "data": Object {
-                          "indexedInformations": Object {
-                            "annee_demande": 2042,
-                            "code_poste": "EJ",
+                          "application": Object {
+                            "indexedInformations": Object {
+                              "annee_demande": 2042,
+                              "code_poste": "EJ",
+                            },
                           },
                         },
                         "joinKey": "EJ - 2042",
@@ -343,9 +345,11 @@ describe("FonjepService", () => {
                     Array [
                       Object {
                         "data": Object {
-                          "indexedInformations": Object {
-                            "annee_demande": 2042,
-                            "code_poste": "EJ",
+                          "application": Object {
+                            "indexedInformations": Object {
+                              "annee_demande": 2042,
+                              "code_poste": "EJ",
+                            },
                           },
                         },
                         "joinKey": "EJ - 2042",
@@ -389,8 +393,8 @@ describe("FonjepService", () => {
     });
 
     describe("rawToGrant", () => {
-        // @ts-expect-error: parameter type
-        const RAW_FULLGRANT: RawFullGrant<FonjepSubventionEntity, FonjepPaymentEntity> = {
+        const RAW_FULLGRANT: RawFullGrant<{ application: FonjepSubventionEntity; payments: FonjepPaymentEntity[] }> = {
+            // @ts-expect-error: parameter type
             data: { application: { foo: "bar" }, payments: [{ poo: "paz" }] },
         };
         // @ts-expect-error: parameter type
