@@ -6,30 +6,29 @@ import csvSyncParser = require("csv-parse/sync");
 jest.mock("../../../shared/Validators");
 const mockedValidators = jest.mocked(Validators);
 import * as DateHelper from "../../../shared/helpers/DateHelper";
+
 jest.mock("../../../shared/helpers/DateHelper");
 const mockedDateHelper = jest.mocked(DateHelper);
 import * as ParserHelper from "../../../shared/helpers/ParserHelper";
 import { SCDL_STORABLE } from "./__fixtures__/RawData";
+
 jest.mock("../../../shared/helpers/ParserHelper");
 const mockedParserHelper = jest.mocked(ParserHelper);
 jest.mock("csv-parse/sync");
 const mockedCsvLib = jest.mocked(csvSyncParser);
 
 describe("ScdlGrantParser", () => {
+    const BUFFER = Buffer.alloc(1);
+
     describe("parseCsv", () => {
-        const BUFFER = Buffer.alloc(1);
-        const mockIsGrantValid = jest.fn();
-        // @ts-expect-error: protected
-        const originalIsGrantValid = ScdlGrantParser.isGrantValid;
+        let validateSpy: jest.SpyInstance;
 
         beforeEach(() => {
             mockedCsvLib.parse.mockReturnValue(SCDL_STORABLE);
-            // @ts-expect-error: mock protected static method
-            ScdlGrantParser.isGrantValid = mockIsGrantValid.mockReturnValue(true);
+            validateSpy = jest.spyOn(ScdlGrantParser, "_filterValidEntities").mockImplementation();
         });
 
-        // @ts-expect-error: unmock protected static method
-        afterAll(() => (ScdlGrantParser.isGrantValid = originalIsGrantValid));
+        afterAll(() => validateSpy.mockRestore());
 
         it("should call csv lib parse", () => {
             ScdlGrantParser.parseCsv(BUFFER);
@@ -41,10 +40,78 @@ describe("ScdlGrantParser", () => {
             });
         });
 
-        it("should return storableChunk", () => {
-            mockedParserHelper.indexDataByPathObject.mockImplementation((mapper, row) => row);
-            const actual = ScdlGrantParser.parseCsv(BUFFER);
-            expect(actual).toMatchSnapshot();
+        it("calls validation with parsed data", () => {
+            ScdlGrantParser.parseCsv(BUFFER);
+            expect(validateSpy).toHaveBeenCalledWith(SCDL_STORABLE);
+        });
+    });
+
+    describe("parseExcel", () => {
+        const HEADERS = ["a", "b", "c"];
+        const DATA = [
+            [1, 2, 3],
+            [4, 5, 6],
+        ];
+        const SHEET = [HEADERS, ...DATA];
+        let validateSpy: jest.SpyInstance;
+
+        beforeAll(() => {
+            jest.mocked(ParserHelper.xlsParseWithPageName).mockReturnValue([{ data: SHEET, name: "whateverName" }]);
+            validateSpy = jest.spyOn(ScdlGrantParser, "_filterValidEntities").mockImplementation();
+        });
+
+        afterAll(() => {
+            jest.mocked(ParserHelper.xlsParseWithPageName).mockRestore();
+            validateSpy.mockRestore();
+        });
+
+        it("parses excel with page names", () => {
+            ScdlGrantParser.parseExcel(BUFFER);
+            expect(ParserHelper.xlsParseWithPageName).toHaveBeenCalledWith(BUFFER);
+        });
+
+        it("throws if empty page", () => {
+            jest.mocked(ParserHelper.xlsParseWithPageName).mockReturnValueOnce([{ data: [], name: "first" }]);
+            expect(() => ScdlGrantParser.parseExcel(BUFFER)).toThrowErrorMatchingInlineSnapshot(
+                `"no data in required page (default is first page)"`,
+            );
+        });
+
+        it("reads proper page", () => {
+            jest.mocked(ParserHelper.xlsParseWithPageName).mockReturnValueOnce([
+                { data: [], name: "first" },
+                {
+                    data: SHEET,
+                    name: "specificName",
+                },
+            ]);
+            ScdlGrantParser.parseExcel(BUFFER, "specificName");
+            expect(ParserHelper.linkHeaderToData).toHaveBeenCalled();
+        });
+
+        it("reads default page: first page", () => {
+            ScdlGrantParser.parseExcel(BUFFER);
+            expect(ParserHelper.linkHeaderToData).toHaveBeenCalled();
+        });
+
+        it("applies offset", () => {
+            jest.mocked(ParserHelper.xlsParseWithPageName).mockReturnValueOnce([
+                {
+                    data: [[], [], ...SHEET],
+                    name: "whateverName",
+                },
+            ]);
+            ScdlGrantParser.parseExcel(BUFFER, undefined, 2);
+            expect(ParserHelper.linkHeaderToData).toHaveBeenCalledWith(HEADERS, DATA[0]);
+            expect(ParserHelper.linkHeaderToData).toHaveBeenCalledWith(HEADERS, DATA[1]);
+        });
+
+        it("filters valid grants", () => {
+            const spyFilter = jest.spyOn(ScdlGrantParser, "_filterValidEntities");
+            jest.mocked(ParserHelper.linkHeaderToData).mockReturnValue("TOTO" as unknown as Record<string, any>);
+            ScdlGrantParser.parseExcel(BUFFER);
+            expect(spyFilter).toHaveBeenCalledWith(["TOTO", "TOTO"]);
+            jest.mocked(ParserHelper.linkHeaderToData).mockRestore();
         });
     });
 
@@ -107,6 +174,32 @@ describe("ScdlGrantParser", () => {
             // @ts-expect-error: protected method
             ScdlGrantParser.isGrantValid(actual);
             expect(actual).toMatchObject(expected);
+        });
+    });
+
+    describe("_filterValidEntities", () => {
+        let isValidSpy: jest.SpyInstance;
+
+        beforeEach(() => {
+            // @ts-expect-error -- protected method
+            isValidSpy = jest.spyOn(ScdlGrantParser, "isGrantValid").mockReturnValue(true);
+            mockedParserHelper.indexDataByPathObject.mockImplementation((_mapper, row) => row);
+        });
+
+        afterEach(() => {
+            isValidSpy.mockRestore();
+        });
+
+        it("should return storableChunk", () => {
+            const actual = ScdlGrantParser._filterValidEntities(SCDL_STORABLE);
+            expect(actual).toMatchSnapshot();
+        });
+
+        it("returns only valid entities", () => {
+            isValidSpy.mockReturnValueOnce(false);
+            const expected = SCDL_STORABLE.length - 1;
+            const actual = ScdlGrantParser._filterValidEntities(SCDL_STORABLE).length;
+            expect(actual).toBe(expected);
         });
     });
 });
