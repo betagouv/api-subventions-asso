@@ -35,7 +35,7 @@ describe("SCDL CLI", () => {
             producerSlug,
             exportDate,
             "Du 01-01-2023 au 30-06-2023",
-            3,
+            2,
         );
     }
 
