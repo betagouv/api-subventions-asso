@@ -14,7 +14,7 @@
             <TableHead>Activité</TableHead>
             <TableHead>Centre financier</TableHead>
             <TableHead>Date</TableHead>
-            <TableHead>BOP</TableHead>
+            <TableHead>Programme</TableHead>
         </svelte:fragment>
         <svelte:fragment slot="body">
             {#each $data.payments as payment}
@@ -24,7 +24,7 @@
                     <StringTableCell value={payment.activitee} />
                     <StringTableCell value={payment.centreFinancier} />
                     <StringTableCell value={payment.date} />
-                    <StringTableCell value={payment.bop} />
+                    <StringTableCell value={payment.programme} />
                 </tr>
             {/each}
         </svelte:fragment>

@@ -4,6 +4,8 @@ jest.mock("../../../dataProviders/api/dataBretagne/dataBretagne.port");
 import stateBudgetProgramPort from "../../../dataProviders/db/state-budget-program/stateBudgetProgram.port";
 jest.mock("../../../dataProviders/db/state-budget-program/stateBudgetProgram.port");
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
+import { PROGRAMS } from "../../../dataProviders/api/dataBretagne/__fixtures__/DataBretagne.fixture";
+import DataBretagneProgrammeAdapter from "../../../dataProviders/api/dataBretagne/DataBretagneProgrammeAdapter";
 
 describe("Data Bretagne Service", () => {
     beforeAll(() => {
@@ -13,6 +15,7 @@ describe("Data Bretagne Service", () => {
             "code_ministere",
             1,
         )]);
+        jest.mocked(stateBudgetProgramPort.findAll).mockResolvedValue(PROGRAMS.map(DataBretagneProgrammeAdapter.toEntity));
     });
 
     describe("resyncPrograms", () => {
@@ -34,11 +37,17 @@ describe("Data Bretagne Service", () => {
         });
     });
 
-    describe("findPrograms", () => {
-        it("should call stateBudgetProgramPort.findAll", async () => {
-            const findAllSpy = jest.spyOn(stateBudgetProgramPort, "findAll").mockResolvedValueOnce([]);
-            await dataBretagneService.findPrograms();
-            expect(findAllSpy).toHaveBeenCalledTimes(1);
+    describe("findProgramsRecord", () => {
+        it("should call stateBudgetProgramPort.find", async () => {
+            await dataBretagneService.findProgramsRecord();
+            expect(jest.mocked(stateBudgetProgramPort.findAll)).toHaveBeenCalledTimes(1);
+        });
+
+        it("should return a record of state budget program entities", async () => {
+            const programs = await dataBretagneService.findProgramsRecord();
+            expect(programs).toEqual({
+                [PROGRAMS[0].code]: DataBretagneProgrammeAdapter.toEntity(PROGRAMS[0]),
+            });
         });
     });
 });

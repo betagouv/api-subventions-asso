@@ -61,13 +61,15 @@ Object {
 exports[`FonjepEntityAdapter toPayment() should return a Payment 1`] = `
 Object {
   "amount": 1000,
-  "bop": 163,
+  "bop": 0,
   "codePoste": "J00034",
   "dateOperation": 2022-01-02T00:00:00.000Z,
   "id": "unique_id",
+  "libelleProgramme": "FAKE",
   "montantAPayer": 1000,
   "periodeDebut": 2022-01-02T00:00:00.000Z,
   "periodeFin": 2022-01-02T00:00:00.000Z,
+  "programme": 0,
   "siret": "10000000000001",
   "versementKey": "J00034",
 }

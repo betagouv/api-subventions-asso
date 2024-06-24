@@ -4,6 +4,7 @@ import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
 import fonjepService from "../fonjep.service";
 import FonjepPaymentEntity from "../entities/FonjepPaymentEntity";
+import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
 
 export default class FonjepEntityAdapter {
     static PROVIDER_NAME = "Fonjep";
@@ -55,7 +56,7 @@ export default class FonjepEntityAdapter {
         };
     }
 
-    static toPayment(entity: FonjepPaymentEntity): FonjepPayment {
+    static toPayment(entity: FonjepPaymentEntity, program: StateBudgetProgramEntity): FonjepPayment {
         const dataDate = entity.indexedInformations.updated_at;
         const toPV = ProviderValueFactory.buildProviderValueAdapter(fonjepService.provider.name, dataDate);
 
@@ -69,7 +70,9 @@ export default class FonjepEntityAdapter {
             periodeDebut: toPV(entity.indexedInformations.periode_debut),
             periodeFin: toPV(entity.indexedInformations.periode_fin),
             montantAPayer: toPV(entity.indexedInformations.montant_a_payer),
-            bop: toPV(entity.indexedInformations.bop),
+            programme: toPV(program.code_programme),
+            libelleProgramme: toPV(program.label_programme),
+            bop: toPV(program.code_programme), // deprecated
         };
     }
 

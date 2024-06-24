@@ -1,6 +1,7 @@
 import FonjepEntityAdapter from "./FonjepEntityAdapter";
 import { SubventionEntity, PaymentEntity } from "../../../../../tests/modules/providers/fonjep/__fixtures__/entity";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
+import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
 
 describe("FonjepEntityAdapter", () => {
     beforeAll(() => jest.useFakeTimers().setSystemTime(new Date("2022-01-01")));
@@ -20,7 +21,10 @@ describe("FonjepEntityAdapter", () => {
         it("should return a Payment", () => {
             // @ts-expect-error: mock
             buildProviderValueAdapterMock.mockImplementationOnce(() => value => value);
-            const actual = FonjepEntityAdapter.toPayment(PaymentEntity);
+            const actual = FonjepEntityAdapter.toPayment(PaymentEntity, {
+                code_programme: 0,
+                label_programme: "FAKE",
+            } as StateBudgetProgramEntity);
             expect(actual).toMatchSnapshot();
         });
     });

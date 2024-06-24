@@ -9,4 +9,6 @@ export interface BasePayment {
     siret: ProviderValue<Siret>;
     amount: ProviderValue<number>;
     dateOperation: ProviderValue<Date>;
+    programme: ProviderValue<number>;
+    libelleProgramme: ProviderValue<string>;
 }

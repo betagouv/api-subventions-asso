@@ -16,11 +16,10 @@ describe("Payments Adapter", () => {
     ];
 
     describe("toPayment()", () => {
-        const mockFormatBop = vi.spyOn(PaymentsAdapter, "formatBop");
-        const mockChooseBop = vi.spyOn(PaymentsAdapter, "_chooseBop");
+        const mockBuildProgrammeText = vi.spyOn(PaymentsAdapter, "buildProgrammeText");
         const mockGetTotalPayment = vi.spyOn(PaymentsAdapter, "_getTotalPayment");
 
-        const mocks = [mockGetTotalPayment];
+        const mocks = [mockGetTotalPayment, mockBuildProgrammeText];
 
         beforeAll(() => mocks.forEach(mock => mock.mockImplementation(vi.fn())));
         afterEach(() => mocks.forEach(mock => mock.mockClear()));
@@ -28,7 +27,7 @@ describe("Payments Adapter", () => {
 
         it("should return an object with properties", () => {
             const actual = Object.keys(PaymentsAdapter.toPayment(PAYMENTS));
-            expect(actual).toEqual(["totalAmount", "centreFinancier", "lastPaymentDate", "bop"]);
+            expect(actual).toEqual(["totalAmount", "centreFinancier", "lastPaymentDate", "programme"]);
         });
 
         it("should call getLastPaymentsDate()", () => {
@@ -41,14 +40,9 @@ describe("Payments Adapter", () => {
             expect(mockGetTotalPayment).toHaveBeenCalledTimes(1);
         });
 
-        it("should call _chooseBop()", () => {
+        it("should call mockBuildProgrammeText()", () => {
             PaymentsAdapter.toPayment(PAYMENTS);
-            expect(mockChooseBop).toHaveBeenCalledTimes(1);
-        });
-
-        it("should call formatBop()", () => {
-            PaymentsAdapter.toPayment(PAYMENTS);
-            expect(mockFormatBop).toHaveBeenCalledTimes(1);
+            expect(mockBuildProgrammeText).toHaveBeenCalledTimes(1);
         });
 
         it("should call valueOrHyphen() 4 times", () => {
@@ -76,68 +70,6 @@ describe("Payments Adapter", () => {
         });
     });
 
-    describe("fromatBop()", () => {
-        it("should remove first character", () => {
-            const BOP = "0163";
-            const expected = "163";
-            const actual = PaymentsAdapter.formatBop(BOP);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return untouched bop", () => {
-            const BOP = 1267;
-            const expected = BOP;
-            const actual = PaymentsAdapter.formatBop(BOP);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return undefined", () => {
-            const BOP = undefined;
-            const expected = undefined;
-            const actual = PaymentsAdapter.formatBop(BOP);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("_chooseBop()", () => {
-        /* eslint-disable vitest/expect-expect -- use helper */
-        function testExpected(payments, expected) {
-            const actual = PaymentsAdapter._chooseBop(payments);
-            expect(actual).toBe(expected);
-        }
-
-        it("returns general bop if any", () => {
-            testExpected(
-                [
-                    { bop: "1", amount: 2 },
-                    { bop: "1", amount: 1 },
-                ],
-                "1",
-            );
-        });
-
-        it("ignores falsy bops", () => {
-            testExpected(
-                [
-                    { bop: "1", amount: 2 },
-                    { bop: null, amount: 1 },
-                ],
-                "1",
-            );
-        });
-
-        it("returns 'multi-BOP' if multiple bops", () => {
-            testExpected(
-                [
-                    { bop: "1", amount: 2 },
-                    { bop: "2", amount: 1 },
-                ],
-                "multi-BOP",
-            );
-        });
-        /* eslint-enable vitest/expect-expect */
-    });
-
     describe("_getTotalPayment", () => {
         const spyCountTotalPayment = vi.spyOn(PaymentsAdapter, "_countTotalPayment");
         it("should call _countTotalPayment()", () => {
@@ -152,6 +84,34 @@ describe("Payments Adapter", () => {
         `("should return undefined", ({ value }) => {
             const expected = undefined;
             const actual = PaymentsAdapter._getTotalPayment(value);
+            expect(actual).toEqual(expected);
+        });
+    });
+    describe("buildProgrammeText()", () => {
+        it("should return an empty string if versements array is empty", () => {
+            const versements = [];
+            const expected = "";
+            const actual = PaymentsAdapter.buildProgrammeText(versements);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return 'multi-programmes' if there are multiple programmes", () => {
+            const versements = [
+                { programme: 123, libelleProgramme: "Libelle 1" },
+                { programme: 321, libelleProgramme: "Libelle 2" },
+            ];
+            const expected = "multi-programmes";
+            const actual = PaymentsAdapter.buildProgrammeText(versements);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return the program text if there is only one programme", () => {
+            const versements = [
+                { programme: 123, libelleProgramme: "Libelle 1" },
+                { programme: 123, libelleProgramme: "Libelle 1" },
+            ];
+            const expected = "123 - Libelle 1";
+            const actual = PaymentsAdapter.buildProgrammeText(versements);
             expect(actual).toEqual(expected);
         });
     });

@@ -2,6 +2,8 @@ import { ObjectId, WithId } from "mongodb";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 import ChorusAdapter from "./ChorusAdapter";
+import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
+import dataBretagneService from "../../dataBretagne/dataBretagne.service";
 
 describe("ChorusAdapter", () => {
     describe("toCommon", () => {
@@ -46,7 +48,10 @@ describe("ChorusAdapter", () => {
             "" as unknown as ObjectId,
         );
 
-        const actual = ChorusAdapter.toPayment(entity as WithId<ChorusLineEntity>);
+        const actual = ChorusAdapter.toPayment(
+            entity as WithId<ChorusLineEntity>,
+            { code_programme: 0, label_programme: "FAKE" } as StateBudgetProgramEntity,
+        );
         const expected = {
             codeBranche: toPV("FAKE"),
             branche: toPV("FAKE"),
@@ -60,6 +65,8 @@ describe("ChorusAdapter", () => {
             ej: toPV("FAKE"),
             amount: toPV(0),
             dateOperation: toPV(now),
+            programme: toPV(0, dataBretagneService.provider.name),
+            libelleProgramme: toPV("FAKE", dataBretagneService.provider.name),
         };
 
         expect(actual).toMatchObject(expected);
@@ -85,7 +92,10 @@ describe("ChorusAdapter", () => {
             "" as unknown as ObjectId,
         );
 
-        const actual = ChorusAdapter.toPayment(entity as WithId<ChorusLineEntity>);
+        const actual = ChorusAdapter.toPayment(
+            entity as WithId<ChorusLineEntity>,
+            { code_programme: 0, label_programme: "FAKE" } as StateBudgetProgramEntity,
+        );
         const expected = {
             codeBranche: toPV("FAKE"),
             branche: toPV("FAKE"),
@@ -95,6 +105,8 @@ describe("ChorusAdapter", () => {
             ej: toPV("FAKE"),
             amount: toPV(0),
             dateOperation: toPV(now),
+            programme: toPV(0, dataBretagneService.provider.name),
+            libelleProgramme: toPV("FAKE", dataBretagneService.provider.name),
         };
 
         expect(actual).toMatchObject(expected);

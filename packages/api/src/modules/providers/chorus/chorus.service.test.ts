@@ -22,6 +22,15 @@ import { WithId } from "mongodb";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 
 describe("chorusService", () => {
+    let toVersementArrayMock: jest.SpyInstance;
+
+    beforeAll(() => {
+        // @ts-expect-error: toPaymentArray is private
+        toVersementArrayMock = jest.spyOn(chorusService, "toPaymentArray");
+
+        toVersementArrayMock.mockImplementation((data) => data);
+    })
+
     describe("insertMany", () => {
         it("should call repository with entities", async () => {
             await chorusService.insertMany(ENTITIES);
@@ -43,10 +52,11 @@ describe("chorusService", () => {
         const SIRET = ENTITIES[0].indexedInformations.siret;
         it("should call chorusLineRepository.findBySiret()", async () => {
             await chorusService.getPaymentsBySiret(SIRET);
+            expect(mockedChorusLineRepository.findBySiret).toHaveBeenCalledWith(SIRET);
         });
-        it("should call ChorusAdapter.toPayment for each document", async () => {
+        it("should call toPaymentArray for each document", async () => {
             await chorusService.getPaymentsBySiret(SIRET);
-            expect(ChorusAdapter.toPayment).toHaveBeenCalledTimes(2);
+            expect(toVersementArrayMock).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -65,10 +75,11 @@ describe("chorusService", () => {
         const SIREN = ENTITIES[0].indexedInformations.siret.substring(0, 9);
         it("should call chorusLineRepository.findBySiren()", async () => {
             await chorusService.getPaymentsBySiren(SIREN);
+            expect(mockedChorusLineRepository.findBySiren).toHaveBeenCalledWith(SIREN);
         });
-        it("should call ChorusAdapter.toPayment for each document", async () => {
+        it("should call toPaymentArray for each document", async () => {
             await chorusService.getPaymentsBySiren(SIREN);
-            expect(ChorusAdapter.toPayment).toHaveBeenCalledTimes(2);
+            expect(toVersementArrayMock).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -87,10 +98,11 @@ describe("chorusService", () => {
         const EJ = ENTITIES[0].indexedInformations.ej;
         it("should call chorusLineRepository.findByEJ()", async () => {
             await chorusService.getPaymentsByKey(EJ);
+            expect(mockedChorusLineRepository.findByEJ).toHaveBeenCalledWith(EJ);
         });
-        it("should call ChorusAdapter.toPayment for each document", async () => {
+        it("should call toPaymentArray for each document", async () => {
             await chorusService.getPaymentsByKey(EJ);
-            expect(ChorusAdapter.toPayment).toHaveBeenCalledTimes(2);
+            expect(toVersementArrayMock).toHaveBeenCalledTimes(1);
         });
     });
 

@@ -7,7 +7,7 @@ import PaymentsAdapter from "$lib/resources/payments/payments.adapter";
 const MONTANT_VERSE_LABEL = "Montant versé";
 const CENTRE_FINANCIER_LABEL = "Centre financier";
 const DATE_VERSEMENT_LABEL = "Date du payment";
-const BOP_LABEL = "BOP";
+const PROGRAMME_LABEL = "Programme";
 
 export default class PaymentTableController {
     constructor(sortMethod) {
@@ -32,7 +32,7 @@ export default class PaymentTableController {
     // Order is important to respect PaymentsAdapter.toPayment() format
     // TODO: enhance this and make a mapper header - payment property ?
     static extractHeaders() {
-        return [MONTANT_VERSE_LABEL, CENTRE_FINANCIER_LABEL, DATE_VERSEMENT_LABEL, BOP_LABEL];
+        return [MONTANT_VERSE_LABEL, CENTRE_FINANCIER_LABEL, DATE_VERSEMENT_LABEL, PROGRAMME_LABEL];
     }
 
     _countPayments() {
@@ -68,7 +68,7 @@ export default class PaymentTableController {
             activitee: valueOrHyphen(payment.activitee),
             centreFinancier: valueOrHyphen(payment.centreFinancier),
             date: withTwoDigitYear(new Date(payment.dateOperation)).slice(0, 8),
-            bop: valueOrHyphen(PaymentsAdapter.formatBop(payment.bop)),
+            programme: PaymentsAdapter.buildProgrammeText([payment]),
         };
     }
 
@@ -76,7 +76,7 @@ export default class PaymentTableController {
         const columnsName = {
             "payments.montant": MONTANT_VERSE_LABEL,
             "payments.date": DATE_VERSEMENT_LABEL,
-            "payments.bop": BOP_LABEL,
+            "payments.programme": PROGRAMME_LABEL,
         };
 
         this.columnDataViews.set(
