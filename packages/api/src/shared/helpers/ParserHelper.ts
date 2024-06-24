@@ -3,11 +3,14 @@ import path from "path";
 import xlsx from "node-xlsx";
 import csvSyncParser = require("csv-parse/sync");
 
-import { ParserInfo, ParserPath, DefaultObject } from "../../@types";
+import { ParserInfo, ParserPath, DefaultObject, BeforeAdaptation } from "../../@types";
 
-export function findByPath<T>(data: unknown, parserData: ParserPath | ParserInfo) {
+export function findByPath<Tin extends BeforeAdaptation, Tout = unknown>(
+    data: DefaultObject<unknown>,
+    parserData: ParserPath | ParserInfo<Tin>,
+) {
     let path: ParserPath;
-    let adapter = (v: string | undefined): unknown => v;
+    let adapter = (v: Tin | undefined): unknown => v;
 
     if (Array.isArray(parserData)) {
         path = parserData;
@@ -16,34 +19,36 @@ export function findByPath<T>(data: unknown, parserData: ParserPath | ParserInfo
         adapter = parserData.adapter || adapter;
     }
 
-    const result = path.reduce((acc, name) => {
+    const result = path.reduce((acc: Tin | DefaultObject<unknown> | undefined, name) => {
         if (acc === undefined) return acc;
 
-        const obj = acc as { [key: string]: string };
+        const obj = acc as { [key: string]: Tin | DefaultObject<unknown> };
 
+        // case of next param is without ambiguity
         if (!(name instanceof Array)) {
             // So is string
             return obj[name];
         }
 
+        // case of next param can have several values
         const key = name.find(key => obj[key.trim()]); // TODO manage multiple valid case (with filters)
 
         if (!key) return undefined;
         return obj[key.trim()];
-    }, data) as string;
+    }, data) as Tin;
 
-    return adapter(result) as T;
+    return adapter(result) as Tout;
 }
 
-export function indexDataByPathObject(
-    pathObject: DefaultObject<ParserPath | ParserInfo>,
+export function indexDataByPathObject<Tin extends BeforeAdaptation>(
+    pathObject: DefaultObject<ParserPath | ParserInfo<Tin>>,
     data: DefaultObject<unknown>,
 ) {
     return Object.keys(pathObject).reduce((acc, key: string) => {
-        const tempAcc = acc as { [key: string]: string };
-        tempAcc[key] = findByPath(data, pathObject[key]);
+        const tempAcc = acc;
+        tempAcc[key] = findByPath<Tin>(data, pathObject[key]);
         return tempAcc;
-    }, {} as unknown) as DefaultObject<unknown>;
+    }, {} as DefaultObject<unknown>);
 }
 
 export function linkHeaderToData(headers: string[], data: unknown[]) {

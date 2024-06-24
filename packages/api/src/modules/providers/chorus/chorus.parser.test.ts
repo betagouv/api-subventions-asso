@@ -8,7 +8,7 @@ import { ENTITIES, FILLED_HEADERS, HEADERS, PAGES } from "./__fixtures__/ChorusF
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 jest.mock("./entities/ChorusLineEntity");
 import * as StringHelper from "../../../shared/helpers/StringHelper";
-import { DefaultObject } from "../../../@types";
+import { BeforeAdaptation, DefaultObject } from "../../../@types";
 jest.mock("../../../shared/helpers/StringHelper");
 const mockedStringHelper = jest.mocked(StringHelper);
 
@@ -101,9 +101,10 @@ describe("ChorusParser", () => {
         const ROWS = [...PAGES];
 
         beforeAll(() => {
-            mockedParserHelper.linkHeaderToData.mockReturnValue(ENTITIES[0].data as DefaultObject<unknown>);
-            // @ts-expect-error: mock
-            mockedParserHelper.indexDataByPathObject.mockReturnValue(ENTITIES[0].indexedInformations);
+            mockedParserHelper.linkHeaderToData.mockReturnValue(ENTITIES[0].data as DefaultObject<BeforeAdaptation>);
+            mockedParserHelper.indexDataByPathObject.mockReturnValue(
+                ENTITIES[0].indexedInformations as unknown as DefaultObject<unknown>,
+            );
             // @ts-expect-error: protected
             ChorusParser.buildUniqueId = mockBuildUniqueId;
             // @ts-expect-error: protected

@@ -15,6 +15,7 @@ export default class LeCompteAssoParser {
 
             const legalInformations = {
                 ...(ParseHelper.indexDataByPathObject(
+                    // TODO <string|number> ??
                     LeCompteAssoRequestEntity.indexedLegalInformationsPath,
                     parsedData,
                 ) as { siret: Siret; name: string }),
@@ -22,7 +23,7 @@ export default class LeCompteAssoParser {
             };
 
             const providerInformations = ParseHelper.indexDataByPathObject(
-                LeCompteAssoRequestEntity.indexedProviderInformationsPath,
+                LeCompteAssoRequestEntity.indexedProviderInformationsPath, // TODO <string|number> ??
                 parsedData,
             ) as ILeCompteAssoRequestInformations;
 

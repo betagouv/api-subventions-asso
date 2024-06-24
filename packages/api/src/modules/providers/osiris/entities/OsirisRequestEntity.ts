@@ -9,7 +9,7 @@ export default class OsirisRequestEntity extends RequestEntity {
     public static defaultMainCategory = "Dossier";
 
     public static indexedProviderInformationsPath: {
-        [key: string]: ParserPath | ParserInfo;
+        [key: string]: ParserPath | ParserInfo; // TODO <string|number>
     } = {
         osirisId: ["Dossier", "N° Dossier Osiris"],
         compteAssoId: ["Dossier", "N° Dossier Compte Asso"],

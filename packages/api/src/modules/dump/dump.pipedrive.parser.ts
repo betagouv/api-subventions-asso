@@ -15,7 +15,7 @@ export default class DumpPipedriveParser {
         const headerRow = page.splice(0, 1)[0] as string[];
         console.log("Map rows to entities...");
         const entities = page.map(userRow => ParserHelper.linkHeaderToData(headerRow, userRow));
-        return entities.map(pipedriveUser => indexDataByPathObject(DumpPipedriveParser.pathObject, pipedriveUser));
+        return entities.map(pipedriveUser => indexDataByPathObject(DumpPipedriveParser.pathObject, pipedriveUser)); // TODO check adapter types
     }
 
     private static pathObject = {

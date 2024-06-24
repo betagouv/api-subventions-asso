@@ -6,11 +6,12 @@ import subventiaService from "../subventia.service";
 import SubventiaDto from "../@types/subventia.dto";
 import SubventiaEntity, { SubventiaDbo } from "../@types/subventia.entity";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
+import { DefaultObject, ParserInfo } from "../../../../@types";
 
 export default class SubventiaAdapter {
     static applicationToEntity(application: SubventiaDto, exportDate: Date): SubventiaEntity {
         return {
-            ...ParseHelper.indexDataByPathObject(subventiaMapper, application),
+            ...ParseHelper.indexDataByPathObject(subventiaMapper, application), // TODO <string|number>
             provider: subventiaService.provider.id,
             exportDate: exportDate,
         } as SubventiaEntity;
@@ -57,7 +58,8 @@ const statusMapper = {
     SOLDE: ApplicationStatus.GRANTED,
 };
 
-const subventiaMapper = {
+const subventiaMapper: DefaultObject<ParserInfo> = {
+    // TODO <string|number>
     reference_demande: { path: ["Référence administrative - Demande"] },
     service_instructeur: { path: ["Financeur Principal"] },
     annee_demande: { path: ["annee_demande"] },

@@ -7,6 +7,7 @@ export default class ChorusLineEntity {
     public provider = "Chorus";
 
     public static indexedInformationsPath: { [key: string]: ParserInfo } = {
+        // TODO <string|number>
         ej: {
             path: ["N° EJ"],
         },

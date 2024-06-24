@@ -18,6 +18,7 @@ export default class FonjepSubventionEntity {
     };
 
     public static indexedProviderInformationsPath: DefaultObject<ParserPath | ParserInfo> = {
+        // TODO <string|number>
         code_poste: ["Code"],
         dispositif: ["Dispositif", "Libelle"],
         montant_paye: {

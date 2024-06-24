@@ -3,6 +3,7 @@ import * as CliHelper from "../../../shared/helpers/CliHelper";
 import { BRANCHE_ACCEPTED } from "../../../shared/ChorusBrancheAccepted";
 import { isSiret, isEJ } from "../../../shared/Validators";
 import { getMD5 } from "../../../shared/helpers/StringHelper";
+import { DefaultObject } from "../../../@types";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import IChorusIndexedInformations from "./@types/IChorusIndexedInformations";
 
@@ -47,8 +48,9 @@ export default class ChorusParser {
 
     protected static rowsToEntities(headers, rows) {
         return rows.reduce((entities, row, index, array) => {
-            const data = ParseHelper.linkHeaderToData(headers, row);
+            const data = ParseHelper.linkHeaderToData(headers, row) as DefaultObject<string | number>;
             const indexedInformations = ParseHelper.indexDataByPathObject(
+                // TODO <string|number>
                 ChorusLineEntity.indexedInformationsPath,
                 data,
             ) as unknown as IChorusIndexedInformations;
