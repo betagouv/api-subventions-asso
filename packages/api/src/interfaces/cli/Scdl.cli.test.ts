@@ -107,7 +107,7 @@ describe("ScdlCli", () => {
     `("$methodName", ({ test, parserMethod, parserArgs }) => {
         it("sanitizes input", async () => {
             // @ts-expect-error -- test private
-            const sanitizeSpy = jest.spyOn(cli, "genericSanitizeInput");
+            const sanitizeSpy = jest.spyOn(cli, "validateGenericInput");
             await test();
             expect(sanitizeSpy).toHaveBeenLastCalledWith(FILE_PATH, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
         });
@@ -163,16 +163,16 @@ describe("ScdlCli", () => {
         });
     });
 
-    describe("genericSanitizeInput", () => {
+    describe("validateGenericInput", () => {
         it("should throw ExportDateError", async () => {
             // @ts-expect-error -- test private
-            expect(() => cli.genericSanitizeInput(PRODUCER_ENTITY.slug)).rejects.toThrowError(ExportDateError);
+            expect(() => cli.validateGenericInput(PRODUCER_ENTITY.slug)).rejects.toThrowError(ExportDateError);
         });
 
         it("should throw Error when providerId does not match any provider in database", async () => {
             mockedScdlService.getProducer.mockResolvedValue(null);
             // @ts-expect-error -- test private
-            expect(() => cli.genericSanitizeInput("WRONG_ID", new Date())).rejects.toThrowError();
+            expect(() => cli.validateGenericInput("WRONG_ID", new Date())).rejects.toThrowError();
         });
     });
 });

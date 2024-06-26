@@ -21,20 +21,20 @@ export default class ScdlCli {
     }
 
     public async parseXls(file: string, producerSlug: string, exportDate?: string, pageName?: string, rowOffset = 0) {
-        await this.genericSanitizeInput(file, producerSlug, exportDate);
+        await this.validateGenericInput(file, producerSlug, exportDate);
         const fileContent = fs.readFileSync(file);
         const entities = ScdlGrantParser.parseExcel(fileContent, pageName, rowOffset);
         return this.persistEntities(entities, producerSlug, exportDate as string);
     }
 
     public async parse(file: string, producerSlug: string, exportDate?: string, delimiter = ";") {
-        await this.genericSanitizeInput(file, producerSlug, exportDate);
+        await this.validateGenericInput(file, producerSlug, exportDate);
         const fileContent = fs.readFileSync(file);
         const entities = ScdlGrantParser.parseCsv(fileContent, delimiter);
         return this.persistEntities(entities, producerSlug, exportDate as string);
     }
 
-    private async genericSanitizeInput(file: string, producerSlug: string, exportDateStr?: string) {
+    private async validateGenericInput(file: string, producerSlug: string, exportDateStr?: string) {
         if (!exportDateStr) throw new ExportDateError();
         const exportDate = new Date(exportDateStr);
         if (isNaN(exportDate.getTime())) throw new ExportDateError();

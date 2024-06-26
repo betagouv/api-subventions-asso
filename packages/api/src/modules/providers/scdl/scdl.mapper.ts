@@ -28,7 +28,12 @@ function getMapperVariants(prop): string[] {
 
 const expandedShortISOPeriodRegExp = /\d{4}-[01]\d-[0-3]\d[/_]\d{4}-[01]\d-[0-3]\d/;
 
-const CONVENTION_DATE_PATHS = [...getMapperVariants("conventionDate"), "datedeconvention", "Date de convention*"];
+const CONVENTION_DATE_PATHS = [
+    ...getMapperVariants("conventionDate"),
+    "datedeconvention",
+    "Date de convention*",
+    "Date de la convention",
+];
 
 const dateAdapter = (date: string | number | Date | undefined | null): Date | undefined => {
     if (!date) return undefined;
@@ -43,7 +48,6 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
         path: [
             [
                 ...getMapperVariants("exercice"),
-                "Date de la convention",
                 "dateDecision_Tri",
                 "annee",
                 "Année budgétaire",
@@ -53,7 +57,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
         adapter: value => dateAdapter(value)?.getFullYear(),
     },
     conventionDate: {
-        path: [["Date de la convention", ...CONVENTION_DATE_PATHS]],
+        path: [[...CONVENTION_DATE_PATHS]],
         adapter: dateAdapter,
     },
     decisionReference: [[...getMapperVariants("decisionReference"), "Référence de la décision"]],
