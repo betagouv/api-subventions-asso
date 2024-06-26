@@ -6,11 +6,11 @@ import Flux from "../../shared/Flux";
 import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
-import { getDemandesSubventionsProviders } from "../providers/helper";
+import { demandesSubventionsProviders } from "../providers";
 import { SubventionsFlux } from "./@types/SubventionsFlux";
 
 export class SubventionsService {
-    public providers = getDemandesSubventionsProviders();
+    public providers = demandesSubventionsProviders;
     public getBySirenMethod = "getDemandeSubventionBySiren";
     public getBySiretMethod = "getDemandeSubventionBySiret";
 
@@ -36,25 +36,24 @@ export class SubventionsService {
         return this.getApplicationFetcher(this.getBySiretMethod)(siret);
     }
 
-    getApplicationFetcher(fn) {
-        const subventionsFlux = new Flux<SubventionsFlux>();
-        const defaultMeta = {
-            totalProviders: this.providers.length,
-        };
-
-        subventionsFlux.push({
-            __meta__: defaultMeta,
-        });
-
-        let countAnswers = 0;
-
+    getApplicationFetcher(getterName) {
         return identifier => {
-            this.providers.forEach(p =>
-                p[fn](identifier).then(subventions => {
-                    countAnswers++;
+            const subventionsFlux = new Flux<SubventionsFlux>();
+            const defaultMeta = {
+                totalProviders: this.providers.length,
+            };
 
+            subventionsFlux.push({
+                __meta__: defaultMeta,
+            });
+
+            let countAnswers = 0;
+
+            this.providers.forEach(providerService =>
+                providerService[getterName](identifier).then(subventions => {
+                    countAnswers++;
                     subventionsFlux.push({
-                        __meta__: { ...defaultMeta, provider: p.provider.name },
+                        __meta__: { ...defaultMeta, provider: providerService.provider.name },
                         subventions: subventions || [],
                     });
 

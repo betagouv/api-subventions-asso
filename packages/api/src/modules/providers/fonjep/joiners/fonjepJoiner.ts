@@ -13,6 +13,11 @@ export class FonjepJoiner {
         return [
             {
                 $project: {
+                    _id: 0,
+                },
+            },
+            {
+                $project: {
                     application: "$$ROOT",
                 },
             },

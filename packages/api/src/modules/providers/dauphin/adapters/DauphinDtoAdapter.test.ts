@@ -3,7 +3,7 @@ const mockToStatus = jest.fn(() => mockLabel);
 
 import DauphinDtoAdapter from "./DauphinDtoAdapter";
 
-jest.mock("../../helper", () => ({
+jest.mock("../../providers.adapter", () => ({
     toStatusFactory: () => mockToStatus,
     __esModule: true, // this property makes it work
 }));

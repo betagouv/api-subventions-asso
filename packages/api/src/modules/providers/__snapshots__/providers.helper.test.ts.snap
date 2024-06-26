@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Providers Helper providersById should return providers by id 1`] = `
+Object {
+  "provider-application-1": Object {
+    "getDemandeSubventionBySiren": [MockFunction],
+    "getDemandeSubventionBySiret": [MockFunction],
+    "isDemandesSubventionsProvider": true,
+    "provider": Object {
+      "description": "API PROVIDER",
+      "id": "provider-application-1",
+      "name": "PROVIDER_APPLICATION_1",
+      "type": "API",
+    },
+    "rawToApplication": [MockFunction],
+  },
+  "provider-application-2": Object {
+    "getDemandeSubventionBySiren": [MockFunction],
+    "getDemandeSubventionBySiret": [MockFunction],
+    "isDemandesSubventionsProvider": true,
+    "provider": Object {
+      "description": "RAW PROVIDER",
+      "id": "provider-application-2",
+      "name": "PROVIDER_APPLICATION_2",
+      "type": "RAW",
+    },
+    "rawToApplication": [MockFunction],
+  },
+}
+`;

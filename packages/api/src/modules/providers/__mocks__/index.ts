@@ -2,6 +2,12 @@ import { IncomingMessage } from "http";
 import { Socket } from "node:net";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { ProviderRequestService } from "../../provider-request/providerRequest.service";
+import {
+    applicationProvidersFixtures,
+    fullGrantProvidersFixtures,
+    grantProvidersFixtures,
+    paymentProvidersFixtures,
+} from "../__fixtures__/providers.fixture";
 
 const providers = {
     // RAW service AssociationProvider + DemandeSubventionProvider
@@ -84,10 +90,7 @@ const providers = {
 
 export default providers;
 
-export const providersById = {
-    "prov-A": providers.serviceA,
-    "prov-B": providers.serviceB,
-    "prov-C": providers.serviceC,
-    "prov-D": providers.serviceD,
-    "prov-E": providers.serviceE,
-};
+export const fullGrantProviders = fullGrantProvidersFixtures;
+export const demandesSubventionsProviders = applicationProvidersFixtures;
+export const paymentProviders = paymentProvidersFixtures;
+export const grantProviders = grantProvidersFixtures;

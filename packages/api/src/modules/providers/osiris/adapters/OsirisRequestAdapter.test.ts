@@ -4,7 +4,7 @@ const mockToStatus = jest.fn(() => mockLabel);
 import OsirisRequestAdapter from "./OsirisRequestAdapter";
 import OsirisEntity from "../../../../../tests/modules/providers/osiris/__fixtures__/entity";
 
-jest.mock("../../helper", () => ({
+jest.mock("../../providers.adapter", () => ({
     toStatusFactory: () => mockToStatus,
     __esModule: true, // this property makes it work
 }));
