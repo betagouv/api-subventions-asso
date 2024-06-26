@@ -12,7 +12,7 @@ import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
 import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 import osirisService from "../osiris.service";
-import { toStatusFactory } from "../../helper";
+import { toStatusFactory } from "../../providers.adapter";
 import { RawApplication } from "../../../grant/@types/rawGrant";
 
 export default class OsirisRequestAdapter {

@@ -1,6 +1,7 @@
 import * as Sentry from "@sentry/node";
 import { CommonGrantDto, Grant, DemandeSubvention, Payment, Rna, Siret } from "dto";
-import providers from "../providers";
+import { providersById } from "../providers/providers.helper";
+import { demandesSubventionsProviders, fullGrantProviders, grantProviders, paymentProviders } from "../providers";
 import DemandesSubventionsProvider from "../subventions/@types/DemandesSubventionsProvider";
 import PaymentProvider from "../payments/@types/PaymentProvider";
 import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
@@ -14,29 +15,22 @@ import rnaSirenService from "../rna-siren/rnaSiren.service";
 import { siretToSiren } from "../../shared/helpers/SirenHelper";
 import { BadRequestError } from "../../shared/errors/httpErrors";
 import { RnaOnlyError } from "../../shared/errors/GrantError";
-import { getDemandesSubventionsProviders, getFullGrantProviders, getPaymentProviders } from "../providers/helper";
+
 import { FullGrantProvider } from "./@types/FullGrantProvider";
 import { RawGrant, JoinedRawGrant, RawFullGrant, RawApplication, RawPayment, AnyRawGrant } from "./@types/rawGrant";
-import GrantProvider from "./@types/GrantProvider";
 import commonGrantService from "./commonGrant.service";
 
 export class GrantService {
-    reduceToProvidersById = (acc, service: GrantProvider) => {
-        acc[service.provider.id] = service;
-        return acc;
-    };
+    fullGrantProvidersById: Record<string, FullGrantProvider<unknown>>;
+    applicationProvidersById: Record<string, DemandesSubventionsProvider<unknown>>;
+    paymentProvidersById: Record<string, PaymentProvider<unknown>>;
 
-    private fullGrantProviders: Record<string, FullGrantProvider<unknown>> = getFullGrantProviders().reduce(
-        this.reduceToProvidersById,
-        {},
-    );
-    private applicationProviders: Record<string, DemandesSubventionsProvider<unknown>> =
-        getDemandesSubventionsProviders().reduce(this.reduceToProvidersById, {});
-
-    private paymentProviders: Record<string, PaymentProvider<unknown>> = getPaymentProviders().reduce(
-        this.reduceToProvidersById,
-        {},
-    );
+    // Done in constructor to avoid circular dependencie issue
+    constructor() {
+        this.fullGrantProvidersById = providersById(fullGrantProviders);
+        this.applicationProvidersById = providersById(demandesSubventionsProviders);
+        this.paymentProvidersById = providersById(paymentProviders);
+    }
 
     static getRawMethodNameByIdType = {
         [StructureIdentifiersEnum.siret]: "getRawGrantsBySiret",
@@ -83,11 +77,11 @@ export class GrantService {
     adapteRawGrant(rawGrant: RawGrant) {
         switch (rawGrant.type) {
             case "fullGrant":
-                return this.fullGrantProviders[rawGrant.provider].rawToGrant(rawGrant as RawFullGrant);
+                return this.fullGrantProvidersById[rawGrant.provider].rawToGrant(rawGrant as RawFullGrant);
             case "application":
-                return this.applicationProviders[rawGrant.provider].rawToApplication(rawGrant as RawApplication);
+                return this.applicationProvidersById[rawGrant.provider].rawToApplication(rawGrant as RawApplication);
             case "payment":
-                return this.paymentProviders[rawGrant.provider].rawToPayment(rawGrant as RawPayment);
+                return this.paymentProvidersById[rawGrant.provider].rawToPayment(rawGrant as RawPayment);
         }
     }
 
@@ -150,7 +144,7 @@ export class GrantService {
         try {
             const { identifier: sirenOrSiret, type } = await this.validateAndGetIdentifierInfo(identifier);
             const method = GrantService.getRawMethodNameByIdType[type];
-            const providers = this.getGrantProviders();
+            const providers = grantProviders;
             const rawGrants = [
                 ...(
                     await Promise.all(
@@ -175,12 +169,6 @@ export class GrantService {
     async getRawGrantsByEstablishment(siret: Siret): Promise<JoinedRawGrant[]> {
         if (!isSiret(siret)) throw new StructureIdentifiersError("SIRET expected");
         return this.getRawGrants(siret);
-    }
-
-    private getGrantProviders(): GrantProvider[] {
-        return Object.values(providers).filter(
-            p => (p as unknown as GrantProvider).isGrantProvider,
-        ) as unknown as GrantProvider[];
     }
 
     // Use to spot grants or applications sharing the same joinKey (EJ or code_poste)

@@ -209,7 +209,7 @@ describe("/association", () => {
             return withoutIdGrants;
         };
 
-        it.only("should return raw grants with siren", async () => {
+        it("should return raw grants with siren", async () => {
             // SIREN must be from an association
             await rnaSirenPort.insert({ siren: SIREN, rna: RNA });
 

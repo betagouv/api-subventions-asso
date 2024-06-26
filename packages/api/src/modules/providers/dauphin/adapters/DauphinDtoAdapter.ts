@@ -3,7 +3,7 @@ import DauphinSubventionDto from "../dto/DauphinSubventionDto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import dauphinService from "../dauphin.service";
 import { capitalizeFirstLetter } from "../../../../shared/helpers/StringHelper";
-import { toStatusFactory } from "../../helper";
+import { toStatusFactory } from "../../providers.adapter";
 import DauphinGisproDbo from "../repositories/dbo/DauphinGisproDbo";
 import DauphinDocumentDto from "../dto/DauphinDocumentDto";
 import { RawApplication } from "../../../grant/@types/rawGrant";

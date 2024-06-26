@@ -5,6 +5,7 @@ import GrantProvider from "../../grant/@types/GrantProvider";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
+import { FullGrantProvider } from "../../grant/@types/FullGrantProvider";
 
 export default interface Provider {
     provider: {
@@ -19,6 +20,7 @@ export default interface Provider {
 export type AnyProvider =
     | DemandesSubventionsProvider<unknown>
     | PaymentProvider<unknown>
+    | FullGrantProvider<unknown>
     | GrantProvider
     | DocumentProvider
     | EtablissementProvider
