@@ -74,14 +74,14 @@ export class CaisseDepotsService
     async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
         return (await this.getRawCaisseDepotsSubventions(siret)).map(grant => ({
             provider: this.provider.id,
-            type: "fullGrant",
+            type: "application",
             data: grant,
         }));
     }
     async getRawGrantsBySiren(siren: string): Promise<RawGrant[] | null> {
         return (await this.getRawCaisseDepotsSubventions(`${siren}*`)).map(grant => ({
             provider: this.provider.id,
-            type: "fullGrant",
+            type: "application",
             data: grant,
         }));
     }
