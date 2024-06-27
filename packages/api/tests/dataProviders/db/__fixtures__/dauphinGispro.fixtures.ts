@@ -1,6 +1,5 @@
 import { ObjectId } from "mongodb";
 import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
-import GRANTORS from "../../../__fixtures__/grantor.fixture";
 import { siretToNIC, siretToSiren } from "../../../../src/shared/helpers/SirenHelper";
 
 export const DAUPHIN_GISPRO_DBOS = [

@@ -320,7 +320,7 @@ export const DATA_ENTITIES: DemarchesSimplifieesDataEntity[] = [
                     label: "Montant de la subvention accordé",
                 },
                 "Q2hhbXAtMjY3NDMxMA==": {
-                    value: "EJ",
+                    value: "0001821732",
                     label: "Engagement Juridique",
                 },
             },

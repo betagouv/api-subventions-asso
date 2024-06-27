@@ -81,7 +81,7 @@ export class GrantService {
             case "fullGrant":
                 return this.fullGrantProvidersById[rawGrant.provider].rawToGrant(rawGrant as RawFullGrant);
             case "application": {
-                // default
+                // default provider
                 let provider = this.applicationProvidersById[rawGrant.provider];
                 // TODO: refactor multi producers provider
                 // scdl specificity -- providerService id (miscScdl) is different from producer name used as rawGrant.provider (i.e Ville de Paris)

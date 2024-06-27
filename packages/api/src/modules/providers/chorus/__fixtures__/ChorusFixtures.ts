@@ -1,5 +1,6 @@
 import { ChorusPayment } from "dto";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
+import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
 
 export const HEADERS = [
     "N° EJ",
@@ -151,7 +152,7 @@ export const ENTITIES: ChorusLineEntity[] = [
         uniqueId: "de175292263fdd97b222a754309df07f",
         indexedInformations: {
             ej: "0001821732",
-            siret: "32534654200001",
+            siret: DEFAULT_ASSOCIATION.siret,
             codeBranche: "Z039",
             branche: "Associations",
             activitee: "Appels a projet",
@@ -171,7 +172,7 @@ export const ENTITIES: ChorusLineEntity[] = [
             "Fournisseur payé (DP)": "ASSO 1",
             "Branche CODE": "Z039",
             Branche: "Associations",
-            "Code taxe 1": "32534654200001",
+            "Code taxe 1": DEFAULT_ASSOCIATION.siret,
             "Référentiel de programmation CODE": "BG00/077601000201",
             "Référentiel de programmation": "Appels a projet",
             "N° DP": "000195567",

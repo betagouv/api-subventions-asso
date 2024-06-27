@@ -1,7 +1,10 @@
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import osirisRequestRepository from "../../../src/modules/providers/osiris/repositories/osiris.request.repository";
 import fonjepSubventionRepository from "../../../src/modules/providers/fonjep/repositories/fonjep.subvention.repository";
-import { SubventionEntity as FonjepEntityFixture } from "../../modules/providers/fonjep/__fixtures__/entity";
+import {
+    SubventionEntity as FonjepSubventionFixture,
+    PaymentEntity as FonjepPaymentFixture,
+} from "../../modules/providers/fonjep/__fixtures__/entity";
 import request from "supertest";
 import OsirisRequestEntityFixture from "../../modules/providers/osiris/__fixtures__/entity";
 import { compareByValueBuilder } from "../../../src/shared/helpers/ArrayHelper";
@@ -21,13 +24,18 @@ import demarchesSimplifieesMapperRepository from "../../../src/modules/providers
 import demarchesSimplifieesService from "../../../src/modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
 import caisseDepotsService from "../../../src/modules/providers/caisseDepots/caisseDepots.service";
 import { CAISSE_DES_DEPOTS_DTO } from "../../dataProviders/api/caisseDepots.fixtures";
-import miscScdlProducersRepository from "../../../src/modules/providers/scdl/repositories/miscScdlProducer.repository";
-import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
+
 import miscScdlGrantRepository from "../../../src/modules/providers/scdl/repositories/miscScdlGrant.repository";
 import DEFAULT_ASSOCIATION, { LONELY_RNA } from "../../__fixtures__/association.fixture";
 import dauphinGisproRepository from "../../../src/modules/providers/dauphin/repositories/dauphin-gispro.repository";
 import { DAUPHIN_GISPRO_DBOS } from "../../dataProviders/db/__fixtures__/dauphinGispro.fixtures";
 import rnaSirenService from "../../../src/modules/rna-siren/rnaSiren.service";
+import FonjepEntityAdapter from "../../../src/modules/providers/fonjep/adapters/FonjepEntityAdapter";
+import { SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
+import chorusLineRepository from "../../../src/modules/providers/chorus/repositories/chorus.line.repository";
+import { ChorusFixtures } from "../../dataProviders/db/__fixtures__/chorus.fixtures";
+import fonjepPaymentRepository from "../../../src/modules/providers/fonjep/repositories/fonjep.payment.repository";
+import FonjepSubventionEntity from "../../../src/modules/providers/fonjep/entities/FonjepSubventionEntity";
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
 
 const g = global as unknown as { app: unknown };
@@ -38,20 +46,24 @@ const mockExternalData = async () => {
 };
 
 const insertData = async () => {
+    // PAYMENTS
+    await chorusLineRepository.insertMany(ChorusFixtures);
+    await fonjepPaymentRepository.create(FonjepPaymentFixture);
+
+    // APPLICATIONS
     // @ts-expect-error: DBO not fully mocked
     await dauphinGisproRepository.upsert(DAUPHIN_GISPRO_DBOS[0]);
     await osirisRequestRepository.add(OsirisRequestEntityFixture);
-    await fonjepSubventionRepository.create(FonjepEntityFixture);
+    await fonjepSubventionRepository.create(FonjepSubventionFixture);
     await demarchesSimplifieesMapperRepository.upsert(DS_SCHEMAS[0]);
     await demarchesSimplifieesDataRepository.upsert(DS_DATA_ENTITIES[0]);
-    await miscScdlProducersRepository.create(LOCAL_AUTHORITIES[0]);
+    // producers are persisted in jest init setup
     await miscScdlGrantRepository.createMany(SCDL_GRANT_DBOS);
 };
 
 describe("/association", () => {
     // SIREN must be from an association
     const SIREN = siretToSiren(DEFAULT_ASSOCIATION.siret);
-    const SIRET = DEFAULT_ASSOCIATION.siret;
     const RNA = DEFAULT_ASSOCIATION.rna;
 
     beforeEach(async () => {
@@ -170,24 +182,24 @@ describe("/association", () => {
         });
     });
 
-    describe.only("/{identifier}/grants", () => {
+    describe("/{identifier}/grants", () => {
         it("should return grants with rna", async () => {
-            await rnaSirenService.insert(RNA, SIRET);
+            await rnaSirenService.insert(RNA, SIREN);
             const response = await request(g.app)
                 .get(`/association/${RNA}/grants`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
+            console.log(response.body.subventions.length);
             expect(response.body).toMatchSnapshot();
         });
 
-        it.only("should return grants with siren", async () => {
+        it("should return grants with siren", async () => {
             await rnaSirenPort.insert({ siren: SIREN, rna: OsirisRequestEntityFixture.legalInformations.rna as Rna });
             const response = await request(g.app)
                 .get(`/association/${SIREN}/grants`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
-            console.log(response.error);
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchSnapshot();
         });
@@ -196,10 +208,26 @@ describe("/association", () => {
     describe("/{identifier}/raw-grants", () => {
         const anonymiseData = (data: JoinedRawGrant[] | null) => {
             if (!data) return null;
-            const expectAnyRawGrantId = (rawGrant: RawGrant) => ({
-                ...rawGrant,
-                data: { ...rawGrant.data, _id: expect.any(String) },
-            });
+            const expectAnyRawGrantId = (rawGrant: RawGrant) => {
+                // if FullGrant
+                if (rawGrant.data.application && rawGrant.data.payments) {
+                    return {
+                        ...rawGrant,
+
+                        // ...rawGrant.data, _id: expect.any(String) },
+                        data: {
+                            application: { ...rawGrant.data.application, _id: expect.any(String) },
+                            payments: rawGrant.data.payments.map(payment => ({ ...payment, _id: expect.any(String) })),
+                        },
+                    };
+                }
+                // if Application or Payment
+                else
+                    return {
+                        ...rawGrant,
+                        data: { ...rawGrant.data, _id: expect.any(String) },
+                    };
+            };
 
             const withoutIdGrants = data.map(joinedRawGrant => ({
                 fullGrants: joinedRawGrant.fullGrants?.map(expectAnyRawGrantId),
