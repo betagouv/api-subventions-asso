@@ -156,12 +156,12 @@ describe("CaisseDepotsService", () => {
             const expected = [
                 {
                     provider: "caisseDepots",
-                    type: "fullGrant",
+                    type: "application",
                     data: 1,
                 },
                 {
                     provider: "caisseDepots",
-                    type: "fullGrant",
+                    type: "application",
                     data: 2,
                 },
             ];
