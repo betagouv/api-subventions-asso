@@ -187,7 +187,6 @@ describe("GrantService", () => {
         `("should sort grants with full grants first", ({ grants }) => {
             const expected = [GRANT, LONELY_APPLICATION, LONLEY_PAYMENT];
             const actual = grantService.sortGrants(grants);
-            console.log(actual);
             expect(actual).toEqual(expected);
         });
     });

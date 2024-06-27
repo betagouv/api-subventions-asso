@@ -190,7 +190,6 @@ describe("/association", () => {
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
-            console.log(response.body.subventions.length);
             expect(response.body).toMatchSnapshot();
         });
 
@@ -246,7 +245,6 @@ describe("/association", () => {
                 .get(`/association/${SIREN}/raw-grants`)
                 .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
-            console.log(response.error);
             expect(response.statusCode).toBe(200);
             expect(anonymiseData(response.body)).toMatchSnapshot();
         });
