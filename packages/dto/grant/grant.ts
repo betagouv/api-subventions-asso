@@ -12,4 +12,5 @@ export type PublishableGrantDto = PublishableFullGrantDto | PublishablePaymentDt
 
 // TODO: rename DemandeSubvention to Application ?
 // TODO: use CommonApplication and extends it for each Provider instead of using DemandeSubvention ?
-export type Grant = { application: DemandeSubvention; payments: Payment[] };
+// Enhance the type to be application OR payments (inclusive)
+export type Grant = { application: DemandeSubvention | null; payments: Payment[] | null };

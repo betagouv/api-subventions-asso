@@ -12,10 +12,10 @@ export class ScdlGrantService implements DemandesSubventionsProvider<MiscScdlGra
     isGrantProvider = true;
     isDemandesSubventionsProvider = true;
     provider = {
-        name: "Data.gouv",
+        name: "Open Data SCDL",
         type: ProviderEnum.raw,
         id: "miscScdl",
-        description: "Données au format SCDL de divers producteurs sur data.gouv",
+        description: "Données au format SCDL de divers producteurs en Open Data",
     };
 
     private async getEntityByPromiseAndAdapt<T>(
