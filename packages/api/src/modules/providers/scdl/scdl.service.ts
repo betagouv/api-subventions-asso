@@ -6,8 +6,18 @@ import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
 
 export class ScdlService {
+    producerNames: string[] = [];
+
+    async init() {
+        this.producerNames = (await this.getProducers()).map(producer => producer.name);
+    }
+
     getProducer(slug: string) {
         return miscScdlProducersRepository.findBySlug(slug);
+    }
+
+    getProducers() {
+        return miscScdlProducersRepository.findAll();
     }
 
     createProducer(entity: MiscScdlProducerEntity) {

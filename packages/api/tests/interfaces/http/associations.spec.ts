@@ -170,7 +170,7 @@ describe("/association", () => {
         });
     });
 
-    describe.skip("/{identifier}/grants", () => {
+    describe.only("/{identifier}/grants", () => {
         it("should return grants with rna", async () => {
             await rnaSirenService.insert(RNA, SIRET);
             const response = await request(g.app)
@@ -181,12 +181,13 @@ describe("/association", () => {
             expect(response.body).toMatchSnapshot();
         });
 
-        it("should return grants with siren", async () => {
+        it.only("should return grants with siren", async () => {
             await rnaSirenPort.insert({ siren: SIREN, rna: OsirisRequestEntityFixture.legalInformations.rna as Rna });
             const response = await request(g.app)
                 .get(`/association/${SIREN}/grants`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
+            console.log(response.error);
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchSnapshot();
         });

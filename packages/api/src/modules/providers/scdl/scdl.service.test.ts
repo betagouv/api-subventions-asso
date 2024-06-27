@@ -12,12 +12,48 @@ import { ObjectId } from "mongodb";
 
 describe("ScdlService", () => {
     const UNIQUE_ID = "UNIQUE_ID";
+
+    describe("init", () => {
+        let mockGetProducers;
+
+        beforeAll(() => {
+            mockGetProducers = jest.spyOn(scdlService, "getProducers").mockResolvedValue([MiscScdlProducerFixture]);
+        });
+
+        afterEach(() => {
+            mockGetProducers.mockClear();
+            scdlService.producerNames = [];
+        });
+
+        afterAll(() => {
+            mockGetProducers.mockRestore();
+        });
+
+        it("should call getProducers", async () => {
+            await scdlService.init();
+            expect(mockGetProducers).toHaveBeenCalledTimes(1);
+        });
+
+        it("should set producerNames", async () => {
+            await scdlService.init();
+            expect(scdlService.producerNames).toEqual([MiscScdlProducerFixture.name]);
+        });
+    });
+
     describe("getProvider()", () => {
         it("should call miscScdlProducerRepository.create()", async () => {
             await scdlService.getProducer(MiscScdlProducerFixture.slug);
             expect(miscScdlProducersRepository.findBySlug).toHaveBeenCalledWith(MiscScdlProducerFixture.slug);
         });
     });
+
+    describe("getProducers", () => {
+        it("should call findAll", async () => {
+            await scdlService.getProducers();
+            expect(miscScdlProducersRepository.findAll).toHaveBeenCalledTimes(1);
+        });
+    });
+
     describe("createProducer()", () => {
         it("should call miscScdlProducerRepository.create()", async () => {
             const PRODUCER = { ...MiscScdlProducerFixture };
