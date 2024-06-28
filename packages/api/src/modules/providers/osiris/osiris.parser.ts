@@ -15,11 +15,12 @@ export default class OsirisParser {
         const rows = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
 
         return rows.map(row => {
-            const data: DefaultObject<DefaultObject<string | number>> = OsirisParser.rowToRowWithHeaders(
+            const data: DefaultObject<DefaultObject<string>> = OsirisParser.rowToRowWithHeaders(
+                // TODO <string|number>
                 headers,
                 row,
                 OsirisRequestEntity.defaultMainCategory,
-            );
+            ) as DefaultObject<DefaultObject<string>>; // TODO remove this, it should be <string|number>
 
             const indexedInformations = ParseHelper.indexDataByPathObject(
                 // TODO <string|number>
@@ -45,11 +46,12 @@ export default class OsirisParser {
         const rows = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
 
         return rows.map((row: unknown[]) => {
-            const data: DefaultObject<DefaultObject<string | number>> = OsirisParser.rowToRowWithHeaders(
+            const data: DefaultObject<DefaultObject<string>> = OsirisParser.rowToRowWithHeaders(
+                // TODO <string|number>
                 headers,
                 row,
                 OsirisActionEntity.defaultMainCategory,
-            );
+            ) as DefaultObject<DefaultObject<string>>; // TODO remove this, it should be <string|number>
 
             const indexedInformations = ParseHelper.indexDataByPathObject(
                 // TODO <string|number>
@@ -70,11 +72,11 @@ export default class OsirisParser {
         const rows = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
 
         return rows.map((row: unknown[]) => {
-            const data: DefaultObject<DefaultObject<string | number>> = OsirisParser.rowToRowWithHeaders(
+            const data: DefaultObject<DefaultObject<string>> = OsirisParser.rowToRowWithHeaders(
                 headers,
                 row,
                 OsirisEvaluationEntity.defaultMainCategory,
-            );
+            ) as DefaultObject<DefaultObject<string>>; // TODO remove this, it should be <string|number>
             const indexedInformations = ParseHelper.indexDataByPathObject(
                 OsirisEvaluationEntity.indexedInformationsPath,
                 data,

@@ -48,7 +48,7 @@ export default class ChorusParser {
 
     protected static rowsToEntities(headers, rows) {
         return rows.reduce((entities, row, index, array) => {
-            const data = ParseHelper.linkHeaderToData(headers, row) as DefaultObject<string | number>;
+            const data = ParseHelper.linkHeaderToData(headers, row) as DefaultObject<string>; // TODO <string|number>
             const indexedInformations = ParseHelper.indexDataByPathObject(
                 // TODO <string|number>
                 ChorusLineEntity.indexedInformationsPath,

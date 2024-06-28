@@ -3,61 +3,80 @@ import path from "path";
 import xlsx from "node-xlsx";
 import csvSyncParser = require("csv-parse/sync");
 
-import { ParserInfo, ParserPath, DefaultObject, BeforeAdaptation } from "../../@types";
+import {
+    ParserInfo,
+    ParserPath,
+    DefaultObject,
+    BeforeAdaptation,
+    NestedBeforeAdaptation,
+    NestedDefaultObject,
+} from "../../@types";
 
-export function findByPath<Tin extends BeforeAdaptation, Tout = unknown>(
-    data: DefaultObject<unknown>,
-    parserData: ParserPath | ParserInfo<Tin>,
-) {
-    let path: ParserPath;
-    let adapter = (v: Tin | undefined): unknown => v;
+/*
+    from parser info and original data, returns original key and data before adaptation
+ */
+export function findValueAndOriginalKeyByPath<T extends BeforeAdaptation>(
+    data: NestedBeforeAdaptation<T>,
+    parserData: ParserPath | ParserInfo<T, unknown>,
+): { value: T; keyPath: string[] } | undefined {
+    type Tin = T | DefaultObject;
+    const mapper: ParserPath = Array.isArray(parserData) ? parserData : parserData.path;
+    const successiveKeys: string[] = [];
+    let objectToLookIn: Tin = data;
+    let oneLevelKey: string | undefined;
 
-    if (Array.isArray(parserData)) {
-        path = parserData;
-    } else {
-        path = parserData.path;
-        adapter = parserData.adapter || adapter;
-    }
+    for (const possibleKeys of mapper) {
+        // If it is a string, it is the only possible header for this property
+        if (!(possibleKeys instanceof Array)) {
+            oneLevelKey = possibleKeys as string;
+        } else {
+            // checking all possible headers for this property
 
-    const result = path.reduce((acc: Tin | DefaultObject<unknown> | undefined, name) => {
-        if (acc === undefined) return acc;
-
-        const obj = acc as { [key: string]: Tin | DefaultObject<unknown> };
-
-        // case of next param is without ambiguity
-        if (!(name instanceof Array)) {
-            // So is string
-            return obj[name];
+            oneLevelKey = (possibleKeys as string[]).find(possibleKey => data[possibleKey.trim()]); // TODO manage multiple valid case (with filters)
         }
+        if (!oneLevelKey) return undefined;
 
-        // case of next param can have several values
-        const key = name.find(key => obj[key.trim()]); // TODO manage multiple valid case (with filters)
-
-        if (!key) return undefined;
-        return obj[key.trim()];
-    }, data) as Tin;
-
-    return adapter(result) as Tout;
+        successiveKeys.push(oneLevelKey);
+        objectToLookIn = objectToLookIn[oneLevelKey.trim()] as Tin;
+    }
+    return { value: objectToLookIn as T, keyPath: successiveKeys };
 }
 
-export function indexDataByPathObject<Tin extends BeforeAdaptation>(
+/*
+    from parser info and original data, returns required data after adaptation
+ */
+export function findAndAdaptByPath<Tin extends BeforeAdaptation, Tout = unknown>(
+    data: NestedDefaultObject<Tin>,
+    parserData: ParserPath | ParserInfo<Tin, Tout>,
+) {
+    let adapter = (v: Tin | undefined): unknown => v as Tout;
+
+    if (!Array.isArray(parserData)) adapter = parserData.adapter || adapter;
+
+    const original = findValueAndOriginalKeyByPath<Tin>(data, parserData);
+    if (!original?.value) return undefined;
+
+    return adapter(original.value) as Tout;
+}
+
+export function indexDataByPathObject<Tin extends BeforeAdaptation, Tout = DefaultObject>(
     pathObject: DefaultObject<ParserPath | ParserInfo<Tin>>,
-    data: DefaultObject<unknown>,
+    data: NestedDefaultObject<Tin>,
 ) {
     return Object.keys(pathObject).reduce((acc, key: string) => {
-        const tempAcc = acc;
-        tempAcc[key] = findByPath<Tin>(data, pathObject[key]);
+        const tempAcc = acc as Tout;
+        tempAcc[key] = findAndAdaptByPath<Tin>(data, pathObject[key]);
         return tempAcc;
-    }, {} as DefaultObject<unknown>);
+    }, {} as unknown) as Tout;
 }
 
-export function linkHeaderToData(headers: string[], data: unknown[]) {
+export function linkHeaderToData<T = string>(headers: string[], data: T[]) {
     return headers.reduce((acc, header, key) => {
         const value = typeof data[key] === "string" ? (data[key] as string).replace(/&#32;/g, " ").trim() : data[key];
         const trimedHeader = typeof header === "string" ? header.trim() : header;
         acc[trimedHeader] = value || "";
         return acc;
-    }, {} as DefaultObject<unknown>);
+    }, {} as DefaultObject<T | string>);
 }
 
 export function findFiles(file: string) {

@@ -1,5 +1,5 @@
 import { Siret } from "dto";
-import { DefaultObject } from "../../../@types";
+import { DefaultObject, NestedDefaultObject } from "../../../@types";
 import * as ParserHelper from "../../../shared/helpers/ParserHelper";
 import IFonjepIndexedInformations from "./@types/IFonjepIndexedInformations";
 import IFonjepPaymentIndexedInformations from "./@types/IFonjepPaymentIndexedInformations";
@@ -19,17 +19,19 @@ export default class FonjepParser {
         });
     }
 
-    private static findOnPropFactory(array: DefaultObject<string | number>[], prop: string) {
+    private static findOnPropFactory(array: DefaultObject<string>[], prop: string) {
+        // TODO <string|number>
         if (!array) array = [];
         return (match: string | number | undefined) => array.find(item => item[prop] == match);
     }
 
-    private static filterOnPropFactory(array: DefaultObject<string | number>[], prop: string) {
+    private static filterOnPropFactory(array: DefaultObject<string>[], prop: string) {
+        // TODO <string|number>
         if (!array) array = [];
         return (match: string | number | undefined) => array.filter(item => item[prop] == match);
     }
 
-    private static createFonjepSubventionEntity(parsedData: DefaultObject<unknown>) {
+    private static createFonjepSubventionEntity(parsedData: NestedDefaultObject<string>) {
         const indexedInformations = ParserHelper.indexDataByPathObject(
             // TODO <string|number>
             FonjepSubventionEntity.indexedProviderInformationsPath,
@@ -42,7 +44,7 @@ export default class FonjepParser {
         return new FonjepSubventionEntity(legalInformations, indexedInformations, parsedData);
     }
 
-    private static createFonjepPaymentEntity(data: DefaultObject<unknown>) {
+    private static createFonjepPaymentEntity(data: DefaultObject<string>) {
         const indexedInformations = ParserHelper.indexDataByPathObject(
             // TODO <string|number>
             FonjepPaymentEntity.indexedProviderInformationsPath,
@@ -72,7 +74,7 @@ export default class FonjepParser {
 
             // recupère le poste
             const postes = findPostes(payment["PosteCode"]);
-            const poste = postes.find(poste => periodDebut.getFullYear() == poste["Annee"]);
+            const poste = postes.find(poste => periodDebut.getFullYear() == (poste["Annee"] as unknown as number));
             if (!poste) return payments;
 
             const association = findTiers(poste["AssociationBeneficiaireCode"]);
@@ -105,10 +107,13 @@ export default class FonjepParser {
                 poste["Code"]
             }-${ParserHelper.ExcelDateToJSDate(Number(poste["DateFinTriennalite"])).toISOString()}`;
 
+            if (!currentDate || !financeur || !typePoste || !association || !dispositif) return subventions;
+
             subventions.push(
                 this.createFonjepSubventionEntity({
                     ...poste,
                     id: uniqueSubventionId,
+                    // @ts-expect-error -- updated_at value is not from the export and will not
                     updated_at: currentDate,
                     Financeur: financeur,
                     TypePoste: typePoste,

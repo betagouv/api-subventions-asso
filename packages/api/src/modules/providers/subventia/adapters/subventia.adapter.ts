@@ -11,7 +11,10 @@ import { DefaultObject, ParserInfo } from "../../../../@types";
 export default class SubventiaAdapter {
     static applicationToEntity(application: SubventiaDto, exportDate: Date): SubventiaEntity {
         return {
-            ...ParseHelper.indexDataByPathObject(subventiaMapper, application), // TODO <string|number>
+            ...ParseHelper.indexDataByPathObject<string | number>(
+                subventiaMapper as DefaultObject<ParserInfo<number | string>>,
+                application as DefaultObject<string | number>,
+            ), // TODO <string|number>
             provider: subventiaService.provider.id,
             exportDate: exportDate,
         } as SubventiaEntity;
