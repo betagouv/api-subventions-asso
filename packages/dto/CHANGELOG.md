@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.51.0](https://github.com/betagouv/datasubvention/compare/v0.50.0...v0.51.0) (2024-07-01)
+
+### Bug Fixes
+
+-   **api:** use dbo on port and on domain part use entity ([#2469](https://github.com/betagouv/datasubvention/issues/2469)) ([2eb8536](https://github.com/betagouv/datasubvention/commit/2eb853665d7d77d826a4f1d992fd8e751eb29881))
+
+### Features
+
+-   **front:** change bop label ([#2453](https://github.com/betagouv/datasubvention/issues/2453)) ([c78b5c9](https://github.com/betagouv/datasubvention/commit/c78b5c982aaa59ec278b1f904b43027fd248fb79))
+
 # [0.50.0](https://github.com/betagouv/datasubvention/compare/v0.49.2...v0.50.0) (2024-06-03)
 
 ### Features

@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.51.0](https://github.com/betagouv/datasubvention/compare/v0.50.0...v0.51.0) (2024-07-01)
+
+### Features
+
+-   **front:** [#2308](https://github.com/betagouv/datasubvention/issues/2308) select docs to group download ([#2451](https://github.com/betagouv/datasubvention/issues/2451)) ([b095d92](https://github.com/betagouv/datasubvention/commit/b095d923d2cac1c8b748e258244141c14d797962))
+-   **front:** [#2432](https://github.com/betagouv/datasubvention/issues/2432) checkbox agent work ethic ([#2434](https://github.com/betagouv/datasubvention/issues/2434)) ([1aa2eca](https://github.com/betagouv/datasubvention/commit/1aa2eca129243e9c86b214ac4779735e996ea889))
+-   **front:** [#2455](https://github.com/betagouv/datasubvention/issues/2455) undo docs show more with new rules ([#2468](https://github.com/betagouv/datasubvention/issues/2468)) ([adfb9e6](https://github.com/betagouv/datasubvention/commit/adfb9e6a6c8ff3e3af0b1e4177e9e48f22968595)), closes [#2311](https://github.com/betagouv/datasubvention/issues/2311)
+-   **front:** change bop label ([#2453](https://github.com/betagouv/datasubvention/issues/2453)) ([c78b5c9](https://github.com/betagouv/datasubvention/commit/c78b5c982aaa59ec278b1f904b43027fd248fb79))
+-   **front:** docs reset selection ([#2470](https://github.com/betagouv/datasubvention/issues/2470)) ([77293e9](https://github.com/betagouv/datasubvention/commit/77293e990c991bc8c6ee457252bcbe1c5a88babb))
+
 # [0.50.0](https://github.com/betagouv/datasubvention/compare/v0.49.2...v0.50.0) (2024-06-03)
 
 ### Features

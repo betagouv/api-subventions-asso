@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.51.0](https://github.com/betagouv/api-subventions-asso/compare/v0.50.0...v0.51.0) (2024-07-01)
+
+### Bug Fixes
+
+-   **api:** ensure estab contacts' phone numbers are string ([b05a71d](https://github.com/betagouv/api-subventions-asso/commit/b05a71d210c896304cb25b3f46e8a12b82516598))
+-   **api:** telephone can be undefined ([a1c17aa](https://github.com/betagouv/api-subventions-asso/commit/a1c17aa7d08b5753a3e710e7162d8613e27bb5f7))
+-   **api:** use dbo on port and on domain part use entity ([#2469](https://github.com/betagouv/api-subventions-asso/issues/2469)) ([2eb8536](https://github.com/betagouv/api-subventions-asso/commit/2eb853665d7d77d826a4f1d992fd8e751eb29881))
+
+### Features
+
+-   **front:** [#2308](https://github.com/betagouv/api-subventions-asso/issues/2308) select docs to group download ([#2451](https://github.com/betagouv/api-subventions-asso/issues/2451)) ([b095d92](https://github.com/betagouv/api-subventions-asso/commit/b095d923d2cac1c8b748e258244141c14d797962))
+-   **front:** change bop label ([#2453](https://github.com/betagouv/api-subventions-asso/issues/2453)) ([c78b5c9](https://github.com/betagouv/api-subventions-asso/commit/c78b5c982aaa59ec278b1f904b43027fd248fb79))
+
 # [0.50.0](https://github.com/betagouv/api-subventions-asso/compare/v0.49.2...v0.50.0) (2024-06-03)
 
 ### Features
