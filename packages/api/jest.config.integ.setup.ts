@@ -25,7 +25,7 @@ import { startServer } from "./src/server";
 import { scheduler } from "./src/cron";
 import configurationsRepository from "./src/modules/configurations/repositories/configurations.repository";
 import { CONFIGURATION_NAMES } from "./src/modules/configurations/configurations.service";
-import { initAsync } from "./src/shared/InitAsync";
+import { initAsync } from "./src/shared/initAsync";
 import { initTests } from "./jest.config.integ.init";
 /**
  *

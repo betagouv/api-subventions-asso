@@ -1,4 +1,4 @@
-import { Siret, Siren, DemandeSubvention, Etablissement, FonjepPayment, Rna } from "dto";
+import { Siret, Siren, DemandeSubvention, Etablissement, Rna } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { isAssociationName, areDates, areNumbersValid, isSiret, areStringsValid } from "../../../shared/Validators";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
@@ -62,7 +62,11 @@ export class FonjepService
     }
 
     rawToGrant(rawFullGrant: RawFullGrant<{ application: FonjepSubventionEntity; payments: FonjepPaymentEntity[] }>) {
-        return FonjepEntityAdapter.rawToGrant(rawFullGrant);
+        // TODO: check if payments on same fullGrant can have different program
+        const programs = rawFullGrant.data.payments.map(
+            payment => dataBretagneService.programsByCode[this.getProgramCode(payment)],
+        );
+        return FonjepEntityAdapter.rawToGrant(rawFullGrant, programs);
     }
 
     // TODO: this might be never use because of rawToGrant
@@ -72,7 +76,8 @@ export class FonjepService
 
     // TODO: this might be never use because of rawToGrant
     rawToPayment(rawGrant: RawPayment<FonjepPaymentEntity>) {
-        return FonjepEntityAdapter.rawToPayment(rawGrant);
+        const program = dataBretagneService.programsByCode[this.getProgramCode(rawGrant.data)];
+        return FonjepEntityAdapter.rawToPayment(rawGrant, program);
     }
 
     async createSubventionEntity(entity: FonjepSubventionEntity): Promise<CreateFonjepResponse> {
@@ -218,11 +223,16 @@ export class FonjepService
 
     isPaymentProvider = true;
 
-    async toPaymentArray(documents: FonjepPaymentEntity[]): Promise<FonjepPayment[]> {
-        const programs = await dataBretagneService.findProgramsRecord();
-        return documents.map(document =>
-            FonjepEntityAdapter.toPayment(document, programs[document.indexedInformations.bop]),
-        );
+    // TODO: Handle edge cases
+    public getProgramCode(entity: FonjepPaymentEntity) {
+        return entity.indexedInformations.bop;
+    }
+
+    toPaymentArray(documents: FonjepPaymentEntity[]) {
+        return documents.map(document => {
+            const program = dataBretagneService.programsByCode[this.getProgramCode(document)];
+            return FonjepEntityAdapter.toPayment(document, program);
+        });
     }
 
     async getPaymentsByKey(codePoste: string) {

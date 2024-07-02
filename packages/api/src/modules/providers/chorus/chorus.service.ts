@@ -33,7 +33,9 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
     }
 
     public rawToPayment(rawGrant: RawPayment<ChorusLineEntity>) {
-        return ChorusAdapter.rawToPayment(rawGrant);
+        // get program
+        const program = dataBretagneService.programsByCode[this.getProgramCode(rawGrant.data)];
+        return ChorusAdapter.rawToPayment(rawGrant, program);
     }
 
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
@@ -112,12 +114,15 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
         return this.toPaymentArray(requests);
     }
 
-    private async toPaymentArray(documents: WithId<ChorusLineEntity>[]) {
-        const programs = await dataBretagneService.findProgramsRecord();
-        return documents.map(document => {
-            const codeProgramme = parseInt(document.indexedInformations.codeDomaineFonctionnel.slice(0, 4), 10); // for exemple codeDomaineFonctionnel = "0143-03-01", codeProgramme = 143
+    // TODO: unit test this
+    public getProgramCode(entity: ChorusLineEntity) {
+        return parseInt(entity.indexedInformations.codeDomaineFonctionnel.slice(0, 4), 10); // for exemple codeDomaineFonctionnel = "0143-03-01", codeProgramme = 143
+    }
 
-            return ChorusAdapter.toPayment(document, programs[codeProgramme]);
+    private toPaymentArray(documents: WithId<ChorusLineEntity>[]) {
+        return documents.map(document => {
+            const program = dataBretagneService.programsByCode[this.getProgramCode(document)];
+            return ChorusAdapter.toPayment(document, program);
         });
     }
 
