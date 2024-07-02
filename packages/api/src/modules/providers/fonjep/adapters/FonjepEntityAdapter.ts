@@ -4,8 +4,8 @@ import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
 import fonjepService from "../fonjep.service";
 import FonjepPaymentEntity from "../entities/FonjepPaymentEntity";
-import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
 import { RawApplication, RawFullGrant, RawPayment } from "../../../grant/@types/rawGrant";
+import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
 
 export default class FonjepEntityAdapter {
     static PROVIDER_NAME = "Fonjep";
@@ -59,10 +59,13 @@ export default class FonjepEntityAdapter {
 
     public static rawToGrant(
         rawFullGrant: RawFullGrant<{ application: FonjepSubventionEntity; payments: FonjepPaymentEntity[] }>,
+        programs: StateBudgetProgramEntity[],
     ): Grant {
         return {
             application: this.toDemandeSubvention(rawFullGrant.data.application),
-            payments: rawFullGrant.data.payments.map(rawPayment => this.toPayment(rawPayment)),
+            payments: rawFullGrant.data.payments.map((rawPayment, index) =>
+                this.toPayment(rawPayment, programs[index]),
+            ),
         };
     }
 
@@ -71,8 +74,8 @@ export default class FonjepEntityAdapter {
     }
 
     // TODO: rename FonjepPaymentEntity to FonjepPaymentDbo ?
-    public static rawToPayment(rawPayment: RawPayment<FonjepPaymentEntity>) {
-        return this.toPayment(rawPayment.data);
+    public static rawToPayment(rawPayment: RawPayment<FonjepPaymentEntity>, program: StateBudgetProgramEntity) {
+        return this.toPayment(rawPayment.data, program);
     }
 
     static toPayment(entity: FonjepPaymentEntity, program: StateBudgetProgramEntity): FonjepPayment {

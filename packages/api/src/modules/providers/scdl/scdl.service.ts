@@ -20,8 +20,9 @@ export class ScdlService {
         return miscScdlProducersRepository.findAll();
     }
 
-    createProducer(entity: MiscScdlProducerEntity) {
-        return miscScdlProducersRepository.create(entity);
+    async createProducer(entity: MiscScdlProducerEntity) {
+        await miscScdlProducersRepository.create(entity);
+        this.producerNames.push(entity.name);
     }
 
     private _buildGrantUniqueId(grant: ScdlStorableGrant, producerSlug: string) {

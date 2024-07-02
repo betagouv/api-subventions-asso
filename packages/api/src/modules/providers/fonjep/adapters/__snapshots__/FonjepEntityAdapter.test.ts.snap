@@ -58,18 +58,17 @@ Object {
 }
 `;
 
-exports[`FonjepEntityAdapter toPayment() should return a Payment 1`] = `
+exports[`FonjepEntityAdapter toPayment should return a Payment 1`] = `
 Object {
   "amount": 1000,
-  "bop": 0,
+  "bop": 163,
   "codePoste": "J00034",
   "dateOperation": 2022-01-02T00:00:00.000Z,
-  "id": "unique_id",
-  "libelleProgramme": "FAKE",
+  "libelleProgramme": "PROGRAM 163",
   "montantAPayer": 1000,
   "periodeDebut": 2022-01-02T00:00:00.000Z,
   "periodeFin": 2022-01-02T00:00:00.000Z,
-  "programme": 0,
+  "programme": 163,
   "siret": "10000000000001",
   "versementKey": "J00034",
 }

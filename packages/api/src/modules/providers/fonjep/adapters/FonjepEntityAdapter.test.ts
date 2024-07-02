@@ -1,15 +1,22 @@
 import FonjepEntityAdapter from "./FonjepEntityAdapter";
 import { SubventionEntity, PaymentEntity } from "../../../../../tests/modules/providers/fonjep/__fixtures__/entity";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
-import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
 import { FONJEP_PAYMENTS, FONJEP_PAYMENT_ENTITIES } from "../__fixtures__/FonjepEntities";
 import { RawApplication, RawFullGrant, RawPayment } from "../../../grant/@types/rawGrant";
 import { DemandeSubvention, Grant, Payment } from "dto";
 import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
 import FonjepPaymentEntity from "../entities/FonjepPaymentEntity";
+import dataBretagneService from "../../dataBretagne/dataBretagne.service";
+import PROGRAMS from "../../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
 
 describe("FonjepEntityAdapter", () => {
-    beforeAll(() => jest.useFakeTimers().setSystemTime(new Date("2022-01-01")));
+    beforeAll(() => {
+        dataBretagneService.programsByCode = {
+            // FONJEP PROGRAM 163
+            [PROGRAMS[2].code_programme]: PROGRAMS[2],
+        };
+        jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
+    });
 
     describe("toDemandeSubvention()", () => {
         const buildProviderValueAdapterMock = jest.spyOn(ProviderValueFactory, "buildProviderValueAdapter");
@@ -66,21 +73,30 @@ describe("FonjepEntityAdapter", () => {
         });
 
         it("should call toDemandeSubvention", () => {
-            FonjepEntityAdapter.rawToGrant(RAW_FULLGRANT);
+            FonjepEntityAdapter.rawToGrant(
+                RAW_FULLGRANT,
+                FONJEP_PAYMENTS.map(_payment => PROGRAMS[1]),
+            );
             expect(mockToDemandeSubvention).toHaveBeenCalledWith(FONJEP_APPLICATION);
         });
 
         it("should call toPayment", () => {
-            FonjepEntityAdapter.rawToGrant(RAW_FULLGRANT);
+            FonjepEntityAdapter.rawToGrant(
+                RAW_FULLGRANT,
+                FONJEP_PAYMENTS.map(_payment => PROGRAMS[1]),
+            );
             expect(mockToPayment).toHaveBeenCalledTimes(FONJEP_PAYMENTS.length);
             FONJEP_PAYMENTS.forEach((payment, index) => {
-                expect(mockToPayment).toHaveBeenNthCalledWith(index + 1, payment);
+                expect(mockToPayment).toHaveBeenNthCalledWith(index + 1, payment, PROGRAMS[1]);
             });
         });
 
         it("should return Grant", () => {
             const expected = GRANT;
-            const actual = FonjepEntityAdapter.rawToGrant(RAW_FULLGRANT);
+            const actual = FonjepEntityAdapter.rawToGrant(
+                RAW_FULLGRANT,
+                FONJEP_PAYMENTS.map(_payment => PROGRAMS[1]),
+            );
             expect(actual).toEqual(expected);
         });
     });
@@ -136,26 +152,24 @@ describe("FonjepEntityAdapter", () => {
         });
 
         it("should call toPayment", () => {
-            FonjepEntityAdapter.rawToPayment(RAW_PAYMENT);
-            expect(FonjepEntityAdapter.toPayment).toHaveBeenCalledWith(RAW_PAYMENT.data);
+            FonjepEntityAdapter.rawToPayment(RAW_PAYMENT, PROGRAMS[1]);
+            expect(FonjepEntityAdapter.toPayment).toHaveBeenCalledWith(RAW_PAYMENT.data, PROGRAMS[1]);
         });
 
         it("should return Payment", () => {
             const expected = FONJEP_PAYMENTS[0];
-            const actual = FonjepEntityAdapter.rawToPayment(RAW_PAYMENT);
+            const actual = FonjepEntityAdapter.rawToPayment(RAW_PAYMENT, PROGRAMS[1]);
             expect(actual).toEqual(expected);
         });
     });
 
-    describe("toPayment()", () => {
+    describe("toPayment", () => {
         const buildProviderValueAdapterMock = jest.spyOn(ProviderValueFactory, "buildProviderValueAdapter");
+
         it("should return a Payment", () => {
             // @ts-expect-error: mock
             buildProviderValueAdapterMock.mockImplementationOnce(() => value => value);
-            const actual = FonjepEntityAdapter.toPayment(PaymentEntity, {
-                code_programme: 0,
-                label_programme: "FAKE",
-            } as StateBudgetProgramEntity);
+            const actual = FonjepEntityAdapter.toPayment(PaymentEntity, PROGRAMS[1]);
             expect(actual).toMatchSnapshot();
         });
     });

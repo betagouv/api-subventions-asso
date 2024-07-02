@@ -1,18 +1,18 @@
 import { CommonPaymentDto, ChorusPayment } from "dto";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
-import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
 import { RawPayment } from "../../../grant/@types/rawGrant";
+import StateBudgetProgramDbo from "../../../../dataProviders/db/state-budget-program/StateBudgetProgramDbo";
 
 export default class ChorusAdapter {
     static PROVIDER_NAME = "Chorus";
 
-    public static rawToPayment(rawPayment: RawPayment<ChorusLineEntity>) {
-        return this.toPayment(rawPayment.data);
+    public static rawToPayment(rawPayment: RawPayment<ChorusLineEntity>, program: Omit<StateBudgetProgramDbo, "_id">) {
+        return this.toPayment(rawPayment.data, program);
     }
 
-    public static toPayment(entity: ChorusLineEntity, program: StateBudgetProgramEntity): ChorusPayment {
+    public static toPayment(entity: ChorusLineEntity, program: Omit<StateBudgetProgramDbo, "_id">): ChorusPayment {
         const toPvChorus = <T>(value: T) =>
             ProviderValueAdapter.toProviderValue<T>(
                 value,

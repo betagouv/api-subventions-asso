@@ -10,6 +10,8 @@ import { RawApplication, RawFullGrant, RawPayment } from "../../grant/@types/raw
 import { DemandeSubvention } from "dto";
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
 import FonjepPaymentEntity from "./entities/FonjepPaymentEntity";
+import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
+import dataBretagneService from "../dataBretagne/dataBretagne.service";
 
 jest.mock("./adapters/FonjepEntityAdapter");
 
@@ -42,6 +44,13 @@ describe("FonjepService", () => {
     beforeAll(() => {
         // @ts-expect-error: mock
         FonjepEntityAdapter.toDemandeSubvention.mockImplementation(entity => entity);
+        dataBretagneService.programsByCode = {
+            [PROGRAMS[1].code_programme]: PROGRAMS[1],
+        };
+    });
+
+    afterEach(() => {
+        jest.mocked(FonjepEntityAdapter.toPayment).mockClear();
     });
 
     afterAll(() => {
@@ -213,14 +222,88 @@ describe("FonjepService", () => {
         });
     });
 
+    describe("getProgramCode", () => {
+        it("should return code", () => {
+            const expected = 163;
+            const actual = fonjepService.getProgramCode(FONJEP_PAYMENT_ENTITIES[0]);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    // used to share getProgramCode mock
+    describe("Adapte to Payment", () => {
+        let mockGetProgamCode: jest.SpyInstance;
+        beforeAll(() => {
+            mockGetProgamCode = jest.spyOn(fonjepService, "getProgramCode").mockReturnValue(163);
+        });
+
+        afterAll(() => {
+            mockGetProgamCode.mockRestore();
+        });
+
+        describe("toPaymentArray", () => {
+            it("call toPayment for each document", () => {
+                fonjepService.toPaymentArray(FONJEP_PAYMENT_ENTITIES);
+                FONJEP_PAYMENT_ENTITIES.forEach((entity, index) => {
+                    expect(jest.mocked(FonjepEntityAdapter.toPayment)).toHaveBeenNthCalledWith(
+                        index + 1,
+                        entity,
+                        PROGRAMS[1],
+                    );
+                });
+            });
+        });
+
+        describe("rawToPayment", () => {
+            // @ts-expect-error: parameter type
+            const RAW_PAYMENT: RawPayment<FonjepPaymentEntity> = { data: FONJEP_PAYMENT_ENTITIES[0] };
+            it("should call FonjepEntityAdapter.rawToPayment", () => {
+                fonjepService.rawToPayment(RAW_PAYMENT);
+                expect(FonjepEntityAdapter.rawToPayment).toHaveBeenCalledWith(RAW_PAYMENT, PROGRAMS[1]);
+            });
+
+            it("should return Payment", () => {
+                jest.mocked(FonjepEntityAdapter.rawToPayment).mockReturnValueOnce(FONJEP_PAYMENTS[0]);
+                const expected = FONJEP_PAYMENTS[0];
+                const actual = fonjepService.rawToPayment(RAW_PAYMENT);
+                expect(actual).toEqual(expected);
+            });
+        });
+
+        describe("rawToGrant", () => {
+            const RAW_FULLGRANT: RawFullGrant<{
+                application: FonjepSubventionEntity;
+                payments: FonjepPaymentEntity[];
+            }> = {
+                // @ts-expect-error: parameter type
+                data: { application: { foo: "bar" }, payments: [{ poo: "paz" }] },
+            };
+            // @ts-expect-error: parameter type
+            const GRANT: Grant = { application: { foo: "bar" }, payments: [{ poo: "paz" }] };
+
+            it("should call FonjepEntityAdapter.rawToGrant", () => {
+                fonjepService.rawToGrant(RAW_FULLGRANT);
+                // array of program see TODO in method
+                expect(FonjepEntityAdapter.rawToGrant).toHaveBeenCalledWith(RAW_FULLGRANT, [PROGRAMS[1]]);
+            });
+
+            it("should return DemandeSubvention", () => {
+                jest.mocked(FonjepEntityAdapter.rawToGrant).mockReturnValueOnce(GRANT);
+                const expected = GRANT;
+                const actual = fonjepService.rawToGrant(RAW_FULLGRANT);
+                expect(actual).toEqual(expected);
+            });
+        });
+    });
+
     describe("getPaymentsByKey", () => {
         const findByCodeMock = jest.spyOn(fonjepPaymentRepository, "findByCodePoste");
         let toPaymentArrayMock: jest.SpyInstance;
 
         beforeAll(() => {
-            toPaymentArrayMock = jest.spyOn(fonjepService, "toPaymentArray")
+            toPaymentArrayMock = jest.spyOn(fonjepService, "toPaymentArray");
             toPaymentArrayMock.mockImplementation(data => data);
-        })
+        });
 
         it("calls adapter", async () => {
             // @ts-expect-error: mock
@@ -235,9 +318,9 @@ describe("FonjepService", () => {
         let toPaymentArrayMock: jest.SpyInstance;
 
         beforeAll(() => {
-            toPaymentArrayMock = jest.spyOn(fonjepService, "toPaymentArray")
+            toPaymentArrayMock = jest.spyOn(fonjepService, "toPaymentArray");
             toPaymentArrayMock.mockImplementation(data => data);
-        })
+        });
 
         it("calls adapter", async () => {
             // @ts-expect-error: mock
@@ -252,9 +335,9 @@ describe("FonjepService", () => {
         let toPaymentArrayMock: jest.SpyInstance;
 
         beforeAll(() => {
-            toPaymentArrayMock = jest.spyOn(fonjepService, "toPaymentArray")
+            toPaymentArrayMock = jest.spyOn(fonjepService, "toPaymentArray");
             toPaymentArrayMock.mockImplementation(data => data);
-        })
+        });
 
         it("calls toPayementArray", async () => {
             // @ts-expect-error: mock
@@ -392,27 +475,6 @@ describe("FonjepService", () => {
         });
     });
 
-    describe("rawToGrant", () => {
-        const RAW_FULLGRANT: RawFullGrant<{ application: FonjepSubventionEntity; payments: FonjepPaymentEntity[] }> = {
-            // @ts-expect-error: parameter type
-            data: { application: { foo: "bar" }, payments: [{ poo: "paz" }] },
-        };
-        // @ts-expect-error: parameter type
-        const GRANT: Grant = { application: { foo: "bar" }, payments: [{ poo: "paz" }] };
-
-        it("should call FonjepEntityAdapter.rawToGrant", () => {
-            fonjepService.rawToGrant(RAW_FULLGRANT);
-            expect(FonjepEntityAdapter.rawToGrant).toHaveBeenCalledWith(RAW_FULLGRANT);
-        });
-
-        it("should return DemandeSubvention", () => {
-            jest.mocked(FonjepEntityAdapter.rawToGrant).mockReturnValueOnce(GRANT);
-            const expected = GRANT;
-            const actual = fonjepService.rawToGrant(RAW_FULLGRANT);
-            expect(actual).toEqual(expected);
-        });
-    });
-
     describe("rawToApplication", () => {
         // @ts-expect-error: parameter type
         const RAW_APPLICATION: RawApplication<FonjepSubventionEntity> = { data: { foo: "bar" } };
@@ -428,22 +490,6 @@ describe("FonjepService", () => {
             jest.mocked(FonjepEntityAdapter.rawToApplication).mockReturnValueOnce(APPLICATION);
             const expected = APPLICATION;
             const actual = fonjepService.rawToApplication(RAW_APPLICATION);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("rawToPayment", () => {
-        // @ts-expect-error: parameter type
-        const RAW_PAYMENT: RawPayment<FonjepPaymentEntity> = { data: FONJEP_PAYMENT_ENTITIES[0] };
-        it("should call FonjepEntityAdapter.rawToPayment", () => {
-            fonjepService.rawToPayment(RAW_PAYMENT);
-            expect(FonjepEntityAdapter.rawToPayment).toHaveBeenCalledWith(RAW_PAYMENT);
-        });
-
-        it("should return Payment", () => {
-            jest.mocked(FonjepEntityAdapter.rawToPayment).mockReturnValueOnce(FONJEP_PAYMENTS[0]);
-            const expected = FONJEP_PAYMENTS[0];
-            const actual = fonjepService.rawToPayment(RAW_PAYMENT);
             expect(actual).toEqual(expected);
         });
     });

@@ -5,6 +5,10 @@ import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { ApplicationStatus, ProviderValue } from "dto";
 import _ from "lodash";
 import { ObjectId } from "mongodb";
+import subventiaService from "../subventia.service";
+import { ENTITIES, RAW_APPLICATION } from "../__fixtures__/subventia.fixture";
+import { RawApplication } from "../../../grant/@types/rawGrant";
+import SubventiaEntity from "../@types/subventia.entity";
 
 describe(SubventiaAdapter, () => {
     const application = { "Montant Ttc": 600, "Référence administrative - Demande": "ref1" } as SubventiaDto;
@@ -38,6 +42,7 @@ describe(SubventiaAdapter, () => {
         "dispositif",
         "sous_dispositif",
     ];
+
     describe("applicationToEntity", () => {
         it("should call indexDataByPathObject", () => {
             let mockIndexDataByPathObject = jest
@@ -117,6 +122,26 @@ describe(SubventiaAdapter, () => {
             };
             const actual = SubventiaAdapter.toCommon(dbo);
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("rawToApplication", () => {
+        let mockToDemandeSubventiaDto: jest.SpyInstance;
+
+        beforeAll(() => {
+            mockToDemandeSubventiaDto = jest
+                .spyOn(SubventiaAdapter, "toDemandeSubventionDto")
+                // @ts-expect-error: mock
+                .mockReturnValue(rawApp => rawApp.data);
+        });
+
+        afterAll(() => {
+            mockToDemandeSubventiaDto.mockRestore();
+        });
+
+        it("should call adapter", () => {
+            SubventiaAdapter.rawToApplication(RAW_APPLICATION);
+            expect(SubventiaAdapter.toDemandeSubventionDto).toHaveBeenCalledWith(RAW_APPLICATION.data);
         });
     });
 });
