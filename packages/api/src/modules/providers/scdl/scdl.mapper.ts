@@ -1,4 +1,4 @@
-import { shortISORegExp } from "../../../shared/helpers/DateHelper";
+import { isValidDate, shortISORegExp } from "../../../shared/helpers/DateHelper";
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 import { ScdlGrantSchema } from "./@types/ScdlGrantSchema";
 
@@ -37,7 +37,7 @@ const CONVENTION_DATE_PATHS = [
 
 const dateAdapter = (date: string | number | Date | undefined | null): Date | undefined => {
     if (!date) return undefined;
-    if (date instanceof Date && !isNaN(date.getTime())) return date;
+    if (isValidDate(date)) return date as Date;
     if (typeof date === "string" || date instanceof String) return new Date(date);
     return ParseHelper.ExcelDateToJSDate(Number(date));
 };
