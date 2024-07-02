@@ -4,7 +4,7 @@ import documentsService from "./documents.service";
 
 jest.mock("../providers");
 
-import { DocumentDto, DocumentRequestDto } from "dto";
+import { DocumentRequestDto } from "dto";
 import providers from "../providers";
 import Provider from "../providers/@types/IProvider";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";

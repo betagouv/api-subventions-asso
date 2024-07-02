@@ -24,6 +24,25 @@ describe("OsirisService", () => {
         });
     });
 
+    describe("rawToApplication", () => {
+        // @ts-expect-error: parameter type
+        const RAW_APPLICATION: RawApplication = { data: { foo: "bar" } };
+        // @ts-expect-error: parameter type
+        const APPLICATION: DemandeSubvention = { foo: "bar" };
+
+        it("should call OsirisRequestAdapter.rawToApplication", () => {
+            osirisService.rawToApplication(RAW_APPLICATION);
+            expect(OsirisRequestAdapter.rawToApplication).toHaveBeenCalledWith(RAW_APPLICATION);
+        });
+
+        it("should return DemandeSubvention", () => {
+            jest.mocked(OsirisRequestAdapter.rawToApplication).mockReturnValueOnce(APPLICATION);
+            const expected = APPLICATION;
+            const actual = osirisService.rawToApplication(RAW_APPLICATION);
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("getDemandeSubventionBySiret", () => {
         const SIRET = "12345678900000";
         const findBySiretMock = jest.spyOn(osirisService, "findBySiret");

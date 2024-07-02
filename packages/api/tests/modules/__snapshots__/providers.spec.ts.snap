@@ -50,8 +50,8 @@ Object {
       "name": "Chorus",
     },
     Object {
-      "description": "Données au format SCDL de divers producteurs sur data.gouv",
-      "name": "Data.gouv",
+      "description": "Données au format SCDL de divers producteurs en Open Data",
+      "name": "Open Data SCDL",
     },
   ],
 }

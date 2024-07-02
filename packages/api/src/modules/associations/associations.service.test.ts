@@ -248,13 +248,13 @@ describe("associationsService", () => {
         });
     });
 
-    describe("getEtablissements()", () => {
+    describe("getEstablishments()", () => {
         it("should call etablissementService.getEtablissementsBySiren()", async () => {
             getEtablissementsBySirenMock.mockImplementationOnce(() =>
                 Promise.resolve([{ etablissement: true } as unknown as Etablissement]),
             );
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
-            await associationsService.getEtablissements(SIRET);
+            await associationsService.getEstablishments(SIRET);
             expect(getEtablissementsBySirenMock).toHaveBeenCalledWith(SIRET);
         });
 
@@ -263,7 +263,7 @@ describe("associationsService", () => {
             getEtablissementsBySirenMock.mockImplementationOnce(async () => []);
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
             rnaSirenServiceFindOne.mockImplementationOnce(() => Promise.resolve([new RnaSirenEntity(RNA, SIREN)]));
-            await associationsService.getEtablissements(RNA);
+            await associationsService.getEstablishments(RNA);
             expect(getEtablissementsBySirenMock).toHaveBeenCalledWith(expected);
         });
 
@@ -271,7 +271,7 @@ describe("associationsService", () => {
             const expected = 0;
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
             rnaSirenServiceFindOne.mockImplementationOnce(() => Promise.resolve(null));
-            const actual = await associationsService.getEtablissements(RNA);
+            const actual = await associationsService.getEstablishments(RNA);
             expect(actual).toHaveLength(expected);
         });
 
@@ -280,7 +280,7 @@ describe("associationsService", () => {
                 throw new NotFoundError();
             });
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
-            expect(() => associationsService.getEtablissements(SIRET)).rejects.toThrowError(NotFoundError);
+            expect(() => associationsService.getEstablishments(SIRET)).rejects.toThrowError(NotFoundError);
         });
 
         it("should throw error (identifiers type not accepted)", async () => {
@@ -288,7 +288,7 @@ describe("associationsService", () => {
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siret);
             let actual;
             try {
-                actual = await associationsService.getEtablissements(SIRET);
+                actual = await associationsService.getEstablishments(SIRET);
             } catch (e) {
                 actual = (e as Error).message;
             }
@@ -300,7 +300,7 @@ describe("associationsService", () => {
             getIdentifierTypeMock.mockImplementationOnce(() => null);
             let actual;
             try {
-                actual = await associationsService.getEtablissements(INVALID_IDENTIFIER);
+                actual = await associationsService.getEstablishments(INVALID_IDENTIFIER);
             } catch (e) {
                 actual = (e as Error).message;
             }

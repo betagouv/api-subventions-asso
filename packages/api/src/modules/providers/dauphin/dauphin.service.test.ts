@@ -59,6 +59,25 @@ describe("Dauphin Service", () => {
      * |-------------------------|
      */
 
+    describe("rawToApplication", () => {
+        // @ts-expect-error: parameter type
+        const RAW_APPLICATION: RawApplication = { data: { foo: "bar" } };
+        // @ts-expect-error: parameter type
+        const APPLICATION: DemandeSubvention = { foo: "bar" };
+
+        it("should call DauphinDtoAdapter.rawToApplication", () => {
+            dauphinService.rawToApplication(RAW_APPLICATION);
+            expect(DauphinDtoAdapter.rawToApplication).toHaveBeenCalledWith(RAW_APPLICATION);
+        });
+
+        it("should return DemandeSubvention", () => {
+            jest.mocked(DauphinDtoAdapter.rawToApplication).mockReturnValueOnce(APPLICATION);
+            const expected = APPLICATION;
+            const actual = dauphinService.rawToApplication(RAW_APPLICATION);
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("getDemandeSubventionBySiret", () => {
         // @ts-expect-error mock
         afterEach(() => DauphinDtoAdapter.toDemandeSubvention.mockReset());
@@ -86,14 +105,6 @@ describe("Dauphin Service", () => {
             DauphinDtoAdapter.toDemandeSubvention.mockImplementationOnce(data => data);
             const actual = await dauphinService.getDemandeSubventionBySiren("FAKE_SIREN");
             expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("getDemandeSubventionByRna", () => {
-        it("should return null", async () => {
-            const expected = null;
-            const actual = await dauphinService.getDemandeSubventionByRna();
-            expect(expected).toBe(actual);
         });
     });
 

@@ -1,6 +1,7 @@
 import {
     GetAssociationResponseDto,
     GetEtablissementsResponseDto,
+    GetGrantsResponseDto,
     GetSubventionsResponseDto,
     GetPaymentsResponseDto,
     GetDocumentsResponseDto,
@@ -39,6 +40,9 @@ export class AssociationHttp extends Controller {
     @Response<HttpErrorInterface>("404")
     public async getDemandeSubventions(identifier: AssociationIdentifiers): Promise<GetSubventionsResponseDto> {
         const flux = await associationService.getSubventions(identifier);
+
+        if (!flux) return { subventions: null };
+
         const result = await flux.toPromise();
         const subventions = result
             .map(fluxSub => fluxSub.subventions)
@@ -60,17 +64,29 @@ export class AssociationHttp extends Controller {
     }
 
     /**
+     *
+     * @summary Recherche toutes les informations des subventions d'une association (demandes ET versements)
+     * @param identifier RNA ou SIREN de l'association
+     * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
+     */
+    @Get("/{identifier}/grants")
+    public async getGrants(identifier: AssociationIdentifiers): Promise<GetGrantsResponseDto> {
+        const grants = await grantService.getGrants(identifier);
+        return { subventions: grants };
+    }
+
+    /**
      * Recherche les subventions liées à une association, format brut
      *
      * @deprecated test purposes
      * @summary Recherche les subventions liées à une association, format brut
      * @param identifier Identifiant Siren ou Rna
      */
-    @Get("/{identifier}/grants")
+    @Get("/{identifier}/raw-grants")
     @Security("jwt", ["admin"])
     @Response<HttpErrorInterface>("404")
-    public getGrants(identifier: AssociationIdentifiers): Promise<JoinedRawGrant[]> {
-        return grantService.getGrantsByAssociation(identifier);
+    public getRawGrants(identifier: AssociationIdentifiers): Promise<JoinedRawGrant[]> {
+        return grantService.getRawGrantsByAssociation(identifier);
     }
 
     /**
@@ -90,8 +106,8 @@ export class AssociationHttp extends Controller {
      * @param identifier Identifiant Siren ou Rna
      */
     @Get("/{identifier}/etablissements")
-    public async getEtablissements(identifier: AssociationIdentifiers): Promise<GetEtablissementsResponseDto> {
-        const etablissements = await associationService.getEtablissements(identifier);
+    public async getEstablishments(identifier: AssociationIdentifiers): Promise<GetEtablissementsResponseDto> {
+        const etablissements = await associationService.getEstablishments(identifier);
         return { etablissements };
     }
 

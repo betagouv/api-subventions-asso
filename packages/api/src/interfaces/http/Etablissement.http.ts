@@ -5,6 +5,7 @@ import {
     GetSubventionsResponseDto,
     GetPaymentsResponseDto,
     Siret,
+    GetGrantsResponseDto,
 } from "dto";
 import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
 import etablissementService from "../../modules/etablissements/etablissements.service";
@@ -28,6 +29,18 @@ export class EtablissementHttp extends Controller {
     public async getEtablissement(siret: Siret): Promise<GetEtablissementResponseDto> {
         const etablissement = await etablissementService.getEtablissement(siret);
         return { etablissement };
+    }
+
+    /**
+     *
+     * * @summary Recherche toutes les informations des subventions d'un établissement (demandes ET versements)
+     * @param siret SIRET de l'établissement
+     * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
+     */
+    @Get("/{siret}/grants")
+    public async getGrants(siret: Siret): Promise<GetGrantsResponseDto> {
+        const grants = await etablissementService.getGrants(siret);
+        return { subventions: grants };
     }
 
     /**

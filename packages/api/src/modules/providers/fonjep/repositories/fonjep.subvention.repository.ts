@@ -7,7 +7,10 @@ export class FonjepSubventionRepository extends FonjepCoreRepository<FonjepSubve
     readonly collectionName = "fonjepSubvention";
 
     readonly joinIndexes = {
-        fonjepVersement: { code_poste: "$indexedInformations.code_poste", year: "$indexedInformations.annee_demande" },
+        fonjepVersement: {
+            code_poste: "$application.indexedInformations.code_poste",
+            year: "$application.indexedInformations.annee_demande",
+        },
     };
 
     async create(entity: FonjepSubventionEntity) {

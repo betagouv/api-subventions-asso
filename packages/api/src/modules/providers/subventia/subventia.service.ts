@@ -1,16 +1,16 @@
-import { ApplicationDto, DemandeSubvention } from "dto";
+import { CommonApplicationDto, DemandeSubvention } from "dto";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import GrantProvider from "../../grant/@types/GrantProvider";
-import { RawGrant } from "../../grant/@types/rawGrant";
+import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import SubventiaParser from "./subventia.parser";
 import SubventiaValidator from "./validators/subventia.validator";
 import SubventiaAdapter from "./adapters/subventia.adapter";
 import subventiaRepository from "./repositories/subventia.repository";
-import { SubventiaDbo } from "./@types/subventia.entity";
+import SubventiaEntity, { SubventiaDbo } from "./@types/subventia.entity";
 import SubventiaDto from "./@types/subventia.dto";
 
-export class SubventiaService implements DemandesSubventionsProvider, GrantProvider {
+export class SubventiaService implements DemandesSubventionsProvider<SubventiaEntity>, GrantProvider {
     provider = {
         name: "Subventia",
         type: ProviderEnum.raw,
@@ -120,8 +120,12 @@ export class SubventiaService implements DemandesSubventionsProvider, GrantProvi
         return Promise.resolve(null);
     }
 
-    rawToCommon(raw: RawGrant): ApplicationDto {
+    rawToCommon(raw: RawGrant): CommonApplicationDto {
         return SubventiaAdapter.toCommon(raw.data as SubventiaDbo);
+    }
+
+    rawToApplication(rawApplication: RawApplication<SubventiaEntity>) {
+        return SubventiaAdapter.rawToApplication(rawApplication);
     }
 }
 

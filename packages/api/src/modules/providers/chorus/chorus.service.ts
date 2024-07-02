@@ -6,8 +6,7 @@ import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import PaymentProvider from "../../payments/@types/PaymentProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import { RawGrant } from "../../grant/@types/rawGrant";
-import GrantProvider from "../../grant/@types/GrantProvider";
+import { RawGrant, RawPayment } from "../../grant/@types/rawGrant";
 import ProviderCore from "../ProviderCore";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import uniteLegalEntreprisesService from "../uniteLegalEntreprises/uniteLegal.entreprises.service";
@@ -22,7 +21,7 @@ export interface RejectedRequest {
     result: { message: string; data: unknown };
 }
 
-export class ChorusService extends ProviderCore implements PaymentProvider, GrantProvider {
+export class ChorusService extends ProviderCore implements PaymentProvider<ChorusLineEntity> {
     constructor() {
         super({
             name: "Chorus",
@@ -31,6 +30,12 @@ export class ChorusService extends ProviderCore implements PaymentProvider, Gran
                 "Chorus est un système d'information porté par l'AIFE pour les services de l'État qui permet de gérer les paiements des crédits État, que ce soit des commandes publiques ou des subventions et d'assurer la gestion financière du budget de l'État.",
             id: "chorus",
         });
+    }
+
+    public rawToPayment(rawGrant: RawPayment<ChorusLineEntity>) {
+        // get program
+        const program = dataBretagneService.programsByCode[this.getProgramCode(rawGrant.data)];
+        return ChorusAdapter.rawToPayment(rawGrant, program);
     }
 
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
@@ -109,18 +114,21 @@ export class ChorusService extends ProviderCore implements PaymentProvider, Gran
         return this.toPaymentArray(requests);
     }
 
-    private async toPaymentArray(documents: WithId<ChorusLineEntity>[]) {
-        const programs = await dataBretagneService.findProgramsRecord();
-        return documents.map(document => {
-            const codeProgramme = parseInt(document.indexedInformations.codeDomaineFonctionnel.slice(0, 4), 10); // for exemple codeDomaineFonctionnel = "0143-03-01", codeProgramme = 143
+    // TODO: unit test this
+    public getProgramCode(entity: ChorusLineEntity) {
+        return parseInt(entity.indexedInformations.codeDomaineFonctionnel.slice(0, 4), 10); // for exemple codeDomaineFonctionnel = "0143-03-01", codeProgramme = 143
+    }
 
-            return ChorusAdapter.toPayment(document, programs[codeProgramme]);
+    private toPaymentArray(documents: WithId<ChorusLineEntity>[]) {
+        return documents.map(document => {
+            const program = dataBretagneService.programsByCode[this.getProgramCode(document)];
+            return ChorusAdapter.toPayment(document, program);
         });
     }
 
     /**
      * |-------------------------|
-     * |   Raw Grant Part        |
+     * |   Grant Part            |
      * |-------------------------|
      */
 

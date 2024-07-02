@@ -10,6 +10,7 @@ import FonjepEntityAdapter from "../providers/fonjep/adapters/FonjepEntityAdapte
 import subventionsService from "../subventions/subventions.service";
 import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
 import { isSiren } from "../../shared/Validators";
+import grantService from "../grant/grant.service";
 import paymentService from "../payments/payments.service";
 import documentsService from "../documents/documents.service";
 import ApiEntrepriseAdapter from "../providers/apiEntreprise/adapters/ApiEntrepriseAdapter";
@@ -73,6 +74,10 @@ export class EtablissementsService {
             this.scoreEtablisement(etablisementB) - this.scoreEtablisement(etablisementA);
         const sortedEtablissement = etablissements.sort(sortEtablissmentsByStatus); // The order is the "siege" first, the secondary is open, the third is closed.
         return sortedEtablissement.map(etablissement => EtablissementAdapter.toSimplifiedEtablissement(etablissement));
+    }
+
+    getGrants(siret: Siret) {
+        return grantService.getGrants(siret);
     }
 
     getSubventions(siret: Siret) {

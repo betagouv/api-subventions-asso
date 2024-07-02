@@ -1,4 +1,4 @@
-import MiscScdlAdapter from "./MiscScdl.adapter";
+import MiscScdlAdapter from "./adapters/MiscScdl.adapter";
 import ENTITY from "./__fixtures__/MiscScdlGrantProducer";
 import { ApplicationStatus } from "dto";
 

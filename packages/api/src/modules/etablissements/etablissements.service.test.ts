@@ -7,6 +7,8 @@ import paymentService from "../payments/payments.service";
 import { EtablissementAdapter } from "./EtablissementAdapter";
 import etablissementService from "./etablissements.service";
 import { BadRequestError, NotFoundError } from "../../shared/errors/httpErrors";
+import grantService from "../grant/grant.service";
+jest.mock("../grant/grant.service");
 
 type asyncPrivateMock<T> = jest.SpyInstance<Promise<T>>;
 
@@ -76,6 +78,13 @@ describe("EtablissementsService", () => {
                 actual = e;
             }
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("getGrants", () => {
+        it("should call grantService.getGrants()", () => {
+            etablissementService.getGrants(SIRET);
+            expect(grantService.getGrants).toHaveBeenCalledWith(SIRET);
         });
     });
 

@@ -56,7 +56,6 @@ describe("SubventiaValidator", () => {
 
         it("should throw an error if the Montant Ttc is not a number", () => {
             const parsedDataRow = { ...PARSED_DATA_ROW, "Montant Ttc": "invalidNumber" };
-            console.log(parsedDataRow["Montant Ttc"]);
             // @ts-expect-error : test invalid data
             expect(() => SubventiaValidator.validateDataRowTypes(parsedDataRow)).toThrowError(
                 "Montant Ttc is not a number",

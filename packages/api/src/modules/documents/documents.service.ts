@@ -4,16 +4,21 @@ import { IncomingMessage } from "http";
 import { Rna, Siren, Siret, DocumentDto, DocumentRequestDto } from "dto";
 import * as Sentry from "@sentry/node";
 import mime = require("mime-types");
-import providers, { providersById } from "../providers";
+import providers from "../providers";
 import { StructureIdentifiers } from "../../@types";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import { ProviderRequestService } from "../provider-request/providerRequest.service";
 import { FRONT_OFFICE_URL } from "../../configurations/front.conf";
+import ProviderCore from "../providers/ProviderCore";
+import { DauphinService } from "../providers/dauphin/dauphin.service";
+import { providersById } from "../providers/providers.helper";
 import DocumentProvider from "./@types/DocumentsProvider";
 import { documentToDocumentRequest } from "./document.adapter";
 
 export class DocumentsService {
+    providersById = providersById(Object.values(providers));
+
     public async getDocumentBySiren(siren: Siren) {
         const result = await this.aggregateDocuments(siren);
 
@@ -83,8 +88,10 @@ export class DocumentsService {
     }
 
     getDocumentStream(providerId: string, docId: string): Promise<IncomingMessage> {
-        const service = providersById[providerId];
+        const service = this.providersById[providerId] as DauphinService | ProviderCore;
         if ("getSpecificDocumentStream" in service) return service.getSpecificDocumentStream(docId);
+        // TODO: refactor this to avoid typescript error on private access method
+        // @ts-expect-error: ok for now because it was any type before refactor
         return this.getGenericDocumentStream(service.http, docId);
     }
 

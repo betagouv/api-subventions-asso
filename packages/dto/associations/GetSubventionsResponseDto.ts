@@ -1,7 +1,7 @@
 import { DemandeSubvention } from "../search/DemandeSubvention";
 
 export interface GetSubventionsSuccessResponseDto {
-    subventions: DemandeSubvention[];
+    subventions: DemandeSubvention[] | null;
 }
 
 export type GetSubventionsResponseDto = GetSubventionsSuccessResponseDto;

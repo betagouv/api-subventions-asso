@@ -9,7 +9,7 @@ export const SubventionEntity = new FonjepEntity(
     },
     {
         unique_id: "unique_id",
-        code_poste: "D00000",
+        code_poste: "J00034",
         montant_paye: 500,
         status: "Attribué",
         raison: "Reconduction",

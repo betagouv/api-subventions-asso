@@ -7,6 +7,8 @@ import associationsService from "../../src/modules/associations/associations.ser
 import { BadRequestError } from "../../src/shared/errors/httpErrors";
 import OsirisRequestEntityFixture from "./providers/osiris/__fixtures__/entity";
 import { osirisRequestRepository } from "../../src/modules/providers/osiris/repositories";
+import DEFAULT_ASSOCIATION from "../__fixtures__/association.fixture";
+import rnaSirenPort from "../../src/dataProviders/db/rnaSiren/rnaSiren.port";
 
 const g = global as unknown as { app: unknown };
 
@@ -18,7 +20,7 @@ describe("/etablissement", () => {
         getSubventionsMock.mockRestore();
     });
 
-    describe("/{structure_identifier}/subventions", () => {
+    describe("/siret/subventions", () => {
         describe("on success", () => {
             const SUBVENTIONS = ["subventions"];
             const SUBVENTION_FLUX = [{ subventions: SUBVENTIONS }];
@@ -52,7 +54,20 @@ describe("/etablissement", () => {
         });
     });
 
-    describe("/{structure_identifier}", () => {
+    describe("/siret/grants", () => {
+        it("should return grants", async () => {
+            // SIREN must be from an association
+            await rnaSirenPort.insert({ siren: siretToSiren(ETABLISSEMENT_SIRET), rna: DEFAULT_ASSOCIATION.rna });
+            const response = await request(g.app)
+                .get(`/etablissement/${ETABLISSEMENT_SIRET}/grants`)
+                .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "application/json");
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toMatchSnapshot();
+        });
+    });
+
+    describe("/siret", () => {
         beforeEach(async () => {
             await osirisRequestRepository.add(OsirisRequestEntityFixture);
         });
