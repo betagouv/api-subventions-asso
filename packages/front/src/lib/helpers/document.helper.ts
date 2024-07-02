@@ -14,7 +14,7 @@ export class DocumentHelper {
             RAR: "Rapport d'activité",
             RFA: "Rapport financier",
             BPA: "Budget prévisionnel annuel",
-            RCA: "Rapport du commissaire aux compte",
+            RCA: "Rapport du commissaire aux comptes",
             "Education nationale": `Agrément Education Nationale`,
             "Jeunesse et Education Populaire (JEP)": `Agrément jeunesse et éducation populaire`,
             Formation: "L'habilitation d'organisme de formation",
