@@ -156,6 +156,8 @@ const buildNewPayment = (entity: FonjepPaymentEntity): FonjepPayment => ({
     periodeFin: toPV(entity.indexedInformations.periode_fin),
     montantAPayer: toPV(entity.indexedInformations.montant_a_payer),
     bop: toPV(entity.indexedInformations.bop),
+    programme: toPV(163),
+    libelleProgramme: toPV("program label"),
 });
 
 export const FONJEP_PAYMENTS: FonjepPayment[] = [buildNewPayment(FONJEP_PAYMENT_ENTITIES[0])];

@@ -1,16 +1,17 @@
-import SubventiaService from "./subventia.service";
+import subventiaService from "./subventia.service";
 import SubventiaParser from "./subventia.parser";
 import SubventiaValidator from "./validators/subventia.validator";
 import SubventiaAdapter from "./adapters/subventia.adapter";
 import SubventiaRepository from "./repositories/subventia.repository";
-import { SubventiaDbo } from "./@types/subventia.entity";
-import { ApplicationDto, ApplicationStatus, DemandeSubvention } from "dto";
+import SubventiaEntity, { SubventiaDbo } from "./@types/subventia.entity";
+import { CommonApplicationDto, ApplicationStatus, DemandeSubvention } from "dto";
 import SubventiaDto from "./@types/subventia.dto";
-import subventiaRepository from "./repositories/subventia.repository";
-import { raw } from "express";
-import { RawGrant } from "../../grant/@types/rawGrant";
+import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
+import { ENTITIES } from "./__fixtures__/subventia.fixture";
 
-describe("SubventiaService", () => {
+jest.mock("./adapters/subventia.adapter");
+
+describe("Subventia Service", () => {
     const filePath = "path/to/file";
 
     const DEFAUT_REF = {
@@ -78,7 +79,7 @@ describe("SubventiaService", () => {
             .mockImplementation(data => data as unknown as DemandeSubvention);
         mockToCommon = jest
             .spyOn(SubventiaAdapter, "toCommon")
-            .mockImplementation(data => data as unknown as ApplicationDto);
+            .mockImplementation(data => data as unknown as CommonApplicationDto);
     });
 
     afterAll(() => {
@@ -93,7 +94,7 @@ describe("SubventiaService", () => {
         it("should group by Référence administrative - Demande", () => {
             const expected = groupedData;
             //@ts-expect-error : test private method
-            const actual = SubventiaService.groupByApplication(parsedData);
+            const actual = subventiaService.groupByApplication(parsedData);
             expect(actual).toEqual(groupedData);
         });
     });
@@ -106,7 +107,7 @@ describe("SubventiaService", () => {
                 "Référence administrative - Demande": "ref1",
             };
             //@ts-expect-error : test private method
-            const actual = SubventiaService.mergeToApplication(applicationLines);
+            const actual = subventiaService.mergeToApplication(applicationLines);
             expect(actual).toEqual(expected);
         });
 
@@ -118,7 +119,7 @@ describe("SubventiaService", () => {
                 "Référence administrative - Demande": "ref1",
             };
             //@ts-expect-error : test private method
-            const actual = SubventiaService.mergeToApplication(applicationLinesWithNullAmount);
+            const actual = subventiaService.mergeToApplication(applicationLinesWithNullAmount);
             expect(actual).toEqual(expected);
         });
     });
@@ -129,9 +130,9 @@ describe("SubventiaService", () => {
         let mockApplicationToEntity: jest.SpyInstance;
         beforeAll(() => {
             //@ts-expect-error : test private method
-            mockGroupByApplication = jest.spyOn(SubventiaService, "groupByApplication").mockReturnValue(groupedData);
+            mockGroupByApplication = jest.spyOn(subventiaService, "groupByApplication").mockReturnValue(groupedData);
             //@ts-expect-error : test private method
-            mockMergeToApplication = jest.spyOn(SubventiaService, "mergeToApplication").mockReturnValue(ref1_value1);
+            mockMergeToApplication = jest.spyOn(subventiaService, "mergeToApplication").mockReturnValue(ref1_value1);
 
             mockApplicationToEntity = jest.spyOn(SubventiaAdapter, "applicationToEntity").mockReturnValue({
                 reference_demande: "ref1",
@@ -158,19 +159,19 @@ describe("SubventiaService", () => {
 
         it("should call groupByApplication", () => {
             ///@ts-expect-error : test private method
-            SubventiaService.getApplications(parsedData, exportDate);
+            subventiaService.getApplications(parsedData, exportDate);
             expect(mockGroupByApplication).toHaveBeenCalledWith(parsedData);
         });
 
         it("should call mergeToApplication", () => {
             //@ts-expect-error : test private method
-            SubventiaService.getApplications(parsedData, exportDate);
+            subventiaService.getApplications(parsedData, exportDate);
             expect(mockMergeToApplication).toHaveBeenCalledTimes(2);
         });
 
         it("should call applicationToEntity", () => {
             //@ts-expect-error : test private method
-            SubventiaService.getApplications(parsedData, exportDate);
+            subventiaService.getApplications(parsedData, exportDate);
             expect(mockApplicationToEntity).toHaveBeenCalledTimes(2);
         });
 
@@ -192,7 +193,7 @@ describe("SubventiaService", () => {
 
             const expected = applications;
             //@ts-expect-error : test private method
-            const actual = SubventiaService.getApplications(parsedData, exportDate);
+            const actual = subventiaService.getApplications(parsedData, exportDate);
 
             expect(actual).toEqual(expected);
         });
@@ -209,7 +210,7 @@ describe("SubventiaService", () => {
                 .spyOn(SubventiaValidator, "sortDataByValidity")
                 .mockReturnValue({ valids: parsedData, invalids: [] });
             //@ts-expect-error : test private method
-            mockGetApplications = jest.spyOn(SubventiaService, "getApplications").mockReturnValue(applications);
+            mockGetApplications = jest.spyOn(subventiaService, "getApplications").mockReturnValue(applications);
         });
 
         afterAll(() => {
@@ -219,17 +220,17 @@ describe("SubventiaService", () => {
         });
 
         it("should call parse", () => {
-            SubventiaService.processSubventiaData(filePath, exportDate);
+            subventiaService.processSubventiaData(filePath, exportDate);
             expect(mockParse).toHaveBeenCalledWith(filePath);
         });
 
         it("should call sortDataByValidity", () => {
-            SubventiaService.processSubventiaData(filePath, exportDate);
+            subventiaService.processSubventiaData(filePath, exportDate);
             expect(mockSortData).toHaveBeenCalledWith(parsedData);
         });
 
         it("should call getApplications", () => {
-            SubventiaService.processSubventiaData(filePath, exportDate);
+            subventiaService.processSubventiaData(filePath, exportDate);
             expect(mockGetApplications).toHaveBeenCalledWith(sortedData["valids"], exportDate);
         });
     });
@@ -239,7 +240,7 @@ describe("SubventiaService", () => {
         } as unknown as SubventiaDbo;
 
         it("should call create", async () => {
-            await SubventiaService.createEntity(entity);
+            await subventiaService.createEntity(entity);
             expect(mockCreate).toHaveBeenCalledWith(entity);
         });
     });
@@ -253,17 +254,17 @@ describe("SubventiaService", () => {
     describe("getDemandeSubventionBySiret", () => {
         const siret = "123456789";
         it("should call findBySiret", async () => {
-            await SubventiaService.getDemandeSubventionBySiret(siret);
+            await subventiaService.getDemandeSubventionBySiret(siret);
             expect(mockFindBySiret).toHaveBeenCalledWith(siret);
         });
 
         it("should call toDemandeSubventionDto for each result", async () => {
-            await SubventiaService.getDemandeSubventionBySiret(siret);
+            await subventiaService.getDemandeSubventionBySiret(siret);
             expect(mockToDemandeSubventionDto).toHaveBeenCalledTimes(2);
         });
 
         it("should return subventions", async () => {
-            const actual = await SubventiaService.getDemandeSubventionBySiret(siret);
+            const actual = await subventiaService.getDemandeSubventionBySiret(siret);
             const expected = applications;
             expect(actual).toEqual(expected);
         });
@@ -272,17 +273,17 @@ describe("SubventiaService", () => {
     describe("getDemandeSubventionBySiren", () => {
         const siren = "123456789";
         it("should call findBySiren", async () => {
-            await SubventiaService.getDemandeSubventionBySiret(siren);
+            await subventiaService.getDemandeSubventionBySiret(siren);
             expect(mockFindBySiret).toHaveBeenCalledWith(siren);
         });
 
         it("should call toDemandeSubventionDto for each result", async () => {
-            await SubventiaService.getDemandeSubventionBySiret(siren);
+            await subventiaService.getDemandeSubventionBySiret(siren);
             expect(mockToDemandeSubventionDto).toHaveBeenCalledTimes(2);
         });
 
         it("should return subventions", async () => {
-            const actual = await SubventiaService.getDemandeSubventionBySiret(siren);
+            const actual = await subventiaService.getDemandeSubventionBySiret(siren);
             const expected = applications;
             expect(actual).toEqual(expected);
         });
@@ -291,7 +292,7 @@ describe("SubventiaService", () => {
     describe("getDemandeSubventionByRna", () => {
         it("should return null", async () => {
             const expected = null;
-            const actual = await SubventiaService.getDemandeSubventionByRna();
+            const actual = await subventiaService.getDemandeSubventionByRna();
             expect(expected).toBe(actual);
         });
     });
@@ -304,12 +305,12 @@ describe("SubventiaService", () => {
 
     describe("getRawGrantsBySiret", () => {
         it("should call findBySiret", async () => {
-            await SubventiaService.getRawGrantsBySiret("FAKE_SIRET");
+            await subventiaService.getRawGrantsBySiret("FAKE_SIRET");
             expect(mockFindBySiret).toHaveBeenCalledWith("FAKE_SIRET");
         });
 
         it("should return raw grants", async () => {
-            const actual = await SubventiaService.getRawGrantsBySiret("FAKE_SIRET");
+            const actual = await subventiaService.getRawGrantsBySiret("FAKE_SIRET");
             const expected = rawGrant;
             expect(actual).toEqual(expected);
         });
@@ -317,12 +318,12 @@ describe("SubventiaService", () => {
 
     describe("getRawGrantsBySiren", () => {
         it("should call findBySiren", async () => {
-            await SubventiaService.getRawGrantsBySiren("FAKE_SIREN");
+            await subventiaService.getRawGrantsBySiren("FAKE_SIREN");
             expect(mockFindBySiren).toHaveBeenCalledWith("FAKE_SIREN");
         });
 
         it("should return raw grants", async () => {
-            const actual = await SubventiaService.getRawGrantsBySiren("FAKE_SIREN");
+            const actual = await subventiaService.getRawGrantsBySiren("FAKE_SIREN");
             const expected = rawGrant;
             expect(actual).toEqual(expected);
         });
@@ -330,8 +331,21 @@ describe("SubventiaService", () => {
 
     describe("rawToCommon", () => {
         it("should call toCommon", () => {
-            const actual = SubventiaService.rawToCommon(rawGrant[0]);
+            const actual = subventiaService.rawToCommon(rawGrant[0]);
             expect(mockToCommon).toHaveBeenCalledWith(rawGrant[0]["data"]);
+        });
+    });
+
+    describe("rawToApplication", () => {
+        const RAW_APPLICATION: RawApplication<SubventiaEntity> = {
+            data: ENTITIES[0],
+            type: "application",
+            provider: "subventia",
+            joinKey: undefined,
+        };
+        it("should call adapter rawToApplication", () => {
+            subventiaService.rawToApplication(RAW_APPLICATION);
+            expect(SubventiaAdapter.rawToApplication).toHaveBeenCalledWith(RAW_APPLICATION);
         });
     });
 });
