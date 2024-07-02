@@ -31,6 +31,7 @@ export default class FonjepParser {
 
     private static createFonjepSubventionEntity(parsedData: DefaultObject<unknown>) {
         const indexedInformations = ParserHelper.indexDataByPathObject(
+            // TODO <string|number>
             FonjepSubventionEntity.indexedProviderInformationsPath,
             parsedData,
         ) as unknown as IFonjepIndexedInformations;
@@ -43,6 +44,7 @@ export default class FonjepParser {
 
     private static createFonjepPaymentEntity(data: DefaultObject<unknown>) {
         const indexedInformations = ParserHelper.indexDataByPathObject(
+            // TODO <string|number>
             FonjepPaymentEntity.indexedProviderInformationsPath,
             data,
         ) as unknown as IFonjepPaymentIndexedInformations;

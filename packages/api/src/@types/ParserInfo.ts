@@ -1,6 +1,8 @@
 import { ParserPath } from "./ParserPath";
 
-export interface ParserInfo {
+export type BeforeAdaptation = string | number; // only string for csv, string or number for Excel
+
+export interface ParserInfo<Tin extends BeforeAdaptation = string, Tout = any> {
     path: ParserPath;
-    adapter?: (value: string | undefined) => unknown;
+    adapter?: (value: Tin | undefined) => Tout;
 }

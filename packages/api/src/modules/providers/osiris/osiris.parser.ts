@@ -22,6 +22,7 @@ export default class OsirisParser {
             );
 
             const indexedInformations = ParseHelper.indexDataByPathObject(
+                // TODO <string|number>
                 OsirisRequestEntity.indexedProviderInformationsPath,
                 data,
             ) as IOsirisRequestInformations;
@@ -51,6 +52,7 @@ export default class OsirisParser {
             );
 
             const indexedInformations = ParseHelper.indexDataByPathObject(
+                // TODO <string|number>
                 OsirisActionEntity.indexedInformationsPath,
                 data,
             ) as unknown as IOsirisActionsInformations;

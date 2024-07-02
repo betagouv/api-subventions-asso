@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ScdlGrantParser parseCsv should return storableChunk 1`] = `
+exports[`ScdlGrantParser _filterValidEntities should return storableChunk 1`] = `
 Array [
   Object {
     "UeNotification": false,
