@@ -86,6 +86,7 @@ export class DemarchesSimplifieesService extends ProviderCore implements Demande
     async updateDataByFormId(formId: number) {
         let result: DemarchesSimplifieesDto;
         let nextCursor: string | undefined = undefined;
+        demarchesSimplifieesDataRepository.initBulk();
         do {
             result = await this.sendQuery(GetDossiersByDemarcheId, {
                 demarcheNumber: formId,
@@ -98,11 +99,12 @@ export class DemarchesSimplifieesService extends ProviderCore implements Demande
                 throw new InternalServerError("empty Démarches Simplifiées result (not normal with graphQL)");
 
             const entities = DemarchesSimplifieesDtoAdapter.toEntities(result, formId);
-            await asyncForEach(entities, async entity => {
-                await demarchesSimplifieesDataRepository.upsert(entity);
-            });
+            for (const entity of entities) {
+                demarchesSimplifieesDataRepository.stackUpsert(entity);
+            }
             nextCursor = result?.data?.demarche?.dossiers?.pageInfo?.endCursor;
         } while (result?.data?.demarche?.dossiers?.pageInfo?.hasNextPage);
+        await demarchesSimplifieesDataRepository.executeBulk();
     }
 
     async sendQuery(query: string, vars: DefaultObject) {
