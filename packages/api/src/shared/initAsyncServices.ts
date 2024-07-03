@@ -3,6 +3,6 @@ import scdlService from "../modules/providers/scdl/scdl.service";
 
 const asyncServices = [scdlService, dataBretagneService];
 
-export async function initAsync() {
+export async function initAsyncServices() {
     await Promise.all(asyncServices.map(service => service.init()));
 }
