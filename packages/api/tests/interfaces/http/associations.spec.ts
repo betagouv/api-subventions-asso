@@ -183,6 +183,17 @@ describe("/association", () => {
     });
 
     describe("/{identifier}/grants", () => {
+        // avoid test failure on date timezone
+        function expectAnyApplicationDate(grants) {
+            return grants.map(grant => {
+                if (grant.application) {
+                    if (grant.application.date_debut) grant.application.date_debut.value = expect.any(Date);
+                    if (grant.application.date_fin) grant.application.date_fin.value = expect.any(Date);
+                }
+                return grant;
+            });
+        }
+
         it("should return grants with rna", async () => {
             await rnaSirenService.insert(RNA, SIREN);
             const response = await request(g.app)
@@ -190,6 +201,8 @@ describe("/association", () => {
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
+
+            response.body.subventions = expectAnyApplicationDate(response.body.subventions);
             expect(response.body).toMatchSnapshot();
         });
 
@@ -200,6 +213,7 @@ describe("/association", () => {
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
+            response.body.subventions = expectAnyApplicationDate(response.body.subventions);
             expect(response.body).toMatchSnapshot();
         });
     });

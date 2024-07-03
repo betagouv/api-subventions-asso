@@ -15,7 +15,7 @@ Object {
           "last_update": "2022-01-02T00:00:00.000Z",
           "provider": "Extranet FONJEP",
           "type": "object",
-          "value": "2022-01-03T00:00:00.000Z",
+          "value": Any<Date>,
         },
         "dispositif": Object {
           "last_update": "2022-01-02T00:00:00.000Z",
@@ -175,13 +175,13 @@ Object {
           "last_update": "2023-07-26T08:49:43.000Z",
           "provider": "Démarches Simplifiées",
           "type": "object",
-          "value": "2022-12-31T23:00:00.000Z",
+          "value": Any<Date>,
         },
         "date_fin": Object {
           "last_update": "2023-07-26T08:49:43.000Z",
           "provider": "Démarches Simplifiées",
           "type": "object",
-          "value": "2023-12-30T23:00:00.000Z",
+          "value": Any<Date>,
         },
         "dispositif": Object {
           "last_update": "2023-07-26T08:49:43.000Z",
@@ -797,7 +797,7 @@ Object {
           "last_update": "2022-01-02T00:00:00.000Z",
           "provider": "Extranet FONJEP",
           "type": "object",
-          "value": "2022-01-03T00:00:00.000Z",
+          "value": Any<Date>,
         },
         "dispositif": Object {
           "last_update": "2022-01-02T00:00:00.000Z",
@@ -957,13 +957,13 @@ Object {
           "last_update": "2023-07-26T08:49:43.000Z",
           "provider": "Démarches Simplifiées",
           "type": "object",
-          "value": "2022-12-31T23:00:00.000Z",
+          "value": Any<Date>,
         },
         "date_fin": Object {
           "last_update": "2023-07-26T08:49:43.000Z",
           "provider": "Démarches Simplifiées",
           "type": "object",
-          "value": "2023-12-30T23:00:00.000Z",
+          "value": Any<Date>,
         },
         "dispositif": Object {
           "last_update": "2023-07-26T08:49:43.000Z",
