@@ -10,6 +10,7 @@ async function main() {
     await connectDB();
     await initIndexes();
     await initAsync();
+    // coucou
     await startServer();
 }
 
