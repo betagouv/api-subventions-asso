@@ -15,6 +15,7 @@ export default class FonjepPaymentEntity {
     };
 
     public static indexedProviderInformationsPath: DefaultObject<ParserPath | ParserInfo> = {
+        // TODO <string|number>
         unique_id: ["id"],
         updated_at: ["updated_at"],
         code_poste: ["PosteCode"],

@@ -18,6 +18,7 @@ export default class GisproParser {
         for (const row of tqdm(data)) {
             const parsedData = ParseHelper.linkHeaderToData(header, row);
             const indexedRow = ParseHelper.indexDataByPathObject(
+                // TODO <string|number> ??
                 GisproLineEntity.indexedInformationsPath,
                 parsedData,
             ) as unknown as Gispro;

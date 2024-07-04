@@ -1,6 +1,6 @@
 class ExportDateError extends Error {
     constructor() {
-        super("You must provide an export date for this command");
+        super("You must provide a valid export date for this command");
     }
 }
 

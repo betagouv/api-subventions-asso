@@ -31,6 +31,26 @@ export default class ScdlGrantParser {
             trim: true,
         });
 
+        return ScdlGrantParser._filterValidEntities(parsedChunk);
+    }
+
+    static parseExcel(content: Buffer, pageName?: string, rowOffset = 0) {
+        console.log("Open and read file ...");
+        const pagesWithName = ParserHelper.xlsParseWithPageName(content);
+        console.log("Read file end");
+
+        const extractionPage = pageName ? pagesWithName.find(page => page.name === pageName) : pagesWithName[0];
+        if (!extractionPage?.data?.length) throw new Error("no data in required page (default is first page)");
+
+        const page = extractionPage.data;
+
+        const headerRow = page[rowOffset] as string[];
+        console.log("Map rows to entities...");
+        const data = page.slice(rowOffset + 1).map(row => ParserHelper.linkHeaderToData(headerRow, row));
+        return ScdlGrantParser._filterValidEntities(data);
+    }
+
+    static _filterValidEntities(parsedChunk) {
         const storableChunk: ScdlStorableGrant[] = [];
         const invalidEntities: Partial<ScdlStorableGrant>[] = [];
 
