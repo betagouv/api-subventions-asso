@@ -1,6 +1,5 @@
 import { ApplicationDto, ApplicationStatus, DemandeSubvention } from "dto";
-import * as ParseHelper from "../../../../shared/helpers/ParserHelper";
-import { ExcelDateToJSDate } from "../../../../shared/helpers/ParserHelper";
+import { ExcelDateToJSDate, GenericParser } from "../../../../shared/helpers/ParserHelper";
 
 import subventiaService from "../subventia.service";
 import SubventiaDto from "../@types/subventia.dto";
@@ -11,7 +10,7 @@ import { DefaultObject, ParserInfo } from "../../../../@types";
 export default class SubventiaAdapter {
     static applicationToEntity(application: SubventiaDto, exportDate: Date): SubventiaEntity {
         return {
-            ...ParseHelper.indexDataByPathObject<string | number>(
+            ...GenericParser.indexDataByPathObject<string | number>(
                 subventiaMapper as DefaultObject<ParserInfo<number | string>>,
                 application as DefaultObject<string | number>,
             ), // TODO <string|number>

@@ -1,6 +1,7 @@
 import { Siret } from "dto";
 import { DefaultObject, NestedDefaultObject } from "../../../@types";
 import * as ParserHelper from "../../../shared/helpers/ParserHelper";
+import { GenericParser } from "../../../shared/helpers/ParserHelper";
 import IFonjepIndexedInformations from "./@types/IFonjepIndexedInformations";
 import IFonjepPaymentIndexedInformations from "./@types/IFonjepPaymentIndexedInformations";
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
@@ -32,12 +33,12 @@ export default class FonjepParser {
     }
 
     private static createFonjepSubventionEntity(parsedData: NestedDefaultObject<string>) {
-        const indexedInformations = ParserHelper.indexDataByPathObject(
+        const indexedInformations = GenericParser.indexDataByPathObject(
             // TODO <string|number>
             FonjepSubventionEntity.indexedProviderInformationsPath,
             parsedData,
         ) as unknown as IFonjepIndexedInformations;
-        const legalInformations = ParserHelper.indexDataByPathObject(
+        const legalInformations = GenericParser.indexDataByPathObject(
             FonjepSubventionEntity.indexedLegalInformationsPath,
             parsedData,
         ) as { siret: Siret; name: string };
@@ -45,12 +46,12 @@ export default class FonjepParser {
     }
 
     private static createFonjepPaymentEntity(data: DefaultObject<string>) {
-        const indexedInformations = ParserHelper.indexDataByPathObject(
+        const indexedInformations = GenericParser.indexDataByPathObject(
             // TODO <string|number>
             FonjepPaymentEntity.indexedProviderInformationsPath,
             data,
         ) as unknown as IFonjepPaymentIndexedInformations;
-        const legalInformations = ParserHelper.indexDataByPathObject(
+        const legalInformations = GenericParser.indexDataByPathObject(
             FonjepPaymentEntity.indexedLegalInformationsPath,
             data,
         ) as { siret: Siret };

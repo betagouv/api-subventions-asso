@@ -1,5 +1,6 @@
 import { Siret } from "dto";
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
+import { GenericParser } from "../../../shared/helpers/ParserHelper";
 import ILeCompteAssoPartialRequestEntity from "./@types/ILeCompteAssoPartialRequestEntity";
 import LeCompteAssoRequestEntity from "./entities/LeCompteAssoRequestEntity";
 import ILeCompteAssoRequestInformations from "./@types/ILeCompteAssoRequestInformations";
@@ -14,7 +15,7 @@ export default class LeCompteAssoParser {
             const parsedData = ParseHelper.linkHeaderToData(header, row);
 
             const legalInformations = {
-                ...(ParseHelper.indexDataByPathObject(
+                ...(GenericParser.indexDataByPathObject(
                     // TODO <string|number> ??
                     LeCompteAssoRequestEntity.indexedLegalInformationsPath,
                     parsedData,
@@ -22,7 +23,7 @@ export default class LeCompteAssoParser {
                 rna: null,
             };
 
-            const providerInformations = ParseHelper.indexDataByPathObject(
+            const providerInformations = GenericParser.indexDataByPathObject(
                 LeCompteAssoRequestEntity.indexedProviderInformationsPath, // TODO <string|number> ??
                 parsedData,
             ) as ILeCompteAssoRequestInformations;

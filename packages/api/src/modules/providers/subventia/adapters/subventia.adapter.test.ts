@@ -5,6 +5,7 @@ import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { ApplicationStatus, ProviderValue } from "dto";
 import _ from "lodash";
 import { ObjectId } from "mongodb";
+import { GenericParser } from "../../../../shared/helpers/ParserHelper";
 
 describe(SubventiaAdapter, () => {
     const application = { "Montant Ttc": 600, "Référence administrative - Demande": "ref1" } as SubventiaDto;
@@ -41,7 +42,7 @@ describe(SubventiaAdapter, () => {
     describe("applicationToEntity", () => {
         it("should call indexDataByPathObject", () => {
             let mockIndexDataByPathObject = jest
-                .spyOn(ParseHelper, "indexDataByPathObject")
+                .spyOn(GenericParser, "indexDataByPathObject")
                 .mockReturnValue(entityIncomplete);
 
             SubventiaAdapter.applicationToEntity(application, exportDate);

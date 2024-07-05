@@ -1,6 +1,7 @@
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 import { DefaultObject } from "../../../@types";
 import ILegalInformations from "../../search/@types/ILegalInformations";
+import { GenericParser } from "../../../shared/helpers/ParserHelper";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 import IOsirisRequestInformations from "./@types/IOsirisRequestInformations";
@@ -22,12 +23,12 @@ export default class OsirisParser {
                 OsirisRequestEntity.defaultMainCategory,
             ) as DefaultObject<DefaultObject<string>>; // TODO remove this, it should be <string|number>
 
-            const indexedInformations = ParseHelper.indexDataByPathObject(
+            const indexedInformations = GenericParser.indexDataByPathObject(
                 // TODO <string|number>
                 OsirisRequestEntity.indexedProviderInformationsPath,
                 data,
             ) as IOsirisRequestInformations;
-            const legalInformations = ParseHelper.indexDataByPathObject(
+            const legalInformations = GenericParser.indexDataByPathObject(
                 OsirisRequestEntity.indexedLegalInformationsPath,
                 data,
             ) as unknown as ILegalInformations;
@@ -53,7 +54,7 @@ export default class OsirisParser {
                 OsirisActionEntity.defaultMainCategory,
             ) as DefaultObject<DefaultObject<string>>; // TODO remove this, it should be <string|number>
 
-            const indexedInformations = ParseHelper.indexDataByPathObject(
+            const indexedInformations = GenericParser.indexDataByPathObject(
                 // TODO <string|number>
                 OsirisActionEntity.indexedInformationsPath,
                 data,
@@ -77,7 +78,7 @@ export default class OsirisParser {
                 row,
                 OsirisEvaluationEntity.defaultMainCategory,
             ) as DefaultObject<DefaultObject<string>>; // TODO remove this, it should be <string|number>
-            const indexedInformations = ParseHelper.indexDataByPathObject(
+            const indexedInformations = GenericParser.indexDataByPathObject(
                 OsirisEvaluationEntity.indexedInformationsPath,
                 data,
             ) as unknown as IOsirisEvaluationsInformations;

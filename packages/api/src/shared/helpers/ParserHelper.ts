@@ -12,62 +12,63 @@ import {
     NestedDefaultObject,
 } from "../../@types";
 
-/*
-    from parser info and original data, returns original key and data before adaptation
- */
-export function findValueAndOriginalKeyByPath<T extends BeforeAdaptation>(
-    data: NestedBeforeAdaptation<T>,
-    parserData: ParserPath | ParserInfo<T, unknown>,
-): { value: T; keyPath: string[] } | undefined {
-    type Tin = T | DefaultObject;
-    const mapper: ParserPath = Array.isArray(parserData) ? parserData : parserData.path;
-    const successiveKeys: string[] = [];
-    let objectToLookIn: Tin = data;
-    let oneLevelKey: string | undefined;
+export type ValueWithPath<T = unknown> = { value: T; keyPath: string[] };
 
-    for (const possibleKeys of mapper) {
-        // If it is a string, it is the only possible header for this property
-        if (!(possibleKeys instanceof Array)) {
-            oneLevelKey = possibleKeys as string;
-        } else {
+export class GenericParser {
+    /*
+        from parser info and original data, returns original key and data before adaptation
+    */
+    static findValueAndOriginalKeyByPath<T extends BeforeAdaptation>(
+        data: NestedBeforeAdaptation<T>,
+        parserData: ParserPath | ParserInfo<T, unknown>,
+    ): ValueWithPath<T> | undefined {
+        type Tin = T | DefaultObject;
+        const mapper: ParserPath = Array.isArray(parserData) ? parserData : parserData.path;
+        const successiveKeys: string[] = [];
+        let objectToLookIn: Tin = data;
+        let oneLevelKey: string | undefined;
+
+        for (const possibleKeys of mapper) {
+            // If it is a string, it is the only possible header for this property
+            if (!(possibleKeys instanceof Array)) oneLevelKey = possibleKeys as string;
             // checking all possible headers for this property
+            else oneLevelKey = (possibleKeys as string[]).find(possibleKey => data[possibleKey.trim()] != undefined); // TODO manage multiple valid case (with filters)
 
-            oneLevelKey = (possibleKeys as string[]).find(possibleKey => data[possibleKey.trim()]); // TODO manage multiple valid case (with filters)
+            if (!oneLevelKey) return undefined;
+
+            successiveKeys.push(oneLevelKey);
+            objectToLookIn = objectToLookIn[oneLevelKey.trim()] as Tin;
         }
-        if (!oneLevelKey) return undefined;
-
-        successiveKeys.push(oneLevelKey);
-        objectToLookIn = objectToLookIn[oneLevelKey.trim()] as Tin;
+        return { value: objectToLookIn as T, keyPath: successiveKeys };
     }
-    return { value: objectToLookIn as T, keyPath: successiveKeys };
-}
 
-/*
-    from parser info and original data, returns required data after adaptation
- */
-export function findAndAdaptByPath<Tin extends BeforeAdaptation, Tout = unknown>(
-    data: NestedDefaultObject<Tin>,
-    parserData: ParserPath | ParserInfo<Tin, Tout>,
-) {
-    let adapter = (v: Tin | undefined): unknown => v as Tout;
+    /*
+        from parser info and original data, returns required data after adaptation
+     */
+    static findAndAdaptByPath<Tin extends BeforeAdaptation, Tout = unknown>(
+        data: NestedDefaultObject<Tin>,
+        parserData: ParserPath | ParserInfo<Tin, Tout>,
+    ) {
+        let adapter = (v: Tin | undefined): unknown => v as Tout;
 
-    if (!Array.isArray(parserData)) adapter = parserData.adapter || adapter;
+        if (!Array.isArray(parserData)) adapter = parserData.adapter || adapter;
 
-    const original = findValueAndOriginalKeyByPath<Tin>(data, parserData);
-    if (!original?.value) return undefined;
+        const original = GenericParser.findValueAndOriginalKeyByPath<Tin>(data, parserData);
+        if (original?.value === undefined || original?.value === null) return undefined;
 
-    return adapter(original.value) as Tout;
-}
+        return adapter(original.value) as Tout;
+    }
 
-export function indexDataByPathObject<Tin extends BeforeAdaptation, Tout = DefaultObject>(
-    pathObject: DefaultObject<ParserPath | ParserInfo<Tin>>,
-    data: NestedDefaultObject<Tin>,
-) {
-    return Object.keys(pathObject).reduce((acc, key: string) => {
-        const tempAcc = acc as Tout;
-        tempAcc[key] = findAndAdaptByPath<Tin>(data, pathObject[key]);
-        return tempAcc;
-    }, {} as unknown) as Tout;
+    static indexDataByPathObject<Tin extends BeforeAdaptation, Tout = DefaultObject>(
+        pathObject: DefaultObject<ParserPath | ParserInfo<Tin>>,
+        data: NestedDefaultObject<Tin>,
+    ) {
+        return Object.keys(pathObject).reduce((acc, key: string) => {
+            const tempAcc = acc as Tout;
+            tempAcc[key] = GenericParser.findAndAdaptByPath<Tin>(data, pathObject[key]);
+            return tempAcc;
+        }, {} as unknown) as Tout;
+    }
 }
 
 export function linkHeaderToData<T = string>(headers: string[], data: T[]) {

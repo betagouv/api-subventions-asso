@@ -7,7 +7,7 @@ jest.mock("./entities/FonjepSubventionEntity");
 jest.mock("./entities/FonjepPaymentEntity");
 
 describe("FonjepParser", () => {
-    const indexDataByPathObjectMock = jest.spyOn(ParserHelper, "indexDataByPathObject");
+    const indexDataByPathObjectMock = jest.spyOn(ParserHelper.GenericParser, "indexDataByPathObject");
     const PAGES = [
         [
             ["foo", "bar"],

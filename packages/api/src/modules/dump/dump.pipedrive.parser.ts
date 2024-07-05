@@ -1,6 +1,6 @@
 import { AdminTerritorialLevel, AgentJobTypeEnum, AgentTypeEnum } from "dto";
 import * as ParserHelper from "../../shared/helpers/ParserHelper";
-import { indexDataByPathObject } from "../../shared/helpers/ParserHelper";
+import { GenericParser } from "../../shared/helpers/ParserHelper";
 import { DefaultObject } from "../../@types";
 
 export default class DumpPipedriveParser {
@@ -17,7 +17,10 @@ export default class DumpPipedriveParser {
         console.log("Map rows to entities...");
         const entities = page.map(userRow => ParserHelper.linkHeaderToData<string | number>(headerRow, userRow));
         return entities.map(pipedriveUser =>
-            indexDataByPathObject<string>(DumpPipedriveParser.pathObject, pipedriveUser as DefaultObject<string>),
+            GenericParser.indexDataByPathObject<string>(
+                DumpPipedriveParser.pathObject,
+                pipedriveUser as DefaultObject<string>,
+            ),
         );
         // TODO check adapter types
     }

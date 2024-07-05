@@ -1,11 +1,9 @@
 import * as ParserHelper from "../../../shared/helpers/ParserHelper";
 jest.mock("../../../shared/helpers/ParserHelper");
 const mockedParserHelper = jest.mocked(ParserHelper);
-import { printAtSameLine } from "../../../shared/helpers/CliHelper";
 jest.mock("../../../shared/helpers/CliHelper");
 import ChorusParser from "./chorus.parser";
 import { ENTITIES, FILLED_HEADERS, HEADERS, PAGES } from "./__fixtures__/ChorusFixtures";
-import ChorusLineEntity from "./entities/ChorusLineEntity";
 jest.mock("./entities/ChorusLineEntity");
 import * as StringHelper from "../../../shared/helpers/StringHelper";
 import { BeforeAdaptation, DefaultObject } from "../../../@types";
@@ -102,7 +100,7 @@ describe("ChorusParser", () => {
 
         beforeAll(() => {
             mockedParserHelper.linkHeaderToData.mockReturnValue(ENTITIES[0].data as DefaultObject<BeforeAdaptation>);
-            mockedParserHelper.indexDataByPathObject.mockReturnValue(
+            jest.mocked(mockedParserHelper.GenericParser.indexDataByPathObject).mockReturnValue(
                 ENTITIES[0].indexedInformations as unknown as DefaultObject<unknown>,
             );
             // @ts-expect-error: protected
@@ -121,7 +119,7 @@ describe("ChorusParser", () => {
         it.each`
             fn
             ${mockedParserHelper.linkHeaderToData}
-            ${mockedParserHelper.indexDataByPathObject}
+            ${mockedParserHelper.GenericParser.indexDataByPathObject}
             ${mockValidateIndexedInformations}
             ${mockBuildUniqueId}
         `("should call $fn", ({ fn }) => {

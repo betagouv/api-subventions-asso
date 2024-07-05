@@ -1,5 +1,6 @@
 import tqdm = require("tqdm");
 import * as ParseHelper from "../../../shared/helpers/ParserHelper";
+import { GenericParser } from "../../../shared/helpers/ParserHelper";
 import GisproLineEntity from "./entities/gisproLineEntity";
 import Gispro from "./@types/Gispro";
 
@@ -17,7 +18,7 @@ export default class GisproParser {
         const entities: GisproLineEntity[] = [];
         for (const row of tqdm(data)) {
             const parsedData = ParseHelper.linkHeaderToData(header, row);
-            const indexedRow = ParseHelper.indexDataByPathObject(
+            const indexedRow = GenericParser.indexDataByPathObject(
                 // TODO <string|number> ??
                 GisproLineEntity.indexedInformationsPath,
                 parsedData,
