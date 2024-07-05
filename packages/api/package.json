@@ -66,6 +66,7 @@
         "cors": "^2.8.5",
         "croner": "^6.0.7",
         "csv-parse": "^5.5.3",
+        "csv-stringify": "^6.5.0",
         "decompress": "^4.2.1",
         "dedent": "^0.7.0",
         "dotenv": "^14.3.2",
