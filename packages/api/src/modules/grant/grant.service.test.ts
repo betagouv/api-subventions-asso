@@ -228,11 +228,6 @@ describe("GrantService", () => {
         let mockValidateAndGetIdentifierInfo: jest.SpyInstance;
         const ID = "ID";
 
-        // const cleanProviders = providers.grantProviders as GrantProvider[];
-        // const paymentProvider = (providers.grantProviders as GrantProvider[]).find(
-        //     provider => provider.isPaymentProvider,
-        // );
-
         beforeAll(() => {
             getSirenMock = jest.spyOn(rnaSirenService, "find").mockResolvedValue([new RnaSirenEntity(RNA, SIREN)]);
             joinGrantsMock = jest.spyOn(grantService as any, "joinGrants").mockReturnValue(JOINED);

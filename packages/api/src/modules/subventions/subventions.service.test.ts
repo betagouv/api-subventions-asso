@@ -65,7 +65,7 @@ describe("SubventionsService", () => {
             returnedType
             ${StructureIdentifiersEnum.siren}
             ${StructureIdentifiersEnum.rna}
-        `("should throw an error if given a SIREN", ({ returnedType }) => {
+        `("should throw an error if identifier type is SIREN or RNA", ({ returnedType }) => {
             getIdentifierTypeMock.mockImplementationOnce(() => returnedType);
             expect(() => subventionsService.getDemandesByEtablissement(IDENTIFIER)).toThrowError(
                 StructureIdentifiersError,
@@ -86,7 +86,7 @@ describe("SubventionsService", () => {
     });
 
     describe("getApplicationFetcher", () => {
-        it("should return method than call given function", () => {
+        it("should return method that calls given function", () => {
             const appFetcher = subventionsService.getApplicationFetcher(subventionsService.getBySirenMethod);
             appFetcher(IDENTIFIER);
             expect(providers.demandesSubventionsProviders[0][subventionsService.getBySirenMethod]).toHaveBeenCalledWith(
