@@ -20,11 +20,6 @@ describe("ScdlService", () => {
             mockGetProducers = jest.spyOn(scdlService, "getProducers").mockResolvedValue([MiscScdlProducerFixture]);
         });
 
-        afterEach(() => {
-            mockGetProducers.mockClear();
-            scdlService.producerNames = [];
-        });
-
         afterAll(() => {
             mockGetProducers.mockRestore();
         });

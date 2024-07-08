@@ -128,11 +128,6 @@ describe("GrantService", () => {
             mockAdapteRawGrant = jest.spyOn(grantService, "adapteRawGrant").mockImplementation(rawGrant => rawGrant);
         });
 
-        afterEach(() => {
-            mockAdapteRawGrant.mockClear();
-            mockToGrant.mockClear();
-        });
-
         afterAll(() => {
             mockToGrant.mockRestore();
             mockAdapteRawGrant.mockRestore();
@@ -239,13 +234,6 @@ describe("GrantService", () => {
                 type: StructureIdentifiersEnum.siren,
             });
             mockedProviders = ProvidersIndex.grantProviders;
-        });
-
-        afterEach(() => {
-            mockedProviders.forEach(provider => {
-                provider.getRawGrantsBySiret.mockClear();
-                provider.getRawGrantsBySiren.mockClear();
-            });
         });
 
         afterAll(() => {
@@ -390,11 +378,6 @@ describe("GrantService", () => {
             mockGroupRawGrantsByType.mockReturnValue(GRANTS_BY_TYPE);
             // @ts-expect-error: mock private method
             mockSendDuplicateMessage = jest.spyOn(grantService, "sendDuplicateMessage");
-        });
-
-        afterEach(() => {
-            mockGroupRawGrantsByType.mockClear();
-            mockSendDuplicateMessage.mockClear();
         });
 
         afterAll(() => {

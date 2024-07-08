@@ -95,10 +95,6 @@ describe("ScdlGrantService", () => {
             mockGetEntityByPromiseAndAdapt.mockResolvedValue(ENTITIES);
         });
 
-        afterEach(() => {
-            mockGetEntityByPromiseAndAdapt.mockClear();
-        });
-
         afterAll(() => {
             mockGetEntityByPromiseAndAdapt.mockRestore();
         });

@@ -42,10 +42,6 @@ describe("associationName.service", () => {
         const RNA = "W1234567";
         const RNA_2 = "W9876543";
 
-        beforeEach(() => {
-            jest.clearAllMocks();
-        });
-
         it("should return an empty array for unknown identifier", async () => {
             mockedUniteLegalNameService.searchBySirenSiretName.mockResolvedValueOnce([]);
             mockedRechercheEntreprises.search.mockResolvedValueOnce([]);

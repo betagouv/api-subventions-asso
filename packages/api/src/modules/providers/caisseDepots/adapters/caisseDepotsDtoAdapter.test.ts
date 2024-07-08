@@ -62,10 +62,6 @@ describe("CaisseDepotsDtoAdapter", () => {
             mockToDemandeSubvention.mockReturnValue(APPLICATION);
         });
 
-        afterEach(() => {
-            mockToDemandeSubvention.mockClear();
-        });
-
         afterAll(() => {
             mockToDemandeSubvention.mockRestore();
         });

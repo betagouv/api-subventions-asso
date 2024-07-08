@@ -77,8 +77,6 @@ describe("chorusService", () => {
                 ] as unknown as WithId<ChorusLineEntity>[]);
             });
 
-            afterEach(() => mockedChorusLineRepository.findBySiret.mockClear());
-
             afterAll(() => mockedChorusLineRepository.findBySiret.mockReset());
 
             const SIRET = ENTITIES[0].indexedInformations.siret;
@@ -101,8 +99,6 @@ describe("chorusService", () => {
                 ] as unknown as WithId<ChorusLineEntity>[]);
             });
 
-            afterEach(() => mockedChorusLineRepository.findOneBySiren.mockClear());
-
             afterAll(() => mockedChorusLineRepository.findBySiren.mockReset());
 
             const SIREN = ENTITIES[0].indexedInformations.siret.substring(0, 9);
@@ -123,8 +119,6 @@ describe("chorusService", () => {
                     ENTITIES[0],
                 ] as unknown as WithId<ChorusLineEntity>[]);
             });
-
-            afterEach(() => mockedChorusLineRepository.findByEJ.mockClear());
 
             afterAll(() => mockedChorusLineRepository.findByEJ.mockReset());
 

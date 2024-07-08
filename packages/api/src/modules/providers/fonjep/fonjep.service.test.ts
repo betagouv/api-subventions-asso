@@ -49,10 +49,6 @@ describe("FonjepService", () => {
         };
     });
 
-    afterEach(() => {
-        jest.mocked(FonjepEntityAdapter.toPayment).mockClear();
-    });
-
     afterAll(() => {
         // @ts-expect-error: mock
         FonjepEntityAdapter.toDemandeSubvention.mockRestore();

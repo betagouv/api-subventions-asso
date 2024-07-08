@@ -34,10 +34,6 @@ describe("ChorusAdapter", () => {
             mockToPayment.mockReturnValue(PAYMENTS[0]);
         });
 
-        afterEach(() => {
-            mockToPayment.mockClear();
-        });
-
         afterAll(() => {
             mockToPayment.mockRestore();
         });

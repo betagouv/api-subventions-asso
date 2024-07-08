@@ -38,10 +38,6 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
             mockToSubvention.mockReturnValue(APPLICATION);
         });
 
-        afterEach(() => {
-            mockToSubvention.mockClear();
-        });
-
         afterAll(() => {
             mockToSubvention.mockRestore();
         });

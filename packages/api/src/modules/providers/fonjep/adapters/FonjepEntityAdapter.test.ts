@@ -62,11 +62,6 @@ describe("FonjepEntityAdapter", () => {
             mockToPayment.mockReturnValueOnce(PAYMENT_2);
         });
 
-        afterEach(() => {
-            mockToDemandeSubvention.mockClear();
-            mockToPayment.mockClear();
-        });
-
         afterAll(() => {
             mockToDemandeSubvention.mockRestore();
             mockToPayment.mockRestore();
@@ -113,10 +108,6 @@ describe("FonjepEntityAdapter", () => {
             mockToDemandeSubvention.mockReturnValue(APPLICATION);
         });
 
-        afterEach(() => {
-            mockToDemandeSubvention.mockClear();
-        });
-
         afterAll(() => {
             mockToDemandeSubvention.mockRestore();
         });
@@ -141,10 +132,6 @@ describe("FonjepEntityAdapter", () => {
         beforeAll(() => {
             mockToPayment = jest.spyOn(FonjepEntityAdapter, "toPayment");
             mockToPayment.mockReturnValue(FONJEP_PAYMENTS[0]);
-        });
-
-        afterEach(() => {
-            mockToPayment.mockClear();
         });
 
         afterAll(() => {
