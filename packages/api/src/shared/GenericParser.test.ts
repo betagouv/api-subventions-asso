@@ -1,8 +1,5 @@
 import dedent from "dedent";
-import { GenericParser } from "../GenericParser";
-
-jest.mock("./GenericParser", () => ({ __esModule: true, ...jest.requireActual("./GenericParser") }));
-// TODO fix mock
+import { GenericParser } from "./GenericParser";
 
 describe("GenericParser", () => {
     const ADAPTER = jest.fn(v => v);
@@ -34,14 +31,14 @@ describe("GenericParser", () => {
     describe("findAndAdaptByPath", () => {
         let findOriginalSpy: jest.SpyInstance;
 
-        beforeEach(() => {
-            findOriginalSpy = jest.mocked(GenericParser.findValueAndOriginalKeyByPath).mockReturnValue({
+        beforeAll(() => {
+            findOriginalSpy = jest.spyOn(GenericParser, "findValueAndOriginalKeyByPath").mockReturnValue({
                 value: "value",
                 keyPath: [],
             });
         });
 
-        afterEach(() => {
+        afterAll(() => {
             jest.mocked(GenericParser.findValueAndOriginalKeyByPath).mockRestore();
         });
 
@@ -52,7 +49,7 @@ describe("GenericParser", () => {
 
         it("calls sent adapter", () => {
             GenericParser.findAndAdaptByPath(DATA, MAPPER.key3);
-            expect(MAPPER.key3.adapter).toHaveBeenCalledWith("value3");
+            expect(ADAPTER).toHaveBeenCalledWith("value");
         });
     });
 

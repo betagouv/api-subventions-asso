@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ParserHelper parseCsv() should apply custom delimiter 1`] = `
+exports[`GenericParser parseCsv() should apply custom delimiter 1`] = `
 Array [
   Array [
     "this is a string, with , (coma)",
@@ -12,7 +12,7 @@ Array [
 ]
 `;
 
-exports[`ParserHelper parseCsv() should apply default delimiter 1`] = `
+exports[`GenericParser parseCsv() should apply default delimiter 1`] = `
 Array [
   Array [
     "this is a string",
