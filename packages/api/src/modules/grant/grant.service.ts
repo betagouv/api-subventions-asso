@@ -76,7 +76,7 @@ export class GrantService {
         return null;
     }
 
-    adapteRawGrant(rawGrant: RawGrant) {
+    adaptRawGrant(rawGrant: RawGrant) {
         switch (rawGrant.type) {
             case "fullGrant":
                 return this.fullGrantProvidersById[rawGrant.provider].rawToGrant(rawGrant as RawFullGrant);
@@ -95,10 +95,10 @@ export class GrantService {
         }
     }
 
-    adapteJoinedRawGrant(joinedRawGrant: JoinedRawGrant) {
-        const payments = (joinedRawGrant.payments?.map(joined => this.adapteRawGrant(joined)) as Payment[]) || [];
-        const fullGrants = joinedRawGrant.fullGrants?.map(joined => this.adapteRawGrant(joined)) as Grant[] | [];
-        const applications = joinedRawGrant.applications?.map(joined => this.adapteRawGrant(joined)) as
+    adaptJoinedRawGrant(joinedRawGrant: JoinedRawGrant) {
+        const payments = (joinedRawGrant.payments?.map(joined => this.adaptRawGrant(joined)) as Payment[]) || [];
+        const fullGrants = joinedRawGrant.fullGrants?.map(joined => this.adaptRawGrant(joined)) as Grant[] | [];
+        const applications = joinedRawGrant.applications?.map(joined => this.adaptRawGrant(joined)) as
             | DemandeSubvention[]
             | [];
         return this.toGrant({ fullGrants, applications, payments });
@@ -135,12 +135,13 @@ export class GrantService {
 
     // sort grants by grants > lonely application > lonely payment
     sortGrants(grants: Grant[]) {
+        const getScore = grant => {
+            if (grant.application && grant.payments) return 2;
+            if (grant.application) return 1;
+            return 0;
+        };
+
         return grants.sort((grantA, grantB) => {
-            const getScore = grant => {
-                if (grant.application && grant.payments) return 2;
-                else if (grant.application) return 1;
-                else return 0;
-            };
             return getScore(grantB) - getScore(grantA);
         });
     }
@@ -149,7 +150,7 @@ export class GrantService {
     // implementer une classe GrantAdapter pour chaque adapter de demande et de paiment
     async getGrants(identifier: StructureIdentifiers): Promise<Grant[]> {
         const joinedRawGrants = await this.getRawGrants(identifier);
-        const grants = joinedRawGrants.map(this.adapteJoinedRawGrant.bind(this)).filter(grant => grant) as Grant[];
+        const grants = joinedRawGrants.map(this.adaptJoinedRawGrant.bind(this)).filter(grant => grant) as Grant[];
         const sortedGrants = this.sortGrants(grants);
         return sortedGrants;
     }

@@ -79,7 +79,7 @@ describe("GrantService", () => {
     // @ts-expect-error: mock type
     const GRANT: Grant = { application: APPLICATION, payments: [{ bop: 101 } as Payment] };
 
-    describe("adapteRawGrant", () => {
+    describe("adaptRawGrant", () => {
         beforeAll(() => {
             grantService.fullGrantProvidersById = {
                 [fullGrantProvidersFixtures[0].provider.id]: fullGrantProvidersFixtures[0],
@@ -99,13 +99,13 @@ describe("GrantService", () => {
             ${RAW_APPLICATION} | ${applicationProvidersFixtures[0]} | ${"rawToApplication"}
             ${RAW_PAYMENTS[0]} | ${paymentProvidersFixtures[0]}     | ${"rawToPayment"}
         `("should adapte RawFullGrant", ({ grant, provider, method }) => {
-            grantService.adapteRawGrant(grant);
+            grantService.adaptRawGrant(grant);
             expect(provider[method]).toHaveBeenCalledWith(grant);
         });
 
         it("should handle SCDL case", () => {
             const oldScdlGrantServiceId = scdlGrantService.provider.id;
-            // Use for SCDL adapteRawGrant specific treatment
+            // Use for SCDL adaptRawGrant specific treatment
             scdlGrantService.provider.id = applicationProvidersFixtures[1].provider.id;
             const APPLICATION_SCDL: RawApplication = {
                 provider: SCDL_PRODUCER_NAME,
@@ -113,19 +113,19 @@ describe("GrantService", () => {
                 type: "application",
                 joinKey: JOIN_KEY_2,
             };
-            grantService.adapteRawGrant(APPLICATION_SCDL);
+            grantService.adaptRawGrant(APPLICATION_SCDL);
             expect(applicationProvidersFixtures[1].rawToApplication).toHaveBeenCalledWith(APPLICATION_SCDL);
             scdlGrantService.provider.id = oldScdlGrantServiceId;
         });
     });
 
-    describe("adapteJoinedRawGrant", () => {
+    describe("adaptJoinedRawGrant", () => {
         let mockToGrant, mockAdapteRawGrant;
 
         beforeAll(() => {
             mockToGrant = jest.spyOn(grantService, "toGrant").mockReturnValue(GRANT);
             // @ts-expect-error: mock return value
-            mockAdapteRawGrant = jest.spyOn(grantService, "adapteRawGrant").mockImplementation(rawGrant => rawGrant);
+            mockAdapteRawGrant = jest.spyOn(grantService, "adaptRawGrant").mockImplementation(rawGrant => rawGrant);
         });
 
         afterAll(() => {
@@ -139,13 +139,13 @@ describe("GrantService", () => {
             ${"fullGrants"}                            | ${{ fullGrants: [RAW_FULL_GRANT, {} as RawFullGrant], applications: [], payments: [] }}                                                                      | ${2}
             ${"application"}                           | ${{ fullGrants: [], applications: [RAW_APPLICATION, {} as RawApplication], payments: [] }}                                                                   | ${2}
             ${"payments, fullGrants and applications"} | ${{ fullGrants: [RAW_FULL_GRANT, {} as RawFullGrant], applications: [RAW_APPLICATION, {} as RawApplication], payments: [RAW_PAYMENTS[0], RAW_PAYMENTS[1]] }} | ${6}
-        `("should call adapteRawGrant for each $arrayName", ({ joinedRawGrant, calls }) => {
-            grantService.adapteJoinedRawGrant(joinedRawGrant);
+        `("should call adaptRawGrant for each $arrayName", ({ joinedRawGrant, calls }) => {
+            grantService.adaptJoinedRawGrant(joinedRawGrant);
             expect(mockAdapteRawGrant).toHaveBeenCalledTimes(calls);
         });
 
         it("should call toGrant", () => {
-            grantService.adapteJoinedRawGrant(DEFAULT_JOINED_RAW_GRANT);
+            grantService.adaptJoinedRawGrant(DEFAULT_JOINED_RAW_GRANT);
             expect(mockToGrant).toHaveBeenCalledWith(DEFAULT_JOINED_RAW_GRANT);
         });
     });
@@ -191,7 +191,7 @@ describe("GrantService", () => {
         let mockGetRawGrants, mockAdapteJoinedRawGrant, mockSortGrants;
         beforeAll(() => {
             mockGetRawGrants = jest.spyOn(grantService, "getRawGrants").mockResolvedValue(JOINED_RAW_GRANTS);
-            mockAdapteJoinedRawGrant = jest.spyOn(grantService, "adapteJoinedRawGrant").mockReturnValue(GRANT);
+            mockAdapteJoinedRawGrant = jest.spyOn(grantService, "adaptJoinedRawGrant").mockReturnValue(GRANT);
             mockSortGrants = jest.spyOn(grantService, "sortGrants").mockImplementation(arr => arr);
         });
 
@@ -205,7 +205,7 @@ describe("GrantService", () => {
             await grantService.getGrants(SIRET);
             expect(mockGetRawGrants).toHaveBeenCalledWith(SIRET);
         });
-        it("should call adapteJoinedRawGrant", async () => {
+        it("should call adaptJoinedRawGrant", async () => {
             await grantService.getGrants(SIRET);
             expect(mockAdapteJoinedRawGrant).toHaveBeenCalledTimes(JOINED_RAW_GRANTS.length);
         });
