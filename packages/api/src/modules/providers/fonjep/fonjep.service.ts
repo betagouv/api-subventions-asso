@@ -69,7 +69,7 @@ export class FonjepService
         return FonjepEntityAdapter.rawToGrant(rawFullGrant, programs);
     }
 
-    // TODO: this might be never use because of rawToGrant
+    // TODO: this might never be used because of rawToGrant
     rawToApplication(rawApplication: RawApplication<FonjepSubventionEntity>) {
         return FonjepEntityAdapter.rawToApplication(rawApplication);
     }
