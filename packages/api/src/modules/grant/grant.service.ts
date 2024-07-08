@@ -27,7 +27,7 @@ export class GrantService {
     applicationProvidersById: Record<string, DemandesSubventionsProvider<unknown>>;
     paymentProvidersById: Record<string, PaymentProvider<unknown>>;
 
-    // Done in constructor to avoid circular dependencie issue
+    // Done in constructor to avoid circular dependency issue
     constructor() {
         this.fullGrantProvidersById = providersById(fullGrantProviders);
         this.applicationProvidersById = providersById(demandesSubventionsProviders);
