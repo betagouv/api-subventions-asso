@@ -1,14 +1,18 @@
-import { WithId } from "mongodb";
-import { PaymentDto, ChorusPayment } from "dto";
+import { CommonPaymentDto, ChorusPayment } from "dto";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
-import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
+import { RawPayment } from "../../../grant/@types/rawGrant";
+import StateBudgetProgramDbo from "../../../../dataProviders/db/state-budget-program/StateBudgetProgramDbo";
 
 export default class ChorusAdapter {
     static PROVIDER_NAME = "Chorus";
 
-    public static toPayment(entity: WithId<ChorusLineEntity>, program: StateBudgetProgramEntity): ChorusPayment {
+    public static rawToPayment(rawPayment: RawPayment<ChorusLineEntity>, program: Omit<StateBudgetProgramDbo, "_id">) {
+        return this.toPayment(rawPayment.data, program);
+    }
+
+    public static toPayment(entity: ChorusLineEntity, program: Omit<StateBudgetProgramDbo, "_id">): ChorusPayment {
         const toPvChorus = <T>(value: T) =>
             ProviderValueAdapter.toProviderValue<T>(
                 value,
@@ -24,8 +28,8 @@ export default class ChorusAdapter {
             );
 
         const toPvOrUndefined = value => (value ? toPvChorus(value) : undefined);
+
         return {
-            id: entity._id.toString(),
             ej: toPvChorus(entity.indexedInformations.ej),
             versementKey: toPvChorus(entity.indexedInformations.ej),
             siret: toPvChorus(entity.indexedInformations.siret),
@@ -46,7 +50,7 @@ export default class ChorusAdapter {
         };
     }
 
-    public static toCommon(entity: ChorusLineEntity): PaymentDto {
+    public static toCommon(entity: ChorusLineEntity): CommonPaymentDto {
         const bop = entity.indexedInformations.codeDomaineFonctionnel.slice(0, 4);
         return {
             montant_verse: entity.indexedInformations.amount,

@@ -1,107 +1,288 @@
-import { GrantDto, Siret } from "dto";
+import * as Sentry from "@sentry/node";
+import { CommonGrantDto, Grant, DemandeSubvention, Payment, Rna, Siret } from "dto";
+import { providersById } from "../providers/providers.helper";
+import { demandesSubventionsProviders, fullGrantProviders, grantProviders, paymentProviders } from "../providers";
+import DemandesSubventionsProvider from "../subventions/@types/DemandesSubventionsProvider";
+import PaymentProvider from "../payments/@types/PaymentProvider";
 import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
-import providers from "../providers";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
 import { isSiret } from "../../shared/Validators";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 import associationsService from "../associations/associations.service";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
+import scdlGrantService from "../providers/scdl/scdl.grant.service";
+import scdlService from "../providers/scdl/scdl.service";
 import { siretToSiren } from "../../shared/helpers/SirenHelper";
 import { BadRequestError } from "../../shared/errors/httpErrors";
-import { RawGrant, JoinedRawGrant } from "./@types/rawGrant";
-import GrantProvider from "./@types/GrantProvider";
+import { RnaOnlyError } from "../../shared/errors/GrantError";
+
+import { FullGrantProvider } from "./@types/FullGrantProvider";
+import { RawGrant, JoinedRawGrant, RawFullGrant, RawApplication, RawPayment, AnyRawGrant } from "./@types/rawGrant";
 import commonGrantService from "./commonGrant.service";
 
 export class GrantService {
+    fullGrantProvidersById: Record<string, FullGrantProvider<unknown>>;
+    applicationProvidersById: Record<string, DemandesSubventionsProvider<unknown>>;
+    paymentProvidersById: Record<string, PaymentProvider<unknown>>;
+
+    // Done in constructor to avoid circular dependency issue
+    constructor() {
+        this.fullGrantProvidersById = providersById(fullGrantProviders);
+        this.applicationProvidersById = providersById(demandesSubventionsProviders);
+        this.paymentProvidersById = providersById(paymentProviders);
+    }
+
     static getRawMethodNameByIdType = {
         [StructureIdentifiersEnum.siret]: "getRawGrantsBySiret",
         [StructureIdentifiersEnum.siren]: "getRawGrantsBySiren",
         [StructureIdentifiersEnum.rna]: "getRawGrantsByRna",
     };
 
-    async getGrants(id: StructureIdentifiers): Promise<JoinedRawGrant[]> {
-        let idType = getIdentifierType(id);
+    private validateAndGetStructureType(id: StructureIdentifiers) {
+        const idType = getIdentifierType(id);
         if (!idType) throw new StructureIdentifiersError();
-
-        let isReallyAsso;
-        if (idType === StructureIdentifiersEnum.rna) {
-            isReallyAsso = true;
-            const rnaSirenEntities = await rnaSirenService.find(id);
-            if (rnaSirenEntities && rnaSirenEntities.length) {
-                id = rnaSirenEntities[0].siren;
-                idType = StructureIdentifiersEnum.siren;
-            }
-        }
-        if (!isReallyAsso) isReallyAsso = await associationsService.isSirenFromAsso(siretToSiren(id));
-        if (!isReallyAsso) throw new BadRequestError("identifier does not represent an association");
-
-        const providers = this.getGrantProviders();
-        const methodName = GrantService.getRawMethodNameByIdType[idType];
-        const rawGrants = [
-            ...(
-                await Promise.all(providers.map(p => p[methodName](id).then(g => (g || []) as RawGrant[]) || []))
-            ).flat(),
-        ];
-
-        return this.joinGrants(rawGrants);
+        return idType;
     }
 
-    async getGrantsByAssociation(id: AssociationIdentifiers): Promise<JoinedRawGrant[]> {
+    private async validateIsAssociation(id: StructureIdentifiers) {
+        const siren = await associationsService.isSirenFromAsso(siretToSiren(id));
+        if (!siren) throw new BadRequestError("identifier does not represent an association");
+    }
+
+    private async validateAndGetIdentifierInfo(identifier: StructureIdentifiers) {
+        let type = this.validateAndGetStructureType(identifier);
+
+        if (type === StructureIdentifiersEnum.rna) {
+            const sirenValues = await this.getSirenValues(identifier);
+            if (sirenValues) {
+                type = sirenValues.type;
+                identifier = sirenValues.identifier;
+            } else {
+                throw new RnaOnlyError(identifier);
+            }
+        } else {
+            this.validateIsAssociation(identifier);
+        }
+        return { identifier, type };
+    }
+
+    private async getSirenValues(rna: Rna) {
+        const rnaSirenEntities = await rnaSirenService.find(rna);
+        if (rnaSirenEntities && rnaSirenEntities.length) {
+            return { identifier: rnaSirenEntities[0].siren, type: StructureIdentifiersEnum.siren };
+        }
+        return null;
+    }
+
+    adaptRawGrant(rawGrant: RawGrant) {
+        switch (rawGrant.type) {
+            case "fullGrant":
+                return this.fullGrantProvidersById[rawGrant.provider].rawToGrant(rawGrant as RawFullGrant);
+            case "application": {
+                // default provider
+                let provider = this.applicationProvidersById[rawGrant.provider];
+                // TODO: refactor multi producers provider
+                // scdl specificity -- providerService id (miscScdl) is different from producer name used as rawGrant.provider (i.e Ville de Paris)
+                if (scdlService.producerNames.includes(rawGrant.provider)) {
+                    provider = this.applicationProvidersById[scdlGrantService.provider.id];
+                }
+                return provider.rawToApplication(rawGrant as RawApplication);
+            }
+            case "payment":
+                return this.paymentProvidersById[rawGrant.provider].rawToPayment(rawGrant as RawPayment);
+        }
+    }
+
+    adaptJoinedRawGrant(joinedRawGrant: JoinedRawGrant) {
+        const payments = (joinedRawGrant.payments?.map(joined => this.adaptRawGrant(joined)) as Payment[]) || [];
+        const fullGrants = joinedRawGrant.fullGrants?.map(joined => this.adaptRawGrant(joined)) as Grant[] | [];
+        const applications = joinedRawGrant.applications?.map(joined => this.adaptRawGrant(joined)) as
+            | DemandeSubvention[]
+            | [];
+        return this.toGrant({ fullGrants, applications, payments });
+    }
+
+    // TODO: #2477 only accept one grant or one application in JoinedRawGrants
+    // and only accept lonely grant as it cannot be linked with other payments ?
+    // https://github.com/betagouv/api-subventions-asso/issues/2477
+    toGrant(joinedGrant: {
+        fullGrants: Grant[];
+        applications: DemandeSubvention[];
+        payments: Payment[];
+    }): Grant | undefined {
+        if (!joinedGrant) return;
+        const { fullGrants: grants, applications, payments } = joinedGrant;
+
+        const hasGrants = Boolean(grants?.length);
+        const hasApplications = Boolean(applications?.length);
+        const hasPayments = Boolean(payments?.length);
+
+        if (!hasGrants && !hasApplications && !hasPayments) return;
+
+        if (hasPayments) {
+            if (!hasGrants && !hasApplications) return { application: null, payments };
+            if (hasGrants) {
+                const grant = grants[0];
+                return { application: grant.application, payments: [...(grant.payments as Payment[]), ...payments] };
+            }
+            if (hasApplications) return { application: applications[0], payments };
+        } else if (hasGrants) return grants[0];
+        // only hasApplication
+        else return { application: applications[0], payments: null };
+    }
+
+    // sort grants by grants > lonely application > lonely payment
+    sortGrants(grants: Grant[]) {
+        const getScore = grant => {
+            if (grant.application && grant.payments) return 2;
+            if (grant.application) return 1;
+            return 0;
+        };
+
+        return grants.sort((grantA, grantB) => {
+            return getScore(grantB) - getScore(grantA);
+        });
+    }
+
+    // appeler adapter pour chaque join.application join.payment et join.fullGrant
+    // implementer une classe GrantAdapter pour chaque adapter de demande et de paiment
+    async getGrants(identifier: StructureIdentifiers): Promise<Grant[]> {
+        const joinedRawGrants = await this.getRawGrants(identifier);
+        const grants = joinedRawGrants.map(this.adaptJoinedRawGrant.bind(this)).filter(grant => grant) as Grant[];
+        const sortedGrants = this.sortGrants(grants);
+        return sortedGrants;
+    }
+
+    /**
+     * Fetch grants by SIREN or SIRET.
+     * Grants can only be referenced by SIRET.
+     *
+     * If we got an RNA as identifier, we try to get the associated SIREN.
+     * If we find it, we proceed the operation using it.
+     * If not, we stop and return an empty array.
+     *
+     * @param identifier Rna, Siren or Siret
+     * @returns List of grants (application with paiments)
+     */
+    async getRawGrants(identifier: StructureIdentifiers): Promise<JoinedRawGrant[]> {
+        try {
+            const { identifier: sirenOrSiret, type } = await this.validateAndGetIdentifierInfo(identifier);
+            const method = GrantService.getRawMethodNameByIdType[type];
+            const providers = grantProviders;
+            const rawGrants = [
+                ...(
+                    await Promise.all(
+                        providers.map(p => p[method](sirenOrSiret).then(g => (g || []) as RawGrant[]) || []),
+                    )
+                ).flat(),
+            ];
+            return this.joinGrants(rawGrants);
+        } catch (e) {
+            // IMPROVE: returning empty array does not inform the user that we could not search for grants
+            // it does not mean that the association does not received any grants
+            if (e instanceof RnaOnlyError) return [] as JoinedRawGrant[];
+            else throw e;
+        }
+    }
+
+    async getRawGrantsByAssociation(id: AssociationIdentifiers): Promise<JoinedRawGrant[]> {
         if (isSiret(id)) throw new AssociationIdentifierError();
-        return this.getGrants(id);
+        return this.getRawGrants(id);
     }
 
-    async getGrantsByEstablishment(siret: Siret): Promise<JoinedRawGrant[]> {
+    async getRawGrantsByEstablishment(siret: Siret): Promise<JoinedRawGrant[]> {
         if (!isSiret(siret)) throw new StructureIdentifiersError("SIRET expected");
-        return this.getGrants(siret);
+        return this.getRawGrants(siret);
     }
 
-    private async getRawGrantsByMethod(id: StructureIdentifiers, idType): Promise<RawGrant[]> {
-        const providers = this.getGrantProviders();
-        const methodName = GrantService.getRawMethodNameByIdType[idType];
-        return [
-            ...(
-                await Promise.all(providers.map(p => p[methodName](id).then(g => (g || []) as RawGrant[]) || []))
-            ).flat(),
-        ];
+    // Use to spot grants or applications sharing the same joinKey (EJ or code_poste)
+    // This should not happen and must be investiguated
+    private sendDuplicateMessage(joinKey: string) {
+        Sentry.captureMessage(`Duplicate joinKey found for grants or applications :  ${joinKey}`);
     }
 
-    private getGrantProviders(): GrantProvider[] {
-        return Object.values(providers).filter(
-            p => (p as unknown as GrantProvider).isGrantProvider,
-        ) as unknown as GrantProvider[];
+    private groupRawGrantsByType(rawGrants: AnyRawGrant[]) {
+        return rawGrants.reduce(
+            (acc, curr) => {
+                switch (curr.type) {
+                    case "fullGrant":
+                        acc["fullGrants"].push(curr);
+                        break;
+                    case "application":
+                        acc["applications"].push(curr);
+                        break;
+                    case "payment":
+                        acc["payments"].push(curr);
+                        break;
+                }
+                return acc;
+            },
+            {
+                fullGrants: [] as RawFullGrant[],
+                applications: [] as RawApplication[],
+                payments: [] as RawPayment[],
+            },
+        );
     }
 
-    private joinGrants(rawGrants: RawGrant[]): JoinedRawGrant[] {
-        // TODO maybe think about a more sophisticated system than joinKey to group grants
-        //  (specifically for dauphin/osiris joins with fonjep)
-        const newJoiningGrant = () => ({ payments: [], applications: [], fullGrants: [] } as JoinedRawGrant);
-        const lonelyGrants: JoinedRawGrant[] = [];
+    private joinGrants(rawGrants: AnyRawGrant[]): JoinedRawGrant[] {
         const byKey: Record<string, JoinedRawGrant> = {};
+        //TODO: improve JoinedRawGrant after investiguating duplicates possibilities
+        // i.e accept only { fullGrant: RawFullGrant , payments: RawPayment[] }
+        // and { application: RawApplication, payments: RawPayment[] }
+        const newJoinedRawGrant = () => ({
+            payments: [],
+            applications: [],
+            fullGrants: [],
+        });
+        const addKey = key => (byKey[key] = newJoinedRawGrant());
+        const lonelyGrants: JoinedRawGrant[] = [];
 
-        // organize results
-        for (const rawGrant of rawGrants) {
-            if (!rawGrant.joinKey) {
-                lonelyGrants.push({ [`${rawGrant.type}s`]: [rawGrant] });
-                continue;
-            }
-            if (!(rawGrant.joinKey in byKey)) byKey[rawGrant.joinKey] = newJoiningGrant();
-            byKey[rawGrant.joinKey][`${rawGrant.type}s`]?.push(rawGrant);
-        }
+        const add = prop => (rawGrant: Required<AnyRawGrant>) => {
+            if (!byKey[rawGrant.joinKey]) addKey(rawGrant.joinKey);
+            byKey[rawGrant.joinKey][prop].push(rawGrant);
+        };
+        // TODO: make addApplicationOrSendMessage that will also check if there is already a fullGrant
+        const addOrSendMessage = type => (rawGrant: Required<RawFullGrant> | Required<RawApplication>) => {
+            if (byKey[rawGrant.joinKey]?.[type]) this.sendDuplicateMessage(rawGrant.joinKey);
+            else add(type)(rawGrant);
+        };
+        const addFullGrant = addOrSendMessage("fullGrants");
+        const addApplication = addOrSendMessage("applications");
+        const addPayment = add("payments");
 
-        // reunite joined, full and lonely grants
+        // TODO: do we want to keep transforming lonely grants into JoinedRawGrant format ?
+        // TODO: Do we realy have RawGrant without joinKey ? Is lonelyGrant a real thing ?
+        const addLonely = prop => (rawGrant: AnyRawGrant) =>
+            lonelyGrants.push({ ...newJoinedRawGrant(), [prop]: [rawGrant] });
+        const addLonelyFullGrant = addLonely("fullGrants");
+        const addLonelyApplication = addLonely("applications");
+        const addLonelyPayment = addLonely("payments");
+
+        const joiner = (add, addLonely) => grant => {
+            if (grant.joinKey) add(grant);
+            else addLonely(grant);
+        };
+
+        const grantsByType = this.groupRawGrantsByType(rawGrants);
+
+        // order matters if we want fullGrants to be more accurate than applications in case of duplicates
+        // TODO: investiguate if duplicates is something that can happen
+        grantsByType.fullGrants?.forEach(joiner(addFullGrant, addLonelyFullGrant));
+        grantsByType.applications?.forEach(joiner(addApplication, addLonelyApplication));
+        grantsByType.payments?.forEach(joiner(addPayment, addLonelyPayment));
+
         return [...Object.values(byKey), ...lonelyGrants];
     }
 
-    async getCommonGrants(id: StructureIdentifiers, publishable = false): Promise<GrantDto[]> {
-        const raws = await this.getGrants(id);
+    async getCommonGrants(id: StructureIdentifiers, publishable = false): Promise<CommonGrantDto[]> {
+        const raws = await this.getRawGrants(id);
 
-        const commonGrants = await Promise.all(
-            raws.map(async raw => await commonGrantService.rawToCommon(raw, publishable)),
-        );
-        return commonGrants.filter(adapted => !!adapted) as GrantDto[];
+        return raws
+            .map(raw => commonGrantService.rawToCommon(raw, publishable))
+            .filter(adapted => !!adapted) as CommonGrantDto[];
     }
 }
 

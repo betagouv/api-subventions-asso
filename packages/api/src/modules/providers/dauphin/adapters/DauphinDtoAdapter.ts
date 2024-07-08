@@ -1,11 +1,12 @@
-import { ApplicationDto, ApplicationStatus, DemandeSubvention, ProviderValue, DocumentDto } from "dto";
+import { CommonApplicationDto, ApplicationStatus, DemandeSubvention, ProviderValue, DocumentDto } from "dto";
 import DauphinSubventionDto from "../dto/DauphinSubventionDto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import dauphinService from "../dauphin.service";
 import { capitalizeFirstLetter } from "../../../../shared/helpers/StringHelper";
-import { toStatusFactory } from "../../helper";
+import { toStatusFactory } from "../../providers.adapter";
 import DauphinGisproDbo from "../repositories/dbo/DauphinGisproDbo";
 import DauphinDocumentDto from "../dto/DauphinDocumentDto";
+import { RawApplication } from "../../../grant/@types/rawGrant";
 
 export default class DauphinDtoAdapter {
     private static _statusConversionArray: { label: ApplicationStatus; providerStatusList: string[] }[] = [
@@ -59,6 +60,10 @@ export default class DauphinDtoAdapter {
 
     private static getStatus(dauphinData: DauphinSubventionDto) {
         return toStatusFactory(DauphinDtoAdapter._statusConversionArray)(dauphinData.virtualStatusLabel);
+    }
+
+    static rawToApplication(rawApplication: RawApplication<DauphinGisproDbo>) {
+        return this.toDemandeSubvention(rawApplication.data);
     }
 
     public static toDemandeSubvention(dbo: DauphinGisproDbo): DemandeSubvention {
@@ -139,7 +144,7 @@ export default class DauphinDtoAdapter {
         return resultArray;
     }
 
-    public static toCommon(dbo: DauphinGisproDbo): ApplicationDto {
+    public static toCommon(dbo: DauphinGisproDbo): CommonApplicationDto {
         const dauphinData = dbo.dauphin;
         return {
             dispositif: DauphinDtoAdapter.getDispositif(dauphinData),

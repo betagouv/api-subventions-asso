@@ -4,7 +4,7 @@ import documentsService from "./documents.service";
 
 jest.mock("../providers");
 
-import { DocumentDto, DocumentRequestDto } from "dto";
+import { DocumentRequestDto } from "dto";
 import providers from "../providers";
 import Provider from "../providers/@types/IProvider";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
@@ -31,10 +31,6 @@ describe("Documents Service", () => {
             Promise<(string | null)[]>,
             []
         >;
-
-        afterAll(() => {
-            mockAggregateDocuments.mockClear();
-        });
 
         it("should return list of document", async () => {
             const expected = ["DocumentA", "DocumentB"];
@@ -88,10 +84,6 @@ describe("Documents Service", () => {
             []
         >;
 
-        afterAll(() => {
-            mockAggregateDocuments.mockClear();
-        });
-
         it("should return list of document", async () => {
             const expected = ["DocumentA", "DocumentB"];
 
@@ -139,10 +131,6 @@ describe("Documents Service", () => {
             Promise<(string | null)[]>,
             []
         >;
-
-        afterAll(() => {
-            mockAggregateDocuments.mockClear();
-        });
 
         it("should return list of document", async () => {
             const expected = ["DocumentA", "DocumentB"];
@@ -219,10 +207,6 @@ describe("Documents Service", () => {
             []
         >;
 
-        afterAll(() => {
-            isDocumentProviderMock.mockClear();
-        });
-
         it("Should not return provider", () => {
             const expected = 0;
 
@@ -233,8 +217,6 @@ describe("Documents Service", () => {
             const actual = documentsService.getDocumentProviders();
 
             expect(actual).toHaveLength(expected);
-
-            isDocumentProviderMock.mockClear();
         });
 
         it("Should return providers", () => {
@@ -247,8 +229,6 @@ describe("Documents Service", () => {
             const actual = documentsService.getDocumentProviders();
 
             expect(actual).toHaveLength(expected);
-
-            isDocumentProviderMock.mockClear();
         });
 
         it("Should return part of providers", () => {
@@ -263,8 +243,6 @@ describe("Documents Service", () => {
             // @ts-ignore
             const actual = documentsService.getDocumentProviders();
             expect(actual).toHaveLength(expected);
-
-            isDocumentProviderMock.mockClear();
         });
     });
 
@@ -287,10 +265,6 @@ describe("Documents Service", () => {
             Provider[],
             []
         >;
-
-        afterAll(() => {
-            getDocumentProvidersMock.mockClear();
-        });
 
         it("should throw error", async () => {
             const expected = "You must provide a valid SIREN or RNA or SIRET";
@@ -439,7 +413,6 @@ describe("Documents Service", () => {
         beforeEach(() => {
             // @ts-ignore
             httpGetSpy = jest.spyOn(HTTP, "get").mockResolvedValue({ data: RES });
-            httpGetSpy.mockClear();
         });
 
         it("calls request's GET with proper args ", async () => {

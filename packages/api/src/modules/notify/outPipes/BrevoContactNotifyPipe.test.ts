@@ -80,10 +80,6 @@ describe("BrevoContactNotifyPipe", () => {
     });
 
     describe("userActivated", () => {
-        afterEach(() => {
-            mockUpdateContact.mockClear();
-        });
-
         it("call updateContact()", async () => {
             // @ts-expect-error userCreated is private method
             await BrevoContactNotifyPipe.userActivated({ email: USER_EMAIL });
@@ -95,10 +91,6 @@ describe("BrevoContactNotifyPipe", () => {
     });
 
     describe("userLogged", () => {
-        afterEach(() => {
-            mockUpdateContact.mockClear();
-        });
-
         it("should call updateContact()", async () => {
             const email = "UserEmail";
             const now = new Date();

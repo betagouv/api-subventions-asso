@@ -7,6 +7,10 @@ export class MiscScdlProducersRepository extends MongoRepository<MiscScdlProduce
         miscScdlGrant: "slug",
     };
 
+    public async findAll() {
+        return this.collection.find({}, { projection: { _id: 0 } }).toArray() as Promise<MiscScdlProducerEntity[]>;
+    }
+
     public async findBySlug(slug: string) {
         return this.collection.findOne({ slug });
     }

@@ -23,15 +23,6 @@ describe("SubventiaRepository", () => {
     });
 
     describe("create", () => {
-        beforeEach(() => {
-            collection.insertOne.mockClear();
-            collection.findOne.mockClear();
-        });
-
-        afterEach(() => {
-            getCollectionMock.mockClear();
-        });
-
         it("should send create request to mongo", async () => {
             const entity = {
                 name: "I'm subventia entity",

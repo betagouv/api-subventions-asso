@@ -1,90 +1,67 @@
 import { Siret } from "dto";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
-import { siretToSiren } from "../../shared/helpers/SirenHelper";
-import { capitalizeFirstLetter } from "../../shared/helpers/StringHelper";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
-import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
-import providers from "../providers";
+import { AssociationIdentifiers } from "../../@types";
 import Flux from "../../shared/Flux";
 import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
-import DemandesSubventionsProvider from "./@types/DemandesSubventionsProvider";
+import { demandesSubventionsProviders } from "../providers";
 import { SubventionsFlux } from "./@types/SubventionsFlux";
 
 export class SubventionsService {
-    async getDemandesByAssociation(id: AssociationIdentifiers) {
-        let type = getIdentifierType(id);
+    public providers = demandesSubventionsProviders;
+    public getBySirenMethod = "getDemandeSubventionBySiren";
+    public getBySiretMethod = "getDemandeSubventionBySiret";
+
+    async getDemandesByAssociation(identifier: AssociationIdentifiers) {
+        const type = getIdentifierType(identifier);
         if (!type) throw new AssociationIdentifierError();
-
         if (type === StructureIdentifiersEnum.rna) {
-            const rnaSirenEntities = await rnaSirenService.find(id);
+            const rnaSirenEntities = await rnaSirenService.find(identifier);
             if (rnaSirenEntities && rnaSirenEntities.length) {
-                id = rnaSirenEntities[0].siren;
-                type = StructureIdentifiersEnum.siren;
-            }
-        }
-
-        return this.aggregate(id, type);
-    }
-
-    getDemandesByEtablissement(id: Siret) {
-        const type = getIdentifierType(id);
-        if (type !== StructureIdentifiersEnum.siret) throw new StructureIdentifiersError("SIRET");
-
-        return this.aggregateByType(id, StructureIdentifiersEnum.siret);
-    }
-
-    private aggregate(
-        id: StructureIdentifiers,
-        type: Record<StructureIdentifiersEnum, string>[StructureIdentifiersEnum],
-    ): Flux<SubventionsFlux> {
-        if (type === StructureIdentifiersEnum.siret || type === StructureIdentifiersEnum.siren) {
-            if (type === StructureIdentifiersEnum.siret) id = siretToSiren(id);
-            return this.aggregateByType(id, StructureIdentifiersEnum.siren);
+                return this.getApplicationFetcher(this.getBySirenMethod)(rnaSirenEntities[0].siren);
+            } else return null;
         } else {
-            return this.aggregateByType(id, StructureIdentifiersEnum.rna);
+            if (type === StructureIdentifiersEnum.siret)
+                return this.getApplicationFetcher(this.getBySiretMethod)(identifier);
+            return this.getApplicationFetcher(this.getBySirenMethod)(identifier);
         }
     }
 
-    private aggregateByType(id: StructureIdentifiers, type: StructureIdentifiersEnum): Flux<SubventionsFlux> {
-        const functionName = `getDemandeSubventionBy${capitalizeFirstLetter(type)}` as
-            | "getDemandeSubventionBySiret"
-            | "getDemandeSubventionBySiren"
-            | "getDemandeSubventionByRna";
-        const subventionsFlux = new Flux<SubventionsFlux>();
-        const providers = this.getDemandesSubventionsProviders();
-
-        const defaultMeta = {
-            totalProviders: providers.length,
-        };
-
-        subventionsFlux.push({
-            __meta__: defaultMeta,
-        });
-
-        let countAnswers = 0;
-
-        providers.forEach(p =>
-            p[functionName](id).then(subventions => {
-                countAnswers++;
-
-                subventionsFlux.push({
-                    __meta__: { ...defaultMeta, provider: p.provider.name },
-                    subventions: subventions || [],
-                });
-
-                if (countAnswers === providers.length) subventionsFlux.close();
-            }),
-        );
-
-        return subventionsFlux;
+    getDemandesByEtablissement(siret: Siret) {
+        const type = getIdentifierType(siret);
+        if (type !== StructureIdentifiersEnum.siret)
+            throw new StructureIdentifiersError(StructureIdentifiersEnum.siret);
+        return this.getApplicationFetcher(this.getBySiretMethod)(siret);
     }
 
-    private getDemandesSubventionsProviders() {
-        return Object.values(providers).filter(
-            p => (p as unknown as DemandesSubventionsProvider).isDemandesSubventionsProvider,
-        ) as unknown as DemandesSubventionsProvider[];
+    getApplicationFetcher(getterName) {
+        return identifier => {
+            const subventionsFlux = new Flux<SubventionsFlux>();
+            const defaultMeta = {
+                totalProviders: this.providers.length,
+            };
+
+            subventionsFlux.push({
+                __meta__: defaultMeta,
+            });
+
+            let countAnswers = 0;
+
+            this.providers.forEach(providerService =>
+                providerService[getterName](identifier).then(subventions => {
+                    countAnswers++;
+                    subventionsFlux.push({
+                        __meta__: { ...defaultMeta, provider: providerService.provider.name },
+                        subventions: subventions || [],
+                    });
+
+                    if (countAnswers === this.providers.length) subventionsFlux.close();
+                }),
+            );
+            return subventionsFlux;
+        };
     }
 }
 

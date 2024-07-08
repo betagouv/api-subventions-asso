@@ -2,12 +2,12 @@ import subventionsService from "./subventions.service";
 import * as IdentifierHelper from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import * as providers from "../providers";
+jest.mock("../providers/index");
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
 import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
+jest.mock("../rna-siren/rnaSiren.service");
 
-jest.mock("../providers/index");
-
-const PROVIDERS_DEFAULT = providers.default;
+const DEMANDES_SUBVENTIONS_PROVIDERS = providers.demandesSubventionsProviders;
 
 const getIdentifierTypeMock = jest.spyOn(IdentifierHelper, "getIdentifierType");
 
@@ -17,10 +17,23 @@ describe("SubventionsService", () => {
     afterEach(() => {
         // @ts-expect-error: mock
         // eslint-disable-next-line import/namespace
-        providers.default = PROVIDERS_DEFAULT;
+        providers.demandesSubventionsProviders = DEMANDES_SUBVENTIONS_PROVIDERS;
     });
 
     describe("getDemandesByAssociation()", () => {
+        let mockGetApplicationFetcher;
+        const spy = jest.fn();
+
+        beforeAll(() => {
+            mockGetApplicationFetcher = jest
+                .spyOn(subventionsService, "getApplicationFetcher")
+                .mockReturnValue(fn => spy(fn));
+        });
+
+        afterAll(() => {
+            mockGetApplicationFetcher.mockRestore();
+        });
+
         it("should throw an error if identifier is not valid", async () => {
             getIdentifierTypeMock.mockImplementationOnce(() => null);
             await expect(() => subventionsService.getDemandesByAssociation(IDENTIFIER)).rejects.toThrowError(
@@ -29,34 +42,56 @@ describe("SubventionsService", () => {
         });
         it("should return DemandeSubvention[]", async () => {
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
-            const expected = [{}, {}];
-            const flux = await subventionsService.getDemandesByAssociation(IDENTIFIER);
-            const actual = (await flux.toPromise()).map(fs => fs.subventions || []).flat();
-            expect(actual).toEqual(expected);
+            await subventionsService.getDemandesByAssociation(IDENTIFIER);
+            expect(mockGetApplicationFetcher).toHaveBeenCalledWith(subventionsService.getBySirenMethod);
         });
     });
 
     describe("getDemandesByEtablissement", () => {
-        it("should throw an error if given a SIREN", () => {
-            getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siren);
+        let mockGetApplicationFetcher;
+        const spy = jest.fn();
+
+        beforeAll(() => {
+            mockGetApplicationFetcher = jest
+                .spyOn(subventionsService, "getApplicationFetcher")
+                .mockReturnValue(fn => spy(fn));
+        });
+
+        afterAll(() => {
+            mockGetApplicationFetcher.mockRestore();
+        });
+
+        it.each`
+            returnedType
+            ${StructureIdentifiersEnum.siren}
+            ${StructureIdentifiersEnum.rna}
+        `("should throw an error if identifier type is SIREN or RNA", ({ returnedType }) => {
+            getIdentifierTypeMock.mockImplementationOnce(() => returnedType);
             expect(() => subventionsService.getDemandesByEtablissement(IDENTIFIER)).toThrowError(
                 StructureIdentifiersError,
             );
         });
 
-        it("should throw an error if given a RNA", () => {
-            getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.rna);
-            expect(() => subventionsService.getDemandesByEtablissement(IDENTIFIER)).toThrowError(
-                StructureIdentifiersError,
-            );
-        });
-
-        it("should return DemandeSubvention[]", async () => {
+        it("should call getApplicationFetcher", async () => {
             getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siret);
-            const expected = [{}, {}];
-            const flux = await subventionsService.getDemandesByEtablissement(IDENTIFIER);
-            const actual = (await flux.toPromise()).map(fs => fs.subventions || []).flat();
-            expect(actual).toEqual(expected);
+            await subventionsService.getDemandesByEtablissement(IDENTIFIER);
+            expect(mockGetApplicationFetcher).toHaveBeenCalledWith(subventionsService.getBySiretMethod);
+        });
+
+        it("should fetch application by siret", async () => {
+            getIdentifierTypeMock.mockImplementationOnce(() => StructureIdentifiersEnum.siret);
+            await subventionsService.getDemandesByEtablissement(IDENTIFIER);
+            expect(spy).toHaveBeenCalledWith(IDENTIFIER);
+        });
+    });
+
+    describe("getApplicationFetcher", () => {
+        it("should return method that calls given function", () => {
+            const appFetcher = subventionsService.getApplicationFetcher(subventionsService.getBySirenMethod);
+            appFetcher(IDENTIFIER);
+            expect(providers.demandesSubventionsProviders[0][subventionsService.getBySirenMethod]).toHaveBeenCalledWith(
+                IDENTIFIER,
+            );
         });
     });
 });

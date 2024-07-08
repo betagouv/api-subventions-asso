@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`/etablissement /siret/grants should return grants 1`] = `
+Object {
+  "subventions": Array [],
+}
+`;

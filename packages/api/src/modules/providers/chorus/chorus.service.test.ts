@@ -16,20 +16,21 @@ const mockedSirenHelper = jest.mocked(SirenHelper);
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 jest.mock("../../rna-siren/rnaSiren.service");
 const mockedRnaSirenService = jest.mocked(rnaSirenService);
-import { ENTITIES } from "./__fixtures__/ChorusFixtures";
+import { ENTITIES, PAYMENTS } from "./__fixtures__/ChorusFixtures";
 import CacheData from "../../../shared/Cache";
 import { WithId } from "mongodb";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
+import dataBretagneService from "../dataBretagne/dataBretagne.service";
+import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
 
 describe("chorusService", () => {
-    let toVersementArrayMock: jest.SpyInstance;
-
     beforeAll(() => {
-        // @ts-expect-error: toPaymentArray is private
-        toVersementArrayMock = jest.spyOn(chorusService, "toPaymentArray");
-
-        toVersementArrayMock.mockImplementation((data) => data);
-    })
+        // 101 and 102 used as chorus program in tests
+        dataBretagneService.programsByCode = {
+            [PROGRAMS[0].code_programme]: PROGRAMS[0],
+            [PROGRAMS[2].code_programme]: PROGRAMS[2],
+        };
+    });
 
     describe("insertMany", () => {
         it("should call repository with entities", async () => {
@@ -37,72 +38,127 @@ describe("chorusService", () => {
         });
     });
 
-    describe("getPaymentsBySiret", () => {
-        beforeAll(() => {
-            mockedChorusLineRepository.findBySiret.mockResolvedValue([
-                ENTITIES[0],
-                ENTITIES[0],
-            ] as unknown as WithId<ChorusLineEntity>[]);
+    describe("rawToPayment", () => {
+        it("should call ChorusAdapter", () => {
+            // @ts-expect-error: parameter type
+            const rawGrant = { data: ENTITIES[0] } as RawGrant;
+            chorusService.rawToPayment(rawGrant);
+            expect(ChorusAdapter.rawToPayment).toHaveBeenCalledWith(rawGrant, PROGRAMS[0]);
         });
 
-        afterEach(() => mockedChorusLineRepository.findBySiret.mockClear());
-
-        afterAll(() => mockedChorusLineRepository.findBySiret.mockReset());
-
-        const SIRET = ENTITIES[0].indexedInformations.siret;
-        it("should call chorusLineRepository.findBySiret()", async () => {
-            await chorusService.getPaymentsBySiret(SIRET);
-            expect(mockedChorusLineRepository.findBySiret).toHaveBeenCalledWith(SIRET);
-        });
-        it("should call toPaymentArray for each document", async () => {
-            await chorusService.getPaymentsBySiret(SIRET);
-            expect(toVersementArrayMock).toHaveBeenCalledTimes(1);
+        it("should return ChorusPayment", () => {
+            // @ts-expect-error: parameter type
+            const rawGrant = { data: ENTITIES[0] } as RawGrant;
+            jest.mocked(ChorusAdapter.rawToPayment).mockReturnValueOnce(PAYMENTS[0]);
+            const expected = PAYMENTS[0];
+            const actual = chorusService.rawToPayment(rawGrant);
+            expect(actual).toEqual(expected);
         });
     });
 
-    describe("getPaymentsBySiren", () => {
+    describe("Get payments", () => {
+        let toVersementArrayMock: jest.SpyInstance;
         beforeAll(() => {
-            mockedChorusLineRepository.findBySiren.mockResolvedValue([
-                ENTITIES[0],
-                ENTITIES[0],
-            ] as unknown as WithId<ChorusLineEntity>[]);
+            // @ts-expect-error: toPaymentArray is private
+            toVersementArrayMock = jest.spyOn(chorusService, "toPaymentArray");
+
+            toVersementArrayMock.mockImplementation(data => data);
         });
 
-        afterEach(() => mockedChorusLineRepository.findOneBySiren.mockClear());
-
-        afterAll(() => mockedChorusLineRepository.findBySiren.mockReset());
-
-        const SIREN = ENTITIES[0].indexedInformations.siret.substring(0, 9);
-        it("should call chorusLineRepository.findBySiren()", async () => {
-            await chorusService.getPaymentsBySiren(SIREN);
-            expect(mockedChorusLineRepository.findBySiren).toHaveBeenCalledWith(SIREN);
+        afterAll(() => {
+            toVersementArrayMock.mockRestore();
         });
-        it("should call toPaymentArray for each document", async () => {
-            await chorusService.getPaymentsBySiren(SIREN);
-            expect(toVersementArrayMock).toHaveBeenCalledTimes(1);
+
+        describe("getPaymentsBySiret", () => {
+            beforeAll(() => {
+                mockedChorusLineRepository.findBySiret.mockResolvedValue([
+                    ENTITIES[0],
+                    ENTITIES[0],
+                ] as unknown as WithId<ChorusLineEntity>[]);
+            });
+
+            afterAll(() => mockedChorusLineRepository.findBySiret.mockReset());
+
+            const SIRET = ENTITIES[0].indexedInformations.siret;
+            it("should call chorusLineRepository.findBySiret()", async () => {
+                await chorusService.getPaymentsBySiret(SIRET);
+                expect(mockedChorusLineRepository.findBySiret).toHaveBeenCalledWith(SIRET);
+            });
+
+            it("should call toPaymentArray for each document", async () => {
+                await chorusService.getPaymentsBySiret(SIRET);
+                expect(toVersementArrayMock).toHaveBeenCalledTimes(1);
+            });
+        });
+
+        describe("getPaymentsBySiren", () => {
+            beforeAll(() => {
+                mockedChorusLineRepository.findBySiren.mockResolvedValue([
+                    ENTITIES[0],
+                    ENTITIES[0],
+                ] as unknown as WithId<ChorusLineEntity>[]);
+            });
+
+            afterAll(() => mockedChorusLineRepository.findBySiren.mockReset());
+
+            const SIREN = ENTITIES[0].indexedInformations.siret.substring(0, 9);
+            it("should call chorusLineRepository.findBySiren()", async () => {
+                await chorusService.getPaymentsBySiren(SIREN);
+                expect(mockedChorusLineRepository.findBySiren).toHaveBeenCalledWith(SIREN);
+            });
+            it("should call toPaymentArray for each document", async () => {
+                await chorusService.getPaymentsBySiren(SIREN);
+                expect(toVersementArrayMock).toHaveBeenCalledTimes(1);
+            });
+        });
+
+        describe("getPaymentsByKey", () => {
+            beforeAll(() => {
+                mockedChorusLineRepository.findByEJ.mockResolvedValue([
+                    ENTITIES[0],
+                    ENTITIES[0],
+                ] as unknown as WithId<ChorusLineEntity>[]);
+            });
+
+            afterAll(() => mockedChorusLineRepository.findByEJ.mockReset());
+
+            const EJ = ENTITIES[0].indexedInformations.ej;
+            it("should call chorusLineRepository.findByEJ()", async () => {
+                await chorusService.getPaymentsByKey(EJ);
+                expect(mockedChorusLineRepository.findByEJ).toHaveBeenCalledWith(EJ);
+            });
+            it("should call toPaymentArray for each document", async () => {
+                await chorusService.getPaymentsByKey(EJ);
+                expect(toVersementArrayMock).toHaveBeenCalledTimes(1);
+            });
         });
     });
 
-    describe("getPaymentsByKey", () => {
+    describe("getProgramCode", () => {
+        const expected = 101;
+        const actual = chorusService.getProgramCode(ENTITIES[0]);
+        expect(actual).toEqual(expected);
+    });
+
+    describe("toPaymentArray", () => {
+        let mockGetProgramCode: jest.SpyInstance;
+
         beforeAll(() => {
-            mockedChorusLineRepository.findByEJ.mockResolvedValue([
-                ENTITIES[0],
-                ENTITIES[0],
-            ] as unknown as WithId<ChorusLineEntity>[]);
+            mockGetProgramCode = jest
+                .spyOn(chorusService, "getProgramCode")
+                .mockReturnValue(PROGRAMS[0].code_programme);
         });
 
-        afterEach(() => mockedChorusLineRepository.findByEJ.mockClear());
-
-        afterAll(() => mockedChorusLineRepository.findByEJ.mockReset());
-
-        const EJ = ENTITIES[0].indexedInformations.ej;
-        it("should call chorusLineRepository.findByEJ()", async () => {
-            await chorusService.getPaymentsByKey(EJ);
-            expect(mockedChorusLineRepository.findByEJ).toHaveBeenCalledWith(EJ);
+        afterAll(() => {
+            mockGetProgramCode.mockRestore();
         });
-        it("should call toPaymentArray for each document", async () => {
-            await chorusService.getPaymentsByKey(EJ);
-            expect(toVersementArrayMock).toHaveBeenCalledTimes(1);
+
+        it("should call toPayment for each entity", () => {
+            // @ts-expect-error: test private method
+            chorusService.toPaymentArray(ENTITIES);
+            ENTITIES.forEach((entity, index) => {
+                expect(ChorusAdapter.toPayment).toHaveBeenNthCalledWith(index + 1, entity, PROGRAMS[0]);
+            });
         });
     });
 

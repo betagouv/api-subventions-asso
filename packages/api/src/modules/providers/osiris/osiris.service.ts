@@ -12,8 +12,8 @@ import {
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import ProviderRequestInterface from "../../search/@types/ProviderRequestInterface";
-import { RawGrant } from "../../grant/@types/rawGrant";
-import GrantProvider from "../../grant/@types/GrantProvider";
+import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
+import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import ProviderCore from "../ProviderCore";
 import rnaSirenSerivce from "../../rna-siren/rnaSiren.service";
 import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
@@ -32,7 +32,11 @@ export const VALID_REQUEST_ERROR_CODE = {
 
 export class OsirisService
     extends ProviderCore
-    implements ProviderRequestInterface, AssociationsProvider, EtablissementProvider, GrantProvider
+    implements
+        ProviderRequestInterface,
+        AssociationsProvider,
+        EtablissementProvider,
+        DemandesSubventionsProvider<OsirisRequestEntity>
 {
     constructor() {
         super({
@@ -319,6 +323,10 @@ export class OsirisService
 
     isDemandesSubventionsProvider = true;
 
+    rawToApplication(rawApplication: RawApplication<OsirisRequestEntity>) {
+        return OsirisRequestAdapter.rawToApplication(rawApplication);
+    }
+
     async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
         const requests = await this.findBySiret(siret);
 
@@ -333,11 +341,6 @@ export class OsirisService
         if (requests.length === 0) return null;
 
         return requests.map(r => OsirisRequestAdapter.toDemandeSubvention(r));
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async getDemandeSubventionByRna(rna: string): Promise<DemandeSubvention[] | null> {
-        return null;
     }
 
     /**
@@ -356,6 +359,9 @@ export class OsirisService
             joinKey: grant?.providerInformations?.ej,
         }));
     }
+
+    // TODO: add toRawApplication in adapter #2457
+    // https://github.com/betagouv/api-subventions-asso/issues/2457
     async getRawGrantsBySiren(siren: string): Promise<RawGrant[] | null> {
         return (await this.findBySiren(siren)).map(grant => ({
             provider: this.provider.id,
@@ -364,6 +370,7 @@ export class OsirisService
             joinKey: grant?.providerInformations?.ej,
         }));
     }
+
     getRawGrantsByRna(): Promise<RawGrant[] | null> {
         return Promise.resolve(null);
     }

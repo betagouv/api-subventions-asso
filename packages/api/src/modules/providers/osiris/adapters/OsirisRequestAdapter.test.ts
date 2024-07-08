@@ -4,7 +4,7 @@ const mockToStatus = jest.fn(() => mockLabel);
 import OsirisRequestAdapter from "./OsirisRequestAdapter";
 import OsirisEntity from "../../../../../tests/modules/providers/osiris/__fixtures__/entity";
 
-jest.mock("../../helper", () => ({
+jest.mock("../../providers.adapter", () => ({
     toStatusFactory: () => mockToStatus,
     __esModule: true, // this property makes it work
 }));
@@ -42,6 +42,34 @@ describe("OsirisRequestAdapter", () => {
             });
             const actual = res?.statut_label?.value;
             expect(actual).toBe(mockLabel);
+        });
+    });
+
+    describe("rawToApplication", () => {
+        // @ts-expect-error: parameter type
+        const RAW_APPLICATION: RawApplication = { data: { foo: "bar" } };
+        // @ts-expect-error: parameter type
+        const APPLICATION: DemandeSubvention = { foo: "bar" };
+        let mockToDemandeSubvention: jest.SpyInstance;
+
+        beforeAll(() => {
+            mockToDemandeSubvention = jest.spyOn(OsirisRequestAdapter, "toDemandeSubvention");
+            mockToDemandeSubvention.mockReturnValue(APPLICATION);
+        });
+
+        afterAll(() => {
+            mockToDemandeSubvention.mockRestore();
+        });
+
+        it("should call toDemandeSubvention", () => {
+            OsirisRequestAdapter.rawToApplication(RAW_APPLICATION);
+            expect(mockToDemandeSubvention).toHaveBeenCalledWith(APPLICATION);
+        });
+
+        it("should return DemandeSubvention", () => {
+            const expected = APPLICATION;
+            const actual = OsirisRequestAdapter.rawToApplication(RAW_APPLICATION);
+            expect(actual).toEqual(expected);
         });
     });
 

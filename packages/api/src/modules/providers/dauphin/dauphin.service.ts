@@ -1,6 +1,6 @@
 import { IncomingMessage } from "http";
 import qs from "qs";
-import { ApplicationDto, DemandeSubvention, Rna, Siren, Siret, DocumentDto } from "dto";
+import { CommonApplicationDto, DemandeSubvention, Rna, Siren, Siret, DocumentDto } from "dto";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DAUPHIN_PASSWORD, DAUPHIN_USERNAME } from "../../../configurations/apis.conf";
@@ -10,9 +10,8 @@ import Gispro from "../gispro/@types/Gispro";
 import { formatIntToTwoDigits } from "../../../shared/helpers/StringHelper";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
-import GrantProvider from "../../grant/@types/GrantProvider";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";
-import { RawGrant } from "../../grant/@types/rawGrant";
+import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import ProviderCore from "../ProviderCore";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
@@ -22,7 +21,7 @@ import DauphinGisproDbo from "./repositories/dbo/DauphinGisproDbo";
 
 export class DauphinService
     extends ProviderCore
-    implements DemandesSubventionsProvider, DocumentProvider, GrantProvider
+    implements DemandesSubventionsProvider<DauphinGisproDbo>, DocumentProvider
 {
     constructor() {
         super({
@@ -44,7 +43,9 @@ export class DauphinService
     isDocumentProvider = false; // only while we no longer have access.
     // when we do again, be careful to skip "liste des dirigeants" because of political insecurities
 
-    // Applications
+    rawToApplication(rawApplication: RawApplication<DauphinGisproDbo>) {
+        return DauphinDtoAdapter.rawToApplication(rawApplication);
+    }
 
     async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
         const applications = await dauphinGisproRepository.findBySiret(siret);
@@ -56,13 +57,9 @@ export class DauphinService
         return applications.map(dto => DauphinDtoAdapter.toDemandeSubvention(dto));
     }
 
-    getDemandeSubventionByRna(): Promise<DemandeSubvention[] | null> {
-        return Promise.resolve(null);
-    }
-
     /**
      * |-------------------------|
-     * |   Raw Grant Part        |
+     * |   Grant Part            |
      * |-------------------------|
      */
 
@@ -89,7 +86,7 @@ export class DauphinService
         return Promise.resolve(null);
     }
 
-    rawToCommon(rawGrant: RawGrant): ApplicationDto {
+    rawToCommon(rawGrant: RawGrant): CommonApplicationDto {
         return DauphinDtoAdapter.toCommon(rawGrant.data as DauphinGisproDbo);
     }
 

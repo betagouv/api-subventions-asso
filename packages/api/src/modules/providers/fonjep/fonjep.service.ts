@@ -1,11 +1,11 @@
-import { Siret, Siren, DemandeSubvention, Etablissement, FonjepPayment, Rna } from "dto";
+import { Siret, Siren, DemandeSubvention, Etablissement, Rna } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { isAssociationName, areDates, areNumbersValid, isSiret, areStringsValid } from "../../../shared/Validators";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import PaymentProvider from "../../payments/@types/PaymentProvider";
-import GrantProvider from "../../grant/@types/GrantProvider";
-import { RawGrant } from "../../grant/@types/rawGrant";
+import { FullGrantProvider } from "../../grant/@types/FullGrantProvider";
+import { RawApplication, RawFullGrant, RawGrant, RawPayment } from "../../grant/@types/rawGrant";
 import ProviderCore from "../ProviderCore";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
@@ -45,7 +45,11 @@ export type CreateFonjepResponse = FonjepRejectedRequest | true;
 
 export class FonjepService
     extends ProviderCore
-    implements DemandesSubventionsProvider, EtablissementProvider, PaymentProvider, GrantProvider
+    implements
+        DemandesSubventionsProvider<FonjepSubventionEntity>,
+        EtablissementProvider,
+        PaymentProvider<FonjepPaymentEntity>,
+        FullGrantProvider<{ application: FonjepSubventionEntity; payments: FonjepPaymentEntity[] }>
 {
     constructor() {
         super({
@@ -55,6 +59,25 @@ export class FonjepService
                 "L'extranet de gestion du Fonjep permet aux services instructeurs d'indiquer les décisions d'attribution des subventions Fonjep et aux associations bénéficiaires de transmettre les informations nécessaires à la mise en paiment des subventions par le Fonjep, il ne gère pas les demandes de subvention qui ne sont pas dématérialisées à ce jour.",
             id: "fonjep",
         });
+    }
+
+    rawToGrant(rawFullGrant: RawFullGrant<{ application: FonjepSubventionEntity; payments: FonjepPaymentEntity[] }>) {
+        // TODO: check if payments on same fullGrant can have different program
+        const programs = rawFullGrant.data.payments.map(
+            payment => dataBretagneService.programsByCode[this.getProgramCode(payment)],
+        );
+        return FonjepEntityAdapter.rawToGrant(rawFullGrant, programs);
+    }
+
+    // TODO: this might never be used because of rawToGrant
+    rawToApplication(rawApplication: RawApplication<FonjepSubventionEntity>) {
+        return FonjepEntityAdapter.rawToApplication(rawApplication);
+    }
+
+    // TODO: this might be never use because of rawToGrant
+    rawToPayment(rawGrant: RawPayment<FonjepPaymentEntity>) {
+        const program = dataBretagneService.programsByCode[this.getProgramCode(rawGrant.data)];
+        return FonjepEntityAdapter.rawToPayment(rawGrant, program);
     }
 
     async createSubventionEntity(entity: FonjepSubventionEntity): Promise<CreateFonjepResponse> {
@@ -168,11 +191,6 @@ export class FonjepService
         return entities.map(e => FonjepEntityAdapter.toDemandeSubvention(e));
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async getDemandeSubventionByRna(rna: string): Promise<DemandeSubvention[] | null> {
-        return null;
-    }
-
     /**
      * |----------------------|
      * |  Etablissement Part  |
@@ -205,11 +223,16 @@ export class FonjepService
 
     isPaymentProvider = true;
 
-    async toPaymentArray(documents: FonjepPaymentEntity[]): Promise<FonjepPayment[]> {
-        const programs = await dataBretagneService.findProgramsRecord();
-        return documents.map(document =>
-            FonjepEntityAdapter.toPayment(document, programs[document.indexedInformations.bop]),
-        );
+    // TODO: Handle edge cases
+    public getProgramCode(entity: FonjepPaymentEntity) {
+        return entity.indexedInformations.bop;
+    }
+
+    toPaymentArray(documents: FonjepPaymentEntity[]) {
+        return documents.map(document => {
+            const program = dataBretagneService.programsByCode[this.getProgramCode(document)];
+            return FonjepEntityAdapter.toPayment(document, program);
+        });
     }
 
     async getPaymentsByKey(codePoste: string) {
@@ -226,22 +249,25 @@ export class FonjepService
 
     /**
      * |----------------------------|
-     * |  Grant Part                |
+     * |    Grant Part              |
      * |----------------------------|
      */
 
     isGrantProvider = true;
+    isFullGrantProvider = true;
 
     getRawGrantsByRna(_rna: Rna): Promise<RawGrant[] | null> {
         return Promise.resolve(null);
     }
 
-    async getRawGrantsBySiren(siren: Siren): Promise<RawGrant[] | null> {
+    async getRawGrantsBySiren(
+        siren: Siren,
+    ): Promise<RawFullGrant<{ application: FonjepSubventionEntity; payments: FonjepPaymentEntity[] }>[] | null> {
         return (await fonjepJoiner.getFullFonjepGrantsBySiren(siren)).map(grant => ({
             provider: this.provider.id,
             type: "fullGrant",
             data: grant,
-            joinKey: `${grant.indexedInformations.code_poste} - ${grant.indexedInformations.annee_demande}`,
+            joinKey: `${grant.application.indexedInformations.code_poste} - ${grant.application.indexedInformations.annee_demande}`,
         }));
     }
 
@@ -250,7 +276,7 @@ export class FonjepService
             provider: this.provider.id,
             type: "fullGrant",
             data: grant,
-            joinKey: `${grant.indexedInformations.code_poste} - ${grant.indexedInformations.annee_demande}`,
+            joinKey: `${grant.application.indexedInformations.code_poste} - ${grant.application.indexedInformations.annee_demande}`,
         }));
     }
 

@@ -1,10 +1,11 @@
-import { DemandeSubvention, Rna, Siren, Siret } from "dto";
+import lodash from "lodash";
+import { DemandeSubvention, Siren, Siret } from "dto";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DEMARCHES_SIMPLIFIEES_TOKEN } from "../../../configurations/apis.conf";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { DefaultObject } from "../../../@types";
-import { RawGrant } from "../../grant/@types/rawGrant";
+import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import { InternalServerError } from "../../../shared/errors/httpErrors";
 import ProviderCore from "../ProviderCore";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
@@ -14,9 +15,13 @@ import demarchesSimplifieesDataRepository from "./repositories/demarchesSimplifi
 import demarchesSimplifieesMapperRepository from "./repositories/demarchesSimplifieesMapper.repository";
 import DemarchesSimplifieesMapperEntity from "./entities/DemarchesSimplifieesMapperEntity";
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
+import { DemarchesSimplifieesRawData } from "./@types/DemarchesSimplifieesRawGrant";
 import DemarchesSimplifieesDataEntity from "./entities/DemarchesSimplifieesDataEntity";
 
-export class DemarchesSimplifieesService extends ProviderCore implements DemandesSubventionsProvider {
+export class DemarchesSimplifieesService
+    extends ProviderCore
+    implements DemandesSubventionsProvider<DemarchesSimplifieesRawData>
+{
     isDemandesSubventionsProvider = true;
 
     constructor() {
@@ -28,31 +33,39 @@ export class DemarchesSimplifieesService extends ProviderCore implements Demande
         });
     }
 
-    getDemandeSubventionByRna(_rna: Rna): Promise<DemandeSubvention[] | null> {
-        return Promise.resolve(null);
-    }
-
     private async getSchemasByIds() {
         const schemas = await demarchesSimplifieesMapperRepository.findAll();
 
         return schemas.reduce((acc, schema) => {
             acc[schema.demarcheId] = schema;
             return acc;
-        }, {});
+        }, {} as Record<string, DemarchesSimplifieesMapperEntity>);
+    }
+
+    private isDraft(entity: DemarchesSimplifieesDataEntity) {
+        return entity && entity?.demande?.state === "en_construction";
+    }
+
+    private async filterAndAdaptEntities<T>(
+        entities: DemarchesSimplifieesDataEntity[],
+        adapter: (entity: DemarchesSimplifieesDataEntity, mapper: DemarchesSimplifieesMapperEntity) => T,
+    ) {
+        // TODO: I think we use schema and mapper to talk about the same thing here and we choose only one term
+        const schemasByIds = await this.getSchemasByIds();
+        const reduceToValidEntities = (acc, entity) => {
+            const schema = schemasByIds[entity.demarcheId];
+            if (!schema || this.isDraft(entity)) return acc;
+            acc.push(adapter(entity, schema));
+            return acc;
+        };
+        return entities.reduce(reduceToValidEntities, []) as T[];
     }
 
     private async entitiesToSubventions(entities: DemarchesSimplifieesDataEntity[]) {
-        const schemasByIds = await this.getSchemasByIds();
-
-        return entities
-            .map((demande: DemarchesSimplifieesDataEntity) => {
-                const schema = schemasByIds[demande.demarcheId];
-
-                if (!schema) return null;
-
-                return DemarchesSimplifieesEntityAdapter.toSubvention(demande, schema);
-            })
-            .filter(sub => sub && sub?.status?.value !== "en_construction") as DemandeSubvention[]; //remove drafts
+        return await this.filterAndAdaptEntities<DemandeSubvention>(
+            entities,
+            DemarchesSimplifieesEntityAdapter.toSubvention,
+        );
     }
 
     async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
@@ -145,37 +158,49 @@ export class DemarchesSimplifieesService extends ProviderCore implements Demande
 
     /**
      * |-------------------------|
-     * |   Raw Grant Part        |
+     * |       Grant Part        |
      * |-------------------------|
      */
 
     isGrantProvider = true;
 
-    private async toRawGrants(providerGrants: DemarchesSimplifieesDataEntity[]): Promise<RawGrant[]> {
-        const schemasById = await this.getSchemasByIds();
-        const rawGrants = providerGrants.map(grant => {
-            if (!schemasById?.[grant.demarcheId]) return null;
-            return {
-                provider: this.provider.id,
-                type: "application",
-                data: { grant, schema: schemasById[grant.demarcheId] },
-            };
-        });
-        return rawGrants.filter(g => !!g) as RawGrant[];
+    /** GRANT */
+
+    public getJoinKey(data: DemarchesSimplifieesRawData) {
+        // TODO: rename schema to schemas and sub schema to default ?
+        const schema = data.schema.schema;
+        // EJ and versementKey are the same.
+        // versementKey abstracts the EJ key that is not always the name of the joiner to match with payments
+        // i.e: in Fonjep we use code_poste instead of EJ
+        const joinKeyFieldName = schema.find(field => field.to === "ej" || field.to === "versementKey")?.from;
+
+        let joinKey: string | undefined;
+        if (joinKeyFieldName) joinKey = lodash.get(data.entity, joinKeyFieldName);
+        return joinKey;
     }
 
-    async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
+    /** RAW GRANT */
+
+    private async toRawGrants(providerGrants: DemarchesSimplifieesDataEntity[]) {
+        // améliorer l'adapter pour voir l'ej en joinKey
+        return await this.filterAndAdaptEntities<RawGrant>(
+            providerGrants,
+            DemarchesSimplifieesEntityAdapter.toRawGrant,
+        );
+    }
+
+    async getRawGrantsBySiret(siret: string): Promise<RawGrant[]> {
         const grants = await demarchesSimplifieesDataRepository.findBySiret(siret);
         return await this.toRawGrants(grants);
     }
 
-    async getRawGrantsBySiren(siren: string): Promise<RawGrant[] | null> {
+    async getRawGrantsBySiren(siren: string): Promise<RawGrant[]> {
         const grants = await demarchesSimplifieesDataRepository.findBySiren(siren);
         return await this.toRawGrants(grants);
     }
 
-    getRawGrantsByRna(): Promise<RawGrant[] | null> {
-        return Promise.resolve(null);
+    rawToApplication(rawApplication: RawApplication<DemarchesSimplifieesRawData>) {
+        return DemarchesSimplifieesEntityAdapter.rawToApplication(rawApplication);
     }
 
     rawToCommon(raw: RawGrant) {

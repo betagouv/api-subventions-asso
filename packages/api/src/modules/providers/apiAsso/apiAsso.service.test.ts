@@ -50,11 +50,6 @@ describe("ApiAssoService", () => {
         const cacheHasMock = jest.spyOn(cache, "has");
         const cacheGetMock = jest.spyOn(cache, "get");
 
-        afterAll(() => {
-            cacheHasMock.mockClear();
-            cacheGetMock.mockClear();
-        });
-
         it("should return cache data", async () => {
             const expected = "FAKEDATA";
 
