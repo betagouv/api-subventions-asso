@@ -145,7 +145,7 @@ export class GrantService {
         });
     }
 
-    // appeler adapter pour chaque joine.application joine.payment et joine.fullGrant
+    // appeler adapter pour chaque join.application join.payment et join.fullGrant
     // implementer une classe GrantAdapter pour chaque adapter de demande et de paiment
     async getGrants(identifier: StructureIdentifiers): Promise<Grant[]> {
         const joinedRawGrants = await this.getRawGrants(identifier);
