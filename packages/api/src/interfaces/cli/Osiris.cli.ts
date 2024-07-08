@@ -10,7 +10,7 @@ import OsirisRequestEntity from "../../modules/providers/osiris/entities/OsirisR
 import { COLORS } from "../../shared/LogOptions";
 import * as CliHelper from "../../shared/helpers/CliHelper";
 import OsirisEvaluationEntity from "../../modules/providers/osiris/entities/OsirisEvaluationEntity";
-import { findFiles } from "../../shared/helpers/ParserHelper";
+import { GenericParser } from "../../shared/GenericParser";
 import rnaSirenService from "../../modules/rna-siren/rnaSiren.service";
 
 @StaticImplements<CliStaticInterface>()
@@ -83,7 +83,7 @@ export default class OsirisCli {
             throw new Error(`File not found ${file}`);
         }
 
-        const files = findFiles(file);
+        const files = GenericParser.findFiles(file);
         const logs: unknown[] = [];
 
         console.info(`${files.length} files in the parse queue`);

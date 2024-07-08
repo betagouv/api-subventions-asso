@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { ParserInfo } from "../../../../@types";
-import { ExcelDateToJSDate } from "../../../../shared/helpers/ParserHelper";
 import IChorusIndexedInformations from "../@types/IChorusIndexedInformations";
+import { GenericParser } from "../../../../shared/GenericParser";
 
 export default class ChorusLineEntity {
     public provider = "Chorus";
@@ -39,7 +39,7 @@ export default class ChorusLineEntity {
                     return new Date(Date.UTC(year, month - 1, day));
                 }
 
-                return ExcelDateToJSDate(parseInt(value, 10));
+                return GenericParser.ExcelDateToJSDate(parseInt(value, 10));
             },
         },
     };

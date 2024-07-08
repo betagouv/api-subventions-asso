@@ -1,7 +1,6 @@
 import { Siret } from "dto";
 import { DefaultObject, NestedDefaultObject } from "../../../@types";
-import * as ParserHelper from "../../../shared/helpers/ParserHelper";
-import { GenericParser } from "../../../shared/helpers/ParserHelper";
+import { GenericParser } from "../../../shared/GenericParser";
 import IFonjepIndexedInformations from "./@types/IFonjepIndexedInformations";
 import IFonjepPaymentIndexedInformations from "./@types/IFonjepPaymentIndexedInformations";
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
@@ -16,7 +15,7 @@ export default class FonjepParser {
 
             const rows = page.slice(1, page.length) as (string | number)[][]; // Delete Headers
 
-            return rows.map(data => ParserHelper.linkHeaderToData(trimHeaders, data) as DefaultObject<string>);
+            return rows.map(data => GenericParser.linkHeaderToData(trimHeaders, data) as DefaultObject<string>);
         });
     }
 
@@ -59,7 +58,7 @@ export default class FonjepParser {
     }
 
     public static parse(fileContent: Buffer, exportDate: Date) {
-        const pages = ParserHelper.xlsParse(fileContent);
+        const pages = GenericParser.xlsParse(fileContent);
         const currentDate = exportDate;
 
         const [tiers, postes, payments, typePoste, dispositifs] = this.mapHeaderToData(pages);
@@ -71,7 +70,7 @@ export default class FonjepParser {
         const createPayments = (payments: FonjepPaymentEntity[], payment) => {
             if (!payment["MontantPaye"] || !payment["DateVersement"]) return payments;
 
-            const periodDebut = ParserHelper.ExcelDateToJSDate(Number(payment["PeriodeDebut"]));
+            const periodDebut = GenericParser.ExcelDateToJSDate(Number(payment["PeriodeDebut"]));
 
             // recupère le poste
             const postes = findPostes(payment["PosteCode"]);
@@ -106,7 +105,7 @@ export default class FonjepParser {
             const dispositif = findDispositif(poste["DispositifId"]);
             const uniqueSubventionId = `${association["SiretOuRidet"]}-${
                 poste["Code"]
-            }-${ParserHelper.ExcelDateToJSDate(Number(poste["DateFinTriennalite"])).toISOString()}`;
+            }-${GenericParser.ExcelDateToJSDate(Number(poste["DateFinTriennalite"])).toISOString()}`;
 
             if (!currentDate || !financeur || !typePoste || !association || !dispositif) return subventions;
 

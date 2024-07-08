@@ -1,11 +1,11 @@
 import SubventiaAdapter from "./subventia.adapter";
-import * as ParseHelper from "../../../../shared/helpers/ParserHelper";
 import SubventiaDto from "../@types/subventia.dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { ApplicationStatus, ProviderValue } from "dto";
 import _ from "lodash";
 import { ObjectId } from "mongodb";
-import { GenericParser } from "../../../../shared/helpers/ParserHelper";
+
+import { GenericParser } from "../../../../shared/GenericParser";
 
 describe(SubventiaAdapter, () => {
     const application = { "Montant Ttc": 600, "Référence administrative - Demande": "ref1" } as SubventiaDto;

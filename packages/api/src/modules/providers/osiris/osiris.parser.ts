@@ -1,7 +1,6 @@
-import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 import { DefaultObject } from "../../../@types";
 import ILegalInformations from "../../search/@types/ILegalInformations";
-import { GenericParser } from "../../../shared/helpers/ParserHelper";
+import { GenericParser } from "../../../shared/GenericParser";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 import IOsirisRequestInformations from "./@types/IOsirisRequestInformations";
@@ -11,7 +10,7 @@ import IOsirisEvaluationsInformations from "./@types/IOsirisEvaluationsInformati
 
 export default class OsirisParser {
     public static parseRequests(content: Buffer, year: number): OsirisRequestEntity[] {
-        const data = ParseHelper.xlsParse(content)[0];
+        const data = GenericParser.xlsParse(content)[0];
         const headers = data.slice(0, 2) as string[][];
         const rows = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
 
@@ -40,7 +39,7 @@ export default class OsirisParser {
     }
 
     public static parseActions(content: Buffer, year: number) {
-        const data = ParseHelper.xlsParse(content)[0];
+        const data = GenericParser.xlsParse(content)[0];
 
         const headers = data.slice(0, 2) as string[][];
 
@@ -66,7 +65,7 @@ export default class OsirisParser {
     }
 
     public static parseEvaluations(content: Buffer, year: number) {
-        const data = ParseHelper.xlsParse(content)[0];
+        const data = GenericParser.xlsParse(content)[0];
 
         const headers = data.slice(0, 2) as string[][];
 

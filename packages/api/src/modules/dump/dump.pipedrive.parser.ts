@@ -1,12 +1,11 @@
 import { AdminTerritorialLevel, AgentJobTypeEnum, AgentTypeEnum } from "dto";
-import * as ParserHelper from "../../shared/helpers/ParserHelper";
-import { GenericParser } from "../../shared/helpers/ParserHelper";
+import { GenericParser } from "../../shared/GenericParser";
 import { DefaultObject } from "../../@types";
 
 export default class DumpPipedriveParser {
     static parse(content: Buffer) {
         console.log("Open and read file ...");
-        const pages = ParserHelper.xlsParse(content);
+        const pages = GenericParser.xlsParse(content);
         console.log("Read file end");
         return DumpPipedriveParser.adapts(pages);
     }
@@ -15,7 +14,7 @@ export default class DumpPipedriveParser {
         const page = excelPages[0];
         const headerRow = page.splice(0, 1)[0] as string[];
         console.log("Map rows to entities...");
-        const entities = page.map(userRow => ParserHelper.linkHeaderToData<string | number>(headerRow, userRow));
+        const entities = page.map(userRow => GenericParser.linkHeaderToData<string | number>(headerRow, userRow));
         return entities.map(pipedriveUser =>
             GenericParser.indexDataByPathObject<string>(
                 DumpPipedriveParser.pathObject,

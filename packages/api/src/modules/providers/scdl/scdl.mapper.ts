@@ -1,5 +1,5 @@
 import { isValidDate, shortISORegExp } from "../../../shared/helpers/DateHelper";
-import * as ParseHelper from "../../../shared/helpers/ParserHelper";
+import { GenericParser } from "../../../shared/GenericParser";
 import { BeforeAdaptation } from "../../../@types";
 import { ScdlGrantSchema } from "./@types/ScdlGrantSchema";
 
@@ -39,7 +39,7 @@ const CONVENTION_DATE_PATHS = [
 const dateAdapter = (date: BeforeAdaptation | undefined | null): Date | undefined => {
     if (!date) return undefined;
     if (typeof date === "string") return new Date(date);
-    return ParseHelper.ExcelDateToJSDate(Number(date));
+    return GenericParser.ExcelDateToJSDate(Number(date));
 };
 
 export const SCDL_MAPPER: ScdlGrantSchema = {

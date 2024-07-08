@@ -4,7 +4,7 @@ const { printAtSameLine } = require("../build/src/shared/helpers/CliHelper");
 const osirisActionRepository =
     require("../build/src/modules/providers/osiris/repositories/osiris.action.repository").default;
 const entity = require("../build/src/modules/providers/osiris/entities/OsirisRequestEntity").default;
-const ParseHelper = require("../build/src/shared/helpers/ParserHelper");
+const { GenericParser } = require("../build/src/shared/GenericParser");
 /* eslint-enable @typescript-eslint/no-var-requires*/
 
 module.exports = {
@@ -21,7 +21,10 @@ module.exports = {
             const doc = await cursor.next();
             if (!doc) continue;
             const data = doc.data;
-            doc.providerInformations = ParseHelper.indexDataByPathObject(entity.indexedProviderInformationsPath, data);
+            doc.providerInformations = GenericParser.indexDataByPathObject(
+                entity.indexedProviderInformationsPath,
+                data,
+            );
             await osirisActionRepository.update(doc);
             counter++;
             printAtSameLine(counter.toString());

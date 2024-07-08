@@ -1,6 +1,6 @@
 import fs from "fs";
 import CliLogger from "./CliLogger";
-import { findFiles } from "./helpers/ParserHelper";
+import { GenericParser } from "./GenericParser";
 
 export default class CliController {
     protected logFileParsePath = "";
@@ -27,7 +27,7 @@ export default class CliController {
     public async parse(file: string, exportDate?: string): Promise<unknown> {
         this.validParseFile(file);
         this.validFileExists(file);
-        const files = findFiles(file);
+        const files = GenericParser.findFiles(file);
         const logs: unknown[] = [];
 
         this.logger.logIC(`${files.length} files in the parse queue`);

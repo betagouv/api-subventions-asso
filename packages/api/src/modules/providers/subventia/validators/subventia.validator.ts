@@ -1,5 +1,5 @@
 import { isSiret } from "../../../../shared/Validators";
-import { ExcelDateToJSDate } from "../../../../shared/helpers/ParserHelper";
+import { GenericParser } from "../../../../shared/GenericParser";
 import SubventiaDto from "../@types/subventia.dto";
 
 export default class SubventiaValidator {
@@ -25,7 +25,7 @@ export default class SubventiaValidator {
 
         if (parsedDataRow["Date - Décision"]) {
             try {
-                ExcelDateToJSDate(parseInt(parsedDataRow["Date - Décision"], 10));
+                GenericParser.ExcelDateToJSDate(parseInt(parsedDataRow["Date - Décision"], 10));
             } catch (e) {
                 throw new Error(`Date - Décision is not a valid date`);
             }
@@ -53,7 +53,7 @@ export default class SubventiaValidator {
 
         if (parsedDataRow["Date - Décision"]) {
             if (
-                ExcelDateToJSDate(parseInt(parsedDataRow["Date - Décision"])).getUTCFullYear() <
+                GenericParser.ExcelDateToJSDate(parseInt(parsedDataRow["Date - Décision"])).getUTCFullYear() <
                 parseInt(parsedDataRow["annee_demande"])
             ) {
                 throw new Error(`The year of the decision cannot be lower than the year of the request`);

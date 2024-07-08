@@ -1,11 +1,11 @@
 import { ApplicationDto, ApplicationStatus, DemandeSubvention } from "dto";
-import { ExcelDateToJSDate, GenericParser } from "../../../../shared/helpers/ParserHelper";
 
 import subventiaService from "../subventia.service";
 import SubventiaDto from "../@types/subventia.dto";
 import SubventiaEntity, { SubventiaDbo } from "../@types/subventia.entity";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { DefaultObject, ParserInfo } from "../../../../@types";
+import { GenericParser } from "../../../../shared/GenericParser";
 
 export default class SubventiaAdapter {
     static applicationToEntity(application: SubventiaDto, exportDate: Date): SubventiaEntity {
@@ -70,7 +70,7 @@ const subventiaMapper: DefaultObject<ParserInfo> = {
         path: ["Date - Décision"],
         adapter: value => {
             if (!value) return value;
-            return ExcelDateToJSDate(parseInt(value, 10));
+            return GenericParser.ExcelDateToJSDate(parseInt(value, 10));
         },
     },
     montants_accorde: { path: ["Montant voté TTC - Décision"] },

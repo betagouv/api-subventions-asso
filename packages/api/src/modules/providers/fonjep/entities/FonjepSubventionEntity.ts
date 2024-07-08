@@ -1,8 +1,8 @@
 import { Siret } from "dto";
-import * as ParseHelper from "../../../../shared/helpers/ParserHelper";
 import { ParserInfo, ParserPath, DefaultObject } from "../../../../@types";
 import IFonjepIndexedInformations from "../@types/IFonjepIndexedInformations";
 import { formatCP } from "../../../../shared/helpers/DataFormatHelper";
+import { GenericParser } from "../../../../shared/GenericParser";
 
 export default class FonjepSubventionEntity {
     public static indexedLegalInformationsPath: DefaultObject<ParserPath | ParserInfo> = {
@@ -37,7 +37,7 @@ export default class FonjepSubventionEntity {
             path: ["DateFinTriennalite"],
             adapter: value => {
                 if (!value) return value;
-                return ParseHelper.ExcelDateToJSDate(Number(value));
+                return GenericParser.ExcelDateToJSDate(Number(value));
             },
         },
         updated_at: ["updated_at"],

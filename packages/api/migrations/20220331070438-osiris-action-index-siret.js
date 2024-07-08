@@ -5,7 +5,7 @@ const migrationManager = require("../build/src/shared/MigrationManager").default
 const osirisActionRepository =
     require("../build/src/modules/providers/osiris/repositories/osiris.action.repository").default;
 const enity = require("../build/src/modules/providers/osiris/entities/OsirisActionEntity").default;
-const ParseHelper = require("../build/src/shared/helpers/ParserHelper");
+const { GenericParser } = require("../build/src/shared/GenericParser");
 /* eslint-enable @typescript-eslint/no-var-requires*/
 
 module.exports = {
@@ -22,7 +22,7 @@ module.exports = {
             const doc = await cursor.next();
             if (!doc) continue;
             const data = doc.data;
-            doc.indexedInformations = ParseHelper.indexDataByPathObject(enity.indexedInformationsPath, data);
+            doc.indexedInformations = GenericParser.indexDataByPathObject(enity.indexedInformationsPath, data);
             await osirisActionRepository.update(doc);
             counter++;
             printAtSameLine(counter.toString());
