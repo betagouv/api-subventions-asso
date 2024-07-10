@@ -1,6 +1,10 @@
 import fs from "fs";
 import { ObjectId } from "mongodb";
 
+jest.mock("csv-stringify/sync", () => ({
+    stringify: jest.fn(() => ""),
+}));
+
 jest.mock("fs");
 const mockedFs = jest.mocked(fs);
 import ExportDateError from "../../shared/errors/cliErrors/ExportDateError";
@@ -31,7 +35,7 @@ describe("ScdlCli", () => {
     const FILE_PATH = "FILE_PATH";
     const STORABLE_DATA_ARRAY = [STORABLE_DATA];
     const DELIMETER = "%";
-    const PAGE_NAME = "nom de feuile";
+    const PAGE_NAME = "nom de feuille";
     const ROW_OFFSET = 4;
 
     let cli: ScdlCli;
@@ -41,8 +45,8 @@ describe("ScdlCli", () => {
         mockedScdlService.getProducer.mockResolvedValue(PRODUCER_ENTITY);
         // @ts-expect-error: private method
         mockedScdlService._buildGrantUniqueId.mockReturnValue(UNIQUE_ID);
-        mockedScdlGrantParser.parseCsv.mockReturnValue(STORABLE_DATA_ARRAY);
-        mockedScdlGrantParser.parseExcel.mockReturnValue(STORABLE_DATA_ARRAY);
+        mockedScdlGrantParser.parseCsv.mockReturnValue({ entities: STORABLE_DATA_ARRAY, errors: [] });
+        mockedScdlGrantParser.parseExcel.mockReturnValue({ entities: STORABLE_DATA_ARRAY, errors: [] });
         cli = new ScdlCli();
     });
 
@@ -124,10 +128,19 @@ describe("ScdlCli", () => {
 
         it("persists entities", async () => {
             // @ts-expect-error -- test private
-            const persistSpy = jest.spyOn(cli, "persistEntities");
-            jest.mocked(parserMethod).mockReturnValueOnce(STORABLE_DATA_ARRAY);
+            const persistSpy = jest.spyOn(cli, "persistEntities").mockReturnValueOnce(Promise.resolve());
+            jest.mocked(parserMethod).mockReturnValueOnce({ entities: STORABLE_DATA_ARRAY });
             await test();
             expect(persistSpy).toHaveBeenLastCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
+        });
+
+        it("exports errors", async () => {
+            const ERRORS = "toto" as unknown as any[];
+            // @ts-expect-error -- test private
+            const exportSpy = jest.spyOn(cli, "exportErrors").mockReturnValueOnce(Promise.resolve());
+            jest.mocked(parserMethod).mockReturnValueOnce({ entities: STORABLE_DATA_ARRAY, errors: ERRORS });
+            await test();
+            expect(exportSpy).toHaveBeenLastCalledWith(ERRORS, FILE_PATH);
         });
     });
 
@@ -174,5 +187,14 @@ describe("ScdlCli", () => {
             // @ts-expect-error -- test private
             expect(() => cli.validateGenericInput("WRONG_ID", new Date())).rejects.toThrowError();
         });
+    });
+
+    describe("exportErrors", () => {
+        it("creates folder if does not exist", () => {});
+        it("does not crete folder if exists already", () => {});
+        it("stringifies errors", () => {});
+        it("creates buffer from stringifued errors", () => {});
+        it("writes in proper path", () => {});
+        it("writes buffer", () => {});
     });
 });

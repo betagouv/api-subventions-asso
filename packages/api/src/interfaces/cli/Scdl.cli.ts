@@ -1,5 +1,7 @@
 import fs from "fs";
+import path from "node:path";
 import { Siret } from "dto";
+import csvSyncStringifier = require("csv-stringify/sync");
 import ExportDateError from "../../shared/errors/cliErrors/ExportDateError";
 import ScdlGrantParser from "../../modules/providers/scdl/scdl.grant.parser";
 import scdlService from "../../modules/providers/scdl/scdl.service";
@@ -7,9 +9,14 @@ import MiscScdlGrantEntity from "../../modules/providers/scdl/entities/MiscScdlG
 import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
 import { isSiret } from "../../shared/Validators";
 import { ScdlStorableGrant } from "../../modules/providers/scdl/@types/ScdlStorableGrant";
+import { ParsedDataWithProblem } from "../../modules/providers/scdl/@types/Validation";
+import { DEV } from "../../configurations/env.conf";
 
 export default class ScdlCli {
     static cmdName = "scdl";
+
+    // relative path refers to package's root
+    static errorsFolderName = "./importErrors";
 
     public async addProducer(slug: string, name: string, siret: Siret) {
         if (!slug) throw Error("producer SLUG is mandatory");
@@ -23,15 +30,21 @@ export default class ScdlCli {
     public async parseXls(file: string, producerSlug: string, exportDate?: string, pageName?: string, rowOffset = 0) {
         await this.validateGenericInput(file, producerSlug, exportDate);
         const fileContent = fs.readFileSync(file);
-        const entities = ScdlGrantParser.parseExcel(fileContent, pageName, rowOffset);
-        return this.persistEntities(entities, producerSlug, exportDate as string);
+        const { entities, errors } = ScdlGrantParser.parseExcel(fileContent, pageName, rowOffset);
+        await Promise.all([
+            this.persistEntities(entities, producerSlug, exportDate as string),
+            this.exportErrors(errors, file),
+        ]);
     }
 
     public async parse(file: string, producerSlug: string, exportDate?: string, delimiter = ";") {
         await this.validateGenericInput(file, producerSlug, exportDate);
         const fileContent = fs.readFileSync(file);
-        const entities = ScdlGrantParser.parseCsv(fileContent, delimiter);
-        return this.persistEntities(entities, producerSlug, exportDate as string);
+        const { entities, errors } = ScdlGrantParser.parseCsv(fileContent, delimiter);
+        await Promise.all([
+            this.persistEntities(entities, producerSlug, exportDate as string),
+            this.exportErrors(errors, file),
+        ]);
     }
 
     private async validateGenericInput(file: string, producerSlug: string, exportDateStr?: string) {
@@ -65,5 +78,26 @@ export default class ScdlCli {
         console.log("Updating producer's last update date");
         await scdlService.updateProducer(producerSlug, { lastUpdate: new Date(exportDateStr) });
         console.log("Parsing ended successfully !");
+    }
+
+    private async exportErrors(errors: ParsedDataWithProblem[], file: string) {
+        const fileName = path.basename(file);
+        if (!fs.existsSync(ScdlCli.errorsFolderName)) fs.mkdirSync(ScdlCli.errorsFolderName);
+        const outputPath = path.join(ScdlCli.errorsFolderName, fileName + "-errors.csv");
+
+        const csvContent = csvSyncStringifier.stringify(errors, { header: true });
+        const buffer = Buffer.from(csvContent);
+
+        if (!DEV) return;
+        fs.open(outputPath, "w", function (err, fd) {
+            if (err) {
+                console.log("Cant open file");
+            } else {
+                fs.write(fd, buffer, 0, buffer.length, null, function (err) {
+                    if (err) console.log("Cant write to file");
+                    else console.log("fields with errors exported in " + path.resolve(outputPath));
+                });
+            }
+        });
     }
 }

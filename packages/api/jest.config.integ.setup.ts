@@ -70,6 +70,10 @@ jest.mock("@getbrevo/brevo", () => {
     };
 });
 
+jest.mock("csv-stringify/sync", () => ({
+    stringify: jest.fn(() => "")
+}))
+
 const g = global as unknown as { app?: Server };
 
 const addBetaGouvEmailDomain = async () => {
