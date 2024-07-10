@@ -58,6 +58,8 @@ export class GenericParser {
         return adapter(original.value) as Tout;
     }
 
+    // equivalent of this method using findValueAndOriginalKeyByPath and keeping
+    // original values and path can be found in scdl.grant.parser
     static indexDataByPathObject<Tin extends BeforeAdaptation, Tout = DefaultObject>(
         pathObject: DefaultObject<ParserPath | ParserInfo<Tin>>,
         data: NestedDefaultObject<Tin>,

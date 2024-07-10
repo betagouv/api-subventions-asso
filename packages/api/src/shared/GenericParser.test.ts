@@ -1,5 +1,6 @@
 import dedent from "dedent";
 import { GenericParser } from "./GenericParser";
+import { DefaultObject, NestedDefaultObject, ParserInfo, ParserPath } from "../@types";
 
 describe("GenericParser", () => {
     const ADAPTER = jest.fn(v => v);
@@ -54,7 +55,28 @@ describe("GenericParser", () => {
     });
 
     describe("indexDataByPathObject", () => {
-        it("calls 'findAndAdaptByPath' for each property in mapper", () => {});
+        let adaptByPathSpy: jest.SpyInstance;
+        const DATA = "data" as unknown as NestedDefaultObject<unknown>;
+        const MAPPER = {
+            value1: "path1",
+            value2: "path2",
+        } as unknown as DefaultObject<ParserPath | ParserInfo<unknown, any>>;
+        beforeAll(() => {
+            adaptByPathSpy = jest.spyOn(GenericParser, "findAndAdaptByPath").mockReturnValue("");
+        });
+
+        it("calls 'findAndAdaptByPath' for each property in mapper", () => {
+            GenericParser.indexDataByPathObject(MAPPER, DATA);
+            expect(GenericParser.findAndAdaptByPath).toHaveBeenCalledWith(DATA, "path1");
+            expect(GenericParser.findAndAdaptByPath).toHaveBeenCalledWith(DATA, "path2");
+        });
+
+        it("returns accumulated adapted values", () => {
+            adaptByPathSpy.mockReturnValueOnce("adapted1");
+            adaptByPathSpy.mockReturnValueOnce("adapted2");
+            const expected = { value1: "adapted1", value2: "adapted2" };
+            const actual = GenericParser.indexDataByPathObject(MAPPER, DATA);
+        });
     });
 
     describe("ExcelDateToJSDate()", () => {
