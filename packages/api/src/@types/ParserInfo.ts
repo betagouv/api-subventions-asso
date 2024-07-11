@@ -3,9 +3,9 @@ import { NestedDefaultObject } from "./utils";
 
 export type BeforeAdaptation = unknown; //string | number; // only string for csv, string or number for Excel
 
-export interface ParserInfo<Tin extends BeforeAdaptation = string, Tout = any> {
+export interface ParserInfo<TypeIn extends BeforeAdaptation = string, TypeOut = any> {
     path: ParserPath;
-    adapter?: (value: Tin | undefined) => Tout;
+    adapter?: (value: TypeIn | undefined) => TypeOut;
 }
 
 export type NestedBeforeAdaptation<T = string> = NestedDefaultObject<T>;

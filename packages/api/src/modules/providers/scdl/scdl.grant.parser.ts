@@ -133,22 +133,22 @@ export default class ScdlGrantParser {
     equivalent of GenericParser.indexDataByPathObject but keeping in memory the initial label
     could be extracted to GenericParser but at this point (#2387) it seems overkill
      */
-    static indexDataByPathAndAnnotate<Tin extends BeforeAdaptation, Tout = DefaultObject>(
-        pathObject: DefaultObject<ParserPath | ParserInfo<Tin>>,
-        data: NestedDefaultObject<Tin>,
+    static indexDataByPathAndAnnotate<TypeIn extends BeforeAdaptation, TypeOut = DefaultObject>(
+        pathObject: DefaultObject<ParserPath | ParserInfo<TypeIn>>,
+        data: NestedDefaultObject<TypeIn>,
     ) {
         const defaultAdapter = <T>(v: string | number | undefined): unknown => v as T;
-        let adapter: (v: Tin) => any;
+        let adapter: (v: TypeIn) => any;
         const errors: ParsedDataWithProblem[] = [];
 
-        const entity: Partial<Tout> = {};
-        const annotations: Record<string, { value: Tin; keyPath: string[] }> = {};
+        const entity: Partial<TypeOut> = {};
+        const annotations: Record<string, { value: TypeIn; keyPath: string[] }> = {};
         for (const key of Object.keys(pathObject)) {
             // finds original value and path then adapt it
-            const annotated: ValueWithPath<Tin> = GenericParser.findValueAndOriginalKeyByPath<Tin>(
+            const annotated: ValueWithPath<TypeIn> = GenericParser.findValueAndOriginalKeyByPath<TypeIn>(
                 data,
                 pathObject[key],
-            ) || { value: "" as Tin, keyPath: [] };
+            ) || { value: "" as TypeIn, keyPath: [] };
             // @ts-expect-error -- ts is scared that adapter may not exist in type
             adapter = pathObject[key]?.adapter || defaultAdapter;
             const adapted = adapter(annotated.value);

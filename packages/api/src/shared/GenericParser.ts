@@ -21,10 +21,10 @@ export class GenericParser {
         data: NestedBeforeAdaptation<T>,
         parserData: ParserPath | ParserInfo<T, unknown>,
     ): ValueWithPath<T> | undefined {
-        type Tin = T | DefaultObject;
+        type TypeIn = T | DefaultObject;
         const mapper: ParserPath = Array.isArray(parserData) ? parserData : parserData.path;
         const successiveKeys: string[] = [];
-        let objectToLookIn: Tin = data;
+        let objectToLookIn: TypeIn = data;
         let oneLevelKey: string | undefined;
 
         for (const possibleKeys of mapper) {
@@ -36,7 +36,7 @@ export class GenericParser {
             if (!oneLevelKey) return undefined;
 
             successiveKeys.push(oneLevelKey);
-            objectToLookIn = objectToLookIn[oneLevelKey.trim()] as Tin;
+            objectToLookIn = objectToLookIn[oneLevelKey.trim()] as TypeIn;
         }
         return { value: objectToLookIn as T, keyPath: successiveKeys };
     }
@@ -44,31 +44,31 @@ export class GenericParser {
     /*
         from parser info and original data, returns required data after adaptation
      */
-    static findAndAdaptByPath<Tin extends BeforeAdaptation, Tout = unknown>(
-        data: NestedDefaultObject<Tin>,
-        parserData: ParserPath | ParserInfo<Tin, Tout>,
+    static findAndAdaptByPath<TypeIn extends BeforeAdaptation, TypeOut = unknown>(
+        data: NestedDefaultObject<TypeIn>,
+        parserData: ParserPath | ParserInfo<TypeIn, TypeOut>,
     ) {
-        let adapter = (v: Tin | undefined): unknown => v as Tout;
+        let adapter = (v: TypeIn | undefined): unknown => v as TypeOut;
 
         if (!Array.isArray(parserData)) adapter = parserData.adapter || adapter;
 
-        const original = GenericParser.findValueAndOriginalKeyByPath<Tin>(data, parserData);
+        const original = GenericParser.findValueAndOriginalKeyByPath<TypeIn>(data, parserData);
         if (original?.value === undefined || original?.value === null) return undefined;
 
-        return adapter(original.value) as Tout;
+        return adapter(original.value) as TypeOut;
     }
 
     // equivalent of this method using findValueAndOriginalKeyByPath and keeping
     // original values and path can be found in scdl.grant.parser
-    static indexDataByPathObject<Tin extends BeforeAdaptation, Tout = DefaultObject>(
-        pathObject: DefaultObject<ParserPath | ParserInfo<Tin>>,
-        data: NestedDefaultObject<Tin>,
+    static indexDataByPathObject<TypeIn extends BeforeAdaptation, TypeOut = DefaultObject>(
+        pathObject: DefaultObject<ParserPath | ParserInfo<TypeIn>>,
+        data: NestedDefaultObject<TypeIn>,
     ) {
         return Object.keys(pathObject).reduce((acc, key: string) => {
-            const tempAcc = acc as Tout;
-            tempAcc[key] = GenericParser.findAndAdaptByPath<Tin>(data, pathObject[key]);
+            const tempAcc = acc as TypeOut;
+            tempAcc[key] = GenericParser.findAndAdaptByPath<TypeIn>(data, pathObject[key]);
             return tempAcc;
-        }, {} as unknown) as Tout;
+        }, {} as unknown) as TypeOut;
     }
 
     static linkHeaderToData<T = string>(headers: string[], data: T[]) {
