@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
-import csvSyncParser = require("csv-parse/sync");
 import xlsx from "node-xlsx";
+import csvSyncParser = require("csv-parse/sync");
 import {
     BeforeAdaptation,
     DefaultObject,
@@ -10,8 +10,7 @@ import {
     ParserInfo,
     ParserPath,
 } from "../@types";
-
-export type ValueWithPath<T = unknown> = { value: T; keyPath: string[] };
+import type { ValueWithPath } from "./@types/ValueWithPath";
 
 export class GenericParser {
     /*
