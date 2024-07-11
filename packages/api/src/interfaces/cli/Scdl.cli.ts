@@ -94,7 +94,7 @@ export default class ScdlCli {
                 console.log("Cant open file");
             } else {
                 fs.write(fd, buffer, 0, buffer.length, null, function (err) {
-                    if (err) console.log("Cant write to file");
+                    if (err) console.log("Can't write to file");
                     else console.log("fields with errors exported in " + path.resolve(outputPath));
                 });
             }

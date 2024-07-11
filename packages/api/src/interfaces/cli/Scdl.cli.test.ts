@@ -17,9 +17,14 @@ import MiscScdlGrant from "../../modules/providers/scdl/__fixtures__/MiscScdlGra
 import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
 import ScdlGrantParser from "../../modules/providers/scdl/scdl.grant.parser";
 import MiscScdlProducer from "../../modules/providers/scdl/__fixtures__/MiscScdlProducer";
+import { ParsedDataWithProblem } from "../../modules/providers/scdl/@types/Validation";
 
 jest.mock("../../modules/providers/scdl/scdl.grant.parser");
 const mockedScdlGrantParser = jest.mocked(ScdlGrantParser);
+
+import csvSyncStringifier = require("csv-stringify/sync");
+import exp from "node:constants";
+jest.mock("csv-stringify/sync");
 
 describe("ScdlCli", () => {
     const PRODUCER_ENTITY = {
@@ -190,11 +195,64 @@ describe("ScdlCli", () => {
     });
 
     describe("exportErrors", () => {
-        it("creates folder if does not exist", () => {});
-        it("does not crete folder if exists already", () => {});
-        it("stringifies errors", () => {});
-        it("creates buffer from stringifued errors", () => {});
-        it("writes in proper path", () => {});
-        it("writes buffer", () => {});
+        const ERRORS: ParsedDataWithProblem[] = [];
+        const FILE = "path/file.csv";
+        const STR_CONTENT = "azertyuiop";
+        const BUFFER = "buffer" as unknown as Buffer;
+        const OUTPUT_PATH = "importErrors/file.csv-errors.csv";
+        let bufferSpy: jest.SpyInstance;
+
+        beforeAll(() => {
+            jest.mocked(csvSyncStringifier.stringify).mockReturnValue(STR_CONTENT);
+            bufferSpy = jest.spyOn(Buffer, "from").mockReturnValue(BUFFER);
+        });
+
+        afterAll(() => {
+            jest.mocked(csvSyncStringifier.stringify).mockRestore();
+            jest.spyOn(Buffer, "from").mockRestore();
+        });
+
+        it("creates folder if does not exist", () => {
+            jest.mocked(fs.existsSync).mockReturnValueOnce(false);
+            // @ts-expect-error -- test private method
+            cli.exportErrors(ERRORS, FILE);
+            expect(fs.mkdirSync).toHaveBeenCalled();
+        });
+
+        it("does not crete folder if exists already", () => {
+            jest.mocked(fs.existsSync).mockReturnValueOnce(true);
+            // @ts-expect-error -- test private method
+            cli.exportErrors(ERRORS, FILE);
+            expect(fs.mkdirSync).not.toHaveBeenCalled();
+        });
+
+        it("stringifies errors", () => {
+            // @ts-expect-error -- test private method
+            cli.exportErrors(ERRORS, FILE);
+            expect(csvSyncStringifier.stringify).toHaveBeenCalled();
+        });
+
+        it("creates buffer from stringified errors", () => {
+            // @ts-expect-error -- test private method
+            cli.exportErrors(ERRORS, FILE);
+            expect(bufferSpy).toHaveBeenCalledWith(STR_CONTENT);
+        });
+
+        it("writes in proper path", () => {
+            // @ts-expect-error -- test private method
+            cli.exportErrors(ERRORS, FILE);
+            expect(fs.open).toHaveBeenCalledWith(OUTPUT_PATH, "w", expect.any(Function));
+        });
+
+        it("writes buffer", () => {
+            // @ts-expect-error -- test private method
+            cli.exportErrors(ERRORS, FILE);
+            // @ts-expect-error -- fs.open has different signatures and ts selects wrong one
+            const write: Function = jest.mocked(fs.open).mock.calls[0][2] as Function;
+            write(null, 0);
+            const expected = BUFFER;
+            const actual = jest.mocked(fs.write).mock.calls[0][1];
+            expect(actual).toBe(expected);
+        });
     });
 });
