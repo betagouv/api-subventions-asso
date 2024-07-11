@@ -56,7 +56,6 @@ describe("ExecutionSyncStack", () => {
         beforeEach(() => {
             // @ts-ignore inProgress is private attribue
             stack.inProgress = false;
-            operationExecutorMock.mockClear();
         });
 
         it("should not call operationExecutor", async () => {

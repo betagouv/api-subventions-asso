@@ -25,7 +25,8 @@ import { startServer } from "./src/server";
 import { scheduler } from "./src/cron";
 import configurationsRepository from "./src/modules/configurations/repositories/configurations.repository";
 import { CONFIGURATION_NAMES } from "./src/modules/configurations/configurations.service";
-
+import { initAsyncServices } from "./src/shared/initAsyncServices";
+import { initTests } from "./jest.config.integ.init";
 /**
  *
  *      JEST MOCKING
@@ -101,6 +102,10 @@ beforeAll(async () => {
     }
 
     if (g.app) return;
+
+    await initTests();
+    await initAsyncServices();
+
     g.app = await startServer("1234", true);
     await initIndexes();
 });

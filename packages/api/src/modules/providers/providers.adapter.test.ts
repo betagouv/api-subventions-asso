@@ -1,4 +1,4 @@
-import { toStatusFactory } from "./helper";
+import { toStatusFactory } from "./providers.adapter";
 import { ApplicationStatus } from "dto";
 
 describe("toStatusFactory", () => {

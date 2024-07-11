@@ -1,10 +1,13 @@
+import { DemandeSubvention } from "dto";
 import { CAISSE_DES_DEPOTS_RECORDS } from "../../../../../tests/dataProviders/api/caisseDepots.fixtures";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
+import { RawApplication } from "../../../grant/@types/rawGrant";
 import CaisseDepotsDtoAdapter from "./caisseDepotsDtoAdapter";
+import caisseDepotsService from "../caisseDepots.service";
 
 jest.mock("../caisseDepots.service", () => ({
     __esModule: true,
-    default: { provider: { name: "TOTO" } },
+    default: { provider: { name: "Caisse des dépôts" } },
 }));
 
 describe("CaisseDepotsDtoAdapter", () => {
@@ -46,6 +49,35 @@ describe("CaisseDepotsDtoAdapter", () => {
         });
     });
 
+    describe("rawToApplication", () => {
+        // @ts-expect-error: parameter type
+        const RAW_APPLICATION: RawApplication<CaisseDepotsSubventionDto> = { data: { foo: "bar" } };
+        // @ts-expect-error parameter type
+        const APPLICATION: DemandeSubvention = { foo: "bar" };
+
+        let mockToDemandeSubvention: jest.SpyInstance;
+
+        beforeAll(() => {
+            mockToDemandeSubvention = jest.spyOn(CaisseDepotsDtoAdapter, "toDemandeSubvention");
+            mockToDemandeSubvention.mockReturnValue(APPLICATION);
+        });
+
+        afterAll(() => {
+            mockToDemandeSubvention.mockRestore();
+        });
+
+        it("should call toDemandeSubvention()", () => {
+            CaisseDepotsDtoAdapter.rawToApplication(RAW_APPLICATION);
+            expect(mockToDemandeSubvention).toHaveBeenCalledWith(RAW_APPLICATION.data);
+        });
+
+        it("should return DemandeSubvention", () => {
+            const expected = APPLICATION;
+            const actual = CaisseDepotsDtoAdapter.rawToApplication(RAW_APPLICATION);
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("toDemandeSubvention", () => {
         const INPUT = CAISSE_DES_DEPOTS_RECORDS[0];
         const DATE = new Date(INPUT.timestamp);
@@ -58,7 +90,7 @@ describe("CaisseDepotsDtoAdapter", () => {
             }));
         it("generate ProviderValueAdapter with proper date and name", () => {
             CaisseDepotsDtoAdapter.toDemandeSubvention(INPUT);
-            expect(toPvSpy).toBeCalledWith("TOTO", DATE);
+            expect(toPvSpy).toBeCalledWith(caisseDepotsService.provider.name, DATE);
         });
 
         it("returns proper value", () => {

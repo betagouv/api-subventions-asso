@@ -100,10 +100,6 @@ describe("DataGouvParser", () => {
             spys.push(jest.spyOn(fs, "statSync").mockImplementationOnce(() => ({ size: 1000 * 1000 } as fs.Stats)));
         });
 
-        afterEach(() => {
-            spys.forEach(s => s.mockClear());
-        });
-
         it("should parse one entity", async () => {
             const buffer = buildFileContent([
                 {

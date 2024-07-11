@@ -3,12 +3,40 @@ const mockToStatus = jest.fn(() => mockLabel);
 
 import DauphinDtoAdapter from "./DauphinDtoAdapter";
 
-jest.mock("../../helper", () => ({
+jest.mock("../../providers.adapter", () => ({
     toStatusFactory: () => mockToStatus,
     __esModule: true, // this property makes it work
 }));
 
 describe("DauphinDtoAdapter", () => {
+    describe("rawToApplication", () => {
+        // @ts-expect-error: parameter type
+        const RAW_APPLICATION: RawApplication = { data: { foo: "bar" } };
+        // @ts-expect-error: parameter type
+        const APPLICATION: DemandeSubvention = { foo: "bar" };
+        let mockToDemandeSubvention: jest.SpyInstance;
+
+        beforeAll(() => {
+            mockToDemandeSubvention = jest.spyOn(DauphinDtoAdapter, "toDemandeSubvention");
+            mockToDemandeSubvention.mockReturnValue(APPLICATION);
+        });
+
+        afterAll(() => {
+            mockToDemandeSubvention.mockRestore();
+        });
+
+        it("should call toDemandeSubvention", () => {
+            DauphinDtoAdapter.rawToApplication(RAW_APPLICATION);
+            expect(mockToDemandeSubvention).toHaveBeenCalledWith(RAW_APPLICATION.data);
+        });
+
+        it("should return DemandeSubvention", () => {
+            const expected = APPLICATION;
+            const actual = DauphinDtoAdapter.rawToApplication(RAW_APPLICATION);
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("toDemandeSubvention()", () => {
         const minDauphinEntity = {
             dauphin: {

@@ -1,7 +1,7 @@
 import { ScdlGrantEntity } from "../@types/ScdlGrantEntity";
 import MiscScdlProducerEntity from "./MiscScdlProducerEntity";
 
-export default interface MiscScdlGrantProducerEntity extends ScdlGrantEntity {
+export default interface MiscScdlGrantEntity extends ScdlGrantEntity {
     producerSlug: string;
     producer: MiscScdlProducerEntity;
 }

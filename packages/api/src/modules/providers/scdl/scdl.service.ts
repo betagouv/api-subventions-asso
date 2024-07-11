@@ -6,12 +6,23 @@ import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
 
 export class ScdlService {
+    producerNames: string[] = [];
+
+    async init() {
+        this.producerNames = (await this.getProducers()).map(producer => producer.name);
+    }
+
     getProducer(slug: string) {
         return miscScdlProducersRepository.findBySlug(slug);
     }
 
-    createProducer(entity: MiscScdlProducerEntity) {
-        return miscScdlProducersRepository.create(entity);
+    getProducers() {
+        return miscScdlProducersRepository.findAll();
+    }
+
+    async createProducer(entity: MiscScdlProducerEntity) {
+        await miscScdlProducersRepository.create(entity);
+        this.producerNames.push(entity.name);
     }
 
     private _buildGrantUniqueId(grant: ScdlStorableGrant, producerSlug: string) {

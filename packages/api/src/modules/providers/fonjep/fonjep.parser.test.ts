@@ -155,11 +155,6 @@ describe("FonjepParser", () => {
             createFonjepPaymentEntityMock.mockImplementation(jest.fn());
         });
 
-        afterEach(() => {
-            createFonjepSubventionEntityMock.mockClear();
-            createFonjepPaymentEntityMock.mockClear();
-        });
-
         it("should not save payments without MontantPaye", () => {
             xlsParseMock.mockImplementationOnce(jest.fn());
             const DATA = JSON.parse(JSON.stringify(DATA_WITH_HEADER));

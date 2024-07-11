@@ -3,13 +3,15 @@ import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
-import GrantProvider from "../../grant/@types/GrantProvider";
 import ProviderCore from "../ProviderCore";
-import { RawGrant } from "../../grant/@types/rawGrant";
+import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import CaisseDepotsDtoAdapter from "./adapters/caisseDepotsDtoAdapter";
 import { CaisseDepotsSubventionDto } from "./dto/CaisseDepotsDto";
 
-export class CaisseDepotsService extends ProviderCore implements DemandesSubventionsProvider, GrantProvider {
+export class CaisseDepotsService
+    extends ProviderCore
+    implements DemandesSubventionsProvider<CaisseDepotsSubventionDto>
+{
     isDemandesSubventionsProvider = true;
     isGrantProvider = true;
 
@@ -27,6 +29,10 @@ export class CaisseDepotsService extends ProviderCore implements DemandesSubvent
                 "Ce jeu de données présente les subventions octroyées par la Caisse des dépôts, d'un montant supérieur à 23k€/an, à des organismes privés depuis le 01/01/2018, présenté selon le format proposé par l'arrêté du 17 novembre 2017 relatif aux conditions de mises à disposition des données essentielles des conventions de subvention.",
             id: "caisseDepots",
         });
+    }
+
+    rawToApplication(rawApplication: RawApplication<CaisseDepotsSubventionDto>) {
+        return CaisseDepotsDtoAdapter.rawToApplication(rawApplication);
     }
 
     private async getRawCaisseDepotsSubventions(identifier: string): Promise<CaisseDepotsSubventionDto[]> {
@@ -51,10 +57,6 @@ export class CaisseDepotsService extends ProviderCore implements DemandesSubvent
         );
     }
 
-    async getDemandeSubventionByRna(_rna: Rna): Promise<DemandeSubvention[] | null> {
-        return null;
-    }
-
     getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
         return this.getCaisseDepotsSubventions(`${siren}*`);
     }
@@ -63,19 +65,23 @@ export class CaisseDepotsService extends ProviderCore implements DemandesSubvent
         return this.getCaisseDepotsSubventions(siret);
     }
 
-    // raw grant service
+    /**
+     * |-------------------------|
+     * |   Grant Part            |
+     * |-------------------------|
+     */
 
     async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
         return (await this.getRawCaisseDepotsSubventions(siret)).map(grant => ({
             provider: this.provider.id,
-            type: "fullGrant",
+            type: "application",
             data: grant,
         }));
     }
     async getRawGrantsBySiren(siren: string): Promise<RawGrant[] | null> {
         return (await this.getRawCaisseDepotsSubventions(`${siren}*`)).map(grant => ({
             provider: this.provider.id,
-            type: "fullGrant",
+            type: "application",
             data: grant,
         }));
     }

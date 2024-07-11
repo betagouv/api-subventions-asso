@@ -1,5 +1,11 @@
 import DemarchesSimplifieesDataEntity from "../entities/DemarchesSimplifieesDataEntity";
 import { DemarchesSimplifieesEntityAdapter } from "./DemarchesSimplifieesEntityAdapter";
+import {
+    DATA_ENTITIES,
+    SCHEMAS,
+} from "../../../../../tests/dataProviders/db/__fixtures__/demarchesSimplifiees.fixtures";
+import demarchesSimplifieesService from "../demarchesSimplifiees.service";
+jest.mock("../demarchesSimplifiees.service");
 
 describe("DemarchesSimplifieesEntityAdapter", () => {
     // @ts-expect-error
@@ -19,6 +25,35 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
             },
         ],
     };
+
+    describe("rawToApplication", () => {
+        // @ts-expect-error: parameter type
+        const RAW_APPLICATION: RawApplication = { data: { entity: { foo: "bar" }, schema: { boo: "faz" } } };
+        // @ts-expect-error: parameter type
+        const APPLICATION: DemandeSubvention = { foo: "bar" };
+        let mockToSubvention: jest.SpyInstance;
+
+        beforeAll(() => {
+            mockToSubvention = jest.spyOn(DemarchesSimplifieesEntityAdapter, "toSubvention");
+            mockToSubvention.mockReturnValue(APPLICATION);
+        });
+
+        afterAll(() => {
+            mockToSubvention.mockRestore();
+        });
+
+        it("should call toSubvention", () => {
+            DemarchesSimplifieesEntityAdapter.rawToApplication(RAW_APPLICATION);
+            const { entity, schema } = RAW_APPLICATION.data;
+            expect(mockToSubvention).toHaveBeenCalledWith(entity, schema);
+        });
+
+        it("should return DemandeSubvention", () => {
+            const expected = APPLICATION;
+            const actual = DemarchesSimplifieesEntityAdapter.rawToApplication(RAW_APPLICATION);
+            expect(actual).toEqual(expected);
+        });
+    });
 
     describe("toSubvention", () => {
         it("should return subvention with siret", () => {
@@ -53,6 +88,36 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
             const actual = DemarchesSimplifieesEntityAdapter.toSubvention(DEMANDE, MAPPING).annee_demande?.value;
 
             expect(actual).toBe(expected);
+        });
+    });
+
+    describe("toRawGrant", () => {
+        it("should try to get joinKey", () => {
+            DemarchesSimplifieesEntityAdapter.toRawGrant(DATA_ENTITIES[0], SCHEMAS[0]);
+            expect(demarchesSimplifieesService.getJoinKey).toHaveBeenCalledWith({
+                entity: DATA_ENTITIES[0],
+                schema: SCHEMAS[0],
+            });
+        });
+
+        it("should not define joinKey if not found", () => {
+            jest.mocked(demarchesSimplifieesService.getJoinKey).mockReturnValueOnce(undefined);
+            const expected = undefined;
+            const actual = DemarchesSimplifieesEntityAdapter.toRawGrant(DATA_ENTITIES[0], SCHEMAS[0]).joinKey;
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return RawGrant", () => {
+            const EJ = "EJ";
+            jest.mocked(demarchesSimplifieesService.getJoinKey).mockReturnValueOnce(EJ);
+            const expected = {
+                provider: demarchesSimplifieesService.provider.id,
+                type: "application",
+                data: { entity: DATA_ENTITIES[0], schema: SCHEMAS[0] },
+                joinKey: EJ,
+            };
+            const actual = DemarchesSimplifieesEntityAdapter.toRawGrant(DATA_ENTITIES[0], SCHEMAS[0]);
+            expect(actual).toEqual(expected);
         });
     });
 

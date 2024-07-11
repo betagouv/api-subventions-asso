@@ -1,5 +1,5 @@
 import {
-    ApplicationDto,
+    CommonApplicationDto,
     ApplicationStatus,
     Association,
     DemandeSubvention,
@@ -12,7 +12,8 @@ import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
 import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 import osirisService from "../osiris.service";
-import { toStatusFactory } from "../../helper";
+import { toStatusFactory } from "../../providers.adapter";
+import { RawApplication } from "../../../grant/@types/rawGrant";
 
 export default class OsirisRequestAdapter {
     static PROVIDER_NAME = "Osiris";
@@ -139,6 +140,10 @@ export default class OsirisRequestAdapter {
         };
     }
 
+    static rawToApplication(rawApplication: RawApplication<OsirisRequestEntity>) {
+        return this.toDemandeSubvention(rawApplication.data);
+    }
+
     static toDemandeSubvention(entity: OsirisRequestEntity): DemandeSubvention {
         const dataDate = new Date(Date.UTC(entity.providerInformations.extractYear, 0));
         const toPV = ProviderValueFactory.buildProviderValueAdapter(osirisService.provider.name, dataDate);
@@ -241,7 +246,7 @@ export default class OsirisRequestAdapter {
         return data;
     }
 
-    static toCommon(entity: OsirisRequestEntity): ApplicationDto {
+    static toCommon(entity: OsirisRequestEntity): CommonApplicationDto {
         return {
             dispositif: entity.providerInformations.dispositif,
             exercice: entity.providerInformations.extractYear,

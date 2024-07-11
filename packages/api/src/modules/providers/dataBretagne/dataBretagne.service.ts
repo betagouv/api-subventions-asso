@@ -8,6 +8,8 @@ import ProviderCore from "../ProviderCore";
  * Service for interacting with the Data Bretagne API.
  */
 class DataBretagneService extends ProviderCore {
+    programsByCode: Record<number, StateBudgetProgramEntity> = {};
+
     constructor() {
         super({
             name: "Data Bretagne",
@@ -15,6 +17,11 @@ class DataBretagneService extends ProviderCore {
             description: "Data Bretagne is the API for the state budget.",
             id: "data-bretagne",
         });
+    }
+
+    // QUICK WIN FROM DEVELOP REBASE FOR #2313 -- WE MAY WANT TO HANDLE THIS IN A BETTER WAY
+    async init() {
+        this.programsByCode = await dataBretagneService.findProgramsRecord();
     }
 
     async login() {

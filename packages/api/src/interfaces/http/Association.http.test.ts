@@ -2,6 +2,8 @@ import { DemandeSubvention } from "dto";
 import Flux from "../../shared/Flux";
 import associationsService from "../../modules/associations/associations.service";
 import { AssociationHttp } from "./Association.http";
+import grantService from "../../modules/grant/grant.service";
+jest.mock("../../modules/grant/grant.service");
 
 const controller = new AssociationHttp();
 
@@ -31,6 +33,12 @@ describe("AssociationHttp", () => {
             flux.close();
 
             expect(await promise).toEqual(expected);
+        });
+    });
+    describe("getGrants", () => {
+        it("should call grantService.getGrants()", async () => {
+            await controller.getGrants(IDENTIFIER);
+            expect(grantService.getGrants).toHaveBeenCalledWith(IDENTIFIER);
         });
     });
 
@@ -100,11 +108,11 @@ describe("AssociationHttp", () => {
         });
     });
 
-    describe("getEtablissements", () => {
-        const getEtablissementSpy = jest.spyOn(associationsService, "getEtablissements");
+    describe("getEstablishments", () => {
+        const getEtablissementSpy = jest.spyOn(associationsService, "getEstablishments");
         it("should call service with args", async () => {
             getEtablissementSpy.mockImplementationOnce(jest.fn());
-            await controller.getEtablissements(IDENTIFIER);
+            await controller.getEstablishments(IDENTIFIER);
             expect(getEtablissementSpy).toHaveBeenCalledWith(IDENTIFIER);
         });
 
@@ -113,7 +121,7 @@ describe("AssociationHttp", () => {
             getEtablissementSpy.mockImplementationOnce(() => etablissements);
             const etablissements = [{}];
             const expected = { etablissements };
-            const actual = await controller.getEtablissements(IDENTIFIER);
+            const actual = await controller.getEstablishments(IDENTIFIER);
             expect(actual).toEqual(expected);
         });
     });

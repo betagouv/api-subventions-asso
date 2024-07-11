@@ -50,10 +50,6 @@ describe("OsirisActionRepository", () => {
             toEntityMock.mockImplementation(entity => entity);
         });
 
-        afterEach(() => {
-            findOneAndUpdateMock.mockClear();
-        });
-
         afterAll(() => {
             toDboMock.mockReset();
             toEntityMock.mockReset();

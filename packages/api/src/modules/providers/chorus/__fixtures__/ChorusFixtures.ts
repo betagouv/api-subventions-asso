@@ -1,4 +1,6 @@
+import { ChorusPayment } from "dto";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
+import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
 
 export const HEADERS = [
     "N° EJ",
@@ -150,7 +152,7 @@ export const ENTITIES: ChorusLineEntity[] = [
         uniqueId: "de175292263fdd97b222a754309df07f",
         indexedInformations: {
             ej: "0001821732",
-            siret: "32534654200001",
+            siret: DEFAULT_ASSOCIATION.siret,
             codeBranche: "Z039",
             branche: "Associations",
             activitee: "Appels a projet",
@@ -160,7 +162,7 @@ export const ENTITIES: ChorusLineEntity[] = [
             centreFinancier: "UO DGER XXXX-C001",
             codeCentreFinancier: "AA01/0776-C001-4000",
             domaineFonctionnel: "Appels à projet",
-            codeDomaineFonctionnel: "1111-01-02",
+            codeDomaineFonctionnel: "0101-01-02",
             amount: 89988.3,
             dateOperation: new Date("2023-07-12T00:00:00.000Z"),
         },
@@ -170,14 +172,14 @@ export const ENTITIES: ChorusLineEntity[] = [
             "Fournisseur payé (DP)": "ASSO 1",
             "Branche CODE": "Z039",
             Branche: "Associations",
-            "Code taxe 1": "32534654200001",
+            "Code taxe 1": DEFAULT_ASSOCIATION.siret,
             "Référentiel de programmation CODE": "BG00/077601000201",
             "Référentiel de programmation": "Appels a projet",
             "N° DP": "000195567",
             "Date de dernière opération sur la DP": "12/07/2023",
             "Centre financier CODE": "AA01/0776-C001-4000",
             "Centre financier": "UO DGER XXXX-C001",
-            "Domaine fonctionnel CODE": "1111-01-02",
+            "Domaine fonctionnel CODE": "0101-01-02",
             "Domaine fonctionnel": "Appels à projet",
             "Montant payé": 89988.3,
         },
@@ -187,7 +189,7 @@ export const ENTITIES: ChorusLineEntity[] = [
     {
         uniqueId: "11d177d88edbd421e4eef4f2e8d42b28",
         indexedInformations: {
-            ej: "0002822326",
+            ej: "0001821732",
             siret: "77568577900002",
             codeBranche: "Z039",
             branche: "Associations",
@@ -197,7 +199,7 @@ export const ENTITIES: ChorusLineEntity[] = [
             numeroTier: "ASSO 2",
             centreFinancier: "UO DGER",
             codeCentreFinancier: "AA01/0776-C001-4000",
-            domaineFonctionnel: "1111-01-02",
+            domaineFonctionnel: "0101-01-02",
             codeDomaineFonctionnel: "XXXX-C001",
             amount: 89931.9,
             dateOperation: new Date("2023-04-21T00:00:00.000Z"),
@@ -215,8 +217,8 @@ export const ENTITIES: ChorusLineEntity[] = [
             "Date de dernière opération sur la DP": "21/04/2023",
             "Centre financier CODE": "AA01/0776-C001-4000",
             "Centre financier": "UO DGER",
-            "Domaine fonctionnel CODE": "XXXX-C001",
-            "Domaine fonctionnel": "1111-01-02",
+            "Domaine fonctionnel CODE": "0101-01-02",
+            "Domaine fonctionnel": "DOMAINE FONCTIONNEL LABEL",
             "Montant payé": 89931.9,
         },
         _id: undefined,
@@ -236,7 +238,7 @@ export const ENTITIES: ChorusLineEntity[] = [
             centreFinancier: "UO régionale",
             codeCentreFinancier: "AA99/0102-DR25-DR25",
             domaineFonctionnel: "Plan inv compétences",
-            codeDomaineFonctionnel: "1234-03",
+            codeDomaineFonctionnel: "0102-03",
             amount: 62655.2,
             dateOperation: new Date("2023-05-05T00:00:00.000Z"),
         },
@@ -253,11 +255,36 @@ export const ENTITIES: ChorusLineEntity[] = [
             "Date de dernière opération sur la DP": "05/05/2023",
             "Centre financier CODE": "AA99/0102-DR25-DR25",
             "Centre financier": "UO régionale",
-            "Domaine fonctionnel CODE": "1234-03",
+            "Domaine fonctionnel CODE": "0102-03",
             "Domaine fonctionnel": "Plan inv compétences",
             "Montant payé": 62655.2,
         },
         _id: undefined,
         provider: "Chorus",
+    },
+];
+
+const buildProviderValue = value => ({
+    value,
+    provider: "chorus",
+    type: typeof value,
+    last_update: new Date("2022-06-06"),
+});
+
+// TODO: fill this with real data
+export const PAYMENTS: ChorusPayment[] = [
+    {
+        ej: buildProviderValue(ENTITIES[0].indexedInformations.ej),
+        versementKey: buildProviderValue(ENTITIES[0].indexedInformations.ej),
+        siret: buildProviderValue(ENTITIES[0].indexedInformations.siret),
+        amount: buildProviderValue(ENTITIES[0].indexedInformations.amount),
+        dateOperation: buildProviderValue(ENTITIES[0].indexedInformations.dateOperation),
+        centreFinancier: buildProviderValue(ENTITIES[0].indexedInformations.centreFinancier),
+        domaineFonctionnel: buildProviderValue(ENTITIES[0].indexedInformations.domaineFonctionnel),
+        bop: buildProviderValue(ENTITIES[0].indexedInformations.codeDomaineFonctionnel.slice(0, 4)),
+        programme: buildProviderValue(
+            `PROGRAM LABEL ${ENTITIES[0].indexedInformations.codeDomaineFonctionnel.slice(0, 4)}`,
+        ),
+        libelleProgramme: buildProviderValue(ENTITIES[0].indexedInformations.codeDomaineFonctionnel.slice(0, 4)),
     },
 ];

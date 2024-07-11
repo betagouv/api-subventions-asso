@@ -1,6 +1,6 @@
 import moment from "moment";
 import * as lodash from "lodash";
-import { ApplicationDto, DemandeSubvention } from "dto";
+import { CommonApplicationDto, DemandeSubvention } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import demarchesSimplifieesService from "../demarchesSimplifiees.service";
 import DemarchesSimplifieesDataEntity from "../entities/DemarchesSimplifieesDataEntity";
@@ -8,6 +8,8 @@ import DemarchesSimplifieesMapperEntity from "../entities/DemarchesSimplifieesMa
 import { isValidDate } from "../../../../shared/helpers/DateHelper";
 import { stringIsFloat } from "../../../../shared/helpers/StringHelper";
 import { DefaultObject } from "../../../../@types";
+import { DemarchesSimplifieesRawData, DemarchesSimplifieesRawGrant } from "../@types/DemarchesSimplifieesRawGrant";
+import { RawApplication } from "../../../grant/@types/rawGrant";
 
 export class DemarchesSimplifieesEntityAdapter {
     private static mapSchema<T>(
@@ -36,6 +38,11 @@ export class DemarchesSimplifieesEntityAdapter {
         return subvention as unknown as T;
     }
 
+    static rawToApplication(rawApplication: RawApplication<DemarchesSimplifieesRawData>) {
+        const { entity, schema } = rawApplication.data;
+        return this.toSubvention(entity, schema);
+    }
+
     static toSubvention(
         entity: DemarchesSimplifieesDataEntity,
         mapper: DemarchesSimplifieesMapperEntity,
@@ -56,7 +63,24 @@ export class DemarchesSimplifieesEntityAdapter {
         return subvention as unknown as DemandeSubvention;
     }
 
-    static toCommon(entity: DemarchesSimplifieesDataEntity, mapper: DemarchesSimplifieesMapperEntity): ApplicationDto {
+    static toRawGrant(
+        entity: DemarchesSimplifieesDataEntity,
+        mapper: DemarchesSimplifieesMapperEntity,
+    ): DemarchesSimplifieesRawGrant {
+        const joinKey = demarchesSimplifieesService.getJoinKey({ entity, schema: mapper });
+
+        return {
+            provider: demarchesSimplifieesService.provider.id,
+            type: "application",
+            data: { entity, schema: mapper },
+            joinKey,
+        };
+    }
+
+    static toCommon(
+        entity: DemarchesSimplifieesDataEntity,
+        mapper: DemarchesSimplifieesMapperEntity,
+    ): CommonApplicationDto {
         const application: DefaultObject = DemarchesSimplifieesEntityAdapter.mapSchema(entity, mapper, "commonSchema");
 
         if (!application.exercice && application.dateTransmitted)
@@ -66,6 +90,6 @@ export class DemarchesSimplifieesEntityAdapter {
         // TODO transform status: missing business logic
         delete application.providerStatus;
 
-        return application as unknown as ApplicationDto;
+        return application as unknown as CommonApplicationDto;
     }
 }
