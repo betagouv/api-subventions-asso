@@ -113,7 +113,7 @@ export default class FonjepParser {
                 this.createFonjepSubventionEntity({
                     ...poste,
                     id: uniqueSubventionId,
-                    // @ts-expect-error -- updated_at value is not from the export and will not
+                    // @ts-expect-error -- updated_at value is not from the export and will not follow typing string|number typing
                     updated_at: currentDate,
                     Financeur: financeur,
                     TypePoste: typePoste,

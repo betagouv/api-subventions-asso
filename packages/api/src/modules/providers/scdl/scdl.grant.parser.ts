@@ -46,19 +46,19 @@ export default class ScdlGrantParser {
     ];
 
     protected static isGrantValid(grant: ScdlParsedGrant, originalWithPath: DefaultObject<ValueWithPath>): Validity {
-        const pb: Problem[] = [];
+        const problems: Problem[] = [];
         let valid = true;
 
         ScdlGrantParser.requirements.forEach(requirement => {
             if (requirement.test(grant[requirement.key])) return;
-            pb.push({
+            problems.push({
                 field: originalWithPath[requirement.key].keyPath.join("."),
                 value: originalWithPath[requirement.key].value,
                 message: requirement.message,
             });
             if (!requirement.optional) valid = false;
         });
-        if (pb.length) return { valid, problems: pb };
+        if (problems.length) return { valid, problems };
         return { valid };
     }
 

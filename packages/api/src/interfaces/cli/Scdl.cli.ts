@@ -1,5 +1,5 @@
 import fs from "fs";
-import path from "node:path";
+import path from "path";
 import { Siret } from "dto";
 import csvSyncStringifier = require("csv-stringify/sync");
 import ExportDateError from "../../shared/errors/cliErrors/ExportDateError";
@@ -81,6 +81,7 @@ export default class ScdlCli {
     }
 
     private async exportErrors(errors: ParsedDataWithProblem[], file: string) {
+        if (!DEV) return;
         const fileName = path.basename(file);
         if (!fs.existsSync(ScdlCli.errorsFolderName)) fs.mkdirSync(ScdlCli.errorsFolderName);
         const outputPath = path.join(ScdlCli.errorsFolderName, fileName + "-errors.csv");
@@ -88,7 +89,6 @@ export default class ScdlCli {
         const csvContent = csvSyncStringifier.stringify(errors, { header: true });
         const buffer = Buffer.from(csvContent);
 
-        if (!DEV) return;
         fs.open(outputPath, "w", function (err, fd) {
             if (err) {
                 console.log("Cant open file");
