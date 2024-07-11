@@ -113,17 +113,17 @@ describe("ScdlCli", () => {
             // @ts-expect-error -- test private
             const sanitizeSpy = jest.spyOn(cli, "validateGenericInput");
             await test();
-            expect(sanitizeSpy).toHaveBeenLastCalledWith(FILE_PATH, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
+            expect(sanitizeSpy).toHaveBeenCalledWith(FILE_PATH, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
         });
 
         it("reads file", async () => {
             await test();
-            expect(fs.readFileSync).toHaveBeenLastCalledWith(FILE_PATH);
+            expect(fs.readFileSync).toHaveBeenCalledWith(FILE_PATH);
         });
 
         it("should call parser", async () => {
             await test();
-            expect(parserMethod).toHaveBeenLastCalledWith(...parserArgs);
+            expect(parserMethod).toHaveBeenCalledWith(...parserArgs);
         });
 
         it("persists entities", async () => {
@@ -131,7 +131,7 @@ describe("ScdlCli", () => {
             const persistSpy = jest.spyOn(cli, "persistEntities").mockReturnValueOnce(Promise.resolve());
             jest.mocked(parserMethod).mockReturnValueOnce({ entities: STORABLE_DATA_ARRAY });
             await test();
-            expect(persistSpy).toHaveBeenLastCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
+            expect(persistSpy).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
         });
 
         it("exports errors", async () => {
@@ -140,7 +140,7 @@ describe("ScdlCli", () => {
             const exportSpy = jest.spyOn(cli, "exportErrors").mockReturnValueOnce(Promise.resolve());
             jest.mocked(parserMethod).mockReturnValueOnce({ entities: STORABLE_DATA_ARRAY, errors: ERRORS });
             await test();
-            expect(exportSpy).toHaveBeenLastCalledWith(ERRORS, FILE_PATH);
+            expect(exportSpy).toHaveBeenCalledWith(ERRORS, FILE_PATH);
         });
     });
 
