@@ -137,7 +137,7 @@ export class DocumentsService {
 
     private async downloadDocument(folderName: string, document: DocumentRequestDto): Promise<string | null> {
         try {
-            const readStream = await this.getDocumentStreamByLocalApiUrl(document.url);
+            const readStream = await this.getDocumentStreamByUrl(document.url);
             const sourceFileName =
                 readStream.headers["content-disposition"]?.match(/attachment;filename="(.*)"/)?.[1] || document.nom;
             const extension = /\.[^/]+$/.test(sourceFileName)
@@ -158,8 +158,8 @@ export class DocumentsService {
         }
     }
 
-    private async getDocumentStreamByLocalApiUrl(localApiUrl: string) {
-        const urlObj = new URL(localApiUrl, FRONT_OFFICE_URL);
+    private async getDocumentStreamByUrl(url: string) {
+        const urlObj = new URL(url, FRONT_OFFICE_URL);
         const providerId = urlObj.pathname.split("/")[2];
         const id = urlObj.searchParams.get("url") || "";
         return this.getDocumentStream(providerId, decodeURIComponent(id));
