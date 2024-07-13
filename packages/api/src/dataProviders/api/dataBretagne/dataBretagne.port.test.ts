@@ -47,4 +47,37 @@ describe("Data Bretagne Port", () => {
             );
         });
     });
+
+    describe("getMinistry", () => {
+        it("should make a GET request", async () => {
+            port.token = "TOKEN";
+            await port.getMinistry();
+            expect(port.http.get).toHaveBeenCalledWith(
+                "https://api.databretagne.fr/budget/api/v1/ministere?limit=400",
+                { headers: { Authorization: "TOKEN" } },
+            );
+        });
+    });
+
+    describe("getDomaineFonctionnel", () => {
+        it("should make a GET request", async () => {
+            port.token = "TOKEN";
+            await port.getDomaineFonctionnel();
+            expect(port.http.get).toHaveBeenCalledWith(
+                "https://api.databretagne.fr/budget/api/v1/domaine-fonct?limit=4000",
+                { headers: { Authorization: "TOKEN" } },
+            );
+        });
+    });
+
+    describe("getRefProgrammation", () => {
+        it("should make a GET request", async () => {
+            port.token = "TOKEN";
+            await port.getRefProgrammation();
+            expect(port.http.get).toHaveBeenCalledWith(
+                "https://api.databretagne.fr/budget/api/v1/ref-programmation?limit=4000",
+                { headers: { Authorization: "TOKEN" } },
+            );
+        });
+    });
 });

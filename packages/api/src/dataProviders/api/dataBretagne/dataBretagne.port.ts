@@ -3,8 +3,16 @@ import { DATA_BRETAGNE_PASSWORD, DATA_BRETAGNE_USERNAME } from "../../../configu
 import ProviderRequestFactory, {
     ProviderRequestService,
 } from "../../../modules/provider-request/providerRequest.service";
-import { DataBretagneProgrammeDto } from "./DataBretagneDto";
+import {
+    DataBretagneProgrammeDto,
+    DataBretagneMinistryDto,
+    DataBretagneDomaineFonctionnelDto,
+    DataBretagnenRefProgrammationDto,
+} from "./DataBretagneDto";
 import DataBretagneProgrammeAdapter from "./DataBretagneProgrammeAdapter";
+import DataBretagneMinistryAdapter from "./DataBretagneMinistryAdapter";
+import DataBretagneDomaineFonctionnelAdapter from "./DataBretagneDomaineFonctionnelAdapter";
+import DataBretagneRefProgrammationAdapter from "./DataBretagneRefProgrammationAdapter";
 
 export class DataBretagnePort {
     private basepath = "https://api.databretagne.fr/budget/api/v1";
@@ -36,6 +44,42 @@ export class DataBretagnePort {
                 },
             })
         )?.data?.items.map(DataBretagneProgrammeAdapter.toEntity);
+    }
+
+    async getMinistry() {
+        return (
+            await this.http.get<{ items: DataBretagneMinistryDto[] }>(`${this.basepath}/ministere?limit=400`, {
+                headers: {
+                    Authorization: this.token,
+                },
+            })
+        )?.data?.items.map(DataBretagneMinistryAdapter.toEntity);
+    }
+
+    async getDomaineFonctionnel() {
+        return (
+            await this.http.get<{ items: DataBretagneDomaineFonctionnelDto[] }>(
+                `${this.basepath}/domaine-fonct?limit=4000`,
+                {
+                    headers: {
+                        Authorization: this.token,
+                    },
+                },
+            )
+        )?.data?.items.map(DataBretagneDomaineFonctionnelAdapter.toEntity);
+    }
+
+    async getRefProgrammation() {
+        return (
+            await this.http.get<{ items: DataBretagnenRefProgrammationDto[] }>(
+                `${this.basepath}/ref-programmation?limit=4000`,
+                {
+                    headers: {
+                        Authorization: this.token,
+                    },
+                },
+            )
+        )?.data?.items.map(DataBretagneRefProgrammationAdapter.toEntity);
     }
 }
 
