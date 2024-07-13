@@ -114,6 +114,12 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
         return this.toPaymentArray(requests);
     }
 
+    async getAllPayments() {
+        const requests = await chorusLineRepository.findAll();
+
+        return this.toPaymentArray(requests);
+    }
+
     // TODO: unit test this
     public getProgramCode(entity: ChorusLineEntity) {
         return parseInt(entity.indexedInformations.codeDomaineFonctionnel.slice(0, 4), 10); // for exemple codeDomaineFonctionnel = "0143-03-01", codeProgramme = 143
