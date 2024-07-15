@@ -4,7 +4,7 @@ exports[`PaymentTableController > extractHeaders() > return an array of header 1
 [
   "Montant versé",
   "Centre financier",
-  "Date du payment",
+  "Date du paiement",
   "Programme",
 ]
 `;
