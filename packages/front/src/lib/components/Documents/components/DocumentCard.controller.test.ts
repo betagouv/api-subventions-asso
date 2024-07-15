@@ -1,33 +1,13 @@
-import { nanoid } from "nanoid";
+import { DocumentsController } from "$lib/components/Documents/Documents.controller";
 import trackerService from "$lib/services/tracker.service.js";
 import { DocumentCardController } from "$lib/components/Documents/components/DocumentCard.controller";
-import type { DocumentEntity } from "$lib/entities/DocumentEntity";
 vi.mock("$lib/resources/documents/documents.service");
 vi.mock("$lib/services/tracker.service.js");
-vi.mock("nanoid");
 
 describe("Documents.controller", () => {
     let controller: DocumentCardController;
-    const DOC: DocumentEntity = {
-        __meta__: { siret: "123456789" },
-        date: new Date("2024-06-01"),
-        label: "Libellé",
-        nom: "",
-        provider: "",
-        type: "",
-        url: "",
-    };
-
     beforeAll(() => {
-        controller = new DocumentCardController(DOC);
-    });
-
-    it("defines checkboxId", () => {
-        const expected = "NOM1609459200000";
-        vi.mocked(nanoid).mockReturnValueOnce(expected);
-        const ctrl = new DocumentCardController(DOC);
-        const actual = ctrl.checkBoxId;
-        expect(actual).toBe(expected);
+        controller = new DocumentCardController();
     });
 
     describe("onClick", () => {
@@ -40,24 +20,6 @@ describe("Documents.controller", () => {
                 "association-etablissement.documents.download",
                 URL,
             );
-        });
-    });
-
-    describe("documentLabel", () => {
-        it("returns label and siret combined if siret is known", () => {
-            const expected = "Libellé - 123456789";
-            const actual = controller.documentLabel;
-            expect(actual).toBe(expected);
-        });
-
-        it("returns label only if no siret is known", () => {
-            // @ts-expect-error -- test
-            controller.document = { label: "Libellé", __meta__: {} } as DocumentEntity;
-            const expected = "Libellé";
-            const actual = controller.documentLabel;
-            expect(actual).toBe(expected);
-            // @ts-expect-error -- test
-            controller.document = DOC;
         });
     });
 });
