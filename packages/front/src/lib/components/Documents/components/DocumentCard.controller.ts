@@ -29,6 +29,6 @@ export class DocumentCardController {
     }
 
     newValueOnCheck() {
-        return this.isSelected.value ? undefined : this.document;
+        return this.isSelected.value ? this.document : undefined;
     }
 }
