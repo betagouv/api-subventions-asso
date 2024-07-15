@@ -9,7 +9,6 @@
 <div class="fr-notice fr-notice--info">
     <div class="fr-container">
         <div class="fr-notice__body">
-            <!-- eslint-disable-next-line svelte/no-at-html-tags ok because defined in component itself -->
             <p class="fr-notice__title">
                 <slot />
             </p>
