@@ -26,8 +26,5 @@
 
     .custom-notice-container :global(.fr-notice__body::before) {
         background-image: none;
-        width: 1.5rem;
-        height: 1.5rem;
-        color: transparent;
     }
 </style>
