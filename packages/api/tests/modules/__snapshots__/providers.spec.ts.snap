@@ -53,6 +53,10 @@ Object {
       "description": "Données au format SCDL de divers producteurs sur data.gouv",
       "name": "Data.gouv",
     },
+    Object {
+      "description": "CIPDR",
+      "name": "Subventia",
+    },
   ],
 }
 `;
