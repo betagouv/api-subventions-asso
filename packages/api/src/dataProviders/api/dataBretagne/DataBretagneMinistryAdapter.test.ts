@@ -1,7 +1,6 @@
 import DataBretagneMinistryAdapter from "./DataBretagneMinistryAdapter";
 import { DataBretagneMinistryDto } from "./DataBretagneDto";
 import MinistryEntity from "../../../entities/MinistryEntity";
-import { cp } from "fs";
 
 describe("DataBretagneMinistryAdapter", () => {
     describe("toEntity", () => {

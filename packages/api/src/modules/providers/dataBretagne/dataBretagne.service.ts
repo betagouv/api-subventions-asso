@@ -1,8 +1,12 @@
+import { IncrementExpression } from "typescript";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import dataBretagnePort from "../../../dataProviders/api/dataBretagne/dataBretagne.port";
 import stateBudgetProgramPort from "../../../dataProviders/db/state-budget-program/stateBudgetProgram.port";
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
 import ProviderCore from "../ProviderCore";
+import MinistryEntity from "../../../entities/MinistryEntity";
+import DomaineFonctionnelEntity from "../../../entities/DomaineFonctionnelEntity";
+import RefProgrammationEntity from "../../../entities/RefProgrammationEntity";
 
 /**
  * Service for interacting with the Data Bretagne API.
@@ -45,6 +49,36 @@ class DataBretagneService extends ProviderCore {
 
         return programs.reduce((acc, program) => {
             acc[program.code_programme] = program;
+            return acc;
+        }, {});
+    }
+
+    async getMinistriesRecord(): Promise<Record<string, MinistryEntity>> {
+        await dataBretagnePort.login();
+        const ministries = await dataBretagnePort.getMinistry();
+
+        return ministries.reduce((acc, ministry) => {
+            acc[ministry.code_ministere] = ministry;
+            return acc;
+        }, {});
+    }
+
+    async getDomaineFonctRecord(): Promise<Record<string, DomaineFonctionnelEntity>> {
+        await dataBretagnePort.login();
+        const domainesFonct = await dataBretagnePort.getDomaineFonctionnel();
+
+        return domainesFonct.reduce((acc, domaine) => {
+            acc[domaine.code_action] = domaine;
+            return acc;
+        }, {});
+    }
+
+    async getRefProgrammationRecord(): Promise<Record<string, RefProgrammationEntity>> {
+        await dataBretagnePort.login();
+        const refsProgram = await dataBretagnePort.getRefProgrammation();
+
+        return refsProgram.reduce((acc, refProgram) => {
+            acc[refProgram.code_activite] = refProgram;
             return acc;
         }, {});
     }

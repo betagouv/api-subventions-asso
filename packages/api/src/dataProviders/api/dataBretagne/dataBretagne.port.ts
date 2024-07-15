@@ -36,50 +36,38 @@ export class DataBretagnePort {
         }
     }
 
-    async getStateBudgetPrograms() {
+    async get_collection<T>(collection: string) {
         return (
-            await this.http.get<{ items: DataBretagneProgrammeDto[] }>(`${this.basepath}/programme?limit=400`, {
+            await this.http.get<{ items: T[] }>(`${this.basepath}/${collection}?limit=4000`, {
                 headers: {
                     Authorization: this.token,
                 },
             })
-        )?.data?.items.map(DataBretagneProgrammeAdapter.toEntity);
+        )?.data?.items;
+    }
+
+    async getStateBudgetPrograms() {
+        return (await this.get_collection<DataBretagneProgrammeDto>("programme")).map(
+            DataBretagneProgrammeAdapter.toEntity,
+        );
     }
 
     async getMinistry() {
-        return (
-            await this.http.get<{ items: DataBretagneMinistryDto[] }>(`${this.basepath}/ministere?limit=400`, {
-                headers: {
-                    Authorization: this.token,
-                },
-            })
-        )?.data?.items.map(DataBretagneMinistryAdapter.toEntity);
+        return (await this.get_collection<DataBretagneMinistryDto>("ministere")).map(
+            DataBretagneMinistryAdapter.toEntity,
+        );
     }
 
     async getDomaineFonctionnel() {
-        return (
-            await this.http.get<{ items: DataBretagneDomaineFonctionnelDto[] }>(
-                `${this.basepath}/domaine-fonct?limit=4000`,
-                {
-                    headers: {
-                        Authorization: this.token,
-                    },
-                },
-            )
-        )?.data?.items.map(DataBretagneDomaineFonctionnelAdapter.toEntity);
+        return (await this.get_collection<DataBretagneDomaineFonctionnelDto>("domaine-fonct")).map(
+            DataBretagneDomaineFonctionnelAdapter.toEntity,
+        );
     }
 
     async getRefProgrammation() {
-        return (
-            await this.http.get<{ items: DataBretagnenRefProgrammationDto[] }>(
-                `${this.basepath}/ref-programmation?limit=4000`,
-                {
-                    headers: {
-                        Authorization: this.token,
-                    },
-                },
-            )
-        )?.data?.items.map(DataBretagneRefProgrammationAdapter.toEntity);
+        return (await this.get_collection<DataBretagnenRefProgrammationDto>("ref-programmation")).map(
+            DataBretagneRefProgrammationAdapter.toEntity,
+        );
     }
 }
 
