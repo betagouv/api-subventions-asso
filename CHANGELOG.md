@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.51.2](https://github.com/betagouv/api-subventions-asso/compare/v0.51.1...v0.51.2) (2024-07-15)
+
+### Features
+
+-   **api:** declare subventia service as provider ([26eaeb5](https://github.com/betagouv/api-subventions-asso/commit/26eaeb508691845d191f903db566fbe1afdf21b9))
+
 ## [0.51.1](https://github.com/betagouv/api-subventions-asso/compare/v0.51.0...v0.51.1) (2024-07-15)
 
 ### Bug Fixes
