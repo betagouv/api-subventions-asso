@@ -11,6 +11,7 @@ import demarchesSimplifieesService from "./demarchesSimplifiees/demarchesSimplif
 import bodaccService from "./bodacc/bodacc.service";
 import Provider from "./@types/IProvider";
 import scdlGrantService from "./scdl/scdl.grant.service";
+import subventiaService from "./subventia/subventia.service";
 
 const providers: { [key: string]: Provider } = {
     osirisService,
@@ -25,6 +26,7 @@ const providers: { [key: string]: Provider } = {
     caisseDepotsService,
     bodaccService,
     scdlGrantService,
+    subventiaService,
 };
 
 export default providers;
