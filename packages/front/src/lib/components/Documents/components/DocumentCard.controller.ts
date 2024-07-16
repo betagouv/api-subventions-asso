@@ -24,7 +24,6 @@ export class DocumentCardController {
     }
 
     get documentLabel() {
-        if (this.document.__meta__.siret) return `${this.document.label} - ${this.document.__meta__.siret}`;
         return this.document.label;
     }
 
