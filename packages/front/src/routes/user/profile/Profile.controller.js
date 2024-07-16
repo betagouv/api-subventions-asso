@@ -54,9 +54,9 @@ export class ProfileController {
     async onSubmit(data) {
         try {
             await userService.updateProfile(data);
-            if (userService.isProfileFullyCompleted(data)) {
-                localStorageService.setItem("hide-main-info-banner", true);
-            }
+            // if (userService.isProfileFullyCompleted(data)) {  // TODO clean in #2544
+            //     localStorageService.setItem("hide-main-info-banner", true);
+            // }
             this.saveStatus.set("saved");
         } catch (_e) {
             this.saveStatus.set("error");
