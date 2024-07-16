@@ -198,13 +198,10 @@ describe("ScdlCli", () => {
         const ERRORS: ParsedDataWithProblem[] = [];
         const FILE = "path/file.csv";
         const STR_CONTENT = "azertyuiop";
-        const BUFFER = "buffer" as unknown as Buffer;
         const OUTPUT_PATH = "importErrors/file.csv-errors.csv";
-        let bufferSpy: jest.SpyInstance;
 
         beforeAll(() => {
             jest.mocked(csvSyncStringifier.stringify).mockReturnValue(STR_CONTENT);
-            bufferSpy = jest.spyOn(Buffer, "from").mockReturnValue(BUFFER);
         });
 
         afterAll(() => {
@@ -232,27 +229,10 @@ describe("ScdlCli", () => {
             expect(csvSyncStringifier.stringify).toHaveBeenCalled();
         });
 
-        it("creates buffer from stringified errors", () => {
-            // @ts-expect-error -- test private method
-            cli.exportErrors(ERRORS, FILE);
-            expect(bufferSpy).toHaveBeenCalledWith(STR_CONTENT);
-        });
-
         it("writes in proper path", () => {
             // @ts-expect-error -- test private method
             cli.exportErrors(ERRORS, FILE);
-            expect(fs.open).toHaveBeenCalledWith(OUTPUT_PATH, "w", expect.any(Function));
-        });
-
-        it("writes buffer", () => {
-            // @ts-expect-error -- test private method
-            cli.exportErrors(ERRORS, FILE);
-            // @ts-expect-error -- fs.open has different signatures and ts selects wrong one
-            const write: Function = jest.mocked(fs.open).mock.calls[0][2] as Function;
-            write(null, 0);
-            const expected = BUFFER;
-            const actual = jest.mocked(fs.write).mock.calls[0][1];
-            expect(actual).toBe(expected);
+            expect(fs.writeFileSync).toHaveBeenCalledWith(OUTPUT_PATH, STR_CONTENT, { flag: "w", encoding: "utf-8" });
         });
     });
 });

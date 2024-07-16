@@ -28,7 +28,7 @@ export class GenericParser {
 
         for (const possibleKeys of mapper) {
             // If it is a string, it is the only possible header for this property
-            if (!(possibleKeys instanceof Array)) oneLevelKey = possibleKeys as string;
+            if (!Array.isArray(possibleKeys)) oneLevelKey = possibleKeys as string;
             // checking all possible headers for this property
             else oneLevelKey = (possibleKeys as string[]).find(possibleKey => data[possibleKey.trim()] != undefined); // TODO manage multiple valid case (with filters)
 
@@ -64,10 +64,10 @@ export class GenericParser {
         data: NestedDefaultObject<TypeIn>,
     ) {
         return Object.keys(pathObject).reduce((acc, key: string) => {
-            const tempAcc = acc as TypeOut;
+            const tempAcc = acc;
             tempAcc[key] = GenericParser.findAndAdaptByPath<TypeIn>(data, pathObject[key]);
             return tempAcc;
-        }, {} as unknown) as TypeOut;
+        }, {} as TypeOut) as TypeOut;
     }
 
     static linkHeaderToData<T = string>(headers: string[], data: T[]) {

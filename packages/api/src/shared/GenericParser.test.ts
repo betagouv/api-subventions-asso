@@ -1,6 +1,6 @@
 import dedent from "dedent";
 import { GenericParser } from "./GenericParser";
-import { DefaultObject, NestedDefaultObject, ParserInfo, ParserPath } from "../@types";
+import { DefaultObject, NestedBeforeAdaptation, NestedDefaultObject, ParserInfo, ParserPath } from "../@types";
 
 describe("GenericParser", () => {
     const ADAPTER = jest.fn(v => v);
@@ -56,11 +56,11 @@ describe("GenericParser", () => {
 
     describe("indexDataByPathObject", () => {
         let adaptByPathSpy: jest.SpyInstance;
-        const DATA = "data" as unknown as NestedDefaultObject<unknown>;
+        const DATA = "data" as unknown as NestedBeforeAdaptation;
         const MAPPER = {
             value1: "path1",
             value2: "path2",
-        } as unknown as DefaultObject<ParserPath | ParserInfo<unknown, any>>;
+        } as unknown as DefaultObject<ParserPath | ParserInfo>;
         beforeAll(() => {
             adaptByPathSpy = jest.spyOn(GenericParser, "findAndAdaptByPath").mockReturnValue("");
         });

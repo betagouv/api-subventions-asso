@@ -87,17 +87,12 @@ export default class ScdlCli {
         const outputPath = path.join(ScdlCli.errorsFolderName, fileName + "-errors.csv");
 
         const csvContent = csvSyncStringifier.stringify(errors, { header: true });
-        const buffer = Buffer.from(csvContent);
 
-        fs.open(outputPath, "w", function (err, fd) {
-            if (err) {
-                console.log("Cant open file");
-            } else {
-                fs.write(fd, buffer, 0, buffer.length, null, function (err) {
-                    if (err) console.log("Can't write to file");
-                    else console.log("fields with errors exported in " + path.resolve(outputPath));
-                });
-            }
-        });
+        try {
+            fs.writeFileSync(outputPath, csvContent, { flag: "w", encoding: "utf-8" });
+        } catch (err) {
+            if (err) console.log("Can't write to file");
+            else console.log("fields with errors exported in " + path.resolve(outputPath));
+        }
     }
 }
