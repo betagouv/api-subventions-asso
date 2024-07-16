@@ -40,6 +40,12 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   **api:** [#2381](https://github.com/betagouv/api-subventions-asso/issues/2381) agent connect creation email ([#2394](https://github.com/betagouv/api-subventions-asso/issues/2394)) ([4575a59](https://github.com/betagouv/api-subventions-asso/commit/4575a597a136219080d9f5cb3b04cb265702bf0d))
 -   **front:** [#2311](https://github.com/betagouv/api-subventions-asso/issues/2311) show all docs button ([#2406](https://github.com/betagouv/api-subventions-asso/issues/2406)) ([90d1215](https://github.com/betagouv/api-subventions-asso/commit/90d1215be5de2f1d493d7a59c8ff6471484820d7)), closes [#2356](https://github.com/betagouv/api-subventions-asso/issues/2356) [#2390](https://github.com/betagouv/api-subventions-asso/issues/2390)
 
+## [0.49.3](https://github.com/betagouv/api-subventions-asso/compare/v0.49.2...v0.49.3) (2024-07-16)
+
+### Features
+
+-   **front:** custom consultation instead of profile notice ([5518d7f](https://github.com/betagouv/api-subventions-asso/commit/5518d7fad75f6a6cdc3e969e82b059b05ce6df42))
+
 ## [0.49.2](https://github.com/betagouv/api-subventions-asso/compare/v0.49.1...v0.49.2) (2024-05-29)
 
 **Note:** Version bump only for package api-subventions-asso

@@ -27,6 +27,12 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   **api,dto:** [#2309](https://github.com/betagouv/datasubvention/issues/2309) download selected docs ([#2403](https://github.com/betagouv/datasubvention/issues/2403)) ([a793a9e](https://github.com/betagouv/datasubvention/commit/a793a9e149783c9371fe146e11ed83b5518330e2))
 -   **front:** [#2311](https://github.com/betagouv/datasubvention/issues/2311) show all docs button ([#2406](https://github.com/betagouv/datasubvention/issues/2406)) ([90d1215](https://github.com/betagouv/datasubvention/commit/90d1215be5de2f1d493d7a59c8ff6471484820d7)), closes [#2356](https://github.com/betagouv/datasubvention/issues/2356) [#2390](https://github.com/betagouv/datasubvention/issues/2390)
 
+## [0.49.3](https://github.com/betagouv/datasubvention/compare/v0.49.2...v0.49.3) (2024-07-16)
+
+### Features
+
+-   **front:** custom consultation instead of profile notice ([5518d7f](https://github.com/betagouv/datasubvention/commit/5518d7fad75f6a6cdc3e969e82b059b05ce6df42))
+
 ## [0.49.2](https://github.com/betagouv/datasubvention/compare/v0.49.1...v0.49.2) (2024-05-29)
 
 **Note:** Version bump only for package front
