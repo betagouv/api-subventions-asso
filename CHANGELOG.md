@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.49.3](https://github.com/betagouv/api-subventions-asso/compare/v0.49.2...v0.49.3) (2024-07-16)
+
+### Features
+
+-   **front:** custom consultation instead of profile notice ([5518d7f](https://github.com/betagouv/api-subventions-asso/commit/5518d7fad75f6a6cdc3e969e82b059b05ce6df42))
+
 ## [0.49.2](https://github.com/betagouv/api-subventions-asso/compare/v0.49.1...v0.49.2) (2024-05-29)
 
 **Note:** Version bump only for package api-subventions-asso
