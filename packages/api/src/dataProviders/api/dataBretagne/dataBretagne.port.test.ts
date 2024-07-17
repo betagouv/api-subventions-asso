@@ -1,4 +1,6 @@
+import { min } from "lodash";
 import { JEST_DATA_BRETAGNE_USERNAME, JEST_DATA_BRETAGNE_PASSWORD } from "../../../../jest.config.env";
+import MinistryEntity from "../../../entities/MinistryEntity";
 
 import ProviderRequestFactory from "../../../modules/provider-request/providerRequest.service";
 jest.mock("../../../modules/provider-request/providerRequest.service", () => ({
@@ -11,6 +13,14 @@ jest.mock("../../../modules/provider-request/providerRequest.service", () => ({
     }),
 }));
 import { DataBretagnePort } from "./dataBretagne.port";
+import DataBretagneMinistryAdapter from "./DataBretagneMinistryAdapter";
+import { mock } from "node:test";
+import { DataBretagneMinistryDto } from "./DataBretagneDto";
+import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
+import DomaineFonctionnelEntity from "../../../entities/DomaineFonctionnelEntity";
+import RefProgrammationEntity from "../../../entities/RefProgrammationEntity";
+
+const dtoData = { code: "code", sigle_ministere: "sigle_ministere", label: "nom_ministere" };
 
 describe("Data Bretagne Port", () => {
     let port;
@@ -37,17 +47,74 @@ describe("Data Bretagne Port", () => {
         });
     });
 
-    describe("getStateBudgetPrograms", () => {
-        it("should make a GET request ", async () => {
+    describe("getCollection", () => {
+        it("should make a GET request for collection value", async () => {
+            const collection = "programme";
             port.token = "TOKEN";
-            await port.getStateBudgetPrograms();
+            await port.getCollection(collection);
             expect(port.http.get).toHaveBeenCalledWith(
-                "https://api.databretagne.fr/budget/api/v1/programme?limit=400",
+                "https://api.databretagne.fr/budget/api/v1/programme?limit=4000",
                 { headers: { Authorization: "TOKEN" } },
             );
         });
     });
 
+    describe("getMinistry", () => {
+        let mockGetCollection: jest.SpyInstance;
+        let mockToEntity: jest.SpyInstance;
+
+        beforeAll(() => {
+            mockGetCollection = jest.spyOn(port, "getCollection").mockImplementation(() => {
+                console.log("ciao");
+                console.log(dtoData);
+                [dtoData] as DataBretagneMinistryDto[];
+            });
+
+            mockToEntity = jest
+                .spyOn(DataBretagneMinistryAdapter, "toEntity")
+                .mockReturnValue(new MinistryEntity("sigle_ministere", "code", "nom_ministere"));
+        });
+
+        afterAll(() => {
+            mockGetCollection.mockRestore();
+            mockToEntity.mockRestore();
+        });
+
+        it("should call getCollection with ministere", async () => {
+            //
+            //   console.log(port.getCollection);
+            //   console.log(mockGetCollection);
+            const result = await port.getMinistry();
+            expect(mockGetCollection).toHaveBeenCalledWith("ministere");
+        });
+    });
+    /*
+    describe.each( [
+        ["programme", [dtoData], new StateBudgetProgramEntity("mission", "label", "code_ministere", 132)],
+        ["ministere", [dtoData], new MinistryEntity("sigle_ministere", "code", "nom_ministere")],
+        ["domaine-fonct", [dtoData], new DomaineFonctionnelEntity("action", "code_action", 122)],
+        ["ref-programmation", [dtoData], new RefProgrammationEntity("label", "code",  121)],
+    ])("with %s", (collection, mockResolvedValueDto, MockReturnValueEntity) => {
+    */
+
+    /*
+        it("should return a list of ministry dto", async () => {
+            const result = await port.getMinistry();
+            expect(result).toEqual([{code: "code",
+                                     sigle_ministere: "sigle_ministere",
+                                     label : "nom_ministere"}]);
+        });
+        */
+    /*
+        it("should call DataBretagneProgrammeAdapter.toEntity", async () => {
+            await port.getMinistry();
+            expect(DataBretagneMinistryAdapter.toEntity).toHaveBeenCalledTimes(1);
+        });
+        
+    })
+    */
+
+    /*
     describe("getMinistry", () => {
         it("should make a GET request", async () => {
             port.token = "TOKEN";
@@ -80,4 +147,5 @@ describe("Data Bretagne Port", () => {
             );
         });
     });
+    */
 });

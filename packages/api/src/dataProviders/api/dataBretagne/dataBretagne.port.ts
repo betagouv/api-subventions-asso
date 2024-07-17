@@ -36,7 +36,7 @@ export class DataBretagnePort {
         }
     }
 
-    async get_collection<T>(collection: string) {
+    async getCollection<T>(collection: string) {
         return (
             await this.http.get<{ items: T[] }>(`${this.basepath}/${collection}?limit=4000`, {
                 headers: {
@@ -47,25 +47,26 @@ export class DataBretagnePort {
     }
 
     async getStateBudgetPrograms() {
-        return (await this.get_collection<DataBretagneProgrammeDto>("programme")).map(
+        // to DO : modify tests
+        return (await this.getCollection<DataBretagneProgrammeDto>("programme")).map(
             DataBretagneProgrammeAdapter.toEntity,
         );
     }
 
     async getMinistry() {
-        return (await this.get_collection<DataBretagneMinistryDto>("ministere")).map(
+        return (await this.getCollection<DataBretagneMinistryDto>("ministere")).map(
             DataBretagneMinistryAdapter.toEntity,
         );
     }
 
     async getDomaineFonctionnel() {
-        return (await this.get_collection<DataBretagneDomaineFonctionnelDto>("domaine-fonct")).map(
+        return (await this.getCollection<DataBretagneDomaineFonctionnelDto>("domaine-fonct")).map(
             DataBretagneDomaineFonctionnelAdapter.toEntity,
         );
     }
 
     async getRefProgrammation() {
-        return (await this.get_collection<DataBretagnenRefProgrammationDto>("ref-programmation")).map(
+        return (await this.getCollection<DataBretagnenRefProgrammationDto>("ref-programmation")).map(
             DataBretagneRefProgrammationAdapter.toEntity,
         );
     }
