@@ -15,6 +15,7 @@ import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import chorusLineRepository from "./repositories/chorus.line.repository";
+import { cursorTo } from "readline";
 
 export interface RejectedRequest {
     state: "rejected";
@@ -115,6 +116,20 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
     }
 
     async getAllPayments() {
+
+        let document = await chorusLineRepository.cursorFind({}, {indexedInformations : 1}).next();
+        while(document != null){
+            const payment = ChorusAdapter.toPayment(document, program);
+            await this.savePayment(payment);
+            document = await chorusLineRepository.cursorFind().next();
+        }
+
+        await chorusLineRepository.cursorFind().forEach((document) => {
+            const program = dataBretagneService.programsByCode[this.getProgramCode(document)];
+            const payment = ChorusAdapter.toPayment(document, program);})
+
+            await this.savePayment(payment);
+        }
         const requests = await chorusLineRepository.findAll();
 
         return this.toPaymentArray(requests);

@@ -22,7 +22,6 @@ import { WithId } from "mongodb";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
-import { before } from "lodash";
 
 describe("chorusService", () => {
     beforeAll(() => {

@@ -72,13 +72,8 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
             .toArray();
     }
 
-    public async findAll() {
-        return this.collection.find({}).toArray();
-        // pourquoi la methode cursorFind n'est pas async ?
-    }
-
-    public cursorFind(query: DefaultObject<unknown> = {}) {
-        return this.collection.find(query);
+    public cursorFind(query: DefaultObject<unknown> = {}, projection: DefaultObject<unknown> = {}) {
+        return this.collection.find(query, projection);
     }
 
     async createIndexes() {
