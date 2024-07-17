@@ -9,7 +9,7 @@
     import Alert from "$lib/dsfr/Alert.svelte";
     import type { ResourceType } from "$lib/types/ResourceType";
     import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
-    import Button from "$lib/dsfr/Button.svelte";
+    import DownloadButton from "$lib/components/Documents/components/DownloadButton.svelte";
 
     // TODO: replace unknown with EstablishmentEntity when created
     export let resource: AssociationEntity | unknown;
@@ -42,29 +42,10 @@
 
             <div class="fr-grid-row fr-mb-1w fr-mt-6w">
                 <div class="fr-ml-auto">
-                    <ul
-                        class="fr-btns-group fr-btns-group--inline-reverse fr-btns-group--inline-sm fr-btns-group--icon-right fr-btns-group--right">
-                        <li>
-                            <Button
-                                iconPosition="right"
-                                icon="download-line"
-                                trackerName="download-zip"
-                                title={$downloadBtnLabel}
-                                on:click={() => controller.download()}>
-                                {$downloadBtnLabel}
-                            </Button>
-                        </li>
-                        <li>
-                            <Button
-                                type="tertiary"
-                                outline={false}
-                                trackerName="reset-docs-selection"
-                                title="Réinitialiser la sélection de documents"
-                                on:click={() => controller.resetSelection()}>
-                                Réinitialiser
-                            </Button>
-                        </li>
-                    </ul>
+                    <DownloadButton
+                        docsStore={controller.flatSelectedDocs}
+                        on:download={() => controller.download()}
+                        on:reset={() => controller.resetSelection()} />
                 </div>
             </div>
 
@@ -95,21 +76,15 @@
                     {/each}
                 </section>
             {/if}
-            <ul class="fr-sr-only">
-                <li>
-                    <Button trackerName="download-zip" title={$downloadBtnLabel} on:click={() => controller.download()}>
-                        {$downloadBtnLabel}
-                    </Button>
-                </li>
-                <li>
-                    <Button
-                        trackerName="reset-docs-selection"
-                        on:click={() => controller.resetSelection()}
-                        title="Réinitialiser la sélection de documents">
-                        Réinitialiser
-                    </Button>
-                </li>
-            </ul>
+
+            <div class="fr-grid-row fr-mb-1w fr-mt-6w">
+                <div class="fr-ml-auto">
+                    <DownloadButton
+                        docsStore={controller.flatSelectedDocs}
+                        on:download={() => controller.download()}
+                        on:reset={() => controller.resetSelection()} />
+                </div>
+            </div>
         {:else}
             <DataNotFound
                 content="Nous sommes désolés, nous n'avons trouvé aucun document sur {controller.resourceNameWithDemonstrative}" />
