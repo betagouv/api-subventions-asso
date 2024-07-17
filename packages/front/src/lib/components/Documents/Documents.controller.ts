@@ -88,6 +88,17 @@ export class DocumentsController {
         return this._filterAssoDocs(associationDocuments, getSiegeSiret(association));
     }
 
+    async _getEstablishmentDocuments(establishment) {
+        const association = currentAssociation.value;
+        if (!association) return [];
+        const estabDocsPromise = establishmentService.getDocuments(establishment.siret);
+        const assoDocsPromise = associationService
+            .getDocuments(association.rna || association.siren)
+            .then(docs => this._filterAssoDocs(docs, establishment.siret));
+        const [estabDocs, assoDocs] = await Promise.all([estabDocsPromise, assoDocsPromise]);
+        return this._removeDuplicates([...estabDocs, ...assoDocs]);
+    }
+
     private _filterAssoDocs(docs: DocumentEntity[], siret: Siret) {
         // display rules from #2455: we show all docs except RIBs from other establishments than the one looked up
         // or the head establishment of the association that is looked up
@@ -111,17 +122,6 @@ export class DocumentsController {
             if (["RNA", "Avis de Situation Insee"].includes(doc.provider)) assoDocs.push(doc);
         }
         return { assoDocs, estabDocs, some: !!(assoDocs.length + estabDocs.length) };
-    }
-
-    async _getEstablishmentDocuments(establishment) {
-        const association = currentAssociation.value;
-        if (!association) return [];
-        const estabDocsPromise = establishmentService.getDocuments(establishment.siret);
-        const assoDocsPromise = associationService
-            .getDocuments(association.rna || association.siren)
-            .then(docs => this._filterAssoDocs(docs, establishment.siret));
-        const [estabDocs, assoDocs] = await Promise.all([estabDocsPromise, assoDocsPromise]);
-        return this._removeDuplicates([...estabDocs, ...assoDocs]);
     }
 
     async onMount() {
