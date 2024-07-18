@@ -8,7 +8,7 @@ import leCompteAssoService, { RejectedRequest } from "../../modules/providers/le
 import LeCompteAssoRequestEntity from "../../modules/providers/leCompteAsso/entities/LeCompteAssoRequestEntity";
 import { COLORS } from "../../shared/LogOptions";
 import * as CliHelper from "../../shared/helpers/CliHelper";
-import { findFiles } from "../../shared/helpers/ParserHelper";
+import { GenericParser } from "../../shared/GenericParser";
 
 @StaticImplements<CliStaticInterface>()
 export default class LeCompteAssoCli {
@@ -69,7 +69,7 @@ export default class LeCompteAssoCli {
             throw new Error(`File not found ${file}`);
         }
 
-        const files = findFiles(file);
+        const files = GenericParser.findFiles(file);
 
         console.info(`${files.length} files in the parse queue`);
         console.info(`You can read log in ${this.logFileParsePath}`);

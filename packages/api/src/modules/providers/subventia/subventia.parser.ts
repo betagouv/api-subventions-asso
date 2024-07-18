@@ -1,5 +1,5 @@
 import fs from "fs";
-import * as ParseHelper from "../../../shared/helpers/ParserHelper";
+import { GenericParser } from "../../../shared/GenericParser";
 import SubventiaDto from "./@types/subventia.dto";
 
 export default class SubventiaParser {
@@ -9,9 +9,9 @@ export default class SubventiaParser {
 
         console.info("\nStart parse file: ", filePath);
 
-        const data = ParseHelper.xlsParse(fileContent)[0];
+        const data = GenericParser.xlsParse(fileContent)[0];
         const headers = data[0] as string[];
-        const parsedData = data.slice(1).map(row => ParseHelper.linkHeaderToData(headers, row)) as SubventiaDto[];
+        const parsedData = data.slice(1).map(row => GenericParser.linkHeaderToData(headers, row)) as SubventiaDto[];
 
         return parsedData;
     }

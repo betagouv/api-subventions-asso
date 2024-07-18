@@ -1,6 +1,10 @@
 import fs from "fs";
 import { ObjectId } from "mongodb";
 
+jest.mock("csv-stringify/sync", () => ({
+    stringify: jest.fn(() => ""),
+}));
+
 jest.mock("fs");
 const mockedFs = jest.mocked(fs);
 import ExportDateError from "../../shared/errors/cliErrors/ExportDateError";
@@ -13,9 +17,14 @@ import MiscScdlGrant from "../../modules/providers/scdl/__fixtures__/MiscScdlGra
 import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
 import ScdlGrantParser from "../../modules/providers/scdl/scdl.grant.parser";
 import MiscScdlProducer from "../../modules/providers/scdl/__fixtures__/MiscScdlProducer";
+import { ParsedDataWithProblem } from "../../modules/providers/scdl/@types/Validation";
 
 jest.mock("../../modules/providers/scdl/scdl.grant.parser");
 const mockedScdlGrantParser = jest.mocked(ScdlGrantParser);
+
+import csvSyncStringifier = require("csv-stringify/sync");
+import exp from "node:constants";
+jest.mock("csv-stringify/sync");
 
 describe("ScdlCli", () => {
     const PRODUCER_ENTITY = {
@@ -31,7 +40,7 @@ describe("ScdlCli", () => {
     const FILE_PATH = "FILE_PATH";
     const STORABLE_DATA_ARRAY = [STORABLE_DATA];
     const DELIMETER = "%";
-    const PAGE_NAME = "nom de feuile";
+    const PAGE_NAME = "nom de feuille";
     const ROW_OFFSET = 4;
 
     let cli: ScdlCli;
@@ -41,8 +50,8 @@ describe("ScdlCli", () => {
         mockedScdlService.getProducer.mockResolvedValue(PRODUCER_ENTITY);
         // @ts-expect-error: private method
         mockedScdlService._buildGrantUniqueId.mockReturnValue(UNIQUE_ID);
-        mockedScdlGrantParser.parseCsv.mockReturnValue(STORABLE_DATA_ARRAY);
-        mockedScdlGrantParser.parseExcel.mockReturnValue(STORABLE_DATA_ARRAY);
+        mockedScdlGrantParser.parseCsv.mockReturnValue({ entities: STORABLE_DATA_ARRAY, errors: [] });
+        mockedScdlGrantParser.parseExcel.mockReturnValue({ entities: STORABLE_DATA_ARRAY, errors: [] });
         cli = new ScdlCli();
     });
 
@@ -109,25 +118,34 @@ describe("ScdlCli", () => {
             // @ts-expect-error -- test private
             const sanitizeSpy = jest.spyOn(cli, "validateGenericInput");
             await test();
-            expect(sanitizeSpy).toHaveBeenLastCalledWith(FILE_PATH, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
+            expect(sanitizeSpy).toHaveBeenCalledWith(FILE_PATH, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
         });
 
         it("reads file", async () => {
             await test();
-            expect(fs.readFileSync).toHaveBeenLastCalledWith(FILE_PATH);
+            expect(fs.readFileSync).toHaveBeenCalledWith(FILE_PATH);
         });
 
         it("should call parser", async () => {
             await test();
-            expect(parserMethod).toHaveBeenLastCalledWith(...parserArgs);
+            expect(parserMethod).toHaveBeenCalledWith(...parserArgs);
         });
 
         it("persists entities", async () => {
             // @ts-expect-error -- test private
-            const persistSpy = jest.spyOn(cli, "persistEntities");
-            jest.mocked(parserMethod).mockReturnValueOnce(STORABLE_DATA_ARRAY);
+            const persistSpy = jest.spyOn(cli, "persistEntities").mockReturnValueOnce(Promise.resolve());
+            jest.mocked(parserMethod).mockReturnValueOnce({ entities: STORABLE_DATA_ARRAY });
             await test();
-            expect(persistSpy).toHaveBeenLastCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
+            expect(persistSpy).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
+        });
+
+        it("exports errors", async () => {
+            const ERRORS = "toto" as unknown as any[];
+            // @ts-expect-error -- test private
+            const exportSpy = jest.spyOn(cli, "exportErrors").mockReturnValueOnce(Promise.resolve());
+            jest.mocked(parserMethod).mockReturnValueOnce({ entities: STORABLE_DATA_ARRAY, errors: ERRORS });
+            await test();
+            expect(exportSpy).toHaveBeenCalledWith(ERRORS, FILE_PATH);
         });
     });
 
@@ -173,6 +191,48 @@ describe("ScdlCli", () => {
             mockedScdlService.getProducer.mockResolvedValue(null);
             // @ts-expect-error -- test private
             expect(() => cli.validateGenericInput("WRONG_ID", new Date())).rejects.toThrowError();
+        });
+    });
+
+    describe("exportErrors", () => {
+        const ERRORS: ParsedDataWithProblem[] = [];
+        const FILE = "path/file.csv";
+        const STR_CONTENT = "azertyuiop";
+        const OUTPUT_PATH = "importErrors/file.csv-errors.csv";
+
+        beforeAll(() => {
+            jest.mocked(csvSyncStringifier.stringify).mockReturnValue(STR_CONTENT);
+        });
+
+        afterAll(() => {
+            jest.mocked(csvSyncStringifier.stringify).mockRestore();
+            jest.spyOn(Buffer, "from").mockRestore();
+        });
+
+        it("creates folder if does not exist", () => {
+            jest.mocked(fs.existsSync).mockReturnValueOnce(false);
+            // @ts-expect-error -- test private method
+            cli.exportErrors(ERRORS, FILE);
+            expect(fs.mkdirSync).toHaveBeenCalled();
+        });
+
+        it("does not crete folder if exists already", () => {
+            jest.mocked(fs.existsSync).mockReturnValueOnce(true);
+            // @ts-expect-error -- test private method
+            cli.exportErrors(ERRORS, FILE);
+            expect(fs.mkdirSync).not.toHaveBeenCalled();
+        });
+
+        it("stringifies errors", () => {
+            // @ts-expect-error -- test private method
+            cli.exportErrors(ERRORS, FILE);
+            expect(csvSyncStringifier.stringify).toHaveBeenCalled();
+        });
+
+        it("writes in proper path", () => {
+            // @ts-expect-error -- test private method
+            cli.exportErrors(ERRORS, FILE);
+            expect(fs.writeFileSync).toHaveBeenCalledWith(OUTPUT_PATH, STR_CONTENT, { flag: "w", encoding: "utf-8" });
         });
     });
 });

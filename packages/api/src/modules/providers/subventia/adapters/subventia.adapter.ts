@@ -1,18 +1,20 @@
 import { CommonApplicationDto, ApplicationStatus, DemandeSubvention } from "dto";
-import * as ParseHelper from "../../../../shared/helpers/ParserHelper";
-import { ExcelDateToJSDate } from "../../../../shared/helpers/ParserHelper";
 
 import subventiaService from "../subventia.service";
 import SubventiaDto from "../@types/subventia.dto";
 import SubventiaEntity, { SubventiaDbo } from "../@types/subventia.entity";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { DefaultObject, ParserInfo } from "../../../../@types";
+import { GenericParser } from "../../../../shared/GenericParser";
 import { RawApplication } from "../../../grant/@types/rawGrant";
 
 export default class SubventiaAdapter {
     static applicationToEntity(application: SubventiaDto, exportDate: Date): SubventiaEntity {
         return {
-            ...ParseHelper.indexDataByPathObject(subventiaMapper, application), // TODO <string|number>
+            ...GenericParser.indexDataByPathObject<string | number>(
+                subventiaMapper as DefaultObject<ParserInfo<number | string>>,
+                application as DefaultObject<string | number>,
+            ), // TODO <string|number>
             provider: subventiaService.provider.id,
             exportDate: exportDate,
         } as SubventiaEntity;
@@ -74,7 +76,7 @@ const subventiaMapper: DefaultObject<ParserInfo> = {
         path: ["Date - Décision"],
         adapter: value => {
             if (!value) return value;
-            return ExcelDateToJSDate(parseInt(value, 10));
+            return GenericParser.ExcelDateToJSDate(parseInt(value, 10));
         },
     },
     montants_accorde: { path: ["Montant voté TTC - Décision"] },

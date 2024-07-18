@@ -1,16 +1,16 @@
-import * as ParseHelper from "../../../shared/helpers/ParserHelper";
 import * as CliHelper from "../../../shared/helpers/CliHelper";
 import { BRANCHE_ACCEPTED } from "../../../shared/ChorusBrancheAccepted";
 import { isSiret, isEJ } from "../../../shared/Validators";
 import { getMD5 } from "../../../shared/helpers/StringHelper";
 import { DefaultObject } from "../../../@types";
+import { GenericParser } from "../../../shared/GenericParser";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import IChorusIndexedInformations from "./@types/IChorusIndexedInformations";
 
 export default class ChorusParser {
     static parse(content: Buffer) {
         console.log("Open and read file ...");
-        const pagesWithName = ParseHelper.xlsParseWithPageName(content);
+        const pagesWithName = GenericParser.xlsParseWithPageName(content);
         console.log("Read file end");
 
         const extractionPage = pagesWithName.find(page => page.name.includes("Extraction"));
@@ -48,8 +48,8 @@ export default class ChorusParser {
 
     protected static rowsToEntities(headers, rows) {
         return rows.reduce((entities, row, index, array) => {
-            const data = ParseHelper.linkHeaderToData(headers, row) as DefaultObject<string | number>;
-            const indexedInformations = ParseHelper.indexDataByPathObject(
+            const data = GenericParser.linkHeaderToData(headers, row) as DefaultObject<string>; // TODO <string|number>
+            const indexedInformations = GenericParser.indexDataByPathObject(
                 // TODO <string|number>
                 ChorusLineEntity.indexedInformationsPath,
                 data,

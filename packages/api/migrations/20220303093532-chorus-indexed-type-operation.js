@@ -3,7 +3,7 @@ const { printAtSameLine } = require("../build/src/shared/helpers/CliHelper");
 const migrationManager = require("../build/src/shared/MigrationManager").default;
 const repo = require("../build/src/modules/providers/chorus/repositories/chorus.line.repository").default;
 const enity = require("../build/src/modules/providers/chorus/entities/ChorusLineEntity").default;
-const ParseHelper = require("../build/src/shared/helpers/ParserHelper");
+const { GenericParser } = require("../build/src/shared/GenericParser");
 
 module.exports = {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -22,7 +22,7 @@ module.exports = {
             const doc = await cursor.next();
             if (!doc) continue;
             const data = doc.data;
-            doc.indexedInformations = ParseHelper.indexDataByPathObject(enity.indexedInformationsPath, data);
+            doc.indexedInformations = GenericParser.indexDataByPathObject(enity.indexedInformationsPath, data);
             await repo.updateById(doc._id, doc);
             counter++;
             printAtSameLine(counter.toString());
