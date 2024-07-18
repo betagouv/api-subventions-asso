@@ -54,7 +54,11 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 ...CONVENTION_DATE_PATHS,
             ],
         ],
-        adapter: value => dateAdapter(value)?.getFullYear(),
+        adapter: value => {
+            if (!value) return null;
+            if (value.toString().length === 4) return Number(value);
+            return dateAdapter(value)?.getFullYear();
+        },
     },
     conventionDate: {
         path: [[...CONVENTION_DATE_PATHS]],
