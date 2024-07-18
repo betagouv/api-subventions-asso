@@ -5,11 +5,11 @@
     import ErrorAlert from "../ErrorAlert.svelte";
     import DataNotFound from "../DataNotFound.svelte";
     import { DocumentsController } from "./Documents.controller";
-    import DocumentCard from "./components/DocumentCard.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
     import type { ResourceType } from "$lib/types/ResourceType";
     import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
     import DownloadButton from "$lib/components/Documents/components/DownloadButton.svelte";
+    import DocumentSection from "$lib/components/Documents/components/DocumentSection.svelte";
 
     // TODO: replace unknown with EstablishmentEntity when created
     export let resource: AssociationEntity | unknown;
@@ -55,27 +55,17 @@
                 si le document n'est pas sélectionné, d'un lien de téléchargement pour le document seul.
             </div>
 
-            <!-- Asso documents -->
-            {#if documents.assoDocs.length}
-                <h3 class="fr-h2 fr-mb-4w">Pièces provenant de l’INSEE et du RNA</h3>
-                <section class="fr-ml-n2w">
-                    {#each documents.assoDocs as document, i}
-                        <DocumentCard {document} bind:value={$selectedDocsOrNull.assoDocs[i]} />
-                    {/each}
-                </section>
-            {/if}
+            <DocumentSection
+                documents={documents.assoDocs}
+                title="Pièces provenant de l’INSEE et du RNA"
+                bind:selectedDocs={$selectedDocsOrNull.assoDocs} />
 
-            {#if documents.estabDocs.length}
-                <!-- Etab documents -->
-                <h3 class="fr-h2 fr-mt-6w fr-mb-4w">
-                    {controller.estabDocsTitle}
-                </h3>
-                <section class="fr-ml-n2w">
-                    {#each documents.estabDocs as document, i}
-                        <DocumentCard {document} bind:value={$selectedDocsOrNull.estabDocs[i]} />
-                    {/each}
-                </section>
-            {/if}
+            <div class="fr-mt-6w" />
+
+            <DocumentSection
+                documents={documents.estabDocs}
+                title="Pièces complémentaires déposées par l’établissement secondaire"
+                bind:selectedDocs={$selectedDocsOrNull.estabDocs} />
 
             <div class="fr-grid-row fr-mb-1w fr-mt-6w">
                 <div class="fr-ml-auto">
