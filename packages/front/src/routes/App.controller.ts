@@ -35,12 +35,12 @@ export class AppController {
     }
 
     async handleBannerDisplay(url: string, user: UserDto) {
-        if (["/user/profile", "/auth/login", "/auth/signup"].includes(url)) return this.displayBanner.set(false);
+        // if (["/user/profile", "/auth/login", "/auth/signup"].includes(url)) return this.displayBanner.set(false); // TODO clean in #2544
         const localStorageHide = localStorageService.getItem("hide-main-info-banner", false);
         if (localStorageHide.value) return this.displayBanner.set(false);
-        if (userService.isProfileFullyCompleted(user)) {
-            return this.displayBanner.set(false);
-        }
+        // if (userService.isProfileFullyCompleted(user)) { // TODO clean in #2544
+        //     return this.displayBanner.set(false);
+        // }
         this.displayBanner.set(true);
     }
 }
