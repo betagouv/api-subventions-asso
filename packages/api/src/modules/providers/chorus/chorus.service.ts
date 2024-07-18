@@ -1,3 +1,4 @@
+import { cursorTo } from "readline";
 import { Siren, Siret } from "dto";
 import { WithId } from "mongodb";
 import { ASSO_BRANCHE } from "../../../shared/ChorusBrancheAccepted";
@@ -12,6 +13,7 @@ import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import uniteLegalEntreprisesService from "../uniteLegalEntreprises/uniteLegal.entreprises.service";
 import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
+import { DefaultObject } from "../../../@types";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import chorusLineRepository from "./repositories/chorus.line.repository";
@@ -114,10 +116,8 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
         return this.toPaymentArray(requests);
     }
 
-    async getAllPayments() {
-        const requests = await chorusLineRepository.findAll();
-
-        return this.toPaymentArray(requests);
+    async chorusCursorFind(projection: DefaultObject<unknown> = { indexedInformations: 1 }) {
+        return await chorusLineRepository.cursorFind({}, projection);
     }
 
     // TODO: unit test this
