@@ -69,24 +69,10 @@ describe("chorusService", () => {
             toVersementArrayMock.mockRestore();
         });
 
-        describe("getAllPayments", () => {
-            beforeAll(() => {
-                mockedChorusLineRepository.findAll.mockResolvedValue([
-                    ENTITIES[0],
-                    ENTITIES[0],
-                ] as unknown as WithId<ChorusLineEntity>[]);
-            });
-
-            afterAll(() => mockedChorusLineRepository.findAll.mockReset());
-
-            it("should call chorusLineRepository.findAll() once", async () => {
-                await chorusService.getAllPayments();
-                expect(mockedChorusLineRepository.findAll).toHaveBeenCalledTimes(1);
-            });
-
-            it("should call toPaymentArray once", async () => {
-                await chorusService.getAllPayments();
-                expect(toVersementArrayMock).toHaveBeenCalledTimes(1);
+        describe("chorusCursorFind", () => {
+            it("should call chorusLineRepository.find", async () => {
+                await chorusService.chorusCursorFind({});
+                expect(mockedChorusLineRepository.cursorFind).toHaveBeenCalledTimes(1);
             });
         });
 
