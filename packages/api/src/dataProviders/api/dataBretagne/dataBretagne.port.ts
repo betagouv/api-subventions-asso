@@ -7,12 +7,17 @@ import {
     DataBretagneProgrammeDto,
     DataBretagneMinistryDto,
     DataBretagneDomaineFonctionnelDto,
-    DataBretagnenRefProgrammationDto,
+    DataBretagneRefProgrammationDto,
 } from "./DataBretagneDto";
-import DataBretagneProgrammeAdapter from "./DataBretagneProgrammeAdapter";
-import DataBretagneMinistryAdapter from "./DataBretagneMinistryAdapter";
-import DataBretagneDomaineFonctionnelAdapter from "./DataBretagneDomaineFonctionnelAdapter";
-import DataBretagneRefProgrammationAdapter from "./DataBretagneRefProgrammationAdapter";
+import {
+    DataBretagneDomaineFonctionnelAdapter,
+    DataBretagneMinistryAdapter,
+    DataBretagneProgrammeAdapter,
+    DataBretagneRefProgrammationAdapter,
+} from "./DataBretagneAdapter";
+
+// TO DO GIULIA : ajouter le validator pour les données de DataBretagne
+// Valider avec Victor que les transformations en entités soit au niveau de la port et pas du service
 
 export class DataBretagnePort {
     private basepath = "https://api.databretagne.fr/budget/api/v1";
@@ -47,7 +52,6 @@ export class DataBretagnePort {
     }
 
     async getStateBudgetPrograms() {
-        // to DO : modify tests
         return (await this.getCollection<DataBretagneProgrammeDto>("programme")).map(
             DataBretagneProgrammeAdapter.toEntity,
         );
@@ -66,7 +70,7 @@ export class DataBretagnePort {
     }
 
     async getRefProgrammation() {
-        return (await this.getCollection<DataBretagnenRefProgrammationDto>("ref-programmation")).map(
+        return (await this.getCollection<DataBretagneRefProgrammationDto>("ref-programmation")).map(
             DataBretagneRefProgrammationAdapter.toEntity,
         );
     }

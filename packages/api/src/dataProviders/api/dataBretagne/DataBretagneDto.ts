@@ -8,21 +8,21 @@ export interface DataBretagneProgrammeDto {
 
 export interface DataBretagneMinistryDto {
     code: string;
-    sigle_ministere: string;
+    sigle_ministere: string | null;
     label: string;
     description?: string | null;
 }
 
 export interface DataBretagneDomaineFonctionnelDto {
     code: string;
-    code_programme: string;
+    code_programme: string | null;
     label: string;
     description?: string | null;
 }
 
-export interface DataBretagnenRefProgrammationDto {
+export interface DataBretagneRefProgrammationDto {
     code: string;
-    code_programme: string;
+    code_programme: string | null;
     label: string;
     description?: string | null;
 }

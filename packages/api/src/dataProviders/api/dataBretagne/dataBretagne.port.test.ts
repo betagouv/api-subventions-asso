@@ -1,4 +1,3 @@
-import { min } from "lodash";
 import { JEST_DATA_BRETAGNE_USERNAME, JEST_DATA_BRETAGNE_PASSWORD } from "../../../../jest.config.env";
 import MinistryEntity from "../../../entities/MinistryEntity";
 
@@ -13,15 +12,24 @@ jest.mock("../../../modules/provider-request/providerRequest.service", () => ({
     }),
 }));
 import { DataBretagnePort } from "./dataBretagne.port";
-import DataBretagneMinistryAdapter from "./DataBretagneMinistryAdapter";
-import { mock } from "node:test";
-import { DataBretagneMinistryDto } from "./DataBretagneDto";
+import {
+    DataBretagneDomaineFonctionnelAdapter,
+    DataBretagneMinistryAdapter,
+    DataBretagneProgrammeAdapter,
+    DataBretagneRefProgrammationAdapter,
+} from "./DataBretagneAdapter";
+import {
+    DataBretagneDomaineFonctionnelDto,
+    DataBretagneMinistryDto,
+    DataBretagneRefProgrammationDto,
+    DataBretagneProgrammeDto,
+} from "./DataBretagneDto";
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
 import DomaineFonctionnelEntity from "../../../entities/DomaineFonctionnelEntity";
 import RefProgrammationEntity from "../../../entities/RefProgrammationEntity";
 
 const dtoData = { code: "code", sigle_ministere: "sigle_ministere", label: "nom_ministere" };
-
+const getResult = { data: { items: [dtoData] } };
 describe("Data Bretagne Port", () => {
     let port;
 
@@ -48,6 +56,15 @@ describe("Data Bretagne Port", () => {
     });
 
     describe("getCollection", () => {
+        let mockGet: jest.SpyInstance;
+        beforeEach(() => {
+            mockGet = jest.spyOn(port.http, "get").mockResolvedValue(getResult);
+        });
+
+        afterAll(() => {
+            mockGet.mockRestore();
+        });
+
         it("should make a GET request for collection value", async () => {
             const collection = "programme";
             port.token = "TOKEN";
@@ -57,95 +74,71 @@ describe("Data Bretagne Port", () => {
                 { headers: { Authorization: "TOKEN" } },
             );
         });
+
+        it("should return the items", async () => {
+            const collection = "programme";
+            const result = await port.getCollection(collection);
+            expect(result).toEqual(getResult.data.items);
+        });
     });
 
-    describe("getMinistry", () => {
+    describe.each([
+        [
+            async () => port.getStateBudgetPrograms(),
+            "programme",
+            [dtoData] as unknown as DataBretagneProgrammeDto[],
+            new StateBudgetProgramEntity("mission", "label", "code_ministere", 132),
+            DataBretagneProgrammeAdapter,
+        ],
+        [
+            async () => port.getMinistry(),
+            "ministere",
+            [dtoData] as unknown as DataBretagneMinistryDto[],
+            new MinistryEntity("sigle_ministere", "code", "nom_ministere"),
+            DataBretagneMinistryAdapter,
+        ],
+        [
+            async () => port.getDomaineFonctionnel(),
+            "domaine-fonct",
+            [dtoData] as unknown as DataBretagneDomaineFonctionnelDto[],
+            new DomaineFonctionnelEntity("action", "code_action", 122),
+            DataBretagneDomaineFonctionnelAdapter,
+        ],
+        [
+            async () => port.getRefProgrammation(),
+            "ref-programmation",
+            [dtoData] as unknown as DataBretagneRefProgrammationDto[],
+            new RefProgrammationEntity("label", "code", 121),
+            DataBretagneRefProgrammationAdapter,
+        ],
+    ])("with %s", (methodToTest, collection, mockResolvedValueDto, MockReturnValueEntity, Adapter) => {
         let mockGetCollection: jest.SpyInstance;
         let mockToEntity: jest.SpyInstance;
 
-        beforeAll(() => {
-            mockGetCollection = jest.spyOn(port, "getCollection").mockImplementation(() => {
-                console.log("ciao");
-                console.log(dtoData);
-                [dtoData] as DataBretagneMinistryDto[];
-            });
+        beforeEach(() => {
+            mockGetCollection = jest.spyOn(port, "getCollection").mockResolvedValue(mockResolvedValueDto);
 
-            mockToEntity = jest
-                .spyOn(DataBretagneMinistryAdapter, "toEntity")
-                .mockReturnValue(new MinistryEntity("sigle_ministere", "code", "nom_ministere"));
+            mockToEntity = jest.spyOn(Adapter, "toEntity").mockReturnValue(MockReturnValueEntity);
         });
 
-        afterAll(() => {
+        afterEach(() => {
             mockGetCollection.mockRestore();
             mockToEntity.mockRestore();
         });
 
-        it("should call getCollection with ministere", async () => {
-            //
-            //   console.log(port.getCollection);
-            //   console.log(mockGetCollection);
-            const result = await port.getMinistry();
-            expect(mockGetCollection).toHaveBeenCalledWith("ministere");
+        it("should call getCollection with collection", async () => {
+            const result = await methodToTest();
+            expect(mockGetCollection).toHaveBeenCalledWith(collection);
+        });
+
+        it("should return a list of entity", async () => {
+            const result = await methodToTest();
+            expect(result).toEqual([MockReturnValueEntity]);
+        });
+
+        it("should call mockToEntity", async () => {
+            const result = await methodToTest();
+            expect(mockToEntity).toHaveBeenCalledTimes(mockResolvedValueDto.length);
         });
     });
-    /*
-    describe.each( [
-        ["programme", [dtoData], new StateBudgetProgramEntity("mission", "label", "code_ministere", 132)],
-        ["ministere", [dtoData], new MinistryEntity("sigle_ministere", "code", "nom_ministere")],
-        ["domaine-fonct", [dtoData], new DomaineFonctionnelEntity("action", "code_action", 122)],
-        ["ref-programmation", [dtoData], new RefProgrammationEntity("label", "code",  121)],
-    ])("with %s", (collection, mockResolvedValueDto, MockReturnValueEntity) => {
-    */
-
-    /*
-        it("should return a list of ministry dto", async () => {
-            const result = await port.getMinistry();
-            expect(result).toEqual([{code: "code",
-                                     sigle_ministere: "sigle_ministere",
-                                     label : "nom_ministere"}]);
-        });
-        */
-    /*
-        it("should call DataBretagneProgrammeAdapter.toEntity", async () => {
-            await port.getMinistry();
-            expect(DataBretagneMinistryAdapter.toEntity).toHaveBeenCalledTimes(1);
-        });
-        
-    })
-    */
-
-    /*
-    describe("getMinistry", () => {
-        it("should make a GET request", async () => {
-            port.token = "TOKEN";
-            await port.getMinistry();
-            expect(port.http.get).toHaveBeenCalledWith(
-                "https://api.databretagne.fr/budget/api/v1/ministere?limit=400",
-                { headers: { Authorization: "TOKEN" } },
-            );
-        });
-    });
-
-    describe("getDomaineFonctionnel", () => {
-        it("should make a GET request", async () => {
-            port.token = "TOKEN";
-            await port.getDomaineFonctionnel();
-            expect(port.http.get).toHaveBeenCalledWith(
-                "https://api.databretagne.fr/budget/api/v1/domaine-fonct?limit=4000",
-                { headers: { Authorization: "TOKEN" } },
-            );
-        });
-    });
-
-    describe("getRefProgrammation", () => {
-        it("should make a GET request", async () => {
-            port.token = "TOKEN";
-            await port.getRefProgrammation();
-            expect(port.http.get).toHaveBeenCalledWith(
-                "https://api.databretagne.fr/budget/api/v1/ref-programmation?limit=4000",
-                { headers: { Authorization: "TOKEN" } },
-            );
-        });
-    });
-    */
 });
