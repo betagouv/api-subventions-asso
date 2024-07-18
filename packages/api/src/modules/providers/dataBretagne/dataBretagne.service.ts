@@ -1,8 +1,13 @@
+import { IncrementExpression } from "typescript";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import dataBretagnePort from "../../../dataProviders/api/dataBretagne/dataBretagne.port";
 import stateBudgetProgramPort from "../../../dataProviders/db/state-budget-program/stateBudgetProgram.port";
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
 import ProviderCore from "../ProviderCore";
+import MinistryEntity from "../../../entities/MinistryEntity";
+import DomaineFonctionnelEntity from "../../../entities/DomaineFonctionnelEntity";
+import RefProgrammationEntity from "../../../entities/RefProgrammationEntity";
+import { DataBretagneMinistryValidator } from "../../../dataProviders/api/dataBretagne/DataBretagneValidator";
 
 /**
  * Service for interacting with the Data Bretagne API.
@@ -43,8 +48,40 @@ class DataBretagneService extends ProviderCore {
     async findProgramsRecord(): Promise<Record<number, StateBudgetProgramEntity>> {
         const programs = await stateBudgetProgramPort.findAll();
 
-        return programs.reduce((acc, program) => {
-            acc[program.code_programme] = program;
+        return programs.reduce((acc, currentLine) => {
+            acc[currentLine.code_programme] = currentLine;
+            return acc;
+        }, {});
+    }
+
+    async getMinistriesRecord(): Promise<Record<string, MinistryEntity>> {
+        await dataBretagnePort.login();
+        const ministries = await dataBretagnePort.getMinistry();
+        return ministries.reduce((acc, currentLine) => {
+            acc[currentLine.code_ministere] = currentLine;
+            return acc;
+        }, {});
+    }
+
+    async getDomaineFonctRecord(): Promise<Record<string, DomaineFonctionnelEntity>> {
+        /*Giulia says : est-ce que je peux mettre le login dans l'init ?
+        comme ça je ne dois pas le faire à chaque fois ?
+        */
+        await dataBretagnePort.login();
+        const domainesFonct = await dataBretagnePort.getDomaineFonctionnel();
+
+        return domainesFonct.reduce((acc, currentLine) => {
+            acc[currentLine.code_action] = currentLine;
+            return acc;
+        }, {});
+    }
+
+    async getRefProgrammationRecord(): Promise<Record<string, RefProgrammationEntity>> {
+        await dataBretagnePort.login();
+        const refsProgram = await dataBretagnePort.getRefProgrammation();
+
+        return refsProgram.reduce((acc, currentLine) => {
+            acc[currentLine.code_activite] = currentLine;
             return acc;
         }, {});
     }

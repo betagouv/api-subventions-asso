@@ -7,12 +7,17 @@ import {
     DataBretagneProgrammeDto,
     DataBretagneMinistryDto,
     DataBretagneDomaineFonctionnelDto,
-    DataBretagnenRefProgrammationDto,
+    DataBretagneRefProgrammationDto,
 } from "./DataBretagneDto";
-import DataBretagneProgrammeAdapter from "./DataBretagneProgrammeAdapter";
-import DataBretagneMinistryAdapter from "./DataBretagneMinistryAdapter";
-import DataBretagneDomaineFonctionnelAdapter from "./DataBretagneDomaineFonctionnelAdapter";
-import DataBretagneRefProgrammationAdapter from "./DataBretagneRefProgrammationAdapter";
+import {
+    DataBretagneDomaineFonctionnelAdapter,
+    DataBretagneMinistryAdapter,
+    DataBretagneProgrammeAdapter,
+    DataBretagneRefProgrammationAdapter,
+} from "./DataBretagneAdapter";
+
+// TO DO GIULIA : ajouter le validator pour les données de DataBretagne
+// Valider avec Victor que les transformations en entités soit au niveau de la port et pas du service
 
 export class DataBretagnePort {
     private basepath = "https://api.databretagne.fr/budget/api/v1";
@@ -36,50 +41,38 @@ export class DataBretagnePort {
         }
     }
 
-    async getStateBudgetPrograms() {
+    async getCollection<T>(collection: string) {
         return (
-            await this.http.get<{ items: DataBretagneProgrammeDto[] }>(`${this.basepath}/programme?limit=400`, {
+            await this.http.get<{ items: T[] }>(`${this.basepath}/${collection}?limit=4000`, {
                 headers: {
                     Authorization: this.token,
                 },
             })
-        )?.data?.items.map(DataBretagneProgrammeAdapter.toEntity);
+        )?.data?.items;
+    }
+
+    async getStateBudgetPrograms() {
+        return (await this.getCollection<DataBretagneProgrammeDto>("programme")).map(
+            DataBretagneProgrammeAdapter.toEntity,
+        );
     }
 
     async getMinistry() {
-        return (
-            await this.http.get<{ items: DataBretagneMinistryDto[] }>(`${this.basepath}/ministere?limit=400`, {
-                headers: {
-                    Authorization: this.token,
-                },
-            })
-        )?.data?.items.map(DataBretagneMinistryAdapter.toEntity);
+        return (await this.getCollection<DataBretagneMinistryDto>("ministere")).map(
+            DataBretagneMinistryAdapter.toEntity,
+        );
     }
 
     async getDomaineFonctionnel() {
-        return (
-            await this.http.get<{ items: DataBretagneDomaineFonctionnelDto[] }>(
-                `${this.basepath}/domaine-fonct?limit=4000`,
-                {
-                    headers: {
-                        Authorization: this.token,
-                    },
-                },
-            )
-        )?.data?.items.map(DataBretagneDomaineFonctionnelAdapter.toEntity);
+        return (await this.getCollection<DataBretagneDomaineFonctionnelDto>("domaine-fonct")).map(
+            DataBretagneDomaineFonctionnelAdapter.toEntity,
+        );
     }
 
     async getRefProgrammation() {
-        return (
-            await this.http.get<{ items: DataBretagnenRefProgrammationDto[] }>(
-                `${this.basepath}/ref-programmation?limit=4000`,
-                {
-                    headers: {
-                        Authorization: this.token,
-                    },
-                },
-            )
-        )?.data?.items.map(DataBretagneRefProgrammationAdapter.toEntity);
+        return (await this.getCollection<DataBretagneRefProgrammationDto>("ref-programmation")).map(
+            DataBretagneRefProgrammationAdapter.toEntity,
+        );
     }
 }
 
