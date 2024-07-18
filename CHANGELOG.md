@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.52.0](https://github.com/betagouv/api-subventions-asso/compare/v0.51.3...v0.52.0) (2024-07-18)
+
+## [0.49.3](https://github.com/betagouv/api-subventions-asso/compare/v0.51.2...v0.49.3) (2024-07-16)
+
+### Features
+
+-   **api:** [#2456](https://github.com/betagouv/api-subventions-asso/issues/2456) scdl parser accepts excel files ([#2483](https://github.com/betagouv/api-subventions-asso/issues/2483)) ([23e3506](https://github.com/betagouv/api-subventions-asso/commit/23e3506b66e61da85ed80973625c1ad829cb7965)), closes [#2318](https://github.com/betagouv/api-subventions-asso/issues/2318)
+-   **api:** clearer type management ([e1925f1](https://github.com/betagouv/api-subventions-asso/commit/e1925f18dce9d8f7f5be1ff697841a519558f2b2))
+-   **api:** new module csv-stringify ([8e9106c](https://github.com/betagouv/api-subventions-asso/commit/8e9106cd87c74d9bda22a11f37a5e115cddaa963))
+-   **api:** scdl parser exports errors ([4df2b28](https://github.com/betagouv/api-subventions-asso/commit/4df2b28aa8d623d210b00c8e36aa25f4807bbead))
+-   **front:** custom consultation instead of profile notice ([5518d7f](https://github.com/betagouv/api-subventions-asso/commit/5518d7fad75f6a6cdc3e969e82b059b05ce6df42))
+
 ## [0.51.3](https://github.com/betagouv/api-subventions-asso/compare/v0.51.2...v0.51.3) (2024-07-18)
 
 **Note:** Version bump only for package api-subventions-asso

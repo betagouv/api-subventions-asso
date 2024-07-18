@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.52.0](https://github.com/betagouv/datasubvention/compare/v0.51.3...v0.52.0) (2024-07-18)
+
+## [0.49.3](https://github.com/betagouv/datasubvention/compare/v0.51.2...v0.49.3) (2024-07-16)
+
+### Features
+
+-   **front:** custom consultation instead of profile notice ([5518d7f](https://github.com/betagouv/datasubvention/commit/5518d7fad75f6a6cdc3e969e82b059b05ce6df42))
+
 ## [0.51.3](https://github.com/betagouv/datasubvention/compare/v0.51.2...v0.51.3) (2024-07-18)
 
 **Note:** Version bump only for package front
