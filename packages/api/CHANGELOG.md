@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.52.1](https://github.com/betagouv/api-subventions-asso/compare/v0.52.0...v0.52.1) (2024-07-19)
+
+### Bug Fixes
+
+-   **api:** [#2552](https://github.com/betagouv/api-subventions-asso/issues/2552) scdl exercice adapter robust for number vs dates ([#2553](https://github.com/betagouv/api-subventions-asso/issues/2553)) ([8a5c8eb](https://github.com/betagouv/api-subventions-asso/commit/8a5c8eb296f141644d35f6824b63df2ca96b82b5))
+
 # [0.52.0](https://github.com/betagouv/api-subventions-asso/compare/v0.51.3...v0.52.0) (2024-07-18)
 
 ### Features
