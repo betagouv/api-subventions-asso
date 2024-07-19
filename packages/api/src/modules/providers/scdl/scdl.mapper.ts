@@ -47,6 +47,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
         // for now if no exercise column we will use conventionDate as default
         path: [
             [
+                "Année de la demande",
                 ...getMapperVariants("exercice"),
                 "dateDecision_Tri",
                 "annee",
@@ -55,7 +56,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             ],
         ],
         adapter: value => {
-            if (!value) return null;
+            if (!value) return undefined;
             if (value.toString().length === 4) return Number(value);
             return dateAdapter(value)?.getFullYear();
         },
