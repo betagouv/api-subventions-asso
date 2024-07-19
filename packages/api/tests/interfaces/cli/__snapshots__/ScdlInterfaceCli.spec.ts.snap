@@ -10,7 +10,131 @@ Object {
 }
 `;
 
-exports[`SCDL CLI parse should add grants with exercise from conventionDate 1`] = `
+exports[`SCDL CLI parsing edge cases should add grants with exercise from its own column 1`] = `
+Array [
+  Object {
+    "__data__": Object {
+      "Année de la demande": 2023,
+      "Co-financement": "",
+      "Date de début du projet": "",
+      "Date de fin du projet": "",
+      "Evaluation": "",
+      "Financeur principal": "",
+      "Montant demandé": 1500,
+      "Pluriannualité": "",
+      "QPV": "Hors Quartier Politique de la Ville",
+      "Statut de la demande": "Soldée",
+      "dateConvention": "Commission Permanente du 22 mai 2023",
+      "descriptif": "blablabla",
+      "idBeneficiaire": "00408359000069",
+      "montant": 1000,
+      "nomAttribuant": "Conseil Départemental de l'Oise - Direction de l'attractivité et du soutien aux acteurs territoriaux",
+      "nomBeneficiaire": "une asso",
+      "objet": "Aide à l'animation locale - Ouverture de l'espace rencontre : visites médiatisées parents enfants en 2023 - 2023",
+      "referenceDecision": 677,
+    },
+    "_id": Any<String>,
+    "aidSystem": "",
+    "allocatorName": "Région Bretagne",
+    "allocatorSiret": "23350001600040",
+    "amount": 1000,
+    "associationName": "une asso",
+    "associationRna": "",
+    "associationSiret": "00408359000069",
+    "decisionReference": 677,
+    "exercice": 2023,
+    "grantPercentage": "",
+    "idRAE": "",
+    "object": "Aide à l'animation locale - Ouverture de l'espace rencontre : visites médiatisées parents enfants en 2023 - 2023",
+    "paymentConditions": "",
+    "paymentEndDate": null,
+    "paymentNature": "",
+    "producerSlug": "bretagne",
+  },
+  Object {
+    "__data__": Object {
+      "Année de la demande": 2023,
+      "Co-financement": "",
+      "Date de début du projet": "",
+      "Date de fin du projet": "",
+      "Evaluation": "",
+      "Financeur principal": "",
+      "Montant demandé": 20000,
+      "Pluriannualité": "",
+      "QPV": "Hors Quartier Politique de la Ville",
+      "Statut de la demande": "Cloturée",
+      "dateConvention": "Commission Permanente du 27 mars 2023",
+      "descriptif": "blablabla",
+      "idBeneficiaire": "00408359000069",
+      "montant": 15000,
+      "nomAttribuant": "Conseil Départemental de l'Oise - Direction de l'attractivité et du soutien aux acteurs territoriaux",
+      "nomBeneficiaire": "une asso",
+      "objet": "Subventions annuelles de fonctionnement des associations - ACAP Pôle Régional Image - 2023",
+      "referenceDecision": "cbc",
+    },
+    "_id": Any<String>,
+    "aidSystem": "",
+    "allocatorName": "Région Bretagne",
+    "allocatorSiret": "23350001600040",
+    "amount": 15000,
+    "associationName": "une asso",
+    "associationRna": "",
+    "associationSiret": "00408359000069",
+    "conventionDate": 2023-03-26T22:00:00.000Z,
+    "decisionReference": "cbc",
+    "exercice": 2023,
+    "grantPercentage": "",
+    "idRAE": "",
+    "object": "Subventions annuelles de fonctionnement des associations - ACAP Pôle Régional Image - 2023",
+    "paymentConditions": "",
+    "paymentEndDate": null,
+    "paymentNature": "",
+    "producerSlug": "bretagne",
+  },
+  Object {
+    "__data__": Object {
+      "Année de la demande": 2023,
+      "Co-financement": "",
+      "Date de début du projet": "",
+      "Date de fin du projet": "",
+      "Evaluation": "",
+      "Financeur principal": "",
+      "Montant demandé": 5000,
+      "Pluriannualité": "",
+      "QPV": "Hors Quartier Politique de la Ville",
+      "Statut de la demande": "Cloturée",
+      "dateConvention": "Commission Permanente du 27 mars 2023",
+      "descriptif": "blablabla",
+      "idBeneficiaire": "00408359000069",
+      "montant": 1500,
+      "nomAttribuant": "Conseil Départemental de l'Oise - Direction de l'attractivité et du soutien aux acteurs territoriaux",
+      "nomBeneficiaire": "une asso",
+      "objet": "Subventions annuelles de fonctionnement des associations - Agence Régionale du Livre et de la Lecture des Hauts de France - 2023",
+      "referenceDecision": "a8b",
+    },
+    "_id": Any<String>,
+    "aidSystem": "",
+    "allocatorName": "Région Bretagne",
+    "allocatorSiret": "23350001600040",
+    "amount": 1500,
+    "associationName": "une asso",
+    "associationRna": "",
+    "associationSiret": "00408359000069",
+    "conventionDate": 2023-03-26T22:00:00.000Z,
+    "decisionReference": "a8b",
+    "exercice": 2023,
+    "grantPercentage": "",
+    "idRAE": "",
+    "object": "Subventions annuelles de fonctionnement des associations - Agence Régionale du Livre et de la Lecture des Hauts de France - 2023",
+    "paymentConditions": "",
+    "paymentEndDate": null,
+    "paymentNature": "",
+    "producerSlug": "bretagne",
+  },
+]
+`;
+
+exports[`SCDL CLI parsing parse should add grants with exercise from conventionDate 1`] = `
 Array [
   Object {
     "UeNotification": false,
@@ -175,7 +299,7 @@ Array [
 ]
 `;
 
-exports[`SCDL CLI parse should add grants with exercise from its own column 1`] = `
+exports[`SCDL CLI parsing parse should add grants with exercise from its own column 1`] = `
 Array [
   Object {
     "UeNotification": false,
@@ -344,7 +468,7 @@ Array [
 ]
 `;
 
-exports[`SCDL CLI parseXls should add grants with exercise from conventionDate 1`] = `
+exports[`SCDL CLI parsing parseXls should add grants with exercise from conventionDate 1`] = `
 Array [
   Object {
     "__data__": Object {
@@ -719,7 +843,7 @@ Array [
 ]
 `;
 
-exports[`SCDL CLI parseXls should add grants with exercise from its own column 1`] = `
+exports[`SCDL CLI parsing parseXls should add grants with exercise from its own column 1`] = `
 Array [
   Object {
     "__data__": Object {
