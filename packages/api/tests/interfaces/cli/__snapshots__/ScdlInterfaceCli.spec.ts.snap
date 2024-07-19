@@ -10,7 +10,15 @@ Object {
 }
 `;
 
-exports[`SCDL CLI parse should add grants with exercise from conventionDate 1`] = `
+exports[`SCDL CLI parsing edge cases should add grants with exercise from its own column 1`] = `
+Array [
+  2023,
+  2023,
+  2023,
+]
+`;
+
+exports[`SCDL CLI parsing parse should add grants with exercise from conventionDate 1`] = `
 Array [
   Object {
     "UeNotification": false,
@@ -175,7 +183,7 @@ Array [
 ]
 `;
 
-exports[`SCDL CLI parse should add grants with exercise from its own column 1`] = `
+exports[`SCDL CLI parsing parse should add grants with exercise from its own column 1`] = `
 Array [
   Object {
     "UeNotification": false,
@@ -344,7 +352,7 @@ Array [
 ]
 `;
 
-exports[`SCDL CLI parseXls should add grants with exercise from conventionDate 1`] = `
+exports[`SCDL CLI parsing parseXls should add grants with exercise from conventionDate 1`] = `
 Array [
   Object {
     "__data__": Object {
@@ -719,7 +727,7 @@ Array [
 ]
 `;
 
-exports[`SCDL CLI parseXls should add grants with exercise from its own column 1`] = `
+exports[`SCDL CLI parsing parseXls should add grants with exercise from its own column 1`] = `
 Array [
   Object {
     "__data__": Object {
