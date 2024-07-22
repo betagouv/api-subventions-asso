@@ -67,6 +67,13 @@
                 title="Pièces complémentaires déposées par l’établissement secondaire"
                 bind:selectedDocs={$selectedDocsOrNull.estabDocs} />
 
+            <div class="fr-mt-6w" />
+
+            <DocumentSection
+                documents={documents.headDocs}
+                title="Pièces complémentaires déposées par l’établissement siège"
+                bind:selectedDocs={$selectedDocsOrNull.headDocs} />
+
             <div class="fr-grid-row fr-mb-1w fr-mt-6w">
                 <div class="fr-ml-auto">
                     <DownloadButton
