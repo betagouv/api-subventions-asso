@@ -5,16 +5,13 @@ import {
     DataBretagneRefProgrammationDto,
 } from "./DataBretagneDto";
 
-// Giulia says : to test
-
-function dropDuplicates<T>(listDTO: T[]) {
-    const uniquesDTO = Array.from(new Map(listDTO.map(item => [JSON.stringify(item), item])).values());
-    return uniquesDTO;
+export function dropDuplicates<T>(listDTO: T[]) {
+    return [...new Set(listDTO)];
 }
 
-function findDuplicateAttribute<T, K extends keyof T>(collection: T[], attribute: K): T[K][] {
+export function findDuplicateAttribute<T, K extends keyof T>(collection: T[], attribute: K): T[K][] {
     const uniqueValues = new Set<T[K]>();
-    const duplicates: T[K][] = [];
+    const duplicates: T[K][] = []; // faire directement un set
 
     let value: T[K];
     for (const item of collection) {
@@ -25,12 +22,12 @@ function findDuplicateAttribute<T, K extends keyof T>(collection: T[], attribute
         }
 
         if (uniqueValues.has(value)) {
-            duplicates.push(value);
-            throw new Error(`Duplicate value found for code : ${String(value)}`);
+            //    duplicates.add(value);
+            console.error(`Duplicate value found for code : ${String(value)}`);
         }
         uniqueValues.add(value);
     }
-    return Array.from(new Set(duplicates));
+    return [...new Set(duplicates)];
 }
 
 export class DataBretagneDomaineFonctionnelValidator {
