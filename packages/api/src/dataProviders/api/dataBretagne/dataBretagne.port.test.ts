@@ -131,9 +131,9 @@ describe("Data Bretagne Port", () => {
             mockGetCollection = jest.spyOn(port, "getCollection").mockResolvedValue(mockResolvedValueDto);
 
             mockToEntity = jest.spyOn(Adapter, "toEntity").mockReturnValue(MockReturnValueEntity);
-            // @ts-expect-error: mockReSolvedValue not specifiable
             mockValidate = jest
                 .spyOn(Validator, "validate")
+                // @ts-expect-error: not specided mockeResolvedValueDto type
                 .mockReturnValue({ valids: mockResolvedValueDto, invalids: mockResolvedValueDto });
         });
 
