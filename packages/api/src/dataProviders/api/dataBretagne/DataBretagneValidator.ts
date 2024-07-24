@@ -5,45 +5,53 @@ import {
     DataBretagneRefProgrammationDto,
 } from "./DataBretagneDto";
 
-export function dropDuplicates<T>(listDTO: T[]) {
-    return [...new Set(listDTO)];
-}
+export class DataBretagneValidatorHelper {
+    static dropDuplicates<T>(listDTO: T[]): T[] {
+        return [...new Set(listDTO)];
+    }
 
-export function findDuplicateAttribute<T, K extends keyof T>(collection: T[], attribute: K): T[K][] {
-    const uniqueValues = new Set<T[K]>();
-    const duplicates: T[K][] = []; // faire directement un set
+    static findDuplicateAttribute<T, K extends keyof T>(collection: T[], attribute: K): Set<T[K]> {
+        const uniqueValues = new Set<T[K]>();
+        const duplicates = new Set<T[K]>();
 
-    let value: T[K];
-    for (const item of collection) {
-        if (attribute === undefined) {
-            value = item as unknown as T[K];
-        } else {
-            value = item[attribute] as unknown as T[K];
+        let value: T[K];
+        for (const item of collection) {
+            if (attribute === undefined) {
+                value = item as unknown as T[K];
+            } else {
+                value = item[attribute] as unknown as T[K];
+            }
+
+            if (uniqueValues.has(value)) {
+                duplicates.add(value);
+                console.error(`Duplicate value found for code : ${String(value)}`);
+            }
+            uniqueValues.add(value);
         }
+        return duplicates;
+    }
 
-        if (uniqueValues.has(value)) {
-            //    duplicates.add(value);
-            console.error(`Duplicate value found for code : ${String(value)}`);
+    static validateNotNulls<T>(dto: T, requiredAttributes: string[]): boolean {
+        for (const attribute of requiredAttributes) {
+            if (!dto[attribute]) {
+                console.error(`${String(attribute)} is required`);
+                return false;
+            }
         }
-        uniqueValues.add(value);
+        return true;
     }
-    return [...new Set(duplicates)];
-}
 
-export class DataBretagneDomaineFonctionnelValidator {
-    static validate(dtoList: DataBretagneDomaineFonctionnelDto[]) {
-        const dtoListWithoutDuplicates = dropDuplicates<DataBretagneDomaineFonctionnelDto>(dtoList);
-        const duplicatesCode = findDuplicateAttribute<DataBretagneDomaineFonctionnelDto, "code">(
-            dtoListWithoutDuplicates,
-            "code",
-        );
-
+    static sortDataByValidity<T>(
+        dtoListWithoutDuplicates: T[],
+        duplicatesCode: Set<string>,
+        requiredAttributes: string[],
+    ): { valids: T[]; invalids: T[] } {
         const sortedData = dtoListWithoutDuplicates.reduce<{
-            valids: DataBretagneDomaineFonctionnelDto[];
-            invalids: DataBretagneDomaineFonctionnelDto[];
+            valids: T[];
+            invalids: T[];
         }>(
             (acc, currentLine) => {
-                if (this.validateNotNulls(currentLine) && !duplicatesCode.includes(currentLine.code))
+                if (this.validateNotNulls(currentLine, requiredAttributes) && !duplicatesCode.has(currentLine["code"]))
                     acc["valids"].push(currentLine);
                 else acc["invalids"].push(currentLine);
                 return acc;
@@ -52,104 +60,78 @@ export class DataBretagneDomaineFonctionnelValidator {
         );
         return sortedData;
     }
-
-    static validateNotNulls(dto: DataBretagneDomaineFonctionnelDto) {
-        if (!dto.code) throw new Error("code is required");
-        if (!dto.label) throw new Error("label is required");
-        return true;
-    }
 }
 
-export class DataBretagneProgrammeValidator {
-    static validate(dtoList: DataBretagneProgrammeDto[]) {
-        const dtoListWithoutDuplicates = dropDuplicates<DataBretagneProgrammeDto>(dtoList);
-        const duplicatesCode = findDuplicateAttribute<DataBretagneProgrammeDto, "code">(
+export class DataBretagneDomaineFonctionnelValidator extends DataBretagneValidatorHelper {
+    static validate(dtoList: DataBretagneDomaineFonctionnelDto[]): {
+        valids: DataBretagneDomaineFonctionnelDto[];
+        invalids: DataBretagneDomaineFonctionnelDto[];
+    } {
+        const dtoListWithoutDuplicates = this.dropDuplicates<DataBretagneDomaineFonctionnelDto>(dtoList);
+        const duplicatesCode = this.findDuplicateAttribute<DataBretagneDomaineFonctionnelDto, "code">(
             dtoListWithoutDuplicates,
             "code",
         );
 
-        const sortedData = dtoListWithoutDuplicates.reduce<{
-            valids: DataBretagneProgrammeDto[];
-            invalids: DataBretagneProgrammeDto[];
-        }>(
-            (acc, currentLine) => {
-                if (this.validateNotNulls(currentLine) && !duplicatesCode.includes(currentLine.code))
-                    acc["valids"].push(currentLine);
-                else acc["invalids"].push(currentLine);
-                return acc;
-            },
-            { valids: [], invalids: [] },
-        );
-        return sortedData;
-    }
-
-    static validateNotNulls(dto: DataBretagneProgrammeDto) {
-        if (!dto.code) throw new Error("code is required");
-        if (!dto.label) throw new Error("label is required");
-        if (!dto.label_theme) throw new Error("label_theme is required");
-        if (!dto.code_ministere) throw new Error("code_ministere is required");
-        return true;
+        return this.sortDataByValidity<DataBretagneDomaineFonctionnelDto>(dtoListWithoutDuplicates, duplicatesCode, [
+            "code",
+            "label",
+        ]);
     }
 }
 
-export class DataBretagneRefProgrammationValidator {
-    static validate(dtoList: DataBretagneRefProgrammationDto[]) {
-        const dtoListWithoutDuplicates = dropDuplicates<DataBretagneRefProgrammationDto>(dtoList);
-        const duplicatesCode = findDuplicateAttribute<DataBretagneRefProgrammationDto, "code">(
+export class DataBretagneProgrammeValidator extends DataBretagneValidatorHelper {
+    static validate(dtoList: DataBretagneProgrammeDto[]): {
+        valids: DataBretagneProgrammeDto[];
+        invalids: DataBretagneProgrammeDto[];
+    } {
+        const dtoListWithoutDuplicates = this.dropDuplicates<DataBretagneProgrammeDto>(dtoList);
+        const duplicatesCode = this.findDuplicateAttribute<DataBretagneProgrammeDto, "code">(
             dtoListWithoutDuplicates,
             "code",
         );
 
-        const sortedData = dtoListWithoutDuplicates.reduce<{
-            valids: DataBretagneRefProgrammationDto[];
-            invalids: DataBretagneRefProgrammationDto[];
-        }>(
-            (acc, currentLine) => {
-                if (this.validateNotNulls(currentLine) && !duplicatesCode.includes(currentLine.code))
-                    acc["valids"].push(currentLine);
-                else acc["invalids"].push(currentLine);
-                return acc;
-            },
-            { valids: [], invalids: [] },
-        );
-        return sortedData;
-    }
-
-    static validateNotNulls(dto: DataBretagneRefProgrammationDto) {
-        if (!dto.code) throw new Error("code is required");
-        if (!dto.label) throw new Error("label is required");
-
-        return true;
+        return this.sortDataByValidity<DataBretagneProgrammeDto>(dtoListWithoutDuplicates, duplicatesCode, [
+            "code",
+            "label",
+            "label_theme",
+            "code_ministere",
+        ]);
     }
 }
 
-export class DataBretagneMinistryValidator {
-    static validate(dtoList: DataBretagneMinistryDto[]) {
-        const dtoListWithoutDuplicates = dropDuplicates<DataBretagneMinistryDto>(dtoList);
-        const duplicatesCode = findDuplicateAttribute<DataBretagneMinistryDto, "code">(
+export class DataBretagneRefProgrammationValidator extends DataBretagneValidatorHelper {
+    static validate(dtoList: DataBretagneRefProgrammationDto[]): {
+        valids: DataBretagneRefProgrammationDto[];
+        invalids: DataBretagneRefProgrammationDto[];
+    } {
+        const dtoListWithoutDuplicates = this.dropDuplicates<DataBretagneRefProgrammationDto>(dtoList);
+        const duplicatesCode = this.findDuplicateAttribute<DataBretagneRefProgrammationDto, "code">(
             dtoListWithoutDuplicates,
             "code",
         );
 
-        const sortedData = dtoListWithoutDuplicates.reduce<{
-            valids: DataBretagneMinistryDto[];
-            invalids: DataBretagneMinistryDto[];
-        }>(
-            (acc, currentLine) => {
-                if (this.validateNotNulls(currentLine) && !duplicatesCode.includes(currentLine.code))
-                    acc["valids"].push(currentLine);
-                else acc["invalids"].push(currentLine);
-                return acc;
-            },
-            { valids: [], invalids: [] },
-        );
-        return sortedData;
+        return this.sortDataByValidity<DataBretagneRefProgrammationDto>(dtoListWithoutDuplicates, duplicatesCode, [
+            "code",
+            "label",
+        ]);
     }
+}
 
-    static validateNotNulls(dto: DataBretagneMinistryDto) {
-        if (!dto.code) throw new Error("code is required");
-        if (!dto.label) throw new Error("label is required");
+export class DataBretagneMinistryValidator extends DataBretagneValidatorHelper {
+    static validate(dtoList: DataBretagneMinistryDto[]): {
+        valids: DataBretagneMinistryDto[];
+        invalids: DataBretagneMinistryDto[];
+    } {
+        const dtoListWithoutDuplicates = this.dropDuplicates<DataBretagneMinistryDto>(dtoList);
+        const duplicatesCode = this.findDuplicateAttribute<DataBretagneMinistryDto, "code">(
+            dtoListWithoutDuplicates,
+            "code",
+        );
 
-        return true;
+        return this.sortDataByValidity<DataBretagneMinistryDto>(dtoListWithoutDuplicates, duplicatesCode, [
+            "code",
+            "label",
+        ]);
     }
 }

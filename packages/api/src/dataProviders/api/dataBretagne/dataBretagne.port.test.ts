@@ -27,6 +27,13 @@ import {
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
 import DomaineFonctionnelEntity from "../../../entities/DomaineFonctionnelEntity";
 import RefProgrammationEntity from "../../../entities/RefProgrammationEntity";
+import {
+    DataBretagneDomaineFonctionnelValidator,
+    DataBretagneMinistryValidator,
+    DataBretagneProgrammeValidator,
+    DataBretagneRefProgrammationValidator,
+} from "./DataBretagneValidator";
+import { DTOS } from "./__fixtures__/DataBretagne.fixture";
 
 const dtoData = { code: "code", sigle_ministere: "sigle_ministere", label: "nom_ministere" };
 const getResult = { data: { items: [dtoData] } };
@@ -86,49 +93,64 @@ describe("Data Bretagne Port", () => {
         [
             async () => port.getStateBudgetPrograms(),
             "programme",
-            [dtoData] as unknown as DataBretagneProgrammeDto[],
+            [DTOS["programme"]] as DataBretagneProgrammeDto[],
             new StateBudgetProgramEntity("mission", "label", "code_ministere", 132),
             DataBretagneProgrammeAdapter,
+            DataBretagneProgrammeValidator,
         ],
         [
             async () => port.getMinistry(),
             "ministere",
-            [dtoData] as unknown as DataBretagneMinistryDto[],
+            [DTOS["ministere"]] as DataBretagneMinistryDto[],
             new MinistryEntity("sigle_ministere", "code", "nom_ministere"),
             DataBretagneMinistryAdapter,
+            DataBretagneMinistryValidator,
         ],
         [
             async () => port.getDomaineFonctionnel(),
             "domaine-fonct",
-            [dtoData] as unknown as DataBretagneDomaineFonctionnelDto[],
+            [DTOS["domaineFonct"]] as DataBretagneDomaineFonctionnelDto[],
             new DomaineFonctionnelEntity("action", "code_action", 122),
             DataBretagneDomaineFonctionnelAdapter,
+            DataBretagneDomaineFonctionnelValidator,
         ],
         [
             async () => port.getRefProgrammation(),
             "ref-programmation",
-            [dtoData] as unknown as DataBretagneRefProgrammationDto[],
+            [DTOS["refProgrammation"]] as DataBretagneRefProgrammationDto[],
             new RefProgrammationEntity("label", "code", 121),
             DataBretagneRefProgrammationAdapter,
+            DataBretagneRefProgrammationValidator,
         ],
-    ])("with %s", (methodToTest, collection, mockResolvedValueDto, MockReturnValueEntity, Adapter) => {
+    ])("with %s", (methodToTest, collection, mockResolvedValueDto, MockReturnValueEntity, Adapter, Validator) => {
         let mockGetCollection: jest.SpyInstance;
         let mockToEntity: jest.SpyInstance;
+        let mockValidate: jest.SpyInstance;
 
         beforeEach(() => {
             mockGetCollection = jest.spyOn(port, "getCollection").mockResolvedValue(mockResolvedValueDto);
 
             mockToEntity = jest.spyOn(Adapter, "toEntity").mockReturnValue(MockReturnValueEntity);
+            // @ts-expect-error: mockReSolvedValue not specifiable
+            mockValidate = jest
+                .spyOn(Validator, "validate")
+                .mockReturnValue({ valids: mockResolvedValueDto, invalids: mockResolvedValueDto });
         });
 
         afterEach(() => {
             mockGetCollection.mockRestore();
             mockToEntity.mockRestore();
+            mockValidate.mockRestore();
         });
 
         it("should call getCollection with collection", async () => {
-            const result = await methodToTest();
+            await methodToTest();
             expect(mockGetCollection).toHaveBeenCalledWith(collection);
+        });
+
+        it("should call validate", async () => {
+            await methodToTest();
+            expect(mockValidate).toHaveBeenCalledWith(mockResolvedValueDto);
         });
 
         it("should return a list of entity", async () => {
@@ -137,7 +159,7 @@ describe("Data Bretagne Port", () => {
         });
 
         it("should call mockToEntity", async () => {
-            const result = await methodToTest();
+            await methodToTest();
             expect(mockToEntity).toHaveBeenCalledTimes(mockResolvedValueDto.length);
         });
     });

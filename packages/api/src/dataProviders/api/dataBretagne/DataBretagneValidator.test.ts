@@ -1,72 +1,167 @@
-import { isConstructorDeclaration } from "typescript";
+import { DTOS } from "./__fixtures__/DataBretagne.fixture";
 import {
-    DataBretagneDomaineFonctionnelDto,
-    DataBretagneMinistryDto,
-    DataBretagneProgrammeDto,
-    DataBretagneRefProgrammationDto,
-} from "./DataBretagneDto";
-import { dropDuplicates, findDuplicateAttribute } from "./DataBretagneValidator"; // Import the dropDuplicates function
-
-const dto = {
-    domaineFonct: {
-        code: "code",
-        code_programme: "163",
-        label: "Label",
-    } as DataBretagneDomaineFonctionnelDto,
-
-    ministry: {
-        code: "code",
-        label: "label",
-        sigle_ministere: "sigle_ministere",
-    } as DataBretagneMinistryDto,
-
-    programme: {
-        code: "code",
-        code_ministere: "code_ministere",
-        label: "label",
-        label_theme: "label_theme",
-    } as DataBretagneProgrammeDto,
-
-    refProgrammation: {
-        code: "code",
-        code_programme: "code_programme",
-        label: "label",
-    } as DataBretagneRefProgrammationDto,
-};
+    DataBretagneDomaineFonctionnelValidator,
+    DataBretagneMinistryValidator,
+    DataBretagneProgrammeValidator,
+    DataBretagneRefProgrammationValidator,
+    DataBretagneValidatorHelper,
+} from "./DataBretagneValidator";
 
 describe("DataBretagneValidator", () => {
-    describe("dropDuplicates", () => {
-        it("should return a list without duplicates", () => {
-            const dtoListwithDuplicates = [
-                dto["domaineFonct"],
-                dto["domaineFonct"],
-                dto["domaineFonct"],
-                dto["domaineFonct"],
-            ];
-            const expected = [dto["domaineFonct"]];
+    describe(DataBretagneValidatorHelper, () => {
+        let requiredAttributes = ["code", "label"];
 
-            const result = dropDuplicates(dtoListwithDuplicates);
-            expect(result).toEqual(expected);
+        describe("dropDuplicates", () => {
+            it("should return a list without duplicates", () => {
+                const dtoListwithDuplicates = [
+                    DTOS["domaineFonct"],
+                    DTOS["domaineFonct"],
+                    DTOS["domaineFonct"],
+                    DTOS["domaineFonct"],
+                ];
+                const expected = [DTOS["domaineFonct"]];
+
+                const result = DataBretagneValidatorHelper.dropDuplicates(dtoListwithDuplicates);
+                expect(result).toEqual(expected);
+            });
+        });
+        describe("findDuplicateAttribute", () => {
+            it("should return an empty list when no duplicate attributes are found", () => {
+                const dtoList = [DTOS["domaineFonct"], { ...DTOS["domaineFonct"], code: "code2" }];
+
+                const expected = new Set();
+
+                const result = DataBretagneValidatorHelper.findDuplicateAttribute(dtoList, "code");
+                expect(result).toEqual(expected);
+            });
+
+            it("should return a set of duplicate attributes", () => {
+                const dtoList = [DTOS["domaineFonct"], { ...DTOS["domaineFonct"], label: "Label2" }];
+
+                const expected = new Set(["code"]);
+
+                const result = DataBretagneValidatorHelper.findDuplicateAttribute(dtoList, "code");
+                expect(result).toEqual(expected);
+            });
+
+            it("should console.error when a duplicate attribute is found", () => {
+                const dtoList = [DTOS["domaineFonct"], { ...DTOS["domaineFonct"], label: "Label2" }];
+
+                const spy = jest.spyOn(console, "error");
+
+                DataBretagneValidatorHelper.findDuplicateAttribute(dtoList, "code");
+                expect(spy).toHaveBeenCalledWith("Duplicate value found for code : code");
+            });
+        });
+
+        describe("validateNotNulls", () => {
+            let dtoInvalid = { ...DTOS["domaineFonct"], code: undefined };
+
+            it("should return true when all required attributes are present", () => {
+                const result = DataBretagneValidatorHelper.validateNotNulls(DTOS["domaineFonct"], requiredAttributes);
+                expect(result).toEqual(true);
+            });
+
+            it("should console.error when a required attribute is missing", () => {
+                const spy = jest.spyOn(console, "error");
+
+                DataBretagneValidatorHelper.validateNotNulls(dtoInvalid, requiredAttributes);
+                expect(spy).toHaveBeenCalledWith("code is required");
+            });
+
+            it("should return false when a required attribute is missing", () => {
+                const result = DataBretagneValidatorHelper.validateNotNulls(dtoInvalid, requiredAttributes);
+
+                expect(result).toEqual(false);
+            });
+        });
+
+        describe("sortByValidity", () => {
+            let dtoListWithInvalids = [
+                DTOS["domaineFonct"],
+                { ...DTOS["domaineFonct"], code: "code2" },
+                { ...DTOS["domaineFonct"], code: undefined },
+            ];
+
+            let mockedValidateNotNulls: jest.SpyInstance;
+
+            let duplicatesCode = new Set(["code"]);
+
+            beforeEach(() => {
+                mockedValidateNotNulls = jest.spyOn(DataBretagneValidatorHelper, "validateNotNulls");
+            });
+
+            afterAll(() => {
+                mockedValidateNotNulls.mockRestore();
+            });
+
+            it("should return a list of valids and invalids", () => {
+                mockedValidateNotNulls.mockReturnValueOnce(false);
+                mockedValidateNotNulls.mockReturnValueOnce(true);
+                mockedValidateNotNulls.mockReturnValueOnce(false);
+
+                const expected = {
+                    valids: [{ ...DTOS["domaineFonct"], code: "code2" }],
+                    invalids: [DTOS["domaineFonct"], { ...DTOS["domaineFonct"], code: undefined }],
+                };
+
+                const result = DataBretagneValidatorHelper.sortDataByValidity(
+                    dtoListWithInvalids,
+                    duplicatesCode,
+                    requiredAttributes,
+                );
+                expect(result).toEqual(expected);
+            });
         });
     });
 
-    describe("findDuplicateAttribute", () => {
-        it("should return an empty list when no duplicate attributes are found", () => {
-            const dtoList = [dto["domaineFonct"], { ...dto["domaineFonct"], code: "code2" }];
+    describe.each([
+        ["domaineFonct", DataBretagneDomaineFonctionnelValidator, ["code", "label"]],
+        ["ministry", DataBretagneMinistryValidator, ["code", "label"]],
+        ["programme", DataBretagneProgrammeValidator, ["code", "label", "label_theme", "code_ministere"]],
+        ["refProgrammation", DataBretagneRefProgrammationValidator, ["code", "label"]],
+    ])("with %s", (entityName, Validator, requiredAttributes) => {
+        describe("validate", () => {
+            let mockedDropDuplicates: jest.SpyInstance;
+            let mockedFindDuplicateAttribute: jest.SpyInstance;
+            let mockedSortDataByValidity: jest.SpyInstance;
 
-            const expected = [];
+            beforeEach(() => {
+                mockedDropDuplicates = jest
+                    .spyOn(DataBretagneValidatorHelper, "dropDuplicates")
+                    .mockReturnValue([DTOS["entityName"]]);
+                mockedFindDuplicateAttribute = jest
+                    .spyOn(DataBretagneValidatorHelper, "findDuplicateAttribute")
+                    .mockReturnValue(new Set());
+                mockedSortDataByValidity = jest
+                    .spyOn(DataBretagneValidatorHelper, "sortDataByValidity")
+                    .mockReturnValue({ valids: [DTOS[entityName]], invalids: [] });
+            });
 
-            const result = findDuplicateAttribute(dtoList, "code");
-            expect(result).toEqual([]);
-        });
+            afterAll(() => {
+                mockedDropDuplicates.mockRestore();
+                mockedFindDuplicateAttribute.mockRestore();
+                mockedSortDataByValidity.mockRestore();
+            });
 
-        it("should return a list of duplicate attributes", () => {
-            const dtoList = [dto["domaineFonct"], { ...dto["domaineFonct"], label: "Label2" }];
+            it("should call dropDuplicates", () => {
+                Validator.validate([DTOS["entityName"]]);
+                expect(mockedDropDuplicates).toHaveBeenCalledWith([DTOS["entityName"]]);
+            });
 
-            const expected = ["code"];
+            it("should call findDuplicateAttribute", () => {
+                Validator.validate([DTOS["entityName"]]);
+                expect(mockedFindDuplicateAttribute).toHaveBeenCalledWith([DTOS["entityName"]], "code");
+            });
 
-            const result = findDuplicateAttribute(dtoList, "code");
-            expect(result).toEqual(expected);
+            it("should call sortDataByValidity", () => {
+                Validator.validate([DTOS["entityName"]]);
+                expect(mockedSortDataByValidity).toHaveBeenCalledWith(
+                    [DTOS["entityName"]],
+                    new Set(),
+                    requiredAttributes,
+                );
+            });
         });
     });
 });

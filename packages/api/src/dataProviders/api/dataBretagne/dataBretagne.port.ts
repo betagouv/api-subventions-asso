@@ -15,6 +15,12 @@ import {
     DataBretagneProgrammeAdapter,
     DataBretagneRefProgrammationAdapter,
 } from "./DataBretagneAdapter";
+import {
+    DataBretagneDomaineFonctionnelValidator,
+    DataBretagneMinistryValidator,
+    DataBretagneProgrammeValidator,
+    DataBretagneRefProgrammationValidator,
+} from "./DataBretagneValidator";
 
 // TO DO GIULIA : ajouter le validator pour les données de DataBretagne
 // Valider avec Victor que les transformations en entités soit au niveau de la port et pas du service
@@ -52,27 +58,31 @@ export class DataBretagnePort {
     }
 
     async getStateBudgetPrograms() {
-        return (await this.getCollection<DataBretagneProgrammeDto>("programme")).map(
-            DataBretagneProgrammeAdapter.toEntity,
+        const validData = DataBretagneProgrammeValidator.validate(
+            await this.getCollection<DataBretagneProgrammeDto>("programme"),
         );
+        return validData.valids.map(DataBretagneProgrammeAdapter.toEntity);
     }
 
     async getMinistry() {
-        return (await this.getCollection<DataBretagneMinistryDto>("ministere")).map(
-            DataBretagneMinistryAdapter.toEntity,
+        const validData = DataBretagneMinistryValidator.validate(
+            await this.getCollection<DataBretagneMinistryDto>("ministere"),
         );
+        return validData.valids.map(DataBretagneMinistryAdapter.toEntity);
     }
 
     async getDomaineFonctionnel() {
-        return (await this.getCollection<DataBretagneDomaineFonctionnelDto>("domaine-fonct")).map(
-            DataBretagneDomaineFonctionnelAdapter.toEntity,
+        const validData = DataBretagneDomaineFonctionnelValidator.validate(
+            await this.getCollection<DataBretagneDomaineFonctionnelDto>("domaine-fonct"),
         );
+        return validData.valids.map(DataBretagneDomaineFonctionnelAdapter.toEntity);
     }
 
     async getRefProgrammation() {
-        return (await this.getCollection<DataBretagneRefProgrammationDto>("ref-programmation")).map(
-            DataBretagneRefProgrammationAdapter.toEntity,
+        const validData = DataBretagneRefProgrammationValidator.validate(
+            await this.getCollection<DataBretagneRefProgrammationDto>("ref-programmation"),
         );
+        return validData.valids.map(DataBretagneRefProgrammationAdapter.toEntity);
     }
 }
 
