@@ -1,4 +1,3 @@
-import { IncrementExpression } from "typescript";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import dataBretagnePort from "../../../dataProviders/api/dataBretagne/dataBretagne.port";
 import stateBudgetProgramPort from "../../../dataProviders/db/state-budget-program/stateBudgetProgram.port";
@@ -7,7 +6,6 @@ import ProviderCore from "../ProviderCore";
 import MinistryEntity from "../../../entities/MinistryEntity";
 import DomaineFonctionnelEntity from "../../../entities/DomaineFonctionnelEntity";
 import RefProgrammationEntity from "../../../entities/RefProgrammationEntity";
-import { DataBretagneMinistryValidator } from "../../../dataProviders/api/dataBretagne/DataBretagneValidator";
 
 /**
  * Service for interacting with the Data Bretagne API.
@@ -64,9 +62,6 @@ class DataBretagneService extends ProviderCore {
     }
 
     async getDomaineFonctRecord(): Promise<Record<string, DomaineFonctionnelEntity>> {
-        /*Giulia says : est-ce que je peux mettre le login dans l'init ?
-        comme ça je ne dois pas le faire à chaque fois ?
-        */
         await dataBretagnePort.login();
         const domainesFonct = await dataBretagnePort.getDomaineFonctionnel();
 
