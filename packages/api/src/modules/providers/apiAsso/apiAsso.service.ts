@@ -345,12 +345,7 @@ export class ApiAssoService
 
         if (!documents) return documents;
 
-        const filteredDocuments = documents.filter(document => {
-            if (document.__meta__.siret == siret) return true;
-            return false;
-        });
-
-        return filteredDocuments;
+        return documents.filter(document => document.__meta__.siret == siret);
     }
 
     async getDocumentsByRna(rna: Rna) {

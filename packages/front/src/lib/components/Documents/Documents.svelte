@@ -5,11 +5,11 @@
     import ErrorAlert from "../ErrorAlert.svelte";
     import DataNotFound from "../DataNotFound.svelte";
     import { DocumentsController } from "./Documents.controller";
-    import DocumentCard from "./components/DocumentCard.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
     import type { ResourceType } from "$lib/types/ResourceType";
     import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
-    import Button from "$lib/dsfr/Button.svelte";
+    import DownloadButton from "$lib/components/Documents/components/DownloadButton.svelte";
+    import DocumentSection from "$lib/components/Documents/components/DocumentSection.svelte";
 
     // TODO: replace unknown with EstablishmentEntity when created
     export let resource: AssociationEntity | unknown;
@@ -42,29 +42,10 @@
 
             <div class="fr-grid-row fr-mb-1w fr-mt-6w">
                 <div class="fr-ml-auto">
-                    <ul
-                        class="fr-btns-group fr-btns-group--inline-reverse fr-btns-group--inline-sm fr-btns-group--icon-right fr-btns-group--right">
-                        <li>
-                            <Button
-                                iconPosition="right"
-                                icon="download-line"
-                                trackerName="download-zip"
-                                title={$downloadBtnLabel}
-                                on:click={() => controller.download()}>
-                                {$downloadBtnLabel}
-                            </Button>
-                        </li>
-                        <li>
-                            <Button
-                                type="tertiary"
-                                outline={false}
-                                trackerName="reset-docs-selection"
-                                title="Réinitialiser la sélection de documents"
-                                on:click={() => controller.resetSelection()}>
-                                Réinitialiser
-                            </Button>
-                        </li>
-                    </ul>
+                    <DownloadButton
+                        docsStore={controller.flatSelectedDocs}
+                        on:download={() => controller.download()}
+                        on:reset={() => controller.resetSelection()} />
                 </div>
             </div>
 
@@ -74,42 +55,33 @@
                 si le document n'est pas sélectionné, d'un lien de téléchargement pour le document seul.
             </div>
 
-            <!-- Asso documents -->
-            {#if documents.assoDocs.length}
-                <h3 class="fr-h2 fr-mb-4w">Pièces provenant de l’INSEE et du RNA</h3>
-                <section class="fr-ml-n2w">
-                    {#each documents.assoDocs as document, i}
-                        <DocumentCard {document} bind:value={$selectedDocsOrNull.assoDocs[i]} />
-                    {/each}
-                </section>
-            {/if}
+            <DocumentSection
+                documents={documents.assoDocs}
+                title="Pièces provenant de l’INSEE et du RNA"
+                bind:selectedDocs={$selectedDocsOrNull.assoDocs} />
 
-            {#if documents.estabDocs.length}
-                <!-- Etab documents -->
-                <h3 class="fr-h2 fr-mt-6w fr-mb-4w">
-                    {controller.estabDocsTitle}
-                </h3>
-                <section class="fr-ml-n2w">
-                    {#each documents.estabDocs as document, i}
-                        <DocumentCard {document} bind:value={$selectedDocsOrNull.estabDocs[i]} />
-                    {/each}
-                </section>
-            {/if}
-            <ul class="fr-sr-only">
-                <li>
-                    <Button trackerName="download-zip" title={$downloadBtnLabel} on:click={() => controller.download()}>
-                        {$downloadBtnLabel}
-                    </Button>
-                </li>
-                <li>
-                    <Button
-                        trackerName="reset-docs-selection"
-                        on:click={() => controller.resetSelection()}
-                        title="Réinitialiser la sélection de documents">
-                        Réinitialiser
-                    </Button>
-                </li>
-            </ul>
+            <div class="fr-mt-6w" />
+
+            <DocumentSection
+                documents={documents.estabDocs}
+                title="Pièces complémentaires déposées par l’établissement secondaire"
+                bind:selectedDocs={$selectedDocsOrNull.estabDocs} />
+
+            <div class="fr-mt-6w" />
+
+            <DocumentSection
+                documents={documents.headDocs}
+                title="Pièces complémentaires déposées par l’établissement siège"
+                bind:selectedDocs={$selectedDocsOrNull.headDocs} />
+
+            <div class="fr-grid-row fr-mb-1w fr-mt-6w">
+                <div class="fr-ml-auto">
+                    <DownloadButton
+                        docsStore={controller.flatSelectedDocs}
+                        on:download={() => controller.download()}
+                        on:reset={() => controller.resetSelection()} />
+                </div>
+            </div>
         {:else}
             <DataNotFound
                 content="Nous sommes désolés, nous n'avons trouvé aucun document sur {controller.resourceNameWithDemonstrative}" />
