@@ -5,11 +5,11 @@
     import ErrorAlert from "../ErrorAlert.svelte";
     import DataNotFound from "../DataNotFound.svelte";
     import { DocumentsController } from "./Documents.controller";
-    import DocumentCard from "./components/DocumentCard.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
     import type { ResourceType } from "$lib/types/ResourceType";
     import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
-    import Button from "$lib/dsfr/Button.svelte";
+    import DownloadButton from "$lib/components/Documents/components/DownloadButton.svelte";
+    import DocumentSection from "$lib/components/Documents/components/DocumentSection.svelte";
 
     // TODO: replace unknown with EstablishmentEntity when created
     export let resource: AssociationEntity | unknown;
@@ -18,6 +18,7 @@
     const controller = new DocumentsController(resourceType, resource);
     const documentsPromise = controller.documentsPromise;
     const zipPromise = controller.zipPromise;
+    const { selectedDocsOrNull, downloadBtnLabel } = controller;
 
     onMount(() => {
         controller.onMount();
@@ -39,41 +40,48 @@
                 <Alert type="info" title="Le téléchargement des fichiers va démarrer d’ici à 8 secondes." />
             {/await}
 
-            <div class="fr-grid-row fr-mb-4w fr-mt-6w">
+            <div class="fr-grid-row fr-mb-1w fr-mt-6w">
                 <div class="fr-ml-auto">
-                    <Button
-                        iconPosition="right"
-                        icon="download-line"
-                        trackerName="download-zip"
-                        title="Tout télécharger"
-                        on:click={() => controller.downloadAll()}>
-                        Tout télécharger
-                    </Button>
+                    <DownloadButton
+                        docsStore={controller.flatSelectedDocs}
+                        on:download={() => controller.download()}
+                        on:reset={() => controller.resetSelection()} />
                 </div>
             </div>
 
-            <!-- Asso documents -->
-            {#if documents.assoDocs.length}
-                <h3 class="fr-h2 fr-mb-4w">Pièces provenant de l’INSEE et du RNA</h3>
-                <!-- change top margin when we have download all button -->
-                <div class="fr-grid-row">
-                    {#each documents.assoDocs as document}
-                        <DocumentCard {document} />
-                    {/each}
-                </div>
-            {/if}
+            <div class="fr-sr-only">
+                Ci-dessous une liste de documents liés à {controller.resourceNameWithDemonstrative}. Chaque document est
+                associée à une checbkox qui sélectionne le document pour un téléchargement groupé sous forme de zip, et,
+                si le document n'est pas sélectionné, d'un lien de téléchargement pour le document seul.
+            </div>
 
-            {#if documents.estabDocs.length}
-                <!-- Etab documents -->
-                <h3 class="fr-h2 fr-mt-6w fr-mb-4w">
-                    {controller.estabDocsTitle}
-                </h3>
-                <div class="fr-grid-row">
-                    {#each documents.estabDocs as document}
-                        <DocumentCard {document} />
-                    {/each}
+            <DocumentSection
+                documents={documents.assoDocs}
+                title="Pièces provenant de l’INSEE et du RNA"
+                bind:selectedDocs={$selectedDocsOrNull.assoDocs} />
+
+            <div class="fr-mt-6w" />
+
+            <DocumentSection
+                documents={documents.estabDocs}
+                title="Pièces complémentaires déposées par l’établissement secondaire"
+                bind:selectedDocs={$selectedDocsOrNull.estabDocs} />
+
+            <div class="fr-mt-6w" />
+
+            <DocumentSection
+                documents={documents.headDocs}
+                title="Pièces complémentaires déposées par l’établissement siège"
+                bind:selectedDocs={$selectedDocsOrNull.headDocs} />
+
+            <div class="fr-grid-row fr-mb-1w fr-mt-6w">
+                <div class="fr-ml-auto">
+                    <DownloadButton
+                        docsStore={controller.flatSelectedDocs}
+                        on:download={() => controller.download()}
+                        on:reset={() => controller.resetSelection()} />
                 </div>
-            {/if}
+            </div>
         {:else}
             <DataNotFound
                 content="Nous sommes désolés, nous n'avons trouvé aucun document sur {controller.resourceNameWithDemonstrative}" />

@@ -592,14 +592,14 @@ describe("Documents Service", () => {
         beforeAll(() => {
             const pipeMock = { headers: {}, pipe: () => ({ on: jest.fn() }) };
             // @ts-expect-error downloadDocument
-            getDocStream = jest.spyOn(documentsService, "getDocumentStreamByUrl").mockResolvedValue(pipeMock);
+            getDocStream = jest.spyOn(documentsService, "getDocumentStreamByLocalApiUrl").mockResolvedValue(pipeMock);
         });
 
         afterAll(() => {
             getDocStream.mockRestore();
         });
 
-        it("calls getDocumentStreamByUrl", () => {
+        it("calls getDocumentStreamByLocalApiUrl", () => {
             const DOC = { url: "url", nom: "nom", type: "type" };
             // @ts-expect-error test private
             documentsService.downloadDocument("folder/name", DOC);

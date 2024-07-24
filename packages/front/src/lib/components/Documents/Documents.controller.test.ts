@@ -23,54 +23,78 @@ describe("Documents.controller", () => {
     const ASSOCIATION = { rna: "RNA", siren: "SIREN", nic_siege: "NIC" };
     const ESTABLISHMENT = { siret: "SIRET" };
 
-    beforeAll(() => {
+    function resetController() {
+        // @ts-expect-error: partial association
+        associationStore["currentAssociation"] = new Store(ASSOCIATION);
         const ctrlNotSpied = new DocumentsController("association", ASSOCIATION);
         ctrl = Object.create(Object.getPrototypeOf(ctrlNotSpied), Object.getOwnPropertyDescriptors(ctrlNotSpied));
 
-        ctrl._getAssociationDocuments = vi.spyOn(ctrlNotSpied, "_getAssociationDocuments");
-        (ctrl._removeDuplicates = vi.spyOn(ctrlNotSpied, "_removeDuplicates")),
-            (ctrl._getEstablishmentDocuments = vi.spyOn(ctrlNotSpied, "_getEstablishmentDocuments"));
+        ctrl._getDocs = vi.spyOn(ctrlNotSpied, "_getDocs");
+        ctrl._removeDuplicates = vi.spyOn(ctrlNotSpied, "_removeDuplicates");
+        ctrl._getEstablishmentDocuments = vi.spyOn(ctrlNotSpied, "_getEstablishmentDocuments");
         ctrl._organizeDocuments = vi.spyOn(ctrlNotSpied, "_organizeDocuments");
         ctrl.onMount = vi.spyOn(ctrlNotSpied, "onMount");
+        ctrl.download = vi.spyOn(ctrlNotSpied, "download");
+        // @ts-expect-error spy private
+        ctrl.downloadAll = vi.spyOn(ctrlNotSpied, "downloadAll");
+        // @ts-expect-error spy private
+        ctrl.downloadSelected = vi.spyOn(ctrlNotSpied, "downloadSelected");
+        // @ts-expect-error spy private
+        ctrl._filterAssoDocs = vi.spyOn(ctrlNotSpied, "_filterAssoDocs");
+        ctrl.resetSelection = vi.spyOn(ctrlNotSpied, "resetSelection");
 
         vi.mocked(associationService).getDocuments.mockResolvedValue([]);
         vi.mocked(establishmentService).getDocuments.mockResolvedValue([]);
-        // @ts-expect-error: partial association
-        associationStore["currentAssociation"] = new Store(ASSOCIATION);
+    }
+
+    beforeAll(() => {
+        resetController();
     });
 
-    describe("_getAssociationDocument", () => {
-        it("calls associationService.getDocuments with RNA", async () => {
-            await ctrl._getAssociationDocuments(ASSOCIATION);
-            expect(associationService.getDocuments).toHaveBeenCalledWith(ASSOCIATION.rna);
+    describe("constructor", () => {
+        it("sets headSiret", () => {
+            expect(ctrl.headSiret).toBe("SIRENNIC");
         });
+        it("sets assoSiren", () => {
+            expect(ctrl.assoSiren).toBe("SIREN");
+        });
+    });
 
-        it("calls associationService.getDocuments with SIREN if no RNA", async () => {
-            await ctrl._getAssociationDocuments({ ...ASSOCIATION, rna: undefined });
-            expect(associationService.getDocuments).toHaveBeenCalledWith(ASSOCIATION.siren);
-        });
-
-        it("filter out docs with siret that are not from siege", async () => {
-            // @ts-expect-error: use mock
-            vi.mocked(associationService).getDocuments.mockResolvedValueOnce([{ __meta__: { siret: "OTHER_SIRET" } }]);
-            const expected = 0;
-            const actual = (await ctrl._getAssociationDocuments(ASSOCIATION)).length;
-            expect(actual).toBe(expected);
-        });
+    describe("_filterAssoDocs", () => {
+        const SIRET = ESTABLISHMENT.siret;
 
         it("keep docs with no siret", async () => {
-            // @ts-expect-error: use mock
-            vi.mocked(associationService).getDocuments.mockResolvedValueOnce([{ __meta__: { siret: undefined } }]);
+            const DOCS = [{ __meta__: { siret: undefined } }];
             const expected = 1;
-            const actual = (await ctrl._getAssociationDocuments(ASSOCIATION)).length;
+            const actual = ctrl._filterAssoDocs(DOCS, SIRET).length;
             expect(actual).toBe(expected);
         });
 
-        it("keep docs with siege siret", async () => {
-            // @ts-expect-error: use mock
-            vi.mocked(associationService).getDocuments.mockResolvedValueOnce([{ __meta__: { siret: "SIRENNIC" } }]);
+        it("keeps docs with required siret", () => {
+            const DOCS = [{ __meta__: { siret: "SIRET" } }];
             const expected = 1;
-            const actual = (await ctrl._getAssociationDocuments(ASSOCIATION)).length;
+            const actual = ctrl._filterAssoDocs(DOCS, SIRET).length;
+            expect(actual).toBe(expected);
+        });
+
+        it("keeps docs with head establishment siret", () => {
+            const DOCS = [{ __meta__: { siret: "SIRENNIC" } }];
+            const expected = 1;
+            const actual = ctrl._filterAssoDocs(DOCS, SIRET).length;
+            expect(actual).toBe(expected);
+        });
+
+        it("skips docs other siret", () => {
+            const DOCS = [{ __meta__: { siret: "OTHER_SIRET" } }];
+            const expected = 0;
+            const actual = ctrl._filterAssoDocs(DOCS, SIRET).length;
+            expect(actual).toBe(expected);
+        });
+
+        it("skips insee of head siret if secondary establishment required", () => {
+            const DOCS = [{ __meta__: { siret: "SIRENNIC" }, provider: "Avis de Situation Insee" }];
+            const expected = 0;
+            const actual = ctrl._filterAssoDocs(DOCS, SIRET).length;
             expect(actual).toBe(expected);
         });
     });
@@ -94,74 +118,79 @@ describe("Documents.controller", () => {
         });
 
         it("calls establishmentService.getDocuments with SIRET", async () => {
-            await ctrl._getEstablishmentDocuments(ESTABLISHMENT);
+            await ctrl._getEstablishmentDocuments(ESTABLISHMENT.siret);
             expect(establishmentService.getDocuments).toHaveBeenCalledWith(ESTABLISHMENT.siret);
         });
 
-        it("calls associationService.getDocuments with RNA", async () => {
-            await ctrl._getEstablishmentDocuments(ESTABLISHMENT);
-            expect(associationService.getDocuments).toHaveBeenCalledWith(ASSOCIATION.rna);
+        it("does not call establishmentService.getDocuments if no siren given", async () => {
+            await ctrl._getEstablishmentDocuments();
+            expect(establishmentService.getDocuments).not.toHaveBeenCalled();
         });
 
-        it("calls associationService.getDocuments with SIREN if no RNA", async () => {
+        it("calls associationService.getDocuments with SIREN", async () => {
             // @ts-expect-error: mock
-            associationStore.currentAssociation.value = { ...ASSOCIATION, rna: undefined };
-            await ctrl._getEstablishmentDocuments(ESTABLISHMENT);
+            associationStore.currentAssociation.value = { ...ASSOCIATION };
+            await ctrl._getEstablishmentDocuments(ESTABLISHMENT.siret);
             expect(associationService.getDocuments).toHaveBeenCalledWith(ASSOCIATION.siren);
             // @ts-expect-error: mock
             associationStore.currentAssociation.value = ASSOCIATION;
         });
 
-        it("filter out docs with siret that are not from given establishment", async () => {
-            // @ts-expect-error: mock
-            vi.mocked(associationService).getDocuments.mockResolvedValueOnce([{ __meta__: { siret: "OTHER_SIRET" } }]);
-            const expected = 0;
-            const actual = (await ctrl._getEstablishmentDocuments(ESTABLISHMENT)).length;
-            expect(actual).toBe(expected);
+        it("filters association docs with given siret", async () => {
+            const DOCS = "docs" as unknown as DocumentEntity[];
+            vi.mocked(associationService.getDocuments).mockResolvedValueOnce(DOCS);
+            vi.mocked(ctrl._filterAssoDocs).mockResolvedValueOnce([]);
+            await ctrl._getEstablishmentDocuments(ESTABLISHMENT.siret);
+            expect(ctrl._filterAssoDocs).toHaveBeenCalledWith(DOCS, "SIRET");
         });
 
-        it("keep docs with no siret", async () => {
-            // @ts-expect-error: mock
-            vi.mocked(associationService).getDocuments.mockResolvedValueOnce([{ __meta__: { siret: undefined } }]);
-            const expected = 1;
-            const actual = (await ctrl._getEstablishmentDocuments(ESTABLISHMENT)).length;
-            expect(actual).toBe(expected);
+        it("filters association docs with head siret if none given", async () => {
+            const DOCS = "docs" as unknown as DocumentEntity[];
+            vi.mocked(associationService.getDocuments).mockResolvedValueOnce(DOCS);
+            vi.mocked(ctrl._filterAssoDocs).mockResolvedValueOnce([]);
+            await ctrl._getEstablishmentDocuments();
+            expect(ctrl._filterAssoDocs).toHaveBeenCalledWith(DOCS, "SIRENNIC");
         });
 
-        it("keep docs with establishment siret", async () => {
-            // @ts-expect-error: mock
-            vi.mocked(associationService).getDocuments.mockResolvedValueOnce([{ __meta__: { siret: "SIRET" } }]);
-            const expected = 1;
-            const actual = (await ctrl._getEstablishmentDocuments(ESTABLISHMENT)).length;
-            expect(actual).toBe(expected);
-        });
-
-        it("calls _removeDuplicates with results from services", async () => {
+        it("calls _removeDuplicates with filtered results from services", async () => {
             const DOC_ASSO = { __meta__: { siret: "SIRET" }, name: "from asso" };
             const DOC_ETAB = { __meta__: { siret: "SIRET" }, name: "from etab" } as unknown as DocumentEntity;
 
-            // @ts-expect-error: mock
-            vi.mocked(associationService).getDocuments.mockResolvedValueOnce([DOC_ASSO]);
             vi.mocked(establishmentService).getDocuments.mockResolvedValueOnce([DOC_ETAB]);
+            vi.mocked(ctrl._filterAssoDocs).mockResolvedValueOnce([DOC_ASSO]);
 
-            await ctrl._getEstablishmentDocuments(ESTABLISHMENT);
+            await ctrl._getEstablishmentDocuments(ESTABLISHMENT.siret);
             expect(ctrl._removeDuplicates).toHaveBeenCalledWith([DOC_ETAB, DOC_ASSO]);
         });
 
         it("return result from _removeDuplicates", async () => {
             const expected = "RES";
             ctrl._removeDuplicates.mockReturnValueOnce(expected);
-            const actual = await ctrl._getEstablishmentDocuments(ESTABLISHMENT);
+            const actual = await ctrl._getEstablishmentDocuments(ESTABLISHMENT.siret);
             expect(actual).toBe(expected);
         });
     });
 
     describe("_organizeDocuments", () => {
         const DOCS = [
-            { provider: "Dauphin", nom: "Document dauphin" },
-            { provider: "Le Compte Asso", nom: "Document Le Compte Asso" },
-            { provider: "RNA", nom: "Document RNA" },
-            { provider: "Avis de Situation Insee", nom: "Document Avis de Situation Insee" },
+            { provider: "Dauphin", nom: "Document dauphin", __meta__: {} },
+            { provider: "Le Compte Asso", nom: "Document Le Compte Asso", __meta__: { siret: "any other siret" } },
+            { provider: "RNA", nom: "Document RNA", __meta__: {} },
+            {
+                provider: "Avis de Situation Insee",
+                nom: "Document Avis de Situation Insee",
+                __meta__: { siret: "SIRENNIC" },
+            },
+            {
+                provider: "Avis de Situation Insee",
+                nom: "Document Avis de Situation Insee",
+                __meta__: {},
+            },
+            {
+                provider: "Avis de Situation Insee",
+                nom: "Document Avis de Situation Insee",
+                __meta__: { siret: "any other siret" },
+            },
         ];
 
         it("separates asso docs and etab docs", () => {
@@ -171,20 +200,36 @@ describe("Documents.controller", () => {
                     {
                         nom: "Document RNA",
                         provider: "RNA",
+                        __meta__: {},
                     },
                     {
                         nom: "Document Avis de Situation Insee",
                         provider: "Avis de Situation Insee",
+                        __meta__: { siret: "SIRENNIC" },
+                    },
+                    {
+                        provider: "Avis de Situation Insee",
+                        nom: "Document Avis de Situation Insee",
+                        __meta__: {},
+                    },
+                    {
+                        provider: "Avis de Situation Insee",
+                        nom: "Document Avis de Situation Insee",
+                        __meta__: { siret: "any other siret" },
                     },
                 ],
                 estabDocs: [
                     {
-                        nom: "Document dauphin",
-                        provider: "Dauphin",
-                    },
-                    {
                         nom: "Document Le Compte Asso",
                         provider: "Le Compte Asso",
+                        __meta__: { siret: "any other siret" },
+                    },
+                ],
+                headDocs: [
+                    {
+                        nom: "Document dauphin",
+                        provider: "Dauphin",
+                        __meta__: {},
                     },
                 ],
             });
@@ -203,76 +248,93 @@ describe("Documents.controller", () => {
 
     describe("onMount", () => {
         let getterSpy;
+        const DOCS = ["DOC1", "DOC2"];
+
         beforeAll(() => {
-            getterSpy = vi.spyOn(ctrl, "_getterByType", "get");
+            getterSpy = vi.spyOn(ctrl, "_getDocs").mockImplementation(vi.fn((..._args) => Promise.resolve(DOCS)));
+            const RES = {};
+            vi.mocked(ctrl._organizeDocuments).mockReturnValue(RES);
         });
+
+        afterAll(async () => {
+            vi.mocked(ctrl._organizeDocuments).mockRestore();
+        });
+
         it("awaits that component is visible", async () => {
             await ctrl.onMount();
             expect(waitElementIsVisible).toHaveBeenCalledWith(ctrl.element);
         });
 
-        it("calls _getterByType", async () => {
+        it("calls result from _getDocs with resource", async () => {
             await ctrl.onMount();
-            expect(getterSpy).toHaveBeenCalled();
-        });
-
-        it("calls result from _getterByType with resource", async () => {
-            const mockedGetter = vi.fn((..._args) => Promise.resolve([]));
-            getterSpy.mockReturnValueOnce(mockedGetter);
-            await ctrl.onMount();
-            expect(mockedGetter).toHaveBeenCalledWith(ctrl.resource);
+            expect(getterSpy).toHaveBeenCalledWith();
         });
 
         describe("documentPromise", () => {
-            it("calls sets documentsPromise _organizeDocuments found docs", async () => {
-                const DOCS = ["DOC1", "DOC2"];
-                const mockedGetter = vi.fn((..._args) => Promise.resolve(DOCS));
-                getterSpy.mockReturnValueOnce(mockedGetter);
+            let documentsPromise;
+
+            beforeEach(async () => {
+                const RES = {};
+                vi.mocked(ctrl._organizeDocuments).mockReturnValue(RES);
                 await ctrl.onMount();
-                const documentsPromise = ctrl.documentsPromise.value;
+                documentsPromise = ctrl.documentsPromise.value;
+            });
+
+            it("sets allFlatDocs", async () => {
+                await documentsPromise;
+                const expected = DOCS;
+                const actual = ctrl.allFlatDocs;
+                expect(actual).toEqual(expected);
+            });
+
+            it("calls sets documentsPromise _organizeDocuments found docs", async () => {
                 await documentsPromise;
                 expect(ctrl._organizeDocuments).toHaveBeenCalledWith(DOCS);
             });
         });
     });
 
-    describe("downloadAll", () => {
+    describe("download", () => {
         beforeAll(() => {
-            // @ts-expect-error - mock
-            vi.mocked(documentService.getAllDocs).mockResolvedValue("");
+            vi.mocked(ctrl.downloadAll).mockResolvedValue("");
+            vi.mocked(ctrl.downloadSelected).mockResolvedValue("");
+            vi.mocked(documentHelper.download).mockResolvedValue();
         });
 
         afterAll(() => {
-            vi.mocked(documentService.getAllDocs).mockReset();
+            vi.mocked(ctrl.downloadAll).mockRestore();
+            vi.mocked(ctrl.downloadSelected).mockRestore();
+            vi.mocked(documentHelper.download).mockRestore();
         });
 
-        it.each`
-            identifier | structure
-            ${"RNA"}   | ${ASSOCIATION}
-            ${"SIREN"} | ${{ siren: "SIREN" }}
-            ${"SIRET"} | ${ESTABLISHMENT}
-        `("gets docs by $identifier", ({ identifier, structure }) => {
-            ctrl.resource = structure;
-            ctrl.downloadAll();
-            expect(documentService.getAllDocs).toHaveBeenCalledWith(identifier);
+        describe.each`
+            case               | downloadMethodName    | flatSelectedDocs
+            ${"download all"}  | ${"downloadAll"}      | ${[]}
+            ${"download some"} | ${"downloadSelected"} | ${["some"]}
+        `("case $case", ({ downloadMethodName, flatSelectedDocs }) => {
+            it("calls $downloadMethodName", async () => {
+                ctrl.flatSelectedDocs = { value: flatSelectedDocs };
+                const BLOB = "BLOB" as unknown as Blob;
+                vi.mocked(ctrl[downloadMethodName]).mockResolvedValueOnce(BLOB);
+                await ctrl.download();
+                expect(ctrl[downloadMethodName]).toHaveBeenCalled();
+            });
 
-            vi.mocked(documentService.getAllDocs).mockClear();
-            ctrl.resource = ASSOCIATION;
-        });
-
-        it("calls documentHelper.download with blob from documentService", async () => {
-            const BLOB = "BLOB" as unknown as Blob;
-            vi.mocked(documentService.getAllDocs).mockResolvedValueOnce(BLOB);
-            await ctrl.downloadAll();
-            expect(documentHelper.download).toHaveBeenCalledWith(BLOB, "documents_RNA.zip");
+            it("calls documentHelper.download with blob from $downloadMethodName", async () => {
+                ctrl.flatSelectedDocs = { value: flatSelectedDocs };
+                const BLOB = "BLOB" as unknown as Blob;
+                vi.mocked(ctrl[downloadMethodName]).mockResolvedValueOnce(BLOB);
+                await ctrl.download();
+                expect(documentHelper.download).toHaveBeenCalledWith(BLOB, "documents_RNA.zip");
+            });
         });
 
         it("if download is quicker than 750 ms, does not set zipPromise", async () => {
             const zipSetSpy = vi.spyOn(ctrl.zipPromise, "set");
             vi.useFakeTimers();
-            vi.mocked(documentService.getAllDocs).mockReturnValueOnce(new Promise(resolve => setTimeout(resolve, 500)));
+            vi.mocked(ctrl.downloadAll).mockReturnValueOnce(new Promise(resolve => setTimeout(resolve, 500)));
 
-            const test = ctrl.downloadAll();
+            const test = ctrl.download();
             vi.advanceTimersByTime(600);
             expect(zipSetSpy).not.toHaveBeenCalled();
             vi.runAllTimers();
@@ -283,16 +345,70 @@ describe("Documents.controller", () => {
         it("if download is slower than 750 ms, sets zipPromise", async () => {
             const zipSetSpy = vi.spyOn(ctrl.zipPromise, "set");
             vi.useFakeTimers();
-            vi.mocked(documentService.getAllDocs).mockReturnValueOnce(
-                new Promise(resolve => setTimeout(resolve, 2000)),
-            );
+            vi.mocked(ctrl.downloadAll).mockReturnValueOnce(new Promise(resolve => setTimeout(resolve, 2000)));
 
-            const test = ctrl.downloadAll();
+            const test = ctrl.download();
             vi.advanceTimersByTime(800);
             expect(zipSetSpy).toHaveBeenCalled();
             vi.runAllTimers();
             await test;
             vi.useRealTimers();
+        });
+    });
+
+    describe("downloadAll", () => {
+        const DOCS = "test" as unknown as DocumentEntity[];
+
+        beforeAll(() => {
+            // @ts-expect-error - mock
+            vi.mocked(documentService.getAllDocs).mockResolvedValue("");
+        });
+
+        afterAll(() => {
+            vi.mocked(documentService.getAllDocs).mockRestore();
+        });
+
+        it("gets docs' blob for all docs", async () => {
+            ctrl.allFlatDocs = DOCS;
+            await ctrl.downloadAll();
+            expect(documentService.getSomeDocs).toHaveBeenCalledWith(DOCS);
+            resetController();
+        });
+
+        it("returns blob from documentService", async () => {
+            const BLOB = "BLOB" as unknown as Blob;
+            vi.mocked(documentService.getSomeDocs).mockResolvedValueOnce(BLOB);
+            const expected = BLOB;
+            const actual = await ctrl.downloadAll();
+            expect(actual).toBe(expected);
+        });
+    });
+
+    describe("downloadSelected", () => {
+        const DOCS = "test" as unknown as DocumentEntity[];
+
+        beforeAll(() => {
+            // @ts-expect-error - mock
+            vi.mocked(documentService.getAllDocs).mockResolvedValue("");
+        });
+
+        afterAll(() => {
+            vi.mocked(documentService.getAllDocs).mockRestore();
+        });
+
+        it("gets docs' blob for selected docs", async () => {
+            vi.spyOn(ctrl.flatSelectedDocs, "value", "get").mockReturnValueOnce(DOCS);
+            await ctrl.downloadSelected();
+            expect(documentService.getSomeDocs).toHaveBeenCalledWith(DOCS);
+            resetController();
+        });
+
+        it("returns blob from documentService", async () => {
+            const BLOB = "BLOB" as unknown as Blob;
+            vi.mocked(documentService.getSomeDocs).mockResolvedValueOnce(BLOB);
+            const expected = BLOB;
+            const actual = await ctrl.downloadSelected();
+            expect(actual).toBe(expected);
         });
     });
 });
