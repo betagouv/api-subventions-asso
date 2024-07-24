@@ -1,5 +1,5 @@
 export interface DataBretagneProgrammeDto {
-    label_theme: string;
+    label_theme: string | null;
     label: string;
     code_ministere: string;
     description?: string | null;

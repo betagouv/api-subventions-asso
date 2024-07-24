@@ -21,7 +21,7 @@ export class DataBretagneDomaineFonctionnelAdapter {
 
 export class DataBretagneMinistryAdapter {
     static toEntity(dto: DataBretagneMinistryDto): MinistryEntity {
-        return new MinistryEntity(dto.sigle_ministere ?? null, dto.code, dto.label);
+        return new MinistryEntity(dto.sigle_ministere, dto.code, dto.label);
     }
 }
 

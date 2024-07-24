@@ -94,7 +94,6 @@ export class DataBretagneProgrammeValidator extends DataBretagneValidatorHelper 
         return this.sortDataByValidity<DataBretagneProgrammeDto>(dtoListWithoutDuplicates, duplicatesCode, [
             "code",
             "label",
-            "label_theme",
             "code_ministere",
         ]);
     }
