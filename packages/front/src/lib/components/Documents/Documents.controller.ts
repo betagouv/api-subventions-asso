@@ -91,6 +91,7 @@ export class DocumentsController {
         const estabDocsPromise = secondarySiret
             ? establishmentService.getDocuments(secondarySiret)
             : Promise.resolve([]);
+        // const assoDocsPromise = Promise.resolve([])
         const assoDocsPromise = associationService
             .getDocuments(this.assoSiren)
             .then(docs => this._filterAssoDocs(docs, secondarySiret || this.headSiret));
@@ -101,7 +102,10 @@ export class DocumentsController {
     private _filterAssoDocs(docs: DocumentEntity[], siret: Siret) {
         // display rules from #2533: we show docs from asso, from head and from required secondary establishment if any
         return docs.filter(
-            doc => !doc.__meta__.siret || doc.__meta__.siret === siret || doc.__meta__.siret === this.headSiret,
+            doc =>
+                !doc.__meta__.siret ||
+                doc.__meta__.siret === siret ||
+                (doc.__meta__.siret === this.headSiret && doc.provider !== "Avis de Situation Insee"),
         );
     }
 
@@ -120,9 +124,8 @@ export class DocumentsController {
         const headDocs: DocumentEntity[] = [];
         const estabDocs: DocumentEntity[] = [];
         for (const doc of miscDocs) {
-            if (doc.provider === "RNA") assoDocs.push(doc);
+            if (doc.provider === "RNA" || doc.provider === "Avis de Situation Insee") assoDocs.push(doc);
             else if (doc.__meta__.siret && doc.__meta__.siret !== this.headSiret) estabDocs.push(doc);
-            else if (doc.provider === "Avis de Situation Insee") assoDocs.push(doc);
             else headDocs.push(doc);
         }
         return { assoDocs, estabDocs, headDocs, some: !!(assoDocs.length + estabDocs.length) };

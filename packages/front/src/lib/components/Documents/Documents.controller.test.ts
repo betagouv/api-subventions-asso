@@ -90,6 +90,13 @@ describe("Documents.controller", () => {
             const actual = ctrl._filterAssoDocs(DOCS, SIRET).length;
             expect(actual).toBe(expected);
         });
+
+        it("skips insee of head siret if secondary establishment required", () => {
+            const DOCS = [{ __meta__: { siret: "SIRENNIC" }, provider: "Avis de Situation Insee" }];
+            const expected = 0;
+            const actual = ctrl._filterAssoDocs(DOCS, SIRET).length;
+            expect(actual).toBe(expected);
+        });
     });
 
     describe("_removeDuplicates", () => {
@@ -177,12 +184,12 @@ describe("Documents.controller", () => {
             {
                 provider: "Avis de Situation Insee",
                 nom: "Document Avis de Situation Insee",
-                __meta__: { siret: "any other siret" },
+                __meta__: {},
             },
             {
                 provider: "Avis de Situation Insee",
                 nom: "Document Avis de Situation Insee",
-                __meta__: {},
+                __meta__: { siret: "any other siret" },
             },
         ];
 
@@ -205,16 +212,16 @@ describe("Documents.controller", () => {
                         nom: "Document Avis de Situation Insee",
                         __meta__: {},
                     },
+                    {
+                        provider: "Avis de Situation Insee",
+                        nom: "Document Avis de Situation Insee",
+                        __meta__: { siret: "any other siret" },
+                    },
                 ],
                 estabDocs: [
                     {
                         nom: "Document Le Compte Asso",
                         provider: "Le Compte Asso",
-                        __meta__: { siret: "any other siret" },
-                    },
-                    {
-                        provider: "Avis de Situation Insee",
-                        nom: "Document Avis de Situation Insee",
                         __meta__: { siret: "any other siret" },
                     },
                 ],
