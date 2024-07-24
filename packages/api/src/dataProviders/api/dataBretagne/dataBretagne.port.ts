@@ -22,9 +22,6 @@ import {
     DataBretagneRefProgrammationValidator,
 } from "./DataBretagneValidator";
 
-// TO DO GIULIA : ajouter le validator pour les données de DataBretagne
-// Valider avec Victor que les transformations en entités soit au niveau de la port et pas du service
-
 export class DataBretagnePort {
     private basepath = "https://api.databretagne.fr/budget/api/v1";
     private http: ProviderRequestService;
