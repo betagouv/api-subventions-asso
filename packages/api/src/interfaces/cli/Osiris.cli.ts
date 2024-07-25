@@ -131,7 +131,7 @@ export default class OsirisCli {
             let validation = osirisService.validRequest(osirisRequest);
 
             if (validation !== true && validation.code === 2) {
-                // RNA NOT FOUND // TODO: use const for decribe error
+                // RNA NOT FOUND // TODO: use const to describe error
                 const rnaSirenEntities = await rnaSirenService.find(osirisRequest.legalInformations.siret);
 
                 if (!rnaSirenEntities || !rnaSirenEntities.length) {
