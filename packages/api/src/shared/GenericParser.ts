@@ -32,7 +32,7 @@ export class GenericParser {
             // checking all possible headers for this property
             else oneLevelKey = (possibleKeys as string[]).find(possibleKey => data[possibleKey.trim()] != undefined); // TODO manage multiple valid case (with filters)
 
-            if (!oneLevelKey) return undefined;
+            if (!oneLevelKey || !objectToLookIn[oneLevelKey.trim()]) return undefined;
 
             successiveKeys.push(oneLevelKey);
             objectToLookIn = objectToLookIn[oneLevelKey.trim()] as TypeIn;
