@@ -1,18 +1,26 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const child_process = require("child_process");
+const { execSync } = require("child_process");
+const { readdirSync } = require("fs");
 
 // scalingo app name
 const appName = process.argv[2];
+
 // i.e : "requests" | "actions" | "evaluations"
 const importType = process.argv[3];
-// tar.gz with only files (no sub-directories) and a maximum size of 100mo
-const osirisFile = process.argv[4];
-// year of exercice (i.e: 2024)
+
+// directory with xls files OR directory with split zips
+const osirisDir = process.argv[4];
+
+// year of exercise (i.e: 2024)
 const yearOfFile = process.argv[5];
+
+// option to skip
+const skipZip = process.argv[6] || false;
 
 if (process.argv.length < 6) {
     console.error(
-        "Please use command: node deploy-osiris-file.js [YOUR_APP_NAME] [OSIRS_FILE_TYPE] [LINK_TO_DATA_OSIRIS] [YEAR_OF_EXTRACT_FILE]",
+        "Please use command: node deploy-osiris-file.js [YOUR_APP_NAME] [OSIRS_FILE_TYPE] [LINK_TO_DATA_DIR_OSIRIS] [YEAR_OF_EXTRACT_FILE]",
     );
     process.exit();
 }
@@ -45,6 +53,23 @@ function scalingAsyncAppAction(action, value) {
 
 console.log("Welcome to OSIRIS automation deploy files !\n");
 
+if (!skipZip) {
+    console.log("Zipping files...\n");
+
+    const zipCmd = `zip  ${osirisDir}/../${importType}.zip ${osirisDir}/* ; zip ${osirisDir}/../${importType}.zip --out ${osirisDir}/../${importType}-split.zip -s 80m`;
+    execSync(zipCmd);
+}
+
+const zipDir = skipZip ? osirisDir : `${osirisDir}/../`;
+
+console.log(`Finding files in ${zipDir} ...
+`);
+
+const files = readdirSync(`${zipDir}`)
+    .filter(f => f.startsWith(`${importType}-split`))
+    .map(archiveName => `--file ${zipDir}/${archiveName}`)
+    .join(" ");
+
 console.log("Getting scalingo app info... \n");
 
 const addonsInfo = scalingoAppAction("addons", "").toString();
@@ -59,7 +84,7 @@ console.log(`Start deploy ${appName} ...\n`);
 
 scalingAsyncAppAction(
     "run",
-    `--size 2XL --file ${osirisFile} --env TMP_YEAR_OF_FILE=${yearOfFile} --env IMPORT_TYPE=${importType} bash ./packages/api/tools/osiris/deploy-files-container.sh`,
+    `--size 2XL ${files} --env TMP_YEAR_OF_FILE=${yearOfFile} --env IMPORT_TYPE=${importType} bash ./packages/api/tools/osiris/deploy-files-container.sh`,
 ).then(() => {
     console.log("Extract end !");
 
