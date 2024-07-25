@@ -116,8 +116,11 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
         return this.toPaymentArray(requests);
     }
 
-    async chorusCursorFind(projection: DefaultObject<unknown> = { indexedInformations: 1 }) {
-        return await chorusLineRepository.cursorFind({}, projection);
+    async chorusCursorFind(
+        query: DefaultObject<unknown> = {},
+        projection: DefaultObject<unknown> = { indexedInformations: 1 },
+    ) {
+        return chorusLineRepository.cursorFind(query, projection);
     }
 
     // TODO: unit test this

@@ -71,7 +71,7 @@ describe("chorusService", () => {
 
         describe("chorusCursorFind", () => {
             it("should call chorusLineRepository.find", async () => {
-                await chorusService.chorusCursorFind({});
+                chorusService.chorusCursorFind();
                 expect(mockedChorusLineRepository.cursorFind).toHaveBeenCalledTimes(1);
             });
         });
