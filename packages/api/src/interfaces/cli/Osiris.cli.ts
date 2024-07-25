@@ -122,11 +122,13 @@ export default class OsirisCli {
         const requests = OsirisParser.parseRequests(contentFile, year);
 
         let tictackClock = true;
-        const results = await requests.reduce(async (acc, osirisRequest, index) => {
-            const data = await acc;
-
+        const ticTacInterval = setInterval(() => {
             tictackClock = !tictackClock;
             console.log(tictackClock ? "TIC" : "TAC");
+        }, 10000);
+
+        const results = await requests.reduce(async (acc, osirisRequest, index) => {
+            const data = await acc;
 
             let validation = osirisService.validRequest(osirisRequest);
 
@@ -157,6 +159,7 @@ export default class OsirisCli {
 
             return data;
         }, Promise.resolve([]) as Promise<{ state: string; result: OsirisRequestEntity }[]>);
+        clearInterval(ticTacInterval);
 
         const created = results.filter(({ state }) => state === "created");
         console.info(`
