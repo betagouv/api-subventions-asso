@@ -8,6 +8,10 @@ depuis le package tools, exécuter
 node osiris-automation/index.js [YEAR] [TYPE_DONNÉES]
 ```
 
+Le script fonctionne en lançant un navigateur détaché. Il y a des bugs connus que voici comment contourner : 
+- Si le script s'arrête en cours de route (l'affichage en console n'évolue plus pendant plusieurs dizaines de secondes), redémarrer le script. Il se relancera bien où vous en étiez
+- Si le navigateur détaché est ouvert sur une page blanche, ouvrir un nouvel onglet dessus. Cela devrait débloquer la situation. 
+
 **Dans ce script**, les valeurs possibles pour `TYPE_DONNÉES` sont `SuiviDossiers` et `SuiviActions`. Nous n'avons *pas* inclus de système pour télécharger automatiquement les évaluations.
 
 Il faut donc l'exéctuer une fois pour les dossiers et une fois pour les actions. En fin d'année, penser à exécuter aussi l'année suivante pour attraper des cas de pluriannualité.
