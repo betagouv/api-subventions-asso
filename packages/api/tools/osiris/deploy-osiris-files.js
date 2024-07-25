@@ -56,7 +56,7 @@ console.log("Welcome to OSIRIS automation deploy files !\n");
 if (!skipZip) {
     console.log("Zipping files...\n");
 
-    const zipCmd = `pusdh ${osirisDir}; zip  ../${importType}.zip ./* ; zip ../${importType}.zip --out ../${importType}-split.zip -s 80m ; popd`;
+    const zipCmd = `zip -j ${osirisDir}/../${importType}.zip ${osirisDir}/* ; zip ${osirisDir}/../${importType}.zip --out ${osirisDir}/../${importType}-split.zip -s 80m`;
     execSync(zipCmd);
 }
 
