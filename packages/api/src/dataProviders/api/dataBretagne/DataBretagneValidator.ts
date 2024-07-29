@@ -7,9 +7,19 @@ import {
 
 export class DataBretagneValidatorHelper {
     static dropDuplicates<T>(listDTO: T[]): T[] {
+        /*
+        This method is used to drop duplicated DTO from a list of DTOs.
+        */
+
         return [...new Set(listDTO)];
     }
 
+    /**
+     * Finds duplicate values of a specified attribute in a collection to identify data incoherence.
+     * @param collection - The list to search for duplicates.
+     * @param attribute - The attribute to check for duplicates.
+     * @returns A Set containing the attributes values found more then once. An error is printed for each duplicate found.
+     */
     static findDuplicateAttribute<T, K extends keyof T>(collection: T[], attribute: K): Set<T[K]> {
         const uniqueValues = new Set<T[K]>();
         const duplicates = new Set<T[K]>();
