@@ -37,10 +37,11 @@ export default class ScdlCli {
         ]);
     }
 
-    public async parse(file: string, producerSlug: string, exportDate?: string, delimiter = ";") {
+    public async parse(file: string, producerSlug: string, exportDate?: string, delimiter = ";", quote = '"') {
         await this.validateGenericInput(file, producerSlug, exportDate);
         const fileContent = fs.readFileSync(file);
-        const { entities, errors } = ScdlGrantParser.parseCsv(fileContent, delimiter);
+        const parsedQuote = quote === "false" ? false : quote;
+        const { entities, errors } = ScdlGrantParser.parseCsv(fileContent, delimiter, parsedQuote);
         await Promise.all([
             this.persistEntities(entities, producerSlug, exportDate as string),
             this.exportErrors(errors, file),
