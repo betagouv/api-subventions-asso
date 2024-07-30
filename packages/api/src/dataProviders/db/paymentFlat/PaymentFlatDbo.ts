@@ -16,6 +16,6 @@ export default interface PaymentFlatDbo {
     provider: string;
     codeAction: string;
     action: string | null;
-    codeActivite: string;
+    codeActivite: string | null;
     activite: string | null;
 }
