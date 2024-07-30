@@ -15,7 +15,6 @@ import ExportDateError from "../../shared/errors/cliErrors/ExportDateError";
 export default class FonjepCli extends CliController {
     static cmdName = "fonjep";
     protected _providerIdToLog = fonjepService.provider.id;
-
     protected logFileParsePath = "./logs/fonjep.parse.log.txt";
 
     /**
