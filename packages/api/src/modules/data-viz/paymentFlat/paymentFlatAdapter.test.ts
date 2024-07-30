@@ -118,7 +118,7 @@ describe("PaymentFlatAdapter", () => {
             delete RECORDS["domaineFonct"]["0161AC123"];
         });
 
-        it.only.each([
+        it.each([
             {
                 chorusLineEntity: { ...CHORUS_LINE_ENTITY, codeDomaineFonctionnel: "0163" },
                 codeValue: "0163",
