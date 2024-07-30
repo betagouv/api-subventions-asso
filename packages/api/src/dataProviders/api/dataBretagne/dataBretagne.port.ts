@@ -3,8 +3,24 @@ import { DATA_BRETAGNE_PASSWORD, DATA_BRETAGNE_USERNAME } from "../../../configu
 import ProviderRequestFactory, {
     ProviderRequestService,
 } from "../../../modules/provider-request/providerRequest.service";
-import { DataBretagneProgrammeDto } from "./DataBretagneDto";
-import DataBretagneProgrammeAdapter from "./DataBretagneProgrammeAdapter";
+import {
+    DataBretagneProgrammeDto,
+    DataBretagneMinistryDto,
+    DataBretagneDomaineFonctionnelDto,
+    DataBretagneRefProgrammationDto,
+} from "./DataBretagneDto";
+import {
+    DataBretagneDomaineFonctionnelAdapter,
+    DataBretagneMinistryAdapter,
+    DataBretagneProgrammeAdapter,
+    DataBretagneRefProgrammationAdapter,
+} from "./DataBretagneAdapter";
+import {
+    DataBretagneDomaineFonctionnelValidator,
+    DataBretagneMinistryValidator,
+    DataBretagneProgrammeValidator,
+    DataBretagneRefProgrammationValidator,
+} from "./DataBretagneValidator";
 
 export class DataBretagnePort {
     private basepath = "https://api.databretagne.fr/budget/api/v1";
@@ -28,14 +44,42 @@ export class DataBretagnePort {
         }
     }
 
-    async getStateBudgetPrograms() {
+    async getCollection<T>(collection: string) {
         return (
-            await this.http.get<{ items: DataBretagneProgrammeDto[] }>(`${this.basepath}/programme?limit=400`, {
+            await this.http.get<{ items: T[] }>(`${this.basepath}/${collection}?limit=4000`, {
                 headers: {
                     Authorization: this.token,
                 },
             })
-        )?.data?.items.map(DataBretagneProgrammeAdapter.toEntity);
+        )?.data?.items;
+    }
+
+    async getStateBudgetPrograms() {
+        const validData = DataBretagneProgrammeValidator.validate(
+            await this.getCollection<DataBretagneProgrammeDto>("programme"),
+        );
+        return validData.valids.map(DataBretagneProgrammeAdapter.toEntity);
+    }
+
+    async getMinistry() {
+        const validData = DataBretagneMinistryValidator.validate(
+            await this.getCollection<DataBretagneMinistryDto>("ministere"),
+        );
+        return validData.valids.map(DataBretagneMinistryAdapter.toEntity);
+    }
+
+    async getDomaineFonctionnel() {
+        const validData = DataBretagneDomaineFonctionnelValidator.validate(
+            await this.getCollection<DataBretagneDomaineFonctionnelDto>("domaine-fonct"),
+        );
+        return validData.valids.map(DataBretagneDomaineFonctionnelAdapter.toEntity);
+    }
+
+    async getRefProgrammation() {
+        const validData = DataBretagneRefProgrammationValidator.validate(
+            await this.getCollection<DataBretagneRefProgrammationDto>("ref-programmation"),
+        );
+        return validData.valids.map(DataBretagneRefProgrammationAdapter.toEntity);
     }
 }
 

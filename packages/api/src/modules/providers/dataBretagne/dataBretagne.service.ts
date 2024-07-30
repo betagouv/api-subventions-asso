@@ -3,6 +3,9 @@ import dataBretagnePort from "../../../dataProviders/api/dataBretagne/dataBretag
 import stateBudgetProgramPort from "../../../dataProviders/db/state-budget-program/stateBudgetProgram.port";
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
 import ProviderCore from "../ProviderCore";
+import MinistryEntity from "../../../entities/MinistryEntity";
+import DomaineFonctionnelEntity from "../../../entities/DomaineFonctionnelEntity";
+import RefProgrammationEntity from "../../../entities/RefProgrammationEntity";
 
 /**
  * Service for interacting with the Data Bretagne API.
@@ -43,8 +46,37 @@ class DataBretagneService extends ProviderCore {
     async findProgramsRecord(): Promise<Record<number, StateBudgetProgramEntity>> {
         const programs = await stateBudgetProgramPort.findAll();
 
-        return programs.reduce((acc, program) => {
-            acc[program.code_programme] = program;
+        return programs.reduce((acc, currentLine) => {
+            acc[currentLine.code_programme] = currentLine;
+            return acc;
+        }, {});
+    }
+
+    async getMinistriesRecord(): Promise<Record<string, MinistryEntity>> {
+        await dataBretagnePort.login();
+        const ministries = await dataBretagnePort.getMinistry();
+        return ministries.reduce((acc, currentLine) => {
+            acc[currentLine.code_ministere] = currentLine;
+            return acc;
+        }, {});
+    }
+
+    async getDomaineFonctRecord(): Promise<Record<string, DomaineFonctionnelEntity>> {
+        await dataBretagnePort.login();
+        const domainesFonct = await dataBretagnePort.getDomaineFonctionnel();
+
+        return domainesFonct.reduce((acc, currentLine) => {
+            acc[currentLine.code_action] = currentLine;
+            return acc;
+        }, {});
+    }
+
+    async getRefProgrammationRecord(): Promise<Record<string, RefProgrammationEntity>> {
+        await dataBretagnePort.login();
+        const refsProgram = await dataBretagnePort.getRefProgrammation();
+
+        return refsProgram.reduce((acc, currentLine) => {
+            acc[currentLine.code_activite] = currentLine;
             return acc;
         }, {});
     }
