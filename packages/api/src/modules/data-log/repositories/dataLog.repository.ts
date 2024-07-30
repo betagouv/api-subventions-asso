@@ -13,6 +13,10 @@ class DataLogRepository extends MongoRepository<DataLogEntity> {
     async insert(entity: DataLogEntity) {
         return this.collection.insertOne(entity);
     }
+
+    async findsAll() {
+        return this.collection.find({}).toArray();
+    }
 }
 
 const dataLogRepository = new DataLogRepository();
