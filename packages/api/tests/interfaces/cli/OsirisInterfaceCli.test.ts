@@ -4,6 +4,7 @@ import OsirisRequestEntity from "../../../src/modules/providers/osiris/entities/
 import OsirisCli from "../../../src/interfaces/cli/Osiris.cli";
 import OsirisParser from "../../../src/modules/providers/osiris/osiris.parser";
 import osirisService from "../../../src/modules/providers/osiris/osiris.service";
+import dataLogRepository from "../../../src/modules/data-log/repositories/dataLog.repository";
 
 describe("OsirisCli", () => {
     const spys: jest.SpyInstance<unknown>[] = [];
@@ -31,7 +32,7 @@ describe("OsirisCli", () => {
             expect(OsirisParser.parseRequests).toHaveBeenCalled();
         });
 
-        it("should throw error because no agrs", () => {
+        it("should throw error because no args", () => {
             expect(controller.parse).rejects.toThrowError("Parse command need type, extractYear and file args");
         });
 
@@ -39,6 +40,22 @@ describe("OsirisCli", () => {
             expect(() => controller.parse("requests", "fake/path", "2022")).rejects.toThrowError(
                 "File not found fake/path",
             );
+        });
+
+        it("should register new import", async () => {
+            const filePath = path.resolve(
+                __dirname,
+                "../../modules/providers/osiris/__fixtures__/SuiviDossiers_test.xls",
+            );
+            await controller.parse("requests", filePath, "2022");
+
+            const actual = await dataLogRepository.findsAll();
+            expect(actual?.[0]).toMatchObject({
+                editionDate: expect.any(Date),
+                fileName: filePath,
+                integrationDate: expect.any(Date),
+                providerId: "osiris",
+            });
         });
     });
 
@@ -70,7 +87,7 @@ describe("OsirisCli", () => {
             expect(OsirisParser.parseActions).toHaveBeenCalled();
         });
 
-        it("should throw error because no agrs", () => {
+        it("should throw error because no args", () => {
             expect(controller.parse).rejects.toThrowError("Parse command need type, extractYear and file args");
         });
 
@@ -78,6 +95,22 @@ describe("OsirisCli", () => {
             expect(() => controller.parse("actions", "fake/path", "2022")).rejects.toThrowError(
                 "File not found fake/path",
             );
+        });
+
+        it("should register new import", async () => {
+            const filePath = path.resolve(
+                __dirname,
+                "../../modules/providers/osiris/__fixtures__/SuiviActions_test.xls",
+            );
+            await controller.parse("actions", filePath, "2022");
+
+            const actual = await dataLogRepository.findsAll();
+            expect(actual?.[0]).toMatchObject({
+                editionDate: expect.any(Date),
+                fileName: filePath,
+                integrationDate: expect.any(Date),
+                providerId: "osiris",
+            });
         });
     });
 

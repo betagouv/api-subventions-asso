@@ -5,9 +5,10 @@ import scdlService from "../../../src/modules/providers/scdl/scdl.service";
 import miscScdlProducersRepository from "../../../src/modules/providers/scdl/repositories/miscScdlProducer.repository";
 import miscScdlGrantRepository from "../../../src/modules/providers/scdl/repositories/miscScdlGrant.repository";
 import MiscScdlProducer from "../../../src/modules/providers/scdl/__fixtures__/MiscScdlProducer";
+import dataLogRepository from "../../../src/modules/data-log/repositories/dataLog.repository";
 
 describe("SCDL CLI", () => {
-    let cli;
+    let cli: ScdlCli;
     const DATE_STR = "2022-12-12";
 
     beforeEach(() => {
@@ -77,6 +78,18 @@ describe("SCDL CLI", () => {
                 const actual = (await scdlService.getProducer(MiscScdlProducer.slug))?.lastUpdate;
                 expect(actual).toEqual(expected);
             }, 10000);
+
+            it("should register new import", async () => {
+                await cli.addProducer(MiscScdlProducer.slug, MiscScdlProducer.name, MiscScdlProducer.siret);
+                await test("SCDL", MiscScdlProducer.slug, DATE_STR);
+                const actual = await dataLogRepository.findsAll();
+                expect(actual?.[0]).toMatchObject({
+                    editionDate: new Date(DATE_STR),
+                    fileName: expect.any(String),
+                    integrationDate: expect.any(Date),
+                    providerId: MiscScdlProducer.slug,
+                });
+            });
         });
 
         describe("edge cases", () => {
