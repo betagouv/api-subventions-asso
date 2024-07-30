@@ -23,7 +23,9 @@ jest.mock("../../modules/providers/scdl/scdl.grant.parser");
 const mockedScdlGrantParser = jest.mocked(ScdlGrantParser);
 
 import csvSyncStringifier = require("csv-stringify/sync");
-import exp from "node:constants";
+import dataLogService from "../../modules/data-log/dataLog.service";
+jest.mock("../../modules/data-log/dataLog.service");
+
 jest.mock("csv-stringify/sync");
 
 describe("ScdlCli", () => {
@@ -34,8 +36,8 @@ describe("ScdlCli", () => {
     const GRANT = { ...MiscScdlGrant };
     const STORABLE_DATA = { ...GRANT, __data__: {} };
     const FILE_CONTENT = "FILE_CONTENT";
-    const EXPORT_DATE = new Date();
-    const EXPORT_DATE_STR = EXPORT_DATE.toString();
+    const EXPORT_DATE_STR = "2023-03-23";
+    const EXPORT_DATE = new Date(EXPORT_DATE_STR);
     const UNIQUE_ID = "UNIQUE_ID";
     const FILE_PATH = "FILE_PATH";
     const STORABLE_DATA_ARRAY = [STORABLE_DATA];
@@ -146,6 +148,11 @@ describe("ScdlCli", () => {
             jest.mocked(parserMethod).mockReturnValueOnce({ entities: STORABLE_DATA_ARRAY, errors: ERRORS });
             await test();
             expect(exportSpy).toHaveBeenCalledWith(ERRORS, FILE_PATH);
+        });
+
+        it("logs import", async () => {
+            await test();
+            expect(dataLogService.addLog).toHaveBeenCalledWith(PRODUCER_ENTITY.slug, EXPORT_DATE, FILE_PATH);
         });
     });
 
