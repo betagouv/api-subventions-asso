@@ -85,6 +85,7 @@ export default class LeCompteAssoCli {
                     encoding: "utf-8",
                 }),
             );
+        // NB : there could be here saving leCompteAsso data but this code is no longer maintained
     }
 
     private async _parse(file: string, logs: unknown[]) {
