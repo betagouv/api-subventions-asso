@@ -86,7 +86,7 @@ describe("ChorusCli", () => {
         it("should register new import", async () => {
             const filePath = path.resolve(__dirname, "./__fixtures__/new-chorus-export.xlsx");
             await controller.parse(filePath, EXPORT_DATE);
-            const actual = await dataLogRepository.findsAll();
+            const actual = await dataLogRepository.findAll();
             expect(actual?.[0]).toMatchObject({
                 editionDate: new Date(EXPORT_DATE),
                 fileName: filePath,

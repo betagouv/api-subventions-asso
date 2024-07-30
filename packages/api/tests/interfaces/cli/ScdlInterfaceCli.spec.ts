@@ -82,7 +82,7 @@ describe("SCDL CLI", () => {
             it("should register new import", async () => {
                 await cli.addProducer(MiscScdlProducer.slug, MiscScdlProducer.name, MiscScdlProducer.siret);
                 await test("SCDL", MiscScdlProducer.slug, DATE_STR);
-                const actual = await dataLogRepository.findsAll();
+                const actual = await dataLogRepository.findAll();
                 expect(actual?.[0]).toMatchObject({
                     editionDate: new Date(DATE_STR),
                     fileName: expect.any(String),

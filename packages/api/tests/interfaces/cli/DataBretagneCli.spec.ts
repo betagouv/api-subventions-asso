@@ -30,7 +30,7 @@ describe("DataBretagneCli", () => {
 
         it("should register new import", async () => {
             await cli.resync();
-            const actual = await dataLogRepository.findsAll();
+            const actual = await dataLogRepository.findAll();
             expect(actual?.[0]).toMatchObject({
                 editionDate: expect.any(Date),
                 fileName: "api",

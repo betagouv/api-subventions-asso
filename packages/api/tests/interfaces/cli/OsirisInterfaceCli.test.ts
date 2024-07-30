@@ -49,7 +49,7 @@ describe("OsirisCli", () => {
             );
             await controller.parse("requests", filePath, "2022");
 
-            const actual = await dataLogRepository.findsAll();
+            const actual = await dataLogRepository.findAll();
             expect(actual?.[0]).toMatchObject({
                 editionDate: expect.any(Date),
                 fileName: filePath,
@@ -104,7 +104,7 @@ describe("OsirisCli", () => {
             );
             await controller.parse("actions", filePath, "2022");
 
-            const actual = await dataLogRepository.findsAll();
+            const actual = await dataLogRepository.findAll();
             expect(actual?.[0]).toMatchObject({
                 editionDate: expect.any(Date),
                 fileName: filePath,

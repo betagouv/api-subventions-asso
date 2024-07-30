@@ -34,7 +34,7 @@ describe("Subventia Cli", () => {
             );
             const EXPORT_DATE = "2024-03-12";
             await cli.parse(path.resolve(__dirname, filePath), "2024-03-12");
-            const actual = await dataLogRepository.findsAll();
+            const actual = await dataLogRepository.findAll();
             expect(actual?.[0]).toMatchObject({
                 editionDate: new Date(EXPORT_DATE),
                 fileName: filePath,
