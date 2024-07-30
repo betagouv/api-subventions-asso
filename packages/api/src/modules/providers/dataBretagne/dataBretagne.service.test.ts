@@ -6,16 +6,17 @@ jest.mock("../../../dataProviders/db/state-budget-program/stateBudgetProgram.por
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
 import { PROGRAMS } from "../../../dataProviders/api/dataBretagne/__fixtures__/DataBretagne.fixture";
 import DataBretagneProgrammeAdapter from "../../../dataProviders/api/dataBretagne/DataBretagneProgrammeAdapter";
+import dataLogService from "../../data-log/dataLog.service";
+jest.mock("../../data-log/dataLog.service");
 
 describe("Data Bretagne Service", () => {
     beforeAll(() => {
-        jest.mocked(dataBretagnePort.getStateBudgetPrograms).mockResolvedValue([new StateBudgetProgramEntity(
-            "label_theme",
-            "label",
-            "code_ministere",
-            1,
-        )]);
-        jest.mocked(stateBudgetProgramPort.findAll).mockResolvedValue(PROGRAMS.map(DataBretagneProgrammeAdapter.toEntity));
+        jest.mocked(dataBretagnePort.getStateBudgetPrograms).mockResolvedValue([
+            new StateBudgetProgramEntity("label_theme", "label", "code_ministere", 1),
+        ]);
+        jest.mocked(stateBudgetProgramPort.findAll).mockResolvedValue(
+            PROGRAMS.map(DataBretagneProgrammeAdapter.toEntity),
+        );
     });
 
     describe("resyncPrograms", () => {
@@ -34,6 +35,14 @@ describe("Data Bretagne Service", () => {
             expect(() => dataBretagneService.resyncPrograms()).rejects.toThrowError(
                 "Unhandled error from API Data Bretagne",
             );
+        });
+
+        it("logs import", async () => {
+            const date = new Date("2022-01-01");
+            jest.useFakeTimers().setSystemTime(date);
+            await dataBretagneService.resyncPrograms();
+            expect(dataLogService.addLog).toHaveBeenCalledWith("data-bretagne", date, "api");
+            jest.useRealTimers();
         });
     });
 

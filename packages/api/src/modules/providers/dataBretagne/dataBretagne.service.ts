@@ -3,6 +3,7 @@ import dataBretagnePort from "../../../dataProviders/api/dataBretagne/dataBretag
 import stateBudgetProgramPort from "../../../dataProviders/db/state-budget-program/stateBudgetProgram.port";
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
 import ProviderCore from "../ProviderCore";
+import dataLogService from "../../data-log/dataLog.service";
 
 /**
  * Service for interacting with the Data Bretagne API.
@@ -33,7 +34,9 @@ class DataBretagneService extends ProviderCore {
         const programs = await dataBretagnePort.getStateBudgetPrograms();
         // do not replace programs if empty
         if (!programs || !programs.length) throw new Error("Unhandled error from API Data Bretagne");
-        return stateBudgetProgramPort.replace(programs);
+        await stateBudgetProgramPort.replace(programs);
+        await dataLogService.addLog(dataBretagneService.provider.id, new Date(), "api");
+        // TODO test
     }
 
     /**
