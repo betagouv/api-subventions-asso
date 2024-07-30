@@ -11,8 +11,8 @@ export const PAYMENT_FLAT_ENTITY = new PaymentFlatEntity(
     "Ministère Exemple", // ministry
     "ME", // ministry acronym
     "EJ Exemple", // EJ
-    "Fournisseur Exemple", // provider
-    "AC123", // action code
+    "chorus", // provider
+    "0163AC123", // action code
     "Label d'action Exemple", // action label
     "AC4560000000", // acitivity code
     "Label d'activité Exemple", // activity label

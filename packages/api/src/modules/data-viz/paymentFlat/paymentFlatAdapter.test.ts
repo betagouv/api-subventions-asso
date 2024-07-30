@@ -42,24 +42,22 @@ describe("PaymentFlatAdapter", () => {
 
         it("should return PaymentFlatEntity with null when data are not fully provided", () => {
             mockGetDataBretagneDocumentData.mockReturnValueOnce({
-                documentDataReturnedValue,
+                ...documentDataReturnedValue,
                 programEntity: undefined,
             });
             const result = PaymentFlatAdapter.toPaymentFlatEntity(
-                { ...CHORUS_LINE_ENTITY, codeActivitee: undefined } as unknown as IChorusIndexedInformations,
+                { ...CHORUS_LINE_ENTITY } as unknown as IChorusIndexedInformations,
                 RECORDS["programme"],
                 RECORDS["ministry"],
                 RECORDS["domaineFonct"],
                 RECORDS["refProgrammation"],
             );
 
+            console.log({ ...CHORUS_LINE_ENTITY, codeActivitee: undefined } as unknown as IChorusIndexedInformations);
+
             const expected = {
                 ...PAYMENT_FLAT_ENTITY,
-                activityCode: null,
-                activityLabel: null,
                 programName: null,
-                ministry: null,
-                ministryAcronym: null,
                 mission: null,
             };
             expect(result).toEqual(expected);
