@@ -1,10 +1,14 @@
 import fs from "fs";
 import CliController from "./CliController";
 import { GenericParser } from "./GenericParser";
+import dataLogService from "../modules/data-log/dataLog.service";
+
+jest.mock("../modules/data-log/dataLog.service");
 
 describe("CliController", () => {
     const controller = new CliController();
     const FILENAME = "FILENAME";
+    const EXPORT_DATE = "2024/07/30";
     const existsSyncMock = jest.spyOn(fs, "existsSync");
     const writeFileSyncMock = jest.spyOn(fs, "writeFileSync").mockImplementation(() => ({}));
 
@@ -25,6 +29,7 @@ describe("CliController", () => {
             expect(actual).toEqual(expected);
         });
     });
+
     describe("validFileExists()", () => {
         it("should throw an error", () => {
             existsSyncMock.mockImplementationOnce(() => false);
@@ -45,10 +50,13 @@ describe("CliController", () => {
             expect(actual).toEqual(true);
         });
     });
+
     describe("parse()", () => {
         const findFilesMock = jest.spyOn(GenericParser, "findFiles");
         let validFileExistsMock: jest.SpyInstance;
         let _parseSpy: jest.SpyInstance;
+        // @ts-expect-error -- mock protected method
+        const logMock = jest.spyOn(controller, "_logImportSuccess").mockResolvedValue(null);
 
         beforeAll(() => {
             // @ts-expect-error: spy on protected method
@@ -57,39 +65,35 @@ describe("CliController", () => {
             validFileExistsMock = jest.spyOn(controller, "validFileExists").mockImplementationOnce(() => true);
             jest.spyOn(console, "info").mockImplementation(() => undefined);
             existsSyncMock.mockImplementation(() => true);
-        });
-
-        afterEach(() => {
-            findFilesMock.mockReset();
+            findFilesMock.mockImplementation(() => [FILENAME]);
         });
 
         afterAll(() => {
             _parseSpy.mockRestore();
+            findFilesMock.mockRestore();
             validFileExistsMock.mockRestore();
+            logMock.mockRestore();
         });
 
         it("should call _parse() one time", async () => {
-            findFilesMock.mockImplementationOnce(() => [FILENAME]);
             const expected = 1;
-            await controller.parse(FILENAME);
+            await controller.parse(FILENAME, EXPORT_DATE);
             const actual = _parseSpy.mock.calls.length;
             expect(actual).toEqual(expected);
         });
+
         it("should call _parse() multiple times", async () => {
             const FILES = [FILENAME, FILENAME, FILENAME];
             findFilesMock.mockImplementationOnce(() => FILES);
             const expected = FILES.length;
-            await controller.parse(FILENAME);
+            await controller.parse(FILENAME, EXPORT_DATE);
             const actual = _parseSpy.mock.calls.length;
             expect(actual).toEqual(expected);
         });
-        it("should call _parse() with a specific export date", async () => {
-            const LOGS: unknown[] = [];
-            const exportDate = "2022-03-03";
-            findFilesMock.mockImplementationOnce(() => [FILENAME]);
-            const expected = new Date(exportDate);
-            await controller.parse(FILENAME, exportDate);
-            expect(_parseSpy).toHaveBeenCalledWith(FILENAME, LOGS, expected);
+
+        it("logs import", async () => {
+            await controller.parse(FILENAME, EXPORT_DATE);
+            expect(logMock).toHaveBeenCalledWith(new Date(EXPORT_DATE), FILENAME);
         });
     });
 
@@ -99,6 +103,30 @@ describe("CliController", () => {
             expect(() => controller._parse("", [])).rejects.toThrowError(
                 "_parse() need to be implemented by the child class",
             );
+        });
+    });
+
+    describe("logImportSuccess", () => {
+        const EDITION_DATE = new Date("2023-02-02");
+
+        it("requires '_providerIdToLog'", async () => {
+            const ctrl = new CliController();
+            // @ts-expect-error -- test protected value
+            ctrl._providerIdToLog = "";
+            // @ts-expect-error -- test protected method
+            const test = () => ctrl._logImportSuccess(EDITION_DATE, FILENAME);
+            await expect(test).rejects.toThrowError(
+                new Error("'_providerIdToLog' needs to be defined by the child class"),
+            );
+        });
+
+        it("logs import", async () => {
+            const ctrl = new CliController();
+            // @ts-expect-error -- test protected value
+            ctrl._providerIdToLog = "something";
+            // @ts-expect-error -- test protected method
+            await ctrl._logImportSuccess(EDITION_DATE, FILENAME);
+            expect(dataLogService.addLog).toHaveBeenCalledWith("something", EDITION_DATE, FILENAME);
         });
     });
 });
