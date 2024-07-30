@@ -10,6 +10,6 @@ export class DataBretagneCron implements CronController {
     @AsyncCron({ cronExpression: "0 0 3 * *" })
     async resync() {
         await dataBretagneService.resyncPrograms();
-        await dataLogService.addLog(dataBretagneService.provider.id, new Date(new Date().getFullYear()), "api");
+        await dataLogService.addLog(dataBretagneService.provider.id, new Date(), "api");
     }
 }
