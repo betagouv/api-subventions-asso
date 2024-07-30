@@ -28,7 +28,7 @@ export default class ScdlCli {
         await scdlService.createProducer({ slug, name, siret, lastUpdate: new Date() });
     }
 
-    public async parseXls(file: string, producerSlug: string, exportDate?: string, pageName?: string, rowOffset = 0) {
+    public async parseXls(file: string, producerSlug: string, exportDate: string, pageName?: string, rowOffset = 0) {
         await this.validateGenericInput(file, producerSlug, exportDate);
         const fileContent = fs.readFileSync(file);
         const { entities, errors } = ScdlGrantParser.parseExcel(fileContent, pageName, rowOffset);
@@ -36,6 +36,7 @@ export default class ScdlCli {
             this.persistEntities(entities, producerSlug, exportDate as string),
             this.exportErrors(errors, file),
         ]);
+        await dataLogService.addLog(producerSlug, new Date(exportDate), file);
     }
 
     public async parse(file: string, producerSlug: string, exportDate: string, delimiter = ";") {
