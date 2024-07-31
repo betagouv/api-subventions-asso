@@ -90,7 +90,9 @@ describe("PaymentFlatService", () => {
                     .mockReturnValueOnce(null),
             };
 
-            mockchorusCursorFind = jest.spyOn(chorusService, "chorusCursorFind").mockResolvedValue(mockCursor as any);
+            mockchorusCursorFind = jest
+                .spyOn(chorusService, "chorusCursorFindIndexedData")
+                .mockResolvedValue(mockCursor as any);
             mockToPaymentFlatEntity = jest
                 .spyOn(PaymentFlatAdapter, "toPaymentFlatEntity")
                 .mockReturnValue(PAYMENT_FLAT_ENTITY);

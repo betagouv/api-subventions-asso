@@ -1,4 +1,4 @@
-import { ObjectId } from "mongodb"; // Import the ObjectId type
+import { ObjectId } from "mongodb";
 import paymentFlatPort from "../../../dataProviders/db/paymentFlat/paymentFlat.port";
 import dataBretagneService from "../../providers/dataBretagne/dataBretagne.service";
 import chorusService from "../../providers/chorus/chorus.service";
@@ -16,7 +16,7 @@ export class PaymentFlatService {
     public async upDatePaymentsFlatCollection(lastChorusObjectId: ObjectId) {
         const { programs, ministries, domainesFonct, refsProgrammation } = await this.getAllDataBretagneData();
 
-        const chorusCursor = await chorusService.chorusCursorFind({ _id: { $gt: lastChorusObjectId } });
+        const chorusCursor = await chorusService.chorusCursorFindIndexedData(lastChorusObjectId);
         let document = await chorusCursor.next();
         let newChorusLastUpdate = lastChorusObjectId;
 
