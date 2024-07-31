@@ -4,16 +4,10 @@ import PaymentFlatDbo from "./PaymentFlatDbo";
 import PaymentFlatAdapter from "./PaymentFlat.adapter";
 
 export class PaymentFlatPort extends MongoRepository<PaymentFlatDbo> {
-    /* Giulia asks :
-     * si la collection existe la classe crée la connexion à la collection
-     * si la collection n'existe pas la classe crée la collection et la connexion à la collection
-     * J'ai bien compris ?
-     */
-
     collectionName = "payments-flat";
 
-    public createIndexes(): void {
-        this.collection.createIndex({ siret: 1 });
+    public async createIndexes(): Promise<void> {
+        await this.collection.createIndex({ siret: 1 });
     }
 
     public async insertOne(entity: PaymentFlatEntity) {
