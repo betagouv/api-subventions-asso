@@ -52,7 +52,7 @@ describe("OsirisCli", () => {
             const actual = await dataLogRepository.findAll();
             expect(actual?.[0]).toMatchObject({
                 editionDate: expect.any(Date),
-                fileName: filePath,
+                fileName: "SuiviDossiers_test.xls",
                 integrationDate: expect.any(Date),
                 providerId: "osiris",
             });
@@ -107,7 +107,7 @@ describe("OsirisCli", () => {
             const actual = await dataLogRepository.findAll();
             expect(actual?.[0]).toMatchObject({
                 editionDate: expect.any(Date),
-                fileName: filePath,
+                fileName: "SuiviActions_test.xls",
                 integrationDate: expect.any(Date),
                 providerId: "osiris",
             });
