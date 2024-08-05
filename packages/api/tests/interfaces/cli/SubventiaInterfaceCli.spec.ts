@@ -14,7 +14,11 @@ describe("Subventia Cli", () => {
     describe("_parse()", () => {
         it("should add entities", async () => {
             // @ts-expect-error protected method
-            await cli._parse(path.resolve(__dirname, "SUBVENTIA.xlsx"), "", "2024-03-12");
+            await cli._parse(
+                path.resolve(__dirname, "../../../src/modules/providers/subventia/__fixtures__/SUBVENTIA.xlsx"),
+                "",
+                "2024-03-12",
+            );
             const entities = await subventiaRepository.findAll();
             const expectedAny = entities.map(_entity => ({
                 _id: expect.any(ObjectId),
@@ -33,7 +37,7 @@ describe("Subventia Cli", () => {
             const actual = await dataLogRepository.findAll();
             expect(actual?.[0]).toMatchObject({
                 editionDate: new Date(EXPORT_DATE),
-                fileName: filePath,
+                fileName: "SUBVENTIA.xlsx",
                 integrationDate: expect.any(Date),
                 providerId: "subventia",
             });
