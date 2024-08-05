@@ -17,6 +17,20 @@ class DataLogRepository extends MongoRepository<DataLogEntity> {
     async findAll() {
         return this.collection.find({}).toArray();
     }
+
+    async findLastByProvider() {
+        return this.collection
+            .aggregate([
+                {
+                    $group: {
+                        _id: "$providerId",
+                        lastIntegrationDate: { $max: "$integrationDate" },
+                        lastEditionDate: { $max: "$editionDate" },
+                    },
+                },
+            ])
+            .toArray();
+    }
 }
 
 const dataLogRepository = new DataLogRepository();
