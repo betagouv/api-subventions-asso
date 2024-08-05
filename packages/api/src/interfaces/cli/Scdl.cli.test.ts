@@ -44,6 +44,7 @@ describe("ScdlCli", () => {
     const DELIMETER = "%";
     const PAGE_NAME = "nom de feuille";
     const ROW_OFFSET = 4;
+    const QUOTE = '"';
 
     let cli: ScdlCli;
 
@@ -113,7 +114,7 @@ describe("ScdlCli", () => {
 
     describe.each`
         methodName    | test            | parserMethod                  | parserArgs
-        ${"parse"}    | ${testParseCsv} | ${ScdlGrantParser.parseCsv}   | ${[FILE_CONTENT, DELIMETER]}
+        ${"parse"}    | ${testParseCsv} | ${ScdlGrantParser.parseCsv}   | ${[FILE_CONTENT, DELIMETER, QUOTE]}
         ${"parseXls"} | ${testParseXls} | ${ScdlGrantParser.parseExcel} | ${[FILE_CONTENT, PAGE_NAME, ROW_OFFSET]}
     `("$methodName", ({ test, parserMethod, parserArgs }) => {
         it("sanitizes input", async () => {

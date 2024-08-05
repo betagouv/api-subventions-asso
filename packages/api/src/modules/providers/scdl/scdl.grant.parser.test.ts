@@ -66,6 +66,20 @@ describe("ScdlGrantParser", () => {
                 delimiter: ";",
                 skip_empty_lines: true,
                 trim: true,
+                cast: false,
+                quote: '"',
+            });
+        });
+
+        it("should call csv lib parse with alternative args", () => {
+            ScdlGrantParser.parseCsv(BUFFER, ":", false);
+            expect(mockedCsvLib.parse).toHaveBeenCalledWith(BUFFER, {
+                columns: true,
+                delimiter: ":",
+                skip_empty_lines: true,
+                trim: true,
+                cast: false,
+                quote: false,
             });
         });
 

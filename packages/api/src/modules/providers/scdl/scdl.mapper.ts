@@ -137,8 +137,8 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
         ],
         adapter: value => {
             if (typeof value !== "string") return undefined;
-            if (value?.toLowerCase() === "oui") return true;
-            if (value?.toLowerCase() === "non") return false;
+            if (["oui", "true"].includes(value?.toLowerCase())) return true;
+            if (["non", "false"].includes(value?.toLowerCase())) return false;
             return undefined;
         },
     },

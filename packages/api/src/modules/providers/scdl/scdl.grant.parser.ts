@@ -71,12 +71,14 @@ export default class ScdlGrantParser {
         return grant;
     }
 
-    static parseCsv(chunk: Buffer, delimiter = ";") {
+    static parseCsv(chunk: Buffer, delimiter = ";", quote: boolean | string = '"') {
         const parsedChunk = csvSyncParser.parse(chunk, {
             columns: true,
             skip_empty_lines: true,
             delimiter,
             trim: true,
+            cast: false,
+            quote,
         });
 
         return ScdlGrantParser.convertValidateData(parsedChunk);
