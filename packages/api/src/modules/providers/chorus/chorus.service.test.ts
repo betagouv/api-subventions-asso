@@ -18,7 +18,7 @@ jest.mock("../../rna-siren/rnaSiren.service");
 const mockedRnaSirenService = jest.mocked(rnaSirenService);
 import { ENTITIES, PAYMENTS } from "./__fixtures__/ChorusFixtures";
 import CacheData from "../../../shared/Cache";
-import { WithId } from "mongodb";
+import { BulkWriteResult, WithId } from "mongodb";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
@@ -32,9 +32,9 @@ describe("chorusService", () => {
         };
     });
 
-    describe("insertMany", () => {
+    describe("upsertMany", () => {
         it("should call repository with entities", async () => {
-            await chorusService.insertMany(ENTITIES);
+            await chorusService.upsertMany(ENTITIES);
         });
     });
 
@@ -367,16 +367,18 @@ describe("chorusService", () => {
     });
 
     describe("insertBatchChorusLine", () => {
-        const EMPTY_ANSWER = { rejected: 0, created: 0, duplicates: 0 };
+        const EMPTY_ANSWER = { rejected: 0, created: 0 };
 
         let mockIsAcceptedEntity: jest.SpyInstance;
         let mockInsertMany: jest.SpyInstance;
         beforeEach(() => {
             mockIsAcceptedEntity = jest.spyOn(chorusService, "isAcceptedEntity").mockResolvedValue(true);
-            mockInsertMany = jest.spyOn(chorusService, "insertMany").mockResolvedValue();
+            mockInsertMany = jest
+                .spyOn(chorusService, "upsertMany")
+                .mockResolvedValue(true as unknown as BulkWriteResult);
         });
 
-        it("should call insertMany", async () => {
+        it("should call upsertMany", async () => {
             await chorusService.insertBatchChorusLine(ENTITIES);
         });
 
@@ -389,13 +391,6 @@ describe("chorusService", () => {
         it("should return response with created and rejected", async () => {
             mockIsAcceptedEntity.mockReturnValueOnce(false);
             const expected = { ...EMPTY_ANSWER, created: ENTITIES.length - 1, rejected: 1 };
-            const actual = await chorusService.insertBatchChorusLine(ENTITIES);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return response with duplicates", async () => {
-            mockInsertMany.mockRejectedValueOnce({ duplicates: [ENTITIES[1]] });
-            const expected = { ...EMPTY_ANSWER, created: ENTITIES.length - 1, duplicates: 1 };
             const actual = await chorusService.insertBatchChorusLine(ENTITIES);
             expect(actual).toEqual(expected);
         });

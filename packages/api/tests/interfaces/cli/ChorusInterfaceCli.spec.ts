@@ -70,7 +70,7 @@ describe("ChorusCli", () => {
             // Other file is containing two new payment, one association duplicate and one entreprise duplicate
             // Result should be 3 from the first file + 2 from the second one
             // To make this test robust, the duplicate payment for an association is inserted between the two new ones.
-            // This is make to be sure that Mongo insertMany continues even if it encounters a Duplicate Error
+            // This is make to be sure that Mongo upsertMany continues even if it encounters duplicates
             it("should not save duplicates with another file containing duplicates", async () => {
                 const expected = 5;
                 await chorusLineRepository.createIndexes();
