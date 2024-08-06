@@ -67,19 +67,8 @@ export default class ChorusParser {
     }
 
     protected static buildUniqueId(info: IChorusIndexedInformations) {
-        const {
-            ej,
-            siret,
-            dateOperation,
-            amount,
-            numeroDemandePayment,
-            codeCentreFinancier,
-            codeDomaineFonctionnel,
-            codeActivitee,
-        } = info;
-        return getMD5(
-            `${ej}-${siret}-${dateOperation.toISOString()}-${amount}-${numeroDemandePayment}-${codeCentreFinancier}-${codeDomaineFonctionnel}-${codeActivitee}`,
-        );
+        const { numeroDemandePayment, exercise, companyCode } = info;
+        return getMD5(`${companyCode}-${exercise}-${numeroDemandePayment}`);
     }
 
     protected static validateIndexedInformations(indexedInformations) {

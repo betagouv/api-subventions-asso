@@ -16,6 +16,7 @@ describe("ChorusAdapter", () => {
                     amount: 42789,
                     dateOperation: new Date("2022-02-02"),
                     codeDomaineFonctionnel: "0BOP-other",
+                    exercise: 2022,
                 },
             };
             // @ts-expect-error mock
