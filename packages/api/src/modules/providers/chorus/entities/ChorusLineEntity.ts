@@ -17,6 +17,8 @@ export default class ChorusLineEntity {
         activitee: { path: ["Référentiel de programmation"] },
         codeActivitee: { path: ["Référentiel de programmation CODE"] },
         numeroDemandePayment: { path: ["N° DP"] },
+        companyCode: { path: ["Société"] },
+        exercise: { path: ["Exercice comptable"] },
         numeroTier: { path: ["Fournisseur payé (DP)"] },
         centreFinancier: { path: ["Centre financier"] },
         codeCentreFinancier: { path: ["Centre financier CODE"] },

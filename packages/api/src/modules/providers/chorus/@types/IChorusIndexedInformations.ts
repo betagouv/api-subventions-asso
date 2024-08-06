@@ -10,6 +10,8 @@ export default interface IChorusIndexedInformations extends IBudgetLine {
     // format bop - activité - sous-activité
     codeDomaineFonctionnel: string;
     numeroDemandePayment: string;
+    companyCode: string;
+    exercise: number;
     numeroTier?: string;
     activitee?: string;
     codeActivitee?: string;

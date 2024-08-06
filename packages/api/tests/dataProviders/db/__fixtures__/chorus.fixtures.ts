@@ -1,6 +1,7 @@
 import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
+import ChorusLineEntity from "../../../../src/modules/providers/chorus/entities/ChorusLineEntity";
 
-export const ChorusFixtures = [
+export const ChorusFixtures: ChorusLineEntity[] = [
     {
         uniqueId: "de175292263fdd97b222a754309df07f",
         indexedInformations: {
@@ -11,6 +12,8 @@ export const ChorusFixtures = [
             activitee: "Appels a projet",
             codeActivitee: "3222",
             numeroDemandePayment: "000195567",
+            companyCode: "9765",
+            exercise: 2023,
             numeroTier: "ASSO 1",
             centreFinancier: "UO DGER XXXX-C001",
             codeCentreFinancier: "AA01/0776-C001-4000",
@@ -29,6 +32,8 @@ export const ChorusFixtures = [
             "Référentiel de programmation CODE": "BG00/077601000201",
             "Référentiel de programmation": "Appels a projet",
             "N° DP": "000195567",
+            companyCode: "975",
+            exercise: 2023,
             "Date de dernière opération sur la DP": "12/07/2023",
             "Centre financier CODE": "AA01/0776-C001-4000",
             "Centre financier": "UO DGER XXXX-C001",
@@ -48,6 +53,8 @@ export const ChorusFixtures = [
             activitee: "Appels a projet",
             codeActivitee: "3222",
             numeroDemandePayment: "000212692",
+            companyCode: "9765",
+            exercise: 2023,
             numeroTier: "ASSO 2",
             centreFinancier: "UO DGER",
             codeCentreFinancier: "AA01/0776-C001-4000",

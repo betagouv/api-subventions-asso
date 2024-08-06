@@ -72,6 +72,8 @@ describe("ChorusAdapter", () => {
                     codeCentreFinancier: "FAKE",
                     domaineFonctionnel: "FAKE",
                     numeroDemandePayment: "FAKE",
+                    companyCode: "FAKE",
+                    exercise: 2023,
                     codeDomaineFonctionnel: "FAKE",
                     siret: "FAKE",
                     ej: "FAKE",
