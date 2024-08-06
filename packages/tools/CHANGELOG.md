@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.53.0](https://github.com/betagouv/api-subventions-asso/compare/v0.52.1...v0.53.0) (2024-08-06)
+
+### Features
+
+-   **api, tools:** [#2498](https://github.com/betagouv/api-subventions-asso/issues/2498) resilient doc import osiris ([382891e](https://github.com/betagouv/api-subventions-asso/commit/382891eea108964c31c5673ceebd72896ead7b63))
+
 # [0.52.0](https://github.com/betagouv/api-subventions-asso/compare/v0.51.3...v0.52.0) (2024-07-18)
 
 ### Features

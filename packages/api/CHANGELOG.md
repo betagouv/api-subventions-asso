@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.53.0](https://github.com/betagouv/api-subventions-asso/compare/v0.52.1...v0.53.0) (2024-08-06)
+
+### Features
+
+-   **api, tools:** [#2498](https://github.com/betagouv/api-subventions-asso/issues/2498) resilient doc import osiris ([382891e](https://github.com/betagouv/api-subventions-asso/commit/382891eea108964c31c5673ceebd72896ead7b63))
+-   **api:** [#2077](https://github.com/betagouv/api-subventions-asso/issues/2077) save imports log ([75e92e3](https://github.com/betagouv/api-subventions-asso/commit/75e92e3445dd44bafc8aaf45b3a25b477fc3cdf4))
+-   **api:** [#2525](https://github.com/betagouv/api-subventions-asso/issues/2525) add domaine-fonct, ref-programmation and ministry to route API data Bretagne ([#2538](https://github.com/betagouv/api-subventions-asso/issues/2538)) ([ad34928](https://github.com/betagouv/api-subventions-asso/commit/ad34928127eb3f8e14867b1ad5a957346e8658a0))
+-   **api:** configure quote management ([e5263bf](https://github.com/betagouv/api-subventions-asso/commit/e5263bf675c7e88355ae035b261000e21cb16272))
+-   **api:** more acceptable values notificationue ([5e805a6](https://github.com/betagouv/api-subventions-asso/commit/5e805a6ceb7327213334662ab5479f616f73ba82))
+-   **front:** [#2308](https://github.com/betagouv/api-subventions-asso/issues/2308) select docs to group download ([#2451](https://github.com/betagouv/api-subventions-asso/issues/2451)) ([262542a](https://github.com/betagouv/api-subventions-asso/commit/262542a125d380c1b7e4c88712ba65b851757f64))
+-   **front:** [#2533](https://github.com/betagouv/api-subventions-asso/issues/2533) new docs categorization ([#2557](https://github.com/betagouv/api-subventions-asso/issues/2557)) ([ab32f79](https://github.com/betagouv/api-subventions-asso/commit/ab32f7974937e8876df8a003f868a20793327651))
+
 ## [0.52.1](https://github.com/betagouv/api-subventions-asso/compare/v0.52.0...v0.52.1) (2024-07-19)
 
 ### Bug Fixes

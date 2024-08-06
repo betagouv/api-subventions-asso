@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.53.0](https://github.com/betagouv/datasubvention/compare/v0.52.1...v0.53.0) (2024-08-06)
+
+### Bug Fixes
+
+-   **front:** [#2532](https://github.com/betagouv/datasubvention/issues/2532) small mistake about doc selection ([#2547](https://github.com/betagouv/datasubvention/issues/2547)) ([fc7fadc](https://github.com/betagouv/datasubvention/commit/fc7fadc02345715fac037d06cb213e7afd3a836f))
+
+### Features
+
+-   **front:** [#2308](https://github.com/betagouv/datasubvention/issues/2308) select docs to group download ([#2451](https://github.com/betagouv/datasubvention/issues/2451)) ([262542a](https://github.com/betagouv/datasubvention/commit/262542a125d380c1b7e4c88712ba65b851757f64))
+-   **front:** [#2311](https://github.com/betagouv/datasubvention/issues/2311) show all docs button ([#2406](https://github.com/betagouv/datasubvention/issues/2406)) ([e475545](https://github.com/betagouv/datasubvention/commit/e475545719ad17c488dc3e127eceb6514b93108b)), closes [#2356](https://github.com/betagouv/datasubvention/issues/2356) [#2390](https://github.com/betagouv/datasubvention/issues/2390)
+-   **front:** [#2455](https://github.com/betagouv/datasubvention/issues/2455) undo docs show more with new rules ([#2468](https://github.com/betagouv/datasubvention/issues/2468)) ([991074d](https://github.com/betagouv/datasubvention/commit/991074db0783bf1de13b8e081c554dd3888ebaee)), closes [#2311](https://github.com/betagouv/datasubvention/issues/2311)
+-   **front:** [#2533](https://github.com/betagouv/datasubvention/issues/2533) new docs categorization ([#2557](https://github.com/betagouv/datasubvention/issues/2557)) ([ab32f79](https://github.com/betagouv/datasubvention/commit/ab32f7974937e8876df8a003f868a20793327651))
+-   **front:** docs reset selection ([#2470](https://github.com/betagouv/datasubvention/issues/2470)) ([42f2808](https://github.com/betagouv/datasubvention/commit/42f28088831e427b69abf865d9dd47ab4bd8f510))
+
 # [0.52.0](https://github.com/betagouv/datasubvention/compare/v0.51.3...v0.52.0) (2024-07-18)
 
 ## [0.49.3](https://github.com/betagouv/datasubvention/compare/v0.51.2...v0.49.3) (2024-07-16)
