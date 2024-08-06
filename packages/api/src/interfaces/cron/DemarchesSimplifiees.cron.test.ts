@@ -1,5 +1,12 @@
 import demarchesSimplifieesService from "../../modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
 import { DemarchesSimplifieesCron } from "./DemarchesSimplifiees.cron";
+import dataLogService from "../../modules/data-log/dataLog.service";
+
+jest.mock("../../modules/providers/demarchesSimplifiees/demarchesSimplifiees.service", () => ({
+    updateAllForms: jest.fn(),
+    provider: { id: "mockedId" },
+}));
+jest.mock("../../modules/data-log/dataLog.service");
 
 describe("DemarchesSimplifieesCron", () => {
     let controller: DemarchesSimplifieesCron;
@@ -21,15 +28,17 @@ describe("DemarchesSimplifieesCron", () => {
             serviceMock.mockRestore();
         });
 
-        it("calls service", () => {
-            controller.updateAll();
+        it("calls service", async () => {
+            await controller.updateAll();
             expect(serviceMock).toBeCalled();
         });
 
-        it("returns result from service", () => {
-            const expected = RESULT;
-            const actual = controller.updateAll();
-            expect(actual).toBe(expected);
+        it("logs import", async () => {
+            const date = new Date("2022-01-01");
+            jest.useFakeTimers().setSystemTime(date);
+            await controller.updateAll();
+            expect(dataLogService.addLog).toHaveBeenCalledWith("mockedId", date, "api");
+            jest.useRealTimers();
         });
     });
 });

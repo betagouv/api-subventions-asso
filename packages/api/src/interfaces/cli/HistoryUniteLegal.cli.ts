@@ -7,6 +7,7 @@ import parseUniteLegalService from "../../modules/providers/datagouv/historyUnit
 @StaticImplements<CliStaticInterface>()
 export default class HistoryUniteLegalCli extends CliController {
     static cmdName = "historyUniteLegal";
+    protected _providerIdToLog = "historyUniteLegal";
 
     protected logFileParsePath = "./logs/historyUniteLegal.parse.log.txt";
 

@@ -11,6 +11,7 @@ import { isSiret } from "../../shared/Validators";
 import { ScdlStorableGrant } from "../../modules/providers/scdl/@types/ScdlStorableGrant";
 import { ParsedDataWithProblem } from "../../modules/providers/scdl/@types/Validation";
 import { DEV } from "../../configurations/env.conf";
+import dataLogService from "../../modules/data-log/dataLog.service";
 
 export default class ScdlCli {
     static cmdName = "scdl";
@@ -27,7 +28,7 @@ export default class ScdlCli {
         await scdlService.createProducer({ slug, name, siret, lastUpdate: new Date() });
     }
 
-    public async parseXls(file: string, producerSlug: string, exportDate?: string, pageName?: string, rowOffset = 0) {
+    public async parseXls(file: string, producerSlug: string, exportDate: string, pageName?: string, rowOffset = 0) {
         await this.validateGenericInput(file, producerSlug, exportDate);
         const fileContent = fs.readFileSync(file);
         const { entities, errors } = ScdlGrantParser.parseExcel(fileContent, pageName, rowOffset);
@@ -35,9 +36,10 @@ export default class ScdlCli {
             this.persistEntities(entities, producerSlug, exportDate as string),
             this.exportErrors(errors, file),
         ]);
+        await dataLogService.addLog(producerSlug, new Date(exportDate), file);
     }
 
-    public async parse(file: string, producerSlug: string, exportDate?: string, delimiter = ";", quote = '"') {
+    public async parse(file: string, producerSlug: string, exportDate: string, delimiter = ";", quote = '"') {
         await this.validateGenericInput(file, producerSlug, exportDate);
         const fileContent = fs.readFileSync(file);
         const parsedQuote = quote === "false" ? false : quote;
@@ -46,6 +48,7 @@ export default class ScdlCli {
             this.persistEntities(entities, producerSlug, exportDate as string),
             this.exportErrors(errors, file),
         ]);
+        await dataLogService.addLog(producerSlug, new Date(exportDate), file);
     }
 
     private async validateGenericInput(file: string, producerSlug: string, exportDateStr?: string) {

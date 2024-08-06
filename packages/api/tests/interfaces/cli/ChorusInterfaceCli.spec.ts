@@ -1,21 +1,23 @@
 import ChorusCli from "../../../src/interfaces/cli/Chorus.cli";
 import path from "path";
 import chorusLineRepository from "../../../src/modules/providers/chorus/repositories/chorus.line.repository";
+import dataLogRepository from "../../../src/modules/data-log/repositories/dataLog.repository";
 
 describe("ChorusCli", () => {
     describe("parse cli requests", () => {
         let controller: ChorusCli;
+        const EXPORT_DATE = "2023-12-06";
 
         beforeEach(() => {
             controller = new ChorusCli();
         });
 
-        // keep this in case we need to re import old files
+        // keep this in case we need to re-import old files
         describe("old format", () => {
             it("should save entities", async () => {
                 const expected = 3;
                 const filePath = path.resolve(__dirname, "./__fixtures__/old-chorus-export.xlsx");
-                await controller.parse(filePath);
+                await controller.parse(filePath, EXPORT_DATE);
                 const actual = (await chorusLineRepository.cursorFind().toArray()).length;
                 expect(actual).toEqual(expected);
             });
@@ -24,8 +26,8 @@ describe("ChorusCli", () => {
                 const expected = 3;
                 await chorusLineRepository.createIndexes();
                 const filePath = path.resolve(__dirname, "./__fixtures__/old-chorus-export.xlsx");
-                await controller.parse(filePath);
-                await controller.parse(filePath);
+                await controller.parse(filePath, EXPORT_DATE);
+                await controller.parse(filePath, EXPORT_DATE);
                 const actual = (await chorusLineRepository.cursorFind().toArray()).length;
                 expect(actual).toEqual(expected);
             });
@@ -39,8 +41,8 @@ describe("ChorusCli", () => {
                 await chorusLineRepository.createIndexes();
                 const filePath1 = path.resolve(__dirname, "./__fixtures__/old-chorus-export.xlsx");
                 const filePath2 = path.resolve(__dirname, "./__fixtures__/old-chorus-export-with-duplicates.xlsx");
-                await controller.parse(filePath1);
-                await controller.parse(filePath2);
+                await controller.parse(filePath1, EXPORT_DATE);
+                await controller.parse(filePath2, EXPORT_DATE);
                 const actual = (await chorusLineRepository.cursorFind().toArray()).length;
                 expect(actual).toEqual(expected);
             });
@@ -50,7 +52,7 @@ describe("ChorusCli", () => {
             it("should save entities", async () => {
                 const expected = 3;
                 const filePath = path.resolve(__dirname, "./__fixtures__/new-chorus-export.xlsx");
-                await controller.parse(filePath);
+                await controller.parse(filePath, EXPORT_DATE);
                 const actual = (await chorusLineRepository.cursorFind().toArray()).length;
                 expect(actual).toEqual(expected);
             });
@@ -59,8 +61,8 @@ describe("ChorusCli", () => {
                 const expected = 3;
                 await chorusLineRepository.createIndexes();
                 const filePath = path.resolve(__dirname, "./__fixtures__/new-chorus-export.xlsx");
-                await controller.parse(filePath);
-                await controller.parse(filePath);
+                await controller.parse(filePath, EXPORT_DATE);
+                await controller.parse(filePath, EXPORT_DATE);
                 const actual = (await chorusLineRepository.cursorFind().toArray()).length;
                 expect(actual).toEqual(expected);
             });
@@ -74,10 +76,22 @@ describe("ChorusCli", () => {
                 await chorusLineRepository.createIndexes();
                 const filePath1 = path.resolve(__dirname, "./__fixtures__/new-chorus-export.xlsx");
                 const filePath2 = path.resolve(__dirname, "./__fixtures__/new-chorus-export-with-duplicates.xlsx");
-                await controller.parse(filePath1);
-                await controller.parse(filePath2);
+                await controller.parse(filePath1, EXPORT_DATE);
+                await controller.parse(filePath2, EXPORT_DATE);
                 const actual = (await chorusLineRepository.cursorFind().toArray()).length;
                 expect(actual).toEqual(expected);
+            });
+        });
+
+        it("should register new import", async () => {
+            const filePath = path.resolve(__dirname, "./__fixtures__/new-chorus-export.xlsx");
+            await controller.parse(filePath, EXPORT_DATE);
+            const actual = await dataLogRepository.findAll();
+            expect(actual?.[0]).toMatchObject({
+                editionDate: new Date(EXPORT_DATE),
+                fileName: "new-chorus-export.xlsx",
+                integrationDate: expect.any(Date),
+                providerId: "chorus",
             });
         });
     });

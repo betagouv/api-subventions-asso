@@ -3,6 +3,7 @@ import DataBretagneCli from "../../../src/interfaces/cli/DataBretagne.cli";
 import DataBretagneFixture from "../../__fixtures__/data-bretagne.fixture.json";
 import bopPort from "../../../src/dataProviders/db/state-budget-program/stateBudgetProgram.port";
 import { ObjectId } from "mongodb";
+import dataLogRepository from "../../../src/modules/data-log/repositories/dataLog.repository";
 
 describe("DataBretagneCli", () => {
     beforeEach(() => {
@@ -25,6 +26,17 @@ describe("DataBretagneCli", () => {
                 _id: expect.any(ObjectId),
             }));
             expect(programs).toMatchSnapshot();
+        });
+
+        it("should register new import", async () => {
+            await cli.resync();
+            const actual = await dataLogRepository.findAll();
+            expect(actual?.[0]).toMatchObject({
+                editionDate: expect.any(Date),
+                fileName: "api",
+                integrationDate: expect.any(Date),
+                providerId: "data-bretagne",
+            });
         });
     });
 });

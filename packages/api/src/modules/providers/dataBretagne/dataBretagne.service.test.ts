@@ -9,6 +9,8 @@ import { DataBretagneProgrammeAdapter } from "../../../dataProviders/api/dataBre
 import DomaineFonctionnelEntity from "../../../entities/DomaineFonctionnelEntity";
 import MinistryEntity from "../../../entities/MinistryEntity";
 import RefProgrammationEntity from "../../../entities/RefProgrammationEntity";
+import dataLogService from "../../data-log/dataLog.service";
+jest.mock("../../data-log/dataLog.service");
 
 const entities = {
     getDomaineFonctionnel: [
@@ -68,6 +70,14 @@ describe("Data Bretagne Service", function () {
             expect(() => dataBretagneService.resyncPrograms()).rejects.toThrowError(
                 "Unhandled error from API Data Bretagne",
             );
+        });
+
+        it("logs import", async () => {
+            const date = new Date("2022-01-01");
+            jest.useFakeTimers().setSystemTime(date);
+            await dataBretagneService.resyncPrograms();
+            expect(dataLogService.addLog).toHaveBeenCalledWith("data-bretagne", date, "api");
+            jest.useRealTimers();
         });
     });
 
