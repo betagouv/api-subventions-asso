@@ -7,8 +7,7 @@ const mockApplicationProvider = service => ({
     ...service,
     isDemandesSubventionsProvider: true,
     rawToApplication: jest.fn(),
-    getDemandeSubventionBySiret: jest.fn().mockResolvedValue([]),
-    getDemandeSubventionBySiren: jest.fn().mockResolvedValue([]),
+    getDemandeSubvention: jest.fn().mockResolvedValue([]),
 });
 
 const mockFullGrantProvider = service => ({
@@ -22,15 +21,13 @@ const mockPaymentProvider = service => ({
     isPaymentProvider: true,
     rawToPayment: jest.fn(),
     getPaymentsByKey: jest.fn().mockResolvedValue([]),
-    getPaymentsBySiret: jest.fn().mockResolvedValue([]),
-    getPaymentsBySiren: jest.fn().mockResolvedValue([]),
+    getPayments: jest.fn().mockResolvedValue([]),
 });
 
 const mockGrantProvider = provider => ({
     provider,
     isGrantProvider: true,
-    getRawGrantsBySiret: jest.fn().mockResolvedValue([]),
-    getRawGrantsBySiren: jest.fn().mockResolvedValue([]),
+    getRawGrants: jest.fn().mockResolvedValue([]),
 });
 
 export const fullGrantProvidersFixtures: FullGrantProvider<unknown>[] = [

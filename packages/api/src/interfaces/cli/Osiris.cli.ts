@@ -1,6 +1,5 @@
 import fs from "fs";
 
-import { Rna, Siret } from "dto";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../@types";
 import OsirisParser from "../../modules/providers/osiris/osiris.parser";
@@ -12,6 +11,8 @@ import * as CliHelper from "../../shared/helpers/CliHelper";
 import OsirisEvaluationEntity from "../../modules/providers/osiris/entities/OsirisEvaluationEntity";
 import { findFiles } from "../../shared/helpers/ParserHelper";
 import rnaSirenService from "../../modules/rna-siren/rnaSiren.service";
+import Siret from "../../valueObjects/Siret";
+import Rna from "../../valueObjects/Rna";
 
 @StaticImplements<CliStaticInterface>()
 export default class OsirisCli {
@@ -132,7 +133,9 @@ export default class OsirisCli {
 
             if (validation !== true && validation.code === 2) {
                 // RNA NOT FOUND // TODO: use const for decribe error
-                const rnaSirenEntities = await rnaSirenService.find(osirisRequest.legalInformations.siret);
+                const rnaSirenEntities = await rnaSirenService.find(
+                    new Siret(osirisRequest.legalInformations.siret).toSiren(),
+                );
 
                 if (!rnaSirenEntities || !rnaSirenEntities.length) {
                     logs.push(
@@ -142,7 +145,7 @@ export default class OsirisCli {
                     return data;
                 }
 
-                osirisRequest.legalInformations.rna = rnaSirenEntities[0].rna;
+                osirisRequest.legalInformations.rna = rnaSirenEntities[0].rna.value;
                 validation = osirisService.validRequest(osirisRequest); // Re-validate with the new rna
             }
 
@@ -235,11 +238,12 @@ export default class OsirisCli {
         `);
     }
 
-    async findBySiret(siret: Siret, format?: string) {
-        if (typeof siret !== "string") {
+    async findBySiret(siretStr: string, format?: string) {
+        if (typeof siretStr !== "string") {
             throw new Error("Parse command need siret args");
         }
 
+        const siret = new Siret(siretStr);
         const file = await osirisService.findBySiret(siret);
 
         if (format === "json") {
@@ -249,11 +253,12 @@ export default class OsirisCli {
         }
     }
 
-    async findByRna(rna: Rna, format?: string) {
-        if (typeof rna !== "string") {
+    async findByRna(rnaStr: string, format?: string) {
+        if (typeof rnaStr !== "string") {
             throw new Error("Parse command need rna args");
         }
 
+        const rna = new Rna(rnaStr);
         const requests = await osirisService.findByRna(rna);
 
         if (format === "json") {

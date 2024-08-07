@@ -1,47 +1,32 @@
 import fs from "fs";
 import childProcess from "child_process";
 import { IncomingMessage } from "http";
-import { Rna, Siren, Siret, DocumentDto, DocumentRequestDto } from "dto";
+import { DocumentDto, DocumentRequestDto } from "dto";
 import * as Sentry from "@sentry/node";
 import mime = require("mime-types");
 import providers from "../providers";
-import { StructureIdentifiers } from "../../@types";
-import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
-import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
+import { StructureIdentifier } from "../../@types";
 import { ProviderRequestService } from "../provider-request/providerRequest.service";
 import { FRONT_OFFICE_URL } from "../../configurations/front.conf";
 import ProviderCore from "../providers/ProviderCore";
 import { DauphinService } from "../providers/dauphin/dauphin.service";
 import { providersById } from "../providers/providers.helper";
+import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
 import DocumentProvider from "./@types/DocumentsProvider";
 import { documentToDocumentRequest } from "./document.adapter";
 
 export class DocumentsService {
     providersById = providersById(Object.values(providers));
 
-    public async getDocumentBySiren(siren: Siren) {
-        const result = await this.aggregateDocuments(siren);
-
-        return result.filter(d => d) as DocumentDto[];
+    public getDocument(identifier: StructureIdentifier) {
+        return this.aggregateDocuments(identifier);
     }
 
-    public async getDocumentByRna(rna: Rna) {
-        const result = await this.aggregateDocuments(rna);
-
-        return result.filter(d => d) as DocumentDto[];
+    public getRibs(identifier: EstablishmentIdentifier) {
+        return this.aggregate(this.getRibProviders(), "getRibs", identifier);
     }
 
-    public async getDocumentBySiret(siret: Siret) {
-        const result = await this.aggregateDocuments(siret);
-
-        return result.filter(d => d) as DocumentDto[];
-    }
-
-    public async getRibsBySiret(siret: Siret) {
-        return await this.aggregateRibs(siret);
-    }
-
-    private isDocumentProvider(provider): boolean {
+    private isDocumentProvider(provider): provider is DocumentProvider {
         return provider?.isDocumentProvider || false;
     }
 
@@ -50,14 +35,10 @@ export class DocumentsService {
     }
 
     private getRibProviders() {
-        return this.getDocumentProviders().filter(p => p.getRibsBySiret);
+        return this.getDocumentProviders().filter(p => p.getRibs);
     }
 
-    private async aggregateRibs(id: Siret) {
-        return await this.aggregate(this.getRibProviders(), "getRibsBySiret", id);
-    }
-
-    private async aggregate(providers, method, id) {
+    private async aggregate(providers: DocumentProvider[], method: string, id: StructureIdentifier) {
         const result = await Promise.all(
             providers.map(provider =>
                 provider[method].call(provider, id).catch(e => {
@@ -71,20 +52,8 @@ export class DocumentsService {
         return result.flat() as DocumentDto[];
     }
 
-    private async aggregateDocuments(id: StructureIdentifiers): Promise<(DocumentDto | null)[]> {
-        const documentProviders = this.getDocumentProviders();
-
-        const type = getIdentifierType(id);
-        if (!type) throw new Error("You must provide a valid SIREN or RNA or SIRET");
-
-        const method =
-            type === StructureIdentifiersEnum.rna
-                ? "getDocumentsByRna"
-                : type === StructureIdentifiersEnum.siren
-                ? "getDocumentsBySiren"
-                : "getDocumentsBySiret";
-
-        return this.aggregate(documentProviders, method, id);
+    private aggregateDocuments(id: StructureIdentifier): Promise<DocumentDto[]> {
+        return this.aggregate(this.getDocumentProviders(), "getDocuments", id);
     }
 
     getDocumentStream(providerId: string, docId: string): Promise<IncomingMessage> {
@@ -107,16 +76,12 @@ export class DocumentsService {
         return res.data;
     }
 
-    async getDocumentsFilesByIdentifier(identifier: StructureIdentifiers) {
-        const type = getIdentifierType(identifier);
-
-        if (!type) throw new Error("You must provide a valid SIREN or RNA or SIRET");
-
-        const documents = (await this.aggregateDocuments(identifier)).filter(d => d) as DocumentDto[];
+    async getDocumentsFilesByIdentifier(identifier: StructureIdentifier) {
+        const documents = await this.aggregateDocuments(identifier);
 
         if (!documents || documents.length == 0) throw new Error("No document found");
 
-        return this.getRequestedDocumentsFiles(documents.map(documentToDocumentRequest), identifier);
+        return this.getRequestedDocumentsFiles(documents.map(documentToDocumentRequest), identifier.toString());
     }
 
     async getRequestedDocumentsFiles(documents: DocumentRequestDto[], baseFolderName = "docs") {

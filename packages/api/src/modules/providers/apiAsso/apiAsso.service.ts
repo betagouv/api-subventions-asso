@@ -1,20 +1,23 @@
-import { Rna, Siren, Siret, Association, Etablissement, DocumentDto } from "dto";
+import { Association, Etablissement, DocumentDto } from "dto";
 import { XMLParser } from "fast-xml-parser";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import { AssociationIdentifiers, DefaultObject, StructureIdentifiers } from "../../../@types";
+import { DefaultObject, StructureIdentifier } from "../../../@types";
 import { API_ASSO_URL, API_ASSO_TOKEN } from "../../../configurations/apis.conf";
 import CacheData from "../../../shared/Cache";
-import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import { hasEmptyProperties } from "../../../shared/helpers/ObjectHelper";
 import ProviderCore from "../ProviderCore";
-import rnaSirenService from "../../rna-siren/rnaSiren.service";
+import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import Rna from "../../../valueObjects/Rna";
+import Siren from "../../../valueObjects/Siren";
+import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
 import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
 import StructureDto, {
+    DocumentsDto,
     StructureDacDocumentDto,
     StructureDocumentDto,
     StructureRnaDocumentDto,
@@ -60,22 +63,28 @@ export class ApiAssoService
         }
     }
 
-    public async findRnaSirenByIdentifiers(identifier: AssociationIdentifiers) {
-        const structure = await this.sendRequest<StructureDto>(`/api/structure/${identifier}`);
+    public async findRnaSirenByIdentifiers(identifier: AssociationIdentifier) {
+        const value = identifier.siren ? identifier.siren.value : identifier.rna ? identifier.rna.value : null;
 
+        if (!value) return { rna: undefined, siren: undefined };
+
+        const structure = await this.sendRequest<StructureDto>(`/api/structure/${value}`);
         // TODO: investigate with JFM
         // some times apiAsso return a 404
         // ex: siren 422606285
         if (!structure?.identite) return { rna: undefined, siren: undefined };
 
+        const rnaValue = structure?.identite?.id_rna;
+        const sirenValue = structure?.identite.id_siren?.toString(); // sometimes siren is string or number;
+
         return {
-            rna: structure?.identite?.id_rna,
-            siren: structure?.identite.id_siren?.toString(), // sometimes siren is string or number
+            rna: rnaValue ? new Rna(rnaValue) : undefined,
+            siren: sirenValue ? new Siren(sirenValue) : undefined,
         };
     }
 
     public async findAssociationByRna(rna: Rna): Promise<Association | null> {
-        const rnaStructure = await this.sendRequest<RnaStructureDto>(`/api/rna/${rna}`);
+        const rnaStructure = await this.sendRequest<RnaStructureDto>(`/api/rna/${rna.value}`);
 
         if (!rnaStructure) return null;
         if (hasEmptyProperties(rnaStructure.identite) || !rnaStructure.identite.date_modif_rna) return null; // sometimes an empty shell object if given by the api
@@ -87,12 +96,12 @@ export class ApiAssoService
     }
 
     public async findAssociationBySiren(siren: Siren): Promise<Association | null> {
-        const sirenStructure = await this.sendRequest<SirenStructureDto>(`/api/siren/${siren}`);
+        const sirenStructure = await this.sendRequest<SirenStructureDto>(`/api/siren/${siren.value}`);
 
         const isSirenStructureValid = structure => structure.etablissement && structure.etablissement.length;
 
         if (!sirenStructure || !isSirenStructureValid(sirenStructure)) {
-            const structure = await this.sendRequest<SirenStructureDto>(`/api/structure/${siren}`);
+            const structure = await this.sendRequest<SirenStructureDto>(`/api/structure/${siren.value}`);
             if (!structure || hasEmptyProperties(structure.identite)) return null;
             if (!structure.identite.date_modif_siren)
                 structure.identite.date_modif_siren = this.getDefaultDateModifSiren(structure);
@@ -106,11 +115,11 @@ export class ApiAssoService
         return ApiAssoDtoAdapter.sirenStructureToAssociation(sirenStructure);
     }
 
-    private async findEtablissementsBySiren(siren: Siren): Promise<Etablissement[] | null> {
-        const structure = await this.sendRequest<StructureDto>(`/api/structure/${siren}`);
+    private async findEtablissementsBySiren(siren: Siren): Promise<Etablissement[]> {
+        const structure = await this.sendRequest<StructureDto>(`/api/structure/${siren.value}`);
 
         if (!structure?.identite || !Object.keys(structure.identite).length || hasEmptyProperties(structure.identite))
-            return null; // sometimes an empty shell object if given by the api
+            return []; // sometimes an empty shell object if given by the api
 
         if (!structure.identite.date_modif_siren)
             structure.identite.date_modif_siren = this.getDefaultDateModifSiren(structure);
@@ -202,7 +211,7 @@ export class ApiAssoService
         return Object.values(uniquesRibs);
     }
 
-    private filterActiveDacDocuments(documents: StructureDacDocumentDto[], structureIdentifier: StructureIdentifiers) {
+    private filterActiveDacDocuments(documents: StructureDacDocumentDto[], structureIdentifier: StructureIdentifier) {
         if (!Array.isArray(documents)) {
             if ((documents as Record<string, unknown>).uuid !== undefined) {
                 // When api have one document, it is not an array but a single object
@@ -210,7 +219,7 @@ export class ApiAssoService
             } else {
                 const errorMessage =
                     "API-ASSO structure do not contain documents or format is not supported. Structure identifier => " +
-                    structureIdentifier;
+                    structureIdentifier.toString();
                 Sentry.captureException(new Error(errorMessage));
                 console.error(errorMessage);
                 return [];
@@ -219,8 +228,18 @@ export class ApiAssoService
         return documents.filter(document => document.meta.etat === "courant");
     }
 
-    private async fetchDocuments(identifier: AssociationIdentifiers) {
-        const result = await this.sendRequest<StructureDocumentDto>(`/proxy_db_asso/documents/${identifier}`);
+    private async fetchDocuments(identifier: AssociationIdentifier): Promise<DocumentsDto | undefined> {
+        const identifierValue = identifier.siren
+            ? identifier.siren.value
+            : identifier.rna
+            ? identifier.rna.value
+            : null;
+
+        if (!identifierValue) {
+            throw new Error("Identifier not supported for documents fetching.");
+        }
+
+        const result = await this.sendRequest<StructureDocumentDto>(`/proxy_db_asso/documents/${identifierValue}`);
 
         if (typeof result == "string") {
             const parser = new XMLParser();
@@ -231,7 +250,7 @@ export class ApiAssoService
         return result?.asso?.documents;
     }
 
-    private async findRibs(identifier: AssociationIdentifiers) {
+    private async findRibs(identifier: AssociationIdentifier) {
         const documents = await this.fetchDocuments(identifier);
         if (!documents) return [];
         const activeDacDocuments = this.filterActiveDacDocuments(documents.document_dac || [], identifier);
@@ -239,7 +258,7 @@ export class ApiAssoService
         return ribs.map(rib => ApiAssoDtoAdapter.dacDocumentToRib(rib));
     }
 
-    private async findDocuments(identifier: AssociationIdentifiers): Promise<DocumentDto[]> {
+    private async findDocuments(identifier: AssociationIdentifier): Promise<DocumentDto[]> {
         const documents = await this.fetchDocuments(identifier);
 
         if (!documents) return [];
@@ -264,68 +283,42 @@ export class ApiAssoService
 
     isAssociationsProvider = true;
 
-    async getAssociationsBySiren(siren: Siren): Promise<Association[] | null> {
-        const sirenAssociation = await this.findAssociationBySiren(siren);
+    async getAssociations(identifier: AssociationIdentifier): Promise<Association[]> {
+        const associations: Association[] = [];
 
-        if (!sirenAssociation) return null;
+        if (identifier.siren) {
+            const sirenAssociation = await this.findAssociationBySiren(identifier.siren);
 
-        const rnaSirenEntities = await rnaSirenService.find(siren);
+            if (sirenAssociation) associations.push(sirenAssociation);
+        }
 
-        if (!rnaSirenEntities?.length) return [sirenAssociation];
+        if (identifier.rna) {
+            const rnaAssociation = await this.findAssociationByRna(identifier.rna);
 
-        const rnaAssociation = await this.findAssociationByRna(rnaSirenEntities[0].rna);
+            if (rnaAssociation) associations.push(rnaAssociation);
+        }
 
-        if (!rnaAssociation) return [sirenAssociation];
-
-        return [sirenAssociation, rnaAssociation];
-    }
-
-    async getAssociationsBySiret(siret: Siret): Promise<Association[] | null> {
-        return this.getAssociationsBySiren(siretToSiren(siret));
-    }
-
-    async getAssociationsByRna(rna: Rna): Promise<Association[] | null> {
-        const rnaAssociation = await this.findAssociationByRna(rna);
-
-        if (!rnaAssociation) return null;
-
-        const rnaSirenEntities = await rnaSirenService.find(rna);
-
-        if (!rnaSirenEntities?.length) return [rnaAssociation];
-
-        const sirenAssociation = await this.findAssociationBySiren(rnaSirenEntities[0].siren);
-
-        if (!sirenAssociation) return [rnaAssociation];
-
-        return [rnaAssociation, sirenAssociation];
+        return associations;
     }
 
     /**
      * |-------------------------|
-     * |   Etablissement Part    |
+     * |   Etsablishment Part    |
      * |-------------------------|
      */
 
     isEtablissementProvider = true;
 
-    async getEtablissementsBySiret(siret: Siret): Promise<Etablissement[] | null> {
-        const siren = siretToSiren(siret);
-
-        const result = await this.getEtablissementsBySiren(siren);
-
-        if (!result) return null;
-
-        return result.filter(e => e.siret[0].value == siret);
+    async getEstablishments(identifier: StructureIdentifier): Promise<Etablissement[]> {
+        if (identifier instanceof AssociationIdentifier && identifier.siren) {
+            return this.findEtablissementsBySiren(identifier.siren);
+        } else if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
+            const siren = identifier.siret.toSiren();
+            const result = await this.findEtablissementsBySiren(siren);
+            return result.filter(establishment => establishment.siret[0].value == identifier.siret?.value);
+        }
+        return [];
     }
-
-    async getEtablissementsBySiren(siren: Siren): Promise<Etablissement[] | null> {
-        const etablissements = await this.findEtablissementsBySiren(siren);
-
-        if (!etablissements) return null;
-
-        return etablissements;
-    }
-
     /**
      * |---------------------|
      * |   Documents Part    |
@@ -334,33 +327,27 @@ export class ApiAssoService
 
     isDocumentProvider = true;
 
-    async getDocumentsBySiren(siren: Siren) {
-        return this.findDocuments(siren);
-    }
+    async getDocuments(identifier: StructureIdentifier): Promise<DocumentDto[]> {
+        if (identifier instanceof AssociationIdentifier) {
+            return this.findDocuments(identifier);
+        }
 
-    async getDocumentsBySiret(siret: Siret) {
-        const siren = siretToSiren(siret);
+        if (!identifier.siret) {
+            throw new Error("Invalid identifier type");
+        }
 
-        const documents = await this.findDocuments(siren);
-
-        if (!documents) return documents;
-
-        const filteredDocuments = documents.filter(document => {
-            if (document.__meta__.siret == siret) return true;
+        const documents = await this.findDocuments(identifier.associationIdentifier);
+        return documents.filter(document => {
+            if (document.__meta__.siret == identifier.siret?.value) return true;
             return false;
         });
-
-        return filteredDocuments;
     }
 
-    async getDocumentsByRna(rna: Rna) {
-        return this.findDocuments(rna);
-    }
+    async getRibs(identifier: EstablishmentIdentifier) {
+        if (!identifier.siret) return [];
+        const ribs = await this.findRibs(identifier.associationIdentifier);
 
-    async getRibsBySiret(siret: Siret) {
-        const ribs = await this.findRibs(siretToSiren(siret));
-
-        return ribs.filter(rib => rib.__meta__.siret === siret);
+        return ribs.filter(rib => rib.__meta__.siret === identifier.siret?.value);
     }
 }
 

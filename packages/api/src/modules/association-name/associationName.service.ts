@@ -1,14 +1,13 @@
 import uniteLegalNameService from "../providers/uniteLegalName/uniteLegal.name.service";
-import { AssociationIdentifiers } from "../../@types";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
-import { isRna, isSiren } from "../../shared/Validators";
 import rechercheEntreprises from "../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.port";
-import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
-import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
+import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
+import Rna from "../../valueObjects/Rna";
+import Siren from "../../valueObjects/Siren";
 import AssociationNameEntity from "./entities/AssociationNameEntity";
 
 export class AssociationNameService {
-    async getNameFromIdentifier(identifier: AssociationIdentifiers): Promise<string | undefined> {
+    async getNameFromIdentifier(identifier: AssociationIdentifier): Promise<string | undefined> {
         const result = await uniteLegalNameService.getNameFromIdentifier(identifier);
 
         if (!result) return;
@@ -16,19 +15,26 @@ export class AssociationNameService {
         return result.name;
     }
 
-    async find(value: AssociationIdentifiers | string): Promise<AssociationNameEntity[]> {
+    async find(value: string): Promise<AssociationNameEntity[]> {
         const lowerCaseValue = value.toLowerCase().trim();
         let associationNames: AssociationNameEntity[];
-        if (isRna(value) || isSiren(value)) {
-            const identifierType = getIdentifierType(value) as
-                | StructureIdentifiersEnum.rna
-                | StructureIdentifiersEnum.siren;
+        if (Rna.isRna(value) || Siren.isSiren(value)) {
+            let identifierType: string;
+            let identifier: Rna | Siren;
+            if (Rna.isRna(value)) {
+                identifierType = "rna";
+                identifier = new Rna(value);
+            } else {
+                identifierType = "siren";
+                identifier = new Siren(value);
+            }
             // For one rna it's possible to have many siren from match
             // For one siren it's possible to have many rna from match
-            const rnaSirenEntities = (await rnaSirenService.find(value)) || [];
-            const identifiers = rnaSirenEntities.length
-                ? rnaSirenEntities.map(entity => entity[identifierType.toLocaleLowerCase()])
+            const rnaSirenEntities = (await rnaSirenService.find(identifier)) || [];
+            const identifiers: string[] = rnaSirenEntities.length
+                ? rnaSirenEntities.map(entity => entity[identifierType.toLocaleLowerCase()].value) // Devrais etre l'inverse on a un rna on cherche les siren et inversment
                 : [value];
+
             associationNames = [
                 ...(await Promise.all(
                     identifiers.map(identifier => uniteLegalNameService.searchBySirenSiretName(identifier)),
@@ -43,7 +49,7 @@ export class AssociationNameService {
             ].flat();
         }
         const mergedAssociationName = associationNames.reduce((acc, associationName) => {
-            const id = `${associationName.rna} - ${associationName.siren}`;
+            const id = `${associationName.rna?.value} - ${associationName.siren.value}`;
             const oldValue = acc[id] || {};
             acc[id] = new AssociationNameEntity(
                 oldValue.name || associationName.name,

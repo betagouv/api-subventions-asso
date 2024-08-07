@@ -1,8 +1,7 @@
-import { MongoServerError } from "mongodb";
-import { Siren } from "dto";
 import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../shared/helpers/MongoHelper";
 import MongoRepository from "../../../shared/MongoRepository";
 import { UniteLegalEntrepriseEntity } from "../../../entities/UniteLegalEntrepriseEntity";
+import Siren from "../../../valueObjects/Siren";
 import { UniteLegalEntrepriseAdapter } from "./UniteLegalEntreprise.adapter";
 import { UniteLegalEntrepriseDbo } from "./UniteLegalEntrepriseDbo";
 
@@ -14,7 +13,7 @@ export class UniteLegalEntreprisePort extends MongoRepository<UniteLegalEntrepri
     }
 
     async findOneBySiren(siren: Siren) {
-        const dbo = await this.collection.findOne({ siren: siren });
+        const dbo = await this.collection.findOne({ siren: siren.value });
         if (!dbo) return null;
 
         return UniteLegalEntrepriseAdapter.toEntity(dbo);

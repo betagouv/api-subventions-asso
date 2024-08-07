@@ -1,7 +1,9 @@
 import csvSyncParser = require("csv-parse/sync");
 import * as ParserHelper from "../../../shared/helpers/ParserHelper";
-import { isNumberValid, isRna, isSiret } from "../../../shared/Validators";
+import { isNumberValid } from "../../../shared/Validators";
 import { isValidDate } from "../../../shared/helpers/DateHelper";
+import Siret from "../../../valueObjects/Siret";
+import Rna from "../../../valueObjects/Rna";
 import { SCDL_MAPPER } from "./scdl.mapper";
 import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
 import { ScdlParsedGrant } from "./@types/ScdlParsedGrant";
@@ -9,7 +11,7 @@ import { ScdlParsedGrant } from "./@types/ScdlParsedGrant";
 export default class ScdlGrantParser {
     protected static isGrantValid(grant: ScdlParsedGrant) {
         // mandatory fields
-        if (!isSiret(grant.associationSiret)) return false;
+        if (!Siret.isSiret(grant.associationSiret)) return false;
         if (!isNumberValid(grant.amount)) return false;
         if (!isNumberValid(grant.exercice)) return false;
         // accept undefined and null as values as it is an optionnal field
@@ -17,7 +19,7 @@ export default class ScdlGrantParser {
 
         // optional fields
         if (grant.conventionDate && !isValidDate(grant.conventionDate)) grant.conventionDate = undefined;
-        if (grant.associationRna && !isRna(grant.associationRna)) grant.associationRna = undefined;
+        if (grant.associationRna && !Rna.isRna(grant.associationRna)) grant.associationRna = undefined;
         if (grant.paymentEndDate && !isValidDate(grant.paymentEndDate)) grant.paymentEndDate = undefined;
 
         return true;

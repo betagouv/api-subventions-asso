@@ -1,8 +1,7 @@
-import { ObjectId } from "mongodb"
-import { Rna, Siren } from "dto";
+import { ObjectId } from "mongodb";
 
 export default interface RnaSirenDbo {
-    siren: Siren,
-    rna: Rna,
-    _id: ObjectId
+    siren: string;
+    rna: string;
+    _id: ObjectId;
 }

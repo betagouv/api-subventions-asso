@@ -1,7 +1,7 @@
-import { Rna } from "dto";
+import { RnaDto } from "dto";
 
 export class RnaOnlyError extends Error {
-    constructor(rna: Rna) {
+    constructor(rna: RnaDto) {
         super(`We could not find any SIREN for the given RNA : ${rna}`);
     }
 }

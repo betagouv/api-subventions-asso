@@ -22,6 +22,10 @@ import { WithId } from "mongodb";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
+import Siren from "../../../valueObjects/Siren";
+import Siret from "../../../valueObjects/Siret";
+import Rna from "../../../valueObjects/Rna";
+import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 
 describe("chorusService", () => {
     beforeAll(() => {
@@ -69,29 +73,7 @@ describe("chorusService", () => {
             toVersementArrayMock.mockRestore();
         });
 
-        describe("getPaymentsBySiret", () => {
-            beforeAll(() => {
-                mockedChorusLineRepository.findBySiret.mockResolvedValue([
-                    ENTITIES[0],
-                    ENTITIES[0],
-                ] as unknown as WithId<ChorusLineEntity>[]);
-            });
-
-            afterAll(() => mockedChorusLineRepository.findBySiret.mockReset());
-
-            const SIRET = ENTITIES[0].indexedInformations.siret;
-            it("should call chorusLineRepository.findBySiret()", async () => {
-                await chorusService.getPaymentsBySiret(SIRET);
-                expect(mockedChorusLineRepository.findBySiret).toHaveBeenCalledWith(SIRET);
-            });
-
-            it("should call toPaymentArray for each document", async () => {
-                await chorusService.getPaymentsBySiret(SIRET);
-                expect(toVersementArrayMock).toHaveBeenCalledTimes(1);
-            });
-        });
-
-        describe("getPaymentsBySiren", () => {
+        describe("getPayments", () => {
             beforeAll(() => {
                 mockedChorusLineRepository.findBySiren.mockResolvedValue([
                     ENTITIES[0],
@@ -101,13 +83,15 @@ describe("chorusService", () => {
 
             afterAll(() => mockedChorusLineRepository.findBySiren.mockReset());
 
-            const SIREN = ENTITIES[0].indexedInformations.siret.substring(0, 9);
+            const SIREN = new Siret(ENTITIES[0].indexedInformations.siret).toSiren();
+            const IDENTIFIER = AssociationIdentifier.fromSiren(SIREN);
+
             it("should call chorusLineRepository.findBySiren()", async () => {
-                await chorusService.getPaymentsBySiren(SIREN);
+                await chorusService.getPayments(IDENTIFIER);
                 expect(mockedChorusLineRepository.findBySiren).toHaveBeenCalledWith(SIREN);
             });
             it("should call toPaymentArray for each document", async () => {
-                await chorusService.getPaymentsBySiren(SIREN);
+                await chorusService.getPayments(IDENTIFIER);
                 expect(toVersementArrayMock).toHaveBeenCalledTimes(1);
             });
         });
@@ -163,7 +147,7 @@ describe("chorusService", () => {
     });
 
     describe("sirenBelongAsso", () => {
-        const SIREN = SirenHelper.siretToSiren(ENTITIES[0].indexedInformations.siret);
+        const SIREN = new Siret(ENTITIES[0].indexedInformations.siret).toSiren();
 
         beforeEach(() => {
             mockedUniteLegalEntreprisesSerivce.isEntreprise.mockResolvedValue(false);
@@ -187,7 +171,7 @@ describe("chorusService", () => {
         });
 
         it("should return true if a RNA is found", async () => {
-            mockedRnaSirenService.find.mockResolvedValueOnce([{ rna: "W7000065", siren: SIREN }]);
+            mockedRnaSirenService.find.mockResolvedValueOnce([{ rna: new Rna("W700006589"), siren: SIREN }]);
             const expected = true;
             const actual = await chorusService.sirenBelongAsso(SIREN);
             expect(actual).toEqual(expected);
@@ -207,43 +191,9 @@ describe("chorusService", () => {
     describe("raw grant", () => {
         const DATA = [{ indexedInformations: { ej: "EJ" } }];
 
-        describe("getRawGrantsBySiret", () => {
-            const SIRET = "12345678900000";
-            let findBySiretMock;
-            beforeAll(
-                () =>
-                    (findBySiretMock = jest
-                        .spyOn(chorusLineRepository, "findBySiret")
-                        // @ts-expect-error: mock
-                        .mockImplementation(jest.fn(() => DATA))),
-            );
-            afterAll(() => findBySiretMock.mockRestore());
-
-            it("should call findBySiret()", async () => {
-                await chorusService.getRawGrantsBySiret(SIRET);
-            });
-
-            it("returns raw grant data", async () => {
-                const actual = await chorusService.getRawGrantsBySiret(SIRET);
-                expect(actual).toMatchInlineSnapshot(`
-                    Array [
-                      Object {
-                        "data": Object {
-                          "indexedInformations": Object {
-                            "ej": "EJ",
-                          },
-                        },
-                        "joinKey": "EJ",
-                        "provider": "chorus",
-                        "type": "payment",
-                      },
-                    ]
-                `);
-            });
-        });
-
-        describe("getRawGrantsBySiren", () => {
-            const SIREN = "123456789";
+        describe("getRawGrants", () => {
+            const SIREN = new Siren("123456789");
+            const IDENTIFIER = AssociationIdentifier.fromSiren(SIREN);
             let findBySirenMock;
             beforeAll(
                 () =>
@@ -255,11 +205,11 @@ describe("chorusService", () => {
             afterAll(() => findBySirenMock.mockRestore());
 
             it("should call findBySiren()", async () => {
-                await chorusService.getRawGrantsBySiren(SIREN);
+                await chorusService.getRawGrants(IDENTIFIER);
             });
 
             it("returns raw grant data", async () => {
-                const actual = await chorusService.getRawGrantsBySiren(SIREN);
+                const actual = await chorusService.getRawGrants(IDENTIFIER);
                 expect(actual).toMatchInlineSnapshot(`
                     Array [
                       Object {
@@ -308,8 +258,7 @@ describe("chorusService", () => {
     });
 
     describe("isAcceptedEntity", () => {
-        const SIREN = "980052658";
-
+        const SIREN = new Siret(ENTITIES[0].indexedInformations.siret).toSiren();
         let mockSirenBelongAsso: jest.SpyInstance;
 
         beforeEach(() => {
@@ -317,7 +266,6 @@ describe("chorusService", () => {
             chorusService.sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
             mockSirenBelongAsso = jest.spyOn(chorusService, "sirenBelongAsso");
             mockSirenBelongAsso.mockResolvedValue(true);
-            mockedSirenHelper.siretToSiren.mockReturnValue(SIREN);
         });
 
         afterAll(() => {
@@ -359,7 +307,7 @@ describe("chorusService", () => {
             };
             const expected = true;
             // @ts-expect-error: set private cache
-            chorusService.sirenBelongAssoCache.add(SIREN, expected);
+            chorusService.sirenBelongAssoCache.add(SIREN.value, expected);
             const actual = await chorusService.isAcceptedEntity(ENTITY);
             expect(actual).toEqual(expected);
             expect(mockSirenBelongAsso).toHaveBeenCalledTimes(0);

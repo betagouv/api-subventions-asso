@@ -1,7 +1,7 @@
 // import { ProviderValues } from "../shared/ProviderValue"
 // import { Siren } from "../shared/Siren"
 
-import { Siren } from "../shared/Siren";
+import { SirenDto } from "../shared/Siren";
 
 // interface MandataireSocial {
 //     "type": ProviderValues<string>,
@@ -160,7 +160,7 @@ interface PersonnePhysique {
 }
 
 export interface ExtraitRcsDto {
-    siren: Siren;
+    siren: SirenDto;
     date_extrait: string;
     date_immatriculation: string;
     mandataires_sociaux: MandataireSocial[];

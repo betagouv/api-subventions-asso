@@ -1,8 +1,9 @@
 import { getSiegeSiret } from "$lib/resources/associations/association.helper";
 import { valueOrHyphen } from "$lib/helpers/dataHelper";
+import { getUniqueIdentifier } from "$lib/helpers/identifierHelper";
 
 export class StructureTitleController {
-    constructor(association, siret = undefined) {
+    constructor(association, siret = undefined, identifiers = []) {
         const associationName = association.denomination_rna || association.denomination_siren;
         if (siret) {
             this.title =
@@ -10,7 +11,11 @@ export class StructureTitleController {
                     ? "Établissement siège de l'association"
                     : "Établissement secondaire de l'association";
             this.subtitle = associationName;
-            this.linkToAsso = `/association/${association.siren}`;
+
+            const uniqueIdentifier = getUniqueIdentifier(identifiers);
+            console.log(identifiers, uniqueIdentifier);
+
+            this.linkToAsso = `/association/${uniqueIdentifier}`;
         } else this.title = `Association : ${associationName}`;
         this.rna = valueOrHyphen(association.rna);
         this.siren = valueOrHyphen(association.siren);

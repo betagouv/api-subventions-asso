@@ -11,6 +11,8 @@ jest.mock("../../../shared/helpers/DateHelper");
 const mockedDateHelper = jest.mocked(DateHelper);
 import * as ParserHelper from "../../../shared/helpers/ParserHelper";
 import { SCDL_STORABLE } from "./__fixtures__/RawData";
+import Siret from "../../../valueObjects/Siret";
+import Rna from "../../../valueObjects/Rna";
 
 jest.mock("../../../shared/helpers/ParserHelper");
 const mockedParserHelper = jest.mocked(ParserHelper);
@@ -19,6 +21,12 @@ const mockedCsvLib = jest.mocked(csvSyncParser);
 
 describe("ScdlGrantParser", () => {
     const BUFFER = Buffer.alloc(1);
+    let isSiretSpy: jest.SpyInstance;
+    let isRnaSpy: jest.SpyInstance = jest.spyOn(Rna, "isRna");
+
+    beforeAll(() => {
+        isSiretSpy = jest.spyOn(Siret, "isSiret");
+    });
 
     describe("parseCsv", () => {
         let validateSpy: jest.SpyInstance;
@@ -119,7 +127,6 @@ describe("ScdlGrantParser", () => {
         const GRANT = { ...MiscScdlGrant };
 
         beforeEach(() => {
-            mockedValidators.isSiret.mockReturnValue(true);
             mockedDateHelper.isValidDate.mockReturnValue(true);
             mockedValidators.isNumberValid.mockReturnValue(true);
         });
@@ -132,7 +139,7 @@ describe("ScdlGrantParser", () => {
         });
 
         it("should return false if siret not valid", () => {
-            mockedValidators.isSiret.mockReturnValueOnce(false);
+            isSiretSpy.mockReturnValueOnce(false);
             const expected = false;
             // @ts-expect-error: protected method
             const actual = ScdlGrantParser.isGrantValid(GRANT);
@@ -158,11 +165,11 @@ describe("ScdlGrantParser", () => {
         it.each`
             param               | mockValidator                   | nbFalseMock
             ${"conventionDate"} | ${mockedDateHelper.isValidDate} | ${1}
-            ${"associationRna"} | ${mockedValidators.isRna}       | ${1}
+            ${"associationRna"} | ${isRnaSpy}                     | ${1}
             ${"paymentEndDate"} | ${mockedDateHelper.isValidDate} | ${2}
         `("it sets '$param' to undefined if set but invalid", ({ param, mockValidator, nbFalseMock }) => {
             // mock validators to get to the optionnal part of isGrantValid()
-            mockedValidators.isSiret.mockReturnValueOnce(true);
+            isSiretSpy.mockReturnValueOnce(true);
             mockedDateHelper.isValidDate.mockReturnValueOnce(true);
             mockedValidators.isNumberValid.mockReturnValueOnce(true);
             mockedValidators.isNumberValid.mockReturnValueOnce(true);

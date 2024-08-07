@@ -2,7 +2,7 @@ import { onDestroy } from "svelte";
 vi.mock("svelte");
 import { AssociationController } from "./Association.controller";
 import associationService from "$lib/resources/associations/association.service";
-import { currentAssociation, currentAssoSimplifiedEtabs } from "$lib/store/association.store";
+import { currentAssociation, currentAssoSimplifiedEtabs, currentIdentifiers } from "$lib/store/association.store";
 import rnaSirenService from "$lib/resources/open-source/rna-siren/rna-siren.service";
 vi.mock("$lib/resources/open-source/rna-siren/rna-siren.service");
 const mockedRnaSirenService = vi.mocked(rnaSirenService);
@@ -11,6 +11,7 @@ vi.mock("$lib/resources/associations/association.service");
 vi.mock("$lib/store/association.store", () => ({
     currentAssociation: { set: vi.fn() },
     currentAssoSimplifiedEtabs: { set: vi.fn() },
+    currentIdentifiers: { set: vi.fn() },
 }));
 
 describe("Association Controller", () => {

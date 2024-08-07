@@ -1,9 +1,9 @@
 import { Adresse } from "../shared/Adresse";
 import { ProviderValues } from "../shared/ProviderValue";
-import { Siret } from "../shared/Siret";
+import { SiretDto } from "../shared/Siret";
 
 export interface SimplifiedEtablissement {
-    siret: ProviderValues<Siret>;
+    siret: ProviderValues<SiretDto>;
     nic: ProviderValues<string>;
     siege?: ProviderValues<boolean>;
     ouvert?: ProviderValues<boolean>;

@@ -24,7 +24,7 @@ describe("Documents.controller", () => {
     const ESTABLISHMENT = { siret: "SIRET" };
 
     function resetController() {
-        const ctrlNotSpied = new DocumentsController("association", ASSOCIATION);
+        const ctrlNotSpied = new DocumentsController("association", ASSOCIATION, []);
         ctrl = Object.create(Object.getPrototypeOf(ctrlNotSpied), Object.getOwnPropertyDescriptors(ctrlNotSpied));
 
         ctrl._getAssociationDocuments = vi.spyOn(ctrlNotSpied, "_getAssociationDocuments");
@@ -54,11 +54,6 @@ describe("Documents.controller", () => {
         it("calls associationService.getDocuments with RNA", async () => {
             await ctrl._getAssociationDocuments(ASSOCIATION);
             expect(associationService.getDocuments).toHaveBeenCalledWith(ASSOCIATION.rna);
-        });
-
-        it("calls associationService.getDocuments with SIREN if no RNA", async () => {
-            await ctrl._getAssociationDocuments({ ...ASSOCIATION, rna: undefined });
-            expect(associationService.getDocuments).toHaveBeenCalledWith(ASSOCIATION.siren);
         });
 
         it("filters association docs", async () => {
@@ -136,15 +131,6 @@ describe("Documents.controller", () => {
         it("calls associationService.getDocuments with RNA", async () => {
             await ctrl._getEstablishmentDocuments(ESTABLISHMENT);
             expect(associationService.getDocuments).toHaveBeenCalledWith(ASSOCIATION.rna);
-        });
-
-        it("calls associationService.getDocuments with SIREN if no RNA", async () => {
-            // @ts-expect-error: mock
-            associationStore.currentAssociation.value = { ...ASSOCIATION, rna: undefined };
-            await ctrl._getEstablishmentDocuments(ESTABLISHMENT);
-            expect(associationService.getDocuments).toHaveBeenCalledWith(ASSOCIATION.siren);
-            // @ts-expect-error: mock
-            associationStore.currentAssociation.value = ASSOCIATION;
         });
 
         it("filters association docs", async () => {

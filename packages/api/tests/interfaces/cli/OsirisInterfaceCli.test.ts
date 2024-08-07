@@ -107,7 +107,7 @@ describe("OsirisCli", () => {
             controller = new OsirisCli();
 
             const entity = new OsirisRequestEntity(
-                { siret: "FAKE_SIRET", rna: "FAKE_RNA", name: "NAME" },
+                { siret: "00000000000000", rna: "W123456789", name: "NAME" },
                 {
                     osirisId: "FAKE_ID_2",
                     compteAssoId: "COMPTEASSOID",
@@ -128,7 +128,7 @@ describe("OsirisCli", () => {
 
         it("should log a file", async () => {
             const consoleInfo = jest.spyOn(console, "info").mockImplementation();
-            await controller.findByRna("FAKE_RNA");
+            await controller.findByRna("W123456789");
             expect(consoleInfo).toHaveBeenCalled();
 
             consoleInfo.mockReset();
@@ -139,8 +139,8 @@ describe("OsirisCli", () => {
             const consoleInfo = jest
                 .spyOn(console, "info")
                 .mockImplementation((dataLogged: string) => (data = dataLogged));
-            await controller.findByRna("FAKE_RNA", "json");
-            expect(JSON.parse(data)[0].legalInformations.rna).toBe("FAKE_RNA");
+            await controller.findByRna("W123456789", "json");
+            expect(JSON.parse(data)[0].legalInformations.rna).toBe("W123456789");
 
             consoleInfo.mockReset();
         });
@@ -153,7 +153,7 @@ describe("OsirisCli", () => {
             controller = new OsirisCli();
 
             const entity = new OsirisRequestEntity(
-                { siret: "FAKE_SIRET", rna: "FAKE_RNA", name: "NAME" },
+                { siret: "00000000000000", rna: "W123456789", name: "NAME" },
                 {
                     osirisId: "FAKE_ID_2",
                     compteAssoId: "COMPTEASSOID",
@@ -174,7 +174,7 @@ describe("OsirisCli", () => {
 
         it("should log a file", async () => {
             const consoleInfo = jest.spyOn(console, "info").mockImplementation();
-            await controller.findBySiret("FAKE_SIRET");
+            await controller.findBySiret("00000000000000");
             expect(consoleInfo).toHaveBeenCalled();
 
             consoleInfo.mockReset();
@@ -185,8 +185,8 @@ describe("OsirisCli", () => {
             const consoleInfo = jest
                 .spyOn(console, "info")
                 .mockImplementation((dataLogged: string) => (data = dataLogged));
-            await controller.findBySiret("FAKE_SIRET", "json");
-            expect(JSON.parse(data)[0].legalInformations.siret).toBe("FAKE_SIRET");
+            await controller.findBySiret("00000000000000", "json");
+            expect(JSON.parse(data)[0].legalInformations.siret).toBe("00000000000000");
 
             consoleInfo.mockReset();
         });

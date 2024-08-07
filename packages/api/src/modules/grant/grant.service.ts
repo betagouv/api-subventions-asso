@@ -1,21 +1,12 @@
 import * as Sentry from "@sentry/node";
-import { CommonGrantDto, Grant, DemandeSubvention, Payment, Rna, Siret } from "dto";
+import { CommonGrantDto, Grant, DemandeSubvention, Payment } from "dto";
 import { providersById } from "../providers/providers.helper";
 import { demandesSubventionsProviders, fullGrantProviders, grantProviders, paymentProviders } from "../providers";
 import DemandesSubventionsProvider from "../subventions/@types/DemandesSubventionsProvider";
 import PaymentProvider from "../payments/@types/PaymentProvider";
-import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
-import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
-import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
-import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
-import { isSiret } from "../../shared/Validators";
-import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
-import associationsService from "../associations/associations.service";
-import rnaSirenService from "../rna-siren/rnaSiren.service";
+import { StructureIdentifier } from "../../@types";
 import scdlGrantService from "../providers/scdl/scdl.grant.service";
 import scdlService from "../providers/scdl/scdl.service";
-import { siretToSiren } from "../../shared/helpers/SirenHelper";
-import { BadRequestError } from "../../shared/errors/httpErrors";
 import { RnaOnlyError } from "../../shared/errors/GrantError";
 
 import { FullGrantProvider } from "./@types/FullGrantProvider";
@@ -32,48 +23,6 @@ export class GrantService {
         this.fullGrantProvidersById = providersById(fullGrantProviders);
         this.applicationProvidersById = providersById(demandesSubventionsProviders);
         this.paymentProvidersById = providersById(paymentProviders);
-    }
-
-    static getRawMethodNameByIdType = {
-        [StructureIdentifiersEnum.siret]: "getRawGrantsBySiret",
-        [StructureIdentifiersEnum.siren]: "getRawGrantsBySiren",
-        [StructureIdentifiersEnum.rna]: "getRawGrantsByRna",
-    };
-
-    private validateAndGetStructureType(id: StructureIdentifiers) {
-        const idType = getIdentifierType(id);
-        if (!idType) throw new StructureIdentifiersError();
-        return idType;
-    }
-
-    private async validateIsAssociation(id: StructureIdentifiers) {
-        const siren = await associationsService.isSirenFromAsso(siretToSiren(id));
-        if (!siren) throw new BadRequestError("identifier does not represent an association");
-    }
-
-    private async validateAndGetIdentifierInfo(identifier: StructureIdentifiers) {
-        let type = this.validateAndGetStructureType(identifier);
-
-        if (type === StructureIdentifiersEnum.rna) {
-            const sirenValues = await this.getSirenValues(identifier);
-            if (sirenValues) {
-                type = sirenValues.type;
-                identifier = sirenValues.identifier;
-            } else {
-                throw new RnaOnlyError(identifier);
-            }
-        } else {
-            this.validateIsAssociation(identifier);
-        }
-        return { identifier, type };
-    }
-
-    private async getSirenValues(rna: Rna) {
-        const rnaSirenEntities = await rnaSirenService.find(rna);
-        if (rnaSirenEntities && rnaSirenEntities.length) {
-            return { identifier: rnaSirenEntities[0].siren, type: StructureIdentifiersEnum.siren };
-        }
-        return null;
     }
 
     adaptRawGrant(rawGrant: RawGrant) {
@@ -148,7 +97,7 @@ export class GrantService {
 
     // appeler adapter pour chaque join.application join.payment et join.fullGrant
     // implementer une classe GrantAdapter pour chaque adapter de demande et de paiment
-    async getGrants(identifier: StructureIdentifiers): Promise<Grant[]> {
+    async getGrants(identifier: StructureIdentifier): Promise<Grant[]> {
         const joinedRawGrants = await this.getRawGrants(identifier);
         const grants = joinedRawGrants.map(this.adaptJoinedRawGrant.bind(this)).filter(grant => grant) as Grant[];
         const sortedGrants = this.sortGrants(grants);
@@ -166,17 +115,10 @@ export class GrantService {
      * @param identifier Rna, Siren or Siret
      * @returns List of grants (application with paiments)
      */
-    async getRawGrants(identifier: StructureIdentifiers): Promise<JoinedRawGrant[]> {
+    async getRawGrants(identifier: StructureIdentifier): Promise<JoinedRawGrant[]> {
         try {
-            const { identifier: sirenOrSiret, type } = await this.validateAndGetIdentifierInfo(identifier);
-            const method = GrantService.getRawMethodNameByIdType[type];
-            const providers = grantProviders;
             const rawGrants = [
-                ...(
-                    await Promise.all(
-                        providers.map(p => p[method](sirenOrSiret).then(g => (g || []) as RawGrant[]) || []),
-                    )
-                ).flat(),
+                ...((await Promise.all(grantProviders.map(p => p.getRawGrants(identifier)))).flat() as AnyRawGrant[]),
             ];
             return this.joinGrants(rawGrants);
         } catch (e) {
@@ -185,16 +127,6 @@ export class GrantService {
             if (e instanceof RnaOnlyError) return [] as JoinedRawGrant[];
             else throw e;
         }
-    }
-
-    async getRawGrantsByAssociation(id: AssociationIdentifiers): Promise<JoinedRawGrant[]> {
-        if (isSiret(id)) throw new AssociationIdentifierError();
-        return this.getRawGrants(id);
-    }
-
-    async getRawGrantsByEstablishment(siret: Siret): Promise<JoinedRawGrant[]> {
-        if (!isSiret(siret)) throw new StructureIdentifiersError("SIRET expected");
-        return this.getRawGrants(siret);
     }
 
     // Use to spot grants or applications sharing the same joinKey (EJ or code_poste)
@@ -277,7 +209,7 @@ export class GrantService {
         return [...Object.values(byKey), ...lonelyGrants];
     }
 
-    async getCommonGrants(id: StructureIdentifiers, publishable = false): Promise<CommonGrantDto[]> {
+    async getCommonGrants(id: StructureIdentifier, publishable = false): Promise<CommonGrantDto[]> {
         const raws = await this.getRawGrants(id);
 
         return raws

@@ -5,6 +5,7 @@ import { RechercheEntreprisesDto } from "./RechercheEntreprisesDto";
 import { RechercheEntreprisesAdapter } from "./RechercheEntreprisesAdapter";
 import AssociationNameEntity from "../../../modules/association-name/entities/AssociationNameEntity";
 import { RequestResponse } from "../../../modules/provider-request/@types/RequestResponse";
+import Siren from "../../../valueObjects/Siren";
 
 // Mocking the external dependencies
 jest.mock("./RechercheEntreprisesAdapter");
@@ -16,7 +17,7 @@ const mockedRechercheEntreprisesAdapter = RechercheEntreprisesAdapter as jest.Mo
 describe("RechercheEntreprises", () => {
     // @ts-expect-error http is private attribute
     const mockedHttpGet = jest.spyOn(rechercheEntreprises.http, "get");
-    const SIREN = "123456789";
+    const SIREN = new Siren("123456789");
     const NAME = "Example";
 
     describe("Initialization", () => {
@@ -60,7 +61,7 @@ describe("RechercheEntreprises", () => {
                 total_pages: 1,
                 total_results: 4,
                 results: [
-                    { nom_complet: NAME, siren: SIREN },
+                    { nom_complet: NAME, siren: SIREN.value },
                     { nom_complet: undefined, siren: "987654321" },
                     { nom_complet: "Example 2", siren: undefined },
                     { nom_complet: undefined, siren: undefined },
@@ -90,7 +91,7 @@ describe("RechercheEntreprises", () => {
         it("should call next pages", async () => {
             const expected = [
                 new AssociationNameEntity(NAME, SIREN),
-                new AssociationNameEntity(NAME + "2", SIREN + "2"),
+                new AssociationNameEntity(NAME + "2", new Siren("123456782")),
             ];
             const responseDataFirst: RechercheEntreprisesDto = {
                 page: 1,
@@ -98,7 +99,7 @@ describe("RechercheEntreprises", () => {
                 total_pages: 2,
                 total_results: 6,
                 results: [
-                    { nom_complet: NAME, siren: SIREN },
+                    { nom_complet: NAME, siren: SIREN.value },
                     { nom_complet: undefined, siren: "987654321" },
                     { nom_complet: "Example 2", siren: undefined },
                     { nom_complet: undefined, siren: undefined },
@@ -128,7 +129,7 @@ describe("RechercheEntreprises", () => {
                 total_pages: 5,
                 total_results: 20,
                 results: [
-                    { nom_complet: NAME, siren: SIREN },
+                    { nom_complet: NAME, siren: SIREN.value },
                     { nom_complet: undefined, siren: "987654321" },
                     { nom_complet: "Example 2", siren: undefined },
                     { nom_complet: undefined, siren: undefined },

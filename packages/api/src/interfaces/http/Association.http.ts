@@ -6,14 +6,16 @@ import {
     GetPaymentsResponseDto,
     GetDocumentsResponseDto,
     DemandeSubvention,
+    StructureIdentifierDto,
+    AssociationIdentifierDto,
 } from "dto";
 import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
-import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
 import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
 
 import associationService from "../../modules/associations/associations.service";
 import grantService from "../../modules/grant/grant.service";
 import { JoinedRawGrant } from "../../modules/grant/@types/rawGrant";
+import associationIdentifierService from "../../modules/association-identifier/association-identifier.service";
 
 @Route("association")
 @Security("jwt")
@@ -25,8 +27,10 @@ export class AssociationHttp extends Controller {
      */
     @Get("/{identifier}")
     @Response<HttpErrorInterface>("404")
-    public async getAssociation(identifier: StructureIdentifiers): Promise<GetAssociationResponseDto> {
-        const association = await associationService.getAssociation(identifier);
+    public async getAssociation(identifier: StructureIdentifierDto): Promise<GetAssociationResponseDto> {
+        const associationIdentifiers = await associationIdentifierService.getOneAssociationIdentifier(identifier);
+
+        const association = await associationService.getAssociation(associationIdentifiers);
         return { association };
     }
 
@@ -38,11 +42,11 @@ export class AssociationHttp extends Controller {
      */
     @Get("/{identifier}/subventions")
     @Response<HttpErrorInterface>("404")
-    public async getDemandeSubventions(identifier: AssociationIdentifiers): Promise<GetSubventionsResponseDto> {
-        const flux = await associationService.getSubventions(identifier);
+    public async getDemandeSubventions(identifier: AssociationIdentifierDto): Promise<GetSubventionsResponseDto> {
+        const associationIdentifiers = await associationIdentifierService.getOneAssociationIdentifier(identifier);
+        const flux = await associationService.getSubventions(associationIdentifiers);
 
         if (!flux) return { subventions: null };
-
         const result = await flux.toPromise();
         const subventions = result
             .map(fluxSub => fluxSub.subventions)
@@ -58,8 +62,10 @@ export class AssociationHttp extends Controller {
      * @param identifier Identifiant Siren ou Rna
      */
     @Get("/{identifier}/versements")
-    public async getPayments(identifier: AssociationIdentifiers): Promise<GetPaymentsResponseDto> {
-        const payments = await associationService.getPayments(identifier);
+    public async getPayments(identifier: AssociationIdentifierDto): Promise<GetPaymentsResponseDto> {
+        const associationIdentifiers = await associationIdentifierService.getOneAssociationIdentifier(identifier);
+
+        const payments = await associationService.getPayments(associationIdentifiers);
         return { versements: payments };
     }
 
@@ -70,8 +76,9 @@ export class AssociationHttp extends Controller {
      * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
      */
     @Get("/{identifier}/grants")
-    public async getGrants(identifier: AssociationIdentifiers): Promise<GetGrantsResponseDto> {
-        const grants = await grantService.getGrants(identifier);
+    public async getGrants(identifier: AssociationIdentifierDto): Promise<GetGrantsResponseDto> {
+        const associationIdentifiers = await associationIdentifierService.getOneAssociationIdentifier(identifier);
+        const grants = await grantService.getGrants(associationIdentifiers);
         return { subventions: grants };
     }
 
@@ -85,8 +92,11 @@ export class AssociationHttp extends Controller {
     @Get("/{identifier}/raw-grants")
     @Security("jwt", ["admin"])
     @Response<HttpErrorInterface>("404")
-    public getRawGrants(identifier: AssociationIdentifiers): Promise<JoinedRawGrant[]> {
-        return grantService.getRawGrantsByAssociation(identifier);
+    public async getRawGrants(identifier: AssociationIdentifierDto): Promise<JoinedRawGrant[]> {
+        // Victor ne moublie pas
+        const associationIdentifiers = await associationIdentifierService.getOneAssociationIdentifier(identifier);
+
+        return grantService.getRawGrants(associationIdentifiers);
     }
 
     /**
@@ -96,9 +106,11 @@ export class AssociationHttp extends Controller {
      * @param identifier Identifiant Siren ou Rna
      */
     @Get("/{identifier}/documents")
-    public async getDocuments(identifier: AssociationIdentifiers): Promise<GetDocumentsResponseDto> {
-        const result = await associationService.getDocuments(identifier);
-        return { documents: result };
+    public async getDocuments(identifier: AssociationIdentifierDto): Promise<GetDocumentsResponseDto> {
+        const associationIdentifiers = await associationIdentifierService.getOneAssociationIdentifier(identifier);
+
+        const documents = await associationService.getDocuments(associationIdentifiers);
+        return { documents };
     }
 
     /**
@@ -106,8 +118,10 @@ export class AssociationHttp extends Controller {
      * @param identifier Identifiant Siren ou Rna
      */
     @Get("/{identifier}/etablissements")
-    public async getEstablishments(identifier: AssociationIdentifiers): Promise<GetEtablissementsResponseDto> {
-        const etablissements = await associationService.getEstablishments(identifier);
+    public async getEstablishments(identifier: AssociationIdentifierDto): Promise<GetEtablissementsResponseDto> {
+        const associationIdentifiers = await associationIdentifierService.getOneAssociationIdentifier(identifier);
+
+        const etablissements = await associationService.getEstablishments(associationIdentifiers);
         return { etablissements };
     }
 
@@ -118,7 +132,7 @@ export class AssociationHttp extends Controller {
      */
     @Get("/{identifier}/extract-data")
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public async registerExtract(identifier: AssociationIdentifiers): Promise<boolean> {
+    public async registerExtract(identifier: AssociationIdentifierDto): Promise<boolean> {
         return true;
     }
 }

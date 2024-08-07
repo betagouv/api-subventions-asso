@@ -1,13 +1,16 @@
 import lodash from "lodash";
-import { DemandeSubvention, Siren, Siret } from "dto";
+import { DemandeSubvention } from "dto";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DEMARCHES_SIMPLIFIEES_TOKEN } from "../../../configurations/apis.conf";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
-import { DefaultObject } from "../../../@types";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
+import { DefaultObject, StructureIdentifier } from "../../../@types";
 import { InternalServerError } from "../../../shared/errors/httpErrors";
 import ProviderCore from "../ProviderCore";
+import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import GrantProvider from "../../grant/@types/GrantProvider";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import { DemarchesSimplifieesDto } from "./dto/DemarchesSimplifieesDto";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
@@ -20,7 +23,7 @@ import DemarchesSimplifieesDataEntity from "./entities/DemarchesSimplifieesDataE
 
 export class DemarchesSimplifieesService
     extends ProviderCore
-    implements DemandesSubventionsProvider<DemarchesSimplifieesRawData>
+    implements DemandesSubventionsProvider<DemarchesSimplifieesRawData>, GrantProvider
 {
     isDemandesSubventionsProvider = true;
 
@@ -68,13 +71,15 @@ export class DemarchesSimplifieesService
         );
     }
 
-    async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
-        const demandes = await demarchesSimplifieesDataRepository.findBySiren(siren);
-        return this.entitiesToSubventions(demandes);
-    }
+    async getDemandeSubvention(id: StructureIdentifier): Promise<DemandeSubvention[]> {
+        const demandes: DemarchesSimplifieesDataEntity[] = [];
 
-    async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
-        const demandes = await demarchesSimplifieesDataRepository.findBySiret(siret);
+        if (id instanceof EstablishmentIdentifier && id.siret) {
+            demandes.push(...(await demarchesSimplifieesDataRepository.findBySiret(id.siret)));
+        } else if (id instanceof AssociationIdentifier && id.siren) {
+            demandes.push(...(await demarchesSimplifieesDataRepository.findBySiren(id.siren)));
+        }
+
         return this.entitiesToSubventions(demandes);
     }
 
@@ -189,14 +194,15 @@ export class DemarchesSimplifieesService
         );
     }
 
-    async getRawGrantsBySiret(siret: string): Promise<RawGrant[]> {
-        const grants = await demarchesSimplifieesDataRepository.findBySiret(siret);
-        return await this.toRawGrants(grants);
-    }
+    async getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
+        let entities: DemarchesSimplifieesDataEntity[] = [];
+        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
+            entities = await demarchesSimplifieesDataRepository.findBySiret(identifier.siret);
+        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
+            entities = await demarchesSimplifieesDataRepository.findBySiren(identifier.siren);
+        }
 
-    async getRawGrantsBySiren(siren: string): Promise<RawGrant[]> {
-        const grants = await demarchesSimplifieesDataRepository.findBySiren(siren);
-        return await this.toRawGrants(grants);
+        return await this.toRawGrants(entities);
     }
 
     rawToApplication(rawApplication: RawApplication<DemarchesSimplifieesRawData>) {

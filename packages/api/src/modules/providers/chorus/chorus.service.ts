@@ -1,9 +1,8 @@
-import { Siren, Siret } from "dto";
+import { Payment } from "dto";
 import { WithId } from "mongodb";
 import { ASSO_BRANCHE } from "../../../shared/ChorusBrancheAccepted";
 import CacheData from "../../../shared/Cache";
 import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
-import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import PaymentProvider from "../../payments/@types/PaymentProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { RawGrant, RawPayment } from "../../grant/@types/rawGrant";
@@ -12,6 +11,12 @@ import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import uniteLegalEntreprisesService from "../uniteLegalEntreprises/uniteLegal.entreprises.service";
 import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
+import { StructureIdentifier } from "../../../@types";
+import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import Siren from "../../../valueObjects/Siren";
+import Siret from "../../../valueObjects/Siret";
+import GrantProvider from "../../grant/@types/GrantProvider";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import chorusLineRepository from "./repositories/chorus.line.repository";
@@ -21,7 +26,7 @@ export interface RejectedRequest {
     result: { message: string; data: unknown };
 }
 
-export class ChorusService extends ProviderCore implements PaymentProvider<ChorusLineEntity> {
+export class ChorusService extends ProviderCore implements PaymentProvider<ChorusLineEntity>, GrantProvider {
     constructor() {
         super({
             name: "Chorus",
@@ -47,13 +52,13 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
     public async isAcceptedEntity(entity: ChorusLineEntity) {
         if (entity.indexedInformations.codeBranche === ASSO_BRANCHE) return true;
 
-        const siren = siretToSiren(entity.indexedInformations.siret);
+        const siren = new Siret(entity.indexedInformations.siret).toSiren();
 
-        if (this.sirenBelongAssoCache.has(siren)) return this.sirenBelongAssoCache.get(siren)[0];
+        if (this.sirenBelongAssoCache.has(siren.value)) return this.sirenBelongAssoCache.get(siren.value)[0];
 
         const sirenIsAsso = await this.sirenBelongAsso(siren);
 
-        this.sirenBelongAssoCache.add(siren, sirenIsAsso);
+        this.sirenBelongAssoCache.add(siren.value, sirenIsAsso);
         return sirenIsAsso;
     }
 
@@ -96,14 +101,14 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
 
     isPaymentProvider = true;
 
-    async getPaymentsBySiret(siret: Siret) {
-        const requests = await chorusLineRepository.findBySiret(siret);
+    async getPayments(identifier: StructureIdentifier): Promise<Payment[]> {
+        const requests: WithId<ChorusLineEntity>[] = [];
 
-        return this.toPaymentArray(requests);
-    }
-
-    async getPaymentsBySiren(siren: Siren) {
-        const requests = await chorusLineRepository.findBySiren(siren);
+        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
+            requests.push(...(await chorusLineRepository.findBySiret(identifier.siret)));
+        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
+            requests.push(...(await chorusLineRepository.findBySiren(identifier.siren)));
+        }
 
         return this.toPaymentArray(requests);
     }
@@ -134,24 +139,20 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
 
     isGrantProvider = true;
 
-    async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
-        return (await chorusLineRepository.findBySiret(siret)).map(grant => ({
+    async getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
+        let entities: ChorusLineEntity[] = [];
+        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
+            entities = await chorusLineRepository.findBySiret(identifier.siret);
+        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
+            entities = await chorusLineRepository.findBySiren(identifier.siren);
+        }
+
+        return entities.map(grant => ({
             provider: this.provider.id,
             type: "payment",
             data: grant,
             joinKey: grant.indexedInformations.ej,
         }));
-    }
-    async getRawGrantsBySiren(siren: string): Promise<RawGrant[] | null> {
-        return (await chorusLineRepository.findBySiren(siren)).map(grant => ({
-            provider: this.provider.id,
-            type: "payment",
-            data: grant,
-            joinKey: grant.indexedInformations.ej,
-        }));
-    }
-    getRawGrantsByRna(_rna: string): Promise<RawGrant[] | null> {
-        return Promise.resolve(null);
     }
 
     rawToCommon(raw: RawGrant) {

@@ -17,6 +17,10 @@ import {
 } from "../../../../tests/dataProviders/db/__fixtures__/demarchesSimplifiees.fixtures";
 import { DemarchesSimplifieesRawData, DemarchesSimplifieesRawGrant } from "./@types/DemarchesSimplifieesRawGrant";
 import lodash from "lodash";
+import Siren from "../../../valueObjects/Siren";
+import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
+import Siret from "../../../valueObjects/Siret";
 jest.mock("lodash");
 
 describe("DemarchesSimplifieesService", () => {
@@ -169,8 +173,9 @@ describe("DemarchesSimplifieesService", () => {
         });
     });
 
-    describe("getDemandeSubventionBySiren", () => {
-        const SIREN = "000000000";
+    describe("getDemandeSubvention", () => {
+        const SIREN = new Siren("000000000");
+        const ASSOCIATION_IDENTIFIER = AssociationIdentifier.fromSiren(SIREN);
         let entitiesToSubMock: jest.SpyInstance;
 
         beforeAll(() => {
@@ -190,13 +195,13 @@ describe("DemarchesSimplifieesService", () => {
         });
 
         it("should call findBySiren", async () => {
-            await demarchesSimplifieesService.getDemandeSubventionBySiren(SIREN);
+            await demarchesSimplifieesService.getDemandeSubvention(ASSOCIATION_IDENTIFIER);
             expect(demarchesSimplifieesDataRepository.findBySiren).toHaveBeenCalledWith(SIREN);
             expect(demarchesSimplifieesDataRepository.findBySiren).toBeCalledTimes(1);
         });
 
         it("should call entitiesToSubventions", async () => {
-            await demarchesSimplifieesService.getDemandeSubventionBySiren(SIREN);
+            await demarchesSimplifieesService.getDemandeSubvention(ASSOCIATION_IDENTIFIER);
             expect(entitiesToSubMock).toHaveBeenCalledWith([]);
             expect(entitiesToSubMock).toBeCalledTimes(1);
         });
@@ -205,48 +210,7 @@ describe("DemarchesSimplifieesService", () => {
             const expected = [{ test: true }];
             // @ts-expect-error mock
             demarchesSimplifieesDataRepository.findBySiren.mockResolvedValueOnce(expected);
-            const actual = await demarchesSimplifieesService.getDemandeSubventionBySiren(SIREN);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("getDemandeSubventionBySiret", () => {
-        const SIRET = "00000000000000";
-        let entitiesToSubMock: jest.SpyInstance;
-
-        beforeAll(() => {
-            // @ts-expect-error mock
-            demarchesSimplifieesDataRepository.findBySiret.mockResolvedValue([]);
-            entitiesToSubMock = jest
-                // @ts-expect-error entitiesToSubventions is private method
-                .spyOn(demarchesSimplifieesService, "entitiesToSubventions")
-                // @ts-expect-error disable ts form return type of entitiesToSubventions
-                .mockImplementation(data => data);
-        });
-
-        afterAll(() => {
-            // @ts-expect-error mock
-            demarchesSimplifieesDataRepository.findBySiret.mockRestore();
-            entitiesToSubMock.mockRestore();
-        });
-
-        it("should call findBySiret", async () => {
-            await demarchesSimplifieesService.getDemandeSubventionBySiret(SIRET);
-            expect(demarchesSimplifieesDataRepository.findBySiret).toHaveBeenCalledWith(SIRET);
-            expect(demarchesSimplifieesDataRepository.findBySiret).toBeCalledTimes(1);
-        });
-
-        it("should call entitiesToSubventions", async () => {
-            await demarchesSimplifieesService.getDemandeSubventionBySiret(SIRET);
-            expect(entitiesToSubMock).toHaveBeenCalledWith([]);
-            expect(entitiesToSubMock).toBeCalledTimes(1);
-        });
-
-        it("should return entities", async () => {
-            const expected = [{ test: true }];
-            // @ts-expect-error mock
-            demarchesSimplifieesDataRepository.findBySiret.mockResolvedValueOnce(expected);
-            const actual = await demarchesSimplifieesService.getDemandeSubventionBySiret(SIRET);
+            const actual = await demarchesSimplifieesService.getDemandeSubvention(ASSOCIATION_IDENTIFIER);
             expect(actual).toEqual(expected);
         });
     });
@@ -446,11 +410,11 @@ describe("DemarchesSimplifieesService", () => {
     });
 
     describe.each`
-        identifier | spyToCall
-        ${"Siren"} | ${demarchesSimplifieesDataRepository.findBySiren}
-        ${"Siret"} | ${demarchesSimplifieesDataRepository.findBySiret}
-    `("getRawGrantsBy$identifier", ({ identifier, spyToCall }) => {
-        const IDENTIFIER = "ID";
+        IDENTIFIER                                                            | spyToCall
+        ${AssociationIdentifier.fromSiren(new Siren("000000000"))}            | ${demarchesSimplifieesDataRepository.findBySiren}
+        ${EstablishmentIdentifier.fromSiret(new Siret("00000000000000"), {})} | ${demarchesSimplifieesDataRepository.findBySiret}
+    `("getRawGrants", ({ IDENTIFIER, spyToCall }) => {
+        // const IDENTIFIER = "ID";
         const DATA = ["G1", "G2"];
         const RAW_DATA = ["g1", "g2"];
         let toRawGrantsMock;
@@ -466,18 +430,18 @@ describe("DemarchesSimplifieesService", () => {
         });
 
         it("gets data from repo", async () => {
-            await demarchesSimplifieesService[`getRawGrantsBy${identifier}`](IDENTIFIER);
-            expect(spyToCall).toHaveBeenCalledWith(IDENTIFIER);
+            await demarchesSimplifieesService.getRawGrants(IDENTIFIER);
+            expect(spyToCall).toHaveBeenCalledWith(IDENTIFIER.siren || IDENTIFIER.siret);
         });
 
         it("call private helper", async () => {
-            await demarchesSimplifieesService[`getRawGrantsBy${identifier}`](IDENTIFIER);
+            await demarchesSimplifieesService.getRawGrants(IDENTIFIER);
             expect(toRawGrantsMock).toHaveBeenCalledWith(DATA);
         });
 
         it("returns data from helper", async () => {
             const expected = RAW_DATA;
-            const actual = await demarchesSimplifieesService[`getRawGrantsBy${identifier}`](IDENTIFIER);
+            const actual = await demarchesSimplifieesService.getRawGrants(IDENTIFIER);
             expect(actual).toEqual(expected);
         });
     });

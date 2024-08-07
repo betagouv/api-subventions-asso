@@ -1,4 +1,4 @@
-import { Siret } from "dto";
+import { SiretDto } from "dto";
 import { DefaultObject } from "../../../@types";
 import * as ParserHelper from "../../../shared/helpers/ParserHelper";
 import IFonjepIndexedInformations from "./@types/IFonjepIndexedInformations";
@@ -38,7 +38,7 @@ export default class FonjepParser {
         const legalInformations = ParserHelper.indexDataByPathObject(
             FonjepSubventionEntity.indexedLegalInformationsPath,
             parsedData,
-        ) as { siret: Siret; name: string };
+        ) as { siret: SiretDto; name: string };
         return new FonjepSubventionEntity(legalInformations, indexedInformations, parsedData);
     }
 
@@ -51,7 +51,7 @@ export default class FonjepParser {
         const legalInformations = ParserHelper.indexDataByPathObject(
             FonjepPaymentEntity.indexedLegalInformationsPath,
             data,
-        ) as { siret: Siret };
+        ) as { siret: SiretDto };
         return new FonjepPaymentEntity(legalInformations, indexedInformations, data);
     }
 

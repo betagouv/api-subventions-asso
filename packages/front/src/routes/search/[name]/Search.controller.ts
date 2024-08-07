@@ -1,4 +1,4 @@
-import type { PaginatedAssociationNameDto, Siret } from "dto";
+import type { PaginatedAssociationNameDto, SiretDto } from "dto";
 import { goto } from "$app/navigation";
 import Store from "$lib/core/Store";
 import { returnInfinitePromise } from "$lib/helpers/promiseHelper";
@@ -48,7 +48,7 @@ export default class SearchController {
         }
     }
 
-    gotoEstablishment(siret: Siret) {
+    gotoEstablishment(siret: SiretDto) {
         goto(`/etablissement/${siret}`);
     }
 

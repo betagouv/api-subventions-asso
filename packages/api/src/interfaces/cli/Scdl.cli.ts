@@ -1,23 +1,22 @@
 import fs from "fs";
-import { Siret } from "dto";
 import ExportDateError from "../../shared/errors/cliErrors/ExportDateError";
 import ScdlGrantParser from "../../modules/providers/scdl/scdl.grant.parser";
 import scdlService from "../../modules/providers/scdl/scdl.service";
 import MiscScdlGrantEntity from "../../modules/providers/scdl/entities/MiscScdlGrantEntity";
 import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
-import { isSiret } from "../../shared/Validators";
 import { ScdlStorableGrant } from "../../modules/providers/scdl/@types/ScdlStorableGrant";
+import Siret from "../../valueObjects/Siret";
 
 export default class ScdlCli {
     static cmdName = "scdl";
 
-    public async addProducer(slug: string, name: string, siret: Siret) {
+    public async addProducer(slug: string, name: string, siret: string) {
         if (!slug) throw Error("producer SLUG is mandatory");
         if (!name) throw Error("producer NAME is mandatory");
         if (!siret) throw Error("producer SIRET is mandatory");
-        if (!isSiret(siret)) throw Error("SIRET is not valid");
+        if (!Siret.isSiret(siret)) throw Error("SIRET is not valid");
         if (await scdlService.getProducer(slug)) throw new Error("Producer already exists");
-        await scdlService.createProducer({ slug, name, siret, lastUpdate: new Date() });
+        await scdlService.createProducer({ slug, name, siret: siret, lastUpdate: new Date() });
     }
 
     public async parseXls(file: string, producerSlug: string, exportDate?: string, pageName?: string, rowOffset = 0) {

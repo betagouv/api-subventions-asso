@@ -1,5 +1,5 @@
-import { isSiret } from "../../../../shared/Validators";
 import { ExcelDateToJSDate } from "../../../../shared/helpers/ParserHelper";
+import Siret from "../../../../valueObjects/Siret";
 import SubventiaDto from "../@types/subventia.dto";
 
 export default class SubventiaValidator {
@@ -19,7 +19,7 @@ export default class SubventiaValidator {
     }
 
     static validateDataRowTypes(parsedDataRow: SubventiaDto) {
-        if (!isSiret(parsedDataRow["SIRET - Demandeur"])) {
+        if (!Siret.isSiret(parsedDataRow["SIRET - Demandeur"])) {
             throw new Error(`INVALID SIRET FOR ${parsedDataRow["SIRET - Demandeur"]}`);
         }
 

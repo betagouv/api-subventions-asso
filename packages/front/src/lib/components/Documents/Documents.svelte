@@ -10,12 +10,13 @@
     import type { ResourceType } from "$lib/types/ResourceType";
     import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
     import Button from "$lib/dsfr/Button.svelte";
+    import { currentIdentifiers } from "$lib/store/association.store";
 
     // TODO: replace unknown with EstablishmentEntity when created
     export let resource: AssociationEntity | unknown;
     export let resourceType: ResourceType = "association";
 
-    const controller = new DocumentsController(resourceType, resource);
+    const controller = new DocumentsController(resourceType, resource, $currentIdentifiers);
     const documentsPromise = controller.documentsPromise;
     const zipPromise = controller.zipPromise;
     const { selectedDocsOrNull, downloadBtnLabel } = controller;

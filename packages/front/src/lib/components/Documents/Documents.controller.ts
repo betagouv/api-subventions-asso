@@ -1,4 +1,4 @@
-import type { Siret } from "dto";
+import type { RnaSirenResponseDto, SiretDto } from "dto";
 import { getSiegeSiret } from "$lib/resources/associations/association.helper";
 import Store, { derived, ReadStore } from "$lib/core/Store";
 import associationService from "$lib/resources/associations/association.service";
@@ -11,6 +11,7 @@ import type AssociationEntity from "$lib/resources/associations/entities/Associa
 import documentService from "$lib/resources/document/document.service";
 import documentHelper from "$lib/helpers/document.helper";
 import { returnInfinitePromise } from "$lib/helpers/promiseHelper";
+import { getUniqueIdentifier } from "$lib/helpers/identifierHelper";
 
 const resourceNameWithDemonstrativeByType = {
     association: "cette association",
@@ -37,6 +38,7 @@ export class DocumentsController {
     }>;
     public flatSelectedDocs: ReadStore<DocumentEntity[]>;
     private identifier: string;
+    private uniqueAssociationIdentifier: string;
     public downloadBtnLabel: ReadStore<string>;
     private allFlatDocs: DocumentEntity[];
 
@@ -44,9 +46,14 @@ export class DocumentsController {
         public resourceType: ResourceType,
         // TODO: replace unknown with EstablishmentEntity when created
         public resource: AssociationEntity | unknown,
+        public currentAssociationIdentifiers: RnaSirenResponseDto[],
     ) {
         // @ts-expect-error -- missing type
         this.identifier = resource?.rna || resource?.siren || resource?.siret;
+        this.uniqueAssociationIdentifier = currentAssociationIdentifiers.length 
+            ? getUniqueIdentifier(currentAssociationIdentifiers) 
+            : this.identifier;
+        console.log(this.uniqueAssociationIdentifier);
         this.resourceType = resourceType;
         this.documentsPromise = new Store(returnInfinitePromise());
         this.zipPromise = new Store(Promise.resolve(null));
@@ -84,11 +91,11 @@ export class DocumentsController {
     }
 
     async _getAssociationDocuments(association: AssociationEntity) {
-        const associationDocuments = await associationService.getDocuments(association.rna || association.siren);
+        const associationDocuments = await associationService.getDocuments(this.uniqueAssociationIdentifier);
         return this._filterAssoDocs(associationDocuments, getSiegeSiret(association));
     }
 
-    private _filterAssoDocs(docs: DocumentEntity[], siret: Siret) {
+    private _filterAssoDocs(docs: DocumentEntity[], siret: SiretDto) {
         // display rules from #2455: we show all docs except RIBs from other establishments than the one looked up
         // or the head establishment of the association that is looked up
         return docs.filter(doc => doc.type !== "RIB" || !doc.__meta__.siret || doc.__meta__.siret === siret);
@@ -118,7 +125,7 @@ export class DocumentsController {
         if (!association) return [];
         const estabDocsPromise = establishmentService.getDocuments(establishment.siret);
         const assoDocsPromise = associationService
-            .getDocuments(association.rna || association.siren)
+            .getDocuments(this.uniqueAssociationIdentifier)
             .then(docs => this._filterAssoDocs(docs, establishment.siret));
         const [estabDocs, assoDocs] = await Promise.all([estabDocsPromise, assoDocsPromise]);
         return this._removeDuplicates([...estabDocs, ...assoDocs]);

@@ -3,6 +3,10 @@ import CaisseDepotsDtoAdapter from "./adapters/caisseDepotsDtoAdapter";
 import providerRequestService from "../../provider-request/providerRequest.service";
 import { RawApplication } from "../../grant/@types/rawGrant";
 import { DemandeSubvention } from "dto";
+import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
+import Siret from "../../../valueObjects/Siret";
+import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import Siren from "../../../valueObjects/Siren";
 
 jest.mock("./adapters/caisseDepotsDtoAdapter");
 
@@ -109,10 +113,10 @@ describe("CaisseDepotsService", () => {
     });
 
     describe.each`
-        identifierType | identifierCalled    | identifierGiven
-        ${"Siren"}     | ${"120001011"}      | ${"120001011*"}
-        ${"Siret"}     | ${"12000101100010"} | ${"12000101100010"}
-    `("getDemandeSubventionBy$identifierType", ({ identifierCalled, identifierGiven, identifierType }) => {
+        identifierType | identifierCalled                                                      | identifierGiven
+        ${"Siret"}     | ${EstablishmentIdentifier.fromSiret(new Siret("12000101100010"), {})} | ${"12000101100010"}
+        ${"Siren"}     | ${AssociationIdentifier.fromSiren(new Siren("120001011"))}            | ${"120001011*"}
+    `("getDemandeSubvention by $identifierType", ({ identifierCalled, identifierGiven, identifierType }) => {
         const RES = {};
 
         beforeAll(() => {
@@ -121,22 +125,22 @@ describe("CaisseDepotsService", () => {
         afterAll(() => privateGetSpy.mockReset());
 
         it(`calls get subventions with ${identifierType} ${identifierGiven}`, async () => {
-            await caisseDepotsService[`getDemandeSubventionBy${identifierType}`](identifierCalled);
+            await caisseDepotsService[`getDemandeSubvention`](identifierCalled);
             expect(privateGetSpy).toBeCalledWith(identifierGiven);
         });
 
         it("returns result from get", async () => {
             const expected = RES;
-            const actual = await caisseDepotsService[`getDemandeSubventionBy${identifierType}`](identifierCalled);
+            const actual = await caisseDepotsService[`getDemandeSubvention`](identifierCalled);
             expect(actual).toEqual(expected);
         });
     });
 
     describe.each`
-        identifierType | identifierCalled    | identifierGiven
-        ${"Siret"}     | ${"12000101100010"} | ${"12000101100010"}
-        ${"Siren"}     | ${"120001011"}      | ${"120001011*"}
-    `("getRawGrantsBy$identifierType", ({ identifierCalled, identifierGiven, identifierType }) => {
+        identifierType | identifierCalled                                                      | identifierGiven
+        ${"Siret"}     | ${EstablishmentIdentifier.fromSiret(new Siret("12000101100010"), {})} | ${"12000101100010"}
+        ${"Siren"}     | ${AssociationIdentifier.fromSiren(new Siren("120001011"))}            | ${"120001011*"}
+    `("getRawGrants by $identifierType", ({ identifierCalled, identifierGiven, identifierType }) => {
         const RES = [1, 2];
 
         beforeAll(() => {
@@ -147,7 +151,7 @@ describe("CaisseDepotsService", () => {
         });
 
         it(`calls get subventions with ${identifierType} ${identifierGiven}`, async () => {
-            await caisseDepotsService[`getRawGrantsBy${identifierType}`](identifierCalled);
+            await caisseDepotsService[`getRawGrants`](identifierCalled);
             expect(privateRawGetSpy).toBeCalledWith(identifierGiven);
         });
 
@@ -166,7 +170,7 @@ describe("CaisseDepotsService", () => {
                 },
             ];
             privateRawGetSpy.mockResolvedValueOnce(RES);
-            const actual = await caisseDepotsService[`getRawGrantsBy${identifierType}`](identifierCalled);
+            const actual = await caisseDepotsService[`getRawGrants`](identifierCalled);
             expect(actual).toMatchObject(expected);
         });
     });
