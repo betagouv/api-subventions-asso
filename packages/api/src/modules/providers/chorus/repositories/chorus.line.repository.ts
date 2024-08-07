@@ -40,7 +40,6 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
                     },
                 } as AnyBulkWriteOperation<ChorusLineEntity>),
         );
-        console.log(operations[0]["updateOne"].update["$set"]);
         return this.collection.bulkWrite(operations);
     }
 
