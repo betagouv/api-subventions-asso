@@ -57,7 +57,7 @@ Plusieurs documents seront vraisemblablement créés, donc prévoir un dossier p
 **Attention :** Pour que le script suivant fonctionne, nommer l'archive splittée de la façon décrite (`[type données]-split.zip`) qui attend ce nom.
 2. Puis exécuter **depuis le package api** : 
 ```bash
-node tools/osiris/deploy-osiris-files.js [app scalingo] [type de données] [chemin vers les dossier des fichiers xls] [YEAR]
+node tools/osiris/deploy-osiris-files.js [app scalingo] [type de données] [chemin vers les dossier des fichiers zippés] [YEAR] true
 ```
 
 ### Niveau 3 : Tout faire soi-même
