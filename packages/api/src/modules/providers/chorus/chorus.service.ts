@@ -40,8 +40,8 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
 
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
 
-    public async insertMany(entities: ChorusLineEntity[]) {
-        return chorusLineRepository.insertMany(entities);
+    public async upsertMany(entities: ChorusLineEntity[]) {
+        return chorusLineRepository.upsertMany(entities);
     }
 
     public async isAcceptedEntity(entity: ChorusLineEntity) {
@@ -62,19 +62,11 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
      */
     public async insertBatchChorusLine(entities: ChorusLineEntity[]) {
         const acceptedEntities = await asyncFilter(entities, entity => this.isAcceptedEntity(entity));
-        let duplicates = 0;
-        if (acceptedEntities.length) {
-            try {
-                await this.insertMany(acceptedEntities);
-            } catch (e) {
-                duplicates = ((e as DuplicateIndexError<ChorusLineEntity[]>).duplicates as ChorusLineEntity[]).length;
-            }
-        }
+        if (acceptedEntities.length) await this.upsertMany(acceptedEntities);
 
         return {
             rejected: entities.length - acceptedEntities.length,
-            created: acceptedEntities.length - duplicates,
-            duplicates,
+            created: acceptedEntities.length,
         };
     }
 

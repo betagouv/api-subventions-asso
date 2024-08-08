@@ -1,39 +1,56 @@
-import { MongoServerError } from "mongodb";
 import chorusLineRepository from "./chorus.line.repository";
 import MongoRepository from "../../../../shared/MongoRepository";
-import * as MongoHelper from "../../../../shared/helpers/MongoHelper";
-const mockedMongoHelper = jest.mocked(MongoHelper);
-jest.mock("../../../../shared/helpers/MongoHelper");
+import ChorusLineEntity from "../entities/ChorusLineEntity";
+
 describe("ChorusLineRepository", () => {
-    const MONGO_SERVER_ERROR = new MongoServerError({ message: "Duplicate Error" });
-    MONGO_SERVER_ERROR.code = 11000;
-    MONGO_SERVER_ERROR.writeErrors = [];
+    let mockBulkWrite = jest.fn();
 
-    let mockInsertMany = jest.fn().mockRejectedValue(MONGO_SERVER_ERROR);
-
-    let mockMongoRepositoryCollection: jest.SpyInstance;
     beforeAll(() => {
-        mockMongoRepositoryCollection = jest
+        jest
             // @ts-expect-error: test
             .spyOn(MongoRepository.prototype, "collection", "get")
             // @ts-expect-error: test
-            .mockReturnValue({ insertMany: mockInsertMany });
+            .mockReturnValue({ bulkWrite: mockBulkWrite });
     });
 
-    afterEach(() => mockInsertMany.mockReset());
+    afterEach(() => mockBulkWrite.mockReset());
 
-    describe("insertMany", () => {
-        beforeEach(() => {
-            mockedMongoHelper.isMongoDuplicateError.mockReturnValue(true);
-        });
-
-        it("should call buildDuplicateIndexError", async () => {
-            await chorusLineRepository
-                .insertMany([])
-                .catch(e => {})
-                .finally(() => {
-                    expect(mockedMongoHelper.buildDuplicateIndexError).toHaveBeenCalledWith(MONGO_SERVER_ERROR);
-                });
+    describe("upsertMany", () => {
+        it("calls bulkWrite with operations from entities", async () => {
+            await chorusLineRepository.upsertMany([{ uniqueId: 1 }, { uniqueId: 2 }] as unknown as ChorusLineEntity[]);
+            const actual = mockBulkWrite.mock.calls[0];
+            expect(actual).toMatchInlineSnapshot(`
+                Array [
+                  Array [
+                    Object {
+                      "updateOne": Object {
+                        "filter": Object {
+                          "uniqueId": 1,
+                        },
+                        "update": Object {
+                          "$set": Object {
+                            "uniqueId": 1,
+                          },
+                        },
+                        "upsert": true,
+                      },
+                    },
+                    Object {
+                      "updateOne": Object {
+                        "filter": Object {
+                          "uniqueId": 2,
+                        },
+                        "update": Object {
+                          "$set": Object {
+                            "uniqueId": 2,
+                          },
+                        },
+                        "upsert": true,
+                      },
+                    },
+                  ],
+                ]
+            `);
         });
     });
 });

@@ -16,6 +16,7 @@ describe("ChorusAdapter", () => {
                     amount: 42789,
                     dateOperation: new Date("2022-02-02"),
                     codeDomaineFonctionnel: "0BOP-other",
+                    exercice: 2022,
                 },
             };
             // @ts-expect-error mock
@@ -72,6 +73,8 @@ describe("ChorusAdapter", () => {
                     codeCentreFinancier: "FAKE",
                     domaineFonctionnel: "FAKE",
                     numeroDemandePayment: "FAKE",
+                    codeSociete: "FAKE",
+                    exercice: 2023,
                     codeDomaineFonctionnel: "FAKE",
                     siret: "FAKE",
                     ej: "FAKE",

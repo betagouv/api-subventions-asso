@@ -60,7 +60,6 @@ export default class ChorusCli extends CliController {
             const result = await chorusService.insertBatchChorusLine(batch);
             finalResult.created += result.created;
             finalResult.rejected += result.rejected;
-            finalResult.duplicates += result.duplicates;
         });
 
         logger.push(`RESULT: ${JSON.stringify(finalResult)}`);

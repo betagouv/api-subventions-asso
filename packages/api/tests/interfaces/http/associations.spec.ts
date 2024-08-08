@@ -47,7 +47,7 @@ const mockExternalData = async () => {
 
 const insertData = async () => {
     // PAYMENTS
-    await chorusLineRepository.insertMany(ChorusFixtures);
+    await chorusLineRepository.upsertMany(ChorusFixtures);
     await fonjepPaymentRepository.create(FonjepPaymentFixture);
 
     // APPLICATIONS

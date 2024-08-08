@@ -56,7 +56,7 @@ export default class ChorusAdapter {
             montant_verse: entity.indexedInformations.amount,
             date_debut: entity.indexedInformations.dateOperation,
             bop: bop,
-            exercice: entity.indexedInformations.dateOperation.getFullYear(),
+            exercice: entity.indexedInformations.exercice,
         };
     }
 }

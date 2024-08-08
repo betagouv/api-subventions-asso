@@ -18,9 +18,7 @@ describe("ChorusParser", () => {
             // @ts-expect-error: protected
             ChorusParser.buildUniqueId(info);
             expect(mockedStringHelper.getMD5).toHaveBeenCalledWith(
-                `${info.ej}-${info.siret}-${info.dateOperation.toISOString()}-${info.amount}-${
-                    info.numeroDemandePayment
-                }-${info.codeCentreFinancier}-${info.codeDomaineFonctionnel}-${info.codeActivitee}`,
+                `${info.codeSociete}-${info.exercice}-${info.numeroDemandePayment}`,
             );
         });
     });

@@ -1,9 +1,8 @@
 import { Siren, Siret } from "dto";
-import { ObjectId, WithId } from "mongodb";
+import { AnyBulkWriteOperation, ObjectId, WithId } from "mongodb";
 import { DefaultObject } from "../../../../@types";
 import MongoRepository from "../../../../shared/MongoRepository";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
-import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../../shared/helpers/MongoHelper";
 
 export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
     readonly collectionName = "chorus-line";
@@ -30,12 +29,18 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
         await this.collection.insertOne(entity);
     }
 
-    public async insertMany(entities: ChorusLineEntity[]) {
-        return this.collection.insertMany(entities, { ordered: false }).catch(error => {
-            if (isMongoDuplicateError(error)) {
-                throw buildDuplicateIndexError<ChorusLineEntity[]>(error);
-            }
-        });
+    public async upsertMany(entities: ChorusLineEntity[]) {
+        const operations = entities.map(
+            e =>
+                ({
+                    updateOne: {
+                        filter: { uniqueId: e.uniqueId },
+                        update: { $set: e },
+                        upsert: true,
+                    },
+                } as AnyBulkWriteOperation<ChorusLineEntity>),
+        );
+        return this.collection.bulkWrite(operations);
     }
 
     public async update(entity: ChorusLineEntity) {
