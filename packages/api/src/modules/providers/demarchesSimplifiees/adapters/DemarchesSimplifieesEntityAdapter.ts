@@ -1,6 +1,6 @@
 import moment from "moment";
 import * as lodash from "lodash";
-import { CommonApplicationDto, DemandeSubvention } from "dto";
+import { CommonApplicationDto, DemandeSubvention, ProviderValue } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import demarchesSimplifieesService from "../demarchesSimplifiees.service";
 import DemarchesSimplifieesDataEntity from "../entities/DemarchesSimplifieesDataEntity";
@@ -43,6 +43,16 @@ export class DemarchesSimplifieesEntityAdapter {
         return this.toSubvention(entity, schema);
     }
 
+    private static nestedToProviderValues(object: any, toPv: (v: any) => ProviderValue<any>) {
+        if (Array.isArray(object)) return object.map(v => this.nestedToProviderValues(v, toPv));
+        if (object.constructor !== Object) return toPv(object);
+        const res = {};
+        for (const [key, value] of Object.entries(object)) {
+            res[key] = DemarchesSimplifieesEntityAdapter.nestedToProviderValues(value, toPv);
+        }
+        return res;
+    }
+
     static toSubvention(
         entity: DemarchesSimplifieesDataEntity,
         mapper: DemarchesSimplifieesMapperEntity,
@@ -57,10 +67,7 @@ export class DemarchesSimplifieesEntityAdapter {
         // DS doesn't have an attribute with only year, so we get year from the start date
         if (!subvention.annee_demande && subvention.date_debut && isValidDate(subvention.date_debut))
             subvention.annee_demande = (subvention.date_debut as Date).getFullYear();
-
-        Object.keys(subvention).map(key => (subvention[key] = toPv(subvention[key])));
-
-        return subvention as unknown as DemandeSubvention;
+        return DemarchesSimplifieesEntityAdapter.nestedToProviderValues(subvention, toPv) as DemandeSubvention;
     }
 
     static toRawGrant(

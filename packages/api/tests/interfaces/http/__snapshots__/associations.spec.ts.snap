@@ -153,18 +153,28 @@ Object {
     },
     Object {
       "application": Object {
-        "actions_proposee": Object {
-          "last_update": "2023-07-26T08:49:43.000Z",
-          "provider": "Démarches Simplifiées",
-          "type": "object",
-          "value": Array [
-            Object {
-              "description": "La pratique artistique est très importante pour sensibiliser les jeunes [...]",
-              "intitule": "Atelier d'arts plastiques et d’écriture en Hors temps scolaire ",
-              "objectifs": "Projet d'atelier d'arts plastiques [...]",
+        "actions_proposee": Array [
+          Object {
+            "description": Object {
+              "last_update": "2023-07-26T08:49:43.000Z",
+              "provider": "Démarches Simplifiées",
+              "type": "string",
+              "value": "La pratique artistique est très importante pour sensibiliser les jeunes [...]",
             },
-          ],
-        },
+            "intitule": Object {
+              "last_update": "2023-07-26T08:49:43.000Z",
+              "provider": "Démarches Simplifiées",
+              "type": "string",
+              "value": "Atelier d'arts plastiques et d’écriture en Hors temps scolaire ",
+            },
+            "objectifs": Object {
+              "last_update": "2023-07-26T08:49:43.000Z",
+              "provider": "Démarches Simplifiées",
+              "type": "string",
+              "value": "Projet d'atelier d'arts plastiques [...]",
+            },
+          },
+        ],
         "annee_demande": Object {
           "last_update": "2023-07-26T08:49:43.000Z",
           "provider": "Démarches Simplifiées",
@@ -196,11 +206,11 @@ Object {
           "value": 1821732,
         },
         "montants": Object {
-          "last_update": "2023-07-26T08:49:43.000Z",
-          "provider": "Démarches Simplifiées",
-          "type": "object",
-          "value": Object {
-            "demande": 1300,
+          "demande": Object {
+            "last_update": "2023-07-26T08:49:43.000Z",
+            "provider": "Démarches Simplifiées",
+            "type": "number",
+            "value": 1300,
           },
         },
         "service_instructeur": Object {
@@ -935,18 +945,28 @@ Object {
     },
     Object {
       "application": Object {
-        "actions_proposee": Object {
-          "last_update": "2023-07-26T08:49:43.000Z",
-          "provider": "Démarches Simplifiées",
-          "type": "object",
-          "value": Array [
-            Object {
-              "description": "La pratique artistique est très importante pour sensibiliser les jeunes [...]",
-              "intitule": "Atelier d'arts plastiques et d’écriture en Hors temps scolaire ",
-              "objectifs": "Projet d'atelier d'arts plastiques [...]",
+        "actions_proposee": Array [
+          Object {
+            "description": Object {
+              "last_update": "2023-07-26T08:49:43.000Z",
+              "provider": "Démarches Simplifiées",
+              "type": "string",
+              "value": "La pratique artistique est très importante pour sensibiliser les jeunes [...]",
             },
-          ],
-        },
+            "intitule": Object {
+              "last_update": "2023-07-26T08:49:43.000Z",
+              "provider": "Démarches Simplifiées",
+              "type": "string",
+              "value": "Atelier d'arts plastiques et d’écriture en Hors temps scolaire ",
+            },
+            "objectifs": Object {
+              "last_update": "2023-07-26T08:49:43.000Z",
+              "provider": "Démarches Simplifiées",
+              "type": "string",
+              "value": "Projet d'atelier d'arts plastiques [...]",
+            },
+          },
+        ],
         "annee_demande": Object {
           "last_update": "2023-07-26T08:49:43.000Z",
           "provider": "Démarches Simplifiées",
@@ -978,11 +998,11 @@ Object {
           "value": 1821732,
         },
         "montants": Object {
-          "last_update": "2023-07-26T08:49:43.000Z",
-          "provider": "Démarches Simplifiées",
-          "type": "object",
-          "value": Object {
-            "demande": 1300,
+          "demande": Object {
+            "last_update": "2023-07-26T08:49:43.000Z",
+            "provider": "Démarches Simplifiées",
+            "type": "number",
+            "value": 1300,
           },
         },
         "service_instructeur": Object {
@@ -6621,18 +6641,28 @@ Array [
     },
   },
   Object {
-    "actions_proposee": Object {
-      "last_update": "2023-07-26T08:49:43.000Z",
-      "provider": "Démarches Simplifiées",
-      "type": "object",
-      "value": Array [
-        Object {
-          "description": "La pratique artistique est très importante pour sensibiliser les jeunes [...]",
-          "intitule": "Atelier d'arts plastiques et d’écriture en Hors temps scolaire ",
-          "objectifs": "Projet d'atelier d'arts plastiques [...]",
+    "actions_proposee": Array [
+      Object {
+        "description": Object {
+          "last_update": "2023-07-26T08:49:43.000Z",
+          "provider": "Démarches Simplifiées",
+          "type": "string",
+          "value": "La pratique artistique est très importante pour sensibiliser les jeunes [...]",
         },
-      ],
-    },
+        "intitule": Object {
+          "last_update": "2023-07-26T08:49:43.000Z",
+          "provider": "Démarches Simplifiées",
+          "type": "string",
+          "value": "Atelier d'arts plastiques et d’écriture en Hors temps scolaire ",
+        },
+        "objectifs": Object {
+          "last_update": "2023-07-26T08:49:43.000Z",
+          "provider": "Démarches Simplifiées",
+          "type": "string",
+          "value": "Projet d'atelier d'arts plastiques [...]",
+        },
+      },
+    ],
     "annee_demande": Object {
       "last_update": "2023-07-26T08:49:43.000Z",
       "provider": "Démarches Simplifiées",
@@ -6664,11 +6694,11 @@ Array [
       "value": 1821732,
     },
     "montants": Object {
-      "last_update": "2023-07-26T08:49:43.000Z",
-      "provider": "Démarches Simplifiées",
-      "type": "object",
-      "value": Object {
-        "demande": 1300,
+      "demande": Object {
+        "last_update": "2023-07-26T08:49:43.000Z",
+        "provider": "Démarches Simplifiées",
+        "type": "number",
+        "value": 1300,
       },
     },
     "service_instructeur": Object {
