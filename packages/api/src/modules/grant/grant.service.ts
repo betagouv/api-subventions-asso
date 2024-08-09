@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/node";
 import { CommonGrantDto, Grant, DemandeSubvention, Payment, Rna, Siret } from "dto";
+import csvStringifier = require("csv-stringify/sync");
 import { providersById } from "../providers/providers.helper";
 import { demandesSubventionsProviders, fullGrantProviders, grantProviders, paymentProviders } from "../providers";
 import DemandesSubventionsProvider from "../subventions/@types/DemandesSubventionsProvider";
@@ -21,6 +22,8 @@ import { RnaOnlyError } from "../../shared/errors/GrantError";
 import { FullGrantProvider } from "./@types/FullGrantProvider";
 import { RawGrant, JoinedRawGrant, RawFullGrant, RawApplication, RawPayment, AnyRawGrant } from "./@types/rawGrant";
 import commonGrantService from "./commonGrant.service";
+import GrantAdapter from "./grant.adapter";
+import { ExtractHeaderLabel } from "./@types/GrantToExtract";
 
 export class GrantService {
     fullGrantProvidersById: Record<string, FullGrantProvider<unknown>>;
@@ -153,6 +156,13 @@ export class GrantService {
         const grants = joinedRawGrants.map(this.adaptJoinedRawGrant.bind(this)).filter(grant => grant) as Grant[];
         const sortedGrants = this.sortGrants(grants);
         return sortedGrants;
+    }
+
+    buildCsv(grants: Grant[]): string {
+        return csvStringifier.stringify(
+            grants.map(g => GrantAdapter.grantToCsv(g)),
+            { header: true, columns: ExtractHeaderLabel },
+        );
     }
 
     /**

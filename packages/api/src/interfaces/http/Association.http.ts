@@ -1,3 +1,4 @@
+import { Readable } from "stream";
 import {
     GetAssociationResponseDto,
     GetEtablissementsResponseDto,
@@ -7,7 +8,7 @@ import {
     GetDocumentsResponseDto,
     DemandeSubvention,
 } from "dto";
-import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
+import { Route, Get, Controller, Tags, Security, Response, Produces } from "tsoa";
 import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
 import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
 
@@ -73,6 +74,28 @@ export class AssociationHttp extends Controller {
     public async getGrants(identifier: AssociationIdentifiers): Promise<GetGrantsResponseDto> {
         const grants = await grantService.getGrants(identifier);
         return { subventions: grants };
+    }
+
+    /**
+     *
+     * @summary Recherche toutes les informations des subventions d'une association (demandes ET versements) et en extrait un fichier csv
+     * @param identifier RNA ou SIREN de l'association
+     * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
+     */
+    @Get("/{identifier}/grants/csv")
+    @Produces("text/csv")
+    @Response<string>("200")
+    public async getGrantsExtract(identifier: AssociationIdentifiers): Promise<Readable> {
+        const grants = await grantService.getGrants(identifier);
+        const csv = grantService.buildCsv(grants);
+
+        this.setHeader("Content-Type", "text/csv");
+        this.setHeader("Content-Disposition", `inline; filename=${identifier}.csv`);
+
+        const stream = new Readable();
+        stream.push(csv);
+        stream.push(null);
+        return stream;
     }
 
     /**
