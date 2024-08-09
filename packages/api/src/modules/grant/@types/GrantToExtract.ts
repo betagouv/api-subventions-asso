@@ -1,7 +1,8 @@
 import { ApplicationStatus } from "dto";
 
 export type GrantToExtract = {
-    postalCode?: string;
+    siret: string;
+    // postalCode?: string; TODO
     instructor?: string;
     measure?: string;
     action?: string;
@@ -15,7 +16,8 @@ export type GrantToExtract = {
 };
 
 export enum ExtractHeaderLabel {
-    postalCode = "Code postal demandeur",
+    siret = "Siret",
+    // postalCode = "Code postal demandeur", TODO
     instructor = "Service instructeur",
     measure = "Dispositif",
     action = "Intitulé de l'action",

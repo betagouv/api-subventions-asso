@@ -52,7 +52,8 @@ export default class GrantAdapter {
             grantedAmount: getValue(grant?.application?.montants?.accorde),
             instructor: getValue(grant?.application?.service_instructeur),
             measure: getValue(grant?.application?.dispositif),
-            postalCode: getValue(grant?.application?.siret), // TODO siret to code postal
+            siret: getValue(grant?.application?.siret),
+            // postalCode: getValue(grant?.application?.siret), // TODO siret to code postal
             status: getValue(grant?.application?.statut_label),
 
             // payment part
