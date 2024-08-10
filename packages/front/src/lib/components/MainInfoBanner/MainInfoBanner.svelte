@@ -7,11 +7,14 @@
 
 <!-- TODO clean in #2544 -->
 <div class="custom-notice-container">
-    <InformationBanner bind:this={ctrl.component} on:close={() => ctrl.close()} closeBtn={true}>
-        <!-- ok because not from user input and only defined once in controller -->
-        <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-        {@html ctrl.title}
-    </InformationBanner>
+    <InformationBanner
+        bind:this={ctrl.component}
+        on:close={() => ctrl.close()}
+        closeBtn={true}
+        title={ctrl.title}
+        desc={ctrl.description}
+        url={ctrl.url}
+        urlLabel="participez à l'enquête" />
 </div>
 
 <style>
@@ -25,6 +28,6 @@
     }
 
     .custom-notice-container :global(.fr-notice__body::before) {
-        background-image: none;
+        /*background-image: none;*/
     }
 </style>
