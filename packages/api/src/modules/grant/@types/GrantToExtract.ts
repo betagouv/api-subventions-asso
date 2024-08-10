@@ -26,6 +26,6 @@ export enum ExtractHeaderLabel {
     status = "Statut de la demande",
     paidAmount = "Montant versé",
     financialCenter = "Centre financier du dernier paiement",
-    paymentDate = "Date du paiement dernier paiement",
+    paymentDate = "Date du dernier paiement",
     program = "Programme des paiements",
 }
