@@ -2,9 +2,13 @@
     export let title = "Résumé du tableau (accessibilité)";
     export let bordered = false;
     export let color = undefined;
+    export let custom = false;
 </script>
 
-<div class="fr-table {color ? `fr-table--${color}` : ''} custom-table" class:fr-table--bordered={bordered}>
+<div
+    class="fr-table {color ? `fr-table--${color}` : ''}"
+    class:custom-table={custom}
+    class:fr-table--bordered={bordered}>
     <table>
         <slot name="colgroup" />
         <caption class="fr-sr-only">{title}</caption>

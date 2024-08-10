@@ -20,7 +20,7 @@
     $: currentSort, controller.sort(currentSort);
 </script>
 
-<Table>
+<Table custom={true}>
     <svelte:fragment slot="head">
         {#each $columnDataViews as columnData}
             {#if columnData.haveAction}

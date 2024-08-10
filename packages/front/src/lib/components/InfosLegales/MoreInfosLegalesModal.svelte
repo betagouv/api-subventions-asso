@@ -8,7 +8,7 @@
 
 <ModalContent title="Détail des informations recueillies">
     <Alert small={true}>Certaines formulations peuvent différer selon les fournisseurs de données</Alert>
-    <Table color="blue-cumulus">
+    <Table color="blue-cumulus" custom={true}>
         <svelte:fragment slot="head">
             {#each $data.headers as header}
                 <th>{header}</th>
