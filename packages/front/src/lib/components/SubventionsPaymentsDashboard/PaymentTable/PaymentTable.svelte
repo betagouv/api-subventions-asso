@@ -28,7 +28,7 @@
     $: currentSort, controller.sort(currentSort);
 </script>
 
-<Table custom={true}>
+<Table multiline={true} custom={true}>
     <svelte:fragment slot="head">
         {#each $columnDataViews as columnDataView}
             <TableHead
