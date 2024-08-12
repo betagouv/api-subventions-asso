@@ -1,7 +1,7 @@
 import { Siren, Siret } from "dto";
 import { ObjectId } from "mongodb";
 
-export default interface paymentFlatDbo {
+export default interface PaymentFlatDbo {
     _id: ObjectId;
     siret: Siret;
     siren: Siren;

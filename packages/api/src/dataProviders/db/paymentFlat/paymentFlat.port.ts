@@ -7,7 +7,7 @@ export class PaymentFlatPort extends MongoRepository<PaymentFlatDbo> {
     collectionName = "payments-flat";
 
     public async createIndexes(): Promise<void> {
-        await this.collection.createIndex({ siret: 1 });
+        await this.collection.createIndex({ siret: 1, dateOperation: 1 });
     }
 
     public async insertOne(entity: PaymentFlatEntity) {
