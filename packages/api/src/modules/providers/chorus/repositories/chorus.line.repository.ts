@@ -82,8 +82,8 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
     }
 
     public cursorFindIndexedData(objectIdThreshold?: ObjectId) {
-        /*ObjectIDThreshold is used to get all the object that have been
-         created after the ObjectIDThreshold. It suppouses that the ObjectID 
+        /*objectIDThreshold is used to get all the objects that have been
+         created after the objectIDThreshold. It supposes that the ObjectID 
          are not manually defined
         */
         if (!objectIdThreshold) {

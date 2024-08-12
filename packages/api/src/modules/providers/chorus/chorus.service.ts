@@ -108,7 +108,7 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
         return this.toPaymentArray(requests);
     }
 
-    async chorusCursorFindIndexedData(objectIdThreshold?: ObjectId) {
+    public chorusCursorFindIndexedData(objectIdThreshold?: ObjectId) {
         return chorusLineRepository.cursorFindIndexedData(objectIdThreshold);
     }
 

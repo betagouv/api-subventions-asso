@@ -9,7 +9,7 @@ import PaymentFlatAdapter from "./paymentFlatAdapter";
 import { PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
 import paymentFlatPort from "../../../dataProviders/db/paymentFlat/paymentFlat.port";
 
-const allDataBretagneDataRsolvedValue = {
+const allDataBretagneDataResolvedValue = {
     programs: RECORDS["programme"],
     ministries: RECORDS["ministry"],
     domainesFonct: RECORDS["domaineFonct"],
@@ -19,7 +19,7 @@ const allDataBretagneDataRsolvedValue = {
 describe("PaymentFlatService", () => {
     describe("getAllDataBretagneData", () => {
         let mockDataBretagneService;
-        beforeEach(() => {
+        beforeAll(() => {
             mockDataBretagneService = {
                 getMinistriesRecord: jest.fn().mockResolvedValue(RECORDS["ministry"]),
                 findProgramsRecord: jest.fn().mockResolvedValue(RECORDS["programme"]),
@@ -27,25 +27,21 @@ describe("PaymentFlatService", () => {
                 getRefProgrammationRecord: jest.fn().mockResolvedValue(RECORDS["refProgrammation"]),
             };
 
-            (dataBretagneService as jest.Mocked<typeof dataBretagneService>).getMinistriesRecord =
-                mockDataBretagneService.getMinistriesRecord;
-            (dataBretagneService as jest.Mocked<typeof dataBretagneService>).findProgramsRecord =
-                mockDataBretagneService.findProgramsRecord;
-            (dataBretagneService as jest.Mocked<typeof dataBretagneService>).getDomaineFonctRecord =
-                mockDataBretagneService.getDomaineFonctRecord;
-            (dataBretagneService as jest.Mocked<typeof dataBretagneService>).getRefProgrammationRecord =
+            jest.mocked(dataBretagneService).getMinistriesRecord = mockDataBretagneService.getMinistriesRecord;
+            jest.mocked(dataBretagneService).findProgramsRecord = mockDataBretagneService.findProgramsRecord;
+            jest.mocked(dataBretagneService).getDomaineFonctRecord = mockDataBretagneService.getDomaineFonctRecord;
+            jest.mocked(dataBretagneService).getRefProgrammationRecord =
                 mockDataBretagneService.getRefProgrammationRecord;
         });
 
         afterAll(() => {
-            jest.resetAllMocks();
+            jest.restoreAllMocks();
         });
 
         it("should return all data from dataBretagneService", async () => {
             //@ts-expect-error : private methode
             const result = await paymentFlatService.getAllDataBretagneData();
-            const ministries = await dataBretagneService.getMinistriesRecord();
-            const expected = allDataBretagneDataRsolvedValue;
+            const expected = allDataBretagneDataResolvedValue;
             expect(result).toEqual(expected);
         });
 
@@ -59,7 +55,7 @@ describe("PaymentFlatService", () => {
         );
     });
 
-    describe("upDatePaymentsFlatCollection", () => {
+    describe("updatePaymentsFlatCollection", () => {
         const lastChorusObjectId = new ObjectId("507f191e810c19729de860ea");
         const mockDocument1 = {
             _id: new ObjectId("607f191e810c19729de860eb"),
@@ -80,7 +76,7 @@ describe("PaymentFlatService", () => {
         beforeEach(() => {
             //@ts-expect-error : private methode
             mockGetAllDataBretagneData = jest.spyOn(paymentFlatService, "getAllDataBretagneData");
-            mockGetAllDataBretagneData.mockResolvedValue(allDataBretagneDataRsolvedValue);
+            mockGetAllDataBretagneData.mockResolvedValue(allDataBretagneDataResolvedValue);
 
             mockCursor = {
                 next: jest
@@ -92,7 +88,7 @@ describe("PaymentFlatService", () => {
 
             mockchorusCursorFind = jest
                 .spyOn(chorusService, "chorusCursorFindIndexedData")
-                .mockResolvedValue(mockCursor as any);
+                .mockReturnValue(mockCursor as any);
             mockToPaymentFlatEntity = jest
                 .spyOn(PaymentFlatAdapter, "toPaymentFlatEntity")
                 .mockReturnValue(PAYMENT_FLAT_ENTITY);
@@ -108,32 +104,32 @@ describe("PaymentFlatService", () => {
         });
 
         it("should call getAllDataBretagneData", async () => {
-            await paymentFlatService.upDatePaymentsFlatCollection(lastChorusObjectId);
+            await paymentFlatService.updatePaymentsFlatCollection(lastChorusObjectId);
             expect(mockGetAllDataBretagneData).toHaveBeenCalledTimes(1);
         });
 
         it("should call chorusCursorFind once", async () => {
-            await paymentFlatService.upDatePaymentsFlatCollection(lastChorusObjectId);
+            await paymentFlatService.updatePaymentsFlatCollection(lastChorusObjectId);
             expect(mockchorusCursorFind).toHaveBeenCalledTimes(1);
         });
 
         it("should call next for times : number of documents + 1", async () => {
-            await paymentFlatService.upDatePaymentsFlatCollection(lastChorusObjectId);
+            await paymentFlatService.updatePaymentsFlatCollection(lastChorusObjectId);
             expect(mockCursor.next).toHaveBeenCalledTimes(3);
         });
 
         it("should return newChorusLastUpdate", async () => {
-            const result = await paymentFlatService.upDatePaymentsFlatCollection(lastChorusObjectId);
+            const result = await paymentFlatService.updatePaymentsFlatCollection(lastChorusObjectId);
             expect(result).toEqual(mockDocument1._id);
         });
 
-        it("should call toPaymentFlatEntity for number of ducments times", async () => {
-            await paymentFlatService.upDatePaymentsFlatCollection(lastChorusObjectId);
+        it("should call toPaymentFlatEntity for number of documents times", async () => {
+            await paymentFlatService.updatePaymentsFlatCollection(lastChorusObjectId);
             expect(mockToPaymentFlatEntity).toHaveBeenCalledTimes(2);
         });
 
-        it("should call insertOne for number of ducments times", async () => {
-            await paymentFlatService.upDatePaymentsFlatCollection(lastChorusObjectId);
+        it("should call insertOne for number of documents times", async () => {
+            await paymentFlatService.updatePaymentsFlatCollection(lastChorusObjectId);
             expect(mockInsertOne).toHaveBeenCalledTimes(2);
         });
     });

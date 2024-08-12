@@ -13,10 +13,10 @@ export class PaymentFlatService {
         return { programs, ministries, domainesFonct, refsProgrammation };
     }
 
-    public async upDatePaymentsFlatCollection(lastChorusObjectId: ObjectId) {
+    public async updatePaymentsFlatCollection(lastChorusObjectId: ObjectId) {
         const { programs, ministries, domainesFonct, refsProgrammation } = await this.getAllDataBretagneData();
 
-        const chorusCursor = await chorusService.chorusCursorFindIndexedData(lastChorusObjectId);
+        const chorusCursor = chorusService.chorusCursorFindIndexedData(lastChorusObjectId);
         let document = await chorusCursor.next();
         let newChorusLastUpdate = lastChorusObjectId;
 

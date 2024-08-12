@@ -27,7 +27,7 @@ describe("PaymentFlatAdapter", () => {
             mockGetDataBretagneDocumentData.mockRestore();
         });
 
-        it("should return PaymentFlatEntity when data are fully provided", () => {
+        it("should return PaymentFlatEntity when data is fully provided", () => {
             const result = PaymentFlatAdapter.toPaymentFlatEntity(
                 CHORUS_LINE_ENTITY as unknown as IChorusIndexedInformations,
                 RECORDS["programme"],
@@ -40,7 +40,7 @@ describe("PaymentFlatAdapter", () => {
             expect(result).toEqual(expected);
         });
 
-        it("should return PaymentFlatEntity with null when data are not fully provided", () => {
+        it("should return PaymentFlatEntity with null when data is not fully provided", () => {
             mockGetDataBretagneDocumentData.mockReturnValueOnce({
                 ...documentDataReturnedValue,
                 programEntity: undefined,
@@ -52,8 +52,6 @@ describe("PaymentFlatAdapter", () => {
                 RECORDS["domaineFonct"],
                 RECORDS["refProgrammation"],
             );
-
-            console.log({ ...CHORUS_LINE_ENTITY, codeActivitee: undefined } as unknown as IChorusIndexedInformations);
 
             const expected = {
                 ...PAYMENT_FLAT_ENTITY,
@@ -129,9 +127,8 @@ describe("PaymentFlatAdapter", () => {
             },
             { chorusLineEntity: CHORUS_LINE_ENTITY, codeValue: "code_2", recordType: "Ministry" },
         ])("should console.error when %s not found", ({ chorusLineEntity, codeValue, recordType }) => {
-            if (recordType === "Ministry") {
-                RECORDS["programme"][163].code_ministere = codeValue;
-            }
+            RECORDS["programme"][163].code_ministere = codeValue;
+
             //@ts-expect-error : test private method
             const result = PaymentFlatAdapter.getDataBretagneDocumentData(
                 chorusLineEntity as unknown as IChorusIndexedInformations,
@@ -144,9 +141,7 @@ describe("PaymentFlatAdapter", () => {
             const expectedMessage = new RegExp(`${recordType} not found for .* ${codeValue}`);
             expect(console.error).toHaveBeenCalledWith(expect.stringMatching(expectedMessage));
 
-            if (recordType === "Ministry") {
-                RECORDS["programme"][163].code_ministere = "code";
-            }
+            RECORDS["programme"][163].code_ministere = "code";
         });
     });
 });
