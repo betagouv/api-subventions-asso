@@ -7,7 +7,7 @@
     $: style = `--justify: ${position}`;
 </script>
 
-<td {colspan} class:primary class="fr-p-3v">
+<td {colspan} class:primary class="fr-p-1w">
     <div class="table-cell-container" {style}>
         <div class="table-cell-content">
             <slot />

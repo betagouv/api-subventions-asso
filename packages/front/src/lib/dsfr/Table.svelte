@@ -3,15 +3,20 @@
     export let bordered = false;
     export let custom = false;
     export let multiline = false;
+    export let caption = false;
 </script>
 
-<div class="fr-table" class:custom-table={custom} class:fr-table--bordered={bordered}>
+<div
+    class="fr-table"
+    class:custom-table={custom}
+    class:fr-table--bordered={bordered}
+    class:fr-table--no-caption={!caption}>
     <div class="fr-table__wrapper">
         <div class="fr-table__container">
             <div class="fr-table__content">
                 <table class:fr-cell--multiline={multiline}>
                     <slot name="colgroup" />
-                    <caption class="fr-sr-only">{title}</caption>
+                    <caption>{title}</caption>
                     <thead>
                         <tr>
                             <slot name="head" />

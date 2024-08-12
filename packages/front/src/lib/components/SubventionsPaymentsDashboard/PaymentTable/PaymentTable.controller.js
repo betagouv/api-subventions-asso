@@ -4,7 +4,7 @@ import { numberToEuro, valueOrHyphen } from "$lib/helpers/dataHelper";
 import { withTwoDigitYear } from "$lib/helpers/dateHelper";
 import PaymentsAdapter from "$lib/resources/payments/payments.adapter";
 
-const MONTANT_VERSE_LABEL = "Montant versé";
+const MONTANT_VERSE_LABEL = "Versé";
 const CENTRE_FINANCIER_LABEL = "Centre financier";
 const DATE_VERSEMENT_LABEL = "Date du paiement";
 const PROGRAMME_LABEL = "Programme";
@@ -75,7 +75,6 @@ export default class PaymentTableController {
     buildColumnDataViews() {
         const columnsName = {
             "payments.montant": MONTANT_VERSE_LABEL,
-            "payments.date": DATE_VERSEMENT_LABEL,
             "payments.programme": PROGRAMME_LABEL,
         };
 

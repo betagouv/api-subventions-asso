@@ -12,19 +12,30 @@
 </script>
 
 <th style={width || null}>
-    <div class="{actionActive ? 'active' : ''} {actionActive ? actionDirection : ''}">
+    <div class="header-wrapper {actionActive ? 'active' : ''} {actionActive ? actionDirection : ''}">
         <p>
             <slot />
         </p>
         {#if action}
-            <Button on:click={action} disabled={actionDisable} icon="arrow-left-s-line" trackingDisable={true} />
+            <Button
+                size="small"
+                on:click={action}
+                disabled={actionDisable}
+                icon="arrow-up-down-line"
+                trackingDisable={true} />
         {/if}
     </div>
 </th>
 
 <style>
+    th .header-wrapper {
+        display: flex;
+        flex-direction: row;
+    }
+
     th {
         vertical-align: top;
+        padding: 0.5rem;
     }
 
     th div {
@@ -35,27 +46,22 @@
     }
 
     p {
-        min-height: 3rem;
-        max-height: 3rem;
         font-size: 0.875rem;
         word-wrap: break-word;
     }
 
     div :global(.fr-btn) {
-        transform: rotate(-90deg);
+        /* sort arrow button */
         background-color: transparent;
-        color: var(--text-action-high-grey);
-        margin-left: -0.5rem;
-    }
-
-    div.desc :global(.fr-btn) {
-        transform: rotate(90deg);
+        color: var(--blue-france-sun-113-625);
+        margin-top: -0.25rem;
     }
 
     div :global(.fr-btn):hover {
-        color: var(--blue-cumulus-925-125-active);
+        color: var(--blue-france-sun-113-625-hover);
     }
+
     div.active :global(.fr-btn) {
-        color: var(--blue-cumulus-925-125-active);
+        color: var(--blue-france-sun-113-625-active);
     }
 </style>

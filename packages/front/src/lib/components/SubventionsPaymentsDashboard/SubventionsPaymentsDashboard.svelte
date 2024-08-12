@@ -62,7 +62,7 @@
     </div>
     <div class="fr-mt-6w compact-columns">
         {#if $elements?.length}
-            <div class="fr-mb-6w">
+            <div>
                 <SubventionsPaymentsStatistique elements={$elements} year={$selectedYear} />
             </div>
             {#if $loaderStateStore.status != "end"}
@@ -70,15 +70,15 @@
                     <ProgressBar percent={$loaderStateStore.percent} />
                 </Alert>
             {/if}
-            <div class="fr-grid-row">
-                <div class="fr-col-8">
+            <div class="fr-grid-row fr-mt-n4w">
+                <div class="fr-col-9">
                     <SubventionTable
                         elements={$elements}
                         sort={column => controller.sort(column)}
                         currentSort={$sortColumn}
                         sortDirection={$sortDirection} />
                 </div>
-                <div class="fr-col-4">
+                <div class="fr-col-3">
                     <PaymentTable
                         elements={$elements}
                         sort={column => controller.sort(column)}

@@ -12,17 +12,19 @@
 </script>
 
 <div class="fr-grid-row fr-grid-row--gutters">
-    <div class="fr-col-8">
+    <div class="fr-col-9">
         <h3 class="fr-h4">Demandes de subventions collectées</h3>
-        <p class="fr-mb-0">D'après les données récupérées via Dauphin, Osiris, Fonjep et la Caisse des Dépôts.</p>
-        <p class="asterisk">
+        <p class="fr-mb-0 fr-text--sm">
+            D'après les données récupérées via Dauphin, Osiris, Fonjep et la Caisse des Dépôts.
+        </p>
+        <p class="asterisk fr-text--sm">
             Certaines informations et données peuvent être manquantes car elles n’ont pas encore été rattachées au
             service.
         </p>
     </div>
-    <div class="fr-col-4">
-        <h3 class="fr-h4">Paiements réalisés</h3>
-        <p>
+    <div class="fr-col-3">
+        <h3 class="fr-h4">Versements réalisés</h3>
+        <p class="fr-text--sm">
             Total des paiements en <b>{year}</b>
             :
             <b>{$paymentsAmount}</b>

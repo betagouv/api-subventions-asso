@@ -6,13 +6,13 @@ import SubventionInfoModal from "$lib/components/SubventionsPaymentsDashboard/Mo
 import SubventionsAdapter from "$lib/resources/subventions/subventions.adapter";
 import trackerService from "$lib/services/tracker.service";
 
-const POST_CODE = "Code postal demandeur";
-const SERVICE_INSTRUCTEUR_LABEL = "Service instructeur";
+const POST_CODE = "Code postal";
+const SERVICE_INSTRUCTEUR_LABEL = "Instructeur";
 const DISPOSITIF_LABEL = "Dispositif";
-const INTITULE_ACTION_LABEL = "Intitulé de l'action";
-const MONTANT_DEMANDE_LABEL = "Montant demandé";
-const MONTANT_ACCORDE_LABEL = "Montant accordé";
-const STATUS_LABEL = "Statut de la demande";
+const INTITULE_ACTION_LABEL = "Action";
+const MONTANT_DEMANDE_LABEL = "Demandé";
+const MONTANT_ACCORDE_LABEL = "Accordé";
+const STATUS_LABEL = "Statut";
 
 export default class SubventionTableController {
     constructor(sortMethod) {
@@ -52,15 +52,15 @@ export default class SubventionTableController {
 
     buildColumnDataViews() {
         const columnsName = {
-            "subvention.establishment_postcode": "Code postal demandeur",
-            "subvention.service_instructeur": "Service instructeur",
+            "subvention.establishment_postcode": "Code postal",
+            "subvention.service_instructeur": "Instructeur",
             "subvention.dispositif": "Dispositif",
-            "subvention.project-name": "Intitulé de l'action",
-            "subvention.montants.demande": "Montant demandé",
-            "subvention.statut_label": "Statut de la demande",
+            "subvention.project-name": "Action",
+            "subvention.montants.demande": "Demandé",
+            "subvention.statut_label": "Statut",
         };
 
-        const columnsSize = ["15%", "15%", "15%", "18%", "14%", "28%"];
+        const columnsSize = ["16%", "15%", "15%", "15%", "17%", "22%"];
 
         this.columnDataViews.set(
             Object.entries(columnsName).map(([name, label], index) => ({
