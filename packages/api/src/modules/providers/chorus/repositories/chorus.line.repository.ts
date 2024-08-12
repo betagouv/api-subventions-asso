@@ -77,8 +77,8 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
             .toArray();
     }
 
-    public cursorFind(query: DefaultObject<unknown> = {}) {
-        return this.collection.find(query);
+    public cursorFind(query: DefaultObject<unknown> = {}, projection: DefaultObject<unknown> = {}) {
+        return this.collection.find(query, projection);
     }
 
     async createIndexes() {

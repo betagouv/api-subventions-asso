@@ -69,6 +69,13 @@ describe("chorusService", () => {
             toVersementArrayMock.mockRestore();
         });
 
+        describe("chorusCursorFind", () => {
+            it("should call chorusLineRepository.find", async () => {
+                chorusService.chorusCursorFind();
+                expect(mockedChorusLineRepository.cursorFind).toHaveBeenCalledTimes(1);
+            });
+        });
+
         describe("getPaymentsBySiret", () => {
             beforeAll(() => {
                 mockedChorusLineRepository.findBySiret.mockResolvedValue([
