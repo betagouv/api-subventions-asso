@@ -6,13 +6,13 @@ import SubventionInfoModal from "$lib/components/SubventionsPaymentsDashboard/Mo
 import SubventionsAdapter from "$lib/resources/subventions/subventions.adapter";
 import trackerService from "$lib/services/tracker.service";
 
-const POST_CODE = "Code postal";
-const SERVICE_INSTRUCTEUR_LABEL = "Instructeur";
+const POST_CODE = "Code postal demandeur";
+const SERVICE_INSTRUCTEUR_LABEL = "Service instructeur";
 const DISPOSITIF_LABEL = "Dispositif";
-const INTITULE_ACTION_LABEL = "Action";
-const MONTANT_DEMANDE_LABEL = "Demandé";
-const MONTANT_ACCORDE_LABEL = "Accordé";
-const STATUS_LABEL = "Statut";
+const INTITULE_ACTION_LABEL = "Intitulé de l'action";
+const MONTANT_DEMANDE_LABEL = "Montant demandé";
+const MONTANT_ACCORDE_LABEL = "Montant accordé";
+const STATUS_LABEL = "Statut de la demande";
 
 export default class SubventionTableController {
     constructor(sortMethod) {
