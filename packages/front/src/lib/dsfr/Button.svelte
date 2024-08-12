@@ -28,8 +28,8 @@
 
     const classBySize = {
         small: "fr-btn--sm",
-        medium: "fr-bn--md",
-        large: "fr-bn--lg",
+        medium: "fr-btn--md",
+        large: "fr-btn--lg",
     };
 
     const classByType = {
