@@ -1,56 +1,47 @@
 <script>
     export let title = "Résumé du tableau (accessibilité)";
     export let bordered = false;
-    export let color = undefined;
     export let custom = false;
+    export let multiline = false;
 </script>
 
-<div
-    class="fr-table {color ? `fr-table--${color}` : ''}"
-    class:custom-table={custom}
-    class:fr-table--bordered={bordered}>
-    <table>
-        <slot name="colgroup" />
-        <caption class="fr-sr-only">{title}</caption>
-        <thead>
-            <tr>
-                <slot name="head" />
-            </tr>
-        </thead>
-        <tbody>
-            <slot name="body" />
-        </tbody>
-    </table>
+<div class="fr-table" class:custom-table={custom} class:fr-table--bordered={bordered}>
+    <div class="fr-table__wrapper">
+        <div class="fr-table__container">
+            <div class="fr-table__content">
+                <table class:fr-cell--multiline={multiline}>
+                    <slot name="colgroup" />
+                    <caption class="fr-sr-only">{title}</caption>
+                    <thead>
+                        <tr>
+                            <slot name="head" />
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <slot name="body" />
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>
     table {
+        border: none;
         display: table;
-        table-layout: fixed;
         border-collapse: collapse;
         overflow: hidden;
     }
 
-    thead tr {
-        border-bottom: #3a3a3a solid 2px;
-    }
+    /* CUSTOM */
 
-    thead {
-        box-shadow: none;
-    }
-
-    .fr-table--bordered table {
-        border: 2px solid #2e2e2e;
+    .custom-table .fr-table__wrapper::after {
+        background: none;
     }
 
     .custom-table {
         margin-bottom: 0px;
-    }
-
-    .custom-table :global(tbody tr),
-    .custom-table :global(thead th) {
-        border-bottom: 1px #e5e5e5 solid;
-        background-color: var(--background-default-grey);
     }
 
     .custom-table :global(tbody tr):last-of-type {

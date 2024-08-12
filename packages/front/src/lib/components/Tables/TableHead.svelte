@@ -24,7 +24,6 @@
 
 <style>
     th {
-        padding: 0rem 0.75rem 0.5rem 0.75rem;
         vertical-align: top;
     }
 
