@@ -9,7 +9,7 @@ vi.mock("$lib/helpers/identifierHelper");
 const mockedIdentifierHelper = vi.mocked(IdentifierHelper);
 import associationService from "$lib/resources/associations/association.service";
 import { isSiret } from "$lib/helpers/identifierHelper";
-import { decodeQuerySearch, encodeQuerySearch } from "$lib/helpers/urlHelper";
+import { decodeQuerySearch } from "$lib/helpers/urlHelper";
 
 vi.mock("$lib/resources/associations/association.service");
 const mockedAssociationService = vi.mocked(associationService);
