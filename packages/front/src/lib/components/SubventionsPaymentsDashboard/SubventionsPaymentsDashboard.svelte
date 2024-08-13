@@ -18,8 +18,16 @@
 
     const promise = controller.load();
 
-    const { loaderStateStore, elements, exercicesOptions, selectedExercice, selectedYear, sortDirection, sortColumn } =
-        controller;
+    const {
+        loaderStateStore,
+        elements,
+        exercicesOptions,
+        selectedExercice,
+        selectedYear,
+        sortDirection,
+        sortColumn,
+        isExtractLoading,
+    } = controller;
 </script>
 
 {#await promise}
@@ -29,14 +37,20 @@
         <h2>Subventions</h2>
         <div class="baseline">
             {#if $elements && $elements.length}
-                <Button
-                    on:click={() => controller.download()}
-                    disabled={$loaderStateStore.status != "end"}
-                    icon="download-line"
-                    trackingDisable={true}
-                    iconPosition="right">
-                    Télécharger les données
-                </Button>
+                {#if $isExtractLoading}
+                    <Button icon="refresh-line" trackingDisable={true} iconPosition="right" disabled="true">
+                        Chargement
+                    </Button>
+                {:else}
+                    <Button
+                        on:click={() => controller.download()}
+                        disabled={$loaderStateStore.status !== "end"}
+                        icon="download-line"
+                        trackingDisable={true}
+                        iconPosition="right">
+                        Télécharger les données
+                    </Button>
+                {/if}
             {/if}
         </div>
     </div>
@@ -105,6 +119,19 @@
 
     .baseline {
         align-self: baseline;
+    }
+
+    @keyframes rotating {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .baseline :global(.fr-icon-refresh-line::after) {
+        animation: rotating 2s linear infinite;
     }
 
     .compact-columns :global(.fr-grid-row--gutters) {

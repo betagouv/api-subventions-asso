@@ -5,17 +5,10 @@ import PaymentTableController from "./PaymentTable/PaymentTable.controller";
 import paymentsService from "$lib/resources/payments/payments.service";
 import subventionsService from "$lib/resources/subventions/subventions.service";
 import { isSiret } from "$lib/helpers/identifierHelper";
-import { buildCsv, downloadCsv } from "$lib/helpers/csvHelper";
-import establishmentService from "$lib/resources/establishments/establishment.service";
-import associationService from "$lib/resources/associations/association.service";
 import trackerService from "$lib/services/tracker.service";
 import { PROVIDER_BLOG_URL } from "$env/static/public";
-import { currentAssociation, currentAssoSimplifiedEtabs } from "$lib/store/association.store";
-import { dateToDDMMYYYY } from "$lib/helpers/dateHelper";
-import { addressToOneLineString } from "$lib/resources/associations/association.helper";
-import { valueOrHyphen } from "$lib/helpers/dataHelper";
-
-const EXERCICE_CSV_KEY = "Exercice";
+import grantService from "$lib/resources/grants/grant.service";
+import documentHelper from "$lib/helpers/document.helper";
 
 export default class SubventionsPaymentsDashboardController {
     constructor(identifier) {
@@ -38,6 +31,8 @@ export default class SubventionsPaymentsDashboardController {
         this.elements = new Store([]);
         this.sortDirection = new Store("asc");
         this.sortColumn = new Store(null);
+
+        this.isExtractLoading = new Store(false);
     }
 
     get providerBlogUrl() {
@@ -95,78 +90,18 @@ export default class SubventionsPaymentsDashboardController {
         trackerService.trackEvent("association-etablissement.dashboard.display-provider-modal");
     }
 
-    _buildFixedCsvHeader() {
-        return ["Nom de l'association", "Rna", "Adresse de l'établissement", "Siret", EXERCICE_CSV_KEY];
-    }
-
-    _buildAssociationCsvData() {
-        return [
-            currentAssociation.value.denomination_rna || currentAssociation.value.denomination_siren,
-            currentAssociation.value.rna,
-        ];
-    }
-
-    _buildEtablissementAndExerciceCsvData(index) {
-        const siret = this._fullElements[index]?.subvention?.siret || this._fullElements[index]?.payments[0]?.siret;
-
-        if (!siret) return ["", "", ""];
-
-        const simplifiedEtab = currentAssoSimplifiedEtabs.value.find(e => e.siret === siret);
-
-        if (!simplifiedEtab)
-            return [
-                "",
-                siret,
-                this._fullElements[index]?.subvention?.annee_demande || this._fullElements[index].date.getFullYear(),
-            ];
-
-        return [
-            valueOrHyphen(addressToOneLineString(simplifiedEtab.adresse)),
-            siret,
-            this._fullElements[index]?.subvention?.annee_demande || this._fullElements[index].date.getFullYear(),
-        ];
-    }
-
-    download() {
-        const fixedHeader = this._buildFixedCsvHeader();
-        const subvHeader = SubventionTableController.extractHeaders();
-        const versHeader = PaymentTableController.extractHeaders();
-        const headers = [...fixedHeader, ...subvHeader, ...versHeader];
-
-        const associationData = this._buildAssociationCsvData();
-        const subventions = SubventionTableController.extractRows(this._fullElements);
-        const payments = PaymentTableController.extractRows(this._fullElements);
-
-        // merge sub and vers
-        const datasub = subventions.map((subvention, index) => {
-            // empty subvention
-            if (!subvention) subvention = Array(subvHeader.length).fill("");
-            // empty payment
-            if (!payments[index]) payments[index] = Array(versHeader.length).fill("");
-            return [
-                ...associationData,
-                ...this._buildEtablissementAndExerciceCsvData(index),
-                ...subvention,
-                ...payments[index],
-            ];
-        });
-
-        const yearIndex = headers.findIndex(header => header === EXERCICE_CSV_KEY);
-
-        const csvString = buildCsv(
-            headers,
-            datasub.sort((a, b) => a[yearIndex] - b[yearIndex]),
-        );
-        downloadCsv(
-            csvString,
-            `DataSubvention-${associationData[0]}-${this.identifier}-${dateToDDMMYYYY(new Date())}`, // For exemple : DataSubvention-AssociationName-SIRET-01-01-2021
-        );
-
-        // Tracking Part
-        trackerService.buttonClickEvent("association-etablissement.dashbord.download-csv", this.identifier);
-
-        if (this.isEtab()) establishmentService.incExtractData(this.identifier);
-        else associationService.incExtractData(this.identifier);
+    async download() {
+        if (this.isExtractLoading.value) return;
+        this.isExtractLoading.set(true);
+        const extractPromise = grantService
+            .getGrantExtract(this.identifier)
+            .then(blob => documentHelper.download(blob, `extract_${this.identifier}.zip`));
+        setTimeout(() => {
+            this.zipPromise.set(extractPromise);
+        }, 750); // weird if message appears and leaves right ahead ; quite arbitrary value
+        await extractPromise;
+        this.isExtractLoading.set(false);
+        return;
     }
 
     _filterElementsBySelectedExercice() {
