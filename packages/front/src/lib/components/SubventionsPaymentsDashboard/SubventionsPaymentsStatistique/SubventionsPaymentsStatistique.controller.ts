@@ -11,7 +11,7 @@ export default class SubventionsPaymentsStatistiqueController {
     constructor() {
         this.elements = [];
         this.paymentsAmount = new Store("-");
-        this.paymentsRepartition = new Store();
+        this.paymentsRepartition = new Store(undefined);
     }
 
     updateElements(elements) {
