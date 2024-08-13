@@ -1,6 +1,7 @@
-import type { SpyInstance } from "vitest";
+import { afterAll, beforeAll, type SpyInstance } from "vitest";
 
 import SearchController from "./Search.controller";
+
 vi.mock("$app/navigation");
 import * as IdentifierHelper from "$lib/helpers/identifierHelper";
 
@@ -8,7 +9,7 @@ vi.mock("$lib/helpers/identifierHelper");
 const mockedIdentifierHelper = vi.mocked(IdentifierHelper);
 import associationService from "$lib/resources/associations/association.service";
 import { isSiret } from "$lib/helpers/identifierHelper";
-import { encodeQuerySearch } from "$lib/helpers/urlHelper";
+import { decodeQuerySearch, encodeQuerySearch } from "$lib/helpers/urlHelper";
 
 vi.mock("$lib/resources/associations/association.service");
 const mockedAssociationService = vi.mocked(associationService);
@@ -28,22 +29,41 @@ describe("SearchController", () => {
     };
     beforeAll(() => {
         mockedAssociationService.search.mockResolvedValue(DUPLICATED_RESULTS);
+        vi.mocked(decodeQuerySearch).mockImplementation(v => v);
     });
 
-    afterEach(() => {
-        mockedIdentifierHelper.isRna.mockReset();
-        mockedIdentifierHelper.isSiren.mockReset();
+    afterAll(() => {
+        mockedAssociationService.search.mockRestore();
+        vi.mocked(decodeQuerySearch).mockRestore();
     });
 
     describe("fetchAssociationFromName()", () => {
+        it("if input is siret, call goToEstablishment", async () => {
+            vi.mocked(isSiret).mockReturnValueOnce(true);
+            const SIRET = "12345678901234";
+            const controller = new SearchController(RNA);
+            mockedIdentifierHelper.isSiret.mockReturnValueOnce(true);
+            const goToEstabSpy = vi.spyOn(controller, "gotoEstablishment");
+            await controller.fetchAssociationFromName(SIRET);
+            expect(goToEstabSpy).toHaveBeenCalledWith(SIRET);
+        });
+
+        it("searches with trimmed input", async () => {
+            const PAGE = 1;
+            const controller = new SearchController(RNA);
+            await new Promise(process.nextTick);
+            await controller.fetchAssociationFromName("  " + RNA + "  ");
+            expect(mockedAssociationService.search).toHaveBeenCalledWith(RNA, PAGE);
+        });
+
         it("should set duplicate store", async () => {
             const expected = [RNA_SIREN_1.siren, RNA_SIREN_2.siren];
             mockedIdentifierHelper.isRna.mockReturnValue(true);
             const controller = new SearchController(RNA);
             await new Promise(process.nextTick);
             const actual = controller.duplicatesFromIdentifier.value;
+            mockedIdentifierHelper.isRna.mockRestore();
             expect(actual).toEqual(expected);
-            mockedIdentifierHelper.isRna.mockReset();
         });
 
         it("should unset duplicate store on second search, with name", async () => {
@@ -85,12 +105,10 @@ describe("SearchController", () => {
 
     describe("onSubmit", () => {
         let controller: SearchController;
-        let goToEstabSpy: SpyInstance;
         let fetchSpy: SpyInstance;
 
         beforeAll(() => {
             controller = new SearchController(RNA);
-            goToEstabSpy = vi.spyOn(controller, "gotoEstablishment");
             // @ts-expect-error -- mock
             fetchSpy = vi.spyOn(controller, "fetchAssociationFromName").mockResolvedValue(null);
         });
@@ -99,14 +117,7 @@ describe("SearchController", () => {
             fetchSpy.mockRestore();
         });
 
-        it("if input is siret, call goToEstablishment", () => {
-            vi.mocked(isSiret).mockReturnValueOnce(true);
-            controller.onSubmit(RNA);
-            expect(goToEstabSpy).toHaveBeenCalledWith(RNA);
-            expect(fetchSpy).not.toHaveBeenCalled();
-        });
-
-        it("if input is not siret, fetch new result on page one", () => {
+        it("fetch new result on page one", () => {
             vi.mocked(isSiret).mockReturnValueOnce(false);
             controller.onSubmit(RNA);
             expect(fetchSpy).toHaveBeenCalledWith(RNA, 1);
@@ -120,7 +131,7 @@ describe("SearchController", () => {
             const PAGE = 5;
             const SEARCH = "search";
             const controller = new SearchController(RNA);
-            fetchSpy = vi.spyOn(controller, "fetchAssociationFromName").mockResolvedValue([]);
+            fetchSpy = vi.spyOn(controller, "fetchAssociationFromName").mockReturnValue(Promise.resolve());
             controller.inputSearch.value = SEARCH;
             controller.onChangePage({ detail: PAGE });
             expect(fetchSpy).toHaveBeenCalledWith(SEARCH, PAGE);

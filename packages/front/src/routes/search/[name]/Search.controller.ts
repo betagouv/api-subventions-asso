@@ -6,6 +6,7 @@ import { decodeQuerySearch, encodeQuerySearch } from "$lib/helpers/urlHelper";
 import { isRna, isSiren, isSiret } from "$lib/helpers/identifierHelper";
 import associationService from "$lib/resources/associations/association.service";
 import { isAssociation } from "$lib/resources/associations/association.helper";
+import { removeWhiteSpace } from "$lib/helpers/stringHelper";
 
 export default class SearchController {
     inputSearch: Store<string | undefined>;
@@ -16,18 +17,21 @@ export default class SearchController {
     isLastSearchCompany = new Store(false);
 
     constructor(name = "") {
-        this.inputSearch = new Store(decodeQuerySearch(name));
+        this.inputSearch = new Store(decodeQuerySearch(name).trim());
         this.duplicatesFromIdentifier = new Store(null);
         this.searchPromise = new Store(returnInfinitePromise());
         this.searchPromise.set(this.fetchAssociationFromName(name));
     }
 
-    async fetchAssociationFromName(name = "", page = 1) {
+    async fetchAssociationFromName(rawName = "", page = 1) {
+        const name = rawName.trim();
         this.isLastSearchCompany.set(false);
+        if (isSiret(name)) return this.gotoEstablishment(name);
         const search = await associationService.search(name, page);
         if ((isSiren(name) || isRna(name)) && search.total === 1) {
             const asso = search.results[0];
-            if (isAssociation(asso)) return goto(`/association/${asso.siren || asso.rna}`, { replaceState: true });
+            if (isAssociation(asso))
+                return goto(`/association/${removeWhiteSpace(asso.siren || asso.rna)}`, { replaceState: true });
             else this.isLastSearchCompany.set(true);
         } else {
             // display alert if there are duplicates in rna-siren links
@@ -49,7 +53,7 @@ export default class SearchController {
     }
 
     gotoEstablishment(siret: Siret) {
-        goto(`/etablissement/${siret}`);
+        goto(`/etablissement/${removeWhiteSpace(siret)}`, { replaceState: true });
     }
 
     updateNbEtabsLabel() {
@@ -58,12 +62,9 @@ export default class SearchController {
     }
 
     onSubmit(input: string) {
-        this.inputSearch.set(input);
-        if (isSiret(input)) {
-            this.gotoEstablishment(input);
-        } else {
-            this.searchPromise.set(this.fetchAssociationFromName(input, 1));
-        }
+        const trimmedInput = input.trim();
+        this.inputSearch.set(trimmedInput);
+        this.searchPromise.set(this.fetchAssociationFromName(trimmedInput, 1));
     }
 
     onChangePage(event: { detail: number }) {
