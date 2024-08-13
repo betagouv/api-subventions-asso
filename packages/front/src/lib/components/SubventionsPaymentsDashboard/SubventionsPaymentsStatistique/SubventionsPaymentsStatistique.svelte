@@ -6,17 +6,23 @@
 
     const controller = new SubventionsPaymentsStatistiqueController(elements);
 
-    const { paymentsAmount } = controller;
+    const { paymentsAmount, paymentsRepartition } = controller;
 
     $: elements, controller.updateElements(elements);
 </script>
 
-<div class="fr-grid-row fr-grid-row--gutters">
+<p class="text--xxl fr-mb-1w">
+    Total des versements réalisés en {year} :
+    <b>{$paymentsAmount}</b>
+</p>
+{#if $paymentsRepartition}
+    <p class="fr-text--lg">
+        Répartis entre {$paymentsRepartition?.paid} des {$paymentsRepartition?.total} établissements liés à l'association.
+    </p>
+{/if}
+<div class="fr-grid-row fr-grid-row--gutters fr-mt-3w">
     <div class="fr-col-9">
-        <h3 class="fr-h4">Demandes de subventions collectées</h3>
-        <p class="fr-mb-0 fr-text--sm">
-            D'après les données récupérées via Dauphin, Osiris, Fonjep et la Caisse des Dépôts.
-        </p>
+        <h3 class="fr-h4 fr-mb-1w">Demandes de subventions collectées</h3>
         <p class="asterisk fr-text--sm">
             Certaines informations et données peuvent être manquantes car elles n’ont pas encore été rattachées au
             service.
@@ -24,13 +30,6 @@
     </div>
     <div class="fr-col-3">
         <h3 class="fr-h4">Versements réalisés</h3>
-        <p class="fr-text--sm">
-            Total des paiements en <b>{year}</b>
-            :
-            <b>{$paymentsAmount}</b>
-            <br />
-            D'après les données récupérées via Chorus et Fonjep.
-        </p>
     </div>
 </div>
 
@@ -38,5 +37,9 @@
     .asterisk {
         font-weight: bold;
         font-style: italic;
+    }
+
+    .text--xxl {
+        font-size: 1.5rem;
     }
 </style>
