@@ -89,9 +89,9 @@ export default class SubventionsPaymentsDashboardController {
     clickProviderLink() {
         trackerService.trackEvent("association-etablissement.dashboard.display-provider-modal");
     }
-
     async download() {
         if (this.isExtractLoading.value) return;
+        trackerService.buttonClickEvent("association-etablissement.dashbord.download-csv", this.identifier); // tracking
         this.isExtractLoading.set(true);
         const extractPromise = grantService
             .getGrantExtract(this.identifier)
@@ -101,7 +101,6 @@ export default class SubventionsPaymentsDashboardController {
         }, 750); // weird if message appears and leaves right ahead ; quite arbitrary value
         await extractPromise;
         this.isExtractLoading.set(false);
-        return;
     }
 
     _filterElementsBySelectedExercice() {
