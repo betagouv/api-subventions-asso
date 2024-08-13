@@ -28,8 +28,7 @@ class AssociationService {
 
     async getEstablishments(identifier) {
         const result = await associationPort.getEstablishments(identifier);
-        const establishments = result.map(etablissement => toEstablishmentComponent(etablissement));
-        return establishments;
+        return result.map(etablissement => toEstablishmentComponent(etablissement));
     }
 
     async getDocuments(identifier) {
