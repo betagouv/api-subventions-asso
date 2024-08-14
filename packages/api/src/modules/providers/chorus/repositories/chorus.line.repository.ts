@@ -81,6 +81,16 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
         return this.collection.find(query, projection);
     }
 
+    public cursorFindIndexedData(objectIdThreshold?: ObjectId) {
+        /*objectIDThreshold is used to get all the objects that have been
+         created after the objectIDThreshold. It supposes that the ObjectID 
+         are not manually defined
+        */
+        if (!objectIdThreshold) {
+            return this.cursorFind({}, { indexedInformations: 1 });
+        } else return this.cursorFind({ _id: { $gt: objectIdThreshold } }, { indexedInformations: 1 });
+    }
+
     async createIndexes() {
         await this.collection.createIndex({ uniqueId: 1 }, { unique: true });
         await this.collection.createIndex({ "indexedInformations.ej": 1 });

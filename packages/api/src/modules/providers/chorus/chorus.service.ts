@@ -1,6 +1,6 @@
 import { cursorTo } from "readline";
 import { Siren, Siret } from "dto";
-import { WithId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
 import { ASSO_BRANCHE } from "../../../shared/ChorusBrancheAccepted";
 import CacheData from "../../../shared/Cache";
 import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
@@ -108,11 +108,8 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
         return this.toPaymentArray(requests);
     }
 
-    async chorusCursorFind(
-        query: DefaultObject<unknown> = {},
-        projection: DefaultObject<unknown> = { indexedInformations: 1 },
-    ) {
-        return chorusLineRepository.cursorFind(query, projection);
+    public chorusCursorFindIndexedData(objectIdThreshold?: ObjectId) {
+        return chorusLineRepository.cursorFindIndexedData(objectIdThreshold);
     }
 
     // TODO: unit test this

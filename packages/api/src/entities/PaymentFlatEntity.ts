@@ -15,7 +15,7 @@ export default class PaymentFlatEntity {
         public provider: string,
         public actionCode: string,
         public actionLabel: string | null,
-        public activityCode: string,
+        public activityCode: string | null,
         public activityLabel: string | null,
     ) {}
 }

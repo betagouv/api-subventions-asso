@@ -1,4 +1,5 @@
 import chorusService, { ChorusService } from "./chorus.service";
+import { ObjectId } from "mongodb";
 import chorusLineRepository from "./repositories/chorus.line.repository";
 jest.mock("./repositories/chorus.line.repository");
 const mockedChorusLineRepository = jest.mocked(chorusLineRepository);
@@ -22,6 +23,7 @@ import { BulkWriteResult, WithId } from "mongodb";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
+import { isObjectBindingPattern } from "typescript";
 
 describe("chorusService", () => {
     beforeAll(() => {
@@ -69,10 +71,16 @@ describe("chorusService", () => {
             toVersementArrayMock.mockRestore();
         });
 
-        describe("chorusCursorFind", () => {
-            it("should call chorusLineRepository.find", async () => {
-                chorusService.chorusCursorFind();
-                expect(mockedChorusLineRepository.cursorFind).toHaveBeenCalledTimes(1);
+        describe("chorusCursorFindIndexedData", () => {
+            it("should call chorusLineRepository.findIndexedData with undefined", async () => {
+                chorusService.chorusCursorFindIndexedData();
+                expect(mockedChorusLineRepository.cursorFindIndexedData).toHaveBeenCalledWith(undefined);
+            });
+
+            it("should call chorusLineRepository.findIndexedData with objectId", async () => {
+                const objectId = new ObjectId("000000000000000000000000");
+                chorusService.chorusCursorFindIndexedData(objectId);
+                expect(mockedChorusLineRepository.cursorFindIndexedData).toHaveBeenCalledWith(objectId);
             });
         });
 
