@@ -1,6 +1,12 @@
 import dataBretagneService from "../../providers/dataBretagne/dataBretagne.service";
 import { RECORDS } from "./__fixtures__/dataBretagne.fixture";
-jest.mock("../../providers/dataBretagne/dataBretagne.service");
+jest.mock("../../providers/dataBretagne/dataBretagne.service", () => ({
+    getMinistriesRecord: jest.fn(),
+    findProgramsRecord: jest.fn(),
+    getDomaineFonctRecord: jest.fn(),
+    getRefProgrammationRecord: jest.fn(),
+}));
+const mockDataBretagneService = jest.mocked(dataBretagneService);
 import paymentFlatService from "./paymentFlat.service";
 import { ObjectId, WithId } from "mongodb";
 import chorusService from "../../providers/chorus/chorus.service";
@@ -18,20 +24,13 @@ const allDataBretagneDataResolvedValue = {
 
 describe("PaymentFlatService", () => {
     describe("getAllDataBretagneData", () => {
-        let mockDataBretagneService;
-        beforeAll(() => {
-            mockDataBretagneService = {
-                getMinistriesRecord: jest.fn().mockResolvedValue(RECORDS["ministry"]),
-                findProgramsRecord: jest.fn().mockResolvedValue(RECORDS["programme"]),
-                getDomaineFonctRecord: jest.fn().mockResolvedValue(RECORDS["domaineFonct"]),
-                getRefProgrammationRecord: jest.fn().mockResolvedValue(RECORDS["refProgrammation"]),
-            };
+        //let mockDataBretagneService;
 
-            jest.mocked(dataBretagneService).getMinistriesRecord = mockDataBretagneService.getMinistriesRecord;
-            jest.mocked(dataBretagneService).findProgramsRecord = mockDataBretagneService.findProgramsRecord;
-            jest.mocked(dataBretagneService).getDomaineFonctRecord = mockDataBretagneService.getDomaineFonctRecord;
-            jest.mocked(dataBretagneService).getRefProgrammationRecord =
-                mockDataBretagneService.getRefProgrammationRecord;
+        beforeAll(() => {
+            mockDataBretagneService.getMinistriesRecord.mockResolvedValue(RECORDS["ministry"]);
+            mockDataBretagneService.findProgramsRecord.mockResolvedValue(RECORDS["programme"]);
+            mockDataBretagneService.getDomaineFonctRecord.mockResolvedValue(RECORDS["domaineFonct"]);
+            mockDataBretagneService.getRefProgrammationRecord.mockResolvedValue(RECORDS["refProgrammation"]);
         });
 
         afterAll(() => {
