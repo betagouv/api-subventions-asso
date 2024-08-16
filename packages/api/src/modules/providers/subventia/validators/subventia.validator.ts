@@ -60,6 +60,14 @@ export default class SubventiaValidator {
             }
         }
 
+        if (
+            //@ts-expect-error : test invalid data
+            parsedDataRow["Montant voté TTC - Décision"] === "" &&
+            ["VOTE", "SOLDE"].includes(parsedDataRow["Statut - Dossier de financement"])
+        ) {
+            throw new Error(`Montant voté TTC - Décision is required for status VOTE and SOLDE`);
+        }
+
         return true;
     }
 
