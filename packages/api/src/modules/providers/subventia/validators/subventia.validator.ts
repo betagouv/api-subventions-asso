@@ -60,8 +60,8 @@ export default class SubventiaValidator {
             }
         }
 
-        //@ts-expect-error : test invalid data
         if (
+            //@ts-expect-error : test invalid data
             parsedDataRow["Montant voté TTC - Décision"] === "" &&
             ["VOTE", "SOLDE"].includes(parsedDataRow["Statut - Dossier de financement"])
         ) {
