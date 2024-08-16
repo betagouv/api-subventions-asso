@@ -7,6 +7,7 @@ const PARSED_DATA_ROW = {
     "Montant voté TTC - Décision": 31164,
     "Montant Ttc": 230,
     "Référence administrative - Demande": "00005478",
+    "Statut - Dossier de financement": "VOTE",
     annee_demande: 2023,
 } as unknown as SubventiaDto;
 
@@ -47,7 +48,7 @@ describe("SubventiaValidator", () => {
         });
 
         it("should throw an error if the Montant voté TTC - Décision is not a number", () => {
-            const parsedDataRow = { ...PARSED_DATA_ROW, "Montant voté TTC - Décision": "invalidNumber" };
+            const parsedDataRow = { ...PARSED_DATA_ROW, "Montant voté TTC - Décision": "invalid" };
             // @ts-expect-error : test invalid data
             expect(() => SubventiaValidator.validateDataRowTypes(parsedDataRow)).toThrowError(
                 "Montant voté TTC - Décision is not a number",
@@ -83,6 +84,14 @@ describe("SubventiaValidator", () => {
 
             expect(() => SubventiaValidator.validateDataRowCoherence(parsedDataRow)).toThrowError(
                 "The year of the decision cannot be lower than the year of the request",
+            );
+        });
+
+        it("should throw an error if the Montant voté TTC - Décision is an empty string and status demande VOTE or SOLDE", () => {
+            const parsedDataRow = { ...PARSED_DATA_ROW, "Montant voté TTC - Décision": "" };
+            // @ts-expect-error : test invalid data
+            expect(() => SubventiaValidator.validateDataRowCoherence(parsedDataRow)).toThrowError(
+                `Montant voté TTC - Décision is required for status VOTE and SOLDE`,
             );
         });
 
