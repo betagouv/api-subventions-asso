@@ -10,6 +10,12 @@ import establishmentService from "$lib/resources/establishments/establishment.se
 import associationService from "$lib/resources/associations/association.service";
 import trackerService from "$lib/services/tracker.service";
 import { PROVIDER_BLOG_URL } from "$env/static/public";
+import { currentAssociation, currentAssoSimplifiedEtabs } from "$lib/store/association.store";
+import { dateToDDMMYYYY } from "$lib/helpers/dateHelper";
+import { addressToOneLineString } from "$lib/resources/associations/association.helper";
+import { valueOrHyphen } from "$lib/helpers/dataHelper";
+
+const EXERCICE_CSV_KEY = "Exercice";
 
 export default class SubventionsPaymentsDashboardController {
     constructor(identifier) {
@@ -89,10 +95,45 @@ export default class SubventionsPaymentsDashboardController {
         trackerService.trackEvent("association-etablissement.dashboard.display-provider-modal");
     }
 
+    _buildAssociationAndEtabCsvHeader() {
+        return ["Nom de l'association", "Rna", "Adresse de l'établissement", "Siret", EXERCICE_CSV_KEY];
+    }
+
+    _buildAssociationCsvData() {
+        return [
+            currentAssociation.value.denomination_rna || currentAssociation.value.denomination_siren,
+            currentAssociation.value.rna,
+        ];
+    }
+
+    _buildEtablissementCsvData(index) {
+        const siret = this._fullElements[index]?.subvention?.siret || this._fullElements[index]?.payments[0]?.siret;
+
+        if (!siret) return ["", "", ""];
+
+        const simplifiedEtab = currentAssoSimplifiedEtabs.value.find(e => e.siret === siret);
+
+        if (!simplifiedEtab)
+            return [
+                "",
+                siret,
+                this._fullElements[index]?.subvention?.annee_demande || this._fullElements[index].date.getFullYear(),
+            ];
+
+        return [
+            valueOrHyphen(addressToOneLineString(simplifiedEtab.adresse)),
+            siret,
+            this._fullElements[index]?.subvention?.annee_demande || this._fullElements[index].date.getFullYear(),
+        ];
+    }
+
     download() {
+        const associationHeader = this._buildAssociationAndEtabCsvHeader();
         const subvHeader = SubventionTableController.extractHeaders();
         const versHeader = PaymentTableController.extractHeaders();
-        const headers = [...subvHeader, ...versHeader];
+        const headers = [...associationHeader, ...subvHeader, ...versHeader];
+
+        const associationData = this._buildAssociationCsvData();
         const subventions = SubventionTableController.extractRows(this._fullElements);
         const payments = PaymentTableController.extractRows(this._fullElements);
 
@@ -102,11 +143,19 @@ export default class SubventionsPaymentsDashboardController {
             if (!subvention) subvention = Array(subvHeader.length).fill("");
             // empty payment
             if (!payments[index]) payments[index] = Array(versHeader.length).fill("");
-            return [...subvention, ...payments[index]];
+            return [...associationData, ...this._buildEtablissementCsvData(index), ...subvention, ...payments[index]];
         });
 
-        const csvString = buildCsv(headers, datasub);
-        downloadCsv(csvString, `DataSubvention-${this.identifier}`);
+        const yearIndex = headers.findIndex(header => header === EXERCICE_CSV_KEY);
+
+        const csvString = buildCsv(
+            headers,
+            datasub.sort((a, b) => a[yearIndex] - b[yearIndex]),
+        );
+        downloadCsv(
+            csvString,
+            `DataSubvention-${associationData[0]}_(${this.identifier})-${dateToDDMMYYYY(new Date())}`,
+        );
 
         // Tracking Part
         trackerService.buttonClickEvent("association-etablissement.dashbord.download-csv", this.identifier);
