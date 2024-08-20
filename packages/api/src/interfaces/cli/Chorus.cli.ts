@@ -13,6 +13,7 @@ export default class ChorusCli extends CliController {
     static cmdName = "chorus";
 
     protected logFileParsePath = "./logs/chorus.parse.log.txt";
+    protected _providerIdToLog = chorusService.provider.id;
     protected batchSize = 1000;
 
     /**
@@ -59,7 +60,6 @@ export default class ChorusCli extends CliController {
             const result = await chorusService.insertBatchChorusLine(batch);
             finalResult.created += result.created;
             finalResult.rejected += result.rejected;
-            finalResult.duplicates += result.duplicates;
         });
 
         logger.push(`RESULT: ${JSON.stringify(finalResult)}`);

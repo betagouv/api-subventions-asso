@@ -9,10 +9,11 @@ import OsirisRequestEntity from "../../modules/providers/osiris/entities/OsirisR
 import { COLORS } from "../../shared/LogOptions";
 import * as CliHelper from "../../shared/helpers/CliHelper";
 import OsirisEvaluationEntity from "../../modules/providers/osiris/entities/OsirisEvaluationEntity";
-import { findFiles } from "../../shared/helpers/ParserHelper";
+import { GenericParser } from "../../shared/GenericParser";
 import rnaSirenService from "../../modules/rna-siren/rnaSiren.service";
 import Siret from "../../valueObjects/Siret";
 import Rna from "../../valueObjects/Rna";
+import dataLogService from "../../modules/data-log/dataLog.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class OsirisCli {
@@ -84,7 +85,7 @@ export default class OsirisCli {
             throw new Error(`File not found ${file}`);
         }
 
-        const files = findFiles(file);
+        const files = GenericParser.findFiles(file);
         const logs: unknown[] = [];
 
         console.info(`${files.length} files in the parse queue`);
@@ -109,25 +110,30 @@ export default class OsirisCli {
         const fileContent = fs.readFileSync(file);
 
         if (type === "requests") {
-            return this._parseRequest(fileContent, year, logs);
+            await this._parseRequest(fileContent, year, logs);
         } else if (type === "actions") {
-            return this._parseAction(fileContent, year, logs);
+            await this._parseAction(fileContent, year, logs);
         } else if (type === "evaluations") {
-            return this._parseEvaluation(fileContent, year, logs);
+            await this._parseEvaluation(fileContent, year, logs);
         } else {
             throw new Error(`The type ${type} is not taken into account`);
         }
+
+        // this assumes that extraction date is close enough to integration date. Is it?
+        await dataLogService.addLog(osirisService.provider.id, new Date(), file);
     }
 
     private async _parseRequest(contentFile: Buffer, year: number, logs: unknown[]) {
         const requests = OsirisParser.parseRequests(contentFile, year);
 
         let tictackClock = true;
-        const results = await requests.reduce(async (acc, osirisRequest, index) => {
-            const data = await acc;
-
+        const ticTacInterval = setInterval(() => {
             tictackClock = !tictackClock;
             console.log(tictackClock ? "TIC" : "TAC");
+        }, 10000);
+
+        const results = await requests.reduce(async (acc, osirisRequest, index) => {
+            const data = await acc;
 
             let validation = osirisService.validRequest(osirisRequest);
 
@@ -160,6 +166,7 @@ export default class OsirisCli {
 
             return data;
         }, Promise.resolve([]) as Promise<{ state: string; result: OsirisRequestEntity }[]>);
+        clearInterval(ticTacInterval);
 
         const created = results.filter(({ state }) => state === "created");
         console.info(`

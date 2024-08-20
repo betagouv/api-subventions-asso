@@ -1,5 +1,5 @@
-import { ExcelDateToJSDate } from "../../../../shared/helpers/ParserHelper";
 import Siret from "../../../../valueObjects/Siret";
+import { GenericParser } from "../../../../shared/GenericParser";
 import SubventiaDto from "../@types/subventia.dto";
 
 export default class SubventiaValidator {
@@ -25,7 +25,7 @@ export default class SubventiaValidator {
 
         if (parsedDataRow["Date - Décision"]) {
             try {
-                ExcelDateToJSDate(parseInt(parsedDataRow["Date - Décision"], 10));
+                GenericParser.ExcelDateToJSDate(parseInt(parsedDataRow["Date - Décision"], 10));
             } catch (e) {
                 throw new Error(`Date - Décision is not a valid date`);
             }
@@ -53,11 +53,19 @@ export default class SubventiaValidator {
 
         if (parsedDataRow["Date - Décision"]) {
             if (
-                ExcelDateToJSDate(parseInt(parsedDataRow["Date - Décision"])).getUTCFullYear() <
+                GenericParser.ExcelDateToJSDate(parseInt(parsedDataRow["Date - Décision"])).getUTCFullYear() <
                 parseInt(parsedDataRow["annee_demande"])
             ) {
                 throw new Error(`The year of the decision cannot be lower than the year of the request`);
             }
+        }
+
+        if (
+            //@ts-expect-error : test invalid data
+            parsedDataRow["Montant voté TTC - Décision"] === "" &&
+            ["VOTE", "SOLDE"].includes(parsedDataRow["Statut - Dossier de financement"])
+        ) {
+            throw new Error(`Montant voté TTC - Décision is required for status VOTE and SOLDE`);
         }
 
         return true;

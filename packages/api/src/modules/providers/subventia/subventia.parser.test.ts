@@ -2,7 +2,7 @@ import fs from "fs";
 jest.mock("fs");
 import SubventiaParser from "./subventia.parser";
 
-import * as ParseHelper from "../../../shared/helpers/ParserHelper";
+import { GenericParser } from "../../../shared/GenericParser";
 
 const BUFFER = Buffer.from("fileContent");
 const FILEPATH = "filePath";
@@ -67,7 +67,7 @@ describe("SubventiaParser", () => {
             mockFilePathValidator = jest.spyOn(SubventiaParser, "filePathValidator").mockReturnValue(true);
             //@ts-expect-error : test private method
             mockGetBuffer = jest.spyOn(SubventiaParser, "getBuffer").mockReturnValue(BUFFER);
-            mockXlsParse = jest.spyOn(ParseHelper, "xlsParse").mockReturnValue([
+            mockXlsParse = jest.spyOn(GenericParser, "xlsParse").mockReturnValue([
                 [
                     ["header1", "header2"],
                     ["value1", "value2"],

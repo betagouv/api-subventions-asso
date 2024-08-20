@@ -1,4 +1,5 @@
 import chorusService, { ChorusService } from "./chorus.service";
+import { ObjectId } from "mongodb";
 import chorusLineRepository from "./repositories/chorus.line.repository";
 jest.mock("./repositories/chorus.line.repository");
 const mockedChorusLineRepository = jest.mocked(chorusLineRepository);
@@ -18,7 +19,7 @@ jest.mock("../../rna-siren/rnaSiren.service");
 const mockedRnaSirenService = jest.mocked(rnaSirenService);
 import { ENTITIES, PAYMENTS } from "./__fixtures__/ChorusFixtures";
 import CacheData from "../../../shared/Cache";
-import { WithId } from "mongodb";
+import { BulkWriteResult, WithId } from "mongodb";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
@@ -26,6 +27,7 @@ import Siren from "../../../valueObjects/Siren";
 import Siret from "../../../valueObjects/Siret";
 import Rna from "../../../valueObjects/Rna";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import { isObjectBindingPattern } from "typescript";
 
 describe("chorusService", () => {
     beforeAll(() => {
@@ -36,9 +38,9 @@ describe("chorusService", () => {
         };
     });
 
-    describe("insertMany", () => {
+    describe("upsertMany", () => {
         it("should call repository with entities", async () => {
-            await chorusService.insertMany(ENTITIES);
+            await chorusService.upsertMany(ENTITIES);
         });
     });
 
@@ -73,47 +75,16 @@ describe("chorusService", () => {
             toVersementArrayMock.mockRestore();
         });
 
-        describe("getPayments", () => {
-            beforeAll(() => {
-                mockedChorusLineRepository.findBySiren.mockResolvedValue([
-                    ENTITIES[0],
-                    ENTITIES[0],
-                ] as unknown as WithId<ChorusLineEntity>[]);
+        describe("chorusCursorFindIndexedData", () => {
+            it("should call chorusLineRepository.findIndexedData with undefined", async () => {
+                chorusService.chorusCursorFindIndexedData();
+                expect(mockedChorusLineRepository.cursorFindIndexedData).toHaveBeenCalledWith(undefined);
             });
 
-            afterAll(() => mockedChorusLineRepository.findBySiren.mockReset());
-
-            const SIREN = new Siret(ENTITIES[0].indexedInformations.siret).toSiren();
-            const IDENTIFIER = AssociationIdentifier.fromSiren(SIREN);
-
-            it("should call chorusLineRepository.findBySiren()", async () => {
-                await chorusService.getPayments(IDENTIFIER);
-                expect(mockedChorusLineRepository.findBySiren).toHaveBeenCalledWith(SIREN);
-            });
-            it("should call toPaymentArray for each document", async () => {
-                await chorusService.getPayments(IDENTIFIER);
-                expect(toVersementArrayMock).toHaveBeenCalledTimes(1);
-            });
-        });
-
-        describe("getPaymentsByKey", () => {
-            beforeAll(() => {
-                mockedChorusLineRepository.findByEJ.mockResolvedValue([
-                    ENTITIES[0],
-                    ENTITIES[0],
-                ] as unknown as WithId<ChorusLineEntity>[]);
-            });
-
-            afterAll(() => mockedChorusLineRepository.findByEJ.mockReset());
-
-            const EJ = ENTITIES[0].indexedInformations.ej;
-            it("should call chorusLineRepository.findByEJ()", async () => {
-                await chorusService.getPaymentsByKey(EJ);
-                expect(mockedChorusLineRepository.findByEJ).toHaveBeenCalledWith(EJ);
-            });
-            it("should call toPaymentArray for each document", async () => {
-                await chorusService.getPaymentsByKey(EJ);
-                expect(toVersementArrayMock).toHaveBeenCalledTimes(1);
+            it("should call chorusLineRepository.findIndexedData with objectId", async () => {
+                const objectId = new ObjectId("000000000000000000000000");
+                chorusService.chorusCursorFindIndexedData(objectId);
+                expect(mockedChorusLineRepository.cursorFindIndexedData).toHaveBeenCalledWith(objectId);
             });
         });
     });
@@ -315,16 +286,18 @@ describe("chorusService", () => {
     });
 
     describe("insertBatchChorusLine", () => {
-        const EMPTY_ANSWER = { rejected: 0, created: 0, duplicates: 0 };
+        const EMPTY_ANSWER = { rejected: 0, created: 0 };
 
         let mockIsAcceptedEntity: jest.SpyInstance;
         let mockInsertMany: jest.SpyInstance;
         beforeEach(() => {
             mockIsAcceptedEntity = jest.spyOn(chorusService, "isAcceptedEntity").mockResolvedValue(true);
-            mockInsertMany = jest.spyOn(chorusService, "insertMany").mockResolvedValue();
+            mockInsertMany = jest
+                .spyOn(chorusService, "upsertMany")
+                .mockResolvedValue(true as unknown as BulkWriteResult);
         });
 
-        it("should call insertMany", async () => {
+        it("should call upsertMany", async () => {
             await chorusService.insertBatchChorusLine(ENTITIES);
         });
 
@@ -337,13 +310,6 @@ describe("chorusService", () => {
         it("should return response with created and rejected", async () => {
             mockIsAcceptedEntity.mockReturnValueOnce(false);
             const expected = { ...EMPTY_ANSWER, created: ENTITIES.length - 1, rejected: 1 };
-            const actual = await chorusService.insertBatchChorusLine(ENTITIES);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return response with duplicates", async () => {
-            mockInsertMany.mockRejectedValueOnce({ duplicates: [ENTITIES[1]] });
-            const expected = { ...EMPTY_ANSWER, created: ENTITIES.length - 1, duplicates: 1 };
             const actual = await chorusService.insertBatchChorusLine(ENTITIES);
             expect(actual).toEqual(expected);
         });

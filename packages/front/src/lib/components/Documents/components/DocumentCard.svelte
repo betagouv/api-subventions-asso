@@ -47,7 +47,7 @@
         <div class="fr-my-auto fr-mx-2w">
             <a
                 class="fr-link"
-                href={$isSelected ? undefined : document.url}
+                href={document.url}
                 aria-describedby="description-document-{controller.checkBoxId}"
                 title="Télécharger"
                 target="_blank"

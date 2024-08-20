@@ -49,6 +49,10 @@ Object {
       "description": "Données au format SCDL de divers producteurs en Open Data",
       "name": "Open Data SCDL",
     },
+    Object {
+      "description": "CIPDR",
+      "name": "Subventia",
+    },
   ],
 }
 `;

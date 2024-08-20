@@ -1,5 +1,5 @@
 import { Payment } from "dto";
-import { WithId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
 import { ASSO_BRANCHE } from "../../../shared/ChorusBrancheAccepted";
 import CacheData from "../../../shared/Cache";
 import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
@@ -9,7 +9,6 @@ import { RawGrant, RawPayment } from "../../grant/@types/rawGrant";
 import ProviderCore from "../ProviderCore";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import uniteLegalEntreprisesService from "../uniteLegalEntreprises/uniteLegal.entreprises.service";
-import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import { StructureIdentifier } from "../../../@types";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
@@ -45,8 +44,8 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
 
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
 
-    public async insertMany(entities: ChorusLineEntity[]) {
-        return chorusLineRepository.insertMany(entities);
+    public async upsertMany(entities: ChorusLineEntity[]) {
+        return chorusLineRepository.upsertMany(entities);
     }
 
     public async isAcceptedEntity(entity: ChorusLineEntity) {
@@ -67,19 +66,11 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
      */
     public async insertBatchChorusLine(entities: ChorusLineEntity[]) {
         const acceptedEntities = await asyncFilter(entities, entity => this.isAcceptedEntity(entity));
-        let duplicates = 0;
-        if (acceptedEntities.length) {
-            try {
-                await this.insertMany(acceptedEntities);
-            } catch (e) {
-                duplicates = ((e as DuplicateIndexError<ChorusLineEntity[]>).duplicates as ChorusLineEntity[]).length;
-            }
-        }
+        if (acceptedEntities.length) await this.upsertMany(acceptedEntities);
 
         return {
             rejected: entities.length - acceptedEntities.length,
-            created: acceptedEntities.length - duplicates,
-            duplicates,
+            created: acceptedEntities.length,
         };
     }
 
@@ -117,6 +108,10 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
         const requests = await chorusLineRepository.findByEJ(ej);
 
         return this.toPaymentArray(requests);
+    }
+
+    public chorusCursorFindIndexedData(objectIdThreshold?: ObjectId) {
+        return chorusLineRepository.cursorFindIndexedData(objectIdThreshold);
     }
 
     // TODO: unit test this

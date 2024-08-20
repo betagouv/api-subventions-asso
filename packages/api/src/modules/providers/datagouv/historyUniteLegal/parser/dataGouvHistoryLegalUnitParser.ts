@@ -1,9 +1,8 @@
 import fs from "fs";
-import * as ParseHelper from "../../../../../shared/helpers/ParserHelper";
 
 import { asyncForEach } from "../../../../../shared/helpers/ArrayHelper";
 import { isValidDate } from "../../../../../shared/helpers/DateHelper";
-import { isEmptyRow } from "../../../../../shared/helpers/ParserHelper";
+import { GenericParser } from "../../../../../shared/GenericParser";
 import { SaveCallback } from "../@types";
 import { UniteLegalHistoryRow } from "../@types/UniteLegalHistoryRow";
 import Siren from "../../../../../valueObjects/Siren";
@@ -46,7 +45,7 @@ export default class DataGouvHistoryLegalUnitParser {
             let logTime = new Date();
 
             stream.on("data", async chunk => {
-                let parsedChunk = ParseHelper.csvParse(chunk as Buffer);
+                let parsedChunk = GenericParser.csvParse(chunk as Buffer);
 
                 if (totalEntities > 500000 * logNumber) {
                     logNumber++;
@@ -60,10 +59,10 @@ export default class DataGouvHistoryLegalUnitParser {
                 }
 
                 await asyncForEach(parsedChunk, async row => {
-                    if (isEmptyRow(row)) return;
+                    if (GenericParser.isEmptyRow(row)) return;
 
                     totalEntities++;
-                    const parsedData = ParseHelper.linkHeaderToData(
+                    const parsedData = GenericParser.linkHeaderToData(
                         header as string[],
                         row,
                     ) as unknown as UniteLegalHistoryRow;

@@ -1,10 +1,9 @@
-import { ObjectId, WithId } from "mongodb";
+import { AnyBulkWriteOperation, ObjectId, WithId } from "mongodb";
+import Siret from "../../../../valueObjects/Siret";
+import Siren from "../../../../valueObjects/Siren";
 import { DefaultObject } from "../../../../@types";
 import MongoRepository from "../../../../shared/MongoRepository";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
-import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../../shared/helpers/MongoHelper";
-import Siret from "../../../../valueObjects/Siret";
-import Siren from "../../../../valueObjects/Siren";
 
 export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
     readonly collectionName = "chorus-line";
@@ -31,12 +30,18 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
         await this.collection.insertOne(entity);
     }
 
-    public async insertMany(entities: ChorusLineEntity[]) {
-        return this.collection.insertMany(entities, { ordered: false }).catch(error => {
-            if (isMongoDuplicateError(error)) {
-                throw buildDuplicateIndexError<ChorusLineEntity[]>(error);
-            }
-        });
+    public async upsertMany(entities: ChorusLineEntity[]) {
+        const operations = entities.map(
+            e =>
+                ({
+                    updateOne: {
+                        filter: { uniqueId: e.uniqueId },
+                        update: { $set: e },
+                        upsert: true,
+                    },
+                } as AnyBulkWriteOperation<ChorusLineEntity>),
+        );
+        return this.collection.bulkWrite(operations);
     }
 
     public async update(entity: ChorusLineEntity) {
@@ -73,8 +78,18 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
             .toArray();
     }
 
-    public cursorFind(query: DefaultObject<unknown> = {}) {
-        return this.collection.find(query);
+    public cursorFind(query: DefaultObject<unknown> = {}, projection: DefaultObject<unknown> = {}) {
+        return this.collection.find(query, projection);
+    }
+
+    public cursorFindIndexedData(objectIdThreshold?: ObjectId) {
+        /*objectIDThreshold is used to get all the objects that have been
+         created after the objectIDThreshold. It supposes that the ObjectID 
+         are not manually defined
+        */
+        if (!objectIdThreshold) {
+            return this.cursorFind({}, { indexedInformations: 1 });
+        } else return this.cursorFind({ _id: { $gt: objectIdThreshold } }, { indexedInformations: 1 });
     }
 
     async createIndexes() {

@@ -1,6 +1,7 @@
 type DefaultObject = Record<string, any>;
 
 // TODO: rename RawGrant to RawData ?
+
 export type RawGrant<T = DefaultObject> = {
     provider: string;
     // TODO: rename fullGrant to grant if we rename RawGrant to RawData ?

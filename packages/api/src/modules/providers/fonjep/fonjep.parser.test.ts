@@ -1,13 +1,13 @@
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
 import FonjepPaymentEntity from "./entities/FonjepPaymentEntity";
 import FonjepParser from "./fonjep.parser";
-import * as ParserHelper from "../../../shared/helpers/ParserHelper";
 import { DATA_WITH_HEADER, DEFAULT_POSTE, DEFAULT_VERSEMENT } from "./__fixtures__/fonjepFileModels";
+import { GenericParser } from "../../../shared/GenericParser";
 jest.mock("./entities/FonjepSubventionEntity");
 jest.mock("./entities/FonjepPaymentEntity");
 
 describe("FonjepParser", () => {
-    const indexDataByPathObjectMock = jest.spyOn(ParserHelper, "indexDataByPathObject");
+    const indexDataByPathObjectMock = jest.spyOn(GenericParser, "indexDataByPathObject");
     const PAGES = [
         [
             ["foo", "bar"],
@@ -86,7 +86,7 @@ describe("FonjepParser", () => {
         afterAll(() => {
             indexDataByPathObjectMock.mockReset();
         });
-        it("should call ParserHelper to build indexed and legal informations", () => {
+        it("should call GenericParser to build indexed and legal informations", () => {
             // @ts-expect-error: test private method
             FonjepParser.createFonjepSubventionEntity({});
             expect(indexDataByPathObjectMock).toHaveBeenCalledTimes(2);
@@ -117,7 +117,7 @@ describe("FonjepParser", () => {
             indexDataByPathObjectMock.mockReset();
         });
 
-        it("should call ParserHelper to build indexed and legal informations", () => {
+        it("should call GenericParser to build indexed and legal informations", () => {
             // @ts-expect-error: test private method
             FonjepParser.createFonjepPaymentEntity({});
             expect(indexDataByPathObjectMock).toHaveBeenCalledTimes(2);
@@ -142,7 +142,7 @@ describe("FonjepParser", () => {
     });
 
     describe("parse()", () => {
-        const xlsParseMock = jest.spyOn(ParserHelper, "xlsParse");
+        const xlsParseMock = jest.spyOn(GenericParser, "xlsParse");
         // @ts-expect-error: mock private method
         const mapHeaderToDataMock = jest.spyOn(FonjepParser, "mapHeaderToData");
         // @ts-expect-error: mock private method

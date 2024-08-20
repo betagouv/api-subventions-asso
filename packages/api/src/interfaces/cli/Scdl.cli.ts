@@ -1,4 +1,6 @@
 import fs from "fs";
+import path from "path";
+import csvSyncStringifier = require("csv-stringify/sync");
 import ExportDateError from "../../shared/errors/cliErrors/ExportDateError";
 import ScdlGrantParser from "../../modules/providers/scdl/scdl.grant.parser";
 import scdlService from "../../modules/providers/scdl/scdl.service";
@@ -6,9 +8,15 @@ import MiscScdlGrantEntity from "../../modules/providers/scdl/entities/MiscScdlG
 import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
 import { ScdlStorableGrant } from "../../modules/providers/scdl/@types/ScdlStorableGrant";
 import Siret from "../../valueObjects/Siret";
+import { ParsedDataWithProblem } from "../../modules/providers/scdl/@types/Validation";
+import { DEV } from "../../configurations/env.conf";
+import dataLogService from "../../modules/data-log/dataLog.service";
 
 export default class ScdlCli {
     static cmdName = "scdl";
+
+    // relative path refers to package's root
+    static errorsFolderName = "./importErrors";
 
     public async addProducer(slug: string, name: string, siret: string) {
         if (!slug) throw Error("producer SLUG is mandatory");
@@ -19,18 +27,27 @@ export default class ScdlCli {
         await scdlService.createProducer({ slug, name, siret: siret, lastUpdate: new Date() });
     }
 
-    public async parseXls(file: string, producerSlug: string, exportDate?: string, pageName?: string, rowOffset = 0) {
+    public async parseXls(file: string, producerSlug: string, exportDate: string, pageName?: string, rowOffset = 0) {
         await this.validateGenericInput(file, producerSlug, exportDate);
         const fileContent = fs.readFileSync(file);
-        const entities = ScdlGrantParser.parseExcel(fileContent, pageName, rowOffset);
-        return this.persistEntities(entities, producerSlug, exportDate as string);
+        const { entities, errors } = ScdlGrantParser.parseExcel(fileContent, pageName, rowOffset);
+        await Promise.all([
+            this.persistEntities(entities, producerSlug, exportDate as string),
+            this.exportErrors(errors, file),
+        ]);
+        await dataLogService.addLog(producerSlug, new Date(exportDate), file);
     }
 
-    public async parse(file: string, producerSlug: string, exportDate?: string, delimiter = ";") {
+    public async parse(file: string, producerSlug: string, exportDate: string, delimiter = ";", quote = '"') {
         await this.validateGenericInput(file, producerSlug, exportDate);
         const fileContent = fs.readFileSync(file);
-        const entities = ScdlGrantParser.parseCsv(fileContent, delimiter);
-        return this.persistEntities(entities, producerSlug, exportDate as string);
+        const parsedQuote = quote === "false" ? false : quote;
+        const { entities, errors } = ScdlGrantParser.parseCsv(fileContent, delimiter, parsedQuote);
+        await Promise.all([
+            this.persistEntities(entities, producerSlug, exportDate as string),
+            this.exportErrors(errors, file),
+        ]);
+        await dataLogService.addLog(producerSlug, new Date(exportDate), file);
     }
 
     private async validateGenericInput(file: string, producerSlug: string, exportDateStr?: string) {
@@ -64,5 +81,21 @@ export default class ScdlCli {
         console.log("Updating producer's last update date");
         await scdlService.updateProducer(producerSlug, { lastUpdate: new Date(exportDateStr) });
         console.log("Parsing ended successfully !");
+    }
+
+    private async exportErrors(errors: ParsedDataWithProblem[], file: string) {
+        if (!DEV) return;
+        const fileName = path.basename(file);
+        if (!fs.existsSync(ScdlCli.errorsFolderName)) fs.mkdirSync(ScdlCli.errorsFolderName);
+        const outputPath = path.join(ScdlCli.errorsFolderName, fileName + "-errors.csv");
+
+        const csvContent = csvSyncStringifier.stringify(errors, { header: true });
+
+        try {
+            fs.writeFileSync(outputPath, csvContent, { flag: "w", encoding: "utf-8" });
+        } catch (err) {
+            if (err) console.log("Can't write to file");
+            else console.log("fields with errors exported in " + path.resolve(outputPath));
+        }
     }
 }

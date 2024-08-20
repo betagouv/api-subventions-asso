@@ -14,6 +14,7 @@ import demarchesSimplifieesService from "./demarchesSimplifiees/demarchesSimplif
 import bodaccService from "./bodacc/bodacc.service";
 import Provider from "./@types/IProvider";
 import scdlGrantService from "./scdl/scdl.grant.service";
+import subventiaService from "./subventia/subventia.service";
 
 // TODO: Why not an array instead of an object ?
 const providers: { [key: string]: Provider } = {
@@ -28,6 +29,7 @@ const providers: { [key: string]: Provider } = {
     caisseDepotsService,
     bodaccService,
     scdlGrantService,
+    subventiaService,
 };
 
 export default providers;

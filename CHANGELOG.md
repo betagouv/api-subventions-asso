@@ -3,6 +3,60 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.53.0](https://github.com/betagouv/api-subventions-asso/compare/v0.52.1...v0.53.0) (2024-08-06)
+
+### Bug Fixes
+
+-   **front:** [#2532](https://github.com/betagouv/api-subventions-asso/issues/2532) small mistake about doc selection ([#2547](https://github.com/betagouv/api-subventions-asso/issues/2547)) ([fc7fadc](https://github.com/betagouv/api-subventions-asso/commit/fc7fadc02345715fac037d06cb213e7afd3a836f))
+
+### Features
+
+-   **api, tools:** [#2498](https://github.com/betagouv/api-subventions-asso/issues/2498) resilient doc import osiris ([382891e](https://github.com/betagouv/api-subventions-asso/commit/382891eea108964c31c5673ceebd72896ead7b63))
+-   **api:** [#2077](https://github.com/betagouv/api-subventions-asso/issues/2077) save imports log ([75e92e3](https://github.com/betagouv/api-subventions-asso/commit/75e92e3445dd44bafc8aaf45b3a25b477fc3cdf4))
+-   **api:** [#2525](https://github.com/betagouv/api-subventions-asso/issues/2525) add domaine-fonct, ref-programmation and ministry to route API data Bretagne ([#2538](https://github.com/betagouv/api-subventions-asso/issues/2538)) ([ad34928](https://github.com/betagouv/api-subventions-asso/commit/ad34928127eb3f8e14867b1ad5a957346e8658a0))
+-   **api:** configure quote management ([e5263bf](https://github.com/betagouv/api-subventions-asso/commit/e5263bf675c7e88355ae035b261000e21cb16272))
+-   **api:** more acceptable values notificationue ([5e805a6](https://github.com/betagouv/api-subventions-asso/commit/5e805a6ceb7327213334662ab5479f616f73ba82))
+-   **front:** [#2308](https://github.com/betagouv/api-subventions-asso/issues/2308) select docs to group download ([#2451](https://github.com/betagouv/api-subventions-asso/issues/2451)) ([262542a](https://github.com/betagouv/api-subventions-asso/commit/262542a125d380c1b7e4c88712ba65b851757f64))
+-   **front:** [#2311](https://github.com/betagouv/api-subventions-asso/issues/2311) show all docs button ([#2406](https://github.com/betagouv/api-subventions-asso/issues/2406)) ([e475545](https://github.com/betagouv/api-subventions-asso/commit/e475545719ad17c488dc3e127eceb6514b93108b)), closes [#2356](https://github.com/betagouv/api-subventions-asso/issues/2356) [#2390](https://github.com/betagouv/api-subventions-asso/issues/2390)
+-   **front:** [#2455](https://github.com/betagouv/api-subventions-asso/issues/2455) undo docs show more with new rules ([#2468](https://github.com/betagouv/api-subventions-asso/issues/2468)) ([991074d](https://github.com/betagouv/api-subventions-asso/commit/991074db0783bf1de13b8e081c554dd3888ebaee)), closes [#2311](https://github.com/betagouv/api-subventions-asso/issues/2311)
+-   **front:** [#2533](https://github.com/betagouv/api-subventions-asso/issues/2533) new docs categorization ([#2557](https://github.com/betagouv/api-subventions-asso/issues/2557)) ([ab32f79](https://github.com/betagouv/api-subventions-asso/commit/ab32f7974937e8876df8a003f868a20793327651))
+-   **front:** docs reset selection ([#2470](https://github.com/betagouv/api-subventions-asso/issues/2470)) ([42f2808](https://github.com/betagouv/api-subventions-asso/commit/42f28088831e427b69abf865d9dd47ab4bd8f510))
+
+## [0.52.1](https://github.com/betagouv/api-subventions-asso/compare/v0.52.0...v0.52.1) (2024-07-19)
+
+### Bug Fixes
+
+-   **api:** [#2552](https://github.com/betagouv/api-subventions-asso/issues/2552) scdl exercice adapter robust for number vs dates ([#2553](https://github.com/betagouv/api-subventions-asso/issues/2553)) ([8a5c8eb](https://github.com/betagouv/api-subventions-asso/commit/8a5c8eb296f141644d35f6824b63df2ca96b82b5))
+
+# [0.52.0](https://github.com/betagouv/api-subventions-asso/compare/v0.51.3...v0.52.0) (2024-07-18)
+
+## [0.49.3](https://github.com/betagouv/api-subventions-asso/compare/v0.51.2...v0.49.3) (2024-07-16)
+
+### Features
+
+-   **api:** [#2456](https://github.com/betagouv/api-subventions-asso/issues/2456) scdl parser accepts excel files ([#2483](https://github.com/betagouv/api-subventions-asso/issues/2483)) ([23e3506](https://github.com/betagouv/api-subventions-asso/commit/23e3506b66e61da85ed80973625c1ad829cb7965)), closes [#2318](https://github.com/betagouv/api-subventions-asso/issues/2318)
+-   **api:** clearer type management ([e1925f1](https://github.com/betagouv/api-subventions-asso/commit/e1925f18dce9d8f7f5be1ff697841a519558f2b2))
+-   **api:** new module csv-stringify ([8e9106c](https://github.com/betagouv/api-subventions-asso/commit/8e9106cd87c74d9bda22a11f37a5e115cddaa963))
+-   **api:** scdl parser exports errors ([4df2b28](https://github.com/betagouv/api-subventions-asso/commit/4df2b28aa8d623d210b00c8e36aa25f4807bbead))
+-   **front:** custom consultation instead of profile notice ([5518d7f](https://github.com/betagouv/api-subventions-asso/commit/5518d7fad75f6a6cdc3e969e82b059b05ce6df42))
+
+## [0.51.3](https://github.com/betagouv/api-subventions-asso/compare/v0.51.2...v0.51.3) (2024-07-18)
+
+**Note:** Version bump only for package api-subventions-asso
+
+## [0.51.2](https://github.com/betagouv/api-subventions-asso/compare/v0.51.1...v0.51.2) (2024-07-15)
+
+### Features
+
+-   **api:** declare subventia service as provider ([26eaeb5](https://github.com/betagouv/api-subventions-asso/commit/26eaeb508691845d191f903db566fbe1afdf21b9))
+
+## [0.51.1](https://github.com/betagouv/api-subventions-asso/compare/v0.51.0...v0.51.1) (2024-07-15)
+
+### Bug Fixes
+
+-   **front:** revert docs features ([6fbc9cd](https://github.com/betagouv/api-subventions-asso/commit/6fbc9cdfcfed8c219947938c412607b3490ad6b3)), closes [#2311](https://github.com/betagouv/api-subventions-asso/issues/2311) [#2308](https://github.com/betagouv/api-subventions-asso/issues/2308) [#2455](https://github.com/betagouv/api-subventions-asso/issues/2455)
+-   **front:** update front csp for crisp help ([3a5b9e3](https://github.com/betagouv/api-subventions-asso/commit/3a5b9e39166a4985204105d2fddd549d200b045d))
+
 # [0.51.0](https://github.com/betagouv/api-subventions-asso/compare/v0.50.0...v0.51.0) (2024-07-01)
 
 ### Bug Fixes
@@ -26,6 +80,12 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 -   **api,dto:** [#2309](https://github.com/betagouv/api-subventions-asso/issues/2309) download selected docs ([#2403](https://github.com/betagouv/api-subventions-asso/issues/2403)) ([a793a9e](https://github.com/betagouv/api-subventions-asso/commit/a793a9e149783c9371fe146e11ed83b5518330e2))
 -   **api:** [#2381](https://github.com/betagouv/api-subventions-asso/issues/2381) agent connect creation email ([#2394](https://github.com/betagouv/api-subventions-asso/issues/2394)) ([4575a59](https://github.com/betagouv/api-subventions-asso/commit/4575a597a136219080d9f5cb3b04cb265702bf0d))
 -   **front:** [#2311](https://github.com/betagouv/api-subventions-asso/issues/2311) show all docs button ([#2406](https://github.com/betagouv/api-subventions-asso/issues/2406)) ([90d1215](https://github.com/betagouv/api-subventions-asso/commit/90d1215be5de2f1d493d7a59c8ff6471484820d7)), closes [#2356](https://github.com/betagouv/api-subventions-asso/issues/2356) [#2390](https://github.com/betagouv/api-subventions-asso/issues/2390)
+
+## [0.49.3](https://github.com/betagouv/api-subventions-asso/compare/v0.49.2...v0.49.3) (2024-07-16)
+
+### Features
+
+-   **front:** custom consultation instead of profile notice ([5518d7f](https://github.com/betagouv/api-subventions-asso/commit/5518d7fad75f6a6cdc3e969e82b059b05ce6df42))
 
 ## [0.49.2](https://github.com/betagouv/api-subventions-asso/compare/v0.49.1...v0.49.2) (2024-05-29)
 

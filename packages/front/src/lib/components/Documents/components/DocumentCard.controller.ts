@@ -24,11 +24,10 @@ export class DocumentCardController {
     }
 
     get documentLabel() {
-        if (this.document.__meta__.siret) return `${this.document.label} - ${this.document.__meta__.siret}`;
         return this.document.label;
     }
 
     newValueOnCheck() {
-        return this.isSelected.value ? undefined : this.document;
+        return this.isSelected.value ? this.document : undefined;
     }
 }

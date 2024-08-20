@@ -45,19 +45,9 @@ describe("Documents.controller", () => {
 
     describe("documentLabel", () => {
         it("returns label and siret combined if siret is known", () => {
-            const expected = "Libellé - 123456789";
-            const actual = controller.documentLabel;
-            expect(actual).toBe(expected);
-        });
-
-        it("returns label only if no siret is known", () => {
-            // @ts-expect-error -- test
-            controller.document = { label: "Libellé", __meta__: {} } as DocumentEntity;
             const expected = "Libellé";
             const actual = controller.documentLabel;
             expect(actual).toBe(expected);
-            // @ts-expect-error -- test
-            controller.document = DOC;
         });
     });
 });

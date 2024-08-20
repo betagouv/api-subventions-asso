@@ -1,10 +1,12 @@
 import fs from "fs";
+import dataLogService from "../modules/data-log/dataLog.service";
 import CliLogger from "./CliLogger";
-import { findFiles } from "./helpers/ParserHelper";
+import { GenericParser } from "./GenericParser";
 
 export default class CliController {
     protected logFileParsePath = "";
     protected logger = new CliLogger();
+    protected _providerIdToLog = "";
 
     private validParseFile(file: string): boolean {
         if (typeof file != "string") {
@@ -24,30 +26,29 @@ export default class CliController {
      * @param exportDate Explicite date of import (any valid date string, like "YYYY-MM-DD")
      * @returns
      */
-    public async parse(file: string, exportDate?: string): Promise<unknown> {
+    public async parse(file: string, exportDate: string): Promise<void> {
         this.validParseFile(file);
         this.validFileExists(file);
-        const files = findFiles(file);
+        const files = GenericParser.findFiles(file);
         const logs: unknown[] = [];
 
         this.logger.logIC(`${files.length} files in the parse queue`);
         this.logger.logIC(`You can read log in ${this.logFileParsePath}`);
 
-        return (
-            files
-                .reduce((acc, filePath) => {
-                    return acc.then(() =>
-                        exportDate ? this._parse(filePath, logs, new Date(exportDate)) : this._parse(filePath, logs),
-                    );
-                }, Promise.resolve())
-                // @todo: remove "+ logs.join()" when all cli controllers has refactored with logger
-                .then(() =>
-                    fs.writeFileSync(this.logFileParsePath, this.logger.getLogs() + logs.join(""), {
-                        flag: "w",
-                        encoding: "utf-8",
-                    }),
-                )
-        );
+        await files
+            .reduce((acc, filePath) => {
+                return acc.then(() =>
+                    exportDate ? this._parse(filePath, logs, new Date(exportDate)) : this._parse(filePath, logs),
+                );
+            }, Promise.resolve())
+            // @todo: remove "+ logs.join()" when all cli controllers has refactored with logger
+            .then(() =>
+                fs.writeFileSync(this.logFileParsePath, this.logger.getLogs() + logs.join(""), {
+                    flag: "w",
+                    encoding: "utf-8",
+                }),
+            );
+        await this._logImportSuccess(new Date(exportDate), file);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -67,5 +68,10 @@ export default class CliController {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected async _compare(previousFile: string, newFile: string): Promise<boolean> {
         throw new Error("_compare() need to be implemented by the child class");
+    }
+
+    protected async _logImportSuccess(editionDate: Date, fileName?: string) {
+        if (!this._providerIdToLog) throw new Error("'_providerIdToLog' needs to be defined by the child class");
+        return dataLogService.addLog(this._providerIdToLog, editionDate, fileName);
     }
 }

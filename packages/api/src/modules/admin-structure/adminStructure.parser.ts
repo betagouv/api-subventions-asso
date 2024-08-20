@@ -1,6 +1,6 @@
 import { AdminTerritorialLevel, AgentTypeEnum } from "dto";
 import { BadRequestError } from "../../shared/errors/httpErrors";
-import * as ParseHelper from "../../shared/helpers/ParserHelper";
+import { GenericParser } from "../../shared/GenericParser";
 import AdminStructureEntity from "./entities/AdminStructureEntity";
 
 /*
@@ -27,7 +27,7 @@ export default class AdminStructureParser {
     };
 
     public static parseXls(content: Buffer): AdminStructureEntity[] {
-        const data = ParseHelper.xlsParse(content)[0]; // single page
+        const data = GenericParser.xlsParse(content)[0]; // single page
         const rows = data.slice(1);
 
         const entities: AdminStructureEntity[] = [];

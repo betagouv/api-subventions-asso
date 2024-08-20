@@ -1,5 +1,6 @@
 import { isValidDate, shortISORegExp } from "../../../shared/helpers/DateHelper";
-import * as ParseHelper from "../../../shared/helpers/ParserHelper";
+import { GenericParser } from "../../../shared/GenericParser";
+import { BeforeAdaptation } from "../../../@types";
 import { ScdlGrantSchema } from "./@types/ScdlGrantSchema";
 
 const OFFICIAL_MAPPER = {
@@ -35,11 +36,10 @@ const CONVENTION_DATE_PATHS = [
     "Date de la convention",
 ];
 
-const dateAdapter = (date: string | number | Date | undefined | null): Date | undefined => {
+const dateAdapter = (date: BeforeAdaptation | undefined | null): Date | undefined => {
     if (!date) return undefined;
-    if (isValidDate(date)) return date as Date;
-    if (typeof date === "string" || date instanceof String) return new Date(date);
-    return ParseHelper.ExcelDateToJSDate(Number(date));
+    if (typeof date === "string") return new Date(date);
+    return GenericParser.ExcelDateToJSDate(Number(date));
 };
 
 export const SCDL_MAPPER: ScdlGrantSchema = {
@@ -47,6 +47,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
         // for now if no exercise column we will use conventionDate as default
         path: [
             [
+                "Année de la demande",
                 ...getMapperVariants("exercice"),
                 "dateDecision_Tri",
                 "annee",
@@ -54,7 +55,11 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 ...CONVENTION_DATE_PATHS,
             ],
         ],
-        adapter: value => dateAdapter(value)?.getFullYear(),
+        adapter: value => {
+            if (!value) return undefined;
+            if (value.toString().length === 4) return Number(value);
+            return dateAdapter(value)?.getFullYear();
+        },
     },
     conventionDate: {
         path: [[...CONVENTION_DATE_PATHS]],
@@ -108,10 +113,9 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
     paymentEndDate: {
         path: [[...getMapperVariants("paymentEndDate"), "Date de versement", "dateperiodedversement"]],
         adapter: value => {
+            if (typeof value !== "string") return undefined;
             const noSpaceValue = value?.replaceAll(" ", "");
-            // @ts-expect-error: with undefined it returns false, so we don't need to check it
             if (expandedShortISOPeriodRegExp.test(noSpaceValue)) return new Date(noSpaceValue.split(/[/_]/)[1].trim());
-            // @ts-expect-error: with undefined it returns false, so we don't need to check it
             else if (shortISORegExp.test(noSpaceValue)) return new Date(noSpaceValue);
             else return null;
         },
@@ -132,8 +136,9 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             ],
         ],
         adapter: value => {
-            if (value?.toLowerCase() === "oui") return true;
-            if (value?.toLowerCase() === "non") return false;
+            if (typeof value !== "string") return undefined;
+            if (["oui", "true"].includes(value?.toLowerCase())) return true;
+            if (["non", "false"].includes(value?.toLowerCase())) return false;
             return undefined;
         },
     },

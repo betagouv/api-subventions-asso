@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.53.0](https://github.com/betagouv/api-subventions-asso/compare/v0.52.1...v0.53.0) (2024-08-06)
+
+### Features
+
+-   **api, tools:** [#2498](https://github.com/betagouv/api-subventions-asso/issues/2498) resilient doc import osiris ([382891e](https://github.com/betagouv/api-subventions-asso/commit/382891eea108964c31c5673ceebd72896ead7b63))
+
+# [0.52.0](https://github.com/betagouv/api-subventions-asso/compare/v0.51.3...v0.52.0) (2024-07-18)
+
+### Features
+
+-   **api:** [#2456](https://github.com/betagouv/api-subventions-asso/issues/2456) scdl parser accepts excel files ([#2483](https://github.com/betagouv/api-subventions-asso/issues/2483)) ([23e3506](https://github.com/betagouv/api-subventions-asso/commit/23e3506b66e61da85ed80973625c1ad829cb7965)), closes [#2318](https://github.com/betagouv/api-subventions-asso/issues/2318)
+
 # [0.51.0](https://github.com/betagouv/api-subventions-asso/compare/v0.50.0...v0.51.0) (2024-07-01)
 
 **Note:** Version bump only for package tools

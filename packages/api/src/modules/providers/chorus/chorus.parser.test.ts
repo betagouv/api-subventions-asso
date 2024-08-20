@@ -1,14 +1,13 @@
-import * as ParserHelper from "../../../shared/helpers/ParserHelper";
-jest.mock("../../../shared/helpers/ParserHelper");
-const mockedParserHelper = jest.mocked(ParserHelper);
-import { printAtSameLine } from "../../../shared/helpers/CliHelper";
-jest.mock("../../../shared/helpers/CliHelper");
 import ChorusParser from "./chorus.parser";
 import { ENTITIES, FILLED_HEADERS, HEADERS, PAGES } from "./__fixtures__/ChorusFixtures";
-import ChorusLineEntity from "./entities/ChorusLineEntity";
-jest.mock("./entities/ChorusLineEntity");
 import * as StringHelper from "../../../shared/helpers/StringHelper";
 import { BeforeAdaptation, DefaultObject } from "../../../@types";
+import { GenericParser } from "../../../shared/GenericParser";
+
+jest.mock("../../../shared/GenericParser");
+const mockedGenericParser = jest.mocked(GenericParser);
+jest.mock("../../../shared/helpers/CliHelper");
+jest.mock("./entities/ChorusLineEntity");
 jest.mock("../../../shared/helpers/StringHelper");
 const mockedStringHelper = jest.mocked(StringHelper);
 
@@ -19,9 +18,7 @@ describe("ChorusParser", () => {
             // @ts-expect-error: protected
             ChorusParser.buildUniqueId(info);
             expect(mockedStringHelper.getMD5).toHaveBeenCalledWith(
-                `${info.ej}-${info.siret}-${info.dateOperation.toISOString()}-${info.amount}-${
-                    info.numeroDemandePayment
-                }-${info.codeCentreFinancier}-${info.codeDomaineFonctionnel}-${info.codeActivitee}`,
+                `${info.codeSociete}-${info.exercice}-${info.numeroDemandePayment}`,
             );
         });
     });
@@ -101,8 +98,8 @@ describe("ChorusParser", () => {
         const ROWS = [...PAGES];
 
         beforeAll(() => {
-            mockedParserHelper.linkHeaderToData.mockReturnValue(ENTITIES[0].data as DefaultObject<BeforeAdaptation>);
-            mockedParserHelper.indexDataByPathObject.mockReturnValue(
+            mockedGenericParser.linkHeaderToData.mockReturnValue(ENTITIES[0].data as DefaultObject<BeforeAdaptation>);
+            jest.mocked(GenericParser.indexDataByPathObject).mockReturnValue(
                 ENTITIES[0].indexedInformations as unknown as DefaultObject<unknown>,
             );
             // @ts-expect-error: protected
@@ -120,8 +117,8 @@ describe("ChorusParser", () => {
 
         it.each`
             fn
-            ${mockedParserHelper.linkHeaderToData}
-            ${mockedParserHelper.indexDataByPathObject}
+            ${mockedGenericParser.linkHeaderToData}
+            ${GenericParser.indexDataByPathObject}
             ${mockValidateIndexedInformations}
             ${mockBuildUniqueId}
         `("should call $fn", ({ fn }) => {
@@ -181,7 +178,7 @@ describe("ChorusParser", () => {
         const DATA = [HEADERS, ...PAGES];
 
         beforeAll(() => {
-            mockedParserHelper.xlsParseWithPageName.mockReturnValue([
+            mockedGenericParser.xlsParseWithPageName.mockReturnValue([
                 { data: [[], []], name: "TAB" },
                 { data: DATA, name: "1. Extraction" },
             ]);
@@ -206,15 +203,15 @@ describe("ChorusParser", () => {
             const CONTENT = "THIS IS A BUFFER";
             // @ts-expect-error
             ChorusParser.parse(CONTENT, () => true);
-            expect(mockedParserHelper.xlsParseWithPageName).toHaveBeenCalledWith(CONTENT);
-            mockedParserHelper.xlsParseWithPageName.mockReturnValueOnce([{ data: DATA, name: "1. Extraction" }]);
+            expect(mockedGenericParser.xlsParseWithPageName).toHaveBeenCalledWith(CONTENT);
+            mockedGenericParser.xlsParseWithPageName.mockReturnValueOnce([{ data: DATA, name: "1. Extraction" }]);
         });
 
-        it("should call ParserHelper.xlsParse", () => {
+        it("should call GenericParser.xlsParse", () => {
             const CONTENT = "THIS IS A BUFFER";
             // @ts-expect-error
             ChorusParser.parse(CONTENT, () => true);
-            expect(mockedParserHelper.xlsParseWithPageName).toHaveBeenCalledWith(CONTENT);
+            expect(mockedGenericParser.xlsParseWithPageName).toHaveBeenCalledWith(CONTENT);
         });
 
         it("should rename empty headers", () => {

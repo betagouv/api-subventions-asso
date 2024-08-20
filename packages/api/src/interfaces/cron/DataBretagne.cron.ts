@@ -1,6 +1,7 @@
 import { CronController } from "../../@types/cron";
 import { AsyncCron } from "../../decorators/cronController.decorator";
 import dataBretagneService from "../../modules/providers/dataBretagne/dataBretagne.service";
+import dataLogService from "../../modules/data-log/dataLog.service";
 
 export class DataBretagneCron implements CronController {
     name = "DataBretagneCron";
@@ -8,6 +9,6 @@ export class DataBretagneCron implements CronController {
     // every month on day 3 (00:00)
     @AsyncCron({ cronExpression: "0 0 3 * *" })
     async resync() {
-        return dataBretagneService.resyncPrograms();
+        await dataBretagneService.resyncPrograms();
     }
 }

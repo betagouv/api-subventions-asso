@@ -1,12 +1,15 @@
 import dataBretagneService from "../../modules/providers/dataBretagne/dataBretagne.service";
 import { DataBretagneCron } from "./DataBretagne.cron";
+import dataLogService from "../../modules/data-log/dataLog.service";
+
 jest.mock("../../modules/providers/dataBretagne/dataBretagne.service");
 
 describe("DataBretagne Cron", () => {
+    // TODO test that it saves import log
     describe("resync", () => {
-        it("shoudl call dataBretagneService.resyncPrograms()", () => {
+        it("should call dataBretagneService.resyncPrograms()", async () => {
             const cron = new DataBretagneCron();
-            cron.resync();
+            await cron.resync();
             expect(dataBretagneService.resyncPrograms).toHaveBeenCalledTimes(1);
         });
     });

@@ -55,7 +55,7 @@ const config = {
                     "sha256-+X7Z1KW2Vcl9pendYbp0FYL6F0HZek43aBP/14cwq+U=", // https://github.com/getsentry/sentry-javascript/issues/8925
                 ],
                 "style-src": ["self", "https://client.crisp.chat", "unsafe-inline"],
-                "frame-src": ["self", "https://game.crisp.chat"],
+                "frame-src": ["self", "https://game.crisp.chat", "https://datasubvention.crisp.help"],
                 "report-uri": ["https://sentry.incubateur.net"],
                 "report-to": ["'csp-endpoint'"],
                 "worker-src": ["blob:"],

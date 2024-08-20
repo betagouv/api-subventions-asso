@@ -1,12 +1,12 @@
 import tqdm = require("tqdm");
-import * as ParseHelper from "../../../shared/helpers/ParserHelper";
+import { GenericParser } from "../../../shared/GenericParser";
 import GisproLineEntity from "./entities/gisproLineEntity";
 import Gispro from "./@types/Gispro";
 
 export default class GisproParser {
     static parse(content: Buffer, validator: (entity: Gispro) => boolean) {
         console.log("Open and read file ...");
-        const pages = ParseHelper.xlsParse(content);
+        const pages = GenericParser.xlsParse(content);
         const page = pages[2];
         console.log("Read file end");
 
@@ -16,8 +16,8 @@ export default class GisproParser {
 
         const entities: GisproLineEntity[] = [];
         for (const row of tqdm(data)) {
-            const parsedData = ParseHelper.linkHeaderToData(header, row);
-            const indexedRow = ParseHelper.indexDataByPathObject(
+            const parsedData = GenericParser.linkHeaderToData(header, row);
+            const indexedRow = GenericParser.indexDataByPathObject(
                 // TODO <string|number> ??
                 GisproLineEntity.indexedInformationsPath,
                 parsedData,
