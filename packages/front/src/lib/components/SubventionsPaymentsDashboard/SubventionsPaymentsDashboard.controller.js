@@ -95,7 +95,7 @@ export default class SubventionsPaymentsDashboardController {
         trackerService.trackEvent("association-etablissement.dashboard.display-provider-modal");
     }
 
-    _buildAssociationAndEtabCsvHeader() {
+    _buildFixedCsvHeader() {
         return ["Nom de l'association", "Rna", "Adresse de l'établissement", "Siret", EXERCICE_CSV_KEY];
     }
 
@@ -106,7 +106,7 @@ export default class SubventionsPaymentsDashboardController {
         ];
     }
 
-    _buildEtablissementCsvData(index) {
+    _buildEtablissementAndExerciceCsvData(index) {
         const siret = this._fullElements[index]?.subvention?.siret || this._fullElements[index]?.payments[0]?.siret;
 
         if (!siret) return ["", "", ""];
@@ -128,10 +128,10 @@ export default class SubventionsPaymentsDashboardController {
     }
 
     download() {
-        const associationHeader = this._buildAssociationAndEtabCsvHeader();
+        const fixedHeader = this._buildFixedCsvHeader();
         const subvHeader = SubventionTableController.extractHeaders();
         const versHeader = PaymentTableController.extractHeaders();
-        const headers = [...associationHeader, ...subvHeader, ...versHeader];
+        const headers = [...fixedHeader, ...subvHeader, ...versHeader];
 
         const associationData = this._buildAssociationCsvData();
         const subventions = SubventionTableController.extractRows(this._fullElements);
@@ -143,7 +143,12 @@ export default class SubventionsPaymentsDashboardController {
             if (!subvention) subvention = Array(subvHeader.length).fill("");
             // empty payment
             if (!payments[index]) payments[index] = Array(versHeader.length).fill("");
-            return [...associationData, ...this._buildEtablissementCsvData(index), ...subvention, ...payments[index]];
+            return [
+                ...associationData,
+                ...this._buildEtablissementAndExerciceCsvData(index),
+                ...subvention,
+                ...payments[index],
+            ];
         });
 
         const yearIndex = headers.findIndex(header => header === EXERCICE_CSV_KEY);
@@ -154,7 +159,7 @@ export default class SubventionsPaymentsDashboardController {
         );
         downloadCsv(
             csvString,
-            `DataSubvention-${associationData[0]}_(${this.identifier})-${dateToDDMMYYYY(new Date())}`,
+            `DataSubvention-${associationData[0]}-${this.identifier}-${dateToDDMMYYYY(new Date())}`, // For exemple : DataSubvention-AssociationName-SIRET-01-01-2021
         );
 
         // Tracking Part

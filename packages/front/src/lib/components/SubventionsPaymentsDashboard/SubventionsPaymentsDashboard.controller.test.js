@@ -272,7 +272,7 @@ describe("SubventionsPaymentsDashboardController", () => {
         beforeEach(() => {
             ctrl = new SubventionsPaymentsDashboardController(SIRET);
             vi.spyOn(ctrl, "_buildAssociationCsvData").mockReturnValue(ASSOCIATION_DATA);
-            vi.spyOn(ctrl, "_buildEtablissementCsvData").mockReturnValue(ESTABLISHMENT_DATA);
+            vi.spyOn(ctrl, "_buildEtablissementAndExerciceCsvData").mockReturnValue(ESTABLISHMENT_DATA);
             mockExtractSubventionHeaders.mockImplementation(vi.fn(() => SUBVENTION_HEADERS));
             mockExtractSubventionRows.mockImplementation(vi.fn(() => [SUBVENTION_ROWS_A, SUBVENTION_ROWS_B]));
             mockExtractPaymentHeaders.mockImplementation(vi.fn(() => VERSEMENT_HEADERS));
