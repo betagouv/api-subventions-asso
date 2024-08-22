@@ -55,8 +55,19 @@ describe("Documents.controller", () => {
         it("sets headSiret", () => {
             expect(ctrl.headSiret).toBe("SIRENNIC");
         });
-        it("sets assoSiren", () => {
-            expect(ctrl.assoSiren).toBe("SIREN");
+
+        it("sets assoIdentifier", () => {
+            expect(ctrl.assoIdentifier).toBe("SIREN");
+        });
+
+        it("sets assoIdentifier to rna if no siren", () => {
+            // @ts-expect-error -- mock private
+            associationStore["currentAssociation"] = new Store({ rna: "RNA" });
+            const controller = new DocumentsController("association", { rna: "RNA" });
+            // @ts-expect-error -- test private
+            expect(controller.assoIdentifier).toBe("RNA");
+            // @ts-expect-error -- mock private
+            associationStore["currentAssociation"] = new Store(ASSOCIATION);
         });
     });
 
