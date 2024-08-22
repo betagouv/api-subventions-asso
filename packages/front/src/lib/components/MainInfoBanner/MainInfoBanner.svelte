@@ -14,7 +14,7 @@
         title={ctrl.title}
         desc={ctrl.description}
         url={ctrl.url}
-        urlLabel="participez à l'enquête" />
+        urlLabel={ctrl.urlLabel} />
 </div>
 
 <style>
@@ -25,9 +25,5 @@
         --hover: var(--background-alt-green-archipel-hover);
         --active: var(--background-contrast-info-active);
         color: var(--background-flat-green-archipel);
-    }
-
-    .custom-notice-container :global(.fr-notice__body::before) {
-        /*background-image: none;*/
     }
 </style>

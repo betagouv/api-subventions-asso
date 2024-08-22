@@ -17,8 +17,12 @@ export class MainInfoBannerController {
     }
 
     get url() {
-        //  return "compléter vos informations ici"  // TODO clean in #2544
         return this.linkUrl;
+    }
+
+    get urlLabel() {
+        //  return "compléter vos informations ici"  // TODO clean in #2544
+        return "participez à l'enquête";
     }
 
     close() {
