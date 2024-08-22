@@ -47,7 +47,7 @@
         "@sveltejs/adapter-auto": "^2.1.1",
         "@sveltejs/adapter-node": "^1.3.1",
         "@sveltejs/kit": "^1.30.3",
-        "axios": "^1.6.2",
+        "axios": "^1.7.4",
         "chart.js": "^4.4.1",
         "csv-stringify": "^6.4.5",
         "dotenv": "^14.3.2",
