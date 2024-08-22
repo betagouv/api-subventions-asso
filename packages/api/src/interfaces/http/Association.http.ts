@@ -15,6 +15,7 @@ import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
 import associationService from "../../modules/associations/associations.service";
 import grantService from "../../modules/grant/grant.service";
 import { JoinedRawGrant } from "../../modules/grant/@types/rawGrant";
+import grantExtractService from "../../modules/grant/grantExtract.service";
 
 @Route("association")
 @Security("jwt")
@@ -87,7 +88,7 @@ export class AssociationHttp extends Controller {
     @Response<string>("200")
     public async getGrantsExtract(identifier: AssociationIdentifiers): Promise<Readable> {
         const grants = await grantService.getGrants(identifier);
-        const csv = grantService.buildCsv(grants);
+        const csv = grantExtractService.buildCsv(grants);
 
         this.setHeader("Content-Type", "text/csv");
         this.setHeader("Content-Disposition", `inline; filename=${identifier}.csv`);

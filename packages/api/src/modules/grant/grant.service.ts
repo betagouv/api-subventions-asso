@@ -1,6 +1,5 @@
 import * as Sentry from "@sentry/node";
 import { CommonGrantDto, Grant, DemandeSubvention, Payment, Rna, Siret } from "dto";
-import csvStringifier = require("csv-stringify/sync");
 import { providersById } from "../providers/providers.helper";
 import { demandesSubventionsProviders, fullGrantProviders, grantProviders, paymentProviders } from "../providers";
 import DemandesSubventionsProvider from "../subventions/@types/DemandesSubventionsProvider";
@@ -22,8 +21,6 @@ import { RnaOnlyError } from "../../shared/errors/GrantError";
 import { FullGrantProvider } from "./@types/FullGrantProvider";
 import { RawGrant, JoinedRawGrant, RawFullGrant, RawApplication, RawPayment, AnyRawGrant } from "./@types/rawGrant";
 import commonGrantService from "./commonGrant.service";
-import GrantAdapter from "./grant.adapter";
-import { ExtractHeaderLabel } from "./@types/GrantToExtract";
 
 export class GrantService {
     fullGrantProvidersById: Record<string, FullGrantProvider<unknown>>;
@@ -150,19 +147,12 @@ export class GrantService {
     }
 
     // appeler adapter pour chaque join.application join.payment et join.fullGrant
-    // implementer une classe GrantAdapter pour chaque adapter de demande et de paiment
+    // implementer une classe GrantAdapter pour chaque adapter de demande et de paiement
     async getGrants(identifier: StructureIdentifiers): Promise<Grant[]> {
         const joinedRawGrants = await this.getRawGrants(identifier);
         const grants = joinedRawGrants.map(this.adaptJoinedRawGrant.bind(this)).filter(grant => grant) as Grant[];
         const sortedGrants = this.sortGrants(grants);
         return sortedGrants;
-    }
-
-    buildCsv(grants: Grant[]): string {
-        return csvStringifier.stringify(
-            grants.map(g => GrantAdapter.grantToCsv(g)),
-            { header: true, columns: ExtractHeaderLabel },
-        );
     }
 
     /**
