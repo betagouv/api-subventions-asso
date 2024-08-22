@@ -3,6 +3,7 @@
 
     import Button from "$lib/dsfr/Button.svelte";
     import userService from "$lib/resources/users/user.service";
+    import Table from "$lib/dsfr/Table.svelte";
 
     export let usersStore;
 
@@ -11,90 +12,82 @@
 </script>
 
 <div class="fr-col fr-col-lg-12 fr-grid-row fr-grid-row--center">
-    <div class="fr-table">
-        <table>
-            <thead>
+    <Table multiline={true}>
+        <svelte:fragment slot="head">
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Actif</th>
+            <th>Nombre de recherches</th>
+            <th>Date dernière recherche</th>
+            <th>Date d'inscription</th>
+            <th>Lien d'activation</th>
+            <th>Date du token de reset</th>
+            <th>Action</th>
+        </svelte:fragment>
+        <svelte:fragment slot="body">
+            {#each $users as user}
                 <tr>
-                    <th>Email</th>
-                    <th>Roles</th>
-                    <th>Actif</th>
-                    <th>Nombre de recherches</th>
-                    <th>Date dernière recherche</th>
-                    <th>Date d'inscription</th>
-                    <th>Lien d'activation</th>
-                    <th>Date du token de reset</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {#each $users as user}
-                    <tr>
-                        <td>
-                            {user.email}
-                        </td>
-                        <td>
-                            {ctrl.prettyUserRoles(user)}
-                        </td>
-                        <td>
-                            {#if !user.active}
-                                Compte à activer
-                            {:else if userService.isUserActif(user)}
-                                Oui
-                            {:else}
-                                <div class="tooltip-wrapper">
-                                    <span class="tooltip">
-                                        L’utilisateur n’a pas effectué de recherche depuis plus de 7 jours
-                                    </span>
-                                    Inactif
-                                    <span class="fr-icon-question-line tooltip-icon fr-icon--sm" aria-hidden="true" />
-                                </div>
-                            {/if}
-                        </td>
-                        <td>
-                            {user.stats.searchCount}
-                        </td>
-                        <td>
-                            {user.stats.lastSearchDate ? new Date(user.stats.lastSearchDate).toLocaleString() : "-"}
-                        </td>
-                        <td>
-                            {new Date(user.signupAt).toLocaleDateString()}
-                        </td>
-                        {#if user.resetToken}
-                            <td>
-                                <a
-                                    href="/auth/reset-password/{user.resetToken}?active=true"
-                                    class="fr-link"
-                                    target="_blank"
-                                    title="Lien d'activation - nouvelle fenêtre"
-                                    rel="noopener external">
-                                    Lien d'activation
-                                </a>
-                            </td>
-                            <td>
-                                {new Date(user.resetTokenDate).toLocaleString()}
-                            </td>
+                    <td>
+                        {user.email}
+                    </td>
+                    <td>
+                        {ctrl.prettyUserRoles(user)}
+                    </td>
+                    <td>
+                        {#if !user.active}
+                            Compte à activer
+                        {:else if userService.isUserActif(user)}
+                            Oui
                         {:else}
-                            <td colspan="2" />
+                            <div class="tooltip-wrapper flex">
+                                <span class="tooltip">
+                                    L’utilisateur n’a pas effectué de recherche depuis plus de 7 jours
+                                </span>
+                                Inactif
+                                <span
+                                    class="fr-icon-question-line tooltip-icon fr-icon--sm fr-ml-1v"
+                                    aria-hidden="true" />
+                            </div>
                         {/if}
+                    </td>
+                    <td>
+                        {user.stats.searchCount}
+                    </td>
+                    <td>
+                        {user.stats.lastSearchDate ? new Date(user.stats.lastSearchDate).toLocaleString() : "-"}
+                    </td>
+                    <td>
+                        {new Date(user.signupAt).toLocaleDateString()}
+                    </td>
+                    {#if user.resetToken}
                         <td>
-                            <Button
-                                disabled={ctrl.isUserDisabled(user)}
-                                type="tertiary"
-                                icon="delete-fill"
-                                ariaControls="fr-modal"
-                                on:click={() => ctrl.displayModal(user)} />
+                            <a
+                                href="/auth/reset-password/{user.resetToken}?active=true"
+                                title="Lien d'activation - nouvelle fenêtre">
+                                Lien d'activation
+                            </a>
                         </td>
-                    </tr>
-                {/each}
-            </tbody>
-        </table>
-    </div>
+                        <td>
+                            {new Date(user.resetTokenDate).toLocaleString()}
+                        </td>
+                    {:else}
+                        <td colspan="2" />
+                    {/if}
+                    <td>
+                        <Button
+                            disabled={ctrl.isUserDisabled(user)}
+                            type="tertiary"
+                            icon="delete-fill"
+                            ariaControls="fr-modal"
+                            on:click={() => ctrl.displayModal(user)} />
+                    </td>
+                </tr>
+            {/each}
+        </svelte:fragment>
+    </Table>
 </div>
 
 <style>
-    .fr-table {
-        overflow: auto;
-    }
     /* This is a quick fix and if needed a Tooltip component should be made */
     .tooltip-wrapper {
         position: relative;

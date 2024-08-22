@@ -20,7 +20,7 @@
     $: currentSort, controller.sort(currentSort);
 </script>
 
-<Table>
+<Table multiline={true} custom={true}>
     <svelte:fragment slot="head">
         {#each $columnDataViews as columnData}
             {#if columnData.haveAction}
@@ -56,10 +56,10 @@
                     <TableCell position={elementData.projectNamePosition}>
                         {elementData.projectName}
                     </TableCell>
-                    <TableCell position="end">
+                    <TableCell>
                         {elementData.montantsDemande}
                     </TableCell>
-                    <TableCell position="end" primary="true">
+                    <TableCell primary="true">
                         <!-- We need #key because StatusLabelController does not see that elementData changes and StatusLabel is not natively rebuilt -->
                         {#key elementData.status}
                             {#if controller.isAccepted(elementData.status)}

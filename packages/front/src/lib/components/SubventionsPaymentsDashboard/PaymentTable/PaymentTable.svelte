@@ -28,7 +28,7 @@
     $: currentSort, controller.sort(currentSort);
 </script>
 
-<Table>
+<Table multiline={true} custom={true}>
     <svelte:fragment slot="head">
         {#each $columnDataViews as columnDataView}
             <TableHead
@@ -52,11 +52,8 @@
                     aria-controls="fr-modal"
                     data-fr-opened="false"
                     class="clickable">
-                    <NumberTableCell primary="true" value={element.totalAmount} />
+                    <NumberTableCell primary="true" value={element.totalAmount} position="start" />
                     <TableCell>
-                        {element.lastPaymentDate}
-                    </TableCell>
-                    <TableCell position="end">
                         {element.programme}
                         <!--
                             What follows is an a11y trick: users can focus this on keyboard.

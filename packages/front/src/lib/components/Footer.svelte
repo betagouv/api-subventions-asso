@@ -35,40 +35,41 @@
                     <li class="fr-footer__content-item">
                         <a
                             class="fr-footer__content-link"
-                            title="legifrance - nouvelle fenêtre"
                             target="_blank"
-                            href="https://legifrance.gouv.fr"
-                            rel="noopener external">
+                            rel="noopener external"
+                            title="info.gouv.fr - nouvelle fenêtre"
+                            href="https://info.gouv.fr">
+                            info.gouv.fr
+                        </a>
+                    </li>
+                    <li class="fr-footer__content-item">
+                        <a
+                            class="fr-footer__content-link"
+                            target="_blank"
+                            rel="noopener external"
+                            title="service-public.fr - nouvelle fenêtre"
+                            href="https://service-public.fr">
+                            service-public.fr
+                        </a>
+                    </li>
+                    <li class="fr-footer__content-item">
+                        <a
+                            class="fr-footer__content-link"
+                            target="_blank"
+                            rel="noopener external"
+                            title="legifrance.gouv.fr - nouvelle fenêtre"
+                            href="https://legifrance.gouv.fr">
                             legifrance.gouv.fr
                         </a>
                     </li>
                     <li class="fr-footer__content-item">
                         <a
                             class="fr-footer__content-link"
-                            title="numerique.gouv - nouvelle fenêtre"
                             target="_blank"
-                            href="https://www.numerique.gouv.fr/"
-                            rel="noopener external">
-                            numerique.gouv.fr
-                        </a>
-                    </li>
-                    <li class="fr-footer__content-item">
-                        <a
-                            class="fr-footer__content-link"
-                            title="beta.gouv - nouvelle fenêtre"
-                            target="_blank"
-                            href="https://beta.gouv.fr/"
-                            rel="noopener external">
-                            beta.gouv.fr
-                        </a>
-                    </li>
-                    <li class="fr-footer__content-item">
-                        <a
-                            class="fr-footer__content-link"
-                            target="_blank"
-                            href="https://www.gouvernement.fr/"
-                            rel="noreferrer">
-                            gouvernement.fr
+                            rel="noopener external"
+                            title="data.gouv.fr - nouvelle fenêtre"
+                            href="https://data.gouv.fr">
+                            data.gouv.fr
                         </a>
                     </li>
                 </ul>

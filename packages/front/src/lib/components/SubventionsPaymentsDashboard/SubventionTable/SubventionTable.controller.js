@@ -52,15 +52,15 @@ export default class SubventionTableController {
 
     buildColumnDataViews() {
         const columnsName = {
-            "subvention.establishment_postcode": "Code postal demandeur",
-            "subvention.service_instructeur": "Service instructeur",
+            "subvention.establishment_postcode": "Code postal",
+            "subvention.service_instructeur": "Instructeur",
             "subvention.dispositif": "Dispositif",
-            "subvention.project-name": "Intitulé de l'action",
-            "subvention.montants.demande": "Montant demandé",
-            "subvention.statut_label": "Statut de la demande",
+            "subvention.project-name": "Action",
+            "subvention.montants.demande": "Demandé",
+            "subvention.statut_label": "Statut",
         };
 
-        const columnsSize = ["15%", "15%", "15%", "18%", "14%", "28%"];
+        const columnsSize = ["16%", "15%", "15%", "15%", "17%", "22%"];
 
         this.columnDataViews.set(
             Object.entries(columnsName).map(([name, label], index) => ({

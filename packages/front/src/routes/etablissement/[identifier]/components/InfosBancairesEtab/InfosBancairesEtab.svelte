@@ -21,7 +21,7 @@
         </svelte:fragment>
         <svelte:fragment slot="head">
             {#each headers as title}
-                <td>{title}</td>
+                <th>{title}</th>
             {/each}
         </svelte:fragment>
         <svelte:fragment slot="body">

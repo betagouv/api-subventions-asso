@@ -2,16 +2,32 @@
     import { createEventDispatcher } from "svelte";
 
     export let closeBtn = false;
+    export let url = undefined;
+    export let urlLabel = "Consulter";
+    export let title = undefined;
+    export let desc = undefined;
+    // info | warning | alert |
+    // weather-orange | weather-red | weather-purple |
+    // attack | witness | cyberattack
+    export let type = "info";
 
     const dispatch = createEventDispatcher();
 </script>
 
-<div class="fr-notice fr-notice--info">
+<div class="fr-notice fr-notice--{type}">
     <div class="fr-container">
         <div class="fr-notice__body">
-            <p class="fr-notice__title">
-                <slot />
-            </p>
+            {#if title}<span class="fr-notice__title">{title}</span>{/if}
+            {#if desc} <span class="fr-notice__desc">{desc}</span>{/if}
+            {#if url}<a
+                    target="_blank"
+                    rel="noopener external"
+                    title="{urlLabel} - nouvelle fenêtre"
+                    href={url}
+                    class="fr-notice__link">
+                    {urlLabel}
+                </a>{/if}
+
             {#if closeBtn}
                 <button on:click={() => dispatch("close")} class="fr-btn--close fr-btn" title="Masquer le message">
                     Masquer le message
