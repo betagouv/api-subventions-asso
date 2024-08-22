@@ -66,8 +66,8 @@ export async function startServer(port = "8080", isTest = false) {
     if (!isTest) app.use(expressLogger());
 
     const limiter = rateLimit({
-        windowMs: 15 * 60 * 1000, // 15 minutes
-        limit: 100, // Limit each IP to 100 requests per `window`
+        windowMs: 60 * 1000, // 1 minute
+        limit: 80, // Limit each IP to 80 requests per `window`
         standardHeaders: "draft-7", // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
         legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
     });
