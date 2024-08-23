@@ -38,7 +38,7 @@ export class DocumentsController {
     public downloadBtnLabel: ReadStore<string>;
     private allFlatDocs: DocumentEntity[];
     private headSiret: Siret;
-    private assoSiren: Siren | undefined;
+    private assoIdentifier: Siren | undefined;
 
     constructor(
         public resourceType: ResourceType,
@@ -69,7 +69,7 @@ export class DocumentsController {
 
         const association = currentAssociation.value;
         this.headSiret = getSiegeSiret(association);
-        this.assoSiren = association?.siren;
+        this.assoIdentifier = association?.siren || association?.rna;
     }
 
     get resourceNameWithDemonstrative() {
@@ -91,9 +91,8 @@ export class DocumentsController {
         const estabDocsPromise = secondarySiret
             ? establishmentService.getDocuments(secondarySiret)
             : Promise.resolve([]);
-        // const assoDocsPromise = Promise.resolve([])
         const assoDocsPromise = associationService
-            .getDocuments(this.assoSiren)
+            .getDocuments(this.assoIdentifier)
             .then(docs => this._filterAssoDocs(docs, secondarySiret || this.headSiret));
         const [estabDocs, assoDocs] = await Promise.all([estabDocsPromise, assoDocsPromise]);
         return this._removeDuplicates([...estabDocs, ...assoDocs]);
