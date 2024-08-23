@@ -3,6 +3,7 @@ import MinistryEntity from "../../../entities/MinistryEntity";
 import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
 import RefProgrammationEntity from "../../../entities/RefProgrammationEntity";
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
+import Siret from "../../../valueObjects/Siret";
 import IChorusIndexedInformations from "../../providers/chorus/@types/IChorusIndexedInformations";
 
 export default class PaymentFlatAdapter {
@@ -24,8 +25,8 @@ export default class PaymentFlatAdapter {
         } = this.getDataBretagneDocumentData(chorusDocument, programs, ministries, domainesFonct, refsProgrammation);
 
         return new PaymentFlatEntity(
-            chorusDocument.siret, // siret,
-            chorusDocument.siret.slice(0, 9), // siren,
+            new Siret(chorusDocument.siret), // siret,
+            new Siret(chorusDocument.siret).toSiren(), // siren,
             chorusDocument.amount, // amount,
             chorusDocument.dateOperation, // operationDate,
             programEntity?.label_programme ?? null, // programName,

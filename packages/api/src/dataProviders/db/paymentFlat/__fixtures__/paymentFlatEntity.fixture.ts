@@ -1,8 +1,10 @@
 import PaymentFlatEntity from "../../../../entities/PaymentFlatEntity";
+import Siren from "../../../../valueObjects/Siren";
+import Siret from "../../../../valueObjects/Siret";
 
 export const PAYMENT_FLAT_ENTITY = new PaymentFlatEntity(
-    "12345678901234", // siret
-    "123456789", // siren
+    new Siret("12345678901234"), // siret
+    new Siren("123456789"), // siren
     1000, // operation amount
     new Date("2023-04-01"), // operation date
     "Programme Exemple", // program
@@ -19,8 +21,8 @@ export const PAYMENT_FLAT_ENTITY = new PaymentFlatEntity(
 );
 
 export const PAYMENT_FLAT_ENTITY_WITH_NULLS = new PaymentFlatEntity(
-    "12345678901234", // siret
-    "123456789", // siren
+    new Siret("12345678901234"), // siret
+    new Siren("123456789"), // siren
     1000, // operation amount
     new Date("2023-04-01"), // operation date
     null, // program

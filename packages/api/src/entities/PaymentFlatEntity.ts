@@ -1,7 +1,10 @@
+import Siren from "../valueObjects/Siren";
+import Siret from "../valueObjects/Siret";
+
 export default class PaymentFlatEntity {
     constructor(
-        public siret: string,
-        public siren: string,
+        public siret: Siret,
+        public siren: Siren,
         public amount: number,
         public operationDate: Date,
         public programName: string | null,
