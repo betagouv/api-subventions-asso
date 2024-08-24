@@ -30,8 +30,7 @@ export default class SearchController {
         const search = await associationService.search(name, page);
         if ((isSiren(name) || isRna(name)) && search.total === 1) {
             const asso = search.results[0];
-            if (isAssociation(asso))
-                return goto(`/association/${removeWhiteSpace(asso.siren || asso.rna)}`, { replaceState: true });
+            if (isAssociation(asso)) return goto(`/association/${asso.siren || asso.rna}`, { replaceState: true });
             else this.isLastSearchCompany.set(true);
         } else {
             // display alert if there are duplicates in rna-siren links
