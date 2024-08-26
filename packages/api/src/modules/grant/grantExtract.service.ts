@@ -1,14 +1,33 @@
-import { FonjepPayment, Grant } from "dto";
+import { Grant, SimplifiedEtablissement } from "dto";
 import csvStringifier = require("csv-stringify/sync");
+import { AssociationIdentifiers } from "../../@types";
+import associationsService from "../associations/associations.service";
+import paymentService from "../payments/payments.service";
 import GrantAdapter from "./grant.adapter";
 import { ExtractHeaderLabel } from "./@types/GrantToExtract";
+import grantService from "./grant.service";
 
 class GrantExtractService {
-    buildCsv(grants: Grant[]): string {
-        return csvStringifier.stringify(
-            this.separateByExercise(grants).map(g => GrantAdapter.grantToCsv(g)),
-            { header: true, columns: ExtractHeaderLabel },
-        );
+    async buildCsv(identifier: AssociationIdentifiers): Promise<{ csv: string; fileName: string }> {
+        const assoIdentifier = identifier; // TODO modify to handle estab identifier
+        const [grants, asso, estabs] = await Promise.all([
+            grantService.getGrants(identifier),
+            associationsService.getAssociation(identifier),
+            associationsService.getEstablishments(identifier),
+        ]);
+
+        const estabBySiret: Record<string, SimplifiedEtablissement> = {};
+        estabs.forEach(estab => (estabBySiret[estab.siret?.[0]?.value] = estab));
+
+        const assoName = asso.denomination_rna?.[0]?.value ?? asso.denomination_siren?.[0]?.value;
+
+        return {
+            csv: csvStringifier.stringify(
+                this.separateByExercise(grants).map(g => GrantAdapter.grantToCsv(g, asso, estabBySiret)),
+                { header: true, columns: ExtractHeaderLabel },
+            ),
+            fileName: `DataSubvention-${assoName}-${identifier}-${new Date().toISOString().slice(0, 10)}`,
+        };
     }
 
     separateByExercise(grants: Grant[]): Grant[] {
@@ -20,10 +39,7 @@ class GrantExtractService {
 
             let year: number;
             for (const payment of payments ?? []) {
-                year =
-                    (payment as FonjepPayment)?.periodeDebut?.value?.getFullYear() ??
-                    payment?.dateOperation?.value?.getFullYear() ??
-                    "unknown";
+                year = paymentService.getPaymentExercise(payment) ?? "unknown";
                 if (!byYear[year]?.payments)
                     byYear[year] = {
                         application: byYear[year]?.application ?? null,

@@ -87,12 +87,10 @@ export class AssociationHttp extends Controller {
     @Produces("text/csv")
     @Response<string>("200")
     public async getGrantsExtract(identifier: AssociationIdentifiers): Promise<Readable> {
-        const grants = await grantService.getGrants(identifier);
-        const csv = grantExtractService.buildCsv(grants);
+        const { csv, fileName } = await grantExtractService.buildCsv(identifier);
 
         this.setHeader("Content-Type", "text/csv");
-        this.setHeader("Content-Disposition", `inline; filename=${identifier}.csv`);
-
+        this.setHeader("Content-Disposition", `inline; filename=${fileName}`);
         const stream = new Readable();
         stream.push(csv);
         stream.push(null);
