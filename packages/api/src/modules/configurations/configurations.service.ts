@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { BadRequestError, ConflictError } from "../../shared/errors/httpErrors";
 import { REGEX_MAIL_DOMAIN } from "../user/user.constant";
 import { DauphinTokenDataEntity, DauphinTokenAvailableTime } from "./entities";
@@ -10,6 +11,7 @@ export enum CONFIGURATION_NAMES {
     ACCEPTED_EMAIL_DOMAINS = "ACCEPTED-EMAIL-DOMAINS",
     DUMP_PUBLISH_DATE = "DUMP-PUBLISH-DATE",
     LAST_RGPD_WARNED_DATE = "LAST-RGPD-WARNED-DATE",
+    LAST_CHORUS_OBJECT_ID = "LAST-CHORUS-OBJECT-ID",
 }
 
 export class ConfigurationsService {
@@ -43,6 +45,16 @@ export class ConfigurationsService {
         return configurationsRepository.getByName<DauphinTokenAvailableTime>(
             CONFIGURATION_NAMES.DAUPHIN_TOKEN_AVAILABLE,
         );
+    }
+
+    async getChorusLastObjectId() {
+        return await configurationsRepository.getByName<ObjectId>(CONFIGURATION_NAMES.LAST_CHORUS_OBJECT_ID);
+    }
+
+    async setChorusLastObjectId(lastObjectId: ObjectId) {
+        await configurationsRepository.upsert(CONFIGURATION_NAMES.LAST_CHORUS_OBJECT_ID, {
+            data: lastObjectId,
+        });
     }
 
     /**

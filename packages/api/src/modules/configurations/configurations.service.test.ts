@@ -1,7 +1,9 @@
+import { isObjectBindingPattern } from "typescript";
 import { BadRequestError } from "../../shared/errors/httpErrors";
 import { ConflictError } from "../../shared/errors/httpErrors/ConflictError";
 import configurationsService, { ConfigurationsService, CONFIGURATION_NAMES } from "./configurations.service";
 import configurationsRepository from "./repositories/configurations.repository";
+import { ObjectId } from "mongodb";
 
 describe("ConfigurationService", () => {
     jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
@@ -113,6 +115,49 @@ describe("ConfigurationService", () => {
                 const actual = await configurationsService.getDauphinTokenAvailableTime();
 
                 expect(actual).toEqual(expected);
+            });
+        });
+    });
+
+    describe("Chorus LastObjectId Configuration Part", () => {
+        describe("getChorusLastObjectId", () => {
+            it("should return lastObjectId", async () => {
+                const expected = { data: new ObjectId("000000000000000000000000") };
+                getByNameMock.mockImplementationOnce(async () => expected);
+
+                const actual = await configurationsService.getChorusLastObjectId();
+                expect(actual).toEqual(expected);
+            });
+
+            it("should call repository with good name", async () => {
+                const expected = "LAST-CHORUS-OBJECT-ID";
+                getByNameMock.mockImplementationOnce(async () => {});
+
+                await configurationsService.getChorusLastObjectId();
+
+                expect(getByNameMock).toHaveBeenCalledWith(expected);
+            });
+
+            it("should return null", async () => {
+                const expected = null;
+                getByNameMock.mockImplementationOnce(async () => expected);
+
+                const actual = await configurationsService.getChorusLastObjectId();
+
+                expect(actual).toEqual(expected);
+            });
+        });
+
+        describe("setChorusLastObjectId", () => {
+            it("should set lastObjectId", async () => {
+                const expected = new ObjectId("000000000000000000000000");
+                upsertMock.mockImplementationOnce(async () => {});
+
+                await configurationsService.setChorusLastObjectId(expected);
+
+                expect(upsertMock).toHaveBeenCalledWith("LAST-CHORUS-OBJECT-ID", {
+                    data: expected,
+                });
             });
         });
     });
