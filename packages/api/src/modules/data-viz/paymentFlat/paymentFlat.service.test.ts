@@ -14,6 +14,9 @@ import ChorusLineEntity from "../../providers/chorus/entities/ChorusLineEntity";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 import { PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
 import paymentFlatPort from "../../../dataProviders/db/paymentFlat/paymentFlat.port";
+import { mock } from "node:test";
+import configurationsService from "../../configurations/configurations.service";
+import { update } from "lodash";
 
 const allDataBretagneDataResolvedValue = {
     programs: RECORDS["programme"],
@@ -54,8 +57,63 @@ describe("PaymentFlatService", () => {
         );
     });
 
+    describe("getChorusLastObjectId", () => {
+        let mockConfigGetChorusObjectId: jest.SpyInstance;
+
+        beforeAll(() => {
+            mockConfigGetChorusObjectId = jest.spyOn(configurationsService, "getChorusLastObjectId").mockResolvedValue({
+                _id: new ObjectId("007f191e810c19729de860ea"),
+                name: "LAST-CHORUS-OBJECT-ID",
+                data: new ObjectId("507f191e810c19729de860ea"),
+                updatedAt: new Date(),
+            });
+        });
+
+        afterAll(() => {
+            mockConfigGetChorusObjectId.mockRestore();
+        });
+
+        it("should call configurationsService.getChorusLastObjectId", async () => {
+            await paymentFlatService.getChorusLastObjectId();
+            expect(mockConfigGetChorusObjectId).toHaveBeenCalledTimes(1);
+        });
+
+        it("should return lastChorusObjectId", async () => {
+            const result = await paymentFlatService.getChorusLastObjectId();
+            const expected = new ObjectId("507f191e810c19729de860ea");
+            expect(result).toEqual(expected);
+        });
+
+        it("should return default value if lastChorusObjectId is null", async () => {
+            mockConfigGetChorusObjectId.mockResolvedValueOnce(null);
+            const result = await paymentFlatService.getChorusLastObjectId();
+            const expected = new ObjectId("000000000000000000000000");
+            expect(result).toEqual(expected);
+        });
+    });
+
+    describe("setChorusLastObjectId", () => {
+        let mockConfigSetChorusObjectId: jest.SpyInstance;
+
+        beforeAll(() => {
+            mockConfigSetChorusObjectId = jest
+                .spyOn(configurationsService, "setChorusLastObjectId")
+                .mockImplementation(jest.fn());
+        });
+
+        afterAll(() => {
+            mockConfigSetChorusObjectId.mockRestore();
+        });
+
+        it("should call configurationsService.setChorusLastObjectId", async () => {
+            const lastObjectId = new ObjectId("000000000000000000000000");
+            await paymentFlatService.setChorusLastObjectId(lastObjectId);
+
+            expect(mockConfigSetChorusObjectId).toHaveBeenCalledWith(lastObjectId);
+        });
+    });
+
     describe("updatePaymentsFlatCollection", () => {
-        const lastChorusObjectId = new ObjectId("507f191e810c19729de860ea");
         const mockDocument1 = {
             _id: new ObjectId("607f191e810c19729de860eb"),
             indexedInformations: {},
@@ -70,13 +128,20 @@ describe("PaymentFlatService", () => {
         let mockchorusCursorFind: jest.SpyInstance;
         let mockToPaymentFlatEntity: jest.SpyInstance;
         let mockInsertOne: jest.SpyInstance;
+        let mockGetChorusLastObjectId: jest.SpyInstance;
+        let mockSetChrousLastObjectId: jest.SpyInstance;
         let mockCursor;
 
         beforeEach(() => {
             //@ts-expect-error : private methode
             mockGetAllDataBretagneData = jest.spyOn(paymentFlatService, "getAllDataBretagneData");
             mockGetAllDataBretagneData.mockResolvedValue(allDataBretagneDataResolvedValue);
-
+            mockGetChorusLastObjectId = jest
+                .spyOn(paymentFlatService, "getChorusLastObjectId")
+                .mockResolvedValue(new ObjectId("507f191e810c19729de860ea"));
+            mockSetChrousLastObjectId = jest
+                .spyOn(paymentFlatService, "setChorusLastObjectId")
+                .mockImplementation(jest.fn());
             mockCursor = {
                 next: jest
                     .fn()
@@ -98,37 +163,45 @@ describe("PaymentFlatService", () => {
             mockGetAllDataBretagneData.mockRestore();
             mockchorusCursorFind.mockRestore();
             mockToPaymentFlatEntity.mockRestore();
+            mockGetChorusLastObjectId.mockRestore();
+            mockSetChrousLastObjectId.mockRestore();
             mockInsertOne.mockRestore();
             mockCursor.next.mockRestore();
         });
 
         it("should call getAllDataBretagneData", async () => {
-            await paymentFlatService.updatePaymentsFlatCollection(lastChorusObjectId);
+            await paymentFlatService.updatePaymentsFlatCollection();
             expect(mockGetAllDataBretagneData).toHaveBeenCalledTimes(1);
         });
 
+        it("should call getChorusLastObjectId", async () => {
+            await paymentFlatService.updatePaymentsFlatCollection();
+            expect(mockGetChorusLastObjectId).toHaveBeenCalledTimes(1);
+        });
+
         it("should call chorusCursorFind once", async () => {
-            await paymentFlatService.updatePaymentsFlatCollection(lastChorusObjectId);
+            await paymentFlatService.updatePaymentsFlatCollection();
             expect(mockchorusCursorFind).toHaveBeenCalledTimes(1);
         });
 
         it("should call next for times : number of documents + 1", async () => {
-            await paymentFlatService.updatePaymentsFlatCollection(lastChorusObjectId);
+            await paymentFlatService.updatePaymentsFlatCollection();
             expect(mockCursor.next).toHaveBeenCalledTimes(3);
         });
 
-        it("should return newChorusLastUpdate", async () => {
-            const result = await paymentFlatService.updatePaymentsFlatCollection(lastChorusObjectId);
-            expect(result).toEqual(mockDocument1._id);
+        it("should set newChorusLastUpdate", async () => {
+            await paymentFlatService.updatePaymentsFlatCollection();
+
+            expect(mockSetChrousLastObjectId).toHaveBeenCalledWith(mockDocument1._id);
         });
 
         it("should call toPaymentFlatEntity for number of documents times", async () => {
-            await paymentFlatService.updatePaymentsFlatCollection(lastChorusObjectId);
+            await paymentFlatService.updatePaymentsFlatCollection();
             expect(mockToPaymentFlatEntity).toHaveBeenCalledTimes(2);
         });
 
         it("should call insertOne for number of documents times", async () => {
-            await paymentFlatService.updatePaymentsFlatCollection(lastChorusObjectId);
+            await paymentFlatService.updatePaymentsFlatCollection();
             expect(mockInsertOne).toHaveBeenCalledTimes(2);
         });
     });

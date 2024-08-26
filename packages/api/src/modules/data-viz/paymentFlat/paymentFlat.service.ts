@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 import paymentFlatPort from "../../../dataProviders/db/paymentFlat/paymentFlat.port";
 import dataBretagneService from "../../providers/dataBretagne/dataBretagne.service";
 import chorusService from "../../providers/chorus/chorus.service";
+import configurationsService, { CONFIGURATION_NAMES } from "../../configurations/configurations.service";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 
 export class PaymentFlatService {
@@ -13,9 +14,21 @@ export class PaymentFlatService {
         return { programs, ministries, domainesFonct, refsProgrammation };
     }
 
-    public async updatePaymentsFlatCollection(lastChorusObjectId: ObjectId) {
+    public async getChorusLastObjectId() {
+        const lastChorusObjectId = await configurationsService.getChorusLastObjectId();
+        if (lastChorusObjectId === null)
+            return new ObjectId("000000000000000000000000"); // ObjectId value corresponding to 1/1/1970 at midnight
+        else return lastChorusObjectId.data;
+    }
+
+    public async setChorusLastObjectId(lastObjectId: ObjectId) {
+        await configurationsService.setChorusLastObjectId(lastObjectId);
+    }
+
+    public async updatePaymentsFlatCollection() {
         const { programs, ministries, domainesFonct, refsProgrammation } = await this.getAllDataBretagneData();
 
+        const lastChorusObjectId = await this.getChorusLastObjectId();
         const chorusCursor = chorusService.chorusCursorFindIndexedData(lastChorusObjectId);
         let document = await chorusCursor.next();
         let newChorusLastUpdate = lastChorusObjectId;
@@ -38,7 +51,7 @@ export class PaymentFlatService {
             document = await chorusCursor.next();
         }
 
-        return newChorusLastUpdate;
+        this.setChorusLastObjectId(newChorusLastUpdate);
     }
 }
 
