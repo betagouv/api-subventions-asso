@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.54.0](https://github.com/betagouv/api-subventions-asso/compare/v0.53.1...v0.54.0) (2024-08-26)
+
+### Features
+
+-   **api:** [#2524](https://github.com/betagouv/api-subventions-asso/issues/2524) add paymentFlatPort ([#2575](https://github.com/betagouv/api-subventions-asso/issues/2575)) ([426fdb0](https://github.com/betagouv/api-subventions-asso/commit/426fdb0bea609c776cfb2c59e8a2c263006974f0))
+-   **api:** [#2526](https://github.com/betagouv/api-subventions-asso/issues/2526) add chorus findAll / getAll ([#2539](https://github.com/betagouv/api-subventions-asso/issues/2539)) ([cf21924](https://github.com/betagouv/api-subventions-asso/commit/cf219245a0739dc835cc3acc2e6a13e82b13e69b))
+-   **api:** [#2580](https://github.com/betagouv/api-subventions-asso/issues/2580) chorus columns ([#2592](https://github.com/betagouv/api-subventions-asso/issues/2592)) ([c9ba473](https://github.com/betagouv/api-subventions-asso/commit/c9ba4738f3d5d9ea6a21cb724b4d5d7c94f2d490))
+-   **api:** [#2588](https://github.com/betagouv/api-subventions-asso/issues/2588) rate limit ([#2593](https://github.com/betagouv/api-subventions-asso/issues/2593)) ([92c4b6c](https://github.com/betagouv/api-subventions-asso/commit/92c4b6c809be90e26263c245a09358a90e59771a))
+-   **api:** 2523 add payment flat service ([#2576](https://github.com/betagouv/api-subventions-asso/issues/2576)) ([45ee4e8](https://github.com/betagouv/api-subventions-asso/commit/45ee4e8d6b54787e54d053d6541e379358551cd4))
+-   resolve sse wrong answer and unessary call to api ([#2614](https://github.com/betagouv/api-subventions-asso/issues/2614)) ([822bd36](https://github.com/betagouv/api-subventions-asso/commit/822bd364a6e410e38ad03f1f495504080d860823))
+
 # [0.53.0](https://github.com/betagouv/api-subventions-asso/compare/v0.52.1...v0.53.0) (2024-08-06)
 
 ### Features

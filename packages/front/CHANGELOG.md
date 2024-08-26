@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.54.0](https://github.com/betagouv/datasubvention/compare/v0.53.1...v0.54.0) (2024-08-26)
+
+### Bug Fixes
+
+-   **front:** [#2171](https://github.com/betagouv/datasubvention/issues/2171) [#2289](https://github.com/betagouv/datasubvention/issues/2289) handle spaces in search ([#2597](https://github.com/betagouv/datasubvention/issues/2597)) ([7edfa71](https://github.com/betagouv/datasubvention/commit/7edfa7177c4b83e4b346ae8fd38c22b6dd90c499))
+-   **front:** [#2611](https://github.com/betagouv/datasubvention/issues/2611) docs when no siren ([#2612](https://github.com/betagouv/datasubvention/issues/2612)) ([76b915a](https://github.com/betagouv/datasubvention/commit/76b915a6782bbced5c40266c48def386f048f122))
+
+### Features
+
+-   **front:** [#2560](https://github.com/betagouv/datasubvention/issues/2560) upgrade dsfr to 1.12 with tables ([#2596](https://github.com/betagouv/datasubvention/issues/2596)) ([2e1d5d2](https://github.com/betagouv/datasubvention/commit/2e1d5d2c7e6c01447d88ae0d6140f457633c9acc))
+-   **front:** add columns on extract csv and add name and date on file… ([#2601](https://github.com/betagouv/datasubvention/issues/2601)) ([45f45ab](https://github.com/betagouv/datasubvention/commit/45f45ab54ee89241f98f26dfae294a6c44e384b7))
+-   resolve sse wrong answer and unessary call to api ([#2614](https://github.com/betagouv/datasubvention/issues/2614)) ([822bd36](https://github.com/betagouv/datasubvention/commit/822bd364a6e410e38ad03f1f495504080d860823))
+
 ## [0.53.1](https://github.com/betagouv/datasubvention/compare/v0.53.0...v0.53.1) (2024-08-21)
 
 **Note:** Version bump only for package front
