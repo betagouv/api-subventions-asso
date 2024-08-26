@@ -20,7 +20,7 @@ export default class GrantAdapter {
             : undefined;
     }
 
-    static grantToCsv(
+    static grantToExtractLines(
         grant: Grant,
         asso: Association,
         estabBySiret: Record<string, SimplifiedEtablissement>,
