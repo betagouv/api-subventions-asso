@@ -44,15 +44,20 @@ export class AssociationController {
     }
 
     getRnaSirenDuplicates(rna, siren) {
-        rnaSirenService.getAssociatedIdentifier(rna).then(mapping => {
-            if (mapping.length > 1) {
-                this.duplicatesFromRna.set(mapping.map(rnaSiren => rnaSiren.siren));
-            }
-        });
-        rnaSirenService.getAssociatedIdentifier(siren).then(mapping => {
-            if (mapping.length > 1) {
-                this.duplicatesFromSiren.set(mapping.map(rnaSiren => rnaSiren.rna));
-            }
-        });
+        if (rna) {
+            rnaSirenService.getAssociatedIdentifier(rna).then(mapping => {
+                if (mapping.length > 1) {
+                    this.duplicatesFromRna.set(mapping.map(rnaSiren => rnaSiren.siren));
+                }
+            });
+        }
+
+        if (siren) {
+            rnaSirenService.getAssociatedIdentifier(siren).then(mapping => {
+                if (mapping.length > 1) {
+                    this.duplicatesFromSiren.set(mapping.map(rnaSiren => rnaSiren.rna));
+                }
+            });
+        }
     }
 }
