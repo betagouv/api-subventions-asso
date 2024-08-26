@@ -10,7 +10,11 @@ export default class PaymentsFlatCli {
 
     async resync(lastChorusObjectId: ObjectId = new ObjectId("000000000000000000000000")) {
         // Default value is 1/1/1970 at midnight
+        console.log("Resyncing payments flat collection");
         const newLastChorusObjectId = await paymentsFlatService.updatePaymentsFlatCollection(lastChorusObjectId);
+
+        // TO DO : modify updatePaymentsFlatCollection
+
         return newLastChorusObjectId;
     }
 
