@@ -42,6 +42,7 @@ export const ChorusFixtures: ChorusLineEntity[] = [
             "Montant payé": 89988.3,
         },
         provider: "Chorus",
+        updated: new Date(),
     },
     {
         uniqueId: "11d177d88edbd421e4eef4f2e8d42b28",
@@ -81,5 +82,6 @@ export const ChorusFixtures: ChorusLineEntity[] = [
             "Montant payé": 89931.9,
         },
         provider: "Chorus",
+        updated: new Date(),
     },
 ];

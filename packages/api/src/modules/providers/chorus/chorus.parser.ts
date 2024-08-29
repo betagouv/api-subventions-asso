@@ -58,7 +58,7 @@ export default class ChorusParser {
             if (!this.isIndexedInformationsValid(indexedInformations)) return entities;
 
             const uniqueId = this.buildUniqueId(indexedInformations);
-            entities.push(new ChorusLineEntity(uniqueId, indexedInformations, data));
+            entities.push(new ChorusLineEntity(uniqueId, new Date(), indexedInformations, data));
 
             CliHelper.printAtSameLine(`${index} entities parsed of ${array.length}`);
 
