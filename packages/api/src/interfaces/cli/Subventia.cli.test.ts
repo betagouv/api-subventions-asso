@@ -4,7 +4,6 @@ jest.mock("csv-stringify/sync", () => ({
     stringify: jest.fn(() => ""),
 }));
 jest.mock("fs");
-//const mockedFs = jest.mocked(fs);
 jest.mock("../../modules/providers/subventia/subventia.service");
 import * as CliHelper from "../../shared/helpers/CliHelper";
 import { SubventiaDbo } from "../../modules/providers/subventia/@types/subventia.entity";
@@ -12,10 +11,7 @@ import { ApplicationStatus } from "dto";
 jest.mock("../../shared/helpers/CliHelper");
 import { ParsedDataWithProblem } from "../../modules/providers/subventia/validators/@types/Validation";
 import csvSyncStringifier = require("csv-stringify/sync");
-import { hasRestParameter } from "typescript";
 import fs from "fs";
-import { mock } from "node:test";
-import { format } from "path";
 
 const MOCK_ENTITIES: Omit<SubventiaDbo, "_id">[] = [
     {
