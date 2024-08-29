@@ -1,10 +1,21 @@
 import SubventiaCli from "./Subventia.cli";
 import subventiaService from "../../modules/providers/subventia/subventia.service";
+jest.mock("csv-stringify/sync", () => ({
+    stringify: jest.fn(() => ""),
+}));
+jest.mock("fs");
+//const mockedFs = jest.mocked(fs);
 jest.mock("../../modules/providers/subventia/subventia.service");
 import * as CliHelper from "../../shared/helpers/CliHelper";
 import { SubventiaDbo } from "../../modules/providers/subventia/@types/subventia.entity";
 import { ApplicationStatus } from "dto";
 jest.mock("../../shared/helpers/CliHelper");
+import { ParsedDataWithProblem } from "../../modules/providers/subventia/validators/@types/Validation";
+import csvSyncStringifier = require("csv-stringify/sync");
+import { hasRestParameter } from "typescript";
+import fs from "fs";
+import { mock } from "node:test";
+import { format } from "path";
 
 const MOCK_ENTITIES: Omit<SubventiaDbo, "_id">[] = [
     {
@@ -103,6 +114,8 @@ const MOCK_ENTITIES: Omit<SubventiaDbo, "_id">[] = [
     },
 ];
 
+const PROCESSED_DATA = { applications: MOCK_ENTITIES, invalids: [] };
+
 describe("SubventiaCli", () => {
     let subventiaCli: SubventiaCli;
 
@@ -113,40 +126,114 @@ describe("SubventiaCli", () => {
     beforeAll(() => {
         subventiaCli = new SubventiaCli();
 
-        (subventiaService.processSubventiaData as jest.Mock).mockReturnValue(MOCK_ENTITIES);
+        (subventiaService.processSubventiaData as jest.Mock).mockReturnValue(PROCESSED_DATA);
         (subventiaService.createEntity as jest.Mock).mockResolvedValue(true);
         (CliHelper.printProgress as jest.Mock).mockReturnValue(true);
     });
 
-    it("should call ProcessSubventiaData", async () => {
-        //@ts-expect-error
-        await subventiaCli._parse(mockFile, mockLogs, mockExportDate);
-        expect(subventiaService.processSubventiaData).toHaveBeenCalledWith(mockFile, mockExportDate);
-    });
+    describe("_parse", () => {
+        let mockPersistEntities: jest.SpyInstance;
+        let mockExportErrors: jest.SpyInstance;
+        beforeAll(() => {
+            //@ts-expect-error -- test private method
+            mockPersistEntities = jest.spyOn(subventiaCli, "persistEntities").mockResolvedValue(Promise.resolve());
+            //@ts-expect-error -- test private method
+            mockExportErrors = jest.spyOn(subventiaCli, "exportErrors").mockResolvedValue(Promise.resolve());
+        });
 
-    it.each`
-        fn
-        ${subventiaService.createEntity}
-        ${CliHelper.printProgress}
-    `("should call $fn several times", async ({ fn }) => {
-        // @ts-expect-error: protected
-        await subventiaCli._parse(mockFile, mockLogs, mockExportDate);
-        expect(fn).toHaveBeenCalledTimes(MOCK_ENTITIES.length);
-    });
+        afterAll(() => {
+            mockPersistEntities.mockRestore();
+            mockExportErrors.mockRestore();
+        });
 
-    it("should call createEntity with each entity", async () => {
-        // @ts-expect-error: protected
-        await subventiaCli._parse(mockFile, mockLogs, mockExportDate);
-        MOCK_ENTITIES.forEach(entity => {
-            expect(subventiaService.createEntity).toHaveBeenCalledWith(entity);
+        it("should call ProcessSubventiaData", async () => {
+            //@ts-expect-error
+            await subventiaCli._parse(mockFile, mockLogs, mockExportDate);
+            expect(subventiaService.processSubventiaData).toHaveBeenCalledWith(mockFile, mockExportDate);
+        });
+
+        it("should call persistEntities", async () => {
+            //@ts-expect-error
+            await subventiaCli._parse(mockFile, mockLogs, mockExportDate);
+            expect(mockPersistEntities).toHaveBeenCalledWith(MOCK_ENTITIES);
+        });
+
+        it("should call exportErrors", async () => {
+            //@ts-expect-error
+            await subventiaCli._parse(mockFile, mockLogs, mockExportDate);
+            expect(mockExportErrors).toHaveBeenCalledWith([], mockFile);
         });
     });
 
-    it("should call printProgress with each index", async () => {
-        // @ts-expect-error: protected
-        await subventiaCli._parse(mockFile, mockLogs, mockExportDate);
-        MOCK_ENTITIES.forEach((_, index) => {
-            expect(CliHelper.printProgress).toHaveBeenCalledWith(index + 1, MOCK_ENTITIES.length);
+    describe("persistEntities", () => {
+        it.each`
+            fn
+            ${subventiaService.createEntity}
+            ${CliHelper.printProgress}
+        `("should call $fn several times", async ({ fn }) => {
+            // @ts-expect-error: protected
+            await subventiaCli.persistEntities(MOCK_ENTITIES);
+            expect(fn).toHaveBeenCalledTimes(MOCK_ENTITIES.length);
+        });
+
+        it("should call createEntity with each entity", async () => {
+            // @ts-expect-error: protected
+            await subventiaCli.persistEntities(MOCK_ENTITIES);
+            MOCK_ENTITIES.forEach(entity => {
+                expect(subventiaService.createEntity).toHaveBeenCalledWith(entity);
+            });
+        });
+
+        it("should call printProgress with each index", async () => {
+            // @ts-expect-error: protected
+            await subventiaCli.persistEntities(MOCK_ENTITIES);
+            MOCK_ENTITIES.forEach((_, index) => {
+                expect(CliHelper.printProgress).toHaveBeenCalledWith(index + 1, MOCK_ENTITIES.length);
+            });
+        });
+    });
+
+    describe("exportErrors", () => {
+        const ERRORS: ParsedDataWithProblem[] = [
+            { error: "error", "Date - Décision": null } as unknown as ParsedDataWithProblem,
+        ];
+        const FILE = "path/subventia";
+        const STR_CONTENT = "content";
+        const OUTPUT_PATH = "importErrors/subventia-Errors.csv";
+
+        beforeAll(() => {
+            jest.mocked(csvSyncStringifier.stringify).mockReturnValue(STR_CONTENT);
+        });
+
+        afterAll(() => {
+            jest.mocked(csvSyncStringifier.stringify).mockRestore();
+            jest.spyOn(Buffer, "from").mockRestore(); // pas clair pour moi
+        });
+
+        it("creates folder if it doesn't exist", async () => {
+            jest.mocked(fs.existsSync).mockReturnValueOnce(false);
+            // @ts-expect-error: protected
+            await subventiaCli.exportErrors(ERRORS, FILE);
+            expect(fs.mkdirSync).toHaveBeenCalledWith(SubventiaCli.errorsFolderName);
+        });
+
+        it("doesn't create folder if it exists", async () => {
+            jest.mocked(fs.existsSync).mockReturnValueOnce(true);
+            // @ts-expect-error: protected
+            await subventiaCli.exportErrors(ERRORS, FILE);
+            expect(fs.mkdirSync).not.toHaveBeenCalled();
+        });
+
+        it("stringifies errors", async () => {
+            // @ts-expect-error: protected
+            await subventiaCli.exportErrors(ERRORS, FILE);
+            expect(csvSyncStringifier.stringify).toHaveBeenCalledWith(ERRORS, { header: true });
+        });
+
+        it("writes in proper path", async () => {
+            // @ts-expect-error: protected
+            await subventiaCli.exportErrors(ERRORS, FILE);
+            expect(fs.writeFileSync).toHaveBeenCalledWith(OUTPUT_PATH, STR_CONTENT, { flag: "w", encoding: "utf-8" });
         });
     });
 });

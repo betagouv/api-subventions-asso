@@ -1,3 +1,4 @@
+import { mock } from "node:test";
 import SubventiaDto from "../@types/subventia.dto";
 import SubventiaValidator from "./subventia.validator";
 
@@ -32,174 +33,289 @@ const INVALID_DATA_ROW = {
 const PARSED_DATA = [PARSED_DATA_ROW, PARSED_DATA_ROW_2, INVALID_DATA_ROW];
 
 describe("SubventiaValidator", () => {
-    describe("validateDataRowTypes", () => {
-        it("should throw an error if the SIRET is invalid", () => {
-            const parsedDataRow = { ...PARSED_DATA_ROW, "SIRET - Demandeur": "invalidSiret" };
-            expect(() => SubventiaValidator.validateDataRowTypes(parsedDataRow)).toThrowError(
-                "INVALID SIRET FOR invalidSiret",
-            );
-        });
-
-        it("should throw an error if the Date - Décision is not a valid date", () => {
-            const parsedDataRow = { ...PARSED_DATA_ROW, "Date - Décision": "invalidDate" };
-            expect(() => SubventiaValidator.validateDataRowTypes(parsedDataRow)).toThrowError(
-                "Date - Décision is not a valid date",
-            );
-        });
-
-        it("should throw an error if the Montant voté TTC - Décision is not a number", () => {
-            const parsedDataRow = { ...PARSED_DATA_ROW, "Montant voté TTC - Décision": "invalid" };
+    describe("isSubventiaDtoValid", () => {
+        it("should return true and no problems if all the data is valid", () => {
+            const expected = { valid: true };
             // @ts-expect-error : test invalid data
-            expect(() => SubventiaValidator.validateDataRowTypes(parsedDataRow)).toThrowError(
-                "Montant voté TTC - Décision is not a number",
-            );
-        });
-
-        it("should throw an error if the Montant Ttc is not a number", () => {
-            const parsedDataRow = { ...PARSED_DATA_ROW, "Montant Ttc": "invalidNumber" };
-            // @ts-expect-error : test invalid data
-            expect(() => SubventiaValidator.validateDataRowTypes(parsedDataRow)).toThrowError(
-                "Montant Ttc is not a number",
-            );
-        });
-
-        it("should return true if the data types are valid", () => {
-            const expected = true;
-            const actual = SubventiaValidator.validateDataRowTypes(PARSED_DATA_ROW);
+            const actual = SubventiaValidator.isSubventiaDtoValid(PARSED_DATA_ROW);
             expect(actual).toEqual(expected);
         });
-    });
 
-    describe("validateDataRowCoherence", () => {
-        it("should throw an error if the Référence administrative - Demande is null", () => {
-            const parsedDataRow = { ...PARSED_DATA_ROW, "Référence administrative - Demande": null };
+        it("should return false and problems if the SIRET is invalid", () => {
+            const expected = {
+                valid: false,
+                problems: [
+                    {
+                        field: "SIRET - Demandeur",
+                        value: "invalidSiret",
+                        message: "SIRET manquant ou invalid",
+                    },
+                ],
+            };
             // @ts-expect-error : test invalid data
-            expect(() => SubventiaValidator.validateDataRowCoherence(parsedDataRow)).toThrowError(
-                "Référence demande null is not accepted in data",
-            );
-        });
-
-        it("should throw an error if the Date - Décision is lower than the year of the request", () => {
-            const parsedDataRow = { ...PARSED_DATA_ROW, "Date - Décision": "50" };
-
-            expect(() => SubventiaValidator.validateDataRowCoherence(parsedDataRow)).toThrowError(
-                "The year of the decision cannot be lower than the year of the request",
-            );
-        });
-
-        it("should throw an error if the Montant voté TTC - Décision is an empty string and status demande VOTE or SOLDE", () => {
-            const parsedDataRow = { ...PARSED_DATA_ROW, "Montant voté TTC - Décision": "" };
-            // @ts-expect-error : test invalid data
-            expect(() => SubventiaValidator.validateDataRowCoherence(parsedDataRow)).toThrowError(
-                `Montant voté TTC - Décision is required for status VOTE and SOLDE`,
-            );
-        });
-
-        it("should return true if the data is coherent", () => {
-            const expected = true;
-            const actual = SubventiaValidator.validateDataRowCoherence(PARSED_DATA_ROW);
+            const actual = SubventiaValidator.isSubventiaDtoValid({
+                ...PARSED_DATA_ROW,
+                "SIRET - Demandeur": "invalidSiret",
+            });
             expect(actual).toEqual(expected);
         });
-    });
 
-    describe("isDataRowTypesValid", () => {
-        let mockValidateDataRowTypes: jest.SpyInstance;
-        beforeAll(() => {
-            mockValidateDataRowTypes = jest.spyOn(SubventiaValidator, "validateDataRowTypes").mockReturnValue(true);
-        });
-
-        afterAll(() => {
-            mockValidateDataRowTypes.mockRestore();
-        });
-
-        it("should call validateDataRowTypes", () => {
-            //@ts-expect-error : test protected method
-            SubventiaValidator.isDataRowTypesValid(PARSED_DATA_ROW);
-            expect(mockValidateDataRowTypes).toHaveBeenCalledWith(PARSED_DATA_ROW);
-        });
-
-        it("should return false if validateDataRowTypes throw an error", () => {
-            mockValidateDataRowTypes.mockImplementationOnce(() => {
-                throw new Error("error");
+        it("should return false and problems if the SIRET is null", () => {
+            const expected = {
+                valid: false,
+                problems: [
+                    {
+                        field: "SIRET - Demandeur",
+                        value: undefined,
+                        message: "SIRET manquant ou invalid",
+                    },
+                ],
+            };
+            // @ts-expect-error : test invalid data
+            const actual = SubventiaValidator.isSubventiaDtoValid({
+                ...PARSED_DATA_ROW,
+                "SIRET - Demandeur": undefined,
             });
-
-            //@ts-expect-error : test protected method
-            const actual = SubventiaValidator.isDataRowTypesValid(PARSED_DATA_ROW);
-            expect(actual).toEqual(false);
+            expect(actual).toEqual(expected);
         });
 
-        it("should return true if validateDataRowTypes return true", () => {
-            //@ts-expect-error : test protected method
-            const actual = SubventiaValidator.isDataRowTypesValid(PARSED_DATA_ROW);
-            expect(actual).toEqual(true);
-        });
-    });
-
-    describe("isDataRowCoherenceValid", () => {
-        let mockValidateDataRowCoherence: jest.SpyInstance;
-        beforeAll(() => {
-            mockValidateDataRowCoherence = jest
-                .spyOn(SubventiaValidator, "validateDataRowCoherence")
-                .mockReturnValue(true);
-        });
-
-        afterAll(() => {
-            mockValidateDataRowCoherence.mockRestore();
-        });
-
-        it("should call validateDataRowCoherence", () => {
-            //@ts-expect-error : test protected method
-            SubventiaValidator.isDataRowCoherenceValid(PARSED_DATA_ROW);
-            expect(mockValidateDataRowCoherence).toHaveBeenCalledWith(PARSED_DATA_ROW);
-        });
-
-        it("should return false if validateDataRowCoherence throw an error", () => {
-            mockValidateDataRowCoherence.mockImplementationOnce(() => {
-                throw new Error("error");
+        it("should return false and problems if the Date - Décision is not a valid date", () => {
+            const expected = {
+                valid: false,
+                problems: [
+                    {
+                        field: "Date - Décision",
+                        value: "invalidDate",
+                        message: "Date - Décision n'est pas valid",
+                    },
+                ],
+            };
+            // @ts-expect-error : test invalid data
+            const actual = SubventiaValidator.isSubventiaDtoValid({
+                ...PARSED_DATA_ROW,
+                "Date - Décision": "invalidDate",
             });
-            //@ts-expect-error : test protected method
-            const actual = SubventiaValidator.isDataRowCoherenceValid(PARSED_DATA_ROW);
-            expect(actual).toEqual(false);
+            expect(actual).toEqual(expected);
         });
 
-        it("should return true if validateDataRowCoherence return true", () => {
-            //@ts-expect-error : test protected method
-            const actual = SubventiaValidator.isDataRowCoherenceValid(PARSED_DATA_ROW);
-            expect(actual).toEqual(true);
+        it("should return true if the Date - Décision is null", () => {
+            const expected = {
+                valid: true,
+            };
+            // @ts-expect-error : test invalid data
+            const actual = SubventiaValidator.isSubventiaDtoValid({ ...PARSED_DATA_ROW, "Date - Décision": undefined });
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return false and problems if the Montant voté TTC - Décision is not a number", () => {
+            const expected = {
+                valid: false,
+                problems: [
+                    {
+                        field: "Montant voté TTC - Décision",
+                        value: "invalid",
+                        message: "Montant voté TTC - Décision n'est pas un nombre",
+                    },
+                ],
+            };
+            // @ts-expect-error : test invalid data
+            const actual = SubventiaValidator.isSubventiaDtoValid({
+                ...PARSED_DATA_ROW,
+                "Montant voté TTC - Décision": "invalid",
+            });
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return true if the Montant voté TTC - Décision is null", () => {
+            const expected = { valid: true };
+            // @ts-expect-error : test invalid data
+            const actual = SubventiaValidator.isSubventiaDtoValid({
+                ...PARSED_DATA_ROW,
+                "Montant voté TTC - Décision": undefined,
+            });
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return false and problems if the Montant Ttc is not a number", () => {
+            const expected = {
+                valid: false,
+                problems: [
+                    {
+                        field: "Montant Ttc",
+                        value: "invalidNumber",
+                        message: "Montant Ttc n'est pas un nombre",
+                    },
+                ],
+            };
+            // @ts-expect-error : test invalid data
+            const actual = SubventiaValidator.isSubventiaDtoValid({
+                ...PARSED_DATA_ROW,
+                "Montant Ttc": "invalidNumber",
+            });
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return true if the Montant Ttc is null", () => {
+            const expected = { valid: true };
+            // @ts-expect-error : test invalid data
+            const actual = SubventiaValidator.isSubventiaDtoValid({ ...PARSED_DATA_ROW, "Montant Ttc": undefined });
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return false and problems if the Référence administrative - Demande is null", () => {
+            const expected = {
+                valid: false,
+                problems: [
+                    {
+                        field: "Référence administrative - Demande",
+                        value: null,
+                        message: "Référence demande null n'est pas une donnée acceptée",
+                    },
+                ],
+            };
+            // @ts-expect-error : test invalid data
+            const actual = SubventiaValidator.isSubventiaDtoValid({
+                ...PARSED_DATA_ROW,
+                "Référence administrative - Demande": null,
+            });
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return false and problem if the Date - Décision is valid but lower than the year of the request", () => {
+            const expected = {
+                valid: false,
+                problems: [
+                    {
+                        field: "Date - Décision",
+                        value: "50",
+                        message: "La date de la décision ne peut pas être inférieure à la date de la demande",
+                    },
+                ],
+            };
+            // @ts-expect-error : test invalid data
+            const actual = SubventiaValidator.isSubventiaDtoValid({ ...PARSED_DATA_ROW, "Date - Décision": "50" });
+            console.log(actual);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return false if the Montant voté TTC - Décision is an empty string and status demande VOTE or SOLDE", () => {
+            const expected = {
+                valid: false,
+                problems: [
+                    {
+                        field: "Montant voté TTC - Décision",
+                        value: "",
+                        message: `Montant voté TTC - Décision est requis pour les status VOTE et SOLDE`,
+                    },
+                ],
+            };
+            // @ts-expect-error : test invalid data
+            const actual = SubventiaValidator.isSubventiaDtoValid({
+                ...PARSED_DATA_ROW,
+                "Montant voté TTC - Décision": "",
+            });
+            expect(actual).toEqual(expected);
         });
     });
 
     describe("sortDataByValidity", () => {
-        let mockIsDataRowTypesValid: jest.SpyInstance;
-        let mockIsDataRowCoherenceValid: jest.SpyInstance;
+        let mockIsSubventiaDtoValid: jest.SpyInstance;
+        let mockFormatInvalids: jest.SpyInstance;
 
         beforeAll(() => {
             //@ts-expect-error : test protected method
-            mockIsDataRowTypesValid = jest.spyOn(SubventiaValidator, "isDataRowTypesValid").mockReturnValue(true);
-
-            mockIsDataRowCoherenceValid = jest //@ts-expect-error : test protected method
-                .spyOn(SubventiaValidator, "isDataRowCoherenceValid")
-                .mockReturnValue(true);
+            mockIsSubventiaDtoValid = jest
+                .spyOn(SubventiaValidator, "isSubventiaDtoValid")
+                .mockReturnValue({ valid: true });
+            //@ts-expect-error : test protected method
+            mockFormatInvalids = jest
+                .spyOn(SubventiaValidator, "formatInvalids")
+                .mockReturnValue([
+                    {
+                        ...INVALID_DATA_ROW,
+                        field: "Montant Ttc",
+                        value: "invalidNumber",
+                        message: "Montant Ttc is not a number",
+                    },
+                ]);
         });
 
         afterAll(() => {
-            mockIsDataRowTypesValid.mockRestore();
-            mockIsDataRowCoherenceValid.mockRestore();
+            mockIsSubventiaDtoValid.mockRestore();
+            mockFormatInvalids.mockRestore();
         });
 
-        it("should call isDataRowTypesValid", () => {
+        it("should call isSubventiaDtoValid", () => {
             SubventiaValidator.sortDataByValidity(PARSED_DATA);
-            expect(mockIsDataRowTypesValid).toHaveBeenCalledTimes(PARSED_DATA.length);
+            expect(mockIsSubventiaDtoValid).toHaveBeenCalledTimes(PARSED_DATA.length);
+        });
+
+        it("should call formatInvalids", () => {
+            SubventiaValidator.sortDataByValidity(PARSED_DATA);
+            expect(mockFormatInvalids).toHaveBeenCalledTimes(1);
         });
 
         it("should return an object with valids and invalids keys", () => {
-            mockIsDataRowTypesValid.mockReturnValueOnce(true);
-            mockIsDataRowTypesValid.mockReturnValueOnce(true);
-            mockIsDataRowTypesValid.mockReturnValueOnce(false);
+            mockIsSubventiaDtoValid.mockReturnValueOnce({ valid: true });
+            mockIsSubventiaDtoValid.mockReturnValueOnce({ valid: true });
+            mockIsSubventiaDtoValid.mockReturnValueOnce({
+                valid: false,
+                problems: [{ field: "Montant Ttc", value: "invalidNumber", message: "Montant Ttc is not a number" }],
+            });
 
-            const expected = { valids: [PARSED_DATA_ROW, PARSED_DATA_ROW_2], invalids: [INVALID_DATA_ROW] };
+            const expected = {
+                valids: [PARSED_DATA_ROW, PARSED_DATA_ROW_2],
+                invalids: [
+                    {
+                        ...INVALID_DATA_ROW,
+                        field: "Montant Ttc",
+                        value: "invalidNumber",
+                        message: "Montant Ttc is not a number",
+                    },
+                ],
+            };
             const actual = SubventiaValidator.sortDataByValidity(PARSED_DATA);
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("formatDate", () => {
+        it("should return '' if ExcelDate is null", () => {
+            // @ts-expect-error: protected
+            expect(SubventiaValidator.formatDate(null)).toEqual("");
+        });
+
+        it("should return a Date object if ExcelDate is not null", async () => {
+            const EXCEL_DATE = "44327";
+            const EXPECTED = "11/05/2021";
+            console.log(EXPECTED);
+            // @ts-expect-error: protected
+            expect(SubventiaValidator.formatDate(EXCEL_DATE)).toEqual(EXPECTED);
+        });
+    });
+
+    describe("formatInvalids", () => {
+        it("should return an array of objects with formatted date", () => {
+            const invalids = [
+                {
+                    error: "error",
+                    "Date - Décision": "44712",
+                    "Date limite de début de réalisation": "44705",
+                    "Date limite de fin de réalisation": "44726",
+                    "Date - Visa de recevabilité": "44677",
+                },
+            ];
+            const expected = [
+                {
+                    error: "error",
+                    "Date - Décision": "31/05/2022",
+                    "Date limite de début de réalisation": "24/05/2022",
+                    "Date limite de fin de réalisation": "14/06/2022",
+                    "Date - Visa de recevabilité": "26/04/2022",
+                },
+            ];
+            // @ts-expect-error: protected
+            expect(SubventiaValidator.formatInvalids(invalids)).toEqual(expected);
         });
     });
 });
