@@ -15,6 +15,9 @@ import { DEV } from "../../configurations/env.conf";
 export default class SubventiaCli extends CliController {
     static cmdName = "subventia";
 
+    protected _providerIdToLog = subventiaService.provider.id;
+
+    protected logFileParsePath = "./logs/subventia.parse.log.txt";
     static errorsFolderName = "./importErrors";
 
     protected async _parse(file: string, logs, exportDate) {
