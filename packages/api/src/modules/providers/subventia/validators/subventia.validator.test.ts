@@ -293,7 +293,6 @@ describe("SubventiaValidator", () => {
         it("should return a Date object if ExcelDate is not null", async () => {
             const EXCEL_DATE = "44327";
             const EXPECTED = "11/05/2021";
-            console.log(EXPECTED);
             // @ts-expect-error: protected
             expect(SubventiaValidator.formatDate(EXCEL_DATE)).toEqual(EXPECTED);
         });

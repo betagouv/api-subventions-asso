@@ -51,6 +51,6 @@ export default class SubventiaCli extends CliController {
             if (err) console.log("Can't write to file");
             else console.log("fields with errors exported in " + path.resolve(outputPath));
         }
-        console.log("file written");
+        console.log("error file written");
     }
 }
