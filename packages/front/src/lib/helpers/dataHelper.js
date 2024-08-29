@@ -3,8 +3,8 @@ export const valueOrHyphen = value => value || "-";
 export const valueOrNotFound = value => value || "Non trouvé";
 
 export const numberToEuro = value => {
-    if (isNaN(value)) return;
     value = typeof value === "string" ? parseFloat(value) : value;
+    if (isNaN(value)) return;
     const nbDigits = value % 1 ? 2 : 0;
     // maximumFractionDigits: check if value have digits if not digits no display N,00
     return value.toLocaleString("fr-FR", {

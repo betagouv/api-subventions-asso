@@ -27,8 +27,8 @@ export default class SubventionsPaymentsStatistiqueController {
 
     _computeRepartition() {
         const establishments = new Set();
-        this.elements.forEach(e => establishments.add(e.siret));
-        if (establishments.size === 1) return undefined;
+        this.elements.forEach(e => establishments.add(e.siret.toString()));
+        if (currentAssoSimplifiedEtabs.value.length === 1) return undefined;
         return { paid: establishments.size, total: currentAssoSimplifiedEtabs.value.length };
     }
 
