@@ -4,7 +4,6 @@ import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum"
 import { isSiret } from "../../shared/Validators";
 import commonGrantService from "./commonGrant.service";
 import mocked = jest.mocked;
-import { siretToSiren } from "../../shared/helpers/SirenHelper";
 import associationsService from "../associations/associations.service";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import RnaSirenEntity from "../../entities/RnaSirenEntity";
@@ -15,11 +14,9 @@ import {
     fullGrantProvidersFixtures,
     paymentProvidersFixtures,
 } from "../providers/__fixtures__/providers.fixture";
-import providers, * as ProvidersIndex from "../providers";
-import * as ProviderMock from "../providers/__mocks__";
+import * as ProvidersIndex from "../providers";
 import scdlService from "../providers/scdl/scdl.service";
 import scdlGrantService from "../providers/scdl/scdl.grant.service";
-import { application } from "express";
 import { DemandeSubvention, Grant, Payment } from "dto";
 import { SIRET } from "../../../tests/__fixtures__/association.fixture";
 jest.mock("../providers/scdl/scdl.service");
