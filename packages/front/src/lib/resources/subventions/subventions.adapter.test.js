@@ -37,7 +37,7 @@ describe("Subventions Adapter", () => {
 
         it("should call valueOrHyphen() multiple time", () => {
             SubventionsAdapter.toSubvention(ELEMENT);
-            expect(dataHelper.valueOrHyphen).toHaveBeenCalledTimes(5);
+            expect(dataHelper.valueOrHyphen).toHaveBeenCalledTimes(6);
         });
     });
 
