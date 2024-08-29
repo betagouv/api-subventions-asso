@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GrantAdapter grantToExtractLine adapts correctly 1`] = `
+Object {
+  "action": "intituléAction",
+  "askedAmount": 12000,
+  "assoName": "nomRNA",
+  "assoRna": "W000000000",
+  "estabAddress": "adresse",
+  "exercice": 2022,
+  "financialCenter": "centreFinancier3",
+  "grantedAmount": 10000,
+  "instructor": "instructeur",
+  "measure": "dispositif",
+  "paidAmount": 6000,
+  "paymentDate": "2022-03-03",
+  "postalCode": "31170",
+  "program": "aggregated",
+  "siret": "01234567891234",
+  "status": "Accordé",
+}
+`;
+
+exports[`GrantAdapter grantToExtractLine adapts correctly with no application 1`] = `
+Object {
+  "action": undefined,
+  "askedAmount": undefined,
+  "assoName": "nomRNA",
+  "assoRna": "W000000000",
+  "estabAddress": "adresse",
+  "exercice": 2022,
+  "financialCenter": "centreFinancier3",
+  "grantedAmount": undefined,
+  "instructor": undefined,
+  "measure": undefined,
+  "paidAmount": 6000,
+  "paymentDate": "2022-03-03",
+  "postalCode": undefined,
+  "program": "aggregated",
+  "siret": undefined,
+  "status": undefined,
+}
+`;
+
+exports[`GrantAdapter grantToExtractLine adapts correctly with no payment 1`] = `
+Object {
+  "action": "intituléAction",
+  "askedAmount": 12000,
+  "assoName": "nomRNA",
+  "assoRna": "W000000000",
+  "estabAddress": "adresse",
+  "exercice": 2022,
+  "financialCenter": undefined,
+  "grantedAmount": 10000,
+  "instructor": "instructeur",
+  "measure": "dispositif",
+  "paidAmount": undefined,
+  "paymentDate": undefined,
+  "postalCode": "31170",
+  "program": "aggregated",
+  "siret": "01234567891234",
+  "status": "Accordé",
+}
+`;
