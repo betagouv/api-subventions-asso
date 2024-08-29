@@ -2,8 +2,12 @@ import { DemandeSubvention } from "dto";
 import Flux from "../../shared/Flux";
 import associationsService from "../../modules/associations/associations.service";
 import { AssociationHttp } from "./Association.http";
+import consumers from "stream/consumers";
 import grantService from "../../modules/grant/grant.service";
+import grantExtractService from "../../modules/grant/grantExtract.service";
+
 jest.mock("../../modules/grant/grant.service");
+jest.mock("../../modules/grant/grantExtract.service");
 
 const controller = new AssociationHttp();
 
@@ -131,6 +135,39 @@ describe("AssociationHttp", () => {
             const expected = true;
             const actual = await controller.registerExtract(IDENTIFIER);
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("getGrantExtract", () => {
+        const CSV = "csv";
+        const FILENAME = "filename";
+
+        beforeAll(() => {
+            jest.mocked(grantExtractService.buildCsv).mockResolvedValue({ csv: CSV, fileName: FILENAME });
+        });
+
+        afterAll(() => {
+            jest.mocked(grantExtractService.buildCsv).mockRestore();
+        });
+
+        it("calls grantExtractService.buildCsv", async () => {
+            await controller.getGrantsExtract(IDENTIFIER);
+            expect(grantExtractService.buildCsv).toHaveBeenCalledWith(IDENTIFIER);
+        });
+
+        it("stream contains csv from service", async () => {
+            const expected = CSV;
+            const streamRes = await controller.getGrantsExtract(IDENTIFIER);
+            const actual = await consumers.text(streamRes);
+            expect(actual).toBe(expected);
+        });
+
+        it("stream contains csv from service", async () => {
+            const expected = "inline; filename=filename";
+            await controller.getGrantsExtract(IDENTIFIER);
+            // @ts-expect-error -- test private
+            const actual = await controller?.headers["Content-Disposition"];
+            expect(actual).toBe(expected);
         });
     });
 });
