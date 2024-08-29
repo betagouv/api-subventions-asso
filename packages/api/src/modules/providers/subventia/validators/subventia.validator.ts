@@ -103,12 +103,10 @@ export default class SubventiaValidator {
 
         {
             key: "Montant voté TTC - Décision",
-            // @ts-expect-error : test invalid data
             test: v =>
-                !(
-                    v["Montant voté TTC - Décision"] === "" &&
-                    ["VOTE", "SOLDE"].includes(v["Statut - Dossier de financement"])
-                ),
+                // @ts-expect-error : test invalid data
+                (v["Montant voté TTC - Décision"] === "" &&
+                    ["VOTE", "SOLDE"].includes(v["Statut - Dossier de financement"])) === false,
             message: "Montant voté TTC - Décision est requis pour les status VOTE et SOLDE",
         },
     ];

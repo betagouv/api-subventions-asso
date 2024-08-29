@@ -1,7 +1,6 @@
 import * as fs from "fs";
 import path from "path";
 import csvSyncStringifier = require("csv-stringify/sync");
-import { relativeTimeRounding } from "moment";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../@types";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";
@@ -11,7 +10,6 @@ import subventiaService from "../../modules/providers/subventia/subventia.servic
 import { SubventiaDbo } from "../../modules/providers/subventia/@types/subventia.entity";
 import { ParsedDataWithProblem } from "../../modules/providers/subventia/validators/@types/Validation";
 import { DEV } from "../../configurations/env.conf";
-import { GenericParser } from "../../shared/GenericParser";
 
 @StaticImplements<CliStaticInterface>()
 export default class SubventiaCli extends CliController {

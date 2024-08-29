@@ -1,4 +1,3 @@
-import { mock } from "node:test";
 import SubventiaDto from "../@types/subventia.dto";
 import SubventiaValidator from "./subventia.validator";
 
@@ -71,9 +70,10 @@ describe("SubventiaValidator", () => {
                     },
                 ],
             };
-            // @ts-expect-error : test invalid data
+            // @ts-expect-error : test protected method
             const actual = SubventiaValidator.isSubventiaDtoValid({
                 ...PARSED_DATA_ROW,
+                // @ts-expect-error : test invalid data
                 "SIRET - Demandeur": undefined,
             });
             expect(actual).toEqual(expected);
@@ -118,9 +118,10 @@ describe("SubventiaValidator", () => {
                     },
                 ],
             };
-            // @ts-expect-error : test invalid data
+            // @ts-expect-error : test protected method
             const actual = SubventiaValidator.isSubventiaDtoValid({
                 ...PARSED_DATA_ROW,
+                // @ts-expect-error : test invalid data
                 "Montant voté TTC - Décision": "invalid",
             });
             expect(actual).toEqual(expected);
@@ -128,9 +129,10 @@ describe("SubventiaValidator", () => {
 
         it("should return true if the Montant voté TTC - Décision is null", () => {
             const expected = { valid: true };
-            // @ts-expect-error : test invalid data
+            // @ts-expect-error : test protected method
             const actual = SubventiaValidator.isSubventiaDtoValid({
                 ...PARSED_DATA_ROW,
+                // @ts-expect-error : test invalid data
                 "Montant voté TTC - Décision": undefined,
             });
             expect(actual).toEqual(expected);
@@ -147,9 +149,10 @@ describe("SubventiaValidator", () => {
                     },
                 ],
             };
-            // @ts-expect-error : test invalid data
+            // @ts-expect-error : test protected method
             const actual = SubventiaValidator.isSubventiaDtoValid({
                 ...PARSED_DATA_ROW,
+                // @ts-expect-error : test invalid data
                 "Montant Ttc": "invalidNumber",
             });
             expect(actual).toEqual(expected);
@@ -173,9 +176,10 @@ describe("SubventiaValidator", () => {
                     },
                 ],
             };
-            // @ts-expect-error : test invalid data
+            // @ts-expect-error : test protected method
             const actual = SubventiaValidator.isSubventiaDtoValid({
                 ...PARSED_DATA_ROW,
+                // @ts-expect-error : test invalid data
                 "Référence administrative - Demande": null,
             });
             expect(actual).toEqual(expected);
@@ -209,9 +213,10 @@ describe("SubventiaValidator", () => {
                     },
                 ],
             };
-            // @ts-expect-error : test invalid data
+            // @ts-expect-error : test protected method
             const actual = SubventiaValidator.isSubventiaDtoValid({
                 ...PARSED_DATA_ROW,
+                // @ts-expect-error : test invalid data
                 "Montant voté TTC - Décision": "",
             });
             expect(actual).toEqual(expected);
@@ -223,12 +228,12 @@ describe("SubventiaValidator", () => {
         let mockFormatInvalids: jest.SpyInstance;
 
         beforeAll(() => {
-            //@ts-expect-error : test protected method
             mockIsSubventiaDtoValid = jest
+                //@ts-expect-error : test protected method
                 .spyOn(SubventiaValidator, "isSubventiaDtoValid")
                 .mockReturnValue({ valid: true });
-            //@ts-expect-error : test protected method
             mockFormatInvalids = jest
+                //@ts-expect-error : test protected method
                 .spyOn(SubventiaValidator, "formatInvalids")
                 .mockReturnValue([
                     {
