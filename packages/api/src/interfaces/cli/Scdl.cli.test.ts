@@ -214,7 +214,6 @@ describe("ScdlCli", () => {
 
         afterAll(() => {
             jest.mocked(csvSyncStringifier.stringify).mockRestore();
-            jest.spyOn(Buffer, "from").mockRestore();
         });
 
         it("creates folder if does not exist", () => {

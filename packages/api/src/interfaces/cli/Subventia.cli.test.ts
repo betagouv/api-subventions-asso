@@ -203,7 +203,6 @@ describe("SubventiaCli", () => {
 
         afterAll(() => {
             jest.mocked(csvSyncStringifier.stringify).mockRestore();
-            jest.spyOn(Buffer, "from").mockRestore(); // pas clair pour moi
         });
 
         it("creates folder if it doesn't exist", async () => {
