@@ -1,7 +1,9 @@
 import dataLogService from "./dataLog.service";
 import dataLogRepository from "./repositories/dataLog.repository";
+import { DataLogAdapter } from "./dataLog.adapter";
 
 jest.mock("./repositories/dataLog.repository");
+jest.mock("./dataLog.adapter");
 
 describe("dataLogService", () => {
     describe("addLog", () => {
@@ -52,6 +54,31 @@ describe("dataLogService", () => {
     });
 
     describe("findLastByProvider", () => {
-        // TODO
+        beforeAll(() => {
+            // @ts-expect-error -- mock
+            jest.mocked(dataLogRepository.findLastByProvider).mockResolvedValue([1, 2, 3]);
+        });
+
+        afterAll(() => {
+            jest.mocked(dataLogRepository.findLastByProvider).mockRestore();
+        });
+
+        it("gets data from repo", async () => {
+            await dataLogService.findLastByProvider();
+            expect(dataLogRepository.findLastByProvider).toHaveBeenCalled();
+        });
+
+        it("adapts each log", async () => {
+            await dataLogService.findLastByProvider();
+            expect(DataLogAdapter.entityToDto).toHaveBeenCalledTimes(3);
+        });
+
+        it("returns adapted value", async () => {
+            // @ts-expect-error -- test
+            jest.mocked(DataLogAdapter.entityToDto).mockImplementation(v => v.toString());
+            const expected = ["1", "2", "3"];
+            const actual = await dataLogService.findLastByProvider();
+            expect(actual).toEqual(expected);
+        });
     });
 });
