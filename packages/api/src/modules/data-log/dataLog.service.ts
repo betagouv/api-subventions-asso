@@ -1,5 +1,7 @@
 import path from "path";
+import { DataLogDto } from "dto";
 import dataLogRepository from "./repositories/dataLog.repository";
+import { DataLogAdapter } from "./dataLog.adapter";
 
 class DataLogService {
     addLog(providerId: string, editionDate: Date, filePath?: string) {
@@ -15,6 +17,11 @@ class DataLogService {
             editionDate,
             fileName,
         });
+    }
+
+    async findLastByProvider(): Promise<DataLogDto[]> {
+        const logs = await dataLogRepository.findLastByProvider();
+        return logs.map(log => DataLogAdapter.entityToDto(log));
     }
 }
 

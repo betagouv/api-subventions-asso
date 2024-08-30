@@ -50,4 +50,8 @@ describe("dataLogService", () => {
             expect(actual).toBe(expected);
         });
     });
+
+    describe("findLastByProvider", () => {
+        // TODO
+    });
 });
