@@ -32,7 +32,7 @@ class GrantExtractService {
         return {
             csv: csvStringifier.stringify(
                 separatedGrants.map(g => GrantAdapter.grantToExtractLine(g, asso, estabBySiret)),
-                { header: true, columns: ExtractHeaderLabel },
+                { header: true, columns: ExtractHeaderLabel, delimiter: ";" },
             ),
             fileName: `DataSubvention-${assoName}-${identifier}-${new Date().toISOString().slice(0, 10)}`,
         };

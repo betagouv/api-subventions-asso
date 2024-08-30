@@ -76,6 +76,7 @@ describe("GrantExtractService", () => {
             expect(csvStringifier.stringify).toHaveBeenCalledWith(expect.any(Array), {
                 header: true,
                 columns: ExtractHeaderLabel,
+                delimiter: ";",
             });
         });
 
