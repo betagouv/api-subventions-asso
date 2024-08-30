@@ -13,7 +13,7 @@ export class PaymentFlatService {
         const refsProgrammation = await dataBretagneService.getRefProgrammationRecord();
         return { programs, ministries, domainesFonct, refsProgrammation };
     }
-
+    /*
     public async getChorusLastObjectId() {
         const lastChorusObjectId = await configurationsService.getChorusLastObjectId();
         if (lastChorusObjectId === null)
@@ -24,19 +24,28 @@ export class PaymentFlatService {
     public async setChorusLastObjectId(lastObjectId: ObjectId) {
         await configurationsService.setChorusLastObjectId(lastObjectId);
     }
+    */
+
+    public async getChorusLastUpdateImported() {
+        const lastChorusUpdateImported = await configurationsService.getChorusLastUpdateImported();
+        if (lastChorusUpdateImported === null) return new Date("1970-01-01");
+        else return lastChorusUpdateImported.data;
+    }
+
+    public async setChorusLastUpdateImportes(lastUpdateImported: Date) {
+        await configurationsService.setChorusLastUpdateImported(lastUpdateImported);
+    }
 
     public async updatePaymentsFlatCollection() {
         const { programs, ministries, domainesFonct, refsProgrammation } = await this.getAllDataBretagneData();
 
-        const lastChorusObjectId = await this.getChorusLastObjectId();
-        const chorusCursor = chorusService.chorusCursorFindIndexedData(lastChorusObjectId);
+        const lastChorusUpdateImported = await this.getChorusLastUpdateImported();
+        const chorusCursor = chorusService.chorusCursorFindIndexedData(lastChorusUpdateImported);
         let document = await chorusCursor.next();
-        let newChorusLastUpdate = lastChorusObjectId;
+        let newChorusLastUpdate = lastChorusUpdateImported;
 
         while (document != null) {
-            document._id.getTimestamp() > newChorusLastUpdate.getTimestamp()
-                ? (newChorusLastUpdate = document._id)
-                : null;
+            document > newChorusLastUpdate.getTimestamp() ? (newChorusLastUpdate = document._id) : null;
 
             const paymentFlatEntity = PaymentFlatAdapter.toPaymentFlatEntity(
                 document.indexedInformations,

@@ -11,7 +11,7 @@ export enum CONFIGURATION_NAMES {
     ACCEPTED_EMAIL_DOMAINS = "ACCEPTED-EMAIL-DOMAINS",
     DUMP_PUBLISH_DATE = "DUMP-PUBLISH-DATE",
     LAST_RGPD_WARNED_DATE = "LAST-RGPD-WARNED-DATE",
-    LAST_CHORUS_OBJECT_ID = "LAST-CHORUS-OBJECT-ID",
+    LAST_CHORUS_UPDATE_IMPORTED = "LAST-CHORUS-UPDATE-IMPORTED",
 }
 
 export class ConfigurationsService {
@@ -47,13 +47,15 @@ export class ConfigurationsService {
         );
     }
 
-    async getChorusLastObjectId() {
-        return await configurationsRepository.getByName<ObjectId>(CONFIGURATION_NAMES.LAST_CHORUS_OBJECT_ID);
+    async getChorusLastUpdateImported() {
+        // get the last chorus update that has been imported in paymentFlat data
+        return await configurationsRepository.getByName<Date>(CONFIGURATION_NAMES.LAST_CHORUS_UPDATE_IMPORTED);
     }
 
-    async setChorusLastObjectId(lastObjectId: ObjectId) {
-        await configurationsRepository.upsert(CONFIGURATION_NAMES.LAST_CHORUS_OBJECT_ID, {
-            data: lastObjectId,
+    async setChorusLastUpdateImported(lastUpdateImported: Date) {
+        // set the last chorus update that has been imported in paymentFlat data
+        await configurationsRepository.upsert(CONFIGURATION_NAMES.LAST_CHORUS_UPDATE_IMPORTED, {
+            data: lastUpdateImported,
         });
     }
 
