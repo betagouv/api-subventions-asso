@@ -6,12 +6,14 @@ import associationsService from "../associations/associations.service";
 import GrantAdapter from "./grant.adapter";
 import csvStringifier = require("csv-stringify/sync");
 import { ExtractHeaderLabel, GrantToExtract } from "./@types/GrantToExtract";
+import { isSiren } from "../../shared/Validators";
 
 jest.mock("./grant.service");
 jest.mock("../associations/associations.service");
 jest.mock("../payments/payments.service");
 jest.mock("./grant.adapter");
 jest.mock("csv-stringify/sync");
+jest.mock("../../shared/Validators");
 
 describe("GrantExtractService", () => {
     describe("buildCsv", () => {
@@ -28,6 +30,7 @@ describe("GrantExtractService", () => {
             jest.mocked(grantService.getGrants).mockResolvedValue(GRANTS);
             jest.mocked(associationsService.getAssociation).mockResolvedValue(ASSO);
             jest.mocked(associationsService.getEstablishments).mockResolvedValue(ESTABS);
+            jest.mocked(isSiren).mockReturnValue(true);
         });
 
         afterAll(() => {
@@ -35,6 +38,7 @@ describe("GrantExtractService", () => {
             jest.mocked(grantService.getGrants).mockRestore();
             jest.mocked(associationsService.getAssociation).mockRestore();
             jest.mocked(associationsService.getEstablishments).mockRestore();
+            jest.mocked(isSiren).mockRestore();
         });
 
         it("gets grants", async () => {

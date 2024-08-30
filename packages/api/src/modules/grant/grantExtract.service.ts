@@ -1,15 +1,22 @@
 import { Grant, SimplifiedEtablissement } from "dto";
 import csvStringifier = require("csv-stringify/sync");
-import { StructureIdentifiers } from "../../@types";
+import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
 import associationsService from "../associations/associations.service";
 import paymentService from "../payments/payments.service";
+import { BadRequestError } from "../../shared/errors/httpErrors";
+import { isRna, isSiren, isSiret } from "../../shared/Validators";
+import { siretToSiren } from "../../shared/helpers/SirenHelper";
 import GrantAdapter from "./grant.adapter";
 import { ExtractHeaderLabel } from "./@types/GrantToExtract";
 import grantService from "./grant.service";
 
 class GrantExtractService {
     async buildCsv(identifier: StructureIdentifiers): Promise<{ csv: string; fileName: string }> {
-        const assoIdentifier = identifier; // TODO modify to handle estab identifier
+        let assoIdentifier: AssociationIdentifiers | undefined;
+        if (isSiret(identifier)) assoIdentifier = siretToSiren(identifier);
+        if (isRna(identifier) || isSiren(identifier)) assoIdentifier = identifier;
+        if (!assoIdentifier) throw new BadRequestError("identifiant invalide");
+
         const [grants, asso, estabs] = await Promise.all([
             grantService.getGrants(identifier),
             associationsService.getAssociation(assoIdentifier),
