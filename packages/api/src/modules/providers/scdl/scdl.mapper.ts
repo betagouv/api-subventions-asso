@@ -1,4 +1,4 @@
-import { isValidDate, shortISORegExp } from "../../../shared/helpers/DateHelper";
+import { shortISORegExp } from "../../../shared/helpers/DateHelper";
 import { GenericParser } from "../../../shared/GenericParser";
 import { BeforeAdaptation } from "../../../@types";
 import { ScdlGrantSchema } from "./@types/ScdlGrantSchema";
@@ -34,6 +34,7 @@ const CONVENTION_DATE_PATHS = [
     "datedeconvention",
     "Date de convention*",
     "Date de la convention",
+    "Date de la convention de subvention (AAAA-MM-JJ)",
 ];
 
 const dateAdapter = (date: BeforeAdaptation | undefined | null): Date | undefined => {
@@ -67,10 +68,22 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
     },
     decisionReference: [[...getMapperVariants("decisionReference"), "Référence de la décision"]],
     associationName: [
-        [...getMapperVariants("associationName"), "Nom du bénéficiaire*", "Nom Bénéficiaire", "NOM Bénéficiaire"],
+        [
+            ...getMapperVariants("associationName"),
+            "Nom du bénéficiaire*",
+            "Nom Bénéficiaire",
+            "NOM Bénéficiaire",
+            "Nom du bénéficiaire",
+        ],
     ],
     associationSiret: [
-        [...getMapperVariants("associationSiret"), "Identification du bénéficiaire*", "Numéro Siret", "N° SIRET"],
+        [
+            ...getMapperVariants("associationSiret"),
+            "Identification du bénéficiaire*",
+            "Numéro Siret",
+            "N° SIRET",
+            "identification du bénéficiaire (SIRET)",
+        ],
     ],
     associationRna: [[...getMapperVariants("associationRna")]],
     object: [
@@ -105,13 +118,21 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "dateperiodedeversement",
                 "dateperiodedversement",
                 "Date(s) ou période(s) de versement",
+                "Date(s) ou période(s) de versement (AAAA-MM-JJ)",
             ],
         ],
         // @ts-expect-error: with undefined it returns false, so we don't need to check it
         adapter: value => (shortISORegExp.test(value) ? new Date(value.split(/[/_]/)[0].trim()) : dateAdapter(value)),
     },
     paymentEndDate: {
-        path: [[...getMapperVariants("paymentEndDate"), "Date de versement", "dateperiodedversement"]],
+        path: [
+            [
+                ...getMapperVariants("paymentEndDate"),
+                "Date de versement",
+                "dateperiodedversement",
+                "Date(s) ou période(s) de versement (AAAA-MM-JJ)",
+            ],
+        ],
         adapter: value => {
             if (typeof value !== "string") return undefined;
             const noSpaceValue = value?.replaceAll(" ", "");
@@ -125,6 +146,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             ...getMapperVariants("idRAE"),
             "Numéro de référencement au répertoire des entreprises",
             "Numéro de référencement au répertoire des entreprises",
+            "Numéro unique de référencement au répertoire des aides aux entreprises (RAE)",
         ],
     ],
     UeNotification: {
@@ -133,6 +155,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 ...getMapperVariants("UeNotification"),
                 "Aide notifiée Ã  l'Europe",
                 "Aides ne relevant pas d'une aide d'état",
+                "Aide d'Etat notifiée à la Commission européenne, conformément aux dispositions du règlement (UE) n° 1407/2013 de la Commission du 18 décembre 2013",
             ],
         ],
         adapter: value => {
@@ -148,6 +171,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 ...getMapperVariants("grantPercentage"),
                 "Pourcentage du montant de la subvention attribué au bénéficiaire*",
                 "% du mt de la subvention attribuée au bénéficiaire",
+                "Pourcentage du montant de la subvention attribuée au bénéficiaire",
             ],
         ],
         adapter: value => (value ? parseFloat(value) : value),
