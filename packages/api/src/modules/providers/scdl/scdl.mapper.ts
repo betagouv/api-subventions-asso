@@ -76,15 +76,18 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             "Nom du bénéficiaire",
         ],
     ],
-    associationSiret: [
-        [
-            ...getMapperVariants("associationSiret"),
-            "Identification du bénéficiaire*",
-            "Numéro Siret",
-            "N° SIRET",
-            "identification du bénéficiaire (SIRET)",
+    associationSiret: {
+        path: [
+            [
+                ...getMapperVariants("associationSiret"),
+                "Identification du bénéficiaire*",
+                "Numéro Siret",
+                "N° SIRET",
+                "identification du bénéficiaire (SIRET)",
+            ],
         ],
-    ],
+        adapter: v => v?.toString(),
+    },
     associationRna: [[...getMapperVariants("associationRna")]],
     object: [
         [
