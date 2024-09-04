@@ -241,6 +241,23 @@ describe("ScdlGrantParser", () => {
             expect(actual).toEqual(expected);
         });
 
+        it("should return true and report error if optional allocatorSiret is set but not valid", () => {
+            requirementTestsMocks.allocatorSiret.mockReturnValueOnce(false);
+            const expected = {
+                valid: true,
+                problems: [
+                    {
+                        field: "allocatorSiret-origin",
+                        value: "allocatorSiret-value",
+                        message: "SIRET invalide",
+                    },
+                ],
+            };
+            // @ts-expect-error: protected method
+            const actual = ScdlGrantParser.isGrantValid(GRANT, ORIGINAL_WITH_PATH);
+            expect(actual).toEqual(expected);
+        });
+
         it("should return false with explanation for each field with error", () => {
             requirementTestsMocks.amount.mockReturnValueOnce(false);
             requirementTestsMocks.paymentStartDate.mockReturnValueOnce(false);
@@ -272,6 +289,7 @@ describe("ScdlGrantParser", () => {
             ${"conventionDate"}   | ${mockedDateHelper.isValidDate} | ${1}
             ${"associationRna"}   | ${mockedValidators.isRna}       | ${0}
             ${"paymentEndDate"}   | ${mockedDateHelper.isValidDate} | ${2}
+            ${"allocatorSiret"}   | ${mockedValidators.isSiret}     | ${0}
         `("it sets '$param' to undefined if set but invalid", ({ param }) => {
             requirementTestsMocks[param].mockReturnValueOnce(false);
             const expected = { [param]: undefined };
