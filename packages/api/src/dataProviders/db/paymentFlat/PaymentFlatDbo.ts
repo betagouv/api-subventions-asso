@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 
 export default interface PaymentFlatDbo {
     _id: ObjectId;
+    uniqueId: string;
     siret: Siret;
     siren: Siren;
     montant: number;

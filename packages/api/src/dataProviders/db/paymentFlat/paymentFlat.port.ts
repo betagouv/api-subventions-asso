@@ -1,3 +1,4 @@
+import { AnyBulkWriteOperation } from "mongodb";
 import MongoRepository from "../../../shared/MongoRepository";
 import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
 import PaymentFlatDbo from "./PaymentFlatDbo";
@@ -11,7 +12,14 @@ export class PaymentFlatPort extends MongoRepository<PaymentFlatDbo> {
     }
 
     public async insertOne(entity: PaymentFlatEntity) {
-        return this.collection.insertOne(PaymentFlatAdapter.toDbo(entity));
+        return await this.collection.insertOne(PaymentFlatAdapter.toDbo(entity));
+    }
+
+    public async upsertOne(entity: PaymentFlatEntity) {
+        const updateDbo = PaymentFlatAdapter.toDbo(entity);
+        console.log(updateDbo);
+        console.log(updateDbo.uniqueId);
+        await this.collection.updateOne({ uniqueId: updateDbo.uniqueId }, { $set: updateDbo }, { upsert: true });
     }
 
     public async deleteAll() {

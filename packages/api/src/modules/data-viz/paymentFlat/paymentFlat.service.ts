@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import paymentFlatPort from "../../../dataProviders/db/paymentFlat/paymentFlat.port";
 import dataBretagneService from "../../providers/dataBretagne/dataBretagne.service";
 import chorusService from "../../providers/chorus/chorus.service";
@@ -13,18 +12,6 @@ export class PaymentFlatService {
         const refsProgrammation = await dataBretagneService.getRefProgrammationRecord();
         return { programs, ministries, domainesFonct, refsProgrammation };
     }
-    /*
-    public async getChorusLastObjectId() {
-        const lastChorusObjectId = await configurationsService.getChorusLastObjectId();
-        if (lastChorusObjectId === null)
-            return new ObjectId("000000000000000000000000"); // ObjectId value corresponding to 1/1/1970 at midnight
-        else return lastChorusObjectId.data;
-    }
-
-    public async setChorusLastObjectId(lastObjectId: ObjectId) {
-        await configurationsService.setChorusLastObjectId(lastObjectId);
-    }
-    */
 
     public async getChorusLastUpdateImported() {
         const lastChorusUpdateImported = await configurationsService.getChorusLastUpdateImported();
@@ -32,7 +19,7 @@ export class PaymentFlatService {
         else return lastChorusUpdateImported.data;
     }
 
-    public async setChorusLastUpdateImportes(lastUpdateImported: Date) {
+    public async setChorusLastUpdateImported(lastUpdateImported: Date) {
         await configurationsService.setChorusLastUpdateImported(lastUpdateImported);
     }
 
@@ -40,27 +27,32 @@ export class PaymentFlatService {
         const { programs, ministries, domainesFonct, refsProgrammation } = await this.getAllDataBretagneData();
 
         const lastChorusUpdateImported = await this.getChorusLastUpdateImported();
-        const chorusCursor = chorusService.chorusCursorFindIndexedData(lastChorusUpdateImported);
+        const chorusCursor = chorusService.chorusCursorFindData(lastChorusUpdateImported);
         let document = await chorusCursor.next();
         let newChorusLastUpdate = lastChorusUpdateImported;
-
+        let i = 0;
         while (document != null) {
-            document > newChorusLastUpdate.getTimestamp() ? (newChorusLastUpdate = document._id) : null;
-
+            i += 1;
+            console.log("inizio");
+            console.log(i);
+            document.updated > newChorusLastUpdate ? (newChorusLastUpdate = document.updated) : null;
+            console.log(document.updated);
+            console.log(document.uniqueId);
             const paymentFlatEntity = PaymentFlatAdapter.toPaymentFlatEntity(
-                document.indexedInformations,
+                document,
                 programs,
                 ministries,
                 domainesFonct,
                 refsProgrammation,
             );
 
-            paymentFlatPort.insertOne(paymentFlatEntity);
-
+            paymentFlatPort.upsertOne(paymentFlatEntity);
+            console.log("fine");
+            console.log(i);
             document = await chorusCursor.next();
         }
 
-        this.setChorusLastObjectId(newChorusLastUpdate);
+        this.setChorusLastUpdateImported(newChorusLastUpdate);
     }
 }
 

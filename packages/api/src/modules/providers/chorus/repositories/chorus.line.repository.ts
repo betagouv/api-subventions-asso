@@ -81,19 +81,20 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
         return this.collection.find(query, projection);
     }
 
-    public cursorFindIndexedData(updateThreshold?: Date) {
+    public cursorFindData(updateThreshold?: Date) {
         /*updateThreshold is used to get all the objects that have been
          updated after the updateThreshold
         */
         if (!updateThreshold) {
-            return this.cursorFind({}, { indexedInformations: 1 });
-        } else return this.cursorFind({ _id: { $gt: updateThreshold } }, { indexedInformations: 1 });
+            return this.cursorFind({});
+        } else return this.cursorFind({ updated: { $gt: updateThreshold } });
     }
 
     async createIndexes() {
         await this.collection.createIndex({ uniqueId: 1 }, { unique: true });
         await this.collection.createIndex({ "indexedInformations.ej": 1 });
         await this.collection.createIndex({ "indexedInformations.siret": 1 });
+        await this.collection.createIndex({ updated: 1 });
     }
 }
 

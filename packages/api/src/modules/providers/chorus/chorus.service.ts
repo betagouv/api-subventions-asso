@@ -1,6 +1,5 @@
-import { cursorTo } from "readline";
 import { Siren, Siret } from "dto";
-import { ObjectId, WithId } from "mongodb";
+import { WithId } from "mongodb";
 import { ASSO_BRANCHE } from "../../../shared/ChorusBrancheAccepted";
 import CacheData from "../../../shared/Cache";
 import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
@@ -11,9 +10,7 @@ import { RawGrant, RawPayment } from "../../grant/@types/rawGrant";
 import ProviderCore from "../ProviderCore";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import uniteLegalEntreprisesService from "../uniteLegalEntreprises/uniteLegal.entreprises.service";
-import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
-import { DefaultObject } from "../../../@types";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import chorusLineRepository from "./repositories/chorus.line.repository";
@@ -108,8 +105,8 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
         return this.toPaymentArray(requests);
     }
 
-    public chorusCursorFindIndexedData(updateThreshold?: Date) {
-        return chorusLineRepository.cursorFindIndexedData(updateThreshold);
+    public chorusCursorFindData(updateThreshold?: Date) {
+        return chorusLineRepository.cursorFindData(updateThreshold);
     }
 
     // TODO: unit test this

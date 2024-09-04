@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../@types";
 
