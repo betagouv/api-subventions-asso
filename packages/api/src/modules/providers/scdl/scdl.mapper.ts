@@ -44,6 +44,11 @@ const dateAdapter = (date: BeforeAdaptation | undefined | null): Date | undefine
 };
 
 export const SCDL_MAPPER: ScdlGrantSchema = {
+    allocatorName: { path: [["nomAttribuant", "Nom de l'attribuant"]] },
+    allocatorSiret: {
+        path: [["idAttribuant", "Identification de l'attribuant (SIRET)"]],
+        adapter: v => v?.toString(),
+    },
     exercice: {
         // for now if no exercise column we will use conventionDate as default
         path: [

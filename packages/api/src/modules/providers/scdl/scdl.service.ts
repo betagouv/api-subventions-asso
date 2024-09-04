@@ -44,8 +44,8 @@ export class ScdlService {
             return {
                 ...grant,
                 producerSlug: producer.slug,
-                allocatorName: producer.name,
-                allocatorSiret: producer.siret,
+                allocatorName: grant.allocatorName || producer.name,
+                allocatorSiret: grant.allocatorSiret || producer.siret,
                 _id: this._buildGrantUniqueId(grant, producerSlug),
             } as ScdlGrantDbo;
         });
