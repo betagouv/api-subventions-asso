@@ -4,6 +4,7 @@ import PaymentsFlatCli from "../../../src/interfaces/cli/PaymentsFlat.cli";
 import paymentFlatService from "../../../src/modules/data-viz/paymentFlat/paymentFlat.service";
 import chorusService from "../../../src/modules/providers/chorus/chorus.service";
 import { MOCK_CURSOR, CHORUS_LAST_UPDATE, ALL_DATA_BRETAGNE_DATA } from "../../__fixtures__/paymentsFlat.fixture";
+import dataLogRepository from "../../../src/modules/data-log/repositories/dataLog.repository";
 
 describe("PaymentsFlatCli", () => {
     let mockGetChorusLastUpdateImported: jest.SpyInstance;
@@ -39,6 +40,17 @@ describe("PaymentsFlatCli", () => {
             }));
 
             expect(paymentsFlat).toMatchSnapshot();
+        });
+
+        it.only("should register new import", async () => {
+            await cli.resync();
+            const actual = await dataLogRepository.findAll();
+            expect(actual?.[0]).toMatchObject({
+                editionDate: expect.any(Date),
+                fileName: "api",
+                integrationDate: expect.any(Date),
+                providerId: "payments-flat",
+            });
         });
     });
 });
