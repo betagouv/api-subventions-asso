@@ -17,9 +17,10 @@ describe("PaymentsFlatCli", () => {
         mockChorusCursorFindData = jest
             .spyOn(chorusService, "chorusCursorFindData")
             .mockReturnValue(MOCK_CURSOR as any);
-        //@ts-expect-error protected method
         mockGetAllDataBretagneData = jest
+            //@ts-expect-error protected method
             .spyOn(paymentFlatService, "getAllDataBretagneData")
+            //@ts-expect-error - je ne comprends pas trop porquoi il n'est pas content
             .mockResolvedValue(ALL_DATA_BRETAGNE_DATA);
     });
 

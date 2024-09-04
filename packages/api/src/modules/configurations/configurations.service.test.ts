@@ -119,21 +119,21 @@ describe("ConfigurationService", () => {
         });
     });
 
-    describe("Chorus LastObjectId Configuration Part", () => {
-        describe("getChorusLastObjectId", () => {
-            it("should return lastObjectId", async () => {
-                const expected = { data: new ObjectId("000000000000000000000000") };
+    describe("Chorus LastUpdateImported Configuration Part", () => {
+        describe("getChorusLastUpdateImported", () => {
+            it("should return lastUpdateDate", async () => {
+                const expected = { data: new Date("2020-12-02") };
                 getByNameMock.mockImplementationOnce(async () => expected);
 
-                const actual = await configurationsService.getChorusLastObjectId();
+                const actual = await configurationsService.getChorusLastUpdateImported();
                 expect(actual).toEqual(expected);
             });
 
             it("should call repository with good name", async () => {
-                const expected = "LAST-CHORUS-OBJECT-ID";
+                const expected = "LAST-CHORUS-UPDATE-IMPORTED";
                 getByNameMock.mockImplementationOnce(async () => {});
 
-                await configurationsService.getChorusLastObjectId();
+                await configurationsService.getChorusLastUpdateImported();
 
                 expect(getByNameMock).toHaveBeenCalledWith(expected);
             });
@@ -142,20 +142,20 @@ describe("ConfigurationService", () => {
                 const expected = null;
                 getByNameMock.mockImplementationOnce(async () => expected);
 
-                const actual = await configurationsService.getChorusLastObjectId();
+                const actual = await configurationsService.getChorusLastUpdateImported();
 
                 expect(actual).toEqual(expected);
             });
         });
 
-        describe("setChorusLastObjectId", () => {
-            it("should set lastObjectId", async () => {
-                const expected = new ObjectId("000000000000000000000000");
+        describe("setChorusLastDateImported", () => {
+            it("should set lastUpdateImported", async () => {
+                const expected = new Date("2020-12-02");
                 upsertMock.mockImplementationOnce(async () => {});
 
-                await configurationsService.setChorusLastObjectId(expected);
+                await configurationsService.setChorusLastUpdateImported(expected);
 
-                expect(upsertMock).toHaveBeenCalledWith("LAST-CHORUS-OBJECT-ID", {
+                expect(upsertMock).toHaveBeenCalledWith("LAST-CHORUS-UPDATE-IMPORTED", {
                     data: expected,
                 });
             });
