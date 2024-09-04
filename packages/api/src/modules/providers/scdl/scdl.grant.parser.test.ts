@@ -198,7 +198,7 @@ describe("ScdlGrantParser", () => {
                     {
                         field: "associationSiret-origin",
                         value: "associationSiret-value",
-                        message: "SIRET manquant",
+                        message: "SIRET manquant ou invalide",
                     },
                 ],
             };
