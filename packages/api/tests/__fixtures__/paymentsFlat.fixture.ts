@@ -5,7 +5,7 @@ export const CHORUS_LAST_UPDATE = new Date("2022-03-12");
 
 export const MOCK_DOCUMENTS: ChorusLineEntity[] = [
     {
-        uniqueId: "uniqueId_1",
+        uniqueId: "1",
         updated: new Date("2023-05-02"),
         indexedInformations: {
             siret: "12345678911111",
@@ -23,7 +23,7 @@ export const MOCK_DOCUMENTS: ChorusLineEntity[] = [
     } as ChorusLineEntity,
 
     {
-        uniqueId: "uniqueId_1bis",
+        uniqueId: "11",
         updated: new Date("2021-05-02"),
         indexedInformations: {
             siret: "12345678911111",
@@ -41,7 +41,7 @@ export const MOCK_DOCUMENTS: ChorusLineEntity[] = [
     } as ChorusLineEntity,
 
     {
-        uniqueId: "uniqueId_2",
+        uniqueId: "2",
         updated: new Date("2022-06-03"),
         indexedInformations: {
             siret: "12345678911111",
@@ -59,7 +59,7 @@ export const MOCK_DOCUMENTS: ChorusLineEntity[] = [
     } as ChorusLineEntity,
 
     {
-        uniqueId: "uniqueId_3",
+        uniqueId: "3",
         updated: new Date("2023-05-02"),
         _id: new ObjectId("607f191e810c19729de860ed"),
         indexedInformations: {
@@ -78,7 +78,7 @@ export const MOCK_DOCUMENTS: ChorusLineEntity[] = [
     } as ChorusLineEntity,
 
     {
-        uniqueId: "uniqueId_4",
+        uniqueId: "4",
         updated: new Date("2022-06-22"),
         _id: new ObjectId("607f191e810c19729de860ee"),
         indexedInformations: {

@@ -40,10 +40,12 @@ describe("PaymentsFlatCli", () => {
         it("should persist payments flat collection", async () => {
             await cli.resync();
             //@ts-expect-error protected method
-            const paymentsFlat = (await paymentFlatPort.collection.find({}).toArray()).map(paymentFlat => ({
-                ...paymentFlat,
-                _id: expect.any(ObjectId),
-            }));
+            const paymentsFlat = (await paymentFlatPort.collection.find({}).toArray())
+                .map(paymentFlat => ({
+                    ...paymentFlat,
+                    _id: expect.any(ObjectId),
+                }))
+                .sort((a, b) => Number(a.uniqueId) - Number(b.uniqueId));
 
             expect(paymentsFlat).toMatchSnapshot();
         });
