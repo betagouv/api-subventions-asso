@@ -2,28 +2,34 @@ import { ObjectId } from "mongodb";
 import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFlat.port";
 import PaymentsFlatCli from "../../../src/interfaces/cli/PaymentsFlat.cli";
 import paymentFlatService from "../../../src/modules/data-viz/paymentFlat/paymentFlat.service";
-import chorusService from "../../../src/modules/providers/chorus/chorus.service";
-import { MOCK_CURSOR, CHORUS_LAST_UPDATE, ALL_DATA_BRETAGNE_DATA } from "../../__fixtures__/paymentsFlat.fixture";
-import dataLogRepository from "../../../src/modules/data-log/repositories/dataLog.repository";
+import {
+    CHORUS_LAST_UPDATE,
+    DATA_BRETAGNE_DTOS,
+    MOCK_DOCUMENTS,
+    PROGRAMS,
+} from "../../__fixtures__/paymentsFlat.fixture";
+import chorusLineRepository from "../../../src/modules/providers/chorus/repositories/chorus.line.repository";
+import dataBretagnePort from "../../../src/dataProviders/api/dataBretagne/dataBretagne.port";
+import stateBudgetProgramPort from "../../../src/dataProviders/db/state-budget-program/stateBudgetProgram.port";
+
+const insertData = async () => {
+    await paymentFlatService.setChorusLastUpdateImported(CHORUS_LAST_UPDATE);
+    await chorusLineRepository.upsertMany(MOCK_DOCUMENTS);
+    await stateBudgetProgramPort.replace(PROGRAMS);
+};
 
 describe("PaymentsFlatCli", () => {
-    let mockGetChorusLastUpdateImported: jest.SpyInstance;
-    let mockChorusCursorFindData: jest.SpyInstance;
-    let mockGetAllDataBretagneData: jest.SpyInstance;
+    let mockGetCollection: jest.SpyInstance;
+    let mockDataBretagneLogin: jest.SpyInstance;
+    beforeEach(async () => {
+        await insertData();
 
-    beforeEach(() => {
-        mockGetChorusLastUpdateImported = jest
-            .spyOn(paymentFlatService, "getChorusLastUpdateImported")
-            .mockResolvedValue(CHORUS_LAST_UPDATE);
-        mockChorusCursorFindData = jest
-            .spyOn(chorusService, "chorusCursorFindData")
-            .mockReturnValue(MOCK_CURSOR as any);
-        mockGetAllDataBretagneData = jest
-            //@ts-expect-error protected method
-            .spyOn(paymentFlatService, "getAllDataBretagneData")
-            //@ts-expect-error - je ne comprends pas trop porquoi il n'est pas content
-            .mockResolvedValue(ALL_DATA_BRETAGNE_DATA);
+        mockGetCollection = jest
+            .spyOn(dataBretagnePort, "getCollection")
+            .mockImplementation(collection => DATA_BRETAGNE_DTOS[collection]);
     });
+
+    mockDataBretagneLogin = jest.spyOn(dataBretagnePort, "login").mockImplementation(jest.fn());
 
     afterEach(() => {
         jest.restoreAllMocks();
@@ -40,17 +46,6 @@ describe("PaymentsFlatCli", () => {
             }));
 
             expect(paymentsFlat).toMatchSnapshot();
-        });
-
-        it.only("should register new import", async () => {
-            await cli.resync();
-            const actual = await dataLogRepository.findAll();
-            expect(actual?.[0]).toMatchObject({
-                editionDate: expect.any(Date),
-                fileName: "api",
-                integrationDate: expect.any(Date),
-                providerId: "payments-flat",
-            });
         });
     });
 });

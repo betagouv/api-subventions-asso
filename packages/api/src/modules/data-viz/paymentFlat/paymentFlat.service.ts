@@ -7,6 +7,7 @@ import PaymentFlatAdapter from "./paymentFlatAdapter";
 export class PaymentFlatService {
     private async getAllDataBretagneData() {
         const ministries = await dataBretagneService.getMinistriesRecord();
+
         const programs = await dataBretagneService.findProgramsRecord();
         const domainesFonct = await dataBretagneService.getDomaineFonctRecord();
         const refsProgrammation = await dataBretagneService.getRefProgrammationRecord();
@@ -30,14 +31,9 @@ export class PaymentFlatService {
         const chorusCursor = chorusService.chorusCursorFindData(lastChorusUpdateImported);
         let document = await chorusCursor.next();
         let newChorusLastUpdate = lastChorusUpdateImported;
-        let i = 0;
         while (document != null) {
-            i += 1;
-            console.log("inizio");
-            console.log(i);
             document.updated > newChorusLastUpdate ? (newChorusLastUpdate = document.updated) : null;
-            console.log(document.updated);
-            console.log(document.uniqueId);
+
             const paymentFlatEntity = PaymentFlatAdapter.toPaymentFlatEntity(
                 document,
                 programs,
@@ -47,8 +43,7 @@ export class PaymentFlatService {
             );
 
             paymentFlatPort.upsertOne(paymentFlatEntity);
-            console.log("fine");
-            console.log(i);
+
             document = await chorusCursor.next();
         }
 

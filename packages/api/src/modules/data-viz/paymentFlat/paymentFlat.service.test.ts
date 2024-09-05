@@ -15,7 +15,6 @@ import PaymentFlatAdapter from "./paymentFlatAdapter";
 import { PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
 import paymentFlatPort from "../../../dataProviders/db/paymentFlat/paymentFlat.port";
 import configurationsService from "../../configurations/configurations.service";
-import { mock } from "node:test";
 
 const allDataBretagneDataResolvedValue = {
     programs: RECORDS["programme"],
