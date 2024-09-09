@@ -1,3 +1,4 @@
+import { Readable } from "stream";
 import {
     DemandeSubvention,
     GetDocumentsResponseDto,
@@ -7,9 +8,10 @@ import {
     Siret,
     GetGrantsResponseDto,
 } from "dto";
-import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
+import { Route, Get, Controller, Tags, Security, Response, Produces } from "tsoa";
 import etablissementService from "../../modules/etablissements/etablissements.service";
 import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
+import grantExtractService from "../../modules/grant/grantExtract.service";
 
 @Route("etablissement")
 @Security("jwt")
@@ -98,5 +100,25 @@ export class EtablissementHttp extends Controller {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async registerExtract(identifier: Siret): Promise<boolean> {
         return true;
+    }
+
+    /**
+     *
+     * @summary Recherche toutes les informations des subventions d'un établissement (demandes ET versements) et en extrait un fichier csv
+     * @param identifier SIRET de l'établissement
+     * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
+     */
+    @Get("/{identifier}/grants/csv")
+    @Produces("text/csv")
+    @Response<string>("200")
+    public async getGrantsExtract(identifier: Siret): Promise<Readable> {
+        const { csv, fileName } = await grantExtractService.buildCsv(identifier);
+
+        this.setHeader("Content-Type", "text/csv");
+        this.setHeader("Content-Disposition", `inline; filename=${fileName}`);
+        const stream = new Readable();
+        stream.push(csv);
+        stream.push(null);
+        return stream;
     }
 }

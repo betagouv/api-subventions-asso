@@ -35,7 +35,7 @@ import { SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtur
 import chorusLineRepository from "../../../src/modules/providers/chorus/repositories/chorus.line.repository";
 import { ChorusFixtures } from "../../dataProviders/db/__fixtures__/chorus.fixtures";
 import fonjepPaymentRepository from "../../../src/modules/providers/fonjep/repositories/fonjep.payment.repository";
-import FonjepSubventionEntity from "../../../src/modules/providers/fonjep/entities/FonjepSubventionEntity";
+
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
 
 const g = global as unknown as { app: unknown };
@@ -159,7 +159,7 @@ describe("/association", () => {
 
         it("should not add one visits on stats AssociationsVisit because status is not 200", async () => {
             const beforeRequestTime = new Date();
-            jest.spyOn(associationsService, "getAssociation").mockImplementationOnce(() => {
+            const getAssoSpy = jest.spyOn(associationsService, "getAssociation").mockImplementationOnce(() => {
                 throw new BadRequestError();
             });
             await request(g.app)
@@ -168,6 +168,7 @@ describe("/association", () => {
             const actual = await statsService.getTopAssociationsByPeriod(1, beforeRequestTime, new Date());
 
             expect(actual).toHaveLength(0);
+            getAssoSpy.mockRestore();
         });
     });
 
@@ -207,7 +208,7 @@ describe("/association", () => {
         });
 
         it("should return grants with siren", async () => {
-            await rnaSirenPort.insert({ siren: SIREN, rna: OsirisRequestEntityFixture.legalInformations.rna as Rna });
+            await rnaSirenService.insert(RNA, SIREN);
             const response = await request(g.app)
                 .get(`/association/${SIREN}/grants`)
                 .set("x-access-token", await createAndGetUserToken())
@@ -282,6 +283,25 @@ describe("/association", () => {
             expect(response.statusCode).toBe(200);
             const actual = response.body;
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("/{identifier}/grants/csv", () => {
+        it.each`
+            identifierType | identifier
+            ${"siren"}     | ${SIREN}
+            ${"rna"}       | ${RNA}
+            ${"siret"}     | ${SIREN + "1234"}
+        `("returns extract from $identifierType", async () => {
+            // SIREN must be from an association
+            await rnaSirenPort.insert({ siren: SIREN, rna: RNA });
+            const response = await request(g.app)
+                .get(`/association/${SIREN}/grants/csv`)
+                .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "text/csv");
+            expect(response.statusCode).toBe(200);
+            const actual = response.text;
+            expect(actual).toMatchSnapshot();
         });
     });
 });

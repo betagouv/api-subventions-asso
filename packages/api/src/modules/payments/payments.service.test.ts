@@ -5,6 +5,8 @@ import * as IdentifierHelper from "../../shared/helpers/IdentifierHelper";
 import RnaSirenEntity from "../../entities/RnaSirenEntity";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import paymentService from "./payments.service";
+import paymentsService from "./payments.service";
+import { Payment } from "dto";
 
 describe("PaymentsService", () => {
     const PAYMENT_KEY = "J00034";
@@ -107,6 +109,26 @@ describe("PaymentsService", () => {
             const expected = [payments[0]];
             const actual = paymentService.filterPaymentsByKey(payments, PAYMENT_KEY);
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("getPaymentExercise", () => {
+        const FONJEP_PAYMENT = {
+            periodeDebut: { value: new Date("2021-02-02") },
+            dateOperation: { value: new Date("2023-02-02") },
+        } as unknown as Payment;
+        const PAYMENT = { dateOperation: { value: new Date("2023-02-02") } } as unknown as Payment;
+
+        it("returns year from periodeDebut if any", () => {
+            const expected = 2021;
+            const actual = paymentsService.getPaymentExercise(FONJEP_PAYMENT);
+            expect(actual).toBe(expected);
+        });
+
+        it("returns year from dateOperation", () => {
+            const expected = 2023;
+            const actual = paymentsService.getPaymentExercise(PAYMENT);
+            expect(actual).toBe(expected);
         });
     });
 });

@@ -153,18 +153,28 @@ Object {
     },
     Object {
       "application": Object {
-        "actions_proposee": Object {
-          "last_update": "2023-07-26T08:49:43.000Z",
-          "provider": "Démarches Simplifiées",
-          "type": "object",
-          "value": Array [
-            Object {
-              "description": "La pratique artistique est très importante pour sensibiliser les jeunes [...]",
-              "intitule": "Atelier d'arts plastiques et d’écriture en Hors temps scolaire ",
-              "objectifs": "Projet d'atelier d'arts plastiques [...]",
+        "actions_proposee": Array [
+          Object {
+            "description": Object {
+              "last_update": "2023-07-26T08:49:43.000Z",
+              "provider": "Démarches Simplifiées",
+              "type": "string",
+              "value": "La pratique artistique est très importante pour sensibiliser les jeunes [...]",
             },
-          ],
-        },
+            "intitule": Object {
+              "last_update": "2023-07-26T08:49:43.000Z",
+              "provider": "Démarches Simplifiées",
+              "type": "string",
+              "value": "Atelier d'arts plastiques et d’écriture en Hors temps scolaire ",
+            },
+            "objectifs": Object {
+              "last_update": "2023-07-26T08:49:43.000Z",
+              "provider": "Démarches Simplifiées",
+              "type": "string",
+              "value": "Projet d'atelier d'arts plastiques [...]",
+            },
+          },
+        ],
         "annee_demande": Object {
           "last_update": "2023-07-26T08:49:43.000Z",
           "provider": "Démarches Simplifiées",
@@ -196,11 +206,11 @@ Object {
           "value": 1821732,
         },
         "montants": Object {
-          "last_update": "2023-07-26T08:49:43.000Z",
-          "provider": "Démarches Simplifiées",
-          "type": "object",
-          "value": Object {
-            "demande": 1300,
+          "demande": Object {
+            "last_update": "2023-07-26T08:49:43.000Z",
+            "provider": "Démarches Simplifiées",
+            "type": "number",
+            "value": 1300,
           },
         },
         "service_instructeur": Object {
@@ -935,18 +945,28 @@ Object {
     },
     Object {
       "application": Object {
-        "actions_proposee": Object {
-          "last_update": "2023-07-26T08:49:43.000Z",
-          "provider": "Démarches Simplifiées",
-          "type": "object",
-          "value": Array [
-            Object {
-              "description": "La pratique artistique est très importante pour sensibiliser les jeunes [...]",
-              "intitule": "Atelier d'arts plastiques et d’écriture en Hors temps scolaire ",
-              "objectifs": "Projet d'atelier d'arts plastiques [...]",
+        "actions_proposee": Array [
+          Object {
+            "description": Object {
+              "last_update": "2023-07-26T08:49:43.000Z",
+              "provider": "Démarches Simplifiées",
+              "type": "string",
+              "value": "La pratique artistique est très importante pour sensibiliser les jeunes [...]",
             },
-          ],
-        },
+            "intitule": Object {
+              "last_update": "2023-07-26T08:49:43.000Z",
+              "provider": "Démarches Simplifiées",
+              "type": "string",
+              "value": "Atelier d'arts plastiques et d’écriture en Hors temps scolaire ",
+            },
+            "objectifs": Object {
+              "last_update": "2023-07-26T08:49:43.000Z",
+              "provider": "Démarches Simplifiées",
+              "type": "string",
+              "value": "Projet d'atelier d'arts plastiques [...]",
+            },
+          },
+        ],
         "annee_demande": Object {
           "last_update": "2023-07-26T08:49:43.000Z",
           "provider": "Démarches Simplifiées",
@@ -978,11 +998,11 @@ Object {
           "value": 1821732,
         },
         "montants": Object {
-          "last_update": "2023-07-26T08:49:43.000Z",
-          "provider": "Démarches Simplifiées",
-          "type": "object",
-          "value": Object {
-            "demande": 1300,
+          "demande": Object {
+            "last_update": "2023-07-26T08:49:43.000Z",
+            "provider": "Démarches Simplifiées",
+            "type": "number",
+            "value": 1300,
           },
         },
         "service_instructeur": Object {
@@ -1562,6 +1582,39 @@ Object {
     },
   ],
 }
+`;
+
+exports[`/association /{identifier}/grants/csv returns extract from rna 1`] = `
+"Nom de l'association;RNA de l'association;Adresse de l'établissement;Exercice de la demande;Siret;Code postal demandeur;Service instructeur;Dispositif;Intitulé de l'action;Montant demandé;Montant accordé;Statut de la demande;Montant versé;Centre financier du dernier paiement;Date du dernier paiement;Programme des paiements
+DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2022;10000000000001;75000;XXX;Dispositif;;500;500;Accordé;1000;;2022-01-02;163 - PROGRAM 163
+DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2023;10000000000001;75000;Auvergne-Rhône-Alpes;Aide au projet ou au fonctionnement - Transmission culturelle (2023);Atelier d'arts plastiques et d’écriture en Hors temps scolaire ;1300;;;179920.2;UO DGER XXXX-C001;2023-07-12;multi-programmes
+DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2022;10000000000001;75000;Dauphin;Education – Sport - Jeunesse - Politique de la ville;INTITULE_PROJET;;7000;Accordé;;;;
+DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2022;10000000000001;75000;;;;;;;;;;
+DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2018;10000000000001;75000;Caisse des dépôts et Consignations;;\\"ETUDE \\"\\"IMPACTS DE LA TRANSITION AGRICOLE ET ALIMENTAIRE SUR L’EMPLOI\\"\\"\\";;40000;Accordé;;;;
+DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2021;10000000000001;75000;Caisse des dépôts et Consignations;;RESOLIS - ETUDE TAA 2021;;35000;Accordé;;;;
+"
+`;
+
+exports[`/association /{identifier}/grants/csv returns extract from siren 1`] = `
+"Nom de l'association;RNA de l'association;Adresse de l'établissement;Exercice de la demande;Siret;Code postal demandeur;Service instructeur;Dispositif;Intitulé de l'action;Montant demandé;Montant accordé;Statut de la demande;Montant versé;Centre financier du dernier paiement;Date du dernier paiement;Programme des paiements
+DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2022;10000000000001;75000;XXX;Dispositif;;500;500;Accordé;1000;;2022-01-02;163 - PROGRAM 163
+DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2023;10000000000001;75000;Auvergne-Rhône-Alpes;Aide au projet ou au fonctionnement - Transmission culturelle (2023);Atelier d'arts plastiques et d’écriture en Hors temps scolaire ;1300;;;179920.2;UO DGER XXXX-C001;2023-07-12;multi-programmes
+DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2022;10000000000001;75000;Dauphin;Education – Sport - Jeunesse - Politique de la ville;INTITULE_PROJET;;7000;Accordé;;;;
+DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2022;10000000000001;75000;;;;;;;;;;
+DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2018;10000000000001;75000;Caisse des dépôts et Consignations;;\\"ETUDE \\"\\"IMPACTS DE LA TRANSITION AGRICOLE ET ALIMENTAIRE SUR L’EMPLOI\\"\\"\\";;40000;Accordé;;;;
+DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2021;10000000000001;75000;Caisse des dépôts et Consignations;;RESOLIS - ETUDE TAA 2021;;35000;Accordé;;;;
+"
+`;
+
+exports[`/association /{identifier}/grants/csv returns extract from siret 1`] = `
+"Nom de l'association;RNA de l'association;Adresse de l'établissement;Exercice de la demande;Siret;Code postal demandeur;Service instructeur;Dispositif;Intitulé de l'action;Montant demandé;Montant accordé;Statut de la demande;Montant versé;Centre financier du dernier paiement;Date du dernier paiement;Programme des paiements
+DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2022;10000000000001;75000;XXX;Dispositif;;500;500;Accordé;1000;;2022-01-02;163 - PROGRAM 163
+DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2023;10000000000001;75000;Auvergne-Rhône-Alpes;Aide au projet ou au fonctionnement - Transmission culturelle (2023);Atelier d'arts plastiques et d’écriture en Hors temps scolaire ;1300;;;179920.2;UO DGER XXXX-C001;2023-07-12;multi-programmes
+DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2022;10000000000001;75000;Dauphin;Education – Sport - Jeunesse - Politique de la ville;INTITULE_PROJET;;7000;Accordé;;;;
+DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2022;10000000000001;75000;;;;;;;;;;
+DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2018;10000000000001;75000;Caisse des dépôts et Consignations;;\\"ETUDE \\"\\"IMPACTS DE LA TRANSITION AGRICOLE ET ALIMENTAIRE SUR L’EMPLOI\\"\\"\\";;40000;Accordé;;;;
+DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2021;10000000000001;75000;Caisse des dépôts et Consignations;;RESOLIS - ETUDE TAA 2021;;35000;Accordé;;;;
+"
 `;
 
 exports[`/association /{identifier}/raw-grants should return raw grants with rna 1`] = `
@@ -3310,6 +3363,8 @@ Array [
             "compteAssoId": "LE_COMPTE_ASSO_ID",
             "dateCommission": "2022-01-01T00:00:00.000Z",
             "ej": "EJ00001",
+            "etablissementCodePostal": "75000",
+            "etablissementVoie": "rue Waldeck-Rousseau",
             "extractYear": 2022,
             "osirisId": "OSIRIS_ID",
           },
@@ -5677,6 +5732,8 @@ Array [
             "compteAssoId": "LE_COMPTE_ASSO_ID",
             "dateCommission": "2022-01-01T00:00:00.000Z",
             "ej": "EJ00001",
+            "etablissementCodePostal": "75000",
+            "etablissementVoie": "rue Waldeck-Rousseau",
             "extractYear": 2022,
             "osirisId": "OSIRIS_ID",
           },
@@ -6348,7 +6405,10 @@ Object {
           "last_update": "2022-01-01T00:00:00.000Z",
           "provider": "Osiris",
           "type": "object",
-          "value": Object {},
+          "value": Object {
+            "code_postal": "75000",
+            "voie": "rue Waldeck-Rousseau",
+          },
         },
         Object {
           "last_update": "2022-01-02T00:00:00.000Z",
@@ -6625,18 +6685,28 @@ Array [
     },
   },
   Object {
-    "actions_proposee": Object {
-      "last_update": "2023-07-26T08:49:43.000Z",
-      "provider": "Démarches Simplifiées",
-      "type": "object",
-      "value": Array [
-        Object {
-          "description": "La pratique artistique est très importante pour sensibiliser les jeunes [...]",
-          "intitule": "Atelier d'arts plastiques et d’écriture en Hors temps scolaire ",
-          "objectifs": "Projet d'atelier d'arts plastiques [...]",
+    "actions_proposee": Array [
+      Object {
+        "description": Object {
+          "last_update": "2023-07-26T08:49:43.000Z",
+          "provider": "Démarches Simplifiées",
+          "type": "string",
+          "value": "La pratique artistique est très importante pour sensibiliser les jeunes [...]",
         },
-      ],
-    },
+        "intitule": Object {
+          "last_update": "2023-07-26T08:49:43.000Z",
+          "provider": "Démarches Simplifiées",
+          "type": "string",
+          "value": "Atelier d'arts plastiques et d’écriture en Hors temps scolaire ",
+        },
+        "objectifs": Object {
+          "last_update": "2023-07-26T08:49:43.000Z",
+          "provider": "Démarches Simplifiées",
+          "type": "string",
+          "value": "Projet d'atelier d'arts plastiques [...]",
+        },
+      },
+    ],
     "annee_demande": Object {
       "last_update": "2023-07-26T08:49:43.000Z",
       "provider": "Démarches Simplifiées",
@@ -6668,11 +6738,11 @@ Array [
       "value": 1821732,
     },
     "montants": Object {
-      "last_update": "2023-07-26T08:49:43.000Z",
-      "provider": "Démarches Simplifiées",
-      "type": "object",
-      "value": Object {
-        "demande": 1300,
+      "demande": Object {
+        "last_update": "2023-07-26T08:49:43.000Z",
+        "provider": "Démarches Simplifiées",
+        "type": "number",
+        "value": 1300,
       },
     },
     "service_instructeur": Object {

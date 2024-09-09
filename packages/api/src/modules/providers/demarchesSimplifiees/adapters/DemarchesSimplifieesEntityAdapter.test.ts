@@ -89,6 +89,13 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
 
             expect(actual).toBe(expected);
         });
+
+        it("calls nestedToProviderValues", () => {
+            // @ts-expect-error -- private spy
+            const nestSpy = jest.spyOn(DemarchesSimplifieesEntityAdapter, "nestedToProviderValues");
+            DemarchesSimplifieesEntityAdapter.toSubvention(DEMANDE, MAPPING);
+            expect(nestSpy).toHaveBeenCalled();
+        });
     });
 
     describe("toRawGrant", () => {
@@ -178,6 +185,37 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
                   "siret": "SIRET",
                 }
             `);
+        });
+    });
+
+    describe("nestedToProviderValues", () => {
+        const TO_PV = jest.fn();
+
+        it("in an array call for each element", () => {
+            const ARRAY = [0, 0, 0, 0];
+            const expected = [1, 2, 3, 4];
+            expected.forEach(v => TO_PV.mockReturnValueOnce(v));
+            // @ts-expect-error -- test private method
+            const actual = DemarchesSimplifieesEntityAdapter.nestedToProviderValues(ARRAY, TO_PV);
+            expect(actual).toEqual(expected);
+        });
+
+        it("if neither object nor array return computed providerValue", () => {
+            const VALUE = "toto";
+            const expected = 1;
+            TO_PV.mockReturnValueOnce(expected);
+            // @ts-expect-error -- test private method
+            const actual = DemarchesSimplifieesEntityAdapter.nestedToProviderValues(VALUE, TO_PV);
+            expect(actual).toEqual(expected);
+        });
+
+        it("if object, call for each attribute", () => {
+            const OBJECT = { a: 23, b: 34 };
+            const expected = { a: 1, b: 2 };
+            Object.values(expected).forEach(v => TO_PV.mockReturnValueOnce(v));
+            // @ts-expect-error -- test private method
+            const actual = DemarchesSimplifieesEntityAdapter.nestedToProviderValues(OBJECT, TO_PV);
+            expect(actual).toEqual(expected);
         });
     });
 });

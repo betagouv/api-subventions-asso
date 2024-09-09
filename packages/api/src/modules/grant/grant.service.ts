@@ -147,7 +147,7 @@ export class GrantService {
     }
 
     // appeler adapter pour chaque join.application join.payment et join.fullGrant
-    // implementer une classe GrantAdapter pour chaque adapter de demande et de paiment
+    // implementer une classe GrantAdapter pour chaque adapter de demande et de paiement
     async getGrants(identifier: StructureIdentifiers): Promise<Grant[]> {
         const joinedRawGrants = await this.getRawGrants(identifier);
         const grants = joinedRawGrants.map(this.adaptJoinedRawGrant.bind(this)).filter(grant => grant) as Grant[];
@@ -181,7 +181,7 @@ export class GrantService {
             return this.joinGrants(rawGrants);
         } catch (e) {
             // IMPROVE: returning empty array does not inform the user that we could not search for grants
-            // it does not mean that the association does not received any grants
+            // it does not mean that the association does not receive any grants
             if (e instanceof RnaOnlyError) return [] as JoinedRawGrant[];
             else throw e;
         }
