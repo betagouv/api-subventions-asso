@@ -1,12 +1,12 @@
 <script lang="ts">
     import AgentConnectButton from "$lib/dsfr/AgentConnectButton.svelte";
-    import { AGENT_CONNECT_ENABLED, DATASUB_URL } from "$env/static/public";
+    import { PUBLIC_AGENT_CONNECT_ENABLED, PUBLIC_DATASUB_URL } from "$env/static/public";
 </script>
 
-{#if AGENT_CONNECT_ENABLED === "true"}
+{#if PUBLIC_AGENT_CONNECT_ENABLED === "true"}
     <div class="fr-grid-row">
         <div class="fr-mx-auto">
-            <AgentConnectButton link={DATASUB_URL + `/auth/ac/login`} />
+            <AgentConnectButton link={PUBLIC_DATASUB_URL + `/auth/ac/login`} />
         </div>
     </div>
     <div class="fr-grid-row or fr-my-4w fr-px-11v">

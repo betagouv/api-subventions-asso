@@ -1,14 +1,14 @@
 import { sequence } from "@sveltejs/kit/hooks";
 import * as Sentry from "@sentry/sveltekit";
 import type { Handle } from "@sveltejs/kit";
-import { ENV } from "$env/static/public";
+import { PUBLIC_ENV } from "$env/static/public";
 import { version } from "$app/environment";
 
-if (ENV !== "dev")
+if (PUBLIC_ENV !== "dev")
     Sentry.init({
         dsn: "https://5d47efb730804541a53e916f0bd27cea@sentry.incubateur.net/101",
         tracesSampleRate: 1,
-        environment: ENV,
+        environment: PUBLIC_ENV,
         release: version,
     });
 

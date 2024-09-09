@@ -1,12 +1,12 @@
 import axios from "axios";
 import errorsService from "../errors/errors.service";
-import { DATASUB_URL } from "$env/static/public";
+import { PUBLIC_DATASUB_URL } from "$env/static/public";
 
 class RequestsService {
     _errorHooks = [];
 
     constructor() {
-        axios.defaults.baseURL = DATASUB_URL;
+        axios.defaults.baseURL = PUBLIC_DATASUB_URL;
 
         axios.interceptors.response.use(
             response => response,
