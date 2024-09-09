@@ -31,6 +31,7 @@ export class PaymentFlatService {
         const chorusCursor = chorusService.chorusCursorFindData(lastChorusUpdateImported);
         let document = await chorusCursor.next();
         let newChorusLastUpdate = lastChorusUpdateImported;
+        const promises: Promise<void>[] = [];
         while (document != null) {
             document.updated > newChorusLastUpdate ? (newChorusLastUpdate = document.updated) : null;
 
@@ -42,12 +43,13 @@ export class PaymentFlatService {
                 refsProgrammation,
             );
 
-            paymentFlatPort.upsertOne(paymentFlatEntity);
+            promises.push(paymentFlatPort.upsertOne(paymentFlatEntity));
 
             document = await chorusCursor.next();
         }
 
-        this.setChorusLastUpdateImported(newChorusLastUpdate);
+        promises.push(this.setChorusLastUpdateImported(newChorusLastUpdate));
+        await Promise.all(promises);
     }
 }
 
