@@ -365,18 +365,18 @@ describe("authService", () => {
             expect(goToUrl).not.toHaveBeenCalled();
         });
 
-        it("does not redirect to received URL if AGENT_CONNECT_ENABLED is off", async () => {
+        it("does not redirect to received URL if PUBLIC_AGENT_CONNECT_ENABLED is off", async () => {
             const URL = "go.somewhere";
             authPort.logout.mockResolvedValue({ success: true, url: URL });
-            vi.spyOn(env, "AGENT_CONNECT_ENABLED", "get").mockReturnValueOnce(false);
+            vi.spyOn(env, "PUBLIC_AGENT_CONNECT_ENABLED", "get").mockReturnValueOnce(false);
             await authService.logout();
             expect(goToUrl).not.toHaveBeenCalledWith(URL);
         });
 
-        it("redirects to received URL if AGENT_CONNECT_ENABLED is on", async () => {
+        it("redirects to received URL if PUBLIC_AGENT_CONNECT_ENABLED is on", async () => {
             const URL = "go.somewhere";
             authPort.logout.mockResolvedValue({ success: true, url: URL });
-            vi.spyOn(env, "AGENT_CONNECT_ENABLED", "get").mockReturnValueOnce(true);
+            vi.spyOn(env, "PUBLIC_AGENT_CONNECT_ENABLED", "get").mockReturnValueOnce(true);
             await authService.logout();
             expect(goToUrl).toHaveBeenCalledWith(URL);
         });
