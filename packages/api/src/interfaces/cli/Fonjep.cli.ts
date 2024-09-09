@@ -9,7 +9,7 @@ import fonjepService, {
 } from "../../modules/providers/fonjep/fonjep.service";
 import * as CliHelper from "../../shared/helpers/CliHelper";
 import CliController from "../../shared/CliController";
-import ExportDateError from "../../shared/errors/cliErrors/ExportDateError";
+import FormatDateError from "../../shared/errors/cliErrors/FormatDateError";
 
 @StaticImplements<CliStaticInterface>()
 export default class FonjepCli extends CliController {
@@ -26,7 +26,7 @@ export default class FonjepCli extends CliController {
      *
      */
     protected async _parse(file: string, logs: unknown[], exportDate: Date) {
-        if (!exportDate) throw new ExportDateError();
+        if (!exportDate) throw new FormatDateError();
         this.logger.logIC("\nStart parse file: ", file);
         this.logger.log(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
 

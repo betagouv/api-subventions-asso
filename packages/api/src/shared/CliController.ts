@@ -3,6 +3,9 @@ import dataLogService from "../modules/data-log/dataLog.service";
 import CliLogger from "./CliLogger";
 import { GenericParser } from "./GenericParser";
 import { isDateNewer, isValidDate } from "./helpers/DateHelper";
+import ExportDateError from "./errors/cliErrors/FormatDateError";
+import OutOfRangeDateError from "./errors/cliErrors/OutOfRangeDateError";
+import ObsoleteDateError from "./errors/cliErrors/ObsoleteDateError";
 
 export default class CliController {
     protected logFileParsePath = "";
@@ -31,10 +34,9 @@ export default class CliController {
     public async parse(file: string, exportDateString: string): Promise<void> {
         const exportDate = new Date(exportDateString);
 
-        // check if year is lower than 2018 which is/was the last year we want to store data from
-        if (Number(exportDateString.split("-")[0]) < 2018) throw new Error("We only import data since 2018");
-        if (!isValidDate(new Date(exportDate))) throw new Error("Invalid date format | YYYY-MM-DD expected");
-        if (isDateNewer(exportDate, new Date())) throw new Error("Export date out of range");
+        if (Number(exportDateString.split("-")[0]) < 2018) throw new ObsoleteDateError();
+        if (!isValidDate(new Date(exportDate))) throw new ExportDateError();
+        if (isDateNewer(exportDate, new Date())) throw new OutOfRangeDateError();
 
         this.validParseFile(file);
         this.validFileExists(file);

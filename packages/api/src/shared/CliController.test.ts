@@ -2,6 +2,9 @@ import fs from "fs";
 import CliController from "./CliController";
 import { GenericParser } from "./GenericParser";
 import dataLogService from "../modules/data-log/dataLog.service";
+import ObsoleteDateError from "./errors/cliErrors/ObsoleteDateError";
+import FormatDateError from "./errors/cliErrors/FormatDateError";
+import OutOfRangeDateError from "./errors/cliErrors/OutOfRangeDateError";
 
 jest.mock("../modules/data-log/dataLog.service");
 
@@ -79,22 +82,18 @@ describe("CliController", () => {
             date
             ${"224-07-30"}
             ${"2017-07-30"}
-        `("throw out of range (lower) error with export year below 2018", async ({ date }) => {
-            await expect(() => controller.parse(FILENAME, date)).rejects.toThrowError("We only import data since 2018");
+        `("throw ObsoleteDateError", async ({ date }) => {
+            await expect(() => controller.parse(FILENAME, date)).rejects.toThrow(ObsoleteDateError);
         });
 
-        it("throw invalid date error", async () => {
-            await expect(() => controller.parse(FILENAME, "20024-07-30")).rejects.toThrowError(
-                "Export date out of range",
-            );
+        it("throw FormatDateError", async () => {
+            await expect(() => controller.parse(FILENAME, "2à24-07-30")).rejects.toThrow(FormatDateError);
         });
 
-        it("throw out of range (greater) error with export date greater than today", async () => {
+        it("throw OutOfRangeDateError", async () => {
             const today = new Date();
             const tomorrow = new Date(today.setDate(today.getDate() + 1));
-            await expect(() => controller.parse(FILENAME, tomorrow.toISOString())).rejects.toThrowError(
-                "Export date out of range",
-            );
+            await expect(() => controller.parse(FILENAME, tomorrow.toISOString())).rejects.toThrow(OutOfRangeDateError);
         });
 
         it("should call _parse() one time", async () => {

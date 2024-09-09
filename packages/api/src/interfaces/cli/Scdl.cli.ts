@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { Siret } from "dto";
 import csvSyncStringifier = require("csv-stringify/sync");
-import ExportDateError from "../../shared/errors/cliErrors/ExportDateError";
+import FormatDateError from "../../shared/errors/cliErrors/FormatDateError";
 import ScdlGrantParser from "../../modules/providers/scdl/scdl.grant.parser";
 import scdlService from "../../modules/providers/scdl/scdl.service";
 import MiscScdlGrantEntity from "../../modules/providers/scdl/entities/MiscScdlGrantEntity";
@@ -52,9 +52,9 @@ export default class ScdlCli {
     }
 
     private async validateGenericInput(file: string, producerSlug: string, exportDateStr?: string) {
-        if (!exportDateStr) throw new ExportDateError();
+        if (!exportDateStr) throw new FormatDateError();
         const exportDate = new Date(exportDateStr);
-        if (isNaN(exportDate.getTime())) throw new ExportDateError();
+        if (isNaN(exportDate.getTime())) throw new FormatDateError();
         if (!(await scdlService.getProducer(producerSlug)))
             throw new Error("Producer ID does not match any producer in database");
     }
