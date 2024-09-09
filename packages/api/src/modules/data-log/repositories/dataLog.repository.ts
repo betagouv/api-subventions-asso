@@ -14,11 +14,15 @@ class DataLogRepository extends MongoRepository<DataLogEntity> {
         return this.collection.insertOne(entity);
     }
 
+    async insertMany(entities: DataLogEntity[]) {
+        return this.collection.insertMany(entities);
+    }
+
     async findAll() {
         return this.collection.find({}).toArray();
     }
 
-    async findLastByProvider() {
+    findLastByProvider(): Promise<DataLogEntity[]> {
         return this.collection
             .aggregate([
                 {
@@ -28,8 +32,15 @@ class DataLogRepository extends MongoRepository<DataLogEntity> {
                         lastEditionDate: { $max: "$editionDate" },
                     },
                 },
+                {
+                    $project: {
+                        providerId: "$_id",
+                        integrationDate: "$lastIntegrationDate",
+                        editionDate: "$lastEditionDate",
+                    },
+                },
             ])
-            .toArray();
+            .toArray() as unknown as Promise<DataLogEntity[]>;
     }
 }
 
