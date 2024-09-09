@@ -13,11 +13,7 @@ export default class GrantAdapter {
     ) {
         if (!adapter) adapter = (v: Payment) => v[property];
         const values = new Set(payments?.map(versement => versement[property].value));
-        return values.size > 1
-            ? multiValue
-            : payments?.length
-            ? adapter(payments[0]) //
-            : undefined;
+        return values.size > 1 ? multiValue : payments?.length ? adapter(payments[0]) : undefined;
     }
 
     private static addressToOneLineString(address) {
@@ -25,8 +21,7 @@ export default class GrantAdapter {
         const { numero, type_voie, voie, code_postal, commune } = address;
         return [numero, type_voie, voie, code_postal, commune]
             .filter(str => str)
-            .map(str => String(str))
-            .map(str => str.toUpperCase())
+            .map(str => String(str).toUpperCase())
             .join(" ");
     }
 
@@ -52,7 +47,7 @@ export default class GrantAdapter {
                  "centreFinancier",
                  "multi-centres financiers",
                  p => getValue((p as ChorusPayment).centreFinancier),
-             ), // TODO choose between this and last payment below
+             ), // We do what we do te be iso with front implementation but I keep this because it seems more true
             */
             financialCenter: (lastPayment as ChorusPayment)?.centreFinancier?.value,
             paidAmount: grant.payments?.reduce(

@@ -11,8 +11,7 @@ export const addressToOneLineString = address => {
     const { numero, type_voie, voie, code_postal, commune } = address;
     return [numero, type_voie, voie, code_postal, commune]
         .filter(str => str)
-        .map(str => String(str))
-        .map(str => str.toUpperCase())
+        .map(str => String(str).toUpperCase())
         .join(" ");
 };
 
