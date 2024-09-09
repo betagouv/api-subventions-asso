@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.55.0](https://github.com/betagouv/datasubvention/compare/v0.54.1...v0.55.0) (2024-09-09)
+
+### Features
+
+-   **api,dto:** [#2589](https://github.com/betagouv/datasubvention/issues/2589) data log route ([#2626](https://github.com/betagouv/datasubvention/issues/2626)) ([5c24e43](https://github.com/betagouv/datasubvention/commit/5c24e436c36385341b2c7f4c48ddb7898347a2cb))
+
 # [0.54.0](https://github.com/betagouv/datasubvention/compare/v0.53.1...v0.54.0) (2024-08-26)
 
 **Note:** Version bump only for package dto

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.55.0](https://github.com/betagouv/datasubvention/compare/v0.54.1...v0.55.0) (2024-09-09)
+
+### Features
+
+-   **api:** [#2413](https://github.com/betagouv/datasubvention/issues/2413) extract grants api-side ([#2595](https://github.com/betagouv/datasubvention/issues/2595)) ([38d69d6](https://github.com/betagouv/datasubvention/commit/38d69d69a6af93a8a25991c3085fead4283cd586))
+
 ## [0.54.1](https://github.com/betagouv/datasubvention/compare/v0.54.0...v0.54.1) (2024-08-29)
 
 ### Bug Fixes

@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.55.0](https://github.com/betagouv/api-subventions-asso/compare/v0.54.1...v0.55.0) (2024-09-09)
+
+### Features
+
+-   **api,dto:** [#2589](https://github.com/betagouv/api-subventions-asso/issues/2589) data log route ([#2626](https://github.com/betagouv/api-subventions-asso/issues/2626)) ([5c24e43](https://github.com/betagouv/api-subventions-asso/commit/5c24e436c36385341b2c7f4c48ddb7898347a2cb))
+-   **api:** [#2384](https://github.com/betagouv/api-subventions-asso/issues/2384) scdl misc attributor data, producer as default ([#2629](https://github.com/betagouv/api-subventions-asso/issues/2629)) ([a4bf2ff](https://github.com/betagouv/api-subventions-asso/commit/a4bf2ff09f70f1e50ac24dddb09cc139e97b4111))
+-   **api:** [#2413](https://github.com/betagouv/api-subventions-asso/issues/2413) extract grants api-side ([#2595](https://github.com/betagouv/api-subventions-asso/issues/2595)) ([38d69d6](https://github.com/betagouv/api-subventions-asso/commit/38d69d69a6af93a8a25991c3085fead4283cd586))
+
 # [0.54.0](https://github.com/betagouv/api-subventions-asso/compare/v0.53.1...v0.54.0) (2024-08-26)
 
 ### Features
