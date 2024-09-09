@@ -20,8 +20,8 @@ export default class SubventiaCli extends CliController {
     protected logFileParsePath = "./logs/subventia.parse.log.txt";
     static errorsFolderName = "./importErrors";
 
-    protected async _parse(file: string, logs, exportDate) {
-        const processedData = subventiaService.processSubventiaData(file, new Date(exportDate));
+    protected async _parse(file: string, logs, exportDate: Date) {
+        const processedData = subventiaService.processSubventiaData(file, exportDate);
         const entities = processedData.applications;
         const errors = processedData.invalids;
         await Promise.all([this.persistEntities(entities), this.exportErrors(errors, file)]);

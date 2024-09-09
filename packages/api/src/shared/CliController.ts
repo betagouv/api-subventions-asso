@@ -53,9 +53,7 @@ export default class CliController {
 
         await files
             .reduce((acc, filePath) => {
-                return acc.then(() =>
-                    exportDate ? this._parse(filePath, logs, new Date(exportDate)) : this._parse(filePath, logs),
-                );
+                return acc.then(() => this._parse(filePath, logs, exportDate));
             }, Promise.resolve())
             // @todo: remove "+ logs.join()" when all cli controllers has refactored with logger
             .then(() =>

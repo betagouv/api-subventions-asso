@@ -26,7 +26,6 @@ export default class FonjepCli extends CliController {
      *
      */
     protected async _parse(file: string, logs: unknown[], exportDate: Date) {
-        if (!exportDate) throw new FormatDateError();
         this.logger.logIC("\nStart parse file: ", file);
         this.logger.log(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
 
