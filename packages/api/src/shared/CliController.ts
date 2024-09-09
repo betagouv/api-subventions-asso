@@ -62,7 +62,7 @@ export default class CliController {
                     encoding: "utf-8",
                 }),
             );
-        await this._logImportSuccess(new Date(exportDate), file);
+        await this._logImportSuccess(exportDate, file);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
