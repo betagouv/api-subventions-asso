@@ -75,7 +75,21 @@ describe("CliController", () => {
             logMock.mockRestore();
         });
 
-        it("throw out of range error with export date greater than today", async () => {
+        it.each`
+            date
+            ${"224-07-30"}
+            ${"2017-07-30"}
+        `("throw out of range (lower) error with export year below 2018", async ({ date }) => {
+            await expect(() => controller.parse(FILENAME, date)).rejects.toThrowError("We only import data since 2018");
+        });
+
+        it("throw invalid date error", async () => {
+            await expect(() => controller.parse(FILENAME, "20024-07-30")).rejects.toThrowError(
+                "Export date out of range",
+            );
+        });
+
+        it("throw out of range (greater) error with export date greater than today", async () => {
             const today = new Date();
             const tomorrow = new Date(today.setDate(today.getDate() + 1));
             await expect(() => controller.parse(FILENAME, tomorrow.toISOString())).rejects.toThrowError(
