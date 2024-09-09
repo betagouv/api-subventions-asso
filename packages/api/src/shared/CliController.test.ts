@@ -75,6 +75,14 @@ describe("CliController", () => {
             logMock.mockRestore();
         });
 
+        it("throw out of range error with export date greater than today", async () => {
+            const today = new Date();
+            const tomorrow = new Date(today.setDate(today.getDate() + 1));
+            await expect(() => controller.parse(FILENAME, tomorrow.toISOString())).rejects.toThrowError(
+                "Export date out of range",
+            );
+        });
+
         it("should call _parse() one time", async () => {
             const expected = 1;
             await controller.parse(FILENAME, EXPORT_DATE);

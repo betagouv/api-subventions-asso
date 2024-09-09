@@ -2,6 +2,7 @@ import fs from "fs";
 import dataLogService from "../modules/data-log/dataLog.service";
 import CliLogger from "./CliLogger";
 import { GenericParser } from "./GenericParser";
+import { isDateNewer } from "./helpers/DateHelper";
 
 export default class CliController {
     protected logFileParsePath = "";
@@ -23,10 +24,15 @@ export default class CliController {
     /**
      *
      * @param file Path to the file
-     * @param exportDate Explicite date of import (any valid date string, like "YYYY-MM-DD")
-     * @returns
+     * @param exportDate This should be as close as possible as the end date of the data coverage period (i.e last day of the month if monthely export)
+     * If not available, take the file's creation date or the file's reception date.
+     * Accept "YYYY-MM-DD" format | TODO: make YYYY-MM-DD mandatory ?
      */
-    public async parse(file: string, exportDate: string): Promise<void> {
+    public async parse(file: string, exportDateString: string): Promise<void> {
+        const exportDate = new Date(exportDateString);
+
+        if (isDateNewer(exportDate, new Date())) throw new Error("Export date out of range");
+
         this.validParseFile(file);
         this.validFileExists(file);
         const files = GenericParser.findFiles(file);
