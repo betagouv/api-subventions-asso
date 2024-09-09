@@ -22,8 +22,8 @@ class DataLogRepository extends MongoRepository<DataLogEntity> {
         return this.collection.find({}).toArray();
     }
 
-    async findLastByProvider(): Promise<DataLogEntity[]> {
-        return (await this.collection
+    findLastByProvider(): Promise<DataLogEntity[]> {
+        return this.collection
             .aggregate([
                 {
                     $group: {
@@ -40,7 +40,7 @@ class DataLogRepository extends MongoRepository<DataLogEntity> {
                     },
                 },
             ])
-            .toArray()) as unknown as DataLogEntity[];
+            .toArray() as unknown as Promise<DataLogEntity[]>;
     }
 }
 
