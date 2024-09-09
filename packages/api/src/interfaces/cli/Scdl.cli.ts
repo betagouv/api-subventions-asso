@@ -28,8 +28,15 @@ export default class ScdlCli {
         await scdlService.createProducer({ slug, name, siret, lastUpdate: new Date() });
     }
 
-    public async parseXls(file: string, producerSlug: string, exportDate: string, pageName?: string, rowOffset = 0) {
+    public async parseXls(
+        file: string,
+        producerSlug: string,
+        exportDate: string,
+        pageName?: string,
+        rowOffsetStr: number | string = 0,
+    ) {
         await this.validateGenericInput(file, producerSlug, exportDate);
+        const rowOffset = typeof rowOffsetStr === "number" ? rowOffsetStr : parseInt(rowOffsetStr);
         const fileContent = fs.readFileSync(file);
         const { entities, errors } = ScdlGrantParser.parseExcel(fileContent, pageName, rowOffset);
         await Promise.all([
