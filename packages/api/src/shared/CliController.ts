@@ -24,6 +24,14 @@ export default class CliController {
         } else return true;
     }
 
+    private validateDate(dateStr: string) {
+        // supposed to be YYYY-MM-DD format
+        if (Number(dateStr.split("-")[0]) < 2018) throw new ObsoleteDateError();
+        if (!isValidDate(new Date(dateStr))) throw new ExportDateError();
+        if (isDateNewer(new Date(dateStr), new Date())) throw new OutOfRangeDateError();
+        return true;
+    }
+
     /**
      *
      * @param file Path to the file
@@ -32,11 +40,8 @@ export default class CliController {
      * Accept "YYYY-MM-DD" format | TODO: make YYYY-MM-DD mandatory ?
      */
     public async parse(file: string, exportDateString: string): Promise<void> {
+        this.validateDate(exportDateString);
         const exportDate = new Date(exportDateString);
-
-        if (Number(exportDateString.split("-")[0]) < 2018) throw new ObsoleteDateError();
-        if (!isValidDate(new Date(exportDate))) throw new ExportDateError();
-        if (isDateNewer(exportDate, new Date())) throw new OutOfRangeDateError();
 
         this.validParseFile(file);
         this.validFileExists(file);
