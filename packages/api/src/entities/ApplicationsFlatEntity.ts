@@ -1,0 +1,40 @@
+import { ApplicationStatus, Siret } from "dto";
+
+export default class ApplicationsFlatEntity {
+    constructor(
+        public provider: string,
+        public idSubvention: string | null,
+        public nomAttribuant: string,
+        public idAttribuant: Siret,
+        public nomServiceInstructeur: string | null,
+        public idServiceInstructeur: Siret | null,
+        public nomBeneficiaire: string,
+        public idBeneficiaire: Siret,
+        public exerciceBudgetaire: number,
+        public pluriannualite: boolean,
+        public anneesPluriannualites: number[],
+        public dateDecision: Date | null,
+        public dateConvention: Date,
+        public referenceDecision: string | null,
+        public dateCreation: Date | null,
+        public dateDebut: Date | null,
+        public dateFin: Date | null,
+        public dispositif: string | null,
+        public sousDispositif: string | null,
+        public statutLabel: ApplicationStatus,
+        public objet: string | null,
+        public nature: string | null, // only valid "aide en numéraie" or "aide en nature"
+        public montantDemande: number,
+        public montantAccorde: number | null,
+        public ej: string | null,
+        public cleVersement: string | null,
+        public conditionsVersement: string | null,
+        public datesPeriodeVersement: Date[] | null,
+        public cofinancement: string | null,
+        public attribuantsCofinanceurs: string[] | null,
+        public idCofinancement: string | null,
+        public notificationUE: boolean,
+        public evaluationCout: number | null,
+        public evaluation: string | null,
+    ) {}
+}
