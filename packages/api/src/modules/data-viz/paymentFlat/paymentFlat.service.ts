@@ -16,8 +16,7 @@ export class PaymentFlatService {
 
     public async getChorusLastUpdateImported() {
         const lastChorusUpdateImported = await configurationsService.getChorusLastUpdateImportedToPaymentFlat();
-        if (lastChorusUpdateImported === null) return new Date("1970-01-01");
-        else return lastChorusUpdateImported.data;
+        return !lastChorusUpdateImported ? new Date("1970-01-01") : lastChorusUpdateImported.data;
     }
 
     public async setChorusLastUpdateImported(lastUpdateImported: Date) {
