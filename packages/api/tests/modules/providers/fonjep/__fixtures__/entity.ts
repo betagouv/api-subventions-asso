@@ -23,6 +23,7 @@ export const SubventionEntity = new FonjepEntity(
         contact: "contact@beta.gouv.fr",
         type_post: "POSTE",
         dispositif: "Dispositif",
+        joinKey: "2022-J00034",
     },
     {},
 );
@@ -41,6 +42,7 @@ export const PaymentEntity = new FonjepPaymentEntity(
         montant_paye: 1000,
         montant_a_payer: 1000,
         bop: 163,
+        joinKey: "2022-J00034",
     },
     {},
 );

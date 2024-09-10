@@ -8,4 +8,5 @@ export default interface IFonjepPaymentIndexedInformations {
     montant_a_payer: number;
     montant_paye: number;
     bop: number;
+    joinKey: string;
 }
