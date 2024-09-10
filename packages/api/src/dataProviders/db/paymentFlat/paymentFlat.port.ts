@@ -1,4 +1,3 @@
-import { AnyBulkWriteOperation } from "mongodb";
 import MongoRepository from "../../../shared/MongoRepository";
 import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
 import PaymentFlatDbo from "./PaymentFlatDbo";
