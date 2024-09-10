@@ -15,20 +15,20 @@ export class PaymentFlatService {
     }
 
     public async getChorusLastUpdateImported() {
-        const lastChorusUpdateImported = await configurationsService.getChorusLastUpdateImported();
+        const lastChorusUpdateImported = await configurationsService.getChorusLastUpdateImportedToPaymentFlat();
         if (lastChorusUpdateImported === null) return new Date("1970-01-01");
         else return lastChorusUpdateImported.data;
     }
 
     public async setChorusLastUpdateImported(lastUpdateImported: Date) {
-        await configurationsService.setChorusLastUpdateImported(lastUpdateImported);
+        await configurationsService.setChorusLastUpdateImportedToPaymentFlat(lastUpdateImported);
     }
 
     public async updatePaymentsFlatCollection() {
         const { programs, ministries, domainesFonct, refsProgrammation } = await this.getAllDataBretagneData();
 
         const lastChorusUpdateImported = await this.getChorusLastUpdateImported();
-        const chorusCursor = chorusService.chorusCursorFindData(lastChorusUpdateImported);
+        const chorusCursor = chorusService.cursorFindData(lastChorusUpdateImported);
         let document = await chorusCursor.next();
         let newChorusLastUpdate = lastChorusUpdateImported;
         const promises: Promise<void>[] = [];

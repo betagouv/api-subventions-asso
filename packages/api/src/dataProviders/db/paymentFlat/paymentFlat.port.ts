@@ -17,8 +17,6 @@ export class PaymentFlatPort extends MongoRepository<PaymentFlatDbo> {
 
     public async upsertOne(entity: PaymentFlatEntity) {
         const updateDbo = PaymentFlatAdapter.toDbo(entity);
-        console.log(updateDbo);
-        console.log(updateDbo.uniqueId);
         await this.collection.updateOne({ uniqueId: updateDbo.uniqueId }, { $set: updateDbo }, { upsert: true });
     }
 

@@ -53,12 +53,12 @@ describe("PaymentFlatService", () => {
         );
     });
 
-    describe("getChorusLastUpdateImported", () => {
+    describe("getChorusLastUpdateImportedToPaymentFlat", () => {
         let mockConfigGetChorusUpdate: jest.SpyInstance;
 
         beforeAll(() => {
             mockConfigGetChorusUpdate = jest
-                .spyOn(configurationsService, "getChorusLastUpdateImported")
+                .spyOn(configurationsService, "getChorusLastUpdateImportedToPaymentFlat")
                 .mockResolvedValue({
                     _id: new ObjectId("007f191e810c19729de860ea"),
                     name: "LAST-CHORUS-OBJECT-ID",
@@ -71,7 +71,7 @@ describe("PaymentFlatService", () => {
             mockConfigGetChorusUpdate.mockRestore();
         });
 
-        it("should call configurationsService.getChorusLastUpdateImported", async () => {
+        it("should call configurationsService.getChorusLastUpdateImportedToPaymentFlat", async () => {
             await paymentFlatService.getChorusLastUpdateImported();
             expect(mockConfigGetChorusUpdate).toHaveBeenCalledTimes(1);
         });
@@ -95,7 +95,7 @@ describe("PaymentFlatService", () => {
 
         beforeAll(() => {
             mockConfigSetChorusUpdateImported = jest
-                .spyOn(configurationsService, "setChorusLastUpdateImported")
+                .spyOn(configurationsService, "setChorusLastUpdateImportedToPaymentFlat")
                 .mockImplementation(jest.fn());
         });
 
@@ -103,7 +103,7 @@ describe("PaymentFlatService", () => {
             mockConfigSetChorusUpdateImported.mockRestore();
         });
 
-        it("should call configurationsService.setChorusLastUpdateImported", async () => {
+        it("should call configurationsService.setChorusLastUpdateImportedToPaymentFlat", async () => {
             const lastUpdate = new Date("2021-05-01");
             await paymentFlatService.setChorusLastUpdateImported(lastUpdate);
 
@@ -150,7 +150,7 @@ describe("PaymentFlatService", () => {
                     .mockReturnValueOnce(null),
             };
 
-            mockchorusCursorFind = jest.spyOn(chorusService, "chorusCursorFindData").mockReturnValue(mockCursor as any);
+            mockchorusCursorFind = jest.spyOn(chorusService, "cursorFindData").mockReturnValue(mockCursor as any);
             mockToPaymentFlatEntity = jest
                 .spyOn(PaymentFlatAdapter, "toPaymentFlatEntity")
                 .mockReturnValue(PAYMENT_FLAT_ENTITY);

@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { BadRequestError, ConflictError } from "../../shared/errors/httpErrors";
 import { REGEX_MAIL_DOMAIN } from "../user/user.constant";
 import { DauphinTokenDataEntity, DauphinTokenAvailableTime } from "./entities";
@@ -47,12 +46,12 @@ export class ConfigurationsService {
         );
     }
 
-    async getChorusLastUpdateImported() {
+    async getChorusLastUpdateImportedToPaymentFlat() {
         // get the last chorus update that has been imported in paymentFlat data
         return await configurationsRepository.getByName<Date>(CONFIGURATION_NAMES.LAST_CHORUS_UPDATE_IMPORTED);
     }
 
-    async setChorusLastUpdateImported(lastUpdateImported: Date) {
+    async setChorusLastUpdateImportedToPaymentFlat(lastUpdateImported: Date) {
         // set the last chorus update that has been imported in paymentFlat data
         await configurationsRepository.upsert(CONFIGURATION_NAMES.LAST_CHORUS_UPDATE_IMPORTED, {
             data: lastUpdateImported,

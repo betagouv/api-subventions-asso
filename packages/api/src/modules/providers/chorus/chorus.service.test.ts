@@ -1,5 +1,4 @@
-import chorusService, { ChorusService } from "./chorus.service";
-import { ObjectId } from "mongodb";
+import chorusService from "./chorus.service";
 import chorusLineRepository from "./repositories/chorus.line.repository";
 jest.mock("./repositories/chorus.line.repository");
 const mockedChorusLineRepository = jest.mocked(chorusLineRepository);
@@ -72,13 +71,13 @@ describe("chorusService", () => {
 
         describe("chorusCursorFindData", () => {
             it("should call chorusLineRepository.findIndexedData with undefined", () => {
-                chorusService.chorusCursorFindData();
+                chorusService.cursorFindData();
                 expect(mockedChorusLineRepository.cursorFindData).toHaveBeenCalledWith(undefined);
             });
 
             it("should call chorusLineRepository.findData with lastUpdateDate", () => {
                 const lastUpdateDate = new Date("2021-01-01");
-                chorusService.chorusCursorFindData(lastUpdateDate);
+                chorusService.cursorFindData(lastUpdateDate);
                 expect(mockedChorusLineRepository.cursorFindData).toHaveBeenCalledWith(lastUpdateDate);
             });
         });

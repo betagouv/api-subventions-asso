@@ -125,7 +125,7 @@ describe("ConfigurationService", () => {
                 const expected = { data: new Date("2020-12-02") };
                 getByNameMock.mockImplementationOnce(async () => expected);
 
-                const actual = await configurationsService.getChorusLastUpdateImported();
+                const actual = await configurationsService.getChorusLastUpdateImportedToPaymentFlat();
                 expect(actual).toEqual(expected);
             });
 
@@ -133,7 +133,7 @@ describe("ConfigurationService", () => {
                 const expected = "LAST-CHORUS-UPDATE-IMPORTED";
                 getByNameMock.mockImplementationOnce(async () => {});
 
-                await configurationsService.getChorusLastUpdateImported();
+                await configurationsService.getChorusLastUpdateImportedToPaymentFlat();
 
                 expect(getByNameMock).toHaveBeenCalledWith(expected);
             });
@@ -142,7 +142,7 @@ describe("ConfigurationService", () => {
                 const expected = null;
                 getByNameMock.mockImplementationOnce(async () => expected);
 
-                const actual = await configurationsService.getChorusLastUpdateImported();
+                const actual = await configurationsService.getChorusLastUpdateImportedToPaymentFlat();
 
                 expect(actual).toEqual(expected);
             });
@@ -153,7 +153,7 @@ describe("ConfigurationService", () => {
                 const expected = new Date("2020-12-02");
                 upsertMock.mockImplementationOnce(async () => {});
 
-                await configurationsService.setChorusLastUpdateImported(expected);
+                await configurationsService.setChorusLastUpdateImportedToPaymentFlat(expected);
 
                 expect(upsertMock).toHaveBeenCalledWith("LAST-CHORUS-UPDATE-IMPORTED", {
                     data: expected,
