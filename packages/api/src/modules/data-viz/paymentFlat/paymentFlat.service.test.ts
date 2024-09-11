@@ -131,6 +131,8 @@ describe("PaymentFlatService", () => {
         let mockGetChorusLastUpdateImported: jest.SpyInstance;
         let mockSetChrousLastUpdateImported: jest.SpyInstance;
         let mockCursor;
+        let mockDocuments;
+        let nDocuments;
 
         beforeEach(() => {
             //@ts-expect-error : private methode
@@ -142,12 +144,13 @@ describe("PaymentFlatService", () => {
             mockSetChrousLastUpdateImported = jest
                 .spyOn(paymentFlatService, "setChorusLastUpdateImported")
                 .mockImplementation(jest.fn());
+            mockDocuments = [mockDocument1, mockDocument2, null];
+            nDocuments = mockDocuments.length - 1;
+
             mockCursor = {
-                next: jest
-                    .fn()
-                    .mockReturnValueOnce(mockDocument1)
-                    .mockReturnValueOnce(mockDocument2)
-                    .mockReturnValueOnce(null),
+                next: jest.fn().mockImplementation(() => {
+                    return mockDocuments.shift();
+                }),
             };
 
             mockchorusCursorFind = jest.spyOn(chorusService, "cursorFindData").mockReturnValue(mockCursor as any);
@@ -176,9 +179,9 @@ describe("PaymentFlatService", () => {
             expect(mockchorusCursorFind).toHaveBeenCalledTimes(1);
         });
 
-        it("should call next for times : number of documents + 1", async () => {
+        it("should call next for times ", async () => {
             await paymentFlatService.updatePaymentsFlatCollection();
-            expect(mockCursor.next).toHaveBeenCalledTimes(3);
+            expect(mockCursor.next).toHaveBeenCalledTimes(nDocuments + 1);
         });
 
         it("should set newChorusLastUpdate", async () => {
@@ -189,12 +192,12 @@ describe("PaymentFlatService", () => {
 
         it("should call toPaymentFlatEntity for number of documents times", async () => {
             await paymentFlatService.updatePaymentsFlatCollection();
-            expect(mockToPaymentFlatEntity).toHaveBeenCalledTimes(2);
+            expect(mockToPaymentFlatEntity).toHaveBeenCalledTimes(nDocuments);
         });
 
         it("should call upsertOne for number of documents times", async () => {
             await paymentFlatService.updatePaymentsFlatCollection();
-            expect(mockUpsertOne).toHaveBeenCalledTimes(2);
+            expect(mockUpsertOne).toHaveBeenCalledTimes(nDocuments);
         });
     });
 });

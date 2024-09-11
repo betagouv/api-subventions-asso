@@ -11,13 +11,14 @@ export class PaymentFlatPort extends MongoRepository<PaymentFlatDbo> {
         await this.collection.createIndex({ siret: 1, dateOperation: 1 });
     }
 
-    public async insertOne(entity: PaymentFlatEntity) {
-        return await this.collection.insertOne(PaymentFlatAdapter.toDbo(entity));
+    public insertOne(entity: PaymentFlatEntity) {
+        return this.collection.insertOne(PaymentFlatAdapter.toDbo(entity));
     }
 
-    public async upsertOne(entity: PaymentFlatEntity) {
+    public upsertOne(entity: PaymentFlatEntity) {
         const updateDbo = PaymentFlatAdapter.toDbo(entity);
-        await this.collection.updateOne({ uniqueId: updateDbo.uniqueId }, { $set: updateDbo }, { upsert: true });
+        this.collection.updateOne({ uniqueId: updateDbo.uniqueId }, { $set: updateDbo }, { upsert: true });
+        return Promise.resolve();
     }
 
     public async deleteAll() {

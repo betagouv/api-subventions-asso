@@ -16,7 +16,7 @@ export class PaymentFlatService {
 
     public async getChorusLastUpdateImported() {
         const lastChorusUpdateImported = await configurationsService.getChorusLastUpdateImportedToPaymentFlat();
-        return !lastChorusUpdateImported ? new Date("1970-01-01") : lastChorusUpdateImported.data;
+        return !lastChorusUpdateImported ? new Date("1970-01-01") : lastChorusUpdateImported.data; // default date to 1970-01-01 allow to take into account all data
     }
 
     public async setChorusLastUpdateImported(lastUpdateImported: Date) {
@@ -32,8 +32,9 @@ export class PaymentFlatService {
         let newChorusLastUpdate = lastChorusUpdateImported;
         const promises: Promise<void>[] = [];
         while (document != null) {
-            document.updated > newChorusLastUpdate ? (newChorusLastUpdate = document.updated) : null;
-
+            if (document.updated > newChorusLastUpdate) {
+                newChorusLastUpdate = document.updated;
+            }
             const paymentFlatEntity = PaymentFlatAdapter.toPaymentFlatEntity(
                 document,
                 programs,
