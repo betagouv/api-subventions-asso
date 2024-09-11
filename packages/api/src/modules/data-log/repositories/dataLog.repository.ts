@@ -1,5 +1,6 @@
 import MongoRepository from "../../../shared/MongoRepository";
 import { DataLogEntity } from "../entities/dataLogEntity";
+import { ProducerLogEntity } from "../entities/producerLogEntity";
 
 class DataLogRepository extends MongoRepository<DataLogEntity> {
     readonly collectionName = "data-log";
@@ -22,25 +23,27 @@ class DataLogRepository extends MongoRepository<DataLogEntity> {
         return this.collection.find({}).toArray();
     }
 
-    findLastByProvider(): Promise<DataLogEntity[]> {
+    getProvidersLogOverview(): Promise<ProducerLogEntity[]> {
         return this.collection
             .aggregate([
                 {
                     $group: {
                         _id: "$providerId",
                         lastIntegrationDate: { $max: "$integrationDate" },
+                        firstIntegrationDate: { $min: "$integrationDate" },
                         lastEditionDate: { $max: "$editionDate" },
                     },
                 },
                 {
                     $project: {
                         providerId: "$_id",
-                        integrationDate: "$lastIntegrationDate",
+                        lastIntegrationDate: "$lastIntegrationDate",
+                        firstIntegrationDate: "$firstIntegrationDate",
                         editionDate: "$lastEditionDate",
                     },
                 },
             ])
-            .toArray() as unknown as Promise<DataLogEntity[]>;
+            .toArray() as unknown as Promise<ProducerLogEntity[]>;
     }
 }
 

@@ -19,6 +19,6 @@ export class ProviderHttp extends Controller {
 
     @Get("/historique")
     async getDataLog(): Promise<DataLogDto[]> {
-        return dataLogService.findLastByProvider();
+        return dataLogService.getProvidersLogOverview();
     }
 }

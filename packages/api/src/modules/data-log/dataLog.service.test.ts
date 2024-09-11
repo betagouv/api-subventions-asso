@@ -53,31 +53,31 @@ describe("dataLogService", () => {
         });
     });
 
-    describe("findLastByProvider", () => {
+    describe("getProvidersLogOverview", () => {
         beforeAll(() => {
             // @ts-expect-error -- mock
-            jest.mocked(dataLogRepository.findLastByProvider).mockResolvedValue([1, 2, 3]);
+            jest.mocked(dataLogRepository.getProvidersLogOverview).mockResolvedValue([1, 2, 3]);
         });
 
         afterAll(() => {
-            jest.mocked(dataLogRepository.findLastByProvider).mockRestore();
+            jest.mocked(dataLogRepository.getProvidersLogOverview).mockRestore();
         });
 
         it("gets data from repo", async () => {
-            await dataLogService.findLastByProvider();
-            expect(dataLogRepository.findLastByProvider).toHaveBeenCalled();
+            await dataLogService.getProvidersLogOverview();
+            expect(dataLogRepository.getProvidersLogOverview).toHaveBeenCalled();
         });
 
         it("adapts each log", async () => {
-            await dataLogService.findLastByProvider();
-            expect(DataLogAdapter.entityToDto).toHaveBeenCalledTimes(3);
+            await dataLogService.getProvidersLogOverview();
+            expect(DataLogAdapter.overviewToDto).toHaveBeenCalledTimes(3);
         });
 
         it("returns adapted value", async () => {
             // @ts-expect-error -- test
-            jest.mocked(DataLogAdapter.entityToDto).mockImplementation(v => v.toString());
+            jest.mocked(DataLogAdapter.overviewToDto).mockImplementation(v => v.toString());
             const expected = ["1", "2", "3"];
-            const actual = await dataLogService.findLastByProvider();
+            const actual = await dataLogService.getProvidersLogOverview();
             expect(actual).toEqual(expected);
         });
     });
