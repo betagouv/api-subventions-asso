@@ -3,6 +3,11 @@ import expressWinston from "express-winston";
 import { ObjectId } from "mongodb";
 
 jest.mock("express-winston");
+jest.mock("winston", () => ({
+    transports: { MongoDB: class MongoDB {} },
+}));
+jest.mock("winston-mongodb");
+jest.mock("../shared/MongoConnection");
 
 describe("LogMiddleware", () => {
     let cfg: expressWinston.LoggerOptions;
@@ -12,6 +17,7 @@ describe("LogMiddleware", () => {
             email: "someone@email.fr",
         },
     } as unknown as expressWinston.FilterRequest;
+
     beforeAll(() => {
         expressLogger();
         cfg = jest.mocked(expressWinston.logger).mock.calls[0][0];
