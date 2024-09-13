@@ -151,9 +151,11 @@ export class DocumentsService {
 
     private async downloadDocument(folderName: string, document: DocumentRequestDto): Promise<string | null> {
         try {
+            const escapeInjectCmdInName = name => name.split('"')[0];
             const readStream = await this.getDocumentStreamByLocalApiUrl(document.url);
             const sourceFileName =
-                readStream.headers["content-disposition"]?.match(/attachment;filename="(.*)"/)?.[1] || document.nom;
+                readStream.headers["content-disposition"]?.match(/attachment;filename="(.*)"/)?.[1] ||
+                escapeInjectCmdInName(document.nom);
             const extension = /\.[^/]+$/.test(sourceFileName)
                 ? ""
                 : "." + (mime.extension(readStream.headers["content-type"]) || "pdf");
