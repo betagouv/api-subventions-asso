@@ -17,6 +17,11 @@ import DocumentProvider from "./@types/DocumentsProvider";
 import { documentToDocumentRequest } from "./document.adapter";
 
 export class DocumentsService {
+    ACCEPETED_URLS = [
+        "https://lecompteasso.associations.gouv.fr/apim/api-asso/api/documents/",
+        "https://api-avis-situation-sirene.insee.fr/identification/pdf/",
+    ];
+
     providersById = providersById(Object.values(providers));
 
     public async getDocumentBySiren(siren: Siren) {
@@ -96,10 +101,12 @@ export class DocumentsService {
     }
 
     async getGenericDocumentStream(http: ProviderRequestService, url: string): Promise<IncomingMessage> {
+        if (!this.ACCEPETED_URLS.some(acceptedUrl => url.startsWith(acceptedUrl))) throw new Error("Invalid URL");
         const res = await http.get(url, {
             responseType: "stream",
             headers: {
                 "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type": "attachment",
                 "mg-authentication": "true",
                 "Referrer-Policy": "strict-origin-when-cross-origin",
             },
