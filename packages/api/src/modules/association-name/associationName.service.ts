@@ -49,6 +49,7 @@ export class AssociationNameService {
                 oldValue.name || associationName.name,
                 oldValue.siren || associationName.siren,
                 oldValue.rna || associationName.rna,
+                oldValue.categorie_juridique || associationName.categorie_juridique,
                 oldValue.address || associationName.address,
                 oldValue.nbEtabs || associationName.nbEtabs,
             );

@@ -7,6 +7,7 @@ export class RechercheEntreprisesAdapter {
             dto.nom_complet,
             dto.siren,
             dto.complements?.identifiant_association || undefined,
+            dto.nature_juridique,
             dto.siege
                 ? {
                       numero: dto.siege.numero_voie,

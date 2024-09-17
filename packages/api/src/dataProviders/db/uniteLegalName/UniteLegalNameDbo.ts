@@ -6,5 +6,6 @@ export default interface UniteLegalNameDbo {
     name: string;
     searchKey: string;
     updatedDate: Date;
+    legalCategory: string;
     _id?: ObjectId;
 }

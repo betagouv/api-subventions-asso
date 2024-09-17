@@ -17,12 +17,16 @@ const mockedRnaSirenService = rnaSirenService as jest.Mocked<typeof rnaSirenServ
 const mockedSirenHelper = SirenHelper as jest.Mocked<typeof SirenHelper>;
 const mockedValidators = Validators as jest.Mocked<typeof Validators>;
 
-mockedRnaSirenService.find;
-
 describe("uniteLegalNameService", () => {
     const SIREN = "123456789";
     const RNA = "W1234567";
-    const fakeUniteLegalNameEntity = new UniteLegalNameEntity(SIREN, "Fake Name", `${SIREN} - Fake Name`, new Date());
+    const fakeUniteLegalNameEntity = new UniteLegalNameEntity(
+        SIREN,
+        "Fake Name",
+        `${SIREN} - Fake Name`,
+        new Date(),
+        "9210",
+    );
 
     describe("getNameFromIdentifier", () => {
         it("should return null for unknown identifier", async () => {
@@ -51,15 +55,15 @@ describe("uniteLegalNameService", () => {
 
         it("should return matched associations", async () => {
             mockedUniteLegalNamePort.search.mockResolvedValueOnce([fakeUniteLegalNameEntity]);
-            const expected = new AssociationNameEntity(fakeUniteLegalNameEntity.name, SIREN);
+            const expected = new AssociationNameEntity(fakeUniteLegalNameEntity.name, SIREN, undefined, "9210");
             const result = await uniteLegalNameService.searchBySirenSiretName("knownIdentifier");
             expect(result).toEqual([expected]);
         });
 
         it("should handle cases where there are multiple rnaSiren entities for the same siren", async () => {
             const expected = [
-                new AssociationNameEntity(fakeUniteLegalNameEntity.name, SIREN, RNA),
-                new AssociationNameEntity(fakeUniteLegalNameEntity.name, SIREN, "W987654321"),
+                new AssociationNameEntity(fakeUniteLegalNameEntity.name, SIREN, RNA, "9210"),
+                new AssociationNameEntity(fakeUniteLegalNameEntity.name, SIREN, "W987654321", "9210"),
             ];
 
             mockedUniteLegalNamePort.search.mockResolvedValueOnce([fakeUniteLegalNameEntity]);
@@ -78,7 +82,7 @@ describe("uniteLegalNameService", () => {
         it("should handle cases where the value is a start of siret", async () => {
             mockedUniteLegalNamePort.search.mockResolvedValueOnce([fakeUniteLegalNameEntity]);
             mockedValidators.isStartOfSiret.mockReturnValue(true);
-            const expected = new AssociationNameEntity(fakeUniteLegalNameEntity.name, SIREN);
+            const expected = new AssociationNameEntity(fakeUniteLegalNameEntity.name, SIREN, undefined, "9210");
 
             const result = await uniteLegalNameService.searchBySirenSiretName(SIREN);
             expect(result).toEqual([expected]);

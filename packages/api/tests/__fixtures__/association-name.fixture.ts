@@ -4,6 +4,7 @@ export default [
     {
         name: "ASSOCIATION AURORE",
         siren: "775684970",
+        legalCategory: "9210",
         searchKey: "775684970 - association aurore",
         updatedDate: new Date(),
     },

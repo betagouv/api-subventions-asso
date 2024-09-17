@@ -6,6 +6,7 @@ export default class UniteLegalNameEntity {
         public name: string,
         public searchKey: string,
         public updatedDate: Date,
+        public legalCategory: string,
         public id?: string,
     ) {}
 }
