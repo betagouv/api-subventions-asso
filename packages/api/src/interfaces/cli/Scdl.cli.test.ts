@@ -7,7 +7,7 @@ jest.mock("csv-stringify/sync", () => ({
 
 jest.mock("fs");
 const mockedFs = jest.mocked(fs);
-import ExportDateError from "../../shared/errors/cliErrors/ExportDateError";
+import FormatDateError from "../../shared/errors/cliErrors/FormatDateError";
 import ScdlCli from "./Scdl.cli";
 import scdlService from "../../modules/providers/scdl/scdl.service";
 
@@ -190,9 +190,9 @@ describe("ScdlCli", () => {
     });
 
     describe("validateGenericInput", () => {
-        it("should throw ExportDateError", async () => {
+        it("should throw FormatDateError", async () => {
             // @ts-expect-error -- test private
-            expect(() => cli.validateGenericInput(PRODUCER_ENTITY.slug)).rejects.toThrowError(ExportDateError);
+            expect(() => cli.validateGenericInput(PRODUCER_ENTITY.slug)).rejects.toThrowError(FormatDateError);
         });
 
         it("should throw Error when providerId does not match any provider in database", async () => {
