@@ -35,7 +35,7 @@ export default class CliController {
     /**
      *
      * @param file Path to the file
-     * @param exportDate This should be as close as possible as the end date of the data coverage period (i.e last day of the month if monthely export)
+     * @param exportDate This should be as close as possible to the end date of the data coverage period (i.e last day of the month if monthly export)
      * If not available, take the file's creation date or the file's reception date.
      * Accept "YYYY-MM-DD" format | TODO: make YYYY-MM-DD mandatory ?
      */
