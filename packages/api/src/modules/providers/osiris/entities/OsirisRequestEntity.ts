@@ -38,6 +38,7 @@ export default class OsirisRequestEntity extends RequestEntity {
                 return new Date(Date.UTC(parseInt(value), 0));
             },
         },
+        
         etablissementSiege: {
             path: ["Association", "Siège"],
             adapter: value => value === "Oui",

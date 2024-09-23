@@ -14,6 +14,7 @@ import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 import osirisService from "../osiris.service";
 import { toStatusFactory } from "../../providers.adapter";
 import { RawApplication } from "../../../grant/@types/rawGrant";
+import ApplicationsFlatEntity from "../../../../entities/ApplicationsFlatEntity";
 
 export default class OsirisRequestAdapter {
     static PROVIDER_NAME = "Osiris";
@@ -37,6 +38,16 @@ export default class OsirisRequestAdapter {
     ];
 
     private static readonly toStatus = toStatusFactory(OsirisRequestAdapter._statusConversionArray);
+
+    private static toBooleanPluriannualite(pluriannualite : string) : boolean {
+        if (pluriannualite === "Pluriannuel") {
+        return true;
+        } else if (pluriannualite === "Annuel") {
+            return false;
+        } else {
+            throw new Error(`Valeur inattendue pour pluriannualite: ${pluriannualite}`);
+        }
+    }
 
     static toAssociation(entity: OsirisRequestEntity, actions: OsirisActionEntity[] = []): Association {
         const dataDate = new Date(Date.UTC(entity.providerInformations.extractYear, 0));
@@ -258,4 +269,44 @@ export default class OsirisRequestAdapter {
             statut: OsirisRequestAdapter.toStatus(entity.providerInformations.status),
         };
     }
-}
+
+    static toApplicationFlat(entity: OsirisRequestEntity): ApplicationsFlatEntity {
+        return new ApplicationsFlatEntity(
+            OsirisRequestAdapter.PROVIDER_NAME, // provider
+            entity.providerInformations.osirisId, // idSubvention
+            entity.providerInformations.compteAssoId, // idJointure
+            "l'idJointure corresponds au n° dossier du compte ASSO. Cela permets ainsi de faire le lien avec les données issus de l'outil compte ASSO", // descriptionIdJointure
+            null, // nomAttribuant
+            null, // idAttribuant
+            entity.providerInformations.service_instructeur, // nomServiceInstructeur
+            null, // idServiceInstructeur
+            entity.legalInformations.siret, // idBeneficiaire
+            null, // exerciceBudgetaire
+            this.toBooleanPluriannualite(entity.providerInformations.pluriannualite), // pluriannualite TO DO : convertir
+            [], // anneesPluriannualites TO DO : faire methode pour extraire ça
+            entity.providerInformations.dateCommission, // dateDecision
+            null, // dateConvention (a valider)
+            null, // referenceDecision
+            null, // dateCreation
+            null, // anneeCreation  TO DO : verifier que c'est extract demande
+            null, // dateDebut
+            null, // dateFin
+            entity.providerInformations.dispositif, // dispositif
+            entity.providerInformations.sous_dispositif, // sousDispositif
+            OsirisRequestAdapter.toStatus(entity.providerInformations.status), // statutLabel
+            null, // objet
+            "aide en numéraire", // nature
+            entity.providerInformations.montantsDemande, // montantDemande TO DO : a valider pour pluriannualite
+            entity.providerInformations.montantsAccorde, // montantAccorde
+            entity.providerInformations.ej, // ej
+            null, // cleVersement
+            null, // conditionsVersement TO DO : a valider
+            null, // datesPeriodeVersement TO DO : a valider
+            null, // cofinancement TO DO : à deduire à partire d'actions
+            null, // attribuantsCofinanceurs TO DO : à deduire à partire d'actions
+            null, // idCofinancement 
+            null, // notificationUE
+            null, // evaluationCout
+            null, // evaluation
+            );
+    }
