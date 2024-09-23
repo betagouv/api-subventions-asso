@@ -43,6 +43,10 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
         return this.collection.bulkWrite(operations);
     }
 
+    public async insertMany(entities: ChorusLineEntity[]) {
+        return this.collection.insertMany(entities);
+    }
+
     public async update(entity: ChorusLineEntity) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { _id, ...entityWithoutId } = entity;

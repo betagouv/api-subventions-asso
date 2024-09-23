@@ -11,9 +11,7 @@ import { RawGrant, RawPayment } from "../../grant/@types/rawGrant";
 import ProviderCore from "../ProviderCore";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import uniteLegalEntreprisesService from "../uniteLegalEntreprises/uniteLegal.entreprises.service";
-import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
-import { DefaultObject } from "../../../@types";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import chorusLineRepository from "./repositories/chorus.line.repository";
@@ -64,6 +62,15 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
      */
     public async insertBatchChorusLine(entities: ChorusLineEntity[]) {
         const acceptedEntities = await asyncFilter(entities, entity => this.isAcceptedEntity(entity));
+        // const groupBy = acceptedEntities.reduce((acc, curr) => {
+        //     if (!acc[curr.uniqueId]) acc[curr.uniqueId] = [curr];
+        //     else acc[curr.uniqueId].push(curr);
+        //     return acc;
+        // }, {});
+        // console.log(groupBy);
+        // // @ts-expect-error: ok
+        // console.log(Object.values(groupBy).filter(group => group.length === 2)[0]);
+
         if (acceptedEntities.length) await this.upsertMany(acceptedEntities);
 
         return {

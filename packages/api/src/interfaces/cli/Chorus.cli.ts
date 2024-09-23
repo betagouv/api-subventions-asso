@@ -22,6 +22,48 @@ export default class ChorusCli extends CliController {
      * @param batchSize La taille des paquets envoyés à mongo coup par coup
      */
     protected async _parse(file: string, logger) {
+        const doc1 = {
+            "N° EJ": "2101766485",
+            "Fournisseur payé (DP) CODE": "1000321116",
+            "Fournisseur payé (DP)": "ASS GESTION REST DRFIP NORD PAS DE",
+            "Branche CODE": "Z039",
+            Branche: "Associations",
+            "Code taxe 1": "34137166400010",
+            "No TVA 3 (COM-RIDET ou TAHITI)": "#",
+            "Référentiel de programmation CODE": "BG00/021701010523",
+            "Référentiel de programmation": "Social restauration",
+            Société: "NORP",
+            "Exercice comptable": "2023",
+            "N° DP": "100053424",
+            "Date de dernière opération sur la DP": 45100,
+            "Centre financier CODE": "BG00/0217-SGAC-ASPR",
+            "Centre financier": "Action Soc et  PRP",
+            "Domaine fonctionnel CODE": "0217-07-05",
+            "Domaine fonctionnel": "Moyens HT2 RH",
+            "Montant payé": 110.94,
+        };
+
+        const doc2 = {
+            "N° EJ": "2101766485",
+            "Fournisseur payé (DP) CODE": "1000321116",
+            "Fournisseur payé (DP)": "ASS GESTION REST DRFIP NORD PAS DE",
+            "Branche CODE": "Z039",
+            Branche: "Associations",
+            "Code taxe 1": "34137166400010",
+            "No TVA 3 (COM-RIDET ou TAHITI)": "#",
+            "Référentiel de programmation CODE": "BG00/02160401012A",
+            "Référentiel de programmation": "Act°soc : restaurati",
+            Société: "NORP",
+            "Exercice comptable": "2023",
+            "N° DP": "100053424",
+            "Date de dernière opération sur la DP": 45100,
+            "Centre financier CODE": "BG00/0216-CPRH-CASR",
+            "Centre financier": "0216-CPRH-CASR",
+            "Domaine fonctionnel CODE": "0216-04-01",
+            "Domaine fonctionnel": "Action sociale : offre de",
+            "Montant payé": 278.96,
+        };
+
         if (typeof file !== "string") {
             throw new Error("Parse command need file args");
         }
