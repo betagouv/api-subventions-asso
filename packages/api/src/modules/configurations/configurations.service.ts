@@ -10,6 +10,7 @@ export enum CONFIGURATION_NAMES {
     ACCEPTED_EMAIL_DOMAINS = "ACCEPTED-EMAIL-DOMAINS",
     DUMP_PUBLISH_DATE = "DUMP-PUBLISH-DATE",
     LAST_RGPD_WARNED_DATE = "LAST-RGPD-WARNED-DATE",
+    LAST_CHORUS_UPDATE_IMPORTED = "LAST-CHORUS-UPDATE-IMPORTED",
 }
 
 export class ConfigurationsService {
@@ -43,6 +44,18 @@ export class ConfigurationsService {
         return configurationsRepository.getByName<DauphinTokenAvailableTime>(
             CONFIGURATION_NAMES.DAUPHIN_TOKEN_AVAILABLE,
         );
+    }
+
+    async getChorusLastUpdateImportedToPaymentFlat() {
+        // get the last chorus update that has been imported in paymentFlat data
+        return await configurationsRepository.getByName<Date>(CONFIGURATION_NAMES.LAST_CHORUS_UPDATE_IMPORTED);
+    }
+
+    async setChorusLastUpdateImportedToPaymentFlat(lastUpdateImported: Date) {
+        // set the last chorus update that has been imported in paymentFlat data
+        await configurationsRepository.upsert(CONFIGURATION_NAMES.LAST_CHORUS_UPDATE_IMPORTED, {
+            data: lastUpdateImported,
+        });
     }
 
     /**

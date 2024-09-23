@@ -2,6 +2,7 @@ import { Siren, Siret } from "dto";
 
 export default class PaymentFlatEntity {
     constructor(
+        public uniqueId: string,
         public siret: Siret,
         public siren: Siren,
         public amount: number,
