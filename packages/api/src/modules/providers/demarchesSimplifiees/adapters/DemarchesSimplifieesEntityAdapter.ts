@@ -1,6 +1,6 @@
 import moment from "moment";
 import * as lodash from "lodash";
-import { CommonApplicationDto, DemandeSubvention, ProviderValue } from "dto";
+import { ApplicationStatus, CommonApplicationDto, DemandeSubvention, ProviderValue } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import demarchesSimplifieesService from "../demarchesSimplifiees.service";
 import DemarchesSimplifieesDataEntity from "../entities/DemarchesSimplifieesDataEntity";
@@ -10,8 +10,16 @@ import { stringIsFloat } from "../../../../shared/helpers/StringHelper";
 import { DefaultObject } from "../../../../@types";
 import { DemarchesSimplifieesRawData, DemarchesSimplifieesRawGrant } from "../@types/DemarchesSimplifieesRawGrant";
 import { RawApplication } from "../../../grant/@types/rawGrant";
+import { toStatusFactory } from "../../providers.adapter";
 
 export class DemarchesSimplifieesEntityAdapter {
+    private static _statusConversionArray: { label: ApplicationStatus; providerStatusList: string[] }[] = [
+        { label: ApplicationStatus.REFUSED, providerStatusList: ["refuse"] },
+        { label: ApplicationStatus.GRANTED, providerStatusList: ["accepte"] },
+        { label: ApplicationStatus.INELIGIBLE, providerStatusList: ["sans_suite"] },
+        { label: ApplicationStatus.PENDING, providerStatusList: ["en_instruction"] },
+    ];
+
     private static mapSchema<T>(
         entity: DemarchesSimplifieesDataEntity,
         mapper: DemarchesSimplifieesMapperEntity,
@@ -67,6 +75,10 @@ export class DemarchesSimplifieesEntityAdapter {
         // DS doesn't have an attribute with only year, so we get year from the start date
         if (!subvention.annee_demande && subvention.date_debut && isValidDate(subvention.date_debut))
             subvention.annee_demande = (subvention.date_debut as Date).getFullYear();
+
+        subvention.statut_label = toStatusFactory(DemarchesSimplifieesEntityAdapter._statusConversionArray)(
+            subvention.status as string,
+        );
         return DemarchesSimplifieesEntityAdapter.nestedToProviderValues(subvention, toPv) as DemandeSubvention;
     }
 
@@ -94,7 +106,10 @@ export class DemarchesSimplifieesEntityAdapter {
             application.exercice = new Date(application.dateTransmitted as string)?.getFullYear();
         delete application.dateTransmitted;
 
-        // TODO transform status: missing business logic
+        application.statut = toStatusFactory(DemarchesSimplifieesEntityAdapter._statusConversionArray)(
+            application.providerStatus as string,
+        );
+
         delete application.providerStatus;
 
         return application as unknown as CommonApplicationDto;

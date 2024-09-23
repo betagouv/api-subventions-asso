@@ -135,13 +135,14 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
         it("adapts to proper format", () => {
             mapMock.mockReturnValueOnce({
                 dateTransmitted: new Date("2022-01-07"),
-                providerStatus: "toBeRemovedFromNow",
+                providerStatus: "sans_suite",
             });
             // @ts-expect-error mock
             const actual = DemarchesSimplifieesEntityAdapter.toCommon(ENTITY, MAPPER);
             expect(actual).toMatchInlineSnapshot(`
                 Object {
                   "exercice": 2022,
+                  "statut": "Inéligible",
                 }
             `);
         });
