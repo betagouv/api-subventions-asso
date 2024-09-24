@@ -1,8 +1,18 @@
+import { Rna, Siren, Siret } from "dto";
 import { getSiegeSiret } from "$lib/resources/associations/association.helper";
 import { valueOrHyphen } from "$lib/helpers/dataHelper";
+import AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
 
 export class StructureTitleController {
-    constructor(association, siret = undefined) {
+    public title?: string;
+    public subtitle?: string;
+    public linkToAsso?: string;
+    public rna: Rna | "-";
+    public siren: Siren | "-";
+    public rup: boolean;
+    public nbEstabs: number;
+
+    constructor(association: AssociationEntity, siret: Siret | undefined = undefined) {
         const associationName = association.denomination_rna || association.denomination_siren;
         if (siret) {
             this.title =
