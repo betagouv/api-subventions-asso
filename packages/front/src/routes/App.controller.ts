@@ -3,7 +3,7 @@ import type { UserDto } from "dto";
 import { setContext } from "svelte";
 import AppContext from "./AppContext";
 import trackerService from "$lib/services/tracker.service";
-import { ENV } from "$env/static/public";
+import { PUBLIC_ENV } from "$env/static/public";
 import localStorageService from "$lib/services/localStorage.service";
 import { page } from "$app/stores";
 import Store, { derived } from "$lib/core/Store";
@@ -14,7 +14,7 @@ export class AppController {
     element: HTMLElement | undefined = undefined;
     displayBanner = new Store(false);
     constructor() {
-        trackerService.init(ENV);
+        trackerService.init(PUBLIC_ENV);
         this.initContext();
 
         // trick to subscribe two stores because we need page AND connectedUser to be defined before running script

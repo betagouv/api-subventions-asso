@@ -1,7 +1,7 @@
 vi.mock("./documents.port");
 import documentHelper from "./document.helper";
 
-vi.mock("$env/static/public", () => ({ DATASUB_URL: "https://api.fr" }));
+vi.mock("$env/static/public", () => ({ PUBLIC_DATASUB_URL: "https://api.fr" }));
 
 describe("DocumentHelper", () => {
     const DOCUMENTS = [

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { NotFoundError } from "../errors";
 import errorsService from "../errors/errors.service";
-import { DATASUB_URL } from "$env/static/public";
+import { PUBLIC_DATASUB_URL } from "$env/static/public";
 import requestsService from "$lib/services/requests.service";
 
 vi.mock("axios");
@@ -9,7 +9,7 @@ vi.mock("axios");
 describe("RequestService", () => {
     describe("constructor", () => {
         it("should set baseUrl", () => {
-            expect(axios.defaults.baseURL).toBe(DATASUB_URL);
+            expect(axios.defaults.baseURL).toBe(PUBLIC_DATASUB_URL);
         });
     });
 

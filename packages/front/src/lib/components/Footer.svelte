@@ -1,6 +1,6 @@
 <script>
     import { getContext } from "svelte";
-    import { STATS_URL, PRIVACY_POLICY_URL, CGU_URL } from "$env/static/public";
+    import { PUBLIC_STATS_URL, PUBLIC_PRIVACY_POLICY_URL, PUBLIC_CGU_URL } from "$env/static/public";
 
     const { getDescription, getRepo } = getContext("app");
 </script>
@@ -83,7 +83,7 @@
                 <li class="fr-footer__bottom-item">
                     <a
                         class="fr-footer__bottom-link"
-                        href={PRIVACY_POLICY_URL}
+                        href={PUBLIC_PRIVACY_POLICY_URL}
                         target="_blank"
                         rel="noopener external"
                         title="Politique de confidentialité - nouvelle fenêtre">
@@ -93,7 +93,7 @@
                 <li class="fr-footer__bottom-item">
                     <a
                         class="fr-footer__bottom-link"
-                        href={STATS_URL}
+                        href={PUBLIC_STATS_URL}
                         target="_blank"
                         rel="noopener external"
                         title="Statistiques d'usage - nouvelle fenêtre">
@@ -106,7 +106,7 @@
                 <li class="fr-footer__bottom-item">
                     <a
                         class="fr-footer__bottom-link"
-                        href={CGU_URL}
+                        href={PUBLIC_CGU_URL}
                         target="_blank"
                         title="Conditions générales d'utilisation - nouvelle fenêtre">
                         Conditions générales d’utilisation

@@ -9,7 +9,7 @@ import { buildCsv, downloadCsv } from "$lib/helpers/csvHelper";
 import establishmentService from "$lib/resources/establishments/establishment.service";
 import associationService from "$lib/resources/associations/association.service";
 import trackerService from "$lib/services/tracker.service";
-import { PROVIDER_BLOG_URL } from "$env/static/public";
+import { PUBLIC_PROVIDER_BLOG_URL } from "$env/static/public";
 import { currentAssociation, currentAssoSimplifiedEtabs } from "$lib/store/association.store";
 import { dateToDDMMYYYY } from "$lib/helpers/dateHelper";
 import { addressToOneLineString } from "$lib/resources/associations/association.helper";
@@ -41,7 +41,7 @@ export default class SubventionsPaymentsDashboardController {
     }
 
     get providerBlogUrl() {
-        return PROVIDER_BLOG_URL;
+        return PUBLIC_PROVIDER_BLOG_URL;
     }
 
     get notFoundMessage() {

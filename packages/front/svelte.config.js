@@ -20,8 +20,8 @@ const config = {
         // See https://kit.svelte.dev/docs/adapters for more information about adapters.
         adapter: adapter({ out: "build" }),
         env: {
-            publicPrefix: "",
-            privatePrefix: "PRIVATE_",
+            publicPrefix: "PUBLIC_",
+            privatePrefix: "",
         },
         version: { name: pkg.version },
         csp: {
@@ -29,7 +29,7 @@ const config = {
                 "default-src": ["self"],
                 "connect-src": [
                     "self",
-                    process.env.DATASUB_URL || "http://localhost:8080",
+                    process.env.PUBLIC_DATASUB_URL || "http://localhost:8080",
                     "https://client.crisp.chat wss://client.relay.crisp.chat",
                     "https://storage.crisp.chat",
                     "wss://stream.relay.crisp.chat",
