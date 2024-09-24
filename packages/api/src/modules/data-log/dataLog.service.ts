@@ -19,9 +19,9 @@ class DataLogService {
         });
     }
 
-    async findLastByProvider(): Promise<DataLogDto[]> {
-        const logs = await dataLogRepository.findLastByProvider();
-        return logs.map(log => DataLogAdapter.entityToDto(log));
+    async getProvidersLogOverview(): Promise<DataLogDto[]> {
+        const overviews = await dataLogRepository.getProvidersLogOverview();
+        return overviews.map(overview => DataLogAdapter.overviewToDto(overview));
     }
 }
 

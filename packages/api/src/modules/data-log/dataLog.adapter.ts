@@ -1,12 +1,14 @@
 import { DataLogDto } from "dto";
-import { DataLogEntity } from "./entities/dataLogEntity";
+import { ProducerLogEntity } from "./entities/producerLogEntity";
 
 export class DataLogAdapter {
-    static entityToDto(log: DataLogEntity): DataLogDto {
+    // do we want this here ?
+    static overviewToDto(overview: ProducerLogEntity): DataLogDto {
         return {
-            date_edition: log.editionDate,
-            date_integration: log.integrationDate,
-            identifiant_fournisseur: log.providerId,
+            identifiant_fournisseur: overview.providerId,
+            premiere_date_integration: overview.firstIntegrationDate,
+            derniere_date_integration: overview.lastIntegrationDate,
+            derniere_date_edition: overview.lastCoverDate,
         };
     }
 }

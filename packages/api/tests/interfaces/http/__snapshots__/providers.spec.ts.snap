@@ -3,14 +3,14 @@
 exports[`/open-data/fournisseurs /historique should return raw grants with rna 1`] = `
 Array [
   Object {
-    "date_edition": "2022-05-01T00:00:00.000Z",
-    "date_integration": "2022-05-01T00:00:00.000Z",
+    "derniere_date_integration": "2022-05-01T00:00:00.000Z",
     "identifiant_fournisseur": "prov2",
+    "premiere_date_integration": "2022-05-01T00:00:00.000Z",
   },
   Object {
-    "date_edition": "2023-01-01T00:00:00.000Z",
-    "date_integration": "2023-01-01T00:00:00.000Z",
+    "derniere_date_integration": "2023-01-01T00:00:00.000Z",
     "identifiant_fournisseur": "prov1",
+    "premiere_date_integration": "2022-01-01T00:00:00.000Z",
   },
 ]
 `;
