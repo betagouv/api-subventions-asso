@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import MultiStepFormController from "./MultiStepForm.controller";
     import Button from "$lib/dsfr/Button.svelte";
 

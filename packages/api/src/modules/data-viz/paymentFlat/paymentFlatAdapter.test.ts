@@ -3,6 +3,7 @@ import { CHORUS_LINE_ENTITY } from "./__fixtures__/chorusLineEntity.fixture";
 import { PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 import IChorusIndexedInformations from "../../providers/chorus/@types/IChorusIndexedInformations";
+import ChorusLineEntity from "../../providers/chorus/entities/ChorusLineEntity";
 console.error = jest.fn();
 
 const documentDataReturnedValue = {
@@ -29,7 +30,7 @@ describe("PaymentFlatAdapter", () => {
 
         it("should return PaymentFlatEntity when data is fully provided", () => {
             const result = PaymentFlatAdapter.toPaymentFlatEntity(
-                CHORUS_LINE_ENTITY as unknown as IChorusIndexedInformations,
+                CHORUS_LINE_ENTITY as unknown as ChorusLineEntity,
                 RECORDS["programme"],
                 RECORDS["ministry"],
                 RECORDS["domaineFonct"],
@@ -46,7 +47,7 @@ describe("PaymentFlatAdapter", () => {
                 programEntity: undefined,
             });
             const result = PaymentFlatAdapter.toPaymentFlatEntity(
-                { ...CHORUS_LINE_ENTITY } as unknown as IChorusIndexedInformations,
+                { ...CHORUS_LINE_ENTITY } as unknown as ChorusLineEntity,
                 RECORDS["programme"],
                 RECORDS["ministry"],
                 RECORDS["domaineFonct"],
@@ -66,7 +67,7 @@ describe("PaymentFlatAdapter", () => {
         it("should return DataBretagne Document Data when no null is present", () => {
             //@ts-expect-error : test private method
             const result = PaymentFlatAdapter.getDataBretagneDocumentData(
-                CHORUS_LINE_ENTITY as unknown as IChorusIndexedInformations,
+                CHORUS_LINE_ENTITY.indexedInformations as unknown as IChorusIndexedInformations,
                 RECORDS["programme"],
                 RECORDS["ministry"],
                 RECORDS["domaineFonct"],
@@ -80,7 +81,10 @@ describe("PaymentFlatAdapter", () => {
         it("should return DataBretagne Document Data with undefined when the join did not work", () => {
             //@ts-expect-error : test private method
             const result = PaymentFlatAdapter.getDataBretagneDocumentData(
-                { ...CHORUS_LINE_ENTITY, codeDomaineFonctionnel: "0161AC123" } as unknown as IChorusIndexedInformations,
+                {
+                    ...CHORUS_LINE_ENTITY.indexedInformations,
+                    codeDomaineFonctionnel: "0161AC123",
+                } as unknown as IChorusIndexedInformations,
                 RECORDS["programme"],
                 RECORDS["ministry"],
                 RECORDS["domaineFonct"],
@@ -103,7 +107,10 @@ describe("PaymentFlatAdapter", () => {
             RECORDS["domaineFonct"]["0161AC123"] = { ...RECORDS["domaineFonct"]["0163AC123"], code_programme: 161 };
             //@ts-expect-error : test private method
             const result = PaymentFlatAdapter.getDataBretagneDocumentData(
-                { ...CHORUS_LINE_ENTITY, codeDomaineFonctionnel: "0161AC123" } as unknown as IChorusIndexedInformations,
+                {
+                    ...CHORUS_LINE_ENTITY.indexedInformations,
+                    codeDomaineFonctionnel: "0161AC123",
+                } as unknown as IChorusIndexedInformations,
                 RECORDS["programme"],
                 RECORDS["ministry"],
                 RECORDS["domaineFonct"],
@@ -116,16 +123,16 @@ describe("PaymentFlatAdapter", () => {
 
         it.each([
             {
-                chorusLineEntity: { ...CHORUS_LINE_ENTITY, codeDomaineFonctionnel: "0163" },
+                chorusLineEntity: { ...CHORUS_LINE_ENTITY.indexedInformations, codeDomaineFonctionnel: "0163" },
                 codeValue: "0163",
                 recordType: "DomaineFonctionnel",
             },
             {
-                chorusLineEntity: { ...CHORUS_LINE_ENTITY, codeActivitee: "code_2" },
+                chorusLineEntity: { ...CHORUS_LINE_ENTITY.indexedInformations, codeActivitee: "code_2" },
                 codeValue: "code_2",
                 recordType: "RefProgrammation",
             },
-            { chorusLineEntity: CHORUS_LINE_ENTITY, codeValue: "code_2", recordType: "Ministry" },
+            { chorusLineEntity: CHORUS_LINE_ENTITY.indexedInformations, codeValue: "code_2", recordType: "Ministry" },
         ])("should console.error when %s not found", ({ chorusLineEntity, codeValue, recordType }) => {
             RECORDS["programme"][163].code_ministere = codeValue;
 

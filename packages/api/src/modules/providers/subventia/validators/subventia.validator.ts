@@ -1,97 +1,133 @@
-import { isSiret } from "../../../../shared/Validators";
+import { isNumberValid, isSiret } from "../../../../shared/Validators";
 import { GenericParser } from "../../../../shared/GenericParser";
 import SubventiaDto from "../@types/subventia.dto";
+import { isValidDate } from "../../../../shared/helpers/DateHelper";
+import { ParsedDataWithProblem, Problem } from "./@types/Validation";
 
 export default class SubventiaValidator {
     static sortDataByValidity(parsedData: SubventiaDto[]) {
-        const sortedData = parsedData.reduce<{ valids: SubventiaDto[]; invalids: SubventiaDto[] }>(
+        const sortedData = parsedData.reduce<{ valids: SubventiaDto[]; invalids: ParsedDataWithProblem[] }>(
             (acc, currentLine) => {
-                if (this.isDataRowTypesValid(currentLine) && this.isDataRowCoherenceValid(currentLine)) {
+                const validation = this.isSubventiaDtoValid(currentLine);
+                if (validation.valid) {
                     acc["valids"].push(currentLine);
                 } else {
-                    acc["invalids"].push(currentLine);
+                    validation?.problems?.map((pb: Problem) => acc["invalids"].push({ ...currentLine, ...pb }));
                 }
                 return acc;
             },
             { valids: [], invalids: [] },
         );
+        sortedData.invalids = this.formatInvalids(sortedData.invalids);
         return sortedData;
     }
 
-    static validateDataRowTypes(parsedDataRow: SubventiaDto) {
-        if (!isSiret(parsedDataRow["SIRET - Demandeur"])) {
-            throw new Error(`INVALID SIRET FOR ${parsedDataRow["SIRET - Demandeur"]}`);
-        }
+    protected static isSubventiaDtoValid(parsedDataRow: SubventiaDto) {
+        const problems: Problem[] = [];
+        let valid = true;
 
-        if (parsedDataRow["Date - Décision"]) {
-            try {
-                GenericParser.ExcelDateToJSDate(parseInt(parsedDataRow["Date - Décision"], 10));
-            } catch (e) {
-                throw new Error(`Date - Décision is not a valid date`);
+        this.typesRequirements.forEach(requirement => {
+            if (requirement.test(parsedDataRow[requirement.key])) {
+                const coherenceRequirement = this.coherenceRequirements.find(
+                    coherenceRequirement => coherenceRequirement.key === requirement.key,
+                );
+                if (coherenceRequirement && !coherenceRequirement.test(parsedDataRow)) {
+                    problems.push({
+                        field: coherenceRequirement.key,
+                        value: parsedDataRow[coherenceRequirement.key],
+                        message: coherenceRequirement.message,
+                    });
+                    valid = false;
+                } else return;
+            } else {
+                problems.push({
+                    field: requirement.key,
+                    value: parsedDataRow[requirement.key],
+                    message: requirement.message,
+                });
+                valid = false;
             }
-        }
+        });
 
-        if (parsedDataRow["Montant voté TTC - Décision"]) {
-            if (isNaN(parsedDataRow["Montant voté TTC - Décision"])) {
-                throw new Error(`Montant voté TTC - Décision is not a number`);
-            }
-        }
-
-        if (parsedDataRow["Montant Ttc"]) {
-            if (isNaN(parsedDataRow["Montant Ttc"])) {
-                throw new Error(`Montant Ttc is not a number`);
-            }
-        }
-
-        return true;
+        if (problems.length) return { valid, problems };
+        return { valid };
     }
 
-    static validateDataRowCoherence(parsedDataRow: SubventiaDto) {
-        if (!parsedDataRow["Référence administrative - Demande"]) {
-            throw new Error(`Référence demande null is not accepted in data`);
-        }
+    protected static typesRequirements: {
+        key: string;
+        test: (v: unknown) => boolean;
+        message: string;
+    }[] = [
+        { key: "SIRET - Demandeur", test: v => isSiret(v as string), message: "SIRET manquant ou invalid" },
+        {
+            key: "Date - Décision",
+            test: v => {
+                if (v) {
+                    try {
+                        GenericParser.ExcelDateToJSDate(parseInt(v as string, 10));
+                    } catch (e) {
+                        return false;
+                    }
+                    return isValidDate(GenericParser.ExcelDateToJSDate(parseInt(v as string, 10)));
+                }
+                return true;
+            },
+            message: "Date - Décision n'est pas valid",
+        },
+        {
+            key: "Montant voté TTC - Décision",
+            test: v => isNumberValid(v as number) || !v,
+            message: "Montant voté TTC - Décision n'est pas un nombre",
+        },
+        { key: "Montant Ttc", test: v => isNumberValid(v as number) || !v, message: "Montant Ttc n'est pas un nombre" },
+        {
+            key: "Référence administrative - Demande",
+            test: v => v !== null,
+            message: "Référence demande null n'est pas une donnée acceptée",
+        },
+    ];
 
-        if (parsedDataRow["Date - Décision"]) {
-            if (
-                GenericParser.ExcelDateToJSDate(parseInt(parsedDataRow["Date - Décision"])).getUTCFullYear() <
-                parseInt(parsedDataRow["annee_demande"])
-            ) {
-                throw new Error(`The year of the decision cannot be lower than the year of the request`);
-            }
-        }
+    protected static coherenceRequirements: {
+        key: string;
+        test: (v: SubventiaDto) => boolean;
+        message: string;
+    }[] = [
+        {
+            key: "Date - Décision",
+            test: v =>
+                !v["Date - Décision"] ||
+                GenericParser.ExcelDateToJSDate(parseInt(v["Date - Décision"] as string, 10)).getUTCFullYear() >=
+                    parseInt(v["annee_demande"]),
+            message: "La date de la décision ne peut pas être inférieure à la date de la demande",
+        },
 
-        if (
-            //@ts-expect-error : test invalid data
-            parsedDataRow["Montant voté TTC - Décision"] === "" &&
-            ["VOTE", "SOLDE"].includes(parsedDataRow["Statut - Dossier de financement"])
-        ) {
-            throw new Error(`Montant voté TTC - Décision is required for status VOTE and SOLDE`);
-        }
+        {
+            key: "Montant voté TTC - Décision",
+            test: v =>
+                // @ts-expect-error : test invalid data
+                (v["Montant voté TTC - Décision"] === "" &&
+                    ["VOTE", "SOLDE"].includes(v["Statut - Dossier de financement"])) === false,
+            message: "Montant voté TTC - Décision est requis pour les status VOTE et SOLDE",
+        },
+    ];
 
-        return true;
+    protected static formatDate(ExcelDate: string) {
+        const JsonDate = ExcelDate ? GenericParser.ExcelDateToJSDate(parseInt(ExcelDate, 10)) : null;
+        if (JsonDate) {
+            return JsonDate.toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" });
+        }
+        return "";
     }
 
-    protected static isDataRowTypesValid(parsedDataRow: SubventiaDto) {
-        try {
-            return this.validateDataRowTypes(parsedDataRow);
-        } catch (e) {
-            console.log(
-                `\n\nThis request is not registered because: ${(e as Error).message}\n`,
-                JSON.stringify(parsedDataRow, null, "\t"),
-            );
-            return false;
-        }
-    }
-
-    protected static isDataRowCoherenceValid(parsedDataRow: SubventiaDto) {
-        try {
-            return this.validateDataRowCoherence(parsedDataRow);
-        } catch (e) {
-            console.log(
-                `\n\nThis request is not registered because: ${(e as Error).message}\n`,
-                JSON.stringify(parsedDataRow, null, "\t"),
-            );
-            return false;
-        }
+    protected static formatInvalids(invalids: ParsedDataWithProblem[]) {
+        return invalids.map(invalid => {
+            return {
+                ...invalid,
+                "Date - Décision": this.formatDate(invalid["Date - Décision"]),
+                "Date limite de début de réalisation": this.formatDate(invalid["Date limite de début de réalisation"]),
+                "Date limite de fin de réalisation": this.formatDate(invalid["Date limite de fin de réalisation"]),
+                "Date - Visa de recevabilité": this.formatDate(invalid["Date - Visa de recevabilité"]),
+            };
+        });
     }
 }

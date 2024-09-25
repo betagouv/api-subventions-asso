@@ -2,6 +2,7 @@ import chorusLineRepository from "./chorus.line.repository";
 import MongoRepository from "../../../../shared/MongoRepository";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 import { ObjectId } from "mongodb";
+import { update } from "lodash";
 describe("ChorusLineRepository", () => {
     let mockBulkWrite = jest.fn();
 
@@ -63,13 +64,13 @@ describe("ChorusLineRepository", () => {
             mockCursorFind.mockRestore();
         });
         it("should call cursorFindIndexedData without filters", () => {
-            chorusLineRepository.cursorFindIndexedData();
-            expect(mockCursorFind).toHaveBeenCalledWith({}, { indexedInformations: 1 });
+            chorusLineRepository.cursorFindData();
+            expect(mockCursorFind).toHaveBeenCalledWith({});
         });
         it("should call cursorFindIndexedData with filters", () => {
-            const objectId = new ObjectId("000000000000000000000000");
-            chorusLineRepository.cursorFindIndexedData(objectId);
-            expect(mockCursorFind).toHaveBeenCalledWith({ _id: { $gt: objectId } }, { indexedInformations: 1 });
+            const lastUpdateDate = new Date("22-02-2022");
+            chorusLineRepository.cursorFindData(lastUpdateDate);
+            expect(mockCursorFind).toHaveBeenCalledWith({ updated: { $gt: lastUpdateDate } });
         });
     });
 });

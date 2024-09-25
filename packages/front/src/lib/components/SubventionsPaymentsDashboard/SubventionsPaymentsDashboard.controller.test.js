@@ -28,7 +28,7 @@ vi.mock("$lib/helpers/identifierHelper", () => {
 });
 import * as identifierHelper from "$lib/helpers/identifierHelper";
 import trackerService from "$lib/services/tracker.service";
-import { PROVIDER_BLOG_URL } from "$env/static/public";
+import { PUBLIC_PROVIDER_BLOG_URL } from "$env/static/public";
 vi.mock("$lib/services/tracker.service");
 describe("SubventionsPaymentsDashboardController", () => {
     const SIREN = "123456789";
@@ -44,7 +44,7 @@ describe("SubventionsPaymentsDashboardController", () => {
 
     describe("providerBlogUrl", () => {
         it("should return URL", () => {
-            const expected = PROVIDER_BLOG_URL;
+            const expected = PUBLIC_PROVIDER_BLOG_URL;
             const controller = new SubventionsPaymentsDashboardController();
             const actual = controller.providerBlogUrl;
             expect(actual).toEqual(expected);

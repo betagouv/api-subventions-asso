@@ -12,11 +12,8 @@ import * as constants from "$env/static/public";
 vi.mock("$env/static/public");
 import localStorageService from "$lib/services/localStorage.service";
 vi.mock("$lib/services/localStorage.service");
-import { page } from "$app/stores";
 vi.mock("$app/stores");
-import { connectedUser } from "$lib/store/user.store";
 vi.mock("$lib/store/user.store");
-import userService from "$lib/resources/users/user.service";
 vi.mock("$lib/resources/users/user.service");
 
 describe("AppController", () => {
@@ -28,7 +25,7 @@ describe("AppController", () => {
     const mockSubscribe = vi.fn(callback => callback([mockPageStoreValue, mockConnectedUserStoreValue]));
 
     beforeAll(() => {
-        vi.mocked(constants).ENV = ENV;
+        vi.mocked(constants).PUBLIC_ENV = ENV;
         vi.mocked(localStorageService).getItem.mockResolvedValue(new Store.default(true));
     });
 

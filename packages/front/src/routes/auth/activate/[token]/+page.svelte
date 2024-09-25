@@ -5,6 +5,7 @@
     import Spinner from "$lib/components/Spinner.svelte";
 
     export let data;
+
     const { token } = data.params;
 
     const controller = new ActivateAccount(token);

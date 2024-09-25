@@ -1,6 +1,6 @@
 import { SignupErrorCodes } from "dto";
 import { getContext } from "svelte";
-import { PRIVACY_POLICY_URL, CGU_URL } from "$env/static/public";
+import { PUBLIC_PRIVACY_POLICY_URL, PUBLIC_CGU_URL } from "$env/static/public";
 import Store from "$lib/core/Store";
 import authService from "$lib/resources/auth/auth.service";
 import { goToUrl } from "$lib/services/router.service";
@@ -15,7 +15,7 @@ export default class SignupController {
 
     WORK_ETHIC_OPTIONS = [
         {
-            label: `J'ai bien conscience que tout usage personnel sans objet avec mes missions professionnelles est proscrit conformément aux <a href="${CGU_URL}" target="_blank">conditions générales d’utilisation</a> du site.`,
+            label: `J'ai bien conscience que tout usage personnel sans objet avec mes missions professionnelles est proscrit conformément aux <a href="${PUBLIC_CGU_URL}" target="_blank">conditions générales d’utilisation</a> du site.`,
             value: "true",
             withHtml: true,
         },
@@ -36,11 +36,11 @@ export default class SignupController {
     }
 
     get privacyPolicyUrl() {
-        return PRIVACY_POLICY_URL;
+        return PUBLIC_PRIVACY_POLICY_URL;
     }
 
     get cguUrl() {
-        return CGU_URL;
+        return PUBLIC_CGU_URL;
     }
 
     signup() {

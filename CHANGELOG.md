@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.55.0](https://github.com/betagouv/api-subventions-asso/compare/v0.54.1...v0.55.0) (2024-09-09)
+
+### Features
+
+-   **api,dto:** [#2589](https://github.com/betagouv/api-subventions-asso/issues/2589) data log route ([#2626](https://github.com/betagouv/api-subventions-asso/issues/2626)) ([5c24e43](https://github.com/betagouv/api-subventions-asso/commit/5c24e436c36385341b2c7f4c48ddb7898347a2cb))
+-   **api:** [#2384](https://github.com/betagouv/api-subventions-asso/issues/2384) scdl misc attributor data, producer as default ([#2629](https://github.com/betagouv/api-subventions-asso/issues/2629)) ([a4bf2ff](https://github.com/betagouv/api-subventions-asso/commit/a4bf2ff09f70f1e50ac24dddb09cc139e97b4111))
+-   **api:** [#2413](https://github.com/betagouv/api-subventions-asso/issues/2413) extract grants api-side ([#2595](https://github.com/betagouv/api-subventions-asso/issues/2595)) ([38d69d6](https://github.com/betagouv/api-subventions-asso/commit/38d69d69a6af93a8a25991c3085fead4283cd586))
+
+## [0.54.1](https://github.com/betagouv/api-subventions-asso/compare/v0.54.0...v0.54.1) (2024-08-29)
+
+### Bug Fixes
+
+-   misc v0.54 ([#2623](https://github.com/betagouv/api-subventions-asso/issues/2623)) ([5240cf3](https://github.com/betagouv/api-subventions-asso/commit/5240cf326669056253f6d79ce6abf660751d2aa7))
+
+# [0.54.0](https://github.com/betagouv/api-subventions-asso/compare/v0.53.1...v0.54.0) (2024-08-26)
+
+### Bug Fixes
+
+-   **front:** [#2171](https://github.com/betagouv/api-subventions-asso/issues/2171) [#2289](https://github.com/betagouv/api-subventions-asso/issues/2289) handle spaces in search ([#2597](https://github.com/betagouv/api-subventions-asso/issues/2597)) ([7edfa71](https://github.com/betagouv/api-subventions-asso/commit/7edfa7177c4b83e4b346ae8fd38c22b6dd90c499))
+-   **front:** [#2611](https://github.com/betagouv/api-subventions-asso/issues/2611) docs when no siren ([#2612](https://github.com/betagouv/api-subventions-asso/issues/2612)) ([76b915a](https://github.com/betagouv/api-subventions-asso/commit/76b915a6782bbced5c40266c48def386f048f122))
+
+### Features
+
+-   **api:** [#2524](https://github.com/betagouv/api-subventions-asso/issues/2524) add paymentFlatPort ([#2575](https://github.com/betagouv/api-subventions-asso/issues/2575)) ([426fdb0](https://github.com/betagouv/api-subventions-asso/commit/426fdb0bea609c776cfb2c59e8a2c263006974f0))
+-   **api:** [#2526](https://github.com/betagouv/api-subventions-asso/issues/2526) add chorus findAll / getAll ([#2539](https://github.com/betagouv/api-subventions-asso/issues/2539)) ([cf21924](https://github.com/betagouv/api-subventions-asso/commit/cf219245a0739dc835cc3acc2e6a13e82b13e69b))
+-   **api:** [#2580](https://github.com/betagouv/api-subventions-asso/issues/2580) chorus columns ([#2592](https://github.com/betagouv/api-subventions-asso/issues/2592)) ([c9ba473](https://github.com/betagouv/api-subventions-asso/commit/c9ba4738f3d5d9ea6a21cb724b4d5d7c94f2d490))
+-   **api:** [#2588](https://github.com/betagouv/api-subventions-asso/issues/2588) rate limit ([#2593](https://github.com/betagouv/api-subventions-asso/issues/2593)) ([92c4b6c](https://github.com/betagouv/api-subventions-asso/commit/92c4b6c809be90e26263c245a09358a90e59771a))
+-   **api:** 2523 add payment flat service ([#2576](https://github.com/betagouv/api-subventions-asso/issues/2576)) ([45ee4e8](https://github.com/betagouv/api-subventions-asso/commit/45ee4e8d6b54787e54d053d6541e379358551cd4))
+-   **front:** [#2560](https://github.com/betagouv/api-subventions-asso/issues/2560) upgrade dsfr to 1.12 with tables ([#2596](https://github.com/betagouv/api-subventions-asso/issues/2596)) ([2e1d5d2](https://github.com/betagouv/api-subventions-asso/commit/2e1d5d2c7e6c01447d88ae0d6140f457633c9acc))
+-   **front:** add columns on extract csv and add name and date on file… ([#2601](https://github.com/betagouv/api-subventions-asso/issues/2601)) ([45f45ab](https://github.com/betagouv/api-subventions-asso/commit/45f45ab54ee89241f98f26dfae294a6c44e384b7))
+-   resolve sse wrong answer and unessary call to api ([#2614](https://github.com/betagouv/api-subventions-asso/issues/2614)) ([822bd36](https://github.com/betagouv/api-subventions-asso/commit/822bd364a6e410e38ad03f1f495504080d860823))
+
 ## [0.53.1](https://github.com/betagouv/api-subventions-asso/compare/v0.53.0...v0.53.1) (2024-08-21)
 
 **Note:** Version bump only for package api-subventions-asso

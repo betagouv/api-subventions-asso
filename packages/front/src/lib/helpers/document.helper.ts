@@ -1,4 +1,4 @@
-import { DATASUB_URL } from "$env/static/public";
+import { PUBLIC_DATASUB_URL } from "$env/static/public";
 import type { DocumentEntity } from "$lib/entities/DocumentEntity";
 
 export class DocumentHelper {
@@ -34,7 +34,7 @@ export class DocumentHelper {
             .map(doc => ({ ...doc, label: documentLabels[doc.type] || doc.type }))
             .sort(compareLabelledDocs);
 
-        return sortedDocs.map(doc => ({ ...doc, url: `${DATASUB_URL}${doc.url}` }));
+        return sortedDocs.map(doc => ({ ...doc, url: `${PUBLIC_DATASUB_URL}${doc.url}` }));
     }
 
     download(blob: Blob, fileName: string) {

@@ -4,11 +4,13 @@ import paymentFlatPort from "./paymentFlat.port";
 import { ObjectId } from "mongodb";
 const mockDeleteMany = jest.fn();
 const mockInsertOne = jest.fn();
+const mockUpdateOne = jest.fn();
 
 jest.mock("../../../shared/MongoConnection", () => ({
     collection: () => ({
         deleteMany: mockDeleteMany,
         insertOne: mockInsertOne,
+        updateOne: mockUpdateOne,
     }),
 }));
 
@@ -17,6 +19,17 @@ describe("PaymentFlat Port", () => {
         it("should call insertOne with the correct arguments", async () => {
             await paymentFlatPort.insertOne(PAYMENT_FLAT_ENTITY);
             expect(mockInsertOne).toHaveBeenCalledWith({ ...PAYMENT_FLAT_DBO, _id: expect.any(ObjectId) });
+        });
+    });
+
+    describe("upsertOne()", () => {
+        it("should call upsertOne with the correct arguments", async () => {
+            await paymentFlatPort.upsertOne(PAYMENT_FLAT_ENTITY);
+            expect(mockUpdateOne).toHaveBeenCalledWith(
+                { uniqueId: PAYMENT_FLAT_ENTITY.uniqueId },
+                { $set: { ...PAYMENT_FLAT_DBO, _id: expect.any(ObjectId) } },
+                { upsert: true },
+            );
         });
     });
 

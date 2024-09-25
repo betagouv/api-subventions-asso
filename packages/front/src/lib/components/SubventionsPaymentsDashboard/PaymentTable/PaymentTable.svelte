@@ -44,7 +44,11 @@
         {#each $elementsDataViews as element}
             {#if !element}
                 <tr>
-                    <TableCell colspan="3" position="center">Nous ne disposons pas de cette information.</TableCell>
+                    <TableCell colspan="3" />
+                </tr>
+            {:else if element && !element.payments}
+                <tr>
+                    <TableCell colspan="3" position="center">Information actuellement indisponible</TableCell>
                 </tr>
             {:else}
                 <tr

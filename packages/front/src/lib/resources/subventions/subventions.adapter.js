@@ -18,7 +18,7 @@ export default class SubventionsAdapter {
             dispositif: valueOrHyphen(dispositif),
             projectName: valueOrHyphen(projectName),
             montantsDemande: valueOrHyphen(numberToEuro(subvention.montants?.demande)),
-            montantsAccorde: numberToEuro(subvention.montants?.accorde),
+            montantsAccorde: valueOrHyphen(numberToEuro(subvention.montants?.accorde)),
             status: subvention.statut_label,
         };
     }

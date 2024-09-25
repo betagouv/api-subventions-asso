@@ -233,6 +233,12 @@ describe("Subventia Service", () => {
             subventiaService.processSubventiaData(filePath, exportDate);
             expect(mockGetApplications).toHaveBeenCalledWith(sortedData["valids"], exportDate);
         });
+
+        it("should return applications and invalidsData", () => {
+            const expected = { applications, invalids: [] };
+            const actual = subventiaService.processSubventiaData(filePath, exportDate);
+            expect(actual).toEqual(expected);
+        });
     });
     describe("createEntity", () => {
         const entity = {

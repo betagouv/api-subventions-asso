@@ -1,4 +1,4 @@
-import { Siren, Siret, Payment, DemandeSubvention } from "dto";
+import { Siren, Siret, Payment, DemandeSubvention, FonjepPayment } from "dto";
 import { paymentProviders } from "../providers";
 import { AssociationIdentifiers } from "../../@types";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
@@ -38,6 +38,10 @@ export class PaymentsService {
 
     private async getPaymentsBySiren(siren: Siren) {
         return [...(await Promise.all(paymentProviders.map(p => p.getPaymentsBySiren(siren)))).flat()];
+    }
+
+    getPaymentExercise(payment: Payment) {
+        return ((payment as FonjepPayment)?.periodeDebut?.value ?? payment.dateOperation.value).getFullYear();
     }
 }
 

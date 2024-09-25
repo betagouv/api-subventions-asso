@@ -1,4 +1,4 @@
-import ExportDateError from "../../shared/errors/cliErrors/ExportDateError";
+import FormatDateError from "../../shared/errors/cliErrors/FormatDateError";
 import FonjepCli from "./Fonjep.cli";
 import FonjepParser from "../../modules/providers/fonjep/fonjep.parser";
 import fonjepParserResponse from "../../modules/providers/fonjep/__fixtures__/fonjepParserResponse.json";
@@ -21,18 +21,6 @@ describe("FonjepCli", () => {
     const cli = new FonjepCli();
     describe("_parse()", () => {
         const PATH = "path/to/test";
-        it("should throw ExportDateError without exportDate", async () => {
-            const expected = new ExportDateError();
-            let actual;
-            try {
-                // @ts-expect-error: protected method
-                actual = await cli._parse(PATH);
-            } catch (e) {
-                actual = e;
-            }
-            expect(actual).toEqual(expected);
-        });
-
         it("should create entities", async () => {
             const parseMock = jest.spyOn(FonjepParser, "parse");
             // @ts-expect-error: mock;

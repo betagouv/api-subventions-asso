@@ -2,6 +2,10 @@ import fs from "fs";
 import dataLogService from "../modules/data-log/dataLog.service";
 import CliLogger from "./CliLogger";
 import { GenericParser } from "./GenericParser";
+import { isDateNewer, isValidDate } from "./helpers/DateHelper";
+import ExportDateError from "./errors/cliErrors/FormatDateError";
+import OutOfRangeDateError from "./errors/cliErrors/OutOfRangeDateError";
+import ObsoleteDateError from "./errors/cliErrors/ObsoleteDateError";
 
 export default class CliController {
     protected logFileParsePath = "";
@@ -20,13 +24,25 @@ export default class CliController {
         } else return true;
     }
 
+    private validateDate(dateStr: string) {
+        // supposed to be YYYY-MM-DD format
+        if (Number(dateStr.split("-")[0]) < 2018) throw new ObsoleteDateError();
+        if (!isValidDate(new Date(dateStr))) throw new ExportDateError();
+        if (isDateNewer(new Date(dateStr), new Date())) throw new OutOfRangeDateError();
+        return true;
+    }
+
     /**
      *
      * @param file Path to the file
-     * @param exportDate Explicite date of import (any valid date string, like "YYYY-MM-DD")
-     * @returns
+     * @param exportDate This should be as close as possible to the end date of the data coverage period (i.e last day of the month if monthly export)
+     * If not available, take the file's creation date or the file's reception date.
+     * Accept "YYYY-MM-DD" format | TODO: make YYYY-MM-DD mandatory ?
      */
-    public async parse(file: string, exportDate: string): Promise<void> {
+    public async parse(file: string, exportDateString: string): Promise<void> {
+        this.validateDate(exportDateString);
+        const exportDate = new Date(exportDateString);
+
         this.validParseFile(file);
         this.validFileExists(file);
         const files = GenericParser.findFiles(file);
@@ -37,9 +53,7 @@ export default class CliController {
 
         await files
             .reduce((acc, filePath) => {
-                return acc.then(() =>
-                    exportDate ? this._parse(filePath, logs, new Date(exportDate)) : this._parse(filePath, logs),
-                );
+                return acc.then(() => this._parse(filePath, logs, exportDate));
             }, Promise.resolve())
             // @todo: remove "+ logs.join()" when all cli controllers has refactored with logger
             .then(() =>
@@ -48,7 +62,7 @@ export default class CliController {
                     encoding: "utf-8",
                 }),
             );
-        await this._logImportSuccess(new Date(exportDate), file);
+        await this._logImportSuccess(exportDate, file);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

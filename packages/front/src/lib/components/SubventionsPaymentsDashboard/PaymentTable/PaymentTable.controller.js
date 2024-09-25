@@ -1,3 +1,4 @@
+import { ApplicationStatus } from "dto";
 import Store from "../../../core/Store";
 
 import { numberToEuro, valueOrHyphen } from "$lib/helpers/dataHelper";
@@ -33,13 +34,16 @@ export default class PaymentTableController {
         this.elements = elements;
 
         const elementsDataViews = this.elements.map(element => {
-            if (element.payments.length === 0) return null;
-
-            return {
-                ...PaymentsAdapter.toPayment(element.payments),
-                payments: element.payments,
-                paymentsModal: element.payments.map(this.buildPaymentsModal),
-            };
+            // quick win, will be handled properly with table refactor (link sub-payment from API)
+            if (element.subvention && element.subvention.statut_label === ApplicationStatus.GRANTED) {
+                if (element.payments.length === 0) return { payments: null };
+                else
+                    return {
+                        ...PaymentsAdapter.toPayment(element.payments),
+                        payments: element.payments,
+                        paymentsModal: element.payments.map(this.buildPaymentsModal),
+                    };
+            } else return null;
         });
 
         this.elementsDataViews.set(elementsDataViews);

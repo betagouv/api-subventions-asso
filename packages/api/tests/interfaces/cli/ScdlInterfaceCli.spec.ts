@@ -46,12 +46,15 @@ describe("SCDL CLI", () => {
             ${"parse"}    | ${testParseCsv}
             ${"parseXls"} | ${testParseXls}
         `("$methodName", ({ test }) => {
+            beforeEach(async () => {
+                await cli.addProducer(MiscScdlProducer.slug, MiscScdlProducer.name, MiscScdlProducer.siret);
+            });
+
             it("should throw Error()", async () => {
                 expect(() => test("FAKE_ID", DATE_STR)).rejects.toThrowError(Error);
             });
 
             it("should add grants with exercise from conventionDate", async () => {
-                await cli.addProducer(MiscScdlProducer.slug, MiscScdlProducer.name, MiscScdlProducer.siret);
                 await test("SCDL", MiscScdlProducer.slug, DATE_STR);
                 const grants = await miscScdlGrantRepository.findAll();
                 const expectedAny = grants.map(grant => ({
@@ -61,7 +64,6 @@ describe("SCDL CLI", () => {
             }, 10000);
 
             it("should add grants with exercise from its own column", async () => {
-                await cli.addProducer(MiscScdlProducer.slug, MiscScdlProducer.name, MiscScdlProducer.siret);
                 await test("SCDL_WITH_EXERCICE", MiscScdlProducer.slug, DATE_STR);
                 const grants = await miscScdlGrantRepository.findAll();
                 const expectedAny = grants.map(grant => ({
@@ -73,14 +75,12 @@ describe("SCDL CLI", () => {
             it("should update producer lastUpdate", async () => {
                 const EXPORT_DATE = new Date("2023-01-01");
                 const expected = EXPORT_DATE;
-                await cli.addProducer(MiscScdlProducer.slug, MiscScdlProducer.name, MiscScdlProducer.siret);
                 await test("SCDL", MiscScdlProducer.slug, EXPORT_DATE);
                 const actual = (await scdlService.getProducer(MiscScdlProducer.slug))?.lastUpdate;
                 expect(actual).toEqual(expected);
             }, 10000);
 
             it("should register new import", async () => {
-                await cli.addProducer(MiscScdlProducer.slug, MiscScdlProducer.name, MiscScdlProducer.siret);
                 await test("SCDL", MiscScdlProducer.slug, DATE_STR);
                 const actual = await dataLogRepository.findAll();
                 expect(actual?.[0]).toMatchObject({

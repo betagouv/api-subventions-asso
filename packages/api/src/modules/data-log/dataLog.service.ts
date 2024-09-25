@@ -1,5 +1,7 @@
 import path from "path";
+import { DataLogDto } from "dto";
 import dataLogRepository from "./repositories/dataLog.repository";
+import { DataLogAdapter } from "./dataLog.adapter";
 
 class DataLogService {
     addLog(providerId: string, editionDate: Date, filePath?: string) {
@@ -15,6 +17,11 @@ class DataLogService {
             editionDate,
             fileName,
         });
+    }
+
+    async getProvidersLogOverview(): Promise<DataLogDto[]> {
+        const overviews = await dataLogRepository.getProvidersLogOverview();
+        return overviews.map(overview => DataLogAdapter.overviewToDto(overview));
     }
 }
 

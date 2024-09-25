@@ -1,6 +1,25 @@
-import Store, { derived } from "$lib/core/Store";
+import type { Step } from "./Step";
+import Store, { derived, ReadStore } from "$lib/core/Store";
 
 export default class MultiStepFormController {
+    public steps: Step[];
+    public onSubmit: (callback) => void;
+    public currentStep: Store<{
+        index: number;
+        positionLabel: number;
+        step: Step;
+        isFirstStep: boolean;
+        isLastStep: boolean;
+        nextStepName: string | null;
+        nextStepPositionLabel: 2 | null;
+    }>;
+    // used in component
+    public isStepBlocked: ReadStore<boolean>;
+    public data: Store<any[]>;
+    public context: ReadStore<unknown>;
+
+    private stepsValidation: Store<boolean[]>;
+
     constructor(steps, onSubmit, buildContext) {
         this.steps = steps;
         this.onSubmit = onSubmit;
