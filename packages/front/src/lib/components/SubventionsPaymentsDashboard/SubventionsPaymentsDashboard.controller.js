@@ -1,12 +1,10 @@
 import Store from "../../core/Store";
 import { mapSubventionsAndPayments, sortByPath } from "./helper";
-import SubventionTableController from "./SubventionTable/SubventionTable.controller";
-import PaymentTableController from "./PaymentTable/PaymentTable.controller";
 import paymentsService from "$lib/resources/payments/payments.service";
 import subventionsService from "$lib/resources/subventions/subventions.service";
 import { isSiret } from "$lib/helpers/identifierHelper";
 import trackerService from "$lib/services/tracker.service";
-import { PROVIDER_BLOG_URL } from "$env/static/public";
+import { PUBLIC_PROVIDER_BLOG_URL } from "$env/static/public";
 import grantService from "$lib/resources/grants/grant.service";
 import documentHelper from "$lib/helpers/document.helper";
 
@@ -36,7 +34,7 @@ export default class SubventionsPaymentsDashboardController {
     }
 
     get providerBlogUrl() {
-        return PROVIDER_BLOG_URL;
+        return PUBLIC_PROVIDER_BLOG_URL;
     }
 
     get notFoundMessage() {
