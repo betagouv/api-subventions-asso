@@ -93,13 +93,9 @@ export default class SubventionsPaymentsDashboardController {
         if (this.isExtractLoading.value) return;
         trackerService.buttonClickEvent("association-etablissement.dashbord.download-csv", this.identifier); // tracking
         this.isExtractLoading.set(true);
-        const extractPromise = grantService
-            .getGrantExtract(this.identifier)
-            .then(blob => documentHelper.download(blob, `extract_${this.identifier}.zip`));
-        setTimeout(() => {
-            this.zipPromise.set(extractPromise);
-        }, 750); // weird if message appears and leaves right ahead ; quite arbitrary value
-        await extractPromise;
+        await grantService.getGrantExtract(this.identifier).then(blob => {
+            documentHelper.download(blob, `extract_${this.identifier}.csv`);
+        });
         this.isExtractLoading.set(false);
     }
 
