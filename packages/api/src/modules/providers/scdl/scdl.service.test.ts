@@ -9,6 +9,7 @@ jest.mock("../../../shared/helpers/StringHelper");
 import MiscScdlGrantFixture from "./__fixtures__/MiscScdlGrant";
 import MiscScdlProducerFixture from "./__fixtures__/MiscScdlProducer";
 import { ObjectId } from "mongodb";
+import { SIRET } from "../../../../tests/__fixtures__/association.fixture";
 
 describe("ScdlService", () => {
     const UNIQUE_ID = "UNIQUE_ID";
@@ -56,6 +57,7 @@ describe("ScdlService", () => {
             expect(miscScdlProducersRepository.create).toHaveBeenCalledWith(PRODUCER);
         });
     });
+
     describe("updateProducer()", () => {
         it("should call miscScdlProducerRepository.update()", async () => {
             const SET_OBJECT = {
@@ -108,7 +110,7 @@ describe("ScdlService", () => {
             expect(mockBuildGrantUniqueId).toHaveBeenCalledWith(GRANTS[0], MiscScdlProducerFixture.slug);
         });
 
-        it("should call miscScdlGrantRepository.createMany()", async () => {
+        it("should call miscScdlGrantRepository.createMany with allocator data from producer", async () => {
             const GRANTS = [{ ...MiscScdlGrantFixture, __data__: {} }];
             await scdlService.createManyGrants(GRANTS, MiscScdlProducerFixture.slug);
             expect(miscScdlGrantRepository.createMany).toHaveBeenCalledWith([
@@ -117,6 +119,18 @@ describe("ScdlService", () => {
                     _id: UNIQUE_ID,
                     allocatorName: PRODUCER.name,
                     allocatorSiret: PRODUCER.siret,
+                    producerSlug: PRODUCER.slug,
+                },
+            ]);
+        });
+
+        it("should call miscScdlGrantRepository.createMany with allocator data from grant", async () => {
+            const GRANTS = [{ ...MiscScdlGrantFixture, allocatorId: SIRET, allocatorName: "attribuant", __data__: {} }];
+            await scdlService.createManyGrants(GRANTS, MiscScdlProducerFixture.slug);
+            expect(miscScdlGrantRepository.createMany).toHaveBeenCalledWith([
+                {
+                    ...GRANTS[0],
+                    _id: UNIQUE_ID,
                     producerSlug: PRODUCER.slug,
                 },
             ]);

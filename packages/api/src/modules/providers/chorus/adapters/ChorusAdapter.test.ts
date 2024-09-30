@@ -66,6 +66,7 @@ describe("ChorusAdapter", () => {
         it("should return partial entity", () => {
             const entity = new ChorusLineEntity(
                 "UNIQUE_ID",
+                new Date("2021-01-01"),
                 {
                     codeBranche: "FAKE",
                     branche: "FAKE",

@@ -209,7 +209,7 @@ describe("ScdlGrantParser", () => {
                     {
                         field: "associationSiret-origin",
                         value: "associationSiret-value",
-                        message: "SIRET manquant",
+                        message: "SIRET manquant ou invalide",
                     },
                 ],
             };
@@ -252,6 +252,23 @@ describe("ScdlGrantParser", () => {
             expect(actual).toEqual(expected);
         });
 
+        it("should return true and report error if optional allocatorSiret is set but not valid", () => {
+            requirementTestsMocks.allocatorSiret.mockReturnValueOnce(false);
+            const expected = {
+                valid: true,
+                problems: [
+                    {
+                        field: "allocatorSiret-origin",
+                        value: "allocatorSiret-value",
+                        message: "SIRET invalide",
+                    },
+                ],
+            };
+            // @ts-expect-error: protected method
+            const actual = ScdlGrantParser.isGrantValid(GRANT, ORIGINAL_WITH_PATH);
+            expect(actual).toEqual(expected);
+        });
+
         it("should return false with explanation for each field with error", () => {
             requirementTestsMocks.amount.mockReturnValueOnce(false);
             requirementTestsMocks.paymentStartDate.mockReturnValueOnce(false);
@@ -283,6 +300,7 @@ describe("ScdlGrantParser", () => {
             ${"conventionDate"}   | ${mockedDateHelper.isValidDate} | ${1}
             ${"associationRna"}   | ${isRnaSpy}                     | ${1}
             ${"paymentEndDate"}   | ${mockedDateHelper.isValidDate} | ${2}
+            ${"allocatorSiret"}   | ${isSiretSpy}                   | ${0}
         `("it sets '$param' to undefined if set but invalid", ({ param, mockValidator, nbFalseMock }) => {
             requirementTestsMocks[param].mockReturnValueOnce(false);
             // mock validators to get to the optionnal part of isGrantValid()

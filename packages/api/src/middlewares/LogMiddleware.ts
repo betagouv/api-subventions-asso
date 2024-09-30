@@ -9,6 +9,10 @@ const LOGGER_IGNORED_ROUTES = [/^\/docs/, /^\/assets/];
 
 const CENSORED_VALUE = "**********";
 
+/**
+ * modifies object recursively censuring secret fields
+ * @param obj
+ */
 function recursiveFilter(obj: object) {
     Object.entries(obj).forEach(([key, value]) => {
         if (LOGGER_SECRET_FIELDS.includes(key)) obj[key] = CENSORED_VALUE;
@@ -52,9 +56,12 @@ export const expressLogger = () =>
 
             // @ts-expect-error strange express-winston types
             // we convert _id into string as a workaround to winston-mongodb bug that serializes them to {}
-            if (propName === "user" && req[propName]?._id)
+            if (propName === "user" && req[propName]?._id) {
                 // @ts-expect-error strange express-winston types
-                return recursiveFilter({ ...req[propName], _id: req[propName]._id.toString() });
+                req[propName] = { ...req[propName], _id: req[propName]._id.toString() };
+                // @ts-expect-error strange express-winston types
+                recursiveFilter(req[propName]);
+            }
 
             if (propName === "headers" && req[propName]?.["x-access-token"])
                 req[propName]["x-access-token"] = CENSORED_VALUE;

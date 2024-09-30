@@ -170,7 +170,7 @@ export class ApiAssoService
             "BPA", // budget prévisionnel annuel
             "RCA", // Rapport du commissaire aux compte
             "RAR", // Rapport d'activité
-            "CPA", // comptes du dernier exercice clôt
+            "Rapport du commissaire aux comptes", // comptes du dernier exercice clôt
             "Jeunesse et Education Populaire (JEP)",
             "Education nationale",
             "Formation", // L'habilitation d'organisme de formation

@@ -187,6 +187,7 @@ export const ENTITIES: ChorusLineEntity[] = [
         },
         _id: undefined,
         provider: "Chorus",
+        updated: new Date("2020-01-01"),
     },
     {
         uniqueId: "11d177d88edbd421e4eef4f2e8d42b28",
@@ -227,6 +228,7 @@ export const ENTITIES: ChorusLineEntity[] = [
         },
         _id: undefined,
         provider: "Chorus",
+        updated: new Date("2020-01-01"),
     },
     {
         uniqueId: "8fa4002caaa720f63bbe2acf525419c0",
@@ -267,6 +269,7 @@ export const ENTITIES: ChorusLineEntity[] = [
         },
         _id: undefined,
         provider: "Chorus",
+        updated: new Date("2020-01-01"),
     },
 ];
 

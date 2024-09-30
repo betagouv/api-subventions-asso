@@ -1,7 +1,7 @@
 import { SiretDto } from "dto";
 
 export default interface SubventiaDto {
-    [key: string]: unknown;
+    [key: string]: any;
 
     "Financeur Principal": string;
     "Référence administrative - Demande": string;

@@ -3,6 +3,7 @@ import Siren from "../../../../valueObjects/Siren";
 import Siret from "../../../../valueObjects/Siret";
 
 export const PAYMENT_FLAT_ENTITY = new PaymentFlatEntity(
+    "123",
     new Siret("12345678901234"), // siret
     new Siren("123456789"), // siren
     1000, // operation amount

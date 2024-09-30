@@ -1,7 +1,9 @@
+import { isObjectBindingPattern } from "typescript";
 import { BadRequestError } from "../../shared/errors/httpErrors";
 import { ConflictError } from "../../shared/errors/httpErrors/ConflictError";
 import configurationsService, { ConfigurationsService, CONFIGURATION_NAMES } from "./configurations.service";
 import configurationsRepository from "./repositories/configurations.repository";
+import { ObjectId } from "mongodb";
 
 describe("ConfigurationService", () => {
     jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
@@ -113,6 +115,49 @@ describe("ConfigurationService", () => {
                 const actual = await configurationsService.getDauphinTokenAvailableTime();
 
                 expect(actual).toEqual(expected);
+            });
+        });
+    });
+
+    describe("Chorus LastUpdateImported Configuration Part", () => {
+        describe("getChorusLastUpdateImported", () => {
+            it("should return lastUpdateDate", async () => {
+                const expected = { data: new Date("2020-12-02") };
+                getByNameMock.mockImplementationOnce(async () => expected);
+
+                const actual = await configurationsService.getChorusLastUpdateImportedToPaymentFlat();
+                expect(actual).toEqual(expected);
+            });
+
+            it("should call repository with good name", async () => {
+                const expected = "LAST-CHORUS-UPDATE-IMPORTED";
+                getByNameMock.mockImplementationOnce(async () => {});
+
+                await configurationsService.getChorusLastUpdateImportedToPaymentFlat();
+
+                expect(getByNameMock).toHaveBeenCalledWith(expected);
+            });
+
+            it("should return null", async () => {
+                const expected = null;
+                getByNameMock.mockImplementationOnce(async () => expected);
+
+                const actual = await configurationsService.getChorusLastUpdateImportedToPaymentFlat();
+
+                expect(actual).toEqual(expected);
+            });
+        });
+
+        describe("setChorusLastDateImported", () => {
+            it("should set lastUpdateImported", async () => {
+                const expected = new Date("2020-12-02");
+                upsertMock.mockImplementationOnce(async () => {});
+
+                await configurationsService.setChorusLastUpdateImportedToPaymentFlat(expected);
+
+                expect(upsertMock).toHaveBeenCalledWith("LAST-CHORUS-UPDATE-IMPORTED", {
+                    data: expected,
+                });
             });
         });
     });

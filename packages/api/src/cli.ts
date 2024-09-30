@@ -23,7 +23,7 @@ import HistoryUniteLegalCli from "./interfaces/cli/HistoryUniteLegal.cli";
 import { initIndexes } from "./shared/MongoInit";
 import GeoCli from "./interfaces/cli/Geo.cli";
 import DataBretagneCli from "./interfaces/cli/DataBretagne.cli";
-
+import PaymentsFlatCli from "./interfaces/cli/PaymentsFlat.cli";
 async function main() {
     await connectDB();
     await initIndexes();
@@ -49,6 +49,7 @@ async function main() {
         HistoryUniteLegalCli,
         GeoCli,
         DataBretagneCli,
+        PaymentsFlatCli,
     ];
 
     const args = process.argv.slice(2);

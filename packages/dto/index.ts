@@ -13,3 +13,4 @@ export * from "./grant/grant";
 export * from "./grant/common";
 export * from "./geoApi/geoApiDto";
 export * from "./documents";
+export * from "./providers/dataLog";

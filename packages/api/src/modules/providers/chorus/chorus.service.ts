@@ -1,5 +1,5 @@
 import { Payment } from "dto";
-import { ObjectId, WithId } from "mongodb";
+import { WithId } from "mongodb";
 import { ASSO_BRANCHE } from "../../../shared/ChorusBrancheAccepted";
 import CacheData from "../../../shared/Cache";
 import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
@@ -110,8 +110,8 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
         return this.toPaymentArray(requests);
     }
 
-    public chorusCursorFindIndexedData(objectIdThreshold?: ObjectId) {
-        return chorusLineRepository.cursorFindIndexedData(objectIdThreshold);
+    public cursorFindData(updateThreshold?: Date) {
+        return chorusLineRepository.cursorFindData(updateThreshold);
     }
 
     // TODO: unit test this

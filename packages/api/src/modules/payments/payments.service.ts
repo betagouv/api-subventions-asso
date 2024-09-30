@@ -20,6 +20,10 @@ export class PaymentsService {
             return paymentKey === key;
         });
     }
+
+    getPaymentExercise(payment: Payment) {
+        return ((payment as FonjepPayment)?.periodeDebut?.value ?? payment.dateOperation.value).getFullYear();
+    }
 }
 
 const paymentService = new PaymentsService();

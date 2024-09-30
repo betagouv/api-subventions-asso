@@ -3,6 +3,7 @@ import Siret from "../valueObjects/Siret";
 
 export default class PaymentFlatEntity {
     constructor(
+        public uniqueId: string,
         public siret: Siret,
         public siren: Siren,
         public amount: number,

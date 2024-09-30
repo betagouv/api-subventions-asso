@@ -123,7 +123,7 @@ export class GrantService {
             return this.joinGrants(rawGrants);
         } catch (e) {
             // IMPROVE: returning empty array does not inform the user that we could not search for grants
-            // it does not mean that the association does not received any grants
+            // it does not mean that the association does not receive any grants
             if (e instanceof RnaOnlyError) return [] as JoinedRawGrant[];
             else throw e;
         }

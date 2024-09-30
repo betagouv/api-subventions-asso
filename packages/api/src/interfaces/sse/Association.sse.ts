@@ -20,7 +20,7 @@ export class AssociationSse {
             const flux = await associationService.getSubventions(req.params.identifier);
 
             if (!flux) {
-                res.sendSSEData(null);
+                res.sendSSEData({ event: "close" });
                 return;
             }
 

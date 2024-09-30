@@ -1,4 +1,4 @@
-import type { RnaSirenResponseDto, SiretDto } from "dto";
+import type { RnaSirenResponseDto, SirenDto, SiretDto } from "dto";
 import { getSiegeSiret } from "$lib/resources/associations/association.helper";
 import Store, { derived, ReadStore } from "$lib/core/Store";
 import associationService from "$lib/resources/associations/association.service";
@@ -40,7 +40,7 @@ export class DocumentsController {
     public downloadBtnLabel: ReadStore<string>;
     private allFlatDocs: DocumentEntity[];
     private headSiret: SiretDto;
-    private assoSiren: SiretDto | undefined;
+    private assoIdentifier: SirenDto | undefined;
 
     constructor(
         public resourceType: ResourceType,
@@ -76,7 +76,7 @@ export class DocumentsController {
 
         const association = currentAssociation.value;
         this.headSiret = getSiegeSiret(association);
-        this.assoSiren = association?.siren;
+        this.assoIdentifier = association?.siren || association?.rna;
     }
 
     get resourceNameWithDemonstrative() {
@@ -98,9 +98,8 @@ export class DocumentsController {
         const estabDocsPromise = secondarySiret
             ? establishmentService.getDocuments(secondarySiret)
             : Promise.resolve([]);
-        // const assoDocsPromise = Promise.resolve([])
         const assoDocsPromise = associationService
-            .getDocuments(this.assoSiren)
+            .getDocuments(this.assoIdentifier)
             .then(docs => this._filterAssoDocs(docs, secondarySiret || this.headSiret));
         const [estabDocs, assoDocs] = await Promise.all([estabDocsPromise, assoDocsPromise]);
         return this._removeDuplicates([...estabDocs, ...assoDocs]);

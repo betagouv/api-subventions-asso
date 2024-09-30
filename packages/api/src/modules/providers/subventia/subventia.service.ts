@@ -26,7 +26,7 @@ export class SubventiaService implements DemandesSubventionsProvider<SubventiaEn
         const sortedData = SubventiaValidator.sortDataByValidity(parsedData);
         const applications = this.getApplications(sortedData["valids"], exportDate);
 
-        return applications;
+        return { applications, invalids: sortedData["invalids"] };
     }
 
     private getApplications(validData: SubventiaDto[], exportDate: Date) {

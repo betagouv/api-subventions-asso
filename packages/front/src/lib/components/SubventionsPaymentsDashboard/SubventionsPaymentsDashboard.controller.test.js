@@ -28,7 +28,7 @@ vi.mock("$lib/helpers/identifierHelper", () => {
 });
 import * as identifierHelper from "$lib/helpers/identifierHelper";
 import trackerService from "$lib/services/tracker.service";
-import { PROVIDER_BLOG_URL } from "$env/static/public";
+import { PUBLIC_PROVIDER_BLOG_URL } from "$env/static/public";
 vi.mock("$lib/services/tracker.service");
 describe("SubventionsPaymentsDashboardController", () => {
     const SIREN = "123456789";
@@ -44,7 +44,7 @@ describe("SubventionsPaymentsDashboardController", () => {
 
     describe("providerBlogUrl", () => {
         it("should return URL", () => {
-            const expected = PROVIDER_BLOG_URL;
+            const expected = PUBLIC_PROVIDER_BLOG_URL;
             const controller = new SubventionsPaymentsDashboardController();
             const actual = controller.providerBlogUrl;
             expect(actual).toEqual(expected);
@@ -259,6 +259,9 @@ describe("SubventionsPaymentsDashboardController", () => {
 
         let ctrl;
 
+        const ASSOCIATION_HEADERS = ["Nom de l'association", "Rna", "Adresse de l'établissement", "Siret", "Exercice"];
+        const ASSOCIATION_DATA = ["ASSO_NAME", "ASSO_RNA"];
+        const ESTABLISHMENT_DATA = ["ESTABLISHMENT_ADDRESS", "ESTABLISHMENT_SIRET", "ESTABLISHMENT_EXERCICE"];
         const SUBVENTION_HEADERS = ["SUBVENTION_HEADER"];
         const SUBVENTION_ROWS_A = ["SERVICE INST. A", "DISPOSITIF A"];
         const SUBVENTION_ROWS_B = ["SERVICE INST. B", "DISPOSITIF B"];
@@ -268,6 +271,8 @@ describe("SubventionsPaymentsDashboardController", () => {
 
         beforeEach(() => {
             ctrl = new SubventionsPaymentsDashboardController(SIRET);
+            vi.spyOn(ctrl, "_buildAssociationCsvData").mockReturnValue(ASSOCIATION_DATA);
+            vi.spyOn(ctrl, "_buildEtablissementAndExerciceCsvData").mockReturnValue(ESTABLISHMENT_DATA);
             mockExtractSubventionHeaders.mockImplementation(vi.fn(() => SUBVENTION_HEADERS));
             mockExtractSubventionRows.mockImplementation(vi.fn(() => [SUBVENTION_ROWS_A, SUBVENTION_ROWS_B]));
             mockExtractPaymentHeaders.mockImplementation(vi.fn(() => VERSEMENT_HEADERS));
@@ -289,10 +294,10 @@ describe("SubventionsPaymentsDashboardController", () => {
         it("should call buildCsv()", () => {
             ctrl.download();
             expect(csvHelper.buildCsv).toHaveBeenCalledWith(
-                [...SUBVENTION_HEADERS, ...VERSEMENT_HEADERS],
+                [...ASSOCIATION_HEADERS, ...SUBVENTION_HEADERS, ...VERSEMENT_HEADERS],
                 [
-                    [...SUBVENTION_ROWS_A, ...VERSEMENT_ROWS_A],
-                    [...SUBVENTION_ROWS_B, ...VERSEMENT_ROWS_B],
+                    [...ASSOCIATION_DATA, ...ESTABLISHMENT_DATA, ...SUBVENTION_ROWS_A, ...VERSEMENT_ROWS_A],
+                    [...ASSOCIATION_DATA, ...ESTABLISHMENT_DATA, ...SUBVENTION_ROWS_B, ...VERSEMENT_ROWS_B],
                 ],
             );
         });

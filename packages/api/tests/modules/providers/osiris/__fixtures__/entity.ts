@@ -11,6 +11,8 @@ export default new OsirisRequestEntity(
         amountAwarded: 0,
         dateCommission: new Date("2022-01-01"),
         extractYear: 2022,
+        etablissementVoie: "rue Waldeck-Rousseau",
+        etablissementCodePostal: "75000",
     } as IOsirisRequestInformations,
     {},
     undefined,

@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import express, { NextFunction, Response } from "express";
+
+import { rateLimit } from "express-rate-limit";
 import session from "express-session";
 import passport from "passport";
 import cookieParser from "cookie-parser";
@@ -62,6 +64,15 @@ export async function startServer(port = "8080", isTest = false) {
     );
 
     if (!isTest) app.use(expressLogger());
+
+    const limiter = rateLimit({
+        windowMs: 60 * 1000, // 1 minute
+        limit: 80, // Limit each IP to 80 requests per `window`
+        standardHeaders: "draft-7", // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
+        legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
+    });
+    // NB : if app is deployed on a multi server infrastructure, use store like "rate-limit-mongo"
+    app.use(limiter);
 
     app.use("/assets", AssetsMiddleware);
     app.use(BodyParserUrlEncoded);

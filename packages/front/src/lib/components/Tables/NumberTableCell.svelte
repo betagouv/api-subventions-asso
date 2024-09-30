@@ -5,7 +5,7 @@
     export let value;
     export let primary = false;
 
-    let position = "end";
+    export let position = "end";
 
     if (isHyphen(value)) position = "center";
 </script>

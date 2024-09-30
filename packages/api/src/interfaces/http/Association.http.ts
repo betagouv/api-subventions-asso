@@ -1,3 +1,4 @@
+import { Readable } from "stream";
 import {
     GetAssociationResponseDto,
     GetEtablissementsResponseDto,
@@ -9,13 +10,14 @@ import {
     StructureIdentifierDto,
     AssociationIdentifierDto,
 } from "dto";
-import { Route, Get, Controller, Tags, Security, Response } from "tsoa";
+import { Route, Get, Controller, Tags, Security, Response, Produces } from "tsoa";
 import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
 
 import associationService from "../../modules/associations/associations.service";
 import grantService from "../../modules/grant/grant.service";
 import { JoinedRawGrant } from "../../modules/grant/@types/rawGrant";
 import associationIdentifierService from "../../modules/association-identifier/association-identifier.service";
+import grantExtractService from "../../modules/grant/grantExtract.service";
 
 @Route("association")
 @Security("jwt")
@@ -80,6 +82,26 @@ export class AssociationHttp extends Controller {
         const associationIdentifiers = await associationIdentifierService.getOneAssociationIdentifier(identifier);
         const grants = await grantService.getGrants(associationIdentifiers);
         return { subventions: grants };
+    }
+
+    /**
+     *
+     * @summary Recherche toutes les informations des subventions d'une association (demandes ET versements) et en extrait un fichier csv
+     * @param identifier RNA ou SIREN de l'association
+     * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
+     */
+    @Get("/{identifier}/grants/csv")
+    @Produces("text/csv")
+    @Response<string>("200")
+    public async getGrantsExtract(identifier: AssociationIdentifierDto): Promise<Readable> {
+        const { csv, fileName } = await grantExtractService.buildCsv(identifier);
+
+        this.setHeader("Content-Type", "text/csv");
+        this.setHeader("Content-Disposition", `inline; filename=${fileName}`);
+        const stream = new Readable();
+        stream.push(csv);
+        stream.push(null);
+        return stream;
     }
 
     /**

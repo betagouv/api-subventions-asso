@@ -28,7 +28,7 @@
     $: currentSort, controller.sort(currentSort);
 </script>
 
-<Table>
+<Table multiline={true} custom={true}>
     <svelte:fragment slot="head">
         {#each $columnDataViews as columnDataView}
             <TableHead
@@ -44,7 +44,11 @@
         {#each $elementsDataViews as element}
             {#if !element}
                 <tr>
-                    <TableCell colspan="3" position="center">Nous ne disposons pas de cette information.</TableCell>
+                    <TableCell colspan="3" />
+                </tr>
+            {:else if element && !element.payments}
+                <tr>
+                    <TableCell colspan="3" position="center">Information actuellement indisponible</TableCell>
                 </tr>
             {:else}
                 <tr
@@ -52,11 +56,8 @@
                     aria-controls="fr-modal"
                     data-fr-opened="false"
                     class="clickable">
-                    <NumberTableCell primary="true" value={element.totalAmount} />
+                    <NumberTableCell primary="true" value={element.totalAmount} position="start" />
                     <TableCell>
-                        {element.lastPaymentDate}
-                    </TableCell>
-                    <TableCell position="end">
                         {element.programme}
                         <!--
                             What follows is an a11y trick: users can focus this on keyboard.

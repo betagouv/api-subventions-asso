@@ -1,10 +1,11 @@
+import { ApplicationStatus } from "dto";
 import Store from "../../../core/Store";
 
 import { numberToEuro, valueOrHyphen } from "$lib/helpers/dataHelper";
 import { withTwoDigitYear } from "$lib/helpers/dateHelper";
 import PaymentsAdapter from "$lib/resources/payments/payments.adapter";
 
-const MONTANT_VERSE_LABEL = "Montant versé";
+const MONTANT_VERSE_LABEL = "Versé";
 const CENTRE_FINANCIER_LABEL = "Centre financier";
 const DATE_VERSEMENT_LABEL = "Date du paiement";
 const PROGRAMME_LABEL = "Programme";
@@ -48,13 +49,16 @@ export default class PaymentTableController {
         this.elements = elements;
 
         const elementsDataViews = this.elements.map(element => {
-            if (element.payments.length === 0) return null;
-
-            return {
-                ...PaymentsAdapter.toPayment(element.payments),
-                payments: element.payments,
-                paymentsModal: element.payments.map(this.buildPaymentsModal),
-            };
+            // quick win, will be handled properly with table refactor (link sub-payment from API)
+            if (element.subvention && element.subvention.statut_label === ApplicationStatus.GRANTED) {
+                if (element.payments.length === 0) return { payments: null };
+                else
+                    return {
+                        ...PaymentsAdapter.toPayment(element.payments),
+                        payments: element.payments,
+                        paymentsModal: element.payments.map(this.buildPaymentsModal),
+                    };
+            } else return null;
         });
 
         this.elementsDataViews.set(elementsDataViews);
@@ -75,7 +79,6 @@ export default class PaymentTableController {
     buildColumnDataViews() {
         const columnsName = {
             "payments.montant": MONTANT_VERSE_LABEL,
-            "payments.date": DATE_VERSEMENT_LABEL,
             "payments.programme": PROGRAMME_LABEL,
         };
 

@@ -14,7 +14,7 @@
     const { promise, values, isSubmitActive, validationTokenStore, title } = ctrl;
 </script>
 
-<div class="fr-container fr-mb-8w">
+<div class="fr-mb-8w">
     <div class="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
         <div class="fr-col fr-col-lg-8">
             {#if $validationTokenStore === "waiting"}

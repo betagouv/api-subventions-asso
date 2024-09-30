@@ -5,10 +5,11 @@ import RefProgrammationEntity from "../../../entities/RefProgrammationEntity";
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
 import Siret from "../../../valueObjects/Siret";
 import IChorusIndexedInformations from "../../providers/chorus/@types/IChorusIndexedInformations";
+import ChorusLineEntity from "../../providers/chorus/entities/ChorusLineEntity";
 
 export default class PaymentFlatAdapter {
     static toPaymentFlatEntity(
-        chorusDocument: IChorusIndexedInformations,
+        chorusDocument: ChorusLineEntity,
         programs: Record<string, StateBudgetProgramEntity>,
         ministries: Record<string, MinistryEntity>,
         domainesFonct: Record<string, DomaineFonctionnelEntity>,
@@ -22,19 +23,26 @@ export default class PaymentFlatAdapter {
             ministryEntity,
             domaineFonctEntity,
             refProgrammationEntity,
-        } = this.getDataBretagneDocumentData(chorusDocument, programs, ministries, domainesFonct, refsProgrammation);
+        } = this.getDataBretagneDocumentData(
+            chorusDocument.indexedInformations,
+            programs,
+            ministries,
+            domainesFonct,
+            refsProgrammation,
+        );
 
         return new PaymentFlatEntity(
-            new Siret(chorusDocument.siret), // siret,
-            new Siret(chorusDocument.siret).toSiren(), // siren,
-            chorusDocument.amount, // amount,
-            chorusDocument.dateOperation, // operationDate,
+            chorusDocument.uniqueId, // uniqueId,
+            new Siret(chorusDocument.indexedInformations.siret), // siret,
+            new Siret(chorusDocument.indexedInformations.siret).toSiren(), // siren,
+            chorusDocument.indexedInformations.amount, // amount,
+            chorusDocument.indexedInformations.dateOperation, // operationDate,
             programEntity?.label_programme ?? null, // programName,
             programCode, // programNumber,
             programEntity?.mission ?? null, // mission,
             ministryEntity?.nom_ministere ?? null, // ministry,
             ministryEntity?.sigle_ministere ?? null, // ministryAcronym,
-            chorusDocument.ej, // ej,
+            chorusDocument.indexedInformations.ej, // ej,
             "chorus", // provider,
             actionCode, // actionCode,
             domaineFonctEntity?.libelle_action ?? null, // actionLabel,

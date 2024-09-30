@@ -48,6 +48,7 @@ export default class ChorusLineEntity {
 
     constructor(
         public uniqueId: string,
+        public updated: Date,
         public indexedInformations: IChorusIndexedInformations,
         public data: unknown,
         public _id?: ObjectId,
