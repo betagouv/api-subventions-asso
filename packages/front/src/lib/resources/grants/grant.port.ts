@@ -6,7 +6,8 @@ class GrantPort {
     async getGrantExtract(identifier: Siren | Rna | Siret) {
         const resourceType = isSiret(identifier) ? "etablissement" : "association";
         const path = `/${resourceType}/${identifier}/grants/csv`;
-        return (await requestsService.get(path, {}, { responseType: "blob" }))?.data;
+        const res = await requestsService.get(path, {}, { responseType: "blob" });
+        return { blob: res?.data, filename: res.headers?.["content-disposition"].match(/inline; filename=(.*)/)?.[1] };
     }
 }
 

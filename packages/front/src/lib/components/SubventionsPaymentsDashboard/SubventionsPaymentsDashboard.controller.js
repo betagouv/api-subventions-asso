@@ -91,8 +91,8 @@ export default class SubventionsPaymentsDashboardController {
         if (this.isExtractLoading.value) return;
         trackerService.buttonClickEvent("association-etablissement.dashbord.download-csv", this.identifier); // tracking
         this.isExtractLoading.set(true);
-        await grantService.getGrantExtract(this.identifier).then(blob => {
-            documentHelper.download(blob, `extract_${this.identifier}.csv`);
+        await grantService.getGrantExtract(this.identifier).then(({ blob, filename }) => {
+            documentHelper.download(blob, filename);
         });
         this.isExtractLoading.set(false);
     }
