@@ -24,6 +24,7 @@ export const FONJEP_PAYMENT_ENTITIES: FonjepPaymentEntity[] = [
             periode_fin: new Date("2017-03-31T00:00:00.000Z"),
             updated_at: new Date("2022-03-03T00:00:00.000Z"),
             bop: 163,
+            joinKey: "2017-J10540",
         },
         legalInformations: {
             siret: "00000000000000",
@@ -51,6 +52,7 @@ export const FONJEP_PAYMENT_ENTITIES: FonjepPaymentEntity[] = [
             periode_fin: new Date("2017-03-31T00:00:00.000Z"),
             updated_at: new Date("2022-03-03T00:00:00.000Z"),
             bop: 163,
+            joinKey: "2017-J02924",
         },
         legalInformations: {
             siret: "00000000000000",
@@ -78,6 +80,7 @@ export const FONJEP_PAYMENT_ENTITIES: FonjepPaymentEntity[] = [
             periode_fin: new Date("2017-06-30T00:00:00.000Z"),
             updated_at: new Date("2022-03-03T00:00:00.000Z"),
             bop: 163,
+            joinKey: "2017-J02924",
         },
         legalInformations: {
             siret: "00000000000000",
@@ -105,6 +108,7 @@ export const FONJEP_PAYMENT_ENTITIES: FonjepPaymentEntity[] = [
             periode_fin: new Date("2017-09-30T00:00:00.000Z"),
             updated_at: new Date("2022-03-03T00:00:00.000Z"),
             bop: 163,
+            joinKey: "2017-J02924",
         },
         legalInformations: {
             siret: "00000000000000",
@@ -132,6 +136,7 @@ export const FONJEP_PAYMENT_ENTITIES: FonjepPaymentEntity[] = [
             periode_fin: new Date("2017-12-31T00:00:00.000Z"),
             updated_at: new Date("2022-03-03T00:00:00.000Z"),
             bop: 163,
+            joinKey: "2017-J02924",
         },
         legalInformations: {
             siret: "00000000000000",
