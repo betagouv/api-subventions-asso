@@ -30,7 +30,10 @@ export class GenericParser {
             // If it is a string, it is the only possible header for this property
             if (!Array.isArray(possibleKeys)) oneLevelKey = possibleKeys as string;
             // checking all possible headers for this property
-            else oneLevelKey = (possibleKeys as string[]).find(possibleKey => data[possibleKey.trim()] != undefined); // TODO manage multiple valid case (with filters)
+            else
+                oneLevelKey = (possibleKeys as string[]).find(
+                    possibleKey => objectToLookIn[possibleKey.trim()] != undefined,
+                ); // TODO manage multiple valid case (with filters)
 
             if (!oneLevelKey || objectToLookIn[oneLevelKey.trim()] === undefined) return undefined;
 
