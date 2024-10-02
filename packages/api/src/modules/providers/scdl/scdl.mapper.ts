@@ -112,7 +112,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Montant voté",
             ],
         ],
-        adapter: value => (value && typeof value === "string" ? parseFloat(value.replace(/[^0-9.,]/, "")) : value),
+        adapter: value => (value && typeof value === "string" ? parseFloat(value.replace(/[^0-9.]/, "")) : value),
     },
     paymentNature: [[...getMapperVariants("paymentNature"), "Nature de la subvention"]],
     paymentConditions: [
