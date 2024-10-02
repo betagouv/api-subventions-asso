@@ -543,7 +543,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 -   **api:** add forgottent failed_cron in accepted notification type ([50e8d7b](https://github.com/betagouv/api-subventions-asso/commit/50e8d7b9da88b141185686507f1bdd60f7ed8905))
--   **api:** add numeroDemandePayment as part of chorus line uniqueId in parse methods ([89fef3e](https://github.com/betagouv/api-subventions-asso/commit/89fef3ea58f08bd8f17d644dc0e6c80cfbf3aac4))
+-   **api:** add numeroDemandePaiment as part of chorus line uniqueId in parse methods ([89fef3e](https://github.com/betagouv/api-subventions-asso/commit/89fef3ea58f08bd8f17d644dc0e6c80cfbf3aac4))
 -   **api:** apiAsso return null if structure has empty properties ([b68ca92](https://github.com/betagouv/api-subventions-asso/commit/b68ca9239044d0c1815926ce3ad72385e9fb9544))
 -   **api:** check object has empty properties in apiAsso getters ([12415a0](https://github.com/betagouv/api-subventions-asso/commit/12415a05f65dee0a84055a80d73a0d0fdb88f854))
 -   **api:** chorus line broken snapshot ([2f3dc8f](https://github.com/betagouv/api-subventions-asso/commit/2f3dc8f598969ff2bba201323dee5d02d9ac4a6f))
@@ -597,7 +597,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 -   **api:** add forgottent failed_cron in accepted notification type ([50e8d7b](https://github.com/betagouv/api-subventions-asso/commit/50e8d7b9da88b141185686507f1bdd60f7ed8905))
--   **api:** add numeroDemandePayment as part of chorus line uniqueId in parse methods ([89fef3e](https://github.com/betagouv/api-subventions-asso/commit/89fef3ea58f08bd8f17d644dc0e6c80cfbf3aac4))
+-   **api:** add numeroDemandePaiment as part of chorus line uniqueId in parse methods ([89fef3e](https://github.com/betagouv/api-subventions-asso/commit/89fef3ea58f08bd8f17d644dc0e6c80cfbf3aac4))
 -   **api:** apiAsso return null if structure has empty properties ([b68ca92](https://github.com/betagouv/api-subventions-asso/commit/b68ca9239044d0c1815926ce3ad72385e9fb9544))
 -   **api:** check object has empty properties in apiAsso getters ([12415a0](https://github.com/betagouv/api-subventions-asso/commit/12415a05f65dee0a84055a80d73a0d0fdb88f854))
 -   **api:** chorus line broken snapshot ([2f3dc8f](https://github.com/betagouv/api-subventions-asso/commit/2f3dc8f598969ff2bba201323dee5d02d9ac4a6f))

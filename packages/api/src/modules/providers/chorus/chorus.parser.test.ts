@@ -18,18 +18,83 @@ describe("ChorusParser", () => {
             // @ts-expect-error: protected
             ChorusParser.buildUniqueId(info);
             expect(mockedStringHelper.getMD5).toHaveBeenCalledWith(
-                `${info.codeSociete}-${info.exercice}-${info.numeroDemandePayment}`,
+                `${info.ej}-${info.numPosteEJ}-${info.numeroDemandePaiment}-${info.numPosteDP}-${info.codeSociete}-${info.exercice}`,
             );
         });
     });
 
+    describe("hasUniqueKeyFields", () => {
+        it("should return true", () => {
+            const expected = { value: true };
+            // @ts-expect-error: access protected method
+            const actual = ChorusParser.hasUniqueKeyFields(ENTITIES[0].indexedInformations);
+            expect(actual).toEqual(expected);
+        });
+
+        it.each`
+            missingProp
+            ${"ej"}
+            ${"numPosteEJ"}
+            ${"numeroDemandePaiment"}
+            ${"numPosteDP"}
+            ${"exercice"}
+            ${"codeSociete"}
+        `("should return false", ({ missingProp }) => {
+            const WRONG_INDEXED_INFORMATIONS = { ...ENTITIES[0].indexedInformations, [missingProp]: undefined };
+            const expected = { value: false, hints: [missingProp] };
+            // @ts-expect-error: access protected method
+            const actual = ChorusParser.hasUniqueKeyFields(WRONG_INDEXED_INFORMATIONS);
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return multiple missing fields", () => {
+            const WRONG_INDEXED_INFORMATIONS = {
+                ...ENTITIES[0].indexedInformations,
+                numeroDemandePaiment: undefined,
+                exercice: undefined,
+                codeSociete: undefined,
+            };
+
+            const expectedHints = ["numeroDemandePaiment", "exercice", "codeSociete"];
+
+            // @ts-expect-error: access protected method
+            const actual = ChorusParser.hasUniqueKeyFields(WRONG_INDEXED_INFORMATIONS);
+            for (const hint of expectedHints) {
+                expect(actual.hints).toContain(hint);
+            }
+        });
+    });
+
     describe("validateIndexedInformations", () => {
+        const mockHasUniqueKeyFields = jest
+            // @ts-expect-error: ok
+            .spyOn(ChorusParser, "hasUniqueKeyFields");
+
+        beforeEach(() => {
+            mockHasUniqueKeyFields.mockReturnValue({ value: true });
+        });
+
         it("rejects because codeBranche is not accepted", () => {
             const indexedInformations = { ...ENTITIES[0].indexedInformations, codeBranche: "WRONG CODE" };
 
             //@ts-expect-error: protected
             expect(() => ChorusParser.validateIndexedInformations(indexedInformations)).toThrow(
                 `The branch ${indexedInformations.codeBranche} is not accepted in data`,
+            );
+        });
+
+        // missingProps order matters
+        it.each`
+            missingProps
+            ${["ej"]}
+            ${["ej", "numPosteDP", "codeSociete"]}
+        `("rejects because $missingProps unique key field(s) is/are missing", ({ missingProps }) => {
+            mockHasUniqueKeyFields.mockReturnValue({ value: false, hints: [missingProps] });
+            const indexedInformations = ENTITIES[0].indexedInformations;
+
+            //@ts-expect-error: protected
+            expect(() => ChorusParser.validateIndexedInformations(indexedInformations)).toThrow(
+                `The mandatory field(s) ${missingProps.concat(" - ")} are missing `,
             );
         });
 

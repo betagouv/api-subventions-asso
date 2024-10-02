@@ -49,6 +49,7 @@ export default class ChorusParser {
     protected static rowsToEntities(headers, rows) {
         return rows.reduce((entities, row, index, array) => {
             const data = GenericParser.linkHeaderToData(headers, row) as DefaultObject<string>; // TODO <string|number>
+
             const indexedInformations = GenericParser.indexDataByPathObject(
                 // TODO <string|number>
                 ChorusLineEntity.indexedInformationsPath,
@@ -60,20 +61,41 @@ export default class ChorusParser {
             const uniqueId = this.buildUniqueId(indexedInformations);
             entities.push(new ChorusLineEntity(uniqueId, new Date(), indexedInformations, data));
 
-            CliHelper.printAtSameLine(`${index} entities parsed of ${array.length}`);
+            CliHelper.printAtSameLine(`${index + 1} entities parsed of ${array.length}`);
 
             return entities;
         }, []);
     }
 
     protected static buildUniqueId(info: IChorusIndexedInformations) {
-        const { numeroDemandePayment, exercice, codeSociete } = info;
-        return getMD5(`${codeSociete}-${exercice}-${numeroDemandePayment}`);
+        const { ej, numPosteEJ, numeroDemandePaiment, exercice, codeSociete, numPosteDP } = info;
+        return getMD5(`${ej}-${numPosteEJ}-${numeroDemandePaiment}-${numPosteDP}-${codeSociete}-${exercice}`);
+    }
+
+    protected static hasUniqueKeyFields(indexedInformations: IChorusIndexedInformations) {
+        const missingFields: string[] = [];
+
+        if (!indexedInformations.ej) missingFields.push("ej");
+        if (!indexedInformations.numPosteEJ) missingFields.push("numPosteEJ");
+        if (!indexedInformations.numeroDemandePaiment) missingFields.push("numeroDemandePaiment");
+        if (!indexedInformations.numPosteDP) missingFields.push("numPosteDP");
+        if (!indexedInformations.codeSociete) missingFields.push("codeSociete");
+        if (!indexedInformations.exercice) missingFields.push("exercice");
+
+        if (missingFields.length) {
+            return { value: false, hints: missingFields };
+        } else return { value: true };
     }
 
     protected static validateIndexedInformations(indexedInformations) {
         if (!BRANCHE_ACCEPTED[indexedInformations.codeBranche]) {
             throw new Error(`The branch ${indexedInformations.codeBranche} is not accepted in data`);
+        }
+
+        const hasUniqueFields = this.hasUniqueKeyFields(indexedInformations);
+
+        if (!hasUniqueFields.value) {
+            throw new Error(`The mandatory field(s) ${hasUniqueFields.hints?.concat(" - ")} are missing `);
         }
 
         // special treatment for siret with # that represents departments which didn't use SIRET but another identifier

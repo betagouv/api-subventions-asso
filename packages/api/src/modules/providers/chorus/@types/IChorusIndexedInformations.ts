@@ -1,6 +1,7 @@
 import IBudgetLine from "../../../search/@types/IBudgetLine";
 
 export default interface IChorusIndexedInformations extends IBudgetLine {
+    numPosteEJ: number;
     codeBranche: string;
     branche: string;
     // reponsable du paiement d'un ou plusieurs programmes (bop)
@@ -9,7 +10,9 @@ export default interface IChorusIndexedInformations extends IBudgetLine {
     domaineFonctionnel: string;
     // format bop - activité - sous-activité
     codeDomaineFonctionnel: string;
-    numeroDemandePayment: string;
+    numeroDemandePaiment: string;
+    // numéro de poste de demande de paiment
+    numPosteDP: number;
     codeSociete: string;
     exercice: number;
     numeroTier?: string;

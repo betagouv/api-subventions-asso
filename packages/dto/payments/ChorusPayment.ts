@@ -5,7 +5,7 @@ export interface ChorusPayment extends BasePayment {
     ej: ProviderValue<string>;
     centreFinancier: ProviderValue<string>;
     domaineFonctionnel: ProviderValue<string>;
-    numeroDemandePayment?: ProviderValue<string>;
+    numeroDemandePaiment?: ProviderValue<string>;
     numeroTier?: ProviderValue<string>;
     activitee?: ProviderValue<string>;
     compte?: ProviderValue<string>;
