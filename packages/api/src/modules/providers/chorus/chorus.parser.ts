@@ -68,8 +68,8 @@ export default class ChorusParser {
     }
 
     protected static buildUniqueId(info: IChorusIndexedInformations) {
-        const { ej, numPosteEJ, numeroDemandePaiment, exercice, codeSociete, numPosteDP } = info;
-        return getMD5(`${ej}-${numPosteEJ}-${numeroDemandePaiment}-${numPosteDP}-${codeSociete}-${exercice}`);
+        const { ej, numPosteEJ, numeroDemandePaiement, exercice, codeSociete, numPosteDP } = info;
+        return getMD5(`${ej}-${numPosteEJ}-${numeroDemandePaiement}-${numPosteDP}-${codeSociete}-${exercice}`);
     }
 
     protected static hasUniqueKeyFields(indexedInformations: IChorusIndexedInformations) {
@@ -77,7 +77,7 @@ export default class ChorusParser {
 
         if (!indexedInformations.ej) missingFields.push("ej");
         if (!indexedInformations.numPosteEJ) missingFields.push("numPosteEJ");
-        if (!indexedInformations.numeroDemandePaiment) missingFields.push("numeroDemandePaiment");
+        if (!indexedInformations.numeroDemandePaiement) missingFields.push("numeroDemandePaiement");
         if (!indexedInformations.numPosteDP) missingFields.push("numPosteDP");
         if (!indexedInformations.codeSociete) missingFields.push("codeSociete");
         if (!indexedInformations.exercice) missingFields.push("exercice");

@@ -18,7 +18,7 @@ describe("ChorusParser", () => {
             // @ts-expect-error: protected
             ChorusParser.buildUniqueId(info);
             expect(mockedStringHelper.getMD5).toHaveBeenCalledWith(
-                `${info.ej}-${info.numPosteEJ}-${info.numeroDemandePaiment}-${info.numPosteDP}-${info.codeSociete}-${info.exercice}`,
+                `${info.ej}-${info.numPosteEJ}-${info.numeroDemandePaiement}-${info.numPosteDP}-${info.codeSociete}-${info.exercice}`,
             );
         });
     });
@@ -35,7 +35,7 @@ describe("ChorusParser", () => {
             missingProp
             ${"ej"}
             ${"numPosteEJ"}
-            ${"numeroDemandePaiment"}
+            ${"numeroDemandePaiement"}
             ${"numPosteDP"}
             ${"exercice"}
             ${"codeSociete"}
@@ -50,12 +50,12 @@ describe("ChorusParser", () => {
         it("should return multiple missing fields", () => {
             const WRONG_INDEXED_INFORMATIONS = {
                 ...ENTITIES[0].indexedInformations,
-                numeroDemandePaiment: undefined,
+                numeroDemandePaiement: undefined,
                 exercice: undefined,
                 codeSociete: undefined,
             };
 
-            const expectedHints = ["numeroDemandePaiment", "exercice", "codeSociete"];
+            const expectedHints = ["numeroDemandePaiement", "exercice", "codeSociete"];
 
             // @ts-expect-error: access protected method
             const actual = ChorusParser.hasUniqueKeyFields(WRONG_INDEXED_INFORMATIONS);
