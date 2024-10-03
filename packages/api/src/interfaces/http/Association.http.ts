@@ -94,7 +94,9 @@ export class AssociationHttp extends Controller {
     @Produces("text/csv")
     @Response<string>("200")
     public async getGrantsExtract(identifier: AssociationIdentifierDto): Promise<Readable> {
-        const { csv, fileName } = await grantExtractService.buildCsv(identifier);
+        const associationIdentifiers = await associationIdentifierService.getOneAssociationIdentifier(identifier);
+
+        const { csv, fileName } = await grantExtractService.buildCsv(associationIdentifiers);
 
         this.setHeader("Content-Type", "text/csv");
         this.setHeader("Content-Disposition", `inline; filename=${fileName}`);
@@ -115,7 +117,6 @@ export class AssociationHttp extends Controller {
     @Security("jwt", ["admin"])
     @Response<HttpErrorInterface>("404")
     public async getRawGrants(identifier: AssociationIdentifierDto): Promise<JoinedRawGrant[]> {
-        // Victor ne moublie pas
         const associationIdentifiers = await associationIdentifierService.getOneAssociationIdentifier(identifier);
 
         return grantService.getRawGrants(associationIdentifiers);

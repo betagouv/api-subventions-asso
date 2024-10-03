@@ -7,11 +7,11 @@ import {
     GetPaymentsResponseDto,
     GetGrantsResponseDto,
     EstablishmentIdentifierDto,
+    SiretDto,
 } from "dto";
 import { Route, Get, Controller, Tags, Security, Response, Produces } from "tsoa";
 import etablissementService from "../../modules/etablissements/etablissements.service";
 import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
-import Siret from "../../valueObjects/Siret";
 import establishmentIdentifierService from "../../modules/establishment-identifier/establishment-identifier.service";
 import grantExtractService from "../../modules/grant/grantExtract.service";
 
@@ -120,7 +120,8 @@ export class EtablissementHttp extends Controller {
     @Get("/{identifier}/grants/csv")
     @Produces("text/csv")
     @Response<string>("200")
-    public async getGrantsExtract(identifier: Siret): Promise<Readable> {
+    public async getGrantsExtract(siret: SiretDto): Promise<Readable> {
+        const identifier = await establishmentIdentifierService.getEstablishmentIdentifiers(siret);
         const { csv, fileName } = await grantExtractService.buildCsv(identifier);
 
         this.setHeader("Content-Type", "text/csv");
