@@ -32,7 +32,7 @@ export class AssociationNameService {
             // For one siren it's possible to have many rna from match
             const rnaSirenEntities = (await rnaSirenService.find(identifier)) || [];
             const identifiers: string[] = rnaSirenEntities.length
-                ? rnaSirenEntities.map(entity => entity[identifierType.toLocaleLowerCase()].value) // Devrais etre l'inverse on a un rna on cherche les siren et inversment
+                ? rnaSirenEntities.map(entity => entity[identifierType.toLocaleLowerCase()].value) // Voir le ticket https://github.com/betagouv/api-subventions-asso/issues/2517
                 : [value];
 
             associationNames = [

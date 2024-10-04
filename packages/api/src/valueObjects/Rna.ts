@@ -10,7 +10,6 @@ export default class Rna {
     }
 
     static isRna(rna: string | undefined): boolean {
-        if (!rna) return false;
         return typeof rna === "string" && /^W\d[A-Z\d]\d{7}$/.test(rna);
     }
 

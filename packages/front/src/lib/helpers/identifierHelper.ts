@@ -24,20 +24,19 @@ export function isIdentifier(identifier) {
 }
 
 export function getUniqueIdentifier(identifiers) {
-    console.log(identifiers)
     const { unique } = identifiers.reduce(
         (acc, identiferRnaSiren) => {
             if (acc.multiple.has(identiferRnaSiren.rna) || acc.multiple.has(identiferRnaSiren.siren)) {
                 return acc;
             }
 
-            for (const key in identiferRnaSiren) {
-                if (!identiferRnaSiren[key]) continue;
-                if (acc.unique.has(identiferRnaSiren[key])) {
-                    acc.multiple.add(identiferRnaSiren[key]);
-                    acc.unique.delete(identiferRnaSiren[key]);
+            for (const identifierName in identiferRnaSiren) {
+                if (!identiferRnaSiren[identifierName]) continue;
+                if (acc.unique.has(identiferRnaSiren[identifierName])) {
+                    acc.multiple.add(identiferRnaSiren[identifierName]);
+                    acc.unique.delete(identiferRnaSiren[identifierName]);
                 } else {
-                    acc.unique.add(identiferRnaSiren[key]);
+                    acc.unique.add(identiferRnaSiren[identifierName]);
                 }
             }
             return acc;

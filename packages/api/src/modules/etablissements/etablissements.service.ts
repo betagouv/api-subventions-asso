@@ -82,7 +82,7 @@ export class EtablissementsService {
     }
 
     async getDocuments(id: EstablishmentIdentifier) {
-        return await documentsService.getDocument(id);
+        return await documentsService.getDocuments(id);
     }
 
     getRibs(id: EstablishmentIdentifier) {

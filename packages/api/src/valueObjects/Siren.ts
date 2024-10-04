@@ -12,7 +12,6 @@ export default class Siren {
     }
 
     static isSiren(siren: string | undefined): boolean {
-        if (!siren) return false;
         return typeof siren === "string" && /^\d{9}$/.test(siren);
     }
 

@@ -12,7 +12,6 @@ export default class Siret {
     }
 
     static isSiret(siret: string | undefined): boolean {
-        if (!siret) return false;
         return typeof siret === "string" && /^\d{14}$/.test(siret);
     }
 

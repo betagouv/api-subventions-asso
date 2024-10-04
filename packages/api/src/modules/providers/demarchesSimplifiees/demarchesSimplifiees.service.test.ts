@@ -414,7 +414,6 @@ describe("DemarchesSimplifieesService", () => {
         ${AssociationIdentifier.fromSiren(new Siren("000000000"))}            | ${demarchesSimplifieesDataRepository.findBySiren}
         ${EstablishmentIdentifier.fromSiret(new Siret("00000000000000"), {})} | ${demarchesSimplifieesDataRepository.findBySiret}
     `("getRawGrants", ({ IDENTIFIER, spyToCall }) => {
-        // const IDENTIFIER = "ID";
         const DATA = ["G1", "G2"];
         const RAW_DATA = ["g1", "g2"];
         let toRawGrantsMock;

@@ -444,7 +444,7 @@ describe("ApiAssoService", () => {
                 expect(mockSendRequest).toBeCalledTimes(1);
             });
 
-            it("should return empty arrai", async () => {
+            it("should return empty array", async () => {
                 mockSendRequest.mockResolvedValueOnce(null);
                 // @ts-ignore findEtablissementsBySiren is private method
                 const actual = await apiAssoService.findEtablissementsBySiren(SIREN);

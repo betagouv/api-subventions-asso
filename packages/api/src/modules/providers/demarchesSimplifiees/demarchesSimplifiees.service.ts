@@ -72,12 +72,12 @@ export class DemarchesSimplifieesService
     }
 
     async getDemandeSubvention(id: StructureIdentifier): Promise<DemandeSubvention[]> {
-        const demandes: DemarchesSimplifieesDataEntity[] = [];
+        let demandes: DemarchesSimplifieesDataEntity[] = [];
 
         if (id instanceof EstablishmentIdentifier && id.siret) {
-            demandes.push(...(await demarchesSimplifieesDataRepository.findBySiret(id.siret)));
+            demandes = await demarchesSimplifieesDataRepository.findBySiret(id.siret);
         } else if (id instanceof AssociationIdentifier && id.siren) {
-            demandes.push(...(await demarchesSimplifieesDataRepository.findBySiren(id.siren)));
+            demandes = await demarchesSimplifieesDataRepository.findBySiren(id.siren);
         }
 
         return this.entitiesToSubventions(demandes);

@@ -13,8 +13,6 @@ export class StructureTitleController {
             this.subtitle = associationName;
 
             const uniqueIdentifier = getUniqueIdentifier(identifiers);
-            console.log(identifiers, uniqueIdentifier);
-
             this.linkToAsso = `/association/${uniqueIdentifier}`;
         } else this.title = `Association : ${associationName}`;
         this.rna = valueOrHyphen(association.rna);

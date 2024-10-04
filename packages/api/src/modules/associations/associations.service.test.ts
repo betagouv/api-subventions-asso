@@ -225,7 +225,7 @@ describe("associationsService", () => {
             expect(actual).toBeTruthy();
         });
 
-        it("shoudl return false when api asso return an association with categorie_juridique not in LEGAL_CATEGORIES_ACCEPTED", async () => {
+        it("should return false when api asso return an association with categorie_juridique not in LEGAL_CATEGORIES_ACCEPTED", async () => {
             // @ts-expect-error: mock
             apiAssoService.findAssociationBySiren.mockImplementationOnce(() => ({
                 categorie_juridique: [{ value: "not in LEGAL_CATEGORIES_ACCEPTED" }],

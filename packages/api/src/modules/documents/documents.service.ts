@@ -18,7 +18,7 @@ import { documentToDocumentRequest } from "./document.adapter";
 export class DocumentsService {
     providersById = providersById(Object.values(providers));
 
-    public getDocument(identifier: StructureIdentifier) {
+    public getDocuments(identifier: StructureIdentifier) {
         return this.aggregateDocuments(identifier);
     }
 

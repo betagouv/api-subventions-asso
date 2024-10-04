@@ -40,7 +40,7 @@ export class DocumentsController {
     public downloadBtnLabel: ReadStore<string>;
     private allFlatDocs: DocumentEntity[];
     private headSiret: SiretDto;
-    private assoIdentifier: SirenDto | undefined;
+    private assoIdentifier: SiretDto | undefined;
 
     constructor(
         public resourceType: ResourceType,
@@ -53,7 +53,6 @@ export class DocumentsController {
         this.uniqueAssociationIdentifier = currentAssociationIdentifiers.length
             ? getUniqueIdentifier(currentAssociationIdentifiers)
             : this.identifier;
-        console.log(this.uniqueAssociationIdentifier);
         this.resourceType = resourceType;
         this.documentsPromise = new Store(returnInfinitePromise());
         this.zipPromise = new Store(Promise.resolve(null));
@@ -106,7 +105,6 @@ export class DocumentsController {
     }
 
     private _filterAssoDocs(docs: DocumentEntity[], siret: SiretDto) {
-        console.log(docs);
         // display rules from #2533: we show docs from asso, from head and from required secondary establishment if any
         return docs.filter(
             doc =>

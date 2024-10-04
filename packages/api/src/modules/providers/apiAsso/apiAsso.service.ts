@@ -337,10 +337,7 @@ export class ApiAssoService
         }
 
         const documents = await this.findDocuments(identifier.associationIdentifier);
-        return documents.filter(document => {
-            if (document.__meta__.siret == identifier.siret?.value) return true;
-            return false;
-        });
+        return documents.filter(document => document.__meta__.siret == identifier.siret?.value);
     }
 
     async getRibs(identifier: EstablishmentIdentifier) {

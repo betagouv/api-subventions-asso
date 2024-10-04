@@ -14,9 +14,9 @@ export class AssociationIdentifierService {
             return [AssociationIdentifier.fromId(associationIdentifier)];
         }
 
-        return rnaSirenEntities.map(rnaSirenEntity => {
-            return AssociationIdentifier.fromSirenAndRna(rnaSirenEntity.siren, rnaSirenEntity.rna);
-        });
+        return rnaSirenEntities.map(rnaSirenEntity =>
+            AssociationIdentifier.fromSirenAndRna(rnaSirenEntity.siren, rnaSirenEntity.rna),
+        );
     }
 
     async getOneAssociationIdentifier(id: string): Promise<AssociationIdentifier> {
@@ -40,7 +40,6 @@ export class AssociationIdentifierService {
             return new Siret(id).toSiren();
         }
 
-        console.log(id);
         throw new Error("Invalid identifier");
     }
 }

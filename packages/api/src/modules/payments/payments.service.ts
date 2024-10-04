@@ -7,8 +7,13 @@ export class PaymentsService {
         return [...(await Promise.all(paymentProviders.map(p => p.getPayments(identifier)))).flat()];
     }
 
+    /**
+     * Function dont used
+     * @param demandeSubvention
+     * @deprecated
+     * @returns
+     */
     hasPayments(demandeSubvention: DemandeSubvention) {
-        // Ca c'est chelou, le type du params je veux dire
         return !!(demandeSubvention.versementKey && demandeSubvention.versementKey.value);
     }
 
