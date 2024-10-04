@@ -23,11 +23,11 @@ describe("ChorusParser", () => {
         });
     });
 
-    describe("hasUniqueKeyFields", () => {
+    describe("hasMandatoryFields", () => {
         it("should return true", () => {
             const expected = { value: true };
             // @ts-expect-error: access protected method
-            const actual = ChorusParser.hasUniqueKeyFields(ENTITIES[0].indexedInformations);
+            const actual = ChorusParser.hasMandatoryFields(ENTITIES[0].indexedInformations);
             expect(actual).toEqual(expected);
         });
 
@@ -43,7 +43,7 @@ describe("ChorusParser", () => {
             const WRONG_INDEXED_INFORMATIONS = { ...ENTITIES[0].indexedInformations, [missingProp]: undefined };
             const expected = { value: false, hints: [missingProp] };
             // @ts-expect-error: access protected method
-            const actual = ChorusParser.hasUniqueKeyFields(WRONG_INDEXED_INFORMATIONS);
+            const actual = ChorusParser.hasMandatoryFields(WRONG_INDEXED_INFORMATIONS);
             expect(actual).toEqual(expected);
         });
 
@@ -58,7 +58,7 @@ describe("ChorusParser", () => {
             const expectedHints = ["numeroDemandePaiement", "exercice", "codeSociete"];
 
             // @ts-expect-error: access protected method
-            const actual = ChorusParser.hasUniqueKeyFields(WRONG_INDEXED_INFORMATIONS);
+            const actual = ChorusParser.hasMandatoryFields(WRONG_INDEXED_INFORMATIONS);
             for (const hint of expectedHints) {
                 expect(actual.hints).toContain(hint);
             }
@@ -68,7 +68,7 @@ describe("ChorusParser", () => {
     describe("validateIndexedInformations", () => {
         const mockHasUniqueKeyFields = jest
             // @ts-expect-error: ok
-            .spyOn(ChorusParser, "hasUniqueKeyFields");
+            .spyOn(ChorusParser, "hasMandatoryFields");
 
         beforeEach(() => {
             mockHasUniqueKeyFields.mockReturnValue({ value: true });
@@ -83,7 +83,7 @@ describe("ChorusParser", () => {
             );
         });
 
-        // missingProps order matters
+        // missingProps order matters for the expect on error message to pass
         it.each`
             missingProps
             ${["ej"]}

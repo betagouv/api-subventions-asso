@@ -72,15 +72,14 @@ export default class ChorusParser {
         return getMD5(`${ej}-${numPosteEJ}-${numeroDemandePaiement}-${numPosteDP}-${codeSociete}-${exercice}`);
     }
 
-    protected static hasUniqueKeyFields(indexedInformations: IChorusIndexedInformations) {
+    protected static hasMandatoryFields(indexedInformations: IChorusIndexedInformations) {
         const missingFields: string[] = [];
 
-        if (!indexedInformations.ej) missingFields.push("ej");
-        if (!indexedInformations.numPosteEJ) missingFields.push("numPosteEJ");
-        if (!indexedInformations.numeroDemandePaiement) missingFields.push("numeroDemandePaiement");
-        if (!indexedInformations.numPosteDP) missingFields.push("numPosteDP");
-        if (!indexedInformations.codeSociete) missingFields.push("codeSociete");
-        if (!indexedInformations.exercice) missingFields.push("exercice");
+        // those fields are "mandatory" because they are used to build the unique ID
+        const mandatoryFields = ["ej", "numPosteEJ", "numeroDemandePaiement", "numPosteDP", "codeSociete", "exercice"];
+        for (const key of mandatoryFields) {
+            if (!indexedInformations[key]) missingFields.push(key);
+        }
 
         if (missingFields.length) {
             return { value: false, hints: missingFields };
@@ -92,7 +91,7 @@ export default class ChorusParser {
             throw new Error(`The branch ${indexedInformations.codeBranche} is not accepted in data`);
         }
 
-        const hasUniqueFields = this.hasUniqueKeyFields(indexedInformations);
+        const hasUniqueFields = this.hasMandatoryFields(indexedInformations);
 
         if (!hasUniqueFields.value) {
             throw new Error(`The mandatory field(s) ${hasUniqueFields.hints?.concat(" - ")} are missing `);

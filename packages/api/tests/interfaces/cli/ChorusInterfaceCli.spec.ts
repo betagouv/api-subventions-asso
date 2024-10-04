@@ -15,8 +15,8 @@ describe("ChorusCli", () => {
         });
 
         describe("new format", () => {
-            // file should have 4 associations and 1 company
-            it("should save association but not companies", async () => {
+            // file should have 4 associations and 1 company's payments
+            it("should save association but not companies' payments", async () => {
                 const expected = NB_ASSOS_IN_FILES;
                 const filePath = path.resolve(__dirname, "./__fixtures__/new-chorus-export.xlsx");
                 await controller.parse(filePath, EXPORT_DATE);
