@@ -1,3 +1,4 @@
+import { SearchCodeError } from "dto";
 import uniteLegalNameService from "../providers/uniteLegalName/uniteLegal.name.service";
 import { AssociationIdentifiers } from "../../@types";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
@@ -5,6 +6,8 @@ import { isRna, isSiren } from "../../shared/Validators";
 import rechercheEntreprises from "../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.port";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
+import associationsService from "../associations/associations.service";
+import { BadRequestError } from "../../shared/errors/httpErrors";
 import AssociationNameEntity from "./entities/AssociationNameEntity";
 
 export class AssociationNameService {
@@ -55,7 +58,20 @@ export class AssociationNameService {
             );
             return acc;
         }, {} as Record<string, AssociationNameEntity>);
-        return Object.values(mergedAssociationName);
+        let gotCompany = false;
+        Object.entries(mergedAssociationName).map(([id, miniAsso]) => {
+            if (!associationsService.isCategoryFromAsso(miniAsso.categorie_juridique)) {
+                gotCompany = true;
+                delete mergedAssociationName[id];
+            }
+        });
+        const res = Object.values(mergedAssociationName);
+        if (!res.length && gotCompany)
+            throw new BadRequestError(
+                "Votre recherche pointe vers une entité qui n'est pas une association",
+                SearchCodeError.ID_NOT_ASSO,
+            );
+        return res;
     }
 }
 
