@@ -2,6 +2,7 @@ import ChorusCli from "../../../src/interfaces/cli/Chorus.cli";
 import path from "path";
 import chorusLineRepository from "../../../src/modules/providers/chorus/repositories/chorus.line.repository";
 import dataLogRepository from "../../../src/modules/data-log/repositories/dataLog.repository";
+import Siret from "../../../src/valueObjects/Siret";
 
 describe("ChorusCli", () => {
     describe("parse cli requests", () => {
@@ -53,7 +54,7 @@ describe("ChorusCli", () => {
                 const filePath2 = path.resolve(__dirname, "./__fixtures__/new-chorus-export-with-duplicates.xlsx");
                 await controller.parse(filePath1, EXPORT_DATE);
                 await controller.parse(filePath2, EXPORT_DATE);
-                const actual = await chorusLineRepository.findBySiret("32984395500001");
+                const actual = await chorusLineRepository.findBySiret(new Siret("32984395500001"));
                 expect(actual).not.toBeUndefined();
             });
         });

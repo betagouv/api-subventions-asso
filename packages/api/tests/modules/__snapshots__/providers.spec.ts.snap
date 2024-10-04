@@ -4,10 +4,6 @@ exports[`open-data/fournisseurs should return a list of providers with name, des
 Object {
   "api": Array [
     Object {
-      "description": "Le Compte Asso est un site internet accessible aux associations qui leur permet de réaliser différentes démarches: déposer des demandes de subvention parmi un répertoire de dispositifs de subventions, effectuer leur première immatriculation SIRET.",
-      "name": "Le Compte Asso",
-    },
-    Object {
       "description": "L'API Asso est une API portée par la DJEPVA et la DNUM des ministères sociaux qui expose des données sur les associations issues du RNA, de l'INSEE (SIREN/SIRET) et du Compte Asso.",
       "name": "API ASSO",
     },

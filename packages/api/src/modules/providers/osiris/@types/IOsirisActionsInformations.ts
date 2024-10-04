@@ -1,4 +1,4 @@
-import { Siret } from "dto";
+import { SiretDto } from "dto";
 
 export default interface IOsirisActionsInformations {
     osirisActionId: string;
@@ -24,7 +24,7 @@ export default interface IOsirisActionsInformations {
     territoireCommentaire: string;
 
     ej: string;
-    siret: Siret;
+    siret: SiretDto;
     rang: number;
     intitule: string;
     objectifs: string;

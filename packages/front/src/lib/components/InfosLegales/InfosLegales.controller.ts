@@ -1,4 +1,4 @@
-import type { Siret } from "dto";
+import type { SiretDto } from "dto";
 import MoreInfosLegalesModal from "./MoreInfosLegalesModal.svelte";
 import {
     getAddress,
@@ -20,7 +20,10 @@ export default class InfosLegalesController {
     private _modalData = {};
 
     // TODO: create EstablishmentEntity / FlatenProviderValueEstablishment
-    constructor(public association, public establishment: { siret: Siret; adresse: unknown } | undefined = undefined) {
+    constructor(
+        public association,
+        public establishment: { siret: SiretDto; adresse: unknown } | undefined = undefined,
+    ) {
         this.association = { ...association };
         this.establishment = establishment ? { ...establishment } : undefined;
         this._immatriculation = getImmatriculation(this.association);

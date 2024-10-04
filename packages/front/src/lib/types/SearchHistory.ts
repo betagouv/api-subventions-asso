@@ -1,8 +1,8 @@
-import type { Adresse, Rna, Siren } from "dto";
+import type { Adresse, RnaDto, SirenDto } from "dto";
 
 export interface SearchHistory {
-    rna: Rna;
-    siren: Siren;
+    rna: RnaDto;
+    siren: SirenDto;
     name: string;
     address: Adresse;
     nbEtabs: number;

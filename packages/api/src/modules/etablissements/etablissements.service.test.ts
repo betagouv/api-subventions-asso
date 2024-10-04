@@ -8,42 +8,20 @@ import { EtablissementAdapter } from "./EtablissementAdapter";
 import etablissementService from "./etablissements.service";
 import { BadRequestError, NotFoundError } from "../../shared/errors/httpErrors";
 import grantService from "../grant/grant.service";
+import Siren from "../../valueObjects/Siren";
+import Siret from "../../valueObjects/Siret";
+import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
 jest.mock("../grant/grant.service");
 
 type asyncPrivateMock<T> = jest.SpyInstance<Promise<T>>;
 
-const SIREN = "000000000";
-const SIRET = "000000000000001";
-const ETABLISSEMENT_1 = {
-    siret: [
-        {
-            value: SIRET,
-            provider: "BASE SIREN <Via API ASSO>",
-            last_update: "2022-08-29T00:00:00.000Z" as unknown as Date,
-            type: "string",
-        },
-    ],
-    nic: [],
-    payments: [],
-    demandes_subventions: [],
-};
-const ETABLISSEMENT_2 = {
-    siret: [
-        {
-            value: "000000000000002",
-            provider: "BASE SIREN <Via API ASSO>",
-            last_update: "2022-08-29T00:00:00.000Z" as unknown as Date,
-            type: "string",
-        },
-    ],
-    nic: [],
-    payments: [],
-    demandes_subventions: [],
-};
+const SIREN = new Siren("000000000");
+const SIRET = new Siret("00000000000001");
+const ASSOCIATION_ID = AssociationIdentifier.fromSiren(SIREN);
+const ESTABLISHMENT_ID = EstablishmentIdentifier.fromSiret(SIRET, ASSOCIATION_ID);
 
 describe("EtablissementsService", () => {
-    const toSimplifiedEtablissementMock = jest.spyOn(EtablissementAdapter, "toSimplifiedEtablissement");
-
     //@ts-expect-error: mock private method
     const aggregateMock = jest.spyOn(etablissementService, "aggregate") as asyncPrivateMock<Etablissement>;
 
@@ -57,23 +35,12 @@ describe("EtablissementsService", () => {
     jest.spyOn(FormaterHelper, "formatData").mockImplementation((data, providerScore) => data);
 
     describe("getEtablissement()", () => {
-        it("should throw BadRequestError", async () => {
-            let actual;
-            const expected = new BadRequestError("You must provide a valid SIRET");
-            try {
-                actual = await etablissementService.getEtablissement(SIRET.substring(0, 3));
-            } catch (e) {
-                actual = e;
-            }
-            expect(actual).toEqual(expected);
-        });
-
         it("should throw NotFoundError", async () => {
             let actual;
             const expected = new NotFoundError("Etablissement not found");
             aggregateMock.mockImplementationOnce(async () => ({ data: [] }));
             try {
-                actual = await etablissementService.getEtablissement(SIRET);
+                actual = await etablissementService.getEtablissement(ESTABLISHMENT_ID);
             } catch (e) {
                 actual = e;
             }
@@ -83,70 +50,54 @@ describe("EtablissementsService", () => {
 
     describe("getGrants", () => {
         it("should call grantService.getGrants()", () => {
-            etablissementService.getGrants(SIRET);
-            expect(grantService.getGrants).toHaveBeenCalledWith(SIRET);
+            etablissementService.getGrants(ESTABLISHMENT_ID);
+            expect(grantService.getGrants).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
     });
 
     describe("getPayments", () => {
-        const getPaymentsBySiretMock = jest.spyOn(paymentService, "getPaymentsBySiret");
+        const getPaymentsBySiretMock = jest.spyOn(paymentService, "getPayments");
 
         it("should call payment service", async () => {
             getPaymentsBySiretMock.mockImplementation(async () => []);
 
-            await etablissementService.getPayments(SIRET);
+            await etablissementService.getPayments(ESTABLISHMENT_ID);
 
-            expect(getPaymentsBySiretMock).toHaveBeenCalledWith(SIRET);
+            expect(getPaymentsBySiretMock).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
     });
 
     describe("getSubventions()", () => {
-        const getDemandesByEtablissementMock = jest.spyOn(subventionsService, "getDemandesByEtablissement");
+        const getDemandesByEtablissementMock = jest.spyOn(subventionsService, "getDemandes");
 
         it("should call DemandeSubventionService.getByAssociation()", async () => {
             getDemandesByEtablissementMock.mockImplementationOnce(() => new Flux<SubventionsFlux>());
-            etablissementService.getSubventions(SIREN);
-            expect(getDemandesByEtablissementMock).toHaveBeenCalledWith(SIREN);
+            etablissementService.getSubventions(ESTABLISHMENT_ID);
+            expect(getDemandesByEtablissementMock).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
     });
 
     describe("getDocuments", () => {
-        const getDocumentBySiretMock = jest.spyOn(documentsService, "getDocumentBySiret");
+        const getDocumentBySiretMock = jest.spyOn(documentsService, "getDocument");
 
         it("should call subventions service", async () => {
             getDocumentBySiretMock.mockImplementation(async () => []);
 
-            await etablissementService.getDocuments(SIRET);
+            await etablissementService.getDocuments(ESTABLISHMENT_ID);
 
-            expect(getDocumentBySiretMock).toHaveBeenCalledWith(SIRET);
+            expect(getDocumentBySiretMock).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
     });
 
     describe("getRibs", () => {
-        const getRibsBySiretMock = jest.spyOn(documentsService, "getRibsBySiret");
+        const getRibsBySiretMock = jest.spyOn(documentsService, "getRibs");
 
         it("should call subventions service", async () => {
             getRibsBySiretMock.mockImplementation(async () => []);
 
-            await etablissementService.getRibs(SIRET);
+            await etablissementService.getRibs(ESTABLISHMENT_ID);
 
-            expect(getRibsBySiretMock).toHaveBeenCalledWith(SIRET);
-        });
-    });
-
-    describe("getEtablissementsBySiren", () => {
-        it("should call toSimplifiedEtablissement", async () => {
-            aggregateMock.mockResolvedValueOnce([ETABLISSEMENT_1, ETABLISSEMENT_2]);
-            toSimplifiedEtablissementMock.mockImplementationOnce(etablissement => etablissement);
-            await etablissementService.getEtablissementsBySiren(SIREN);
-            expect(toSimplifiedEtablissementMock).toHaveBeenCalledTimes(2);
-        });
-
-        it("should throw a not found error", async () => {
-            aggregateMock.mockResolvedValueOnce([]);
-            await expect(() => etablissementService.getEtablissementsBySiren(SIREN)).rejects.toThrowError(
-                NotFoundError,
-            );
+            expect(getRibsBySiretMock).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
     });
 });

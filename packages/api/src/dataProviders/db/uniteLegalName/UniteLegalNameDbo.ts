@@ -1,8 +1,7 @@
-import { Siren } from "dto";
 import { ObjectId } from "mongodb";
 
 export default interface UniteLegalNameDbo {
-    siren: Siren;
+    siren: string;
     name: string;
     searchKey: string;
     updatedDate: Date;

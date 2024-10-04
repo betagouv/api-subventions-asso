@@ -1,11 +1,11 @@
-import { Siret, ApplicationStatus } from "dto";
+import { SiretDto, ApplicationStatus } from "dto";
 import { ObjectId } from "mongodb";
 import SubventiaDto from "./subventia.dto";
 
 export default interface SubventiaEntity {
     service_instructeur: string;
     annee_demande: number;
-    siret: Siret;
+    siret: SiretDto;
     date_commission: Date;
     montants_accorde: number;
     montants_demande: number;

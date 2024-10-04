@@ -1,8 +1,8 @@
 import type { Adresse } from "dto/shared/Adresse";
-import type { Siret } from "dto/shared/Siret";
+import type { SiretDto } from "dto/shared/Siret";
 
 export interface SimplifiedEstablishment {
-    siret: Siret;
+    siret: SiretDto;
     nic: string;
     siege?: boolean;
     ouvert?: boolean;

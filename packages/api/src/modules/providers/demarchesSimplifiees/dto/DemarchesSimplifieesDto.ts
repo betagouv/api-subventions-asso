@@ -1,5 +1,3 @@
-import { Rna, Siret } from "dto";
-
 export interface DemarchesSimplifieesSuccessDto {
     data: {
         demarche: {
@@ -8,9 +6,9 @@ export interface DemarchesSimplifieesSuccessDto {
                     {
                         id: string;
                         demandeur: {
-                            siret: Siret;
+                            siret: string;
                             association?: {
-                                rna: Rna;
+                                rna: string;
                                 titre: string;
                             };
                         };

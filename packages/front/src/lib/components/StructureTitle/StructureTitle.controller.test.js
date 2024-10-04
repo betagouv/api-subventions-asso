@@ -1,5 +1,8 @@
 import { StructureTitleController } from "./StructureTitle.controller";
 import * as associationHelper from "$lib/resources/associations/association.helper";
+import { getUniqueIdentifier } from "$lib/helpers/identifierHelper"; 
+
+vi.mock("$lib/helpers/identifierHelper")
 
 describe("StructureTitleController", () => {
     const ASSO = {
@@ -12,10 +15,12 @@ describe("StructureTitleController", () => {
     };
     const ETAB_SIRET = "10000000000000";
     const controllerAsso = new StructureTitleController(ASSO);
-    const controllerEtab = new StructureTitleController(ASSO, ETAB_SIRET);
+    const controllerEtab = new StructureTitleController(ASSO, ETAB_SIRET, [{siren: ASSO.siren}]);
     const mockBuildSiret = vi.spyOn(associationHelper, "getSiegeSiret");
 
-    beforeAll(() => mockBuildSiret.mockReturnValue(ETAB_SIRET));
+    beforeAll(() => {
+        mockBuildSiret.mockReturnValue(ETAB_SIRET)
+    });
 
     describe("specific cases with asso", () => {
         it("should set rup to false if undefined", () => {
@@ -112,6 +117,8 @@ describe("StructureTitleController", () => {
     });
 
     it("is correct for establishments", () => {
+        vi.mocked(getUniqueIdentifier).mockReturnValueOnce(ASSO.siren);
+        const controllerEtab = new StructureTitleController(ASSO, ETAB_SIRET);
         const actual = controllerEtab.linkToAsso;
         const expected = "/association/100000000";
         expect(actual).toBe(expected);

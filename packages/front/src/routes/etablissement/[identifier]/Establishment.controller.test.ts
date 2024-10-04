@@ -1,13 +1,16 @@
 import { EstablishmentController } from "./Establishment.controller";
 import associationService from "$lib/resources/associations/association.service";
-import { currentAssociation, currentAssoSimplifiedEtabs } from "$lib/store/association.store";
+import { currentAssociation, currentAssoSimplifiedEtabs, currentIdentifiers } from "$lib/store/association.store";
 import establishmentService from "$lib/resources/establishments/establishment.service";
+import rnaSirenService from "$lib/resources/open-source/rna-siren/rna-siren.service";
 
 vi.mock("$lib/resources/associations/association.service");
 vi.mock("$lib/resources/establishments/establishment.service");
+vi.mock("$lib/resources/open-source/rna-siren/rna-siren.service");
 vi.mock("$lib/store/association.store", () => ({
     currentAssociation: { set: vi.fn() },
     currentAssoSimplifiedEtabs: { set: vi.fn() },
+    currentIdentifiers: { set: vi.fn() },
 }));
 
 describe("Establishment Controller", () => {
@@ -19,6 +22,7 @@ describe("Establishment Controller", () => {
         vi.mocked(associationService.getEstablishments).mockResolvedValue([]);
         vi.mocked(associationService.getAssociation).mockResolvedValue({});
         vi.mocked(establishmentService.getBySiret).mockResolvedValue({});
+        vi.mocked(rnaSirenService.getAssociatedIdentifier).mockResolvedValue([]);
     });
 
     beforeEach(() => {

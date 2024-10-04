@@ -1,12 +1,13 @@
-import type { Siret } from "dto";
+import type { RnaSirenResponseDto, SiretDto } from "dto";
 import Store from "$lib/core/Store";
 import type { SimplifiedEstablishment } from "$lib/resources/establishments/types/establishment.types";
 import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
 
 export const currentAssociation = new Store<AssociationEntity | undefined>(undefined);
 export const currentAssoSimplifiedEtabs = new Store<SimplifiedEstablishment[]>([]);
+export const currentIdentifiers = new Store<RnaSirenResponseDto[]>([]);
 
-export const mapSiretPostCodeStore = new Store(new Map<Siret, string | undefined>()); // store necessary ?
+export const mapSiretPostCodeStore = new Store(new Map<SiretDto, string | undefined>()); // store necessary ?
 currentAssoSimplifiedEtabs.subscribe(establishments => {
     const map = mapSiretPostCodeStore.value;
     establishments.forEach(establishment =>
@@ -18,4 +19,5 @@ currentAssoSimplifiedEtabs.subscribe(establishments => {
 export const cleanStores = () => {
     currentAssociation.set(undefined);
     currentAssoSimplifiedEtabs.set([]);
+    currentIdentifiers.set([]);
 };

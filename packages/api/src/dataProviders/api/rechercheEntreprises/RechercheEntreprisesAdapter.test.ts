@@ -1,4 +1,6 @@
 import AssociationNameEntity from "../../../modules/association-name/entities/AssociationNameEntity";
+import Rna from "../../../valueObjects/Rna";
+import Siren from "../../../valueObjects/Siren";
 import { RechercheEntreprisesAdapter } from "./RechercheEntreprisesAdapter";
 import { RechercheEntreprisesResultDto } from "./RechercheEntreprisesDto";
 
@@ -8,7 +10,7 @@ describe("RechercheEntreprisesAdapter", () => {
             const dto = {
                 nom_complet: "Example Association",
                 siren: "123456789",
-                complements: { identifiant_association: "W1234567" },
+                complements: { identifiant_association: "W123456789" },
                 siege: {
                     numero_voie: "123",
                     type_voie: "Rue",
@@ -21,8 +23,8 @@ describe("RechercheEntreprisesAdapter", () => {
 
             const expected = new AssociationNameEntity(
                 dto.nom_complet,
-                dto.siren,
-                dto.complements?.identifiant_association,
+                new Siren(dto.siren),
+                new Rna(dto.complements?.identifiant_association),
                 {
                     numero: dto.siege.numero_voie,
                     type_voie: dto.siege.type_voie,
@@ -49,7 +51,7 @@ describe("RechercheEntreprisesAdapter", () => {
 
             const expected = new AssociationNameEntity(
                 dto.nom_complet,
-                dto.siren,
+                new Siren(dto.siren),
                 undefined,
                 undefined,
                 dto.nombre_etablissements,
@@ -70,7 +72,7 @@ describe("RechercheEntreprisesAdapter", () => {
 
             const expected = new AssociationNameEntity(
                 dto.nom_complet,
-                dto.siren,
+                new Siren(dto.siren),
                 undefined,
                 undefined,
                 dto.nombre_etablissements,

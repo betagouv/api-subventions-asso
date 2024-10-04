@@ -3,14 +3,21 @@ import scdlGrantService from "./scdl.grant.service";
 import MiscScdlAdapter from "./adapters/MiscScdl.adapter";
 import * as Sentry from "@sentry/node";
 import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
+import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import Rna from "../../../valueObjects/Rna";
+import Siren from "../../../valueObjects/Siren";
+import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
+import Siret from "../../../valueObjects/Siret";
 
-jest.mock("./repositories/miscScdl.joiner");
+jest.mock("./repositories/miscScdl.joiner", () => ({
+    findByRna: jest.fn(),
+    findBySiren: jest.fn(),
+    findBySiret: jest.fn(),
+}));
 jest.mock("./adapters/MiscScdl.adapter");
 jest.mock("@sentry/node");
 
 describe("ScdlGrantService", () => {
-    const IDENTIFIER = "structIdentifier";
-
     describe("getEntityByPromiseAndAdapt", () => {
         const ENTITIES = [1, 2];
         const PROMISE = Promise.resolve(ENTITIES);
@@ -31,10 +38,10 @@ describe("ScdlGrantService", () => {
             expect(Sentry.captureException).toHaveBeenCalledWith(new Error(ERROR_CONTENT));
         });
 
-        it("returns null if error is thrown by promise", async () => {
+        it("returns empty array if error is thrown by promise", async () => {
             // @ts-expect-error tests
             const actual = await scdlGrantService.getEntityByPromiseAndAdapt(ERROR_PROMISE, ADAPTER);
-            expect(actual).toBeNull();
+            expect(actual).toHaveLength(0);
         });
 
         it("captures adapter error to sentry", async () => {
@@ -46,43 +53,13 @@ describe("ScdlGrantService", () => {
             expect(Sentry.captureException).toHaveBeenCalledWith(new Error(ERROR_CONTENT));
         });
 
-        it("returns null if error is thrown by adapter", async () => {
+        it("returns empty array if error is thrown by adapter", async () => {
             ADAPTER.mockImplementationOnce(() => {
                 throw new Error(ERROR_CONTENT);
             });
             // @ts-expect-error tests
             const actual = await scdlGrantService.getEntityByPromiseAndAdapt(PROMISE, ADAPTER);
-            expect(actual).toBeNull();
-        });
-    });
-
-    describe.each`
-        joinerMethod                  | identifierType | serviceMethodName
-        ${miscScdlJoiner.findBySiret} | ${"Siret"}     | ${"getDemandeSubventionBySiret"}
-        ${miscScdlJoiner.findBySiren} | ${"Siren"}     | ${"getDemandeSubventionBySiren"}
-    `("getDemandeSubventionBy$identifierType", ({ joinerMethod, serviceMethodName }) => {
-        it("calls joiner to get data", async () => {
-            await scdlGrantService[serviceMethodName](IDENTIFIER);
-            expect(joinerMethod).toHaveBeenCalledWith(IDENTIFIER);
-        });
-
-        it("calls private method with promise from joiner", async () => {
-            // @ts-expect-error tests
-            const spy: jest.SpyInstance = jest.spyOn(scdlGrantService, "getEntityByPromiseAndAdapt");
-            const expected = Promise.resolve(["value from joiner"]);
-            jest.mocked(joinerMethod).mockReturnValueOnce(expected);
-            await scdlGrantService[serviceMethodName](IDENTIFIER);
-            const actual = spy.mock.calls[0][0];
-            expect(actual).toEqual(expected);
-        });
-
-        it("calls private method with adapter", async () => {
-            // @ts-expect-error tests
-            const spy: jest.SpyInstance = jest.spyOn(scdlGrantService, "getEntityByPromiseAndAdapt");
-            const expected = MiscScdlAdapter.toDemandeSubvention;
-            await scdlGrantService[serviceMethodName](IDENTIFIER);
-            const actual = spy.mock.calls[0][1];
-            expect(actual).toEqual(expected);
+            expect(actual).toHaveLength(0);
         });
     });
 
@@ -115,23 +92,30 @@ describe("ScdlGrantService", () => {
         });
     });
 
-    describe.each`
-        joinerMethod                  | identifierType | serviceMethodName
-        ${miscScdlJoiner.findByRna}   | ${"Rna"}       | ${"getRawGrantsByRna"}
-        ${miscScdlJoiner.findBySiret} | ${"Siret"}     | ${"getRawGrantsBySiret"}
-        ${miscScdlJoiner.findBySiren} | ${"Siren"}     | ${"getRawGrantsBySiren"}
-    `("getRawGrantsBy$identifierType", ({ joinerMethod, serviceMethodName }) => {
+    describe.each([
+        ["Rna", miscScdlJoiner.findByRna, new Rna("W123456789")],
+        ["Siren", miscScdlJoiner.findBySiren, new Siren("123456789")],
+        ["Siret", miscScdlJoiner.findBySiret, new Siret("12345678901234")],
+    ])("getRawGrants by identifiers type %s", (type, joinerMethod, value) => {
+        const IDENTIFIER =
+            value instanceof Siret
+                ? EstablishmentIdentifier.fromSiret(value, AssociationIdentifier.fromId(value.toSiren()))
+                : AssociationIdentifier.fromId(value);
+
         it("calls joiner to get data", async () => {
-            await scdlGrantService[serviceMethodName](IDENTIFIER);
-            expect(joinerMethod).toHaveBeenCalledWith(IDENTIFIER);
+            // @ts-expect-error tests
+            jest.spyOn(scdlGrantService, "getRawGrantSubventionByPromise").mockResolvedValueOnce([]);
+            await scdlGrantService.getRawGrants(IDENTIFIER);
+            expect(joinerMethod).toHaveBeenCalledWith(value);
         });
 
         it("calls private method with promise from joiner", async () => {
             // @ts-expect-error tests
             const spy: jest.SpyInstance = jest.spyOn(scdlGrantService, "getEntityByPromiseAndAdapt");
             const expected = Promise.resolve(["value from joiner"]);
+            // @ts-expect-error tests
             jest.mocked(joinerMethod).mockReturnValueOnce(expected);
-            await scdlGrantService[serviceMethodName](IDENTIFIER);
+            await scdlGrantService.getRawGrants(IDENTIFIER);
             const actual = spy.mock.calls[0][0];
             expect(actual).toEqual(expected);
         });

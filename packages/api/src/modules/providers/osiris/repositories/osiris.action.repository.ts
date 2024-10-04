@@ -1,9 +1,9 @@
 import { FindOneAndUpdateOptions } from "mongodb";
-import { Siren } from "dto";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
 import OsirisActionEntityDbo from "../entities/OsirisActionEntityDbo";
 import MongoCnxError from "../../../../shared/errors/MongoCnxError";
 import MongoRepository from "../../../../shared/MongoRepository";
+import Siren from "../../../../valueObjects/Siren";
 import OsirisActionAdapter from "./dboAdapters/osirisActionAdapter";
 
 export class OsirisActionRepository extends MongoRepository<OsirisActionEntityDbo> {
@@ -24,14 +24,16 @@ export class OsirisActionRepository extends MongoRepository<OsirisActionEntityDb
     public async update(osirisAction: OsirisActionEntity) {
         const options: FindOneAndUpdateOptions = { returnDocument: "after", includeResultMetadata: true };
         const { _id, ...actionWithoutId } = OsirisActionAdapter.toDbo(osirisAction);
-        const dbo = (await this.collection.findOneAndUpdate(
-            {
-                "indexedInformations.osirisActionId": osirisAction.indexedInformations.osirisActionId,
-            },
-            { $set: actionWithoutId },
-            options,
-            //@ts-expect-error -- mongo typing expects no metadata
-        ))!.value;
+        const dbo = (
+            await this.collection.findOneAndUpdate(
+                {
+                    "indexedInformations.osirisActionId": osirisAction.indexedInformations.osirisActionId,
+                },
+                { $set: actionWithoutId },
+                options,
+            )
+        //@ts-expect-error -- mongo typing expects no metadata
+        )?.value;
         if (!dbo) throw new MongoCnxError();
         return OsirisActionAdapter.toEntity(dbo);
     }
@@ -55,7 +57,7 @@ export class OsirisActionRepository extends MongoRepository<OsirisActionEntityDb
 
     public async findBySiren(siren: Siren) {
         const dbos = await this.collection
-            .find({ "indexedInformations.siret": new RegExp(`^${siren}\\d{5}`) })
+            .find({ "indexedInformations.siret": new RegExp(`^${siren.value}\\d{5}`) })
             .toArray();
         return dbos.map(dbo => OsirisActionAdapter.toEntity(dbo));
     }

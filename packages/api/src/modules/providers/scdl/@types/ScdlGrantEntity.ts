@@ -1,8 +1,7 @@
-import { Siret } from "dto";
-
+import { SiretDto } from "dto";
 export type ScdlGrantEntity = {
     allocatorName: string;
-    allocatorSiret: Siret;
+    allocatorSiret: SiretDto;
     exercice: number;
     conventionDate?: Date;
     decisionReference?: string;

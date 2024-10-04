@@ -2,7 +2,6 @@ import "reflect-metadata";
 import { mkdirSync, existsSync } from "fs";
 import "./configurations/env.conf";
 
-import LeCompteAssoCli from "./interfaces/cli/LeCompteAsso.cli";
 import FonjepCli from "./interfaces/cli/Fonjep.cli";
 import ChorusCli from "./interfaces/cli/Chorus.cli";
 import OsirisCli from "./interfaces/cli/Osiris.cli";
@@ -35,7 +34,6 @@ async function main() {
 
     const controllers: CliStaticInterface[] = [
         OsirisCli,
-        LeCompteAssoCli,
         UserCli,
         ChorusCli,
         FonjepCli,

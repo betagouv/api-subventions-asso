@@ -4,12 +4,15 @@ import bodaccService from "./bodacc.service";
 import { BodaccDto } from "./dto/BodaccDto";
 
 import * as SirenHelper from "./../../../shared/helpers/SirenHelper";
+import Siren from "../../../valueObjects/Siren";
+import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 jest.mock("./../../../shared/helpers/SirenHelper", () => ({
     siretToSiren: jest.fn(siren => siren),
 }));
 
 describe("Bodacc Service", () => {
-    const SIREN = "123456789";
+    const SIREN = new Siren("123456789");
+    const ASSOCIATION_ID = AssociationIdentifier.fromSiren(SIREN);
 
     const RECORD = {
         record: {
@@ -39,40 +42,20 @@ describe("Bodacc Service", () => {
         });
     });
 
-    describe("getAssociationsBySiren", () => {
+    describe("getAssociations", () => {
         let mockSendRequest: jest.SpyInstance;
         beforeEach(() => {
             mockSendRequest = jest.spyOn(bodaccService, "sendRequest").mockImplementation(async () => BODACC_DTO);
         });
 
         it("should call sendRequest with siren", async () => {
-            await bodaccService.getAssociationsBySiren(SIREN);
+            await bodaccService.getAssociations(ASSOCIATION_ID);
             expect(mockSendRequest).toHaveBeenCalledWith(SIREN);
         });
 
         it("should call BodaccAdapter.toAssociation", async () => {
-            await bodaccService.getAssociationsBySiren(SIREN);
+            await bodaccService.getAssociations(ASSOCIATION_ID);
             expect(mockToAssociation).toHaveBeenCalledWith(BODACC_DTO);
-        });
-    });
-
-    describe("getAssociationsBySiret", () => {
-        let spyGetAssociationsBySiren: jest.SpyInstance;
-
-        beforeEach(() => {
-            spyGetAssociationsBySiren = jest.spyOn(bodaccService, "getAssociationsBySiren");
-        });
-
-        it("should call getAssociationsBySiren", () => {
-            bodaccService.getAssociationsBySiret(SIREN);
-            expect(spyGetAssociationsBySiren).toHaveBeenCalledWith(SIREN);
-        });
-    });
-
-    describe("getAssociationsByRna", () => {
-        it("should return null", async () => {
-            const actual = await bodaccService.getAssociationsByRna();
-            expect(actual).toEqual(null);
         });
     });
 });

@@ -8,6 +8,7 @@
     import Alert from "$lib/dsfr/Alert.svelte";
     import type { ResourceType } from "$lib/types/ResourceType";
     import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
+    import { currentIdentifiers } from "$lib/store/association.store";
     import DownloadButton from "$lib/components/Documents/components/DownloadButton.svelte";
     import DocumentSection from "$lib/components/Documents/components/DocumentSection.svelte";
 
@@ -15,7 +16,7 @@
     export let resource: AssociationEntity | unknown;
     export let resourceType: ResourceType = "association";
 
-    const controller = new DocumentsController(resourceType, resource);
+    const controller = new DocumentsController(resourceType, resource, $currentIdentifiers);
     const documentsPromise = controller.documentsPromise;
     const zipPromise = controller.zipPromise;
     const { selectedDocsOrNull, downloadBtnLabel } = controller;

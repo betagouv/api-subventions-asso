@@ -1,6 +1,8 @@
 import csvSyncParser = require("csv-parse/sync");
-import { isNumberValid, isRna, isSiret } from "../../../shared/Validators";
+import { isNumberValid } from "../../../shared/Validators";
 import { isValidDate } from "../../../shared/helpers/DateHelper";
+import Siret from "../../../valueObjects/Siret";
+import Rna from "../../../valueObjects/Rna";
 import { BeforeAdaptation, DefaultObject, NestedDefaultObject, ParserInfo, ParserPath } from "../../../@types";
 import { GenericParser } from "../../../shared/GenericParser";
 import { ValueWithPath } from "../../../shared/@types/ValueWithPath";
@@ -16,8 +18,17 @@ export default class ScdlGrantParser {
         message: string;
         optional?: boolean;
     }[] = [
-        { key: "associationSiret", test: v => isSiret(v?.toString() ?? ""), message: "SIRET manquant ou invalide" },
-        { key: "allocatorSiret", test: v => isSiret(v?.toString() ?? ""), message: "SIRET invalide", optional: true },
+        {
+            key: "associationSiret",
+            test: v => Siret.isSiret(v?.toString() ?? ""),
+            message: "SIRET manquant ou invalide",
+        },
+        {
+            key: "allocatorSiret",
+            test: v => Siret.isSiret(v?.toString() ?? ""),
+            message: "SIRET invalide",
+            optional: true,
+        },
         { key: "amount", test: v => isNumberValid(v as number), message: "Le montant n'est pas un nombre" },
         { key: "exercice", test: v => isNumberValid(v as number), message: "L'exercice n'est pas un nombre" },
         {
@@ -34,7 +45,7 @@ export default class ScdlGrantParser {
         },
         {
             key: "associationRna",
-            test: v => !v || isRna(v as string),
+            test: v => !v || Rna.isRna(v as string),
             message: "Le RNA de l'association est défini mais pas valide",
             optional: true,
         },

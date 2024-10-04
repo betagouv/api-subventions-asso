@@ -3,6 +3,9 @@ import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubven
 import GrantProvider from "../../grant/@types/GrantProvider";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
+import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import { StructureIdentifier } from "../../../@types";
+import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
 import SubventiaParser from "./subventia.parser";
 import SubventiaValidator from "./validators/subventia.validator";
 import SubventiaAdapter from "./adapters/subventia.adapter";
@@ -78,18 +81,16 @@ export class SubventiaService implements DemandesSubventionsProvider<SubventiaEn
 
     isDemandesSubventionsProvider = true;
 
-    async getDemandeSubventionBySiret(siret: string) {
-        const applications = await subventiaRepository.findBySiret(siret);
-        return applications.map(dbo => SubventiaAdapter.toDemandeSubventionDto(dbo));
-    }
+    async getDemandeSubvention(id: StructureIdentifier): Promise<DemandeSubvention[]> {
+        const applications: SubventiaDbo[] = [];
 
-    async getDemandeSubventionBySiren(siren: string) {
-        const applications = await subventiaRepository.findBySiren(siren);
-        return applications.map(dbo => SubventiaAdapter.toDemandeSubventionDto(dbo));
-    }
+        if (id instanceof EstablishmentIdentifier && id.siret) {
+            applications.push(...(await subventiaRepository.findBySiret(id.siret)));
+        } else if (id instanceof AssociationIdentifier && id.siren) {
+            applications.push(...(await subventiaRepository.findBySiren(id.siren)));
+        }
 
-    getDemandeSubventionByRna(): Promise<DemandeSubvention[] | null> {
-        return Promise.resolve(null);
+        return applications.map(dbo => SubventiaAdapter.toDemandeSubventionDto(dbo));
     }
 
     /**
@@ -100,24 +101,19 @@ export class SubventiaService implements DemandesSubventionsProvider<SubventiaEn
 
     isGrantProvider = true;
 
-    async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
-        return (await subventiaRepository.findBySiret(siret)).map(grant => ({
+    async getRawGrants(id: StructureIdentifier): Promise<RawGrant[]> {
+        let subventiaDbos: SubventiaDbo[] = [];
+        if (id instanceof EstablishmentIdentifier && id.siret) {
+            subventiaDbos = await subventiaRepository.findBySiret(id.siret);
+        } else if (id instanceof AssociationIdentifier && id.siren) {
+            subventiaDbos = await subventiaRepository.findBySiren(id.siren);
+        }
+
+        return subventiaDbos.map(grant => ({
             provider: this.provider.id,
             type: "application",
             data: grant,
         }));
-    }
-
-    async getRawGrantsBySiren(siren: string): Promise<RawGrant[] | null> {
-        return (await subventiaRepository.findBySiren(siren)).map(grant => ({
-            provider: this.provider.id,
-            type: "application",
-            data: grant,
-        }));
-    }
-
-    getRawGrantsByRna(): Promise<RawGrant[] | null> {
-        return Promise.resolve(null);
     }
 
     rawToCommon(raw: RawGrant): CommonApplicationDto {

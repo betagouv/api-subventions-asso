@@ -5,7 +5,7 @@ import {
     DemandeSubvention,
     Etablissement,
     ProviderValue,
-    Rna,
+    RnaDto,
 } from "dto";
 import { siretToNIC, siretToSiren } from "../../../../shared/helpers/SirenHelper";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
@@ -56,7 +56,7 @@ export default class OsirisRequestAdapter {
 
         return {
             siren: toPVs(siretToSiren(entity.legalInformations.siret)),
-            rna: toPVs(entity.legalInformations.rna as Rna),
+            rna: toPVs(entity.legalInformations.rna as RnaDto),
             denomination_rna: toPVs(entity.legalInformations.name),
             etablisements_siret: toPVs([entity.legalInformations.siret]),
             nic_siege: entity.providerInformations.etablissementSiege
