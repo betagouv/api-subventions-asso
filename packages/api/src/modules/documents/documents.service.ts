@@ -17,7 +17,7 @@ import DocumentProvider from "./@types/DocumentsProvider";
 import { documentToDocumentRequest } from "./document.adapter";
 
 export class DocumentsService {
-    ACCEPETED_URLS = [
+    ACCEPTED_URLS = [
         "https://lecompteasso.associations.gouv.fr/apim/api-asso/api/documents/",
         "https://api-avis-situation-sirene.insee.fr/identification/pdf/",
     ];
@@ -101,7 +101,7 @@ export class DocumentsService {
     }
 
     async getGenericDocumentStream(http: ProviderRequestService, url: string): Promise<IncomingMessage> {
-        if (!this.ACCEPETED_URLS.some(acceptedUrl => url.startsWith(acceptedUrl))) throw new Error("Invalid URL");
+        if (!this.ACCEPTED_URLS.some(acceptedUrl => url.startsWith(acceptedUrl))) throw new Error("Invalid URL");
         const res = await http.get(url, {
             responseType: "stream",
             headers: {
