@@ -26,6 +26,7 @@ import { headersMiddleware } from "./middlewares/headersMiddleware";
 import { ENV } from "./configurations/env.conf";
 import { SESSION_SECRET } from "./configurations/agentConnect.conf";
 import { mongoSessionStoreConfig } from "./shared/MongoConnection";
+import { FRONT_OFFICE_URL } from "./configurations/front.conf";
 
 const appName = "api-subventions-asso";
 const MongoStore = MongoStoreBuilder(session);
@@ -56,12 +57,6 @@ export async function startServer(port = "8080", isTest = false) {
             store: new MongoStore(mongoSessionStoreConfig),
         }),
     );
-    app.use(
-        cors({
-            credentials: true,
-            origin: true,
-        }),
-    );
 
     if (!isTest) app.use(expressLogger());
 
@@ -81,6 +76,21 @@ export async function startServer(port = "8080", isTest = false) {
     app.use(passport.initialize());
 
     await registerAuthMiddlewares(app); // Passport Part
+
+    app.use(
+        cors(function (req, callback) {
+            const frontAuth = {
+                credentials: true,
+                origin: FRONT_OFFICE_URL,
+            };
+            const defaultAuth = {
+                credentials: false,
+                origin: true,
+            };
+            if (req?.headers.origin === FRONT_OFFICE_URL) return callback(null, frontAuth);
+            return callback(null, defaultAuth);
+        }),
+    );
 
     StatsAssoVisitRoutesRegex.forEach(route =>
         app.use(route, (req, res, next) =>
