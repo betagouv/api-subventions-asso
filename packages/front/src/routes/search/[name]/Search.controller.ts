@@ -33,8 +33,7 @@ export default class SearchController {
             // search is an identifier
             if (isSiret(name) && search.total === 1) return this.gotoEstablishment(name);
             if ((isSiren(name) || isRna(name)) && search.total === 1) {
-                const asso = search.results[0];
-                return goto(`/association/${asso.siren || asso.rna}`, { replaceState: true });
+                return goto(`/association/${name}`, { replaceState: true });
 
                 // search is text
             } else {
