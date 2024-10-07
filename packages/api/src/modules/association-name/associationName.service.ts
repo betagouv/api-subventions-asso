@@ -23,7 +23,7 @@ export class AssociationNameService {
         let associationNames: AssociationNameEntity[];
         let gotCompany = false;
         const searchEntreprisesCatch = value =>
-            rechercheEntreprisesService.searchForceAsso(value).catch(e => {
+            rechercheEntreprisesService.search(value, true).catch(e => {
                 gotCompany = true;
                 return [];
             });
