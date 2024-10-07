@@ -1,4 +1,4 @@
-import rechercheEntreprises, { RechercheEntreprises } from "./rechercheEntreprises.port";
+import rechercheEntreprisesPort, { RechercheEntreprisesPort } from "./rechercheEntreprises.port";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
 import { ProviderRequestService } from "../../../modules/provider-request/providerRequest.service";
 import { RechercheEntreprisesDto } from "./RechercheEntreprisesDto";
@@ -15,31 +15,31 @@ const mockedRechercheEntreprisesAdapter = RechercheEntreprisesAdapter as jest.Mo
 
 describe("RechercheEntreprises", () => {
     // @ts-expect-error http is private attribute
-    const mockedHttpGet = jest.spyOn(rechercheEntreprises.http, "get");
+    const mockedHttpGet = jest.spyOn(rechercheEntreprisesPort.http, "get");
     const SIREN = "123456789";
     const NAME = "Example";
 
     describe("Initialization", () => {
         it("should initialize the URL correctly", () => {
-            expect(RechercheEntreprises["URL"]).toBe("https://recherche-entreprises.api.gouv.fr/search");
+            expect(RechercheEntreprisesPort["URL"]).toBe("https://recherche-entreprises.api.gouv.fr/search");
         });
 
         it("should initialize the natureJuridique correctly", () => {
             const expectedNatureJuridique = LEGAL_CATEGORIES_ACCEPTED.filter(id => id !== "92").join(",");
-            expect(RechercheEntreprises["natureJuridique"]).toBe(expectedNatureJuridique);
+            expect(RechercheEntreprisesPort["natureJuridique"]).toBe(expectedNatureJuridique);
         });
 
         it("should initialize the http service correctly", () => {
-            expect(rechercheEntreprises["http"]).toBeInstanceOf(ProviderRequestService);
+            expect(rechercheEntreprisesPort["http"]).toBeInstanceOf(ProviderRequestService);
         });
     });
 
     describe("search", () => {
         it("should make a GET request to the correct URL with the provided query", async () => {
             const query = "example";
-            const expectedUrl = `https://recherche-entreprises.api.gouv.fr/search?q=${query}&nature_juridique=${RechercheEntreprises["natureJuridique"]}&per_page=25&page=1`;
+            const expectedUrl = `https://recherche-entreprises.api.gouv.fr/search?q=${query}&nature_juridique=${RechercheEntreprisesPort["natureJuridique"]}&per_page=25&page=1`;
             mockedHttpGet.mockResolvedValueOnce({ data: {} } as unknown as RequestResponse<unknown>);
-            await rechercheEntreprises.search(query);
+            await rechercheEntreprisesPort.search(query);
 
             expect(mockedHttpGet).toHaveBeenCalledWith(expectedUrl);
         });
@@ -47,7 +47,7 @@ describe("RechercheEntreprises", () => {
         it("should return an empty array if the API response does not contain results", async () => {
             mockedHttpGet.mockResolvedValueOnce({ data: {} } as unknown as RequestResponse<unknown>);
 
-            const result = await rechercheEntreprises.search("example");
+            const result = await rechercheEntreprisesPort.search("example");
 
             expect(result).toEqual([]);
         });
@@ -69,7 +69,7 @@ describe("RechercheEntreprises", () => {
             mockedRechercheEntreprisesAdapter.toAssociationNameEntity.mockReturnValueOnce(expected);
             mockedHttpGet.mockResolvedValueOnce({ data: responseData } as unknown as RequestResponse<unknown>);
 
-            const result = await rechercheEntreprises.search("example");
+            const result = await rechercheEntreprisesPort.search("example");
 
             expect(result).toEqual([expected]);
         });
@@ -80,7 +80,7 @@ describe("RechercheEntreprises", () => {
             };
             mockedHttpGet.mockResolvedValueOnce({ data: responseData } as unknown as RequestResponse<unknown>);
 
-            await rechercheEntreprises.search("example");
+            await rechercheEntreprisesPort.search("example");
 
             expect(mockedRechercheEntreprisesAdapter.toAssociationNameEntity).toHaveBeenCalledWith(
                 responseData.results[0],
@@ -116,7 +116,7 @@ describe("RechercheEntreprises", () => {
             mockedHttpGet.mockResolvedValueOnce({ data: responseDataFirst } as unknown as RequestResponse<unknown>);
             mockedHttpGet.mockResolvedValueOnce({ data: responseDataSecond } as unknown as RequestResponse<unknown>);
 
-            const result = await rechercheEntreprises.search("example");
+            const result = await rechercheEntreprisesPort.search("example");
 
             expect(result).toEqual(expected);
         });
@@ -135,7 +135,7 @@ describe("RechercheEntreprises", () => {
                 ],
             };
             mockedHttpGet.mockResolvedValue({ data: responseDataFirst } as unknown as RequestResponse<unknown>);
-            await rechercheEntreprises.search("example");
+            await rechercheEntreprisesPort.search("example");
 
             expect(mockedHttpGet).toHaveBeenCalledTimes(3);
             mockedHttpGet.mockReset();

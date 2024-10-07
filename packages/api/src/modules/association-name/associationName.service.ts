@@ -3,7 +3,7 @@ import uniteLegalNameService from "../providers/uniteLegalName/uniteLegal.name.s
 import { AssociationIdentifiers } from "../../@types";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import { isRna, isSiren } from "../../shared/Validators";
-import rechercheEntreprises from "../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.port";
+import rechercheEntreprisesPort from "../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.port";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import associationsService from "../associations/associations.service";
@@ -36,13 +36,13 @@ export class AssociationNameService {
                 ...(await Promise.all(
                     identifiers.map(identifier => uniteLegalNameService.searchBySirenSiretName(identifier)),
                 )),
-                ...(await Promise.all(identifiers.map(identifier => rechercheEntreprises.search(identifier)))),
+                ...(await Promise.all(identifiers.map(identifier => rechercheEntreprisesPort.search(identifier)))),
             ].flat();
         } else {
             // Siret Or Name
             associationNames = [
                 ...(await uniteLegalNameService.searchBySirenSiretName(lowerCaseValue)),
-                ...(await rechercheEntreprises.search(value)),
+                ...(await rechercheEntreprisesPort.search(value)),
             ].flat();
         }
         const mergedAssociationName = associationNames.reduce((acc, associationName) => {
