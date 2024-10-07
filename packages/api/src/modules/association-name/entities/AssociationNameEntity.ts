@@ -5,7 +5,6 @@ export default class AssociationNameEntity {
         public name: string,
         public siren: Siren,
         public rna?: Rna,
-        public categorie_juridique?: string,
         public address?: Adresse,
         public nbEtabs?: number,
     ) {}

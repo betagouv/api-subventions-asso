@@ -6,7 +6,6 @@ Object {
   "page": 1,
   "results": Array [
     Object {
-      "categorie_juridique": "9210",
       "name": "ASSOCIATION AURORE",
       "siren": "775684970",
     },
@@ -21,7 +20,6 @@ Object {
   "page": 1,
   "results": Array [
     Object {
-      "categorie_juridique": "9210",
       "name": "ASSOCIATION AURORE",
       "siren": "775684970",
     },

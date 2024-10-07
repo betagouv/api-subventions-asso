@@ -10,7 +10,6 @@ export class UniteLegaleHistoriqueAdapter {
             row.denominationUniteLegale,
             this.buildSearchKey(row.siren, row.denominationUniteLegale),
             new Date(row.dateDebut),
-            row.categorieJuridiqueUniteLegale.toString(),
         );
     }
 

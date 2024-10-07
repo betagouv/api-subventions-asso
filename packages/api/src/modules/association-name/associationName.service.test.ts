@@ -22,7 +22,6 @@ describe("associationName.service", () => {
             "ALPCM NANTES BASKET",
             "",
             new Date("2022-07-13T00:00:00.000Z"),
-            "9210",
         );
 
         beforeAll(() => {
@@ -52,7 +51,7 @@ describe("associationName.service", () => {
         });
 
         it("should return merged association names for a known SIREN identifier", async () => {
-            const fakeAssociation = new AssociationNameEntity("Fake Name", SIREN, RNA, "9210", {}, 3);
+            const fakeAssociation = new AssociationNameEntity("Fake Name", SIREN, RNA, {}, 3);
             mockedUniteLegalNameService.searchBySirenSiretName.mockResolvedValueOnce([fakeAssociation]);
             mockedRnaSirenService.find.mockResolvedValueOnce([{ siren: SIREN, rna: RNA }]);
             mockedRechercheEntreprises.search.mockResolvedValueOnce([]);
@@ -62,7 +61,7 @@ describe("associationName.service", () => {
         });
 
         it("should return merged association names for a known RNA identifier", async () => {
-            const fakeAssociation = new AssociationNameEntity("Fake Name", SIREN_2, RNA_2, "9210", {}, 2);
+            const fakeAssociation = new AssociationNameEntity("Fake Name", SIREN_2, RNA_2, {}, 2);
             mockedUniteLegalNameService.searchBySirenSiretName.mockResolvedValueOnce([fakeAssociation]);
             mockedRnaSirenService.find.mockResolvedValueOnce([{ siren: SIREN_2, rna: RNA_2 }]);
             mockedRechercheEntreprises.search.mockResolvedValueOnce([]);
@@ -72,8 +71,8 @@ describe("associationName.service", () => {
         });
 
         it("should handle cases where there are multiple rnaSiren entities for the same identifier", async () => {
-            const fakeAssociation1 = new AssociationNameEntity("Fake Name 1", SIREN, RNA, "9210", {}, 3);
-            const fakeAssociation2 = new AssociationNameEntity("Fake Name 2", SIREN, RNA_2, "9210", {}, 2);
+            const fakeAssociation1 = new AssociationNameEntity("Fake Name 1", SIREN, RNA, {}, 3);
+            const fakeAssociation2 = new AssociationNameEntity("Fake Name 2", SIREN, RNA_2, {}, 2);
             mockedUniteLegalNameService.searchBySirenSiretName.mockResolvedValueOnce([
                 fakeAssociation1,
                 fakeAssociation2,
@@ -86,14 +85,14 @@ describe("associationName.service", () => {
 
             const result = await associationNameService.find(SIREN);
             const expected = [
-                new AssociationNameEntity("Fake Name 1", SIREN, RNA, "9210", {}, 3),
-                new AssociationNameEntity("Fake Name 2", SIREN, RNA_2, "9210", {}, 2),
+                new AssociationNameEntity("Fake Name 1", SIREN, RNA, {}, 3),
+                new AssociationNameEntity("Fake Name 2", SIREN, RNA_2, {}, 2),
             ];
             expect(result).toEqual(expected);
         });
 
         it("should handle cases where the identifier type is neither SIREN nor RNA", async () => {
-            const fakeAssociation = new AssociationNameEntity("Fake Name", SIREN_2, RNA_2, "9210", {}, 2);
+            const fakeAssociation = new AssociationNameEntity("Fake Name", SIREN_2, RNA_2, {}, 2);
             mockedUniteLegalNameService.searchBySirenSiretName.mockResolvedValueOnce([fakeAssociation]);
             mockedRnaSirenService.find.mockResolvedValueOnce([]);
             mockedRechercheEntreprises.search.mockResolvedValueOnce([fakeAssociation]);
