@@ -3,11 +3,10 @@ import uniteLegalNameService from "../providers/uniteLegalName/uniteLegal.name.s
 import { AssociationIdentifiers } from "../../@types";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import { isRna, isSiren } from "../../shared/Validators";
-import rechercheEntreprisesPort from "../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.port";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
-import associationsService from "../associations/associations.service";
 import { BadRequestError } from "../../shared/errors/httpErrors";
+import rechercheEntreprisesService from "../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.service";
 import AssociationNameEntity from "./entities/AssociationNameEntity";
 
 export class AssociationNameService {
@@ -22,6 +21,13 @@ export class AssociationNameService {
     async find(value: AssociationIdentifiers | string): Promise<AssociationNameEntity[]> {
         const lowerCaseValue = value.toLowerCase().trim();
         let associationNames: AssociationNameEntity[];
+        let gotCompany = false;
+        const searchEntreprisesCatch = value =>
+            rechercheEntreprisesService.searchForceAsso(value).catch(e => {
+                gotCompany = true;
+                return [];
+            });
+
         if (isRna(value) || isSiren(value)) {
             const identifierType = getIdentifierType(value) as
                 | StructureIdentifiersEnum.rna
@@ -36,13 +42,13 @@ export class AssociationNameService {
                 ...(await Promise.all(
                     identifiers.map(identifier => uniteLegalNameService.searchBySirenSiretName(identifier)),
                 )),
-                ...(await Promise.all(identifiers.map(identifier => rechercheEntreprisesPort.search(identifier)))),
+                ...(await Promise.all(identifiers.map(identifier => searchEntreprisesCatch(identifier)))),
             ].flat();
         } else {
             // Siret Or Name
             associationNames = [
                 ...(await uniteLegalNameService.searchBySirenSiretName(lowerCaseValue)),
-                ...(await rechercheEntreprisesPort.search(value)),
+                ...(await searchEntreprisesCatch(value)),
             ].flat();
         }
         const mergedAssociationName = associationNames.reduce((acc, associationName) => {
@@ -52,19 +58,11 @@ export class AssociationNameService {
                 oldValue.name || associationName.name,
                 oldValue.siren || associationName.siren,
                 oldValue.rna || associationName.rna,
-                oldValue.categorie_juridique || associationName.categorie_juridique,
                 oldValue.address || associationName.address,
                 oldValue.nbEtabs || associationName.nbEtabs,
             );
             return acc;
         }, {} as Record<string, AssociationNameEntity>);
-        let gotCompany = false;
-        Object.entries(mergedAssociationName).map(([id, miniAsso]) => {
-            if (!associationsService.isCategoryFromAsso(miniAsso.categorie_juridique)) {
-                gotCompany = true;
-                delete mergedAssociationName[id];
-            }
-        });
         const res = Object.values(mergedAssociationName);
         if (!res.length && gotCompany)
             throw new BadRequestError(
