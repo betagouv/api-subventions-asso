@@ -49,6 +49,7 @@ export default class ChorusParser {
     protected static rowsToEntities(headers, rows) {
         return rows.reduce((entities, row, index, array) => {
             const data = GenericParser.linkHeaderToData(headers, row) as DefaultObject<string>; // TODO <string|number>
+
             const indexedInformations = GenericParser.indexDataByPathObject(
                 // TODO <string|number>
                 ChorusLineEntity.indexedInformationsPath,
@@ -60,20 +61,40 @@ export default class ChorusParser {
             const uniqueId = this.buildUniqueId(indexedInformations);
             entities.push(new ChorusLineEntity(uniqueId, new Date(), indexedInformations, data));
 
-            CliHelper.printAtSameLine(`${index} entities parsed of ${array.length}`);
+            CliHelper.printAtSameLine(`${index + 1} entities parsed of ${array.length}`);
 
             return entities;
         }, []);
     }
 
     protected static buildUniqueId(info: IChorusIndexedInformations) {
-        const { numeroDemandePayment, exercice, codeSociete } = info;
-        return getMD5(`${codeSociete}-${exercice}-${numeroDemandePayment}`);
+        const { ej, numPosteEJ, numeroDemandePaiement, exercice, codeSociete, numPosteDP } = info;
+        return getMD5(`${ej}-${numPosteEJ}-${numeroDemandePaiement}-${numPosteDP}-${codeSociete}-${exercice}`);
+    }
+
+    protected static hasMandatoryFields(indexedInformations: IChorusIndexedInformations) {
+        const missingFields: string[] = [];
+
+        // those fields are "mandatory" because they are used to build the unique ID
+        const mandatoryFields = ["ej", "numPosteEJ", "numeroDemandePaiement", "numPosteDP", "codeSociete", "exercice"];
+        for (const key of mandatoryFields) {
+            if (!indexedInformations[key]) missingFields.push(key);
+        }
+
+        if (missingFields.length) {
+            return { value: false, hints: missingFields };
+        } else return { value: true };
     }
 
     protected static validateIndexedInformations(indexedInformations) {
         if (!BRANCHE_ACCEPTED[indexedInformations.codeBranche]) {
             throw new Error(`The branch ${indexedInformations.codeBranche} is not accepted in data`);
+        }
+
+        const hasUniqueFields = this.hasMandatoryFields(indexedInformations);
+
+        if (!hasUniqueFields.value) {
+            throw new Error(`The mandatory field(s) ${hasUniqueFields.hints?.concat(" - ")} are missing `);
         }
 
         // special treatment for siret with # that represents departments which didn't use SIRET but another identifier
