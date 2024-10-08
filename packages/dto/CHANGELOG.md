@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.56.0](https://github.com/betagouv/datasubvention/compare/v0.55.0...v0.56.0) (2024-10-07)
+
+### Features
+
+-   **api, dto:** add prefix and first integ date ([#2654](https://github.com/betagouv/datasubvention/issues/2654)) ([2f8b21d](https://github.com/betagouv/datasubvention/commit/2f8b21d873e7af2922ea38c7ad95edbfd5ec12b7))
+
 # [0.55.0](https://github.com/betagouv/datasubvention/compare/v0.54.1...v0.55.0) (2024-09-09)
 
 ### Features

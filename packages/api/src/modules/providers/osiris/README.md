@@ -33,7 +33,7 @@ Il faudra faire les opérations suivantes pour chaque type de donnée à déploy
 
 Exécuter depuis le package api 
 ```bash
-npm run cli osiris parse [TYPE_DONNÉES] [CHEMIN_DES_FICHIERS]
+npm run cli osiris parse [TYPE_DONNÉES] [CHEMIN_DES_FICHIERS] [YEAR]
 ```
 
 Si vous ne les avez pas modifés, le chemin sera (depuis le package api) `../tools/extract/[YEAR]/[TYPE_DONNÉES_DL] [YEAR]`

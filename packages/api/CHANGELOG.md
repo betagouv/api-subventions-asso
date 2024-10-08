@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.56.0](https://github.com/betagouv/api-subventions-asso/compare/v0.55.0...v0.56.0) (2024-10-07)
+
+### Bug Fixes
+
+-   **api:** [#2653](https://github.com/betagouv/api-subventions-asso/issues/2653) cors config differentiates front and consumer calls ([#2683](https://github.com/betagouv/api-subventions-asso/issues/2683)) ([0ae034a](https://github.com/betagouv/api-subventions-asso/commit/0ae034a2fbc95596d62e8516e42c51ba9a7069e3))
+-   **api:** [#2655](https://github.com/betagouv/api-subventions-asso/issues/2655) keep user id in logs ([#2657](https://github.com/betagouv/api-subventions-asso/issues/2657)) ([b5f6758](https://github.com/betagouv/api-subventions-asso/commit/b5f6758a99e77594e9be4b1b6369d14c2826e9c7))
+-   **api:** [#2688](https://github.com/betagouv/api-subventions-asso/issues/2688) fix osiris status ([#2689](https://github.com/betagouv/api-subventions-asso/issues/2689)) ([4fdb100](https://github.com/betagouv/api-subventions-asso/commit/4fdb100155be1441007d2fa5bd0ecd9bb691175d))
+-   **api:** add samesite lax in dev mode ([#2685](https://github.com/betagouv/api-subventions-asso/issues/2685)) ([e6f6dc8](https://github.com/betagouv/api-subventions-asso/commit/e6f6dc8e33c41cc71e0064daa86a56db903747ce))
+-   **api:** check url of document behind call ([#2667](https://github.com/betagouv/api-subventions-asso/issues/2667)) ([9c7621e](https://github.com/betagouv/api-subventions-asso/commit/9c7621e509cc76a1d1cab9e327f3cf74a631b96d))
+
+### Features
+
+-   **api, dto:** add prefix and first integ date ([#2654](https://github.com/betagouv/api-subventions-asso/issues/2654)) ([2f8b21d](https://github.com/betagouv/api-subventions-asso/commit/2f8b21d873e7af2922ea38c7ad95edbfd5ec12b7))
+-   **api:** [#2671](https://github.com/betagouv/api-subventions-asso/issues/2671) map demarches simplifiees status ([#2675](https://github.com/betagouv/api-subventions-asso/issues/2675)) ([9b99e46](https://github.com/betagouv/api-subventions-asso/commit/9b99e4686def628e01d8a927d109cbc1f62c6989))
+-   **api:** rename CPA doc ([aeabab7](https://github.com/betagouv/api-subventions-asso/commit/aeabab7aef978fa1b2135479a09359fa3e46fe1c)), closes [#2668](https://github.com/betagouv/api-subventions-asso/issues/2668)
+-   **front, api:** [#2413](https://github.com/betagouv/api-subventions-asso/issues/2413) front extracts csv from api ([#2613](https://github.com/betagouv/api-subventions-asso/issues/2613)) ([e17023d](https://github.com/betagouv/api-subventions-asso/commit/e17023dab2db577b840de44f3b6e8c2ce0b067d7))
+
+### Performance Improvements
+
+-   **api:** [#2548](https://github.com/betagouv/api-subventions-asso/issues/2548) better join key in fonjep ([#2658](https://github.com/betagouv/api-subventions-asso/issues/2658)) ([ba1d286](https://github.com/betagouv/api-subventions-asso/commit/ba1d28647c6c22965898726dd29e4bbd6d039032))
+
 # [0.55.0](https://github.com/betagouv/api-subventions-asso/compare/v0.54.1...v0.55.0) (2024-09-09)
 
 ### Features

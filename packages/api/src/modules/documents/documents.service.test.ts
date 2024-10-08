@@ -407,7 +407,7 @@ describe("Documents Service", () => {
     describe("getGenericDocumentStream", () => {
         let httpGetSpy: jest.SpyInstance;
         const HTTP = new ProviderRequestService("PROVIDER_ID");
-        const URL = "path";
+        const URL = documentsService.ACCEPTED_URLS[0];
         const RES = "STREAM";
 
         beforeEach(() => {
@@ -420,11 +420,12 @@ describe("Documents Service", () => {
             const actual = httpGetSpy.mock.calls[0];
             expect(actual).toMatchInlineSnapshot(`
                 Array [
-                  "path",
+                  "${documentsService.ACCEPTED_URLS[0]}",
                   Object {
                     "headers": Object {
                       "Referrer-Policy": "strict-origin-when-cross-origin",
                       "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+                      "content-type": "attachment",
                       "mg-authentication": "true",
                     },
                     "responseType": "stream",

@@ -26,7 +26,7 @@ export class AuthentificationHttp extends Controller {
     private setCookie(req, user) {
         const cookieOption: CookieOptions = {
             secure: true,
-            sameSite: "none",
+            sameSite: "strict",
             domain: DOMAIN,
             expires: user.jwt.expirateDate,
             httpOnly: true,
@@ -35,6 +35,7 @@ export class AuthentificationHttp extends Controller {
         if (DEV) {
             cookieOption.domain = undefined;
             cookieOption.secure = false;
+            cookieOption.sameSite = "lax";
         }
 
         req.res?.cookie("token", user.jwt.token, cookieOption);

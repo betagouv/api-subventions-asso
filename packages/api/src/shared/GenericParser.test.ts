@@ -13,6 +13,7 @@ describe("GenericParser", () => {
         key1: ["weird path", "another turn"],
         key2: [["first choice", "second choice"]],
         key3: { path: ["easy path"], adapter: ADAPTER },
+        key4: ["weird path", ["other possibility", "another turn"]],
     };
 
     describe("findValueAndOriginalKeyByPath", () => {
@@ -25,6 +26,12 @@ describe("GenericParser", () => {
         it("finds second option object", () => {
             const expected = { value: "value2", keyPath: ["second choice"] };
             const actual = GenericParser.findValueAndOriginalKeyByPath(DATA, MAPPER.key2);
+            expect(actual).toEqual(expected);
+        });
+
+        it("finds nested object with choices", () => {
+            const expected = { value: "value1", keyPath: ["weird path", "another turn"] };
+            const actual = GenericParser.findValueAndOriginalKeyByPath(DATA, MAPPER.key4);
             expect(actual).toEqual(expected);
         });
     });

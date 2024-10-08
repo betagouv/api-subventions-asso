@@ -29,7 +29,11 @@ const ASSOCIATIONS = [{ rna: "W123455353", siren: "123456789" }];
 import * as providerValueHelper from "$lib/helpers/providerValueHelper";
 import { isAssociation } from "$lib/resources/associations/association.helper";
 import { updateSearchHistory } from "$lib/services/searchHistory.service";
-vi.mock("$lib/helpers/providerValueHelper");
+vi.mock("$lib/helpers/providerValueHelper", () => {
+    return {
+        flattenProviderValue: vi.fn(() => ASSOCIATIONS),
+    };
+});
 
 describe("AssociationService", () => {
     const SIREN = "000000009";

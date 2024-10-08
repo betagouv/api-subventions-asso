@@ -23,7 +23,7 @@ export class ApiEntrepriseService extends ProviderCore implements EtablissementP
     isAssociationsProvider = true;
 
     HEADCOUNT_REASON = "Remonter l'effectif pour le service Data.Subvention";
-    RCS_EXTRACT_REASON = "Remonter l'extrait RCS d'une associaiton pour Data.Subvention";
+    RCS_EXTRACT_REASON = "Remonter l'extrait RCS d'une association pour Data.Subvention";
 
     private requestCache = new CacheData<unknown>(CACHE_TIMES.ONE_DAY);
 

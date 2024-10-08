@@ -8,9 +8,14 @@ const SIREN = "987654321";
 describe("AssociationCardController", () => {
     describe("getters", () => {
         describe("url", () => {
-            const simplifiedAssoWithOnlyRna = { rna: RNA, sien: null, address: {} };
-            const simplifiedAssoWithOnlySiren = { rna: null, siren: SIREN, address: {} };
-            const simplifiedAssoWithBothIdentifier = { rna: RNA, siren: SIREN, address: {} };
+            const simplifiedAssoWithOnlyRna = { rna: RNA, sien: null, address: {}, categorie_juridique: "9210" };
+            const simplifiedAssoWithOnlySiren = { rna: null, siren: SIREN, address: {}, categorie_juridique: "9210" };
+            const simplifiedAssoWithBothIdentifier = {
+                rna: RNA,
+                siren: SIREN,
+                address: {},
+                categorie_juridique: "9210",
+            };
 
             it.each`
                 simplifiedAsso                      | expectedIdentifier | identifierName
