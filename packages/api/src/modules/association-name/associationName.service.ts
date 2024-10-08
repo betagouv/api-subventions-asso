@@ -1,12 +1,11 @@
-import { SearchCodeError } from "dto";
 import uniteLegalNameService from "../providers/uniteLegalName/uniteLegal.name.service";
 import { AssociationIdentifiers } from "../../@types";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import { isRna, isSiren } from "../../shared/Validators";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
-import { BadRequestError } from "../../shared/errors/httpErrors";
 import rechercheEntreprisesService from "../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.service";
+import NotAssociationError from "../../shared/errors/NotAssociationError";
 import AssociationNameEntity from "./entities/AssociationNameEntity";
 
 export class AssociationNameService {
@@ -64,11 +63,7 @@ export class AssociationNameService {
             return acc;
         }, {} as Record<string, AssociationNameEntity>);
         const res = Object.values(mergedAssociationName);
-        if (!res.length && gotCompany)
-            throw new BadRequestError(
-                "Votre recherche pointe vers une entité qui n'est pas une association",
-                SearchCodeError.ID_NOT_ASSO,
-            );
+        if (!res.length && gotCompany) throw new NotAssociationError();
         return res;
     }
 }
