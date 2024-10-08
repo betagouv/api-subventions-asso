@@ -24,34 +24,35 @@ export default class SearchController {
         this.searchPromise.set(this.fetchAssociationFromName(name));
     }
 
-    async fetchAssociationFromName(rawName = "", page = 1) {
-        const name = rawName.trim();
+    async fetchAssociationFromName(rawInput = "", page = 1) {
+        const input = rawInput.trim();
         this.isLastSearchCompany.set(false);
         try {
-            const search = await associationService.search(name, page);
+            const search = await associationService.search(input, page);
 
-            // search is an identifier
-            if (isSiret(name) && search.total === 1) return this.gotoEstablishment(name);
-            if ((isSiren(name) || isRna(name)) && search.total === 1) {
-                return goto(`/association/${name}`, { replaceState: true });
+            // search by id with single result: we can redirect
+            if (isSiret(input) && search.total === 1) return this.gotoEstablishment(input);
+            if ((isSiren(input) || isRna(input)) && search.total === 1) {
+                return goto(`/association/${input}`, { replaceState: true });
 
-                // search is text
+                // multiple results
             } else {
                 // display alert if there are duplicates in rna-siren links
-                if (isSiren(name) || isRna(name)) {
+                if (isSiren(input) || isRna(input)) {
                     this.duplicatesFromIdentifier.set(
                         search.results
                             .map(association =>
-                                [association.rna, association.siren].find(identifier => identifier !== name),
+                                [association.rna, association.siren].find(identifier => identifier !== input),
                             )
                             .filter(identifier => identifier) as string[],
                     );
                 } else this.duplicatesFromIdentifier.set(null);
 
+                // search by name
                 this.associations.set(search);
                 this.currentPage.set(search.page);
                 // reload same page to save search in history
-                goto(`/search/${encodeQuerySearch(name)}`, { replaceState: true });
+                goto(`/search/${encodeQuerySearch(input)}`, { replaceState: true });
             }
         } catch (e) {
             if (e instanceof BadRequestError && e.data?.code === SearchCodeError.ID_NOT_ASSO)

@@ -11,13 +11,13 @@ export class RechercheEntreprisesService {
         const results: AssociationNameEntity[] = [];
         let foundCompany = false;
 
-        for (const hit of apiResults) {
-            if (!hit.nom_complet || !hit.siren) continue;
-            if (forceAsso && !associationsService.isCategoryFromAsso(hit.nature_juridique)) {
+        for (const structure of apiResults) {
+            if (!structure.nom_complet || !structure.siren) continue;
+            if (forceAsso && !associationsService.isCategoryFromAsso(structure.nature_juridique)) {
                 foundCompany = true;
                 continue;
             }
-            const dto = hit as RechercheEntreprisesResultDto & { siren: string; nom_complet: string }; // tell ts that the new typing is good
+            const dto = structure as RechercheEntreprisesResultDto & { siren: string; nom_complet: string }; // tell ts that the new typing is good
             results.push(RechercheEntreprisesAdapter.toAssociationNameEntity(dto));
         }
         if (forceAsso && !results.length && foundCompany) throw new NotAssociationError();

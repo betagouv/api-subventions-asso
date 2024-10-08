@@ -35,7 +35,6 @@ export class RechercheEntreprisesPort {
         do {
             response = await this.getSearchResult(query);
             if (!response) return results;
-            // addResults(response);
             results.push(...(response.results || []));
             page += 1;
             maxPage = response.total_pages;
