@@ -1,5 +1,5 @@
+import { AssociationIdentifiers } from "dto";
 import uniteLegalNameService from "../providers/uniteLegalName/uniteLegal.name.service";
-import { AssociationIdentifiers } from "../../@types";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import { isRna, isSiren } from "../../shared/Validators";
 import rechercheEntreprises from "../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.port";

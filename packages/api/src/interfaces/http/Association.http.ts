@@ -7,9 +7,10 @@ import {
     GetPaymentsResponseDto,
     GetDocumentsResponseDto,
     DemandeSubvention,
+    AssociationIdentifiers,
+    StructureIdentifiers,
 } from "dto";
 import { Route, Get, Controller, Tags, Security, Response, Produces } from "tsoa";
-import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
 import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
 
 import associationService from "../../modules/associations/associations.service";

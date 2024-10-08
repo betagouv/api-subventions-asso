@@ -1,10 +1,18 @@
 import * as Sentry from "@sentry/node";
-import { CommonGrantDto, Grant, DemandeSubvention, Payment, Rna, Siret } from "dto";
+import {
+    CommonGrantDto,
+    Grant,
+    DemandeSubvention,
+    Payment,
+    Rna,
+    Siret,
+    AssociationIdentifiers,
+    StructureIdentifiers,
+} from "dto";
 import { providersById } from "../providers/providers.helper";
 import { demandesSubventionsProviders, fullGrantProviders, grantProviders, paymentProviders } from "../providers";
 import DemandesSubventionsProvider from "../subventions/@types/DemandesSubventionsProvider";
 import PaymentProvider from "../payments/@types/PaymentProvider";
-import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
