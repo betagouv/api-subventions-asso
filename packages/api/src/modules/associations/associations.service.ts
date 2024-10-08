@@ -112,7 +112,7 @@ export class AssociationsService {
      */
 
     getDocuments(identifier: AssociationIdentifier) {
-        return documentsService.getDocument(identifier);
+        return documentsService.getDocuments(identifier);
     }
 }
 

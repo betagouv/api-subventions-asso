@@ -114,10 +114,10 @@ export class EtablissementHttp extends Controller {
     /**
      *
      * @summary Recherche toutes les informations des subventions d'un établissement (demandes ET versements) et en extrait un fichier csv
-     * @param identifier SIRET de l'établissement
+     * @param siret SIRET de l'établissement
      * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
      */
-    @Get("/{identifier}/grants/csv")
+    @Get("/{siret}/grants/csv")
     @Produces("text/csv")
     @Response<string>("200")
     public async getGrantsExtract(siret: SiretDto): Promise<Readable> {
