@@ -27,7 +27,8 @@ vi.mock("$lib/resources/associations/association.adapter");
 const ASSOCIATIONS = [{ rna: "W123455353", siren: "123456789" }];
 
 import * as providerValueHelper from "$lib/helpers/providerValueHelper";
-
+import { isAssociation } from "$lib/resources/associations/association.helper";
+import { updateSearchHistory } from "$lib/services/searchHistory.service";
 vi.mock("$lib/helpers/providerValueHelper", () => {
     return {
         flattenProviderValue: vi.fn(() => ASSOCIATIONS),
@@ -57,6 +58,30 @@ describe("AssociationService", () => {
             mockedAssociationPort.getByIdentifier.mockResolvedValue(ASSOCIATIONS[0]);
             await associationService.getAssociation(SIREN);
             expect(providerValueHelper.flattenProviderValue).toHaveBeenCalledTimes(1);
+        });
+
+        it("checks if is really asso", async () => {
+            // @ts-expect-error: mock
+            mockedAssociationPort.getByIdentifier.mockResolvedValue(ASSOCIATIONS[0]);
+            vi.mocked(providerValueHelper.flattenProviderValue).mockReturnValueOnce(ASSOCIATIONS[0]);
+            await associationService.getAssociation(SIREN);
+            expect(isAssociation).toHaveBeenCalledWith(ASSOCIATIONS[0]);
+        });
+
+        it("saves asso in search history if really asso", async () => {
+            // @ts-expect-error: mock
+            mockedAssociationPort.getByIdentifier.mockResolvedValue(ASSOCIATIONS[0]);
+            vi.mocked(isAssociation).mockReturnValueOnce(true);
+            await associationService.getAssociation(SIREN);
+            expect(updateSearchHistory).toHaveBeenCalled();
+        });
+
+        it("does not save in search history if not asso", async () => {
+            // @ts-expect-error: mock
+            mockedAssociationPort.getByIdentifier.mockResolvedValue(ASSOCIATIONS[0]);
+            await associationService.getAssociation(SIREN);
+            vi.mocked(isAssociation).mockReturnValueOnce(false);
+            expect(updateSearchHistory).not.toHaveBeenCalled();
         });
     });
 
