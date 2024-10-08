@@ -21,14 +21,13 @@ import * as sirenHelper from "$lib/helpers/sirenHelper";
 vi.mock("$lib/helpers/sirenHelper");
 const mockedSirenHelper = vi.mocked(sirenHelper);
 vi.mock("$lib/services/searchHistory.service");
-import * as AssociationHelper from "$lib/resources/associations/association.helper";
 vi.mock("$lib/resources/associations/association.helper");
-import * as AssociationAdapter from "$lib/resources/associations/association.adapter";
 vi.mock("$lib/resources/associations/association.adapter");
 
 const ASSOCIATIONS = [{ rna: "W123455353", siren: "123456789" }];
 
 import * as providerValueHelper from "$lib/helpers/providerValueHelper";
+
 vi.mock("$lib/helpers/providerValueHelper", () => {
     return {
         flattenProviderValue: vi.fn(() => ASSOCIATIONS),

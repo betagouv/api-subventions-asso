@@ -121,8 +121,12 @@ export class AssociationsService {
         if (await rnaSirenService.find(siren)) return true;
 
         const asso = await apiAssoService.findAssociationBySiren(siren);
-        if (!asso?.categorie_juridique?.[0]?.value) return false;
-        return LEGAL_CATEGORIES_ACCEPTED.includes(asso.categorie_juridique[0].value);
+        return this.isCategoryFromAsso(asso?.categorie_juridique?.[0]?.value);
+    }
+
+    isCategoryFromAsso(category: string | undefined): boolean {
+        if (!category) return false;
+        return LEGAL_CATEGORIES_ACCEPTED.includes(category);
     }
 
     /**
