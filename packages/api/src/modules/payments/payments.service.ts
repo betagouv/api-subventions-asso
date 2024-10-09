@@ -1,6 +1,5 @@
-import { Siren, Siret, Payment, DemandeSubvention, FonjepPayment } from "dto";
+import { Siren, Siret, Payment, DemandeSubvention, FonjepPayment, AssociationIdentifiers } from "dto";
 import { paymentProviders } from "../providers";
-import { AssociationIdentifiers } from "../../@types";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";

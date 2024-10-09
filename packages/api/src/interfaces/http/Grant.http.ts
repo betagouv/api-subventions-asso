@@ -1,7 +1,6 @@
 import { Controller, Get, Route, Tags } from "tsoa";
-import { Siret, PublishableGrantDto } from "dto";
+import { Siret, PublishableGrantDto, AssociationIdentifiers, StructureIdentifiers } from "dto";
 import openDataGrantService from "../../modules/_open-data/grant/openDataGrantService";
-import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
 
 @Route("open-data/subventions")
 @Tags("Open Data")

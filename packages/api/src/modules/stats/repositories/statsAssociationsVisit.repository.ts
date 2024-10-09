@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { AssociationIdentifiers } from "../../../@types";
+import { AssociationIdentifiers } from "dto";
 import MongoRepository from "../../../shared/MongoRepository";
 import AssociationVisitEntity from "../entities/AssociationVisitEntity";
 

@@ -1,5 +1,5 @@
+import { StructureIdentifiers } from "dto";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
-import { StructureIdentifiers } from "../../@types";
 import { isRna, isSiren, isSiret } from "../Validators";
 
 export const getIdentifierType = (id: StructureIdentifiers) => {

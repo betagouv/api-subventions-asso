@@ -16,6 +16,11 @@
         "resolveJsonModule": true,
         "noImplicitAny": false
     },
-    "include": ["src/**/*", "tests/**/*"],
+    "include": [
+        "src/**/*",
+        "tests/**/*",
+        "../dto/shared/AssociationIdentifiers.ts",
+        "../dto/shared/StructureIdentifiers.ts"
+    ],
     "exclude": ["node_modules"]
 }

@@ -1,7 +1,6 @@
-import { Siret } from "dto";
+import { Siret, AssociationIdentifiers } from "dto";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
-import { AssociationIdentifiers } from "../../@types";
 import Flux from "../../shared/Flux";
 import StructureIdentifiersError from "../../shared/errors/StructureIdentifierError";
 import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
