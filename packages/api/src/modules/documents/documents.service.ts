@@ -1,11 +1,10 @@
 import fs from "fs";
 import childProcess from "child_process";
 import { IncomingMessage } from "http";
-import { Rna, Siren, Siret, DocumentDto, DocumentRequestDto } from "dto";
+import { Rna, Siren, Siret, DocumentDto, DocumentRequestDto, StructureIdentifiers } from "dto";
 import * as Sentry from "@sentry/node";
 import mime = require("mime-types");
 import providers from "../providers";
-import { StructureIdentifiers } from "../../@types";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import { ProviderRequestService } from "../provider-request/providerRequest.service";
