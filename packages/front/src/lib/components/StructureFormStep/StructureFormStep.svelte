@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import StructureFormStepController from "./StructureFormStep.controller";
     import Checkbox from "$lib/dsfr/Checkbox.svelte";
     import Input from "$lib/dsfr/Input.svelte";
@@ -11,6 +11,7 @@
     export let context = {};
 
     const ctrl = new StructureFormStepController();
+    // @ts-expect-error: TODO - Why do we accept context as empty object ?
     $: ctrl.onUpdateContext(context, values);
 
     const { errors, subStep } = ctrl;

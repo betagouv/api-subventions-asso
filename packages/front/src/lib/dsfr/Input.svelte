@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { nanoid } from "nanoid";
 
     export let label;
@@ -10,8 +10,8 @@
     export let name = `input-${id}`;
     export let autocomplete = "false";
     export let placeholder = "";
-    export let error = false;
-    export let errorMsg = null;
+    export let error = "";
+    export let errorMsg: string | null = null;
     export let hint = "";
 
     let spellcheck = true;
@@ -48,8 +48,8 @@
         {autocomplete}
         {placeholder}
         bind:value
-        required={required ? "required" : undefined}
-        disabled={disabled ? "disabled" : undefined}
+        {required}
+        {disabled}
         use:typeAction
         aria-invalid={errorMsg ? "true" : undefined}
         aria-errormessage={errorMsg ? descErrorElement : undefined}

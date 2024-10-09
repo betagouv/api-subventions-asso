@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import Input from "$lib/dsfr/Input.svelte";
     import RegionField from "$lib/components/StructureFormStep/RegionField/RegionField.svelte";
 

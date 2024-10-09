@@ -44,6 +44,7 @@ export default class AssociationEntity {
     etablissements: ({ demandes_subventions: DemandeSubvention[] | null } & Etablissement)[] | null;
     extrait_rcs: ExtraitRcsDto;
     bodacc: BodaccRecordDto;
+    rup: boolean;
 
     constructor({
         rna,
@@ -71,6 +72,7 @@ export default class AssociationEntity {
         etablissements,
         extrait_rcs,
         bodacc,
+        rup,
     }) {
         this.rna = rna;
         this.siren = siren;
@@ -97,5 +99,6 @@ export default class AssociationEntity {
         this.etablissements = etablissements;
         this.extrait_rcs = extrait_rcs;
         this.bodacc = bodacc;
+        this.rup = rup;
     }
 }
