@@ -13,6 +13,8 @@ import { ReadStream } from "node:fs";
 import Siren from "../../valueObjects/Siren";
 import Rna from "../../valueObjects/Rna";
 import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
+import Siret from "../../valueObjects/Siret";
+import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
 
 jest.mock("./document.adapter");
 jest.mock("fs");
@@ -24,6 +26,7 @@ describe("Documents Service", () => {
     const RNA = new Rna("W000000000");
 
     const ASSOCIATION_ID = AssociationIdentifier.fromSirenAndRna(SIREN, RNA);
+    const ESTABLISHMENT_ID = EstablishmentIdentifier.fromSiret(SIRET, ASSOCIATION_ID);
 
     describe("getDocumentBySiren", () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -38,7 +41,7 @@ describe("Documents Service", () => {
 
             mockAggregateDocuments.mockImplementationOnce(() => Promise.resolve(expected));
 
-            const actual = await documentsService.getDocument(ASSOCIATION_ID);
+            const actual = await documentsService.getDocuments(ASSOCIATION_ID);
 
             expect(expected).toEqual(actual);
         });
@@ -46,7 +49,7 @@ describe("Documents Service", () => {
         it("should call aggregate with SIREN", async () => {
             mockAggregateDocuments.mockImplementationOnce(() => Promise.resolve([]));
 
-            await documentsService.getDocument(ASSOCIATION_ID);
+            await documentsService.getDocuments(ASSOCIATION_ID);
 
             const actual = mockAggregateDocuments;
 
@@ -305,19 +308,14 @@ describe("Documents Service", () => {
             expect(aggregateDocumentsSpy).toHaveBeenCalledWith(ASSOCIATION_ID);
         });
 
-        it("should throw an error when identifier type is unknown", async () => {
-            await expect(documentsService.getDocumentsFilesByIdentifier("SIRET")).rejects.toThrow();
-        });
-
         it("should throw an error no documents found", async () => {
-            const SIRET = "12345678912345";
             aggregateDocumentsSpy.mockResolvedValueOnce([]);
-            await expect(documentsService.getDocumentsFilesByIdentifier(SIRET)).rejects.toThrow();
+            await expect(documentsService.getDocumentsFilesByIdentifier(ESTABLISHMENT_ID)).rejects.toThrow();
         });
 
         it("should adapt document", async () => {
             aggregateDocumentsSpy.mockResolvedValueOnce([FAKE_DOCUMENT, FAKE_DOCUMENT]);
-            await documentsService.getDocumentsFilesByIdentifier(SIRET);
+            await documentsService.getDocumentsFilesByIdentifier(ESTABLISHMENT_ID);
             expect(documentToDocumentRequest).toHaveBeenCalledTimes(2);
         });
 
@@ -325,7 +323,7 @@ describe("Documents Service", () => {
             const ADAPTED = "ADAPTED";
             aggregateDocumentsSpy.mockResolvedValueOnce([FAKE_DOCUMENT, FAKE_DOCUMENT]);
             jest.mocked(documentToDocumentRequest).mockReturnValue(ADAPTED as unknown as DocumentRequestDto);
-            await documentsService.getDocumentsFilesByIdentifier(SIRET);
+            await documentsService.getDocumentsFilesByIdentifier(ESTABLISHMENT_ID);
             jest.mocked(documentToDocumentRequest).mockRestore();
             expect(getRequestedDocumentsFilesSpy).toBeCalledWith([ADAPTED, ADAPTED], SIRET.value);
         });

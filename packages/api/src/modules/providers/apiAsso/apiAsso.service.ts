@@ -64,7 +64,7 @@ export class ApiAssoService
     }
 
     public async findRnaSirenByIdentifiers(identifier: AssociationIdentifier) {
-        const value = identifier.siren ? identifier.siren.value : identifier.rna ? identifier.rna.value : null;
+        const value = identifier.getValue(["siren", "rna"]);
 
         if (!value) return { rna: undefined, siren: undefined };
 
@@ -229,11 +229,7 @@ export class ApiAssoService
     }
 
     private async fetchDocuments(identifier: AssociationIdentifier): Promise<DocumentsDto | undefined> {
-        const identifierValue = identifier.siren
-            ? identifier.siren.value
-            : identifier.rna
-            ? identifier.rna.value
-            : null;
+        const identifierValue = identifier.getValue(["siren", "rna"]);
 
         if (!identifierValue) {
             throw new Error("Identifier not supported for documents fetching.");

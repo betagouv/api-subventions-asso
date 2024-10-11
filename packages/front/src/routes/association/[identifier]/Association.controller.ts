@@ -32,6 +32,7 @@ export class AssociationController {
         this.associationPromise = associationService.getAssociation(identifier).then(async asso => {
             if (!asso) return asso;
             currentIdentifiers.set([
+                // Keep only the current identifier because we are sure is not a duplicate identifier (case for "Doublon rna siren")
                 {
                     rna: asso.rna === identifier ? identifier : undefined,
                     siren: asso.siren === identifier ? identifier : undefined,

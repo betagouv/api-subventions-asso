@@ -1,4 +1,4 @@
-import type { RnaSirenResponseDto, SirenDto, SiretDto } from "dto";
+import type { RnaSirenResponseDto, SiretDto } from "dto";
 import { getSiegeSiret } from "$lib/resources/associations/association.helper";
 import Store, { derived, ReadStore } from "$lib/core/Store";
 import associationService from "$lib/resources/associations/association.service";
@@ -40,7 +40,6 @@ export class DocumentsController {
     public downloadBtnLabel: ReadStore<string>;
     private allFlatDocs: DocumentEntity[];
     private headSiret: SiretDto;
-    private assoIdentifier: SiretDto | undefined;
 
     constructor(
         public resourceType: ResourceType,
@@ -52,7 +51,7 @@ export class DocumentsController {
         this.identifier = resource?.rna || resource?.siren || resource?.siret;
         this.uniqueAssociationIdentifier = currentAssociationIdentifiers.length
             ? getUniqueIdentifier(currentAssociationIdentifiers)
-            : this.identifier;
+            : currentAssociation.value?.siren || currentAssociation.value?.rna;
         this.resourceType = resourceType;
         this.documentsPromise = new Store(returnInfinitePromise());
         this.zipPromise = new Store(Promise.resolve(null));
@@ -75,7 +74,6 @@ export class DocumentsController {
 
         const association = currentAssociation.value;
         this.headSiret = getSiegeSiret(association);
-        this.assoIdentifier = association?.siren || association?.rna;
     }
 
     get resourceNameWithDemonstrative() {
@@ -98,7 +96,7 @@ export class DocumentsController {
             ? establishmentService.getDocuments(secondarySiret)
             : Promise.resolve([]);
         const assoDocsPromise = associationService
-            .getDocuments(this.assoIdentifier)
+            .getDocuments(this.uniqueAssociationIdentifier)
             .then(docs => this._filterAssoDocs(docs, secondarySiret || this.headSiret));
         const [estabDocs, assoDocs] = await Promise.all([estabDocsPromise, assoDocsPromise]);
         return this._removeDuplicates([...estabDocs, ...assoDocs]);

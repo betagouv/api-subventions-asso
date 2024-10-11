@@ -1,6 +1,9 @@
 import { Controller, Get, Route, Tags } from "tsoa";
 import { SiretDto, PublishableGrantDto, AssociationIdentifierDto, StructureIdentifierDto } from "dto";
 import openDataGrantService from "../../modules/_open-data/grant/openDataGrantService";
+import establishmentIdentifierService from "../../modules/establishment-identifier/establishment-identifier.service";
+import associationIdentifierService from "../../modules/association-identifier/association-identifier.service";
+import Siret from "../../valueObjects/Siret";
 
 @Route("open-data/subventions")
 @Tags("Open Data")
@@ -13,7 +16,8 @@ export class GrantHttp extends Controller {
      */
     @Get("/etablissement/{siret}")
     async getOpenDataGrantsByEstablishment(siret: SiretDto): Promise<PublishableGrantDto[]> {
-        return await openDataGrantService.getByStructure(siret);
+        const identifier = await establishmentIdentifierService.getEstablishmentIdentifiers(siret);
+        return await openDataGrantService.getByStructure(identifier);
     }
 
     /**
@@ -24,7 +28,9 @@ export class GrantHttp extends Controller {
      */
     @Get("/association/{siren_ou_rna}")
     async getOpenDataGrantsByAssociation(siren_ou_rna: AssociationIdentifierDto): Promise<PublishableGrantDto[]> {
-        return await openDataGrantService.getByStructure(siren_ou_rna);
+        const associationIdentifiers = await associationIdentifierService.getOneAssociationIdentifier(siren_ou_rna);
+
+        return await openDataGrantService.getByStructure(associationIdentifiers);
     }
 
     /**
@@ -35,6 +41,9 @@ export class GrantHttp extends Controller {
      */
     @Get("/structure/{siren_ou_siret_ou_rna}")
     async getOpenDataGrantsByStructure(siren_ou_siret_ou_rna: StructureIdentifierDto): Promise<PublishableGrantDto[]> {
-        return await openDataGrantService.getByStructure(siren_ou_siret_ou_rna);
+        const identifier = Siret.isSiret(siren_ou_siret_ou_rna)
+            ? await establishmentIdentifierService.getEstablishmentIdentifiers(siren_ou_siret_ou_rna)
+            : await associationIdentifierService.getOneAssociationIdentifier(siren_ou_siret_ou_rna);
+        return await openDataGrantService.getByStructure(identifier);
     }
 }

@@ -38,4 +38,11 @@ export default class AssociationIdentifier {
         if (this.siren) return this.siren.value;
         throw new Error("No rna or siren found in AssociationIdentifier");
     }
+
+    getValue(order: ("rna" | "siren")[] = ["rna", "siren"]): string | null {
+        for (const key of order) {
+            if (this[key]) return (this[key] as Siren | Rna).value;
+        }
+        return null;
+    }
 }

@@ -24,14 +24,21 @@ export function isIdentifier(identifier) {
 }
 
 export function getUniqueIdentifier(identifiers) {
+    /**
+     * Here we are trying to find the unique identifier in the case of a multiple rna or a multiple siren.
+     *
+     * For example, in the case of a duplicate rna (2 Rna for a Siret) we are looking to recover the rna that will allow us
+     * to be sure that we are addressing the correct structure.
+     */
     const { unique } = identifiers.reduce(
         (acc, identiferRnaSiren) => {
-            if (acc.multiple.has(identiferRnaSiren.rna) || acc.multiple.has(identiferRnaSiren.siren)) {
+            if (Object.values(identiferRnaSiren).find(value => acc.multiple.has(value))) {
                 return acc;
             }
 
             for (const identifierName in identiferRnaSiren) {
-                if (!identiferRnaSiren[identifierName]) continue;
+                // Separate identifier used
+
                 if (acc.unique.has(identiferRnaSiren[identifierName])) {
                     acc.multiple.add(identiferRnaSiren[identifierName]);
                     acc.unique.delete(identiferRnaSiren[identifierName]);

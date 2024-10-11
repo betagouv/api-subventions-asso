@@ -24,7 +24,7 @@ export default class ScdlCli {
         if (!siret) throw Error("producer SIRET is mandatory");
         if (!Siret.isSiret(siret)) throw Error("SIRET is not valid");
         if (await scdlService.getProducer(slug)) throw new Error("Producer already exists");
-        await scdlService.createProducer({ slug, name, siret: siret, lastUpdate: new Date() });
+        await scdlService.createProducer({ slug, name, siret, lastUpdate: new Date() });
     }
 
     public async parseXls(
