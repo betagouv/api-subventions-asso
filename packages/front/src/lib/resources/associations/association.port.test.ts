@@ -20,12 +20,8 @@ describe("AssociationPort", () => {
         const mockGetResource = vi.spyOn(associationPort, "getResource");
 
         beforeAll(() => {
-            // @ts-expect-error: ok
+            // @ts-expect-error: mock empty axios response
             mockGetResource.mockResolvedValue({ data: {} });
-        });
-
-        afterEach(() => {
-            mockGetResource.mockReset();
         });
 
         afterAll(() => {

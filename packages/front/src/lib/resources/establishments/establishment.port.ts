@@ -1,4 +1,4 @@
-import type { DocumentDto, Grant, Siret } from "dto";
+import type { DocumentDto, GetGrantsResponseDto, Grant, Siret } from "dto";
 import requestsService from "$lib/services/requests.service";
 
 class EstablishmentPort {
@@ -20,7 +20,7 @@ class EstablishmentPort {
     }
 
     async getGrants(siret: Siret): Promise<Grant[]> {
-        return (await this.getResource(siret, "grants"))?.data?.subventions;
+        return ((await this.getResource(siret, "grants")).data as GetGrantsResponseDto).subventions;
     }
 }
 
