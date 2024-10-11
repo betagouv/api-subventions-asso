@@ -1,41 +1,41 @@
+import { FindCursor, WithId } from "mongodb";
 import paymentFlatPort from "../../../dataProviders/db/paymentFlat/paymentFlat.port";
 import dataBretagneService from "../../providers/dataBretagne/dataBretagne.service";
 import chorusService from "../../providers/chorus/chorus.service";
-import configurationsService, { CONFIGURATION_NAMES } from "../../configurations/configurations.service";
+import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
+import ChorusLineEntity from "../../providers/chorus/entities/ChorusLineEntity";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 
 export class PaymentFlatService {
     private async getAllDataBretagneData() {
         const ministries = await dataBretagneService.getMinistriesRecord();
-
         const programs = await dataBretagneService.findProgramsRecord();
         const domainesFonct = await dataBretagneService.getDomaineFonctRecord();
         const refsProgrammation = await dataBretagneService.getRefProgrammationRecord();
         return { programs, ministries, domainesFonct, refsProgrammation };
     }
 
-    public async getChorusLastUpdateImported() {
-        const lastChorusUpdateImported = await configurationsService.getChorusLastUpdateImportedToPaymentFlat();
-        return !lastChorusUpdateImported ? new Date("1970-01-01") : lastChorusUpdateImported.data; // default date to 1970-01-01 allow to take into account all data
-    }
-
-    public async setChorusLastUpdateImported(lastUpdateImported: Date) {
-        await configurationsService.setChorusLastUpdateImportedToPaymentFlat(lastUpdateImported);
-    }
-
-    public async updatePaymentsFlatCollection() {
-        const { programs, ministries, domainesFonct, refsProgrammation } = await this.getAllDataBretagneData();
-
-        const lastChorusUpdateImported = await this.getChorusLastUpdateImported();
-        const chorusCursor = chorusService.cursorFindData(lastChorusUpdateImported);
+    public async toPaymentFlatChorusEntities(
+        programs,
+        ministries,
+        domainesFonct,
+        refsProgrammation,
+        exerciceBudgetaire?: number,
+    ) {
+        /*
+        from the chorus collection, create a list of PaymentFlatEntity 
+        by aggregating NotAggregatedChorusPaymentFlatEntity having the same uniqueId
+        */
+        let chorusCursor: FindCursor<WithId<ChorusLineEntity>>;
+        if (exerciceBudgetaire) {
+            chorusCursor = chorusService.cursorFindData(exerciceBudgetaire);
+        } else {
+            chorusCursor = chorusService.cursorFindData();
+        }
         let document = await chorusCursor.next();
-        let newChorusLastUpdate = lastChorusUpdateImported;
-        const promises: Promise<void>[] = [];
+        const entities: Record<string, PaymentFlatEntity> = {};
         while (document != null) {
-            if (document.updated > newChorusLastUpdate) {
-                newChorusLastUpdate = document.updated;
-            }
-            const paymentFlatEntity = PaymentFlatAdapter.toPaymentFlatEntity(
+            const paymentFlatEntity = PaymentFlatAdapter.toNotAggregatedChorusPaymentFlatEntity(
                 document,
                 programs,
                 ministries,
@@ -43,12 +43,33 @@ export class PaymentFlatService {
                 refsProgrammation,
             );
 
-            promises.push(paymentFlatPort.upsertOne(paymentFlatEntity));
+            if (entities[paymentFlatEntity.uniqueId]) {
+                entities[paymentFlatEntity.uniqueId].amount += paymentFlatEntity.amount;
+            } else {
+                entities[paymentFlatEntity.uniqueId] = paymentFlatEntity;
+            }
 
             document = await chorusCursor.next();
         }
 
-        promises.push(this.setChorusLastUpdateImported(newChorusLastUpdate));
+        return Object.values(entities);
+    }
+
+    public async updatePaymentsFlatCollection(exerciceBudgetaire?: number) {
+        const { programs, ministries, domainesFonct, refsProgrammation } = await this.getAllDataBretagneData();
+        const chorusEntities: PaymentFlatEntity[] = await this.toPaymentFlatChorusEntities(
+            programs,
+            ministries,
+            domainesFonct,
+            refsProgrammation,
+            exerciceBudgetaire,
+        );
+
+        const promises: Promise<void>[] = [];
+
+        const entityPromises = chorusEntities.map(entity => paymentFlatPort.upsertOne(entity));
+        promises.push(...entityPromises);
+
         await Promise.all(promises);
     }
 }

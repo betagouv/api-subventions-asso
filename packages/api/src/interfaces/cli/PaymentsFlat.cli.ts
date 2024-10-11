@@ -8,8 +8,13 @@ import CliController from "../../shared/CliController";
 export default class PaymentsFlatCli extends CliController {
     static cmdName = "payments-flat";
 
-    async resync() {
-        this.logger.logIC("Resyncing payments flat collection");
+    async resyncExercice(exerciceBudgetaire: number) {
+        this.logger.logIC(`Resync payment flat collection for exercice ${exerciceBudgetaire}`);
+        await paymentsFlatService.updatePaymentsFlatCollection(exerciceBudgetaire);
+    }
+
+    async resyncAll() {
+        this.logger.logIC("Create or resync all payment flat collection");
         await paymentsFlatService.updatePaymentsFlatCollection();
     }
 }

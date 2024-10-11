@@ -81,13 +81,10 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
         return this.collection.find(query, projection);
     }
 
-    public cursorFindData(updateThreshold?: Date) {
-        /*updateThreshold is used to get all the objects that have been
-         updated after the updateThreshold
-        */
-        if (!updateThreshold) {
+    public cursorFindData(exerciceBudgetaire?: number) {
+        if (!exerciceBudgetaire) {
             return this.cursorFind({});
-        } else return this.cursorFind({ updated: { $gt: updateThreshold } });
+        } else return this.cursorFind({ exercice: { exerciceBudgetaire } });
     }
 
     async createIndexes() {

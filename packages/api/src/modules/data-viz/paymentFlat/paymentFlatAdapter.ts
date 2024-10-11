@@ -8,7 +8,12 @@ import IChorusIndexedInformations from "../../providers/chorus/@types/IChorusInd
 import ChorusLineEntity from "../../providers/chorus/entities/ChorusLineEntity";
 
 export default class PaymentFlatAdapter {
-    static toPaymentFlatEntity(
+    static toNotAggregatedChorusPaymentFlatEntity(
+        /*
+        create a PaymentFlatEntity from a ChorusLineEntity without
+         taking into account the aggregation of the data
+        */
+
         chorusDocument: ChorusLineEntity,
         programs: Record<string, StateBudgetProgramEntity>,
         ministries: Record<string, MinistryEntity>,
@@ -31,8 +36,13 @@ export default class PaymentFlatAdapter {
             refsProgrammation,
         );
 
+        const idVersement = `${chorusDocument.indexedInformations.siret}-${chorusDocument.indexedInformations.ej}-${chorusDocument.indexedInformations.exercice}`;
+        const uniqueId = `${idVersement}-${programCode}-${actionCode}-${activityCode}`;
+
         return new PaymentFlatEntity(
-            chorusDocument.uniqueId, // uniqueId,
+            uniqueId, // uniqueId,
+            idVersement, // idVersement,
+            chorusDocument.indexedInformations.exercice, // exerciceBudget
             chorusDocument.indexedInformations.siret, // siret,
             siretToSiren(chorusDocument.indexedInformations.siret), // siren,
             chorusDocument.indexedInformations.amount, // amount,
