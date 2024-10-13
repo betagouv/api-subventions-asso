@@ -1,5 +1,7 @@
+import { Siret } from "dto";
 import { StructureTitleController } from "./StructureTitle.controller";
 import * as associationHelper from "$lib/resources/associations/association.helper";
+import AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
 
 describe("StructureTitleController", () => {
     const ASSO = {
@@ -9,16 +11,19 @@ describe("StructureTitleController", () => {
         denomination_siren: "nom_siren",
         nic_siege: "00000",
         rup: true,
-    };
-    const ETAB_SIRET = "10000000000000";
+    } as AssociationEntity;
+    const ETAB_SIRET: Siret = "10000000000000";
     const controllerAsso = new StructureTitleController(ASSO);
     const controllerEtab = new StructureTitleController(ASSO, ETAB_SIRET);
     const mockBuildSiret = vi.spyOn(associationHelper, "getSiegeSiret");
 
-    beforeAll(() => mockBuildSiret.mockReturnValue(ETAB_SIRET));
+    beforeAll(() => {
+        mockBuildSiret.mockReturnValue(ETAB_SIRET);
+    });
 
     describe("specific cases with asso", () => {
         it("should set rup to false if undefined", () => {
+            // @ts-expect-error: edge case
             const controller = new StructureTitleController({ ...ASSO, rup: undefined });
             const expected = false;
             const actual = controller.rup;
@@ -99,7 +104,7 @@ describe("StructureTitleController", () => {
 
     // IDENTIFIERS
     it("hyphens unknown identifiers", () => {
-        const controller = new StructureTitleController({ denomination_rna: "nom" });
+        const controller = new StructureTitleController({ denomination_rna: "nom" } as AssociationEntity);
         const expected = { rna: "-", siren: "-" };
         const actual = { rna: controller.rna, siren: controller.siren };
         expect(actual).toEqual(expected);
