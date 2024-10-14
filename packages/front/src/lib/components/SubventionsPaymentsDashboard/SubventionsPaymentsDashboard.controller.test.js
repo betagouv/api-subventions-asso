@@ -244,12 +244,81 @@ describe("SubventionsPaymentsDashboardController", () => {
         });
     });
 
-    // eslint-disable-next-line vitest/no-commented-out-tests
-    /* TODO
     describe("download()", () => {
+        const mockExtractPaymentHeaders = vi.spyOn(PaymentTableController, "extractHeaders");
+        const mockExtractPaymentRows = vi.spyOn(PaymentTableController, "extractRows");
+        const mockExtractSubventionHeaders = vi.spyOn(SubventionTableController, "extractHeaders");
+        const mockExtractSubventionRows = vi.spyOn(SubventionTableController, "extractRows");
 
+        const spys = [
+            mockExtractPaymentHeaders,
+            mockExtractPaymentRows,
+            mockExtractSubventionHeaders,
+            mockExtractSubventionRows,
+        ];
+
+        let ctrl;
+
+        const ASSOCIATION_HEADERS = ["Nom de l'association", "Rna", "Adresse de l'établissement", "Siret", "Exercice"];
+        const ASSOCIATION_DATA = ["ASSO_NAME", "ASSO_RNA"];
+        const ESTABLISHMENT_DATA = ["ESTABLISHMENT_ADDRESS", "ESTABLISHMENT_SIRET", "ESTABLISHMENT_EXERCICE"];
+        const SUBVENTION_HEADERS = ["SUBVENTION_HEADER"];
+        const SUBVENTION_ROWS_A = ["SERVICE INST. A", "DISPOSITIF A"];
+        const SUBVENTION_ROWS_B = ["SERVICE INST. B", "DISPOSITIF B"];
+        const VERSEMENT_HEADERS = ["VERSEMENT_HEADER"];
+        const VERSEMENT_ROWS_A = ["CENTRE FINANCIER A"];
+        const VERSEMENT_ROWS_B = ["CENTRE FINANCIER B"];
+
+        beforeEach(() => {
+            ctrl = new SubventionsPaymentsDashboardController(SIRET);
+            vi.spyOn(ctrl, "_buildAssociationCsvData").mockReturnValue(ASSOCIATION_DATA);
+            vi.spyOn(ctrl, "_buildEtablissementAndExerciceCsvData").mockReturnValue(ESTABLISHMENT_DATA);
+            mockExtractSubventionHeaders.mockImplementation(vi.fn(() => SUBVENTION_HEADERS));
+            mockExtractSubventionRows.mockImplementation(vi.fn(() => [SUBVENTION_ROWS_A, SUBVENTION_ROWS_B]));
+            mockExtractPaymentHeaders.mockImplementation(vi.fn(() => VERSEMENT_HEADERS));
+            mockExtractPaymentRows.mockImplementation(vi.fn(() => [VERSEMENT_ROWS_A, VERSEMENT_ROWS_B]));
+        });
+        afterEach(() => spys.forEach(spy => spy.mockClear()));
+
+        it.each`
+            mock
+            ${mockExtractPaymentHeaders}
+            ${mockExtractPaymentRows}
+            ${mockExtractSubventionHeaders}
+            ${mockExtractSubventionRows}
+        `("should call extract methods", ({ mock }) => {
+            ctrl.download();
+            expect(mock).toHaveBeenCalledTimes(1);
+        });
+
+        it("should call buildCsv()", () => {
+            ctrl.download();
+            expect(csvHelper.buildCsv).toHaveBeenCalledWith(
+                [...ASSOCIATION_HEADERS, ...SUBVENTION_HEADERS, ...VERSEMENT_HEADERS],
+                [
+                    [...ASSOCIATION_DATA, ...ESTABLISHMENT_DATA, ...SUBVENTION_ROWS_A, ...VERSEMENT_ROWS_A],
+                    [...ASSOCIATION_DATA, ...ESTABLISHMENT_DATA, ...SUBVENTION_ROWS_B, ...VERSEMENT_ROWS_B],
+                ],
+            );
+        });
+
+        it("should increment assocation extract data", () => {
+            identifierHelper.isSiret.mockImplementationOnce(() => false);
+            ctrl.download();
+            expect(associationService.incExtractData).toHaveBeenCalledTimes(1);
+        });
+
+        it("should increment establishment extract data", () => {
+            identifierHelper.isSiret.mockImplementationOnce(() => true);
+            ctrl.download();
+            expect(establishmentService.incExtractData).toHaveBeenCalledTimes(1);
+        });
+
+        it("should call downloadCsv()", () => {
+            ctrl.download();
+            expect(csvHelper.buildCsv).toHaveBeenCalledTimes(1);
+        });
     });
-     */
 
     describe("_filterElementsBySelectedExercice", () => {
         it("should filter elements with year is 2021", () => {
