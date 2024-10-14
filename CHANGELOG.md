@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.56.1](https://github.com/betagouv/api-subventions-asso/compare/v0.56.0...v0.56.1) (2024-10-14)
+
+### Bug Fixes
+
+-   **api:** comprehend new osiris paths ([#2754](https://github.com/betagouv/api-subventions-asso/issues/2754)) ([dcb3b91](https://github.com/betagouv/api-subventions-asso/commit/dcb3b913619ecc3fea872aca184dc4d27474875b))
+-   **front:** display payments if no application info ([#2739](https://github.com/betagouv/api-subventions-asso/issues/2739)) ([0e1ebc6](https://github.com/betagouv/api-subventions-asso/commit/0e1ebc6322246730d384acb6c7dc0d9fa13e83eb))
+
+### Reverts
+
+-   Revert "feat(front, api): #2413 front extracts csv from api (#2613)" ([98ccfbe](https://github.com/betagouv/api-subventions-asso/commit/98ccfbe15f201114b6901e30209c9dca03e344bf)), closes [#2413](https://github.com/betagouv/api-subventions-asso/issues/2413) [#2613](https://github.com/betagouv/api-subventions-asso/issues/2613)
+
 # [0.56.0](https://github.com/betagouv/api-subventions-asso/compare/v0.55.0...v0.56.0) (2024-10-07)
 
 ### Bug Fixes
