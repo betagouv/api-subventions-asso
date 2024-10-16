@@ -1,4 +1,4 @@
-import { AssociationIdentifiers } from "../../../@types";
+import { AssociationIdentifiers } from "dto";
 import AssociationVisitEntity from "../entities/AssociationVisitEntity";
 
 export default interface GroupAssociationVisits {

@@ -1,25 +1,29 @@
-import type { Association, DocumentDto, PaginatedAssociationNameDto } from "dto";
+import type { Association, DocumentDto, Grant, PaginatedAssociationNameDto, AssociationIdentifiers } from "dto";
 import requestsService from "$lib/services/requests.service";
 
 class AssociationPort {
+    getResource(identifier: AssociationIdentifiers, resource?: string) {
+        return requestsService.get(`/association/${identifier}${resource ? "/" + resource : ""}`);
+    }
+
     incExtractData(identifier) {
-        const path = `/association/${identifier}/extract-data`;
-        requestsService.get(path).catch(() => null);
+        this.getResource(identifier, "extract-data").catch(() => null);
     }
 
-    async getByIdentifier(identifier): Promise<Association | undefined> {
-        const path = `/association/${identifier}`;
-        return (await requestsService.get(path))?.data?.association;
+    async getByIdentifier(identifier: AssociationIdentifiers): Promise<Association | undefined> {
+        return (await this.getResource(identifier))?.data?.association;
     }
 
-    async getEstablishments(identifier) {
-        const path = `/association/${identifier}/etablissements`;
-        return (await requestsService.get(path))?.data?.etablissements;
+    async getEstablishments(identifier: AssociationIdentifiers) {
+        return (await this.getResource(identifier, "etablissements"))?.data?.etablissements;
     }
 
-    async getDocuments(identifier): Promise<DocumentDto[]> {
-        const path = `association/${identifier}/documents`;
-        return (await requestsService.get(path))?.data?.documents;
+    async getGrants(identifier: AssociationIdentifiers): Promise<Grant[]> {
+        return (await this.getResource(identifier, "grants"))?.data?.subventions;
+    }
+
+    async getDocuments(identifier: AssociationIdentifiers): Promise<DocumentDto[]> {
+        return (await this.getResource(identifier, "documents"))?.data?.documents;
     }
 
     async search(lookup: string, page = 1) {

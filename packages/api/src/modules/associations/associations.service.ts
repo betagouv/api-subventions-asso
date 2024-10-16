@@ -1,8 +1,8 @@
-import { ProviderValues, Association, Siret, Rna, Siren } from "dto";
+import { ProviderValues, Association, Siret, Rna, Siren, AssociationIdentifiers, StructureIdentifiers } from "dto";
 
 import * as Sentry from "@sentry/node";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
-import { AssociationIdentifiers, DefaultObject, StructureIdentifiers } from "../../@types";
+import { DefaultObject } from "../../@types";
 
 import providers from "../providers";
 import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";

@@ -1,6 +1,5 @@
-import { Grant, SimplifiedEtablissement } from "dto";
+import { Grant, SimplifiedEtablissement, AssociationIdentifiers, StructureIdentifiers } from "dto";
 import csvStringifier = require("csv-stringify/sync");
-import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
 import associationsService from "../associations/associations.service";
 import paymentService from "../payments/payments.service";
 import { BadRequestError } from "../../shared/errors/httpErrors";
