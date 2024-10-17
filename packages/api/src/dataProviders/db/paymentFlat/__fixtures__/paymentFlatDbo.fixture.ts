@@ -4,6 +4,8 @@ import paymentFlatDbo from "../PaymentFlatDbo";
 export const PAYMENT_FLAT_DBO: paymentFlatDbo = {
     _id: new ObjectId(),
     uniqueId: "12345678901234",
+    exerciceBudgetaire: 2023,
+    idVersement: "id_versement",
     siret: "12345678901234",
     siren: "123456789",
     montant: 1000,
@@ -24,6 +26,8 @@ export const PAYMENT_FLAT_DBO: paymentFlatDbo = {
 export const PAYMENT_FLAT_DBO_WITH_NULLS: paymentFlatDbo = {
     _id: new ObjectId(),
     uniqueId: "12345678901234",
+    exerciceBudgetaire: 2023,
+    idVersement: "id_versement",
     siret: "12345678901234",
     siren: "123456789",
     montant: 1000,

@@ -9,8 +9,18 @@ describe("PaymentsFlatCli", () => {
         paymentsFlatCli = new PaymentsFlatCli();
     });
 
-    it("should call updatePaymentsFlatCollection", async () => {
-        await paymentsFlatCli.resync();
-        expect(paymentsFlatService.updatePaymentsFlatCollection).toHaveBeenCalledTimes(1);
+    describe("resyncExercice", () => {
+        it("should call updatePaymentsFlatCollection with the given exerciceBudgetaire", async () => {
+            const exerciceBudgetaire = 2022;
+            await paymentsFlatCli.resyncExercice(exerciceBudgetaire);
+            expect(paymentsFlatService.updatePaymentsFlatCollection).toHaveBeenCalledWith(exerciceBudgetaire);
+        });
+    });
+
+    describe("resyncAll", () => {
+        it("should call updatePaymentsFlatCollection", async () => {
+            await paymentsFlatCli.resyncAll();
+            expect(paymentsFlatService.updatePaymentsFlatCollection).toHaveBeenCalledTimes(1);
+        });
     });
 });
