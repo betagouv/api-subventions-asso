@@ -4,7 +4,13 @@ import { ENTITIES } from "../../src/modules/providers/chorus/__fixtures__/Chorus
 export const CHORUS_LAST_UPDATE = new Date("2022-03-12");
 
 export const MOCK_DOCUMENTS: ChorusLineEntity[] = [
-    { ...ENTITIES[0], indexedInformations: { ...ENTITIES[0].indexedInformations, exercice: 2022 } },
+    // je change le siret pour que je puisse ordonner le snapshot par siret
+    // je change l'exercice du première document pour qu'il ne soit pas enregistré lors de resyncExercice(2023)
+    {
+        ...ENTITIES[0],
+        indexedInformations: { ...ENTITIES[0].indexedInformations, siret: "123456789013", exercice: 2022 },
+    },
+    // je mets des entités avec le même uniqueId pour tester le groupement
     {
         ...ENTITIES[1],
         indexedInformations: {
@@ -25,7 +31,7 @@ export const MOCK_DOCUMENTS: ChorusLineEntity[] = [
             siret: "123456789012",
         },
     },
-    ENTITIES[2],
+    { ...ENTITIES[2], indexedInformations: { ...ENTITIES[2].indexedInformations, siret: "123456789014" } },
 ];
 
 export const PROGRAMS = [

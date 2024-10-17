@@ -65,8 +65,6 @@ export class PaymentFlatService {
             exerciceBudgetaire,
         );
 
-        const promises: Promise<void>[] = [];
-
         const entityPromises = chorusEntities.map(entity => paymentFlatPort.upsertOne(entity));
 
         await Promise.all(entityPromises);

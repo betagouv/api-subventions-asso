@@ -42,7 +42,7 @@ describe("PaymentsFlatCli", () => {
                     ...paymentFlat,
                     _id: expect.any(ObjectId),
                 }))
-                .sort((a, b) => Number(a.uniqueId) - Number(b.uniqueId));
+                .sort((a, b) => Number(a.siret) - Number(b.siret));
 
             expect(paymentsFlat).toMatchSnapshot("Snapshot resyncAll");
         });
@@ -58,7 +58,7 @@ describe("PaymentsFlatCli", () => {
                     ...paymentFlat,
                     _id: expect.any(ObjectId),
                 }))
-                .sort((a, b) => Number(a.uniqueId) - Number(b.uniqueId));
+                .sort((a, b) => Number(a.siret) - Number(b.siret));
 
             expect(paymentsFlat).toMatchSnapshot("Snapshot resyncExercice");
         });
