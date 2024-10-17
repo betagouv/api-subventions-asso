@@ -70,7 +70,7 @@ describe("ChorusLineRepository", () => {
         it("should call cursorFind with filters", () => {
             const exerciceBudgetaire = 2022;
             chorusLineRepository.cursorFindData(exerciceBudgetaire);
-            expect(mockCursorFind).toHaveBeenCalledWith({ exercice: { exerciceBudgetaire } });
+            expect(mockCursorFind).toHaveBeenCalledWith({ "indexedInformations.exercice": exerciceBudgetaire });
         });
     });
 });
