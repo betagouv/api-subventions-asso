@@ -7,6 +7,8 @@ export default class PaymentsFlatAdapter {
         return {
             _id: new ObjectId(),
             uniqueId: entity.uniqueId,
+            idVersement: entity.idVersement,
+            exerciceBudgetaire: entity.exerciceBudgetaire,
             siret: entity.siret,
             siren: entity.siren,
             montant: entity.amount,

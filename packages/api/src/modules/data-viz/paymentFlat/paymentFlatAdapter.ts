@@ -88,6 +88,7 @@ export default class PaymentFlatAdapter {
         if (!refProgrammationEntity) {
             console.error(`RefProgrammation not found for activityCode: ${activityCode}`);
         }
+
         return {
             programCode,
             activityCode,

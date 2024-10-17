@@ -84,7 +84,7 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
     public cursorFindData(exerciceBudgetaire?: number) {
         if (!exerciceBudgetaire) {
             return this.cursorFind({});
-        } else return this.cursorFind({ exercice: { exerciceBudgetaire } });
+        } else return this.cursorFind({ "indexedInformations.exercice": exerciceBudgetaire });
     }
 
     async createIndexes() {

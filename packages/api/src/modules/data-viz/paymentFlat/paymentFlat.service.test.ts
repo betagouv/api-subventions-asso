@@ -16,6 +16,7 @@ import ChorusLineEntity from "../../providers/chorus/entities/ChorusLineEntity";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 import { PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
 import paymentFlatPort from "../../../dataProviders/db/paymentFlat/paymentFlat.port";
+import { mock } from "node:test";
 
 const allDataBretagneDataResolvedValue = {
     programs: RECORDS["programme"],
@@ -63,7 +64,7 @@ describe("PaymentFlatService", () => {
         let nDocuments;
 
         beforeEach(() => {
-            mockDocuments = [ENTITIES[0], ENTITIES[0], null];
+            mockDocuments = [ENTITIES[1], ENTITIES[0], null];
 
             nDocuments = mockDocuments.length - 1;
 
@@ -126,7 +127,7 @@ describe("PaymentFlatService", () => {
         });
 
         it("should call toPaymentFlatEntity for number of documents times", async () => {
-            const result = await paymentFlatService.toPaymentFlatChorusEntities(
+            await paymentFlatService.toPaymentFlatChorusEntities(
                 RECORDS["programme"],
                 RECORDS["ministry"],
                 RECORDS["domaineFonct"],
@@ -142,7 +143,7 @@ describe("PaymentFlatService", () => {
                 RECORDS["domaineFonct"],
                 RECORDS["refProgrammation"],
             );
-            const expected = [{ ...PAYMENT_FLAT_ENTITY, amount: 179976.6 }];
+            const expected = [{ ...PAYMENT_FLAT_ENTITY, amount: PAYMENT_FLAT_ENTITY.amount * 2 }];
             expect(result).toEqual(expected);
         });
     });
@@ -151,15 +152,16 @@ describe("PaymentFlatService", () => {
         let mockToPaymentFlatChorusEntities: jest.SpyInstance;
         let mockUpsertOne: jest.SpyInstance;
         let mockGetAllDataBretagneData: jest.SpyInstance;
+        let mockEntities;
 
         beforeEach(() => {
             //@ts-expect-error : private methode
             mockGetAllDataBretagneData = jest.spyOn(paymentFlatService, "getAllDataBretagneData");
             mockGetAllDataBretagneData.mockResolvedValue(allDataBretagneDataResolvedValue);
-
+            mockEntities = [PAYMENT_FLAT_ENTITY, { ...PAYMENT_FLAT_ENTITY, exerciceBudgetaire: 2022 }];
             mockToPaymentFlatChorusEntities = jest
                 .spyOn(paymentFlatService, "toPaymentFlatChorusEntities")
-                .mockResolvedValue([PAYMENT_FLAT_ENTITY]);
+                .mockResolvedValue(mockEntities);
             mockUpsertOne = jest.spyOn(paymentFlatPort, "upsertOne").mockImplementation(jest.fn());
         });
         afterEach(() => {
@@ -201,9 +203,14 @@ describe("PaymentFlatService", () => {
 
         it("should call upsertOne for each entity", async () => {
             await paymentFlatService.updatePaymentsFlatCollection();
-            expect(mockUpsertOne).toHaveBeenCalledTimes(1);
+            expect(mockUpsertOne).toHaveBeenCalledTimes(mockEntities.length);
         });
 
-        mockUpsertOne = jest.spyOn(paymentFlatPort, "upsertOne").mockImplementation(jest.fn());
+        it("should call upsertOne with each entity", async () => {
+            await paymentFlatService.updatePaymentsFlatCollection();
+            mockEntities.forEach(entity => {
+                expect(mockUpsertOne).toHaveBeenCalledWith(entity);
+            });
+        });
     });
 });

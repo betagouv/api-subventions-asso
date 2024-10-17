@@ -68,9 +68,8 @@ export class PaymentFlatService {
         const promises: Promise<void>[] = [];
 
         const entityPromises = chorusEntities.map(entity => paymentFlatPort.upsertOne(entity));
-        promises.push(...entityPromises);
 
-        await Promise.all(promises);
+        await Promise.all(entityPromises);
     }
 }
 

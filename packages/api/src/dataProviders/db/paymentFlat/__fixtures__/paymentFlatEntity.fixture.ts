@@ -1,7 +1,9 @@
 import PaymentFlatEntity from "../../../../entities/PaymentFlatEntity";
 
-export const PAYMENT_FLAT_ENTITY = {
+export const PAYMENT_FLAT_ENTITY: PaymentFlatEntity = {
     uniqueId: "12345678901234", // uniqueId
+    idVersement: "id_versement", // idVersement
+    exerciceBudgetaire: 2023, // exerciceBudgetaire
     siret: "12345678901234", // siret
     siren: "123456789", // siren
     amount: 1000, // operation amount
@@ -19,8 +21,10 @@ export const PAYMENT_FLAT_ENTITY = {
     activityLabel: "Label d'activité Exemple", // activity label
 };
 
-export const PAYMENT_FLAT_ENTITY_WITH_NULLS = {
+export const PAYMENT_FLAT_ENTITY_WITH_NULLS: PaymentFlatEntity = {
     uniqueId: "12345678901234", // uniqueId
+    idVersement: "id_versement", // idVersement
+    exerciceBudgetaire: 2023, // exerciceBudgetaire
     siret: "12345678901234", // siret
     siren: "123456789", // siren
     amount: 1000, // operation amount
