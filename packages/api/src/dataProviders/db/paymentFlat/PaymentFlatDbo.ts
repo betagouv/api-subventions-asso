@@ -4,6 +4,8 @@ import { ObjectId } from "mongodb";
 export default interface PaymentFlatDbo {
     _id: ObjectId;
     uniqueId: string;
+    idVersement: string;
+    exerciceBudgetaire: number;
     siret: Siret;
     siren: Siren;
     montant: number;

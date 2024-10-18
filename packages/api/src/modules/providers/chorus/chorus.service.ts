@@ -105,8 +105,8 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
         return this.toPaymentArray(requests);
     }
 
-    public cursorFindData(updateThreshold?: Date) {
-        return chorusLineRepository.cursorFindData(updateThreshold);
+    public cursorFindData(exerciceBudgetaire?: number) {
+        return chorusLineRepository.cursorFindData(exerciceBudgetaire);
     }
 
     // TODO: unit test this

@@ -46,18 +46,6 @@ export class ConfigurationsService {
         );
     }
 
-    async getChorusLastUpdateImportedToPaymentFlat() {
-        // get the last chorus update that has been imported in paymentFlat data
-        return await configurationsRepository.getByName<Date>(CONFIGURATION_NAMES.LAST_CHORUS_UPDATE_IMPORTED);
-    }
-
-    async setChorusLastUpdateImportedToPaymentFlat(lastUpdateImported: Date) {
-        // set the last chorus update that has been imported in paymentFlat data
-        await configurationsRepository.upsert(CONFIGURATION_NAMES.LAST_CHORUS_UPDATE_IMPORTED, {
-            data: lastUpdateImported,
-        });
-    }
-
     /**
      * |---------------------|
      * |  Email Domain Part  |
