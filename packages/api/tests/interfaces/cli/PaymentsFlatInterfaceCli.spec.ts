@@ -10,6 +10,7 @@ const insertData = async () => {
     await chorusLineRepository.upsertMany(MOCK_DOCUMENTS);
     await stateBudgetProgramPort.replace(PROGRAMS);
 };
+console.log("mock documents length: ", MOCK_DOCUMENTS.length);
 
 describe("PaymentsFlatCli", () => {
     let mockGetCollection: jest.SpyInstance;

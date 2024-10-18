@@ -34,6 +34,7 @@ export class PaymentFlatService {
         }
         let document = await chorusCursor.next();
         const entities: Record<string, PaymentFlatEntity> = {};
+
         while (document != null) {
             const paymentFlatEntity = PaymentFlatAdapter.toNotAggregatedChorusPaymentFlatEntity(
                 document,
@@ -45,6 +46,9 @@ export class PaymentFlatService {
 
             if (entities[paymentFlatEntity.uniqueId]) {
                 entities[paymentFlatEntity.uniqueId].amount += paymentFlatEntity.amount;
+                entities[paymentFlatEntity.uniqueId].amount = parseFloat(
+                    entities[paymentFlatEntity.uniqueId].amount.toFixed(2),
+                );
             } else {
                 entities[paymentFlatEntity.uniqueId] = paymentFlatEntity;
             }
@@ -64,7 +68,6 @@ export class PaymentFlatService {
             refsProgrammation,
             exerciceBudgetaire,
         );
-
         const entityPromises = chorusEntities.map(entity => paymentFlatPort.upsertOne(entity));
 
         await Promise.all(entityPromises);

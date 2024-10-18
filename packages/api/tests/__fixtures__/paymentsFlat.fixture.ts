@@ -10,7 +10,7 @@ export const MOCK_DOCUMENTS: ChorusLineEntity[] = [
         ...ENTITIES[0],
         indexedInformations: { ...ENTITIES[0].indexedInformations, siret: "123456789013", exercice: 2022 },
     },
-    // je mets des entités avec le même uniqueId pour tester le groupement
+    // je mets des entités avec le même paymentFlat uniqueId pour tester le groupement
     {
         ...ENTITIES[1],
         indexedInformations: {
@@ -24,14 +24,20 @@ export const MOCK_DOCUMENTS: ChorusLineEntity[] = [
     {
         ...ENTITIES[2],
         indexedInformations: {
-            ...ENTITIES[1].indexedInformations,
+            ...ENTITIES[2].indexedInformations,
             ej: "EJ_egale",
             codeDomaineFonctionnel: "0143-03-01",
             codeActivitee: "014303000102",
             siret: "123456789012",
+            dateOperation: new Date("2023-04-21T00:00:00.000Z"),
         },
     },
-    { ...ENTITIES[2], indexedInformations: { ...ENTITIES[2].indexedInformations, siret: "123456789014" } },
+
+    {
+        ...ENTITIES[2],
+        uniqueId: "newUniqueId",
+        indexedInformations: { ...ENTITIES[2].indexedInformations, siret: "123456789014" },
+    },
 ];
 
 export const PROGRAMS = [

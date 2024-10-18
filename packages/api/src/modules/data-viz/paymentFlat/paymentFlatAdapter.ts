@@ -37,7 +37,7 @@ export default class PaymentFlatAdapter {
         );
 
         const idVersement = `${chorusDocument.indexedInformations.siret}-${chorusDocument.indexedInformations.ej}-${chorusDocument.indexedInformations.exercice}`;
-        const uniqueId = `${idVersement}-${programCode}-${actionCode}-${activityCode}`;
+        const uniqueId = `${idVersement}-${programCode}-${actionCode}-${activityCode}-${chorusDocument.indexedInformations.dateOperation.getTime()}`;
 
         return new PaymentFlatEntity(
             uniqueId, // uniqueId,
