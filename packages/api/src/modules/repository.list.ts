@@ -9,7 +9,6 @@ import demarchesSimplifieesDataRepository from "./providers/demarchesSimplifiees
 import demarchesSimplifieesMapperRepository from "./providers/demarchesSimplifiees/repositories/demarchesSimplifieesMapper.repository";
 import fonjepSubventionRepository from "./providers/fonjep/repositories/fonjep.subvention.repository";
 import fonjepPaymentRepository from "./providers/fonjep/repositories/fonjep.payment.repository";
-import leCompteAssoRepository from "./providers/leCompteAsso/repositories/leCompteAsso.repository";
 import {
     osirisActionRepository,
     osirisEvaluationRepository,
@@ -33,7 +32,6 @@ export const repositoriesWithIndexes = [
     fonjepPaymentRepository,
     fonjepSubventionRepository,
     dauphinGisproRepository,
-    leCompteAssoRepository,
     miscScdlGrantRepository,
     miscScdlProducerRepository,
     configurationsRepository,

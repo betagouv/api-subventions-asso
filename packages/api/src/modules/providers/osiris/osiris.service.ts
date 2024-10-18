@@ -1,14 +1,6 @@
-import { DemandeSubvention, Rna, Siren, Siret, Association, Etablissement } from "dto";
+import { DemandeSubvention, Association, Etablissement } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import { siretToSiren } from "../../../shared/helpers/SirenHelper";
-import {
-    isSiret,
-    isAssociationName,
-    isCompteAssoId,
-    isRna,
-    isOsirisRequestId,
-    isOsirisActionId,
-} from "../../../shared/Validators";
+import { isAssociationName, isCompteAssoId, isOsirisRequestId, isOsirisActionId } from "../../../shared/Validators";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import ProviderRequestInterface from "../../search/@types/ProviderRequestInterface";
@@ -16,6 +8,13 @@ import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import ProviderCore from "../ProviderCore";
 import rnaSirenSerivce from "../../rna-siren/rnaSiren.service";
+import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
+import { StructureIdentifier } from "../../../@types";
+import GrantProvider from "../../grant/@types/GrantProvider";
+import Siret from "../../../valueObjects/Siret";
+import Siren from "../../../valueObjects/Siren";
+import Rna from "../../../valueObjects/Rna";
 import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisEvaluationEntity from "./entities/OsirisEvaluationEntity";
@@ -36,7 +35,8 @@ export class OsirisService
         ProviderRequestInterface,
         AssociationsProvider,
         EtablissementProvider,
-        DemandesSubventionsProvider<OsirisRequestEntity>
+        DemandesSubventionsProvider<OsirisRequestEntity>,
+        GrantProvider
 {
     constructor() {
         super({
@@ -51,9 +51,8 @@ export class OsirisService
     public async addRequest(request: OsirisRequestEntity): Promise<{ state: string; result: OsirisRequestEntity }> {
         const existingFile = await osirisRequestRepository.findByOsirisId(request.providerInformations.osirisId);
         const { rna, siret } = request.legalInformations;
-        const siren = siretToSiren(siret);
 
-        if (rna) await rnaSirenSerivce.insert(rna, siren);
+        if (rna) await rnaSirenSerivce.insert(new Rna(rna), new Siret(siret).toSiren());
 
         if (existingFile) {
             await osirisRequestRepository.update(request);
@@ -71,7 +70,7 @@ export class OsirisService
     }
 
     public validRequest(request: OsirisRequestEntity) {
-        if (!isSiret(request.legalInformations.siret)) {
+        if (!Siret.isSiret(request.legalInformations.siret)) {
             return {
                 message: `INVALID SIRET FOR ${request.legalInformations.siret}`,
                 data: request.legalInformations,
@@ -79,7 +78,7 @@ export class OsirisService
             };
         }
 
-        if (!isRna(request.legalInformations.rna)) {
+        if (!Rna.isRna(request.legalInformations.rna)) {
             return {
                 message: `INVALID RNA FOR ${request.legalInformations.rna}`,
                 data: request.legalInformations,
@@ -158,7 +157,7 @@ export class OsirisService
             };
         }
 
-        if (!isSiret(evaluation.siret)) {
+        if (!Siret.isSiret(evaluation.siret)) {
             return {
                 message: `INVALID SIRET FOR ${evaluation.siret}`,
                 data: evaluation,
@@ -243,47 +242,22 @@ export class OsirisService
 
     isAssociationsProvider = true;
 
-    async getAssociationsBySiren(siren: Siren): Promise<Association[] | null> {
-        const requests = await osirisRequestRepository.findBySiren(siren);
+    async getAssociations(identifier: AssociationIdentifier): Promise<Association[]> {
+        let requests: OsirisRequestEntity[] = [];
 
-        if (requests.length === 0) return null;
+        if (identifier.siren) {
+            requests.push(...(await this.findBySiren(identifier.siren)));
+        }
+
+        if (identifier.rna) {
+            requests = [...new Set([...requests, ...(await this.findByRna(identifier.rna))])];
+        }
+
         const associations = await Promise.all(
             requests.map(async r =>
                 OsirisRequestAdapter.toAssociation(
                     r,
-                    (await osirisActionRepository.findByCompteAssoId(r.providerInformations.compteAssoId)) || undefined,
-                ),
-            ),
-        );
-
-        return associations;
-    }
-
-    async getAssociationsBySiret(siret: Siret): Promise<Association[] | null> {
-        const requests = await osirisRequestRepository.findBySiret(siret);
-
-        if (requests.length === 0) return null;
-        const associations = await Promise.all(
-            requests.map(async r =>
-                OsirisRequestAdapter.toAssociation(
-                    r,
-                    (await osirisActionRepository.findByCompteAssoId(r.providerInformations.compteAssoId)) || undefined,
-                ),
-            ),
-        );
-
-        return associations;
-    }
-
-    async getAssociationsByRna(rna: Rna): Promise<Association[] | null> {
-        const requests = await osirisRequestRepository.findByRna(rna);
-
-        if (requests.length === 0) return null;
-        const associations = await Promise.all(
-            requests.map(async r =>
-                OsirisRequestAdapter.toAssociation(
-                    r,
-                    (await osirisActionRepository.findByCompteAssoId(r.providerInformations.compteAssoId)) || undefined,
+                    (await osirisActionRepository.findByCompteAssoId(r.providerInformations.compteAssoId)) || undefined, // todo faire une jointure, un jour ^^ !
                 ),
             ),
         );
@@ -299,20 +273,14 @@ export class OsirisService
 
     isEtablissementProvider = true;
 
-    async getEtablissementsBySiret(siret: Siret): Promise<Etablissement[] | null> {
-        const requests = await this.findBySiret(siret);
-
-        if (requests.length === 0) return null;
-
-        return requests.map(r => OsirisRequestAdapter.toEtablissement(r));
-    }
-
-    async getEtablissementsBySiren(siren: Siren): Promise<Etablissement[] | null> {
-        const requests = await this.findBySiren(siren);
-
-        if (requests.length === 0) return null;
-
-        return requests.map(r => OsirisRequestAdapter.toEtablissement(r));
+    async getEstablishments(identifier: StructureIdentifier): Promise<Etablissement[]> {
+        let requests: OsirisRequestEntity[] = [];
+        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
+            requests = await this.findBySiret(identifier.siret);
+        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
+            requests = await this.findBySiren(identifier.siren);
+        }
+        return requests.map(request => OsirisRequestAdapter.toEtablissement(request));
     }
 
     /**
@@ -327,20 +295,15 @@ export class OsirisService
         return OsirisRequestAdapter.rawToApplication(rawApplication);
     }
 
-    async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
-        const requests = await this.findBySiret(siret);
+    async getDemandeSubvention(id: StructureIdentifier): Promise<DemandeSubvention[]> {
+        let requests: OsirisRequestEntity[] = [];
+        if (id instanceof EstablishmentIdentifier && id.siret) {
+            requests = await this.findBySiret(id.siret);
+        } else if (id instanceof AssociationIdentifier && id.siren) {
+            requests = await this.findBySiren(id.siren);
+        }
 
-        if (requests.length === 0) return null;
-
-        return requests.map(r => OsirisRequestAdapter.toDemandeSubvention(r));
-    }
-
-    async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
-        const requests = await this.findBySiren(siren);
-
-        if (requests.length === 0) return null;
-
-        return requests.map(r => OsirisRequestAdapter.toDemandeSubvention(r));
+        return Promise.all(requests.map(r => OsirisRequestAdapter.toDemandeSubvention(r)));
     }
 
     /**
@@ -351,28 +314,22 @@ export class OsirisService
 
     isGrantProvider = true;
 
-    async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
-        return (await this.findBySiret(siret)).map(grant => ({
-            provider: this.provider.id,
-            type: "application",
-            data: grant,
-            joinKey: grant?.providerInformations?.ej,
-        }));
-    }
-
     // TODO: add toRawApplication in adapter #2457
     // https://github.com/betagouv/api-subventions-asso/issues/2457
-    async getRawGrantsBySiren(siren: string): Promise<RawGrant[] | null> {
-        return (await this.findBySiren(siren)).map(grant => ({
+    async getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
+        let requests: OsirisRequestEntity[] = [];
+        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
+            requests = await this.findBySiret(identifier.siret);
+        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
+            requests = await this.findBySiren(identifier.siren);
+        }
+
+        return requests.map(request => ({
             provider: this.provider.id,
             type: "application",
-            data: grant,
-            joinKey: grant?.providerInformations?.ej,
+            data: request,
+            joinKey: request?.providerInformations?.ej,
         }));
-    }
-
-    getRawGrantsByRna(): Promise<RawGrant[] | null> {
-        return Promise.resolve(null);
     }
 
     rawToCommon(raw: RawGrant) {

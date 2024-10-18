@@ -3,8 +3,7 @@
 exports[`Providers Helper providersById should return providers by id 1`] = `
 Object {
   "provider-application-1": Object {
-    "getDemandeSubventionBySiren": [MockFunction],
-    "getDemandeSubventionBySiret": [MockFunction],
+    "getDemandeSubvention": [MockFunction],
     "isDemandesSubventionsProvider": true,
     "provider": Object {
       "description": "API PROVIDER",
@@ -15,8 +14,7 @@ Object {
     "rawToApplication": [MockFunction],
   },
   "provider-application-2": Object {
-    "getDemandeSubventionBySiren": [MockFunction],
-    "getDemandeSubventionBySiret": [MockFunction],
+    "getDemandeSubvention": [MockFunction],
     "isDemandesSubventionsProvider": true,
     "provider": Object {
       "description": "RAW PROVIDER",

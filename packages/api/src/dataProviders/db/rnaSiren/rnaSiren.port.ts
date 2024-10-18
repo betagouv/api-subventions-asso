@@ -1,8 +1,8 @@
-import { Rna, Siren } from "dto";
+import Siren from "../../../valueObjects/Siren";
+import Rna from "../../../valueObjects/Rna";
 import { isMongoDuplicateError } from "../../../shared/helpers/MongoHelper";
 import RnaSirenEntity from "../../../entities/RnaSirenEntity";
 import MongoRepository from "../../../shared/MongoRepository";
-import { isRna } from "../../../shared/Validators";
 import RnaSirenAdapter from "./RnaSiren.adapter";
 import RnaSirenDbo from "./RnaSirenDbo";
 
@@ -27,20 +27,22 @@ export class RnaSirenPort extends MongoRepository<RnaSirenDbo> {
         }
     }
 
-    async find(query: Rna | Siren) {
+    async find(id: Rna | Siren) {
         let dbos: RnaSirenDbo[] = [];
-        if (isRna(query)) {
+        if (id instanceof Rna) {
             dbos = await this.collection
                 .find({
-                    rna: query,
+                    rna: id.value,
+                })
+                .toArray();
+        } else if (id instanceof Siren) {
+            dbos = await this.collection
+                .find({
+                    siren: id.value,
                 })
                 .toArray();
         } else {
-            dbos = await this.collection
-                .find({
-                    siren: query,
-                })
-                .toArray();
+            throw new Error("Identifier not supported");
         }
 
         if (!dbos.length) return null;

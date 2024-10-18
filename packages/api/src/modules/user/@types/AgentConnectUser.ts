@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { Siren, Siret } from "dto";
+import { SirenDto, SiretDto } from "dto";
 
 // cf https://github.com/france-connect/Documentation-AgentConnect/blob/main/doc_fs/projet_fca/projet_fca_donnees.md
 export type AgentConnectUser = {
@@ -9,8 +9,8 @@ export type AgentConnectUser = {
     uid: string; // agent connect identifier
     sub: string; // identifier dependant of identity provider. Don't use!
 
-    siren?: Siren;
-    siret?: Siret;
+    siren?: SirenDto;
+    siret?: SiretDto;
     organizational_unit?: string;
     belonging_population?: string;
     phone?: string; // unclear type, TODO test type in real environment

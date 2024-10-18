@@ -8,6 +8,8 @@ import { CommonApplicationDto, ApplicationStatus, DemandeSubvention } from "dto"
 import SubventiaDto from "./@types/subventia.dto";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import { ENTITIES } from "./__fixtures__/subventia.fixture";
+import Siren from "../../../valueObjects/Siren";
+import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 
 jest.mock("./adapters/subventia.adapter");
 
@@ -257,49 +259,23 @@ describe("Subventia Service", () => {
      * |-------------------------|
      */
 
-    describe("getDemandeSubventionBySiret", () => {
-        const siret = "123456789";
-        it("should call findBySiret", async () => {
-            await subventiaService.getDemandeSubventionBySiret(siret);
-            expect(mockFindBySiret).toHaveBeenCalledWith(siret);
-        });
-
-        it("should call toDemandeSubventionDto for each result", async () => {
-            await subventiaService.getDemandeSubventionBySiret(siret);
-            expect(mockToDemandeSubventionDto).toHaveBeenCalledTimes(2);
-        });
-
-        it("should return subventions", async () => {
-            const actual = await subventiaService.getDemandeSubventionBySiret(siret);
-            const expected = applications;
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("getDemandeSubventionBySiren", () => {
-        const siren = "123456789";
+    describe("getDemandeSubvention", () => {
+        const SIREN = new Siren("123456789");
+        const ASSOCIATION_IDENTIFIER = AssociationIdentifier.fromSiren(SIREN);
         it("should call findBySiren", async () => {
-            await subventiaService.getDemandeSubventionBySiret(siren);
-            expect(mockFindBySiret).toHaveBeenCalledWith(siren);
+            await subventiaService.getDemandeSubvention(ASSOCIATION_IDENTIFIER);
+            expect(mockFindBySiren).toHaveBeenCalledWith(SIREN);
         });
 
         it("should call toDemandeSubventionDto for each result", async () => {
-            await subventiaService.getDemandeSubventionBySiret(siren);
+            await subventiaService.getDemandeSubvention(ASSOCIATION_IDENTIFIER);
             expect(mockToDemandeSubventionDto).toHaveBeenCalledTimes(2);
         });
 
         it("should return subventions", async () => {
-            const actual = await subventiaService.getDemandeSubventionBySiret(siren);
+            const actual = await subventiaService.getDemandeSubvention(ASSOCIATION_IDENTIFIER);
             const expected = applications;
             expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("getDemandeSubventionByRna", () => {
-        it("should return null", async () => {
-            const expected = null;
-            const actual = await subventiaService.getDemandeSubventionByRna();
-            expect(expected).toBe(actual);
         });
     });
 
@@ -309,27 +285,16 @@ describe("Subventia Service", () => {
      * |-------------------------|
      */
 
-    describe("getRawGrantsBySiret", () => {
-        it("should call findBySiret", async () => {
-            await subventiaService.getRawGrantsBySiret("FAKE_SIRET");
-            expect(mockFindBySiret).toHaveBeenCalledWith("FAKE_SIRET");
-        });
-
-        it("should return raw grants", async () => {
-            const actual = await subventiaService.getRawGrantsBySiret("FAKE_SIRET");
-            const expected = rawGrant;
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("getRawGrantsBySiren", () => {
+    describe("getRawGrants", () => {
+        const SIREN = new Siren("123456789");
+        const ASSOCIATION_IDENTIFIER = AssociationIdentifier.fromSiren(SIREN);
         it("should call findBySiren", async () => {
-            await subventiaService.getRawGrantsBySiren("FAKE_SIREN");
-            expect(mockFindBySiren).toHaveBeenCalledWith("FAKE_SIREN");
+            await subventiaService.getRawGrants(ASSOCIATION_IDENTIFIER);
+            expect(mockFindBySiren).toHaveBeenCalledWith(SIREN);
         });
 
         it("should return raw grants", async () => {
-            const actual = await subventiaService.getRawGrantsBySiren("FAKE_SIREN");
+            const actual = await subventiaService.getRawGrants(ASSOCIATION_IDENTIFIER);
             const expected = rawGrant;
             expect(actual).toEqual(expected);
         });

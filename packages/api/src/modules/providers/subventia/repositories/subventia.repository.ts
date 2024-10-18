@@ -1,5 +1,6 @@
-import { Siren, Siret } from "dto";
 import MongoRepository from "../../../../shared/MongoRepository";
+import Siren from "../../../../valueObjects/Siren";
+import Siret from "../../../../valueObjects/Siret";
 import { SubventiaDbo } from "../@types/subventia.entity";
 export class SubventiaRepository extends MongoRepository<Omit<SubventiaDbo, "_id">> {
     readonly collectionName = "subventia";
@@ -7,13 +8,13 @@ export class SubventiaRepository extends MongoRepository<Omit<SubventiaDbo, "_id
     public async findBySiren(siren: Siren) {
         return this.collection
             .find({
-                siret: { $regex: new RegExp(`^${siren}\\d{5}`) },
+                siret: { $regex: new RegExp(`^${siren.value}\\d{5}`) },
             })
             .toArray();
     }
 
     public async findBySiret(siret: Siret) {
-        return this.collection.find({ siret: siret }).toArray();
+        return this.collection.find({ siret: siret.value }).toArray();
     }
 
     public createIndexes(): void {

@@ -1,4 +1,4 @@
-import { Siret } from "dto";
+import { SiretDto } from "dto";
 
 export type OpenDataSoftLinks = { rel: string; href: string };
 
@@ -22,10 +22,10 @@ export type CaisseDepotsSubventionDto = {
         nombeneficiaire: string;
         nature: string;
         nomattribuant: string; // centre financier
-        idbeneficiaire: Siret;
+        idbeneficiaire: SiretDto;
         pourcentagesubvention: number;
         conditionsversement: "UNIQUE" | "ECHELONNE";
-        idattribuant: Siret;
+        idattribuant: SiretDto;
         referencedecision: string | null; // often null
         idrae: string | null; // often null
     };

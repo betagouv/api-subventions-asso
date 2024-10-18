@@ -1,4 +1,4 @@
-import { Siret } from "dto";
+import { SiretDto } from "dto";
 import { DefaultObject, NestedDefaultObject } from "../../../@types";
 import { GenericParser } from "../../../shared/GenericParser";
 import IFonjepIndexedInformations from "./@types/IFonjepIndexedInformations";
@@ -40,7 +40,7 @@ export default class FonjepParser {
         const legalInformations = GenericParser.indexDataByPathObject(
             FonjepSubventionEntity.indexedLegalInformationsPath,
             parsedData,
-        ) as { siret: Siret; name: string };
+        ) as { siret: SiretDto; name: string };
         return new FonjepSubventionEntity(legalInformations, indexedInformations, parsedData);
     }
 
@@ -53,7 +53,7 @@ export default class FonjepParser {
         const legalInformations = GenericParser.indexDataByPathObject(
             FonjepPaymentEntity.indexedLegalInformationsPath,
             data,
-        ) as { siret: Siret };
+        ) as { siret: SiretDto };
         return new FonjepPaymentEntity(legalInformations, indexedInformations, data);
     }
 

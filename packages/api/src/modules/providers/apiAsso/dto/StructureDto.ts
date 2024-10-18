@@ -1,4 +1,4 @@
-import { Rna } from "dto";
+import { RnaDto, SirenDto } from "dto";
 
 export interface StructureEtablissementDto {
     id_siret: number;
@@ -104,9 +104,9 @@ export default interface StructureDto {
         nom_sirene?: string;
         sigle: string;
         sigle_sirene?: string;
-        id_rna: Rna;
+        id_rna: RnaDto;
         id_ex: string;
-        id_siren?: number;
+        id_siren?: SirenDto | number;
         id_siret_siege: number;
         id_correspondance: string;
         id_forme_juridique: string;

@@ -4,6 +4,7 @@ import { RechercheEntreprisesResultDto } from "./RechercheEntreprisesDto";
 import { RechercheEntreprisesAdapter } from "./RechercheEntreprisesAdapter";
 import AssociationNameEntity from "../../../modules/association-name/entities/AssociationNameEntity";
 import associationsService from "../../../modules/associations/associations.service";
+import Siren from "../../../valueObjects/Siren";
 
 // Mocking the external dependencies
 jest.mock("./RechercheEntreprisesAdapter");
@@ -15,7 +16,7 @@ const mockedRechercheEntreprisesAdapter = RechercheEntreprisesAdapter as jest.Mo
 >;
 
 describe("RechercheEntreprisesService", () => {
-    const SIREN = "123456789";
+    const SIREN = new Siren("123456789");
     const NAME = "Example";
 
     beforeAll(() => {
@@ -30,7 +31,7 @@ describe("RechercheEntreprisesService", () => {
         it("should filter out results with missing nom_complet or siren fields", async () => {
             const expected = new AssociationNameEntity(NAME, SIREN);
             const responseData: RechercheEntreprisesResultDto[] = [
-                { nom_complet: NAME, siren: SIREN },
+                { nom_complet: NAME, siren: SIREN.value },
                 { nom_complet: undefined, siren: "987654321" },
                 { nom_complet: "Example 2", siren: undefined },
                 { nom_complet: undefined, siren: undefined },
@@ -44,7 +45,7 @@ describe("RechercheEntreprisesService", () => {
         });
 
         it("should use RechercheEntreprisesAdapter.toAssociationNameEntity to convert results", async () => {
-            const responseData: RechercheEntreprisesResultDto[] = [{ nom_complet: NAME, siren: SIREN }];
+            const responseData: RechercheEntreprisesResultDto[] = [{ nom_complet: NAME, siren: SIREN.value }];
             jest.mocked(rechercheEntreprisesPort.search).mockResolvedValueOnce(responseData);
 
             await rechercheEntreprisesService.searchForceAsso("example");
@@ -54,7 +55,7 @@ describe("RechercheEntreprisesService", () => {
 
         it("raises error if single result is a company", async () => {
             const responseData: RechercheEntreprisesResultDto[] = [
-                { nom_complet: NAME, siren: SIREN, nature_juridique: "1234567890" },
+                { nom_complet: NAME, siren: SIREN.value, nature_juridique: "1234567890" },
             ];
             jest.mocked(rechercheEntreprisesPort.search).mockResolvedValueOnce(responseData);
             jest.mocked(associationsService.isCategoryFromAsso).mockReturnValueOnce(false);

@@ -1,16 +1,20 @@
-import { DemandeSubvention, Rna, Siren, Siret } from "dto";
+import { DemandeSubvention } from "dto";
 import * as Sentry from "@sentry/node";
+import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import ProviderCore from "../ProviderCore";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
+import { StructureIdentifier } from "../../../@types";
+import GrantProvider from "../../grant/@types/GrantProvider";
 import CaisseDepotsDtoAdapter from "./adapters/caisseDepotsDtoAdapter";
 import { CaisseDepotsSubventionDto } from "./dto/CaisseDepotsDto";
 
 export class CaisseDepotsService
     extends ProviderCore
-    implements DemandesSubventionsProvider<CaisseDepotsSubventionDto>
+    implements DemandesSubventionsProvider<CaisseDepotsSubventionDto>, GrantProvider
 {
     isDemandesSubventionsProvider = true;
     isGrantProvider = true;
@@ -57,12 +61,14 @@ export class CaisseDepotsService
         );
     }
 
-    getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
-        return this.getCaisseDepotsSubventions(`${siren}*`);
-    }
+    async getDemandeSubvention(id: StructureIdentifier) {
+        if (id instanceof EstablishmentIdentifier && id.siret) {
+            return this.getCaisseDepotsSubventions(id.siret.value);
+        } else if (id instanceof AssociationIdentifier && id.siren) {
+            return this.getCaisseDepotsSubventions(`${id.siren.value}*`);
+        }
 
-    getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
-        return this.getCaisseDepotsSubventions(siret);
+        return [];
     }
 
     /**
@@ -71,22 +77,19 @@ export class CaisseDepotsService
      * |-------------------------|
      */
 
-    async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
-        return (await this.getRawCaisseDepotsSubventions(siret)).map(grant => ({
+    async getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
+        let entities: CaisseDepotsSubventionDto[] = [];
+        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
+            entities = await this.getRawCaisseDepotsSubventions(identifier.siret.value);
+        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
+            entities = await this.getRawCaisseDepotsSubventions(`${identifier.siren.value}*`);
+        }
+
+        return entities.map(grant => ({
             provider: this.provider.id,
             type: "application",
             data: grant,
         }));
-    }
-    async getRawGrantsBySiren(siren: string): Promise<RawGrant[] | null> {
-        return (await this.getRawCaisseDepotsSubventions(`${siren}*`)).map(grant => ({
-            provider: this.provider.id,
-            type: "application",
-            data: grant,
-        }));
-    }
-    getRawGrantsByRna(_rna: string): Promise<RawGrant[] | null> {
-        return Promise.resolve(null);
     }
 
     rawToCommon(rawGrant: RawGrant) {

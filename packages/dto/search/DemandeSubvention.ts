@@ -1,4 +1,4 @@
-import { Siret } from "..";
+import { SiretDto } from "..";
 import { ProviderValue } from "../shared/ProviderValue";
 import { Payment } from "../payments";
 
@@ -12,7 +12,7 @@ export enum ApplicationStatus {
 
 export interface DemandeSubvention {
     service_instructeur: ProviderValue<string>;
-    siret: ProviderValue<Siret>;
+    siret: ProviderValue<SiretDto>;
     dispositif?: ProviderValue<string>;
     sous_dispositif?: ProviderValue<string>;
     ej?: ProviderValue<string>;

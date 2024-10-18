@@ -1,5 +1,6 @@
-import { Siren, Siret } from "dto";
 import MongoRepository from "../../../../shared/MongoRepository";
+import Siren from "../../../../valueObjects/Siren";
+import Siret from "../../../../valueObjects/Siret";
 import DemarchesSimplifieesDataEntity from "../entities/DemarchesSimplifieesDataEntity";
 
 export class DemarchesSimplifieesDataRepository extends MongoRepository<DemarchesSimplifieesDataEntity> {
@@ -21,11 +22,13 @@ export class DemarchesSimplifieesDataRepository extends MongoRepository<Demarche
     }
 
     findBySiret(siret: Siret) {
-        return this.collection.find({ siret }).toArray();
+        return this.collection.find({ siret: siret.value }).toArray();
     }
 
     findBySiren(siren: Siren) {
-        return this.collection.find({ siret: new RegExp(`^${siren}\\d{5}`) }, { projection: { _id: 0 } }).toArray();
+        return this.collection
+            .find({ siret: new RegExp(`^${siren.value}\\d{5}`) }, { projection: { _id: 0 } })
+            .toArray();
     }
 }
 

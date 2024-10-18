@@ -1,4 +1,4 @@
-import { Siret } from "../shared/Siret";
+import { SiretDto } from "../shared/Siret";
 import { ApplicationStatus } from "../search/DemandeSubvention";
 
 export interface CommonApplicationDto {
@@ -9,7 +9,7 @@ export interface CommonApplicationDto {
     /**
      * SIRET de l'établissement qui a fait la demande
      */
-    siret: Siret;
+    siret: SiretDto;
     /**
      * nom du service qui a instruit la demande de subvention
      */

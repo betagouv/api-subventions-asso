@@ -1,16 +1,22 @@
 import { Route, Get, Controller, Tags, Security, Response, Query, Path, Post, Body, Request } from "tsoa";
-import { DocumentRequestDto } from "dto";
+import { DocumentRequestDto, StructureIdentifierDto } from "dto";
 import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
 import documentService from "../../modules/documents/documents.service";
-import { IdentifiedRequest, StructureIdentifiers } from "../../@types";
+import { IdentifiedRequest } from "../../@types";
+import establishmentIdentifierService from "../../modules/establishment-identifier/establishment-identifier.service";
+import associationIdentifierService from "../../modules/association-identifier/association-identifier.service";
 
 @Route("document")
 @Security("jwt")
 @Tags("Document Controller")
 export class DocumentHttp extends Controller {
     @Get("/downloads/{identifier}")
-    public async downloadDocumentsByIdentifier(@Path() identifier: StructureIdentifiers) {
-        const stream = await documentService.getDocumentsFilesByIdentifier(identifier);
+    public async downloadDocumentsByIdentifier(@Path() identifier: StructureIdentifierDto) {
+        const identifierEntity = await (establishmentIdentifierService.isEstablishmentIdentifier(identifier)
+            ? establishmentIdentifierService.getEstablishmentIdentifiers(identifier)
+            : associationIdentifierService.getOneAssociationIdentifier(identifier));
+
+        const stream = await documentService.getDocumentsFilesByIdentifier(identifierEntity);
         this.setHeader("Content-Type", "application/zip");
         this.setHeader("Content-Disposition", "inline");
         return stream;

@@ -1,4 +1,4 @@
-import type { PaginatedAssociationNameDto, Siret } from "dto";
+import type { PaginatedAssociationNameDto, SiretDto } from "dto";
 import { SearchCodeError } from "dto";
 import { goto } from "$app/navigation";
 import Store from "$lib/core/Store";
@@ -60,7 +60,7 @@ export default class SearchController {
         }
     }
 
-    gotoEstablishment(siret: Siret) {
+    gotoEstablishment(siret: SiretDto) {
         goto(`/etablissement/${removeWhiteSpace(siret)}`, { replaceState: true });
     }
 

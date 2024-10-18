@@ -1,12 +1,14 @@
 import qs from "qs";
 import StructureIdentifiersError from "../../../shared/errors/StructureIdentifierError";
 import apiEntrepriseService from "./apiEntreprise.service";
-import providerRequestService from "../../provider-request/providerRequest.service";
+import Siren from "../../../valueObjects/Siren";
+import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 
 describe("ApiEntrepriseService", () => {
     jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
-    const SIREN = "120034005";
-    const SIRET = SIREN + "00001";
+    const SIREN = new Siren("120034005");
+    const SIRET = SIREN.toSiret("00001");
     const HEADCOUNT_REASON = "Remonter l'effectif pour le service Data.Subvention";
     const RCS_EXTRACT_REASON = "Remonter l'extrait RCS d'une association pour Data.Subvention";
 
@@ -84,12 +86,13 @@ describe("ApiEntrepriseService", () => {
         // Remove it and check error line 113
         // @ts-expect-error
         let getEtablissementHeadcountMock = jest.spyOn<any>(apiEntrepriseService, "getEtablissementHeadcount");
+        const IDENTIFIER = EstablishmentIdentifier.fromSiret(SIRET, AssociationIdentifier.fromSiren(SIREN));
 
         afterAll(() => getEtablissementHeadcountMock.mockRestore());
 
         it("should look for etablissement headcount given a SIRET", async () => {
             getEtablissementHeadcountMock.mockImplementationOnce(jest.fn());
-            await apiEntrepriseService.getHeadcount(SIRET);
+            await apiEntrepriseService.getHeadcount(IDENTIFIER);
             const actual = getEtablissementHeadcountMock.mock.calls.length;
             expect(actual).toEqual(1);
         });
@@ -101,7 +104,7 @@ describe("ApiEntrepriseService", () => {
                 throw expected;
             });
             try {
-                await apiEntrepriseService.getHeadcount(SIRET);
+                await apiEntrepriseService.getHeadcount(IDENTIFIER);
             } catch (e) {
                 actual = e;
             }
@@ -117,7 +120,7 @@ describe("ApiEntrepriseService", () => {
                 throw expected;
             });
             try {
-                await apiEntrepriseService.getHeadcount(SIRET);
+                await apiEntrepriseService.getHeadcount(IDENTIFIER);
             } catch (e) {
                 actual = e;
             }
@@ -146,7 +149,7 @@ describe("ApiEntrepriseService", () => {
                 // @ts-exect-error
                 .mockImplementationOnce(() => expected);
             try {
-                actual = await apiEntrepriseService.getHeadcount(SIRET);
+                actual = await apiEntrepriseService.getHeadcount(IDENTIFIER);
             } catch (e) {}
             expect(actual).toEqual(expected);
         });
@@ -156,7 +159,7 @@ describe("ApiEntrepriseService", () => {
             getEtablissementHeadcountMock.mockImplementationOnce(jest.fn());
             let actual;
             try {
-                await apiEntrepriseService.getHeadcount("NOT_A_SIRET");
+                await apiEntrepriseService.getHeadcount(AssociationIdentifier.fromSiren(SIREN));
             } catch (e) {
                 actual = e;
             }
@@ -193,17 +196,6 @@ describe("ApiEntrepriseService", () => {
     });
 
     describe("getExtractRcs", () => {
-        it("should return StructureIdentifierError", async () => {
-            const execpted = new StructureIdentifiersError("siren");
-            let actual;
-            try {
-                await apiEntrepriseService.getExtractRcs("NOT_A_SIREN");
-            } catch (e) {
-                actual = e;
-            }
-            expect(actual).toEqual(execpted);
-        });
-
         it("should return rcs extract", async () => {
             const expected = {};
             // @ts-expect-error

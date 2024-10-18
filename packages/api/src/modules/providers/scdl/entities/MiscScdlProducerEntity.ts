@@ -1,8 +1,8 @@
-import { Siret } from "dto";
+import { SiretDto } from "dto";
 
 export default interface MiscScdlProducerEntity {
     slug: string;
     name: string;
-    siret: Siret;
+    siret: SiretDto;
     lastUpdate: Date;
 }

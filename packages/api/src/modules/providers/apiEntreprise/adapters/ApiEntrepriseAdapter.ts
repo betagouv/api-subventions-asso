@@ -1,8 +1,7 @@
-import { Association, Etablissement } from "dto";
+import { Etablissement } from "dto";
 import { getMonthFromFrenchStr } from "../../../../shared/helpers/DateHelper";
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
-import IApiEntrepriseExtraitRcs from "../@types/IApiEntrepriseExtraitRcs";
 import IApiEntrepriseHeadcount from "../@types/IApiEntrepriseHeadcount";
 
 export default class ApiEntrepriseAdapter {
@@ -16,17 +15,6 @@ export default class ApiEntrepriseAdapter {
             siret: toProviderValue(data.siret),
             nic: toProviderValue(siretToNIC(data.siret)),
             headcount: toProviderValue(data.effectifs_mensuels),
-        };
-    }
-
-    static toAssociation(data: IApiEntrepriseExtraitRcs): Association {
-        const toProviderValue = ProviderValueFactory.buildProviderValuesAdapter(
-            this.PROVIDER_NAME,
-            this.toValidDate(data.date_extrait),
-        );
-        return {
-            siren: toProviderValue(data.siren),
-            extrait_rcs: toProviderValue(data),
         };
     }
 

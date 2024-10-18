@@ -1,13 +1,16 @@
-import { Siren, Siret, Rna, DocumentDto } from "dto";
+import { DocumentDto } from "dto";
 
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import ProviderValueAdapter from "../../../shared/adapters/ProviderValueAdapter";
 import CacheData from "../../../shared/Cache";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
-import { siretToNIC, siretToSiren } from "../../../shared/helpers/SirenHelper";
 import ProviderCore from "../ProviderCore";
-import rnaSirenService from "../../rna-siren/rnaSiren.service";
+import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
+import { StructureIdentifier } from "../../../@types";
+import Siren from "../../../valueObjects/Siren";
+import Siret from "../../../valueObjects/Siret";
 
 interface AvisSituationCache {
     etablissements: {
@@ -33,7 +36,7 @@ export class AvisSituationInseeService extends ProviderCore implements DocumentP
     }
 
     private async getInseeEtablissementsBySiren(siren: Siren): Promise<AvisSituationCache | false> {
-        if (this.requestCache.has(siren)) return this.requestCache.get(siren)[0];
+        if (this.requestCache.has(siren.value)) return this.requestCache.get(siren.value)[0];
 
         try {
             const result = await this.http.get<{
@@ -41,13 +44,13 @@ export class AvisSituationInseeService extends ProviderCore implements DocumentP
                     nic: string;
                     etablissementSiege: boolean;
                 }[];
-            }>(`${AvisSituationInseeService.API_URL}/siren/${siren}`);
+            }>(`${AvisSituationInseeService.API_URL}/siren/${siren.value}`);
 
             if (result.status == 200) {
-                this.requestCache.add(siren, result.data);
+                this.requestCache.add(siren.value, result.data);
                 return result.data;
             }
-            this.requestCache.add(siren, false);
+            this.requestCache.add(siren.value, false);
             return false;
         } catch (e) {
             return false;
@@ -56,65 +59,55 @@ export class AvisSituationInseeService extends ProviderCore implements DocumentP
 
     isDocumentProvider = true;
 
-    async getDocumentsBySiren(siren: Siren): Promise<DocumentDto[] | null> {
+    async findSiretSiege(siren: Siren): Promise<Siret> {
         const data = await this.getInseeEtablissementsBySiren(siren);
-
-        if (!data) return null;
+        if (!data) throw new Error("No data found in Insee API");
 
         const nic = data.etablissements.find(e => e.etablissementSiege)?.nic;
+        if (!nic) throw new Error("No siege found in Insee API");
 
-        if (!nic) return null;
+        return siren.toSiret(nic);
+    }
+
+    async getDocuments(identifier: StructureIdentifier): Promise<DocumentDto[]> {
+        if (identifier instanceof AssociationIdentifier && !identifier.siren) {
+            return [];
+        }
+
+        let siret: Siret;
+
+        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
+            siret = identifier.siret;
+        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
+            try {
+                siret = await this.findSiretSiege(identifier.siren);
+            } catch {
+                return [];
+            }
+        } else {
+            return [];
+        }
 
         return [
             {
                 type: ProviderValueAdapter.toProviderValue("Avis Situation Insee", this.provider.name, new Date()),
                 url: ProviderValueAdapter.toProviderValue(
                     `${AvisSituationInseeService.DOC_PATH}/?url=${encodeURIComponent(
-                        `${AvisSituationInseeService.API_URL}/pdf/${siren}${nic}`,
+                        `${AvisSituationInseeService.API_URL}/pdf/${siret.value}`,
                     )}`,
                     this.provider.name,
                     new Date(),
                 ),
                 nom: ProviderValueAdapter.toProviderValue(
-                    `Avis Situation Insee (${siren}${nic})`,
+                    `Avis Situation Insee (${siret.value})`,
                     this.provider.name,
                     new Date(),
                 ),
                 __meta__: {
-                    siret: siren + nic,
+                    siret: siret.value,
                 },
             },
         ];
-    }
-    async getDocumentsBySiret(siret: Siret): Promise<DocumentDto[] | null> {
-        return [
-            {
-                type: ProviderValueAdapter.toProviderValue("Avis Situation Insee", this.provider.name, new Date()),
-                url: ProviderValueAdapter.toProviderValue(
-                    `${AvisSituationInseeService.DOC_PATH}/?url=${encodeURIComponent(
-                        `${AvisSituationInseeService.API_URL}/pdf/${siret}`,
-                    )}`,
-                    this.provider.name,
-                    new Date(),
-                ),
-                nom: ProviderValueAdapter.toProviderValue(
-                    `Avis Situation Insee (${siret})`,
-                    this.provider.name,
-                    new Date(),
-                ),
-                __meta__: {
-                    siret,
-                },
-            },
-        ];
-    }
-
-    async getDocumentsByRna(rna: Rna): Promise<DocumentDto[] | null> {
-        const rnaSirenEntities = await rnaSirenService.find(rna);
-
-        if (!rnaSirenEntities || !rnaSirenEntities.length) return null;
-
-        return this.getDocumentsBySiren(rnaSirenEntities[0].siren);
     }
 }
 

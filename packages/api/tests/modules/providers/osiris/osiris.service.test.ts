@@ -1,4 +1,3 @@
-import associationNameService from "../../../../src/modules/association-name/associationName.service";
 import IOsirisActionsInformations from "../../../../src/modules/providers/osiris/@types/IOsirisActionsInformations";
 import IOsirisEvaluationsInformations from "../../../../src/modules/providers/osiris/@types/IOsirisEvaluationsInformations";
 import IOsirisRequestInformations from "../../../../src/modules/providers/osiris/@types/IOsirisRequestInformations";
@@ -6,19 +5,27 @@ import OsirisActionEntity from "../../../../src/modules/providers/osiris/entitie
 import OsirisEvaluationEntity from "../../../../src/modules/providers/osiris/entities/OsirisEvaluationEntity";
 import OsirisRequestEntity from "../../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
 import osirisService, { OsirisService } from "../../../../src/modules/providers/osiris/osiris.service";
-import { osirisRequestRepository } from "../../../../src/modules/providers/osiris/repositories";
 import ProviderValueAdapter from "../../../../src/shared/adapters/ProviderValueAdapter";
+import AssociationIdentifier from "../../../../src/valueObjects/AssociationIdentifier";
+import Rna from "../../../../src/valueObjects/Rna";
+import Siren from "../../../../src/valueObjects/Siren";
 
 describe("OsirisService", () => {
     it("should return an instance of osirisService", () => {
         expect(osirisService).toBeInstanceOf(OsirisService);
     });
 
+    const SIREN = new Siren("123456789");
+    const SIRET = SIREN.toSiret("00000");
+    const RNA = new Rna("W123456789");
+
+    const ASSOCIATION_IDENTIFER = AssociationIdentifier.fromSirenAndRna(SIREN, RNA);
+
     describe("requests part", () => {
         describe("addRequest", () => {
             it("should return the added osiris request", async () => {
                 const entity = new OsirisRequestEntity(
-                    { siret: "SIRET", rna: "RNA", name: "NAME" },
+                    { siret: SIRET.value, rna: RNA.value, name: "NAME" },
                     {
                         osirisId: "OSIRISID",
                         compteAssoId: "COMPTEASSOID",
@@ -35,7 +42,7 @@ describe("OsirisService", () => {
 
             it("should return the updated osiris request", async () => {
                 const entity = new OsirisRequestEntity(
-                    { siret: "SIRET", rna: "RNA", name: "NAME" },
+                    { siret: SIRET.value, rna: RNA.value, name: "NAME" },
                     {
                         osirisId: "OSIRISID",
                         compteAssoId: "COMPTEASSOID",
@@ -56,7 +63,7 @@ describe("OsirisService", () => {
 
         describe("findBySiret", () => {
             const entity = new OsirisRequestEntity(
-                { siret: "FAKE_SIRET", rna: "RNA", name: "NAME" },
+                { siret: SIRET.value, rna: RNA.value, name: "NAME" },
                 {
                     osirisId: "FAKE_ID_2",
                     compteAssoId: "COMPTEASSOID",
@@ -74,7 +81,7 @@ describe("OsirisService", () => {
             });
 
             it("should return request", async () => {
-                expect(await osirisService.findBySiret("FAKE_SIRET")).toMatchObject([entity]);
+                expect(await osirisService.findBySiret(SIRET)).toMatchObject([entity]);
             });
 
             it("should return action without evaluation", async () => {
@@ -88,8 +95,7 @@ describe("OsirisService", () => {
                         undefined,
                     ),
                 );
-                const osirisActions = (await osirisService.findBySiret("FAKE_SIRET"))[0]
-                    .actions as OsirisActionEntity[];
+                const osirisActions = (await osirisService.findBySiret(SIRET))[0].actions as OsirisActionEntity[];
                 const actual = osirisActions[0];
                 const expected = {
                     indexedInformations: {
@@ -117,15 +123,14 @@ describe("OsirisService", () => {
                     new OsirisEvaluationEntity(
                         {
                             osirisActionId: "FAKE_ACTION_ID",
-                            siret: "FAKE_SIRET",
+                            siret: SIRET.value,
                             evaluation_resultat: "",
                             cout_total_realise: 2000,
                         } as IOsirisEvaluationsInformations,
                         {},
                     ),
                 );
-                const osirisActions = (await osirisService.findBySiret("FAKE_SIRET"))[0]
-                    .actions as OsirisActionEntity[];
+                const osirisActions = (await osirisService.findBySiret(SIRET))[0].actions as OsirisActionEntity[];
                 const actual = osirisActions[0];
                 const expected = {
                     indexedInformations: {
@@ -144,7 +149,7 @@ describe("OsirisService", () => {
 
         describe("findByRna", () => {
             const entity = new OsirisRequestEntity(
-                { siret: "FAKE_SIRET", rna: "FAKE_RNA", name: "NAME" },
+                { siret: SIRET.value, rna: RNA.value, name: "NAME" },
                 {
                     osirisId: "FAKE_ID_2",
                     compteAssoId: "COMPTEASSOID",
@@ -162,7 +167,7 @@ describe("OsirisService", () => {
             });
 
             it("should return request", async () => {
-                expect(await osirisService.findByRna("FAKE_RNA")).toMatchObject([entity]);
+                expect(await osirisService.findByRna(RNA)).toMatchObject([entity]);
             });
         });
     });
@@ -310,7 +315,7 @@ describe("OsirisService", () => {
             ProviderValueAdapter.toProviderValues(value, provider, now);
 
         const entity = new OsirisRequestEntity(
-            { siret: "12345678900000", rna: "RNA", name: "NAME" },
+            { siret: "12345678900000", rna: RNA.value, name: "NAME" },
             {
                 osirisId: "FAKE_ID_2",
                 compteAssoId: "COMPTEASSOID",
@@ -328,29 +333,16 @@ describe("OsirisService", () => {
             await osirisService.addRequest(entity);
         });
 
-        describe("getEtablissementsBySiret", () => {
+        describe("getEstablishments", () => {
             it("should return one demande", async () => {
                 const expected = [
                     {
-                        siret: toPVs("12345678900000"),
+                        siret: toPVs(SIRET.value),
                         nic: toPVs("00000"),
                     },
                 ];
 
-                const actual = await osirisService.getEtablissementsBySiret("12345678900000");
-                expect(actual).toMatchObject(expected);
-            });
-        });
-        describe("getEtablissementsBySiren", () => {
-            it("should return one demande", async () => {
-                const expected = [
-                    {
-                        siret: toPVs("12345678900000"),
-                        nic: toPVs("00000"),
-                    },
-                ];
-
-                const actual = await osirisService.getEtablissementsBySiren("123456789");
+                const actual = await osirisService.getEstablishments(ASSOCIATION_IDENTIFER);
                 expect(actual).toMatchObject(expected);
             });
         });
@@ -362,7 +354,7 @@ describe("OsirisService", () => {
             ProviderValueAdapter.toProviderValues(value, provider, now);
 
         const entity = new OsirisRequestEntity(
-            { siret: "12345678900000", rna: "W1234567", name: "NAME" },
+            { siret: "12345678900000", rna: "W123456789", name: "NAME" },
             {
                 osirisId: "FAKE_ID_2",
                 compteAssoId: "COMPTEASSOID",
@@ -376,35 +368,24 @@ describe("OsirisService", () => {
             [],
         );
 
+        const SIREN = new Siren("123456789");
+        const IDENTIFIER = AssociationIdentifier.fromSiren(SIREN);
+
         beforeEach(async () => {
             await osirisService.addRequest(entity);
         });
 
-        describe("getAssociationsBySiret", () => {
+        describe("getAssociations", () => {
             it("should return one demande", async () => {
                 const expected = [
                     {
                         siren: toPVs("123456789"),
-                        rna: toPVs("W1234567"),
+                        rna: toPVs("W123456789"),
                         etablisements_siret: toPVs(["12345678900000"]),
                     },
                 ];
 
-                const actual = await osirisService.getAssociationsBySiret("12345678900000");
-                expect(actual).toMatchObject(expected);
-            });
-        });
-        describe("getAssociationsBySiren", () => {
-            it("should return one demande", async () => {
-                const expected = [
-                    {
-                        siren: toPVs("123456789"),
-                        rna: toPVs("W1234567"),
-                        etablisements_siret: toPVs(["12345678900000"]),
-                    },
-                ];
-
-                const actual = await osirisService.getAssociationsBySiren("123456789");
+                const actual = await osirisService.getAssociations(IDENTIFIER);
                 expect(actual).toMatchObject(expected);
             });
         });

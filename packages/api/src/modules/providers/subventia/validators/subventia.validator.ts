@@ -1,4 +1,5 @@
-import { isNumberValid, isSiret } from "../../../../shared/Validators";
+import Siret from "../../../../valueObjects/Siret";
+import { isNumberValid } from "../../../../shared/Validators";
 import { GenericParser } from "../../../../shared/GenericParser";
 import SubventiaDto from "../@types/subventia.dto";
 import { isValidDate } from "../../../../shared/helpers/DateHelper";
@@ -58,7 +59,7 @@ export default class SubventiaValidator {
         test: (v: unknown) => boolean;
         message: string;
     }[] = [
-        { key: "SIRET - Demandeur", test: v => isSiret(v as string), message: "SIRET manquant ou invalid" },
+        { key: "SIRET - Demandeur", test: v => Siret.isSiret(v as string), message: "SIRET manquant ou invalid" },
         {
             key: "Date - Décision",
             test: v => {

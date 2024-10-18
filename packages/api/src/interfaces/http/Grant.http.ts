@@ -1,7 +1,9 @@
 import { Controller, Get, Route, Tags } from "tsoa";
-import { Siret, PublishableGrantDto } from "dto";
+import { SiretDto, PublishableGrantDto, AssociationIdentifierDto, StructureIdentifierDto } from "dto";
 import openDataGrantService from "../../modules/_open-data/grant/openDataGrantService";
-import { AssociationIdentifiers, StructureIdentifiers } from "../../@types";
+import establishmentIdentifierService from "../../modules/establishment-identifier/establishment-identifier.service";
+import associationIdentifierService from "../../modules/association-identifier/association-identifier.service";
+import Siret from "../../valueObjects/Siret";
 
 @Route("open-data/subventions")
 @Tags("Open Data")
@@ -13,8 +15,9 @@ export class GrantHttp extends Controller {
      * @param siret le siret de l'établissement
      */
     @Get("/etablissement/{siret}")
-    async getOpenDataGrantsByEstablishment(siret: Siret): Promise<PublishableGrantDto[]> {
-        return await openDataGrantService.getByStructure(siret);
+    async getOpenDataGrantsByEstablishment(siret: SiretDto): Promise<PublishableGrantDto[]> {
+        const identifier = await establishmentIdentifierService.getEstablishmentIdentifiers(siret);
+        return await openDataGrantService.getByStructure(identifier);
     }
 
     /**
@@ -24,8 +27,10 @@ export class GrantHttp extends Controller {
      * @param siren_ou_rna le siren ou le rna de l'association
      */
     @Get("/association/{siren_ou_rna}")
-    async getOpenDataGrantsByAssociation(siren_ou_rna: AssociationIdentifiers): Promise<PublishableGrantDto[]> {
-        return await openDataGrantService.getByStructure(siren_ou_rna);
+    async getOpenDataGrantsByAssociation(siren_ou_rna: AssociationIdentifierDto): Promise<PublishableGrantDto[]> {
+        const associationIdentifiers = await associationIdentifierService.getOneAssociationIdentifier(siren_ou_rna);
+
+        return await openDataGrantService.getByStructure(associationIdentifiers);
     }
 
     /**
@@ -35,7 +40,10 @@ export class GrantHttp extends Controller {
      * @param siren_ou_siret_ou_rna le siren ou le siret ou le rna de l'association ou de l'établissement
      */
     @Get("/structure/{siren_ou_siret_ou_rna}")
-    async getOpenDataGrantsByStructure(siren_ou_siret_ou_rna: StructureIdentifiers): Promise<PublishableGrantDto[]> {
-        return await openDataGrantService.getByStructure(siren_ou_siret_ou_rna);
+    async getOpenDataGrantsByStructure(siren_ou_siret_ou_rna: StructureIdentifierDto): Promise<PublishableGrantDto[]> {
+        const identifier = Siret.isSiret(siren_ou_siret_ou_rna)
+            ? await establishmentIdentifierService.getEstablishmentIdentifiers(siren_ou_siret_ou_rna)
+            : await associationIdentifierService.getOneAssociationIdentifier(siren_ou_siret_ou_rna);
+        return await openDataGrantService.getByStructure(identifier);
     }
 }

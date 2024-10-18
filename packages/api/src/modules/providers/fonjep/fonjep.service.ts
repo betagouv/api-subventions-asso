@@ -1,13 +1,17 @@
-import { Siret, Siren, DemandeSubvention, Etablissement, Rna } from "dto";
+import { DemandeSubvention, Etablissement, Payment } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import { isAssociationName, areDates, areNumbersValid, isSiret, areStringsValid } from "../../../shared/Validators";
+import { isAssociationName, areDates, areNumbersValid, areStringsValid } from "../../../shared/Validators";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import PaymentProvider from "../../payments/@types/PaymentProvider";
 import { FullGrantProvider } from "../../grant/@types/FullGrantProvider";
-import { RawApplication, RawFullGrant, RawGrant, RawPayment } from "../../grant/@types/rawGrant";
+import { FullGrantData, RawApplication, RawFullGrant, RawGrant, RawPayment } from "../../grant/@types/rawGrant";
 import ProviderCore from "../ProviderCore";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
+import { StructureIdentifier } from "../../../@types";
+import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import Siret from "../../../valueObjects/Siret";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
 import fonjepSubventionRepository from "./repositories/fonjep.subvention.repository";
@@ -91,7 +95,7 @@ export class FonjepService
     }
 
     validateEntity(entity: FonjepSubventionEntity): true | FonjepRejectedRequest {
-        if (!isSiret(entity.legalInformations.siret)) {
+        if (!Siret.isSiret(entity.legalInformations.siret)) {
             return new FonjepRejectedRequest(
                 `INVALID SIRET FOR ${entity.legalInformations.siret}`,
                 FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
@@ -153,7 +157,7 @@ export class FonjepService
     }
 
     async createPaymentEntity(entity: FonjepPaymentEntity): Promise<CreateFonjepResponse> {
-        if (!isSiret(entity.legalInformations.siret)) {
+        if (!Siret.isSiret(entity.legalInformations.siret)) {
             return new FonjepRejectedRequest(
                 `INVALID SIRET FOR ${entity.legalInformations.siret}`,
                 FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
@@ -175,18 +179,14 @@ export class FonjepService
 
     isDemandesSubventionsProvider = true;
 
-    async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
-        const entities = await fonjepSubventionRepository.findBySiret(siret);
+    async getDemandeSubvention(id: StructureIdentifier): Promise<DemandeSubvention[]> {
+        const entities: FonjepSubventionEntity[] = [];
 
-        if (entities.length === 0) return null;
-
-        return entities.map(e => FonjepEntityAdapter.toDemandeSubvention(e));
-    }
-
-    async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
-        const entities = await fonjepSubventionRepository.findBySiren(siren);
-
-        if (entities.length === 0) return null;
+        if (id instanceof EstablishmentIdentifier && id.siret) {
+            entities.push(...(await fonjepSubventionRepository.findBySiret(id.siret)));
+        } else if (id instanceof AssociationIdentifier && id.siren) {
+            entities.push(...(await fonjepSubventionRepository.findBySiren(id.siren)));
+        }
 
         return entities.map(e => FonjepEntityAdapter.toDemandeSubvention(e));
     }
@@ -199,20 +199,14 @@ export class FonjepService
 
     isEtablissementProvider = true;
 
-    async getEtablissementsBySiret(siret: Siret): Promise<Etablissement[] | null> {
-        const entities = await fonjepSubventionRepository.findBySiret(siret);
-
-        if (entities.length === 0) return null;
-
-        return entities.map(e => FonjepEntityAdapter.toEtablissement(e));
-    }
-
-    async getEtablissementsBySiren(siren: Siren): Promise<Etablissement[] | null> {
-        const entities = await fonjepSubventionRepository.findBySiren(siren);
-
-        if (entities.length === 0) return null;
-
-        return entities.map(e => FonjepEntityAdapter.toEtablissement(e));
+    async getEstablishments(identifier: StructureIdentifier): Promise<Etablissement[]> {
+        let entities: FonjepSubventionEntity[] = [];
+        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
+            entities = await fonjepSubventionRepository.findBySiret(identifier.siret);
+        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
+            entities = await fonjepSubventionRepository.findBySiren(identifier.siren);
+        }
+        return entities.map(entity => FonjepEntityAdapter.toEtablissement(entity));
     }
 
     /**
@@ -235,16 +229,20 @@ export class FonjepService
         });
     }
 
+    async getPayments(identifier: StructureIdentifier): Promise<Payment[]> {
+        const requests: FonjepPaymentEntity[] = [];
+
+        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
+            requests.push(...(await fonjepPaymentRepository.findBySiret(identifier.siret)));
+        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
+            requests.push(...(await fonjepPaymentRepository.findBySiren(identifier.siren)));
+        }
+
+        return this.toPaymentArray(requests);
+    }
+
     async getPaymentsByKey(codePoste: string) {
         return this.toPaymentArray(await fonjepPaymentRepository.findByCodePoste(codePoste));
-    }
-
-    async getPaymentsBySiret(siret: Siret) {
-        return this.toPaymentArray(await fonjepPaymentRepository.findBySiret(siret));
-    }
-
-    async getPaymentsBySiren(siren: Siren) {
-        return this.toPaymentArray(await fonjepPaymentRepository.findBySiren(siren));
     }
 
     /**
@@ -256,23 +254,15 @@ export class FonjepService
     isGrantProvider = true;
     isFullGrantProvider = true;
 
-    getRawGrantsByRna(_rna: Rna): Promise<RawGrant[] | null> {
-        return Promise.resolve(null);
-    }
+    async getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
+        let entities: FullGrantData<FonjepSubventionEntity, FonjepPaymentEntity>[] = [];
+        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
+            entities = await fonjepJoiner.getFullFonjepGrantsBySiret(identifier.siret);
+        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
+            entities = await fonjepJoiner.getFullFonjepGrantsBySiren(identifier.siren);
+        }
 
-    async getRawGrantsBySiren(
-        siren: Siren,
-    ): Promise<RawFullGrant<{ application: FonjepSubventionEntity; payments: FonjepPaymentEntity[] }>[] | null> {
-        return (await fonjepJoiner.getFullFonjepGrantsBySiren(siren)).map(grant => ({
-            provider: this.provider.id,
-            type: "fullGrant",
-            data: grant,
-            joinKey: `${grant.application.indexedInformations.code_poste} - ${grant.application.indexedInformations.annee_demande}`,
-        }));
-    }
-
-    async getRawGrantsBySiret(siret: Siret): Promise<RawGrant[] | null> {
-        return (await fonjepJoiner.getFullFonjepGrantsBySiret(siret)).map(grant => ({
+        return entities.map(grant => ({
             provider: this.provider.id,
             type: "fullGrant",
             data: grant,

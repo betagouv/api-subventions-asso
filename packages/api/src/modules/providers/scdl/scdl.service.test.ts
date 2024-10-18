@@ -9,7 +9,7 @@ jest.mock("../../../shared/helpers/StringHelper");
 import MiscScdlGrantFixture from "./__fixtures__/MiscScdlGrant";
 import MiscScdlProducerFixture from "./__fixtures__/MiscScdlProducer";
 import { ObjectId } from "mongodb";
-import { SIRET } from "../../../../tests/__fixtures__/association.fixture";
+import { SIRET_STR } from "../../../../tests/__fixtures__/association.fixture";
 
 describe("ScdlService", () => {
     const UNIQUE_ID = "UNIQUE_ID";
@@ -125,7 +125,9 @@ describe("ScdlService", () => {
         });
 
         it("should call miscScdlGrantRepository.createMany with allocator data from grant", async () => {
-            const GRANTS = [{ ...MiscScdlGrantFixture, allocatorId: SIRET, allocatorName: "attribuant", __data__: {} }];
+            const GRANTS = [
+                { ...MiscScdlGrantFixture, allocatorId: SIRET_STR, allocatorName: "attribuant", __data__: {} },
+            ];
             await scdlService.createManyGrants(GRANTS, MiscScdlProducerFixture.slug);
             expect(miscScdlGrantRepository.createMany).toHaveBeenCalledWith([
                 {
