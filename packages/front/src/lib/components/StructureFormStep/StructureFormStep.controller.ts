@@ -1,5 +1,5 @@
 import { AgentTypeEnum, AgentJobTypeEnum } from "dto";
-import type { SvelteComponent } from "svelte";
+import type { ComponentType, SvelteComponent } from "svelte";
 import OperatorSubStep from "./OperatorSubStep/OperatorSubStep.svelte";
 import CentralSubStep from "./CentralSubStep/CentralSubStep.svelte";
 import TerritorialCollectivitySubStep from "./TerritorialCollectivitySubStep/TerritorialCollectivitySubStep.svelte";
@@ -49,7 +49,7 @@ export default class StructureFormStepController {
         { value: AgentJobTypeEnum.OTHER, label: "Autre" },
     ];
 
-    private static subStepByAgentType: Record<AgentTypeEnum, typeof SvelteComponent | undefined> = {
+    private static subStepByAgentType: Record<AgentTypeEnum, ComponentType> = {
         [AgentTypeEnum.CENTRAL_ADMIN]: CentralSubStep,
         [AgentTypeEnum.OPERATOR]: OperatorSubStep,
         [AgentTypeEnum.TERRITORIAL_COLLECTIVITY]: TerritorialCollectivitySubStep,
@@ -103,7 +103,7 @@ export default class StructureFormStepController {
     }
 
     cleanSubStepValues(values: Record<string, any>, contextAgentType: AgentTypeEnum) {
-        const prefixes = [];
+        const prefixes: string[] = [];
         for (const [agentType, prefix] of Object.entries(StructureFormStepController.subFieldsPrefixByAgentType)) {
             if (agentType === contextAgentType) continue;
             prefixes.push(prefix);

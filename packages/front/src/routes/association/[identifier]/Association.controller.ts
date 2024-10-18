@@ -34,8 +34,8 @@ export class AssociationController {
             currentIdentifiers.set([
                 // Keep only the current identifier because we are sure is not a duplicate identifier (case for "Doublon rna siren")
                 {
-                    rna: asso.rna === identifier ? identifier : undefined,
-                    siren: asso.siren === identifier ? identifier : undefined,
+                    rna: asso.rna === identifier ? identifier : null,
+                    siren: asso.siren === identifier ? identifier : null,
                 },
             ]);
             this.getRnaSirenDuplicates(asso.rna, asso.siren);

@@ -1,3 +1,4 @@
+import { RnaDto, SirenDto } from "dto";
 import { removeWhiteSpace } from "./stringHelper";
 
 export function isSiret(siret) {
@@ -23,7 +24,7 @@ export function isIdentifier(identifier) {
     return isRna(identifier) || isSiren(identifier) || isSiret(identifier);
 }
 
-export function getUniqueIdentifier(identifiers) {
+export function getUniqueIdentifier(identifiers: { rna?: RnaDto | null; siren?: SirenDto | null }[]): string {
     /**
      * Here we are trying to find the unique identifier in the case of a multiple rna or a multiple siren.
      *
@@ -32,7 +33,7 @@ export function getUniqueIdentifier(identifiers) {
      */
     const { unique } = identifiers.reduce(
         (acc, identiferRnaSiren) => {
-            if (Object.values(identiferRnaSiren).find(value => acc.multiple.has(value))) {
+            if (Object.values(identiferRnaSiren).find(value => value && acc.multiple.has(value))) {
                 return acc;
             }
 
@@ -48,7 +49,12 @@ export function getUniqueIdentifier(identifiers) {
             }
             return acc;
         },
-        { unique: new Set(), multiple: new Set() },
+        { unique: new Set<string>(), multiple: new Set<string>() },
     );
-    return unique.size >= 1 ? unique.values().next().value : undefined;
+
+    if (unique.size === 0) {
+        throw new Error("No identifier found");
+    }
+
+    return unique.values().next().value;
 }

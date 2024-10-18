@@ -56,8 +56,8 @@ describe("Documents.controller", () => {
             expect(ctrl.headSiret).toBe("SIRENNIC");
         });
 
-        it("sets assoIdentifier", () => {
-            expect(ctrl.assoIdentifier).toBe("SIREN");
+        it("sets uniqueAssociationIdentifier", () => {
+            expect(ctrl.uniqueAssociationIdentifier).toBe("SIREN");
         });
     });
 
