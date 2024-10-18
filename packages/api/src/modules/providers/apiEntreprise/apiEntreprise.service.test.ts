@@ -10,7 +10,7 @@ describe("ApiEntrepriseService", () => {
     const SIREN = new Siren("120034005");
     const SIRET = SIREN.toSiret("00001");
     const HEADCOUNT_REASON = "Remonter l'effectif pour le service Data.Subvention";
-    const RCS_EXTRACT_REASON = "Remonter l'extrait RCS d'une associaiton pour Data.Subvention";
+    const RCS_EXTRACT_REASON = "Remonter l'extrait RCS d'une association pour Data.Subvention";
 
     // @ts-expect-error
     const sendRequestMock = jest.spyOn(apiEntrepriseService, "sendRequest");

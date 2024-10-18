@@ -11,7 +11,10 @@ import {
 import scdlService from "../providers/scdl/scdl.service";
 import scdlGrantService from "../providers/scdl/scdl.grant.service";
 import { DemandeSubvention, Grant, Payment } from "dto";
-import { SIRET } from "../../../tests/__fixtures__/association.fixture";
+import { SIRET_STR } from "../../../tests/__fixtures__/association.fixture";
+import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
+import Siret from "../../valueObjects/Siret";
+import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
 jest.mock("../providers/scdl/scdl.service");
 
 jest.mock("@sentry/node");
@@ -26,6 +29,9 @@ describe("GrantService", () => {
     beforeAll(() => {
         scdlService.producerNames = [SCDL_PRODUCER_NAME];
     });
+
+    const SIRET = new Siret(SIRET_STR);
+    const ESTABLISHMENT_ID = EstablishmentIdentifier.fromSiret(SIRET, AssociationIdentifier.fromSiren(SIRET.toSiren()));
 
     const JOIN_KEY_1 = "JOIN_KEY_1";
     const JOIN_KEY_2 = "JOIN_KEY_2";
@@ -59,8 +65,7 @@ describe("GrantService", () => {
         applications: [],
         payments: RAW_PAYMENTS.filter(rawPayment => rawPayment.joinKey === RAW_FULL_GRANT.joinKey),
     };
-    // @ts-expect-error: mock type
-    const APPLICATION = { siret: SIRET } as DemandeSubvention;
+    const APPLICATION = { siret: SIRET_STR } as unknown as DemandeSubvention;
     // @ts-expect-error: mock type
     const PAYMENTS = [{ bop: 163 }, { bop: 147 }] as Payment[];
     // @ts-expect-error: mock type
@@ -189,15 +194,15 @@ describe("GrantService", () => {
         });
 
         it("should call getRawGrants", async () => {
-            await grantService.getGrants(SIRET);
-            expect(mockGetRawGrants).toHaveBeenCalledWith(SIRET);
+            await grantService.getGrants(ESTABLISHMENT_ID);
+            expect(mockGetRawGrants).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
         it("should call adaptJoinedRawGrant", async () => {
-            await grantService.getGrants(SIRET);
+            await grantService.getGrants(ESTABLISHMENT_ID);
             expect(mockAdapteJoinedRawGrant).toHaveBeenCalledTimes(JOINED_RAW_GRANTS.length);
         });
         it("should call sortGrants", async () => {
-            await grantService.getGrants(SIRET);
+            await grantService.getGrants(ESTABLISHMENT_ID);
             expect(mockSortGrants).toHaveBeenCalledWith([GRANT, GRANT]);
         });
     });
@@ -334,7 +339,6 @@ describe("GrantService", () => {
 
     describe("getCommonGrants", () => {
         let getGrantsMock;
-        const ID = "ID";
         beforeAll(() => {
             // @ts-expect-error: mock
             getGrantsMock = jest.spyOn(grantService, "getRawGrants").mockResolvedValue([1, 2]);
@@ -348,18 +352,18 @@ describe("GrantService", () => {
         });
 
         it("gets raw grants", async () => {
-            await grantService.getCommonGrants(ID);
-            expect(getGrantsMock).toHaveBeenCalledWith(ID);
+            await grantService.getCommonGrants(ESTABLISHMENT_ID);
+            expect(getGrantsMock).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
 
         it("calls adapter as many times as necessary", async () => {
-            await grantService.getCommonGrants(ID);
+            await grantService.getCommonGrants(ESTABLISHMENT_ID);
             expect(commonGrantService.rawToCommon).toHaveBeenCalledWith(1, false);
             expect(commonGrantService.rawToCommon).toHaveBeenCalledTimes(2);
         });
 
         it("calls adapter as many times as necessary with publishable param", async () => {
-            await grantService.getCommonGrants(ID, true);
+            await grantService.getCommonGrants(ESTABLISHMENT_ID, true);
             expect(commonGrantService.rawToCommon).toHaveBeenCalledWith(1, true);
             expect(commonGrantService.rawToCommon).toHaveBeenCalledTimes(2);
         });
@@ -367,7 +371,7 @@ describe("GrantService", () => {
         it("returns adapted and filtered grants", async () => {
             mocked(commonGrantService.rawToCommon).mockReturnValueOnce(null);
             const expected = [2];
-            const actual = await grantService.getCommonGrants(ID, true);
+            const actual = await grantService.getCommonGrants(ESTABLISHMENT_ID, true);
             expect(actual).toEqual(expected);
         });
     });

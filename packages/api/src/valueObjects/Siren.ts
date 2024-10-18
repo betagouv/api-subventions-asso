@@ -15,6 +15,10 @@ export default class Siren {
         return typeof siren === "string" && /^\d{9}$/.test(siren);
     }
 
+    static fromPartialSiretStr(siret: string) {
+        return new Siren(siret.slice(0, 9));
+    }
+
     get value() {
         return this.siren;
     }

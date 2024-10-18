@@ -2,25 +2,27 @@ import UniteLegalNameEntity from "../../entities/UniteLegalNameEntity";
 import uniteLegalNameService from "../providers/uniteLegalName/uniteLegal.name.service";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import associationNameService from "./associationName.service";
-import rechercheEntreprises from "../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.port";
+import rechercheEntreprisesService from "../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.service";
 import AssociationNameEntity from "./entities/AssociationNameEntity";
 import Siren from "../../valueObjects/Siren";
 import Rna from "../../valueObjects/Rna";
+import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
 
 jest.mock("../providers/uniteLegalName/uniteLegal.name.service");
 jest.mock("../rna-siren/rnaSiren.service");
-jest.mock("../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.port");
+jest.mock("../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.service");
 
 const mockedUniteLegalNameService = uniteLegalNameService as jest.Mocked<typeof uniteLegalNameService>;
 const mockedRnaSirenService = rnaSirenService as jest.Mocked<typeof rnaSirenService>;
-const mockedRechercheEntreprises = rechercheEntreprises as jest.Mocked<typeof rechercheEntreprises>;
+const mockedRechercheEntreprises = rechercheEntreprisesService as jest.Mocked<typeof rechercheEntreprisesService>;
 
 describe("associationName.service", () => {
     describe("getNameFromIdentifier()", () => {
         const uniteLegalNameMock = jest.spyOn(uniteLegalNameService, "getNameFromIdentifier");
-        const IDENTIFIER = "toto";
+        const SIREN = new Siren("433955101");
+        const IDENTIFIER = AssociationIdentifier.fromSiren(SIREN);
         const REPO_OUTPUT = new UniteLegalNameEntity(
-            new Siren("433955101"),
+            SIREN,
             "ALPCM NANTES BASKET",
             "",
             new Date("2022-07-13T00:00:00.000Z"),
@@ -46,7 +48,7 @@ describe("associationName.service", () => {
 
         it("should return an empty array for unknown identifier", async () => {
             mockedUniteLegalNameService.searchBySirenSiretName.mockResolvedValueOnce([]);
-            mockedRechercheEntreprises.search.mockResolvedValueOnce([]);
+            mockedRechercheEntreprises.searchForceAsso.mockResolvedValueOnce([]);
 
             const result = await associationNameService.find("unknownIdentifier");
             expect(result).toEqual([]);
@@ -56,7 +58,7 @@ describe("associationName.service", () => {
             const fakeAssociation = new AssociationNameEntity("Fake Name", SIREN, RNA, {}, 3);
             mockedUniteLegalNameService.searchBySirenSiretName.mockResolvedValueOnce([fakeAssociation]);
             mockedRnaSirenService.find.mockResolvedValueOnce([{ siren: SIREN, rna: RNA }]);
-            mockedRechercheEntreprises.search.mockResolvedValueOnce([]);
+            mockedRechercheEntreprises.searchForceAsso.mockResolvedValueOnce([]);
 
             const result = await associationNameService.find(SIREN.value);
             expect(result).toEqual([fakeAssociation]);
@@ -66,7 +68,7 @@ describe("associationName.service", () => {
             const fakeAssociation = new AssociationNameEntity("Fake Name", SIREN_2, RNA_2, {}, 2);
             mockedUniteLegalNameService.searchBySirenSiretName.mockResolvedValueOnce([fakeAssociation]);
             mockedRnaSirenService.find.mockResolvedValueOnce([{ siren: SIREN_2, rna: RNA_2 }]);
-            mockedRechercheEntreprises.search.mockResolvedValueOnce([]);
+            mockedRechercheEntreprises.searchForceAsso.mockResolvedValueOnce([]);
 
             const result = await associationNameService.find(RNA_2.value);
             expect(result).toEqual([fakeAssociation]);
@@ -80,7 +82,7 @@ describe("associationName.service", () => {
                 { siren: SIREN, rna: RNA },
                 { siren: SIREN, rna: RNA_2 },
             ]);
-            mockedRechercheEntreprises.search.mockResolvedValue([]);
+            mockedRechercheEntreprises.searchForceAsso.mockResolvedValue([]);
 
             const result = await associationNameService.find(SIREN.value);
             const expected = [
@@ -94,7 +96,7 @@ describe("associationName.service", () => {
             const fakeAssociation = new AssociationNameEntity("Fake Name", SIREN_2, RNA_2, {}, 2);
             mockedUniteLegalNameService.searchBySirenSiretName.mockResolvedValueOnce([fakeAssociation]);
             mockedRnaSirenService.find.mockResolvedValueOnce([]);
-            mockedRechercheEntreprises.search.mockResolvedValueOnce([fakeAssociation]);
+            mockedRechercheEntreprises.searchForceAsso.mockResolvedValueOnce([fakeAssociation]);
 
             const result = await associationNameService.find("unknownIdentifier");
             expect(result).toEqual([fakeAssociation]);

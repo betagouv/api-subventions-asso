@@ -78,7 +78,7 @@ describe("EtablissementsService", () => {
     });
 
     describe("getDocuments", () => {
-        const getDocumentBySiretMock = jest.spyOn(documentsService, "getDocument");
+        const getDocumentBySiretMock = jest.spyOn(documentsService, "getDocuments");
 
         it("should call subventions service", async () => {
             getDocumentBySiretMock.mockImplementation(async () => []);

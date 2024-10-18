@@ -1,9 +1,10 @@
 import uniteLegalNameService from "../providers/uniteLegalName/uniteLegal.name.service";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
-import rechercheEntreprises from "../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.port";
 import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
 import Rna from "../../valueObjects/Rna";
 import Siren from "../../valueObjects/Siren";
+import rechercheEntreprisesService from "../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.service";
+import NotAssociationError from "../../shared/errors/NotAssociationError";
 import AssociationNameEntity from "./entities/AssociationNameEntity";
 
 export class AssociationNameService {
@@ -18,9 +19,18 @@ export class AssociationNameService {
     async find(value: string): Promise<AssociationNameEntity[]> {
         const lowerCaseValue = value.toLowerCase().trim();
         let associationNames: AssociationNameEntity[];
+        let gotCompany = false;
+        const searchEntreprisesCatch = (value: string) =>
+            rechercheEntreprisesService.searchForceAsso(value).catch(_e => {
+                gotCompany = true;
+                return [];
+            });
+
         if (Rna.isRna(value) || Siren.isSiren(value)) {
             let identifierType: string;
             let identifier: Rna | Siren;
+
+            // from here we manipulate identifiers as object
             if (Rna.isRna(value)) {
                 identifierType = "rna";
                 identifier = new Rna(value);
@@ -31,21 +41,23 @@ export class AssociationNameService {
             // For one rna it's possible to have many siren from match
             // For one siren it's possible to have many rna from match
             const rnaSirenEntities = (await rnaSirenService.find(identifier)) || [];
+
+            // from here in loops we manipulate each found identifier as string
             const identifiers: string[] = rnaSirenEntities.length
-                ? rnaSirenEntities.map(entity => entity[identifierType.toLocaleLowerCase()].value) // Voir le ticket https://github.com/betagouv/api-subventions-asso/issues/2517
+                ? rnaSirenEntities.map(entity => entity[identifierType.toLocaleLowerCase()].value) // See issue https://github.com/betagouv/api-subventions-asso/issues/2517
                 : [value];
 
             associationNames = [
                 ...(await Promise.all(
-                    identifiers.map(identifier => uniteLegalNameService.searchBySirenSiretName(identifier)),
+                    identifiers.map(identifierStr => uniteLegalNameService.searchBySirenSiretName(identifierStr)),
                 )),
-                ...(await Promise.all(identifiers.map(identifier => rechercheEntreprises.search(identifier)))),
+                ...(await Promise.all(identifiers.map(identifierStr => searchEntreprisesCatch(identifierStr)))),
             ].flat();
         } else {
             // Siret Or Name
             associationNames = [
                 ...(await uniteLegalNameService.searchBySirenSiretName(lowerCaseValue)),
-                ...(await rechercheEntreprises.search(value)),
+                ...(await searchEntreprisesCatch(value)),
             ].flat();
         }
         const mergedAssociationName = associationNames.reduce((acc, associationName) => {
@@ -60,7 +72,9 @@ export class AssociationNameService {
             );
             return acc;
         }, {} as Record<string, AssociationNameEntity>);
-        return Object.values(mergedAssociationName);
+        const res = Object.values(mergedAssociationName);
+        if (!res.length && gotCompany) throw new NotAssociationError();
+        return res;
     }
 }
 

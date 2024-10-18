@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.56.0](https://github.com/betagouv/datasubvention/compare/v0.55.0...v0.56.0) (2024-10-07)
+
+### Bug Fixes
+
+-   **front:** [#2645](https://github.com/betagouv/datasubvention/issues/2645) add svelte public prefix ([#2650](https://github.com/betagouv/datasubvention/issues/2650)) ([50d4335](https://github.com/betagouv/datasubvention/commit/50d4335e0e454cac7a9bd7a5f851213405ebce09))
+
+### Features
+
+-   **front, api:** [#2413](https://github.com/betagouv/datasubvention/issues/2413) front extracts csv from api ([#2613](https://github.com/betagouv/datasubvention/issues/2613)) ([e17023d](https://github.com/betagouv/datasubvention/commit/e17023dab2db577b840de44f3b6e8c2ce0b067d7))
+-   **front:** display nothing on payment cell if sub is refused ([#2652](https://github.com/betagouv/datasubvention/issues/2652)) ([c9a9083](https://github.com/betagouv/datasubvention/commit/c9a90838d6fffd41dde1fada5dc1e32f99e56a14))
+
 # [0.55.0](https://github.com/betagouv/datasubvention/compare/v0.54.1...v0.55.0) (2024-09-09)
 
 ### Features

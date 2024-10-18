@@ -7,15 +7,13 @@ export class FonjepPaymentRepository extends FonjepCoreRepository<FonjepPaymentE
     readonly collectionName = "fonjepVersement";
 
     readonly joinIndexes = {
-        fonjepSubvention: {
-            code_poste: "$indexedInformations.code_poste",
-            year: { $year: "$indexedInformations.periode_debut" },
-        },
+        fonjepSubvention: "indexedInformations.joinKey",
     };
 
     async createIndexes() {
         super.createIndexes();
         await this.collection.createIndex({ "indexedInformations.code_poste": 1 });
+        await this.collection.createIndex({ "indexedInformations.joinKey": 1 });
     }
 
     create(entity: FonjepPaymentEntity) {

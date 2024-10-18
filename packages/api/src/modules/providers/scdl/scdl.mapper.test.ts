@@ -25,4 +25,13 @@ describe("scdl mapper", () => {
             expect(actual).toBe(2023);
         });
     });
+
+    describe("amount adapter", () => {
+        const adapter = (SCDL_MAPPER.amount as ParserInfo<any>).adapter as (v: any) => any;
+
+        it("only keeps numbers from string", () => {
+            const actual = adapter("2 098.56");
+            expect(actual).toBe(2098.56);
+        });
+    });
 });

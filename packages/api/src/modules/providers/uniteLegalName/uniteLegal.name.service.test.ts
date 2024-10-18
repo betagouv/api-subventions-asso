@@ -17,15 +17,18 @@ jest.mock("../../../shared/Validators");
 
 const mockedUniteLegalNamePort = uniteLegalNamePort as jest.Mocked<typeof uniteLegalNamePort>;
 const mockedRnaSirenService = rnaSirenService as jest.Mocked<typeof rnaSirenService>;
-const mockedSirenHelper = SirenHelper as jest.Mocked<typeof SirenHelper>;
-const mockedValidators = Validators as jest.Mocked<typeof Validators>;
 
 describe("uniteLegalNameService", () => {
     const SIREN = new Siren("123456789");
     const RNA = new Rna("W123456789");
-    const ASSOCIATION_IDENTIFIER = AssociationIdentifier.fromSirenAndRna(SIREN, RNA);
     const RNA_IDENTIFIER = AssociationIdentifier.fromRna(RNA);
     const fakeUniteLegalNameEntity = new UniteLegalNameEntity(SIREN, "Fake Name", `${SIREN} - Fake Name`, new Date());
+
+    let fromPartialSiretStrMock: jest.SpyInstance;
+
+    beforeAll(() => {
+        fromPartialSiretStrMock = jest.spyOn(Siren, "fromPartialSiretStr");
+    });
 
     describe("getNameFromIdentifier", () => {
         it("should return null for unknown identifier", async () => {
@@ -81,7 +84,7 @@ describe("uniteLegalNameService", () => {
             const result = await uniteLegalNameService.searchBySirenSiretName(SIREN.value);
             expect(result).toEqual([expected]);
             expect(isStartOfSiretMock).toHaveBeenCalledWith(SIREN.value);
-            expect(mockedSirenHelper.siretToSiren).toHaveBeenCalledWith(SIREN.value);
+            expect(fromPartialSiretStrMock).toHaveBeenCalledWith(SIREN.value);
         });
     });
 

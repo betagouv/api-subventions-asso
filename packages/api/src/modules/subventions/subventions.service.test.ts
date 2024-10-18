@@ -1,10 +1,12 @@
 import subventionsService from "./subventions.service";
 import * as providers from "../providers";
+import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
+import Rna from "../../valueObjects/Rna";
 jest.mock("../providers/index");
 
 const DEMANDES_SUBVENTIONS_PROVIDERS = providers.demandesSubventionsProviders;
 
-const IDENTIFIER = "IDENTIFIER";
+const IDENTIFIER = AssociationIdentifier.fromRna(new Rna("W123456789"));
 
 describe("SubventionsService", () => {
     const spy = jest.fn().mockResolvedValue([]);

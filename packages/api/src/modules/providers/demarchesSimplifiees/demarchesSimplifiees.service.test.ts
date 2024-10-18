@@ -409,10 +409,13 @@ describe("DemarchesSimplifieesService", () => {
         });
     });
 
+    const SIREN = new Siren("000000000");
+    const SIRET = SIREN.toSiret("00000");
+
     describe.each`
-        IDENTIFIER                                                            | spyToCall
-        ${AssociationIdentifier.fromSiren(new Siren("000000000"))}            | ${demarchesSimplifieesDataRepository.findBySiren}
-        ${EstablishmentIdentifier.fromSiret(new Siret("00000000000000"), {})} | ${demarchesSimplifieesDataRepository.findBySiret}
+        IDENTIFIER                                                                          | spyToCall
+        ${AssociationIdentifier.fromSiren(SIREN)}                                           | ${demarchesSimplifieesDataRepository.findBySiren}
+        ${EstablishmentIdentifier.fromSiret(SIRET, AssociationIdentifier.fromSiren(SIREN))} | ${demarchesSimplifieesDataRepository.findBySiret}
     `("getRawGrants", ({ IDENTIFIER, spyToCall }) => {
         const DATA = ["G1", "G2"];
         const RAW_DATA = ["g1", "g2"];

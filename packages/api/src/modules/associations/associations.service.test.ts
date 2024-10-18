@@ -30,10 +30,10 @@ describe("associationsService", () => {
     const RNA = new Rna("W000000001");
     const SIREN = new Siren("100000001");
     const IDENTIFIER = AssociationIdentifier.fromSirenAndRna(SIREN, RNA);
-    const INVALID_IDENTIFIER = {};
+    const INVALID_IDENTIFIER = {} as unknown as AssociationIdentifier;
     const getDemandesByAssociationMock = jest.spyOn(subventionService, "getDemandes");
     const getPaymentsByAssociationMock = jest.spyOn(paymentService, "getPayments");
-    const getDocumentMock = jest.spyOn(documentsService, "getDocument");
+    const getDocumentMock = jest.spyOn(documentsService, "getDocuments");
     const getEtablissementsMock = jest.spyOn(etablissementService, "getEtablissements");
     const rnaSirenServiceFindOne = jest.spyOn(rnaSirenService, "find");
     // @ts-expect-error: mock private method

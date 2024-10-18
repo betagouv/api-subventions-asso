@@ -12,32 +12,14 @@ export class FonjepJoiner {
 
     private get joinPipeline() {
         return [
-            {
-                $project: {
-                    _id: 0,
-                },
-            },
-            {
-                $project: {
-                    application: "$$ROOT",
-                },
-            },
+            { $project: { _id: 0 } },
+            { $project: { application: "$$ROOT" } },
             {
                 $lookup: {
                     from: fonjepPaymentRepository.collectionName,
-                    let: { joinId: fonjepSubventionRepository.joinIndexes[fonjepPaymentRepository.collectionName] },
-                    pipeline: [
-                        {
-                            $match: {
-                                $expr: {
-                                    $eq: [
-                                        fonjepPaymentRepository.joinIndexes[fonjepSubventionRepository.collectionName],
-                                        "$$joinId",
-                                    ],
-                                },
-                            },
-                        },
-                    ],
+                    localField:
+                        "application." + fonjepSubventionRepository.joinIndexes[fonjepPaymentRepository.collectionName],
+                    foreignField: fonjepPaymentRepository.joinIndexes[fonjepSubventionRepository.collectionName],
                     as: "payments",
                 },
             },

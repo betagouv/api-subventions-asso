@@ -8,6 +8,7 @@ import { flattenProviderValue, getObjectWithMetadata } from "$lib/helpers/provid
 import { updateSearchHistory } from "$lib/services/searchHistory.service";
 import { toEstablishmentComponent } from "$lib/resources/establishments/establishment.adapter";
 import documentHelper from "$lib/helpers/document.helper";
+import { isAssociation } from "$lib/resources/associations/association.helper";
 
 class AssociationService {
     incExtractData(identifier) {
@@ -20,8 +21,7 @@ class AssociationService {
 
         // TODO(#2079): use an adapter
         const association = flattenProviderValue(result) as AssociationEntity;
-
-        updateSearchHistory(toSearchHistory(association));
+        if (isAssociation(association)) updateSearchHistory(toSearchHistory(association));
 
         return association;
     }

@@ -162,7 +162,7 @@ describe("AssociationHttp", () => {
 
         it("calls grantExtractService.buildCsv", async () => {
             await controller.getGrantsExtract(IDENTIFIER.value);
-            expect(grantExtractService.buildCsv).toHaveBeenCalledWith(IDENTIFIER.value);
+            expect(grantExtractService.buildCsv).toHaveBeenCalledWith(ASSOCIATION_ID);
         });
 
         it("stream contains csv from service", async () => {

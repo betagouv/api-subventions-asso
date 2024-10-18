@@ -14,6 +14,8 @@ describe("CaisseDepotsService", () => {
     const TOKEN = "TOKEN";
     const IDENTIFIER = "11000000012013";
     let privateRawGetSpy, privateGetSpy;
+    const SIRET = new Siret("12000101100010");
+    const SIREN = SIRET.toSiren();
 
     beforeAll(() => {
         // @ts-expect-error: mock
@@ -113,9 +115,9 @@ describe("CaisseDepotsService", () => {
     });
 
     describe.each`
-        identifierType | identifierCalled                                                      | identifierGiven
-        ${"Siret"}     | ${EstablishmentIdentifier.fromSiret(new Siret("12000101100010"), {})} | ${"12000101100010"}
-        ${"Siren"}     | ${AssociationIdentifier.fromSiren(new Siren("120001011"))}            | ${"120001011*"}
+        identifierType | identifierCalled                                                                    | identifierGiven
+        ${"Siret"}     | ${EstablishmentIdentifier.fromSiret(SIRET, AssociationIdentifier.fromSiren(SIREN))} | ${"12000101100010"}
+        ${"Siren"}     | ${AssociationIdentifier.fromSiren(SIREN)}                                           | ${"120001011*"}
     `("getDemandeSubvention by $identifierType", ({ identifierCalled, identifierGiven, identifierType }) => {
         const RES = {};
 
@@ -137,9 +139,9 @@ describe("CaisseDepotsService", () => {
     });
 
     describe.each`
-        identifierType | identifierCalled                                                      | identifierGiven
-        ${"Siret"}     | ${EstablishmentIdentifier.fromSiret(new Siret("12000101100010"), {})} | ${"12000101100010"}
-        ${"Siren"}     | ${AssociationIdentifier.fromSiren(new Siren("120001011"))}            | ${"120001011*"}
+        identifierType | identifierCalled                                                                    | identifierGiven
+        ${"Siret"}     | ${EstablishmentIdentifier.fromSiret(SIRET, AssociationIdentifier.fromSiren(SIREN))} | ${"12000101100010"}
+        ${"Siren"}     | ${AssociationIdentifier.fromSiren(SIREN)}                                           | ${"120001011*"}
     `("getRawGrants by $identifierType", ({ identifierCalled, identifierGiven, identifierType }) => {
         const RES = [1, 2];
 

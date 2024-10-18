@@ -39,7 +39,7 @@ export default class ChorusAdapter {
             domaineFonctionnel: toPvChorus(entity.indexedInformations.domaineFonctionnel),
             codeBranche: toPvChorus(entity.indexedInformations.codeBranche),
             branche: toPvChorus(entity.indexedInformations.branche),
-            numeroDemandePayment: toPvOrUndefined(entity.indexedInformations.numeroDemandePayment),
+            numeroDemandePaiement: toPvOrUndefined(entity.indexedInformations.numeroDemandePaiement),
             numeroTier: toPvOrUndefined(entity.indexedInformations.numeroTier),
             activitee: toPvOrUndefined(entity.indexedInformations.activitee),
             compte: toPvOrUndefined(entity.indexedInformations.compte),
