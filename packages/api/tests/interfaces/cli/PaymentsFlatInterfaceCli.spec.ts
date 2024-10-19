@@ -19,17 +19,11 @@ const insertData = async () => {
 };
 
 describe("PaymentsFlatCli", () => {
-    let mockGetCollection: jest.SpyInstance;
-    let mockDataBretagneLogin: jest.SpyInstance;
     beforeEach(async () => {
         await insertData();
-
-        mockGetCollection = jest
-            .spyOn(dataBretagnePort, "getCollection")
-            .mockImplementation(collection => DATA_BRETAGNE_DTOS[collection]);
+        jest.spyOn(dataBretagnePort, "login").mockImplementation(jest.fn());
+        jest.spyOn(dataBretagnePort, "getCollection").mockImplementation(collection => DATA_BRETAGNE_DTOS[collection]);
     });
-
-    mockDataBretagneLogin = jest.spyOn(dataBretagnePort, "login").mockImplementation(jest.fn());
 
     afterEach(() => {
         jest.restoreAllMocks();
@@ -39,8 +33,8 @@ describe("PaymentsFlatCli", () => {
     describe("resync()", () => {
         it("should persist payments flat collection", async () => {
             await cli.resync();
-            //@ts-expect-error protected method
-            const paymentsFlat = (await paymentFlatPort.collection.find({}).toArray())
+
+            const paymentsFlat = (await paymentFlatPort.findAll())
                 .map(paymentFlat => ({
                     ...paymentFlat,
                     _id: expect.any(ObjectId),

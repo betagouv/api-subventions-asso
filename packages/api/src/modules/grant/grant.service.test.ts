@@ -13,8 +13,10 @@ import scdlGrantService from "../providers/scdl/scdl.grant.service";
 import { DemandeSubvention, Grant, Payment } from "dto";
 import { SIRET_STR } from "../../../tests/__fixtures__/association.fixture";
 import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
-import Siret from "../../valueObjects/Siret";
 import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
+import paymentService from "../payments/payments.service";
+import subventionsService from "../subventions/subventions.service";
+import Siret from "../../valueObjects/Siret";
 jest.mock("../providers/scdl/scdl.service");
 
 jest.mock("@sentry/node");
@@ -23,6 +25,8 @@ jest.mock("../../shared/Validators");
 jest.mock("./commonGrant.service");
 jest.mock("../associations/associations.service");
 jest.mock("../../shared/helpers/SirenHelper");
+jest.mock("../subventions/subventions.service");
+jest.mock("../payments/payments.service");
 
 describe("GrantService", () => {
     const SCDL_PRODUCER_NAME = "SCDL_PRODUCER_NAME";
@@ -53,6 +57,7 @@ describe("GrantService", () => {
         { provider: paymentProvidersFixtures[0].provider.id, data: {}, type: "payment", joinKey: JOIN_KEY_2 },
         { provider: paymentProvidersFixtures[0].provider.id, data: {}, type: "payment", joinKey: JOIN_KEY_2 },
     ];
+
     const RAW_GRANTS: AnyRawGrant[] = [RAW_FULL_GRANT, RAW_APPLICATION, ...RAW_PAYMENTS];
     const GRANTS_BY_TYPE = {
         fullGrants: [RAW_FULL_GRANT],
@@ -160,7 +165,7 @@ describe("GrantService", () => {
         });
     });
 
-    describe("sortGrants", () => {
+    describe("sortByGrantType", () => {
         const LONLEY_PAYMENT = { application: null, payments: PAYMENTS };
         const LONELY_APPLICATION = { application: APPLICATION, payments: null };
         it.each`
@@ -173,37 +178,65 @@ describe("GrantService", () => {
             ${[LONLEY_PAYMENT, LONELY_APPLICATION, GRANT]}
         `("should sort grants with full grants first", ({ grants }) => {
             const expected = [GRANT, LONELY_APPLICATION, LONLEY_PAYMENT];
-            const actual = grantService.sortGrants(grants);
+            const actual = grantService.sortByGrantType(grants);
             expect(actual).toEqual(expected);
         });
     });
 
     describe("getGrants", () => {
         const JOINED_RAW_GRANTS = [DEFAULT_JOINED_RAW_GRANT, {}];
-        let mockGetRawGrants, mockAdapteJoinedRawGrant, mockSortGrants;
+        // @ts-expect-error: mock DemandeSubvention
+        const GRANT_2 = { application: { siret: "10000000000002" } as DemandeSubvention, payments: [] };
+        const GROUPED_BY_EXERCISE_GRANTS = {
+            "2024": [GRANT],
+            unknown: [GRANT_2],
+        };
+        const mockGetRawGrants = jest.spyOn(grantService, "getRawGrants");
+        const mockAdapteJoinedRawGrant = jest.spyOn(grantService, "adaptJoinedRawGrant");
+        const mockSortByGrantType = jest.spyOn(grantService, "sortByGrantType");
+        const mockHandleMultiYearGrants = jest.spyOn(grantService, "handleMultiYearGrants");
+        const mockGroupGrantsByExercise = jest.spyOn(grantService, "groupGrantsByExercise");
+        const mocks: jest.SpyInstance[] = [
+            mockGetRawGrants,
+            mockAdapteJoinedRawGrant,
+            mockHandleMultiYearGrants,
+            mockGroupGrantsByExercise,
+            mockSortByGrantType,
+        ];
+
         beforeAll(() => {
-            mockGetRawGrants = jest.spyOn(grantService, "getRawGrants").mockResolvedValue(JOINED_RAW_GRANTS);
-            mockAdapteJoinedRawGrant = jest.spyOn(grantService, "adaptJoinedRawGrant").mockReturnValue(GRANT);
-            mockSortGrants = jest.spyOn(grantService, "sortGrants").mockImplementation(arr => arr);
+            mockGetRawGrants.mockResolvedValue(JOINED_RAW_GRANTS);
+            mockAdapteJoinedRawGrant.mockReturnValue(GRANT);
+            mockHandleMultiYearGrants.mockImplementation(grants => grants);
+            mockGroupGrantsByExercise.mockImplementation(grants => GROUPED_BY_EXERCISE_GRANTS);
+            mockSortByGrantType.mockImplementation(arr => arr);
         });
 
         afterAll(() => {
-            mockGetRawGrants.mockRestore();
-            mockAdapteJoinedRawGrant.mockRestore();
-            mockSortGrants.mockRestore();
+            mocks.forEach(mock => mock.mockRestore());
         });
+
+        afterEach(() => mocks.forEach(mock => mock.mockClear()));
 
         it("should call getRawGrants", async () => {
             await grantService.getGrants(ESTABLISHMENT_ID);
             expect(mockGetRawGrants).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
+
         it("should call adaptJoinedRawGrant", async () => {
             await grantService.getGrants(ESTABLISHMENT_ID);
             expect(mockAdapteJoinedRawGrant).toHaveBeenCalledTimes(JOINED_RAW_GRANTS.length);
         });
-        it("should call sortGrants", async () => {
+
+        it("should call handleMultiYearGrants", async () => {
             await grantService.getGrants(ESTABLISHMENT_ID);
-            expect(mockSortGrants).toHaveBeenCalledWith([GRANT, GRANT]);
+            expect(mockHandleMultiYearGrants).toHaveBeenCalledWith([GRANT, GRANT]);
+        });
+
+        it("should call sortByGrantType", async () => {
+            await grantService.getGrants(ESTABLISHMENT_ID);
+            expect(mockSortByGrantType).toHaveBeenNthCalledWith(1, [GRANT]);
+            expect(mockSortByGrantType).toHaveBeenNthCalledWith(2, [GRANT_2]);
         });
     });
 
@@ -217,25 +250,72 @@ describe("GrantService", () => {
         });
     });
 
-    describe("groupRawGrantsByType", () => {
-        it("should return grants grouped by type", () => {
-            const expected = { fullGrants: [RAW_FULL_GRANT], applications: [RAW_APPLICATION], payments: RAW_PAYMENTS };
-            // @ts-expect-error: test private method
-            const actual = grantService.groupRawGrantsByType(RAW_GRANTS);
-            expect(actual).toEqual(expected);
+    describe("groupGrantsByExercise", () => {
+        beforeAll(() => {
+            jest.mocked(subventionsService.getSubventionExercise).mockImplementation(
+                // @ts-expect-error: mock
+                application => application.annee_demande,
+            );
+            // @ts-expect-error: mock
+            jest.mocked(paymentService.getPaymentExercise).mockImplementation(payment => payment.dateOperation);
         });
 
-        it.each`
-            rawGrants                             | grantByType
-            ${[RAW_FULL_GRANT]}                   | ${{ fullGrants: [RAW_FULL_GRANT], applications: [], payments: [] }}
-            ${[RAW_FULL_GRANT, RAW_APPLICATION]}  | ${{ fullGrants: [RAW_FULL_GRANT], applications: [RAW_APPLICATION], payments: [] }}
-            ${[RAW_FULL_GRANT, ...RAW_PAYMENTS]}  | ${{ fullGrants: [RAW_FULL_GRANT], applications: [], payments: RAW_PAYMENTS }}
-            ${[RAW_APPLICATION, ...RAW_PAYMENTS]} | ${{ fullGrants: [], applications: [RAW_APPLICATION], payments: RAW_PAYMENTS }}
-            ${[]}                                 | ${{ fullGrants: [], applications: [], payments: [] }}
-        `("should set empty array for empty type grant", ({ rawGrants, grantByType }) => {
-            const expected = grantByType;
-            // @ts-expect-error: test private method
-            const actual = grantService.groupRawGrantsByType(rawGrants);
+        afterAll(() => {
+            jest.mocked(subventionsService.getSubventionExercise).mockReset();
+            jest.mocked(paymentService.getPaymentExercise).mockReset();
+        });
+
+        const GRANT_APPLICATION_EXERCISE_LOWER_THAN_PAYMENT = {
+            application: { annee_demande: 2019 },
+            payments: [{ dateOperation: 2020 }, { dateOperation: 2020 }, { dateOperation: 2020 }],
+        };
+
+        const GRANT_ONE_EXERCISE = {
+            application: { annee_demande: 2020 },
+            payments: [{ dateOperation: 2020 }, { dateOperation: 2020 }, { dateOperation: 2020 }],
+        };
+
+        const GRANT_NO_APPLICATION = {
+            application: undefined,
+            payments: [{ dateOperation: 2021 }, { dateOperation: 2021 }, { dateOperation: 2021 }],
+        };
+
+        const GRANT_NO_PAYMENT = { application: { annee_demande: 2020 }, payments: undefined };
+
+        const GRANTS = [
+            GRANT_APPLICATION_EXERCISE_LOWER_THAN_PAYMENT,
+            GRANT_ONE_EXERCISE,
+            GRANT_NO_APPLICATION,
+            GRANT_NO_PAYMENT,
+        ];
+
+        it("should call subventionsService", () => {
+            // @ts-expect-error: partial object
+            grantService.groupGrantsByExercise(GRANTS);
+            expect(subventionsService.getSubventionExercise).toHaveBeenCalledTimes(1); // number of grant without payment
+        });
+
+        it("should call paymentService", () => {
+            // @ts-expect-error: partial object
+            grantService.groupGrantsByExercise(GRANTS);
+            expect(paymentService.getPaymentExercise).toHaveBeenCalledTimes(3); // number of grant with payments
+        });
+
+        it("should throw an error if no application nor payments", () => {
+            // @ts-expect-error: partial object
+            expect(() => grantService.groupGrantsByExercise([GRANT_ONE_EXERCISE, {}])).toThrow(
+                "We should not have Grant without payment and application",
+            );
+        });
+
+        it("should group grants by exercise", () => {
+            const expected = {
+                // order matters and should be the same as described in GRANTS definition
+                2020: [GRANT_APPLICATION_EXERCISE_LOWER_THAN_PAYMENT, GRANT_ONE_EXERCISE, GRANT_NO_PAYMENT],
+                2021: [GRANT_NO_APPLICATION],
+            };
+            // @ts-expect-error: partial object
+            const actual = grantService.groupGrantsByExercise(GRANTS);
             expect(actual).toEqual(expected);
         });
     });
@@ -372,6 +452,67 @@ describe("GrantService", () => {
             mocked(commonGrantService.rawToCommon).mockReturnValueOnce(null);
             const expected = [2];
             const actual = await grantService.getCommonGrants(ESTABLISHMENT_ID, true);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("handleMultiYearGrants", () => {
+        let separateOneBy: jest.SpyInstance;
+
+        beforeAll(() => {
+            separateOneBy = jest.spyOn(grantService, "splitGrantByExercise").mockReturnValue([]);
+        });
+
+        afterAll(() => {
+            separateOneBy.mockRestore();
+        });
+
+        it("calls splitGrantByExercise for each grant", () => {
+            grantService.handleMultiYearGrants([1, 2, 3] as unknown as Grant[]);
+            expect(separateOneBy).toHaveBeenCalledTimes(3);
+        });
+
+        it("returns flattened result from splitGrantByExercise", () => {
+            separateOneBy.mockReturnValueOnce([1, 2]);
+            separateOneBy.mockReturnValueOnce([3]);
+            separateOneBy.mockReturnValueOnce([4, 5]);
+            const expected = [1, 2, 3, 4, 5];
+            const actual = grantService.handleMultiYearGrants([1, 2, 3] as unknown as Grant[]);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("splitGrantByExercise", () => {
+        const APPLICATION = { id: 1, annee_demande: { value: 2022 } };
+        const PAYMENT = (annee = 2022) => ({ annee });
+        const mockGetPaymentYear = jest.fn(payment => payment.annee);
+        const DISPARATE_PAYMENTS = [PAYMENT(2022), PAYMENT(2023), PAYMENT(2022)];
+
+        beforeAll(() => {
+            jest.mocked(paymentService.getPaymentExercise).mockImplementation(mockGetPaymentYear);
+            jest.mocked(subventionsService.getSubventionExercise).mockReturnValue(APPLICATION.annee_demande.value);
+        });
+
+        it("calls getPaymentExercise for each payment", () => {
+            // @ts-expect-error -- mocked args
+            grantService.splitGrantByExercise({ application: null, payments: DISPARATE_PAYMENTS });
+            expect(mockGetPaymentYear).toHaveBeenCalledTimes(3);
+        });
+
+        it("separates application and payments from different years", () => {
+            const expected = [
+                {
+                    application: APPLICATION,
+                    payments: [PAYMENT(2022), PAYMENT(2022)],
+                },
+                { application: null, payments: [PAYMENT(2023)] },
+            ];
+            const actual = grantService.splitGrantByExercise({
+                // @ts-expect-error -- mocked args
+                application: APPLICATION,
+                // @ts-expect-error -- mocked args
+                payments: DISPARATE_PAYMENTS,
+            });
             expect(actual).toEqual(expected);
         });
     });

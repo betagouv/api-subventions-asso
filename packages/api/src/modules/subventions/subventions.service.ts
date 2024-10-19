@@ -1,3 +1,4 @@
+import { DemandeSubvention } from "dto";
 import { StructureIdentifier } from "../../@types";
 import Flux from "../../shared/Flux";
 import { demandesSubventionsProviders } from "../providers";
@@ -32,6 +33,10 @@ export class SubventionsService {
         );
 
         return subventionsFlux;
+    }
+
+    getSubventionExercise(application: DemandeSubvention) {
+        return application?.annee_demande?.value;
     }
 }
 
