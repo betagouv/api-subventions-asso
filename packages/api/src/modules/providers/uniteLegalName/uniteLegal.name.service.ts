@@ -1,7 +1,6 @@
-import { Siren, Siret } from "dto";
+import { Siren, Siret, AssociationIdentifiers } from "dto";
 import Fuse from "fuse.js";
 import { StructureIdentifiersEnum } from "../../../@enums/StructureIdentifiersEnum";
-import { AssociationIdentifiers } from "../../../@types";
 import uniteLegalNamePort from "../../../dataProviders/db/uniteLegalName/uniteLegalName.port";
 import { isStartOfSiret } from "../../../shared/Validators";
 import { getIdentifierType } from "../../../shared/helpers/IdentifierHelper";

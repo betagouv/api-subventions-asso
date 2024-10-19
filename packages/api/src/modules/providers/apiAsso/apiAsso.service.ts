@@ -1,8 +1,17 @@
-import { Rna, Siren, Siret, Association, Etablissement, DocumentDto } from "dto";
+import {
+    Rna,
+    Siren,
+    Siret,
+    Association,
+    Etablissement,
+    DocumentDto,
+    AssociationIdentifiers,
+    StructureIdentifiers,
+} from "dto";
 import { XMLParser } from "fast-xml-parser";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import { AssociationIdentifiers, DefaultObject, StructureIdentifiers } from "../../../@types";
+import { DefaultObject } from "../../../@types";
 import { API_ASSO_URL, API_ASSO_TOKEN } from "../../../configurations/apis.conf";
 import CacheData from "../../../shared/Cache";
 import { siretToSiren } from "../../../shared/helpers/SirenHelper";

@@ -1,6 +1,5 @@
-import { Rna, Siren } from "dto";
+import { Rna, Siren, AssociationIdentifiers } from "dto";
 import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
-import { AssociationIdentifiers } from "../../@types";
 import rnaSirenPort from "../../dataProviders/db/rnaSiren/rnaSiren.port";
 import apiAssoService from "../providers/apiAsso/apiAsso.service";
 import RnaSirenEntity from "../../entities/RnaSirenEntity";
