@@ -1,4 +1,4 @@
-import { Siret } from "dto";
+import { DemandeSubvention, Siret } from "dto";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { AssociationIdentifiers } from "../../@types";
@@ -62,6 +62,10 @@ export class SubventionsService {
             );
             return subventionsFlux;
         };
+    }
+
+    getSubventionExercise(application: DemandeSubvention) {
+        return application?.annee_demande?.value;
     }
 }
 

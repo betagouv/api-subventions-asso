@@ -13,7 +13,6 @@ import { siretToSiren } from "../../../src/shared/helpers/SirenHelper";
 import { BadRequestError } from "../../../src/shared/errors/httpErrors";
 import associationsService from "../../../src/modules/associations/associations.service";
 import rnaSirenPort from "../../../src/dataProviders/db/rnaSiren/rnaSiren.port";
-import { Rna } from "dto";
 import { JoinedRawGrant, RawGrant } from "../../../src/modules/grant/@types/rawGrant";
 import demarchesSimplifieesDataRepository from "../../../src/modules/providers/demarchesSimplifiees/repositories/demarchesSimplifieesData.repository";
 import {
@@ -30,11 +29,12 @@ import DEFAULT_ASSOCIATION, { LONELY_RNA } from "../../__fixtures__/association.
 import dauphinGisproRepository from "../../../src/modules/providers/dauphin/repositories/dauphin-gispro.repository";
 import { DAUPHIN_GISPRO_DBOS } from "../../dataProviders/db/__fixtures__/dauphinGispro.fixtures";
 import rnaSirenService from "../../../src/modules/rna-siren/rnaSiren.service";
-import FonjepEntityAdapter from "../../../src/modules/providers/fonjep/adapters/FonjepEntityAdapter";
-import { SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
+import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
 import chorusLineRepository from "../../../src/modules/providers/chorus/repositories/chorus.line.repository";
 import { ChorusFixtures } from "../../dataProviders/db/__fixtures__/chorus.fixtures";
 import fonjepPaymentRepository from "../../../src/modules/providers/fonjep/repositories/fonjep.payment.repository";
+import { Grant } from "dto";
+import miscScdlProducersRepository from "../../../src/modules/providers/scdl/repositories/miscScdlProducer.repository";
 
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
 
@@ -57,7 +57,9 @@ const insertData = async () => {
     await fonjepSubventionRepository.create(FonjepSubventionFixture);
     await demarchesSimplifieesMapperRepository.upsert(DS_SCHEMAS[0]);
     await demarchesSimplifieesDataRepository.upsert(DS_DATA_ENTITIES[0]);
-    // producers are persisted in jest init setup
+    // jest integ setup insert producers on app launch and may be defined at this point
+    //@ts-expect-error: only for test
+    await miscScdlProducersRepository.upsert(LOCAL_AUTHORITIES[0].slug, LOCAL_AUTHORITIES[0]);
     await miscScdlGrantRepository.createMany(SCDL_GRANT_DBOS);
 };
 
@@ -209,6 +211,7 @@ describe("/association", () => {
 
         it("should return grants with siren", async () => {
             await rnaSirenService.insert(RNA, SIREN);
+
             const response = await request(g.app)
                 .get(`/association/${SIREN}/grants`)
                 .set("x-access-token", await createAndGetUserToken())

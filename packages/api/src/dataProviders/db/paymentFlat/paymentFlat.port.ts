@@ -21,6 +21,11 @@ export class PaymentFlatPort extends MongoRepository<PaymentFlatDbo> {
         return Promise.resolve();
     }
 
+    // used in test
+    public async findAll() {
+        return (await this.collection.find({})).toArray();
+    }
+
     public async deleteAll() {
         await this.collection.deleteMany({});
     }

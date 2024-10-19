@@ -23,6 +23,11 @@ export class MiscScdlProducersRepository extends MongoRepository<MiscScdlProduce
         return this.collection.updateOne({ slug }, { $set: set });
     }
 
+    // only used in test - private should make typescript disallow the use
+    private async upsert(slug: string, set: MiscScdlProducerEntity) {
+        return this.collection.updateOne({ slug }, { $set: set }, { upsert: true });
+    }
+
     async createIndexes() {
         await this.collection.createIndex({ slug: 1 }, { unique: true });
         await this.collection.createIndex({ name: 1 }, { unique: true });
