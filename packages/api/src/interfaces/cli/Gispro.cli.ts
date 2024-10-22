@@ -19,7 +19,7 @@ export default class GisproCli extends CliController {
      * Tests parser
      * @param file path to file
      */
-    public async test(file: string) {
+    public async test(file: string, year: string) {
         if (typeof file !== "string") {
             throw new Error("Parse command need file args");
         }
@@ -32,16 +32,17 @@ export default class GisproCli extends CliController {
 
         const fileContent = fs.readFileSync(file);
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars -- debug purposes
-        const entities = GisproParser.parse(fileContent, () => true);
+        GisproParser.parse(fileContent, parseInt(year), () => true);
     }
 
-    protected async _parse(file: string) {
+    protected async _parse(file: string, logs: unknown[], exportDate?: Date, ...args) {
         this.logger.logIC("\nStart parse file: ", file);
+
+        const year = parseInt(args[0]);
 
         const fileContent = fs.readFileSync(file);
 
-        const entities = GisproParser.parse(fileContent, () => true);
+        const entities = GisproParser.parse(fileContent, year, () => true);
 
         this.logger.logIC(entities.length + " entities founds");
 
