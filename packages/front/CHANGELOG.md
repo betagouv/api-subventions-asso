@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.56.1](https://github.com/betagouv/datasubvention/compare/v0.56.0...v0.56.1) (2024-10-14)
+
+### Bug Fixes
+
+-   **front:** display payments if no application info ([#2739](https://github.com/betagouv/datasubvention/issues/2739)) ([0e1ebc6](https://github.com/betagouv/datasubvention/commit/0e1ebc6322246730d384acb6c7dc0d9fa13e83eb))
+
+### Reverts
+
+-   Revert "feat(front, api): #2413 front extracts csv from api (#2613)" ([98ccfbe](https://github.com/betagouv/datasubvention/commit/98ccfbe15f201114b6901e30209c9dca03e344bf)), closes [#2413](https://github.com/betagouv/datasubvention/issues/2413) [#2613](https://github.com/betagouv/datasubvention/issues/2613)
+
 # [0.56.0](https://github.com/betagouv/datasubvention/compare/v0.55.0...v0.56.0) (2024-10-07)
 
 ### Bug Fixes
