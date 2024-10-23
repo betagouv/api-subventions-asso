@@ -1,5 +1,5 @@
 import { RECORDS } from "./__fixtures__/dataBretagne.fixture";
-import { CHORUS_LINE_ENTITY } from "./__fixtures__/chorusLineEntity.fixture";
+import { ENTITIES } from "../../providers/chorus/__fixtures__/ChorusFixtures";
 import { PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 import IChorusIndexedInformations from "../../providers/chorus/@types/IChorusIndexedInformations";
@@ -7,14 +7,16 @@ import ChorusLineEntity from "../../providers/chorus/entities/ChorusLineEntity";
 console.error = jest.fn();
 
 const documentDataReturnedValue = {
-    programCode: 163,
-    activityCode: "AC4560000000",
-    actionCode: "0163AC123",
-    programEntity: RECORDS["programme"][163],
+    programCode: 101,
+    activityCode: "3222",
+    actionCode: "0101-01-02",
+    programEntity: RECORDS["programme"][101],
     ministryEntity: RECORDS["ministry"]["code"],
-    domaineFonctEntity: RECORDS["domaineFonct"]["0163AC123"],
-    refProgrammationEntity: RECORDS["refProgrammation"]["AC4560000000"],
+    domaineFonctEntity: RECORDS["domaineFonct"]["0101-01-02"],
+    refProgrammationEntity: RECORDS["refProgrammation"]["3222"],
 };
+
+const CHORUS_LINE_ENTITY = ENTITIES[0];
 
 describe("PaymentFlatAdapter", () => {
     describe("toPaymentFlatEntity", () => {
@@ -29,8 +31,8 @@ describe("PaymentFlatAdapter", () => {
         });
 
         it("should return PaymentFlatEntity when data is fully provided", () => {
-            const result = PaymentFlatAdapter.toPaymentFlatEntity(
-                CHORUS_LINE_ENTITY as unknown as ChorusLineEntity,
+            const result = PaymentFlatAdapter.toNotAggregatedChorusPaymentFlatEntity(
+                CHORUS_LINE_ENTITY,
                 RECORDS["programme"],
                 RECORDS["ministry"],
                 RECORDS["domaineFonct"],
@@ -46,7 +48,7 @@ describe("PaymentFlatAdapter", () => {
                 ...documentDataReturnedValue,
                 programEntity: undefined,
             });
-            const result = PaymentFlatAdapter.toPaymentFlatEntity(
+            const result = PaymentFlatAdapter.toNotAggregatedChorusPaymentFlatEntity(
                 { ...CHORUS_LINE_ENTITY } as unknown as ChorusLineEntity,
                 RECORDS["programme"],
                 RECORDS["ministry"],
@@ -67,7 +69,7 @@ describe("PaymentFlatAdapter", () => {
         it("should return DataBretagne Document Data when no null is present", () => {
             //@ts-expect-error : test private method
             const result = PaymentFlatAdapter.getDataBretagneDocumentData(
-                CHORUS_LINE_ENTITY.indexedInformations as unknown as IChorusIndexedInformations,
+                CHORUS_LINE_ENTITY.indexedInformations,
                 RECORDS["programme"],
                 RECORDS["ministry"],
                 RECORDS["domaineFonct"],
@@ -84,7 +86,7 @@ describe("PaymentFlatAdapter", () => {
                 {
                     ...CHORUS_LINE_ENTITY.indexedInformations,
                     codeDomaineFonctionnel: "0161AC123",
-                } as unknown as IChorusIndexedInformations,
+                },
                 RECORDS["programme"],
                 RECORDS["ministry"],
                 RECORDS["domaineFonct"],
@@ -93,12 +95,12 @@ describe("PaymentFlatAdapter", () => {
 
             expect(result).toEqual({
                 programCode: 161,
-                activityCode: "AC4560000000",
+                activityCode: "3222",
                 actionCode: "0161AC123",
                 programEntity: undefined,
                 ministryEntity: undefined,
                 domaineFonctEntity: undefined,
-                refProgrammationEntity: RECORDS["refProgrammation"]["AC4560000000"],
+                refProgrammationEntity: RECORDS["refProgrammation"]["3222"],
             });
         });
 
@@ -134,7 +136,7 @@ describe("PaymentFlatAdapter", () => {
             },
             { chorusLineEntity: CHORUS_LINE_ENTITY.indexedInformations, codeValue: "code_2", recordType: "Ministry" },
         ])("should console.error when %s not found", ({ chorusLineEntity, codeValue, recordType }) => {
-            RECORDS["programme"][163].code_ministere = codeValue;
+            RECORDS["programme"][101].code_ministere = codeValue;
 
             //@ts-expect-error : test private method
             const result = PaymentFlatAdapter.getDataBretagneDocumentData(
@@ -148,7 +150,7 @@ describe("PaymentFlatAdapter", () => {
             const expectedMessage = new RegExp(`${recordType} not found for .* ${codeValue}`);
             expect(console.error).toHaveBeenCalledWith(expect.stringMatching(expectedMessage));
 
-            RECORDS["programme"][163].code_ministere = "code";
+            RECORDS["programme"][101].code_ministere = "code";
         });
     });
 });
