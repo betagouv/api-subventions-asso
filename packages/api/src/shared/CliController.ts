@@ -39,7 +39,7 @@ export default class CliController {
      * If not available, take the file's creation date or the file's reception date.
      * Accept "YYYY-MM-DD" format | TODO: make YYYY-MM-DD mandatory ?
      */
-    public async parse(file: string, exportDateString: string): Promise<void> {
+    public async parse(file: string, exportDateString: string, ...args): Promise<void> {
         this.validateDate(exportDateString);
         const exportDate = new Date(exportDateString);
 
@@ -53,7 +53,7 @@ export default class CliController {
 
         await files
             .reduce((acc, filePath) => {
-                return acc.then(() => this._parse(filePath, logs, exportDate));
+                return acc.then(() => this._parse(filePath, logs, exportDate, ...args));
             }, Promise.resolve())
             // @todo: remove "+ logs.join()" when all cli controllers has refactored with logger
             .then(() =>
@@ -66,7 +66,7 @@ export default class CliController {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    protected async _parse(file: string, logs: unknown[], exportDate?: Date) {
+    protected async _parse(file: string, logs: unknown[], exportDate?: Date, ..._args) {
         throw new Error("_parse() need to be implemented by the child class");
     }
 
