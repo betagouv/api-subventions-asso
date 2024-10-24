@@ -3,17 +3,17 @@ import localStorageService from "$lib/services/localStorage.service";
 
 export class MainInfoBannerController {
     private linkUrl =
-        "https://datasubvention.beta.gouv.fr/consultation-agents-publics-donnees-subventions-2024/?mtm_campaign=consultationdonnees&mtm_source=bandeauapp";
+        "https://datasubvention.beta.gouv.fr/webinaireformation-datasubvention/?mtm_campaign=webinaireformation&mtm_source=appli-bandeau";
     // private link = "/user/profile";  // TODO clean in #2544
     public component: SvelteComponent | undefined;
 
     get title() {
-        return "CONSULTATION";
+        return "";
     }
 
     get description() {
         // return `Certaines informations de votre profil sont manquantes. N’oubliez pas de`; // TODO clean in #2544
-        return "Agents publics, partagez vos attentes et besoins métiers en matière d’informations sur les subventions des associations :";
+        return "Formez-vous en moins d'une heure à Data.subvention et gagnez un temps précieux au quotidien : ";
     }
 
     get url() {
@@ -22,7 +22,7 @@ export class MainInfoBannerController {
 
     get urlLabel() {
         //  return "compléter vos informations ici"  // TODO clean in #2544
-        return "participez à l'enquête";
+        return "inscrivez-vous en cliquant ici";
     }
 
     close() {
