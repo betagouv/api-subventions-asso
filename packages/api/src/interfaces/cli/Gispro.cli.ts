@@ -35,10 +35,10 @@ export default class GisproCli extends CliController {
         GisproParser.parse(fileContent, parseInt(year), () => true);
     }
 
-    protected async _parse(file: string, logs: unknown[], exportDate?: Date, ...args) {
+    protected async _parse(file: string, logs: unknown[], exportDate?: Date, ..._args) {
         this.logger.logIC("\nStart parse file: ", file);
 
-        const year = parseInt(args[0]);
+        const year = exportDate?.getFullYear();
 
         const fileContent = fs.readFileSync(file);
 
