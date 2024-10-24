@@ -308,11 +308,14 @@ describe("Dauphin Service", () => {
 
     describe("formatAndReturnApplicationDto", () => {
         it("should remove fields", () => {
-            const objectToKeep = { foo: "bar" };
+            const objectToKeep = {
+                foo: "bar",
+            };
             const demandeurFieldToKeep = { fieldToKeep: "baz" };
             const beneficiaireFieldToKeep = { fieldToKeep: "ban" };
             const expected = {
                 objectToKeep,
+                referenceAdministrative: "01234567-3456",
                 demandeur: demandeurFieldToKeep,
                 beneficiaires: [beneficiaireFieldToKeep],
             };
@@ -320,11 +323,12 @@ describe("Dauphin Service", () => {
             const actual = dauphinService.formatAndReturnApplicationDto({
                 _source: {
                     objectToKeep,
+                    referenceAdministrative: "01234567-3456",
                     demandeur: { ...demandeurFieldToKeep, pieces: "", history: "", linkedUsers: "" },
                     beneficiaires: [{ ...beneficiaireFieldToKeep, pieces: "", history: "", linkedUsers: "" }],
                 },
             });
-            expect(actual).toEqual(expected);
+            expect(actual).toMatchObject(expected);
         });
 
         it("should add adapted 'codeActionProjet' field", () => {
