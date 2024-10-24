@@ -108,6 +108,12 @@ describe("CliController", () => {
             expect(actual).toEqual(expected);
         });
 
+        it("should call _parse() with additional args", async () => {
+            await controller.parse(FILENAME, EXPORT_DATE, "some", "other", "thing");
+            const actual = _parseSpy.mock.calls[0];
+            expect(actual).toMatchInlineSnapshot();
+        });
+
         it("should call _parse() multiple times", async () => {
             const FILES = [FILENAME, FILENAME, FILENAME];
             findFilesMock.mockImplementationOnce(() => FILES);
