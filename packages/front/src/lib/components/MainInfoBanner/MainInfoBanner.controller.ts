@@ -13,7 +13,7 @@ export class MainInfoBannerController {
 
     get description() {
         // return `Certaines informations de votre profil sont manquantes. N’oubliez pas de`; // TODO clean in #2544
-        return "Exclusivement pour les agents publics : formez-vous en moins d'une heure à Data.subvention et gagnez un temps précieux au quotidien : ";
+        return "Formez-vous en moins d'une heure à Data.subvention et gagnez un temps précieux au quotidien : ";
     }
 
     get url() {
