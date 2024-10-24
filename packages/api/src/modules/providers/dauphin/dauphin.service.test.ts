@@ -306,7 +306,7 @@ describe("Dauphin Service", () => {
         });
     });
 
-    describe("formatAndReturnDto", () => {
+    describe("formatAndReturnApplicationDto", () => {
         it("should remove fields", () => {
             const objectToKeep = { foo: "bar" };
             const demandeurFieldToKeep = { fieldToKeep: "baz" };
@@ -322,6 +322,20 @@ describe("Dauphin Service", () => {
                     objectToKeep,
                     demandeur: { ...demandeurFieldToKeep, pieces: "", history: "", linkedUsers: "" },
                     beneficiaires: [{ ...beneficiaireFieldToKeep, pieces: "", history: "", linkedUsers: "" }],
+                },
+            });
+            expect(actual).toEqual(expected);
+        });
+
+        it("should add adapted 'codeActionProjet' field", () => {
+            const expected = {
+                referenceAdministrative: "01234567-3456",
+                codeActionProjet: "01234567",
+            };
+            // @ts-expect-error: private method
+            const actual = dauphinService.formatAndReturnApplicationDto({
+                _source: {
+                    referenceAdministrative: "01234567-3456",
                 },
             });
             expect(actual).toEqual(expected);

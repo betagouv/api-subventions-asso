@@ -14,14 +14,12 @@ export class DauphinGisproRepository extends MongoRepository<DauphinGisproDbo> {
         await this.collection.createIndex({ "dauphin.reference": 1 });
         // Unique id on gispro
         await this.collection.createIndex({ "dauphin.multiFinancement.financeurs.source.reference": 1 });
-        await this.collection.createIndex({ "dauphin.referenceAdministrative": 1 });
+        await this.collection.createIndex({ "dauphin.codeActionProject": 1 });
     }
 
     async upsert(entity: DauphinGisproDbo) {
         return this.collection.updateOne(
-            {
-                "dauphin.reference": entity.dauphin.reference,
-            },
+            { "dauphin.reference": entity.dauphin.reference },
             { $set: entity as Partial<DauphinGisproDbo> },
             { upsert: true },
         );
@@ -45,7 +43,7 @@ export class DauphinGisproRepository extends MongoRepository<DauphinGisproDbo> {
 
     findOneByDauphinId(codeDossier: string) {
         return this.collection.findOne({
-            "dauphin.referenceAdministrative": codeDossier,
+            "dauphin.codeActionProject": codeDossier,
         });
     }
 
