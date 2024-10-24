@@ -22,7 +22,7 @@ export class MainInfoBannerController {
 
     get urlLabel() {
         //  return "compléter vos informations ici"  // TODO clean in #2544
-        return "plus d'information";
+        return "inscrivez-vous en cliquant ici";
     }
 
     close() {
