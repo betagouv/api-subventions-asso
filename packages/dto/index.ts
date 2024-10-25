@@ -1,4 +1,4 @@
-export * from "./search/";
+export * from "./search";
 export * from "./configurations";
 export * from "./stats";
 export * from "./user";
@@ -9,8 +9,7 @@ export * from "./auth";
 export * from "./shared";
 export * from "./rna-siren/RnaSirenResponseDts";
 export * from "./consumer/ConsumerTokenDto";
-export * from "./grant/grant";
-export * from "./grant/common";
+export * from "./grant";
 export * from "./geoApi/geoApiDto";
 export * from "./documents";
 export * from "./providers/dataLog";
