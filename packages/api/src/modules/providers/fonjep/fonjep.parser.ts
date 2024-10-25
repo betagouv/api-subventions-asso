@@ -37,6 +37,7 @@ export default class FonjepParser {
             FonjepSubventionEntity.indexedProviderInformationsPath,
             parsedData,
         ) as unknown as IFonjepIndexedInformations;
+        indexedInformations.joinKey = indexedInformations.annee_demande + "-" + indexedInformations.code_poste;
         const legalInformations = GenericParser.indexDataByPathObject(
             FonjepSubventionEntity.indexedLegalInformationsPath,
             parsedData,
@@ -50,6 +51,8 @@ export default class FonjepParser {
             FonjepPaymentEntity.indexedProviderInformationsPath,
             data,
         ) as unknown as IFonjepPaymentIndexedInformations;
+        indexedInformations.joinKey =
+            indexedInformations.periode_debut.getFullYear() + "-" + indexedInformations.code_poste;
         const legalInformations = GenericParser.indexDataByPathObject(
             FonjepPaymentEntity.indexedLegalInformationsPath,
             data,
