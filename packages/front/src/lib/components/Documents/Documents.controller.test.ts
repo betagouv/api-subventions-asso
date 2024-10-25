@@ -26,7 +26,7 @@ describe("Documents.controller", () => {
     function resetController() {
         // @ts-expect-error: partial association
         associationStore["currentAssociation"] = new Store(ASSOCIATION);
-        const ctrlNotSpied = new DocumentsController("association", ASSOCIATION);
+        const ctrlNotSpied = new DocumentsController("association", ASSOCIATION, []);
         ctrl = Object.create(Object.getPrototypeOf(ctrlNotSpied), Object.getOwnPropertyDescriptors(ctrlNotSpied));
 
         ctrl._getDocs = vi.spyOn(ctrlNotSpied, "_getDocs");
@@ -56,18 +56,8 @@ describe("Documents.controller", () => {
             expect(ctrl.headSiret).toBe("SIRENNIC");
         });
 
-        it("sets assoIdentifier", () => {
-            expect(ctrl.assoIdentifier).toBe("SIREN");
-        });
-
-        it("sets assoIdentifier to rna if no siren", () => {
-            // @ts-expect-error -- mock private
-            associationStore["currentAssociation"] = new Store({ rna: "RNA" });
-            const controller = new DocumentsController("association", { rna: "RNA" });
-            // @ts-expect-error -- test private
-            expect(controller.assoIdentifier).toBe("RNA");
-            // @ts-expect-error -- mock private
-            associationStore["currentAssociation"] = new Store(ASSOCIATION);
+        it("sets uniqueAssociationIdentifier", () => {
+            expect(ctrl.uniqueAssociationIdentifier).toBe("SIREN");
         });
     });
 

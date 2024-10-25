@@ -1,8 +1,10 @@
 import { Route, Get, Controller, Tags, Response } from "tsoa";
-import { RnaSirenResponseDto, GetRnaSirenErrorResponse, StructureIdentifiers } from "dto";
+import { RnaSirenResponseDto, GetRnaSirenErrorResponse } from "dto";
 import { siretToSiren } from "../../shared/helpers/SirenHelper";
-import { isStartOfSiret } from "../../shared/Validators";
 import rnaSirenService from "../../modules/rna-siren/rnaSiren.service";
+import Siren from "../../valueObjects/Siren";
+import Rna from "../../valueObjects/Rna";
+import Siret from "../../valueObjects/Siret";
 
 @Route("open-data/rna-siren")
 @Tags("Open Data")
@@ -15,15 +17,20 @@ export class RnaSirenHttp extends Controller {
      */
     @Get("/{rna_ou_siren_ou_siret}")
     @Response<GetRnaSirenErrorResponse>(404, "Nous n'avons pas réussi à trouver une correspondance RNA-Siren")
-    public async findBySiret(rna_ou_siren_ou_siret: StructureIdentifiers): Promise<RnaSirenResponseDto[]> {
-        const identifier = isStartOfSiret(rna_ou_siren_ou_siret)
-            ? siretToSiren(rna_ou_siren_ou_siret)
-            : rna_ou_siren_ou_siret;
+    public async findBySiret(rna_ou_siren_ou_siret: string): Promise<RnaSirenResponseDto[]> {
+        const identifier = Siret.isStartOfSiret(rna_ou_siren_ou_siret)
+            ? new Siren(siretToSiren(rna_ou_siren_ou_siret))
+            : Rna.isRna(rna_ou_siren_ou_siret)
+            ? new Rna(rna_ou_siren_ou_siret)
+            : new Siren(rna_ou_siren_ou_siret);
         const entities = await rnaSirenService.find(identifier);
-        if (!entities) {
-            return [];
-        }
 
-        return entities;
+        if (!entities) return [];
+
+        return entities.map(entity => ({
+            // Todo : use adapter
+            siren: entity.siren.value,
+            rna: entity.rna.value,
+        }));
     }
 }

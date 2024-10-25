@@ -1,7 +1,8 @@
-import { Siren, Siret } from "dto";
 import { Collection } from "mongodb";
 import MongoRepository from "../../../../shared/MongoRepository";
 import DauphinSubventionDto from "../dto/DauphinSubventionDto";
+import Siret from "../../../../valueObjects/Siret";
+import Siren from "../../../../valueObjects/Siren";
 import DauphinGisproDbo from "./dbo/DauphinGisproDbo";
 
 export class DauphinGisproRepository extends MongoRepository<DauphinGisproDbo> {
@@ -29,7 +30,7 @@ export class DauphinGisproRepository extends MongoRepository<DauphinGisproDbo> {
     findBySiret(siret: Siret) {
         return this.collection
             .find({
-                "dauphin.demandeur.SIRET.complet": siret,
+                "dauphin.demandeur.SIRET.complet": siret.value,
             })
             .toArray();
     }
@@ -37,7 +38,7 @@ export class DauphinGisproRepository extends MongoRepository<DauphinGisproDbo> {
     findBySiren(siren: Siren) {
         return this.collection
             .find({
-                "dauphin.demandeur.SIRET.SIREN": siren,
+                "dauphin.demandeur.SIRET.SIREN": siren.value,
             })
             .toArray();
     }

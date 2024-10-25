@@ -13,7 +13,6 @@ import { siretToSiren } from "../../../src/shared/helpers/SirenHelper";
 import { BadRequestError } from "../../../src/shared/errors/httpErrors";
 import associationsService from "../../../src/modules/associations/associations.service";
 import rnaSirenPort from "../../../src/dataProviders/db/rnaSiren/rnaSiren.port";
-import { Rna } from "dto";
 import { JoinedRawGrant, RawGrant } from "../../../src/modules/grant/@types/rawGrant";
 import demarchesSimplifieesDataRepository from "../../../src/modules/providers/demarchesSimplifiees/repositories/demarchesSimplifieesData.repository";
 import {
@@ -35,7 +34,9 @@ import { SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtur
 import chorusLineRepository from "../../../src/modules/providers/chorus/repositories/chorus.line.repository";
 import { ChorusFixtures } from "../../dataProviders/db/__fixtures__/chorus.fixtures";
 import fonjepPaymentRepository from "../../../src/modules/providers/fonjep/repositories/fonjep.payment.repository";
-
+import FonjepSubventionEntity from "../../../src/modules/providers/fonjep/entities/FonjepSubventionEntity";
+import Rna from "../../../src/valueObjects/Rna";
+import Siret from "../../../src/valueObjects/Siret";
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
 
 const g = global as unknown as { app: unknown };
@@ -63,8 +64,8 @@ const insertData = async () => {
 
 describe("/association", () => {
     // SIREN must be from an association
-    const SIREN = siretToSiren(DEFAULT_ASSOCIATION.siret);
-    const RNA = DEFAULT_ASSOCIATION.rna;
+    const SIREN = new Siret(DEFAULT_ASSOCIATION.siret).toSiren();
+    const RNA = new Rna(DEFAULT_ASSOCIATION.rna);
 
     beforeEach(async () => {
         await insertData();
@@ -96,8 +97,7 @@ describe("/association", () => {
             expect(subventions).toMatchSnapshot();
         });
 
-        it("should return null if RNA does not match a SIREN", async () => {
-            const expected = null;
+        it("should return empty array if RNA does not match a SIREN", async () => {
             const response = await request(g.app)
                 .get(`/association/${LONELY_RNA}/subventions`)
                 .set("x-access-token", await createAndGetUserToken())
@@ -105,7 +105,7 @@ describe("/association", () => {
             expect(response.statusCode).toBe(200);
 
             const actual = response.body.subventions;
-            expect(actual).toEqual(expected);
+            expect(actual).toHaveLength(0);
         });
     });
 
@@ -208,7 +208,10 @@ describe("/association", () => {
         });
 
         it("should return grants with siren", async () => {
-            await rnaSirenService.insert(RNA, SIREN);
+            await rnaSirenPort.insert({
+                siren: SIREN,
+                rna: new Rna(OsirisRequestEntityFixture.legalInformations.rna as string),
+            });
             const response = await request(g.app)
                 .get(`/association/${SIREN}/grants`)
                 .set("x-access-token", await createAndGetUserToken())

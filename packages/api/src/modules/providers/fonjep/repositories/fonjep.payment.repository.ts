@@ -1,4 +1,5 @@
-import { Siren, Siret } from "dto";
+import Siren from "../../../../valueObjects/Siren";
+import Siret from "../../../../valueObjects/Siret";
 import FonjepPaymentEntity from "../entities/FonjepPaymentEntity";
 import { FonjepCoreRepository } from "./fonjep.core.repository";
 
@@ -24,13 +25,13 @@ export class FonjepPaymentRepository extends FonjepCoreRepository<FonjepPaymentE
     }
 
     findBySiret(siret: Siret) {
-        return this.collection.find({ "legalInformations.siret": siret }).toArray();
+        return this.collection.find({ "legalInformations.siret": siret.value }).toArray();
     }
 
     public findBySiren(siren: Siren) {
         return this.collection
             .find({
-                "legalInformations.siret": new RegExp(`^${siren}\\d{5}`),
+                "legalInformations.siret": new RegExp(`^${siren.value}\\d{5}`),
             })
             .toArray();
     }

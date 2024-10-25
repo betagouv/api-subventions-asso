@@ -1,12 +1,14 @@
 import request = require("supertest");
 import { createAndGetUserToken } from "../__helpers__/tokenHelper";
 import rnaSirenService from "../../src/modules/rna-siren/rnaSiren.service";
+import Rna from "../../src/valueObjects/Rna";
+import Siren from "../../src/valueObjects/Siren";
 
 const g = global as unknown as { app: unknown };
 
 describe("RnaSirenController", () => {
-    const RNA = "W123456789";
-    const SIREN = "123456789";
+    const RNA = new Rna("W123456789");
+    const SIREN = new Siren("123456789");
 
     beforeEach(() => {
         jest.spyOn(rnaSirenService, "find");
@@ -15,10 +17,10 @@ describe("RnaSirenController", () => {
     describe("GET /open-data/rna-siren/{rna}", () => {
         describe("on success", () => {
             it("should return an object", async () => {
-                const expected = [{ siren: SIREN, rna: RNA }];
-                (rnaSirenService.find as jest.Mock).mockResolvedValueOnce(expected);
+                const expected = [{ siren: SIREN.value, rna: RNA.value }];
+                (rnaSirenService.find as jest.Mock).mockResolvedValueOnce([{ siren: SIREN, rna: RNA }]);
                 const actual = await request(g.app)
-                    .get(`/open-data/rna-siren/${RNA}`)
+                    .get(`/open-data/rna-siren/${RNA.value}`)
                     .set("x-access-token", await createAndGetUserToken())
                     .set("Accept", "application/json");
                 expect(actual.body).toEqual(expected);
@@ -29,11 +31,11 @@ describe("RnaSirenController", () => {
     describe("GET /open-data/rna-siren/{siren}", () => {
         describe("on success", () => {
             it("should return an object", async () => {
-                const expected = [{ siren: SIREN, rna: RNA }];
-                (rnaSirenService.find as jest.Mock).mockResolvedValueOnce(expected);
+                const expected = [{ siren: SIREN.value, rna: RNA.value }];
+                (rnaSirenService.find as jest.Mock).mockResolvedValueOnce([{ siren: SIREN, rna: RNA }]);
                 const actual = (
                     await request(g.app)
-                        .get(`/open-data/rna-siren/${SIREN}`)
+                        .get(`/open-data/rna-siren/${SIREN.value}`)
                         .set("x-access-token", await createAndGetUserToken())
                         .set("Accept", "application/json")
                 ).body;

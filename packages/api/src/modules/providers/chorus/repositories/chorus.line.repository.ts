@@ -1,5 +1,6 @@
-import { Siren, Siret } from "dto";
 import { AnyBulkWriteOperation, ObjectId, WithId } from "mongodb";
+import Siret from "../../../../valueObjects/Siret";
+import Siren from "../../../../valueObjects/Siren";
 import { DefaultObject } from "../../../../@types";
 import MongoRepository from "../../../../shared/MongoRepository";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
@@ -12,12 +13,12 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
     }
 
     public async findOneBySiret(siret: Siret) {
-        return this.collection.findOne({ "indexedInformations.siret": siret });
+        return this.collection.findOne({ "indexedInformations.siret": siret.value });
     }
 
     public async findOneBySiren(siren: Siren) {
         return this.collection.findOne({
-            "indexedInformations.siret": new RegExp(`^${siren}\\d{5}`),
+            "indexedInformations.siret": new RegExp(`^${siren.value}\\d{5}`),
         });
     }
 
@@ -62,7 +63,7 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
     }
 
     public async findBySiret(siret: Siret) {
-        return this.collection.find({ "indexedInformations.siret": siret }).toArray();
+        return this.collection.find({ "indexedInformations.siret": siret.value }).toArray();
     }
 
     public async findByEJ(ej: string) {
@@ -72,7 +73,7 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
     public async findBySiren(siren: Siren) {
         return this.collection
             .find({
-                "indexedInformations.siret": new RegExp(`^${siren}\\d{5}`),
+                "indexedInformations.siret": new RegExp(`^${siren.value}\\d{5}`),
             })
             .toArray();
     }

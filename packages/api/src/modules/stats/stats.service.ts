@@ -1,5 +1,5 @@
 import { ObjectId, WithId } from "mongodb";
-import { UserCountByStatus, AssociationIdentifiers } from "dto";
+import { RnaDto, SirenDto, UserCountByStatus } from "dto";
 import { firstDayOfPeriod, isValidDate, oneYearAfterPeriod } from "../../shared/helpers/DateHelper";
 import { BadRequestError } from "../../shared/errors/httpErrors";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";
@@ -11,7 +11,8 @@ import { isUserActif } from "../../shared/helpers/UserHelper";
 import * as DateHelper from "../../shared/helpers/DateHelper";
 import userStatsService from "../user/services/stats/user.stats.service";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
-import { isRna } from "../../shared/Validators";
+import Rna from "../../valueObjects/Rna";
+import associationIdentifierService from "../association-identifier/association-identifier.service";
 import userAssociationVisitJoiner from "./joiners/UserAssociationVisitsJoiner";
 import { UserWithAssociationVisitsEntity } from "./entities/UserWithAssociationVisitsEntity";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
@@ -117,15 +118,17 @@ class StatsService {
 
     private async groupVisitsOnMaps(
         group: GroupAssociationVisits,
-        rnaMap: Map<AssociationIdentifiers, GroupAssociationVisits>,
-        sirenMap: Map<AssociationIdentifiers, GroupAssociationVisits>,
+        rnaMap: Map<RnaDto | SirenDto, GroupAssociationVisits>,
+        sirenMap: Map<RnaDto | SirenDto, GroupAssociationVisits>,
     ) {
         if (rnaMap.has(group._id) || sirenMap.has(group._id)) {
             const mapVisits = rnaMap.get(group._id) || sirenMap.get(group._id);
             mapVisits?.visits.push(...group.visits);
             return;
         }
-        const rnaSirenEntities = await rnaSirenService.find(group._id);
+        const rnaSirenEntities = await rnaSirenService.find(
+            associationIdentifierService.identifierStringToEntity(group._id),
+        );
         const associationVisits = {
             _id: group._id,
             visits: [] as AssociationVisitEntity[],
@@ -133,9 +136,9 @@ class StatsService {
 
         associationVisits.visits.push(...group.visits);
         if (rnaSirenEntities && rnaSirenEntities.length) {
-            rnaMap.set(rnaSirenEntities[0].rna, associationVisits);
-            sirenMap.set(rnaSirenEntities[0].siren, associationVisits);
-        } else if (isRna(group._id)) {
+            rnaMap.set(rnaSirenEntities[0].rna.value, associationVisits);
+            sirenMap.set(rnaSirenEntities[0].siren.value, associationVisits);
+        } else if (Rna.isRna(group._id)) {
             rnaMap.set(group._id, associationVisits);
         } else {
             sirenMap.set(group._id, associationVisits);
@@ -144,8 +147,8 @@ class StatsService {
 
     private async groupAssociationVisitsByAssociation(visits: GroupAssociationVisits[]) {
         // Group by association, same association but different identifier
-        const rnaMap: Map<AssociationIdentifiers, GroupAssociationVisits> = new Map();
-        const sirenMap: Map<AssociationIdentifiers, GroupAssociationVisits> = new Map();
+        const rnaMap: Map<RnaDto | SirenDto, GroupAssociationVisits> = new Map();
+        const sirenMap: Map<RnaDto | SirenDto, GroupAssociationVisits> = new Map();
 
         await asyncForEach(visits, async group => this.groupVisitsOnMaps(group, rnaMap, sirenMap));
 
@@ -197,7 +200,12 @@ class StatsService {
 
         const topAssociationsAsc = countVisitByAssociationDesc.slice(0, limit);
 
-        const getAssociationName = async id => (await associationNameService.getNameFromIdentifier(id)) || id;
+        const getAssociationName = async idStr => {
+            const associationIdentifiers = await associationIdentifierService.getAssociationIdentifiers(idStr);
+            return associationIdentifiers.length ?
+                (await associationNameService.getNameFromIdentifier(associationIdentifiers[0])) || idStr
+                : idStr;
+        };
         const namedTopAssociations = topAssociationsAsc.reduce(async (acc, topAssociation) => {
             const result = await acc;
             return result.concat({

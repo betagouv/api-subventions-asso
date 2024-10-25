@@ -1,9 +1,9 @@
-import { Adresse, Rna, Siren } from "../shared";
+import { Adresse, RnaDto, SirenDto } from "../shared";
 
 export interface AssociationNameDto {
-    siren: Siren;
+    siren: SirenDto;
     name: string;
-    rna?: Rna;
+    rna?: RnaDto;
     address?: Adresse;
     nbEtabs?: number;
 }

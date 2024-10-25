@@ -1,5 +1,3 @@
-import { Siren } from "dto";
-
 interface MandataireSocial {
     type: string;
     nom: string;
@@ -72,7 +70,7 @@ interface PersonnePhysique {
 }
 
 export default interface ExtractRcs {
-    siren: Siren;
+    siren: string;
     date_extrait: string;
     date_immatriculation: string;
     mandataires_sociaux: MandataireSocial[];

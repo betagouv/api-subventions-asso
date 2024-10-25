@@ -1,24 +1,21 @@
 import { AxiosError } from "axios";
 import qs from "qs";
 
-import { Association, Siren, Siret, ExtraitRcsDto, StructureIdentifiers } from "dto";
+import { ExtraitRcsDto } from "dto";
 import { API_ENTREPRISE_TOKEN } from "../../../configurations/apis.conf";
-import { DefaultObject } from "../../../@types";
+import { DefaultObject, StructureIdentifier } from "../../../@types";
 import StructureIdentifiersError from "../../../shared/errors/StructureIdentifierError";
-import { isSiren, isSiret } from "../../../shared/Validators";
-import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import CacheData from "../../../shared/Cache";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
-import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import ProviderCore from "../ProviderCore";
+import Siret from "../../../valueObjects/Siret";
+import Siren from "../../../valueObjects/Siren";
+import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
 import IApiEntrepriseHeadcount from "./@types/IApiEntrepriseHeadcount";
 
-export class ApiEntrepriseService extends ProviderCore implements EtablissementProvider, AssociationsProvider {
+export class ApiEntrepriseService extends ProviderCore {
     static API_URL = "https://entreprise.api.gouv.fr/";
-
-    isEtablissementProvider = true;
-    isAssociationsProvider = true;
 
     HEADCOUNT_REASON = "Remonter l'effectif pour le service Data.Subvention";
     RCS_EXTRACT_REASON = "Remonter l'extrait RCS d'une association pour Data.Subvention";
@@ -77,8 +74,8 @@ export class ApiEntrepriseService extends ProviderCore implements EtablissementP
      * @param id StructureIdentifier RNA, SIREN ou SIRET
      * Si un SIRET est donné, alors renvoi l'effectif pour l'établissement donné
      */
-    public async getHeadcount(id: StructureIdentifiers) {
-        if (isSiret(id)) {
+    public async getHeadcount(id: StructureIdentifier) {
+        if (id instanceof EstablishmentIdentifier && id.siret) {
             let retries = 0;
             let headcount;
             let error;
@@ -86,7 +83,7 @@ export class ApiEntrepriseService extends ProviderCore implements EtablissementP
             // We retry a maximum of 5 times, going back from one month each time trying to find the last headcount saved
             while (retries < 5) {
                 try {
-                    headcount = (await this.getEtablissementHeadcount(id, retries)) as IApiEntrepriseHeadcount;
+                    headcount = await this.getEtablissementHeadcount(id.siret, retries);
                     retries = 5;
                 } catch (e) {
                     retries++;
@@ -109,8 +106,8 @@ export class ApiEntrepriseService extends ProviderCore implements EtablissementP
             year -= 1;
             month = 12 - month;
         }
-        if (month < 10) return `v2/effectifs_mensuels_acoss_covid/${year}/0${month}/etablissement/${siret}`;
-        else return `v2/effectifs_mensuels_acoss_covid/${year}/${month}/etablissement/${siret}`;
+        if (month < 10) return `v2/effectifs_mensuels_acoss_covid/${year}/0${month}/etablissement/${siret.value}`;
+        else return `v2/effectifs_mensuels_acoss_covid/${year}/${month}/etablissement/${siret.value}`;
     }
 
     private async getEtablissementHeadcount(siret: Siret, subtractMonths = 0) {
@@ -123,56 +120,17 @@ export class ApiEntrepriseService extends ProviderCore implements EtablissementP
     }
 
     public async getExtractRcs(siren: Siren) {
-        if (isSiren(siren)) {
-            try {
-                return (
-                    await this.sendRequest<{ data: ExtraitRcsDto }>(
-                        `v3/infogreffe/rcs/unites_legales/${siren}/extrait_kbis`,
-                        {},
-                        this.RCS_EXTRACT_REASON,
-                    )
-                )?.data;
-            } catch (e) {
-                return null;
-            }
-        } else {
-            throw new StructureIdentifiersError("siren");
+        try {
+            return (
+                await this.sendRequest<{ data: ExtraitRcsDto }>(
+                    `v3/infogreffe/rcs/unites_legales/${siren.value}/extrait_kbis`,
+                    {},
+                    this.RCS_EXTRACT_REASON,
+                )
+            )?.data;
+        } catch (e) {
+            return null;
         }
-    }
-
-    async getEtablissementsBySiret(siret: Siret) {
-        return null;
-        // try {
-        //     const result = await this.getHeadcount(siret);
-        //     if (!result) return null;
-        //     return [ApiEntrepriseAdapter.toEtablissement(result)];
-        // } catch {
-        //     return null;
-        // }
-    }
-
-    async getEtablissementsBySiren(_siret: Siren) {
-        return null;
-    }
-
-    async getAssociationsBySiren(siren: string): Promise<Association[] | null> {
-        return null;
-        // try {
-        //     const result = await this.getExtractRcs(siren);
-        //     if (!result) return null;
-        //     return [ApiEntrepriseAdapter.toAssociation(result)];
-        // } catch (e) {
-        //     return null;
-        // }
-    }
-
-    async getAssociationsBySiret(siret: string): Promise<Association[] | null> {
-        return null;
-        // return await this.getAssociationsBySiren(siretToSiren(siret));
-    }
-
-    async getAssociationsByRna(_rna: string): Promise<Association[] | null> {
-        return null;
     }
 }
 
