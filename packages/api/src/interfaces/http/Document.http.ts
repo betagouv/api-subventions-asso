@@ -1,8 +1,8 @@
 import { Route, Get, Controller, Tags, Security, Response, Query, Path, Post, Body, Request } from "tsoa";
-import { DocumentRequestDto } from "dto";
+import { DocumentRequestDto, StructureIdentifiers } from "dto";
 import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
 import documentService from "../../modules/documents/documents.service";
-import { IdentifiedRequest, StructureIdentifiers } from "../../@types";
+import { IdentifiedRequest } from "../../@types";
 
 @Route("document")
 @Security("jwt")

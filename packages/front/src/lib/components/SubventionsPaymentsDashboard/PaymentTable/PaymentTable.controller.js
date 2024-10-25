@@ -33,17 +33,19 @@ export default class PaymentTableController {
     updateElements(elements) {
         this.elements = elements;
 
+        const buildPayments = element => ({
+            ...PaymentsAdapter.toPayment(element.payments),
+            payments: element.payments,
+            paymentsModal: element.payments.map(this.buildPaymentsModal),
+        });
+
         const elementsDataViews = this.elements.map(element => {
             // quick win, will be handled properly with table refactor (link sub-payment from API)
             if (element.subvention && element.subvention.statut_label === ApplicationStatus.GRANTED) {
                 if (element.payments.length === 0) return { payments: null };
-                else
-                    return {
-                        ...PaymentsAdapter.toPayment(element.payments),
-                        payments: element.payments,
-                        paymentsModal: element.payments.map(this.buildPaymentsModal),
-                    };
-            } else return null;
+                else return buildPayments(element);
+            } else if (!element.subvention && element.payments) return buildPayments(element);
+            else return null;
         });
 
         this.elementsDataViews.set(elementsDataViews);

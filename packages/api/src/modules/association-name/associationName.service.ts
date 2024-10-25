@@ -1,10 +1,11 @@
+import { AssociationIdentifiers } from "dto";
 import uniteLegalNameService from "../providers/uniteLegalName/uniteLegal.name.service";
-import { AssociationIdentifiers } from "../../@types";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import { isRna, isSiren } from "../../shared/Validators";
-import rechercheEntreprises from "../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.port";
 import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
+import rechercheEntreprisesService from "../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.service";
+import NotAssociationError from "../../shared/errors/NotAssociationError";
 import AssociationNameEntity from "./entities/AssociationNameEntity";
 
 export class AssociationNameService {
@@ -19,6 +20,13 @@ export class AssociationNameService {
     async find(value: AssociationIdentifiers | string): Promise<AssociationNameEntity[]> {
         const lowerCaseValue = value.toLowerCase().trim();
         let associationNames: AssociationNameEntity[];
+        let gotCompany = false;
+        const searchEntreprisesCatch = value =>
+            rechercheEntreprisesService.searchForceAsso(value).catch(e => {
+                gotCompany = true;
+                return [];
+            });
+
         if (isRna(value) || isSiren(value)) {
             const identifierType = getIdentifierType(value) as
                 | StructureIdentifiersEnum.rna
@@ -33,13 +41,13 @@ export class AssociationNameService {
                 ...(await Promise.all(
                     identifiers.map(identifier => uniteLegalNameService.searchBySirenSiretName(identifier)),
                 )),
-                ...(await Promise.all(identifiers.map(identifier => rechercheEntreprises.search(identifier)))),
+                ...(await Promise.all(identifiers.map(identifier => searchEntreprisesCatch(identifier)))),
             ].flat();
         } else {
             // Siret Or Name
             associationNames = [
                 ...(await uniteLegalNameService.searchBySirenSiretName(lowerCaseValue)),
-                ...(await rechercheEntreprises.search(value)),
+                ...(await searchEntreprisesCatch(value)),
             ].flat();
         }
         const mergedAssociationName = associationNames.reduce((acc, associationName) => {
@@ -54,7 +62,9 @@ export class AssociationNameService {
             );
             return acc;
         }, {} as Record<string, AssociationNameEntity>);
-        return Object.values(mergedAssociationName);
+        const res = Object.values(mergedAssociationName);
+        if (!res.length && gotCompany) throw new NotAssociationError();
+        return res;
     }
 }
 

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import TerritorialCollectivitySubStepController from "./TerritorialCollectivitySubStep.controller";
     import Input from "$lib/dsfr/Input.svelte";
     import Radio from "$lib/dsfr/Radio.svelte";

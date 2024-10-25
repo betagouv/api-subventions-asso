@@ -1,8 +1,8 @@
-import { ProviderValues, Association, Siret, Rna, Siren } from "dto";
+import { ProviderValues, Association, Siret, Rna, Siren, AssociationIdentifiers, StructureIdentifiers } from "dto";
 
 import * as Sentry from "@sentry/node";
 import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
-import { AssociationIdentifiers, DefaultObject, StructureIdentifiers } from "../../@types";
+import { DefaultObject } from "../../@types";
 
 import providers from "../providers";
 import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
@@ -121,8 +121,12 @@ export class AssociationsService {
         if (await rnaSirenService.find(siren)) return true;
 
         const asso = await apiAssoService.findAssociationBySiren(siren);
-        if (!asso?.categorie_juridique?.[0]?.value) return false;
-        return LEGAL_CATEGORIES_ACCEPTED.includes(asso.categorie_juridique[0].value);
+        return this.isCategoryFromAsso(asso?.categorie_juridique?.[0]?.value);
+    }
+
+    isCategoryFromAsso(category: string | undefined): boolean {
+        if (!category) return false;
+        return LEGAL_CATEGORIES_ACCEPTED.includes(category);
     }
 
     /**

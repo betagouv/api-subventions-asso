@@ -1,9 +1,9 @@
 import { AxiosError } from "axios";
 import qs from "qs";
 
-import { Association, Siren, Siret, ExtraitRcsDto } from "dto";
+import { Association, Siren, Siret, ExtraitRcsDto, StructureIdentifiers } from "dto";
 import { API_ENTREPRISE_TOKEN } from "../../../configurations/apis.conf";
-import { DefaultObject, StructureIdentifiers } from "../../../@types";
+import { DefaultObject } from "../../../@types";
 import StructureIdentifiersError from "../../../shared/errors/StructureIdentifierError";
 import { isSiren, isSiret } from "../../../shared/Validators";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
@@ -11,9 +11,7 @@ import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import CacheData from "../../../shared/Cache";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
-import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import ProviderCore from "../ProviderCore";
-import ApiEntrepriseAdapter from "./adapters/ApiEntrepriseAdapter";
 import IApiEntrepriseHeadcount from "./@types/IApiEntrepriseHeadcount";
 
 export class ApiEntrepriseService extends ProviderCore implements EtablissementProvider, AssociationsProvider {
@@ -23,7 +21,7 @@ export class ApiEntrepriseService extends ProviderCore implements EtablissementP
     isAssociationsProvider = true;
 
     HEADCOUNT_REASON = "Remonter l'effectif pour le service Data.Subvention";
-    RCS_EXTRACT_REASON = "Remonter l'extrait RCS d'une associaiton pour Data.Subvention";
+    RCS_EXTRACT_REASON = "Remonter l'extrait RCS d'une association pour Data.Subvention";
 
     private requestCache = new CacheData<unknown>(CACHE_TIMES.ONE_DAY);
 

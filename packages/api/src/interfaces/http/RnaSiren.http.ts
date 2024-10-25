@@ -1,7 +1,6 @@
 import { Route, Get, Controller, Tags, Response } from "tsoa";
-import { RnaSirenResponseDto, GetRnaSirenErrorResponse } from "dto";
+import { RnaSirenResponseDto, GetRnaSirenErrorResponse, StructureIdentifiers } from "dto";
 import { siretToSiren } from "../../shared/helpers/SirenHelper";
-import { StructureIdentifiers } from "../../@types";
 import { isStartOfSiret } from "../../shared/Validators";
 import rnaSirenService from "../../modules/rna-siren/rnaSiren.service";
 

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import CentralSubStepController from "./CentralSubStep.controller";
     import AutocompleteSelect from "$lib/components/AutocompleteSelect/AutocompleteSelect.svelte";
 

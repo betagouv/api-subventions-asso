@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { AdminTerritorialLevel } from "dto";
     import DecentralizedSubStepController from "./DecentralizedSubStep.controller";
     import Input from "$lib/dsfr/Input.svelte";
