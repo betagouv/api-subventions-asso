@@ -1,7 +1,8 @@
-import { Siret, Siren } from "dto";
 import { FindOneAndUpdateOptions } from "mongodb";
 import OsirisEvaluationEntity from "../entities/OsirisEvaluationEntity";
 import MongoRepository from "../../../../shared/MongoRepository";
+import Siret from "../../../../valueObjects/Siret";
+import Siren from "../../../../valueObjects/Siren";
 
 export class OsirisEvaluationRepository extends MongoRepository<OsirisEvaluationEntity> {
     readonly collectionName = "osiris-evaluation";
@@ -31,7 +32,7 @@ export class OsirisEvaluationRepository extends MongoRepository<OsirisEvaluation
     public findsBySiret(siret: Siret) {
         return this.collection
             .find({
-                "legalInformations.siret": siret,
+                "legalInformations.siret": siret.value,
             })
             .toArray();
     }
@@ -39,7 +40,7 @@ export class OsirisEvaluationRepository extends MongoRepository<OsirisEvaluation
     public findBySiren(siren: Siren) {
         return this.collection
             .find({
-                "legalInformations.siret": new RegExp(`^${siren}\\d{5}`),
+                "legalInformations.siret": new RegExp(`^${siren.value}\\d{5}`),
             })
             .toArray();
     }

@@ -1,9 +1,9 @@
 import { ProviderValue } from "../shared/ProviderValue";
-import { Siret } from "../shared/Siret";
+import { SiretDto } from "../shared/Siret";
 
 export interface BasePayment {
     versementKey: ProviderValue<string>;
-    siret: ProviderValue<Siret>;
+    siret: ProviderValue<SiretDto>;
     amount: ProviderValue<number>;
     dateOperation: ProviderValue<Date>;
     programme: ProviderValue<number>;

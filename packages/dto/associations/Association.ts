@@ -1,8 +1,8 @@
 import { Adresse } from "../shared/Adresse";
 import { ProviderValues } from "../shared/ProviderValue";
-import { Rna } from "../shared/Rna";
-import { Siren } from "../shared/Siren";
-import { Siret } from "../shared/Siret";
+import { RnaDto } from "../shared/Rna";
+import { SirenDto } from "../shared/Siren";
+import { SiretDto } from "../shared/Siret";
 import { DemandeSubvention } from "../search/DemandeSubvention";
 import { Etablissement } from "../etablissements/Etablissement";
 import { Payment } from "../payments/Payment";
@@ -11,8 +11,8 @@ import { BodaccRecordDto } from "./BodaccRecordDto";
 import { AssociationNature } from "./AssociationNature";
 
 export interface Association {
-    siren?: ProviderValues<Siren>;
-    rna?: ProviderValues<Rna>;
+    siren?: ProviderValues<SirenDto>;
+    rna?: ProviderValues<RnaDto>;
     nic_siege?: ProviderValues<string>;
     categorie_juridique?: ProviderValues<string>;
     denomination_siren?: ProviderValues<string>;
@@ -24,7 +24,7 @@ export interface Association {
     objet_social?: ProviderValues<string>;
     code_objet_social_1?: ProviderValues<string>;
     code_objet_social_2?: ProviderValues<string>;
-    etablisements_siret?: ProviderValues<Siret[]>;
+    etablisements_siret?: ProviderValues<SiretDto[]>;
     adresse_siege_rna?: ProviderValues<Adresse>;
     adresse_siege_siren?: ProviderValues<Adresse>;
     nature?: ProviderValues<AssociationNature>;

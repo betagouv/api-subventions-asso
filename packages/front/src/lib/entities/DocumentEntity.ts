@@ -1,4 +1,4 @@
-import type { Siret } from "dto";
+import type { SiretDto } from "dto";
 
 export interface DocumentEntity {
     type: string;
@@ -8,6 +8,6 @@ export interface DocumentEntity {
     provider: string;
     date: Date;
     __meta__: {
-        siret: Siret;
+        siret: SiretDto;
     };
 }

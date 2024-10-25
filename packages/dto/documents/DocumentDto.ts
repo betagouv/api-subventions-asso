@@ -1,4 +1,4 @@
-import { Siret, ProviderValue } from "..";
+import { SiretDto, ProviderValue } from "..";
 
 export interface DocumentDto {
     // TODO list possible types ?
@@ -6,6 +6,6 @@ export interface DocumentDto {
     url: ProviderValue<string>;
     nom: ProviderValue<string>;
     __meta__: {
-        siret?: Siret;
+        siret?: SiretDto;
     };
 }

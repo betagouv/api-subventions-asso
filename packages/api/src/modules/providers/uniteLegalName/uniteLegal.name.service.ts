@@ -1,34 +1,27 @@
-import { Siren, Siret, AssociationIdentifiers } from "dto";
 import Fuse from "fuse.js";
-import { StructureIdentifiersEnum } from "../../../@enums/StructureIdentifiersEnum";
 import uniteLegalNamePort from "../../../dataProviders/db/uniteLegalName/uniteLegalName.port";
-import { isStartOfSiret } from "../../../shared/Validators";
-import { getIdentifierType } from "../../../shared/helpers/IdentifierHelper";
-import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import UniteLegalNameEntity from "../../../entities/UniteLegalNameEntity";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import AssociationNameAdapter from "../../association-name/adapters/AssociationNameAdapter";
+import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import Siret from "../../../valueObjects/Siret";
+import Siren from "../../../valueObjects/Siren";
 
 export class UniteLegalNameService {
-    async getNameFromIdentifier(identifier: AssociationIdentifiers): Promise<UniteLegalNameEntity | null> {
-        let siren;
-        if (getIdentifierType(identifier) === StructureIdentifiersEnum.siren) siren = identifier;
-        else {
-            const rnaSirenEntities = await rnaSirenService.find(identifier);
-            if (!rnaSirenEntities || !rnaSirenEntities.length) return null;
-            siren = rnaSirenEntities[0].siren;
-        }
-        return uniteLegalNamePort.findOneBySiren(siren);
+    async getNameFromIdentifier(identifier: AssociationIdentifier): Promise<UniteLegalNameEntity | null> {
+        if (!identifier.siren) return null;
+        return uniteLegalNamePort.findOneBySiren(identifier.siren);
     }
 
-    async searchBySirenSiretName(value: Siren | Siret | string) {
-        if (isStartOfSiret(value)) value = siretToSiren(value); // Check if value is a start of siret
+    async searchBySirenSiretName(value: string) {
+        if (Siret.isStartOfSiret(value)) value = Siren.fromPartialSiretStr(value).value;
         const associations = await uniteLegalNamePort.search(value);
         const groupedNameByStructures = associations.reduce((acc, entity) => {
-            if (!acc[entity.siren]) acc[entity.siren] = [];
-            acc[entity.siren].push(entity);
+            const sirenStr = entity.siren.value;
+            if (!acc[sirenStr]) acc[sirenStr] = [];
+            acc[sirenStr].push(entity);
             return acc;
-        }, {} as Record<Siren, UniteLegalNameEntity[]>);
+        }, {} as Record<string, UniteLegalNameEntity[]>);
 
         const fuseSearch = (names: UniteLegalNameEntity[]) => {
             const fuse = new Fuse(names, {
@@ -47,7 +40,6 @@ export class UniteLegalNameService {
             }
 
             const rnaSirenEntities = await rnaSirenService.find(bestMatch.siren);
-
             if (!rnaSirenEntities) return [AssociationNameAdapter.fromUniteLegalNameEntity(bestMatch)];
 
             return rnaSirenEntities?.map(entity => {

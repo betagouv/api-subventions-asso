@@ -3,11 +3,12 @@ import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccept
 import { ProviderRequestService } from "../../../modules/provider-request/providerRequest.service";
 import { RechercheEntreprisesDto } from "./RechercheEntreprisesDto";
 import { RequestResponse } from "../../../modules/provider-request/@types/RequestResponse";
+import Siren from "../../../valueObjects/Siren";
 
 describe("RechercheEntreprisesPort", () => {
     // @ts-expect-error http is private attribute
     const mockedHttpGet = jest.spyOn(rechercheEntreprisesPort.http, "get");
-    const SIREN = "123456789";
+    const SIREN = new Siren("123456789");
     const NAME = "Example";
 
     describe("Initialization", () => {
@@ -50,7 +51,7 @@ describe("RechercheEntreprisesPort", () => {
                 total_pages: 2,
                 total_results: 6,
                 results: [
-                    { nom_complet: NAME, siren: SIREN },
+                    { nom_complet: NAME, siren: SIREN.value },
                     { nom_complet: undefined, siren: "987654321" },
                     { nom_complet: "Example 2", siren: undefined },
                     { nom_complet: undefined, siren: undefined },
@@ -80,7 +81,7 @@ describe("RechercheEntreprisesPort", () => {
                 total_pages: 5,
                 total_results: 20,
                 results: [
-                    { nom_complet: NAME, siren: SIREN },
+                    { nom_complet: NAME, siren: SIREN.value },
                     { nom_complet: undefined, siren: "987654321" },
                     { nom_complet: "Example 2", siren: undefined },
                     { nom_complet: undefined, siren: undefined },

@@ -1,14 +1,14 @@
-import { Rna } from "../shared/Rna";
-import { Siren } from "../shared/Siren";
+import { RnaDto } from "../shared/Rna";
+import { SirenDto } from "../shared/Siren";
 
 export interface GetRnaSirenSuccessResponse {
-    siren: Siren;
-    rna: Rna;
+    siren: SirenDto;
+    rna: RnaDto;
 }
 
 export interface GetRnaSirenErrorResponse {
-    siren: Siren | null;
-    rna: Rna | null;
+    siren: SirenDto | null;
+    rna: RnaDto | null;
 }
 
 export type RnaSirenResponseDto = GetRnaSirenSuccessResponse | GetRnaSirenErrorResponse;

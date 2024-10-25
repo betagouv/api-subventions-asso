@@ -1,12 +1,16 @@
 <script lang="ts">
     import { StructureTitleController } from "./StructureTitle.controller";
-    import { currentAssociation } from "$lib/store/association.store";
+    import { currentAssociation, currentIdentifiers } from "$lib/store/association.store";
     import Badge from "$lib/dsfr/Badge.svelte";
     import AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
     export let siret = undefined;
 
     // If we are here we know that we got a currentAssociation
-    const controller = new StructureTitleController($currentAssociation as AssociationEntity, siret);
+    const controller = new StructureTitleController(
+        $currentAssociation as AssociationEntity,
+        siret,
+        $currentIdentifiers,
+    );
 </script>
 
 <div class="fr-grid-row">

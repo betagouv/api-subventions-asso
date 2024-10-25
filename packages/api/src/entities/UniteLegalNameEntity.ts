@@ -1,4 +1,4 @@
-import { Siren } from "dto";
+import Siren from "../valueObjects/Siren";
 
 export default class UniteLegalNameEntity {
     constructor(

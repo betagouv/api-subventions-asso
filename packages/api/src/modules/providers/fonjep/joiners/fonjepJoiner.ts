@@ -1,10 +1,11 @@
-import { Siren, Siret } from "dto";
 import fonjepPaymentRepository from "../repositories/fonjep.payment.repository";
 import fonjepSubventionRepository from "../repositories/fonjep.subvention.repository";
 import db from "../../../../shared/MongoConnection";
 import { FullGrantData } from "../../../grant/@types/rawGrant";
 import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
 import FonjepPaymentEntity from "../entities/FonjepPaymentEntity";
+import Siret from "../../../../valueObjects/Siret";
+import Siren from "../../../../valueObjects/Siren";
 
 export class FonjepJoiner {
     applicationCollection = db.collection(fonjepSubventionRepository.collectionName);
@@ -27,14 +28,17 @@ export class FonjepJoiner {
 
     public getFullFonjepGrantsBySiret(siret: Siret) {
         return this.applicationCollection
-            .aggregate([{ $match: { "legalInformations.siret": siret } }, ...this.joinPipeline])
-            .toArray();
+            .aggregate([{ $match: { "legalInformations.siret": siret.value } }, ...this.joinPipeline])
+            .toArray() as Promise<FullGrantData<FonjepSubventionEntity, FonjepPaymentEntity>[]>;
     }
 
     public getFullFonjepGrantsBySiren(siren: Siren) {
         return this.applicationCollection
-            .aggregate([{ $match: { "legalInformations.siret": { $regex: `^${siren}\\d{5}` } } }, ...this.joinPipeline])
-            .toArray() as unknown as FullGrantData<FonjepSubventionEntity, FonjepPaymentEntity>[];
+            .aggregate([
+                { $match: { "legalInformations.siret": { $regex: `^${siren.value}\\d{5}` } } },
+                ...this.joinPipeline,
+            ])
+            .toArray() as Promise<FullGrantData<FonjepSubventionEntity, FonjepPaymentEntity>[]>;
     }
 }
 

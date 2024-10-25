@@ -1,4 +1,5 @@
 export * from "./Falsy";
+export * from "./StructureIdentifiers";
 export * from "./ParserPath";
 export * from "./ParserInfo";
 export * from "./ParserScheme";

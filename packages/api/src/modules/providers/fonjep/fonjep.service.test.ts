@@ -12,19 +12,29 @@ import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
 import FonjepPaymentEntity from "./entities/FonjepPaymentEntity";
 import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
+import Siren from "../../../valueObjects/Siren";
+import Siret from "../../../valueObjects/Siret";
+import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
 
 jest.mock("./adapters/FonjepEntityAdapter");
 
-const SIREN = "002034000";
-const SIRET = `${SIREN}32010`;
+const SIREN = new Siren("002034000");
+const SIRET = SIREN.toSiret(`32010`);
+const ASSOCIATION_ID = AssociationIdentifier.fromSiren(SIREN);
+const ESTABLISHMENT_ID = EstablishmentIdentifier.fromSiret(SIRET, ASSOCIATION_ID);
+
 const CODE_POSTE = "J00034";
-const WRONG_SIRET = SIRET.slice(0, 6);
-const isSiretMock = jest.spyOn(Validators, "isSiret");
+const WRONG_SIRET = SIRET.value.slice(0, 6);
+const isSiretMock = jest.spyOn(Siret, "isSiret");
 const isAssociationNameMock = jest.spyOn(Validators, "isAssociationName");
 const isDatesMock = jest.spyOn(Validators, "areDates");
 const isStringsValidMock = jest.spyOn(Validators, "areStringsValid");
 const isNumbersValidMock = jest.spyOn(Validators, "areNumbersValid");
-const findBySiretMock = jest.spyOn(fonjepSubventionRepository, "findBySiret");
+const findBySiretSubventionMock = jest.spyOn(fonjepSubventionRepository, "findBySiret");
+const findBySirenSubventionMock = jest.spyOn(fonjepSubventionRepository, "findBySiren");
+const findBySiretPaymentMock = jest.spyOn(fonjepPaymentRepository, "findBySiret");
+const findBySirenPaymentMock = jest.spyOn(fonjepPaymentRepository, "findBySiren");
 
 const replaceDateWithFakeTimer = value => {
     if (value instanceof Date) {
@@ -200,21 +210,26 @@ describe("FonjepService", () => {
         });
     });
 
-    describe("getDemandeSubventionBySiret", () => {
-        it("should map FonjepEntity to DemandeSubvention", async () => {
-            // @ts-expect-error: mock;
-            findBySiretMock.mockImplementationOnce(async () => [{}]);
-            // @ts-expect-error: mock;
-            FonjepEntityAdapter.toDemandeSubvention.mockImplementationOnce(entity => entity);
-            await fonjepService.getDemandeSubventionBySiret(SIRET);
-            expect(FonjepEntityAdapter.toDemandeSubvention).toHaveBeenCalledTimes(1);
+    describe("getDemandeSubvention", () => {
+        it("should call fonjepSubventionRepository.findBySiret", async () => {
+            // @ts-expect-error: SubventionEntity dont have _id
+            findBySiretSubventionMock.mockResolvedValueOnce([SubventionEntity]);
+            await fonjepService.getDemandeSubvention(ESTABLISHMENT_ID);
+            expect(findBySiretSubventionMock).toHaveBeenCalledWith(SIRET);
         });
 
-        it("should return null", async () => {
-            findBySiretMock.mockImplementationOnce(async () => []);
-            const expected = null;
-            const actual = await fonjepService.getDemandeSubventionBySiret(SIRET);
-            expect(actual).toEqual(expected);
+        it("should call fonjepSubventionRepository.findBySiren", async () => {
+            // @ts-expect-error: SubventionEntity dont have _id
+            findBySirenSubventionMock.mockResolvedValueOnce([SubventionEntity]);
+            await fonjepService.getDemandeSubvention(ASSOCIATION_ID);
+            expect(findBySirenSubventionMock).toHaveBeenCalledWith(SIREN);
+        });
+
+        it("should call FonjepEntityAdapter.toDemandeSubvention", async () => {
+            // @ts-expect-error: SubventionEntity dont have _id
+            findBySiretSubventionMock.mockResolvedValueOnce([SubventionEntity]);
+            await fonjepService.getDemandeSubvention(ESTABLISHMENT_ID);
+            expect(FonjepEntityAdapter.toDemandeSubvention).toHaveBeenCalledWith(SubventionEntity);
         });
     });
 
@@ -309,36 +324,26 @@ describe("FonjepService", () => {
         });
     });
 
-    describe("getPaymentsBySiret", () => {
-        const findBySiretMock = jest.spyOn(fonjepPaymentRepository, "findBySiret");
-        let toPaymentArrayMock: jest.SpyInstance;
-
-        beforeAll(() => {
-            toPaymentArrayMock = jest.spyOn(fonjepService, "toPaymentArray");
-            toPaymentArrayMock.mockImplementation(data => data);
+    describe("getPayments", () => {
+        it("should call fonjepPaymentRepository.findBySiret", async () => {
+            // @ts-expect-error: PaymentEntity dont have _id
+            findBySiretPaymentMock.mockResolvedValueOnce([PaymentEntity]);
+            await fonjepService.getPayments(ESTABLISHMENT_ID);
+            expect(findBySiretPaymentMock).toHaveBeenCalledWith(SIRET);
         });
 
-        it("calls adapter", async () => {
-            // @ts-expect-error: mock
-            findBySiretMock.mockImplementationOnce(async () => [PaymentEntity]);
-            await fonjepService.getPaymentsBySiret(SIRET);
-            expect(toPaymentArrayMock).toHaveBeenCalledWith([PaymentEntity]);
-        });
-    });
-
-    describe("getPaymentsBySiren", () => {
-        const findBySirenMock = jest.spyOn(fonjepPaymentRepository, "findBySiren");
-        let toPaymentArrayMock: jest.SpyInstance;
-
-        beforeAll(() => {
-            toPaymentArrayMock = jest.spyOn(fonjepService, "toPaymentArray");
-            toPaymentArrayMock.mockImplementation(data => data);
+        it("should call fonjepPaymentRepository.findBySiren", async () => {
+            // @ts-expect-error: PaymentEntity dont have _id
+            findBySirenPaymentMock.mockResolvedValueOnce([PaymentEntity]);
+            await fonjepService.getPayments(ASSOCIATION_ID);
+            expect(findBySirenPaymentMock).toHaveBeenCalledWith(SIREN);
         });
 
-        it("calls toPayementArray", async () => {
-            // @ts-expect-error: mock
-            findBySirenMock.mockImplementationOnce(async () => [PaymentEntity]);
-            await fonjepService.getPaymentsBySiren(SIREN);
+        it("should call toPaymentArray", async () => {
+            // @ts-expect-error: PaymentEntity dont have _id
+            findBySiretPaymentMock.mockResolvedValueOnce([PaymentEntity]);
+            const toPaymentArrayMock = jest.spyOn(fonjepService, "toPaymentArray");
+            await fonjepService.getPayments(ESTABLISHMENT_ID);
             expect(toPaymentArrayMock).toHaveBeenCalledWith([PaymentEntity]);
         });
     });
@@ -362,47 +367,7 @@ describe("FonjepService", () => {
     describe("raw grant", () => {
         const DATA = [{ application: { indexedInformations: { code_poste: "EJ", annee_demande: 2042 } } }];
 
-        describe("getRawGrantsBySiret", () => {
-            const SIRET = "12345678900000";
-            let findBySiretMock;
-            beforeAll(
-                () =>
-                    (findBySiretMock = jest
-                        .spyOn(fonjepJoiner, "getFullFonjepGrantsBySiret")
-                        // @ts-expect-error: mock
-                        .mockImplementation(jest.fn(() => DATA))),
-            );
-            afterAll(() => findBySiretMock.mockRestore());
-
-            it("should call findBySiret()", async () => {
-                await fonjepService.getRawGrantsBySiret(SIRET);
-                expect(findBySiretMock).toHaveBeenCalledWith(SIRET);
-            });
-
-            it("returns raw grant data", async () => {
-                const actual = await fonjepService.getRawGrantsBySiret(SIRET);
-                expect(actual).toMatchInlineSnapshot(`
-                    Array [
-                      Object {
-                        "data": Object {
-                          "application": Object {
-                            "indexedInformations": Object {
-                              "annee_demande": 2042,
-                              "code_poste": "EJ",
-                            },
-                          },
-                        },
-                        "joinKey": "EJ - 2042",
-                        "provider": "fonjep",
-                        "type": "fullGrant",
-                      },
-                    ]
-                `);
-            });
-        });
-
-        describe("getRawGrantsBySiren", () => {
-            const SIREN = "123456789";
+        describe("getRawGrants", () => {
             let findBySirenMock;
             beforeAll(
                 () =>
@@ -414,12 +379,12 @@ describe("FonjepService", () => {
             afterAll(() => findBySirenMock.mockRestore());
 
             it("should call findBySiren()", async () => {
-                await fonjepService.getRawGrantsBySiren(SIREN);
+                await fonjepService.getRawGrants(ASSOCIATION_ID);
                 expect(findBySirenMock).toHaveBeenCalledWith(SIREN);
             });
 
             it("returns raw grant data", async () => {
-                const actual = await fonjepService.getRawGrantsBySiren(SIREN);
+                const actual = await fonjepService.getRawGrants(ASSOCIATION_ID);
                 expect(actual).toMatchInlineSnapshot(`
                     Array [
                       Object {

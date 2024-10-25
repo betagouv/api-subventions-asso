@@ -9,6 +9,8 @@ import OsirisRequestEntityFixture from "./providers/osiris/__fixtures__/entity";
 import { osirisRequestRepository } from "../../src/modules/providers/osiris/repositories";
 import DEFAULT_ASSOCIATION from "../__fixtures__/association.fixture";
 import rnaSirenPort from "../../src/dataProviders/db/rnaSiren/rnaSiren.port";
+import Siret from "../../src/valueObjects/Siret";
+import Rna from "../../src/valueObjects/Rna";
 
 const g = global as unknown as { app: unknown };
 
@@ -57,7 +59,10 @@ describe("/etablissement", () => {
     describe("/siret/grants", () => {
         it("should return grants", async () => {
             // SIREN must be from an association
-            await rnaSirenPort.insert({ siren: siretToSiren(ETABLISSEMENT_SIRET), rna: DEFAULT_ASSOCIATION.rna });
+            await rnaSirenPort.insert({
+                siren: new Siret(ETABLISSEMENT_SIRET).toSiren(),
+                rna: new Rna(DEFAULT_ASSOCIATION.rna),
+            });
             const response = await request(g.app)
                 .get(`/etablissement/${ETABLISSEMENT_SIRET}/grants`)
                 .set("x-access-token", await createAndGetUserToken())

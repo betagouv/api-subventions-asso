@@ -2,7 +2,6 @@ import DemandesSubventionsProvider from "../subventions/@types/DemandesSubventio
 import PaymentProvider from "../payments/@types/PaymentProvider";
 import GrantProvider from "../grant/@types/GrantProvider";
 import { FullGrantProvider } from "../grant/@types/FullGrantProvider";
-import leCompteAssoService from "./leCompteAsso/leCompteAsso.service";
 import osirisService from "./osiris/osiris.service";
 import fonjepService from "./fonjep/fonjep.service";
 import chorusService from "./chorus/chorus.service";
@@ -20,7 +19,6 @@ import subventiaService from "./subventia/subventia.service";
 // TODO: Why not an array instead of an object ?
 const providers: { [key: string]: Provider } = {
     osirisService,
-    leCompteAssoService,
     fonjepService,
     chorusService,
     apiAssoService,

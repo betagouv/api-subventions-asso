@@ -1,14 +1,14 @@
-import { Rna, Siret } from "dto";
+import { RnaDto, SiretDto } from "dto";
 
 export default interface DemarchesSimplifieesDataEntity {
-    siret: Siret;
+    siret: SiretDto;
     demarcheId: number;
     demande: {
         id: string;
         demandeur: {
-            siret: Siret;
+            siret: SiretDto;
             association?: {
-                rna: Rna;
+                rna: RnaDto;
                 titre: string;
             };
         };

@@ -1,8 +1,8 @@
-import { StructureIdentifiers } from "dto";
+import { StructureIdentifier } from "../../../@types";
 import grantService from "../../grant/grant.service";
 
 class OpenDataGrantService {
-    getByStructure(identifier: StructureIdentifiers) {
+    getByStructure(identifier: StructureIdentifier) {
         return grantService.getCommonGrants(identifier, true);
     }
 }

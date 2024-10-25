@@ -1,7 +1,9 @@
 import { FindOneAndUpdateOptions, ObjectId } from "mongodb";
-import { Rna, Siren, Siret } from "dto";
 import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 import MongoRepository from "../../../../shared/MongoRepository";
+import Siret from "../../../../valueObjects/Siret";
+import Rna from "../../../../valueObjects/Rna";
+import Siren from "../../../../valueObjects/Siren";
 
 export class OsirisRequestRepository extends MongoRepository<OsirisRequestEntity> {
     collectionName = "osiris-requests";
@@ -19,14 +21,16 @@ export class OsirisRequestRepository extends MongoRepository<OsirisRequestEntity
     public async update(osirisRequest: OsirisRequestEntity) {
         const options = { returnDocument: "after", includeResultMetadata: true } as FindOneAndUpdateOptions;
         const { _id, ...requestWithoutId } = osirisRequest;
-        return (await this.collection.findOneAndUpdate(
-            {
-                "providerInformations.osirisId": osirisRequest.providerInformations.osirisId,
-            },
-            { $set: requestWithoutId },
-            options,
-            //@ts-expect-error -- mongo typing expects no metadata
-        ))!.value as OsirisRequestEntity;
+        return (
+            await this.collection.findOneAndUpdate(
+                {
+                    "providerInformations.osirisId": osirisRequest.providerInformations.osirisId,
+                },
+                { $set: requestWithoutId },
+                options,
+            )
+        //@ts-expect-error -- mongo typing expects no metadata
+        )?.value as OsirisRequestEntity;
     }
 
     public async findByMongoId(id: string): Promise<OsirisRequestEntity | null> {
@@ -42,7 +46,7 @@ export class OsirisRequestRepository extends MongoRepository<OsirisRequestEntity
     public findBySiret(siret: Siret) {
         return this.collection
             .find({
-                "legalInformations.siret": siret,
+                "legalInformations.siret": siret.value,
             })
             .toArray();
     }
@@ -50,7 +54,7 @@ export class OsirisRequestRepository extends MongoRepository<OsirisRequestEntity
     public findByRna(rna: Rna) {
         return this.collection
             .find({
-                "legalInformations.rna": rna,
+                "legalInformations.rna": rna.value,
             })
             .toArray();
     }
@@ -58,7 +62,7 @@ export class OsirisRequestRepository extends MongoRepository<OsirisRequestEntity
     public async findBySiren(siren: Siren) {
         return this.collection
             .find({
-                "legalInformations.siret": new RegExp(`^${siren}\\d{5}`),
+                "legalInformations.siret": new RegExp(`^${siren.value}\\d{5}`),
             })
             .toArray();
     }

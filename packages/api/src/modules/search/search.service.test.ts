@@ -1,9 +1,11 @@
 import searchService, { SearchService } from "./search.service";
 import searchCacheRepository from "./repositories/search.repository";
 import associationNameService from "../association-name/associationName.service";
+import AssociationNameDtoAdapter from "./adapters/AssociationNameDtoAdapter";
 
 jest.mock("./repositories/search.repository");
 jest.mock("../association-name/associationName.service");
+jest.mock("./adapters/AssociationNameDtoAdapter");
 
 describe("SearchService", () => {
     describe("getAssociationsKeys", () => {
@@ -58,6 +60,8 @@ describe("SearchService", () => {
 
         it("save found results", async () => {
             const RES = ["something"];
+            // @ts-expect-error -- test
+            jest.mocked(AssociationNameDtoAdapter.toDto).mockImplementationOnce(x => x);
             jest.mocked(searchCacheRepository.getResults).mockResolvedValue(null);
             // @ts-expect-error -- test
             jest.mocked(associationNameService.find).mockResolvedValue(RES);
@@ -68,6 +72,8 @@ describe("SearchService", () => {
         it("return truncated and annotated results", async () => {
             const RES = ["something"];
             jest.mocked(searchCacheRepository.getResults).mockResolvedValue(null);
+            // @ts-expect-error -- test
+            jest.mocked(AssociationNameDtoAdapter.toDto).mockImplementationOnce(x => x);
             // @ts-expect-error -- test
             jest.mocked(associationNameService.find).mockResolvedValue(RES);
             const actual = await searchService.getAssociationsKeys(SEARCH_TOKEN, PAGE);
