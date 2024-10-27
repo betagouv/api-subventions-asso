@@ -26,6 +26,25 @@ export default class SubventionTableController {
         this.buildColumnDataViews();
     }
 
+    // extract Table data to build CSV
+    static extractRows(elements) {
+        return elements.map(element =>
+            element.subvention ? Object.values(SubventionsAdapter.toSubvention(element)) : null,
+        );
+    }
+
+    static extractHeaders() {
+        return [
+            POST_CODE,
+            SERVICE_INSTRUCTEUR_LABEL,
+            DISPOSITIF_LABEL,
+            INTITULE_ACTION_LABEL,
+            MONTANT_DEMANDE_LABEL,
+            MONTANT_ACCORDE_LABEL,
+            STATUS_LABEL,
+        ];
+    }
+
     sort(column) {
         this.sortColumn = column;
         this.columnDataViews.update(columnDataViews => this.updateColumnDataViews(columnDataViews));

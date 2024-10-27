@@ -1,9 +1,9 @@
 import { InsertOneResult } from "mongodb";
-import { Siren } from "dto";
 import UniteLegalNameEntity from "../../../entities/UniteLegalNameEntity";
 import ExecutionSyncStack from "../../../shared/ExecutionSyncStack";
 import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../shared/helpers/MongoHelper";
 import MongoRepository from "../../../shared/MongoRepository";
+import Siren from "../../../valueObjects/Siren";
 import UniteLegalNameAdapter from "./UniteLegalName.adapter";
 import UniteLegalNameDbo from "./UniteLegalNameDbo";
 
@@ -40,7 +40,7 @@ export class UniteLegalNamePort extends MongoRepository<UniteLegalNameDbo> {
      * @returns the latest name associate at the siren
      */
     async findOneBySiren(siren: Siren) {
-        const cursor = this.collection.find({ siren }).sort({ updatedDate: 1 });
+        const cursor = this.collection.find({ siren: siren.value }).sort({ updatedDate: 1 });
 
         if (!cursor.hasNext()) return null;
         const dbo = await cursor.next();

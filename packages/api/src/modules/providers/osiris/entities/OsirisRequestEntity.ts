@@ -5,15 +5,17 @@ import RequestEntity from "../../../search/entities/RequestEntity";
 import IOsirisRequestInformations from "../@types/IOsirisRequestInformations";
 import OsirisActionEntity from "./OsirisActionEntity";
 
+const dossier = ["Dossier/action", "Dossier"];
+
 export default class OsirisRequestEntity extends RequestEntity {
     public static defaultMainCategory = "Dossier";
 
     public static indexedProviderInformationsPath: {
         [key: string]: ParserPath | ParserInfo; // TODO <string|number>
     } = {
-        osirisId: ["Dossier", "N° Dossier Osiris"],
-        compteAssoId: ["Dossier", "N° Dossier Compte Asso"],
-        ej: ["Dossier", "N° EJ"],
+        osirisId: [dossier, "N° Dossier Osiris"],
+        compteAssoId: [dossier, "N° Dossier Compte Asso"],
+        ej: [dossier, "N° EJ"],
         amountAwarded: {
             path: ["Montants", "Accordé"],
             adapter: value => {
@@ -23,7 +25,7 @@ export default class OsirisRequestEntity extends RequestEntity {
             },
         },
         dateCommission: {
-            path: ["Dossier", "Date Commission"],
+            path: [dossier, "Date Commission"],
             adapter: value => {
                 if (!value) return value;
 
@@ -32,7 +34,7 @@ export default class OsirisRequestEntity extends RequestEntity {
             },
         },
         exerciceDebut: {
-            path: ["Dossier", "Exercice Début"],
+            path: [dossier, "Exercice Début"],
             adapter: value => {
                 if (!value) return value;
                 return new Date(Date.UTC(parseInt(value), 0));
@@ -55,11 +57,11 @@ export default class OsirisRequestEntity extends RequestEntity {
         representantEmail: ["Représentant légal", ["Courriel", "Adresse messagerie"]],
         representantPhone: ["Représentant légal", "N° Téléphone"],
 
-        service_instructeur: ["Dossier", "Service"],
-        dispositif: ["Dossier", "N° programme  / Type financement"],
-        sous_dispositif: ["Dossier", "Sous-Type financement"],
-        status: ["Dossier", ["Etat Dossier", "Etat dossier"]],
-        pluriannualite: ["Dossier", "Pluriannualité"],
+        service_instructeur: [dossier, "Service"],
+        dispositif: [dossier, "N° programme  / Type financement"],
+        sous_dispositif: [dossier, "Sous-Type financement"],
+        status: [dossier, ["Etat Dossier", "Etat dossier"]],
+        pluriannualite: [dossier, "Pluriannualité"],
 
         montantsTotal: {
             path: ["Montants", "Coût (Total des Charges)"],

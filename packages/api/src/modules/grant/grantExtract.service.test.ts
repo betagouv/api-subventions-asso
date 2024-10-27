@@ -6,7 +6,10 @@ import associationsService from "../associations/associations.service";
 import GrantAdapter from "./grant.adapter";
 import csvStringifier = require("csv-stringify/sync");
 import { ExtractHeaderLabel, GrantToExtract } from "./@types/GrantToExtract";
-import { isSiren } from "../../shared/Validators";
+import Siren from "../../valueObjects/Siren";
+import Siret from "../../valueObjects/Siret";
+import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
 
 jest.mock("./grant.service");
 jest.mock("../associations/associations.service");
@@ -17,28 +20,30 @@ jest.mock("../../shared/Validators");
 
 describe("GrantExtractService", () => {
     describe("buildCsv", () => {
-        const IDENTIFIER = "A";
+        const SIRET = new Siret("12345678912345");
+        const IDENTIFIER = EstablishmentIdentifier.fromSiret(SIRET, AssociationIdentifier.fromSiren(SIRET.toSiren()));
         const GRANTS = [1, 2, 3] as unknown as Grant[];
-        const ESTABS = [{ siret: [{ value: "1234567890" }] }] as unknown as SimplifiedEtablissement[];
+        const ESTABS = [{ siret: [{ value: SIRET.value }] }] as unknown as SimplifiedEtablissement[];
         const ASSO = { denomination_siren: [{ value: "NomAsso" }] } as unknown as Association;
-        const ESTABS_BY_SIRET = { 1234567890: ESTABS[0] };
+        const ESTABS_BY_SIRET = { [SIRET.value]: ESTABS[0] };
 
         let separateByExerciseSpy: jest.SpyInstance;
+        let isSirenSpy: jest.SpyInstance;
 
         beforeAll(() => {
             separateByExerciseSpy = jest.spyOn(grantExtractService, "separateByExercise").mockImplementation(v => v); // TODO mock
+            isSirenSpy = jest.spyOn(Siren, "isSiren").mockReturnValue(true);
             jest.mocked(grantService.getGrants).mockResolvedValue(GRANTS);
             jest.mocked(associationsService.getAssociation).mockResolvedValue(ASSO);
             jest.mocked(associationsService.getEstablishments).mockResolvedValue(ESTABS);
-            jest.mocked(isSiren).mockReturnValue(true);
         });
 
         afterAll(() => {
             separateByExerciseSpy.mockRestore();
+            isSirenSpy.mockRestore();
             jest.mocked(grantService.getGrants).mockRestore();
             jest.mocked(associationsService.getAssociation).mockRestore();
             jest.mocked(associationsService.getEstablishments).mockRestore();
-            jest.mocked(isSiren).mockRestore();
         });
 
         it("gets grants", async () => {
@@ -48,12 +53,12 @@ describe("GrantExtractService", () => {
 
         it("gets association", async () => {
             await grantExtractService.buildCsv(IDENTIFIER); // TODO modify to handle estab identifier
-            expect(associationsService.getAssociation).toHaveBeenCalledWith(IDENTIFIER);
+            expect(associationsService.getAssociation).toHaveBeenCalledWith(IDENTIFIER.associationIdentifier);
         });
 
         it("gets establishments", async () => {
             await grantExtractService.buildCsv(IDENTIFIER); // TODO modify to handle estab identifier
-            expect(associationsService.getEstablishments).toHaveBeenCalledWith(IDENTIFIER);
+            expect(associationsService.getEstablishments).toHaveBeenCalledWith(IDENTIFIER.associationIdentifier);
         });
 
         it("separates grants", async () => {
@@ -90,7 +95,7 @@ describe("GrantExtractService", () => {
         it("returns proper filename", async () => {
             const FAKE_NOW = new Date("2022-01-01");
             jest.useFakeTimers().setSystemTime(FAKE_NOW);
-            const expected = "DataSubvention-NomAsso-A-2022-01-01";
+            const expected = "DataSubvention-NomAsso-12345678912345-2022-01-01";
             jest.mocked(csvStringifier.stringify).mockReturnValueOnce(expected);
             const actual = (await grantExtractService.buildCsv(IDENTIFIER)).fileName;
             expect(actual).toBe(expected);

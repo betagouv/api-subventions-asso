@@ -1,4 +1,5 @@
-import { Siren, Siret } from "dto";
+import Siren from "../valueObjects/Siren";
+import Siret from "../valueObjects/Siret";
 
 export default class PaymentFlatEntity {
     constructor(

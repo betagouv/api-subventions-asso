@@ -6,11 +6,11 @@ export default class PaymentsFlatAdapter {
     static toDbo(entity: PaymentFlatEntity): PaymentFlatDbo {
         return {
             _id: new ObjectId(),
+            siret: entity.siret.value,
+            siren: entity.siren.value,
             uniqueId: entity.uniqueId,
             idVersement: entity.idVersement,
             exerciceBudgetaire: entity.exerciceBudgetaire,
-            siret: entity.siret,
-            siren: entity.siren,
             montant: entity.amount,
             dateOperation: entity.operationDate,
             programme: entity.programName,

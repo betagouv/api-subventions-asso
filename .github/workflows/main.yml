@@ -10,10 +10,8 @@ on:
 
 env:
   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-  ENV: test
-  AGENT_CONNECT_ENABLED: false
-  PUBLIC_ENV: test
   PUBLIC_AGENT_CONNECT_ENABLED: false
+  PUBLIC_ENV: test
 
 jobs:
     build:

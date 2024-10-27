@@ -3,7 +3,7 @@ import MinistryEntity from "../../../entities/MinistryEntity";
 import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
 import RefProgrammationEntity from "../../../entities/RefProgrammationEntity";
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
-import { siretToSiren } from "../../../shared/helpers/SirenHelper";
+import Siret from "../../../valueObjects/Siret";
 import IChorusIndexedInformations from "../../providers/chorus/@types/IChorusIndexedInformations";
 import ChorusLineEntity from "../../providers/chorus/entities/ChorusLineEntity";
 
@@ -45,8 +45,8 @@ export default class PaymentFlatAdapter {
             uniqueId, // uniqueId,
             idVersement, // idVersement,
             chorusDocument.indexedInformations.exercice, // exerciceBudget
-            chorusDocument.indexedInformations.siret, // siret,
-            siretToSiren(chorusDocument.indexedInformations.siret), // siren,
+            new Siret(chorusDocument.indexedInformations.siret), // siret,
+            new Siret(chorusDocument.indexedInformations.siret).toSiren(), // siren,
             chorusDocument.indexedInformations.amount, // amount,
             chorusDocument.indexedInformations.dateOperation, // operationDate,
             programEntity?.label_programme ?? null, // programName,

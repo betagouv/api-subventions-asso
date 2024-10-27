@@ -1,3 +1,6 @@
+import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import Rna from "../../../valueObjects/Rna";
+import Siren from "../../../valueObjects/Siren";
 import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
 import osirisService from "./osiris.service";
 import { osirisRequestRepository } from "./repositories";
@@ -17,10 +20,14 @@ describe("OsirisService", () => {
 
     describe("getAssociationsByRna", () => {
         const findByRnaMock = jest.spyOn(osirisRequestRepository, "findByRna");
+        const RNA = new Rna("W123456789");
+        const ASSOCIATION_IDENTIFIER = AssociationIdentifier.fromRna(RNA);
 
         it("should call osirisRequestRepository.findByRna()", async () => {
             findByRnaMock.mockImplementationOnce(async () => []);
-            await osirisService.getAssociationsByRna("W12345678");
+            await osirisService.getAssociations(ASSOCIATION_IDENTIFIER);
+
+            expect(findByRnaMock).toHaveBeenCalledWith(RNA);
         });
     });
 
@@ -43,72 +50,26 @@ describe("OsirisService", () => {
         });
     });
 
-    describe("getDemandeSubventionBySiret", () => {
-        const SIRET = "12345678900000";
-        const findBySiretMock = jest.spyOn(osirisService, "findBySiret");
-        it("should call findBySiret()", async () => {
-            // @ts-expect-error: mock
-            findBySiretMock.mockImplementationOnce(jest.fn(() => [{}]));
-            // @ts-expect-error: mock
-            toDemandeSubventionMock.mockImplementationOnce(entity => entity);
-            await osirisService.getDemandeSubventionBySiret(SIRET);
-            expect(findBySiretMock).toHaveBeenCalledWith(SIRET);
-        });
-    });
-
     describe("getDemandeSubventionBySiren", () => {
-        const SIREN = "123456789";
+        const SIREN = new Siren("123456789");
+        const ASSOCIATION_IDENTIFIER = AssociationIdentifier.fromSiren(SIREN);
         const findBySirenMock = jest.spyOn(osirisService, "findBySiren");
         it("should call findBySiren", async () => {
             // @ts-expect-error: mock
             findBySirenMock.mockImplementationOnce(jest.fn(() => [{}]));
             // @ts-expect-error: mock
             toDemandeSubventionMock.mockImplementationOnce(entity => entity);
-            await osirisService.getDemandeSubventionBySiren(SIREN);
+            await osirisService.getDemandeSubvention(ASSOCIATION_IDENTIFIER);
             expect(findBySirenMock).toHaveBeenCalledWith(SIREN);
         });
     });
 
     describe("raw grants", () => {
         const DATA = [{ providerInformations: { ej: "EJ" } }];
-        describe("getRawGrantsBySiret", () => {
-            const SIRET = "12345678900000";
-            let findBySiretMock;
-            beforeAll(
-                () =>
-                    (findBySiretMock = jest
-                        .spyOn(osirisService, "findBySiret")
-                        // @ts-expect-error: mock
-                        .mockImplementation(jest.fn(() => DATA))),
-            );
-            afterAll(() => findBySiretMock.mockRestore());
 
-            it("should call findBySiret()", async () => {
-                await osirisService.getRawGrantsBySiret(SIRET);
-                expect(findBySiretMock).toHaveBeenCalledWith(SIRET);
-            });
-
-            it("returns raw grant data", async () => {
-                const actual = await osirisService.getRawGrantsBySiret(SIRET);
-                expect(actual).toMatchInlineSnapshot(`
-                    Array [
-                      Object {
-                        "data": Object {
-                          "providerInformations": Object {
-                            "ej": "EJ",
-                          },
-                        },
-                        "joinKey": "EJ",
-                        "provider": "osiris",
-                        "type": "application",
-                      },
-                    ]
-                `);
-            });
-        });
-
-        describe("getRawGrantsBySiren", () => {
-            const SIREN = "123456789";
+        describe("getRawGrants", () => {
+            const SIREN = new Siren("123456789");
+            const ASSOCIATION_IDENTIFIER = AssociationIdentifier.fromSiren(SIREN);
             let findBySirenMock;
             beforeAll(
                 () =>
@@ -120,12 +81,12 @@ describe("OsirisService", () => {
             afterAll(() => findBySirenMock.mockRestore());
 
             it("should call findBySiren()", async () => {
-                await osirisService.getRawGrantsBySiren(SIREN);
+                await osirisService.getRawGrants(ASSOCIATION_IDENTIFIER);
                 expect(findBySirenMock).toHaveBeenCalledWith(SIREN);
             });
 
             it("returns raw grant data", async () => {
-                const actual = await osirisService.getRawGrantsBySiren(SIREN);
+                const actual = await osirisService.getRawGrants(ASSOCIATION_IDENTIFIER);
                 expect(actual).toMatchInlineSnapshot(`
                     Array [
                       Object {

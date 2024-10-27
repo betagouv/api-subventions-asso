@@ -1,15 +1,16 @@
 import axios from "axios";
-import { Association, Etablissement } from "dto";
+import { Etablissement } from "dto";
 import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
 import apiAssoService from "./apiAsso.service";
-import { DacDtoDocument, DacSiret, DtoDocument, RnaDtoDocument } from "./__fixtures__/DtoDocumentFixture";
-import { sirenStructureFixture } from "./__fixtures__/SirenStructureFixture";
-import { rnaStructureFixture } from "./__fixtures__/RnaStructureFixture";
+import { DacDtoDocument, RnaDtoDocument } from "./__fixtures__/DtoDocumentFixture";
 import { fixtureAsso } from "./__fixtures__/ApiAssoStructureFixture";
 import { SirenStructureDto } from "./dto/SirenStructureDto";
 import * as ObjectHelper from "../../../shared/helpers/ObjectHelper";
-import rnaSirenService from "../../rna-siren/rnaSiren.service";
-import StructureDto from "./dto/StructureDto";
+import { DocumentsDto } from "./dto/StructureDto";
+import Siren from "../../../valueObjects/Siren";
+import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import Rna from "../../../valueObjects/Rna";
+import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
 jest.mock("../../../shared/helpers/ObjectHelper");
 const mockedObjectHelper = jest.mocked(ObjectHelper);
 
@@ -26,8 +27,6 @@ describe("ApiAssoService", () => {
     let httpGetSpy: jest.SpyInstance;
     // @ts-expect-error: mock private method
     let mockSendRequest = jest.spyOn(apiAssoService, "sendRequest") as jest.SpyInstance<any | null>;
-    // @ts-expect-error: mock private method
-    const findDocumentsMock = jest.spyOn(apiAssoService, "findDocuments") as jest.SpyInstance<any | null>;
 
     const RNA = "W750000000";
     const API_ASSO_RESPONSE = {
@@ -118,8 +117,9 @@ describe("ApiAssoService", () => {
     });
 
     describe("findRnaSirenByIdentifiers", () => {
-        const RNA = "W76009382";
+        const RNA = "W760938289";
         const SIREN = "954983829";
+        const ASSOCIATION_ID = AssociationIdentifier.fromRna(new Rna(RNA));
 
         beforeEach(() => {
             mockSendRequest.mockResolvedValue({ identite: { id_rna: RNA, id_siren: SIREN } });
@@ -130,21 +130,29 @@ describe("ApiAssoService", () => {
         it("should return undefined identifiers if identite is undefined", async () => {
             mockSendRequest.mockResolvedValueOnce({});
             const expected = { rna: undefined, siren: undefined };
-            const actual = await apiAssoService.findRnaSirenByIdentifiers(RNA);
+            const actual = await apiAssoService.findRnaSirenByIdentifiers(ASSOCIATION_ID);
             expect(actual).toEqual(expected);
         });
 
         it("should return identifiers", async () => {
-            const expected = { rna: RNA, siren: SIREN };
-            const actual = await apiAssoService.findRnaSirenByIdentifiers(RNA);
+            mockSendRequest.mockResolvedValueOnce({
+                identite: {
+                    id_rna: RNA,
+                    id_siren: SIREN,
+                },
+            });
+
+            const expected = { rna: new Rna(RNA), siren: new Siren(SIREN) };
+            const actual = await apiAssoService.findRnaSirenByIdentifiers(ASSOCIATION_ID);
             expect(actual).toEqual(expected);
         });
     });
 
     describe("fetchDocuments", () => {
+        const ASSOCIATION_ID = AssociationIdentifier.fromRna(new Rna(RNA));
         it("call sendRequest()", async () => {
             // @ts-expect-error: private method
-            await apiAssoService.fetchDocuments(RNA);
+            await apiAssoService.fetchDocuments(ASSOCIATION_ID);
             expect(mockSendRequest).toHaveBeenCalledWith(`/proxy_db_asso/documents/${RNA}`);
         });
 
@@ -152,7 +160,7 @@ describe("ApiAssoService", () => {
             const expected = API_ASSO_RESPONSE.asso.documents;
             mockSendRequest.mockImplementationOnce(async () => API_ASSO_RESPONSE);
             // @ts-expect-error: private method
-            const actual = await apiAssoService.fetchDocuments(RNA);
+            const actual = await apiAssoService.fetchDocuments(ASSOCIATION_ID);
             expect(actual).toEqual(expected);
         });
 
@@ -160,174 +168,60 @@ describe("ApiAssoService", () => {
             const expected = undefined;
             mockSendRequest.mockImplementationOnce(async () => null);
             // @ts-expect-error: private method
-            const test = async () => await apiAssoService.fetchDocuments(RNA);
+            const test = async () => await apiAssoService.fetchDocuments(ASSOCIATION_ID);
             await expect(test).resolves;
         });
     });
 
     describe("Association Provider Part", () => {
-        describe("getAssociationsBySiren", () => {
-            let findAssociationBySirenMock: jest.SpyInstance;
-            let findRnaSirenMock: jest.SpyInstance;
-            let findAssociationByRnaMock: jest.SpyInstance;
+        const SIREN = new Siren("509221941");
+        const RNA = new Rna("W750000000");
+        const ASSOCIATION_ID_WITHOUT_RNA = AssociationIdentifier.fromSiren(SIREN);
+        const ASSOCIATION_ID_WITH_RNA = AssociationIdentifier.fromRna(RNA);
+        const ASSOCIATION_ID = AssociationIdentifier.fromSirenAndRna(SIREN, RNA);
 
-            beforeAll(() => {
-                findAssociationBySirenMock = jest
-                    .spyOn(apiAssoService, "findAssociationBySiren")
-                    // @ts-ignore because previous line is ignored this line is not happy
-                    .mockResolvedValue(sirenStructureFixture);
-                findRnaSirenMock = jest.spyOn(rnaSirenService, "find").mockResolvedValue(null);
-                findAssociationByRnaMock = jest.spyOn(apiAssoService, "findAssociationByRna").mockResolvedValue(null);
-            });
+        describe("getAssociations", () => {
+            const findAssociationBySirenMock = jest.spyOn(apiAssoService, "findAssociationBySiren");
+            const findAssociationByRnaMock = jest.spyOn(apiAssoService, "findAssociationByRna");
 
-            afterAll(() => {
-                findAssociationBySirenMock.mockRestore();
-                findRnaSirenMock.mockRestore();
-                findAssociationByRnaMock.mockRestore();
-            });
-
-            it("should return one association", async () => {
-                const expected = 1;
-                const actual = await apiAssoService.getAssociationsBySiren("509221941");
-
-                expect(actual).toHaveLength(expected);
-            });
-
-            it("should return one association, because rna structure not found", async () => {
-                const expected = 1;
-                findRnaSirenMock.mockResolvedValue([{ siren: "509221941", rna: "W000000000" }]);
-                const actual = await apiAssoService.getAssociationsBySiren("509221941");
-
-                expect(actual).toHaveLength(expected);
-            });
-
-            it("should return two associations (With rna asso)", async () => {
-                const expected = 2;
-                findRnaSirenMock.mockResolvedValue([{ siren: "509221941", rna: "W000000000" }]);
-                findAssociationByRnaMock.mockResolvedValueOnce(rnaStructureFixture);
-                const actual = await apiAssoService.getAssociationsBySiren("509221941");
-
-                expect(actual).toHaveLength(expected);
-            });
-
-            it("should return association", async () => {
-                const expected = [sirenStructureFixture];
-                const actual = await apiAssoService.getAssociationsBySiren("509221941");
-
-                expect(actual).toEqual(expected);
-            });
-
-            it("should return null", async () => {
-                const expected = null;
-
+            it("should call findAssociationBySiren", async () => {
                 findAssociationBySirenMock.mockResolvedValueOnce(null);
-
-                const actual = await apiAssoService.getAssociationsBySiren("00");
-                expect(actual).toBe(expected);
-            });
-        });
-
-        describe("getAssociationsBySiret", () => {
-            let getAssociationsBySirenMock: jest.SpyInstance;
-
-            beforeAll(() => {
-                getAssociationsBySirenMock = jest
-                    .spyOn(apiAssoService, "getAssociationsBySiren")
-                    .mockResolvedValue([sirenStructureFixture as unknown as Association]);
+                await apiAssoService.getAssociations(ASSOCIATION_ID_WITHOUT_RNA);
+                expect(findAssociationBySirenMock).toHaveBeenCalledWith(SIREN);
             });
 
-            afterAll(() => {
-                getAssociationsBySirenMock.mockRestore();
-            });
-
-            it("should return one association", async () => {
-                const expected = 1;
-                const actual = await apiAssoService.getAssociationsBySiret("50922194100000");
-
-                expect(actual).toHaveLength(expected);
-            });
-
-            it("should return association", async () => {
-                const expected = [expect.objectContaining(sirenStructureFixture)];
-                const actual = await apiAssoService.getAssociationsBySiret("50922194100000");
-
-                expect(actual).toEqual(expected);
-            });
-
-            it("should return null", async () => {
-                const expected = null;
-                getAssociationsBySirenMock.mockResolvedValue(expected);
-                const actual = await apiAssoService.getAssociationsBySiret("00");
-                expect(actual).toBe(expected);
-            });
-        });
-
-        describe("getAssociationsByRna", () => {
-            let findAssociationBySirenMock: jest.SpyInstance;
-            let findRnaSirenMock: jest.SpyInstance;
-            let findAssociationByRnaMock: jest.SpyInstance;
-
-            beforeAll(() => {
-                findAssociationByRnaMock = jest
-                    .spyOn(apiAssoService, "findAssociationByRna")
-                    // @ts-ignore because previous line is ignored this line is not happy
-                    .mockResolvedValue(rnaStructureFixture);
-                findRnaSirenMock = jest.spyOn(rnaSirenService, "find").mockResolvedValue(null);
-                findAssociationBySirenMock = jest
-                    .spyOn(apiAssoService, "findAssociationBySiren")
-                    // @ts-ignore because previous line is ignored this line is not happy
-                    .mockResolvedValue(null);
-            });
-
-            afterAll(() => {
-                findAssociationByRnaMock.mockRestore();
-                findRnaSirenMock.mockRestore();
-                findAssociationBySirenMock.mockRestore();
-            });
-
-            it("should return one association", async () => {
-                const expected = 1;
-                const actual = await apiAssoService.getAssociationsByRna("W000000000");
-
-                expect(actual).toHaveLength(expected);
-            });
-
-            it("should return one association, because siren structure not found", async () => {
-                const expected = 1;
-                findRnaSirenMock.mockResolvedValue([{ siren: "509221941", rna: "W000000000" }]);
-                const actual = await apiAssoService.getAssociationsByRna("W000000000");
-
-                expect(actual).toHaveLength(expected);
-            });
-
-            it("should return two associations (With siren asso)", async () => {
-                const expected = 2;
-                findRnaSirenMock.mockResolvedValue([{ siren: "509221941", rna: "W000000000" }]);
-                findAssociationBySirenMock.mockResolvedValueOnce(sirenStructureFixture);
-                const actual = await apiAssoService.getAssociationsByRna("W000000000");
-
-                expect(actual).toHaveLength(expected);
-            });
-
-            it("should return association", async () => {
-                const expected = [rnaStructureFixture];
-                const actual = await apiAssoService.getAssociationsByRna("W000000000");
-
-                expect(actual).toEqual(expected);
-            });
-
-            it("should return null", async () => {
-                const expected = null;
-
+            it("should call findAssociationByRna", async () => {
                 findAssociationByRnaMock.mockResolvedValueOnce(null);
+                await apiAssoService.getAssociations(ASSOCIATION_ID_WITH_RNA);
+                expect(findAssociationByRnaMock).toHaveBeenCalledWith(RNA);
+            });
 
-                const actual = await apiAssoService.getAssociationsByRna("W000000000");
-                expect(actual).toBe(expected);
+            it("should call findAssociationBySiren and findAssociationByRna", async () => {
+                findAssociationBySirenMock.mockResolvedValueOnce(null);
+                findAssociationByRnaMock.mockResolvedValueOnce(null);
+                await apiAssoService.getAssociations(ASSOCIATION_ID);
+                expect(findAssociationBySirenMock).toHaveBeenCalledWith(SIREN);
+            });
+
+            it("should return empty array", async () => {
+                findAssociationBySirenMock.mockResolvedValueOnce(null);
+                const actual = await apiAssoService.getAssociations(ASSOCIATION_ID_WITHOUT_RNA);
+                expect(actual).toHaveLength(0);
+            });
+
+            it("should return many associations", async () => {
+                const expected = 2;
+                // @ts-ignore mock fake data
+                findAssociationBySirenMock.mockResolvedValueOnce({ data: true });
+                // @ts-ignore
+                findAssociationByRnaMock.mockResolvedValueOnce({ data: true });
+                const actual = await apiAssoService.getAssociations(ASSOCIATION_ID);
+                expect(actual).toHaveLength(expected);
             });
         });
 
         describe("findAssociationByRna", () => {
-            const RNA = "W000000000";
+            const RNA = new Rna("W000000000");
             let mockSendRequest: jest.SpyInstance;
 
             beforeAll(() => {
@@ -376,7 +270,7 @@ describe("ApiAssoService", () => {
         });
 
         describe("findAssociationBySiren", () => {
-            const SIREN = "000000000";
+            const SIREN = new Siren("000000000");
             const ASSO_WITH_STRUCTURES = {
                 data: true,
                 identite: { date_modif_siren: "smthg" },
@@ -408,14 +302,14 @@ describe("ApiAssoService", () => {
 
             it("should call /structures if no establishment found", async () => {
                 mockSendRequest.mockResolvedValueOnce({ data: true, identite: { date_modif_siren: "smthg" } });
-                await apiAssoService.findAssociationBySiren(RNA);
-                expect(mockSendRequest).toHaveBeenCalledWith(`/api/structure/${RNA}`);
+                await apiAssoService.findAssociationBySiren(SIREN);
+                expect(mockSendRequest).toHaveBeenCalledWith(`/api/structure/${SIREN}`);
             });
 
             it("should return null if result without date", async () => {
                 const expected = null;
                 mockSendRequest.mockResolvedValueOnce({ data: true, etablissement: { length: 1 } });
-                const actual = await apiAssoService.findAssociationBySiren(RNA);
+                const actual = await apiAssoService.findAssociationBySiren(SIREN);
                 expect(actual).toBe(expected);
             });
 
@@ -473,73 +367,52 @@ describe("ApiAssoService", () => {
         });
     });
 
-    describe("Etablissement part", () => {
-        describe("getEtablissementsBySiret", () => {
-            const SIRET = "00000000000000";
+    describe("getEstablishments part", () => {
+        let findDocumentsMock: jest.SpyInstance;
+        let findEtablissementsBySirenMock: jest.SpyInstance;
 
-            let getEtablissementsBySirenMock: jest.SpyInstance;
-
-            beforeAll(() => {
-                getEtablissementsBySirenMock = jest
-                    .spyOn(apiAssoService, "getEtablissementsBySiren")
-                    .mockResolvedValue([{ siret: [{ value: SIRET }] } as unknown as Etablissement]);
-            });
-
-            afterAll(() => {
-                getEtablissementsBySirenMock.mockRestore();
-            });
-
-            it("should return one etablissement", async () => {
-                const expected = 1;
-                const actual = await apiAssoService.getEtablissementsBySiret(SIRET);
-                expect(actual).toHaveLength(expected);
-            });
-
-            it("should return null", async () => {
-                const expected = null;
-                getEtablissementsBySirenMock.mockReturnValueOnce(null);
-                const actual = await apiAssoService.getEtablissementsBySiret(SIRET);
-                expect(actual).toBe(expected);
-            });
+        beforeAll(() => {
+            // @ts-expect-error: mock private method
+            findDocumentsMock = jest.spyOn(apiAssoService, "findDocuments");
+            // @ts-ignore findEtablissementsBySiren is private method
+            findEtablissementsBySirenMock = jest.spyOn(apiAssoService, "findEtablissementsBySiren");
         });
 
-        describe("getEtablissementsBySiren", () => {
-            const SIREN = "000000000";
-            const etablissement: Etablissement = [{ siret: [{ value: SIREN + "00000" }] }] as unknown as Etablissement;
+        afterAll(() => {
+            findDocumentsMock.mockRestore();
+        });
 
-            let findEtablissementsBySirenMock: jest.SpyInstance;
-
-            beforeAll(() => {
-                findEtablissementsBySirenMock = jest
-                    // @ts-ignore findEtablissementsBySiren is private method
-                    .spyOn(apiAssoService, "findEtablissementsBySiren")
-                    // @ts-ignore because previous line is ignored this line is not happy
-                    .mockResolvedValue([etablissement]);
+        describe("getEstablishments", () => {
+            const SIREN = new Siren("000000000");
+            const ASSOCIATION_ID = AssociationIdentifier.fromSiren(SIREN);
+            const SIRET = SIREN.toSiret("00001");
+            const ESTABLISHMENT_ID = EstablishmentIdentifier.fromSiret(SIRET, ASSOCIATION_ID);
+            it("should call findEtablissementsBySiren with Association identifier", async () => {
+                findEtablissementsBySirenMock.mockResolvedValueOnce([]);
+                await apiAssoService.getEstablishments(ASSOCIATION_ID);
+                expect(findEtablissementsBySirenMock).toHaveBeenCalledWith(SIREN);
             });
 
-            afterAll(() => {
-                findEtablissementsBySirenMock.mockRestore();
+            it("should call findEtablissementsBySiren with Establishment identifier", async () => {
+                findEtablissementsBySirenMock.mockResolvedValueOnce([]);
+                await apiAssoService.getEstablishments(ESTABLISHMENT_ID);
+                expect(findEtablissementsBySirenMock).toHaveBeenCalledWith(SIREN);
             });
 
-            it("should return one etablissement", async () => {
+            it("should filter establishments by siret", async () => {
                 const expected = 1;
-                const actual = await apiAssoService.getEtablissementsBySiren(SIREN);
-
+                // @ts-ignore mock fake data
+                findEtablissementsBySirenMock.mockResolvedValueOnce([
+                    { siret: [{ value: SIRET.value }] },
+                    { siret: [{ value: SIREN.toSiret("00002").value }] },
+                ]);
+                const actual = await apiAssoService.getEstablishments(ESTABLISHMENT_ID);
                 expect(actual).toHaveLength(expected);
-            });
-
-            it("should return null", async () => {
-                const expected = null;
-
-                findEtablissementsBySirenMock.mockResolvedValueOnce(null);
-
-                const actual = await apiAssoService.getEtablissementsBySiren(SIREN);
-                expect(actual).toBe(expected);
             });
         });
 
         describe("findEtablissementsBySiren", () => {
-            const SIREN = "000000000";
+            const SIREN = new Siren("000000000");
 
             let mockSendRequest: jest.SpyInstance;
             let mockGetDefaultDateModifSiren: jest.SpyInstance;
@@ -571,15 +444,15 @@ describe("ApiAssoService", () => {
                 expect(mockSendRequest).toBeCalledTimes(1);
             });
 
-            it("should return null", async () => {
+            it("should return empty array", async () => {
                 mockSendRequest.mockResolvedValueOnce(null);
                 // @ts-ignore findEtablissementsBySiren is private method
                 const actual = await apiAssoService.findEtablissementsBySiren(SIREN);
 
-                expect(actual).toBe(null);
+                expect(actual).toHaveLength(0);
             });
 
-            it("should return null if structure.identite has empty properties", async () => {
+            it("should return empty array if structure.identite has empty properties", async () => {
                 mockSendRequest.mockResolvedValueOnce({
                     date_modif_siren: null,
                     id_siren: null,
@@ -587,7 +460,7 @@ describe("ApiAssoService", () => {
                 // @ts-ignore findEtablissementsBySiren is private method
                 const actual = await apiAssoService.findEtablissementsBySiren(SIREN);
 
-                expect(actual).toBe(null);
+                expect(actual).toHaveLength(0);
             });
 
             it("should call adapter", async () => {
@@ -786,7 +659,8 @@ describe("ApiAssoService", () => {
         });
 
         describe("findDocuments", () => {
-            const IDENTIFIER = "123456789";
+            const SIREN = new Siren("123456789");
+            const ASSOCIATION_ID = AssociationIdentifier.fromSiren(SIREN);
 
             // @ts-expect-error: mock
             const mockFilterRnaDocuments = jest.spyOn(apiAssoService, "filterRnaDocuments");
@@ -796,6 +670,8 @@ describe("ApiAssoService", () => {
             const mockFilterDacDocuments = jest.spyOn(apiAssoService, "filterDacDocuments");
             // @ts-expect-error: mock
             const mockFilterRibsInDacDocuments = jest.spyOn(apiAssoService, "filterRibsInDacDocuments");
+            // @ts-expect-error: mock
+            const fetchDocumentsMock: jest.SpyInstance = jest.spyOn(apiAssoService, "fetchDocuments");
 
             beforeAll(() => {
                 // @ts-ignore filterRnaDocuments has private method
@@ -817,16 +693,14 @@ describe("ApiAssoService", () => {
                     },
                 ];
 
-                mockSendRequest.mockResolvedValueOnce({
-                    asso: {
-                        documents: {
-                            document_rna: expected,
-                        },
-                    },
-                });
+                const documents = {
+                    document_rna: expected,
+                } as unknown as DocumentsDto;
+
+                fetchDocumentsMock.mockResolvedValueOnce(documents);
 
                 // @ts-ignore findDocuments has private method
-                await apiAssoService.findDocuments(IDENTIFIER);
+                await apiAssoService.findDocuments(ASSOCIATION_ID);
 
                 expect(mockFilterRnaDocuments).toHaveBeenCalledWith(expected);
             });
@@ -834,14 +708,14 @@ describe("ApiAssoService", () => {
             it("should call filterRnaDocuments with empty array", async () => {
                 const expected = [];
 
-                mockSendRequest.mockImplementationOnce(() => ({
-                    asso: {
-                        documents: {},
-                    },
-                }));
+                const documents = {
+                    document_rna: expected,
+                } as unknown as DocumentsDto;
+
+                fetchDocumentsMock.mockResolvedValueOnce(documents);
 
                 // @ts-ignore findDocuments has private method
-                await apiAssoService.findDocuments(IDENTIFIER);
+                await apiAssoService.findDocuments(ASSOCIATION_ID);
 
                 expect(mockFilterRnaDocuments).toHaveBeenCalledWith(expected);
             });
@@ -855,33 +729,31 @@ describe("ApiAssoService", () => {
                     },
                 ];
 
-                mockSendRequest.mockImplementationOnce(() => ({
-                    asso: {
-                        documents: {
-                            document_dac: expected,
-                        },
-                    },
-                }));
+                const documents = {
+                    document_dac: expected,
+                } as unknown as DocumentsDto;
+
+                fetchDocumentsMock.mockResolvedValueOnce(documents);
 
                 // @ts-ignore findDocuments has private method
-                await apiAssoService.findDocuments(IDENTIFIER);
+                await apiAssoService.findDocuments(ASSOCIATION_ID);
 
-                expect(mockFilterActiveDacDocuments).toHaveBeenCalledWith(expected, IDENTIFIER);
+                expect(mockFilterActiveDacDocuments).toHaveBeenCalledWith(expected, ASSOCIATION_ID);
             });
 
             it("should call filterActiveDacDocuments with empty array", async () => {
                 const expected = [];
 
-                mockSendRequest.mockImplementationOnce(() => ({
-                    asso: {
-                        documents: {},
-                    },
-                }));
+                const documents = {
+                    document_dac: expected,
+                } as unknown as DocumentsDto;
+
+                fetchDocumentsMock.mockResolvedValueOnce(documents);
 
                 // @ts-ignore findDocuments has private method
-                await apiAssoService.findDocuments(IDENTIFIER);
+                await apiAssoService.findDocuments(ASSOCIATION_ID);
 
-                expect(mockFilterActiveDacDocuments).toHaveBeenCalledWith(expected, IDENTIFIER);
+                expect(mockFilterActiveDacDocuments).toHaveBeenCalledWith(expected, ASSOCIATION_ID);
             });
 
             it("should call filterDacDocuments with actives document_dac", async () => {
@@ -893,19 +765,16 @@ describe("ApiAssoService", () => {
                     },
                 ];
 
-                mockSendRequest.mockImplementationOnce(() => ({
-                    asso: {
-                        documents: {
-                            document_dac: expected,
-                        },
-                    },
-                }));
+                const documents = {
+                    document_dac: expected,
+                } as unknown as DocumentsDto;
 
+                fetchDocumentsMock.mockResolvedValueOnce(documents);
                 // @ts-expect-error: mock
                 mockFilterActiveDacDocuments.mockImplementationOnce(data => data);
 
                 // @ts-ignore findDocuments has private method
-                await apiAssoService.findDocuments(IDENTIFIER);
+                await apiAssoService.findDocuments(ASSOCIATION_ID);
 
                 expect(mockFilterDacDocuments).toHaveBeenCalledWith(expected);
             });
@@ -919,19 +788,17 @@ describe("ApiAssoService", () => {
                     },
                 ];
 
-                mockSendRequest.mockImplementationOnce(() => ({
-                    asso: {
-                        documents: {
-                            document_dac: expected,
-                        },
-                    },
-                }));
+                const documents = {
+                    document_dac: expected,
+                } as unknown as DocumentsDto;
+
+                fetchDocumentsMock.mockResolvedValueOnce(documents);
 
                 // @ts-expect-error: mock
                 mockFilterActiveDacDocuments.mockImplementationOnce(data => data);
 
                 // @ts-ignore findDocuments has private method
-                await apiAssoService.findDocuments(IDENTIFIER);
+                await apiAssoService.findDocuments(ASSOCIATION_ID);
 
                 expect(mockFilterRibsInDacDocuments).toHaveBeenCalledWith(expected);
             });
@@ -941,19 +808,17 @@ describe("ApiAssoService", () => {
                     sous_type: "PV",
                 };
 
-                mockSendRequest.mockImplementationOnce(() => ({
-                    asso: {
-                        documents: {
-                            document_rna: [expected],
-                        },
-                    },
-                }));
+                const documents = {
+                    document_rna: [expected],
+                } as unknown as DocumentsDto;
+
+                fetchDocumentsMock.mockResolvedValueOnce(documents);
 
                 // @ts-expect-error: mock
                 mockFilterRnaDocuments.mockImplementationOnce(data => data);
 
                 // @ts-ignore findDocuments has private method
-                await apiAssoService.findDocuments(IDENTIFIER);
+                await apiAssoService.findDocuments(ASSOCIATION_ID);
 
                 expect(ApiAssoDtoAdapter.rnaDocumentToDocument).toHaveBeenCalledWith(expected);
             });
@@ -965,13 +830,11 @@ describe("ApiAssoService", () => {
                     },
                 };
 
-                mockSendRequest.mockImplementationOnce(() => ({
-                    asso: {
-                        documents: {
-                            document_dac: [expected],
-                        },
-                    },
-                }));
+                const documents = {
+                    document_dac: [expected],
+                } as unknown as DocumentsDto;
+
+                fetchDocumentsMock.mockResolvedValueOnce(documents);
 
                 // @ts-expect-error: mock
                 mockFilterActiveDacDocuments.mockImplementationOnce(data => data);
@@ -979,7 +842,7 @@ describe("ApiAssoService", () => {
                 mockFilterDacDocuments.mockImplementationOnce(data => data);
 
                 // @ts-ignore findDocuments has private method
-                await apiAssoService.findDocuments(IDENTIFIER);
+                await apiAssoService.findDocuments(ASSOCIATION_ID);
 
                 expect(ApiAssoDtoAdapter.dacDocumentToDocument).toHaveBeenCalledWith(expected);
             });
@@ -991,13 +854,11 @@ describe("ApiAssoService", () => {
                     },
                 };
 
-                mockSendRequest.mockImplementationOnce(() => ({
-                    asso: {
-                        documents: {
-                            document_dac: [expected],
-                        },
-                    },
-                }));
+                const documents = {
+                    document_dac: [expected],
+                } as unknown as DocumentsDto;
+
+                fetchDocumentsMock.mockResolvedValueOnce(documents);
 
                 // @ts-expect-error: mock
                 mockFilterActiveDacDocuments.mockImplementationOnce(data => data);
@@ -1007,57 +868,50 @@ describe("ApiAssoService", () => {
                 ApiAssoDtoAdapter.dacDocumentToDocument.mockImplementationOnce(data => data);
 
                 // @ts-ignore findDocuments has private method
-                await apiAssoService.findDocuments(IDENTIFIER);
+                await apiAssoService.findDocuments(ASSOCIATION_ID);
 
                 expect(ApiAssoDtoAdapter.dacDocumentToRib).toHaveBeenCalledWith(expected);
             });
         });
 
-        describe("getDocumentsBySiret", () => {
-            it("should return one document", async () => {
-                findDocumentsMock.mockImplementationOnce(async () => DtoDocument);
+        describe("getDocuments", () => {
+            const SIREN = new Siren("000000000");
+            const ASSOCIATION_ID = AssociationIdentifier.fromSiren(SIREN);
+            const SIRET = SIREN.toSiret("00001");
+            const ESTABLISHMENT_ID = EstablishmentIdentifier.fromSiret(SIRET, ASSOCIATION_ID);
+
+            let findDocumentsMock: jest.SpyInstance;
+
+            beforeAll(() => {
+                // @ts-expect-error: mock private method
+                findDocumentsMock = jest.spyOn(apiAssoService, "findDocuments");
+            });
+
+            afterAll(() => {
+                findDocumentsMock.mockRestore();
+            });
+
+            it("should call findDocuments", async () => {
+                findDocumentsMock.mockResolvedValueOnce([]);
+                await apiAssoService.getDocuments(ASSOCIATION_ID);
+                expect(findDocumentsMock).toHaveBeenCalledWith(ASSOCIATION_ID);
+            });
+
+            it("should call findDocuments with establishment identifier", async () => {
+                findDocumentsMock.mockResolvedValueOnce([]);
+                await apiAssoService.getDocuments(ESTABLISHMENT_ID);
+                expect(findDocumentsMock).toHaveBeenCalledWith(ASSOCIATION_ID);
+            });
+
+            it("should filter documents by siret", async () => {
                 const expected = 1;
-                const actual = await apiAssoService.getDocumentsBySiret(DacSiret);
+                // @ts-ignore mock fake data
+                findDocumentsMock.mockResolvedValueOnce([
+                    { __meta__: { siret: SIRET.value } },
+                    { __meta__: { siret: SIREN.toSiret("00002").value } },
+                ]);
+                const actual = await apiAssoService.getDocuments(ESTABLISHMENT_ID);
                 expect(actual).toHaveLength(expected);
-            });
-
-            it("should return null", async () => {
-                const expected = null;
-                findDocumentsMock.mockImplementationOnce(() => Promise.resolve(null));
-                const actual = await apiAssoService.getDocumentsBySiret("");
-                expect(actual).toBe(expected);
-            });
-        });
-
-        describe("getDocumentsBySiren", () => {
-            it("should return 2 documents", async () => {
-                findDocumentsMock.mockImplementationOnce(async () => DtoDocument);
-                const expected = 2;
-                const actual = await apiAssoService.getDocumentsBySiren("");
-                expect(actual).toHaveLength(expected);
-            });
-
-            it("should return null", async () => {
-                findDocumentsMock.mockImplementationOnce(() => Promise.resolve(null));
-                const expected = null;
-                const actual = await apiAssoService.getDocumentsBySiren("");
-                expect(actual).toBe(expected);
-            });
-        });
-
-        describe("getDocumentsByRna", () => {
-            it("should return 2 documents", async () => {
-                findDocumentsMock.mockImplementationOnce(async () => DtoDocument);
-                const expected = 2;
-                const actual = await apiAssoService.getDocumentsByRna("");
-                expect(actual).toHaveLength(expected);
-            });
-
-            it("should return null", async () => {
-                findDocumentsMock.mockImplementationOnce(() => Promise.resolve(null));
-                const expected = null;
-                const actual = await apiAssoService.getDocumentsByRna("");
-                expect(actual).toBe(expected);
             });
         });
     });

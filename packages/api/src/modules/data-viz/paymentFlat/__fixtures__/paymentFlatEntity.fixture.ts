@@ -1,12 +1,14 @@
 import PaymentFlatEntity from "../../../../entities/PaymentFlatEntity";
-import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
+
+import Siren from "../../../../valueObjects/Siren";
+import Siret from "../../../../valueObjects/Siret";
 
 export const PAYMENT_FLAT_ENTITY = new PaymentFlatEntity(
-    `${DEFAULT_ASSOCIATION.siret}-0001821732-2023-101-0101-01-02-3222-1689120000000`, // uniqueId
-    `${DEFAULT_ASSOCIATION.siret}-0001821732-2023`, // idVersement
+    '$12345678901234-0001821732-2023-101-0101-01-02-3222-1689120000000', // uniqueId
+    '$12345678901234-0001821732-2023', // idVersement
     2023, // exerciceBudgetaire
-    DEFAULT_ASSOCIATION.siret, // siret
-    DEFAULT_ASSOCIATION.siren, // siren
+    new Siret("12345678901234"), // siret
+    new Siren("123456789"), // siren
     89988.3, // operation amount
     new Date("2023-07-12T00:00:00.000Z"), // operation date
     "Programme Exemple", // program

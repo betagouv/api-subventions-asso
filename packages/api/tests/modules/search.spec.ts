@@ -4,16 +4,15 @@ import uniteLegalNamePort from "../../src/dataProviders/db/uniteLegalName/uniteL
 import AssociationNameFixture from "../__fixtures__/association-name.fixture";
 import apiEntrepriseService from "../../src/modules/providers/apiEntreprise/apiEntreprise.service";
 import dauphinService from "../../src/modules/providers/dauphin/dauphin.service";
-import rechercheEntreprises from "../../src/dataProviders/api/rechercheEntreprises/rechercheEntreprises.port";
+import rechercheEntreprisesPort from "../../src/dataProviders/api/rechercheEntreprises/rechercheEntreprises.port";
 
 const g = global as unknown as { app: unknown };
 
 describe("/search", () => {
     beforeAll(() => {
         jest.spyOn(apiEntrepriseService, "getHeadcount").mockImplementation(async () => null);
-        jest.spyOn(rechercheEntreprises, "search").mockImplementation(async () => []);
-        jest.spyOn(dauphinService, "getDemandeSubventionBySiret").mockImplementation(async () => []);
-        jest.spyOn(dauphinService, "getDemandeSubventionBySiren").mockImplementation(async () => []);
+        jest.spyOn(rechercheEntreprisesPort, "search").mockImplementation(async () => []);
+        jest.spyOn(dauphinService, "getDemandeSubvention").mockImplementation(async () => []);
     });
 
     describe("/associations/{input}", () => {
@@ -38,7 +37,7 @@ describe("/search", () => {
 
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchSnapshot({
-                results: [{ name: AssociationNameFixture[0].name, siren: AssociationNameFixture[0].siren }],
+                results: [{ name: AssociationNameFixture[0].name, siren: AssociationNameFixture[0].siren.value }],
                 nbPages: 1,
                 page: 1,
                 total: 1,
@@ -52,7 +51,7 @@ describe("/search", () => {
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
             expect(response.body).toMatchSnapshot({
-                results: [{ name: AssociationNameFixture[0].name, siren: AssociationNameFixture[0].siren }],
+                results: [{ name: AssociationNameFixture[0].name, siren: AssociationNameFixture[0].siren.value }],
                 nbPages: 1,
                 page: 1,
                 total: 1,

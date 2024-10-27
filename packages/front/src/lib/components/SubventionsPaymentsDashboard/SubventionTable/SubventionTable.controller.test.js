@@ -19,8 +19,34 @@ import { ApplicationStatus } from "dto";
 import SubventionTableController from "./SubventionTable.controller";
 import * as modalStore from "$lib/store/modal.store";
 import SubventionInfoModal from "$lib/components/SubventionsPaymentsDashboard/Modals/SubventionInfoModal.svelte";
+import SubventionsAdapter from "$lib/resources/subventions/subventions.adapter";
 
 describe("SubventionTableController", () => {
+    describe("extractHeaders()", () => {
+        it("return an array of header", () => {
+            const actual = SubventionTableController.extractHeaders();
+            expect(actual).toMatchSnapshot();
+        });
+    });
+
+    describe("extractRows()", () => {
+        it("should call SubventionsAdapter.toSubvention for each element in array", () => {
+            SubventionTableController.extractRows([{ subvention: {} }, { subvention: {} }]);
+            expect(SubventionsAdapter.toSubvention).toHaveBeenCalledTimes(2);
+        });
+
+        it("should not call SubventionsAdapter.toSubvention if no subvention", () => {
+            SubventionTableController.extractRows([{ subvention: {} }, {}]);
+            expect(SubventionsAdapter.toSubvention).toHaveBeenCalledTimes(1);
+        });
+
+        it("should return an array", () => {
+            const expected = [null, null];
+            const actual = SubventionTableController.extractRows([{}, {}]);
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("onRowClick", () => {
         const elementData = {
             hasMoreInfo: true,

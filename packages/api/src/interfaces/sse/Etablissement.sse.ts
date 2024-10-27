@@ -3,6 +3,7 @@ import ControllerSSE from "../../decorators/controllerSSE.decorator";
 import { Get } from "../../decorators/sse.methods.decorator";
 import SSEResponse from "../../sse/@types/SSEResponse";
 import etablissementService from "../../modules/etablissements/etablissements.service";
+import establishmentIdentifierService from "../../modules/establishment-identifier/establishment-identifier.service";
 
 @ControllerSSE("/sse/etablissement", {
     security: "jwt",
@@ -17,7 +18,8 @@ export class EtablissementSse {
     @Get("/:identifier/subventions")
     public async getDemandeSubventions(req: express.Request, res: SSEResponse) {
         try {
-            const flux = await etablissementService.getSubventions(req.params.identifier);
+            const identifier = await establishmentIdentifierService.getEstablishmentIdentifiers(req.params.identifier);
+            const flux = await etablissementService.getSubventions(identifier);
 
             flux.on("data", data => {
                 res.sendSSEData(data);

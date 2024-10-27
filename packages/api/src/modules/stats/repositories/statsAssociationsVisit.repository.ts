@@ -1,5 +1,4 @@
 import { ObjectId } from "mongodb";
-import { AssociationIdentifiers } from "../../../@types";
 import MongoRepository from "../../../shared/MongoRepository";
 import AssociationVisitEntity from "../entities/AssociationVisitEntity";
 
@@ -38,7 +37,7 @@ export class StatsAssociationsVisitRepository extends MongoRepository<Associatio
 
     findGroupedByAssociationIdentifier() {
         return this.collection.aggregate([this._getGroupByAssociationIdentifierMatcher()]).toArray() as Promise<
-            { _id: AssociationIdentifiers; visits: AssociationVisitEntity[] }[]
+            { _id: string; visits: AssociationVisitEntity[] }[]
         >;
     }
 
@@ -55,7 +54,7 @@ export class StatsAssociationsVisitRepository extends MongoRepository<Associatio
                 },
                 this._getGroupByAssociationIdentifierMatcher(),
             ])
-            .toArray() as Promise<{ _id: AssociationIdentifiers; visits: AssociationVisitEntity[] }[]>;
+            .toArray() as Promise<{ _id: string; visits: AssociationVisitEntity[] }[]>;
     }
 
     findGroupedByUserIdentifierOnPeriod(start: Date, end: Date) {
@@ -76,7 +75,7 @@ export class StatsAssociationsVisitRepository extends MongoRepository<Associatio
                     },
                 },
             ])
-            .toArray() as Promise<{ _id: AssociationIdentifiers; associationVisits: AssociationVisitEntity[] }[]>;
+            .toArray() as Promise<{ _id: string; associationVisits: AssociationVisitEntity[] }[]>;
     }
 
     findByUserId(userId: string) {

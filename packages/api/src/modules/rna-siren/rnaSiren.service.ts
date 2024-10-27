@@ -1,23 +1,23 @@
-import { Rna, Siren } from "dto";
 import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
-import { AssociationIdentifiers } from "../../@types";
 import rnaSirenPort from "../../dataProviders/db/rnaSiren/rnaSiren.port";
 import apiAssoService from "../providers/apiAsso/apiAsso.service";
 import RnaSirenEntity from "../../entities/RnaSirenEntity";
+import Rna from "../../valueObjects/Rna";
+import Siren from "../../valueObjects/Siren";
+import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
 
 export class RnaSirenService {
-    async find(identifier: AssociationIdentifiers): Promise<RnaSirenEntity[] | null> {
-        const entities = await rnaSirenPort.find(identifier);
-        if (!entities) {
-            // If not rna siren matching search in API ASSO
-            const { rna, siren } = await apiAssoService.findRnaSirenByIdentifiers(identifier);
+    async find(id: Rna | Siren): Promise<RnaSirenEntity[] | null> {
+        const entities = await rnaSirenPort.find(id);
 
-            if (!rna || !siren) return null;
-            const result = await this.insert(rna, siren);
-            return result ? [result] : null;
-        }
+        if (entities) return entities;
 
-        return entities;
+        // If not rna siren matching search in API ASSO
+        const { rna, siren } = await apiAssoService.findRnaSirenByIdentifiers(AssociationIdentifier.fromId(id));
+
+        if (!rna || !siren) return null;
+        const result = await this.insert(rna, siren);
+        return result ? [result] : null;
     }
 
     async insert(rna: Rna, siren: Siren) {

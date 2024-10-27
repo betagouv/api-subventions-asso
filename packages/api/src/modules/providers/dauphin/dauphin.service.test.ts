@@ -3,11 +3,10 @@ import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import dauphinService from "./dauphin.service";
 import dauphinGisproRepository from "./repositories/dauphin-gispro.repository";
 import SpyInstance = jest.SpyInstance;
-import { Siret, Siren } from "dto";
-import * as sirenHelper from "../../../shared/helpers/SirenHelper";
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
-import rnaSirenService from "../../rna-siren/rnaSiren.service";
-import RnaSirenEntity from "../../../entities/RnaSirenEntity";
+import Siren from "../../../valueObjects/Siren";
+import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
 
 jest.mock("axios", () => ({
     post: jest.fn(),
@@ -23,8 +22,10 @@ jest.mock("./repositories/dauphin-gispro.repository", () => ({
 
 jest.mock("./adapters/DauphinDtoAdapter");
 
-const SIRET: Siret = "12345678912345";
-const SIREN: Siren = "123456789";
+const SIREN = new Siren("123456789");
+const SIRET = SIREN.toSiret("12345");
+const ASSOCIATION_IDENTIFIER = AssociationIdentifier.fromSiren(SIREN);
+const ESTABLISHMENT_IDENTIFIER = EstablishmentIdentifier.fromSiret(SIRET, ASSOCIATION_IDENTIFIER);
 
 jest.mock("./../../../configurations/apis.conf", () => ({
     DAUPHIN_USERNAME: "DAUPHIN_USERNAME",
@@ -78,32 +79,14 @@ describe("Dauphin Service", () => {
         });
     });
 
-    describe("getDemandeSubventionBySiret", () => {
-        // @ts-expect-error mock
-        afterEach(() => DauphinDtoAdapter.toDemandeSubvention.mockReset());
-
-        it("should return subventions", async () => {
-            const APPLICATION_ENTITIES = [{ id: "A" }, { id: "B" }];
-            const expected = APPLICATION_ENTITIES;
-            // @ts-expect-error: mock return value
-            dauphinGisproRepository.findBySiret.mockImplementationOnce(async () => APPLICATION_ENTITIES);
-            // @ts-expect-error: mock return value
-            DauphinDtoAdapter.toDemandeSubvention.mockImplementation(data => data);
-
-            const actual = await dauphinService.getDemandeSubventionBySiret(SIRET);
-
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("getDemandeSubventionBySiren", () => {
+    describe("getDemandeSubvention", () => {
         it("should return subventions", async () => {
             const expected = [{ fake: "data" }];
             // @ts-expect-error: mock return value
             dauphinGisproRepository.findBySiren.mockImplementationOnce(async () => expected);
             // @ts-expect-error: mock return value
             DauphinDtoAdapter.toDemandeSubvention.mockImplementationOnce(data => data);
-            const actual = await dauphinService.getDemandeSubventionBySiren("FAKE_SIREN");
+            const actual = await dauphinService.getDemandeSubvention(ASSOCIATION_IDENTIFIER);
             expect(actual).toEqual(expected);
         });
     });
@@ -117,44 +100,7 @@ describe("Dauphin Service", () => {
     describe("raw grant", () => {
         const DATA = [{ gispro: { ej: "EJ" } }];
 
-        describe("getRawGrantsBySiret", () => {
-            const SIRET = "12345678900000";
-            let findBySiretMock;
-            beforeAll(
-                () =>
-                    (findBySiretMock = jest
-                        .spyOn(dauphinGisproRepository, "findBySiret")
-                        // @ts-expect-error: mock
-                        .mockImplementation(jest.fn(() => DATA))),
-            );
-            afterAll(() => findBySiretMock.mockRestore());
-
-            it("should call findBySiret()", async () => {
-                await dauphinService.getRawGrantsBySiret(SIRET);
-                expect(findBySiretMock).toHaveBeenCalledWith(SIRET);
-            });
-
-            it("returns raw grant data", async () => {
-                const actual = await dauphinService.getRawGrantsBySiret(SIRET);
-                expect(actual).toMatchInlineSnapshot(`
-                                    Array [
-                                      Object {
-                                        "data": Object {
-                                          "gispro": Object {
-                                            "ej": "EJ",
-                                          },
-                                        },
-                                        "joinKey": "EJ",
-                                        "provider": "dauphin",
-                                        "type": "application",
-                                      },
-                                    ]
-                            `);
-            });
-        });
-
-        describe("getRawGrantsBySiren", () => {
-            const SIREN = "123456789";
+        describe("getRawGrants", () => {
             let findBySirenMock;
             beforeAll(
                 () =>
@@ -166,12 +112,12 @@ describe("Dauphin Service", () => {
             afterAll(() => findBySirenMock.mockRestore());
 
             it("should call findBySiren()", async () => {
-                await dauphinService.getRawGrantsBySiren(SIREN);
+                await dauphinService.getRawGrants(ASSOCIATION_IDENTIFIER);
                 expect(findBySirenMock).toHaveBeenCalledWith(SIREN);
             });
 
             it("returns raw grant data", async () => {
-                const actual = await dauphinService.getRawGrantsBySiren(SIREN);
+                const actual = await dauphinService.getRawGrants(ASSOCIATION_IDENTIFIER);
                 expect(actual).toMatchInlineSnapshot(`
                     Array [
                       Object {
@@ -470,44 +416,7 @@ describe("Dauphin Service", () => {
             });
         });
 
-        describe("getDocumentsByRna", () => {
-            const RNA = "RNA";
-            let getSirenMock: SpyInstance, getBySirenMock: SpyInstance;
-
-            beforeAll(() => {
-                getSirenMock = jest.spyOn(rnaSirenService, "find").mockResolvedValue([new RnaSirenEntity(RNA, SIREN)]);
-                // @ts-expect-error: mock
-                getBySirenMock = jest.spyOn(dauphinService, "getDocumentsBySiren").mockResolvedValue(DOC);
-            });
-            afterAll(() => {
-                getSirenMock.mockRestore();
-                getBySirenMock.mockRestore();
-            });
-
-            it("gets siren", async () => {
-                await dauphinService.getDocumentsByRna(RNA);
-                expect(getSirenMock).toHaveBeenCalled();
-            });
-
-            it("does not get documents if no siren", async () => {
-                getSirenMock.mockResolvedValueOnce(null);
-                await dauphinService.getDocumentsByRna(RNA);
-                expect(getBySirenMock).not.toHaveBeenCalled();
-            });
-
-            it("gets documents with siren", async () => {
-                await dauphinService.getDocumentsByRna(RNA);
-                expect(getBySirenMock).toHaveBeenCalledWith(SIREN);
-            });
-
-            it("returns document from siren method", async () => {
-                const expected = DOC;
-                const actual = await dauphinService.getDocumentsByRna(RNA);
-                expect(actual).toBe(expected);
-            });
-        });
-
-        describe("getDocumentsBySiren", () => {
+        describe("getDocuments", () => {
             let findIdMock: SpyInstance;
             const RAW_DOCS = ["httpSpy"];
             const ADAPTED_DOCS = ["doc"];
@@ -528,65 +437,35 @@ describe("Dauphin Service", () => {
             });
 
             it("gets internal id", async () => {
-                await dauphinService.getDocumentsBySiren(SIREN);
+                await dauphinService.getDocuments(ASSOCIATION_IDENTIFIER);
                 expect(findIdMock).toHaveBeenCalled();
             });
 
             it("does not call httpSpy if no internal id", async () => {
                 findIdMock.mockResolvedValueOnce(null);
-                await dauphinService.getDocumentsBySiren(SIREN);
+                await dauphinService.getDocuments(ASSOCIATION_IDENTIFIER);
                 expect(httpGetSpy).not.toHaveBeenCalled();
             });
 
             it("should call getAuthToken", async () => {
-                await dauphinService.getDocumentsBySiren(SIREN);
+                await dauphinService.getDocuments(ASSOCIATION_IDENTIFIER);
                 expect(mockGetAuthToken).toHaveBeenCalledTimes(1);
             });
 
             it("should call httpSpy with args", async () => {
-                await dauphinService.getDocumentsBySiren(SIREN);
+                await dauphinService.getDocuments(ASSOCIATION_IDENTIFIER);
                 expect(httpGetSpy.mock.calls[0]).toMatchSnapshot();
             });
 
             it("should adapt result from httpSpy", async () => {
-                await dauphinService.getDocumentsBySiren(SIREN);
+                await dauphinService.getDocuments(ASSOCIATION_IDENTIFIER);
                 expect(DauphinDtoAdapter.toDocuments).toHaveBeenCalledWith(RAW_DOCS);
             });
 
             it("returns documents from httpSpy", async () => {
                 const expected = ADAPTED_DOCS;
-                const actual = await dauphinService.getDocumentsBySiren(SIREN);
+                const actual = await dauphinService.getDocuments(ASSOCIATION_IDENTIFIER);
                 expect(actual).toEqual(expected);
-            });
-        });
-
-        describe("getDocumentsBySiret", () => {
-            let getSirenMock: SpyInstance, getBySirenMock: SpyInstance;
-
-            beforeAll(() => {
-                getSirenMock = jest.spyOn(sirenHelper, "siretToSiren").mockReturnValue(SIREN);
-                // @ts-expect-error: mock
-                getBySirenMock = jest.spyOn(dauphinService, "getDocumentsBySiren").mockResolvedValue(DOC);
-            });
-            afterAll(() => {
-                getSirenMock.mockRestore();
-                getBySirenMock.mockRestore();
-            });
-
-            it("gets siren", async () => {
-                await dauphinService.getDocumentsBySiret(SIRET);
-                expect(getSirenMock).toHaveBeenCalled();
-            });
-
-            it("gets documents with siren", async () => {
-                await dauphinService.getDocumentsBySiret(SIRET);
-                expect(getBySirenMock).toHaveBeenCalledWith(SIREN);
-            });
-
-            it("returns document from siren method", async () => {
-                const expected = DOC;
-                const actual = await dauphinService.getDocumentsBySiret(SIRET);
-                expect(actual).toBe(expected);
             });
         });
 
@@ -594,7 +473,10 @@ describe("Dauphin Service", () => {
             const ID = "DAUPHIN_ID";
             const httpSpy_RES = {
                 hits: {
-                    hits: [{ _source: { SIREN: "pas le bon" } }, { _source: { SIREN: SIREN }, _id: `cget-${ID}` }],
+                    hits: [
+                        { _source: { SIREN: "pas le bon" } },
+                        { _source: { SIREN: SIREN.value }, _id: `cget-${ID}` },
+                    ],
                 },
             };
 

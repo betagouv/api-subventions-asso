@@ -13,6 +13,8 @@ import { createAndActiveUser, createUser } from "../__helpers__/userHelper";
 import userRepository from "../../src/modules/user/repositories/user.repository";
 import uniteLegalNamePort from "../../src/dataProviders/db/uniteLegalName/uniteLegalName.port";
 import rnaSirenService from "../../src/modules/rna-siren/rnaSiren.service";
+import Rna from "../../src/valueObjects/Rna";
+import Siren from "../../src/valueObjects/Siren";
 
 const g = global as unknown as { app: unknown };
 
@@ -174,8 +176,12 @@ describe("/stats", () => {
 
             beforeEach(async () => {
                 await collection.insertMany(visitsFixture);
-                Promise.all(AssociationNameFixture.map(fixture => uniteLegalNamePort.insert(fixture)));
-                Promise.all(RnaNameFixture.map(fixture => rnaSirenService.insert(fixture.rna, fixture.siren)));
+                await Promise.all(AssociationNameFixture.map(fixture => uniteLegalNamePort.insert(fixture)));
+                await Promise.all(
+                    RnaNameFixture.map(fixture =>
+                        rnaSirenService.insert(new Rna(fixture.rna), new Siren(fixture.siren)),
+                    ),
+                );
             });
 
             describe("should return data with HTTP status code 200", () => {

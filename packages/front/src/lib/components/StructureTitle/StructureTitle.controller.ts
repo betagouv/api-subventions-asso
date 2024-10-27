@@ -1,8 +1,23 @@
+import { RnaDto, SirenDto, SiretDto } from "dto";
 import { getSiegeSiret } from "$lib/resources/associations/association.helper";
 import { valueOrHyphen } from "$lib/helpers/dataHelper";
+import AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
+import { getUniqueIdentifier } from "$lib/helpers/identifierHelper";
 
 export class StructureTitleController {
-    constructor(association, siret = undefined) {
+    public title?: string;
+    public subtitle?: string;
+    public linkToAsso?: string;
+    public rna: RnaDto | "-";
+    public siren: SirenDto | "-";
+    public rup: boolean;
+    public nbEstabs: number;
+
+    constructor(
+        association: AssociationEntity,
+        siret: SiretDto | undefined = undefined,
+        identifiers: { rna: RnaDto | null; siren?: SirenDto | null }[] = [],
+    ) {
         const associationName = association.denomination_rna || association.denomination_siren;
         if (siret) {
             this.title =
@@ -10,7 +25,9 @@ export class StructureTitleController {
                     ? "Établissement siège de l'association"
                     : "Établissement secondaire de l'association";
             this.subtitle = associationName;
-            this.linkToAsso = `/association/${association.siren}`;
+
+            const uniqueIdentifier = getUniqueIdentifier(identifiers);
+            this.linkToAsso = `/association/${uniqueIdentifier}`;
         } else this.title = `Association : ${associationName}`;
         this.rna = valueOrHyphen(association.rna);
         this.siren = valueOrHyphen(association.siren);

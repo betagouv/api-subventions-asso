@@ -1,7 +1,7 @@
-import { Rna, Siret } from "dto";
+import { RnaDto, SiretDto } from "dto";
 
 export default interface ILegalInformations {
-    siret: Siret;
-    rna?: Rna;
+    siret: SiretDto;
+    rna?: RnaDto;
     name: string;
 }

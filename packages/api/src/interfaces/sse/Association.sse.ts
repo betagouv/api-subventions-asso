@@ -3,6 +3,7 @@ import associationService from "../../modules/associations/associations.service"
 import ControllerSSE from "../../decorators/controllerSSE.decorator";
 import { Get } from "../../decorators/sse.methods.decorator";
 import SSEResponse from "../../sse/@types/SSEResponse";
+import associationIdentifierService from "../../modules/association-identifier/association-identifier.service";
 
 @ControllerSSE("/sse/association", {
     security: "jwt",
@@ -17,7 +18,11 @@ export class AssociationSse {
     @Get("/:identifier/subventions")
     public async getDemandeSubventions(req: express.Request, res: SSEResponse) {
         try {
-            const flux = await associationService.getSubventions(req.params.identifier);
+            const associationIdentifiers = await associationIdentifierService.getOneAssociationIdentifier(
+                req.params.identifier,
+            );
+
+            const flux = await associationService.getSubventions(associationIdentifiers);
 
             if (!flux) {
                 res.sendSSEData({ event: "close" });

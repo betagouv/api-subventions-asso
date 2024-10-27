@@ -1,6 +1,7 @@
 import { PaginatedAssociationNameDto } from "dto";
 import associationNameService from "../association-name/associationName.service";
 import searchRepository from "./repositories/search.repository";
+import AssociationNameDtoAdapter from "./adapters/AssociationNameDtoAdapter";
 
 export class SearchService {
     static PAGE_SIZE = 12;
@@ -23,15 +24,16 @@ export class SearchService {
             };
 
         // nothing in cache
-        const results = await associationNameService.find(value);
-        const nbResults = results.length;
-        searchRepository.saveResults(value, results);
+        const resultsEntities = await associationNameService.find(value);
+        const resultsDtos = resultsEntities.map(entity => AssociationNameDtoAdapter.toDto(entity));
+        const nbResults = resultsDtos.length;
+        searchRepository.saveResults(value, resultsDtos);
 
         return {
             nbPages: Math.ceil(nbResults / SearchService.PAGE_SIZE),
             page,
-            results: results.slice((page - 1) * SearchService.PAGE_SIZE, page * SearchService.PAGE_SIZE),
-            total: results.length,
+            results: resultsDtos.slice((page - 1) * SearchService.PAGE_SIZE, page * SearchService.PAGE_SIZE),
+            total: resultsDtos.length,
         };
     }
 

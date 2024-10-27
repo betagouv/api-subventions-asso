@@ -1,6 +1,7 @@
-import { Siren, Siret } from "dto";
 import { ObjectId } from "mongodb";
 import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
+import Siret from "../../../../valueObjects/Siret";
+import Siren from "../../../../valueObjects/Siren";
 import { FonjepCoreRepository } from "./fonjep.core.repository";
 
 export class FonjepSubventionRepository extends FonjepCoreRepository<FonjepSubventionEntity> {
@@ -23,7 +24,7 @@ export class FonjepSubventionRepository extends FonjepCoreRepository<FonjepSubve
     findBySiret(siret: Siret) {
         return this.collection
             .find({
-                "legalInformations.siret": siret,
+                "legalInformations.siret": siret.value,
             })
             .toArray();
     }
@@ -31,7 +32,7 @@ export class FonjepSubventionRepository extends FonjepCoreRepository<FonjepSubve
     findBySiren(siren: Siren) {
         return this.collection
             .find({
-                "legalInformations.siret": new RegExp(`^${siren}\\d{5}`),
+                "legalInformations.siret": new RegExp(`^${siren.value}\\d{5}`),
             })
             .toArray();
     }

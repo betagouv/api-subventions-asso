@@ -1,43 +1,29 @@
-import { Siren, Siret, Payment, DemandeSubvention, FonjepPayment } from "dto";
+import { ChorusPayment, DemandeSubvention, FonjepPayment, Payment } from "dto";
 import { paymentProviders } from "../providers";
-import { AssociationIdentifiers } from "../../@types";
-import { getIdentifierType } from "../../shared/helpers/IdentifierHelper";
-import { StructureIdentifiersEnum } from "../../@enums/StructureIdentifiersEnum";
-import AssociationIdentifierError from "../../shared/errors/AssociationIdentifierError";
-import { NotFoundError } from "../../shared/errors/httpErrors";
-import rnaSirenService from "../rna-siren/rnaSiren.service";
+import { StructureIdentifier } from "../../@types";
 
 export class PaymentsService {
-    async getPaymentsByAssociation(identifier: AssociationIdentifiers) {
-        const type = getIdentifierType(identifier);
-        if (!type || type === StructureIdentifiersEnum.siret) throw new AssociationIdentifierError();
-
-        let siren = type === StructureIdentifiersEnum.siren ? identifier : null;
-        if (!siren) {
-            const rnaSirenEntities = await rnaSirenService.find(identifier);
-            if (rnaSirenEntities && rnaSirenEntities.length) siren = rnaSirenEntities[0].siren;
-        }
-
-        if (!siren) throw new NotFoundError("Impossible to recover the SIREN");
-
-        return this.getPaymentsBySiren(siren);
+    async getPayments(identifier: StructureIdentifier) {
+        return [...(await Promise.all(paymentProviders.map(p => p.getPayments(identifier)))).flat()];
     }
 
+    /**
+     * Function dont used
+     * @param demandeSubvention
+     * @deprecated
+     * @returns
+     */
     hasPayments(demandeSubvention: DemandeSubvention) {
         return !!(demandeSubvention.versementKey && demandeSubvention.versementKey.value);
     }
 
-    filterPaymentsByKey(payments, key) {
+    filterPaymentsByKey(payments: Payment[], key: string) {
         if (!payments) return null;
-        return payments.filter(payment => (payment.ej?.value || payment.codePoste?.value) === key);
-    }
+        return payments.filter(payment => {
+            const paymentKey = (payment as ChorusPayment).ej?.value || (payment as FonjepPayment).codePoste?.value;
 
-    async getPaymentsBySiret(siret: Siret): Promise<Payment[]> {
-        return [...(await Promise.all(paymentProviders.map(p => p.getPaymentsBySiret(siret)))).flat()];
-    }
-
-    private async getPaymentsBySiren(siren: Siren) {
-        return [...(await Promise.all(paymentProviders.map(p => p.getPaymentsBySiren(siren)))).flat()];
+            return paymentKey === key;
+        });
     }
 
     getPaymentExercise(payment: Payment) {

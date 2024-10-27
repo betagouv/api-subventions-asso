@@ -1,6 +1,6 @@
 import { IncomingMessage } from "http";
 import qs from "qs";
-import { CommonApplicationDto, DemandeSubvention, Rna, Siren, Siret, DocumentDto } from "dto";
+import { CommonApplicationDto, DemandeSubvention, DocumentDto } from "dto";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DAUPHIN_PASSWORD, DAUPHIN_USERNAME } from "../../../configurations/apis.conf";
@@ -10,10 +10,13 @@ import Gispro from "../gispro/@types/Gispro";
 import { formatIntToTwoDigits } from "../../../shared/helpers/StringHelper";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
-import { siretToSiren } from "../../../shared/helpers/SirenHelper";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import ProviderCore from "../ProviderCore";
-import rnaSirenService from "../../rna-siren/rnaSiren.service";
+import { StructureIdentifier } from "../../../@types";
+import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import Siren from "../../../valueObjects/Siren";
+import GrantProvider from "../../grant/@types/GrantProvider";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import dauphinGisproRepository from "./repositories/dauphin-gispro.repository";
@@ -21,7 +24,7 @@ import DauphinGisproDbo from "./repositories/dbo/DauphinGisproDbo";
 
 export class DauphinService
     extends ProviderCore
-    implements DemandesSubventionsProvider<DauphinGisproDbo>, DocumentProvider
+    implements DemandesSubventionsProvider<DauphinGisproDbo>, DocumentProvider, GrantProvider
 {
     constructor() {
         super({
@@ -47,13 +50,15 @@ export class DauphinService
         return DauphinDtoAdapter.rawToApplication(rawApplication);
     }
 
-    async getDemandeSubventionBySiret(siret: Siret): Promise<DemandeSubvention[] | null> {
-        const applications = await dauphinGisproRepository.findBySiret(siret);
-        return applications.map(dto => DauphinDtoAdapter.toDemandeSubvention(dto));
-    }
+    async getDemandeSubvention(id: StructureIdentifier): Promise<DemandeSubvention[]> {
+        let applications: DauphinGisproDbo[] = [];
+        if (id instanceof EstablishmentIdentifier && id.siret) {
+            applications = await dauphinGisproRepository.findBySiret(id.siret);
+            return applications.map(dto => DauphinDtoAdapter.toDemandeSubvention(dto));
+        } else if (id instanceof AssociationIdentifier && id.siren) {
+            applications = await dauphinGisproRepository.findBySiren(id.siren);
+        }
 
-    async getDemandeSubventionBySiren(siren: Siren): Promise<DemandeSubvention[] | null> {
-        const applications = await dauphinGisproRepository.findBySiren(siren);
         return applications.map(dto => DauphinDtoAdapter.toDemandeSubvention(dto));
     }
 
@@ -65,25 +70,20 @@ export class DauphinService
 
     isGrantProvider = true;
 
-    async getRawGrantsBySiret(siret: string): Promise<RawGrant[] | null> {
-        return (await dauphinGisproRepository.findBySiret(siret)).map(grant => ({
-            provider: this.provider.id,
-            type: "application",
-            data: grant,
-            joinKey: grant.gispro?.ej,
-        }));
-    }
+    async getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
+        let entities: DauphinGisproDbo[] = [];
+        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
+            entities = await dauphinGisproRepository.findBySiret(identifier.siret);
+        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
+            entities = await dauphinGisproRepository.findBySiren(identifier.siren);
+        }
 
-    async getRawGrantsBySiren(siren: string): Promise<RawGrant[] | null> {
-        return (await dauphinGisproRepository.findBySiren(siren)).map(grant => ({
+        return entities.map(entity => ({
             provider: this.provider.id,
             type: "application",
-            data: grant,
-            joinKey: grant.gispro?.ej,
+            data: entity,
+            joinKey: entity.gispro?.ej,
         }));
-    }
-    getRawGrantsByRna(): Promise<RawGrant[] | null> {
-        return Promise.resolve(null);
     }
 
     rawToCommon(rawGrant: RawGrant): CommonApplicationDto {
@@ -226,19 +226,27 @@ export class DauphinService
 
     // no RIB document in dauphin
 
-    async getDocumentsByRna(rna: Rna): Promise<DocumentDto[] | null> {
-        const rnaSirenEntities = await rnaSirenService.find(rna);
-        if (!rnaSirenEntities || !rnaSirenEntities.length) return null;
-        return this.getDocumentsBySiren(rnaSirenEntities[0].siren);
-    }
+    async getDocuments(identifier: StructureIdentifier): Promise<DocumentDto[]> {
+        if (identifier instanceof AssociationIdentifier && !identifier.siren) {
+            return [];
+        }
 
-    async getDocumentsBySiren(siren: Siren): Promise<DocumentDto[] | null> {
+        let siren: Siren;
+
+        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
+            siren = identifier.siret.toSiren();
+        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
+            siren = identifier.siren;
+        } else {
+            return [];
+        }
+
         /*
-        the only way to get documents through dauphin API is to get them through their internal dauphin ID.
-        Because of that, we need a preliminary request to dauphin to get their internal id. cf issue #1004
+            the only way to get documents through dauphin API is to get them through their internal dauphin ID.
+            Because of that, we need a preliminary request to dauphin to get their internal id. cf issue #1004
         */
         const dauphinInternalId = await this.findDauphinInternalId(siren);
-        if (!dauphinInternalId) return null;
+        if (!dauphinInternalId) return [];
 
         const token = await this.getAuthToken();
         const result = (
@@ -251,16 +259,12 @@ export class DauphinService
         return DauphinDtoAdapter.toDocuments(result);
     }
 
-    getDocumentsBySiret(siret: Siret): Promise<DocumentDto[] | null> {
-        return this.getDocumentsBySiren(siretToSiren(siret));
-    }
-
     private async findDauphinInternalId(siren: Siren): Promise<string | undefined> {
         const query = {
             from: 0,
             size: 1,
             type: "tiers",
-            query: siren,
+            query: siren.value,
             facets: {
                 famille: ["Association"],
                 status: ["SUPPORTED"],
@@ -275,7 +279,7 @@ export class DauphinService
                 this.buildSearchHeader(token),
             )
         ).data;
-        const properHit = res?.hits?.hits?.find(asso => asso._source.SIREN === siren);
+        const properHit = res?.hits?.hits?.find(asso => asso._source.SIREN === siren.value);
         return properHit?._id?.match(/cget-(.*)/)?.[1];
     }
 

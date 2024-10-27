@@ -10,10 +10,12 @@ import * as DateHelper from "../../../shared/helpers/DateHelper";
 jest.mock("../../../shared/helpers/DateHelper");
 const mockedDateHelper = jest.mocked(DateHelper);
 import { SCDL_STORABLE } from "./__fixtures__/RawData";
+import Siret from "../../../valueObjects/Siret";
+import Rna from "../../../valueObjects/Rna";
 import { GenericParser } from "../../../shared/GenericParser";
-import { ScdlParsedGrant } from "./@types/ScdlParsedGrant";
 import { Problem } from "./@types/Validation";
 import { DefaultObject, ParserInfo, ParserPath } from "../../../@types";
+import { ScdlParsedGrant } from "./@types/ScdlParsedGrant";
 
 jest.mock("../../../shared/GenericParser");
 const mockedGenericParser = jest.mocked(GenericParser);
@@ -32,10 +34,14 @@ jest.mock("./scdl.mapper", () => {
 
 describe("ScdlGrantParser", () => {
     const BUFFER = Buffer.alloc(1);
+    let isSiretSpy: jest.SpyInstance;
+    let isRnaSpy: jest.SpyInstance = jest.spyOn(Rna, "isRna");
+
     let GRANT: ScdlParsedGrant = { ...MiscScdlGrant };
     const requirementTestsMocks: { [key: string]: jest.SpyInstance } = {};
 
     beforeAll(() => {
+        isSiretSpy = jest.spyOn(Siret, "isSiret");
         // @ts-expect-error -- mock tests
         ScdlGrantParser.requirements.forEach(req => {
             const spy = jest.fn(v => true);
@@ -183,7 +189,12 @@ describe("ScdlGrantParser", () => {
             aidSystem: { value: "aidSystem-value", keyPath: ["aidSystem-origin"] },
         };
 
-        it("should return true and no errors with a well formatted grant", () => {
+        beforeEach(() => {
+            mockedDateHelper.isValidDate.mockReturnValue(true);
+            mockedValidators.isNumberValid.mockReturnValue(true);
+        });
+
+        it("should return true with a well formatted grant", () => {
             const expected = { valid: true };
             // @ts-expect-error: protected method
             const actual = ScdlGrantParser.isGrantValid(GRANT, ORIGINAL_WITH_PATH);
@@ -287,11 +298,19 @@ describe("ScdlGrantParser", () => {
             param                 | mockValidator                   | nbFalseMock
             ${"paymentStartDate"} | ${mockedDateHelper.isValidDate} | ${0}
             ${"conventionDate"}   | ${mockedDateHelper.isValidDate} | ${1}
-            ${"associationRna"}   | ${mockedValidators.isRna}       | ${0}
+            ${"associationRna"}   | ${isRnaSpy}                     | ${1}
             ${"paymentEndDate"}   | ${mockedDateHelper.isValidDate} | ${2}
-            ${"allocatorSiret"}   | ${mockedValidators.isSiret}     | ${0}
-        `("it sets '$param' to undefined if set but invalid", ({ param }) => {
+            ${"allocatorSiret"}   | ${isSiretSpy}                   | ${0}
+        `("it sets '$param' to undefined if set but invalid", ({ param, mockValidator, nbFalseMock }) => {
             requirementTestsMocks[param].mockReturnValueOnce(false);
+            // mock validators to get to the optionnal part of isGrantValid()
+            isSiretSpy.mockReturnValueOnce(true);
+            mockedDateHelper.isValidDate.mockReturnValueOnce(true);
+            mockedValidators.isNumberValid.mockReturnValueOnce(true);
+            mockedValidators.isNumberValid.mockReturnValueOnce(true);
+
+            for (let i = 0; i < nbFalseMock; i++) mockValidator.mockReturnValueOnce(false);
+
             const expected = { [param]: undefined };
             // @ts-expect-error: protected method
             const actual = ScdlGrantParser.cleanOptionalFields(GRANT);

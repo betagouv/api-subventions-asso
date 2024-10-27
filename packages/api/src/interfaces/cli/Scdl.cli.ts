@@ -1,14 +1,13 @@
 import fs from "fs";
 import path from "path";
-import { Siret } from "dto";
 import csvSyncStringifier = require("csv-stringify/sync");
 import FormatDateError from "../../shared/errors/cliErrors/FormatDateError";
 import ScdlGrantParser from "../../modules/providers/scdl/scdl.grant.parser";
 import scdlService from "../../modules/providers/scdl/scdl.service";
 import MiscScdlGrantEntity from "../../modules/providers/scdl/entities/MiscScdlGrantEntity";
 import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
-import { isSiret } from "../../shared/Validators";
 import { ScdlStorableGrant } from "../../modules/providers/scdl/@types/ScdlStorableGrant";
+import Siret from "../../valueObjects/Siret";
 import { ParsedDataWithProblem } from "../../modules/providers/scdl/@types/Validation";
 import { DEV } from "../../configurations/env.conf";
 import dataLogService from "../../modules/data-log/dataLog.service";
@@ -19,11 +18,11 @@ export default class ScdlCli {
     // relative path refers to package's root
     static errorsFolderName = "./importErrors";
 
-    public async addProducer(slug: string, name: string, siret: Siret) {
+    public async addProducer(slug: string, name: string, siret: string) {
         if (!slug) throw Error("producer SLUG is mandatory");
         if (!name) throw Error("producer NAME is mandatory");
         if (!siret) throw Error("producer SIRET is mandatory");
-        if (!isSiret(siret)) throw Error("SIRET is not valid");
+        if (!Siret.isSiret(siret)) throw Error("SIRET is not valid");
         if (await scdlService.getProducer(slug)) throw new Error("Producer already exists");
         await scdlService.createProducer({ slug, name, siret, lastUpdate: new Date() });
     }

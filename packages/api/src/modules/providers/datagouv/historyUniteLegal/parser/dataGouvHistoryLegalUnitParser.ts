@@ -1,11 +1,11 @@
 import fs from "fs";
 
 import { asyncForEach } from "../../../../../shared/helpers/ArrayHelper";
-import { isSiren } from "../../../../../shared/Validators";
 import { isValidDate } from "../../../../../shared/helpers/DateHelper";
 import { GenericParser } from "../../../../../shared/GenericParser";
 import { SaveCallback } from "../@types";
 import { UniteLegalHistoryRow } from "../@types/UniteLegalHistoryRow";
+import Siren from "../../../../../valueObjects/Siren";
 
 export default class DataGouvHistoryLegalUnitParser {
     private static isDatesValid({
@@ -66,7 +66,7 @@ export default class DataGouvHistoryLegalUnitParser {
                         header as string[],
                         row,
                     ) as unknown as UniteLegalHistoryRow;
-                    if (!parsedData.siren || !isSiren(parsedData.siren)) return;
+                    if (!parsedData.siren || !Siren.isSiren(parsedData.siren)) return;
 
                     const periodStartDate = new Date(parsedData.dateDebut);
 
