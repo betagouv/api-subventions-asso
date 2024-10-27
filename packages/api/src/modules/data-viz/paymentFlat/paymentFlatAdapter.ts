@@ -11,7 +11,9 @@ export default class PaymentFlatAdapter {
     static toNotAggregatedChorusPaymentFlatEntity(
         /*
         create a PaymentFlatEntity from a ChorusLineEntity without
-         taking into account the aggregation of the data
+        aggregating the data. To get "a real" PaymentFlat entity data have
+        to be groupbed by the unique key of paymentFlat that is not necessarily
+        the same as the unique key of the ChorusLineEntity.
         */
 
         chorusDocument: ChorusLineEntity,
