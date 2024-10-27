@@ -37,11 +37,10 @@ export default class PaymentFlatAdapter {
             domainesFonct,
             refsProgrammation,
         );
-        console.log("getDataBretagneDocumentData done");
 
         const idVersement = `${chorusDocument.indexedInformations.siret}-${chorusDocument.indexedInformations.ej}-${chorusDocument.indexedInformations.exercice}`;
         const uniqueId = `${idVersement}-${programCode}-${actionCode}-${activityCode}-${chorusDocument.indexedInformations.dateOperation.getTime()}`;
-        console.log("uniqueId done");
+
         return new PaymentFlatEntity(
             uniqueId, // uniqueId,
             idVersement, // idVersement,

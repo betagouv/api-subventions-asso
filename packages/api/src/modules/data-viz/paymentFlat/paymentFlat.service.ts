@@ -35,7 +35,6 @@ export class PaymentFlatService {
         let document = await chorusCursor.next();
         const entities: Record<string, PaymentFlatEntity> = {};
 
-        console.log("avant while");
         while (document != null) {
             const paymentFlatEntity = PaymentFlatAdapter.toNotAggregatedChorusPaymentFlatEntity(
                 document,
@@ -44,7 +43,7 @@ export class PaymentFlatService {
                 domainesFonct,
                 refsProgrammation,
             );
-            console.log("toNotaggretedChorusPaymentFlatEntity done");
+
             if (entities[paymentFlatEntity.uniqueId]) {
                 entities[paymentFlatEntity.uniqueId].amount += paymentFlatEntity.amount;
                 entities[paymentFlatEntity.uniqueId].amount = parseFloat(
@@ -61,7 +60,7 @@ export class PaymentFlatService {
 
     public async updatePaymentsFlatCollection(exerciceBudgetaire?: number) {
         const { programs, ministries, domainesFonct, refsProgrammation } = await this.getAllDataBretagneData();
-        console.log("programs done");
+
         const chorusEntities: PaymentFlatEntity[] = await this.toPaymentFlatChorusEntities(
             programs,
             ministries,
