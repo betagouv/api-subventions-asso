@@ -8,7 +8,7 @@ export const MOCK_DOCUMENTS: ChorusLineEntity[] = [
     // je change l'exercice du première document pour qu'il ne soit pas enregistré lors de resyncExercice(2023)
     {
         ...ENTITIES[0],
-        indexedInformations: { ...ENTITIES[0].indexedInformations, siret: "123456789013", exercice: 2022 },
+        indexedInformations: { ...ENTITIES[0].indexedInformations, siret: "12345678901313", exercice: 2022 },
     },
     // je mets des entités avec le même paymentFlat uniqueId pour tester le groupement
     {
@@ -18,7 +18,7 @@ export const MOCK_DOCUMENTS: ChorusLineEntity[] = [
             ej: "EJ_egale",
             codeDomaineFonctionnel: "0143-03-01",
             codeActivitee: "014303000102",
-            siret: "123456789012",
+            siret: "12345678901212",
         },
     },
     {
@@ -28,7 +28,7 @@ export const MOCK_DOCUMENTS: ChorusLineEntity[] = [
             ej: "EJ_egale",
             codeDomaineFonctionnel: "0143-03-01",
             codeActivitee: "014303000102",
-            siret: "123456789012",
+            siret: "12345678901212",
             dateOperation: new Date("2023-04-21T00:00:00.000Z"),
         },
     },
@@ -36,7 +36,7 @@ export const MOCK_DOCUMENTS: ChorusLineEntity[] = [
     {
         ...ENTITIES[2],
         uniqueId: "newUniqueId",
-        indexedInformations: { ...ENTITIES[2].indexedInformations, siret: "123456789014" },
+        indexedInformations: { ...ENTITIES[2].indexedInformations, siret: "12345678901414" },
     },
 ];
 
