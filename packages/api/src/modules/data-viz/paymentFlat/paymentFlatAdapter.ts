@@ -1,3 +1,4 @@
+import { cp } from "node:fs";
 import DomaineFonctionnelEntity from "../../../entities/DomaineFonctionnelEntity";
 import MinistryEntity from "../../../entities/MinistryEntity";
 import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
@@ -73,8 +74,8 @@ export default class PaymentFlatAdapter {
         const programCode = parseInt(chorusDocument.codeDomaineFonctionnel?.slice(1, 4), 10);
         const activityCode = chorusDocument.codeActivitee?.slice(-12);
         const actionCode = chorusDocument.codeDomaineFonctionnel;
+        const programEntity = programs[String(programCode)] ?? undefined;
 
-        const programEntity = programs[programCode] ?? undefined;
         if (!programEntity) {
             console.error(`Program not found for programCode: ${programCode}`);
         }

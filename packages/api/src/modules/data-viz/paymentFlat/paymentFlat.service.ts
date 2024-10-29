@@ -58,9 +58,8 @@ export class PaymentFlatService {
         return Object.values(entities);
     }
 
-    public async updatePaymentsFlatCollection(exerciceBudgetaire?: number) {
+    public async updatePaymentsFlatCollection(exerciceBudgetaire?: number, batchSize = 100000) {
         const { programs, ministries, domainesFonct, refsProgrammation } = await this.getAllDataBretagneData();
-
         const chorusEntities: PaymentFlatEntity[] = await this.toPaymentFlatChorusEntities(
             programs,
             ministries,
@@ -68,11 +67,18 @@ export class PaymentFlatService {
             refsProgrammation,
             exerciceBudgetaire,
         );
-        const entityPromises = chorusEntities.map(entity => paymentFlatPort.upsertOne(entity));
 
-        await Promise.all(entityPromises);
+        for (let i = 0; i < chorusEntities.length; i += batchSize) {
+            const batchEntities = chorusEntities.slice(i, i + batchSize);
+            const entityBatchPromises = batchEntities.map(entity => paymentFlatPort.upsertOne(entity));
+
+            await Promise.all(entityBatchPromises);
+            console.log(`Inserted ${i + batchSize} documents`);
+        }
+        console.log("All documents inserted");
     }
 }
 
 const paymentFlatService = new PaymentFlatService();
+
 export default paymentFlatService;

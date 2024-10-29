@@ -1,3 +1,4 @@
+import { invalid } from "moment";
 import {
     DataBretagneDomaineFonctionnelDto,
     DataBretagneMinistryDto,
@@ -44,7 +45,6 @@ export class DataBretagneValidatorHelper {
     static validateNotNulls<T>(dto: T, requiredAttributes: string[]): boolean {
         for (const attribute of requiredAttributes) {
             if (!dto[attribute]) {
-                console.error(`${String(attribute)} is required`);
                 return false;
             }
         }
@@ -68,6 +68,7 @@ export class DataBretagneValidatorHelper {
             },
             { valids: [], invalids: [] },
         );
+
         return sortedData;
     }
 }
@@ -104,7 +105,6 @@ export class DataBretagneProgrammeValidator extends DataBretagneValidatorHelper 
         return this.sortDataByValidity<DataBretagneProgrammeDto>(dtoListWithoutDuplicates, duplicatesCode, [
             "code",
             "label",
-            "code_ministere",
         ]);
     }
 }
