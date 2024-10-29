@@ -45,6 +45,7 @@ export class DataBretagneValidatorHelper {
     static validateNotNulls<T>(dto: T, requiredAttributes: string[]): boolean {
         for (const attribute of requiredAttributes) {
             if (!dto[attribute]) {
+                console.error(`${attribute} is required`);
                 return false;
             }
         }

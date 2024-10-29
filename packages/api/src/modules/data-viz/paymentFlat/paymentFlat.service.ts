@@ -58,7 +58,7 @@ export class PaymentFlatService {
         return Object.values(entities);
     }
 
-    public async updatePaymentsFlatCollection(exerciceBudgetaire?: number, batchSize = 100000) {
+    public async updatePaymentsFlatCollection(exerciceBudgetaire?: number, batchSize = 50000) {
         const { programs, ministries, domainesFonct, refsProgrammation } = await this.getAllDataBretagneData();
         const chorusEntities: PaymentFlatEntity[] = await this.toPaymentFlatChorusEntities(
             programs,
