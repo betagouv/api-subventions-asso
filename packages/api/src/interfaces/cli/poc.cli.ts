@@ -1,3 +1,4 @@
+import fs from "fs";
 import { CliStaticInterface } from "../../@types";
 import sirenePort from "../../dataProviders/api/SIRENE/sirene.port";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
@@ -8,8 +9,26 @@ export default class PocCli extends CliController {
     static cmdName = "poc";
 
     public async test() {
-        const url = "https://www.data.gouv.fr/fr/datasets/r/825f4199-cadd-486c-ac46-a65a8ea1a047";
+        const file = fs.createWriteStream("poc-zip.zip");
 
-        await sirenePort.downloadAndExtractSireneZip();
+        const response = await sirenePort.getZip();
+
+        return new Promise(resolve => {
+            response.data.pipe(file);
+
+            file.on("finish", () => {
+                console.log("finish");
+                file.close();
+            });
+
+            file.on("error", error => {
+                console.log("error", error);
+            });
+
+            file.on("close", () => {
+                resolve("ok google");
+                console.log("close");
+            });
+        });
     }
 }
