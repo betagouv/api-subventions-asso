@@ -1,6 +1,8 @@
+import { ObjectId } from "mongodb";
 import Siren from "../../../valueObjects/Siren";
 
-export default interface SireneDto {
+export default interface SireneDbo {
+    _id: ObjectId;
     'siren' : Siren,
     'statutDiffusionUniteLegale' : string, 
     'unitePurgeeUniteLegale' : boolean | null,
@@ -35,4 +37,5 @@ export default interface SireneDto {
     'economieSocialeSolidaireUniteLegale' : string | null,
     'societeMissionUniteLegale' : string | null,
     'caractereEmployeurUniteLegale' : string | null,
+
 }
