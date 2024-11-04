@@ -68,6 +68,7 @@ describe("FonjepParser", () => {
             const actual = typeof FonjepParser.filterOnPropFactory([], "propName");
             expect(actual).toEqual(expected);
         });
+
         it("should return a function that filter given array on property", () => {
             const CODE = "5678";
             const expected = [{ Code: CODE }, { Code: CODE }];
@@ -81,7 +82,7 @@ describe("FonjepParser", () => {
 
     describe("createFonjepSubventionEntity()", () => {
         beforeAll(() => {
-            indexDataByPathObjectMock.mockImplementation(jest.fn());
+            indexDataByPathObjectMock.mockReturnValue({ annee_demande: 2023, code_poste: "CODE" });
         });
         afterAll(() => {
             indexDataByPathObjectMock.mockReset();
