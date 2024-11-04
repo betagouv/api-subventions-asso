@@ -97,7 +97,7 @@ export class GrantService {
     groupGrantsByExercise(grants: Grant[]) {
         function groupByExercise(group: Record<number | "unknown", Grant[]>, grant: Grant) {
             if (!grant.application && !grant.payments?.length)
-                throw new Error("We should not have Grant without payment and application");
+                throw new Error("We should not have Grant without payment nor application");
 
             let exercise;
             if (grant?.payments?.length) {
