@@ -304,7 +304,7 @@ describe("GrantService", () => {
         it("should throw an error if no application nor payments", () => {
             // @ts-expect-error: partial object
             expect(() => grantService.groupGrantsByExercise([GRANT_ONE_EXERCISE, {}])).toThrow(
-                "We should not have Grant without payment and application",
+                "We should not have Grant without payment nor application",
             );
         });
 
