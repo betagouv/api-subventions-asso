@@ -24,16 +24,16 @@ module.exports = {
             db
                 .collection("fonjepSubvention")
                 .find({})
-                .forEach(subv => {
+                .forEach(application => {
                     bulkWriteApplication.push({
                         updateOne: {
-                            filter: { _id: subv._id },
+                            filter: { _id: application._id },
                             update: {
                                 $set: {
                                     "indexedInformations.joinKey":
-                                        subv.indexedInformations.annee_demande +
+                                        application.indexedInformations.annee_demande +
                                         "-" +
-                                        subv.indexedInformations.code_poste,
+                                        application.indexedInformations.code_poste,
                                 },
                             },
                         },
