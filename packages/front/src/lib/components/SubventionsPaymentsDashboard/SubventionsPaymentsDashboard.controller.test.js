@@ -4,12 +4,10 @@ import paymentsService from "../../resources/payments/payments.service";
 import SubventionsPaymentsDashboardController from "./SubventionsPaymentsDashboard.controller";
 
 import * as helper from "./helper";
-import SubventionTableController from "./SubventionTable/SubventionTable.controller";
-import PaymentTableController from "./PaymentTable/PaymentTable.controller";
-import associationService from "$lib/resources/associations/association.service";
+
 vi.mock("$lib/resources/associations/association.service");
-import establishmentService from "$lib/resources/establishments/establishment.service";
 vi.mock("$lib/resources/establishments/establishment.service");
+vi.mock("$lib/helpers/document.helper");
 
 vi.mock("$lib/helpers/csvHelper", () => {
     return {
@@ -18,7 +16,6 @@ vi.mock("$lib/helpers/csvHelper", () => {
         downloadCsv: vi.fn(),
     };
 });
-import * as csvHelper from "$lib/helpers/csvHelper";
 
 vi.mock("$lib/helpers/identifierHelper", () => {
     return {
@@ -29,6 +26,10 @@ vi.mock("$lib/helpers/identifierHelper", () => {
 import * as identifierHelper from "$lib/helpers/identifierHelper";
 import trackerService from "$lib/services/tracker.service";
 import { PUBLIC_PROVIDER_BLOG_URL } from "$env/static/public";
+import associationService from "$lib/resources/associations/association.service";
+import establishmentService from "$lib/resources/establishments/establishment.service";
+import documentHelper from "$lib/helpers/document.helper";
+
 vi.mock("$lib/services/tracker.service");
 describe("SubventionsPaymentsDashboardController", () => {
     const SIREN = "123456789";
@@ -244,12 +245,78 @@ describe("SubventionsPaymentsDashboardController", () => {
         });
     });
 
-    // eslint-disable-next-line vitest/no-commented-out-tests
-    /* TODO
     describe("download()", () => {
+        let controller;
+        let setExtractLoading;
 
+        beforeAll(() => {
+            vi.mocked(identifierHelper.isSiret).mockReturnValue(true);
+            vi.mocked(establishmentService.getGrantExtract).mockResolvedValue({
+                blob: "BLOB",
+                filename: "FILENAME",
+            });
+            vi.mocked(associationService.getGrantExtract).mockResolvedValue({
+                blob: "BLOB",
+                filename: "FILENAME",
+            });
+        });
+
+        afterAll(() => {
+            vi.mocked(identifierHelper.isSiret).mockRestore();
+            vi.mocked(establishmentService.getGrantExtract).mockRestore();
+            vi.mocked(associationService.getGrantExtract).mockRestore();
+        });
+
+        beforeEach(() => {
+            controller = new SubventionsPaymentsDashboardController();
+            setExtractLoading = vi.spyOn(controller.isExtractLoading, "set");
+        });
+
+        it("don't check isSiret if isExtractLoading is already true", async () => {
+            controller.isExtractLoading.set(true);
+            await controller.download();
+            expect(identifierHelper.isSiret).not.toHaveBeenCalled();
+        });
+
+        it("tracks button click", async () => {
+            await controller.download();
+            expect(trackerService.buttonClickEvent).toHaveBeenCalledWith(
+                "association-etablissement.dashbord.download-csv",
+                controller.identifier,
+            );
+        });
+
+        it("sets extractLoading to true", async () => {
+            await controller.download();
+            expect(setExtractLoading).toHaveBeenCalledWith(true);
+        });
+
+        it("checks if identifier is siret", async () => {
+            await controller.download();
+            expect(identifierHelper.isSiret).toHaveBeenCalled();
+        });
+
+        it("if siret: gets grant extract from establishmentService", async () => {
+            await controller.download();
+            expect(establishmentService.getGrantExtract).toHaveBeenCalled(controller.identifier);
+        });
+
+        it("if not siret: gets grant extract from associationService", async () => {
+            vi.mocked(identifierHelper.isSiret).mockReturnValueOnce(false);
+            await controller.download();
+            expect(associationService.getGrantExtract).toHaveBeenCalledWith(controller.identifier);
+        });
+
+        it("calls documentHelper.download", async () => {
+            await controller.download();
+            expect(documentHelper.download).toHaveBeenCalledWith("BLOB", "FILENAME");
+        });
+
+        it("when download is over, sets extractLoading to false", async () => {
+            await controller.download();
+            expect(setExtractLoading).toHaveBeenCalledWith(false);
+        });
     });
-     */
 
     describe("_filterElementsBySelectedExercice", () => {
         it("should filter elements with year is 2021", () => {
