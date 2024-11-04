@@ -5,8 +5,9 @@ import subventionsService from "$lib/resources/subventions/subventions.service";
 import { isSiret } from "$lib/helpers/identifierHelper";
 import trackerService from "$lib/services/tracker.service";
 import { PUBLIC_PROVIDER_BLOG_URL } from "$env/static/public";
-import grantService from "$lib/resources/grants/grant.service";
 import documentHelper from "$lib/helpers/document.helper";
+import establishmentService from "$lib/resources/establishments/establishment.service";
+import associationService from "$lib/resources/associations/association.service";
 
 export default class SubventionsPaymentsDashboardController {
     constructor(identifier) {
@@ -87,11 +88,13 @@ export default class SubventionsPaymentsDashboardController {
     clickProviderLink() {
         trackerService.trackEvent("association-etablissement.dashboard.display-provider-modal");
     }
+
     async download() {
         if (this.isExtractLoading.value) return;
         trackerService.buttonClickEvent("association-etablissement.dashbord.download-csv", this.identifier); // tracking
         this.isExtractLoading.set(true);
-        await grantService.getGrantExtract(this.identifier).then(({ blob, filename }) => {
+        const resourceService = isSiret(this.identifier) ? establishmentService : associationService;
+        await resourceService.getGrantExtract(this.identifier).then(({ blob, filename }) => {
             documentHelper.download(blob, filename);
         });
         this.isExtractLoading.set(false);

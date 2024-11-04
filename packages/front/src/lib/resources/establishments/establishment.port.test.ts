@@ -50,5 +50,36 @@ describe("EstablishmentPort", () => {
                 expect(actual).toEqual(expected);
             });
         });
+
+        describe("getGrantExtract", () => {
+            it("should call axios with route", () => {
+                establishmentPort.getGrantExtract(SIRET);
+                const actual = mockedRequestService.get.mock.calls[0];
+                expect(actual).toMatchInlineSnapshot(`
+                  [
+                    "/etablissement/SIRET/grants/csv",
+                    {},
+                    {
+                      "responseType": "blob",
+                    },
+                  ]
+                `);
+            });
+
+            it("should return properly formatted data", async () => {
+                // @ts-expect-error -- simplified response
+                mockedRequestService.get.mockResolvedValueOnce({
+                    data: "DATA",
+                    headers: { ["content-disposition"]: "inline; filename=nom.pdf" },
+                });
+                const actual = await establishmentPort.getGrantExtract(SIRET);
+                expect(actual).toMatchInlineSnapshot(`
+              {
+                "blob": "DATA",
+                "filename": "nom.pdf",
+              }
+            `);
+            });
+        });
     });
 });
