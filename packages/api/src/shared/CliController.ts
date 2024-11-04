@@ -66,7 +66,7 @@ export default class CliController {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    protected async _parse(file: string, logs: unknown[], exportDate?: Date, ..._args) {
+    protected async _parse(file: string, logs: unknown[], exportDate: Date, ..._args) {
         throw new Error("_parse() need to be implemented by the child class");
     }
 
