@@ -4,19 +4,19 @@ import GisproLineEntity from "./entities/gisproLineEntity";
 import Gispro from "./@types/Gispro";
 
 export default class GisproParser {
-    static configByYear = {
-        2018: { pageIndex: 0 },
-        2019: { pageIndex: 0 },
-        2020: { pageIndex: 0 },
-        2021: { pageIndex: 0 },
-        2023: { pageIndex: 1 },
-        2022: { pageIndex: 2 },
+    static pageIndexByYear = {
+        2018: 0,
+        2019: 0,
+        2020: 0,
+        2021: 0,
+        2023: 1,
+        2022: 2,
     };
 
     static parse(content: Buffer, configKey, validator: (entity: Gispro) => boolean) {
         console.log("Open and read file ...");
         const pages = GenericParser.xlsParse(content);
-        const page = pages[GisproParser.configByYear[configKey].pageIndex];
+        const page = pages[GisproParser.pageIndexByYear[configKey]];
         console.log("Read file end");
 
         const header = page[0] as string[];
