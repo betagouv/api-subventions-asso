@@ -140,9 +140,7 @@ export class DocumentsService {
             const writeStream = readStream.pipe(fs.createWriteStream(documentPath));
             return new Promise((resolve, reject) => {
                 // finish event is same event of end but for write stream
-                writeStream.on("finish", () => {
-                    resolve(documentPath);
-                });
+                writeStream.on("finish", () => resolve(documentPath));
                 writeStream.on("error", reject);
             });
         } catch (e) {
