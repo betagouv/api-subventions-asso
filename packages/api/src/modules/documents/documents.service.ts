@@ -92,7 +92,7 @@ export class DocumentsService {
     }
 
     private sanitizeDocumentRequest(doc: DocumentRequestDto) {
-        const noPathTraversal = s => s.replace(/[/|\\]/, "");
+        const noPathTraversal = s => s.replace(/[/|\\]/g, "");
         doc.type = noPathTraversal(doc.type);
         doc.nom = noPathTraversal(doc.nom);
         return doc;
