@@ -425,9 +425,11 @@ describe("Documents Service", () => {
         it("should call execSync", async () => {
             downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
             await documentsService.getRequestedDocumentFiles(REQUESTED_DOCS, IDENTIFIER);
-            expect(childProcess.execSync).toBeCalledWith(
-                expect.stringMatching('zip -j /tmp/12345678912345-([0-9]+).zip "/fake/path"'),
-            );
+            expect(childProcess.execFileSync).toBeCalledWith("zip", [
+                "j",
+                expect.stringMatching("/tmp/12345678912345-([0-9]+).zip"),
+                "/fake/path",
+            ]);
         });
 
         it("should call rmSync", async () => {

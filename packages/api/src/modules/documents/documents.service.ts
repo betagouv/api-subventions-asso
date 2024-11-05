@@ -113,8 +113,7 @@ export class DocumentsService {
         });
 
         const documentsPath = (await Promise.all(documentsPathPromises)).filter(document => document) as string[];
-        const zipCmd = `zip -j /tmp/${folderName}.zip "${documentsPath.join('" "')}"`;
-        childProcess.execSync(zipCmd);
+        childProcess.execFileSync("zip", ["j", `/tmp/${folderName}.zip`].concat(documentsPath));
         fs.rmSync("/tmp/" + folderName, { recursive: true, force: true });
         const stream = fs.createReadStream(`/tmp/${folderName}.zip`);
 
