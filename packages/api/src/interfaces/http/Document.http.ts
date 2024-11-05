@@ -27,7 +27,7 @@ export class DocumentHttp extends Controller {
         @Body() requiredDocs: DocumentRequestDto[],
         @Request() req: IdentifiedRequest,
     ) {
-        const stream = await documentService.getRequestedDocumentsFiles(requiredDocs, req.user._id.toString());
+        const stream = await documentService.safeGetRequestedDocumentFiles(requiredDocs, req.user._id.toString());
         this.setHeader("Content-Type", "application/zip");
         this.setHeader("Content-Disposition", "inline");
         return stream;

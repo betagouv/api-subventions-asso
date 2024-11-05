@@ -88,10 +88,22 @@ export class DocumentsService {
 
         if (!documents || documents.length == 0) throw new Error("No document found");
 
-        return this.getRequestedDocumentsFiles(documents.map(documentToDocumentRequest), identifier.toString());
+        return this.getRequestedDocumentFiles(documents.map(documentToDocumentRequest), identifier.toString());
     }
 
-    async getRequestedDocumentsFiles(documents: DocumentRequestDto[], baseFolderName = "docs") {
+    private sanitizeDocumentRequest(doc: DocumentRequestDto) {
+        const noPathTraversal = s => s.replace(/\/\\/, "");
+        doc.type = noPathTraversal(doc.type);
+        doc.nom = noPathTraversal(doc.nom);
+        return doc;
+    }
+
+    async safeGetRequestedDocumentFiles(unsafeDocuments: DocumentRequestDto[], baseFolderName = "docs") {
+        const documents = unsafeDocuments.map(doc => this.sanitizeDocumentRequest(doc));
+        return this.getRequestedDocumentFiles(documents, baseFolderName);
+    }
+
+    async getRequestedDocumentFiles(documents: DocumentRequestDto[], baseFolderName = "docs") {
         const folderName = `${baseFolderName}-${new Date().getTime()}`;
 
         fs.mkdirSync("/tmp/" + folderName);
