@@ -129,9 +129,9 @@ export class DocumentsService {
         try {
             const escapeInjectCmdInName = name => name.split('"')[0];
             const readStream = await this.getDocumentStreamByLocalApiUrl(document.url);
-            const sourceFileName =
-                readStream.headers["content-disposition"]?.match(/attachment;filename="(.*)"/)?.[1] ||
-                escapeInjectCmdInName(document.nom);
+            const sourceFileName = escapeInjectCmdInName(
+                readStream.headers["content-disposition"]?.match(/attachment;filename="(.*)"/)?.[1] || document.nom,
+            );
             const extension = /\.[^/]+$/.test(sourceFileName)
                 ? ""
                 : "." + (mime.extension(readStream.headers["content-type"]) || "pdf");
