@@ -6,6 +6,8 @@ import { withTwoDigitYear } from "$lib/helpers/dateHelper";
 import PaymentsAdapter from "$lib/resources/payments/payments.adapter";
 
 const MONTANT_VERSE_LABEL = "Versé";
+const CENTRE_FINANCIER_LABEL = "Centre financier";
+const DATE_VERSEMENT_LABEL = "Date du paiement";
 const PROGRAMME_LABEL = "Programme";
 
 export default class PaymentTableController {
@@ -19,6 +21,19 @@ export default class PaymentTableController {
         this.noPayments = new Store(false);
 
         this.buildColumnDataViews();
+    }
+
+    // extract values from payment table
+    static extractRows(elements) {
+        return elements.map(element =>
+            element.payments ? Object.values(PaymentsAdapter.toPayment(element.payments)) : null,
+        );
+    }
+
+    // Order is important to respect PaymentsAdapter.toPayment() format
+    // TODO: enhance this and make a mapper header - payment property ?
+    static extractHeaders() {
+        return [MONTANT_VERSE_LABEL, CENTRE_FINANCIER_LABEL, DATE_VERSEMENT_LABEL, PROGRAMME_LABEL];
     }
 
     _countPayments() {

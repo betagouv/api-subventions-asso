@@ -1,4 +1,4 @@
-import type { AssociationIdentifiers, PaginatedAssociationNameDto } from "dto";
+import type { PaginatedAssociationNameDto } from "dto";
 import type AssociationEntity from "./entities/AssociationEntity";
 import associationPort from "./association.port";
 import { toSearchHistory } from "./association.adapter";
@@ -35,10 +35,6 @@ class AssociationService {
         const result = await associationPort.getDocuments(identifier);
         const documents = result.map(document => getObjectWithMetadata(document));
         return documentHelper.formatAndSortDocuments(documents);
-    }
-
-    getGrantExtract(identifier: AssociationIdentifiers) {
-        return associationPort.getGrantExtract(identifier);
     }
 
     async search(lookup, page = 1): Promise<PaginatedAssociationNameDto> {
