@@ -22,6 +22,12 @@ class AssociationPort {
         return (await this.getResource(identifier, "grants"))?.data?.subventions;
     }
 
+    async getGrantExtract(identifier: AssociationIdentifiers) {
+        const path = `/association/${identifier}/grants/csv`;
+        const res = await requestsService.get(path, {}, { responseType: "blob" });
+        return { blob: res?.data, filename: res.headers?.["content-disposition"].match(/inline; filename=(.*)/)?.[1] };
+    }
+
     async getDocuments(identifier: AssociationIdentifiers): Promise<DocumentDto[]> {
         return (await this.getResource(identifier, "documents"))?.data?.documents;
     }

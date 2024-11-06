@@ -1,3 +1,4 @@
+import type { Siret } from "dto";
 import { toEstablishmentComponent } from "./establishment.adapter";
 import establishmentPort from "./establishment.port";
 import type { DocumentEntity } from "$lib/entities/DocumentEntity";
@@ -31,6 +32,10 @@ class EstablishmentService {
 
         const documents: DocumentEntity[] = result.map(document => getObjectWithMetadata(document));
         return documentHelper.formatAndSortDocuments(documents);
+    }
+
+    getGrantExtract(identifier: Siret) {
+        return establishmentPort.getGrantExtract(identifier);
     }
 }
 

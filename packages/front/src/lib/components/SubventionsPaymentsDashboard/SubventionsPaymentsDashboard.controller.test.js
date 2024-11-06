@@ -4,12 +4,10 @@ import paymentsService from "../../resources/payments/payments.service";
 import SubventionsPaymentsDashboardController from "./SubventionsPaymentsDashboard.controller";
 
 import * as helper from "./helper";
-import SubventionTableController from "./SubventionTable/SubventionTable.controller";
-import PaymentTableController from "./PaymentTable/PaymentTable.controller";
-import associationService from "$lib/resources/associations/association.service";
+
 vi.mock("$lib/resources/associations/association.service");
-import establishmentService from "$lib/resources/establishments/establishment.service";
 vi.mock("$lib/resources/establishments/establishment.service");
+vi.mock("$lib/helpers/document.helper");
 
 vi.mock("$lib/helpers/csvHelper", () => {
     return {
@@ -18,7 +16,6 @@ vi.mock("$lib/helpers/csvHelper", () => {
         downloadCsv: vi.fn(),
     };
 });
-import * as csvHelper from "$lib/helpers/csvHelper";
 
 vi.mock("$lib/helpers/identifierHelper", () => {
     return {
@@ -29,6 +26,10 @@ vi.mock("$lib/helpers/identifierHelper", () => {
 import * as identifierHelper from "$lib/helpers/identifierHelper";
 import trackerService from "$lib/services/tracker.service";
 import { PUBLIC_PROVIDER_BLOG_URL } from "$env/static/public";
+import associationService from "$lib/resources/associations/association.service";
+import establishmentService from "$lib/resources/establishments/establishment.service";
+import documentHelper from "$lib/helpers/document.helper";
+
 vi.mock("$lib/services/tracker.service");
 describe("SubventionsPaymentsDashboardController", () => {
     const SIREN = "123456789";
@@ -245,78 +246,75 @@ describe("SubventionsPaymentsDashboardController", () => {
     });
 
     describe("download()", () => {
-        const mockExtractPaymentHeaders = vi.spyOn(PaymentTableController, "extractHeaders");
-        const mockExtractPaymentRows = vi.spyOn(PaymentTableController, "extractRows");
-        const mockExtractSubventionHeaders = vi.spyOn(SubventionTableController, "extractHeaders");
-        const mockExtractSubventionRows = vi.spyOn(SubventionTableController, "extractRows");
+        let controller;
+        let setExtractLoading;
 
-        const spys = [
-            mockExtractPaymentHeaders,
-            mockExtractPaymentRows,
-            mockExtractSubventionHeaders,
-            mockExtractSubventionRows,
-        ];
+        beforeAll(() => {
+            vi.mocked(identifierHelper.isSiret).mockReturnValue(true);
+            vi.mocked(establishmentService.getGrantExtract).mockResolvedValue({
+                blob: "BLOB",
+                filename: "FILENAME",
+            });
+            vi.mocked(associationService.getGrantExtract).mockResolvedValue({
+                blob: "BLOB",
+                filename: "FILENAME",
+            });
+        });
 
-        let ctrl;
-
-        const ASSOCIATION_HEADERS = ["Nom de l'association", "Rna", "Adresse de l'établissement", "Siret", "Exercice"];
-        const ASSOCIATION_DATA = ["ASSO_NAME", "ASSO_RNA"];
-        const ESTABLISHMENT_DATA = ["ESTABLISHMENT_ADDRESS", "ESTABLISHMENT_SIRET", "ESTABLISHMENT_EXERCICE"];
-        const SUBVENTION_HEADERS = ["SUBVENTION_HEADER"];
-        const SUBVENTION_ROWS_A = ["SERVICE INST. A", "DISPOSITIF A"];
-        const SUBVENTION_ROWS_B = ["SERVICE INST. B", "DISPOSITIF B"];
-        const VERSEMENT_HEADERS = ["VERSEMENT_HEADER"];
-        const VERSEMENT_ROWS_A = ["CENTRE FINANCIER A"];
-        const VERSEMENT_ROWS_B = ["CENTRE FINANCIER B"];
+        afterAll(() => {
+            vi.mocked(identifierHelper.isSiret).mockRestore();
+            vi.mocked(establishmentService.getGrantExtract).mockRestore();
+            vi.mocked(associationService.getGrantExtract).mockRestore();
+        });
 
         beforeEach(() => {
-            ctrl = new SubventionsPaymentsDashboardController(SIRET);
-            vi.spyOn(ctrl, "_buildAssociationCsvData").mockReturnValue(ASSOCIATION_DATA);
-            vi.spyOn(ctrl, "_buildEtablissementAndExerciceCsvData").mockReturnValue(ESTABLISHMENT_DATA);
-            mockExtractSubventionHeaders.mockImplementation(vi.fn(() => SUBVENTION_HEADERS));
-            mockExtractSubventionRows.mockImplementation(vi.fn(() => [SUBVENTION_ROWS_A, SUBVENTION_ROWS_B]));
-            mockExtractPaymentHeaders.mockImplementation(vi.fn(() => VERSEMENT_HEADERS));
-            mockExtractPaymentRows.mockImplementation(vi.fn(() => [VERSEMENT_ROWS_A, VERSEMENT_ROWS_B]));
-        });
-        afterEach(() => spys.forEach(spy => spy.mockClear()));
-
-        it.each`
-            mock
-            ${mockExtractPaymentHeaders}
-            ${mockExtractPaymentRows}
-            ${mockExtractSubventionHeaders}
-            ${mockExtractSubventionRows}
-        `("should call extract methods", ({ mock }) => {
-            ctrl.download();
-            expect(mock).toHaveBeenCalledTimes(1);
+            controller = new SubventionsPaymentsDashboardController();
+            setExtractLoading = vi.spyOn(controller.isExtractLoading, "set");
         });
 
-        it("should call buildCsv()", () => {
-            ctrl.download();
-            expect(csvHelper.buildCsv).toHaveBeenCalledWith(
-                [...ASSOCIATION_HEADERS, ...SUBVENTION_HEADERS, ...VERSEMENT_HEADERS],
-                [
-                    [...ASSOCIATION_DATA, ...ESTABLISHMENT_DATA, ...SUBVENTION_ROWS_A, ...VERSEMENT_ROWS_A],
-                    [...ASSOCIATION_DATA, ...ESTABLISHMENT_DATA, ...SUBVENTION_ROWS_B, ...VERSEMENT_ROWS_B],
-                ],
+        it("don't check isSiret if isExtractLoading is already true", async () => {
+            controller.isExtractLoading.set(true);
+            await controller.download();
+            expect(identifierHelper.isSiret).not.toHaveBeenCalled();
+        });
+
+        it("tracks button click", async () => {
+            await controller.download();
+            expect(trackerService.buttonClickEvent).toHaveBeenCalledWith(
+                "association-etablissement.dashbord.download-csv",
+                controller.identifier,
             );
         });
 
-        it("should increment assocation extract data", () => {
-            identifierHelper.isSiret.mockImplementationOnce(() => false);
-            ctrl.download();
-            expect(associationService.incExtractData).toHaveBeenCalledTimes(1);
+        it("sets extractLoading to true", async () => {
+            await controller.download();
+            expect(setExtractLoading).toHaveBeenCalledWith(true);
         });
 
-        it("should increment establishment extract data", () => {
-            identifierHelper.isSiret.mockImplementationOnce(() => true);
-            ctrl.download();
-            expect(establishmentService.incExtractData).toHaveBeenCalledTimes(1);
+        it("checks if identifier is siret", async () => {
+            await controller.download();
+            expect(identifierHelper.isSiret).toHaveBeenCalled();
         });
 
-        it("should call downloadCsv()", () => {
-            ctrl.download();
-            expect(csvHelper.buildCsv).toHaveBeenCalledTimes(1);
+        it("if siret: gets grant extract from establishmentService", async () => {
+            await controller.download();
+            expect(establishmentService.getGrantExtract).toHaveBeenCalled(controller.identifier);
+        });
+
+        it("if not siret: gets grant extract from associationService", async () => {
+            vi.mocked(identifierHelper.isSiret).mockReturnValueOnce(false);
+            await controller.download();
+            expect(associationService.getGrantExtract).toHaveBeenCalledWith(controller.identifier);
+        });
+
+        it("calls documentHelper.download", async () => {
+            await controller.download();
+            expect(documentHelper.download).toHaveBeenCalledWith("BLOB", "FILENAME");
+        });
+
+        it("when download is over, sets extractLoading to false", async () => {
+            await controller.download();
+            expect(setExtractLoading).toHaveBeenCalledWith(false);
         });
     });
 

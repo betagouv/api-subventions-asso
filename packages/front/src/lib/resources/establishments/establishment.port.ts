@@ -1,4 +1,4 @@
-import type { DocumentDto, GetGrantsResponseDto, Grant, Siret } from "dto";
+import type { AssociationIdentifiers, DocumentDto, GetGrantsResponseDto, Grant, Siret } from "dto";
 import requestsService from "$lib/services/requests.service";
 
 class EstablishmentPort {
@@ -21,6 +21,12 @@ class EstablishmentPort {
 
     async getGrants(siret: Siret): Promise<Grant[]> {
         return ((await this.getResource(siret, "grants")).data as GetGrantsResponseDto).subventions;
+    }
+
+    async getGrantExtract(identifier: AssociationIdentifiers) {
+        const path = `/etablissement/${identifier}/grants/csv`;
+        const res = await requestsService.get(path, {}, { responseType: "blob" });
+        return { blob: res?.data, filename: res.headers?.["content-disposition"].match(/inline; filename=(.*)/)?.[1] };
     }
 }
 
