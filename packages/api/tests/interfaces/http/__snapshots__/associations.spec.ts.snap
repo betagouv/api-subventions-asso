@@ -78,6 +78,7 @@ Object {
           "value": "f84f45a69fca47a7f8a36665b94db7719208abdf",
         },
       },
+      "payments": null,
     },
     Object {
       "application": Object {
@@ -148,6 +149,7 @@ Object {
           "value": "Accordé",
         },
       },
+      "payments": null,
     },
     Object {
       "application": Object {
@@ -224,6 +226,7 @@ Object {
           "value": "74959357aff2a17c3a876310f5d90bb037a80427",
         },
       },
+      "payments": null,
     },
     Object {
       "application": Object {
@@ -448,6 +451,7 @@ Object {
           "value": "2103814945",
         },
       },
+      "payments": null,
     },
     Object {
       "application": Object {
@@ -573,6 +577,7 @@ Object {
           "value": "EJ00001",
         },
       },
+      "payments": null,
     },
     Object {
       "application": Object {
@@ -942,6 +947,7 @@ Object {
           "value": "f84f45a69fca47a7f8a36665b94db7719208abdf",
         },
       },
+      "payments": null,
     },
     Object {
       "application": Object {
@@ -1012,6 +1018,7 @@ Object {
           "value": "Accordé",
         },
       },
+      "payments": null,
     },
     Object {
       "application": Object {
@@ -1088,6 +1095,7 @@ Object {
           "value": "74959357aff2a17c3a876310f5d90bb037a80427",
         },
       },
+      "payments": null,
     },
     Object {
       "application": Object {
@@ -1312,6 +1320,7 @@ Object {
           "value": "2103814945",
         },
       },
+      "payments": null,
     },
     Object {
       "application": Object {
@@ -1437,6 +1446,7 @@ Object {
           "value": "EJ00001",
         },
       },
+      "payments": null,
     },
     Object {
       "application": Object {
