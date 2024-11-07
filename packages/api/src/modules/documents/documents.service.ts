@@ -88,10 +88,22 @@ export class DocumentsService {
 
         if (!documents || documents.length == 0) throw new Error("No document found");
 
-        return this.getRequestedDocumentsFiles(documents.map(documentToDocumentRequest), identifier.toString());
+        return this.getRequestedDocumentFiles(documents.map(documentToDocumentRequest), identifier.toString());
     }
 
-    async getRequestedDocumentsFiles(documents: DocumentRequestDto[], baseFolderName = "docs") {
+    private sanitizeDocumentRequest(doc: DocumentRequestDto) {
+        const noPathTraversal = s => s.replace(/[/|\\]/g, "");
+        doc.type = noPathTraversal(doc.type);
+        doc.nom = noPathTraversal(doc.nom);
+        return doc;
+    }
+
+    async safeGetRequestedDocumentFiles(unsafeDocuments: DocumentRequestDto[], baseFolderName = "docs") {
+        const documents = unsafeDocuments.map(doc => this.sanitizeDocumentRequest(doc));
+        return this.getRequestedDocumentFiles(documents, baseFolderName);
+    }
+
+    async getRequestedDocumentFiles(documents: DocumentRequestDto[], baseFolderName = "docs") {
         const folderName = `${baseFolderName}-${new Date().getTime()}`;
 
         fs.mkdirSync("/tmp/" + folderName);
@@ -101,8 +113,7 @@ export class DocumentsService {
         });
 
         const documentsPath = (await Promise.all(documentsPathPromises)).filter(document => document) as string[];
-        const zipCmd = `zip -j /tmp/${folderName}.zip "${documentsPath.join('" "')}"`;
-        childProcess.execSync(zipCmd);
+        childProcess.execFileSync("zip", ["j", `/tmp/${folderName}.zip`].concat(documentsPath));
         fs.rmSync("/tmp/" + folderName, { recursive: true, force: true });
         const stream = fs.createReadStream(`/tmp/${folderName}.zip`);
 
@@ -118,9 +129,9 @@ export class DocumentsService {
         try {
             const escapeInjectCmdInName = name => name.split('"')[0];
             const readStream = await this.getDocumentStreamByLocalApiUrl(document.url);
-            const sourceFileName =
-                readStream.headers["content-disposition"]?.match(/attachment;filename="(.*)"/)?.[1] ||
-                escapeInjectCmdInName(document.nom);
+            const sourceFileName = escapeInjectCmdInName(
+                readStream.headers["content-disposition"]?.match(/attachment;filename="(.*)"/)?.[1] || document.nom,
+            );
             const extension = /\.[^/]+$/.test(sourceFileName)
                 ? ""
                 : "." + (mime.extension(readStream.headers["content-type"]) || "pdf");
@@ -128,9 +139,7 @@ export class DocumentsService {
             const writeStream = readStream.pipe(fs.createWriteStream(documentPath));
             return new Promise((resolve, reject) => {
                 // finish event is same event of end but for write stream
-                writeStream.on("finish", () => {
-                    resolve(documentPath);
-                });
+                writeStream.on("finish", () => resolve(documentPath));
                 writeStream.on("error", reject);
             });
         } catch (e) {
