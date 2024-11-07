@@ -99,6 +99,8 @@ beforeAll(async () => {
 
     if (g.app) return;
 
+    // setup database for initAsyncServices
+    // everything will be droped after the first test from the afterEach below
     await initTests();
     await initAsyncServices();
 
@@ -106,7 +108,9 @@ beforeAll(async () => {
     await initIndexes();
 });
 
-beforeEach(async () => await addBetaGouvEmailDomain());
+beforeEach(async () => {
+    await addBetaGouvEmailDomain();
+});
 
 afterEach(async () => {
     // Clear database between test

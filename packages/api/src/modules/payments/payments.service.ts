@@ -27,7 +27,7 @@ export class PaymentsService {
     }
 
     getPaymentExercise(payment: Payment) {
-        return ((payment as FonjepPayment)?.periodeDebut?.value ?? payment.dateOperation.value).getFullYear();
+        return payment.dateOperation.value.getFullYear();
     }
 }
 

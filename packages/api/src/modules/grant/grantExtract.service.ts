@@ -1,8 +1,7 @@
-import { Grant, SimplifiedEtablissement } from "dto";
+import { SimplifiedEtablissement } from "dto";
 import csvStringifier = require("csv-stringify/sync");
 import { StructureIdentifier } from "../../@types";
 import associationsService from "../associations/associations.service";
-import paymentService from "../payments/payments.service";
 import { BadRequestError } from "../../shared/errors/httpErrors";
 import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
@@ -27,7 +26,7 @@ class GrantExtractService {
         estabs.forEach(estab => (estabBySiret[estab.siret?.[0]?.value] = estab));
 
         const assoName = asso.denomination_rna?.[0]?.value ?? asso.denomination_siren?.[0]?.value;
-        const separatedGrants = this.separateByExercise(grants);
+        const separatedGrants = grantService.handleMultiYearGrants(grants);
 
         return {
             csv: csvStringifier.stringify(
@@ -36,31 +35,6 @@ class GrantExtractService {
             ),
             fileName: `DataSubvention-${assoName}-${identifier.toString()}-${new Date().toISOString().slice(0, 10)}`,
         };
-    }
-
-    separateByExercise(grants: Grant[]): Grant[] {
-        return grants.map(grant => this.separateOneByExercise(grant)).flat();
-    }
-
-    separateOneByExercise(grant: Grant): Grant[] {
-        const { application, payments } = grant;
-        const byYear: Record<number, Grant> = {};
-
-        if (application) byYear[application?.annee_demande?.value ?? "unknwown"] = { application };
-
-        let year: number;
-        for (const payment of payments ?? []) {
-            year = paymentService.getPaymentExercise(payment) ?? "unknown";
-            if (!byYear[year]?.payments)
-                byYear[year] = {
-                    application: byYear[year]?.application ?? null,
-                    payments: [payment],
-                };
-            // @ts-expect-error -- ts doesn't see that I covered the case year byYear[year].payemnts is null but I did
-            else byYear[year].payments.push(payment);
-        }
-
-        return Object.values(byYear);
     }
 }
 
