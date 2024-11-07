@@ -54,5 +54,11 @@ describe("PaymentsService", () => {
             const actual = paymentsService.getPaymentExercise(PAYMENT);
             expect(actual).toBe(expected);
         });
+
+        it("returns undefined if payment is undefined", () => {
+            const expected = undefined;
+            const actual = paymentsService.getPaymentExercise(undefined);
+            expect(actual).toBe(expected);
+        });
     });
 });

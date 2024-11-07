@@ -67,7 +67,8 @@ export default class GrantAdapter {
             // application part
             exercice:
                 grant?.application?.annee_demande?.value ??
-                paymentService.getPaymentExercise((grant?.payments as Payment[])[0]),
+                paymentService.getPaymentExercise((grant?.payments as Payment[])?.[0]) ??
+                0,
             action: getValue(grant?.application?.actions_proposee?.[0]?.intitule),
             askedAmount: getValue(grant?.application?.montants?.demande),
             grantedAmount: getValue(grant?.application?.montants?.accorde),

@@ -267,9 +267,10 @@ export class GrantService {
     splitGrantByExercise(grant: Grant): Grant[] {
         const { application, payments } = grant;
         const byYear: Record<number, Grant> = {};
-        const NO_YEAR = "unknown";
+        const NO_YEAR = 0;
 
-        if (application) byYear[subventionsService.getSubventionExercise(application) ?? NO_YEAR] = { application };
+        if (application)
+            byYear[subventionsService.getSubventionExercise(application) ?? NO_YEAR] = { application, payments: null };
 
         let year: number;
         for (const payment of payments ?? []) {

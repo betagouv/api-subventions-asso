@@ -26,8 +26,9 @@ export class PaymentsService {
         });
     }
 
-    getPaymentExercise(payment: Payment) {
-        return payment.dateOperation.value.getFullYear();
+    getPaymentExercise(payment: Payment | undefined) {
+        if (!payment) return undefined;
+        return payment?.dateOperation?.value?.getFullYear();
     }
 }
 
