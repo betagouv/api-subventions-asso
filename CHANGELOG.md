@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.57.0](https://github.com/betagouv/api-subventions-asso/compare/v0.56.1...v0.57.0) (2024-11-07)
+
+### Bug Fixes
+
+-   **api,front:** [#2618](https://github.com/betagouv/api-subventions-asso/issues/2618) only company in search raises error ([#2674](https://github.com/betagouv/api-subventions-asso/issues/2674)) ([af34bb0](https://github.com/betagouv/api-subventions-asso/commit/af34bb0980be6baadd2870ddccb71e69a201892d))
+-   **api:** [#2128](https://github.com/betagouv/api-subventions-asso/issues/2128) only save actual assos ([#2691](https://github.com/betagouv/api-subventions-asso/issues/2691)) ([4276673](https://github.com/betagouv/api-subventions-asso/commit/427667346bd80f9c6672cc243905662015343053))
+-   **api:** [#2656](https://github.com/betagouv/api-subventions-asso/issues/2656) adapts amounts with spaces in string ([#2690](https://github.com/betagouv/api-subventions-asso/issues/2690)) ([26455a5](https://github.com/betagouv/api-subventions-asso/commit/26455a5afb1998ca0d408dd0e610b466d2e90495))
+-   **api:** [#2732](https://github.com/betagouv/api-subventions-asso/issues/2732) protect from path traversal ith execFileSync and sanitization ([#2845](https://github.com/betagouv/api-subventions-asso/issues/2845)) ([0a6e7f7](https://github.com/betagouv/api-subventions-asso/commit/0a6e7f78e982829884399929d63f009273f64b84))
+-   **api:** [#2740](https://github.com/betagouv/api-subventions-asso/issues/2740) fonjep parser sets joinKey ([#2825](https://github.com/betagouv/api-subventions-asso/issues/2825)) ([c15f0dd](https://github.com/betagouv/api-subventions-asso/commit/c15f0ddd765aa16cec3e2a57ba3eb37d2af05c31))
+-   **api:** handle undefined exercise 🙄 ([b621fc1](https://github.com/betagouv/api-subventions-asso/commit/b621fc1b1b92ab533bf2bd7d2d53ae679f49e4ac))
+-   **front:** missing default env vars ([5b0e5a1](https://github.com/betagouv/api-subventions-asso/commit/5b0e5a11e65714e86c1d7329c94b1180869bbf91))
+
+### Features
+
+-   **api:** [#2322](https://github.com/betagouv/api-subventions-asso/issues/2322) get EJ from gispro data ([#2809](https://github.com/betagouv/api-subventions-asso/issues/2809)) ([3e338b1](https://github.com/betagouv/api-subventions-asso/commit/3e338b1c261766ac1bc91d52004f4489b3acf054))
+-   **api:** flatten payment by exercise year and order grant results ([#2793](https://github.com/betagouv/api-subventions-asso/issues/2793)) ([a2f62dd](https://github.com/betagouv/api-subventions-asso/commit/a2f62ddeaed29ad9317c6142ebb7723bb9e1cd5d))
+-   **front:** [#2788](https://github.com/betagouv/api-subventions-asso/issues/2788) changer main banner content ([#2815](https://github.com/betagouv/api-subventions-asso/issues/2815)) ([4535af4](https://github.com/betagouv/api-subventions-asso/commit/4535af491c40fecd36a3fa52486a77d2fe42930e))
+-   **front:** [#2791](https://github.com/betagouv/api-subventions-asso/issues/2791) extract api with front ([#2827](https://github.com/betagouv/api-subventions-asso/issues/2827)) ([778074d](https://github.com/betagouv/api-subventions-asso/commit/778074d33f89da1a90d00a8e4260653536d1c8e1))
+
 ## [0.56.1](https://github.com/betagouv/api-subventions-asso/compare/v0.56.0...v0.56.1) (2024-10-14)
 
 ### Bug Fixes
