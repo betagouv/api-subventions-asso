@@ -10,6 +10,7 @@ import {transferData} from "../../dataProviders/db/SIRENE/sirene.transfer";
 import { joinCollection } from "../../dataProviders/db/associationFlat/associationFlatMongo";
 import { joinCollectionPostgres } from "../../dataProviders/db/associationFlat/associationFlatPostgres";
 import { start } from "repl";
+import { jointureHybride } from "../../dataProviders/db/associationFlat/associationFlatTypeScript";
 const DIRECTORY_PATH = '/home/gcarra/data_subvention/api-subventions-asso/packages/api/src/modules/providers/sirene';
 @StaticImplements<CliStaticInterface>()
 export default class PocCli extends CliController {
@@ -19,10 +20,17 @@ export default class PocCli extends CliController {
     public async test() {
       console.log('unzip');
       
+      const start_hybride = performance.now();
+      const result_typescript = await jointureHybride();
+      const end_hybride = performance.now();
+        const executionTime_hybride = end_hybride - start_hybride;
+        console.log(`Execution Time: ${executionTime_hybride.toFixed(2)} milliseconds`);
+
       const start_postgres = performance.now(); 
       console.log(start_postgres);
       
-      const result_postgres = await joinCollectionPostgres();
+    
+     // const result_postgres = await joinCollectionPostgres();
       const end_postgres = performance.now();
       const executionTime_postgres = end_postgres - start_postgres;
       console.log(`Execution Time: ${executionTime_postgres.toFixed(2)} milliseconds`);
@@ -30,7 +38,7 @@ export default class PocCli extends CliController {
         //const result = await SireneParser.parseWithDuckDb(path.join(DIRECTORY_PATH, "StockUniteLegale_utf8.csv"));
       
         const start = performance.now();
-        const result = await joinCollection();
+    //    const result = await joinCollection();
         const end = performance.now();
         const executionTime = end - start;
        // console.log('Execution time: ', end - start);
