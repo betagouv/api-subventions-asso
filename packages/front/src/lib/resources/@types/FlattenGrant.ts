@@ -1,9 +1,21 @@
 import { ApplicationStatus, SiretDto } from "dto";
 
-export type FlatGrant = {
-    application: FlatApplication | null;
-    payments: FlatPayment[] | null;
+export type OnlyApplication = {
+    application: FlatApplication;
+    payments: null;
 };
+
+export type OnlyPayments = {
+    application: null;
+    payments: FlatPayment[];
+};
+
+export type ApplicationWithPayments = {
+    application: FlatApplication;
+    payments: FlatPayment[];
+};
+
+export type FlatGrant = OnlyApplication | OnlyPayments | ApplicationWithPayments;
 
 export type FlatPayment = FlatChorusPayment | FlatFonjepPayment;
 
@@ -11,7 +23,7 @@ interface FlatBasePayment {
     versementKey: string;
     siret: SiretDto;
     amount: number;
-    dateOperation: Date;
+    dateOperation: string;
     programme: number;
     libelleProgramme: string;
 }
@@ -35,8 +47,8 @@ interface FlatChorusPayment extends FlatBasePayment {
 
 interface FlatFonjepPayment extends FlatBasePayment {
     codePoste: string;
-    periodeDebut: Date;
-    periodeFin: Date;
+    periodeDebut: string;
+    periodeFin: string;
     montantAPayer: number;
     /**
      * Deprecated
@@ -52,11 +64,11 @@ export interface FlatApplication {
     ej?: string;
     versementKey?: string;
     annee_demande?: number;
-    date_commision?: Date;
+    date_commision?: string;
     financeur_principal?: string;
-    creer_le?: Date;
-    transmis_le?: Date;
-    date_fin?: Date;
+    creer_le?: string;
+    transmis_le?: string;
+    date_fin?: string;
     pluriannualite?: string;
     plein_temps?: string;
     contact?: {
