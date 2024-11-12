@@ -28,9 +28,9 @@ export class PaymentFlatService {
         */
         let chorusCursor: FindCursor<WithId<ChorusLineEntity>>;
         if (exerciceBudgetaire) {
-            chorusCursor = chorusService.cursorFindData(exerciceBudgetaire);
+            chorusCursor = chorusService.cursorFindDataWithoutHash(exerciceBudgetaire);
         } else {
-            chorusCursor = chorusService.cursorFindData();
+            chorusCursor = chorusService.cursorFindDataWithoutHash();
         }
         let document = await chorusCursor.next();
         const entities: Record<string, PaymentFlatEntity> = {};
@@ -45,9 +45,8 @@ export class PaymentFlatService {
             );
 
             if (entities[paymentFlatEntity.uniqueId]) {
-                entities[paymentFlatEntity.uniqueId].amount += paymentFlatEntity.amount;
                 entities[paymentFlatEntity.uniqueId].amount = parseFloat(
-                    entities[paymentFlatEntity.uniqueId].amount.toFixed(2),
+                    (entities[paymentFlatEntity.uniqueId].amount + paymentFlatEntity.amount).toFixed(2),
                 );
             } else {
                 entities[paymentFlatEntity.uniqueId] = paymentFlatEntity;

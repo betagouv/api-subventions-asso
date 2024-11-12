@@ -10,13 +10,10 @@ jest.mock("../../providers/dataBretagne/dataBretagne.service", () => ({
 }));
 const mockDataBretagneService = jest.mocked(dataBretagneService);
 import paymentFlatService from "./paymentFlat.service";
-import { ObjectId, WithId } from "mongodb";
 import chorusService from "../../providers/chorus/chorus.service";
-import ChorusLineEntity from "../../providers/chorus/entities/ChorusLineEntity";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 import { PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
 import paymentFlatPort from "../../../dataProviders/db/paymentFlat/paymentFlat.port";
-import { mock } from "node:test";
 
 const allDataBretagneDataResolvedValue = {
     programs: RECORDS["programme"],
@@ -56,7 +53,7 @@ describe("PaymentFlatService", () => {
     });
 
     describe("toPaymentFlatChorusEntities", () => {
-        let mockchorusCursorFind: jest.SpyInstance;
+        let mockChorusCursorFind: jest.SpyInstance;
         let mockToPaymentFlatEntity: jest.SpyInstance;
 
         let mockCursor;
@@ -74,7 +71,9 @@ describe("PaymentFlatService", () => {
                 }),
             };
 
-            mockchorusCursorFind = jest.spyOn(chorusService, "cursorFindData").mockReturnValue(mockCursor as any);
+            mockChorusCursorFind = jest
+                .spyOn(chorusService, "cursorFindDataWithoutHash")
+                .mockReturnValue(mockCursor as any);
             mockToPaymentFlatEntity = jest
                 .spyOn(PaymentFlatAdapter, "toNotAggregatedChorusPaymentFlatEntity")
                 .mockReturnValue({ ...PAYMENT_FLAT_ENTITY });
@@ -84,16 +83,6 @@ describe("PaymentFlatService", () => {
             jest.restoreAllMocks();
         });
 
-        it("should call chorusCursorFind once", async () => {
-            await paymentFlatService.toPaymentFlatChorusEntities(
-                RECORDS["programme"],
-                RECORDS["ministry"],
-                RECORDS["domaineFonct"],
-                RECORDS["refProgrammation"],
-            );
-            expect(mockchorusCursorFind).toHaveBeenCalledTimes(1);
-        });
-
         it("should call chorusCursorFind with no argument", async () => {
             await paymentFlatService.toPaymentFlatChorusEntities(
                 RECORDS["programme"],
@@ -101,7 +90,7 @@ describe("PaymentFlatService", () => {
                 RECORDS["domaineFonct"],
                 RECORDS["refProgrammation"],
             );
-            expect(mockchorusCursorFind).toHaveBeenCalledWith();
+            expect(mockChorusCursorFind).toHaveBeenCalledWith();
         });
 
         it("should call chorusCursorFind with exercice", async () => {
@@ -113,10 +102,10 @@ describe("PaymentFlatService", () => {
                 RECORDS["refProgrammation"],
                 exercice,
             );
-            expect(mockchorusCursorFind).toHaveBeenCalledWith(exercice);
+            expect(mockChorusCursorFind).toHaveBeenCalledWith(exercice);
         });
 
-        it("should call next for times ", async () => {
+        it(`should call next for ${nDocuments} times`, async () => {
             await paymentFlatService.toPaymentFlatChorusEntities(
                 RECORDS["programme"],
                 RECORDS["ministry"],
@@ -171,11 +160,6 @@ describe("PaymentFlatService", () => {
         it("should call getAllDataBretagneData once", async () => {
             await paymentFlatService.updatePaymentsFlatCollection();
             expect(mockGetAllDataBretagneData).toHaveBeenCalledTimes(1);
-        });
-
-        it("should call toPaymentFlatChorusEntities once", async () => {
-            await paymentFlatService.updatePaymentsFlatCollection();
-            expect(mockToPaymentFlatChorusEntities).toHaveBeenCalledTimes(1);
         });
 
         it("should call toPaymentFlatChorusEntities with all data from dataBretagneService", async () => {

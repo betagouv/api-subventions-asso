@@ -64,13 +64,16 @@ describe("ChorusLineRepository", () => {
             mockCursorFind.mockRestore();
         });
         it("should call cursorFind without filters", () => {
-            chorusLineRepository.cursorFindData();
-            expect(mockCursorFind).toHaveBeenCalledWith({});
+            chorusLineRepository.cursorFindDataWithoutHash();
+            expect(mockCursorFind).toHaveBeenCalledWith({ "indexedInformations.siret": { $ne: "#" } });
         });
         it("should call cursorFind with filters", () => {
             const exerciceBudgetaire = 2022;
-            chorusLineRepository.cursorFindData(exerciceBudgetaire);
-            expect(mockCursorFind).toHaveBeenCalledWith({ "indexedInformations.exercice": exerciceBudgetaire });
+            chorusLineRepository.cursorFindDataWithoutHash(exerciceBudgetaire);
+            expect(mockCursorFind).toHaveBeenCalledWith({
+                "indexedInformations.exercice": exerciceBudgetaire,
+                "indexedInformations.siret": { $ne: "#" },
+            });
         });
     });
 });
