@@ -9,10 +9,8 @@ export default class PaymentsFlatCli extends CliController {
     static cmdName = "payments-flat";
 
     resyncExercice(exerciceBudgetaire: number) {
-        if (!exerciceBudgetaire) {
-            this.logger.logIC("Exercice budgetaire is required");
-            return;
-        }
+        if (!exerciceBudgetaire) throw new Error("Exercice budgetaire is required");
+
         this.logger.logIC(`Resync payment flat collection for exercice ${exerciceBudgetaire}`);
         return paymentsFlatService.updatePaymentsFlatCollection(exerciceBudgetaire);
     }
