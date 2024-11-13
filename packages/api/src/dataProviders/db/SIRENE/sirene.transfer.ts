@@ -1,11 +1,11 @@
+import { Client } from "pg";
 import { POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_USER } from "../../../configurations/apis.conf";
-import { Client } from 'pg';
 import paymentFlatPort from "../paymentFlat/paymentFlat.port";
 import sirenePort from "./sirene.port";
 
 const pgConfig = {
     user: POSTGRES_USER,
-    host: 'localhost',
+    host: "localhost",
     database: POSTGRES_DB,
     password: POSTGRES_PASSWORD,
     port: 5432,
@@ -19,20 +19,20 @@ export async function transferData() {
 
         console.log("Connected to MongoDB and PostgreSQL");
 
-        const paymentFlatDocsTemp = await paymentFlatPort.findAll()
+        const paymentFlatDocsTemp = await paymentFlatPort.findAll();
         const paymentFlatDocs = paymentFlatDocsTemp.map(doc => ({
-        ...doc,
-        _id: doc._id.toString(),
-        }))
-        const sireneDocsTemps = await sirenePort.findAll()
+            ...doc,
+            _id: doc._id.toString(),
+        }));
+        const sireneDocsTemps = await sirenePort.findAll();
         const sireneDocs = sireneDocsTemps.map(doc => ({
             ...doc,
             _id: doc._id.toString(),
-        }))
+        }));
 
-     //   console.log(Object.keys(paymentFlatDocs[0]))
-    //    pgClient.query('DROP TABLE IF EXISTS paymentsFlat');
-        pgClient.query('DROP TABLE IF EXISTS sirene');
+        //   console.log(Object.keys(paymentFlatDocs[0]))
+        //   pgClient.query('DROP TABLE IF EXISTS paymentsFlat');
+        //  pgClient.query('DROP TABLE IF EXISTS sirene');
 
         const paymentFlatTableQuery = `CREATE TABLE paymentsFlat ( 
         "uniqueId" VARCHAR(200) PRIMARY KEY,    
@@ -94,14 +94,14 @@ export async function transferData() {
         "caractereEmployeurUniteLegale" VARCHAR(100)
     )`;
 
-        
-     //   await pgClient.query(paymentFlatTableQuery);
+        //    await pgClient.query(paymentFlatTableQuery);
 
         await pgClient.query(sireneTableQuery);
-     //   createTableStatement('sirene', Object.keys(sireneDocs[0]));
+        //   createTableStatement('sirene', Object.keys(sireneDocs[0]));
+        /*
         console.log(paymentFlatDocs.length)
         let doc_i = 0
-        /*
+        
         for (const doc of paymentFlatDocs) {
             doc_i+=1
             if (doc_i % 1000 === 0) console.log(doc_i)
@@ -122,18 +122,18 @@ export async function transferData() {
         for (const doc of sireneDocs) {
             doc_sirene_i++;
             if (doc_sirene_i % 1000 === 0) console.log(doc_sirene_i);
-            const columns = Object.keys(doc).map(key => `"${key}"`).join(', ');
+            const columns = Object.keys(doc)
+                .map(key => `"${key}"`)
+                .join(", ");
             const values = Object.values(doc);
-            const placeholders = values.map((_, i) => `$${i + 1}`).join(', ');
+            const placeholders = values.map((_, i) => `$${i + 1}`).join(", ");
             // Insert into PostgreSQL
             const query = `INSERT INTO sirene (${columns}) VALUES (${placeholders})`;
             await pgClient.query(query, values);
         }
-        
     } catch (err) {
         console.error("Error transferring data:", err);
     } finally {
         await pgClient.end();
     }
 }
-
