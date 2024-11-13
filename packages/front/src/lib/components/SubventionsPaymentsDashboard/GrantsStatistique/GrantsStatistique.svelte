@@ -1,14 +1,14 @@
 <script>
-    import SubventionsPaymentsStatistiqueController from "./SubventionsPaymentsStatistique.controller";
+    import SubventionsPaymentsStatistiqueController from "./GrantsStatistique.controller";
 
-    export let elements;
+    export let grants;
     export let year;
 
-    const controller = new SubventionsPaymentsStatistiqueController(elements);
+    const controller = new SubventionsPaymentsStatistiqueController(grants);
 
     const { paymentsAmount, paymentsRepartition } = controller;
 
-    $: elements, controller.updateElements(elements);
+    $: grants, controller.updateElements(grants);
 </script>
 
 <p class="text--xxl fr-mb-1w">

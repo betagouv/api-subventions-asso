@@ -17,6 +17,7 @@ export class GrantDashboardController {
     public grants: Store<FlatGrant[] | undefined> = new Store(undefined);
     public grantsByExercise: Record<string, FlatGrant[]> = {};
     public selectedExerciseIndex: Store<number | undefined> = new Store(undefined);
+    public selectedExercise: ReadStore<string | null>;
     public selectedGrants: ReadStore<FlatGrant[] | null>;
     public isExtractLoading: Store<boolean> = new Store(false);
     public exerciseOptions: Store<string[] | undefined> = new Store(undefined);
@@ -27,6 +28,10 @@ export class GrantDashboardController {
             if (!index) return null;
             const exercise = (this.exerciseOptions.value as string[])[index];
             return this.grantsByExercise[exercise];
+        });
+        this.selectedExercise = derived(this.selectedExerciseIndex, index => {
+            if (!index || !this.exerciseOptions.value) return null;
+            return this.exerciseOptions.value[index];
         });
         if (isSiret(identifier)) {
             this.grantPromise = establishmentPort.getGrants(identifier);
@@ -39,6 +44,12 @@ export class GrantDashboardController {
 
     get providerBlogUrl() {
         return PUBLIC_PROVIDER_BLOG_URL;
+    }
+
+    get notFoundMessage() {
+        const defaultContent = "Nous sommes désolés, nous n'avons trouvé aucune donnée pour cet établissement";
+        if (this.exerciseOptions.value?.length) return `${defaultContent} sur l'année ${this.selectedExercise.value}`;
+        else return defaultContent;
     }
 
     public selectExercise(index) {

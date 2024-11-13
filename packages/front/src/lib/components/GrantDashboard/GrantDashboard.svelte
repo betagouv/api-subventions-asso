@@ -1,4 +1,7 @@
 <script lang="ts">
+    import SubventionsPaymentsStatistique from "../SubventionsPaymentsDashboard/GrantsStatistique/GrantsStatistique.svelte";
+    import DataNotFound from "../DataNotFound.svelte";
+    import ErrorAlert from "../ErrorAlert.svelte";
     import { GrantDashboardController } from "./GrantDashboard.controller";
     import Spinner from "$lib/components/Spinner.svelte";
     import Button from "$lib/dsfr/Button.svelte";
@@ -7,7 +10,15 @@
     export let structureId;
 
     const ctrl = new GrantDashboardController(structureId);
-    const { grantPromise, grants, selectedGrants, selectedExerciseIndex, exerciseOptions, isExtractLoading } = ctrl;
+    const {
+        grantPromise,
+        grants,
+        selectedGrants,
+        selectedExerciseIndex,
+        selectedExercise,
+        exerciseOptions,
+        isExtractLoading,
+    } = ctrl;
 </script>
 
 {#await grantPromise}
@@ -53,6 +64,26 @@
             </a>
         </div>
     </div>
+    <div class="fr-mt-6w compact-columns">
+        {#if $grants?.length}
+            <div>
+                <SubventionsPaymentsStatistique grants={$grants} year={$selectedExercise} />
+            </div>
+            <!-- {#if $loaderStateStore.status != "end"}
+                <Alert type="info" title="Récupération en cours des subventions chez nos fournisseurs ...">
+                    <ProgressBar percent={$loaderStateStore.percent} />
+                </Alert>
+            {/if} -->
+        {:else}
+            <DataNotFound content={ctrl.notFoundMessage} />
+        {/if}
+    </div>
+{:catch error}
+    {#if error.request && error.request.status == 404}
+        <DataNotFound />
+    {:else}
+        <ErrorAlert message={error.message} />
+    {/if}
 {/await}
 
 Hello new Grant DashBoard !! There is {$selectedGrants?.length} grant for the {$selectedExerciseIndex} exercise
