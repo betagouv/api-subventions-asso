@@ -50,7 +50,6 @@ export async function jointureHybride(){
     });
 
     console.log(result.length);
-    console.log(result[0])
     return  result;
 
 
