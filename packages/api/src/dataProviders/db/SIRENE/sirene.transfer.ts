@@ -24,14 +24,16 @@ export async function transferData() {
             ...doc,
             _id: doc._id.toString(),
         }));
+        /*
         const sireneDocsTemps = await sirenePort.findAll();
         const sireneDocs = sireneDocsTemps.map(doc => ({
             ...doc,
             _id: doc._id.toString(),
         }));
+        */
 
         //   console.log(Object.keys(paymentFlatDocs[0]))
-        //   pgClient.query('DROP TABLE IF EXISTS paymentsFlat');
+        pgClient.query("DROP TABLE IF EXISTS paymentsFlat");
         //  pgClient.query('DROP TABLE IF EXISTS sirene');
 
         const paymentFlatTableQuery = `CREATE TABLE paymentsFlat ( 
@@ -94,29 +96,31 @@ export async function transferData() {
         "caractereEmployeurUniteLegale" VARCHAR(100)
     )`;
 
-        //    await pgClient.query(paymentFlatTableQuery);
+        await pgClient.query(paymentFlatTableQuery);
 
-        await pgClient.query(sireneTableQuery);
+        // await pgClient.query(sireneTableQuery);
         //   createTableStatement('sirene', Object.keys(sireneDocs[0]));
-        /*
-        console.log(paymentFlatDocs.length)
-        let doc_i = 0
-        
+
+        console.log(paymentFlatDocs.length);
+        let doc_i = 0;
+
         for (const doc of paymentFlatDocs) {
-            doc_i+=1
-            if (doc_i % 1000 === 0) console.log(doc_i)
-            const columns = Object.keys(doc).map(key => `"${key}"`).join(', ');
+            doc_i += 1;
+            if (doc_i % 1000 === 0) console.log(doc_i);
+            const columns = Object.keys(doc)
+                .map(key => `"${key}"`)
+                .join(", ");
             const values = Object.values(doc);
-                
-            const placeholders = values.map((_, i) => `$${i + 1}`).join(', ');
-         
+
+            const placeholders = values.map((_, i) => `$${i + 1}`).join(", ");
+
             // Insert into PostgreSQL
             const query = `INSERT INTO paymentsFlat (${columns}) VALUES (${placeholders})`;
             await pgClient.query(query, values);
-
         }
         console.log(`Data from paymentsFlat transferred successfully`);
-        */
+
+        /*
         console.log(sireneDocs.length);
         let doc_sirene_i = 0;
         for (const doc of sireneDocs) {
@@ -131,6 +135,7 @@ export async function transferData() {
             const query = `INSERT INTO sirene (${columns}) VALUES (${placeholders})`;
             await pgClient.query(query, values);
         }
+        */
     } catch (err) {
         console.error("Error transferring data:", err);
     } finally {

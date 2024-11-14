@@ -20,13 +20,13 @@ export default class PocCli extends CliController {
         console.log("unzip");
 
         const start_postgres = performance.now();
-        const result_postgres = await joinCollectionPostgres();
+        //  const result_postgres = await joinCollectionPostgres();
         const end_postgres = performance.now();
         const executionTime_postgres = end_postgres - start_postgres;
         console.log(`Execution Time with Postgres: ${executionTime_postgres.toFixed(2)} milliseconds`);
 
         const start_hybride = performance.now();
-        const result_typescript = await jointureHybride();
+        //    const result_typescript = await jointureHybride();
         const end_hybride = performance.now();
         const executionTime_hybride = end_hybride - start_hybride;
         console.log(`Execution Time hybrid: ${executionTime_hybride.toFixed(2)} milliseconds`);
