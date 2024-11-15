@@ -3,6 +3,7 @@ import { page } from "$lib/store/kit.store";
 import Store from "$lib/core/Store";
 
 export default class AuthController {
+    public show: Store<boolean>;
     constructor() {
         this.show = new Store(false);
     }

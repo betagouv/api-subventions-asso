@@ -20,8 +20,13 @@ export function isRna(rna) {
     return /^W\d[A-Z\d]\d{7}$/.test(removeWhiteSpace(rna));
 }
 
+export function isAssociationIdentifier(identifier) {
+    console.log(identifier, isRna(identifier), isSiren(identifier), isRna(identifier) || isSiren(identifier));
+    return isRna(identifier) || isSiren(identifier);
+}
+
 export function isIdentifier(identifier) {
-    return isRna(identifier) || isSiren(identifier) || isSiret(identifier);
+    return isAssociationIdentifier(identifier) || isSiret(identifier);
 }
 
 export function getUniqueIdentifier(identifiers: { rna?: RnaDto | null; siren?: SirenDto | null }[]): string {
@@ -56,5 +61,5 @@ export function getUniqueIdentifier(identifiers: { rna?: RnaDto | null; siren?: 
         throw new Error("No identifier found");
     }
 
-    return unique.values().next().value;
+    return unique.values().next().value as string;
 }
