@@ -249,6 +249,17 @@ describe("chorusService", () => {
             expect(actual).toEqual(expected);
         });
 
+        it("should return true if siret is #", async () => {
+            const ENTITY = {
+                ...ACCEPTED_ENTITY,
+                indexedInformations: { ...ACCEPTED_ENTITY.indexedInformations, siret: "#" },
+            };
+
+            const expected = true;
+            const actual = await chorusService.isAcceptedEntity(ENTITY);
+            expect(actual).toEqual(expected);
+        });
+
         it("should return true if siren belongs to an association", async () => {
             const ENTITY = {
                 ...ACCEPTED_ENTITY,

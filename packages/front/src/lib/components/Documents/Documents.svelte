@@ -19,7 +19,7 @@
     const controller = new DocumentsController(resourceType, resource, $currentIdentifiers);
     const documentsPromise = controller.documentsPromise;
     const zipPromise = controller.zipPromise;
-    const { selectedDocsOrNull, downloadBtnLabel } = controller;
+    const { selectedDocsOrNull } = controller;
 
     onMount(() => {
         controller.onMount();

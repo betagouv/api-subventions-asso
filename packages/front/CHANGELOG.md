@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.57.1](https://github.com/betagouv/datasubvention/compare/v0.56.1...v0.57.1) (2024-11-18)
+
+### Bug Fixes
+
+-   **api,front:** [#2618](https://github.com/betagouv/datasubvention/issues/2618) only company in search raises error ([#2674](https://github.com/betagouv/datasubvention/issues/2674)) ([af34bb0](https://github.com/betagouv/datasubvention/commit/af34bb0980be6baadd2870ddccb71e69a201892d))
+-   **api:** [#2128](https://github.com/betagouv/datasubvention/issues/2128) only save actual assos ([#2691](https://github.com/betagouv/datasubvention/issues/2691)) ([4276673](https://github.com/betagouv/datasubvention/commit/427667346bd80f9c6672cc243905662015343053))
+-   **front:** [#2882](https://github.com/betagouv/datasubvention/issues/2882) redirect to estab page if identifier is a siret ([#2888](https://github.com/betagouv/datasubvention/issues/2888)) ([f17147e](https://github.com/betagouv/datasubvention/commit/f17147e56e58dea932c940fc37976e88bd84db15))
+-   **front:** missing default env vars ([5b0e5a1](https://github.com/betagouv/datasubvention/commit/5b0e5a11e65714e86c1d7329c94b1180869bbf91))
+
+### Features
+
+-   **front:** [#2788](https://github.com/betagouv/datasubvention/issues/2788) changer main banner content ([#2815](https://github.com/betagouv/datasubvention/issues/2815)) ([4535af4](https://github.com/betagouv/datasubvention/commit/4535af491c40fecd36a3fa52486a77d2fe42930e))
+-   **front:** [#2791](https://github.com/betagouv/datasubvention/issues/2791) extract api with front ([#2827](https://github.com/betagouv/datasubvention/issues/2827)) ([778074d](https://github.com/betagouv/datasubvention/commit/778074d33f89da1a90d00a8e4260653536d1c8e1))
+
 # [0.57.0](https://github.com/betagouv/datasubvention/compare/v0.56.1...v0.57.0) (2024-11-07)
 
 ### Bug Fixes

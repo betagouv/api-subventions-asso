@@ -81,6 +81,7 @@ describe("GrantExtractService", () => {
                 header: true,
                 columns: ExtractHeaderLabel,
                 delimiter: ";",
+                bom: true,
             });
         });
 
@@ -94,7 +95,7 @@ describe("GrantExtractService", () => {
         it("returns proper filename", async () => {
             const FAKE_NOW = new Date("2022-01-01");
             jest.useFakeTimers().setSystemTime(FAKE_NOW);
-            const expected = "DataSubvention-NomAsso-12345678912345-2022-01-01";
+            const expected = "DataSubvention-NomAsso-12345678912345-2022-01-01.csv";
             jest.mocked(csvStringifier.stringify).mockReturnValueOnce(expected);
             const actual = (await grantExtractService.buildCsv(IDENTIFIER)).fileName;
             expect(actual).toBe(expected);

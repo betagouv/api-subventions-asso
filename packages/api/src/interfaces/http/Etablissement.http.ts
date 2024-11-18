@@ -126,6 +126,7 @@ export class EtablissementHttp extends Controller {
 
         this.setHeader("Content-Type", "text/csv");
         this.setHeader("Content-Disposition", `inline; filename=${fileName}`);
+        this.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
         const stream = new Readable();
         stream.push(csv);
         stream.push(null);
