@@ -35,6 +35,7 @@ const CONVENTION_DATE_PATHS = [
     "Date de convention*",
     "Date de la convention",
     "Date de la convention de subvention (AAAA-MM-JJ)",
+    "DateConvention",
 ];
 
 const dateAdapter = (date: BeforeAdaptation | undefined | null): Date | undefined => {
@@ -47,7 +48,10 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
     allocatorName: { path: [["nomAttribuant", "Nom de l'attribuant"]] },
     allocatorSiret: {
         path: [["idAttribuant", "Identification de l'attribuant (SIRET)"]],
-        adapter: v => v?.toString(),
+        adapter: v => {
+            const str = v?.toString();
+            if (str) return str.split(".")[0];
+        },
     },
     exercice: {
         // for now if no exercise column we will use conventionDate as default
