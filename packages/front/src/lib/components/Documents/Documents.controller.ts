@@ -37,7 +37,6 @@ export class DocumentsController {
     public flatSelectedDocs: ReadStore<DocumentEntity[]>;
     private identifier: string;
     private uniqueAssociationIdentifier: string;
-    public downloadBtnLabel: ReadStore<string>;
     private allFlatDocs: DocumentEntity[];
     private headSiret: SiretDto;
 
@@ -67,9 +66,6 @@ export class DocumentsController {
                 (flatDocs: DocumentEntity[], docs) => [...flatDocs, ...(docs.filter(doc => !!doc) as DocumentEntity[])],
                 [],
             ),
-        );
-        this.downloadBtnLabel = derived(this.flatSelectedDocs, docs =>
-            docs.length ? `Télécharger la sélection (${docs.length})` : "Tout télécharger",
         );
 
         const association = currentAssociation.value;
