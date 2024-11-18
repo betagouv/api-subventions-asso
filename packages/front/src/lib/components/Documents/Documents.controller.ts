@@ -48,9 +48,10 @@ export class DocumentsController {
     ) {
         // @ts-expect-error -- missing type
         this.identifier = resource?.rna || resource?.siren || resource?.siret;
-        this.uniqueAssociationIdentifier = currentAssociationIdentifiers.length
-            ? getUniqueIdentifier(currentAssociationIdentifiers)
-            : ((currentAssociation.value?.siren || currentAssociation.value?.rna) as string);
+        this.uniqueAssociationIdentifier =
+            currentAssociationIdentifiers.length > 1
+                ? getUniqueIdentifier(currentAssociationIdentifiers)
+                : ((currentAssociation.value?.siren || currentAssociation.value?.rna) as string);
         this.resourceType = resourceType;
         this.documentsPromise = new Store(returnInfinitePromise());
         this.zipPromise = new Store(Promise.resolve(null));

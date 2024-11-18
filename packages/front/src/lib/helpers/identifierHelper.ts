@@ -56,5 +56,5 @@ export function getUniqueIdentifier(identifiers: { rna?: RnaDto | null; siren?: 
         throw new Error("No identifier found");
     }
 
-    return unique.values().next().value;
+    return unique.values().next().value as string;
 }
