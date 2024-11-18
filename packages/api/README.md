@@ -25,7 +25,7 @@ Pour utiliser l'api, vous devez au préalable avoir installé Node.js et NPM.
 
 Vous devez ensuite installer les dépendances avec `npm install`.
 
-Ensuite, il vous faudra créer un fichier .env à la racine du projet, avec au moins les variables d'environnement suivantes:
+Ensuite, il vous faudra créer un fichier .env.local à la racine du projet api, avec au moins les variables d'environnement suivantes:
 
 -   JWT_SECRET
 -   MAIL_HOST
@@ -66,9 +66,13 @@ Pour fonctionner l'api doit pouvoir se connecter à une base de données mongoDB
 Par défaut, elle se connecte à l'url `mongodb://localhost:27017/api-subventions-asso`.  
 Il est possible de paramétrer ces informations dans le fichier .env. Le nom des variables se trouve dans `configurations/mongo.conf.ts`.
 
-Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les commandes suivantes :  
-`sudo docker pull mongo:4.0.3`  
-`sudo docker run -d -p 27017:27017 mongo`
+Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les commandes suivantes :   
+`sudo docker run -d -p 27017:27017 mongo:4.0.3`
+
+En partant d'une base de données vierge, il est nécessaire d'ajouter, en local, un nom de domaine accepté dans la collection `configurations` afin de permettre la création d'un utilisateur :
+`db.configurations.insertOne({name: "ACCEPTED-EMAIL-DOMAINS", data: ["beta.gouv.fr"]})`
+
+Pour build l'api il est nécessaire au préalable de build le dossier dto pour avoir accès au types. Pour ce faire executer un `npm run build:api` depuis la racine `/api-subventions-asso`.
 
 ### Pour AgentConnect
 
