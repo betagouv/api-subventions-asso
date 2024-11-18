@@ -1739,7 +1739,7 @@ Object {
 `;
 
 exports[`/association /{identifier}/grants/csv returns extract from rna 1`] = `
-"Nom de l'association;RNA de l'association;Adresse de l'établissement;Exercice de la demande;Siret;Code postal demandeur;Service instructeur;Dispositif;Intitulé de l'action;Montant demandé;Montant accordé;Statut de la demande;Montant versé;Centre financier du dernier paiement;Date du dernier paiement;Programme des paiements
+"﻿Nom de l'association;RNA de l'association;Adresse de l'établissement;Exercice de la demande;Siret;Code postal demandeur;Service instructeur;Dispositif;Intitulé de l'action;Montant demandé;Montant accordé;Statut de la demande;Montant versé;Centre financier du dernier paiement;Date du dernier paiement;Programme des paiements
 DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2018;10000000000001;75000;Caisse des dépôts et Consignations;;\\"ETUDE \\"\\"IMPACTS DE LA TRANSITION AGRICOLE ET ALIMENTAIRE SUR L’EMPLOI\\"\\"\\";;40000;Accordé;;;;
 DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2019;10000000000001;75000;GRANTOR_1;;2019-15081 - INSTITUT DE SOUDURE;;60854;Accordé;;;;
 DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2021;10000000000001;75000;Caisse des dépôts et Consignations;;RESOLIS - ETUDE TAA 2021;;35000;Accordé;;;;
@@ -1751,7 +1751,7 @@ DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2023;10000000000001;75
 `;
 
 exports[`/association /{identifier}/grants/csv returns extract from siren 1`] = `
-"Nom de l'association;RNA de l'association;Adresse de l'établissement;Exercice de la demande;Siret;Code postal demandeur;Service instructeur;Dispositif;Intitulé de l'action;Montant demandé;Montant accordé;Statut de la demande;Montant versé;Centre financier du dernier paiement;Date du dernier paiement;Programme des paiements
+"﻿Nom de l'association;RNA de l'association;Adresse de l'établissement;Exercice de la demande;Siret;Code postal demandeur;Service instructeur;Dispositif;Intitulé de l'action;Montant demandé;Montant accordé;Statut de la demande;Montant versé;Centre financier du dernier paiement;Date du dernier paiement;Programme des paiements
 DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2018;10000000000001;75000;Caisse des dépôts et Consignations;;\\"ETUDE \\"\\"IMPACTS DE LA TRANSITION AGRICOLE ET ALIMENTAIRE SUR L’EMPLOI\\"\\"\\";;40000;Accordé;;;;
 DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2019;10000000000001;75000;GRANTOR_1;;2019-15081 - INSTITUT DE SOUDURE;;60854;Accordé;;;;
 DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2021;10000000000001;75000;Caisse des dépôts et Consignations;;RESOLIS - ETUDE TAA 2021;;35000;Accordé;;;;
@@ -1763,7 +1763,7 @@ DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2023;10000000000001;75
 `;
 
 exports[`/association /{identifier}/grants/csv returns extract from siret 1`] = `
-"Nom de l'association;RNA de l'association;Adresse de l'établissement;Exercice de la demande;Siret;Code postal demandeur;Service instructeur;Dispositif;Intitulé de l'action;Montant demandé;Montant accordé;Statut de la demande;Montant versé;Centre financier du dernier paiement;Date du dernier paiement;Programme des paiements
+"﻿Nom de l'association;RNA de l'association;Adresse de l'établissement;Exercice de la demande;Siret;Code postal demandeur;Service instructeur;Dispositif;Intitulé de l'action;Montant demandé;Montant accordé;Statut de la demande;Montant versé;Centre financier du dernier paiement;Date du dernier paiement;Programme des paiements
 DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2018;10000000000001;75000;Caisse des dépôts et Consignations;;\\"ETUDE \\"\\"IMPACTS DE LA TRANSITION AGRICOLE ET ALIMENTAIRE SUR L’EMPLOI\\"\\"\\";;40000;Accordé;;;;
 DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2019;10000000000001;75000;GRANTOR_1;;2019-15081 - INSTITUT DE SOUDURE;;60854;Accordé;;;;
 DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2021;10000000000001;75000;Caisse des dépôts et Consignations;;RESOLIS - ETUDE TAA 2021;;35000;Accordé;;;;
