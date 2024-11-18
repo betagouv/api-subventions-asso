@@ -11,6 +11,7 @@ import { transferData } from "../../dataProviders/db/SIRENE/sirene.transfer";
 import { joinCollection } from "../../dataProviders/db/associationFlat/associationFlatMongo";
 import { joinCollectionPostgres } from "../../dataProviders/db/associationFlat/associationFlatPostgres";
 import { jointureHybride } from "../../dataProviders/db/associationFlat/associationFlatTypeScript";
+import { exportToCsv } from "../../dataProviders/db/paymentFlat/paymentFlatToMinIO";
 const DIRECTORY_PATH = "/home/gcarra/data_subvention/api-subventions-asso/packages/api/src/modules/providers/sirene";
 @StaticImplements<CliStaticInterface>()
 export default class PocCli extends CliController {
@@ -18,8 +19,9 @@ export default class PocCli extends CliController {
 
     public async test() {
         console.log("unzip");
+        exportToCsv();
 
-        const start_postgres = performance.now();
+   /*     const start_postgres = performance.now();
         //  const result_postgres = await joinCollectionPostgres();
         const end_postgres = performance.now();
         const executionTime_postgres = end_postgres - start_postgres;
@@ -45,5 +47,6 @@ export default class PocCli extends CliController {
         //    const result = await SireneParser.parseCsv(path.join(DIRECTORY_PATH, "StockUniteLegale_utf8.csv"));
         //   await sirenePort.insertMany(result.map(SireneAdapter.toDbo));
         //   await sireneService.unzip("poc-zipp2mYyapoc-zip.zip", "d");
+        */
     }
 }
