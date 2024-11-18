@@ -37,7 +37,6 @@ export class DocumentsController {
     public flatSelectedDocs: ReadStore<DocumentEntity[]>;
     private identifier: string;
     private uniqueAssociationIdentifier: string;
-    public downloadBtnLabel: ReadStore<string>;
     private allFlatDocs: DocumentEntity[];
     private headSiret: SiretDto;
 
@@ -49,9 +48,10 @@ export class DocumentsController {
     ) {
         // @ts-expect-error -- missing type
         this.identifier = resource?.rna || resource?.siren || resource?.siret;
-        this.uniqueAssociationIdentifier = currentAssociationIdentifiers.length
-            ? getUniqueIdentifier(currentAssociationIdentifiers)
-            : ((currentAssociation.value?.siren || currentAssociation.value?.rna) as string);
+        this.uniqueAssociationIdentifier =
+            currentAssociationIdentifiers.length > 1
+                ? getUniqueIdentifier(currentAssociationIdentifiers)
+                : ((currentAssociation.value?.siren || currentAssociation.value?.rna) as string);
         this.resourceType = resourceType;
         this.documentsPromise = new Store(returnInfinitePromise());
         this.zipPromise = new Store(Promise.resolve(null));
@@ -67,9 +67,6 @@ export class DocumentsController {
                 (flatDocs: DocumentEntity[], docs) => [...flatDocs, ...(docs.filter(doc => !!doc) as DocumentEntity[])],
                 [],
             ),
-        );
-        this.downloadBtnLabel = derived(this.flatSelectedDocs, docs =>
-            docs.length ? `Télécharger la sélection (${docs.length})` : "Tout télécharger",
         );
 
         const association = currentAssociation.value;
