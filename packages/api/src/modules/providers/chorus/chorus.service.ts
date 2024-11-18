@@ -51,14 +51,22 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
     public async isAcceptedEntity(entity: ChorusLineEntity) {
         if (entity.indexedInformations.codeBranche === ASSO_BRANCHE) return true;
 
-        const siren = new Siret(entity.indexedInformations.siret).toSiren();
+        // quick fix to handle payments to assocations without siret but ridet or tahiti
+        // there is cases where both siret and ridet/tahiti columns values are #
+        // for now we insert all because we don't know the rules behind it
+        // and we don't want to lose any information
+        if (entity.indexedInformations.siret === "#") {
+            return true;
+        } else {
+            const siren = new Siret(entity.indexedInformations.siret).toSiren();
 
-        if (this.sirenBelongAssoCache.has(siren.value)) return this.sirenBelongAssoCache.get(siren.value)[0];
+            if (this.sirenBelongAssoCache.has(siren.value)) return this.sirenBelongAssoCache.get(siren.value)[0];
 
-        const sirenIsAsso = await this.sirenBelongAsso(siren);
+            const sirenIsAsso = await this.sirenBelongAsso(siren);
 
-        this.sirenBelongAssoCache.add(siren.value, sirenIsAsso);
-        return sirenIsAsso;
+            this.sirenBelongAssoCache.add(siren.value, sirenIsAsso);
+            return sirenIsAsso;
+        }
     }
 
     /**

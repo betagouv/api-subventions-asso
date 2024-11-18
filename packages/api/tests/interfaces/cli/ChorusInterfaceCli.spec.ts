@@ -8,14 +8,14 @@ describe("ChorusCli", () => {
         let controller: ChorusCli;
         const EXPORT_DATE = "2023-12-06";
         // change this when you update the fixture
-        const NB_ASSOS_IN_FILES = 4;
+        const NB_ASSOS_IN_FILES = 6;
 
         beforeEach(() => {
             controller = new ChorusCli();
         });
 
         describe("new format", () => {
-            // file should have 4 associations and 1 company's payments
+            // file should have 6 associations and 1 company's payments
             it("should save association but not companies' payments", async () => {
                 const expected = NB_ASSOS_IN_FILES;
                 const filePath = path.resolve(__dirname, "./__fixtures__/new-chorus-export.xlsx");
