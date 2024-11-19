@@ -74,6 +74,7 @@ describe("ScdlGrantParser", () => {
                 trim: true,
                 cast: false,
                 quote: '"',
+                bom: true,
             });
         });
 
@@ -86,6 +87,7 @@ describe("ScdlGrantParser", () => {
                 trim: true,
                 cast: false,
                 quote: false,
+                bom: true,
             });
         });
 

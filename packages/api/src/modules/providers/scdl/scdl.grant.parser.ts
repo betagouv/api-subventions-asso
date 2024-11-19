@@ -91,6 +91,7 @@ export default class ScdlGrantParser {
             trim: true,
             cast: false,
             quote,
+            bom: true,
         });
 
         return ScdlGrantParser.convertValidateData(parsedChunk);
