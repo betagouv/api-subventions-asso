@@ -85,7 +85,7 @@ export default class ScdlGrantParser {
 
     static parseCsv(chunk: Buffer, delimiter = ";", quote: boolean | string = '"') {
         const parsedChunk = csvSyncParser.parse(chunk, {
-            columns: true,
+            columns: (header: string[]): string[] => header.map(h => h.trim()),
             skip_empty_lines: true,
             delimiter,
             trim: true,
