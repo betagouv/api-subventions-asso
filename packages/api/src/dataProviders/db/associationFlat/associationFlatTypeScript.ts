@@ -32,10 +32,11 @@ export async function jointureHybride() {
         console.error(err);
     }
 
+    const sireneMap = new Map(sireneCollection.map(asso => [asso.siren, asso]));
     // Jointure gauche
     const result = paymentFlatCollection.map(payment => {
-        // Filtrer les subventions correspondant au SIREN de l'entreprise
-        const assoInfo = sireneCollection.find(sirene => sirene.siren === payment._id);
+        const assoInfo = sireneMap.get(payment._id);
+        //  const assoInfo = sireneCollection.find(sirene => sirene.siren === payment._id);
 
         // Retourner un objet combiné
         return {
