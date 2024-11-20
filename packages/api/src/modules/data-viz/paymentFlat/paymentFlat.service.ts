@@ -15,6 +15,10 @@ export class PaymentFlatService {
         return { programs, ministries, domainesFonct, refsProgrammation };
     }
 
+    public isCollectionInitialized() {
+        return paymentFlatPort.hasBeenInitialized();
+    }
+
     public async toPaymentFlatChorusEntities(
         programs,
         ministries,
@@ -32,10 +36,11 @@ export class PaymentFlatService {
         } else {
             chorusCursor = chorusService.cursorFindDataWithoutHash();
         }
-        let document = await chorusCursor.next();
         const entities: Record<string, PaymentFlatEntity> = {};
 
-        while (document != null) {
+        while (await chorusCursor.hasNext()) {
+            const document = (await chorusCursor.next()) as ChorusLineEntity;
+
             const paymentFlatEntity = PaymentFlatAdapter.toNotAggregatedChorusPaymentFlatEntity(
                 document,
                 programs,
@@ -51,14 +56,31 @@ export class PaymentFlatService {
             } else {
                 entities[paymentFlatEntity.uniqueId] = paymentFlatEntity;
             }
-
-            document = await chorusCursor.next();
         }
         return Object.values(entities);
     }
 
+    public async init() {
+        const { programs, ministries, domainesFonct, refsProgrammation } = await this.getAllDataBretagneData();
+        const chorusEntities: PaymentFlatEntity[] = await this.toPaymentFlatChorusEntities(
+            programs,
+            ministries,
+            domainesFonct,
+            refsProgrammation,
+        );
+
+        const BATCH_SIZE = 50000;
+
+        for (let i = 0; i < chorusEntities.length; i += BATCH_SIZE) {
+            const batchEntities = chorusEntities.slice(i, i + BATCH_SIZE);
+            await paymentFlatPort.insertMany(batchEntities);
+            console.log(`Inserted ${i + BATCH_SIZE} documents`);
+        }
+    }
+
     public async updatePaymentsFlatCollection(exerciceBudgetaire?: number, batchSize = 50000) {
         const { programs, ministries, domainesFonct, refsProgrammation } = await this.getAllDataBretagneData();
+
         const chorusEntities: PaymentFlatEntity[] = await this.toPaymentFlatChorusEntities(
             programs,
             ministries,
@@ -69,10 +91,16 @@ export class PaymentFlatService {
 
         for (let i = 0; i < chorusEntities.length; i += batchSize) {
             const batchEntities = chorusEntities.slice(i, i + batchSize);
-            const entityBatchPromises = batchEntities.map(entity => paymentFlatPort.upsertOne(entity));
 
-            await Promise.all(entityBatchPromises);
-            console.log(`Inserted ${i + batchSize} documents`);
+            const bulkWriteArray = batchEntities.map(entity => ({
+                updateOne: {
+                    filter: { uniqueId: entity.uniqueId },
+                    update: { $set: entity },
+                    upsert: true,
+                },
+            }));
+
+            await paymentFlatPort.upsertMany(bulkWriteArray);
         }
         console.log("All documents inserted");
     }

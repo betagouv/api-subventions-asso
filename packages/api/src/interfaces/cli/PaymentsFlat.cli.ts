@@ -15,8 +15,12 @@ export default class PaymentsFlatCli extends CliController {
         return paymentsFlatService.updatePaymentsFlatCollection(exerciceBudgetaire);
     }
 
-    resyncAll() {
-        this.logger.logIC("Create or resync all payment flat collection");
-        return paymentsFlatService.updatePaymentsFlatCollection();
+    // should only be used once, then sync with resyncExercise
+    async init() {
+        if (await paymentsFlatService.isCollectionInitialized())
+            throw new Error("DB already initialized, used resyncExercice instead");
+
+        this.logger.logIC("Create all payment flat collection");
+        return paymentsFlatService.init();
     }
 }
