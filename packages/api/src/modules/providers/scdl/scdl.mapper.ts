@@ -49,8 +49,8 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
     allocatorSiret: {
         path: [["idAttribuant", "Identification de l'attribuant (SIRET)"]],
         adapter: v => {
-            const str = v?.toString();
-            if (str) return str.split(".")[0];
+            if (v?.includes(".")) return v.split(".")[0]; // TODO: quickfix for Centre Val de Loire, remove when CSV will be cleaned
+            return v;
         },
     },
     exercice: {

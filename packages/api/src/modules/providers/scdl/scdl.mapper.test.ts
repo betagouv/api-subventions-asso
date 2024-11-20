@@ -5,11 +5,6 @@ describe("scdl mapper", () => {
     describe("allocatorSiret adapter", () => {
         const adapter = (SCDL_MAPPER.allocatorSiret as ParserInfo<any>).adapter as (v: any) => any;
 
-        it("returns undefined if falsy value", () => {
-            const actual = adapter("");
-            expect(actual).toBeUndefined();
-        });
-
         it("returns siret directly if given directly", () => {
             const actual = adapter("23450002300028");
             expect(actual).toBe("23450002300028");
