@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.58.0](https://github.com/betagouv/api-subventions-asso/compare/v0.56.1...v0.58.0) (2024-11-20)
+
+### Reverts
+
+-   Revert "v0.57.1" ([8802b2d](https://github.com/betagouv/api-subventions-asso/commit/8802b2d2e85a3d0f3e698a7480e2e7e741c68574))
+
 # [0.57.0](https://github.com/betagouv/api-subventions-asso/compare/v0.56.1...v0.57.0) (2024-11-07)
 
 **Note:** Version bump only for package tools
