@@ -4,27 +4,26 @@ import { buildCsv, downloadCsv } from "$lib/helpers/csvHelper";
 import Store from "$lib/core/Store";
 
 export default class AdminUserAccountListController {
-    public promises: Promise<void>;
+    public promises: Promise<any>;
     public newDomain: Store<string>;
     public domainError: Store<boolean | undefined>;
     public users: Store<any[]>;
     public domains: Store<unknown>;
 
     constructor() {
-        const usersPromise = new Store(
-            adminService
-                .getUsers()
-                .then(users => users.filter(u => !u.email.includes("@deleted.datasubvention.beta.gouv.fr"))),
-        );
-        const domainsPromise = new Store(adminService.getUserDomaines());
         this.newDomain = new Store("");
         this.domainError = new Store(undefined);
         this.domains = new Store([]);
         this.users = new Store([]);
-        this.promises = Promise.all([usersPromise.value, domainsPromise.value]).then(results => {
-            this.users.set(results[0].reverse());
-            this.domains.set(results[1]);
-        });
+
+        const usersPromise = new Store(
+            adminService.getUsers().then(users => {
+                users.filter(u => !u.email.includes("@deleted.datasubvention.beta.gouv.fr"));
+                this.users.set(users.reverse());
+                this.domains.set(adminService.getUserDomainsFromUsers(users));
+            }),
+        );
+        this.promises = usersPromise.value;
     }
 
     async addDomain() {

@@ -22,7 +22,7 @@ export class AdminService {
         });
     }
 
-    async getUserDomaines() {
+    getUserDomainsFromUsers(users) {
         const getDomainName = user => user.email.match(/@.+/)?.toString();
         const createDomain = (domainsMap, name) => domainsMap.set(name, { name: name, users: [], totalActive: 0 });
         const sortDomainsByUserNumber = (domainA, domaineB) => domaineB.users.length - domainA.users.length;
@@ -46,8 +46,12 @@ export class AdminService {
             return domainsMap;
         };
 
-        const users = await this.getUsers();
         return [...users.reduce(aggregateUsersByDomain, new Map()).values()].sort(sortDomainsByUserNumber);
+    }
+
+    async getUserDomains() {
+        const users = await this.getUsers();
+        return this.getUserDomainsFromUsers(users);
     }
 
     async addDomain(domain) {
