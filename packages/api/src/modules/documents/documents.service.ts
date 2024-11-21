@@ -105,6 +105,7 @@ export class DocumentsService {
 
     async getRequestedDocumentFiles(documents: DocumentRequestDto[], baseFolderName = "docs") {
         const folderName = `${baseFolderName}-${new Date().getTime()}`;
+        const archiveName = `archive-${folderName}`;
 
         fs.mkdirSync("/tmp/" + folderName);
 
@@ -113,13 +114,12 @@ export class DocumentsService {
         });
 
         const documentsPath = (await Promise.all(documentsPathPromises)).filter(document => document) as string[];
-        childProcess.execFileSync("zip", ["j", `/tmp/${folderName}.zip`].concat(documentsPath));
-        fs.rmSync("/tmp/" + folderName, { recursive: true, force: true });
-        const stream = fs.createReadStream(`/tmp/${folderName}.zip`);
+        childProcess.execFileSync("zip", ["-m", "-j", `/tmp/${folderName}/${archiveName}.zip`].concat(documentsPath));
+        const stream = fs.createReadStream(`/tmp/${folderName}/${archiveName}.zip`);
 
         // end event is same event of finish but for read stream
         stream.on("end", () => {
-            fs.rmSync(`/tmp/${folderName}.zip`);
+            fs.rmSync(`/tmp/${folderName}`, { recursive: true, force: true });
         });
 
         return stream;
