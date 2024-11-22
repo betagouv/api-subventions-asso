@@ -1,6 +1,6 @@
 import PaymentFlatCli from "./PaymentFlat.cli";
 import paymentsFlatService from "../../modules/paymentFlat/paymentFlat.service";
-jest.mock("../../modules/data-viz/paymentFlat/paymentFlat.service");
+jest.mock("../../modules/paymentFlat/paymentFlat.service");
 
 describe("PaymentFlat Cli", () => {
     let paymentFlatCli: PaymentFlatCli;
