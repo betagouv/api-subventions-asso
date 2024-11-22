@@ -7,6 +7,8 @@ import ChorusLineEntity from "../providers/chorus/entities/ChorusLineEntity";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 
 export class PaymentFlatService {
+    private BATCH_SIZE = 50000;
+
     private async getAllDataBretagneData() {
         const ministries = await dataBretagneService.getMinistriesRecord();
         const programs = await dataBretagneService.findProgramsRecord();
@@ -69,16 +71,14 @@ export class PaymentFlatService {
             refsProgrammation,
         );
 
-        const BATCH_SIZE = 50000;
-
-        for (let i = 0; i < chorusEntities.length; i += BATCH_SIZE) {
-            const batchEntities = chorusEntities.slice(i, i + BATCH_SIZE);
+        for (let i = 0; i < chorusEntities.length; i += this.BATCH_SIZE) {
+            const batchEntities = chorusEntities.slice(i, i + this.BATCH_SIZE);
             await paymentFlatPort.insertMany(batchEntities);
-            console.log(`Inserted ${i + BATCH_SIZE} documents`);
+            console.log(`Inserted ${i + this.BATCH_SIZE} documents`);
         }
     }
 
-    public async updatePaymentsFlatCollection(exerciceBudgetaire?: number, batchSize = 50000) {
+    public async updatePaymentsFlatCollection(exerciceBudgetaire?: number) {
         const { programs, ministries, domainesFonct, refsProgrammation } = await this.getAllDataBretagneData();
 
         const chorusEntities: PaymentFlatEntity[] = await this.toPaymentFlatChorusEntities(
@@ -89,8 +89,8 @@ export class PaymentFlatService {
             exerciceBudgetaire,
         );
 
-        for (let i = 0; i < chorusEntities.length; i += batchSize) {
-            const batchEntities = chorusEntities.slice(i, i + batchSize);
+        for (let i = 0; i < chorusEntities.length; i += this.BATCH_SIZE) {
+            const batchEntities = chorusEntities.slice(i, i + this.BATCH_SIZE);
 
             const bulkWriteArray = batchEntities.map(entity => ({
                 updateOne: {
