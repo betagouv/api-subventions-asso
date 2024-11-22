@@ -1,18 +1,18 @@
-import PaymentsFlatCli from "./PaymentsFlat.cli";
+import PaymentFlatCli from "./PaymentFlat.cli";
 import paymentsFlatService from "../../modules/data-viz/paymentFlat/paymentFlat.service";
 jest.mock("../../modules/data-viz/paymentFlat/paymentFlat.service");
 
-describe("PaymentsFlatCli", () => {
-    let paymentsFlatCli: PaymentsFlatCli;
+describe("PaymentFlat Cli", () => {
+    let paymentFlatCli: PaymentFlatCli;
 
     beforeEach(() => {
-        paymentsFlatCli = new PaymentsFlatCli();
+        paymentFlatCli = new PaymentFlatCli();
     });
 
     describe("resyncExercice", () => {
         it("should call updatePaymentsFlatCollection with the given exerciceBudgetaire", async () => {
             const exerciceBudgetaire = 2022;
-            await paymentsFlatCli.resyncExercice(exerciceBudgetaire);
+            await paymentFlatCli.resyncExercice(exerciceBudgetaire);
             expect(paymentsFlatService.updatePaymentsFlatCollection).toHaveBeenCalledWith(exerciceBudgetaire);
         });
     });
@@ -24,19 +24,19 @@ describe("PaymentsFlatCli", () => {
         });
 
         it("calls isCollectionInitialized", async () => {
-            await paymentsFlatCli.init();
+            await paymentFlatCli.init();
             expect(paymentsFlatService.isCollectionInitialized).toHaveBeenCalledTimes(1);
         });
 
         it("throws an error if collection has already been initialized", () => {
             mockIsCollectionInitialized.mockResolvedValueOnce(true);
-            expect(async () => await paymentsFlatCli.init()).rejects.toThrowError(
+            expect(async () => await paymentFlatCli.init()).rejects.toThrowError(
                 "DB already initialized, used resyncExercice instead",
             );
         });
 
         it("calls service init method", async () => {
-            await paymentsFlatCli.init();
+            await paymentFlatCli.init();
             expect(paymentsFlatService.init).toHaveBeenCalledTimes(1);
         });
     });

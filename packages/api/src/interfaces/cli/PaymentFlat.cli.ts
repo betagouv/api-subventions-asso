@@ -5,8 +5,8 @@ import paymentsFlatService from "../../modules/data-viz/paymentFlat/paymentFlat.
 import CliController from "../../shared/CliController";
 
 @StaticImplements<CliStaticInterface>()
-export default class PaymentsFlatCli extends CliController {
-    static cmdName = "payments-flat";
+export default class PaymentFlatCli extends CliController {
+    static cmdName = "payment-flat";
 
     resyncExercice(exerciceBudgetaire: number) {
         if (!exerciceBudgetaire) throw new Error("Exercice budgetaire is required");
