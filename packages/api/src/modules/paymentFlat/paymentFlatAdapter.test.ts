@@ -1,9 +1,9 @@
 import { RECORDS } from "./__fixtures__/dataBretagne.fixture";
-import { ENTITIES } from "../../providers/chorus/__fixtures__/ChorusFixtures";
+import { ENTITIES } from "../providers/chorus/__fixtures__/ChorusFixtures";
 import { PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
-import IChorusIndexedInformations from "../../providers/chorus/@types/IChorusIndexedInformations";
-import ChorusLineEntity from "../../providers/chorus/entities/ChorusLineEntity";
+import IChorusIndexedInformations from "../providers/chorus/@types/IChorusIndexedInformations";
+import ChorusLineEntity from "../providers/chorus/entities/ChorusLineEntity";
 console.error = jest.fn();
 
 const documentDataReturnedValue = {

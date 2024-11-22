@@ -1,7 +1,7 @@
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../@types";
 
-import paymentsFlatService from "../../modules/data-viz/paymentFlat/paymentFlat.service";
+import paymentsFlatService from "../../modules/paymentFlat/paymentFlat.service";
 import CliController from "../../shared/CliController";
 
 @StaticImplements<CliStaticInterface>()

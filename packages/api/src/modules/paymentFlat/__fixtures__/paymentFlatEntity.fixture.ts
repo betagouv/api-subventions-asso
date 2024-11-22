@@ -1,7 +1,7 @@
-import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
-import PaymentFlatEntity from "../../../../entities/PaymentFlatEntity";
-import Siren from "../../../../valueObjects/Siren";
-import Siret from "../../../../valueObjects/Siret";
+import DEFAULT_ASSOCIATION from "../../../../tests/__fixtures__/association.fixture";
+import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
+import Siren from "../../../valueObjects/Siren";
+import Siret from "../../../valueObjects/Siret";
 
 export const PAYMENT_FLAT_ENTITY = new PaymentFlatEntity(
     `${DEFAULT_ASSOCIATION.siret}-0001821732-2023-101-0101-01-02-3222-1689120000000`, // uniqueId

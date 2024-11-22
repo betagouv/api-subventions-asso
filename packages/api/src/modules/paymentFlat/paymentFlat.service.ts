@@ -1,9 +1,9 @@
 import { FindCursor, WithId } from "mongodb";
-import paymentFlatPort from "../../../dataProviders/db/paymentFlat/paymentFlat.port";
-import dataBretagneService from "../../providers/dataBretagne/dataBretagne.service";
-import chorusService from "../../providers/chorus/chorus.service";
-import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
-import ChorusLineEntity from "../../providers/chorus/entities/ChorusLineEntity";
+import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port";
+import dataBretagneService from "../providers/dataBretagne/dataBretagne.service";
+import chorusService from "../providers/chorus/chorus.service";
+import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
+import ChorusLineEntity from "../providers/chorus/entities/ChorusLineEntity";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 
 export class PaymentFlatService {

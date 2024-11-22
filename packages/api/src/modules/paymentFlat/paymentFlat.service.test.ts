@@ -1,8 +1,8 @@
-import dataBretagneService from "../../providers/dataBretagne/dataBretagne.service";
+import dataBretagneService from "../providers/dataBretagne/dataBretagne.service";
 import { RECORDS } from "./__fixtures__/dataBretagne.fixture";
-import { ENTITIES } from "../../providers/chorus/__fixtures__/ChorusFixtures";
+import { ENTITIES } from "../providers/chorus/__fixtures__/ChorusFixtures";
 
-jest.mock("../../providers/dataBretagne/dataBretagne.service", () => ({
+jest.mock("../providers/dataBretagne/dataBretagne.service", () => ({
     getMinistriesRecord: jest.fn(),
     findProgramsRecord: jest.fn(),
     getDomaineFonctRecord: jest.fn(),
@@ -10,10 +10,10 @@ jest.mock("../../providers/dataBretagne/dataBretagne.service", () => ({
 }));
 const mockDataBretagneService = jest.mocked(dataBretagneService);
 import paymentFlatService from "./paymentFlat.service";
-import chorusService from "../../providers/chorus/chorus.service";
+import chorusService from "../providers/chorus/chorus.service";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 import { PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
-import paymentFlatPort from "../../../dataProviders/db/paymentFlat/paymentFlat.port";
+import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port";
 
 const allDataBretagneDataResolvedValue = {
     programs: RECORDS["programme"],
@@ -52,7 +52,14 @@ describe("PaymentFlatService", () => {
         );
     });
 
-    describe("toPaymentFlatChorusEntities", () => {
+    describe("isCollectionInitialized", () => {
+        it("calls port.hasBeenInitialized", () => {
+            paymentFlatService.isCollectionInitialized();
+            expect(paymentFlatPort.hasBeenInitialized).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe.only("toPaymentFlatChorusEntities", () => {
         let mockChorusCursorFind: jest.SpyInstance;
         let mockToPaymentFlatEntity: jest.SpyInstance;
 
@@ -68,6 +75,10 @@ describe("PaymentFlatService", () => {
             mockCursor = {
                 next: jest.fn().mockImplementation(() => {
                     return mockDocuments.shift();
+                }),
+                hasNext: jest.fn().mockImplementation(() => {
+                    if (mockDocuments.length) return true;
+                    return false;
                 }),
             };
 
