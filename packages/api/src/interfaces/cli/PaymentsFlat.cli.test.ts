@@ -17,10 +17,27 @@ describe("PaymentsFlatCli", () => {
         });
     });
 
-    describe("resyncAll", () => {
-        it("should call updatePaymentsFlatCollection", async () => {
-            await paymentsFlatCli.resyncAll();
-            expect(paymentsFlatService.updatePaymentsFlatCollection).toHaveBeenCalledTimes(1);
+    describe("init", () => {
+        const mockIsCollectionInitialized = jest.spyOn(paymentsFlatService, "isCollectionInitialized");
+        beforeAll(() => {
+            mockIsCollectionInitialized.mockResolvedValue(false);
+        });
+
+        it("calls isCollectionInitialized", async () => {
+            await paymentsFlatCli.init();
+            expect(paymentsFlatService.isCollectionInitialized).toHaveBeenCalledTimes(1);
+        });
+
+        it("throws an error if collection has already been initialized", () => {
+            mockIsCollectionInitialized.mockResolvedValueOnce(true);
+            expect(async () => await paymentsFlatCli.init()).rejects.toThrowError(
+                "DB already initialized, used resyncExercice instead",
+            );
+        });
+
+        it("calls service init method", async () => {
+            await paymentsFlatCli.init();
+            expect(paymentsFlatService.init).toHaveBeenCalledTimes(1);
         });
     });
 });
