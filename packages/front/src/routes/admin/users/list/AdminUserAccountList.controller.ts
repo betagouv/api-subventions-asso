@@ -8,19 +8,16 @@ export default class AdminUserAccountListController {
     public newDomain: Store<string>;
     public domainError: Store<boolean | undefined>;
     public users: Store<any[]>;
-    public domains: Store<unknown>;
 
     constructor() {
         this.newDomain = new Store("");
         this.domainError = new Store(undefined);
-        this.domains = new Store([]);
         this.users = new Store([]);
 
         const usersPromise = new Store(
             adminService.getUsers().then(users => {
                 users.filter(u => !u.email.includes("@deleted.datasubvention.beta.gouv.fr"));
                 this.users.set(users.reverse());
-                this.domains.set(adminService.getUserDomainsFromUsers(users));
             }),
         );
         this.promises = usersPromise.value;
