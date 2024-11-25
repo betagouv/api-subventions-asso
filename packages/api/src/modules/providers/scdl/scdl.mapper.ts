@@ -35,6 +35,7 @@ const CONVENTION_DATE_PATHS = [
     "Date de convention*",
     "Date de la convention",
     "Date de la convention de subvention (AAAA-MM-JJ)",
+    "datedeConvention",
 ];
 
 const dateAdapter = (date: BeforeAdaptation | undefined | null): Date | undefined => {
