@@ -6,8 +6,8 @@
     import Spinner from "$lib/components/Spinner.svelte";
     import Button from "$lib/dsfr/Button.svelte";
     import Select from "$lib/dsfr/Select.svelte";
-    import NewTable from "$lib/dsfr/NewTable.svelte";
-    import SlotCellNewTable from "$lib/dsfr/SlotCellNewTable.svelte";
+    import Table from "$lib/dsfr/Table.svelte";
+    import TableSlotCell from "$lib/dsfr/TableSlotCell.svelte";
 
     export let structureId;
 
@@ -75,20 +75,22 @@
                 <GrantsStatistique grants={$grants} year={$selectedExercise} />
             </div>
             <div class="negative-margin">
-                <NewTable
+                <Table
                     on:sort={event => ctrl.sortTable(event.detail)}
                     title="Tableau de subventions et leurs versements"
                     hideTitle={true}
                     size="md"
+                    sortable={true}
+                    scrollable={false}
                     {headers}>
-                    {#each $rows as row, index}
-                        <SlotCellNewTable id={tableId} {index}>
-                            {#each row as cell}
-                                <td>{cell}</td>
+                    {#each $rows as row, rowIndex}
+                        <TableSlotCell id={tableId} index={rowIndex} openModal={true}>
+                            {#each row as cell, cellIndex}
+                                <td on:click={() => ctrl.onRowClick(rowIndex, cellIndex)}>{cell}</td>
                             {/each}
-                        </SlotCellNewTable>
+                        </TableSlotCell>
                     {/each}
-                </NewTable>
+                </Table>
             </div>
         {:else}
             <DataNotFound content={ctrl.notFoundMessage} />

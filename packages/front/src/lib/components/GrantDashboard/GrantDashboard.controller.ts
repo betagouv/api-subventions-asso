@@ -1,5 +1,7 @@
 import type { StructureIdentifierDto } from "dto";
 import type { FlatGrant, FlatPayment, OnlyApplication } from "../../resources/@types/FlattenGrant";
+import ApplicationInfoModal from "./Modals/ApplicationInfoModal.svelte";
+import PaymentsInfoModal from "./Modals/PaymentsInfoModal.svelte";
 import { isSiret } from "$lib/helpers/identifierHelper";
 import associationPort from "$lib/resources/associations/association.port";
 import establishmentPort from "$lib/resources/establishments/establishment.port";
@@ -13,6 +15,7 @@ import { PUBLIC_PROVIDER_BLOG_URL } from "$env/static/public";
 import { mapSiretPostCodeStore } from "$lib/store/association.store";
 import { numberToEuro, valueOrHyphen } from "$lib/helpers/dataHelper";
 import { capitalizeFirstLetter } from "$lib/helpers/stringHelper";
+import { data, modal } from "$lib/store/modal.store";
 
 export class GrantDashboardController {
     public identifier: StructureIdentifierDto;
@@ -37,9 +40,14 @@ export class GrantDashboardController {
     public headers: string[];
     private columnsSortOrder: number[];
 
+    private applicationCellsLength = 6;
+    private paymentCellsLength = 2;
+
     constructor(identifier: StructureIdentifierDto) {
         this.identifier = identifier;
 
+        // if you change this please update applicationCellsLength and paymentsCellsLength
+        // TODO create this from a applicationHeader + paymentHeader to simplify above comment
         this.headers = [
             "Code postal",
             "Instructeur",
@@ -137,13 +145,10 @@ export class GrantDashboardController {
     }
 
     private grantToRow(grant: FlatGrant): string[] {
-        const applicationCellsLength = 6;
-        const paymentCellsLength = 2;
-
         let applicationCells: string[];
         let paymentCells: string[];
 
-        if (!grant.application) applicationCells = Array(applicationCellsLength).fill("-");
+        if (!grant.application) applicationCells = Array(this.applicationCellsLength).fill("-");
         else {
             const grantedAmount = numberToEuro(grant.application.montants?.accorde);
 
@@ -157,7 +162,7 @@ export class GrantDashboardController {
             ];
         }
 
-        if (!grant.payments) paymentCells = Array(paymentCellsLength).fill("-");
+        if (!grant.payments) paymentCells = Array(this.paymentCellsLength).fill("-");
         else {
             paymentCells = [
                 valueOrHyphen(this.getTotalPayment(grant.payments)),
@@ -236,5 +241,24 @@ export class GrantDashboardController {
             documentHelper.download(blob, filename);
         });
         this.isExtractLoading.set(false);
+    }
+
+    public onRowClick(rowIndex, cellIndex) {
+        if (cellIndex <= this.applicationCellsLength - 1) this.onApplicationClick(rowIndex);
+        else this.onPaymentClick(rowIndex);
+    }
+
+    public onPaymentClick(index) {
+        trackerService.buttonClickEvent("association-etablissement.dashbord.payment.more_information");
+        data.set({ payments: (this.selectedGrants.value as FlatGrant[])[index].payments });
+        modal.set(PaymentsInfoModal);
+    }
+
+    public onApplicationClick(index) {
+        trackerService.buttonClickEvent("association-etablissement.dashbord.subvention.more_information");
+        data.set({
+            application: (this.selectedGrants.value as FlatGrant[])[index].application,
+        });
+        modal.set(ApplicationInfoModal);
     }
 }

@@ -1,52 +1,37 @@
 <script>
     import { data } from "$lib/store/modal.store";
     import { capitalizeFirstLetter } from "$lib/helpers/stringHelper";
+
+    data.subscribe(data => console.log(data));
 </script>
 
-{#if $data.subvention}
-    <!-- TODO info établissement: from a store ?
-  <section>
-      <h4 class="fr-icon-arrow-right-line">Établissement concerné</h4>
-      <div class="bigger-link">
-          <a href="/etablissement/{establishment.siret}" target="_blank" rel="noopener external" title="{association.denomination_rna || association.denomination_siren} - nouvelle fenêtre">
-              {association.denomination_rna || association.denomination_siren}
-          </a>
-          <EstablishmentPreview {establishment} small={true} />
-      </div>
-  </section>
-  -->
+{#if $data.application}
     <section>
         <h4 class="fr-icon-arrow-right-line">Informations collectées</h4>
-        <!-- prettier-ignore-start -->
         <p class="fr-text--lead">
-            {#if $data.subvention.montants.accorde}
-                <span class="fr-text--bold">{$data.montantAccorde}</span>
-                ont été accordés{#if $data.subvention.montants.demande}
+            {#if $data.application.montants.accorde}
+                <span class="fr-text--bold">{$data.application.montants.accorde}</span>
+                ont été accordés{#if $data.application.montants.demande}
                     {" "}sur
-                    <span class="fr-text--bold">{$data.montantDemande}</span>
+                    <span class="fr-text--bold">{$data.application.montants.demande}</span>
                     demandés{/if}.
-            {:else if $data.subvention.montants.demande}
-                <span class="fr-text--bold">{$data.montantDemande}</span>
+            {:else if $data.application.montants.demande}
+                <span class="fr-text--bold">{$data.application.montants.demande}</span>
                 ont été demandés.
             {/if}
         </p>
-        <!-- prettier-ignore-end -->
-        <!-- TODO provider and update value
-    <p class="fr-text--lg fr-text--bold">D'après les données récupérées via {provider} et
-        mises à jour le {updateDate}.</p>
-    -->
-        {#if $data.subvention.date_depot}
+        {#if $data.application.date_depot}
             <p class="fr-text--lg">
                 <span class="fr-text--bold">Date de dépôt de la demande :</span>
-                {$data.subvention.date_depot}
+                {$data.application.date_depot}
             </p>{/if}
-        {#if $data.subvention.date_decision}
+        {#if $data.application.date_decision}
             <p class="fr-text--lg">
                 <span class="fr-text--bold">Date de décision du service instructeur :</span>
-                {$data.subvention.date_decision}
+                {$data.application.date_decision}
             </p>{/if}
     </section>
-    {#each $data.subvention?.actions_proposee || [] as action}
+    {#each $data.application?.actions_proposee || [] as action}
         <section>
             <h4 class="fr-icon-arrow-right-line">{capitalizeFirstLetter(action.intitule)}</h4>
             {#each action.objectifs?.split("\n") || [] as line}

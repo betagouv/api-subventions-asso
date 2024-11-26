@@ -12,7 +12,13 @@ export default class ContactEtabController {
         this._inputName = "";
     }
 
-    getHeaders = () => ["Civilité", "Nom", "Prénom", "Téléphone", "Email", "Rôle"];
+    get headers() {
+        return ["Civilité", "Nom", "Prénom", "Téléphone", "Email", "Rôle"];
+    }
+
+    get headersSize() {
+        return ["xs", "xs", "xs", "md", "lg", "md"];
+    }
 
     get contacts() {
         return this._filteredContacts;
