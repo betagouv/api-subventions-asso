@@ -1,10 +1,10 @@
 <script>
-    import SubventionsPaymentsStatistiqueController from "./GrantsStatistique.controller";
+    import GrantsStatistiqueController from "./GrantsStatistique.controller";
 
     export let grants;
     export let year;
 
-    const controller = new SubventionsPaymentsStatistiqueController(grants);
+    const controller = new GrantsStatistiqueController(grants);
 
     const { paymentsAmount, paymentsRepartition } = controller;
 
@@ -20,7 +20,7 @@
         Répartis entre {$paymentsRepartition?.paid} des {$paymentsRepartition?.total} établissements liés à l'association.
     </p>
 {/if}
-<div class="fr-grid-row fr-grid-row--gutters fr-mt-3w">
+<div class="fr-grid-row fr-mt-3w">
     <div class="fr-col-9">
         <h3 class="fr-h4 fr-mb-1w">Demandes de subventions collectées</h3>
         <p class="asterisk fr-text--sm">

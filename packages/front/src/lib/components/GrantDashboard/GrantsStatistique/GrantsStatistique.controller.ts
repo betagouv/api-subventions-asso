@@ -20,9 +20,9 @@ export default class GrantsStatistiqueController {
     }
 
     _computePaymentsAmount() {
-        return this.grants.reduce((acc, element) => {
-            if (!element.payments) return acc;
-            return element.payments.reduce((total, payment) => total + payment.amount, acc);
+        return this.grants.reduce((acc, grant) => {
+            if (!grant.payments) return acc;
+            return grant.payments.reduce((total, payment) => total + payment.amount, acc);
         }, 0);
     }
 

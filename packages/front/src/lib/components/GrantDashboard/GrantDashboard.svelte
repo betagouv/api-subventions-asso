@@ -1,11 +1,12 @@
 <script lang="ts">
-    import SubventionsPaymentsStatistique from "../SubventionsPaymentsDashboard/GrantsStatistique/GrantsStatistique.svelte";
     import DataNotFound from "../DataNotFound.svelte";
     import ErrorAlert from "../ErrorAlert.svelte";
     import { GrantDashboardController } from "./GrantDashboard.controller";
+    import GrantsStatistique from "$lib/components/GrantDashboard/GrantsStatistique/GrantsStatistique.svelte";
     import Spinner from "$lib/components/Spinner.svelte";
     import Button from "$lib/dsfr/Button.svelte";
     import Select from "$lib/dsfr/Select.svelte";
+    import NewTable from "$lib/dsfr/NewTable.svelte";
 
     export let structureId;
 
@@ -13,7 +14,8 @@
     const {
         grantPromise,
         grants,
-        selectedGrants,
+        headers,
+        rows,
         selectedExerciseIndex,
         selectedExercise,
         exerciseOptions,
@@ -67,13 +69,17 @@
     <div class="fr-mt-6w compact-columns">
         {#if $grants?.length}
             <div>
-                <SubventionsPaymentsStatistique grants={$grants} year={$selectedExercise} />
+                <GrantsStatistique grants={$grants} year={$selectedExercise} />
             </div>
-            <!-- {#if $loaderStateStore.status != "end"}
-                <Alert type="info" title="Récupération en cours des subventions chez nos fournisseurs ...">
-                    <ProgressBar percent={$loaderStateStore.percent} />
-                </Alert>
-            {/if} -->
+            <div class="negative-margin">
+                <NewTable
+                    on:sort={event => ctrl.sortTable(event.detail)}
+                    title="Tableau de subventions et leurs versements"
+                    hideTitle={true}
+                    size="md"
+                    {headers}
+                    rows={$rows} />
+            </div>
         {:else}
             <DataNotFound content={ctrl.notFoundMessage} />
         {/if}
@@ -86,10 +92,14 @@
     {/if}
 {/await}
 
-Hello new Grant DashBoard !! There is {$selectedGrants?.length} grant for the {$selectedExerciseIndex} exercise
-
 <style>
     .baseline {
         align-self: baseline;
+    }
+
+    /* remove padding from fr-table__container and margin from fr-table */
+    .negative-margin {
+        margin-top: -2rem;
+        margin-bottom: -2.5rem;
     }
 </style>
