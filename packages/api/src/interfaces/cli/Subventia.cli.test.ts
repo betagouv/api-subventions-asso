@@ -12,6 +12,7 @@ jest.mock("../../shared/helpers/CliHelper");
 import { ParsedDataWithProblem } from "../../modules/providers/subventia/validators/@types/Validation";
 import csvSyncStringifier = require("csv-stringify/sync");
 import fs from "fs";
+import { normalize } from "path";
 
 const MOCK_ENTITIES: Omit<SubventiaDbo, "_id">[] = [
     {
@@ -195,7 +196,8 @@ describe("SubventiaCli", () => {
         ];
         const FILE = "path/subventia";
         const STR_CONTENT = "content";
-        const OUTPUT_PATH = "importErrors/subventia-Errors.csv";
+        // normalize for windows and linux compatilibity
+        const OUTPUT_PATH = normalize("importErrors/subventia-Errors.csv");
 
         beforeAll(() => {
             jest.mocked(csvSyncStringifier.stringify).mockReturnValue(STR_CONTENT);

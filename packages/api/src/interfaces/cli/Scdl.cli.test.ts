@@ -1,5 +1,6 @@
 import fs from "fs";
 import { ObjectId } from "mongodb";
+import { normalize } from "path";
 
 jest.mock("csv-stringify/sync", () => ({
     stringify: jest.fn(() => ""),
@@ -206,7 +207,8 @@ describe("ScdlCli", () => {
         const ERRORS: ParsedDataWithProblem[] = [];
         const FILE = "path/file.csv";
         const STR_CONTENT = "azertyuiop";
-        const OUTPUT_PATH = "importErrors/file.csv-errors.csv";
+        // normalize for windows and linux compatilibity
+        const OUTPUT_PATH = normalize("importErrors/file.csv-errors.csv");
 
         beforeAll(() => {
             jest.mocked(csvSyncStringifier.stringify).mockReturnValue(STR_CONTENT);
