@@ -4,16 +4,15 @@
 
     // TODO: make it possible to has column with custom length
 
+    export let id = crypto.randomUUID();
     export let title = "Titre du tableau (caption)";
     export let hideTitle = false;
     export let size: "sm" | "md" | "lg" = "md";
     export let headers: string[];
-    export let rows: string[][];
+    export let rows: string[][] = [];
     export let scrollable = false;
     export let bordered = true;
     export let sortable = true;
-
-    const id = crypto.randomUUID();
 
     let tableClasses: string[] = ["fr-table", `fr-table--${size}`];
     if (!scrollable) tableClasses.push("fr-table--no-scroll");
@@ -54,13 +53,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {#each rows as row, index}
-                            <tr id="table-${size}-row-key-${index}" data-row-key={index}>
-                                {#each row as cell}
-                                    <td>{cell}</td>
-                                {/each}
-                            </tr>
-                        {/each}
+                        <slot>
+                            {#each rows as row, index}
+                                <tr id="table-${id}-row-key-${index}" data-row-key={index}>
+                                    {#each row as cell}
+                                        <td>{cell}</td>
+                                    {/each}
+                                </tr>
+                            {/each}
+                        </slot>
                     </tbody>
                 </table>
             </div>

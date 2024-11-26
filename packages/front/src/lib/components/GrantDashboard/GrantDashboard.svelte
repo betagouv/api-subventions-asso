@@ -7,8 +7,11 @@
     import Button from "$lib/dsfr/Button.svelte";
     import Select from "$lib/dsfr/Select.svelte";
     import NewTable from "$lib/dsfr/NewTable.svelte";
+    import SlotCellNewTable from "$lib/dsfr/SlotCellNewTable.svelte";
 
     export let structureId;
+
+    const tableId = "grant-dashboard";
 
     const ctrl = new GrantDashboardController(structureId);
     const {
@@ -77,8 +80,15 @@
                     title="Tableau de subventions et leurs versements"
                     hideTitle={true}
                     size="md"
-                    {headers}
-                    rows={$rows} />
+                    {headers}>
+                    {#each $rows as row, index}
+                        <SlotCellNewTable id={tableId} {index}>
+                            {#each row as cell}
+                                <td>{cell}</td>
+                            {/each}
+                        </SlotCellNewTable>
+                    {/each}
+                </NewTable>
             </div>
         {:else}
             <DataNotFound content={ctrl.notFoundMessage} />
