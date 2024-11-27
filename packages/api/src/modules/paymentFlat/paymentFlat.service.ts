@@ -94,8 +94,7 @@ export class PaymentFlatService {
             const batchEntities = chorusEntities.slice(i, i + this.BATCH_SIZE);
 
             const bulkWriteArray = batchEntities.map(entity => {
-                const updateDbo = PaymentFlatAdapterDbo.toDbo(entity);
-                const { _id, ...DboWithoutId } = updateDbo;
+                const { _id, ...DboWithoutId } = PaymentFlatAdapterDbo.toDbo(entity);
                 return {
                     updateOne: {
                         filter: { uniqueId: DboWithoutId.uniqueId },
