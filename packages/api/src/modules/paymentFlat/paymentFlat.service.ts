@@ -4,6 +4,7 @@ import dataBretagneService from "../providers/dataBretagne/dataBretagne.service"
 import chorusService from "../providers/chorus/chorus.service";
 import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
 import ChorusLineEntity from "../providers/chorus/entities/ChorusLineEntity";
+import PaymentFlatAdapterDbo from "../../dataProviders/db/paymentFlat/PaymentFlat.adapter";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 
 export class PaymentFlatService {
@@ -92,13 +93,17 @@ export class PaymentFlatService {
         for (let i = 0; i < chorusEntities.length; i += this.BATCH_SIZE) {
             const batchEntities = chorusEntities.slice(i, i + this.BATCH_SIZE);
 
-            const bulkWriteArray = batchEntities.map(entity => ({
-                updateOne: {
-                    filter: { uniqueId: entity.uniqueId },
-                    update: { $set: entity },
-                    upsert: true,
-                },
-            }));
+            const bulkWriteArray = batchEntities.map(entity => {
+                const updateDbo = PaymentFlatAdapterDbo.toDbo(entity);
+                const { _id, ...DboWithoutId } = updateDbo;
+                return {
+                    updateOne: {
+                        filter: { uniqueId: DboWithoutId.uniqueId },
+                        update: { $set: DboWithoutId },
+                        upsert: true,
+                    },
+                };
+            });
 
             await paymentFlatPort.upsertMany(bulkWriteArray);
         }

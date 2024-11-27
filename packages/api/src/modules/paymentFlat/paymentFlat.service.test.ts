@@ -6,8 +6,10 @@ import paymentFlatService from "./paymentFlat.service";
 import chorusService from "../providers/chorus/chorus.service";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 import { PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
+import { PAYMENT_FLAT_DBO } from "../../dataProviders/db/paymentFlat/__fixtures__/paymentFlatDbo.fixture";
+
 import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port";
-import { uniqueId } from "lodash";
+import PaymentFlatAdapterDbo from "../../dataProviders/db/paymentFlat/PaymentFlat.adapter";
 
 jest.mock("../providers/dataBretagne/dataBretagne.service", () => ({
     getMinistriesRecord: jest.fn(),
@@ -157,11 +159,14 @@ describe("PaymentFlatService", () => {
         let mockUpsertMany: jest.SpyInstance;
         let mockGetAllDataBretagneData: jest.SpyInstance;
         let mockEntities;
+        let mockToDbo: jest.SpyInstance;
 
         beforeEach(() => {
             //@ts-expect-error : private methode
             mockGetAllDataBretagneData = jest.spyOn(paymentFlatService, "getAllDataBretagneData");
             mockGetAllDataBretagneData.mockResolvedValue(allDataBretagneDataResolvedValue);
+            mockToDbo = jest.spyOn(PaymentFlatAdapterDbo, "toDbo");
+            mockToDbo.mockReturnValue(PAYMENT_FLAT_DBO);
             mockEntities = [PAYMENT_FLAT_ENTITY, { ...PAYMENT_FLAT_ENTITY, exerciceBudgetaire: 2022 }];
             mockToPaymentFlatChorusEntities = jest
                 .spyOn(paymentFlatService, "toPaymentFlatChorusEntities")
@@ -200,7 +205,12 @@ describe("PaymentFlatService", () => {
             );
         });
 
-        it("should call upsertMay for each batch", async () => {
+        it("should call toDbo for each entity", async () => {
+            await paymentFlatService.updatePaymentsFlatCollection();
+            expect(mockToDbo).toHaveBeenCalledWith(PAYMENT_FLAT_ENTITY);
+        });
+
+        it("should call upsertMany for each batch", async () => {
             // @ts-expect-error: private var
             paymentFlatService.BATCH_SIZE = 2;
             const ENTITIES: Record<string, any> = [];
@@ -213,13 +223,17 @@ describe("PaymentFlatService", () => {
 
             console.log(ENTITIES);
 
-            const buildExpectedOps = entity => ({
-                updateOne: {
-                    filter: { uniqueId: entity.uniqueId },
-                    update: { $set: entity },
-                    upsert: true,
-                },
-            });
+            const updateDbo = PAYMENT_FLAT_DBO;
+            const { _id, ...DboWithoutId } = updateDbo;
+            const buildExpectedOps = entity => {
+                return {
+                    updateOne: {
+                        filter: { uniqueId: DboWithoutId.uniqueId },
+                        update: { $set: DboWithoutId },
+                        upsert: true,
+                    },
+                };
+            };
             const EXPECTED_CALLS = [
                 [buildExpectedOps(ENTITIES[0]), buildExpectedOps(ENTITIES[1])],
                 [buildExpectedOps(ENTITIES[2])],

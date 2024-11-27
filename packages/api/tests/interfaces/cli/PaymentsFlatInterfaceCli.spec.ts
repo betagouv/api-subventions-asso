@@ -33,9 +33,9 @@ describe("PaymentsFlatCli", () => {
 
     let cli = new PaymentsFlatCli();
 
-    describe("resyncAll()", () => {
+    describe("init()", () => {
         it("should persist payments flat collection", async () => {
-            await cli.resyncAll();
+            await cli.init();
             //@ts-expect-error protected method
             const paymentsFlat = (await paymentFlatPort.collection.find({}).toArray())
                 .map(paymentFlat => ({
@@ -44,7 +44,7 @@ describe("PaymentsFlatCli", () => {
                 }))
                 .sort((a, b) => Number(a.siret) - Number(b.siret));
 
-            expect(paymentsFlat).toMatchSnapshot("Snapshot resyncAll");
+            expect(paymentsFlat).toMatchSnapshot("Snapshot init");
         });
     });
 
