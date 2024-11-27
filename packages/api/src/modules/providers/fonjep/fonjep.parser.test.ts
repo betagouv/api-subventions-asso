@@ -3,6 +3,7 @@ import FonjepPaymentEntity from "./entities/FonjepPaymentEntity";
 import FonjepParser from "./fonjep.parser";
 import { DATA_WITH_HEADER, DEFAULT_POSTE, DEFAULT_VERSEMENT } from "./__fixtures__/fonjepFileModels";
 import { GenericParser } from "../../../shared/GenericParser";
+
 jest.mock("./entities/FonjepSubventionEntity");
 jest.mock("./entities/FonjepPaymentEntity");
 
@@ -68,6 +69,7 @@ describe("FonjepParser", () => {
             const actual = typeof FonjepParser.filterOnPropFactory([], "propName");
             expect(actual).toEqual(expected);
         });
+
         it("should return a function that filter given array on property", () => {
             const CODE = "5678";
             const expected = [{ Code: CODE }, { Code: CODE }];
@@ -81,7 +83,7 @@ describe("FonjepParser", () => {
 
     describe("createFonjepSubventionEntity()", () => {
         beforeAll(() => {
-            indexDataByPathObjectMock.mockImplementation(jest.fn());
+            indexDataByPathObjectMock.mockReturnValue({ annee_demande: 2023, code_poste: "CODE" });
         });
         afterAll(() => {
             indexDataByPathObjectMock.mockReset();
@@ -111,7 +113,10 @@ describe("FonjepParser", () => {
 
     describe("createFonjepPayment()", () => {
         beforeAll(() => {
-            indexDataByPathObjectMock.mockImplementation(jest.fn());
+            indexDataByPathObjectMock.mockReturnValue({
+                periode_debut: new Date("2023-01-01"),
+                code_poste: "CODE",
+            });
         });
         afterAll(() => {
             indexDataByPathObjectMock.mockReset();

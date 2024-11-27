@@ -3,20 +3,26 @@ import * as StringHelper from "./stringHelper";
 vi.mock("./stringHelper");
 
 describe("IdentifierHelper", () => {
+    const RNA = "W000000000";
+    const SIREN = "125896475";
+    const SIRET = "12589647500018";
+
+    beforeEach(() => {
+        vi.mocked(StringHelper.removeWhiteSpace).mockImplementation(rna => rna);
+    });
+
     describe("isRna", () => {
         it("should call StringHelper.removeWhiteSpace", () => {
-            const rna = "W000000000";
-            IdentifierHelper.isRna(rna);
-            expect(vi.mocked(StringHelper.removeWhiteSpace)).toHaveBeenCalledWith(rna);
+            IdentifierHelper.isRna(RNA);
+            expect(vi.mocked(StringHelper.removeWhiteSpace)).toHaveBeenCalledWith(RNA);
         });
 
         it.each`
             rna
-            ${"W000000000"}
+            ${RNA}
             ${"W0P0000000"}
         `("should return true", ({ rna }) => {
             const expected = true;
-            vi.mocked(StringHelper.removeWhiteSpace).mockReturnValue(rna);
             const actual = IdentifierHelper.isRna(rna);
             expect(actual).toEqual(expected);
         });
@@ -27,7 +33,6 @@ describe("IdentifierHelper", () => {
             ${"WP00000000"}
             ${"W00P000000"}
         `("should return false", ({ rna }) => {
-            vi.mocked(StringHelper.removeWhiteSpace).mockReturnValue(rna);
             const expected = false;
             const actual = IdentifierHelper.isRna(rna);
             expect(actual).toEqual(expected);
@@ -42,7 +47,7 @@ describe("IdentifierHelper", () => {
         });
 
         it("should return true", () => {
-            const validSiren = "125896475";
+            const validSiren = SIREN;
             vi.mocked(StringHelper.removeWhiteSpace).mockReturnValue(validSiren);
             const expected = true;
             const actual = IdentifierHelper.isSiren(validSiren);
@@ -66,7 +71,7 @@ describe("IdentifierHelper", () => {
         });
 
         it("should return true", () => {
-            const validSiret = "12589647500018";
+            const validSiret = SIRET;
             vi.mocked(StringHelper.removeWhiteSpace).mockReturnValue(validSiret);
             const expected = true;
             const actual = IdentifierHelper.isSiret(validSiret);
@@ -78,6 +83,21 @@ describe("IdentifierHelper", () => {
             vi.mocked(StringHelper.removeWhiteSpace).mockReturnValueOnce(invalidSiret);
             const expected = false;
             const actual = IdentifierHelper.isSiret(invalidSiret);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("isAssociationIdentifier", () => {
+        it.each`
+            expected | identifier   | test
+            ${true}  | ${SIREN}     | ${"SIREN"}
+            ${true}  | ${RNA}       | ${"RNA"}
+            ${false} | ${SIRET}     | ${"SIRET"}
+            ${false} | ${undefined} | ${"undefined"}
+            ${false} | ${null}      | ${"null"}
+            ${false} | ${""}        | ${"empty string"}
+        `("returns $expected with $test", ({ expected, identifier }) => {
+            const actual = IdentifierHelper.isAssociationIdentifier(identifier);
             expect(actual).toEqual(expected);
         });
     });

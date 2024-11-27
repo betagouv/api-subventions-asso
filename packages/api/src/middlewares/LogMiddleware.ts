@@ -1,6 +1,7 @@
 import winston from "winston";
 import expressWinston from "express-winston";
 import "winston-mongodb";
+import { UserDto } from "dto";
 import { client } from "../shared/MongoConnection";
 
 const LOGGER_SECRET_FIELDS = ["password", "token", "email", "phoneNumber", "firstName", "lastName", "hashPassword"];
@@ -34,6 +35,12 @@ export const expressLogger = () =>
             }),
         ],
         meta: true,
+        dynamicMeta: function (req, res) {
+            // completes generated meta in log
+            return {
+                req: { user: { _id: (req.user as UserDto)?._id?.toString() } },
+            };
+        },
         msg: "Request: HTTP {{req.method}} {{req.url}}; ipAddress {{req.connection.remoteAddress}}",
         requestWhitelist: [
             "url",
@@ -57,8 +64,6 @@ export const expressLogger = () =>
             // @ts-expect-error strange express-winston types
             // we convert _id into string as a workaround to winston-mongodb bug that serializes them to {}
             if (propName === "user" && req[propName]?._id) {
-                // @ts-expect-error strange express-winston types
-                req[propName] = { ...req[propName], _id: req[propName]._id.toString() };
                 // @ts-expect-error strange express-winston types
                 recursiveFilter(req[propName]);
             }

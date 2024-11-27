@@ -35,6 +35,11 @@ export class PaymentFlatPort extends MongoRepository<PaymentFlatDbo> {
         return this.collection.insertMany(entities.map(entity => PaymentFlatAdapter.toDbo(entity), { ordered: false }));
     }
 
+    // used in test
+    public async findAll() {
+        return (await this.collection.find({})).toArray();
+    }
+
     public async deleteAll() {
         await this.collection.deleteMany({});
     }

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.57.1](https://github.com/betagouv/datasubvention/compare/v0.56.1...v0.57.1) (2024-11-18)
+
+### Bug Fixes
+
+-   **api,front:** [#2618](https://github.com/betagouv/datasubvention/issues/2618) only company in search raises error ([#2674](https://github.com/betagouv/datasubvention/issues/2674)) ([af34bb0](https://github.com/betagouv/datasubvention/commit/af34bb0980be6baadd2870ddccb71e69a201892d))
+
+# [0.57.0](https://github.com/betagouv/datasubvention/compare/v0.56.1...v0.57.0) (2024-11-07)
+
+### Bug Fixes
+
+-   **api,front:** [#2618](https://github.com/betagouv/datasubvention/issues/2618) only company in search raises error ([#2674](https://github.com/betagouv/datasubvention/issues/2674)) ([af34bb0](https://github.com/betagouv/datasubvention/commit/af34bb0980be6baadd2870ddccb71e69a201892d))
+
 # [0.56.0](https://github.com/betagouv/datasubvention/compare/v0.55.0...v0.56.0) (2024-10-07)
 
 ### Features

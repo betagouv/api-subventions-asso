@@ -47,21 +47,17 @@ describe("PaymentsService", () => {
     });
 
     describe("getPaymentExercise", () => {
-        const FONJEP_PAYMENT = {
-            periodeDebut: { value: new Date("2021-02-02") },
-            dateOperation: { value: new Date("2023-02-02") },
-        } as unknown as Payment;
         const PAYMENT = { dateOperation: { value: new Date("2023-02-02") } } as unknown as Payment;
 
-        it("returns year from periodeDebut if any", () => {
-            const expected = 2021;
-            const actual = paymentsService.getPaymentExercise(FONJEP_PAYMENT);
+        it("returns year from dateOperation", () => {
+            const expected = PAYMENT.dateOperation.value.getFullYear();
+            const actual = paymentsService.getPaymentExercise(PAYMENT);
             expect(actual).toBe(expected);
         });
 
-        it("returns year from dateOperation", () => {
-            const expected = 2023;
-            const actual = paymentsService.getPaymentExercise(PAYMENT);
+        it("returns undefined if payment is undefined", () => {
+            const expected = undefined;
+            const actual = paymentsService.getPaymentExercise(undefined);
             expect(actual).toBe(expected);
         });
     });

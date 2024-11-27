@@ -8,6 +8,8 @@ import { StructureIdentifier } from "../../@types";
 import scdlGrantService from "../providers/scdl/scdl.grant.service";
 import scdlService from "../providers/scdl/scdl.service";
 import { RnaOnlyError } from "../../shared/errors/GrantError";
+import paymentService from "../payments/payments.service";
+import subventionsService from "../subventions/subventions.service";
 
 import { FullGrantProvider } from "./@types/FullGrantProvider";
 import { RawGrant, JoinedRawGrant, RawFullGrant, RawApplication, RawPayment, AnyRawGrant } from "./@types/rawGrant";
@@ -82,8 +84,44 @@ export class GrantService {
         else return { application: applications[0], payments: null };
     }
 
+    /**
+     *
+     * @param grants Grants with payments for only one exercise (see handleMultiYearGrant)
+     * @returns
+     *
+     * It was decided that if we both have application and payments
+     * but the application and first payment exercise are different,
+     * that we will choose the payment date as the year of exercise.
+     *
+     */
+    groupGrantsByExercise(grants: Grant[]) {
+        function groupByExercise(group: Record<number | "unknown", Grant[]>, grant: Grant) {
+            if (!grant.application && !grant.payments?.length)
+                throw new Error("We should not have Grant without payment nor application");
+
+            let exercise;
+            if (grant?.payments?.length) {
+                exercise = paymentService.getPaymentExercise(grant.payments[0]);
+            } else {
+                exercise = subventionsService.getSubventionExercise(
+                    grant.application as DemandeSubvention, // ts should know that we have application defined
+                );
+
+                // not sure if possible but because DemandeSubventionDTO as annee_demande as optionnal it could occur
+                // prevent lonely application grant without annee_demande
+                if (!exercise) exercise = "unknown";
+            }
+
+            if (!group[exercise]) group[exercise] = [grant];
+            else group[exercise].push(grant);
+            return group;
+        }
+
+        return grants.reduce(groupByExercise, {} as Record<number | "unknown", Grant[]>);
+    }
+
     // sort grants by grants > lonely application > lonely payment
-    sortGrants(grants: Grant[]) {
+    sortByGrantType(grants: Grant[]) {
         const getScore = grant => {
             if (grant.application && grant.payments) return 2;
             if (grant.application) return 1;
@@ -100,8 +138,11 @@ export class GrantService {
     async getGrants(identifier: StructureIdentifier): Promise<Grant[]> {
         const joinedRawGrants = await this.getRawGrants(identifier);
         const grants = joinedRawGrants.map(this.adaptJoinedRawGrant.bind(this)).filter(grant => grant) as Grant[];
-        const sortedGrants = this.sortGrants(grants);
-        return sortedGrants;
+        const groupByExerciseGrants = this.groupGrantsByExercise(this.handleMultiYearGrants(grants));
+        const sortedByTypeGrants = Object.keys(groupByExerciseGrants)
+            .map(exercise => this.sortByGrantType(groupByExerciseGrants[exercise]))
+            .flat();
+        return sortedByTypeGrants;
     }
 
     /**
@@ -215,6 +256,36 @@ export class GrantService {
         return raws
             .map(raw => commonGrantService.rawToCommon(raw, publishable))
             .filter(adapted => !!adapted) as CommonGrantDto[];
+    }
+
+    handleMultiYearGrants(grants: Grant[]): Grant[] {
+        return grants.map(grant => this.splitGrantByExercise(grant)).flat();
+    }
+
+    // split payments by exercise and keep application information only for the first occurence
+    // this should be improve with multi-year handling
+    splitGrantByExercise(grant: Grant): Grant[] {
+        const { application, payments } = grant;
+        const byYear: Record<number, Grant> = {};
+        const NO_YEAR = 0;
+
+        if (application)
+            byYear[subventionsService.getSubventionExercise(application) ?? NO_YEAR] = { application, payments: null };
+
+        let year: number;
+        for (const payment of payments ?? []) {
+            year = paymentService.getPaymentExercise(payment) ?? NO_YEAR;
+            if (!byYear[year]?.payments)
+                byYear[year] = {
+                    // TODO: improve multi year treatment when OSIRIS imports will be fixed
+                    // cf: https://github.com/betagouv/api-subventions-asso/issues/2734
+                    application: byYear[year]?.application ?? null,
+                    payments: [payment],
+                };
+            else (byYear[year].payments as Payment[]).push(payment);
+        }
+
+        return Object.values(byYear);
     }
 }
 

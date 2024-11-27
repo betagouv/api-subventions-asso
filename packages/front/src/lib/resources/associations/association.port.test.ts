@@ -1,6 +1,8 @@
-import { AxiosResponse } from "axios";
+import type { AxiosResponse } from "axios";
 import associationPort from "./association.port";
 import requestsService from "$lib/services/requests.service";
+import associationService from "$lib/resources/associations/association.service";
+
 vi.mock("$lib/services/requests.service");
 const mockedRequestService = vi.mocked(requestsService);
 
@@ -86,6 +88,37 @@ describe("AssociationPort", () => {
             mockedRequestService.get.mockResolvedValueOnce(RES);
             const actual = await associationPort.search(SIREN);
             expect(actual).toBe(expected);
+        });
+    });
+
+    describe("getGrantExtract", () => {
+        it("should call axios with route", () => {
+            associationService.getGrantExtract(SIREN);
+            const actual = mockedRequestService.get.mock.calls[0];
+            expect(actual).toMatchInlineSnapshot(`
+                  [
+                    "/association/SIREN/grants/csv",
+                    {},
+                    {
+                      "responseType": "blob",
+                    },
+                  ]
+                `);
+        });
+
+        it("should return properly formatted data", async () => {
+            // @ts-expect-error -- simplified response
+            mockedRequestService.get.mockResolvedValueOnce({
+                data: "DATA",
+                headers: { ["content-disposition"]: "inline; filename=nom.pdf" },
+            });
+            const actual = await associationService.getGrantExtract(SIREN);
+            expect(actual).toMatchInlineSnapshot(`
+              {
+                "blob": "DATA",
+                "filename": "nom.pdf",
+              }
+            `);
         });
     });
 });

@@ -1,4 +1,3 @@
-import paymentService from "../payments/payments.service";
 import grantExtractService from "./grantExtract.service";
 import { Association, Grant, SimplifiedEtablissement } from "dto";
 import grantService from "./grant.service";
@@ -31,16 +30,16 @@ describe("GrantExtractService", () => {
         let isSirenSpy: jest.SpyInstance;
 
         beforeAll(() => {
-            separateByExerciseSpy = jest.spyOn(grantExtractService, "separateByExercise").mockImplementation(v => v); // TODO mock
             isSirenSpy = jest.spyOn(Siren, "isSiren").mockReturnValue(true);
+            jest.mocked(grantService.handleMultiYearGrants).mockImplementation(v => v); // TODO mock
             jest.mocked(grantService.getGrants).mockResolvedValue(GRANTS);
             jest.mocked(associationsService.getAssociation).mockResolvedValue(ASSO);
             jest.mocked(associationsService.getEstablishments).mockResolvedValue(ESTABS);
         });
 
         afterAll(() => {
-            separateByExerciseSpy.mockRestore();
             isSirenSpy.mockRestore();
+            jest.mocked(grantService.handleMultiYearGrants).mockRestore();
             jest.mocked(grantService.getGrants).mockRestore();
             jest.mocked(associationsService.getAssociation).mockRestore();
             jest.mocked(associationsService.getEstablishments).mockRestore();
@@ -63,7 +62,7 @@ describe("GrantExtractService", () => {
 
         it("separates grants", async () => {
             await grantExtractService.buildCsv(IDENTIFIER);
-            expect(separateByExerciseSpy).toHaveBeenCalledWith(GRANTS);
+            expect(grantService.handleMultiYearGrants).toHaveBeenCalledWith(GRANTS);
         });
 
         it("calls adapter for each separated grant and gotten asso and estabsBySiret", async () => {
@@ -82,6 +81,7 @@ describe("GrantExtractService", () => {
                 header: true,
                 columns: ExtractHeaderLabel,
                 delimiter: ";",
+                bom: true,
             });
         });
 
@@ -95,70 +95,10 @@ describe("GrantExtractService", () => {
         it("returns proper filename", async () => {
             const FAKE_NOW = new Date("2022-01-01");
             jest.useFakeTimers().setSystemTime(FAKE_NOW);
-            const expected = "DataSubvention-NomAsso-12345678912345-2022-01-01";
+            const expected = "DataSubvention-NomAsso-12345678912345-2022-01-01.csv";
             jest.mocked(csvStringifier.stringify).mockReturnValueOnce(expected);
             const actual = (await grantExtractService.buildCsv(IDENTIFIER)).fileName;
             expect(actual).toBe(expected);
-        });
-    });
-
-    describe("separateByExercise", () => {
-        let separateOneBy: jest.SpyInstance;
-
-        beforeAll(() => {
-            separateOneBy = jest.spyOn(grantExtractService, "separateOneByExercise").mockReturnValue([]);
-        });
-
-        afterAll(() => {
-            separateOneBy.mockRestore();
-        });
-
-        it("calls separateOneByExercise for each grant", () => {
-            grantExtractService.separateByExercise([1, 2, 3] as unknown as Grant[]);
-            expect(separateOneBy).toHaveBeenCalledTimes(3);
-        });
-
-        it("returns flattened result from separateOneByExercise", () => {
-            separateOneBy.mockReturnValueOnce([1, 2]);
-            separateOneBy.mockReturnValueOnce([3]);
-            separateOneBy.mockReturnValueOnce([4, 5]);
-            const expected = [1, 2, 3, 4, 5];
-            const actual = grantExtractService.separateByExercise([1, 2, 3] as unknown as Grant[]);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("separateOneByExercise", () => {
-        const APPLICATION = { id: 1, annee_demande: { value: 2022 } };
-        const PAYMENT = (annee = 2022) => ({ annee });
-        const mockGetPaymentYear = jest.fn(payment => payment.annee);
-        const DISPARATE_PAYMENTS = [PAYMENT(2022), PAYMENT(2023), PAYMENT(2022)];
-
-        beforeAll(() => {
-            jest.mocked(paymentService.getPaymentExercise).mockImplementation(mockGetPaymentYear);
-        });
-
-        it("calls getPaymentExercise for each payment", () => {
-            // @ts-expect-error -- mocked args
-            grantExtractService.separateOneByExercise({ application: null, payments: DISPARATE_PAYMENTS });
-            expect(mockGetPaymentYear).toHaveBeenCalledTimes(3);
-        });
-
-        it("separates application and payments from different years", () => {
-            const expected = [
-                {
-                    application: APPLICATION,
-                    payments: [PAYMENT(2022), PAYMENT(2022)],
-                },
-                { application: null, payments: [PAYMENT(2023)] },
-            ];
-            const actual = grantExtractService.separateOneByExercise({
-                // @ts-expect-error -- mocked args
-                application: APPLICATION,
-                // @ts-expect-error -- mocked args
-                payments: DISPARATE_PAYMENTS,
-            });
-            expect(actual).toEqual(expected);
         });
     });
 });

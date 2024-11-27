@@ -10,6 +10,8 @@ import {
     currentAssoSimplifiedEtabs,
     currentIdentifiers,
 } from "$lib/store/association.store";
+import { isAssociationIdentifier } from "$lib/helpers/identifierHelper";
+import { goToUrl } from "$lib/services/router.service";
 
 export class AssociationController {
     titles = [
@@ -26,6 +28,8 @@ export class AssociationController {
     simplifiedEstablishmentPromise: Promise<unknown>;
 
     constructor(identifier) {
+        if (!isAssociationIdentifier(identifier)) goToUrl(`/etablissement/${identifier}`);
+
         this.duplicatesFromRna = new Store(null);
         this.duplicatesFromSiren = new Store(null);
 

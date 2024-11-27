@@ -205,6 +205,7 @@ export class DauphinService
                 delete beneficiaire.linkedUsers;
             });
         }
+        source.codeActionProjet = source.referenceAdministrative.match(/(?:DA)?(\d{8})(?:-\d*)?/)?.[1];
 
         return source as DauphinSubventionDto;
     }

@@ -13,7 +13,7 @@
     import Input from "$lib/dsfr/Input.svelte";
 
     const ctrl = new AdminUserAccountListController();
-    const { users, domains, domainError, newDomain } = ctrl;
+    const { users, domainError, newDomain } = ctrl;
 </script>
 
 {#await ctrl.promises}
@@ -38,20 +38,6 @@
                 </ActionGroup>
             </div>
         </div>
-        <div class="fr-col-md-12">
-            <Widget title="Noms de domaines :">
-                <ul class="admin-domain-ul">
-                    {#each $domains as domain}
-                        <li>
-                            <a href="#{domain.name}">
-                                {domain.name.replace("@", "")}
-                                {domain.users.length} utilisateurs
-                            </a>
-                        </li>
-                    {/each}
-                </ul>
-            </Widget>
-        </div>
     </div>
     <div class="fr-grid-row fr-mb-6w">
         <div class="fr-col-md-12">
@@ -75,9 +61,3 @@
 {:catch error}
     <ErrorAlert message={error.message} />
 {/await}
-
-<style>
-    .admin-domain-ul {
-        columns: 2;
-    }
-</style>

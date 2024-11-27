@@ -59,7 +59,7 @@ describe("DocumentController", () => {
         const REQUEST: IdentifiedRequest = { user: { _id: { toString: jest.fn(() => USER_ID) } } };
 
         beforeAll(() => {
-            jest.mocked(documentsService.getRequestedDocumentsFiles).mockResolvedValue(stream as ReadStream);
+            jest.mocked(documentsService.safeGetRequestedDocumentFiles).mockResolvedValue(stream as ReadStream);
             documentController = new DocumentHttp();
             setHeaderMock = jest.spyOn(documentController, "setHeader").mockImplementation(jest.fn());
         });
@@ -72,7 +72,7 @@ describe("DocumentController", () => {
 
         it("should call service with required docs and user id as temp folder ", async () => {
             await documentController.downloadRequiredDocuments(REQUIRED_DOCS, REQUEST);
-            expect(documentsService.getRequestedDocumentsFiles).toHaveBeenCalledWith(REQUIRED_DOCS, USER_ID);
+            expect(documentsService.safeGetRequestedDocumentFiles).toHaveBeenCalledWith(REQUIRED_DOCS, USER_ID);
         });
 
         it("should return stream", async () => {

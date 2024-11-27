@@ -287,19 +287,19 @@ describe("Documents Service", () => {
 
     describe("getDocumentsFilesByIdentifier", () => {
         let aggregateDocumentsSpy: jest.SpyInstance;
-        let getRequestedDocumentsFilesSpy: jest.SpyInstance;
+        let getRequestedDocumentFilesSpy: jest.SpyInstance;
         const FAKE_DOCUMENT = "FAKE_DOCUMENT";
 
         beforeAll(() => {
             // @ts-expect-error aggregateDocument is private
             aggregateDocumentsSpy = jest.spyOn(documentsService, "aggregateDocuments");
-            getRequestedDocumentsFilesSpy = jest
-                .spyOn(documentsService, "getRequestedDocumentsFiles")
+            getRequestedDocumentFilesSpy = jest
+                .spyOn(documentsService, "getRequestedDocumentFiles")
                 .mockImplementation(jest.fn());
         });
 
         afterAll(() => {
-            getRequestedDocumentsFilesSpy.mockRestore();
+            getRequestedDocumentFilesSpy.mockRestore();
         });
 
         it("should call aggregateDocuments", async () => {
@@ -326,11 +326,66 @@ describe("Documents Service", () => {
             jest.mocked(documentToDocumentRequest).mockReturnValue(ADAPTED as unknown as DocumentRequestDto);
             await documentsService.getDocumentsFilesByIdentifier(ESTABLISHMENT_ID);
             jest.mocked(documentToDocumentRequest).mockRestore();
-            expect(getRequestedDocumentsFilesSpy).toBeCalledWith([ADAPTED, ADAPTED], SIRET.value);
+            expect(getRequestedDocumentFilesSpy).toBeCalledWith([ADAPTED, ADAPTED], SIRET.value);
         });
     });
 
-    describe("getRequestedDocumentsFiles", () => {
+    describe("sanitizeDocumentRequest", () => {
+        it.each`
+            property  | character      | unsafe                        | safe
+            ${"nom"}  | ${"slash"}     | ${"with/Character/Slash"}     | ${"withCharacterSlash"}
+            ${"nom"}  | ${"backslash"} | ${"with/Character/Backslash"} | ${"withCharacterBackslash"}
+            ${"type"} | ${"slash"}     | ${"with/Character/Slash"}     | ${"withCharacterSlash"}
+            ${"type"} | ${"backslash"} | ${"with/Character/Backslash"} | ${"withCharacterBackslash"}
+        `("removes $character in $property", ({ property, unsafe, safe: expected }) => {
+            // @ts-expect-error -- test private method
+            const actual = documentsService.sanitizeDocumentRequest({
+                nom: "",
+                url: "",
+                type: "",
+                [property]: unsafe,
+            });
+            expect(actual[property]).toBe(expected);
+        });
+    });
+
+    describe("safeGetRequestedDocumentFiles", () => {
+        const UNSAFE_DOCS = ["a", "b"] as any as DocumentRequestDto[];
+        const STREAM = "STREAM" as unknown as ReadStream;
+        let sanitizeSpy, getDocsSpy;
+
+        beforeAll(() => {
+            sanitizeSpy = jest
+                // @ts-expect-error -- spy private method
+                .spyOn(documentsService, "sanitizeDocumentRequest")
+                // @ts-expect-error -- harsh mock
+                .mockImplementation(s => s.toUpperCase());
+            getDocsSpy = jest.spyOn(documentsService, "getRequestedDocumentFiles").mockResolvedValue(STREAM);
+        });
+
+        afterAll(() => {
+            sanitizeSpy.mockRestore();
+            getDocsSpy.mockRestore();
+        });
+
+        it("sanitizes docs", async () => {
+            await documentsService.safeGetRequestedDocumentFiles(UNSAFE_DOCS);
+            expect(sanitizeSpy).toHaveBeenCalledTimes(2);
+        });
+
+        it("calls getRequestedDocumentFiles", async () => {
+            await documentsService.safeGetRequestedDocumentFiles(UNSAFE_DOCS);
+            expect(getDocsSpy).toHaveBeenCalledWith(["A", "B"], "docs");
+        });
+
+        it("returns result from getRequestedDocumentFiles", async () => {
+            const actual = await documentsService.safeGetRequestedDocumentFiles(UNSAFE_DOCS);
+            const expected = STREAM;
+            expect(actual).toBe(expected);
+        });
+    });
+
+    describe("getRequestedDocumentFiles", () => {
         let downloadDocumentSpy: jest.SpyInstance;
 
         const FAKE_DOCUMENT = "FAKE_DOCUMENT" as unknown as DocumentRequestDto;
@@ -358,26 +413,28 @@ describe("Documents Service", () => {
         });
 
         it("should call mkdir", async () => {
-            await documentsService.getRequestedDocumentsFiles(REQUESTED_DOCS, IDENTIFIER);
+            await documentsService.getRequestedDocumentFiles(REQUESTED_DOCS, IDENTIFIER);
             expect(fs.mkdirSync).toBeCalled();
         });
 
         it("should call downloadDocument", async () => {
-            await documentsService.getRequestedDocumentsFiles(REQUESTED_DOCS, IDENTIFIER);
+            await documentsService.getRequestedDocumentFiles(REQUESTED_DOCS, IDENTIFIER);
             expect(downloadDocumentSpy).toBeCalledWith(expect.any(String), FAKE_DOCUMENT);
         });
 
         it("should call execSync", async () => {
             downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
-            await documentsService.getRequestedDocumentsFiles(REQUESTED_DOCS, IDENTIFIER);
-            expect(childProcess.execSync).toBeCalledWith(
-                expect.stringMatching('zip -j /tmp/12345678912345-([0-9]+).zip "/fake/path"'),
-            );
+            await documentsService.getRequestedDocumentFiles(REQUESTED_DOCS, IDENTIFIER);
+            expect(childProcess.execFileSync).toBeCalledWith("zip", [
+                "j",
+                expect.stringMatching("/tmp/12345678912345-([0-9]+).zip"),
+                "/fake/path",
+            ]);
         });
 
         it("should call rmSync", async () => {
             downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
-            await documentsService.getRequestedDocumentsFiles(REQUESTED_DOCS, IDENTIFIER);
+            await documentsService.getRequestedDocumentFiles(REQUESTED_DOCS, IDENTIFIER);
             expect(fs.rmSync).toBeCalledWith(expect.stringMatching("/tmp/12345678912345-([0-9]+)"), {
                 recursive: true,
                 force: true,
@@ -386,14 +443,14 @@ describe("Documents Service", () => {
 
         it("should call createReadStream and return stream", async () => {
             downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
-            const actual = await documentsService.getRequestedDocumentsFiles(REQUESTED_DOCS, IDENTIFIER);
+            const actual = await documentsService.getRequestedDocumentFiles(REQUESTED_DOCS, IDENTIFIER);
             expect(fs.createReadStream).toBeCalledWith(expect.stringMatching("/tmp/12345678912345-([0-9]+).zip"));
             expect(actual).toBe(FAKE_STREAM);
         });
 
         it("should call remove file after end of stream", async () => {
             downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
-            await documentsService.getRequestedDocumentsFiles(REQUESTED_DOCS, IDENTIFIER);
+            await documentsService.getRequestedDocumentFiles(REQUESTED_DOCS, IDENTIFIER);
 
             const lastStreamOnCall = FAKE_STREAM.on.mock.lastCall;
 
