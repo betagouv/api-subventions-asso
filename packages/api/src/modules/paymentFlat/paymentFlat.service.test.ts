@@ -1,19 +1,23 @@
-import dataBretagneService from "../../providers/dataBretagne/dataBretagne.service";
+import dataBretagneService from "../providers/dataBretagne/dataBretagne.service";
 import { RECORDS } from "./__fixtures__/dataBretagne.fixture";
-import { ENTITIES } from "../../providers/chorus/__fixtures__/ChorusFixtures";
+import { ENTITIES } from "../providers/chorus/__fixtures__/ChorusFixtures";
 
-jest.mock("../../providers/dataBretagne/dataBretagne.service", () => ({
+import paymentFlatService from "./paymentFlat.service";
+import chorusService from "../providers/chorus/chorus.service";
+import PaymentFlatAdapter from "./paymentFlatAdapter";
+import { PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
+import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port";
+import { uniqueId } from "lodash";
+
+jest.mock("../providers/dataBretagne/dataBretagne.service", () => ({
     getMinistriesRecord: jest.fn(),
     findProgramsRecord: jest.fn(),
     getDomaineFonctRecord: jest.fn(),
     getRefProgrammationRecord: jest.fn(),
 }));
 const mockDataBretagneService = jest.mocked(dataBretagneService);
-import paymentFlatService from "./paymentFlat.service";
-import chorusService from "../../providers/chorus/chorus.service";
-import PaymentFlatAdapter from "./paymentFlatAdapter";
-import { PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
-import paymentFlatPort from "../../../dataProviders/db/paymentFlat/paymentFlat.port";
+jest.mock("./paymentFlatAdapter");
+jest.mock("../../dataProviders/db/paymentFlat/paymentFlat.port");
 
 const allDataBretagneDataResolvedValue = {
     programs: RECORDS["programme"],
@@ -52,29 +56,40 @@ describe("PaymentFlatService", () => {
         );
     });
 
+    describe("isCollectionInitialized", () => {
+        it("calls port.hasBeenInitialized", () => {
+            paymentFlatService.isCollectionInitialized();
+            expect(paymentFlatPort.hasBeenInitialized).toHaveBeenCalledTimes(1);
+        });
+    });
+
     describe("toPaymentFlatChorusEntities", () => {
         let mockChorusCursorFind: jest.SpyInstance;
-        let mockToPaymentFlatEntity: jest.SpyInstance;
+        let mockToNotAggregatedChorusPaymentFlatEntity: jest.SpyInstance;
 
         let mockCursor;
         let mockDocuments;
         let nDocuments;
 
         beforeEach(() => {
-            mockDocuments = [ENTITIES[1], ENTITIES[0], null];
+            mockDocuments = [ENTITIES[1], ENTITIES[0]];
 
-            nDocuments = mockDocuments.length - 1;
+            nDocuments = mockDocuments.length;
 
             mockCursor = {
                 next: jest.fn().mockImplementation(() => {
                     return mockDocuments.shift();
+                }),
+                hasNext: jest.fn().mockImplementation(() => {
+                    if (mockDocuments.length) return true;
+                    return false;
                 }),
             };
 
             mockChorusCursorFind = jest
                 .spyOn(chorusService, "cursorFindDataWithoutHash")
                 .mockReturnValue(mockCursor as any);
-            mockToPaymentFlatEntity = jest
+            mockToNotAggregatedChorusPaymentFlatEntity = jest
                 .spyOn(PaymentFlatAdapter, "toNotAggregatedChorusPaymentFlatEntity")
                 .mockReturnValue({ ...PAYMENT_FLAT_ENTITY });
         });
@@ -105,24 +120,24 @@ describe("PaymentFlatService", () => {
             expect(mockChorusCursorFind).toHaveBeenCalledWith(exercice);
         });
 
-        it(`should call next for ${nDocuments} times`, async () => {
+        it(`calls next for $nDocuments times`, async () => {
             await paymentFlatService.toPaymentFlatChorusEntities(
                 RECORDS["programme"],
                 RECORDS["ministry"],
                 RECORDS["domaineFonct"],
                 RECORDS["refProgrammation"],
             );
-            expect(mockCursor.next).toHaveBeenCalledTimes(nDocuments + 1);
+            expect(mockCursor.next).toHaveBeenCalledTimes(nDocuments);
         });
 
-        it("should call toPaymentFlatEntity for number of documents times", async () => {
+        it("calls adapter.toNotAggregatedChorusPaymentFlatEntity for each documents", async () => {
             await paymentFlatService.toPaymentFlatChorusEntities(
                 RECORDS["programme"],
                 RECORDS["ministry"],
                 RECORDS["domaineFonct"],
                 RECORDS["refProgrammation"],
             );
-            expect(mockToPaymentFlatEntity).toHaveBeenCalledTimes(nDocuments);
+            expect(mockToNotAggregatedChorusPaymentFlatEntity).toHaveBeenCalledTimes(nDocuments);
         });
 
         it("should return an array of PaymentFlatEntity", async () => {
@@ -139,7 +154,7 @@ describe("PaymentFlatService", () => {
 
     describe("updatePaymentsFlatCollection", () => {
         let mockToPaymentFlatChorusEntities: jest.SpyInstance;
-        let mockUpsertOne: jest.SpyInstance;
+        let mockUpsertMany: jest.SpyInstance;
         let mockGetAllDataBretagneData: jest.SpyInstance;
         let mockEntities;
 
@@ -151,18 +166,18 @@ describe("PaymentFlatService", () => {
             mockToPaymentFlatChorusEntities = jest
                 .spyOn(paymentFlatService, "toPaymentFlatChorusEntities")
                 .mockResolvedValue(mockEntities);
-            mockUpsertOne = jest.spyOn(paymentFlatPort, "upsertOne").mockImplementation(jest.fn());
+            mockUpsertMany = jest.spyOn(paymentFlatPort, "upsertMany").mockImplementation(jest.fn());
         });
         afterEach(() => {
             jest.restoreAllMocks();
         });
 
-        it("should call getAllDataBretagneData once", async () => {
+        it("calls getAllDataBretagneData once", async () => {
             await paymentFlatService.updatePaymentsFlatCollection();
             expect(mockGetAllDataBretagneData).toHaveBeenCalledTimes(1);
         });
 
-        it("should call toPaymentFlatChorusEntities with all data from dataBretagneService", async () => {
+        it("calls toPaymentFlatChorusEntities with all data from dataBretagneService", async () => {
             await paymentFlatService.updatePaymentsFlatCollection();
             expect(mockToPaymentFlatChorusEntities).toHaveBeenCalledWith(
                 RECORDS["programme"],
@@ -185,16 +200,36 @@ describe("PaymentFlatService", () => {
             );
         });
 
-        it("should call upsertOne for each entity", async () => {
-            await paymentFlatService.updatePaymentsFlatCollection();
-            expect(mockUpsertOne).toHaveBeenCalledTimes(mockEntities.length);
-        });
+        it("should call upsertMay for each batch", async () => {
+            // @ts-expect-error: private var
+            paymentFlatService.BATCH_SIZE = 2;
+            const ENTITIES: Record<string, any> = [];
 
-        it("should call upsertOne with each entity", async () => {
-            await paymentFlatService.updatePaymentsFlatCollection();
-            mockEntities.forEach(entity => {
-                expect(mockUpsertOne).toHaveBeenCalledWith(entity);
+            // create array corresponing to 3 batch
+            // @ts-expect-error: access private var
+            for (let i = 0; i < paymentFlatService.BATCH_SIZE + 1; i++) {
+                ENTITIES.push({ uniqueId: i });
+            }
+
+            console.log(ENTITIES);
+
+            const buildExpectedOps = entity => ({
+                updateOne: {
+                    filter: { uniqueId: entity.uniqueId },
+                    update: { $set: entity },
+                    upsert: true,
+                },
             });
+            const EXPECTED_CALLS = [
+                [buildExpectedOps(ENTITIES[0]), buildExpectedOps(ENTITIES[1])],
+                [buildExpectedOps(ENTITIES[2])],
+            ];
+
+            mockToPaymentFlatChorusEntities.mockResolvedValueOnce(ENTITIES);
+            await paymentFlatService.updatePaymentsFlatCollection();
+
+            expect(mockUpsertMany).toHaveBeenNthCalledWith(1, EXPECTED_CALLS[0]);
+            expect(mockUpsertMany).toHaveBeenNthCalledWith(2, EXPECTED_CALLS[1]);
         });
     });
 });

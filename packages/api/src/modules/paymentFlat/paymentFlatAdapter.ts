@@ -1,11 +1,11 @@
-import DomaineFonctionnelEntity from "../../../entities/DomaineFonctionnelEntity";
-import MinistryEntity from "../../../entities/MinistryEntity";
-import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
-import RefProgrammationEntity from "../../../entities/RefProgrammationEntity";
-import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
-import Siret from "../../../valueObjects/Siret";
-import IChorusIndexedInformations from "../../providers/chorus/@types/IChorusIndexedInformations";
-import ChorusLineEntity from "../../providers/chorus/entities/ChorusLineEntity";
+import DomaineFonctionnelEntity from "../../entities/DomaineFonctionnelEntity";
+import MinistryEntity from "../../entities/MinistryEntity";
+import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
+import RefProgrammationEntity from "../../entities/RefProgrammationEntity";
+import StateBudgetProgramEntity from "../../entities/StateBudgetProgramEntity";
+import Siret from "../../valueObjects/Siret";
+import IChorusIndexedInformations from "../providers/chorus/@types/IChorusIndexedInformations";
+import ChorusLineEntity from "../providers/chorus/entities/ChorusLineEntity";
 
 export default class PaymentFlatAdapter {
     static toNotAggregatedChorusPaymentFlatEntity(

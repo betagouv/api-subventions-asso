@@ -3,11 +3,11 @@ import {
     DataBretagneMinistryDto,
     DataBretagneProgrammeDto,
     DataBretagneRefProgrammationDto,
-} from "../../../../dataProviders/api/dataBretagne/DataBretagneDto";
-import DomaineFonctionnelEntity from "../../../../entities/DomaineFonctionnelEntity";
-import MinistryEntity from "../../../../entities/MinistryEntity";
-import RefProgrammationEntity from "../../../../entities/RefProgrammationEntity";
-import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
+} from "../../../dataProviders/api/dataBretagne/DataBretagneDto";
+import DomaineFonctionnelEntity from "../../../entities/DomaineFonctionnelEntity";
+import MinistryEntity from "../../../entities/MinistryEntity";
+import RefProgrammationEntity from "../../../entities/RefProgrammationEntity";
+import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
 
 export const RECORDS: {
     domaineFonct: Record<string, DomaineFonctionnelEntity>;

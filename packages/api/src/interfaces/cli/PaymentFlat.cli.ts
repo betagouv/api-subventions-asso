@@ -1,12 +1,12 @@
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../@types";
 
-import paymentsFlatService from "../../modules/data-viz/paymentFlat/paymentFlat.service";
+import paymentsFlatService from "../../modules/paymentFlat/paymentFlat.service";
 import CliController from "../../shared/CliController";
 
 @StaticImplements<CliStaticInterface>()
-export default class PaymentsFlatCli extends CliController {
-    static cmdName = "payments-flat";
+export default class PaymentFlatCli extends CliController {
+    static cmdName = "payment-flat";
 
     resyncExercice(exerciceBudgetaire: number) {
         if (!exerciceBudgetaire) throw new Error("Exercice budgetaire is required");
@@ -15,8 +15,12 @@ export default class PaymentsFlatCli extends CliController {
         return paymentsFlatService.updatePaymentsFlatCollection(exerciceBudgetaire);
     }
 
-    resyncAll() {
-        this.logger.logIC("Create or resync all payment flat collection");
-        return paymentsFlatService.updatePaymentsFlatCollection();
+    // should only be used once, then sync with resyncExercise
+    async init() {
+        if (await paymentsFlatService.isCollectionInitialized())
+            throw new Error("DB already initialized, used resyncExercice instead");
+
+        this.logger.logIC("Create all payment flat collection");
+        return paymentsFlatService.init();
     }
 }

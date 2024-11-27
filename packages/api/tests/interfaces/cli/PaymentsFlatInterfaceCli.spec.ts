@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFlat.port";
-import PaymentsFlatCli from "../../../src/interfaces/cli/PaymentsFlat.cli";
+import PaymentsFlatCli from "../../../src/interfaces/cli/PaymentFlat.cli";
 import { DATA_BRETAGNE_DTOS, MOCK_DOCUMENTS, PROGRAMS } from "../../__fixtures__/paymentsFlat.fixture";
 import chorusLineRepository from "../../../src/modules/providers/chorus/repositories/chorus.line.repository";
 import dataBretagnePort from "../../../src/dataProviders/api/dataBretagne/dataBretagne.port";
