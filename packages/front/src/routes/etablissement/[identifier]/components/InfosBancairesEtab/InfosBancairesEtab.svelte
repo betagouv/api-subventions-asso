@@ -1,7 +1,7 @@
 <script>
     import { InfosBancairesEtabController } from "./InfosBancairesEtab.controller";
     import Table from "$lib/dsfr/Table.svelte";
-    import TableSlotCell from "$lib/dsfr/TableSlotCell.svelte";
+    import TableRow from "$lib/dsfr/TableRow.svelte";
 
     export let elements; // informations_bancaires
 
@@ -23,12 +23,12 @@
                 bordered={false}
                 title="Informations bancaires">
                 {#each infosBancaires as element, index}
-                    <TableSlotCell id={tableId} {index}>
+                    <TableRow id={tableId} {index}>
                         <td>{element.bic}</td>
                         <td>{element.iban}</td>
                         <td>{element.date}</td>
                         <td>{element.provider}</td>
-                    </TableSlotCell>
+                    </TableRow>
                 {/each}
             </Table>
         </div>

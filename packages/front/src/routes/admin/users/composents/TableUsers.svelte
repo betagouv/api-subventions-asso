@@ -4,7 +4,7 @@
     import Button from "$lib/dsfr/Button.svelte";
     import userService from "$lib/resources/users/user.service";
     import Table from "$lib/dsfr/Table.svelte";
-    import TableSlotCell from "$lib/dsfr/TableSlotCell.svelte";
+    import TableRow from "$lib/dsfr/TableRow.svelte";
 
     export let usersStore;
 
@@ -29,7 +29,7 @@
 <div class="fr-col fr-col-lg-12 fr-grid-row fr-grid-row--center">
     <Table id={tableId} hideTitle={true} {headers}>
         {#each $users as user, index}
-            <TableSlotCell id={tableId} {index}>
+            <TableRow id={tableId} {index}>
                 <td>
                     {user.email}
                 </td>
@@ -84,7 +84,7 @@
                         ariaControls="fr-modal"
                         on:click={() => ctrl.displayModal(user)} />
                 </td>
-            </TableSlotCell>
+            </TableRow>
         {/each}
     </Table>
 </div>

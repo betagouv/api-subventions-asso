@@ -5,7 +5,7 @@
     import Input from "$lib/dsfr/Input.svelte";
     import Select from "$lib/dsfr/Select.svelte";
     import Table from "$lib/dsfr/Table.svelte";
-    import TableSlotCell from "$lib/dsfr/TableSlotCell.svelte";
+    import TableRow from "$lib/dsfr/TableRow.svelte";
 
     export let contacts = [];
     export let siret;
@@ -48,7 +48,7 @@
                 headersSize={controller.headersSize}
                 scrollable={false}>
                 {#each $_contacts as contact, index}
-                    <TableSlotCell id={tableId} {index}>
+                    <TableRow id={tableId} {index}>
                         <td>
                             {contact.civilite}
                         </td>
@@ -67,7 +67,7 @@
                         <td>
                             {contact.role}
                         </td>
-                    </TableSlotCell>
+                    </TableRow>
                 {/each}
             </Table>
         </div>

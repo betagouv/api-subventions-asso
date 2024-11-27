@@ -4,7 +4,7 @@
 
     // TODO: make it possible to has column with custom length
 
-    export let id = crypto.randomUUID();
+    export let id: string = crypto.randomUUID();
     export let title = "Titre du tableau (caption)";
     export let hideTitle = false;
     export let size: "sm" | "md" | "lg" = "md";

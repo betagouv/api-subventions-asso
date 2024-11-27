@@ -2,12 +2,14 @@
     import DataNotFound from "../DataNotFound.svelte";
     import ErrorAlert from "../ErrorAlert.svelte";
     import { GrantDashboardController } from "./GrantDashboard.controller";
+    import ApplicationRow from "./ApplicationRow/ApplicationRow.svelte";
+    import PaymentRow from "./PaymentRow/PaymentRow.svelte";
     import GrantsStatistique from "$lib/components/GrantDashboard/GrantsStatistique/GrantsStatistique.svelte";
     import Spinner from "$lib/components/Spinner.svelte";
     import Button from "$lib/dsfr/Button.svelte";
     import Select from "$lib/dsfr/Select.svelte";
     import Table from "$lib/dsfr/Table.svelte";
-    import TableSlotCell from "$lib/dsfr/TableSlotCell.svelte";
+    import TableRow from "$lib/dsfr/TableRow.svelte";
 
     export let structureId;
 
@@ -23,6 +25,7 @@
         selectedExercise,
         exerciseOptions,
         isExtractLoading,
+        selectedGrants,
     } = ctrl;
 </script>
 
@@ -70,25 +73,31 @@
         </div>
     </div>
     <div class="fr-mt-6w compact-columns">
-        {#if $grants?.length}
+        {#if $selectedGrants?.length}
             <div>
                 <GrantsStatistique grants={$grants} year={$selectedExercise} />
             </div>
             <div class="negative-margin">
                 <Table
+                    id={tableId}
                     on:sort={event => ctrl.sortTable(event.detail)}
                     title="Tableau de subventions et leurs versements"
                     hideTitle={true}
                     size="md"
                     sortable={true}
                     scrollable={false}
+                    bordered={false}
                     {headers}>
                     {#each $rows as row, rowIndex}
-                        <TableSlotCell id={tableId} index={rowIndex} openModal={true}>
-                            {#each row as cell, cellIndex}
-                                <td on:click={() => ctrl.onRowClick(rowIndex, cellIndex)}>{cell}</td>
-                            {/each}
-                        </TableSlotCell>
+                        <TableRow id={tableId} index={rowIndex} openModal={true}>
+                            <ApplicationRow
+                                on:click={() => ctrl.onApplicationClick(rowIndex)}
+                                cells={row.applicationCells} />
+                            <PaymentRow
+                                on:click={() => ctrl.onPaymentClick(rowIndex)}
+                                cells={row.paymentsCells}
+                                granted={row.granted} />
+                        </TableRow>
                     {/each}
                 </Table>
             </div>

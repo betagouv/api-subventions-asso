@@ -1,7 +1,10 @@
 import type { StructureIdentifierDto } from "dto";
-import type { FlatGrant, FlatPayment, OnlyApplication } from "../../resources/@types/FlattenGrant";
+import type { FlatGrant, OnlyApplication } from "../../resources/@types/FlattenGrant";
 import ApplicationInfoModal from "./Modals/ApplicationInfoModal.svelte";
 import PaymentsInfoModal from "./Modals/PaymentsInfoModal.svelte";
+import { getApplicationCells, isGranted } from "./application.helper";
+import { getPaymentsCells } from "./payments.helper";
+import type { TableCell } from "$lib/dsfr/TableCell.types";
 import { isSiret } from "$lib/helpers/identifierHelper";
 import associationPort from "$lib/resources/associations/association.port";
 import establishmentPort from "$lib/resources/establishments/establishment.port";
@@ -12,9 +15,6 @@ import establishmentService from "$lib/resources/establishments/establishment.se
 import associationService from "$lib/resources/associations/association.service";
 import documentHelper from "$lib/helpers/document.helper";
 import { PUBLIC_PROVIDER_BLOG_URL } from "$env/static/public";
-import { mapSiretPostCodeStore } from "$lib/store/association.store";
-import { numberToEuro, valueOrHyphen } from "$lib/helpers/dataHelper";
-import { capitalizeFirstLetter } from "$lib/helpers/stringHelper";
 import { data, modal } from "$lib/store/modal.store";
 
 export class GrantDashboardController {
@@ -26,22 +26,18 @@ export class GrantDashboardController {
     public selectedExerciseIndex: Store<number | undefined> = new Store(undefined);
 
     // @ts-expect-error: done in initStores()
-    public selectedExercise: ReadStore<string | null>;
-    // @ts-expect-error: done in initStores()
     public selectedGrants: ReadStore<FlatGrant[] | null>;
-    // represents selectedGrants but in a table row format
     // @ts-expect-error: done in initStores()
-    public selectedGrantRows: ReadStore<string[][]>;
+    public selectedExercise: ReadStore<string | null>;
     // final rows displayed in view
     // can be updated with exercise filter and in a futur with other filters
-    public rows: Store<string[][]> = new Store([]);
+    public rows: Store<{ applicationCells: TableCell[]; paymentsCells: TableCell[]; granted: boolean }[]> = new Store(
+        [],
+    );
     public isExtractLoading: Store<boolean> = new Store(false);
     public exerciseOptions: Store<string[] | undefined> = new Store(undefined);
     public headers: string[];
     private columnsSortOrder: number[];
-
-    private applicationCellsLength = 6;
-    private paymentCellsLength = 2;
 
     constructor(identifier: StructureIdentifierDto) {
         this.identifier = identifier;
@@ -72,22 +68,26 @@ export class GrantDashboardController {
     }
 
     private initStores() {
+        this.selectedExercise = derived(this.selectedExerciseIndex, index => {
+            if (!index || !this.exerciseOptions.value) return null;
+            return this.exerciseOptions.value[index];
+        });
         this.selectedGrants = derived(this.selectedExerciseIndex, index => {
             if (!index) return null;
             const exercise = (this.exerciseOptions.value as string[])[index];
-            return this.grantsByExercise[exercise];
+            const grants = this.grantsByExercise[exercise];
+            this.updateRows(grants);
+            return grants;
         });
-        this.selectedGrantRows = derived(this.selectedExerciseIndex, index => {
-            if (!index) return [];
-            const exercise = (this.exerciseOptions.value as string[])[index];
-            return this.grantRowsByExercise[exercise];
-        });
-        this.selectedExercise = derived(this.selectedExerciseIndex, index => {
-            if (!index || !this.exerciseOptions.value) return null;
-            const exercise = this.exerciseOptions.value[index];
-            this.rows.set(this.grantRowsByExercise[exercise]);
-            return this.exerciseOptions.value[index];
-        });
+    }
+
+    private processGrants(grants: FlatGrant[]) {
+        this.grants.set(grants);
+        this.grantsByExercise = this.splitGrantsByExercise(this.grants.value as FlatGrant[]);
+
+        // needs to be done after grantRowsByExercise or it will not be initialized for derived store trigger
+        this.exerciseOptions.set(Object.keys(this.grantsByExercise));
+        this.selectedExerciseIndex.set((this.exerciseOptions.value as string[]).length - 1);
     }
 
     get providerBlogUrl() {
@@ -100,26 +100,40 @@ export class GrantDashboardController {
         else return defaultContent;
     }
 
-    // TODO: make sort works for "Versé" => use custom sort method casting numbers
+    // TODO: move valueOrHyphen thing to ApplicationRow and PaymentRow
+    private updateRows(grants) {
+        this.rows.set(
+            grants.map(grant => {
+                const granted = isGranted(grant.application);
+                return {
+                    applicationCells: getApplicationCells(grant.application, granted),
+                    paymentsCells: getPaymentsCells(grant.payments),
+                    granted,
+                };
+            }),
+        );
+        console.log("updated rows", this.rows.value);
+    }
+
+    // TODO: MAKE THIS WORK WITH ROWS AS APPLICATION_CELLS AND PAYMENTS_CELLS
     public sortTable(index) {
-        this.columnsSortOrder[index] = this.columnsSortOrder[index] * -1;
-        this.rows.update(rows => {
-            const sortedRows = rows.sort((a, b) => {
-                const valueA = a[index],
-                    valueB = b[index];
+        // this.columnsSortOrder[index] = this.columnsSortOrder[index] * -1;
+        // this.rows.update(rows => {
+        //     const sortedRows = rows.sort((a, b) => {
+        //         const valueA = a[index],
+        //             valueB = b[index];
 
-                // TODO: use ENUM
-                const currencyColumnIndexes = [this.headers.indexOf("Demandé"), this.headers.indexOf("Versé")];
-                if (currencyColumnIndexes.includes(index)) {
-                    // TODO: specific treatment for non usual column values
-                }
+        //         const currencyColumnIndexes = [this.headers.indexOf("Demandé"), this.headers.indexOf("Versé")];
+        //         if (currencyColumnIndexes.includes(index)) {
+        //             console.info("specific treatment for non usual column values");
+        //         }
 
-                if (valueA < valueB) return -1 * this.columnsSortOrder[index];
-                else if (valueA > valueB) return 1 * this.columnsSortOrder[index];
-                else return 0;
-            });
-            return sortedRows;
-        });
+        //         if (valueA < valueB) return -1 * this.columnsSortOrder[index];
+        //         else if (valueA > valueB) return 1 * this.columnsSortOrder[index];
+        //         else return 0;
+        //     });
+        //     return sortedRows;
+        // });
         console.log(`sortTable with index ${index}`);
     }
 
@@ -129,95 +143,6 @@ export class GrantDashboardController {
 
     public clickProviderLink() {
         trackerService.trackEvent("association-etablissement.dashboard.display-provider-modal");
-    }
-
-    private processGrants(grants: FlatGrant[]) {
-        this.grants.set(grants);
-        this.grantsByExercise = this.splitGrantsByExercise(this.grants.value as FlatGrant[]);
-        this.grantRowsByExercise = Object.entries(this.grantsByExercise).reduce((acc, [year, grants]) => {
-            acc[year] = grants.map(grant => this.grantToRow(grant));
-            return acc;
-        }, {});
-
-        // needs to be done after grantRowsByExercise or it will not be initialized for derived store trigger
-        this.exerciseOptions.set(Object.keys(this.grantsByExercise));
-        this.selectedExerciseIndex.set((this.exerciseOptions.value as string[]).length - 1);
-    }
-
-    private grantToRow(grant: FlatGrant): string[] {
-        let applicationCells: string[];
-        let paymentCells: string[];
-
-        if (!grant.application) applicationCells = Array(this.applicationCellsLength).fill("-");
-        else {
-            const grantedAmount = numberToEuro(grant.application.montants?.accorde);
-
-            applicationCells = [
-                valueOrHyphen(mapSiretPostCodeStore.value.get(grant.application.siret?.toString() as string)),
-                valueOrHyphen(grant.application.service_instructeur),
-                valueOrHyphen(grant.application.dispositif),
-                valueOrHyphen(this.getProjectName(grant.application)),
-                valueOrHyphen(numberToEuro(grant.application.montants?.demande)),
-                valueOrHyphen(grantedAmount ? grantedAmount : grant.application.statut_label),
-            ];
-        }
-
-        if (!grant.payments) paymentCells = Array(this.paymentCellsLength).fill("-");
-        else {
-            paymentCells = [
-                valueOrHyphen(this.getTotalPayment(grant.payments)),
-                // valueOrHyphen(grant.payments[0].centreFinancier),
-                // valueOrHyphen(withTwoDigitYear(this.getLastPaymentsDate(grant.payments))),
-                valueOrHyphen(this.buildProgrammeText(grant.payments)),
-            ];
-        }
-
-        return [...applicationCells, ...paymentCells];
-    }
-
-    // private getLastPaymentsDate = (payments: FlatPayment[]) => {
-    //     const orderedPayments = payments.sort((paymentA, paymentB) => {
-    //         const dateA = new Date(paymentA.dateOperation);
-    //         const dateB = new Date(paymentB.dateOperation);
-
-    //         return dateB.getTime() - dateA.getTime();
-    //     });
-
-    //     if (!orderedPayments.length) return null;
-
-    //     return new Date(orderedPayments[0].dateOperation);
-    // };
-
-    /**
-     * Builds the program text based on the given payments.
-     * @param {Array} payments - The array of payments.
-     * @returns {string} The program text.
-     */
-    private buildProgrammeText(payments: FlatPayment[]) {
-        const programmes = new Set(payments.map(versement => versement.programme));
-
-        if (programmes.size > 1) {
-            return "multi-programmes";
-        }
-
-        return `${payments[0].programme} - ${payments[0].libelleProgramme}`;
-    }
-
-    private getTotalPayment(payments: FlatPayment[]) {
-        return numberToEuro(payments.reduce((acc, payment) => acc + payment.amount, 0));
-    }
-
-    private getProjectName(application) {
-        if (!application) return undefined;
-        if (!application.actions_proposee || !application.actions_proposee.length) return;
-
-        let names = application.actions_proposee
-            .sort((actionA, actionB) => actionA.rang - actionB.rang)
-            .map(action => `${capitalizeFirstLetter(action.intitule)}.`.replace("..", "."));
-
-        names = [...new Set(names)].join(" - ");
-
-        return names;
     }
 
     // Grants are supposed to be ordered from API
@@ -244,7 +169,7 @@ export class GrantDashboardController {
     }
 
     public onRowClick(rowIndex, cellIndex) {
-        if (cellIndex <= this.applicationCellsLength - 1) this.onApplicationClick(rowIndex);
+        if (cellIndex <= this.rows.value[rowIndex].applicationCells.length - 1) this.onApplicationClick(rowIndex);
         else this.onPaymentClick(rowIndex);
     }
 

@@ -1,6 +1,6 @@
 <script>
     import Table from "$lib/dsfr/Table.svelte";
-    import TableSlotCell from "$lib/dsfr/TableSlotCell.svelte";
+    import TableRow from "$lib/dsfr/TableRow.svelte";
 
     import { data } from "$lib/store/modal.store";
 
@@ -11,14 +11,14 @@
 {#if $data.payments}
     <Table id={tableId} {headers}>
         {#each $data.payments as payment, index}
-            <TableSlotCell id={tableId} {index}>
+            <TableRow id={tableId} {index}>
                 <td class="primary">{payment.amount}</td>
                 <td>{payment.domaineFonctionnel}</td>
                 <td>{payment.activitee}</td>
                 <td>{payment.centreFinancier}</td>
                 <td>{payment.date}</td>
                 <td>{payment.programme}</td>
-            </TableSlotCell>
+            </TableRow>
         {/each}
     </Table>
 {/if}
