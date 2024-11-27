@@ -25,9 +25,10 @@ describe("PaymentFlat Port", () => {
     describe("upsertOne()", () => {
         it("should call upsertOne with the correct arguments", async () => {
             await paymentFlatPort.upsertOne(PAYMENT_FLAT_ENTITY);
+            const { _id, ...DboWithoutId } = PAYMENT_FLAT_DBO;
             expect(mockUpdateOne).toHaveBeenCalledWith(
                 { uniqueId: PAYMENT_FLAT_ENTITY.uniqueId },
-                { $set: { ...PAYMENT_FLAT_DBO, _id: expect.any(ObjectId) } },
+                { $set: DboWithoutId },
                 { upsert: true },
             );
         });

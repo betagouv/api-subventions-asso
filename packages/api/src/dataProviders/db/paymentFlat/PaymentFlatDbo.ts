@@ -5,6 +5,8 @@ export default interface PaymentFlatDbo {
     siret: string;
     siren: string;
     uniqueId: string;
+    idVersement: string;
+    exerciceBudgetaire: number;
     montant: number;
     dateOperation: Date;
     programme: string | null;

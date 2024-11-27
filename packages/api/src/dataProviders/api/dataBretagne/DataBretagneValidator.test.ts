@@ -118,7 +118,7 @@ describe("DataBretagneValidator", () => {
     describe.each([
         ["domaineFonct", DataBretagneDomaineFonctionnelValidator, ["code", "label"]],
         ["ministry", DataBretagneMinistryValidator, ["code", "label"]],
-        ["programme", DataBretagneProgrammeValidator, ["code", "label", "code_ministere"]],
+        ["programme", DataBretagneProgrammeValidator, ["code", "label"]],
         ["refProgrammation", DataBretagneRefProgrammationValidator, ["code", "label"]],
     ])("with %s", (entityName, Validator, requiredAttributes) => {
         describe("validate", () => {

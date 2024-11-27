@@ -55,7 +55,7 @@ describe("ChorusLineRepository", () => {
         });
     });
 
-    describe("cursorFindIndexedData", () => {
+    describe("cursorFindData", () => {
         let mockCursorFind: jest.SpyInstance;
         beforeEach(() => {
             mockCursorFind = jest.spyOn(chorusLineRepository, "cursorFind").mockImplementation(jest.fn());
@@ -63,14 +63,17 @@ describe("ChorusLineRepository", () => {
         afterAll(() => {
             mockCursorFind.mockRestore();
         });
-        it("should call cursorFindIndexedData without filters", () => {
-            chorusLineRepository.cursorFindData();
-            expect(mockCursorFind).toHaveBeenCalledWith({});
+        it("should call cursorFind without filters", () => {
+            chorusLineRepository.cursorFindDataWithoutHash();
+            expect(mockCursorFind).toHaveBeenCalledWith({ "indexedInformations.siret": { $ne: "#" } });
         });
-        it("should call cursorFindIndexedData with filters", () => {
-            const lastUpdateDate = new Date("22-02-2022");
-            chorusLineRepository.cursorFindData(lastUpdateDate);
-            expect(mockCursorFind).toHaveBeenCalledWith({ updated: { $gt: lastUpdateDate } });
+        it("should call cursorFind with filters", () => {
+            const exerciceBudgetaire = 2022;
+            chorusLineRepository.cursorFindDataWithoutHash(exerciceBudgetaire);
+            expect(mockCursorFind).toHaveBeenCalledWith({
+                "indexedInformations.exercice": exerciceBudgetaire,
+                "indexedInformations.siret": { $ne: "#" },
+            });
         });
     });
 });
