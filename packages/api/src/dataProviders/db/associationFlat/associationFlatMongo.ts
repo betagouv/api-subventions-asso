@@ -4,9 +4,7 @@ import db from "../../../shared/MongoConnection";
 
 export async function joinCollection() {
     const threeYearsAgo = new Date();
-    console.log(threeYearsAgo);
     threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
-    console.log(threeYearsAgo);
 
     try {
         const result = db.collection("payments-flat").aggregate([
@@ -49,8 +47,6 @@ export async function joinCollection() {
             },
         ]);
 
-        console.log("result");
-        let processedDocuments = 0;
         /*
     // Chemin du fichier CSV
     const csvFilePath = path.join(__dirname,'associationFlat_mongodb.csv');
@@ -67,19 +63,9 @@ export async function joinCollection() {
         // Boucle sur chaque document du curseur MongoDB
     */
 
-        // Fermer le flux une fois terminé
-        for await (const doc of result) {
-            processedDocuments++;
-            //   csvStream.write(doc); // Écriture des données dans le fichier CSV
-            if (processedDocuments % 1000 === 0) {
-                console.log(processedDocuments);
-            }
-        }
-
         const toReturn = await result.toArray();
-        console.log(processedDocuments);
+
         //csvStream.end();
-        console.log("toReturn");
         return toReturn;
     } catch (err) {
         console.error("Error joining collections:", err);

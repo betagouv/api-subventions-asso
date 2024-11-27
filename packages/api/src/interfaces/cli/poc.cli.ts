@@ -19,16 +19,16 @@ export default class PocCli extends CliController {
 
     public async test() {
         console.log("unzip");
-        exportToCsv();
+        //   exportToCsv();
 
-   /*     const start_postgres = performance.now();
-        //  const result_postgres = await joinCollectionPostgres();
+        const start_postgres = performance.now();
+        const result_postgres = await joinCollectionPostgres();
         const end_postgres = performance.now();
         const executionTime_postgres = end_postgres - start_postgres;
         console.log(`Execution Time with Postgres: ${executionTime_postgres.toFixed(2)} milliseconds`);
 
         const start_hybride = performance.now();
-        //    const result_typescript = await jointureHybride();
+        const result_typescript = await jointureHybride();
         const end_hybride = performance.now();
         const executionTime_hybride = end_hybride - start_hybride;
         console.log(`Execution Time hybrid: ${executionTime_hybride.toFixed(2)} milliseconds`);
@@ -36,17 +36,18 @@ export default class PocCli extends CliController {
         //      await sireneService.saveZip("poc-zip");
         //const result = await SireneParser.parseWithDuckDb(path.join(DIRECTORY_PATH, "StockUniteLegale_utf8.csv"));
 
-        //      const start = performance.now();
-        //    const result = await joinCollection();
-        //     const end = performance.now();
-        //      const executionTime = end - start;
-        // console.log('Execution time: ', end - start);
-        //     console.log(`Execution Time: ${executionTime.toFixed(2)} milliseconds`);
+        const start = performance.now();
+        const result = await joinCollection();
+        const end = performance.now();
+        const executionTime = end - start;
+        console.log(`Execution Time with Mongo: ${executionTime.toFixed(2)} milliseconds`);
 
-        await transferData();
-        //    const result = await SireneParser.parseCsv(path.join(DIRECTORY_PATH, "StockUniteLegale_utf8.csv"));
-        //   await sirenePort.insertMany(result.map(SireneAdapter.toDbo));
+        // la partie ci-dessous transfère les données de mongo vers postgres
+        //  await transferData();
         //   await sireneService.unzip("poc-zipp2mYyapoc-zip.zip", "d");
-        */
+
+        // la partie ci-dessous créer la collection sirene à partir du fichier csv
+        // const result = await SireneParser.parseCsv(path.join(DIRECTORY_PATH, "StockUniteLegale_utf8.csv"));
+        //  await sirenePort.insertMany(result.map(SireneAdapter.toDbo));
     }
 }

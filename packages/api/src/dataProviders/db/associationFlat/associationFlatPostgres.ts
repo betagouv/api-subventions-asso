@@ -1,11 +1,10 @@
-import { Client } from 'pg';
-import { POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB } from "../../../configurations/apis.conf";
-import * as fs from 'fs';
-import * as fastcsv from 'fast-csv';
+import * as fs from "fs";
 import path from "path";
+import { Client } from "pg";
+import { POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB } from "../../../configurations/apis.conf";
 const pgConfig = {
     user: POSTGRES_USER,
-    host: 'localhost',
+    host: "localhost",
     database: POSTGRES_DB,
     password: POSTGRES_PASSWORD,
     port: 5432,
@@ -17,15 +16,13 @@ export async function joinCollectionPostgres() {
     try {
         await pgClient.connect();
 
-        console.log("Connected to PostgreSQL");
-
         const query = `
         SELECT *
         FROM 
         (SELECT siren, 
             SUM(montant) AS last_three_years_subv
         FROM paymentsflat
-        WHERE "dateOperation" < (CURRENT_DATE + INTERVAL '3 years')
+        WHERE "dateOperation" > (CURRENT_DATE - INTERVAL '3 years')
         GROUP BY siren
         ) AS paymentFlat
         LEFT JOIN (
@@ -33,7 +30,7 @@ export async function joinCollectionPostgres() {
         FROM sirene
         ) AS sirene
         ON sirene.siren = paymentFlat.siren
-        `
+        `;
 
         const result = await pgClient.query(query);
         /*
@@ -53,11 +50,8 @@ export async function joinCollectionPostgres() {
                 });
         });
         */
-       console.log(result.rows.length);
         return result;
-
-    }
-    catch (err) {
+    } catch (err) {
         console.error("Error dropping table:", err);
     } finally {
         await pgClient.end();

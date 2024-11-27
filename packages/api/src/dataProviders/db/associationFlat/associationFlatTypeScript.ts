@@ -20,7 +20,6 @@ export async function jointureHybride() {
             },
         ]);
         paymentFlatCollection = await result.toArray();
-        console.log("paymentFlatCollection length", paymentFlatCollection.length);
     } catch (err) {
         console.error(err);
     }
@@ -36,7 +35,6 @@ export async function jointureHybride() {
     // Jointure gauche
     const result = paymentFlatCollection.map(payment => {
         const assoInfo = sireneMap.get(payment._id);
-        //  const assoInfo = sireneCollection.find(sirene => sirene.siren === payment._id);
 
         // Retourner un objet combiné
         return {
@@ -44,7 +42,5 @@ export async function jointureHybride() {
             ...(assoInfo || {}),
         };
     });
-
-    console.log(result.length);
     return result;
 }
