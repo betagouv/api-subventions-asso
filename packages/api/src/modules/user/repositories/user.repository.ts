@@ -112,6 +112,17 @@ export class UserRepository extends MongoRepository<UserDbo> {
     async createIndexes() {
         await this.collection.createIndex({ email: 1 }, { unique: true });
     }
+
+    async updateNbRequests(countByUser: { count: number; _id: string }[]) {
+        const bulk = countByUser.map(({ _id, count }) => ({
+            updateOne: {
+                filter: { _id: new ObjectId(_id) },
+                update: { $inc: { searchCount: count } },
+            },
+        }));
+        if (!bulk.length) return;
+        return this.db.collection("users").bulkWrite(bulk);
+    }
 }
 
 const userRepository = new UserRepository();

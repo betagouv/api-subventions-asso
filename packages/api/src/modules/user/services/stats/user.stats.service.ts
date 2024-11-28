@@ -1,7 +1,5 @@
-import { UserWithStatsDto } from "dto";
+import { UserDto } from "dto";
 import userRepository from "../../repositories/user.repository";
-import userAssociationVisitJoiner from "../../../stats/joiners/UserAssociationVisitsJoiner";
-import { getMostRecentDate } from "../../../../shared/helpers/DateHelper";
 import UserReset from "../../entities/UserReset";
 import userResetRepository from "../../repositories/user-reset.repository";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
@@ -9,6 +7,9 @@ import { NotificationType } from "../../../notify/@types/NotificationType";
 import notifyService from "../../../notify/notify.service";
 import { NotificationDataTypes } from "../../../notify/@types/NotificationDataTypes";
 import ExecutionSyncStack from "../../../../shared/ExecutionSyncStack";
+import statsAssociationsVisitRepository from "../../../stats/repositories/statsAssociationsVisit.repository";
+import userCrudService from "../crud/user.crud.service";
+import configurationsService from "../../../configurations/configurations.service";
 
 export class UserStatsService {
     public countTotalUsersOnDate(date, withAdmin = false) {
@@ -19,21 +20,29 @@ export class UserStatsService {
         return userRepository.findByPeriod(begin, end, withAdmin);
     }
 
-    public async getUsersWithStats(includesAdmin = false): Promise<UserWithStatsDto[]> {
-        const usersWithAssociationVisits = await userAssociationVisitJoiner.findUsersWithAssociationVisits(
-            includesAdmin,
-        );
-        const userWithStats = usersWithAssociationVisits.map(user => {
-            const stats = {
-                lastSearchDate: getMostRecentDate(user.associationVisits.map(visit => visit.date)),
-                searchCount: user.associationVisits.length,
-            };
-            // remove associationVisits
-            const { associationVisits: _associationVisits, ...userDbo } = user;
-            return { ...userDbo, stats } as UserWithStatsDto;
-        });
+    public getUsersWithStats(): Promise<UserDto[]> {
+        return userCrudService.find();
+    }
 
-        return userWithStats;
+    public async updateNbRequests() {
+        const since = await configurationsService.getLastUserStatsUpdate();
+        return this.updateNbRequestsByDate(since, new Date());
+    }
+
+    private async updateNbRequestsByDate(since?: Date, until?: Date) {
+        if (!until) until = new Date();
+        if (!since) {
+            since = new Date();
+            since.setDate(since.getDate() - 1);
+        }
+        const countByUser = (
+            await statsAssociationsVisitRepository.findGroupedByUserIdentifierOnPeriod(since, until)
+        ).map(({ _id, associationVisits }) => ({
+            _id,
+            count: associationVisits.length,
+        }));
+        await userRepository.updateNbRequests(countByUser);
+        await configurationsService.setLastUserStatsUpdate(until);
     }
 
     async notifyAllUsersInSubTools() {
