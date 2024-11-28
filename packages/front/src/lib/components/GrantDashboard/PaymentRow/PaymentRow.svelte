@@ -11,7 +11,7 @@
 
 {#if cells}
     {#each cells as cell}
-        <td>
+        <td on:click>
             {#if cell.title}
                 <TableCellTitle>{cell.title}</TableCellTitle>
             {/if}

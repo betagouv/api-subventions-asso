@@ -87,6 +87,7 @@
                     sortable={true}
                     scrollable={false}
                     bordered={false}
+                    light={true}
                     {headers}>
                     {#each $rows as row, rowIndex}
                         <TableRow id={tableId} index={rowIndex} openModal={true}>

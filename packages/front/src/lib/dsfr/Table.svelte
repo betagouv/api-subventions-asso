@@ -14,6 +14,8 @@
     export let scrollable = true;
     export let bordered = true;
     export let sortable = false;
+    // remove outer border
+    export let light = false;
 
     let tableClasses: string[] = ["fr-table", `fr-table--${size}`];
     if (!scrollable) tableClasses.push("fr-table--no-scroll");
@@ -33,11 +35,11 @@
     }
 </script>
 
-<div class={tableClasses.join(" ")} id="table-component-${id}">
+<div class={tableClasses.join(" ")} id="table-component-{id}">
     <div class="fr-table__wrapper">
         <div class="fr-table__container">
             <div class="fr-table__content">
-                <table id="table-${id}">
+                <table class:no-outer-border={light} id="table-{id}">
                     <caption class:fr-sr-only={hideTitle} aria-hidden={hideTitle}>{title}</caption>
                     <thead>
                         <tr>
@@ -65,7 +67,7 @@
                     <tbody>
                         <slot>
                             {#each rows as row, index}
-                                <tr id="table-${id}-row-key-${index}" data-row-key={index}>
+                                <tr id="table-{id}-row-key-{index}" data-row-key={index}>
                                     {#each row as cell}
                                         <td>{cell}</td>
                                     {/each}
@@ -78,3 +80,10 @@
         </div>
     </div>
 </div>
+
+<style>
+    .no-outer-border {
+        border-left: 0;
+        border-right: 0;
+    }
+</style>

@@ -12,7 +12,7 @@
 
 {#if cells}
     {#each cells as cell}
-        <td>
+        <td on:click>
             {#if cell.badge}
                 {#if cell.badge.status}
                     <StatusLabel status={cell.badge.status} />

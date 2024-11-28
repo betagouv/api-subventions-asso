@@ -1,8 +1,6 @@
 <script>
     import { data } from "$lib/store/modal.store";
     import { capitalizeFirstLetter } from "$lib/helpers/stringHelper";
-
-    data.subscribe(data => console.log(data));
 </script>
 
 {#if $data.application}

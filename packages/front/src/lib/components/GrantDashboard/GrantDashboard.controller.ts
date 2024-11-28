@@ -22,12 +22,12 @@ export class GrantDashboardController {
     public grantPromise: Promise<FlatGrant[]> = returnInfinitePromise();
     public grants: Store<FlatGrant[] | undefined> = new Store(undefined);
     public grantsByExercise: Record<string, FlatGrant[]> = {};
-    public grantRowsByExercise: Record<string, string[][]> = {};
     public selectedExerciseIndex: Store<number | undefined> = new Store(undefined);
 
     // @ts-expect-error: done in initStores()
     public selectedGrants: ReadStore<FlatGrant[] | null>;
     // @ts-expect-error: done in initStores()
+    // TODO: voir si on peut pas mieux gérer ça car utilisé que dans GrantsStatistique
     public selectedExercise: ReadStore<string | null>;
     // final rows displayed in view
     // can be updated with exercise filter and in a futur with other filters
@@ -85,7 +85,6 @@ export class GrantDashboardController {
         this.grants.set(grants);
         this.grantsByExercise = this.splitGrantsByExercise(this.grants.value as FlatGrant[]);
 
-        // needs to be done after grantRowsByExercise or it will not be initialized for derived store trigger
         this.exerciseOptions.set(Object.keys(this.grantsByExercise));
         this.selectedExerciseIndex.set((this.exerciseOptions.value as string[]).length - 1);
     }
@@ -112,7 +111,6 @@ export class GrantDashboardController {
                 };
             }),
         );
-        console.log("updated rows", this.rows.value);
     }
 
     // TODO: MAKE THIS WORK WITH ROWS AS APPLICATION_CELLS AND PAYMENTS_CELLS
