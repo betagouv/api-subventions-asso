@@ -3,7 +3,7 @@ import Rna from "../../../valueObjects/Rna";
 import Siren from "../../../valueObjects/Siren";
 import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
 import osirisService from "./osiris.service";
-import { osirisRequestRepository } from "./repositories";
+import { osirisRequestRepository } from "../../../dataProviders/db/providers/osiris";
 
 const toDemandeSubventionMock = jest.spyOn(OsirisRequestAdapter, "toDemandeSubvention");
 jest.mock("./adapters/OsirisRequestAdapter");

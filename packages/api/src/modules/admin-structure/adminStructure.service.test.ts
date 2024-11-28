@@ -1,9 +1,9 @@
 import adminStructureService from "./adminStructure.service";
 import { BadRequestError } from "../../shared/errors/httpErrors";
-import adminStructureRepository from "./repositories/adminStructure.repository";
+import adminStructureRepository from "../../dataProviders/db/admin-structure/adminStructure.port";
 import { AgentTypeEnum } from "dto";
 
-jest.mock("./repositories/adminStructure.repository");
+jest.mock("../../dataProviders/db/admin-structure/adminStructure.port");
 
 describe("AdminStructureService", () => {
     const REPO_RES = "PROMISE";

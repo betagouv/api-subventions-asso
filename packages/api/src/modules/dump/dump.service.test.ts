@@ -1,9 +1,9 @@
 import dumpService from "./dump.service";
-import metabaseDumpRepo from "./repositories/metabase-dump.repository";
+import metabaseDumpRepo from "../../dataProviders/db/dump/metabase-dump.port";
 import userCrudService from "../user/services/crud/user.crud.service";
 
 jest.mock("../user/services/crud/user.crud.service");
-jest.mock("./repositories/metabase-dump.repository");
+jest.mock("../../dataProviders/db/dump/metabase-dump.port");
 jest.mock("../configurations/configurations.service");
 jest.mock("../stats/stats.service", () => ({
     getAnonymizedLogsOnPeriod: jest.fn((..._args) => ({ hasNext: jest.fn(() => false) })),

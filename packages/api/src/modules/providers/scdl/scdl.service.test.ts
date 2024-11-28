@@ -1,8 +1,8 @@
 import scdlService from "./scdl.service";
-import miscScdlGrantRepository from "./repositories/miscScdlGrant.repository";
-jest.mock("./repositories/miscScdlGrant.repository");
-import miscScdlProducersRepository from "./repositories/miscScdlProducer.repository";
-jest.mock("./repositories/miscScdlProducer.repository");
+import miscScdlGrantRepository from "../../../dataProviders/db/providers/scdl/miscScdlGrant.port";
+jest.mock("../../../dataProviders/db/providers/scdl/miscScdlGrant.port");
+import miscScdlProducersRepository from "../../../dataProviders/db/providers/scdl/miscScdlProducer.port";
+jest.mock("../../../dataProviders/db/providers/scdl/miscScdlProducer.port");
 import { getMD5 } from "../../../shared/helpers/StringHelper";
 jest.mock("../../../shared/helpers/StringHelper");
 

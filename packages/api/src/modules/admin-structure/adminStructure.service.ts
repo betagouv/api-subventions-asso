@@ -1,6 +1,6 @@
 import { AgentTypeEnum } from "dto";
 import { BadRequestError } from "../../shared/errors/httpErrors";
-import adminStructureRepository from "./repositories/adminStructure.repository";
+import adminStructureRepository from "../../dataProviders/db/admin-structure/adminStructure.port";
 import AdminStructureEntity from "./entities/AdminStructureEntity";
 
 export class AdminStructureService {

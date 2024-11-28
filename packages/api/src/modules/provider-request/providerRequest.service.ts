@@ -1,6 +1,6 @@
 import axios, { AxiosError } from "axios";
+import providerRequestRepository from "../../dataProviders/db/provider-request/providerRequest.port";
 import ProviderRequestLog from "./entities/ProviderRequestLog";
-import providerRequestRepository from "./repositories/providerRequest.repository";
 import RequestConfig from "./@types/RequestConfig";
 import { RequestResponse } from "./@types/RequestResponse";
 import RequestConfigAdapter from "./adapters/RequestConfigAdapter";

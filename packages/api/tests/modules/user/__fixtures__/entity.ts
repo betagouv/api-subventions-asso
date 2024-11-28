@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import UserDbo from "../../../../src/modules/user/repositories/dbo/UserDbo";
+import UserDbo from "../../../../src/dataProviders/db/user/UserDbo";
 
 export default [
     {

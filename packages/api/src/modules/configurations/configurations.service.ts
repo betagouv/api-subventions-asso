@@ -1,8 +1,8 @@
 import { BadRequestError, ConflictError } from "../../shared/errors/httpErrors";
 import { REGEX_MAIL_DOMAIN } from "../user/user.constant";
+import configurationsRepository from "../../dataProviders/db/configurations/configurations.port";
 import { DauphinTokenDataEntity, DauphinTokenAvailableTime } from "./entities";
 import ConfigurationEntity from "./entities/ConfigurationEntity";
-import configurationsRepository from "./repositories/configurations.repository";
 
 export enum CONFIGURATION_NAMES {
     DAUPHIN_TOKEN = "DAUPHIN-TOKEN",

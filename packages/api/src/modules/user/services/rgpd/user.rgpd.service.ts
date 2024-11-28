@@ -1,21 +1,21 @@
 import { UserDataDto, UserDto } from "dto";
 import * as Sentry from "@sentry/node";
 import { NotFoundError } from "../../../../shared/errors/httpErrors";
-import userResetRepository from "../../repositories/user-reset.repository";
-import consumerTokenRepository from "../../repositories/consumer-token.repository";
+import userResetRepository from "../../../../dataProviders/db/user/user-reset.port";
+import consumerTokenRepository from "../../../../dataProviders/db/user/consumer-token.port";
 import { uniformizeId } from "../../../../shared/helpers/RepositoryHelper";
 import statsService from "../../../stats/stats.service";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
-import userRepository from "../../repositories/user.repository";
+import userRepository from "../../../../dataProviders/db/user/user.port";
 import userCrudService from "../crud/user.crud.service";
 import { DefaultObject } from "../../../../@types";
 import userActivationService from "../activation/user.activation.service";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
-import configurationsRepository from "../../../configurations/repositories/configurations.repository";
+import configurationsRepository from "../../../../dataProviders/db/configurations/configurations.port";
 import configurationsService, { CONFIGURATION_NAMES } from "../../../configurations/configurations.service";
 import { STALL_RGPD_CRON_6_MONTHS_DELETION } from "../../../../configurations/mail.conf";
-import statsRepository from "../../../stats/repositories/stats.repository";
+import statsRepository from "../../../../dataProviders/db/stats/stats.port";
 
 export class UserRgpdService {
     public async getAllData(userId: string): Promise<UserDataDto> {

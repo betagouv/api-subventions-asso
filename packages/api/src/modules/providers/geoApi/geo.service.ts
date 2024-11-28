@@ -1,8 +1,8 @@
 import { GeoDepartementDto, GeoRegionDto } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import ProviderCore from "../ProviderCore";
+import geoRepository from "../../../dataProviders/db/providers/geoApi/geo.port";
 import { GeoEntity } from "./@types/geo.types";
-import geoRepository from "./geo.repository";
 
 export class GeoService extends ProviderCore {
     apiUrl = "https://geo.api.gouv.fr";

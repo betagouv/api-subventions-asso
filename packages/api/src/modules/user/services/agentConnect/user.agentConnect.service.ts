@@ -1,10 +1,10 @@
 import { FutureUserDto, UpdatableUser, UserDto, UserWithJWTDto } from "dto";
 import { Client, generators, Issuer, TokenSet } from "openid-client";
 import { ObjectId } from "mongodb";
-import userRepository from "../../repositories/user.repository";
+import userRepository from "../../../../dataProviders/db/user/user.port";
 import userAuthService from "../auth/user.auth.service";
 import notifyService from "../../../notify/notify.service";
-import UserDbo from "../../repositories/dbo/UserDbo";
+import UserDbo from "../../../../dataProviders/db/user/UserDbo";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import { AgentConnectUser } from "../../@types/AgentConnectUser";
 import userCrudService from "../crud/user.crud.service";
@@ -14,7 +14,7 @@ import { BadRequestError, InternalServerError } from "../../../../shared/errors/
 import { removeHashPassword, removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
 import configurationsService from "../../../configurations/configurations.service";
 import { applyValidations, ValidationResult } from "../../../../shared/helpers/validation.helper";
-import agentConnectTokenRepository from "../../repositories/acToken.repository";
+import agentConnectTokenRepository from "../../../../dataProviders/db/user/acToken.port";
 import {
     AGENT_CONNECT_CLIENT_ID,
     AGENT_CONNECT_CLIENT_SECRET,

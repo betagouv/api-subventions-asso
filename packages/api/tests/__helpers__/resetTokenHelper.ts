@@ -1,7 +1,7 @@
 import RandToken from "rand-token";
 
 import UserReset from "../../src/modules/user/entities/UserReset";
-import userResetRepository from "../../src/modules/user/repositories/user-reset.repository";
+import userResetRepository from "../../src/dataProviders/db/user/user-reset.port";
 
 export const createResetToken = async userId => {
     const token = RandToken.generate(32);

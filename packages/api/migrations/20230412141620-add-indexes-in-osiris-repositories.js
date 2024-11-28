@@ -1,10 +1,10 @@
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const {
     default: osirisActionRepository,
-} = require("../build/src/modules/providers/osiris/repositories/osiris.action.repository");
+} = require("../build/src/dataProviders/db/providers/osiris/osiris.action.port");
 const {
     default: osirisRequestRepository,
-} = require("../build/src/modules/providers/osiris/repositories/osiris.request.repository");
+} = require("../build/src/dataProviders/db/providers/osiris/osiris.request.port");
 
 module.exports = {
     async up() {

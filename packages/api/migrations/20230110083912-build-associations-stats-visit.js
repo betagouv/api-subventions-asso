@@ -1,15 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require("../build/src/shared/MongoConnection");
-const { default: statsRepository } = require("../build/src/modules/stats/repositories/stats.repository");
+const { default: statsRepository } = require("../build/src/dataProviders/db/stats/stats.port");
 const {
     default: statsAssociationsVisitRepository,
-} = require("../build/src/modules/stats/repositories/statsAssociationsVisit.repository");
-const { default: userRepository } = require("../build/src/modules/user/repositories/user.repository");
+} = require("../build/src/dataProviders/db/stats/statsAssociationsVisit.port");
+const { default: userRepository } = require("../build/src/dataProviders/db/user/user.port");
 const { getIdentifierType } = require("../build/src/shared/helpers/IdentifierHelper");
 const { siretToSiren } = require("../build/src/shared/helpers/SirenHelper");
-const {
-    default: rnaSirenRepository,
-} = require("../build/src/modules/_open-data/rna-siren/repositories/rnaSiren.repository");
+const { default: rnaSirenRepository } = require("../build/src/dataProviders/db/rnaSiren/rnaSiren.port");
 /* eslint-enable @typescript-eslint/no-var-requires */
 
 module.exports = {

@@ -1,10 +1,10 @@
 import { RgpdCron } from "../../../src/interfaces/cron/Rgpd.cron";
-import userRepository from "../../../src/modules/user/repositories/user.repository";
+import userRepository from "../../../src/dataProviders/db/user/user.port";
 import { USER_DBO } from "../../../src/modules/user/__fixtures__/user.fixture";
 import brevoContactNotifyPipe from "../../../src/modules/notify/outPipes/BrevoContactNotifyPipe";
 import axios from "axios";
 import brevoMailNotifyPipe from "../../../src/modules/notify/outPipes/BrevoMailNotifyPipe";
-import userResetRepository from "../../../src/modules/user/repositories/user-reset.repository";
+import userResetRepository from "../../../src/dataProviders/db/user/user-reset.port";
 import configurationsService, { CONFIGURATION_NAMES } from "../../../src/modules/configurations/configurations.service";
 
 describe("Rgpd Cron", () => {

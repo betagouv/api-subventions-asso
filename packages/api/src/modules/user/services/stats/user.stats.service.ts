@@ -1,9 +1,9 @@
 import { UserWithStatsDto } from "dto";
-import userRepository from "../../repositories/user.repository";
+import userRepository from "../../../../dataProviders/db/user/user.port";
 import userAssociationVisitJoiner from "../../../stats/joiners/UserAssociationVisitsJoiner";
 import { getMostRecentDate } from "../../../../shared/helpers/DateHelper";
 import UserReset from "../../entities/UserReset";
-import userResetRepository from "../../repositories/user-reset.repository";
+import userResetRepository from "../../../../dataProviders/db/user/user-reset.port";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import notifyService from "../../../notify/notify.service";

@@ -1,8 +1,8 @@
 import path from "node:path";
 import SubventiaCli from "../../../src/interfaces/cli/Subventia.cli";
-import subventiaRepository from "../../../src/modules/providers/subventia/repositories/subventia.repository";
+import subventiaRepository from "../../../src/dataProviders/db/providers/subventia/subventia.port";
 import { ObjectId } from "mongodb";
-import dataLogRepository from "../../../src/modules/data-log/repositories/dataLog.repository";
+import dataLogRepository from "../../../src/dataProviders/db/data-log/dataLog.port";
 
 describe("Subventia Cli", () => {
     let cli: SubventiaCli;

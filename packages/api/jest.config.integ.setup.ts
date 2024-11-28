@@ -23,7 +23,7 @@ import db, { connectDB, client } from "./src/shared/MongoConnection";
 import { initIndexes } from "./src/shared/MongoInit";
 import { startServer } from "./src/server";
 import { scheduler } from "./src/cron";
-import configurationsRepository from "./src/modules/configurations/repositories/configurations.repository";
+import configurationsRepository from "./src/dataProviders/db/configurations/configurations.port";
 import { CONFIGURATION_NAMES } from "./src/modules/configurations/configurations.service";
 import { initAsyncServices } from "./src/shared/initAsyncServices";
 import { initTests } from "./jest.config.integ.init";

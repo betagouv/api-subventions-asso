@@ -6,10 +6,10 @@ import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import { StructureIdentifier } from "../../../@types";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
+import subventiaRepository from "../../../dataProviders/db/providers/subventia/subventia.port";
 import SubventiaParser from "./subventia.parser";
 import SubventiaValidator from "./validators/subventia.validator";
 import SubventiaAdapter from "./adapters/subventia.adapter";
-import subventiaRepository from "./repositories/subventia.repository";
 import SubventiaEntity, { SubventiaDbo } from "./@types/subventia.entity";
 import SubventiaDto from "./@types/subventia.dto";
 

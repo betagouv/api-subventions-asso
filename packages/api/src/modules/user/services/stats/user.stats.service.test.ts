@@ -1,6 +1,6 @@
 import userStatsService from "./user.stats.service";
-import userRepository from "../../repositories/user.repository";
-jest.mock("../../repositories/user.repository");
+import userRepository from "../../../../dataProviders/db/user/user.port";
+jest.mock("../../../../dataProviders/db/user/user.port");
 const mockedUserRepository = jest.mocked(userRepository);
 import userAssociationVisitJoiner from "../../../stats/joiners/UserAssociationVisitsJoiner";
 import { USER_DBO, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";

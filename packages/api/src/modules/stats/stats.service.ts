@@ -4,20 +4,20 @@ import { firstDayOfPeriod, isValidDate, oneYearAfterPeriod } from "../../shared/
 import { BadRequestError } from "../../shared/errors/httpErrors";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";
 import associationNameService from "../association-name/associationName.service";
-import userRepository from "../user/repositories/user.repository";
+import userRepository from "../../dataProviders/db/user/user.port";
 import { RoleEnum } from "../../@enums/Roles";
-import UserDbo from "../user/repositories/dbo/UserDbo";
+import UserDbo from "../../dataProviders/db/user/UserDbo";
 import { isUserActif } from "../../shared/helpers/UserHelper";
 import * as DateHelper from "../../shared/helpers/DateHelper";
 import userStatsService from "../user/services/stats/user.stats.service";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import Rna from "../../valueObjects/Rna";
 import associationIdentifierService from "../association-identifier/association-identifier.service";
+import statsAssociationsVisitRepository from "../../dataProviders/db/stats/statsAssociationsVisit.port";
+import statsRepository from "../../dataProviders/db/stats/stats.port";
 import userAssociationVisitJoiner from "./joiners/UserAssociationVisitsJoiner";
 import { UserWithAssociationVisitsEntity } from "./entities/UserWithAssociationVisitsEntity";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
-import statsAssociationsVisitRepository from "./repositories/statsAssociationsVisit.repository";
-import statsRepository from "./repositories/stats.repository";
 import GroupAssociationVisits from "./@types/GroupAssociationVisits";
 
 class StatsService {
@@ -202,8 +202,8 @@ class StatsService {
 
         const getAssociationName = async idStr => {
             const associationIdentifiers = await associationIdentifierService.getAssociationIdentifiers(idStr);
-            return associationIdentifiers.length ?
-                (await associationNameService.getNameFromIdentifier(associationIdentifiers[0])) || idStr
+            return associationIdentifiers.length
+                ? (await associationNameService.getNameFromIdentifier(associationIdentifiers[0])) || idStr
                 : idStr;
         };
         const namedTopAssociations = topAssociationsAsc.reduce(async (acc, topAssociation) => {

@@ -2,7 +2,7 @@ import { isObjectBindingPattern } from "typescript";
 import { BadRequestError } from "../../shared/errors/httpErrors";
 import { ConflictError } from "../../shared/errors/httpErrors/ConflictError";
 import configurationsService, { ConfigurationsService, CONFIGURATION_NAMES } from "./configurations.service";
-import configurationsRepository from "./repositories/configurations.repository";
+import configurationsRepository from "../../dataProviders/db/configurations/configurations.port";
 import { ObjectId } from "mongodb";
 
 describe("ConfigurationService", () => {

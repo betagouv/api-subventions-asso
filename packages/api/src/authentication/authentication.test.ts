@@ -3,7 +3,7 @@ import * as express from "express";
 
 import { expressAuthentication } from "../../src/authentication/authentication";
 import jwt from "jsonwebtoken";
-import userRepository from "../modules/user/repositories/user.repository";
+import userRepository from "../dataProviders/db/user/user.port";
 import { ObjectId } from "mongodb";
 import { LoginRequest } from "../@types";
 import { RoleEnum } from "../@enums/Roles";
@@ -51,7 +51,7 @@ describe("expressAuthentication", () => {
                 service: "",
                 phoneNumber: "",
                 jobType: [],
-                lastActivityDate: null
+                lastActivityDate: null,
             }),
         );
         mockedUserAuthService.findJwtByEmail.mockImplementation(() =>
@@ -73,7 +73,7 @@ describe("expressAuthentication", () => {
                 jobType: [],
                 hashPassword: "fqskfyqfdkq",
                 jwt: { token: "dsdsgfd", expirateDate: new Date() },
-                lastActivityDate: null
+                lastActivityDate: null,
             }),
         );
         // @ts-expect-error: mock

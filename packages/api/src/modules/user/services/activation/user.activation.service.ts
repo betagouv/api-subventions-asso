@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import * as RandToken from "rand-token";
 import { ResetPasswordErrorCodes, TokenValidationDtoResponse, TokenValidationType, UserDto } from "dto";
-import userRepository from "../../repositories/user.repository";
+import userRepository from "../../../../dataProviders/db/user/user.port";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import UserReset from "../../entities/UserReset";
 import {
@@ -11,12 +11,12 @@ import {
     ResetTokenNotFoundError,
     UserNotFoundError,
 } from "../../../../shared/errors/httpErrors";
-import userResetRepository from "../../repositories/user-reset.repository";
+import userResetRepository from "../../../../dataProviders/db/user/user-reset.port";
 import notifyService from "../../../notify/notify.service";
 import userAuthService from "../auth/user.auth.service";
 import userCheckService, { UserCheckService } from "../check/user.check.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
-import UserDbo from "../../repositories/dbo/UserDbo";
+import UserDbo from "../../../../dataProviders/db/user/UserDbo";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import userCrudService from "../crud/user.crud.service";
 import { UserServiceErrors } from "../../user.enum";

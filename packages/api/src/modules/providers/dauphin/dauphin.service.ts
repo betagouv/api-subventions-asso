@@ -17,10 +17,10 @@ import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifi
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import Siren from "../../../valueObjects/Siren";
 import GrantProvider from "../../grant/@types/GrantProvider";
+import dauphinGisproRepository from "../../../dataProviders/db/providers/dauphin/dauphin-gispro.port";
+import DauphinGisproDbo from "../../../dataProviders/db/providers/dauphin/DauphinGisproDbo";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
-import dauphinGisproRepository from "./repositories/dauphin-gispro.repository";
-import DauphinGisproDbo from "./repositories/dbo/DauphinGisproDbo";
 
 export class DauphinService
     extends ProviderCore

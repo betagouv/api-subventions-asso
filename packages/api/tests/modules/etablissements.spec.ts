@@ -6,7 +6,7 @@ import { siretToSiren } from "../../src/shared/helpers/SirenHelper";
 import associationsService from "../../src/modules/associations/associations.service";
 import { BadRequestError } from "../../src/shared/errors/httpErrors";
 import OsirisRequestEntityFixture from "./providers/osiris/__fixtures__/entity";
-import { osirisRequestRepository } from "../../src/modules/providers/osiris/repositories";
+import { osirisRequestRepository } from "../../src/dataProviders/db/providers/osiris";
 import DEFAULT_ASSOCIATION from "../__fixtures__/association.fixture";
 import rnaSirenPort from "../../src/dataProviders/db/rnaSiren/rnaSiren.port";
 import Siret from "../../src/valueObjects/Siret";

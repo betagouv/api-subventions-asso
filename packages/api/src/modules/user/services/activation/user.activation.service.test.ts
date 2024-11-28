@@ -1,5 +1,5 @@
 import userActivationService from "./user.activation.service";
-import userRepository from "../../repositories/user.repository";
+import userRepository from "../../../../dataProviders/db/user/user.port";
 import { USER_DBO, USER_SECRETS, USER_WITHOUT_PASSWORD, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import UserReset from "../../entities/UserReset";
@@ -11,10 +11,10 @@ import {
     ResetTokenNotFoundError,
 } from "../../../../shared/errors/httpErrors";
 import { ResetPasswordErrorCodes, TokenValidationDtoPositiveResponse, TokenValidationType, UserDto } from "dto";
-jest.mock("../../repositories/user.repository");
+jest.mock("../../../../dataProviders/db/user/user.port");
 const mockedUserRepository = jest.mocked(userRepository);
-import userResetRepository from "../../repositories/user-reset.repository";
-jest.mock("../../repositories/user-reset.repository");
+import userResetRepository from "../../../../dataProviders/db/user/user-reset.port";
+jest.mock("../../../../dataProviders/db/user/user-reset.port");
 const mockedUserResetRepository = jest.mocked(userResetRepository);
 import userCheckService, { UserCheckService } from "../check/user.check.service";
 jest.mock("../check/user.check.service");

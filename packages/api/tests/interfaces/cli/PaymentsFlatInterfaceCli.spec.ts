@@ -8,7 +8,7 @@ import {
     MOCK_DOCUMENTS,
     PROGRAMS,
 } from "../../__fixtures__/paymentsFlat.fixture";
-import chorusLineRepository from "../../../src/modules/providers/chorus/repositories/chorus.line.repository";
+import chorusLineRepository from "../../../src/dataProviders/db/providers/chorus/chorus.line.port";
 import dataBretagnePort from "../../../src/dataProviders/api/dataBretagne/dataBretagne.port";
 import stateBudgetProgramPort from "../../../src/dataProviders/db/state-budget-program/stateBudgetProgram.port";
 

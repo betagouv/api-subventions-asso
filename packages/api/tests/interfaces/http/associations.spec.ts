@@ -1,6 +1,6 @@
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
-import osirisRequestRepository from "../../../src/modules/providers/osiris/repositories/osiris.request.repository";
-import fonjepSubventionRepository from "../../../src/modules/providers/fonjep/repositories/fonjep.subvention.repository";
+import osirisRequestRepository from "../../../src/dataProviders/db/providers/osiris/osiris.request.port";
+import fonjepSubventionRepository from "../../../src/dataProviders/db/providers/fonjep/fonjep.subvention.port";
 import {
     SubventionEntity as FonjepSubventionFixture,
     PaymentEntity as FonjepPaymentFixture,
@@ -14,30 +14,30 @@ import { BadRequestError } from "../../../src/shared/errors/httpErrors";
 import associationsService from "../../../src/modules/associations/associations.service";
 import rnaSirenPort from "../../../src/dataProviders/db/rnaSiren/rnaSiren.port";
 import { JoinedRawGrant, RawGrant } from "../../../src/modules/grant/@types/rawGrant";
-import demarchesSimplifieesDataRepository from "../../../src/modules/providers/demarchesSimplifiees/repositories/demarchesSimplifieesData.repository";
+import demarchesSimplifieesDataRepository from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
 import {
     DATA_ENTITIES as DS_DATA_ENTITIES,
     SCHEMAS as DS_SCHEMAS,
 } from "../../dataProviders/db/__fixtures__/demarchesSimplifiees.fixtures";
-import demarchesSimplifieesMapperRepository from "../../../src/modules/providers/demarchesSimplifiees/repositories/demarchesSimplifieesMapper.repository";
+import demarchesSimplifieesMapperRepository from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port";
 import demarchesSimplifieesService from "../../../src/modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
 import caisseDepotsService from "../../../src/modules/providers/caisseDepots/caisseDepots.service";
 import { CAISSE_DES_DEPOTS_DTO } from "../../dataProviders/api/caisseDepots.fixtures";
 
-import miscScdlGrantRepository from "../../../src/modules/providers/scdl/repositories/miscScdlGrant.repository";
+import miscScdlGrantRepository from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.port";
 import DEFAULT_ASSOCIATION, { LONELY_RNA } from "../../__fixtures__/association.fixture";
-import dauphinGisproRepository from "../../../src/modules/providers/dauphin/repositories/dauphin-gispro.repository";
+import dauphinGisproRepository from "../../../src/dataProviders/db/providers/dauphin/dauphin-gispro.port";
 import { DAUPHIN_GISPRO_DBOS } from "../../dataProviders/db/__fixtures__/dauphinGispro.fixtures";
 import rnaSirenService from "../../../src/modules/rna-siren/rnaSiren.service";
 import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
-import chorusLineRepository from "../../../src/modules/providers/chorus/repositories/chorus.line.repository";
+import chorusLineRepository from "../../../src/dataProviders/db/providers/chorus/chorus.line.port";
 import { ChorusFixtures } from "../../dataProviders/db/__fixtures__/chorus.fixtures";
-import fonjepPaymentRepository from "../../../src/modules/providers/fonjep/repositories/fonjep.payment.repository";
+import fonjepPaymentRepository from "../../../src/dataProviders/db/providers/fonjep/fonjep.payment.port";
 import FonjepSubventionEntity from "../../../src/modules/providers/fonjep/entities/FonjepSubventionEntity";
 import Rna from "../../../src/valueObjects/Rna";
 import Siret from "../../../src/valueObjects/Siret";
 import { Grant } from "dto";
-import miscScdlProducersRepository from "../../../src/modules/providers/scdl/repositories/miscScdlProducer.repository";
+import miscScdlProducersRepository from "../../../src/dataProviders/db/providers/scdl/miscScdlProducer.port";
 
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
 

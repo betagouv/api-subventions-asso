@@ -1,6 +1,6 @@
 import { UserDto } from "dto";
 import { RoleEnum } from "../../../../@enums/Roles";
-import userRepository from "../../repositories/user.repository";
+import userRepository from "../../../../dataProviders/db/user/user.port";
 import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
 import { UserServiceErrors } from "../../user.enum";
 

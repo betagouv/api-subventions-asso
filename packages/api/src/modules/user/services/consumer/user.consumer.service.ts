@@ -5,7 +5,7 @@ import userAuthService from "../auth/user.auth.service";
 import { RoleEnum } from "../../../../@enums/Roles";
 import { InternalServerError, NotFoundError } from "../../../../shared/errors/httpErrors";
 import { ConsumerToken } from "../../entities/ConsumerToken";
-import consumerTokenRepository from "../../repositories/consumer-token.repository";
+import consumerTokenRepository from "../../../../dataProviders/db/user/consumer-token.port";
 import { UserServiceErrors } from "../../user.enum";
 
 export class UserConsumerService {

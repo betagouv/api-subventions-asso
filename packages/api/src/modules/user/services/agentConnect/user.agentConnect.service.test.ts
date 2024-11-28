@@ -2,13 +2,13 @@ import userAgentConnectService, { UserAgentConnectService } from "./user.agentCo
 import { AGENT_CONNECT_URL } from "../../../../configurations/agentConnect.conf";
 import { Issuer, TokenSet } from "openid-client";
 import { AgentConnectTokenDbo, AgentConnectUser } from "../../@types/AgentConnectUser";
-import userRepository from "../../repositories/user.repository";
+import userRepository from "../../../../dataProviders/db/user/user.port";
 import userAuthService from "../auth/user.auth.service";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import { removeHashPassword, removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
 import { USER_DBO, USER_WITHOUT_PASSWORD, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
-import agentConnectTokenRepository from "../../repositories/acToken.repository";
+import agentConnectTokenRepository from "../../../../dataProviders/db/user/acToken.port";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import { ObjectId } from "mongodb";
 import { InternalServerError } from "../../../../shared/errors/httpErrors";
@@ -30,8 +30,8 @@ jest.mock("../../../notify/notify.service", () => ({
 }));
 jest.mock("../../../../shared/helpers/RepositoryHelper");
 jest.mock("../crud/user.crud.service");
-jest.mock("../../repositories/user.repository");
-jest.mock("../../repositories/acToken.repository");
+jest.mock("../../../../dataProviders/db/user/user.port");
+jest.mock("../../../../dataProviders/db/user/acToken.port");
 jest.mock("../../../configurations/configurations.service");
 jest.mock("../auth/user.auth.service");
 

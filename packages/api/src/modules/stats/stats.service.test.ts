@@ -10,11 +10,11 @@ jest.mock("../../shared/helpers/UserHelper", () => {
 import statsService from "./stats.service";
 import * as DateHelper from "../../shared/helpers/DateHelper";
 import associationNameService from "../association-name/associationName.service";
-import statsRepository from "./repositories/stats.repository";
-import statsAssociationsVisitRepository from "./repositories/statsAssociationsVisit.repository";
+import statsRepository from "../../dataProviders/db/stats/stats.port";
+import statsAssociationsVisitRepository from "../../dataProviders/db/stats/statsAssociationsVisit.port";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
-import userRepository from "../user/repositories/user.repository";
-import UserDbo from "../user/repositories/dbo/UserDbo";
+import userRepository from "../../dataProviders/db/user/user.port";
+import UserDbo from "../../dataProviders/db/user/UserDbo";
 import { UserDto } from "dto";
 import userAssociationVisitJoiner from "./joiners/UserAssociationVisitsJoiner";
 import { UserWithAssociationVisitsEntity } from "./entities/UserWithAssociationVisitsEntity";
@@ -384,7 +384,7 @@ describe("StatsService", () => {
             groupAssociationVisitsByAssociationMock.mockImplementationOnce(async () => DATA);
             keepOneVisitByUserAndDateMock.mockImplementationOnce(data => data);
             getNameFromIdentifierMock.mockImplementationOnce(async () => undefined);
-            getAssociationIdentifiersMock.mockResolvedValueOnce([ expected ]);
+            getAssociationIdentifiersMock.mockResolvedValueOnce([expected]);
             await statsService.getTopAssociationsByPeriod(5, START, END);
 
             expect(getNameFromIdentifierMock).toHaveBeenCalledWith(expected);
@@ -405,8 +405,7 @@ describe("StatsService", () => {
             findGroupedByAssociationIdentifierOnPeriodMock.mockImplementationOnce(async () => []);
             groupAssociationVisitsByAssociationMock.mockImplementationOnce(async () => DATA);
             keepOneVisitByUserAndDateMock.mockImplementation(data => data);
-            getAssociationIdentifiersMock
-                .mockResolvedValueOnce([]);
+            getAssociationIdentifiersMock.mockResolvedValueOnce([]);
 
             const actual = await statsService.getTopAssociationsByPeriod(1, START, END);
 
@@ -460,8 +459,8 @@ describe("StatsService", () => {
             groupAssociationVisitsByAssociationMock.mockImplementationOnce(async () => DATA);
             keepOneVisitByUserAndDateMock.mockImplementation(data => data);
             getNameFromIdentifierMock.mockResolvedValueOnce(expected.name);
-            // @ts-expect-error 
-            getAssociationIdentifiersMock.mockResolvedValueOnce([{test: true}]);
+            // @ts-expect-error
+            getAssociationIdentifiersMock.mockResolvedValueOnce([{ test: true }]);
             const actual = await statsService.getTopAssociationsByPeriod(2, START, END);
 
             expect(actual).toEqual([expected]);

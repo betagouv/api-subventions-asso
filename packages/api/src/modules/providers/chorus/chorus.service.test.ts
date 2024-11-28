@@ -1,6 +1,6 @@
 import chorusService from "./chorus.service";
-import chorusLineRepository from "./repositories/chorus.line.repository";
-jest.mock("./repositories/chorus.line.repository");
+import chorusLineRepository from "../../../dataProviders/db/providers/chorus/chorus.line.port";
+jest.mock("../../../dataProviders/db/providers/chorus/chorus.line.port");
 const mockedChorusLineRepository = jest.mocked(chorusLineRepository);
 import ChorusAdapter from "./adapters/ChorusAdapter";
 jest.mock("./adapters/ChorusAdapter");

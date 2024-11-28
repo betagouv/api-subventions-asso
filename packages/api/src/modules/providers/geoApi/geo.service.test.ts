@@ -1,7 +1,7 @@
 import { GeoService } from "./geo.service";
-import geoRepository from "./geo.repository";
+import geoRepository from "../../../dataProviders/db/providers/geoApi/geo.port";
 
-jest.mock("./geo.repository");
+jest.mock("../../../dataProviders/db/providers/geoApi/geo.port");
 
 describe("GeoService", () => {
     let ctrl: GeoService;

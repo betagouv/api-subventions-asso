@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require("../build/src/shared/MongoConnection");
 
-const userRepository = require("../build/src/modules/user/repositoies/user.repository").default;
+const userRepository = require("../build/src/dataProviders/db/user/user.port").default;
 const asyncForEach = require("../build/src/shared/helpers/ArrayHelper").asyncForEach;
 
 module.exports = {

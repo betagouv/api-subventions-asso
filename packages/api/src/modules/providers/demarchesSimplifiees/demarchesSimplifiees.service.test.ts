@@ -1,5 +1,5 @@
-jest.mock("./repositories/demarchesSimplifieesMapper.repository");
-jest.mock("./repositories/demarchesSimplifieesData.repository");
+jest.mock("../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port");
+jest.mock("../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port");
 jest.mock("./adapters/DemarchesSimplifieesEntityAdapter");
 
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
@@ -7,8 +7,8 @@ import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifie
 import demarchesSimplifieesService from "./demarchesSimplifiees.service";
 import DemarchesSimplifieesMapperEntity from "./entities/DemarchesSimplifieesMapperEntity";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
-import demarchesSimplifieesDataRepository from "./repositories/demarchesSimplifieesData.repository";
-import demarchesSimplifieesMapperRepository from "./repositories/demarchesSimplifieesMapper.repository";
+import demarchesSimplifieesDataRepository from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
+import demarchesSimplifieesMapperRepository from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port";
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
 import { DATA_ENTITIES, SCHEMAS } from "./__fixtures__/DemarchesSimplifieesFixture";
 import {

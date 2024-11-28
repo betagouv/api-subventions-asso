@@ -1,5 +1,5 @@
 import request from "supertest";
-import dataLogRepository from "../../../src/modules/data-log/repositories/dataLog.repository";
+import dataLogRepository from "../../../src/dataProviders/db/data-log/dataLog.port";
 
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
 

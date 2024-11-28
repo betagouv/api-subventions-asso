@@ -14,8 +14,8 @@ import userCheckService from "../check/user.check.service";
 import userActivationService from "../activation/user.activation.service";
 import userCrudService from "../crud/user.crud.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
-import userRepository from "../../repositories/user.repository";
-import userResetRepository from "../../repositories/user-reset.repository";
+import userRepository from "../../../../dataProviders/db/user/user.port";
+import userResetRepository from "../../../../dataProviders/db/user/user-reset.port";
 import notifyService from "../../../notify/notify.service";
 import { ObjectId } from "mongodb";
 import geoService from "../../../providers/geoApi/geo.service";
@@ -34,9 +34,9 @@ jest.mock("../activation/user.activation.service");
 const mockedUserActivationService = jest.mocked(userActivationService);
 jest.mock("../crud/user.crud.service");
 const mockedUserCrudService = jest.mocked(userCrudService);
-jest.mock("../../repositories/user.repository");
+jest.mock("../../../../dataProviders/db/user/user.port");
 const mockedUserRepository = jest.mocked(userRepository);
-jest.mock("../../repositories/user-reset.repository");
+jest.mock("../../../../dataProviders/db/user/user-reset.port");
 const mockedUserResetRepository = jest.mocked(userResetRepository);
 jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),

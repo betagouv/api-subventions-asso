@@ -1,9 +1,9 @@
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
 import fonjepService, { FonjepRejectedRequest, FONJEP_SERVICE_ERRORS } from "./fonjep.service";
-import fonjepSubventionRepository from "./repositories/fonjep.subvention.repository";
+import fonjepSubventionRepository from "../../../dataProviders/db/providers/fonjep/fonjep.subvention.port";
 import { SubventionEntity, PaymentEntity } from "../../../../tests/modules/providers/fonjep/__fixtures__/entity";
 import * as Validators from "../../../shared/Validators";
-import fonjepPaymentRepository from "./repositories/fonjep.payment.repository";
+import fonjepPaymentRepository from "../../../dataProviders/db/providers/fonjep/fonjep.payment.port";
 import fonjepJoiner from "./joiners/fonjepJoiner";
 import { FONJEP_PAYMENTS, FONJEP_PAYMENT_ENTITIES } from "./__fixtures__/FonjepEntities";
 import { RawApplication, RawFullGrant, RawPayment } from "../../grant/@types/rawGrant";

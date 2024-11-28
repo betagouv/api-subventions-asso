@@ -1,6 +1,6 @@
 import { PaginatedAssociationNameDto } from "dto";
 import associationNameService from "../association-name/associationName.service";
-import searchRepository from "./repositories/search.repository";
+import searchRepository from "../../dataProviders/db/search/search.port";
 import AssociationNameDtoAdapter from "./adapters/AssociationNameDtoAdapter";
 
 export class SearchService {

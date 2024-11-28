@@ -2,7 +2,7 @@ import { ENV } from "../../configurations/env.conf";
 import configurationsService from "../configurations/configurations.service";
 import statsService from "../stats/stats.service";
 import userCrudService from "../user/services/crud/user.crud.service";
-import metabaseDumpRepo from "./repositories/metabase-dump.repository";
+import metabaseDumpRepo from "../../dataProviders/db/dump/metabase-dump.port";
 
 export class DumpService {
     // Dump logs, stats tables

@@ -1,6 +1,4 @@
-const {
-    default: miscScdlGrantRepository,
-} = require("../build/src/modules/providers/scdl/repositories/miscScdlGrant.repository");
+const { default: miscScdlGrantRepository } = require("../build/src/dataProviders/db/providers/scdl/miscScdlGrant.port");
 
 module.exports = {
     async up(db) {

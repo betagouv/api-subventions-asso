@@ -1,5 +1,9 @@
 import { printAtSameLine } from "../../../shared/helpers/CliHelper";
-import { osirisRequestRepository, osirisActionRepository, osirisEvaluationRepository } from "./repositories";
+import {
+    osirisRequestRepository,
+    osirisActionRepository,
+    osirisEvaluationRepository,
+} from "../../../dataProviders/db/providers/osiris";
 
 export default class OsirisMigration {
     async setExtractYearOnOsirisEntities(year = 2021) {

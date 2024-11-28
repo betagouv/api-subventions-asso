@@ -2,7 +2,7 @@ import request = require("supertest");
 import { AgentTypeEnum, ResetPasswordErrorCodes } from "dto";
 import { createAndActiveUser, createUser, DEFAULT_PASSWORD, USER_EMAIL } from "../../__helpers__/userHelper";
 import { createResetToken } from "../../__helpers__/resetTokenHelper";
-import userResetRepository from "../../../src/modules/user/repositories/user-reset.repository";
+import userResetRepository from "../../../src/dataProviders/db/user/user-reset.port";
 import notifyService from "../../../src/modules/notify/notify.service";
 import userActivationService, {
     UserActivationService,

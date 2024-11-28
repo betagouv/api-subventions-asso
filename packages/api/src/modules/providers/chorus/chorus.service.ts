@@ -16,9 +16,9 @@ import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import Siren from "../../../valueObjects/Siren";
 import Siret from "../../../valueObjects/Siret";
 import GrantProvider from "../../grant/@types/GrantProvider";
+import chorusLineRepository from "../../../dataProviders/db/providers/chorus/chorus.line.port";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
-import chorusLineRepository from "./repositories/chorus.line.repository";
 
 export interface RejectedRequest {
     state: "rejected";

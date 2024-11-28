@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const {
-    default: osirisRepository,
-} = require("../build/src/modules/providers/osiris/repositories/osiris.request.repository");
+const { default: osirisRepository } = require("../build/src/dataProviders/db/providers/osiris/osiris.request.port");
 const {
     default: associationNameRepository,
 } = require("../build/src/modules/association-name/repositories/associationName.repository");

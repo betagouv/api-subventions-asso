@@ -1,7 +1,7 @@
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const { printAtSameLine } = require("../build/src/shared/helpers/CliHelper");
 const migrationManager = require("../build/src/shared/MigrationManager").default;
-const repo = require("../build/src/modules/providers/chorus/repositories/chorus.line.repository").default;
+const repo = require("../build/src/dataProviders/db/providers/chorus/chorus.line.port").default;
 const enity = require("../build/src/modules/providers/chorus/entities/ChorusLineEntity").default;
 const { GenericParser } = require("../build/src/shared/GenericParser");
 

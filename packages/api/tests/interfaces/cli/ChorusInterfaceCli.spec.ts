@@ -1,7 +1,7 @@
 import ChorusCli from "../../../src/interfaces/cli/Chorus.cli";
 import path from "path";
-import chorusLineRepository from "../../../src/modules/providers/chorus/repositories/chorus.line.repository";
-import dataLogRepository from "../../../src/modules/data-log/repositories/dataLog.repository";
+import chorusLineRepository from "../../../src/dataProviders/db/providers/chorus/chorus.line.port";
+import dataLogRepository from "../../../src/dataProviders/db/data-log/dataLog.port";
 
 describe("ChorusCli", () => {
     describe("parse cli requests", () => {

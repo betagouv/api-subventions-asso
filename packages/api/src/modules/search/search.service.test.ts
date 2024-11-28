@@ -1,9 +1,9 @@
 import searchService, { SearchService } from "./search.service";
-import searchCacheRepository from "./repositories/search.repository";
+import searchCacheRepository from "../../dataProviders/db/search/search.port";
 import associationNameService from "../association-name/associationName.service";
 import AssociationNameDtoAdapter from "./adapters/AssociationNameDtoAdapter";
 
-jest.mock("./repositories/search.repository");
+jest.mock("../../dataProviders/db/search/search.port");
 jest.mock("../association-name/associationName.service");
 jest.mock("./adapters/AssociationNameDtoAdapter");
 

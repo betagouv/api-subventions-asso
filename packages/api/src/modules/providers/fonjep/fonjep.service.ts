@@ -12,10 +12,10 @@ import { StructureIdentifier } from "../../../@types";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import Siret from "../../../valueObjects/Siret";
+import fonjepSubventionRepository from "../../../dataProviders/db/providers/fonjep/fonjep.subvention.port";
+import fonjepPaymentRepository from "../../../dataProviders/db/providers/fonjep/fonjep.payment.port";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
-import fonjepSubventionRepository from "./repositories/fonjep.subvention.repository";
-import fonjepPaymentRepository from "./repositories/fonjep.payment.repository";
 import FonjepPaymentEntity from "./entities/FonjepPaymentEntity";
 import fonjepJoiner from "./joiners/fonjepJoiner";
 

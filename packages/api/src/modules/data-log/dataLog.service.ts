@@ -1,7 +1,7 @@
 import path from "path";
 import { DataLogDto } from "dto";
-import dataLogRepository from "./repositories/dataLog.repository";
-import { DataLogAdapter } from "./dataLog.adapter";
+import dataLogRepository from "../../dataProviders/db/data-log/dataLog.port";
+import { DataLogAdapter } from "../../dataProviders/db/data-log/dataLog.adapter";
 
 class DataLogService {
     addLog(providerId: string, editionDate: Date, filePath?: string) {

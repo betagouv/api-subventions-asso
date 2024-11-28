@@ -2,10 +2,10 @@
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const {
     default: demarchesSimplifieesDataRepository,
-} = require("../build/src/modules/providers/demarchesSimplifiees/repositories/demarchesSimplifieesData.repository");
+} = require("../build/src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port");
 const {
     default: demarchesSimplifieesMapperRepository,
-} = require("../build/src/modules/providers/demarchesSimplifiees/repositories/demarchesSimplifieesMapper.repository");
+} = require("../build/src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port");
 /* eslint-enable @typescript-eslint/no-var-requires */
 
 module.exports = {

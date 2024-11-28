@@ -1,10 +1,10 @@
 import { RoleEnum } from "../../../../@enums/Roles";
 import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
 import userRolesService from "./user.roles.service";
-import userRepository from "../../repositories/user.repository";
+import userRepository from "../../../../dataProviders/db/user/user.port";
 import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
 import { USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
-jest.mock("../../repositories/user.repository");
+jest.mock("../../../../dataProviders/db/user/user.port");
 const mockedUserRepository = jest.mocked(userRepository);
 
 describe("user roles service", () => {

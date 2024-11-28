@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { LoginDtoErrorCodes, UserDto, UserErrorCodes, UserWithJWTDto } from "dto";
-import userRepository from "../../repositories/user.repository";
+import userRepository from "../../../../dataProviders/db/user/user.port";
 import {
     BadRequestError,
     ForbiddenError,
@@ -10,11 +10,11 @@ import {
     UnauthorizedError,
 } from "../../../../shared/errors/httpErrors";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../../../configurations/jwt.conf";
-import UserDbo from "../../repositories/dbo/UserDbo";
+import UserDbo from "../../../../dataProviders/db/user/UserDbo";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import userCheckService, { UserCheckService } from "../check/user.check.service";
-import { UserUpdateError } from "../../repositories/errors/UserUpdateError";
+import { UserUpdateError } from "../../../../dataProviders/db/user/UserUpdateError";
 import LoginError from "../../../../shared/errors/LoginError";
 import { removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
 import { UserConsumerService } from "../consumer/user.consumer.service";

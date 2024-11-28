@@ -15,11 +15,15 @@ import GrantProvider from "../../grant/@types/GrantProvider";
 import Siret from "../../../valueObjects/Siret";
 import Siren from "../../../valueObjects/Siren";
 import Rna from "../../../valueObjects/Rna";
+import {
+    osirisRequestRepository,
+    osirisActionRepository,
+    osirisEvaluationRepository,
+} from "../../../dataProviders/db/providers/osiris";
 import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisEvaluationEntity from "./entities/OsirisEvaluationEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
-import { osirisRequestRepository, osirisActionRepository, osirisEvaluationRepository } from "./repositories";
 
 export const VALID_REQUEST_ERROR_CODE = {
     INVALID_SIRET: 1,

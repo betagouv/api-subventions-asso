@@ -2,7 +2,7 @@
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const {
     default: statsAssociationsVisitRepository,
-} = require("../build/src/modules/stats/repositories/statsAssociationsVisit.repository");
+} = require("../build/src/dataProviders/db/stats/statsAssociationsVisit.port");
 /* eslint-enable @typescript-eslint/no-var-requires */
 
 module.exports = {

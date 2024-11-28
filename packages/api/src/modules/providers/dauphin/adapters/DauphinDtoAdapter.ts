@@ -4,7 +4,7 @@ import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import dauphinService from "../dauphin.service";
 import { capitalizeFirstLetter } from "../../../../shared/helpers/StringHelper";
 import { toStatusFactory } from "../../providers.adapter";
-import DauphinGisproDbo from "../repositories/dbo/DauphinGisproDbo";
+import DauphinGisproDbo from "../../../../dataProviders/db/providers/dauphin/DauphinGisproDbo";
 import DauphinDocumentDto from "../dto/DauphinDocumentDto";
 import { RawApplication } from "../../../grant/@types/rawGrant";
 

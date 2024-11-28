@@ -14,14 +14,14 @@ import { BadRequestError, UserNotFoundError } from "../../../../shared/errors/ht
 import { joinEnum } from "../../../../shared/helpers/ArrayHelper";
 import userCheckService, { UserCheckService } from "../check/user.check.service";
 import { sanitizeToPlainText } from "../../../../shared/helpers/StringHelper";
-import userRepository from "../../repositories/user.repository";
+import userRepository from "../../../../dataProviders/db/user/user.port";
 import { removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
-import userResetRepository from "../../repositories/user-reset.repository";
+import userResetRepository from "../../../../dataProviders/db/user/user-reset.port";
 import UserReset from "../../entities/UserReset";
 import userAuthService from "../auth/user.auth.service";
-import UserDbo from "../../repositories/dbo/UserDbo";
+import UserDbo from "../../../../dataProviders/db/user/UserDbo";
 import userActivationService from "../activation/user.activation.service";
 import userCrudService from "../crud/user.crud.service";
 import geoService from "../../../providers/geoApi/geo.service";
