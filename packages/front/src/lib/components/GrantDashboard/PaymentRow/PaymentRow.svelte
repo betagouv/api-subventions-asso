@@ -25,3 +25,9 @@
 {:else}
     <td colspan={cellsLength} />
 {/if}
+
+<style>
+    td {
+        padding: 1rem 0.5rem;
+    }
+</style>

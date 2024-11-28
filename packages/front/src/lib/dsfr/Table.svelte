@@ -9,7 +9,7 @@
     export let hideTitle = false;
     export let size: "sm" | "md" | "lg" = "md";
     export let headers: string[];
-    export let headersSize: "xs" | "sm" | "md" | "lg"[] | undefined = undefined;
+    export let headersSize: ("xs" | "sm" | "md" | "lg")[] | undefined = undefined;
     export let rows: string[][] = [];
     export let scrollable = true;
     export let bordered = true;
@@ -82,6 +82,7 @@
 </div>
 
 <style>
+    /* TODO: make this work */
     .no-outer-border {
         border-left: 0;
         border-right: 0;

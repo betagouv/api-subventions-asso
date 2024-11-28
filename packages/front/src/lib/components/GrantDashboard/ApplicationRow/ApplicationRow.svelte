@@ -15,13 +15,13 @@
         <td on:click>
             {#if cell.badge}
                 {#if cell.badge.status}
-                    <StatusLabel status={cell.badge.status} />
+                    <StatusLabel small={true} status={cell.badge.status} />
                 {:else}
                     <Badge {...cell.badge} />
                 {/if}
             {/if}
             {#if !cell.badge && !cell.title && !cell.desc}
-                <TableCellDesc>-</TableCellDesc>
+                <TableCellDesc position="center">-</TableCellDesc>
             {:else}
                 {#if cell.title}
                     <TableCellTitle>{cell.title}</TableCellTitle>
@@ -35,3 +35,9 @@
 {:else}
     <td colspan={cellsLength} class="fr-cell--center">Nous ne disposons pas encore de cette information.</td>
 {/if}
+
+<style>
+    td {
+        padding: 1rem 0.5rem;
+    }
+</style>

@@ -7,7 +7,7 @@
 </script>
 
 {#if label}
-    <p class="fr-badge {classes}">{label}</p>
+    <p class="fr-badge fr-badge--sm {classes}">{label}</p>
 {:else}
     <p>-</p>
 {/if}

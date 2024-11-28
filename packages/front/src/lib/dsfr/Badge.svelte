@@ -11,4 +11,6 @@
     if (color) otherClasses += `fr-badge--${color} `;
 </script>
 
-<p class={otherClasses} class:fr-badge--sm={small} class:fr-badge--no-icon={noIcon}>{label}</p>
+<p class={otherClasses} class:fr-badge--sm={small} class:fr-badge--no-icon={noIcon}>
+    <span class="fr-ellipsis">{label}</span>
+</p>

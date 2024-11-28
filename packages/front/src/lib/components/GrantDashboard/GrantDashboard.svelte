@@ -88,7 +88,8 @@
                     scrollable={false}
                     bordered={false}
                     light={true}
-                    {headers}>
+                    {headers}
+                    headersSize={["sm", "sm", "xs", "xs", "xs", "sm", "sm", "xs"]}>
                     {#each $rows as row, rowIndex}
                         <TableRow id={tableId} index={rowIndex} openModal={true}>
                             <ApplicationRow
