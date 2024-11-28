@@ -40,8 +40,8 @@ export default class AdminUserAccountListController {
             new Date(user.signupAt).toLocaleDateString(),
             user.resetToken ? `/auth/reset-password/${user.resetToken}?active=true` : "",
             user.resetTokenDate ? new Date(user.resetTokenDate).toLocaleString() : "",
-            user.stats.searchCount,
-            new Date(user.stats.lastSearchDate).toLocaleString(),
+            user.searchCount,
+            new Date(user.lastActivityDate).toLocaleString(),
         ]);
 
         const csvHeader = [

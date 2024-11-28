@@ -20,6 +20,7 @@ export interface UserDto extends FutureUserDto, Omit<UserActivationInfoDto, "pas
     disable?: boolean;
     lastActivityDate: Date | null;
     agentConnectId?: string;
+    searchCount: number;
 }
 
 export interface UserActivationInfoDto {
@@ -57,18 +58,9 @@ export interface UserWithJWTDto extends UserDto {
     jwt: { token: string; expirateDate: Date };
 }
 
-export interface UserStatsDto {
-    stats: {
-        searchCount: number;
-        lastSearchDate: Date | null;
-    };
-}
-
 export interface UserResetDto {
     resetToken?: string;
     resetTokenDate?: Date;
 }
 
-export type UserWithStatsDto = UserDto & UserStatsDto;
-
-export type UserWithResetTokenDto = UserDto & UserResetDto & Partial<UserStatsDto>;
+export type UserWithResetTokenDto = UserDto & UserResetDto & Partial<UserDto>;

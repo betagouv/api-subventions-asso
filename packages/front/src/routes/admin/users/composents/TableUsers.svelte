@@ -51,10 +51,10 @@
                         {/if}
                     </td>
                     <td>
-                        {user.stats.searchCount}
+                        {user.searchCount}
                     </td>
                     <td>
-                        {user.stats.lastSearchDate ? new Date(user.stats.lastSearchDate).toLocaleString() : "-"}
+                        {user.lastActivityDate ? new Date(user.lastActivityDate).toLocaleString() : "-"}
                     </td>
                     <td>
                         {new Date(user.signupAt).toLocaleDateString()}
