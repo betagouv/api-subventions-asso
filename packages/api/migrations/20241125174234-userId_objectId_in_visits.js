@@ -14,8 +14,7 @@ module.exports = {
                     },
                 });
             });
-
-        await db.collection("stats-association-visits").bulkWrite(bulk);
+        if (bulk.length) await db.collection("stats-association-visits").bulkWrite(bulk);
     },
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
