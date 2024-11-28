@@ -81,7 +81,7 @@ export class UserCrudService {
             profileToComplete: !userObject.agentConnectId,
             lastActivityDate: null,
             agentConnectId: userObject.agentConnectId,
-        };
+        } as unknown;
 
         const jwtParams = {
             token: userAuthService.buildJWTToken(partialUser as UserDto),
@@ -89,7 +89,7 @@ export class UserCrudService {
         };
 
         const user = {
-            ...partialUser,
+            ...(partialUser as UserDto),
             jwt: jwtParams,
             active: !!userObject.agentConnectId,
         } as UserNotPersisted;
