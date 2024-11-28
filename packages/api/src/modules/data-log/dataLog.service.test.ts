@@ -1,9 +1,9 @@
 import dataLogService from "./dataLog.service";
 import dataLogRepository from "../../dataProviders/db/data-log/dataLog.port";
-import { DataLogAdapter } from "../../dataProviders/db/data-log/dataLog.adapter";
+import { DataLogAdapter } from "./dataLog.adapter";
 
 jest.mock("../../dataProviders/db/data-log/dataLog.port");
-jest.mock("../../dataProviders/db/data-log/dataLog.adapter");
+jest.mock("./dataLog.adapter");
 
 describe("dataLogService", () => {
     describe("addLog", () => {

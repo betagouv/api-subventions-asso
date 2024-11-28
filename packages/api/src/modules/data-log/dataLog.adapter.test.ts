@@ -1,5 +1,5 @@
 import { DataLogAdapter } from "./dataLog.adapter";
-import { ProducerLogEntity } from "../../../modules/data-log/entities/producerLogEntity";
+import { ProducerLogEntity } from "./entities/producerLogEntity";
 
 describe("DataLog Adapter", () => {
     describe("overviewToDto", () => {

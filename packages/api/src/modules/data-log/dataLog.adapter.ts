@@ -1,5 +1,5 @@
 import { DataLogDto } from "dto";
-import { ProducerLogEntity } from "../../../modules/data-log/entities/producerLogEntity";
+import { ProducerLogEntity } from "./entities/producerLogEntity";
 
 export class DataLogAdapter {
     // do we want this here ?
