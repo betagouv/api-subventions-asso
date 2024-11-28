@@ -422,29 +422,23 @@ describe("Documents Service", () => {
             expect(downloadDocumentSpy).toBeCalledWith(expect.any(String), FAKE_DOCUMENT);
         });
 
-        it("should call execSync", async () => {
+        it("should call execFileSync", async () => {
             downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
             await documentsService.getRequestedDocumentFiles(REQUESTED_DOCS, IDENTIFIER);
             expect(childProcess.execFileSync).toBeCalledWith("zip", [
-                "j",
-                expect.stringMatching("/tmp/12345678912345-([0-9]+).zip"),
+                "-m",
+                "-j",
+                expect.stringMatching("/tmp/12345678912345-([0-9]+)/archive-12345678912345-([0-9]+).zip"),
                 "/fake/path",
             ]);
-        });
-
-        it("should call rmSync", async () => {
-            downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
-            await documentsService.getRequestedDocumentFiles(REQUESTED_DOCS, IDENTIFIER);
-            expect(fs.rmSync).toBeCalledWith(expect.stringMatching("/tmp/12345678912345-([0-9]+)"), {
-                recursive: true,
-                force: true,
-            });
         });
 
         it("should call createReadStream and return stream", async () => {
             downloadDocumentSpy.mockResolvedValueOnce("/fake/path");
             const actual = await documentsService.getRequestedDocumentFiles(REQUESTED_DOCS, IDENTIFIER);
-            expect(fs.createReadStream).toBeCalledWith(expect.stringMatching("/tmp/12345678912345-([0-9]+).zip"));
+            expect(fs.createReadStream).toBeCalledWith(
+                expect.stringMatching("/tmp/12345678912345-([0-9]+)/archive-12345678912345-([0-9]+).zip"),
+            );
             expect(actual).toBe(FAKE_STREAM);
         });
 
@@ -458,7 +452,10 @@ describe("Documents Service", () => {
 
             callbackOnLastStream();
 
-            expect(fs.rmSync).toBeCalledWith(expect.stringMatching("/tmp/12345678912345-([0-9]+).zip"));
+            expect(fs.rmSync).toBeCalledWith(expect.stringMatching("/tmp/12345678912345-([0-9]+)"), {
+                force: true,
+                recursive: true,
+            });
         });
     });
 

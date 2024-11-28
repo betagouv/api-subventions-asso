@@ -23,6 +23,15 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Reverts
 
 -   Revert "feat(api): #2917 data integration centre val de loire 2021" (#2946) ([ed73c54](https://github.com/betagouv/api-subventions-asso/commit/ed73c54bb732cd713163ad351146f0c05c168865)), closes [#2917](https://github.com/betagouv/api-subventions-asso/issues/2917) [#2946](https://github.com/betagouv/api-subventions-asso/issues/2946) [#2917](https://github.com/betagouv/api-subventions-asso/issues/2917) [#2939](https://github.com/betagouv/api-subventions-asso/issues/2939)
+## [0.57.2](https://github.com/betagouv/api-subventions-asso/compare/v0.57.1...v0.57.2) (2024-11-21)
+
+### Bug Fixes
+
+-   **api:** wrong use of execFileSync args ([#2919](https://github.com/betagouv/api-subventions-asso/issues/2919)) ([1a5adeb](https://github.com/betagouv/api-subventions-asso/commit/1a5adeb15189cf1d592d1a2368601d478ec41294))
+
+### Features
+
+-   **api:** sentry track brevo errors ([#2874](https://github.com/betagouv/api-subventions-asso/issues/2874)) ([d974c62](https://github.com/betagouv/api-subventions-asso/commit/d974c62446506bf9ec70151de7f4915a0b9dee20))
 
 ## [0.57.1](https://github.com/betagouv/api-subventions-asso/compare/v0.56.1...v0.57.1) (2024-11-18)
 
