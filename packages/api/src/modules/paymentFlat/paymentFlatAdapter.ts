@@ -1,14 +1,21 @@
-import DomaineFonctionnelEntity from "../../../entities/DomaineFonctionnelEntity";
-import MinistryEntity from "../../../entities/MinistryEntity";
-import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
-import RefProgrammationEntity from "../../../entities/RefProgrammationEntity";
-import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
-import Siret from "../../../valueObjects/Siret";
-import IChorusIndexedInformations from "../../providers/chorus/@types/IChorusIndexedInformations";
-import ChorusLineEntity from "../../providers/chorus/entities/ChorusLineEntity";
+import DomaineFonctionnelEntity from "../../entities/DomaineFonctionnelEntity";
+import MinistryEntity from "../../entities/MinistryEntity";
+import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
+import RefProgrammationEntity from "../../entities/RefProgrammationEntity";
+import StateBudgetProgramEntity from "../../entities/StateBudgetProgramEntity";
+import Siret from "../../valueObjects/Siret";
+import IChorusIndexedInformations from "../providers/chorus/@types/IChorusIndexedInformations";
+import ChorusLineEntity from "../providers/chorus/entities/ChorusLineEntity";
 
 export default class PaymentFlatAdapter {
-    static toPaymentFlatEntity(
+    static toNotAggregatedChorusPaymentFlatEntity(
+        /*
+        create a PaymentFlatEntity from a ChorusLineEntity without
+        aggregating the data. To get "a real" PaymentFlat entity data have
+        to be groupbed by the unique key of paymentFlat that is not necessarily
+        the same as the unique key of the ChorusLineEntity.
+        */
+
         chorusDocument: ChorusLineEntity,
         programs: Record<string, StateBudgetProgramEntity>,
         ministries: Record<string, MinistryEntity>,
@@ -31,8 +38,13 @@ export default class PaymentFlatAdapter {
             refsProgrammation,
         );
 
+        const idVersement = `${chorusDocument.indexedInformations.siret}-${chorusDocument.indexedInformations.ej}-${chorusDocument.indexedInformations.exercice}`;
+        const uniqueId = `${idVersement}-${programCode}-${actionCode}-${activityCode}-${chorusDocument.indexedInformations.dateOperation.getTime()}`;
+
         return new PaymentFlatEntity(
-            chorusDocument.uniqueId, // uniqueId,
+            uniqueId, // uniqueId,
+            idVersement, // idVersement,
+            chorusDocument.indexedInformations.exercice, // exerciceBudget
             new Siret(chorusDocument.indexedInformations.siret), // siret,
             new Siret(chorusDocument.indexedInformations.siret).toSiren(), // siren,
             chorusDocument.indexedInformations.amount, // amount,
@@ -61,8 +73,8 @@ export default class PaymentFlatAdapter {
         const programCode = parseInt(chorusDocument.codeDomaineFonctionnel?.slice(1, 4), 10);
         const activityCode = chorusDocument.codeActivitee?.slice(-12);
         const actionCode = chorusDocument.codeDomaineFonctionnel;
+        const programEntity = programs[String(programCode)] ?? undefined;
 
-        const programEntity = programs[programCode] ?? undefined;
         if (!programEntity) {
             console.error(`Program not found for programCode: ${programCode}`);
         }
@@ -78,6 +90,7 @@ export default class PaymentFlatAdapter {
         if (!refProgrammationEntity) {
             console.error(`RefProgrammation not found for activityCode: ${activityCode}`);
         }
+
         return {
             programCode,
             activityCode,

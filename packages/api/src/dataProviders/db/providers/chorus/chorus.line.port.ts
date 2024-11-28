@@ -82,13 +82,15 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
         return this.collection.find(query, projection);
     }
 
-    public cursorFindData(updateThreshold?: Date) {
-        /*updateThreshold is used to get all the objects that have been
-         updated after the updateThreshold
-        */
-        if (!updateThreshold) {
-            return this.cursorFind({});
-        } else return this.cursorFind({ updated: { $gt: updateThreshold } });
+    public cursorFindDataWithoutHash(exerciceBudgetaire?: number) {
+        // In chorus database # are used instead of non siret identifier, we exclude here these data
+        if (!exerciceBudgetaire) {
+            return this.cursorFind({ "indexedInformations.siret": { $ne: "#" } });
+        } else
+            return this.cursorFind({
+                "indexedInformations.exercice": exerciceBudgetaire,
+                "indexedInformations.siret": { $ne: "#" },
+            });
     }
 
     async createIndexes() {

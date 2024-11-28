@@ -9,6 +9,8 @@ export default class PaymentsFlatAdapter {
             siret: entity.siret.value,
             siren: entity.siren.value,
             uniqueId: entity.uniqueId,
+            idVersement: entity.idVersement,
+            exerciceBudgetaire: entity.exerciceBudgetaire,
             montant: entity.amount,
             dateOperation: entity.operationDate,
             programme: entity.programName,

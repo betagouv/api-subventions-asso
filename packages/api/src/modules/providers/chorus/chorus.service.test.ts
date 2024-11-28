@@ -74,16 +74,16 @@ describe("chorusService", () => {
             toVersementArrayMock.mockRestore();
         });
 
-        describe("chorusCursorFindData", () => {
-            it("should call chorusLineRepository.findIndexedData with undefined", () => {
-                chorusService.cursorFindData();
-                expect(mockedChorusLineRepository.cursorFindData).toHaveBeenCalledWith(undefined);
+        describe("chorusCursorFindDataWithoutHash", () => {
+            it("should call chorusLineRepository.findData with undefined", () => {
+                chorusService.cursorFindDataWithoutHash();
+                expect(mockedChorusLineRepository.cursorFindDataWithoutHash).toHaveBeenCalledWith(undefined);
             });
 
-            it("should call chorusLineRepository.findData with lastUpdateDate", () => {
-                const lastUpdateDate = new Date("2021-01-01");
-                chorusService.cursorFindData(lastUpdateDate);
-                expect(mockedChorusLineRepository.cursorFindData).toHaveBeenCalledWith(lastUpdateDate);
+            it("should call chorusLineRepository.findData with exerciceBudgetaire", () => {
+                const exerciceBudgetaire = 2021;
+                chorusService.cursorFindDataWithoutHash(exerciceBudgetaire);
+                expect(mockedChorusLineRepository.cursorFindDataWithoutHash).toHaveBeenCalledWith(exerciceBudgetaire);
             });
         });
     });

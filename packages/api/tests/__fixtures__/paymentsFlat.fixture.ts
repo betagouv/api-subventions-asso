@@ -1,100 +1,43 @@
 import { ObjectId } from "mongodb";
 import ChorusLineEntity from "../../src/modules/providers/chorus/entities/ChorusLineEntity";
-
+import { ENTITIES } from "../../src/modules/providers/chorus/__fixtures__/ChorusFixtures";
 export const CHORUS_LAST_UPDATE = new Date("2022-03-12");
 
 export const MOCK_DOCUMENTS: ChorusLineEntity[] = [
+    // je change le siret pour que je puisse ordonner le snapshot par siret
+    // je change l'exercice du première document pour qu'il ne soit pas enregistré lors de resyncExercice(2023)
     {
-        uniqueId: "1",
-        updated: new Date("2023-05-02"),
+        ...ENTITIES[0],
+        indexedInformations: { ...ENTITIES[0].indexedInformations, siret: "12345678901313", exercice: 2022 },
+    },
+    // je mets des entités avec le même paymentFlat uniqueId pour tester le groupement
+    {
+        ...ENTITIES[1],
         indexedInformations: {
-            siret: "12345678911111",
-            amount: 2000,
-            dateOperation: new Date("2021-04-02"),
-            codeCentreFinancier: "AA99/0102-DR25-DR25",
-            domaineFonctionnel: "domaineFonctionnel_1",
+            ...ENTITIES[1].indexedInformations,
+            ej: "EJ_egale",
             codeDomaineFonctionnel: "0143-03-01",
-            numeroDemandePaiement: "numeroDemandePaiement_1",
-            codeSociete: "AZE",
-            exercice: 2021,
-            codeActivitee: "BG00/014303000102",
-            ej: "ej_1",
+            codeActivitee: "014303000102",
+            siret: "12345678901212",
         },
-    } as ChorusLineEntity,
-
+    },
     {
-        uniqueId: "11",
-        updated: new Date("2021-05-02"),
+        ...ENTITIES[2],
         indexedInformations: {
-            siret: "12345678911111",
-            amount: 2000,
-            dateOperation: new Date("2021-04-02"),
-            codeCentreFinancier: "AA99/0102-DR25-DR25",
-            domaineFonctionnel: "domaineFonctionnel_1",
+            ...ENTITIES[2].indexedInformations,
+            ej: "EJ_egale",
             codeDomaineFonctionnel: "0143-03-01",
-            numeroDemandePaiement: "numeroDemandePaiement_1",
-            codeSociete: "AZE",
-            exercice: 2021,
-            codeActivitee: "BG00/014303000102",
-            ej: "ej_1",
+            codeActivitee: "014303000102",
+            siret: "12345678901212",
+            dateOperation: new Date("2023-04-21T00:00:00.000Z"),
         },
-    } as ChorusLineEntity,
+    },
 
     {
-        uniqueId: "2",
-        updated: new Date("2022-06-03"),
-        indexedInformations: {
-            siret: "12345678911111",
-            amount: 3000,
-            dateOperation: new Date("2022-01-02"),
-            codeCentreFinancier: "BG00/0180-CMED-C302",
-            domaineFonctionnel: "domaineFonctionnel_2",
-            codeDomaineFonctionnel: "0180-06-01",
-            numeroDemandePaiement: "numeroDemandePaiement_2",
-            codeSociete: "ZER",
-            exercice: 2022,
-            codeActivitee: "BG00/018000110101",
-            ej: "ej_2",
-        },
-    } as ChorusLineEntity,
-
-    {
-        uniqueId: "3",
-        updated: new Date("2023-05-02"),
-        _id: new ObjectId("607f191e810c19729de860ed"),
-        indexedInformations: {
-            siret: "12345678911111",
-            amount: 4000,
-            dateOperation: new Date("2023-04-02"),
-            codeCentreFinancier: "BG00/0224-DR45-D645",
-            domaineFonctionnel: "domaineFonctionnel_3",
-            codeDomaineFonctionnel: "0224-02-24",
-            numeroDemandePaiement: "numeroDemandePaiement_3",
-            codeSociete: "ZER",
-            exercice: 2023,
-            codeActivitee: "BG00/022400080205",
-            ej: "ej_3",
-        },
-    } as ChorusLineEntity,
-
-    {
-        uniqueId: "4",
-        updated: new Date("2022-06-22"),
-        _id: new ObjectId("607f191e810c19729de860ee"),
-        indexedInformations: {
-            siret: "12345678911111",
-            amount: 5000,
-            dateOperation: new Date("2022-05-02"),
-            codeCentreFinancier: "BG00/0147-LAMI-S034",
-            domaineFonctionnel: "domaineFonctionnel_4",
-            codeDomaineFonctionnel: "0147-01-10",
-            numeroDemandePaiement: "numeroDemandePaiement_4",
-            codeSociete: "ZER",
-            exercice: 2022,
-            codeActivitee: "BG00/014701010101",
-            ej: "ej_4",
-        },
-    } as ChorusLineEntity,
+        ...ENTITIES[2],
+        uniqueId: "newUniqueId",
+        indexedInformations: { ...ENTITIES[2].indexedInformations, siret: "12345678901414" },
+    },
 ];
 
 export const PROGRAMS = [

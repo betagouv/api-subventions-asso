@@ -14,6 +14,7 @@ import demarchesSimplifieesDataRepository from "../dataProviders/db/providers/de
 import demarchesSimplifieesMapperRepository from "../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port";
 import fonjepSubventionRepository from "../dataProviders/db/providers/fonjep/fonjep.subvention.port";
 import fonjepPaymentRepository from "../dataProviders/db/providers/fonjep/fonjep.payment.port";
+import paymentFlatPort from "../dataProviders/db/paymentFlat/paymentFlat.port";
 import {
     osirisActionRepository,
     osirisEvaluationRepository,
@@ -44,4 +45,5 @@ export const repositoriesWithIndexes = [
     uniteLegalEntreprisePort,
     uniteLegalImportsPort,
     uniteLegalNamePort,
+    paymentFlatPort,
 ];
