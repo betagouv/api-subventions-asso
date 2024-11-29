@@ -29,12 +29,7 @@ export class UserStatsService {
         return this.updateNbRequestsByDate(since, new Date());
     }
 
-    private async updateNbRequestsByDate(since?: Date, until?: Date) {
-        if (!until) until = new Date();
-        if (!since) {
-            since = new Date();
-            since.setDate(since.getDate() - 1);
-        }
+    private async updateNbRequestsByDate(since: Date, until: Date) {
         const countByUser = (
             await statsAssociationsVisitRepository.findGroupedByUserIdentifierOnPeriod(since, until)
         ).map(({ _id, associationVisits }) => ({
