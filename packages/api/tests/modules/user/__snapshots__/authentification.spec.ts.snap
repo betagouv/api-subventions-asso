@@ -18,6 +18,7 @@ Object {
   "roles": Array [
     "user",
   ],
+  "searchCount": 0,
   "signupAt": Any<String>,
 }
 `;

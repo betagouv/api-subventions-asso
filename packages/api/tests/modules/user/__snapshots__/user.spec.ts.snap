@@ -12,11 +12,8 @@ Object {
   "roles": Array [
     "user",
   ],
+  "searchCount": 3,
   "signupAt": Any<String>,
-  "stats": Object {
-    "lastSearchDate": Any<String>,
-    "searchCount": 3,
-  },
 }
 `;
 

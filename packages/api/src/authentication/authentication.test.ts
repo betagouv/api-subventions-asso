@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as express from "express";
 
-import { expressAuthentication } from "../../src/authentication/authentication";
+import { expressAuthentication } from "./authentication";
 import jwt from "jsonwebtoken";
 import userRepository from "../modules/user/repositories/user.repository";
 import { ObjectId } from "mongodb";
@@ -51,7 +51,7 @@ describe("expressAuthentication", () => {
                 service: "",
                 phoneNumber: "",
                 jobType: [],
-                lastActivityDate: null
+                lastActivityDate: null,
             }),
         );
         mockedUserAuthService.findJwtByEmail.mockImplementation(() =>
@@ -73,7 +73,7 @@ describe("expressAuthentication", () => {
                 jobType: [],
                 hashPassword: "fqskfyqfdkq",
                 jwt: { token: "dsdsgfd", expirateDate: new Date() },
-                lastActivityDate: null
+                lastActivityDate: null,
             }),
         );
         // @ts-expect-error: mock

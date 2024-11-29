@@ -16,6 +16,7 @@ Object {
     "user",
     "consumer",
   ],
+  "searchCount": 0,
   "signupAt": Any<String>,
 }
 `;
@@ -33,6 +34,7 @@ Object {
     "user",
     "consumer",
   ],
+  "searchCount": 0,
   "signupAt": Any<Date>,
 }
 `;

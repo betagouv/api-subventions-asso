@@ -9,6 +9,7 @@ import { ObjectId } from "mongodb";
 import notifyService from "../../../src/modules/notify/notify.service";
 import userActivationService from "../../../src/modules/user/services/activation/user.activation.service";
 import userCrudService from "../../../src/modules/user/services/crud/user.crud.service";
+import userStatsService from "../../../src/modules/user/services/stats/user.stats.service";
 
 const g = global as unknown as { app: unknown };
 
@@ -161,21 +162,25 @@ describe("UserController, /user", () => {
             const ACTIVE_USER_EMAIL = "active.user@beta.gouv.fr";
             await createAndActiveUser(ACTIVE_USER_EMAIL);
             const ACTIVE_USER = (await userRepository.findByEmail(ACTIVE_USER_EMAIL)) as UserDbo;
-            await statsAssociationsVisitRepository.add({
-                associationIdentifier: SIREN,
-                userId: ACTIVE_USER._id,
-                date: new Date(new Date(TODAY).setDate(TODAY.getDate() - 12)),
-            });
-            await statsAssociationsVisitRepository.add({
-                associationIdentifier: SIREN,
-                userId: ACTIVE_USER._id,
-                date: new Date(new Date(TODAY).setDate(TODAY.getDate() - 6)),
-            });
-            await statsAssociationsVisitRepository.add({
-                associationIdentifier: SIREN,
-                userId: ACTIVE_USER._id,
-                date: TODAY,
-            });
+            await Promise.all([
+                statsAssociationsVisitRepository.add({
+                    associationIdentifier: SIREN,
+                    userId: ACTIVE_USER._id,
+                    date: new Date(new Date(TODAY).setDate(TODAY.getDate() - 12)),
+                }),
+                statsAssociationsVisitRepository.add({
+                    associationIdentifier: SIREN,
+                    userId: ACTIVE_USER._id,
+                    date: new Date(new Date(TODAY).setDate(TODAY.getDate() - 6)),
+                }),
+                statsAssociationsVisitRepository.add({
+                    associationIdentifier: SIREN,
+                    userId: ACTIVE_USER._id,
+                    date: TODAY,
+                }),
+            ]);
+
+            await userStatsService.updateNbRequests();
 
             const response = await request(g.app)
                 .get(`/user/admin/list-users`)
@@ -186,9 +191,6 @@ describe("UserController, /user", () => {
             expect(response.body.users[0]).toMatchSnapshot({
                 _id: expect.any(String),
                 signupAt: expect.any(String),
-                stats: {
-                    lastSearchDate: expect.any(String),
-                },
             });
         });
     });
