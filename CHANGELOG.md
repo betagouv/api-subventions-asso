@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.58.0](https://github.com/betagouv/api-subventions-asso/compare/v0.57.1...v0.58.0) (2024-11-28)
+
+### Bug Fixes
+
+-   **api:** [#2872](https://github.com/betagouv/api-subventions-asso/issues/2872) userId as string only in logs ([#2942](https://github.com/betagouv/api-subventions-asso/issues/2942)) ([a8dacea](https://github.com/betagouv/api-subventions-asso/commit/a8daceaacddd3bbea2b9ed1d9e0572ca1a0cf6d1))
+-   **api:** normalize path according to OS ([#2893](https://github.com/betagouv/api-subventions-asso/issues/2893)) ([0a26ccc](https://github.com/betagouv/api-subventions-asso/commit/0a26cccb487ef7cf90bb484326cd26d37bebed7f))
+
+### Features
+
+-   **api:** [#2917](https://github.com/betagouv/api-subventions-asso/issues/2917) data integration centre val de loire 2021 ([#2939](https://github.com/betagouv/api-subventions-asso/issues/2939)) ([18f79f4](https://github.com/betagouv/api-subventions-asso/commit/18f79f44511a98dfdbe5626dbc784cd0a13fd937))
+-   **api:** data integration centre val de loire ([#2897](https://github.com/betagouv/api-subventions-asso/issues/2897)) ([39a5de4](https://github.com/betagouv/api-subventions-asso/commit/39a5de4995602ee50cb0b6e60f0d830a0cdefea1)), closes [#2813](https://github.com/betagouv/api-subventions-asso/issues/2813) [#2885](https://github.com/betagouv/api-subventions-asso/issues/2885)
+
+### Performance Improvements
+
+-   **front:** [#2850](https://github.com/betagouv/api-subventions-asso/issues/2850) clean domain list in admin ([#2941](https://github.com/betagouv/api-subventions-asso/issues/2941)) ([67b1bc5](https://github.com/betagouv/api-subventions-asso/commit/67b1bc551e5c307e0c74c94533db14b844f79927))
+-   **front:** [#2850](https://github.com/betagouv/api-subventions-asso/issues/2850) no dsfr table is much faster and not much uglier ([#2949](https://github.com/betagouv/api-subventions-asso/issues/2949)) ([93537de](https://github.com/betagouv/api-subventions-asso/commit/93537debf2fb3b40dbfc3acfde564bec45547b14))
+
+### Reverts
+
+-   Revert "feat(api): #2917 data integration centre val de loire 2021" (#2946) ([ed73c54](https://github.com/betagouv/api-subventions-asso/commit/ed73c54bb732cd713163ad351146f0c05c168865)), closes [#2917](https://github.com/betagouv/api-subventions-asso/issues/2917) [#2946](https://github.com/betagouv/api-subventions-asso/issues/2946) [#2917](https://github.com/betagouv/api-subventions-asso/issues/2917) [#2939](https://github.com/betagouv/api-subventions-asso/issues/2939)
+## [0.57.2](https://github.com/betagouv/api-subventions-asso/compare/v0.57.1...v0.57.2) (2024-11-21)
+
+### Bug Fixes
+
+-   **api:** wrong use of execFileSync args ([#2919](https://github.com/betagouv/api-subventions-asso/issues/2919)) ([1a5adeb](https://github.com/betagouv/api-subventions-asso/commit/1a5adeb15189cf1d592d1a2368601d478ec41294))
+
+### Features
+
+-   **api:** sentry track brevo errors ([#2874](https://github.com/betagouv/api-subventions-asso/issues/2874)) ([d974c62](https://github.com/betagouv/api-subventions-asso/commit/d974c62446506bf9ec70151de7f4915a0b9dee20))
+
 ## [0.57.1](https://github.com/betagouv/api-subventions-asso/compare/v0.56.1...v0.57.1) (2024-11-18)
 
 ### Bug Fixes
