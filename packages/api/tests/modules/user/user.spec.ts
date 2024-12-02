@@ -297,10 +297,5 @@ describe("UserController, /user", () => {
             const actual = await configurationsService.getLastUserStatsUpdate();
             expect(actual).not.toBe(unexpected);
         });
-
-        // sets up user
-        // sets up visits
-        // updates nb requests
-        // checks user stats
     });
 });
