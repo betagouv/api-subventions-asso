@@ -8,11 +8,11 @@ Object {
   "firstName": null,
   "lastActivityDate": null,
   "lastName": null,
+  "nbVisits": 3,
   "profileToComplete": true,
   "roles": Array [
     "user",
   ],
-  "nbVisits": 3,
   "signupAt": Any<String>,
 }
 `;

@@ -12,11 +12,11 @@ Object {
   },
   "lastActivityDate": null,
   "lastName": null,
+  "nbVisits": 0,
   "profileToComplete": true,
   "roles": Array [
     "user",
   ],
-  "nbVisits": 0,
   "signupAt": Any<Date>,
 }
 `;

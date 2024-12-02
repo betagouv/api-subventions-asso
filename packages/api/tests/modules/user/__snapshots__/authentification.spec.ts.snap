@@ -14,11 +14,11 @@ Object {
   },
   "lastActivityDate": Any<String>,
   "lastName": null,
+  "nbVisits": 0,
   "profileToComplete": false,
   "roles": Array [
     "user",
   ],
-  "nbVisits": 0,
   "signupAt": Any<String>,
 }
 `;

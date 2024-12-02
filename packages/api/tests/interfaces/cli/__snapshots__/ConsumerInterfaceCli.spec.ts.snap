@@ -10,13 +10,13 @@ Object {
   "isConsumerToken": true,
   "lastActivityDate": null,
   "lastName": null,
+  "nbVisits": 0,
   "now": Any<String>,
   "profileToComplete": true,
   "roles": Array [
     "user",
     "consumer",
   ],
-  "nbVisits": 0,
   "signupAt": Any<String>,
 }
 `;
@@ -29,12 +29,12 @@ Object {
   "firstName": null,
   "lastActivityDate": null,
   "lastName": null,
+  "nbVisits": 0,
   "profileToComplete": true,
   "roles": Array [
     "user",
     "consumer",
   ],
-  "nbVisits": 0,
   "signupAt": Any<Date>,
 }
 `;
