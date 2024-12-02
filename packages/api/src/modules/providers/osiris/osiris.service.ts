@@ -15,11 +15,7 @@ import GrantProvider from "../../grant/@types/GrantProvider";
 import Siret from "../../../valueObjects/Siret";
 import Siren from "../../../valueObjects/Siren";
 import Rna from "../../../valueObjects/Rna";
-import {
-    osirisRequestRepository,
-    osirisActionRepository,
-    osirisEvaluationRepository,
-} from "../../../dataProviders/db/providers/osiris";
+import { osirisRequestPort, osirisActionPort, osirisEvaluationPort } from "../../../dataProviders/db/providers/osiris";
 import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisEvaluationEntity from "./entities/OsirisEvaluationEntity";
@@ -53,19 +49,19 @@ export class OsirisService
     }
 
     public async addRequest(request: OsirisRequestEntity): Promise<{ state: string; result: OsirisRequestEntity }> {
-        const existingFile = await osirisRequestRepository.findByOsirisId(request.providerInformations.osirisId);
+        const existingFile = await osirisRequestPort.findByOsirisId(request.providerInformations.osirisId);
         const { rna, siret } = request.legalInformations;
 
         if (rna) await rnaSirenSerivce.insert(new Rna(rna), new Siret(siret).toSiren());
 
         if (existingFile) {
-            await osirisRequestRepository.update(request);
+            await osirisRequestPort.update(request);
             return {
                 state: "updated",
                 result: request,
             };
         } else {
-            await osirisRequestRepository.add(request);
+            await osirisRequestPort.add(request);
             return {
                 state: "created",
                 result: request,
@@ -118,15 +114,15 @@ export class OsirisService
     }
 
     public async addAction(action: OsirisActionEntity): Promise<{ state: string; result: OsirisActionEntity }> {
-        const existingAction = await osirisActionRepository.findByOsirisId(action.indexedInformations.osirisActionId);
+        const existingAction = await osirisActionPort.findByOsirisId(action.indexedInformations.osirisActionId);
         if (existingAction) {
             return {
                 state: "updated",
-                result: await osirisActionRepository.update(action),
+                result: await osirisActionPort.update(action),
             };
         }
 
-        await osirisActionRepository.add(action);
+        await osirisActionPort.add(action);
 
         return {
             state: "created",
@@ -180,15 +176,15 @@ export class OsirisService
 
     public async addEvaluation(entity: OsirisEvaluationEntity) {
         const evaluation = entity.indexedInformations;
-        const existingEvaluation = await osirisEvaluationRepository.findByActionId(evaluation.osirisActionId);
+        const existingEvaluation = await osirisEvaluationPort.findByActionId(evaluation.osirisActionId);
         if (existingEvaluation) {
             return {
                 state: "updated",
-                result: await osirisEvaluationRepository.update(entity),
+                result: await osirisEvaluationPort.update(entity),
             };
         }
 
-        await osirisEvaluationRepository.add(entity);
+        await osirisEvaluationPort.add(entity);
 
         return {
             state: "created",
@@ -197,27 +193,23 @@ export class OsirisService
     }
 
     public async findBySiret(siret: Siret) {
-        const requests = await osirisRequestRepository.findBySiret(siret);
+        const requests = await osirisRequestPort.findBySiret(siret);
 
         for (const request of requests) {
-            request.actions = await osirisActionRepository.findByCompteAssoId(
-                request.providerInformations.compteAssoId,
-            );
+            request.actions = await osirisActionPort.findByCompteAssoId(request.providerInformations.compteAssoId);
             // map -> save actions + map -> save eval
             await request.actions.reduce(async (acc, value) => {
                 await acc;
-                value.evaluation = await osirisEvaluationRepository.findByActionId(
-                    value.indexedInformations.osirisActionId,
-                );
+                value.evaluation = await osirisEvaluationPort.findByActionId(value.indexedInformations.osirisActionId);
             }, Promise.resolve());
         }
         return requests;
     }
 
     public async findBySiren(siren: Siren) {
-        const requests = await osirisRequestRepository.findBySiren(siren);
+        const requests = await osirisRequestPort.findBySiren(siren);
 
-        const actions = await osirisActionRepository.findBySiren(siren);
+        const actions = await osirisActionPort.findBySiren(siren);
 
         for (const request of requests) {
             request.actions = actions.filter(
@@ -228,12 +220,10 @@ export class OsirisService
     }
 
     public async findByRna(rna: Rna) {
-        const requests = await osirisRequestRepository.findByRna(rna);
+        const requests = await osirisRequestPort.findByRna(rna);
 
         for (const request of requests) {
-            request.actions = await osirisActionRepository.findByCompteAssoId(
-                request.providerInformations.compteAssoId,
-            );
+            request.actions = await osirisActionPort.findByCompteAssoId(request.providerInformations.compteAssoId);
         }
         return requests;
     }
@@ -261,7 +251,7 @@ export class OsirisService
             requests.map(async r =>
                 OsirisRequestAdapter.toAssociation(
                     r,
-                    (await osirisActionRepository.findByCompteAssoId(r.providerInformations.compteAssoId)) || undefined, // todo faire une jointure, un jour ^^ !
+                    (await osirisActionPort.findByCompteAssoId(r.providerInformations.compteAssoId)) || undefined, // todo faire une jointure, un jour ^^ !
                 ),
             ),
         );

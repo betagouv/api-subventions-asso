@@ -3,7 +3,7 @@ import { WithId } from "mongodb";
 import db from "../../../shared/MongoConnection";
 import AdminStructureEntity from "../../../modules/admin-structure/entities/AdminStructureEntity";
 
-export class AdminStructureRepository {
+export class AdminStructurePort {
     private readonly collection = db.collection<AdminStructureEntity>("admin-structures");
 
     private toEntity(document: WithId<AdminStructureEntity>) {
@@ -27,6 +27,6 @@ export class AdminStructureRepository {
     }
 }
 
-const associationNameRepository = new AdminStructureRepository();
+const associationNamePort = new AdminStructurePort();
 
-export default associationNameRepository;
+export default associationNamePort;

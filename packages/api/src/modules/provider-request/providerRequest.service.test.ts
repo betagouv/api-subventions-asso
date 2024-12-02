@@ -1,6 +1,6 @@
 import axios from "axios";
 import ProviderRequestFactory, { ProviderRequestService } from "./providerRequest.service";
-import providerRequestRepository from "../../dataProviders/db/provider-request/providerRequest.port";
+import providerRequestPort from "../../dataProviders/db/provider-request/providerRequest.port";
 
 jest.mock("../../dataProviders/db/provider-request/providerRequest.port");
 
@@ -44,13 +44,13 @@ describe("ProviderRequestService", () => {
     });
 
     describe("createLog", () => {
-        let repositoryCreateSpy: jest.SpyInstance;
+        let portCreateSpy: jest.SpyInstance;
 
         beforeAll(() => {
-            repositoryCreateSpy = jest.spyOn(providerRequestRepository, "create").mockResolvedValue();
+            portCreateSpy = jest.spyOn(providerRequestPort, "create").mockResolvedValue();
         });
 
-        it("should call repository", async () => {
+        it("should call port", async () => {
             const url = "/test";
             const date = new Date();
             const responseCode = 200;
@@ -59,7 +59,7 @@ describe("ProviderRequestService", () => {
             // @ts-expect-error createlog is private method
             await providerRequestService.createLog(url, date, responseCode, type);
 
-            expect(repositoryCreateSpy).toHaveBeenCalledWith({
+            expect(portCreateSpy).toHaveBeenCalledWith({
                 providerId,
                 route: url,
                 date,

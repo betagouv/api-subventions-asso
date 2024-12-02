@@ -2,9 +2,9 @@ import { ObjectId } from "mongodb";
 import FonjepSubventionEntity from "../../../../modules/providers/fonjep/entities/FonjepSubventionEntity";
 import Siret from "../../../../valueObjects/Siret";
 import Siren from "../../../../valueObjects/Siren";
-import { FonjepCoreRepository } from "./fonjep.core.port";
+import { FonjepCorePort } from "./fonjep.core.port";
 
-export class FonjepSubventionRepository extends FonjepCoreRepository<FonjepSubventionEntity> {
+export class FonjepSubventionPort extends FonjepCorePort<FonjepSubventionEntity> {
     readonly collectionName = "fonjepSubvention";
 
     readonly joinIndexes = {
@@ -50,6 +50,6 @@ export class FonjepSubventionRepository extends FonjepCoreRepository<FonjepSubve
     }
 }
 
-const fonjepSubventionRepository = new FonjepSubventionRepository();
+const fonjepSubventionPort = new FonjepSubventionPort();
 
-export default fonjepSubventionRepository;
+export default fonjepSubventionPort;

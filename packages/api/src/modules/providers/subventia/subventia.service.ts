@@ -6,7 +6,7 @@ import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import { StructureIdentifier } from "../../../@types";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
-import subventiaRepository from "../../../dataProviders/db/providers/subventia/subventia.port";
+import subventiaPort from "../../../dataProviders/db/providers/subventia/subventia.port";
 import SubventiaParser from "./subventia.parser";
 import SubventiaValidator from "./validators/subventia.validator";
 import SubventiaAdapter from "./adapters/subventia.adapter";
@@ -70,7 +70,7 @@ export class SubventiaService implements DemandesSubventionsProvider<SubventiaEn
     }
 
     async createEntity(entity: Omit<SubventiaDbo, "_id">) {
-        return subventiaRepository.create(entity);
+        return subventiaPort.create(entity);
     }
 
     /**
@@ -85,9 +85,9 @@ export class SubventiaService implements DemandesSubventionsProvider<SubventiaEn
         const applications: SubventiaDbo[] = [];
 
         if (id instanceof EstablishmentIdentifier && id.siret) {
-            applications.push(...(await subventiaRepository.findBySiret(id.siret)));
+            applications.push(...(await subventiaPort.findBySiret(id.siret)));
         } else if (id instanceof AssociationIdentifier && id.siren) {
-            applications.push(...(await subventiaRepository.findBySiren(id.siren)));
+            applications.push(...(await subventiaPort.findBySiren(id.siren)));
         }
 
         return applications.map(dbo => SubventiaAdapter.toDemandeSubventionDto(dbo));
@@ -104,9 +104,9 @@ export class SubventiaService implements DemandesSubventionsProvider<SubventiaEn
     async getRawGrants(id: StructureIdentifier): Promise<RawGrant[]> {
         let subventiaDbos: SubventiaDbo[] = [];
         if (id instanceof EstablishmentIdentifier && id.siret) {
-            subventiaDbos = await subventiaRepository.findBySiret(id.siret);
+            subventiaDbos = await subventiaPort.findBySiret(id.siret);
         } else if (id instanceof AssociationIdentifier && id.siren) {
-            subventiaDbos = await subventiaRepository.findBySiren(id.siren);
+            subventiaDbos = await subventiaPort.findBySiren(id.siren);
         }
 
         return subventiaDbos.map(grant => ({

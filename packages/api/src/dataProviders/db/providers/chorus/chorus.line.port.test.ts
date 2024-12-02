@@ -1,9 +1,9 @@
-import chorusLineRepository from "./chorus.line.port";
+import chorusLinePort from "./chorus.line.port";
 import MongoRepository from "../../../../shared/MongoRepository";
 import ChorusLineEntity from "../../../../modules/providers/chorus/entities/ChorusLineEntity";
 import { ObjectId } from "mongodb";
 import { update } from "lodash";
-describe("ChorusLineRepository", () => {
+describe("chorusLinePort", () => {
     let mockBulkWrite = jest.fn();
 
     beforeAll(() => {
@@ -18,7 +18,7 @@ describe("ChorusLineRepository", () => {
 
     describe("upsertMany", () => {
         it("calls bulkWrite with operations from entities", async () => {
-            await chorusLineRepository.upsertMany([{ uniqueId: 1 }, { uniqueId: 2 }] as unknown as ChorusLineEntity[]);
+            await chorusLinePort.upsertMany([{ uniqueId: 1 }, { uniqueId: 2 }] as unknown as ChorusLineEntity[]);
             const actual = mockBulkWrite.mock.calls[0];
             expect(actual).toMatchInlineSnapshot(`
                 Array [
@@ -58,18 +58,18 @@ describe("ChorusLineRepository", () => {
     describe("cursorFindData", () => {
         let mockCursorFind: jest.SpyInstance;
         beforeEach(() => {
-            mockCursorFind = jest.spyOn(chorusLineRepository, "cursorFind").mockImplementation(jest.fn());
+            mockCursorFind = jest.spyOn(chorusLinePort, "cursorFind").mockImplementation(jest.fn());
         });
         afterAll(() => {
             mockCursorFind.mockRestore();
         });
         it("should call cursorFind without filters", () => {
-            chorusLineRepository.cursorFindDataWithoutHash();
+            chorusLinePort.cursorFindDataWithoutHash();
             expect(mockCursorFind).toHaveBeenCalledWith({ "indexedInformations.siret": { $ne: "#" } });
         });
         it("should call cursorFind with filters", () => {
             const exerciceBudgetaire = 2022;
-            chorusLineRepository.cursorFindDataWithoutHash(exerciceBudgetaire);
+            chorusLinePort.cursorFindDataWithoutHash(exerciceBudgetaire);
             expect(mockCursorFind).toHaveBeenCalledWith({
                 "indexedInformations.exercice": exerciceBudgetaire,
                 "indexedInformations.siret": { $ne: "#" },

@@ -1,7 +1,7 @@
 import { Document } from "mongodb";
 import MongoRepository from "../../../../shared/MongoRepository";
 
-export abstract class FonjepCoreRepository<
+export abstract class FonjepCorePort<
     FonjepTypedDocument extends Document,
 > extends MongoRepository<FonjepTypedDocument> {
     private tmpCollectionEnabled = false;

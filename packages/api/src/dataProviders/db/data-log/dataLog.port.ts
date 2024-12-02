@@ -2,7 +2,7 @@ import MongoRepository from "../../../shared/MongoRepository";
 import { DataLogEntity } from "../../../modules/data-log/entities/dataLogEntity";
 import { ProducerLogEntity } from "../../../modules/data-log/entities/producerLogEntity";
 
-class DataLogRepository extends MongoRepository<DataLogEntity> {
+class DataLogPort extends MongoRepository<DataLogEntity> {
     readonly collectionName = "data-log";
 
     async createIndexes() {
@@ -47,5 +47,5 @@ class DataLogRepository extends MongoRepository<DataLogEntity> {
     }
 }
 
-const dataLogRepository = new DataLogRepository();
-export default dataLogRepository;
+const dataLogPort = new DataLogPort();
+export default dataLogPort;

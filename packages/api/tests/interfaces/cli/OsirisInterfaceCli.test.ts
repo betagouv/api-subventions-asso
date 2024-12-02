@@ -4,7 +4,7 @@ import OsirisRequestEntity from "../../../src/modules/providers/osiris/entities/
 import OsirisCli from "../../../src/interfaces/cli/Osiris.cli";
 import OsirisParser from "../../../src/modules/providers/osiris/osiris.parser";
 import osirisService from "../../../src/modules/providers/osiris/osiris.service";
-import dataLogRepository from "../../../src/dataProviders/db/data-log/dataLog.port";
+import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
 
 describe("OsirisCli", () => {
     const spys: jest.SpyInstance<unknown>[] = [];
@@ -49,7 +49,7 @@ describe("OsirisCli", () => {
             );
             await controller.parse("requests", filePath, "2022");
 
-            const actual = await dataLogRepository.findAll();
+            const actual = await dataLogPort.findAll();
             expect(actual?.[0]).toMatchObject({
                 editionDate: expect.any(Date),
                 fileName: "SuiviDossiers_test.xls",
@@ -104,7 +104,7 @@ describe("OsirisCli", () => {
             );
             await controller.parse("actions", filePath, "2022");
 
-            const actual = await dataLogRepository.findAll();
+            const actual = await dataLogPort.findAll();
             expect(actual?.[0]).toMatchObject({
                 editionDate: expect.any(Date),
                 fileName: "SuiviActions_test.xls",

@@ -3,7 +3,7 @@ import MiscScdlGrantEntity from "../../../../modules/providers/scdl/entities/Mis
 import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../../shared/helpers/MongoHelper";
 import { ScdlGrantDbo } from "../../../../modules/providers/scdl/dbo/ScdlGrantDbo";
 
-export class MiscScdlGrantRepository extends MongoRepository<ScdlGrantDbo> {
+export class MiscScdlGrantPort extends MongoRepository<ScdlGrantDbo> {
     readonly collectionName = "misc-scdl-grant";
     readonly joinIndexes = {
         miscScdlProducer: "producerSlug",
@@ -28,6 +28,6 @@ export class MiscScdlGrantRepository extends MongoRepository<ScdlGrantDbo> {
     }
 }
 
-const miscScdlGrantRepository = new MiscScdlGrantRepository();
+const miscScdlGrantPort = new MiscScdlGrantPort();
 
-export default miscScdlGrantRepository;
+export default miscScdlGrantPort;

@@ -6,7 +6,7 @@ import { removeHashPassword, removeSecrets } from "../../../shared/helpers/Repos
 import { InternalServerError } from "../../../shared/errors/httpErrors";
 import UserDbo, { UserNotPersisted } from "./UserDbo";
 
-export class UserRepository extends MongoRepository<UserDbo> {
+export class UserPort extends MongoRepository<UserDbo> {
     collectionName = "users";
 
     joinIndexes = {
@@ -114,6 +114,6 @@ export class UserRepository extends MongoRepository<UserDbo> {
     }
 }
 
-const userRepository = new UserRepository();
+const userPort = new UserPort();
 
-export default userRepository;
+export default userPort;

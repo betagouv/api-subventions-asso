@@ -1,6 +1,6 @@
 import MongoRepository from "../../../shared/MongoRepository";
 import AssociationVisitEntity from "../../../modules/stats/entities/AssociationVisitEntity";
-import statsAssociationsVisitRepository from "./statsAssociationsVisit.port";
+import statsAssociationsVisitPort from "./statsAssociationsVisit.port";
 
 export const groupVisitByUser = (result, visit) => {
     const name = visit.userId;
@@ -53,7 +53,7 @@ export class StatsUniqueVisitByDay extends MongoRepository<AssociationVisitEntit
     }
 
     public async createCollectionFromStatsAssociationVisits() {
-        const visitsByAssociation = await statsAssociationsVisitRepository.findGroupedByAssociationIdentifier();
+        const visitsByAssociation = await statsAssociationsVisitPort.findGroupedByAssociationIdentifier();
         const visits = this._reduceToOneVisitByDayByUser(visitsByAssociation);
         await this.collection.insertMany(visits);
     }

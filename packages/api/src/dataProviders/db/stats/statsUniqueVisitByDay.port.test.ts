@@ -1,5 +1,5 @@
 import VisitsGroupByAssociation from "./__fixtures__/VisitsGroupByAssociationIdentifier.json";
-import statsAssociationsVisitRepository from "./statsAssociationsVisit.port";
+import statsAssociationsVisitPort from "./statsAssociationsVisit.port";
 import statsUniqueVisitByDay, { groupVisitByUser, keepOneUserVisitByDay } from "./statsUniqueVisitByDay.port";
 
 import MongoConnection from "../../../shared/MongoConnection";
@@ -12,7 +12,7 @@ jest.mock("../../../shared/MongoConnection", () => ({
 const associationVisits = VisitsGroupByAssociation;
 const associationWithManyUsers = associationVisits[2];
 
-describe("StatsUniqueVisitByDay Repository", () => {
+describe("StatsUniqueVisitByDay Port", () => {
     describe("groupVisitByUser()", () => {
         it("should group by users", () => {
             const actual = associationWithManyUsers.visits.reduce(groupVisitByUser, {});
@@ -36,9 +36,9 @@ describe("StatsUniqueVisitByDay Repository", () => {
     });
 
     describe("createCollectionFromStatsAssociationVisits()", () => {
-        it("should call StatsAssociationVisitRepository", async () => {
+        it("should call statsAssociationsVisitPort", async () => {
             const mockFindGroupedByAssociationIdentifier = jest
-                .spyOn(statsAssociationsVisitRepository, "findGroupedByAssociationIdentifier")
+                .spyOn(statsAssociationsVisitPort, "findGroupedByAssociationIdentifier")
                 //@ts-expect-error: mock
                 .mockImplementation(async () => associationVisits);
 

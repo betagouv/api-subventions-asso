@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import MongoRepository from "../../../shared/MongoRepository";
 import AssociationVisitEntity from "../../../modules/stats/entities/AssociationVisitEntity";
 
-export class StatsAssociationsVisitRepository extends MongoRepository<AssociationVisitEntity> {
+export class StatsAssociationsVisitPort extends MongoRepository<AssociationVisitEntity> {
     collectionName = "stats-association-visits";
 
     joinIndexes = {
@@ -94,6 +94,6 @@ export class StatsAssociationsVisitRepository extends MongoRepository<Associatio
     }
 }
 
-const statsAssociationsVisitRepository = new StatsAssociationsVisitRepository();
+const statsAssociationsVisitPort = new StatsAssociationsVisitPort();
 
-export default statsAssociationsVisitRepository;
+export default statsAssociationsVisitPort;

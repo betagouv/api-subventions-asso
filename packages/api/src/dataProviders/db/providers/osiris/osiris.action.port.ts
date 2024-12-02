@@ -6,7 +6,7 @@ import MongoRepository from "../../../../shared/MongoRepository";
 import Siren from "../../../../valueObjects/Siren";
 import OsirisActionAdapter from "./osirisAction.adapter";
 
-export class OsirisActionRepository extends MongoRepository<OsirisActionEntityDbo> {
+export class OsirisActionPort extends MongoRepository<OsirisActionEntityDbo> {
     collectionName = "osiris-actions";
 
     async createIndexes() {
@@ -64,6 +64,6 @@ export class OsirisActionRepository extends MongoRepository<OsirisActionEntityDb
     }
 }
 
-const osirisActionRepository: OsirisActionRepository = new OsirisActionRepository();
+const osirisActionPort: OsirisActionPort = new OsirisActionPort();
 
-export default osirisActionRepository;
+export default osirisActionPort;

@@ -3,7 +3,7 @@ import { RoleEnum } from "../../../@enums/Roles";
 import { DefaultObject } from "../../../@types";
 import MongoRepository from "../../../shared/MongoRepository";
 
-export class StatsRepository extends MongoRepository<any> {
+export class StatsPort extends MongoRepository<any> {
     collectionName = "log";
 
     async createIndexes() {
@@ -103,5 +103,5 @@ export class StatsRepository extends MongoRepository<any> {
     }
 }
 
-const statsRepository = new StatsRepository();
-export default statsRepository;
+const statsPort = new StatsPort();
+export default statsPort;

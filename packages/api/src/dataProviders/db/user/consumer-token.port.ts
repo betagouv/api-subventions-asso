@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import { ConsumerToken } from "../../../modules/user/entities/ConsumerToken";
 import MongoRepository from "../../../shared/MongoRepository";
 
-class ConsumerTokenRepository extends MongoRepository<ConsumerToken> {
+class ConsumerTokenPort extends MongoRepository<ConsumerToken> {
     collectionName = "consumer-token";
 
     async findToken(userId: string | ObjectId) {
@@ -27,6 +27,6 @@ class ConsumerTokenRepository extends MongoRepository<ConsumerToken> {
     }
 }
 
-const consumerTokenRepository = new ConsumerTokenRepository();
+const consumerTokenPort = new ConsumerTokenPort();
 
-export default consumerTokenRepository;
+export default consumerTokenPort;

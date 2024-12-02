@@ -1,9 +1,9 @@
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
 import fonjepService, { FonjepRejectedRequest, FONJEP_SERVICE_ERRORS } from "./fonjep.service";
-import fonjepSubventionRepository from "../../../dataProviders/db/providers/fonjep/fonjep.subvention.port";
+import fonjepSubventionPort from "../../../dataProviders/db/providers/fonjep/fonjep.subvention.port";
 import { SubventionEntity, PaymentEntity } from "../../../../tests/modules/providers/fonjep/__fixtures__/entity";
 import * as Validators from "../../../shared/Validators";
-import fonjepPaymentRepository from "../../../dataProviders/db/providers/fonjep/fonjep.payment.port";
+import fonjepPaymentPort from "../../../dataProviders/db/providers/fonjep/fonjep.payment.port";
 import fonjepJoiner from "./joiners/fonjepJoiner";
 import { FONJEP_PAYMENTS, FONJEP_PAYMENT_ENTITIES } from "./__fixtures__/FonjepEntities";
 import { RawApplication, RawFullGrant, RawPayment } from "../../grant/@types/rawGrant";
@@ -31,10 +31,10 @@ const isAssociationNameMock = jest.spyOn(Validators, "isAssociationName");
 const isDatesMock = jest.spyOn(Validators, "areDates");
 const isStringsValidMock = jest.spyOn(Validators, "areStringsValid");
 const isNumbersValidMock = jest.spyOn(Validators, "areNumbersValid");
-const findBySiretSubventionMock = jest.spyOn(fonjepSubventionRepository, "findBySiret");
-const findBySirenSubventionMock = jest.spyOn(fonjepSubventionRepository, "findBySiren");
-const findBySiretPaymentMock = jest.spyOn(fonjepPaymentRepository, "findBySiret");
-const findBySirenPaymentMock = jest.spyOn(fonjepPaymentRepository, "findBySiren");
+const findBySiretSubventionMock = jest.spyOn(fonjepSubventionPort, "findBySiret");
+const findBySirenSubventionMock = jest.spyOn(fonjepSubventionPort, "findBySiren");
+const findBySiretPaymentMock = jest.spyOn(fonjepPaymentPort, "findBySiret");
+const findBySirenPaymentMock = jest.spyOn(fonjepPaymentPort, "findBySiren");
 
 const replaceDateWithFakeTimer = value => {
     if (value instanceof Date) {
@@ -147,23 +147,23 @@ describe("FonjepService", () => {
         const validateEntityMock = jest.spyOn(fonjepService, "validateEntity");
         it("should create entity", async () => {
             validateEntityMock.mockImplementationOnce(() => true);
-            // @ts-expect-error: mock repository
-            jest.spyOn(fonjepSubventionRepository, "create").mockImplementationOnce(async () => entity);
+            // @ts-expect-error: mock port
+            jest.spyOn(fonjepSubventionPort, "create").mockImplementationOnce(async () => entity);
             const entity = { ...SubventionEntity };
             const expected = true;
             const actual = await fonjepService.createSubventionEntity(entity);
             expect(actual).toEqual(expected);
         });
 
-        it("should call repository", async () => {
+        it("should call port", async () => {
             validateEntityMock.mockImplementationOnce(() => true);
-            const repoCreateMock = jest
-                .spyOn(fonjepSubventionRepository, "create")
-                // @ts-expect-error: mock repository
+            const portCreateMock = jest
+                .spyOn(fonjepSubventionPort, "create")
+                // @ts-expect-error: mock port
                 .mockImplementationOnce(async () => expected);
             const expected = { ...SubventionEntity };
             await fonjepService.createSubventionEntity(expected);
-            expect(repoCreateMock).toHaveBeenCalledWith(expected);
+            expect(portCreateMock).toHaveBeenCalledWith(expected);
         });
 
         it("should not create entity", async () => {
@@ -202,7 +202,7 @@ describe("FonjepService", () => {
         });
 
         it("creates entity", async () => {
-            const createPaymentMock = jest.spyOn(fonjepPaymentRepository, "create");
+            const createPaymentMock = jest.spyOn(fonjepPaymentPort, "create");
             createPaymentMock.mockImplementationOnce(jest.fn());
             const entity = { ...PaymentEntity };
             await fonjepService.createPaymentEntity(entity);
@@ -211,14 +211,14 @@ describe("FonjepService", () => {
     });
 
     describe("getDemandeSubvention", () => {
-        it("should call fonjepSubventionRepository.findBySiret", async () => {
+        it("should call fonjepSubventionPort.findBySiret", async () => {
             // @ts-expect-error: SubventionEntity dont have _id
             findBySiretSubventionMock.mockResolvedValueOnce([SubventionEntity]);
             await fonjepService.getDemandeSubvention(ESTABLISHMENT_ID);
             expect(findBySiretSubventionMock).toHaveBeenCalledWith(SIRET);
         });
 
-        it("should call fonjepSubventionRepository.findBySiren", async () => {
+        it("should call fonjepSubventionPort.findBySiren", async () => {
             // @ts-expect-error: SubventionEntity dont have _id
             findBySirenSubventionMock.mockResolvedValueOnce([SubventionEntity]);
             await fonjepService.getDemandeSubvention(ASSOCIATION_ID);
@@ -308,7 +308,7 @@ describe("FonjepService", () => {
     });
 
     describe("getPaymentsByKey", () => {
-        const findByCodeMock = jest.spyOn(fonjepPaymentRepository, "findByCodePoste");
+        const findByCodeMock = jest.spyOn(fonjepPaymentPort, "findByCodePoste");
         let toPaymentArrayMock: jest.SpyInstance;
 
         beforeAll(() => {
@@ -325,14 +325,14 @@ describe("FonjepService", () => {
     });
 
     describe("getPayments", () => {
-        it("should call fonjepPaymentRepository.findBySiret", async () => {
+        it("should call fonjepPaymentPort.findBySiret", async () => {
             // @ts-expect-error: PaymentEntity dont have _id
             findBySiretPaymentMock.mockResolvedValueOnce([PaymentEntity]);
             await fonjepService.getPayments(ESTABLISHMENT_ID);
             expect(findBySiretPaymentMock).toHaveBeenCalledWith(SIRET);
         });
 
-        it("should call fonjepPaymentRepository.findBySiren", async () => {
+        it("should call fonjepPaymentPort.findBySiren", async () => {
             // @ts-expect-error: PaymentEntity dont have _id
             findBySirenPaymentMock.mockResolvedValueOnce([PaymentEntity]);
             await fonjepService.getPayments(ASSOCIATION_ID);
@@ -352,10 +352,10 @@ describe("FonjepService", () => {
         describe("applyTemporyCollection()", () => {
             it("should call applyTemporyCollection() on payment and subvention collection", async () => {
                 const spySubventionApplyTemporyCollection = jest
-                    .spyOn(fonjepSubventionRepository, "applyTemporyCollection")
+                    .spyOn(fonjepSubventionPort, "applyTemporyCollection")
                     .mockImplementation(jest.fn());
                 const spyPaymentApplyTemporyCollection = jest
-                    .spyOn(fonjepPaymentRepository, "applyTemporyCollection")
+                    .spyOn(fonjepPaymentPort, "applyTemporyCollection")
                     .mockImplementation(jest.fn());
                 await fonjepService.applyTemporyCollection();
                 expect(spySubventionApplyTemporyCollection).toHaveBeenCalledTimes(1);

@@ -1,5 +1,5 @@
-import osirisRequestRepository from "./osiris.request.port";
-import osirisActionRepository from "./osiris.action.port";
-import osirisEvaluationRepository from "./osiris.evaluation.port";
+import osirisRequestPort from "./osiris.request.port";
+import osirisActionPort from "./osiris.action.port";
+import osirisEvaluationPort from "./osiris.evaluation.port";
 
-export { osirisRequestRepository, osirisActionRepository, osirisEvaluationRepository };
+export { osirisRequestPort, osirisActionPort, osirisEvaluationPort };

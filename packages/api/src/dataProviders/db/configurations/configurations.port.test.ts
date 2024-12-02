@@ -1,8 +1,8 @@
-import configurationsRepository from "../../../dataProviders/db/configurations/configurations.port";
+import configurationsPort from "../../../dataProviders/db/configurations/configurations.port";
 
-describe("Configuration Repository", () => {
+describe("Configuration Port", () => {
     // @ts-expect-error collection is private methods for getter
-    const collectionMock: jest.SpyInstance<unknown> = jest.spyOn(configurationsRepository, "collection", "get");
+    const collectionMock: jest.SpyInstance<unknown> = jest.spyOn(configurationsPort, "collection", "get");
 
     describe("upsert", () => {
         it("should be call updateOne of collection", async () => {
@@ -21,7 +21,7 @@ describe("Configuration Repository", () => {
                 },
             ];
 
-            configurationsRepository.upsert("TEST", {
+            configurationsPort.upsert("TEST", {
                 data: "test-data",
                 name: "TEST",
             });
@@ -41,7 +41,7 @@ describe("Configuration Repository", () => {
                 },
             ];
 
-            configurationsRepository.getByName("TEST");
+            configurationsPort.getByName("TEST");
 
             expect(fn).toHaveBeenCalledWith(...expected);
         });

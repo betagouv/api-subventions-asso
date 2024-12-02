@@ -5,7 +5,7 @@ import { DefaultObject } from "../../../../@types";
 import MongoRepository from "../../../../shared/MongoRepository";
 import ChorusLineEntity from "../../../../modules/providers/chorus/entities/ChorusLineEntity";
 
-export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
+export class ChorusLinePort extends MongoRepository<ChorusLineEntity> {
     readonly collectionName = "chorus-line";
 
     public async findOneByEJ(ej: string) {
@@ -101,6 +101,6 @@ export class ChorusLineRepository extends MongoRepository<ChorusLineEntity> {
     }
 }
 
-const chorusLineRepository = new ChorusLineRepository();
+const chorusLinePort = new ChorusLinePort();
 
-export default chorusLineRepository;
+export default chorusLinePort;

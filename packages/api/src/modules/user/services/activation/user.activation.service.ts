@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import * as RandToken from "rand-token";
 import { ResetPasswordErrorCodes, TokenValidationDtoResponse, TokenValidationType, UserDto } from "dto";
-import userRepository from "../../../../dataProviders/db/user/user.port";
+import userPort from "../../../../dataProviders/db/user/user.port";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import UserReset from "../../entities/UserReset";
 import {
@@ -11,7 +11,7 @@ import {
     ResetTokenNotFoundError,
     UserNotFoundError,
 } from "../../../../shared/errors/httpErrors";
-import userResetRepository from "../../../../dataProviders/db/user/user-reset.port";
+import userResetPort from "../../../../dataProviders/db/user/user-reset.port";
 import notifyService from "../../../notify/notify.service";
 import userAuthService from "../auth/user.auth.service";
 import userCheckService, { UserCheckService } from "../check/user.check.service";
@@ -26,7 +26,7 @@ export class UserActivationService {
     public static RESET_TIMEOUT = 1000 * 60 * 60 * 24 * 10; // 10 days in ms
 
     async refreshExpirationToken(user: UserDto) {
-        const userWithSecrets = await userRepository.getUserWithSecretsByEmail(user.email);
+        const userWithSecrets = await userPort.getUserWithSecretsByEmail(user.email);
         if (!userWithSecrets?.jwt) {
             return {
                 message: "User is not active",
@@ -36,7 +36,7 @@ export class UserActivationService {
 
         userWithSecrets.jwt.expirateDate = new Date(Date.now() + JWT_EXPIRES_TIME);
 
-        return await userRepository.update(userWithSecrets);
+        return await userPort.update(userWithSecrets);
     }
 
     public validateResetToken(userReset: UserReset | null): { valid: false; error: Error } | { valid: true } {
@@ -56,7 +56,7 @@ export class UserActivationService {
     }
 
     async validateTokenAndGetType(resetToken: string): Promise<TokenValidationDtoResponse> {
-        const reset = await userResetRepository.findByToken(resetToken);
+        const reset = await userResetPort.findByToken(resetToken);
         const tokenValidation = userActivationService.validateResetToken(reset);
         if (!tokenValidation.valid) return tokenValidation;
 
@@ -70,7 +70,7 @@ export class UserActivationService {
     }
 
     async resetPassword(password: string, resetToken: string): Promise<UserDto> {
-        const reset = await userResetRepository.findByToken(resetToken);
+        const reset = await userResetPort.findByToken(resetToken);
 
         const tokenValidation = userActivationService.validateResetToken(reset);
         if (!tokenValidation.valid) throw tokenValidation.error;
@@ -86,14 +86,14 @@ export class UserActivationService {
 
         const hashPassword = await userAuthService.getHashPassword(password);
 
-        await userResetRepository.remove(reset as UserReset);
+        await userResetPort.remove(reset as UserReset);
         const date = new Date();
 
         // TODO maybe send another signal with another email, the one from USER_ACTIVATED sounds weird
         notifyService.notify(NotificationType.USER_ACTIVATED, { email: user.email });
         notifyService.notify(NotificationType.USER_LOGGED, { email: user.email, date });
 
-        const userUpdated = (await userRepository.update(
+        const userUpdated = (await userPort.update(
             {
                 ...user,
                 hashPassword,
@@ -113,7 +113,7 @@ export class UserActivationService {
     }
 
     async forgetPassword(email: string) {
-        const user = await userRepository.findByEmail(email.toLocaleLowerCase());
+        const user = await userPort.findByEmail(email.toLocaleLowerCase());
         if (!user) return; // Don't say user not found, for security reasons
 
         const resetResult = await this.resetUser(user);
@@ -125,16 +125,16 @@ export class UserActivationService {
     }
 
     async findUserResetByUserId(userId: ObjectId) {
-        return userResetRepository.findOneByUserId(userId);
+        return userResetPort.findOneByUserId(userId);
     }
 
     async resetUser(user: UserDto): Promise<UserReset> {
-        await userResetRepository.removeAllByUserId(user._id);
+        await userResetPort.removeAllByUserId(user._id);
 
         const token = RandToken.generate(32);
         const reset = new UserReset(user._id, token, new Date());
 
-        const createdReset = await userResetRepository.create(reset);
+        const createdReset = await userResetPort.create(reset);
         if (!createdReset) {
             throw new InternalServerError(
                 "The user reset password could not be created",
@@ -144,14 +144,14 @@ export class UserActivationService {
 
         user.active = false;
 
-        await userRepository.update(user);
+        await userPort.update(user);
 
         return createdReset;
     }
 
     async activeUser(user: UserDto | string): Promise<UserServiceError | { user: UserDto }> {
         if (typeof user === "string") {
-            const foundUser = await userRepository.findByEmail(user);
+            const foundUser = await userPort.findByEmail(user);
             if (!foundUser) {
                 throw new NotFoundError("User email does not correspond to a user");
             }
@@ -160,7 +160,7 @@ export class UserActivationService {
 
         user.active = true;
 
-        return { user: await userRepository.update(user) };
+        return { user: await userPort.update(user) };
     }
 }
 

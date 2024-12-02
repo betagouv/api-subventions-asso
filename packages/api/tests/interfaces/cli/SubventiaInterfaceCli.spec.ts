@@ -1,8 +1,8 @@
 import path from "node:path";
 import SubventiaCli from "../../../src/interfaces/cli/Subventia.cli";
-import subventiaRepository from "../../../src/dataProviders/db/providers/subventia/subventia.port";
+import subventiaPort from "../../../src/dataProviders/db/providers/subventia/subventia.port";
 import { ObjectId } from "mongodb";
-import dataLogRepository from "../../../src/dataProviders/db/data-log/dataLog.port";
+import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
 
 describe("Subventia Cli", () => {
     let cli: SubventiaCli;
@@ -19,7 +19,7 @@ describe("Subventia Cli", () => {
                 "",
                 new Date("2024-03-12"),
             );
-            const entities = await subventiaRepository.findAll();
+            const entities = await subventiaPort.findAll();
             const expectedAny = entities.map(_entity => ({
                 _id: expect.any(ObjectId),
             }));
@@ -34,7 +34,7 @@ describe("Subventia Cli", () => {
             );
             const EXPORT_DATE = "2024-03-12";
             await cli.parse(path.resolve(__dirname, filePath), "2024-03-12");
-            const actual = await dataLogRepository.findAll();
+            const actual = await dataLogPort.findAll();
             expect(actual?.[0]).toMatchObject({
                 editionDate: new Date(EXPORT_DATE),
                 fileName: "SUBVENTIA.xlsx",

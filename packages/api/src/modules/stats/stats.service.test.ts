@@ -10,10 +10,10 @@ jest.mock("../../shared/helpers/UserHelper", () => {
 import statsService from "./stats.service";
 import * as DateHelper from "../../shared/helpers/DateHelper";
 import associationNameService from "../association-name/associationName.service";
-import statsRepository from "../../dataProviders/db/stats/stats.port";
-import statsAssociationsVisitRepository from "../../dataProviders/db/stats/statsAssociationsVisit.port";
+import statsPort from "../../dataProviders/db/stats/stats.port";
+import statsAssociationsVisitPort from "../../dataProviders/db/stats/statsAssociationsVisit.port";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
-import userRepository from "../../dataProviders/db/user/user.port";
+import userPort from "../../dataProviders/db/user/user.port";
 import UserDbo from "../../dataProviders/db/user/UserDbo";
 import { UserDto } from "dto";
 import userAssociationVisitJoiner from "./joiners/UserAssociationVisitsJoiner";
@@ -73,7 +73,7 @@ describe("StatsService", () => {
             expect(mockFindAssociationVisitsOnPeriodGroupedByUsers).toHaveBeenCalledWith(...expected);
         });
 
-        it("should return result from repository", async () => {
+        it("should return result from port", async () => {
             const expected = 3;
             const actual = await statsService.getNbUsersByRequestsOnPeriod(START, END, NB_REQUESTS);
             expect(actual).toBe(expected);
@@ -82,7 +82,7 @@ describe("StatsService", () => {
 
     describe("getMedianVisitsOnPeriod()", () => {
         const findGroupedByUserIdentifierOnPeriodMock = jest.spyOn(
-            statsAssociationsVisitRepository,
+            statsAssociationsVisitPort,
             "findGroupedByUserIdentifierOnPeriod",
         );
 
@@ -97,21 +97,21 @@ describe("StatsService", () => {
             findGroupedByUserIdentifierOnPeriodMock.mockImplementationOnce((start, end) => Promise.resolve([]));
         });
 
-        it("should call repository", async () => {
+        it("should call port", async () => {
             const expected = [START, END];
-            const actual = statsAssociationsVisitRepository.findGroupedByUserIdentifierOnPeriod;
+            const actual = statsAssociationsVisitPort.findGroupedByUserIdentifierOnPeriod;
             await statsService.getMedianVisitsOnPeriod(START, END);
             expect(actual).toHaveBeenCalledWith(...expected);
         });
 
-        it("should call repository with includesAdmin", async () => {
+        it("should call port with includesAdmin", async () => {
             const expected = [START, END];
-            const actual = statsAssociationsVisitRepository.findGroupedByUserIdentifierOnPeriod;
+            const actual = statsAssociationsVisitPort.findGroupedByUserIdentifierOnPeriod;
             await statsService.getMedianVisitsOnPeriod(START, END);
             expect(actual).toHaveBeenCalledWith(...expected);
         });
 
-        it("should call repository", async () => {
+        it("should call port", async () => {
             const expected = 0;
             const actual = await statsService.getMedianVisitsOnPeriod(START, END);
             expect(actual).toBe(expected);
@@ -119,7 +119,7 @@ describe("StatsService", () => {
     });
 
     describe("getRequestsPerMonthByYear()", () => {
-        const monthlyAvgRequestsOnPeriodMock = jest.spyOn(statsRepository, "countRequestsPerMonthByYear");
+        const monthlyAvgRequestsOnPeriodMock = jest.spyOn(statsPort, "countRequestsPerMonthByYear");
 
         const YEAR = 2022;
         const CURR_YEAR = new Date().getFullYear();
@@ -134,16 +134,16 @@ describe("StatsService", () => {
         beforeAll(() => monthlyAvgRequestsOnPeriodMock.mockResolvedValue(mockedValue));
         afterAll(() => monthlyAvgRequestsOnPeriodMock.mockRestore());
 
-        it("calls repository", async () => {
+        it("calls port", async () => {
             const expected = [YEAR, false];
-            const actual = statsRepository.countRequestsPerMonthByYear;
+            const actual = statsPort.countRequestsPerMonthByYear;
             await statsService.getRequestsPerMonthByYear(YEAR, false);
             expect(actual).toHaveBeenCalledWith(...expected);
         });
 
-        it("calls repository with includesAdmin", async () => {
+        it("calls port with includesAdmin", async () => {
             const expected = [YEAR, true];
-            const actual = statsRepository.countRequestsPerMonthByYear;
+            const actual = statsPort.countRequestsPerMonthByYear;
             await statsService.getRequestsPerMonthByYear(YEAR, true);
             expect(actual).toHaveBeenCalledWith(...expected);
         });
@@ -287,7 +287,7 @@ describe("StatsService", () => {
         const START = new Date(Date.UTC(END.getFullYear() - 1, END.getMonth() + 1, 1));
 
         const findGroupedByAssociationIdentifierOnPeriodMock: jest.SpyInstance = jest.spyOn(
-            statsAssociationsVisitRepository,
+            statsAssociationsVisitPort,
             "findGroupedByAssociationIdentifierOnPeriod",
         );
         const getNameFromIdentifierMock = jest.spyOn(associationNameService, "getNameFromIdentifier");
@@ -334,7 +334,7 @@ describe("StatsService", () => {
             ).rejects.toThrowError("Invalid Date");
         });
 
-        it("should call repository with arguments", async () => {
+        it("should call port with arguments", async () => {
             findGroupedByAssociationIdentifierOnPeriodMock.mockImplementationOnce(async () => []);
             await statsService.getTopAssociationsByPeriod(5, START, END);
 
@@ -764,14 +764,14 @@ describe("StatsService", () => {
 
     describe("getUserCountByStatus()", () => {
         it("should return UsersByStatus with empty users", async () => {
-            jest.spyOn(userRepository, "findAll").mockImplementationOnce(async () => []);
+            jest.spyOn(userPort, "findAll").mockImplementationOnce(async () => []);
             const expected = { admin: 0, active: 0, idle: 0, inactive: 0 };
             const actual = await statsService.getUserCountByStatus();
             expect(actual).toEqual(expected);
         });
 
         it("should return UsersByStatus", async () => {
-            jest.spyOn(userRepository, "findAll").mockImplementationOnce(async () => [{} as UserDbo]);
+            jest.spyOn(userPort, "findAll").mockImplementationOnce(async () => [{} as UserDbo]);
             const USERS_BY_STATUS = { admin: 1, active: 1, idle: 1, inactive: 1 };
             const expected = USERS_BY_STATUS;
             // @ts-expect-error: private method
@@ -936,17 +936,17 @@ describe("StatsService", () => {
     describe("getExporterEmails", () => {
         const mailToLog = email => ({ meta: { req: { user: { email } } } });
         const LOGS = [{ meta: { req: { user: { email: "a@b.c" } } } }, { meta: { req: { user: { email: "d@e.f" } } } }];
-        const repoMock = jest
-            .spyOn(statsRepository, "getLogsWithRegexUrl")
+        const portMock = jest
+            .spyOn(statsPort, "getLogsWithRegexUrl")
             // @ts-expect-error mock
             .mockReturnValue({ toArray: () => Promise.resolve(LOGS) });
         const RES = ["a@b.c", "d@e.f"];
 
-        afterAll(() => repoMock.mockRestore());
+        afterAll(() => portMock.mockRestore());
 
-        it("gets proper logs from repository", async () => {
+        it("gets proper logs from port", async () => {
             await statsService.getExportersEmails();
-            expect(repoMock).toBeCalledWith(/extract-data$/);
+            expect(portMock).toBeCalledWith(/extract-data$/);
         });
 
         it("returns emails from logs", async () => {
@@ -958,7 +958,7 @@ describe("StatsService", () => {
         it("removes duplicates", async () => {
             const expected = RES;
             // @ts-expect-error mock
-            repoMock.mockReturnValueOnce({ toArray: () => Promise.resolve([...LOGS, mailToLog("a@b.c")]) });
+            portMock.mockReturnValueOnce({ toArray: () => Promise.resolve([...LOGS, mailToLog("a@b.c")]) });
             const actual = await statsService.getExportersEmails();
             expect(actual).toEqual(expected);
         });
@@ -966,7 +966,7 @@ describe("StatsService", () => {
         it("removes undefined", async () => {
             const expected = RES;
             // @ts-expect-error mock
-            repoMock.mockReturnValueOnce({ toArray: () => Promise.resolve([...LOGS, mailToLog("a@b.c")]) });
+            portMock.mockReturnValueOnce({ toArray: () => Promise.resolve([...LOGS, mailToLog("a@b.c")]) });
             const actual = await statsService.getExportersEmails();
             expect(actual).toEqual(expected);
         });

@@ -2,10 +2,10 @@
 
 import { UserDto } from "dto";
 import { ObjectId } from "mongodb";
-import userRepository from "../../../../src/dataProviders/db/user/user.port";
+import userPort from "../../../../src/dataProviders/db/user/user.port";
 import userCrudService from "../../../../src/modules/user/services/crud/user.crud.service";
 
-describe("UserRepository", () => {
+describe("UserPort", () => {
     const defaultUser = {
         email: "test22@beta.gouv.fr",
         hashPassword: "PASSWORD",
@@ -22,7 +22,7 @@ describe("UserRepository", () => {
         });
 
         it("findByEmail", async () => {
-            await expect(userRepository.findByEmail("test@beta.gouv.fr")).resolves.toMatchObject(
+            await expect(userPort.findByEmail("test@beta.gouv.fr")).resolves.toMatchObject(
                 expect.not.objectContaining({
                     hashPassword: expect.any(String),
                     jwt: { token: expect.any(String), expirateDate: expect.any(Date) },
@@ -31,8 +31,8 @@ describe("UserRepository", () => {
         });
 
         it("update", async () => {
-            const user = (await userRepository.findByEmail("test@beta.gouv.fr")) as UserDto;
-            await expect(userRepository.update({ ...user, active: true })).resolves.toMatchObject(
+            const user = (await userPort.findByEmail("test@beta.gouv.fr")) as UserDto;
+            await expect(userPort.update({ ...user, active: true })).resolves.toMatchObject(
                 expect.not.objectContaining({
                     hashPassword: expect.any(String),
                     jwt: { token: expect.any(String), expirateDate: expect.any(Date) },
@@ -42,7 +42,7 @@ describe("UserRepository", () => {
 
         it("create", async () => {
             // @ts-expect-error: light user
-            await expect(userRepository.create(defaultUser)).resolves.toMatchObject(
+            await expect(userPort.create(defaultUser)).resolves.toMatchObject(
                 expect.not.objectContaining({
                     hashPassword: expect.any(String),
                     jwt: { token: expect.any(String), expirateDate: expect.any(Date) },
@@ -57,7 +57,7 @@ describe("UserRepository", () => {
         });
 
         it("should return user", async () => {
-            const actual = await userRepository.getUserWithSecretsByEmail("test@beta.gouv.fr");
+            const actual = await userPort.getUserWithSecretsByEmail("test@beta.gouv.fr");
             expect(actual).toMatchSnapshot({
                 _id: expect.any(ObjectId),
                 signupAt: expect.any(Date),
@@ -66,7 +66,7 @@ describe("UserRepository", () => {
         });
 
         it("should return null", async () => {
-            await expect(userRepository.getUserWithSecretsByEmail("")).resolves.toBe(null);
+            await expect(userPort.getUserWithSecretsByEmail("")).resolves.toBe(null);
         });
     });
 });

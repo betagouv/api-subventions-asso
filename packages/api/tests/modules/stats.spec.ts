@@ -7,10 +7,10 @@ import db from "../../src/shared/MongoConnection";
 import visitsFixture, { THIS_MONTH, TODAY } from "../__fixtures__/association-visits.fixture";
 import AssociationNameFixture from "../__fixtures__/association-name.fixture";
 import RnaNameFixture from "../__fixtures__/rna-siren.fixture";
-import statsAssociationsVisitRepository from "../../src/dataProviders/db/stats/statsAssociationsVisit.port";
+import statsAssociationsVisitPort from "../../src/dataProviders/db/stats/statsAssociationsVisit.port";
 import { DefaultObject } from "../../src/@types";
 import { createAndActiveUser, createUser } from "../__helpers__/userHelper";
-import userRepository from "../../src/dataProviders/db/user/user.port";
+import userPort from "../../src/dataProviders/db/user/user.port";
 import uniteLegalNamePort from "../../src/dataProviders/db/uniteLegalName/uniteLegalName.port";
 import rnaSirenService from "../../src/modules/rna-siren/rnaSiren.service";
 import Rna from "../../src/valueObjects/Rna";
@@ -171,7 +171,7 @@ describe("/stats", () => {
                 return makeRequest(query);
             }
 
-            const collection = db.collection(statsAssociationsVisitRepository.collectionName);
+            const collection = db.collection(statsAssociationsVisitPort.collectionName);
             const serviceSpy = jest.spyOn(statsService, "getTopAssociationsByPeriod");
 
             beforeEach(async () => {
@@ -316,8 +316,8 @@ describe("/stats", () => {
                 await createAndActiveUser(ACTIVE_USER_EMAIL);
                 await createAndActiveUser("idle.user@beta.gouv.fr");
                 await createUser("inactive.user@beta.gouv.fr");
-                const ACTIVE_USER = (await userRepository.findByEmail(ACTIVE_USER_EMAIL)) as UserDbo;
-                await statsAssociationsVisitRepository.add({
+                const ACTIVE_USER = (await userPort.findByEmail(ACTIVE_USER_EMAIL)) as UserDbo;
+                await statsAssociationsVisitPort.add({
                     associationIdentifier: SIREN,
                     userId: ACTIVE_USER._id,
                     date: new Date(),

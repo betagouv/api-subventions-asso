@@ -1,7 +1,7 @@
 import userStatsService from "./user.stats.service";
-import userRepository from "../../../../dataProviders/db/user/user.port";
+import userPort from "../../../../dataProviders/db/user/user.port";
 jest.mock("../../../../dataProviders/db/user/user.port");
-const mockedUserRepository = jest.mocked(userRepository);
+const mockedUserPort = jest.mocked(userPort);
 import userAssociationVisitJoiner from "../../../stats/joiners/UserAssociationVisitsJoiner";
 import { USER_DBO, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 jest.mock("../../../stats/joiners/UserAssociationVisitsJoiner");
@@ -13,52 +13,52 @@ const mockedDateHelper = jest.mocked(dateHelper);
 
 describe("user stats service", () => {
     describe("countTotalUsersOnDate()", () => {
-        const REPO_RETURN = 5;
+        const PORT_RETURN = 5;
         const DATE = new Date();
         const WITH_ADMIN = true;
 
-        beforeAll(() => mockedUserRepository.countTotalUsersOnDate.mockResolvedValue(REPO_RETURN));
-        afterAll(() => mockedUserRepository.countTotalUsersOnDate.mockRestore());
+        beforeAll(() => mockedUserPort.countTotalUsersOnDate.mockResolvedValue(PORT_RETURN));
+        afterAll(() => mockedUserPort.countTotalUsersOnDate.mockRestore());
 
-        it("should call repo with given args", async () => {
+        it("should call port with given args", async () => {
             await userStatsService.countTotalUsersOnDate(DATE, WITH_ADMIN);
-            expect(mockedUserRepository.countTotalUsersOnDate).toBeCalledWith(DATE, WITH_ADMIN);
+            expect(mockedUserPort.countTotalUsersOnDate).toBeCalledWith(DATE, WITH_ADMIN);
         });
 
-        it("should call repo with default", async () => {
+        it("should call port with default", async () => {
             await userStatsService.countTotalUsersOnDate(DATE);
-            expect(mockedUserRepository.countTotalUsersOnDate).toBeCalledWith(DATE, false);
+            expect(mockedUserPort.countTotalUsersOnDate).toBeCalledWith(DATE, false);
         });
 
-        it("should return repo's return value", async () => {
-            const expected = REPO_RETURN;
+        it("should return port's return value", async () => {
+            const expected = PORT_RETURN;
             const actual = await userStatsService.countTotalUsersOnDate(DATE);
             expect(actual).toBe(expected);
         });
     });
 
     describe("findByPeriod()", () => {
-        const REPO_RETURN = {};
+        const PORT_RETURN = {};
         const END = new Date();
         const BEGIN = new Date(END.getFullYear() - 1, END.getMonth(), END.getDay() + 1);
         const WITH_ADMIN = true;
 
         // @ts-expect-error: mock return value
-        beforeAll(() => mockedUserRepository.findByPeriod.mockResolvedValue(REPO_RETURN));
-        afterAll(() => mockedUserRepository.findByPeriod.mockReset());
+        beforeAll(() => mockedUserPort.findByPeriod.mockResolvedValue(PORT_RETURN));
+        afterAll(() => mockedUserPort.findByPeriod.mockReset());
 
-        it("should call repo with given args", async () => {
+        it("should call port with given args", async () => {
             await userStatsService.findByPeriod(BEGIN, END, WITH_ADMIN);
-            expect(mockedUserRepository.findByPeriod).toBeCalledWith(BEGIN, END, WITH_ADMIN);
+            expect(mockedUserPort.findByPeriod).toBeCalledWith(BEGIN, END, WITH_ADMIN);
         });
 
-        it("should call repo with default", async () => {
+        it("should call port with default", async () => {
             await userStatsService.findByPeriod(BEGIN, END);
-            expect(mockedUserRepository.findByPeriod).toBeCalledWith(BEGIN, END, false);
+            expect(mockedUserPort.findByPeriod).toBeCalledWith(BEGIN, END, false);
         });
 
-        it("should return repo's return value", async () => {
-            const expected = REPO_RETURN;
+        it("should return port's return value", async () => {
+            const expected = PORT_RETURN;
             const actual = await userStatsService.findByPeriod(BEGIN, END);
             expect(actual).toBe(expected);
         });

@@ -1,11 +1,11 @@
 import { RoleEnum } from "../../../../@enums/Roles";
 import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
 import userRolesService from "./user.roles.service";
-import userRepository from "../../../../dataProviders/db/user/user.port";
+import userPort from "../../../../dataProviders/db/user/user.port";
 import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
 import { USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 jest.mock("../../../../dataProviders/db/user/user.port");
-const mockedUserRepository = jest.mocked(userRepository);
+const mockedUserPort = jest.mocked(userPort);
 
 describe("user roles service", () => {
     describe("isRoleValid", () => {
@@ -40,10 +40,10 @@ describe("user roles service", () => {
     });
 
     describe("addRolesToUser", () => {
-        afterAll(() => mockedUserRepository.findByEmail.mockReset());
+        afterAll(() => mockedUserPort.findByEmail.mockReset());
 
         it("should throw InternalServerError if user email not found", async () => {
-            mockedUserRepository.findByEmail.mockImplementationOnce(async () => null);
+            mockedUserPort.findByEmail.mockImplementationOnce(async () => null);
             const expected = new InternalServerError("An error has occurred");
             let actual;
             try {
@@ -61,18 +61,18 @@ describe("user roles service", () => {
             expect(() => userRolesService.addRolesToUser(USER_WITHOUT_SECRET, [ROLE])).rejects.toThrowError(expected);
         });
 
-        it("should call userRepository.update() with user as argument", async () => {
+        it("should call userPort.update() with user as argument", async () => {
             await userRolesService.addRolesToUser(USER_WITHOUT_SECRET, [RoleEnum.admin]);
-            expect(mockedUserRepository.update).toHaveBeenCalledWith({
+            expect(mockedUserPort.update).toHaveBeenCalledWith({
                 ...USER_WITHOUT_SECRET,
                 roles: [...USER_WITHOUT_SECRET.roles, RoleEnum.admin],
             });
         });
 
-        it("should call userRepository.update() with email as argument", async () => {
-            mockedUserRepository.findByEmail.mockImplementationOnce(async email => USER_WITHOUT_SECRET);
+        it("should call userPort.update() with email as argument", async () => {
+            mockedUserPort.findByEmail.mockImplementationOnce(async email => USER_WITHOUT_SECRET);
             await userRolesService.addRolesToUser(USER_EMAIL, [RoleEnum.admin]);
-            expect(mockedUserRepository.update).toHaveBeenCalledWith({
+            expect(mockedUserPort.update).toHaveBeenCalledWith({
                 ...USER_WITHOUT_SECRET,
                 roles: [...USER_WITHOUT_SECRET.roles, RoleEnum.admin],
             });

@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import providerRequestRepository from "../../dataProviders/db/provider-request/providerRequest.port";
+import providerRequestPort from "../../dataProviders/db/provider-request/providerRequest.port";
 import ProviderRequestLog from "./entities/ProviderRequestLog";
 import RequestConfig from "./@types/RequestConfig";
 import { RequestResponse } from "./@types/RequestResponse";
@@ -47,7 +47,7 @@ export class ProviderRequestService {
     private async createLog(route: string, date: Date, responseCode: number, type: "GET" | "POST") {
         const log = new ProviderRequestLog(this.providerId, route, date, responseCode, type);
 
-        await providerRequestRepository.create(log);
+        await providerRequestPort.create(log);
     }
 }
 

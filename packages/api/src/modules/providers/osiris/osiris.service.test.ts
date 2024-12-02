@@ -3,7 +3,7 @@ import Rna from "../../../valueObjects/Rna";
 import Siren from "../../../valueObjects/Siren";
 import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
 import osirisService from "./osiris.service";
-import { osirisRequestRepository } from "../../../dataProviders/db/providers/osiris";
+import { osirisRequestPort } from "../../../dataProviders/db/providers/osiris";
 
 const toDemandeSubventionMock = jest.spyOn(OsirisRequestAdapter, "toDemandeSubvention");
 jest.mock("./adapters/OsirisRequestAdapter");
@@ -19,11 +19,11 @@ describe("OsirisService", () => {
     });
 
     describe("getAssociationsByRna", () => {
-        const findByRnaMock = jest.spyOn(osirisRequestRepository, "findByRna");
+        const findByRnaMock = jest.spyOn(osirisRequestPort, "findByRna");
         const RNA = new Rna("W123456789");
         const ASSOCIATION_IDENTIFIER = AssociationIdentifier.fromRna(RNA);
 
-        it("should call osirisRequestRepository.findByRna()", async () => {
+        it("should call osirisRequestPort.findByRna()", async () => {
             findByRnaMock.mockImplementationOnce(async () => []);
             await osirisService.getAssociations(ASSOCIATION_IDENTIFIER);
 

@@ -1,6 +1,6 @@
 import { SubventiaDbo } from "../../../../modules/providers/subventia/@types/subventia.entity";
-import subventiaRepository from "./subventia.port";
-describe("SubventiaRepository", () => {
+import subventiaPort from "./subventia.port";
+describe("SubventiaPort", () => {
     let getCollectionMock: jest.SpyInstance;
 
     let collection = {
@@ -13,7 +13,7 @@ describe("SubventiaRepository", () => {
     beforeAll(() => {
         getCollectionMock = jest
             //@ts-expect-error Use for mock collection (private attribute)
-            .spyOn(subventiaRepository, "collection", "get")
+            .spyOn(subventiaPort, "collection", "get")
             //@ts-expect-error: mock
             .mockImplementation(() => collection);
     });
@@ -36,7 +36,7 @@ describe("SubventiaRepository", () => {
                 ...entity,
             }));
 
-            await subventiaRepository.create(entity);
+            await subventiaPort.create(entity);
 
             expect(collection.insertOne).toHaveBeenCalledWith(entity);
         });
@@ -44,7 +44,7 @@ describe("SubventiaRepository", () => {
 
     describe("createIndexes", () => {
         it("should create indexes", () => {
-            subventiaRepository.createIndexes();
+            subventiaPort.createIndexes();
 
             expect(collection.createIndex).toHaveBeenCalledWith({ siret: 1 });
         });
@@ -55,7 +55,7 @@ describe("SubventiaRepository", () => {
             collection.find.mockImplementationOnce(() => ({
                 toArray: jest.fn(),
             }));
-            await subventiaRepository.findAll();
+            await subventiaPort.findAll();
 
             expect(collection.find).toHaveBeenCalledWith({});
         });

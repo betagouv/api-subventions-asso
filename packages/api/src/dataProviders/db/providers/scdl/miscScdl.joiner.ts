@@ -3,19 +3,19 @@ import Rna from "../../../../valueObjects/Rna";
 import Siren from "../../../../valueObjects/Siren";
 import Siret from "../../../../valueObjects/Siret";
 import MiscScdlGrantProducerEntity from "../../../../modules/providers/scdl/entities/MiscScdlGrantProducerEntity";
-import miscScdlProducerRepository from "./miscScdlProducer.port";
-import miscScdlGrantRepository from "./miscScdlGrant.port";
+import miscScdlProducerPort from "./miscScdlProducer.port";
+import miscScdlGrantPort from "./miscScdlGrant.port";
 
 export class MiscScdlJoiner {
-    applicationCollection = db.collection(miscScdlGrantRepository.collectionName);
+    applicationCollection = db.collection(miscScdlGrantPort.collectionName);
 
     private get joinPipeline() {
         return [
             {
                 $lookup: {
-                    from: miscScdlProducerRepository.collectionName,
-                    localField: miscScdlGrantRepository.joinIndexes.miscScdlProducer,
-                    foreignField: miscScdlProducerRepository.joinIndexes.miscScdlGrant,
+                    from: miscScdlProducerPort.collectionName,
+                    localField: miscScdlGrantPort.joinIndexes.miscScdlProducer,
+                    foreignField: miscScdlProducerPort.joinIndexes.miscScdlGrant,
                     as: "producer",
                 },
             },

@@ -1,12 +1,12 @@
 const { connectDB } = require("../build/src/shared/MongoConnection");
 
 const {
-    default: statsUniqueVisitByDayRepository,
+    default: statsUniqueVisitByDayPort,
 } = require("../build/src/dataProviders/db/stats/statsUniqueVisitByDay.port.js");
 
 module.exports = {
     async up() {
         await connectDB();
-        await statsUniqueVisitByDayRepository.createCollectionFromStatsAssociationVisits();
+        await statsUniqueVisitByDayPort.createCollectionFromStatsAssociationVisits();
     },
 };

@@ -1,5 +1,5 @@
 import dumpService from "./dump.service";
-import metabaseDumpRepo from "../../dataProviders/db/dump/metabase-dump.port";
+import metabaseDumpPort from "../../dataProviders/db/dump/metabase-dump.port";
 import userCrudService from "../user/services/crud/user.crud.service";
 
 jest.mock("../user/services/crud/user.crud.service");
@@ -15,17 +15,17 @@ jest.mock("../../configurations/env.conf", () => ({
 
 describe("dumpService", () => {
     describe("patchWithPipedriveData", () => {
-        it("calls repo", () => {
+        it("calls port", () => {
             // @ts-expect-error -- test private
             dumpService.patchWithPipedriveData();
-            expect(metabaseDumpRepo.patchWithPipedriveData).toHaveBeenCalled();
+            expect(metabaseDumpPort.patchWithPipedriveData).toHaveBeenCalled();
         });
     });
 
     describe("importPipedriveData", () => {
-        it("calls repo with arg", () => {
+        it("calls port with arg", () => {
             dumpService.importPipedriveData([]);
-            expect(metabaseDumpRepo.savePipedrive).toHaveBeenCalledWith([]);
+            expect(metabaseDumpPort.savePipedrive).toHaveBeenCalledWith([]);
         });
     });
 

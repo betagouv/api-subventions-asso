@@ -1,23 +1,23 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require("../build/src/shared/MongoConnection");
-const { default: statsRepository } = require("../build/src/dataProviders/db/stats/stats.port");
+const { default: statsPort } = require("../build/src/dataProviders/db/stats/stats.port");
 const {
-    default: statsAssociationsVisitRepository,
+    default: statsAssociationsVisitPort,
 } = require("../build/src/dataProviders/db/stats/statsAssociationsVisit.port");
-const { default: userRepository } = require("../build/src/dataProviders/db/user/user.port");
+const { default: userPort } = require("../build/src/dataProviders/db/user/user.port");
 const { getIdentifierType } = require("../build/src/shared/helpers/IdentifierHelper");
 const { siretToSiren } = require("../build/src/shared/helpers/SirenHelper");
-const { default: rnaSirenRepository } = require("../build/src/dataProviders/db/rnaSiren/rnaSiren.port");
+const { default: rnaSirenPort } = require("../build/src/dataProviders/db/rnaSiren/rnaSiren.port");
 /* eslint-enable @typescript-eslint/no-var-requires */
 
 module.exports = {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async up(db, client) {
         await connectDB();
-        const logsCursor = await statsRepository.getLogsWithRegexUrl(/\/(association|etablissement)\/.{9,14}$/);
+        const logsCursor = await statsPort.getLogsWithRegexUrl(/\/(association|etablissement)\/.{9,14}$/);
 
-        await statsAssociationsVisitRepository.createIndexes();
-        await rnaSirenRepository.createIndexes();
+        await statsAssociationsVisitPort.createIndexes();
+        await rnaSirenPort.createIndexes();
 
         while (await logsCursor.hasNext()) {
             const log = await logsCursor.next();
@@ -29,13 +29,13 @@ module.exports = {
                 continue;
             }
 
-            const user = await userRepository.findByEmail(log.meta.req.user.email);
+            const user = await userPort.findByEmail(log.meta.req.user.email);
 
             if (!user || user.roles.includes("admin")) {
                 continue;
             }
 
-            await statsAssociationsVisitRepository.add({
+            await statsAssociationsVisitPort.add({
                 associationIdentifier: typeIdentifier === "SIRET" ? siretToSiren(identifier) : identifier,
                 userId: user._id,
                 date: log.timestamp,
@@ -46,6 +46,6 @@ module.exports = {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async down(db, client) {
         await connectDB();
-        db.collection(statsAssociationsVisitRepository.collectionName).drop();
+        db.collection(statsAssociationsVisitPort.collectionName).drop();
     },
 };

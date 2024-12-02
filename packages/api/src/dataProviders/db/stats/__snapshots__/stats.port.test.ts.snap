@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`StatsRepository countMedianRequestsOnPeriod() should call mongo with admin filters 1`] = `
+exports[`StatsPort countMedianRequestsOnPeriod() should call mongo with admin filters 1`] = `
 Array [
   Array [
     Array [
@@ -39,7 +39,7 @@ Array [
 ]
 `;
 
-exports[`StatsRepository countMedianRequestsOnPeriod() should call mongo without admin filters 1`] = `
+exports[`StatsPort countMedianRequestsOnPeriod() should call mongo without admin filters 1`] = `
 Array [
   Array [
     Array [

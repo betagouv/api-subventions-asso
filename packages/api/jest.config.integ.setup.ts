@@ -23,7 +23,7 @@ import db, { connectDB, client } from "./src/shared/MongoConnection";
 import { initIndexes } from "./src/shared/MongoInit";
 import { startServer } from "./src/server";
 import { scheduler } from "./src/cron";
-import configurationsRepository from "./src/dataProviders/db/configurations/configurations.port";
+import configurationsPort from "./src/dataProviders/db/configurations/configurations.port";
 import { CONFIGURATION_NAMES } from "./src/modules/configurations/configurations.service";
 import { initAsyncServices } from "./src/shared/initAsyncServices";
 import { initTests } from "./jest.config.integ.init";
@@ -74,7 +74,7 @@ jest.mock("@getbrevo/brevo", () => {
 const g = global as unknown as { app?: Server };
 
 const addBetaGouvEmailDomain = async () => {
-    await configurationsRepository.upsert(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS, {
+    await configurationsPort.upsert(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS, {
         data: [process.env.BETA_GOUV_DOMAIN],
     });
 };

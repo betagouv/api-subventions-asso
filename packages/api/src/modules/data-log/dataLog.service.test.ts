@@ -1,5 +1,5 @@
 import dataLogService from "./dataLog.service";
-import dataLogRepository from "../../dataProviders/db/data-log/dataLog.port";
+import dataLogPort from "../../dataProviders/db/data-log/dataLog.port";
 import { DataLogAdapter } from "./dataLog.adapter";
 
 jest.mock("../../dataProviders/db/data-log/dataLog.port");
@@ -13,12 +13,12 @@ describe("dataLogService", () => {
 
         it("inserts log", async () => {
             await dataLogService.addLog(PROVIDER_ID, EDITION_DATE, FILE_PATH);
-            expect(dataLogRepository.insert).toHaveBeenCalled();
+            expect(dataLogPort.insert).toHaveBeenCalled();
         });
 
         it("inserts log", async () => {
             await dataLogService.addLog(PROVIDER_ID, EDITION_DATE, FILE_PATH);
-            const actual = jest.mocked(dataLogRepository.insert).mock.calls[0][0];
+            const actual = jest.mocked(dataLogPort.insert).mock.calls[0][0];
             expect(actual).toMatchObject({
                 providerId: PROVIDER_ID,
                 editionDate: EDITION_DATE,
@@ -29,7 +29,7 @@ describe("dataLogService", () => {
             const DATE_NOW = new Date("2024-04-04");
             jest.useFakeTimers().setSystemTime(DATE_NOW);
             await dataLogService.addLog(PROVIDER_ID, EDITION_DATE, FILE_PATH);
-            const arg = jest.mocked(dataLogRepository.insert).mock.calls[0][0];
+            const arg = jest.mocked(dataLogPort.insert).mock.calls[0][0];
             const expected = DATE_NOW;
             const actual = arg.integrationDate;
             expect(actual).toEqual(expected);
@@ -39,7 +39,7 @@ describe("dataLogService", () => {
         it("sets fileName from file path", async () => {
             const expected = "file.csv";
             await dataLogService.addLog(PROVIDER_ID, EDITION_DATE, FILE_PATH);
-            const arg = jest.mocked(dataLogRepository.insert).mock.calls[0][0];
+            const arg = jest.mocked(dataLogPort.insert).mock.calls[0][0];
             const actual = arg.fileName;
             expect(actual).toBe(expected);
         });
@@ -47,7 +47,7 @@ describe("dataLogService", () => {
         it("returns res from provider", async () => {
             const expected = "RES";
             // @ts-expect-error mock
-            jest.mocked(dataLogRepository.insert).mockResolvedValueOnce(expected);
+            jest.mocked(dataLogPort.insert).mockResolvedValueOnce(expected);
             const actual = await dataLogService.addLog(PROVIDER_ID, EDITION_DATE, FILE_PATH);
             expect(actual).toBe(expected);
         });
@@ -56,16 +56,16 @@ describe("dataLogService", () => {
     describe("getProvidersLogOverview", () => {
         beforeAll(() => {
             // @ts-expect-error -- mock
-            jest.mocked(dataLogRepository.getProvidersLogOverview).mockResolvedValue([1, 2, 3]);
+            jest.mocked(dataLogPort.getProvidersLogOverview).mockResolvedValue([1, 2, 3]);
         });
 
         afterAll(() => {
-            jest.mocked(dataLogRepository.getProvidersLogOverview).mockRestore();
+            jest.mocked(dataLogPort.getProvidersLogOverview).mockRestore();
         });
 
-        it("gets data from repo", async () => {
+        it("gets data from port", async () => {
             await dataLogService.getProvidersLogOverview();
-            expect(dataLogRepository.getProvidersLogOverview).toHaveBeenCalled();
+            expect(dataLogPort.getProvidersLogOverview).toHaveBeenCalled();
         });
 
         it("adapts each log", async () => {

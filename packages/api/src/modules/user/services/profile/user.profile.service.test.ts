@@ -14,8 +14,8 @@ import userCheckService from "../check/user.check.service";
 import userActivationService from "../activation/user.activation.service";
 import userCrudService from "../crud/user.crud.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
-import userRepository from "../../../../dataProviders/db/user/user.port";
-import userResetRepository from "../../../../dataProviders/db/user/user-reset.port";
+import userPort from "../../../../dataProviders/db/user/user.port";
+import userResetPort from "../../../../dataProviders/db/user/user-reset.port";
 import notifyService from "../../../notify/notify.service";
 import { ObjectId } from "mongodb";
 import geoService from "../../../providers/geoApi/geo.service";
@@ -35,9 +35,9 @@ const mockedUserActivationService = jest.mocked(userActivationService);
 jest.mock("../crud/user.crud.service");
 const mockedUserCrudService = jest.mocked(userCrudService);
 jest.mock("../../../../dataProviders/db/user/user.port");
-const mockedUserRepository = jest.mocked(userRepository);
+const mockedUserPort = jest.mocked(userPort);
 jest.mock("../../../../dataProviders/db/user/user-reset.port");
-const mockedUserResetRepository = jest.mocked(userResetRepository);
+const mockedUserResetPort = jest.mocked(userResetPort);
 jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),
 }));
@@ -184,13 +184,13 @@ describe("user profile service", () => {
             mockValidateUserProfileData.mockReturnValue({ valid: true });
             jest.mocked(userAgentConnectService.agentConnectUpdateValidations).mockReturnValue({ valid: true });
             mockSanitizeUserProfileData.mockImplementation(userInfo => userInfo);
-            mockedUserRepository.update.mockResolvedValue({ ...USER_DBO, ...USER_ACTIVATION_INFO });
+            mockedUserPort.update.mockResolvedValue({ ...USER_DBO, ...USER_ACTIVATION_INFO });
         });
 
         afterAll(() => {
             mockValidateUserProfileData.mockRestore();
             mockSanitizeUserProfileData.mockRestore();
-            mockedUserRepository.update.mockReset();
+            mockedUserPort.update.mockReset();
         });
 
         it("should call validateUserProfileData() without testing password", async () => {
@@ -221,10 +221,10 @@ describe("user profile service", () => {
             expect(deduceRegionSpy).toHaveBeenCalledWith(USER_ACTIVATION_INFO);
         });
 
-        it("should call userRepository.update() with sanitized and completed data", async () => {
+        it("should call userPort.update() with sanitized and completed data", async () => {
             deduceRegionSpy.mockImplementationOnce(data => (data.modified = true));
             await userProfileService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
-            expect(userRepository.update).toHaveBeenCalledWith({
+            expect(userPort.update).toHaveBeenCalledWith({
                 modified: true,
                 ...USER_WITHOUT_SECRET,
                 ...USER_ACTIVATION_INFO,
@@ -232,7 +232,7 @@ describe("user profile service", () => {
         });
 
         it("should notify user updated", async () => {
-            mockedUserRepository.update.mockResolvedValue(USER_WITHOUT_SECRET);
+            mockedUserPort.update.mockResolvedValue(USER_WITHOUT_SECRET);
             await userProfileService.profileUpdate(USER_WITHOUT_SECRET, USER_ACTIVATION_INFO);
             expect(mockedNotifyService.notify).toHaveBeenCalledWith(NotificationType.USER_UPDATED, USER_WITHOUT_SECRET);
         });
@@ -250,7 +250,7 @@ describe("user profile service", () => {
         let mockSanitizeUserProfileData: jest.SpyInstance;
 
         const mockResetList = [
-            mockedUserResetRepository.findByToken,
+            mockedUserResetPort.findByToken,
             mockedUserActivationService.validateResetToken,
             mockedUserAuthService.updateJwt,
         ];
@@ -262,12 +262,12 @@ describe("user profile service", () => {
             mockValidateUserProfileData.mockReturnValue({ valid: true });
             mockSanitizeUserProfileData.mockImplementation(userInfo => userInfo);
 
-            mockedUserResetRepository.findByToken.mockImplementation(async token => RESET_DOCUMENT);
+            mockedUserResetPort.findByToken.mockImplementation(async token => RESET_DOCUMENT);
             mockedUserCrudService.getUserById.mockImplementation(async id => UNACTIVATED_USER);
             mockedUserActivationService.validateResetToken.mockImplementation(token => ({ valid: true }));
             mockedUserAuthService.getHashPassword.mockImplementation(async password => Promise.resolve(password));
             // @ts-expect-error: unknown error
-            mockedUserRepository.update.mockImplementation(() => ({
+            mockedUserPort.update.mockImplementation(() => ({
                 ...USER_WITHOUT_SECRET,
                 ...USER_ACTIVATION_INFO,
             }));
@@ -280,9 +280,9 @@ describe("user profile service", () => {
             mockResetList.forEach(mock => mock.mockReset());
         });
 
-        it("should call userRepository.update()", async () => {
+        it("should call userPort.update()", async () => {
             await userProfileService.activate("token", { ...USER_ACTIVATION_INFO });
-            expect(userRepository.update).toHaveBeenCalledTimes(1);
+            expect(userPort.update).toHaveBeenCalledTimes(1);
         });
 
         it("should notify user updated", async () => {
@@ -325,11 +325,11 @@ describe("user profile service", () => {
             expect(deduceRegionSpy).toHaveBeenCalledWith(USER_ACTIVATION_INFO);
         });
 
-        it("should call userRepository.update() with sanitized and completed data", async () => {
+        it("should call userPort.update() with sanitized and completed data", async () => {
             deduceRegionSpy.mockImplementationOnce(data => (data.modified = true));
             await userProfileService.activate("token", USER_ACTIVATION_INFO);
             // @ts-expect-error -- test
-            const actual = jest.mocked(userRepository.update).mock?.calls?.[0]?.[0]?.modified;
+            const actual = jest.mocked(userPort.update).mock?.calls?.[0]?.[0]?.modified;
             expect(actual).toBeTruthy();
         });
 
@@ -353,7 +353,7 @@ describe("user profile service", () => {
 
         it("sets lastActivityDate", async () => {
             await userProfileService.activate("token", USER_ACTIVATION_INFO);
-            const actual = jest.mocked(userRepository.update).mock.calls[0][0]?.lastActivityDate;
+            const actual = jest.mocked(userPort.update).mock.calls[0][0]?.lastActivityDate;
 
             expect(actual).toEqual(expect.any(Date));
         });

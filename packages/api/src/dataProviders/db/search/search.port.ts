@@ -2,7 +2,7 @@ import { AssociationNameDto } from "dto";
 import db from "../../../shared/MongoConnection";
 import SearchCacheEntity from "./searchCacheDbo";
 
-export class SearchCacheRepository {
+export class SearchCachePort {
     private readonly collection = db.collection<SearchCacheEntity>("search-cache");
 
     saveResults(searchToken: string, results: AssociationNameDto[]) {
@@ -31,6 +31,6 @@ export class SearchCacheRepository {
     }
 }
 
-const searchCacheRepository = new SearchCacheRepository();
+const searchCachePort = new SearchCachePort();
 
-export default searchCacheRepository;
+export default searchCachePort;

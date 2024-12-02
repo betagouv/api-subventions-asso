@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires*/
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const { printAtSameLine } = require("../build/src/shared/helpers/CliHelper");
-const osirisActionRepository = require("../build/src/dataProviders/db/providers/osiris/osiris.action.port").default;
+const osirisActionPort = require("../build/src/dataProviders/db/providers/osiris/osiris.action.port").default;
 const entity = require("../build/src/modules/providers/osiris/entities/OsirisRequestEntity").default;
 const { GenericParser } = require("../build/src/shared/GenericParser");
 /* eslint-enable @typescript-eslint/no-var-requires*/
@@ -13,7 +13,7 @@ module.exports = {
         await connectDB();
 
         console.log("Start Osris action indexed siret migration");
-        const cursor = osirisActionRepository.cursorFind();
+        const cursor = osirisActionPort.cursorFind();
 
         let counter = 0;
         while (await cursor.hasNext()) {
@@ -24,7 +24,7 @@ module.exports = {
                 entity.indexedProviderInformationsPath,
                 data,
             );
-            await osirisActionRepository.update(doc);
+            await osirisActionPort.update(doc);
             counter++;
             printAtSameLine(counter.toString());
         }

@@ -1,9 +1,9 @@
 import Siren from "../../../../valueObjects/Siren";
 import Siret from "../../../../valueObjects/Siret";
 import FonjepPaymentEntity from "../../../../modules/providers/fonjep/entities/FonjepPaymentEntity";
-import { FonjepCoreRepository } from "./fonjep.core.port";
+import { FonjepCorePort } from "./fonjep.core.port";
 
-export class FonjepPaymentRepository extends FonjepCoreRepository<FonjepPaymentEntity> {
+export class FonjepPaymentPort extends FonjepCorePort<FonjepPaymentEntity> {
     readonly collectionName = "fonjepVersement";
 
     readonly joinIndexes = {
@@ -37,5 +37,5 @@ export class FonjepPaymentRepository extends FonjepCoreRepository<FonjepPaymentE
     }
 }
 
-const fonjepPaymentRepository = new FonjepPaymentRepository();
-export default fonjepPaymentRepository;
+const fonjepPaymentPort = new FonjepPaymentPort();
+export default fonjepPaymentPort;

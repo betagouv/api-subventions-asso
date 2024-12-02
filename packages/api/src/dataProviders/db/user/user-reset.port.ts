@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import UserReset from "../../../modules/user/entities/UserReset";
 import MongoRepository from "../../../shared/MongoRepository";
 
-export class UserResetRepository extends MongoRepository<UserReset> {
+export class UserResetPort extends MongoRepository<UserReset> {
     collectionName = "users-reset";
 
     public async findByToken(token: string) {
@@ -37,6 +37,6 @@ export class UserResetRepository extends MongoRepository<UserReset> {
     }
 }
 
-const userResetRepository = new UserResetRepository();
+const userResetPort = new UserResetPort();
 
-export default userResetRepository;
+export default userResetPort;

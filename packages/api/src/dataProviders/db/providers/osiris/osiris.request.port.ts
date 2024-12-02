@@ -5,7 +5,7 @@ import Siret from "../../../../valueObjects/Siret";
 import Rna from "../../../../valueObjects/Rna";
 import Siren from "../../../../valueObjects/Siren";
 
-export class OsirisRequestRepository extends MongoRepository<OsirisRequestEntity> {
+export class OsirisRequestPort extends MongoRepository<OsirisRequestEntity> {
     collectionName = "osiris-requests";
 
     async createIndexes() {
@@ -74,5 +74,5 @@ export class OsirisRequestRepository extends MongoRepository<OsirisRequestEntity
     }
 }
 
-const osirisRequestRepository: OsirisRequestRepository = new OsirisRequestRepository();
-export default osirisRequestRepository;
+const osirisRequestPort: OsirisRequestPort = new OsirisRequestPort();
+export default osirisRequestPort;

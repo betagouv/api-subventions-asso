@@ -1,10 +1,10 @@
 import { RgpdCron } from "../../../src/interfaces/cron/Rgpd.cron";
-import userRepository from "../../../src/dataProviders/db/user/user.port";
+import userPort from "../../../src/dataProviders/db/user/user.port";
 import { USER_DBO } from "../../../src/modules/user/__fixtures__/user.fixture";
 import brevoContactNotifyPipe from "../../../src/modules/notify/outPipes/BrevoContactNotifyPipe";
 import axios from "axios";
 import brevoMailNotifyPipe from "../../../src/modules/notify/outPipes/BrevoMailNotifyPipe";
-import userResetRepository from "../../../src/dataProviders/db/user/user-reset.port";
+import userResetPort from "../../../src/dataProviders/db/user/user-reset.port";
 import configurationsService, { CONFIGURATION_NAMES } from "../../../src/modules/configurations/configurations.service";
 
 describe("Rgpd Cron", () => {
@@ -22,26 +22,26 @@ describe("Rgpd Cron", () => {
         beforeEach(async () => {
             await Promise.all([
                 // last activity more than two years ago
-                userRepository.create({
+                userPort.create({
                     ...USER_DBO,
                     email: "old-user1@mail.com",
                     lastActivityDate: new Date("2020-12-12"),
                 }),
                 // user just came to the solution
-                userRepository.create({
+                userPort.create({
                     ...USER_DBO,
                     email: "new-user@mail.com",
                     lastActivityDate: new Date(NOW),
                 }),
                 // user never activated for 6 months
-                userRepository.create({
+                userPort.create({
                     ...USER_DBO,
                     email: "old-user2@mail.com",
                     signupAt: new Date(NOW.getFullYear(), NOW.getMonth() - 6, -1),
                     lastActivityDate: null,
                 }),
                 // user activated account more than 6 months ago
-                userRepository.create({
+                userPort.create({
                     ...USER_DBO,
                     email: "normal-user@mail.com",
                     signupAt: new Date(NOW.getFullYear(), NOW.getMonth() - 10),
@@ -52,7 +52,7 @@ describe("Rgpd Cron", () => {
 
         it("should disable users that did not use the app for 2 years", async () => {
             await cron.removeInactiveUsers();
-            const users = await userRepository.findAll();
+            const users = await userPort.findAll();
             const expected = [
                 {
                     firstName: "",
@@ -108,20 +108,20 @@ describe("Rgpd Cron", () => {
         beforeEach(async () => {
             await Promise.all([
                 // user just came to the solution
-                userRepository.create({
+                userPort.create({
                     ...USER_DBO,
                     email: "new-user@mail.com",
                     lastActivityDate: new Date(NOW),
                 }),
                 // user never activated for 5 months
-                userRepository.create({
+                userPort.create({
                     ...USER_DBO,
                     email: "old-user2@mail.com",
                     signupAt: new Date(NOW.getFullYear(), NOW.getMonth() - 5),
                     lastActivityDate: null,
                 }),
                 // user activated for 5 months that came
-                userRepository.create({
+                userPort.create({
                     ...USER_DBO,
                     email: "normal-user@mail.com",
                     lastActivityDate: new Date(NOW),
@@ -158,7 +158,7 @@ describe("Rgpd Cron", () => {
             ]);
             const actualLink = actual[0][0].params.activationLink;
             const actualToken = actualLink.match(/^http:\/\/dev\.local:5173\/auth\/reset-password\/(.*)/)[1];
-            const foundReset = await userResetRepository.findByToken(actualToken);
+            const foundReset = await userResetPort.findByToken(actualToken);
             expect(foundReset).not.toBeNull();
         });
 

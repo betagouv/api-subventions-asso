@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import MongoRepository from "../../../shared/MongoRepository";
 import { AgentConnectTokenDbo } from "../../../modules/user/@types/AgentConnectUser";
 
-class AgentConnectTokenRepository extends MongoRepository<AgentConnectTokenDbo> {
+class AgentConnectTokenPort extends MongoRepository<AgentConnectTokenDbo> {
     collectionName = "agent-connect-token";
 
     findLastActive(userId: ObjectId) {
@@ -25,5 +25,5 @@ class AgentConnectTokenRepository extends MongoRepository<AgentConnectTokenDbo> 
     }
 }
 
-const agentConnectTokenRepository = new AgentConnectTokenRepository();
-export default agentConnectTokenRepository;
+const agentConnectTokenPort = new AgentConnectTokenPort();
+export default agentConnectTokenPort;

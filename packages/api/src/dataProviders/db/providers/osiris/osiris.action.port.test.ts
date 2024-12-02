@@ -13,17 +13,17 @@ import db from "../../../../shared/MongoConnection";
 import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
 import MongoCnxError from "../../../../shared/errors/MongoCnxError";
 import OsirisActionAdapter from "./osirisAction.adapter";
-import { OsirisActionRepository } from "./osiris.action.port";
+import { OsirisActionPort } from "./osiris.action.port";
 import { ObjectId, WithId } from "mongodb";
 
 const toDboMock = jest.spyOn(OsirisActionAdapter, "toDbo");
 const toEntityMock = jest.spyOn(OsirisActionAdapter, "toEntity");
-const findByOsirisIdMock = jest.spyOn(OsirisActionRepository.prototype, "findByOsirisId");
+const findByOsirisIdMock = jest.spyOn(OsirisActionPort.prototype, "findByOsirisId");
 
-describe("OsirisActionRepository", () => {
-    let repository: OsirisActionRepository;
+describe("OsirisActionPort", () => {
+    let port: OsirisActionPort;
     beforeEach(() => {
-        repository = new OsirisActionRepository();
+        port = new OsirisActionPort();
     });
 
     const OSIRIS_ACTION_ID = "OSIRIS_ACTION_ID";
@@ -38,7 +38,7 @@ describe("OsirisActionRepository", () => {
             // @ts-expect-error: mock
             findByOsirisIdMock.mockImplementationOnce(jest.fn(() => ({})));
             toDboMock.mockImplementationOnce(jest.fn());
-            const entity = await repository.add(ENTITY);
+            const entity = await port.add(ENTITY);
             expect(toDboMock).toHaveBeenCalledWith(ENTITY);
             expect(entity).toEqual(ENTITY);
         });
@@ -56,7 +56,7 @@ describe("OsirisActionRepository", () => {
         });
 
         it("calls findOneAndUpdate() with given action without id", async () => {
-            await repository.update(ENTITY_WITH_ID);
+            await port.update(ENTITY_WITH_ID);
             // @ts-expect-error: weird
             expect(findOneAndUpdateMock.mock.calls[0][1].$set).toEqual(ENTITY);
         });
@@ -67,7 +67,7 @@ describe("OsirisActionRepository", () => {
             const expected = new MongoCnxError();
             let actual;
             try {
-                actual = await repository.update(ENTITY_WITH_ID);
+                actual = await port.update(ENTITY_WITH_ID);
             } catch (e) {
                 actual = e;
             }

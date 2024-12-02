@@ -7,8 +7,8 @@ import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifie
 import demarchesSimplifieesService from "./demarchesSimplifiees.service";
 import DemarchesSimplifieesMapperEntity from "./entities/DemarchesSimplifieesMapperEntity";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
-import demarchesSimplifieesDataRepository from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
-import demarchesSimplifieesMapperRepository from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port";
+import demarchesSimplifieesDataPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
+import demarchesSimplifieesMapperPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port";
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
 import { DATA_ENTITIES, SCHEMAS } from "./__fixtures__/DemarchesSimplifieesFixture";
 import {
@@ -27,7 +27,7 @@ describe("DemarchesSimplifieesService", () => {
     describe("getSchemasByIds", () => {
         beforeAll(() => {
             // @ts-expect-error mock
-            demarchesSimplifieesMapperRepository.findAll.mockResolvedValue([
+            demarchesSimplifieesMapperPort.findAll.mockResolvedValue([
                 {
                     demarcheId: 1,
                     schema: [],
@@ -35,11 +35,11 @@ describe("DemarchesSimplifieesService", () => {
             ]);
         });
 
-        it("should call mapperRepo", async () => {
+        it("should call demarchesSimplifieesMapperPort", async () => {
             // @ts-ignore getSchemasByIds is private method
             await demarchesSimplifieesService.getSchemasByIds();
 
-            expect(demarchesSimplifieesMapperRepository.findAll).toHaveBeenCalledTimes(1);
+            expect(demarchesSimplifieesMapperPort.findAll).toHaveBeenCalledTimes(1);
         });
 
         it("should return good data", async () => {
@@ -180,7 +180,7 @@ describe("DemarchesSimplifieesService", () => {
 
         beforeAll(() => {
             // @ts-expect-error mock
-            demarchesSimplifieesDataRepository.findBySiren.mockResolvedValue([]);
+            demarchesSimplifieesDataPort.findBySiren.mockResolvedValue([]);
             entitiesToSubMock = jest
                 // @ts-expect-error entitiesToSubventions is private method
                 .spyOn(demarchesSimplifieesService, "entitiesToSubventions")
@@ -190,14 +190,14 @@ describe("DemarchesSimplifieesService", () => {
 
         afterAll(() => {
             // @ts-expect-error mock
-            demarchesSimplifieesDataRepository.findBySiren.mockRestore();
+            demarchesSimplifieesDataPort.findBySiren.mockRestore();
             entitiesToSubMock.mockRestore();
         });
 
         it("should call findBySiren", async () => {
             await demarchesSimplifieesService.getDemandeSubvention(ASSOCIATION_IDENTIFIER);
-            expect(demarchesSimplifieesDataRepository.findBySiren).toHaveBeenCalledWith(SIREN);
-            expect(demarchesSimplifieesDataRepository.findBySiren).toBeCalledTimes(1);
+            expect(demarchesSimplifieesDataPort.findBySiren).toHaveBeenCalledWith(SIREN);
+            expect(demarchesSimplifieesDataPort.findBySiren).toBeCalledTimes(1);
         });
 
         it("should call entitiesToSubventions", async () => {
@@ -209,7 +209,7 @@ describe("DemarchesSimplifieesService", () => {
         it("should return entities", async () => {
             const expected = [{ test: true }];
             // @ts-expect-error mock
-            demarchesSimplifieesDataRepository.findBySiren.mockResolvedValueOnce(expected);
+            demarchesSimplifieesDataPort.findBySiren.mockResolvedValueOnce(expected);
             const actual = await demarchesSimplifieesService.getDemandeSubvention(ASSOCIATION_IDENTIFIER);
             expect(actual).toEqual(expected);
         });
@@ -220,24 +220,24 @@ describe("DemarchesSimplifieesService", () => {
 
         beforeAll(() => {
             // @ts-expect-error mock
-            demarchesSimplifieesMapperRepository.getAcceptedDemarcheIds.mockResolvedValue([]);
+            demarchesSimplifieesMapperPort.getAcceptedDemarcheIds.mockResolvedValue([]);
             updateDataByFormIdMock = jest.spyOn(demarchesSimplifieesService, "updateDataByFormId").mockResolvedValue();
         });
 
         afterAll(() => {
             // @ts-expect-error mock
-            demarchesSimplifieesMapperRepository.getAcceptedDemarcheIds.mockRestore();
+            demarchesSimplifieesMapperPort.getAcceptedDemarcheIds.mockRestore();
             updateDataByFormIdMock.mockRestore();
         });
 
         it("should get accepted forms ids", async () => {
             await demarchesSimplifieesService.updateAllForms();
-            expect(demarchesSimplifieesMapperRepository.getAcceptedDemarcheIds).toHaveBeenCalledTimes(1);
+            expect(demarchesSimplifieesMapperPort.getAcceptedDemarcheIds).toHaveBeenCalledTimes(1);
         });
 
         it("should throw error (ds is not configured)", async () => {
             // @ts-expect-error mock
-            demarchesSimplifieesMapperRepository.getAcceptedDemarcheIds.mockResolvedValueOnce(null);
+            demarchesSimplifieesMapperPort.getAcceptedDemarcheIds.mockResolvedValueOnce(null);
             await expect(() => demarchesSimplifieesService.updateAllForms()).rejects.toThrowError(
                 "DS is not configured on this env, please add mapper",
             );
@@ -247,7 +247,7 @@ describe("DemarchesSimplifieesService", () => {
             const expected = [12345, 12346];
 
             // @ts-expect-error mock
-            demarchesSimplifieesMapperRepository.getAcceptedDemarcheIds.mockResolvedValueOnce(expected);
+            demarchesSimplifieesMapperPort.getAcceptedDemarcheIds.mockResolvedValueOnce(expected);
 
             await demarchesSimplifieesService.updateAllForms();
 
@@ -272,14 +272,14 @@ describe("DemarchesSimplifieesService", () => {
                 // @ts-expect-error disable ts form return type of toEntities
                 .mockImplementation(data => [data]);
             // @ts-expect-error mock
-            demarchesSimplifieesDataRepository.upsert.mockResolvedValue();
+            demarchesSimplifieesDataPort.upsert.mockResolvedValue();
         });
 
         afterAll(() => {
             sendQueryMock.mockRestore();
             toEntitiesMock.mockRestore();
             // @ts-expect-error mock
-            demarchesSimplifieesMapperRepository.upsert.mockRestore();
+            demarchesSimplifieesMapperPort.upsert.mockRestore();
         });
 
         it("should call sendQuery", async () => {
@@ -305,7 +305,7 @@ describe("DemarchesSimplifieesService", () => {
 
             await demarchesSimplifieesService.updateDataByFormId(FORM_ID);
 
-            expect(demarchesSimplifieesDataRepository.upsert).toBeCalledWith(expected);
+            expect(demarchesSimplifieesDataPort.upsert).toBeCalledWith(expected);
         });
     });
 
@@ -374,12 +374,12 @@ describe("DemarchesSimplifieesService", () => {
     describe("addSchemaMapper", () => {
         beforeAll(() => {
             // @ts-expect-error mock
-            demarchesSimplifieesMapperRepository.upsert.mockResolvedValue();
+            demarchesSimplifieesMapperPort.upsert.mockResolvedValue();
         });
 
         afterAll(() => {
             // @ts-expect-error mock
-            demarchesSimplifieesMapperRepository.upsert.mockRestore();
+            demarchesSimplifieesMapperPort.upsert.mockRestore();
         });
 
         it("should call upsert", async () => {
@@ -387,7 +387,7 @@ describe("DemarchesSimplifieesService", () => {
 
             await demarchesSimplifieesService.addSchemaMapper(expected);
 
-            expect(demarchesSimplifieesMapperRepository.upsert).toBeCalledWith(expected);
+            expect(demarchesSimplifieesMapperPort.upsert).toBeCalledWith(expected);
         });
     });
 
@@ -414,8 +414,8 @@ describe("DemarchesSimplifieesService", () => {
 
     describe.each`
         IDENTIFIER                                                                          | spyToCall
-        ${AssociationIdentifier.fromSiren(SIREN)}                                           | ${demarchesSimplifieesDataRepository.findBySiren}
-        ${EstablishmentIdentifier.fromSiret(SIRET, AssociationIdentifier.fromSiren(SIREN))} | ${demarchesSimplifieesDataRepository.findBySiret}
+        ${AssociationIdentifier.fromSiren(SIREN)}                                           | ${demarchesSimplifieesDataPort.findBySiren}
+        ${EstablishmentIdentifier.fromSiret(SIRET, AssociationIdentifier.fromSiren(SIREN))} | ${demarchesSimplifieesDataPort.findBySiret}
     `("getRawGrants", ({ IDENTIFIER, spyToCall }) => {
         const DATA = ["G1", "G2"];
         const RAW_DATA = ["g1", "g2"];
@@ -431,7 +431,7 @@ describe("DemarchesSimplifieesService", () => {
             spyToCall.mockReset();
         });
 
-        it("gets data from repo", async () => {
+        it("gets data from port", async () => {
             await demarchesSimplifieesService.getRawGrants(IDENTIFIER);
             expect(spyToCall).toHaveBeenCalledWith(IDENTIFIER.siren || IDENTIFIER.siret);
         });

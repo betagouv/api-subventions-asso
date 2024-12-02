@@ -1,6 +1,6 @@
 import path from "path";
 import { DataLogDto } from "dto";
-import dataLogRepository from "../../dataProviders/db/data-log/dataLog.port";
+import dataLogPort from "../../dataProviders/db/data-log/dataLog.port";
 import { DataLogAdapter } from "./dataLog.adapter";
 
 class DataLogService {
@@ -11,7 +11,7 @@ class DataLogService {
             fileName = realPath?.base;
         }
 
-        return dataLogRepository.insert({
+        return dataLogPort.insert({
             providerId,
             integrationDate: new Date(),
             editionDate,
@@ -20,7 +20,7 @@ class DataLogService {
     }
 
     async getProvidersLogOverview(): Promise<DataLogDto[]> {
-        const overviews = await dataLogRepository.getProvidersLogOverview();
+        const overviews = await dataLogPort.getProvidersLogOverview();
         return overviews.map(overview => DataLogAdapter.overviewToDto(overview));
     }
 }

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const {
-    default: statsAssociationsVisitRepository,
+    default: statsAssociationsVisitPort,
 } = require("../build/src/dataProviders/db/stats/statsAssociationsVisit.port");
 /* eslint-enable @typescript-eslint/no-var-requires */
 
@@ -10,7 +10,7 @@ module.exports = {
     async up(db, client) {
         await connectDB();
 
-        await statsAssociationsVisitRepository.createIndexes();
+        await statsAssociationsVisitPort.createIndexes();
     },
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

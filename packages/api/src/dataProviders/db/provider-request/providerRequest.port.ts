@@ -3,7 +3,7 @@ import ProviderRequestLog from "../../../modules/provider-request/entities/Provi
 import ProviderRequestLogDbo from "./ProviderRequestLogDbo";
 import ProviderRequestLogAdapter from "./ProviderRequestLog.adapter";
 
-class ProviderRequestRepository extends MigrationRepository<ProviderRequestLogDbo> {
+class ProviderRequestPort extends MigrationRepository<ProviderRequestLogDbo> {
     public collectionName = "provider-request-log";
 
     async createIndexes() {
@@ -17,6 +17,6 @@ class ProviderRequestRepository extends MigrationRepository<ProviderRequestLogDb
     }
 }
 
-const providerRequestRepository = new ProviderRequestRepository();
+const providerRequestPort = new ProviderRequestPort();
 
-export default providerRequestRepository;
+export default providerRequestPort;

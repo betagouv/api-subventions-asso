@@ -16,7 +16,7 @@ import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import Siren from "../../../valueObjects/Siren";
 import Siret from "../../../valueObjects/Siret";
 import GrantProvider from "../../grant/@types/GrantProvider";
-import chorusLineRepository from "../../../dataProviders/db/providers/chorus/chorus.line.port";
+import chorusLinePort from "../../../dataProviders/db/providers/chorus/chorus.line.port";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 
@@ -45,7 +45,7 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
 
     public async upsertMany(entities: ChorusLineEntity[]) {
-        return chorusLineRepository.upsertMany(entities);
+        return chorusLinePort.upsertMany(entities);
     }
 
     public async isAcceptedEntity(entity: ChorusLineEntity) {
@@ -83,7 +83,7 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
     }
 
     public async sirenBelongAsso(siren: Siren): Promise<boolean> {
-        const chorusLine = await chorusLineRepository.findOneBySiren(siren);
+        const chorusLine = await chorusLinePort.findOneBySiren(siren);
         if (chorusLine) return true;
 
         if (await uniteLegalEntreprisesService.isEntreprise(siren)) return false;
@@ -104,22 +104,22 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
         const requests: WithId<ChorusLineEntity>[] = [];
 
         if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            requests.push(...(await chorusLineRepository.findBySiret(identifier.siret)));
+            requests.push(...(await chorusLinePort.findBySiret(identifier.siret)));
         } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            requests.push(...(await chorusLineRepository.findBySiren(identifier.siren)));
+            requests.push(...(await chorusLinePort.findBySiren(identifier.siren)));
         }
 
         return this.toPaymentArray(requests);
     }
 
     async getPaymentsByKey(ej: string) {
-        const requests = await chorusLineRepository.findByEJ(ej);
+        const requests = await chorusLinePort.findByEJ(ej);
 
         return this.toPaymentArray(requests);
     }
 
     public cursorFindDataWithoutHash(exerciceBudgetaire?: number) {
-        return chorusLineRepository.cursorFindDataWithoutHash(exerciceBudgetaire);
+        return chorusLinePort.cursorFindDataWithoutHash(exerciceBudgetaire);
     }
 
     // TODO: unit test this
@@ -145,9 +145,9 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
     async getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
         let entities: ChorusLineEntity[] = [];
         if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            entities = await chorusLineRepository.findBySiret(identifier.siret);
+            entities = await chorusLinePort.findBySiret(identifier.siret);
         } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            entities = await chorusLineRepository.findBySiren(identifier.siren);
+            entities = await chorusLinePort.findBySiren(identifier.siren);
         }
 
         return entities.map(grant => ({

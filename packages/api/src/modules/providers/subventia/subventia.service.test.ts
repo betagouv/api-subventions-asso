@@ -2,7 +2,7 @@ import subventiaService from "./subventia.service";
 import SubventiaParser from "./subventia.parser";
 import SubventiaValidator from "./validators/subventia.validator";
 import SubventiaAdapter from "./adapters/subventia.adapter";
-import SubventiaRepository from "../../../dataProviders/db/providers/subventia/subventia.port";
+import SubventiaPort from "../../../dataProviders/db/providers/subventia/subventia.port";
 import SubventiaEntity, { SubventiaDbo } from "./@types/subventia.entity";
 import { CommonApplicationDto, ApplicationStatus, DemandeSubvention } from "dto";
 import SubventiaDto from "./@types/subventia.dto";
@@ -72,10 +72,10 @@ describe("Subventia Service", () => {
     let mockCreate: jest.SpyInstance;
 
     beforeAll(() => {
-        mockFindBySiret = jest.spyOn(SubventiaRepository, "findBySiret").mockResolvedValue(applications);
-        mockFindBySiren = jest.spyOn(SubventiaRepository, "findBySiren").mockResolvedValue(applications);
+        mockFindBySiret = jest.spyOn(SubventiaPort, "findBySiret").mockResolvedValue(applications);
+        mockFindBySiren = jest.spyOn(SubventiaPort, "findBySiren").mockResolvedValue(applications);
         //@ts-expect-error : resolved value type not valid
-        mockCreate = jest.spyOn(SubventiaRepository, "create").mockResolvedValue("FAKE_ID");
+        mockCreate = jest.spyOn(SubventiaPort, "create").mockResolvedValue("FAKE_ID");
         mockToDemandeSubventionDto = jest
             .spyOn(SubventiaAdapter, "toDemandeSubventionDto")
             .mockImplementation(data => data as unknown as DemandeSubvention);

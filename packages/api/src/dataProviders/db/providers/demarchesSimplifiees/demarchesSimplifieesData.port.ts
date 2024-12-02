@@ -3,7 +3,7 @@ import Siren from "../../../../valueObjects/Siren";
 import Siret from "../../../../valueObjects/Siret";
 import DemarchesSimplifieesDataEntity from "../../../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesDataEntity";
 
-export class DemarchesSimplifieesDataRepository extends MongoRepository<DemarchesSimplifieesDataEntity> {
+export class DemarchesSimplifieesDataPort extends MongoRepository<DemarchesSimplifieesDataEntity> {
     collectionName = "demarches-simplifiees-data";
 
     async createIndexes() {
@@ -32,6 +32,6 @@ export class DemarchesSimplifieesDataRepository extends MongoRepository<Demarche
     }
 }
 
-const demarchesSimplifieesDataRepository = new DemarchesSimplifieesDataRepository();
+const demarchesSimplifieesDataPort = new DemarchesSimplifieesDataPort();
 
-export default demarchesSimplifieesDataRepository;
+export default demarchesSimplifieesDataPort;

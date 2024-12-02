@@ -3,7 +3,7 @@ import * as express from "express";
 
 import { expressAuthentication } from "../../src/authentication/authentication";
 import jwt from "jsonwebtoken";
-import userRepository from "../dataProviders/db/user/user.port";
+import userPort from "../dataProviders/db/user/user.port";
 import { ObjectId } from "mongodb";
 import { LoginRequest } from "../@types";
 import { RoleEnum } from "../@enums/Roles";
@@ -19,7 +19,7 @@ describe("expressAuthentication", () => {
     const verifyMock = jest.spyOn(jwt, "verify");
     const refreshExpirationTokenMock = jest.spyOn(userActivationService, "refreshExpirationToken");
     const findByEmailMock = jest.spyOn(userCrudService, "findByEmail");
-    const updateMock = jest.spyOn(userRepository, "update");
+    const updateMock = jest.spyOn(userPort, "update");
     const SPYS = [verifyMock, findByEmailMock, findByEmailMock, refreshExpirationTokenMock, updateMock];
 
     const DEFAULT_REQ = {

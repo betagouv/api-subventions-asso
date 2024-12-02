@@ -1,9 +1,9 @@
 import { UserWithStatsDto } from "dto";
-import userRepository from "../../../../dataProviders/db/user/user.port";
+import userPort from "../../../../dataProviders/db/user/user.port";
 import userAssociationVisitJoiner from "../../../stats/joiners/UserAssociationVisitsJoiner";
 import { getMostRecentDate } from "../../../../shared/helpers/DateHelper";
 import UserReset from "../../entities/UserReset";
-import userResetRepository from "../../../../dataProviders/db/user/user-reset.port";
+import userResetPort from "../../../../dataProviders/db/user/user-reset.port";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import notifyService from "../../../notify/notify.service";
@@ -12,11 +12,11 @@ import ExecutionSyncStack from "../../../../shared/ExecutionSyncStack";
 
 export class UserStatsService {
     public countTotalUsersOnDate(date, withAdmin = false) {
-        return userRepository.countTotalUsersOnDate(date, withAdmin);
+        return userPort.countTotalUsersOnDate(date, withAdmin);
     }
 
     public findByPeriod(begin: Date, end: Date, withAdmin = false) {
-        return userRepository.findByPeriod(begin, end, withAdmin);
+        return userPort.findByPeriod(begin, end, withAdmin);
     }
 
     public async getUsersWithStats(includesAdmin = false): Promise<UserWithStatsDto[]> {
@@ -37,14 +37,14 @@ export class UserStatsService {
     }
 
     async notifyAllUsersInSubTools() {
-        const users = await userRepository.findAll();
+        const users = await userPort.findAll();
 
         for (const user of users) {
             if (user.disable) continue;
 
             let reset: null | UserReset = null;
             if (!user.active) {
-                reset = await userResetRepository.findOneByUserId(user._id);
+                reset = await userResetPort.findOneByUserId(user._id);
             }
 
             const data = {
@@ -70,7 +70,7 @@ export class UserStatsService {
             data => notifyService.notify(NotificationType.USER_UPDATED, data),
             100, // brevo limits calls to /contacts to 10 per second so 100 per ms https://developers.brevo.com/docs/api-limits#general-rate-limiting
         );
-        const users = await userRepository.findAll();
+        const users = await userPort.findAll();
         const promises: Promise<boolean>[] = [];
 
         for (const user of users) {
@@ -78,7 +78,7 @@ export class UserStatsService {
 
             let reset: null | UserReset = null;
             if (!user.active) {
-                reset = await userResetRepository.findOneByUserId(user._id);
+                reset = await userResetPort.findOneByUserId(user._id);
             }
 
             const data = {

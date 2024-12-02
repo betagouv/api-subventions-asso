@@ -4,7 +4,7 @@ import MongoRepository from "../../../../shared/MongoRepository";
 import Siret from "../../../../valueObjects/Siret";
 import Siren from "../../../../valueObjects/Siren";
 
-export class OsirisEvaluationRepository extends MongoRepository<OsirisEvaluationEntity> {
+export class OsirisEvaluationPort extends MongoRepository<OsirisEvaluationEntity> {
     readonly collectionName = "osiris-evaluation";
 
     public async findByActionId(actionId: string) {
@@ -55,6 +55,6 @@ export class OsirisEvaluationRepository extends MongoRepository<OsirisEvaluation
     }
 }
 
-const osirisEvaluationRepository = new OsirisEvaluationRepository();
+const osirisEvaluationPort = new OsirisEvaluationPort();
 
-export default osirisEvaluationRepository;
+export default osirisEvaluationPort;

@@ -1,24 +1,24 @@
 import userCrudService from "./user.crud.service";
-import userRepository from "../../../../dataProviders/db/user/user.port";
+import userPort from "../../../../dataProviders/db/user/user.port";
 import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
 import { SIGNED_TOKEN, USER_DBO, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import bcrypt from "bcrypt";
 jest.mock("bcrypt");
 jest.mock("../../../../dataProviders/db/user/user.port");
-const mockedUserRepository = jest.mocked(userRepository);
+const mockedUserPort = jest.mocked(userPort);
 import userCheckService from "../check/user.check.service";
 jest.mock("../check/user.check.service");
 const mockedUserCheckService = jest.mocked(userCheckService);
 import userActivationService from "../activation/user.activation.service";
 jest.mock("../activation/user.activation.service");
 const mockedUserActivationService = jest.mocked(userActivationService);
-import userResetRepository from "../../../../dataProviders/db/user/user-reset.port";
+import userResetPort from "../../../../dataProviders/db/user/user-reset.port";
 jest.mock("../../../../dataProviders/db/user/user-reset.port");
-const mockedUserResetRepository = jest.mocked(userResetRepository);
-import consumerTokenRepository from "../../../../dataProviders/db/user/consumer-token.port";
+const mockedUserResetPort = jest.mocked(userResetPort);
+import consumerTokenPort from "../../../../dataProviders/db/user/consumer-token.port";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 jest.mock("../../../../dataProviders/db/user/consumer-token.port");
-const mockedConsumerTokenRepository = jest.mocked(consumerTokenRepository);
+const mockedConsumerTokenPort = jest.mocked(consumerTokenPort);
 import userAuthService from "../auth/user.auth.service";
 jest.mock("../auth/user.auth.service");
 const mockedUserAuthService = jest.mocked(userAuthService);
@@ -39,18 +39,18 @@ jest.mock("../../../../shared/helpers/RepositoryHelper");
 
 describe("user crud service", () => {
     describe("find", () => {
-        it("should call userRepository.find", async () => {
+        it("should call userPort.find", async () => {
             const QUERY = { _id: USER_WITHOUT_SECRET._id };
             const expected = QUERY;
             await userCrudService.find(QUERY);
-            expect(mockedUserRepository.find).toHaveBeenCalledWith(expected);
+            expect(mockedUserPort.find).toHaveBeenCalledWith(expected);
         });
     });
 
     describe("findByEmail", () => {
-        it("should call userRepository.findByEmail", async () => {
+        it("should call userPort.findByEmail", async () => {
             await userCrudService.findByEmail(USER_EMAIL);
-            expect(mockedUserRepository.findByEmail).toHaveBeenCalledWith(USER_EMAIL);
+            expect(mockedUserPort.findByEmail).toHaveBeenCalledWith(USER_EMAIL);
         });
     });
 
@@ -64,9 +64,9 @@ describe("user crud service", () => {
             expect(mockedUserCheckService.validateEmail).toHaveBeenCalledWith(USER_WITHOUT_SECRET.email);
         });
 
-        it("should call userRepository.update", async () => {
+        it("should call userPort.update", async () => {
             await userCrudService.update(USER_WITHOUT_SECRET);
-            expect(mockedUserRepository.update).toHaveBeenCalledWith(USER_WITHOUT_SECRET);
+            expect(mockedUserPort.update).toHaveBeenCalledWith(USER_WITHOUT_SECRET);
         });
     });
 
@@ -76,16 +76,16 @@ describe("user crud service", () => {
         beforeAll(() => {
             mockGetUserById = jest.spyOn(userCrudService, "getUserById");
             mockGetUserById.mockResolvedValue(USER_WITHOUT_SECRET);
-            mockedUserRepository.delete.mockResolvedValue(true);
-            mockedUserResetRepository.removeAllByUserId.mockResolvedValue(true);
-            mockedConsumerTokenRepository.deleteAllByUserId.mockResolvedValue(true);
+            mockedUserPort.delete.mockResolvedValue(true);
+            mockedUserResetPort.removeAllByUserId.mockResolvedValue(true);
+            mockedConsumerTokenPort.deleteAllByUserId.mockResolvedValue(true);
         });
 
         afterAll(() => {
             mockGetUserById.mockReset();
-            mockedUserRepository.delete.mockReset();
-            mockedUserResetRepository.removeAllByUserId.mockReset();
-            mockedConsumerTokenRepository.deleteAllByUserId.mockReset();
+            mockedUserPort.delete.mockReset();
+            mockedUserResetPort.removeAllByUserId.mockReset();
+            mockedConsumerTokenPort.deleteAllByUserId.mockReset();
         });
 
         it("gets user", async () => {
@@ -93,41 +93,41 @@ describe("user crud service", () => {
             expect(mockGetUserById).toHaveBeenCalledWith(USER_WITHOUT_SECRET._id.toString());
         });
 
-        it("returns false if no user without calling other repos", async () => {
+        it("returns false if no user without calling other ports", async () => {
             mockGetUserById.mockResolvedValueOnce(null);
             const expected = false;
             const actual = await userCrudService.delete(USER_WITHOUT_SECRET._id.toString());
             expect(actual).toBe(expected);
-            expect(mockedUserRepository.delete).not.toHaveBeenCalled();
-            expect(mockedUserResetRepository.removeAllByUserId).not.toHaveBeenCalled();
-            expect(consumerTokenRepository.deleteAllByUserId).not.toHaveBeenCalled();
+            expect(mockedUserPort.delete).not.toHaveBeenCalled();
+            expect(mockedUserResetPort.removeAllByUserId).not.toHaveBeenCalled();
+            expect(consumerTokenPort.deleteAllByUserId).not.toHaveBeenCalled();
         });
 
         it.each`
-            method                                         | methodName                                       | arg
-            ${mockedUserRepository.delete}                 | ${"mockedUserRepository.delete"}                 | ${USER_WITHOUT_SECRET}
-            ${mockedUserResetRepository.removeAllByUserId} | ${"mockedUserResetRepository.removeAllByUserId"} | ${USER_WITHOUT_SECRET._id}
-            ${consumerTokenRepository.deleteAllByUserId}   | ${"consumerTokenRepository.deleteAllByUserId"}   | ${USER_WITHOUT_SECRET._id}
+            method                                   | methodName                                 | arg
+            ${mockedUserPort.delete}                 | ${"mockedUserPort.delete"}                 | ${USER_WITHOUT_SECRET}
+            ${mockedUserResetPort.removeAllByUserId} | ${"mockedUserResetPort.removeAllByUserId"} | ${USER_WITHOUT_SECRET._id}
+            ${consumerTokenPort.deleteAllByUserId}   | ${"consumerTokenPort.deleteAllByUserId"}   | ${USER_WITHOUT_SECRET._id}
         `("calls $methodName", async ({ arg, method }) => {
             await userCrudService.delete(USER_WITHOUT_SECRET._id.toString());
             expect(method).toHaveBeenCalledWith(arg);
         });
 
-        it("returns false without other calls if mockedUserRepository.delete returns false", async () => {
-            mockedUserRepository.delete.mockResolvedValueOnce(false);
+        it("returns false without other calls if mockedUserPort.delete returns false", async () => {
+            mockedUserPort.delete.mockResolvedValueOnce(false);
 
             const expected = false;
             const actual = await userCrudService.delete(USER_WITHOUT_SECRET._id.toString());
             expect(actual).toBe(expected);
 
-            expect(mockedUserResetRepository.removeAllByUserId).not.toHaveBeenCalled();
-            expect(consumerTokenRepository.deleteAllByUserId).not.toHaveBeenCalled();
+            expect(mockedUserResetPort.removeAllByUserId).not.toHaveBeenCalled();
+            expect(consumerTokenPort.deleteAllByUserId).not.toHaveBeenCalled();
         });
 
         it.each`
-            method                                         | methodName
-            ${mockedUserResetRepository.removeAllByUserId} | ${"mockedUserResetRepository.removeAllByUserId"}
-            ${consumerTokenRepository.deleteAllByUserId}   | ${"consumerTokenRepository.deleteAllByUserId"}
+            method                                   | methodName
+            ${mockedUserResetPort.removeAllByUserId} | ${"mockedUserResetPort.removeAllByUserId"}
+            ${consumerTokenPort.deleteAllByUserId}   | ${"consumerTokenPort.deleteAllByUserId"}
         `("returns false if $methodName returns false", async ({ method }) => {
             method.mockResolvedValueOnce(false);
             const expected = false;
@@ -154,8 +154,8 @@ describe("user crud service", () => {
 
         beforeAll(() => {
             mockCreateUser = jest.spyOn(userCrudService, "createUser");
-            jest.mocked(mockedUserRepository.create).mockResolvedValue(USER_WITHOUT_SECRET);
-            jest.mocked(mockedUserRepository.createAndReturnWithJWT).mockResolvedValue({
+            jest.mocked(mockedUserPort.create).mockResolvedValue(USER_WITHOUT_SECRET);
+            jest.mocked(mockedUserPort.createAndReturnWithJWT).mockResolvedValue({
                 ...USER_WITHOUT_SECRET,
                 jwt: USER_DBO.jwt,
             });
@@ -166,7 +166,7 @@ describe("user crud service", () => {
         });
 
         afterAll(() => {
-            jest.mocked(mockedUserRepository.findByEmail).mockReset();
+            jest.mocked(mockedUserPort.findByEmail).mockReset();
             mockedUserCheckService.validateSanitizeUser.mockReset();
             jest.mocked(bcrypt.hash).mockReset();
         });
@@ -184,17 +184,17 @@ describe("user crud service", () => {
             expect(mockedUserCheckService.validateSanitizeUser).toHaveBeenCalledWith(FUTURE_USER);
         });
 
-        it("calls userRepository.create()", async () => {
+        it("calls userPort.create()", async () => {
             mockedUserCheckService.validateSanitizeUser.mockImplementation(async user => user);
             await userCrudService.createUser({ ...FUTURE_USER });
-            expect(mockedUserRepository.create).toHaveBeenCalledTimes(1);
+            expect(mockedUserPort.create).toHaveBeenCalledTimes(1);
         });
 
         it("ignores properties that should not be saved", async () => {
             // @ts-expect-error testing purposes
             await userCrudService.createUser({ ...FUTURE_USER, randomProperty: "lalala" });
             const expected = FUTURE_USER;
-            const actual = jest.mocked(mockedUserRepository.create).mock.calls[0][0];
+            const actual = jest.mocked(mockedUserPort.create).mock.calls[0][0];
             expect(actual).toMatchObject(expected);
         });
 
@@ -205,15 +205,15 @@ describe("user crud service", () => {
                 profileToComplete: false,
                 active: true,
             };
-            const actual = jest.mocked(mockedUserRepository.create).mock.calls[0][0];
+            const actual = jest.mocked(mockedUserPort.create).mock.calls[0][0];
             expect(actual).toMatchObject(expected);
         });
 
-        it("calls alternate repo if jwt needed", async () => {
+        it("calls alternate port if jwt needed", async () => {
             mockedUserCheckService.validateSanitizeUser.mockImplementation(async user => user);
             await userCrudService.createUser({ ...FUTURE_USER }, true);
-            expect(mockedUserRepository.createAndReturnWithJWT).toHaveBeenCalledTimes(1);
-            expect(mockedUserRepository.create).not.toHaveBeenCalled();
+            expect(mockedUserPort.createAndReturnWithJWT).toHaveBeenCalledTimes(1);
+            expect(mockedUserPort.create).not.toHaveBeenCalled();
         });
     });
 
@@ -283,20 +283,20 @@ describe("user crud service", () => {
     describe("getUserWithoutSecret", () => {
         const EMAIL = "user@mail.fr";
 
-        it("gets user from repo", async () => {
-            jest.mocked(userRepository.getUserWithSecretsByEmail).mockResolvedValueOnce(USER_DBO);
+        it("gets user from port", async () => {
+            jest.mocked(userPort.getUserWithSecretsByEmail).mockResolvedValueOnce(USER_DBO);
             await userCrudService.getUserWithoutSecret(EMAIL);
-            expect(userRepository.getUserWithSecretsByEmail).toHaveBeenCalledWith(EMAIL);
+            expect(userPort.getUserWithSecretsByEmail).toHaveBeenCalledWith(EMAIL);
         });
 
         it("should call removeSecrets()", async () => {
-            jest.mocked(userRepository.getUserWithSecretsByEmail).mockResolvedValueOnce(USER_DBO);
+            jest.mocked(userPort.getUserWithSecretsByEmail).mockResolvedValueOnce(USER_DBO);
             const actual = await userCrudService.getUserWithoutSecret(EMAIL);
             expect(repositoryHelper.removeSecrets).toHaveBeenCalledTimes(1);
         });
 
         it("throws not found if noe found", async () => {
-            jest.mocked(userRepository.getUserWithSecretsByEmail).mockResolvedValueOnce(null);
+            jest.mocked(userPort.getUserWithSecretsByEmail).mockResolvedValueOnce(null);
             const test = () => userCrudService.getUserWithoutSecret(EMAIL);
             await expect(test).rejects.toMatchInlineSnapshot(`[Error: User not found]`);
         });

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`UserRepository getUserWithSecretsByEmail should return user 1`] = `
+exports[`UserPort getUserWithSecretsByEmail should return user 1`] = `
 Object {
   "_id": Any<ObjectId>,
   "active": false,

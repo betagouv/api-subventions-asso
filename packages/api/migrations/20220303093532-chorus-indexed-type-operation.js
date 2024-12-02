@@ -1,7 +1,7 @@
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const { printAtSameLine } = require("../build/src/shared/helpers/CliHelper");
 const migrationManager = require("../build/src/shared/MigrationManager").default;
-const repo = require("../build/src/dataProviders/db/providers/chorus/chorus.line.port").default;
+const port = require("../build/src/dataProviders/db/providers/chorus/chorus.line.port").default;
 const enity = require("../build/src/modules/providers/chorus/entities/ChorusLineEntity").default;
 const { GenericParser } = require("../build/src/shared/GenericParser");
 
@@ -16,14 +16,14 @@ module.exports = {
         // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: true}});
         await migrationManager.startMigration();
 
-        const cursor = repo.cursorFind();
+        const cursor = port.cursorFind();
         let counter = 0;
         while (await cursor.hasNext()) {
             const doc = await cursor.next();
             if (!doc) continue;
             const data = doc.data;
             doc.indexedInformations = GenericParser.indexDataByPathObject(enity.indexedInformationsPath, data);
-            await repo.updateById(doc._id, doc);
+            await port.updateById(doc._id, doc);
             counter++;
             printAtSameLine(counter.toString());
         }

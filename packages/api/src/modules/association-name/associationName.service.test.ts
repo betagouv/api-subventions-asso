@@ -21,7 +21,7 @@ describe("associationName.service", () => {
         const uniteLegalNameMock = jest.spyOn(uniteLegalNameService, "getNameFromIdentifier");
         const SIREN = new Siren("433955101");
         const IDENTIFIER = AssociationIdentifier.fromSiren(SIREN);
-        const REPO_OUTPUT = new UniteLegalNameEntity(
+        const PORT_OUTPUT = new UniteLegalNameEntity(
             SIREN,
             "ALPCM NANTES BASKET",
             "",
@@ -29,13 +29,13 @@ describe("associationName.service", () => {
         );
 
         beforeAll(() => {
-            uniteLegalNameMock.mockResolvedValue(REPO_OUTPUT);
+            uniteLegalNameMock.mockResolvedValue(PORT_OUTPUT);
         });
         afterAll(() => {
             uniteLegalNameMock.mockRestore();
         });
 
-        it("should call repo", async () => {
+        it("should call port", async () => {
             await associationNameService.getNameFromIdentifier(IDENTIFIER);
             expect(uniteLegalNameMock).toBeCalledWith(IDENTIFIER);
         });

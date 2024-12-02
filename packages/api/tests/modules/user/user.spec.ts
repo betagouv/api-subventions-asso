@@ -2,8 +2,8 @@ import request = require("supertest");
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import { RoleEnum } from "../../../src/@enums/Roles";
 import { createAndActiveUser, getDefaultUser } from "../../__helpers__/userHelper";
-import userRepository from "../../../src/dataProviders/db/user/user.port";
-import statsAssociationsVisitRepository from "../../../src/dataProviders/db/stats/statsAssociationsVisit.port";
+import userPort from "../../../src/dataProviders/db/user/user.port";
+import statsAssociationsVisitPort from "../../../src/dataProviders/db/stats/statsAssociationsVisit.port";
 import UserDbo from "../../../src/dataProviders/db/user/UserDbo";
 import { ObjectId } from "mongodb";
 import notifyService from "../../../src/modules/notify/notify.service";
@@ -160,18 +160,18 @@ describe("UserController, /user", () => {
             const TODAY = new Date();
             const ACTIVE_USER_EMAIL = "active.user@beta.gouv.fr";
             await createAndActiveUser(ACTIVE_USER_EMAIL);
-            const ACTIVE_USER = (await userRepository.findByEmail(ACTIVE_USER_EMAIL)) as UserDbo;
-            await statsAssociationsVisitRepository.add({
+            const ACTIVE_USER = (await userPort.findByEmail(ACTIVE_USER_EMAIL)) as UserDbo;
+            await statsAssociationsVisitPort.add({
                 associationIdentifier: SIREN,
                 userId: ACTIVE_USER._id,
                 date: new Date(new Date(TODAY).setDate(TODAY.getDate() - 12)),
             });
-            await statsAssociationsVisitRepository.add({
+            await statsAssociationsVisitPort.add({
                 associationIdentifier: SIREN,
                 userId: ACTIVE_USER._id,
                 date: new Date(new Date(TODAY).setDate(TODAY.getDate() - 6)),
             });
-            await statsAssociationsVisitRepository.add({
+            await statsAssociationsVisitPort.add({
                 associationIdentifier: SIREN,
                 userId: ACTIVE_USER._id,
                 date: TODAY,
@@ -203,7 +203,7 @@ describe("UserController, /user", () => {
                 .set("Accept", "application/json")
                 .expect(204);
 
-            const user = await userRepository.findById(userId?.toString() as string);
+            const user = await userPort.findById(userId?.toString() as string);
             expect(user).toMatchObject({
                 signupAt: expect.any(Date),
                 _id: expect.any(ObjectId),

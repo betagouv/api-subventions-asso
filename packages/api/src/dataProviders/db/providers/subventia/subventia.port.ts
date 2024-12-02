@@ -2,7 +2,8 @@ import MongoRepository from "../../../../shared/MongoRepository";
 import Siren from "../../../../valueObjects/Siren";
 import Siret from "../../../../valueObjects/Siret";
 import { SubventiaDbo } from "../../../../modules/providers/subventia/@types/subventia.entity";
-export class SubventiaRepository extends MongoRepository<Omit<SubventiaDbo, "_id">> {
+
+export class SubventiaPort extends MongoRepository<Omit<SubventiaDbo, "_id">> {
     readonly collectionName = "subventia";
 
     public async findBySiren(siren: Siren) {
@@ -31,6 +32,6 @@ export class SubventiaRepository extends MongoRepository<Omit<SubventiaDbo, "_id
     }
 }
 
-const subventiaRepository = new SubventiaRepository();
+const subventiaPort = new SubventiaPort();
 
-export default subventiaRepository;
+export default subventiaPort;

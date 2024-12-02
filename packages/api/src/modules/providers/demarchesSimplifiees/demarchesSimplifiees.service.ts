@@ -11,8 +11,8 @@ import ProviderCore from "../ProviderCore";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import GrantProvider from "../../grant/@types/GrantProvider";
-import demarchesSimplifieesDataRepository from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
-import demarchesSimplifieesMapperRepository from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port";
+import demarchesSimplifieesDataPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
+import demarchesSimplifieesMapperPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import { DemarchesSimplifieesDto } from "./dto/DemarchesSimplifieesDto";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
@@ -37,7 +37,7 @@ export class DemarchesSimplifieesService
     }
 
     private async getSchemasByIds() {
-        const schemas = await demarchesSimplifieesMapperRepository.findAll();
+        const schemas = await demarchesSimplifieesMapperPort.findAll();
 
         return schemas.reduce((acc, schema) => {
             acc[schema.demarcheId] = schema;
@@ -75,9 +75,9 @@ export class DemarchesSimplifieesService
         let demandes: DemarchesSimplifieesDataEntity[] = [];
 
         if (id instanceof EstablishmentIdentifier && id.siret) {
-            demandes = await demarchesSimplifieesDataRepository.findBySiret(id.siret);
+            demandes = await demarchesSimplifieesDataPort.findBySiret(id.siret);
         } else if (id instanceof AssociationIdentifier && id.siren) {
-            demandes = await demarchesSimplifieesDataRepository.findBySiren(id.siren);
+            demandes = await demarchesSimplifieesDataPort.findBySiren(id.siren);
         }
 
         return this.entitiesToSubventions(demandes);
@@ -90,7 +90,7 @@ export class DemarchesSimplifieesService
      */
 
     async updateAllForms() {
-        const formsIds = await demarchesSimplifieesMapperRepository.getAcceptedDemarcheIds();
+        const formsIds = await demarchesSimplifieesMapperPort.getAcceptedDemarcheIds();
 
         if (!formsIds) {
             throw new Error("DS is not configured on this env, please add mapper");
@@ -117,7 +117,7 @@ export class DemarchesSimplifieesService
 
             const entities = DemarchesSimplifieesDtoAdapter.toEntities(result, formId);
             await asyncForEach(entities, async entity => {
-                await demarchesSimplifieesDataRepository.upsert(entity);
+                await demarchesSimplifieesDataPort.upsert(entity);
             });
             nextCursor = result?.data?.demarche?.dossiers?.pageInfo?.endCursor;
         } while (result?.data?.demarche?.dossiers?.pageInfo?.hasNextPage);
@@ -158,7 +158,7 @@ export class DemarchesSimplifieesService
     }
 
     addSchemaMapper(schema: DemarchesSimplifieesMapperEntity) {
-        return demarchesSimplifieesMapperRepository.upsert(schema);
+        return demarchesSimplifieesMapperPort.upsert(schema);
     }
 
     /**
@@ -197,9 +197,9 @@ export class DemarchesSimplifieesService
     async getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
         let entities: DemarchesSimplifieesDataEntity[] = [];
         if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            entities = await demarchesSimplifieesDataRepository.findBySiret(identifier.siret);
+            entities = await demarchesSimplifieesDataPort.findBySiret(identifier.siret);
         } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            entities = await demarchesSimplifieesDataRepository.findBySiren(identifier.siren);
+            entities = await demarchesSimplifieesDataPort.findBySiren(identifier.siren);
         }
 
         return await this.toRawGrants(entities);

@@ -9,7 +9,7 @@ import {
     MONGO_METABASE_USER,
 } from "../../../configurations/mongo.conf";
 
-export class MetabaseDumpRepository {
+export class MetabaseDumpPort {
     mongoClient: mongoDB.MongoClient;
     db: mongoDB.Db;
 
@@ -140,6 +140,6 @@ export class MetabaseDumpRepository {
     }
 }
 
-const metabaseDumpRepo = new MetabaseDumpRepository();
+const metabaseDumpPort = new MetabaseDumpPort();
 
-export default metabaseDumpRepo;
+export default metabaseDumpPort;

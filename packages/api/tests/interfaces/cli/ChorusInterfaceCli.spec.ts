@@ -1,7 +1,7 @@
 import ChorusCli from "../../../src/interfaces/cli/Chorus.cli";
 import path from "path";
-import chorusLineRepository from "../../../src/dataProviders/db/providers/chorus/chorus.line.port";
-import dataLogRepository from "../../../src/dataProviders/db/data-log/dataLog.port";
+import chorusLinePort from "../../../src/dataProviders/db/providers/chorus/chorus.line.port";
+import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
 
 describe("ChorusCli", () => {
     describe("parse cli requests", () => {
@@ -20,18 +20,18 @@ describe("ChorusCli", () => {
                 const expected = NB_ASSOS_IN_FILES;
                 const filePath = path.resolve(__dirname, "./__fixtures__/new-chorus-export.xlsx");
                 await controller.parse(filePath, EXPORT_DATE);
-                const actual = (await chorusLineRepository.cursorFind().toArray()).length;
+                const actual = (await chorusLinePort.cursorFind().toArray()).length;
                 expect(actual).toEqual(expected);
             });
 
             // rerun above test twice
             it("should not save duplicates", async () => {
                 const expected = NB_ASSOS_IN_FILES;
-                await chorusLineRepository.createIndexes();
+                await chorusLinePort.createIndexes();
                 const filePath = path.resolve(__dirname, "./__fixtures__/new-chorus-export.xlsx");
                 await controller.parse(filePath, EXPORT_DATE);
                 await controller.parse(filePath, EXPORT_DATE);
-                const actual = (await chorusLineRepository.cursorFind().toArray()).length;
+                const actual = (await chorusLinePort.cursorFind().toArray()).length;
                 expect(actual).toEqual(expected);
             });
         });
@@ -39,7 +39,7 @@ describe("ChorusCli", () => {
         it("should register new import", async () => {
             const filePath = path.resolve(__dirname, "./__fixtures__/new-chorus-export.xlsx");
             await controller.parse(filePath, EXPORT_DATE);
-            const actual = await dataLogRepository.findAll();
+            const actual = await dataLogPort.findAll();
             expect(actual?.[0]).toMatchObject({
                 editionDate: new Date(EXPORT_DATE),
                 fileName: "new-chorus-export.xlsx",
