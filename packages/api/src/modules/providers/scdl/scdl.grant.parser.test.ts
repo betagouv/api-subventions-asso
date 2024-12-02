@@ -68,25 +68,57 @@ describe("ScdlGrantParser", () => {
         it("should call csv lib parse", () => {
             ScdlGrantParser.parseCsv(BUFFER);
             expect(mockedCsvLib.parse).toHaveBeenCalledWith(BUFFER, {
-                columns: true,
+                columns: expect.any(Function),
                 delimiter: ";",
                 skip_empty_lines: true,
                 trim: true,
                 cast: false,
                 quote: '"',
+                bom: true,
             });
         });
 
         it("should call csv lib parse with alternative args", () => {
             ScdlGrantParser.parseCsv(BUFFER, ":", false);
             expect(mockedCsvLib.parse).toHaveBeenCalledWith(BUFFER, {
-                columns: true,
+                columns: expect.any(Function),
                 delimiter: ":",
                 skip_empty_lines: true,
                 trim: true,
                 cast: false,
                 quote: false,
+                bom: true,
             });
+        });
+
+        it("should apply header callback and trim column headers", () => {
+            const mockParse = jest.fn();
+            csvSyncParser.parse = mockParse;
+
+            ScdlGrantParser.parseCsv(BUFFER);
+
+            expect(mockParse).toHaveBeenCalledWith(
+                BUFFER,
+                expect.objectContaining({
+                    columns: expect.any(Function),
+                    skip_empty_lines: true,
+                    delimiter: ";",
+                    trim: true,
+                    cast: false,
+                    quote: '"',
+                    bom: true,
+                }),
+            );
+
+            const firstCallArguments = mockParse.mock.calls[0];
+            const optionsParam = firstCallArguments[1];
+            const columnsFunction = optionsParam.columns;
+
+            // use cases
+            const headers = ["  nomAttribuant  ", "objet\n"];
+            const trimmedHeaders = columnsFunction(headers);
+
+            expect(trimmedHeaders).toEqual(["nomAttribuant", "objet"]);
         });
 
         it("calls validation with parsed data", () => {
