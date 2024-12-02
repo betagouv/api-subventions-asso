@@ -267,7 +267,7 @@ describe("UserController, /user", () => {
         beforeEach(async () => {
             await createAndActiveUser(ACTIVE_USER_EMAIL);
             const ACTIVE_USER = (await userRepository.findByEmail(ACTIVE_USER_EMAIL)) as UserDbo;
-            await userRepository.update({ searchCount: 40 });
+            await userRepository.update({ nbVisits: 40 });
             await configurationsService.setLastUserStatsUpdate(new Date(new Date(TODAY).setDate(TODAY.getDate() - 11)));
 
             await Promise.all([

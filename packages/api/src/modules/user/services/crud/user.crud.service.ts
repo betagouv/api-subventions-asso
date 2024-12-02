@@ -80,7 +80,7 @@ export class UserCrudService {
             profileToComplete: !userObject.agentConnectId,
             lastActivityDate: null,
             agentConnectId: userObject.agentConnectId,
-            searchCount: 0,
+            nbVisits: 0,
         } as unknown;
 
         const jwtParams = {

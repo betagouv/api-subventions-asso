@@ -12,7 +12,7 @@ Object {
   "roles": Array [
     "user",
   ],
-  "searchCount": 3,
+  "nbVisits": 3,
   "signupAt": Any<String>,
 }
 `;

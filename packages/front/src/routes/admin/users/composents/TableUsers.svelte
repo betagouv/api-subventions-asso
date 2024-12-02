@@ -51,7 +51,7 @@
                         {/if}
                     </td>
                     <td>
-                        {user.searchCount}
+                        {user.nbVisits}
                     </td>
                     <td>
                         {user.lastActivityDate ? new Date(user.lastActivityDate).toLocaleString() : "-"}

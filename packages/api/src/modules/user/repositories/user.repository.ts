@@ -117,7 +117,7 @@ export class UserRepository extends MongoRepository<UserDbo> {
         const bulk = countByUser.map(({ _id, count }) => ({
             updateOne: {
                 filter: { _id: new ObjectId(_id) },
-                update: { $inc: { searchCount: count } },
+                update: { $inc: { nbVisits: count } },
             },
         }));
         if (!bulk.length) return;

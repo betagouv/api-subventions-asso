@@ -40,7 +40,7 @@ export default class AdminUserAccountListController {
             new Date(user.signupAt).toLocaleDateString(),
             user.resetToken ? `/auth/reset-password/${user.resetToken}?active=true` : "",
             user.resetTokenDate ? new Date(user.resetTokenDate).toLocaleString() : "",
-            user.searchCount,
+            user.nbVisits,
             new Date(user.lastActivityDate).toLocaleString(),
         ]);
 

@@ -20,7 +20,7 @@ export interface UserDto extends FutureUserDto, Omit<UserActivationInfoDto, "pas
     disable?: boolean;
     lastActivityDate: Date | null;
     agentConnectId?: string;
-    searchCount: number;
+    nbVisits: number;
 }
 
 export interface UserActivationInfoDto {
