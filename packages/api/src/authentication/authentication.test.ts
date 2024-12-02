@@ -52,6 +52,7 @@ describe("expressAuthentication", () => {
                 phoneNumber: "",
                 jobType: [],
                 lastActivityDate: null,
+                nbVisits: 0,
             }),
         );
         mockedUserAuthService.findJwtByEmail.mockImplementation(() =>
@@ -74,6 +75,7 @@ describe("expressAuthentication", () => {
                 hashPassword: "fqskfyqfdkq",
                 jwt: { token: "dsdsgfd", expirateDate: new Date() },
                 lastActivityDate: null,
+                nbVisits: 0,
             }),
         );
         // @ts-expect-error: mock
