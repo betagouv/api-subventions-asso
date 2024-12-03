@@ -27,7 +27,7 @@ jest.mock("../../../../dataProviders/db/user/user.port");
 const mockedUserPort = jest.mocked(userPort);
 import notifyService from "../../../notify/notify.service";
 
-jest.mock("../../../dataProviders/db/configurations/configurations.port");
+jest.mock("../../../../dataProviders/db/configurations/configurations.port");
 import configurationsPort from "../../../../dataProviders/db/configurations/configurations.port";
 
 jest.mock("../../../configurations/configurations.service");
