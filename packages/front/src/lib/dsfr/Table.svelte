@@ -14,17 +14,29 @@
     export let scrollable = true;
     export let bordered = true;
     export let sortable = false;
+    export let custom = false;
+    export let multiline = false;
     // remove outer border
-    export let light = false;
+    export let customLight = false;
+    export let customColSizes: (string | number)[] = [];
 
     let tableClasses: string[] = ["fr-table", `fr-table--${size}`];
     if (!scrollable) tableClasses.push("fr-table--no-scroll");
     if (bordered) tableClasses.push("fr-table--bordered");
 
-    function getHeaderSize(index) {
-        if (!headersSize) return undefined;
+    function getHeaderSize(index: number) {
+        if (!headersSize || (custom && customColSizes)) return undefined;
         const size = headersSize[index];
         if (["xs", "sm", "md", "lg"].includes(size)) return `fr-col--${size}`;
+        return undefined;
+    }
+
+    function getCustomWidth(index: number) {
+        if (!customColSizes || !custom) return undefined;
+        const size = customColSizes[index];
+        if (!size) return undefined;
+        if (typeof size === "number" || size.match(/^\d+$/)) return `${size}%`;
+        if (size.match(/^\d+%$/)) return size;
         return undefined;
     }
 
@@ -35,17 +47,17 @@
     }
 </script>
 
-<div class={tableClasses.join(" ")} id="table-component-{id}">
+<div class={tableClasses.join(" ")} id="table-component-{id}" class:custom-table={custom}>
     <div class="fr-table__wrapper">
         <div class="fr-table__container">
             <div class="fr-table__content">
-                <table class:no-outer-border={light} id="table-{id}">
+                <table class:no-outer-border={customLight} id="table-{id}" class:fr-cell--multiline={multiline}>
                     <caption class:fr-sr-only={hideTitle} aria-hidden={hideTitle}>{title}</caption>
                     <thead>
                         <tr>
                             {#each headers as header, index}
                                 {#if sortable}
-                                    <th class={getHeaderSize(index)}>
+                                    <th class={getHeaderSize(index)} style:width={getCustomWidth(index)}>
                                         <div class="fr-cell--sort">
                                             <span class="fr-cell__title">{header}</span>
                                             <Button
@@ -82,9 +94,26 @@
 </div>
 
 <style>
-    /* TODO: make this work */
-    .no-outer-border {
-        border-left: 0;
-        border-right: 0;
+    /* CUSTOM */
+
+    .custom-table .fr-table__wrapper::after {
+        background: none;
+    }
+
+    .custom-table {
+        margin-bottom: 0;
+    }
+
+    .custom-table :global(tbody tr):last-of-type {
+        border-bottom: none;
+    }
+
+    .custom-table :global(tr.clickable) {
+        cursor: pointer;
+    }
+
+    .custom-table :global(tr.clickable:hover td),
+    :global(tr.clickable:focus-within td) {
+        background-color: var(--background-alt-grey);
     }
 </style>
