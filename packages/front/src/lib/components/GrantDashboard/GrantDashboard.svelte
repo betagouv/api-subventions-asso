@@ -9,7 +9,7 @@
     import Button from "$lib/dsfr/Button.svelte";
     import Select from "$lib/dsfr/Select.svelte";
     import Table from "$lib/dsfr/Table.svelte";
-    import TableRow from "$lib/dsfr/TableRow.svelte";
+    import GrantRow from "$lib/components/GrantDashboard/GrantRow/GrantRow.svelte";
 
     export let structureId;
 
@@ -87,20 +87,19 @@
                     sortable={true}
                     scrollable={false}
                     bordered={false}
-                    light={true}
-                    {headers}
-                    headersSize={["sm", "sm", "xs", "xs", "xs", "sm", "sm", "xs"]}>
-                    {#each $rows as row, rowIndex}
-                        <TableRow id={tableId} index={rowIndex} openModal={true}>
-                            <ApplicationRow
-                                on:click={() => ctrl.onApplicationClick(rowIndex)}
-                                cells={row.applicationCells} />
-                            <PaymentRow
-                                on:click={() => ctrl.onPaymentClick(rowIndex)}
-                                cells={row.paymentsCells}
-                                granted={row.granted} />
-                        </TableRow>
-                    {/each}
+                    custom={true}
+                    customColSizes={[12, 11, 11, 11, 13, 17, 11, 11]}
+                    {headers}>
+                    {#key $selectedExercise}
+                        {#each $selectedGrants as grant, grantIndex}
+                            <GrantRow
+                                index={grantIndex}
+                                {tableId}
+                                {grant}
+                                on:applicationClick={() => ctrl.onApplicationClick(grantIndex)}
+                                on:paymentClick={() => ctrl.onPaymentClick(grantIndex)} />
+                        {/each}
+                    {/key}
                 </Table>
             </div>
         {:else}
