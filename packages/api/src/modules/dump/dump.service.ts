@@ -12,6 +12,7 @@ export class DumpService {
         await metabaseDumpRepo.connectToDumpDatabase();
 
         const lastExecution = await configurationsService.getLastPublishDumpDate();
+        await metabaseDumpRepo.cleanAfterDate(lastExecution); // ensures not to duplicate logs. should usually do nothing
         const now = new Date();
         const lastLogsCursor = statsService.getAnonymizedLogsOnPeriod(lastExecution, now);
         const batch: unknown[] = [];
