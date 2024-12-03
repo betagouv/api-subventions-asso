@@ -2,11 +2,11 @@ import { FindOneAndUpdateOptions } from "mongodb";
 import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
 import OsirisActionEntityDbo from "../../../../modules/providers/osiris/entities/OsirisActionEntityDbo";
 import MongoCnxError from "../../../../shared/errors/MongoCnxError";
-import MongoRepository from "../../../../shared/MongoRepository";
+import MongoPort from "../../../../shared/MongoPort";
 import Siren from "../../../../valueObjects/Siren";
 import OsirisActionAdapter from "./osirisAction.adapter";
 
-export class OsirisActionPort extends MongoRepository<OsirisActionEntityDbo> {
+export class OsirisActionPort extends MongoPort<OsirisActionEntityDbo> {
     collectionName = "osiris-actions";
 
     async createIndexes() {

@@ -33,9 +33,9 @@ jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),
 }));
 const mockedNotifyService = jest.mocked(notifyService);
-import * as repositoryHelper from "../../../../shared/helpers/RepositoryHelper";
+import * as portHelper from "../../../../shared/helpers/PortHelper";
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
-jest.mock("../../../../shared/helpers/RepositoryHelper");
+jest.mock("../../../../shared/helpers/PortHelper");
 
 describe("user crud service", () => {
     describe("find", () => {
@@ -292,7 +292,7 @@ describe("user crud service", () => {
         it("should call removeSecrets()", async () => {
             jest.mocked(userPort.getUserWithSecretsByEmail).mockResolvedValueOnce(USER_DBO);
             const actual = await userCrudService.getUserWithoutSecret(EMAIL);
-            expect(repositoryHelper.removeSecrets).toHaveBeenCalledTimes(1);
+            expect(portHelper.removeSecrets).toHaveBeenCalledTimes(1);
         });
 
         it("throws not found if noe found", async () => {

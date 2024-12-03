@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`StatsUniqueVisitByDay Repository _reduceToOneVisitByDayByUser() should return unique visits by user by day  1`] = `
+exports[`StatsUniqueVisitByDay Port _reduceToOneVisitByDayByUser() should return unique visits by user by day  1`] = `
 Array [
   Object {
     "_id": "63f86f1d22086bd41093b0e7",
@@ -35,7 +35,7 @@ Array [
 ]
 `;
 
-exports[`StatsUniqueVisitByDay Repository groupVisitByUser() should group by users 1`] = `
+exports[`StatsUniqueVisitByDay Port groupVisitByUser() should group by users 1`] = `
 Object {
   "62a0baa14b0eea5c8a749b0e": Array [
     Object {
@@ -62,7 +62,7 @@ Object {
 }
 `;
 
-exports[`StatsUniqueVisitByDay Repository keepOneUserVisitByDay() should keep one visit by day 1`] = `
+exports[`StatsUniqueVisitByDay Port keepOneUserVisitByDay() should keep one visit by day 1`] = `
 Array [
   Object {
     "2022-07-04": Object {

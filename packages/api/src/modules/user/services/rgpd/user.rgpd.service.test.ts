@@ -37,13 +37,13 @@ jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),
 }));
 const mockedNotifyService = jest.mocked(notifyService);
-import * as repositoryHelper from "../../../../shared/helpers/RepositoryHelper";
+import * as portHelper from "../../../../shared/helpers/PortHelper";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import userActivationService from "../activation/user.activation.service";
 import { STALL_RGPD_CRON_6_MONTHS_DELETION } from "../../../../configurations/mail.conf";
 import { UserDto } from "dto";
 
-jest.mock("../../../../shared/helpers/RepositoryHelper", () => ({
+jest.mock("../../../../shared/helpers/PortHelper", () => ({
     removeSecrets: jest.fn(user => user),
     uniformizeId: jest.fn(token => token),
 }));
@@ -101,7 +101,7 @@ describe("user rgpd service", () => {
             ]);
 
             await userRgpdService.getAllData(USER_WITHOUT_SECRET._id.toString());
-            expect(repositoryHelper.uniformizeId).toHaveBeenCalledTimes(1);
+            expect(portHelper.uniformizeId).toHaveBeenCalledTimes(1);
         });
 
         it("should call statsService.getAllVisitsUser()", async () => {

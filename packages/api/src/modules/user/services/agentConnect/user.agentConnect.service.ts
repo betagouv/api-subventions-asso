@@ -11,7 +11,7 @@ import userCrudService from "../crud/user.crud.service";
 import { RoleEnum } from "../../../../@enums/Roles";
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
-import { removeHashPassword, removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
+import { removeHashPassword, removeSecrets } from "../../../../shared/helpers/PortHelper";
 import configurationsService from "../../../configurations/configurations.service";
 import { applyValidations, ValidationResult } from "../../../../shared/helpers/validation.helper";
 import agentConnectTokenPort from "../../../../dataProviders/db/user/acToken.port";

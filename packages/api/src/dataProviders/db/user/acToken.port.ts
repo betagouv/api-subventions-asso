@@ -1,8 +1,8 @@
 import { ObjectId } from "mongodb";
-import MongoRepository from "../../../shared/MongoRepository";
+import MongoPort from "../../../shared/MongoPort";
 import { AgentConnectTokenDbo } from "../../../modules/user/@types/AgentConnectUser";
 
-class AgentConnectTokenPort extends MongoRepository<AgentConnectTokenDbo> {
+class AgentConnectTokenPort extends MongoPort<AgentConnectTokenDbo> {
     collectionName = "agent-connect-token";
 
     findLastActive(userId: ObjectId) {

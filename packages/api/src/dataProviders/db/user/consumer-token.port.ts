@@ -1,8 +1,8 @@
 import { ObjectId } from "mongodb";
 import { ConsumerToken } from "../../../modules/user/entities/ConsumerToken";
-import MongoRepository from "../../../shared/MongoRepository";
+import MongoPort from "../../../shared/MongoPort";
 
-class ConsumerTokenPort extends MongoRepository<ConsumerToken> {
+class ConsumerTokenPort extends MongoPort<ConsumerToken> {
     collectionName = "consumer-token";
 
     async findToken(userId: string | ObjectId) {

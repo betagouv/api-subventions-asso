@@ -16,7 +16,7 @@ import { NotificationType } from "../../../notify/@types/NotificationType";
 import userCheckService, { UserCheckService } from "../check/user.check.service";
 import { UserUpdateError } from "../../../../dataProviders/db/user/UserUpdateError";
 import LoginError from "../../../../shared/errors/LoginError";
-import { removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
+import { removeSecrets } from "../../../../shared/helpers/PortHelper";
 import { UserConsumerService } from "../consumer/user.consumer.service";
 import { UserServiceErrors } from "../../user.enum";
 import { getNewJwtExpireDate } from "../../user.helper";

@@ -1,6 +1,6 @@
 import { DefaultObject } from "../../../@types";
 import db from "../../../shared/MongoConnection";
-import { removeSecrets } from "../../../shared/helpers/RepositoryHelper";
+import { removeSecrets } from "../../../shared/helpers/PortHelper";
 import userPort from "../../../dataProviders/db/user/user.port";
 import { UserWithAssociationVisitsEntity } from "../entities/UserWithAssociationVisitsEntity";
 import statsAssociationsVisitPort from "../../../dataProviders/db/stats/statsAssociationsVisit.port";

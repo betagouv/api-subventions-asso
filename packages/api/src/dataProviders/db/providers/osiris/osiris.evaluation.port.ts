@@ -1,10 +1,10 @@
 import { FindOneAndUpdateOptions } from "mongodb";
 import OsirisEvaluationEntity from "../../../../modules/providers/osiris/entities/OsirisEvaluationEntity";
-import MongoRepository from "../../../../shared/MongoRepository";
+import MongoPort from "../../../../shared/MongoPort";
 import Siret from "../../../../valueObjects/Siret";
 import Siren from "../../../../valueObjects/Siren";
 
-export class OsirisEvaluationPort extends MongoRepository<OsirisEvaluationEntity> {
+export class OsirisEvaluationPort extends MongoPort<OsirisEvaluationEntity> {
     readonly collectionName = "osiris-evaluation";
 
     public async findByActionId(actionId: string) {

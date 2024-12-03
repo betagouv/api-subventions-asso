@@ -15,7 +15,7 @@ import { joinEnum } from "../../../../shared/helpers/ArrayHelper";
 import userCheckService, { UserCheckService } from "../check/user.check.service";
 import { sanitizeToPlainText } from "../../../../shared/helpers/StringHelper";
 import userPort from "../../../../dataProviders/db/user/user.port";
-import { removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
+import { removeSecrets } from "../../../../shared/helpers/PortHelper";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import userResetPort from "../../../../dataProviders/db/user/user-reset.port";

@@ -1,12 +1,12 @@
 import { UserDto } from "dto";
 import { Filter, ObjectId } from "mongodb";
 import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../shared/helpers/MongoHelper";
-import MongoRepository from "../../../shared/MongoRepository";
-import { removeHashPassword, removeSecrets } from "../../../shared/helpers/RepositoryHelper";
+import MongoPort from "../../../shared/MongoPort";
+import { removeHashPassword, removeSecrets } from "../../../shared/helpers/PortHelper";
 import { InternalServerError } from "../../../shared/errors/httpErrors";
 import UserDbo, { UserNotPersisted } from "./UserDbo";
 
-export class UserPort extends MongoRepository<UserDbo> {
+export class UserPort extends MongoPort<UserDbo> {
     collectionName = "users";
 
     joinIndexes = {

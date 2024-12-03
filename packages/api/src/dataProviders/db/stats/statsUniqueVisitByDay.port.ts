@@ -1,4 +1,4 @@
-import MongoRepository from "../../../shared/MongoRepository";
+import MongoPort from "../../../shared/MongoPort";
 import AssociationVisitEntity from "../../../modules/stats/entities/AssociationVisitEntity";
 import statsAssociationsVisitPort from "./statsAssociationsVisit.port";
 
@@ -22,7 +22,7 @@ export const keepOneUserVisitByDay = userVisits => {
     }, {});
 };
 
-export class StatsUniqueVisitByDay extends MongoRepository<AssociationVisitEntity> {
+export class StatsUniqueVisitByDay extends MongoPort<AssociationVisitEntity> {
     public collectionName = "stats-unique-visit-by-day";
 
     public createIndexes(): void {

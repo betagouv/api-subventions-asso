@@ -1,9 +1,9 @@
-import MongoRepository from "../../../../shared/MongoRepository";
+import MongoPort from "../../../../shared/MongoPort";
 import MiscScdlGrantEntity from "../../../../modules/providers/scdl/entities/MiscScdlGrantEntity";
 import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../../shared/helpers/MongoHelper";
 import { ScdlGrantDbo } from "../../../../modules/providers/scdl/dbo/ScdlGrantDbo";
 
-export class MiscScdlGrantPort extends MongoRepository<ScdlGrantDbo> {
+export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
     readonly collectionName = "misc-scdl-grant";
     readonly joinIndexes = {
         miscScdlProducer: "producerSlug",

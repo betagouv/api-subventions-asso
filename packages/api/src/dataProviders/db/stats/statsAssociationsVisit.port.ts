@@ -1,8 +1,8 @@
 import { ObjectId } from "mongodb";
-import MongoRepository from "../../../shared/MongoRepository";
+import MongoPort from "../../../shared/MongoPort";
 import AssociationVisitEntity from "../../../modules/stats/entities/AssociationVisitEntity";
 
-export class StatsAssociationsVisitPort extends MongoRepository<AssociationVisitEntity> {
+export class StatsAssociationsVisitPort extends MongoPort<AssociationVisitEntity> {
     collectionName = "stats-association-visits";
 
     joinIndexes = {

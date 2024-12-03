@@ -1,7 +1,7 @@
-import MongoRepository from "../../../../shared/MongoRepository";
+import MongoPort from "../../../../shared/MongoPort";
 import DemarchesSimplifieesMapperEntity from "../../../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesMapperEntity";
 
-export class DemarchesSimplifieesMapperPort extends MongoRepository<DemarchesSimplifieesMapperEntity> {
+export class DemarchesSimplifieesMapperPort extends MongoPort<DemarchesSimplifieesMapperEntity> {
     public collectionName = "demarches-simplifiees-schemas";
 
     async createIndexes() {

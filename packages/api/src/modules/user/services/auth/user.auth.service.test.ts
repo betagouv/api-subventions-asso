@@ -1,4 +1,4 @@
-import { removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
+import { removeSecrets } from "../../../../shared/helpers/PortHelper";
 
 const jwtVerifyMock = jest.fn();
 const jwtSignMock = jest.fn(() => SIGNED_TOKEN);
@@ -34,9 +34,9 @@ import {
 import { BadRequestError, UnauthorizedError } from "../../../../shared/errors/httpErrors";
 
 jest.mock("../../../../dataProviders/db/user/user.port");
-import * as repositoryHelper from "../../../../shared/helpers/RepositoryHelper";
+import * as portHelper from "../../../../shared/helpers/PortHelper";
 
-jest.mock("../../../../shared/helpers/RepositoryHelper", () => ({
+jest.mock("../../../../shared/helpers/PortHelper", () => ({
     removeSecrets: jest.fn(user => user),
     uniformizeId: jest.fn(token => token),
 }));
@@ -274,13 +274,13 @@ describe("user auth service", () => {
                 async () => ({ ...CONSUMER_USER, ...USER_SECRETS } as UserDbo),
             );
             await userAuthService.authenticate({ ...DECODED_TOKEN, ...CONSUMER_USER }, USER_SECRETS.jwt.token);
-            expect(repositoryHelper.removeSecrets).toBeCalledTimes(1);
+            expect(portHelper.removeSecrets).toBeCalledTimes(1);
         });
 
         it("should call removeSecrets() when user", async () => {
             mockedUserPort.getUserWithSecretsByEmail.mockImplementationOnce(async () => USER_DBO);
             await userAuthService.authenticate(DECODED_TOKEN, USER_SECRETS.jwt.token);
-            expect(repositoryHelper.removeSecrets).toBeCalledTimes(1);
+            expect(portHelper.removeSecrets).toBeCalledTimes(1);
         });
 
         it("should return UserServiceError if user not active", async () => {

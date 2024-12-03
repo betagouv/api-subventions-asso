@@ -1,9 +1,9 @@
 import { UserDto } from "dto";
 import { RoleEnum } from "../../../@enums/Roles";
 import { DefaultObject } from "../../../@types";
-import MongoRepository from "../../../shared/MongoRepository";
+import MongoPort from "../../../shared/MongoPort";
 
-export class StatsPort extends MongoRepository<any> {
+export class StatsPort extends MongoPort<any> {
     collectionName = "log";
 
     async createIndexes() {

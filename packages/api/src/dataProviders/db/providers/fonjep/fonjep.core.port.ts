@@ -1,9 +1,7 @@
 import { Document } from "mongodb";
-import MongoRepository from "../../../../shared/MongoRepository";
+import MongoPort from "../../../../shared/MongoPort";
 
-export abstract class FonjepCorePort<
-    FonjepTypedDocument extends Document,
-> extends MongoRepository<FonjepTypedDocument> {
+export abstract class FonjepCorePort<FonjepTypedDocument extends Document> extends MongoPort<FonjepTypedDocument> {
     private tmpCollectionEnabled = false;
 
     async createIndexes() {

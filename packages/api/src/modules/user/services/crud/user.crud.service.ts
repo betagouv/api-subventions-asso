@@ -14,7 +14,7 @@ import { BadRequestError, InternalServerError, NotFoundError } from "../../../..
 import userConsumerService from "../consumer/user.consumer.service";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import userActivationService from "../activation/user.activation.service";
-import { removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
+import { removeSecrets } from "../../../../shared/helpers/PortHelper";
 import { UserServiceErrors } from "../../user.enum";
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 import { getNewJwtExpireDate } from "../../user.helper";

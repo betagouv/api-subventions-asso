@@ -1,9 +1,9 @@
-import MongoRepository from "../../../../shared/MongoRepository";
+import MongoPort from "../../../../shared/MongoPort";
 import Siren from "../../../../valueObjects/Siren";
 import Siret from "../../../../valueObjects/Siret";
 import DemarchesSimplifieesDataEntity from "../../../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesDataEntity";
 
-export class DemarchesSimplifieesDataPort extends MongoRepository<DemarchesSimplifieesDataEntity> {
+export class DemarchesSimplifieesDataPort extends MongoPort<DemarchesSimplifieesDataEntity> {
     collectionName = "demarches-simplifiees-data";
 
     async createIndexes() {

@@ -1,11 +1,11 @@
 import { Collection } from "mongodb";
-import MongoRepository from "../../../../shared/MongoRepository";
+import MongoPort from "../../../../shared/MongoPort";
 import DauphinSubventionDto from "../../../../modules/providers/dauphin/dto/DauphinSubventionDto";
 import Siret from "../../../../valueObjects/Siret";
 import Siren from "../../../../valueObjects/Siren";
 import DauphinGisproDbo from "./DauphinGisproDbo";
 
-export class DauphinGisproPort extends MongoRepository<DauphinGisproDbo> {
+export class DauphinGisproPort extends MongoPort<DauphinGisproDbo> {
     readonly collectionName = "dauphin-gispro";
 
     async createIndexes() {

@@ -1,8 +1,8 @@
 import { WithId } from "mongodb";
-import MongoRepository from "../../../shared/MongoRepository";
+import MongoPort from "../../../shared/MongoPort";
 import ConfigurationEntity from "../../../modules/configurations/entities/ConfigurationEntity";
 
-export class ConfigurationsPort extends MongoRepository<ConfigurationEntity> {
+export class ConfigurationsPort extends MongoPort<ConfigurationEntity> {
     readonly collectionName = "configurations";
 
     async upsert(name: string, partialEntity: Partial<ConfigurationEntity>) {

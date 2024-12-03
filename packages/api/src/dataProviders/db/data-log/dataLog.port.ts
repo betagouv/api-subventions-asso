@@ -1,8 +1,8 @@
-import MongoRepository from "../../../shared/MongoRepository";
+import MongoPort from "../../../shared/MongoPort";
 import { DataLogEntity } from "../../../modules/data-log/entities/dataLogEntity";
 import { ProducerLogEntity } from "../../../modules/data-log/entities/producerLogEntity";
 
-class DataLogPort extends MongoRepository<DataLogEntity> {
+class DataLogPort extends MongoPort<DataLogEntity> {
     readonly collectionName = "data-log";
 
     async createIndexes() {

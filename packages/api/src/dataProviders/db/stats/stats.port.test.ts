@@ -1,6 +1,6 @@
 import statsPort, { StatsPort } from "../../../dataProviders/db/stats/stats.port";
 import { firstDayOfPeriod } from "../../../shared/helpers/DateHelper";
-import MongoRepository from "../../../shared/MongoRepository";
+import MongoPort from "../../../shared/MongoPort";
 
 const FIRST_DAY_YEAR = firstDayOfPeriod(2022);
 const YEAR = 2022;
@@ -14,16 +14,16 @@ const dateFactory = (diff: number) => {
 describe("StatsPort", () => {
     const mockToArray = jest.fn();
     let spyAggregate = jest.fn(() => ({ toArray: mockToArray }));
-    let mockMongoRepositoryCollection: jest.SpyInstance;
+    let mockMongoPortCollection: jest.SpyInstance;
     beforeAll(() => {
-        mockMongoRepositoryCollection = jest
+        mockMongoPortCollection = jest
             // @ts-expect-error: test
-            .spyOn(MongoRepository.prototype, "collection", "get")
+            .spyOn(MongoPort.prototype, "collection", "get")
             // @ts-expect-error: test
             .mockReturnValue({ aggregate: spyAggregate });
     });
 
-    afterAll(() => mockMongoRepositoryCollection.mockRestore());
+    afterAll(() => mockMongoPortCollection.mockRestore());
 
     describe("countMedianRequestsOnPeriod()", () => {
         const START = dateFactory(-1);

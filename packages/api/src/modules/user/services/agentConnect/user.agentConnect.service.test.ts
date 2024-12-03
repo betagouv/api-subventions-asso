@@ -6,7 +6,7 @@ import userPort from "../../../../dataProviders/db/user/user.port";
 import userAuthService from "../auth/user.auth.service";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
-import { removeHashPassword, removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
+import { removeHashPassword, removeSecrets } from "../../../../shared/helpers/PortHelper";
 import { USER_DBO, USER_WITHOUT_PASSWORD, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import agentConnectTokenPort from "../../../../dataProviders/db/user/acToken.port";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
@@ -28,7 +28,7 @@ jest.mock("../../../../configurations/front.conf", () => ({
 jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(), // I shouldn't have to do this but mocking didn't work
 }));
-jest.mock("../../../../shared/helpers/RepositoryHelper");
+jest.mock("../../../../shared/helpers/PortHelper");
 jest.mock("../crud/user.crud.service");
 jest.mock("../../../../dataProviders/db/user/user.port");
 jest.mock("../../../../dataProviders/db/user/acToken.port");

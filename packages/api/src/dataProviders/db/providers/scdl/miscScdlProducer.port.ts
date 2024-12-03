@@ -1,7 +1,7 @@
-import MongoRepository from "../../../../shared/MongoRepository";
+import MongoPort from "../../../../shared/MongoPort";
 import MiscScdlProducerEntity from "../../../../modules/providers/scdl/entities/MiscScdlProducerEntity";
 
-export class MiscScdlProducersPort extends MongoRepository<MiscScdlProducerEntity> {
+export class MiscScdlProducersPort extends MongoPort<MiscScdlProducerEntity> {
     readonly collectionName = "misc-scdl-producers";
     readonly joinIndexes = {
         miscScdlGrant: "slug",

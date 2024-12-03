@@ -3,7 +3,7 @@ import * as Sentry from "@sentry/node";
 import { NotFoundError } from "../../../../shared/errors/httpErrors";
 import userResetPort from "../../../../dataProviders/db/user/user-reset.port";
 import consumerTokenPort from "../../../../dataProviders/db/user/consumer-token.port";
-import { uniformizeId } from "../../../../shared/helpers/RepositoryHelper";
+import { uniformizeId } from "../../../../shared/helpers/PortHelper";
 import statsService from "../../../stats/stats.service";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";

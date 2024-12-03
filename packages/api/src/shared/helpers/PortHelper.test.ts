@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import * as RepositoryHelper from "./RepositoryHelper";
+import * as PortHelper from "./PortHelper";
 import { AgentTypeEnum } from "dto";
 
 const USER_DBO = {
@@ -17,7 +17,7 @@ const USER_DBO = {
 
 describe("removeSecrets", () => {
     it("should remove all secret in user", () => {
-        const actual = RepositoryHelper.removeSecrets(USER_DBO);
+        const actual = PortHelper.removeSecrets(USER_DBO);
         expect(actual).toMatchSnapshot({
             _id: expect.any(ObjectId),
             signupAt: expect.any(Date),
@@ -27,7 +27,7 @@ describe("removeSecrets", () => {
 
 describe("removeHashPassword", () => {
     it("should remove only hash password in user", () => {
-        const actual = RepositoryHelper.removeHashPassword(USER_DBO);
+        const actual = PortHelper.removeHashPassword(USER_DBO);
         expect(actual).toMatchSnapshot({
             _id: expect.any(ObjectId),
             signupAt: expect.any(Date),
@@ -38,7 +38,7 @@ describe("removeHashPassword", () => {
 
 describe("uniformizeId", () => {
     it("should uniformizeId id ", () => {
-        const actual = RepositoryHelper.uniformizeId(USER_DBO);
+        const actual = PortHelper.uniformizeId(USER_DBO);
         expect(actual).toMatchObject({
             _id: expect.any(String),
         });
