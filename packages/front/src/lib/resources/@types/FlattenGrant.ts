@@ -1,4 +1,4 @@
-import { ApplicationStatus, SiretDto } from "dto";
+import type { ApplicationStatus, SiretDto } from "dto";
 
 export type OnlyApplication = {
     application: FlatApplication;
