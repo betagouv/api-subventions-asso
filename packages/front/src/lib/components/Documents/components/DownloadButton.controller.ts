@@ -9,6 +9,6 @@ export default class DownloadButtonController {
         this.downloadBtnLabel = derived(selectDocsStore, docs =>
             docs.length ? `Télécharger la sélection (${docs.length})` : "Tout télécharger",
         );
-        this.resetBtnDisabled = derived(selectDocsStore, docs => (docs.length > 0 ? false : true));
+        this.resetBtnDisabled = derived(selectDocsStore, docs => docs.length === 0);
     }
 }
