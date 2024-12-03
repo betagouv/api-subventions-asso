@@ -14,10 +14,10 @@
     {#each cells as cell}
         <td on:click>
             {#if cell.badge}
-                {#if cell.badge.status}
-                    <StatusLabel small={true} status={cell.badge.status} />
+                {#if cell.badge?.status}
+                    <StatusLabel status={cell.badge.status} />
                 {:else}
-                    <Badge {...cell.badge} />
+                    <Badge small={true} {...cell.badge} />
                 {/if}
             {/if}
             {#if !cell.badge && !cell.title && !cell.desc}
