@@ -138,6 +138,10 @@ export class MetabaseDumpPort {
         }
         return this.db.collection("users-pipedrive").bulkWrite(operations);
     }
+
+    public cleanAfterDate(date: Date) {
+        return this.db.collection("log").deleteMany({ timestamp: { $gt: date } });
+    }
 }
 
 const metabaseDumpPort = new MetabaseDumpPort();

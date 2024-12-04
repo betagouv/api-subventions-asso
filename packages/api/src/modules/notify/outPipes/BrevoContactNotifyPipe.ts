@@ -17,6 +17,8 @@ const SENDIND_BLUE_CONTACT_LISTS = [Number(API_SENDINBLUE_CONTACT_LIST)];
 export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOutPipe {
     private apiInstance: Brevo.ContactsApi;
 
+    // TODO track errors
+
     constructor() {
         super();
         this.apiInstance = new Brevo.ContactsApi();
@@ -58,13 +60,22 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
         };
 
         const sendCreation = () => {
-            return this.apiInstance.createContact({
-                email: data.email,
-                ...payload,
-            });
+            return this.apiInstance
+                .createContact({
+                    email: data.email,
+                    ...payload,
+                })
+                .catch(e => {
+                    Sentry.captureException(e);
+                    throw e;
+                });
         };
 
-        const sendUpdate = () => this.apiInstance.updateContact(data.email, payload);
+        const sendUpdate = () =>
+            this.apiInstance.updateContact(data.email, payload).catch(e => {
+                Sentry.captureException(e);
+                throw e;
+            });
 
         return sendCreation()
             .then(({ body }) => {

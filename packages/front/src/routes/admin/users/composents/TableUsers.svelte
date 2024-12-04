@@ -12,8 +12,8 @@
 </script>
 
 <div class="fr-col fr-col-lg-12 fr-grid-row fr-grid-row--center">
-    <Table multiline={true}>
-        <svelte:fragment slot="head">
+    <table>
+        <thead>
             <th>Email</th>
             <th>Roles</th>
             <th>Actif</th>
@@ -23,8 +23,8 @@
             <th>Lien d'activation</th>
             <th>Date du token de reset</th>
             <th>Action</th>
-        </svelte:fragment>
-        <svelte:fragment slot="body">
+        </thead>
+        <tbody>
             {#each $users as user}
                 <tr>
                     <td>
@@ -84,11 +84,24 @@
                     </td>
                 </tr>
             {/each}
-        </svelte:fragment>
-    </Table>
+        </tbody>
+    </table>
 </div>
 
 <style>
+    table,
+    td,
+    th {
+        border: 1px solid black;
+        border-collapse: collapse;
+        background: var(--background-default-grey);
+    }
+
+    th,
+    td {
+        padding: 0.5rem;
+    }
+
     /* This is a quick fix and if needed a Tooltip component should be made */
     .tooltip-wrapper {
         position: relative;
