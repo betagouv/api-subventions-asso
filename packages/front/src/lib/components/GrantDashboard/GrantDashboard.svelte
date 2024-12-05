@@ -2,13 +2,13 @@
     import DataNotFound from "../DataNotFound.svelte";
     import ErrorAlert from "../ErrorAlert.svelte";
     import { GrantDashboardController } from "./GrantDashboard.controller";
-    import ApplicationRow from "./ApplicationRow/ApplicationRow.svelte";
-    import PaymentRow from "./PaymentRow/PaymentRow.svelte";
     import GrantsStatistique from "$lib/components/GrantDashboard/GrantsStatistique/GrantsStatistique.svelte";
     import Spinner from "$lib/components/Spinner.svelte";
     import Button from "$lib/dsfr/Button.svelte";
     import Select from "$lib/dsfr/Select.svelte";
     import Table from "$lib/dsfr/Table.svelte";
+    import ApplicationRow from "$lib/components/GrantDashboard/ApplicationRow/ApplicationRow.svelte";
+    import PaymentRow from "$lib/components/GrantDashboard/PaymentRow/PaymentRow.svelte";
     import TableRow from "$lib/dsfr/TableRow.svelte";
 
     export let structureId;
@@ -87,9 +87,9 @@
                     sortable={true}
                     scrollable={false}
                     bordered={false}
-                    light={true}
-                    {headers}
-                    headersSize={["sm", "sm", "xs", "xs", "xs", "sm", "sm", "xs"]}>
+                    custom={true}
+                    customColSizes={[12, 11, 11, 11, 13, 17, 11, 11]}
+                    {headers}>
                     {#each $rows as row, rowIndex}
                         <TableRow id={tableId} index={rowIndex} openModal={true}>
                             <ApplicationRow
