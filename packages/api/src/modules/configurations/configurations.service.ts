@@ -11,6 +11,7 @@ export enum CONFIGURATION_NAMES {
     DUMP_PUBLISH_DATE = "DUMP-PUBLISH-DATE",
     LAST_RGPD_WARNED_DATE = "LAST-RGPD-WARNED-DATE",
     LAST_CHORUS_UPDATE_IMPORTED = "LAST-CHORUS-UPDATE-IMPORTED",
+    LAST_USER_STATS_UPDATE = "LAST_USER_STATS_UPDATE",
 }
 
 export class ConfigurationsService {
@@ -104,6 +105,19 @@ export class ConfigurationsService {
 
     async setLastPublishDumpDate(date: Date) {
         return configurationsRepository.upsert(CONFIGURATION_NAMES.DUMP_PUBLISH_DATE, {
+            data: date,
+        });
+    }
+
+    async getLastUserStatsUpdate(): Promise<Date> {
+        return (
+            ((await configurationsRepository.getByName(CONFIGURATION_NAMES.LAST_USER_STATS_UPDATE))?.data as Date) ||
+            new Date(1970)
+        );
+    }
+
+    async setLastUserStatsUpdate(date: Date) {
+        await configurationsRepository.upsert(CONFIGURATION_NAMES.LAST_USER_STATS_UPDATE, {
             data: date,
         });
     }

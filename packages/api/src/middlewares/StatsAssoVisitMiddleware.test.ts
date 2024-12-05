@@ -55,73 +55,35 @@ describe("StatsAssoVisitsMiddleware", () => {
         expect(addAssociationVisitMock).not.toBeCalled();
     });
 
-    it("should call addAssociationVisit (RNA)", async () => {
-        isRequestFromAdminMock.mockImplementationOnce(() => false);
-        addAssociationVisitMock.mockImplementationOnce(async () => true);
+    it.each`
+        identifierType | identifier          | resourceType       | assoIdentifier  | status
+        ${"RNA"}       | ${"W123456789"}     | ${"association"}   | ${"W123456789"} | ${200}
+        ${"SIREN"}     | ${"123456789"}      | ${"association"}   | ${"123456789"}  | ${200}
+        ${"SIRET"}     | ${"12345678912345"} | ${"etablissement"} | ${"123456789"}  | ${200}
+        ${"RNA"}       | ${"W123456789"}     | ${"association"}   | ${"W123456789"} | ${201}
+    `(
+        "should call addAssociationVisit ($identifierType) with status $status",
+        async ({ identifier, resourceType, assoIdentifier, status }) => {
+            isRequestFromAdminMock.mockImplementationOnce(() => false);
+            addAssociationVisitMock.mockImplementationOnce(async () => true);
 
-        const RNA = "W123456789";
-        const USER_ID = "USER_ID";
-        const req = {
-            user: {
-                _id: USER_ID,
-            },
-            originalUrl: `/association/${RNA}`,
-        } as unknown as IdentifiedRequest;
-        await StatsAssoVisitMiddleware(req, { statusCode: 200 } as Response);
+            const IDENTIFIER = "W123456789";
+            const USER_ID = "USER_ID";
+            const req = {
+                user: {
+                    _id: USER_ID,
+                },
+                originalUrl: `/${resourceType}/${identifier}`,
+            } as unknown as IdentifiedRequest;
+            await StatsAssoVisitMiddleware(req, { statusCode: status } as Response);
 
-        const expected = {
-            userId: USER_ID,
-            associationIdentifier: RNA,
-            date: expect.any(Date),
-        };
+            const expected = {
+                userId: USER_ID,
+                associationIdentifier: assoIdentifier,
+                date: expect.any(Date),
+            };
 
-        expect(addAssociationVisitMock).toBeCalledWith(expected);
-    });
-
-    it("should call addAssociationVisit (SIREN)", async () => {
-        isRequestFromAdminMock.mockImplementationOnce(() => false);
-        addAssociationVisitMock.mockImplementationOnce(async () => true);
-
-        const SIREN = "123456789";
-        const USER_ID = "USER_ID";
-        const req = {
-            user: {
-                _id: USER_ID,
-            },
-            originalUrl: `/association/${SIREN}`,
-        } as unknown as IdentifiedRequest;
-        await StatsAssoVisitMiddleware(req, { statusCode: 200 } as Response);
-
-        const expected = {
-            userId: USER_ID,
-            associationIdentifier: SIREN,
-            date: expect.any(Date),
-        };
-
-        expect(addAssociationVisitMock).toBeCalledWith(expected);
-    });
-
-    it("should call addAssociationVisit (SIRET)", async () => {
-        isRequestFromAdminMock.mockImplementationOnce(() => false);
-        addAssociationVisitMock.mockImplementationOnce(async () => true);
-
-        const SIREN = "123456789";
-        const SIRET = SIREN + "12345";
-        const USER_ID = "USER_ID";
-        const req = {
-            user: {
-                _id: USER_ID,
-            },
-            originalUrl: `/etablissement/${SIRET}`,
-        } as unknown as IdentifiedRequest;
-        await StatsAssoVisitMiddleware(req, { statusCode: 200 } as Response);
-
-        const expected = {
-            userId: USER_ID,
-            associationIdentifier: SIREN,
-            date: expect.any(Date),
-        };
-
-        expect(addAssociationVisitMock).toBeCalledWith(expected);
-    });
+            expect(addAssociationVisitMock).toBeCalledWith(expected);
+        },
+    );
 });

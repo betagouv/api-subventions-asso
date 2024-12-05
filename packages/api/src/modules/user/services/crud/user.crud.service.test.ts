@@ -3,39 +3,56 @@ import userRepository from "../../repositories/user.repository";
 import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
 import { SIGNED_TOKEN, USER_DBO, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import bcrypt from "bcrypt";
+
 jest.mock("bcrypt");
 jest.mock("../../repositories/user.repository");
 const mockedUserRepository = jest.mocked(userRepository);
 import userCheckService from "../check/user.check.service";
+
 jest.mock("../check/user.check.service");
 const mockedUserCheckService = jest.mocked(userCheckService);
 import userActivationService from "../activation/user.activation.service";
+
 jest.mock("../activation/user.activation.service");
 const mockedUserActivationService = jest.mocked(userActivationService);
 import userResetRepository from "../../repositories/user-reset.repository";
+
 jest.mock("../../repositories/user-reset.repository");
 const mockedUserResetRepository = jest.mocked(userResetRepository);
 import consumerTokenRepository from "../../repositories/consumer-token.repository";
 import { NotificationType } from "../../../notify/@types/NotificationType";
+
 jest.mock("../../repositories/consumer-token.repository");
 const mockedConsumerTokenRepository = jest.mocked(consumerTokenRepository);
 import userAuthService from "../auth/user.auth.service";
+
 jest.mock("../auth/user.auth.service");
 const mockedUserAuthService = jest.mocked(userAuthService);
 import userConsumerService from "../consumer/user.consumer.service";
+
 jest.mock("../consumer/user.consumer.service");
 const mockedUserConsumerService = jest.mocked(userConsumerService);
 import notifyService from "../../../notify/notify.service";
 import { RoleEnum } from "../../../../@enums/Roles";
 import { UserDto } from "dto";
 import UserReset from "../../entities/UserReset";
+
 jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),
 }));
 const mockedNotifyService = jest.mocked(notifyService);
 import * as repositoryHelper from "../../../../shared/helpers/RepositoryHelper";
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
+
+jest.mock("../../../stats/repositories/statsAssociationsVisit.repository");
+import statsAssociationsVisitRepository from "../../../stats/repositories/statsAssociationsVisit.repository";
+
 jest.mock("../../../../shared/helpers/RepositoryHelper");
+
+import userStatsService from "../stats/user.stats.service";
+import configurationsService from "../../../configurations/configurations.service";
+jest.mock("../../../configurations/configurations.service");
+import AssociationVisitEntity from "../../../stats/entities/AssociationVisitEntity";
 
 describe("user crud service", () => {
     describe("find", () => {
@@ -299,6 +316,84 @@ describe("user crud service", () => {
             jest.mocked(userRepository.getUserWithSecretsByEmail).mockResolvedValueOnce(null);
             const test = () => userCrudService.getUserWithoutSecret(EMAIL);
             await expect(test).rejects.toMatchInlineSnapshot(`[Error: User not found]`);
+        });
+    });
+
+    describe("updateNbRequests", () => {
+        const SINCE = new Date("2022-01-16");
+        const UNTIL = new Date("2024-09-09");
+        let updateByDateSpy;
+
+        beforeAll(() => {
+            // @ts-expect-error -- private method
+            updateByDateSpy = jest.spyOn(userStatsService, "updateNbRequestsByDate").mockResolvedValue(null);
+            jest.useFakeTimers().setSystemTime(UNTIL);
+            jest.mocked(configurationsService.getLastUserStatsUpdate).mockResolvedValue(SINCE);
+        });
+
+        afterAll(() => {
+            updateByDateSpy.mockRestore();
+            jest.useRealTimers();
+            jest.mocked(configurationsService.getLastUserStatsUpdate).mockRestore();
+        });
+
+        it("calls updateNbRequestsByDate", async () => {
+            await userStatsService.updateNbRequests();
+            expect(updateByDateSpy).toHaveBeenCalledWith(SINCE, UNTIL);
+        });
+    });
+
+    describe("updateNbRequestsByDate", () => {
+        const SINCE = new Date("2022-01-16");
+        const UNTIL = new Date("2024-09-09");
+        const REPO_GROUP = [
+            { _id: 1, associationVisits: [1] },
+            { _id: 2, associationVisits: [2, 2] },
+        ] as unknown as {
+            _id: string;
+            associationVisits: AssociationVisitEntity[];
+        }[];
+        const COUNTS = [
+            { _id: 1, count: 1 },
+            { _id: 2, count: 2 },
+        ];
+
+        beforeAll(() => {
+            jest.mocked(statsAssociationsVisitRepository.findGroupedByUserIdentifierOnPeriod).mockResolvedValue(
+                REPO_GROUP,
+            );
+        });
+
+        afterAll(() => {
+            jest.mocked(statsAssociationsVisitRepository.findGroupedByUserIdentifierOnPeriod).mockRestore();
+        });
+
+        it("gets visits grouped by identifier ", async () => {
+            // @ts-expect-error -- private method
+            await userStatsService.updateNbRequestsByDate(SINCE, UNTIL);
+            expect(statsAssociationsVisitRepository.findGroupedByUserIdentifierOnPeriod).toHaveBeenCalledWith(
+                SINCE,
+                UNTIL,
+            );
+        });
+
+        it("calls repository for user update", async () => {
+            // @ts-expect-error -- private method
+            await userStatsService.updateNbRequestsByDate(SINCE, UNTIL);
+            expect(userRepository.updateNbRequests).toHaveBeenCalledWith(COUNTS);
+        });
+
+        it("sets last user stat update in configuration", async () => {
+            // @ts-expect-error -- private method
+            await userStatsService.updateNbRequestsByDate(SINCE, UNTIL);
+            expect(configurationsService.setLastUserStatsUpdate).toHaveBeenCalledWith(UNTIL);
+        });
+
+        it("don't save last stat update in case update fails", async () => {
+            jest.mocked(userRepository.updateNbRequests).mockRejectedValueOnce("tata");
+            // @ts-expect-error -- private method
+            await userStatsService.updateNbRequestsByDate(SINCE, UNTIL).catch(() => {});
+            expect(configurationsService.setLastUserStatsUpdate).not.toHaveBeenCalled();
         });
     });
 });

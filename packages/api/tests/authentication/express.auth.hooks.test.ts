@@ -43,11 +43,12 @@ describe("express.auth.hooks", () => {
                     active: true,
                     signupAt: new Date(),
                     jwt: { token: "", expirateDate: new Date() },
-                    stats: { searchCount: 0, lastSearchDate: null },
+                    nbVisits: 0,
+                    lastActivityDate: null,
                     profileToComplete: false,
                 }),
             );
-
+            // TODO fix here
             passportMock.mockImplementation(name => {
                 if (name != "login") return;
 
@@ -99,7 +100,8 @@ describe("express.auth.hooks", () => {
                 active: true,
                 signupAt: new Date(),
                 jwt: { token: "", expirateDate: new Date() },
-                stats: { searchCount: 0, lastSearchDate: null },
+                lastActivityDate: null,
+                nbVisits: 0,
                 profileToComplete: false,
                 _id: new ObjectId(),
             }));
