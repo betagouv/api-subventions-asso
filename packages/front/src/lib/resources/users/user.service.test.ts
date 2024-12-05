@@ -1,4 +1,4 @@
-import { AdminTerritorialLevel, AgentJobTypeEnum, AgentTypeEnum } from "dto";
+import { AdminTerritorialLevel, AgentJobTypeEnum, AgentTypeEnum, type UserDto } from "dto";
 import authService from "../auth/auth.service";
 
 vi.mock("../auth/auth.service");
@@ -18,7 +18,7 @@ describe("UsersService", () => {
         it("should return true", () => {
             const user = { lastActivityDate: new Date() };
             const expected = true;
-            const actual = userService.isUserActif(user);
+            const actual = userService.isUserActif(user as UserDto);
 
             expect(actual).toEqual(expected);
         });
