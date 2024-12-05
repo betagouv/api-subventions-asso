@@ -21,6 +21,8 @@ export class EstablishmentController {
             // Usecase : multiple rna identifiers, old rules select the first one. Waiting to do better.
             associationUniqueIdentifier = associationIdentifiers[0].rna;
         }
+        // if no link with other identifiers was found, keep initial identifier to do what we can
+        if (!associationIdentifiers.length) associationIdentifiers.push({ siren: associationUniqueIdentifier });
 
         currentIdentifiers.set(associationIdentifiers);
 
