@@ -1,4 +1,4 @@
-import { shortISORegExp } from "../../../shared/helpers/DateHelper";
+import { isValidDate, shortISORegExp } from "../../../shared/helpers/DateHelper";
 import { GenericParser } from "../../../shared/GenericParser";
 import { BeforeAdaptation } from "../../../@types";
 import { ScdlGrantSchema } from "./@types/ScdlGrantSchema";
@@ -40,6 +40,17 @@ const CONVENTION_DATE_PATHS = [
     "datedeConvention",
 ];
 
+const PERIODE_VERSEMENT_PATHS = [
+    "Date de versement",
+    "dateperiodedeversement",
+    "dateperiodedversement",
+    "Date(s) ou période(s) de versement",
+    "Date(s) ou période(s) de versement (AAAA-MM-JJ)",
+    "dates Periode Versement",
+    "datesPériodeVersement",
+    "Date de versement",
+];
+
 const dateAdapter = (date: BeforeAdaptation | undefined | null): Date | undefined => {
     if (!date) return undefined;
     if (typeof date === "string") return new Date(date);
@@ -51,7 +62,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
     allocatorSiret: {
         path: [["idAttribuant", "Identification de l'attribuant (SIRET)", "id  Attribuant"]],
         adapter: v => {
-            if (v?.includes(".")) return v.split(".")[0]; // TODO: quickfix for Centre Val de Loire, remove when CSV will be cleaned
+            if (v?.includes(".")) return v.split(".")[0]; // fix to remove ".0" from ids when the csv comme from a cell formatted as a float
             return v;
         },
     },
@@ -86,6 +97,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             "NOM Bénéficiaire",
             "Nom du bénéficiaire",
             "nom Beneficiaire",
+            "nomBénéficiaire",
         ],
     ],
     associationSiret: {
@@ -99,7 +111,10 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "id Beneficiaire",
             ],
         ],
-        adapter: v => v?.toString(),
+        adapter: v => {
+            if (v?.includes(".")) return v.split(".")[0]; // fix to remove ".0" from ids when the csv comme from a cell formatted as a float
+            return v;
+        },
     },
     associationRna: [[...getMapperVariants("associationRna")]],
     object: [
@@ -132,29 +147,18 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
         ],
     ],
     paymentStartDate: {
-        path: [
-            [
-                ...getMapperVariants("paymentStartDate"),
-                "Date de versement",
-                "dateperiodedeversement",
-                "dateperiodedversement",
-                "Date(s) ou période(s) de versement",
-                "Date(s) ou période(s) de versement (AAAA-MM-JJ)",
-                "dates Periode Versement",
-            ],
-        ],
-        // @ts-expect-error: with undefined it returns false, so we don't need to check it
-        adapter: value => (shortISORegExp.test(value) ? new Date(value.split(/[/_]/)[0].trim()) : dateAdapter(value)),
+        path: [[...getMapperVariants("paymentStartDate"), ...PERIODE_VERSEMENT_PATHS]],
+        adapter: value => {
+            // @ts-expect-error: with undefined it returns false, so we don't need to check it
+            if (shortISORegExp.test(value)) return new Date(value.split(/[/_]/)[0].trim());
+            else {
+                const parsedDate = dateAdapter(value);
+                return isValidDate(parsedDate) ? parsedDate : null;
+            }
+        },
     },
     paymentEndDate: {
-        path: [
-            [
-                ...getMapperVariants("paymentEndDate"),
-                "Date de versement",
-                "dateperiodedversement",
-                "Date(s) ou période(s) de versement (AAAA-MM-JJ)",
-            ],
-        ],
+        path: [[...getMapperVariants("paymentEndDate"), ...PERIODE_VERSEMENT_PATHS]],
         adapter: value => {
             if (typeof value !== "string") return undefined;
             const noSpaceValue = value?.replaceAll(" ", "");
