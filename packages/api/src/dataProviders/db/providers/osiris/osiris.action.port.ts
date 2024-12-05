@@ -24,6 +24,8 @@ export class OsirisActionPort extends MongoPort<OsirisActionEntityDbo> {
     public async update(osirisAction: OsirisActionEntity) {
         const options: FindOneAndUpdateOptions = { returnDocument: "after", includeResultMetadata: true };
         const { _id, ...actionWithoutId } = OsirisActionAdapter.toDbo(osirisAction);
+        /* eslint-disable */
+        //Reformat KO on push
         const dbo =
             //@ts-expect-error -- mongo typing expects no metadata
             (
@@ -33,6 +35,7 @@ export class OsirisActionPort extends MongoPort<OsirisActionEntityDbo> {
                     options,
                 )
             )?.value;
+        /* eslint-enable */
         if (!dbo) throw new MongoCnxError();
         return OsirisActionAdapter.toEntity(dbo);
     }
