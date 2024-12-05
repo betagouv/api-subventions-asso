@@ -43,7 +43,6 @@
                         bind:values={$values} />
                     <div class="fr-input-group fr-my-4w">
                         <Button
-                            type="submit"
                             title="Valider"
                             htmlType="submit"
                             disabled={!$isSubmitActive}
