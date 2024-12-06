@@ -1,7 +1,7 @@
 import chorusService from "./chorus.service";
-import chorusLineRepository from "./repositories/chorus.line.repository";
-jest.mock("./repositories/chorus.line.repository");
-const mockedChorusLineRepository = jest.mocked(chorusLineRepository);
+import chorusLinePort from "../../../dataProviders/db/providers/chorus/chorus.line.port";
+jest.mock("../../../dataProviders/db/providers/chorus/chorus.line.port");
+const mockedChorusLinePort = jest.mocked(chorusLinePort);
 import ChorusAdapter from "./adapters/ChorusAdapter";
 jest.mock("./adapters/ChorusAdapter");
 import uniteLegalEntreprisesSerivce from "../uniteLegalEntreprises/uniteLegal.entreprises.service";
@@ -38,7 +38,7 @@ describe("chorusService", () => {
     });
 
     describe("upsertMany", () => {
-        it("should call repository with entities", async () => {
+        it("should call port with entities", async () => {
             await chorusService.upsertMany(ENTITIES);
         });
     });
@@ -75,15 +75,15 @@ describe("chorusService", () => {
         });
 
         describe("chorusCursorFindDataWithoutHash", () => {
-            it("should call chorusLineRepository.findData with undefined", () => {
+            it("should call chorusLinePort.findData with undefined", () => {
                 chorusService.cursorFindDataWithoutHash();
-                expect(mockedChorusLineRepository.cursorFindDataWithoutHash).toHaveBeenCalledWith(undefined);
+                expect(mockedChorusLinePort.cursorFindDataWithoutHash).toHaveBeenCalledWith(undefined);
             });
 
-            it("should call chorusLineRepository.findData with exerciceBudgetaire", () => {
+            it("should call chorusLinePort.findData with exerciceBudgetaire", () => {
                 const exerciceBudgetaire = 2021;
                 chorusService.cursorFindDataWithoutHash(exerciceBudgetaire);
-                expect(mockedChorusLineRepository.cursorFindDataWithoutHash).toHaveBeenCalledWith(exerciceBudgetaire);
+                expect(mockedChorusLinePort.cursorFindDataWithoutHash).toHaveBeenCalledWith(exerciceBudgetaire);
             });
         });
     });
@@ -123,18 +123,18 @@ describe("chorusService", () => {
             mockedUniteLegalEntreprisesSerivce.isEntreprise.mockResolvedValue(false);
             mockedRnaSirenService.find.mockResolvedValue(null);
             // @ts-expect-error: mock resolve value
-            mockedChorusLineRepository.findOneBySiren.mockResolvedValue(ENTITIES[0]);
+            mockedChorusLinePort.findOneBySiren.mockResolvedValue(ENTITIES[0]);
         });
 
         afterAll(() => {
             mockedUniteLegalEntreprisesSerivce.isEntreprise.mockReset();
             mockedRnaSirenService.find.mockReset();
-            mockedChorusLineRepository.findOneBySiren.mockReset();
+            mockedChorusLinePort.findOneBySiren.mockReset();
         });
 
         it("should return false if siren belongs to company", async () => {
             mockedUniteLegalEntreprisesSerivce.isEntreprise.mockResolvedValueOnce(true);
-            mockedChorusLineRepository.findOneBySiren.mockResolvedValueOnce(null);
+            mockedChorusLinePort.findOneBySiren.mockResolvedValueOnce(null);
             const expected = false;
             const actual = await chorusService.sirenBelongAsso(SIREN);
             expect(actual).toEqual(expected);
@@ -147,7 +147,7 @@ describe("chorusService", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should call chorusLineRepository.findOneBySiren()", async () => {
+        it("should call chorusLinePort.findOneBySiren()", async () => {
             await chorusService.sirenBelongAsso(SIREN);
         });
 
@@ -168,7 +168,7 @@ describe("chorusService", () => {
             beforeAll(
                 () =>
                     (findBySirenMock = jest
-                        .spyOn(chorusLineRepository, "findBySiren")
+                        .spyOn(chorusLinePort, "findBySiren")
                         // @ts-expect-error: mock
                         .mockImplementation(jest.fn(() => DATA))),
             );

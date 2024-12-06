@@ -7,9 +7,9 @@ import { StructureIdentifier } from "../../../@types";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import GrantProvider from "../../grant/@types/GrantProvider";
+import miscScdlJoiner from "../../../dataProviders/db/providers/scdl/miscScdl.joiner";
 import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
 import MiscScdlGrantProducerEntity from "./entities/MiscScdlGrantProducerEntity";
-import miscScdlJoiner from "./repositories/miscScdl.joiner";
 import MiscScdlAdapter from "./adapters/MiscScdl.adapter";
 
 export class ScdlGrantService implements DemandesSubventionsProvider<MiscScdlGrantProducerEntity>, GrantProvider {

@@ -2,12 +2,12 @@ import { ObjectId } from "mongodb";
 import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFlat.port";
 import PaymentsFlatCli from "../../../src/interfaces/cli/PaymentFlat.cli";
 import { DATA_BRETAGNE_DTOS, MOCK_DOCUMENTS, PROGRAMS } from "../../__fixtures__/paymentsFlat.fixture";
-import chorusLineRepository from "../../../src/modules/providers/chorus/repositories/chorus.line.repository";
+import chorusLinePort from "../../../src/dataProviders/db/providers/chorus/chorus.line.port";
 import dataBretagnePort from "../../../src/dataProviders/api/dataBretagne/dataBretagne.port";
 import stateBudgetProgramPort from "../../../src/dataProviders/db/state-budget-program/stateBudgetProgram.port";
 
 const insertData = async () => {
-    await chorusLineRepository.upsertMany(MOCK_DOCUMENTS);
+    await chorusLinePort.upsertMany(MOCK_DOCUMENTS);
     await stateBudgetProgramPort.replace(PROGRAMS);
 };
 

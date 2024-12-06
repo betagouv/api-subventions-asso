@@ -1,12 +1,12 @@
 import adminStructureService from "./adminStructure.service";
 import { BadRequestError } from "../../shared/errors/httpErrors";
-import adminStructureRepository from "./repositories/adminStructure.repository";
+import adminStructurePort from "../../dataProviders/db/admin-structure/adminStructure.port";
 import { AgentTypeEnum } from "dto";
 
-jest.mock("./repositories/adminStructure.repository");
+jest.mock("../../dataProviders/db/admin-structure/adminStructure.port");
 
 describe("AdminStructureService", () => {
-    const REPO_RES = "PROMISE";
+    const PORT_RES = "PROMISE";
     const AGENT_TYPE = AgentTypeEnum.OPERATOR;
 
     describe("getAdminStructureByStringAgentType", () => {
@@ -14,7 +14,7 @@ describe("AdminStructureService", () => {
 
         beforeAll(() => {
             getTyped = jest.spyOn(adminStructureService, "getAdminStructureByAgentType");
-            getTyped.mockResolvedValue(REPO_RES);
+            getTyped.mockResolvedValue(PORT_RES);
         });
         afterAll(() => {
             getTyped.mockRestore();
@@ -25,13 +25,13 @@ describe("AdminStructureService", () => {
             expect(test).rejects.toThrow(BadRequestError);
         });
 
-        it("calls repository", async () => {
+        it("calls port", async () => {
             await adminStructureService.getAdminStructureByStringAgentType(AGENT_TYPE);
             expect(getTyped).toHaveBeenCalledWith(AGENT_TYPE);
         });
 
-        it("returns result from repository", async () => {
-            const expected = REPO_RES;
+        it("returns result from port", async () => {
+            const expected = PORT_RES;
             const actual = await adminStructureService.getAdminStructureByStringAgentType(AGENT_TYPE);
             expect(actual).toBe(expected);
         });
@@ -40,19 +40,19 @@ describe("AdminStructureService", () => {
     describe("getAdminStructureByAgentType", () => {
         beforeAll(() => {
             // @ts-expect-error mock
-            jest.mocked(adminStructureRepository.findAllByAgentType).mockReturnValue(REPO_RES);
+            jest.mocked(adminStructurePort.findAllByAgentType).mockReturnValue(PORT_RES);
         });
         afterAll(() => {
-            jest.mocked(adminStructureRepository.findAllByAgentType).mockReset();
+            jest.mocked(adminStructurePort.findAllByAgentType).mockReset();
         });
 
-        it("calls repository", () => {
+        it("calls port", () => {
             adminStructureService.getAdminStructureByAgentType(AGENT_TYPE);
-            expect(adminStructureRepository.findAllByAgentType).toHaveBeenCalledWith(AGENT_TYPE);
+            expect(adminStructurePort.findAllByAgentType).toHaveBeenCalledWith(AGENT_TYPE);
         });
 
-        it("returns result from repository", () => {
-            const expected = REPO_RES;
+        it("returns result from port", () => {
+            const expected = PORT_RES;
             const actual = adminStructureService.getAdminStructureByAgentType(AGENT_TYPE);
             expect(actual).toBe(expected);
         });
@@ -64,19 +64,19 @@ describe("AdminStructureService", () => {
         it("saves old entries", async () => {
             // @ts-expect-error mock
             await adminStructureService.replaceAll(NEW_ENTITIES);
-            expect(adminStructureRepository.findAll).toHaveBeenCalled();
+            expect(adminStructurePort.findAll).toHaveBeenCalled();
         });
 
         it("deletes all old entries", async () => {
             // @ts-expect-error mock
             await adminStructureService.replaceAll(NEW_ENTITIES);
-            expect(adminStructureRepository.deleteAll).toHaveBeenCalled();
+            expect(adminStructurePort.deleteAll).toHaveBeenCalled();
         });
 
         it("inserts new entries", async () => {
             // @ts-expect-error mock
             await adminStructureService.replaceAll(NEW_ENTITIES);
-            expect(adminStructureRepository.insertMany).toHaveBeenCalledWith(NEW_ENTITIES);
+            expect(adminStructurePort.insertMany).toHaveBeenCalledWith(NEW_ENTITIES);
         });
 
         describe("in case of failure", () => {
@@ -84,15 +84,15 @@ describe("AdminStructureService", () => {
             const OLD_ENTRIES = ["old1", "old2"];
 
             beforeEach(() => {
-                jest.mocked(adminStructureRepository.insertMany).mockRejectedValueOnce(ERROR);
+                jest.mocked(adminStructurePort.insertMany).mockRejectedValueOnce(ERROR);
                 // @ts-expect-error mock
-                jest.mocked(adminStructureRepository.findAll).mockResolvedValueOnce(OLD_ENTRIES);
+                jest.mocked(adminStructurePort.findAll).mockResolvedValueOnce(OLD_ENTRIES);
             });
 
             it("restores old entries in case of failure", async () => {
                 // @ts-expect-error mock
                 await adminStructureService.replaceAll(NEW_ENTITIES).catch(() => {});
-                expect(adminStructureRepository.insertMany).toHaveBeenNthCalledWith(2, OLD_ENTRIES);
+                expect(adminStructurePort.insertMany).toHaveBeenNthCalledWith(2, OLD_ENTRIES);
             });
 
             it("throws error back", async () => {

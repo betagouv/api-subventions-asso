@@ -1,12 +1,12 @@
 import { DefaultObject } from "../../../@types";
 import db from "../../../shared/MongoConnection";
-import { removeSecrets } from "../../../shared/helpers/RepositoryHelper";
-import userRepository from "../../user/repositories/user.repository";
+import { removeSecrets } from "../../../shared/helpers/PortHelper";
+import userPort from "../../../dataProviders/db/user/user.port";
 import { UserWithAssociationVisitsEntity } from "../entities/UserWithAssociationVisitsEntity";
-import statsAssociationsVisitRepository from "../repositories/statsAssociationsVisit.repository";
+import statsAssociationsVisitPort from "../../../dataProviders/db/stats/statsAssociationsVisit.port";
 
 export class UserAssociationVisitJoiner {
-    userCollection = db.collection(userRepository.collectionName);
+    userCollection = db.collection(userPort.collectionName);
 
     excludeAdmins() {
         return {
@@ -22,9 +22,9 @@ export class UserAssociationVisitJoiner {
         const query: DefaultObject[] = [
             {
                 $lookup: {
-                    from: statsAssociationsVisitRepository.collectionName,
-                    localField: userRepository.joinIndexes.associationVisits,
-                    foreignField: statsAssociationsVisitRepository.joinIndexes.user,
+                    from: statsAssociationsVisitPort.collectionName,
+                    localField: userPort.joinIndexes.associationVisits,
+                    foreignField: statsAssociationsVisitPort.joinIndexes.user,
                     as: "associationVisits",
                 },
             },
@@ -45,18 +45,15 @@ export class UserAssociationVisitJoiner {
                 this.excludeAdmins(),
                 {
                     $lookup: {
-                        from: statsAssociationsVisitRepository.collectionName,
-                        let: { joinId: `$${userRepository.joinIndexes.associationVisits}` },
+                        from: statsAssociationsVisitPort.collectionName,
+                        let: { joinId: `$${userPort.joinIndexes.associationVisits}` },
                         pipeline: [
                             {
                                 $match: {
                                     $expr: {
                                         $and: [
                                             {
-                                                $eq: [
-                                                    `$${statsAssociationsVisitRepository.joinIndexes.user}`,
-                                                    "$$joinId",
-                                                ],
+                                                $eq: [`$${statsAssociationsVisitPort.joinIndexes.user}`, "$$joinId"],
                                             },
                                             { $gte: ["$date", start] },
                                             { $lte: ["$date", end] },

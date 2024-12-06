@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require("../build/src/shared/MongoConnection");
 
-const userRepository = require("../build/src/modules/user/repositoies/user.repository").default;
+const userPort = require("../build/src/dataProviders/db/user/user.port").default;
 const asyncForEach = require("../build/src/shared/helpers/ArrayHelper").asyncForEach;
 
 module.exports = {
@@ -44,11 +44,11 @@ module.exports = {
                 result.push(partialUser);
             });
 
-        await asyncForEach(result, async partialUser => await userRepository.update(partialUser));
+        await asyncForEach(result, async partialUser => await userPort.update(partialUser));
 
-        const users = await userRepository.find({ stats: { $exists: false } });
+        const users = await userPort.find({ stats: { $exists: false } });
 
-        await asyncForEach(users, async user => await userRepository.update({ ...user, stats: { searchCount: 0 } }));
+        await asyncForEach(users, async user => await userPort.update({ ...user, stats: { searchCount: 0 } }));
     },
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

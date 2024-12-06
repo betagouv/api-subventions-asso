@@ -1,7 +1,7 @@
 import { GeoService } from "./geo.service";
-import geoRepository from "./geo.repository";
+import geoPort from "../../../dataProviders/db/providers/geoApi/geo.port";
 
-jest.mock("./geo.repository");
+jest.mock("../../../dataProviders/db/providers/geoApi/geo.port");
 
 describe("GeoService", () => {
     let ctrl: GeoService;
@@ -101,12 +101,12 @@ describe("GeoService", () => {
 
         it("empties geo collection", async () => {
             await ctrl.generateAndSaveEntities();
-            expect(geoRepository.deleteAll).toHaveBeenCalled();
+            expect(geoPort.deleteAll).toHaveBeenCalled();
         });
 
         it("inserts merged entities", async () => {
             await ctrl.generateAndSaveEntities();
-            const actual = jest.mocked(geoRepository.insertMany).mock.calls?.[0]?.[0];
+            const actual = jest.mocked(geoPort.insertMany).mock.calls?.[0]?.[0];
             expect(actual).toMatchSnapshot();
         });
     });
@@ -126,15 +126,15 @@ describe("GeoService", () => {
             expect(actual).toBeUndefined();
         });
 
-        it("calls repo with name from arg", async () => {
+        it("calls port with name from arg", async () => {
             await ctrl.getRegionFromDepartment(LABEL);
-            expect(geoRepository.findByDepartmentName).toHaveBeenCalledWith(NAME);
+            expect(geoPort.findByDepartmentName).toHaveBeenCalledWith(NAME);
         });
 
         it("returns region name", async () => {
             const expected = "REGION_NAME";
             // @ts-expect-error -- mock
-            jest.mocked(geoRepository.findByDepartmentName).mockResolvedValueOnce({ regionName: expected });
+            jest.mocked(geoPort.findByDepartmentName).mockResolvedValueOnce({ regionName: expected });
             const actual = await ctrl.getRegionFromDepartment(LABEL);
             expect(actual).toBe(expected);
         });

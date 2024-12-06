@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require("../build/src/shared/MongoConnection");
-const configRepo = require("../build/src/modules/configurations/repositories/configurations.repository").default;
+const configRepo = require("../build/src/dataProviders/db/configurations/configurations.port").default;
 module.exports = {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async up(db, client) {

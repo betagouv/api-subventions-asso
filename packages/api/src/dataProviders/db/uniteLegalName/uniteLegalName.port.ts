@@ -2,12 +2,12 @@ import { InsertOneResult } from "mongodb";
 import UniteLegalNameEntity from "../../../entities/UniteLegalNameEntity";
 import ExecutionSyncStack from "../../../shared/ExecutionSyncStack";
 import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../shared/helpers/MongoHelper";
-import MongoRepository from "../../../shared/MongoRepository";
+import MongoPort from "../../../shared/MongoPort";
 import Siren from "../../../valueObjects/Siren";
 import UniteLegalNameAdapter from "./UniteLegalName.adapter";
 import UniteLegalNameDbo from "./UniteLegalNameDbo";
 
-export class UniteLegalNamePort extends MongoRepository<UniteLegalNameDbo> {
+export class UniteLegalNamePort extends MongoPort<UniteLegalNameDbo> {
     collectionName = "unite-legal-names";
 
     private insertSirenStack: ExecutionSyncStack<UniteLegalNameDbo, InsertOneResult>;

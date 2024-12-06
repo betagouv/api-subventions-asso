@@ -1,6 +1,6 @@
 import { getMD5 } from "../../../shared/helpers/StringHelper";
-import miscScdlGrantRepository from "./repositories/miscScdlGrant.repository";
-import miscScdlProducersRepository from "./repositories/miscScdlProducer.repository";
+import miscScdlGrantPort from "../../../dataProviders/db/providers/scdl/miscScdlGrant.port";
+import miscScdlProducersPort from "../../../dataProviders/db/providers/scdl/miscScdlProducer.port";
 import MiscScdlProducerEntity from "./entities/MiscScdlProducerEntity";
 import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
@@ -13,15 +13,15 @@ export class ScdlService {
     }
 
     getProducer(slug: string) {
-        return miscScdlProducersRepository.findBySlug(slug);
+        return miscScdlProducersPort.findBySlug(slug);
     }
 
     getProducers() {
-        return miscScdlProducersRepository.findAll();
+        return miscScdlProducersPort.findAll();
     }
 
     async createProducer(entity: MiscScdlProducerEntity) {
-        await miscScdlProducersRepository.create(entity);
+        await miscScdlProducersPort.create(entity);
         this.producerNames.push(entity.name);
     }
 
@@ -50,11 +50,11 @@ export class ScdlService {
             } as ScdlGrantDbo;
         });
 
-        return miscScdlGrantRepository.createMany(dboArray);
+        return miscScdlGrantPort.createMany(dboArray);
     }
 
     updateProducer(slug, setObject) {
-        return miscScdlProducersRepository.update(slug, setObject);
+        return miscScdlProducersPort.update(slug, setObject);
     }
 }
 

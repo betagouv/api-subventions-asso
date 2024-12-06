@@ -2,10 +2,10 @@ import path from "path";
 import { ObjectId } from "mongodb";
 import ScdlCli from "../../../src/interfaces/cli/Scdl.cli";
 import scdlService from "../../../src/modules/providers/scdl/scdl.service";
-import miscScdlProducersRepository from "../../../src/modules/providers/scdl/repositories/miscScdlProducer.repository";
-import miscScdlGrantRepository from "../../../src/modules/providers/scdl/repositories/miscScdlGrant.repository";
+import miscScdlProducersPort from "../../../src/dataProviders/db/providers/scdl/miscScdlProducer.port";
+import miscScdlGrantPort from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.port";
 import MiscScdlProducer from "../../../src/modules/providers/scdl/__fixtures__/MiscScdlProducer";
-import dataLogRepository from "../../../src/modules/data-log/repositories/dataLog.repository";
+import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
 
 describe("SCDL CLI", () => {
     let cli: ScdlCli;
@@ -17,7 +17,7 @@ describe("SCDL CLI", () => {
     describe("addProducer()", () => {
         it("should create MiscScdlProducerEntity", async () => {
             await cli.addProducer(MiscScdlProducer.slug, MiscScdlProducer.name, MiscScdlProducer.siret);
-            const document = await miscScdlProducersRepository.findBySlug(MiscScdlProducer.slug);
+            const document = await miscScdlProducersPort.findBySlug(MiscScdlProducer.slug);
             expect(document).toMatchSnapshot({ _id: expect.any(ObjectId), lastUpdate: expect.any(Date) });
         });
     });
@@ -56,7 +56,7 @@ describe("SCDL CLI", () => {
 
             it("should add grants with exercise from conventionDate", async () => {
                 await test("SCDL", MiscScdlProducer.slug, DATE_STR);
-                const grants = await miscScdlGrantRepository.findAll();
+                const grants = await miscScdlGrantPort.findAll();
                 const expectedAny = grants.map(grant => ({
                     _id: expect.any(String),
                 }));
@@ -65,7 +65,7 @@ describe("SCDL CLI", () => {
 
             it("should add grants with exercise from its own column", async () => {
                 await test("SCDL_WITH_EXERCICE", MiscScdlProducer.slug, DATE_STR);
-                const grants = await miscScdlGrantRepository.findAll();
+                const grants = await miscScdlGrantPort.findAll();
                 const expectedAny = grants.map(grant => ({
                     _id: expect.any(String),
                 }));
@@ -82,7 +82,7 @@ describe("SCDL CLI", () => {
 
             it("should register new import", async () => {
                 await test("SCDL", MiscScdlProducer.slug, DATE_STR);
-                const actual = await dataLogRepository.findAll();
+                const actual = await dataLogPort.findAll();
                 expect(actual?.[0]).toMatchObject({
                     editionDate: new Date(DATE_STR),
                     fileName: expect.any(String),
@@ -105,7 +105,7 @@ describe("SCDL CLI", () => {
                     DATE_STR,
                     "Sheet1",
                 );
-                const grants = await miscScdlGrantRepository.findAll();
+                const grants = await miscScdlGrantPort.findAll();
                 const grantExercices = grants.map(g => g.exercice);
                 expect(grantExercices).toMatchSnapshot();
             }, 20000);

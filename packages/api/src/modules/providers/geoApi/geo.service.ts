@@ -1,8 +1,8 @@
 import { GeoDepartementDto, GeoRegionDto } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import ProviderCore from "../ProviderCore";
+import geoPort from "../../../dataProviders/db/providers/geoApi/geo.port";
 import { GeoEntity } from "./@types/geo.types";
-import geoRepository from "./geo.repository";
 
 export class GeoService extends ProviderCore {
     apiUrl = "https://geo.api.gouv.fr";
@@ -50,15 +50,15 @@ export class GeoService extends ProviderCore {
             )
             .filter(almostEntity => almostEntity.regionCode && almostEntity.regionName);
 
-        await geoRepository.deleteAll();
-        await geoRepository.insertMany(entities);
+        await geoPort.deleteAll();
+        await geoPort.insertMany(entities);
     }
 
     async getRegionFromDepartment(departmentLabel: string | undefined) {
         if (!departmentLabel) return undefined;
         const departmentName = departmentLabel.match(/\d+ - (.+)/)?.[1];
         if (!departmentName) return undefined;
-        const dbo = (await geoRepository.findByDepartmentName(departmentName)) || undefined;
+        const dbo = (await geoPort.findByDepartmentName(departmentName)) || undefined;
         return dbo?.regionName;
     }
 }

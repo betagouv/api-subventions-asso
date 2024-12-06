@@ -2,7 +2,7 @@ import request = require("supertest");
 import { AgentTypeEnum, ResetPasswordErrorCodes } from "dto";
 import { createAndActiveUser, createUser, DEFAULT_PASSWORD, USER_EMAIL } from "../../__helpers__/userHelper";
 import { createResetToken } from "../../__helpers__/resetTokenHelper";
-import userResetRepository from "../../../src/modules/user/repositories/user-reset.repository";
+import userResetPort from "../../../src/dataProviders/db/user/user-reset.port";
 import notifyService from "../../../src/modules/notify/notify.service";
 import userActivationService, {
     UserActivationService,
@@ -49,7 +49,7 @@ describe("AuthentificationController, /auth", () => {
             const user = await userCrudService.createUser({ email: "test-reset@beta.gouv.fr" });
             await userActivationService.forgetPassword("test-reset@beta.gouv.fr");
 
-            const userReset = await userResetRepository.findOneByUserId(user._id);
+            const userReset = await userResetPort.findOneByUserId(user._id);
 
             const response = await request(g.app)
                 .post("/auth/reset-password")
@@ -69,7 +69,7 @@ describe("AuthentificationController, /auth", () => {
             const user = await userCrudService.createUser({ email: "test-reset@beta.gouv.fr" });
             await userActivationService.forgetPassword("test-reset@beta.gouv.fr");
 
-            const userReset = await userResetRepository.findOneByUserId(user._id);
+            const userReset = await userResetPort.findOneByUserId(user._id);
 
             const response = await request(g.app)
                 .post("/auth/reset-password")
@@ -103,7 +103,7 @@ describe("AuthentificationController, /auth", () => {
             const user = await userCrudService.createUser({ email: "test-reset@beta.gouv.fr" });
             await userActivationService.forgetPassword("test-reset@beta.gouv.fr");
 
-            const userReset = await userResetRepository.findOneByUserId(user._id);
+            const userReset = await userResetPort.findOneByUserId(user._id);
 
             const oldResetTimout = UserActivationService.RESET_TIMEOUT;
             UserActivationService.RESET_TIMEOUT = 0;

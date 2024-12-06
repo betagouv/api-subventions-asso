@@ -12,10 +12,10 @@ import { StructureIdentifier } from "../../../@types";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import Siret from "../../../valueObjects/Siret";
+import fonjepSubventionPort from "../../../dataProviders/db/providers/fonjep/fonjep.subvention.port";
+import fonjepPaymentPort from "../../../dataProviders/db/providers/fonjep/fonjep.payment.port";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
-import fonjepSubventionRepository from "./repositories/fonjep.subvention.repository";
-import fonjepPaymentRepository from "./repositories/fonjep.payment.repository";
 import FonjepPaymentEntity from "./entities/FonjepPaymentEntity";
 import fonjepJoiner from "./joiners/fonjepJoiner";
 
@@ -89,7 +89,7 @@ export class FonjepService
 
         if (validation instanceof FonjepRejectedRequest) return validation;
 
-        await fonjepSubventionRepository.create(entity);
+        await fonjepSubventionPort.create(entity);
 
         return true;
     }
@@ -166,7 +166,7 @@ export class FonjepService
         }
 
         // Do not validEntity now because it is only called after Subvention validation (siret as already been validated)
-        await fonjepPaymentRepository.create(entity);
+        await fonjepPaymentPort.create(entity);
 
         return true;
     }
@@ -183,9 +183,9 @@ export class FonjepService
         const entities: FonjepSubventionEntity[] = [];
 
         if (id instanceof EstablishmentIdentifier && id.siret) {
-            entities.push(...(await fonjepSubventionRepository.findBySiret(id.siret)));
+            entities.push(...(await fonjepSubventionPort.findBySiret(id.siret)));
         } else if (id instanceof AssociationIdentifier && id.siren) {
-            entities.push(...(await fonjepSubventionRepository.findBySiren(id.siren)));
+            entities.push(...(await fonjepSubventionPort.findBySiren(id.siren)));
         }
 
         return entities.map(e => FonjepEntityAdapter.toDemandeSubvention(e));
@@ -202,9 +202,9 @@ export class FonjepService
     async getEstablishments(identifier: StructureIdentifier): Promise<Etablissement[]> {
         let entities: FonjepSubventionEntity[] = [];
         if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            entities = await fonjepSubventionRepository.findBySiret(identifier.siret);
+            entities = await fonjepSubventionPort.findBySiret(identifier.siret);
         } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            entities = await fonjepSubventionRepository.findBySiren(identifier.siren);
+            entities = await fonjepSubventionPort.findBySiren(identifier.siren);
         }
         return entities.map(entity => FonjepEntityAdapter.toEtablissement(entity));
     }
@@ -233,16 +233,16 @@ export class FonjepService
         const requests: FonjepPaymentEntity[] = [];
 
         if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            requests.push(...(await fonjepPaymentRepository.findBySiret(identifier.siret)));
+            requests.push(...(await fonjepPaymentPort.findBySiret(identifier.siret)));
         } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            requests.push(...(await fonjepPaymentRepository.findBySiren(identifier.siren)));
+            requests.push(...(await fonjepPaymentPort.findBySiren(identifier.siren)));
         }
 
         return this.toPaymentArray(requests);
     }
 
     async getPaymentsByKey(codePoste: string) {
-        return this.toPaymentArray(await fonjepPaymentRepository.findByCodePoste(codePoste));
+        return this.toPaymentArray(await fonjepPaymentPort.findByCodePoste(codePoste));
     }
 
     /**
@@ -281,13 +281,13 @@ export class FonjepService
      */
 
     useTemporyCollection(active: boolean) {
-        fonjepSubventionRepository.useTemporyCollection(active);
-        fonjepPaymentRepository.useTemporyCollection(active);
+        fonjepSubventionPort.useTemporyCollection(active);
+        fonjepPaymentPort.useTemporyCollection(active);
     }
 
     async applyTemporyCollection() {
-        await fonjepSubventionRepository.applyTemporyCollection();
-        await fonjepPaymentRepository.applyTemporyCollection();
+        await fonjepSubventionPort.applyTemporyCollection();
+        await fonjepPaymentPort.applyTemporyCollection();
     }
 }
 

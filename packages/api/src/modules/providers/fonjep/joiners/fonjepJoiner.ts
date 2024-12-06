@@ -1,5 +1,5 @@
-import fonjepPaymentRepository from "../repositories/fonjep.payment.repository";
-import fonjepSubventionRepository from "../repositories/fonjep.subvention.repository";
+import fonjepPaymentPort from "../../../../dataProviders/db/providers/fonjep/fonjep.payment.port";
+import fonjepSubventionPort from "../../../../dataProviders/db/providers/fonjep/fonjep.subvention.port";
 import db from "../../../../shared/MongoConnection";
 import { FullGrantData } from "../../../grant/@types/rawGrant";
 import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
@@ -8,7 +8,7 @@ import Siret from "../../../../valueObjects/Siret";
 import Siren from "../../../../valueObjects/Siren";
 
 export class FonjepJoiner {
-    applicationCollection = db.collection(fonjepSubventionRepository.collectionName);
+    applicationCollection = db.collection(fonjepSubventionPort.collectionName);
 
     private get joinPipeline() {
         return [
@@ -16,10 +16,9 @@ export class FonjepJoiner {
             { $project: { application: "$$ROOT" } },
             {
                 $lookup: {
-                    from: fonjepPaymentRepository.collectionName,
-                    localField:
-                        "application." + fonjepSubventionRepository.joinIndexes[fonjepPaymentRepository.collectionName],
-                    foreignField: fonjepPaymentRepository.joinIndexes[fonjepSubventionRepository.collectionName],
+                    from: fonjepPaymentPort.collectionName,
+                    localField: "application." + fonjepSubventionPort.joinIndexes[fonjepPaymentPort.collectionName],
+                    foreignField: fonjepPaymentPort.joinIndexes[fonjepSubventionPort.collectionName],
                     as: "payments",
                 },
             },

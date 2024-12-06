@@ -1,4 +1,4 @@
-import miscScdlJoiner from "./repositories/miscScdl.joiner";
+import miscScdlJoiner from "../../../dataProviders/db/providers/scdl/miscScdl.joiner";
 import scdlGrantService from "./scdl.grant.service";
 import MiscScdlAdapter from "./adapters/MiscScdl.adapter";
 import * as Sentry from "@sentry/node";
@@ -9,7 +9,7 @@ import Siren from "../../../valueObjects/Siren";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
 import Siret from "../../../valueObjects/Siret";
 
-jest.mock("./repositories/miscScdl.joiner", () => ({
+jest.mock("../../../dataProviders/db/providers/scdl/miscScdl.joiner", () => ({
     findByRna: jest.fn(),
     findBySiren: jest.fn(),
     findBySiret: jest.fn(),

@@ -1,9 +1,9 @@
 import HistoryUniteLegalImportEntity from "../../../entities/HistoryUniteLegalImportEntity";
-import MongoRepository from "../../../shared/MongoRepository";
+import MongoPort from "../../../shared/MongoPort";
 import UniteLegalImportAdapter from "./UniteLegalImport.adapter";
 import UniteLegalImportDbo from "./UniteLegalImportDbo";
 
-export class UniteLegalImportsPort extends MongoRepository<UniteLegalImportDbo>{
+export class UniteLegalImportsPort extends MongoPort<UniteLegalImportDbo> {
     public collectionName = "unite-legal-imports";
 
     async createIndexes() {
@@ -18,14 +18,13 @@ export class UniteLegalImportsPort extends MongoRepository<UniteLegalImportDbo>{
             console.error(e);
             return false;
         }
-        
     }
 
     async findLastImport() {
         const dbo = await this.collection.find().sort({ dateOfFile: -1 }).tryNext();
 
         if (!dbo) return null;
-        
+
         return UniteLegalImportAdapter.toEntity(dbo);
     }
 }

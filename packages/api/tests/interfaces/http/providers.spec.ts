@@ -1,12 +1,12 @@
 import request from "supertest";
-import dataLogRepository from "../../../src/modules/data-log/repositories/dataLog.repository";
+import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
 
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
 
 const g = global as unknown as { app: unknown };
 
 const insertData = async () => {
-    await dataLogRepository.insertMany([
+    await dataLogPort.insertMany([
         {
             editionDate: new Date("2022-01-01"),
             integrationDate: new Date("2022-01-01"),

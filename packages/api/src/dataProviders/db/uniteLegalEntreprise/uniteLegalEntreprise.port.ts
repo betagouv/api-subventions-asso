@@ -1,11 +1,11 @@
 import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../shared/helpers/MongoHelper";
-import MongoRepository from "../../../shared/MongoRepository";
+import MongoPort from "../../../shared/MongoPort";
 import { UniteLegalEntrepriseEntity } from "../../../entities/UniteLegalEntrepriseEntity";
 import Siren from "../../../valueObjects/Siren";
 import { UniteLegalEntrepriseAdapter } from "./UniteLegalEntreprise.adapter";
 import { UniteLegalEntrepriseDbo } from "./UniteLegalEntrepriseDbo";
 
-export class UniteLegalEntreprisePort extends MongoRepository<UniteLegalEntrepriseDbo> {
+export class UniteLegalEntreprisePort extends MongoPort<UniteLegalEntrepriseDbo> {
     collectionName = "unite-legal-entreprise";
 
     async createIndexes() {
