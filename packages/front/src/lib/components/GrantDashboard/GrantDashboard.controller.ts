@@ -166,12 +166,14 @@ export class GrantDashboardController {
     }
 
     public onPaymentClick(index) {
+        if (!this.rows.value[index].paymentsCells) return;
         trackerService.buttonClickEvent("association-etablissement.dashbord.payment.more_information");
         data.set({ payments: (this.selectedGrants.value as FlatGrant[])[index].payments });
         modal.set(PaymentsInfoModal);
     }
 
     public onApplicationClick(index) {
+        if (!this.rows.value[index].applicationCells) return;
         trackerService.buttonClickEvent("association-etablissement.dashbord.subvention.more_information");
         data.set({
             application: (this.selectedGrants.value as FlatGrant[])[index].application,
