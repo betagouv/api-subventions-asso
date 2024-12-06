@@ -1,6 +1,7 @@
 <script>
     import { data } from "$lib/store/modal.store";
     import { capitalizeFirstLetter } from "$lib/helpers/stringHelper";
+    import { numberToEuro } from "$lib/helpers/dataHelper.js";
 </script>
 
 {#if $data.application}
@@ -8,13 +9,13 @@
         <h4 class="fr-icon-arrow-right-line">Informations collectées</h4>
         <p class="fr-text--lead">
             {#if $data.application.montants.accorde}
-                <span class="fr-text--bold">{$data.application.montants.accorde}</span>
+                <span class="fr-text--bold">{numberToEuro($data.application.montants.accorde)}</span>
                 ont été accordés{#if $data.application.montants.demande}
                     {" "}sur
-                    <span class="fr-text--bold">{$data.application.montants.demande}</span>
+                    <span class="fr-text--bold">{numberToEuro($data.application.montants.demande)}</span>
                     demandés{/if}.
             {:else if $data.application.montants.demande}
-                <span class="fr-text--bold">{$data.application.montants.demande}</span>
+                <span class="fr-text--bold">{numberToEuro($data.application.montants.demande)}</span>
                 ont été demandés.
             {/if}
         </p>
