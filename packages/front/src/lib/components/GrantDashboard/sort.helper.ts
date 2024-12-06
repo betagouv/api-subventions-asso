@@ -6,6 +6,10 @@ type CompareIngredient<T> = {
     compareGetter: (g: DashboardGrant) => T;
 };
 
+/*
+ * Ensures that in any order, empty values are in the end
+ * To do that, we need to know if we are asc or desc order
+ *  */
 export const nullIsLowCmpBuilder =
     <T>(cmpFn: (a: T, b: T) => number) =>
     (a: T | undefined, b: T | undefined, orderInt: number) => {
@@ -19,7 +23,12 @@ export const nullIsLowCmpBuilder =
 
 const strCompare = nullIsLowCmpBuilder((a: string, b: string) => a?.localeCompare(b));
 const positiveNumberCompare = nullIsLowCmpBuilder((a: number, b: number) => (a ?? 0) - (b ?? 0));
+
 type StatusAmount = { status: ApplicationStatus; montantAccorde: number | undefined };
+
+/*
+ * any amount > granted with no amount > other statuses
+ * */
 const statusAmountCmp = nullIsLowCmpBuilder((a: StatusAmount, b: StatusAmount) => {
     if (a.montantAccorde === undefined) {
         if (b.montantAccorde === undefined) return 0;
@@ -56,6 +65,7 @@ const compareIngredients: CompareIngredient<any>[] = [
     { compareFn: positiveNumberCompare, compareGetter: g => g.payment?.programme?.code }, // "Programme",
 ];
 
+// gets proper compare fonction and proper getter for proper attribute according to column index required
 function grantCompareBuilder(
     cmpFunction: <T>(a: T, b: T, orderInt: number) => number,
     compareGetter: <T>(g: DashboardGrant) => T,
@@ -63,6 +73,7 @@ function grantCompareBuilder(
     return (a, b, orderInt) => cmpFunction(compareGetter(a), compareGetter(b), orderInt);
 }
 
+// builds array of compare fonctions based on compare ingredients
 export const grantCompareFn = compareIngredients.map(({ compareFn, compareGetter }) =>
     grantCompareBuilder(compareFn, compareGetter),
 );

@@ -1,5 +1,5 @@
-import type { FlatGrant } from "../../resources/@types/FlattenGrant";
 import { GrantDashboardController } from "./GrantDashboard.controller";
+import type { FlatGrant } from "$lib/resources/@types/FlattenGrant";
 import { isSiret } from "$lib/helpers/identifierHelper";
 import establishmentService from "$lib/resources/establishments/establishment.service";
 import establishmentPort from "$lib/resources/establishments/establishment.port";

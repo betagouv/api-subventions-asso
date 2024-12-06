@@ -1,9 +1,9 @@
 import type { StructureIdentifierDto } from "dto";
-import type { FlatGrant, OnlyApplication } from "../../resources/@types/FlattenGrant";
 import ApplicationInfoModal from "./Modals/ApplicationInfoModal.svelte";
 import PaymentsInfoModal from "./Modals/PaymentsInfoModal.svelte";
 import { getApplicationCells, getApplicationDashboardData, isGranted } from "./application.helper";
 import { getPaymentDashboardData, getPaymentsCells } from "./payments.helper";
+import type { FlatGrant, OnlyApplication } from "$lib/resources/@types/FlattenGrant";
 import { isSiret } from "$lib/helpers/identifierHelper";
 import associationPort from "$lib/resources/associations/association.port";
 import establishmentPort from "$lib/resources/establishments/establishment.port";
@@ -15,12 +15,8 @@ import associationService from "$lib/resources/associations/association.service"
 import documentHelper from "$lib/helpers/document.helper";
 import { PUBLIC_PROVIDER_BLOG_URL } from "$env/static/public";
 import { data, modal } from "$lib/store/modal.store";
-import type {
-    DashboardApplication,
-    DashboardPayment,
-    SortableRow,
-} from "$lib/components/GrantDashboard/@types/DashboardGrant";
-import { grantCompareFn, nullIsLowCmpBuilder } from "$lib/components/GrantDashboard/sort.helper";
+import type { SortableRow } from "$lib/components/GrantDashboard/@types/DashboardGrant";
+import { grantCompareFn } from "$lib/components/GrantDashboard/sort.helper";
 
 export class GrantDashboardController {
     public identifier: StructureIdentifierDto;
@@ -136,7 +132,7 @@ export class GrantDashboardController {
         trackerService.trackEvent("association-etablissement.dashboard.display-provider-modal");
     }
 
-    // Grants are supposed to be ordered from API
+    // Grants are expected to be ordered from API
     private splitGrantsByExercise(grants: FlatGrant[]) {
         return grants.reduce((byExercise, grant) => {
             let exercise;
@@ -157,12 +153,6 @@ export class GrantDashboardController {
             documentHelper.download(blob, filename);
         });
         this.isExtractLoading.set(false);
-    }
-
-    // deprectated, replaced by onPaymentClick and onApplicationClick
-    public onRowClick(rowIndex, cellIndex) {
-        if (cellIndex <= this.rows.value[rowIndex].applicationCells.length - 1) this.onApplicationClick(rowIndex);
-        else this.onPaymentClick(rowIndex);
     }
 
     public onPaymentClick(index) {

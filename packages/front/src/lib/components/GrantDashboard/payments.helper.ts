@@ -2,7 +2,7 @@ import type { FlatPayment } from "$lib/resources/@types/FlattenGrant";
 import type { TableCell } from "$lib/dsfr/TableCell.types";
 import { numberToEuro, valueOrHyphen } from "$lib/helpers/dataHelper";
 import { withTwoDigitYear } from "$lib/helpers/dateHelper";
-import type { DashboardApplication, DashboardProgram } from "$lib/components/GrantDashboard/@types/DashboardGrant";
+import type { DashboardProgram } from "$lib/components/GrantDashboard/@types/DashboardGrant";
 
 const MULTI = "multi";
 

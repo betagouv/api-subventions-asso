@@ -3,7 +3,7 @@
     import type { TableCell } from "$lib/dsfr/TableCell.types";
     import TableCellTitle from "$lib/dsfr/TableCellTitle.svelte";
     import TableCellDesc from "$lib/dsfr/TableCellDesc.svelte";
-    import StatusLabel from "$lib/components/SubventionsPaymentsDashboard/StatutLabel/StatusLabel.svelte";
+    import StatusLabel from "$lib/components/GrantDashboard/StatutLabel/StatusLabel.svelte";
 
     export let cells: TableCell[] | null;
 
