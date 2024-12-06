@@ -5,10 +5,12 @@
     import Input from "$lib/dsfr/Input.svelte";
     import Select from "$lib/dsfr/Select.svelte";
     import Table from "$lib/dsfr/Table.svelte";
+    import TableRow from "$lib/dsfr/TableRow.svelte";
 
     export let contacts = [];
     export let siret;
 
+    const tableId = "contact-etab";
     const controller = new ContactEtabController(contacts, siret);
     const { contacts: _contacts } = controller;
 </script>
@@ -37,57 +39,39 @@
             <Select on:change={e => controller.filterByRole(e.detail)} label="Rôle" options={controller.roles} />
         </div>
     </div>
-    <Table title="Tableau des contacts de l'établissement">
-        <svelte:fragment slot="colgroup">
-            <col class="small" />
-            <col span="3" class="medium" />
-            <col class="large" />
-            <col span="1" class="medium" />
-        </svelte:fragment>
-        <svelte:fragment slot="head">
-            {#each controller.getHeaders() as header}
-                <th scope="col">{header}</th>
-            {/each}
-        </svelte:fragment>
-        <svelte:fragment slot="body">
-            {#each $_contacts as contact}
-                <tr>
-                    <td>
-                        {contact.civilite}
-                    </td>
-                    <td>
-                        {contact.nom}
-                    </td>
-                    <td>
-                        {contact.prenom}
-                    </td>
-                    <td>
-                        {contact.telephone}
-                    </td>
-                    <td>
-                        {contact.email}
-                    </td>
-                    <td>
-                        {contact.role}
-                    </td>
-                </tr>
-            {/each}
-        </svelte:fragment>
-    </Table>
+    <div class="fr-grid-row fr-grid-row--gutters">
+        <div class="fr-col-12">
+            <Table
+                id={tableId}
+                title="Tableau des contacts de l'établissement"
+                headers={controller.headers}
+                headersSize={controller.headersSize}
+                scrollable={false}>
+                {#each $_contacts as contact, index}
+                    <TableRow id={tableId} {index}>
+                        <td>
+                            {contact.civilite}
+                        </td>
+                        <td>
+                            {contact.nom}
+                        </td>
+                        <td>
+                            {contact.prenom}
+                        </td>
+                        <td>
+                            {contact.telephone}
+                        </td>
+                        <td>
+                            {contact.email}
+                        </td>
+                        <td>
+                            {contact.role}
+                        </td>
+                    </TableRow>
+                {/each}
+            </Table>
+        </div>
+    </div>
 {:else}
     <p>Nous sommes désolés, nous n'avons trouvé aucune donnée pour cet établissement</p>
 {/if}
-
-<style>
-    .small {
-        width: calc(100% / 12);
-    }
-
-    .medium {
-        width: calc(100% / 6);
-    }
-
-    .large {
-        width: calc(100% / 3);
-    }
-</style>

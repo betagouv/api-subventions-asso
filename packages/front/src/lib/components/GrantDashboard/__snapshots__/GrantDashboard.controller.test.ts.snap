@@ -1,0 +1,37 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`GrantDashboard Controller > with a mocked constructor > splitGrantsByExercise > returns grants by exercise 1`] = `
+{
+  "2021": [
+    {
+      "payments": [
+        {
+          "dateOperation": "2021-08-14",
+        },
+      ],
+    },
+  ],
+  "2023": [
+    {
+      "application": {
+        "annee_demande": 2022,
+      },
+      "payments": [
+        {
+          "dateOperation": "2023-01-13",
+        },
+        {
+          "dateOperation": "2023-04-21",
+        },
+      ],
+    },
+  ],
+  "2024": [
+    {
+      "application": {
+        "annee_demande": 2024,
+      },
+    },
+  ],
+}
+`;
