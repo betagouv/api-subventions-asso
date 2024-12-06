@@ -29,13 +29,10 @@ export class GrantDashboardController {
     public grantsByExercise: Record<string, FlatGrant[]> = {};
     public selectedExerciseIndex: Store<number | undefined> = new Store(undefined);
 
-    // @ts-expect-error: done in initStores()
-    public selectedGrants: Store<FlatGrant[] | null>;
-    // @ts-expect-error: done in initStores()
-    // TODO: voir si on peut pas mieux gérer ça car utilisé que dans GrantsStatistique
-    public selectedExercise: ReadStore<string | null>;
-    // final rows displayed in view
-    // can be updated with exercise filter and in a future with other filters
+    public selectedGrants: Store<FlatGrant[] | null> = new Store(null);
+    public selectedExercise: ReadStore<string | null> = new ReadStore(null);
+
+    // final rows displayed in view: can be updated with exercise filter and in a future with other filters
     public rows: Store<SortableRow[]> = new Store([]);
     public isExtractLoading: Store<boolean> = new Store(false);
     public exerciseOptions: Store<string[] | undefined> = new Store(undefined);
