@@ -9,8 +9,10 @@ type CompareIngredient<T> = {
 export const nullIsLowCmpBuilder =
     <T>(cmpFn: (a: T, b: T) => number) =>
     (a: T | undefined, b: T | undefined, orderInt: number) => {
-        if (a === undefined && b == undefined) return 0;
-        if (a === undefined) return 1;
+        if (a === undefined) {
+            if (b === undefined) return 0;
+            return 1;
+        }
         if (b === undefined) return -1;
         return orderInt * cmpFn(a, b);
     };
@@ -19,13 +21,18 @@ const strCompare = nullIsLowCmpBuilder((a: string, b: string) => a?.localeCompar
 const positiveNumberCompare = nullIsLowCmpBuilder((a: number, b: number) => (a ?? 0) - (b ?? 0));
 type StatusAmount = { status: ApplicationStatus; montantAccorde: number | undefined };
 const statusAmountCmp = nullIsLowCmpBuilder((a: StatusAmount, b: StatusAmount) => {
-    if (a.status !== ApplicationStatus.GRANTED && b.status !== ApplicationStatus.GRANTED)
-        return a.status.localeCompare(b.status);
-    if (a.status !== ApplicationStatus.GRANTED) return -1;
-    if (b.status !== ApplicationStatus.GRANTED) return 1;
-    if (a.montantAccorde === undefined && b.montantAccorde == undefined) return 0;
-    if (a.montantAccorde === undefined) return 1;
+    if (a.montantAccorde === undefined) {
+        if (b.montantAccorde === undefined) return 0;
+        return 1;
+    }
     if (b.montantAccorde === undefined) return -1;
+
+    if (a.status !== ApplicationStatus.GRANTED) {
+        if (b.status !== ApplicationStatus.GRANTED) return a.status.localeCompare(b.status);
+        return 1;
+    }
+    if (a.status !== ApplicationStatus.GRANTED) return -1;
+
     return a.montantAccorde - b.montantAccorde;
 });
 
