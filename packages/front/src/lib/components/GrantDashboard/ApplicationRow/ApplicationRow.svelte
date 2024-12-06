@@ -7,12 +7,17 @@
 
     export let cells: TableCell[] | null;
 
+    const openModal = cells?.length;
     const cellsLength = 6;
 </script>
 
 {#if cells}
     {#each cells as cell}
-        <td on:click>
+        <td
+            class="clickable application"
+            on:click
+            aria-controls={openModal ? "fr-modal" : ""}
+            data-fr-opened={openModal ? "true" : "false"}>
             {#if cell.badge}
                 {#if cell.badge?.status}
                     <StatusLabel status={cell.badge.status} />
@@ -39,5 +44,14 @@
 <style>
     td {
         padding: 1rem 0.5rem;
+    }
+
+    td.clickable {
+        cursor: pointer;
+    }
+
+    :global(tr):has(td.application:hover) td.clickable.application,
+    :global(tr):has(td.application:focus-within) td.clickable.application {
+        background-color: var(--background-alt-grey);
     }
 </style>

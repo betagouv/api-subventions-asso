@@ -6,12 +6,17 @@
     export let cells: TableCell[] | null;
     export let granted: boolean;
 
+    const openModal = cells?.length;
     const cellsLength = 2;
 </script>
 
 {#if cells}
     {#each cells as cell}
-        <td on:click>
+        <td
+            class="clickable payment"
+            on:click
+            aria-controls={openModal ? "fr-modal" : ""}
+            data-fr-opened={openModal ? "true" : "false"}>
             {#if cell.title}
                 <TableCellTitle>{cell.title}</TableCellTitle>
             {/if}
@@ -29,5 +34,14 @@
 <style>
     td {
         padding: 1rem 0.5rem;
+    }
+
+    td.clickable {
+        cursor: pointer;
+    }
+
+    :global(tr):has(td.payment:hover) td.clickable.payment,
+    :global(tr):has(td.payment:focus-within) td.clickable.payment {
+        background-color: var(--background-alt-grey);
     }
 </style>

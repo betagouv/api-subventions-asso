@@ -91,7 +91,7 @@
                     customColSizes={[12, 11, 11, 11, 13, 17, 11, 11]}
                     {headers}>
                     {#each $rows as row, rowIndex}
-                        <TableRow id={tableId} index={rowIndex} openModal={true}>
+                        <TableRow id={tableId} index={rowIndex}>
                             <ApplicationRow
                                 on:click={() => ctrl.onApplicationClick(rowIndex)}
                                 cells={row.applicationCells} />

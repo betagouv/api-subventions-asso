@@ -107,13 +107,4 @@
     .custom-table :global(tbody tr):last-of-type {
         border-bottom: none;
     }
-
-    .custom-table :global(tr.clickable) {
-        cursor: pointer;
-    }
-
-    .custom-table :global(tr.clickable:hover td),
-    :global(tr.clickable:focus-within td) {
-        background-color: var(--background-alt-grey);
-    }
 </style>
