@@ -2,14 +2,9 @@ import userStatsService from "./user.stats.service";
 import userPort from "../../../../dataProviders/db/user/user.port";
 jest.mock("../../../../dataProviders/db/user/user.port");
 const mockedUserPort = jest.mocked(userPort);
-import userAssociationVisitJoiner from "../../../stats/joiners/UserAssociationVisitsJoiner";
-import { USER_DBO, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
-jest.mock("../../../stats/joiners/UserAssociationVisitsJoiner");
-const mockedUserAssociationVisitJoiner = jest.mocked(userAssociationVisitJoiner);
-import * as dateHelper from "../../../../shared/helpers/DateHelper";
-import AssociationVisitEntity from "../../../stats/entities/AssociationVisitEntity";
-jest.mock("../../../../shared/helpers/DateHelper");
-const mockedDateHelper = jest.mocked(dateHelper);
+jest.mock("../crud/user.crud.service");
+import userCrudService from "../crud/user.crud.service";
+import { UserDto } from "dto";
 
 describe("user stats service", () => {
     describe("countTotalUsersOnDate()", () => {
@@ -65,41 +60,19 @@ describe("user stats service", () => {
     });
 
     describe("getUsersWithStats", () => {
-        const MOST_RECENT_DATE = new Date();
-        const ASSOCIATION_VISIT = {
-            associationIdentifier: "rna",
-            userId: USER_WITHOUT_SECRET._id,
-            date: MOST_RECENT_DATE,
-        };
+        const PROMISE = "PROMISE" as unknown as Promise<UserDto[]>;
+
         beforeAll(() => {
-            mockedUserAssociationVisitJoiner.findUsersWithAssociationVisits.mockImplementation(async () => [
-                {
-                    ...USER_WITHOUT_SECRET,
-                    associationVisits: [ASSOCIATION_VISIT],
-                },
-            ]);
-            mockedDateHelper.getMostRecentDate.mockImplementation(() => MOST_RECENT_DATE);
+            jest.mocked(userCrudService.find).mockReturnValueOnce(PROMISE);
         });
 
         afterAll(() => {
-            mockedUserAssociationVisitJoiner.findUsersWithAssociationVisits.mockReset();
-            mockedDateHelper.getMostRecentDate.mockReset();
+            jest.mocked(userCrudService.find).mockRestore();
         });
 
-        it("should call userAssociationVisitJoiner.findUsersWithAssociationVisits()", async () => {
+        it("should call crud", async () => {
             await userStatsService.getUsersWithStats();
-            expect(mockedUserAssociationVisitJoiner.findUsersWithAssociationVisits).toHaveBeenCalledTimes(1);
-        });
-
-        it("should call DateHelper.getMostRecentDate()", async () => {
-            await userStatsService.getUsersWithStats();
-            expect(mockedDateHelper.getMostRecentDate).toHaveBeenCalledTimes(1);
-        });
-
-        it("should return user with stats", async () => {
-            const expected = [{ ...USER_WITHOUT_SECRET, stats: { lastSearchDate: MOST_RECENT_DATE, searchCount: 1 } }];
-            const actual = await userStatsService.getUsersWithStats();
-            expect(actual).toEqual(expected);
+            expect(userCrudService.find).toHaveBeenCalledTimes(1);
         });
     });
 });

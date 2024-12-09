@@ -6,7 +6,6 @@ import userResetPort from "../../../../dataProviders/db/user/user-reset.port";
 import consumerTokenPort from "../../../../dataProviders/db/user/consumer-token.port";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
-import userStatsService from "../stats/user.stats.service";
 import { RoleEnum } from "../../../../@enums/Roles";
 import userAuthService from "../auth/user.auth.service";
 import { UserNotPersisted } from "../../../../dataProviders/db/user/UserDbo";
@@ -53,7 +52,7 @@ export class UserCrudService {
     }
 
     public async listUsers(): Promise<UserWithResetTokenDto[]> {
-        const users = await userStatsService.getUsersWithStats(true);
+        const users = await this.find();
         return await Promise.all(
             users.map(async user => {
                 const reset = await userResetPort.findOneByUserId(user._id);
@@ -81,7 +80,8 @@ export class UserCrudService {
             profileToComplete: !userObject.agentConnectId,
             lastActivityDate: null,
             agentConnectId: userObject.agentConnectId,
-        };
+            nbVisits: 0,
+        } as unknown;
 
         const jwtParams = {
             token: userAuthService.buildJWTToken(partialUser as UserDto),
@@ -89,7 +89,7 @@ export class UserCrudService {
         };
 
         const user = {
-            ...partialUser,
+            ...(partialUser as UserDto),
             jwt: jwtParams,
             active: !!userObject.agentConnectId,
         } as UserNotPersisted;

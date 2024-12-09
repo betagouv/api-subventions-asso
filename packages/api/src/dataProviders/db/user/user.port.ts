@@ -112,6 +112,17 @@ export class UserPort extends MongoPort<UserDbo> {
     async createIndexes() {
         await this.collection.createIndex({ email: 1 }, { unique: true });
     }
+
+    async updateNbRequests(countByUser: { count: number; _id: string }[]) {
+        const bulk = countByUser.map(({ _id, count }) => ({
+            updateOne: {
+                filter: { _id: new ObjectId(_id) },
+                update: { $inc: { nbVisits: count } },
+            },
+        }));
+        if (!bulk.length) return;
+        return this.db.collection("users").bulkWrite(bulk);
+    }
 }
 
 const userPort = new UserPort();

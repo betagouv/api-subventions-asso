@@ -10,6 +10,7 @@ Object {
   "isConsumerToken": true,
   "lastActivityDate": null,
   "lastName": null,
+  "nbVisits": 0,
   "now": Any<String>,
   "profileToComplete": true,
   "roles": Array [
@@ -28,6 +29,7 @@ Object {
   "firstName": null,
   "lastActivityDate": null,
   "lastName": null,
+  "nbVisits": 0,
   "profileToComplete": true,
   "roles": Array [
     "user",

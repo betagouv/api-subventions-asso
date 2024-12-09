@@ -31,7 +31,7 @@ export class OsirisActionPort extends MongoPort<OsirisActionEntityDbo> {
                     { $set: actionWithoutId },
                     options,
                 )
-                //@ts-expect-error -- mongo typing expects no metadata 
+            //@ts-expect-error -- mongo typing expects no metadata
             )?.value;
         if (!dbo) throw new MongoCnxError();
         return OsirisActionAdapter.toEntity(dbo);

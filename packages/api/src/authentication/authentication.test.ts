@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as express from "express";
 
-import { expressAuthentication } from "../../src/authentication/authentication";
+import { expressAuthentication } from "./authentication";
 import jwt from "jsonwebtoken";
-import userPort from "../dataProviders/db/user/user.port";
 import { ObjectId } from "mongodb";
 import { LoginRequest } from "../@types";
 import { RoleEnum } from "../@enums/Roles";
@@ -11,6 +10,7 @@ import { AgentTypeEnum } from "dto";
 import userAuthService from "../modules/user/services/auth/user.auth.service";
 import userActivationService from "../modules/user/services/activation/user.activation.service";
 import userCrudService from "../modules/user/services/crud/user.crud.service";
+import userPort from "../dataProviders/db/user/user.port";
 jest.mock("../modules/user/services/auth/user.auth.service");
 const mockedUserAuthService = jest.mocked(userAuthService, true);
 
@@ -52,6 +52,7 @@ describe("expressAuthentication", () => {
                 phoneNumber: "",
                 jobType: [],
                 lastActivityDate: null,
+                nbVisits: 0,
             }),
         );
         mockedUserAuthService.findJwtByEmail.mockImplementation(() =>
@@ -74,6 +75,7 @@ describe("expressAuthentication", () => {
                 hashPassword: "fqskfyqfdkq",
                 jwt: { token: "dsdsgfd", expirateDate: new Date() },
                 lastActivityDate: null,
+                nbVisits: 0,
             }),
         );
         // @ts-expect-error: mock

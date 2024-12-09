@@ -13,9 +13,10 @@ describe("UserPort", () => {
         signupAt: new Date(),
         jwt: { token: "TOKEN", expirateDate: new Date() },
         active: false,
-        stats: { searchCount: 0, lastSearchDate: null },
+        lastActivityDate: null,
+        nbVisits: 0,
         profileToComplete: false,
-    };
+    }; // TODO fix here
     describe("The methods must not return any secret", () => {
         beforeEach(async () => {
             await userCrudService.createUser({ email: "test@beta.gouv.fr" });

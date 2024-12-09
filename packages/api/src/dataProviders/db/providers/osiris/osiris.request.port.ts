@@ -28,7 +28,7 @@ export class OsirisRequestPort extends MongoPort<OsirisRequestEntity> {
                     { $set: requestWithoutId },
                     options,
                 )
-                //@ts-expect-error -- mongo typing expects no metadata
+            //@ts-expect-error -- mongo typing expects no metadata
             )?.value as OsirisRequestEntity
         );
     }
