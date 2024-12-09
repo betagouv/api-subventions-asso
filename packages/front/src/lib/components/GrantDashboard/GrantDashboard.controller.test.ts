@@ -19,24 +19,24 @@ vi.mock("$lib/helpers/document.helper");
 describe("GrantDashboard Controller", () => {
     const IDENTIFIER = "000000001";
 
-    const GRANT_FROM_2024 = {
+    const GRANT_FROM_2024 = () => ({
         application: { annee_demande: 2024 },
-    };
+    });
 
-    const GRANT_FROM_2023 = {
+    const GRANT_FROM_2023 = () => ({
         application: { annee_demande: 2022 },
         payments: [{ dateOperation: "2023-01-13" }, { dateOperation: "2023-04-21" }],
-    };
+    });
 
-    const GRANT_FROM_2021 = { payments: [{ dateOperation: "2021-08-14" }] };
+    const GRANT_FROM_2021 = () => ({ payments: [{ dateOperation: "2021-08-14" }] });
 
-    const FLAT_GRANTS = [GRANT_FROM_2021, GRANT_FROM_2023, GRANT_FROM_2024] as FlatGrant[];
+    const FLAT_GRANTS = () => [GRANT_FROM_2021(), GRANT_FROM_2023(), GRANT_FROM_2024()] as FlatGrant[];
 
     let CTRL: GrantDashboardController;
 
     beforeAll(() => {
-        vi.mocked(associationPort.getGrants).mockResolvedValue(FLAT_GRANTS);
-        vi.mocked(establishmentPort.getGrants).mockResolvedValue(FLAT_GRANTS);
+        vi.mocked(associationPort.getGrants).mockResolvedValue(FLAT_GRANTS());
+        vi.mocked(establishmentPort.getGrants).mockResolvedValue(FLAT_GRANTS());
     });
 
     describe("constructor", () => {
@@ -45,7 +45,6 @@ describe("GrantDashboard Controller", () => {
         });
 
         beforeEach(() => {
-            vi.mocked(isSiret).mockReturnValue(true);
             CTRL = new GrantDashboardController(IDENTIFIER);
             // @ts-expect-error: mock
             vi.spyOn(CTRL, "processGrants").mockReturnValue("processGrants return value");
@@ -59,7 +58,7 @@ describe("GrantDashboard Controller", () => {
             expect(establishmentPort.getGrants).toHaveBeenCalledWith(IDENTIFIER);
         });
 
-        it("fetches assocation grants", () => {
+        it("fetches association grants", () => {
             vi.clearAllMocks();
             vi.mocked(isSiret).mockReturnValueOnce(false);
             CTRL = new GrantDashboardController(IDENTIFIER);
@@ -70,42 +69,43 @@ describe("GrantDashboard Controller", () => {
 
         it("calls processGrants", () => {
             // @ts-expect-error: access private method
-            expect(CTRL.processGrants).toHaveBeenCalledWith(FLAT_GRANTS);
+            expect(CTRL.processGrants).toHaveBeenCalledWith(FLAT_GRANTS());
         });
     });
 
     describe("with a mocked constructor", () => {
-        beforeEach(() => {
-            vi.mocked(isSiret).mockReturnValue(true);
-            const constructor = GrantDashboardController.prototype.constructor;
-            // @ts-expect-error: ok
-            vi.spyOn(GrantDashboardController.prototype, "constructor").mockImplementation(() => ({ grants: [] }));
+        beforeAll(() => {
+            vi.mocked(isSiret).mockReturnValueOnce(true);
+            vi.mocked(establishmentPort.getGrants).mockResolvedValueOnce([]);
             CTRL = new GrantDashboardController(IDENTIFIER);
-            GrantDashboardController.prototype.constructor = constructor;
         });
 
         describe("processGrants", () => {
             const GRANTS_BY_EXERCISE = { 2021: GRANT_FROM_2021, 2023: [GRANT_FROM_2023], 2024: [GRANT_FROM_2024] };
-            beforeEach(() => {
+            let splitSpy;
+            beforeAll(() => {
                 // @ts-expect-error: mock private method
-                vi.spyOn(CTRL, "splitGrantsByExercise").mockReturnValue(GRANTS_BY_EXERCISE);
+                splitSpy = vi.spyOn(CTRL, "splitGrantsByExercise").mockReturnValue(GRANTS_BY_EXERCISE);
+            });
+            afterAll(() => {
+                splitSpy.mockRestore();
             });
 
             it("defines grants", () => {
                 // @ts-expect-error: calls private method
-                CTRL.processGrants(FLAT_GRANTS);
-                expect(CTRL.grants.value).toEqual(FLAT_GRANTS);
+                CTRL.processGrants(FLAT_GRANTS());
+                expect(CTRL.grants.value).toEqual(FLAT_GRANTS());
             });
 
             it("split grants by exercise", () => {
                 // @ts-expect-error: calls private method
-                CTRL.processGrants(FLAT_GRANTS);
+                CTRL.processGrants(FLAT_GRANTS());
                 expect(CTRL.grantsByExercise).toEqual(GRANTS_BY_EXERCISE);
             });
 
             it("select most recent exercise", () => {
                 // @ts-expect-error: calls private method
-                CTRL.processGrants(FLAT_GRANTS);
+                CTRL.processGrants(FLAT_GRANTS());
                 expect(CTRL.selectedExerciseIndex.value).toBe(2);
             });
         });
@@ -129,7 +129,7 @@ describe("GrantDashboard Controller", () => {
         describe("splitGrantsByExercise", () => {
             it("returns grants by exercise", () => {
                 // @ts-expect-error: call private method
-                const actual = CTRL.splitGrantsByExercise(FLAT_GRANTS);
+                const actual = CTRL.splitGrantsByExercise(FLAT_GRANTS());
                 expect(actual).toMatchSnapshot();
             });
         });
@@ -150,7 +150,8 @@ describe("GrantDashboard Controller", () => {
                 expect(trackerService.trackEvent).not.toHaveBeenCalled();
             });
 
-            it("calls trackerService", async () => {
+            it("calls trackerService if not already loading", async () => {
+                CTRL.isExtractLoading.value = false;
                 await CTRL.download();
                 expect(trackerService.buttonClickEvent).toHaveBeenCalledWith(
                     "association-etablissement.dashbord.download-csv",
