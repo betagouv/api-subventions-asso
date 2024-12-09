@@ -6,8 +6,10 @@ export default class PaymentFlatEntity {
         public uniqueId: string,
         public idVersement: string,
         public exerciceBudgetaire: number,
-        public siret: Siret,
-        public siren: Siren,
+        public typeIdEtablissementBeneficiaire: string, // ceci peut prendre que les valeurs suivantes siret, ridet, thaiti-t
+        public idEtablissementBeneficiaire: string, // ceci doit correspondre à un format précis en fonction de la valeur de typeIdEtablissement
+        public typeIdEntrepriseBeneficiaire: string, // ceci peut prendre que les valeurs suivantes siren, rid, thaiti
+        public IdEntrepriseBeneficiaire: string, // ceci doit correspondre à un format précis en fonction de la valeur de typeIdEntreprise
         public amount: number,
         public operationDate: Date,
         public programName: string | null,
