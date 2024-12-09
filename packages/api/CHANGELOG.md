@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.59.0](https://github.com/betagouv/api-subventions-asso/compare/v0.58.2...v0.59.0) (2024-12-09)
+
+### Features
+
+-   **api,dto,front:** [#2852](https://github.com/betagouv/api-subventions-asso/issues/2852) save nb visits in user ([#2972](https://github.com/betagouv/api-subventions-asso/issues/2972)) ([a9d7089](https://github.com/betagouv/api-subventions-asso/commit/a9d7089db51c62147cff766603957e1b62947205))
+-   **api:** [#2917](https://github.com/betagouv/api-subventions-asso/issues/2917) data integration centre val de loire 2021 ([#2947](https://github.com/betagouv/api-subventions-asso/issues/2947)) ([566ed87](https://github.com/betagouv/api-subventions-asso/commit/566ed87874c3fa566b2dd762436e82ed10df4243))
+
 ## [0.58.2](https://github.com/betagouv/api-subventions-asso/compare/v0.58.1...v0.58.2) (2024-12-03)
 
 ### Bug Fixes

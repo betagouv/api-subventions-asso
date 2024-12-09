@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.59.0](https://github.com/betagouv/datasubvention/compare/v0.58.2...v0.59.0) (2024-12-09)
+
+### Features
+
+-   **api,dto,front:** [#2852](https://github.com/betagouv/datasubvention/issues/2852) save nb visits in user ([#2972](https://github.com/betagouv/datasubvention/issues/2972)) ([a9d7089](https://github.com/betagouv/datasubvention/commit/a9d7089db51c62147cff766603957e1b62947205))
+
 ## [0.58.1](https://github.com/betagouv/datasubvention/compare/v0.58.0...v0.58.1) (2024-12-02)
 
 ## [0.57.2](https://github.com/betagouv/datasubvention/compare/v0.57.1...v0.57.2) (2024-11-21)
