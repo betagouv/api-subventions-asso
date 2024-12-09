@@ -1,8 +1,8 @@
 import { BadRequestError, ConflictError } from "../../shared/errors/httpErrors";
 import { REGEX_MAIL_DOMAIN } from "../user/user.constant";
+import configurationsPort from "../../dataProviders/db/configurations/configurations.port";
 import { DauphinTokenDataEntity, DauphinTokenAvailableTime } from "./entities";
 import ConfigurationEntity from "./entities/ConfigurationEntity";
-import configurationsRepository from "./repositories/configurations.repository";
 
 export enum CONFIGURATION_NAMES {
     DAUPHIN_TOKEN = "DAUPHIN-TOKEN",
@@ -27,23 +27,21 @@ export class ConfigurationsService {
     }
 
     updateConfigEntity<T>(name: string, data: T) {
-        return configurationsRepository.upsert(name, { data });
+        return configurationsPort.upsert(name, { data });
     }
 
     getDauphinToken() {
-        return configurationsRepository.getByName<DauphinTokenDataEntity>(CONFIGURATION_NAMES.DAUPHIN_TOKEN);
+        return configurationsPort.getByName<DauphinTokenDataEntity>(CONFIGURATION_NAMES.DAUPHIN_TOKEN);
     }
 
     async setDauphinToken(token: string) {
-        await configurationsRepository.upsert(CONFIGURATION_NAMES.DAUPHIN_TOKEN, {
+        await configurationsPort.upsert(CONFIGURATION_NAMES.DAUPHIN_TOKEN, {
             data: token,
         });
     }
 
     getDauphinTokenAvailableTime() {
-        return configurationsRepository.getByName<DauphinTokenAvailableTime>(
-            CONFIGURATION_NAMES.DAUPHIN_TOKEN_AVAILABLE,
-        );
+        return configurationsPort.getByName<DauphinTokenAvailableTime>(CONFIGURATION_NAMES.DAUPHIN_TOKEN_AVAILABLE);
     }
 
     /**
@@ -60,9 +58,9 @@ export class ConfigurationsService {
 
     async addEmailDomain(domain: string, throwOnConflict = true) {
         if (!this.isDomainValid(domain)) throw new BadRequestError();
-        const document = await configurationsRepository.getByName<string[]>(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS);
+        const document = await configurationsPort.getByName<string[]>(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS);
         if (!document) {
-            await configurationsRepository.upsert(
+            await configurationsPort.upsert(
                 CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS,
                 this.createEmptyConfigEntity(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS, [domain]),
             );
@@ -73,7 +71,7 @@ export class ConfigurationsService {
             return domain;
         }
 
-        await configurationsRepository.upsert(
+        await configurationsPort.upsert(
             CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS,
             this.generateConfiguationEntity(document, [...document.data, domain]),
         );
@@ -81,14 +79,12 @@ export class ConfigurationsService {
     }
 
     async getEmailDomains() {
-        return (
-            (await configurationsRepository.getByName<string[]>(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS))?.data || []
-        );
+        return (await configurationsPort.getByName<string[]>(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS))?.data || [];
     }
 
     async isDomainAccepted(domainOrEmail: string) {
         const domain = domainOrEmail.split("@")[1];
-        const persistedDomains = (await configurationsRepository.getByName(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS))
+        const persistedDomains = (await configurationsPort.getByName(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS))
             ?.data as string[];
         return persistedDomains.some(
             presistedDomain => domain == presistedDomain || domain.endsWith("." + presistedDomain),
@@ -97,13 +93,13 @@ export class ConfigurationsService {
 
     async getLastPublishDumpDate(): Promise<Date> {
         return (
-            ((await configurationsRepository.getByName(CONFIGURATION_NAMES.DUMP_PUBLISH_DATE))?.data as Date) ||
+            ((await configurationsPort.getByName(CONFIGURATION_NAMES.DUMP_PUBLISH_DATE))?.data as Date) ||
             new Date(1970)
         );
     }
 
     async setLastPublishDumpDate(date: Date) {
-        return configurationsRepository.upsert(CONFIGURATION_NAMES.DUMP_PUBLISH_DATE, {
+        return configurationsPort.upsert(CONFIGURATION_NAMES.DUMP_PUBLISH_DATE, {
             data: date,
         });
     }

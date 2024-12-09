@@ -1,21 +1,21 @@
 import { UserDataDto, UserDto } from "dto";
 import * as Sentry from "@sentry/node";
 import { NotFoundError } from "../../../../shared/errors/httpErrors";
-import userResetRepository from "../../repositories/user-reset.repository";
-import consumerTokenRepository from "../../repositories/consumer-token.repository";
-import { uniformizeId } from "../../../../shared/helpers/RepositoryHelper";
+import userResetPort from "../../../../dataProviders/db/user/user-reset.port";
+import consumerTokenPort from "../../../../dataProviders/db/user/consumer-token.port";
+import { uniformizeId } from "../../../../shared/helpers/PortHelper";
 import statsService from "../../../stats/stats.service";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
-import userRepository from "../../repositories/user.repository";
+import userPort from "../../../../dataProviders/db/user/user.port";
 import userCrudService from "../crud/user.crud.service";
 import { DefaultObject } from "../../../../@types";
 import userActivationService from "../activation/user.activation.service";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
-import configurationsRepository from "../../../configurations/repositories/configurations.repository";
+import configurationsPort from "../../../../dataProviders/db/configurations/configurations.port";
 import configurationsService, { CONFIGURATION_NAMES } from "../../../configurations/configurations.service";
 import { STALL_RGPD_CRON_6_MONTHS_DELETION } from "../../../../configurations/mail.conf";
-import statsRepository from "../../../stats/repositories/stats.repository";
+import statsPort from "../../../../dataProviders/db/stats/stats.port";
 
 export class UserRgpdService {
     public async getAllData(userId: string): Promise<UserDataDto> {
@@ -25,10 +25,7 @@ export class UserRgpdService {
 
         const userIdToString = document => ({ ...document, userId: document.userId.toString() });
 
-        const tokens = [
-            ...(await userResetRepository.findByUserId(userId)),
-            ...(await consumerTokenRepository.find(userId)),
-        ]
+        const tokens = [...(await userResetPort.findByUserId(userId)), ...(await consumerTokenPort.find(userId))]
             .map(uniformizeId)
             .map(userIdToString);
 
@@ -66,8 +63,8 @@ export class UserRgpdService {
             phoneNumber: "",
         };
         const promises = Promise.all([
-            statsRepository.anonymizeLogsByUser(user, disabledUser),
-            userRepository.update(disabledUser).then(r => !!r),
+            statsPort.anonymizeLogsByUser(user, disabledUser),
+            userPort.update(disabledUser).then(r => !!r),
         ]);
 
         if (!whileBatch) notifyService.notify(NotificationType.USER_DELETED, { email: user.email, selfDeleted: self });
@@ -84,11 +81,11 @@ export class UserRgpdService {
 
         const lastActivityLimit = new Date(now.valueOf());
         lastActivityLimit.setFullYear(now.getFullYear() - 2);
-        const inactiveUsersToDisable = await userRepository.findInactiveSince(lastActivityLimit);
+        const inactiveUsersToDisable = await userPort.findInactiveSince(lastActivityLimit);
 
         const subscriptionNotActivatedLimit = new Date(now.valueOf());
         subscriptionNotActivatedLimit.setUTCMonth(now.getUTCMonth() - 6);
-        const neverSeenUsersToDisable = await userRepository.findNotActivatedSince(subscriptionNotActivatedLimit);
+        const neverSeenUsersToDisable = await userPort.findNotActivatedSince(subscriptionNotActivatedLimit);
         if (STALL_RGPD_CRON_6_MONTHS_DELETION < now)
             console.log(`rgpdCron: ${neverSeenUsersToDisable.length} seraient supprimés si la feature était activée`);
 
@@ -123,15 +120,11 @@ export class UserRgpdService {
      * The users that did not log in for 2 years will be warned via pure brevo automation */
     async warnDisableInactive() {
         const now = new Date();
-        const lastWarningWave = (
-            await configurationsRepository.getByName<Date>(CONFIGURATION_NAMES.LAST_RGPD_WARNED_DATE)
-        )?.data;
+        const lastWarningWave = (await configurationsPort.getByName<Date>(CONFIGURATION_NAMES.LAST_RGPD_WARNED_DATE))
+            ?.data;
         const lastSubscriptionNotActivatedLimit = new Date(now.valueOf());
         lastSubscriptionNotActivatedLimit.setUTCMonth(now.getUTCMonth() - 5);
-        const usersToWarn = await userRepository.findNotActivatedSince(
-            lastSubscriptionNotActivatedLimit,
-            lastWarningWave,
-        );
+        const usersToWarn = await userPort.findNotActivatedSince(lastSubscriptionNotActivatedLimit, lastWarningWave);
 
         const promises = usersToWarn.map(user =>
             userActivationService

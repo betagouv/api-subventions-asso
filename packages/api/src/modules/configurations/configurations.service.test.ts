@@ -2,13 +2,13 @@ import { isObjectBindingPattern } from "typescript";
 import { BadRequestError } from "../../shared/errors/httpErrors";
 import { ConflictError } from "../../shared/errors/httpErrors/ConflictError";
 import configurationsService, { ConfigurationsService, CONFIGURATION_NAMES } from "./configurations.service";
-import configurationsRepository from "./repositories/configurations.repository";
+import configurationsPort from "../../dataProviders/db/configurations/configurations.port";
 import { ObjectId } from "mongodb";
 
 describe("ConfigurationService", () => {
     jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
-    const getByNameMock: jest.SpyInstance<unknown> = jest.spyOn(configurationsRepository, "getByName");
-    const upsertMock: jest.SpyInstance<unknown> = jest.spyOn(configurationsRepository, "upsert");
+    const getByNameMock: jest.SpyInstance<unknown> = jest.spyOn(configurationsPort, "getByName");
+    const upsertMock: jest.SpyInstance<unknown> = jest.spyOn(configurationsPort, "upsert");
 
     const CONFIG_NAME = "name";
     const DEFAULT_DATA = [];
@@ -36,7 +36,7 @@ describe("ConfigurationService", () => {
     });
 
     describe("updateConfigEntity()", () => {
-        it("should call repository", async () => {
+        it("should call port", async () => {
             // @ts-expect-error -- mock
             upsertMock.mockResolvedValueOnce({});
             const UPDATED_DATA = ["DATA"];
@@ -57,7 +57,7 @@ describe("ConfigurationService", () => {
                 expect(actual).toEqual(expected);
             });
 
-            it("should call repository with good name", async () => {
+            it("should call port with good name", async () => {
                 const expected = "DAUPHIN-TOKEN";
                 getByNameMock.mockImplementationOnce(async () => ({}));
 
@@ -99,7 +99,7 @@ describe("ConfigurationService", () => {
                 expect(actual).toEqual(expected);
             });
 
-            it("should call repository with good name", async () => {
+            it("should call port with good name", async () => {
                 const expected = "DAUPHIN-TOKEN-AVAILABLE";
                 getByNameMock.mockImplementationOnce(async () => ({}));
 

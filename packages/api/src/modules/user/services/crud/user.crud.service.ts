@@ -1,40 +1,40 @@
 import { FutureUserDto, SignupErrorCodes, UserDto, UserWithJWTDto, UserWithResetTokenDto } from "dto";
 import { DefaultObject } from "../../../../@types";
-import userRepository from "../../repositories/user.repository";
+import userPort from "../../../../dataProviders/db/user/user.port";
 import userCheckService from "../check/user.check.service";
-import userResetRepository from "../../repositories/user-reset.repository";
-import consumerTokenRepository from "../../repositories/consumer-token.repository";
+import userResetPort from "../../../../dataProviders/db/user/user-reset.port";
+import consumerTokenPort from "../../../../dataProviders/db/user/consumer-token.port";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import userStatsService from "../stats/user.stats.service";
 import { RoleEnum } from "../../../../@enums/Roles";
 import userAuthService from "../auth/user.auth.service";
-import { UserNotPersisted } from "../../repositories/dbo/UserDbo";
+import { UserNotPersisted } from "../../../../dataProviders/db/user/UserDbo";
 import { BadRequestError, InternalServerError, NotFoundError } from "../../../../shared/errors/httpErrors";
 import userConsumerService from "../consumer/user.consumer.service";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import userActivationService from "../activation/user.activation.service";
-import { removeSecrets } from "../../../../shared/helpers/RepositoryHelper";
+import { removeSecrets } from "../../../../shared/helpers/PortHelper";
 import { UserServiceErrors } from "../../user.enum";
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 import { getNewJwtExpireDate } from "../../user.helper";
 
 export class UserCrudService {
     find(query: DefaultObject = {}) {
-        return userRepository.find(query);
+        return userPort.find(query);
     }
 
     findByEmail(email: string) {
-        return userRepository.findByEmail(email);
+        return userPort.findByEmail(email);
     }
 
     public getUserById(userId) {
-        return userRepository.findById(userId);
+        return userPort.findById(userId);
     }
 
     public async update(user: Partial<UserDto> & Pick<UserDto, "email">): Promise<UserDto> {
         await userCheckService.validateEmail(user.email);
-        return await userRepository.update(user);
+        return await userPort.update(user);
     }
 
     public async delete(userId: string): Promise<boolean> {
@@ -42,11 +42,11 @@ export class UserCrudService {
 
         if (!user) return false;
 
-        if (!(await userRepository.delete(user))) return false;
+        if (!(await userPort.delete(user))) return false;
 
         const deletePromises = [
-            userResetRepository.removeAllByUserId(user._id),
-            consumerTokenRepository.deleteAllByUserId(user._id),
+            userResetPort.removeAllByUserId(user._id),
+            consumerTokenPort.deleteAllByUserId(user._id),
         ];
 
         return (await Promise.all(deletePromises)).every(success => success);
@@ -56,7 +56,7 @@ export class UserCrudService {
         const users = await userStatsService.getUsersWithStats(true);
         return await Promise.all(
             users.map(async user => {
-                const reset = await userResetRepository.findOneByUserId(user._id);
+                const reset = await userResetPort.findOneByUserId(user._id);
                 return {
                     ...user,
                     resetToken: reset?.token,
@@ -94,9 +94,7 @@ export class UserCrudService {
             active: !!userObject.agentConnectId,
         } as UserNotPersisted;
 
-        const createdUser = withJWT
-            ? await userRepository.createAndReturnWithJWT(user)
-            : await userRepository.create(user);
+        const createdUser = withJWT ? await userPort.createAndReturnWithJWT(user) : await userPort.create(user);
 
         if (!createdUser)
             throw new InternalServerError("The user could not be created", UserServiceErrors.CREATE_USER_WRONG);
@@ -140,7 +138,7 @@ export class UserCrudService {
     }
 
     async getUserWithoutSecret(email: string) {
-        const withSecrets = await userRepository.getUserWithSecretsByEmail(email);
+        const withSecrets = await userPort.getUserWithSecretsByEmail(email);
         if (!withSecrets) throw new NotFoundError("User not found");
         return removeSecrets(withSecrets);
     }

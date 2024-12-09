@@ -1,0 +1,84 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`StatsUniqueVisitByDay Port _reduceToOneVisitByDayByUser() should return unique visits by user by day  1`] = `
+Array [
+  Object {
+    "_id": "63f86f1d22086bd41093b0e7",
+    "associationIdentifier": "923109060",
+    "date": "2023-02-24T08:02:37.445Z",
+    "userId": "63e106ddc2837bcfc90c1b42",
+  },
+  Object {
+    "_id": "64215a18a0361ce301a9a75b",
+    "associationIdentifier": "W411004557",
+    "date": "2023-03-27T08:55:52.438Z",
+    "userId": "63d79fa4b10c7cd75f2afb7d",
+  },
+  Object {
+    "_id": "6435592b86ac581877125e6d",
+    "associationIdentifier": "W411004557",
+    "date": "2023-04-11T12:57:15.397Z",
+    "userId": "63d79fa4b10c7cd75f2afb7d",
+  },
+  Object {
+    "_id": "63d248b0fd5236180bf7be30",
+    "associationIdentifier": "752999151",
+    "date": "2022-07-04T09:24:56.549Z",
+    "userId": "62c29a87f27171939164bd90",
+  },
+  Object {
+    "_id": "63d248b0fd5236180bf7bde9",
+    "associationIdentifier": "752999151",
+    "date": "2022-06-28T08:58:53.930Z",
+    "userId": "62a0baa14b0eea5c8a749b0e",
+  },
+]
+`;
+
+exports[`StatsUniqueVisitByDay Port groupVisitByUser() should group by users 1`] = `
+Object {
+  "62a0baa14b0eea5c8a749b0e": Array [
+    Object {
+      "_id": "63d248b0fd5236180bf7bde9",
+      "associationIdentifier": "752999151",
+      "date": "2022-06-28T08:58:53.930Z",
+      "userId": "62a0baa14b0eea5c8a749b0e",
+    },
+  ],
+  "62c29a87f27171939164bd90": Array [
+    Object {
+      "_id": "63d248b0fd5236180bf7be30",
+      "associationIdentifier": "752999151",
+      "date": "2022-07-04T09:24:56.549Z",
+      "userId": "62c29a87f27171939164bd90",
+    },
+    Object {
+      "_id": "63d248b0fd5236180bf7be32",
+      "associationIdentifier": "752999151",
+      "date": "2022-07-04T09:26:19.953Z",
+      "userId": "62c29a87f27171939164bd90",
+    },
+  ],
+}
+`;
+
+exports[`StatsUniqueVisitByDay Port keepOneUserVisitByDay() should keep one visit by day 1`] = `
+Array [
+  Object {
+    "2022-07-04": Object {
+      "_id": "63d248b0fd5236180bf7be30",
+      "associationIdentifier": "752999151",
+      "date": "2022-07-04T09:24:56.549Z",
+      "userId": "62c29a87f27171939164bd90",
+    },
+  },
+  Object {
+    "2022-06-28": Object {
+      "_id": "63d248b0fd5236180bf7bde9",
+      "associationIdentifier": "752999151",
+      "date": "2022-06-28T08:58:53.930Z",
+      "userId": "62a0baa14b0eea5c8a749b0e",
+    },
+  },
+]
+`;

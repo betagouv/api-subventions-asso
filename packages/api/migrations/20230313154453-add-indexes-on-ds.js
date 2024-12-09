@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const {
-    default: demarchesSimplifieesDataRepository,
-} = require("../build/src/modules/providers/demarchesSimplifiees/repositories/demarchesSimplifieesData.repository");
+    default: demarchesSimplifieesDataPort,
+} = require("../build/src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port");
 const {
-    default: demarchesSimplifieesMapperRepository,
-} = require("../build/src/modules/providers/demarchesSimplifiees/repositories/demarchesSimplifieesMapper.repository");
+    default: demarchesSimplifieesMapperPort,
+} = require("../build/src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port");
 /* eslint-enable @typescript-eslint/no-var-requires */
 
 module.exports = {
@@ -13,8 +13,8 @@ module.exports = {
     async up(db, client) {
         await connectDB();
 
-        await demarchesSimplifieesDataRepository.createIndexes();
-        await demarchesSimplifieesMapperRepository.createIndexes();
+        await demarchesSimplifieesDataPort.createIndexes();
+        await demarchesSimplifieesMapperPort.createIndexes();
     },
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

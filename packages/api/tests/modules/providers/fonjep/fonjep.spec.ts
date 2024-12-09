@@ -4,8 +4,8 @@ import path from "path";
 import FonjepParser from "../../../../src/modules/providers/fonjep/fonjep.parser";
 import FonjepCli from "../../../../src/interfaces/cli/Fonjep.cli";
 import db from "../../../../src/shared/MongoConnection";
-import fonjepVersementRepository from "../../../../src/modules/providers/fonjep/repositories/fonjep.payment.repository";
-import fonjepSubventionRepository from "../../../../src/modules/providers/fonjep/repositories/fonjep.subvention.repository";
+import fonjepVersementPort from "../../../../src/dataProviders/db/providers/fonjep/fonjep.payment.port";
+import fonjepSubventionPort from "../../../../src/dataProviders/db/providers/fonjep/fonjep.subvention.port";
 
 const FILE = fs.readFileSync(path.resolve(__dirname, "./__fixtures__/fonjep.xlsx"));
 const EXPORT_DATE = new Date("2022-03-03").toISOString();
@@ -21,8 +21,8 @@ describe("FonjepParser", () => {
 
 describe("FonjepCli", () => {
     beforeEach(() => {
-        fonjepVersementRepository.createIndexes();
-        fonjepSubventionRepository.createIndexes();
+        fonjepVersementPort.createIndexes();
+        fonjepSubventionPort.createIndexes();
     });
     describe("parse()", () => {
         it("should remove temporary collections", async () => {
