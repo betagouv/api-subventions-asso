@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require("../build/src/shared/MongoConnection");
-// const osirisRequestPort = require('../build/src/dataProviders/db/providers/osiris/osiris.request.port').default;
 
 module.exports = {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
