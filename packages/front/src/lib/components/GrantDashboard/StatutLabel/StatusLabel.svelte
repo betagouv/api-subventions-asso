@@ -1,5 +1,5 @@
 <script>
-    import { StatusLabelController } from "./StatusLabel.controller.js";
+    import { StatusLabelController } from "./StatusLabel.controller";
 
     export let status;
 
