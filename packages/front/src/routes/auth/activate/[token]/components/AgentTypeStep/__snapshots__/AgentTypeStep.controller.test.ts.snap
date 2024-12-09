@@ -29,7 +29,7 @@ exports[`AgentTypeStepController > onUpdate - case 'error' > updates errorMessag
 [MockFunction spy] {
   "calls": [
     [
-      "Data.Subvention est réservé aux agents publics. Pour toute question, vous pouvez nous contacter à <a href=\\"mailto:contact@datasubvention.beta.gouv.fr\\">contact@datasubvention.beta.gouv.fr</a>",
+      "Data.Subvention est réservé aux agents publics. Pour toute question, vous pouvez nous contacter à <a href="mailto:contact@datasubvention.beta.gouv.fr">contact@datasubvention.beta.gouv.fr</a>",
     ],
   ],
   "results": [
