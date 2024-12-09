@@ -57,7 +57,7 @@ export const getProjectName = application => {
 
     let names = application.actions_proposee
         .sort((actionA, actionB) => actionA.rang - actionB.rang)
-        .map(action => `${capitalizeFirstLetter(action.intitule)}.`.replace("..", "."));
+        .map(action => `${capitalizeFirstLetter(action.intitule)}.`.replace(/\.\./g, "."));
 
     names = [...new Set(names)].join(" - ");
 
