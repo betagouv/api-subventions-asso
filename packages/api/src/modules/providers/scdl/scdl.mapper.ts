@@ -35,7 +35,9 @@ const CONVENTION_DATE_PATHS = [
     "Date de convention*",
     "Date de la convention",
     "Date de la convention de subvention (AAAA-MM-JJ)",
+    "date Convention",
     "DateConvention",
+    "datedeConvention",
 ];
 
 const dateAdapter = (date: BeforeAdaptation | undefined | null): Date | undefined => {
@@ -45,9 +47,9 @@ const dateAdapter = (date: BeforeAdaptation | undefined | null): Date | undefine
 };
 
 export const SCDL_MAPPER: ScdlGrantSchema = {
-    allocatorName: { path: [["nomAttribuant", "Nom de l'attribuant"]] },
+    allocatorName: { path: [["nomAttribuant", "Nom de l'attribuant", "nom Attribuant"]] },
     allocatorSiret: {
-        path: [["idAttribuant", "Identification de l'attribuant (SIRET)"]],
+        path: [["idAttribuant", "Identification de l'attribuant (SIRET)", "id  Attribuant"]],
         adapter: v => {
             if (v?.includes(".")) return v.split(".")[0]; // TODO: quickfix for Centre Val de Loire, remove when CSV will be cleaned
             return v;
@@ -75,7 +77,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
         path: [[...CONVENTION_DATE_PATHS]],
         adapter: dateAdapter,
     },
-    decisionReference: [[...getMapperVariants("decisionReference"), "Référence de la décision"]],
+    decisionReference: [[...getMapperVariants("decisionReference"), "Référence de la décision", "reference Decision"]],
     associationName: [
         [
             ...getMapperVariants("associationName"),
@@ -83,6 +85,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             "Nom Bénéficiaire",
             "NOM Bénéficiaire",
             "Nom du bénéficiaire",
+            "nom Beneficiaire",
         ],
     ],
     associationSiret: {
@@ -93,6 +96,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Numéro Siret",
                 "N° SIRET",
                 "identification du bénéficiaire (SIRET)",
+                "id Beneficiaire",
             ],
         ],
         adapter: v => v?.toString(),
@@ -120,7 +124,12 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
     },
     paymentNature: [[...getMapperVariants("paymentNature"), "Nature de la subvention"]],
     paymentConditions: [
-        [...getMapperVariants("paymentConditions"), "Conditions de versement*", "Conditions de versement"],
+        [
+            ...getMapperVariants("paymentConditions"),
+            "Conditions de versement*",
+            "Conditions de versement",
+            "conditions Versement",
+        ],
     ],
     paymentStartDate: {
         path: [
@@ -131,6 +140,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "dateperiodedversement",
                 "Date(s) ou période(s) de versement",
                 "Date(s) ou période(s) de versement (AAAA-MM-JJ)",
+                "dates Periode Versement",
             ],
         ],
         // @ts-expect-error: with undefined it returns false, so we don't need to check it

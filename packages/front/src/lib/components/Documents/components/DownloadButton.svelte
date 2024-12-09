@@ -1,4 +1,5 @@
 <script lang="ts">
+    import Documents from "../Documents.svelte";
     import Button from "$lib/dsfr/Button.svelte";
     import Dispatch from "$lib/core/Dispatch";
     import DownloadButtonController from "$lib/components/Documents/components/DownloadButton.controller";
@@ -9,7 +10,7 @@
     const dispatch = Dispatch.getDispatcher();
 
     const ctrl = new DownloadButtonController(docsStore);
-    const { downloadBtnLabel } = ctrl;
+    const { downloadBtnLabel, resetBtnDisabled } = ctrl;
 </script>
 
 <ul
@@ -28,10 +29,11 @@
         <Button
             type="tertiary"
             outline={false}
+            disabled={$resetBtnDisabled}
             trackerName="reset-docs-selection"
             title="Réinitialiser la sélection de documents"
             on:click={() => dispatch("reset")}>
-            Réinitialiser
+            Tout désélectionner
         </Button>
     </li>
 </ul>

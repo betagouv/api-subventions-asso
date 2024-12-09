@@ -7,7 +7,7 @@ export class SearchCacheCron implements CronController {
 
     // every day at 11 PM UTC
     @AsyncCron({ cronExpression: "0 23 * * *" })
-    removeInactiveUsers() {
+    clear() {
         return searchService.cleanCache();
     }
 }

@@ -6,7 +6,7 @@ import { siretToSiren } from "../../src/shared/helpers/SirenHelper";
 import associationsService from "../../src/modules/associations/associations.service";
 import { BadRequestError } from "../../src/shared/errors/httpErrors";
 import OsirisRequestEntityFixture from "./providers/osiris/__fixtures__/entity";
-import { osirisRequestRepository } from "../../src/modules/providers/osiris/repositories";
+import { osirisRequestPort } from "../../src/dataProviders/db/providers/osiris";
 import DEFAULT_ASSOCIATION from "../__fixtures__/association.fixture";
 import rnaSirenPort from "../../src/dataProviders/db/rnaSiren/rnaSiren.port";
 import Siret from "../../src/valueObjects/Siret";
@@ -74,7 +74,7 @@ describe("/etablissement", () => {
 
     describe("/siret", () => {
         beforeEach(async () => {
-            await osirisRequestRepository.add(OsirisRequestEntityFixture);
+            await osirisRequestPort.add(OsirisRequestEntityFixture);
         });
         it("should add one visits on stats AssociationsVisit", async () => {
             const beforeRequestTime = new Date();

@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.58.1](https://github.com/betagouv/datasubvention/compare/v0.58.0...v0.58.1) (2024-12-02)
+
+## [0.57.2](https://github.com/betagouv/datasubvention/compare/v0.57.1...v0.57.2) (2024-11-21)
+
+**Note:** Version bump only for package front
+
+# [0.58.0](https://github.com/betagouv/datasubvention/compare/v0.57.1...v0.58.0) (2024-11-28)
+
+### Performance Improvements
+
+-   **front:** [#2850](https://github.com/betagouv/datasubvention/issues/2850) clean domain list in admin ([#2941](https://github.com/betagouv/datasubvention/issues/2941)) ([67b1bc5](https://github.com/betagouv/datasubvention/commit/67b1bc551e5c307e0c74c94533db14b844f79927))
+-   **front:** [#2850](https://github.com/betagouv/datasubvention/issues/2850) no dsfr table is much faster and not much uglier ([#2949](https://github.com/betagouv/datasubvention/issues/2949)) ([93537de](https://github.com/betagouv/datasubvention/commit/93537debf2fb3b40dbfc3acfde564bec45547b14))
+
+## [0.57.2](https://github.com/betagouv/datasubvention/compare/v0.57.1...v0.57.2) (2024-11-21)
+
+**Note:** Version bump only for package front
+
 ## [0.57.1](https://github.com/betagouv/datasubvention/compare/v0.56.1...v0.57.1) (2024-11-18)
 
 ### Bug Fixes

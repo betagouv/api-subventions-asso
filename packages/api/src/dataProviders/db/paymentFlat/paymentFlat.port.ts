@@ -1,9 +1,9 @@
-import MongoRepository from "../../../shared/MongoRepository";
+import MongoPort from "../../../shared/MongoPort";
 import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
 import PaymentFlatDbo from "./PaymentFlatDbo";
 import PaymentFlatAdapter from "./PaymentFlat.adapter";
 
-export class PaymentFlatPort extends MongoRepository<PaymentFlatDbo> {
+export class PaymentFlatPort extends MongoPort<PaymentFlatDbo> {
     collectionName = "payments-flat";
 
     public async createIndexes(): Promise<void> {

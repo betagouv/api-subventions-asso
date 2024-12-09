@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require("../build/src/shared/MongoConnection");
 
-const userRepository = require("../build/src/modules/user/repositoies/user.repository").default;
+const userPort = require("../build/src/dataProviders/db/user/user.port").default;
 const asyncForEach = require("../build/src/shared/helpers/ArrayHelper").asyncForEach;
 
 module.exports = {
@@ -45,20 +45,20 @@ module.exports = {
             });
 
         await asyncForEach(result, async partialUser => {
-            const user = await userRepository.findByEmail(partialUser.email);
+            const user = await userPort.findByEmail(partialUser.email);
             if (!user) return;
 
             user.stats.lastSearchDate = partialUser.stats.lastSearchDate;
-            await userRepository.update(user);
+            await userPort.update(user);
         });
-        const users = await userRepository.find({
+        const users = await userPort.find({
             "stats.lastSearchDate": { $exists: false },
         });
 
         await asyncForEach(
             users,
             async user =>
-                await userRepository.update({
+                await userPort.update({
                     ...user,
                     stats: { searchCount: 0, lastSearchDate: null },
                 }),

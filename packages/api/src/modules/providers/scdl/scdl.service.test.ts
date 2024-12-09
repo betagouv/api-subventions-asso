@@ -1,8 +1,8 @@
 import scdlService from "./scdl.service";
-import miscScdlGrantRepository from "./repositories/miscScdlGrant.repository";
-jest.mock("./repositories/miscScdlGrant.repository");
-import miscScdlProducersRepository from "./repositories/miscScdlProducer.repository";
-jest.mock("./repositories/miscScdlProducer.repository");
+import miscScdlGrantPort from "../../../dataProviders/db/providers/scdl/miscScdlGrant.port";
+jest.mock("../../../dataProviders/db/providers/scdl/miscScdlGrant.port");
+import miscScdlProducersPort from "../../../dataProviders/db/providers/scdl/miscScdlProducer.port";
+jest.mock("../../../dataProviders/db/providers/scdl/miscScdlProducer.port");
 import { getMD5 } from "../../../shared/helpers/StringHelper";
 jest.mock("../../../shared/helpers/StringHelper");
 
@@ -37,34 +37,34 @@ describe("ScdlService", () => {
     });
 
     describe("getProvider()", () => {
-        it("should call miscScdlProducerRepository.create()", async () => {
+        it("should call miscScdlProducerPort.create()", async () => {
             await scdlService.getProducer(MiscScdlProducerFixture.slug);
-            expect(miscScdlProducersRepository.findBySlug).toHaveBeenCalledWith(MiscScdlProducerFixture.slug);
+            expect(miscScdlProducersPort.findBySlug).toHaveBeenCalledWith(MiscScdlProducerFixture.slug);
         });
     });
 
     describe("getProducers", () => {
         it("should call findAll", async () => {
             await scdlService.getProducers();
-            expect(miscScdlProducersRepository.findAll).toHaveBeenCalledTimes(1);
+            expect(miscScdlProducersPort.findAll).toHaveBeenCalledTimes(1);
         });
     });
 
     describe("createProducer()", () => {
-        it("should call miscScdlProducerRepository.create()", async () => {
+        it("should call miscScdlProducerPort.create()", async () => {
             const PRODUCER = { ...MiscScdlProducerFixture };
             await scdlService.createProducer(PRODUCER);
-            expect(miscScdlProducersRepository.create).toHaveBeenCalledWith(PRODUCER);
+            expect(miscScdlProducersPort.create).toHaveBeenCalledWith(PRODUCER);
         });
     });
 
     describe("updateProducer()", () => {
-        it("should call miscScdlProducerRepository.update()", async () => {
+        it("should call miscScdlProducerPort.update()", async () => {
             const SET_OBJECT = {
                 lastUpdate: new Date(),
             };
             await scdlService.updateProducer(MiscScdlProducerFixture.slug, SET_OBJECT);
-            expect(miscScdlProducersRepository.update).toHaveBeenCalledWith(MiscScdlProducerFixture.slug, SET_OBJECT);
+            expect(miscScdlProducersPort.update).toHaveBeenCalledWith(MiscScdlProducerFixture.slug, SET_OBJECT);
         });
     });
 
@@ -110,10 +110,10 @@ describe("ScdlService", () => {
             expect(mockBuildGrantUniqueId).toHaveBeenCalledWith(GRANTS[0], MiscScdlProducerFixture.slug);
         });
 
-        it("should call miscScdlGrantRepository.createMany with allocator data from producer", async () => {
+        it("should call miscScdlGrantPort.createMany with allocator data from producer", async () => {
             const GRANTS = [{ ...MiscScdlGrantFixture, __data__: {} }];
             await scdlService.createManyGrants(GRANTS, MiscScdlProducerFixture.slug);
-            expect(miscScdlGrantRepository.createMany).toHaveBeenCalledWith([
+            expect(miscScdlGrantPort.createMany).toHaveBeenCalledWith([
                 {
                     ...GRANTS[0],
                     _id: UNIQUE_ID,
@@ -124,12 +124,12 @@ describe("ScdlService", () => {
             ]);
         });
 
-        it("should call miscScdlGrantRepository.createMany with allocator data from grant", async () => {
+        it("should call miscScdlGrantPort.createMany with allocator data from grant", async () => {
             const GRANTS = [
                 { ...MiscScdlGrantFixture, allocatorId: SIRET_STR, allocatorName: "attribuant", __data__: {} },
             ];
             await scdlService.createManyGrants(GRANTS, MiscScdlProducerFixture.slug);
-            expect(miscScdlGrantRepository.createMany).toHaveBeenCalledWith([
+            expect(miscScdlGrantPort.createMany).toHaveBeenCalledWith([
                 {
                     ...GRANTS[0],
                     _id: UNIQUE_ID,

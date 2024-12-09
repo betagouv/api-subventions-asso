@@ -1,6 +1,6 @@
 import { WithId } from "mongodb";
 import { UserDto } from "dto";
-import UserDbo from "../../modules/user/repositories/dbo/UserDbo";
+import UserDbo from "../../dataProviders/db/user/UserDbo";
 import statsService from "../../modules/stats/stats.service";
 import { ONE_DAY_MS } from "./DateHelper";
 
