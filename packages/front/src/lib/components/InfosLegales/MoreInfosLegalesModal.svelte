@@ -8,6 +8,6 @@
 
 <ModalContent title="Détail des informations recueillies">
     <Alert small={true}>Certaines formulations peuvent différer selon les fournisseurs de données</Alert>
-    <!-- TODO: find a way to remove that TS error -->
+    {"" + /* @ts-expect-error -- $data has unknown type */ +""}
     <Table hideTitle={true} headers={$data.headers} rows={$data.rows} bordered={false} scrollable={false} />
 </ModalContent>
