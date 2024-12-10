@@ -3,10 +3,13 @@ import { readFileSync } from "fs";
 import { sentrySvelteKit } from "@sentry/sveltekit";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { defineConfig, loadEnv } from "vite";
+import dotenv from "dotenv";
 
 const file = fileURLToPath(new URL("package.json", import.meta.url));
 const json = readFileSync(file, "utf8");
 const pkg = JSON.parse(json);
+
+if (process.env.ENV !== "test") dotenv.config({ path: `.env.local`, override: true }); //https://stackoverflow.com/a/74622497
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), "");
