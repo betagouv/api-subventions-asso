@@ -354,12 +354,16 @@ describe("ScdlGrantParser", () => {
         let isValidSpy: jest.SpyInstance;
         let indexAnnotateSpy: jest.SpyInstance;
         let cleanupSpy: jest.SpyInstance;
+        let verifyMissingHeadersSpy: jest.SpyInstance;
 
         beforeAll(() => {
             const annotations = {};
             for (const key of Object.keys(GRANT)) {
                 annotations[key] = { keyPath: [key], value: GRANT[key] };
             }
+            verifyMissingHeadersSpy = jest
+                .spyOn(ScdlGrantParser, "verifyMissingHeaders")
+                .mockImplementationOnce(() => {});
             // @ts-expect-error -- protected method
             isValidSpy = jest.spyOn(ScdlGrantParser, "isGrantValid").mockReturnValue({ valid: true });
             indexAnnotateSpy = jest
@@ -374,6 +378,7 @@ describe("ScdlGrantParser", () => {
         });
 
         afterAll(() => {
+            verifyMissingHeadersSpy.mockRestore();
             isValidSpy.mockRestore();
             cleanupSpy.mockRestore();
             indexAnnotateSpy.mockRestore();
@@ -386,6 +391,7 @@ describe("ScdlGrantParser", () => {
         });
 
         it("returns only valid entities", () => {
+            verifyMissingHeadersSpy.mockReturnValueOnce(undefined);
             isValidSpy.mockReturnValueOnce(false);
             const expected = SCDL_STORABLE.length - 1;
             // @ts-expect-error -- mock private method
@@ -395,6 +401,7 @@ describe("ScdlGrantParser", () => {
 
         it("also returns errors", () => {
             const pb: Problem = { field: "something", value: "something", message: "clarify problem" };
+            verifyMissingHeadersSpy.mockReturnValueOnce(undefined);
             isValidSpy.mockReturnValueOnce({ valid: false, problems: [pb] });
             const expected = SCDL_STORABLE.length - 1;
             // @ts-expect-error -- mock private method
@@ -404,6 +411,7 @@ describe("ScdlGrantParser", () => {
 
         it("also returns errors with problems in optional field so valid result", () => {
             const pb: Problem = { field: "something", value: "something", message: "clarify problem" };
+            verifyMissingHeadersSpy.mockReturnValueOnce(undefined);
             isValidSpy.mockReturnValueOnce({ valid: true, problems: [pb] });
             const expected = SCDL_STORABLE.length - 1;
             // @ts-expect-error -- mock private method
@@ -413,6 +421,7 @@ describe("ScdlGrantParser", () => {
 
         it("saves cleaned up optional fields ", () => {
             cleanupSpy.mockReturnValue({ value: "clean" });
+            verifyMissingHeadersSpy.mockReturnValueOnce(undefined);
             // @ts-expect-error -- mock private method
             const actual = ScdlGrantParser.convertValidateData(SCDL_STORABLE).entities;
             expect(actual).toMatchSnapshot();
