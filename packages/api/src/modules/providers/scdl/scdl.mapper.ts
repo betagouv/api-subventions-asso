@@ -150,21 +150,25 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
         path: [[...getMapperVariants("paymentStartDate"), ...PERIODE_VERSEMENT_PATHS]],
         adapter: value => {
             // @ts-expect-error: with undefined it returns false, so we don't need to check it
-            if (shortISORegExp.test(value)) return new Date(value.split(/[/_]/)[0].trim());
-            else {
-                const parsedDate = dateAdapter(value);
-                return isValidDate(parsedDate) ? parsedDate : null;
-            }
+            const parsedDate = shortISORegExp.test(value)
+                ? // @ts-expect-error: idem
+                  new Date(value.split(/[/_]/)[0].trim())
+                : dateAdapter(value);
+            return isValidDate(parsedDate) ? parsedDate : null;
         },
     },
     paymentEndDate: {
         path: [[...getMapperVariants("paymentEndDate"), ...PERIODE_VERSEMENT_PATHS]],
         adapter: value => {
-            if (typeof value !== "string") return undefined;
+            if (typeof value !== "string") return null;
+            let parsedDate: Date | null = null;
             const noSpaceValue = value?.replaceAll(" ", "");
-            if (expandedShortISOPeriodRegExp.test(noSpaceValue)) return new Date(noSpaceValue.split(/[/_]/)[1].trim());
-            else if (shortISORegExp.test(noSpaceValue)) return new Date(noSpaceValue);
-            else return null;
+            if (expandedShortISOPeriodRegExp.test(noSpaceValue)) {
+                parsedDate = new Date(noSpaceValue.split(/[/_]/)[1].trim());
+            } else if (shortISORegExp.test(noSpaceValue)) {
+                parsedDate = new Date(noSpaceValue);
+            }
+            return isValidDate(parsedDate) ? parsedDate : null;
         },
     },
     idRAE: [
