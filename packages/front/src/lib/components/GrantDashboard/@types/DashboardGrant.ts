@@ -24,7 +24,7 @@ export type DashboardProgram =
 export type DashboardPayment = {
     total: number;
     dernier: Date;
-    programme: { label: string; code: number };
+    programme: DashboardProgram;
 };
 
 export interface DashboardGrant {
