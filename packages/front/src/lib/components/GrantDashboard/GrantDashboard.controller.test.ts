@@ -1,4 +1,6 @@
 import { GrantDashboardController } from "./GrantDashboard.controller";
+import { getPaymentDashboardData, getPaymentsCells } from "./payments.helper";
+import { getApplicationCells, getApplicationDashboardData, isGranted } from "./application.helper";
 import type { FlatGrant } from "$lib/resources/@types/FlattenGrant";
 import { isSiret } from "$lib/helpers/identifierHelper";
 import establishmentService from "$lib/resources/establishments/establishment.service";
@@ -7,6 +9,17 @@ import associationService from "$lib/resources/associations/association.service"
 import associationPort from "$lib/resources/associations/association.port";
 import trackerService from "$lib/services/tracker.service";
 import documentHelper from "$lib/helpers/document.helper";
+import PaymentsInfoModal from "$lib/components/GrantDashboard/Modals/PaymentsInfoModal.svelte";
+import ApplicationInfoModal from "$lib/components/GrantDashboard/Modals/ApplicationInfoModal.svelte";
+import { data, modal } from "$lib/store/modal.store";
+import type {
+    DashboardApplication,
+    DashboardPayment,
+    SortableRow,
+} from "$lib/components/GrantDashboard/@types/DashboardGrant";
+import { grantCompareFn } from "$lib/components/GrantDashboard/sort.helper";
+import type { TableCell } from "$lib/dsfr/TableCell.types";
+
 vi.mock("$lib/helpers/identifierHelper");
 vi.mock("$lib/resources/establishments/establishment.service");
 vi.mock("$lib/resources/establishments/establishment.port");
@@ -15,9 +28,16 @@ vi.mock("$lib/resources/associations/association.port");
 vi.mock("$lib/helpers/providerValueHelper");
 vi.mock("$lib/services/tracker.service");
 vi.mock("$lib/helpers/document.helper");
+vi.mock("$lib/store/modal.store");
+vi.mock("./application.helper");
+vi.mock("./payments.helper");
+vi.mock("$lib/components/GrantDashboard/sort.helper", () => ({
+    grantCompareFn: [null, vi.fn((_a, _b, _sortOrder) => 0)],
+}));
 
 describe("GrantDashboard Controller", () => {
     const IDENTIFIER = "000000001";
+    const INDEX = 1;
 
     const GRANT_FROM_2024 = () => ({
         application: { annee_demande: 2024 },
@@ -194,6 +214,134 @@ describe("GrantDashboard Controller", () => {
                 CTRL.isExtractLoading = { set: vi.fn() };
                 await CTRL.download();
                 expect(CTRL.isExtractLoading.set).toHaveBeenNthCalledWith(2, false);
+            });
+        });
+
+        describe("updateRows", () => {
+            let rowSetSpy;
+
+            beforeAll(() => {
+                rowSetSpy = vi.spyOn(CTRL.rows, "set");
+            });
+
+            it("does nothing if grants is null", () => {
+                // @ts-expect-error -- test private
+                CTRL.updateRows(null);
+                expect(rowSetSpy).not.toHaveBeenCalled();
+            });
+
+            it("sets rows with results from adapters", () => {
+                vi.mocked(isGranted).mockReturnValueOnce(true);
+                vi.mocked(isGranted).mockReturnValueOnce(false);
+                vi.mocked(getApplicationCells).mockImplementation(a => `ac-${a}` as unknown as TableCell[]);
+                vi.mocked(getPaymentsCells).mockImplementation(a => `pc-${a}` as unknown as TableCell[]);
+                vi.mocked(getApplicationDashboardData).mockImplementation(
+                    a => `a-${a}` as unknown as DashboardApplication,
+                );
+                vi.mocked(getPaymentDashboardData).mockImplementation(a => `p-${a}` as unknown as DashboardPayment);
+                const GRANTS = [
+                    { application: "a0", payments: "p0" },
+                    { application: "a1", payments: "p1" },
+                ];
+                // @ts-expect-error -- test private
+                CTRL.updateRows(GRANTS);
+                const actual = rowSetSpy.mock.calls[0][0];
+                expect(actual).toMatchInlineSnapshot(`
+                  [
+                    {
+                      "application": "a-a0",
+                      "applicationCells": "ac-a0",
+                      "granted": true,
+                      "payment": "p-p0",
+                      "paymentsCells": "pc-p0",
+                    },
+                    {
+                      "application": "a-a1",
+                      "applicationCells": "ac-a1",
+                      "granted": false,
+                      "payment": "p-p1",
+                      "paymentsCells": "pc-p1",
+                    },
+                  ]
+                `);
+                vi.mocked(getApplicationCells).mockRestore();
+                vi.mocked(getPaymentsCells).mockRestore();
+                vi.mocked(getApplicationDashboardData).mockRestore();
+                vi.mocked(getPaymentDashboardData).mockRestore();
+            });
+        });
+
+        describe("sortTable", () => {
+            it("changes sort order", () => {
+                const expected = 2;
+                // @ts-expect-error -- test mock private
+                CTRL.columnsSortOrder[INDEX] = -2;
+                CTRL.sortTable(INDEX);
+                // @ts-expect-error -- test mock private
+                const actual = CTRL.columnsSortOrder[INDEX];
+                expect(actual).toBe(expected);
+            });
+
+            it("sorts row with compare function with proper index", () => {
+                CTRL.sortTable(INDEX);
+                expect(grantCompareFn[INDEX]).toHaveBeenCalled();
+            });
+
+            it("updates rows", () => {
+                const spy = vi.spyOn(CTRL.rows, "update");
+                CTRL.sortTable(INDEX);
+                expect(spy).toHaveBeenCalled();
+            });
+        });
+
+        describe.each`
+            side            | method                  | keyWordInTracker | modalComponent
+            ${"payment"}    | ${"onPaymentClick"}     | ${"payment"}     | ${PaymentsInfoModal}
+            ${"subvention"} | ${"onApplicationClick"} | ${"subvention"}  | ${ApplicationInfoModal}
+        `("onRowClick: $side side", ({ method, keyWordInTracker, modalComponent }) => {
+            const INDEX = 1;
+            const ROWS = [
+                { paymentCells: "Pc0", applicationCells: "Ac0" },
+                {
+                    paymentCells: "Pc1",
+                    applicationCells: "Ac1",
+                },
+            ] as unknown as SortableRow[];
+            const SUBV = [
+                { application: "A0", payments: "P0" },
+                { application: "A1", payments: "P1" },
+            ] as unknown as FlatGrant[];
+
+            beforeAll(() => {
+                CTRL.selectedGrants.value = SUBV;
+                CTRL.rows.value = ROWS;
+            });
+
+            it("if no cells, nothing happens", () => {
+                CTRL.rows.value = [ROWS[0], {} as SortableRow];
+                CTRL[method](INDEX);
+                expect(trackerService.buttonClickEvent).not.toHaveBeenCalled();
+                expect(data.set).not.toHaveBeenCalled();
+                expect(modal.set).not.toHaveBeenCalled();
+                CTRL.rows.value = ROWS;
+            });
+
+            it("tracks button click", () => {
+                CTRL[method](INDEX);
+                const eventTag = `association-etablissement.dashbord.${keyWordInTracker}.more_information`;
+                expect(trackerService.buttonClickEvent).toHaveBeenCalledWith(eventTag, IDENTIFIER);
+            });
+
+            it("sets data", () => {
+                CTRL.selectedGrants.value = SUBV;
+                CTRL[method](INDEX);
+                expect(data.set).toHaveBeenCalledWith({ application: "A1" });
+            });
+
+            it("sets modal component", () => {
+                CTRL.selectedGrants.value = SUBV;
+                CTRL[method](INDEX);
+                expect(modal.set).toHaveBeenCalledWith(modalComponent);
             });
         });
     });
