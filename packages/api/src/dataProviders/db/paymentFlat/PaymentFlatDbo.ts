@@ -2,8 +2,10 @@ import { ObjectId } from "mongodb";
 
 export default interface PaymentFlatDbo {
     _id: ObjectId;
-    siret: string;
-    siren: string;
+    typeIdEtablissementBeneficiaire: string;
+    idEtablissementBeneficiaire: string;
+    typeIdEntrepriseBeneficiaire: string;
+    idEntrepriseBeneficiaire: string;
     uniqueId: string;
     idVersement: string;
     exerciceBudgetaire: number;

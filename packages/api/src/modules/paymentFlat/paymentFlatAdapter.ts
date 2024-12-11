@@ -45,7 +45,9 @@ export default class PaymentFlatAdapter {
             uniqueId, // uniqueId,
             idVersement, // idVersement,
             chorusDocument.indexedInformations.exercice, // exerciceBudget
+            "siret", // typeIdEtablissementBeneficiaire,
             new Siret(chorusDocument.indexedInformations.siret), // siret,
+            "siren", // typeIdEntrepriseBeneficiaire,
             new Siret(chorusDocument.indexedInformations.siret).toSiren(), // siren,
             chorusDocument.indexedInformations.amount, // amount,
             chorusDocument.indexedInformations.dateOperation, // operationDate,
