@@ -21,6 +21,7 @@ Array [
     "paymentConditions": "aide en numéraire",
     "paymentEndDate": 2019-05-20T00:00:00.000Z,
     "paymentStartDate": 2019-05-20T00:00:00.000Z,
+    "valid": "invalid",
     "value": "something",
   },
 ]
@@ -47,6 +48,7 @@ Array [
     "paymentConditions": "aide en numéraire",
     "paymentEndDate": 2019-05-20T00:00:00.000Z,
     "paymentStartDate": 2019-05-20T00:00:00.000Z,
+    "valid": "valid",
     "value": "something",
   },
 ]
