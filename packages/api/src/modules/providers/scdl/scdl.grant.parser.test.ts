@@ -475,6 +475,7 @@ describe("ScdlGrantParser", () => {
                       },
                     },
                     "some": "someValue",
+                    "valid": "",
                     "value": "value-needs-adapting",
                   },
                 ]

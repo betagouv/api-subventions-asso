@@ -131,10 +131,14 @@ export default class ScdlGrantParser {
 
             // validates and saves annotated errors
             const validation = this.isGrantValid(entity as ScdlStorableGrant, annotations);
-            if (validation.valid)
+            if (validation.valid) {
                 storableChunk.push({ ...this.cleanOptionalFields(entity as ScdlStorableGrant), __data__: parsedData });
-            else invalidEntities.push(entity);
-            validation?.problems?.map((pb: Problem) => errors.push({ ...parsedData, ...pb }));
+            } else {
+                invalidEntities.push(entity);
+            }
+            validation?.problems?.map((pb: Problem) =>
+                errors.push({ ...parsedData, ...pb, valid: validation.valid ? "valid" : "invalid" }),
+            );
         }
 
         if (invalidEntities.length) {
@@ -176,6 +180,7 @@ export default class ScdlGrantParser {
                     field: annotated.keyPath.join("."),
                     value: annotated.value,
                     message: "donnée non récupérable",
+                    valid: "",
                 });
 
             // saves adapted field in entity ; and original value and path to annotations to give feedback in validation later
