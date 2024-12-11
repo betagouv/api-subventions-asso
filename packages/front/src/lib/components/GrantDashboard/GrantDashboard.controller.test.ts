@@ -19,6 +19,8 @@ import type {
 } from "$lib/components/GrantDashboard/@types/DashboardGrant";
 import { grantCompareFn } from "$lib/components/GrantDashboard/sort.helper";
 import type { TableCell } from "$lib/dsfr/TableCell.types";
+import * as Store from "$lib/core/Store";
+import type { ReadStore } from "$lib/core/Store";
 
 vi.mock("$lib/helpers/identifierHelper");
 vi.mock("$lib/resources/establishments/establishment.service");
@@ -98,6 +100,103 @@ describe("GrantDashboard Controller", () => {
             vi.mocked(isSiret).mockReturnValueOnce(true);
             vi.mocked(establishmentPort.getGrants).mockResolvedValueOnce([]);
             CTRL = new GrantDashboardController(IDENTIFIER);
+        });
+
+        describe("initStores", () => {
+            let updateRowSpy;
+            beforeAll(() => {
+                // @ts-expect-error -- test private
+                updateRowSpy = vi.spyOn(CTRL, "updateRows").mockReturnValue();
+            });
+
+            afterAll(() => {
+                updateRowSpy.mockRestore();
+            });
+
+            describe("selectedExercise derives from selectedExerciseIndex", () => {
+                let updateSpy;
+                let refStore;
+
+                beforeAll(() => {
+                    const derivedSpy = vi.spyOn(Store, "derived");
+                    // @ts-expect-error -- test private
+                    CTRL.initStores();
+                    const callArgs = vi.mocked(derivedSpy).mock.calls[0];
+                    updateSpy = callArgs[1];
+                    refStore = callArgs[0];
+                });
+
+                it("depends on selectedExerciseIndex", () => {
+                    const actual = refStore;
+                    const expected = CTRL.selectedExerciseIndex;
+                    expect(actual).toBe(expected);
+                });
+
+                it("returns null if no exercise index", () => {
+                    const expected = null;
+                    const actual = updateSpy(undefined);
+                    expect(actual).toBe(expected);
+                });
+
+                it("returns null if no exerciseOptions", () => {
+                    CTRL.exerciseOptions.value = undefined;
+                    const expected = null;
+                    const actual = updateSpy(0);
+                    expect(actual).toBe(expected);
+                });
+
+                it("returns exercise from options", () => {
+                    const expected = "2023";
+                    CTRL.exerciseOptions.value = ["2022", expected];
+                    const actual = updateSpy(1);
+                    expect(actual).toBe(expected);
+                });
+
+                it("returns exercise from options with index set to 0", () => {
+                    const expected = "2023";
+                    CTRL.exerciseOptions.value = [expected, "2022"];
+                    const actual = updateSpy(0);
+                    expect(actual).toBe(expected);
+                });
+            });
+
+            describe("on selectedExerciseIndex change", () => {
+                let subscribeFn;
+                const YEAR = "2021";
+                const GRANTS = "g2021" as unknown as FlatGrant[];
+
+                beforeAll(() => {
+                    const subscribeSpy = vi.fn();
+                    vi.spyOn(Store, "derived").mockReturnValueOnce({
+                        subscribe: subscribeSpy,
+                    } as unknown as ReadStore<string>);
+                    // @ts-expect-error -- test private
+                    CTRL.initStores();
+                    subscribeFn = subscribeSpy.mock.calls[0][0];
+                    CTRL.grantsByExercise = { [YEAR]: GRANTS };
+                });
+
+                it("does nothing if selectedExercise is set to null", () => {
+                    const setSpy = vi.spyOn(CTRL.selectedGrants, "set");
+                    subscribeFn(null);
+                    expect(setSpy).not.toHaveBeenCalled();
+                });
+
+                it("updates selectedGrants through grantsByExercise on selectedExerciseIndex change", () => {
+                    const setSpy = vi.spyOn(CTRL.selectedGrants, "set");
+                    subscribeFn(YEAR);
+                    expect(setSpy).toHaveBeenCalledWith(GRANTS);
+                });
+            });
+
+            it("calls updateRows on selectedGrants change", () => {
+                // @ts-expect-error -- test private
+                CTRL.initStores();
+
+                const GRANTS = "grants" as unknown as FlatGrant[];
+                CTRL.selectedGrants.set(GRANTS);
+                expect(updateRowSpy).toHaveBeenCalledWith(GRANTS);
+            });
         });
 
         describe("processGrants", () => {
