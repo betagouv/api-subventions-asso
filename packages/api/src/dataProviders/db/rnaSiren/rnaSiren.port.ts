@@ -29,21 +29,13 @@ export class RnaSirenPort extends MongoPort<RnaSirenDbo> {
 
     async find(id: Rna | Siren) {
         let dbos: RnaSirenDbo[] = [];
-        if (id instanceof Rna) {
-            dbos = await this.collection
-                .find({
-                    rna: id.value,
-                })
-                .toArray();
-        } else if (id instanceof Siren) {
-            dbos = await this.collection
-                .find({
-                    siren: id.value,
-                })
-                .toArray();
-        } else {
-            throw new Error("Identifier not supported");
-        }
+        let rnaSirenToFind;
+
+        if (id instanceof Rna) rnaSirenToFind = { rna: id.value };
+        else if (id instanceof Siren) rnaSirenToFind = { siren: id.value };
+        else throw new Error("Identifier not supported");
+
+        dbos = await this.collection.find(rnaSirenToFind).toArray();
 
         if (!dbos.length) return null;
 
