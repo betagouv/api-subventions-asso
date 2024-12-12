@@ -39,7 +39,7 @@ export class GrantDashboardController {
         this.identifier = identifier;
 
         // if you change this please update applicationCellsLength and paymentsCellsLength
-        // TODO create this from a applicationHeader + paymentHeader to simplify above comment
+        // TODO create this from a applicationHeader + paymentHeader to simplify above comment THIS
         this.headers = [
             "Code postal",
             "Instructeur",
@@ -117,9 +117,7 @@ export class GrantDashboardController {
     public sortTable(index: number) {
         // change order between ASC and DESC
         this.columnsSortOrder[index] *= -1;
-
         this.rows.update(rows => rows.sort((a, b) => grantCompareFn[index](a, b, this.columnsSortOrder[index])));
-        console.log(`sortTable with index ${index}`);
     }
 
     public selectExercise(index) {
