@@ -4,7 +4,7 @@
     import trackerService from "$lib/services/tracker.service";
     import { HTML_BUTTON_TYPES, isValidButtonType } from "$lib/helpers/htmlHelper";
 
-    export let id = "default-button-id";
+    export let id = "btn-" + crypto.randomUUID();
     export let trackerName = "";
     export let trackingDisable = false;
     export let type = "primary";
