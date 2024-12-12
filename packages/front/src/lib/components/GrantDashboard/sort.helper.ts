@@ -13,11 +13,11 @@ type CompareIngredient<T> = {
 export const nullIsLowCmpBuilder =
     <T>(cmpFn: (a: T, b: T) => number) =>
     (a: T | undefined, b: T | undefined, orderInt: number) => {
-        if (a === undefined) {
-            if (b === undefined) return 0;
+        if (a == undefined) {
+            if (b == undefined) return 0;
             return 1;
         }
-        if (b === undefined) return -1;
+        if (b == undefined) return -1;
         return orderInt * cmpFn(a, b);
     };
 
@@ -30,17 +30,23 @@ type StatusAmount = { status: ApplicationStatus; montantAccorde: number | undefi
  * any amount > granted with no amount > other statuses
  * */
 const statusAmountCmp = nullIsLowCmpBuilder((a: StatusAmount, b: StatusAmount) => {
-    if (a.montantAccorde === undefined) {
-        if (b.montantAccorde === undefined) return 0;
+    if (a.montantAccorde == undefined) {
+        if (b.montantAccorde == undefined) return 0;
         return 1;
     }
-    if (b.montantAccorde === undefined) return -1;
+    if (b.montantAccorde == undefined) return -1;
 
     if (a.status !== ApplicationStatus.GRANTED) {
         if (b.status !== ApplicationStatus.GRANTED) return a.status.localeCompare(b.status);
-        return 1;
+        return -1;
     }
-    if (a.status !== ApplicationStatus.GRANTED) return -1;
+    if (b.status !== ApplicationStatus.GRANTED) return 1;
+
+    if (a.montantAccorde == undefined) {
+        if (b.montantAccorde == undefined) return 0;
+        return -1;
+    }
+    if (b.montantAccorde == undefined) return 1;
 
     return a.montantAccorde - b.montantAccorde;
 });
@@ -66,10 +72,10 @@ const compareIngredients: CompareIngredient<any>[] = [
 ];
 
 // gets proper compare fonction and proper getter for proper attribute according to column index required
-function grantCompareBuilder(
+function grantCompareBuilder<S>(
     cmpFunction: <T>(a: T, b: T, orderInt: number) => number,
-    compareGetter: <T>(g: DashboardGrant) => T,
-): (a: DashboardGrant, b: DashboardGrant, orderInt: number) => number {
+    compareGetter: <T>(g: S) => T,
+): (a: S, b: S, orderInt: number) => number {
     return (a, b, orderInt) => cmpFunction(compareGetter(a), compareGetter(b), orderInt);
 }
 

@@ -64,12 +64,11 @@ export class GrantDashboardController {
     private initStores() {
         this.selectedGrants = new Store(null);
         this.selectedExercise = derived(this.selectedExerciseIndex, index => {
-            if (!index || !this.exerciseOptions.value) return null;
+            if (index == null || !this.exerciseOptions.value) return null;
             return this.exerciseOptions.value[index];
         });
-        this.selectedExerciseIndex.subscribe(index => {
-            if (!index) return null;
-            const exercise = (this.exerciseOptions.value as string[])[index];
+        this.selectedExercise.subscribe(exercise => {
+            if (exercise == null) return;
             this.selectedGrants.set(this.grantsByExercise[exercise]);
         });
         this.selectedGrants.subscribe(grants => this.updateRows(grants));
@@ -99,7 +98,6 @@ export class GrantDashboardController {
         else return defaultContent;
     }
 
-    // TODO: move valueOrHyphen thing to ApplicationRow and PaymentRow
     private updateRows(grants) {
         if (!grants) return;
         this.rows.set(
