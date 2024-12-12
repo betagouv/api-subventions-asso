@@ -35,4 +35,23 @@ export class ConfigurationsHttp extends Controller {
         const domains = await configurationsService.getEmailDomains();
         return { domains };
     }
+
+    /**
+     * @summary Modifie le bandeau d'informations de la homepage
+     * @param title Titre du bandeau
+     * @param desc Contenu du bandeau - en HTML
+     * @returns {title: string, desc: string}
+     */
+    @Post("/update-home-infos-banner")
+    @SuccessResponse("201", "Updated")
+    @Response<HttpErrorInterface>(500, "Internal Server Error", {
+        message: "Internal Server Error",
+    })
+    public async updateHomeInfosBanner(
+        @Body() body: { title: string; desc: string },
+    ): Promise<{ title: string; desc: string }> {
+        const banner = await configurationsService.updateHomeInfosBanner(body.title, body.desc);
+        this.setStatus(201);
+        return banner;
+    }
 }

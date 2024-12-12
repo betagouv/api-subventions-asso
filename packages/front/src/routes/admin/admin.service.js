@@ -28,6 +28,13 @@ export class AdminService {
             return result.status == 201;
         });
     }
+
+    async updateHomeInfosBanner(title, desc) {
+        const path = `/config/update-home-infos-banner`;
+        return requestsService.post(path, { title, desc }).then(result => {
+            return result.status == 201;
+        });
+    }
 }
 
 const adminService = new AdminService();

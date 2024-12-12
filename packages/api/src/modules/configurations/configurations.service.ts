@@ -12,6 +12,8 @@ export enum CONFIGURATION_NAMES {
     LAST_RGPD_WARNED_DATE = "LAST-RGPD-WARNED-DATE",
     LAST_CHORUS_UPDATE_IMPORTED = "LAST-CHORUS-UPDATE-IMPORTED",
     LAST_USER_STATS_UPDATE = "LAST_USER_STATS_UPDATE",
+    HOME_INFOS_BANNER_TITLE = "HOME-INFOS-BANNER-TITLE",
+    HOME_INFOS_BANNER_DESC = "HOME-INFOS-BANNER-DESC",
 }
 
 export class ConfigurationsService {
@@ -116,6 +118,33 @@ export class ConfigurationsService {
         await configurationsPort.upsert(CONFIGURATION_NAMES.LAST_USER_STATS_UPDATE, {
             data: date,
         });
+    }
+    async updateHomeInfosBanner(title: string, desc: string) {
+        const bannerTitle = await configurationsPort.getByName<string[]>(CONFIGURATION_NAMES.HOME_INFOS_BANNER_TITLE);
+        const bannerDesc = await configurationsPort.getByName<string[]>(CONFIGURATION_NAMES.HOME_INFOS_BANNER_DESC);
+        if (!bannerTitle) {
+            await configurationsPort.upsert(
+                CONFIGURATION_NAMES.HOME_INFOS_BANNER_TITLE,
+                this.createEmptyConfigEntity(CONFIGURATION_NAMES.HOME_INFOS_BANNER_TITLE, title),
+            );
+        } else {
+            await configurationsPort.upsert(
+                CONFIGURATION_NAMES.HOME_INFOS_BANNER_TITLE,
+                this.generateConfiguationEntity(bannerTitle, title),
+            );
+        }
+        if (!bannerDesc) {
+            await configurationsPort.upsert(
+                CONFIGURATION_NAMES.HOME_INFOS_BANNER_DESC,
+                this.createEmptyConfigEntity(CONFIGURATION_NAMES.HOME_INFOS_BANNER_DESC, desc),
+            );
+        } else {
+            await configurationsPort.upsert(
+                CONFIGURATION_NAMES.HOME_INFOS_BANNER_DESC,
+                this.generateConfiguationEntity(bannerDesc, desc),
+            );
+        }
+        return { title, desc };
     }
 }
 
