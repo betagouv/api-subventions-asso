@@ -1,5 +1,5 @@
 <script lang="ts">
-    export let type: "success" | "error" | "info" | "warning" | "new" = "success"; //
+    export let type: "success" | "error" | "info" | "warning" | "new" = "success";
     export let label = "";
     export let color = undefined;
     export let small = false;
