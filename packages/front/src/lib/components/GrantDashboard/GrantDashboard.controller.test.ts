@@ -394,15 +394,15 @@ describe("GrantDashboard Controller", () => {
         });
 
         describe.each`
-            side            | method                  | keyWordInTracker | modalComponent
-            ${"payment"}    | ${"onPaymentClick"}     | ${"payment"}     | ${PaymentsInfoModal}
-            ${"subvention"} | ${"onApplicationClick"} | ${"subvention"}  | ${ApplicationInfoModal}
-        `("onRowClick: $side side", ({ method, keyWordInTracker, modalComponent }) => {
+            side            | method                  | keyWordInTracker | modalComponent          | modalData
+            ${"payment"}    | ${"onPaymentClick"}     | ${"payment"}     | ${PaymentsInfoModal}    | ${{ payments: "P1" }}
+            ${"subvention"} | ${"onApplicationClick"} | ${"subvention"}  | ${ApplicationInfoModal} | ${{ application: "A1" }}
+        `("onRowClick: $side side", ({ method, keyWordInTracker, modalComponent, modalData }) => {
             const INDEX = 1;
             const ROWS = [
-                { paymentCells: "Pc0", applicationCells: "Ac0" },
+                { paymentsCells: "Pc0", applicationCells: "Ac0" },
                 {
-                    paymentCells: "Pc1",
+                    paymentsCells: "Pc1",
                     applicationCells: "Ac1",
                 },
             ] as unknown as SortableRow[];
@@ -411,7 +411,7 @@ describe("GrantDashboard Controller", () => {
                 { application: "A1", payments: "P1" },
             ] as unknown as FlatGrant[];
 
-            beforeAll(() => {
+            beforeEach(() => {
                 CTRL.selectedGrants.value = SUBV;
                 CTRL.rows.value = ROWS;
             });
@@ -422,7 +422,6 @@ describe("GrantDashboard Controller", () => {
                 expect(trackerService.buttonClickEvent).not.toHaveBeenCalled();
                 expect(data.set).not.toHaveBeenCalled();
                 expect(modal.set).not.toHaveBeenCalled();
-                CTRL.rows.value = ROWS;
             });
 
             it("tracks button click", () => {
@@ -432,13 +431,11 @@ describe("GrantDashboard Controller", () => {
             });
 
             it("sets data", () => {
-                CTRL.selectedGrants.value = SUBV;
                 CTRL[method](INDEX);
-                expect(data.set).toHaveBeenCalledWith({ application: "A1" });
+                expect(data.set).toHaveBeenCalledWith(modalData);
             });
 
             it("sets modal component", () => {
-                CTRL.selectedGrants.value = SUBV;
                 CTRL[method](INDEX);
                 expect(modal.set).toHaveBeenCalledWith(modalComponent);
             });
