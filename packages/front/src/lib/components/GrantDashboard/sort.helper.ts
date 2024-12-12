@@ -28,14 +28,9 @@ type StatusAmount = { status: ApplicationStatus; montantAccorde: number | undefi
 
 /*
  * any amount > granted with no amount > other statuses
+ * exported for test purposes
  * */
-const statusAmountCmp = nullIsLowCmpBuilder((a: StatusAmount, b: StatusAmount) => {
-    if (a.montantAccorde == undefined) {
-        if (b.montantAccorde == undefined) return 0;
-        return 1;
-    }
-    if (b.montantAccorde == undefined) return -1;
-
+export const statusAmountCmp = nullIsLowCmpBuilder((a: StatusAmount, b: StatusAmount) => {
     if (a.status !== ApplicationStatus.GRANTED) {
         if (b.status !== ApplicationStatus.GRANTED) return a.status.localeCompare(b.status);
         return -1;
@@ -72,7 +67,8 @@ const compareIngredients: CompareIngredient<any>[] = [
 ];
 
 // gets proper compare fonction and proper getter for proper attribute according to column index required
-function grantCompareBuilder<S>(
+// exported for test purposes
+export function grantCompareBuilder<S>(
     cmpFunction: <T>(a: T, b: T, orderInt: number) => number,
     compareGetter: <T>(g: S) => T,
 ): (a: S, b: S, orderInt: number) => number {
