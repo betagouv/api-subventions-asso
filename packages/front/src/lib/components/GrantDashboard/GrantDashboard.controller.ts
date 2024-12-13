@@ -160,10 +160,7 @@ export class GrantDashboardController {
 
     public onApplicationClick(index) {
         if (!this.rows.value[index].applicationCells) return;
-        trackerService.buttonClickEvent(
-            "association-etablissement.dashbord.subvention.more_information",
-            this.identifier,
-        );
+        trackerService.buttonClickEvent("association-etablissement.dashbord.subvention.more_information");
         data.set({ application: (this.selectedGrants.value as FlatGrant[])[index].application });
         modal.set(ApplicationInfoModal);
     }

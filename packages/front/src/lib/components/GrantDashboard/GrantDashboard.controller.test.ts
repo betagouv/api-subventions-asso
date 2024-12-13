@@ -427,7 +427,7 @@ describe("GrantDashboard Controller", () => {
             it("tracks button click", () => {
                 CTRL[method](INDEX);
                 const eventTag = `association-etablissement.dashbord.${keyWordInTracker}.more_information`;
-                expect(trackerService.buttonClickEvent).toHaveBeenCalledWith(eventTag, IDENTIFIER);
+                expect(trackerService.buttonClickEvent).toHaveBeenCalledWith(eventTag);
             });
 
             it("sets data", () => {
