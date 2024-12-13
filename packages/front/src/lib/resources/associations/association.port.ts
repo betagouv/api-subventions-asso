@@ -1,8 +1,10 @@
-import type { Association, DocumentDto, Grant, PaginatedAssociationNameDto, AssociationIdentifiers } from "dto";
+import type { Association, DocumentDto, PaginatedAssociationNameDto, AssociationIdentifierDto } from "dto";
+import type { FlatGrant } from "../@types/FlattenGrant";
 import requestsService from "$lib/services/requests.service";
+import { flattenProviderValue } from "$lib/helpers/providerValueHelper";
 
 class AssociationPort {
-    getResource(identifier: AssociationIdentifiers, resource?: string) {
+    getResource(identifier: AssociationIdentifierDto, resource?: string) {
         return requestsService.get(`/association/${identifier}${resource ? "/" + resource : ""}`);
     }
 
@@ -10,25 +12,26 @@ class AssociationPort {
         this.getResource(identifier, "extract-data").catch(() => null);
     }
 
-    async getByIdentifier(identifier: AssociationIdentifiers): Promise<Association | undefined> {
+    async getByIdentifier(identifier: AssociationIdentifierDto): Promise<Association | undefined> {
         return (await this.getResource(identifier))?.data?.association;
     }
 
-    async getEstablishments(identifier: AssociationIdentifiers) {
+    async getEstablishments(identifier: AssociationIdentifierDto) {
         return (await this.getResource(identifier, "etablissements"))?.data?.etablissements;
     }
 
-    async getGrants(identifier: AssociationIdentifiers): Promise<Grant[]> {
-        return (await this.getResource(identifier, "grants"))?.data?.subventions;
+    async getGrants(identifier: AssociationIdentifierDto): Promise<FlatGrant[]> {
+        const grants = (await this.getResource(identifier, "grants"))?.data?.subventions;
+        return flattenProviderValue(grants);
     }
 
-    async getGrantExtract(identifier: AssociationIdentifiers) {
+    async getGrantExtract(identifier: AssociationIdentifierDto) {
         const path = `/association/${identifier}/grants/csv`;
         const res = await requestsService.get(path, {}, { responseType: "blob" });
         return { blob: res?.data, filename: res.headers?.["content-disposition"].match(/inline; filename=(.*)/)?.[1] };
     }
 
-    async getDocuments(identifier: AssociationIdentifiers): Promise<DocumentDto[]> {
+    async getDocuments(identifier: AssociationIdentifierDto): Promise<DocumentDto[]> {
         return (await this.getResource(identifier, "documents"))?.data?.documents;
     }
 

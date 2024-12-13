@@ -1,5 +1,5 @@
-<script>
-    export let type = undefined; // "success" | "error" | "info" | "warning" | "new"
+<script lang="ts">
+    export let type: "success" | "error" | "info" | "warning" | "new" = "success";
     export let label = "";
     export let color = undefined;
     export let small = false;
@@ -11,4 +11,6 @@
     if (color) otherClasses += `fr-badge--${color} `;
 </script>
 
-<p class={otherClasses} class:fr-badge--sm={small} class:fr-badge--no-icon={noIcon}>{label}</p>
+<p class={otherClasses} class:fr-badge--sm={small} class:fr-badge--no-icon={noIcon}>
+    <span class="fr-ellipsis">{label}</span>
+</p>
