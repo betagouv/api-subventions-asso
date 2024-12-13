@@ -1,7 +1,7 @@
-import { RnaDto, SirenDto, SiretDto } from "dto";
+import type { RnaDto, SirenDto, SiretDto } from "dto";
 import { getSiegeSiret } from "$lib/resources/associations/association.helper";
 import { valueOrHyphen } from "$lib/helpers/dataHelper";
-import AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
+import type AssociationEntity from "$lib/resources/associations/entities/AssociationEntity";
 import { getUniqueIdentifier } from "$lib/helpers/identifierHelper";
 
 export class StructureTitleController {
