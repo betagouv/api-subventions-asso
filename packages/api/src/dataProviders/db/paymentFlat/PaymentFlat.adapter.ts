@@ -6,8 +6,10 @@ export default class PaymentsFlatAdapter {
     static toDbo(entity: PaymentFlatEntity): PaymentFlatDbo {
         return {
             _id: new ObjectId(),
-            siret: entity.siret.value,
-            siren: entity.siren.value,
+            typeIdEntrepriseBeneficiaire: entity.typeIdEntrepriseBeneficiaire,
+            idEntrepriseBeneficiaire: entity.idEntrepriseBeneficiaire.value,
+            typeIdEtablissementBeneficiaire: entity.typeIdEtablissementBeneficiaire,
+            idEtablissementBeneficiaire: entity.idEtablissementBeneficiaire.value,
             uniqueId: entity.uniqueId,
             idVersement: entity.idVersement,
             exerciceBudgetaire: entity.exerciceBudgetaire,
