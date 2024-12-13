@@ -1,5 +1,7 @@
 import { ObjectId } from "mongodb";
 import paymentFlatDbo from "../PaymentFlatDbo";
+import Siren from "../../../../valueObjects/Siren";
+import Siret from "../../../../valueObjects/Siret";
 
 export const PAYMENT_FLAT_DBO: paymentFlatDbo = {
     _id: new ObjectId(),

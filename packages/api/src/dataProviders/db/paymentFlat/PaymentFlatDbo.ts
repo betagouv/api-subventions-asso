@@ -9,9 +9,9 @@ import {
 export default interface PaymentFlatDbo {
     _id: ObjectId;
     typeIdEtablissementBeneficiaire: typeIdEtablissement;
-    idEtablissementBeneficiaire: idEtablissementType<typeIdEtablissement>;
+    idEtablissementBeneficiaire: string;
     typeIdEntrepriseBeneficiaire: typeIdEntreprise;
-    idEntrepriseBeneficiaire: idEntrepriseType<typeIdEntreprise>;
+    idEntrepriseBeneficiaire: string;
     uniqueId: string;
     idVersement: string;
     exerciceBudgetaire: number;
