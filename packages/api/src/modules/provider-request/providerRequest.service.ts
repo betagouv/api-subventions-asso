@@ -23,6 +23,10 @@ export class ProviderRequestService {
         return this.sendRequest<T>("POST", url, option);
     }
 
+    options<T = any>(url: string, option?: RequestConfig) {
+        return this.sendRequest<T>("OPTIONS", url, option);
+    }
+
     private sendRequest<T>(type: Method, url: string, option?: RequestConfig): Promise<RequestResponse<T>> {
         const date = new Date();
 
