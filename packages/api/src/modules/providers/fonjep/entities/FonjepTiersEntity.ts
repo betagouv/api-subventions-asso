@@ -1,13 +1,13 @@
 export default class FonjepTiersEntity {
     constructor(
-        public Code: string,
-        public RaisonSociale: string,
-        public EstAssociation: string,
-        public EstCoFinanceurPostes: string,
-        public EstFinanceurPostes: string,
-        public SiretOuRidet: string,
-        public CodePostal: string,
-        public Ville: string,
-        public ContactEmail: string,
+        public Code: string | null,
+        public RaisonSociale: string | null,
+        public EstAssociation: string | null,
+        public EstCoFinanceurPostes: string | null,
+        public EstFinanceurPostes: string | null,
+        public SiretOuRidet: string | null,
+        public CodePostal: string | null,
+        public Ville: string | null,
+        public ContactEmail: string | null,
     ) {}
 }

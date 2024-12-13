@@ -1,10 +1,10 @@
 export default class FonjepVersementEntity {
     constructor(
-        public PosteCode: string,
-        public PeriodeDebut: Date,
-        public PeriodeFin: Date,
-        public DateVersement: Date,
-        public MontantAPayer: number,
-        public MontantPaye: number,
+        public PosteCode: string | null,
+        public PeriodeDebut: Date | null,
+        public PeriodeFin: Date | null,
+        public DateVersement: Date | null,
+        public MontantAPayer: number | null,
+        public MontantPaye: number | null,
     ) {}
 }

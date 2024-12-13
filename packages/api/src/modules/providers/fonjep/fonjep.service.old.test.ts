@@ -1,5 +1,5 @@
-import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
-import fonjepService, { FonjepRejectedRequest, FONJEP_SERVICE_ERRORS } from "./fonjep.service";
+import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter.old";
+import fonjepService, { FonjepRejectedRequest, FONJEP_SERVICE_ERRORS } from "./fonjep.service.old";
 import fonjepSubventionPort from "../../../dataProviders/db/providers/fonjep/fonjep.subvention.port";
 import { SubventionEntity, PaymentEntity } from "../../../../tests/modules/providers/fonjep/__fixtures__/entity";
 import * as Validators from "../../../shared/Validators";

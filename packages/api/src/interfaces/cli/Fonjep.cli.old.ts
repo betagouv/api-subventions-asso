@@ -2,12 +2,18 @@ import fs from "fs";
 
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../@types";
+import FonjepParser from "../../modules/providers/fonjep/fonjep.parser.old";
+import fonjepService, {
+    CreateFonjepResponse,
+    FonjepRejectedRequest,
+} from "../../modules/providers/fonjep/fonjep.service.old";
+import * as CliHelper from "../../shared/helpers/CliHelper";
 import CliController from "../../shared/CliController";
-import FonjepParser from "../../modules/providers/fonjep/fonjep.parser";
-import fonjepService from "../../modules/providers/fonjep/fonjep.service";
+import FormatDateError from "../../shared/errors/cliErrors/FormatDateError";
+
 @StaticImplements<CliStaticInterface>()
 export default class FonjepCli extends CliController {
-    static cmdName = "fonjep";
+    static cmdName = "fonjep-old";
     protected _providerIdToLog = fonjepService.provider.id;
     protected logFileParsePath = "./logs/fonjep.parse.log.txt";
 
@@ -23,8 +29,9 @@ export default class FonjepCli extends CliController {
         this.logger.logIC("\nStart parse file: ", file);
         this.logger.log(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
 
-        const { tierEntities, posteEntities, versementEntities, typePosteEntities, dispositifEntities } =
-            fonjepService.fromFileToEntities(file);
+        const fileContent = fs.readFileSync(file);
+
+        const { subventions, payments } = FonjepParser.parse(fileContent, exportDate);
 
         fonjepService.useTemporyCollection(true);
 

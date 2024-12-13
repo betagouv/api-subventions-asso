@@ -1,3 +1,3 @@
 export default class FonjepTypePosteEntity {
-    constructor(public Code: string, public Libelle: string) {}
+    constructor(public Code: string | null, public Libelle: string | null) {}
 }

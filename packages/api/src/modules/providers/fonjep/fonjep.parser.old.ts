@@ -5,7 +5,7 @@ import IFonjepIndexedInformations from "./@types/IFonjepIndexedInformations";
 import IFonjepPaymentIndexedInformations from "./@types/IFonjepPaymentIndexedInformations";
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
 import FonjepPaymentEntity from "./entities/FonjepPaymentEntity";
-import fonjepService from "./fonjep.service";
+import fonjepService from "./fonjep.service.old";
 
 export default class FonjepParser {
     private static mapHeaderToData(pages: unknown[][]) {
