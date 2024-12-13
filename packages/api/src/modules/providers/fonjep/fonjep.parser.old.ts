@@ -1,16 +1,12 @@
 import { SiretDto } from "dto";
 import { DefaultObject, NestedDefaultObject } from "../../../@types";
 import { GenericParser } from "../../../shared/GenericParser";
-
-// COMMENTAIRES A ELIMINAIRE UNE FOIS QUE FONJEP SERA DANS PAYMENTFLAT ET APPLICATIONFLAT
-
-/*
 import IFonjepIndexedInformations from "./@types/IFonjepIndexedInformations";
 import IFonjepPaymentIndexedInformations from "./@types/IFonjepPaymentIndexedInformations";
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
 import FonjepPaymentEntity from "./entities/FonjepPaymentEntity";
 import fonjepService from "./fonjep.service";
-*/
+
 export default class FonjepParser {
     private static mapHeaderToData(pages: unknown[][]) {
         return pages.map(page => {
@@ -22,7 +18,7 @@ export default class FonjepParser {
             return rows.map(data => GenericParser.linkHeaderToData(trimHeaders, data) as DefaultObject<string>);
         });
     }
-    /*
+
     private static findOnPropFactory(array: DefaultObject<string>[], prop: string) {
         // TODO <string|number>
         if (!array) array = [];
@@ -64,16 +60,6 @@ export default class FonjepParser {
         return new FonjepPaymentEntity(legalInformations, indexedInformations, data);
     }
 
-    */
-
-    public static parse(fileContent: Buffer, exportDate: Date) {
-        const pages = GenericParser.xlsParse(fileContent);
-        const currentDate = exportDate;
-
-        const [tiers, postes, payments, typePoste, dispositifs] = this.mapHeaderToData(pages);
-    }
-
-    /*
     public static parse(fileContent: Buffer, exportDate: Date) {
         const pages = GenericParser.xlsParse(fileContent);
         const currentDate = exportDate;
@@ -145,7 +131,5 @@ export default class FonjepParser {
             subventions: postes.reduce(createSubventions, []),
             payments: payments.reduce(createPayments, []),
         };
-    
     }
-    */
 }

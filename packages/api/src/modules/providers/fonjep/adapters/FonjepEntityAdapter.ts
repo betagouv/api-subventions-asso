@@ -6,9 +6,32 @@ import fonjepService from "../fonjep.service";
 import FonjepPaymentEntity from "../entities/FonjepPaymentEntity";
 import { RawApplication, RawFullGrant, RawPayment } from "../../../grant/@types/rawGrant";
 import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
+import { DefaultObject } from "../../../../@types";
+import FonjepTiersEntity from "../entities/FonjepTiersEntity";
+
+// TO DO DANS LA SUITE : une fois applicationFlat et paymentFlat crées,
+// il faudra supprimer les métodes de cette classe qui ne sont plus pertinent
 
 export default class FonjepEntityAdapter {
     static PROVIDER_NAME = "Fonjep";
+
+    static toFonjepTiersEntity(array: DefaultObject<string | number>[]): FonjepTiersEntity {
+        return {};
+    }
+
+    private static findOnPropFactory(array: DefaultObject<string>[], prop: string) {
+        // TODO <string|number>
+        if (!array) array = [];
+        return (match: string | number | undefined) => array.find(item => item[prop] == match);
+    }
+
+    static toFonjepPosteEntity();
+
+    static toFonjepVersementEntity();
+
+    static toFonjepTypePosteEntity();
+
+    static toFonjepDispositifEntity();
 
     static toDemandeSubvention(entity: FonjepSubventionEntity): DemandeSubvention {
         const dataDate = entity.indexedInformations.updated_at;
