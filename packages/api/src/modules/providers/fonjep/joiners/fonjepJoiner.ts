@@ -1,5 +1,5 @@
-import fonjepPaymentPort from "../../../../dataProviders/db/providers/fonjep/fonjep.payment.port";
-import fonjepSubventionPort from "../../../../dataProviders/db/providers/fonjep/fonjep.subvention.port";
+import fonjepPaymentPort from "../../../../dataProviders/db/providers/fonjep/fonjep.payment.port.old";
+import fonjepSubventionPort from "../../../../dataProviders/db/providers/fonjep/fonjep.subvention.port.old";
 import db from "../../../../shared/MongoConnection";
 import { FullGrantData } from "../../../grant/@types/rawGrant";
 import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
