@@ -39,6 +39,23 @@ export class FonjepService extends ProviderCore {
 
         return { tierEntities, posteEntities, versementEntities, typePosteEntities, dispositifEntities };
     }
+
+    /**
+     * |----------------------------|
+     * |  Database Management      |
+     * |----------------------------|
+     */
+
+    useTemporyCollection(active: boolean) {
+        // TO DO GIULIA : créate une porte for each entity
+        fonjepSubventionPort.useTemporyCollection(active);
+        fonjepPaymentPort.useTemporyCollection(active);
+    }
+
+    async applyTemporyCollection() {
+        await fonjepSubventionPort.applyTemporyCollection();
+        await fonjepPaymentPort.applyTemporyCollection();
+    }
 }
 
 const fonjepService = new FonjepService();
