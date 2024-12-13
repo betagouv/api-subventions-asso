@@ -9,7 +9,7 @@ export default class Rid {
     }
 
     static isRid(rid: string | undefined): boolean {
-        return typeof rid === "string" && (/^\d{7}$/.test(rid) || /^\d{6}$/.test(rid));
+        return typeof rid === "string" && /^\d{6,7}$/.test(rid);
     }
 
     get value() {

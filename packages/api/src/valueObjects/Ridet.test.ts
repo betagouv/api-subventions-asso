@@ -9,7 +9,7 @@ const INVALID_RIDET_LIST = ["12345678", "abcdefghij", "", undefined];
 
 describe("Ridet", () => {
     describe("constructor", () => {
-        it.each(VALID_RIDET_LIST)("should create an instance of Ridet with a valid 10-digit ridet", ridet => {
+        it.each(VALID_RIDET_LIST)("should create an instance of Ridet with a valid ridet", ridet => {
             const ridetInstance = new Ridet(ridet);
             expect(ridetInstance.value).toBe(ridet);
         });
@@ -38,11 +38,11 @@ describe("Ridet", () => {
     });
 
     describe("toRid", () => {
-        it.each(RIDET_TO_RID_MAP)("should convert a Ridet to a Rid", (ridet, expectedRid) => {
+        it.each(RIDET_TO_RID_MAP)("should convert a Ridet to a Rid", (ridet, expected) => {
             const ridetInstance = new Ridet(ridet);
-            const rid = ridetInstance.toRid();
-            expect(rid).toBeInstanceOf(Rid);
-            expect(rid.value).toBe(expectedRid);
+            const actual = ridetInstance.toRid();
+            expect(actual).toBeInstanceOf(Rid);
+            expect(actual.value).toBe(expected);
         });
     });
 });

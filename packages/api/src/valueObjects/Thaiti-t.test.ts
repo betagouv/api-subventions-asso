@@ -1,8 +1,8 @@
 import ThaitiT from "./Thaiti-t";
 import Thaiti from "./Thaiti";
 
-const VALID_THAITI_T_LIST = ["A12345678", "123456789"];
-const THAITI_LIST = ["A12345", "123456"];
+const VALID_THAITI_T_LIST = ["A12345678", "b12345678", "123456789"];
+const THAITI_LIST = ["A12345", "b12345", "123456"];
 const THAITI_T_TO_THAITI_MAP = VALID_THAITI_T_LIST.map((thaitiT, index) => [thaitiT, THAITI_LIST[index]]);
 
 const INVALID_THAITI_T_LIST = ["12345678", "abcdefghi", "", undefined];
@@ -38,11 +38,11 @@ describe("ThaitiT", () => {
     });
 
     describe("toThaiti", () => {
-        it.each(THAITI_T_TO_THAITI_MAP)("should convert a ThaitiT to a Thaiti", (thaitiT, expectedThaiti) => {
+        it.each(THAITI_T_TO_THAITI_MAP)("should convert a ThaitiT to a Thaiti", (thaitiT, expected) => {
             const thaitiTInstance = new ThaitiT(thaitiT);
-            const thaiti = thaitiTInstance.toThaiti();
-            expect(thaiti).toBeInstanceOf(Thaiti);
-            expect(thaiti.value).toBe(expectedThaiti);
+            const actual = thaitiTInstance.toThaiti();
+            expect(actual).toBeInstanceOf(Thaiti);
+            expect(actual.value).toBe(expected);
         });
     });
 });

@@ -11,7 +11,7 @@ export default class Ridet {
     }
 
     static isRidet(ridet: string | undefined): boolean {
-        return typeof ridet === "string" && (/^\d{10}$/.test(ridet) || /^\d{9}$/.test(ridet));
+        return typeof ridet === "string" && /^\d{9,10}$/.test(ridet);
     }
 
     get value() {

@@ -10,9 +10,8 @@ export default class Thaiti {
     }
 
     static isThaiti(thaiti: string | undefined): boolean {
-        const regex1 = /^[A-Z][0-9]{5}$/i; // Regex : 1 lettre + 5 chiffres
-        const regex2 = /^\d{6}$/; // Regex : 6 chiffres
-        return typeof thaiti === "string" && (regex1.test(thaiti) || regex2.test(thaiti));
+        const regex = /^[A-Z0-9][0-9]{5}$/i;
+        return typeof thaiti === "string" && regex.test(thaiti);
     }
 
     get value() {
