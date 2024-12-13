@@ -3,6 +3,7 @@ import { mkdirSync, existsSync } from "fs";
 import "./configurations/env.conf";
 
 import FonjepCli from "./interfaces/cli/Fonjep.cli";
+import FonjepCliOld from "./interfaces/cli/Fonjep.cli.old";
 import ChorusCli from "./interfaces/cli/Chorus.cli";
 import OsirisCli from "./interfaces/cli/Osiris.cli";
 import UserCli from "./interfaces/cli/User.cli";
@@ -50,6 +51,7 @@ async function main() {
         GeoCli,
         DataBretagneCli,
         PaymentFlatCli,
+        FonjepCliOld,
     ];
 
     const args = process.argv.slice(2);
