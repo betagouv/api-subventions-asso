@@ -8,8 +8,7 @@ export class StatsPort extends MongoPort<any> {
 
     async createIndexes() {
         // await this.collection.createIndex({ timestamp: -1 });
-        await this.collection.createIndex({ "meta.req.user.email": 1 });
-        await this.collection.createIndex({ "meta.req.user._id": 1 });
+        await this.collection.createIndex({ "meta.userId": 1 });
         // to handle in #1874
         // await this.collection.createIndex({ "meta.req.url": 1 });
     }

@@ -311,7 +311,7 @@ class StatsService {
             if (log.meta.req?.body?.phoneNumber) delete log.meta.req.body.phoneNumber;
             if (log.meta.req?.user) {
                 // userId is needed for joins with another table, but is saved as a string because of a dependency bug
-                log.meta.req.userId = new ObjectId(log.meta.req.user._id);
+                log.meta.req.userId = new ObjectId(log.meta.userId);
                 delete log.meta.req.user;
             }
 
