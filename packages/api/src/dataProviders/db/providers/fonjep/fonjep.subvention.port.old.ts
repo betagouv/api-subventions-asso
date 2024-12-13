@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import FonjepSubventionEntity from "../../../../modules/providers/fonjep/entities/FonjepSubventionEntity";
 import Siret from "../../../../valueObjects/Siret";
 import Siren from "../../../../valueObjects/Siren";
-import { FonjepCorePort } from "./fonjep.core.port";
+import { FonjepCorePort } from "./fonjep.core.port.old";
 
 export class FonjepSubventionPort extends FonjepCorePort<FonjepSubventionEntity> {
     readonly collectionName = "fonjepSubvention";

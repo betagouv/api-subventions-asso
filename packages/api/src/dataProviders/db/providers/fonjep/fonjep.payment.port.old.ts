@@ -1,7 +1,7 @@
 import Siren from "../../../../valueObjects/Siren";
 import Siret from "../../../../valueObjects/Siret";
 import FonjepPaymentEntity from "../../../../modules/providers/fonjep/entities/FonjepPaymentEntity";
-import { FonjepCorePort } from "./fonjep.core.port";
+import { FonjepCorePort } from "./fonjep.core.port.old";
 
 export class FonjepPaymentPort extends FonjepCorePort<FonjepPaymentEntity> {
     readonly collectionName = "fonjepVersement";

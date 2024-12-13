@@ -12,8 +12,8 @@ import chorusLinePort from "../dataProviders/db/providers/chorus/chorus.line.por
 import dauphinGisproPort from "../dataProviders/db/providers/dauphin/dauphin-gispro.port";
 import demarchesSimplifieesDataPort from "../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
 import demarchesSimplifieesMapperPort from "../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port";
-import fonjepSubventionPort from "../dataProviders/db/providers/fonjep/fonjep.subvention.port";
-import fonjepPaymentPort from "../dataProviders/db/providers/fonjep/fonjep.payment.port";
+import fonjepSubventionPort from "../dataProviders/db/providers/fonjep/fonjep.subvention.port.old";
+import fonjepPaymentPort from "../dataProviders/db/providers/fonjep/fonjep.payment.port.old";
 import paymentFlatPort from "../dataProviders/db/paymentFlat/paymentFlat.port";
 import { osirisActionPort, osirisEvaluationPort, osirisRequestPort } from "../dataProviders/db/providers/osiris";
 import miscScdlGrantPort from "../dataProviders/db/providers/scdl/miscScdlGrant.port";
