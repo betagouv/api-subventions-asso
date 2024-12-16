@@ -39,7 +39,7 @@ export const POSTE_ENTITY = new FonjepPosteEntity(
     "AssociationImplantationCode",
     2022,
     1000,
-    new Date("2022-12-31"),
+    44926,
     "PstTypePosteCode",
     "Oui",
     "Non",
@@ -56,29 +56,15 @@ export const POSTE_ENTITY_WITH_NULLS = new FonjepPosteEntity(
     "AssociationImplantationCode",
     2022,
     1000,
-    new Date("2022-12-31"),
+    44926,
     "PstTypePosteCode",
     "Oui",
     "Non",
 );
 
-export const VERSEMENT_ENTITY = new FonjepVersementEntity(
-    "Code",
-    new Date("2022-12-01"),
-    new Date("2022-10-01"),
-    new Date("2022-12-31"),
-    1000,
-    1000,
-);
+export const VERSEMENT_ENTITY = new FonjepVersementEntity("Code", 44896, 44835, 44926, 1000, 1000);
 
-export const VERSEMENT_ENTITY_WITH_NULLS = new FonjepVersementEntity(
-    "Code",
-    new Date("2022-12-01"),
-    new Date("2022-10-01"),
-    new Date("2022-12-31"),
-    null,
-    1000,
-);
+export const VERSEMENT_ENTITY_WITH_NULLS = new FonjepVersementEntity("Code", 44896, 44835, 44926, null, 1000);
 
 export const TYPE_POSTE_ENTITY = new FonjepTypePosteEntity("Code", "Libelle");
 

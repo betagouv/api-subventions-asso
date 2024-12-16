@@ -1,4 +1,5 @@
 export default class FonjepPosteEntity {
+    // dates are reported as Excel dates
     constructor(
         public Code: string | null,
         public DispositifId: number | null,
@@ -10,7 +11,7 @@ export default class FonjepPosteEntity {
         public AssociationImplantationCode: string | null,
         public Annee: number | null,
         public MontantSubvention: number | null,
-        public DateFinTriennalite: Date | null,
+        public DateFinTriennalite: number | null,
         public PstTypePosteCode: string | null,
         public PleinTemps: string | null,
         public DoublementUniteCompte: string | null,

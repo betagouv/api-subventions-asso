@@ -1,7 +1,6 @@
-import { ObjectId } from "mongodb";
-// dates are reported as Excel dates
-export default interface FonjepPosteDbo {
-    _id: ObjectId;
+export default interface FonjepPosteDto {
+    [key: string]: any;
+
     Code: string | null;
     DispositifId: number | null;
     PstStatutPosteLibelle: string | null;
@@ -12,7 +11,7 @@ export default interface FonjepPosteDbo {
     AssociationImplantationCode: string | null;
     Annee: number | null;
     MontantSubvention: number | null;
-    DateFinTriennalite: number | null;
+    DateFinTriennalite: Date | null;
     PstTypePosteCode: string | null;
     PleinTemps: string | null;
     DoublementUniteCompte: string | null;

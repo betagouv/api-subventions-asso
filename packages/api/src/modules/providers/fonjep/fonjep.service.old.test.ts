@@ -17,7 +17,7 @@ import Siret from "../../../valueObjects/Siret";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
 
-jest.mock("./adapters/FonjepEntityAdapter");
+jest.mock("./adapters/FonjepEntityAdapter.old");
 
 const SIREN = new Siren("002034000");
 const SIRET = SIREN.toSiret(`32010`);

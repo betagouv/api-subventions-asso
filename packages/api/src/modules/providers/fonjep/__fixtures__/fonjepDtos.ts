@@ -16,7 +16,7 @@ export const TIER_DTO_WITH_NULLS = { ...TIER_DTO, Ville: null };
 
 export const POSTE_DTO = {
     Code: "Code",
-    DispositifId: "1",
+    DispositifId: 1,
     PstStatutPosteLibelle: "PstStatutPosteLibelle",
     PstRaisonStatutLibelle: "PstRaisonStatutLibelle",
     FinanceurPrincipalCode: "FinanceurPrincipalCode",
@@ -50,7 +50,7 @@ export const TYPE_POSTE_DTO = {
 export const TYPE_POSTE_DTO_WITH_NULLS = { ...TYPE_POSTE_DTO, Libelle: null };
 
 export const DISPOSITIF_DTO = {
-    Id: "1",
+    Id: 1,
     Libelle: "Libelle",
     FinanceurCode: "FinanceurCode",
 };

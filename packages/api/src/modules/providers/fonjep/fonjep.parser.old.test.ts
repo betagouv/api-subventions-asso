@@ -1,11 +1,11 @@
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity.old";
 import FonjepPaymentEntity from "./entities/FonjepPaymentEntity.old";
 import FonjepParser from "./fonjep.parser.old";
-import { DATA_WITH_HEADER, DEFAULT_POSTE, DEFAULT_VERSEMENT } from "./__fixtures__old/fonjepFileModels";
+import { DATA_WITH_HEADER } from "./__fixtures__old/fonjepFileModels";
 import { GenericParser } from "../../../shared/GenericParser";
 
-jest.mock("./entities/FonjepSubventionEntity");
-jest.mock("./entities/FonjepPaymentEntity");
+jest.mock("./entities/FonjepSubventionEntity.old");
+jest.mock("./entities/FonjepPaymentEntity.old");
 
 describe("FonjepParser", () => {
     const indexDataByPathObjectMock = jest.spyOn(GenericParser, "indexDataByPathObject");

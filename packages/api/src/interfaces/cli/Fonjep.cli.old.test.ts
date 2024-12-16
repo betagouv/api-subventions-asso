@@ -1,4 +1,4 @@
-import FonjepCli from "./Fonjep.cli";
+import FonjepCli from "./Fonjep.cli.old";
 import FonjepParser from "../../modules/providers/fonjep/fonjep.parser.old";
 import fonjepParserResponse from "../../modules/providers/fonjep/__fixtures__old/fonjepParserResponse.json";
 import fonjepService from "../../modules/providers/fonjep/fonjep.service.old";

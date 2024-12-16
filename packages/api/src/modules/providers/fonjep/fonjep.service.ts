@@ -1,6 +1,4 @@
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import FonjepTypePosteDbo from "../../../dataProviders/db/providers/fonjep/dbo/fonjepTypePosteDbo";
-import FonjepVersementDbo from "../../../dataProviders/db/providers/fonjep/dbo/FonjepVersementDbo";
 import fonjepDispositifPort from "../../../dataProviders/db/providers/fonjep/fonjep.dispositif.port";
 import fonjepPostesPort from "../../../dataProviders/db/providers/fonjep/fonjep.postes.port";
 import fonjepTiersPort from "../../../dataProviders/db/providers/fonjep/fonjep.tiers.port";
