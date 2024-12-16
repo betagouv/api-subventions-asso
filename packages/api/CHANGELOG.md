@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.59.1](https://github.com/betagouv/api-subventions-asso/compare/v0.59.0...v0.59.1) (2024-12-16)
+
+### Bug Fixes
+
+-   **api:** put userId elsewhere to not override req ([99c8dbf](https://github.com/betagouv/api-subventions-asso/commit/99c8dbffa56f6ff07f0f3a99772ea59497c02733))
+
 # [0.59.0](https://github.com/betagouv/api-subventions-asso/compare/v0.58.2...v0.59.0) (2024-12-09)
 
 ### Features
