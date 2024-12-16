@@ -36,10 +36,8 @@ export const expressLogger = () =>
         ],
         meta: true,
         dynamicMeta: function (req, res) {
-            // completes generated meta in log
-            return {
-                req: { user: { _id: (req.user as UserDto)?._id?.toString() } },
-            };
+            // completes generated meta in log, careful it overrides nested values
+            return { userId: (req.user as UserDto)?._id?.toString() };
         },
         msg: "Request: HTTP {{req.method}} {{req.url}}; ipAddress {{req.connection.remoteAddress}}",
         requestWhitelist: [
