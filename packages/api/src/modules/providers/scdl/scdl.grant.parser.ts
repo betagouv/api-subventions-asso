@@ -6,6 +6,7 @@ import Rna from "../../../valueObjects/Rna";
 import { BeforeAdaptation, DefaultObject, NestedDefaultObject, ParserInfo, ParserPath } from "../../../@types";
 import { GenericParser } from "../../../shared/GenericParser";
 import { ValueWithPath } from "../../../shared/@types/ValueWithPath";
+import { DEV } from "../../../configurations/env.conf";
 import { SCDL_MAPPER } from "./scdl.mapper";
 import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
 import { ScdlParsedGrant } from "./@types/ScdlParsedGrant";
@@ -188,6 +189,8 @@ export default class ScdlGrantParser {
     }
 
     /**
+     * USE ONLY FOR SCDL WHERE NESTED COLUMNS ARE NOT POSSIBLE
+     *
      * Verifies if any column headers is missing in the file and returns a list of the missing ones.
      * For each missing header, the developer should check if it is a naming issue,
      * and if so, add it to the SCDL mapper to prevent the data from being excluded from processing.
@@ -200,18 +203,20 @@ export default class ScdlGrantParser {
         pathObject: DefaultObject<ParserPath | ParserInfo<TypeIn>>,
         data: NestedDefaultObject<TypeIn>,
     ): void {
-        const missingKeys = Object.entries(pathObject)
-            .filter(([key, path]) => {
-                const flatMapper = (Array.isArray(path) ? path : path.path).flat();
-                return !flatMapper.some(lib => lib in data);
-            })
-            .map(([key]) => key);
+        if (DEV) {
+            const missingKeys = Object.entries(pathObject)
+                .filter(([key, path]) => {
+                    const flatMapper = (Array.isArray(path) ? path : path.path).flat();
+                    return !flatMapper.some(lib => lib in data);
+                })
+                .map(([key]) => key);
 
-        if (missingKeys.length > 0) {
-            console.log(
-                `⚠️ Missing Headers Detected: ${missingKeys.length} column(s) are missing. Please check the following headers:`,
-            );
-            console.log(`  - ${missingKeys.join("\n  - ")}`);
+            if (missingKeys.length > 0) {
+                console.log(
+                    `⚠️ Missing Headers Detected: ${missingKeys.length} column(s) are missing. Please check the following headers:`,
+                );
+                console.log(`  - ${missingKeys.join("\n  - ")}`);
+            }
         }
     }
 }
