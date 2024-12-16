@@ -15,9 +15,9 @@ import Siret from "../../../valueObjects/Siret";
 import fonjepSubventionPort from "../../../dataProviders/db/providers/fonjep/fonjep.subvention.port.old";
 import fonjepPaymentPort from "../../../dataProviders/db/providers/fonjep/fonjep.payment.port.old";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter.old";
-import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
-import FonjepPaymentEntity from "./entities/FonjepPaymentEntity";
-import fonjepJoiner from "./joiners/fonjepJoiner";
+import FonjepSubventionEntity from "./entities/FonjepSubventionEntity.old";
+import FonjepPaymentEntity from "./entities/FonjepPaymentEntity.old";
+import fonjepJoiner from "./joiners/fonjepJoiner.old";
 
 export enum FONJEP_SERVICE_ERRORS {
     INVALID_ENTITY = 1,

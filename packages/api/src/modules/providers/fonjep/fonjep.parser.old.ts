@@ -3,8 +3,8 @@ import { DefaultObject, NestedDefaultObject } from "../../../@types";
 import { GenericParser } from "../../../shared/GenericParser";
 import IFonjepIndexedInformations from "./@types/IFonjepIndexedInformations";
 import IFonjepPaymentIndexedInformations from "./@types/IFonjepPaymentIndexedInformations";
-import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
-import FonjepPaymentEntity from "./entities/FonjepPaymentEntity";
+import FonjepSubventionEntity from "./entities/FonjepSubventionEntity.old";
+import FonjepPaymentEntity from "./entities/FonjepPaymentEntity.old";
 import fonjepService from "./fonjep.service.old";
 
 export default class FonjepParser {

@@ -38,6 +38,7 @@ async function main() {
         UserCli,
         ChorusCli,
         FonjepCli,
+        FonjepCliOld,
         SubventiaCli,
         ConsumerCli,
         DemarchesSimplifieesCli,
@@ -51,7 +52,6 @@ async function main() {
         GeoCli,
         DataBretagneCli,
         PaymentFlatCli,
-        FonjepCliOld,
     ];
 
     const args = process.argv.slice(2);

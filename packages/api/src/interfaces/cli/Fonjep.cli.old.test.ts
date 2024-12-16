@@ -1,7 +1,6 @@
-import FormatDateError from "../../shared/errors/cliErrors/FormatDateError";
 import FonjepCli from "./Fonjep.cli";
 import FonjepParser from "../../modules/providers/fonjep/fonjep.parser.old";
-import fonjepParserResponse from "../../modules/providers/fonjep/__fixtures__/fonjepParserResponse.json";
+import fonjepParserResponse from "../../modules/providers/fonjep/__fixtures__old/fonjepParserResponse.json";
 import fonjepService from "../../modules/providers/fonjep/fonjep.service.old";
 jest.mock("fs");
 

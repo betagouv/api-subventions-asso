@@ -1,9 +1,8 @@
-import fs from "fs";
-
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../@types";
 import CliController from "../../shared/CliController";
 import fonjepService from "../../modules/providers/fonjep/fonjep.service";
+
 @StaticImplements<CliStaticInterface>()
 export default class FonjepCli extends CliController {
     static cmdName = "fonjep";

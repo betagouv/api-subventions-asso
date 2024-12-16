@@ -1,9 +1,9 @@
 import { ApplicationStatus, CommonFullGrantDto, DemandeSubvention, Etablissement, FonjepPayment, Grant } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
-import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
+import FonjepSubventionEntity from "../entities/FonjepSubventionEntity.old";
 import fonjepService from "../fonjep.service.old";
-import FonjepPaymentEntity from "../entities/FonjepPaymentEntity";
+import FonjepPaymentEntity from "../entities/FonjepPaymentEntity.old";
 import { RawApplication, RawFullGrant, RawPayment } from "../../../grant/@types/rawGrant";
 import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
 import { DefaultObject } from "../../../../@types";
@@ -13,12 +13,6 @@ import { DefaultObject } from "../../../../@types";
 
 export default class FonjepEntityAdapter {
     static PROVIDER_NAME = "Fonjep";
-
-    private static findOnPropFactory(array: DefaultObject<string>[], prop: string) {
-        // TODO <string|number>
-        if (!array) array = [];
-        return (match: string | number | undefined) => array.find(item => item[prop] == match);
-    }
 
     static toDemandeSubvention(entity: FonjepSubventionEntity): DemandeSubvention {
         const dataDate = entity.indexedInformations.updated_at;

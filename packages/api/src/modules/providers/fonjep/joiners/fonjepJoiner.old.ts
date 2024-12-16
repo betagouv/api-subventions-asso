@@ -2,8 +2,8 @@ import fonjepPaymentPort from "../../../../dataProviders/db/providers/fonjep/fon
 import fonjepSubventionPort from "../../../../dataProviders/db/providers/fonjep/fonjep.subvention.port.old";
 import db from "../../../../shared/MongoConnection";
 import { FullGrantData } from "../../../grant/@types/rawGrant";
-import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
-import FonjepPaymentEntity from "../entities/FonjepPaymentEntity";
+import FonjepSubventionEntity from "../entities/FonjepSubventionEntity.old";
+import FonjepPaymentEntity from "../entities/FonjepPaymentEntity.old";
 import Siret from "../../../../valueObjects/Siret";
 import Siren from "../../../../valueObjects/Siren";
 

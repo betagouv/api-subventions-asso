@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FonjepEntityAdapter toCommon returns proper result 1`] = `
+Object {
+  "bop": "",
+  "date_debut": 2022-02-02T00:00:00.000Z,
+  "dispositif": "DISPOSITIF",
+  "exercice": 2023,
+  "montant_accorde": 43,
+  "montant_verse": 42,
+  "objet": "",
+  "service_instructeur": "INSTRUCTEUR",
+  "siret": "123456789",
+  "statut": "Accordé",
+}
+`;
+
+exports[`FonjepEntityAdapter toDemandeSubvention() should return a DemandeSubvention 1`] = `
+Object {
+  "annee_demande": 2022,
+  "date_fin": 2022-01-03T00:00:00.000Z,
+  "dispositif": "Dispositif",
+  "montants": Object {
+    "accorde": 500,
+    "demande": 500,
+  },
+  "plein_temps": "Oui",
+  "pluriannualite": "Oui",
+  "service_instructeur": "XXX",
+  "siret": "10000000000001",
+  "status": "Attribué - Reconduction",
+  "statut_label": "Accordé",
+  "versementKey": "J00034",
+}
+`;
+
+exports[`FonjepEntityAdapter toEtablissement() should return an Etablissement 1`] = `
+Object {
+  "adresse": Array [
+    Object {
+      "code_postal": "75000",
+      "commune": "Paris",
+    },
+  ],
+  "contacts": Array [
+    Array [
+      Object {
+        "email": "contact@beta.gouv.fr",
+      },
+    ],
+  ],
+  "nic": Array [
+    "00001",
+  ],
+  "siret": Array [
+    "10000000000001",
+  ],
+}
+`;
+
+exports[`FonjepEntityAdapter toPayment should return a Payment 1`] = `
+Object {
+  "amount": 1000,
+  "bop": 163,
+  "codePoste": "J00034",
+  "dateOperation": 2022-01-02T00:00:00.000Z,
+  "libelleProgramme": "PROGRAM 163",
+  "montantAPayer": 1000,
+  "periodeDebut": 2022-01-02T00:00:00.000Z,
+  "periodeFin": 2022-01-02T00:00:00.000Z,
+  "programme": 163,
+  "siret": "10000000000001",
+  "versementKey": "J00034",
+}
+`;

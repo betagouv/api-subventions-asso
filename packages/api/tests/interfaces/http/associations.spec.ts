@@ -33,7 +33,7 @@ import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fix
 import chorusLinePort from "../../../src/dataProviders/db/providers/chorus/chorus.line.port";
 import { ChorusFixtures } from "../../dataProviders/db/__fixtures__/chorus.fixtures";
 import fonjepPaymentPort from "../../../src/dataProviders/db/providers/fonjep/fonjep.payment.port.old";
-import FonjepSubventionEntity from "../../../src/modules/providers/fonjep/entities/FonjepSubventionEntity";
+import FonjepSubventionEntity from "../../../src/modules/providers/fonjep/entities/FonjepSubventionEntity.old";
 import Rna from "../../../src/valueObjects/Rna";
 import Siret from "../../../src/valueObjects/Siret";
 import { Grant } from "dto";

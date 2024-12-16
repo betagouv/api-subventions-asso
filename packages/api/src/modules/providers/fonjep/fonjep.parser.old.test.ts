@@ -1,7 +1,7 @@
-import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
-import FonjepPaymentEntity from "./entities/FonjepPaymentEntity";
-import FonjepParser from "./fonjep.parser";
-import { DATA_WITH_HEADER, DEFAULT_POSTE, DEFAULT_VERSEMENT } from "./__fixtures__/fonjepFileModels";
+import FonjepSubventionEntity from "./entities/FonjepSubventionEntity.old";
+import FonjepPaymentEntity from "./entities/FonjepPaymentEntity.old";
+import FonjepParser from "./fonjep.parser.old";
+import { DATA_WITH_HEADER, DEFAULT_POSTE, DEFAULT_VERSEMENT } from "./__fixtures__old/fonjepFileModels";
 import { GenericParser } from "../../../shared/GenericParser";
 
 jest.mock("./entities/FonjepSubventionEntity");

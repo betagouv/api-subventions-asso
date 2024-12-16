@@ -1,11 +1,11 @@
-import FonjepEntityAdapter from "./FonjepEntityAdapter";
+import FonjepEntityAdapter from "./FonjepEntityAdapter.old";
 import { SubventionEntity, PaymentEntity } from "../../../../../tests/modules/providers/fonjep/__fixtures__/entity";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
-import { FONJEP_PAYMENTS, FONJEP_PAYMENT_ENTITIES } from "../__fixtures__/FonjepEntities";
+import { FONJEP_PAYMENTS, FONJEP_PAYMENT_ENTITIES } from "../__fixtures__old/FonjepEntities";
 import { RawApplication, RawFullGrant, RawPayment } from "../../../grant/@types/rawGrant";
 import { DemandeSubvention, Grant, Payment } from "dto";
-import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
-import FonjepPaymentEntity from "../entities/FonjepPaymentEntity";
+import FonjepSubventionEntity from "../entities/FonjepSubventionEntity.old";
+import FonjepPaymentEntity from "../entities/FonjepPaymentEntity.old";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
 import PROGRAMS from "../../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
 

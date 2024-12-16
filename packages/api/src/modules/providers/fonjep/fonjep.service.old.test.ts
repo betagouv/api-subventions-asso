@@ -4,12 +4,12 @@ import fonjepSubventionPort from "../../../dataProviders/db/providers/fonjep/fon
 import { SubventionEntity, PaymentEntity } from "../../../../tests/modules/providers/fonjep/__fixtures__/entity";
 import * as Validators from "../../../shared/Validators";
 import fonjepPaymentPort from "../../../dataProviders/db/providers/fonjep/fonjep.payment.port.old";
-import fonjepJoiner from "./joiners/fonjepJoiner";
-import { FONJEP_PAYMENTS, FONJEP_PAYMENT_ENTITIES } from "./__fixtures__/FonjepEntities";
+import fonjepJoiner from "./joiners/fonjepJoiner.old";
+import { FONJEP_PAYMENTS, FONJEP_PAYMENT_ENTITIES } from "./__fixtures__old/FonjepEntities";
 import { RawApplication, RawFullGrant, RawPayment } from "../../grant/@types/rawGrant";
 import { DemandeSubvention } from "dto";
-import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
-import FonjepPaymentEntity from "./entities/FonjepPaymentEntity";
+import FonjepSubventionEntity from "./entities/FonjepSubventionEntity.old";
+import FonjepPaymentEntity from "./entities/FonjepPaymentEntity.old";
 import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import Siren from "../../../valueObjects/Siren";

@@ -9,7 +9,6 @@ import fonjepService, {
 } from "../../modules/providers/fonjep/fonjep.service.old";
 import * as CliHelper from "../../shared/helpers/CliHelper";
 import CliController from "../../shared/CliController";
-import FormatDateError from "../../shared/errors/cliErrors/FormatDateError";
 
 @StaticImplements<CliStaticInterface>()
 export default class FonjepCli extends CliController {
