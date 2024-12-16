@@ -467,6 +467,7 @@ describe("ScdlGrantParser", () => {
                 Array [
                   Object {
                     "field": "path.needs.adapting",
+                    "lineRejected": "",
                     "message": "donnée non récupérable",
                     "other": "otherValue",
                     "path": Object {
@@ -475,7 +476,6 @@ describe("ScdlGrantParser", () => {
                       },
                     },
                     "some": "someValue",
-                    "valid": "",
                     "value": "value-needs-adapting",
                   },
                 ]

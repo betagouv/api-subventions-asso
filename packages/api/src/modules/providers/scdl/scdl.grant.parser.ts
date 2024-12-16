@@ -137,7 +137,7 @@ export default class ScdlGrantParser {
                 invalidEntities.push(entity);
             }
             validation?.problems?.map((pb: Problem) =>
-                errors.push({ ...parsedData, ...pb, valid: validation.valid ? "valid" : "invalid" }),
+                errors.push({ ...parsedData, ...pb, lineRejected: validation.valid ? "oui" : "non" }),
             );
         }
 
@@ -180,7 +180,7 @@ export default class ScdlGrantParser {
                     field: annotated.keyPath.join("."),
                     value: annotated.value,
                     message: "donnée non récupérable",
-                    valid: "",
+                    lineRejected: "",
                 });
 
             // saves adapted field in entity ; and original value and path to annotations to give feedback in validation later
