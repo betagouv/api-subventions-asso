@@ -38,6 +38,19 @@ const CONVENTION_DATE_PATHS = [
     "date Convention",
     "DateConvention",
     "datedeConvention",
+    "Date de la convention de subvention",
+];
+
+const PERIODE_VERSEMENT_PATHS = [
+    "Date de versement",
+    "dateperiodedeversement",
+    "dateperiodedversement",
+    "Date(s) ou période(s) de versement",
+    "Date(s) ou période(s) de versement (AAAA-MM-JJ)",
+    "dates Periode Versement",
+    "datesPériodeVersement",
+    "Date de versement",
+    "Date ou période de versement",
 ];
 
 const dateAdapter = (date: BeforeAdaptation | undefined | null): Date | undefined => {
@@ -49,7 +62,14 @@ const dateAdapter = (date: BeforeAdaptation | undefined | null): Date | undefine
 export const SCDL_MAPPER: ScdlGrantSchema = {
     allocatorName: { path: [["nomAttribuant", "Nom de l'attribuant", "nom Attribuant"]] },
     allocatorSiret: {
-        path: [["idAttribuant", "Identification de l'attribuant (SIRET)", "id  Attribuant"]],
+        path: [
+            [
+                "idAttribuant",
+                "Identification de l'attribuant (SIRET)",
+                "id  Attribuant",
+                "Identification de l'attribuant",
+            ],
+        ],
         adapter: v => {
             if (v?.includes(".")) return v.split(".")[0]; // TODO: quickfix for Centre Val de Loire, remove when CSV will be cleaned
             return v;
@@ -86,6 +106,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             "NOM Bénéficiaire",
             "Nom du bénéficiaire",
             "nom Beneficiaire",
+            "nomBénéficiaire",
         ],
     ],
     associationSiret: {
@@ -97,6 +118,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "N° SIRET",
                 "identification du bénéficiaire (SIRET)",
                 "id Beneficiaire",
+                "Identification du bénéficiaire",
             ],
         ],
         adapter: v => v?.toString(),
@@ -129,32 +151,16 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             "Conditions de versement*",
             "Conditions de versement",
             "conditions Versement",
+            "Conditions de versement de la subvention",
         ],
     ],
     paymentStartDate: {
-        path: [
-            [
-                ...getMapperVariants("paymentStartDate"),
-                "Date de versement",
-                "dateperiodedeversement",
-                "dateperiodedversement",
-                "Date(s) ou période(s) de versement",
-                "Date(s) ou période(s) de versement (AAAA-MM-JJ)",
-                "dates Periode Versement",
-            ],
-        ],
+        path: [[...getMapperVariants("paymentStartDate"), ...PERIODE_VERSEMENT_PATHS]],
         // @ts-expect-error: with undefined it returns false, so we don't need to check it
         adapter: value => (shortISORegExp.test(value) ? new Date(value.split(/[/_]/)[0].trim()) : dateAdapter(value)),
     },
     paymentEndDate: {
-        path: [
-            [
-                ...getMapperVariants("paymentEndDate"),
-                "Date de versement",
-                "dateperiodedversement",
-                "Date(s) ou période(s) de versement (AAAA-MM-JJ)",
-            ],
-        ],
+        path: [[...getMapperVariants("paymentEndDate"), ...PERIODE_VERSEMENT_PATHS]],
         adapter: value => {
             if (typeof value !== "string") return undefined;
             const noSpaceValue = value?.replaceAll(" ", "");
@@ -169,6 +175,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             "Numéro de référencement au répertoire des entreprises",
             "Numéro de référencement au répertoire des entreprises",
             "Numéro unique de référencement au répertoire des aides aux entreprises (RAE)",
+            "Identifiant RAE de l’aide au titre de laquelle la subvention est attribuée",
         ],
     ],
     UeNotification: {
@@ -178,6 +185,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Aide notifiée Ã  l'Europe",
                 "Aides ne relevant pas d'une aide d'état",
                 "Aide d'Etat notifiée à la Commission européenne, conformément aux dispositions du règlement (UE) n° 1407/2013 de la Commission du 18 décembre 2013",
+                "Aide d'Etat notifiée à la Commission Européenne",
             ],
         ],
         adapter: value => {
@@ -194,6 +202,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Pourcentage du montant de la subvention attribué au bénéficiaire*",
                 "% du mt de la subvention attribuée au bénéficiaire",
                 "Pourcentage du montant de la subvention attribuée au bénéficiaire",
+                "Pourcentage du montant total de la subvention attribuée au bénéficiaire",
             ],
         ],
         adapter: value => (value ? parseFloat(value) : value),
