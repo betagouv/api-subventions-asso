@@ -188,7 +188,7 @@ export default class ScdlGrantParser {
     }
 
     /**
-     * Verifies if any column headers are missing in the file and returns a list of the missing ones.
+     * Verifies if any column headers is missing in the file and returns a list of the missing ones.
      * For each missing header, the developer should check if it is a naming issue,
      * and if so, add it to the SCDL mapper to prevent the data from being excluded from processing.
      * @param pathObject

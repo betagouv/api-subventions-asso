@@ -57,14 +57,18 @@ const dateAdapter = (date: BeforeAdaptation | undefined | null): Date | undefine
     return GenericParser.ExcelDateToJSDate(Number(date));
 };
 
+const removeTrailingDotZero = value => {
+    if (value?.includes(".")) {
+        return value.split(".")[0]; // Fix to remove ".0" from IDs when the CSV comes from a cell formatted as a float
+    }
+    return value;
+};
+
 export const SCDL_MAPPER: ScdlGrantSchema = {
     allocatorName: { path: [["nomAttribuant", "Nom de l'attribuant", "nom Attribuant"]] },
     allocatorSiret: {
         path: [["idAttribuant", "Identification de l'attribuant (SIRET)", "id  Attribuant"]],
-        adapter: v => {
-            if (v?.includes(".")) return v.split(".")[0]; // fix to remove ".0" from ids when the csv comme from a cell formatted as a float
-            return v;
-        },
+        adapter: v => removeTrailingDotZero(v),
     },
     exercice: {
         // for now if no exercise column we will use conventionDate as default
@@ -111,10 +115,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "id Beneficiaire",
             ],
         ],
-        adapter: v => {
-            if (v?.includes(".")) return v.split(".")[0]; // fix to remove ".0" from ids when the csv comme from a cell formatted as a float
-            return v;
-        },
+        adapter: v => removeTrailingDotZero(v),
     },
     associationRna: [[...getMapperVariants("associationRna")]],
     object: [
