@@ -1,3 +1,4 @@
+import { MainInfoBannerDto } from "dto";
 import { BadRequestError, ConflictError } from "../../shared/errors/httpErrors";
 import { REGEX_MAIL_DOMAIN } from "../user/user.constant";
 import configurationsPort from "../../dataProviders/db/configurations/configurations.port";
@@ -119,9 +120,10 @@ export class ConfigurationsService {
             data: date,
         });
     }
-    async updateHomeInfosBanner(title: string, desc: string) {
-        const bannerTitle = await configurationsPort.getByName<string[]>(CONFIGURATION_NAMES.HOME_INFOS_BANNER_TITLE);
-        const bannerDesc = await configurationsPort.getByName<string[]>(CONFIGURATION_NAMES.HOME_INFOS_BANNER_DESC);
+
+    async updateMainInfoBanner(title: string, desc: string) {
+        const bannerTitle = await configurationsPort.getByName<string>(CONFIGURATION_NAMES.HOME_INFOS_BANNER_TITLE);
+        const bannerDesc = await configurationsPort.getByName<string>(CONFIGURATION_NAMES.HOME_INFOS_BANNER_DESC);
         if (!bannerTitle) {
             await configurationsPort.upsert(
                 CONFIGURATION_NAMES.HOME_INFOS_BANNER_TITLE,
@@ -145,6 +147,12 @@ export class ConfigurationsService {
             );
         }
         return { title, desc };
+    }
+
+    async getMainInfoBanner(): Promise<MainInfoBannerDto> {
+        const bannertitle = await configurationsPort.getByName<string>(CONFIGURATION_NAMES.HOME_INFOS_BANNER_TITLE);
+        const bannerdesc = await configurationsPort.getByName<string>(CONFIGURATION_NAMES.HOME_INFOS_BANNER_DESC);
+        return { title: bannertitle?.data || "", desc: bannerdesc?.data || "" };
     }
 }
 

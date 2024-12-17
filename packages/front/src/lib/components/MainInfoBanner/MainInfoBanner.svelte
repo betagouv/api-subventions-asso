@@ -2,7 +2,9 @@
     import { MainInfoBannerController } from "./MainInfoBanner.controller";
     import InformationBanner from "$lib/dsfr/InformationBanner.svelte";
 
-    let ctrl = new MainInfoBannerController();
+    const ctrl = new MainInfoBannerController();
+    const { mainInfoBanner } = ctrl;
+    ctrl.init();
 </script>
 
 <!-- TODO clean in #2544 -->
@@ -11,10 +13,8 @@
         bind:this={ctrl.component}
         on:close={() => ctrl.close()}
         closeBtn={true}
-        title={ctrl.title}
-        desc={ctrl.description}
-        url={ctrl.url}
-        urlLabel={ctrl.urlLabel} />
+        title={$mainInfoBanner.title}
+        desc={$mainInfoBanner.desc} />
 </div>
 
 <style>

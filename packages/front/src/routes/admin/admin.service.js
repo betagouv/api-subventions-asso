@@ -29,8 +29,15 @@ export class AdminService {
         });
     }
 
-    async updateHomeInfosBanner(title, desc) {
-        const path = `/config/update-home-infos-banner`;
+    async getMainInfoBanner() {
+        const path = `/config/main-info-banner`;
+        return requestsService.get(path).then(result => {
+            return result.data;
+        });
+    }
+
+    async updateMainInfoBanner(title, desc) {
+        const path = `/config/main-info-banner`;
         return requestsService.post(path, { title, desc }).then(result => {
             return result.status == 201;
         });

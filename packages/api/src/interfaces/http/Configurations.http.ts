@@ -1,4 +1,4 @@
-import { AddEmailDomainDto, GetEmailDomainsDto } from "dto";
+import { AddEmailDomainDto, GetEmailDomainsDto, MainInfoBannerDto } from "dto";
 import { Controller, Get, Post, Route, Security, Tags, Response, Body, SuccessResponse } from "tsoa";
 import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
 import configurationsService from "../../modules/configurations/configurations.service";
@@ -40,18 +40,29 @@ export class ConfigurationsHttp extends Controller {
      * @summary Modifie le bandeau d'informations de la homepage
      * @param title Titre du bandeau
      * @param desc Contenu du bandeau - en HTML
-     * @returns {title: string, desc: string}
+     * @returns {MainInfoBannerDto}
      */
-    @Post("/update-home-infos-banner")
+    @Post("/main-info-banner")
     @SuccessResponse("201", "Updated")
     @Response<HttpErrorInterface>(500, "Internal Server Error", {
         message: "Internal Server Error",
     })
-    public async updateHomeInfosBanner(
-        @Body() body: { title: string; desc: string },
-    ): Promise<{ title: string; desc: string }> {
-        const banner = await configurationsService.updateHomeInfosBanner(body.title, body.desc);
+    public async updateMainInfoBanner(@Body() body: { title: string; desc: string }): Promise<MainInfoBannerDto> {
+        const banner = await configurationsService.updateMainInfoBanner(body.title, body.desc);
         this.setStatus(201);
+        return banner;
+    }
+
+    /**
+     * @summary Récupère les infos du bandeau d'informations de la homepage
+     * @returns {MainInfoBannerDto}
+     */
+    @Get("/main-info-banner")
+    @Response<HttpErrorInterface>(500, "Internal Server Error", {
+        message: "Internal Server Error",
+    })
+    public async getMainInfoBanner(): Promise<MainInfoBannerDto> {
+        const banner = await configurationsService.getMainInfoBanner();
         return banner;
     }
 }
