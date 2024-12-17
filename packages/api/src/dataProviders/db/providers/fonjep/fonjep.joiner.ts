@@ -1,11 +1,11 @@
-import fonjepPaymentPort from "../../../../dataProviders/db/providers/fonjep/fonjep.payment.port";
-import fonjepSubventionPort from "../../../../dataProviders/db/providers/fonjep/fonjep.subvention.port";
 import db from "../../../../shared/MongoConnection";
-import { FullGrantData } from "../../../grant/@types/rawGrant";
-import FonjepSubventionEntity from "../entities/FonjepSubventionEntity";
-import FonjepPaymentEntity from "../entities/FonjepPaymentEntity";
+import { FullGrantData } from "../../../../modules/grant/@types/rawGrant";
+import FonjepSubventionEntity from "../../../../modules/providers/fonjep/entities/FonjepSubventionEntity";
+import FonjepPaymentEntity from "../../../../modules/providers/fonjep/entities/FonjepPaymentEntity";
 import Siret from "../../../../valueObjects/Siret";
 import Siren from "../../../../valueObjects/Siren";
+import fonjepPaymentPort from "./fonjep.payment.port";
+import fonjepSubventionPort from "./fonjep.subvention.port";
 
 export class FonjepJoiner {
     applicationCollection = db.collection(fonjepSubventionPort.collectionName);

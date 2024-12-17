@@ -4,7 +4,7 @@ import fonjepSubventionPort from "../../../dataProviders/db/providers/fonjep/fon
 import { SubventionEntity, PaymentEntity } from "../../../../tests/modules/providers/fonjep/__fixtures__/entity";
 import * as Validators from "../../../shared/Validators";
 import fonjepPaymentPort from "../../../dataProviders/db/providers/fonjep/fonjep.payment.port";
-import fonjepJoiner from "./joiners/fonjepJoiner";
+import fonjepJoiner from "../../../dataProviders/db/providers/fonjep/fonjep.joiner";
 import { FONJEP_PAYMENTS, FONJEP_PAYMENT_ENTITIES } from "./__fixtures__/FonjepEntities";
 import { RawApplication, RawFullGrant, RawPayment } from "../../grant/@types/rawGrant";
 import { DemandeSubvention } from "dto";
