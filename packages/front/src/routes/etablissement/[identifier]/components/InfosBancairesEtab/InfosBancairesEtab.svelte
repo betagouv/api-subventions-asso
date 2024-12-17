@@ -1,8 +1,11 @@
 <script>
     import { InfosBancairesEtabController } from "./InfosBancairesEtab.controller";
     import Table from "$lib/dsfr/Table.svelte";
+    import TableRow from "$lib/dsfr/TableRow.svelte";
 
     export let elements; // informations_bancaires
+
+    const tableId = "infos-bancaires-etab";
 
     const controller = new InfosBancairesEtabController(elements);
     const { infosBancaires, headers } = controller;
@@ -10,45 +13,26 @@
 
 <h2>Informations bancaires</h2>
 {#if controller.hasInfo}
-    <Table title="Informations bancaires">
-        <svelte:fragment slot="colgroup">
-            <colgroup>
-                <col class="col-8" />
-                <col class="col-15" />
-                <col class="col-10" />
-                <col class="col-10" />
-            </colgroup>
-        </svelte:fragment>
-        <svelte:fragment slot="head">
-            {#each headers as title}
-                <th>{title}</th>
-            {/each}
-        </svelte:fragment>
-        <svelte:fragment slot="body">
-            {#each infosBancaires as element}
-                <tr>
-                    <td>{element.bic}</td>
-                    <td>{element.iban}</td>
-                    <td>{element.date}</td>
-                    <td>{element.provider}</td>
-                </tr>
-            {/each}
-        </svelte:fragment>
-    </Table>
+    <div class="fr-grid-row">
+        <div class="fr-col-12">
+            <!-- TODO: scrollable make it spread width, investigate why scrollable={false} make it not -->
+            <Table
+                id={tableId}
+                {headers}
+                headersSize={["md", "lg", "md", "md"]}
+                bordered={false}
+                title="Informations bancaires">
+                {#each infosBancaires as element, index}
+                    <TableRow id={tableId} {index}>
+                        <td>{element.bic}</td>
+                        <td>{element.iban}</td>
+                        <td>{element.date}</td>
+                        <td>{element.provider}</td>
+                    </TableRow>
+                {/each}
+            </Table>
+        </div>
+    </div>
 {:else}
     <p>Nous sommes désolés, nous n'avons trouvé aucune donnée pour cet établissement</p>
 {/if}
-
-<style>
-    .col-8 {
-        width: 8em;
-    }
-
-    .col-15 {
-        width: 15em;
-    }
-
-    .col-10 {
-        width: 10em;
-    }
-</style>

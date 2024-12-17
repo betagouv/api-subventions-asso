@@ -7,7 +7,9 @@ export const PAYMENT_FLAT_ENTITY = new PaymentFlatEntity(
     `${DEFAULT_ASSOCIATION.siret}-0001821732-2023-101-0101-01-02-3222-1689120000000`, // uniqueId
     `${DEFAULT_ASSOCIATION.siret}-0001821732-2023`, // idVersement
     2023, // exerciceBudgetaire
+    "siret", // typeIdEtablissementBeneficiaire
     new Siret(DEFAULT_ASSOCIATION.siret), // siret
+    "siren", // typeIdEntrepriseBeneficiaire
     new Siren(DEFAULT_ASSOCIATION.siren), // siren
     89988.3, // operation amount
     new Date("2023-07-12T00:00:00.000Z"), // operation date

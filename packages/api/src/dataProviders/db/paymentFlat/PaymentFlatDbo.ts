@@ -1,9 +1,17 @@
 import { ObjectId } from "mongodb";
+import {
+    idEntrepriseType,
+    idEtablissementType,
+    typeIdEntreprise,
+    typeIdEtablissement,
+} from "../../../valueObjects/typeIdentifier";
 
 export default interface PaymentFlatDbo {
     _id: ObjectId;
-    siret: string;
-    siren: string;
+    typeIdEtablissementBeneficiaire: typeIdEtablissement;
+    idEtablissementBeneficiaire: string;
+    typeIdEntrepriseBeneficiaire: typeIdEntreprise;
+    idEntrepriseBeneficiaire: string;
     uniqueId: string;
     idVersement: string;
     exerciceBudgetaire: number;

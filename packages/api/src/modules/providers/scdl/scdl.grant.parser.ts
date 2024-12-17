@@ -6,6 +6,7 @@ import Rna from "../../../valueObjects/Rna";
 import { BeforeAdaptation, DefaultObject, NestedDefaultObject, ParserInfo, ParserPath } from "../../../@types";
 import { GenericParser } from "../../../shared/GenericParser";
 import { ValueWithPath } from "../../../shared/@types/ValueWithPath";
+import { DEV } from "../../../configurations/env.conf";
 import { SCDL_MAPPER } from "./scdl.mapper";
 import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
 import { ScdlParsedGrant } from "./@types/ScdlParsedGrant";
@@ -121,6 +122,8 @@ export default class ScdlGrantParser {
         const invalidEntities: Partial<ScdlStorableGrant>[] = [];
         const errors: ParsedDataWithProblem[] = [];
 
+        ScdlGrantParser.verifyMissingHeaders(SCDL_MAPPER, parsedChunk[0]);
+
         for (const parsedData of parsedChunk) {
             const {
                 entity,
@@ -131,10 +134,14 @@ export default class ScdlGrantParser {
 
             // validates and saves annotated errors
             const validation = this.isGrantValid(entity as ScdlStorableGrant, annotations);
-            if (validation.valid)
+            if (validation.valid) {
                 storableChunk.push({ ...this.cleanOptionalFields(entity as ScdlStorableGrant), __data__: parsedData });
-            else invalidEntities.push(entity);
-            validation?.problems?.map((pb: Problem) => errors.push({ ...parsedData, ...pb }));
+            } else {
+                invalidEntities.push(entity);
+            }
+            validation?.problems?.map((pb: Problem) =>
+                errors.push({ ...parsedData, ...pb, lineRejected: validation.valid ? "oui" : "non" }),
+            );
         }
 
         if (invalidEntities.length) {
@@ -176,6 +183,7 @@ export default class ScdlGrantParser {
                     field: annotated.keyPath.join("."),
                     value: annotated.value,
                     message: "donnée non récupérable",
+                    lineRejected: "",
                 });
 
             // saves adapted field in entity ; and original value and path to annotations to give feedback in validation later
@@ -183,5 +191,37 @@ export default class ScdlGrantParser {
             annotations[key] = annotated;
         }
         return { entity, annotations, errors };
+    }
+
+    /**
+     * USE ONLY FOR SCDL WHERE NESTED COLUMNS ARE NOT POSSIBLE
+     *
+     * Verifies if any column headers is missing in the file and returns a list of the missing ones.
+     * For each missing header, the developer should check if it is a naming issue,
+     * and if so, add it to the SCDL mapper to prevent the data from being excluded from processing.
+     * @param pathObject
+     * @param data
+     *
+     * @returns void
+     */
+    static verifyMissingHeaders<TypeIn extends BeforeAdaptation>(
+        pathObject: DefaultObject<ParserPath | ParserInfo<TypeIn>>,
+        data: NestedDefaultObject<TypeIn>,
+    ): void {
+        if (DEV) {
+            const missingKeys = Object.entries(pathObject)
+                .filter(([key, path]) => {
+                    const flatMapper = (Array.isArray(path) ? path : path.path).flat();
+                    return !flatMapper.some(lib => lib in data);
+                })
+                .map(([key]) => key);
+
+            if (missingKeys.length > 0) {
+                console.log(
+                    `⚠️ Missing Headers Detected: ${missingKeys.length} column(s) are missing. Please check the following headers:`,
+                );
+                console.log(`  - ${missingKeys.join("\n  - ")}`);
+            }
+        }
     }
 }

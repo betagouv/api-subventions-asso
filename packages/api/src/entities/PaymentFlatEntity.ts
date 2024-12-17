@@ -1,13 +1,19 @@
-import Siren from "../valueObjects/Siren";
-import Siret from "../valueObjects/Siret";
+import {
+    idEntrepriseType,
+    idEtablissementType,
+    typeIdEntreprise,
+    typeIdEtablissement,
+} from "../valueObjects/typeIdentifier";
 
 export default class PaymentFlatEntity {
     constructor(
         public uniqueId: string,
         public idVersement: string,
         public exerciceBudgetaire: number,
-        public siret: Siret,
-        public siren: Siren,
+        public typeIdEtablissementBeneficiaire: typeIdEtablissement,
+        public idEtablissementBeneficiaire: idEtablissementType<typeIdEtablissement>,
+        public typeIdEntrepriseBeneficiaire: typeIdEntreprise,
+        public idEntrepriseBeneficiaire: idEntrepriseType<typeIdEntreprise>,
         public amount: number,
         public operationDate: Date,
         public programName: string | null,

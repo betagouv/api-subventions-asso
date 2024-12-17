@@ -5,10 +5,10 @@ import associationsService from "../associations/associations.service";
 import GrantAdapter from "./grant.adapter";
 import csvStringifier = require("csv-stringify/sync");
 import { ExtractHeaderLabel, GrantToExtract } from "./@types/GrantToExtract";
-import Siren from "../../valueObjects/Siren";
 import Siret from "../../valueObjects/Siret";
 import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
 import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
+import Siren from "../../valueObjects/Siren";
 
 jest.mock("./grant.service");
 jest.mock("../associations/associations.service");
@@ -25,8 +25,6 @@ describe("GrantExtractService", () => {
         const ESTABS = [{ siret: [{ value: SIRET.value }] }] as unknown as SimplifiedEtablissement[];
         const ASSO = { denomination_siren: [{ value: "NomAsso" }] } as unknown as Association;
         const ESTABS_BY_SIRET = { [SIRET.value]: ESTABS[0] };
-
-        let separateByExerciseSpy: jest.SpyInstance;
         let isSirenSpy: jest.SpyInstance;
 
         beforeAll(() => {
