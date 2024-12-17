@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.59.2](https://github.com/betagouv/api-subventions-asso/compare/v0.59.1...v0.59.2) (2024-12-17)
+
+### Bug Fixes
+
+-   **api:** rebuild req to log with string userId ([b09c7c6](https://github.com/betagouv/api-subventions-asso/commit/b09c7c6ab32652f8d7391f58f138418c2958bba5))
+
 ## [0.59.1](https://github.com/betagouv/api-subventions-asso/compare/v0.59.0...v0.59.1) (2024-12-16)
 
 ### Bug Fixes
