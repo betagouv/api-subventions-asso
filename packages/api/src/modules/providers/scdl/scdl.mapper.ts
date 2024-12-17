@@ -1,4 +1,4 @@
-import { shortISORegExp } from "../../../shared/helpers/DateHelper";
+import { isValidDate, shortISORegExp } from "../../../shared/helpers/DateHelper";
 import { GenericParser } from "../../../shared/GenericParser";
 import { BeforeAdaptation } from "../../../@types";
 import { ScdlGrantSchema } from "./@types/ScdlGrantSchema";
@@ -40,20 +40,35 @@ const CONVENTION_DATE_PATHS = [
     "datedeConvention",
 ];
 
+const PERIODE_VERSEMENT_PATHS = [
+    "Date de versement",
+    "dateperiodedeversement",
+    "dateperiodedversement",
+    "Date(s) ou période(s) de versement",
+    "Date(s) ou période(s) de versement (AAAA-MM-JJ)",
+    "dates Periode Versement",
+    "datesPériodeVersement",
+    "Date de versement",
+];
+
 const dateAdapter = (date: BeforeAdaptation | undefined | null): Date | undefined => {
     if (!date) return undefined;
     if (typeof date === "string") return new Date(date);
     return GenericParser.ExcelDateToJSDate(Number(date));
 };
 
+const removeTrailingDotZero = value => {
+    if (value?.includes(".")) {
+        return value.split(".")[0]; // Fix to remove ".0" from IDs when the CSV comes from a cell formatted as a float
+    }
+    return value;
+};
+
 export const SCDL_MAPPER: ScdlGrantSchema = {
     allocatorName: { path: [["nomAttribuant", "Nom de l'attribuant", "nom Attribuant"]] },
     allocatorSiret: {
         path: [["idAttribuant", "Identification de l'attribuant (SIRET)", "id  Attribuant"]],
-        adapter: v => {
-            if (v?.includes(".")) return v.split(".")[0]; // TODO: quickfix for Centre Val de Loire, remove when CSV will be cleaned
-            return v;
-        },
+        adapter: v => removeTrailingDotZero(v),
     },
     exercice: {
         // for now if no exercise column we will use conventionDate as default
@@ -86,6 +101,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             "NOM Bénéficiaire",
             "Nom du bénéficiaire",
             "nom Beneficiaire",
+            "nomBénéficiaire",
         ],
     ],
     associationSiret: {
@@ -99,7 +115,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "id Beneficiaire",
             ],
         ],
-        adapter: v => v?.toString(),
+        adapter: v => removeTrailingDotZero(v),
     },
     associationRna: [[...getMapperVariants("associationRna")]],
     object: [
@@ -132,35 +148,28 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
         ],
     ],
     paymentStartDate: {
-        path: [
-            [
-                ...getMapperVariants("paymentStartDate"),
-                "Date de versement",
-                "dateperiodedeversement",
-                "dateperiodedversement",
-                "Date(s) ou période(s) de versement",
-                "Date(s) ou période(s) de versement (AAAA-MM-JJ)",
-                "dates Periode Versement",
-            ],
-        ],
-        // @ts-expect-error: with undefined it returns false, so we don't need to check it
-        adapter: value => (shortISORegExp.test(value) ? new Date(value.split(/[/_]/)[0].trim()) : dateAdapter(value)),
+        path: [[...getMapperVariants("paymentStartDate"), ...PERIODE_VERSEMENT_PATHS]],
+        adapter: value => {
+            // @ts-expect-error: with undefined it returns false, so we don't need to check it
+            const parsedDate = shortISORegExp.test(value)
+                ? // @ts-expect-error: idem
+                  new Date(value.split(/[/_]/)[0].trim())
+                : dateAdapter(value);
+            return isValidDate(parsedDate) ? parsedDate : null;
+        },
     },
     paymentEndDate: {
-        path: [
-            [
-                ...getMapperVariants("paymentEndDate"),
-                "Date de versement",
-                "dateperiodedversement",
-                "Date(s) ou période(s) de versement (AAAA-MM-JJ)",
-            ],
-        ],
+        path: [[...getMapperVariants("paymentEndDate"), ...PERIODE_VERSEMENT_PATHS]],
         adapter: value => {
-            if (typeof value !== "string") return undefined;
+            if (typeof value !== "string") return null;
+            let parsedDate: Date | null = null;
             const noSpaceValue = value?.replaceAll(" ", "");
-            if (expandedShortISOPeriodRegExp.test(noSpaceValue)) return new Date(noSpaceValue.split(/[/_]/)[1].trim());
-            else if (shortISORegExp.test(noSpaceValue)) return new Date(noSpaceValue);
-            else return null;
+            if (expandedShortISOPeriodRegExp.test(noSpaceValue)) {
+                parsedDate = new Date(noSpaceValue.split(/[/_]/)[1].trim());
+            } else if (shortISORegExp.test(noSpaceValue)) {
+                parsedDate = new Date(noSpaceValue);
+            }
+            return isValidDate(parsedDate) ? parsedDate : null;
         },
     },
     idRAE: [

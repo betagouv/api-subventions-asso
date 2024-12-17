@@ -354,12 +354,14 @@ describe("ScdlGrantParser", () => {
         let isValidSpy: jest.SpyInstance;
         let indexAnnotateSpy: jest.SpyInstance;
         let cleanupSpy: jest.SpyInstance;
+        let verifyMissingHeadersSpy: jest.SpyInstance;
 
         beforeAll(() => {
             const annotations = {};
             for (const key of Object.keys(GRANT)) {
                 annotations[key] = { keyPath: [key], value: GRANT[key] };
             }
+            verifyMissingHeadersSpy = jest.spyOn(ScdlGrantParser, "verifyMissingHeaders").mockReturnValue(undefined);
             // @ts-expect-error -- protected method
             isValidSpy = jest.spyOn(ScdlGrantParser, "isGrantValid").mockReturnValue({ valid: true });
             indexAnnotateSpy = jest
@@ -374,6 +376,7 @@ describe("ScdlGrantParser", () => {
         });
 
         afterAll(() => {
+            verifyMissingHeadersSpy.mockRestore();
             isValidSpy.mockRestore();
             cleanupSpy.mockRestore();
             indexAnnotateSpy.mockRestore();
