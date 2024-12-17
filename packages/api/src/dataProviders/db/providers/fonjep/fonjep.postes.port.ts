@@ -4,16 +4,14 @@ import { FonjepCorePort } from "./fonjep.core.port.old";
 import FonjepDboAdapter from "./fonjepDboAdapter";
 
 export class FonjepPostesPort extends FonjepCorePort<FonjepPosteDbo> {
-    readonly collectionName = "fonjepPostes";
+    readonly collectionName = "fonjepPoste";
 
     async createIndexes() {
         await this.collection.createIndex({ Code: 1 });
     }
 
     public insertMany(entities: FonjepPosteEntity[]) {
-        return this.collection.insertMany(
-            entities.map(entity => FonjepDboAdapter.toPosteDbo(entity), { ordered: false }),
-        );
+        return this.collection.insertMany(entities.map(entity => FonjepDboAdapter.toPosteDbo(entity)));
     }
 
     public findByCode(code: string) {

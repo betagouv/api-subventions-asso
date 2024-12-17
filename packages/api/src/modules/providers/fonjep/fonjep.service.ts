@@ -32,7 +32,6 @@ export class FonjepService extends ProviderCore {
         dispositifEntities: FonjepDispositifEntity[];
     } {
         const { tiers, postes, versements, typePoste, dispositifs } = FonjepParser.parse(filePath);
-
         const tierEntities = tiers.map(tier => FonjepEntityAdapter.toFonjepTierEntity(tier));
 
         const posteEntities = postes.map(poste => FonjepEntityAdapter.toFonjepPosteEntity(poste));

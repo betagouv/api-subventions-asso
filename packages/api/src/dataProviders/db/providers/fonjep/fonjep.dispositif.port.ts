@@ -11,9 +11,7 @@ export class FonjepDispositif extends FonjepCorePort<FonjepDispositifDbo> {
     }
 
     public insertMany(entities: FonjepDispositifEntity[]) {
-        return this.collection.insertMany(
-            entities.map(entity => FonjepDboAdapter.toDispositifDbo(entity), { ordered: false }),
-        );
+        return this.collection.insertMany(entities.map(entity => FonjepDboAdapter.toDispositifDbo(entity)));
     }
 
     public findByID(id: number) {

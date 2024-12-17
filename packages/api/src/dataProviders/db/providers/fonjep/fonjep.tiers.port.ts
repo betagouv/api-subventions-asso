@@ -11,9 +11,7 @@ export class FonjepTiersPort extends FonjepCorePort<FonjepTiersDbo> {
     }
 
     public insertMany(entities: FonjepTiersEntity[]) {
-        return this.collection.insertMany(
-            entities.map(entity => fonjepDboAdapter.toTierDbo(entity), { ordered: false }),
-        );
+        return this.collection.insertMany(entities.map(entity => fonjepDboAdapter.toTierDbo(entity)));
     }
 
     public findBySiretOuRidet(siretOuRidet: string) {

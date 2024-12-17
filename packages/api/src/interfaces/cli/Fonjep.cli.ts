@@ -28,7 +28,7 @@ export default class FonjepCli extends CliController {
 
         this.logger.logIC("Start register in database ...");
 
-        fonjepService.createFonjepCollections(
+        await fonjepService.createFonjepCollections(
             tierEntities,
             posteEntities,
             versementEntities,

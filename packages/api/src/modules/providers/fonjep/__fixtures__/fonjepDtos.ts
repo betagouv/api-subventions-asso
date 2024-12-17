@@ -50,7 +50,7 @@ export const TYPE_POSTE_DTO = {
 export const TYPE_POSTE_DTO_WITH_NULLS = { ...TYPE_POSTE_DTO, Libelle: null };
 
 export const DISPOSITIF_DTO = {
-    Id: 1,
+    ID: 1,
     Libelle: "Libelle",
     FinanceurCode: "FinanceurCode",
 };

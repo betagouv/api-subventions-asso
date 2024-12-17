@@ -62,7 +62,7 @@ export default class FonjepEntityAdapter {
 
     static toFonjepDispositifEntity(dispositif): FonjepDispositifEntity {
         return new FonjepDispositifEntity(
-            Number(dispositif["Id"]), // Id
+            dispositif["ID"], // ID
             dispositif["Libelle"], // Libelle
             dispositif["FinanceurCode"], // FinanceurCode
         );

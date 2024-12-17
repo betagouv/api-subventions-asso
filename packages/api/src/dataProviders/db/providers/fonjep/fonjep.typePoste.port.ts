@@ -11,9 +11,7 @@ export class FonjepTypePostePort extends FonjepCorePort<FonjepTypePosteDbo> {
     }
 
     public insertMany(entities: FonjepTypePosteEntity[]) {
-        return this.collection.insertMany(
-            entities.map(entity => FonjepDboAdapter.toTypePosteDbo(entity), { ordered: false }),
-        );
+        return this.collection.insertMany(entities.map(entity => FonjepDboAdapter.toTypePosteDbo(entity)));
     }
 
     public findByCode(code: string) {

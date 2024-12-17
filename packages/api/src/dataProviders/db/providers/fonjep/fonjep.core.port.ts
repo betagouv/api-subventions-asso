@@ -12,7 +12,6 @@ export abstract class FonjepCorePort<FonjepTypedDocument extends Document> exten
         this.useTemporyCollection(false);
         await this.collection.rename(this.collectionName + "-OLD");
         await this.getTmpCollection().rename(this.collectionName);
-        await this.createIndexes();
         await this.getOldCollection().drop();
     }
 
