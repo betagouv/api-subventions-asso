@@ -26,6 +26,30 @@ describe("scdl mapper", () => {
         });
     });
 
+    describe("associationSiret adapter", () => {
+        const adapter = (SCDL_MAPPER.associationSiret as ParserInfo<any>).adapter as (v: any) => any;
+
+        it("returns siret directly if given directly", () => {
+            const actual = adapter("23450002300028");
+            expect(actual).toBe("23450002300028");
+        });
+
+        it("returns siret without decimals if present", () => {
+            const actual = adapter("23450002300028.0");
+            expect(actual).toBe("23450002300028");
+        });
+
+        it("returns siret without decimals if present with more precision", () => {
+            const actual = adapter("23450002300028.00");
+            expect(actual).toBe("23450002300028");
+        });
+
+        it("returns siret without point if present", () => {
+            const actual = adapter("23450002300028.");
+            expect(actual).toBe("23450002300028");
+        });
+    });
+
     describe("exercise adapter", () => {
         const adapter = (SCDL_MAPPER.exercice as ParserInfo<any>).adapter as (v: any) => any;
 
