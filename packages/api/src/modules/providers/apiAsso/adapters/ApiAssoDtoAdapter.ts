@@ -144,6 +144,14 @@ export default class ApiAssoDtoAdapter {
         };
     }
 
+    static convertAndEncodeUrl(url: string) {
+        const distantUrl = url.replace(
+            /^http:\/\/localhost:8181\/services/,
+            "https://lecompteasso.associations.gouv.fr/apim/api-asso/",
+        );
+        return encodeURIComponent(distantUrl);
+    }
+
     static rnaDocumentToDocument(rnaDocument: StructureRnaDocumentDto): DocumentDto {
         let date = new Date(Date.UTC(rnaDocument.annee as number, 0));
         // DTO expect date, so we use 1970 as a hack to know that the date is not defined
@@ -154,7 +162,7 @@ export default class ApiAssoDtoAdapter {
         return {
             nom: toRnaPv(`${rnaDocument.lib_sous_type} - ${rnaDocument.id}`),
             type: toRnaPv(rnaDocument.sous_type),
-            url: toRnaPv(`/document/api_asso/?url=${encodeURIComponent(rnaDocument.url)}`),
+            url: toRnaPv(`/document/api_asso/?url=${ApiAssoDtoAdapter.convertAndEncodeUrl(rnaDocument.url)}`),
             __meta__: {},
         };
     }
@@ -177,7 +185,7 @@ export default class ApiAssoDtoAdapter {
         return {
             nom: toLCAPv(dacDocument.nom),
             type: toLCAPv(dacDocument.meta.type),
-            url: toLCAPv(`/document/api_asso/?url=${encodeURIComponent(dacDocument.url)}`),
+            url: toLCAPv(`/document/api_asso/?url=${ApiAssoDtoAdapter.convertAndEncodeUrl(dacDocument.url)}`),
             __meta__: {
                 siret: String(dacDocument.meta.id_siret),
             },
@@ -191,7 +199,7 @@ export default class ApiAssoDtoAdapter {
         return {
             nom: toLCAPv(rib.meta.iban || rib.nom),
             type: toLCAPv("RIB"),
-            url: toLCAPv(`/document/api_asso/?url=${encodeURIComponent(rib.url)}`),
+            url: toLCAPv(`/document/api_asso/?url=${ApiAssoDtoAdapter.convertAndEncodeUrl(rib.url)}`),
             __meta__: {
                 siret: String(rib.meta.id_siret),
             },
