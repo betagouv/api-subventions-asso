@@ -76,6 +76,20 @@ describe("ApiAssoDtoAdapter", () => {
         });
     });
 
+    describe("convertAndEncodeUrl", () => {
+        it("replaces localhost routes", () => {
+            const expected = "https%3A%2F%2Flecompteasso.associations.gouv.fr%2Fapim%2Fapi-asso%2F%2Ftoto";
+            const actual = ApiAssoDtoAdapter.convertAndEncodeUrl("http://localhost:8181/services/toto");
+            expect(actual).toBe(expected);
+        });
+
+        it("does not change anything else", () => {
+            const expected = "toto";
+            const actual = ApiAssoDtoAdapter.convertAndEncodeUrl(expected);
+            expect(actual).toBe(expected);
+        });
+    });
+
     describe("rnaDocumentToDocument", () => {
         let buildProviderValueSpy: jest.SpyInstance;
 
@@ -110,6 +124,12 @@ describe("ApiAssoDtoAdapter", () => {
             const actual = buildProviderValueSpy.mock.calls[0][1];
             expect(actual).toMatchInlineSnapshot(`2021-01-01T00:00:00.000Z`);
         });
+
+        it("converts and encodes url", () => {
+            const spy = jest.spyOn(ApiAssoDtoAdapter, "convertAndEncodeUrl");
+            ApiAssoDtoAdapter.rnaDocumentToDocument(ApiAssoDocumentFixture.asso.documents.document_rna[0]);
+            expect(spy).toHaveBeenCalledWith(ApiAssoDocumentFixture.asso.documents.document_rna[0].url);
+        });
     });
 
     describe("dacDocumentToDocument", () => {
@@ -119,6 +139,12 @@ describe("ApiAssoDtoAdapter", () => {
                 ApiAssoDocumentFixture.asso.documents.document_dac[0],
             );
             expect(actual).toEqual(expected);
+        });
+
+        it("converts and encodes url", () => {
+            const spy = jest.spyOn(ApiAssoDtoAdapter, "convertAndEncodeUrl");
+            ApiAssoDtoAdapter.dacDocumentToDocument(ApiAssoDocumentFixture.asso.documents.document_dac[0]);
+            expect(spy).toHaveBeenCalledWith(ApiAssoDocumentFixture.asso.documents.document_dac[0].url);
         });
     });
 
