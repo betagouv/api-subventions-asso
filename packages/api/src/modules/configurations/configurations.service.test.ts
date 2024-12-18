@@ -214,5 +214,27 @@ describe("ConfigurationService", () => {
                 expect(actual).toEqual(expected);
             });
         });
+
+        describe("Main Info Banner Configuration Part", () => {
+            describe("getMainInfoBanner()", () => {
+                it("should return info banner", async () => {
+                    const expected = {};
+                    getByNameMock.mockImplementationOnce(async () => expected);
+                    const actual = await configurationsService.getMainInfoBanner();
+                    expect(actual).toEqual(expected);
+                });
+            });
+
+            describe("updateMainInfoBanner()", () => {
+                it("should upsert info banner", async () => {
+                    const newBannerInfo = { title: "title", desc: "desc" };
+                    await configurationsService.updateMainInfoBanner(newBannerInfo.title, newBannerInfo.desc);
+                    expect(upsertMock).toHaveBeenCalledWith(CONFIGURATION_NAMES.HOME_INFOS_BANNER, {
+                        data: { title: newBannerInfo.title, desc: newBannerInfo.desc },
+                        updatedAt: new Date(),
+                    });
+                });
+            });
+        });
     });
 });
