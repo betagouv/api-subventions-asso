@@ -15,11 +15,7 @@ export class FonjepTiersPort extends FonjepCorePort<FonjepTiersDbo> {
     }
 
     public findBySiretOuRidet(siretOuRidet: string) {
-        return this.collection
-            .find({
-                SiretOuRidet: siretOuRidet,
-            })
-            .toArray();
+        return this.collection.find({ SiretOuRidet: siretOuRidet }).toArray();
     }
 
     public async findAll() {

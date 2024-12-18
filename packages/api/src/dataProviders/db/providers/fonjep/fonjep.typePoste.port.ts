@@ -1,6 +1,6 @@
 import FonjepTypePosteEntity from "../../../../modules/providers/fonjep/entities/FonjepTypePosteEntity";
 import FonjepTypePosteDbo from "./dbo/fonjepTypePosteDbo";
-import { FonjepCorePort } from "./fonjep.core.port.old";
+import { FonjepCorePort } from "./fonjep.core.port";
 import FonjepDboAdapter from "./fonjepDboAdapter";
 
 export class FonjepTypePostePort extends FonjepCorePort<FonjepTypePosteDbo> {
@@ -15,11 +15,7 @@ export class FonjepTypePostePort extends FonjepCorePort<FonjepTypePosteDbo> {
     }
 
     public findByCode(code: string) {
-        return this.collection
-            .find({
-                Code: code,
-            })
-            .toArray();
+        return this.collection.find({ Code: code }).toArray();
     }
 
     public async findAll() {

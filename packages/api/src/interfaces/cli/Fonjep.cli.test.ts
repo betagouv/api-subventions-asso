@@ -26,7 +26,7 @@ describe("FonjepCli", () => {
     });
     const cli = new FonjepCli();
     describe("_parse()", () => {
-        it("should call fromFileToEntities with the rigth arguments", async () => {
+        it("should call fromFileToEntities with the right arguments", async () => {
             // @ts-expect-error: test private method
             await cli._parse(FILEPATH, LOGS, EXPORT_DATE);
             expect(fonjepService.fromFileToEntities).toHaveBeenCalledWith(FILEPATH);
@@ -38,7 +38,7 @@ describe("FonjepCli", () => {
             expect(fonjepService.useTemporyCollection).toHaveBeenCalledWith(true);
         });
 
-        it("should call createFonjepCollections with the rigth arguments", async () => {
+        it("should call createFonjepCollections with the right arguments", async () => {
             // @ts-expect-error: test private method
             await cli._parse(FILEPATH, LOGS, EXPORT_DATE);
             expect(fonjepService.createFonjepCollections).toHaveBeenCalledWith(

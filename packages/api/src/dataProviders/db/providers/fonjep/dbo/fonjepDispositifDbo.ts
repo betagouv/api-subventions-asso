@@ -1,8 +1,6 @@
 import { ObjectId } from "mongodb";
+import FonjepDispositifDto from "../dto/fonjepDispositifDto";
 
-export default interface FonjepDispositifDbo {
+export default interface FonjepDispositifDbo extends FonjepDispositifDto {
     _id: ObjectId;
-    ID: number | null;
-    Libelle: string | null;
-    FinanceurCode: string | null;
 }

@@ -15,11 +15,7 @@ export class FonjepDispositif extends FonjepCorePort<FonjepDispositifDbo> {
     }
 
     public findByID(id: number) {
-        return this.collection
-            .find({
-                ID: id,
-            })
-            .toArray();
+        return this.collection.find({ ID: id }).toArray();
     }
 
     public async findAll() {

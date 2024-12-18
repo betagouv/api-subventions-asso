@@ -1,11 +1,6 @@
 import { ObjectId } from "mongodb";
-// dates are reported as Excel dates
-export default interface FonjepVersementDbo {
+import FonjepVersementDto from "../dto/fonjepVersementDto";
+// dates are reported as Excel dates i.e. the number of days since 1900-01-01
+export default interface FonjepVersementDbo extends FonjepVersementDto {
     _id: ObjectId;
-    PosteCode: string | null;
-    PeriodeDebut: number | null;
-    PeriodeFin: number | null;
-    DateVersement: number | null;
-    MontantAPayer: number | null;
-    MontantPaye: number | null;
 }
