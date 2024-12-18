@@ -23,6 +23,9 @@ export const PAYMENT_FLAT_ENTITY = new PaymentFlatEntity(
     "Label d'action Exemple", // action label
     "AC456", // acitivity code
     "Label d'activité Exemple", // activity label
+    "AA01/0776-C001-4000", // centre financier code
+    "UO DGER XXXX-C001", // centre financier libelle
+    "BRET", // attachement comptable
 );
 
 export const PAYMENT_FLAT_ENTITY_WITH_NULLS = new PaymentFlatEntity(
@@ -46,4 +49,7 @@ export const PAYMENT_FLAT_ENTITY_WITH_NULLS = new PaymentFlatEntity(
     "Label d'action Exemple", // action label
     "AC456", // acitivity code
     "Label d'activité Exemple", // activity label
+    "AA01/0776-C001-4000", // centre financier code
+    "UO DGER XXXX-C001", // centre financier libelle
+    "BRET", // attachement comptable
 );
