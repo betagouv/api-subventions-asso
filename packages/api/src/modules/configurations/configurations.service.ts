@@ -13,8 +13,7 @@ export enum CONFIGURATION_NAMES {
     LAST_RGPD_WARNED_DATE = "LAST-RGPD-WARNED-DATE",
     LAST_CHORUS_UPDATE_IMPORTED = "LAST-CHORUS-UPDATE-IMPORTED",
     LAST_USER_STATS_UPDATE = "LAST_USER_STATS_UPDATE",
-    HOME_INFOS_BANNER_TITLE = "HOME-INFOS-BANNER-TITLE",
-    HOME_INFOS_BANNER_DESC = "HOME-INFOS-BANNER-DESC",
+    HOME_INFOS_BANNER = "HOME-INFOS-BANNER",
 }
 
 export class ConfigurationsService {
@@ -121,38 +120,31 @@ export class ConfigurationsService {
         });
     }
 
-    async updateMainInfoBanner(title: string, desc: string) {
-        const bannerTitle = await configurationsPort.getByName<string>(CONFIGURATION_NAMES.HOME_INFOS_BANNER_TITLE);
-        const bannerDesc = await configurationsPort.getByName<string>(CONFIGURATION_NAMES.HOME_INFOS_BANNER_DESC);
-        if (!bannerTitle) {
+    async updateMainInfoBanner(title?: string, desc?: string) {
+        const newBannerConfig: MainInfoBannerDto = { title: title, desc: desc };
+
+        const bannerConfig = await configurationsPort.getByName<MainInfoBannerDto>(
+            CONFIGURATION_NAMES.HOME_INFOS_BANNER,
+        );
+        if (!bannerConfig) {
             await configurationsPort.upsert(
-                CONFIGURATION_NAMES.HOME_INFOS_BANNER_TITLE,
-                this.createEmptyConfigEntity(CONFIGURATION_NAMES.HOME_INFOS_BANNER_TITLE, title),
+                CONFIGURATION_NAMES.HOME_INFOS_BANNER,
+                this.createEmptyConfigEntity(CONFIGURATION_NAMES.HOME_INFOS_BANNER, newBannerConfig),
             );
         } else {
             await configurationsPort.upsert(
-                CONFIGURATION_NAMES.HOME_INFOS_BANNER_TITLE,
-                this.generateConfiguationEntity(bannerTitle, title),
+                CONFIGURATION_NAMES.HOME_INFOS_BANNER,
+                this.generateConfiguationEntity(bannerConfig, newBannerConfig),
             );
         }
-        if (!bannerDesc) {
-            await configurationsPort.upsert(
-                CONFIGURATION_NAMES.HOME_INFOS_BANNER_DESC,
-                this.createEmptyConfigEntity(CONFIGURATION_NAMES.HOME_INFOS_BANNER_DESC, desc),
-            );
-        } else {
-            await configurationsPort.upsert(
-                CONFIGURATION_NAMES.HOME_INFOS_BANNER_DESC,
-                this.generateConfiguationEntity(bannerDesc, desc),
-            );
-        }
-        return { title, desc };
+        return newBannerConfig;
     }
 
     async getMainInfoBanner(): Promise<MainInfoBannerDto> {
-        const bannertitle = await configurationsPort.getByName<string>(CONFIGURATION_NAMES.HOME_INFOS_BANNER_TITLE);
-        const bannerdesc = await configurationsPort.getByName<string>(CONFIGURATION_NAMES.HOME_INFOS_BANNER_DESC);
-        return { title: bannertitle?.data || "", desc: bannerdesc?.data || "" };
+        const bannerConfig = await configurationsPort.getByName<MainInfoBannerDto>(
+            CONFIGURATION_NAMES.HOME_INFOS_BANNER,
+        );
+        return bannerConfig?.data || {};
     }
 }
 

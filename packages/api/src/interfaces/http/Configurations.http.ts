@@ -47,7 +47,7 @@ export class ConfigurationsHttp extends Controller {
     @Response<HttpErrorInterface>(500, "Internal Server Error", {
         message: "Internal Server Error",
     })
-    public async updateMainInfoBanner(@Body() body: { title: string; desc: string }): Promise<MainInfoBannerDto> {
+    public async updateMainInfoBanner(@Body() body: { title?: string; desc?: string }): Promise<MainInfoBannerDto> {
         const banner = await configurationsService.updateMainInfoBanner(body.title, body.desc);
         this.setStatus(201);
         return banner;

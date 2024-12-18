@@ -28,20 +28,6 @@ export class AdminService {
             return result.status == 201;
         });
     }
-
-    async getMainInfoBanner() {
-        const path = `/config/main-info-banner`;
-        return requestsService.get(path).then(result => {
-            return result.data;
-        });
-    }
-
-    async updateMainInfoBanner(title, desc) {
-        const path = `/config/main-info-banner`;
-        return requestsService.post(path, { title, desc }).then(result => {
-            return result.status == 201;
-        });
-    }
 }
 
 const adminService = new AdminService();

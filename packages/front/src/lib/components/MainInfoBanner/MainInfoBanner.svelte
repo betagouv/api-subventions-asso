@@ -4,17 +4,20 @@
 
     const ctrl = new MainInfoBannerController();
     const { mainInfoBanner } = ctrl;
-    ctrl.init();
+    const promise = ctrl.init();
 </script>
 
-<!-- TODO clean in #2544 -->
 <div class="custom-notice-container">
-    <InformationBanner
-        bind:this={ctrl.component}
-        on:close={() => ctrl.close()}
-        closeBtn={true}
-        title={$mainInfoBanner.title}
-        desc={$mainInfoBanner.desc} />
+    {#await promise then _}
+        {#if $mainInfoBanner.title || $mainInfoBanner.desc}
+            <InformationBanner
+                bind:this={ctrl.component}
+                on:close={() => ctrl.close()}
+                closeBtn={true}
+                title={$mainInfoBanner.title}
+                desc={$mainInfoBanner.desc} />
+        {/if}
+    {/await}
 </div>
 
 <style>
