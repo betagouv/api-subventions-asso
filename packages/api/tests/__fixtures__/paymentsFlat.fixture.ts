@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import ChorusLineEntity from "../../src/modules/providers/chorus/entities/ChorusLineEntity";
 import { ENTITIES } from "../../src/modules/providers/chorus/__fixtures__/ChorusFixtures";
 export const CHORUS_LAST_UPDATE = new Date("2022-03-12");

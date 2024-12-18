@@ -25,6 +25,10 @@ export const PAYMENT_FLAT_DBO: paymentFlatDbo = {
     action: "Label d'action Exemple",
     codeActivite: "AC456",
     activite: "Label d'activité Exemple",
+    codeCentreFinancier: "AA01/0776-C001-4000",
+    libelleCentreFinancier: "UO DGER XXXX-C001",
+    attachementComptable: "BRET",
+    regionAttachementComptable: "Bretagne",
 };
 
 export const PAYMENT_FLAT_DBO_WITH_NULLS: paymentFlatDbo = {
@@ -49,4 +53,8 @@ export const PAYMENT_FLAT_DBO_WITH_NULLS: paymentFlatDbo = {
     action: "Label d'action Exemple",
     codeActivite: "AC456",
     activite: "Label d'activité Exemple",
+    codeCentreFinancier: "AA01/0776-C001-4000",
+    libelleCentreFinancier: "UO DGER XXXX-C001",
+    attachementComptable: "BRET",
+    regionAttachementComptable: "Bretagne",
 };
