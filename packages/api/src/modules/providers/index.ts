@@ -3,7 +3,7 @@ import PaymentProvider from "../payments/@types/PaymentProvider";
 import GrantProvider from "../grant/@types/GrantProvider";
 import { FullGrantProvider } from "../grant/@types/FullGrantProvider";
 import osirisService from "./osiris/osiris.service";
-import fonjepService from "./fonjep/fonjep.service";
+import fonjepService from "./fonjep/fonjep.service.old";
 import chorusService from "./chorus/chorus.service";
 import apiAssoService from "./apiAsso/apiAsso.service";
 import avisSituationInseeService from "./avisSituationInsee/avisSituationInsee.service";

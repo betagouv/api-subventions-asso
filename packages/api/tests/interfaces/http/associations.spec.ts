@@ -1,6 +1,6 @@
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import osirisRequestPort from "../../../src/dataProviders/db/providers/osiris/osiris.request.port";
-import fonjepSubventionPort from "../../../src/dataProviders/db/providers/fonjep/fonjep.subvention.port";
+import fonjepSubventionPort from "../../../src/dataProviders/db/providers/fonjep/fonjep.subvention.port.old";
 import {
     SubventionEntity as FonjepSubventionFixture,
     PaymentEntity as FonjepPaymentFixture,
@@ -32,8 +32,8 @@ import rnaSirenService from "../../../src/modules/rna-siren/rnaSiren.service";
 import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
 import chorusLinePort from "../../../src/dataProviders/db/providers/chorus/chorus.line.port";
 import { ChorusFixtures } from "../../dataProviders/db/__fixtures__/chorus.fixtures";
-import fonjepPaymentPort from "../../../src/dataProviders/db/providers/fonjep/fonjep.payment.port";
-import FonjepSubventionEntity from "../../../src/modules/providers/fonjep/entities/FonjepSubventionEntity";
+import fonjepPaymentPort from "../../../src/dataProviders/db/providers/fonjep/fonjep.payment.port.old";
+import FonjepSubventionEntity from "../../../src/modules/providers/fonjep/entities/FonjepSubventionEntity.old";
 import Rna from "../../../src/valueObjects/Rna";
 import Siret from "../../../src/valueObjects/Siret";
 import { Grant } from "dto";

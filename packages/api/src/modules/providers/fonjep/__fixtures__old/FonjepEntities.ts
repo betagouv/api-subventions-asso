@@ -1,5 +1,5 @@
 import { FonjepPayment } from "dto";
-import FonjepPaymentEntity from "../entities/FonjepPaymentEntity";
+import FonjepPaymentEntity from "../entities/FonjepPaymentEntity.old";
 
 export const FONJEP_PAYMENT_ENTITIES: FonjepPaymentEntity[] = [
     {
