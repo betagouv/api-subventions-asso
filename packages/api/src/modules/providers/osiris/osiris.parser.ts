@@ -50,12 +50,14 @@ export default class OsirisParser {
                 row,
                 OsirisActionEntity.defaultMainCategory,
             ) as DefaultObject<DefaultObject<string | number>>;
+            const dossier = data["Dossier/action"] || data["Dossier"];
+            dossier["Exercice Budgetaire"] = year;
 
             const indexedInformations = GenericParser.indexDataByPathObject(
                 OsirisActionEntity.indexedInformationsPath,
                 data,
             ) as unknown as IOsirisActionsInformations;
-            indexedInformations.extractYear = year;
+            indexedInformations.exercise = year;
 
             return new OsirisActionEntity(indexedInformations, data);
         });
@@ -74,11 +76,13 @@ export default class OsirisParser {
                 row,
                 OsirisEvaluationEntity.defaultMainCategory,
             ) as DefaultObject<DefaultObject<string | number>>;
+            data["Dossier/action"]["Exercice Budgetaire"] = year;
+
             const indexedInformations = GenericParser.indexDataByPathObject(
                 OsirisEvaluationEntity.indexedInformationsPath,
                 data,
             ) as unknown as IOsirisEvaluationsInformations;
-            indexedInformations.extractYear = year;
+            indexedInformations.exercise = year;
 
             return new OsirisEvaluationEntity(indexedInformations, data);
         });

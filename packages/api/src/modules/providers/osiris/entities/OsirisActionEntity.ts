@@ -12,6 +12,7 @@ export default class OsirisActionEntity extends OsirisActionEntityDbo {
     } = {
         osirisActionId: [OsirisActionEntity.defaultMainCategory, "Numero Action Osiris"],
         compteAssoId: [OsirisActionEntity.defaultMainCategory, "N° Dossier Compte Asso"],
+        exercise: [OsirisActionEntity.defaultMainCategory, "Exercice budgetaire"],
         federation: ["Fédération d'affiliation", "Fédération"],
         licencies: ["Fédération d'affiliation", "Nombre licenciés"],
         licenciesHommes: ["Fédération d'affiliation", "Nombre licenciés hommes"],

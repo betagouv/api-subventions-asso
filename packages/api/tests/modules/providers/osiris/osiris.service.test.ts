@@ -212,7 +212,7 @@ describe("OsirisService", () => {
                         osirisActionId: "W&-",
                         siret: "WRONG_SIRET",
                         evaluation_resultat: "",
-                        extractYear: 2022,
+                        exercise: 2022,
                     },
                     {},
                 );
@@ -230,7 +230,7 @@ describe("OsirisService", () => {
                         osirisActionId: "FAKE_OSIRIS_ID",
                         siret: "WRONG_SIRET",
                         evaluation_resultat: "",
-                        extractYear: 2022,
+                        exercise: 2022,
                     },
                     {},
                 );
@@ -248,7 +248,7 @@ describe("OsirisService", () => {
                         osirisActionId: "FAKE_OSIRIS_ID",
                         siret: "01234567891112",
                         evaluation_resultat: "",
-                        extractYear: 2022,
+                        exercise: 2022,
                     },
                     {},
                 );
@@ -266,7 +266,7 @@ describe("OsirisService", () => {
                         osirisActionId: "FAKE_OSIRIS_ID",
                         siret: "01234567891112",
                         evaluation_resultat: "FAKE_RESULT",
-                        extractYear: 2022,
+                        exercise: 2022,
                     },
                     {},
                 );
