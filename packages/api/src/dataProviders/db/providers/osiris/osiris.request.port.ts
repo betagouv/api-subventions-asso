@@ -21,16 +21,13 @@ export class OsirisRequestPort extends MongoPort<OsirisRequestEntity> {
     public async update(osirisRequest: OsirisRequestEntity) {
         const options = { returnDocument: "after", includeResultMetadata: true } as FindOneAndUpdateOptions;
         const { _id, ...requestWithoutId } = osirisRequest;
-        return (
-            //@ts-expect-error -- mongo typing expects no metadata
-            (
-                await this.collection.findOneAndUpdate(
-                    { "providerInformations.osirisId": osirisRequest.providerInformations.osirisId },
-                    { $set: requestWithoutId },
-                    options,
-                )
-            )?.value as OsirisRequestEntity
+        const updateRes = await this.collection.findOneAndUpdate(
+            { "providerInformations.osirisId": osirisRequest.providerInformations.osirisId },
+            { $set: requestWithoutId },
+            options,
         );
+        //@ts-expect-error -- mongo typing expects no metadata
+        return updateRes?.value as OsirisRequestEntity;
     }
 
     public async findByMongoId(id: string): Promise<OsirisRequestEntity | null> {
