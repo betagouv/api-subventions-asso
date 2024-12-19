@@ -39,4 +39,5 @@ export default interface IOsirisRequestInformations extends IProviderInformation
     versementCompensationN: number;
 
     exercise: number;
+    uniqueId: string;
 }

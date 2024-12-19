@@ -125,5 +125,6 @@ export default class OsirisRequestEntity extends RequestEntity {
         public actions?: OsirisActionEntity[],
     ) {
         super(legalInformations);
+        this.providerInformations.uniqueId = `${this.providerInformations.osirisId}-${this.providerInformations.exercise}`;
     }
 }

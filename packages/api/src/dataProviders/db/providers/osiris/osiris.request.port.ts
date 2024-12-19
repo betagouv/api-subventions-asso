@@ -22,13 +22,13 @@ export class OsirisRequestPort extends MongoPort<OsirisRequestEntity> {
         const options = { returnDocument: "after", includeResultMetadata: true } as FindOneAndUpdateOptions;
         const { _id, ...requestWithoutId } = osirisRequest;
         return (
+            //@ts-expect-error -- mongo typing expects no metadata
             (
                 await this.collection.findOneAndUpdate(
                     { "providerInformations.osirisId": osirisRequest.providerInformations.osirisId },
                     { $set: requestWithoutId },
                     options,
                 )
-            //@ts-expect-error -- mongo typing expects no metadata
             )?.value as OsirisRequestEntity
         );
     }
@@ -37,9 +37,9 @@ export class OsirisRequestPort extends MongoPort<OsirisRequestEntity> {
         return this.collection.findOne({ _id: new ObjectId(id) });
     }
 
-    public findByOsirisId(osirisId: string) {
+    public findByUniqueId(uniqueId: string) {
         return this.collection.findOne({
-            "providerInformations.osirisId": osirisId,
+            "providerInformations.uniqueId": uniqueId,
         }) as unknown as OsirisRequestEntity | null;
     }
 
