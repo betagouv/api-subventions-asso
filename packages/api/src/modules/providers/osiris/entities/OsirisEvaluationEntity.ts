@@ -9,6 +9,7 @@ export default class OsirisEvaluationEntity {
         [key: string]: ParserPath | ParserInfo<string | number>;
     } = {
         osirisActionId: [OsirisEvaluationEntity.defaultMainCategory, "Numero Action Osiris"],
+        exercise: [OsirisEvaluationEntity.defaultMainCategory, "Exercice budgetaire"],
         siret: {
             path: ["Bénéficiaire", "N° Siret"],
             adapter: value => {
