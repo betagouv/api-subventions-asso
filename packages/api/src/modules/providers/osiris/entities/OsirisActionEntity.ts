@@ -8,10 +8,10 @@ export default class OsirisActionEntity extends OsirisActionEntityDbo {
     public static defaultMainCategory = "Dossier/action";
 
     public static indexedInformationsPath: {
-        [key: string]: ParserPath | ParserInfo;
+        [key: string]: ParserPath | ParserInfo<string | number>;
     } = {
-        osirisActionId: ["Dossier/action", "Numero Action Osiris"],
-        compteAssoId: ["Dossier/action", "N° Dossier Compte Asso"],
+        osirisActionId: [OsirisActionEntity.defaultMainCategory, "Numero Action Osiris"],
+        compteAssoId: [OsirisActionEntity.defaultMainCategory, "N° Dossier Compte Asso"],
         federation: ["Fédération d'affiliation", "Fédération"],
         licencies: ["Fédération d'affiliation", "Nombre licenciés"],
         licenciesHommes: ["Fédération d'affiliation", "Nombre licenciés hommes"],
@@ -31,7 +31,7 @@ export default class OsirisActionEntity extends OsirisActionEntityDbo {
         territoireStatus: ["Territoires", "Statut"],
         territoireCommentaire: ["Territoires", "Commentaire"],
 
-        ej: ["Dossier/action", "N° EJ"],
+        ej: [OsirisActionEntity.defaultMainCategory, "N° EJ"],
         siret: ["Bénéficiaire", "N° Siret"],
         rang: ["Caractéristiques actions", "Rang"],
         intitule: ["Caractéristiques actions", "Intitulé"],

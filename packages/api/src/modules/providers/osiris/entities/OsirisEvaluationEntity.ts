@@ -6,7 +6,7 @@ export default class OsirisEvaluationEntity {
     public static defaultMainCategory = "Dossier/action";
 
     public static indexedInformationsPath: {
-        [key: string]: ParserPath | ParserInfo;
+        [key: string]: ParserPath | ParserInfo<string | number>;
     } = {
         osirisActionId: [OsirisEvaluationEntity.defaultMainCategory, "Numero Action Osiris"],
         siret: {
@@ -19,7 +19,7 @@ export default class OsirisEvaluationEntity {
         cout_total_realise: {
             path: ["Montants et versements", "Coût réalisé (total charges)"],
             adapter: value => {
-                if (!value) return value;
+                if (!value || typeof value === "number") return value;
                 return parseFloat(value);
             },
         },
