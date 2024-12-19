@@ -20,6 +20,7 @@ export default class OsirisParser {
                 row,
                 OsirisRequestEntity.defaultMainCategory,
             ) as DefaultObject<DefaultObject<string | number>>;
+            data.Dossier["Exercice Budgetaire"] = year;
 
             const indexedInformations = GenericParser.indexDataByPathObject<string | number>(
                 OsirisRequestEntity.indexedProviderInformationsPath,
@@ -30,7 +31,7 @@ export default class OsirisParser {
                 data,
             ) as unknown as ILegalInformations;
 
-            indexedInformations.extractYear = year;
+            indexedInformations.exercise = year;
 
             return new OsirisRequestEntity(legalInformations, indexedInformations, data);
         });

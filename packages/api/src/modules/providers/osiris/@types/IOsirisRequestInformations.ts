@@ -38,5 +38,5 @@ export default interface IOsirisRequestInformations extends IProviderInformation
     versementCompensationN1: number;
     versementCompensationN: number;
 
-    extractYear: number;
+    exercise: number;
 }
