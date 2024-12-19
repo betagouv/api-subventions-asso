@@ -69,7 +69,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
     allocatorName: { path: [["nomAttribuant", "Nom de l'attribuant", "nom Attribuant"]] },
     allocatorSiret: {
         path: [["idAttribuant", "Identification de l'attribuant (SIRET)", "id  Attribuant"]],
-        adapter: v => removeTrailingDotZero(v),
+        adapter: v => removeTrailingDotZero(v?.toString()),
     },
     exercice: {
         // for now if no exercise column we will use conventionDate as default
@@ -119,7 +119,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Id du bénéficiaire",
             ],
         ],
-        adapter: v => removeTrailingDotZero(v),
+        adapter: v => removeTrailingDotZero(v?.toString()),
     },
     associationRna: [[...getMapperVariants("associationRna")]],
     object: [
