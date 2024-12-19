@@ -3526,6 +3526,7 @@ Array [
             "etablissementVoie": "rue Waldeck-Rousseau",
             "exercise": 2022,
             "osirisId": "OSIRIS_ID",
+            "uniqueId": "OSIRIS_ID-2022",
           },
           "providerMatchingKeys": Array [
             "osirisId",
@@ -5955,6 +5956,7 @@ Array [
             "etablissementVoie": "rue Waldeck-Rousseau",
             "exercise": 2022,
             "osirisId": "OSIRIS_ID",
+            "uniqueId": "OSIRIS_ID-2022",
           },
           "providerMatchingKeys": Array [
             "osirisId",
