@@ -44,7 +44,7 @@ describe("/config", () => {
         describe("GET /main-info-banner", () => {
             it("should return SuccessResponse", async () => {
                 await request(g.app)
-                    .get("/config/domains")
+                    .get("/config/main-info-banner")
                     .set("x-access-token", await createAndGetAdminToken())
                     .set("Accept", "application/json")
                     .expect(200, {});
