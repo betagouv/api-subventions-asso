@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import ChorusLineEntity from "../../src/modules/providers/chorus/entities/ChorusLineEntity";
 import { ENTITIES } from "../../src/modules/providers/chorus/__fixtures__/ChorusFixtures";
 export const CHORUS_LAST_UPDATE = new Date("2022-03-12");
@@ -8,7 +7,12 @@ export const MOCK_DOCUMENTS: ChorusLineEntity[] = [
     // je change l'exercice du première document pour qu'il ne soit pas enregistré lors de resyncExercice(2023)
     {
         ...ENTITIES[0],
-        indexedInformations: { ...ENTITIES[0].indexedInformations, siret: "12345678901313", exercice: 2022 },
+        indexedInformations: {
+            ...ENTITIES[0].indexedInformations,
+            siret: "12345678901313",
+            exercice: 2022,
+            codeSociete: "HNOR",
+        },
     },
     // je mets des entités avec le même paymentFlat uniqueId pour tester le groupement
     {
