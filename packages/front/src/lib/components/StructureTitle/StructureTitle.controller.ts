@@ -41,8 +41,10 @@ export class StructureTitleController {
 
     get nbEstabLabel() {
         // duplicate from AssociationCard but I don't think it is worth making an helper for this
-        return this.nbEstabs <= 1
+        return this.nbEstabs == 1
             ? `${this.nbEstabs} établissement rattaché`
+            : this.nbEstabs < 1
+            ? "aucun établissement rattaché"
             : `${this.nbEstabs} établissements rattachés`;
     }
 }
