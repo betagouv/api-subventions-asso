@@ -91,10 +91,13 @@ export class DocumentsService {
         return this.getRequestedDocumentFiles(documents.map(documentToDocumentRequest), identifier.toString());
     }
 
+    private noPathTraversal(path: string) {
+        return path.split(/[/\\]/).pop() ?? "";
+    }
+
     private sanitizeDocumentRequest(doc: DocumentRequestDto) {
-        const noPathTraversal = s => s.replace(/[/|\\]/g, "");
-        doc.type = noPathTraversal(doc.type);
-        doc.nom = noPathTraversal(doc.nom);
+        doc.type = this.noPathTraversal(doc.type);
+        doc.nom = this.noPathTraversal(doc.nom);
         return doc;
     }
 
@@ -130,7 +133,9 @@ export class DocumentsService {
             const escapeInjectCmdInName = name => name.split('"')[0].split(/\/\\/).pop();
             const readStream = await this.getDocumentStreamByLocalApiUrl(document.url);
             const sourceFileName = escapeInjectCmdInName(
-                readStream.headers["content-disposition"]?.match(/attachment;filename="(.*)"/)?.[1] || document.nom,
+                this.noPathTraversal(
+                    readStream.headers["content-disposition"]?.match(/attachment;filename="(.*)"/)?.[1] || document.nom,
+                ),
             );
             const extension = /\.[^/\\.]+$/.test(sourceFileName)
                 ? ""

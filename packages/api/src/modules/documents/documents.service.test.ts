@@ -459,24 +459,76 @@ describe("Documents Service", () => {
         });
     });
 
+    describe("noPathTraversal", () => {
+        it("keeps last item after / and \\", () => {
+            const expected = "end.ts";
+            // @ts-expect-error -- test private method
+            const actual = documentsService.noPathTraversal("toto/after/path\\end.ts");
+            expect(actual).toBe(expected);
+        });
+    });
+
     describe("downloadDocument", () => {
         let getDocStream: jest.SpyInstance;
+        let spyProtectPathTraversal: jest.SpyInstance;
+        const DOC = { url: "url", nom: "nom", type: "type" };
+        const pipeOn = () => jest.fn((_, f) => f());
+        const FOLDER = "folder/name";
 
         beforeAll(() => {
-            const pipeMock = { headers: {}, pipe: () => ({ on: jest.fn() }) };
+            const pipeMock = { headers: {}, pipe: () => ({ on: pipeOn() }) };
             // @ts-expect-error downloadDocument
             getDocStream = jest.spyOn(documentsService, "getDocumentStreamByLocalApiUrl").mockResolvedValue(pipeMock);
+            // @ts-expect-error downloadDocument
+            spyProtectPathTraversal = jest.spyOn(documentsService, "noPathTraversal").mockReturnValue("safe.toto");
         });
 
         afterAll(() => {
             getDocStream.mockRestore();
         });
 
-        it("calls getDocumentStreamByLocalApiUrl", () => {
-            const DOC = { url: "url", nom: "nom", type: "type" };
+        it("calls getDocumentStreamByLocalApiUrl", async () => {
             // @ts-expect-error test private
-            documentsService.downloadDocument("folder/name", DOC);
+            await documentsService.downloadDocument(FOLDER, DOC);
             expect(getDocStream).toHaveBeenCalledWith("url");
+        });
+
+        it("protects from pathTraversal path from document", async () => {
+            const nom = 'nom/with/path"traversal"/and/problems.toto';
+            const DOC: DocumentRequestDto = {
+                type: "typeDoc",
+                url: "url",
+                nom,
+            };
+            const expected = "/tmp/folder/typeDoc-problems.toto";
+            // @ts-expect-error test private
+            await documentsService.downloadDocument(FOLDER, DOC);
+            expect(spyProtectPathTraversal).toHaveBeenCalledWith(nom);
+        });
+
+        it("protects from pathTraversal path from headers", async () => {
+            const name = 'nom/with/path"traversal"/and/problems.toto';
+            const pipeMock = {
+                headers: { "content-disposition": `attachment;filename="${name}"` },
+                pipe: () => ({ on: pipeOn() }),
+            };
+            getDocStream = jest
+                // @ts-expect-error downloadDocument
+                .spyOn(documentsService, "getDocumentStreamByLocalApiUrl")
+                // @ts-expect-error downloadDocument
+                .mockResolvedValueOnce(pipeMock);
+
+            const expected = "/tmp/folder/typeDoc-problems.toto";
+            // @ts-expect-error test private
+            await documentsService.downloadDocument(FOLDER, DOC);
+            expect(spyProtectPathTraversal).toHaveBeenCalledWith('nom/with/path"traversal"/and/problems.toto');
+        });
+
+        it("creates write file stream with sanitized path ", async () => {
+            const expected = "/tmp/folder/name/type-safe.toto";
+            // @ts-expect-error test private
+            await documentsService.downloadDocument(FOLDER, DOC);
+            expect(fs.createWriteStream).toHaveBeenCalledWith(expected);
         });
     });
 });
