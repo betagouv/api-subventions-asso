@@ -127,12 +127,12 @@ export class DocumentsService {
 
     private async downloadDocument(folderName: string, document: DocumentRequestDto): Promise<string | null> {
         try {
-            const escapeInjectCmdInName = name => name.split('"')[0];
+            const escapeInjectCmdInName = name => name.split('"')[0].split(/\/\\/).pop();
             const readStream = await this.getDocumentStreamByLocalApiUrl(document.url);
             const sourceFileName = escapeInjectCmdInName(
                 readStream.headers["content-disposition"]?.match(/attachment;filename="(.*)"/)?.[1] || document.nom,
             );
-            const extension = /\.[^/]+$/.test(sourceFileName)
+            const extension = /\.[^/\\.]+$/.test(sourceFileName)
                 ? ""
                 : "." + (mime.extension(readStream.headers["content-type"]) || "pdf");
             const documentPath = `/tmp/${folderName}/${document.type}-${sourceFileName}${extension}`;
