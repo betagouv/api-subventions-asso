@@ -1,6 +1,6 @@
 import request = require("supertest");
 import osirisRequestPort from "../../src/dataProviders/db/providers/osiris/osiris.request.port";
-import fonjepSubventionPort from "../../src/dataProviders/db/providers/fonjep/fonjep.subvention.port";
+import fonjepSubventionPort from "../../src/dataProviders/db/providers/fonjep/fonjep.subvention.port.old";
 import { SubventionEntity as FonjepEntityFixture } from "./providers/fonjep/__fixtures__/entity";
 import OsirisRequestEntityFixture from "./providers/osiris/__fixtures__/entity";
 

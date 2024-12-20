@@ -4,7 +4,11 @@ import MongoPort from "../../../../shared/MongoPort";
 export abstract class FonjepCorePort<FonjepTypedDocument extends Document> extends MongoPort<FonjepTypedDocument> {
     private tmpCollectionEnabled = false;
 
-    useTemporyCollection(active: boolean) {
+    async createIndexes() {
+        await this.collection.createIndex({ "legalInformations.siret": 1 });
+    }
+
+    useTemporyCollection(active) {
         this.tmpCollectionEnabled = active;
     }
 
@@ -12,6 +16,7 @@ export abstract class FonjepCorePort<FonjepTypedDocument extends Document> exten
         this.useTemporyCollection(false);
         await this.collection.rename(this.collectionName + "-OLD");
         await this.getTmpCollection().rename(this.collectionName);
+        await this.createIndexes();
         await this.getOldCollection().drop();
     }
 
