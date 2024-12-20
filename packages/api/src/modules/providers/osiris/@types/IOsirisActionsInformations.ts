@@ -46,5 +46,5 @@ export default interface IOsirisActionsInformations {
     montants_versement_realise: number;
     montants_versement_compensation: number;
 
-    extractYear: number;
+    exercise: number;
 }
