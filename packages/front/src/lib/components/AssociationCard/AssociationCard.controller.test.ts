@@ -49,6 +49,14 @@ describe("AssociationCardController", () => {
         });
 
         describe("nbEtabsLabel", () => {
+            it("should return none", () => {
+                const simplifiedAsso = { rna: RNA, address: {}, nbEtabs: 0 };
+                const ctrl = new AssociationCardController(simplifiedAsso, "");
+                const expected = "aucun établissement rattaché";
+                const actual = ctrl.nbEtabsLabel;
+                expect(actual).toEqual(expected);
+            });
+
             it("should return singular", () => {
                 const simplifiedAsso = { rna: RNA, address: {}, nbEtabs: 1 };
                 const ctrl = new AssociationCardController(simplifiedAsso, "");
