@@ -1,6 +1,7 @@
 import winston from "winston";
 import expressWinston from "express-winston";
 import "winston-mongodb";
+import { ObjectId } from "mongodb";
 import { UserDto } from "dto";
 import { client } from "../shared/MongoConnection";
 
@@ -21,6 +22,18 @@ function recursiveFilter(obj: object) {
     });
 }
 
+const requestWhitelist = [
+    "url",
+    "method",
+    "httpVersion",
+    "originalUrl",
+    "query",
+    "body",
+    "user",
+    "connection",
+    "headers",
+];
+
 export const expressLogger = () =>
     expressWinston.logger({
         transports: [
@@ -36,23 +49,14 @@ export const expressLogger = () =>
         ],
         meta: true,
         dynamicMeta: function (req, res) {
-            // completes generated meta in log
-            return {
-                req: { user: { _id: (req.user as UserDto)?._id?.toString() } },
-            };
+            if ((req.user as UserDto)?._id == null) return {};
+            // completes generated meta in log, careful it overrides nested values
+            const whiteReq = {};
+            requestWhitelist.map(propertyName => (whiteReq[propertyName] = req[propertyName]));
+            return { req: { ...whiteReq, user: { ...req.user, _id: (req.user as UserDto)?._id?.toString() } } };
         },
         msg: "Request: HTTP {{req.method}} {{req.url}}; ipAddress {{req.connection.remoteAddress}}",
-        requestWhitelist: [
-            "url",
-            "method",
-            "httpVersion",
-            "originalUrl",
-            "query",
-            "body",
-            "user",
-            "connection",
-            "headers",
-        ],
+        requestWhitelist,
         responseWhitelist: ["statusCode"],
         ignoreRoute: req => {
             return LOGGER_IGNORED_ROUTES.some(regex => regex.test(req.url));

@@ -49,6 +49,7 @@ const PERIODE_VERSEMENT_PATHS = [
     "dates Periode Versement",
     "datesPériodeVersement",
     "Date de versement",
+    "Période de versement",
 ];
 
 const dateAdapter = (date: BeforeAdaptation | undefined | null): Date | undefined => {
@@ -79,6 +80,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "dateDecision_Tri",
                 "annee",
                 "Année budgétaire",
+                "anneeConvention",
                 ...CONVENTION_DATE_PATHS,
             ],
         ],
@@ -113,6 +115,8 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "N° SIRET",
                 "identification du bénéficiaire (SIRET)",
                 "id Beneficiaire",
+                "IdBeneficiaire",
+                "Id du bénéficiaire",
             ],
         ],
         adapter: v => removeTrailingDotZero(v),
@@ -125,12 +129,14 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             "Objet de la convention",
             "Objet du dossier",
             "Objet de la subvention",
+            "Objet de l'aide",
         ],
     ],
     amount: {
         path: [
             [
                 ...getMapperVariants("amount"),
+                "Montant",
                 "Montant total de la subvention*",
                 "Montant total de la subvention",
                 "Montant voté",
@@ -138,7 +144,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
         ],
         adapter: value => (value && typeof value === "string" ? parseFloat(value.replace(/[^0-9.]/, "")) : value),
     },
-    paymentNature: [[...getMapperVariants("paymentNature"), "Nature de la subvention"]],
+    paymentNature: [[...getMapperVariants("paymentNature"), "Nature de la subvention", "Nature de l'aide"]],
     paymentConditions: [
         [
             ...getMapperVariants("paymentConditions"),
@@ -178,6 +184,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             "Numéro de référencement au répertoire des entreprises",
             "Numéro de référencement au répertoire des entreprises",
             "Numéro unique de référencement au répertoire des aides aux entreprises (RAE)",
+            "ID RAE",
         ],
     ],
     UeNotification: {
@@ -187,6 +194,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Aide notifiée Ã  l'Europe",
                 "Aides ne relevant pas d'une aide d'état",
                 "Aide d'Etat notifiée à la Commission européenne, conformément aux dispositions du règlement (UE) n° 1407/2013 de la Commission du 18 décembre 2013",
+                "Notification UE",
             ],
         ],
         adapter: value => {
@@ -203,6 +211,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Pourcentage du montant de la subvention attribué au bénéficiaire*",
                 "% du mt de la subvention attribuée au bénéficiaire",
                 "Pourcentage du montant de la subvention attribuée au bénéficiaire",
+                "Pourcentage subvention",
             ],
         ],
         adapter: value => (value ? parseFloat(value) : value),
