@@ -2,6 +2,8 @@ import { MainInfoBannerDto } from "dto";
 import configurationsService from "../../modules/configurations/configurations.service";
 import { ConfigurationsHttp } from "./Configurations.http";
 
+jest.mock("../../modules/configurations/configurations.service");
+
 describe("ConfigurationsHttp", () => {
     let controller;
     beforeEach(() => {
@@ -9,9 +11,8 @@ describe("ConfigurationsHttp", () => {
     });
     describe("addDomain()", () => {
         const BODY = { domain: "rhone.fr" };
-        const addEmailDomainMock = jest.spyOn(configurationsService, "addEmailDomain");
         it("should return response", async () => {
-            addEmailDomainMock.mockImplementationOnce(async domain => domain);
+            jest.mocked(configurationsService.addEmailDomain).mockImplementationOnce(async domain => domain);
             const expected = { domain: BODY.domain };
             const actual = await controller.addDomain(BODY);
             expect(actual).toEqual(expected);
@@ -19,15 +20,14 @@ describe("ConfigurationsHttp", () => {
     });
 
     describe("getMainInfoBanner", () => {
-        const getMainInfoBannerSpy = jest.spyOn(configurationsService, "getMainInfoBanner");
         it("should call service without args", async () => {
-            getMainInfoBannerSpy.mockImplementationOnce(jest.fn());
+            jest.mocked(configurationsService.getMainInfoBanner).mockImplementationOnce(jest.fn());
             await controller.getMainInfoBanner();
-            expect(getMainInfoBannerSpy).toHaveBeenCalled();
+            expect(configurationsService.getMainInfoBanner).toHaveBeenCalled();
         });
 
         it("should return banner infos", async () => {
-            getMainInfoBannerSpy.mockImplementationOnce(async () => expected);
+            jest.mocked(configurationsService.getMainInfoBanner).mockImplementationOnce(async () => expected);
             const expected = {};
             const actual = await controller.getMainInfoBanner();
             expect(actual).toEqual(expected);
@@ -35,10 +35,11 @@ describe("ConfigurationsHttp", () => {
     });
 
     describe("updateMainInfoBanner", () => {
-        const updateMainInfoBannerSpy = jest.spyOn(configurationsService, "updateMainInfoBanner");
         const newBannerInfo = { title: "title", desc: "desc" };
         it("should return response", async () => {
-            updateMainInfoBannerSpy.mockImplementationOnce(async newBannerInfo => expected);
+            jest.mocked(configurationsService.updateMainInfoBanner).mockImplementationOnce(
+                async newBannerInfo => expected,
+            );
             const expected = {};
             const actual = await controller.updateMainInfoBanner(newBannerInfo.title, newBannerInfo.desc);
             expect(actual).toEqual(expected);

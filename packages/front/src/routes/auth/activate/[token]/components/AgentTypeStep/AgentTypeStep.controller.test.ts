@@ -53,13 +53,12 @@ describe("AgentTypeStepController", () => {
         ${true}   | ${"error"} | ${{ value: "none" }}
         ${false}  | ${"valid"} | ${{ value: "some" }}
     `("onUpdate - case $event", ({ event, option }) => {
-        // eslint-disable-next-line vitest/no-commented-out-tests
-        // it("updates errorMessage store", () => {
-        //     // @ts-expect-error - mock readonly
-        //     ctrl.errorMessage = { set: vi.fn() };
-        //     ctrl.onUpdate(option);
-        //     expect(ctrl.errorMessage.set).toMatchSnapshot();
-        // });
+        it("updates errorMessage store", () => {
+            // @ts-expect-error - mock readonly
+            ctrl.errorMessage = { set: vi.fn() };
+            ctrl.onUpdate(option);
+            expect(ctrl.errorMessage.set).toMatchSnapshot();
+        });
 
         it("dispatches event", () => {
             // @ts-expect-error - mock private
