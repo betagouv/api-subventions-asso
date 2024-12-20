@@ -27,8 +27,8 @@ describe("ConfigurationsHttp", () => {
         });
 
         it("should return banner infos", async () => {
-            jest.mocked(configurationsService.getMainInfoBanner).mockImplementationOnce(async () => expected);
             const expected = {};
+            jest.mocked(configurationsService.getMainInfoBanner).mockResolvedValueOnce(expected);
             const actual = await controller.getMainInfoBanner();
             expect(actual).toEqual(expected);
         });
@@ -37,10 +37,8 @@ describe("ConfigurationsHttp", () => {
     describe("updateMainInfoBanner", () => {
         const newBannerInfo = { title: "title", desc: "desc" };
         it("should return response", async () => {
-            jest.mocked(configurationsService.updateMainInfoBanner).mockImplementationOnce(
-                async newBannerInfo => expected,
-            );
             const expected = {};
+            jest.mocked(configurationsService.updateMainInfoBanner).mockResolvedValueOnce(expected);
             const actual = await controller.updateMainInfoBanner(newBannerInfo.title, newBannerInfo.desc);
             expect(actual).toEqual(expected);
         });
