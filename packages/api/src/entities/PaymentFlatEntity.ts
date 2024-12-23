@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import {
     idEntrepriseType,
     idEtablissementType,
@@ -80,12 +81,19 @@ export default class PaymentFlatEntity {
         public centreFinancierLibelle: string | null,
         public attachementComptable: string | null,
     ) {
-        this.regionAttachementComptable = null;
-        if (attachementComptable) {
-            if (attachementComptable in PaymentFlatEntity.regionMapping) {
-                this.regionAttachementComptable = PaymentFlatEntity.regionMapping[attachementComptable];
-            } else
-                console.error(`Error: attachementComptable '${attachementComptable}' is not found in regionMapping.`);
+        this.regionAttachementComptable = PaymentFlatEntity.getRegionAttachementComptable(attachementComptable);
+    }
+
+    public static getRegionAttachementComptable(attachementComptable: string | null): string | null {
+        if (!attachementComptable) return null;
+
+        const region = PaymentFlatEntity.regionMapping[attachementComptable];
+        if (region === undefined) {
+            const errorMessage = `Unknown region code: ${attachementComptable}`;
+            Sentry.captureException(new Error(errorMessage));
+            console.error(errorMessage);
+            return null;
         }
+        return region;
     }
 }
