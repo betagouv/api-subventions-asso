@@ -1,5 +1,4 @@
 export default interface FonjepPosteDto {
-    [key: string]: any;
     // dates are excel dates (i.e. days since 1900-01-01)
     Code: string | null;
     DispositifId: number | null;
