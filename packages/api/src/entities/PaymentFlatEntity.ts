@@ -5,6 +5,9 @@ import {
     typeIdEntreprise,
     typeIdEtablissement,
 } from "../valueObjects/typeIdentifier";
+import { ParserInfo } from "../@types";
+import { GenericParser } from "../shared/GenericParser";
+import Siret from "../valueObjects/Siret";
 
 export default class PaymentFlatEntity {
     private static regionMapping: Record<string, string> = {
@@ -54,36 +57,6 @@ export default class PaymentFlatEntity {
         PAYL: "Pays de la Loire",
     };
 
-    public regionAttachementComptable: string | null;
-
-    constructor(
-        public uniqueId: string,
-        public idVersement: string,
-        public exerciceBudgetaire: number,
-        public typeIdEtablissementBeneficiaire: typeIdEtablissement,
-        public idEtablissementBeneficiaire: idEtablissementType<typeIdEtablissement>,
-        public typeIdEntrepriseBeneficiaire: typeIdEntreprise,
-        public idEntrepriseBeneficiaire: idEntrepriseType<typeIdEntreprise>,
-        public amount: number,
-        public operationDate: Date,
-        public programName: string | null,
-        public programNumber: number,
-        public mission: string | null,
-        public ministry: string | null,
-        public ministryAcronym: string | null,
-        public ej: string,
-        public provider: string,
-        public actionCode: string,
-        public actionLabel: string | null,
-        public activityCode: string | null,
-        public activityLabel: string | null,
-        public centreFinancierCode: string | null,
-        public centreFinancierLibelle: string | null,
-        public attachementComptable: string | null,
-    ) {
-        this.regionAttachementComptable = PaymentFlatEntity.getRegionAttachementComptable(attachementComptable);
-    }
-
     public static getRegionAttachementComptable(attachementComptable: string | null): string | null {
         if (!attachementComptable) return null;
 
@@ -95,5 +68,107 @@ export default class PaymentFlatEntity {
             return null;
         }
         return region;
+    }
+
+    public static chorusToPaymentFlatPath: { [key: string]: ParserInfo } = {
+        exerciceBudgetaire: {
+            path: ["Exercice comptable"],
+            adapter: value => {
+                if (!value) return value;
+                return parseInt(value, 10);
+            },
+        },
+        typeIdEtablissementBeneficiaire: {
+            path: ["Code taxe 1"],
+            adapter: value => {
+                if (Siret.isSiret(value)) return "siret";
+            },
+        },
+        idEtablissementBeneficiaire: {
+            path: ["Code taxe 1"],
+            adapter: value => {
+                if (value) return new Siret(value);
+            },
+        },
+        typeIdEntrepriseBeneficiaire: {
+            path: ["Code taxe 1"],
+            adapter: value => {
+                if (Siret.isSiret(value)) return "siren";
+            },
+        },
+        idEntrepriseBeneficiaire: {
+            path: ["Code taxe 1"],
+            adapter: value => {
+                if (value) return new Siret(value).toSiren();
+            },
+        },
+        amount: {
+            path: ["Montant payé"],
+            adapter: value => {
+                if (!value || typeof value === "number") return value;
+
+                return parseFloat(value.replace("\r", "").replace(" ", "").replace(",", "."));
+            },
+        },
+        dateOperation: {
+            path: ["Date de dernière opération sur la DP"],
+            adapter: value => {
+                if (!value) return value;
+                if (value != parseInt(value, 10).toString()) {
+                    const [day, month, year] = value.split(/[/.]/).map(v => parseInt(v, 10));
+                    return new Date(Date.UTC(year, month - 1, day));
+                }
+                return GenericParser.ExcelDateToJSDate(parseInt(value, 10));
+            },
+        },
+
+        centreFinancierCode: {
+            path: ["Centre financier CODE"],
+        },
+        centreFinancierLibelle: {
+            path: ["Centre financier"],
+        },
+        attachementComptable: {
+            path: ["Société"],
+        },
+        ej: {
+            path: ["N° EJ"],
+        },
+        provider: {
+            path: [],
+            adapter: () => "Chorus",
+        },
+    };
+
+    public regionAttachementComptable: string | null;
+    public idVersement: string;
+    public uniqueId: string;
+
+    constructor(
+        public exerciceBudgetaire: number,
+        public typeIdEtablissementBeneficiaire: typeIdEtablissement,
+        public idEtablissementBeneficiaire: idEtablissementType<typeIdEtablissement>,
+        public typeIdEntrepriseBeneficiaire: typeIdEntreprise,
+        public idEntrepriseBeneficiaire: idEntrepriseType<typeIdEntreprise>,
+        public amount: number,
+        public operationDate: Date,
+        public centreFinancierCode: string,
+        public centreFinancierLibelle: string,
+        public attachementComptable: string,
+        public ej: string,
+        public provider: string,
+        public programName: string | null,
+        public programNumber: number,
+        public mission: string | null,
+        public ministry: string | null,
+        public ministryAcronym: string | null,
+        public actionCode: string,
+        public actionLabel: string | null,
+        public activityCode: string | null,
+        public activityLabel: string | null,
+    ) {
+        this.regionAttachementComptable = PaymentFlatEntity.getRegionAttachementComptable(attachementComptable);
+        this.idVersement = `${idEtablissementBeneficiaire}-${ej}-${exerciceBudgetaire}`;
+        this.uniqueId = `${this.idVersement}-${programNumber}-${actionCode}-${activityCode}-${operationDate.getTime()}`;
     }
 }

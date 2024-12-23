@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 import { ParserInfo } from "../../../../@types";
 import IChorusIndexedInformations from "../@types/IChorusIndexedInformations";
 import { GenericParser } from "../../../../shared/GenericParser";
+import { ChorusLineDto } from "../adapters/chorusLineDto";
 
 export default class ChorusLineEntity {
     public provider = "Chorus";
@@ -52,7 +53,7 @@ export default class ChorusLineEntity {
         public uniqueId: string,
         public updated: Date,
         public indexedInformations: IChorusIndexedInformations,
-        public data: unknown,
+        public data: ChorusLineDto,
         public _id?: ObjectId,
     ) {}
 }
