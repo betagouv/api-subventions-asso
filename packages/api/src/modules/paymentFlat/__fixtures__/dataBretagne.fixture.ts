@@ -31,6 +31,6 @@ export const RECORDS: {
 
     refProgrammation: {
         AC4560000000: new RefProgrammationEntity("Label d'activité Exemple", "AC4560000000", 163),
-        "3222": new RefProgrammationEntity("Label d'activité Exemple", "3222", 101),
+        "077601003222": new RefProgrammationEntity("Label d'activité Exemple", "077601003222", 101),
     },
 };
