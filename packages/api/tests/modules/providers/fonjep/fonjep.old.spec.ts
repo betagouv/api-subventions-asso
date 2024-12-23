@@ -1,11 +1,11 @@
 import fs from "fs";
 import path from "path";
 
-import FonjepParser from "../../../../src/modules/providers/fonjep/fonjep.parser";
-import FonjepCli from "../../../../src/interfaces/cli/Fonjep.cli";
+import FonjepParser from "../../../../src/modules/providers/fonjep/fonjep.parser.old";
+import FonjepCli from "../../../../src/interfaces/cli/Fonjep.cli.old";
 import db from "../../../../src/shared/MongoConnection";
-import fonjepVersementPort from "../../../../src/dataProviders/db/providers/fonjep/fonjep.payment.port";
-import fonjepSubventionPort from "../../../../src/dataProviders/db/providers/fonjep/fonjep.subvention.port";
+import fonjepVersementPort from "../../../../src/dataProviders/db/providers/fonjep/fonjep.payment.port.old";
+import fonjepSubventionPort from "../../../../src/dataProviders/db/providers/fonjep/fonjep.subvention.port.old";
 
 const FILE = fs.readFileSync(path.resolve(__dirname, "./__fixtures__/fonjep.xlsx"));
 const EXPORT_DATE = new Date("2022-03-03").toISOString();

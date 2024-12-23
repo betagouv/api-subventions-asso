@@ -1,457 +1,222 @@
+import {
+    DISPOSITIF_ENTITY,
+    POSTE_ENTITY,
+    TIER_ENTITY,
+    TYPE_POSTE_ENTITY,
+    VERSEMENT_ENTITY,
+} from "./__fixtures__/fonjepEntities";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
-import fonjepService, { FonjepRejectedRequest, FONJEP_SERVICE_ERRORS } from "./fonjep.service";
-import fonjepSubventionPort from "../../../dataProviders/db/providers/fonjep/fonjep.subvention.port";
-import { SubventionEntity, PaymentEntity } from "../../../../tests/modules/providers/fonjep/__fixtures__/entity";
-import * as Validators from "../../../shared/Validators";
-import fonjepPaymentPort from "../../../dataProviders/db/providers/fonjep/fonjep.payment.port";
-import fonjepJoiner from "./joiners/fonjepJoiner";
-import { FONJEP_PAYMENTS, FONJEP_PAYMENT_ENTITIES } from "./__fixtures__/FonjepEntities";
-import { RawApplication, RawFullGrant, RawPayment } from "../../grant/@types/rawGrant";
-import { DemandeSubvention } from "dto";
-import FonjepSubventionEntity from "./entities/FonjepSubventionEntity";
-import FonjepPaymentEntity from "./entities/FonjepPaymentEntity";
-import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
-import dataBretagneService from "../dataBretagne/dataBretagne.service";
-import Siren from "../../../valueObjects/Siren";
-import Siret from "../../../valueObjects/Siret";
-import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
-import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
-
 jest.mock("./adapters/FonjepEntityAdapter");
+import fonjepTiersPort from "../../../dataProviders/db/providers/fonjep/fonjep.tiers.port";
+import fonjepPostesPort from "../../../dataProviders/db/providers/fonjep/fonjep.postes.port";
+import fonjepVersementsPort from "../../../dataProviders/db/providers/fonjep/fonjep.versements.port";
+import fonjepTypePostePort from "../../../dataProviders/db/providers/fonjep/fonjep.typePoste.port";
+import fonjepDispositifPort from "../../../dataProviders/db/providers/fonjep/fonjep.dispositif.port";
+jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.tiers.port");
+jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.postes.port");
+jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.versements.port");
+jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.typePoste.port");
+jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.dispositif.port");
+import FonjepParser from "./fonjep.parser";
+import fonjepService from "./fonjep.service";
+import { cp } from "fs";
 
-const SIREN = new Siren("002034000");
-const SIRET = SIREN.toSiret(`32010`);
-const ASSOCIATION_ID = AssociationIdentifier.fromSiren(SIREN);
-const ESTABLISHMENT_ID = EstablishmentIdentifier.fromSiret(SIRET, ASSOCIATION_ID);
+const MAPPED_DATA_ELEMENT = [
+    { foo: "foo1", bar: "bar1" },
+    { foo: "foo2", bar: "bar2" },
+];
 
-const CODE_POSTE = "J00034";
-const WRONG_SIRET = SIRET.value.slice(0, 6);
-const isSiretMock = jest.spyOn(Siret, "isSiret");
-const isAssociationNameMock = jest.spyOn(Validators, "isAssociationName");
-const isDatesMock = jest.spyOn(Validators, "areDates");
-const isStringsValidMock = jest.spyOn(Validators, "areStringsValid");
-const isNumbersValidMock = jest.spyOn(Validators, "areNumbersValid");
-const findBySiretSubventionMock = jest.spyOn(fonjepSubventionPort, "findBySiret");
-const findBySirenSubventionMock = jest.spyOn(fonjepSubventionPort, "findBySiren");
-const findBySiretPaymentMock = jest.spyOn(fonjepPaymentPort, "findBySiret");
-const findBySirenPaymentMock = jest.spyOn(fonjepPaymentPort, "findBySiren");
+const MAPPED_DATA = [
+    MAPPED_DATA_ELEMENT,
+    MAPPED_DATA_ELEMENT,
+    MAPPED_DATA_ELEMENT,
+    MAPPED_DATA_ELEMENT,
+    MAPPED_DATA_ELEMENT,
+];
 
-const replaceDateWithFakeTimer = value => {
-    if (value instanceof Date) {
-        return new Date();
-    } else return value;
+const PARSED_DATA = {
+    tiers: MAPPED_DATA_ELEMENT,
+    postes: MAPPED_DATA_ELEMENT,
+    versements: MAPPED_DATA_ELEMENT,
+    typePoste: MAPPED_DATA_ELEMENT,
+    dispositifs: MAPPED_DATA_ELEMENT,
+};
+
+const ENTITIES = {
+    tierEntities: [TIER_ENTITY, TIER_ENTITY],
+    posteEntities: [POSTE_ENTITY, POSTE_ENTITY],
+    versementEntities: [VERSEMENT_ENTITY, VERSEMENT_ENTITY],
+    typePosteEntities: [TYPE_POSTE_ENTITY, TYPE_POSTE_ENTITY],
+    dispositifEntities: [DISPOSITIF_ENTITY, DISPOSITIF_ENTITY],
 };
 
 describe("FonjepService", () => {
-    jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
-
-    // Mock all date in fixture with fake timer
-    // Maybe this should / could be done for all test files (in jest.config ?)
-    for (const prop in PaymentEntity.indexedInformations) {
-        PaymentEntity.indexedInformations[prop] = replaceDateWithFakeTimer(PaymentEntity.indexedInformations[prop]);
-    }
-
+    let mockParse: jest.SpyInstance;
     beforeAll(() => {
-        // @ts-expect-error: mock
-        FonjepEntityAdapter.toDemandeSubvention.mockImplementation(entity => entity);
-        dataBretagneService.programsByCode = {
-            [PROGRAMS[1].code_programme]: PROGRAMS[1],
-        };
+        mockParse = jest.spyOn(FonjepParser, "parse").mockReturnValue(PARSED_DATA);
+
+        jest.mocked(FonjepEntityAdapter.toFonjepTierEntity).mockReturnValue(TIER_ENTITY);
+        jest.mocked(FonjepEntityAdapter.toFonjepPosteEntity).mockReturnValue(POSTE_ENTITY);
+        jest.mocked(FonjepEntityAdapter.toFonjepVersementEntity).mockReturnValue(VERSEMENT_ENTITY);
+        jest.mocked(FonjepEntityAdapter.toFonjepTypePosteEntity).mockReturnValue(TYPE_POSTE_ENTITY);
+        jest.mocked(FonjepEntityAdapter.toFonjepDispositifEntity).mockReturnValue(DISPOSITIF_ENTITY);
     });
 
     afterAll(() => {
-        // @ts-expect-error: mock
-        FonjepEntityAdapter.toDemandeSubvention.mockRestore();
+        mockParse.mockRestore();
     });
 
-    describe("validateEntity", () => {
-        it("should validate entity", () => {
-            const entity = { ...SubventionEntity };
-            const expected = true;
-            const actual = fonjepService.validateEntity(entity);
-            expect(actual).toEqual(expected);
+    describe("fromFileToEntities", () => {
+        it("should call FonjepParser.parse with the given file path", () => {
+            const filePath = "filePath";
+            fonjepService.fromFileToEntities(filePath);
+            expect(mockParse).toHaveBeenCalledWith(filePath);
         });
 
-        it("should not validate because siret is wrong", () => {
-            const entity = { ...SubventionEntity };
-            isSiretMock.mockImplementationOnce(() => false);
-            const expected = new FonjepRejectedRequest(
-                `INVALID SIRET FOR ${entity.legalInformations.siret}`,
-                FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
-                entity,
-            );
-            const actual = fonjepService.validateEntity(entity);
-            expect(actual).toEqual(expected);
+        it("should call toFonjepTierEntities the length of the parsed tiers", () => {
+            fonjepService.fromFileToEntities("filePath");
+            expect(FonjepEntityAdapter.toFonjepTierEntity).toHaveBeenCalledTimes(PARSED_DATA.tiers.length);
         });
 
-        it("should not validate because name is wrong", () => {
-            const entity = { ...SubventionEntity };
-            isSiretMock.mockImplementationOnce(() => true);
-            isAssociationNameMock.mockImplementationOnce(() => false);
-            const expected = new FonjepRejectedRequest(
-                `INVALID NAME FOR ${SubventionEntity.legalInformations.siret}`,
-                FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
-                entity,
-            );
-            const actual = fonjepService.validateEntity(entity);
-            expect(actual).toEqual(expected);
+        it.each(PARSED_DATA.tiers)("should call toFonjepTierEntity with the given tier", tier => {
+            fonjepService.fromFileToEntities("filePath");
+            expect(FonjepEntityAdapter.toFonjepTierEntity).toHaveBeenCalledWith(tier);
         });
 
-        it("should not validate because date is wrong", () => {
-            const entity = { ...SubventionEntity };
-            isSiretMock.mockImplementationOnce(() => true);
-            isAssociationNameMock.mockImplementationOnce(() => true);
-            isDatesMock.mockImplementationOnce(() => false);
-            const expected = new FonjepRejectedRequest(
-                `INVALID DATE FOR ${SubventionEntity.legalInformations.siret}`,
-                FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
-                entity,
-            );
-            const actual = fonjepService.validateEntity(entity);
-            expect(actual).toEqual(expected);
+        it("should call toFonjepPosteEntities the length of the parsed postes", () => {
+            fonjepService.fromFileToEntities("filePath");
+            expect(FonjepEntityAdapter.toFonjepPosteEntity).toHaveBeenCalledTimes(PARSED_DATA.postes.length);
         });
 
-        it("should not validate because a string is wrong", () => {
-            const entity = { ...SubventionEntity };
-            isSiretMock.mockImplementationOnce(() => true);
-            isAssociationNameMock.mockImplementationOnce(() => true);
-            isDatesMock.mockImplementationOnce(() => true);
-            isStringsValidMock.mockImplementationOnce(() => false);
-            const expected = new FonjepRejectedRequest(
-                `INVALID STRING FOR ${entity.legalInformations.siret}`,
-                FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
-                entity,
-            );
-            const actual = fonjepService.validateEntity(entity);
-            expect(actual).toEqual(expected);
+        it.each(PARSED_DATA.postes)("should call toFonjepPosteEntity with the given poste", poste => {
+            fonjepService.fromFileToEntities("filePath");
+            expect(FonjepEntityAdapter.toFonjepPosteEntity).toHaveBeenCalledWith(poste);
         });
 
-        it("should not validate because a number is wrong", () => {
-            const entity = { ...SubventionEntity };
-            isSiretMock.mockImplementationOnce(() => true);
-            isAssociationNameMock.mockImplementationOnce(() => true);
-            isDatesMock.mockImplementationOnce(() => true);
-            isStringsValidMock.mockImplementationOnce(() => true);
-            isNumbersValidMock.mockImplementationOnce(() => false);
-            const expected = new FonjepRejectedRequest(
-                `INVALID NUMBER FOR ${entity.legalInformations.siret}`,
-                FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
-                entity,
-            );
-            const actual = fonjepService.validateEntity(entity);
+        it("should call toFonjepVersementEntities the length of the parsed versements", () => {
+            fonjepService.fromFileToEntities("filePath");
+            expect(FonjepEntityAdapter.toFonjepVersementEntity).toHaveBeenCalledTimes(PARSED_DATA.versements.length);
+        });
+
+        it.each(PARSED_DATA.versements)("should call toFonjepVersementEntity with the given versement", versement => {
+            fonjepService.fromFileToEntities("filePath");
+            expect(FonjepEntityAdapter.toFonjepVersementEntity).toHaveBeenCalledWith(versement);
+        });
+
+        it("should call toFonjepTypePosteEntities the length of the parsed typePostes", () => {
+            fonjepService.fromFileToEntities("filePath");
+            expect(FonjepEntityAdapter.toFonjepTypePosteEntity).toHaveBeenCalledTimes(PARSED_DATA.typePoste.length);
+        });
+
+        it.each(PARSED_DATA.typePoste)("should call toFonjepTypePosteEntity with the given typePoste", typePoste => {
+            fonjepService.fromFileToEntities("filePath");
+            expect(FonjepEntityAdapter.toFonjepTypePosteEntity).toHaveBeenCalledWith(typePoste);
+        });
+
+        it("should call toFonjepDispositifEntities the length of the parsed dispositifs", () => {
+            fonjepService.fromFileToEntities("filePath");
+            expect(FonjepEntityAdapter.toFonjepDispositifEntity).toHaveBeenCalledTimes(PARSED_DATA.dispositifs.length);
+        });
+
+        it.each(PARSED_DATA.dispositifs)(
+            "should call toFonjepDispositifEntity with the given dispositif",
+            dispositif => {
+                fonjepService.fromFileToEntities("filePath");
+                expect(FonjepEntityAdapter.toFonjepDispositifEntity).toHaveBeenCalledWith(dispositif);
+            },
+        );
+
+        it("should return the entities", () => {
+            const actual = fonjepService.fromFileToEntities("filePath");
+            const expected = ENTITIES;
+
             expect(actual).toEqual(expected);
         });
     });
 
-    describe("createSubventionEntity", () => {
-        const validateEntityMock = jest.spyOn(fonjepService, "validateEntity");
-        it("should create entity", async () => {
-            validateEntityMock.mockImplementationOnce(() => true);
-            // @ts-expect-error: mock port
-            jest.spyOn(fonjepSubventionPort, "create").mockImplementationOnce(async () => entity);
-            const entity = { ...SubventionEntity };
-            const expected = true;
-            const actual = await fonjepService.createSubventionEntity(entity);
-            expect(actual).toEqual(expected);
+    describe("useTemporyCollection", () => {
+        it("should call useTemporyCollection on fonjepDispositifPort", () => {
+            const active = true;
+            fonjepService.useTemporyCollection(active);
+            expect(fonjepDispositifPort.useTemporyCollection).toHaveBeenCalledWith(active);
         });
 
-        it("should call port", async () => {
-            validateEntityMock.mockImplementationOnce(() => true);
-            const portCreateMock = jest
-                .spyOn(fonjepSubventionPort, "create")
-                // @ts-expect-error: mock port
-                .mockImplementationOnce(async () => expected);
-            const expected = { ...SubventionEntity };
-            await fonjepService.createSubventionEntity(expected);
-            expect(portCreateMock).toHaveBeenCalledWith(expected);
+        it("should call useTemporyCollection on fonjepPostesPort", () => {
+            const active = true;
+            fonjepService.useTemporyCollection(active);
+            expect(fonjepPostesPort.useTemporyCollection).toHaveBeenCalledWith(active);
         });
 
-        it("should not create entity", async () => {
-            const entity = { ...SubventionEntity };
-            const VALIDATE = new FonjepRejectedRequest("", 1, {});
-            const expected = VALIDATE;
-            validateEntityMock.mockImplementationOnce(() => VALIDATE);
-            const actual = await fonjepService.createSubventionEntity(entity);
-            expect(actual).toEqual(expected);
+        it("should call useTemporyCollection on fonjepTiersPort", () => {
+            const active = true;
+            fonjepService.useTemporyCollection(active);
+            expect(fonjepTiersPort.useTemporyCollection).toHaveBeenCalledWith(active);
         });
-    });
 
-    describe("getBopFromFounderCode", () => {
-        it.each`
-            code         | expected
-            ${"10012"}   | ${361}
-            ${undefined} | ${undefined}
-        `("should return value", ({ code, expected }) => {
-            const actual = fonjepService.getBopFromFounderCode(code);
-            expect(actual).toEqual(expected);
+        it("should call useTemporyCollection on fonjepTypePostePort", () => {
+            const active = true;
+            fonjepService.useTemporyCollection(active);
+            expect(fonjepTypePostePort.useTemporyCollection).toHaveBeenCalledWith(active);
+        });
+
+        it("should call useTemporyCollection on fonjepVersementsPort", () => {
+            const active = true;
+            fonjepService.useTemporyCollection(active);
+            expect(fonjepVersementsPort.useTemporyCollection).toHaveBeenCalledWith(active);
         });
     });
 
-    describe("createPaymentEntity", () => {
-        it("should throw error if siret invalid", async () => {
-            // copy with spread operator doesn't work for nested object (indexedInformations)
-            const entity = JSON.parse(JSON.stringify(PaymentEntity));
-            entity.legalInformations.siret = WRONG_SIRET;
-            const expected = new FonjepRejectedRequest(
-                `INVALID SIRET FOR ${WRONG_SIRET}`,
-                FONJEP_SERVICE_ERRORS.INVALID_ENTITY,
-                entity,
-            );
-            const actual = await fonjepService.createPaymentEntity(entity);
-            expect(actual).toEqual(expected);
+    describe("createFonjepCollections", () => {
+        it("should call insertMany on fonjepTiersPort with the given tierEntities", async () => {
+            await fonjepService.createFonjepCollections(ENTITIES.tierEntities, [], [], [], []);
+            expect(fonjepTiersPort.insertMany).toHaveBeenCalledWith(ENTITIES.tierEntities);
         });
 
-        it("creates entity", async () => {
-            const createPaymentMock = jest.spyOn(fonjepPaymentPort, "create");
-            createPaymentMock.mockImplementationOnce(jest.fn());
-            const entity = { ...PaymentEntity };
-            await fonjepService.createPaymentEntity(entity);
-            expect(createPaymentMock).toHaveBeenCalledTimes(1);
-        });
-    });
-
-    describe("getDemandeSubvention", () => {
-        it("should call fonjepSubventionPort.findBySiret", async () => {
-            // @ts-expect-error: SubventionEntity dont have _id
-            findBySiretSubventionMock.mockResolvedValueOnce([SubventionEntity]);
-            await fonjepService.getDemandeSubvention(ESTABLISHMENT_ID);
-            expect(findBySiretSubventionMock).toHaveBeenCalledWith(SIRET);
+        it("should call insertMany on fonjepPostesPort with the given posteEntities", async () => {
+            await fonjepService.createFonjepCollections([], ENTITIES.posteEntities, [], [], []);
+            expect(fonjepPostesPort.insertMany).toHaveBeenCalledWith(ENTITIES.posteEntities);
         });
 
-        it("should call fonjepSubventionPort.findBySiren", async () => {
-            // @ts-expect-error: SubventionEntity dont have _id
-            findBySirenSubventionMock.mockResolvedValueOnce([SubventionEntity]);
-            await fonjepService.getDemandeSubvention(ASSOCIATION_ID);
-            expect(findBySirenSubventionMock).toHaveBeenCalledWith(SIREN);
+        it("should call insertMany on fonjepVersementsPort with the given versementEntities", async () => {
+            await fonjepService.createFonjepCollections([], [], ENTITIES.versementEntities, [], []);
+            expect(fonjepVersementsPort.insertMany).toHaveBeenCalledWith(ENTITIES.versementEntities);
         });
 
-        it("should call FonjepEntityAdapter.toDemandeSubvention", async () => {
-            // @ts-expect-error: SubventionEntity dont have _id
-            findBySiretSubventionMock.mockResolvedValueOnce([SubventionEntity]);
-            await fonjepService.getDemandeSubvention(ESTABLISHMENT_ID);
-            expect(FonjepEntityAdapter.toDemandeSubvention).toHaveBeenCalledWith(SubventionEntity);
+        it("should call insertMany on fonjepTypePostePort with the given typePosteEntities", async () => {
+            await fonjepService.createFonjepCollections([], [], [], ENTITIES.typePosteEntities, []);
+            expect(fonjepTypePostePort.insertMany).toHaveBeenCalledWith(ENTITIES.typePosteEntities);
+        });
+
+        it("should call insertMany on fonjepDispositifPort with the given dispositifEntities", async () => {
+            await fonjepService.createFonjepCollections([], [], [], [], ENTITIES.dispositifEntities);
+            expect(fonjepDispositifPort.insertMany).toHaveBeenCalledWith(ENTITIES.dispositifEntities);
         });
     });
 
-    describe("getProgramCode", () => {
-        it("should return code", () => {
-            const expected = 163;
-            const actual = fonjepService.getProgramCode(FONJEP_PAYMENT_ENTITIES[0]);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    // used to share getProgramCode mock
-    describe("Adapte to Payment", () => {
-        let mockGetProgamCode: jest.SpyInstance;
-        beforeAll(() => {
-            mockGetProgamCode = jest.spyOn(fonjepService, "getProgramCode").mockReturnValue(163);
+    describe("applyTemporyCollection", () => {
+        it("should call applyTemporyCollection on fonjepDispositifPort", async () => {
+            await fonjepService.applyTemporyCollection();
+            expect(fonjepDispositifPort.applyTemporyCollection).toHaveBeenCalled();
         });
 
-        afterAll(() => {
-            mockGetProgamCode.mockRestore();
+        it("should call applyTemporyCollection on fonjepPostesPort", async () => {
+            await fonjepService.applyTemporyCollection();
+            expect(fonjepPostesPort.applyTemporyCollection).toHaveBeenCalled();
         });
 
-        describe("toPaymentArray", () => {
-            it("call toPayment for each document", () => {
-                fonjepService.toPaymentArray(FONJEP_PAYMENT_ENTITIES);
-                FONJEP_PAYMENT_ENTITIES.forEach((entity, index) => {
-                    expect(jest.mocked(FonjepEntityAdapter.toPayment)).toHaveBeenNthCalledWith(
-                        index + 1,
-                        entity,
-                        PROGRAMS[1],
-                    );
-                });
-            });
+        it("should call applyTemporyCollection on fonjepTiersPort", async () => {
+            await fonjepService.applyTemporyCollection();
+            expect(fonjepTiersPort.applyTemporyCollection).toHaveBeenCalled();
         });
 
-        describe("rawToPayment", () => {
-            // @ts-expect-error: parameter type
-            const RAW_PAYMENT: RawPayment<FonjepPaymentEntity> = { data: FONJEP_PAYMENT_ENTITIES[0] };
-            it("should call FonjepEntityAdapter.rawToPayment", () => {
-                fonjepService.rawToPayment(RAW_PAYMENT);
-                expect(FonjepEntityAdapter.rawToPayment).toHaveBeenCalledWith(RAW_PAYMENT, PROGRAMS[1]);
-            });
-
-            it("should return Payment", () => {
-                jest.mocked(FonjepEntityAdapter.rawToPayment).mockReturnValueOnce(FONJEP_PAYMENTS[0]);
-                const expected = FONJEP_PAYMENTS[0];
-                const actual = fonjepService.rawToPayment(RAW_PAYMENT);
-                expect(actual).toEqual(expected);
-            });
+        it("should call applyTemporyCollection on fonjepTypePostePort", async () => {
+            await fonjepService.applyTemporyCollection();
+            expect(fonjepTypePostePort.applyTemporyCollection).toHaveBeenCalled();
         });
 
-        describe("rawToGrant", () => {
-            const RAW_FULLGRANT: RawFullGrant<{
-                application: FonjepSubventionEntity;
-                payments: FonjepPaymentEntity[];
-            }> = {
-                // @ts-expect-error: parameter type
-                data: { application: { foo: "bar" }, payments: [{ poo: "paz" }] },
-            };
-            // @ts-expect-error: parameter type
-            const GRANT: Grant = { application: { foo: "bar" }, payments: [{ poo: "paz" }] };
-
-            it("should call FonjepEntityAdapter.rawToGrant", () => {
-                fonjepService.rawToGrant(RAW_FULLGRANT);
-                // array of program see TODO in method
-                expect(FonjepEntityAdapter.rawToGrant).toHaveBeenCalledWith(RAW_FULLGRANT, [PROGRAMS[1]]);
-            });
-
-            it("should return DemandeSubvention", () => {
-                jest.mocked(FonjepEntityAdapter.rawToGrant).mockReturnValueOnce(GRANT);
-                const expected = GRANT;
-                const actual = fonjepService.rawToGrant(RAW_FULLGRANT);
-                expect(actual).toEqual(expected);
-            });
-        });
-    });
-
-    describe("getPaymentsByKey", () => {
-        const findByCodeMock = jest.spyOn(fonjepPaymentPort, "findByCodePoste");
-        let toPaymentArrayMock: jest.SpyInstance;
-
-        beforeAll(() => {
-            toPaymentArrayMock = jest.spyOn(fonjepService, "toPaymentArray");
-            toPaymentArrayMock.mockImplementation(data => data);
-        });
-
-        it("calls adapter", async () => {
-            // @ts-expect-error: mock
-            findByCodeMock.mockImplementationOnce(async () => [PaymentEntity]);
-            await fonjepService.getPaymentsByKey(CODE_POSTE);
-            expect(toPaymentArrayMock).toHaveBeenCalledWith([PaymentEntity]);
-        });
-    });
-
-    describe("getPayments", () => {
-        it("should call fonjepPaymentPort.findBySiret", async () => {
-            // @ts-expect-error: PaymentEntity dont have _id
-            findBySiretPaymentMock.mockResolvedValueOnce([PaymentEntity]);
-            await fonjepService.getPayments(ESTABLISHMENT_ID);
-            expect(findBySiretPaymentMock).toHaveBeenCalledWith(SIRET);
-        });
-
-        it("should call fonjepPaymentPort.findBySiren", async () => {
-            // @ts-expect-error: PaymentEntity dont have _id
-            findBySirenPaymentMock.mockResolvedValueOnce([PaymentEntity]);
-            await fonjepService.getPayments(ASSOCIATION_ID);
-            expect(findBySirenPaymentMock).toHaveBeenCalledWith(SIREN);
-        });
-
-        it("should call toPaymentArray", async () => {
-            // @ts-expect-error: PaymentEntity dont have _id
-            findBySiretPaymentMock.mockResolvedValueOnce([PaymentEntity]);
-            const toPaymentArrayMock = jest.spyOn(fonjepService, "toPaymentArray");
-            await fonjepService.getPayments(ESTABLISHMENT_ID);
-            expect(toPaymentArrayMock).toHaveBeenCalledWith([PaymentEntity]);
-        });
-    });
-
-    describe("Database Management", () => {
-        describe("applyTemporyCollection()", () => {
-            it("should call applyTemporyCollection() on payment and subvention collection", async () => {
-                const spySubventionApplyTemporyCollection = jest
-                    .spyOn(fonjepSubventionPort, "applyTemporyCollection")
-                    .mockImplementation(jest.fn());
-                const spyPaymentApplyTemporyCollection = jest
-                    .spyOn(fonjepPaymentPort, "applyTemporyCollection")
-                    .mockImplementation(jest.fn());
-                await fonjepService.applyTemporyCollection();
-                expect(spySubventionApplyTemporyCollection).toHaveBeenCalledTimes(1);
-                expect(spyPaymentApplyTemporyCollection).toHaveBeenCalledTimes(1);
-            });
-        });
-    });
-
-    describe("raw grant", () => {
-        const DATA = [{ application: { indexedInformations: { code_poste: "EJ", annee_demande: 2042 } } }];
-
-        describe("getRawGrants", () => {
-            let findBySirenMock;
-            beforeAll(
-                () =>
-                    (findBySirenMock = jest
-                        .spyOn(fonjepJoiner, "getFullFonjepGrantsBySiren")
-                        // @ts-expect-error: mock
-                        .mockImplementation(jest.fn(() => DATA))),
-            );
-            afterAll(() => findBySirenMock.mockRestore());
-
-            it("should call findBySiren()", async () => {
-                await fonjepService.getRawGrants(ASSOCIATION_ID);
-                expect(findBySirenMock).toHaveBeenCalledWith(SIREN);
-            });
-
-            it("returns raw grant data", async () => {
-                const actual = await fonjepService.getRawGrants(ASSOCIATION_ID);
-                expect(actual).toMatchInlineSnapshot(`
-                    Array [
-                      Object {
-                        "data": Object {
-                          "application": Object {
-                            "indexedInformations": Object {
-                              "annee_demande": 2042,
-                              "code_poste": "EJ",
-                            },
-                          },
-                        },
-                        "joinKey": "EJ - 2042",
-                        "provider": "fonjep",
-                        "type": "fullGrant",
-                      },
-                    ]
-                `);
-            });
-        });
-    });
-
-    describe("rawToCommon", () => {
-        const RAW = "RAW";
-        const ADAPTED = {};
-
-        beforeAll(() => {
-            FonjepEntityAdapter.toCommon
-                // @ts-expect-error: mock
-                .mockImplementation(input => input.toString());
-        });
-
-        afterAll(() => {
-            // @ts-expect-error: mock
-            FonjepEntityAdapter.toCommon.mockReset();
-        });
-
-        it("calls adapter with data from raw grant", () => {
-            // @ts-expect-error: mock
-            fonjepService.rawToCommon({ data: RAW });
-            expect(FonjepEntityAdapter.toCommon).toHaveBeenCalledWith(RAW);
-        });
-        it("returns result from adapter", () => {
-            // @ts-expect-error: mock
-            FonjepEntityAdapter.toCommon.mockReturnValueOnce(ADAPTED);
-            const expected = ADAPTED;
-            // @ts-expect-error: mock
-            const actual = fonjepService.rawToCommon({ data: RAW });
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("rawToApplication", () => {
-        // @ts-expect-error: parameter type
-        const RAW_APPLICATION: RawApplication<FonjepSubventionEntity> = { data: { foo: "bar" } };
-        // @ts-expect-error: parameter type
-        const APPLICATION: DemandeSubvention = { foo: "bar" };
-
-        it("should call FonjepEntityAdapter.rawToApplication", () => {
-            fonjepService.rawToApplication(RAW_APPLICATION);
-            expect(FonjepEntityAdapter.rawToApplication).toHaveBeenCalledWith(RAW_APPLICATION);
-        });
-
-        it("should return DemandeSubvention", () => {
-            jest.mocked(FonjepEntityAdapter.rawToApplication).mockReturnValueOnce(APPLICATION);
-            const expected = APPLICATION;
-            const actual = fonjepService.rawToApplication(RAW_APPLICATION);
-            expect(actual).toEqual(expected);
+        it("should call applyTemporyCollection on fonjepVersementsPort", async () => {
+            await fonjepService.applyTemporyCollection();
+            expect(fonjepVersementsPort.applyTemporyCollection).toHaveBeenCalled();
         });
     });
 });
