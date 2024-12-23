@@ -140,7 +140,7 @@ export default class ScdlGrantParser {
                 invalidEntities.push(entity);
             }
             validation?.problems?.map((pb: Problem) =>
-                errors.push({ ...parsedData, ...pb, lineRejected: validation.valid ? "oui" : "non" }),
+                errors.push({ ...parsedData, ...pb, lineRejected: validation.valid ? "non" : "oui" }),
             );
         }
 
