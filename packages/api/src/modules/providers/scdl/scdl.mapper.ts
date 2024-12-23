@@ -81,6 +81,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "annee",
                 "Année budgétaire",
                 "anneeConvention",
+                "anneeDecision",
                 ...CONVENTION_DATE_PATHS,
             ],
         ],
