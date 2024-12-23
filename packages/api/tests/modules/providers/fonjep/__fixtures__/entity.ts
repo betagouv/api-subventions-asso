@@ -1,5 +1,5 @@
-import FonjepEntity from "../../../../../src/modules/providers/fonjep/entities/FonjepSubventionEntity";
-import FonjepPaymentEntity from "../../../../../src/modules/providers/fonjep/entities/FonjepPaymentEntity";
+import FonjepEntity from "../../../../../src/modules/providers/fonjep/entities/FonjepSubventionEntity.old";
+import FonjepPaymentEntity from "../../../../../src/modules/providers/fonjep/entities/FonjepPaymentEntity.old";
 import DEFAULT_ASSOCIATION from "../../../../__fixtures__/association.fixture";
 
 export const SubventionEntity = new FonjepEntity(

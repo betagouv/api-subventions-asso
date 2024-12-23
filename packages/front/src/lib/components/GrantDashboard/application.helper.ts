@@ -27,7 +27,9 @@ export const getApplicationCells = (application: FlatApplication | null, accepte
             { desc: getProjectName(application) },
             requestedCell,
             {
-                badge: accepted ? { type: "success", label: grantedAmount } : { status: application.statut_label },
+                badge: accepted
+                    ? { type: "success", label: grantedAmount || application.statut_label }
+                    : { status: application.statut_label },
             },
         ];
     }

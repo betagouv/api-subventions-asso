@@ -8,6 +8,8 @@ import { DumpCron } from "./interfaces/cron/Dump.cron";
 import { HistoryUniteLegalCron } from "./interfaces/cron/HistoryUniteLegal.cron";
 import { DEV } from "./configurations/env.conf";
 import { RgpdCron } from "./interfaces/cron/Rgpd.cron";
+import { StatsCron } from "./interfaces/cron/Stats.cron";
+import { SearchCacheCron } from "./interfaces/cron/SearchCache.cron";
 
 const controllers: CronController[] = [
     // ExampleCron,
@@ -16,6 +18,8 @@ const controllers: CronController[] = [
     DumpCron,
     HistoryUniteLegalCron,
     RgpdCron,
+    SearchCacheCron,
+    StatsCron,
 ];
 
 export const scheduler = new ToadScheduler();

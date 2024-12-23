@@ -3,10 +3,13 @@ import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import adapter from "@sveltejs/adapter-node";
 import { vitePreprocess } from "@sveltejs/kit/vite";
+import dotenv from "dotenv";
 
 const file = fileURLToPath(new URL("package.json", import.meta.url));
 const json = readFileSync(file, "utf8");
 const pkg = JSON.parse(json);
+
+if (process.env.ENV !== "test") dotenv.config({ path: `.env.local`, override: true }); //https://stackoverflow.com/a/74622497
 
 /** @type {import("@sveltejs/kit").Config} */
 const config = {
@@ -30,6 +33,7 @@ const config = {
                 "connect-src": [
                     "self",
                     process.env.PUBLIC_DATASUB_URL || "http://localhost:8080",
+                  // "http://dev.local:8080",
                     "https://client.crisp.chat wss://client.relay.crisp.chat",
                     "https://storage.crisp.chat",
                     "wss://stream.relay.crisp.chat",

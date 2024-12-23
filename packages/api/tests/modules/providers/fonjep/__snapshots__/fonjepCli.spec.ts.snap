@@ -1,0 +1,224 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FonjepCli parse() should create or remplace TypePoste collection 1`] = `
+Array [
+  Object {
+    "Code": "DOUBLE",
+    "Libelle": "UNITE DE COMPTE DOUBLEE",
+    "_id": Any<ObjectId>,
+  },
+  Object {
+    "Code": "FONJEP",
+    "Libelle": "Poste FONJEP",
+    "_id": Any<ObjectId>,
+  },
+  Object {
+    "Code": "PSTEMP",
+    "Libelle": "POSTES EMPOI FONJEP (100 %)",
+    "_id": Any<ObjectId>,
+  },
+  Object {
+    "Code": "FONBIS",
+    "Libelle": "PROLONGATION PAS DE FRAIS",
+    "_id": Any<ObjectId>,
+  },
+]
+`;
+
+exports[`FonjepCli parse() should create or replace Dispositif collection 1`] = `
+Array [
+  Object {
+    "FinanceurCode": "10004",
+    "ID": 1,
+    "Libelle": "FONJEP Jeunesse éducation populaire",
+    "_id": Any<ObjectId>,
+  },
+  Object {
+    "FinanceurCode": "10005",
+    "ID": 2,
+    "Libelle": "FONJEP Cohésion sociale",
+    "_id": Any<ObjectId>,
+  },
+  Object {
+    "FinanceurCode": "10008",
+    "ID": 3,
+    "Libelle": "FONJEP Politique de la ville",
+    "_id": Any<ObjectId>,
+  },
+  Object {
+    "FinanceurCode": "10009",
+    "ID": 4,
+    "Libelle": "FONJEP Guid'Asso",
+    "_id": Any<ObjectId>,
+  },
+  Object {
+    "FinanceurCode": "10010",
+    "ID": 5,
+    "Libelle": "FONJEP Éducation à la citoyenneté et à la solidarité internationale (ECSI)",
+    "_id": Any<ObjectId>,
+  },
+  Object {
+    "FinanceurCode": "10012",
+    "ID": 6,
+    "Libelle": "FONJEP Culture",
+    "_id": Any<ObjectId>,
+  },
+  Object {
+    "FinanceurCode": "10016",
+    "ID": 7,
+    "Libelle": "FONJEP Centre de ressources et d'information des bénévoles",
+    "_id": Any<ObjectId>,
+  },
+  Object {
+    "FinanceurCode": "10017",
+    "ID": 8,
+    "Libelle": "FONJEP Jeunes",
+    "_id": Any<ObjectId>,
+  },
+]
+`;
+
+exports[`FonjepCli parse() should create or replace Poste collection 1`] = `
+Array [
+  Object {
+    "Annee": 2017,
+    "AssociationBeneficiaireCode": 1,
+    "AssociationImplantationCode": 1,
+    "Code": "J10540",
+    "DateFinTriennalite": 43465,
+    "DispositifId": "1",
+    "DoublementUniteCompte": "Non",
+    "FinanceurAttributeurCode": 1,
+    "FinanceurPrincipalCode": "10004",
+    "MontantSubvention": 6666,
+    "PleinTemps": "Oui",
+    "PstRaisonStatutLibelle": "Reconduction",
+    "PstStatutPosteLibelle": "Attribué",
+    "PstTypePosteCode": "FONJEP",
+    "_id": Any<ObjectId>,
+  },
+  Object {
+    "Annee": 2017,
+    "AssociationBeneficiaireCode": 3,
+    "AssociationImplantationCode": 3,
+    "Code": "J02924",
+    "DateFinTriennalite": 45657,
+    "DispositifId": 3,
+    "DoublementUniteCompte": "Non",
+    "FinanceurAttributeurCode": 3,
+    "FinanceurPrincipalCode": 10005,
+    "MontantSubvention": 7164,
+    "PleinTemps": "Oui",
+    "PstRaisonStatutLibelle": "Création",
+    "PstStatutPosteLibelle": "Attribué",
+    "PstTypePosteCode": "FONJEP",
+    "_id": Any<ObjectId>,
+  },
+]
+`;
+
+exports[`FonjepCli parse() should create or replace Tiers collection 1`] = `
+Array [
+  Object {
+    "Code": 1,
+    "CodePostal": "00000",
+    "ContactEmail": "exemple@beta.gouv.fr",
+    "EstAssociation": "Oui",
+    "EstCoFinanceurPostes": "Non",
+    "EstFinanceurPostes": "Non",
+    "RaisonSociale": "CENTRE D'INFO ****",
+    "SiretOuRidet": "00000000000000",
+    "Ville": "Paris",
+    "_id": Any<ObjectId>,
+  },
+  Object {
+    "Code": 3,
+    "CodePostal": "00000",
+    "ContactEmail": "exemple@beta.gouv.fr",
+    "EstAssociation": "Oui",
+    "EstCoFinanceurPostes": "Non",
+    "EstFinanceurPostes": "Non",
+    "RaisonSociale": "DES IDEES PLEIN LA TERRE",
+    "SiretOuRidet": "00000000000000",
+    "Ville": "Paris",
+    "_id": Any<ObjectId>,
+  },
+]
+`;
+
+exports[`FonjepCli parse() should create or replace versement collection 1`] = `
+Array [
+  Object {
+    "DateVersement": 42761,
+    "MontantAPayer": 1777,
+    "MontantPaye": 1777,
+    "PeriodeDebut": 42736,
+    "PeriodeFin": 42825,
+    "PosteCode": "J10540",
+    "_id": Any<ObjectId>,
+  },
+  Object {
+    "DateVersement": 42852,
+    "MontantAPayer": 1777,
+    "MontantPaye": 1777,
+    "PeriodeDebut": 42826,
+    "PeriodeFin": 42916,
+    "PosteCode": "J10540",
+    "_id": Any<ObjectId>,
+  },
+  Object {
+    "DateVersement": 42927,
+    "MontantAPayer": 1777,
+    "MontantPaye": 1777,
+    "PeriodeDebut": 42917,
+    "PeriodeFin": 43008,
+    "PosteCode": "J10540",
+    "_id": Any<ObjectId>,
+  },
+  Object {
+    "DateVersement": 43027,
+    "MontantAPayer": 1776,
+    "MontantPaye": 1776,
+    "PeriodeDebut": 43009,
+    "PeriodeFin": 43100,
+    "PosteCode": "J10540",
+    "_id": Any<ObjectId>,
+  },
+  Object {
+    "DateVersement": 42761,
+    "MontantAPayer": 1791,
+    "MontantPaye": 1791,
+    "PeriodeDebut": 42736,
+    "PeriodeFin": 42825,
+    "PosteCode": "J02924",
+    "_id": Any<ObjectId>,
+  },
+  Object {
+    "DateVersement": 42852,
+    "MontantAPayer": 1791,
+    "MontantPaye": 1791,
+    "PeriodeDebut": 42826,
+    "PeriodeFin": 42916,
+    "PosteCode": "J02924",
+    "_id": Any<ObjectId>,
+  },
+  Object {
+    "DateVersement": 42927,
+    "MontantAPayer": 1791,
+    "MontantPaye": 1791,
+    "PeriodeDebut": 42917,
+    "PeriodeFin": 43008,
+    "PosteCode": "J02924",
+    "_id": Any<ObjectId>,
+  },
+  Object {
+    "DateVersement": 43027,
+    "MontantAPayer": 1791,
+    "MontantPaye": 1791,
+    "PeriodeDebut": 43009,
+    "PeriodeFin": 43100,
+    "PosteCode": "J02924",
+    "_id": Any<ObjectId>,
+  },
+]
+`;

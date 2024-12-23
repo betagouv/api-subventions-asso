@@ -1,34 +1,59 @@
-import FormatDateError from "../../shared/errors/cliErrors/FormatDateError";
 import FonjepCli from "./Fonjep.cli";
-import FonjepParser from "../../modules/providers/fonjep/fonjep.parser";
-import fonjepParserResponse from "../../modules/providers/fonjep/__fixtures__/fonjepParserResponse.json";
+import {
+    DISPOSITIF_ENTITY,
+    POSTE_ENTITY,
+    TIER_ENTITY,
+    TYPE_POSTE_ENTITY,
+    VERSEMENT_ENTITY,
+} from "../../modules/providers/fonjep/__fixtures__/fonjepEntities";
 import fonjepService from "../../modules/providers/fonjep/fonjep.service";
-jest.mock("fs");
+jest.mock("../../modules/providers/fonjep/fonjep.service");
 
+const ENTITIES = {
+    tierEntities: [TIER_ENTITY, TIER_ENTITY],
+    posteEntities: [POSTE_ENTITY, POSTE_ENTITY],
+    versementEntities: [VERSEMENT_ENTITY, VERSEMENT_ENTITY],
+    typePosteEntities: [TYPE_POSTE_ENTITY, TYPE_POSTE_ENTITY],
+    dispositifEntities: [DISPOSITIF_ENTITY, DISPOSITIF_ENTITY],
+};
+
+const FILEPATH = "file.xlsx";
+const EXPORT_DATE = new Date();
+const LOGS = [];
 describe("FonjepCli", () => {
-    const createSubventionEntityMock = jest.spyOn(fonjepService, "createSubventionEntity");
-    const createPaymentEntityMock = jest.spyOn(fonjepService, "createPaymentEntity");
-    const useTemporyCollectionMock = jest.spyOn(fonjepService, "useTemporyCollection");
-    const applyTemporyCollectionMock = jest.spyOn(fonjepService, "applyTemporyCollection");
-
     beforeAll(() => {
-        createSubventionEntityMock.mockImplementation(async () => true);
-        createPaymentEntityMock.mockImplementation(async () => true);
-        applyTemporyCollectionMock.mockImplementation(async () => {});
-        useTemporyCollectionMock.mockImplementation(() => {});
+        jest.mocked(fonjepService.fromFileToEntities).mockReturnValue(ENTITIES);
     });
-
     const cli = new FonjepCli();
     describe("_parse()", () => {
-        const PATH = "path/to/test";
-        it("should create entities", async () => {
-            const parseMock = jest.spyOn(FonjepParser, "parse");
-            // @ts-expect-error: mock;
-            parseMock.mockImplementationOnce(() => fonjepParserResponse);
-            // @ts-expect-error: test protected method
-            await cli._parse(PATH, [], new Date());
-            expect(createSubventionEntityMock).toHaveBeenCalledTimes(fonjepParserResponse.subventions.length);
-            expect(createPaymentEntityMock).toHaveBeenCalledTimes(fonjepParserResponse.payments.length);
+        it("should call fromFileToEntities with the right arguments", async () => {
+            // @ts-expect-error: test private method
+            await cli._parse(FILEPATH, LOGS, EXPORT_DATE);
+            expect(fonjepService.fromFileToEntities).toHaveBeenCalledWith(FILEPATH);
+        });
+
+        it("should call useTemporyCollection with true", async () => {
+            // @ts-expect-error: test private method
+            await cli._parse(FILEPATH, LOGS, EXPORT_DATE);
+            expect(fonjepService.useTemporyCollection).toHaveBeenCalledWith(true);
+        });
+
+        it("should call createFonjepCollections with the right arguments", async () => {
+            // @ts-expect-error: test private method
+            await cli._parse(FILEPATH, LOGS, EXPORT_DATE);
+            expect(fonjepService.createFonjepCollections).toHaveBeenCalledWith(
+                ENTITIES.tierEntities,
+                ENTITIES.posteEntities,
+                ENTITIES.versementEntities,
+                ENTITIES.typePosteEntities,
+                ENTITIES.dispositifEntities,
+            );
+        });
+
+        it("should call applyTemporyCollection", async () => {
+            // @ts-expect-error: test private method
+            await cli._parse(FILEPATH, LOGS, EXPORT_DATE);
+            expect(fonjepService.applyTemporyCollection).toHaveBeenCalled();
         });
     });
 });
