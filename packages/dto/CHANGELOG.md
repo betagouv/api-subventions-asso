@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.60.0](https://github.com/betagouv/datasubvention/compare/v0.59.2...v0.60.0) (2024-12-26)
+
+### Features
+
+-   **api, dto, front:** [#2853](https://github.com/betagouv/datasubvention/issues/2853) create resource to update home info banner ([#3034](https://github.com/betagouv/datasubvention/issues/3034)) ([7c1ffcd](https://github.com/betagouv/datasubvention/commit/7c1ffcd58419fb1e6af61e88ad47a94fc8ead179))
+
 # [0.59.0](https://github.com/betagouv/datasubvention/compare/v0.58.2...v0.59.0) (2024-12-09)
 
 ### Features

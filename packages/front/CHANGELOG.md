@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.60.0](https://github.com/betagouv/datasubvention/compare/v0.59.2...v0.60.0) (2024-12-26)
+
+### Bug Fixes
+
+-   **front:** [#2994](https://github.com/betagouv/datasubvention/issues/2994) get estab data when no rna can be found ([#3008](https://github.com/betagouv/datasubvention/issues/3008)) ([7e652ac](https://github.com/betagouv/datasubvention/commit/7e652ac0e83b89fb3104ab7d29346846d102103d))
+-   **front:** [#2995](https://github.com/betagouv/datasubvention/issues/2995) confusion between type and htmlType ([#3009](https://github.com/betagouv/datasubvention/issues/3009)) ([95e17b4](https://github.com/betagouv/datasubvention/commit/95e17b4fbab510d73d9c5aec326c36f0fa343f64))
+
+### Features
+
+-   **api, dto, front:** [#2853](https://github.com/betagouv/datasubvention/issues/2853) create resource to update home info banner ([#3034](https://github.com/betagouv/datasubvention/issues/3034)) ([7c1ffcd](https://github.com/betagouv/datasubvention/commit/7c1ffcd58419fb1e6af61e88ad47a94fc8ead179))
+-   **front:** [#2684](https://github.com/betagouv/datasubvention/issues/2684) grant dashboard with new api route ([#2959](https://github.com/betagouv/datasubvention/issues/2959)) ([ea924e5](https://github.com/betagouv/datasubvention/commit/ea924e53790d5a89136be13a0b6f27b26afb57af))
+-   **front:** [#2981](https://github.com/betagouv/datasubvention/issues/2981) agent pro connect ([#3013](https://github.com/betagouv/datasubvention/issues/3013)) ([17316de](https://github.com/betagouv/datasubvention/commit/17316de9cdfcfa6451975f7232019c1b8cc42131))
+-   **front:** [#2993](https://github.com/betagouv/datasubvention/issues/2993) if no granted amount display label ([#3052](https://github.com/betagouv/datasubvention/issues/3052)) ([e6e979d](https://github.com/betagouv/datasubvention/commit/e6e979de9141cf1b4439fac79cc4621baf6e009f))
+
 # [0.59.0](https://github.com/betagouv/datasubvention/compare/v0.58.2...v0.59.0) (2024-12-09)
 
 ### Bug Fixes
