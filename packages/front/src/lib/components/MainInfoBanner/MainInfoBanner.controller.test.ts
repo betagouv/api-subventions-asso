@@ -1,5 +1,7 @@
 vi.mock("svelte");
+import type { MainInfoBannerDto } from "dto";
 import { MainInfoBannerController } from "./MainInfoBanner.controller";
+import configurationsService from "$lib/resources/configurations/configurations.service";
 
 describe("MainInfoBannerController", () => {
     let controller;
@@ -7,12 +9,13 @@ describe("MainInfoBannerController", () => {
     beforeEach(() => {
         controller = new MainInfoBannerController();
     });
-
-    describe("class props", () => {
-        it("should contain linkUrl", () => {
-            const expected = expect.any(String); // "/user/profile"; // TODO clean in #2544
-            const actual = controller.linkUrl;
-            expect(actual).toEqual(expected);
+    describe("init", () => {
+        const configurationsServiceMock = vi.spyOn(configurationsService, "getMainInfoBanner");
+        it("should call configurationsService", async () => {
+            await controller.init();
+            const expected = {};
+            configurationsServiceMock.mockImplementationOnce(async () => expected);
+            expect(configurationsServiceMock).toHaveBeenCalledTimes(1);
         });
     });
 
