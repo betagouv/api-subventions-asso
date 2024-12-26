@@ -1,9 +1,9 @@
 import { DefaultObject } from "../../../@types";
 import db from "../../../shared/MongoConnection";
 import { removeSecrets } from "../../../shared/helpers/PortHelper";
-import userPort from "../../../dataProviders/db/user/user.port";
-import { UserWithAssociationVisitsEntity } from "../entities/UserWithAssociationVisitsEntity";
-import statsAssociationsVisitPort from "../../../dataProviders/db/stats/statsAssociationsVisit.port";
+import userPort from "../user/user.port";
+import { UserWithAssociationVisitsEntity } from "../../../modules/stats/entities/UserWithAssociationVisitsEntity";
+import statsAssociationsVisitPort from "./statsAssociationsVisit.port";
 
 export class UserAssociationVisitJoiner {
     userCollection = db.collection(userPort.collectionName);

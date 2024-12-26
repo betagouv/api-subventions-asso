@@ -14,10 +14,10 @@ import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import Siret from "../../../valueObjects/Siret";
 import fonjepSubventionPort from "../../../dataProviders/db/providers/fonjep/fonjep.subvention.port.old";
 import fonjepPaymentPort from "../../../dataProviders/db/providers/fonjep/fonjep.payment.port.old";
+import fonjepJoiner from "../../../dataProviders/db/providers/fonjep/fonjep.joiner.old";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter.old";
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity.old";
 import FonjepPaymentEntity from "./entities/FonjepPaymentEntity.old";
-import fonjepJoiner from "./joiners/fonjepJoiner.old";
 
 export enum FONJEP_SERVICE_ERRORS {
     INVALID_ENTITY = 1,

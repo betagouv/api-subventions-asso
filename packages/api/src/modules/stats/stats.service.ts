@@ -15,7 +15,7 @@ import Rna from "../../valueObjects/Rna";
 import associationIdentifierService from "../association-identifier/association-identifier.service";
 import statsAssociationsVisitPort from "../../dataProviders/db/stats/statsAssociationsVisit.port";
 import statsPort from "../../dataProviders/db/stats/stats.port";
-import userAssociationVisitJoiner from "./joiners/UserAssociationVisitsJoiner";
+import userAssociationVisitJoiner from "../../dataProviders/db/stats/UserAssociationVisits.joiner";
 import { UserWithAssociationVisitsEntity } from "./entities/UserWithAssociationVisitsEntity";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
 import GroupAssociationVisits from "./@types/GroupAssociationVisits";

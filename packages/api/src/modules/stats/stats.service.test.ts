@@ -16,7 +16,7 @@ import AssociationVisitEntity from "./entities/AssociationVisitEntity";
 import userPort from "../../dataProviders/db/user/user.port";
 import UserDbo from "../../dataProviders/db/user/UserDbo";
 import { UserDto } from "dto";
-import userAssociationVisitJoiner from "./joiners/UserAssociationVisitsJoiner";
+import userAssociationVisitJoiner from "../../dataProviders/db/stats/UserAssociationVisits.joiner";
 import { UserWithAssociationVisitsEntity } from "./entities/UserWithAssociationVisitsEntity";
 import { ObjectId } from "mongodb";
 import userStatsService from "../user/services/stats/user.stats.service";
