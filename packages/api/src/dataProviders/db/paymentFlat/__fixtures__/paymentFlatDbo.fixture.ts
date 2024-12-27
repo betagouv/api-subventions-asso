@@ -1,13 +1,11 @@
 import { ObjectId } from "mongodb";
 import paymentFlatDbo from "../PaymentFlatDbo";
-import Siren from "../../../../valueObjects/Siren";
-import Siret from "../../../../valueObjects/Siret";
 
 export const PAYMENT_FLAT_DBO: paymentFlatDbo = {
     _id: new ObjectId(),
-    uniqueId: "12345678901234",
+    uniqueId: "12345678901234-EJ Exemple-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
     exerciceBudgetaire: 2023,
-    idVersement: "id_versement",
+    idVersement: "12345678901234-EJ Exemple-2023",
     typeIdEtablissementBeneficiaire: "siret",
     idEtablissementBeneficiaire: "12345678901234",
     typeIdEntrepriseBeneficiaire: "siren",
@@ -33,9 +31,9 @@ export const PAYMENT_FLAT_DBO: paymentFlatDbo = {
 
 export const PAYMENT_FLAT_DBO_WITH_NULLS: paymentFlatDbo = {
     _id: new ObjectId(),
-    uniqueId: "12345678901234",
+    uniqueId: "12345678901234-EJ Exemple-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
     exerciceBudgetaire: 2023,
-    idVersement: "id_versement",
+    idVersement: "12345678901234-EJ Exemple-2023",
     typeIdEtablissementBeneficiaire: "siret",
     idEtablissementBeneficiaire: "12345678901234",
     typeIdEntrepriseBeneficiaire: "siren",

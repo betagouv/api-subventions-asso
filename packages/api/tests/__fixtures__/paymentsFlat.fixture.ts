@@ -32,7 +32,8 @@ export const MOCK_DOCUMENTS: ChorusLineEntity[] = [
             "Domaine fonctionnel CODE": "0143-03-01",
             "Référentiel de programmation CODE": "014303000102",
             "Code taxe 1": "12345678901212",
-            "Date de dernière opération sur la DP": 44903,
+            "Date de dernière opération sur la DP": 45037,
+            "Centre financier CODE": "AA01/0776-C001-4000",
         },
     },
 

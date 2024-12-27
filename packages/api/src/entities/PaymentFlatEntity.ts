@@ -169,6 +169,8 @@ export default class PaymentFlatEntity {
     ) {
         this.regionAttachementComptable = PaymentFlatEntity.getRegionAttachementComptable(attachementComptable);
         this.idVersement = `${idEtablissementBeneficiaire}-${ej}-${exerciceBudgetaire}`;
-        this.uniqueId = `${this.idVersement}-${programNumber}-${actionCode}-${activityCode}-${operationDate.getTime()}`;
+        this.uniqueId = `${
+            this.idVersement
+        }-${programNumber}-${actionCode}-${activityCode}-${operationDate.getTime()}-${attachementComptable}-${centreFinancierCode}`;
     }
 }
