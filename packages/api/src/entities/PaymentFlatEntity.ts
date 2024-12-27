@@ -107,7 +107,7 @@ export default class PaymentFlatEntity {
             adapter: value => {
                 if (!value || typeof value === "number") return value;
 
-                return parseFloat(value.replace("\r", "").replace(" ", "").replace(",", "."));
+                return parseFloat(value.replace(/\r/g, "").replace(/ /g, "").replace(/,/g, "."));
             },
         },
         dateOperation: {
