@@ -21,5 +21,5 @@ export interface ChorusLineDto {
     "Domaine fonctionnel": string | null;
     "Domaine fonctionnel CODE": string;
     "Montant payé": number | null;
-    "Date de dernière opération sur la DP": number | null;
+    "Date de dernière opération sur la DP": number | null | string;
 }

@@ -2,8 +2,8 @@ import { RECORDS } from "./__fixtures__/dataBretagne.fixture";
 import { ENTITIES } from "../providers/chorus/__fixtures__/ChorusFixtures";
 import { PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
-import IChorusIndexedInformations from "../providers/chorus/@types/IChorusIndexedInformations";
 import ChorusLineEntity from "../providers/chorus/entities/ChorusLineEntity";
+import { ChorusLineDto } from "../providers/chorus/adapters/chorusLineDto";
 console.error = jest.fn();
 
 const documentDataReturnedValue = {
@@ -18,7 +18,7 @@ const documentDataReturnedValue = {
 
 const CHORUS_LINE_ENTITY = {
     ...ENTITIES[0],
-    data: { ...ENTITIES[0].data, Société: "BRET" },
+    data: { ...(ENTITIES[0].data as ChorusLineDto), Société: "BRET" },
 };
 
 describe("PaymentFlatAdapter", () => {

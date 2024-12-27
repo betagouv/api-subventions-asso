@@ -33,7 +33,7 @@ export default class PaymentFlatAdapter {
             domaineFonctEntity,
             refProgrammationEntity,
         } = this.getDataBretagneDocumentData(
-            chorusDocument.data,
+            chorusDocument.data as ChorusLineDto,
             programs,
             ministries,
             domainesFonct,
