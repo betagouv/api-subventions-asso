@@ -77,7 +77,7 @@ describe("Data Bretagne Port", () => {
             port.token = "TOKEN";
             await port.getCollection(collection);
             expect(port.http.get).toHaveBeenCalledWith(
-                "https://api.databretagne.fr/budget/api/v1/programme?limit=4000",
+                "https://api.databretagne.fr/budget/api/v1/programme?limit=1000000",
                 { headers: { Authorization: "TOKEN" } },
             );
         });
