@@ -1,3 +1,4 @@
+import { cp } from "fs";
 import { FindCursor, WithId } from "mongodb";
 import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port";
 import dataBretagneService from "../providers/dataBretagne/dataBretagne.service";
@@ -15,6 +16,7 @@ export class PaymentFlatService {
         const programs = await dataBretagneService.findProgramsRecord();
         const domainesFonct = await dataBretagneService.getDomaineFonctRecord();
         const refsProgrammation = await dataBretagneService.getRefProgrammationRecord();
+
         return { programs, ministries, domainesFonct, refsProgrammation };
     }
 
