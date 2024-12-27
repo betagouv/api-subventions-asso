@@ -3,6 +3,7 @@ import {
     AdminTerritorialLevel,
     AgentJobTypeEnum,
     AgentTypeEnum,
+    FromTypeEnum,
     ResetPasswordErrorCodes,
     TerritorialScopeEnum,
     UpdatableUser,
@@ -33,7 +34,7 @@ export class UserProfileService {
         userInfo: Partial<UpdatableUser> | UserActivationInfoDto,
         withPassword = true,
     ): ValidationResult {
-        const { agentType, jobType, structure, region } = userInfo;
+        const { agentType, jobType, structure, region, from } = userInfo;
         let password = "";
         if (withPassword && "password" in userInfo) password = userInfo?.password;
         const validations: ValidationCriterias = [
@@ -64,6 +65,16 @@ export class UserProfileService {
                 // TODO: verify from GEO API
                 method: value => !value || typeof value == "string",
                 error: new BadRequestError(dedent`Mauvaise valeur pour la région.`),
+            },
+            {
+                value: from,
+                method: from => {
+                    if (!from?.length) return true;
+                    return !from.find(value => !isInObjectValues(FromTypeEnum, value));
+                },
+                error: new BadRequestError(dedent`Mauvaise valeur pour la provenance.
+                    Les valeurs possibles sont ${joinEnum(FromTypeEnum)}
+                `),
             },
         ];
 
@@ -107,6 +118,7 @@ export class UserProfileService {
             "structure",
             "decentralizedTerritory, firstName, lastName",
             "region",
+            "fromOther",
         ];
         const sanitizedUserInfo = { ...unsafeUserInfo };
         fieldsToSanitize.forEach(field => {

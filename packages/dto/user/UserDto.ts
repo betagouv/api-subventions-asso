@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { AdminTerritorialLevel, AgentJobTypeEnum, AgentTypeEnum, TerritorialScopeEnum } from "../auth";
+import { AdminTerritorialLevel, AgentJobTypeEnum, AgentTypeEnum, FromTypeEnum, TerritorialScopeEnum } from "../auth";
 
 export default UserDto;
 
@@ -36,6 +36,9 @@ export interface UserActivationInfoDto {
     // TODO: verify from GEO API
     decentralizedTerritory?: string;
     territorialScope?: TerritorialScopeEnum;
+    from?: FromTypeEnum;
+    fromMail?: string;
+    fromOther?: string;
 }
 
 export interface UpdatableUser {
@@ -52,6 +55,9 @@ export interface UpdatableUser {
     // TODO: verify from GEO API
     decentralizedTerritory?: string;
     territorialScope?: TerritorialScopeEnum;
+    from?: FromTypeEnum;
+    fromMail?: string;
+    fromOther?: string;
 }
 
 export interface UserWithJWTDto extends UserDto {
