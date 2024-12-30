@@ -79,7 +79,7 @@ export class GrantDashboardController {
         this.grantsByExercise = this.splitGrantsByExercise(this.grants.value as FlatGrant[]);
 
         this.exerciseOptions.set(this._buildExercices(Object.keys(this.grantsByExercise)));
-        this.selectedExercise.set((this.exerciseOptions.value || []).slice(-1)?.[0].value);
+        this.selectedExercise.set((this.exerciseOptions.value || []).slice(-1)?.[0]?.value);
     }
 
     _buildExercices(exercices: string[]) {
@@ -119,10 +119,6 @@ export class GrantDashboardController {
         // change order between ASC and DESC
         this.columnsSortOrder[index] *= -1;
         this.rows.update(rows => rows.sort((a, b) => grantCompareFn[index](a, b, this.columnsSortOrder[index])));
-    }
-
-    public selectExercise(index) {
-        this.selectedExerciseIndex.set(index);
     }
 
     public clickProviderLink() {
