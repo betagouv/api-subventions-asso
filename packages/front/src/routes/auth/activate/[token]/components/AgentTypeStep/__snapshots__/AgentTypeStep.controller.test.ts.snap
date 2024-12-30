@@ -24,35 +24,3 @@ exports[`AgentTypeStepController > constructor > inits options 1`] = `
   },
 ]
 `;
-
-exports[`AgentTypeStepController > onUpdate - case 'error' > updates errorMessage store 1`] = `
-[MockFunction spy] {
-  "calls": [
-    [
-      "Data.Subvention est réservé aux agents publics. Pour toute question, vous pouvez nous contacter à <a href="mailto:contact@datasubvention.beta.gouv.fr">contact@datasubvention.beta.gouv.fr</a>",
-    ],
-  ],
-  "results": [
-    {
-      "type": "return",
-      "value": undefined,
-    },
-  ],
-}
-`;
-
-exports[`AgentTypeStepController > onUpdate - case 'valid' > updates errorMessage store 1`] = `
-[MockFunction spy] {
-  "calls": [
-    [
-      "",
-    ],
-  ],
-  "results": [
-    {
-      "type": "return",
-      "value": undefined,
-    },
-  ],
-}
-`;
