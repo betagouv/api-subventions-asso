@@ -333,10 +333,10 @@ describe("Documents Service", () => {
     describe("sanitizeDocumentRequest", () => {
         it.each`
             property  | character      | unsafe                        | safe
-            ${"nom"}  | ${"slash"}     | ${"with/Character/Slash"}     | ${"withCharacterSlash"}
-            ${"nom"}  | ${"backslash"} | ${"with/Character/Backslash"} | ${"withCharacterBackslash"}
-            ${"type"} | ${"slash"}     | ${"with/Character/Slash"}     | ${"withCharacterSlash"}
-            ${"type"} | ${"backslash"} | ${"with/Character/Backslash"} | ${"withCharacterBackslash"}
+            ${"nom"}  | ${"slash"}     | ${"with/Character/Slash"}     | ${"Slash"}
+            ${"nom"}  | ${"backslash"} | ${"with/Character/Backslash"} | ${"Backslash"}
+            ${"type"} | ${"slash"}     | ${"with/Character/Slash"}     | ${"Slash"}
+            ${"type"} | ${"backslash"} | ${"with/Character/Backslash"} | ${"Backslash"}
         `("removes $character in $property", ({ property, unsafe, safe: expected }) => {
             // @ts-expect-error -- test private method
             const actual = documentsService.sanitizeDocumentRequest({
