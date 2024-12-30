@@ -3,7 +3,7 @@
     import TableRow from "$lib/dsfr/TableRow.svelte";
 
     import { data } from "$lib/store/modal.store";
-    import { numberToEuro } from "$lib/helpers/dataHelper.js";
+    import { numberToEuro, valueOrHyphen } from "$lib/helpers/dataHelper.js";
     import { dateToDDMMYYYY } from "$lib/helpers/dateHelper.js";
 
     const headers = ["Montant", "Domaine fonctionnel", "Activité", "Centre financier", "Date", "Programme"];
@@ -14,12 +14,12 @@
     <Table id={tableId} {headers}>
         {#each $data.payments as payment, index}
             <TableRow id={tableId} {index} title="Détail des versements" hideTitle={true}>
-                <td class="primary">{numberToEuro(payment.amount)}</td>
-                <td>{payment.domaineFonctionnel}</td>
-                <td>{payment.activitee}</td>
-                <td>{payment.centreFinancier}</td>
-                <td>{dateToDDMMYYYY(new Date(payment.dateOperation))}</td>
-                <td>{payment.programme}</td>
+                <td class="primary">{valueOrHyphen(numberToEuro(payment.amount))}</td>
+                <td>{valueOrHyphen(payment.domaineFonctionnel)}</td>
+                <td>{valueOrHyphen(payment.activitee)}</td>
+                <td>{valueOrHyphen(payment.centreFinancier)}</td>
+                <td>{valueOrHyphen(dateToDDMMYYYY(new Date(payment.dateOperation)))}</td>
+                <td>{valueOrHyphen(payment.programme)}</td>
             </TableRow>
         {/each}
     </Table>

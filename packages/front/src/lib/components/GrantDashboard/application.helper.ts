@@ -1,7 +1,7 @@
 import { ApplicationStatus } from "dto";
 import type { FlatApplication } from "$lib/resources/@types/FlattenGrant";
 import type { TableCell } from "$lib/dsfr/TableCell.types";
-import { numberToEuro } from "$lib/helpers/dataHelper";
+import { numberToEuro, valueOrHyphen } from "$lib/helpers/dataHelper";
 import { withTwoDigitYear } from "$lib/helpers/dateHelper";
 import { capitalizeFirstLetter } from "$lib/helpers/stringHelper";
 import { mapSiretPostCodeStore } from "$lib/store/association.store";
@@ -9,28 +9,32 @@ import { mapSiretPostCodeStore } from "$lib/store/association.store";
 export const getApplicationCells = (application: FlatApplication | null, accepted: boolean): TableCell[] | null => {
     if (!application) return null;
     else {
-        const grantedAmount = numberToEuro(application.montants?.accorde);
+        const grantedAmount = valueOrHyphen(numberToEuro(application.montants?.accorde));
 
         const requestedCell = application.montants?.demande
             ? {
-                  title: numberToEuro(application.montants?.demande),
-                  desc: application.creer_le
-                      ? `Demandé le ${withTwoDigitYear(new Date(application.creer_le))}`
-                      : undefined,
+                  title: valueOrHyphen(numberToEuro(application.montants?.demande)),
+                  desc: valueOrHyphen(
+                      application.creer_le
+                          ? `Demandé le ${withTwoDigitYear(new Date(application.creer_le))}`
+                          : undefined,
+                  ),
               }
-            : { desc: null };
+            : { desc: "-" };
 
         return [
-            { desc: mapSiretPostCodeStore.value.get(application.siret?.toString() as string) },
-            { desc: application.service_instructeur },
-            { desc: application.dispositif },
-            { desc: getProjectName(application) },
+            { desc: valueOrHyphen(mapSiretPostCodeStore.value.get(application.siret?.toString() as string)) },
+            { desc: valueOrHyphen(application.service_instructeur) },
+            { desc: valueOrHyphen(application.dispositif) },
+            { desc: valueOrHyphen(getProjectName(application)) },
             requestedCell,
-            {
-                badge: accepted
-                    ? { type: "success", label: grantedAmount || application.statut_label }
-                    : { status: application.statut_label },
-            },
+            application.statut_label != undefined
+                ? {
+                      badge: accepted
+                          ? { type: "success", label: grantedAmount || application.statut_label }
+                          : { status: application.statut_label },
+                  }
+                : { desc: "-" },
         ];
     }
 };
