@@ -167,7 +167,9 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
     paymentEndDate: {
         path: [[...getMapperVariants("paymentEndDate"), ...PERIODE_VERSEMENT_PATHS]],
         adapter: value => {
-            if (typeof value !== "string") return null;
+            if (typeof value !== "string") {
+                return dateAdapter(value);
+            }
             let parsedDate: Date | null = null;
             const noSpaceValue = value?.replaceAll(" ", "");
             if (expandedShortISOPeriodRegExp.test(noSpaceValue)) {
