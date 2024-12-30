@@ -156,6 +156,26 @@ describe("user profile service", () => {
             });
             // TODO question : laisser le test comme ça ou extraire des tests ?
         });
+
+        describe("from", () => {
+            const mockList = [mockedUserCheckService.passwordValidator];
+            beforeAll(() => mockedUserCheckService.passwordValidator.mockImplementation(() => true));
+            afterAll(() => mockList.forEach(mock => mock.mockReset()));
+            it("should throw an error", () => {
+                const actual = userProfileService.validateUserProfileData({
+                    ...validInput,
+                    // @ts-expect-error -- test errors in input
+                    from: ["WRONG_FROM"],
+                });
+                expect(actual).toMatchSnapshot();
+            });
+            it("should return true", () => {
+                const expected = { valid: true };
+
+                const actual = userProfileService.validateUserProfileData(validInput);
+                expect(actual).toEqual(expected);
+            });
+        });
     });
 
     describe("sanitizeActivationUserInfo()", () => {
