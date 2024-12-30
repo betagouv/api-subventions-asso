@@ -19,7 +19,7 @@
                 <td>{valueOrHyphen(payment.activitee)}</td>
                 <td>{valueOrHyphen(payment.centreFinancier)}</td>
                 <td>{valueOrHyphen(dateToDDMMYYYY(new Date(payment.dateOperation)))}</td>
-                <td>{valueOrHyphen(payment.programme)}</td>
+                <td>{payment.programme ? `${payment.programme} - ${payment.libelleProgramme}` : "-"}</td>
             </TableRow>
         {/each}
     </Table>
