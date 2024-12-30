@@ -62,6 +62,9 @@ export default class PaymentFlatAdapter {
             domaineFonctEntity?.libelle_action ?? null, // actionLabel,
             activityCode ?? null, // activityCode,
             refProgrammationEntity?.libelle_activite ?? null, // activityLabel
+            chorusDocument.indexedInformations.codeCentreFinancier, // centreFinancierCode,
+            chorusDocument.indexedInformations.centreFinancier, // centreFinancierLibelle,
+            chorusDocument.indexedInformations.codeSociete, // attachementComptable
         );
     }
 

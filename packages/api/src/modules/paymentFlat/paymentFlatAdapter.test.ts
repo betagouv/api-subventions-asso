@@ -16,7 +16,10 @@ const documentDataReturnedValue = {
     refProgrammationEntity: RECORDS["refProgrammation"]["3222"],
 };
 
-const CHORUS_LINE_ENTITY = ENTITIES[0];
+const CHORUS_LINE_ENTITY = {
+    ...ENTITIES[0],
+    indexedInformations: { ...ENTITIES[0].indexedInformations, codeSociete: "BRET" },
+};
 
 describe("PaymentFlatAdapter", () => {
     describe("toPaymentFlatEntity", () => {

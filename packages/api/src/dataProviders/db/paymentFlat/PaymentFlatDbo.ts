@@ -28,4 +28,8 @@ export default interface PaymentFlatDbo {
     action: string | null;
     codeActivite: string | null;
     activite: string | null;
+    codeCentreFinancier: string | null;
+    libelleCentreFinancier: string | null;
+    attachementComptable: string | null;
+    regionAttachementComptable: string | null;
 }
