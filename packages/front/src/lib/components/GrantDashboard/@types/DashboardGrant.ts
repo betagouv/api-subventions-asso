@@ -39,4 +39,5 @@ export type SortableRow = {
     payment?: DashboardPayment | null;
     application?: DashboardApplication | null;
     granted: boolean;
+    flatGrant: FlatGrant;
 };
