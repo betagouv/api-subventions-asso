@@ -98,7 +98,7 @@ export class GrantDashboardController {
         else return defaultContent;
     }
 
-    private updateRows(grants) {
+    private updateRows(grants: FlatGrant[]) {
         if (!grants) return;
         this.rows.set(
             grants.map(grant => {

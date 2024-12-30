@@ -5,6 +5,7 @@ import { numberToEuro } from "$lib/helpers/dataHelper";
 import { withTwoDigitYear } from "$lib/helpers/dateHelper";
 import { capitalizeFirstLetter } from "$lib/helpers/stringHelper";
 import { mapSiretPostCodeStore } from "$lib/store/association.store";
+import type { DashboardApplication } from "$lib/components/GrantDashboard/@types/DashboardGrant";
 
 export const getApplicationCells = (application: FlatApplication | null, accepted: boolean): TableCell[] | null => {
     if (!application) return null;
@@ -35,8 +36,9 @@ export const getApplicationCells = (application: FlatApplication | null, accepte
     }
 };
 
-export function getApplicationDashboardData(application: FlatApplication | null) {
+export function getApplicationDashboardData(application: FlatApplication | null): DashboardApplication | null {
     if (!application) return application;
+    if (!application.annee_demande) return null;
     return {
         montantAccorde: application.montants?.accorde,
         montantDemande: application.montants?.demande,
@@ -46,6 +48,7 @@ export function getApplicationDashboardData(application: FlatApplication | null)
         dispositif: application.dispositif,
         nomProjet: getProjectName(application),
         statut_label: application.statut_label,
+        annee_demande: application.annee_demande,
     };
 }
 
