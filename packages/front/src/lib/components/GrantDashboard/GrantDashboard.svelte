@@ -75,7 +75,7 @@
     <div class="fr-mt-6w compact-columns">
         {#if $selectedGrants?.length}
             <div>
-                <GrantsStatistique grants={$grants} year={$selectedExercise} />
+                <GrantsStatistique grants={$selectedGrants} year={$selectedExercise} />
             </div>
             <div class="negative-margin">
                 <Table
