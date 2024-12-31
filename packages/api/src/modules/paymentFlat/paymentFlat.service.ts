@@ -1,4 +1,3 @@
-import { cp } from "fs";
 import { FindCursor, WithId } from "mongodb";
 import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port";
 import dataBretagneService from "../providers/dataBretagne/dataBretagne.service";

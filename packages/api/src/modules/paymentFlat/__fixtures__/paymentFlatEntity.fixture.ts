@@ -23,6 +23,6 @@ export const PAYMENT_FLAT_ENTITY = new PaymentFlatEntity(
     "ME", // ministry acronym
     "0101-01-02", // action code
     "Label d'action Exemple", // action label
-    "077601003222", // acitivity code
+    "077601003222", // activity code
     "Label d'activité Exemple", // activity label
 );

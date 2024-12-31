@@ -107,7 +107,7 @@ export default class PaymentFlatEntity {
             adapter: value => {
                 if (!value || typeof value === "number") return value;
 
-                return parseFloat(value.replace(/\r/g, "").replace(/ /g, "").replace(/,/g, "."));
+                return parseFloat(value.replaceAll(/[\r ]/, "").replace(",", "."));
             },
         },
         dateOperation: {
@@ -153,7 +153,7 @@ export default class PaymentFlatEntity {
         public amount: number,
         public operationDate: Date,
         public centreFinancierCode: string,
-        public centreFinancierLibelle: string,
+        public centreFinancierLibelle: string | null,
         public attachementComptable: string,
         public ej: string,
         public provider: string,
