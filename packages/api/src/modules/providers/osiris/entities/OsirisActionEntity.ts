@@ -57,5 +57,6 @@ export default class OsirisActionEntity extends OsirisActionEntityDbo {
 
     constructor(public indexedInformations: IOsirisActionsInformations, public data: unknown, public _id?: ObjectId) {
         super(indexedInformations, data, _id);
+        this.indexedInformations.uniqueId = `${this.indexedInformations.osirisActionId}-${this.indexedInformations.exercise}`;
     }
 }
