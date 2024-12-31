@@ -1,8 +1,7 @@
 import { ObjectId } from "mongodb";
-import { ParserInfo, ParserPath, Falsy } from "../../../../@types";
+import { ParserInfo, ParserPath } from "../../../../@types";
 import IOsirisActionsInformations from "../@types/IOsirisActionsInformations";
 import OsirisActionEntityDbo from "./OsirisActionEntityDbo";
-import OsirisEvaluationEntity from "./OsirisEvaluationEntity";
 
 export default class OsirisActionEntity extends OsirisActionEntityDbo {
     public static defaultMainCategory = "Dossier/action";
@@ -56,12 +55,7 @@ export default class OsirisActionEntity extends OsirisActionEntityDbo {
         montants_versement_compensation: ["Montants et versements", "Compensation"],
     };
 
-    constructor(
-        public indexedInformations: IOsirisActionsInformations,
-        public data: unknown,
-        public _id?: ObjectId,
-        public evaluation?: Falsy<OsirisEvaluationEntity>,
-    ) {
+    constructor(public indexedInformations: IOsirisActionsInformations, public data: unknown, public _id?: ObjectId) {
         super(indexedInformations, data, _id);
     }
 }
