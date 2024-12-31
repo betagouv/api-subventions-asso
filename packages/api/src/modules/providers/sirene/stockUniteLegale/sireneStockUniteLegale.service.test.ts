@@ -1,19 +1,22 @@
 import sireneStockUniteLegaleService from "./sireneStockUniteLegale.service";
 import sireneStockUniteLegalePort from "../../../../dataProviders/api/sirene/sireneStockUniteLegale.port";
 import { Readable } from "stream";
-import fs from "fs";
+import fs, { cp } from "fs";
 import { exec } from "child_process";
+import { after } from "lodash";
 
 jest.mock("child_process", () => ({
     exec: jest.fn((_path, cb) => cb(null, "stdout", "stderr")),
 }));
 
+
 const ZIP_PATH = "path/to/zip";
-const DESTINATION_DIRECTORY_PATH = "path/to/destination";
+const DIRECTORY_PATH = "path/to/destination";
 jest.mock("fs", () => {
     const actualFs = jest.requireActual("fs");
     return {
         ...actualFs,
+        mkdtempSync: jest.fn(),
         createWriteStream: jest.fn(),
     };
 });
@@ -123,17 +126,55 @@ describe("SireneStockUniteLegaleService", () => {
 
     describe("decompressFolder", () => {
         it("should call exec with the right parameters", async () => {
-            await sireneStockUniteLegaleService.decompressFolder(ZIP_PATH, DESTINATION_DIRECTORY_PATH);
+            await sireneStockUniteLegaleService.decompressFolder(ZIP_PATH, DIRECTORY_PATH);
             expect(exec).toHaveBeenCalledWith(
-                `unzip ${ZIP_PATH} -d ${DESTINATION_DIRECTORY_PATH}`,
+                `unzip ${ZIP_PATH} -d ${DIRECTORY_PATH}`,
                 expect.any(Function),
             );
         });
         it("should decompress the file and return the path", async () => {
-            const actual = await sireneStockUniteLegaleService.decompressFolder(ZIP_PATH, DESTINATION_DIRECTORY_PATH);
-            expect(actual).toBe(DESTINATION_DIRECTORY_PATH);
+            const actual = await sireneStockUniteLegaleService.decompressFolder(ZIP_PATH, DIRECTORY_PATH);
+            expect(actual).toBe(DIRECTORY_PATH);
+        })
+        /*
+        // TO DO : resoudre probleme avec callback ci-dessous
+        it("should throw an error if exec fails", async () => {
+            jest.mocked(exec).mockImplementationOnce((_path, callback) => callback(new Error("simulated error during exec"), "stdout", "stderr"));
+            await expect(sireneStockUniteLegaleService.decompressFolder(ZIP_PATH, DESTINATION_DIRECTORY_PATH)).rejects.toThrow(
+                "Failed to decompress: stderr",
+            );
+        });
+        */
+    });
+
+    describe("getExtractAndSaveFiles", () => {
+        let mockGetAndSaveZip: jest.SpyInstance;
+        let mockDecompressFolder: jest.SpyInstance;
+
+        beforeEach(() => {
+            mockGetAndSaveZip = jest.spyOn(sireneStockUniteLegaleService, "getAndSaveZip").mockResolvedValue("finish");
+            mockDecompressFolder = jest.spyOn(sireneStockUniteLegaleService, "decompressFolder").mockResolvedValue(
+                DIRECTORY_PATH,
+            );
+        });
+        afterAll(() => {
+            jest.clearAllMocks();
+            jest.restoreAllMocks();
+        });
+        it("should call getAndSaveZip", async () => {
+            await sireneStockUniteLegaleService.getExtractAndSaveFiles();
+            expect(sireneStockUniteLegaleService.getAndSaveZip).toHaveBeenCalledTimes(1);
         });
 
-        // TO DO : test error
+        it("should call decompressFolder", async () => {
+            sireneStockUniteLegaleService.directory_path = DIRECTORY_PATH;
+            await sireneStockUniteLegaleService.getExtractAndSaveFiles();
+            expect(sireneStockUniteLegaleService.decompressFolder).toHaveBeenCalledWith(
+                DIRECTORY_PATH + "/SireneStockUniteLegale.zip",
+                DIRECTORY_PATH,
+            );
+            
+        
+        });
     });
 });

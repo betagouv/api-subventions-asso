@@ -2,11 +2,18 @@ import * as fs from "fs";
 import { exec } from "child_process";
 import sireneStockUniteLegalePort from "../../../../dataProviders/api/sirene/sireneStockUniteLegale.port";
 
-const DIRECTORY_PATH = fs.mkdtempSync("./tmpSirene");
 
 export class SireneStockUniteLegaleService {
+    directory_path = fs.mkdtempSync(__dirname +"/tmpSirene");
+    
+    public async getExtractAndSaveFiles() {
+        await this.getAndSaveZip();
+        const zipPath = this.directory_path + "/SireneStockUniteLegale.zip";
+        await this.decompressFolder(zipPath, this.directory_path);
+    }
+
     public async getAndSaveZip() {
-        const file = fs.createWriteStream(DIRECTORY_PATH + "/SireneStockUniteLegale.zip");
+        const file = fs.createWriteStream(this+ "/SireneStockUniteLegale.zip");
         const response = await sireneStockUniteLegalePort.getZip();
 
         console.info(`Start downloading the file`);
