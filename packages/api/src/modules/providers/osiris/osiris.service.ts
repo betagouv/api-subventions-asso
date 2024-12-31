@@ -113,7 +113,7 @@ export class OsirisService
     }
 
     public async addAction(action: OsirisActionEntity): Promise<{ state: string; result: OsirisActionEntity }> {
-        const existingAction = await osirisActionPort.findByOsirisId(action.indexedInformations.osirisActionId);
+        const existingAction = await osirisActionPort.findByUniqueId(action.indexedInformations.uniqueId);
         if (existingAction) {
             return {
                 state: "updated",

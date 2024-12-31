@@ -2,6 +2,7 @@ import { SiretDto } from "dto";
 
 export default interface IOsirisActionsInformations {
     osirisActionId: string;
+    uniqueId: string;
     compteAssoId: string;
     licencies: number;
     licenciesHommes: number;
