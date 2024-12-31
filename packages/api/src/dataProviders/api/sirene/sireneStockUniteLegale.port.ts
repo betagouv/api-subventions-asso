@@ -2,7 +2,7 @@ import ProviderRequestFactory, {
     ProviderRequestService,
 } from "../../../modules/provider-request/providerRequest.service";
 
-export class SireneStockUniteLegalePort {
+export class SireneStockUniteLegaleApiPort {
     private URL = "https://files.data.gouv.fr/insee-sirene/StockUniteLegale_utf8.zip";
 
     private http: ProviderRequestService;
@@ -16,5 +16,5 @@ export class SireneStockUniteLegalePort {
     }
 }
 
-const sireneStockUniteLegalePort = new SireneStockUniteLegalePort();
+const sireneStockUniteLegalePort = new SireneStockUniteLegaleApiPort();
 export default sireneStockUniteLegalePort;
