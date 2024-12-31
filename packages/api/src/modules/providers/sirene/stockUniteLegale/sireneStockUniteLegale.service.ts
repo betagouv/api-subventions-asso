@@ -1,5 +1,5 @@
 import * as fs from "fs";
-//import StreamZip from 'node-stream-zip';
+import { exec } from "child_process";
 import sireneStockUniteLegalePort from "../../../../dataProviders/api/sirene/sireneStockUniteLegale.port";
 
 const DIRECTORY_PATH = fs.mkdtempSync("./tmpSirene");
@@ -22,15 +22,20 @@ export class SireneStockUniteLegaleService {
             response.data.on("data", chunk => {
                 currentLength += chunk.length;
             });
+            let hasErrorOccured = false;
 
             response.data.on("error", error => {
                 clearInterval(interval);
+                hasErrorOccured = true;
+                console.log("error", error);
                 file.close();
                 reject(error);
-                console.log("error", error);
             });
 
             file.on("finish", () => {
+                if (hasErrorOccured) {
+                    return;
+                }
                 clearInterval(interval);
                 console.log("finish");
                 resolve("finish");
@@ -39,18 +44,26 @@ export class SireneStockUniteLegaleService {
             file.on("error", error => {
                 clearInterval(interval);
                 console.log("error", error);
+                file.close();
                 reject(error);
             });
         });
     }
-    /*
-    public async unzip( zipPath: string, destinationDirectoryPath: string
-    )  {
-        const zip = new StreamZip.async({ file: zipPath});
-        await zip.extract(null, destinationDirectoryPath);
-        await zip.close();
-    };
-*/
+
+    public decompressFolder(zipPath: string, destinationDirectoryPath: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            console.log("Start decompress");
+            exec(`unzip ${zipPath} -d ${destinationDirectoryPath}`, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`Error decompressing archive: ${stderr}`);
+                    reject(`Failed to decompress: ${stderr}`);
+                    return;
+                }
+                console.log("End decompress");
+                resolve(destinationDirectoryPath);
+            });
+        });
+    }
 }
 
 const sireneStockUniteLegaleService = new SireneStockUniteLegaleService();
