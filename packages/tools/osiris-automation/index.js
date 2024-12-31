@@ -9,7 +9,7 @@ const OSIRIS_URL = process.env.OSIRIS_URL || "https://osiris.extranet.jeunesse-s
 const OSIRIS_EMAIL = process.env.OSIRIS_EMAIL || "";
 const OSIRIS_PASSWORD = process.env.OSIRIS_PASSWORD || "";
 const year = process.argv[2] || new Date().getFullYear().toString();
-const reportName = process.argv[3] || "SuiviDossiers"; // or "SuiviActions". "SuiviEvaluations does not work"
+const reportName = process.argv[3] || "SuiviDossiers"; // or "SuiviActions"
 
 async function getCookie() {
     console.log("Getting cookies");

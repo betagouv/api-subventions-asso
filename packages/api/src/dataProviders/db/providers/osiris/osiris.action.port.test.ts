@@ -30,7 +30,6 @@ describe("OsirisActionPort", () => {
     const ENTITY = {
         indexedInformations: { osirisActionId: OSIRIS_ACTION_ID },
         data: {},
-        evaluation: undefined,
     } as OsirisActionEntity;
     const ENTITY_WITH_ID = Object.assign({ _id: new ObjectId("6239dd8a674c33bdf741f56b") }, ENTITY);
     describe("add()", () => {

@@ -234,12 +234,6 @@ export default class OsirisRequestAdapter {
                     realise: toPV(action.indexedInformations.montants_versement_realise),
                     compensation: toPV(action.indexedInformations.montants_versement_compensation),
                 },
-                evaluation: action.evaluation
-                    ? {
-                          evaluation_resultat: toPV(action.evaluation.indexedInformations.evaluation_resultat),
-                          cout_total_realise: toPV(action.evaluation.indexedInformations.cout_total_realise),
-                      }
-                    : undefined,
             }));
         }
 

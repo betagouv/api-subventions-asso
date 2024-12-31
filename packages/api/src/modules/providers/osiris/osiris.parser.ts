@@ -5,8 +5,6 @@ import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 import IOsirisRequestInformations from "./@types/IOsirisRequestInformations";
 import IOsirisActionsInformations from "./@types/IOsirisActionsInformations";
-import OsirisEvaluationEntity from "./entities/OsirisEvaluationEntity";
-import IOsirisEvaluationsInformations from "./@types/IOsirisEvaluationsInformations";
 
 export default class OsirisParser {
     public static parseRequests(content: Buffer, year: number): OsirisRequestEntity[] {
@@ -60,31 +58,6 @@ export default class OsirisParser {
             indexedInformations.exercise = year;
 
             return new OsirisActionEntity(indexedInformations, data);
-        });
-    }
-
-    public static parseEvaluations(content: Buffer, year: number) {
-        const data = GenericParser.xlsParse(content)[0];
-
-        const headers = data.slice(0, 2) as string[][];
-
-        const rows = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
-
-        return rows.map((row: unknown[]) => {
-            const data: DefaultObject<DefaultObject<string | number>> = OsirisParser.rowToRowWithHeaders(
-                headers,
-                row,
-                OsirisEvaluationEntity.defaultMainCategory,
-            ) as DefaultObject<DefaultObject<string | number>>;
-            data["Dossier/action"]["Exercice Budgetaire"] = year;
-
-            const indexedInformations = GenericParser.indexDataByPathObject(
-                OsirisEvaluationEntity.indexedInformationsPath,
-                data,
-            ) as unknown as IOsirisEvaluationsInformations;
-            indexedInformations.exercise = year;
-
-            return new OsirisEvaluationEntity(indexedInformations, data);
         });
     }
 
