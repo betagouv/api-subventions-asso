@@ -162,7 +162,7 @@ export default class PaymentFlatEntity {
         public mission: string | null,
         public ministry: string | null,
         public ministryAcronym: string | null,
-        public actionCode: string | null,
+        public actionCode: string,
         public actionLabel: string | null,
         public activityCode: string | null,
         public activityLabel: string | null,
