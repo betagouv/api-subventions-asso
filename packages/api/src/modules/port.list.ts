@@ -15,7 +15,7 @@ import demarchesSimplifieesMapperPort from "../dataProviders/db/providers/demarc
 import fonjepSubventionPort from "../dataProviders/db/providers/fonjep/fonjep.subvention.port";
 import fonjepPaymentPort from "../dataProviders/db/providers/fonjep/fonjep.payment.port";
 import paymentFlatPort from "../dataProviders/db/paymentFlat/paymentFlat.port";
-import { osirisActionPort, osirisEvaluationPort, osirisRequestPort } from "../dataProviders/db/providers/osiris";
+import { osirisActionPort, osirisRequestPort } from "../dataProviders/db/providers/osiris";
 import miscScdlGrantPort from "../dataProviders/db/providers/scdl/miscScdlGrant.port";
 import miscScdlProducerPort from "../dataProviders/db/providers/scdl/miscScdlProducer.port";
 
@@ -25,7 +25,6 @@ export const portsWithIndexes = [
     userResetPort,
     osirisRequestPort,
     osirisActionPort,
-    osirisEvaluationPort,
     fonjepPaymentPort,
     fonjepSubventionPort,
     dauphinGisproPort,
