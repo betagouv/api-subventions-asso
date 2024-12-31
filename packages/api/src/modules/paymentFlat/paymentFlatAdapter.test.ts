@@ -2,23 +2,23 @@ import { RECORDS } from "./__fixtures__/dataBretagne.fixture";
 import { ENTITIES } from "../providers/chorus/__fixtures__/ChorusFixtures";
 import { PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
-import IChorusIndexedInformations from "../providers/chorus/@types/IChorusIndexedInformations";
 import ChorusLineEntity from "../providers/chorus/entities/ChorusLineEntity";
+import { ChorusLineDto } from "../providers/chorus/adapters/chorusLineDto";
 console.error = jest.fn();
 
 const documentDataReturnedValue = {
     programCode: 101,
-    activityCode: "3222",
+    activityCode: "077601003222",
     actionCode: "0101-01-02",
     programEntity: RECORDS["programme"][101],
     ministryEntity: RECORDS["ministry"]["code"],
     domaineFonctEntity: RECORDS["domaineFonct"]["0101-01-02"],
-    refProgrammationEntity: RECORDS["refProgrammation"]["3222"],
+    refProgrammationEntity: RECORDS["refProgrammation"]["077601003222"],
 };
 
 const CHORUS_LINE_ENTITY = {
     ...ENTITIES[0],
-    indexedInformations: { ...ENTITIES[0].indexedInformations, codeSociete: "BRET" },
+    data: { ...(ENTITIES[0].data as ChorusLineDto), Société: "BRET" },
 };
 
 describe("PaymentFlatAdapter", () => {
@@ -72,7 +72,7 @@ describe("PaymentFlatAdapter", () => {
         it("should return DataBretagne Document Data when no null is present", () => {
             //@ts-expect-error : test private method
             const result = PaymentFlatAdapter.getDataBretagneDocumentData(
-                CHORUS_LINE_ENTITY.indexedInformations,
+                CHORUS_LINE_ENTITY.data,
                 RECORDS["programme"],
                 RECORDS["ministry"],
                 RECORDS["domaineFonct"],
@@ -87,8 +87,8 @@ describe("PaymentFlatAdapter", () => {
             //@ts-expect-error : test private method
             const result = PaymentFlatAdapter.getDataBretagneDocumentData(
                 {
-                    ...CHORUS_LINE_ENTITY.indexedInformations,
-                    codeDomaineFonctionnel: "0161AC123",
+                    ...CHORUS_LINE_ENTITY.data,
+                    "Domaine fonctionnel CODE": "0161AC123",
                 },
                 RECORDS["programme"],
                 RECORDS["ministry"],
@@ -98,12 +98,12 @@ describe("PaymentFlatAdapter", () => {
 
             expect(result).toEqual({
                 programCode: 161,
-                activityCode: "3222",
+                activityCode: "077601003222",
                 actionCode: "0161AC123",
                 programEntity: undefined,
                 ministryEntity: undefined,
                 domaineFonctEntity: undefined,
-                refProgrammationEntity: RECORDS["refProgrammation"]["3222"],
+                refProgrammationEntity: RECORDS["refProgrammation"]["077601003222"],
             });
         });
 
@@ -113,9 +113,9 @@ describe("PaymentFlatAdapter", () => {
             //@ts-expect-error : test private method
             const result = PaymentFlatAdapter.getDataBretagneDocumentData(
                 {
-                    ...CHORUS_LINE_ENTITY.indexedInformations,
-                    codeDomaineFonctionnel: "0161AC123",
-                } as unknown as IChorusIndexedInformations,
+                    ...CHORUS_LINE_ENTITY.data,
+                    "Domaine fonctionnel CODE": "0161AC123",
+                },
                 RECORDS["programme"],
                 RECORDS["ministry"],
                 RECORDS["domaineFonct"],
@@ -128,22 +128,22 @@ describe("PaymentFlatAdapter", () => {
 
         it.each([
             {
-                chorusLineEntity: { ...CHORUS_LINE_ENTITY.indexedInformations, codeDomaineFonctionnel: "0163" },
+                chorusLineEntity: { ...CHORUS_LINE_ENTITY.data, "Domaine fonctionnel CODE": "0163" },
                 codeValue: "0163",
                 recordType: "DomaineFonctionnel",
             },
             {
-                chorusLineEntity: { ...CHORUS_LINE_ENTITY.indexedInformations, codeActivitee: "code_2" },
+                chorusLineEntity: { ...CHORUS_LINE_ENTITY.data, "Référentiel de programmation CODE": "code_2" },
                 codeValue: "code_2",
                 recordType: "RefProgrammation",
             },
-            { chorusLineEntity: CHORUS_LINE_ENTITY.indexedInformations, codeValue: "code_2", recordType: "Ministry" },
+            { chorusLineEntity: CHORUS_LINE_ENTITY.data, codeValue: "code_2", recordType: "Ministry" },
         ])("should console.error when %s not found", ({ chorusLineEntity, codeValue, recordType }) => {
             RECORDS["programme"][101].code_ministere = codeValue;
 
             //@ts-expect-error : test private method
             const result = PaymentFlatAdapter.getDataBretagneDocumentData(
-                chorusLineEntity as unknown as IChorusIndexedInformations,
+                chorusLineEntity,
                 RECORDS["programme"],
                 RECORDS["ministry"],
                 RECORDS["domaineFonct"],

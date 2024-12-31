@@ -1,10 +1,12 @@
+import { NestedDefaultObject } from "../../@types";
 import DomaineFonctionnelEntity from "../../entities/DomaineFonctionnelEntity";
 import MinistryEntity from "../../entities/MinistryEntity";
 import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
 import RefProgrammationEntity from "../../entities/RefProgrammationEntity";
 import StateBudgetProgramEntity from "../../entities/StateBudgetProgramEntity";
-import Siret from "../../valueObjects/Siret";
-import IChorusIndexedInformations from "../providers/chorus/@types/IChorusIndexedInformations";
+import { GenericParser } from "../../shared/GenericParser";
+
+import { ChorusLineDto } from "../providers/chorus/adapters/chorusLineDto";
 import ChorusLineEntity from "../providers/chorus/entities/ChorusLineEntity";
 
 export default class PaymentFlatAdapter {
@@ -31,53 +33,44 @@ export default class PaymentFlatAdapter {
             domaineFonctEntity,
             refProgrammationEntity,
         } = this.getDataBretagneDocumentData(
-            chorusDocument.indexedInformations,
+            chorusDocument.data as ChorusLineDto,
             programs,
             ministries,
             domainesFonct,
             refsProgrammation,
         );
 
-        const idVersement = `${chorusDocument.indexedInformations.siret}-${chorusDocument.indexedInformations.ej}-${chorusDocument.indexedInformations.exercice}`;
-        const uniqueId = `${idVersement}-${programCode}-${actionCode}-${activityCode}-${chorusDocument.indexedInformations.dateOperation.getTime()}`;
-
-        return new PaymentFlatEntity(
-            uniqueId, // uniqueId,
-            idVersement, // idVersement,
-            chorusDocument.indexedInformations.exercice, // exerciceBudget
-            "siret", // typeIdEtablissementBeneficiaire,
-            new Siret(chorusDocument.indexedInformations.siret), // siret,
-            "siren", // typeIdEntrepriseBeneficiaire,
-            new Siret(chorusDocument.indexedInformations.siret).toSiren(), // siren,
-            chorusDocument.indexedInformations.amount, // amount,
-            chorusDocument.indexedInformations.dateOperation, // operationDate,
+        const entityConstructorParameters = [
+            ...Object.values(
+                GenericParser.indexDataByPathObject(
+                    PaymentFlatEntity.chorusToPaymentFlatPath,
+                    chorusDocument.data as NestedDefaultObject<string>,
+                ),
+            ),
             programEntity?.label_programme ?? null, // programName,
             programCode, // programNumber,
             programEntity?.mission ?? null, // mission,
             ministryEntity?.nom_ministere ?? null, // ministry,
             ministryEntity?.sigle_ministere ?? null, // ministryAcronym,
-            chorusDocument.indexedInformations.ej, // ej,
-            "chorus", // provider,
             actionCode, // actionCode,
             domaineFonctEntity?.libelle_action ?? null, // actionLabel,
             activityCode ?? null, // activityCode,
-            refProgrammationEntity?.libelle_activite ?? null, // activityLabel
-            chorusDocument.indexedInformations.codeCentreFinancier, // centreFinancierCode,
-            chorusDocument.indexedInformations.centreFinancier, // centreFinancierLibelle,
-            chorusDocument.indexedInformations.codeSociete, // attachementComptable
-        );
+            refProgrammationEntity?.libelle_activite ?? null, // activityLabel,
+        ] as ConstructorParameters<typeof PaymentFlatEntity>;
+
+        return new PaymentFlatEntity(...entityConstructorParameters);
     }
 
     private static getDataBretagneDocumentData(
-        chorusDocument: IChorusIndexedInformations,
+        chorusDocument: ChorusLineDto,
         programs: Record<number, StateBudgetProgramEntity>,
         ministries: Record<string, MinistryEntity>,
         domainesFonct: Record<string, DomaineFonctionnelEntity>,
         refsProgrammation: Record<string, RefProgrammationEntity>,
     ) {
-        const programCode = parseInt(chorusDocument.codeDomaineFonctionnel?.slice(1, 4), 10);
-        const activityCode = chorusDocument.codeActivitee?.slice(-12);
-        const actionCode = chorusDocument.codeDomaineFonctionnel;
+        const programCode = parseInt(chorusDocument["Domaine fonctionnel CODE"].slice(1, 4), 10);
+        const activityCode = chorusDocument["Référentiel de programmation CODE"]?.slice(-12);
+        const actionCode = chorusDocument["Domaine fonctionnel CODE"] ?? undefined;
         const programEntity = programs[String(programCode)] ?? undefined;
 
         if (!programEntity) {
@@ -87,7 +80,7 @@ export default class PaymentFlatAdapter {
         if (!ministryEntity) {
             console.error(`Ministry not found for ministry: ${programEntity?.code_ministere}`);
         }
-        const domaineFonctEntity = domainesFonct[actionCode] ?? undefined;
+        const domaineFonctEntity = actionCode ? domainesFonct[actionCode] : undefined;
         if (!domaineFonctEntity) {
             console.error(`DomaineFonctionnel not found for actionCode: ${actionCode}`);
         }
