@@ -17,12 +17,13 @@ export default class ScdlGrantParser {
         key: string;
         test: (v: unknown) => boolean;
         message: string;
-        optional?: boolean;
+        optional: boolean;
     }[] = [
         {
             key: "associationSiret",
             test: v => Siret.isSiret(v?.toString() ?? ""),
             message: "SIRET manquant ou invalide",
+            optional: false,
         },
         {
             key: "allocatorSiret",
@@ -30,8 +31,18 @@ export default class ScdlGrantParser {
             message: "SIRET invalide",
             optional: true,
         },
-        { key: "amount", test: v => isNumberValid(v as number), message: "Le montant n'est pas un nombre" },
-        { key: "exercice", test: v => isNumberValid(v as number), message: "L'exercice n'est pas un nombre" },
+        {
+            key: "amount",
+            test: v => isNumberValid(v as number),
+            message: "Le montant n'est pas un nombre",
+            optional: false,
+        },
+        {
+            key: "exercice",
+            test: v => isNumberValid(v as number),
+            message: "L'exercice n'est pas un nombre",
+            optional: false,
+        },
         {
             key: "paymentStartDate",
             test: v => !v || isValidDate(v),
