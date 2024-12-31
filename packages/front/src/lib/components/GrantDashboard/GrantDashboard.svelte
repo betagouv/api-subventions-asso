@@ -91,15 +91,17 @@
                     customColSizes={[12, 11, 11, 11, 13, 17, 11, 11]}
                     {headers}>
                     {#each $rows as row, rowIndex}
-                        <TableRow id={tableId} index={rowIndex}>
-                            <ApplicationRow
-                                on:click={() => ctrl.onApplicationClick(rowIndex)}
-                                cells={row.applicationCells} />
-                            <PaymentRow
-                                on:click={() => ctrl.onPaymentClick(rowIndex)}
-                                cells={row.paymentsCells}
-                                granted={row.granted} />
-                        </TableRow>
+                        {#key row}
+                            <TableRow id={tableId} index={rowIndex}>
+                                <ApplicationRow
+                                    on:click={() => ctrl.onApplicationClick(rowIndex)}
+                                    cells={row.applicationCells} />
+                                <PaymentRow
+                                    on:click={() => ctrl.onPaymentClick(rowIndex)}
+                                    cells={row.paymentsCells}
+                                    granted={row.granted} />
+                            </TableRow>
+                        {/key}
                     {/each}
                 </Table>
             </div>

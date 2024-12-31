@@ -350,6 +350,10 @@ describe("GrantDashboard Controller", () => {
                     {
                       "application": "a-a0",
                       "applicationCells": "ac-a0",
+                      "flatGrant": {
+                        "application": "a0",
+                        "payments": "p0",
+                      },
                       "granted": true,
                       "payment": "p-p0",
                       "paymentsCells": "pc-p0",
@@ -357,6 +361,10 @@ describe("GrantDashboard Controller", () => {
                     {
                       "application": "a-a1",
                       "applicationCells": "ac-a1",
+                      "flatGrant": {
+                        "application": "a1",
+                        "payments": "p1",
+                      },
                       "granted": false,
                       "payment": "p-p1",
                       "paymentsCells": "pc-p1",
@@ -399,20 +407,20 @@ describe("GrantDashboard Controller", () => {
             ${"subvention"} | ${"onApplicationClick"} | ${"subvention"}  | ${ApplicationInfoModal} | ${{ application: "A1" }}
         `("onRowClick: $side side", ({ method, keyWordInTracker, modalComponent, modalData }) => {
             const INDEX = 1;
-            const ROWS = [
-                { paymentsCells: "Pc0", applicationCells: "Ac0" },
-                {
-                    paymentsCells: "Pc1",
-                    applicationCells: "Ac1",
-                },
-            ] as unknown as SortableRow[];
             const SUBV = [
                 { application: "A0", payments: "P0" },
                 { application: "A1", payments: "P1" },
             ] as unknown as FlatGrant[];
+            const ROWS = [
+                { paymentsCells: "Pc0", applicationCells: "Ac0", flatGrant: SUBV[0] },
+                {
+                    paymentsCells: "Pc1",
+                    applicationCells: "Ac1",
+                    flatGrant: SUBV[1],
+                },
+            ] as unknown as SortableRow[];
 
             beforeEach(() => {
-                CTRL.selectedGrants.value = SUBV;
                 CTRL.rows.value = ROWS;
             });
 

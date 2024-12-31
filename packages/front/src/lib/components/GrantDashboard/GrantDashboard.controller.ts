@@ -98,7 +98,7 @@ export class GrantDashboardController {
         else return defaultContent;
     }
 
-    private updateRows(grants) {
+    private updateRows(grants: FlatGrant[]) {
         if (!grants) return;
         this.rows.set(
             grants.map(grant => {
@@ -109,6 +109,7 @@ export class GrantDashboardController {
                     granted,
                     application: getApplicationDashboardData(grant.application),
                     payment: getPaymentDashboardData(grant.payments),
+                    flatGrant: grant,
                 };
             }),
         );
@@ -154,14 +155,14 @@ export class GrantDashboardController {
     public onPaymentClick(index) {
         if (!this.rows.value[index].paymentsCells) return;
         trackerService.buttonClickEvent("association-etablissement.dashbord.payment.more_information");
-        data.set({ payments: (this.selectedGrants.value as FlatGrant[])[index].payments });
+        data.set({ payments: (this.rows.value as SortableRow[])[index].flatGrant.payments });
         modal.set(PaymentsInfoModal);
     }
 
     public onApplicationClick(index) {
         if (!this.rows.value[index].applicationCells) return;
         trackerService.buttonClickEvent("association-etablissement.dashbord.subvention.more_information");
-        data.set({ application: (this.selectedGrants.value as FlatGrant[])[index].application });
+        data.set({ application: (this.rows.value as SortableRow[])[index].flatGrant.application });
         modal.set(ApplicationInfoModal);
     }
 }
