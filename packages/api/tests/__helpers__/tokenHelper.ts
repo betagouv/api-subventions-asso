@@ -6,6 +6,7 @@ import userCrudService from "../../src/modules/user/services/crud/user.crud.serv
 import userConsumerService from "../../src/modules/user/services/consumer/user.consumer.service";
 
 export const getTokenByUser = async user => {
+    delete user.roles;
     await userActivationService.activeUser(user);
 
     const jwtData = await userAuthService.findJwtByEmail(user.email);
