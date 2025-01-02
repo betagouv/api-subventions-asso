@@ -3,8 +3,9 @@
     import { getIconClass } from "./helper";
     import trackerService from "$lib/services/tracker.service";
     import { HTML_BUTTON_TYPES, isValidButtonType } from "$lib/helpers/htmlHelper";
+    import { uuid } from "$lib/helpers/stringHelper";
 
-    export let id = "btn-" + crypto.randomUUID();
+    export let id = "btn-" + uuid();
     export let trackerName = "";
     export let trackingDisable = false;
     export let type = "primary";
