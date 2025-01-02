@@ -49,7 +49,7 @@ export class OsirisService
     }
 
     public async addRequest(request: OsirisRequestEntity): Promise<{ state: string; result: OsirisRequestEntity }> {
-        const existingFile = await osirisRequestPort.findByOsirisId(request.providerInformations.osirisId);
+        const existingFile = await osirisRequestPort.findByUniqueId(request.providerInformations.uniqueId);
         const { rna, siret } = request.legalInformations;
 
         if (rna) await rnaSirenSerivce.insert(new Rna(rna), new Siret(siret).toSiren());
