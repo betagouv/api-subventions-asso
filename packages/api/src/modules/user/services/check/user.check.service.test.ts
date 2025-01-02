@@ -59,13 +59,9 @@ describe("user check service", () => {
         mockedConfigurationsService.isDomainAccepted.mockImplementation(async () => true);
         const EMAIL = "daemon.targaryen@ac-pentos.ws";
 
-        it("should verify domain", async () => {
-            await userCheckService.validateEmail(EMAIL);
-            expect(mockedConfigurationsService.isDomainAccepted).toHaveBeenCalledWith(EMAIL);
-        });
-
         it("should return if email is correct", async () => {
-            await userCheckService.validateEmail(EMAIL);
+            const test = userCheckService.validateEmail(EMAIL);
+            await expect(test).resolves.toMatchInlineSnapshot(`undefined`);
         });
 
         it("should throw error if not well formatted", async () => {
@@ -73,14 +69,24 @@ describe("user check service", () => {
             expect(() => userCheckService.validateEmail("ab1")).rejects.toThrowError(expected);
         });
 
-        it("should throw error if domain not accepted", async () => {
-            mockedConfigurationsService.isDomainAccepted.mockImplementationOnce(async () => false);
+        it("not agent connect: should verify domain", async () => {
+            await userCheckService.validateEmail(EMAIL, false);
+            expect(mockedConfigurationsService.isDomainAccepted).toHaveBeenCalledWith(EMAIL);
+        });
+
+        it("not agent connect: should throw error if domain not accepted", async () => {
+            mockedConfigurationsService.isDomainAccepted.mockResolvedValueOnce(false);
             const expected = {
                 message: "Email domain is not accepted",
                 code: UserServiceErrors.CREATE_EMAIL_GOUV,
             };
-            const test = () => userCheckService.validateEmail(EMAIL);
+            const test = () => userCheckService.validateEmail(EMAIL, false);
             await expect(test).rejects.toMatchObject(expected);
+        });
+
+        it("agent connect: should not check domain", async () => {
+            await userCheckService.validateEmail(EMAIL, true); // true is default
+            expect(mockedConfigurationsService.isDomainAccepted).not.toHaveBeenCalled();
         });
     });
 

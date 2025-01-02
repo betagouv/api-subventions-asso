@@ -2,11 +2,17 @@
 
 Vous pouvez voir ce site en ligne ici : https://datasubvention.beta.gouv.fr.
 
-## Lancer en prod
+## Lancer
+
+### en prod
 
 ```
 npm start
 ```
+
+### en dev
+
+`npm run dev` puis accès sur http://dev.local:5173
 
 ## Mettre à jour le Design System
 

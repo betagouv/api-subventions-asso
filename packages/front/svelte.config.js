@@ -32,8 +32,7 @@ const config = {
                 "default-src": ["self"],
                 "connect-src": [
                     "self",
-                    process.env.PUBLIC_DATASUB_URL || "http://localhost:8080",
-                  // "http://dev.local:8080",
+                    process.env.PUBLIC_DATASUB_URL || "http://dev.local:8080",
                     "https://client.crisp.chat wss://client.relay.crisp.chat",
                     "https://storage.crisp.chat",
                     "wss://stream.relay.crisp.chat",

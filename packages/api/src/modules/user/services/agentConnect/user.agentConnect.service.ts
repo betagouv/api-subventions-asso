@@ -128,14 +128,14 @@ export class UserAgentConnectService {
         return applyValidations([
             {
                 value: data.firstName,
-                method: (value: string | undefined | null) => value === undefined,
+                method: (value: string | undefined | null) => !value || value === user.firstName,
                 error: new BadRequestError(
                     "Un utilisateur lié à AgentConnect ne peut pas changer de prénom sur l'application",
                 ),
             },
             {
                 value: data.lastName,
-                method: (value: string | undefined | null) => value === undefined,
+                method: (value: string | undefined | null) => !value || value === user.lastName,
                 error: new BadRequestError(
                     "Un utilisateur lié à AgentConnect ne peut pas changer de nom de famille sur l'application",
                 ),
