@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.60.1](https://github.com/betagouv/datasubvention/compare/v0.60.0...v0.60.1) (2025-01-02)
+
+### Bug Fixes
+
+-   **front:** [#2977](https://github.com/betagouv/datasubvention/issues/2977) one or no establishment is not the same ([#3055](https://github.com/betagouv/datasubvention/issues/3055)) ([8d00809](https://github.com/betagouv/datasubvention/commit/8d00809579ed431e10cf7adbaa590e0c64bea5fc))
+-   **front:** [#3061](https://github.com/betagouv/datasubvention/issues/3061) modale sort fix ([#3070](https://github.com/betagouv/datasubvention/issues/3070)) ([06bf228](https://github.com/betagouv/datasubvention/commit/06bf22873720da2cf1017a9947f1e608e7e7c364))
+-   **front:** [#3062](https://github.com/betagouv/datasubvention/issues/3062) [#3064](https://github.com/betagouv/datasubvention/issues/3064) payment modale ([#3071](https://github.com/betagouv/datasubvention/issues/3071)) ([574aebf](https://github.com/betagouv/datasubvention/commit/574aebfc06f2abcaa7a2a0480dd35cc77ee46430))
+-   **front:** [#3063](https://github.com/betagouv/datasubvention/issues/3063) exercise label ([#3072](https://github.com/betagouv/datasubvention/issues/3072)) ([9ee6b5a](https://github.com/betagouv/datasubvention/commit/9ee6b5ae3651d0c357d8d3c9b3ea7eeb5734a6d7))
+
 # [0.60.0](https://github.com/betagouv/datasubvention/compare/v0.59.2...v0.60.0) (2024-12-26)
 
 ### Bug Fixes

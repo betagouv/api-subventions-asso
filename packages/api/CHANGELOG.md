@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.60.1](https://github.com/betagouv/api-subventions-asso/compare/v0.60.0...v0.60.1) (2025-01-02)
+
+### Features
+
+-   **api:** [#2989](https://github.com/betagouv/api-subventions-asso/issues/2989) data integration finistere ([#3056](https://github.com/betagouv/api-subventions-asso/issues/3056)) ([7ff612b](https://github.com/betagouv/api-subventions-asso/commit/7ff612bec70c4ef4dfc7c8ab12daba379a49c5d4))
+
 # [0.60.0](https://github.com/betagouv/api-subventions-asso/compare/v0.59.2...v0.60.0) (2024-12-26)
 
 ### Bug Fixes
