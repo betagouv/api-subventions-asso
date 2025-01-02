@@ -21,12 +21,12 @@ export class UserCheckService {
         return REGEX_PASSWORD.test(password);
     }
 
-    async validateEmail(email: string): Promise<void> {
+    async validateEmail(email: string, isAgentConnect = true): Promise<void> {
         if (!REGEX_MAIL.test(email)) {
             throw new BadRequestError("Email is not valid", UserServiceErrors.CREATE_INVALID_EMAIL);
         }
 
-        if (!(await configurationsService.isDomainAccepted(email))) {
+        if (!(isAgentConnect || (await configurationsService.isDomainAccepted(email)))) {
             throw new BadRequestError("Email domain is not accepted", UserServiceErrors.CREATE_EMAIL_GOUV);
         }
     }
