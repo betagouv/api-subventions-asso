@@ -38,7 +38,7 @@ export class OsirisRequestPort extends MongoPort<OsirisRequestEntity> {
     public findByUniqueId(uniqueId: string) {
         return this.collection.findOne({
             "providerInformations.uniqueId": uniqueId,
-        }) as unknown as OsirisRequestEntity | null;
+        }) as unknown as Promise<OsirisRequestEntity | null>;
     }
 
     public findBySiret(siret: Siret) {
