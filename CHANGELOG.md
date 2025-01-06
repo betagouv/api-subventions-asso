@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.60.2](https://github.com/betagouv/api-subventions-asso/compare/v0.60.1...v0.60.2) (2025-01-06)
+
+### Bug Fixes
+
+-   **api:** extract number with coma not point decimal separator ([f734242](https://github.com/betagouv/api-subventions-asso/commit/f734242692367ac872fbbcb30c0a5550ea149b9a))
+
 ## [0.60.1](https://github.com/betagouv/api-subventions-asso/compare/v0.60.0...v0.60.1) (2025-01-02)
 
 ### Bug Fixes
