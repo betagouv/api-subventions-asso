@@ -18,7 +18,7 @@ import { ObjectId, WithId } from "mongodb";
 
 const toDboMock = jest.spyOn(OsirisActionAdapter, "toDbo");
 const toEntityMock = jest.spyOn(OsirisActionAdapter, "toEntity");
-const findByOsirisIdMock = jest.spyOn(OsirisActionPort.prototype, "findByOsirisId");
+const findByOsirisIdMock = jest.spyOn(OsirisActionPort.prototype, "findByUniqueId");
 
 describe("OsirisActionPort", () => {
     let port: OsirisActionPort;

@@ -58,5 +58,15 @@ export default class OsirisActionEntity extends OsirisActionEntityDbo {
     constructor(public indexedInformations: IOsirisActionsInformations, public data: unknown, public _id?: ObjectId) {
         super(indexedInformations, data, _id);
         this.indexedInformations.uniqueId = `${this.indexedInformations.osirisActionId}-${this.indexedInformations.exercise}`;
+        const requestId = this.indexedInformations.osirisActionId.match(/^(.+)-\d+$/)?.[1];
+        const requestUniqueId = `${requestId ?? this.indexedInformations.osirisActionId}-${
+            this.indexedInformations.exercise
+        }`;
+        if (!requestId) {
+            console.error(
+                `l'identifiant osirisActionId ${this.indexedInformations.osirisActionId} est mal formé. On ne peut pas en déduire l'identifiant du dossier. Nous prenons l'osirisActionId tel quel mais c'est un problème`,
+            );
+        }
+        this.indexedInformations.requestUniqueId = requestUniqueId;
     }
 }
