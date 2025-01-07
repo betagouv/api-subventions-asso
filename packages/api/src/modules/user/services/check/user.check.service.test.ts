@@ -55,43 +55,52 @@ describe("user check service", () => {
         });
     });
 
-    describe("validateEmail()", () => {
-        mockedConfigurationsService.isDomainAccepted.mockImplementation(async () => true);
+    describe("validateOnlyEmail()", () => {
         const EMAIL = "daemon.targaryen@ac-pentos.ws";
 
-        it("should return if email is correct", async () => {
-            const test = userCheckService.validateEmail(EMAIL);
-            await expect(test).resolves.toMatchInlineSnapshot(`undefined`);
+        it("should return if email is correct", () => {
+            const actual = userCheckService.validateOnlyEmail(EMAIL);
+            expect(actual).toBeUndefined();
         });
 
-        it("should throw error if not well formatted", async () => {
+        it("should throw error if not well formatted", () => {
             const expected = new BadRequestError("Email is not valid");
-            expect(() => userCheckService.validateEmail("ab1")).rejects.toThrowError(expected);
+            expect(() => userCheckService.validateOnlyEmail("ab1")).toThrowError(expected);
+        });
+    });
+
+    describe("validateEmailAndDomain()", () => {
+        mockedConfigurationsService.isDomainAccepted.mockImplementation(async () => true);
+        let onlyEmailSpy: jest.SpyInstance;
+        const EMAIL = "daemon.targaryen@ac-pentos.ws";
+
+        beforeAll(() => {
+            onlyEmailSpy = jest.spyOn(userCheckService, "validateOnlyEmail");
         });
 
-        it("not agent connect: should verify domain", async () => {
-            await userCheckService.validateEmail(EMAIL, false);
+        it("should call validateOnlyEmail", async () => {
+            await userCheckService.validateEmailAndDomain(EMAIL);
+            expect(onlyEmailSpy).toHaveBeenCalledWith(EMAIL);
+        });
+
+        it("should verify domain", async () => {
+            await userCheckService.validateEmailAndDomain(EMAIL);
             expect(mockedConfigurationsService.isDomainAccepted).toHaveBeenCalledWith(EMAIL);
         });
 
-        it("not agent connect: should throw error if domain not accepted", async () => {
+        it("should throw error if domain not accepted", async () => {
             mockedConfigurationsService.isDomainAccepted.mockResolvedValueOnce(false);
             const expected = {
                 message: "Email domain is not accepted",
                 code: UserServiceErrors.CREATE_EMAIL_GOUV,
             };
-            const test = () => userCheckService.validateEmail(EMAIL, false);
+            const test = () => userCheckService.validateEmailAndDomain(EMAIL);
             await expect(test).rejects.toMatchObject(expected);
-        });
-
-        it("agent connect: should not check domain", async () => {
-            await userCheckService.validateEmail(EMAIL, true); // true is default
-            expect(mockedConfigurationsService.isDomainAccepted).not.toHaveBeenCalled();
         });
     });
 
     describe("validateSanitizeUser", () => {
-        const mockValidateEmail = jest.spyOn(userCheckService, "validateEmail");
+        const mockValidateEmail = jest.spyOn(userCheckService, "validateEmailAndDomain");
 
         beforeAll(() => {
             mockedUserPort.findByEmail.mockResolvedValue(null);

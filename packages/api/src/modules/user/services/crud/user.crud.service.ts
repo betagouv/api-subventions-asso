@@ -33,7 +33,10 @@ export class UserCrudService {
 
     public async update(user: Partial<UserDto> & Pick<UserDto, "email">): Promise<UserDto> {
         const fullUser = await userCrudService.findByEmail(user.email);
-        await userCheckService.validateEmail(user.email, !!fullUser?.agentConnectId);
+
+        if (fullUser?.agentConnectId) userCheckService.validateOnlyEmail(user.email);
+        else await userCheckService.validateEmailAndDomain(user.email);
+
         return await userPort.update(user);
     }
 

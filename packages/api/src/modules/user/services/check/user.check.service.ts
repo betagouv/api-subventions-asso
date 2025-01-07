@@ -21,14 +21,16 @@ export class UserCheckService {
         return REGEX_PASSWORD.test(password);
     }
 
-    async validateEmail(email: string, isAgentConnect = true): Promise<void> {
-        if (!REGEX_MAIL.test(email)) {
-            throw new BadRequestError("Email is not valid", UserServiceErrors.CREATE_INVALID_EMAIL);
-        }
+    async validateEmailAndDomain(email: string): Promise<void> {
+        this.validateOnlyEmail(email);
 
-        if (!(isAgentConnect || (await configurationsService.isDomainAccepted(email)))) {
+        if (!(await configurationsService.isDomainAccepted(email)))
             throw new BadRequestError("Email domain is not accepted", UserServiceErrors.CREATE_EMAIL_GOUV);
-        }
+    }
+
+    validateOnlyEmail(email: string): void {
+        if (!REGEX_MAIL.test(email))
+            throw new BadRequestError("Email is not valid", UserServiceErrors.CREATE_INVALID_EMAIL);
     }
 
     /**
@@ -37,7 +39,7 @@ export class UserCheckService {
      */
     async validateSanitizeUser(user: FutureUserDto) {
         try {
-            await userCheckService.validateEmail(user.email);
+            await userCheckService.validateEmailAndDomain(user.email);
         } catch (e) {
             if (e instanceof BadRequestError && e.code === UserServiceErrors.CREATE_EMAIL_GOUV) {
                 notifyService.notify(NotificationType.SIGNUP_BAD_DOMAIN, user);
