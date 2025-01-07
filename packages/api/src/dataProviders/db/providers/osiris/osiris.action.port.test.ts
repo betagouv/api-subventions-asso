@@ -18,7 +18,7 @@ import { ObjectId, WithId } from "mongodb";
 
 const toDboMock = jest.spyOn(OsirisActionAdapter, "toDbo");
 const toEntityMock = jest.spyOn(OsirisActionAdapter, "toEntity");
-const findByOsirisIdMock = jest.spyOn(OsirisActionPort.prototype, "findByUniqueId");
+const findByUniqueIdMock = jest.spyOn(OsirisActionPort.prototype, "findByUniqueId");
 
 describe("OsirisActionPort", () => {
     let port: OsirisActionPort;
@@ -35,7 +35,7 @@ describe("OsirisActionPort", () => {
     describe("add()", () => {
         it("should insert an OsirisActionEntityDbo and return entity", async () => {
             // @ts-expect-error: mock
-            findByOsirisIdMock.mockImplementationOnce(jest.fn(() => ({})));
+            findByUniqueIdMock.mockImplementationOnce(jest.fn(() => ({})));
             toDboMock.mockImplementationOnce(jest.fn());
             const entity = await port.add(ENTITY);
             expect(toDboMock).toHaveBeenCalledWith(ENTITY);
