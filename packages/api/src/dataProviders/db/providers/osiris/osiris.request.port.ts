@@ -23,7 +23,7 @@ export class OsirisRequestPort extends MongoPort<OsirisRequestEntity> {
         const options = { returnDocument: "after", includeResultMetadata: true } as FindOneAndUpdateOptions;
         const { _id, ...requestWithoutId } = osirisRequest;
         const updateRes = await this.collection.findOneAndUpdate(
-            { "providerInformations.osirisId": osirisRequest.providerInformations.osirisId },
+            { "providerInformations.uniqueId": osirisRequest.providerInformations.uniqueId },
             { $set: requestWithoutId },
             options,
         );
