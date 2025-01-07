@@ -42,7 +42,7 @@
         "url": "https://github.com/betagouv/datasubvention/issues"
     },
     "dependencies": {
-        "@gouvfr/dsfr": "1.12",
+        "@gouvfr/dsfr": "1.13",
         "@sentry/sveltekit": "^7.88.0",
         "@sveltejs/adapter-auto": "^2.1.1",
         "@sveltejs/adapter-node": "^1.3.1",
