@@ -95,10 +95,7 @@ describe("user activation service", () => {
             const reset = {
                 createdAt: new Date(2000),
             } as unknown as UserReset;
-
-            // @ts-expect-error is ExpiredReset is private
             const actual = userActivationService.isExpiredReset(reset);
-
             expect(actual).toBeTruthy();
         });
 
@@ -106,10 +103,7 @@ describe("user activation service", () => {
             const reset = {
                 createdAt: new Date(),
             } as unknown as UserReset;
-
-            // @ts-expect-error is ExpiredReset is private
             const actual = userActivationService.isExpiredReset(reset);
-
             expect(actual).toBeFalsy();
         });
     });
@@ -124,7 +118,6 @@ describe("user activation service", () => {
         let mockIsExpiredReset: jest.SpyInstance;
 
         beforeAll(() => {
-            // @ts-expect-error: private method
             mockIsExpiredReset = jest.spyOn(userActivationService, "isExpiredReset");
             mockIsExpiredReset.mockReturnValue(false);
         });

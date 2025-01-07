@@ -51,7 +51,7 @@ export class UserActivationService {
         return error ? { valid: false, error } : { valid: true };
     }
 
-    private isExpiredReset(reset: UserReset) {
+    public isExpiredReset(reset: UserReset) {
         return reset.createdAt.getTime() + UserActivationService.RESET_TIMEOUT < Date.now();
     }
 
