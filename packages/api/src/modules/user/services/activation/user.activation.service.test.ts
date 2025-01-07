@@ -11,30 +11,36 @@ import {
     ResetTokenNotFoundError,
 } from "../../../../shared/errors/httpErrors";
 import { ResetPasswordErrorCodes, TokenValidationDtoPositiveResponse, TokenValidationType, UserDto } from "dto";
+
 jest.mock("../../../../dataProviders/db/user/user.port");
 const mockedUserPort = jest.mocked(userPort);
 import userResetPort from "../../../../dataProviders/db/user/user-reset.port";
+
 jest.mock("../../../../dataProviders/db/user/user-reset.port");
 const mockedUserResetPort = jest.mocked(userResetPort);
 import userCheckService, { UserCheckService } from "../check/user.check.service";
+
 jest.mock("../check/user.check.service");
 const mockedUserCheckService = jest.mocked(userCheckService);
 import userAuthService from "../auth/user.auth.service";
+
 jest.mock("../auth/user.auth.service");
 const mockedUserAuthService = jest.mocked(userAuthService);
 import userCrudService from "../crud/user.crud.service";
+
 jest.mock("../crud/user.crud.service");
 const mockedUserCrudService = jest.mocked(userCrudService);
 import notifyService from "../../../notify/notify.service";
 import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
 import { NotificationType } from "../../../notify/@types/NotificationType";
-import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
+
 jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),
 }));
 const mockedNotifyService = jest.mocked(notifyService);
 import RandToken from "rand-token";
 import { UserServiceErrors } from "../../user.enum";
+
 jest.mock("rand-token", () => ({
     generate: () => "RAND_TOKEN",
 }));
@@ -329,17 +335,27 @@ describe("user activation service", () => {
         });
     });
 
+    describe("buildResetPwdUrl", () => {
+        it("returns expected url", () => {
+            const TOKEN = "toto";
+            const actual = userActivationService.buildResetPwdUrl(TOKEN);
+            expect(actual).toMatchInlineSnapshot(`"http://dev.local:5173/auth/reset-password/toto"`);
+        });
+    });
+
     describe("forgetPassword", () => {
         const TOKEN = "MyTOK3N&64qzd4qs5d4z";
+        const URL = "URL";
         let mockResetUser: jest.SpyInstance;
+        let mockBuildUrl: jest.SpyInstance;
         beforeAll(() => {
-            mockResetUser = jest.spyOn(userActivationService, "resetUser");
             mockedUserPort.findByEmail.mockResolvedValue(USER_WITHOUT_SECRET);
-            mockResetUser.mockResolvedValue({
+            mockResetUser = jest.spyOn(userActivationService, "resetUser").mockResolvedValue({
                 userId: USER_WITHOUT_SECRET._id,
                 token: TOKEN,
                 createdAt: new Date(),
             });
+            mockBuildUrl = jest.spyOn(userActivationService, "buildResetPwdUrl").mockReturnValue(URL);
         });
 
         afterAll(() => mockResetUser.mockRestore());
@@ -361,11 +377,16 @@ describe("user activation service", () => {
             expect(mockResetUser).toHaveBeenCalledWith(USER_WITHOUT_SECRET);
         });
 
+        it("builds reset password", async () => {
+            await userActivationService.forgetPassword(USER_EMAIL);
+            expect(mockBuildUrl).toHaveBeenCalledWith(TOKEN);
+        });
+
         it("should call notifyService.notify()", async () => {
             await userActivationService.forgetPassword(USER_EMAIL);
             expect(mockedNotifyService.notify).toHaveBeenCalledWith(NotificationType.USER_FORGET_PASSWORD, {
                 email: USER_EMAIL.toLocaleLowerCase(),
-                url: `${FRONT_OFFICE_URL}/auth/reset-password/${TOKEN}`,
+                url: URL,
             });
         });
     });

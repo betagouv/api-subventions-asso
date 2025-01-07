@@ -112,6 +112,10 @@ export class UserActivationService {
         return await userAuthService.updateJwt(userUpdated);
     }
 
+    buildResetPwdUrl(token: string) {
+        return `${FRONT_OFFICE_URL}/auth/reset-password/${token}`;
+    }
+
     async forgetPassword(email: string) {
         const user = await userPort.findByEmail(email.toLocaleLowerCase());
         if (!user) return; // Don't say user not found, for security reasons
@@ -120,7 +124,7 @@ export class UserActivationService {
 
         notifyService.notify(NotificationType.USER_FORGET_PASSWORD, {
             email: email.toLocaleLowerCase(),
-            url: `${FRONT_OFFICE_URL}/auth/reset-password/${resetResult.token}`,
+            url: this.buildResetPwdUrl(resetResult.token),
         });
     }
 
