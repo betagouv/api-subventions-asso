@@ -151,7 +151,7 @@ export class OsirisService
         const requests = await osirisRequestPort.findBySiret(siret);
 
         for (const request of requests) {
-            request.actions = await osirisActionPort.findByCompteAssoId(request.providerInformations.compteAssoId);
+            request.actions = await osirisActionPort.findByRequestUniqueId(request.providerInformations.uniqueId);
         }
         return requests;
     }
@@ -163,7 +163,7 @@ export class OsirisService
 
         for (const request of requests) {
             request.actions = actions.filter(
-                a => a.indexedInformations.compteAssoId === request.providerInformations.compteAssoId,
+                a => a.indexedInformations.requestUniqueId === request.providerInformations.uniqueId,
             );
         }
         return requests;
@@ -173,7 +173,7 @@ export class OsirisService
         const requests = await osirisRequestPort.findByRna(rna);
 
         for (const request of requests) {
-            request.actions = await osirisActionPort.findByCompteAssoId(request.providerInformations.compteAssoId);
+            request.actions = await osirisActionPort.findByRequestUniqueId(request.providerInformations.uniqueId);
         }
         return requests;
     }
@@ -201,7 +201,7 @@ export class OsirisService
             requests.map(async r =>
                 OsirisRequestAdapter.toAssociation(
                     r,
-                    (await osirisActionPort.findByCompteAssoId(r.providerInformations.compteAssoId)) || undefined, // todo faire une jointure, un jour ^^ !
+                    (await osirisActionPort.findByRequestUniqueId(r.providerInformations.uniqueId)) || undefined,
                 ),
             ),
         );
