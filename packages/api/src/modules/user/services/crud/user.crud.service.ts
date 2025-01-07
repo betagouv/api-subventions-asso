@@ -56,10 +56,12 @@ export class UserCrudService {
         return await Promise.all(
             users.map(async user => {
                 const reset = await userResetPort.findOneByUserId(user._id);
+                if (!reset || userActivationService.isExpiredReset(reset)) return user;
                 return {
                     ...user,
                     resetToken: reset?.token,
                     resetTokenDate: reset?.createdAt,
+                    resetUrl: userActivationService.buildResetPwdUrl(reset?.token),
                 };
             }),
         );
