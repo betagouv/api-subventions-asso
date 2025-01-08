@@ -1,17 +1,27 @@
 module.exports = {
     async up(db) {
         const collection = db.collection("users");
-        await collection
-            .aggregate([
-                {
-                    $addFields: {
-                        from: [],
-                        fromEmail: "",
-                        fromOther: "",
-                    },
+        await collection.updateMany(
+            {},
+            {
+                $set: {
+                    from: [],
+                    fromEmail: "",
+                    fromOther: "",
                 },
-                { $out: "users" },
-            ])
-            .toArray();
+            },
+        );
+    },
+    async down(db) {
+        db.collection("users").updateMany(
+            {},
+            {
+                $unset: {
+                    from: "",
+                    fromEmail: "",
+                    fromOther: "",
+                },
+            },
+        );
     },
 };
