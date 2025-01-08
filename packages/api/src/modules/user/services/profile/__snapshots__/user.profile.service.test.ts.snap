@@ -3,7 +3,7 @@
 exports[`user profile service validateUserProfileData() User field : from should throw an error 1`] = `
 Object {
   "error": [Error: Mauvaise valeur pour la provenance.
-Les valeurs possibles sont INTRODUCTION, RESEARCH, COLLEAGUES_HIERARCHY, POST, OTHER],
+Les valeurs possibles sont DEMO, SEARCH_ENGINE, COLLEAGUES_HIERARCHY, SOCIALS, OTHER],
   "valid": false,
 }
 `;
@@ -19,7 +19,7 @@ Les valeurs possibles sont OPERATOR, CENTRAL_ADMIN, TERRITORIAL_COLLECTIVITY, DE
 exports[`user profile service validateUserProfileData() from should throw an error 1`] = `
 Object {
   "error": [Error: Mauvaise valeur pour la provenance.
-Les valeurs possibles sont INTRODUCTION, RESEARCH, COLLEAGUES_HIERARCHY, POST, OTHER],
+Les valeurs possibles sont DEMO, SEARCH_ENGINE, COLLEAGUES_HIERARCHY, SOCIALS, OTHER],
   "valid": false,
 }
 `;
