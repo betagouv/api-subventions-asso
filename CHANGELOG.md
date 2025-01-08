@@ -3,6 +3,53 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.60.3](https://github.com/betagouv/api-subventions-asso/compare/v0.60.2...v0.60.3) (2025-01-06)
+
+### Bug Fixes
+
+-   **api:** homogenize treatment csv xls single payment date ([#3069](https://github.com/betagouv/api-subventions-asso/issues/3069)) ([5db60ed](https://github.com/betagouv/api-subventions-asso/commit/5db60ed00f5e8124f475ed209cdade54ba398db1))
+
+## [0.60.2](https://github.com/betagouv/api-subventions-asso/compare/v0.60.1...v0.60.2) (2025-01-06)
+
+### Bug Fixes
+
+-   **api:** extract number with coma not point decimal separator ([f734242](https://github.com/betagouv/api-subventions-asso/commit/f734242692367ac872fbbcb30c0a5550ea149b9a))
+
+## [0.60.1](https://github.com/betagouv/api-subventions-asso/compare/v0.60.0...v0.60.1) (2025-01-02)
+
+### Bug Fixes
+
+-   **front:** [#2977](https://github.com/betagouv/api-subventions-asso/issues/2977) one or no establishment is not the same ([#3055](https://github.com/betagouv/api-subventions-asso/issues/3055)) ([8d00809](https://github.com/betagouv/api-subventions-asso/commit/8d00809579ed431e10cf7adbaa590e0c64bea5fc))
+-   **front:** [#3061](https://github.com/betagouv/api-subventions-asso/issues/3061) modale sort fix ([#3070](https://github.com/betagouv/api-subventions-asso/issues/3070)) ([06bf228](https://github.com/betagouv/api-subventions-asso/commit/06bf22873720da2cf1017a9947f1e608e7e7c364))
+-   **front:** [#3062](https://github.com/betagouv/api-subventions-asso/issues/3062) [#3064](https://github.com/betagouv/api-subventions-asso/issues/3064) payment modale ([#3071](https://github.com/betagouv/api-subventions-asso/issues/3071)) ([574aebf](https://github.com/betagouv/api-subventions-asso/commit/574aebfc06f2abcaa7a2a0480dd35cc77ee46430))
+-   **front:** [#3063](https://github.com/betagouv/api-subventions-asso/issues/3063) exercise label ([#3072](https://github.com/betagouv/api-subventions-asso/issues/3072)) ([9ee6b5a](https://github.com/betagouv/api-subventions-asso/commit/9ee6b5ae3651d0c357d8d3c9b3ea7eeb5734a6d7))
+
+### Features
+
+-   **api:** [#2989](https://github.com/betagouv/api-subventions-asso/issues/2989) data integration finistere ([#3056](https://github.com/betagouv/api-subventions-asso/issues/3056)) ([7ff612b](https://github.com/betagouv/api-subventions-asso/commit/7ff612bec70c4ef4dfc7c8ab12daba379a49c5d4))
+
+# [0.60.0](https://github.com/betagouv/api-subventions-asso/compare/v0.59.2...v0.60.0) (2024-12-26)
+
+### Bug Fixes
+
+-   **api:** [#3037](https://github.com/betagouv/api-subventions-asso/issues/3037) registers missing crons ([911e71b](https://github.com/betagouv/api-subventions-asso/commit/911e71b5891c4684b3a73adf56af2cc8df41635f))
+-   **api:** comment out duplicate index creation ([904967d](https://github.com/betagouv/api-subventions-asso/commit/904967d7593df0b611abab29bd2c1e599eb8893a))
+-   **front:** [#2994](https://github.com/betagouv/api-subventions-asso/issues/2994) get estab data when no rna can be found ([#3008](https://github.com/betagouv/api-subventions-asso/issues/3008)) ([7e652ac](https://github.com/betagouv/api-subventions-asso/commit/7e652ac0e83b89fb3104ab7d29346846d102103d))
+-   **front:** [#2995](https://github.com/betagouv/api-subventions-asso/issues/2995) confusion between type and htmlType ([#3009](https://github.com/betagouv/api-subventions-asso/issues/3009)) ([95e17b4](https://github.com/betagouv/api-subventions-asso/commit/95e17b4fbab510d73d9c5aec326c36f0fa343f64))
+
+### Features
+
+-   **api, dto, front:** [#2853](https://github.com/betagouv/api-subventions-asso/issues/2853) create resource to update home info banner ([#3034](https://github.com/betagouv/api-subventions-asso/issues/3034)) ([7c1ffcd](https://github.com/betagouv/api-subventions-asso/commit/7c1ffcd58419fb1e6af61e88ad47a94fc8ead179))
+-   **api:** [#2551](https://github.com/betagouv/api-subventions-asso/issues/2551) transforms api-asso localhost url to actual domain ([#3025](https://github.com/betagouv/api-subventions-asso/issues/3025)) ([49baa4a](https://github.com/betagouv/api-subventions-asso/commit/49baa4a9259fd8634e4a3eb22d409f52b9a27fa6))
+-   **api:** [#2984](https://github.com/betagouv/api-subventions-asso/issues/2984) data integration Bordeaux ([#3010](https://github.com/betagouv/api-subventions-asso/issues/3010)) ([44aefbd](https://github.com/betagouv/api-subventions-asso/commit/44aefbd9cd21409106178fbfc8bb5e7f463ed278))
+-   **api:** [#2988](https://github.com/betagouv/api-subventions-asso/issues/2988) data integration sarthe ([#3028](https://github.com/betagouv/api-subventions-asso/issues/3028)) ([5bd4238](https://github.com/betagouv/api-subventions-asso/commit/5bd423876dec7633303abd25b9be99a8778413bf))
+-   **api:** [#2990](https://github.com/betagouv/api-subventions-asso/issues/2990) data integration Hauts-De-Seine ([#3048](https://github.com/betagouv/api-subventions-asso/issues/3048)) ([5285cca](https://github.com/betagouv/api-subventions-asso/commit/5285cca80acc39d05ab4184b1602059bd3b6528b))
+-   **api:** [#3003](https://github.com/betagouv/api-subventions-asso/issues/3003) data integration IHEDN ([#3049](https://github.com/betagouv/api-subventions-asso/issues/3049)) ([9f67789](https://github.com/betagouv/api-subventions-asso/commit/9f67789b9d063622445bbb3d8e6ef2e48b32840c))
+-   **api:** [#3022](https://github.com/betagouv/api-subventions-asso/issues/3022) add scdl integration errors field ([#3023](https://github.com/betagouv/api-subventions-asso/issues/3023)) ([047c0df](https://github.com/betagouv/api-subventions-asso/commit/047c0df021e28cc891d8ff2e6e9c35b98c41e6e6))
+-   **front:** [#2684](https://github.com/betagouv/api-subventions-asso/issues/2684) grant dashboard with new api route ([#2959](https://github.com/betagouv/api-subventions-asso/issues/2959)) ([ea924e5](https://github.com/betagouv/api-subventions-asso/commit/ea924e53790d5a89136be13a0b6f27b26afb57af))
+-   **front:** [#2981](https://github.com/betagouv/api-subventions-asso/issues/2981) agent pro connect ([#3013](https://github.com/betagouv/api-subventions-asso/issues/3013)) ([17316de](https://github.com/betagouv/api-subventions-asso/commit/17316de9cdfcfa6451975f7232019c1b8cc42131))
+-   **front:** [#2993](https://github.com/betagouv/api-subventions-asso/issues/2993) if no granted amount display label ([#3052](https://github.com/betagouv/api-subventions-asso/issues/3052)) ([e6e979d](https://github.com/betagouv/api-subventions-asso/commit/e6e979de9141cf1b4439fac79cc4621baf6e009f))
+
 ## [0.59.2](https://github.com/betagouv/api-subventions-asso/compare/v0.59.1...v0.59.2) (2024-12-17)
 
 ### Bug Fixes

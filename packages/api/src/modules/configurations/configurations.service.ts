@@ -1,3 +1,4 @@
+import { MainInfoBannerDto } from "dto";
 import { BadRequestError, ConflictError } from "../../shared/errors/httpErrors";
 import { REGEX_MAIL_DOMAIN } from "../user/user.constant";
 import configurationsPort from "../../dataProviders/db/configurations/configurations.port";
@@ -12,6 +13,7 @@ export enum CONFIGURATION_NAMES {
     LAST_RGPD_WARNED_DATE = "LAST-RGPD-WARNED-DATE",
     LAST_CHORUS_UPDATE_IMPORTED = "LAST-CHORUS-UPDATE-IMPORTED",
     LAST_USER_STATS_UPDATE = "LAST_USER_STATS_UPDATE",
+    HOME_INFOS_BANNER = "HOME-INFOS-BANNER",
 }
 
 export class ConfigurationsService {
@@ -116,6 +118,33 @@ export class ConfigurationsService {
         await configurationsPort.upsert(CONFIGURATION_NAMES.LAST_USER_STATS_UPDATE, {
             data: date,
         });
+    }
+
+    async updateMainInfoBanner(title?: string, desc?: string) {
+        const newBannerConfig: MainInfoBannerDto = { title: title, desc: desc };
+
+        const bannerConfig = await configurationsPort.getByName<MainInfoBannerDto>(
+            CONFIGURATION_NAMES.HOME_INFOS_BANNER,
+        );
+        if (!bannerConfig) {
+            await configurationsPort.upsert(
+                CONFIGURATION_NAMES.HOME_INFOS_BANNER,
+                this.createEmptyConfigEntity(CONFIGURATION_NAMES.HOME_INFOS_BANNER, newBannerConfig),
+            );
+        } else {
+            await configurationsPort.upsert(
+                CONFIGURATION_NAMES.HOME_INFOS_BANNER,
+                this.generateConfiguationEntity(bannerConfig, newBannerConfig),
+            );
+        }
+        return newBannerConfig;
+    }
+
+    async getMainInfoBanner(): Promise<MainInfoBannerDto> {
+        const bannerConfig = await configurationsPort.getByName<MainInfoBannerDto>(
+            CONFIGURATION_NAMES.HOME_INFOS_BANNER,
+        );
+        return bannerConfig?.data || {};
     }
 }
 

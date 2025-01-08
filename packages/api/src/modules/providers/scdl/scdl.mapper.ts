@@ -38,6 +38,7 @@ const CONVENTION_DATE_PATHS = [
     "date Convention",
     "DateConvention",
     "datedeConvention",
+    "Date convention",
 ];
 
 const PERIODE_VERSEMENT_PATHS = [
@@ -66,9 +67,16 @@ const removeTrailingDotZero = value => {
 };
 
 export const SCDL_MAPPER: ScdlGrantSchema = {
-    allocatorName: { path: [["nomAttribuant", "Nom de l'attribuant", "nom Attribuant"]] },
+    allocatorName: { path: [["nomAttribuant", "Nom de l'attribuant", "nom Attribuant", "Autorité administrative"]] },
     allocatorSiret: {
-        path: [["idAttribuant", "Identification de l'attribuant (SIRET)", "id  Attribuant"]],
+        path: [
+            [
+                "idAttribuant",
+                "Identification de l'attribuant (SIRET)",
+                "id  Attribuant",
+                "SIRET autorité administrative",
+            ],
+        ],
         adapter: v => removeTrailingDotZero(v?.toString()),
     },
     exercice: {
@@ -81,6 +89,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "annee",
                 "Année budgétaire",
                 "anneeConvention",
+                "anneeDecision",
                 ...CONVENTION_DATE_PATHS,
             ],
         ],
@@ -94,7 +103,14 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
         path: [[...CONVENTION_DATE_PATHS]],
         adapter: dateAdapter,
     },
-    decisionReference: [[...getMapperVariants("decisionReference"), "Référence de la décision", "reference Decision"]],
+    decisionReference: [
+        [
+            ...getMapperVariants("decisionReference"),
+            "Référence de la décision",
+            "reference Decision",
+            "Référence délibération",
+        ],
+    ],
     associationName: [
         [
             ...getMapperVariants("associationName"),
@@ -104,6 +120,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             "Nom du bénéficiaire",
             "nom Beneficiaire",
             "nomBénéficiaire",
+            "Nom attributaire",
         ],
     ],
     associationSiret: {
@@ -117,6 +134,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "id Beneficiaire",
                 "IdBeneficiaire",
                 "Id du bénéficiaire",
+                "N° SIRET attributaire",
             ],
         ],
         adapter: v => removeTrailingDotZero(v?.toString()),
@@ -130,6 +148,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             "Objet du dossier",
             "Objet de la subvention",
             "Objet de l'aide",
+            "Objet convention",
         ],
     ],
     amount: {
@@ -140,11 +159,14 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Montant total de la subvention*",
                 "Montant total de la subvention",
                 "Montant voté",
+                "Montant décidé ligne",
             ],
         ],
         adapter: value => (value && typeof value === "string" ? parseFloat(value.replace(/[^0-9.]/, "")) : value),
     },
-    paymentNature: [[...getMapperVariants("paymentNature"), "Nature de la subvention", "Nature de l'aide"]],
+    paymentNature: [
+        [...getMapperVariants("paymentNature"), "Nature de la subvention", "Nature de l'aide", "Nature subvention"],
+    ],
     paymentConditions: [
         [
             ...getMapperVariants("paymentConditions"),
@@ -167,7 +189,9 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
     paymentEndDate: {
         path: [[...getMapperVariants("paymentEndDate"), ...PERIODE_VERSEMENT_PATHS]],
         adapter: value => {
-            if (typeof value !== "string") return null;
+            if (typeof value !== "string") {
+                return dateAdapter(value);
+            }
             let parsedDate: Date | null = null;
             const noSpaceValue = value?.replaceAll(" ", "");
             if (expandedShortISOPeriodRegExp.test(noSpaceValue)) {

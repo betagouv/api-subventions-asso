@@ -2,7 +2,7 @@ import type { FlatPayment } from "$lib/resources/@types/FlattenGrant";
 import type { TableCell } from "$lib/dsfr/TableCell.types";
 import { numberToEuro, valueOrHyphen } from "$lib/helpers/dataHelper";
 import { withTwoDigitYear } from "$lib/helpers/dateHelper";
-import type { DashboardProgram } from "$lib/components/GrantDashboard/@types/DashboardGrant";
+import type { DashboardPayment, DashboardProgram } from "$lib/components/GrantDashboard/@types/DashboardGrant";
 
 const MULTI = "multi";
 
@@ -18,11 +18,13 @@ export const getPaymentsCells = (payments: FlatPayment[] | null): TableCell[] | 
         ];
 };
 
-export const getPaymentDashboardData = (payments: FlatPayment[] | null) => {
+export const getPaymentDashboardData = (payments: FlatPayment[] | null): DashboardPayment | null => {
     if (!payments) return payments;
+    const dernier = getLastPaymentsDate(payments);
+    if (!dernier) return null;
     return {
         total: getTotalPayment(payments),
-        dernier: getLastPaymentsDate(payments),
+        dernier,
         programme: buildProgramme(payments),
     };
 };

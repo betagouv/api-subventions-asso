@@ -6,6 +6,7 @@ import dataBretagneService from "../../dataBretagne/dataBretagne.service";
 import { ENTITIES, PAYMENTS } from "../__fixtures__/ChorusFixtures";
 import { RawPayment } from "../../../grant/@types/rawGrant";
 import PROGRAMS from "../../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
+import { ChorusLineDto } from "./chorusLineDto";
 
 describe("ChorusAdapter", () => {
     const PROGRAM = PROGRAMS[0];
@@ -84,7 +85,7 @@ describe("ChorusAdapter", () => {
                     amount: 0,
                     dateOperation: now,
                 },
-                {},
+                {} as ChorusLineDto,
                 "" as unknown as ObjectId,
             );
 

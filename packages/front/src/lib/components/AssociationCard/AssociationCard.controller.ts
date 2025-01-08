@@ -23,8 +23,10 @@ export default class AssociationCardController {
     }
 
     get nbEtabsLabel() {
-        return this.simplifiedAsso.nbEtabs <= 1
+        return this.simplifiedAsso.nbEtabs == 1
             ? `${this.simplifiedAsso.nbEtabs} établissement rattaché`
+            : this.simplifiedAsso.nbEtabs < 1
+            ? "aucun établissement rattaché"
             : `${this.simplifiedAsso.nbEtabs} établissements rattachés`;
     }
 }

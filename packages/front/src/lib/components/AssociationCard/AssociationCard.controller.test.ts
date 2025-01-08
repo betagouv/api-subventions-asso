@@ -23,7 +23,7 @@ describe("AssociationCardController", () => {
                 ${simplifiedAssoWithOnlySiren}      | ${SIREN}           | ${"SIREN"}
                 ${simplifiedAssoWithBothIdentifier} | ${RNA}             | ${"RNA"}
             `("should return url with $identifierName", ({ simplifiedAsso, expectedIdentifier }) => {
-                const ctrl = new AssociationCardController(simplifiedAsso);
+                const ctrl = new AssociationCardController(simplifiedAsso, "");
                 const expected = `/association/${expectedIdentifier}`;
                 const actual = ctrl.url;
                 expect(actual).toEqual(expected);
@@ -33,7 +33,7 @@ describe("AssociationCardController", () => {
         describe("street", () => {
             it("should call getFirstPartAddress()", () => {
                 const simplifiedAsso = { rna: RNA, address: {} };
-                const ctrl = new AssociationCardController(simplifiedAsso);
+                const ctrl = new AssociationCardController(simplifiedAsso, "");
                 ctrl.street;
                 expect(AssociationHelper.getFirstPartAddress).toHaveBeenCalledOnce();
             });
@@ -42,16 +42,24 @@ describe("AssociationCardController", () => {
         describe("city", () => {
             it("should call getLastPartAddress()", () => {
                 const simplifiedAsso = { rna: RNA, address: {} };
-                const ctrl = new AssociationCardController(simplifiedAsso);
+                const ctrl = new AssociationCardController(simplifiedAsso, "");
                 ctrl.city;
                 expect(AssociationHelper.getLastPartAddress).toHaveBeenCalledOnce();
             });
         });
 
         describe("nbEtabsLabel", () => {
+            it("should return none", () => {
+                const simplifiedAsso = { rna: RNA, address: {}, nbEtabs: 0 };
+                const ctrl = new AssociationCardController(simplifiedAsso, "");
+                const expected = "aucun établissement rattaché";
+                const actual = ctrl.nbEtabsLabel;
+                expect(actual).toEqual(expected);
+            });
+
             it("should return singular", () => {
                 const simplifiedAsso = { rna: RNA, address: {}, nbEtabs: 1 };
-                const ctrl = new AssociationCardController(simplifiedAsso);
+                const ctrl = new AssociationCardController(simplifiedAsso, "");
                 const expected = "1 établissement rattaché";
                 const actual = ctrl.nbEtabsLabel;
                 expect(actual).toEqual(expected);
@@ -59,7 +67,7 @@ describe("AssociationCardController", () => {
 
             it("should return plural", () => {
                 const simplifiedAsso = { rna: RNA, address: {}, nbEtabs: 4 };
-                const ctrl = new AssociationCardController(simplifiedAsso);
+                const ctrl = new AssociationCardController(simplifiedAsso, "");
                 const expected = "4 établissements rattachés";
                 const actual = ctrl.nbEtabsLabel;
                 expect(actual).toEqual(expected);

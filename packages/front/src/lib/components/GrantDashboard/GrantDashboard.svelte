@@ -16,17 +16,8 @@
     const tableId = "grant-dashboard";
 
     const ctrl = new GrantDashboardController(structureId);
-    const {
-        grantPromise,
-        grants,
-        headers,
-        rows,
-        selectedExerciseIndex,
-        selectedExercise,
-        exerciseOptions,
-        isExtractLoading,
-        selectedGrants,
-    } = ctrl;
+    const { grantPromise, grants, headers, rows, selectedExercise, exerciseOptions, isExtractLoading, selectedGrants } =
+        ctrl;
 </script>
 
 {#await grantPromise}
@@ -55,10 +46,7 @@
     <div class="fr-grid-row flex space-between">
         <div class="fr-col-3">
             {#if $exerciseOptions?.length}
-                <Select
-                    on:change={event => ctrl.selectExercise(event.detail)}
-                    selected={$selectedExerciseIndex}
-                    options={$exerciseOptions} />
+                <Select bind:selected={$selectedExercise} options={$exerciseOptions} />
             {/if}
         </div>
         <div class="align-bottom">
@@ -75,7 +63,7 @@
     <div class="fr-mt-6w compact-columns">
         {#if $selectedGrants?.length}
             <div>
-                <GrantsStatistique grants={$grants} year={$selectedExercise} />
+                <GrantsStatistique grants={$selectedGrants} year={$selectedExercise} />
             </div>
             <div class="negative-margin">
                 <Table
@@ -91,15 +79,17 @@
                     customColSizes={[12, 11, 11, 11, 13, 17, 11, 11]}
                     {headers}>
                     {#each $rows as row, rowIndex}
-                        <TableRow id={tableId} index={rowIndex}>
-                            <ApplicationRow
-                                on:click={() => ctrl.onApplicationClick(rowIndex)}
-                                cells={row.applicationCells} />
-                            <PaymentRow
-                                on:click={() => ctrl.onPaymentClick(rowIndex)}
-                                cells={row.paymentsCells}
-                                granted={row.granted} />
-                        </TableRow>
+                        {#key row}
+                            <TableRow id={tableId} index={rowIndex}>
+                                <ApplicationRow
+                                    on:click={() => ctrl.onApplicationClick(rowIndex)}
+                                    cells={row.applicationCells} />
+                                <PaymentRow
+                                    on:click={() => ctrl.onPaymentClick(rowIndex)}
+                                    cells={row.paymentsCells}
+                                    granted={row.granted} />
+                            </TableRow>
+                        {/key}
                     {/each}
                 </Table>
             </div>
