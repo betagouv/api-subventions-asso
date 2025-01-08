@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`user profile service validateUserProfileData() User field : from should throw an error 1`] = `
+Object {
+  "error": [Error: Mauvaise valeur pour la provenance.
+Les valeurs possibles sont INTRODUCTION, RESEARCH, COLLEAGUES_HIERARCHY, POST, OTHER],
+  "valid": false,
+}
+`;
+
 exports[`user profile service validateUserProfileData() agentType should throw if agentType is wrong 1`] = `
 Object {
   "error": [Error: Mauvaise valeur pour le type d'agent.
