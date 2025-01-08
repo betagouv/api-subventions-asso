@@ -1,5 +1,6 @@
 import { fileURLToPath } from "url";
 import { readFileSync } from "fs";
+import path from "path";
 import { sentrySvelteKit } from "@sentry/sveltekit";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { defineConfig, loadEnv } from "vite";
@@ -21,7 +22,7 @@ export default defineConfig(({ mode }) => {
                     project: "data-subvention-front",
                     url: "https://sentry.incubateur.net/",
                     authToken: env.SENTRY_AUTH_TOKEN || env.SENTRY_AUTH_TOKEN,
-                    release: pkg.version
+                    release: pkg.version,
                 },
             }),
             sveltekit(),

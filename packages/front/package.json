@@ -43,10 +43,11 @@
     },
     "dependencies": {
         "@gouvfr/dsfr": "1.12",
-        "@sentry/sveltekit": "^7.88.0",
-        "@sveltejs/adapter-auto": "^2.1.1",
-        "@sveltejs/adapter-node": "^1.3.1",
-        "@sveltejs/kit": "^1.30.3",
+        "@sentry/sveltekit": "^8.47.0",
+        "@sveltejs/adapter-auto": "^3.3.1",
+        "@sveltejs/adapter-node": "^5.2.11",
+        "@sveltejs/kit": "^2.0.0",
+        "@sveltejs/vite-plugin-svelte": "^3.0.0",
         "axios": "^1.7.4",
         "chart.js": "^4.4.1",
         "csv-stringify": "^6.4.5",
@@ -57,7 +58,7 @@
         "string-similarity": "^4.0.4",
         "svelte": "^4.2.8",
         "svelte-check": "^3.6.2",
-        "vite": "^4.5.1"
+        "vite": "^5.4.11"
     },
     "devDependencies": {
         "@playwright/test": "^1.40.1",
@@ -72,7 +73,7 @@
         "lint-staged": "^13.3.0",
         "prettier-plugin-svelte": "^2.10.1",
         "tslib": "^2.6.2",
-        "vitest": "^2.1.4"
+        "vitest": "^2.1.8"
     },
     "type": "module"
 }

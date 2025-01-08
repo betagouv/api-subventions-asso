@@ -21,7 +21,6 @@ export function isRna(rna) {
 }
 
 export function isAssociationIdentifier(identifier) {
-    console.log(identifier, isRna(identifier), isSiren(identifier), isRna(identifier) || isSiren(identifier));
     return isRna(identifier) || isSiren(identifier);
 }
 

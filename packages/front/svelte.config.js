@@ -2,7 +2,7 @@ import "dotenv/config";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import adapter from "@sveltejs/adapter-node";
-import { vitePreprocess } from "@sveltejs/kit/vite";
+import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 import dotenv from "dotenv";
 
 const file = fileURLToPath(new URL("package.json", import.meta.url));
@@ -48,14 +48,12 @@ const config = {
                     "https://storage.crisp.chat",
                 ],
                 "script-src": [
-                    "unsafe-inline",
-                    "unsafe-eval",
                     "self",
                     "https://client.crisp.chat",
                     "https://settings.crisp.chat",
                     "https://matomo-datasubvention.osc-secnum-fr1.scalingo.io",
                     "https://sentry.incubateur.net",
-                    "sha256-+X7Z1KW2Vcl9pendYbp0FYL6F0HZek43aBP/14cwq+U=", // https://github.com/getsentry/sentry-javascript/issues/8925
+                    "nonce-62dd82411d41", // https://github.com/getsentry/sentry-javascript/pull/9969
                 ],
                 "style-src": ["self", "https://client.crisp.chat", "unsafe-inline"],
                 "frame-src": ["self", "https://game.crisp.chat", "https://datasubvention.crisp.help"],

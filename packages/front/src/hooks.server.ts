@@ -12,7 +12,10 @@ if (PUBLIC_ENV !== "dev")
         release: version,
     });
 
-export const handle = sequence(Sentry.sentryHandle(), (async ({ event, resolve }) => {
+export const handle = sequence(Sentry.sentryHandle({ fetchProxyScriptNonce: "62dd82411d41" }), (async ({
+    event,
+    resolve,
+}) => {
     event.setHeaders({
         "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
         "X-Frame-Options": "SAMEORIGIN",
