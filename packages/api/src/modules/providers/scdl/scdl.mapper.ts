@@ -4,6 +4,8 @@ import { BeforeAdaptation } from "../../../@types";
 import { ScdlGrantSchema } from "./@types/ScdlGrantSchema";
 
 const OFFICIAL_MAPPER = {
+    allocatorName: "nomAttribuant",
+    allocatorSiret: "idAttribuant",
     exercice: "exercice",
     conventionDate: "dateConvention",
     decisionReference: "referenceDecision",
@@ -67,11 +69,11 @@ const removeTrailingDotZero = value => {
 };
 
 export const SCDL_MAPPER: ScdlGrantSchema = {
-    allocatorName: { path: [["nomAttribuant", "Nom de l'attribuant", "nom Attribuant", "NomAttribuant", "Autorité administrative"]] },
+    allocatorName: { path: [[...getMapperVariants("allocatorName"), "Nom de l'attribuant", "nom Attribuant", "NomAttribuant", "Autorité administrative"]] },
     allocatorSiret: {
         path: [
             [
-                "idAttribuant",
+                ...getMapperVariants("allocatorSiret"),
                 "Identification de l'attribuant (SIRET)",
                 "id  Attribuant",
                 "IdAttribuant",
