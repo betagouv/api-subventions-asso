@@ -96,12 +96,12 @@ describe("user activation service", () => {
         });
     });
 
-    describe("isExpiredReset", () => {
+    describe("isResetExpired", () => {
         it("should return true", () => {
             const reset = {
                 createdAt: new Date(2000),
             } as unknown as UserReset;
-            const actual = userActivationService.isExpiredReset(reset);
+            const actual = userActivationService.isResetExpired(reset);
             expect(actual).toBeTruthy();
         });
 
@@ -109,7 +109,7 @@ describe("user activation service", () => {
             const reset = {
                 createdAt: new Date(),
             } as unknown as UserReset;
-            const actual = userActivationService.isExpiredReset(reset);
+            const actual = userActivationService.isResetExpired(reset);
             expect(actual).toBeFalsy();
         });
     });
@@ -121,11 +121,11 @@ describe("user activation service", () => {
             createdAt: new Date(),
         };
 
-        let mockIsExpiredReset: jest.SpyInstance;
+        let mockisResetExpired: jest.SpyInstance;
 
         beforeAll(() => {
-            mockIsExpiredReset = jest.spyOn(userActivationService, "isExpiredReset");
-            mockIsExpiredReset.mockReturnValue(false);
+            mockisResetExpired = jest.spyOn(userActivationService, "isResetExpired");
+            mockisResetExpired.mockReturnValue(false);
         });
 
         it("should return ResetTokenNotFoundError if token is null", () => {
@@ -135,7 +135,7 @@ describe("user activation service", () => {
         });
 
         it("should return BadRequestError if token has expired", () => {
-            mockIsExpiredReset.mockReturnValueOnce(true);
+            mockisResetExpired.mockReturnValueOnce(true);
             const expected = {
                 valid: false,
                 error: new BadRequestError(

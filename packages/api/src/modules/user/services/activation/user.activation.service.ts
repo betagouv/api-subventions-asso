@@ -42,7 +42,7 @@ export class UserActivationService {
     public validateResetToken(userReset: UserReset | null): { valid: false; error: Error } | { valid: true } {
         let error: Error | null = null;
         if (!userReset) error = new ResetTokenNotFoundError();
-        else if (this.isExpiredReset(userReset as UserReset))
+        else if (this.isResetExpired(userReset as UserReset))
             error = new BadRequestError(
                 "Reset token has expired, please retry forget password",
                 ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED,
@@ -51,7 +51,7 @@ export class UserActivationService {
         return error ? { valid: false, error } : { valid: true };
     }
 
-    public isExpiredReset(reset: UserReset) {
+    public isResetExpired(reset: UserReset) {
         return reset.createdAt.getTime() + UserActivationService.RESET_TIMEOUT < Date.now();
     }
 

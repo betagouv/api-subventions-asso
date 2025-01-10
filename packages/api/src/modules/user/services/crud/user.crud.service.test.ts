@@ -436,9 +436,9 @@ describe("user crud service", () => {
             jest.mocked(userResetPort.findOneByUserId).mockResolvedValueOnce(RESETS[2]);
             jest.mocked(userResetPort.findOneByUserId).mockResolvedValueOnce(RESETS[3]);
 
-            jest.mocked(userActivationService.isExpiredReset).mockReturnValueOnce(false);
-            jest.mocked(userActivationService.isExpiredReset).mockReturnValueOnce(false);
-            jest.mocked(userActivationService.isExpiredReset).mockReturnValueOnce(true);
+            jest.mocked(userActivationService.isResetExpired).mockReturnValueOnce(false);
+            jest.mocked(userActivationService.isResetExpired).mockReturnValueOnce(false);
+            jest.mocked(userActivationService.isResetExpired).mockReturnValueOnce(true);
         });
 
         it("gets users", async () => {
@@ -456,7 +456,7 @@ describe("user crud service", () => {
 
         it("controls expiration of each found token", async () => {
             await userCrudService.listUsers();
-            expect(userActivationService.isExpiredReset).toHaveBeenCalledTimes(3);
+            expect(userActivationService.isResetExpired).toHaveBeenCalledTimes(3);
         });
 
         it("builds reset pwd url for each valid token", async () => {
