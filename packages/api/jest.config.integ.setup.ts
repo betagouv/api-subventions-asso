@@ -52,6 +52,9 @@ jest.mock("@getbrevo/brevo", () => {
         updateContact = jest.fn().mockResolvedValue(true);
         deleteContact = jest.fn().mockResolvedValue(true);
     }
+    class UpdateContact {
+        updateContact = jest.fn().mockResolvedValue(true);
+    }
     class TransactionalEmailsApi {
         sendTransacEmail = jest.fn().mockResolvedValue(true);
     }
@@ -68,6 +71,7 @@ jest.mock("@getbrevo/brevo", () => {
             },
         },
         ContactsApi,
+        UpdateContact
     };
 });
 

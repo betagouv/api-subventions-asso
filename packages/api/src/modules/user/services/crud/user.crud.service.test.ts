@@ -17,10 +17,12 @@ jest.mock("../activation/user.activation.service");
 const mockedUserActivationService = jest.mocked(userActivationService);
 
 import userResetPort from "../../../../dataProviders/db/user/user-reset.port";
+
 jest.mock("../../../../dataProviders/db/user/user-reset.port");
 const mockedUserResetPort = jest.mocked(userResetPort);
 
 import consumerTokenPort from "../../../../dataProviders/db/user/consumer-token.port";
+
 jest.mock("../../../../dataProviders/db/user/consumer-token.port");
 const mockedConsumerTokenPort = jest.mocked(consumerTokenPort);
 
@@ -43,15 +45,18 @@ jest.mock("../../../notify/notify.service", () => ({
 }));
 const mockedNotifyService = jest.mocked(notifyService);
 import * as portHelper from "../../../../shared/helpers/PortHelper";
+
 jest.mock("../../../../shared/helpers/PortHelper");
 
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 
 import userStatsService from "../stats/user.stats.service";
 import configurationsService from "../../../configurations/configurations.service";
+
 jest.mock("../../../configurations/configurations.service");
 import AssociationVisitEntity from "../../../stats/entities/AssociationVisitEntity";
 import statsAssociationsVisitPort from "../../../../dataProviders/db/stats/statsAssociationsVisit.port";
+
 jest.mock("../../../../dataProviders/db/stats/statsAssociationsVisit.port");
 
 describe("user crud service", () => {
@@ -72,13 +77,25 @@ describe("user crud service", () => {
     });
 
     describe("update", () => {
+        let spyFindByEmail;
+
         beforeAll(() => {
-            mockedUserCheckService.validateEmail.mockResolvedValue(undefined);
+            spyFindByEmail = jest.spyOn(userCrudService, "findByEmail").mockResolvedValue(USER_WITHOUT_SECRET);
         });
 
-        it("should call userCheckService.validateEmail()", async () => {
+        it("gets original user", async () => {
             await userCrudService.update(USER_WITHOUT_SECRET);
-            expect(mockedUserCheckService.validateEmail).toHaveBeenCalledWith(USER_WITHOUT_SECRET.email);
+            expect(spyFindByEmail).toHaveBeenCalledWith(USER_WITHOUT_SECRET.email);
+        });
+
+        it.each`
+            agentConnectId | checkFn
+            ${null}        | ${mockedUserCheckService.validateEmailAndDomain}
+            ${"something"} | ${mockedUserCheckService.validateOnlyEmail}
+        `("should call userCheckService.validateEmail()", async ({ agentConnectId, checkFn }) => {
+            spyFindByEmail.mockResolvedValue({ ...USER_WITHOUT_SECRET, agentConnectId });
+            await userCrudService.update(USER_WITHOUT_SECRET);
+            expect(checkFn).toHaveBeenCalledWith(USER_WITHOUT_SECRET.email);
         });
 
         it("should call userPort.update", async () => {

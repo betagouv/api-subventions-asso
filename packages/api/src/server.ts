@@ -115,6 +115,6 @@ export async function startServer(port = "8080", isTest = false) {
     initCron();
 
     return app.listen(port, () => {
-        if (!isTest) console.log(`${appName} listening at http://localhost:${port}`);
+        if (!isTest) console.log(`${appName} listening at http://dev.local:${port}`);
     });
 }
