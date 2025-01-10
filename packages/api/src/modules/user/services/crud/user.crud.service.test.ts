@@ -78,13 +78,25 @@ describe("user crud service", () => {
     });
 
     describe("update", () => {
+        let spyFindByEmail;
+
         beforeAll(() => {
-            mockedUserCheckService.validateEmail.mockResolvedValue(undefined);
+            spyFindByEmail = jest.spyOn(userCrudService, "findByEmail").mockResolvedValue(USER_WITHOUT_SECRET);
         });
 
-        it("should call userCheckService.validateEmail()", async () => {
+        it("gets original user", async () => {
             await userCrudService.update(USER_WITHOUT_SECRET);
-            expect(mockedUserCheckService.validateEmail).toHaveBeenCalledWith(USER_WITHOUT_SECRET.email);
+            expect(spyFindByEmail).toHaveBeenCalledWith(USER_WITHOUT_SECRET.email);
+        });
+
+        it.each`
+            agentConnectId | checkFn
+            ${null}        | ${mockedUserCheckService.validateEmailAndDomain}
+            ${"something"} | ${mockedUserCheckService.validateOnlyEmail}
+        `("should call userCheckService.validateEmail()", async ({ agentConnectId, checkFn }) => {
+            spyFindByEmail.mockResolvedValue({ ...USER_WITHOUT_SECRET, agentConnectId });
+            await userCrudService.update(USER_WITHOUT_SECRET);
+            expect(checkFn).toHaveBeenCalledWith(USER_WITHOUT_SECRET.email);
         });
 
         it("should call userPort.update", async () => {
