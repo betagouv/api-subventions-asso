@@ -67,6 +67,7 @@ export interface UserWithJWTDto extends UserDto {
 export interface UserResetDto {
     resetToken?: string;
     resetTokenDate?: Date;
+    resetUrl?: string;
 }
 
 export type UserWithResetTokenDto = UserDto & UserResetDto & Partial<UserDto>;

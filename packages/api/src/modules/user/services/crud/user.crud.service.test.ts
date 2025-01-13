@@ -17,10 +17,12 @@ jest.mock("../activation/user.activation.service");
 const mockedUserActivationService = jest.mocked(userActivationService);
 
 import userResetPort from "../../../../dataProviders/db/user/user-reset.port";
+
 jest.mock("../../../../dataProviders/db/user/user-reset.port");
 const mockedUserResetPort = jest.mocked(userResetPort);
 
 import consumerTokenPort from "../../../../dataProviders/db/user/consumer-token.port";
+
 jest.mock("../../../../dataProviders/db/user/consumer-token.port");
 const mockedConsumerTokenPort = jest.mocked(consumerTokenPort);
 
@@ -43,15 +45,19 @@ jest.mock("../../../notify/notify.service", () => ({
 }));
 const mockedNotifyService = jest.mocked(notifyService);
 import * as portHelper from "../../../../shared/helpers/PortHelper";
+
 jest.mock("../../../../shared/helpers/PortHelper");
 
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 
 import userStatsService from "../stats/user.stats.service";
 import configurationsService from "../../../configurations/configurations.service";
+
 jest.mock("../../../configurations/configurations.service");
 import AssociationVisitEntity from "../../../stats/entities/AssociationVisitEntity";
 import statsAssociationsVisitPort from "../../../../dataProviders/db/stats/statsAssociationsVisit.port";
+import { ObjectId } from "mongodb";
+
 jest.mock("../../../../dataProviders/db/stats/statsAssociationsVisit.port");
 
 describe("user crud service", () => {
@@ -72,13 +78,25 @@ describe("user crud service", () => {
     });
 
     describe("update", () => {
+        let spyFindByEmail;
+
         beforeAll(() => {
-            mockedUserCheckService.validateEmail.mockResolvedValue(undefined);
+            spyFindByEmail = jest.spyOn(userCrudService, "findByEmail").mockResolvedValue(USER_WITHOUT_SECRET);
         });
 
-        it("should call userCheckService.validateEmail()", async () => {
+        it("gets original user", async () => {
             await userCrudService.update(USER_WITHOUT_SECRET);
-            expect(mockedUserCheckService.validateEmail).toHaveBeenCalledWith(USER_WITHOUT_SECRET.email);
+            expect(spyFindByEmail).toHaveBeenCalledWith(USER_WITHOUT_SECRET.email);
+        });
+
+        it.each`
+            agentConnectId | checkFn
+            ${null}        | ${mockedUserCheckService.validateEmailAndDomain}
+            ${"something"} | ${mockedUserCheckService.validateOnlyEmail}
+        `("should call userCheckService.validateEmail()", async ({ agentConnectId, checkFn }) => {
+            spyFindByEmail.mockResolvedValue({ ...USER_WITHOUT_SECRET, agentConnectId });
+            await userCrudService.update(USER_WITHOUT_SECRET);
+            expect(checkFn).toHaveBeenCalledWith(USER_WITHOUT_SECRET.email);
         });
 
         it("should call userPort.update", async () => {
@@ -389,6 +407,79 @@ describe("user crud service", () => {
             // @ts-expect-error -- private method
             await userStatsService.updateNbRequestsByDate(SINCE, UNTIL).catch(() => {});
             expect(configurationsService.setLastUserStatsUpdate).not.toHaveBeenCalled();
+        });
+    });
+
+    describe("listUsers", () => {
+        let findSpy: jest.SpyInstance;
+        const DATE = new Date("2025-01-16");
+        const RESETS = [
+            {
+                _id: new ObjectId(),
+                userId: 1 as unknown as ObjectId,
+                token: "TOKEN1",
+                createdAt: DATE,
+            },
+            null,
+            {
+                _id: new ObjectId(),
+                userId: 1 as unknown as ObjectId,
+                token: "TOKEN3",
+                createdAt: DATE,
+            },
+            {
+                _id: new ObjectId(),
+                userId: 1 as unknown as ObjectId,
+                token: "TOKEN4",
+                createdAt: DATE,
+            },
+        ];
+
+        beforeAll(() => {
+            findSpy = jest
+                .spyOn(userCrudService, "find")
+                .mockResolvedValue([1, 2, 3, 4].map(i => ({ _id: i } as unknown as UserDto)));
+            jest.mocked(userActivationService.buildResetPwdUrl).mockImplementation(t => `link/${t}`);
+        });
+
+        beforeEach(() => {
+            jest.mocked(userResetPort.findOneByUserId).mockResolvedValueOnce(RESETS[0]);
+            jest.mocked(userResetPort.findOneByUserId).mockResolvedValueOnce(RESETS[1]);
+            jest.mocked(userResetPort.findOneByUserId).mockResolvedValueOnce(RESETS[2]);
+            jest.mocked(userResetPort.findOneByUserId).mockResolvedValueOnce(RESETS[3]);
+
+            jest.mocked(userActivationService.isResetExpired).mockReturnValueOnce(false);
+            jest.mocked(userActivationService.isResetExpired).mockReturnValueOnce(false);
+            jest.mocked(userActivationService.isResetExpired).mockReturnValueOnce(true);
+        });
+
+        it("gets users", async () => {
+            await userCrudService.listUsers();
+            expect(findSpy).toHaveBeenCalled();
+        });
+
+        it("gets reset token for each user", async () => {
+            await userCrudService.listUsers();
+            expect(userResetPort.findOneByUserId).toHaveBeenCalledWith(1);
+            expect(userResetPort.findOneByUserId).toHaveBeenCalledWith(2);
+            expect(userResetPort.findOneByUserId).toHaveBeenCalledWith(3);
+            expect(userResetPort.findOneByUserId).toHaveBeenCalledWith(4);
+        });
+
+        it("controls expiration of each found token", async () => {
+            await userCrudService.listUsers();
+            expect(userActivationService.isResetExpired).toHaveBeenCalledTimes(3);
+        });
+
+        it("builds reset pwd url for each valid token", async () => {
+            await userCrudService.listUsers();
+            expect(userActivationService.buildResetPwdUrl).toHaveBeenCalledWith("TOKEN1");
+            expect(userActivationService.buildResetPwdUrl).toHaveBeenCalledWith("TOKEN3");
+        });
+
+        it("returns proper result", async () => {
+            const actual = await userCrudService.listUsers();
+            expect(actual).toMatchSnapshot();
         });
     });
 });

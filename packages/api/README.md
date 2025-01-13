@@ -92,7 +92,7 @@ AgentConnect ne fonctionne pas avec l'url `localhost`. Pour qu'AgentConnect fonc
 ## Démarrer l'api en local
 
 1. Run `npm run dev`
-2. Visit [http://localhost:8080](http://localhost:8080)
+2. Visit [http://dev.local:8080](http://dev.local:8080) 
 
 ## Exécuter une commande CLI
 
@@ -101,10 +101,10 @@ AgentConnect ne fonctionne pas avec l'url `localhost`. Pour qu'AgentConnect fonc
 ### Créer son utilisateur en local
 
 1. Exécutez `npm run cli user create [your email]`.
-2. Faites une requête HTTP POST `localhost:8080/auth/forget-password` avec comme corps `{ "email": [your email] }` pour générer un token de réinitialisation de mot de passe.
+2. Faites une requête HTTP POST `dev.local:8080/auth/forget-password` avec comme corps `{ "email": [your email] }` pour générer un token de réinitialisation de mot de passe.
 3. Allez dans la collection `user-reset` de mongodb user et copiez la valeur du token nouvellement généré.
-4. Faites ensuite une requête HTTP POST `localhost:8080/auth/reset-password` avec comme corps `{ "password": [your new password], "token": [token from step 3] }` pour mettre à jour votre mot de passe.
-5. Enfin, pour vous connecter, faite une requête HTTP POST `localhost:8080/auth/login` avec comme corps de requête `{ "email": [your email]}, "password": [password defined in step 4] }`
+4. Faites ensuite une requête HTTP POST `dev.local:8080/auth/reset-password` avec comme corps `{ "password": [your new password], "token": [token from step 3] }` pour mettre à jour votre mot de passe.
+5. Enfin, pour vous connecter, faite une requête HTTP POST `dev.local:8080/auth/login` avec comme corps de requête `{ "email": [your email]}, "password": [password defined in step 4] }`
 
 ## Mettre en place une tâche récurrente
 
