@@ -69,7 +69,17 @@ const removeTrailingDotZero = value => {
 };
 
 export const SCDL_MAPPER: ScdlGrantSchema = {
-    allocatorName: { path: [[...getMapperVariants("allocatorName"), "Nom de l'attribuant", "nom Attribuant", "NomAttribuant", "Autorité administrative"]] },
+    allocatorName: {
+        path: [
+            [
+                ...getMapperVariants("allocatorName"),
+                "Nom de l'attribuant",
+                "nom Attribuant",
+                "NomAttribuant",
+                "Autorité administrative",
+            ],
+        ],
+    },
     allocatorSiret: {
         path: [
             [
