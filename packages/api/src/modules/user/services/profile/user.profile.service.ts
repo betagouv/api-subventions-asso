@@ -157,6 +157,7 @@ export class UserProfileService {
         if (!user) throw new UserNotFoundError();
 
         if (!userInfo.jobType) userInfo.jobType = [];
+        if (!userInfo.from) userInfo.from = [];
 
         const userInfoValidation = userProfileService.validateUserProfileData(userInfo);
         if (!userInfoValidation.valid) throw userInfoValidation.error;

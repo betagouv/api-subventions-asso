@@ -36,8 +36,8 @@ export interface UserActivationInfoDto {
     // TODO: verify from GEO API
     decentralizedTerritory?: string;
     territorialScope?: TerritorialScopeEnum;
-    from?: FromTypeEnum;
-    fromMail?: string;
+    from?: FromTypeEnum[];
+    fromEmail?: string;
     fromOther?: string;
 }
 
@@ -55,8 +55,8 @@ export interface UpdatableUser {
     // TODO: verify from GEO API
     decentralizedTerritory?: string;
     territorialScope?: TerritorialScopeEnum;
-    from?: FromTypeEnum;
-    fromMail?: string;
+    from?: FromTypeEnum[];
+    fromEmail?: string;
     fromOther?: string;
 }
 
