@@ -1,5 +1,5 @@
 module.exports = {
-    async up(db) {
+    async up(db, client) {
         const collection = db.collection("users");
         await collection.updateMany(
             {},
@@ -12,7 +12,8 @@ module.exports = {
             },
         );
     },
-    async down(db) {
+
+    async down(db, client) {
         db.collection("users").updateMany(
             {},
             {
