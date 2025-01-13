@@ -53,7 +53,6 @@ const config = {
                     "https://settings.crisp.chat",
                     "https://matomo-datasubvention.osc-secnum-fr1.scalingo.io",
                     "https://sentry.incubateur.net",
-                    "nonce-62dd82411d41", // https://github.com/getsentry/sentry-javascript/pull/9969
                 ],
                 "style-src": ["self", "https://client.crisp.chat", "unsafe-inline"],
                 "frame-src": ["self", "https://game.crisp.chat", "https://datasubvention.crisp.help"],
