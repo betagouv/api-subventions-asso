@@ -7,6 +7,7 @@ Object {
   "agentType": "CENTRAL_ADMIN",
   "email": "user@beta.gouv.fr",
   "firstName": null,
+  "from": Array [],
   "jobType": Array [],
   "jwt": Object {
     "expirateDate": Any<String>,
