@@ -1,4 +1,4 @@
-import type { AssociationIdentifiers, PaginatedAssociationNameDto } from "dto";
+import type { AssociationIdentifierDto, PaginatedAssociationNameDto } from "dto";
 import type AssociationEntity from "./entities/AssociationEntity";
 import associationPort from "./association.port";
 import { toSearchHistory } from "./association.adapter";
@@ -37,7 +37,7 @@ class AssociationService {
         return documentHelper.formatAndSortDocuments(documents);
     }
 
-    getGrantExtract(identifier: AssociationIdentifiers) {
+    getGrantExtract(identifier: AssociationIdentifierDto) {
         return associationPort.getGrantExtract(identifier);
     }
 
