@@ -33,8 +33,9 @@ export class ConsumerHttp extends Controller {
      */
     @Post("")
     @Security("jwt", ["admin"])
-    @Response<UserDto>(200, "Retourne l'utilisateur créé")
-    create(@Body() { email }: { email: string }): Promise<UserDto> {
-        return userCrudService.signup({ email: email.toLocaleLowerCase() }, RoleEnum.consumer);
+    @Response<{ user: UserDto }>(200, "Retourne l'utilisateur créé")
+    async create(@Body() { email }: { email: string }): Promise<{ user: UserDto }> {
+        const user = await userCrudService.signup({ email: email.toLocaleLowerCase() }, RoleEnum.consumer);
+        return { user };
     }
 }
