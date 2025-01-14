@@ -1,13 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`user profile service validateUserProfileData() User field : registrationSrc should throw an error 1`] = `
-Object {
-  "error": [Error: Mauvaise valeur pour la provenance.
-Les valeurs possibles sont DEMO, SEARCH_ENGINE, COLLEAGUES_HIERARCHY, SOCIALS, OTHER],
-  "valid": false,
-}
-`;
-
 exports[`user profile service validateUserProfileData() agentType should throw if agentType is wrong 1`] = `
 Object {
   "error": [Error: Mauvaise valeur pour le type d'agent.
@@ -31,6 +23,14 @@ At least 8 characters in length, but no more than 32.],
 exports[`user profile service validateUserProfileData() region should throw an error 1`] = `
 Object {
   "error": [Error: Mauvaise valeur pour la région.],
+  "valid": false,
+}
+`;
+
+exports[`user profile service validateUserProfileData() registrationSrc should throw an error 1`] = `
+Object {
+  "error": [Error: Mauvaise valeur pour la provenance.
+Les valeurs possibles sont DEMO, SEARCH_ENGINE, COLLEAGUES_HIERARCHY, SOCIALS, OTHER],
   "valid": false,
 }
 `;
