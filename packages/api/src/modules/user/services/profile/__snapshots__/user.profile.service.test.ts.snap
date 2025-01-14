@@ -27,6 +27,14 @@ Object {
 }
 `;
 
+exports[`user profile service validateUserProfileData() registrationSrc should throw an error 1`] = `
+Object {
+  "error": [Error: Mauvaise valeur pour la provenance.
+Les valeurs possibles sont DEMO, SEARCH_ENGINE, COLLEAGUES_HIERARCHY, SOCIALS, OTHER],
+  "valid": false,
+}
+`;
+
 exports[`user profile service validateUserProfileData() structure should throw an error 1`] = `
 Object {
   "error": [Error: Mauvaise valeur pour la structure.],
