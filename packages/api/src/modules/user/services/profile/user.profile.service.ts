@@ -3,7 +3,7 @@ import {
     AdminTerritorialLevel,
     AgentJobTypeEnum,
     AgentTypeEnum,
-    FromTypeEnum,
+    RegistrationSrcTypeEnum,
     ResetPasswordErrorCodes,
     TerritorialScopeEnum,
     UpdatableUser,
@@ -34,7 +34,7 @@ export class UserProfileService {
         userInfo: Partial<UpdatableUser> | UserActivationInfoDto,
         withPassword = true,
     ): ValidationResult {
-        const { agentType, jobType, structure, region, from } = userInfo;
+        const { agentType, jobType, structure, region, registrationSrc } = userInfo;
         let password = "";
         if (withPassword && "password" in userInfo) password = userInfo?.password;
         const validations: ValidationCriterias = [
@@ -67,13 +67,13 @@ export class UserProfileService {
                 error: new BadRequestError(dedent`Mauvaise valeur pour la région.`),
             },
             {
-                value: from,
-                method: from => {
-                    if (!from?.length) return true;
-                    return !from.find(value => !isInObjectValues(FromTypeEnum, value));
+                value: registrationSrc,
+                method: registrationSrc => {
+                    if (!registrationSrc?.length) return true;
+                    return !registrationSrc.find(value => !isInObjectValues(RegistrationSrcTypeEnum, value));
                 },
                 error: new BadRequestError(dedent`Mauvaise valeur pour la provenance.
-                    Les valeurs possibles sont ${joinEnum(FromTypeEnum)}
+                    Les valeurs possibles sont ${joinEnum(RegistrationSrcTypeEnum)}
                 `),
             },
         ];
@@ -118,7 +118,7 @@ export class UserProfileService {
             "structure",
             "decentralizedTerritory, firstName, lastName",
             "region",
-            "fromOther",
+            "registrationSrcDetails",
         ];
         const sanitizedUserInfo = { ...unsafeUserInfo };
         fieldsToSanitize.forEach(field => {
@@ -157,7 +157,7 @@ export class UserProfileService {
         if (!user) throw new UserNotFoundError();
 
         if (!userInfo.jobType) userInfo.jobType = [];
-        if (!userInfo.from) userInfo.from = [];
+        if (!userInfo.registrationSrc) userInfo.registrationSrc = [];
 
         const userInfoValidation = userProfileService.validateUserProfileData(userInfo);
         if (!userInfoValidation.valid) throw userInfoValidation.error;

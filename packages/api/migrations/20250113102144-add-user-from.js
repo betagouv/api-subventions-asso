@@ -5,9 +5,9 @@ module.exports = {
             {},
             {
                 $set: {
-                    from: [],
-                    fromEmail: "",
-                    fromOther: "",
+                    registrationSrc: [],
+                    registrationSrcEmail: "",
+                    registrationSrcDetails: "",
                 },
             },
         );
@@ -18,9 +18,9 @@ module.exports = {
             {},
             {
                 $unset: {
-                    from: "",
-                    fromEmail: "",
-                    fromOther: "",
+                    registrationSrc: "",
+                    registrationSrcEmail: "",
+                    registrationSrcDetails: "",
                 },
             },
         );

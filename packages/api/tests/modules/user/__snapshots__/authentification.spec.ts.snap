@@ -7,7 +7,6 @@ Object {
   "agentType": "CENTRAL_ADMIN",
   "email": "user@beta.gouv.fr",
   "firstName": null,
-  "from": Array [],
   "jobType": Array [],
   "jwt": Object {
     "expirateDate": Any<String>,
@@ -17,6 +16,7 @@ Object {
   "lastName": null,
   "nbVisits": 0,
   "profileToComplete": false,
+  "registrationSrc": Array [],
   "roles": Array [
     "user",
   ],

@@ -254,7 +254,7 @@ describe("AuthentificationController, /auth", () => {
             const DATA_WITH_WRONG_AGENT_TYPE = { ...DATA, agentType: "WRONG" };
             const DATA_WITH_WRONG_JOB_TYPE = { ...DATA, password: "WRONG_PASSWORD!!" };
             const DATA_WITH_WRONG_STRUCTURE = { ...DATA, structure: 9 };
-            const DATA_WITH_WRONG_FROM = { ...DATA, from: ["WRONG"] };
+            const DATA_WITH_WRONG_REGISTRATIONSRC = { ...DATA, registrationSrc: ["WRONG"] };
             const DATA_WITH_WRONG_TERRITORIAL_SCOPE = {
                 ...DATA,
                 agentType: AgentTypeEnum.TERRITORIAL_COLLECTIVITY,
@@ -272,7 +272,7 @@ describe("AuthentificationController, /auth", () => {
                 ${DATA_WITH_WRONG_AGENT_TYPE}
                 ${DATA_WITH_WRONG_JOB_TYPE}
                 ${DATA_WITH_WRONG_STRUCTURE}
-                ${DATA_WITH_WRONG_FROM}
+                ${DATA_WITH_WRONG_REGISTRATIONSRC}
                 ${DATA_WITH_WRONG_TERRITORIAL_SCOPE}
                 ${DATA_WITH_WRONG_DECENTRALIZED_LEVEL}
             `("return a 404 BadRequestError'", async ({ data }) => {

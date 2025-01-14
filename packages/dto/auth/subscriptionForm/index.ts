@@ -3,4 +3,4 @@ export * from "./agentType";
 export * from "./adminStructureDto";
 export * from "./territorialScope";
 export * from "./adminTerritorialLevel";
-export * from "./fromType";
+export * from "./registrationSrcType";
