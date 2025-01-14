@@ -75,7 +75,7 @@ describe("EstablishmentsController", () => {
 
     describe("filterEstablishments", () => {
         let mockGetter: SpyInstance;
-        const ESTABLISHMENT = { adresse: { code_postal: "93100" }, siret: "45000000000019" };
+        const ESTABLISHMENT = { adresse: { code_postal: "93100" }, nic: "00019" };
 
         beforeAll(() => {
             mockGetter = vi.spyOn(Store.prototype, "value", "get").mockReturnValue([ESTABLISHMENT]);

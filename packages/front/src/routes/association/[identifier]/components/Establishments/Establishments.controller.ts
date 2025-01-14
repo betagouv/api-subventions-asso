@@ -67,7 +67,7 @@ export class EstablishmentsController {
 
     private filterEstablishments(filter) {
         return this.establishmentsStore.value.filter(
-            estab => estab.adresse?.code_postal?.startsWith(filter) || estab.siret.includes(filter),
+            estab => estab.adresse?.code_postal?.startsWith(filter) || estab.nic.includes(filter),
         );
     }
 
