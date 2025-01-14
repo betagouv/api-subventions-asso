@@ -1,4 +1,4 @@
-import { AgentTypeEnum, AgentJobTypeEnum } from "dto";
+import { AgentTypeEnum, AgentJobTypeEnum, FromTypeEnum } from "dto";
 import type { ComponentType, SvelteComponent } from "svelte";
 import OperatorSubStep from "./OperatorSubStep/OperatorSubStep.svelte";
 import CentralSubStep from "./CentralSubStep/CentralSubStep.svelte";
@@ -47,6 +47,13 @@ export default class StructureFormStepController {
         { value: AgentJobTypeEnum.SERVICE_HEAD, label: "Responsable de service" },
         { value: AgentJobTypeEnum.CONTROLLER, label: "Contrôleur / Inspecteur" },
         { value: AgentJobTypeEnum.OTHER, label: "Autre" },
+    ];
+    public readonly fromOptions: Option<FromTypeEnum>[] = [
+        { value: FromTypeEnum.DEMO, label: "Lors d’une présentation avec une personne de Data.Subvention" },
+        { value: FromTypeEnum.SEARCH_ENGINE, label: "Via des recherches sur internet" },
+        { value: FromTypeEnum.COLLEAGUES_HIERARCHY, label: "Un de mes collègues ou de ma hiérarchie m’en a parlé" },
+        { value: FromTypeEnum.SOCIALS, label: "Via une publication sur les réseaux sociaux" },
+        { value: FromTypeEnum.OTHER, label: "Autre" },
     ];
 
     private static subStepByAgentType: Record<AgentTypeEnum, ComponentType> = {
@@ -100,6 +107,20 @@ export default class StructureFormStepController {
         this.errors.set(tempErrors);
         this.dispatch("change");
         this.dispatch(shouldBlockStep ? "error" : "valid");
+    }
+
+    onUpdateFrom(values: Record<string, unknown>) {
+        this.onUpdate(values, "from");
+        if (values["from"] && Array.isArray(values["from"])) {
+            if (!values["from"].includes(FromTypeEnum.COLLEAGUES_HIERARCHY) && values["fromEmail"] !== "") {
+                values["fromEmail"] = "";
+                this.onUpdate(values, "fromEmail");
+            }
+            if (!values["from"].includes(FromTypeEnum.OTHER) && values["fromOther"] !== "") {
+                values["fromOther"] = "";
+                this.onUpdate(values, "fromOther");
+            }
+        }
     }
 
     cleanSubStepValues(values: Record<string, any>, contextAgentType: AgentTypeEnum) {

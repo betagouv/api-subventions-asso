@@ -1,4 +1,4 @@
-import { AgentTypeEnum } from "dto";
+import { AgentTypeEnum, FromTypeEnum } from "dto";
 import type { MockInstance } from "vitest";
 import { beforeEach } from "vitest";
 import StructureFormStepController from "./StructureFormStep.controller";
@@ -206,6 +206,33 @@ describe("StructureFormStepController", () => {
         it("remove values from other substeps", () => {
             ctrl.cleanSubStepValues(values, AgentTypeEnum.OPERATOR);
             expect(values.centralSomething).toBeUndefined();
+        });
+    });
+
+    describe("updateFrom", () => {
+        it("fromEmail and fromOther are set to empty strings", () => {
+            const values = {
+                from: [FromTypeEnum.DEMO],
+                fromEmail: "test@email.com",
+                fromOther: "Other",
+            };
+            const expected = {
+                from: [FromTypeEnum.DEMO],
+                fromEmail: "",
+                fromOther: "",
+            };
+            ctrl.onUpdateFrom(values);
+            expect(values).toStrictEqual(expected);
+        });
+        it("fromEmail and fromOther are not set to empty strings", () => {
+            const values = {
+                from: [FromTypeEnum.COLLEAGUES_HIERARCHY, FromTypeEnum.OTHER],
+                fromEmail: "test@email.com",
+                fromOther: "Other",
+            };
+            const expected = { ...values };
+            ctrl.onUpdateFrom(values);
+            expect(values).toStrictEqual(expected);
         });
     });
 });
