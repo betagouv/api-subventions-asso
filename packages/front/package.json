@@ -15,7 +15,7 @@
         "url": "git+https://github.com/betagouv/datasubvention.git"
     },
     "scripts": {
-        "dev": "vite dev",
+        "dev": "vite dev --host dev.local",
         "vite:clean": "rm -r node_modules/.vite node_modules/.vitest",
         "start": "node ./build/index.js",
         "build": "vite build -l warn",

@@ -5,7 +5,13 @@ import {
     USER_SECRETS,
     USER_WITHOUT_SECRET,
 } from "../../__fixtures__/user.fixture";
-import { AdminTerritorialLevel, AgentTypeEnum, UpdatableUser, UserActivationInfoDto } from "dto";
+import {
+    AdminTerritorialLevel,
+    AgentTypeEnum,
+    RegistrationSrcTypeEnum,
+    UpdatableUser,
+    UserActivationInfoDto,
+} from "dto";
 import userProfileService from "./user.profile.service";
 
 import * as stringHelper from "../../../../shared/helpers/StringHelper";
@@ -155,6 +161,29 @@ describe("user profile service", () => {
                 expect(actual).toEqual(expected);
             });
             // TODO question : laisser le test comme ça ou extraire des tests ?
+        });
+
+        describe("registrationSrc", () => {
+            const mockList = [mockedUserCheckService.passwordValidator];
+            beforeAll(() => mockedUserCheckService.passwordValidator.mockImplementation(() => true));
+            afterAll(() => mockList.forEach(mock => mock.mockReset()));
+            it("should throw an error", () => {
+                const actual = userProfileService.validateUserProfileData({
+                    ...validInput,
+                    // @ts-expect-error -- test errors in input
+                    registrationSrc: ["WRONG_REGISTRATIONSRC"],
+                });
+                expect(actual).toMatchSnapshot();
+            });
+            it("should return true", () => {
+                const expected = { valid: true };
+                const input = {
+                    registrationSrc: [RegistrationSrcTypeEnum.SEARCH_ENGINE],
+                    ...validInput,
+                };
+                const actual = userProfileService.validateUserProfileData(validInput);
+                expect(actual).toEqual(expected);
+            });
         });
     });
 
