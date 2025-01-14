@@ -163,7 +163,7 @@ describe("user profile service", () => {
             // TODO question : laisser le test comme ça ou extraire des tests ?
         });
 
-        describe("User field : registrationSrc", () => {
+        describe("registrationSrc", () => {
             const mockList = [mockedUserCheckService.passwordValidator];
             beforeAll(() => mockedUserCheckService.passwordValidator.mockImplementation(() => true));
             afterAll(() => mockList.forEach(mock => mock.mockReset()));
