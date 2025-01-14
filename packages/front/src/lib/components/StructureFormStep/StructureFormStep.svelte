@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { FromTypeEnum } from "dto";
+    import { RegistrationSrcTypeEnum } from "dto";
     import StructureFormStepController from "./StructureFormStep.controller";
     import Checkbox from "$lib/dsfr/Checkbox.svelte";
     import Input from "$lib/dsfr/Input.svelte";
@@ -8,9 +8,9 @@
         service: "",
         jobType: [],
         phoneNumber: "",
-        from: [] as FromTypeEnum[],
-        fromEmail: "",
-        fromOther: "",
+        registrationSrc: [] as RegistrationSrcTypeEnum[],
+        registrationSrcEmail: "",
+        registrationSrcDetails: "",
     };
     export let context = {};
 
@@ -62,36 +62,36 @@
 
     <div class="fr-fieldset__element fr-mb-0 fr-mt-4v">
         <Checkbox
-            options={ctrl.fromOptions}
+            options={ctrl.registrationSrcOptions}
             label="Comment avez-vous connu Data.Subvention ?"
-            errorMsg={$errors.from}
-            on:change={() => ctrl.onUpdateFrom(values)}
-            bind:value={values.from} />
+            errorMsg={$errors.registrationSrc}
+            on:change={() => ctrl.onUpdateRegistrationSrc(values)}
+            bind:value={values.registrationSrc} />
     </div>
 
-    {#if values?.from && values?.from.includes(FromTypeEnum.COLLEAGUES_HIERARCHY)}
+    {#if values?.registrationSrc && values?.registrationSrc.includes(RegistrationSrcTypeEnum.COLLEAGUES_HIERARCHY)}
         <div class="fr-fieldset__element">
             <Input
-                id="fromEmail-input"
+                id="registrationSrcEmail-input"
                 type="email"
                 label="Pouvez-vous nous indiquer son email ?"
                 autocomplete="email"
-                bind:value={values.fromEmail}
-                errorMsg={$errors.fromEmail}
-                error={$errors.fromEmail}
+                bind:value={values.registrationSrcEmail}
+                errorMsg={$errors.registrationSrcEmail}
+                error={$errors.registrationSrcEmail}
                 on:change
-                on:blur={() => ctrl.onUpdate(values, "fromEmail")} />
+                on:blur={() => ctrl.onUpdate(values, "registrationSrcEmail")} />
         </div>
     {/if}
-    {#if values?.from && values?.from.includes(FromTypeEnum.OTHER)}
+    {#if values?.registrationSrc && values?.registrationSrc.includes(RegistrationSrcTypeEnum.OTHER)}
         <div class="fr-fieldset__element">
             <Input
-                id="fromOther-input"
+                id="registrationSrcDetails-input"
                 type="text"
                 label="Précisez"
-                bind:value={values.fromOther}
+                bind:value={values.registrationSrcDetails}
                 on:change
-                on:blur={() => ctrl.onUpdate(values, "fromOther")} />
+                on:blur={() => ctrl.onUpdate(values, "registrationSrcDetails")} />
         </div>
     {/if}
 </fieldset>

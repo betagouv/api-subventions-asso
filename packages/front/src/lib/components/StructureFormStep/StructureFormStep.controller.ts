@@ -1,4 +1,4 @@
-import { AgentTypeEnum, AgentJobTypeEnum, FromTypeEnum } from "dto";
+import { AgentTypeEnum, AgentJobTypeEnum, RegistrationSrcTypeEnum } from "dto";
 import type { ComponentType, SvelteComponent } from "svelte";
 import OperatorSubStep from "./OperatorSubStep/OperatorSubStep.svelte";
 import CentralSubStep from "./CentralSubStep/CentralSubStep.svelte";
@@ -48,12 +48,15 @@ export default class StructureFormStepController {
         { value: AgentJobTypeEnum.CONTROLLER, label: "Contrôleur / Inspecteur" },
         { value: AgentJobTypeEnum.OTHER, label: "Autre" },
     ];
-    public readonly fromOptions: Option<FromTypeEnum>[] = [
-        { value: FromTypeEnum.DEMO, label: "Lors d’une présentation avec une personne de Data.Subvention" },
-        { value: FromTypeEnum.SEARCH_ENGINE, label: "Via des recherches sur internet" },
-        { value: FromTypeEnum.COLLEAGUES_HIERARCHY, label: "Un de mes collègues ou de ma hiérarchie m’en a parlé" },
-        { value: FromTypeEnum.SOCIALS, label: "Via une publication sur les réseaux sociaux" },
-        { value: FromTypeEnum.OTHER, label: "Autre" },
+    public readonly registrationSrcOptions: Option<RegistrationSrcTypeEnum>[] = [
+        { value: RegistrationSrcTypeEnum.DEMO, label: "Lors d’une présentation avec une personne de Data.Subvention" },
+        { value: RegistrationSrcTypeEnum.SEARCH_ENGINE, label: "Via des recherches sur internet" },
+        {
+            value: RegistrationSrcTypeEnum.COLLEAGUES_HIERARCHY,
+            label: "Un de mes collègues ou de ma hiérarchie m’en a parlé",
+        },
+        { value: RegistrationSrcTypeEnum.SOCIALS, label: "Via une publication sur les réseaux sociaux" },
+        { value: RegistrationSrcTypeEnum.OTHER, label: "Autre" },
     ];
 
     private static subStepByAgentType: Record<AgentTypeEnum, ComponentType> = {
@@ -109,16 +112,22 @@ export default class StructureFormStepController {
         this.dispatch(shouldBlockStep ? "error" : "valid");
     }
 
-    onUpdateFrom(values: Record<string, unknown>) {
-        this.onUpdate(values, "from");
-        if (values["from"] && Array.isArray(values["from"])) {
-            if (!values["from"].includes(FromTypeEnum.COLLEAGUES_HIERARCHY) && values["fromEmail"] !== "") {
-                values["fromEmail"] = "";
-                this.onUpdate(values, "fromEmail");
+    onUpdateRegistrationSrc(values: Record<string, unknown>) {
+        this.onUpdate(values, "registrationSrc");
+        if (values["registrationSrc"] && Array.isArray(values["registrationSrc"])) {
+            if (
+                !values["registrationSrc"].includes(RegistrationSrcTypeEnum.COLLEAGUES_HIERARCHY) &&
+                values["registrationSrcEmail"] !== ""
+            ) {
+                values["registrationSrcEmail"] = "";
+                this.onUpdate(values, "registrationSrcEmail");
             }
-            if (!values["from"].includes(FromTypeEnum.OTHER) && values["fromOther"] !== "") {
-                values["fromOther"] = "";
-                this.onUpdate(values, "fromOther");
+            if (
+                !values["registrationSrc"].includes(RegistrationSrcTypeEnum.OTHER) &&
+                values["registrationSrcDetails"] !== ""
+            ) {
+                values["registrationSrcDetails"] = "";
+                this.onUpdate(values, "registrationSrcDetails");
             }
         }
     }

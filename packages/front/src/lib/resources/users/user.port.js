@@ -24,9 +24,9 @@ export class UserPort {
             decentralizedLevel: data.decentralizedLevel,
             decentralizedTerritory: data.decentralizedTerritory,
             territorialScope: data.territorialScope,
-            from: data.from,
-            fromEmail: data.fromEmail,
-            fromOther: data.fromOther,
+            registrationSrc: data.from,
+            registrationSrcEmail: data.fromEmail,
+            registrationSrcDetails: data.fromOther,
         };
         return requestsService.patch(`${this.BASE_PATH}/`, updateProfile);
     }

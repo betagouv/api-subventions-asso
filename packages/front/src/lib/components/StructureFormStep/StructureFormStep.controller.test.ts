@@ -1,4 +1,4 @@
-import { AgentTypeEnum, FromTypeEnum } from "dto";
+import { AgentTypeEnum, RegistrationSrcTypeEnum } from "dto";
 import type { MockInstance } from "vitest";
 import { beforeEach } from "vitest";
 import StructureFormStepController from "./StructureFormStep.controller";
@@ -209,29 +209,29 @@ describe("StructureFormStepController", () => {
         });
     });
 
-    describe("updateFrom", () => {
-        it("fromEmail and fromOther are set to empty strings", () => {
+    describe("onUpdateRegistrationSrc", () => {
+        it("registrationSrcEmail and registrationSrcDetails are set to empty strings", () => {
             const values = {
-                from: [FromTypeEnum.DEMO],
-                fromEmail: "test@email.com",
-                fromOther: "Other",
+                registrationSrc: [RegistrationSrcTypeEnum.DEMO],
+                registrationSrcEmail: "test@email.com",
+                registrationSrcDetails: "Other",
             };
             const expected = {
-                from: [FromTypeEnum.DEMO],
-                fromEmail: "",
-                fromOther: "",
+                registrationSrc: [RegistrationSrcTypeEnum.DEMO],
+                registrationSrcEmail: "",
+                registrationSrcDetails: "",
             };
-            ctrl.onUpdateFrom(values);
+            ctrl.onUpdateRegistrationSrc(values);
             expect(values).toStrictEqual(expected);
         });
-        it("fromEmail and fromOther are not set to empty strings", () => {
+        it("registrationSrcEmail and registrationSrcDetails are not set to empty strings", () => {
             const values = {
-                from: [FromTypeEnum.COLLEAGUES_HIERARCHY, FromTypeEnum.OTHER],
-                fromEmail: "test@email.com",
-                fromOther: "Other",
+                registrationSrc: [RegistrationSrcTypeEnum.COLLEAGUES_HIERARCHY, RegistrationSrcTypeEnum.OTHER],
+                registrationSrcEmail: "test@email.com",
+                registrationSrcDetails: "Other",
             };
             const expected = { ...values };
-            ctrl.onUpdateFrom(values);
+            ctrl.onUpdateRegistrationSrc(values);
             expect(values).toStrictEqual(expected);
         });
     });
