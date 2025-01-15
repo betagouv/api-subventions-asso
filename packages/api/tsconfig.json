@@ -2,7 +2,7 @@
     "compilerOptions": {
         "target": "es2021",
         "module": "commonjs",
-        "types": ["reflect-metadata", "jest"],
+        "types": ["reflect-metadata", "jest", "node"],
         "paths": {
             "~": ["./src"]
         },
