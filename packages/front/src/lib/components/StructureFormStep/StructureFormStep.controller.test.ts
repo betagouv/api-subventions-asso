@@ -235,4 +235,34 @@ describe("StructureFormStepController", () => {
             expect(values).toStrictEqual(expected);
         });
     });
+
+    describe("isRegistrationSrcEmailVisible", () => {
+        it("is visible", () => {
+            const registerSrcValue = [RegistrationSrcTypeEnum.SOCIALS, RegistrationSrcTypeEnum.COLLEAGUES_HIERARCHY];
+            const expected = true;
+            const isVisible = ctrl.isRegistrationSrcEmailVisible(registerSrcValue);
+            expect(isVisible).toStrictEqual(expected);
+        });
+        it("is not visible", () => {
+            const registerSrcValue = [RegistrationSrcTypeEnum.SOCIALS, RegistrationSrcTypeEnum.OTHER];
+            const expected = false;
+            const isVisible = ctrl.isRegistrationSrcEmailVisible(registerSrcValue);
+            expect(isVisible).toStrictEqual(expected);
+        });
+    });
+
+    describe("isRegistrationSrcDetailsVisible", () => {
+        it("is visible", () => {
+            const registerSrcValue = [RegistrationSrcTypeEnum.SOCIALS, RegistrationSrcTypeEnum.OTHER];
+            const expected = true;
+            const isVisible = ctrl.isRegistrationSrcDetailsVisible(registerSrcValue);
+            expect(isVisible).toStrictEqual(expected);
+        });
+        it("is not visible", () => {
+            const registerSrcValue = [RegistrationSrcTypeEnum.SOCIALS, RegistrationSrcTypeEnum.COLLEAGUES_HIERARCHY];
+            const expected = false;
+            const isVisible = ctrl.isRegistrationSrcDetailsVisible(registerSrcValue);
+            expect(isVisible).toStrictEqual(expected);
+        });
+    });
 });

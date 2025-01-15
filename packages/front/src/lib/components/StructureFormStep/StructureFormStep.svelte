@@ -69,7 +69,7 @@
             bind:value={values.registrationSrc} />
     </div>
 
-    {#if values?.registrationSrc && values?.registrationSrc.includes(RegistrationSrcTypeEnum.COLLEAGUES_HIERARCHY)}
+    {#if ctrl.isRegistrationSrcEmailVisible(values.registrationSrc)}
         <div class="fr-fieldset__element">
             <Input
                 id="registrationSrcEmail-input"
@@ -83,7 +83,7 @@
                 on:blur={() => ctrl.onUpdate(values, "registrationSrcEmail")} />
         </div>
     {/if}
-    {#if values?.registrationSrc && values?.registrationSrc.includes(RegistrationSrcTypeEnum.OTHER)}
+    {#if ctrl.isRegistrationSrcDetailsVisible(values.registrationSrc)}
         <div class="fr-fieldset__element">
             <Input
                 id="registrationSrcDetails-input"

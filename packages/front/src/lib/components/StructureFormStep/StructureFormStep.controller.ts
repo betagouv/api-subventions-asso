@@ -160,4 +160,18 @@ export default class StructureFormStepController {
                 : undefined,
         );
     }
+
+    isRegistrationSrcEmailVisible(registerSrcValue: RegistrationSrcTypeEnum[]) {
+        if (registerSrcValue && registerSrcValue.includes(RegistrationSrcTypeEnum.COLLEAGUES_HIERARCHY)) {
+            return true;
+        }
+        return false;
+    }
+
+    isRegistrationSrcDetailsVisible(registerSrcValue: RegistrationSrcTypeEnum[]) {
+        if (registerSrcValue && registerSrcValue.includes(RegistrationSrcTypeEnum.OTHER)) {
+            return true;
+        }
+        return false;
+    }
 }
