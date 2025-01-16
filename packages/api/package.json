@@ -28,7 +28,7 @@
         "prettier": "prettier --write",
         "prettier:all": "prettier --write ./{migrations,src,tests,tools}/**/*.{js,ts}",
         "lint-format": "lint-staged",
-        "scdl-integration": "ts-node src/interfaces/scripts/ScdlDataIntegration.node.ts"
+        "scdl:import": "ts-node src/interfaces/scripts/ScdlDataIntegration.node.ts"
     },
     "lint-staged": {
         "./{migrations,src,tests,tools}/**/*.{js,ts}": [
