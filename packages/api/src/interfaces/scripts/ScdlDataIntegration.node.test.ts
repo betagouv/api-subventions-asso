@@ -10,7 +10,7 @@ import { ScdlParseArgs, ScdlParseXlsArgs } from "../../@types/ScdlDataIntegratio
 
 jest.mock("../../configurations/scdlIntegration.conf", () => ({
     SCDL_FILE_PROCESSING_PATH: path.resolve(__dirname, "test-integration"),
-    SCDL_FILE_PROCESSING_CONFIG_FILENAME: "test-scdl-file-processing-config.json",
+    SCDL_FILE_PROCESSING_CONFIG_FILENAME: "test-scdl-file-processing.config.json",
 }));
 jest.mock("../cli/Scdl.cli");
 
