@@ -53,7 +53,8 @@ export const processFile = async (fileInfo: ScdlFileProcessingConfig) => {
         const type = path.extname(name).slice(1).toLowerCase();
         const filePath = path.join(dirPath, name);
         if (type === FileExtensionEnum.CSV) {
-            const [delimiter = undefined, quote = undefined] = optionalParams;
+            const delimiter = optionalParams[0];
+            const quote = typeof optionalParams[1] === "string" ? optionalParams[1] : undefined;
             await scdlCli.parse(filePath, producerSlug, exportDate, delimiter, quote);
         } else if (type === FileExtensionEnum.XLS || type === FileExtensionEnum.XLSX) {
             const [pageName = undefined, rowOffsetStr = undefined] = optionalParams;

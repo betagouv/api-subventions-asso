@@ -6,6 +6,7 @@ import {
     SCDL_FILE_PROCESSING_CONFIG_FILENAME,
 } from "../../configurations/scdlIntegration.conf";
 import ScdlCli from "../cli/Scdl.cli";
+import { ScdlParseArgs, ScdlParseXlsArgs } from "../../@types/ScdlDataIntegration";
 
 jest.mock("../../configurations/scdlIntegration.conf", () => ({
     SCDL_FILE_PROCESSING_PATH: path.resolve(__dirname, "test-integration"),
@@ -120,7 +121,7 @@ describe("scdl-data-integration.node", () => {
     describe("Test for processFile method", () => {
         const fileConfig = {
             name: "donnees-a-integrer1.csv",
-            parseParams: ["producerSlug1", "2025-01-13"],
+            parseParams: ["producerSlug1", "2025-01-13"] as ScdlParseArgs,
             addProducer: true,
             producerName: "Test Producer 1",
             producerSiret: "12345678901",
@@ -128,7 +129,7 @@ describe("scdl-data-integration.node", () => {
 
         const fileConfigWrongType = {
             name: "donnees-a-integrer1.doc",
-            parseParams: ["producerSlug1", "2025-01-13"],
+            parseParams: ["producerSlug1", "2025-01-13"] as ScdlParseXlsArgs,
             addProducer: true,
             producerName: "Test Producer 1",
             producerSiret: "12345678901",
@@ -255,21 +256,21 @@ describe("scdl-data-integration.node", () => {
                 files: [
                     {
                         name: "donnees-a-integrer1.xlsx",
-                        parseParams: ["producerSlug1", "2025-01-13"],
+                        parseParams: ["producerSlug1", "2025-01-13"] as ScdlParseXlsArgs,
                         addProducer: true,
                         producerName: "Test Producer 1",
                         producerSiret: "12345678901",
                     },
                     {
                         name: "donnees-a-integrer2.csv",
-                        parseParams: ["producerSlug2", "2025-01-14"],
+                        parseParams: ["producerSlug2", "2025-01-14"] as ScdlParseArgs,
                         addProducer: true,
                         producerName: "Test Producer 2",
                         producerSiret: "12345678902",
                     },
                     {
                         name: "donnees-a-integrer3.csv",
-                        parseParams: ["producerSlug3", "2025-01-15"],
+                        parseParams: ["producerSlug3", "2025-01-15"] as ScdlParseArgs,
                         addProducer: true,
                         producerName: "Test Producer 3",
                         producerSiret: "12345678903",
