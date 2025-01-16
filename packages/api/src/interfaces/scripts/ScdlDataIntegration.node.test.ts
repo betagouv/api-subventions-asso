@@ -76,7 +76,7 @@ describe("scdl-data-integration.node", () => {
     });
 
     beforeEach(() => {
-        jest.spyOn(process, "exit").mockImplementation((() => {}) as (code?: number) => never);
+        jest.spyOn(process, "exit").mockImplementation((() => {}) as (code?: any) => never);
         addProducerMock = jest.spyOn(ScdlCli.prototype, "addProducer").mockResolvedValue();
         parseMock = jest.spyOn(ScdlCli.prototype, "parse").mockResolvedValue();
         parseXlsMock = jest.spyOn(ScdlCli.prototype, "parseXls").mockResolvedValue();
