@@ -6,6 +6,8 @@ import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../../shared/LegalCategories
 import sireneStockUniteLegaleService from "../sireneStockUniteLegale.service";
 import SireneStockUniteLegaleAdapter from "../adapter/sireneStockUniteLegale.adapter";
 import Siren from "../../../../../valueObjects/Siren";
+import csv from 'csv-parser';
+import { SireneStockUniteLegaleEntity } from "../../../../../entities/SireneStockUniteLegaleEntity";
 
 export class SireneStockUniteLegaleParser{
 
@@ -22,35 +24,21 @@ export class SireneStockUniteLegaleParser{
                 console.info(`Downloading: ${currentRow}`);
             }, 5000);
 
-
+            let batch : SireneStockUniteLegaleEntity[] = [];
             const stream = fs.createReadStream(filePath);
 
             stream
+            .pipe(csv())
             .on('data', async (data) => {
-                let parsedData = GenericParser.csvParse(data as Buffer);
-
-                if (!header) {
-                    header = parsedData[0];
-                    parsedData = parsedData.slice(1);
-                }
-
-                await asyncForEach(parsedData, async (row) => {
-                    if (GenericParser.isEmptyRow(row)) return;
-
+                if (this.isToInclude(data)) {
                     currentRow++;
-                    const parsedRow = GenericParser.linkHeaderToData(
-                        header as string[],
-                        row,
-                    ) as unknown as SireneUniteLegaleDto;
-
-                    if (!this.isToInclude(parsedRow)) return;
-
-                    const entity = SireneStockUniteLegaleAdapter.dtoToEntity(parsedRow);
-                    const dbo = SireneStockUniteLegaleAdapter.entityToDbo(entity);
-                    await sireneStockUniteLegaleService.insertOne(dbo);
-                    
-                });
-
+                    const entity = SireneStockUniteLegaleAdapter.dtoToEntity(data);
+                    batch.push(entity);
+                    if(batch.length >= 1000) {
+                        await sireneStockUniteLegaleService.insertMany(batch.map(entity => SireneStockUniteLegaleAdapter.entityToDbo(entity)));
+                        batch = [];
+                    }
+                }
             })
             .on('end', () => {
                 console.info("Finished parsing file.");
@@ -62,6 +50,38 @@ export class SireneStockUniteLegaleParser{
             });
         });
 
+    };
+
+    static async parseCsv(filePath)   {
+        this.filePathValidator(filePath);
+        console.info("\nStart parsing file: ", filePath);
+        console.log('dirrentSiren')
+        return new Promise((resolve, reject) => {
+            const results  = [];
+            let currentRow = 0;
+            const interval = setInterval(() => {
+                console.info(`Downloading: ${currentRow}`);
+            }, 5000);
+            
+            
+            
+            fs.createReadStream(filePath)
+            .pipe(csv())
+            .on('data', (data) => {    
+                //@ts-ignore
+                currentRow++;
+             //   results.push(data); // Only include if it meets the criteria
+            
+            })
+            .on('end', () => {
+                console.info("Finished parsing file.");
+                resolve(results); // Resolve with the filtered results
+            })
+            .on('error', (error) => {
+                console.error("Error reading CSV file:", error);
+                reject(error);
+            });
+        });
     }
 
     protected static filePathValidator(file: string) {
@@ -79,8 +99,8 @@ export class SireneStockUniteLegaleParser{
         const categorieJuridique = data.categorieJuridiqueUniteLegale;
         const unitePurgee = data.unitePurgeeUniteLegale;
 
-        return (LEGAL_CATEGORIES_ACCEPTED.includes(categorieJuridique) && 
-        unitePurgee == null && (Siren.isSiren(data.siren)));
+        return ((LEGAL_CATEGORIES_ACCEPTED.includes(categorieJuridique) && 
+        unitePurgee == "" && (Siren.isSiren(data.siren))));
     }
 
 }

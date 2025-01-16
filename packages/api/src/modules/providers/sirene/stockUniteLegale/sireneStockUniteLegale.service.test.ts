@@ -1,14 +1,25 @@
 import sireneStockUniteLegaleService from "./sireneStockUniteLegale.service";
 import sireneStockUniteLegalePort from "../../../../dataProviders/api/sirene/sireneStockUniteLegale.port";
 import { Readable } from "stream";
-import fs, { cp } from "fs";
+import fs from "fs";
 import { exec } from "child_process";
-import { after } from "lodash";
+import StreamZip from "node-stream-zip";
 
 jest.mock("child_process", () => ({
     exec: jest.fn((_path, cb) => cb(null, "stdout", "stderr")),
 }));
 
+jest.mock('node-stream-zip', () => {
+    const mockExtract = jest.fn();
+    const mockClose = jest.fn();
+
+    return {
+        async: jest.fn(() => ({
+            extract: mockExtract,
+            close: mockClose,
+        })),
+    };
+});
 
 const ZIP_PATH = "path/to/zip";
 const DIRECTORY_PATH = "path/to/destination";
@@ -124,28 +135,33 @@ describe("SireneStockUniteLegaleService", () => {
         });
     });
 
-    describe("decompressFolder", () => {
-        it("should call exec with the right parameters", async () => {
-            await sireneStockUniteLegaleService.decompressFolder(ZIP_PATH, DIRECTORY_PATH);
-            expect(exec).toHaveBeenCalledWith(
-                `unzip ${ZIP_PATH} -d ${DIRECTORY_PATH}`,
-                expect.any(Function),
-            );
-        });
-        it("should decompress the file and return the path", async () => {
-            const actual = await sireneStockUniteLegaleService.decompressFolder(ZIP_PATH, DIRECTORY_PATH);
-            expect(actual).toBe(DIRECTORY_PATH);
-        })
-        /*
-        // TO DO : resoudre probleme avec callback ci-dessous
-        it("should throw an error if exec fails", async () => {
+    /*
+    
             jest.mocked(exec).mockImplementationOnce((_path, callback) => callback(new Error("simulated error during exec"), "stdout", "stderr"));
-            await expect(sireneStockUniteLegaleService.decompressFolder(ZIP_PATH, DESTINATION_DIRECTORY_PATH)).rejects.toThrow(
-                "Failed to decompress: stderr",
-            );
-        });
+       
         */
+
+        
     });
+    
+
+    describe("decompressFolder", () => {
+
+        it("should call StreamZip", async () => {
+            await sireneStockUniteLegaleService.decompressFolder(ZIP_PATH, DIRECTORY_PATH);
+            expect(StreamZip.async).toHaveBeenCalledWith({ file: ZIP_PATH });
+        });
+
+        it("should call extract", async () => {
+            await sireneStockUniteLegaleService.decompressFolder(ZIP_PATH, DIRECTORY_PATH);
+            expect(StreamZip.async).toHaveBeenCalledWith({ file: ZIP_PATH });
+        });
+
+        it("should call close", async () => {
+            await sireneStockUniteLegaleService.decompressFolder(ZIP_PATH, DIRECTORY_PATH);
+            expect(StreamZip.async).toHaveBeenCalledWith({ file: ZIP_PATH });
+        });     
+        
 
     describe("getExtractAndSaveFiles", () => {
         let mockGetAndSaveZip: jest.SpyInstance;

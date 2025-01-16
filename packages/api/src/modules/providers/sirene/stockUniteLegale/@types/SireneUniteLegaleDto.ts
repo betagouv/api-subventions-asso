@@ -3,7 +3,7 @@ import Siren from "../../../../../valueObjects/Siren";
 export default interface SireneUniteLegaleDto {
     'siren' : string,
     'statutDiffusionUniteLegale' : string, 
-    'unitePurgeeUniteLegale' : boolean | null,
+    'unitePurgeeUniteLegale' : boolean | null | "",
     'dateCreationUniteLegale': Date, 
     'sigleUniteLegale' : string | null,
     'sexeUniteLegale' : string | null,

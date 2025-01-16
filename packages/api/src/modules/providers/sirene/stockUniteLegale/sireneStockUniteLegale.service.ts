@@ -1,15 +1,17 @@
 import * as fs from "fs";
-import { exec } from "child_process";
 import { SireneUniteLegaleDbo } from "./@types/SireneUniteLegaleDbo";
 import sireneUniteLegaleDbPort from "../../../../dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.port";
 import sireneStockUniteLegaleApiPort from "../../../../dataProviders/api/sirene/sireneStockUniteLegale.port";
 import { SireneStockUniteLegaleParser } from "./parser/sireneStockUniteLegale.parser";
+
+import StreamZip from "node-stream-zip";
 
 export class SireneStockUniteLegaleService {
     directory_path = fs.mkdtempSync(__dirname +"/tmpSirene");
     
     public async getAndParse(){
         await this.getExtractAndSaveFiles();
+        console.log('start getExtractAndSaveFiles');
         await SireneStockUniteLegaleParser.parseCsvAndInsert(this.directory_path + "/StockUniteLegale_utf8.csv");
         this.deleteTemporaryFolder;
     }
@@ -66,23 +68,25 @@ export class SireneStockUniteLegaleService {
         });
     }
 
-    public decompressFolder(zipPath: string, destinationDirectoryPath: string): Promise<string> {
-        return new Promise((resolve, reject) => {
-            console.log("Start decompress");
-            exec(`unzip ${zipPath} -d ${destinationDirectoryPath}`, (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`Error decompressing archive: ${stderr}`);
-                    reject(`Failed to decompress: ${stderr}`);
-                    return;
-                }
-                console.log("End decompress");
-                resolve(destinationDirectoryPath);
-            });
-        });
+    public async decompressFolder(zipPath: string, destinationDirectoryPath: string)  {
+        console.log("Start decompress");
+        try {
+            const zip = new StreamZip.async({file: zipPath});
+            await zip.extract(null, destinationDirectoryPath);
+            await zip.close();
+            console.log('End decompress');
+        }
+        catch (error) {
+            console.error(`Error decompressing archive: ${error}`);
+        }
     }
 
     public async insertOne(dbo : SireneUniteLegaleDbo) {
         return sireneUniteLegaleDbPort.insertOne(dbo);
+    }
+
+    public async insertMany(dbos : SireneUniteLegaleDbo[]) {
+        return sireneUniteLegaleDbPort.insertMany(dbos);
     }
 
     public async deleteTemporaryFolder() {
