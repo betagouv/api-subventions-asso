@@ -1,4 +1,4 @@
-import { handleErrorWithSentry, Replay } from "@sentry/sveltekit";
+import { handleErrorWithSentry } from "@sentry/sveltekit";
 import * as Sentry from "@sentry/sveltekit";
 import { PUBLIC_ENV } from "$env/static/public";
 import { version } from "$app/environment";
@@ -16,8 +16,6 @@ if (PUBLIC_ENV !== "dev")
         // sessions when an error occurs.
         replaysOnErrorSampleRate: 1.0,
 
-        // If you don't want to use Session Replay, just remove the line below:
-        integrations: [new Replay()],
         environment: PUBLIC_ENV,
         release: version,
     });

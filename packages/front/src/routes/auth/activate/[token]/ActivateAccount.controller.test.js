@@ -1,4 +1,4 @@
-import { nanoid } from "nanoid";
+import { nanoid } from "nanoid/non-secure";
 import { AgentTypeEnum } from "dto";
 import ActivateAccountController from "./ActivateAccount.controller";
 import authService from "$lib/resources/auth/auth.service";
