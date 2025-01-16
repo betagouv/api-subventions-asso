@@ -1,8 +1,12 @@
-import { onDestroy } from "svelte";
-vi.mock("svelte");
+vi.mock("svelte", async originalImport => {
+    return {
+        ...(await originalImport()),
+        onDestroy: vi.fn(),
+    };
+});
 import { AssociationController } from "./Association.controller";
 import associationService from "$lib/resources/associations/association.service";
-import { currentAssociation, currentAssoSimplifiedEtabs, currentIdentifiers } from "$lib/store/association.store";
+import { currentAssociation, currentAssoSimplifiedEtabs } from "$lib/store/association.store";
 import rnaSirenService from "$lib/resources/open-source/rna-siren/rna-siren.service";
 vi.mock("$lib/resources/open-source/rna-siren/rna-siren.service");
 const mockedRnaSirenService = vi.mocked(rnaSirenService);
@@ -20,8 +24,9 @@ describe("Association Controller", () => {
     let controller;
 
     beforeAll(() => {
-        associationService.getEstablishments.mockResolvedValue([]);
-        associationService.getAssociation.mockResolvedValue({});
+        vi.mocked(associationService.getEstablishments).mockResolvedValue([]);
+        // @ts-expect-error: mock response
+        vi.mocked(associationService.getAssociation).mockResolvedValue({});
         mockedRnaSirenService.getAssociatedIdentifier.mockResolvedValue([RNA_SIREN]);
     });
 

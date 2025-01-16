@@ -7,7 +7,6 @@ import { PUBLIC_ENV } from "$env/static/public";
 import localStorageService from "$lib/services/localStorage.service";
 import { page } from "$app/stores";
 import Store, { derived } from "$lib/core/Store";
-import userService from "$lib/resources/users/user.service";
 import { connectedUser } from "$lib/store/user.store";
 
 export class AppController {

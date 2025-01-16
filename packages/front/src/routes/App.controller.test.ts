@@ -1,6 +1,11 @@
 import { setContext } from "svelte";
-vi.mock("svelte");
-import type { SpyInstance } from "vitest";
+vi.mock("svelte", async originalImport => {
+    return {
+        ...(await originalImport()),
+        setContext: vi.fn(),
+    };
+});
+import type { MockInstance } from "vitest";
 import { AppController } from "./App.controller";
 import AppContext from "./AppContext";
 vi.mock("./AppContext");
@@ -38,11 +43,10 @@ describe("AppController", () => {
     });
 
     describe("constructor", () => {
-        let mockHandleBannerDisplay: SpyInstance;
+        let mockHandleBannerDisplay: MockInstance;
         beforeEach(() => {
             mockHandleBannerDisplay = vi
                 .spyOn(AppController.prototype, "handleBannerDisplay")
-                // @ts-expect-error: mock
                 .mockImplementation(vi.fn());
             controller = new AppController();
         });
