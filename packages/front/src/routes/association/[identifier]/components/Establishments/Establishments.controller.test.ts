@@ -1,6 +1,5 @@
-import { onDestroy } from "svelte";
 vi.mock("svelte");
-import type { SpyInstance } from "vitest";
+import type { MockInstance } from "vitest";
 import { EstablishmentsController } from "./Establishments.controller";
 import Store from "$lib/core/Store";
 import type { SimplifiedEstablishment } from "$lib/resources/establishments/types/establishment.types";
@@ -15,7 +14,7 @@ describe("EstablishmentsController", () => {
 
     describe("nbEstabInActivity", () => {
         const ESTABLISHMENTS = [{ ouvert: true }, { ouvert: false }, { ouvert: true }];
-        let mockGetter: SpyInstance;
+        let mockGetter: MockInstance;
 
         beforeEach(() => {
             mockGetter = vi.spyOn(Store.prototype, "value", "get").mockReturnValue(ESTABLISHMENTS);
@@ -37,9 +36,9 @@ describe("EstablishmentsController", () => {
     describe("onFilter()", () => {
         const FILTER = "FILTER";
         const FILTERED_ESTABLISHMENTS = [] as SimplifiedEstablishment[];
-        let mockFilterEstablishments: SpyInstance;
-        let mockSetTotalPages: SpyInstance;
-        let mockRenderPages: SpyInstance;
+        let mockFilterEstablishments: MockInstance;
+        let mockSetTotalPages: MockInstance;
+        let mockRenderPages: MockInstance;
 
         beforeEach(() => {
             controller.filteredEstablishments = new Store([]);
@@ -74,7 +73,7 @@ describe("EstablishmentsController", () => {
     });
 
     describe("filterEstablishments", () => {
-        let mockGetter: SpyInstance;
+        let mockGetter: MockInstance;
         const ESTABLISHMENT = { adresse: { code_postal: "93100" }, nic: "00019" };
 
         beforeAll(() => {
@@ -104,8 +103,8 @@ describe("EstablishmentsController", () => {
 
     describe("resetFilter", () => {
         const FILTERED_ESTABLISHMENTS = [] as SimplifiedEstablishment[];
-        let mockSetTotalPages: SpyInstance;
-        let mockRenderPages: SpyInstance;
+        let mockSetTotalPages: MockInstance;
+        let mockRenderPages: MockInstance;
 
         beforeEach(() => {
             vi.spyOn(Store.prototype, "value", "get").mockReturnValue([]);
@@ -133,8 +132,8 @@ describe("EstablishmentsController", () => {
     });
 
     describe("onEstablishementsUpdated", () => {
-        let mockSetTotalPages: SpyInstance;
-        let mockRenderPages: SpyInstance;
+        let mockSetTotalPages: MockInstance;
+        let mockRenderPages: MockInstance;
 
         beforeEach(() => {
             mockSetTotalPages = vi.spyOn(controller, "setTotalPages").mockImplementation(vi.fn());
@@ -153,7 +152,7 @@ describe("EstablishmentsController", () => {
     });
 
     describe("setTotalPages", () => {
-        let mockGetter: SpyInstance;
+        let mockGetter: MockInstance;
 
         beforeEach(() => {
             mockGetter = vi.spyOn(Store.prototype, "value", "get").mockReturnValue([]);
@@ -197,7 +196,7 @@ describe("EstablishmentsController", () => {
 
     describe("renderPage", () => {
         const ESTABLISHMENTS = [{}, {}];
-        let mockGetter: SpyInstance;
+        let mockGetter: MockInstance;
         beforeEach(() => {
             mockGetter = vi.spyOn(Store.prototype, "value", "get").mockReturnValueOnce(1);
             mockGetter.mockReturnValueOnce(ESTABLISHMENTS);
@@ -214,7 +213,7 @@ describe("EstablishmentsController", () => {
     });
 
     describe("changePage", () => {
-        let mockRenderPage: SpyInstance;
+        let mockRenderPage: MockInstance;
 
         beforeEach(() => {
             mockRenderPage = vi.spyOn(controller, "renderPage").mockImplementation(vi.fn());

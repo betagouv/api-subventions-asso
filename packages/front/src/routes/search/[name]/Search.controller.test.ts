@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, beforeEach, type SpyInstance } from "vitest";
+import { afterAll, beforeAll, beforeEach, type MockInstance } from "vitest";
 import { SearchCodeError } from "dto";
 
 import SearchController from "./Search.controller";
@@ -134,7 +134,7 @@ describe("SearchController", () => {
 
     describe("onSubmit", () => {
         let controller: SearchController;
-        let fetchSpy: SpyInstance;
+        let fetchSpy: MockInstance;
 
         beforeAll(() => {
             controller = new SearchController(RNA);
