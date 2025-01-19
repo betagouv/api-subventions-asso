@@ -124,5 +124,4 @@ export const ENTITIES: SireneStockUniteLegaleEntity[] = [
 export const DBOS: SireneUniteLegaleDbo[] = [
     { ...ENTITIES[0], _id: new ObjectId() },
     { ...ENTITIES[1], _id: new ObjectId() },
-    { ...ENTITIES[2], _id: new ObjectId() },
 ];
