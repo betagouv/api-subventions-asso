@@ -7,13 +7,13 @@ jest.mock("../../../modules/provider-request/providerRequest.service", () => ({
         })();
     }),
 }));
-import { SireneStockUniteLegalePort } from "./sireneStockUniteLegale.port";
+import { SireneStockUniteLegaleApiPort } from "./sireneStockUniteLegale.port";
 
 describe("SireneStockUniteLegalePort", () => {
     let port;
 
     beforeEach(() => {
-        port = new SireneStockUniteLegalePort();
+        port = new SireneStockUniteLegaleApiPort();
     });
     describe("constructor", () => {
         it("should call ProviderRequestFactory", async () => {

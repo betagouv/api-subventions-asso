@@ -81,8 +81,8 @@ describe("SireneStockUniteLegaleService", () => {
 
         it("should call parseCsvAndInsert", async () => {
             await sireneStockUniteLegaleService.getAndParse();
-            // @ts-expect-error : private variable
             expect(parseCsvAndInsertMock).toHaveBeenCalledWith(
+                // @ts-expect-error : private variable
                 sireneStockUniteLegaleService.directory_path + "/StockUniteLegale_utf8.csv",
             );
         });
