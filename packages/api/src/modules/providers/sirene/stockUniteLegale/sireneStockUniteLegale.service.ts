@@ -1,30 +1,36 @@
 import * as fs from "fs";
-import { SireneUniteLegaleDbo } from "./@types/SireneUniteLegaleDbo";
+import StreamZip from "node-stream-zip";
 import sireneUniteLegaleDbPort from "../../../../dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.port";
 import sireneStockUniteLegaleApiPort from "../../../../dataProviders/api/sirene/sireneStockUniteLegale.port";
-import { SireneStockUniteLegaleParser } from "./parser/sireneStockUniteLegale.parser";
+import { SireneUniteLegaleDbo } from "./@types/SireneUniteLegaleDbo";
+import SireneStockUniteLegaleParser from "./parser/sireneStockUniteLegale.parser";
 
-import StreamZip from "node-stream-zip";
 
 export class SireneStockUniteLegaleService {
-    directory_path = fs.mkdtempSync(__dirname +"/tmpSirene");
-    
-    public async getAndParse(){
-        await this.getExtractAndSaveFiles();
-        console.log('start getExtractAndSaveFiles');
-        await SireneStockUniteLegaleParser.parseCsvAndInsert(this.directory_path + "/StockUniteLegale_utf8.csv");
-        this.deleteTemporaryFolder;
+    private directory_path;
+
+    private getOrCreateDirectory() {
+        if (!fs.existsSync(this.directory_path)) {
+            this.directory_path = fs.mkdtempSync(__dirname + "/tmpSirene");
+        }
     }
 
+    public async getAndParse() {
+        await this.getExtractAndSaveFiles();
+        console.log("start getExtractAndSaveFiles");
+        await SireneStockUniteLegaleParser.parseCsvAndInsert(this.directory_path + "/StockUniteLegale_utf8.csv");
+        this.deleteTemporaryFolder();
+    }
 
     public async getExtractAndSaveFiles() {
+        this.getOrCreateDirectory();
         await this.getAndSaveZip();
         const zipPath = this.directory_path + "/SireneStockUniteLegale.zip";
         await this.decompressFolder(zipPath, this.directory_path);
     }
 
     public async getAndSaveZip() {
-        const file = fs.createWriteStream(this.directory_path+ "/SireneStockUniteLegale.zip");
+        const file = fs.createWriteStream(this.directory_path + "/SireneStockUniteLegale.zip");
         const response = await sireneStockUniteLegaleApiPort.getZip();
 
         console.info(`Start downloading the file`);
@@ -68,29 +74,28 @@ export class SireneStockUniteLegaleService {
         });
     }
 
-    public async decompressFolder(zipPath: string, destinationDirectoryPath: string)  {
+    public async decompressFolder(zipPath: string, destinationDirectoryPath: string) {
         console.log("Start decompress");
         try {
-            const zip = new StreamZip.async({file: zipPath});
+            const zip = new StreamZip.async({ file: zipPath });
             await zip.extract(null, destinationDirectoryPath);
             await zip.close();
-            console.log('End decompress');
-        }
-        catch (error) {
+            console.log("End decompress");
+        } catch (error) {
             console.error(`Error decompressing archive: ${error}`);
         }
     }
 
-    public async insertOne(dbo : SireneUniteLegaleDbo) {
+    public async insertOne(dbo: SireneUniteLegaleDbo) {
         return sireneUniteLegaleDbPort.insertOne(dbo);
     }
 
-    public async insertMany(dbos : SireneUniteLegaleDbo[]) {
+    public async insertMany(dbos: SireneUniteLegaleDbo[]) {
         return sireneUniteLegaleDbPort.insertMany(dbos);
     }
 
-    public async deleteTemporaryFolder() {
-        fs.rmdirSync(this.directory_path, { recursive: true });
+    public deleteTemporaryFolder() {
+        fs.rmSync(this.directory_path, { recursive: true });
     }
 }
 
