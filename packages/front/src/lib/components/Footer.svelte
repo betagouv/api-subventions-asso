@@ -123,6 +123,13 @@
                         Paramètres d'affichage
                     </button>
                 </li>
+                <li class="fr-footer__bottom-item">
+                    <a
+                        class="fr-footer__bottom-link"
+                        href="mailto:contact@datasubvention.beta.gouv.fr?subject=Faille de sécurité détectée&body=Bonjour, %0D%0A %0D%0A Il me semble avoir détecté une faille de sécurité. %0D%0A %0D%0A Voici la description : &html=true">
+                        Signaler un problème de sécurité
+                    </a>
+                </li>
             </ul>
             <div class="fr-footer__bottom-copy">
                 <p>
