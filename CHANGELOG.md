@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.60.3](https://github.com/betagouv/api-subventions-asso/compare/v0.60.2...v0.60.3) (2025-01-06)
+
+### Bug Fixes
+
+-   **api:** homogenize treatment csv xls single payment date ([#3069](https://github.com/betagouv/api-subventions-asso/issues/3069)) ([5db60ed](https://github.com/betagouv/api-subventions-asso/commit/5db60ed00f5e8124f475ed209cdade54ba398db1))
+
+## [0.60.2](https://github.com/betagouv/api-subventions-asso/compare/v0.60.1...v0.60.2) (2025-01-06)
+
+### Bug Fixes
+
+-   **api:** extract number with coma not point decimal separator ([f734242](https://github.com/betagouv/api-subventions-asso/commit/f734242692367ac872fbbcb30c0a5550ea149b9a))
+
+## [0.60.1](https://github.com/betagouv/api-subventions-asso/compare/v0.60.0...v0.60.1) (2025-01-02)
+
+### Bug Fixes
+
+-   **front:** [#2977](https://github.com/betagouv/api-subventions-asso/issues/2977) one or no establishment is not the same ([#3055](https://github.com/betagouv/api-subventions-asso/issues/3055)) ([8d00809](https://github.com/betagouv/api-subventions-asso/commit/8d00809579ed431e10cf7adbaa590e0c64bea5fc))
+-   **front:** [#3061](https://github.com/betagouv/api-subventions-asso/issues/3061) modale sort fix ([#3070](https://github.com/betagouv/api-subventions-asso/issues/3070)) ([06bf228](https://github.com/betagouv/api-subventions-asso/commit/06bf22873720da2cf1017a9947f1e608e7e7c364))
+-   **front:** [#3062](https://github.com/betagouv/api-subventions-asso/issues/3062) [#3064](https://github.com/betagouv/api-subventions-asso/issues/3064) payment modale ([#3071](https://github.com/betagouv/api-subventions-asso/issues/3071)) ([574aebf](https://github.com/betagouv/api-subventions-asso/commit/574aebfc06f2abcaa7a2a0480dd35cc77ee46430))
+-   **front:** [#3063](https://github.com/betagouv/api-subventions-asso/issues/3063) exercise label ([#3072](https://github.com/betagouv/api-subventions-asso/issues/3072)) ([9ee6b5a](https://github.com/betagouv/api-subventions-asso/commit/9ee6b5ae3651d0c357d8d3c9b3ea7eeb5734a6d7))
+
+### Features
+
+-   **api:** [#2989](https://github.com/betagouv/api-subventions-asso/issues/2989) data integration finistere ([#3056](https://github.com/betagouv/api-subventions-asso/issues/3056)) ([7ff612b](https://github.com/betagouv/api-subventions-asso/commit/7ff612bec70c4ef4dfc7c8ab12daba379a49c5d4))
+
 # [0.60.0](https://github.com/betagouv/api-subventions-asso/compare/v0.59.2...v0.60.0) (2024-12-26)
 
 ### Bug Fixes

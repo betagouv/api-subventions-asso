@@ -16,6 +16,7 @@ Object {
   "lastName": null,
   "nbVisits": 0,
   "profileToComplete": false,
+  "registrationSrc": Array [],
   "roles": Array [
     "user",
   ],

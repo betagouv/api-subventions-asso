@@ -46,7 +46,7 @@ export class DataBretagnePort {
 
     async getCollection<T>(collection: string) {
         return (
-            await this.http.get<{ items: T[] }>(`${this.basepath}/${collection}?limit=4000`, {
+            await this.http.get<{ items: T[] }>(`${this.basepath}/${collection}?limit=1000000`, {
                 headers: {
                     Authorization: this.token,
                 },

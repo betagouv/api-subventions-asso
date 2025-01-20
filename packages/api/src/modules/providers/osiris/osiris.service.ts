@@ -15,10 +15,9 @@ import GrantProvider from "../../grant/@types/GrantProvider";
 import Siret from "../../../valueObjects/Siret";
 import Siren from "../../../valueObjects/Siren";
 import Rna from "../../../valueObjects/Rna";
-import { osirisRequestPort, osirisActionPort, osirisEvaluationPort } from "../../../dataProviders/db/providers/osiris";
+import { osirisRequestPort, osirisActionPort } from "../../../dataProviders/db/providers/osiris";
 import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
-import OsirisEvaluationEntity from "./entities/OsirisEvaluationEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 
 export const VALID_REQUEST_ERROR_CODE = {
@@ -49,7 +48,7 @@ export class OsirisService
     }
 
     public async addRequest(request: OsirisRequestEntity): Promise<{ state: string; result: OsirisRequestEntity }> {
-        const existingFile = await osirisRequestPort.findByOsirisId(request.providerInformations.osirisId);
+        const existingFile = await osirisRequestPort.findByUniqueId(request.providerInformations.uniqueId);
         const { rna, siret } = request.legalInformations;
 
         if (rna) await rnaSirenSerivce.insert(new Rna(rna), new Siret(siret).toSiren());
@@ -114,7 +113,7 @@ export class OsirisService
     }
 
     public async addAction(action: OsirisActionEntity): Promise<{ state: string; result: OsirisActionEntity }> {
-        const existingAction = await osirisActionPort.findByOsirisId(action.indexedInformations.osirisActionId);
+        const existingAction = await osirisActionPort.findByUniqueId(action.indexedInformations.uniqueId);
         if (existingAction) {
             return {
                 state: "updated",
@@ -148,60 +147,11 @@ export class OsirisService
         return true;
     }
 
-    public validEvaluation(entity: OsirisEvaluationEntity) {
-        const evaluation = entity.indexedInformations;
-        if (!isOsirisActionId(evaluation.osirisActionId)) {
-            return {
-                message: `INVALID OSIRIS ACTION ID FOR ${evaluation.osirisActionId}`,
-                data: evaluation,
-            };
-        }
-
-        if (!Siret.isSiret(evaluation.siret)) {
-            return {
-                message: `INVALID SIRET FOR ${evaluation.siret}`,
-                data: evaluation,
-            };
-        }
-
-        if (!evaluation.evaluation_resultat.length) {
-            return {
-                message: `INVALID EVALUATION RESULTAT FOR ${evaluation.evaluation_resultat}`,
-                data: evaluation,
-            };
-        }
-
-        return true;
-    }
-
-    public async addEvaluation(entity: OsirisEvaluationEntity) {
-        const evaluation = entity.indexedInformations;
-        const existingEvaluation = await osirisEvaluationPort.findByActionId(evaluation.osirisActionId);
-        if (existingEvaluation) {
-            return {
-                state: "updated",
-                result: await osirisEvaluationPort.update(entity),
-            };
-        }
-
-        await osirisEvaluationPort.add(entity);
-
-        return {
-            state: "created",
-            result: entity,
-        };
-    }
-
     public async findBySiret(siret: Siret) {
         const requests = await osirisRequestPort.findBySiret(siret);
 
         for (const request of requests) {
-            request.actions = await osirisActionPort.findByCompteAssoId(request.providerInformations.compteAssoId);
-            // map -> save actions + map -> save eval
-            await request.actions.reduce(async (acc, value) => {
-                await acc;
-                value.evaluation = await osirisEvaluationPort.findByActionId(value.indexedInformations.osirisActionId);
-            }, Promise.resolve());
+            request.actions = await osirisActionPort.findByRequestUniqueId(request.providerInformations.uniqueId);
         }
         return requests;
     }
@@ -213,7 +163,7 @@ export class OsirisService
 
         for (const request of requests) {
             request.actions = actions.filter(
-                a => a.indexedInformations.compteAssoId === request.providerInformations.compteAssoId,
+                a => a.indexedInformations.requestUniqueId === request.providerInformations.uniqueId,
             );
         }
         return requests;
@@ -223,7 +173,7 @@ export class OsirisService
         const requests = await osirisRequestPort.findByRna(rna);
 
         for (const request of requests) {
-            request.actions = await osirisActionPort.findByCompteAssoId(request.providerInformations.compteAssoId);
+            request.actions = await osirisActionPort.findByRequestUniqueId(request.providerInformations.uniqueId);
         }
         return requests;
     }
@@ -251,7 +201,7 @@ export class OsirisService
             requests.map(async r =>
                 OsirisRequestAdapter.toAssociation(
                     r,
-                    (await osirisActionPort.findByCompteAssoId(r.providerInformations.compteAssoId)) || undefined, // todo faire une jointure, un jour ^^ !
+                    (await osirisActionPort.findByRequestUniqueId(r.providerInformations.uniqueId)) || undefined,
                 ),
             ),
         );

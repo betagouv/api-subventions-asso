@@ -1,10 +1,11 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
     import Button from "./Button.svelte";
+    import { uuid } from "$lib/helpers/stringHelper";
 
     // TODO: make it possible to has column with custom length
 
-    export let id: string = crypto.randomUUID();
+    export let id: string = uuid();
     export let title = "";
     export let hideTitle = false;
     export let size: "sm" | "md" | "lg" = "md";

@@ -33,6 +33,13 @@ describe("StructureTitleController", () => {
             expect(actual).toEqual(expected);
         });
 
+        it("should return none estab label", () => {
+            const controller = new StructureTitleController({ ...ASSO, etablisements_siret: [] });
+            const expected = "aucun établissement rattaché";
+            const actual = controller.nbEstabLabel;
+            expect(actual).toEqual(expected);
+        });
+
         it("should return singular estab label", () => {
             const controller = new StructureTitleController({ ...ASSO, etablisements_siret: [""] });
             const expected = "1 établissement rattaché";

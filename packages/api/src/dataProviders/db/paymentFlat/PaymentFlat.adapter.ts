@@ -26,6 +26,10 @@ export default class PaymentsFlatAdapter {
             action: entity.actionLabel,
             codeActivite: entity.activityCode,
             activite: entity.activityLabel,
+            codeCentreFinancier: entity.centreFinancierCode,
+            libelleCentreFinancier: entity.centreFinancierLibelle,
+            attachementComptable: entity.attachementComptable,
+            regionAttachementComptable: entity.regionAttachementComptable,
         };
     }
 }

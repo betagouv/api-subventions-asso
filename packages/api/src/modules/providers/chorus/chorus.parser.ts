@@ -7,6 +7,7 @@ import Siret from "../../../valueObjects/Siret";
 import { GenericParser } from "../../../shared/GenericParser";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import IChorusIndexedInformations from "./@types/IChorusIndexedInformations";
+import { ChorusLineDto } from "./adapters/chorusLineDto";
 
 export default class ChorusParser {
     static parse(content: Buffer) {
@@ -60,7 +61,9 @@ export default class ChorusParser {
             if (!this.isIndexedInformationsValid(indexedInformations)) return entities;
 
             const uniqueId = this.buildUniqueId(indexedInformations);
-            entities.push(new ChorusLineEntity(uniqueId, new Date(), indexedInformations, data));
+            entities.push(
+                new ChorusLineEntity(uniqueId, new Date(), indexedInformations, data as unknown as ChorusLineDto),
+            );
 
             CliHelper.printAtSameLine(`${index + 1} entities parsed of ${array.length}`);
 

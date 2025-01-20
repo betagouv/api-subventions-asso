@@ -52,12 +52,16 @@ describe("AgentTypeStepController", () => {
         withError | event      | option
         ${true}   | ${"error"} | ${{ value: "none" }}
         ${false}  | ${"valid"} | ${{ value: "some" }}
-    `("onUpdate - case $event", ({ event, option }) => {
+    `("onUpdate - case $event", ({ event, option, withError }) => {
         it("updates errorMessage store", () => {
-            // @ts-expect-error - mock readonly
-            ctrl.errorMessage = { set: vi.fn() };
+            const errorSpy = vi.spyOn(ctrl.errorMessage, "set").mockImplementation(vi.fn());
+            const expected = withError
+                ? 'Data.Subvention est réservé aux agents publics. Pour toute question, vous pouvez nous contacter à <a href="mailto:contact@datasubvention.beta.gouv.fr">contact@datasubvention.beta.gouv.fr</a>'
+                : "";
             ctrl.onUpdate(option);
-            expect(ctrl.errorMessage.set).toMatchSnapshot();
+            const actual = errorSpy.mock.calls?.[0]?.[0];
+            expect(actual).toBe(expected);
+            errorSpy.mockRestore();
         });
 
         it("dispatches event", () => {

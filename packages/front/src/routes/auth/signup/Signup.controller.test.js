@@ -16,12 +16,14 @@ vi.mock("dto", () => ({
 
 const NAME = "nom";
 
-vi.mock("svelte", () => ({
-    __esModule: true, // this property makes it work
-    getContext: vi.fn(() => ({
-        getName: vi.fn(() => NAME),
-    })),
-}));
+vi.mock(import("svelte"), async importOriginal => {
+    const actual = await importOriginal();
+    return {
+        __esModule: true, // this property makes it work
+        ...actual,
+        getContext: vi.fn(() => ({ getName: vi.fn(() => NAME) })),
+    };
+});
 
 describe("SignupController", () => {
     describe("constructor and static values", () => {

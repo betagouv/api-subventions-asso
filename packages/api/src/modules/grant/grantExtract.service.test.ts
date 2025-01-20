@@ -80,7 +80,21 @@ describe("GrantExtractService", () => {
                 columns: ExtractHeaderLabel,
                 delimiter: ";",
                 bom: true,
+                cast: { number: expect.any(Function) },
             });
+        });
+
+        it("converts number to comma style", async () => {
+            jest.mocked(grantService.getGrants).mockResolvedValueOnce([1 as unknown as Grant]);
+            jest.mocked(GrantAdapter.grantToExtractLine).mockReturnValueOnce("1" as unknown as GrantToExtract);
+
+            await grantExtractService.buildCsv(IDENTIFIER);
+            // @ts-expect-error -- ??
+            const converter: (n: number) => string =
+                jest.mocked(csvStringifier.stringify).mock.calls[0][1]?.cast?.number ?? (() => "");
+            const expected = "20000012,3";
+            const actual = converter(20000012.3);
+            expect(actual).toBe(expected);
         });
 
         it("returns stringified csv", async () => {

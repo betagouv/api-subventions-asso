@@ -8,7 +8,7 @@ import { isSiret } from "$lib/helpers/identifierHelper";
 import associationPort from "$lib/resources/associations/association.port";
 import establishmentPort from "$lib/resources/establishments/establishment.port";
 import { returnInfinitePromise } from "$lib/helpers/promiseHelper";
-import Store, { derived, ReadStore } from "$lib/core/Store";
+import Store from "$lib/core/Store";
 import trackerService from "$lib/services/tracker.service";
 import establishmentService from "$lib/resources/establishments/establishment.service";
 import associationService from "$lib/resources/associations/association.service";
@@ -17,21 +17,21 @@ import { PUBLIC_PROVIDER_BLOG_URL } from "$env/static/public";
 import { data, modal } from "$lib/store/modal.store";
 import type { SortableRow } from "$lib/components/GrantDashboard/@types/DashboardGrant";
 import { grantCompareFn } from "$lib/components/GrantDashboard/sort.helper";
+import type { Option } from "$lib/types/FieldOption";
 
 export class GrantDashboardController {
     public identifier: StructureIdentifierDto;
     public grantPromise: Promise<FlatGrant[]> = returnInfinitePromise();
     public grants: Store<FlatGrant[] | undefined> = new Store(undefined);
     public grantsByExercise: Record<string, FlatGrant[]> = {};
-    public selectedExerciseIndex: Store<number | undefined> = new Store(undefined);
 
     public selectedGrants: Store<FlatGrant[] | null> = new Store(null);
-    public selectedExercise: ReadStore<string | null> = new ReadStore(null);
+    public selectedExercise: Store<string | null> = new Store(null);
 
     // final rows displayed in view: can be updated with exercise filter and in a future with other filters
     public rows: Store<SortableRow[]> = new Store([]);
     public isExtractLoading: Store<boolean> = new Store(false);
-    public exerciseOptions: Store<string[] | undefined> = new Store(undefined);
+    public exerciseOptions: Store<Option<string>[] | undefined> = new Store(undefined);
     public headers: string[];
     private columnsSortOrder: number[];
 
@@ -63,10 +63,7 @@ export class GrantDashboardController {
 
     private initStores() {
         this.selectedGrants = new Store(null);
-        this.selectedExercise = derived(this.selectedExerciseIndex, index => {
-            if (index == null || !this.exerciseOptions.value) return null;
-            return this.exerciseOptions.value[index];
-        });
+        this.selectedExercise = new Store(null);
         this.selectedExercise.subscribe(exercise => {
             if (exercise == null) return;
             this.selectedGrants.set(this.grantsByExercise[exercise]);
@@ -81,8 +78,12 @@ export class GrantDashboardController {
         this.grants.set(grants);
         this.grantsByExercise = this.splitGrantsByExercise(this.grants.value as FlatGrant[]);
 
-        this.exerciseOptions.set(Object.keys(this.grantsByExercise));
-        this.selectedExerciseIndex.set((this.exerciseOptions.value as string[]).length - 1);
+        this.exerciseOptions.set(this._buildExercices(Object.keys(this.grantsByExercise)));
+        this.selectedExercise.set((this.exerciseOptions.value || []).slice(-1)?.[0]?.value);
+    }
+
+    _buildExercices(exercices: string[]) {
+        return exercices.map(year => ({ value: year, label: `Exercice ${year} (année civile)` }));
     }
 
     get providerBlogUrl() {
@@ -98,7 +99,7 @@ export class GrantDashboardController {
         else return defaultContent;
     }
 
-    private updateRows(grants) {
+    private updateRows(grants: FlatGrant[]) {
         if (!grants) return;
         this.rows.set(
             grants.map(grant => {
@@ -109,6 +110,7 @@ export class GrantDashboardController {
                     granted,
                     application: getApplicationDashboardData(grant.application),
                     payment: getPaymentDashboardData(grant.payments),
+                    flatGrant: grant,
                 };
             }),
         );
@@ -118,10 +120,6 @@ export class GrantDashboardController {
         // change order between ASC and DESC
         this.columnsSortOrder[index] *= -1;
         this.rows.update(rows => rows.sort((a, b) => grantCompareFn[index](a, b, this.columnsSortOrder[index])));
-    }
-
-    public selectExercise(index) {
-        this.selectedExerciseIndex.set(index);
     }
 
     public clickProviderLink() {
@@ -154,14 +152,14 @@ export class GrantDashboardController {
     public onPaymentClick(index) {
         if (!this.rows.value[index].paymentsCells) return;
         trackerService.buttonClickEvent("association-etablissement.dashbord.payment.more_information");
-        data.set({ payments: (this.selectedGrants.value as FlatGrant[])[index].payments });
+        data.set({ payments: (this.rows.value as SortableRow[])[index].flatGrant.payments });
         modal.set(PaymentsInfoModal);
     }
 
     public onApplicationClick(index) {
         if (!this.rows.value[index].applicationCells) return;
         trackerService.buttonClickEvent("association-etablissement.dashbord.subvention.more_information");
-        data.set({ application: (this.selectedGrants.value as FlatGrant[])[index].application });
+        data.set({ application: (this.rows.value as SortableRow[])[index].flatGrant.application });
         modal.set(ApplicationInfoModal);
     }
 }

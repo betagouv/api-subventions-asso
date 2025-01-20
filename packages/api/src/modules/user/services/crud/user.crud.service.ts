@@ -32,7 +32,11 @@ export class UserCrudService {
     }
 
     public async update(user: Partial<UserDto> & Pick<UserDto, "email">): Promise<UserDto> {
-        await userCheckService.validateEmail(user.email);
+        const fullUser = await userCrudService.findByEmail(user.email);
+
+        if (fullUser?.agentConnectId) userCheckService.validateOnlyEmail(user.email);
+        else await userCheckService.validateEmailAndDomain(user.email);
+
         return await userPort.update(user);
     }
 
@@ -56,10 +60,12 @@ export class UserCrudService {
         return await Promise.all(
             users.map(async user => {
                 const reset = await userResetPort.findOneByUserId(user._id);
+                if (!reset || userActivationService.isResetExpired(reset)) return user;
                 return {
                     ...user,
                     resetToken: reset?.token,
                     resetTokenDate: reset?.createdAt,
+                    resetUrl: userActivationService.buildResetPwdUrl(reset?.token),
                 };
             }),
         );

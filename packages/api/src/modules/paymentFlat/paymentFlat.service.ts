@@ -15,6 +15,7 @@ export class PaymentFlatService {
         const programs = await dataBretagneService.findProgramsRecord();
         const domainesFonct = await dataBretagneService.getDomaineFonctRecord();
         const refsProgrammation = await dataBretagneService.getRefProgrammationRecord();
+
         return { programs, ministries, domainesFonct, refsProgrammation };
     }
 

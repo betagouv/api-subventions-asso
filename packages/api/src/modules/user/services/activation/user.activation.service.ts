@@ -42,7 +42,7 @@ export class UserActivationService {
     public validateResetToken(userReset: UserReset | null): { valid: false; error: Error } | { valid: true } {
         let error: Error | null = null;
         if (!userReset) error = new ResetTokenNotFoundError();
-        else if (this.isExpiredReset(userReset as UserReset))
+        else if (this.isResetExpired(userReset as UserReset))
             error = new BadRequestError(
                 "Reset token has expired, please retry forget password",
                 ResetPasswordErrorCodes.RESET_TOKEN_EXPIRED,
@@ -51,7 +51,7 @@ export class UserActivationService {
         return error ? { valid: false, error } : { valid: true };
     }
 
-    private isExpiredReset(reset: UserReset) {
+    public isResetExpired(reset: UserReset) {
         return reset.createdAt.getTime() + UserActivationService.RESET_TIMEOUT < Date.now();
     }
 
@@ -112,6 +112,10 @@ export class UserActivationService {
         return await userAuthService.updateJwt(userUpdated);
     }
 
+    buildResetPwdUrl(token: string) {
+        return `${FRONT_OFFICE_URL}/auth/reset-password/${token}`;
+    }
+
     async forgetPassword(email: string) {
         const user = await userPort.findByEmail(email.toLocaleLowerCase());
         if (!user) return; // Don't say user not found, for security reasons
@@ -120,7 +124,7 @@ export class UserActivationService {
 
         notifyService.notify(NotificationType.USER_FORGET_PASSWORD, {
             email: email.toLocaleLowerCase(),
-            url: `${FRONT_OFFICE_URL}/auth/reset-password/${resetResult.token}`,
+            url: this.buildResetPwdUrl(resetResult.token),
         });
     }
 
