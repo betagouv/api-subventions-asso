@@ -142,4 +142,18 @@ describe("SireneStockUniteLegaleParser", () => {
             await expect(SireneStockUniteLegaleParser.parseCsvAndInsert(filePath)).rejects.toThrowError("error");
         });
     });
+
+    describe("isToInclude", () => {
+        it("should return true if the data is to include", () => {
+            const actual = SireneStockUniteLegaleParser.isToInclude(DTOS[0]);
+            const expected = true;
+            expect(actual).toBe(expected);
+        });
+
+        it("should return false if the data is not to include", () => {
+            const actual = SireneStockUniteLegaleParser.isToInclude(DTOS[2]);
+            const expected = false;
+            expect(SireneStockUniteLegaleParser.isToInclude(DTOS[DTOS_BEING_ASSOCIATIONS])).toBe(false);
+        });
+    });
 });
