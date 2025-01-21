@@ -8,24 +8,24 @@ export class SireneUniteLegaleDbPort extends MongoPort<SireneUniteLegaleDbo> {
         await this.collection.createIndex({ siren: 1 }, { unique: true });
     }
 
-    public async insertMany(dbos: SireneUniteLegaleDbo[]) {
+    public insertMany(dbos: SireneUniteLegaleDbo[]) {
         return this.collection.insertMany(dbos);
     }
 
-    public async insertOne(dbo: SireneUniteLegaleDbo) {
+    public insertOne(dbo: SireneUniteLegaleDbo) {
         return this.collection.insertOne(dbo);
     }
 
-    public async updateOne(dbo: SireneUniteLegaleDbo) {
+    public updateOne(dbo: SireneUniteLegaleDbo) {
         return this.collection.updateOne({ siren: dbo.siren }, { $set: dbo });
     }
 
-    public async findAll() {
+    public findAll() {
         return this.collection.find().toArray();
     }
 
-    public async deleteAll() {
-        await this.collection.deleteMany({});
+    public deleteAll() {
+        return this.collection.deleteMany({});
     }
 }
 
