@@ -117,6 +117,11 @@ describe("SireneStockUniteLegaleParser", () => {
             expect(mockInsertMany).toHaveBeenCalledTimes(1);
         });
 
+        it("should call entityToDbo", async () => {
+            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
+            expect(mockEntityToDbo).toHaveBeenCalledTimes(NUMBER_DTOS_BEING_ASSOCIATIONS);
+        });
+
         it("should call dtoToEntity", async () => {
             await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
             expect(mockDtoToEntity).toHaveBeenCalledTimes(NUMBER_DTOS_BEING_ASSOCIATIONS);
