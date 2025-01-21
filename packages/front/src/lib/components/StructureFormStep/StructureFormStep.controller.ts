@@ -113,6 +113,7 @@ export default class StructureFormStepController {
     }
 
     onUpdateRegistrationSrc(values: Record<string, unknown>) {
+        //Set registrationSrcEmail & registrationSrcDetails to empty, to avoid saving unused data
         this.onUpdate(values, "registrationSrc");
         if (values["registrationSrc"] && Array.isArray(values["registrationSrc"])) {
             if (
@@ -162,16 +163,10 @@ export default class StructureFormStepController {
     }
 
     isRegistrationSrcEmailVisible(registerSrcValue: RegistrationSrcTypeEnum[]) {
-        if (registerSrcValue && registerSrcValue.includes(RegistrationSrcTypeEnum.COLLEAGUES_HIERARCHY)) {
-            return true;
-        }
-        return false;
+        return registerSrcValue && registerSrcValue.includes(RegistrationSrcTypeEnum.COLLEAGUES_HIERARCHY);
     }
 
     isRegistrationSrcDetailsVisible(registerSrcValue: RegistrationSrcTypeEnum[]) {
-        if (registerSrcValue && registerSrcValue.includes(RegistrationSrcTypeEnum.OTHER)) {
-            return true;
-        }
-        return false;
+        return registerSrcValue && registerSrcValue.includes(RegistrationSrcTypeEnum.OTHER);
     }
 }
