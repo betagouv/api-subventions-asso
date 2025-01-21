@@ -28,6 +28,7 @@ export default class SireneStockUniteLegaleParser {
             stream
                 .pipe(csv())
                 .on("data", async data => {
+                    console.log(data);
                     if (this.isToInclude(data)) {
                         currentRow++;
                         const entity = SireneStockUniteLegaleAdapter.dtoToEntity(data);
@@ -42,11 +43,20 @@ export default class SireneStockUniteLegaleParser {
                         stream.resume();
                     }
                 })
-                .on("end", () => {
+                .on("end", async () => {
+                    clearInterval(interval);
+
+                    if (batch.length > 0) {
+                        await sireneStockUniteLegaleService.insertMany(
+                            batch.map(entity => SireneStockUniteLegaleAdapter.entityToDbo(entity)),
+                        );
+                    }
+
                     console.info("Finished parsing file.");
                     resolve();
                 })
                 .on("error", error => {
+                    clearInterval(interval);
                     console.error("Error reading CSV file:", error);
                     reject(error);
                 });

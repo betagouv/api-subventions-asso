@@ -5,7 +5,6 @@ import sireneStockUniteLegaleApiPort from "../../../../dataProviders/api/sirene/
 import { SireneUniteLegaleDbo } from "./@types/SireneUniteLegaleDbo";
 import SireneStockUniteLegaleParser from "./parser/sireneStockUniteLegale.parser";
 
-
 export class SireneStockUniteLegaleService {
     private directory_path;
 
@@ -86,11 +85,11 @@ export class SireneStockUniteLegaleService {
         }
     }
 
-    public async insertOne(dbo: SireneUniteLegaleDbo) {
+    public insertOne(dbo: SireneUniteLegaleDbo) {
         return sireneUniteLegaleDbPort.insertOne(dbo);
     }
 
-    public async insertMany(dbos: SireneUniteLegaleDbo[]) {
+    public insertMany(dbos: SireneUniteLegaleDbo[]) {
         return sireneUniteLegaleDbPort.insertMany(dbos);
     }
 

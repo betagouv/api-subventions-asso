@@ -1,8 +1,9 @@
 import SireneStockUniteLegaleParser from "./sireneStockUniteLegale.parser";
-import fs, { createReadStream, ReadStream } from "fs";
+import fs, { cp, createReadStream, ReadStream } from "fs";
 import csv from "csv-parser";
 import { DTOS, DBOS, ENTITIES } from "../../__fixtures__/sireneStockUniteLegale.fixture";
 import SireneStockUniteLegaleAdapter from "../adapter/sireneStockUniteLegale.adapter";
+import sireneStockUniteLegaleService from "../sireneStockUniteLegale.service";
 
 jest.mock("fs", () => {
     const actualFs = jest.requireActual("fs");
@@ -43,6 +44,7 @@ describe("SireneStockUniteLegaleParser", () => {
     describe("parseCsvAndInsert", () => {
         let mockFilePathValidator: jest.SpyInstance;
         let mockDtoToEntity: jest.SpyInstance;
+        let mockEntityToDbo: jest.SpyInstance;
         let mockIsToInclude: jest.SpyInstance;
         let mockInsertMany: jest.SpyInstance;
         let filePath = "file";
@@ -51,7 +53,8 @@ describe("SireneStockUniteLegaleParser", () => {
             jest.useFakeTimers();
             mockFilePathValidator = jest.spyOn(SireneStockUniteLegaleParser, "filePathValidator").mockReturnValue(true);
             mockDtoToEntity = jest.spyOn(SireneStockUniteLegaleAdapter, "dtoToEntity").mockReturnValue(ENTITIES[0]);
-            mockInsertMany = jest.spyOn(SireneStockUniteLegaleAdapter, "entityToDbo").mockReturnValue(DBOS[0]);
+            mockEntityToDbo = jest.spyOn(SireneStockUniteLegaleAdapter, "entityToDbo").mockReturnValue(DBOS[0]);
+            mockInsertMany = jest.spyOn(sireneStockUniteLegaleService, "insertMany").mockImplementation(jest.fn());
             mockStream = {
                 pipe: jest.fn().mockReturnThis(),
                 on: jest.fn().mockImplementation((event, cb) => {
@@ -109,9 +112,9 @@ describe("SireneStockUniteLegaleParser", () => {
         });
 
         it("should call sireneStockUniteLegaleService.insertMany once", async () => {
+            // 1 is equal to the number of batches + 1 computes as Math.floor(NUMBER_DTOS_BEING_ASSOCIATIONS / 1000) + 1
             await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
-
-            expect(mockInsertMany).toHaveBeenCalledTimes(Math.floor(NUMBER_DTOS_BEING_ASSOCIATIONS / 1000));
+            expect(mockInsertMany).toHaveBeenCalledTimes(1);
         });
 
         it("should call dtoToEntity", async () => {
