@@ -28,7 +28,6 @@ export default class SireneStockUniteLegaleParser {
             stream
                 .pipe(parse({ columns: true }))
                 .on("data", async data => {
-                    console.log(data);
                     if (this.isToInclude(data)) {
                         currentRow++;
                         const entity = SireneStockUniteLegaleAdapter.dtoToEntity(data);
