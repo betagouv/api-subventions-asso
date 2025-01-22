@@ -77,13 +77,11 @@ describe("SireneStockUniteLegaleParser", () => {
         });
 
         beforeEach(() => {
-            let callCount = 0;
             mockIsToInclude = jest.spyOn(SireneStockUniteLegaleParser, "isToInclude").mockImplementation(() => {
-                callCount++;
-                if (callCount > NUMBER_DTOS_BEING_ASSOCIATIONS) {
-                    return false;
+                if (mockIsToInclude.mock.calls.length <= 2) {
+                    return true;
                 }
-                return true;
+                return false;
             });
         });
 
