@@ -78,7 +78,7 @@ export default class PaymentFlatAdapter {
         }
         const ministryEntity = programEntity ? ministries[programEntity.code_ministere] : undefined;
         if (!ministryEntity) {
-            console.error(`Ministry not found for program: ${programEntity.code_programme}`);
+            console.error(`Ministry not found for program: ${programCode}`);
         }
         const domaineFonctEntity = actionCode ? domainesFonct[actionCode] : undefined;
         if (!domaineFonctEntity) {
