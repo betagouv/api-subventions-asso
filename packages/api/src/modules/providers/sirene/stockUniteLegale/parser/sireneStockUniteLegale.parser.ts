@@ -1,6 +1,6 @@
 import fs from "fs";
 
-import csv from "csv-parser";
+import { parse } from "csv-parse";
 import SireneUniteLegaleDto from "../@types/SireneUniteLegaleDto";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../../shared/LegalCategoriesAccepted";
 import sireneStockUniteLegaleService from "../sireneStockUniteLegale.service";
@@ -26,7 +26,7 @@ export default class SireneStockUniteLegaleParser {
             const stream = fs.createReadStream(filePath);
 
             stream
-                .pipe(csv())
+                .pipe(parse({ columns: true }))
                 .on("data", async data => {
                     console.log(data);
                     if (this.isToInclude(data)) {

@@ -1,6 +1,6 @@
 import SireneStockUniteLegaleParser from "./sireneStockUniteLegale.parser";
-import fs, { cp, createReadStream, ReadStream } from "fs";
-import csv from "csv-parser";
+import fs, { createReadStream, ReadStream } from "fs";
+import { parse } from "csv-parse";
 import { DTOS, DBOS, ENTITIES } from "../../__fixtures__/sireneStockUniteLegale.fixture";
 import SireneStockUniteLegaleAdapter from "../adapter/sireneStockUniteLegale.adapter";
 import sireneStockUniteLegaleService from "../sireneStockUniteLegale.service";
@@ -15,6 +15,7 @@ jest.mock("fs", () => {
 });
 
 jest.mock("csv-parser");
+jest.mock("csv-parse");
 
 const NUMBER_DTOS_BEING_ASSOCIATIONS = 2;
 
@@ -101,9 +102,9 @@ describe("SireneStockUniteLegaleParser", () => {
             expect(fs.createReadStream).toHaveBeenCalledWith(filePath);
         });
 
-        it("should call csv", async () => {
+        it("should call parse", async () => {
             await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
-            expect(csv).toHaveBeenCalledTimes(1);
+            expect(parse).toHaveBeenCalledTimes(1);
         });
 
         it("should call isToInclude", async () => {
