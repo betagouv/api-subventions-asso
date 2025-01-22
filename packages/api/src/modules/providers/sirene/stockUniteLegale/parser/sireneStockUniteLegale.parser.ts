@@ -77,6 +77,11 @@ export default class SireneStockUniteLegaleParser {
     static isToInclude(data: SireneUniteLegaleDto) {
         const categorieJuridique = data.categorieJuridiqueUniteLegale;
         const unitePurgee = data.unitePurgeeUniteLegale;
+        /* unitePurgee == true si for storage reasons, data concerning companies
+            ceased before 31/12/2002 have been purged.
+            * unitePurgee == ture if the company has been purged
+            * unitePurgee == "" if the company has not been purged
+        */
 
         return LEGAL_CATEGORIES_ACCEPTED.includes(categorieJuridique) && unitePurgee == "" && Siren.isSiren(data.siren);
     }
