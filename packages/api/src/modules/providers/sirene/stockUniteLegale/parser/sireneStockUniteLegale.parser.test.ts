@@ -14,7 +14,6 @@ jest.mock("fs", () => {
     };
 });
 
-jest.mock("csv-parser");
 jest.mock("csv-parse");
 
 const NUMBER_DTOS_BEING_ASSOCIATIONS = 2;
