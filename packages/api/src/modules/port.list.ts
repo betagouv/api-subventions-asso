@@ -23,6 +23,7 @@ import paymentFlatPort from "../dataProviders/db/paymentFlat/paymentFlat.port";
 import { osirisActionPort, osirisRequestPort } from "../dataProviders/db/providers/osiris";
 import miscScdlGrantPort from "../dataProviders/db/providers/scdl/miscScdlGrant.port";
 import miscScdlProducerPort from "../dataProviders/db/providers/scdl/miscScdlProducer.port";
+import sireneStockUniteLegalePort from "../dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.port";
 
 export const portsWithIndexes = [
     userPort,
@@ -51,4 +52,5 @@ export const portsWithIndexes = [
     uniteLegalImportsPort,
     uniteLegalNamePort,
     paymentFlatPort,
+    sireneStockUniteLegalePort,
 ];
