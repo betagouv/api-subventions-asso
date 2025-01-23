@@ -76,9 +76,9 @@ export default class SireneStockUniteLegaleParser {
     static isToInclude(data: SireneUniteLegaleDto) {
         const categorieJuridique = data.categorieJuridiqueUniteLegale;
         const unitePurgee = data.unitePurgeeUniteLegale;
-        /* unitePurgee == true si for storage reasons, data concerning companies
-            ceased before 31/12/2002 have been purged.
-            * unitePurgee == ture if the company has been purged
+        /* for storage reasons, data concerning companies
+            ceased before 31/12/2002 are purged.
+            * unitePurgee == true if the company has been purged
             * unitePurgee == "" if the company has not been purged
         */
 
