@@ -137,7 +137,7 @@ describe("PaymentFlatAdapter", () => {
                 codeValue: "code_2",
                 recordType: "RefProgrammation",
             },
-            { chorusLineEntity: CHORUS_LINE_ENTITY.data, codeValue: "code_2", recordType: "Ministry" },
+            { chorusLineEntity: CHORUS_LINE_ENTITY.data, codeValue: "101", recordType: "Ministry" },
         ])("should console.error when %s not found", ({ chorusLineEntity, codeValue, recordType }) => {
             RECORDS["programme"][101].code_ministere = codeValue;
 
