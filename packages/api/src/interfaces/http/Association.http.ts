@@ -10,7 +10,7 @@ import {
     StructureIdentifierDto,
     AssociationIdentifierDto,
 } from "dto";
-import { Route, Get, Controller, Tags, Security, Response, Produces } from "tsoa";
+import { Route, Get, Controller, Tags, Security, Response, Produces, Middlewares, Path, Request } from "tsoa";
 import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
 
 import associationService from "../../modules/associations/associations.service";
@@ -18,19 +18,43 @@ import grantService from "../../modules/grant/grant.service";
 import { JoinedRawGrant } from "../../modules/grant/@types/rawGrant";
 import associationIdentifierService from "../../modules/association-identifier/association-identifier.service";
 import grantExtractService from "../../modules/grant/grantExtract.service";
+import { BadRequestError } from "../../shared/errors/httpErrors";
+import { errorHandler } from "../../middlewares/ErrorMiddleware";
+
+async function isAssoIdentifierFromAssoMiddleware(req, _res, next) {
+    try {
+        const identifier = req.params.identifier;
+        const associationIdentifiers = await associationIdentifierService.getOneAssociationIdentifier(identifier);
+        if (!(await associationService.isIdentifierFromAsso(associationIdentifiers)))
+            throw new BadRequestError("L'identifiant n'appartient pas à une association");
+        req.assoIdentifier = associationIdentifiers;
+    } catch (e) {
+        errorHandler(false)(e, req, _res, next);
+    }
+    next();
+}
 
 @Route("association")
 @Security("jwt")
 @Tags("Association Controller")
 export class AssociationHttp extends Controller {
+    async getIdentifier(req, strIdentifier: string) {
+        return req.assoIdentifier ?? (await associationIdentifierService.getOneAssociationIdentifier(strIdentifier));
+    }
+
     /**
      * Remonte les informations d'une association
      * @param identifier Siret, Siren ou Rna
+     * @param req
      */
     @Get("/{identifier}")
+    @Middlewares(isAssoIdentifierFromAssoMiddleware)
     @Response<HttpErrorInterface>("404")
-    public async getAssociation(identifier: StructureIdentifierDto): Promise<GetAssociationResponseDto> {
-        const associationIdentifiers = await associationIdentifierService.getOneAssociationIdentifier(identifier);
+    public async getAssociation(
+        @Path() identifier: StructureIdentifierDto,
+        @Request() req,
+    ): Promise<GetAssociationResponseDto> {
+        const associationIdentifiers = await this.getIdentifier(req, identifier);
 
         const association = await associationService.getAssociation(associationIdentifiers);
         return { association };
