@@ -233,6 +233,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Aides ne relevant pas d'une aide d'état",
                 "Aide d'Etat notifiée à la Commission européenne, conformément aux dispositions du règlement (UE) n° 1407/2013 de la Commission du 18 décembre 2013",
                 "Notification UE",
+                "NotificationUE",
             ],
         ],
         adapter: value => {
