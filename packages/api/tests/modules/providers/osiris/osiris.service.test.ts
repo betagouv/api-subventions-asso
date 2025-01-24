@@ -1,6 +1,8 @@
 import IOsirisActionsInformations from "../../../../src/modules/providers/osiris/@types/IOsirisActionsInformations";
+import IOsirisEvaluationsInformations from "../../../../src/modules/providers/osiris/@types/IOsirisEvaluationsInformations";
 import IOsirisRequestInformations from "../../../../src/modules/providers/osiris/@types/IOsirisRequestInformations";
 import OsirisActionEntity from "../../../../src/modules/providers/osiris/entities/OsirisActionEntity";
+import OsirisEvaluationEntity from "../../../../src/modules/providers/osiris/entities/OsirisEvaluationEntity";
 import OsirisRequestEntity from "../../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
 import osirisService, { OsirisService } from "../../../../src/modules/providers/osiris/osiris.service";
 import ProviderValueAdapter from "../../../../src/shared/adapters/ProviderValueAdapter";
@@ -30,7 +32,6 @@ describe("OsirisService", () => {
                         ej: "",
                         amountAwarded: 0,
                         dateCommission: new Date(),
-                        exercise: 2022,
                     } as IOsirisRequestInformations,
                     {},
                     undefined,
@@ -48,7 +49,6 @@ describe("OsirisService", () => {
                         ej: "",
                         amountAwarded: 0,
                         dateCommission: new Date(),
-                        exercise: 2022,
                     } as IOsirisRequestInformations,
                     {},
                     undefined,
@@ -59,40 +59,6 @@ describe("OsirisService", () => {
                 expect(result.result).toMatchObject(entity);
                 expect(result.state).toBe("updated");
             });
-
-            it("should add new if same id different exercise", async () => {
-                const entity = new OsirisRequestEntity(
-                    { siret: SIRET.value, rna: RNA.value, name: "NAME" },
-                    {
-                        osirisId: "OSIRISID",
-                        compteAssoId: "COMPTEASSOID",
-                        ej: "",
-                        amountAwarded: 0,
-                        dateCommission: new Date(),
-                        exercise: 2022,
-                    } as IOsirisRequestInformations,
-                    {},
-                    undefined,
-                    [],
-                );
-                const entity2 = new OsirisRequestEntity(
-                    { siret: SIRET.value, rna: RNA.value, name: "NAME" },
-                    {
-                        osirisId: "OSIRISID",
-                        compteAssoId: "COMPTEASSOID",
-                        ej: "",
-                        amountAwarded: 0,
-                        dateCommission: new Date(),
-                        exercise: 2023,
-                    } as IOsirisRequestInformations,
-                    {},
-                    undefined,
-                    [],
-                );
-                await osirisService.addRequest(entity);
-                const result = await osirisService.addRequest(entity2);
-                expect(result.state).not.toBe("updated");
-            });
         });
 
         describe("findBySiret", () => {
@@ -100,10 +66,10 @@ describe("OsirisService", () => {
                 { siret: SIRET.value, rna: RNA.value, name: "NAME" },
                 {
                     osirisId: "FAKE_ID_2",
+                    compteAssoId: "COMPTEASSOID",
                     ej: "",
                     amountAwarded: 0,
                     dateCommission: new Date(),
-                    exercise: 2022,
                 } as IOsirisRequestInformations,
                 {},
                 undefined,
@@ -122,9 +88,45 @@ describe("OsirisService", () => {
                 await osirisService.addAction(
                     new OsirisActionEntity(
                         {
-                            osirisActionId: "FAKE_ID_2-001",
-                            exercise: 2022,
-                        } as unknown as IOsirisActionsInformations,
+                            osirisActionId: "FAKE_ACTION_ID",
+                            compteAssoId: "COMPTEASSOID",
+                        } as IOsirisActionsInformations,
+                        {},
+                        undefined,
+                    ),
+                );
+                const osirisActions = (await osirisService.findBySiret(SIRET))[0].actions as OsirisActionEntity[];
+                const actual = osirisActions[0];
+                const expected = {
+                    indexedInformations: {
+                        osirisActionId: "FAKE_ACTION_ID",
+                        compteAssoId: "COMPTEASSOID",
+                    },
+                    data: {},
+                    evaluation: null,
+                };
+                expect(actual).toMatchObject(expected);
+            });
+
+            it("should return action with evaluation", async () => {
+                await osirisService.addAction(
+                    new OsirisActionEntity(
+                        {
+                            osirisActionId: "FAKE_ACTION_ID",
+                            compteAssoId: "COMPTEASSOID",
+                        } as IOsirisActionsInformations,
+                        {},
+                        undefined,
+                    ),
+                );
+                await osirisService.addEvaluation(
+                    new OsirisEvaluationEntity(
+                        {
+                            osirisActionId: "FAKE_ACTION_ID",
+                            siret: SIRET.value,
+                            evaluation_resultat: "",
+                            cout_total_realise: 2000,
+                        } as IOsirisEvaluationsInformations,
                         {},
                     ),
                 );
@@ -132,9 +134,14 @@ describe("OsirisService", () => {
                 const actual = osirisActions[0];
                 const expected = {
                     indexedInformations: {
-                        osirisActionId: "FAKE_ID_2-001",
+                        osirisActionId: "FAKE_ACTION_ID",
+                        compteAssoId: "COMPTEASSOID",
                     },
                     data: {},
+                    evaluation: {
+                        indexedInformations: {},
+                        data: {},
+                    },
                 };
                 expect(actual).toMatchObject(expected);
             });
@@ -149,7 +156,6 @@ describe("OsirisService", () => {
                     ej: "",
                     amountAwarded: 0,
                     dateCommission: new Date(),
-                    exercise: 2022,
                 } as IOsirisRequestInformations,
                 {},
                 undefined,
@@ -171,21 +177,21 @@ describe("OsirisService", () => {
             it("should return the added osiris action", async () => {
                 const entity = new OsirisActionEntity(
                     {
-                        osirisActionId: "OSIRISID-001",
-                        exercise: 2022,
+                        osirisActionId: "OSIRISID",
+                        compteAssoId: "COMPTEASSOID",
                     } as IOsirisActionsInformations,
                     {},
                     undefined,
                 );
-                const expected = (await osirisService.addAction(entity)).result;
-                expect(entity).toMatchObject(expected);
+                const expected = await osirisService.addAction(entity);
+                expect(entity).toMatchObject(expected.result);
             });
 
             it("should return the updated osiris action", async () => {
                 const entity = new OsirisActionEntity(
                     {
-                        osirisActionId: "OSIRISID-001",
-                        exercise: 2022,
+                        osirisActionId: "OSIRISID",
+                        compteAssoId: "COMPTEASSOID",
                     } as IOsirisActionsInformations,
                     {},
                     undefined,
@@ -195,27 +201,110 @@ describe("OsirisService", () => {
                 expect(entity).toMatchObject({ ...expected.result, _id: undefined });
                 expect(expected.state).toBe("updated");
             });
+        });
+    });
 
-            it("should add new if same id different exercise", async () => {
-                const entity1 = new OsirisActionEntity(
+    describe("evaluation part", () => {
+        describe("validEvaluation()", () => {
+            it("should return a message if action ID is invalid", () => {
+                const evaluation = new OsirisEvaluationEntity(
                     {
-                        osirisActionId: "OSIRISID-001",
-                        exercise: 2022,
-                    } as IOsirisActionsInformations,
+                        osirisActionId: "W&-",
+                        siret: "WRONG_SIRET",
+                        evaluation_resultat: "",
+                        extractYear: 2022,
+                    },
                     {},
-                    undefined,
                 );
-                const entity2 = new OsirisActionEntity(
+                const expected = {
+                    message: `INVALID OSIRIS ACTION ID FOR ${evaluation.indexedInformations.osirisActionId}`,
+                    data: evaluation.data,
+                };
+                const actual = osirisService.validEvaluation(evaluation);
+                expect(actual).toMatchObject(expected);
+            });
+
+            it("should return a message if siret is invalid", () => {
+                const evaluation = new OsirisEvaluationEntity(
                     {
-                        osirisActionId: "OSIRISID-001",
-                        exercise: 2023,
-                    } as IOsirisActionsInformations,
+                        osirisActionId: "FAKE_OSIRIS_ID",
+                        siret: "WRONG_SIRET",
+                        evaluation_resultat: "",
+                        extractYear: 2022,
+                    },
                     {},
-                    undefined,
                 );
-                await osirisService.addAction(entity1);
-                const expected = await osirisService.addAction(entity2);
-                expect(expected.state).not.toBe("updated");
+                const expected = {
+                    message: `INVALID SIRET FOR ${evaluation.indexedInformations.siret}`,
+                    data: evaluation.data,
+                };
+                const actual = osirisService.validEvaluation(evaluation);
+                expect(actual).toMatchObject(expected);
+            });
+
+            it("should return a message if evaluation result is empty", () => {
+                const evaluation = new OsirisEvaluationEntity(
+                    {
+                        osirisActionId: "FAKE_OSIRIS_ID",
+                        siret: "01234567891112",
+                        evaluation_resultat: "",
+                        extractYear: 2022,
+                    },
+                    {},
+                );
+                const expected = {
+                    message: `INVALID EVALUATION RESULTAT FOR ${evaluation.indexedInformations.evaluation_resultat}`,
+                    data: evaluation.data,
+                };
+                const actual = osirisService.validEvaluation(evaluation);
+                expect(actual).toMatchObject(expected);
+            });
+
+            it("should return true if valid", () => {
+                const evaluation = new OsirisEvaluationEntity(
+                    {
+                        osirisActionId: "FAKE_OSIRIS_ID",
+                        siret: "01234567891112",
+                        evaluation_resultat: "FAKE_RESULT",
+                        extractYear: 2022,
+                    },
+                    {},
+                );
+                const actual = osirisService.validEvaluation(evaluation);
+                expect(actual).toBeTruthy();
+            });
+        });
+
+        describe("addEvaluation", () => {
+            it("should return the added osiris evaluation", async () => {
+                const expected = new OsirisEvaluationEntity(
+                    {
+                        osirisActionId: "FAKE_OSIRISID",
+                        siret: "01234567891112",
+                        evaluation_resultat: "",
+                        cout_total_realise: 2000,
+                    } as IOsirisEvaluationsInformations,
+                    {},
+                );
+                const actual = await osirisService.addEvaluation(expected);
+                expect(actual.result).toMatchObject(expected);
+                expect(actual.state).toBe("created");
+            });
+
+            it("should return the updated osiris action", async () => {
+                const expected = new OsirisEvaluationEntity(
+                    {
+                        osirisActionId: "FAKE_OSIRISID",
+                        siret: "01234567891112",
+                        evaluation_resultat: "",
+                        cout_total_realise: 2000,
+                    } as IOsirisEvaluationsInformations,
+                    {},
+                );
+                await osirisService.addEvaluation(expected);
+                const actual = await osirisService.addEvaluation(expected);
+                expect(actual.result).toMatchObject(expected);
+                expect(actual.state).toBe("updated");
             });
         });
     });
@@ -233,7 +322,7 @@ describe("OsirisService", () => {
                 ej: "",
                 amountAwarded: 0,
                 dateCommission: new Date(),
-                exercise: 2022,
+                extractYear: 2022,
             } as IOsirisRequestInformations,
             {},
             undefined,
@@ -272,7 +361,7 @@ describe("OsirisService", () => {
                 ej: "",
                 amountAwarded: 0,
                 dateCommission: new Date(),
-                exercise: 2022,
+                extractYear: 2022,
             } as IOsirisRequestInformations,
             {},
             undefined,

@@ -78,7 +78,7 @@ describe("OsirisRequestAdapter", () => {
             const INPUT = {
                 providerInformations: {
                     dispositif: "DISPOSITIF",
-                    exercise: 2023,
+                    extractYear: 2023,
                     montantsAccorde: 42,
                     montantsDemande: 43,
                     service_instructeur: "INSTRUCTEUR",

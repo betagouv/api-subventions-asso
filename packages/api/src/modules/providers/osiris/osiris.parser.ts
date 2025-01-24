@@ -5,6 +5,8 @@ import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 import IOsirisRequestInformations from "./@types/IOsirisRequestInformations";
 import IOsirisActionsInformations from "./@types/IOsirisActionsInformations";
+import OsirisEvaluationEntity from "./entities/OsirisEvaluationEntity";
+import IOsirisEvaluationsInformations from "./@types/IOsirisEvaluationsInformations";
 
 export default class OsirisParser {
     public static parseRequests(content: Buffer, year: number): OsirisRequestEntity[] {
@@ -13,14 +15,15 @@ export default class OsirisParser {
         const rows = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
 
         return rows.map(row => {
-            const data: DefaultObject<DefaultObject<string | number>> = OsirisParser.rowToRowWithHeaders(
+            const data: DefaultObject<DefaultObject<string>> = OsirisParser.rowToRowWithHeaders(
+                // TODO <string|number>
                 headers,
                 row,
                 OsirisRequestEntity.defaultMainCategory,
-            ) as DefaultObject<DefaultObject<string | number>>;
-            data.Dossier["Exercice Budgetaire"] = year;
+            ) as DefaultObject<DefaultObject<string>>; // TODO remove this, it should be <string|number>
 
-            const indexedInformations = GenericParser.indexDataByPathObject<string | number>(
+            const indexedInformations = GenericParser.indexDataByPathObject(
+                // TODO <string|number>
                 OsirisRequestEntity.indexedProviderInformationsPath,
                 data,
             ) as IOsirisRequestInformations;
@@ -29,7 +32,7 @@ export default class OsirisParser {
                 data,
             ) as unknown as ILegalInformations;
 
-            indexedInformations.exercise = year;
+            indexedInformations.extractYear = year;
 
             return new OsirisRequestEntity(legalInformations, indexedInformations, data);
         });
@@ -43,21 +46,44 @@ export default class OsirisParser {
         const rows = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
 
         return rows.map((row: unknown[]) => {
-            const data: DefaultObject<DefaultObject<string | number>> = OsirisParser.rowToRowWithHeaders(
+            const data: DefaultObject<DefaultObject<string>> = OsirisParser.rowToRowWithHeaders(
+                // TODO <string|number>
                 headers,
                 row,
                 OsirisActionEntity.defaultMainCategory,
-            ) as DefaultObject<DefaultObject<string | number>>;
-            const dossier = data["Dossier/action"] || data["Dossier"];
-            dossier["Exercice Budgetaire"] = year;
+            ) as DefaultObject<DefaultObject<string>>; // TODO remove this, it should be <string|number>
 
             const indexedInformations = GenericParser.indexDataByPathObject(
+                // TODO <string|number>
                 OsirisActionEntity.indexedInformationsPath,
                 data,
             ) as unknown as IOsirisActionsInformations;
-            indexedInformations.exercise = year;
+            indexedInformations.extractYear = year;
 
             return new OsirisActionEntity(indexedInformations, data);
+        });
+    }
+
+    public static parseEvaluations(content: Buffer, year: number) {
+        const data = GenericParser.xlsParse(content)[0];
+
+        const headers = data.slice(0, 2) as string[][];
+
+        const rows = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
+
+        return rows.map((row: unknown[]) => {
+            const data: DefaultObject<DefaultObject<string>> = OsirisParser.rowToRowWithHeaders(
+                headers,
+                row,
+                OsirisEvaluationEntity.defaultMainCategory,
+            ) as DefaultObject<DefaultObject<string>>; // TODO remove this, it should be <string|number>
+            const indexedInformations = GenericParser.indexDataByPathObject(
+                OsirisEvaluationEntity.indexedInformationsPath,
+                data,
+            ) as unknown as IOsirisEvaluationsInformations;
+            indexedInformations.extractYear = year;
+
+            return new OsirisEvaluationEntity(indexedInformations, data);
         });
     }
 

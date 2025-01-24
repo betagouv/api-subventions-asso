@@ -20,7 +20,7 @@ import fonjepTiersPort from "../dataProviders/db/providers/fonjep/fonjep.tiers.p
 import fonjepTypePostePort from "../dataProviders/db/providers/fonjep/fonjep.typePoste.port";
 import fonjepDispositifPort from "../dataProviders/db/providers/fonjep/fonjep.dispositif.port";
 import paymentFlatPort from "../dataProviders/db/paymentFlat/paymentFlat.port";
-import { osirisActionPort, osirisRequestPort } from "../dataProviders/db/providers/osiris";
+import { osirisActionPort, osirisEvaluationPort, osirisRequestPort } from "../dataProviders/db/providers/osiris";
 import miscScdlGrantPort from "../dataProviders/db/providers/scdl/miscScdlGrant.port";
 import miscScdlProducerPort from "../dataProviders/db/providers/scdl/miscScdlProducer.port";
 import sireneStockUniteLegalePort from "../dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.port";
@@ -31,6 +31,7 @@ export const portsWithIndexes = [
     userResetPort,
     osirisRequestPort,
     osirisActionPort,
+    osirisEvaluationPort,
     fonjepPaymentPort,
     fonjepSubventionPort,
     fonjepVersementsPort,
