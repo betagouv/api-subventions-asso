@@ -40,4 +40,26 @@ describe("PaymentFlat Port", () => {
             expect(mockDeleteMany).toHaveBeenCalledWith({});
         });
     });
+
+    describe("cursorFindChorusOnly()", () => {
+        let mockCursorFind: jest.SpyInstance;
+        beforeAll(() => {
+            mockCursorFind = jest.spyOn(paymentFlatPort, "cursorFind").mockImplementation(jest.fn());
+        });
+
+        afterAll(() => {
+            mockCursorFind.mockRestore();
+        });
+
+        it("should call cursorFind with provider filter", () => {
+            paymentFlatPort.cursorFindChorusOnly();
+            expect(mockCursorFind).toHaveBeenCalledWith({ provider: "chorus" });
+        });
+
+        it("should call cursorFind with provider and exerciceBudgetaire filter", () => {
+            const exerciceBudgetaire = 2021;
+            paymentFlatPort.cursorFindChorusOnly(exerciceBudgetaire);
+            expect(mockCursorFind).toHaveBeenCalledWith({ provider: "chorus", exerciceBudgetaire: exerciceBudgetaire });
+        });
+    });
 });
