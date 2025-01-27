@@ -247,7 +247,7 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
                         break;
                     case "registrationSrc":
                         acc[ATTRIBUTES_MAPPING[key]] = (data[key] || [])
-                            .map(job => REGISTRATION_SRC_LABEL_MAPPING[job])
+                            .map(registrationSrc => REGISTRATION_SRC_LABEL_MAPPING[registrationSrc])
                             .join(",");
                         break;
                     default:
