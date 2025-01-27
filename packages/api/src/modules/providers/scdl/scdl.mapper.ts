@@ -14,7 +14,7 @@ const OFFICIAL_MAPPER = {
     associationRna: "rnaBeneficiaire",
     object: "object",
     amount: "montant",
-    paymentNature: "nature",
+    paymentNature: "Nature",
     paymentConditions: "conditionsVersement",
     paymentStartDate: "datesPeriodeVersement",
     paymentEndDate: "datesPeriodeVersement",
@@ -122,6 +122,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             "Référence de la décision",
             "reference Decision",
             "Référence délibération",
+            "ReferenceDecision",
         ],
     ],
     associationName: [
@@ -134,6 +135,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             "nom Beneficiaire",
             "nomBénéficiaire",
             "Nom attributaire",
+            "NomBeneficiaire",
         ],
     ],
     associationSiret: {
@@ -187,6 +189,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             "Conditions de versement*",
             "Conditions de versement",
             "conditions Versement",
+            "ConditionsVersement",
         ],
     ],
     paymentStartDate: {
@@ -223,6 +226,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             "Numéro de référencement au répertoire des entreprises",
             "Numéro unique de référencement au répertoire des aides aux entreprises (RAE)",
             "ID RAE",
+            "IdRAE",
         ],
     ],
     UeNotification: {
@@ -233,6 +237,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Aides ne relevant pas d'une aide d'état",
                 "Aide d'Etat notifiée à la Commission européenne, conformément aux dispositions du règlement (UE) n° 1407/2013 de la Commission du 18 décembre 2013",
                 "Notification UE",
+                "NotificationUE",
             ],
         ],
         adapter: value => {
@@ -250,6 +255,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "% du mt de la subvention attribuée au bénéficiaire",
                 "Pourcentage du montant de la subvention attribuée au bénéficiaire",
                 "Pourcentage subvention",
+                "PourcentageSubvention",
             ],
         ],
         adapter: value => (value ? parseFloat(value) : value),
