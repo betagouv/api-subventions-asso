@@ -53,6 +53,7 @@ const PERIODE_VERSEMENT_PATHS = [
     "datesPériodeVersement",
     "Date de versement",
     "Période de versement",
+    "datesperiodeVersement",
 ];
 
 const dateAdapter = (date: BeforeAdaptation | undefined | null): Date | undefined => {
@@ -88,6 +89,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "id  Attribuant",
                 "IdAttribuant",
                 "SIRET autorité administrative",
+                "iAttribuant"
             ],
         ],
         adapter: v => removeTrailingDotZero(v?.toString()),
@@ -150,6 +152,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "IdBeneficiaire",
                 "Id du bénéficiaire",
                 "N° SIRET attributaire",
+                "iBeneficiaire",
             ],
         ],
         adapter: v => removeTrailingDotZero(v?.toString()),
@@ -189,6 +192,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             "Conditions de versement*",
             "Conditions de versement",
             "conditions Versement",
+            "conditionVersement",
             "ConditionsVersement",
         ],
     ],
