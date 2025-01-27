@@ -2,6 +2,8 @@ import { PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
 import { PAYMENT_FLAT_DBO } from "./__fixtures__/paymentFlatDbo.fixture";
 import paymentFlatPort from "./paymentFlat.port";
 import { ObjectId } from "mongodb";
+import PaymentFlatAdapter from "../../../modules/paymentFlat/paymentFlatAdapter";
+import PaymentsFlatAdapter from "./PaymentFlat.adapter";
 const mockDeleteMany = jest.fn();
 const mockInsertOne = jest.fn();
 const mockUpdateOne = jest.fn();
@@ -43,8 +45,10 @@ describe("PaymentFlat Port", () => {
 
     describe("cursorFindChorusOnly()", () => {
         let mockCursorFind: jest.SpyInstance;
+        let mockDboToEntity: jest.SpyInstance;
         beforeAll(() => {
             mockCursorFind = jest.spyOn(paymentFlatPort, "cursorFind").mockImplementation(jest.fn());
+            mockDboToEntity = jest.spyOn(PaymentsFlatAdapter, "dboToEntity").mockImplementation(jest.fn());
         });
 
         afterAll(() => {
@@ -61,5 +65,6 @@ describe("PaymentFlat Port", () => {
             paymentFlatPort.cursorFindChorusOnly(exerciceBudgetaire);
             expect(mockCursorFind).toHaveBeenCalledWith({ provider: "chorus", exerciceBudgetaire: exerciceBudgetaire });
         });
+
     });
 });

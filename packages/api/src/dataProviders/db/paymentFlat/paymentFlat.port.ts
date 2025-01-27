@@ -42,7 +42,7 @@ export class PaymentFlatPort extends MongoPort<PaymentFlatDbo> {
     }
 
     public cursorFind(query: DefaultObject<unknown> = {}, projection: DefaultObject<unknown> = {}) {
-        return this.collection.find(query, projection);
+        return this.collection.find(query, projection).map(PaymentFlatAdapter.dboToEntity);
     }
 
     public cursorFindChorusOnly(exerciceBudgetaire?: number) {

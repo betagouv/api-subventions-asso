@@ -57,15 +57,15 @@ export default class PaymentFlatEntity {
         PAYL: "Pays de la Loire",
     };
 
-    public static getRegionAttachementComptable(attachementComptable: string | null): string | null {
-        if (!attachementComptable) return null;
+    public static getRegionAttachementComptable(attachementComptable: string | "N/A"): string | "N/A" {
+        if (!attachementComptable) return "N/A";
 
         const region = PaymentFlatEntity.regionMapping[attachementComptable];
         if (region === undefined) {
             const errorMessage = `Unknown region code: ${attachementComptable}`;
             Sentry.captureException(new Error(errorMessage));
             console.error(errorMessage);
-            return null;
+            return "region name not found";
         }
         return region;
     }
