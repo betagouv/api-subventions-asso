@@ -57,14 +57,13 @@ describe("PaymentFlat Port", () => {
 
         it("should call cursorFind with provider filter", () => {
             paymentFlatPort.cursorFindChorusOnly();
-            expect(mockCursorFind).toHaveBeenCalledWith({ provider: "chorus" });
+            expect(mockCursorFind).toHaveBeenCalledWith({ provider: "Chorus" });
         });
 
         it("should call cursorFind with provider and exerciceBudgetaire filter", () => {
             const exerciceBudgetaire = 2021;
             paymentFlatPort.cursorFindChorusOnly(exerciceBudgetaire);
-            expect(mockCursorFind).toHaveBeenCalledWith({ provider: "chorus", exerciceBudgetaire: exerciceBudgetaire });
+            expect(mockCursorFind).toHaveBeenCalledWith({ provider: "Chorus", exerciceBudgetaire: exerciceBudgetaire });
         });
-
     });
 });

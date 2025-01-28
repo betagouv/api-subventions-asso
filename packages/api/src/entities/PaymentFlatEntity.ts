@@ -58,7 +58,7 @@ export default class PaymentFlatEntity {
     };
 
     public static getRegionAttachementComptable(attachementComptable: string | "N/A"): string | "N/A" {
-        if (!attachementComptable) return "N/A";
+        if (attachementComptable == "N/A") return "N/A";
 
         const region = PaymentFlatEntity.regionMapping[attachementComptable];
         if (region === undefined) {

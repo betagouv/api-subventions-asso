@@ -47,8 +47,8 @@ export class PaymentFlatPort extends MongoPort<PaymentFlatDbo> {
 
     public cursorFindChorusOnly(exerciceBudgetaire?: number) {
         if (!exerciceBudgetaire) {
-            return this.cursorFind({ provider: "chorus" });
-        } else return this.cursorFind({ provider: "chorus", exerciceBudgetaire: exerciceBudgetaire });
+            return this.cursorFind({ provider: "Chorus" });
+        } else return this.cursorFind({ provider: "Chorus", exerciceBudgetaire: exerciceBudgetaire });
     }
 
     public async deleteAll() {

@@ -1,44 +1,52 @@
-import { PAYMENT_FLAT_ENTITY_WITH_NULLS, PAYMENT_FLAT_ENTITY } from "../../../dataProviders/db/paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+import {
+    PAYMENT_FLAT_ENTITY_WITH_NULLS,
+    PAYMENT_FLAT_ENTITY,
+} from "../../../dataProviders/db/paymentFlat/__fixtures__/paymentFlatEntity.fixture";
 import paymentFlatService from "../../paymentFlat/paymentFlat.service";
 import amountsVsProgrammeRegionService from "./amountsVsProgrammeRegion.service";
 import AmountsVsProgrammeRegionAdapter from "./amountsVsProgrammeRegion.adapter";
-import { AMOUNTS_VS_PROGRAMME_REGION_ENTITIES, NOT_AGGREGATED_ENTITIES } from "./__fixtures__/amountsVSProgrammeRegion.fixture";
+import {
+    AMOUNTS_VS_PROGRAMME_REGION_ENTITIES,
+    NOT_AGGREGATED_ENTITIES,
+} from "./__fixtures__/amountsVSProgrammeRegion.fixture";
 import amountsVsProgrammeRegionPort from "../../../dataProviders/db/dataViz/amountVSProgrammeRegion/amountsVsProgrammeRegion.port";
 
 describe("amountsVSProgrammeRegionService", () => {
-
     describe("toAmountsVsProgrammeRegionEntities", () => {
-        let mockAdapter : jest.SpyInstance;
-        let mockCursorFindChorusOnly : jest.SpyInstance;
+        let mockAdapter: jest.SpyInstance;
+        let mockCursorFindChorusOnly: jest.SpyInstance;
 
         let mockCursor;
         let mockDocuments;
         let nDocuments;
 
-        beforeEach(() =>  {
-            mockDocuments = [PAYMENT_FLAT_ENTITY, {...PAYMENT_FLAT_ENTITY, amount: 7000}, PAYMENT_FLAT_ENTITY_WITH_NULLS];
+        beforeEach(() => {
+            mockDocuments = [
+                PAYMENT_FLAT_ENTITY,
+                { ...PAYMENT_FLAT_ENTITY, amount: 7000 },
+                PAYMENT_FLAT_ENTITY_WITH_NULLS,
+            ];
             nDocuments = mockDocuments.length;
 
             mockCursor = {
-                next : jest.fn().mockImplementation( () => {
+                next: jest.fn().mockImplementation(() => {
                     return mockDocuments.shift();
                 }),
-                hasNext : jest.fn().mockImplementation(() => {
-                    if(mockDocuments.length) return true;
+                hasNext: jest.fn().mockImplementation(() => {
+                    if (mockDocuments.length) return true;
                     return false;
-                })
+                }),
             };
 
             mockCursorFindChorusOnly = jest
-            .spyOn(paymentFlatService, "cursorFindChorusOnly")
-            .mockReturnValue(mockCursor);
+                .spyOn(paymentFlatService, "cursorFindChorusOnly")
+                .mockReturnValue(mockCursor);
 
             mockAdapter = jest.spyOn(AmountsVsProgrammeRegionAdapter, "toNotAggregatedEntity");
-            
+
             mockAdapter.mockReturnValueOnce(NOT_AGGREGATED_ENTITIES[0]);
             mockAdapter.mockReturnValueOnce(NOT_AGGREGATED_ENTITIES[2]);
             mockAdapter.mockReturnValue(undefined);
-            
         });
 
         afterEach(() => {
@@ -65,7 +73,6 @@ describe("amountsVSProgrammeRegionService", () => {
         });
 
         it("should call cursor.next nDocuments times", async () => {
-
             await amountsVsProgrammeRegionService.toAmountsVsProgrammeRegionEntities();
 
             expect(mockCursor.next).toHaveBeenCalledTimes(nDocuments);
@@ -83,21 +90,18 @@ describe("amountsVSProgrammeRegionService", () => {
 
             expect(actual).toEqual(expected);
         });
-
     });
 
     describe("init", () => {
-        let mockToAmountsVsProgrammeRegionEntities : jest.SpyInstance;
-        let mockInsertMany : jest.SpyInstance;
+        let mockToAmountsVsProgrammeRegionEntities: jest.SpyInstance;
+        let mockInsertMany: jest.SpyInstance;
 
         beforeEach(() => {
             mockToAmountsVsProgrammeRegionEntities = jest
-            .spyOn(amountsVsProgrammeRegionService, "toAmountsVsProgrammeRegionEntities")
-            .mockResolvedValue(AMOUNTS_VS_PROGRAMME_REGION_ENTITIES);
+                .spyOn(amountsVsProgrammeRegionService, "toAmountsVsProgrammeRegionEntities")
+                .mockResolvedValue(AMOUNTS_VS_PROGRAMME_REGION_ENTITIES);
 
-            mockInsertMany = jest
-            .spyOn(amountsVsProgrammeRegionPort, "insertMany")
-            .mockImplementation(jest.fn());
+            mockInsertMany = jest.spyOn(amountsVsProgrammeRegionPort, "insertMany").mockImplementation(jest.fn());
         });
 
         afterEach(() => {
@@ -115,21 +119,18 @@ describe("amountsVSProgrammeRegionService", () => {
 
             expect(mockInsertMany).toHaveBeenCalledWith(AMOUNTS_VS_PROGRAMME_REGION_ENTITIES);
         });
-
     });
 
-    describe("updatePaymentsFlatCollection", () => {
-        let mockToAmountsVsProgrammeRegionEntities : jest.SpyInstance;
-        let mockUpsertMany : jest.SpyInstance;
+    describe("updateCollection", () => {
+        let mockToAmountsVsProgrammeRegionEntities: jest.SpyInstance;
+        let mockUpsertMany: jest.SpyInstance;
 
         beforeEach(() => {
             mockToAmountsVsProgrammeRegionEntities = jest
-            .spyOn(amountsVsProgrammeRegionService, "toAmountsVsProgrammeRegionEntities")
-            .mockResolvedValue(AMOUNTS_VS_PROGRAMME_REGION_ENTITIES);
+                .spyOn(amountsVsProgrammeRegionService, "toAmountsVsProgrammeRegionEntities")
+                .mockResolvedValue(AMOUNTS_VS_PROGRAMME_REGION_ENTITIES);
 
-            mockUpsertMany = jest
-            .spyOn(amountsVsProgrammeRegionPort, "upsertMany")
-            .mockImplementation(jest.fn());
+            mockUpsertMany = jest.spyOn(amountsVsProgrammeRegionPort, "upsertMany").mockImplementation(jest.fn());
         });
 
         afterEach(() => {
@@ -137,25 +138,42 @@ describe("amountsVSProgrammeRegionService", () => {
         });
 
         it("should call toAmountsVsProgrammeRegionEntities without ExcerciceBudgetaire", async () => {
-            await amountsVsProgrammeRegionService.updatePaymentsFlatCollection();
+            await amountsVsProgrammeRegionService.updateCollection();
 
             expect(mockToAmountsVsProgrammeRegionEntities).toHaveBeenCalledWith(undefined);
         });
 
         it("should call toAmountsVsProgrammeRegionEntities with ExcerciceBudgetaire", async () => {
             const exerciceBudgetaire = 2020;
-            await amountsVsProgrammeRegionService.updatePaymentsFlatCollection(exerciceBudgetaire);
+            await amountsVsProgrammeRegionService.updateCollection(exerciceBudgetaire);
 
             expect(mockToAmountsVsProgrammeRegionEntities).toHaveBeenCalledWith(exerciceBudgetaire);
         });
 
         it("should call upsertMany with the right entities", async () => {
-            await amountsVsProgrammeRegionService.updatePaymentsFlatCollection();
+            await amountsVsProgrammeRegionService.updateCollection();
 
             expect(mockUpsertMany).toHaveBeenCalledWith(AMOUNTS_VS_PROGRAMME_REGION_ENTITIES);
         });
-
     });
 
+    describe("isCollectionInitialized", () => {
+        let mockHasBeenInitialized: jest.SpyInstance;
 
-})
+        beforeEach(() => {
+            mockHasBeenInitialized = jest
+                .spyOn(amountsVsProgrammeRegionPort, "hasBeenInitialized")
+                .mockReturnValue(Promise.resolve(true));
+        });
+
+        afterEach(() => {
+            jest.resetAllMocks();
+        });
+
+        it("should call hasBeenInitialized", async () => {
+            await amountsVsProgrammeRegionService.isCollectionInitialized();
+
+            expect(mockHasBeenInitialized).toHaveBeenCalledTimes(1);
+        });
+    });
+});

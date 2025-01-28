@@ -1,34 +1,28 @@
 import { FindCursor } from "mongodb";
 import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
 import paymentFlatService from "../../paymentFlat/paymentFlat.service";
+import amountsVsProgrammeRegionPort from "../../../dataProviders/db/dataViz/amountVSProgrammeRegion/amountsVsProgrammeRegion.port";
 import AmountsVsProgrammeRegionAdapter from "./amountsVsProgrammeRegion.adapter";
 import amountsVsProgrammeRegionEntity from "./entitiyAndDbo/amountsVsProgrammeRegion.entity";
-import amountsVsProgrammeRegionPort from "../../../dataProviders/db/dataViz/amountVSProgrammeRegion/amountsVsProgrammeRegion.port";
-
 
 export class AmountsVsProgrammeRegionService {
+    public async toAmountsVsProgrammeRegionEntities(
+        exerciceBudgetaire?: number,
+    ): Promise<amountsVsProgrammeRegionEntity[]> {
+        const paymentFlatCursor: FindCursor<PaymentFlatEntity> =
+            paymentFlatService.cursorFindChorusOnly(exerciceBudgetaire);
 
-    public async toAmountsVsProgrammeRegionEntities(exerciceBudgetaire?: number) : Promise<amountsVsProgrammeRegionEntity[]> {
-        let paymentFlatCursor : FindCursor<PaymentFlatEntity>;
-
-        paymentFlatCursor = paymentFlatService.cursorFindChorusOnly(exerciceBudgetaire);
-        
-        const entities : Record<string, amountsVsProgrammeRegionEntity> = {};
+        const entities: Record<string, amountsVsProgrammeRegionEntity> = {};
         while (await paymentFlatCursor.hasNext()) {
-        
             const document = (await paymentFlatCursor.next()) as PaymentFlatEntity;
             const key = `${document.regionAttachementComptable}-${document.programName}-${document.programNumber}`;
-        
             if (entities[key]) {
-            
                 entities[key].amount += parseFloat(document.amount.toFixed(2));
-            }
-            else {      
-                entities[key] = {...AmountsVsProgrammeRegionAdapter.toNotAggregatedEntity(document)};
-               
+            } else {
+                entities[key] = { ...AmountsVsProgrammeRegionAdapter.toNotAggregatedEntity(document) };
             }
         }
-        return Object.values(entities)
+        return Object.values(entities);
     }
 
     public async init() {
@@ -36,11 +30,14 @@ export class AmountsVsProgrammeRegionService {
         await amountsVsProgrammeRegionPort.insertMany(entities);
     }
 
-    public async updatePaymentsFlatCollection(exerciceBudgetaire?: number) {
+    public async updateCollection(exerciceBudgetaire?: number) {
         const entities = await this.toAmountsVsProgrammeRegionEntities(exerciceBudgetaire);
         await amountsVsProgrammeRegionPort.upsertMany(entities);
     }
 
+    public isCollectionInitialized() {
+        return amountsVsProgrammeRegionPort.hasBeenInitialized();
+    }
 }
 
 const amountsVsProgrammeRegionService = new AmountsVsProgrammeRegionService();

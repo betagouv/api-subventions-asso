@@ -1,19 +1,36 @@
+import { ObjectId } from "mongodb";
 import amountsVsProgrammeRegionPort from "../../../src/dataProviders/db/dataViz/amountVSProgrammeRegion/amountsVsProgrammeRegion.port";
 import { PAYMENT_FLAT_DBO } from "../../../src/dataProviders/db/paymentFlat/__fixtures__/paymentFlatDbo.fixture";
-import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFlat.port"
-import { PAYMENT_FLAT_ENTITY } from "../../../src/modules/paymentFlat/__fixtures__/paymentFlatEntity.fixture";
-
+import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFlat.port";
+import AmountsVsProgrammeRegionCli from "../../../src/interfaces/cli/AmountsVsProgrammeRegion.cli";
 
 const MOCK_DOCUMENTS = [
-    PAYMENT_FLAT_DBO,
-    { ...PAYMENT_FLAT_DBO, montant : 7000 },
-    { ...PAYMENT_FLAT_DBO, montant : 100_000, numeroProgramme : "1234" },
-    { ...PAYMENT_FLAT_DBO, montant: 34_000, attachementComptable : "HNOR" },
+    { ...PAYMENT_FLAT_DBO, provider: "Chorus", uniqueId: "1" },
+    { ...PAYMENT_FLAT_DBO, montant: 7000, provider: "Chorus", uniqueId: "2" },
+    { ...PAYMENT_FLAT_DBO, montant: 100_000, numeroProgramme: "1234", provider: "Chorus", uniqueId: "3" },
+    {
+        ...PAYMENT_FLAT_DBO,
+        montant: 34_000,
+        attachementComptable: "HNOR",
+        exerciceBudgetaire: 2021,
+        provider: "Chorus",
+        uniqueId: "4",
+    },
 ];
 
 const insertData = async () => {
-    await paymentFlatPort.upsertMany(MOCK_DOCUMENTS);
+    const bulkWriteArray = MOCK_DOCUMENTS.map(dbo => {
+        const { _id, ...DboWithoutId } = dbo;
+        return {
+            updateOne: {
+                filter: { uniqueId: DboWithoutId.uniqueId },
+                update: { $set: DboWithoutId },
+                upsert: true,
+            },
+        };
+    });
 
+    await paymentFlatPort.upsertMany(bulkWriteArray);
 };
 
 describe("AmountsVsProgrammeRegionCli", () => {
@@ -28,5 +45,48 @@ describe("AmountsVsProgrammeRegionCli", () => {
 
     let cli = new AmountsVsProgrammeRegionCli();
 
-    
+    describe("init()", () => {
+        it("should persist amounts vs programme region collection", async () => {
+            await cli.init();
+            //@ts-expect-error protected method
+            const amountsVsProgrammeRegion = (await amountsVsProgrammeRegionPort.collection.find({}).toArray())
+                .map(amountsVsProgrammeRegion => ({
+                    ...amountsVsProgrammeRegion,
+                    _id: expect.any(ObjectId),
+                }))
+                .sort((a, b) => {
+                    if (a.regionAttachementComptable < b.regionAttachementComptable) return -1;
+                    if (a.regionAttachementComptable > b.regionAttachementComptable) return 1;
+                    if (a.programme < b.programme) return -1;
+                    if (a.programme > b.programme) return 1;
+
+                    return a.exerciceBudgetaire - b.exerciceBudgetaire;
+                });
+
+            expect(amountsVsProgrammeRegion).toMatchSnapshot("Snapshot init");
+        });
+    });
+
+    describe("resyncExercice()", () => {
+        it("should persist amounts vs programme region collection for the given exercice", async () => {
+            const exercice = 2023;
+            await cli.resyncExercice(exercice);
+            //@ts-expect-error protected method
+            const amountsVsProgrammeRegion = (await amountsVsProgrammeRegionPort.collection.find({}).toArray())
+                .map(amountsVsProgrammeRegion => ({
+                    ...amountsVsProgrammeRegion,
+                    _id: expect.any(ObjectId),
+                }))
+                .sort((a, b) => {
+                    if (a.regionAttachementComptable < b.regionAttachementComptable) return -1;
+                    if (a.regionAttachementComptable > b.regionAttachementComptable) return 1;
+                    if (a.programme < b.programme) return -1;
+                    if (a.programme > b.programme) return 1;
+
+                    return a.exerciceBudgetaire - b.exerciceBudgetaire;
+                });
+
+            expect(amountsVsProgrammeRegion).toMatchSnapshot("Snapshot resyncExercice");
+        });
+    });
 });
