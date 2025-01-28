@@ -38,6 +38,11 @@ export class AmountsVsProgrammeRegionService {
     public isCollectionInitialized() {
         return amountsVsProgrammeRegionPort.hasBeenInitialized();
     }
+
+    public async getAmountsVsProgrammeRegion() {
+        const data = await amountsVsProgrammeRegionPort.findAll();
+        return data.map(({ _id, ...rest }) => rest);
+    }
 }
 
 const amountsVsProgrammeRegionService = new AmountsVsProgrammeRegionService();
