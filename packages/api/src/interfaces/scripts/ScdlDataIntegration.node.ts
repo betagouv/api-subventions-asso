@@ -50,17 +50,17 @@ export const processFile = async (fileInfo: ScdlFileProcessingConfig) => {
     }
 
     try {
-        const type = path.extname(name).slice(1).toLowerCase();
+        const fileType = path.extname(name).slice(1).toLowerCase();
         const filePath = path.join(dirPath, name);
-        if (type === FileExtensionEnum.CSV) {
+        if (fileType === FileExtensionEnum.CSV) {
             const delimiter = optionalParams[0];
             const quote = typeof optionalParams[1] === "string" ? optionalParams[1] : undefined;
             await scdlCli.parse(filePath, producerSlug, exportDate, delimiter, quote);
-        } else if (type === FileExtensionEnum.XLS || type === FileExtensionEnum.XLSX) {
+        } else if (fileType === FileExtensionEnum.XLS || fileType === FileExtensionEnum.XLSX) {
             const [pageName = undefined, rowOffset = undefined] = optionalParams;
             await scdlCli.parseXls(filePath, producerSlug, exportDate, pageName, rowOffset);
         } else {
-            console.error(`❌ Unsupported file type : ${name} (type: ${type})`);
+            console.error(`❌ Unsupported file type : ${name} (type: ${fileType})`);
             throw new Error(`Unsupported file type : ${filePath}`);
         }
         successList.push(`parse data of ${producerSlug} for file ${name}`);
