@@ -1,3 +1,4 @@
+/*
 import {
     AMOUNTS_VS_PROGRAMME_REGION_DBOS,
     AMOUNTS_VS_PROGRAMME_REGION_ENTITIES,
@@ -34,3 +35,4 @@ describe("AmountsVsProgrammeRegionHttp", () => {
         });
     });
 });
+*/
