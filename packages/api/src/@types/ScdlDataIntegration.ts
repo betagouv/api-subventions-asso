@@ -4,7 +4,7 @@ export type ScdlParseXlsArgs = [
     producerSlug: string,
     exportDate: string,
     pageName?: string,
-    rowOffsetStr?: number | string,
+    rowOffset?: number | string,
 ];
 
 export interface ScdlFileProcessingConfig {

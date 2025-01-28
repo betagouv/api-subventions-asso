@@ -57,8 +57,8 @@ export const processFile = async (fileInfo: ScdlFileProcessingConfig) => {
             const quote = typeof optionalParams[1] === "string" ? optionalParams[1] : undefined;
             await scdlCli.parse(filePath, producerSlug, exportDate, delimiter, quote);
         } else if (type === FileExtensionEnum.XLS || type === FileExtensionEnum.XLSX) {
-            const [pageName = undefined, rowOffsetStr = undefined] = optionalParams;
-            await scdlCli.parseXls(filePath, producerSlug, exportDate, pageName, rowOffsetStr);
+            const [pageName = undefined, rowOffset = undefined] = optionalParams;
+            await scdlCli.parseXls(filePath, producerSlug, exportDate, pageName, rowOffset);
         } else {
             console.error(`❌ Unsupported file type : ${name} (type: ${type})`);
             throw new Error(`Unsupported file type : ${filePath}`);

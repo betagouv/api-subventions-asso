@@ -59,7 +59,7 @@ describe("scdl-data-integration.node", () => {
             producerSlug: string,
             exportDate: string,
             pageName?: string | undefined,
-            rowOffsetStr?: string | number | undefined,
+            rowOffset?: string | number | undefined,
         ]
     >;
 
