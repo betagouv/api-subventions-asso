@@ -88,9 +88,7 @@ describe("scdl data integration script", () => {
                 throw new Error("Unexpected token i in JSON at position 2");
             });
 
-            expect(() => {
-                loadConfig();
-            }).toThrowError(new Error("Unexpected token i in JSON at position 2"));
+            expect(() => loadConfig()).toThrowError(new Error("Unexpected token i in JSON at position 2"));
         });
 
         it("should throw an error when the JSON file does not exist", () => {
