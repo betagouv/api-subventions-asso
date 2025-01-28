@@ -1,5 +1,6 @@
 import { Controller, Get, Route, Security, Response, Tags } from "tsoa";
-import { GetMontantsVsProgrammeRegionResponseDto } from "dto";
+// il devrait être dans "dto" : comment on fait ça ?
+import { GetMontantsVsProgrammeRegionResponseDto } from "../../../dto/dataViz/GetMontantsVsProgrammeRegionDto";
 import { HttpErrorInterface } from "../../../shared/errors/httpErrors/HttpError";
 
 import amountsVsProgrammeRegionService from "../../../modules/dataViz/amountsVsProgrammeRegion/amountsVsProgrammeRegion.service";
