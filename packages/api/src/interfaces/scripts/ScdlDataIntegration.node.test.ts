@@ -13,6 +13,7 @@ jest.mock("../../configurations/scdlIntegration.conf", () => ({
     SCDL_FILE_PROCESSING_CONFIG_FILENAME: "test-scdl-file-processing.config.json",
 }));
 jest.mock("../cli/Scdl.cli");
+jest.mock("fs");
 
 const validConfigData: ScdlFileProcessingConfigList = {
     files: [
@@ -63,18 +64,6 @@ describe("scdl data integration script", () => {
         ]
     >;
 
-    beforeAll(() => {
-        if (!fs.existsSync(SCDL_FILE_PROCESSING_PATH)) {
-            fs.mkdirSync(SCDL_FILE_PROCESSING_PATH);
-        }
-    });
-
-    afterAll(() => {
-        if (fs.existsSync(SCDL_FILE_PROCESSING_PATH)) {
-            fs.rmSync(SCDL_FILE_PROCESSING_PATH, { recursive: true });
-        }
-    });
-
     beforeEach(() => {
         jest.spyOn(process, "exit").mockImplementation((() => {}) as (code?: any) => never);
         addProducerMock = jest.spyOn(ScdlCli.prototype, "addProducer").mockResolvedValue();
@@ -84,23 +73,20 @@ describe("scdl data integration script", () => {
 
     afterEach(() => {
         jest.restoreAllMocks();
-        if (fs.existsSync(testFilePath)) {
-            fs.unlinkSync(testFilePath);
-        }
     });
 
     describe("loadConfig method", () => {
         it("should load config file successfully", () => {
-            fs.writeFileSync(testFilePath, JSON.stringify(validConfigData));
+            jest.spyOn(fs, "readFileSync").mockReturnValueOnce(JSON.stringify(validConfigData));
             const result = loadConfig();
 
             expect(result).toEqual(validConfigData);
         });
 
         it("should throw an error when the JSON file is invalid", () => {
-            const invalidJsonData = "{ invalidJson: true ";
-
-            fs.writeFileSync(testFilePath, invalidJsonData);
+            jest.spyOn(fs, "readFileSync").mockImplementationOnce(() => {
+                throw new Error("Unexpected token i in JSON at position 2");
+            });
 
             expect(() => {
                 loadConfig();
@@ -108,6 +94,9 @@ describe("scdl data integration script", () => {
         });
 
         it("should throw an error when the JSON file does not exist", () => {
+            jest.spyOn(fs, "readFileSync").mockImplementationOnce(() => {
+                throw new Error("ENOENT: no such file or directory");
+            });
             expect(() => {
                 loadConfig();
             }).toThrowError(
@@ -187,7 +176,7 @@ describe("scdl data integration script", () => {
 
     describe("Test for main script", () => {
         it("should call ScdlCli methods with correct arguments", async () => {
-            fs.writeFileSync(testFilePath, JSON.stringify(validConfigData));
+            jest.spyOn(fs, "readFileSync").mockReturnValueOnce(JSON.stringify(validConfigData));
 
             await expect(main()).resolves.toBeUndefined();
 
@@ -221,9 +210,9 @@ describe("scdl data integration script", () => {
         });
 
         it("should throw Unexpected token error", async () => {
-            const invalidJsonData = "{ invalidJson: true ";
-
-            fs.writeFileSync(testFilePath, invalidJsonData);
+            jest.spyOn(fs, "readFileSync").mockImplementationOnce(() => {
+                throw new Error("Unexpected token i in JSON at position 2");
+            });
             await expect(main()).rejects.toThrow("Unexpected token i in JSON at position 2");
             expect(addProducerMock).not.toHaveBeenCalled();
             expect(parseMock).not.toHaveBeenCalled();
@@ -241,6 +230,7 @@ describe("scdl data integration script", () => {
                     },
                 ],
             };
+            jest.spyOn(fs, "readFileSync").mockReturnValueOnce(JSON.stringify(invalidConfigData));
             fs.writeFileSync(testFilePath, JSON.stringify(invalidConfigData));
 
             await expect(main()).rejects.toThrow(
@@ -277,7 +267,7 @@ describe("scdl data integration script", () => {
                     },
                 ],
             };
-            fs.writeFileSync(testFilePath, JSON.stringify(configData));
+            jest.spyOn(fs, "readFileSync").mockReturnValueOnce(JSON.stringify(configData));
             parseXlsMock = jest
                 .spyOn(ScdlCli.prototype, "parseXls")
                 .mockRejectedValue(new Error("Mocked addProducer error"));
