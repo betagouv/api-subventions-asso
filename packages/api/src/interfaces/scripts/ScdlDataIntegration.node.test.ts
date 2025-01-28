@@ -6,7 +6,7 @@ import {
     SCDL_FILE_PROCESSING_CONFIG_FILENAME,
 } from "../../configurations/scdlIntegration.conf";
 import ScdlCli from "../cli/Scdl.cli";
-import { ScdlParseArgs, ScdlParseXlsArgs } from "../../@types/ScdlDataIntegration";
+import { ScdlFileProcessingConfigList, ScdlParseArgs, ScdlParseXlsArgs } from "../../@types/ScdlDataIntegration";
 
 jest.mock("../../configurations/scdlIntegration.conf", () => ({
     SCDL_FILE_PROCESSING_PATH: path.resolve(__dirname, "test-integration"),
@@ -14,7 +14,7 @@ jest.mock("../../configurations/scdlIntegration.conf", () => ({
 }));
 jest.mock("../cli/Scdl.cli");
 
-const validConfigData = {
+const validConfigData: ScdlFileProcessingConfigList = {
     files: [
         {
             name: "donnees-a-integrer1.csv",
