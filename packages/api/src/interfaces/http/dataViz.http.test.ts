@@ -1,9 +1,9 @@
 import {
     AMOUNTS_VS_PROGRAMME_REGION_DBOS,
     AMOUNTS_VS_PROGRAMME_REGION_ENTITIES,
-} from "../../../modules/dataViz/amountsVsProgrammeRegion/__fixtures__/amountsVSProgrammeRegion.fixture";
-import amountsVsProgrammeRegionService from "../../../modules/dataViz/amountsVsProgrammeRegion/amountsVsProgrammeRegion.service";
-import { AmountsVsProgrammeRegionHttp } from "./amountsVsProgrammeRegion.http";
+} from "../../modules/dataViz/amountsVsProgrammeRegion/__fixtures__/amountsVSProgrammeRegion.fixture";
+import amountsVsProgrammeRegionService from "../../modules/dataViz/amountsVsProgrammeRegion/amountsVsProgrammeRegion.service";
+import { AmountsVsProgrammeRegionHttp } from "./dataViz.http";
 
 const controller = new AmountsVsProgrammeRegionHttp();
 
