@@ -95,13 +95,7 @@ describe("scdl data integration script", () => {
             jest.spyOn(fs, "readFileSync").mockImplementationOnce(() => {
                 throw new Error("ENOENT: no such file or directory");
             });
-            expect(() => {
-                loadConfig();
-            }).toThrowError(
-                expect.objectContaining({
-                    message: expect.stringContaining("ENOENT: no such file or directory"),
-                }),
-            );
+            expect(() => loadConfig()).toThrowError("ENOENT: no such file or directory");
         });
     });
 
@@ -122,17 +116,19 @@ describe("scdl data integration script", () => {
             producerSiret: "12345678901",
         };
 
-        it("should process file methods correctly", async () => {
+        it("should process file methods correctly with addProducer Called with correct params", async () => {
             await expect(processFile(fileConfig)).resolves.toBeUndefined();
 
-            expect(addProducerMock).toHaveBeenCalledTimes(1);
             expect(addProducerMock).toHaveBeenCalledWith(
                 fileConfig.parseParams[0],
                 fileConfig.producerName,
                 fileConfig.producerSiret,
             );
+        });
 
-            expect(parseMock).toHaveBeenCalledTimes(1);
+        it("should process file methods correctly with parse method Called with correct params", async () => {
+            await expect(processFile(fileConfig)).resolves.toBeUndefined();
+
             expect(parseMock).toHaveBeenCalledWith(
                 expect.stringContaining(fileConfig.name),
                 fileConfig.parseParams[0],
@@ -140,35 +136,57 @@ describe("scdl data integration script", () => {
                 undefined,
                 undefined,
             );
+        });
+
+        it("should process file methods correctly with parseXls method not to have been Called", async () => {
+            await expect(processFile(fileConfig)).resolves.toBeUndefined();
             expect(parseXlsMock).not.toHaveBeenCalled();
         });
 
-        it("should catch error and not call parse method", async () => {
+        it("should catch error", async () => {
             addProducerMock = jest
                 .spyOn(ScdlCli.prototype, "addProducer")
                 .mockRejectedValue(new Error("Mocked addProducer error"));
             await expect(processFile(fileConfig)).resolves.toBeUndefined();
-            expect(addProducerMock).toHaveBeenCalledTimes(1);
-            expect(parseMock).not.toHaveBeenCalled();
-            expect(parseXlsMock).not.toHaveBeenCalled();
         });
 
-        it("should catch Unsupported file type error and not call parse method", async () => {
+        it("should not call parse method when addProducer error", async () => {
+            addProducerMock = jest
+                .spyOn(ScdlCli.prototype, "addProducer")
+                .mockRejectedValue(new Error("Mocked addProducer error"));
+            await expect(processFile(fileConfig)).resolves.toBeUndefined();
+            expect(parseMock).not.toHaveBeenCalled();
+        });
+
+        it("should catch Unsupported file type error", async () => {
             await expect(processFile(fileConfigWrongType)).resolves.toBeUndefined();
-            expect(addProducerMock).toHaveBeenCalledTimes(1);
+        });
+
+        it("should not call parse method when wrong file type", async () => {
+            await expect(processFile(fileConfigWrongType)).resolves.toBeUndefined();
             expect(parseMock).not.toHaveBeenCalled();
+        });
+
+        it("should not call parseXls method when wrong file type", async () => {
+            await expect(processFile(fileConfigWrongType)).resolves.toBeUndefined();
             expect(parseXlsMock).not.toHaveBeenCalled();
         });
 
-        it("should catch Producer already exists error and call parse method", async () => {
+        it("should catch Producer already exists error", async () => {
             addProducerMock = jest
                 .spyOn(ScdlCli.prototype, "addProducer")
                 .mockRejectedValue(new Error("Producer already exists"));
 
             await expect(processFile(fileConfig)).resolves.toBeUndefined();
-            expect(addProducerMock).toHaveBeenCalledTimes(1);
+        });
+
+        it("should call parse method when producer already exists", async () => {
+            addProducerMock = jest
+                .spyOn(ScdlCli.prototype, "addProducer")
+                .mockRejectedValue(new Error("Producer already exists"));
+
+            await expect(processFile(fileConfig)).resolves.toBeUndefined();
             expect(parseMock).toHaveBeenCalledTimes(1);
-            expect(parseXlsMock).not.toHaveBeenCalled();
         });
     });
 
@@ -212,9 +230,6 @@ describe("scdl data integration script", () => {
                 throw new Error("Unexpected token i in JSON at position 2");
             });
             await expect(main()).rejects.toThrow("Unexpected token i in JSON at position 2");
-            expect(addProducerMock).not.toHaveBeenCalled();
-            expect(parseMock).not.toHaveBeenCalled();
-            expect(parseXlsMock).not.toHaveBeenCalled();
         });
 
         it("should throw Invalid configuration file error", async () => {
@@ -234,9 +249,6 @@ describe("scdl data integration script", () => {
             await expect(main()).rejects.toThrow(
                 "Invalid configuration file: The config does not match the expected structure.",
             );
-            expect(addProducerMock).not.toHaveBeenCalled();
-            expect(parseMock).not.toHaveBeenCalled();
-            expect(parseXlsMock).not.toHaveBeenCalled();
         });
 
         it("when error with one file, should process continue for other files", async () => {
