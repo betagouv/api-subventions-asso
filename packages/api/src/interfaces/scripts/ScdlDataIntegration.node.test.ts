@@ -38,7 +38,7 @@ const validConfigData: ScdlFileProcessingConfigList = {
     ],
 };
 
-describe("scdl-data-integration.node", () => {
+describe("scdl data integration script", () => {
     const testFilePath = path.join(SCDL_FILE_PROCESSING_PATH, SCDL_FILE_PROCESSING_CONFIG_FILENAME);
 
     let addProducerMock: jest.SpyInstance<Promise<void>, [slug: string, name: string, siret: string]>;
