@@ -1,6 +1,7 @@
 import { AgentTypeEnum, RegistrationSrcTypeEnum } from "dto";
 import type { MockInstance } from "vitest";
 import { beforeEach } from "vitest";
+import type { SpyInstance } from "vitest";
 import StructureFormStepController from "./StructureFormStep.controller";
 import Dispatch from "$lib/core/Dispatch";
 import { isPhoneNumber } from "$lib/helpers/stringHelper";
@@ -210,6 +211,15 @@ describe("StructureFormStepController", () => {
     });
 
     describe("onUpdateRegistrationSrc", () => {
+        let mockUpdate: SpyInstance;
+        beforeEach(() => {
+            mockUpdate = vi.spyOn(StructureFormStepController.prototype, "onUpdate").mockImplementation(vi.fn());
+        });
+
+        afterAll(() => {
+            mockUpdate.mockRestore();
+        });
+
         it("registrationSrcEmail and registrationSrcDetails are set to empty strings", () => {
             const values = {
                 registrationSrc: [RegistrationSrcTypeEnum.DEMO],
