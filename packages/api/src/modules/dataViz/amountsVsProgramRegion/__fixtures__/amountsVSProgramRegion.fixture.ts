@@ -1,55 +1,55 @@
 import { ObjectId } from "mongodb";
-import { amountsVsProgrammeRegionDbo } from "../entitiyAndDbo/amountsVsProgramRegion.dbo";
-import amountsVsProgrammeRegionEntity from "../entitiyAndDbo/amountsVsProgramRegion.entity";
+import { AmountsVsProgrammeRegionDbo } from "../entitiyAndDbo/amountsVsProgramRegion.dbo";
+import AmountsVsProgrammeRegionEntity from "../entitiyAndDbo/amountsVsProgramRegion.entity";
 
-export const NOT_AGGREGATED_ENTITIES: amountsVsProgrammeRegionEntity[] = [
+export const NOT_AGGREGATED_ENTITIES: AmountsVsProgrammeRegionEntity[] = [
     {
         exerciceBudgetaire: 2023,
         programme: "1 - Programme Exemple",
         mission: "Mission Exemple",
-        amount: 1000,
+        montant: 1000,
         regionAttachementComptable: "Bretagne",
     },
     {
         exerciceBudgetaire: 2023,
         programme: "1 - Programme Exemple",
         mission: "Mission Exemple",
-        amount: 7000,
-        regionAttachementComptable: "Bretagne",
-    },
-    {
-        exerciceBudgetaire: 2023,
-        programme: "1",
-        mission: "Mission Exemple",
-        amount: 1000,
-        regionAttachementComptable: "Normandie",
-    },
-];
-
-export const AMOUNTS_VS_PROGRAMME_REGION_ENTITIES: amountsVsProgrammeRegionEntity[] = [
-    {
-        exerciceBudgetaire: 2023,
-        programme: "1 - Programme Exemple",
-        mission: "Mission Exemple",
-        amount: 8000,
+        montant: 7000,
         regionAttachementComptable: "Bretagne",
     },
     {
         exerciceBudgetaire: 2023,
         programme: "1",
         mission: "Mission Exemple",
-        amount: 1000,
+        montant: 1000,
         regionAttachementComptable: "Normandie",
     },
 ];
 
-export const AMOUNTS_VS_PROGRAMME_REGION_DBOS: amountsVsProgrammeRegionDbo[] = [
+export const AMOUNTS_VS_PROGRAM_REGION_ENTITIES: AmountsVsProgrammeRegionEntity[] = [
+    {
+        exerciceBudgetaire: 2023,
+        programme: "1 - Programme Exemple",
+        mission: "Mission Exemple",
+        montant: 8000,
+        regionAttachementComptable: "Bretagne",
+    },
+    {
+        exerciceBudgetaire: 2023,
+        programme: "1",
+        mission: "Mission Exemple",
+        montant: 1000,
+        regionAttachementComptable: "Normandie",
+    },
+];
+
+export const AMOUNTS_VS_PROGRAM_REGION_DBOS: AmountsVsProgrammeRegionDbo[] = [
     {
         _id: new ObjectId(),
         exerciceBudgetaire: 2023,
         programme: "1 - Programme Exemple",
         mission: "Mission Exemple",
-        amount: 8000,
+        montant: 8000,
         regionAttachementComptable: "Bretagne",
     },
     {
@@ -57,7 +57,7 @@ export const AMOUNTS_VS_PROGRAMME_REGION_DBOS: amountsVsProgrammeRegionDbo[] = [
         exerciceBudgetaire: 2023,
         programme: "1",
         mission: "Mission Exemple",
-        amount: 1000,
+        montant: 1000,
         regionAttachementComptable: "Normandie",
     },
 ];

@@ -6,7 +6,7 @@ import paymentFlatService from "../../paymentFlat/paymentFlat.service";
 import amountsVsProgrammeRegionService from "./amountsVsProgramRegion.service";
 import AmountsVsProgrammeRegionAdapter from "./amountsVsProgramRegion.adapter";
 import {
-    AMOUNTS_VS_PROGRAMME_REGION_ENTITIES,
+    AMOUNTS_VS_PROGRAM_REGION_ENTITIES,
     NOT_AGGREGATED_ENTITIES,
 } from "./__fixtures__/amountsVSProgramRegion.fixture";
 import amountsVsProgrammeRegionPort from "../../../dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
@@ -43,14 +43,16 @@ describe("amountsVSProgrammeRegionService", () => {
                 .mockReturnValue(mockCursor);
 
             mockAdapter = jest.spyOn(AmountsVsProgrammeRegionAdapter, "toNotAggregatedEntity");
-
+            //* NOT_AGGREGATED_ENTITIES[1] has the same agregation key (program, budgetExercice, region)
+            // of NOT_AGGREGATED_ENTITIES[0]
+            // and toNotAggregatedEntity is called only for new key
             mockAdapter.mockReturnValueOnce(NOT_AGGREGATED_ENTITIES[0]);
             mockAdapter.mockReturnValueOnce(NOT_AGGREGATED_ENTITIES[2]);
             mockAdapter.mockReturnValue(undefined);
         });
 
         afterEach(() => {
-            jest.resetAllMocks();
+            jest.restoreAllMocks();
         });
 
         it("should call cursorFindChorusOnly with the budget exercice", async () => {
@@ -78,15 +80,15 @@ describe("amountsVSProgrammeRegionService", () => {
             expect(mockCursor.next).toHaveBeenCalledTimes(nDocuments);
         });
 
-        it("should call toNotAggregatedEntity amountsVsProgrammeRegion lenght", async () => {
+        it("should call toNotAggregatedEntity for each first time occurrence of agregation key (program, year,region)", async () => {
             await amountsVsProgrammeRegionService.toAmountsVsProgrammeRegionEntities();
 
-            expect(mockAdapter).toHaveBeenCalledTimes(AMOUNTS_VS_PROGRAMME_REGION_ENTITIES.length);
+            expect(mockAdapter).toHaveBeenCalledTimes(AMOUNTS_VS_PROGRAM_REGION_ENTITIES.length);
         });
 
         it("should return the right entities", async () => {
             const actual = await amountsVsProgrammeRegionService.toAmountsVsProgrammeRegionEntities();
-            const expected = AMOUNTS_VS_PROGRAMME_REGION_ENTITIES;
+            const expected = AMOUNTS_VS_PROGRAM_REGION_ENTITIES;
 
             expect(actual).toEqual(expected);
         });
@@ -99,13 +101,13 @@ describe("amountsVSProgrammeRegionService", () => {
         beforeEach(() => {
             mockToAmountsVsProgrammeRegionEntities = jest
                 .spyOn(amountsVsProgrammeRegionService, "toAmountsVsProgrammeRegionEntities")
-                .mockResolvedValue(AMOUNTS_VS_PROGRAMME_REGION_ENTITIES);
+                .mockResolvedValue(AMOUNTS_VS_PROGRAM_REGION_ENTITIES);
 
             mockInsertMany = jest.spyOn(amountsVsProgrammeRegionPort, "insertMany").mockImplementation(jest.fn());
         });
 
-        afterEach(() => {
-            jest.resetAllMocks();
+        afterAll(() => {
+            jest.restoreAllMocks();
         });
 
         it("should call toAmountsVsProgrammeRegionEntities", async () => {
@@ -117,7 +119,7 @@ describe("amountsVSProgrammeRegionService", () => {
         it("should call insertMany with the right entities", async () => {
             await amountsVsProgrammeRegionService.init();
 
-            expect(mockInsertMany).toHaveBeenCalledWith(AMOUNTS_VS_PROGRAMME_REGION_ENTITIES);
+            expect(mockInsertMany).toHaveBeenCalledWith(AMOUNTS_VS_PROGRAM_REGION_ENTITIES);
         });
     });
 
@@ -128,13 +130,13 @@ describe("amountsVSProgrammeRegionService", () => {
         beforeEach(() => {
             mockToAmountsVsProgrammeRegionEntities = jest
                 .spyOn(amountsVsProgrammeRegionService, "toAmountsVsProgrammeRegionEntities")
-                .mockResolvedValue(AMOUNTS_VS_PROGRAMME_REGION_ENTITIES);
+                .mockResolvedValue(AMOUNTS_VS_PROGRAM_REGION_ENTITIES);
 
             mockUpsertMany = jest.spyOn(amountsVsProgrammeRegionPort, "upsertMany").mockImplementation(jest.fn());
         });
 
         afterEach(() => {
-            jest.resetAllMocks();
+            jest.restoreAllMocks();
         });
 
         it("should call toAmountsVsProgrammeRegionEntities without ExcerciceBudgetaire", async () => {
@@ -153,7 +155,7 @@ describe("amountsVSProgrammeRegionService", () => {
         it("should call upsertMany with the right entities", async () => {
             await amountsVsProgrammeRegionService.updateCollection();
 
-            expect(mockUpsertMany).toHaveBeenCalledWith(AMOUNTS_VS_PROGRAMME_REGION_ENTITIES);
+            expect(mockUpsertMany).toHaveBeenCalledWith(AMOUNTS_VS_PROGRAM_REGION_ENTITIES);
         });
     });
 
@@ -167,7 +169,7 @@ describe("amountsVSProgrammeRegionService", () => {
         });
 
         afterEach(() => {
-            jest.resetAllMocks();
+            jest.restoreAllMocks();
         });
 
         it("should call hasBeenInitialized", async () => {

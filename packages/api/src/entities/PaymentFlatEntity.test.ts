@@ -21,7 +21,7 @@ describe("PaymentFlatEntity", () => {
 
         it("should return region name not found for an invalid region code", () => {
             const actual = PaymentFlatEntity.getRegionAttachementComptable("INVALID");
-            const expected = "region name not found";
+            const expected = "code region inconnu";
             expect(actual).toBe(expected);
         });
 

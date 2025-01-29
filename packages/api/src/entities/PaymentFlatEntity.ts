@@ -65,7 +65,7 @@ export default class PaymentFlatEntity {
             const errorMessage = `Unknown region code: ${attachementComptable}`;
             Sentry.captureException(new Error(errorMessage));
             console.error(errorMessage);
-            return "region name not found";
+            return "code region inconnu";
         }
         return region;
     }
@@ -140,7 +140,7 @@ export default class PaymentFlatEntity {
         },
     };
 
-    public regionAttachementComptable: string | null;
+    public regionAttachementComptable: string | "N/A" | "code region inconnu";
     public idVersement: string;
     public uniqueId: string;
 
@@ -153,7 +153,7 @@ export default class PaymentFlatEntity {
         public amount: number,
         public operationDate: Date,
         public centreFinancierCode: string | "N/A",
-        public centreFinancierLibelle: string | null,
+        public centreFinancierLibelle: string | "N/A" | null,
         public attachementComptable: string | "N/A",
         public ej: string,
         public provider: string,

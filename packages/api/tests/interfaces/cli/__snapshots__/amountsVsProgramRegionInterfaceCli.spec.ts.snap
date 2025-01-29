@@ -4,25 +4,25 @@ exports[`AmountsVsProgrammeRegionCli init() should persist amounts vs programme 
 Array [
   Object {
     "_id": Any<ObjectId>,
-    "amount": 8000,
     "exerciceBudgetaire": 2023,
     "mission": "Mission Exemple",
+    "montant": 8000,
     "programme": "1 - Programme Exemple",
     "regionAttachementComptable": "Bretagne",
   },
   Object {
     "_id": Any<ObjectId>,
-    "amount": 100000,
     "exerciceBudgetaire": 2023,
     "mission": "Mission Exemple",
+    "montant": 100000,
     "programme": "1234 - Programme Exemple",
     "regionAttachementComptable": "Bretagne",
   },
   Object {
     "_id": Any<ObjectId>,
-    "amount": 34000,
     "exerciceBudgetaire": 2021,
     "mission": "Mission Exemple",
+    "montant": 34000,
     "programme": "1 - Programme Exemple",
     "regionAttachementComptable": "Normandie",
   },
@@ -33,17 +33,17 @@ exports[`AmountsVsProgrammeRegionCli resyncExercice() should persist amounts vs 
 Array [
   Object {
     "_id": Any<ObjectId>,
-    "amount": 8000,
     "exerciceBudgetaire": 2023,
     "mission": "Mission Exemple",
+    "montant": 8000,
     "programme": "1 - Programme Exemple",
     "regionAttachementComptable": "Bretagne",
   },
   Object {
     "_id": Any<ObjectId>,
-    "amount": 100000,
     "exerciceBudgetaire": 2023,
     "mission": "Mission Exemple",
+    "montant": 100000,
     "programme": "1234 - Programme Exemple",
     "regionAttachementComptable": "Bretagne",
   },

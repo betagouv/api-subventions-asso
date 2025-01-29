@@ -1,10 +1,10 @@
-import { amountsVsProgrammeRegionDbo } from "../../../../modules/dataViz/amountsVsProgramRegion/entitiyAndDbo/amountsVsProgramRegion.dbo";
-import amountsVsProgrammeRegionEntity from "../../../../modules/dataViz/amountsVsProgramRegion/entitiyAndDbo/amountsVsProgramRegion.entity";
+import { AmountsVsProgrammeRegionDbo } from "../../../../modules/dataViz/amountsVsProgramRegion/entitiyAndDbo/amountsVsProgramRegion.dbo";
+import AmountsVsProgrammeRegionEntity from "../../../../modules/dataViz/amountsVsProgramRegion/entitiyAndDbo/amountsVsProgramRegion.entity";
 import MongoPort from "../../../../shared/MongoPort";
 import AmountsVsProgrammeRegionAdapter from "./amountsVsProgramRegion.adapter";
 
-export class AmountsVsProgrammeRegionPort extends MongoPort<amountsVsProgrammeRegionDbo> {
-    collectionName = "dv-montantVsProgrammeRegion";
+export class AmountsVsProgrammeRegionPort extends MongoPort<AmountsVsProgrammeRegionDbo> {
+    collectionName = "dv--montant-programme-region";
 
     public async createIndexes(): Promise<void> {
         await this.collection.createIndex({ regionAttachementComptable: 1 });
@@ -21,11 +21,11 @@ export class AmountsVsProgrammeRegionPort extends MongoPort<amountsVsProgrammeRe
         return !!dbo;
     }
 
-    public insertOne(entity: amountsVsProgrammeRegionEntity) {
+    public insertOne(entity: AmountsVsProgrammeRegionEntity) {
         return this.collection.insertOne(AmountsVsProgrammeRegionAdapter.toDbo(entity));
     }
 
-    public upsertOne(entity: amountsVsProgrammeRegionEntity) {
+    public upsertOne(entity: AmountsVsProgrammeRegionEntity) {
         const updateDbo = AmountsVsProgrammeRegionAdapter.toDbo(entity);
         const { _id, ...DboWithoutId } = updateDbo;
         return this.collection.updateOne(
@@ -39,13 +39,13 @@ export class AmountsVsProgrammeRegionPort extends MongoPort<amountsVsProgrammeRe
         );
     }
 
-    public insertMany(entities: amountsVsProgrammeRegionEntity[]) {
+    public insertMany(entities: AmountsVsProgrammeRegionEntity[]) {
         return this.collection.insertMany(
             entities.map(entity => AmountsVsProgrammeRegionAdapter.toDbo(entity), { ordered: false }),
         );
     }
 
-    public upsertMany(entities: amountsVsProgrammeRegionEntity[]) {
+    public upsertMany(entities: AmountsVsProgrammeRegionEntity[]) {
         const bulkWriteArray = entities.map(entity => {
             const updateDbo = AmountsVsProgrammeRegionAdapter.toDbo(entity);
             const { _id, ...DboWithoutId } = updateDbo;

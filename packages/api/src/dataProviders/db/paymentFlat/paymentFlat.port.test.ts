@@ -52,7 +52,7 @@ describe("PaymentFlat Port", () => {
         });
 
         afterAll(() => {
-            mockCursorFind.mockRestore();
+            jest.restoreAllMocks();
         });
 
         it("should call cursorFind with provider filter", () => {

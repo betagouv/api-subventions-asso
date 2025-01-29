@@ -29,7 +29,7 @@ export default interface PaymentFlatDbo {
     codeActivite: string | null;
     activite: string | null;
     codeCentreFinancier: string | "N/A";
-    libelleCentreFinancier: string | null;
+    libelleCentreFinancier: string | "N/A" | null;
     attachementComptable: string | "N/A";
-    regionAttachementComptable: string | null;
+    regionAttachementComptable: string | "N/A" | "code region inconnu";
 }

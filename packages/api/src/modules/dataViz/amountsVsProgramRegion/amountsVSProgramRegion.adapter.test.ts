@@ -8,7 +8,7 @@ const EXPECTED_WITHOUT_NULLS = {
     exerciceBudgetaire: 2023,
     programme: "1 - Programme Exemple",
     mission: "Mission Exemple",
-    amount: 1000,
+    montant: 1000,
     regionAttachementComptable: "Bretagne",
 };
 
@@ -16,7 +16,7 @@ const EXPECTED_WITH_NULLS = {
     exerciceBudgetaire: 2023,
     programme: "1",
     mission: "Mission Exemple",
-    amount: 1000,
+    montant: 1000,
     regionAttachementComptable: "Bretagne",
 };
 
@@ -31,13 +31,6 @@ describe("AmountsVsProgrammeRegionAdapter", () => {
         it("should return right mapping when paymentFlat is with nulls", () => {
             const actual = AmountsVsProgrammeRegionAdapter.toNotAggregatedEntity(PAYMENT_FLAT_ENTITY_WITH_NULLS);
             const expected = EXPECTED_WITH_NULLS;
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return right mapping when paymentFlat is with nulls and regionAttachementComptable is null", () => {
-            const paymentFlatEntity = { ...PAYMENT_FLAT_ENTITY_WITH_NULLS, regionAttachementComptable: null };
-            const actual = AmountsVsProgrammeRegionAdapter.toNotAggregatedEntity(paymentFlatEntity);
-            const expected = { ...EXPECTED_WITH_NULLS, regionAttachementComptable: "Non renseigné" };
             expect(actual).toEqual(expected);
         });
     });

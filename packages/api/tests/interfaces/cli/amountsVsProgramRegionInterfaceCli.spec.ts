@@ -33,6 +33,15 @@ const insertData = async () => {
     await paymentFlatPort.upsertMany(bulkWriteArray);
 };
 
+function sortResultForSnapshot(a, b) {
+    if (a.regionAttachementComptable < b.regionAttachementComptable) return -1;
+    if (a.regionAttachementComptable > b.regionAttachementComptable) return 1;
+    if (a.programme < b.programme) return -1;
+    if (a.programme > b.programme) return 1;
+
+    return a.exerciceBudgetaire - b.exerciceBudgetaire;
+}
+
 describe("AmountsVsProgrammeRegionCli", () => {
     beforeEach(async () => {
         await amountsVsProgrammeRegionPort.deleteAll();
@@ -54,14 +63,7 @@ describe("AmountsVsProgrammeRegionCli", () => {
                     ...amountsVsProgrammeRegion,
                     _id: expect.any(ObjectId),
                 }))
-                .sort((a, b) => {
-                    if (a.regionAttachementComptable < b.regionAttachementComptable) return -1;
-                    if (a.regionAttachementComptable > b.regionAttachementComptable) return 1;
-                    if (a.programme < b.programme) return -1;
-                    if (a.programme > b.programme) return 1;
-
-                    return a.exerciceBudgetaire - b.exerciceBudgetaire;
-                });
+                .sort(sortResultForSnapshot);
 
             expect(amountsVsProgrammeRegion).toMatchSnapshot("Snapshot init");
         });
@@ -77,14 +79,7 @@ describe("AmountsVsProgrammeRegionCli", () => {
                     ...amountsVsProgrammeRegion,
                     _id: expect.any(ObjectId),
                 }))
-                .sort((a, b) => {
-                    if (a.regionAttachementComptable < b.regionAttachementComptable) return -1;
-                    if (a.regionAttachementComptable > b.regionAttachementComptable) return 1;
-                    if (a.programme < b.programme) return -1;
-                    if (a.programme > b.programme) return 1;
-
-                    return a.exerciceBudgetaire - b.exerciceBudgetaire;
-                });
+                .sort(sortResultForSnapshot);
 
             expect(amountsVsProgrammeRegion).toMatchSnapshot("Snapshot resyncExercice");
         });

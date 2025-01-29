@@ -3,21 +3,21 @@ import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
 import paymentFlatService from "../../paymentFlat/paymentFlat.service";
 import amountsVsProgrammeRegionPort from "../../../dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
 import AmountsVsProgrammeRegionAdapter from "./amountsVsProgramRegion.adapter";
-import amountsVsProgrammeRegionEntity from "./entitiyAndDbo/amountsVsProgramRegion.entity";
+import AmountsVsProgrammeRegionEntity from "./entitiyAndDbo/amountsVsProgramRegion.entity";
 
 export class AmountsVsProgrammeRegionService {
     public async toAmountsVsProgrammeRegionEntities(
         exerciceBudgetaire?: number,
-    ): Promise<amountsVsProgrammeRegionEntity[]> {
+    ): Promise<AmountsVsProgrammeRegionEntity[]> {
         const paymentFlatCursor: FindCursor<PaymentFlatEntity> =
             paymentFlatService.cursorFindChorusOnly(exerciceBudgetaire);
 
-        const entities: Record<string, amountsVsProgrammeRegionEntity> = {};
+        const entities: Record<string, AmountsVsProgrammeRegionEntity> = {};
         while (await paymentFlatCursor.hasNext()) {
             const document = (await paymentFlatCursor.next()) as PaymentFlatEntity;
             const key = `${document.regionAttachementComptable}-${document.programName}-${document.programNumber}`;
             if (entities[key]) {
-                entities[key].amount += parseFloat(document.amount.toFixed(2));
+                entities[key].montant += parseFloat(document.amount.toFixed(2));
             } else {
                 entities[key] = { ...AmountsVsProgrammeRegionAdapter.toNotAggregatedEntity(document) };
             }

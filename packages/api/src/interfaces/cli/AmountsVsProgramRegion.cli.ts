@@ -5,7 +5,7 @@ import CliController from "../../shared/CliController";
 
 @StaticImplements<CliStaticInterface>()
 export default class AmountsVsProgrammeRegionCli extends CliController {
-    static cmdName = "amounts-vs-programme-region";
+    static cmdName = "amounts-vs-program-region";
 
     // should only be used once, then sync with resyncExercise
     async init() {
