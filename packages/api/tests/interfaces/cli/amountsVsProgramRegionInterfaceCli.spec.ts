@@ -5,15 +5,15 @@ import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFl
 import AmountsVsProgrammeRegionCli from "../../../src/interfaces/cli/AmountsVsProgramRegion.cli";
 
 const MOCK_DOCUMENTS = [
-    { ...PAYMENT_FLAT_DBO, provider: "Chorus", uniqueId: "1" },
-    { ...PAYMENT_FLAT_DBO, montant: 7000, provider: "Chorus", uniqueId: "2" },
-    { ...PAYMENT_FLAT_DBO, montant: 100_000, numeroProgramme: "1234", provider: "Chorus", uniqueId: "3" },
+    { ...PAYMENT_FLAT_DBO, provider: "chorus", uniqueId: "1" },
+    { ...PAYMENT_FLAT_DBO, montant: 7000, provider: "chorus", uniqueId: "2" },
+    { ...PAYMENT_FLAT_DBO, montant: 100_000, numeroProgramme: "1234", provider: "chorus", uniqueId: "3" },
     {
         ...PAYMENT_FLAT_DBO,
         montant: 34_000,
         attachementComptable: "HNOR",
         exerciceBudgetaire: 2021,
-        provider: "Chorus",
+        provider: "chorus",
         uniqueId: "4",
     },
 ];
