@@ -2,7 +2,6 @@ import { PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
 import { PAYMENT_FLAT_DBO } from "./__fixtures__/paymentFlatDbo.fixture";
 import paymentFlatPort from "./paymentFlat.port";
 import { ObjectId } from "mongodb";
-import PaymentFlatAdapter from "../../../modules/paymentFlat/paymentFlatAdapter";
 import PaymentsFlatAdapter from "./PaymentFlat.adapter";
 const mockDeleteMany = jest.fn();
 const mockInsertOne = jest.fn();
@@ -57,13 +56,13 @@ describe("PaymentFlat Port", () => {
 
         it("should call cursorFind with provider filter", () => {
             paymentFlatPort.cursorFindChorusOnly();
-            expect(mockCursorFind).toHaveBeenCalledWith({ provider: "Chorus" });
+            expect(mockCursorFind).toHaveBeenCalledWith({ provider: "chorus" });
         });
 
         it("should call cursorFind with provider and exerciceBudgetaire filter", () => {
             const exerciceBudgetaire = 2021;
             paymentFlatPort.cursorFindChorusOnly(exerciceBudgetaire);
-            expect(mockCursorFind).toHaveBeenCalledWith({ provider: "Chorus", exerciceBudgetaire: exerciceBudgetaire });
+            expect(mockCursorFind).toHaveBeenCalledWith({ provider: "chorus", exerciceBudgetaire: exerciceBudgetaire });
         });
     });
 });
