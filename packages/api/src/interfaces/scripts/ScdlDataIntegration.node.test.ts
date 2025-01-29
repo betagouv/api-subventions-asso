@@ -105,7 +105,7 @@ describe("scdl data integration script", () => {
             producerSiret: "12345678901",
         };
 
-        it("should process file methods correctly with addProducer Called with correct params", async () => {
+        it("should process file methods correctly with addProducer called with correct params", async () => {
             await expect(processFile(fileConfig)).resolves.toBeUndefined();
 
             expect(addProducerMock).toHaveBeenCalledWith(
@@ -115,7 +115,7 @@ describe("scdl data integration script", () => {
             );
         });
 
-        it("should process file methods correctly with parse method Called with correct params", async () => {
+        it("should process file methods correctly with parse method called with correct params", async () => {
             await expect(processFile(fileConfig)).resolves.toBeUndefined();
 
             expect(parseMock).toHaveBeenCalledWith(
@@ -127,7 +127,7 @@ describe("scdl data integration script", () => {
             );
         });
 
-        it("should process file methods correctly with parseXls method not to have been Called", async () => {
+        it("should process file methods correctly with parseXls method not to have been called", async () => {
             await expect(processFile(fileConfig)).resolves.toBeUndefined();
             expect(parseXlsMock).not.toHaveBeenCalled();
         });
@@ -179,7 +179,7 @@ describe("scdl data integration script", () => {
         });
     });
 
-    describe("Test for main script", () => {
+    describe("main", () => {
         it("should call ScdlCli methods with correct arguments", async () => {
             jest.spyOn(fs, "readFileSync").mockReturnValueOnce(JSON.stringify(validConfigData));
 
