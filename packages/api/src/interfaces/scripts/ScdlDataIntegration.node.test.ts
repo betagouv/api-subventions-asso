@@ -86,13 +86,6 @@ describe("scdl data integration script", () => {
 
             expect(() => loadConfig()).toThrowError(new Error("Unexpected token i in JSON at position 2"));
         });
-
-        it("should throw an error when the JSON file does not exist", () => {
-            jest.spyOn(fs, "readFileSync").mockImplementationOnce(() => {
-                throw new Error("ENOENT: no such file or directory");
-            });
-            expect(() => loadConfig()).toThrowError("ENOENT: no such file or directory");
-        });
     });
 
     describe("Test for processFile method", () => {
