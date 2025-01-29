@@ -89,7 +89,7 @@ export const main = async () => {
         const filePromises = config.files.map(processFile);
         await Promise.all(filePromises);
     } catch (e) {
-        console.log("❌ Global execution failure.", e);
+        console.trace("❌ Global execution failure.", e);
         errorList.push(`Global execution failure : ${(e as Error).message}`);
         throw e;
     } finally {
