@@ -6,7 +6,12 @@ import {
     SCDL_FILE_PROCESSING_PATH,
 } from "../../configurations/scdlIntegration.conf";
 import { FileExtensionEnum } from "../../@enums/FileExtensionEnum";
-import { ScdlFileProcessingConfig, ScdlFileProcessingConfigList } from "../../@types/ScdlDataIntegration";
+import {
+    ScdlFileProcessingConfig,
+    ScdlFileProcessingConfigList,
+    ScdlParseArgs,
+    ScdlParseXlsArgs,
+} from "../../@types/ScdlDataIntegration";
 
 const scdlCli = new ScdlCli();
 const successList: string[] = [];
@@ -19,7 +24,10 @@ const isFileConfig = (file: any): file is ScdlFileProcessingConfig => {
     return (
         file &&
         typeof file.name === "string" &&
-        Array.isArray(file.parseParams) &&
+        typeof file.parseParams == "object" &&
+        file.parseParams !== null &&
+        typeof file.parseParams.producerSlug === "string" &&
+        typeof file.parseParams.exportDate === "string" &&
         typeof file.addProducer === "boolean"
     );
 };
@@ -33,7 +41,7 @@ export const loadConfig = (): ScdlFileProcessingConfigList => {
 export const processFile = async (fileInfo: ScdlFileProcessingConfig) => {
     const { name, parseParams, addProducer, producerName, producerSiret } = fileInfo;
     const dirPath = path.resolve(SCDL_FILE_PROCESSING_PATH);
-    const [producerSlug, exportDate, ...optionalParams] = parseParams;
+    const { producerSlug, exportDate, ...optionalParams } = parseParams;
 
     try {
         if (addProducer && producerName && producerSiret) {
@@ -53,11 +61,10 @@ export const processFile = async (fileInfo: ScdlFileProcessingConfig) => {
         const fileType = path.extname(name).slice(1).toLowerCase();
         const filePath = path.join(dirPath, name);
         if (fileType === FileExtensionEnum.CSV) {
-            const delimiter = optionalParams[0];
-            const quote = typeof optionalParams[1] === "string" ? optionalParams[1] : undefined;
+            const { delimiter, quote } = optionalParams as ScdlParseArgs;
             await scdlCli.parse(filePath, producerSlug, exportDate, delimiter, quote);
         } else if (fileType === FileExtensionEnum.XLS || fileType === FileExtensionEnum.XLSX) {
-            const [pageName = undefined, rowOffset = undefined] = optionalParams;
+            const { pageName, rowOffset } = optionalParams as ScdlParseXlsArgs;
             await scdlCli.parseXls(filePath, producerSlug, exportDate, pageName, rowOffset);
         } else {
             console.error(`❌ Unsupported file type : ${name} (type: ${fileType})`);

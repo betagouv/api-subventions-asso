@@ -19,21 +19,21 @@ const validConfigData: ScdlFileProcessingConfigList = {
     files: [
         {
             name: "donnees-a-integrer1.csv",
-            parseParams: ["producerSlug1", "2025-01-13"],
+            parseParams: { producerSlug: "producerSlug1", exportDate: "2025-01-13" },
             addProducer: true,
             producerName: "Test Producer 1",
             producerSiret: "12345678901",
         },
         {
             name: "donnees-a-integrer2.csv",
-            parseParams: ["producerSlug2", "2025-01-14"],
+            parseParams: { producerSlug: "producerSlug2", exportDate: "2025-01-14" },
             addProducer: true,
             producerName: "Test Producer 2",
             producerSiret: "12345678902",
         },
         {
             name: "donnees-a-integrer3.csv",
-            parseParams: ["producerSlug2", "2025-01-15"],
+            parseParams: { producerSlug: "producerSlug2", exportDate: "2025-01-15" },
             addProducer: false,
         },
     ],
@@ -102,7 +102,7 @@ describe("scdl data integration script", () => {
     describe("Test for processFile method", () => {
         const fileConfig = {
             name: "donnees-a-integrer1.csv",
-            parseParams: ["producerSlug1", "2025-01-13"] as ScdlParseArgs,
+            parseParams: { producerSlug: "producerSlug1", exportDate: "2025-01-13" } as ScdlParseArgs,
             addProducer: true,
             producerName: "Test Producer 1",
             producerSiret: "12345678901",
@@ -110,7 +110,7 @@ describe("scdl data integration script", () => {
 
         const fileConfigWrongType = {
             name: "donnees-a-integrer1.doc",
-            parseParams: ["producerSlug1", "2025-01-13"] as ScdlParseXlsArgs,
+            parseParams: { producerSlug: "producerSlug1", exportDate: "2025-01-13" } as ScdlParseXlsArgs,
             addProducer: true,
             producerName: "Test Producer 1",
             producerSiret: "12345678901",
@@ -120,7 +120,7 @@ describe("scdl data integration script", () => {
             await expect(processFile(fileConfig)).resolves.toBeUndefined();
 
             expect(addProducerMock).toHaveBeenCalledWith(
-                fileConfig.parseParams[0],
+                fileConfig.parseParams.producerSlug,
                 fileConfig.producerName,
                 fileConfig.producerSiret,
             );
@@ -131,8 +131,8 @@ describe("scdl data integration script", () => {
 
             expect(parseMock).toHaveBeenCalledWith(
                 expect.stringContaining(fileConfig.name),
-                fileConfig.parseParams[0],
-                fileConfig.parseParams[1],
+                fileConfig.parseParams.producerSlug,
+                fileConfig.parseParams.exportDate,
                 undefined,
                 undefined,
             );
@@ -256,21 +256,21 @@ describe("scdl data integration script", () => {
                 files: [
                     {
                         name: "donnees-a-integrer1.xlsx",
-                        parseParams: ["producerSlug1", "2025-01-13"] as ScdlParseXlsArgs,
+                        parseParams: { producerSlug: "producerSlug1", exportDate: "2025-01-13" } as ScdlParseXlsArgs,
                         addProducer: true,
                         producerName: "Test Producer 1",
                         producerSiret: "12345678901",
                     },
                     {
                         name: "donnees-a-integrer2.csv",
-                        parseParams: ["producerSlug2", "2025-01-14"] as ScdlParseArgs,
+                        parseParams: { producerSlug: "producerSlug2", exportDate: "2025-01-14" } as ScdlParseArgs,
                         addProducer: true,
                         producerName: "Test Producer 2",
                         producerSiret: "12345678902",
                     },
                     {
                         name: "donnees-a-integrer3.csv",
-                        parseParams: ["producerSlug3", "2025-01-15"] as ScdlParseArgs,
+                        parseParams: { producerSlug: "producerSlug3", exportDate: "2025-01-15" } as ScdlParseArgs,
                         addProducer: true,
                         producerName: "Test Producer 3",
                         producerSiret: "12345678903",
