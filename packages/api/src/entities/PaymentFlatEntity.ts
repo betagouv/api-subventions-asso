@@ -136,7 +136,7 @@ export default class PaymentFlatEntity {
         },
         provider: {
             path: [],
-            adapter: () => "Chorus",
+            adapter: () => "chorus",
         },
     };
 
