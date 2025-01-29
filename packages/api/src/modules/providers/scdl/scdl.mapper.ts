@@ -78,6 +78,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "nom Attribuant",
                 "NomAttribuant",
                 "Autorité administrative",
+                "Nom attribuant",
             ],
         ],
     },
@@ -89,7 +90,8 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "id  Attribuant",
                 "IdAttribuant",
                 "SIRET autorité administrative",
-                "iAttribuant"
+                "iAttribuant",
+                "Id attribuant",
             ],
         ],
         adapter: v => removeTrailingDotZero(v?.toString()),
@@ -125,6 +127,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             "reference Decision",
             "Référence délibération",
             "ReferenceDecision",
+            "Référence décision 1",
         ],
     ],
     associationName: [
@@ -138,6 +141,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             "nomBénéficiaire",
             "Nom attributaire",
             "NomBeneficiaire",
+            "Nom bénéficiaire",
         ],
     ],
     associationSiret: {
@@ -153,6 +157,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Id du bénéficiaire",
                 "N° SIRET attributaire",
                 "iBeneficiaire",
+                "Id bénéficiaire",
             ],
         ],
         adapter: v => removeTrailingDotZero(v?.toString()),
