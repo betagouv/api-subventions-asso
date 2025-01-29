@@ -71,10 +71,6 @@ describe("scdl data integration script", () => {
         parseXlsMock = jest.spyOn(ScdlCli.prototype, "parseXls").mockResolvedValue();
     });
 
-    afterEach(() => {
-        jest.restoreAllMocks();
-    });
-
     describe("loadConfig method", () => {
         it("should load config file successfully", () => {
             jest.spyOn(fs, "readFileSync").mockReturnValueOnce(JSON.stringify(validConfigData));
