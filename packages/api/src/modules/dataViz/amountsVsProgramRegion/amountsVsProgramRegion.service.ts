@@ -1,9 +1,9 @@
 import { FindCursor } from "mongodb";
 import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
 import paymentFlatService from "../../paymentFlat/paymentFlat.service";
-import amountsVsProgrammeRegionPort from "../../../dataProviders/db/dataViz/amountVSProgrammeRegion/amountsVsProgrammeRegion.port";
-import AmountsVsProgrammeRegionAdapter from "./amountsVsProgrammeRegion.adapter";
-import amountsVsProgrammeRegionEntity from "./entitiyAndDbo/amountsVsProgrammeRegion.entity";
+import amountsVsProgrammeRegionPort from "../../../dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
+import AmountsVsProgrammeRegionAdapter from "./amountsVsProgramRegion.adapter";
+import amountsVsProgrammeRegionEntity from "./entitiyAndDbo/amountsVsProgramRegion.entity";
 
 export class AmountsVsProgrammeRegionService {
     public async toAmountsVsProgrammeRegionEntities(

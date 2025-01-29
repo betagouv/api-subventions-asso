@@ -1,24 +1,26 @@
-import { PAYMENT_FLAT_ENTITY, PAYMENT_FLAT_ENTITY_WITH_NULLS } from "../../../dataProviders/db/paymentFlat/__fixtures__/paymentFlatEntity.fixture";
-import AmountsVsProgrammeRegionAdapter from "./amountsVsProgrammeRegion.adapter";
+import {
+    PAYMENT_FLAT_ENTITY,
+    PAYMENT_FLAT_ENTITY_WITH_NULLS,
+} from "../../../dataProviders/db/paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+import AmountsVsProgrammeRegionAdapter from "./amountsVsProgramRegion.adapter";
 
 const EXPECTED_WITHOUT_NULLS = {
-    exerciceBudgetaire : 2023,
-    programme : "1 - Programme Exemple",
-    mission : "Mission Exemple",
-    amount : 1000,
-    regionAttachementComptable : "Bretagne"
-}
+    exerciceBudgetaire: 2023,
+    programme: "1 - Programme Exemple",
+    mission: "Mission Exemple",
+    amount: 1000,
+    regionAttachementComptable: "Bretagne",
+};
 
 const EXPECTED_WITH_NULLS = {
-    exerciceBudgetaire : 2023,
-    programme : "1",
-    mission : "Mission Exemple",
-    amount : 1000,
-    regionAttachementComptable: "Bretagne"
-}
+    exerciceBudgetaire: 2023,
+    programme: "1",
+    mission: "Mission Exemple",
+    amount: 1000,
+    regionAttachementComptable: "Bretagne",
+};
 
 describe("AmountsVsProgrammeRegionAdapter", () => {
-
     describe("toNotAggregatedEntity", () => {
         it("should return right mapping when paymentFlat is without nulls", () => {
             const actual = AmountsVsProgrammeRegionAdapter.toNotAggregatedEntity(PAYMENT_FLAT_ENTITY);
@@ -33,12 +35,10 @@ describe("AmountsVsProgrammeRegionAdapter", () => {
         });
 
         it("should return right mapping when paymentFlat is with nulls and regionAttachementComptable is null", () => {
-            const paymentFlatEntity = {...PAYMENT_FLAT_ENTITY_WITH_NULLS, regionAttachementComptable: null};
+            const paymentFlatEntity = { ...PAYMENT_FLAT_ENTITY_WITH_NULLS, regionAttachementComptable: null };
             const actual = AmountsVsProgrammeRegionAdapter.toNotAggregatedEntity(paymentFlatEntity);
-            const expected = {...EXPECTED_WITH_NULLS, regionAttachementComptable: "Non renseigné"};
+            const expected = { ...EXPECTED_WITH_NULLS, regionAttachementComptable: "Non renseigné" };
             expect(actual).toEqual(expected);
-
         });
     });
-
 });

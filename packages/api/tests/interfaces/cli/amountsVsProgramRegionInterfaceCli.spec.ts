@@ -1,8 +1,8 @@
 import { ObjectId } from "mongodb";
-import amountsVsProgrammeRegionPort from "../../../src/dataProviders/db/dataViz/amountVSProgrammeRegion/amountsVsProgrammeRegion.port";
+import amountsVsProgrammeRegionPort from "../../../src/dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
 import { PAYMENT_FLAT_DBO } from "../../../src/dataProviders/db/paymentFlat/__fixtures__/paymentFlatDbo.fixture";
 import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFlat.port";
-import AmountsVsProgrammeRegionCli from "../../../src/interfaces/cli/AmountsVsProgrammeRegion.cli";
+import AmountsVsProgrammeRegionCli from "../../../src/interfaces/cli/AmountsVsProgramRegion.cli";
 
 const MOCK_DOCUMENTS = [
     { ...PAYMENT_FLAT_DBO, provider: "Chorus", uniqueId: "1" },

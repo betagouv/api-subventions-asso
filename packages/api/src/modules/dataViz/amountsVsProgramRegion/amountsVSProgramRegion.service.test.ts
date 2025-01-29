@@ -3,13 +3,13 @@ import {
     PAYMENT_FLAT_ENTITY,
 } from "../../../dataProviders/db/paymentFlat/__fixtures__/paymentFlatEntity.fixture";
 import paymentFlatService from "../../paymentFlat/paymentFlat.service";
-import amountsVsProgrammeRegionService from "./amountsVsProgrammeRegion.service";
-import AmountsVsProgrammeRegionAdapter from "./amountsVsProgrammeRegion.adapter";
+import amountsVsProgrammeRegionService from "./amountsVsProgramRegion.service";
+import AmountsVsProgrammeRegionAdapter from "./amountsVsProgramRegion.adapter";
 import {
     AMOUNTS_VS_PROGRAMME_REGION_ENTITIES,
     NOT_AGGREGATED_ENTITIES,
-} from "./__fixtures__/amountsVSProgrammeRegion.fixture";
-import amountsVsProgrammeRegionPort from "../../../dataProviders/db/dataViz/amountVSProgrammeRegion/amountsVsProgrammeRegion.port";
+} from "./__fixtures__/amountsVSProgramRegion.fixture";
+import amountsVsProgrammeRegionPort from "../../../dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
 
 describe("amountsVSProgrammeRegionService", () => {
     describe("toAmountsVsProgrammeRegionEntities", () => {

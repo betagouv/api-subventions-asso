@@ -26,7 +26,7 @@ import GeoCli from "./interfaces/cli/Geo.cli";
 import DataBretagneCli from "./interfaces/cli/DataBretagne.cli";
 import PaymentFlatCli from "./interfaces/cli/PaymentFlat.cli";
 import SireneStockUniteLegaleCli from "./interfaces/cli/SireneStockUniteLegale.cli";
-import AmountsVsProgrammeRegionCli from "./interfaces/cli/AmountsVsProgrammeRegion.cli";
+import AmountsVsProgrammeRegionCli from "./interfaces/cli/AmountsVsProgramRegion.cli";
 async function main() {
     await connectDB();
     await initIndexes();

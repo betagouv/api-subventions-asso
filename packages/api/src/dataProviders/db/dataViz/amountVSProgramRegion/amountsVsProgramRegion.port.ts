@@ -1,16 +1,19 @@
-import { amountsVsProgrammeRegionDbo } from "../../../../modules/dataViz/amountsVsProgrammeRegion/entitiyAndDbo/amountsVsProgrammeRegion.dbo";
-import amountsVsProgrammeRegionEntity from "../../../../modules/dataViz/amountsVsProgrammeRegion/entitiyAndDbo/amountsVsProgrammeRegion.entity";
+import { amountsVsProgrammeRegionDbo } from "../../../../modules/dataViz/amountsVsProgramRegion/entitiyAndDbo/amountsVsProgramRegion.dbo";
+import amountsVsProgrammeRegionEntity from "../../../../modules/dataViz/amountsVsProgramRegion/entitiyAndDbo/amountsVsProgramRegion.entity";
 import MongoPort from "../../../../shared/MongoPort";
-import AmountsVsProgrammeRegionAdapter from "./amountsVsProgrammeRegion.adapter";
+import AmountsVsProgrammeRegionAdapter from "./amountsVsProgramRegion.adapter";
 
 export class AmountsVsProgrammeRegionPort extends MongoPort<amountsVsProgrammeRegionDbo> {
     collectionName = "dv-montantVsProgrammeRegion";
-    
+
     public async createIndexes(): Promise<void> {
         await this.collection.createIndex({ regionAttachementComptable: 1 });
         await this.collection.createIndex({ programme: 1 });
         await this.collection.createIndex({ exerciceBudgetaire: 1 });
-        await this.collection.createIndex({ regionAttachementComptable: 1, programme: 1, exerciceBudgetaire: 1 }, { unique: true });
+        await this.collection.createIndex(
+            { regionAttachementComptable: 1, programme: 1, exerciceBudgetaire: 1 },
+            { unique: true },
+        );
     }
 
     public async hasBeenInitialized() {
@@ -25,29 +28,34 @@ export class AmountsVsProgrammeRegionPort extends MongoPort<amountsVsProgrammeRe
     public upsertOne(entity: amountsVsProgrammeRegionEntity) {
         const updateDbo = AmountsVsProgrammeRegionAdapter.toDbo(entity);
         const { _id, ...DboWithoutId } = updateDbo;
-        return this.collection.updateOne({ 
-            regionAttachementComptable: updateDbo.regionAttachementComptable,
-            programme: updateDbo.programme,
-            exerciceBudgetaire: updateDbo.exerciceBudgetaire
-        }, { $set: DboWithoutId }, { upsert: true });
+        return this.collection.updateOne(
+            {
+                regionAttachementComptable: updateDbo.regionAttachementComptable,
+                programme: updateDbo.programme,
+                exerciceBudgetaire: updateDbo.exerciceBudgetaire,
+            },
+            { $set: DboWithoutId },
+            { upsert: true },
+        );
     }
 
     public insertMany(entities: amountsVsProgrammeRegionEntity[]) {
-        return this.collection.insertMany(entities.map(entity => AmountsVsProgrammeRegionAdapter.toDbo(entity), { ordered: false }));
+        return this.collection.insertMany(
+            entities.map(entity => AmountsVsProgrammeRegionAdapter.toDbo(entity), { ordered: false }),
+        );
     }
 
     public upsertMany(entities: amountsVsProgrammeRegionEntity[]) {
-
         const bulkWriteArray = entities.map(entity => {
             const updateDbo = AmountsVsProgrammeRegionAdapter.toDbo(entity);
             const { _id, ...DboWithoutId } = updateDbo;
             return {
                 updateOne: {
-                    filter: { 
+                    filter: {
                         regionAttachementComptable: updateDbo.regionAttachementComptable,
                         programme: updateDbo.programme,
-                        exerciceBudgetaire: updateDbo.exerciceBudgetaire
-        },
+                        exerciceBudgetaire: updateDbo.exerciceBudgetaire,
+                    },
                     update: { $set: DboWithoutId },
                     upsert: true,
                 },
@@ -64,7 +72,6 @@ export class AmountsVsProgrammeRegionPort extends MongoPort<amountsVsProgrammeRe
     public async deleteAll() {
         await this.collection.deleteMany({});
     }
-
 }
 
 const amountsVsProgrammeRegionPort = new AmountsVsProgrammeRegionPort();

@@ -1,6 +1,6 @@
 import { CliStaticInterface } from "../../@types";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
-import amountsVsProgrammeRegionService from "../../modules/dataViz/amountsVsProgrammeRegion/amountsVsProgrammeRegion.service";
+import amountsVsProgrammeRegionService from "../../modules/dataViz/amountsVsProgramRegion/amountsVsProgramRegion.service";
 import CliController from "../../shared/CliController";
 
 @StaticImplements<CliStaticInterface>()
