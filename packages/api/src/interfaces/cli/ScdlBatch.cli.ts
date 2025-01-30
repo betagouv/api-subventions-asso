@@ -43,13 +43,13 @@ export default class ScdlBatchCli {
         );
     }
 
-    public loadConfig(): ScdlFileProcessingConfigList {
+    private loadConfig(): ScdlFileProcessingConfigList {
         const filePath = path.resolve(SCDL_FILE_PROCESSING_PATH, SCDL_FILE_PROCESSING_CONFIG_FILENAME);
         const data = fs.readFileSync(filePath, "utf8");
         return JSON.parse(data) as ScdlFileProcessingConfigList;
     }
 
-    public async processFile(fileInfo: ScdlFileProcessingConfig): Promise<void> {
+    protected async processFile(fileInfo: ScdlFileProcessingConfig): Promise<void> {
         const { name, parseParams, addProducer, producerName, producerSiret } = fileInfo;
         const dirPath = path.resolve(SCDL_FILE_PROCESSING_PATH);
         const { producerSlug, exportDate, ...optionalParams } = parseParams;
@@ -92,7 +92,7 @@ export default class ScdlBatchCli {
     /**
      * main function to load the file listing .json and launch data integration
      */
-    public async main() {
+    public async import() {
         try {
             const config: ScdlFileProcessingConfigList = this.loadConfig();
 
@@ -121,7 +121,6 @@ export default class ScdlBatchCli {
                 console.log("⚠️ List of Errors :");
                 this.errorList.forEach(desc => console.log(`❌ ${desc}`));
             }
-            process.exit(0);
         }
     }
 }
