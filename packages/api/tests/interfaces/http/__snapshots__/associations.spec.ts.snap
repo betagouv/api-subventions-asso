@@ -3524,9 +3524,8 @@ Array [
             "ej": "EJ00001",
             "etablissementCodePostal": "75000",
             "etablissementVoie": "rue Waldeck-Rousseau",
-            "exercise": 2022,
+            "extractYear": 2022,
             "osirisId": "OSIRIS_ID",
-            "uniqueId": "OSIRIS_ID-2022",
           },
           "providerMatchingKeys": Array [
             "osirisId",
@@ -5954,9 +5953,8 @@ Array [
             "ej": "EJ00001",
             "etablissementCodePostal": "75000",
             "etablissementVoie": "rue Waldeck-Rousseau",
-            "exercise": 2022,
+            "extractYear": 2022,
             "osirisId": "OSIRIS_ID",
-            "uniqueId": "OSIRIS_ID-2022",
           },
           "providerMatchingKeys": Array [
             "osirisId",

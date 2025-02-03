@@ -2,10 +2,7 @@ import { SiretDto } from "dto";
 
 export default interface IOsirisActionsInformations {
     osirisActionId: string;
-    uniqueId: string;
-    requestUniqueId: string;
     compteAssoId: string;
-
     licencies: number;
     licenciesHommes: number;
     licenciesFemmes: number;
@@ -49,5 +46,5 @@ export default interface IOsirisActionsInformations {
     montants_versement_realise: number;
     montants_versement_compensation: number;
 
-    exercise: number;
+    extractYear: number;
 }

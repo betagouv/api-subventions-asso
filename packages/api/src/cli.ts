@@ -25,6 +25,7 @@ import { initIndexes } from "./shared/MongoInit";
 import GeoCli from "./interfaces/cli/Geo.cli";
 import DataBretagneCli from "./interfaces/cli/DataBretagne.cli";
 import PaymentFlatCli from "./interfaces/cli/PaymentFlat.cli";
+import SireneStockUniteLegaleCli from "./interfaces/cli/SireneStockUniteLegale.cli";
 import ScdlBatchCli from "./interfaces/cli/ScdlBatch.cli";
 async function main() {
     await connectDB();
@@ -53,6 +54,7 @@ async function main() {
         GeoCli,
         DataBretagneCli,
         PaymentFlatCli,
+        SireneStockUniteLegaleCli,
         ScdlBatchCli,
     ];
 

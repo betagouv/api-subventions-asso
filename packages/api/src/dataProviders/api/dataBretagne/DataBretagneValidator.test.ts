@@ -62,13 +62,6 @@ describe("DataBretagneValidator", () => {
                 expect(result).toEqual(true);
             });
 
-            it("should console.error when a required attribute is missing", () => {
-                const spy = jest.spyOn(console, "error");
-
-                DataBretagneValidatorHelper.validateNotNulls(dtoInvalid, requiredAttributes);
-                expect(spy).toHaveBeenCalledWith("code is required");
-            });
-
             it("should return false when a required attribute is missing", () => {
                 const result = DataBretagneValidatorHelper.validateNotNulls(dtoInvalid, requiredAttributes);
 

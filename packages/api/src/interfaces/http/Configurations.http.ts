@@ -58,6 +58,7 @@ export class ConfigurationsHttp extends Controller {
      * @returns {MainInfoBannerDto}
      */
     @Get("/main-info-banner")
+    @Security("jwt")
     @Response<HttpErrorInterface>(500, "Internal Server Error", {
         message: "Internal Server Error",
     })

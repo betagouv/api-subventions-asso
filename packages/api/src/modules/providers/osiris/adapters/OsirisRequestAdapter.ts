@@ -39,7 +39,7 @@ export default class OsirisRequestAdapter {
     private static readonly toStatus = toStatusFactory(OsirisRequestAdapter._statusConversionArray);
 
     static toAssociation(entity: OsirisRequestEntity, actions: OsirisActionEntity[] = []): Association {
-        const dataDate = new Date(Date.UTC(entity.providerInformations.exercise, 0));
+        const dataDate = new Date(Date.UTC(entity.providerInformations.extractYear, 0));
         const toPVs = ProviderValueFactory.buildProviderValuesAdapter(OsirisRequestAdapter.PROVIDER_NAME, dataDate);
         const federation =
             actions.length &&
@@ -96,7 +96,7 @@ export default class OsirisRequestAdapter {
     }
 
     static toEtablissement(entity: OsirisRequestEntity): Etablissement {
-        const dataDate = new Date(Date.UTC(entity.providerInformations.exercise, 0));
+        const dataDate = new Date(Date.UTC(entity.providerInformations.extractYear, 0));
         const toPVs = ProviderValueFactory.buildProviderValuesAdapter(OsirisRequestAdapter.PROVIDER_NAME, dataDate);
 
         return {
@@ -145,13 +145,13 @@ export default class OsirisRequestAdapter {
     }
 
     static toDemandeSubvention(entity: OsirisRequestEntity): DemandeSubvention {
-        const dataDate = new Date(Date.UTC(entity.providerInformations.exercise, 0));
+        const dataDate = new Date(Date.UTC(entity.providerInformations.extractYear, 0));
         const toPV = ProviderValueFactory.buildProviderValueAdapter(osirisService.provider.name, dataDate);
 
         const EJ = entity.providerInformations.ej ? toPV(entity.providerInformations.ej) : undefined;
 
         const data: DemandeSubvention = {
-            annee_demande: toPV(entity.providerInformations.exercise),
+            annee_demande: toPV(entity.providerInformations.extractYear),
             siret: toPV(entity.legalInformations.siret),
             service_instructeur: toPV(entity.providerInformations.service_instructeur),
             dispositif: toPV(entity.providerInformations.dispositif),
@@ -234,6 +234,12 @@ export default class OsirisRequestAdapter {
                     realise: toPV(action.indexedInformations.montants_versement_realise),
                     compensation: toPV(action.indexedInformations.montants_versement_compensation),
                 },
+                evaluation: action.evaluation
+                    ? {
+                          evaluation_resultat: toPV(action.evaluation.indexedInformations.evaluation_resultat),
+                          cout_total_realise: toPV(action.evaluation.indexedInformations.cout_total_realise),
+                      }
+                    : undefined,
             }));
         }
 
@@ -243,7 +249,7 @@ export default class OsirisRequestAdapter {
     static toCommon(entity: OsirisRequestEntity): CommonApplicationDto {
         return {
             dispositif: entity.providerInformations.dispositif,
-            exercice: entity.providerInformations.exercise,
+            exercice: entity.providerInformations.extractYear,
             montant_accorde: entity.providerInformations.montantsAccorde,
             montant_demande: entity.providerInformations.montantsDemande,
             objet: (entity.actions || []).map(action => action.indexedInformations.intitule).join(" – ") || "",
