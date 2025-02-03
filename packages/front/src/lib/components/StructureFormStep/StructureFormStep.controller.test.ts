@@ -1,7 +1,6 @@
 import { AgentTypeEnum, RegistrationSrcTypeEnum } from "dto";
 import type { MockInstance } from "vitest";
-import { beforeEach } from "vitest";
-import type { SpyInstance } from "vitest";
+import { beforeEach, SpyInstance } from "vitest";
 import StructureFormStepController from "./StructureFormStep.controller";
 import Dispatch from "$lib/core/Dispatch";
 import { isPhoneNumber } from "$lib/helpers/stringHelper";
