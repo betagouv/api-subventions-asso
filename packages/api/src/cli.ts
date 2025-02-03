@@ -14,7 +14,6 @@ import { CliStaticInterface } from "./@types";
 
 import SubventiaCli from "./interfaces/cli/Subventia.cli";
 import DemarchesSimplifieesCli from "./interfaces/cli/DemarchesSimplifiees.cli";
-import CaisseDepotsCli from "./interfaces/cli/CaisseDepots.cli";
 import GisproCli from "./interfaces/cli/Gispro.cli";
 import DauphinCli from "./interfaces/cli/Dauphin.cli";
 import AdminStructureCli from "./interfaces/cli/AdminStructure.cli";
@@ -44,7 +43,6 @@ async function main() {
         SubventiaCli,
         ConsumerCli,
         DemarchesSimplifieesCli,
-        CaisseDepotsCli,
         GisproCli,
         DauphinCli,
         AdminStructureCli,
