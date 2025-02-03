@@ -1,4 +1,4 @@
-export interface MontantVsProgrammeRegionDto {
+export interface AmountsVsProgramRegionDto {
     exerciceBudgetaire: number;
     montant: number;
     programme: string;

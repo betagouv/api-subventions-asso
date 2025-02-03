@@ -10,7 +10,7 @@ export default class AmountsVsProgramRegionAdapter {
         };
     }
 
-    static toEntity(dbo: AmountsVsProgrammeRegionDbo): AmountsVsProgrammeRegionEntity {
+    static toEntity(dbo: AmountsVsProgramRegionDbo): AmountsVsProgramRegionEntity {
         return {
             exerciceBudgetaire: dbo.exerciceBudgetaire,
             montant: dbo.montant,

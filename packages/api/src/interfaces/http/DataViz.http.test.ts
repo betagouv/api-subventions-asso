@@ -1,37 +1,37 @@
-import amountsVsProgrammeRegionService from "../../modules/dataViz/amountsVsProgramRegion/amountsVsProgramRegion.service";
+import amountsVsProgramRegionService from "../../modules/dataViz/amountsVsProgramRegion/amountsVsProgramRegion.service";
 import { DataVizHttp } from "./DataViz.http";
 import { AMOUNTS_VS_PROGRAM_REGION_ENTITIES } from "../../modules/dataViz/amountsVsProgramRegion/__fixtures__/amountsVSProgramRegion.fixture";
-import { MontantVsProgrammeRegionDto } from "dto";
+import { AmountsVsProgramRegionDto } from "dto";
 
 const controller = new DataVizHttp();
 
 describe("DataVizHttp", () => {
-    const MontantVsProgrammeRegionDtoList = AMOUNTS_VS_PROGRAM_REGION_ENTITIES as MontantVsProgrammeRegionDto[];
+    const AmountsVsProgramRegionDtoList = AMOUNTS_VS_PROGRAM_REGION_ENTITIES as AmountsVsProgramRegionDto[];
 
-    describe("getMontantVsProgrammeRegion", () => {
+    describe("getAmountsVsProgramRegion", () => {
         let getAmountsVsProgramRegionDataSpy = jest.spyOn(
-            amountsVsProgrammeRegionService,
+            amountsVsProgramRegionService,
             "getAmountsVsProgramRegionData",
         );
         beforeAll(() => {
-            getAmountsVsProgramRegionDataSpy.mockResolvedValue(MontantVsProgrammeRegionDtoList);
+            getAmountsVsProgramRegionDataSpy.mockResolvedValue(AmountsVsProgramRegionDtoList);
         });
 
         it("should call service", async () => {
-            await controller.getMontantVsProgrammeRegion();
-            expect(amountsVsProgrammeRegionService.getAmountsVsProgramRegionData).toHaveBeenCalledTimes(1);
+            await controller.getAmountsVsProgramRegion();
+            expect(amountsVsProgramRegionService.getAmountsVsProgramRegionData).toHaveBeenCalledTimes(1);
         });
 
         it("should return data", async () => {
-            const expected = { montantVersusProgrammeRegionData: MontantVsProgrammeRegionDtoList };
-            const actual = await controller.getMontantVsProgrammeRegion();
+            const expected = { amountsVersusProgramRegionData: AmountsVsProgramRegionDtoList };
+            const actual = await controller.getAmountsVsProgramRegion();
             expect(actual).toEqual(expected);
         });
 
         it("should throw error", async () => {
             const ERROR_MESSAGE = "Error";
             getAmountsVsProgramRegionDataSpy.mockImplementationOnce(() => Promise.reject(new Error(ERROR_MESSAGE)));
-            expect(() => controller.getMontantVsProgrammeRegion()).rejects.toThrowError(ERROR_MESSAGE);
+            expect(() => controller.getAmountsVsProgramRegion()).rejects.toThrowError(ERROR_MESSAGE);
         });
     });
 });

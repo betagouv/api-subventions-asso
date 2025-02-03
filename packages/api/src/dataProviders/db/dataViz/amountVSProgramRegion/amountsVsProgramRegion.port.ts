@@ -67,7 +67,7 @@ export class AmountsVsProgramRegionPort extends MongoPort<AmountsVsProgramRegion
 
     public async findAll() {
         const result = await this.collection.find({}).toArray();
-        return result.map(dbo => AmountsVsProgrammeRegionAdapter.toEntity(dbo));
+        return result.map(dbo => AmountsVsProgramRegionAdapter.toEntity(dbo));
     }
 
     public async deleteAll() {

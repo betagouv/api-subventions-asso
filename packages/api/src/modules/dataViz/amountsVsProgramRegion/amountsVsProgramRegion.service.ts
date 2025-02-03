@@ -1,5 +1,5 @@
 import { FindCursor } from "mongodb";
-import { MontantVsProgrammeRegionDto } from "dto";
+import { AmountsVsProgramRegionDto } from "dto";
 import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
 import paymentFlatService from "../../paymentFlat/paymentFlat.service";
 import amountsVsProgramRegionPort from "../../../dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
@@ -41,7 +41,7 @@ export class AmountsVsProgramRegionService {
     }
 
     public async getAmountsVsProgramRegionData() {
-        const data = (await amountsVsProgrammeRegionPort.findAll()) as MontantVsProgrammeRegionDto[];
+        const data = (await amountsVsProgramRegionPort.findAll()) as AmountsVsProgramRegionDto[];
         return data;
     }
 }

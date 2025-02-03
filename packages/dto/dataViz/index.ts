@@ -1,2 +1,2 @@
-export * from "./GetMontantVsProgrammeRegionResponseDto";
-export * from "./MontantVsProgrammeRegionDto";
+export * from "./GetAmountsVsProgramRegionResponseDto";
+export * from "./AmountsVsProgramRegionDto";

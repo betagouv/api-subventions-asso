@@ -1,7 +1,7 @@
 import { Controller, Get, Route, Security, Tags, Response } from "tsoa";
-import { GetMontantVsProgrammeRegionResponseDto } from "dto";
+import { GetAmountsVsProgramRegionResponseDto } from "dto";
 import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
-import amountsVsProgrammeRegionService from "../../modules/dataViz/amountsVsProgramRegion/amountsVsProgramRegion.service";
+import amountsVsProgramRegionService from "../../modules/dataViz/amountsVsProgramRegion/amountsVsProgramRegion.service";
 
 @Route("dataviz")
 @Security("jwt")
@@ -9,8 +9,8 @@ import amountsVsProgrammeRegionService from "../../modules/dataViz/amountsVsProg
 export class DataVizHttp extends Controller {
     @Get("/montant-versus-programme-region")
     @Response<HttpErrorInterface>("404")
-    public async getMontantVsProgrammeRegion(): Promise<GetMontantVsProgrammeRegionResponseDto> {
-        const montantVersusProgrammeRegionData = await amountsVsProgrammeRegionService.getAmountsVsProgramRegionData();
-        return { montantVersusProgrammeRegionData };
+    public async getAmountsVsProgramRegion(): Promise<GetAmountsVsProgramRegionResponseDto> {
+        const amountsVersusProgramRegionData = await amountsVsProgramRegionService.getAmountsVsProgramRegionData();
+        return { amountsVersusProgramRegionData };
     }
 }
