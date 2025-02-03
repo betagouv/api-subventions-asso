@@ -55,7 +55,7 @@ describe("AmountsVsProgrammeRegionCli", () => {
     let cli = new AmountsVsProgrammeRegionCli();
 
     describe("init()", () => {
-        it("should persist amounts vs programme region collection", async () => {
+        it("should persist amounts vs program region collection", async () => {
             await cli.init();
             //@ts-expect-error protected method
             const amountsVsProgrammeRegion = (await amountsVsProgrammeRegionPort.collection.find({}).toArray())
@@ -70,7 +70,7 @@ describe("AmountsVsProgrammeRegionCli", () => {
     });
 
     describe("resyncExercice()", () => {
-        it("should persist amounts vs programme region collection for the given exercice", async () => {
+        it("should persist amounts vs program region collection for the given exercice", async () => {
             const exercice = 2023;
             await cli.resyncExercice(exercice);
             //@ts-expect-error protected method

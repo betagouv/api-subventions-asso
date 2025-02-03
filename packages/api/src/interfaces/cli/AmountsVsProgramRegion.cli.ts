@@ -12,12 +12,12 @@ export default class AmountsVsProgrammeRegionCli extends CliController {
         if (await amountsVsProgrammeRegionService.isCollectionInitialized())
             throw new Error("DB already initialized, used resyncExercice instead");
 
-        this.logger.logIC("Create all amounts vs programme region collection");
+        this.logger.logIC("Create all amounts vs program region collection");
         return amountsVsProgrammeRegionService.init();
     }
 
     resyncExercice(exerciceBudgetaire: number) {
-        this.logger.logIC(`Resync amounts vs programme region collection for exercice ${exerciceBudgetaire}`);
+        this.logger.logIC(`Resync amounts vs program region collection for exercice ${exerciceBudgetaire}`);
         return amountsVsProgrammeRegionService.updateCollection(exerciceBudgetaire);
     }
 }
