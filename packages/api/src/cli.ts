@@ -27,6 +27,8 @@ import DataBretagneCli from "./interfaces/cli/DataBretagne.cli";
 import PaymentFlatCli from "./interfaces/cli/PaymentFlat.cli";
 import SireneStockUniteLegaleCli from "./interfaces/cli/SireneStockUniteLegale.cli";
 import AmountsVsProgramRegionCli from "./interfaces/cli/AmountsVsProgramRegion.cli";
+import ScdlBatchCli from "./interfaces/cli/ScdlBatch.cli";
+
 async function main() {
     await connectDB();
     await initIndexes();
@@ -56,6 +58,7 @@ async function main() {
         PaymentFlatCli,
         SireneStockUniteLegaleCli,
         AmountsVsProgramRegionCli,
+        ScdlBatchCli,
     ];
 
     const args = process.argv.slice(2);

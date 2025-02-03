@@ -26,5 +26,4 @@ describe("PaymentFlatAdapter", () => {
             expect(result).toEqual(PAYMENT_FLAT_ENTITY_WITH_NULLS);
         });
     });
-
 });

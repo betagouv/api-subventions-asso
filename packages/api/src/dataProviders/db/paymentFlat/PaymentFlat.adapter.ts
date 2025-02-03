@@ -1,8 +1,8 @@
 import { ObjectId } from "mongodb";
 import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
-import PaymentFlatDbo from "./PaymentFlatDbo";
 import Siret from "../../../valueObjects/Siret";
 import Siren from "../../../valueObjects/Siren";
+import PaymentFlatDbo from "./PaymentFlatDbo";
 
 export default class PaymentsFlatAdapter {
     static toDbo(entity: PaymentFlatEntity): PaymentFlatDbo {
