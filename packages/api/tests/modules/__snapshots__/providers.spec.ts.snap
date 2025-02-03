@@ -24,10 +24,6 @@ Object {
       "name": "Démarches Simplifiées",
     },
     Object {
-      "description": "Ce jeu de données présente les subventions octroyées par la Caisse des dépôts, d'un montant supérieur à 23k€/an, à des organismes privés depuis le 01/01/2018, présenté selon le format proposé par l'arrêté du 17 novembre 2017 relatif aux conditions de mises à disposition des données essentielles des conventions de subvention.",
-      "name": "API Caisse des dépôts",
-    },
-    Object {
       "description": "Le bulletin officiel des annonces civiles et commerciales",
       "name": "Bodacc",
     },
