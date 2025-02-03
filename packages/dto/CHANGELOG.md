@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.61.0](https://github.com/betagouv/datasubvention/compare/v0.60.3...v0.61.0) (2025-02-03)
+
+### Features
+
+-   **api, dto:** [#3042](https://github.com/betagouv/datasubvention/issues/3042) add field in user ([#3067](https://github.com/betagouv/datasubvention/issues/3067)) ([1be9916](https://github.com/betagouv/datasubvention/commit/1be9916bb11c4f845e1995595b3d647291a57add))
+-   **api:** [#2851](https://github.com/betagouv/datasubvention/issues/2851) reset link in list-user admin root ([#3094](https://github.com/betagouv/datasubvention/issues/3094)) ([6165d05](https://github.com/betagouv/datasubvention/commit/6165d05dfbd8d6f40beaf114acb0690d4898e660))
+
 # [0.60.0](https://github.com/betagouv/datasubvention/compare/v0.59.2...v0.60.0) (2024-12-26)
 
 ### Features
