@@ -9,7 +9,6 @@ import apiAssoService from "./apiAsso/apiAsso.service";
 import avisSituationInseeService from "./avisSituationInsee/avisSituationInsee.service";
 import apiEntrepriseService from "./apiEntreprise/apiEntreprise.service";
 import dauphinService from "./dauphin/dauphin.service";
-import caisseDepotsService from "./caisseDepots/caisseDepots.service";
 import demarchesSimplifieesService from "./demarchesSimplifiees/demarchesSimplifiees.service";
 import bodaccService from "./bodacc/bodacc.service";
 import Provider from "./@types/IProvider";
@@ -26,7 +25,6 @@ const providers: { [key: string]: Provider } = {
     apiEntrepriseService,
     dauphinService,
     demarchesSimplifieesService,
-    caisseDepotsService,
     bodaccService,
     scdlGrantService,
     subventiaService,
