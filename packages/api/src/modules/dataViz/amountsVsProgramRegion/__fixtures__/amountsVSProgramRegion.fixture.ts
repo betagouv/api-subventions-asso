@@ -1,8 +1,8 @@
 import { ObjectId } from "mongodb";
-import { AmountsVsProgrammeRegionDbo } from "../entitiyAndDbo/amountsVsProgramRegion.dbo";
-import AmountsVsProgrammeRegionEntity from "../entitiyAndDbo/amountsVsProgramRegion.entity";
+import { AmountsVsProgramRegionDbo } from "../entitiyAndDbo/amountsVsProgramRegion.dbo";
+import AmountsVsProgramRegionEntity from "../entitiyAndDbo/amountsVsProgramRegion.entity";
 
-export const NOT_AGGREGATED_ENTITIES: AmountsVsProgrammeRegionEntity[] = [
+export const NOT_AGGREGATED_ENTITIES: AmountsVsProgramRegionEntity[] = [
     {
         exerciceBudgetaire: 2023,
         programme: "1 - Programme Exemple",
@@ -26,7 +26,7 @@ export const NOT_AGGREGATED_ENTITIES: AmountsVsProgrammeRegionEntity[] = [
     },
 ];
 
-export const AMOUNTS_VS_PROGRAM_REGION_ENTITIES: AmountsVsProgrammeRegionEntity[] = [
+export const AMOUNTS_VS_PROGRAM_REGION_ENTITIES: AmountsVsProgramRegionEntity[] = [
     {
         exerciceBudgetaire: 2023,
         programme: "1 - Programme Exemple",
@@ -43,7 +43,7 @@ export const AMOUNTS_VS_PROGRAM_REGION_ENTITIES: AmountsVsProgrammeRegionEntity[
     },
 ];
 
-export const AMOUNTS_VS_PROGRAM_REGION_DBOS: AmountsVsProgrammeRegionDbo[] = [
+export const AMOUNTS_VS_PROGRAM_REGION_DBOS: AmountsVsProgramRegionDbo[] = [
     {
         _id: new ObjectId(),
         exerciceBudgetaire: 2023,

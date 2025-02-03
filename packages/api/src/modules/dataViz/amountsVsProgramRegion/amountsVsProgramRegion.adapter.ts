@@ -1,9 +1,9 @@
 import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
-import AmountsVsProgrammeRegionEntity from "./entitiyAndDbo/amountsVsProgramRegion.entity";
+import AmountsVsProgramRegionEntity from "./entitiyAndDbo/amountsVsProgramRegion.entity";
 
-export default class AmountsVsProgrammeRegionAdapter {
-    static toNotAggregatedEntity(paymentFlatEntity: PaymentFlatEntity): AmountsVsProgrammeRegionEntity {
-        const amountsVsProgrammeRegionEntity = {
+export default class AmountsVsProgramRegionAdapter {
+    static toNotAggregatedEntity(paymentFlatEntity: PaymentFlatEntity): AmountsVsProgramRegionEntity {
+        const amountsVsProgramRegionEntity = {
             exerciceBudgetaire: paymentFlatEntity.exerciceBudgetaire,
             regionAttachementComptable: paymentFlatEntity.regionAttachementComptable
                 ? paymentFlatEntity.regionAttachementComptable
@@ -14,6 +14,6 @@ export default class AmountsVsProgrammeRegionAdapter {
             mission: paymentFlatEntity.mission,
             montant: paymentFlatEntity.amount,
         };
-        return amountsVsProgrammeRegionEntity;
+        return amountsVsProgramRegionEntity;
     }
 }

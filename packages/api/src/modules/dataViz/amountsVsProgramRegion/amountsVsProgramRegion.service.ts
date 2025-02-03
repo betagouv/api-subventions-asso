@@ -1,44 +1,44 @@
 import { FindCursor } from "mongodb";
 import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
 import paymentFlatService from "../../paymentFlat/paymentFlat.service";
-import amountsVsProgrammeRegionPort from "../../../dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
-import AmountsVsProgrammeRegionAdapter from "./amountsVsProgramRegion.adapter";
-import AmountsVsProgrammeRegionEntity from "./entitiyAndDbo/amountsVsProgramRegion.entity";
+import amountsVsProgramRegionPort from "../../../dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
+import AmountsVsProgramRegionAdapter from "./amountsVsProgramRegion.adapter";
+import AmountsVsProgramRegionEntity from "./entitiyAndDbo/amountsVsProgramRegion.entity";
 
-export class AmountsVsProgrammeRegionService {
-    public async toAmountsVsProgrammeRegionEntities(
+export class AmountsVsProgramRegionService {
+    public async toAmountsVsProgramRegionEntities(
         exerciceBudgetaire?: number,
-    ): Promise<AmountsVsProgrammeRegionEntity[]> {
+    ): Promise<AmountsVsProgramRegionEntity[]> {
         const paymentFlatCursor: FindCursor<PaymentFlatEntity> =
             paymentFlatService.cursorFindChorusOnly(exerciceBudgetaire);
 
-        const entities: Record<string, AmountsVsProgrammeRegionEntity> = {};
+        const entities: Record<string, AmountsVsProgramRegionEntity> = {};
         while (await paymentFlatCursor.hasNext()) {
             const document = (await paymentFlatCursor.next()) as PaymentFlatEntity;
             const key = `${document.regionAttachementComptable}-${document.programName}-${document.programNumber}`;
             if (entities[key]) {
                 entities[key].montant += parseFloat(document.amount.toFixed(2));
             } else {
-                entities[key] = { ...AmountsVsProgrammeRegionAdapter.toNotAggregatedEntity(document) };
+                entities[key] = { ...AmountsVsProgramRegionAdapter.toNotAggregatedEntity(document) };
             }
         }
         return Object.values(entities);
     }
 
     public async init() {
-        const entities = await this.toAmountsVsProgrammeRegionEntities();
-        await amountsVsProgrammeRegionPort.insertMany(entities);
+        const entities = await this.toAmountsVsProgramRegionEntities();
+        await amountsVsProgramRegionPort.insertMany(entities);
     }
 
     public async updateCollection(exerciceBudgetaire?: number) {
-        const entities = await this.toAmountsVsProgrammeRegionEntities(exerciceBudgetaire);
-        await amountsVsProgrammeRegionPort.upsertMany(entities);
+        const entities = await this.toAmountsVsProgramRegionEntities(exerciceBudgetaire);
+        await amountsVsProgramRegionPort.upsertMany(entities);
     }
 
     public isCollectionInitialized() {
-        return amountsVsProgrammeRegionPort.hasBeenInitialized();
+        return amountsVsProgramRegionPort.hasBeenInitialized();
     }
 }
 
-const amountsVsProgrammeRegionService = new AmountsVsProgrammeRegionService();
-export default amountsVsProgrammeRegionService;
+const amountsVsProgramRegionService = new AmountsVsProgramRegionService();
+export default amountsVsProgramRegionService;

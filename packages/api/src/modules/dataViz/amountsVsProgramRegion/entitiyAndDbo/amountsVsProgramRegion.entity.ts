@@ -1,4 +1,4 @@
-type AmountsVsProgrammeRegionEntity = {
+type AmountsVsProgramRegionEntity = {
     // For the moment this concerns only chorus data
 
     exerciceBudgetaire: number;
@@ -9,4 +9,4 @@ type AmountsVsProgrammeRegionEntity = {
     regionAttachementComptable: string;
 };
 
-export default AmountsVsProgrammeRegionEntity;
+export default AmountsVsProgramRegionEntity;

@@ -1,4 +1,4 @@
 import { WithId } from "mongodb";
-import AmountsVsProgrammeRegionEntity from "./amountsVsProgramRegion.entity";
+import AmountsVsProgramRegionEntity from "./amountsVsProgramRegion.entity";
 
-export type AmountsVsProgrammeRegionDbo = WithId<AmountsVsProgrammeRegionEntity>;
+export type AmountsVsProgramRegionDbo = WithId<AmountsVsProgramRegionEntity>;
