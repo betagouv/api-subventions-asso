@@ -184,7 +184,7 @@ describe("amountsVSProgramRegionService", () => {
         });
     });
 
-    describe("getAmountsVsProgrammeRegionData", () => {
+    describe("getAmountsVsProgramRegionData", () => {
         let mockFindAll: jest.SpyInstance;
 
         beforeEach(() => {
