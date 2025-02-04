@@ -128,6 +128,10 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider<
         console.log("All documents inserted");
     }
 
+    public cursorFindChorusOnly(exerciceBudgetaire?: number) {
+        return paymentFlatPort.cursorFindChorusOnly(exerciceBudgetaire);
+    }
+
     /**
      * |-------------------------|
      * |     Payment Part        |

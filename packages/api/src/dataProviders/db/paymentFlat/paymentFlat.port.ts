@@ -2,6 +2,7 @@ import MongoPort from "../../../shared/MongoPort";
 import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
 import Siren from "../../../valueObjects/Siren";
 import Siret from "../../../valueObjects/Siret";
+import { DefaultObject } from "../../../@types";
 import PaymentFlatDbo from "./PaymentFlatDbo";
 import PaymentFlatAdapter from "./PaymentFlat.adapter";
 
@@ -40,6 +41,16 @@ export class PaymentFlatPort extends MongoPort<PaymentFlatDbo> {
     // used in test
     public async findAll() {
         return (await this.collection.find({})).toArray();
+    }
+
+    public cursorFind(query: DefaultObject<unknown> = {}, projection: DefaultObject<unknown> = {}) {
+        return this.collection.find(query, projection).map(PaymentFlatAdapter.dboToEntity);
+    }
+
+    public cursorFindChorusOnly(exerciceBudgetaire?: number) {
+        if (!exerciceBudgetaire) {
+            return this.cursorFind({ provider: "chorus" });
+        } else return this.cursorFind({ provider: "chorus", exerciceBudgetaire: exerciceBudgetaire });
     }
 
     public async deleteAll() {

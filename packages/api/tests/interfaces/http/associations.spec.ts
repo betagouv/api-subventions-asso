@@ -21,8 +21,6 @@ import {
 } from "../../dataProviders/db/__fixtures__/demarchesSimplifiees.fixtures";
 import demarchesSimplifieesMapperPort from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port";
 import demarchesSimplifieesService from "../../../src/modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
-import caisseDepotsService from "../../../src/modules/providers/caisseDepots/caisseDepots.service";
-import { CAISSE_DES_DEPOTS_DTO } from "../../dataProviders/api/caisseDepots.fixtures";
 
 import miscScdlGrantPort from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.port";
 import DEFAULT_ASSOCIATION, { LONELY_RNA } from "../../__fixtures__/association.fixture";
@@ -43,10 +41,7 @@ jest.mock("../../../src/modules/provider-request/providerRequest.service");
 
 const g = global as unknown as { app: unknown };
 
-const mockExternalData = async () => {
-    // @ts-expect-error: mock protected http ProviderServiceRequest
-    caisseDepotsService.http = { get: () => ({ data: CAISSE_DES_DEPOTS_DTO }) };
-};
+const mockExternalData = async () => {};
 
 const insertData = async () => {
     // PAYMENTS

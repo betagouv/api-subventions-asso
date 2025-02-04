@@ -14,7 +14,6 @@ import { CliStaticInterface } from "./@types";
 
 import SubventiaCli from "./interfaces/cli/Subventia.cli";
 import DemarchesSimplifieesCli from "./interfaces/cli/DemarchesSimplifiees.cli";
-import CaisseDepotsCli from "./interfaces/cli/CaisseDepots.cli";
 import GisproCli from "./interfaces/cli/Gispro.cli";
 import DauphinCli from "./interfaces/cli/Dauphin.cli";
 import AdminStructureCli from "./interfaces/cli/AdminStructure.cli";
@@ -25,6 +24,10 @@ import { initIndexes } from "./shared/MongoInit";
 import GeoCli from "./interfaces/cli/Geo.cli";
 import DataBretagneCli from "./interfaces/cli/DataBretagne.cli";
 import PaymentFlatCli from "./interfaces/cli/PaymentFlat.cli";
+import SireneStockUniteLegaleCli from "./interfaces/cli/SireneStockUniteLegale.cli";
+import AmountsVsProgramRegionCli from "./interfaces/cli/AmountsVsProgramRegion.cli";
+import ScdlBatchCli from "./interfaces/cli/ScdlBatch.cli";
+
 async function main() {
     await connectDB();
     await initIndexes();
@@ -42,7 +45,6 @@ async function main() {
         SubventiaCli,
         ConsumerCli,
         DemarchesSimplifieesCli,
-        CaisseDepotsCli,
         GisproCli,
         DauphinCli,
         AdminStructureCli,
@@ -52,6 +54,9 @@ async function main() {
         GeoCli,
         DataBretagneCli,
         PaymentFlatCli,
+        SireneStockUniteLegaleCli,
+        AmountsVsProgramRegionCli,
+        ScdlBatchCli,
     ];
 
     const args = process.argv.slice(2);

@@ -16,7 +16,8 @@ Le script fonctionne en lançant un navigateur détaché. Il y a des bugs connus
 - Si le navigateur détaché est ouvert sur une page blanche, ouvrir un nouvel onglet dessus. Cela devrait débloquer la
   situation.
 
-**Dans ce script**, les valeurs possibles pour `TYPE_DONNÉES` sont `SuiviDossiers` et `SuiviActions`.
+**Dans ce script**, les valeurs possibles pour `TYPE_DONNÉES` sont `SuiviDossiers` et `SuiviActions`. Nous n'avons *pas*
+inclus de système pour télécharger automatiquement les évaluations.
 
 Il faut donc l'exéctuer une fois pour les dossiers et une fois pour les actions. En fin d'année, penser à exécuter aussi
 l'année suivante pour attraper des cas de pluriannualité.
@@ -26,12 +27,13 @@ Les documents seront de multiples (nombreux !) fichiers excel, rangés dans le d
 
 ## Déployer les données
 
-**Attention :** dans la partie déploiement, les types de données s'appellent  `requests` et `actions``
+**Attention :** dans la partie déploiement, les types de données s'appellent  `requests`, `actions` et `evaluations`
 
 | côté Téléchargement | côté Déploiement |
 |---------------------|------------------|
 | SuiviDossiers       | requests         |
 | SuiviActions        | actions          |
+| /                   | evaluations      |
 
 Il faudra faire les opérations suivantes pour chaque type de donnée à déployer. Ce point ne sera pas précisé au sein de
 chaque niveau.

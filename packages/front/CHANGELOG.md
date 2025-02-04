@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.61.0](https://github.com/betagouv/datasubvention/compare/v0.60.3...v0.61.0) (2025-02-03)
+
+### Bug Fixes
+
+-   **front:** add 'dev.local' in script command 'dev' ([3725900](https://github.com/betagouv/datasubvention/commit/37259005bce287c197e2b6210681ff7aa8b3eb9b))
+-   **front:** proper type given ([#3118](https://github.com/betagouv/datasubvention/issues/3118)) ([2bbfec6](https://github.com/betagouv/datasubvention/commit/2bbfec629d40537b6f18d1cf941122bdc44c372d))
+
+### Features
+
+-   **api:** [#3045](https://github.com/betagouv/datasubvention/issues/3045) no control on agent connect email domains ([#3076](https://github.com/betagouv/datasubvention/issues/3076)) ([7f7fbbe](https://github.com/betagouv/datasubvention/commit/7f7fbbe3e1671a68e3411bd5b4801dcc50dcf977))
+-   **front:** [#3043](https://github.com/betagouv/datasubvention/issues/3043) add 'from' fields in user registration form ([#3119](https://github.com/betagouv/datasubvention/issues/3119)) ([9e9a0b0](https://github.com/betagouv/datasubvention/commit/9e9a0b0f4b392dc130af3167c88f54ddddde0873))
+-   **front:** [#3116](https://github.com/betagouv/datasubvention/issues/3116) search on NIC instead of SIRET ([#3120](https://github.com/betagouv/datasubvention/issues/3120)) ([c30d924](https://github.com/betagouv/datasubvention/commit/c30d924c209379145d9202316708202e11e711c5))
+-   **front:** add security breach link in footer ([#3125](https://github.com/betagouv/datasubvention/issues/3125)) ([e38465d](https://github.com/betagouv/datasubvention/commit/e38465dbe1065c329216f2c1d679cccc44022481))
+
 ## [0.60.1](https://github.com/betagouv/datasubvention/compare/v0.60.0...v0.60.1) (2025-01-02)
 
 ### Bug Fixes

@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.61.0](https://github.com/betagouv/api-subventions-asso/compare/v0.60.3...v0.61.0) (2025-02-03)
+
+### Bug Fixes
+
+-   **api:** [#2733](https://github.com/betagouv/api-subventions-asso/issues/2733) no slash doc name on download ([#3054](https://github.com/betagouv/api-subventions-asso/issues/3054)) ([55cdf21](https://github.com/betagouv/api-subventions-asso/commit/55cdf2129392a48b6cd95165e50e3c5eedbcee7b))
+-   **api:** [#3122](https://github.com/betagouv/api-subventions-asso/issues/3122) get conf/info-main-banner not only for admin ([#3123](https://github.com/betagouv/api-subventions-asso/issues/3123)) ([5822eb9](https://github.com/betagouv/api-subventions-asso/commit/5822eb994775e95e14f72a70c895f7fa3bc149c4))
+-   **ci:** ci runs on same os as server ([567acdd](https://github.com/betagouv/api-subventions-asso/commit/567acddd8299f38720c03d2dfd93fbd51a187332))
+-   **front:** add 'dev.local' in script command 'dev' ([3725900](https://github.com/betagouv/api-subventions-asso/commit/37259005bce287c197e2b6210681ff7aa8b3eb9b))
+-   **front:** proper type given ([#3118](https://github.com/betagouv/api-subventions-asso/issues/3118)) ([2bbfec6](https://github.com/betagouv/api-subventions-asso/commit/2bbfec629d40537b6f18d1cf941122bdc44c372d))
+
+### Features
+
+-   **api, dto:** [#3042](https://github.com/betagouv/api-subventions-asso/issues/3042) add field in user ([#3067](https://github.com/betagouv/api-subventions-asso/issues/3067)) ([1be9916](https://github.com/betagouv/api-subventions-asso/commit/1be9916bb11c4f845e1995595b3d647291a57add))
+-   **api:** [#2842](https://github.com/betagouv/api-subventions-asso/issues/2842) data integration ille-et-vilaine ([#3098](https://github.com/betagouv/api-subventions-asso/issues/3098)) ([6fd5c65](https://github.com/betagouv/api-subventions-asso/commit/6fd5c651c8fd185f24acc5aaa23e3900f6ce4446))
+-   **api:** [#2851](https://github.com/betagouv/api-subventions-asso/issues/2851) reset link in list-user admin root ([#3094](https://github.com/betagouv/api-subventions-asso/issues/3094)) ([6165d05](https://github.com/betagouv/api-subventions-asso/commit/6165d05dfbd8d6f40beaf114acb0690d4898e660))
+-   **api:** [#2956](https://github.com/betagouv/api-subventions-asso/issues/2956) data integration lot ([#3059](https://github.com/betagouv/api-subventions-asso/issues/3059)) ([6fb9b23](https://github.com/betagouv/api-subventions-asso/commit/6fb9b2317abde29258069117679cae64170edde4))
+-   **api:** [#3021](https://github.com/betagouv/api-subventions-asso/issues/3021) data integration lille ([#3074](https://github.com/betagouv/api-subventions-asso/issues/3074)) ([8f63ce4](https://github.com/betagouv/api-subventions-asso/commit/8f63ce4db09092aab0af262ec7b354e9d5351e3a))
+-   **api:** [#3032](https://github.com/betagouv/api-subventions-asso/issues/3032) data integration deux-sevres ([#3075](https://github.com/betagouv/api-subventions-asso/issues/3075)) ([333bfaa](https://github.com/betagouv/api-subventions-asso/commit/333bfaa4a99b05257e82af080410f071cf6f65d4))
+-   **api:** [#3045](https://github.com/betagouv/api-subventions-asso/issues/3045) no control on agent connect email domains ([#3076](https://github.com/betagouv/api-subventions-asso/issues/3076)) ([7f7fbbe](https://github.com/betagouv/api-subventions-asso/commit/7f7fbbe3e1671a68e3411bd5b4801dcc50dcf977))
+-   **api:** [#3073](https://github.com/betagouv/api-subventions-asso/issues/3073) data integration caisse des dépôts ([#3131](https://github.com/betagouv/api-subventions-asso/issues/3131)) ([c1d04e8](https://github.com/betagouv/api-subventions-asso/commit/c1d04e8f1fa65de63e4b89dd66b9f61c19132811))
+-   **api:** [#3102](https://github.com/betagouv/api-subventions-asso/issues/3102) data integration loire ([#3139](https://github.com/betagouv/api-subventions-asso/issues/3139)) ([ffc6b47](https://github.com/betagouv/api-subventions-asso/commit/ffc6b475fc06d28768cced1e46c00cee34c5ade9))
+-   **api:** [#3103](https://github.com/betagouv/api-subventions-asso/issues/3103) data integration occitanie ([#3129](https://github.com/betagouv/api-subventions-asso/issues/3129)) ([4974247](https://github.com/betagouv/api-subventions-asso/commit/497424717d4702eac2fc5f75c2053fd137ceb090))
+-   **api:** [#3110](https://github.com/betagouv/api-subventions-asso/issues/3110) create consomer via http route ([#3117](https://github.com/betagouv/api-subventions-asso/issues/3117)) ([c101fc8](https://github.com/betagouv/api-subventions-asso/commit/c101fc85042bc4183c95978cc0bf6760f32dcdd3))
+-   **api:** [#3121](https://github.com/betagouv/api-subventions-asso/issues/3121) scdl integration script ([#3124](https://github.com/betagouv/api-subventions-asso/issues/3124)) ([593deb4](https://github.com/betagouv/api-subventions-asso/commit/593deb4717b6d642bede5b4500b4dbbdee2d3986))
+-   **api:** [#3132](https://github.com/betagouv/api-subventions-asso/issues/3132) add registration source informations in brevo ([#3133](https://github.com/betagouv/api-subventions-asso/issues/3133)) ([535d8bd](https://github.com/betagouv/api-subventions-asso/commit/535d8bd357aa84926392a6659170ab7c3e525bf5))
+-   **front:** [#3043](https://github.com/betagouv/api-subventions-asso/issues/3043) add 'from' fields in user registration form ([#3119](https://github.com/betagouv/api-subventions-asso/issues/3119)) ([9e9a0b0](https://github.com/betagouv/api-subventions-asso/commit/9e9a0b0f4b392dc130af3167c88f54ddddde0873))
+-   **front:** [#3116](https://github.com/betagouv/api-subventions-asso/issues/3116) search on NIC instead of SIRET ([#3120](https://github.com/betagouv/api-subventions-asso/issues/3120)) ([c30d924](https://github.com/betagouv/api-subventions-asso/commit/c30d924c209379145d9202316708202e11e711c5))
+-   **front:** add security breach link in footer ([#3125](https://github.com/betagouv/api-subventions-asso/issues/3125)) ([e38465d](https://github.com/betagouv/api-subventions-asso/commit/e38465dbe1065c329216f2c1d679cccc44022481))
+
 ## [0.60.3](https://github.com/betagouv/api-subventions-asso/compare/v0.60.2...v0.60.3) (2025-01-06)
 
 ### Bug Fixes

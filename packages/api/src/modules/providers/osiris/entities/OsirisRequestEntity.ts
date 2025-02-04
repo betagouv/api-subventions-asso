@@ -3,7 +3,6 @@ import { ParserInfo, ParserPath } from "../../../../@types";
 import ILegalInformations from "../../../search/@types/ILegalInformations";
 import RequestEntity from "../../../search/entities/RequestEntity";
 import IOsirisRequestInformations from "../@types/IOsirisRequestInformations";
-import { GenericParser } from "../../../../shared/GenericParser";
 import OsirisActionEntity from "./OsirisActionEntity";
 
 const dossier = ["Dossier/action", "Dossier"];
@@ -11,20 +10,17 @@ const dossier = ["Dossier/action", "Dossier"];
 export default class OsirisRequestEntity extends RequestEntity {
     public static defaultMainCategory = "Dossier";
 
-    public static adaptsToNb = value => (value ? (typeof value === "number" ? value : parseFloat(value)) : value);
-
     public static indexedProviderInformationsPath: {
-        [key: string]: ParserPath | ParserInfo<string | number>;
+        [key: string]: ParserPath | ParserInfo; // TODO <string|number>
     } = {
         osirisId: [dossier, "N° Dossier Osiris"],
-        exercise: { path: [dossier, "Exercice Budgetaire"], adapter: OsirisRequestEntity.adaptsToNb },
         compteAssoId: [dossier, "N° Dossier Compte Asso"],
         ej: [dossier, "N° EJ"],
         amountAwarded: {
             path: ["Montants", "Accordé"],
             adapter: value => {
                 if (!value) return value;
-                if (typeof value == "number") return value;
+
                 return parseFloat(value);
             },
         },
@@ -32,7 +28,7 @@ export default class OsirisRequestEntity extends RequestEntity {
             path: [dossier, "Date Commission"],
             adapter: value => {
                 if (!value) return value;
-                if (typeof value == "number") return GenericParser.ExcelDateToJSDate(value);
+
                 const [day, month, year] = value.split("/").map(v => parseInt(v, 10));
                 return new Date(Date.UTC(year, month - 1, day));
             },
@@ -41,7 +37,6 @@ export default class OsirisRequestEntity extends RequestEntity {
             path: [dossier, "Exercice Début"],
             adapter: value => {
                 if (!value) return value;
-                if (typeof value == "number") return value;
                 return new Date(Date.UTC(parseInt(value), 0));
             },
         },
@@ -70,40 +65,40 @@ export default class OsirisRequestEntity extends RequestEntity {
 
         montantsTotal: {
             path: ["Montants", "Coût (Total des Charges)"],
-            adapter: OsirisRequestEntity.adaptsToNb,
+            adapter: value => (value ? parseFloat(value) : value),
         },
         montantsDemande: {
             path: ["Montants", "Demandé"],
-            adapter: OsirisRequestEntity.adaptsToNb,
+            adapter: value => (value ? parseFloat(value) : value),
         },
         montantsPropose: {
             path: ["Montants", "Proposé"],
-            adapter: OsirisRequestEntity.adaptsToNb,
+            adapter: value => (value ? parseFloat(value) : value),
         },
         montantsAccorde: {
             path: ["Montants", "Accordé"],
-            adapter: OsirisRequestEntity.adaptsToNb,
+            adapter: value => (value ? parseFloat(value) : value),
         },
 
         versementAcompte: {
             path: ["Versements", "Acompte"],
-            adapter: OsirisRequestEntity.adaptsToNb,
+            adapter: value => (value ? parseFloat(value) : value),
         },
         versementSolde: {
             path: ["Versements", "Solde"],
-            adapter: OsirisRequestEntity.adaptsToNb,
+            adapter: value => (value ? parseFloat(value) : value),
         },
         versementRealise: {
             path: ["Versements", "Réalisé"],
-            adapter: OsirisRequestEntity.adaptsToNb,
+            adapter: value => (value ? parseFloat(value) : value),
         },
         versementCompensationN1: {
             path: ["Versements", "Compensation N-1"],
-            adapter: OsirisRequestEntity.adaptsToNb,
+            adapter: value => (value ? parseFloat(value) : value),
         },
         versementCompensationN: {
             path: ["Versements", "Reversement/Compensation"],
-            adapter: OsirisRequestEntity.adaptsToNb,
+            adapter: value => (value ? parseFloat(value) : value),
         },
     };
 
@@ -125,6 +120,5 @@ export default class OsirisRequestEntity extends RequestEntity {
         public actions?: OsirisActionEntity[],
     ) {
         super(legalInformations);
-        this.providerInformations.uniqueId = `${this.providerInformations.osirisId}-${this.providerInformations.exercise}`;
     }
 }
