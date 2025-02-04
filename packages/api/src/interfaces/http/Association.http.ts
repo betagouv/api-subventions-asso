@@ -26,7 +26,7 @@ async function isAssoIdentifierFromAssoMiddleware(req, _res, next) {
      * middleware that
      * * retrieves normalized identifier from param `identifier` and throws if identifier does not belong
      *   to an association
-     * * stores normalized identifier in request as `assoidentifier`
+     * * stores normalized identifier in request as `assoIdentifier`
      * requires that identifier is present in parameter `identifier`
      * */
     try {
@@ -42,7 +42,7 @@ async function isAssoIdentifierFromAssoMiddleware(req, _res, next) {
     next();
 }
 
-@Route("association")
+@Route("association/{identifier}")
 @Middlewares(isAssoIdentifierFromAssoMiddleware)
 @Security("jwt")
 @Tags("Association Controller")
@@ -60,7 +60,7 @@ export class AssociationHttp extends Controller {
      * @param identifier Siret, Siren ou Rna
      * @param req
      */
-    @Get("/{identifier}")
+    @Get("/")
     @Response<HttpErrorInterface>("404")
     public async getAssociation(
         @Path() identifier: StructureIdentifierDto,
@@ -79,7 +79,7 @@ export class AssociationHttp extends Controller {
      * @param identifier Identifiant Siren ou Rna
      * @param req
      */
-    @Get("/{identifier}/subventions")
+    @Get("/subventions")
     @Response<HttpErrorInterface>("404")
     public async getDemandeSubventions(
         identifier: AssociationIdentifierDto,
@@ -104,7 +104,7 @@ export class AssociationHttp extends Controller {
      * @param identifier Identifiant Siren ou Rna
      * @param req
      */
-    @Get("/{identifier}/versements")
+    @Get("/versements")
     public async getPayments(identifier: AssociationIdentifierDto, @Request() req): Promise<GetPaymentsResponseDto> {
         const associationIdentifiers = await this.getIdentifier(req, identifier);
 
@@ -119,7 +119,7 @@ export class AssociationHttp extends Controller {
      * @param req
      * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
      */
-    @Get("/{identifier}/grants")
+    @Get("/grants")
     public async getGrants(identifier: AssociationIdentifierDto, @Request() req): Promise<GetGrantsResponseDto> {
         const associationIdentifiers = await this.getIdentifier(req, identifier);
         const grants = await grantService.getGrants(associationIdentifiers);
@@ -133,7 +133,7 @@ export class AssociationHttp extends Controller {
      * @param req
      * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
      */
-    @Get("/{identifier}/grants/csv")
+    @Get("/grants/csv")
     @Produces("text/csv")
     @Response<string>("200")
     public async getGrantsExtract(identifier: AssociationIdentifierDto, @Request() req): Promise<Readable> {
@@ -158,7 +158,7 @@ export class AssociationHttp extends Controller {
      * @param identifier Identifiant Siren ou Rna
      * @param req
      */
-    @Get("/{identifier}/raw-grants")
+    @Get("/raw-grants")
     @Security("jwt", ["admin"])
     @Response<HttpErrorInterface>("404")
     public async getRawGrants(identifier: AssociationIdentifierDto, @Request() req): Promise<JoinedRawGrant[]> {
@@ -174,7 +174,7 @@ export class AssociationHttp extends Controller {
      * @param identifier Identifiant Siren ou Rna
      * @param req
      */
-    @Get("/{identifier}/documents")
+    @Get("/documents")
     public async getDocuments(identifier: AssociationIdentifierDto, @Request() req): Promise<GetDocumentsResponseDto> {
         const associationIdentifiers = await this.getIdentifier(req, identifier);
 
@@ -187,7 +187,7 @@ export class AssociationHttp extends Controller {
      * @param identifier Identifiant Siren ou Rna
      * @param req
      */
-    @Get("/{identifier}/etablissements")
+    @Get("/etablissements")
     public async getEstablishments(
         identifier: AssociationIdentifierDto,
         @Request() req,
@@ -203,7 +203,7 @@ export class AssociationHttp extends Controller {
      * @deprecated
      */
     @Hidden()
-    @Get("/{identifier}/extract-data")
+    @Get("/extract-data")
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async registerExtract(): Promise<boolean> {
         return true;
