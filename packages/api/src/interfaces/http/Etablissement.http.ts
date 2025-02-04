@@ -9,43 +9,68 @@ import {
     EstablishmentIdentifierDto,
     SiretDto,
 } from "dto";
-import { Route, Get, Controller, Tags, Security, Response, Produces } from "tsoa";
+import { Route, Get, Controller, Tags, Security, Response, Produces, Middlewares, Hidden } from "tsoa";
 import etablissementService from "../../modules/etablissements/etablissements.service";
 import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
 import establishmentIdentifierService from "../../modules/establishment-identifier/establishment-identifier.service";
 import grantExtractService from "../../modules/grant/grantExtract.service";
+import { BadRequestError } from "../../shared/errors/httpErrors";
+import { errorHandler } from "../../middlewares/ErrorMiddleware";
+import associationService from "../../modules/associations/associations.service";
 
-@Route("etablissement")
+async function isEtabIdentifierFromAssoMiddleware(req, _res, next) {
+    /*
+     * middleware that
+     * * retrieves normalized identifier from param `identifier` and throws if identifier does not belong
+     *   to an association
+     * * stores normalized establishment identifier in request as `estabIdentifier`
+     * requires that identifier is present in parameter `identifier`
+     * */
+    try {
+        const identifier = req.params.identifier;
+        const estabIdentifier = await establishmentIdentifierService.getEstablishmentIdentifiers(identifier);
+        if (!(await associationService.isIdentifierFromAsso(estabIdentifier.associationIdentifier)))
+            throw new BadRequestError("L'identifiant n'appartient pas à une association");
+        req.estabIdentifier = estabIdentifier;
+    } catch (e) {
+        // somehow errorMiddleware does not catch errors in tsoa middlewares so it needs ot be called explicitly
+        errorHandler(false)(e, req, _res, next);
+    }
+    next();
+}
+
+@Route("etablissement/{identifier}")
+@Middlewares(isEtabIdentifierFromAssoMiddleware)
 @Security("jwt")
 @Tags("Etablissement Controller")
 export class EtablissementHttp extends Controller {
     /**
      * Remonte les informations d'un établissement
-     * @param siret Identifiant Siret
+     * @param identifier  Identifiant Siret
      */
-    @Get("/{siret}")
+    @Get("/")
     @Response<HttpErrorInterface>("400", "SIRET incorrect", {
         message: "You must provide a valid SIRET",
     })
     @Response<HttpErrorInterface>("404", "L'établissement n'a pas été trouvé", {
         message: "Etablissement not found",
     })
-    public async getEtablissement(siret: EstablishmentIdentifierDto): Promise<GetEtablissementResponseDto> {
-        const identifier = await establishmentIdentifierService.getEstablishmentIdentifiers(siret);
-        const etablissement = await etablissementService.getEtablissement(identifier);
+    public async getEtablissement(identifier: EstablishmentIdentifierDto): Promise<GetEtablissementResponseDto> {
+        const estabIdentifier = await establishmentIdentifierService.getEstablishmentIdentifiers(identifier);
+        const etablissement = await etablissementService.getEtablissement(estabIdentifier);
         return { etablissement };
     }
 
     /**
      *
      * * @summary Recherche toutes les informations des subventions d'un établissement (demandes ET versements)
-     * @param siret SIRET de l'établissement
+     * @param identifier  SIRET de l'établissement
      * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
      */
-    @Get("/{siret}/grants")
-    public async getGrants(siret: EstablishmentIdentifierDto): Promise<GetGrantsResponseDto> {
-        const identifier = await establishmentIdentifierService.getEstablishmentIdentifiers(siret);
-        const grants = await etablissementService.getGrants(identifier);
+    @Get("grants")
+    public async getGrants(identifier: EstablishmentIdentifierDto): Promise<GetGrantsResponseDto> {
+        const estabIdentifier = await establishmentIdentifierService.getEstablishmentIdentifiers(identifier);
+        const grants = await etablissementService.getGrants(estabIdentifier);
         return { subventions: grants };
     }
 
@@ -53,13 +78,13 @@ export class EtablissementHttp extends Controller {
      * Recherche les demandes de subventions liées à un établissement
      *
      * @summary Recherche les demandes de subventions liées à un établissement
-     * @param siret Identifiant Siret
+     * @param identifier  Identifiant Siret
      */
-    @Get("/{siret}/subventions")
-    public async getDemandeSubventions(siret: EstablishmentIdentifierDto): Promise<GetSubventionsResponseDto> {
-        const identifier = await establishmentIdentifierService.getEstablishmentIdentifiers(siret);
+    @Get("subventions")
+    public async getDemandeSubventions(identifier: EstablishmentIdentifierDto): Promise<GetSubventionsResponseDto> {
+        const estabIdentifier = await establishmentIdentifierService.getEstablishmentIdentifiers(identifier);
 
-        const data = await etablissementService.getSubventions(identifier).toPromise();
+        const data = await etablissementService.getSubventions(estabIdentifier).toPromise();
         const subventions = data
             .map(subFlux => subFlux.subventions)
             .flat()
@@ -71,12 +96,12 @@ export class EtablissementHttp extends Controller {
      * Recherche les payments liés à un établissement
      *
      * @summary Recherche les payments liés à un établissement
-     * @param siret Identifiant Siret
+     * @param identifier  Identifiant Siret
      */
-    @Get("/{siret}/versements")
-    public async getPaymentsEstablishement(siret: EstablishmentIdentifierDto): Promise<GetPaymentsResponseDto> {
-        const establishement = await establishmentIdentifierService.getEstablishmentIdentifiers(siret);
-        const payments = await etablissementService.getPayments(establishement);
+    @Get("versements")
+    public async getPaymentsEstablishement(identifier: EstablishmentIdentifierDto): Promise<GetPaymentsResponseDto> {
+        const estabIdentifier = await establishmentIdentifierService.getEstablishmentIdentifiers(identifier);
+        const payments = await etablissementService.getPayments(estabIdentifier);
         return { versements: payments };
     }
 
@@ -84,45 +109,45 @@ export class EtablissementHttp extends Controller {
      * Recherche les documents liés à un établissement
      *
      * @summary Recherche les documents liés à un établissement
-     * @param siret Identifiant Siret
+     * @param identifier  Identifiant Siret
      */
-    @Get("/{siret}/documents")
-    public async getDocuments(siret: EstablishmentIdentifierDto): Promise<GetDocumentsResponseDto> {
-        const identifier = await establishmentIdentifierService.getEstablishmentIdentifiers(siret);
-        const documents = await etablissementService.getDocuments(identifier);
+    @Get("documents")
+    public async getDocuments(identifier: EstablishmentIdentifierDto): Promise<GetDocumentsResponseDto> {
+        const estabIdentifier = await establishmentIdentifierService.getEstablishmentIdentifiers(identifier);
+        const documents = await etablissementService.getDocuments(estabIdentifier);
         return { documents };
     }
 
-    @Get("/{siret}/documents/rib")
-    public async getRibs(siret: EstablishmentIdentifierDto): Promise<GetDocumentsResponseDto> {
-        const identifier = await establishmentIdentifierService.getEstablishmentIdentifiers(siret);
-        const ribs = await etablissementService.getRibs(identifier);
+    @Get("documents/rib")
+    public async getRibs(identifier: EstablishmentIdentifierDto): Promise<GetDocumentsResponseDto> {
+        const estabIdentifier = await establishmentIdentifierService.getEstablishmentIdentifiers(identifier);
+        const ribs = await etablissementService.getRibs(estabIdentifier);
         return { documents: ribs };
     }
 
     /**
      * Permet de logger le mail de l'utilisateur qui fait un extract
-     * @param identifier Identifiant Siret
      * @deprecated
      */
+    @Hidden()
     @Get("/{identifier}/extract-data")
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public async registerExtract(identifier: EstablishmentIdentifierDto): Promise<boolean> {
+    public async registerExtract(): Promise<boolean> {
         return true;
     }
 
     /**
      *
      * @summary Recherche toutes les informations des subventions d'un établissement (demandes ET versements) et en extrait un fichier csv
-     * @param siret SIRET de l'établissement
+     * @param identifier  SIRET de l'établissement
      * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
      */
-    @Get("/{siret}/grants/csv")
+    @Get("/grants/csv")
     @Produces("text/csv")
     @Response<string>("200")
-    public async getGrantsExtract(siret: SiretDto): Promise<Readable> {
-        const identifier = await establishmentIdentifierService.getEstablishmentIdentifiers(siret);
-        const { csv, fileName } = await grantExtractService.buildCsv(identifier);
+    public async getGrantsExtract(identifier: SiretDto): Promise<Readable> {
+        const estabIdentifier = await establishmentIdentifierService.getEstablishmentIdentifiers(identifier);
+        const { csv, fileName } = await grantExtractService.buildCsv(estabIdentifier);
 
         this.setHeader("Content-Type", "text/csv");
         this.setHeader("Content-Disposition", `inline; filename=${fileName}`);
