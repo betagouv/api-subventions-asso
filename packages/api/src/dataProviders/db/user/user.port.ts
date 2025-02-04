@@ -1,5 +1,5 @@
 import { UserDto } from "dto";
-import { Filter, ObjectId } from "mongodb";
+import { Filter, FindCursor, FindOptions, ObjectId, WithId } from "mongodb";
 import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../shared/helpers/MongoHelper";
 import MongoPort from "../../../shared/MongoPort";
 import { removeHashPassword, removeSecrets } from "../../../shared/helpers/PortHelper";
@@ -23,9 +23,16 @@ export class UserPort extends MongoPort<UserDbo> {
         return removeSecrets(user);
     }
 
-    async find(query: Filter<UserDbo> = {}): Promise<UserDto[]> {
-        const dbos = await this.collection.find(query).toArray();
+    async find(query: Filter<UserDbo> = {}, options?: FindOptions): Promise<UserDto[]> {
+        const dbos = await this.collection.find(query, options).toArray();
         return dbos.map(dbo => removeSecrets(dbo));
+    }
+
+    async findEmails(userIds: string[]): Promise<{ _id: string; email: string }[]> {
+        const result = await this.collection
+            .find({ _id: { $in: userIds.map(id => new ObjectId(id)) } }, { projection: { email: 1 } })
+            .toArray();
+        return result.map(document => ({ ...document, _id: document._id.toString() }));
     }
 
     async findById(userId: ObjectId | string): Promise<UserDto | null> {

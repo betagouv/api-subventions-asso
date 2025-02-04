@@ -8,6 +8,7 @@
 process.env.JWT_SECRET = require("crypto").randomBytes(256).toString("base64");
 process.env.BETA_GOUV_DOMAIN = "beta.gouv.fr";
 process.env.AGENT_CONNECT_ENABLED = "true";
+process.env.API_BREVO_TOKEN = "1FT47%TRADF!";
 
 /**
  *
@@ -57,6 +58,7 @@ jest.mock("@getbrevo/brevo", () => {
     }
     class TransactionalEmailsApi {
         sendTransacEmail = jest.fn().mockResolvedValue(true);
+        setApiKey = jest.fn();
     }
     return {
         TransactionalEmailsApi,
@@ -71,7 +73,7 @@ jest.mock("@getbrevo/brevo", () => {
             },
         },
         ContactsApi,
-        UpdateContact
+        UpdateContact,
     };
 });
 

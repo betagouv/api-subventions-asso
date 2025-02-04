@@ -48,8 +48,8 @@ export default class UserCli {
         await userStatsService.updateAllUsersInSubTools();
     }
 
-    updateNbRequests() {
-        return userStatsService.updateNbRequests();
+    async updateNbRequests() {
+        await userStatsService.updateNbRequests();
         // TODO also update to brevo #1900
     }
 }

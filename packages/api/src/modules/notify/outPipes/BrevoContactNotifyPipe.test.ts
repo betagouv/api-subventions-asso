@@ -5,7 +5,7 @@ import {
     RegistrationSrcTypeEnum,
     TerritorialScopeEnum,
 } from "dto";
-import { API_SENDINBLUE_CONTACT_LIST } from "../../../configurations/apis.conf";
+import { API_BREVO_CONTACT_LIST } from "../../../configurations/apis.conf";
 import { NotificationType } from "../@types/NotificationType";
 import BrevoContactNotifyPipe from "./BrevoContactNotifyPipe";
 
@@ -70,7 +70,7 @@ describe("BrevoContactNotifyPipe", () => {
                     SOURCE_IMPORT: "Data.Subvention",
                     LIEN_ACTIVATION: "TOKEN",
                 },
-                listIds: [Number(API_SENDINBLUE_CONTACT_LIST)],
+                listIds: [Number(API_BREVO_CONTACT_LIST)],
             };
 
             // @ts-expect-error userCreated is private method
@@ -91,7 +91,7 @@ describe("BrevoContactNotifyPipe", () => {
             await BrevoContactNotifyPipe.userActivated({ email: USER_EMAIL });
             expect(mockUpdateContact).toHaveBeenCalledWith(USER_EMAIL, {
                 attributes: { COMPTE_ACTIVE: true, LIEN_ACTIVATION: "" },
-                listIds: [Number(API_SENDINBLUE_CONTACT_LIST)],
+                listIds: [Number(API_BREVO_CONTACT_LIST)],
             });
         });
     });
@@ -106,7 +106,7 @@ describe("BrevoContactNotifyPipe", () => {
 
             expect(mockUpdateContact).toHaveBeenCalledWith(email, {
                 attributes: { DERNIERE_CONNEXION: now },
-                listIds: [Number(API_SENDINBLUE_CONTACT_LIST)],
+                listIds: [Number(API_BREVO_CONTACT_LIST)],
             });
         });
     });

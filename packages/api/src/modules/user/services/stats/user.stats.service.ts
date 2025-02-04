@@ -37,7 +37,25 @@ export class UserStatsService {
             }),
         );
         await userPort.updateNbRequests(countByUser);
-        await configurationsService.setLastUserStatsUpdate(until);
+        // await configurationsService.setLastUserStatsUpdate(until);
+
+        // should we await this ? to ensure we got feedback from Brevo update ?
+        await this.updateNbRequestsInBrevo(countByUser);
+    }
+
+    private async updateNbRequestsInBrevo(countByUser: { _id: string; count: number }[]) {
+        const userIds = countByUser.map(userCount => userCount._id);
+        const usersIdWithEmail = await userPort.findEmails(userIds);
+        const emailsWithNbRequests: { email: string; requests: number }[] = [];
+        countByUser.forEach(idWithCount => {
+            const email = usersIdWithEmail.find(idWithEmail => idWithCount._id === idWithEmail._id)?.email;
+            if (email) {
+                emailsWithNbRequests.push({ email, requests: idWithCount.count });
+            } else
+                console.warn(`Trying to update the number of requests for an unknown user with id ${idWithCount._id}`);
+        });
+
+        await notifyService.notify(NotificationType.STATS_NB_REQUESTS, emailsWithNbRequests);
     }
 
     async notifyAllUsersInSubTools() {

@@ -1,8 +1,8 @@
 import { BrevoMailNotifyPipe, TemplateEnum } from "./BrevoMailNotifyPipe";
-import Brevo from "@getbrevo/brevo";
+import * as Brevo from "@getbrevo/brevo";
 
 jest.mock("@getbrevo/brevo", () => ({
-    TransactionalEmailsApi: jest.fn(),
+    TransactionalEmailsApi: jest.fn(() => ({ setApiKey: jest.fn() })),
     SendSmtpEmail: jest.fn(() => ({ templateId: undefined })),
     ApiClient: {
         instance: {
@@ -18,7 +18,11 @@ jest.mock("@getbrevo/brevo", () => ({
 describe("BrevoMailNotify", () => {
     const mockSendMail = jest.fn();
     const mockSendTransacEmail = jest.fn();
-    Brevo.TransactionalEmailsApi.mockImplementation(() => ({ sendTransacEmail: mockSendTransacEmail }));
+    // @ts-expect-error: partial mock of class
+    jest.mocked(Brevo.TransactionalEmailsApi).mockImplementation(() => ({
+        sendTransacEmail: mockSendTransacEmail,
+        setApiKey: jest.fn(),
+    }));
     let provider: BrevoMailNotifyPipe;
     const EMAIL = "EMAIL";
 
