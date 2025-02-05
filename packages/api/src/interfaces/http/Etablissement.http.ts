@@ -18,7 +18,7 @@ import { errorHandler } from "../../middlewares/ErrorMiddleware";
 import associationService from "../../modules/associations/associations.service";
 import NotAssociationError from "../../shared/errors/NotAssociationError";
 
-async function isEtabIdentifierFromAssoMiddleware(req, _res, next) {
+export async function isEtabIdentifierFromAssoMiddleware(req, _res, next) {
     /*
      * middleware that
      * * retrieves normalized identifier from param `identifier` and throws if identifier does not belong
@@ -152,7 +152,6 @@ export class EtablissementHttp extends Controller {
 
     /**
      * Permet de logger le mail de l'utilisateur qui fait un extract
-     * @deprecated
      */
     @Hidden()
     @Get("/{identifier}/extract-data")

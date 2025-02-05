@@ -21,7 +21,7 @@ import grantExtractService from "../../modules/grant/grantExtract.service";
 import { errorHandler } from "../../middlewares/ErrorMiddleware";
 import NotAssociationError from "../../shared/errors/NotAssociationError";
 
-async function isAssoIdentifierFromAssoMiddleware(req, _res, next) {
+export async function isAssoIdentifierFromAssoMiddleware(req, _res, next) {
     /*
      * middleware that
      * * retrieves normalized identifier from param `identifier` and throws if identifier does not belong
@@ -199,7 +199,6 @@ export class AssociationHttp extends Controller {
 
     /**
      * Permet de logger le mail de l'utilisateur qui fait un extract
-     * @deprecated
      */
     @Hidden()
     @Get("/extract-data")
