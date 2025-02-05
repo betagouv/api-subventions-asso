@@ -14,9 +14,9 @@ import etablissementService from "../../modules/etablissements/etablissements.se
 import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
 import establishmentIdentifierService from "../../modules/establishment-identifier/establishment-identifier.service";
 import grantExtractService from "../../modules/grant/grantExtract.service";
-import { BadRequestError } from "../../shared/errors/httpErrors";
 import { errorHandler } from "../../middlewares/ErrorMiddleware";
 import associationService from "../../modules/associations/associations.service";
+import NotAssociationError from "../../shared/errors/NotAssociationError";
 
 async function isEtabIdentifierFromAssoMiddleware(req, _res, next) {
     /*
@@ -30,7 +30,7 @@ async function isEtabIdentifierFromAssoMiddleware(req, _res, next) {
         const identifier = req.params.identifier;
         const estabIdentifier = await establishmentIdentifierService.getEstablishmentIdentifiers(identifier);
         if (!(await associationService.isIdentifierFromAsso(estabIdentifier.associationIdentifier)))
-            throw new BadRequestError("L'identifiant n'appartient pas à une association");
+            throw new NotAssociationError();
         req.estabIdentifier = estabIdentifier;
     } catch (e) {
         // somehow errorMiddleware does not catch errors in tsoa middlewares so it needs ot be called explicitly
