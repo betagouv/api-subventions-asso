@@ -18,8 +18,8 @@ import grantService from "../../modules/grant/grant.service";
 import { JoinedRawGrant } from "../../modules/grant/@types/rawGrant";
 import associationIdentifierService from "../../modules/association-identifier/association-identifier.service";
 import grantExtractService from "../../modules/grant/grantExtract.service";
-import { BadRequestError } from "../../shared/errors/httpErrors";
 import { errorHandler } from "../../middlewares/ErrorMiddleware";
+import NotAssociationError from "../../shared/errors/NotAssociationError";
 
 async function isAssoIdentifierFromAssoMiddleware(req, _res, next) {
     /*
@@ -32,8 +32,7 @@ async function isAssoIdentifierFromAssoMiddleware(req, _res, next) {
     try {
         const identifier = req.params.identifier;
         const associationIdentifiers = await associationIdentifierService.getOneAssociationIdentifier(identifier);
-        if (!(await associationService.isIdentifierFromAsso(associationIdentifiers)))
-            throw new BadRequestError("L'identifiant n'appartient pas à une association");
+        if (!(await associationService.isIdentifierFromAsso(associationIdentifiers))) throw new NotAssociationError();
         req.assoIdentifier = associationIdentifiers;
     } catch (e) {
         // somehow errorMiddleware does not catch errors in tsoa middlewares so it needs ot be called explicitly
