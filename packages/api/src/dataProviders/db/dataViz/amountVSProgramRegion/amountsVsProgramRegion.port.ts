@@ -75,5 +75,5 @@ export class AmountsVsProgramRegionPort extends MongoPort<AmountsVsProgramRegion
     }
 }
 
-const amountsVsProgrammeRegionPort = new AmountsVsProgramRegionPort();
-export default amountsVsProgrammeRegionPort;
+const amountsVsProgramRegionPort = new AmountsVsProgramRegionPort();
+export default amountsVsProgramRegionPort;
