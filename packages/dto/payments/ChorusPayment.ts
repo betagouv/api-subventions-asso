@@ -4,7 +4,7 @@ import { BasePayment } from "./BasePayment";
 export interface ChorusPayment extends BasePayment {
     ej: ProviderValue<string>;
     centreFinancier?: ProviderValue<string>;
-    domaineFonctionnel: ProviderValue<string>;
+    domaineFonctionnel?: ProviderValue<string>;
     numeroDemandePaiement?: ProviderValue<string>;
     numeroTier?: ProviderValue<string>;
     activitee?: ProviderValue<string>;

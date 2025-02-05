@@ -43,7 +43,7 @@ export const PAYMENT_FROM_PAYMENT_FLAT_DBO: ChorusPayment = {
     amount: buildProviderValue(PAYMENT_FLAT_DBO.montant),
     dateOperation: buildProviderValue(PAYMENT_FLAT_DBO.dateOperation),
     centreFinancier: buildProviderValue(PAYMENT_FLAT_DBO.libelleCentreFinancier),
-    domaineFonctionnel: buildProviderValue(PAYMENT_FLAT_DBO.codeAction),
+    domaineFonctionnel: buildProviderValue(PAYMENT_FLAT_DBO.action),
     activitee: buildProviderValue(PAYMENT_FLAT_DBO.activite),
     programme: buildProviderValue(PAYMENT_FLAT_DBO.numeroProgramme),
     libelleProgramme: buildProviderValue(PAYMENT_FLAT_DBO.programme),

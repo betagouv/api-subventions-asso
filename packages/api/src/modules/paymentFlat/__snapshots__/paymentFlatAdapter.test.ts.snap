@@ -30,7 +30,7 @@ Object {
     "last_update": 2023-04-01T00:00:00.000Z,
     "provider": "PaymentFlat",
     "type": "string",
-    "value": "AC123",
+    "value": "Label d'action Exemple",
   },
   "ej": Object {
     "last_update": 2023-04-01T00:00:00.000Z,

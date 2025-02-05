@@ -123,7 +123,7 @@ export default class PaymentFlatAdapter {
             amount: toPvPaymentFlat(entity.montant),
             dateOperation: toPvPaymentFlat(entity.dateOperation),
             centreFinancier: toPvOrUndefined(entity.libelleCentreFinancier),
-            domaineFonctionnel: toPvPaymentFlat(entity.codeAction),
+            domaineFonctionnel: toPvOrUndefined(entity.action),
             activitee: toPvOrUndefined(entity.activite),
             programme: toPvPaymentFlat(entity.numeroProgramme),
             libelleProgramme: toPvOrUndefined(entity.programme),
