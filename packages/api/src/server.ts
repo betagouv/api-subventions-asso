@@ -23,7 +23,7 @@ import UserActivityMiddleware from "./middlewares/UserActivityMiddleware";
 import { IdentifiedRequest } from "./@types";
 import { initCron } from "./cron";
 import { headersMiddleware } from "./middlewares/headersMiddleware";
-import { ENV } from "./configurations/env.conf";
+import { DEV, ENV } from "./configurations/env.conf";
 import { SESSION_SECRET } from "./configurations/agentConnect.conf";
 import { mongoSessionStoreConfig } from "./shared/MongoConnection";
 import { FRONT_OFFICE_URL } from "./configurations/front.conf";
@@ -114,7 +114,14 @@ export async function startServer(port = "8080", isTest = false) {
 
     initCron();
 
+    if (DEV) {
+        //@ts-expect-error : No type
+        return app.listen(port, "dev.local", () => {
+            if (!isTest) console.log(`${appName} listening at http://dev.local:${port}`);
+        });
+    }
+
     return app.listen(port, () => {
-        if (!isTest) console.log(`${appName} listening at http://dev.local:${port}`);
+        if (!isTest) console.log(`${appName} listening at http://localhost:${port}`);
     });
 }
