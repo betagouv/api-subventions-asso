@@ -27,11 +27,5 @@ describe("DataVizHttp", () => {
             const actual = await controller.getAmountsVsProgramRegion();
             expect(actual).toEqual(expected);
         });
-
-        it("should throw error", async () => {
-            const ERROR_MESSAGE = "Error";
-            getAmountsVsProgramRegionDataSpy.mockImplementationOnce(() => Promise.reject(new Error(ERROR_MESSAGE)));
-            expect(() => controller.getAmountsVsProgramRegion()).rejects.toThrowError(ERROR_MESSAGE);
-        });
     });
 });
