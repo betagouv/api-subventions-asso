@@ -21,7 +21,7 @@ const ETABLISSEMENT_SIRET = SIRET_STR;
 describe("/etablissement", () => {
     const getSubventionsMock: jest.SpyInstance = jest.spyOn(etablissementService, "getSubventions");
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         await rnaSirenPort.insert(
             new RnaSirenEntity(new Rna(DEFAULT_ASSOCIATION.rna), new Siren(DEFAULT_ASSOCIATION.siren)),
         );
