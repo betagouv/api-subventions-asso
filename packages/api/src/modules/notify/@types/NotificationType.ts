@@ -12,4 +12,5 @@ export enum NotificationType {
     SIGNUP_BAD_DOMAIN,
     FAILED_CRON,
     WARN_NEW_USER_TO_BE_DELETED,
+    STATS_NB_REQUESTS,
 }

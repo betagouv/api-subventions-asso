@@ -30,6 +30,7 @@ export interface NotifierMethodType {
         type: NotificationType.WARN_NEW_USER_TO_BE_DELETED,
         data: NotificationDataTypes[NotificationType.WARN_NEW_USER_TO_BE_DELETED],
     );
+    (type: NotificationType.STATS_NB_REQUESTS, data: NotificationDataTypes[NotificationType.STATS_NB_REQUESTS]);
 }
 
 export interface NotifyOutPipe {

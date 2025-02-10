@@ -59,4 +59,8 @@ export interface NotificationDataTypes {
         email: string;
         activationLink: string;
     };
+    [NotificationType.STATS_NB_REQUESTS]: {
+        email: string;
+        requests: number;
+    }[];
 }
