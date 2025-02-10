@@ -14,5 +14,11 @@ describe("Router Service", () => {
             const actual = RouterService.buildBreadcrumbs("/admin/users/list");
             expect(actual).toEqual(expected);
         });
+
+        it("should return data viz breadcrumbs", () => {
+            const expected = [{ label: "Visualisation de données" }];
+            const actual = RouterService.buildBreadcrumbs("/dataviz");
+            expect(actual).toEqual(expected);
+        });
     });
 });
