@@ -32,35 +32,30 @@
 {/await}
 
 <style>
-    /* Conteneur principal - divisé en 2 parties horizontalement */
     .main-container {
         display: flex;
-        flex-direction: column; /* Divise la page en 2 (haut et bas) */
-        height: 100vh; /* Prend toute la hauteur de la fenêtre */
+        flex-direction: column;
+        height: 100vh;
     }
 
-    /* Partie supérieure de la page (divisée en 2 verticalement) */
     .top-section {
         display: flex;
-        flex: 1; /* Prend la moitié de la hauteur */
+        flex: 1;
     }
 
-    /* Partie gauche de la section supérieure */
     .left-top {
         flex: 1;
         padding: 10px;
     }
 
-    /* Partie droite de la section supérieure */
     .right-top {
-        flex: 1; /* Prend l'autre moitié de la hauteur */
+        flex: 1;
         padding: 10px;
     }
 
-    /* Partie inférieure de la page */
     .bottom-section {
-        flex: 1; /* Prend l'autre moitié de la hauteur */
+        flex: 1;
         padding: 10px;
-        background-color: lightgray; /* Pour visualiser l'élément */
+        background-color: lightgray;
     }
 </style>
