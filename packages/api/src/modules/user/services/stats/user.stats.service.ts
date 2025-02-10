@@ -37,7 +37,7 @@ export class UserStatsService {
             }),
         );
         await userPort.updateNbRequests(countByUser);
-        // await configurationsService.setLastUserStatsUpdate(until);
+        await configurationsService.setLastUserStatsUpdate(until);
 
         // should we await this ? to ensure we got feedback from Brevo update ?
         await this.updateNbRequestsInBrevo(countByUser);
