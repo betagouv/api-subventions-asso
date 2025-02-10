@@ -8,7 +8,7 @@ class DataVizService {
             return result;
         } catch (e) {
             console.error(e);
-            throw new Error("No data found");
+            throw new Error("Aucune donnée trouvée");
         }
     }
 }

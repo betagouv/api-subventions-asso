@@ -32,24 +32,13 @@ describe("DataVizService", () => {
         });
 
         it("should return result from getAmountsVsProgramRegion", async () => {
-            const expected = [
-                {
-                    exerciceBudgetaire: 2022,
-                    montant: 1000,
-                    programme: "121 - nom du programme",
-                    regionAttachementComptable: "Normandie",
-                    mission: "nom de la mission",
-                },
-            ] as AmountsVsProgramRegionDto[];
-
-            mockedDataVizPort.getAmountsVsProgramRegion.mockResolvedValueOnce(expected);
             const actual = await dataVizService.getAmountsVsProgramRegion();
-            expect(actual).toBe(expected);
+            expect(actual).toBe(EXPECTED_DATA);
         });
 
         it("should throw error if dataVizPort throw error", async () => {
             mockedDataVizPort.getAmountsVsProgramRegion.mockRejectedValueOnce(new Error("No data found"));
-            await expect(dataVizService.getAmountsVsProgramRegion()).rejects.toThrow("No data found");
+            await expect(dataVizService.getAmountsVsProgramRegion()).rejects.toThrow("Aucune donnée trouvée");
         });
     });
 });
