@@ -288,10 +288,6 @@ export class BrevoContactNotifyPipe implements NotifyOutPipe {
         // c.f https://developers.brevo.com/reference/importcontacts-1
         requestContactImport.jsonBody = [];
         requestContactImport.listIds = SENDIND_BLUE_CONTACT_LISTS;
-        requestContactImport.emailBlacklist = false;
-        requestContactImport.smsBlacklist = false;
-        requestContactImport.updateExistingContacts = true;
-        requestContactImport.emptyContactsAttributes = false;
 
         data.map(contactRequest => {
             requestContactImport.jsonBody?.push({
