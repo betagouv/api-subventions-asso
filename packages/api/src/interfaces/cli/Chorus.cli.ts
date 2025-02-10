@@ -7,7 +7,6 @@ import * as CliHelper from "../../shared/helpers/CliHelper";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";
 import CliController from "../../shared/CliController";
 import ChorusLineEntity from "../../modules/providers/chorus/entities/ChorusLineEntity";
-import paymentFlatService from "../../modules/paymentFlat/paymentFlat.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class ChorusCli extends CliController {
@@ -22,7 +21,7 @@ export default class ChorusCli extends CliController {
      * @param file path to file
      * @param batchSize La taille des paquets envoyés à mongo coup par coup
      */
-    protected async _parse(file: string, logger, exportDate: Date) {
+    protected async _parse(file: string, logger) {
         if (typeof file !== "string") {
             throw new Error("Parse command need file args");
         }
@@ -53,6 +52,7 @@ export default class ChorusCli extends CliController {
         const finalResult = {
             created: 0,
             rejected: 0,
+            duplicates: 0,
         };
 
         await asyncForEach(batchs, async (batch, index) => {
@@ -68,7 +68,5 @@ export default class ChorusCli extends CliController {
             flag: "w",
             encoding: "utf-8",
         });
-
-        await paymentFlatService.updatePaymentsFlatCollection(exportDate.getFullYear());
     }
 }
