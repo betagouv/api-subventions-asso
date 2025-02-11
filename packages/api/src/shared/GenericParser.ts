@@ -120,11 +120,11 @@ export class GenericParser {
     }
 
     static xlsParseByPageName(content: Buffer): { [name: string]: any[][] } {
-        const xls = xlsx.parse(content);
-        return xls.reduce(
+        const pagesWithName = GenericParser.xlsParseWithPageName(content);
+        return pagesWithName.reduce(
             (pages, xlsPage) => ({
                 ...pages,
-                [xlsPage.name]: xlsPage.data.filter(row => (row as unknown[]).length),
+                [xlsPage.name]: xlsPage.data,
             }),
             {},
         );
