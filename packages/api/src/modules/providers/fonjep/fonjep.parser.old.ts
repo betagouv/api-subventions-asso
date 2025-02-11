@@ -61,7 +61,14 @@ export default class FonjepParser {
     }
 
     public static parse(fileContent: Buffer, exportDate: Date) {
-        const pages = GenericParser.xlsParse(fileContent);
+        const pagesWithName = GenericParser.xlsParseByPageName(fileContent);
+        const pages = [
+            pagesWithName["Tiers"],
+            pagesWithName["Poste"],
+            pagesWithName["Versement"],
+            pagesWithName["TypePoste"],
+            pagesWithName["Dispositif"],
+        ];
         const currentDate = exportDate;
 
         const [tiers, postes, payments, typePoste, dispositifs] = this.mapHeaderToData(pages);

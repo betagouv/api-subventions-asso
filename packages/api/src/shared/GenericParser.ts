@@ -119,6 +119,17 @@ export class GenericParser {
         }));
     }
 
+    static xlsParseByPageName(content: Buffer): { [name: string]: any[][] } {
+        const xls = xlsx.parse(content);
+        return xls.reduce(
+            (pages, xlsPage) => ({
+                ...pages,
+                [xlsPage.name]: xlsPage.data.filter(row => (row as unknown[]).length),
+            }),
+            {},
+        );
+    }
+
     static ExcelDateToJSDate(serial: number) {
         const utc_days = Math.floor(serial - 25569);
         const utc_value = utc_days * 86400;
