@@ -14,11 +14,12 @@
     <div class="fr-container">
         <div class="fr-grid-row">
             <div class="fr-col-6">
-                <h2>Montant des subventions que l'Etat a versées</h2>
+                <h2 class="fr-h4 text-center">Montant des subventions que l'Etat a versées</h2>
+
                 <TableAmountsVsProgramRegion elements={result} />
             </div>
             <div class="fr-col-6">
-                <h2>Construction graphe en cours</h2>
+                <h2 class="fr-h4 text-center">Construction graphe en cours</h2>
             </div>
         </div>
     </div>
