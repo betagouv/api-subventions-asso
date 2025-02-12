@@ -52,7 +52,10 @@ describe("amountsVSProgramRegionService", () => {
         });
 
         afterEach(() => {
-            jest.restoreAllMocks();
+            mockAdapter.mockRestore();
+            mockCursorFindChorusOnly.mockRestore();
+            mockCursor.next.mockRestore();
+            mockCursor.hasNext.mockRestore();
         });
 
         it("should call cursorFindChorusOnly with the budget exercice", async () => {
@@ -107,7 +110,8 @@ describe("amountsVSProgramRegionService", () => {
         });
 
         afterAll(() => {
-            jest.restoreAllMocks();
+            mockToAmountsVsProgramRegionEntities.mockRestore();
+            mockInsertMany.mockRestore();
         });
 
         it("should call toAmountsVsProgramRegionEntities", async () => {
@@ -136,7 +140,8 @@ describe("amountsVSProgramRegionService", () => {
         });
 
         afterEach(() => {
-            jest.restoreAllMocks();
+            mockToAmountsVsProgramRegionEntities.mockRestore();
+            mockUpsertMany.mockRestore();
         });
 
         it("should call toAmountsVsProgramRegionEntities without ExcerciceBudgetaire", async () => {
@@ -169,13 +174,33 @@ describe("amountsVSProgramRegionService", () => {
         });
 
         afterEach(() => {
-            jest.restoreAllMocks();
+            mockHasBeenInitialized.mockRestore();
         });
 
         it("should call hasBeenInitialized", async () => {
             await amountsVsProgramRegionService.isCollectionInitialized();
 
             expect(mockHasBeenInitialized).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe("getAmountsVsProgramRegionData", () => {
+        let mockFindAll: jest.SpyInstance;
+
+        beforeEach(() => {
+            mockFindAll = jest
+                .spyOn(amountsVsProgramRegionPort, "findAll")
+                .mockResolvedValue(AMOUNTS_VS_PROGRAM_REGION_ENTITIES);
+        });
+
+        afterEach(() => {
+            mockFindAll.mockRestore();
+        });
+
+        it("should call findAll", () => {
+            amountsVsProgramRegionService.getAmountsVsProgramRegionData();
+
+            expect(mockFindAll).toHaveBeenCalledTimes(1);
         });
     });
 });
