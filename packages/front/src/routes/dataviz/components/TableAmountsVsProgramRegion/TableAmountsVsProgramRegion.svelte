@@ -1,37 +1,34 @@
-<script>
+<script lang="ts">
+    import type { AmountsVsProgramRegionDto } from "dto";
     import { TableAmountsVsProgramRegionController } from "./TableAmountsVsProgramRegion.controller";
     import Table from "$lib/dsfr/Table.svelte";
     import TableRow from "$lib/dsfr/TableRow.svelte";
     import Checkbox from "$lib/dsfr/Checkbox.svelte";
 
-    export let elements; // amountsVsProgramRegion
+    export let elements: AmountsVsProgramRegionDto[]; // amountsVsProgramRegion
 
     const tableId = "table-amounts-vs-program-region";
-    let value = ["regionAttachementComptable", "programme"];
-
 
     const controller = new TableAmountsVsProgramRegionController();
 
-    $: headers = ["Exercice", ...value.map(col=>controller.headersDict[col]), "Montant"];
-    $: groupedData = controller.getTableData(elements, value);
-
+    const { checkboxOptions, selectedColumns } = controller;
+    $: groupedData = controller.getTableData(elements, $selectedColumns);
+    $: headers = controller.getHeaders($selectedColumns);
 </script>
-    <Checkbox 
-    bind:value
-    id=checkboxId
-    label="Ajouter ou eliminer des colonnes" 
-    inline=true
-    options={[
-        {label: "Attachement Comptable", value: "regionAttachementComptable"},
-        {label: "Programme", value: "programme"}
-    ]}/>
-    <div class="scrollable-container">
+
+<Checkbox
+    bind:value={selectedColumns.value}
+    id="checkboxId"
+    label="Ajouter ou éliminer des colonnes"
+    inline={true}
+    options={checkboxOptions} />
+<div class="scrollable-container">
     <div class="fr-grid-row">
-        <div class="fr-col-2">
+        <div class="fr-col">
             <Table
                 id={tableId}
-                headers = {headers}
-                headersSize={["sm", "md", "md", "sm"]}
+                {headers}
+                headersSize={["sm", "sm", "sm", "sm"]}
                 bordered={false}
                 scrollable={false}
                 hideTitle={true}
@@ -39,7 +36,7 @@
                 {#each groupedData as row, index}
                     <TableRow id={tableId} {index}>
                         <td>{row.exerciceBudgetaire}</td>
-                        {#each value as col}
+                        {#each selectedColumns.value as col}
                             <td>{row[col]}</td>
                         {/each}
                         <td>{row.montant}</td>
@@ -48,12 +45,11 @@
             </Table>
         </div>
     </div>
-    </div>
+</div>
 
 <style>
-.scrollable-container {
-    max-height: 500px;
-    overflow-y: auto;
-}
-
+    .scrollable-container {
+        max-height: 500px;
+        overflow-y: auto;
+    }
 </style>

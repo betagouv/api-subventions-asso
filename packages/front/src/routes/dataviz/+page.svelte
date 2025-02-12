@@ -5,24 +5,21 @@
     import Alert from "$lib/dsfr/Alert.svelte";
 
     const controller = new DataVizController();
-    const { amountsVsProgramRegionData } = controller;
+    const { amountsVsProgramRegionDataPromise } = controller;
 </script>
 
-{#await amountsVsProgramRegionData}
+{#await amountsVsProgramRegionDataPromise}
     <FullPageSpinner description="Chargement des données en cours ..." />
 {:then result}
-    <div class="main-container">
-        <div class="top-section">
-            <div class="left-top">
-                <h3>Montant des subventions que l'Etat a versées</h3>
+    <div class="fr-container">
+        <div class="fr-grid-row">
+            <div class="fr-col-6">
+                <h2>Montant des subventions que l'Etat a versées</h2>
                 <TableAmountsVsProgramRegion elements={result} />
             </div>
-            <div class="right-top">
+            <div class="fr-col-6">
                 <h2>Construction graphe en cours</h2>
             </div>
-        </div>
-        <div class="bottom-section">
-            <h2>Construction carte en cours</h2>
         </div>
     </div>
 {:catch error}
@@ -30,32 +27,3 @@
         {error.message}
     </Alert>
 {/await}
-
-<style>
-    .main-container {
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-    }
-
-    .top-section {
-        display: flex;
-        flex: 1;
-    }
-
-    .left-top {
-        flex: 1;
-        padding: 10px;
-    }
-
-    .right-top {
-        flex: 1;
-        padding: 10px;
-    }
-
-    .bottom-section {
-        flex: 1;
-        padding: 10px;
-        background-color: lightgray;
-    }
-</style>
