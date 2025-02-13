@@ -24,48 +24,14 @@ const ASSOCIATION_ID = AssociationIdentifier.fromSiren(SIREN);
 const ESTABLISHMENT_ID = EstablishmentIdentifier.fromSiret(SIRET, ASSOCIATION_ID);
 
 describe("EtablissementHttp", () => {
-    let getIdentifierSpy: jest.SpyInstance;
     const REQ = { params: { identifier: ID_STR }, estabIdentifier: ESTABLISHMENT_ID };
 
     beforeAll(() => {
-        getIdentifierSpy = jest.spyOn(controller, "getIdentifier").mockResolvedValue(ESTABLISHMENT_ID);
         jest.mocked(establishmentIdentifierService.getEstablishmentIdentifiers).mockResolvedValue(ESTABLISHMENT_ID);
     });
 
     afterAll(() => {
-        getIdentifierSpy.mockRestore();
         jest.mocked(establishmentIdentifierService.getEstablishmentIdentifiers).mockRestore();
-    });
-
-    describe("getIdentifier", () => {
-        beforeAll(() => {
-            getIdentifierSpy.mockRestore();
-        });
-        afterAll(() => {
-            getIdentifierSpy.mockResolvedValue(ESTABLISHMENT_ID);
-        });
-
-        it("returns identifier from req if exists", async () => {
-            const expected = "ID-from-request";
-            const actual = await controller.getIdentifier({ estabIdentifier: "ID-from-request" }, "ID");
-            expect(actual).toBe(expected);
-        });
-
-        it("does not call service if identifier in req", async () => {
-            await controller.getIdentifier({ estabIdentifier: "ID-from-request" }, "ID");
-            expect(establishmentIdentifierService.getEstablishmentIdentifiers).not.toHaveBeenCalled();
-        });
-
-        it("calls service if identifier not in req", async () => {
-            await controller.getIdentifier({}, "ID");
-            expect(establishmentIdentifierService.getEstablishmentIdentifiers).toHaveBeenCalledWith("ID");
-        });
-
-        it("returns identifier from service if not in request", async () => {
-            const expected = ESTABLISHMENT_ID;
-            const actual = await controller.getIdentifier({}, "ID");
-            expect(actual).toBe(expected);
-        });
     });
 
     describe("getDemandeSubventions", () => {

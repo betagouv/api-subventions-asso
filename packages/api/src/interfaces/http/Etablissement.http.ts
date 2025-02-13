@@ -44,14 +44,6 @@ export async function isEtabIdentifierFromAssoMiddleware(req, _res, next) {
 @Security("jwt")
 @Tags("Etablissement Controller")
 export class EtablissementHttp extends Controller {
-    /*
-     * gets identifier either from request (if isEtabIdentifierFromAssoMiddleware has been called) or from service from string argument.
-     * extracted to avoid boilerplate
-     * */
-    async getIdentifier(req, strIdentifier: string) {
-        return req.estabIdentifier ?? (await establishmentIdentifierService.getEstablishmentIdentifiers(strIdentifier));
-    }
-
     /**
      * Remonte les informations d'un établissement
      * @param identifier  Identifiant Siret
@@ -68,7 +60,7 @@ export class EtablissementHttp extends Controller {
         identifier: EstablishmentIdentifierDto,
         @Request() req,
     ): Promise<GetEtablissementResponseDto> {
-        const estabIdentifier = await this.getIdentifier(req, identifier);
+        const estabIdentifier = req.estabIdentifier;
         const etablissement = await etablissementService.getEtablissement(estabIdentifier);
         return { etablissement };
     }
@@ -82,7 +74,7 @@ export class EtablissementHttp extends Controller {
      */
     @Get("grants")
     public async getGrants(identifier: EstablishmentIdentifierDto, @Request() req): Promise<GetGrantsResponseDto> {
-        const estabIdentifier = await this.getIdentifier(req, identifier);
+        const estabIdentifier = req.estabIdentifier;
         const grants = await etablissementService.getGrants(estabIdentifier);
         return { subventions: grants };
     }
@@ -99,7 +91,7 @@ export class EtablissementHttp extends Controller {
         identifier: EstablishmentIdentifierDto,
         @Request() req,
     ): Promise<GetSubventionsResponseDto> {
-        const estabIdentifier = await this.getIdentifier(req, identifier);
+        const estabIdentifier = req.estabIdentifier;
 
         const data = await etablissementService.getSubventions(estabIdentifier).toPromise();
         const subventions = data
@@ -121,7 +113,7 @@ export class EtablissementHttp extends Controller {
         identifier: EstablishmentIdentifierDto,
         @Request() req,
     ): Promise<GetPaymentsResponseDto> {
-        const estabIdentifier = await this.getIdentifier(req, identifier);
+        const estabIdentifier = req.estabIdentifier;
         const payments = await etablissementService.getPayments(estabIdentifier);
         return { versements: payments };
     }
@@ -138,14 +130,14 @@ export class EtablissementHttp extends Controller {
         identifier: EstablishmentIdentifierDto,
         @Request() req,
     ): Promise<GetDocumentsResponseDto> {
-        const estabIdentifier = await this.getIdentifier(req, identifier);
+        const estabIdentifier = req.estabIdentifier;
         const documents = await etablissementService.getDocuments(estabIdentifier);
         return { documents };
     }
 
     @Get("documents/rib")
     public async getRibs(identifier: EstablishmentIdentifierDto, @Request() req): Promise<GetDocumentsResponseDto> {
-        const estabIdentifier = await this.getIdentifier(req, identifier);
+        const estabIdentifier = req.estabIdentifier;
         const ribs = await etablissementService.getRibs(estabIdentifier);
         return { documents: ribs };
     }
@@ -171,7 +163,7 @@ export class EtablissementHttp extends Controller {
     @Produces("text/csv")
     @Response<string>("200")
     public async getGrantsExtract(identifier: SiretDto, @Request() req): Promise<Readable> {
-        const estabIdentifier = await this.getIdentifier(req, identifier);
+        const estabIdentifier = req.estabIdentifier;
         const { csv, fileName } = await grantExtractService.buildCsv(estabIdentifier);
 
         this.setHeader("Content-Type", "text/csv");

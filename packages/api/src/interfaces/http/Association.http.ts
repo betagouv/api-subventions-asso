@@ -46,14 +46,6 @@ export async function isAssoIdentifierFromAssoMiddleware(req, _res, next) {
 @Security("jwt")
 @Tags("Association Controller")
 export class AssociationHttp extends Controller {
-    /*
-     * gets identifier either from request (if isAssoIdentifierFromAssoMiddleware has been called) or from service from string argument.
-     * extracted to avoid boilerplate
-     * */
-    async getIdentifier(req, strIdentifier: string) {
-        return req.assoIdentifier ?? (await associationIdentifierService.getOneAssociationIdentifier(strIdentifier));
-    }
-
     /**
      * Remonte les informations d'une association
      * @param identifier Siret, Siren ou Rna
@@ -65,7 +57,7 @@ export class AssociationHttp extends Controller {
         @Path() identifier: StructureIdentifierDto,
         @Request() req,
     ): Promise<GetAssociationResponseDto> {
-        const associationIdentifiers = await this.getIdentifier(req, identifier);
+        const associationIdentifiers = req.assoIdentifier;
 
         const association = await associationService.getAssociation(associationIdentifiers);
         return { association };
@@ -84,7 +76,7 @@ export class AssociationHttp extends Controller {
         identifier: AssociationIdentifierDto,
         @Request() req,
     ): Promise<GetSubventionsResponseDto> {
-        const associationIdentifiers = await this.getIdentifier(req, identifier);
+        const associationIdentifiers = req.assoIdentifier;
         const flux = await associationService.getSubventions(associationIdentifiers);
 
         if (!flux) return { subventions: null };
@@ -105,7 +97,7 @@ export class AssociationHttp extends Controller {
      */
     @Get("/versements")
     public async getPayments(identifier: AssociationIdentifierDto, @Request() req): Promise<GetPaymentsResponseDto> {
-        const associationIdentifiers = await this.getIdentifier(req, identifier);
+        const associationIdentifiers = req.assoIdentifier;
 
         const payments = await associationService.getPayments(associationIdentifiers);
         return { versements: payments };
@@ -120,7 +112,7 @@ export class AssociationHttp extends Controller {
      */
     @Get("/grants")
     public async getGrants(identifier: AssociationIdentifierDto, @Request() req): Promise<GetGrantsResponseDto> {
-        const associationIdentifiers = await this.getIdentifier(req, identifier);
+        const associationIdentifiers = req.assoIdentifier;
         const grants = await grantService.getGrants(associationIdentifiers);
         return { subventions: grants };
     }
@@ -136,7 +128,7 @@ export class AssociationHttp extends Controller {
     @Produces("text/csv")
     @Response<string>("200")
     public async getGrantsExtract(identifier: AssociationIdentifierDto, @Request() req): Promise<Readable> {
-        const associationIdentifiers = await this.getIdentifier(req, identifier);
+        const associationIdentifiers = req.assoIdentifier;
 
         const { csv, fileName } = await grantExtractService.buildCsv(associationIdentifiers);
 
@@ -161,7 +153,7 @@ export class AssociationHttp extends Controller {
     @Security("jwt", ["admin"])
     @Response<HttpErrorInterface>("404")
     public async getRawGrants(identifier: AssociationIdentifierDto, @Request() req): Promise<JoinedRawGrant[]> {
-        const associationIdentifiers = await this.getIdentifier(req, identifier);
+        const associationIdentifiers = req.assoIdentifier;
 
         return grantService.getRawGrants(associationIdentifiers);
     }
@@ -175,7 +167,7 @@ export class AssociationHttp extends Controller {
      */
     @Get("/documents")
     public async getDocuments(identifier: AssociationIdentifierDto, @Request() req): Promise<GetDocumentsResponseDto> {
-        const associationIdentifiers = await this.getIdentifier(req, identifier);
+        const associationIdentifiers = req.assoIdentifier;
 
         const documents = await associationService.getDocuments(associationIdentifiers);
         return { documents };
@@ -191,7 +183,7 @@ export class AssociationHttp extends Controller {
         identifier: AssociationIdentifierDto,
         @Request() req,
     ): Promise<GetEtablissementsResponseDto> {
-        const associationIdentifiers = await this.getIdentifier(req, identifier);
+        const associationIdentifiers = req.assoIdentifier;
 
         const etablissements = await associationService.getEstablishments(associationIdentifiers);
         return { etablissements };

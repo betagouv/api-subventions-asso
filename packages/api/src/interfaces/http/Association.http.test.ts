@@ -24,44 +24,10 @@ const IDENTIFIER = new Siren(ID_STR);
 const ASSOCIATION_ID = AssociationIdentifier.fromSiren(IDENTIFIER);
 
 describe("AssociationHttp", () => {
-    let getIdentifierSpy: jest.SpyInstance;
     const REQ = { params: { identifier: ID_STR }, assoIdentifier: ASSOCIATION_ID };
 
     beforeAll(() => {
         jest.mocked(associationIdentifierService.getOneAssociationIdentifier).mockResolvedValue(ASSOCIATION_ID);
-
-        getIdentifierSpy = jest.spyOn(controller, "getIdentifier").mockResolvedValue(ASSOCIATION_ID);
-    });
-
-    describe("getIdentifier", () => {
-        beforeAll(() => {
-            getIdentifierSpy.mockRestore();
-        });
-        afterAll(() => {
-            getIdentifierSpy.mockResolvedValue(ASSOCIATION_ID);
-        });
-
-        it("returns identifier from req if exists", async () => {
-            const expected = "ID-from-request";
-            const actual = await controller.getIdentifier({ assoIdentifier: "ID-from-request" }, "ID");
-            expect(actual).toBe(expected);
-        });
-
-        it("does not call service if identifier in req", async () => {
-            await controller.getIdentifier({ assoIdentifier: "ID-from-request" }, "ID");
-            expect(associationIdentifierService.getOneAssociationIdentifier).not.toHaveBeenCalled();
-        });
-
-        it("calls service if identifier not in req", async () => {
-            await controller.getIdentifier({}, "ID");
-            expect(associationIdentifierService.getOneAssociationIdentifier).toHaveBeenCalledWith("ID");
-        });
-
-        it("returns identifier from service if not in request", async () => {
-            const expected = ASSOCIATION_ID;
-            const actual = await controller.getIdentifier({}, "ID");
-            expect(actual).toBe(expected);
-        });
     });
 
     describe("getDemandeSubventions", () => {
