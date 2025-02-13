@@ -5,11 +5,12 @@ import { ENTITIES } from "../providers/chorus/__fixtures__/ChorusFixtures";
 import paymentFlatService from "./paymentFlat.service";
 import chorusService from "../providers/chorus/chorus.service";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
-import { PAYMENT_FLAT_ENTITY, PAYMENT_FROM_PAYMENT_FLAT_DBO } from "./__fixtures__/paymentFlatEntity.fixture";
 import {
-    LIST_PAYMENT_FLAT_DBO,
-    PAYMENT_FLAT_DBO,
-} from "../../dataProviders/db/paymentFlat/__fixtures__/paymentFlatDbo.fixture";
+    LIST_PAYMENT_FLAT_ENTITY,
+    PAYMENT_FLAT_ENTITY,
+    PAYMENT_FROM_PAYMENT_FLAT,
+} from "./__fixtures__/paymentFlatEntity.fixture";
+import { PAYMENT_FLAT_DBO } from "../../dataProviders/db/paymentFlat/__fixtures__/paymentFlatDbo.fixture";
 
 import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port";
 import PaymentFlatAdapterDbo from "../../dataProviders/db/paymentFlat/PaymentFlat.adapter";
@@ -268,16 +269,16 @@ describe("PaymentFlatService", () => {
     describe("rawToPayment", () => {
         it("should call PaymentFlatAdapter", () => {
             // @ts-expect-error: parameter type
-            const rawGrant = { data: PAYMENT_FLAT_DBO } as RawGrant;
+            const rawGrant = { data: PAYMENT_FLAT_ENTITY } as RawGrant;
             paymentFlatService.rawToPayment(rawGrant);
             expect(PaymentFlatAdapter.rawToPayment).toHaveBeenCalledWith(rawGrant);
         });
 
-        it("should return ChorusPayment", () => {
+        it("should return Payment", () => {
             // @ts-expect-error: parameter type
-            const rawGrant = { data: PAYMENT_FLAT_DBO } as RawGrant;
-            jest.mocked(PaymentFlatAdapter.rawToPayment).mockReturnValueOnce(PAYMENT_FROM_PAYMENT_FLAT_DBO);
-            const expected = PAYMENT_FROM_PAYMENT_FLAT_DBO;
+            const rawGrant = { data: PAYMENT_FLAT_ENTITY } as RawGrant;
+            jest.mocked(PaymentFlatAdapter.rawToPayment).mockReturnValueOnce(PAYMENT_FROM_PAYMENT_FLAT);
+            const expected = PAYMENT_FROM_PAYMENT_FLAT;
             const actual = paymentFlatService.rawToPayment(rawGrant);
             expect(actual).toEqual(expected);
         });
@@ -286,8 +287,8 @@ describe("PaymentFlatService", () => {
     describe("toPaymentArray", () => {
         it("should call toPayment for each entity", () => {
             // @ts-expect-error: test private method
-            paymentFlatService.toPaymentArray(LIST_PAYMENT_FLAT_DBO);
-            LIST_PAYMENT_FLAT_DBO.forEach((entity, index) => {
+            paymentFlatService.toPaymentArray(LIST_PAYMENT_FLAT_ENTITY);
+            LIST_PAYMENT_FLAT_ENTITY.forEach((entity, index) => {
                 expect(PaymentFlatAdapter.toPayment).toHaveBeenNthCalledWith(index + 1, entity);
             });
         });
@@ -311,6 +312,7 @@ describe("PaymentFlatService", () => {
 
             it("should call findBySiren()", async () => {
                 await paymentFlatService.getRawGrants(IDENTIFIER);
+                expect(findBySirenMock).toHaveBeenCalledWith(SIREN);
             });
 
             it("returns raw grant data", async () => {
@@ -322,7 +324,7 @@ describe("PaymentFlatService", () => {
                           "ej": "EJ",
                         },
                         "joinKey": "EJ",
-                        "provider": "paymentflat",
+                        "provider": "payment_flat",
                         "type": "payment",
                       },
                     ]

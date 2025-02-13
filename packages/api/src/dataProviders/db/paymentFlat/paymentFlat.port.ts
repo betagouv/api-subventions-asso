@@ -63,6 +63,7 @@ export class PaymentFlatPort extends MongoPort<PaymentFlatDbo> {
                 typeIdEtablissementBeneficiaire: "siret",
                 idEtablissementBeneficiaire: siret.value,
             })
+            .map(PaymentFlatAdapter.dboToEntity)
             .toArray();
     }
 
@@ -72,11 +73,12 @@ export class PaymentFlatPort extends MongoPort<PaymentFlatDbo> {
                 typeIdEntrepriseBeneficiaire: "siren",
                 idEntrepriseBeneficiaire: new RegExp(`^${siren.value}\\d{5}`),
             })
+            .map(PaymentFlatAdapter.dboToEntity)
             .toArray();
     }
 
     public async findByEJ(ej: string) {
-        return this.collection.find({ ej: ej }).toArray();
+        return this.collection.find({ ej: ej }).map(PaymentFlatAdapter.dboToEntity).toArray();
     }
 }
 

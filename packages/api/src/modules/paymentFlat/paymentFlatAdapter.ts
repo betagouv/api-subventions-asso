@@ -1,6 +1,5 @@
-import { ChorusPayment } from "dto";
+import { Payment } from "dto";
 import { NestedDefaultObject } from "../../@types";
-import PaymentFlatDbo from "../../dataProviders/db/paymentFlat/PaymentFlatDbo";
 import DomaineFonctionnelEntity from "../../entities/DomaineFonctionnelEntity";
 import MinistryEntity from "../../entities/MinistryEntity";
 import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
@@ -14,7 +13,7 @@ import { RawPayment } from "../grant/@types/rawGrant";
 import ProviderValueAdapter from "../../shared/adapters/ProviderValueAdapter";
 
 export default class PaymentFlatAdapter {
-    static PROVIDER_NAME = "PaymentFlat";
+    static PROVIDER_NAME = "payment_flat";
 
     static toNotAggregatedChorusPaymentFlatEntity(
         /*
@@ -106,27 +105,27 @@ export default class PaymentFlatAdapter {
         };
     }
 
-    public static rawToPayment(rawPayment: RawPayment<PaymentFlatDbo>) {
+    public static rawToPayment(rawPayment: RawPayment<PaymentFlatEntity>) {
         return this.toPayment(rawPayment.data);
     }
 
-    public static toPayment(entity: PaymentFlatDbo): ChorusPayment {
+    public static toPayment(entity: PaymentFlatEntity): Payment {
         const toPvPaymentFlat = <T>(value: T) =>
-            ProviderValueAdapter.toProviderValue<T>(value, PaymentFlatAdapter.PROVIDER_NAME, entity.dateOperation);
+            ProviderValueAdapter.toProviderValue<T>(value, entity.provider, entity.operationDate);
 
         const toPvOrUndefined = value => (value ? toPvPaymentFlat(value) : undefined);
 
         return {
+            versementKey: toPvPaymentFlat(entity.ej),
+            siret: toPvPaymentFlat(entity.idEtablissementBeneficiaire.toString()),
+            amount: toPvPaymentFlat(entity.amount),
+            dateOperation: toPvPaymentFlat(entity.operationDate),
+            programme: toPvPaymentFlat(entity.programNumber),
+            libelleProgramme: toPvOrUndefined(entity.programName),
             ej: toPvPaymentFlat(entity.ej),
-            versementKey: toPvPaymentFlat(entity.idVersement),
-            siret: toPvPaymentFlat(entity.idEtablissementBeneficiaire),
-            amount: toPvPaymentFlat(entity.montant),
-            dateOperation: toPvPaymentFlat(entity.dateOperation),
-            centreFinancier: toPvOrUndefined(entity.libelleCentreFinancier),
-            domaineFonctionnel: toPvOrUndefined(entity.action),
-            activitee: toPvOrUndefined(entity.activite),
-            programme: toPvPaymentFlat(entity.numeroProgramme),
-            libelleProgramme: toPvOrUndefined(entity.programme),
+            centreFinancier: toPvOrUndefined(entity.centreFinancierLibelle),
+            domaineFonctionnel: toPvOrUndefined(entity.actionLabel),
+            activitee: toPvOrUndefined(entity.activityLabel),
         };
     }
 }

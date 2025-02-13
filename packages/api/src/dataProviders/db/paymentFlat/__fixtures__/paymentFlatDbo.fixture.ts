@@ -56,5 +56,3 @@ export const PAYMENT_FLAT_DBO_WITH_NULLS: paymentFlatDbo = {
     attachementComptable: "BRET",
     regionAttachementComptable: "Bretagne",
 };
-
-export const LIST_PAYMENT_FLAT_DBO: paymentFlatDbo[] = [PAYMENT_FLAT_DBO, PAYMENT_FLAT_DBO_WITH_NULLS];

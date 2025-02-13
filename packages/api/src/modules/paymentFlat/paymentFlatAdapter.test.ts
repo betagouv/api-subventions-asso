@@ -1,12 +1,17 @@
 import { RECORDS } from "./__fixtures__/dataBretagne.fixture";
 import { ENTITIES } from "../providers/chorus/__fixtures__/ChorusFixtures";
-import { PAYMENT_FLAT_ENTITY, PAYMENT_FROM_PAYMENT_FLAT_DBO } from "./__fixtures__/paymentFlatEntity.fixture";
+import {
+    PAYMENT_FLAT_ENTITY,
+    PAYMENT_FLAT_ENTITY_WITH_NULLS,
+    PAYMENT_FROM_PAYMENT_FLAT,
+} from "./__fixtures__/paymentFlatEntity.fixture";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 import ChorusLineEntity from "../providers/chorus/entities/ChorusLineEntity";
 import { ChorusLineDto } from "../providers/chorus/adapters/chorusLineDto";
 import ProviderValueAdapter from "../../shared/adapters/ProviderValueAdapter";
 import PaymentFlatDbo from "../../dataProviders/db/paymentFlat/PaymentFlatDbo";
 import { PAYMENT_FLAT_DBO } from "../../dataProviders/db/paymentFlat/__fixtures__/paymentFlatDbo.fixture";
+import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
 console.error = jest.fn();
 
 const documentDataReturnedValue = {
@@ -162,12 +167,12 @@ describe("PaymentFlatAdapter", () => {
 
     describe("rawToPayment", () => {
         //@ts-expect-error: parameter type
-        const RAW_PAYMENT: RawPayment<PaymentFlatDbo> = { data: PAYMENT_FLAT_DBO };
+        const RAW_PAYMENT: RawPayment<PaymentFlatEntity> = { data: PAYMENT_FLAT_ENTITY };
 
         let mockToPayment: jest.SpyInstance;
         beforeAll(() => {
             mockToPayment = jest.spyOn(PaymentFlatAdapter, "toPayment");
-            mockToPayment.mockReturnValue(PAYMENT_FROM_PAYMENT_FLAT_DBO);
+            mockToPayment.mockReturnValue(PAYMENT_FROM_PAYMENT_FLAT);
         });
 
         afterAll(() => {
@@ -180,7 +185,7 @@ describe("PaymentFlatAdapter", () => {
         });
 
         it("should return Payment", () => {
-            const expected = PAYMENT_FROM_PAYMENT_FLAT_DBO;
+            const expected = PAYMENT_FROM_PAYMENT_FLAT;
             const actual = PaymentFlatAdapter.rawToPayment(RAW_PAYMENT);
             expect(actual).toEqual(expected);
         });
@@ -191,10 +196,10 @@ describe("PaymentFlatAdapter", () => {
         ProviderValueAdapter.toProviderValue(value, provider, now);
 
     describe("toPayment", () => {
-        it("should return partial ChorusPayment entity", () => {
-            const entity = PAYMENT_FLAT_DBO;
+        it("should return partial Payment entity", () => {
+            const entity = PAYMENT_FLAT_ENTITY_WITH_NULLS;
 
-            const actual = PaymentFlatAdapter.toPayment(entity as PaymentFlatDbo);
+            const actual = PaymentFlatAdapter.toPayment(entity as PaymentFlatEntity);
 
             expect(actual).toMatchSnapshot();
         });

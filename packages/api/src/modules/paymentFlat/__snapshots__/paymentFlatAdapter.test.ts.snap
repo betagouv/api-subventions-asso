@@ -1,66 +1,61 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`PaymentFlatAdapter toPayment should return partial ChorusPayment entity 1`] = `
+exports[`PaymentFlatAdapter toPayment should return partial Payment entity 1`] = `
 Object {
   "activitee": Object {
-    "last_update": 2023-04-01T00:00:00.000Z,
-    "provider": "PaymentFlat",
+    "last_update": 2025-02-12T00:00:00.000Z,
+    "provider": "chorus",
     "type": "string",
     "value": "Label d'activité Exemple",
   },
   "amount": Object {
-    "last_update": 2023-04-01T00:00:00.000Z,
-    "provider": "PaymentFlat",
+    "last_update": 2025-02-12T00:00:00.000Z,
+    "provider": "chorus",
     "type": "number",
     "value": 1000,
   },
   "centreFinancier": Object {
-    "last_update": 2023-04-01T00:00:00.000Z,
-    "provider": "PaymentFlat",
+    "last_update": 2025-02-12T00:00:00.000Z,
+    "provider": "chorus",
     "type": "string",
     "value": "UO DGER XXXX-C001",
   },
   "dateOperation": Object {
-    "last_update": 2023-04-01T00:00:00.000Z,
-    "provider": "PaymentFlat",
+    "last_update": 2025-02-12T00:00:00.000Z,
+    "provider": "chorus",
     "type": "object",
-    "value": 2023-04-01T00:00:00.000Z,
+    "value": 2025-02-12T00:00:00.000Z,
   },
   "domaineFonctionnel": Object {
-    "last_update": 2023-04-01T00:00:00.000Z,
-    "provider": "PaymentFlat",
+    "last_update": 2025-02-12T00:00:00.000Z,
+    "provider": "chorus",
     "type": "string",
     "value": "Label d'action Exemple",
   },
   "ej": Object {
-    "last_update": 2023-04-01T00:00:00.000Z,
-    "provider": "PaymentFlat",
+    "last_update": 2025-02-12T00:00:00.000Z,
+    "provider": "chorus",
     "type": "string",
-    "value": "EJ Exemple",
+    "value": "0001821732",
   },
-  "libelleProgramme": Object {
-    "last_update": 2023-04-01T00:00:00.000Z,
-    "provider": "PaymentFlat",
-    "type": "string",
-    "value": "Programme Exemple",
-  },
+  "libelleProgramme": undefined,
   "programme": Object {
-    "last_update": 2023-04-01T00:00:00.000Z,
-    "provider": "PaymentFlat",
+    "last_update": 2025-02-12T00:00:00.000Z,
+    "provider": "chorus",
     "type": "number",
     "value": 1,
   },
   "siret": Object {
-    "last_update": 2023-04-01T00:00:00.000Z,
-    "provider": "PaymentFlat",
+    "last_update": 2025-02-12T00:00:00.000Z,
+    "provider": "chorus",
     "type": "string",
-    "value": "12345678901234",
+    "value": "10000000000001",
   },
   "versementKey": Object {
-    "last_update": 2023-04-01T00:00:00.000Z,
-    "provider": "PaymentFlat",
+    "last_update": 2025-02-12T00:00:00.000Z,
+    "provider": "chorus",
     "type": "string",
-    "value": "12345678901234-EJ Exemple-2023",
+    "value": "0001821732",
   },
 }
 `;
