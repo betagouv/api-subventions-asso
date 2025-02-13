@@ -22,7 +22,14 @@ export default class FonjepParser {
         dispositifs: DefaultObject<any>[];
     } {
         const fileContent = this.getBuffer(filePath);
-        const pages = GenericParser.xlsParse(fileContent);
+        const pagesWithName = GenericParser.xlsParseByPageName(fileContent);
+        const pages = [
+            pagesWithName["Tiers"],
+            pagesWithName["Poste"],
+            pagesWithName["Versement"],
+            pagesWithName["TypePoste"],
+            pagesWithName["Dispositif"],
+        ];
         const [tiers, postes, versements, typePoste, dispositifs] = this.mapHeaderToData(pages);
 
         return { tiers, postes, versements, typePoste, dispositifs };

@@ -1,4 +1,5 @@
 import fs from "fs";
+
 jest.mock("fs");
 import FonjepParser from "./fonjep.parser";
 import { GenericParser } from "../../../shared/GenericParser";
@@ -11,7 +12,8 @@ const PAGE = [
     ["foo2", "bar2"],
 ];
 
-const PAGES = [PAGE, PAGE, PAGE, PAGE, PAGE];
+const PAGES = { Tiers: PAGE, Poste: PAGE, Versement: PAGE, TypePoste: PAGE, Dispositif: PAGE };
+const PAGES_LIST = [PAGE, PAGE, PAGE, PAGE, PAGE];
 
 const MAPPED_DATA_ELEMENT = [
     { foo: "foo1", bar: "bar1" },
@@ -89,7 +91,7 @@ describe("FonjepParser", () => {
         it("should return a map object with header ad property name", () => {
             const expected = MAPPED_DATA;
             // @ts-expect-error: test private method
-            const actual = FonjepParser.mapHeaderToData(PAGES);
+            const actual = FonjepParser.mapHeaderToData(PAGES_LIST);
             expect(actual).toEqual(expected);
         });
     });
@@ -102,7 +104,7 @@ describe("FonjepParser", () => {
         beforeAll(() => {
             // @ts-expect-error: test private method
             mockGetBuffer = jest.spyOn(FonjepParser, "getBuffer").mockReturnValue(BUFFER);
-            mockXlsParse = jest.spyOn(GenericParser, "xlsParse").mockReturnValue(PAGES);
+            mockXlsParse = jest.spyOn(GenericParser, "xlsParseByPageName").mockReturnValue(PAGES);
             // @ts-expect-error: test private method
             mockMapHeaderToData = jest.spyOn(FonjepParser, "mapHeaderToData").mockReturnValue(MAPPED_DATA);
         });
@@ -125,7 +127,7 @@ describe("FonjepParser", () => {
 
         it("should call mapHeaderToData", () => {
             FonjepParser.parse(FILEPATH);
-            expect(mockMapHeaderToData).toHaveBeenCalledWith(PAGES);
+            expect(mockMapHeaderToData).toHaveBeenCalledWith(PAGES_LIST);
         });
 
         it("should return an object with tiers, postes, versements, typePoste, dispositifs", () => {
