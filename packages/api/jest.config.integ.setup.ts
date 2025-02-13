@@ -20,6 +20,7 @@ import { existsSync, mkdirSync } from "fs";
 import { Server } from "http";
 import axios from "axios";
 import { Issuer } from "openid-client";
+import * as Brevo from "@getbrevo/brevo";
 import db, { connectDB, client } from "./src/shared/MongoConnection";
 import { initIndexes } from "./src/shared/MongoInit";
 import { startServer } from "./src/server";
@@ -28,6 +29,7 @@ import configurationsPort from "./src/dataProviders/db/configurations/configurat
 import { CONFIGURATION_NAMES } from "./src/modules/configurations/configurations.service";
 import { initAsyncServices } from "./src/shared/initAsyncServices";
 import { initTests } from "./jest.config.integ.init";
+
 /**
  *
  *      JEST MOCKING
@@ -47,11 +49,14 @@ jest.mock("connect-mongodb-session", () => {
     class MongoStore {}
     return jest.fn(() => MongoStore);
 });
+
 jest.mock("@getbrevo/brevo", () => {
     class ContactsApi {
+        setApiKey = jest.fn();
         createContact = jest.fn().mockResolvedValue(true);
         updateContact = jest.fn().mockResolvedValue(true);
         deleteContact = jest.fn().mockResolvedValue(true);
+        importContacts = jest.fn().mockResolvedValue(true);
     }
     class UpdateContact {
         updateContact = jest.fn().mockResolvedValue(true);
@@ -60,7 +65,9 @@ jest.mock("@getbrevo/brevo", () => {
         sendTransacEmail = jest.fn().mockResolvedValue(true);
         setApiKey = jest.fn();
     }
+
     return {
+        RequestContactImport: jest.fn(),
         TransactionalEmailsApi,
         SendSmtpEmail: jest.fn(() => ({ templateId: undefined })),
         ApiClient: {

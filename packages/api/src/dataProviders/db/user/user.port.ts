@@ -1,5 +1,5 @@
 import { UserDto } from "dto";
-import { Filter, FindCursor, FindOptions, ObjectId, WithId } from "mongodb";
+import { Filter, FindOptions, ObjectId } from "mongodb";
 import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../shared/helpers/MongoHelper";
 import MongoPort from "../../../shared/MongoPort";
 import { removeHashPassword, removeSecrets } from "../../../shared/helpers/PortHelper";
@@ -12,6 +12,9 @@ export class UserPort extends MongoPort<UserDbo> {
     joinIndexes = {
         associationVisits: "_id",
     };
+
+    // must be removed with removeSecrets when returning UserDto
+    secretFields = ["hashPassword", "jwt"];
 
     async findAll() {
         return this.collection.find({}).toArray();
@@ -28,13 +31,6 @@ export class UserPort extends MongoPort<UserDbo> {
         return dbos.map(dbo => removeSecrets(dbo));
     }
 
-    async findEmails(userIds: string[]): Promise<{ _id: string; email: string }[]> {
-        const result = await this.collection
-            .find({ _id: { $in: userIds.map(id => new ObjectId(id)) } }, { projection: { email: 1 } })
-            .toArray();
-        return result.map(document => ({ ...document, _id: document._id.toString() }));
-    }
-
     async findById(userId: ObjectId | string): Promise<UserDto | null> {
         const user = await this.collection.findOne({ _id: new ObjectId(userId) });
         if (!user) return null;
@@ -45,6 +41,24 @@ export class UserPort extends MongoPort<UserDbo> {
         const query: Filter<UserDbo> = { signupAt: { $gte: begin, $lt: end } };
         if (!withAdmin) query.roles = { $ne: "admin" };
         return this.find(query);
+    }
+
+    async findPartialUsersById(usersId: string[], fields: string[]): Promise<Partial<UserDto>[]> {
+        return this.find(
+            {
+                _id: { $in: usersId.map(id => new ObjectId(id)) },
+            },
+            {
+                projection: fields.reduce(
+                    (projection, field) => {
+                        // ensure that we do not return secret field with this method
+                        if (!this.secretFields.includes(field)) projection[field] = 1;
+                        return projection;
+                    },
+                    { _id: 0 },
+                ),
+            },
+        ) as Promise<Partial<UserDbo>[]>;
     }
 
     async findInactiveSince(date: Date): Promise<UserDto[]> {

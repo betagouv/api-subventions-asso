@@ -61,6 +61,6 @@ export interface NotificationDataTypes {
     };
     [NotificationType.STATS_NB_REQUESTS]: {
         email: string;
-        requests: number;
+        nbVisits: number;
     }[];
 }

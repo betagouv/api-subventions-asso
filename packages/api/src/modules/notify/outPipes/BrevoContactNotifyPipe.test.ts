@@ -2,24 +2,33 @@ import {
     AdminTerritorialLevel,
     AgentJobTypeEnum,
     AgentTypeEnum,
-    RegistrationSrcTypeEnum,
     TerritorialScopeEnum,
+    RegistrationSrcTypeEnum,
 } from "dto";
 import { API_BREVO_CONTACT_LIST } from "../../../configurations/apis.conf";
 import { NotificationType } from "../@types/NotificationType";
-import BrevoContactNotifyPipe from "./BrevoContactNotifyPipe";
+import BrevoContactNotifyPipe, {
+    BrevoContactNotifyPipe as BrevoContactNotifyPipeClass,
+} from "./BrevoContactNotifyPipe";
+import * as Brevo from "@getbrevo/brevo";
+jest.mock("@getbrevo/brevo");
 
 describe("BrevoContactNotifyPipe", () => {
     const USER_EMAIL = "user@beta.gouv.fr";
 
+    const mockeRequestContactImport = jest.spyOn(Brevo, "RequestContactImport");
     // @ts-expect-error apiInstance is private attribute
     const mockUpdateContact = jest.spyOn(BrevoContactNotifyPipe.apiInstance, "updateContact");
     // @ts-expect-error apiInstance is private attribute
     const mockDeleteContact = jest.spyOn(BrevoContactNotifyPipe.apiInstance, "deleteContact");
+    // @ts-expect-error apiInstance is private attribute
+    const mockImportContacts = jest.spyOn(BrevoContactNotifyPipe.apiInstance, "importContacts");
 
     beforeAll(() => {
         mockUpdateContact.mockResolvedValue({ body: { id: 1 } } as any);
         mockDeleteContact.mockResolvedValue({ body: { id: 1 } } as any);
+        mockImportContacts.mockResolvedValue({ body: { id: 1 } } as any);
+        mockeRequestContactImport.mockImplementation(() => ({}));
     });
 
     describe("notify", () => {
@@ -169,6 +178,25 @@ describe("BrevoContactNotifyPipe", () => {
             //@ts-expect-error: private method
             await BrevoContactNotifyPipe.batchUsersDeleted(UPDATE_PAYLOAD);
             expect(mockDeleteContact.mock.calls).toMatchSnapshot();
+        });
+    });
+
+    describe("updateNbRequests", () => {
+        it("should create a Brevo RequestContactImport", () => {
+            // @ts-expect-error: test private method
+            BrevoContactNotifyPipe.updateNbRequests([]);
+            expect(jest.mocked(Brevo.RequestContactImport)).toHaveBeenCalledTimes(1);
+        });
+
+        it("should call importContacts", () => {
+            const data = [
+                { email: "john.doe@gouv.fr", nbVisits: 13 },
+                { email: "arsene.lupin@gouv.fr", nbVisits: "45" },
+            ];
+            // @ts-expect-error: test private method
+            BrevoContactNotifyPipe.updateNbRequests(data);
+            const expected = data.map(d => ({ email: d.email, attributes: { NB_REQUETES: d.nbVisits } }));
+            expect(mockImportContacts).toHaveBeenCalledWith({ jsonBody: expected, listIds: [1] });
         });
     });
 });

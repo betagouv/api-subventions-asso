@@ -40,22 +40,17 @@ export class UserStatsService {
         await configurationsService.setLastUserStatsUpdate(until);
 
         // should we await this ? to ensure we got feedback from Brevo update ?
-        await this.updateNbRequestsInBrevo(countByUser);
+        const userIds = countByUser.map(userCount => userCount._id);
+        await this.updateNbRequestsInBrevo(userIds);
     }
 
-    private async updateNbRequestsInBrevo(countByUser: { _id: string; count: number }[]) {
-        const userIds = countByUser.map(userCount => userCount._id);
-        const usersIdWithEmail = await userPort.findEmails(userIds);
-        const emailsWithNbRequests: { email: string; requests: number }[] = [];
-        countByUser.forEach(idWithCount => {
-            const email = usersIdWithEmail.find(idWithEmail => idWithCount._id === idWithEmail._id)?.email;
-            if (email) {
-                emailsWithNbRequests.push({ email, requests: idWithCount.count });
-            } else
-                console.warn(`Trying to update the number of requests for an unknown user with id ${idWithCount._id}`);
-        });
+    private async updateNbRequestsInBrevo(usersId: string[]) {
+        const partialUsers = (await userPort.findPartialUsersById(usersId, ["email", "nbVisits"])) as Pick<
+            UserDto,
+            "email" | "nbVisits"
+        >[];
 
-        await notifyService.notify(NotificationType.STATS_NB_REQUESTS, emailsWithNbRequests);
+        await notifyService.notify(NotificationType.STATS_NB_REQUESTS, partialUsers);
     }
 
     async notifyAllUsersInSubTools() {

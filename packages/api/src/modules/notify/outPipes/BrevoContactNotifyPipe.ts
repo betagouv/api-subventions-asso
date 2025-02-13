@@ -292,7 +292,7 @@ export class BrevoContactNotifyPipe implements NotifyOutPipe {
         data.map(contactRequest => {
             requestContactImport.jsonBody?.push({
                 email: contactRequest.email,
-                attributes: { [BREVO_NB_REQUESTS_FIELD]: contactRequest.requests },
+                attributes: { [BREVO_NB_REQUESTS_FIELD]: contactRequest.nbVisits },
             });
         });
 

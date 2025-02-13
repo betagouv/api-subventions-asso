@@ -13,20 +13,22 @@ jest.mock("../../../../dataProviders/db/stats/statsAssociationsVisit.port");
 import configurationsService from "../../../configurations/configurations.service";
 jest.mock("../../../configurations/configurations.service");
 
-const COUNT_BY_USER = [
-    { _id: "67a480e7dd6e57423b7f0825", count: 16 },
-    { _id: "67a480f671757a46cd1b9461", count: 2 },
+// fixtures users with nb visits updated
+const PARTIAL_USERS = [
+    { _id: "67a480e7dd6e57423b7f0825", nbVisits: 34, email: "john.doe@gouv.fr" },
+    { _id: "67a480f671757a46cd1b9461", nbVisits: 13, email: "thomas.martin@gouv.fr" },
 ];
 
-const IDS_WITH_EMAIL = [
-    { _id: "67a480e7dd6e57423b7f0825", email: "john.doe@gouv.fr" },
-    { _id: "67a480f671757a46cd1b9461", email: "thomas.martin@gouv.fr" },
+const OMIT_ID_PARTIAL_USERS = PARTIAL_USERS.map(user => ({ email: user.email, nbVisits: user.nbVisits }));
+
+// fixtures update nb requests for users calculated from statsAssociationsVisitPort
+const COUNT_BY_USER = [
+    { _id: PARTIAL_USERS[0]._id, count: 16 },
+    { _id: PARTIAL_USERS[1]._id, count: 2 },
 ];
 
 describe("user stats service", () => {
-    beforeEach(() => {
-        mockedUserPort.findEmails.mockResolvedValue(IDS_WITH_EMAIL);
-    });
+    beforeAll(() => mockedUserPort.findPartialUsersById.mockResolvedValue(OMIT_ID_PARTIAL_USERS));
 
     describe("countTotalUsersOnDate()", () => {
         const PORT_RETURN = 5;
@@ -157,24 +159,27 @@ describe("user stats service", () => {
         it("notify brevo to update users requests", async () => {
             // @ts-expect-error: test private method
             await userStatsService.updateNbRequestsByDate(SINCE, UNTIL);
-            expect(mockUpdateNbRequestsInBrevo).toHaveBeenCalledWith(COUNT_BY_USER);
+            expect(mockUpdateNbRequestsInBrevo).toHaveBeenCalledWith(COUNT_BY_USER.map(element => element._id));
         });
     });
 
     describe("updateNbRequestsInBrevo", () => {
-        it("retrieve users email from userPort", async () => {
+        it("retrieve users email and nbVisits", async () => {
+            const USERS_ID = COUNT_BY_USER.map(element => element._id);
             // @ts-expect-error: test protected method
-            await userStatsService.updateNbRequestsInBrevo(COUNT_BY_USER);
-            expect(userPort.findEmails).toHaveBeenCalledWith([COUNT_BY_USER[0]._id, COUNT_BY_USER[1]._id]);
+            await userStatsService.updateNbRequestsInBrevo(USERS_ID);
+            expect(userPort.findPartialUsersById).toHaveBeenCalledWith(USERS_ID, ["email", "nbVisits"]);
         });
 
         it("should notify STATS_NB_REQUESTS", async () => {
+            const expected = OMIT_ID_PARTIAL_USERS;
+            jest.spyOn(userPort, "findPartialUsersById").mockResolvedValue(expected);
             // @ts-expect-error: test protected method
             await userStatsService.updateNbRequestsInBrevo(COUNT_BY_USER);
-            expect(jest.mocked(notifyService.notify)).toHaveBeenCalledWith(NotificationType.STATS_NB_REQUESTS, [
-                { email: IDS_WITH_EMAIL[0].email, requests: COUNT_BY_USER[0].count },
-                { email: IDS_WITH_EMAIL[1].email, requests: COUNT_BY_USER[1].count },
-            ]);
+            expect(jest.mocked(notifyService.notify)).toHaveBeenCalledWith(
+                NotificationType.STATS_NB_REQUESTS,
+                expected,
+            );
         });
     });
 });
