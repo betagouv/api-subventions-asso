@@ -23,6 +23,7 @@ export default class SireneStockUniteLegaleParser {
             }, 5000);
 
             let batch: SireneStockUniteLegaleEntity[] = [];
+            let batchToSave: SireneStockUniteLegaleEntity[] = [];
             const stream = fs.createReadStream(filePath);
 
             stream
@@ -33,11 +34,12 @@ export default class SireneStockUniteLegaleParser {
                         const entity = SireneStockUniteLegaleAdapter.dtoToEntity(data);
                         batch.push(entity);
                         stream.pause();
-                        if (batch.length >= 1000) {
-                            await sireneStockUniteLegaleService.insertMany(
-                                batch.map(entity => SireneStockUniteLegaleAdapter.entityToDbo(entity)),
-                            );
+                        if (batch.length === 1000) {
+                            batchToSave = batch;
                             batch = [];
+                            await sireneStockUniteLegaleService.insertMany(
+                                batchToSave.map(entity => SireneStockUniteLegaleAdapter.entityToDbo(entity)),
+                            );
                         }
                         stream.resume();
                     }
