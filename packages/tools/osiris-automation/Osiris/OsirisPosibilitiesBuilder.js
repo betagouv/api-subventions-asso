@@ -175,7 +175,7 @@ class OsirisPosibilitiesBuilder {
                 return posibilities;
             }
 
-            return posibilities.concat(await this.__getPosibilitiesServices(servicePosibility));
+            return posibilities.concat(await this.__getPosibilitiesSousTypeFinancement(servicePosibility));
         }, Promise.resolve([]));
     }
 
