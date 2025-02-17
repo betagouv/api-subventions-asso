@@ -25,6 +25,7 @@ import miscScdlGrantPort from "../dataProviders/db/providers/scdl/miscScdlGrant.
 import miscScdlProducerPort from "../dataProviders/db/providers/scdl/miscScdlProducer.port";
 import sireneStockUniteLegalePort from "../dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.port";
 import amountsVsProgramRegionPort from "../dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
+import dataLogPort from "../dataProviders/db/data-log/dataLog.port";
 
 export const portsWithIndexes = [
     userPort,
@@ -56,4 +57,5 @@ export const portsWithIndexes = [
     paymentFlatPort,
     sireneStockUniteLegalePort,
     amountsVsProgramRegionPort,
+    dataLogPort,
 ];
