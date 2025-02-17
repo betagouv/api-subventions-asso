@@ -86,11 +86,20 @@ export class TableAmountsVsProgramRegionController {
         return Object.values(temp);
     }
 
+    private _filterYears(
+        groupedData: PartialAmountsVsProgramRegionDto[],
+        yearMin: number,
+    ): PartialAmountsVsProgramRegionDto[] {
+        const currentYear = new Date().getFullYear();
+        return groupedData.filter(row => row.exerciceBudgetaire >= yearMin && row.exerciceBudgetaire !== currentYear);
+    }
+
     public getTableData(
         data: AmountsVsProgramRegionDto[],
         selectedColumns: string[],
     ): PartialAmountsVsProgramRegionFormatted[] {
-        const temp = this._groupAndSum(data, selectedColumns);
+        let temp = this._groupAndSum(data, selectedColumns);
+        temp = this._filterYears(temp, 2021);
         return this._formatData(temp);
     }
 

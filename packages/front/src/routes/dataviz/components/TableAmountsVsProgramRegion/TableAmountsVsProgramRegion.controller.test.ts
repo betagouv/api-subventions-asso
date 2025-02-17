@@ -8,7 +8,7 @@ describe("TableAmountsVsProgramRegionController", () => {
     let controller: TableAmountsVsProgramRegionController;
 
     beforeAll(() => {
-        controller = new TableAmountsVsProgramRegionController();
+        controller = new TableAmountsVsProgramRegionController(DTO as AmountsVsProgramRegionDto[]);
     });
 
     describe("_formatData", () => {
@@ -97,15 +97,19 @@ describe("TableAmountsVsProgramRegionController", () => {
     describe("getTableData", () => {
         let mockGroupAndSum;
         let mockFormatData;
+        let mockFilterYears;
         beforeAll(() => {
             //@ts-expect-error : private method
             mockGroupAndSum = vi.spyOn(controller, "_groupAndSum").mockReturnValue([DTO[0]] as any);
+            //@ts-expect-error : private method
+            mockFilterYears = vi.spyOn(controller, "_filterYears").mockReturnValue([DTO[0]] as any);
             //@ts-expect-error : private method
             mockFormatData = vi.spyOn(controller, "_formatData").mockReturnValue([]);
         });
         afterAll(() => {
             mockGroupAndSum.mockRestore();
             mockFormatData.mockRestore();
+            mockFilterYears.mockRestore();
         });
 
         it("should call _GroupAndSum with the right parameters", () => {
@@ -116,6 +120,22 @@ describe("TableAmountsVsProgramRegionController", () => {
         it("should call _formatData with the right parameter", () => {
             controller.getTableData(DTO as AmountsVsProgramRegionDto[], [VARS.PROGRAMME]);
             expect(mockFormatData).toHaveBeenCalledWith([DTO[0]]);
+        });
+    });
+
+    describe("filterYears", () => {
+        it("should return only data with exerciceBudgetaire >= yearMin and different from current year", () => {
+            const groupedData = [
+                { ...DTO[0], exerciceBudgetaire: 2025 },
+                { ...DTO[2], exerciceBudgetaire: 2021 },
+                { ...DTO[2], exerciceBudgetaire: 2023 },
+                { ...DTO[1], exerciceBudgetaire: 2020 },
+            ];
+
+            const expected = [groupedData[1], groupedData[2]];
+            //@ts-expect-error : private method
+            const actual = controller._filterYears(groupedData, 2021);
+            expect(actual).toEqual(expected);
         });
     });
 });
