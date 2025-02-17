@@ -114,3 +114,8 @@ globalConfig.json
 
 # Editor specifics
 .vscode
+
+# Data Subvention specifics
+
+# use by ScdlBatch CLI to import scdl files batch localy
+data-integration/
