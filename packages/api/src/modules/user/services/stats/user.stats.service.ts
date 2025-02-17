@@ -36,6 +36,7 @@ export class UserStatsService {
                 count: associationVisits.length,
             }),
         );
+
         await userPort.updateNbRequests(countByUser);
         await configurationsService.setLastUserStatsUpdate(until);
 

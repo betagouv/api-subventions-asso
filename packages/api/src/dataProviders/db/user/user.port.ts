@@ -43,7 +43,21 @@ export class UserPort extends MongoPort<UserDbo> {
         return this.find(query);
     }
 
-    async findPartialUsersById(usersId: string[], fields: string[]): Promise<Partial<UserDto>[]> {
+    /**
+     *
+     * @param usersId list of user's id
+     * @param fields specific fields to return
+     * @returns
+     */
+    async findPartialUsersById(usersId: string[], fields: Array<keyof UserDto>): Promise<Partial<UserDto>[]> {
+        // ensure that we do not return secret fields and remove duplicates
+        // secrets should be guarded with typescript Array<keyof UserDto> type but we never know
+        // TODO-THOUGHTS: apply projection on others method to remove the use of removeSecrets ?
+        // TODO: find a way to prevent duplicates using TS ? But we should always keep those checks
+        fields = fields.filter((value, index) => !this.secretFields.includes(value) || fields.indexOf(value) !== index);
+
+        if (!fields) throw new Error("You should not use findPartialUsersById if you want full users data");
+
         return this.find(
             {
                 _id: { $in: usersId.map(id => new ObjectId(id)) },
@@ -51,8 +65,7 @@ export class UserPort extends MongoPort<UserDbo> {
             {
                 projection: fields.reduce(
                     (projection, field) => {
-                        // ensure that we do not return secret field with this method
-                        if (!this.secretFields.includes(field)) projection[field] = 1;
+                        projection[field] = 1;
                         return projection;
                     },
                     { _id: 0 },

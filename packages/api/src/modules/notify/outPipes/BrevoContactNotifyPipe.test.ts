@@ -16,7 +16,7 @@ jest.mock("@getbrevo/brevo");
 describe("BrevoContactNotifyPipe", () => {
     const USER_EMAIL = "user@beta.gouv.fr";
 
-    const mockeRequestContactImport = jest.spyOn(Brevo, "RequestContactImport");
+    const mockRequestContactImport = jest.spyOn(Brevo, "RequestContactImport");
     // @ts-expect-error apiInstance is private attribute
     const mockUpdateContact = jest.spyOn(BrevoContactNotifyPipe.apiInstance, "updateContact");
     // @ts-expect-error apiInstance is private attribute
@@ -28,7 +28,7 @@ describe("BrevoContactNotifyPipe", () => {
         mockUpdateContact.mockResolvedValue({ body: { id: 1 } } as any);
         mockDeleteContact.mockResolvedValue({ body: { id: 1 } } as any);
         mockImportContacts.mockResolvedValue({ body: { id: 1 } } as any);
-        mockeRequestContactImport.mockImplementation(() => ({}));
+        mockRequestContactImport.mockImplementation(() => ({}));
     });
 
     describe("notify", () => {
