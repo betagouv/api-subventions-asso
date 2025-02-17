@@ -181,11 +181,13 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider<
             dbos = await paymentFlatPort.findBySiren(identifier.siren);
         }
 
+        /* Pour l'instant on garde ej pour tous les providers sauf Fonjep qui prend idVersement 
+        Il faudra convertir tous les versementKey en idVersement quand tout est connecté  */
         return dbos.map(grant => ({
-            provider: this.provider.id,
+            provider: grant.provider,
             type: "payment",
             data: grant,
-            joinKey: grant.ej,
+            joinKey: grant.provider === "fonjep" ? grant.idVersement : grant.ej,
         }));
     }
 }

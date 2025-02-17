@@ -13,8 +13,6 @@ import { RawPayment } from "../grant/@types/rawGrant";
 import ProviderValueAdapter from "../../shared/adapters/ProviderValueAdapter";
 
 export default class PaymentFlatAdapter {
-    static PROVIDER_NAME = "payment_flat";
-
     static toNotAggregatedChorusPaymentFlatEntity(
         /*
         create a PaymentFlatEntity from a ChorusLineEntity without
@@ -115,8 +113,11 @@ export default class PaymentFlatAdapter {
 
         const toPvOrUndefined = value => (value ? toPvPaymentFlat(value) : undefined);
 
+        /* Pour l'instant on garde ej pour tous les providers sauf Fonjep qui prend idVersement 
+        Il faudra convertir tous les versementKey en idVersement quand tout est connecté  */
         return {
-            versementKey: toPvPaymentFlat(entity.ej),
+            versementKey:
+                entity.provider === "fonjep" ? toPvPaymentFlat(entity.idVersement) : toPvPaymentFlat(entity.ej),
             siret: toPvPaymentFlat(entity.idEtablissementBeneficiaire.toString()),
             amount: toPvPaymentFlat(entity.amount),
             dateOperation: toPvPaymentFlat(entity.operationDate),

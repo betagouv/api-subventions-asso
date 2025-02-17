@@ -9,8 +9,6 @@ import PaymentFlatAdapter from "./paymentFlatAdapter";
 import ChorusLineEntity from "../providers/chorus/entities/ChorusLineEntity";
 import { ChorusLineDto } from "../providers/chorus/adapters/chorusLineDto";
 import ProviderValueAdapter from "../../shared/adapters/ProviderValueAdapter";
-import PaymentFlatDbo from "../../dataProviders/db/paymentFlat/PaymentFlatDbo";
-import { PAYMENT_FLAT_DBO } from "../../dataProviders/db/paymentFlat/__fixtures__/paymentFlatDbo.fixture";
 import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
 console.error = jest.fn();
 
@@ -169,9 +167,8 @@ describe("PaymentFlatAdapter", () => {
         //@ts-expect-error: parameter type
         const RAW_PAYMENT: RawPayment<PaymentFlatEntity> = { data: PAYMENT_FLAT_ENTITY };
 
-        let mockToPayment: jest.SpyInstance;
-        beforeAll(() => {
-            mockToPayment = jest.spyOn(PaymentFlatAdapter, "toPayment");
+        const mockToPayment = jest.spyOn(PaymentFlatAdapter, "toPayment");
+        beforeEach(() => {
             mockToPayment.mockReturnValue(PAYMENT_FROM_PAYMENT_FLAT);
         });
 
@@ -191,16 +188,10 @@ describe("PaymentFlatAdapter", () => {
         });
     });
 
-    const now = new Date();
-    const toPV = (value: unknown, provider = "PaymentFlat") =>
-        ProviderValueAdapter.toProviderValue(value, provider, now);
-
     describe("toPayment", () => {
         it("should return partial Payment entity", () => {
             const entity = PAYMENT_FLAT_ENTITY_WITH_NULLS;
-
             const actual = PaymentFlatAdapter.toPayment(entity as PaymentFlatEntity);
-
             expect(actual).toMatchSnapshot();
         });
     });

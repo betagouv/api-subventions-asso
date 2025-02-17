@@ -295,7 +295,7 @@ describe("PaymentFlatService", () => {
     });
 
     describe("raw grant", () => {
-        const DATA = [{ ej: "EJ" }];
+        const DATA = [{ ej: "EJ", provider: "chorus" }];
 
         describe("getRawGrants", () => {
             const SIREN = new Siren("123456789");
@@ -322,9 +322,10 @@ describe("PaymentFlatService", () => {
                       Object {
                         "data": Object {
                           "ej": "EJ",
+                          "provider": "chorus",
                         },
                         "joinKey": "EJ",
-                        "provider": "payment_flat",
+                        "provider": "chorus",
                         "type": "payment",
                       },
                     ]
