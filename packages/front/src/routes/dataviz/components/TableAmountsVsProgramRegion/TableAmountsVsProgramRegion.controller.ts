@@ -94,13 +94,27 @@ export class TableAmountsVsProgramRegionController {
         return groupedData.filter(row => row.exerciceBudgetaire >= yearMin && row.exerciceBudgetaire !== currentYear);
     }
 
+    private _sortData(a, b, selectedColumns) {
+        if (selectedColumns.includes(VARS.REGION_ATTACHEMENT_COMPTABLE)) {
+            if (a[VARS.REGION_ATTACHEMENT_COMPTABLE] < b[VARS.REGION_ATTACHEMENT_COMPTABLE]) return -1;
+            if (a[VARS.REGION_ATTACHEMENT_COMPTABLE] > b[VARS.REGION_ATTACHEMENT_COMPTABLE]) return 1;
+        }
+
+        if (selectedColumns.includes(VARS.PROGRAMME)) {
+            if (a[VARS.PROGRAMME] < b[VARS.PROGRAMME]) return -1;
+            if (a[VARS.PROGRAMME] > b[VARS.PROGRAMME]) return 1;
+        }
+
+        return a.exerciceBudgetaire - b.exerciceBudgetaire;
+    }
+
     public getTableData(
         data: AmountsVsProgramRegionDto[],
         selectedColumns: string[],
     ): PartialAmountsVsProgramRegionFormatted[] {
         let temp = this._groupAndSum(data, selectedColumns);
         temp = this._filterYears(temp, 2021);
-        return this._formatData(temp);
+        return this._formatData(temp).sort((a, b) => this._sortData(a, b, selectedColumns));
     }
 
     public getHeaders(selectedColumns: string[]): string[] {
