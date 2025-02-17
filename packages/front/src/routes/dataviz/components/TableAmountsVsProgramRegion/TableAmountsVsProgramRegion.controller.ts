@@ -95,6 +95,8 @@ export class TableAmountsVsProgramRegionController {
     }
 
     private _sortData(a, b, selectedColumns) {
+        // Sort by regionAttachementComptable then by programme then by exerciceBudgetaire
+
         if (selectedColumns.includes(VARS.REGION_ATTACHEMENT_COMPTABLE)) {
             if (a[VARS.REGION_ATTACHEMENT_COMPTABLE] < b[VARS.REGION_ATTACHEMENT_COMPTABLE]) return -1;
             if (a[VARS.REGION_ATTACHEMENT_COMPTABLE] > b[VARS.REGION_ATTACHEMENT_COMPTABLE]) return 1;
