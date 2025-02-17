@@ -25,6 +25,9 @@ describe("amountsVSProgramRegionService", () => {
                 PAYMENT_FLAT_ENTITY,
                 { ...PAYMENT_FLAT_ENTITY, amount: 7000 },
                 PAYMENT_FLAT_ENTITY_WITH_NULLS,
+                { ...PAYMENT_FLAT_ENTITY, exerciceBudgetaire: 2025 },
+                { ...PAYMENT_FLAT_ENTITY, programNumber: "programNumber" },
+                { ...PAYMENT_FLAT_ENTITY, regionAttachementComptable: "Occitanie" },
             ];
             nDocuments = mockDocuments.length;
 
@@ -48,6 +51,10 @@ describe("amountsVSProgramRegionService", () => {
             // and toNotAggregatedEntity is called only for new key
             mockAdapter.mockReturnValueOnce(NOT_AGGREGATED_ENTITIES[0]);
             mockAdapter.mockReturnValueOnce(NOT_AGGREGATED_ENTITIES[2]);
+            mockAdapter.mockReturnValueOnce(NOT_AGGREGATED_ENTITIES[3]);
+            mockAdapter.mockReturnValueOnce(NOT_AGGREGATED_ENTITIES[4]);
+            mockAdapter.mockReturnValueOnce(NOT_AGGREGATED_ENTITIES[5]);
+
             mockAdapter.mockReturnValue(undefined);
         });
 
