@@ -56,7 +56,7 @@ export const LIST_PAYMENT_FLAT_ENTITY = [PAYMENT_FLAT_ENTITY, PAYMENT_FLAT_ENTIT
 
 const buildProviderValue = value => ({
     value,
-    provider: "payment_flat",
+    provider: PAYMENT_FLAT_ENTITY.provider,
     type: typeof value,
     last_update: new Date("2025-02-04"),
 });

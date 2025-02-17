@@ -23,7 +23,7 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider<
             name: "Payment Flat",
             type: ProviderEnum.raw,
             description: "PaymentFlat",
-            id: "payment_flat",
+            id: "payment-flat",
         });
     }
 
