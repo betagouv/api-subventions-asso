@@ -14,8 +14,6 @@
     const { checkboxOptions, selectedColumns, groupedData, headers } = controller;
 </script>
 
-{$selectedColumns}
-
 <Checkbox
     bind:value={$selectedColumns}
     id="checkboxId"
