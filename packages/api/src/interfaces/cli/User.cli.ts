@@ -44,11 +44,11 @@ export default class UserCli {
         return userStatsService.notifyAllUsersInSubTools();
     }
 
-    async updateAllUsersInSubTools() {
+    updateAllUsersInSubTools() {
         return userStatsService.updateAllUsersInSubTools();
     }
 
-    async updateNbRequests() {
+    updateNbRequests() {
         return userStatsService.updateNbRequests();
     }
 }
