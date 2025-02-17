@@ -9,15 +9,15 @@
 
     const tableId = "table-amounts-vs-program-region";
 
-    const controller = new TableAmountsVsProgramRegionController();
+    const controller = new TableAmountsVsProgramRegionController(elements);
 
-    const { checkboxOptions, selectedColumns } = controller;
-    $: groupedData = controller.getTableData(elements, $selectedColumns);
-    $: headers = controller.getHeaders($selectedColumns);
+    const { checkboxOptions, selectedColumns, groupedData, headers } = controller;
 </script>
 
+{$selectedColumns}
+
 <Checkbox
-    bind:value={selectedColumns.value}
+    bind:value={$selectedColumns}
     id="checkboxId"
     label="Ajouter ou éliminer des colonnes"
     inline={true}
@@ -27,16 +27,16 @@
         <div class="fr-col">
             <Table
                 id={tableId}
-                {headers}
+                headers={$headers}
                 headersSize={["sm", "sm", "sm", "sm"]}
                 bordered={false}
                 scrollable={false}
                 hideTitle={true}
                 title="Montant des subventions que l'Etat a versé">
-                {#each groupedData as row, index}
+                {#each $groupedData as row, index}
                     <TableRow id={tableId} {index}>
                         <td>{row.exerciceBudgetaire}</td>
-                        {#each selectedColumns.value as col}
+                        {#each $selectedColumns as col}
                             <td>{row[col]}</td>
                         {/each}
                         <td>{row.montant}</td>

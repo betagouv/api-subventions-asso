@@ -1,5 +1,6 @@
 import type { AmountsVsProgramRegionDto } from "dto";
-import Store from "$lib/core/Store";
+import { elements } from "chart.js";
+import Store, { derived, ReadStore } from "$lib/core/Store";
 
 type PartialAmountsVsProgramRegionDto = Partial<AmountsVsProgramRegionDto> & {
     montant: number;
@@ -39,8 +40,17 @@ export class TableAmountsVsProgramRegionController {
 
     public selectedColumns: Store<string[]>;
 
-    constructor() {
+    public elements: AmountsVsProgramRegionDto[];
+    public groupedData: ReadStore<PartialAmountsVsProgramRegionFormatted[]>;
+    public headers: ReadStore<string[]>;
+
+    constructor(elements: AmountsVsProgramRegionDto[]) {
+        this.elements = elements;
         this.selectedColumns = new Store([VARS.PROGRAMME, VARS.REGION_ATTACHEMENT_COMPTABLE]);
+        this.headers = derived(this.selectedColumns, selectedColumns => this.getHeaders(selectedColumns));
+        this.groupedData = derived(this.selectedColumns, selectedColumns =>
+            this.getTableData(this.elements, selectedColumns),
+        );
     }
 
     private _formatData(data: PartialAmountsVsProgramRegionDto[]): PartialAmountsVsProgramRegionFormatted[] {
