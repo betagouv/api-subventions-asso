@@ -112,9 +112,8 @@ export class TableAmountsVsProgramRegionController {
         data: AmountsVsProgramRegionDto[],
         selectedColumns: string[],
     ): PartialAmountsVsProgramRegionFormatted[] {
-        let temp = this._groupAndSum(data, selectedColumns);
-        temp = this._filterYears(temp, 2021);
-        return this._formatData(temp).sort((a, b) => this._sortData(a, b, selectedColumns));
+        const filteredAndGroupedData = this._filterYears(this._groupAndSum(data, selectedColumns), 2021);
+        return this._formatData(filteredAndGroupedData).sort((a, b) => this._sortData(a, b, selectedColumns));
     }
 
     public getHeaders(selectedColumns: string[]): string[] {
