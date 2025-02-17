@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.62.0](https://github.com/betagouv/datasubvention/compare/v0.61.0...v0.62.0) (2025-02-17)
+
+### Features
+
+-   **api,front:** [#2349](https://github.com/betagouv/datasubvention/issues/2349) check id comes from asso api-side ([#3188](https://github.com/betagouv/datasubvention/issues/3188)) ([843641c](https://github.com/betagouv/datasubvention/commit/843641ca3f968bb8bc83a76e64bd88eeb20aa0e0))
+-   **api:** [#3158](https://github.com/betagouv/datasubvention/issues/3158) data viz AmountsVsProgramRegion create resource ([#3170](https://github.com/betagouv/datasubvention/issues/3170)) ([46fa57c](https://github.com/betagouv/datasubvention/commit/46fa57cb3c913d15d157c8aab1be8890dd80220a))
+-   **front:** [#3159](https://github.com/betagouv/datasubvention/issues/3159) create-new-empty-page-for-dataviz ([#3193](https://github.com/betagouv/datasubvention/issues/3193)) ([0a71dcf](https://github.com/betagouv/datasubvention/commit/0a71dcf03893e743483f4a2f34a3b6c9869a9f2b))
+-   **front:** [#3160](https://github.com/betagouv/datasubvention/issues/3160) wip add amountsVsProgramRegion table ([#3196](https://github.com/betagouv/datasubvention/issues/3196)) ([6c3f61d](https://github.com/betagouv/datasubvention/commit/6c3f61d942e7df594291efb552964e4b9b5c2437))
+
 # [0.61.0](https://github.com/betagouv/datasubvention/compare/v0.60.3...v0.61.0) (2025-02-03)
 
 ### Bug Fixes
