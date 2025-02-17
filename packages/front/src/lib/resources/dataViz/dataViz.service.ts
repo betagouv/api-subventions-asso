@@ -2,7 +2,7 @@ import type { AmountsVsProgramRegionDto } from "dto";
 import dataVizPort from "./dataViz.port";
 
 class DataVizService {
-    async getAmountsVsProgramRegion(): Promise<AmountsVsProgramRegionDto[] | undefined> {
+    async getAmountsVsProgramRegion(): Promise<AmountsVsProgramRegionDto[]> {
         try {
             const result = await dataVizPort.getAmountsVsProgramRegion();
             return result;
