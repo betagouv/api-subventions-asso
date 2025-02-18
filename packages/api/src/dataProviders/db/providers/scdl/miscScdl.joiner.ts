@@ -3,7 +3,7 @@ import Rna from "../../../../valueObjects/Rna";
 import Siren from "../../../../valueObjects/Siren";
 import Siret from "../../../../valueObjects/Siret";
 import MiscScdlGrantProducerEntity from "../../../../modules/providers/scdl/entities/MiscScdlGrantProducerEntity";
-import miscScdlProducerPort from "./miscScdlProducer.port";
+import miscScdlProducersPort from "./miscScdlProducers.port";
 import miscScdlGrantPort from "./miscScdlGrant.port";
 
 export class MiscScdlJoiner {
@@ -13,9 +13,9 @@ export class MiscScdlJoiner {
         return [
             {
                 $lookup: {
-                    from: miscScdlProducerPort.collectionName,
+                    from: miscScdlProducersPort.collectionName,
                     localField: miscScdlGrantPort.joinIndexes.miscScdlProducer,
-                    foreignField: miscScdlProducerPort.joinIndexes.miscScdlGrant,
+                    foreignField: miscScdlProducersPort.joinIndexes.miscScdlGrant,
                     as: "producer",
                 },
             },

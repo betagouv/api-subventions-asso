@@ -38,22 +38,24 @@ export default class ScdlCli {
         const parsedRowOffset = typeof rowOffset === "number" ? rowOffset : parseInt(rowOffset);
         const fileContent = fs.readFileSync(file);
         const { entities, errors } = ScdlGrantParser.parseExcel(fileContent, pageName, parsedRowOffset);
-        await Promise.all([
-            this.persistEntities(entities, producerSlug, exportDate as string),
-            this.exportErrors(errors, file),
-        ]);
+        await Promise.all([this.persistEntities(entities, producerSlug), this.exportErrors(errors, file)]);
         await dataLogService.addLog(producerSlug, new Date(exportDate), file);
     }
 
+    /**
+     *
+     * @param file (string) : Name of the file to import
+     * @param producerSlug (string) : Slug of the file producer
+     * @param exportDate  (string | format YYYY-MM-DD) :
+     * @param delimiter
+     * @param quote
+     */
     public async parse(file: string, producerSlug: string, exportDate: string, delimiter = ";", quote = '"') {
         await this.validateGenericInput(file, producerSlug, exportDate);
         const fileContent = fs.readFileSync(file);
         const parsedQuote = quote === "false" ? false : quote;
         const { entities, errors } = ScdlGrantParser.parseCsv(fileContent, delimiter, parsedQuote);
-        await Promise.all([
-            this.persistEntities(entities, producerSlug, exportDate as string),
-            this.exportErrors(errors, file),
-        ]);
+        await Promise.all([this.persistEntities(entities, producerSlug), this.exportErrors(errors, file)]);
         await dataLogService.addLog(producerSlug, new Date(exportDate), file);
     }
 
@@ -65,7 +67,7 @@ export default class ScdlCli {
             throw new Error("Producer ID does not match any producer in database");
     }
 
-    private async persistEntities(entities: ScdlStorableGrant[], producerSlug: string, exportDateStr: string) {
+    private async persistEntities(entities: ScdlStorableGrant[], producerSlug: string) {
         if (!entities) throw new Error("No entities could be created from this file");
 
         console.log(`start persisting ${entities.length} grants`);
@@ -86,7 +88,11 @@ export default class ScdlCli {
         }
 
         console.log("Updating producer's last update date");
-        await scdlService.updateProducer(producerSlug, { lastUpdate: new Date(exportDateStr) });
+        // THOUGHTS: what do we want to do with lastUpdate ? Code was making possible to update it with a date lower than a previous one
+        // e.g if we import a file from 2018 with already 2024 data the lastUpdate will be 2018
+        // => always use new Date() in updateProducer
+        // but if we do that lastUpdate doesn't mean the most recent data date but only the "lastUpdate" stricto sensus
+        await scdlService.updateProducer(producerSlug, { lastUpdate: new Date() });
         console.log("Parsing ended successfully !");
     }
 

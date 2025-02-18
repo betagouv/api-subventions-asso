@@ -2,7 +2,7 @@ import path from "path";
 import { ObjectId } from "mongodb";
 import ScdlCli from "../../../src/interfaces/cli/Scdl.cli";
 import scdlService from "../../../src/modules/providers/scdl/scdl.service";
-import miscScdlProducersPort from "../../../src/dataProviders/db/providers/scdl/miscScdlProducer.port";
+import miscScdlProducersPort from "../../../src/dataProviders/db/providers/scdl/miscScdlProducers.port";
 import miscScdlGrantPort from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.port";
 import MiscScdlProducer from "../../../src/modules/providers/scdl/__fixtures__/MiscScdlProducer";
 import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";

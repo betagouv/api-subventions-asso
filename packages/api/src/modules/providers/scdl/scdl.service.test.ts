@@ -1,7 +1,7 @@
 import scdlService from "./scdl.service";
 import miscScdlGrantPort from "../../../dataProviders/db/providers/scdl/miscScdlGrant.port";
 jest.mock("../../../dataProviders/db/providers/scdl/miscScdlGrant.port");
-import miscScdlProducersPort from "../../../dataProviders/db/providers/scdl/miscScdlProducer.port";
+import miscScdlProducersPort from "../../../dataProviders/db/providers/scdl/miscScdlProducers.port";
 jest.mock("../../../dataProviders/db/providers/scdl/miscScdlProducer.port");
 import { getMD5 } from "../../../shared/helpers/StringHelper";
 jest.mock("../../../shared/helpers/StringHelper");
@@ -37,7 +37,7 @@ describe("ScdlService", () => {
     });
 
     describe("getProvider()", () => {
-        it("should call miscScdlProducerPort.create()", async () => {
+        it("should call miscScdlProducersPort.create()", async () => {
             await scdlService.getProducer(MiscScdlProducerFixture.slug);
             expect(miscScdlProducersPort.findBySlug).toHaveBeenCalledWith(MiscScdlProducerFixture.slug);
         });
@@ -51,7 +51,7 @@ describe("ScdlService", () => {
     });
 
     describe("createProducer()", () => {
-        it("should call miscScdlProducerPort.create()", async () => {
+        it("should call miscScdlProducersPort.create()", async () => {
             const PRODUCER = { ...MiscScdlProducerFixture };
             await scdlService.createProducer(PRODUCER);
             expect(miscScdlProducersPort.create).toHaveBeenCalledWith(PRODUCER);
@@ -59,7 +59,7 @@ describe("ScdlService", () => {
     });
 
     describe("updateProducer()", () => {
-        it("should call miscScdlProducerPort.update()", async () => {
+        it("should call miscScdlProducersPort.update()", async () => {
             const SET_OBJECT = {
                 lastUpdate: new Date(),
             };
