@@ -40,16 +40,15 @@ export default class UserCli {
         }
     }
 
-    async notifyAllUsersInSubTools() {
-        await userStatsService.notifyAllUsersInSubTools();
+    notifyAllUsersInSubTools() {
+        return userStatsService.notifyAllUsersInSubTools();
     }
 
-    async updateAllUsersInSubTools() {
-        await userStatsService.updateAllUsersInSubTools();
+    updateAllUsersInSubTools() {
+        return userStatsService.updateAllUsersInSubTools();
     }
 
     updateNbRequests() {
         return userStatsService.updateNbRequests();
-        // TODO also update to brevo #1900
     }
 }

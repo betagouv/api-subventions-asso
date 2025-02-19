@@ -1,10 +1,10 @@
-import Brevo from "@getbrevo/brevo";
+import * as Brevo from "@getbrevo/brevo";
 import * as Sentry from "@sentry/node";
 import { NotificationType } from "../@types/NotificationType";
 import { NotifyOutPipe } from "../@types/NotifyOutPipe";
 import { LOG_MAIL, MAIL_USER } from "../../../configurations/mail.conf";
 import { NotificationDataTypes } from "../@types/NotificationDataTypes";
-import BrevoNotifyPipe from "./BrevoNotifyPipe";
+import { API_BREVO_TOKEN } from "../../../configurations/apis.conf";
 
 export enum TemplateEnum {
     creation = 55,
@@ -16,12 +16,13 @@ export enum TemplateEnum {
     creationAgentConnect = 171,
 }
 
-export class BrevoMailNotifyPipe extends BrevoNotifyPipe implements NotifyOutPipe {
+export class BrevoMailNotifyPipe implements NotifyOutPipe {
     private apiInstance: Brevo.TransactionalEmailsApi;
 
     constructor() {
-        super();
         this.apiInstance = new Brevo.TransactionalEmailsApi();
+        if (!API_BREVO_TOKEN) throw new Error("Brevo token must be defined before runtime");
+        this.apiInstance.setApiKey(0, API_BREVO_TOKEN);
     }
 
     notify(type, data) {
@@ -79,7 +80,7 @@ export class BrevoMailNotifyPipe extends BrevoNotifyPipe implements NotifyOutPip
         return this.sendMail(data.email, data, TemplateEnum.activated);
     }
 
-    async sendMail(email: string, params: unknown, templateId: number): Promise<boolean> {
+    async sendMail(email: string, params: Record<string, any>, templateId: number): Promise<boolean> {
         const sendSmtpEmail = new Brevo.SendSmtpEmail();
         sendSmtpEmail.templateId = templateId;
         sendSmtpEmail.sender = { name: "Data.Subvention", email: MAIL_USER };

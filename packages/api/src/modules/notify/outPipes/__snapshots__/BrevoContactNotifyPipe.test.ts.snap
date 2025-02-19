@@ -20,7 +20,7 @@ Array [
 exports[`BrevoContactNotifyPipe userUpdated should call updateContact() 1`] = `
 Array [
   "test@datasubvention.gouv.fr",
-  exports {
+  UpdateContact {
     "attributes": Object {
       "BUYER_PERSONNAE": "Gestionnaire administratif et financier,Chargé de mission / Expert métier",
       "CATEGORIE": "Agent public d’une collectivité territoriale",

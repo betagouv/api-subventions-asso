@@ -5,6 +5,8 @@ import outPipes from "./outPipes";
 export class NotifyService {
     private outPipes: NotifyOutPipe[] = outPipes;
 
+    // we use getter to force NotifierMethodType for function returned by this
+    // this is used to avoid using notify()() syntax
     get notify(): NotifierMethodType {
         return (type, data) => {
             const pipesPromise = this.outPipes.map(pipe => {
