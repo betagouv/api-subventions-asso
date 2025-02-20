@@ -46,11 +46,17 @@ export default class ScdlCli {
      *
      * @param file (string) : Name of the file to import
      * @param producerSlug (string) : Slug of the file producer
-     * @param exportDate  (string | format YYYY-MM-DD) :
+     * @param exportDate  (string | format YYYY-MM-DD | optionnal) : IF PROVIDED => date of production or end date of covered period
      * @param delimiter
      * @param quote
      */
-    public async parse(file: string, producerSlug: string, exportDate: string, delimiter = ";", quote = '"') {
+    public async parse(
+        file: string,
+        producerSlug: string,
+        exportDate: string | undefined = undefined,
+        delimiter = ";",
+        quote = '"',
+    ) {
         await this.validateGenericInput(file, producerSlug, exportDate);
         const fileContent = fs.readFileSync(file);
         const parsedQuote = quote === "false" ? false : quote;
