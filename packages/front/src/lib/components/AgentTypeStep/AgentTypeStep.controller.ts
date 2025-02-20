@@ -15,7 +15,7 @@ export default class AgentTypeStepController {
     constructor(context?: any) {
         this.dispatch = Dispatch.getDispatcher();
         this.errorMessage = new Store("");
-        if (!context.fromAC) {
+        if (!context?.fromAC) {
             this.options = [
                 ...this.options,
                 {
