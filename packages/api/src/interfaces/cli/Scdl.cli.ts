@@ -39,7 +39,7 @@ export default class ScdlCli {
         const fileContent = fs.readFileSync(file);
         const { entities, errors } = ScdlGrantParser.parseExcel(fileContent, pageName, parsedRowOffset);
         await Promise.all([this.persistEntities(entities, producerSlug), this.exportErrors(errors, file)]);
-        await dataLogService.addLog(producerSlug, new Date(exportDate), file);
+        await dataLogService.addLog(producerSlug, file);
     }
 
     /**
@@ -56,7 +56,7 @@ export default class ScdlCli {
         const parsedQuote = quote === "false" ? false : quote;
         const { entities, errors } = ScdlGrantParser.parseCsv(fileContent, delimiter, parsedQuote);
         await Promise.all([this.persistEntities(entities, producerSlug), this.exportErrors(errors, file)]);
-        await dataLogService.addLog(producerSlug, new Date(exportDate), file);
+        await dataLogService.addLog(producerSlug, file);
     }
 
     private async validateGenericInput(file: string, producerSlug: string, exportDateStr?: string) {

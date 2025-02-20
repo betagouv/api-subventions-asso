@@ -2,7 +2,7 @@ import scdlService from "./scdl.service";
 import miscScdlGrantPort from "../../../dataProviders/db/providers/scdl/miscScdlGrant.port";
 jest.mock("../../../dataProviders/db/providers/scdl/miscScdlGrant.port");
 import miscScdlProducersPort from "../../../dataProviders/db/providers/scdl/miscScdlProducers.port";
-jest.mock("../../../dataProviders/db/providers/scdl/miscScdlProducer.port");
+jest.mock("../../../dataProviders/db/providers/scdl/miscScdlProducers.port");
 import { getMD5 } from "../../../shared/helpers/StringHelper";
 jest.mock("../../../shared/helpers/StringHelper");
 

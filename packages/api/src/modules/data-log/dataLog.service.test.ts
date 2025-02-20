@@ -12,12 +12,12 @@ describe("dataLogService", () => {
         const FILE_PATH = "/path/to/file.csv";
 
         it("inserts log", async () => {
-            await dataLogService.addLog(PROVIDER_ID, EDITION_DATE, FILE_PATH);
+            await dataLogService.addLog(PROVIDER_ID, FILE_PATH, EDITION_DATE);
             expect(dataLogPort.insert).toHaveBeenCalled();
         });
 
         it("inserts log", async () => {
-            await dataLogService.addLog(PROVIDER_ID, EDITION_DATE, FILE_PATH);
+            await dataLogService.addLog(PROVIDER_ID, FILE_PATH, EDITION_DATE);
             const actual = jest.mocked(dataLogPort.insert).mock.calls[0][0];
             expect(actual).toMatchObject({
                 providerId: PROVIDER_ID,
@@ -28,7 +28,7 @@ describe("dataLogService", () => {
         it("set integration date to now", async () => {
             const DATE_NOW = new Date("2024-04-04");
             jest.useFakeTimers().setSystemTime(DATE_NOW);
-            await dataLogService.addLog(PROVIDER_ID, EDITION_DATE, FILE_PATH);
+            await dataLogService.addLog(PROVIDER_ID, FILE_PATH, EDITION_DATE);
             const arg = jest.mocked(dataLogPort.insert).mock.calls[0][0];
             const expected = DATE_NOW;
             const actual = arg.integrationDate;
@@ -38,7 +38,7 @@ describe("dataLogService", () => {
 
         it("sets fileName from file path", async () => {
             const expected = "file.csv";
-            await dataLogService.addLog(PROVIDER_ID, EDITION_DATE, FILE_PATH);
+            await dataLogService.addLog(PROVIDER_ID, FILE_PATH, EDITION_DATE);
             const arg = jest.mocked(dataLogPort.insert).mock.calls[0][0];
             const actual = arg.fileName;
             expect(actual).toBe(expected);
@@ -48,7 +48,7 @@ describe("dataLogService", () => {
             const expected = "RES";
             // @ts-expect-error mock
             jest.mocked(dataLogPort.insert).mockResolvedValueOnce(expected);
-            const actual = await dataLogService.addLog(PROVIDER_ID, EDITION_DATE, FILE_PATH);
+            const actual = await dataLogService.addLog(PROVIDER_ID, FILE_PATH, EDITION_DATE);
             expect(actual).toBe(expected);
         });
     });

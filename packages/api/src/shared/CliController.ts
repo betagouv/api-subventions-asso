@@ -86,6 +86,6 @@ export default class CliController {
 
     protected async _logImportSuccess(editionDate: Date, fileName?: string) {
         if (!this._providerIdToLog) throw new Error("'_providerIdToLog' needs to be defined by the child class");
-        return dataLogService.addLog(this._providerIdToLog, editionDate, fileName);
+        return dataLogService.addLog(this._providerIdToLog, fileName, editionDate);
     }
 }

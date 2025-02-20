@@ -241,7 +241,7 @@ describe("ScdlGrantParser", () => {
                     {
                         field: "associationSiret-origin",
                         value: "associationSiret-value",
-                        message: "SIRET manquant ou invalide",
+                        message: "SIRET du bénéficiaire manquant ou invalide",
                     },
                 ],
             };
@@ -275,7 +275,7 @@ describe("ScdlGrantParser", () => {
                     {
                         field: "paymentStartDate-origin",
                         value: "paymentStartDate-value",
-                        message: "La date de début de paiement est définie mais pas valide",
+                        message: "La date de début de paiement est absente ou non valide",
                     },
                 ],
             };
@@ -292,7 +292,7 @@ describe("ScdlGrantParser", () => {
                     {
                         field: "allocatorSiret-origin",
                         value: "allocatorSiret-value",
-                        message: "SIRET invalide",
+                        message: "SIRET de l'allocataire manquant ou invalide",
                     },
                 ],
             };
@@ -315,7 +315,7 @@ describe("ScdlGrantParser", () => {
                     {
                         field: "paymentStartDate-origin",
                         value: "paymentStartDate-value",
-                        message: "La date de début de paiement est définie mais pas valide",
+                        message: "La date de début de paiement est absente ou non valide",
                     },
                 ],
             };

@@ -140,7 +140,7 @@ describe("ScdlCli", () => {
             const persistSpy = jest.spyOn(cli, "persistEntities").mockReturnValueOnce(Promise.resolve());
             jest.mocked(parserMethod).mockReturnValueOnce({ entities: STORABLE_DATA_ARRAY });
             await test();
-            expect(persistSpy).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
+            expect(persistSpy).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug);
         });
 
         it("exports errors", async () => {
@@ -154,7 +154,7 @@ describe("ScdlCli", () => {
 
         it("logs import", async () => {
             await test();
-            expect(dataLogService.addLog).toHaveBeenCalledWith(PRODUCER_ENTITY.slug, EXPORT_DATE, FILE_PATH);
+            expect(dataLogService.addLog).toHaveBeenCalledWith(PRODUCER_ENTITY.slug, FILE_PATH);
         });
     });
 
@@ -182,11 +182,14 @@ describe("ScdlCli", () => {
         });
 
         it("should call scdlService.updateProducer()", async () => {
+            const now = new Date();
+            jest.useFakeTimers().setSystemTime(now);
             // @ts-expect-error -- test private
-            await cli.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
+            await cli.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug);
             expect(scdlService.updateProducer).toHaveBeenCalledWith(PRODUCER_ENTITY.slug, {
-                lastUpdate: new Date(EXPORT_DATE_STR),
+                lastUpdate: now,
             });
+            jest.useRealTimers();
         });
     });
 

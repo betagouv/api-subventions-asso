@@ -158,7 +158,7 @@ describe("CliController", () => {
             ctrl._providerIdToLog = "something";
             // @ts-expect-error -- test protected method
             await ctrl._logImportSuccess(EDITION_DATE, FILENAME);
-            expect(dataLogService.addLog).toHaveBeenCalledWith("something", EDITION_DATE, FILENAME);
+            expect(dataLogService.addLog).toHaveBeenCalledWith("something", FILENAME, EDITION_DATE);
         });
     });
 });
