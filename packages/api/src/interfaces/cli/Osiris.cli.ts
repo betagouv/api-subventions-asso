@@ -156,35 +156,37 @@ export default class OsirisCli {
 
     private async _parseAction(contentFile: Buffer, year: number, logs: unknown[]) {
         const actions = OsirisParser.parseActions(contentFile, year);
-        const results = await actions.reduce(
-            async (acc, osirisAction, index) => {
-                const data = await acc;
-                const validation = osirisService.validAction(osirisAction);
+        let nbErrors = 0;
 
-                CliHelper.printProgress(index + 1, actions.length);
+        let tictackClock = true;
+        const ticTacInterval = setInterval(() => {
+            tictackClock = !tictackClock;
+            console.log(tictackClock ? "TIC" : "TAC");
+        }, 100000);
+        const validated: OsirisActionEntity[] = [];
 
-                if (validation !== true) {
-                    logs.push(
-                        `\n\nThis request is not registered because: ${validation.message}\n`,
-                        JSON.stringify(validation.data, null, "\t"),
-                    );
-                } else data.push(await osirisService.addAction(osirisAction));
+        actions.map(a => {
+            const validation = osirisService.validAction(a);
+            if (validation !== true) {
+                logs.push(
+                    `\n\nThis request is not registered because: ${validation.message}\n`,
+                    JSON.stringify(validation.data, null, "\t"),
+                );
+                nbErrors += 1;
+            } else validated.push(a);
+        });
 
-                return data;
-            },
-            Promise.resolve([]) as Promise<
-                {
-                    state: string;
-                    result: OsirisActionEntity;
-                }[]
-            >,
-        );
+        const result = await osirisService.bulkAddActions(validated);
+        if (!result) return;
+        CliHelper.printProgress(validated.length, actions.length);
 
-        const created = results.filter(({ state }) => state === "created");
+        clearInterval(ticTacInterval);
         console.info(`
-            ${results.length}/${actions.length}
-            ${created.length} actions created and ${results.length - created.length} actions update
-            ${actions.length - results.length} actions not valid
+            ${validated.length}/${actions.length}
+            ${result.insertedCount + result.upsertedCount} actions created and ${
+            result.modifiedCount + result.matchedCount
+        } actions updated
+            ${nbErrors} actions not valid
         `);
     }
 

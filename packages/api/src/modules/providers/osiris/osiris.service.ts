@@ -1,7 +1,7 @@
-import { DemandeSubvention, Association, Etablissement } from "dto";
+import { Association, DemandeSubvention, Etablissement } from "dto";
 import { BulkWriteResult } from "mongodb";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import { isAssociationName, isCompteAssoId, isOsirisRequestId, isOsirisActionId } from "../../../shared/Validators";
+import { isAssociationName, isCompteAssoId, isOsirisActionId, isOsirisRequestId } from "../../../shared/Validators";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import ProviderRequestInterface from "../../search/@types/ProviderRequestInterface";
@@ -16,7 +16,7 @@ import GrantProvider from "../../grant/@types/GrantProvider";
 import Siret from "../../../valueObjects/Siret";
 import Siren from "../../../valueObjects/Siren";
 import Rna from "../../../valueObjects/Rna";
-import { osirisRequestPort, osirisActionPort } from "../../../dataProviders/db/providers/osiris";
+import { osirisActionPort, osirisRequestPort } from "../../../dataProviders/db/providers/osiris";
 import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
@@ -149,20 +149,15 @@ export class OsirisService
     }
 
     public async addAction(action: OsirisActionEntity): Promise<{ state: string; result: OsirisActionEntity }> {
-        const existingAction = await osirisActionPort.findByUniqueId(action.indexedInformations.uniqueId);
-        if (existingAction) {
-            return {
-                state: "updated",
-                result: await osirisActionPort.update(action),
-            };
-        }
-
-        await osirisActionPort.add(action);
-
+        const res = await osirisActionPort.upsertOne(action);
         return {
-            state: "created",
+            state: res.upsertedCount ? "created" : "updated",
             result: action,
         };
+    }
+
+    public bulkAddActions(actions: OsirisActionEntity[]): Promise<void | BulkWriteResult> {
+        return osirisActionPort.bulkUpsert(actions);
     }
 
     public validAction(action: OsirisActionEntity) {
