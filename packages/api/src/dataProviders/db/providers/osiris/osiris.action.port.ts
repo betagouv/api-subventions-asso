@@ -44,7 +44,7 @@ export class OsirisActionPort extends MongoPort<OsirisActionEntityDbo> {
         const options = { upsert: true } as FindOneAndUpdateOptions;
         const { _id, ...actionWithoutId } = osirisAction;
         return this.collection.updateOne(
-            { "providerInformations.uniqueId": osirisAction.indexedInformations.uniqueId },
+            { "indexedInformations.uniqueId": osirisAction.indexedInformations.uniqueId },
             { $set: actionWithoutId },
             options,
         );
@@ -55,7 +55,7 @@ export class OsirisActionPort extends MongoPort<OsirisActionEntityDbo> {
             const { _id, ...actionWithoutId } = a;
             return {
                 updateOne: {
-                    filter: { "providerInformations.uniqueId": a.indexedInformations.uniqueId },
+                    filter: { "indexedInformations.uniqueId": a.indexedInformations.uniqueId },
                     update: { $set: actionWithoutId },
                     upsert: true,
                 },
