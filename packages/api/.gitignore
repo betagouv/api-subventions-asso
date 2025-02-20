@@ -119,3 +119,4 @@ globalConfig.json
 
 # use by ScdlBatch CLI to import scdl files batch localy
 data-integration/
+import-errors/

@@ -218,7 +218,7 @@ describe("ScdlCli", () => {
         const FILE = "path/file.csv";
         const STR_CONTENT = "azertyuiop";
         // normalize for windows and linux compatilibity
-        const OUTPUT_PATH = normalize("importErrors/file.csv-errors.csv");
+        const OUTPUT_PATH = normalize("import-errors/file.csv-errors.csv");
 
         beforeAll(() => {
             jest.mocked(csvSyncStringifier.stringify).mockReturnValue(STR_CONTENT);

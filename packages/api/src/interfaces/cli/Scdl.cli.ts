@@ -16,7 +16,7 @@ export default class ScdlCli {
     static cmdName = "scdl";
 
     // relative path refers to package's root
-    static errorsFolderName = "./importErrors";
+    static errorsFolderName = "./import-errors";
 
     public async addProducer(slug: string, name: string, siret: string) {
         if (!slug) throw Error("producer SLUG is mandatory");
