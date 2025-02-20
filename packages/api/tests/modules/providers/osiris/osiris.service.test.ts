@@ -7,6 +7,7 @@ import ProviderValueAdapter from "../../../../src/shared/adapters/ProviderValueA
 import AssociationIdentifier from "../../../../src/valueObjects/AssociationIdentifier";
 import Rna from "../../../../src/valueObjects/Rna";
 import Siren from "../../../../src/valueObjects/Siren";
+import { ObjectId } from "mongodb";
 
 describe("OsirisService", () => {
     it("should return an instance of osirisService", () => {
@@ -115,7 +116,9 @@ describe("OsirisService", () => {
             });
 
             it("should return request", async () => {
-                expect(await osirisService.findBySiret(SIRET)).toMatchObject([entity]);
+                const expected = { ...entity, _id: expect.any(ObjectId) };
+                const actual = (await osirisService.findBySiret(SIRET))[0];
+                expect(actual).toMatchObject(expected);
             });
 
             it("should return action without evaluation", async () => {
@@ -161,7 +164,9 @@ describe("OsirisService", () => {
             });
 
             it("should return request", async () => {
-                expect(await osirisService.findByRna(RNA)).toMatchObject([entity]);
+                const expected = { ...entity, _id: expect.any(ObjectId) };
+                const actual = (await osirisService.findByRna(RNA))[0];
+                expect(actual).toMatchObject(expected);
             });
         });
     });
