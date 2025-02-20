@@ -8,7 +8,8 @@ jest.mock("csv-stringify/sync", () => ({
 
 jest.mock("fs");
 const mockedFs = jest.mocked(fs);
-import FormatDateError from "../../shared/errors/cliErrors/FormatDateError";
+import * as CliHelper from "../../shared/helpers/CliHelper";
+jest.mock("../../shared/helpers/CliHelper");
 import ScdlCli from "./Scdl.cli";
 import scdlService from "../../modules/providers/scdl/scdl.service";
 
@@ -38,7 +39,6 @@ describe("ScdlCli", () => {
     const STORABLE_DATA = { ...GRANT, __data__: {} };
     const FILE_CONTENT = "FILE_CONTENT";
     const EXPORT_DATE_STR = "2023-03-23";
-    const EXPORT_DATE = new Date(EXPORT_DATE_STR);
     const UNIQUE_ID = "UNIQUE_ID";
     const FILE_PATH = "FILE_PATH";
     const STORABLE_DATA_ARRAY = [STORABLE_DATA];
@@ -122,7 +122,7 @@ describe("ScdlCli", () => {
             // @ts-expect-error -- test private
             const sanitizeSpy = jest.spyOn(cli, "validateGenericInput");
             await test();
-            expect(sanitizeSpy).toHaveBeenCalledWith(FILE_PATH, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
+            expect(sanitizeSpy).toHaveBeenCalledWith(PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
         });
 
         it("reads file", async () => {
@@ -194,15 +194,22 @@ describe("ScdlCli", () => {
     });
 
     describe("validateGenericInput", () => {
-        it("should throw FormatDateError", async () => {
+        it("validates export date", async () => {
             // @ts-expect-error -- test private
-            expect(() => cli.validateGenericInput(PRODUCER_ENTITY.slug)).rejects.toThrowError(FormatDateError);
+            cli.validateGenericInput(PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
+            expect(CliHelper.validateDate).toHaveBeenCalledWith(EXPORT_DATE_STR);
+        });
+
+        it("does not validates date if undefined", async () => {
+            // @ts-expect-error -- test private
+            cli.validateGenericInput(PRODUCER_ENTITY.slug);
+            expect(CliHelper.validateDate).not.toHaveBeenCalled();
         });
 
         it("should throw Error when providerId does not match any provider in database", async () => {
             mockedScdlService.getProducer.mockResolvedValue(null);
             // @ts-expect-error -- test private
-            expect(() => cli.validateGenericInput("WRONG_ID", new Date())).rejects.toThrowError();
+            expect(() => cli.validateGenericInput("WRONG_ID")).rejects.toThrowError();
         });
     });
 

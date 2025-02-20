@@ -2,10 +2,9 @@ import fs from "fs";
 import CliController from "./CliController";
 import { GenericParser } from "./GenericParser";
 import dataLogService from "../modules/data-log/dataLog.service";
-import ObsoleteDateError from "./errors/cliErrors/ObsoleteDateError";
-import FormatDateError from "./errors/cliErrors/FormatDateError";
-import OutOfRangeDateError from "./errors/cliErrors/OutOfRangeDateError";
+import { validateDate } from "./helpers/CliHelper";
 
+jest.mock("./helpers/CliHelper");
 jest.mock("../modules/data-log/dataLog.service");
 
 describe("CliController", () => {
@@ -54,39 +53,17 @@ describe("CliController", () => {
         });
     });
 
-    describe("validateDate()", () => {
-        it.each`
-            date
-            ${"224-07-30"}
-            ${"2017-07-30"}
-        `("throw ObsoleteDateError", async ({ date }) => {
-            await expect(() => controller.parse(FILENAME, date)).rejects.toThrow(ObsoleteDateError);
-        });
-
-        it("throw FormatDateError", async () => {
-            await expect(() => controller.parse(FILENAME, "2à24-07-30")).rejects.toThrow(FormatDateError);
-        });
-
-        it("throw OutOfRangeDateError", async () => {
-            const today = new Date();
-            const tomorrow = new Date(today.setDate(today.getDate() + 1));
-            await expect(() => controller.parse(FILENAME, tomorrow.toISOString())).rejects.toThrow(OutOfRangeDateError);
-        });
-    });
-
     describe("parse()", () => {
         const findFilesMock = jest.spyOn(GenericParser, "findFiles");
-        let mockValidateDate: jest.SpyInstance;
         let validFileExistsMock: jest.SpyInstance;
         let _parseSpy: jest.SpyInstance;
         // @ts-expect-error -- mock protected method
         const logMock = jest.spyOn(controller, "_logImportSuccess").mockResolvedValue(null);
 
         beforeAll(() => {
+            jest.mocked(validateDate).mockReturnValue(true);
             // @ts-expect-error: spy on protected method
             _parseSpy = jest.spyOn(controller, "_parse").mockImplementation(() => true);
-            // @ts-expect-error: spy on protected method
-            mockValidateDate = jest.spyOn(controller, "validateDate").mockReturnValue(true);
             // @ts-expect-error: spy on protected method
             validFileExistsMock = jest.spyOn(controller, "validFileExists").mockImplementationOnce(() => true);
             jest.spyOn(console, "info").mockImplementation(() => undefined);

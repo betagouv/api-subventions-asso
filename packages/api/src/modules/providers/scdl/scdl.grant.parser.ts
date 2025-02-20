@@ -141,6 +141,7 @@ export default class ScdlGrantParser {
                 annotations,
                 errors: errorsEntity,
             } = ScdlGrantParser.indexDataByPathAndAnnotate<string, ScdlStorableGrant>(SCDL_MAPPER, parsedData);
+
             errors.push(...errorsEntity);
 
             // validates and saves annotated errors

@@ -50,7 +50,7 @@ describe("scdl data integration script", () => {
         [
             file: string,
             producerSlug: string,
-            exportDate: string,
+            exportDate?: string,
             delimiter?: string | undefined,
             quote?: string | undefined,
         ]
@@ -60,7 +60,7 @@ describe("scdl data integration script", () => {
         [
             file: string,
             producerSlug: string,
-            exportDate: string,
+            exportDate?: string,
             pageName?: string | undefined,
             rowOffset?: string | number | undefined,
         ]

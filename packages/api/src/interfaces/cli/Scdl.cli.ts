@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
 import csvSyncStringifier = require("csv-stringify/sync");
-import FormatDateError from "../../shared/errors/cliErrors/FormatDateError";
 import ScdlGrantParser from "../../modules/providers/scdl/scdl.grant.parser";
 import scdlService from "../../modules/providers/scdl/scdl.service";
 import MiscScdlGrantEntity from "../../modules/providers/scdl/entities/MiscScdlGrantEntity";
@@ -11,6 +10,7 @@ import Siret from "../../valueObjects/Siret";
 import { ParsedDataWithProblem } from "../../modules/providers/scdl/@types/Validation";
 import { DEV } from "../../configurations/env.conf";
 import dataLogService from "../../modules/data-log/dataLog.service";
+import { validateDate } from "../../shared/helpers/CliHelper";
 
 export default class ScdlCli {
     static cmdName = "scdl";
@@ -30,11 +30,11 @@ export default class ScdlCli {
     public async parseXls(
         file: string,
         producerSlug: string,
-        exportDate: string,
-        pageName?: string,
+        exportDate: string | undefined = undefined,
+        pageName: string | undefined = undefined,
         rowOffset: number | string = 0,
     ) {
-        await this.validateGenericInput(file, producerSlug, exportDate);
+        await this.validateGenericInput(producerSlug, exportDate);
         const parsedRowOffset = typeof rowOffset === "number" ? rowOffset : parseInt(rowOffset);
         const fileContent = fs.readFileSync(file);
         const { entities, errors } = ScdlGrantParser.parseExcel(fileContent, pageName, parsedRowOffset);
@@ -57,7 +57,7 @@ export default class ScdlCli {
         delimiter = ";",
         quote = '"',
     ) {
-        await this.validateGenericInput(file, producerSlug, exportDate);
+        await this.validateGenericInput(producerSlug, exportDate);
         const fileContent = fs.readFileSync(file);
         const parsedQuote = quote === "false" ? false : quote;
         const { entities, errors } = ScdlGrantParser.parseCsv(fileContent, delimiter, parsedQuote);
@@ -65,10 +65,8 @@ export default class ScdlCli {
         await dataLogService.addLog(producerSlug, file);
     }
 
-    private async validateGenericInput(file: string, producerSlug: string, exportDateStr?: string) {
-        if (!exportDateStr) throw new FormatDateError();
-        const exportDate = new Date(exportDateStr);
-        if (isNaN(exportDate.getTime())) throw new FormatDateError();
+    private async validateGenericInput(producerSlug: string, exportDateStr?: string) {
+        if (exportDateStr) validateDate(exportDateStr);
         if (!(await scdlService.getProducer(producerSlug)))
             throw new Error("Producer ID does not match any producer in database");
     }
