@@ -141,7 +141,7 @@ export default class OsirisCli {
                     validation = osirisService.validRequest(osirisRequest); // Re-validate with the new rna
                 }
             }
-            CliHelper.printProgress(index + 1, requests.length); // TODO why are you here
+            CliHelper.printProgress(index + 1, requests.length);
 
             if (validation !== true) {
                 logs.push(
