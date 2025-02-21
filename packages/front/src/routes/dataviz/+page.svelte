@@ -19,7 +19,7 @@
     </Alert>
 
     <div class="fr-container">
-        <div class="fr-grid-row">
+        <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-6">
                 <h2 class="fr-h4 text-center">Montant des subventions que l'Etat a versées</h2>
 

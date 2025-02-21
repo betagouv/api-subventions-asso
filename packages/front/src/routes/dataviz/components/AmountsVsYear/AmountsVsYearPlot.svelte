@@ -2,24 +2,33 @@
 // @ts-nocheck
 
     import { onMount } from 'svelte';
-    //import CategoryLegend from "./CategoryLegend.svelte";
-    //import Labels from "./Labels.svelte";
+    import CategoryLegend from "../CategoryLegend.svelte";
     import * as d3 from 'd3';
 
     export let data_year;
     export let data_selected;
 
     let svg;
-    let width = 1000;
+    let width = 800;
     let height = 400;
 
-    const margin = { top: 20, right: 320, bottom: 40, left: 90 };
+    const margin = { top: 80, right: 320, bottom: 40, left: 90 };
     const svgWidth = width - margin.left - margin.right;
     const svgHeight = height - margin.top - margin.bottom;
-    onMount(() => {
+
+    const formatter = new Intl.NumberFormat('fr-FR', {
+        style: 'decimal',
+        maximumFractionDigits: 0,
+    });
+
+    
+
+    function updateChart() {
+
+        if (!svg || !data_year) return;
+        d3.select(svg).selectAll("*").remove();
 
         const years = [...new Set(data_year.map((d) => d.exerciceBudgetaire))];
-        console.log(years);
         // Créer l'échelle X (temps)
         const x = d3
         .scaleBand()
@@ -33,7 +42,6 @@
         .domain([0, d3.max(data_year, (d) => d.montant)])
         .nice()
         .range([svgHeight, 0]);
-
         // Créer l'échelle Yselected (valeurs)
         
         
@@ -92,10 +100,12 @@
         ;
 
         // Ajouter l'axe Y
-        svgElement.append('g').call(d3.axisLeft(y));
+        svgElement.append('g').call(d3.axisLeft(y))
+        .attr('color', 'steelblue');
 
         svgElement.append('g').call(d3.axisRight(ySelected))
-        .attr('transform', `translate(${svgWidth },0)`);
+        .attr('transform', `translate(${svgWidth },0)`)
+        .attr('color', 'red');
         
     const tooltip = d3
         .select('body') 
@@ -120,7 +130,7 @@
         .on('mouseover', function (event, d) {
         tooltip
             .style('visibility', 'visible') // Affiche le tooltip
-            .text(`Exercice: ${d.exerciceBudgetaire}, Montant: ${d.montant}`);
+            .text(`Exercice: ${d.exerciceBudgetaire}, Montant: ${formatter.format(d.montant)}`);
         })
         .on('mousemove', function (event) {
         tooltip
@@ -143,7 +153,7 @@
         .on('mouseover', function (event, d) {
         tooltip
             .style('visibility', 'visible') // Affiche le tooltip
-            .text(`Exercice: ${d.exerciceBudgetaire}, Montant: ${d.montant}`);
+            .text(`Exercice: ${d.exerciceBudgetaire}, Montant: ${formatter.format(d.montant)}`);
         })
         .on('mousemove', function (event) {
         tooltip
@@ -154,11 +164,53 @@
         tooltip.style('visibility', 'hidden'); // Cache le tooltip quand la souris quitte le point
         });
 
-        
-    });
+      // Créer la légende
+    const legend = svgElement.append('g')
+        .attr('transform', `translate(0, -55)`); // Positionner la légende
+
+    // Ajouter le rectangle pour la ligne "data_year"
+    legend.append('rect')
+        .attr('width', 12)
+        .attr('height', 12)
+        .attr('fill', 'steelblue');
+
+    // Ajouter le texte pour la ligne "data_year"
+    legend.append('text')
+        .attr('x', 20)
+        .attr('y', 10)
+        .text('Montant total')
+        .style('font-size', '12px')
+        .style('font-family', 'Marianne');
+
+    // Ajouter le rectangle pour la ligne "data_selected"
+    legend.append('rect')
+        .attr('y', 20)
+        .attr('width', 12)
+        .attr('height', 12)
+        .attr('fill', 'red');
+
+    // Ajouter le texte pour la ligne "data_selected"
+    legend.append('text')
+        .attr('x', 20)
+        .attr('y', 30)
+        .text('Montant pour le programme et region selectionné')
+        .style('font-size', '12px')
+        .style('font-family', 'Marianne');
+
+
+    };
+
+    onMount(updateChart);
+
+    $: if (data_selected) { 
+        updateChart();
+    }
+
 </script>
 
   
 
-<svg bind:this={svg}>
+<svg bind:this={svg} >
+
 </svg>
+
