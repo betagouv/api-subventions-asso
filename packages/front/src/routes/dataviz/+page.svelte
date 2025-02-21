@@ -3,9 +3,11 @@
     import { DataVizController } from "./DataViz.controller";
     import FullPageSpinner from "$lib/components/FullPageSpinner.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
+    import AmountsVsYear from "./components/AmountsVsYear/AmountsVsYear.svelte";
 
     const controller = new DataVizController();
     const { amountsVsProgramRegionDataPromise } = controller;
+
 </script>
 
 {#await amountsVsProgramRegionDataPromise}
@@ -25,6 +27,7 @@
             </div>
             <div class="fr-col-6">
                 <h2 class="fr-h4 text-center">Construction graphe en cours</h2>
+                <AmountsVsYear elements={result} />
             </div>
         </div>
     </div>

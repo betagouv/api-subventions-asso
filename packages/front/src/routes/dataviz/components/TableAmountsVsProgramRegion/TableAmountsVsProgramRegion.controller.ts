@@ -1,5 +1,4 @@
 import type { AmountsVsProgramRegionDto } from "dto";
-import { elements } from "chart.js";
 import Store, { derived, ReadStore } from "$lib/core/Store";
 
 type PartialAmountsVsProgramRegionDto = Partial<AmountsVsProgramRegionDto> & {
