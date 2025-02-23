@@ -39,7 +39,7 @@ export default class ScdlCli {
         const fileContent = fs.readFileSync(file);
         const { entities, errors } = ScdlGrantParser.parseExcel(fileContent, pageName, parsedRowOffset);
         await Promise.all([this.persistEntities(entities, producerSlug), this.exportErrors(errors, file)]);
-        await dataLogService.addLog(producerSlug, file);
+        await dataLogService.addLog(producerSlug, file, exportDate ? new Date(exportDate) : undefined);
     }
 
     /**
@@ -62,7 +62,7 @@ export default class ScdlCli {
         const parsedQuote = quote === "false" ? false : quote;
         const { entities, errors } = ScdlGrantParser.parseCsv(fileContent, delimiter, parsedQuote);
         await Promise.all([this.persistEntities(entities, producerSlug), this.exportErrors(errors, file)]);
-        await dataLogService.addLog(producerSlug, file);
+        return await dataLogService.addLog(producerSlug, file, exportDate ? new Date(exportDate) : undefined);
     }
 
     private async validateGenericInput(producerSlug: string, exportDateStr?: string) {
@@ -78,8 +78,10 @@ export default class ScdlCli {
         let duplicates: MiscScdlGrantEntity[] = [];
 
         try {
+            console.log("creates many grants...", scdlService.createManyGrants);
             await scdlService.createManyGrants(entities, producerSlug);
         } catch (e) {
+            console.log("error....", e);
             if (!(e instanceof DuplicateIndexError)) throw e;
             duplicates = (e as DuplicateIndexError<MiscScdlGrantEntity[]>).duplicates;
         }
@@ -102,6 +104,7 @@ export default class ScdlCli {
 
     private async exportErrors(errors: ParsedDataWithProblem[], file: string) {
         if (!DEV) return;
+
         const fileName = path.basename(file);
         if (!fs.existsSync(ScdlCli.errorsFolderName)) fs.mkdirSync(ScdlCli.errorsFolderName);
         const outputPath = path.join(ScdlCli.errorsFolderName, fileName + "-errors.csv");
