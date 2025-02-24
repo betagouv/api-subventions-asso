@@ -23,16 +23,16 @@ describe("SignupACController", () => {
             agentType: AgentTypeEnum.OPERATOR,
             something: "something",
         };
-        const userServiceMock = vi.spyOn(userService, "updateProfile");
+        const userServiceMock = vi.spyOn(userService, "completeProfile");
 
-        it("should call userService.updateProfile()", async () => {
+        it("should call userService.completeProfile()", async () => {
             await controller.onSubmit(USER);
             expect(userServiceMock).toHaveBeenCalledWith(USER);
         });
 
         it("should redirect to successful login", async () => {
             await controller.onSubmit(USER);
-            expect(goToUrl).toHaveBeenCalledWith("/?success=ACCOUNT_ACTIVATED", true, true);
+            expect(goToUrl).toHaveBeenCalledWith("/?success=ACCOUNT_COMPLETED", true, true);
         });
     });
 });

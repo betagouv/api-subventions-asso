@@ -104,8 +104,15 @@ export class AuthService {
 
     redirectAfterLogin() {
         const redirection = localStorageService.getItem("redirectUrl", null).value;
-
-        if (!redirection) return goToUrl("/", true, true);
+        if (!redirection) {
+            if (
+                this.getCurrentUser() &&
+                this.getCurrentUser().agentConnectId &&
+                this.getCurrentUser().profileToComplete
+            )
+                return goToUrl("/auth/signup-ac", true, true);
+            return goToUrl("/", true, true);
+        }
         localStorageService.removeItem("redirectUrl");
         const { url, setDate } = redirection;
         const soonBefore = new Date();
