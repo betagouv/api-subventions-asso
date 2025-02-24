@@ -62,7 +62,7 @@ export default class ScdlCli {
         const parsedQuote = quote === "false" ? false : quote;
         const { entities, errors } = ScdlGrantParser.parseCsv(fileContent, delimiter, parsedQuote);
         await Promise.all([this.persistEntities(entities, producerSlug), this.exportErrors(errors, file)]);
-        return await dataLogService.addLog(producerSlug, file, exportDate ? new Date(exportDate) : undefined);
+        await dataLogService.addLog(producerSlug, file, exportDate ? new Date(exportDate) : undefined);
     }
 
     private async validateGenericInput(producerSlug: string, exportDateStr?: string) {

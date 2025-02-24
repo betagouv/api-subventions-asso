@@ -154,7 +154,11 @@ describe("ScdlCli", () => {
 
         it("logs import", async () => {
             await test();
-            expect(dataLogService.addLog).toHaveBeenCalledWith(PRODUCER_ENTITY.slug, FILE_PATH);
+            expect(dataLogService.addLog).toHaveBeenCalledWith(
+                PRODUCER_ENTITY.slug,
+                FILE_PATH,
+                new Date(EXPORT_DATE_STR),
+            );
         });
     });
 

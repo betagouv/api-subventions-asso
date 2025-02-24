@@ -44,27 +44,9 @@ describe("scdl data integration script", () => {
     let scdlBatchCli: ScdlBatchCli;
     const testFilePath = path.join(SCDL_FILE_PROCESSING_PATH, SCDL_FILE_PROCESSING_CONFIG_FILENAME);
 
-    let addProducerMock: jest.SpyInstance<Promise<void>, [slug: string, name: string, siret: string]>;
-    let parseMock: jest.SpyInstance<
-        Promise<void>,
-        [
-            file: string,
-            producerSlug: string,
-            exportDate?: string,
-            delimiter?: string | undefined,
-            quote?: string | undefined,
-        ]
-    >;
-    let parseXlsMock: jest.SpyInstance<
-        Promise<void>,
-        [
-            file: string,
-            producerSlug: string,
-            exportDate?: string,
-            pageName?: string | undefined,
-            rowOffset?: string | number | undefined,
-        ]
-    >;
+    const addProducerMock = jest.spyOn(ScdlCli.prototype, "addProducer");
+    const parseMock = jest.spyOn(ScdlCli.prototype, "parse");
+    const parseXlsMock = jest.spyOn(ScdlCli.prototype, "parseXls");
 
     beforeAll(() => {
         scdlBatchCli = new ScdlBatchCli();
@@ -72,9 +54,7 @@ describe("scdl data integration script", () => {
 
     beforeEach(() => {
         jest.spyOn(process, "exit").mockImplementation((() => {}) as (code?: any) => never);
-        addProducerMock = jest.spyOn(ScdlCli.prototype, "addProducer").mockResolvedValue();
-        parseMock = jest.spyOn(ScdlCli.prototype, "parse").mockResolvedValue();
-        parseXlsMock = jest.spyOn(ScdlCli.prototype, "parseXls").mockResolvedValue();
+        addProducerMock.mockResolvedValue();
     });
 
     describe("loadConfig method", () => {
@@ -143,17 +123,13 @@ describe("scdl data integration script", () => {
         });
 
         it("should catch error", async () => {
-            addProducerMock = jest
-                .spyOn(ScdlCli.prototype, "addProducer")
-                .mockRejectedValue(new Error("Mocked addProducer error"));
+            addProducerMock.mockRejectedValue(new Error("Mocked addProducer error"));
             // @ts-expect-error: protected
             await expect(scdlBatchCli.processFile(fileConfig)).resolves.toBeUndefined();
         });
 
         it("should not call parse method when addProducer error", async () => {
-            addProducerMock = jest
-                .spyOn(ScdlCli.prototype, "addProducer")
-                .mockRejectedValue(new Error("Mocked addProducer error"));
+            addProducerMock.mockRejectedValue(new Error("Mocked addProducer error"));
             // @ts-expect-error: protected
             await expect(scdlBatchCli.processFile(fileConfig)).resolves.toBeUndefined();
             expect(parseMock).not.toHaveBeenCalled();
@@ -177,17 +153,13 @@ describe("scdl data integration script", () => {
         });
 
         it("should catch Producer already exists error", async () => {
-            addProducerMock = jest
-                .spyOn(ScdlCli.prototype, "addProducer")
-                .mockRejectedValue(new Error("Producer already exists"));
+            addProducerMock.mockRejectedValue(new Error("Producer already exists"));
             // @ts-expect-error: protected
             await expect(scdlBatchCli.processFile(fileConfig)).resolves.toBeUndefined();
         });
 
         it("should call parse method when producer already exists", async () => {
-            addProducerMock = jest
-                .spyOn(ScdlCli.prototype, "addProducer")
-                .mockRejectedValue(new Error("Producer already exists"));
+            addProducerMock.mockRejectedValue(new Error("Producer already exists"));
             // @ts-expect-error: protected
             await expect(scdlBatchCli.processFile(fileConfig)).resolves.toBeUndefined();
             expect(parseMock).toHaveBeenCalledTimes(1);
@@ -282,9 +254,7 @@ describe("scdl data integration script", () => {
                 ],
             };
             jest.spyOn(fs, "readFileSync").mockReturnValueOnce(JSON.stringify(configData));
-            parseXlsMock = jest
-                .spyOn(ScdlCli.prototype, "parseXls")
-                .mockRejectedValue(new Error("Mocked addProducer error"));
+            parseXlsMock.mockRejectedValue(new Error("Mocked addProducer error"));
 
             await expect(scdlBatchCli.import()).resolves.toBeUndefined();
             expect(addProducerMock).toHaveBeenCalledTimes(3);
