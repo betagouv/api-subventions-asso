@@ -1,7 +1,6 @@
 <script>
     import { onMount } from "svelte";
     import * as d3 from "d3";
-    import CategoryLegend from "../CategoryLegend.svelte";
 
     export let data_year;
     export let data_selected;
