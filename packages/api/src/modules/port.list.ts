@@ -22,9 +22,10 @@ import fonjepDispositifPort from "../dataProviders/db/providers/fonjep/fonjep.di
 import paymentFlatPort from "../dataProviders/db/paymentFlat/paymentFlat.port";
 import { osirisActionPort, osirisEvaluationPort, osirisRequestPort } from "../dataProviders/db/providers/osiris";
 import miscScdlGrantPort from "../dataProviders/db/providers/scdl/miscScdlGrant.port";
-import miscScdlProducerPort from "../dataProviders/db/providers/scdl/miscScdlProducer.port";
+import miscScdlProducersPort from "../dataProviders/db/providers/scdl/miscScdlProducers.port";
 import sireneStockUniteLegalePort from "../dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.port";
 import amountsVsProgramRegionPort from "../dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
+import dataLogPort from "../dataProviders/db/data-log/dataLog.port";
 
 export const portsWithIndexes = [
     userPort,
@@ -42,7 +43,7 @@ export const portsWithIndexes = [
     fonjepDispositifPort,
     dauphinGisproPort,
     miscScdlGrantPort,
-    miscScdlProducerPort,
+    miscScdlProducersPort,
     configurationsPort,
     consumerTokenPort,
     chorusLinePort,
@@ -56,4 +57,5 @@ export const portsWithIndexes = [
     paymentFlatPort,
     sireneStockUniteLegalePort,
     amountsVsProgramRegionPort,
+    dataLogPort,
 ];

@@ -9,7 +9,6 @@ import configurationsService, { CONFIGURATION_NAMES } from "../../../src/modules
 
 describe("Rgpd Cron", () => {
     const NOW = new Date();
-    const NOW_STR = NOW.toString();
     let cron: RgpdCron;
 
     beforeEach(() => {
@@ -156,9 +155,12 @@ describe("Rgpd Cron", () => {
                     { headers: { "content-type": "application/json" } },
                 ],
             ]);
-            const actualLink = actual[0][0].params.activationLink;
-            const actualToken = actualLink.match(/^http:\/\/dev\.local:5173\/auth\/reset-password\/(.*)/)[1];
-            const foundReset = await userResetPort.findByToken(actualToken);
+            const actualLink = (actual[0][0].params as { email: string; activationLink: string }).activationLink;
+            const actualLinkMatch = actualLink.match(
+                /^http:\/\/dev\.local:5173\/auth\/reset-password\/(.*)/,
+            ) as RegExpMatchArray; // we know that a link as been provided and that the match will find it
+            const actualToken = actualLinkMatch[1];
+            const foundReset = await userResetPort.findByToken(actualToken as string);
             expect(foundReset).not.toBeNull();
         });
 

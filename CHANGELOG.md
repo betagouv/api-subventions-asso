@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.62.0](https://github.com/betagouv/api-subventions-asso/compare/v0.61.0...v0.62.0) (2025-02-17)
+
+### Bug Fixes
+
+-   **api:** [#3047](https://github.com/betagouv/api-subventions-asso/issues/3047) ensure to not overload batch ([#3202](https://github.com/betagouv/api-subventions-asso/issues/3202)) ([9912be9](https://github.com/betagouv/api-subventions-asso/commit/9912be981e1f5684d82bbc89d82c5e114099e054))
+-   **api:** modified start server api ([#3181](https://github.com/betagouv/api-subventions-asso/issues/3181)) ([f89b9ed](https://github.com/betagouv/api-subventions-asso/commit/f89b9ed89b15d7d3f9b29cb7de470fbdb434994c))
+
+### Features
+
+-   **api,front:** [#2349](https://github.com/betagouv/api-subventions-asso/issues/2349) check id comes from asso api-side ([#3188](https://github.com/betagouv/api-subventions-asso/issues/3188)) ([843641c](https://github.com/betagouv/api-subventions-asso/commit/843641ca3f968bb8bc83a76e64bd88eeb20aa0e0))
+-   **api:** [#2703](https://github.com/betagouv/api-subventions-asso/issues/2703) add first import for each raw provider ([#2718](https://github.com/betagouv/api-subventions-asso/issues/2718)) ([3ffd22a](https://github.com/betagouv/api-subventions-asso/commit/3ffd22a9c7c509592afa6f2f2137ba1aa66ddab6))
+-   **api:** [#3158](https://github.com/betagouv/api-subventions-asso/issues/3158) data viz AmountsVsProgramRegion create resource ([#3170](https://github.com/betagouv/api-subventions-asso/issues/3170)) ([46fa57c](https://github.com/betagouv/api-subventions-asso/commit/46fa57cb3c913d15d157c8aab1be8890dd80220a))
+-   **api:** [#3191](https://github.com/betagouv/api-subventions-asso/issues/3191) fonjep new format ([#3198](https://github.com/betagouv/api-subventions-asso/issues/3198)) ([2b62409](https://github.com/betagouv/api-subventions-asso/commit/2b624099e9b9d6e76eee7461c63505c351a8c0cc))
+-   **front:** [#3159](https://github.com/betagouv/api-subventions-asso/issues/3159) create-new-empty-page-for-dataviz ([#3193](https://github.com/betagouv/api-subventions-asso/issues/3193)) ([0a71dcf](https://github.com/betagouv/api-subventions-asso/commit/0a71dcf03893e743483f4a2f34a3b6c9869a9f2b))
+-   **front:** [#3160](https://github.com/betagouv/api-subventions-asso/issues/3160) wip add amountsVsProgramRegion table ([#3196](https://github.com/betagouv/api-subventions-asso/issues/3196)) ([6c3f61d](https://github.com/betagouv/api-subventions-asso/commit/6c3f61d942e7df594291efb552964e4b9b5c2437))
+
 # [0.61.0](https://github.com/betagouv/api-subventions-asso/compare/v0.60.3...v0.61.0) (2025-02-03)
 
 ### Bug Fixes

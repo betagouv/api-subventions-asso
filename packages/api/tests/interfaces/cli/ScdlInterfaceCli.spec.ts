@@ -2,7 +2,7 @@ import path from "path";
 import { ObjectId } from "mongodb";
 import ScdlCli from "../../../src/interfaces/cli/Scdl.cli";
 import scdlService from "../../../src/modules/providers/scdl/scdl.service";
-import miscScdlProducersPort from "../../../src/dataProviders/db/providers/scdl/miscScdlProducer.port";
+import miscScdlProducersPort from "../../../src/dataProviders/db/providers/scdl/miscScdlProducers.port";
 import miscScdlGrantPort from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.port";
 import MiscScdlProducer from "../../../src/modules/providers/scdl/__fixtures__/MiscScdlProducer";
 import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
@@ -41,13 +41,19 @@ describe("SCDL CLI", () => {
     }
 
     describe("parsing", () => {
+        const PRODUCER_CREATION_DATE = new Date("2025-01-01");
         describe.each`
             methodName    | test
             ${"parse"}    | ${testParseCsv}
             ${"parseXls"} | ${testParseXls}
         `("$methodName", ({ test }) => {
             beforeEach(async () => {
-                await cli.addProducer(MiscScdlProducer.slug, MiscScdlProducer.name, MiscScdlProducer.siret);
+                await miscScdlProducersPort.create({
+                    slug: MiscScdlProducer.slug,
+                    name: MiscScdlProducer.name,
+                    siret: MiscScdlProducer.siret,
+                    lastUpdate: PRODUCER_CREATION_DATE,
+                });
             });
 
             it("should throw Error()", async () => {
@@ -61,7 +67,7 @@ describe("SCDL CLI", () => {
                     _id: expect.any(String),
                 }));
                 expect(grants).toMatchSnapshot(expectedAny);
-            }, 10000);
+            });
 
             it("should add grants with exercise from its own column", async () => {
                 await test("SCDL_WITH_EXERCICE", MiscScdlProducer.slug, DATE_STR);
@@ -70,15 +76,15 @@ describe("SCDL CLI", () => {
                     _id: expect.any(String),
                 }));
                 expect(grants).toMatchSnapshot(expectedAny);
-            }, 10000);
+            });
 
+            // could not find another way to test the date update
+            // jest.useFakeTimers() does not work with mongoDB (at least findOne method) and crash the test
             it("should update producer lastUpdate", async () => {
-                const EXPORT_DATE = new Date("2023-01-01");
-                const expected = EXPORT_DATE;
-                await test("SCDL", MiscScdlProducer.slug, EXPORT_DATE);
+                await test("SCDL", MiscScdlProducer.slug);
                 const actual = (await scdlService.getProducer(MiscScdlProducer.slug))?.lastUpdate;
-                expect(actual).toEqual(expected);
-            }, 10000);
+                expect(actual).not.toEqual(PRODUCER_CREATION_DATE);
+            });
 
             it("should register new import", async () => {
                 await test("SCDL", MiscScdlProducer.slug, DATE_STR);

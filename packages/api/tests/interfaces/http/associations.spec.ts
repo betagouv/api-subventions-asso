@@ -35,7 +35,7 @@ import FonjepSubventionEntity from "../../../src/modules/providers/fonjep/entiti
 import Rna from "../../../src/valueObjects/Rna";
 import Siret from "../../../src/valueObjects/Siret";
 import { Grant } from "dto";
-import miscScdlProducersPort from "../../../src/dataProviders/db/providers/scdl/miscScdlProducer.port";
+import miscScdlProducersPort from "../../../src/dataProviders/db/providers/scdl/miscScdlProducers.port";
 import RnaSirenEntity from "../../../src/entities/RnaSirenEntity";
 import Siren from "../../../src/valueObjects/Siren";
 

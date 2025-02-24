@@ -2,10 +2,7 @@ import fs from "fs";
 import dataLogService from "../modules/data-log/dataLog.service";
 import CliLogger from "./CliLogger";
 import { GenericParser } from "./GenericParser";
-import { isDateNewer, isValidDate } from "./helpers/DateHelper";
-import ExportDateError from "./errors/cliErrors/FormatDateError";
-import OutOfRangeDateError from "./errors/cliErrors/OutOfRangeDateError";
-import ObsoleteDateError from "./errors/cliErrors/ObsoleteDateError";
+import { validateDate } from "./helpers/CliHelper";
 
 export default class CliController {
     protected logFileParsePath = "";
@@ -24,14 +21,6 @@ export default class CliController {
         } else return true;
     }
 
-    private validateDate(dateStr: string) {
-        // supposed to be YYYY-MM-DD format
-        if (Number(dateStr.split("-")[0]) < 2018) throw new ObsoleteDateError();
-        if (!isValidDate(new Date(dateStr))) throw new ExportDateError();
-        if (isDateNewer(new Date(dateStr), new Date())) throw new OutOfRangeDateError();
-        return true;
-    }
-
     /**
      *
      * @param file Path to the file
@@ -40,7 +29,7 @@ export default class CliController {
      * Accept "YYYY-MM-DD" format | TODO: make YYYY-MM-DD mandatory ?
      */
     public async parse(file: string, exportDateString: string, ...args): Promise<void> {
-        this.validateDate(exportDateString);
+        validateDate(exportDateString);
         const exportDate = new Date(exportDateString);
 
         this.validParseFile(file);
@@ -86,6 +75,6 @@ export default class CliController {
 
     protected async _logImportSuccess(editionDate: Date, fileName?: string) {
         if (!this._providerIdToLog) throw new Error("'_providerIdToLog' needs to be defined by the child class");
-        return dataLogService.addLog(this._providerIdToLog, editionDate, fileName);
+        return dataLogService.addLog(this._providerIdToLog, fileName, editionDate);
     }
 }
