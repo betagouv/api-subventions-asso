@@ -17,13 +17,18 @@
         nettoyer les données rapidement.
     </Alert>
 
-    <h2 class="fr-h4 text-center">Montant des subventions que l'Etat a versées</h2>
     <div class="fr-container">
         <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-6">
+                <h2 class="fr-h4">Montant des subventions que l'Etat a versées</h2>
                 <TableAmountsVsProgramRegion elements={result} />
             </div>
             <div class="fr-col-6">
+                <h2 class="fr-h4">Evolution des subventions attribuées :</h2>
+                <p class="fr-h10">
+                    comparaison de la tendance globale en bleu et de la tendance par région et/ou programme selectionné
+                    en rouge. Attention, les deux courbes n'ont pas la même échelle.
+                </p>
                 <AmountsVsYear elements={result} />
             </div>
         </div>

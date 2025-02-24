@@ -6,8 +6,6 @@
 
     export let elements: AmountsVsProgramRegionDto[];
 
-    const grapheId = "graph-amounts-vs-year";
-
     const controller = new AmountsVsYearController(elements);
     const { selectedRegion, selectedProgram, regionOptions, programOptions, filteredData, dataYear } = controller;
 </script>

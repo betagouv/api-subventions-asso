@@ -2,19 +2,6 @@ import * as d3 from "d3";
 import { montantFormatter } from "../../dataViz.helper";
 import type { PartialAmountsVsProgramRegionDto } from "../../@types/AmountsVsYear.types";
 
-export let data_year;
-export let data_selected;
-
-let svg;
-/*
-let width = 800;
-let height = 400;
-
-const margin = { top: 80, right: 320, bottom: 40, left: 90 };
-
-
-*/
-
 export function updateChart(
     svg: SVGSVGElement,
     data_year: PartialAmountsVsProgramRegionDto[],
