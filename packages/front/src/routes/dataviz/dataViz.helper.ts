@@ -1,16 +1,6 @@
 import type { AmountsVsProgramRegionDto } from "dto";
-export type PartialAmountsVsProgramRegionDto = Partial<AmountsVsProgramRegionDto> & {
-    montant: number;
-    exerciceBudgetaire: number;
-};
-
-const VARS = {
-    REGION_ATTACHEMENT_COMPTABLE: "regionAttachementComptable",
-    PROGRAMME: "programme",
-    EXERCICE: "exerciceBudgetaire",
-    MONTANT: "montant",
-};
-
+import { VARS_AMOUNTS_VS_PROGRAM_REGION as VARS } from "./@types/AmountsVsYear.types";
+import type { PartialAmountsVsProgramRegionDto } from "./@types/AmountsVsYear.types";
 
 export const groupAndSum = (
     data: AmountsVsProgramRegionDto[],
@@ -29,12 +19,12 @@ export const groupAndSum = (
         return acc;
     }, {});
     return Object.values(temp);
-}
+};
 
 export const filterYears = (
-        groupedData: PartialAmountsVsProgramRegionDto[],
-        yearMin: number,
-    ): PartialAmountsVsProgramRegionDto[] => {
-        const currentYear = new Date().getFullYear();
-        return groupedData.filter(row => row.exerciceBudgetaire >= yearMin && row.exerciceBudgetaire !== currentYear);
-    }
+    groupedData: PartialAmountsVsProgramRegionDto[],
+    yearMin: number,
+): PartialAmountsVsProgramRegionDto[] => {
+    const currentYear = new Date().getFullYear();
+    return groupedData.filter(row => row.exerciceBudgetaire >= yearMin && row.exerciceBudgetaire !== currentYear);
+};

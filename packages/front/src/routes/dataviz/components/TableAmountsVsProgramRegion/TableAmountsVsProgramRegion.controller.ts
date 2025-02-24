@@ -1,22 +1,11 @@
 import type { AmountsVsProgramRegionDto } from "dto";
+import { filterYears, groupAndSum } from "../../dataViz.helper";
+import { VARS_AMOUNTS_VS_PROGRAM_REGION as VARS } from "../../@types/AmountsVsYear.types";
+import type {
+    PartialAmountsVsProgramRegionDto,
+    PartialAmountsVsProgramRegionFormatted,
+} from "../../@types/AmountsVsYear.types";
 import Store, { derived, ReadStore } from "$lib/core/Store";
-
-type PartialAmountsVsProgramRegionDto = Partial<AmountsVsProgramRegionDto> & {
-    montant: number;
-    exerciceBudgetaire: number;
-};
-
-type PartialAmountsVsProgramRegionFormatted = Partial<AmountsVsProgramRegionDto> & {
-    montant: string;
-    exerciceBudgetaire: number;
-};
-
-const VARS = {
-    REGION_ATTACHEMENT_COMPTABLE: "regionAttachementComptable",
-    PROGRAMME: "programme",
-    EXERCICE: "exerciceBudgetaire",
-    MONTANT: "montant",
-};
 
 export class TableAmountsVsProgramRegionController {
     public headersMapping: Record<string, string> = {
@@ -66,33 +55,6 @@ export class TableAmountsVsProgramRegionController {
         }) as PartialAmountsVsProgramRegionFormatted[];
     }
 
-    private _groupAndSum(
-        data: AmountsVsProgramRegionDto[],
-        selectedColumns: string[],
-    ): PartialAmountsVsProgramRegionDto[] {
-        const cols = [...selectedColumns, VARS.EXERCICE];
-        const temp = data.reduce((acc, row) => {
-            const key = cols.map(column => row[column]).join("-");
-            if (!acc[key]) {
-                acc[key] = cols.reduce((obj, field) => {
-                    obj[field] = row[field];
-                    return obj;
-                }, {});
-                acc[key][VARS.MONTANT] = row[VARS.MONTANT];
-            } else acc[key][VARS.MONTANT] += row[VARS.MONTANT];
-            return acc;
-        }, {});
-        return Object.values(temp);
-    }
-
-    private _filterYears(
-        groupedData: PartialAmountsVsProgramRegionDto[],
-        yearMin: number,
-    ): PartialAmountsVsProgramRegionDto[] {
-        const currentYear = new Date().getFullYear();
-        return groupedData.filter(row => row.exerciceBudgetaire >= yearMin && row.exerciceBudgetaire !== currentYear);
-    }
-
     private _sortData(a, b, selectedColumns) {
         // Sort by regionAttachementComptable then by programme then by exerciceBudgetaire
 
@@ -113,7 +75,7 @@ export class TableAmountsVsProgramRegionController {
         data: AmountsVsProgramRegionDto[],
         selectedColumns: string[],
     ): PartialAmountsVsProgramRegionFormatted[] {
-        const filteredAndGroupedData = this._filterYears(this._groupAndSum(data, selectedColumns), 2021);
+        const filteredAndGroupedData = filterYears(groupAndSum(data, selectedColumns), 2021);
         return this._formatData(filteredAndGroupedData).sort((a, b) => this._sortData(a, b, selectedColumns));
     }
 

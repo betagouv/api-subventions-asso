@@ -1,7 +1,7 @@
-import Store, { ReadStore, derived } from "$lib/core/Store";
 import type { AmountsVsProgramRegionDto } from "dto";
-import { filterYears, groupAndSum} from "../../DataViz.helper";
-import type { PartialAmountsVsProgramRegionDto } from "../../DataViz.helper";
+import { filterYears, groupAndSum } from "../../dataViz.helper";
+import type { PartialAmountsVsProgramRegionDto } from "../../@types/AmountsVsYear.types";
+import Store, { ReadStore, derived } from "$lib/core/Store";
 
 export class AmountsVsYearController {
     public selectedRegion: Store<string>;
@@ -36,8 +36,6 @@ export class AmountsVsYearController {
         selectedRegion: string,
         selectedProgram: string,
     ): AmountsVsProgramRegionDto[] {
-        console.log("selectedRegion", selectedRegion);
-        console.log("selectedProgram", selectedProgram);
         const filteredData = data.filter(element => {
             return (
                 (selectedRegion === "Tous" || element.regionAttachementComptable === selectedRegion) &&
