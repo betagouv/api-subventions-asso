@@ -64,6 +64,8 @@ export interface UpdatableUser {
     registrationSrc?: RegistrationSrcTypeEnum[];
     registrationSrcEmail?: string;
     registrationSrcDetails?: string;
+    //To user from agent connect
+    profileToComplete?: boolean;
 }
 
 export interface UserWithJWTDto extends UserDto {
