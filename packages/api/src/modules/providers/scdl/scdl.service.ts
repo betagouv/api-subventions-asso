@@ -1,6 +1,6 @@
 import { getMD5 } from "../../../shared/helpers/StringHelper";
 import miscScdlGrantPort from "../../../dataProviders/db/providers/scdl/miscScdlGrant.port";
-import miscScdlProducersPort from "../../../dataProviders/db/providers/scdl/miscScdlProducer.port";
+import miscScdlProducersPort from "../../../dataProviders/db/providers/scdl/miscScdlProducers.port";
 import MiscScdlProducerEntity from "./entities/MiscScdlProducerEntity";
 import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";

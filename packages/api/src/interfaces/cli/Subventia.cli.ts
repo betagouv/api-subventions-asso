@@ -18,7 +18,7 @@ export default class SubventiaCli extends CliController {
     protected _providerIdToLog = subventiaService.provider.id;
 
     protected logFileParsePath = "./logs/subventia.parse.log.txt";
-    static errorsFolderName = "./importErrors";
+    static errorsFolderName = "./import-errors";
 
     protected async _parse(file: string, logs, exportDate: Date) {
         const processedData = subventiaService.processSubventiaData(file, exportDate);
