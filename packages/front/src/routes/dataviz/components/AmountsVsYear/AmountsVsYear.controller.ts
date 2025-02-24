@@ -21,7 +21,7 @@ export class AmountsVsYearController {
         this.regionOptions = this._getRegionOptions(data);
         this.programOptions = this._getProgramOptions(data);
 
-        this.selectedRegion = new Store("Bretagne");
+        this.selectedRegion = new Store("Tous");
         this.selectedProgram = new Store("Tous");
 
         this.filteredData = derived([this.selectedRegion, this.selectedProgram], ([region, program]) =>

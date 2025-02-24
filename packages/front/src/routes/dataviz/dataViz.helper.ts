@@ -28,3 +28,8 @@ export const filterYears = (
     const currentYear = new Date().getFullYear();
     return groupedData.filter(row => row.exerciceBudgetaire >= yearMin && row.exerciceBudgetaire !== currentYear);
 };
+
+export const montantFormatter = new Intl.NumberFormat("fr-FR", {
+    style: "decimal",
+    maximumFractionDigits: 0,
+});

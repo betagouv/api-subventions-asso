@@ -12,9 +12,6 @@
     const controller = new TableAmountsVsProgramRegionController(elements);
 
     const { checkboxOptions, selectedColumns, groupedData, headers } = controller;
-    console.log(elements);
-    console.log("groupedData");
-    console.log(groupedData.value);
 </script>
 
 <Checkbox

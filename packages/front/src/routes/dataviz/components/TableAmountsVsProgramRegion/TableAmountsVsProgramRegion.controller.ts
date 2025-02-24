@@ -1,5 +1,5 @@
 import type { AmountsVsProgramRegionDto } from "dto";
-import { filterYears, groupAndSum } from "../../dataViz.helper";
+import { filterYears, groupAndSum, montantFormatter } from "../../dataViz.helper";
 import { VARS_AMOUNTS_VS_PROGRAM_REGION as VARS } from "../../@types/AmountsVsYear.types";
 import type {
     PartialAmountsVsProgramRegionDto,
@@ -43,10 +43,7 @@ export class TableAmountsVsProgramRegionController {
 
     private _formatData(data: PartialAmountsVsProgramRegionDto[]): PartialAmountsVsProgramRegionFormatted[] {
         return data.map(element => {
-            const montant = new Intl.NumberFormat("fr-FR", {
-                style: "decimal",
-                maximumFractionDigits: 0,
-            }).format(element.montant);
+            const montant = montantFormatter.format(element.montant);
             return {
                 ...element,
                 montant: montant as string,
