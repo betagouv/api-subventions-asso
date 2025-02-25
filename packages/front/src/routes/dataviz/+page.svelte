@@ -11,6 +11,11 @@
 {#await amountsVsProgramRegionDataPromise}
     <FullPageSpinner description="Chargement des données en cours ..." />
 {:then result}
+    <Alert type="warning">
+        Ceci est une beta, les données présentes peuvent inclure des données de fondation. Nous nous efforçons de
+        nettoyer les données rapidement.
+    </Alert>
+
     <div class="fr-container">
         <div class="fr-grid-row">
             <div class="fr-col-6">

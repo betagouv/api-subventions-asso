@@ -5,16 +5,43 @@ import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFl
 import AmountsVsProgramRegionCli from "../../../src/interfaces/cli/AmountsVsProgramRegion.cli";
 
 const MOCK_DOCUMENTS = [
+    // the following two should be agregated together
     { ...PAYMENT_FLAT_DBO, provider: "chorus", uniqueId: "1" },
     { ...PAYMENT_FLAT_DBO, montant: 7000, provider: "chorus", uniqueId: "2" },
+
+    // the following two should be agregated together
     { ...PAYMENT_FLAT_DBO, montant: 100_000, numeroProgramme: "1234", provider: "chorus", uniqueId: "3" },
+    { ...PAYMENT_FLAT_DBO, montant: 30_000, numeroProgramme: "1234", provider: "chorus", uniqueId: "4" },
+
+    // the following two should be agregated together
     {
         ...PAYMENT_FLAT_DBO,
         montant: 34_000,
         attachementComptable: "HNOR",
+        regionAttachementComptable: "Normandie",
         exerciceBudgetaire: 2021,
         provider: "chorus",
-        uniqueId: "4",
+        uniqueId: "5",
+    },
+    {
+        ...PAYMENT_FLAT_DBO,
+        montant: 34_000,
+        attachementComptable: "BNOR",
+        regionAttachementComptable: "Normandie",
+        exerciceBudgetaire: 2021,
+        provider: "chorus",
+        uniqueId: "6",
+    },
+
+    // this one should not be agregated
+    {
+        ...PAYMENT_FLAT_DBO,
+        montant: 34_000,
+        attachementComptable: "BNOR",
+        regionAttachementComptable: "Normandie",
+        exerciceBudgetaire: 2024,
+        provider: "chorus",
+        uniqueId: "7",
     },
 ];
 

@@ -10,6 +10,6 @@ export class DauphinCron implements CronController {
     @AsyncCron({ cronExpression: "0 20 * * *" })
     async updateDauphinCache() {
         await dauphinService.updateApplicationCache();
-        await dataLogService.addLog(dauphinService.provider.id, new Date(), "api");
+        await dataLogService.addLog(dauphinService.provider.id, "api", new Date());
     }
 }

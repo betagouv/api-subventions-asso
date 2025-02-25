@@ -50,15 +50,8 @@ jest.mock("../../../../shared/helpers/PortHelper");
 
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 
-import userStatsService from "../stats/user.stats.service";
-import configurationsService from "../../../configurations/configurations.service";
-
 jest.mock("../../../configurations/configurations.service");
-import AssociationVisitEntity from "../../../stats/entities/AssociationVisitEntity";
-import statsAssociationsVisitPort from "../../../../dataProviders/db/stats/statsAssociationsVisit.port";
 import { ObjectId } from "mongodb";
-
-jest.mock("../../../../dataProviders/db/stats/statsAssociationsVisit.port");
 
 describe("user crud service", () => {
     describe("find", () => {
@@ -334,79 +327,6 @@ describe("user crud service", () => {
             jest.mocked(userPort.getUserWithSecretsByEmail).mockResolvedValueOnce(null);
             const test = () => userCrudService.getUserWithoutSecret(EMAIL);
             await expect(test).rejects.toMatchInlineSnapshot(`[Error: User not found]`);
-        });
-    });
-
-    describe("updateNbRequests", () => {
-        const SINCE = new Date("2022-01-16");
-        const UNTIL = new Date("2024-09-09");
-        let updateByDateSpy;
-
-        beforeAll(() => {
-            // @ts-expect-error -- private method
-            updateByDateSpy = jest.spyOn(userStatsService, "updateNbRequestsByDate").mockResolvedValue(null);
-            jest.useFakeTimers().setSystemTime(UNTIL);
-            jest.mocked(configurationsService.getLastUserStatsUpdate).mockResolvedValue(SINCE);
-        });
-
-        afterAll(() => {
-            updateByDateSpy.mockRestore();
-            jest.useRealTimers();
-            jest.mocked(configurationsService.getLastUserStatsUpdate).mockRestore();
-        });
-
-        it("calls updateNbRequestsByDate", async () => {
-            await userStatsService.updateNbRequests();
-            expect(updateByDateSpy).toHaveBeenCalledWith(SINCE, UNTIL);
-        });
-    });
-
-    describe("updateNbRequestsByDate", () => {
-        const SINCE = new Date("2022-01-16");
-        const UNTIL = new Date("2024-09-09");
-        const REPO_GROUP = [
-            { _id: 1, associationVisits: [1] },
-            { _id: 2, associationVisits: [2, 2] },
-        ] as unknown as {
-            _id: string;
-            associationVisits: AssociationVisitEntity[];
-        }[];
-        const COUNTS = [
-            { _id: 1, count: 1 },
-            { _id: 2, count: 2 },
-        ];
-
-        beforeAll(() => {
-            jest.mocked(statsAssociationsVisitPort.findGroupedByUserIdentifierOnPeriod).mockResolvedValue(REPO_GROUP);
-        });
-
-        afterAll(() => {
-            jest.mocked(statsAssociationsVisitPort.findGroupedByUserIdentifierOnPeriod).mockRestore();
-        });
-
-        it("gets visits grouped by identifier ", async () => {
-            // @ts-expect-error -- private method
-            await userStatsService.updateNbRequestsByDate(SINCE, UNTIL);
-            expect(statsAssociationsVisitPort.findGroupedByUserIdentifierOnPeriod).toHaveBeenCalledWith(SINCE, UNTIL);
-        });
-
-        it("calls port for user update", async () => {
-            // @ts-expect-error -- private method
-            await userStatsService.updateNbRequestsByDate(SINCE, UNTIL);
-            expect(userPort.updateNbRequests).toHaveBeenCalledWith(COUNTS);
-        });
-
-        it("sets last user stat update in configuration", async () => {
-            // @ts-expect-error -- private method
-            await userStatsService.updateNbRequestsByDate(SINCE, UNTIL);
-            expect(configurationsService.setLastUserStatsUpdate).toHaveBeenCalledWith(UNTIL);
-        });
-
-        it("don't save last stat update in case update fails", async () => {
-            jest.mocked(userPort.updateNbRequests).mockRejectedValueOnce("tata");
-            // @ts-expect-error -- private method
-            await userStatsService.updateNbRequestsByDate(SINCE, UNTIL).catch(() => {});
-            expect(configurationsService.setLastUserStatsUpdate).not.toHaveBeenCalled();
         });
     });
 

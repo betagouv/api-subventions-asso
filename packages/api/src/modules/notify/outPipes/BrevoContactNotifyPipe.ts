@@ -1,5 +1,4 @@
 import * as Sentry from "@sentry/node";
-import Brevo from "@getbrevo/brevo";
 import {
     AdminTerritorialLevel,
     AgentJobTypeEnum,
@@ -7,27 +6,28 @@ import {
     RegistrationSrcTypeEnum,
     TerritorialScopeEnum,
 } from "dto";
+import * as Brevo from "@getbrevo/brevo";
 import { NotificationDataTypes } from "../@types/NotificationDataTypes";
 import { NotificationType } from "../@types/NotificationType";
 import { NotifyOutPipe } from "../@types/NotifyOutPipe";
-import { API_SENDINBLUE_CONTACT_LIST } from "../../../configurations/apis.conf";
-import BrevoNotifyPipe from "./BrevoNotifyPipe";
+import { API_BREVO_CONTACT_LIST, API_BREVO_TOKEN } from "../../../configurations/apis.conf";
 
-const SENDIND_BLUE_CONTACT_LISTS = [Number(API_SENDINBLUE_CONTACT_LIST)];
+const SENDIND_BLUE_CONTACT_LISTS = [Number(API_BREVO_CONTACT_LIST)];
 
 /*
  * COMPTE_ACTIVE does not mean that the account is currently active, only that it has been through firstActivation
  * specifically, a user that had activated the account then lost they password, would have `active: false` on db
  * but COMPTE_ACTIVE: true on brevo */
 
-export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOutPipe {
+export class BrevoContactNotifyPipe implements NotifyOutPipe {
     private apiInstance: Brevo.ContactsApi;
 
     // TODO track errors
 
     constructor() {
-        super();
         this.apiInstance = new Brevo.ContactsApi();
+        if (!API_BREVO_TOKEN) throw new Error("Brevo token must be defined before runtime");
+        this.apiInstance.setApiKey(0, API_BREVO_TOKEN);
     }
 
     notify(type, data) {
@@ -46,6 +46,8 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
                 return this.batchUsersDeleted(data);
             case NotificationType.USER_UPDATED:
                 return this.userUpdated(data);
+            case NotificationType.STATS_NB_REQUESTS:
+                return this.updateNbRequests(data);
             default:
                 return Promise.resolve(false);
         }
@@ -274,6 +276,36 @@ export class BrevoContactNotifyPipe extends BrevoNotifyPipe implements NotifyOut
                 console.error("error updating contact", { email: data.email, error: error.response._body });
                 return false;
             });
+    }
+
+    private async updateNbRequests(data: NotificationDataTypes[NotificationType.STATS_NB_REQUESTS]) {
+        // must match attribute used in BREVO
+        const BREVO_NB_REQUESTS_FIELD = "NB_REQUETES";
+
+        const requestContactImport = new Brevo.RequestContactImport();
+
+        // TODO: use fileUrl if jsonBody get too big
+        // c.f https://developers.brevo.com/reference/importcontacts-1
+        requestContactImport.jsonBody = [];
+        requestContactImport.listIds = SENDIND_BLUE_CONTACT_LISTS;
+
+        data.map(contactRequest => {
+            requestContactImport.jsonBody?.push({
+                email: contactRequest.email,
+                attributes: { [BREVO_NB_REQUESTS_FIELD]: contactRequest.nbVisits },
+            });
+        });
+
+        return this.apiInstance.importContacts(requestContactImport).then(
+            () => true,
+            function (error) {
+                Sentry.captureException({
+                    exception: error,
+                    message: `Brevo contacts update failed for number of requests with : ${error}`,
+                });
+                return false;
+            },
+        );
     }
 }
 
