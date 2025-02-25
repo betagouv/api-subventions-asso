@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.63.0](https://github.com/betagouv/api-subventions-asso/compare/v0.62.0...v0.63.0) (2025-02-25)
+
+### Bug Fixes
+
+-   **api:** [#3207](https://github.com/betagouv/api-subventions-asso/issues/3207) - fix amountsVsProgramRegionTable ([#3208](https://github.com/betagouv/api-subventions-asso/issues/3208)) ([6755adf](https://github.com/betagouv/api-subventions-asso/commit/6755adfe5287d31b72c183d433913f97167926e7))
+-   **front:** typo 0 ([6799602](https://github.com/betagouv/api-subventions-asso/commit/6799602061f2359ccf325bc203e87d1fd6c5396a))
+
+### Features
+
+-   **api, dto:** [#3107](https://github.com/betagouv/api-subventions-asso/issues/3107) implement paymentProvider in paymentFlat.service ([#3229](https://github.com/betagouv/api-subventions-asso/issues/3229)) ([98e4131](https://github.com/betagouv/api-subventions-asso/commit/98e4131d18f528a0d184ff0c09867d9a23ac7da2))
+-   **api:** [#3111](https://github.com/betagouv/api-subventions-asso/issues/3111) update users nb requests in brevo ([#3192](https://github.com/betagouv/api-subventions-asso/issues/3192)) ([a7bdd2e](https://github.com/betagouv/api-subventions-asso/commit/a7bdd2ee81fcab284e2f9ce2710b7a3b224aca7d))
+-   **api:** [#3149](https://github.com/betagouv/api-subventions-asso/issues/3149) http routes to get csv scdl errors ([#3221](https://github.com/betagouv/api-subventions-asso/issues/3221)) ([e364fa9](https://github.com/betagouv/api-subventions-asso/commit/e364fa94d0de16375d9ca169293dc290f94c3049))
+-   **front:** [#3214](https://github.com/betagouv/api-subventions-asso/issues/3214) add dataviz beta alert ([#3217](https://github.com/betagouv/api-subventions-asso/issues/3217)) ([7272863](https://github.com/betagouv/api-subventions-asso/commit/7272863984c2b997b2e9ed736eef3c35064c647a))
+
 # [0.62.0](https://github.com/betagouv/api-subventions-asso/compare/v0.61.0...v0.62.0) (2025-02-17)
 
 ### Bug Fixes
