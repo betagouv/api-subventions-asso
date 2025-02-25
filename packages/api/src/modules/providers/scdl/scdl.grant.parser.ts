@@ -133,6 +133,7 @@ export default class ScdlGrantParser {
         const invalidEntities: Partial<ScdlStorableGrant>[] = [];
         const errors: ParsedDataWithProblem[] = [];
 
+        // TODO create errors for that (does not fit in the csv format)
         ScdlGrantParser.verifyMissingHeaders(SCDL_MAPPER, parsedChunk[0]);
 
         for (const parsedData of parsedChunk) {
@@ -142,6 +143,7 @@ export default class ScdlGrantParser {
                 errors: errorsEntity,
             } = ScdlGrantParser.indexDataByPathAndAnnotate<string, ScdlStorableGrant>(SCDL_MAPPER, parsedData);
 
+            // TODO make indexDataByPathAndAnnotate indicate if errors make us reject the line
             errors.push(...errorsEntity);
 
             // validates and saves annotated errors
