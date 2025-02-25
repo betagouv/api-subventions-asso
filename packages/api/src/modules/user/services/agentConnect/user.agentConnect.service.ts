@@ -109,7 +109,7 @@ export class UserAgentConnectService {
             email: userObject.email,
             firstname: userObject.firstName,
             lastname: userObject.lastName,
-            url: `${FRONT_OFFICE_URL}/auth/signup-ac`, // redirect to the profile form
+            url: null, // no activation link, agent connect users are automatically active
             active: true, // agent connect users automatically active
             signupAt: createdUser.signupAt,
             isAgentConnect: true,
