@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
 import csvSyncStringifier = require("csv-stringify/sync");
-import ScdlGrantParser from "../../modules/providers/scdl/scdl.grant.parser";
 import scdlService from "../../modules/providers/scdl/scdl.service";
 import MiscScdlGrantEntity from "../../modules/providers/scdl/entities/MiscScdlGrantEntity";
 import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
@@ -37,7 +36,7 @@ export default class ScdlCli {
         await this.validateGenericInput(producerSlug, exportDate);
         const parsedRowOffset = typeof rowOffset === "number" ? rowOffset : parseInt(rowOffset);
         const fileContent = fs.readFileSync(file);
-        const { entities, errors } = ScdlGrantParser.parseExcel(fileContent, pageName, parsedRowOffset);
+        const { entities, errors } = scdlService.parseXls(fileContent, pageName, parsedRowOffset);
         await Promise.all([this.persistEntities(entities, producerSlug), this.exportErrors(errors, file)]);
         await dataLogService.addLog(producerSlug, file, exportDate ? new Date(exportDate) : undefined);
     }
@@ -60,7 +59,7 @@ export default class ScdlCli {
         await this.validateGenericInput(producerSlug, exportDate);
         const fileContent = fs.readFileSync(file);
         const parsedQuote = quote === "false" ? false : quote;
-        const { entities, errors } = ScdlGrantParser.parseCsv(fileContent, delimiter, parsedQuote);
+        const { entities, errors } = scdlService.parseCsv(fileContent, delimiter, parsedQuote);
         await Promise.all([this.persistEntities(entities, producerSlug), this.exportErrors(errors, file)]);
         await dataLogService.addLog(producerSlug, file, exportDate ? new Date(exportDate) : undefined);
     }
