@@ -49,13 +49,15 @@ export const DTOS: SireneUniteLegaleDto[] = [
         siren: "123456989",
         categorieJuridiqueUniteLegale: "9320", // not an association
     },
+    { ...baseDto, siren: "098765432", unitePurgeeUniteLegale: "true" }, // purged
 ];
 
 export const ENTITIES: SireneStockUniteLegaleEntity[] = [
     { ...DTOS[0], siren: new Siren(DTOS[0].siren) },
     { ...DTOS[1], siren: new Siren(DTOS[1].siren) },
-    { ...DTOS[2], siren: new Siren(DTOS[2].siren) },
 ];
+
+export const UNITE_LEGAL_ENTREPRISE_ENTITIES = [{ siren: new Siren(DTOS[2].siren) }];
 
 export const DBOS: SireneUniteLegaleDbo[] = [
     { ...ENTITIES[0], _id: new ObjectId() },
