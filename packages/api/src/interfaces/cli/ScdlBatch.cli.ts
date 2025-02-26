@@ -7,6 +7,7 @@ import {
     ScdlFileProcessingConfig,
     ScdlFileProcessingConfigList,
     ScdlParseArgs,
+    ScdlParseParams,
     ScdlParseXlsArgs,
 } from "../../@types/ScdlDataIntegration";
 import {
@@ -14,6 +15,9 @@ import {
     SCDL_FILE_PROCESSING_PATH,
 } from "../../configurations/scdlIntegration.conf";
 import { FileExtensionEnum } from "../../@enums/FileExtensionEnum";
+import { isShortISODateParam } from "../../shared/helpers/DateHelper";
+import { isNumberValid } from "../../shared/Validators";
+import { isStringParam } from "../../shared/helpers/StringHelper";
 import ScdlCli from "./Scdl.cli";
 
 @StaticImplements<CliStaticInterface>()
@@ -31,14 +35,40 @@ export default class ScdlBatchCli {
     private isConfig(obj: any): obj is ScdlFileProcessingConfigList {
         return obj && Array.isArray(obj.files) && obj.files.every((file: any) => this.isFileConfig(file));
     }
+
+    private isXlsArgs(params: ScdlParseXlsArgs) {
+        if (isStringParam(params.pageName)) return false;
+        if (params.rowOffset && !isNumberValid(Number(params.rowOffset))) return false;
+        return true;
+    }
+
+    private isCsvArgs(params: ScdlParseArgs) {
+        const ACCEPTED_DELIMITERS = [";", ","];
+        const ACCEPTED_QUOTES = ['"', "'"];
+        if (params.delimiter && !ACCEPTED_DELIMITERS.includes(params.delimiter as string)) return false;
+        if (params.quote && !ACCEPTED_QUOTES.includes(params.quote as string)) return false;
+        return true;
+    }
+
+    private isParseParams(params: ScdlParseParams) {
+        if (typeof params != "object") return false;
+        if (!isStringParam(params.producerSlug)) return false;
+        if (isShortISODateParam(params.exportDate)) return false;
+
+        // csv part
+        // @ts-expect-error: type of parseParam is ScdlParseArgs
+        if (params.delimiter || params.quote) return this.isCsvArgs(parseParam);
+
+        // excel part
+        // @ts-expect-error: type of parseParam is ScdlParseXlsArgs
+        if (params.pageName || params.rowOffset) return this.isXlsArgs(params);
+    }
+
     private isFileConfig(file: any): file is ScdlFileProcessingConfig {
         return (
             file &&
             typeof file.name === "string" &&
-            typeof file.parseParams == "object" &&
-            file.parseParams !== null &&
-            typeof file.parseParams.producerSlug === "string" &&
-            typeof file.parseParams.exportDate === "string" &&
+            this.isParseParams(file.parseParams) &&
             typeof file.addProducer === "boolean"
         );
     }

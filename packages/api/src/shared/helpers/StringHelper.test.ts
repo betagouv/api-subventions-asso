@@ -52,4 +52,23 @@ describe("StringHelper", () => {
             expect(digest).toHaveBeenCalledWith("hex");
         });
     });
+
+    describe("isStringParam", () => {
+        it("return true", () => {
+            const expected = true;
+            const actual = StringHelper.isStringParam("cmd-name");
+            expect(actual).toEqual(expected);
+        });
+
+        it.each`
+            param
+            ${undefined}
+            ${null}
+            ${123}
+        `("return false", ({ param }) => {
+            const expected = false;
+            const actual = StringHelper.isStringParam(param);
+            expect(actual).toEqual(expected);
+        });
+    });
 });

@@ -152,4 +152,25 @@ describe("DateHelper", () => {
             expect(actual).toEqual(expected);
         });
     });
+
+    describe("isShortISODateParam", () => {
+        it("return true", () => {
+            const expected = true;
+            const actual = DateHelper.isShortISODateParam("2025-01-01");
+            expect(actual).toEqual(expected);
+        });
+
+        it.each`
+            param
+            ${"205-01-01"}
+            ${"01-01-2025"}
+            ${"20250101"}
+            ${undefined}
+            ${null}
+        `("return false", ({ param }) => {
+            const expected = false;
+            const actual = DateHelper.isShortISODateParam(param);
+            expect(actual).toEqual(expected);
+        });
+    });
 });
