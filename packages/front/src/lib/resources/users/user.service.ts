@@ -21,6 +21,10 @@ export class UsersService {
         return userPort.updateProfile(data);
     }
 
+    completeProfile(data) {
+        return userPort.completeProfile(data);
+    }
+
     isProfileFullyCompleted(user: UserDto) {
         // old users may not have agentType defined
         // TODO(maxime) : update UserDto to make it optionnal in code ??

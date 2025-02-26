@@ -1,6 +1,6 @@
 import { ResetPasswordErrorCodes, TokenValidationType } from "dto";
-import AgentTypeStep from "./components/AgentTypeStep/AgentTypeStep.svelte";
-import CollectedDataAlert from "./components/AgentTypeStep/CollectedDataAlert.svelte";
+import AgentTypeStep from "$lib/components/AgentTypeStep/AgentTypeStep.svelte";
+import CollectedDataAlert from "$lib/components/AgentTypeStep/CollectedDataAlert.svelte";
 import StructureFormStep from "$lib/components/StructureFormStep/StructureFormStep.svelte";
 import DefinePassword from "$lib/components/DefinePassword/DefinePassword.svelte";
 import PasswordFormatAlert from "$lib/components/DefinePassword/PasswordFormatAlert.svelte";
@@ -38,7 +38,7 @@ export default class ActivateAccountController {
             .activate(this.token, noConfirmValues)
             .then(() => {
                 trackerService.buttonClickEvent("activate.form.step.submit-success");
-            goToUrl("/?success=ACCOUNT_ACTIVATED", true, true);
+                goToUrl("/?success=ACCOUNT_ACTIVATED", true, true);
             })
             .catch(e => {
                 trackerService.buttonClickEvent("activate.form.submit-error", e?.message);

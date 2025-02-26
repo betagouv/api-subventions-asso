@@ -10,17 +10,20 @@ export default class AgentTypeStepController {
 
     private readonly dispatch: (_: string) => void;
     public readonly errorMessage: Store<string>;
-    public readonly options: Option<AgentTypeEnum | "none">[] = [
-        ...subscriptionFormService.agentTypeOptions,
-        {
-            label: "Aucune des propositions ci-dessus",
-            value: "none",
-        },
-    ];
+    public readonly options: Option<AgentTypeEnum | "none">[] = subscriptionFormService.agentTypeOptions;
 
-    constructor() {
+    constructor(context?: any) {
         this.dispatch = Dispatch.getDispatcher();
         this.errorMessage = new Store("");
+        if (!context?.fromAC) {
+            this.options = [
+                ...this.options,
+                {
+                    label: "Aucune des propositions ci-dessus",
+                    value: "none",
+                },
+            ];
+        }
     }
 
     onUpdate(option: Option<AgentTypeEnum | "none">) {
