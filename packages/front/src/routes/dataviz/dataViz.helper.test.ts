@@ -58,7 +58,7 @@ describe("filterYears", () => {
             { ...DTO[1], exerciceBudgetaire: 2020 },
         ];
 
-        const expected = [groupedData[1], groupedData[2]];
+        const expected = [groupedData[2], groupedData[3]];
         const actual = filterYears(groupedData, 2021);
         expect(actual).toEqual(expected);
     });
