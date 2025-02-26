@@ -4,6 +4,8 @@ import { parse } from "csv-parse";
 import { DTOS, DBOS, ENTITIES } from "../../__fixtures__/sireneStockUniteLegale.fixture";
 import SireneStockUniteLegaleAdapter from "../adapter/sireneStockUniteLegale.adapter";
 import sireneStockUniteLegaleService from "../sireneStockUniteLegale.service";
+import uniteLegalEntreprisesService from "../../../uniteLegalEntreprises/uniteLegal.entreprises.service";
+import { UniteLegalEntrepriseEntity } from "../../../../../entities/UniteLegalEntrepriseEntity";
 
 jest.mock("fs", () => {
     const actualFs = jest.requireActual("fs");
@@ -129,14 +131,27 @@ describe("SireneStockUniteLegaleParser", () => {
             expect(sireneStockUniteLegaleService.insertMany).toHaveBeenCalledTimes(1);
         });
 
-        it("should call entityToDbo to save asso", async () => {
+        it("should call entityToDbo for assos", async () => {
             await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
             expect(SireneStockUniteLegaleAdapter.entityToDbo).toHaveBeenCalledTimes(NUMBER_DTOS_BEING_ASSOCIATIONS);
         });
 
-        it("should call dtoToEntity", async () => {
+        it("should call dtoToEntity for assos", async () => {
             await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
             expect(SireneStockUniteLegaleAdapter.dtoToEntity).toHaveBeenCalledTimes(NUMBER_DTOS_BEING_ASSOCIATIONS);
+        });
+
+        it("should call uniteLegalEntreprisesService.insertManyEntrepriseSiren once", async () => {
+            // 1 is equal to the number of batches + 1 computes as Math.floor(NUMBER_DTOS_BEING_ASSOCIATIONS / 1000) + 1
+            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
+            expect(uniteLegalEntreprisesService.insertManyEntrepriseSiren).toHaveBeenCalledTimes(1);
+        });
+
+        it("should call dtoToEntity for non-assos", async () => {
+            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
+            expect(UniteLegalEntrepriseEntity.prototype.constructor).toHaveBeenCalledTimes(
+                NUMBER_DTOS_TO_SAVE - NUMBER_DTOS_BEING_ASSOCIATIONS,
+            );
         });
 
         it("should call stream.pause", async () => {
