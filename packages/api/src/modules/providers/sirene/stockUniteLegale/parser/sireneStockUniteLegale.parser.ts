@@ -29,7 +29,7 @@ export default class SireneStockUniteLegaleParser {
             stream
                 .pipe(parse({ columns: true }))
                 .on("data", async data => {
-                    if (this.isToInclude(data)) {
+                    if (this.isAsso(data)) {
                         currentRow++;
                         const entity = SireneStockUniteLegaleAdapter.dtoToEntity(data);
                         batch.push(entity);
@@ -75,7 +75,7 @@ export default class SireneStockUniteLegaleParser {
         return true;
     }
 
-    static isToInclude(data: SireneUniteLegaleDto) {
+    static isAsso(data: SireneUniteLegaleDto) {
         const categorieJuridique = data.categorieJuridiqueUniteLegale;
         const unitePurgee = data.unitePurgeeUniteLegale;
         /* for storage reasons, data concerning companies

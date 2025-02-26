@@ -76,7 +76,7 @@ describe("SireneStockUniteLegaleParser", () => {
         });
 
         beforeEach(() => {
-            mockIsToInclude = jest.spyOn(SireneStockUniteLegaleParser, "isToInclude").mockImplementation(() => {
+            mockIsToInclude = jest.spyOn(SireneStockUniteLegaleParser, "isAsso").mockImplementation(() => {
                 if (mockIsToInclude.mock.calls.length <= 2) {
                     return true;
                 }
@@ -104,7 +104,7 @@ describe("SireneStockUniteLegaleParser", () => {
             expect(parse).toHaveBeenCalledTimes(1);
         });
 
-        it("should call isToInclude", async () => {
+        it("should call isAsso", async () => {
             await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
             expect(mockIsToInclude).toHaveBeenCalledTimes(DTOS.length);
         });
@@ -151,18 +151,18 @@ describe("SireneStockUniteLegaleParser", () => {
         });
     });
 
-    describe("isToInclude", () => {
+    describe("isAsso", () => {
         // data are to be added if belong to the LEGAL CATEFORIES ACCEPTED and if the attribute purge is ""
         // belong DTOS[0] respect the condition and DTOS[2] does not
 
         it("should return true if the data is to include", () => {
-            const actual = SireneStockUniteLegaleParser.isToInclude(DTOS[0]);
+            const actual = SireneStockUniteLegaleParser.isAsso(DTOS[0]);
             const expected = true;
             expect(actual).toBe(expected);
         });
 
         it("should return false if the data is not to include", () => {
-            const actual = SireneStockUniteLegaleParser.isToInclude(DTOS[2]);
+            const actual = SireneStockUniteLegaleParser.isAsso(DTOS[2]);
             const expected = false;
             expect(actual).toBe(expected);
         });
