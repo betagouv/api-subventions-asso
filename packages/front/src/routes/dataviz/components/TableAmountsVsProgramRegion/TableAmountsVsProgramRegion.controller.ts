@@ -1,6 +1,6 @@
 import type { AmountsVsProgramRegionDto } from "dto";
 import { filterYears, groupAndSum, montantFormatter } from "../../dataViz.helper";
-import { VARS_AMOUNTS_VS_PROGRAM_REGION as VARS } from "../../@types/AmountsVsYear.types";
+import { AMOUNTS_VS_PROGRAM_REGION_ENUM as VARS } from "../../@types/AmountsVsYear.types";
 import type {
     PartialAmountsVsProgramRegionDto,
     PartialAmountsVsProgramRegionFormatted,

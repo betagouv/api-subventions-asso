@@ -4,12 +4,9 @@ export type PartialAmountsVsProgramRegionDto = Partial<AmountsVsProgramRegionDto
     exerciceBudgetaire: number;
 };
 
-export type PartialAmountsVsProgramRegionFormatted = Partial<AmountsVsProgramRegionDto> & {
-    montant: string;
-    exerciceBudgetaire: number;
-};
+export type PartialAmountsVsProgramRegionFormatted = PartialAmountsVsProgramRegionDto & { montant: string };
 
-export enum VARS_AMOUNTS_VS_PROGRAM_REGION {
+export enum AMOUNTS_VS_PROGRAM_REGION_ENUM {
     REGION_ATTACHEMENT_COMPTABLE = "regionAttachementComptable",
     PROGRAMME = "programme",
     EXERCICE = "exerciceBudgetaire",

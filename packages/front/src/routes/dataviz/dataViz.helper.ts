@@ -1,5 +1,5 @@
 import type { AmountsVsProgramRegionDto } from "dto";
-import { VARS_AMOUNTS_VS_PROGRAM_REGION as VARS } from "./@types/AmountsVsYear.types";
+import { AMOUNTS_VS_PROGRAM_REGION_ENUM as VARS } from "./@types/AmountsVsYear.types";
 import type { PartialAmountsVsProgramRegionDto } from "./@types/AmountsVsYear.types";
 
 export const groupAndSum = (

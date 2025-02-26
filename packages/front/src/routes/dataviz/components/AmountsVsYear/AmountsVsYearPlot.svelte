@@ -7,8 +7,8 @@
     export let data_selected: PartialAmountsVsProgramRegionDto[];
 
     let svg: SVGSVGElement;
-    let width = 800;
-    let height = 400;
+    const width = 800;
+    const height = 400;
 
     const margin = { top: 80, right: 320, bottom: 40, left: 90 };
 

@@ -18,5 +18,7 @@
     <div class="fr-col-6">
         <Select bind:selected={$selectedProgram} options={programOptions} label={"Programme"} />
     </div>
+</div>
+<div class="fr-grid-row">
     <AmountsVsYearPlot data_year={dataYear} data_selected={$filteredData} />
 </div>

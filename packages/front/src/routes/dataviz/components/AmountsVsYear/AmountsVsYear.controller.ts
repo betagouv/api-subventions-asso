@@ -14,8 +14,6 @@ export class AmountsVsYearController {
     public filteredData: ReadStore<PartialAmountsVsProgramRegionDto[]>;
     public dataYear: PartialAmountsVsProgramRegionDto[];
 
-    // filtersYear in Table defined as static and applied at the beginning to all instances ??
-
     constructor(data: AmountsVsProgramRegionDto[]) {
         this.data = data;
         this.regionOptions = this._getRegionOptions(data);
@@ -47,20 +45,22 @@ export class AmountsVsYearController {
     }
 
     private _getRegionOptions(data: AmountsVsProgramRegionDto[]): { value: string; label: string }[] {
-        const uniqueRegions = [...new Set(data.map(element => element.regionAttachementComptable))].map(region => ({
-            value: region,
-            label: region,
-        }));
-        uniqueRegions.push({ value: "Tous", label: "Tous" });
+        const uniqueRegions = [...new Set(data.map(element => element.regionAttachementComptable))].map(
+            (region, index) => ({
+                value: `region-${index}`,
+                label: region,
+            }),
+        );
+        uniqueRegions.push({ value: "region-all", label: "Tous" });
         return uniqueRegions;
     }
 
     private _getProgramOptions(data: AmountsVsProgramRegionDto[]): { value: string; label: string }[] {
-        const uniquePrograms = [...new Set(data.map(element => element.programme))].map(program => ({
-            value: program,
+        const uniquePrograms = [...new Set(data.map(element => element.programme))].map((program, index) => ({
+            value: `program-${index}`,
             label: program,
         }));
-        uniquePrograms.push({ value: "Tous", label: "Tous" });
+        uniquePrograms.push({ value: "program-all", label: "Tous" });
         return uniquePrograms;
     }
 }

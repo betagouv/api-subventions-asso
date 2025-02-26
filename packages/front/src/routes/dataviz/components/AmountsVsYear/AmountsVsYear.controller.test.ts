@@ -43,9 +43,9 @@ describe("AmountsVsYearController", () => {
             //@ts-expect-error private method
             const actual = controller._getRegionOptions(DTO);
             const expected = [
-                { value: "Occitanie", label: "Occitanie" },
-                { value: "Nord", label: "Nord" },
-                { value: "Tous", label: "Tous" },
+                { value: "region-0", label: "Occitanie" },
+                { value: "region-1", label: "Nord" },
+                { value: "region-all", label: "Tous" },
             ];
             expect(actual).toEqual(expected);
         });
@@ -56,9 +56,9 @@ describe("AmountsVsYearController", () => {
             //@ts-expect-error private method
             const actual = controller._getProgramOptions(DTO);
             const expected = [
-                { value: "120-Programme", label: "120-Programme" },
-                { value: "124-Programme", label: "124-Programme" },
-                { value: "Tous", label: "Tous" },
+                { value: "program-0", label: "120-Programme" },
+                { value: "program-1", label: "124-Programme" },
+                { value: "program-all", label: "Tous" },
             ];
             expect(actual).toEqual(expected);
         });
