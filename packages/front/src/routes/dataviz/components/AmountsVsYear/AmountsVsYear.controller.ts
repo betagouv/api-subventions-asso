@@ -12,21 +12,23 @@ export class AmountsVsYearController {
 
     public data: AmountsVsProgramRegionDto[];
     public filteredData: ReadStore<PartialAmountsVsProgramRegionDto[]>;
-    public dataYear: PartialAmountsVsProgramRegionDto[];
+    public dataAll: PartialAmountsVsProgramRegionDto[];
+
+    public yearMin = 2021;
 
     constructor(data: AmountsVsProgramRegionDto[]) {
         this.data = data;
         this.regionOptions = this._getRegionOptions(data);
         this.programOptions = this._getProgramOptions(data);
 
-        this.selectedRegion = new Store("Tous");
-        this.selectedProgram = new Store("Tous");
+        this.selectedRegion = new Store("region-all");
+        this.selectedProgram = new Store("program-all");
 
         this.filteredData = derived([this.selectedRegion, this.selectedProgram], ([region, program]) =>
-            filterYears(groupAndSum(this._filterData(this.data, region, program), []), 2021),
+            filterYears(groupAndSum(this._filterData(this.data, region, program), []), this.yearMin),
         );
 
-        this.dataYear = filterYears(groupAndSum(this.data, []), 2021);
+        this.dataAll = filterYears(groupAndSum(this.data, []), this.yearMin);
     }
 
     private _filterData(
@@ -34,10 +36,12 @@ export class AmountsVsYearController {
         selectedRegion: string,
         selectedProgram: string,
     ): AmountsVsProgramRegionDto[] {
+        const selectedRegionValue = this.regionOptions.find(option => option.value === selectedRegion)?.label;
+        const selectedProgramValue = this.programOptions.find(option => option.value === selectedProgram)?.label;
         const filteredData = data.filter(element => {
             return (
-                (selectedRegion === "Tous" || element.regionAttachementComptable === selectedRegion) &&
-                (selectedProgram === "Tous" || element.programme === selectedProgram)
+                (selectedRegion === "region-all" || element.regionAttachementComptable === selectedRegionValue) &&
+                (selectedProgram === "program-all" || element.programme === selectedProgramValue)
             );
         });
 

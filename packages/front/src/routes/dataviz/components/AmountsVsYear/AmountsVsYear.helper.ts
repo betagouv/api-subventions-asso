@@ -4,19 +4,19 @@ import type { PartialAmountsVsProgramRegionDto } from "../../@types/AmountsVsYea
 
 export function updateChart(
     svg: SVGSVGElement,
-    data_year: PartialAmountsVsProgramRegionDto[],
+    data_all: PartialAmountsVsProgramRegionDto[],
     data_selected: PartialAmountsVsProgramRegionDto[],
     width: number,
     height: number,
     margin: { top: number; right: number; bottom: number; left: number },
 ) {
-    if (!svg || !data_year) return;
+    if (!svg || !data_all) return;
     d3.select(svg).selectAll("*").remove();
 
     const svgWidth = width - margin.left - margin.right;
     const svgHeight = height - margin.top - margin.bottom;
 
-    const years = [...new Set(data_year.map(d => d.exerciceBudgetaire))];
+    const years = [...new Set(data_all.map(d => d.exerciceBudgetaire))];
 
     // Create X scale (years)
     const x = d3.scaleBand().domain(years).range([0, svgWidth]);
@@ -24,7 +24,7 @@ export function updateChart(
     // Create Y left scale (values)
     const y = d3
         .scaleLinear()
-        .domain([0, d3.max(data_year, d => d.montant)])
+        .domain([0, d3.max(data_all, d => d.montant)])
         .nice()
         .range([svgHeight, 0]);
 
@@ -57,7 +57,7 @@ export function updateChart(
     // Add lines to the graph
     svgElement
         .append("path")
-        .data([data_year])
+        .data([data_all])
         .attr("class", "line")
         .attr("d", line)
         .attr("fill", "none")
@@ -98,7 +98,7 @@ export function updateChart(
     // Add points to each data point to interact with the tooltip
     svgElement
         .selectAll(".dot")
-        .data(data_year)
+        .data(data_all)
         .enter()
         .append("circle")
         .attr("cx", d => x(d.exerciceBudgetaire) + x.bandwidth() / 2)

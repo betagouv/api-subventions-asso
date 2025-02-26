@@ -26,7 +26,7 @@ export const filterYears = (
     yearMin: number,
 ): PartialAmountsVsProgramRegionDto[] => {
     const currentYear = new Date().getFullYear();
-    return groupedData.filter(row => row.exerciceBudgetaire >= yearMin && row.exerciceBudgetaire !== currentYear);
+    return groupedData.filter(row => row.exerciceBudgetaire >= yearMin && row.exerciceBudgetaire < currentYear);
 };
 
 export const montantFormatter = new Intl.NumberFormat("fr-FR", {

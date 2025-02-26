@@ -7,7 +7,7 @@
     export let elements: AmountsVsProgramRegionDto[];
 
     const controller = new AmountsVsYearController(elements);
-    const { selectedRegion, selectedProgram, regionOptions, programOptions, filteredData, dataYear } = controller;
+    const { selectedRegion, selectedProgram, regionOptions, programOptions, filteredData, dataAll } = controller;
 </script>
 
 <div class="fr-grid-row flex space-between">
@@ -20,5 +20,5 @@
     </div>
 </div>
 <div class="fr-grid-row">
-    <AmountsVsYearPlot data_year={dataYear} data_selected={$filteredData} />
+    <AmountsVsYearPlot data_all={dataAll} data_selected={$filteredData} />
 </div>

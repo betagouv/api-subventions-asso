@@ -9,30 +9,30 @@ describe("AmountsVsYearController", () => {
     });
 
     describe("_filterData", () => {
-        it("should return not filtered data if both parameters are equalt to Tous", () => {
+        it("should return not filtered data if both parameters are equal to 'region-all' and 'program-all'", () => {
             //@ts-expect-error private method
-            const actual = controller._filterData(DTO, "Tous", "Tous");
+            const actual = controller._filterData(DTO, "region-all", "program-all");
             const expected = DTO;
             expect(actual).toEqual(expected);
         });
 
-        it("should return data filtered on region if selectedRegion is different from Tous", () => {
+        it("should return data filtered on region if selectedRegion is different from 'region-all'", () => {
             //@ts-expect-error private method
-            const actual = controller._filterData(DTO, "Occitanie", "Tous");
+            const actual = controller._filterData(DTO, "region-0", "program-all");
             const expected = [DTO[0], DTO[2]];
             expect(actual).toEqual(expected);
         });
 
-        it("should return data filtered on program if selectedProgram is different from Tous", () => {
+        it("should return data filtered on program if selectedProgram is different from 'program-all'", () => {
             //@ts-expect-error private method
-            const actual = controller._filterData(DTO, "Tous", "120-Programme");
+            const actual = controller._filterData(DTO, "region-all", "program-0");
             const expected = [DTO[0], DTO[1]];
             expect(actual).toEqual(expected);
         });
 
-        it("should return data filtered on region and program if both are different from Tous", () => {
+        it("should return data filtered on region and program if are different from 'region-all' and 'program-all'", () => {
             //@ts-expect-error private method
-            const actual = controller._filterData(DTO, "Occitanie", "120-Programme");
+            const actual = controller._filterData(DTO, "region-0", "program-0");
             const expected = [DTO[0]];
             expect(actual).toEqual(expected);
         });
