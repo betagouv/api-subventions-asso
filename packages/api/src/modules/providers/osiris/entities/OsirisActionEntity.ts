@@ -1,17 +1,17 @@
 import { ObjectId } from "mongodb";
-import { ParserInfo, ParserPath, Falsy } from "../../../../@types";
+import { ParserInfo, ParserPath } from "../../../../@types";
 import IOsirisActionsInformations from "../@types/IOsirisActionsInformations";
 import OsirisActionEntityDbo from "./OsirisActionEntityDbo";
-import OsirisEvaluationEntity from "./OsirisEvaluationEntity";
 
 export default class OsirisActionEntity extends OsirisActionEntityDbo {
     public static defaultMainCategory = "Dossier/action";
 
     public static indexedInformationsPath: {
-        [key: string]: ParserPath | ParserInfo;
+        [key: string]: ParserPath | ParserInfo<string | number>;
     } = {
-        osirisActionId: ["Dossier/action", "Numero Action Osiris"],
-        compteAssoId: ["Dossier/action", "N° Dossier Compte Asso"],
+        osirisActionId: [OsirisActionEntity.defaultMainCategory, "Numero Action Osiris"],
+        compteAssoId: [OsirisActionEntity.defaultMainCategory, "N° Dossier Compte Asso"],
+        exercise: [OsirisActionEntity.defaultMainCategory, "Exercice budgetaire"],
         federation: ["Fédération d'affiliation", "Fédération"],
         licencies: ["Fédération d'affiliation", "Nombre licenciés"],
         licenciesHommes: ["Fédération d'affiliation", "Nombre licenciés hommes"],
@@ -31,7 +31,7 @@ export default class OsirisActionEntity extends OsirisActionEntityDbo {
         territoireStatus: ["Territoires", "Statut"],
         territoireCommentaire: ["Territoires", "Commentaire"],
 
-        ej: ["Dossier/action", "N° EJ"],
+        ej: [OsirisActionEntity.defaultMainCategory, "N° EJ"],
         siret: ["Bénéficiaire", "N° Siret"],
         rang: ["Caractéristiques actions", "Rang"],
         intitule: ["Caractéristiques actions", "Intitulé"],
@@ -55,12 +55,18 @@ export default class OsirisActionEntity extends OsirisActionEntityDbo {
         montants_versement_compensation: ["Montants et versements", "Compensation"],
     };
 
-    constructor(
-        public indexedInformations: IOsirisActionsInformations,
-        public data: unknown,
-        public _id?: ObjectId,
-        public evaluation?: Falsy<OsirisEvaluationEntity>,
-    ) {
+    constructor(public indexedInformations: IOsirisActionsInformations, public data: unknown, public _id?: ObjectId) {
         super(indexedInformations, data, _id);
+        this.indexedInformations.uniqueId = `${this.indexedInformations.osirisActionId}-${this.indexedInformations.exercise}`;
+        const requestId = this.indexedInformations.osirisActionId.match(/^(.+)-\d+$/)?.[1];
+        const requestUniqueId = `${requestId ?? this.indexedInformations.osirisActionId}-${
+            this.indexedInformations.exercise
+        }`;
+        if (!requestId) {
+            console.error(
+                `l'identifiant osirisActionId ${this.indexedInformations.osirisActionId} est mal formé. On ne peut pas en déduire l'identifiant du dossier. Nous prenons l'osirisActionId tel quel mais c'est un problème`,
+            );
+        }
+        this.indexedInformations.requestUniqueId = requestUniqueId;
     }
 }

@@ -6,7 +6,7 @@ const { readdirSync } = require("fs");
 // scalingo app name
 const appName = process.argv[2];
 
-// i.e : "requests" | "actions" | "evaluations"
+// i.e : "requests" | "actions"
 const importType = process.argv[3];
 
 // directory with xls files OR directory with split zips
