@@ -141,25 +141,32 @@ export function updateChart(
         });
 
     // Create legend
+
+    const legendItems = [
+        { color: "steelblue", text: "Montant total" },
+        { color: "red", text: "Montant pour le programme et region selectionné" },
+    ];
+
     const legend = svgElement.append("g").attr("transform", `translate(0, -55)`);
 
-    legend.append("rect").attr("width", 12).attr("height", 12).attr("fill", "steelblue");
+    const legendGroups = legend
+        .selectAll("g")
+        .data(legendItems)
+        .enter()
+        .append("g")
+        .attr("transform", (d, i) => `translate(0, ${i * 20})`);
 
-    legend
+    legendGroups
+        .append("rect")
+        .attr("width", 12)
+        .attr("height", 12)
+        .attr("fill", d => d.color);
+
+    legendGroups
         .append("text")
         .attr("x", 20)
         .attr("y", 10)
-        .text("Montant total")
-        .style("font-size", "12px")
-        .style("font-family", "Marianne");
-
-    legend.append("rect").attr("y", 20).attr("width", 12).attr("height", 12).attr("fill", "red");
-
-    legend
-        .append("text")
-        .attr("x", 20)
-        .attr("y", 30)
-        .text("Montant pour le programme et region selectionné")
+        .text(d => d.text)
         .style("font-size", "12px")
         .style("font-family", "Marianne");
 }
