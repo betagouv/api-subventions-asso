@@ -49,7 +49,7 @@ describe("groupAndSum", () => {
 });
 
 describe("filterYears", () => {
-    it("should return only data with exerciceBudgetaire >= yearMin and inferieur from current year", () => {
+    it("should return only data with exerciceBudgetaire >= yearMin and lower than current year", () => {
         const groupedData = [
             { ...DTO[0], exerciceBudgetaire: new Date().getFullYear() },
             { ...DTO[0], exerciceBudgetaire: new Date().getFullYear() + 1 },
