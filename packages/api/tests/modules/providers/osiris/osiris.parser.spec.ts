@@ -5,6 +5,8 @@ import OsirisParser from "../../../../src/modules/providers/osiris/osiris.parser
 import OsirisActionEntity from "../../../../src/modules/providers/osiris/entities/OsirisActionEntity";
 import OsirisRequestEntity from "../../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
 
+// TODO ensure this is proper integ test. It is historical test when we did not make a difference
+
 describe("OsirisParser", () => {
     describe("parseRequests", () => {
         it("should return osiris requests", () => {
