@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.63.0](https://github.com/betagouv/datasubvention/compare/v0.62.0...v0.63.0) (2025-02-25)
+
+### Bug Fixes
+
+-   **front:** typo 0 ([6799602](https://github.com/betagouv/datasubvention/commit/6799602061f2359ccf325bc203e87d1fd6c5396a))
+
+### Features
+
+-   **api, dto:** [#3107](https://github.com/betagouv/datasubvention/issues/3107) implement paymentProvider in paymentFlat.service ([#3229](https://github.com/betagouv/datasubvention/issues/3229)) ([98e4131](https://github.com/betagouv/datasubvention/commit/98e4131d18f528a0d184ff0c09867d9a23ac7da2))
+-   **front:** [#3214](https://github.com/betagouv/datasubvention/issues/3214) add dataviz beta alert ([#3217](https://github.com/betagouv/datasubvention/issues/3217)) ([7272863](https://github.com/betagouv/datasubvention/commit/7272863984c2b997b2e9ed736eef3c35064c647a))
+
 # [0.62.0](https://github.com/betagouv/datasubvention/compare/v0.61.0...v0.62.0) (2025-02-17)
 
 ### Features

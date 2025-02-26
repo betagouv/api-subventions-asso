@@ -38,7 +38,7 @@ export const buildProgramme: (p: FlatPayment[]) => DashboardProgram = (payments:
     const programmes = new Set(payments.map(versement => versement.programme));
     if (programmes.size > 1) return MULTI;
     if (programmes.size < 1) return null;
-    return { code: payments[0].programme, libelle: payments[0].libelleProgramme };
+    return { code: payments[0].programme, libelle: valueOrHyphen(payments[0].libelleProgramme) };
 };
 
 /**
@@ -49,7 +49,7 @@ export const buildProgramme: (p: FlatPayment[]) => DashboardProgram = (payments:
 export const buildProgrammeText = (payments: FlatPayment[]) => {
     const programmes = new Set(payments.map(versement => versement.programme));
     if (programmes.size > 1) return "multi-programmes";
-    return `${payments[0].programme} - ${payments[0].libelleProgramme}`;
+    return `${payments[0].programme} - ${valueOrHyphen(payments[0].libelleProgramme)}`;
 };
 
 export const getTotalPayment = (payments: FlatPayment[]) => {
