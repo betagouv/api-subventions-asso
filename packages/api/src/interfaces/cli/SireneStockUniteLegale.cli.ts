@@ -9,7 +9,7 @@ export default class SireneStockUniteLegaleCli extends CliController {
 
     protected logFileParsePath = "./logs/sireneStockUniteLegale.parse.log.txt";
 
-    async parse() {
+    async getAndParse() {
         await sireneStockUniteLegaleService.getAndParse();
     }
 }
