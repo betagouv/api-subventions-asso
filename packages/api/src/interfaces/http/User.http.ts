@@ -1,17 +1,7 @@
-import {
-    CreateUserDtoResponse,
-    FutureUserDto,
-    GetRolesDtoResponse,
-    UpdatableUser,
-    UserDataDto,
-    UserDto,
-    UserDtoResponse,
-    UserListDtoResponse,
-} from "dto";
-import { Route, Controller, Tags, Post, Body, Security, Put, Request, Get, Delete, Path, Response, Patch } from "tsoa";
-import { RoleEnum } from "../../@enums/Roles";
+import { GetRolesDtoResponse, UpdatableUser, UserDataDto, UserDto, UserDtoResponse } from "dto";
+import { Route, Controller, Tags, Body, Security, Put, Request, Get, Delete, Response, Patch } from "tsoa";
 import { IdentifiedRequest } from "../../@types";
-import { BadRequestError, NotFoundError } from "../../shared/errors/httpErrors";
+import { NotFoundError } from "../../shared/errors/httpErrors";
 import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
 import userAuthService from "../../modules/user/services/auth/user.auth.service";
 import userRolesService from "../../modules/user/services/roles/user.roles.service";
@@ -23,64 +13,6 @@ import userCrudService from "../../modules/user/services/crud/user.crud.service"
 @Tags("User Controller")
 @Security("jwt")
 export class UserHttp extends Controller {
-    /**
-     * Update user roles
-     * @summary Update user's roles
-     */
-    @Post("/admin/roles")
-    @Security("jwt", ["admin"])
-    @Response<HttpErrorInterface>(400, "Role Not Valid")
-    public async upgradeUserRoles(@Body() body: { email: string; roles: RoleEnum[] }): Promise<UserDtoResponse> {
-        return await userRolesService.addRolesToUser(body.email, body.roles);
-    }
-
-    /**
-     * Return the list of all users
-     * @summary List all users
-     */
-    @Get("/admin/list-users")
-    @Security("jwt", ["admin"])
-    public async listUsers(): Promise<UserListDtoResponse> {
-        return {
-            users: await userCrudService.listUsers(),
-        };
-    }
-
-    /**
-     * Create a new user and send a mail to create a new password
-     * @summary Create user
-     */
-    @Post("/admin/create-user")
-    @Security("jwt", ["admin"])
-    @Response<HttpErrorInterface>(400, "Bad Request")
-    @Response<HttpErrorInterface>(409, "Unprocessable Entity")
-    public async createUser(@Body() body: FutureUserDto): Promise<CreateUserDtoResponse> {
-        const formatedBody = {
-            ...body,
-            email: body.email.toLocaleLowerCase(),
-        };
-        const user = await userCrudService.signup(formatedBody);
-        this.setStatus(201);
-        return { user };
-    }
-
-    /**
-     * Remove a user
-     * @summary Remove user
-     */
-    @Delete("/admin/user/:id")
-    @Security("jwt", ["admin"])
-    @Response<HttpErrorInterface>(400, "Bad Request")
-    public async deleteUser(@Request() req: IdentifiedRequest, @Path() id: string): Promise<boolean> {
-        if (!id) throw new BadRequestError("User ID is not defined");
-
-        if (req.user._id.toString() === id) {
-            throw new BadRequestError("Cannot delete its own account");
-        }
-
-        return await userRgpdService.disableById(id, false);
-    }
-
     /**
      * Return user roles
      * @summary List user's roles

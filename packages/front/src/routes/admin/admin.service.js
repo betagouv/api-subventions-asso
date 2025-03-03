@@ -2,21 +2,21 @@ import requestsService from "$lib/services/requests.service";
 
 export class AdminService {
     async getUsers() {
-        const path = `/user/admin/list-users`;
+        const path = `/admin/user/list-users`;
         return requestsService.get(path).then(result => {
             return result.data.users;
         });
     }
 
     async deleteUser(userId) {
-        const path = `/user/admin/user/${userId}`;
+        const path = `/admin/user/user/${userId}`;
         return requestsService.delete(path).then(result => {
             return result.status == 204;
         });
     }
 
     async create(email) {
-        const path = `/user/admin/create-user`;
+        const path = `/admin/user/create-user`;
         return requestsService.post(path, { email }).then(result => {
             return result.status == 201;
         });
