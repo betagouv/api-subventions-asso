@@ -21,9 +21,6 @@ import ScdlGrantParser from "../../modules/providers/scdl/scdl.grant.parser";
 import MiscScdlProducer from "../../modules/providers/scdl/__fixtures__/MiscScdlProducer";
 import { ParsedDataWithProblem } from "../../modules/providers/scdl/@types/Validation";
 
-jest.mock("../../modules/providers/scdl/scdl.grant.parser");
-const mockedScdlGrantParser = jest.mocked(ScdlGrantParser);
-
 import csvSyncStringifier = require("csv-stringify/sync");
 import dataLogService from "../../modules/data-log/dataLog.service";
 jest.mock("../../modules/data-log/dataLog.service");
@@ -54,8 +51,8 @@ describe("ScdlCli", () => {
         mockedScdlService.getProducer.mockResolvedValue(PRODUCER_ENTITY);
         // @ts-expect-error: private method
         mockedScdlService._buildGrantUniqueId.mockReturnValue(UNIQUE_ID);
-        mockedScdlGrantParser.parseCsv.mockReturnValue({ entities: STORABLE_DATA_ARRAY, errors: [] });
-        mockedScdlGrantParser.parseExcel.mockReturnValue({ entities: STORABLE_DATA_ARRAY, errors: [] });
+        mockedScdlService.parseCsv.mockReturnValue({ entities: STORABLE_DATA_ARRAY, errors: [] });
+        mockedScdlService.parseXls.mockReturnValue({ entities: STORABLE_DATA_ARRAY, errors: [] });
         cli = new ScdlCli();
     });
 
@@ -114,9 +111,9 @@ describe("ScdlCli", () => {
     }
 
     describe.each`
-        methodName    | test            | parserMethod                  | parserArgs
-        ${"parse"}    | ${testParseCsv} | ${ScdlGrantParser.parseCsv}   | ${[FILE_CONTENT, DELIMETER, QUOTE]}
-        ${"parseXls"} | ${testParseXls} | ${ScdlGrantParser.parseExcel} | ${[FILE_CONTENT, PAGE_NAME, ROW_OFFSET]}
+        methodName    | test            | parserMethod            | parserArgs
+        ${"parse"}    | ${testParseCsv} | ${scdlService.parseCsv} | ${[FILE_CONTENT, DELIMETER, QUOTE]}
+        ${"parseXls"} | ${testParseXls} | ${scdlService.parseXls} | ${[FILE_CONTENT, PAGE_NAME, ROW_OFFSET]}
     `("$methodName", ({ test, parserMethod, parserArgs }) => {
         it("sanitizes input", async () => {
             // @ts-expect-error -- test private

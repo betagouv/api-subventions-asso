@@ -1,9 +1,9 @@
 import { ToolsHttp } from "./Tools.http";
-import ScdlGrantParser from "../../modules/providers/scdl/scdl.grant.parser";
 import csvSyncStringifier = require("csv-stringify/sync");
 import { ParsedDataWithProblem } from "../../modules/providers/scdl/@types/Validation";
+import scdlService from "../../modules/providers/scdl/scdl.service";
 
-jest.mock("../../modules/providers/scdl/scdl.grant.parser");
+jest.mock("../../modules/providers/scdl/scdl.service");
 jest.mock("csv-stringify/sync");
 
 describe("Tools test", () => {
@@ -17,8 +17,8 @@ describe("Tools test", () => {
     const CSV_ERRORS = "a;b;c;d\n1;2;3;4";
     let ctrl = new ToolsHttp();
     beforeAll(() => {
-        jest.mocked(ScdlGrantParser.parseExcel).mockReturnValue({ errors: ERRORS, entities: [] });
-        jest.mocked(ScdlGrantParser.parseCsv).mockReturnValue({ errors: ERRORS, entities: [] });
+        jest.mocked(scdlService.parseXls).mockReturnValue({ errors: ERRORS, entities: [] });
+        jest.mocked(scdlService.parseCsv).mockReturnValue({ errors: ERRORS, entities: [] });
         jest.mocked(csvSyncStringifier.stringify).mockReturnValue(CSV_ERRORS);
     });
 
@@ -26,13 +26,13 @@ describe("Tools test", () => {
         it("calls parser with proper args", () => {
             // @ts-expect-error -- spy private
             ctrl.parseXls(FILE, PAGE_NAME, ROW_OFFSET);
-            expect(ScdlGrantParser.parseExcel).toHaveBeenCalledWith(FILE_CONTENT, PAGE_NAME, ROW_OFFSET);
+            expect(scdlService.parseXls).toHaveBeenCalledWith(FILE_CONTENT, PAGE_NAME, ROW_OFFSET);
         });
 
         it("parses string row offset", () => {
             // @ts-expect-error -- spy private
             ctrl.parseXls(FILE, PAGE_NAME, "42");
-            expect(ScdlGrantParser.parseExcel).toHaveBeenCalledWith(FILE_CONTENT, PAGE_NAME, ROW_OFFSET);
+            expect(scdlService.parseXls).toHaveBeenCalledWith(FILE_CONTENT, PAGE_NAME, ROW_OFFSET);
         });
 
         it("stringifies errors from parser", () => {
@@ -53,13 +53,13 @@ describe("Tools test", () => {
         it("calls parser with proper args", () => {
             // @ts-expect-error -- spy private
             ctrl.parseCsv(FILE, DELIMITER, QUOTE);
-            expect(ScdlGrantParser.parseCsv).toHaveBeenCalledWith(FILE_CONTENT, DELIMITER, QUOTE);
+            expect(scdlService.parseCsv).toHaveBeenCalledWith(FILE_CONTENT, DELIMITER, QUOTE);
         });
 
         it("converts 'false' value to boolean if given as quote", () => {
             // @ts-expect-error -- spy private
             ctrl.parseCsv(FILE, DELIMITER, "false");
-            expect(ScdlGrantParser.parseCsv).toHaveBeenCalledWith(FILE_CONTENT, DELIMITER, false);
+            expect(scdlService.parseCsv).toHaveBeenCalledWith(FILE_CONTENT, DELIMITER, false);
         });
 
         it("stringifies errors from parser", () => {
