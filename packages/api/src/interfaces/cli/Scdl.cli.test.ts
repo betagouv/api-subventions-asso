@@ -17,7 +17,6 @@ jest.mock("../../modules/providers/scdl/scdl.service");
 const mockedScdlService = jest.mocked(scdlService);
 import MiscScdlGrant from "../../modules/providers/scdl/__fixtures__/MiscScdlGrant";
 import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
-import ScdlGrantParser from "../../modules/providers/scdl/scdl.grant.parser";
 import MiscScdlProducer from "../../modules/providers/scdl/__fixtures__/MiscScdlProducer";
 import { ParsedDataWithProblem } from "../../modules/providers/scdl/@types/Validation";
 

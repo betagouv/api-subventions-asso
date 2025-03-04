@@ -33,7 +33,3 @@ export function sanitizeToPlainText(unsafe: string): string {
 export function getMD5(str: string) {
     return crypto.createHash("md5").update(str).digest("hex");
 }
-
-export function isStringParam(str) {
-    return !!str && typeof str === "string";
-}

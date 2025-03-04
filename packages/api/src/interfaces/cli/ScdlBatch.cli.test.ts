@@ -6,15 +6,46 @@ import {
     SCDL_FILE_PROCESSING_PATH,
     SCDL_FILE_PROCESSING_CONFIG_FILENAME,
 } from "../../configurations/scdlIntegration.conf";
-import ScdlCli from "../cli/Scdl.cli";
-import { ScdlFileProcessingConfigList, ScdlParseArgs, ScdlParseXlsArgs } from "../../@types/ScdlDataIntegration";
+import {
+    ScdlFileProcessingConfig,
+    ScdlFileProcessingConfigList,
+    ScdlParseCsvArgs,
+} from "../../@types/ScdlDataIntegration";
+import scdlService from "../../modules/providers/scdl/scdl.service";
+import ScdlCli from "./Scdl.cli";
+import MiscScdlProducerEntity from "../../modules/providers/scdl/entities/MiscScdlProducerEntity";
+import { FileExtensionEnum } from "../../@enums/FileExtensionEnum";
 
-jest.mock("../../configurations/scdlIntegration.conf", () => ({
-    SCDL_FILE_PROCESSING_PATH: path.resolve(__dirname, "test-integration"),
-    SCDL_FILE_PROCESSING_CONFIG_FILENAME: "test-scdl-file-processing.config.json",
-}));
+import { isStringValid, isBooleanValid, isNumberValid, isShortISODateValid } from "../../shared/Validators";
+
+jest.mock("../../modules/providers/scdl/scdl.service");
 jest.mock("../cli/Scdl.cli");
 jest.mock("fs");
+jest.mock("path");
+jest.mock("../../shared/Validators");
+
+const BASE_SCDL_FILE_CONFIG = {
+    name: "scdl-import-bretagne-2025.csv",
+    addProducer: true,
+    producerName: "Région Bretagne",
+    producerSiret: "23350001600040",
+    parseParams: { producerSlug: "bretagne" },
+};
+
+const CSV_PARSE_PARMS = { delimiter: ",", quote: "'" };
+const XLS_PARSE_PARMS = { pageName: "Données au format SCDL", rowOffset: 2 };
+
+const FILES_CONFIG = [
+    {
+        ...BASE_SCDL_FILE_CONFIG,
+        parseParams: { ...BASE_SCDL_FILE_CONFIG.parseParams, ...CSV_PARSE_PARMS },
+    },
+    {
+        ...BASE_SCDL_FILE_CONFIG,
+        name: "scdl-import-bretagne-2025.xls",
+        parseParams: { ...BASE_SCDL_FILE_CONFIG.parseParams, ...XLS_PARSE_PARMS },
+    },
+];
 
 const validConfigData: ScdlFileProcessingConfigList = {
     files: [
@@ -40,24 +71,295 @@ const validConfigData: ScdlFileProcessingConfigList = {
     ],
 };
 
-describe("scdl data integration script", () => {
+describe("SCDL Batch Import CLI", () => {
     let scdlBatchCli: ScdlBatchCli;
-    const testFilePath = path.join(SCDL_FILE_PROCESSING_PATH, SCDL_FILE_PROCESSING_CONFIG_FILENAME);
-
-    const addProducerMock = jest.spyOn(ScdlCli.prototype, "addProducer");
-    const parseMock = jest.spyOn(ScdlCli.prototype, "parse");
-    const parseXlsMock = jest.spyOn(ScdlCli.prototype, "parseXls");
-
-    beforeAll(() => {
-        scdlBatchCli = new ScdlBatchCli();
-    });
 
     beforeEach(() => {
         jest.spyOn(process, "exit").mockImplementation((() => {}) as (code?: any) => never);
-        addProducerMock.mockResolvedValue();
+        jest.mocked(scdlService.createProducer).mockResolvedValue();
     });
 
-    describe("loadConfig method", () => {
+    describe("isConfig", () => {
+        // @ts-expect-error: spy protected method
+        const mockIsFileConfig = jest.spyOn(ScdlBatchCli.prototype, "isFileConfig");
+
+        beforeAll(() => {
+            //@ts-expect-error
+            mockIsFileConfig.mockReturnValue(true);
+        });
+
+        afterAll(() => {
+            mockIsFileConfig.mockRestore();
+        });
+
+        it.each`
+            value
+            ${undefined}
+            ${null}
+            ${{}}
+            ${{ files: [] }}
+            ${{ files: [{}, {}] }}
+        `("return false with $value", ({ value }) => {
+            // make one file invalid for last test
+            if (value?.files?.length) {
+                // @ts-expect-error
+                mockIsFileConfig.mockReturnValueOnce(false);
+            }
+            const cli = new ScdlBatchCli();
+            const expected = false;
+            // @ts-expect-error: private method
+            const actual = cli.isConfig(value);
+            expect(actual).toEqual(expected);
+        });
+
+        it("return true", () => {
+            const cli = new ScdlBatchCli();
+            const expected = true;
+            // @ts-expect-error: private method
+            const actual = cli.isConfig({ files: [{}] });
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("isFileConfig", () => {
+        // @ts-expect-error: private method
+        const mockIsParseParams = jest.spyOn(ScdlBatchCli.prototype, "isParseParams");
+
+        const PARSE_PARAMS = { producerSlug: "bretagne" };
+
+        beforeEach(() => {
+            jest.mocked(isStringValid).mockReturnValue(true);
+            jest.mocked(isBooleanValid).mockReturnValue(true);
+            // @ts-expect-error
+            mockIsParseParams.mockReturnValue(true);
+            scdlBatchCli = new ScdlBatchCli();
+        });
+
+        afterAll(() => mockIsParseParams.mockRestore());
+
+        it("throw if no file given", () => {
+            // @ts-expect-error: test private method
+            expect(() => scdlBatchCli.isFileConfig()).toThrowError(
+                `You must provide a config file for SCDL batch import and name it ${SCDL_FILE_PROCESSING_CONFIG_FILENAME}`,
+            );
+        });
+
+        it("add error to the list if file name is not a valid string", () => {
+            jest.mocked(isStringValid).mockReturnValueOnce(false);
+            const expected = { field: "name" };
+            // @ts-expect-error: test private method
+            scdlBatchCli.isFileConfig({ name: 123 });
+            // @ts-expect-error: access private property
+            console.log(scdlBatchCli.fileConfigErrors);
+            // @ts-expect-error: access private property
+            expect(scdlBatchCli.fileConfigErrors).toContainEqual(expected);
+        });
+
+        it("do not call isParseParams if addProducer is set to false", () => {
+            // @ts-expect-error: test private method
+            scdlBatchCli.isFileConfig({ name: "bretagne-2025", addProducer: false });
+            expect(mockIsParseParams).not.toHaveBeenCalled();
+        });
+
+        it("returns true if file config is valid", () => {
+            const expected = true;
+            // @ts-expect-error: test private method
+            const actual = scdlBatchCli.isFileConfig({ name: "bretagne-2025" });
+            expect(actual).toEqual(expected);
+        });
+
+        it("calls isParseParams() is addProducer is set to true", () => {
+            // @ts-expect-error: test private method
+            scdlBatchCli.isFileConfig({ name: "name", addProducer: true, parseParams: PARSE_PARAMS });
+            expect(mockIsParseParams).toHaveBeenCalledWith(PARSE_PARAMS);
+        });
+    });
+
+    describe("isXlsArgs", () => {
+        beforeAll(() => {
+            jest.mocked(isStringValid).mockReturnValue(true);
+            jest.mocked(isNumberValid).mockReturnValue(true);
+        });
+
+        beforeEach(() => {
+            scdlBatchCli = new ScdlBatchCli();
+        });
+
+        it("concats errors if any", () => {
+            jest.mocked(isStringValid).mockReturnValueOnce(false);
+            jest.mocked(isNumberValid).mockReturnValueOnce(false);
+            // @ts-expect-error: test private method
+            scdlBatchCli.isXlsArgs({ rowOffset: "not a number" });
+            // @ts-expect-error: access private property
+            expect(scdlBatchCli.fileConfigErrors).toContainEqual({ field: "pageName" });
+            // @ts-expect-error: access private property
+            expect(scdlBatchCli.fileConfigErrors).toContainEqual({ field: "rowOffset" });
+        });
+
+        it("returns false if not a valid ScdlParseXlsArgs", () => {
+            jest.mocked(isStringValid).mockReturnValueOnce(false);
+            jest.mocked(isNumberValid).mockReturnValueOnce(false);
+            const expected = false;
+            // @ts-expect-error: test private method
+            const actual = scdlBatchCli.isXlsArgs({ rowOffset: "not a number" });
+            expect(actual).toEqual(expected);
+        });
+
+        it("returns true if it is a valid ScdlParseXlsArgs", () => {
+            const expected = true;
+            // @ts-expect-error: test private method
+            const actual = scdlBatchCli.isXlsArgs({ pageName: "Subventions", rowOffset: 2 });
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("isCsvArgs", () => {
+        beforeEach(() => {
+            scdlBatchCli = new ScdlBatchCli();
+        });
+
+        it("pushes delimiter error", () => {
+            // @ts-expect-error
+            scdlBatchCli.isCsvArgs({ producerSlug: "bretagne", delimiter: "a" });
+            // @ts-expect-error: access private property
+            expect(scdlBatchCli.fileConfigErrors).toContainEqual({ field: "delimiter" });
+        });
+
+        it("pushes quote error", () => {
+            // @ts-expect-error
+            scdlBatchCli.isCsvArgs({ producerSlug: "bretagne", quote: "a" });
+            // @ts-expect-error: access private property
+            expect(scdlBatchCli.fileConfigErrors).toContainEqual({ field: "quote" });
+        });
+
+        it.each`
+            parseParams
+            ${{ producerSlug: "bretagne", delimiter: ";", quote: '"' }}
+            ${{ producerSlug: "bretagne", delimiter: ";", quote: "'" }}
+            ${{ producerSlug: "bretagne", delimiter: ",", quote: '"' }}
+            ${{ producerSlug: "bretagne", delimiter: ",", quote: "'" }}
+            ${{ producerSlug: "bretagne", delimiter: ";" }}
+            ${{ producerSlug: "bretagne", delimiter: "," }}
+            ${{ producerSlug: "bretagne", quote: "'" }}
+            ${{ producerSlug: "bretagne", quote: '"' }}
+            ${{ producerSlug: "bretagne" }}
+        `("returns true if it is a valid ScdlParseCsvArgs", ({ parseParams }) => {
+            const expected = true;
+            // @ts-expect-error: test private method
+            const actual = scdlBatchCli.isCsvArgs(parseParams);
+            expect(actual).toEqual(expected);
+        });
+
+        it.each`
+            parseParams
+            ${{ delimiter: ";;," }}
+            ${{ quote: "(" }}
+        `("returns false if it is not a valid ScdlParseCsvArgs", ({ parseParams }) => {
+            const expected = false;
+            // @ts-expect-error: test private method
+            const actual = scdlBatchCli.isCsvArgs(parseParams);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("isParseParams", () => {
+        // @ts-expect-error: private method
+        const spyIsCsvArgs = jest.spyOn(ScdlBatchCli.prototype, "isCsvArgs");
+        // @ts-expect-error: private method
+        const spyIsXlsArgs = jest.spyOn(ScdlBatchCli.prototype, "isXlsArgs");
+
+        beforeAll(() => {
+            jest.mocked(isStringValid).mockReturnValue(true);
+            jest.mocked(isShortISODateValid).mockReturnValue(true);
+        });
+
+        beforeEach(() => {
+            scdlBatchCli = new ScdlBatchCli();
+        });
+
+        afterAll(() => {
+            spyIsCsvArgs.mockRestore();
+            spyIsXlsArgs.mockRestore();
+        });
+
+        it.each`
+            parseParams
+            ${[]}
+            ${undefined}
+            ${"bretagne"}
+        `("pushes error if parseParams is not valid", ({ parseParams }) => {
+            // @ts-expect-error: private method
+            scdlBatchCli.isParseParams(parseParams);
+            // @ts-expect-error: private property
+            expect(scdlBatchCli.fileConfigErrors).toContainEqual({ field: "parseParams" });
+        });
+
+        it("pushes error if producerSlug is not valid", () => {
+            jest.mocked(isStringValid).mockReturnValueOnce(false);
+            // @ts-expect-error: private method
+            scdlBatchCli.isParseParams({ producerSlug: 123 });
+            // @ts-expect-error: private property
+            expect(scdlBatchCli.fileConfigErrors).toContainEqual({ field: "producerSlug" });
+        });
+
+        it("pushes error if exportDate is not valid", () => {
+            jest.mocked(isShortISODateValid).mockReturnValueOnce(false);
+            // @ts-expect-error: private method
+            scdlBatchCli.isParseParams({ exportDate: "2025" });
+            // @ts-expect-error: private property
+            expect(scdlBatchCli.fileConfigErrors).toContainEqual({ field: "exportDate" });
+        });
+
+        it.each`
+            parseParams
+            ${{ delimiter: ";", quote: "'" }}
+            ${{ delimiter: ";" }}
+            ${{ quote: "'" }}
+        `("calls validate csv specific args if present", ({ parseParams }) => {
+            // @ts-expect-error: private method
+            scdlBatchCli.isParseParams(parseParams);
+            expect(spyIsCsvArgs).toHaveBeenCalledWith(parseParams);
+        });
+
+        it.each`
+            parseParams
+            ${{ pageName: "Sheet1", rowOffset: 2 }}
+            ${{ pageName: "Sheet1" }}
+            ${{ rowOffset: 2 }}
+        `("calls validate xls specific args if present", ({ parseParams }) => {
+            // @ts-expect-error: private method
+            scdlBatchCli.isParseParams(parseParams);
+            expect(spyIsXlsArgs).toHaveBeenCalledWith(parseParams);
+        });
+
+        // for each if else block
+        it.each`
+            parseParams              | comment
+            ${undefined}             | ${"parseParam is not defined"}
+            ${[]}                    | ${"parseParam an array"}
+            ${{ producerSlug: 123 }} | ${"one of the field is not valid"}
+        `("return false if $comment", ({ parseParams }) => {
+            // only mock one error to enter if block
+            if (parseParams?.producerSlug) jest.mocked(isStringValid).mockReturnValueOnce(false);
+            const expected = false;
+            // @ts-expect-error: private method
+            const actual = scdlBatchCli.isParseParams(parseParams);
+            expect(actual).toEqual(expected);
+        });
+
+        it("return true if it's a valid ScdlParseParams", () => {
+            const expected = true;
+            // @ts-expect-error: private method
+            const actual = scdlBatchCli.isParseParams({ producerSlug: "bretagne", exportDate: "2025-01-15" });
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("loadConfig()", () => {
+        beforeAll(() => {
+            scdlBatchCli = new ScdlBatchCli();
+        });
+
         it("should load config file successfully", () => {
             jest.spyOn(fs, "readFileSync").mockReturnValueOnce(JSON.stringify(validConfigData));
             // @ts-expect-error: protected
@@ -75,191 +377,193 @@ describe("scdl data integration script", () => {
         });
     });
 
-    describe("Test for processFile method", () => {
-        const fileConfig = {
-            name: "donnees-a-integrer1.csv",
-            parseParams: { producerSlug: "producerSlug1", exportDate: "2025-01-13" } as ScdlParseArgs,
-            addProducer: true,
-            producerName: "Test Producer 1",
-            producerSiret: "12345678901",
-        };
+    describe("processFile()", () => {
+        const FILE_PATH = "path-to-file/file.ext";
+        // ScdlBatchCli extends ScdlCli
+        const mockParse = jest.spyOn(ScdlCli.prototype, "parse").mockResolvedValue();
+        const mockParseXls = jest.spyOn(ScdlCli.prototype, "parseXls").mockResolvedValue();
 
-        const fileConfigWrongType = {
-            name: "donnees-a-integrer1.doc",
-            parseParams: { producerSlug: "producerSlug1", exportDate: "2025-01-13" } as ScdlParseXlsArgs,
-            addProducer: true,
-            producerName: "Test Producer 1",
-            producerSiret: "12345678901",
-        };
+        beforeAll(() => {
+            jest.mocked(path.join).mockReturnValue(FILE_PATH);
+            // default case for tests
+            jest.mocked(scdlService.getProducer).mockResolvedValue(null);
+        });
 
-        it("should process file methods correctly with addProducer called with correct params", async () => {
-            // @ts-expect-error: protected
-            await expect(scdlBatchCli.processFile(fileConfig)).resolves.toBeUndefined();
+        beforeEach(() => {
+            scdlBatchCli = new ScdlBatchCli();
+        });
 
-            expect(addProducerMock).toHaveBeenCalledWith(
-                fileConfig.parseParams.producerSlug,
-                fileConfig.producerName,
-                fileConfig.producerSiret,
+        afterAll(() => {
+            mockParse.mockRestore();
+            mockParseXls.mockRestore();
+        });
+
+        it("resolves file config path", () => {
+            // @ts-expect-error:
+            scdlBatchCli.processFile(FILES_CONFIG[0]);
+            expect(path.resolve).toHaveBeenCalledWith(SCDL_FILE_PROCESSING_PATH);
+        });
+
+        describe("with add producer set to true", () => {
+            it("add producer if it does not exist", async () => {
+                // @ts-expect-error:
+                await scdlBatchCli.processFile(FILES_CONFIG[0]);
+                expect(jest.mocked(scdlService.createProducer)).toHaveBeenCalledWith({
+                    slug: FILES_CONFIG[0].parseParams.producerSlug,
+                    name: FILES_CONFIG[0].producerName,
+                    siret: FILES_CONFIG[0].producerSiret,
+                    lastUpdate: expect.any(Date),
+                });
+            });
+
+            it("add an error to the list if producer already exist", async () => {
+                // @ts-expect-error: mock resolve value
+                jest.mocked(scdlService.getProducer).mockResolvedValueOnce({} as MiscScdlProducerEntity);
+                // @ts-expect-error:
+                await scdlBatchCli.processFile({ ...FILES_CONFIG[0] });
+                // @ts-expect-error: test protected property
+                expect(scdlBatchCli.errorList).toContain(
+                    `Producer with slug ${FILES_CONFIG[0].parseParams.producerSlug} already exist. Used with file ${FILES_CONFIG[0].name}`,
+                );
+            });
+        });
+
+        it("calls parse when file type is CSV", async () => {
+            jest.mocked(path.extname).mockReturnValue(`.${FileExtensionEnum.CSV}`);
+            const FILE_CONF = { ...FILES_CONFIG[0] } as ScdlFileProcessingConfig<ScdlParseCsvArgs>;
+            // @ts-expect-error:
+            await scdlBatchCli.processFile(FILE_CONF);
+            expect(scdlBatchCli.parse).toHaveBeenCalledWith(
+                FILE_PATH,
+                FILE_CONF.parseParams.producerSlug,
+                undefined,
+                FILE_CONF.parseParams.delimiter,
+                FILE_CONF.parseParams.quote,
             );
         });
 
-        it("should process file methods correctly with parse method called with correct params", async () => {
-            // @ts-expect-error: protected
-            await expect(scdlBatchCli.processFile(fileConfig)).resolves.toBeUndefined();
-
-            expect(parseMock).toHaveBeenCalledWith(
-                expect.stringContaining(fileConfig.name),
-                fileConfig.parseParams.producerSlug,
-                fileConfig.parseParams.exportDate,
+        it.each`
+            type                      | fileConf
+            ${FileExtensionEnum.XLS}  | ${{ ...FILES_CONFIG[1] }}
+            ${FileExtensionEnum.XLSX} | ${{ ...FILES_CONFIG[1], name: "scdl-import-bretagne-2025.xlsx" }}
+        `("calls parseXls when file type is $type", async ({ type, fileConf }) => {
+            jest.mocked(path.extname).mockReturnValue(`.${type}`);
+            // @ts-expect-error:
+            await scdlBatchCli.processFile(fileConf);
+            expect(scdlBatchCli.parseXls).toHaveBeenCalledWith(
+                FILE_PATH,
+                fileConf.parseParams.producerSlug,
                 undefined,
-                undefined,
+                fileConf.parseParams.pageName,
+                fileConf.parseParams.rowOffset,
             );
         });
 
-        it("should process file methods correctly with parseXls method not to have been called", async () => {
-            // @ts-expect-error: protected
-            await expect(scdlBatchCli.processFile(fileConfig)).resolves.toBeUndefined();
-            expect(parseXlsMock).not.toHaveBeenCalled();
-        });
-
-        it("should catch error", async () => {
-            addProducerMock.mockRejectedValue(new Error("Mocked addProducer error"));
-            // @ts-expect-error: protected
-            await expect(scdlBatchCli.processFile(fileConfig)).resolves.toBeUndefined();
-        });
-
-        it("should not call parse method when addProducer error", async () => {
-            addProducerMock.mockRejectedValue(new Error("Mocked addProducer error"));
-            // @ts-expect-error: protected
-            await expect(scdlBatchCli.processFile(fileConfig)).resolves.toBeUndefined();
-            expect(parseMock).not.toHaveBeenCalled();
-        });
-
-        it("should catch Unsupported file type error", async () => {
-            // @ts-expect-error: protected
-            await expect(scdlBatchCli.processFile(fileConfigWrongType)).resolves.toBeUndefined();
-        });
-
-        it("should not call parse method when wrong file type", async () => {
-            // @ts-expect-error: protected
-            await expect(scdlBatchCli.processFile(fileConfigWrongType)).resolves.toBeUndefined();
-            expect(parseMock).not.toHaveBeenCalled();
-        });
-
-        it("should not call parseXls method when wrong file type", async () => {
-            // @ts-expect-error: protected
-            await expect(scdlBatchCli.processFile(fileConfigWrongType)).resolves.toBeUndefined();
-            expect(parseXlsMock).not.toHaveBeenCalled();
-        });
-
-        it("should catch Producer already exists error", async () => {
-            addProducerMock.mockRejectedValue(new Error("Producer already exists"));
-            // @ts-expect-error: protected
-            await expect(scdlBatchCli.processFile(fileConfig)).resolves.toBeUndefined();
-        });
-
-        it("should call parse method when producer already exists", async () => {
-            addProducerMock.mockRejectedValue(new Error("Producer already exists"));
-            // @ts-expect-error: protected
-            await expect(scdlBatchCli.processFile(fileConfig)).resolves.toBeUndefined();
-            expect(parseMock).toHaveBeenCalledTimes(1);
+        // only test with the extension test case
+        it("add an error in the list if an error is thrown inside try block", async () => {
+            const ERROR_MESSAGE = `Unsupported file type : ${FILE_PATH}`;
+            jest.mocked(path.extname).mockReturnValue(`.json`);
+            const FILE_CONF = FILES_CONFIG[0];
+            // @ts-expect-error:
+            await scdlBatchCli.processFile(FILE_CONF);
+            // @ts-expect-error: access protected property
+            expect(scdlBatchCli.errorList).toContain(
+                `parse data of ${FILE_CONF.parseParams.producerSlug} for file ${FILE_CONF.name} : ${ERROR_MESSAGE}`,
+            );
         });
     });
 
-    describe("main", () => {
-        it("should call ScdlCli methods with correct arguments", async () => {
-            jest.spyOn(fs, "readFileSync").mockReturnValueOnce(JSON.stringify(validConfigData));
-
-            await expect(scdlBatchCli.import()).resolves.toBeUndefined();
-
-            expect(addProducerMock).toHaveBeenCalledTimes(2);
-            expect(addProducerMock).toHaveBeenCalledWith("producerSlug1", "Test Producer 1", "12345678901");
-            expect(addProducerMock).toHaveBeenCalledWith("producerSlug2", "Test Producer 2", "12345678902");
-
-            expect(parseMock).toHaveBeenCalledTimes(3);
-            expect(parseMock).toHaveBeenCalledWith(
-                path.join(SCDL_FILE_PROCESSING_PATH, "donnees-a-integrer1.csv"),
-                "producerSlug1",
-                "2025-01-13",
-                undefined,
-                undefined,
-            );
-            expect(parseMock).toHaveBeenCalledWith(
-                path.join(SCDL_FILE_PROCESSING_PATH, "donnees-a-integrer2.csv"),
-                "producerSlug2",
-                "2025-01-14",
-                undefined,
-                undefined,
-            );
-            expect(parseMock).toHaveBeenCalledWith(
-                path.join(SCDL_FILE_PROCESSING_PATH, "donnees-a-integrer3.csv"),
-                "producerSlug2",
-                "2025-01-15",
-                undefined,
-                undefined,
-            );
-            expect(parseXlsMock).not.toHaveBeenCalled();
-        });
-
-        it("should throw Unexpected token error", async () => {
-            jest.spyOn(fs, "readFileSync").mockImplementationOnce(() => {
-                throw new Error("Unexpected token i in JSON at position 2");
+    describe("import()", () => {
+        // @ts-expect-error: private method
+        const mockIsConfig: jest.SpyInstance<Boolean> = jest.spyOn(ScdlBatchCli.prototype, "isConfig");
+        const mockLoadConfig: jest.SpyInstance<ScdlFileProcessingConfigList> = jest.spyOn(
+            ScdlBatchCli.prototype,
+            // @ts-expect-error: private met"Invalid configuration file: The config does not match the expected structure."hod
+            "loadConfig",
+        );
+        // @ts-expect-error: private method
+        const mockProcessFile: jest.SpyInstance<Promise<void>> = jest.spyOn(ScdlBatchCli.prototype, "processFile");
+        beforeEach(() => {
+            // se default mocks returned value
+            mockIsConfig.mockReturnValue(true);
+            mockLoadConfig.mockReturnValue({
+                files: FILES_CONFIG,
             });
-            await expect(scdlBatchCli.import()).rejects.toThrow("Unexpected token i in JSON at position 2");
+            mockProcessFile.mockResolvedValue();
+            scdlBatchCli = new ScdlBatchCli();
         });
 
-        it("should throw Invalid configuration file error", async () => {
-            const invalidConfigData = {
-                files: [
-                    {
-                        name: "donnees-a-integrer1.csv",
-                        addProducer: true,
-                        producerName: "Test Producer 1",
-                        producerSiret: "12345678901",
-                    },
-                ],
-            };
-            jest.spyOn(fs, "readFileSync").mockReturnValueOnce(JSON.stringify(invalidConfigData));
-            fs.writeFileSync(testFilePath, JSON.stringify(invalidConfigData));
+        afterAll(() => {
+            mockIsConfig.mockRestore();
+            mockLoadConfig.mockRestore();
+            mockProcessFile.mockRestore();
+        });
 
-            await expect(scdlBatchCli.import()).rejects.toThrow(
+        it("loads config", async () => {
+            await scdlBatchCli.import();
+            expect(mockLoadConfig).toHaveBeenCalledTimes(1);
+        });
+
+        it("throw if config file is not valid", () => {
+            mockIsConfig.mockReturnValue(false);
+            expect(() => scdlBatchCli.import()).rejects.toThrow(
                 "Invalid configuration file: The config does not match the expected structure.",
             );
         });
 
-        it("when error with one file, should process continue for other files", async () => {
-            const configData = {
-                files: [
-                    {
-                        name: "donnees-a-integrer1.xlsx",
-                        parseParams: { producerSlug: "producerSlug1", exportDate: "2025-01-13" } as ScdlParseXlsArgs,
-                        addProducer: true,
-                        producerName: "Test Producer 1",
-                        producerSiret: "12345678901",
-                    },
-                    {
-                        name: "donnees-a-integrer2.csv",
-                        parseParams: { producerSlug: "producerSlug2", exportDate: "2025-01-14" } as ScdlParseArgs,
-                        addProducer: true,
-                        producerName: "Test Producer 2",
-                        producerSiret: "12345678902",
-                    },
-                    {
-                        name: "donnees-a-integrer3.csv",
-                        parseParams: { producerSlug: "producerSlug3", exportDate: "2025-01-15" } as ScdlParseArgs,
-                        addProducer: true,
-                        producerName: "Test Producer 3",
-                        producerSiret: "12345678903",
-                    },
-                ],
-            };
-            jest.spyOn(fs, "readFileSync").mockReturnValueOnce(JSON.stringify(configData));
-            parseXlsMock.mockRejectedValue(new Error("Mocked addProducer error"));
+        it("imports each file in the config file", async () => {
+            await scdlBatchCli.import();
+            FILES_CONFIG.map((file, index) => expect(mockProcessFile).toHaveBeenNthCalledWith(index + 1, file));
+        });
 
-            await expect(scdlBatchCli.import()).resolves.toBeUndefined();
-            expect(addProducerMock).toHaveBeenCalledTimes(3);
-            expect(parseMock).toHaveBeenCalledTimes(2);
-            expect(parseXlsMock).toHaveBeenCalledTimes(1);
+        it("throws if one of the processFile() failed", async () => {
+            const error = new Error("SOMETHING WENT WRONG");
+            mockProcessFile.mockRejectedValueOnce(error);
+            await expect(async () => await scdlBatchCli.import()).rejects.toThrow(error);
+        });
+
+        it("logs errors from list", async () => {
+            const spyConsoleLog = jest.spyOn(console, "log");
+            const ERRORS = [
+                `Something went wrong with ${FILES_CONFIG[0].name}`,
+                `Something went wrong with ${FILES_CONFIG[1].name}`,
+            ];
+            // @ts-expect-error: private property
+            scdlBatchCli.errorList = ERRORS;
+            await scdlBatchCli.import();
+            expect(spyConsoleLog).toHaveBeenNthCalledWith(1, "\n---------------Summary of Operations---------------");
+            expect(spyConsoleLog).toHaveBeenNthCalledWith(2, "⚠️ List of Errors :");
+            expect(spyConsoleLog).toHaveBeenNthCalledWith(3, `❌ ${ERRORS[0]}`);
+            expect(spyConsoleLog).toHaveBeenNthCalledWith(4, `❌ ${ERRORS[1]}`);
+            spyConsoleLog.mockRestore();
+        });
+
+        it("displays log when all processing files succeed", async () => {
+            const SUCCESS = [`Success importing ${FILES_CONFIG[0].name}`, `Success importing ${FILES_CONFIG[1].name}`];
+            const spyConsoleLog = jest.spyOn(console, "log");
+            // @ts-expect-error
+            scdlBatchCli.successList = SUCCESS;
+            await scdlBatchCli.import();
+            expect(spyConsoleLog).toHaveBeenNthCalledWith(1, "\n---------------Summary of Operations---------------");
+            expect(spyConsoleLog).toHaveBeenNthCalledWith(2, "🚀 All operations completed successfully! 🎯");
+            spyConsoleLog.mockRestore();
+        });
+
+        it("logs errors and success", async () => {
+            const SUCCESS = [`Success importing ${FILES_CONFIG[0].name}`];
+            const ERRORS = [`Something went wrong with ${FILES_CONFIG[1].name}`];
+            const spyConsoleLog = jest.spyOn(console, "log");
+            // @ts-expect-error
+            scdlBatchCli.successList = SUCCESS;
+            // @ts-expect-error
+            scdlBatchCli.errorList = ERRORS;
+            await scdlBatchCli.import();
+            expect(spyConsoleLog).toHaveBeenNthCalledWith(1, "\n---------------Summary of Operations---------------");
+            expect(spyConsoleLog).toHaveBeenNthCalledWith(2, "✅ list of Success :");
+            expect(spyConsoleLog).toHaveBeenNthCalledWith(3, `➡️ ${SUCCESS[0]}`);
+            expect(spyConsoleLog).toHaveBeenNthCalledWith(4, "⚠️ List of Errors :");
+            expect(spyConsoleLog).toHaveBeenNthCalledWith(5, `❌ ${ERRORS[0]}`);
+            spyConsoleLog.mockRestore();
         });
     });
 });
