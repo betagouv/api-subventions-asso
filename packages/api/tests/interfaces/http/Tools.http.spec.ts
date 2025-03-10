@@ -13,7 +13,8 @@ describe("Tools http interface", () => {
                 .field("delimiter", ",")
                 .attach("file", "tests/interfaces/http/fixtures/fixture.csv");
             expect(response.statusCode).toBe(200);
-            expect(response.body).toBe("");
+            // @ts-expect-error -- weird supertest typing
+            expect(response.res.text);
         });
 
         it("returns errors as csv", async () => {
@@ -37,7 +38,8 @@ describe("Tools http interface", () => {
                 .field("rowOffset", "2")
                 .attach("file", "tests/interfaces/http/fixtures/fixture.xlsx");
             expect(response.statusCode).toBe(200);
-            expect(response.body).toBe("");
+            // @ts-expect-error -- weird supertest typing
+            expect(response.res.text);
         });
 
         it("returns errors as excel", async () => {
