@@ -1,6 +1,7 @@
 <script lang="ts">
     import TableAmountsVsProgramRegion from "./components/TableAmountsVsProgramRegion/TableAmountsVsProgramRegion.svelte";
     import { DataVizController } from "./DataViz.controller";
+    import AmountsVsYear from "./components/AmountsVsYear/AmountsVsYear.svelte";
     import FullPageSpinner from "$lib/components/FullPageSpinner.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
 
@@ -17,14 +18,18 @@
     </Alert>
 
     <div class="fr-container">
-        <div class="fr-grid-row">
+        <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-6">
-                <h2 class="fr-h4 text-center">Montant des subventions que l'Etat a versées</h2>
-
+                <h2 class="fr-h4">Montant des subventions que l'Etat a versées</h2>
                 <TableAmountsVsProgramRegion elements={result} />
             </div>
             <div class="fr-col-6">
-                <h2 class="fr-h4 text-center">Construction graphe en cours</h2>
+                <h2 class="fr-h4">Evolution des subventions attribuées :</h2>
+                <p class="fr-h10">
+                    comparaison de la tendance globale en bleu et de la tendance par région et/ou programme selectionné
+                    en rouge. Attention, les deux courbes n'ont pas la même échelle.
+                </p>
+                <AmountsVsYear elements={result} />
             </div>
         </div>
     </div>
