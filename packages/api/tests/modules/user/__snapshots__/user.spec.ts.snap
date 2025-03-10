@@ -1,34 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`UserController, /user GET /admin/list-users should return UserRequestsSuccessResponse 1`] = `
-Object {
-  "_id": Any<String>,
-  "active": true,
-  "email": "active.user@beta.gouv.fr",
-  "firstName": null,
-  "lastActivityDate": null,
-  "lastName": null,
-  "nbVisits": 3,
-  "profileToComplete": true,
-  "roles": Array [
-    "user",
-  ],
-  "signupAt": Any<String>,
-}
-`;
-
-exports[`UserController, /user POST /admin/roles should reject because role not exist 1`] = `
-Object {
-  "details": Object {
-    "roles.$0": Object {
-      "message": "should be one of the following; ['admin','user','consumer']",
-      "value": "test",
-    },
-  },
-  "message": "Validation Failed",
-}
-`;
-
 exports[`UserController, /user Put /password should reject because password is too weak 1`] = `
 Object {
   "code": 4,
