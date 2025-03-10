@@ -83,7 +83,7 @@ export class UserCrudService {
             roles: sanitizedUser.roles,
             firstName: sanitizedUser.firstName || null,
             lastName: sanitizedUser.lastName || null,
-            profileToComplete: !userObject.agentConnectId,
+            profileToComplete: true,
             lastActivityDate: null,
             agentConnectId: userObject.agentConnectId,
             nbVisits: 0,

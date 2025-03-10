@@ -230,7 +230,7 @@ describe("user crud service", () => {
             await userCrudService.createUser({ ...FUTURE_USER, agentConnectId: "something" });
             const expected = {
                 agentConnectId: "something",
-                profileToComplete: false,
+                profileToComplete: true,
                 active: true,
             };
             const actual = jest.mocked(mockedUserPort.create).mock.calls[0][0];
