@@ -1,8 +1,8 @@
 import { Readable } from "stream";
 import { Controller, FormField, Post, Route, Security, Tags, UploadedFile } from "tsoa";
 import csvSyncStringifier = require("csv-stringify/sync");
-import ScdlGrantParser from "../../modules/providers/scdl/scdl.grant.parser";
 import { BadRequestError } from "../../shared/errors/httpErrors";
+import scdlService from "../../modules/providers/scdl/scdl.service";
 
 @Route("tools")
 @Tags("Tools Controller")
@@ -32,14 +32,14 @@ export class ToolsHttp extends Controller {
     private parseXls(file: Express.Multer.File, pageName?: string, rowOffset: number | string = 0) {
         const parsedRowOffset = typeof rowOffset === "number" ? rowOffset : parseInt(rowOffset);
         const fileContent = file.buffer;
-        const { errors } = ScdlGrantParser.parseExcel(fileContent, pageName, parsedRowOffset);
+        const { errors } = scdlService.parseXls(fileContent, pageName, parsedRowOffset);
         return csvSyncStringifier.stringify(errors, { header: true });
     }
 
     private parseCsv(file: Express.Multer.File, delimiter = ";", quote = '"') {
         const fileContent = file.buffer;
         const parsedQuote = quote === "false" ? false : quote;
-        const { errors } = ScdlGrantParser.parseCsv(fileContent, delimiter, parsedQuote);
+        const { errors } = scdlService.parseCsv(fileContent, delimiter, parsedQuote);
         return csvSyncStringifier.stringify(errors, { header: true });
     }
 }

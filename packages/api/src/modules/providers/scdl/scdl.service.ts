@@ -4,6 +4,7 @@ import miscScdlProducersPort from "../../../dataProviders/db/providers/scdl/misc
 import MiscScdlProducerEntity from "./entities/MiscScdlProducerEntity";
 import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
+import ScdlGrantParser from "./scdl.grant.parser";
 
 export class ScdlService {
     producerNames: string[] = [];
@@ -55,6 +56,14 @@ export class ScdlService {
 
     updateProducer(slug, setObject) {
         return miscScdlProducersPort.update(slug, setObject);
+    }
+
+    parseXls(fileContent: Buffer, pageName?: string, rowOffset = 0) {
+        return ScdlGrantParser.parseExcel(fileContent, pageName, rowOffset);
+    }
+
+    parseCsv(fileContent: Buffer, delimiter = ";", quote: string | boolean = '"') {
+        return ScdlGrantParser.parseCsv(fileContent, delimiter, quote);
     }
 }
 
