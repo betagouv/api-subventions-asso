@@ -78,9 +78,9 @@ describe("Tools test", () => {
 
     describe("parse", () => {
         let spyXls: jest.SpyInstance;
-        const xlsMock = jest.fn();
+        const xlsMock = jest.fn(() => "xls");
         let spyCsv: jest.SpyInstance;
-        const csvMock = jest.fn();
+        const csvMock = jest.fn(() => "csv");
 
         beforeAll(() => {
             // @ts-expect-error -- spy private
