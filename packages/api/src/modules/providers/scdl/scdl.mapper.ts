@@ -41,6 +41,7 @@ const CONVENTION_DATE_PATHS = [
     "DateConvention",
     "datedeConvention",
     "Date convention",
+    "Date - Décision",
 ];
 
 const PERIODE_VERSEMENT_PATHS = [
@@ -158,6 +159,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "N° SIRET attributaire",
                 "iBeneficiaire",
                 "Id bénéficiaire",
+                "SIRET du bénéficiaire",
             ],
         ],
         adapter: v => removeTrailingDotZero(v?.toString()),
@@ -167,12 +169,13 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
         [
             ...getMapperVariants("object"),
             "objet",
+            "Objet",
             "Objet de la convention",
             "Objet du dossier",
             "Objet de la subvention",
             "Objet de l'aide",
             "Objet convention",
-            "Objet",
+            "Nom du Projet",
         ],
     ],
     amount: {
@@ -184,6 +187,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Montant total de la subvention",
                 "Montant voté",
                 "Montant décidé ligne",
+                "Montant accordé",
             ],
         ],
         adapter: value => (value && typeof value === "string" ? parseFloat(value.replace(/[^0-9.]/, "")) : value),
