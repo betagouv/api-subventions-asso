@@ -109,8 +109,9 @@ export class AuthService {
 
     redirectAfterLogin() {
         const redirection = localStorageService.getItem("redirectUrl", null).value;
-        //if connect with proconnect and uncomplete profil - redirection to form
-        if (this.getCurrentUser() && this.getCurrentUser().agentConnectId && this.getCurrentUser().profileToComplete) {
+        // if connect with proconnect and incomplete profil - redirection to form
+        const currentUser = this.getCurrentUser();
+        if (currentUser && currentUser.agentConnectId && currentUser.profileToComplete) {
             return goToUrl("/auth/signup-ac", true, true);
         }
         if (!redirection) return goToUrl("/", true, true);
