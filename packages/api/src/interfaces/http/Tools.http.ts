@@ -23,7 +23,7 @@ export class ToolsHttp extends Controller {
         if (!["csv", "excel"].includes(type)) throw new BadRequestError("import type needs to be 'csv' or 'excel'");
         let resStr = "";
         if (type === "csv") resStr = this.parseCsv(file, delimiter, quote);
-        else if (type === "excel") resStr = this.parseXls(file, pageName, rowOffset);
+        else resStr = this.parseXls(file, pageName, rowOffset);
         this.setHeader(`Content-Type`, "text/csv");
         this.setHeader("Content-Disposition", "attachment");
         return Readable.from(Buffer.from(resStr));
