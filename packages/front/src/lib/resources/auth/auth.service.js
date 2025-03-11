@@ -102,17 +102,18 @@ export class AuthService {
         return goToUrl("/auth/login");
     }
 
+    redirectAfterProConnectLogin(updatedUser) {
+        this.setUserInApp(updatedUser);
+        return this.redirectAfterLogin();
+    }
+
     redirectAfterLogin() {
         const redirection = localStorageService.getItem("redirectUrl", null).value;
-        if (!redirection) {
-            if (
-                this.getCurrentUser() &&
-                this.getCurrentUser().agentConnectId &&
-                this.getCurrentUser().profileToComplete
-            )
-                return goToUrl("/auth/signup-ac", true, true);
-            return goToUrl("/", true, true);
+        //if connect with proconnect and uncomplete profil - redirection to form
+        if (this.getCurrentUser() && this.getCurrentUser().agentConnectId && this.getCurrentUser().profileToComplete) {
+            return goToUrl("/auth/signup-ac", true, true);
         }
+        if (!redirection) return goToUrl("/", true, true);
         localStorageService.removeItem("redirectUrl");
         const { url, setDate } = redirection;
         const soonBefore = new Date();

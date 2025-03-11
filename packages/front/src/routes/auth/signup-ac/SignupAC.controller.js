@@ -1,10 +1,10 @@
 import CollectedDataAlert from "$lib/components/AgentTypeStep/CollectedDataAlert.svelte";
 import AgentTypeStep from "$lib/components/AgentTypeStep/AgentTypeStep.svelte";
 import StructureFormStep from "$lib/components/StructureFormStep/StructureFormStep.svelte";
-import { goToUrl } from "$lib/services/router.service";
 import userService from "$lib/resources/users/user.service";
 import Store from "$lib/core/Store";
 import trackerService from "$lib/services/tracker.service";
+import authService from "$lib/resources/auth/auth.service";
 
 export default class SignupACController {
     constructor() {
@@ -26,9 +26,9 @@ export default class SignupACController {
 
     async onSubmit(values) {
         try {
-            await userService.completeProfile(values);
+            const user = await userService.completeProfile(values);
             trackerService.buttonClickEvent("signup-ac.form.step.submit-success");
-            goToUrl("/?success=ACCOUNT_COMPLETED", true, true);
+            return authService.redirectAfterProConnectLogin(user.data);
         } catch (e) {
             trackerService.buttonClickEvent("signup-ac.form.submit-error", e?.message);
             this.errorMessage.set("Veuillez ré-essayer");
