@@ -1,3 +1,4 @@
+import { Readable } from "stream";
 import { Controller, FormField, Post, Route, Security, Tags, UploadedFile } from "tsoa";
 import csvSyncStringifier = require("csv-stringify/sync");
 import { BadRequestError } from "../../shared/errors/httpErrors";
@@ -19,9 +20,13 @@ export class ToolsHttp extends Controller {
         @FormField() delimiter = ";",
         @FormField() quote = '"',
     ) {
-        if (type === "csv") return this.parseCsv(file, delimiter, quote);
-        else if (type === "excel") return this.parseXls(file, pageName, rowOffset);
-        throw new BadRequestError("import type needs to be 'csv' or 'excel'");
+        if (!["csv", "excel"].includes(type)) throw new BadRequestError("import type needs to be 'csv' or 'excel'");
+        let resStr = "";
+        if (type === "csv") resStr = this.parseCsv(file, delimiter, quote);
+        else resStr = this.parseXls(file, pageName, rowOffset);
+        this.setHeader(`Content-Type`, "text/csv");
+        this.setHeader("Content-Disposition", "attachment");
+        return Readable.from(Buffer.from(resStr));
     }
 
     private parseXls(file: Express.Multer.File, pageName?: string, rowOffset: number | string = 0) {
