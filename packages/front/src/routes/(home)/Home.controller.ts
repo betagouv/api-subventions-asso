@@ -29,10 +29,5 @@ export class HomeController {
                 title: "Bravo, votre mot de passe a bien été modifié !",
                 content: "",
             };
-        if (successKey === "ACCOUNT_COMPLETED")
-            return {
-                title: "Merci d'avoir complété votre profil !",
-                content: "",
-            };
     }
 }
