@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.63.1](https://github.com/betagouv/datasubvention/compare/v0.63.0...v0.63.1) (2025-03-03)
+
+### Bug Fixes
+
+-   **front:** more info modal typo in code ([e051f0b](https://github.com/betagouv/datasubvention/commit/e051f0ba3cf1b7302c7360c3b6fe86a6c4ccd861))
+
 # [0.63.0](https://github.com/betagouv/datasubvention/compare/v0.62.0...v0.63.0) (2025-02-25)
 
 ### Bug Fixes

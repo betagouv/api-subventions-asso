@@ -1,15 +1,20 @@
 import scdlService from "./scdl.service";
 import miscScdlGrantPort from "../../../dataProviders/db/providers/scdl/miscScdlGrant.port";
+
 jest.mock("../../../dataProviders/db/providers/scdl/miscScdlGrant.port");
 import miscScdlProducersPort from "../../../dataProviders/db/providers/scdl/miscScdlProducers.port";
+
 jest.mock("../../../dataProviders/db/providers/scdl/miscScdlProducers.port");
 import { getMD5 } from "../../../shared/helpers/StringHelper";
+
 jest.mock("../../../shared/helpers/StringHelper");
+jest.mock("./scdl.grant.parser");
 
 import MiscScdlGrantFixture from "./__fixtures__/MiscScdlGrant";
 import MiscScdlProducerFixture from "./__fixtures__/MiscScdlProducer";
 import { ObjectId } from "mongodb";
 import { SIRET_STR } from "../../../../tests/__fixtures__/association.fixture";
+import ScdlGrantParser from "./scdl.grant.parser";
 
 describe("ScdlService", () => {
     const UNIQUE_ID = "UNIQUE_ID";
@@ -136,6 +141,29 @@ describe("ScdlService", () => {
                     producerSlug: PRODUCER.slug,
                 },
             ]);
+        });
+    });
+
+    describe.each`
+        service       | parser                        | args
+        ${"parseCsv"} | ${ScdlGrantParser.parseCsv}   | ${[",", "'"]}
+        ${"parseXls"} | ${ScdlGrantParser.parseExcel} | ${["page", 2]}
+    `("parser boilerplate $service", ({ service, parser, args }) => {
+        const FILE_CONTENT = Buffer.from("toto");
+        const RES = { errors: [], entities: [] };
+
+        beforeAll(() => jest.mocked(parser).mockReturnValue(RES));
+        afterAll(() => jest.mocked(parser).mockRestore());
+
+        it("calls parser with given args", () => {
+            scdlService[service](FILE_CONTENT, ...args);
+            expect(parser).toHaveBeenCalledWith(FILE_CONTENT, ...args);
+        });
+
+        it("returns res from parser", () => {
+            const expected = RES;
+            const actual = scdlService[service](FILE_CONTENT, ...args);
+            expect(actual).toBe(expected);
         });
     });
 });
