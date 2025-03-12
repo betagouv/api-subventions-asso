@@ -1,4 +1,4 @@
-import { UniteLegalHistoryRow } from "../@types/UniteLegalHistoryRow";
+import { UniteLegalHistoryRow } from "../@types";
 import UniteLegalNameEntity from "../../../../../entities/UniteLegalNameEntity";
 import { UniteLegalEntrepriseEntity } from "../../../../../entities/UniteLegalEntrepriseEntity";
 import Siren from "../../../../../valueObjects/Siren";
@@ -14,7 +14,7 @@ export class UniteLegaleHistoriqueAdapter {
         );
     }
 
-    private static buildSearchKey(siren: Siren, name: string) {
+    public static buildSearchKey(siren: Siren, name: string) {
         const nameLc = name.toLowerCase();
         let key = `${siren.value} - ${nameLc}`;
         const removeAccents = str => str.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Remove accent on name for futur search
