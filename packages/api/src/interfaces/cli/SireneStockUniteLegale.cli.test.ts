@@ -1,4 +1,4 @@
-import sireneStockUniteLegaleService from "../../modules/providers/sirene/stockUniteLegale/sireneStockUniteLegale.service";
+import sireneStockUniteLegaleFileService from "../../modules/providers/sirene/stockUniteLegale/sireneStockUniteLegale.file.service";
 import SireneStockUniteLegaleCli from "./SireneStockUniteLegale.cli";
 
 describe("SireneStockUniteLegaleCli", () => {
@@ -10,7 +10,7 @@ describe("SireneStockUniteLegaleCli", () => {
         beforeAll(() => {
             sireneCli = new SireneStockUniteLegaleCli();
             mockGetAndParse = jest
-                .spyOn(sireneStockUniteLegaleService, "getAndParse")
+                .spyOn(sireneStockUniteLegaleFileService, "getAndParse")
                 .mockResolvedValue(Promise.resolve());
         });
 
@@ -20,7 +20,7 @@ describe("SireneStockUniteLegaleCli", () => {
 
         it("should call service's getAndParse", async () => {
             await sireneCli.getAndParse();
-            expect(sireneStockUniteLegaleService.getAndParse).toHaveBeenCalled();
+            expect(sireneStockUniteLegaleFileService.getAndParse).toHaveBeenCalled();
         });
     });
 });
