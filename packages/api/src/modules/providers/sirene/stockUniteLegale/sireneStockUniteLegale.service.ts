@@ -11,12 +11,12 @@ export class SireneStockUniteLegaleService {
     public async parse(filePath: string) {
         await SireneStockUniteLegaleParser.parseCsvAndInsert(
             filePath,
-            this.saveBatchAssoData,
-            this.saveBatchNonAssoData,
+            this._saveBatchAssoData,
+            this._saveBatchNonAssoData,
         );
     }
 
-    private async saveBatchAssoData(batchAssosToSave: SireneStockUniteLegaleEntity[]) {
+    public async _saveBatchAssoData(batchAssosToSave: SireneStockUniteLegaleEntity[]) {
         await Promise.all([
             this.insertMany(batchAssosToSave.map(entity => SireneStockUniteLegaleAdapter.entityToDbo(entity))),
             uniteLegalNameService.upsertMany(
@@ -25,7 +25,7 @@ export class SireneStockUniteLegaleService {
         ]);
     }
 
-    private async saveBatchNonAssoData(batchNonAssosToSave: SireneStockUniteLegaleEntity[]) {
+    public async _saveBatchNonAssoData(batchNonAssosToSave: SireneStockUniteLegaleEntity[]) {
         await uniteLegalEntreprisesService.insertManyEntrepriseSiren(
             batchNonAssosToSave.map(e => new UniteLegalEntrepriseEntity(e.siren)),
         );
