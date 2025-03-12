@@ -12,7 +12,7 @@ import uniteLegalEntreprisesService from "../../uniteLegalEntreprises/uniteLegal
 import uniteLegalNameService from "../../uniteLegalName/uniteLegal.name.service";
 
 describe("ParseUniteLegalService", () => {
-    const addAssociationNameMock = jest.spyOn(uniteLegalNameService, "insert").mockImplementation(jest.fn());
+    const addAssociationNameMock = jest.spyOn(uniteLegalNameService, "upsert").mockImplementation(jest.fn());
     const addManyEntrepriseSirenMock = jest
         .spyOn(uniteLegalEntreprisesService, "insertManyEntrepriseSiren")
         .mockImplementation(jest.fn());

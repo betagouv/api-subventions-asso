@@ -89,9 +89,9 @@ describe("uniteLegalNameService", () => {
     });
 
     describe("insert", () => {
-        it("should call uniteLegalNamePort.insert with the provided entity", () => {
-            uniteLegalNameService.insert(fakeUniteLegalNameEntity);
-            expect(mockedUniteLegalNamePort.insert).toHaveBeenCalledWith(fakeUniteLegalNameEntity);
+        it("should call uniteLegalNamePort.upsert with the provided entity", () => {
+            uniteLegalNameService.upsert(fakeUniteLegalNameEntity);
+            expect(mockedUniteLegalNamePort.upsert).toHaveBeenCalledWith(fakeUniteLegalNameEntity);
         });
     });
 });

@@ -50,8 +50,8 @@ export class UniteLegalNameService {
         return (await Promise.all(rnaSirenPromises)).flat();
     }
 
-    insert(entity: UniteLegalNameEntity) {
-        return uniteLegalNamePort.insert(entity);
+    upsert(entity: UniteLegalNameEntity) {
+        return uniteLegalNamePort.upsert(entity);
     }
 }
 

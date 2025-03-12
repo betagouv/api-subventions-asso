@@ -17,7 +17,7 @@ describe("/search", () => {
 
     describe("/associations/{input}", () => {
         beforeEach(async () => {
-            Promise.all(AssociationNameFixture.map(fixture => uniteLegalNamePort.insert(fixture)));
+            Promise.all(AssociationNameFixture.map(fixture => uniteLegalNamePort.upsert(fixture)));
         });
 
         it("should return 200", async () => {

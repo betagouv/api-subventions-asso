@@ -94,7 +94,7 @@ export class UniteLegalParseService {
     private async _saveAssociations(rows: UniteLegalHistoryRow[]) {
         for (const row of rows) {
             const entity = UniteLegaleHistoriqueAdapter.rowToUniteLegalNameEntity(row);
-            await uniteLegalNameService.insert(entity);
+            await uniteLegalNameService.upsert(entity);
         }
     }
 
