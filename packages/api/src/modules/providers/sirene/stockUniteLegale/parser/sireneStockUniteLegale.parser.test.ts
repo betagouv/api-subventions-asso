@@ -3,9 +3,7 @@ import fs, { createReadStream, ReadStream } from "fs";
 import { parse } from "csv-parse";
 import { DTOS, DBOS, ENTITIES } from "../../__fixtures__/sireneStockUniteLegale.fixture";
 import SireneStockUniteLegaleAdapter from "../adapter/sireneStockUniteLegale.adapter";
-import sireneStockUniteLegaleFileService from "../sireneStockUniteLegale.file.service";
-import uniteLegalEntreprisesService from "../../../uniteLegalEntreprises/uniteLegal.entreprises.service";
-import { UniteLegalEntrepriseEntity } from "../../../../../entities/UniteLegalEntrepriseEntity";
+import sireneStockUniteLegaleService from "../sireneStockUniteLegale.service";
 
 jest.mock("fs", () => {
     const actualFs = jest.requireActual("fs");
@@ -18,7 +16,7 @@ jest.mock("fs", () => {
 
 jest.mock("csv-parse");
 jest.mock("../adapter/sireneStockUniteLegale.adapter");
-jest.mock("../sireneStockUniteLegale.file.service");
+jest.mock("../sireneStockUniteLegale.service");
 jest.mock("../../../uniteLegalEntreprises/uniteLegal.entreprises.service");
 jest.mock("../../../../../entities/UniteLegalEntrepriseEntity");
 
@@ -54,11 +52,15 @@ describe("SireneStockUniteLegaleParser", () => {
         let mockIsCorrect: jest.SpyInstance;
         let filePath = "file";
         let mockStream: ReadStream;
+
+        const mockSaveNonAsso = jest.fn();
+        const mockSaveAsso = jest.fn();
+
         beforeAll(() => {
             mockFilePathValidator = jest.spyOn(SireneStockUniteLegaleParser, "filePathValidator").mockReturnValue(true);
             jest.mocked(SireneStockUniteLegaleAdapter.dtoToEntity).mockReturnValue(ENTITIES[0]);
             jest.mocked(SireneStockUniteLegaleAdapter.entityToDbo).mockReturnValue(DBOS[0]);
-            jest.mocked(sireneStockUniteLegaleFileService.insertMany).mockImplementation(jest.fn());
+            jest.mocked(sireneStockUniteLegaleService.insertMany).mockImplementation(jest.fn());
             mockStream = {
                 pipe: jest.fn().mockReturnThis(),
                 on: jest.fn().mockImplementation((event, cb) => {
@@ -101,71 +103,58 @@ describe("SireneStockUniteLegaleParser", () => {
         });
 
         it("should call filePathValidator", async () => {
-            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
+            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath, mockSaveAsso, mockSaveNonAsso);
             expect(mockFilePathValidator).toHaveBeenCalledWith(filePath);
         });
 
         it("should call fs.createReadStream with the filePath", async () => {
-            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
+            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath, mockSaveAsso, mockSaveNonAsso);
             expect(fs.createReadStream).toHaveBeenCalledWith(filePath);
         });
 
         it("should call parse", async () => {
-            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
+            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath, mockSaveAsso, mockSaveNonAsso);
             expect(parse).toHaveBeenCalledTimes(1);
         });
 
         it("should call isCorrect", async () => {
-            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
+            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath, mockSaveAsso, mockSaveNonAsso);
             expect(mockIsCorrect).toHaveBeenCalledTimes(DTOS.length);
         });
 
         it("should call isAsso", async () => {
-            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
+            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath, mockSaveAsso, mockSaveNonAsso);
             expect(mockIsAsso).toHaveBeenCalledTimes(DTOS.length - 1); // one is not correct
         });
 
-        it("should call sireneStockUniteLegaleFileService.insertMany once", async () => {
+        it("should call saveAsso once", async () => {
             // 1 is equal to the number of batches + 1 computes as Math.floor(NUMBER_DTOS_BEING_ASSOCIATIONS / 1000) + 1
-            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
-            expect(sireneStockUniteLegaleFileService.insertMany).toHaveBeenCalledTimes(1);
-        });
-
-        it("should call entityToDbo for assos", async () => {
-            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
-            expect(SireneStockUniteLegaleAdapter.entityToDbo).toHaveBeenCalledTimes(NUMBER_DTOS_BEING_ASSOCIATIONS);
-        });
-
-        it("should call dtoToEntity for assos", async () => {
-            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
-            expect(SireneStockUniteLegaleAdapter.dtoToEntity).toHaveBeenCalledTimes(NUMBER_DTOS_BEING_ASSOCIATIONS);
+            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath, mockSaveAsso, mockSaveNonAsso);
+            expect(mockSaveAsso).toHaveBeenCalledTimes(1);
         });
 
         it("should call uniteLegalEntreprisesService.insertManyEntrepriseSiren once", async () => {
             // 1 is equal to the number of batches + 1 computes as Math.floor(NUMBER_DTOS_BEING_ASSOCIATIONS / 1000) + 1
-            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
-            expect(uniteLegalEntreprisesService.insertManyEntrepriseSiren).toHaveBeenCalledTimes(1);
-        });
-
-        it("should call dtoToEntity for non-assos", async () => {
-            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
-            expect(UniteLegalEntrepriseEntity.prototype.constructor).toHaveBeenCalledTimes(
-                NUMBER_DTOS_TO_SAVE - NUMBER_DTOS_BEING_ASSOCIATIONS,
-            );
+            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath, mockSaveAsso, mockSaveNonAsso);
+            expect(mockSaveNonAsso).toHaveBeenCalledTimes(1);
         });
 
         it("should call stream.pause", async () => {
-            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
+            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath, mockSaveAsso, mockSaveNonAsso);
             expect(mockStream.pause).toHaveBeenCalledTimes(NUMBER_DTOS_TO_SAVE);
         });
 
         it("should call stream.resume", async () => {
-            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
+            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath, mockSaveAsso, mockSaveNonAsso);
             expect(mockStream.resume).toHaveBeenCalledTimes(NUMBER_DTOS_TO_SAVE);
         });
 
         it("should return undefined if no error occurs", async () => {
-            const result = await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
+            const result = await SireneStockUniteLegaleParser.parseCsvAndInsert(
+                filePath,
+                mockSaveAsso,
+                mockSaveNonAsso,
+            );
             expect(result).toBe(undefined);
         });
 
@@ -176,7 +165,7 @@ describe("SireneStockUniteLegaleParser", () => {
                 }
                 return mockStream;
             });
-            const result = SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
+            const result = SireneStockUniteLegaleParser.parseCsvAndInsert(filePath, mockSaveAsso, mockSaveNonAsso);
             await expect(result).rejects.toThrowError("error");
         });
     });

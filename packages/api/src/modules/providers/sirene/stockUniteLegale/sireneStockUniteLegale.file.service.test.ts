@@ -1,11 +1,10 @@
 import sireneStockUniteLegaleFileService from "./sireneStockUniteLegale.file.service";
 import sireneStockUniteLegaleApiPort from "../../../../dataProviders/api/sirene/sireneStockUniteLegale.port";
-import sireneStockUniteLegaleDbPort from "../../../../dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.port";
 import { Readable } from "stream";
 import fs from "fs";
 import StreamZip from "node-stream-zip";
 import SireneStockUniteLegaleParser from "./parser/sireneStockUniteLegale.parser";
-import { SireneUniteLegaleDbo } from "./@types/SireneUniteLegaleDbo";
+import sireneStockUniteLegaleService from "./sireneStockUniteLegale.service";
 
 jest.mock("node-stream-zip", () => {
     const mockExtract = jest.fn();
@@ -18,6 +17,7 @@ jest.mock("node-stream-zip", () => {
         })),
     };
 });
+jest.mock("./sireneStockUniteLegale.service");
 
 const ZIP_PATH = "path/to/zip";
 const DIRECTORY_PATH = "path/to/destination";
@@ -81,7 +81,7 @@ describe("SireneStockUniteLegaleService", () => {
 
         it("should call parseCsvAndInsert", async () => {
             await sireneStockUniteLegaleFileService.getAndParse();
-            expect(parseCsvAndInsertMock).toHaveBeenCalledWith(
+            expect(sireneStockUniteLegaleService.parse).toHaveBeenCalledWith(
                 // @ts-expect-error : private variable
                 sireneStockUniteLegaleFileService.directory_path + "/StockUniteLegale_utf8.csv",
             );
@@ -219,38 +219,6 @@ describe("SireneStockUniteLegaleService", () => {
             sireneStockUniteLegaleFileService.deleteTemporaryFolder();
 
             expect(fs.rmSync).toHaveBeenCalledWith(DIRECTORY_PATH, { recursive: true });
-        });
-    });
-
-    describe("insertOne", () => {
-        let insertOneMock: jest.SpyInstance;
-        beforeAll(() => {
-            insertOneMock = jest.spyOn(sireneStockUniteLegaleDbPort, "insertOne").mockImplementation(jest.fn());
-        });
-        afterAll(() => {
-            jest.restoreAllMocks();
-        });
-
-        it("should call insertOne", async () => {
-            const dbo = { siren: "123456789" } as unknown as SireneUniteLegaleDbo;
-            await sireneStockUniteLegaleFileService.insertOne(dbo);
-            expect(insertOneMock).toHaveBeenCalledWith(dbo);
-        });
-    });
-
-    describe("insertMany", () => {
-        let insertManyMock: jest.SpyInstance;
-        beforeAll(() => {
-            insertManyMock = jest.spyOn(sireneStockUniteLegaleDbPort, "insertMany").mockImplementation(jest.fn());
-        });
-        afterAll(() => {
-            jest.restoreAllMocks();
-        });
-
-        it("should call insertMany", async () => {
-            const dbos = [{ siren: "123456789" }] as unknown as SireneUniteLegaleDbo[];
-            await sireneStockUniteLegaleFileService.insertMany(dbos);
-            expect(insertManyMock).toHaveBeenCalledWith(dbos);
         });
     });
 });
