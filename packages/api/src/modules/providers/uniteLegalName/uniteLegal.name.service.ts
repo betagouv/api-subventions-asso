@@ -53,6 +53,10 @@ export class UniteLegalNameService {
     upsert(entity: UniteLegalNameEntity) {
         return uniteLegalNamePort.upsert(entity);
     }
+
+    upsertMany(entities: UniteLegalNameEntity[]) {
+        return uniteLegalNamePort.upsertMany(entities);
+    }
 }
 
 const uniteLegalNameService = new UniteLegalNameService();

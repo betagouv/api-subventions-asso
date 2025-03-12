@@ -1,3 +1,4 @@
+import { AnyBulkWriteOperation } from "mongodb";
 import UniteLegalNameEntity from "../../../entities/UniteLegalNameEntity";
 import MongoPort from "../../../shared/MongoPort";
 import Siren from "../../../valueObjects/Siren";
@@ -41,6 +42,20 @@ export class UniteLegalNamePort extends MongoPort<UniteLegalNameDbo> {
         return this.collection.updateOne({ searchKey: entity.searchKey }, UniteLegalNameAdapter.toDbo(entity), {
             upsert: true,
         });
+    }
+
+    public upsertMany(entities: UniteLegalNameEntity[]) {
+        const operations = entities.map(
+            e =>
+                ({
+                    updateOne: {
+                        filter: { searchKey: e.searchKey },
+                        update: { $set: UniteLegalNameAdapter.toDbo(e) },
+                        upsert: true,
+                    },
+                } as AnyBulkWriteOperation<UniteLegalNameDbo>),
+        );
+        return this.collection.bulkWrite(operations);
     }
 }
 
