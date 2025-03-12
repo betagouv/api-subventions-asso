@@ -18,4 +18,11 @@ describe("SireneStockUniteLegaleAdapter", () => {
             expect(actual).toEqual({ ...expected, _id: expect.any(ObjectId) });
         });
     });
+
+    describe("entityToUniteLegaleNameEntity", () => {
+        it("should return a SireneStockUniteLegaleEntity", () => {
+            const actual = SireneStockUniteLegaleAdapter.entityToUniteLegaleNameEntity(ENTITIES[0]);
+            expect(actual).toMatchSnapshot();
+        });
+    });
 });
