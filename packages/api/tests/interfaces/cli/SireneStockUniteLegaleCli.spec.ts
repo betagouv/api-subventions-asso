@@ -25,12 +25,13 @@ describe("SireneStockUniteLegaleCli", () => {
     let cli = new SireneStockUniteLegaleCli();
     describe("parse", () => {
         it("should persist sirene data", async () => {
-            await cli.parse();
+            await cli.getAndParse();
             // @ts-expect-error: access protected for test
             const data = (await sireneStockUniteLegaleDbPort.collection.find({}).toArray()).map(object => ({
                 ...object,
                 _id: expect.any(ObjectId),
             }));
+            // TODO check sirene
 
             expect(data).toMatchSnapshot();
         });

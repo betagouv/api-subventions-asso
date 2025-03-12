@@ -3,15 +3,13 @@ import fs from "fs";
 import { parse } from "csv-parse";
 import SireneUniteLegaleDto from "../@types/SireneUniteLegaleDto";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../../shared/LegalCategoriesAccepted";
-import sireneStockUniteLegaleService from "../sireneStockUniteLegale.service";
 import SireneStockUniteLegaleAdapter from "../adapter/sireneStockUniteLegale.adapter";
 import Siren from "../../../../../valueObjects/Siren";
 import { SireneStockUniteLegaleEntity } from "../../../../../entities/SireneStockUniteLegaleEntity";
 import { UniteLegalEntrepriseEntity } from "../../../../../entities/UniteLegalEntrepriseEntity";
-import uniteLegalEntreprisesService from "../../../uniteLegalEntreprises/uniteLegal.entreprises.service";
 
 export default class SireneStockUniteLegaleParser {
-    static async parseCsvAndInsert(filePath: string): Promise<void> {
+    static async parseCsvAndInsert(filePath: string, saveBatchAssoData, saveBatchNonAssoData): Promise<void> {
         this.filePathValidator(filePath);
 
         console.info("\nStart parsing file: ", filePath);
@@ -29,6 +27,7 @@ export default class SireneStockUniteLegaleParser {
             let batchAssosToSave: SireneStockUniteLegaleEntity[] = [];
             let batchNonAssos: UniteLegalEntrepriseEntity[] = [];
             let batchNonAssosToSave: UniteLegalEntrepriseEntity[] = [];
+
             const stream = fs.createReadStream(filePath);
 
             stream
@@ -37,23 +36,20 @@ export default class SireneStockUniteLegaleParser {
                     currentRow++;
                     if (!this.isCorrect(data)) return;
                     stream.pause();
+                    const entity = SireneStockUniteLegaleAdapter.dtoToEntity(data);
                     if (this.isAsso(data)) {
-                        const entity = SireneStockUniteLegaleAdapter.dtoToEntity(data);
                         batchAssos.push(entity);
                         if (batchAssos.length === 1000) {
                             batchAssosToSave = batchAssos;
                             batchAssos = [];
-                            await sireneStockUniteLegaleService.insertMany(
-                                batchAssosToSave.map(entity => SireneStockUniteLegaleAdapter.entityToDbo(entity)),
-                            );
+                            await saveBatchAssoData(batchAssosToSave);
                         }
                     } else {
-                        const entity = new UniteLegalEntrepriseEntity(new Siren(data.siren));
                         batchNonAssos.push(entity);
                         if (batchNonAssos.length === 1000) {
                             batchNonAssosToSave = batchNonAssos;
                             batchNonAssos = [];
-                            await uniteLegalEntreprisesService.insertManyEntrepriseSiren(batchNonAssosToSave);
+                            await saveBatchNonAssoData(batchNonAssosToSave);
                         }
                     }
                     stream.resume();
@@ -61,13 +57,8 @@ export default class SireneStockUniteLegaleParser {
                 .on("end", async () => {
                     clearInterval(interval);
 
-                    if (batchAssos.length > 0)
-                        await sireneStockUniteLegaleService.insertMany(
-                            batchAssos.map(entity => SireneStockUniteLegaleAdapter.entityToDbo(entity)),
-                        );
-
-                    if (batchNonAssos.length > 0)
-                        await uniteLegalEntreprisesService.insertManyEntrepriseSiren(batchNonAssosToSave);
+                    if (batchAssos.length > 0) await saveBatchAssoData(batchAssos);
+                    if (batchNonAssos.length > 0) await saveBatchNonAssoData(batchNonAssos);
 
                     console.info("Finished parsing file.");
                     resolve();
