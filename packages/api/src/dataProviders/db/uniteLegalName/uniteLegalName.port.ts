@@ -39,9 +39,13 @@ export class UniteLegalNamePort extends MongoPort<UniteLegalNameDbo> {
     }
 
     upsert(entity: UniteLegalNameEntity) {
-        return this.collection.updateOne({ searchKey: entity.searchKey }, UniteLegalNameAdapter.toDbo(entity), {
-            upsert: true,
-        });
+        return this.collection.updateOne(
+            { searchKey: entity.searchKey },
+            { $set: UniteLegalNameAdapter.toDbo(entity) },
+            {
+                upsert: true,
+            },
+        );
     }
 
     public upsertMany(entities: UniteLegalNameEntity[]) {
