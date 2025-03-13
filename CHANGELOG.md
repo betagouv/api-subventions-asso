@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.64.0](https://github.com/betagouv/api-subventions-asso/compare/v0.63.1...v0.64.0) (2025-03-13)
+
+### Bug Fixes
+
+-   **api:** [#3239](https://github.com/betagouv/api-subventions-asso/issues/3239) detect scdl issues returns text/csv ([#3234](https://github.com/betagouv/api-subventions-asso/issues/3234)) ([428d312](https://github.com/betagouv/api-subventions-asso/commit/428d3127445198b717aa4e07f5b8b65e1672e5ee))
+
+### Features
+
+-   **api, dto, front:** [#3146](https://github.com/betagouv/api-subventions-asso/issues/3146) redirect proconnect ([#3223](https://github.com/betagouv/api-subventions-asso/issues/3223)) ([d142f3a](https://github.com/betagouv/api-subventions-asso/commit/d142f3aa1c8fdf5d50dbf9adabfefd63d10c8371))
+-   **api:** [#3163](https://github.com/betagouv/api-subventions-asso/issues/3163) add Oise specific mapping ([#3245](https://github.com/betagouv/api-subventions-asso/issues/3245)) ([f0e643a](https://github.com/betagouv/api-subventions-asso/commit/f0e643af8517927e234948228d2d316c10cd4b1f))
+-   **front:** [#3161](https://github.com/betagouv/api-subventions-asso/issues/3161) create graph Amount vs year ([#3228](https://github.com/betagouv/api-subventions-asso/issues/3228)) ([b619e5c](https://github.com/betagouv/api-subventions-asso/commit/b619e5c5d483e11eb102685c022e067f605f9156))
+
 ## [0.63.1](https://github.com/betagouv/api-subventions-asso/compare/v0.63.0...v0.63.1) (2025-03-03)
 
 ### Bug Fixes
