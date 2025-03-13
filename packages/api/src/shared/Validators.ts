@@ -1,3 +1,5 @@
+import { shortISORegExp } from "./helpers/DateHelper";
+
 export function isAssociationName(name: string): boolean {
     return typeof name === "string" && name.length != 0;
 }
@@ -28,7 +30,22 @@ export function areDates(dates: unknown[]) {
 }
 
 export function areStringsValid(strings: unknown[]) {
-    return strings.every(s => typeof s === "string" && s.length != 0);
+    return strings.every(s => isStringValid(s));
+}
+
+export function isStringValid(str, options?: { acceptEmpty: boolean }) {
+    if (options && options.acceptEmpty) return typeof str === "string";
+    return !!str && typeof str === "string" && str.length != 0;
+}
+
+export function isBooleanValid(bool) {
+    if (typeof bool === "boolean") return true;
+    if (typeof bool === "string" && ["false", "true"].includes(bool)) return true;
+    return false;
+}
+
+export function isShortISODateValid(date) {
+    return !!date && shortISORegExp.test(date);
 }
 
 export function areNumbersValid(numbers: unknown[]) {

@@ -71,7 +71,7 @@ export default class ScdlCli {
     }
 
     private async persistEntities(entities: ScdlStorableGrant[], producerSlug: string) {
-        if (!entities) throw new Error("No entities could be created from this file");
+        if (!entities || !entities.length) throw new Error("No entities could be created from this file");
 
         console.log(`start persisting ${entities.length} grants`);
         let duplicates: MiscScdlGrantEntity[] = [];
