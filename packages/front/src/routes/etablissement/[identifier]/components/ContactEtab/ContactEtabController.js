@@ -49,7 +49,7 @@ export default class ContactEtabController {
     download() {
         downloadCsv(
             buildCsv(
-                this.getHeaders(),
+                this.headers,
                 this._contacts.map(contact => Object.values(contact)),
             ),
             this._buildCsvName(),
