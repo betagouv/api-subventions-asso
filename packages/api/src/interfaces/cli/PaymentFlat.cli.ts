@@ -19,8 +19,14 @@ export default class PaymentFlatCli extends CliController {
     async init() {
         if (await paymentsFlatService.isCollectionInitialized())
             throw new Error("DB already initialized, used resyncExercice instead");
+        const START_YEAR = 2017;
+        const END_YEAR = new Date().getFullYear();
+        for (let year = START_YEAR; year <= END_YEAR; year++) {
+            this.logger.logIC(`init payment flat collection for exercice ${year}`);
+            await paymentsFlatService.updatePaymentsFlatCollection(year);
+        }
 
-        this.logger.logIC("Create all payment flat collection");
-        return paymentsFlatService.init();
+        // this.logger.logIC("Create all payment flat collection");
+        // return paymentsFlatService.init();
     }
 }
