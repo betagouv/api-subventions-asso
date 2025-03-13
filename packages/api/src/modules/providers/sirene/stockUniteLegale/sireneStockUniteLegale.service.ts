@@ -11,8 +11,8 @@ export class SireneStockUniteLegaleService {
     public async parse(filePath: string) {
         await SireneStockUniteLegaleParser.parseCsvAndInsert(
             filePath,
-            this._saveBatchAssoData,
-            this._saveBatchNonAssoData,
+            this._saveBatchAssoData.bind(this),
+            this._saveBatchNonAssoData.bind(this),
         );
     }
 
