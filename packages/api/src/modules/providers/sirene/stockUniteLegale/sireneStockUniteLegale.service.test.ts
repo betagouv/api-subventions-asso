@@ -1,11 +1,26 @@
-import sireneStockUniteLegaleService from "./sireneStockUniteLegale.service";
-import sireneStockUniteLegaleApiPort from "../../../../dataProviders/api/sirene/sireneStockUniteLegale.port";
 import sireneStockUniteLegaleDbPort from "../../../../dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.port";
-import { Readable } from "stream";
-import fs from "fs";
-import StreamZip from "node-stream-zip";
-import SireneStockUniteLegaleParser from "./parser/sireneStockUniteLegale.parser";
 import { SireneUniteLegaleDbo } from "./@types/SireneUniteLegaleDbo";
+import sireneStockUniteLegaleService from "./sireneStockUniteLegale.service";
+import { SireneStockUniteLegaleEntity } from "../../../../entities/SireneStockUniteLegaleEntity";
+import UniteLegalNameEntity from "../../../../entities/UniteLegalNameEntity";
+import SireneStockUniteLegaleAdapter from "./adapter/sireneStockUniteLegale.adapter";
+import uniteLegalNameService from "../../uniteLegalName/uniteLegal.name.service";
+import { UniteLegalEntrepriseEntity } from "../../../../entities/UniteLegalEntrepriseEntity";
+import uniteLegalEntreprisesService from "../../uniteLegalEntreprises/uniteLegal.entreprises.service";
+import { InsertManyResult } from "mongodb";
+
+const mockUniteLegalEntrepriseConstructor = jest.fn();
+
+jest.mock("./adapter/sireneStockUniteLegale.adapter");
+jest.mock("../../uniteLegalEntreprises/uniteLegal.entreprises.service");
+jest.mock("../../uniteLegalName/uniteLegal.name.service");
+jest.mock("../../../../entities/UniteLegalEntrepriseEntity", () => ({
+    UniteLegalEntrepriseEntity: class Mock {
+        constructor(public i) {
+            mockUniteLegalEntrepriseConstructor(i);
+        }
+    },
+}));
 
 jest.mock("node-stream-zip", () => {
     const mockExtract = jest.fn();
@@ -19,8 +34,6 @@ jest.mock("node-stream-zip", () => {
     };
 });
 
-const ZIP_PATH = "path/to/zip";
-const DIRECTORY_PATH = "path/to/destination";
 jest.mock("fs", () => {
     const actualFs = jest.requireActual("fs");
     return {
@@ -33,195 +46,6 @@ jest.mock("fs", () => {
 });
 
 describe("SireneStockUniteLegaleService", () => {
-    describe("getOrCreateDirectory", () => {
-        it("should check if the directory exists", () => {
-            // @ts-expect-error : we are testing a private method
-            sireneStockUniteLegaleService.getOrCreateDirectory();
-            // @ts-expect-error : private variable
-            expect(fs.existsSync).toHaveBeenCalledWith(sireneStockUniteLegaleService.directory_path);
-        });
-
-        it("should create a directory if it does not exist", () => {
-            jest.mocked(fs.existsSync).mockReturnValueOnce(false);
-            // @ts-expect-error : we are testing a private method
-            sireneStockUniteLegaleService.getOrCreateDirectory();
-            expect(fs.mkdtempSync).toHaveBeenCalledWith(expect.stringContaining("/tmpSirene"));
-        });
-
-        it("should not create a directory if it exists", () => {
-            jest.mocked(fs.existsSync).mockReturnValueOnce(true);
-            // @ts-expect-error : we are testing a private method
-            sireneStockUniteLegaleService.getOrCreateDirectory();
-            expect(fs.mkdtempSync).not.toHaveBeenCalled();
-        });
-    });
-
-    describe("getAndParse", () => {
-        let getExtractAndSaveFilesMock: jest.SpyInstance;
-        let parseCsvAndInsertMock: jest.SpyInstance;
-        let deleteTemporaryFolderMock: jest.SpyInstance;
-        beforeAll(() => {
-            getExtractAndSaveFilesMock = jest
-                .spyOn(sireneStockUniteLegaleService, "getExtractAndSaveFiles")
-                .mockResolvedValue();
-            parseCsvAndInsertMock = jest.spyOn(SireneStockUniteLegaleParser, "parseCsvAndInsert").mockResolvedValue();
-            deleteTemporaryFolderMock = jest
-                .spyOn(sireneStockUniteLegaleService, "deleteTemporaryFolder")
-                .mockReturnValue();
-        });
-
-        afterAll(() => {
-            jest.restoreAllMocks();
-        });
-
-        it("should call getExtractAndSaveFiles", async () => {
-            await sireneStockUniteLegaleService.getAndParse();
-            expect(getExtractAndSaveFilesMock).toHaveBeenCalledTimes(1);
-        });
-
-        it("should call parseCsvAndInsert", async () => {
-            await sireneStockUniteLegaleService.getAndParse();
-            expect(parseCsvAndInsertMock).toHaveBeenCalledWith(
-                // @ts-expect-error : private variable
-                sireneStockUniteLegaleService.directory_path + "/StockUniteLegale_utf8.csv",
-            );
-        });
-
-        it("should call deleteTemporaryFolder", async () => {
-            await sireneStockUniteLegaleService.getAndParse();
-            expect(deleteTemporaryFolderMock).toHaveBeenCalledTimes(1);
-        });
-    });
-
-    describe("getAndSaveZip", () => {
-        let getZipMock: jest.SpyInstance;
-        beforeAll(() => {
-            getZipMock = jest.spyOn(sireneStockUniteLegaleApiPort, "getZip").mockResolvedValue({
-                data: new Readable({
-                    read() {
-                        this.push("chunk1");
-                        this.push("chunk2");
-                        this.push(null);
-                    },
-                }),
-                status: 200,
-                statusText: "OK",
-            });
-
-            const mockFileStream = {
-                write: jest.fn(),
-                end: jest.fn(),
-                on: jest.fn((event, callback) => {
-                    if (event === "finish") {
-                        setImmediate(() => {
-                            callback();
-                        });
-                    } else if (event === "error") {
-                        setImmediate(() => {
-                            callback(new Error("simulated error during writing"));
-                        });
-                    }
-                }),
-                emit: jest.fn(),
-
-                removeListener: jest.fn(),
-                listenerCount: jest.fn(),
-                once: jest.fn(),
-                close: jest.fn(),
-            };
-
-            (fs.createWriteStream as jest.Mock).mockReturnValue(mockFileStream);
-        });
-
-        afterAll(() => {
-            jest.clearAllMocks();
-            jest.restoreAllMocks();
-        });
-
-        it("should call createWriteStream", async () => {
-            await sireneStockUniteLegaleService.getAndSaveZip();
-            expect(fs.createWriteStream).toHaveBeenCalledWith(expect.stringContaining("SireneStockUniteLegale.zip"));
-        });
-
-        it("should call getZip", async () => {
-            await sireneStockUniteLegaleService.getAndSaveZip();
-            expect(sireneStockUniteLegaleApiPort.getZip).toHaveBeenCalledTimes(1);
-        });
-
-        it("should download and write the data to the file without errors", async () => {
-            const acutal = await sireneStockUniteLegaleService.getAndSaveZip();
-            expect(acutal).toBe("finish");
-        });
-
-        it("should throw an error if the response data emits an error", async () => {
-            getZipMock.mockResolvedValueOnce({
-                data: new Readable({
-                    read() {
-                        this.emit("error", new Error("simulated error during reading"));
-                    },
-                }),
-                status: 300,
-                statusText: "Not ok",
-            });
-            await expect(sireneStockUniteLegaleService.getAndSaveZip()).rejects.toThrow(
-                "simulated error during reading",
-            );
-        });
-
-        it("should throw an error if the file emits an error", async () => {
-            const mockFileStream = {
-                write: jest.fn(),
-                end: jest.fn(),
-                on: jest.fn((event, callback) => {
-                    if (event === "error") {
-                        setImmediate(() => {
-                            callback(new Error("simulated error during writing"));
-                        });
-                    }
-                }),
-                emit: jest.fn(),
-
-                removeListener: jest.fn(),
-                listenerCount: jest.fn(),
-                once: jest.fn(),
-                close: jest.fn(),
-            };
-
-            (fs.createWriteStream as jest.Mock).mockReturnValue(mockFileStream);
-
-            await expect(sireneStockUniteLegaleService.getAndSaveZip()).rejects.toThrow(
-                "simulated error during writing",
-            );
-        });
-    });
-
-    describe("decompressFolder", () => {
-        it("should call StreamZip", async () => {
-            await sireneStockUniteLegaleService.decompressFolder(ZIP_PATH, DIRECTORY_PATH);
-            expect(StreamZip.async).toHaveBeenCalledWith({ file: ZIP_PATH });
-        });
-
-        it("should call extract", async () => {
-            await sireneStockUniteLegaleService.decompressFolder(ZIP_PATH, DIRECTORY_PATH);
-            expect(StreamZip.async).toHaveBeenCalledWith({ file: ZIP_PATH });
-        });
-
-        it("should call close", async () => {
-            await sireneStockUniteLegaleService.decompressFolder(ZIP_PATH, DIRECTORY_PATH);
-            expect(StreamZip.async).toHaveBeenCalledWith({ file: ZIP_PATH });
-        });
-    });
-
-    describe("deleteTemporaryFolder", () => {
-        it("should call fs.rmdirSync", () => {
-            // @ts-expect-error : private variable
-            sireneStockUniteLegaleService.directory_path = DIRECTORY_PATH;
-            sireneStockUniteLegaleService.deleteTemporaryFolder();
-
-            expect(fs.rmSync).toHaveBeenCalledWith(DIRECTORY_PATH, { recursive: true });
-        });
-    });
-
     describe("insertOne", () => {
         let insertOneMock: jest.SpyInstance;
         beforeAll(() => {
@@ -251,6 +75,69 @@ describe("SireneStockUniteLegaleService", () => {
             const dbos = [{ siren: "123456789" }] as unknown as SireneUniteLegaleDbo[];
             await sireneStockUniteLegaleService.insertMany(dbos);
             expect(insertManyMock).toHaveBeenCalledWith(dbos);
+        });
+    });
+
+    describe("saveBatchAssoData", () => {
+        const BATCH = [1, 2] as unknown as SireneStockUniteLegaleEntity[];
+        const ADAPTED_NAME_BATCH = ["one", "two"] as unknown as UniteLegalNameEntity[];
+        const ADAPTED_ENTITY_BATCH = ["1", "2"] as unknown as SireneStockUniteLegaleEntity[];
+        let insertSpy: jest.SpyInstance;
+
+        beforeAll(() => {
+            insertSpy = jest
+                .spyOn(sireneStockUniteLegaleService, "insertMany")
+                .mockResolvedValue("" as unknown as InsertManyResult<SireneUniteLegaleDbo>);
+
+            jest.mocked(SireneStockUniteLegaleAdapter.entityToDbo).mockImplementation(
+                i => i.toString() as unknown as SireneUniteLegaleDbo,
+            );
+        });
+        afterAll(() => insertSpy.mockRestore());
+
+        it("calls adapter to dbo", async () => {
+            await sireneStockUniteLegaleService._saveBatchAssoData(BATCH);
+            expect(SireneStockUniteLegaleAdapter.entityToDbo).toHaveBeenCalledWith(1);
+            expect(SireneStockUniteLegaleAdapter.entityToDbo).toHaveBeenCalledWith(2);
+        });
+
+        it("calls adapter to name", async () => {
+            await sireneStockUniteLegaleService._saveBatchAssoData(BATCH);
+            expect(SireneStockUniteLegaleAdapter.entityToUniteLegaleNameEntity).toHaveBeenCalledWith(1);
+            expect(SireneStockUniteLegaleAdapter.entityToUniteLegaleNameEntity).toHaveBeenCalledWith(2);
+        });
+
+        it("saves sirene entity", async () => {
+            await sireneStockUniteLegaleService._saveBatchAssoData(BATCH);
+            expect(insertSpy).toHaveBeenCalledWith(ADAPTED_ENTITY_BATCH);
+        });
+
+        it("saves name entity", async () => {
+            jest.mocked(SireneStockUniteLegaleAdapter.entityToUniteLegaleNameEntity).mockReturnValueOnce(
+                "one" as unknown as UniteLegalNameEntity,
+            );
+            jest.mocked(SireneStockUniteLegaleAdapter.entityToUniteLegaleNameEntity).mockReturnValueOnce(
+                "two" as unknown as UniteLegalNameEntity,
+            );
+
+            await sireneStockUniteLegaleService._saveBatchAssoData(BATCH);
+            expect(uniteLegalNameService.upsertMany).toHaveBeenCalledWith(ADAPTED_NAME_BATCH);
+        });
+    });
+
+    describe("saveBatchNonAssoData", () => {
+        const BATCH = [{ siren: 1 }, { siren: 2 }] as unknown as SireneStockUniteLegaleEntity[];
+        const ADAPTED_ENTITY_BATCH = [{ i: 1 }, { i: 2 }] as unknown as UniteLegalEntrepriseEntity;
+
+        it("adapt to entreprise entity", async () => {
+            await sireneStockUniteLegaleService._saveBatchNonAssoData(BATCH);
+            expect(mockUniteLegalEntrepriseConstructor).toHaveBeenCalledWith(2);
+            expect(mockUniteLegalEntrepriseConstructor).toHaveBeenCalledWith(1);
+        });
+
+        it("save entreprise entity", async () => {
+            await sireneStockUniteLegaleService._saveBatchNonAssoData(BATCH);
+            expect(uniteLegalEntreprisesService.insertManyEntrepriseSiren).toHaveBeenCalledWith(ADAPTED_ENTITY_BATCH);
         });
     });
 });

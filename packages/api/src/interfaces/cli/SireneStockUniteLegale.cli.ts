@@ -1,7 +1,7 @@
 import { CliStaticInterface } from "../../@types";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import CliController from "../../shared/CliController";
-import sireneStockUniteLegaleService from "../../modules/providers/sirene/stockUniteLegale/sireneStockUniteLegale.service";
+import sireneStockUniteLegaleFileService from "../../modules/providers/sirene/stockUniteLegale/sireneStockUniteLegale.file.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class SireneStockUniteLegaleCli extends CliController {
@@ -9,7 +9,7 @@ export default class SireneStockUniteLegaleCli extends CliController {
 
     protected logFileParsePath = "./logs/sireneStockUniteLegale.parse.log.txt";
 
-    async parse() {
-        await sireneStockUniteLegaleService.getAndParse();
+    async getAndParse() {
+        await sireneStockUniteLegaleFileService.getAndParse();
     }
 }

@@ -176,7 +176,7 @@ describe("/stats", () => {
 
             beforeEach(async () => {
                 await collection.insertMany(visitsFixture);
-                await Promise.all(AssociationNameFixture.map(fixture => uniteLegalNamePort.insert(fixture)));
+                await Promise.all(AssociationNameFixture.map(fixture => uniteLegalNamePort.upsert(fixture)));
                 await Promise.all(
                     RnaNameFixture.map(fixture =>
                         rnaSirenService.insert(new Rna(fixture.rna), new Siren(fixture.siren)),

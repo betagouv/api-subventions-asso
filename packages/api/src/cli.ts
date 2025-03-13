@@ -19,7 +19,6 @@ import DauphinCli from "./interfaces/cli/Dauphin.cli";
 import AdminStructureCli from "./interfaces/cli/AdminStructure.cli";
 import DumpCli from "./interfaces/cli/Dump.cli";
 import ScdlCli from "./interfaces/cli/Scdl.cli";
-import HistoryUniteLegalCli from "./interfaces/cli/HistoryUniteLegal.cli";
 import { initIndexes } from "./shared/MongoInit";
 import GeoCli from "./interfaces/cli/Geo.cli";
 import DataBretagneCli from "./interfaces/cli/DataBretagne.cli";
@@ -50,7 +49,6 @@ async function main() {
         AdminStructureCli,
         DumpCli,
         ScdlCli,
-        HistoryUniteLegalCli,
         GeoCli,
         DataBretagneCli,
         PaymentFlatCli,
