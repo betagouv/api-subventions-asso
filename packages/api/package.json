@@ -63,6 +63,7 @@
         "bcrypt": "^5.1.1",
         "connect-mongodb-session": "^5.0.0",
         "cookie-parser": "^1.4.6",
+        "core": "^0.64.0",
         "cors": "^2.8.5",
         "croner": "^6.0.7",
         "csv-parse": "^5.5.3",
