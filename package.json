@@ -12,6 +12,7 @@
         "build:front": "lerna run build --scope=front",
         "build:api": "lerna run build --scope=api",
         "build:dto": "lerna run build --scope=dto",
+        "build:core": "lerna run build --scope=core",
         "build": "lerna run build",
         "scalingo-postbuild": "bash ./build.bash",
         "postinstall": "bash ./post-install.bash",
