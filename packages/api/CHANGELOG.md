@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.64.2](https://github.com/betagouv/api-subventions-asso/compare/v0.64.1...v0.64.2) (2025-03-17)
+
+### Bug Fixes
+
+-   **api:** make producerName and producerSiret optionnal again ([e252c6d](https://github.com/betagouv/api-subventions-asso/commit/e252c6d12d975ac89f015f0828a551a6e9fdc8e5))
+
 ## [0.64.1](https://github.com/betagouv/api-subventions-asso/compare/v0.64.0...v0.64.1) (2025-03-17)
 
 ### Bug Fixes
