@@ -46,8 +46,5 @@
       "eslint-config-prettier": "^8.10.0",
       "eslint-plugin-import": "^2.29.1",
       "lint-staged": "^13.3.0"
-  },
-  "dependencies": {
-      "mongodb": "^6"
   }
 }
