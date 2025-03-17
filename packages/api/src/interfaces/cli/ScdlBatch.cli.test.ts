@@ -405,6 +405,20 @@ describe("SCDL Batch Import CLI", () => {
             mockParseXls.mockRestore();
         });
 
+        it.each`
+            fileConfig                                                                                 | errorMsg
+            ${{}}                                                                                      | ${"You must provide the file name for every file's configuration."}
+            ${{ name: "bretagne-2025" }}                                                               | ${"You must provide the file parameters for every file's configuration"}
+            ${{ name: "bretagne-2025", parseParams: { producerSlug: "bretagne" }, addProducer: true }} | ${"You must provide the producer name and SIRET for a first import"}
+        `("throws error if the file's config misses some mandatory", async ({ fileConfig, errorMsg }) => {
+            try {
+                // @ts-expect-error: private method
+                await scdlBatchCli.processFile(fileConfig);
+            } catch (e) {
+                expect((e as Error).message).toEqual(errorMsg);
+            }
+        });
+
         it("resolves file config path", () => {
             // @ts-expect-error:
             scdlBatchCli.processFile(FILES_CONFIG[0]);

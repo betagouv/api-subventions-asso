@@ -57,7 +57,6 @@ export default class ScdlBatchCli extends ScdlCli {
         if (params.rowOffset && !isNumberValid(Number(params.rowOffset))) errors.push({ field: "rowOffset" });
         if (errors.length) {
             this.fileConfigErrors = this.fileConfigErrors.concat(errors);
-            console.log(this.fileConfigErrors);
             return false;
         }
         return true;
@@ -111,8 +110,10 @@ export default class ScdlBatchCli extends ScdlCli {
         const { name, parseParams, addProducer, producerName, producerSiret } = fileConfig;
 
         // just to be sure but everything is supposed to be checked before calling processFile
-        if (!name || !parseParams || !producerName || !producerSiret)
-            throw new Error("File config values should have been checked earlier");
+        if (!name) throw new Error("You must provide the file name for every file's configuration.");
+        if (!parseParams) throw new Error("You must provide the file parameters for every file's configuration");
+        if (addProducer && (!producerName || !producerSiret))
+            throw new Error("You must provide the producer name and SIRET for a first import");
 
         const dirPath = path.resolve(SCDL_FILE_PROCESSING_PATH);
         const { producerSlug, exportDate, ...optionalParams } = parseParams;
@@ -124,8 +125,8 @@ export default class ScdlBatchCli extends ScdlCli {
             } else {
                 await scdlService.createProducer({
                     slug: producerSlug,
-                    name: producerName,
-                    siret: producerSiret,
+                    name: producerName as string,
+                    siret: producerSiret as string,
                     lastUpdate: new Date(),
                 });
                 this.successList.push(`added producer ${producerSlug}`);
