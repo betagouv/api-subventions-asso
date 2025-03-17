@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.64.1](https://github.com/betagouv/api-subventions-asso/compare/v0.64.0...v0.64.1) (2025-03-17)
+
+### Bug Fixes
+
+-   **api:** make exportDate optionnal in scdl file conf ([3571578](https://github.com/betagouv/api-subventions-asso/commit/357157803252d39a8f6137520ad391987320b11e))
+
 # [0.64.0](https://github.com/betagouv/api-subventions-asso/compare/v0.63.1...v0.64.0) (2025-03-13)
 
 ### Bug Fixes
