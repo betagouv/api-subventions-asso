@@ -310,6 +310,13 @@ describe("SCDL Batch Import CLI", () => {
             expect(scdlBatchCli.fileConfigErrors).toContainEqual({ field: "exportDate" });
         });
 
+        it("allows undefined exportDate", () => {
+            // @ts-expect-error: private method
+            scdlBatchCli.isParseParams({ exportDate: undefined });
+            // @ts-expect-error: private property
+            expect(scdlBatchCli.fileConfigErrors).not.toContainEqual({ field: "exportDate" });
+        });
+
         it.each`
             parseParams
             ${{ delimiter: ";", quote: "'" }}

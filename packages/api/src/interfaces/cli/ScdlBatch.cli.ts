@@ -87,7 +87,7 @@ export default class ScdlBatchCli extends ScdlCli {
         } else {
             // shared part
             if (!isStringValid(params.producerSlug)) errors.push({ field: "producerSlug" });
-            if (!isShortISODateValid(params.exportDate)) errors.push({ field: "exportDate" });
+            if (params.exportDate && !isShortISODateValid(params.exportDate)) errors.push({ field: "exportDate" });
 
             // csv part
             if (params.delimiter || params.quote) this.isCsvArgs(params);
