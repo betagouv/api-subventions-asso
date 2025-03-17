@@ -34,24 +34,24 @@ export default class ScdlBatchCli extends ScdlCli {
             obj &&
                 Array.isArray(obj.files) &&
                 obj.files.length &&
-                obj.files.every((file: any) => this.isFileConfig(file)),
+                obj.files.every((file: any) => this.validateFileConfig(file)),
         );
     }
 
-    private isFileConfig(file: any): file is ScdlFileProcessingConfig {
+    private validateFileConfig(file: any): file is ScdlFileProcessingConfig {
         if (!file)
             throw new Error(
                 `You must provide a config file for SCDL batch import and name it ${SCDL_FILE_PROCESSING_CONFIG_FILENAME}`,
             );
 
         if (!isStringValid(file.name)) this.fileConfigErrors.push({ field: "name" });
-        if (isBooleanValid(file.addProducer) && file.addProducer) this.isParseParams(file.parseParams);
+        if (isBooleanValid(file.addProducer) && file.addProducer) this.validateParseParams(file.parseParams);
 
         if (this.fileConfigErrors.length) return false;
         else return true;
     }
 
-    private isXlsArgs(params: ScdlParseXlsArgs) {
+    private validateXlsArgs(params: ScdlParseXlsArgs) {
         const errors: FileConfigErrors = [];
         if (!isStringValid(params.pageName)) errors.push({ field: "pageName" });
         if (params.rowOffset && !isNumberValid(Number(params.rowOffset))) errors.push({ field: "rowOffset" });
@@ -62,7 +62,7 @@ export default class ScdlBatchCli extends ScdlCli {
         return true;
     }
 
-    private isCsvArgs(params: ScdlParseCsvArgs): params is ScdlParseCsvArgs {
+    private validateCsvArgs(params: ScdlParseCsvArgs): params is ScdlParseCsvArgs {
         const ACCEPTED_DELIMITERS = [";", ","];
         const ACCEPTED_QUOTES = ['"', "'"];
 
@@ -79,7 +79,7 @@ export default class ScdlBatchCli extends ScdlCli {
         return true;
     }
 
-    private isParseParams(params: any): params is ScdlParseParams {
+    private validateParseParams(params: any): params is ScdlParseParams {
         const errors: FileConfigErrors = [];
         if (typeof params != "object" || params instanceof Array) {
             errors.push({ field: "parseParams" });
@@ -89,10 +89,10 @@ export default class ScdlBatchCli extends ScdlCli {
             if (params.exportDate && !isShortISODateValid(params.exportDate)) errors.push({ field: "exportDate" });
 
             // csv part
-            if (params.delimiter || params.quote) this.isCsvArgs(params);
+            if (params.delimiter || params.quote) this.validateCsvArgs(params);
 
             // excel part
-            if (params.pageName || params.rowOffset) this.isXlsArgs(params);
+            if (params.pageName || params.rowOffset) this.validateXlsArgs(params);
         }
         if (errors.length) {
             this.fileConfigErrors = this.fileConfigErrors.concat(errors);
