@@ -21,50 +21,50 @@ export default class ScdlGrantParser {
     }[] = [
         {
             key: "associationSiret",
-            test: v => Siret.isSiret(v?.toString() ?? ""),
-            message: "SIRET manquant ou invalide",
+            test: v => Siret.isSiret(v?.toString()),
+            message: "SIRET du bénéficiaire manquant ou invalide",
             optional: false,
         },
         {
             key: "allocatorSiret",
-            test: v => Siret.isSiret(v?.toString() ?? ""),
-            message: "SIRET invalide",
+            test: v => Siret.isSiret(v?.toString()),
+            message: "SIRET de l'allocataire manquant ou invalide",
             optional: true,
         },
         {
             key: "amount",
-            test: v => isNumberValid(v as number),
+            test: v => isNumberValid(Number(v)),
             message: "Le montant n'est pas un nombre",
             optional: false,
         },
         {
             key: "exercice",
-            test: v => isNumberValid(v as number),
+            test: v => isNumberValid(Number(v)),
             message: "L'exercice n'est pas un nombre",
             optional: false,
         },
         {
             key: "paymentStartDate",
             test: v => !v || isValidDate(v),
-            message: "La date de début de paiement est définie mais pas valide",
+            message: "La date de début de paiement est absente ou non valide",
             optional: true,
         },
         {
             key: "conventionDate",
             test: v => !v || isValidDate(v),
-            message: "La date de convention est définie mais pas valide",
+            message: "La date de convention est absente ou non valide",
             optional: true,
         },
         {
             key: "associationRna",
             test: v => !v || Rna.isRna(v as string),
-            message: "Le RNA de l'association est défini mais pas valide",
+            message: "Le RNA de l'association est absent ou erroné",
             optional: true,
         },
         {
             key: "paymentEndDate",
             test: v => !v || isValidDate(v),
-            message: "La date de fin de paiement est définie mais pas valide",
+            message: "La date de fin de paiement est absente ou non valide",
             optional: true,
         },
     ];
@@ -133,6 +133,7 @@ export default class ScdlGrantParser {
         const invalidEntities: Partial<ScdlStorableGrant>[] = [];
         const errors: ParsedDataWithProblem[] = [];
 
+        // TODO create errors for that (does not fit in the csv format)
         ScdlGrantParser.verifyMissingHeaders(SCDL_MAPPER, parsedChunk[0]);
 
         for (const parsedData of parsedChunk) {
@@ -141,6 +142,8 @@ export default class ScdlGrantParser {
                 annotations,
                 errors: errorsEntity,
             } = ScdlGrantParser.indexDataByPathAndAnnotate<string, ScdlStorableGrant>(SCDL_MAPPER, parsedData);
+
+            // TODO make indexDataByPathAndAnnotate indicate if errors make us reject the line
             errors.push(...errorsEntity);
 
             // validates and saves annotated errors

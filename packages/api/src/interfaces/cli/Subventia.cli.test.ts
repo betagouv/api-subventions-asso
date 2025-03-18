@@ -197,7 +197,7 @@ describe("SubventiaCli", () => {
         const FILE = "path/subventia";
         const STR_CONTENT = "content";
         // normalize for windows and linux compatilibity
-        const OUTPUT_PATH = normalize("importErrors/subventia-Errors.csv");
+        const OUTPUT_PATH = normalize("import-errors/subventia-Errors.csv");
 
         beforeAll(() => {
             jest.mocked(csvSyncStringifier.stringify).mockReturnValue(STR_CONTENT);

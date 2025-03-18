@@ -25,13 +25,13 @@ interface FlatBasePayment {
     amount: number;
     dateOperation: string;
     programme: number;
-    libelleProgramme: string;
+    libelleProgramme?: string;
 }
 
 interface FlatChorusPayment extends FlatBasePayment {
     ej: string;
-    centreFinancier: string;
-    domaineFonctionnel: string;
+    centreFinancier?: string;
+    domaineFonctionnel?: string;
     numeroDemandePaiement?: string;
     numeroTier?: string;
     activitee?: string;
@@ -42,7 +42,7 @@ interface FlatChorusPayment extends FlatBasePayment {
     /**
      * Deprecated
      */
-    bop: string;
+    bop?: string;
 }
 
 interface FlatFonjepPayment extends FlatBasePayment {
@@ -53,7 +53,7 @@ interface FlatFonjepPayment extends FlatBasePayment {
     /**
      * Deprecated
      */
-    bop: number;
+    bop?: number;
 }
 
 export interface FlatApplication {

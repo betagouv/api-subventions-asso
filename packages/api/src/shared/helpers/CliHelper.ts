@@ -1,3 +1,8 @@
+import FormatDateError from "../errors/cliErrors/FormatDateError";
+import ObsoleteDateError from "../errors/cliErrors/ObsoleteDateError";
+import OutOfRangeDateError from "../errors/cliErrors/OutOfRangeDateError";
+import { isDateNewer, isValidDate } from "./DateHelper";
+
 export function printProgress(progress: number, total: number, entities = "entities") {
     printAtSameLine(`${progress} ${entities} save of ${total}`);
 }
@@ -14,4 +19,18 @@ export function printAtSameLine(text: string) {
         // Reactivate this to have more logs in CI
         // console.log(text);
     }
+}
+
+/**
+ * Validate date format (must be YYYY-DD-MM) and do some range check
+ *
+ * @param dateStr (string) : date string to be validate
+ * @returns (boolean)
+ */
+export function validateDate(dateStr: string) {
+    // supposed to be YYYY-MM-DD format
+    if (!isValidDate(new Date(dateStr))) throw new FormatDateError();
+    if (Number(dateStr.split("-")[0]) < 2018) throw new ObsoleteDateError();
+    if (isDateNewer(new Date(dateStr), new Date())) throw new OutOfRangeDateError();
+    return true;
 }

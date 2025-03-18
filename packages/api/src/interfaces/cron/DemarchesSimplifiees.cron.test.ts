@@ -37,7 +37,7 @@ describe("DemarchesSimplifieesCron", () => {
             const date = new Date("2022-01-01");
             jest.useFakeTimers().setSystemTime(date);
             await controller.updateAll();
-            expect(dataLogService.addLog).toHaveBeenCalledWith("mockedId", date, "api");
+            expect(dataLogService.addLog).toHaveBeenCalledWith("mockedId", "api", date);
             jest.useRealTimers();
         });
     });

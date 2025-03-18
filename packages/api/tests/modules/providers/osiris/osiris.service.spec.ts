@@ -9,6 +9,8 @@ import Rna from "../../../../src/valueObjects/Rna";
 import Siren from "../../../../src/valueObjects/Siren";
 import { ObjectId } from "mongodb";
 
+// TODO ensure this is proper integ test. It is historical test when we did not make a difference
+
 describe("OsirisService", () => {
     it("should return an instance of osirisService", () => {
         expect(osirisService).toBeInstanceOf(OsirisService);

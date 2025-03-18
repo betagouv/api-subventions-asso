@@ -36,8 +36,22 @@ export class UserStatsService {
                 count: associationVisits.length,
             }),
         );
+
         await userPort.updateNbRequests(countByUser);
         await configurationsService.setLastUserStatsUpdate(until);
+
+        // should we await this ? to ensure we got feedback from Brevo update ?
+        const userIds = countByUser.map(userCount => userCount._id);
+        await this.updateNbRequestsInBrevo(userIds);
+    }
+
+    private async updateNbRequestsInBrevo(usersId: string[]) {
+        const partialUsers = (await userPort.findPartialUsersById(usersId, ["email", "nbVisits"])) as Pick<
+            UserDto,
+            "email" | "nbVisits"
+        >[];
+
+        await notifyService.notify(NotificationType.STATS_NB_REQUESTS, partialUsers);
     }
 
     async notifyAllUsersInSubTools() {

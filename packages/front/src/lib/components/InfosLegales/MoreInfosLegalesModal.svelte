@@ -4,10 +4,16 @@
 
     import Alert from "$lib/dsfr/Alert.svelte";
     import ModalContent from "$lib/dsfr/ModalContent.svelte";
+    import type Store from "$lib/core/Store";
+    const dataWithType = data as unknown as Store<{ headers: any; rows: any }>;
 </script>
 
 <ModalContent title="Détail des informations recueillies">
     <Alert small={true}>Certaines formulations peuvent différer selon les fournisseurs de données</Alert>
-    {"" + /* @ts-expect-error -- $data has unknown type */ +""}
-    <Table hideTitle={true} headers={$data.headers} rows={$data.rows} bordered={false} scrollable={false} />
+    <Table
+        hideTitle={true}
+        headers={$dataWithType.headers}
+        rows={$dataWithType.rows}
+        bordered={false}
+        scrollable={false} />
 </ModalContent>

@@ -111,7 +111,7 @@ export default class OsirisCli {
         }
 
         // this assumes that extraction date is close enough to integration date. Is it?
-        await dataLogService.addLog(osirisService.provider.id, new Date(), file);
+        await dataLogService.addLog(osirisService.provider.id, file, new Date());
     }
 
     private async _parseRequest(contentFile: Buffer, year: number, logs: unknown[]) {

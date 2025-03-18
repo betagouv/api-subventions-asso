@@ -5,8 +5,9 @@
     export let values = {
         agentType: null,
     };
+    export let context = {};
 
-    const ctrl = new AgentTypeStepController(values);
+    const ctrl = new AgentTypeStepController(context);
     const { errorMessage } = ctrl;
 </script>
 

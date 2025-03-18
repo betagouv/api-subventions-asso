@@ -12,8 +12,8 @@ export class UserPort {
         return res.data;
     }
 
-    updateProfile(data) {
-        const updateProfile = {
+    getProfileFromData(data) {
+        return {
             firstName: data.firstName,
             lastName: data.lastName,
             agentType: data.agentType,
@@ -28,7 +28,20 @@ export class UserPort {
             registrationSrcEmail: data.registrationSrcEmail,
             registrationSrcDetails: data.registrationSrcDetails,
         };
+    }
+
+    updateProfile(data) {
+        const updateProfile = this.getProfileFromData(data);
         return requestsService.patch(`${this.BASE_PATH}/`, updateProfile);
+    }
+
+    completeProfile(data) {
+        const updateProfile = this.getProfileFromData(data);
+        const completeProfile = {
+            ...updateProfile,
+            profileToComplete: false,
+        };
+        return requestsService.patch(`${this.BASE_PATH}/`, completeProfile);
     }
 }
 

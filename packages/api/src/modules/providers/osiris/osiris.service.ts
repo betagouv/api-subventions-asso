@@ -16,7 +16,7 @@ import GrantProvider from "../../grant/@types/GrantProvider";
 import Siret from "../../../valueObjects/Siret";
 import Siren from "../../../valueObjects/Siren";
 import Rna from "../../../valueObjects/Rna";
-import { osirisActionPort, osirisRequestPort } from "../../../dataProviders/db/providers/osiris";
+import { osirisRequestPort, osirisActionPort } from "../../../dataProviders/db/providers/osiris";
 import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";

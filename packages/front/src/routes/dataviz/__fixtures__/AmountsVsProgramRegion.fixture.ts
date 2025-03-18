@@ -1,3 +1,5 @@
+import type { AmountsVsProgramRegionDto } from "dto";
+
 export const DTO = [
     {
         exerciceBudgetaire: 2020,
@@ -18,7 +20,7 @@ export const DTO = [
         regionAttachementComptable: "Occitanie",
         montant: 33,
     },
-];
+] as AmountsVsProgramRegionDto[];
 
 export const DTO_FORMATTED = [
     { ...DTO[0], montant: "12 222 000" },
