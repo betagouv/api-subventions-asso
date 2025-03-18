@@ -1,3 +1,4 @@
+import { Payment } from "dto";
 import { NestedDefaultObject } from "../../@types";
 import DomaineFonctionnelEntity from "../../entities/DomaineFonctionnelEntity";
 import MinistryEntity from "../../entities/MinistryEntity";
@@ -8,6 +9,8 @@ import { GenericParser } from "../../shared/GenericParser";
 
 import { ChorusLineDto } from "../providers/chorus/adapters/chorusLineDto";
 import ChorusLineEntity from "../providers/chorus/entities/ChorusLineEntity";
+import { RawPayment } from "../grant/@types/rawGrant";
+import ProviderValueAdapter from "../../shared/adapters/ProviderValueAdapter";
 
 export default class PaymentFlatAdapter {
     static toNotAggregatedChorusPaymentFlatEntity(
@@ -97,6 +100,33 @@ export default class PaymentFlatAdapter {
             ministryEntity,
             domaineFonctEntity,
             refProgrammationEntity,
+        };
+    }
+
+    public static rawToPayment(rawPayment: RawPayment<PaymentFlatEntity>) {
+        return this.toPayment(rawPayment.data);
+    }
+
+    public static toPayment(entity: PaymentFlatEntity): Payment {
+        const toPvPaymentFlat = <T>(value: T) =>
+            ProviderValueAdapter.toProviderValue<T>(value, entity.provider, entity.operationDate);
+
+        const toPvOrUndefined = value => (value ? toPvPaymentFlat(value) : undefined);
+
+        /* Pour l'instant on garde ej pour tous les providers sauf Fonjep qui prend idVersement 
+        Il faudra convertir tous les versementKey en idVersement quand tout est connecté  */
+        return {
+            versementKey:
+                entity.provider === "fonjep" ? toPvPaymentFlat(entity.idVersement) : toPvPaymentFlat(entity.ej),
+            siret: toPvPaymentFlat(entity.idEtablissementBeneficiaire.toString()),
+            amount: toPvPaymentFlat(entity.amount),
+            dateOperation: toPvPaymentFlat(entity.operationDate),
+            programme: toPvPaymentFlat(entity.programNumber),
+            libelleProgramme: toPvOrUndefined(entity.programName),
+            ej: toPvPaymentFlat(entity.ej),
+            centreFinancier: toPvOrUndefined(entity.centreFinancierLibelle),
+            domaineFonctionnel: toPvOrUndefined(entity.actionLabel),
+            activitee: toPvOrUndefined(entity.activityLabel),
         };
     }
 }

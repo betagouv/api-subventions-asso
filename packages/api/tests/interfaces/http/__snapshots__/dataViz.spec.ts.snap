@@ -17,6 +17,27 @@ Object {
       "programme": "1",
       "regionAttachementComptable": "Normandie",
     },
+    Object {
+      "exerciceBudgetaire": 2025,
+      "mission": "Mission Exemple",
+      "montant": 1000,
+      "programme": "1 - Programme Exemple",
+      "regionAttachementComptable": "Bretagne",
+    },
+    Object {
+      "exerciceBudgetaire": 2023,
+      "mission": "Mission Exemple",
+      "montant": 1000,
+      "programme": "programNumber",
+      "regionAttachementComptable": "Bretagne",
+    },
+    Object {
+      "exerciceBudgetaire": 2023,
+      "mission": "Mission Exemple",
+      "montant": 1000,
+      "programme": "1 - Programme Exemple",
+      "regionAttachementComptable": "Occitanie",
+    },
   ],
 }
 `;

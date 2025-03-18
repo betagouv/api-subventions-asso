@@ -41,8 +41,8 @@ export class StatsAssociationsVisitPort extends MongoPort<AssociationVisitEntity
         >;
     }
 
-    findGroupedByAssociationIdentifierOnPeriod(start: Date, end: Date) {
-        return this.collection
+    async findGroupedByAssociationIdentifierOnPeriod(start: Date, end: Date) {
+        const result = (await this.collection
             .aggregate([
                 {
                     $match: {
@@ -54,11 +54,12 @@ export class StatsAssociationsVisitPort extends MongoPort<AssociationVisitEntity
                 },
                 this._getGroupByAssociationIdentifierMatcher(),
             ])
-            .toArray() as Promise<{ _id: string; visits: AssociationVisitEntity[] }[]>;
+            .toArray()) as { _id: ObjectId; visits: AssociationVisitEntity[] }[];
+        return result.map(document => ({ ...document, _id: document._id.toString() }));
     }
 
-    findGroupedByUserIdentifierOnPeriod(start: Date, end: Date) {
-        return this.collection
+    async findGroupedByUserIdentifierOnPeriod(start: Date, end: Date) {
+        const result = (await this.collection
             .aggregate([
                 {
                     $match: {
@@ -75,7 +76,8 @@ export class StatsAssociationsVisitPort extends MongoPort<AssociationVisitEntity
                     },
                 },
             ])
-            .toArray() as Promise<{ _id: string; associationVisits: AssociationVisitEntity[] }[]>;
+            .toArray()) as { _id: ObjectId; associationVisits: AssociationVisitEntity[] }[];
+        return result.map(document => ({ ...document, _id: document._id.toString() }));
     }
 
     findByUserId(userId: string) {

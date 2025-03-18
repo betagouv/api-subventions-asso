@@ -48,8 +48,8 @@ Pour spécifier le nom de la base de donnée
 
 Pour se connecter à l'API Entreprise
 
--   API_SENDINBLUE_TOKEN
--   API_SENDINBLUE_CONTACT_LIST
+-   API_BREVO_TOKEN
+-   API_BREVO_CONTACT_LIST
 
 Pour utiliser les services Brevo (envoi de mail)
 
@@ -66,7 +66,7 @@ Pour fonctionner l'api doit pouvoir se connecter à une base de données mongoDB
 Par défaut, elle se connecte à l'url `mongodb://localhost:27017/api-subventions-asso`.  
 Il est possible de paramétrer ces informations dans le fichier .env. Le nom des variables se trouve dans `configurations/mongo.conf.ts`.
 
-Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les commandes suivantes :   
+Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les commandes suivantes :  
 `sudo docker run -d -p 27017:27017 mongo:4.0.3`
 
 En partant d'une base de données vierge, il est nécessaire d'ajouter, en local, un nom de domaine accepté dans la collection `configurations` afin de permettre la création d'un utilisateur :
@@ -92,7 +92,7 @@ AgentConnect ne fonctionne pas avec l'url `localhost`. Pour qu'AgentConnect fonc
 ## Démarrer l'api en local
 
 1. Run `npm run dev`
-2. Visit [http://dev.local:8080](http://dev.local:8080) 
+2. Visit [http://dev.local:8080](http://dev.local:8080)
 
 ## Exécuter une commande CLI
 

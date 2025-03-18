@@ -1,5 +1,5 @@
 import { UserDto } from "dto";
-import { Filter, ObjectId } from "mongodb";
+import { Filter, FindOptions, ObjectId } from "mongodb";
 import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../shared/helpers/MongoHelper";
 import MongoPort from "../../../shared/MongoPort";
 import { removeHashPassword, removeSecrets } from "../../../shared/helpers/PortHelper";
@@ -13,6 +13,9 @@ export class UserPort extends MongoPort<UserDbo> {
         associationVisits: "_id",
     };
 
+    // must be removed with removeSecrets when returning UserDto
+    secretFields = ["hashPassword", "jwt"];
+
     async findAll() {
         return this.collection.find({}).toArray();
     }
@@ -23,8 +26,8 @@ export class UserPort extends MongoPort<UserDbo> {
         return removeSecrets(user);
     }
 
-    async find(query: Filter<UserDbo> = {}): Promise<UserDto[]> {
-        const dbos = await this.collection.find(query).toArray();
+    async find(query: Filter<UserDbo> = {}, options?: FindOptions): Promise<UserDto[]> {
+        const dbos = await this.collection.find(query, options).toArray();
         return dbos.map(dbo => removeSecrets(dbo));
     }
 
@@ -38,6 +41,37 @@ export class UserPort extends MongoPort<UserDbo> {
         const query: Filter<UserDbo> = { signupAt: { $gte: begin, $lt: end } };
         if (!withAdmin) query.roles = { $ne: "admin" };
         return this.find(query);
+    }
+
+    /**
+     *
+     * @param usersId list of user's id
+     * @param fields specific fields to return
+     * @returns
+     */
+    async findPartialUsersById(usersId: string[], fields: Array<keyof UserDto>): Promise<Partial<UserDto>[]> {
+        // ensure that we do not return secret fields and remove duplicates
+        // secrets should be guarded with typescript Array<keyof UserDto> type but we never know
+        // TODO-THOUGHTS: apply projection on others method to remove the use of removeSecrets ?
+        // TODO: find a way to prevent duplicates using TS ? But we should always keep those checks
+        fields = fields.filter((value, index) => !this.secretFields.includes(value) || fields.indexOf(value) !== index);
+
+        if (!fields) throw new Error("You should not use findPartialUsersById if you want full users data");
+
+        return this.find(
+            {
+                _id: { $in: usersId.map(id => new ObjectId(id)) },
+            },
+            {
+                projection: fields.reduce(
+                    (projection, field) => {
+                        projection[field] = 1;
+                        return projection;
+                    },
+                    { _id: 0 },
+                ),
+            },
+        ) as Promise<Partial<UserDbo>[]>;
     }
 
     async findInactiveSince(date: Date): Promise<UserDto[]> {

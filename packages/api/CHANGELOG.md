@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.64.2](https://github.com/betagouv/api-subventions-asso/compare/v0.64.1...v0.64.2) (2025-03-17)
+
+### Bug Fixes
+
+-   **api:** make producerName and producerSiret optionnal again ([e252c6d](https://github.com/betagouv/api-subventions-asso/commit/e252c6d12d975ac89f015f0828a551a6e9fdc8e5))
+
+## [0.64.1](https://github.com/betagouv/api-subventions-asso/compare/v0.64.0...v0.64.1) (2025-03-17)
+
+### Bug Fixes
+
+-   **api:** make exportDate optionnal in scdl file conf ([3571578](https://github.com/betagouv/api-subventions-asso/commit/357157803252d39a8f6137520ad391987320b11e))
+
+# [0.64.0](https://github.com/betagouv/api-subventions-asso/compare/v0.63.1...v0.64.0) (2025-03-13)
+
+### Bug Fixes
+
+-   **api:** [#3239](https://github.com/betagouv/api-subventions-asso/issues/3239) detect scdl issues returns text/csv ([#3234](https://github.com/betagouv/api-subventions-asso/issues/3234)) ([428d312](https://github.com/betagouv/api-subventions-asso/commit/428d3127445198b717aa4e07f5b8b65e1672e5ee))
+
+### Features
+
+-   **api, dto, front:** [#3146](https://github.com/betagouv/api-subventions-asso/issues/3146) redirect proconnect ([#3223](https://github.com/betagouv/api-subventions-asso/issues/3223)) ([d142f3a](https://github.com/betagouv/api-subventions-asso/commit/d142f3aa1c8fdf5d50dbf9adabfefd63d10c8371))
+-   **api:** [#3163](https://github.com/betagouv/api-subventions-asso/issues/3163) add Oise specific mapping ([#3245](https://github.com/betagouv/api-subventions-asso/issues/3245)) ([f0e643a](https://github.com/betagouv/api-subventions-asso/commit/f0e643af8517927e234948228d2d316c10cd4b1f))
+
+# [0.63.0](https://github.com/betagouv/api-subventions-asso/compare/v0.62.0...v0.63.0) (2025-02-25)
+
+### Bug Fixes
+
+-   **api:** [#3207](https://github.com/betagouv/api-subventions-asso/issues/3207) - fix amountsVsProgramRegionTable ([#3208](https://github.com/betagouv/api-subventions-asso/issues/3208)) ([6755adf](https://github.com/betagouv/api-subventions-asso/commit/6755adfe5287d31b72c183d433913f97167926e7))
+
+### Features
+
+-   **api, dto:** [#3107](https://github.com/betagouv/api-subventions-asso/issues/3107) implement paymentProvider in paymentFlat.service ([#3229](https://github.com/betagouv/api-subventions-asso/issues/3229)) ([98e4131](https://github.com/betagouv/api-subventions-asso/commit/98e4131d18f528a0d184ff0c09867d9a23ac7da2))
+-   **api:** [#3111](https://github.com/betagouv/api-subventions-asso/issues/3111) update users nb requests in brevo ([#3192](https://github.com/betagouv/api-subventions-asso/issues/3192)) ([a7bdd2e](https://github.com/betagouv/api-subventions-asso/commit/a7bdd2ee81fcab284e2f9ce2710b7a3b224aca7d))
+-   **api:** [#3149](https://github.com/betagouv/api-subventions-asso/issues/3149) http routes to get csv scdl errors ([#3221](https://github.com/betagouv/api-subventions-asso/issues/3221)) ([e364fa9](https://github.com/betagouv/api-subventions-asso/commit/e364fa94d0de16375d9ca169293dc290f94c3049))
+
 # [0.62.0](https://github.com/betagouv/api-subventions-asso/compare/v0.61.0...v0.62.0) (2025-02-17)
 
 ### Bug Fixes

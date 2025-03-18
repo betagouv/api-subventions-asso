@@ -1,6 +1,5 @@
 import request = require("supertest");
-import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
-import { RoleEnum } from "../../../src/@enums/Roles";
+import { createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import { createAndActiveUser, getDefaultUser } from "../../__helpers__/userHelper";
 import userPort from "../../../src/dataProviders/db/user/user.port";
 import statsAssociationsVisitPort from "../../../src/dataProviders/db/stats/statsAssociationsVisit.port";
@@ -17,86 +16,6 @@ const g = global as unknown as { app: unknown };
 describe("UserController, /user", () => {
     const SIREN = "123456789";
     jest.spyOn(notifyService, "notify").mockResolvedValue(true);
-
-    describe("POST /admin/roles", () => {
-        it("should return 200", async () => {
-            const response = await request(g.app)
-                .post("/user/admin/roles")
-                .send({
-                    email: "admin@beta.gouv.fr",
-                    roles: [RoleEnum.admin],
-                })
-                .set("x-access-token", await createAndGetAdminToken())
-                .set("Accept", "application/json");
-
-            expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchObject({
-                user: { email: "admin@beta.gouv.fr", roles: ["user", "admin"] },
-            });
-        });
-
-        it("should add role", async () => {
-            await userCrudService.createUser({ email: "futur-admin@beta.gouv.fr" });
-
-            const response = await request(g.app)
-                .post("/user/admin/roles")
-                .send({
-                    email: "futur-admin@beta.gouv.fr",
-                    roles: [RoleEnum.admin],
-                })
-                .set("x-access-token", await createAndGetAdminToken())
-                .set("Accept", "application/json");
-
-            expect(response.statusCode).toBe(200);
-            expect(response.body).toMatchObject({
-                user: {
-                    email: "futur-admin@beta.gouv.fr",
-                    roles: ["user", RoleEnum.admin],
-                },
-            });
-        });
-
-        it("should reject because role not exist", async () => {
-            await userCrudService.createUser({ email: "futur-admin@beta.gouv.fr" });
-
-            const response = await request(g.app)
-                .post("/user/admin/roles")
-                .send({
-                    email: "futur-admin@beta.gouv.fr",
-                    roles: ["test"],
-                })
-                .set("x-access-token", await createAndGetAdminToken())
-                .set("Accept", "application/json");
-
-            expect(response.statusCode).toBe(400);
-            expect(response.body).toMatchSnapshot();
-        });
-
-        it("should return 401 because user dont have right", async () => {
-            const response = await request(g.app)
-                .post("/user/admin/roles")
-                .send({
-                    email: "admin@beta.gouv.fr",
-                    roles: [RoleEnum.admin],
-                })
-                .set("x-access-token", await createAndGetUserToken())
-                .set("Accept", "application/json");
-
-            expect(response.statusCode).toBe(401);
-        });
-
-        it("should return 401 because user not connected", async () => {
-            const response = await request(g.app)
-                .post("/user/admin/roles")
-                .send({
-                    email: "admin@beta.gouv.fr",
-                    roles: [RoleEnum.admin],
-                })
-                .set("Accept", "application/json");
-
-            expect(response.statusCode).toBe(401);
-        });
-    });
 
     describe("Put /password", () => {
         it("should return 200", async () => {
@@ -154,44 +73,6 @@ describe("UserController, /user", () => {
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(401);
-        });
-    });
-
-    describe("GET /admin/list-users", () => {
-        it("should return UserRequestsSuccessResponse", async () => {
-            const TODAY = new Date();
-            const ACTIVE_USER_EMAIL = "active.user@beta.gouv.fr";
-            await createAndActiveUser(ACTIVE_USER_EMAIL);
-            const ACTIVE_USER = (await userPort.findByEmail(ACTIVE_USER_EMAIL)) as UserDbo;
-            await Promise.all([
-                statsAssociationsVisitPort.add({
-                    associationIdentifier: SIREN,
-                    userId: ACTIVE_USER._id,
-                    date: new Date(new Date(TODAY).setDate(TODAY.getDate() - 12)),
-                }),
-                statsAssociationsVisitPort.add({
-                    associationIdentifier: SIREN,
-                    userId: ACTIVE_USER._id,
-                    date: new Date(new Date(TODAY).setDate(TODAY.getDate() - 6)),
-                }),
-                statsAssociationsVisitPort.add({
-                    associationIdentifier: SIREN,
-                    userId: ACTIVE_USER._id,
-                    date: TODAY,
-                }),
-            ]);
-            await userStatsService.updateNbRequests();
-
-            const response = await request(g.app)
-                .get(`/user/admin/list-users`)
-                .set("x-access-token", await createAndGetAdminToken())
-                .set("Accept", "application/json")
-                .expect(200);
-
-            expect(response.body.users[0]).toMatchSnapshot({
-                _id: expect.any(String),
-                signupAt: expect.any(String),
-            });
         });
     });
 

@@ -1,10 +1,12 @@
-type BaseScdlParseArgs = { producerSlug: string; exportDate: string };
-export type ScdlParseArgs = BaseScdlParseArgs & { delimiter?: string; quote?: string };
+type BaseScdlParseArgs = { producerSlug: string; exportDate?: string };
+export type ScdlParseCsvArgs = BaseScdlParseArgs & { delimiter?: string; quote?: string };
 export type ScdlParseXlsArgs = BaseScdlParseArgs & { pageName?: string; rowOffset?: number | string };
 
-export interface ScdlFileProcessingConfig {
+export type ScdlParseParams = ScdlParseCsvArgs | ScdlParseXlsArgs;
+
+export interface ScdlFileProcessingConfig<T = ScdlParseParams> {
     name: string;
-    parseParams: ScdlParseArgs | ScdlParseXlsArgs;
+    parseParams: T;
     addProducer: boolean;
     producerName?: string;
     producerSiret?: string;
@@ -13,3 +15,5 @@ export interface ScdlFileProcessingConfig {
 export interface ScdlFileProcessingConfigList {
     files: ScdlFileProcessingConfig[];
 }
+
+export type FileConfigErrors = { field: string }[];

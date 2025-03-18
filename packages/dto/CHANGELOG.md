@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.64.0](https://github.com/betagouv/datasubvention/compare/v0.63.1...v0.64.0) (2025-03-13)
+
+### Features
+
+-   **api, dto, front:** [#3146](https://github.com/betagouv/datasubvention/issues/3146) redirect proconnect ([#3223](https://github.com/betagouv/datasubvention/issues/3223)) ([d142f3a](https://github.com/betagouv/datasubvention/commit/d142f3aa1c8fdf5d50dbf9adabfefd63d10c8371))
+
+# [0.63.0](https://github.com/betagouv/datasubvention/compare/v0.62.0...v0.63.0) (2025-02-25)
+
+### Features
+
+-   **api, dto:** [#3107](https://github.com/betagouv/datasubvention/issues/3107) implement paymentProvider in paymentFlat.service ([#3229](https://github.com/betagouv/datasubvention/issues/3229)) ([98e4131](https://github.com/betagouv/datasubvention/commit/98e4131d18f528a0d184ff0c09867d9a23ac7da2))
+
 # [0.62.0](https://github.com/betagouv/datasubvention/compare/v0.61.0...v0.62.0) (2025-02-17)
 
 **Note:** Version bump only for package dto

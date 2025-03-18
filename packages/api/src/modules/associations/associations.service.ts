@@ -61,7 +61,9 @@ export class AssociationsService {
     private getAssociationProviders() {
         return Object.values(providers).filter(p => this.isAssociationsProvider(p)) as AssociationsProvider[];
     }
-
+    /*
+     * eventually should be used to filter chorus as well
+     * */
     async isIdentifierFromAsso(id: StructureIdentifier): Promise<boolean> {
         let siren: Siren;
         if (id instanceof AssociationIdentifier) {

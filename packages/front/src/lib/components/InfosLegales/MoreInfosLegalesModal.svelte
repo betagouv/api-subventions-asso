@@ -5,7 +5,7 @@
     import Alert from "$lib/dsfr/Alert.svelte";
     import ModalContent from "$lib/dsfr/ModalContent.svelte";
     import type Store from "$lib/core/Store";
-    const dataWithType = $data as unknown as Store<{ headers: any; rows: any }>;
+    const dataWithType = data as unknown as Store<{ headers: any; rows: any }>;
 </script>
 
 <ModalContent title="Détail des informations recueillies">

@@ -1,9 +1,15 @@
 import { RECORDS } from "./__fixtures__/dataBretagne.fixture";
 import { ENTITIES } from "../providers/chorus/__fixtures__/ChorusFixtures";
-import { PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
+import {
+    PAYMENT_FLAT_ENTITY,
+    PAYMENT_FLAT_ENTITY_WITH_NULLS,
+    PAYMENT_FROM_PAYMENT_FLAT,
+} from "./__fixtures__/paymentFlatEntity.fixture";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 import ChorusLineEntity from "../providers/chorus/entities/ChorusLineEntity";
 import { ChorusLineDto } from "../providers/chorus/adapters/chorusLineDto";
+import ProviderValueAdapter from "../../shared/adapters/ProviderValueAdapter";
+import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
 console.error = jest.fn();
 
 const documentDataReturnedValue = {
@@ -154,6 +160,39 @@ describe("PaymentFlatAdapter", () => {
             expect(console.error).toHaveBeenCalledWith(expect.stringMatching(expectedMessage));
 
             RECORDS["programme"][101].code_ministere = "code";
+        });
+    });
+
+    describe("rawToPayment", () => {
+        //@ts-expect-error: parameter type
+        const RAW_PAYMENT: RawPayment<PaymentFlatEntity> = { data: PAYMENT_FLAT_ENTITY };
+
+        const mockToPayment = jest.spyOn(PaymentFlatAdapter, "toPayment");
+        beforeEach(() => {
+            mockToPayment.mockReturnValue(PAYMENT_FROM_PAYMENT_FLAT);
+        });
+
+        afterAll(() => {
+            mockToPayment.mockRestore();
+        });
+
+        it("should call toPayment()", () => {
+            PaymentFlatAdapter.rawToPayment(RAW_PAYMENT);
+            expect(PaymentFlatAdapter.toPayment).toHaveBeenCalledWith(RAW_PAYMENT.data);
+        });
+
+        it("should return Payment", () => {
+            const expected = PAYMENT_FROM_PAYMENT_FLAT;
+            const actual = PaymentFlatAdapter.rawToPayment(RAW_PAYMENT);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("toPayment", () => {
+        it("should return partial Payment entity", () => {
+            const entity = PAYMENT_FLAT_ENTITY_WITH_NULLS;
+            const actual = PaymentFlatAdapter.toPayment(entity as PaymentFlatEntity);
+            expect(actual).toMatchSnapshot();
         });
     });
 });

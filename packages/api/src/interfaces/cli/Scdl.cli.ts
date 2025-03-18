@@ -1,8 +1,6 @@
 import fs from "fs";
 import path from "path";
 import csvSyncStringifier = require("csv-stringify/sync");
-import FormatDateError from "../../shared/errors/cliErrors/FormatDateError";
-import ScdlGrantParser from "../../modules/providers/scdl/scdl.grant.parser";
 import scdlService from "../../modules/providers/scdl/scdl.service";
 import MiscScdlGrantEntity from "../../modules/providers/scdl/entities/MiscScdlGrantEntity";
 import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
@@ -11,12 +9,13 @@ import Siret from "../../valueObjects/Siret";
 import { ParsedDataWithProblem } from "../../modules/providers/scdl/@types/Validation";
 import { DEV } from "../../configurations/env.conf";
 import dataLogService from "../../modules/data-log/dataLog.service";
+import { validateDate } from "../../shared/helpers/CliHelper";
 
 export default class ScdlCli {
     static cmdName = "scdl";
 
     // relative path refers to package's root
-    static errorsFolderName = "./importErrors";
+    static errorsFolderName = "./import-errors";
 
     public async addProducer(slug: string, name: string, siret: string) {
         if (!slug) throw Error("producer SLUG is mandatory");
@@ -30,50 +29,58 @@ export default class ScdlCli {
     public async parseXls(
         file: string,
         producerSlug: string,
-        exportDate: string,
-        pageName?: string,
+        exportDate: string | undefined = undefined,
+        pageName: string | undefined = undefined,
         rowOffset: number | string = 0,
     ) {
-        await this.validateGenericInput(file, producerSlug, exportDate);
+        await this.validateGenericInput(producerSlug, exportDate);
         const parsedRowOffset = typeof rowOffset === "number" ? rowOffset : parseInt(rowOffset);
         const fileContent = fs.readFileSync(file);
-        const { entities, errors } = ScdlGrantParser.parseExcel(fileContent, pageName, parsedRowOffset);
-        await Promise.all([
-            this.persistEntities(entities, producerSlug, exportDate as string),
-            this.exportErrors(errors, file),
-        ]);
-        await dataLogService.addLog(producerSlug, new Date(exportDate), file);
+        const { entities, errors } = scdlService.parseXls(fileContent, pageName, parsedRowOffset);
+        await Promise.all([this.persistEntities(entities, producerSlug), this.exportErrors(errors, file)]);
+        await dataLogService.addLog(producerSlug, file, exportDate ? new Date(exportDate) : undefined);
     }
 
-    public async parse(file: string, producerSlug: string, exportDate: string, delimiter = ";", quote = '"') {
-        await this.validateGenericInput(file, producerSlug, exportDate);
+    /**
+     *
+     * @param file (string) : Name of the file to import
+     * @param producerSlug (string) : Slug of the file producer
+     * @param exportDate  (string | format YYYY-MM-DD | optionnal) : IF PROVIDED => date of production or end date of covered period
+     * @param delimiter
+     * @param quote
+     */
+    public async parse(
+        file: string,
+        producerSlug: string,
+        exportDate: string | undefined = undefined,
+        delimiter = ";",
+        quote = '"',
+    ) {
+        await this.validateGenericInput(producerSlug, exportDate);
         const fileContent = fs.readFileSync(file);
         const parsedQuote = quote === "false" ? false : quote;
-        const { entities, errors } = ScdlGrantParser.parseCsv(fileContent, delimiter, parsedQuote);
-        await Promise.all([
-            this.persistEntities(entities, producerSlug, exportDate as string),
-            this.exportErrors(errors, file),
-        ]);
-        await dataLogService.addLog(producerSlug, new Date(exportDate), file);
+        const { entities, errors } = scdlService.parseCsv(fileContent, delimiter, parsedQuote);
+        await Promise.all([this.persistEntities(entities, producerSlug), this.exportErrors(errors, file)]);
+        await dataLogService.addLog(producerSlug, file, exportDate ? new Date(exportDate) : undefined);
     }
 
-    private async validateGenericInput(file: string, producerSlug: string, exportDateStr?: string) {
-        if (!exportDateStr) throw new FormatDateError();
-        const exportDate = new Date(exportDateStr);
-        if (isNaN(exportDate.getTime())) throw new FormatDateError();
+    private async validateGenericInput(producerSlug: string, exportDateStr?: string) {
+        if (exportDateStr) validateDate(exportDateStr);
         if (!(await scdlService.getProducer(producerSlug)))
             throw new Error("Producer ID does not match any producer in database");
     }
 
-    private async persistEntities(entities: ScdlStorableGrant[], producerSlug: string, exportDateStr: string) {
-        if (!entities) throw new Error("No entities could be created from this file");
+    private async persistEntities(entities: ScdlStorableGrant[], producerSlug: string) {
+        if (!entities || !entities.length) throw new Error("No entities could be created from this file");
 
         console.log(`start persisting ${entities.length} grants`);
         let duplicates: MiscScdlGrantEntity[] = [];
 
         try {
+            console.log("creates many grants...", scdlService.createManyGrants);
             await scdlService.createManyGrants(entities, producerSlug);
         } catch (e) {
+            console.log("error....", e);
             if (!(e instanceof DuplicateIndexError)) throw e;
             duplicates = (e as DuplicateIndexError<MiscScdlGrantEntity[]>).duplicates;
         }
@@ -86,12 +93,17 @@ export default class ScdlCli {
         }
 
         console.log("Updating producer's last update date");
-        await scdlService.updateProducer(producerSlug, { lastUpdate: new Date(exportDateStr) });
+        // THOUGHTS: what do we want to do with lastUpdate ? Code was making possible to update it with a date lower than a previous one
+        // e.g if we import a file from 2018 with already 2024 data the lastUpdate will be 2018
+        // => always use new Date() in updateProducer
+        // but if we do that lastUpdate doesn't mean the most recent data date but only the "lastUpdate" stricto sensus
+        await scdlService.updateProducer(producerSlug, { lastUpdate: new Date() });
         console.log("Parsing ended successfully !");
     }
 
     private async exportErrors(errors: ParsedDataWithProblem[], file: string) {
         if (!DEV) return;
+
         const fileName = path.basename(file);
         if (!fs.existsSync(ScdlCli.errorsFolderName)) fs.mkdirSync(ScdlCli.errorsFolderName);
         const outputPath = path.join(ScdlCli.errorsFolderName, fileName + "-errors.csv");
