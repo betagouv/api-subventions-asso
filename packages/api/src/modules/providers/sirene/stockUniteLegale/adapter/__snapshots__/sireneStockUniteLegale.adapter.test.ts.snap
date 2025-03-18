@@ -4,7 +4,7 @@ exports[`SireneStockUniteLegaleAdapter entityToUniteLegaleNameEntity should retu
 UniteLegalNameEntity {
   "id": undefined,
   "name": "asso coeur",
-  "searchKey": "123411189 - asso coeur",
+  "searchKey": "123411189 +++ asso coeur",
   "siren": Siren {
     "siren": "123411189",
   },

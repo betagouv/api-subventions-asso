@@ -6,7 +6,6 @@ import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../../shared/LegalCategories
 import SireneStockUniteLegaleAdapter from "../adapter/sireneStockUniteLegale.adapter";
 import Siren from "../../../../../valueObjects/Siren";
 import { SireneStockUniteLegaleEntity } from "../../../../../entities/SireneStockUniteLegaleEntity";
-import { UniteLegalEntrepriseEntity } from "../../../../../entities/UniteLegalEntrepriseEntity";
 
 export default class SireneStockUniteLegaleParser {
     static async parseCsvAndInsert(filePath: string, saveBatchAssoData, saveBatchNonAssoData): Promise<void> {
@@ -25,8 +24,8 @@ export default class SireneStockUniteLegaleParser {
             // otherwise duplicate try to get saved
             let batchAssos: SireneStockUniteLegaleEntity[] = [];
             let batchAssosToSave: SireneStockUniteLegaleEntity[] = [];
-            let batchNonAssos: UniteLegalEntrepriseEntity[] = [];
-            let batchNonAssosToSave: UniteLegalEntrepriseEntity[] = [];
+            let batchNonAssos: SireneStockUniteLegaleEntity[] = [];
+            let batchNonAssosToSave: SireneStockUniteLegaleEntity[] = [];
 
             const stream = fs.createReadStream(filePath);
 

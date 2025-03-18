@@ -5,7 +5,7 @@ import { SireneStockUniteLegaleEntity } from "../../../../../entities/SireneStoc
 import { SireneUniteLegaleDbo } from "../@types/SireneUniteLegaleDbo";
 import Siren from "../../../../../valueObjects/Siren";
 import UniteLegalNameEntity from "../../../../../entities/UniteLegalNameEntity";
-import { UniteLegaleHistoriqueAdapter } from "../../../datagouv/historyUniteLegal/adapters/UniteLegaleHistoriqueAdapter";
+import UniteLegalNameAdapter from "../../../../../dataProviders/db/uniteLegalName/UniteLegalName.adapter";
 
 export default class SireneStockUniteLegaleAdapter {
     static dtoToEntity(dto: SireneUniteLegaleDto): SireneStockUniteLegaleEntity {
@@ -26,7 +26,7 @@ export default class SireneStockUniteLegaleAdapter {
         return new UniteLegalNameEntity(
             entity.siren,
             entity.denominationUniteLegale,
-            UniteLegaleHistoriqueAdapter.buildSearchKey(entity.siren, entity.denominationUniteLegale),
+            UniteLegalNameAdapter.buildSearchKey(entity.siren, entity.denominationUniteLegale),
             new Date(entity.dateDebut),
         );
     }

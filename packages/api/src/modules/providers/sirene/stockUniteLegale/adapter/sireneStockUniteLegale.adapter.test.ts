@@ -2,6 +2,14 @@ import { ObjectId } from "mongodb";
 import { DTOS, DBOS, ENTITIES } from "../../__fixtures__/sireneStockUniteLegale.fixture";
 import SireneStockUniteLegaleAdapter from "../adapter/sireneStockUniteLegale.adapter";
 
+jest.mock("~/dataProviders/db/uniteLegalName/UniteLegalName.adapter", () => ({
+    UniteLegalNameAdapter: class UniteLegalNameAdapter {
+        static buildSearchKey(a, b) {
+            return `${a} +++ ${b}`;
+        }
+    },
+}));
+
 describe("SireneStockUniteLegaleAdapter", () => {
     describe("dtoToEntity", () => {
         it("should return a SireneStockUniteLegaleEntity", () => {
