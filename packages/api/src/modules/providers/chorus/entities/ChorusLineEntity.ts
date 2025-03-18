@@ -26,7 +26,7 @@ export default class ChorusLineEntity {
             adapter: value => {
                 if (!value || typeof value === "number") return value;
 
-                return parseFloat(value.replace("\r", "").replace(" ", "").replace(",", "."));
+                return parseFloat(value.replaceAll("\r", "").replaceAll(" ", "").replaceAll(",", "."));
             },
         },
         numeroTier: { path: ["Fournisseur payé (DP)"] },
@@ -39,7 +39,7 @@ export default class ChorusLineEntity {
             adapter: value => {
                 if (!value || typeof value === "number") return value;
 
-                return parseFloat(value.replace("\r", "").replace(" ", "").replace(",", "."));
+                return parseFloat(value.replaceAll("\r", "").replaceAll(" ", "").replaceAll(",", "."));
             },
         },
         dateOperation: {
