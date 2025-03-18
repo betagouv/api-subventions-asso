@@ -21,7 +21,14 @@ export default class ChorusLineEntity {
         numeroDemandePaiement: { path: ["N° DP"] },
         numPosteDP: { path: ["N° poste DP"] },
         codeSociete: { path: ["Société"] },
-        exercice: { path: ["Exercice comptable"] },
+        exercice: {
+            path: ["Exercice comptable"],
+            adapter: value => {
+                if (!value || typeof value === "number") return value;
+
+                return parseFloat(value.replace("\r", "").replace(" ", "").replace(",", "."));
+            },
+        },
         numeroTier: { path: ["Fournisseur payé (DP)"] },
         centreFinancier: { path: ["Centre financier"] },
         codeCentreFinancier: { path: ["Centre financier CODE"] },
