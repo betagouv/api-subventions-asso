@@ -1,37 +1,27 @@
 module.exports = {
     async up(db) {
-        const bulk = [];
-        await db
-            .collection("chorus-line")
-            .find({ "indexedInformations.exercice": { $type: "string" } })
-            .forEach(line => {
-                bulk.push({
-                    updateOne: {
-                        filter: { _id: line._id },
-                        update: {
-                            $set: { "indexedInformations.exercice": parseInt(line.indexedInformations.exercice) },
-                        },
-                    },
-                });
-            });
-        if (bulk.length) await db.collection("chorus-line").bulkWrite(bulk);
+        await db.collection("chorus-line").aggregate([
+            {
+                $addFields: {
+                    "indexedInformations.exercice": { $toInt: "$indexedInformations.exercice" },
+                },
+            },
+            { $out: "chorus-line-nb" },
+        ]);
+        await db.dropCollection("chorus-line");
+        await db.renameCollection("chorus-line-nb", "chorus-line");
     },
 
     async down(db) {
-        const bulk = [];
-        await db
-            .collection("chorus-line")
-            .find({ "indexedInformations.exercice": { $type: "string" } })
-            .forEach(line => {
-                bulk.push({
-                    updateOne: {
-                        filter: { _id: line._id },
-                        update: {
-                            $set: { "indexedInformations.exercice": line.indexedInformations.exercice.toString() },
-                        },
-                    },
-                });
-            });
-        if (bulk.length) await db.collection("chorus-line").bulkWrite(bulk);
+        await db.collection("chorus-line").aggregate([
+            {
+                $addFields: {
+                    "indexedInformations.exercice": { $toString: "$indexedInformations.exercice" },
+                },
+            },
+            { $out: "chorus-line-str" },
+        ]);
+        await db.dropCollection("chorus-line");
+        await db.renameCollection("chorus-line-str", "chorus-line");
     },
 };
