@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SireneStockUniteLegaleCli parse should persist asso names 1`] = `
+exports[`SireneStockUniteLegaleCli import should persist asso names 1`] = `
 Array [
   Object {
     "_id": Any<ObjectId>,
@@ -19,7 +19,7 @@ Array [
 ]
 `;
 
-exports[`SireneStockUniteLegaleCli parse should persist entreprises' siret 1`] = `
+exports[`SireneStockUniteLegaleCli import should persist entreprises' siret 1`] = `
 Array [
   Object {
     "_id": Any<ObjectId>,
@@ -32,7 +32,7 @@ Array [
 ]
 `;
 
-exports[`SireneStockUniteLegaleCli parse should persist sirene data 1`] = `
+exports[`SireneStockUniteLegaleCli import should persist sirene data 1`] = `
 Array [
   Object {
     "_id": Any<ObjectId>,
