@@ -80,6 +80,9 @@ export class AuthService {
         return this.connectedUser.value;
     }
 
+    getCurrentUserStore() {
+        return this.connectedUser;
+    }
     controlAuth(requiredLevel = AuthLevels.USER) {
         if (requiredLevel === AuthLevels.NONE) return true;
         const user = this.getCurrentUser();
