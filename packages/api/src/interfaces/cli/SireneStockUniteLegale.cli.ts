@@ -5,11 +5,11 @@ import sireneStockUniteLegaleFileService from "../../modules/providers/sirene/st
 
 @StaticImplements<CliStaticInterface>()
 export default class SireneStockUniteLegaleCli extends CliController {
-    static cmdName = "sireneStockUniteLegale";
+    static cmdName = "sirene";
 
     protected logFileParsePath = "./logs/sireneStockUniteLegale.parse.log.txt";
 
-    async getAndParse() {
+    async import() {
         await sireneStockUniteLegaleFileService.getAndParse();
     }
 }

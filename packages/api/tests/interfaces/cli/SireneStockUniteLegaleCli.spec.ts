@@ -26,9 +26,9 @@ describe("SireneStockUniteLegaleCli", () => {
     });
 
     let cli = new SireneStockUniteLegaleCli();
-    describe("parse", () => {
+    describe("import", () => {
         it("should persist sirene data", async () => {
-            await cli.getAndParse();
+            await cli.import();
             // @ts-expect-error: access protected for test
             const data = (await sireneStockUniteLegaleDbPort.collection.find({}).toArray()).map(object => ({
                 ...object,
@@ -38,7 +38,7 @@ describe("SireneStockUniteLegaleCli", () => {
         });
 
         it("should persist asso names", async () => {
-            await cli.getAndParse();
+            await cli.import();
             // @ts-expect-error: access protected for test
             const data = (await uniteLegalNamePort.collection.find({}).toArray()).map(object => ({
                 ...object,
@@ -48,7 +48,7 @@ describe("SireneStockUniteLegaleCli", () => {
         });
 
         it("should persist entreprises' siret", async () => {
-            await cli.getAndParse();
+            await cli.import();
             // @ts-expect-error: access protected for test
             const data = (await uniteLegalEntreprisePort.collection.find({}).toArray()).map(object => ({
                 ...object,

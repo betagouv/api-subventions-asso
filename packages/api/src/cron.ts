@@ -9,7 +9,7 @@ import { DEV } from "./configurations/env.conf";
 import { RgpdCron } from "./interfaces/cron/Rgpd.cron";
 import { StatsCron } from "./interfaces/cron/Stats.cron";
 import { SearchCacheCron } from "./interfaces/cron/SearchCache.cron";
-import { SireneStockUniteLegaleCron } from "./interfaces/cron/sireneStockUniteLegale.cron";
+import { SireneStockUniteLegaleCron } from "./interfaces/cron/SireneStockUniteLegale.cron";
 
 const controllers: CronController[] = [
     // ExampleCron,

@@ -18,8 +18,8 @@ describe("SireneStockUniteLegaleCli", () => {
             mockGetAndParse.mockRestore();
         });
 
-        it("should call service's getAndParse", async () => {
-            await sireneCli.getAndParse();
+        it("should call service's import", async () => {
+            await sireneCli.import();
             expect(sireneStockUniteLegaleFileService.getAndParse).toHaveBeenCalled();
         });
     });
