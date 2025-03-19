@@ -114,7 +114,7 @@ export default class OsirisCli {
         await dataLogService.addLog(osirisService.provider.id, file, new Date());
     }
 
-    private async _parseRequest(contentFile: Buffer, year: number, logs: unknown[]) {
+    async _parseRequest(contentFile: Buffer, year: number, logs: unknown[]) {
         const requests = OsirisParser.parseRequests(contentFile, year);
         let nbErrors = 0;
 
@@ -154,7 +154,7 @@ export default class OsirisCli {
         `);
     }
 
-    private async _parseAction(contentFile: Buffer, year: number, logs: unknown[]) {
+    async _parseAction(contentFile: Buffer, year: number, logs: unknown[]) {
         const actions = OsirisParser.parseActions(contentFile, year);
         let nbErrors = 0;
 
