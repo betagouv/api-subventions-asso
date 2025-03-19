@@ -120,6 +120,9 @@ export class AuthService {
         if (!redirection) return goToUrl("/");
         localStorageService.removeItem("redirectUrl");
         const { url, setDate } = redirection;
+
+        // we only redirect if redirection has been required soon before the actual reloading
+        // if it is old we guess the user no longer wants it
         const soonBefore = new Date();
         soonBefore.setHours(soonBefore.getHours() - 1);
 
