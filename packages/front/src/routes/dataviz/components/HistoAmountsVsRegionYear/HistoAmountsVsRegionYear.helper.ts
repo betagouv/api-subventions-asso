@@ -54,7 +54,7 @@ export function createHistoAmountsVsRegionYear(
         .attr("dy", "0.5em");
 
     // Ajout de l'axe Y
-    svgElement.append("g").call(d3.axisLeft(y));
+    svgElement.append("g").call(d3.axisLeft(y)).selectAll("text").style("font-family", "Marianne");
 
     // Création des barres
     svgElement
