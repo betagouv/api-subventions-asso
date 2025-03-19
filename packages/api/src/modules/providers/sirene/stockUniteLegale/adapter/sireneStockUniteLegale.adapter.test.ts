@@ -2,12 +2,13 @@ import { ObjectId } from "mongodb";
 import { DTOS, DBOS, ENTITIES } from "../../__fixtures__/sireneStockUniteLegale.fixture";
 import SireneStockUniteLegaleAdapter from "../adapter/sireneStockUniteLegale.adapter";
 
-jest.mock("~/dataProviders/db/uniteLegalName/UniteLegalName.adapter", () => ({
-    UniteLegalNameAdapter: class UniteLegalNameAdapter {
+jest.mock("../../../../../dataProviders/db/uniteLegalName/UniteLegalName.adapter", () => ({
+    default: class UniteLegalNameAdapter {
         static buildSearchKey(a, b) {
             return `${a} +++ ${b}`;
         }
     },
+    __esModule: true,
 }));
 
 describe("SireneStockUniteLegaleAdapter", () => {
