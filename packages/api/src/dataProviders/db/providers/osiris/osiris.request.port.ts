@@ -19,6 +19,9 @@ export class OsirisRequestPort extends MongoPort<OsirisRequestEntity> {
         return this.collection.insertOne(osirisRequest);
     }
 
+    /*
+     * @deprecated
+     * */
     public async update(osirisRequest: OsirisRequestEntity) {
         const options = { returnDocument: "after", includeResultMetadata: true } as FindOneAndUpdateOptions;
         const { _id, ...requestWithoutId } = osirisRequest;
@@ -29,6 +32,30 @@ export class OsirisRequestPort extends MongoPort<OsirisRequestEntity> {
         );
         //@ts-expect-error -- mongo typing expects no metadata
         return updateRes?.value as OsirisRequestEntity;
+    }
+
+    public upsertOne(osirisRequest: OsirisRequestEntity) {
+        const options = { upsert: true } as FindOneAndUpdateOptions;
+        const { _id, ...requestWithoutId } = osirisRequest;
+        return this.collection.updateOne(
+            { "providerInformations.uniqueId": osirisRequest.providerInformations.uniqueId },
+            { $set: requestWithoutId },
+            options,
+        );
+    }
+
+    public async bulkUpsert(osirisRequests: OsirisRequestEntity[]) {
+        const bulk = osirisRequests.map(r => {
+            const { _id, ...requestWithoutId } = r;
+            return {
+                updateOne: {
+                    filter: { "providerInformations.uniqueId": r.providerInformations.uniqueId },
+                    update: { $set: requestWithoutId },
+                    upsert: true,
+                },
+            };
+        });
+        return bulk.length ? this.collection.bulkWrite(bulk, { ordered: false }) : Promise.resolve();
     }
 
     public async findByMongoId(id: string): Promise<OsirisRequestEntity | null> {
