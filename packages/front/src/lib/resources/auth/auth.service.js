@@ -68,12 +68,12 @@ export class AuthService {
         }
     }
 
-    async logout(reload = true) {
+    async logout() {
         const { url, _success } = await authPort.logout();
         this.connectedUser.set(null);
         crispService.resetSession();
         if (PUBLIC_AGENT_CONNECT_ENABLED && url) return goToUrl(url);
-        if (reload) return goToUrl("/auth/login", false, true);
+        return goToUrl("/auth/login", false);
     }
 
     getCurrentUser() {
@@ -115,16 +115,16 @@ export class AuthService {
         // if connect with proconnect and incomplete profil - redirection to form
         const currentUser = this.getCurrentUser();
         if (currentUser && currentUser.agentConnectId && currentUser.profileToComplete) {
-            return goToUrl("/auth/signup-ac", true, true);
+            return goToUrl("/auth/signup-ac");
         }
-        if (!redirection) return goToUrl("/", true, true);
+        if (!redirection) return goToUrl("/");
         localStorageService.removeItem("redirectUrl");
         const { url, setDate } = redirection;
         const soonBefore = new Date();
         soonBefore.setHours(soonBefore.getHours() - 1);
 
         if (new Date(setDate) < soonBefore) return goToUrl("/", true, true);
-        return goToUrl(url, true, true);
+        return goToUrl(url);
     }
 
     validateToken(token) {

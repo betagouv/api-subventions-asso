@@ -357,12 +357,7 @@ describe("authService", () => {
 
         it("redirects to login page", async () => {
             await authService.logout();
-            expect(goToUrl).toHaveBeenCalledWith("/auth/login", false, true);
-        });
-
-        it("does not redirect to login page according to arg", async () => {
-            await authService.logout(false);
-            expect(goToUrl).not.toHaveBeenCalled();
+            expect(goToUrl).toHaveBeenCalledWith("/auth/login", false);
         });
 
         it("does not redirect to received URL if PUBLIC_AGENT_CONNECT_ENABLED is off", async () => {
@@ -417,7 +412,7 @@ describe("authService", () => {
 
         it("if no redirect url return to /", () => {
             authService.redirectAfterLogin();
-            expect(vi.mocked(goToUrl)).toHaveBeenCalledWith("/", true, true);
+            expect(vi.mocked(goToUrl)).toHaveBeenCalledWith("/");
         });
 
         it("removes saved redirect url", () => {
@@ -438,7 +433,7 @@ describe("authService", () => {
                 value: { setDate: new Date(), url: URL },
             });
             authService.redirectAfterLogin();
-            expect(vi.mocked(goToUrl)).toHaveBeenCalledWith(URL, true, true);
+            expect(vi.mocked(goToUrl)).toHaveBeenCalledWith(URL);
         });
     });
 });
