@@ -25,13 +25,13 @@ export class OsirisActionPort extends MongoPort<OsirisActionEntityDbo> {
         const options: FindOneAndUpdateOptions = { returnDocument: "after", includeResultMetadata: true };
         const { _id, ...actionWithoutId } = OsirisActionAdapter.toDbo(osirisAction);
         const dbo =
-            //@ts-expect-error -- mongo typing expects no metadata
             (
                 await this.collection.findOneAndUpdate(
                     { "indexedInformations.osirisActionId": osirisAction.indexedInformations.osirisActionId },
                     { $set: actionWithoutId },
                     options,
                 )
+                //@ts-expect-error -- mongo typing expects no metadata
             )?.value;
         if (!dbo) throw new MongoCnxError();
         return OsirisActionAdapter.toEntity(dbo);
