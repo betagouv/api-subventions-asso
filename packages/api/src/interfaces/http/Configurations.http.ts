@@ -1,6 +1,6 @@
 import { AddEmailDomainDto, GetEmailDomainsDto, MainInfoBannerDto } from "dto";
 import { Controller, Get, Post, Route, Security, Tags, Response, Body, SuccessResponse } from "tsoa";
-import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
+import { HttpErrorInterface } from "core";
 import configurationsService from "../../modules/configurations/configurations.service";
 
 @Route("/config")

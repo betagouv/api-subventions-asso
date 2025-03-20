@@ -1,16 +1,10 @@
 import { ObjectId } from "mongodb";
 import * as RandToken from "rand-token";
 import { ResetPasswordErrorCodes, TokenValidationDtoResponse, TokenValidationType, UserDto } from "dto";
+import { BadRequestError, InternalServerError, NotFoundError, ResetTokenNotFoundError, UserNotFoundError } from "core";
 import userPort from "../../../../dataProviders/db/user/user.port";
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import UserReset from "../../entities/UserReset";
-import {
-    BadRequestError,
-    InternalServerError,
-    NotFoundError,
-    ResetTokenNotFoundError,
-    UserNotFoundError,
-} from "../../../../shared/errors/httpErrors";
 import userResetPort from "../../../../dataProviders/db/user/user-reset.port";
 import notifyService from "../../../notify/notify.service";
 import userAuthService from "../auth/user.auth.service";

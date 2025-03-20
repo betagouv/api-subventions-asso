@@ -1,8 +1,8 @@
 import { SimplifiedEtablissement } from "dto";
 import csvStringifier = require("csv-stringify/sync");
+import { BadRequestError } from "core";
 import { StructureIdentifier } from "../../@types";
 import associationsService from "../associations/associations.service";
-import { BadRequestError } from "../../shared/errors/httpErrors";
 import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
 import GrantAdapter from "./grant.adapter";

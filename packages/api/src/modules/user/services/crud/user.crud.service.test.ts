@@ -48,7 +48,7 @@ import * as portHelper from "../../../../shared/helpers/PortHelper";
 
 jest.mock("../../../../shared/helpers/PortHelper");
 
-import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
+import { DuplicateIndexError } from "core";
 
 jest.mock("../../../configurations/configurations.service");
 import { ObjectId } from "mongodb";

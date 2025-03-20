@@ -11,7 +11,7 @@ import {
     AssociationIdentifierDto,
 } from "dto";
 import { Route, Get, Controller, Tags, Security, Response, Produces, Middlewares, Path, Request, Hidden } from "tsoa";
-import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
+import { HttpErrorInterface, NotAssociationError } from "core";
 
 import associationService from "../../modules/associations/associations.service";
 import grantService from "../../modules/grant/grant.service";
@@ -19,7 +19,6 @@ import { JoinedRawGrant } from "../../modules/grant/@types/rawGrant";
 import associationIdentifierService from "../../modules/association-identifier/association-identifier.service";
 import grantExtractService from "../../modules/grant/grantExtract.service";
 import { errorHandler } from "../../middlewares/ErrorMiddleware";
-import NotAssociationError from "../../shared/errors/NotAssociationError";
 
 export async function isAssoIdentifierFromAssoMiddleware(req, _res, next) {
     /*

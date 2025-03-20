@@ -1,5 +1,5 @@
 import { MainInfoBannerDto } from "dto";
-import { BadRequestError, ConflictError } from "../../shared/errors/httpErrors";
+import { BadRequestError, ConflictError } from "core";
 import { REGEX_MAIL_DOMAIN } from "../user/user.constant";
 import configurationsPort from "../../dataProviders/db/configurations/configurations.port";
 import { DauphinTokenDataEntity, DauphinTokenAvailableTime } from "./entities";

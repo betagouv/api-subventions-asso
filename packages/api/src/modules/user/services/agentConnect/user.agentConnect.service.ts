@@ -1,6 +1,7 @@
 import { FutureUserDto, UpdatableUser, UserDto, UserWithJWTDto } from "dto";
 import { Client, generators, Issuer, TokenSet } from "openid-client";
 import { ObjectId } from "mongodb";
+import { BadRequestError, InternalServerError, DuplicateIndexError } from "core";
 import userPort from "../../../../dataProviders/db/user/user.port";
 import userAuthService from "../auth/user.auth.service";
 import notifyService from "../../../notify/notify.service";
@@ -9,8 +10,6 @@ import { NotificationType } from "../../../notify/@types/NotificationType";
 import { AgentConnectUser } from "../../@types/AgentConnectUser";
 import userCrudService from "../crud/user.crud.service";
 import { RoleEnum } from "../../../../@enums/Roles";
-import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
-import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
 import { removeHashPassword, removeSecrets } from "../../../../shared/helpers/PortHelper";
 import configurationsService from "../../../configurations/configurations.service";
 import { applyValidations, ValidationResult } from "../../../../shared/helpers/validation.helper";

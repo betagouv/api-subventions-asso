@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ValidateError } from "tsoa";
-import HttpError from "../shared/errors/httpErrors/HttpError";
+import { HttpError } from "core";
 
 export function errorHandler(isTest: boolean) {
     return function (err: unknown, req: Request, res: Response, next: NextFunction): Response | void {

@@ -8,7 +8,7 @@ import paymentService from "../payments/payments.service";
 import documentsService from "../documents/documents.service";
 import Flux from "../../shared/Flux";
 import { SubventionsFlux } from "../subventions/@types/SubventionsFlux";
-import { NotFoundError } from "../../shared/errors/httpErrors";
+import { NotFoundError } from "core";
 import apiAssoService from "../providers/apiAsso/apiAsso.service";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import uniteLegalEntreprisesService from "../providers/uniteLegalEntreprises/uniteLegal.entreprises.service";

@@ -1,6 +1,7 @@
 import { ProviderValues, Association } from "dto";
 
 import * as Sentry from "@sentry/node";
+import { NotFoundError } from "core";
 import { DefaultObject, StructureIdentifier } from "../../@types";
 
 import providers from "../providers";
@@ -13,7 +14,6 @@ import documentsService from "../documents/documents.service";
 import paymentService from "../payments/payments.service";
 import subventionsService from "../subventions/subventions.service";
 import etablissementService from "../etablissements/etablissements.service";
-import { NotFoundError } from "../../shared/errors/httpErrors";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import uniteLegalEntreprisesService from "../providers/uniteLegalEntreprises/uniteLegal.entreprises.service";
 import apiAssoService from "../providers/apiAsso/apiAsso.service";

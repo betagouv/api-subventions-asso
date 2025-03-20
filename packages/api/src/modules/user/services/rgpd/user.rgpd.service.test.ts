@@ -15,7 +15,7 @@ import userCrudService from "../crud/user.crud.service";
 jest.mock("../crud/user.crud.service");
 const mockedUserCrudService = jest.mocked(userCrudService);
 import { ANONYMIZED_USER, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
-import { NotFoundError } from "../../../../shared/errors/httpErrors";
+import { NotFoundError } from "core";
 import { ObjectId } from "mongodb";
 import userResetPort from "../../../../dataProviders/db/user/user-reset.port";
 

@@ -1,5 +1,5 @@
 import userCheckService from "./user.check.service";
-import { BadRequestError } from "../../../../shared/errors/httpErrors";
+import { BadRequestError } from "core";
 import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
 import configurationsService from "../../../configurations/configurations.service";
 jest.mock("../../../configurations/configurations.service");

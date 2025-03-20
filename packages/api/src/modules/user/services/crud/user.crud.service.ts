@@ -1,4 +1,5 @@
 import { FutureUserDto, SignupErrorCodes, UserDto, UserWithJWTDto, UserWithResetTokenDto } from "dto";
+import { BadRequestError, InternalServerError, NotFoundError, DuplicateIndexError } from "core";
 import { DefaultObject } from "../../../../@types";
 import userPort from "../../../../dataProviders/db/user/user.port";
 import userCheckService from "../check/user.check.service";
@@ -9,13 +10,11 @@ import { NotificationType } from "../../../notify/@types/NotificationType";
 import { RoleEnum } from "../../../../@enums/Roles";
 import userAuthService from "../auth/user.auth.service";
 import { UserNotPersisted } from "../../../../dataProviders/db/user/UserDbo";
-import { BadRequestError, InternalServerError, NotFoundError } from "../../../../shared/errors/httpErrors";
 import userConsumerService from "../consumer/user.consumer.service";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import userActivationService from "../activation/user.activation.service";
 import { removeSecrets } from "../../../../shared/helpers/PortHelper";
 import { UserServiceErrors } from "../../user.enum";
-import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 import { getNewJwtExpireDate } from "../../user.helper";
 
 export class UserCrudService {
