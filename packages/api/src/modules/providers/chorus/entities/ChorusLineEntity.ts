@@ -7,6 +7,12 @@ import { ChorusLineDto } from "../adapters/chorusLineDto";
 export default class ChorusLineEntity {
     public provider = "Chorus";
 
+    private static santitizeFloat = value => {
+        if (!value || typeof value === "number") return value;
+
+        return parseFloat(value.replaceAll("\r", "").replaceAll(" ", "").replaceAll(",", "."));
+    };
+
     public static indexedInformationsPath: { [key: string]: ParserInfo } = {
         // TODO <string|number>
         ej: {
@@ -23,11 +29,7 @@ export default class ChorusLineEntity {
         codeSociete: { path: ["Société"] },
         exercice: {
             path: ["Exercice comptable"],
-            adapter: value => {
-                if (!value || typeof value === "number") return value;
-
-                return parseFloat(value.replaceAll("\r", "").replaceAll(" ", "").replaceAll(",", "."));
-            },
+            adapter: ChorusLineEntity.santitizeFloat,
         },
         numeroTier: { path: ["Fournisseur payé (DP)"] },
         centreFinancier: { path: ["Centre financier"] },
@@ -36,11 +38,7 @@ export default class ChorusLineEntity {
         codeDomaineFonctionnel: { path: ["Domaine fonctionnel CODE"] },
         amount: {
             path: [["EUR", "Montant payé"]],
-            adapter: value => {
-                if (!value || typeof value === "number") return value;
-
-                return parseFloat(value.replaceAll("\r", "").replaceAll(" ", "").replaceAll(",", "."));
-            },
+            adapter: ChorusLineEntity.santitizeFloat,
         },
         dateOperation: {
             path: ["Date de dernière opération sur la DP"],
