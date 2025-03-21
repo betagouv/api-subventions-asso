@@ -38,7 +38,7 @@ export default class ActivateAccountController {
             .activate(this.token, noConfirmValues)
             .then(() => {
                 trackerService.buttonClickEvent("activate.form.step.submit-success");
-                goToUrl("/?success=ACCOUNT_ACTIVATED", true, true);
+                goToUrl("/?success=ACCOUNT_ACTIVATED");
             })
             .catch(e => {
                 trackerService.buttonClickEvent("activate.form.submit-error", e?.message);

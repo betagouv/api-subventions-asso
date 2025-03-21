@@ -90,7 +90,7 @@ describe("ResetPwdController", () => {
             ctrl.activation = active;
             const expected = `/?success=${queryParam}`;
             await ctrl.onSubmit();
-            expect(goToUrl).toBeCalledWith(expected, true, true);
+            expect(goToUrl).toBeCalledWith(expected);
         });
 
         it("catches promise rejection", async () => {

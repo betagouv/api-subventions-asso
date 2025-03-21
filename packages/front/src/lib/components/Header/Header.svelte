@@ -6,7 +6,7 @@
     import Button from "$lib/dsfr/Button.svelte";
     import { version } from "$app/environment";
 
-    const user = authService.getCurrentUser();
+    const user = authService.getCurrentUserStore();
     const { getName, getDescription, getEnv } = getContext<typeof AppContext>("app");
     const name = getName();
     const description = getDescription();
@@ -75,14 +75,14 @@
                                     Paramètres d'affichage
                                 </button>
                             </li>
-                            {#if user?.roles?.includes("admin")}
+                            {#if $user?.roles?.includes("admin")}
                                 <li>
                                     <a class="fr-btn fr-link--icon-right" href="/admin" title="admin" rel="noopener">
                                         Admin
                                     </a>
                                 </li>
                             {/if}
-                            {#if user}
+                            {#if $user}
                                 <li>
                                     <Button
                                         on:click={controller.logout}

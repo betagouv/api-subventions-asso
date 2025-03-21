@@ -45,7 +45,7 @@ describe("ActivateAccountController", () => {
         it("should redirect to successful login", async () => {
             controller = new ActivateAccountController(FAKE_TOKEN);
             await controller.onSubmit(USER);
-            expect(goToUrl).toHaveBeenCalledWith("/?success=ACCOUNT_ACTIVATED", true, true);
+            expect(goToUrl).toHaveBeenCalledWith("/?success=ACCOUNT_ACTIVATED");
         });
 
         it("tracks successful submits", async () => {
