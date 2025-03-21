@@ -1,9 +1,9 @@
 import { ObjectId } from "mongodb";
 import { FutureUserDto } from "dto";
+import { InternalServerError, NotFoundError } from "core";
 import userCrudService from "../crud/user.crud.service";
 import userAuthService from "../auth/user.auth.service";
 import { RoleEnum } from "../../../../@enums/Roles";
-import { InternalServerError, NotFoundError } from "../../../../shared/errors/httpErrors";
 import { ConsumerToken } from "../../entities/ConsumerToken";
 import consumerTokenPort from "../../../../dataProviders/db/user/consumer-token.port";
 import { UserServiceErrors } from "../../user.enum";

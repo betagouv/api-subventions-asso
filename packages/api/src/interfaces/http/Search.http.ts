@@ -1,6 +1,6 @@
 import { Controller, Get, Response, Route, Security, Tags, Query, Path } from "tsoa";
 import { PaginatedAssociationNameDto } from "dto";
-import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
+import { HttpErrorInterface } from "core";
 
 import searchService from "../../modules/search/search.service";
 

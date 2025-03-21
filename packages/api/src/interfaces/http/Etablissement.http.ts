@@ -10,13 +10,12 @@ import {
     SiretDto,
 } from "dto";
 import { Route, Get, Controller, Tags, Security, Response, Produces, Middlewares, Hidden, Request } from "tsoa";
+import { NotAssociationError, HttpErrorInterface } from "core";
 import etablissementService from "../../modules/etablissements/etablissements.service";
-import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
 import establishmentIdentifierService from "../../modules/establishment-identifier/establishment-identifier.service";
 import grantExtractService from "../../modules/grant/grantExtract.service";
 import { errorHandler } from "../../middlewares/ErrorMiddleware";
 import associationService from "../../modules/associations/associations.service";
-import NotAssociationError from "../../shared/errors/NotAssociationError";
 
 export async function isEtabIdentifierFromAssoMiddleware(req, _res, next) {
     /*

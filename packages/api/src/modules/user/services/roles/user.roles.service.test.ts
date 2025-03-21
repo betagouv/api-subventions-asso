@@ -1,5 +1,5 @@
 import { RoleEnum } from "../../../../@enums/Roles";
-import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
+import { BadRequestError, InternalServerError } from "core";
 import userRolesService from "./user.roles.service";
 import userPort from "../../../../dataProviders/db/user/user.port";
 import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";

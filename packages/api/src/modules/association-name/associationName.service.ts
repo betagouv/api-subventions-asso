@@ -1,10 +1,10 @@
+import { NotAssociationError } from "core";
 import uniteLegalNameService from "../providers/uniteLegalName/uniteLegal.name.service";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
 import Rna from "../../valueObjects/Rna";
 import Siren from "../../valueObjects/Siren";
 import rechercheEntreprisesService from "../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.service";
-import NotAssociationError from "../../shared/errors/NotAssociationError";
 import AssociationNameEntity from "./entities/AssociationNameEntity";
 
 export class AssociationNameService {

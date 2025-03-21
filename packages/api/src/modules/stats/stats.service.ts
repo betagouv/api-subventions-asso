@@ -1,7 +1,7 @@
 import { ObjectId, WithId } from "mongodb";
 import { RnaDto, SirenDto, UserCountByStatus } from "dto";
+import { BadRequestError } from "core";
 import { firstDayOfPeriod, isValidDate, oneYearAfterPeriod } from "../../shared/helpers/DateHelper";
-import { BadRequestError } from "../../shared/errors/httpErrors";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";
 import associationNameService from "../association-name/associationName.service";
 import userPort from "../../dataProviders/db/user/user.port";

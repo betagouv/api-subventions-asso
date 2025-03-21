@@ -1,5 +1,5 @@
 import { AdminTerritorialLevel, AgentTypeEnum } from "dto";
-import { BadRequestError } from "../../shared/errors/httpErrors";
+import { BadRequestError } from "core";
 import { GenericParser } from "../../shared/GenericParser";
 import AdminStructureEntity from "./entities/AdminStructureEntity";
 

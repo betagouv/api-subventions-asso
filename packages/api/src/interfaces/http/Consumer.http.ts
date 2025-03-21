@@ -1,8 +1,8 @@
 import { ConsumerTokenDtoPositiveResponse, ConsumerTokenDtoResponse, UserDto } from "dto";
 import { Controller, Get, Route, Security, Tags, Response, Request, Post, Body } from "tsoa";
+import { HttpErrorInterface } from "core";
 import { RoleEnum } from "../../@enums/Roles";
 import { IdentifiedRequest } from "../../@types";
-import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
 import userConsumerService from "../../modules/user/services/consumer/user.consumer.service";
 import userCrudService from "../../modules/user/services/crud/user.crud.service";
 

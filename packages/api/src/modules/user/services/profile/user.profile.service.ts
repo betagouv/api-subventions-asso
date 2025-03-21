@@ -10,8 +10,8 @@ import {
     UserActivationInfoDto,
     UserDto,
 } from "dto";
+import { BadRequestError, UserNotFoundError } from "core";
 import { isInObjectValues } from "../../../../shared/Validators";
-import { BadRequestError, UserNotFoundError } from "../../../../shared/errors/httpErrors";
 import { joinEnum } from "../../../../shared/helpers/ArrayHelper";
 import userCheckService, { UserCheckService } from "../check/user.check.service";
 import { sanitizeToPlainText } from "../../../../shared/helpers/StringHelper";

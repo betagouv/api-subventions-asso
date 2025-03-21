@@ -1,5 +1,5 @@
 import { AgentTypeEnum } from "dto";
-import { BadRequestError } from "../../shared/errors/httpErrors";
+import { BadRequestError } from "core";
 import adminStructurePort from "../../dataProviders/db/admin-structure/adminStructure.port";
 import AdminStructureEntity from "./entities/AdminStructureEntity";
 

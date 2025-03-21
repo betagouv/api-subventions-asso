@@ -1,5 +1,5 @@
 import qs from "qs";
-import StructureIdentifiersError from "../../../shared/errors/StructureIdentifierError";
+import { StructureIdentifiersError } from "core";
 import apiEntrepriseService from "./apiEntreprise.service";
 import Siren from "../../../valueObjects/Siren";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";

@@ -10,7 +10,7 @@ import OsirisRequestEntityFixture from "../../modules/providers/osiris/__fixture
 import { compareByValueBuilder } from "../../../src/shared/helpers/ArrayHelper";
 import statsService from "../../../src/modules/stats/stats.service";
 import { siretToSiren } from "../../../src/shared/helpers/SirenHelper";
-import { BadRequestError } from "../../../src/shared/errors/httpErrors";
+import { BadRequestError } from "core";
 import associationsService from "../../../src/modules/associations/associations.service";
 import rnaSirenPort from "../../../src/dataProviders/db/rnaSiren/rnaSiren.port";
 import { JoinedRawGrant, RawGrant } from "../../../src/modules/grant/@types/rawGrant";

@@ -1,7 +1,7 @@
 import { UserDto } from "dto";
+import { BadRequestError, InternalServerError } from "core";
 import { RoleEnum } from "../../../../@enums/Roles";
 import userPort from "../../../../dataProviders/db/user/user.port";
-import { BadRequestError, InternalServerError } from "../../../../shared/errors/httpErrors";
 import { UserServiceErrors } from "../../user.enum";
 
 export class UserRolesService {

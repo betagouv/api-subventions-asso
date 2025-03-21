@@ -1,12 +1,12 @@
 import lodash from "lodash";
 import { DemandeSubvention } from "dto";
+import { InternalServerError } from "core";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DEMARCHES_SIMPLIFIEES_TOKEN } from "../../../configurations/apis.conf";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import { DefaultObject, StructureIdentifier } from "../../../@types";
-import { InternalServerError } from "../../../shared/errors/httpErrors";
 import ProviderCore from "../ProviderCore";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";

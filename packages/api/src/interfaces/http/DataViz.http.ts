@@ -1,6 +1,6 @@
 import { Controller, Get, Route, Security, Tags, Response } from "tsoa";
 import { GetAmountsVsProgramRegionResponseDto } from "dto";
-import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
+import { HttpErrorInterface } from "core";
 import amountsVsProgramRegionService from "../../modules/dataViz/amountsVsProgramRegion/amountsVsProgramRegion.service";
 
 @Route("dataviz")

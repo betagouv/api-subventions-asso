@@ -31,7 +31,7 @@ import {
     USER_SECRETS,
     USER_WITHOUT_SECRET,
 } from "../../__fixtures__/user.fixture";
-import { BadRequestError, UnauthorizedError } from "../../../../shared/errors/httpErrors";
+import { BadRequestError, UnauthorizedError, LoginError } from "core";
 
 jest.mock("../../../../dataProviders/db/user/user.port");
 import * as portHelper from "../../../../shared/helpers/PortHelper";
@@ -41,7 +41,6 @@ jest.mock("../../../../shared/helpers/PortHelper", () => ({
     uniformizeId: jest.fn(token => token),
 }));
 import userCheckService, { UserCheckService } from "../check/user.check.service";
-import LoginError from "../../../../shared/errors/LoginError";
 import UserReset from "../../entities/UserReset";
 
 jest.mock("../check/user.check.service");

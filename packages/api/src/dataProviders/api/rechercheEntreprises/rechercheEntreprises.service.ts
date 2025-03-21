@@ -1,6 +1,6 @@
+import { NotAssociationError } from "core";
 import associationsService from "../../../modules/associations/associations.service";
 import AssociationNameEntity from "../../../modules/association-name/entities/AssociationNameEntity";
-import NotAssociationError from "../../../shared/errors/NotAssociationError";
 import rechercheEntreprisesPort from "./rechercheEntreprises.port";
 import { RechercheEntreprisesResultDto } from "./RechercheEntreprisesDto";
 import { RechercheEntreprisesAdapter } from "./RechercheEntreprisesAdapter";

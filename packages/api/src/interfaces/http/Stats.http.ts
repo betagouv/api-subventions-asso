@@ -6,8 +6,8 @@ import {
     UsersByStatusResponseDto,
 } from "dto";
 import { Controller, Get, Query, Route, Security, Tags } from "tsoa";
+import { BadRequestError } from "core";
 import statsService from "../../modules/stats/stats.service";
-import { BadRequestError } from "../../shared/errors/httpErrors";
 
 @Route("stats")
 @Security("jwt", ["admin"])

@@ -4,7 +4,7 @@ import etablissementService from "../../../src/modules/etablissements/etablissem
 import statsService from "../../../src/modules/stats/stats.service";
 import { siretToSiren } from "../../../src/shared/helpers/SirenHelper";
 import associationsService from "../../../src/modules/associations/associations.service";
-import { BadRequestError } from "../../../src/shared/errors/httpErrors";
+import { BadRequestError } from "core";
 import OsirisRequestEntityFixture from "../../modules/providers/osiris/__fixtures__/entity";
 import { osirisRequestPort } from "../../../src/dataProviders/db/providers/osiris";
 import DEFAULT_ASSOCIATION, { LONELY_RNA, SIRET_STR } from "../../__fixtures__/association.fixture";

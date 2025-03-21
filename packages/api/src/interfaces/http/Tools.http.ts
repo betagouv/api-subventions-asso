@@ -1,7 +1,7 @@
 import { Readable } from "stream";
 import { Controller, FormField, Post, Route, Security, Tags, UploadedFile } from "tsoa";
 import csvSyncStringifier = require("csv-stringify/sync");
-import { BadRequestError } from "../../shared/errors/httpErrors";
+import { BadRequestError } from "core";
 import scdlService from "../../modules/providers/scdl/scdl.service";
 
 @Route("tools")
