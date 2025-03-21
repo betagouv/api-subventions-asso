@@ -1,6 +1,5 @@
 import rnaSirenPort from "../dataProviders/db/rnaSiren/rnaSiren.port";
 import uniteLegalEntreprisePort from "../dataProviders/db/uniteLegalEntreprise/uniteLegalEntreprise.port";
-import uniteLegalImportsPort from "../dataProviders/db/uniteLegalImports/uniteLegalImports.port";
 import uniteLegalNamePort from "../dataProviders/db/uniteLegalName/uniteLegalName.port";
 import configurationsPort from "../dataProviders/db/configurations/configurations.port";
 import statsPort from "../dataProviders/db/stats/stats.port";
@@ -52,7 +51,6 @@ export const portsWithIndexes = [
     statsAssociationsVisitPort,
     rnaSirenPort,
     uniteLegalEntreprisePort,
-    uniteLegalImportsPort,
     uniteLegalNamePort,
     paymentFlatPort,
     sireneStockUniteLegalePort,

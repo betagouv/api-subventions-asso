@@ -2,6 +2,15 @@ import { ObjectId } from "mongodb";
 import { DTOS, DBOS, ENTITIES } from "../../__fixtures__/sireneStockUniteLegale.fixture";
 import SireneStockUniteLegaleAdapter from "../adapter/sireneStockUniteLegale.adapter";
 
+jest.mock("../../../../../dataProviders/db/uniteLegalName/UniteLegalName.adapter", () => ({
+    default: class UniteLegalNameAdapter {
+        static buildSearchKey(a, b) {
+            return `${a} +++ ${b}`;
+        }
+    },
+    __esModule: true,
+}));
+
 describe("SireneStockUniteLegaleAdapter", () => {
     describe("dtoToEntity", () => {
         it("should return a SireneStockUniteLegaleEntity", () => {
@@ -16,6 +25,13 @@ describe("SireneStockUniteLegaleAdapter", () => {
             const expected = DBOS[0];
             const actual = SireneStockUniteLegaleAdapter.entityToDbo(ENTITIES[0]);
             expect(actual).toEqual({ ...expected, _id: expect.any(ObjectId) });
+        });
+    });
+
+    describe("entityToUniteLegaleNameEntity", () => {
+        it("should return a SireneStockUniteLegaleEntity", () => {
+            const actual = SireneStockUniteLegaleAdapter.entityToUniteLegaleNameEntity(ENTITIES[0]);
+            expect(actual).toMatchSnapshot();
         });
     });
 });

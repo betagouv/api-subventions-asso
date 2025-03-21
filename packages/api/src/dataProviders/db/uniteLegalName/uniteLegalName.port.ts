@@ -1,7 +1,5 @@
-import { InsertOneResult } from "mongodb";
+import { AnyBulkWriteOperation } from "mongodb";
 import UniteLegalNameEntity from "../../../entities/UniteLegalNameEntity";
-import ExecutionSyncStack from "../../../shared/ExecutionSyncStack";
-import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../shared/helpers/MongoHelper";
 import MongoPort from "../../../shared/MongoPort";
 import Siren from "../../../valueObjects/Siren";
 import UniteLegalNameAdapter from "./UniteLegalName.adapter";
@@ -9,15 +7,6 @@ import UniteLegalNameDbo from "./UniteLegalNameDbo";
 
 export class UniteLegalNamePort extends MongoPort<UniteLegalNameDbo> {
     collectionName = "unite-legal-names";
-
-    private insertSirenStack: ExecutionSyncStack<UniteLegalNameDbo, InsertOneResult>;
-
-    constructor() {
-        super();
-        this.insertSirenStack = new ExecutionSyncStack(entity => {
-            return this.collection.insertOne(entity);
-        });
-    }
 
     async createIndexes() {
         await this.collection.createIndex({ searchKey: 1 }, { unique: true });
@@ -49,12 +38,28 @@ export class UniteLegalNamePort extends MongoPort<UniteLegalNameDbo> {
         return UniteLegalNameAdapter.toEntity(dbo);
     }
 
-    insert(entity: UniteLegalNameEntity) {
-        // Use stack because, sometimes to upsert on same entity as executed at the same time, please read : https://jira.mongodb.org/browse/SERVER-14322
-        return this.insertSirenStack.addOperation(UniteLegalNameAdapter.toDbo(entity)).catch(error => {
-            if (isMongoDuplicateError(error)) throw buildDuplicateIndexError<UniteLegalNameDbo>(error);
-            return error;
-        });
+    upsert(entity: UniteLegalNameEntity) {
+        return this.collection.updateOne(
+            { searchKey: entity.searchKey },
+            { $set: UniteLegalNameAdapter.toDbo(entity) },
+            {
+                upsert: true,
+            },
+        );
+    }
+
+    public upsertMany(entities: UniteLegalNameEntity[]) {
+        const operations = entities.map(
+            e =>
+                ({
+                    updateOne: {
+                        filter: { searchKey: e.searchKey },
+                        update: { $set: UniteLegalNameAdapter.toDbo(e) },
+                        upsert: true,
+                    },
+                } as AnyBulkWriteOperation<UniteLegalNameDbo>),
+        );
+        return this.collection.bulkWrite(operations);
     }
 }
 

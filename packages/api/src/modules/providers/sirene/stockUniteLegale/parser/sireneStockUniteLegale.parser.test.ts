@@ -15,8 +15,13 @@ jest.mock("fs", () => {
 });
 
 jest.mock("csv-parse");
+jest.mock("../adapter/sireneStockUniteLegale.adapter");
+jest.mock("../sireneStockUniteLegale.service");
+jest.mock("../../../uniteLegalEntreprises/uniteLegal.entreprises.service");
+jest.mock("../../../../../entities/UniteLegalEntrepriseEntity");
 
 const NUMBER_DTOS_BEING_ASSOCIATIONS = 2;
+const NUMBER_DTOS_TO_SAVE = 3;
 
 describe("SireneStockUniteLegaleParser", () => {
     describe("filePathValidator", () => {
@@ -43,18 +48,19 @@ describe("SireneStockUniteLegaleParser", () => {
 
     describe("parseCsvAndInsert", () => {
         let mockFilePathValidator: jest.SpyInstance;
-        let mockDtoToEntity: jest.SpyInstance;
-        let mockEntityToDbo: jest.SpyInstance;
-        let mockIsToInclude: jest.SpyInstance;
-        let mockInsertMany: jest.SpyInstance;
+        let mockIsAsso: jest.SpyInstance;
+        let mockIsCorrect: jest.SpyInstance;
         let filePath = "file";
         let mockStream: ReadStream;
+
+        const mockSaveNonAsso = jest.fn();
+        const mockSaveAsso = jest.fn();
+
         beforeAll(() => {
-            jest.useFakeTimers();
             mockFilePathValidator = jest.spyOn(SireneStockUniteLegaleParser, "filePathValidator").mockReturnValue(true);
-            mockDtoToEntity = jest.spyOn(SireneStockUniteLegaleAdapter, "dtoToEntity").mockReturnValue(ENTITIES[0]);
-            mockEntityToDbo = jest.spyOn(SireneStockUniteLegaleAdapter, "entityToDbo").mockReturnValue(DBOS[0]);
-            mockInsertMany = jest.spyOn(sireneStockUniteLegaleService, "insertMany").mockImplementation(jest.fn());
+            jest.mocked(SireneStockUniteLegaleAdapter.dtoToEntity).mockReturnValue(ENTITIES[0]);
+            jest.mocked(SireneStockUniteLegaleAdapter.entityToDbo).mockReturnValue(DBOS[0]);
+            jest.mocked(sireneStockUniteLegaleService.insertMany).mockImplementation(jest.fn());
             mockStream = {
                 pipe: jest.fn().mockReturnThis(),
                 on: jest.fn().mockImplementation((event, cb) => {
@@ -62,6 +68,7 @@ describe("SireneStockUniteLegaleParser", () => {
                         cb(DTOS[0]);
                         cb(DTOS[1]);
                         cb(DTOS[2]);
+                        cb(DTOS[3]);
                     }
                     if (event === "end") {
                         cb();
@@ -73,69 +80,81 @@ describe("SireneStockUniteLegaleParser", () => {
                 error: jest.fn(),
             } as unknown as ReadStream;
             jest.mocked(createReadStream).mockReturnValue(mockStream);
+            mockIsAsso = jest.spyOn(SireneStockUniteLegaleParser, "isAsso");
+            mockIsCorrect = jest.spyOn(SireneStockUniteLegaleParser, "isCorrect");
         });
 
         beforeEach(() => {
-            mockIsToInclude = jest.spyOn(SireneStockUniteLegaleParser, "isToInclude").mockImplementation(() => {
-                if (mockIsToInclude.mock.calls.length <= 2) {
-                    return true;
-                }
-                return false;
-            });
+            mockIsAsso = jest
+                .spyOn(SireneStockUniteLegaleParser, "isAsso")
+                .mockImplementation(() => mockIsAsso.mock.calls.length <= 2);
+            mockIsCorrect = jest
+                .spyOn(SireneStockUniteLegaleParser, "isCorrect")
+                .mockImplementation(() => mockIsCorrect.mock.calls.length <= 3);
+        });
+
+        afterEach(() => {
+            mockIsAsso.mockRestore();
+            mockIsCorrect.mockRestore();
         });
 
         afterAll(() => {
-            jest.useRealTimers();
             jest.restoreAllMocks();
         });
 
         it("should call filePathValidator", async () => {
-            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
+            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath, mockSaveAsso, mockSaveNonAsso);
             expect(mockFilePathValidator).toHaveBeenCalledWith(filePath);
         });
 
         it("should call fs.createReadStream with the filePath", async () => {
-            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
+            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath, mockSaveAsso, mockSaveNonAsso);
             expect(fs.createReadStream).toHaveBeenCalledWith(filePath);
         });
 
         it("should call parse", async () => {
-            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
+            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath, mockSaveAsso, mockSaveNonAsso);
             expect(parse).toHaveBeenCalledTimes(1);
         });
 
-        it("should call isToInclude", async () => {
-            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
-            expect(mockIsToInclude).toHaveBeenCalledTimes(DTOS.length);
+        it("should call isCorrect", async () => {
+            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath, mockSaveAsso, mockSaveNonAsso);
+            expect(mockIsCorrect).toHaveBeenCalledTimes(DTOS.length);
         });
 
-        it("should call sireneStockUniteLegaleService.insertMany once", async () => {
+        it("should call isAsso", async () => {
+            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath, mockSaveAsso, mockSaveNonAsso);
+            expect(mockIsAsso).toHaveBeenCalledTimes(DTOS.length - 1); // one is not correct
+        });
+
+        it("should call saveAsso once", async () => {
             // 1 is equal to the number of batches + 1 computes as Math.floor(NUMBER_DTOS_BEING_ASSOCIATIONS / 1000) + 1
-            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
-            expect(mockInsertMany).toHaveBeenCalledTimes(1);
+            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath, mockSaveAsso, mockSaveNonAsso);
+            expect(mockSaveAsso).toHaveBeenCalledTimes(1);
         });
 
-        it("should call entityToDbo", async () => {
-            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
-            expect(mockEntityToDbo).toHaveBeenCalledTimes(NUMBER_DTOS_BEING_ASSOCIATIONS);
+        it("should call uniteLegalEntreprisesService.insertManyEntrepriseSiren once", async () => {
+            // 1 is equal to the number of batches + 1 computes as Math.floor(NUMBER_DTOS_BEING_ASSOCIATIONS / 1000) + 1
+            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath, mockSaveAsso, mockSaveNonAsso);
+            expect(mockSaveNonAsso).toHaveBeenCalledTimes(1);
         });
 
-        it("should call dtoToEntity", async () => {
-            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
-            expect(mockDtoToEntity).toHaveBeenCalledTimes(NUMBER_DTOS_BEING_ASSOCIATIONS);
-        });
         it("should call stream.pause", async () => {
-            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
-            expect(mockStream.pause).toHaveBeenCalledTimes(NUMBER_DTOS_BEING_ASSOCIATIONS);
+            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath, mockSaveAsso, mockSaveNonAsso);
+            expect(mockStream.pause).toHaveBeenCalledTimes(NUMBER_DTOS_TO_SAVE);
         });
 
         it("should call stream.resume", async () => {
-            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
-            expect(mockStream.resume).toHaveBeenCalledTimes(NUMBER_DTOS_BEING_ASSOCIATIONS);
+            await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath, mockSaveAsso, mockSaveNonAsso);
+            expect(mockStream.resume).toHaveBeenCalledTimes(NUMBER_DTOS_TO_SAVE);
         });
 
         it("should return undefined if no error occurs", async () => {
-            const result = await SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
+            const result = await SireneStockUniteLegaleParser.parseCsvAndInsert(
+                filePath,
+                mockSaveAsso,
+                mockSaveNonAsso,
+            );
             expect(result).toBe(undefined);
         });
 
@@ -146,23 +165,39 @@ describe("SireneStockUniteLegaleParser", () => {
                 }
                 return mockStream;
             });
-            const result = SireneStockUniteLegaleParser.parseCsvAndInsert(filePath);
+            const result = SireneStockUniteLegaleParser.parseCsvAndInsert(filePath, mockSaveAsso, mockSaveNonAsso);
             await expect(result).rejects.toThrowError("error");
         });
     });
 
-    describe("isToInclude", () => {
-        // data are to be added if belong to the LEGAL CATEFORIES ACCEPTED and if the attribute purge is ""
-        // belong DTOS[0] respect the condition and DTOS[2] does not
+    describe("isCorrect", () => {
+        // data is correct if it has not been purged. DTOS[3] is purged and DTOS[0] is not
 
         it("should return true if the data is to include", () => {
-            const actual = SireneStockUniteLegaleParser.isToInclude(DTOS[0]);
+            const actual = SireneStockUniteLegaleParser.isCorrect(DTOS[0]);
             const expected = true;
             expect(actual).toBe(expected);
         });
 
         it("should return false if the data is not to include", () => {
-            const actual = SireneStockUniteLegaleParser.isToInclude(DTOS[2]);
+            const actual = SireneStockUniteLegaleParser.isCorrect(DTOS[3]);
+            const expected = false;
+            expect(actual).toBe(expected);
+        });
+    });
+
+    describe("isAsso", () => {
+        // data is considered asso according to LEGAL CATEFORIES ACCEPTED
+        // belong DTOS[0] respect the condition and DTOS[2] does not
+
+        it("should return true if the data is to include", () => {
+            const actual = SireneStockUniteLegaleParser.isAsso(DTOS[0]);
+            const expected = true;
+            expect(actual).toBe(expected);
+        });
+
+        it("should return false if the data is not to include", () => {
+            const actual = SireneStockUniteLegaleParser.isAsso(DTOS[2]);
             const expected = false;
             expect(actual).toBe(expected);
         });

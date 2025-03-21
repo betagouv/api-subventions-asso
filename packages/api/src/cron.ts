@@ -4,18 +4,18 @@ import { CronController } from "./@types/cron";
 import { ExampleCron } from "./interfaces/cron/_Example.cron";
 import { DemarchesSimplifieesCron } from "./interfaces/cron/DemarchesSimplifiees.cron";
 import { DumpCron } from "./interfaces/cron/Dump.cron";
-import { HistoryUniteLegalCron } from "./interfaces/cron/HistoryUniteLegal.cron";
 import { DEV } from "./configurations/env.conf";
 import { RgpdCron } from "./interfaces/cron/Rgpd.cron";
 import { StatsCron } from "./interfaces/cron/Stats.cron";
 import { SearchCacheCron } from "./interfaces/cron/SearchCache.cron";
+import { SireneStockUniteLegaleCron } from "./interfaces/cron/SireneStockUniteLegale.cron";
 
 const controllers: CronController[] = [
     // ExampleCron,
     DemarchesSimplifieesCron,
     // DauphinCron, // disabled because we lost access
     DumpCron,
-    HistoryUniteLegalCron,
+    SireneStockUniteLegaleCron,
     RgpdCron,
     SearchCacheCron,
     StatsCron,

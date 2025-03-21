@@ -1,7 +1,5 @@
 import uniteLegalNamePort from "../../../dataProviders/db/uniteLegalName/uniteLegalName.port";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
-import * as SirenHelper from "../../../shared/helpers/SirenHelper";
-import * as Validators from "../../../shared/Validators";
 import UniteLegalNameEntity from "../../../entities/UniteLegalNameEntity";
 import uniteLegalNameService from "./uniteLegal.name.service";
 import AssociationNameEntity from "../../association-name/entities/AssociationNameEntity";
@@ -88,10 +86,10 @@ describe("uniteLegalNameService", () => {
         });
     });
 
-    describe("insert", () => {
-        it("should call uniteLegalNamePort.insert with the provided entity", () => {
-            uniteLegalNameService.insert(fakeUniteLegalNameEntity);
-            expect(mockedUniteLegalNamePort.insert).toHaveBeenCalledWith(fakeUniteLegalNameEntity);
+    describe("upsert", () => {
+        it("should call uniteLegalNamePort.upsert with the provided entity", () => {
+            uniteLegalNameService.upsert(fakeUniteLegalNameEntity);
+            expect(mockedUniteLegalNamePort.upsert).toHaveBeenCalledWith(fakeUniteLegalNameEntity);
         });
     });
 });
