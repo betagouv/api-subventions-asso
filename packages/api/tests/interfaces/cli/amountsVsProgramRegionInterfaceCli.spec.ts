@@ -98,8 +98,8 @@ describe("AmountsVsProgramRegionCli", () => {
 
     describe("resyncExercice()", () => {
         it("should persist amounts vs program region collection for the given exercice", async () => {
-            const exercice = 2023;
-            await cli.resyncExercice(exercice);
+            const exerciceStr = "2023";
+            await cli.resyncExercice(exerciceStr);
             //@ts-expect-error protected method
             const amountsVsProgramRegion = (await amountsVsProgramRegionPort.collection.find({}).toArray())
                 .map(amountsVsProgramRegion => ({

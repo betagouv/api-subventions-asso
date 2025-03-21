@@ -40,12 +40,14 @@ export class AmountsVsProgramRegionPort extends MongoPort<AmountsVsProgramRegion
     }
 
     public insertMany(entities: AmountsVsProgramRegionEntity[]) {
+        if (!entities.length) return;
         return this.collection.insertMany(
             entities.map(entity => AmountsVsProgramRegionAdapter.toDbo(entity), { ordered: false }),
         );
     }
 
     public upsertMany(entities: AmountsVsProgramRegionEntity[]) {
+        if (!entities.length) return;
         const bulkWriteArray = entities.map(entity => {
             const updateDbo = AmountsVsProgramRegionAdapter.toDbo(entity);
             const { _id, ...DboWithoutId } = updateDbo;

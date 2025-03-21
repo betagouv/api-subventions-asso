@@ -83,17 +83,27 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider<
 
     public async init() {
         const { programs, ministries, domainesFonct, refsProgrammation } = await this.getAllDataBretagneData();
-        const chorusEntities: PaymentFlatEntity[] = await this.toPaymentFlatChorusEntities(
-            programs,
-            ministries,
-            domainesFonct,
-            refsProgrammation,
-        );
 
-        for (let i = 0; i < chorusEntities.length; i += this.BATCH_SIZE) {
-            const batchEntities = chorusEntities.slice(i, i + this.BATCH_SIZE);
-            await paymentFlatPort.insertMany(batchEntities);
-            console.log(`Inserted ${i + this.BATCH_SIZE} documents`);
+        const START_YEAR = 2017;
+        const END_YEAR = new Date().getFullYear();
+        let chorusEntities: PaymentFlatEntity[] = [];
+
+        for (let year = START_YEAR; year <= END_YEAR; year++) {
+            console.log(`init payment flat collection for exercise ${year}`);
+
+            chorusEntities = await this.toPaymentFlatChorusEntities(
+                programs,
+                ministries,
+                domainesFonct,
+                refsProgrammation,
+                year,
+            );
+
+            for (let i = 0; i < chorusEntities.length; i += this.BATCH_SIZE) {
+                const batchEntities = chorusEntities.slice(i, i + this.BATCH_SIZE);
+                await paymentFlatPort.insertMany(batchEntities);
+                console.log(`Inserted ${i + this.BATCH_SIZE} documents`);
+            }
         }
     }
 
