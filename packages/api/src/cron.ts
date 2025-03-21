@@ -3,7 +3,6 @@ import { CronController } from "./@types/cron";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- test purposes
 import { ExampleCron } from "./interfaces/cron/_Example.cron";
 import { DemarchesSimplifieesCron } from "./interfaces/cron/DemarchesSimplifiees.cron";
-import { DauphinCron } from "./interfaces/cron/Dauphin.cron";
 import { DumpCron } from "./interfaces/cron/Dump.cron";
 import { HistoryUniteLegalCron } from "./interfaces/cron/HistoryUniteLegal.cron";
 import { DEV } from "./configurations/env.conf";
@@ -14,7 +13,7 @@ import { SearchCacheCron } from "./interfaces/cron/SearchCache.cron";
 const controllers: CronController[] = [
     // ExampleCron,
     DemarchesSimplifieesCron,
-    DauphinCron,
+    // DauphinCron, // disabled because we lost access
     DumpCron,
     HistoryUniteLegalCron,
     RgpdCron,
