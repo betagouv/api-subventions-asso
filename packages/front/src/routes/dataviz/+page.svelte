@@ -2,6 +2,7 @@
     import TableAmountsVsProgramRegion from "./components/TableAmountsVsProgramRegion/TableAmountsVsProgramRegion.svelte";
     import { DataVizController } from "./DataViz.controller";
     import AmountsVsYear from "./components/AmountsVsYear/AmountsVsYear.svelte";
+    import HistoAmountsVsRegionYear from "./components/HistoAmountsVsRegionYear/HistoAmountsVsRegionYear.svelte";
     import FullPageSpinner from "$lib/components/FullPageSpinner.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
 
@@ -24,12 +25,16 @@
                 <TableAmountsVsProgramRegion elements={result} />
             </div>
             <div class="fr-col-6">
-                <h2 class="fr-h4">Evolution des subventions attribuées :</h2>
+                <h2 class="fr-h4">Evolution des subventions versées :</h2>
                 <p class="fr-h10">
                     comparaison de la tendance globale en bleu et de la tendance par région et/ou programme selectionné
                     en rouge. Attention, les deux courbes n'ont pas la même échelle.
                 </p>
                 <AmountsVsYear elements={result} />
+            </div>
+            <div class="fr-col-12">
+                <h2 class="fr-h4">Evolution des subventions versées selon la société d'attachement comptable.</h2>
+                <HistoAmountsVsRegionYear elements={result} />
             </div>
         </div>
     </div>
