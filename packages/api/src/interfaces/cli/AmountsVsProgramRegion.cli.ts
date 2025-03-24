@@ -16,7 +16,8 @@ export default class AmountsVsProgramRegionCli extends CliController {
         return amountsVsProgramRegionService.init();
     }
 
-    resyncExercice(exerciceBudgetaire: number) {
+    resyncExercice(exerciceBudgetaireStr: string) {
+        const exerciceBudgetaire = parseInt(exerciceBudgetaireStr);
         this.logger.logIC(`Resync amounts vs program region collection for exercice ${exerciceBudgetaire}`);
         return amountsVsProgramRegionService.updateCollection(exerciceBudgetaire);
     }

@@ -8,11 +8,13 @@ import CliController from "../../shared/CliController";
 export default class PaymentFlatCli extends CliController {
     static cmdName = "payment-flat";
 
-    resyncExercice(exerciceBudgetaire: number) {
+    async resyncExercice(exerciceBudgetaire: number) {
+        const ticTacInterval = setInterval(() => console.log("TIC"), 60000);
         if (!exerciceBudgetaire) throw new Error("Exercice budgetaire is required");
 
         this.logger.logIC(`Resync payment flat collection for exercice ${exerciceBudgetaire}`);
-        return paymentsFlatService.updatePaymentsFlatCollection(exerciceBudgetaire);
+        await paymentsFlatService.updatePaymentsFlatCollection(exerciceBudgetaire);
+        clearInterval(ticTacInterval);
     }
 
     // should only be used once, then sync with resyncExercise
@@ -21,6 +23,8 @@ export default class PaymentFlatCli extends CliController {
             throw new Error("DB already initialized, used resyncExercice instead");
 
         this.logger.logIC("Create all payment flat collection");
-        return paymentsFlatService.init();
+        const ticTacInterval = setInterval(() => console.log("TIC"), 60000);
+        await paymentsFlatService.init();
+        clearInterval(ticTacInterval);
     }
 }
