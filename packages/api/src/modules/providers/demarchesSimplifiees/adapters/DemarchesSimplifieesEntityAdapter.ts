@@ -11,6 +11,7 @@ import { DefaultObject } from "../../../../@types";
 import { DemarchesSimplifieesRawData, DemarchesSimplifieesRawGrant } from "../@types/DemarchesSimplifieesRawGrant";
 import { RawApplication } from "../../../grant/@types/rawGrant";
 import { toStatusFactory } from "../../providers.adapter";
+import { isNumberValid } from "../../../../shared/Validators";
 
 export class DemarchesSimplifieesEntityAdapter {
     private static _statusConversionArray: { label: ApplicationStatus; providerStatusList: string[] }[] = [
@@ -72,9 +73,13 @@ export class DemarchesSimplifieesEntityAdapter {
 
         const subvention: DefaultObject = DemarchesSimplifieesEntityAdapter.mapSchema(entity, mapper, "schema");
 
-        // DS doesn't have an attribute with only year, so we get year from the start date
-        if (!subvention.annee_demande && subvention.date_debut && isValidDate(subvention.date_debut))
-            subvention.annee_demande = (subvention.date_debut as Date).getFullYear();
+        if (!subvention.annee_demande) {
+            if (subvention.exercice && isNumberValid(Number(subvention.exercice)))
+                subvention.annee_demande = subvention.exercice;
+            // DS doesn't always have an attribute with only year, so we get year from the start date
+            else if (subvention.date_debut && isValidDate(subvention.date_debut))
+                subvention.annee_demande = (subvention.date_debut as Date).getFullYear();
+        }
 
         subvention.statut_label = toStatusFactory(DemarchesSimplifieesEntityAdapter._statusConversionArray)(
             subvention.status as string,
