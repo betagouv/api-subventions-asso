@@ -22,6 +22,9 @@ export class OsirisActionPort extends MongoPort<OsirisActionEntityDbo> {
         return osirisAction;
     }
 
+    /*
+     * @deprecated
+     * */
     public async update(osirisAction: OsirisActionEntity) {
         const options: FindOneAndUpdateOptions = { returnDocument: "after", includeResultMetadata: true };
         const { _id, ...actionWithoutId } = OsirisActionAdapter.toDbo(osirisAction);
@@ -35,6 +38,30 @@ export class OsirisActionPort extends MongoPort<OsirisActionEntityDbo> {
         const dbo = updateRes?.value;
         if (!dbo) throw new MongoCnxError();
         return OsirisActionAdapter.toEntity(dbo);
+    }
+
+    public upsertOne(osirisAction: OsirisActionEntity) {
+        const options = { upsert: true } as FindOneAndUpdateOptions;
+        const { _id, ...actionWithoutId } = osirisAction;
+        return this.collection.updateOne(
+            { "indexedInformations.uniqueId": osirisAction.indexedInformations.uniqueId },
+            { $set: actionWithoutId },
+            options,
+        );
+    }
+
+    public async bulkUpsert(osirisActions: OsirisActionEntity[]) {
+        const bulk = osirisActions.map(a => {
+            const { _id, ...actionWithoutId } = a;
+            return {
+                updateOne: {
+                    filter: { "indexedInformations.uniqueId": a.indexedInformations.uniqueId },
+                    update: { $set: actionWithoutId },
+                    upsert: true,
+                },
+            };
+        });
+        return bulk.length ? this.collection.bulkWrite(bulk, { ordered: false }) : Promise.resolve();
     }
 
     public async findByUniqueId(uniqueId: string) {

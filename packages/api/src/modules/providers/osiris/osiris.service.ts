@@ -1,13 +1,14 @@
-import { DemandeSubvention, Association, Etablissement } from "dto";
+import { Association, DemandeSubvention, Etablissement } from "dto";
+import { BulkWriteResult } from "mongodb";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import { isAssociationName, isCompteAssoId, isOsirisRequestId, isOsirisActionId } from "../../../shared/Validators";
+import { isAssociationName, isCompteAssoId, isOsirisActionId, isOsirisRequestId } from "../../../shared/Validators";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import ProviderRequestInterface from "../../search/@types/ProviderRequestInterface";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import ProviderCore from "../ProviderCore";
-import rnaSirenSerivce from "../../rna-siren/rnaSiren.service";
+import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
 import { StructureIdentifier } from "../../../@types";
@@ -20,13 +21,25 @@ import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 
-export const VALID_REQUEST_ERROR_CODE = {
-    INVALID_SIRET: 1,
-    INVALID_RNA: 2,
-    INVALID_NAME: 3,
-    INVALID_CAID: 4,
-    INVALID_OSIRISID: 5,
+export enum VALID_REQUEST_ERROR_CODE {
+    INVALID_SIRET = 1,
+    INVALID_RNA = 2,
+    INVALID_NAME = 3,
+    INVALID_CAID = 4,
+    INVALID_OSIRISID = 5,
+}
+
+type OsirisRequestValidation = {
+    message: string;
+    data: any;
+    code: VALID_REQUEST_ERROR_CODE;
 };
+
+export class InvalidOsirisRequestError extends Error {
+    constructor(public validation: OsirisRequestValidation) {
+        super();
+    }
+}
 
 export class OsirisService
     extends ProviderCore
@@ -48,24 +61,28 @@ export class OsirisService
     }
 
     public async addRequest(request: OsirisRequestEntity): Promise<{ state: string; result: OsirisRequestEntity }> {
-        const existingFile = await osirisRequestPort.findByUniqueId(request.providerInformations.uniqueId);
         const { rna, siret } = request.legalInformations;
 
-        if (rna) await rnaSirenSerivce.insert(new Rna(rna), new Siret(siret).toSiren());
+        if (rna) await rnaSirenService.insert(new Rna(rna), new Siret(siret).toSiren());
+        const res = await osirisRequestPort.upsertOne(request);
+        return {
+            state: res.upsertedCount ? "created" : "updated",
+            result: request,
+        };
+    }
 
-        if (existingFile) {
-            await osirisRequestPort.update(request);
-            return {
-                state: "updated",
-                result: request,
-            };
-        } else {
-            await osirisRequestPort.add(request);
-            return {
-                state: "created",
-                result: request,
-            };
+    public async bulkAddRequest(requests: OsirisRequestEntity[]): Promise<void | BulkWriteResult> {
+        const rnaSirens: { rna: Rna; siren: Siren }[] = [];
+        for (const request of requests) {
+            const { rna, siret } = request.legalInformations;
+            if (rna) rnaSirens.push({ rna: new Rna(rna), siren: new Siret(siret).toSiren() });
         }
+        const [metadataRequests, _metadataRnaSiren] = await Promise.all([
+            osirisRequestPort.bulkUpsert(requests),
+            rnaSirenService.insertMany(rnaSirens),
+        ]);
+
+        return metadataRequests;
     }
 
     public validRequest(request: OsirisRequestEntity, rnaNeeded = true) {
@@ -112,21 +129,35 @@ export class OsirisService
         return true;
     }
 
-    public async addAction(action: OsirisActionEntity): Promise<{ state: string; result: OsirisActionEntity }> {
-        const existingAction = await osirisActionPort.findByUniqueId(action.indexedInformations.uniqueId);
-        if (existingAction) {
-            return {
-                state: "updated",
-                result: await osirisActionPort.update(action),
-            };
+    public async validateAndComplete(osirisRequest: OsirisRequestEntity) {
+        let validation = this.validRequest(osirisRequest);
+
+        if (validation !== true && validation.code === VALID_REQUEST_ERROR_CODE.INVALID_RNA) {
+            const rnaSirenEntities = await rnaSirenService.find(
+                new Siret(osirisRequest.legalInformations.siret).toSiren(),
+            );
+
+            if (!rnaSirenEntities || !rnaSirenEntities.length) {
+                validation = osirisService.validRequest(osirisRequest, false); // we still want the request if there is no rna
+            } else {
+                osirisRequest.legalInformations.rna = rnaSirenEntities[0].rna.value;
+                validation = osirisService.validRequest(osirisRequest); // Re-validate with the new rna
+            }
         }
 
-        await osirisActionPort.add(action);
+        if (validation !== true) throw new InvalidOsirisRequestError(validation);
+    }
 
+    public async addAction(action: OsirisActionEntity): Promise<{ state: string; result: OsirisActionEntity }> {
+        const res = await osirisActionPort.upsertOne(action);
         return {
-            state: "created",
+            state: res.upsertedCount ? "created" : "updated",
             result: action,
         };
+    }
+
+    public bulkAddActions(actions: OsirisActionEntity[]): Promise<void | BulkWriteResult> {
+        return osirisActionPort.bulkUpsert(actions);
     }
 
     public validAction(action: OsirisActionEntity) {
