@@ -24,7 +24,7 @@
   "scripts": {
       "test": "echo 'no test in core'",
       "prebuild": "rm -rf ./build/*",
-      "build": "tsc --project ./",
+      "build": "tsc --project tsconfig.json",
       "lint": "eslint --fix --ext .ts",
       "lint:all": "eslint --fix --ext .ts .",
       "prettier": "prettier --write",
