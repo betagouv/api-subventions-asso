@@ -12,6 +12,7 @@ export class StructureTitleController {
     public siren: SirenDto | "-";
     public rup: boolean;
     public nbEstabs: number;
+    public isAsso: boolean;
 
     constructor(
         association: AssociationEntity,
@@ -28,7 +29,11 @@ export class StructureTitleController {
 
             const uniqueIdentifier = getUniqueIdentifier(identifiers);
             this.linkToAsso = `/association/${uniqueIdentifier}`;
-        } else this.title = `Association : ${associationName}`;
+            this.isAsso = false;
+        } else {
+            this.title = `Association : ${associationName}`;
+            this.isAsso = true;
+        }
         this.rna = valueOrHyphen(association.rna);
         this.siren = valueOrHyphen(association.siren);
         this.rup = Boolean(association.rup);
