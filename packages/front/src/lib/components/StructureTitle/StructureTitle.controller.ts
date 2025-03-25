@@ -10,9 +10,9 @@ export class StructureTitleController {
     public linkToAsso?: string;
     public rna: RnaDto | "-";
     public siren: SirenDto | "-";
+    public siret: SiretDto | undefined;
     public rup: boolean;
     public nbEstabs: number;
-    public isAsso: boolean;
 
     constructor(
         association: AssociationEntity,
@@ -20,6 +20,7 @@ export class StructureTitleController {
         identifiers: { rna: RnaDto | null; siren?: SirenDto | null }[] = [],
     ) {
         const associationName = association.denomination_rna || association.denomination_siren;
+        this.siret = siret;
         if (siret) {
             this.title =
                 getSiegeSiret(association) === siret
@@ -29,11 +30,7 @@ export class StructureTitleController {
 
             const uniqueIdentifier = getUniqueIdentifier(identifiers);
             this.linkToAsso = `/association/${uniqueIdentifier}`;
-            this.isAsso = false;
-        } else {
-            this.title = `Association : ${associationName}`;
-            this.isAsso = true;
-        }
+        } else this.title = `Association : ${associationName}`;
         this.rna = valueOrHyphen(association.rna);
         this.siren = valueOrHyphen(association.siren);
         this.rup = Boolean(association.rup);

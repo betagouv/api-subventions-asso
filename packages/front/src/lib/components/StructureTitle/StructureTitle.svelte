@@ -28,7 +28,7 @@
             {#if controller.rup}
                 <Badge label="Association reconnue d'utilité publique" noIcon={true} type="purple-glycine" />
             {/if}
-            {#if controller.isAsso}
+            {#if !controller.siret}
                 <p class="nb-estab fr-icon-info-fill fr-text--sm">
                     {controller.nbEstabLabel}
                 </p>
