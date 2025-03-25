@@ -4,11 +4,11 @@ import FonjepPosteEntity from "../../../../modules/providers/fonjep/entities/Fon
 import FonjepVersementEntity from "../../../../modules/providers/fonjep/entities/FonjepVersementEntity";
 import FonjepTiersEntity from "../../../../modules/providers/fonjep/entities/FonjepTiersEntity";
 import FonjepTypePosteEntity from "../../../../modules/providers/fonjep/entities/FonjepTypePosteEntity";
-import FonjepDispositifDbo from "./dbo/fonjepDispositifDbo";
-import FonjepPosteDbo from "./dbo/fonjepPosteDbo";
-import FonjepVersementDbo from "./dbo/FonjepVersementDbo";
-import FonjepTiersDbo from "./dbo/fonjepTiersDbo";
-import FonjepTypePosteDbo from "./dbo/fonjepTypePosteDbo";
+import type FonjepDispositifDbo from "./dbo/fonjepDispositifDbo";
+import type FonjepPosteDbo from "./dbo/fonjepPosteDbo";
+import type FonjepVersementDbo from "./dbo/FonjepVersementDbo";
+import type FonjepTiersDbo from "./dbo/fonjepTiersDbo";
+import type FonjepTypePosteDbo from "./dbo/fonjepTypePosteDbo";
 
 export default class FonjepDboAdapter {
     static toDispositifDbo(entity: FonjepDispositifEntity): FonjepDispositifDbo {

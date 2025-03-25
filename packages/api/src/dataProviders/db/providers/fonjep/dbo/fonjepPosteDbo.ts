@@ -1,6 +1,5 @@
-import { ObjectId } from "mongodb";
-import FonjepPosteDto from "../dto/fonjepPosteDto";
-// dates are reported as Excel dates
-export default interface FonjepPosteDbo extends FonjepPosteDto {
-    _id: ObjectId;
-}
+import { WithId } from "mongodb";
+import FonjepPosteEntity from "../../../../../modules/providers/fonjep/entities/FonjepPosteEntity";
+
+type FonjepPosteDbo = WithId<FonjepPosteEntity>;
+export default FonjepPosteDbo;

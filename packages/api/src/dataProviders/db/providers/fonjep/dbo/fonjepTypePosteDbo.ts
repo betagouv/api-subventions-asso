@@ -1,6 +1,5 @@
-import { ObjectId } from "mongodb";
-import FonjepTypePosteDto from "../dto/fonjepTypePosteDto";
+import { WithId } from "mongodb";
+import FonjepTypePosteEntity from "../../../../../modules/providers/fonjep/entities/FonjepTypePosteEntity";
 
-export default interface FonjepTypePosteDbo extends FonjepTypePosteDto {
-    _id: ObjectId;
-}
+type FonjepTypePosteDbo = WithId<FonjepTypePosteEntity>;
+export default FonjepTypePosteDbo;
