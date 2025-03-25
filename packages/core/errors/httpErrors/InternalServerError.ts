@@ -1,4 +1,4 @@
-import HttpError from "./HttpError";
+import { HttpError } from "./HttpError";
 
 export const InternalServerErrorMessage = "Internal Server Error";
 export const InternalServerErrorCode = 500;

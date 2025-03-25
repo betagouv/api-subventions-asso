@@ -1,6 +1,6 @@
 import statsService from "../../modules/stats/stats.service";
 import { StatsHttp } from "./Stats.http";
-import { BadRequestError } from "../../shared/errors/httpErrors";
+import { BadRequestError } from "core";
 
 const controller = new StatsHttp();
 

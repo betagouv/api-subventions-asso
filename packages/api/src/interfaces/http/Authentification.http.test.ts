@@ -2,7 +2,7 @@ import { AuthentificationHttp } from "./Authentification.http";
 import { IdentifiedRequest } from "../../@types";
 import userAgentConnectService from "../../modules/user/services/agentConnect/user.agentConnect.service";
 import userAuthService from "../../modules/user/services/auth/user.auth.service";
-import { BadRequestError } from "../../shared/errors/httpErrors";
+import { BadRequestError } from "core";
 
 jest.mock("../../modules/user/services/agentConnect/user.agentConnect.service");
 jest.mock("../../modules/user/services/auth/user.auth.service");

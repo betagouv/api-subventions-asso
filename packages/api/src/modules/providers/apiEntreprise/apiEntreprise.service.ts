@@ -2,9 +2,9 @@ import { AxiosError } from "axios";
 import qs from "qs";
 
 import { ExtraitRcsDto } from "dto";
+import { StructureIdentifiersError } from "core";
 import { API_ENTREPRISE_TOKEN } from "../../../configurations/apis.conf";
 import { DefaultObject, StructureIdentifier } from "../../../@types";
-import StructureIdentifiersError from "../../../shared/errors/StructureIdentifierError";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import CacheData from "../../../shared/Cache";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";

@@ -1,4 +1,4 @@
-import HttpError from "./HttpError";
+import { HttpError } from "./HttpError";
 
 export const BadRequestErrorMessage = "Bad Request";
 export const BadRequestErrorCode = 400;

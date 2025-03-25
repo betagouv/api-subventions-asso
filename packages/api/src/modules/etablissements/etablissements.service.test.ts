@@ -6,7 +6,7 @@ import subventionsService from "../subventions/subventions.service";
 import paymentService from "../payments/payments.service";
 import { EtablissementAdapter } from "./EtablissementAdapter";
 import etablissementService from "./etablissements.service";
-import { BadRequestError, NotFoundError } from "../../shared/errors/httpErrors";
+import { BadRequestError, NotFoundError } from "core";
 import grantService from "../grant/grant.service";
 import Siren from "../../valueObjects/Siren";
 import Siret from "../../valueObjects/Siret";

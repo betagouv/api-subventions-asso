@@ -1,6 +1,6 @@
 import dedent from "dedent";
 import { FutureUserDto } from "dto";
-import { BadRequestError } from "../../../../shared/errors/httpErrors";
+import { BadRequestError } from "core";
 import { REGEX_MAIL, REGEX_PASSWORD } from "../../user.constant";
 import configurationsService from "../../../configurations/configurations.service";
 import { sanitizeToPlainText } from "../../../../shared/helpers/StringHelper";

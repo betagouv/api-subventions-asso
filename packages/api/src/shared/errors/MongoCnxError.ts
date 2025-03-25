@@ -1,4 +1,4 @@
-export default class MongoCnxError extends Error {
+export class MongoCnxError extends Error {
     constructor() {
         super("Connexion to DB lost");
     }

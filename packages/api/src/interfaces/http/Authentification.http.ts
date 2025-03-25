@@ -9,8 +9,8 @@ import {
     TokenValidationDtoResponse,
     ActivateDtoResponse,
 } from "dto";
+import { BadRequestError, InternalServerError } from "core";
 import { IdentifiedRequest, LoginRequest } from "../../@types";
-import { BadRequestError, InternalServerError } from "../../shared/errors/httpErrors";
 import userAuthService from "../../modules/user/services/auth/user.auth.service";
 import userProfileService from "../../modules/user/services/profile/user.profile.service";
 import userActivationService from "../../modules/user/services/activation/user.activation.service";

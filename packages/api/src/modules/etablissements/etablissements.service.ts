@@ -1,6 +1,7 @@
 import { ProviderValues, Etablissement } from "dto";
 
 import * as Sentry from "@sentry/node";
+import { NotFoundError } from "core";
 import OsirisRequestAdapter from "../providers/osiris/adapters/OsirisRequestAdapter";
 import { DefaultObject, StructureIdentifier } from "../../@types";
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
@@ -12,7 +13,6 @@ import grantService from "../grant/grant.service";
 import paymentService from "../payments/payments.service";
 import documentsService from "../documents/documents.service";
 import ApiEntrepriseAdapter from "../providers/apiEntreprise/adapters/ApiEntrepriseAdapter";
-import { NotFoundError } from "../../shared/errors/httpErrors";
 import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
 import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
 import { EtablissementAdapter } from "./EtablissementAdapter";

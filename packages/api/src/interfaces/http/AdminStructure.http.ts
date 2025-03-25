@@ -1,6 +1,6 @@
 import { Controller, Get, Route, Tags, Response } from "tsoa";
 import { AdminStructureDto, AgentTypeEnum } from "dto";
-import { HttpErrorInterface } from "../../shared/errors/httpErrors/HttpError";
+import { HttpErrorInterface } from "core";
 import adminStructureService from "../../modules/admin-structure/adminStructure.service";
 
 @Route("/admin-structures")

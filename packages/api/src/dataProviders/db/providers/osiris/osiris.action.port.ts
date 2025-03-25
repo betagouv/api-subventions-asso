@@ -1,7 +1,7 @@
 import { FindOneAndUpdateOptions } from "mongodb";
+import { MongoCnxError } from "../../../../shared/errors/MongoCnxError";
 import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
 import OsirisActionEntityDbo from "../../../../modules/providers/osiris/entities/OsirisActionEntityDbo";
-import MongoCnxError from "../../../../shared/errors/MongoCnxError";
 import MongoPort from "../../../../shared/MongoPort";
 import Siren from "../../../../valueObjects/Siren";
 import OsirisActionAdapter from "./osirisAction.adapter";

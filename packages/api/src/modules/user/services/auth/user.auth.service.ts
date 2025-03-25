@@ -1,21 +1,21 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { LoginDtoErrorCodes, UserDto, UserErrorCodes, UserWithJWTDto } from "dto";
-import userPort from "../../../../dataProviders/db/user/user.port";
 import {
     BadRequestError,
     ForbiddenError,
     InternalServerError,
     NotFoundError,
     UnauthorizedError,
-} from "../../../../shared/errors/httpErrors";
+    LoginError,
+} from "core";
+import userPort from "../../../../dataProviders/db/user/user.port";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../../../configurations/jwt.conf";
 import UserDbo from "../../../../dataProviders/db/user/UserDbo";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import userCheckService, { UserCheckService } from "../check/user.check.service";
 import { UserUpdateError } from "../../../../dataProviders/db/user/UserUpdateError";
-import LoginError from "../../../../shared/errors/LoginError";
 import { removeSecrets } from "../../../../shared/helpers/PortHelper";
 import { UserConsumerService } from "../consumer/user.consumer.service";
 import { UserServiceErrors } from "../../user.enum";

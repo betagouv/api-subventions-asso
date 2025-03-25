@@ -1,5 +1,5 @@
 import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
-import { InternalServerError } from "../../../../shared/errors/httpErrors";
+import { InternalServerError } from "core";
 import { CONSUMER_JWT_PAYLOAD, CONSUMER_USER, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import userConsumerService from "./user.consumer.service";
 import userCrudService from "../crud/user.crud.service";

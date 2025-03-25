@@ -1,5 +1,5 @@
 import adminStructureService from "./adminStructure.service";
-import { BadRequestError } from "../../shared/errors/httpErrors";
+import { BadRequestError } from "core";
 import adminStructurePort from "../../dataProviders/db/admin-structure/adminStructure.port";
 import { AgentTypeEnum } from "dto";
 

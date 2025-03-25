@@ -4,12 +4,7 @@ import { USER_DBO, USER_SECRETS, USER_WITHOUT_PASSWORD, USER_WITHOUT_SECRET } fr
 import { JWT_EXPIRES_TIME } from "../../../../configurations/jwt.conf";
 import UserReset from "../../entities/UserReset";
 import { ObjectId, WithId } from "mongodb";
-import {
-    BadRequestError,
-    InternalServerError,
-    NotFoundError,
-    ResetTokenNotFoundError,
-} from "../../../../shared/errors/httpErrors";
+import { BadRequestError, InternalServerError, NotFoundError, ResetTokenNotFoundError } from "core";
 import { ResetPasswordErrorCodes, TokenValidationDtoPositiveResponse, TokenValidationType, UserDto } from "dto";
 
 jest.mock("../../../../dataProviders/db/user/user.port");

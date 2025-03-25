@@ -11,7 +11,7 @@ const mongoMock = jest.mock("../../../../shared/MongoConnection", () => ({
 }));
 import db from "../../../../shared/MongoConnection";
 import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
-import MongoCnxError from "../../../../shared/errors/MongoCnxError";
+import { MongoCnxError } from "../../../../shared/errors/MongoCnxError";
 import OsirisActionAdapter from "./osirisAction.adapter";
 import { OsirisActionPort } from "./osiris.action.port";
 import { ObjectId, WithId } from "mongodb";

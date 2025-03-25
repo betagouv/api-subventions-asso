@@ -1,4 +1,4 @@
-import HttpError from "./HttpError";
+import { HttpError } from "./HttpError";
 
 export const ConflictErrorMessage = "UnprocessableEntity";
 export const ConflictErrorCode = 409;

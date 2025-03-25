@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/node";
 import { CommonGrantDto, Grant, DemandeSubvention, Payment } from "dto";
+import { RnaOnlyError } from "core";
 import { providersById } from "../providers/providers.helper";
 import { demandesSubventionsProviders, fullGrantProviders, grantProviders, paymentProviders } from "../providers";
 import DemandesSubventionsProvider from "../subventions/@types/DemandesSubventionsProvider";
@@ -7,7 +8,6 @@ import PaymentProvider from "../payments/@types/PaymentProvider";
 import { StructureIdentifier } from "../../@types";
 import scdlGrantService from "../providers/scdl/scdl.grant.service";
 import scdlService from "../providers/scdl/scdl.service";
-import { RnaOnlyError } from "../../shared/errors/GrantError";
 import paymentService from "../payments/payments.service";
 import subventionsService from "../subventions/subventions.service";
 

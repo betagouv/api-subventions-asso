@@ -1,4 +1,4 @@
-import { BadRequestError } from "../errors/httpErrors";
+import { BadRequestError } from "core";
 
 export type ValidationResult = { valid: false; error: Error } | { valid: true };
 export type ValidationCriteria<T> = {

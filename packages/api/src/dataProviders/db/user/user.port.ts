@@ -1,9 +1,9 @@
 import { UserDto } from "dto";
 import { Filter, FindOptions, ObjectId } from "mongodb";
+import { InternalServerError } from "core";
 import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../shared/helpers/MongoHelper";
 import MongoPort from "../../../shared/MongoPort";
 import { removeHashPassword, removeSecrets } from "../../../shared/helpers/PortHelper";
-import { InternalServerError } from "../../../shared/errors/httpErrors";
 import UserDbo, { UserNotPersisted } from "./UserDbo";
 
 export class UserPort extends MongoPort<UserDbo> {

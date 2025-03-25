@@ -1,3 +1,3 @@
 export * from "./NotFoundError";
-export * from "./UserNotFoundError";
 export * from "./ResetTokenNotFoundError";
+export * from "./UserNotFoundError";
