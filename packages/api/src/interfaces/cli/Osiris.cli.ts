@@ -3,14 +3,12 @@ import fs from "fs";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../@types";
 import OsirisParser from "../../modules/providers/osiris/osiris.parser";
-import osirisService from "../../modules/providers/osiris/osiris.service";
+import osirisService, { InvalidOsirisRequestError } from "../../modules/providers/osiris/osiris.service";
 import OsirisActionEntity from "../../modules/providers/osiris/entities/OsirisActionEntity";
 import OsirisRequestEntity from "../../modules/providers/osiris/entities/OsirisRequestEntity";
 import { COLORS } from "../../shared/LogOptions";
 import * as CliHelper from "../../shared/helpers/CliHelper";
-import OsirisEvaluationEntity from "../../modules/providers/osiris/entities/OsirisEvaluationEntity";
 import { GenericParser } from "../../shared/GenericParser";
-import rnaSirenService from "../../modules/rna-siren/rnaSiren.service";
 import Siret from "../../valueObjects/Siret";
 import Rna from "../../valueObjects/Rna";
 import dataLogService from "../../modules/data-log/dataLog.service";
@@ -22,7 +20,6 @@ export default class OsirisCli {
     private logFileParsePath = {
         actions: "./logs/osiris.parse.actions.log.txt",
         requests: "./logs/osiris.parse.requests.log.txt",
-        evaluations: "./logs/osiris.parse.evaluations.log.txt",
     };
 
     public validate(type: string, file: string, extractYear = "2022") {
@@ -68,11 +65,7 @@ export default class OsirisCli {
         }
     }
 
-    public async parse(
-        type: "requests" | "actions" | "evaluations",
-        file: string,
-        extractYear: string,
-    ): Promise<unknown> {
+    public async parse(type: "requests" | "actions", file: string, extractYear: string): Promise<unknown> {
         if (typeof type != "string" && typeof file != "string" && typeof extractYear != "string") {
             throw new Error("Parse command need type, extractYear and file args");
         }
@@ -113,8 +106,6 @@ export default class OsirisCli {
             await this._parseRequest(fileContent, year, logs);
         } else if (type === "actions") {
             await this._parseAction(fileContent, year, logs);
-        } else if (type === "evaluations") {
-            await this._parseEvaluation(fileContent, year, logs);
         } else {
             throw new Error(`The type ${type} is not taken into account`);
         }
@@ -123,125 +114,79 @@ export default class OsirisCli {
         await dataLogService.addLog(osirisService.provider.id, file, new Date());
     }
 
-    private async _parseRequest(contentFile: Buffer, year: number, logs: unknown[]) {
+    async _parseRequest(contentFile: Buffer, year: number, logs: unknown[]) {
         const requests = OsirisParser.parseRequests(contentFile, year);
+        let nbErrors = 0;
 
         let tictackClock = true;
         const ticTacInterval = setInterval(() => {
             tictackClock = !tictackClock;
             console.log(tictackClock ? "TIC" : "TAC");
-        }, 10000);
+        }, 100000);
+        const validated: OsirisRequestEntity[] = [];
 
-        const results = await requests.reduce(async (acc, osirisRequest, index) => {
-            const data = await acc;
+        // validate all requests in any order
+        await Promise.all(
+            requests.map(r =>
+                osirisService
+                    .validateAndComplete(r)
+                    .then(() => validated.push(r))
+                    .catch((e: InvalidOsirisRequestError) => {
+                        logs.push(
+                            `\n\nThis request is not registered because: ${e.validation.message}\n`,
+                            JSON.stringify(e.validation.data, null, "\t"),
+                        );
+                        nbErrors += 1;
+                    }),
+            ),
+        );
+        const result = await osirisService.bulkAddRequest(validated);
+        clearInterval(ticTacInterval);
+        if (!result) return;
 
-            let validation = osirisService.validRequest(osirisRequest);
+        CliHelper.printProgress(validated.length, requests.length);
+        console.info(`
+            ${validated.length}/${requests.length}
+            ${result.insertedCount + result.upsertedCount} requests created and ${
+            result.modifiedCount + result.matchedCount
+        } requests updated
+            ${nbErrors} requests not valid
+        `);
+    }
 
-            if (validation !== true && validation.code === 2) {
-                // RNA NOT FOUND // TODO: use const for decribe error
-                const rnaSirenEntities = await rnaSirenService.find(
-                    new Siret(osirisRequest.legalInformations.siret).toSiren(),
-                );
+    async _parseAction(contentFile: Buffer, year: number, logs: unknown[]) {
+        const actions = OsirisParser.parseActions(contentFile, year);
+        let nbErrors = 0;
 
-                if (!rnaSirenEntities || !rnaSirenEntities.length) {
-                    logs.push(
-                        `\n\nThis request is not registered because: RNA not found\n`,
-                        JSON.stringify(osirisRequest.legalInformations, null, "\t"),
-                    );
-                    return data;
-                }
+        let tictackClock = true;
+        const ticTacInterval = setInterval(() => {
+            tictackClock = !tictackClock;
+            console.log(tictackClock ? "TIC" : "TAC");
+        }, 100000);
+        const validated: OsirisActionEntity[] = [];
 
-                osirisRequest.legalInformations.rna = rnaSirenEntities[0].rna.value;
-                validation = osirisService.validRequest(osirisRequest); // Re-validate with the new rna
-            }
-
-            CliHelper.printProgress(index + 1, requests.length);
-
-            if (validation !== true && validation.code != 2) {
+        actions.map(a => {
+            const validation = osirisService.validAction(a);
+            if (validation !== true) {
                 logs.push(
                     `\n\nThis request is not registered because: ${validation.message}\n`,
                     JSON.stringify(validation.data, null, "\t"),
                 );
-            } else data.push(await osirisService.addRequest(osirisRequest));
+                nbErrors += 1;
+            } else validated.push(a);
+        });
 
-            return data;
-        }, Promise.resolve([]) as Promise<{ state: string; result: OsirisRequestEntity }[]>);
+        const result = await osirisService.bulkAddActions(validated);
         clearInterval(ticTacInterval);
+        if (!result) return;
 
-        const created = results.filter(({ state }) => state === "created");
+        CliHelper.printProgress(validated.length, actions.length);
         console.info(`
-            ${results.length}/${requests.length}
-            ${created.length} requests created and ${results.length - created.length} requests updated
-            ${requests.length - results.length} requests not valid
-        `);
-    }
-
-    private async _parseAction(contentFile: Buffer, year: number, logs: unknown[]) {
-        const actions = OsirisParser.parseActions(contentFile, year);
-        const results = await actions.reduce(
-            async (acc, osirisAction, index) => {
-                const data = await acc;
-                const validation = osirisService.validAction(osirisAction);
-
-                CliHelper.printProgress(index + 1, actions.length);
-
-                if (validation !== true) {
-                    logs.push(
-                        `\n\nThis request is not registered because: ${validation.message}\n`,
-                        JSON.stringify(validation.data, null, "\t"),
-                    );
-                } else data.push(await osirisService.addAction(osirisAction));
-
-                return data;
-            },
-            Promise.resolve([]) as Promise<
-                {
-                    state: string;
-                    result: OsirisActionEntity;
-                }[]
-            >,
-        );
-
-        const created = results.filter(({ state }) => state === "created");
-        console.info(`
-            ${results.length}/${actions.length}
-            ${created.length} actions created and ${results.length - created.length} actions update
-            ${actions.length - results.length} actions not valid
-        `);
-    }
-
-    private async _parseEvaluation(contentFile: Buffer, year: number, logs: unknown[]) {
-        const evaluations = OsirisParser.parseEvaluations(contentFile, year);
-
-        const results = await evaluations.reduce(
-            async (acc, entity, index) => {
-                const data = await acc;
-                const validation = osirisService.validEvaluation(entity);
-
-                CliHelper.printProgress(index + 1, evaluations.length);
-
-                if (validation !== true) {
-                    logs.push(
-                        `\n\nThis request is not registered because: ${validation.message}\n`,
-                        JSON.stringify(validation.data, null, "\t"),
-                    );
-                } else data.push(await osirisService.addEvaluation(entity));
-
-                return data;
-            },
-            Promise.resolve([]) as Promise<
-                {
-                    state: string;
-                    result: OsirisEvaluationEntity;
-                }[]
-            >,
-        );
-
-        const created = results.filter(({ state }) => state === "created");
-        console.info(`
-            ${results.length}/${evaluations.length}
-            ${created.length} evaluation created and ${results.length - created.length} evaluations updated
-            ${evaluations.length - results.length} evaluations not valid
+            ${validated.length}/${actions.length}
+            ${result.insertedCount + result.upsertedCount} actions created and ${
+            result.modifiedCount + result.matchedCount
+        } actions updated
+            ${nbErrors} actions not valid
         `);
     }
 

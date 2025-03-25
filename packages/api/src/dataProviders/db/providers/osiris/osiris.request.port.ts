@@ -9,7 +9,8 @@ export class OsirisRequestPort extends MongoPort<OsirisRequestEntity> {
     collectionName = "osiris-requests";
 
     async createIndexes() {
-        await this.collection.createIndex({ "providerInformations.osirisId": 1 }, { unique: true });
+        await this.collection.createIndex({ "providerInformations.uniqueId": 1 }, { unique: true });
+        await this.collection.createIndex({ "providerInformations.osirisId": 1 });
         await this.collection.createIndex({ "legalInformations.rna": 1 });
         await this.collection.createIndex({ "legalInformations.siret": 1 });
     }
@@ -18,29 +19,53 @@ export class OsirisRequestPort extends MongoPort<OsirisRequestEntity> {
         return this.collection.insertOne(osirisRequest);
     }
 
+    /*
+     * @deprecated
+     * */
     public async update(osirisRequest: OsirisRequestEntity) {
         const options = { returnDocument: "after", includeResultMetadata: true } as FindOneAndUpdateOptions;
         const { _id, ...requestWithoutId } = osirisRequest;
-        return (
-            (
-                await this.collection.findOneAndUpdate(
-                    { "providerInformations.osirisId": osirisRequest.providerInformations.osirisId },
-                    { $set: requestWithoutId },
-                    options,
-                )
-            //@ts-expect-error -- mongo typing expects no metadata
-            )?.value as OsirisRequestEntity
+        const updateRes = await this.collection.findOneAndUpdate(
+            { "providerInformations.uniqueId": osirisRequest.providerInformations.uniqueId },
+            { $set: requestWithoutId },
+            options,
         );
+        //@ts-expect-error -- mongo typing expects no metadata
+        return updateRes?.value as OsirisRequestEntity;
+    }
+
+    public upsertOne(osirisRequest: OsirisRequestEntity) {
+        const options = { upsert: true } as FindOneAndUpdateOptions;
+        const { _id, ...requestWithoutId } = osirisRequest;
+        return this.collection.updateOne(
+            { "providerInformations.uniqueId": osirisRequest.providerInformations.uniqueId },
+            { $set: requestWithoutId },
+            options,
+        );
+    }
+
+    public async bulkUpsert(osirisRequests: OsirisRequestEntity[]) {
+        const bulk = osirisRequests.map(r => {
+            const { _id, ...requestWithoutId } = r;
+            return {
+                updateOne: {
+                    filter: { "providerInformations.uniqueId": r.providerInformations.uniqueId },
+                    update: { $set: requestWithoutId },
+                    upsert: true,
+                },
+            };
+        });
+        return bulk.length ? this.collection.bulkWrite(bulk, { ordered: false }) : Promise.resolve();
     }
 
     public async findByMongoId(id: string): Promise<OsirisRequestEntity | null> {
         return this.collection.findOne({ _id: new ObjectId(id) });
     }
 
-    public findByOsirisId(osirisId: string) {
+    public findByUniqueId(uniqueId: string) {
         return this.collection.findOne({
-            "providerInformations.osirisId": osirisId,
-        }) as unknown as OsirisRequestEntity | null;
+            "providerInformations.uniqueId": uniqueId,
+        }) as unknown as Promise<OsirisRequestEntity | null>;
     }
 
     public findBySiret(siret: Siret) {
