@@ -1,50 +1,50 @@
 {
-  "name": "core",
-  "version": "0.64.0",
-  "description": "Core package",
-  "homepage": "https://github.com/betagouv/api-subventions-asso/tree/main/packages/core#readme",
-  "license": "ISC",
-  "main": "./build/index.js",
-  "types": "./build/index.d.ts",
-  "engines": {
-      "node": "18.17",
-      "npm": "9.6.7"
-  },
-  "directories": {
-      "build": "./build",
-      "test": "__tests__"
-  },
-  "files": [
-      "./build"
-  ],
-  "repository": {
-      "type": "git",
-      "url": "git+https://github.com/betagouv/datasubvention.git"
-  },
-  "scripts": {
-      "test": "echo 'no test in core'",
-      "prebuild": "rm -rf ./build/*",
-      "build": "tsc --project tsconfig.json",
-      "lint": "eslint --fix --ext .ts",
-      "lint:all": "eslint --fix --ext .ts .",
-      "prettier": "prettier --write",
-      "prettier:all": "prettier --write ./**/*.ts",
-      "lint-format": "lint-staged"
-  },
-  "lint-staged": {
-      "./**/*.ts": [
-          "npx prettier --write --loglevel warn",
-          "npx eslint --fix --quiet"
-      ]
-  },
-  "bugs": {
-      "url": "https://github.com/betagouv/datasubvention/issues"
-  },
-  "devDependencies": {
-      "@typescript-eslint/eslint-plugin": "^5.62.0",
-      "eslint": "^8.55.0",
-      "eslint-config-prettier": "^8.10.0",
-      "eslint-plugin-import": "^2.29.1",
-      "lint-staged": "^13.3.0"
-  }
+    "name": "core",
+    "version": "0.65.0",
+    "description": "Core package",
+    "homepage": "https://github.com/betagouv/api-subventions-asso/tree/main/packages/core#readme",
+    "license": "ISC",
+    "main": "./build/index.js",
+    "types": "./build/index.d.ts",
+    "engines": {
+        "node": "18.17",
+        "npm": "9.6.7"
+    },
+    "directories": {
+        "build": "./build",
+        "test": "__tests__"
+    },
+    "files": [
+        "./build"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/betagouv/datasubvention.git"
+    },
+    "scripts": {
+        "test": "echo 'no test in core'",
+        "prebuild": "rm -rf ./build/*",
+        "build": "tsc --project tsconfig.json",
+        "lint": "eslint --fix --ext .ts",
+        "lint:all": "eslint --fix --ext .ts .",
+        "prettier": "prettier --write",
+        "prettier:all": "prettier --write ./**/*.ts",
+        "lint-format": "lint-staged"
+    },
+    "lint-staged": {
+        "./**/*.ts": [
+            "npx prettier --write --loglevel warn",
+            "npx eslint --fix --quiet"
+        ]
+    },
+    "bugs": {
+        "url": "https://github.com/betagouv/datasubvention/issues"
+    },
+    "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^5.62.0",
+        "eslint": "^8.55.0",
+        "eslint-config-prettier": "^8.10.0",
+        "eslint-plugin-import": "^2.29.1",
+        "lint-staged": "^13.3.0"
+    }
 }

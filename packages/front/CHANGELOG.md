@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.65.0](https://github.com/betagouv/datasubvention/compare/v0.64.2...v0.65.0) (2025-03-25)
+
+### Bug Fixes
+
+-   **front:** [#3209](https://github.com/betagouv/datasubvention/issues/3209) use new header getter ([#3248](https://github.com/betagouv/datasubvention/issues/3248)) ([d038dce](https://github.com/betagouv/datasubvention/commit/d038dce9974961d9a6bbf12415d43fa06a0002ed))
+-   **front:** [#3212](https://github.com/betagouv/datasubvention/issues/3212) don't display number of establishments in establishment page ([#3272](https://github.com/betagouv/datasubvention/issues/3272)) ([79bfb6e](https://github.com/betagouv/datasubvention/commit/79bfb6e420037a38e614e8e54c322f6c14a48b4a))
+
+### Features
+
+-   **front:** [#3162](https://github.com/betagouv/datasubvention/issues/3162) histo added to dataViz ([#3251](https://github.com/betagouv/datasubvention/issues/3251)) ([d018fe0](https://github.com/betagouv/datasubvention/commit/d018fe0aa1f4630aba7d19e752dc9ba1e46c57a4))
+
 # [0.64.0](https://github.com/betagouv/datasubvention/compare/v0.63.1...v0.64.0) (2025-03-13)
 
 ### Features

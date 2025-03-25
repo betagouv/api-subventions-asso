@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.65.0](https://github.com/betagouv/api-subventions-asso/compare/v0.64.2...v0.65.0) (2025-03-25)
+
+### Bug Fixes
+
+-   **tools:** [#3215](https://github.com/betagouv/api-subventions-asso/issues/3215) mettre à jour routes osiris dans le script ([#3216](https://github.com/betagouv/api-subventions-asso/issues/3216)) ([1ae1f1a](https://github.com/betagouv/api-subventions-asso/commit/1ae1f1aefb58d52fa3fd62fe7cd39ccbaf24f8a4))
+
+### Features
+
+-   **api:** [#2785](https://github.com/betagouv/api-subventions-asso/issues/2785) new osiris data attributes ([#3197](https://github.com/betagouv/api-subventions-asso/issues/3197)) ([cc7f47f](https://github.com/betagouv/api-subventions-asso/commit/cc7f47fec4768b1b0c2b2ff67ca23786dac101a9))
+
 # [0.64.0](https://github.com/betagouv/api-subventions-asso/compare/v0.63.1...v0.64.0) (2025-03-13)
 
 **Note:** Version bump only for package tools

@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.65.0](https://github.com/betagouv/api-subventions-asso/compare/v0.64.2...v0.65.0) (2025-03-25)
+
+### Bug Fixes
+
+-   **api:** [#3266](https://github.com/betagouv/api-subventions-asso/issues/3266) use exercice to calculate annee_demande in demarches simplifees adapter ([#3267](https://github.com/betagouv/api-subventions-asso/issues/3267)) ([53ad155](https://github.com/betagouv/api-subventions-asso/commit/53ad15526984a40b13fb469769050b33eceac9c1))
+-   **api:** typo in 86113 ds schema ([3a01485](https://github.com/betagouv/api-subventions-asso/commit/3a0148538c7dd013554226ce98bd1b54cc006b8c))
+-   **front:** [#3209](https://github.com/betagouv/api-subventions-asso/issues/3209) use new header getter ([#3248](https://github.com/betagouv/api-subventions-asso/issues/3248)) ([d038dce](https://github.com/betagouv/api-subventions-asso/commit/d038dce9974961d9a6bbf12415d43fa06a0002ed))
+-   **front:** [#3212](https://github.com/betagouv/api-subventions-asso/issues/3212) don't display number of establishments in establishment page ([#3272](https://github.com/betagouv/api-subventions-asso/issues/3272)) ([79bfb6e](https://github.com/betagouv/api-subventions-asso/commit/79bfb6e420037a38e614e8e54c322f6c14a48b4a))
+-   **tools:** [#3215](https://github.com/betagouv/api-subventions-asso/issues/3215) mettre à jour routes osiris dans le script ([#3216](https://github.com/betagouv/api-subventions-asso/issues/3216)) ([1ae1f1a](https://github.com/betagouv/api-subventions-asso/commit/1ae1f1aefb58d52fa3fd62fe7cd39ccbaf24f8a4))
+
+### Features
+
+-   [#1161](https://github.com/betagouv/api-subventions-asso/issues/1161) create package core ([#3250](https://github.com/betagouv/api-subventions-asso/issues/3250)) ([345c8a2](https://github.com/betagouv/api-subventions-asso/commit/345c8a23b71fb50cb144cd8b40487fc1938f9e7d))
+-   **api:** [#2785](https://github.com/betagouv/api-subventions-asso/issues/2785) new osiris data attributes ([#3197](https://github.com/betagouv/api-subventions-asso/issues/3197)) ([cc7f47f](https://github.com/betagouv/api-subventions-asso/commit/cc7f47fec4768b1b0c2b2ff67ca23786dac101a9))
+-   **api:** [#3090](https://github.com/betagouv/api-subventions-asso/issues/3090) osiris optimize imports with bulk ([#3218](https://github.com/betagouv/api-subventions-asso/issues/3218)) ([0b542b5](https://github.com/betagouv/api-subventions-asso/commit/0b542b56cb091a15b6e4c0c872e3f76f1f579af2))
+-   **api:** [#3225](https://github.com/betagouv/api-subventions-asso/issues/3225) [#3227](https://github.com/betagouv/api-subventions-asso/issues/3227) use siren unite legale to fill entreprise sirens and names ([#3246](https://github.com/betagouv/api-subventions-asso/issues/3246)) ([2fa1b84](https://github.com/betagouv/api-subventions-asso/commit/2fa1b845d249c4d3a0bf2c54665de4744f25c617))
+-   **api:** [#3237](https://github.com/betagouv/api-subventions-asso/issues/3237) hide confusing dauphin 2023 data ([#3265](https://github.com/betagouv/api-subventions-asso/issues/3265)) ([b99a1d5](https://github.com/betagouv/api-subventions-asso/commit/b99a1d58bf38917193b010d2b3d08bb9381b5c1c))
+-   **front:** [#3162](https://github.com/betagouv/api-subventions-asso/issues/3162) histo added to dataViz ([#3251](https://github.com/betagouv/api-subventions-asso/issues/3251)) ([d018fe0](https://github.com/betagouv/api-subventions-asso/commit/d018fe0aa1f4630aba7d19e752dc9ba1e46c57a4))
+
+### Performance Improvements
+
+-   **api:** [#3219](https://github.com/betagouv/api-subventions-asso/issues/3219) optimize payment flat ([#3249](https://github.com/betagouv/api-subventions-asso/issues/3249)) ([4a92cb2](https://github.com/betagouv/api-subventions-asso/commit/4a92cb2cbe0138d3a54add453a5ed00012570696))
+
 ## [0.64.2](https://github.com/betagouv/api-subventions-asso/compare/v0.64.1...v0.64.2) (2025-03-17)
 
 ### Bug Fixes
