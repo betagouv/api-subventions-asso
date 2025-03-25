@@ -1,6 +1,6 @@
 import { MongoServerError } from "mongodb";
 import { buildDuplicateIndexError, isMongoDuplicateError } from "./MongoHelper";
-import { DuplicateIndexError } from "core";
+import { DuplicateIndexError } from "../errors/dbError/DuplicateIndexError";
 
 describe("MongoHelper", () => {
     describe("isMongoDuplicateError", () => {

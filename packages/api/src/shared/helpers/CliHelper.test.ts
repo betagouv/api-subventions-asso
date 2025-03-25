@@ -1,4 +1,6 @@
-import { FormatDateError, ObsoleteDateError, OutOfRangeDateError } from "core";
+import { FormatDateError } from "../errors/cliErrors/FormatDateError";
+import { ObsoleteDateError } from "../errors/cliErrors/ObsoleteDateError";
+import { OutOfRangeDateError } from "../errors/cliErrors/OutOfRangeDateError";
 import * as CliHelper from "./CliHelper";
 
 describe("CliHelper", () => {

@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import csvSyncStringifier = require("csv-stringify/sync");
-import { DuplicateIndexError } from "core";
+import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
 import scdlService from "../../modules/providers/scdl/scdl.service";
 import MiscScdlGrantEntity from "../../modules/providers/scdl/entities/MiscScdlGrantEntity";
 import { ScdlStorableGrant } from "../../modules/providers/scdl/@types/ScdlStorableGrant";

@@ -1,5 +1,6 @@
 import { FutureUserDto, SignupErrorCodes, UserDto, UserWithJWTDto, UserWithResetTokenDto } from "dto";
-import { BadRequestError, InternalServerError, NotFoundError, DuplicateIndexError } from "core";
+import { BadRequestError, InternalServerError, NotFoundError } from "core";
+import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 import { DefaultObject } from "../../../../@types";
 import userPort from "../../../../dataProviders/db/user/user.port";
 import userCheckService from "../check/user.check.service";

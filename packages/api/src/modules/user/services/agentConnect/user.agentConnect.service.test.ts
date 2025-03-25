@@ -11,10 +11,11 @@ import { USER_DBO, USER_WITHOUT_PASSWORD, USER_WITHOUT_SECRET } from "../../__fi
 import agentConnectTokenPort from "../../../../dataProviders/db/user/acToken.port";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import { ObjectId } from "mongodb";
-import { InternalServerError, DuplicateIndexError } from "core";
+import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 import configurationsService from "../../../configurations/configurations.service";
 import userCrudService from "../crud/user.crud.service";
 import { FutureUserDto, UserDto } from "dto";
+import { InternalServerError } from "core";
 
 jest.mock("../../../../configurations/agentConnect.conf", () => ({
     AGENT_CONNECT_CLIENT_ID: "mocked_client_id",

@@ -1,5 +1,5 @@
 import { MongoServerError, ObjectId } from "mongodb";
-import { DuplicateIndexError } from "core";
+import { DuplicateIndexError } from "../errors/dbError/DuplicateIndexError";
 
 export function isMongoDuplicateError(error: unknown): error is MongoServerError {
     if (!(error instanceof MongoServerError)) return false;

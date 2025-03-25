@@ -1,4 +1,4 @@
-import { DuplicateIndexError } from "core";
+import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
 import rnaSirenPort from "../../dataProviders/db/rnaSiren/rnaSiren.port";
 import apiAssoService from "../providers/apiAsso/apiAsso.service";
 import RnaSirenEntity from "../../entities/RnaSirenEntity";

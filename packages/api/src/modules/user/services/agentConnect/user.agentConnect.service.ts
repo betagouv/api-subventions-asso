@@ -1,7 +1,8 @@
 import { FutureUserDto, UpdatableUser, UserDto, UserWithJWTDto } from "dto";
 import { Client, generators, Issuer, TokenSet } from "openid-client";
 import { ObjectId } from "mongodb";
-import { BadRequestError, InternalServerError, DuplicateIndexError } from "core";
+import { BadRequestError, InternalServerError } from "core";
+import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 import userPort from "../../../../dataProviders/db/user/user.port";
 import userAuthService from "../auth/user.auth.service";
 import notifyService from "../../../notify/notify.service";

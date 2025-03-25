@@ -1,4 +1,4 @@
-import { DuplicateIndexError } from "core";
+import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
 import uniteLegalEntreprisePort from "../../../dataProviders/db/uniteLegalEntreprise/uniteLegalEntreprise.port";
 import { UniteLegalEntrepriseEntity } from "../../../entities/UniteLegalEntrepriseEntity";
 import Siren from "../../../valueObjects/Siren";
