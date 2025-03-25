@@ -10,6 +10,7 @@ export class StructureTitleController {
     public linkToAsso?: string;
     public rna: RnaDto | "-";
     public siren: SirenDto | "-";
+    public siret: SiretDto | undefined;
     public rup: boolean;
     public nbEstabs: number;
 
@@ -19,6 +20,7 @@ export class StructureTitleController {
         identifiers: { rna: RnaDto | null; siren?: SirenDto | null }[] = [],
     ) {
         const associationName = association.denomination_rna || association.denomination_siren;
+        this.siret = siret;
         if (siret) {
             this.title =
                 getSiegeSiret(association) === siret
