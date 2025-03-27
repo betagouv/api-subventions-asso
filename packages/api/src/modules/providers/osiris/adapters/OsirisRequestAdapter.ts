@@ -56,7 +56,7 @@ export default class OsirisRequestAdapter {
 
         return {
             siren: toPVs(siretToSiren(entity.legalInformations.siret)),
-            rna: toPVs(entity.legalInformations.rna as RnaDto),
+            rna: entity.legalInformations.rna == undefined ? undefined : toPVs(entity.legalInformations.rna as RnaDto),
             denomination_rna: toPVs(entity.legalInformations.name),
             etablisements_siret: toPVs([entity.legalInformations.siret]),
             nic_siege: entity.providerInformations.etablissementSiege
