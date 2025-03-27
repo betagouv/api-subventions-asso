@@ -2,7 +2,7 @@ import { isAssoCategory } from "$lib/helpers/entrepriseHelper";
 
 export const isAddressValid = address => {
     if (!address) return false;
-    const mandatoryFields = ["numero", "type_voie", "voie", "code_postal", "commune"];
+    const mandatoryFields = ["type_voie", "voie", "code_postal", "commune"];
     return mandatoryFields.every(field => address[field]);
 };
 
