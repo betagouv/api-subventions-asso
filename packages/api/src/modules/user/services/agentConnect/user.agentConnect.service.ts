@@ -92,7 +92,6 @@ export class UserAgentConnectService {
 
         const domain = userObject.email.match(/.*@(.*)/)?.[1];
         if (!domain) throw new InternalServerError("email from AgentConnect invalid");
-        await configurationsService.addEmailDomain(domain, false);
 
         const createdUser = (await userCrudService.createUser(userObject, true).catch(e => {
             if (e instanceof DuplicateIndexError) {

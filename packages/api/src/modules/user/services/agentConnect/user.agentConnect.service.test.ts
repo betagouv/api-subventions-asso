@@ -222,9 +222,9 @@ describe("userAgentConnectService", () => {
             await expect(test).rejects.toEqual(expected);
         });
 
-        it("adds email domain with conflict fail-safe", async () => {
+        it("do not add email domain", async () => {
             await userAgentConnectService.createUserFromAgentConnect({ ...AC_USER, email: "user@domain.fr" });
-            expect(configurationsService.addEmailDomain).toHaveBeenCalledWith("domain.fr", false);
+            expect(configurationsService.addEmailDomain).not.toHaveBeenCalled();
         });
 
         it("creates user with userCrudService", async () => {
