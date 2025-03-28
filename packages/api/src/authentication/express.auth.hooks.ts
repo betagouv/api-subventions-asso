@@ -1,4 +1,5 @@
 import passport from "passport";
+import * as Sentry from "@sentry/node";
 import { Client, generators, Strategy as OpenIdClientStrategy } from "openid-client";
 import { Express, Request } from "express";
 import { Strategy as JwtStrategy } from "passport-jwt";
@@ -73,7 +74,7 @@ export async function registerAuthMiddlewares(app: Express) {
                     client: userAgentConnectService.client as Client,
                     params: {
                         acr_values: "eidas1",
-                        scope: "openid uid given_name email phone organizational_unit siret usual_name belonging_population",
+                        scope: "openid uid given_name email phone siret usual_name",
                     },
                     usePKCE: false,
                     passReqToCallback: true,
@@ -83,6 +84,12 @@ export async function registerAuthMiddlewares(app: Express) {
                     try {
                         const user = await userAgentConnectService.login(profile, tokenset);
                         if (user) {
+                            // TODO remove once we known more about ac data
+                            Sentry.captureEvent({
+                                level: "log",
+                                extra: { acUser: profile },
+                                message: "pro connect login",
+                            } as Sentry.Event);
                             req.user = user;
                             req.authInfo = { message: "Logged in Successfully" };
                         }

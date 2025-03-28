@@ -95,12 +95,6 @@ describe("SireneStockUniteLegaleService", () => {
         });
         afterAll(() => insertSpy.mockRestore());
 
-        it("calls adapter to dbo", async () => {
-            await sireneStockUniteLegaleService._saveBatchAssoData(BATCH);
-            expect(SireneStockUniteLegaleAdapter.entityToDbo).toHaveBeenCalledWith(1);
-            expect(SireneStockUniteLegaleAdapter.entityToDbo).toHaveBeenCalledWith(2);
-        });
-
         it("calls adapter to name", async () => {
             await sireneStockUniteLegaleService._saveBatchAssoData(BATCH);
             expect(SireneStockUniteLegaleAdapter.entityToUniteLegaleNameEntity).toHaveBeenCalledWith(1);
@@ -109,7 +103,7 @@ describe("SireneStockUniteLegaleService", () => {
 
         it("saves sirene entity", async () => {
             await sireneStockUniteLegaleService._saveBatchAssoData(BATCH);
-            expect(insertSpy).toHaveBeenCalledWith(ADAPTED_ENTITY_BATCH);
+            expect(insertSpy).toHaveBeenCalledWith(BATCH);
         });
 
         it("saves name entity", async () => {

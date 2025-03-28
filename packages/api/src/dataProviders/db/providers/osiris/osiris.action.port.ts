@@ -12,6 +12,7 @@ export class OsirisActionPort extends MongoPort<OsirisActionEntityDbo> {
     async createIndexes() {
         await this.collection.createIndex({ "indexedInformations.uniqueId": 1 }, { unique: true });
         await this.collection.createIndex({ "indexedInformations.osirisActionId": 1 });
+        await this.collection.createIndex({ "indexedInformations.requestUniqueId": 1 });
         await this.collection.createIndex({ "indexedInformations.compteAssoId": 1 });
         await this.collection.createIndex({ "indexedInformations.siret": 1 });
     }

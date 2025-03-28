@@ -55,7 +55,9 @@ export class UserAgentConnectService {
         if (!isNewUser)
             user = {
                 ...user,
-                ...this.acUserToFutureUser(agentConnectUser),
+                firstName: agentConnectUser.given_name.split(" ")[0],
+                lastName: agentConnectUser.usual_name,
+                agentConnectId: agentConnectUser.uid,
                 active: true,
             };
 
@@ -79,23 +81,17 @@ export class UserAgentConnectService {
         });
     }
 
-    private acUserToFutureUser(agentConnectUser: AgentConnectUser): FutureUserDto {
-        const firstName = agentConnectUser.given_name.split(" ")[0];
-        return {
-            email: agentConnectUser.email,
-            firstName,
-            lastName: agentConnectUser.usual_name,
-            roles: [RoleEnum.user],
-            agentConnectId: agentConnectUser.uid,
-        };
-    }
-
     async createUserFromAgentConnect(agentConnectUser: AgentConnectUser): Promise<Omit<UserDbo, "hashPassword">> {
-        const userObject = this.acUserToFutureUser(agentConnectUser);
+        const userObject = {
+            email: agentConnectUser.email,
+            firstName: agentConnectUser.given_name.split(" ")[0],
+            lastName: agentConnectUser.usual_name,
+            agentConnectId: agentConnectUser.uid,
+            roles: ["user"],
+        };
 
         const domain = userObject.email.match(/.*@(.*)/)?.[1];
         if (!domain) throw new InternalServerError("email from AgentConnect invalid");
-        await configurationsService.addEmailDomain(domain, false);
 
         const createdUser = (await userCrudService.createUser(userObject, true).catch(e => {
             if (e instanceof DuplicateIndexError) {

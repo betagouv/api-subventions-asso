@@ -14,7 +14,7 @@ import { ObjectId } from "mongodb";
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 import configurationsService from "../../../configurations/configurations.service";
 import userCrudService from "../crud/user.crud.service";
-import { FutureUserDto, UserDto } from "dto";
+import { UserDto } from "dto";
 import { InternalServerError } from "core";
 
 jest.mock("../../../../configurations/agentConnect.conf", () => ({
@@ -152,13 +152,6 @@ describe("userAgentConnectService", () => {
                 expect(removeHashPassword).toHaveBeenCalledWith(USER_DBO);
             });
 
-            it("converts agent connect data to user", async () => {
-                // @ts-expect-error -- spy private
-                const convertUserSpy = jest.spyOn(userAgentConnectService, "acUserToFutureUser");
-                await userAgentConnectService.login(AC_USER, TOKENSET);
-                expect(convertUserSpy).toHaveBeenCalledWith(AC_USER);
-            });
-
             it("notifies user update with no secret", async () => {
                 const expectedUser = USER_WITHOUT_SECRET;
                 jest.mocked(removeSecrets).mockReturnValueOnce(USER_WITHOUT_SECRET);
@@ -218,53 +211,38 @@ describe("userAgentConnectService", () => {
         });
     });
 
-    describe("acUserToFutureUser", () => {
-        it("converts correctly", () => {
-            // @ts-expect-error -- private method
-            const actual = userAgentConnectService.acUserToFutureUser(AC_USER);
-            expect(actual).toMatchInlineSnapshot(`
-                Object {
-                  "agentConnectId": "123456789",
-                  "email": "mail@mail.com",
-                  "firstName": "prénom1",
-                  "lastName": "nom de famille",
-                  "roles": Array [
-                    "user",
-                  ],
-                }
-            `); // TODO or explicit to reuse
-        });
-    });
-
     describe("createUserFromAgentConnect", () => {
-        let convertAcUserSpy: jest.SpyInstance;
-        const FUTURE_AC_USER: FutureUserDto = { email: "user@domain.fr" };
         beforeAll(() => {
-            convertAcUserSpy = jest
-                // @ts-expect-error -- private method
-                .spyOn(userAgentConnectService, "acUserToFutureUser")
-                // @ts-expect-error -- private method
-                .mockReturnValue(FUTURE_AC_USER);
             jest.mocked(userCrudService.createUser).mockResolvedValue(USER_WITHOUT_PASSWORD);
-        });
-        afterAll(() => convertAcUserSpy.mockRestore());
-
-        it("gets converted user", async () => {
-            await userAgentConnectService.createUserFromAgentConnect(AC_USER as unknown as AgentConnectUser);
-            expect(convertAcUserSpy).toHaveBeenCalledWith(AC_USER);
         });
 
         it("throws if no domain in email", async () => {
-            convertAcUserSpy.mockReturnValueOnce({ email: "no-domain" });
-            const test = () => userAgentConnectService.createUserFromAgentConnect(AC_USER);
+            const test = () => userAgentConnectService.createUserFromAgentConnect({ ...AC_USER, email: "no-domain" });
             const expected = new InternalServerError("email from AgentConnect invalid");
             await expect(test).rejects.toEqual(expected);
         });
 
-        it("adds email domain with conflict fail-safe", async () => {
-            convertAcUserSpy.mockReturnValueOnce({ email: "user@domain.fr" } as AgentConnectUser);
+        it("do not add email domain", async () => {
+            await userAgentConnectService.createUserFromAgentConnect({ ...AC_USER, email: "user@domain.fr" });
+            expect(configurationsService.addEmailDomain).not.toHaveBeenCalled();
+        });
+
+        it("creates user with userCrudService", async () => {
             await userAgentConnectService.createUserFromAgentConnect(AC_USER);
-            expect(configurationsService.addEmailDomain).toHaveBeenCalledWith("domain.fr", false);
+            expect(jest.mocked(userCrudService.createUser).mock.calls[0]).toMatchInlineSnapshot(`
+                Array [
+                  Object {
+                    "agentConnectId": "123456789",
+                    "email": "mail@mail.com",
+                    "firstName": "prénom1",
+                    "lastName": "nom de famille",
+                    "roles": Array [
+                      "user",
+                    ],
+                  },
+                  true,
+                ]
+            `);
         });
 
         it("returns user from userCrudService", async () => {
@@ -278,7 +256,7 @@ describe("userAgentConnectService", () => {
             await userAgentConnectService.createUserFromAgentConnect(AC_USER);
             expect(notifyService.notify).toHaveBeenCalledWith(
                 NotificationType.USER_CREATED,
-                expect.objectContaining({ email: FUTURE_AC_USER.email, isAgentConnect: true }),
+                expect.objectContaining({ email: AC_USER.email, isAgentConnect: true }),
             );
         });
 
