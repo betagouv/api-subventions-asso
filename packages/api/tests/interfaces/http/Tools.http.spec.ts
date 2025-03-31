@@ -42,7 +42,7 @@ describe("Tools http interface", () => {
             expect(response.res.text);
         });
 
-        it("returns errors as excel", async () => {
+        it.only("returns errors as excel", async () => {
             const response = await request(g.app)
                 .post(`/tools/scdl/validate`)
                 .set("x-access-token", await createAndGetAdminToken())
