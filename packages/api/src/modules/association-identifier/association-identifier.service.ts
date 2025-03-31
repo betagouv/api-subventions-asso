@@ -1,4 +1,4 @@
-import MultipleAssociationError from "core";
+import { MultipleAssociationError } from "core";
 import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
 import Rna from "../../valueObjects/Rna";
 import Siren from "../../valueObjects/Siren";
