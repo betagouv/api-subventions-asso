@@ -18,7 +18,7 @@ export class SireneStockUniteLegaleService {
 
     public async _saveBatchAssoData(batchAssosToSave: SireneStockUniteLegaleEntity[]) {
         await Promise.all([
-            this.insertMany(batchAssosToSave.map(entity => SireneStockUniteLegaleAdapter.entityToDbo(entity))),
+            this.insertMany(batchAssosToSave),
             uniteLegalNameService.upsertMany(
                 batchAssosToSave.map(e => SireneStockUniteLegaleAdapter.entityToUniteLegaleNameEntity(e)),
             ),
@@ -31,11 +31,11 @@ export class SireneStockUniteLegaleService {
         );
     }
 
-    public insertOne(dbo: SireneUniteLegaleDbo) {
+    public insertOne(dbo: SireneUniteLegaleDbo | SireneStockUniteLegaleEntity) {
         return sireneUniteLegaleDbPort.insertOne(dbo);
     }
 
-    public insertMany(dbos: SireneUniteLegaleDbo[]) {
+    public insertMany(dbos: SireneUniteLegaleDbo[] | SireneStockUniteLegaleEntity[]) {
         return sireneUniteLegaleDbPort.insertMany(dbos);
     }
 }
