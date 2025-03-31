@@ -10,6 +10,9 @@ import DomaineFonctionnelEntity from "../../../entities/DomaineFonctionnelEntity
 import MinistryEntity from "../../../entities/MinistryEntity";
 import RefProgrammationEntity from "../../../entities/RefProgrammationEntity";
 import dataLogService from "../../data-log/dataLog.service";
+import { STATE_BUDGET_PROGRAM_DBOS } from "../../../dataProviders/db/state-budget-program/__fixtures__/StateBudgetProgramDbo.fixture";
+import { DATA_BRETAGNE_RECORDS, MINISTRY_ENTITIES, PROGRAM_ENTITIES } from "./__fixtures__/dataBretagne.fixture";
+import { MinistriesRecord } from "./@types/MinistriesRecord";
 jest.mock("../../data-log/dataLog.service");
 
 const entities = {
@@ -81,14 +84,51 @@ describe("Data Bretagne Service", function () {
         });
     });
 
-    describe("findProgramsRecord", () => {
+    describe("getAllDataRecords", () => {
+        const mockGetProgramsRecord = jest.spyOn(dataBretagneService, "getProgramsRecord");
+        const mockGetMinistriesRecord = jest.spyOn(dataBretagneService, "getMinistriesRecord");
+        const mockGetProgramsRefRecord = jest.spyOn(dataBretagneService, "getProgramsRefRecord");
+        const mockGetFonctionalDomainsRecord = jest.spyOn(dataBretagneService, "getFonctionalDomainsRecord");
+
+        beforeAll(() => {
+            mockGetProgramsRecord.mockResolvedValue(DATA_BRETAGNE_RECORDS.programs);
+            mockGetMinistriesRecord.mockResolvedValue(DATA_BRETAGNE_RECORDS.ministries);
+            mockGetProgramsRefRecord.mockResolvedValue(DATA_BRETAGNE_RECORDS.programsRef);
+            mockGetFonctionalDomainsRecord.mockResolvedValue(DATA_BRETAGNE_RECORDS.fonctionalDomains);
+        });
+
+        afterAll(() => {
+            [
+                mockGetFonctionalDomainsRecord,
+                mockGetProgramsRecord,
+                mockGetMinistriesRecord,
+                mockGetProgramsRefRecord,
+            ].map(mock => mock.mockRestore());
+        });
+
+        it("should return all data from dataBretagneService", async () => {
+            const result = await dataBretagneService.getAllDataRecords();
+            const expected = DATA_BRETAGNE_RECORDS;
+            expect(result).toEqual(expected);
+        });
+
+        it.each(["getMinistriesRecord", "getProgramsRecord", "getFonctionalDomainsRecord", "getProgramsRefRecord"])(
+            "should call %s",
+            async methodName => {
+                await dataBretagneService.getAllDataRecords();
+                expect(dataBretagneService[methodName]).toHaveBeenCalledTimes(1);
+            },
+        );
+    });
+
+    describe("getProgramsRecord", () => {
         it("should call stateBudgetProgramPort.find", async () => {
-            await dataBretagneService.findProgramsRecord();
+            await dataBretagneService.getProgramsRecord();
             expect(jest.mocked(stateBudgetProgramPort.findAll)).toHaveBeenCalledTimes(1);
         });
 
         it("should return a record of state budget program entities", async () => {
-            const programs = await dataBretagneService.findProgramsRecord();
+            const programs = await dataBretagneService.getProgramsRecord();
             expect(programs).toEqual({
                 [PROGRAMS[0].code]: DataBretagneProgrammeAdapter.toEntity(PROGRAMS[0]),
             });
@@ -97,8 +137,8 @@ describe("Data Bretagne Service", function () {
 
     describe.each([
         [async () => dataBretagneService.getMinistriesRecord(), "getMinistry"],
-        [async () => dataBretagneService.getDomaineFonctRecord(), "getDomaineFonctionnel"],
-        [async () => dataBretagneService.getRefProgrammationRecord(), "getRefProgrammation"],
+        [async () => dataBretagneService.getFonctionalDomainsRecord(), "getDomaineFonctionnel"],
+        [async () => dataBretagneService.getProgramsRefRecord(), "getRefProgrammation"],
     ])("with %s", (methodToTest, methodToMock) => {
         let mockLogin: jest.SpyInstance;
         let mockGetEntities: jest.SpyInstance;
@@ -128,6 +168,38 @@ describe("Data Bretagne Service", function () {
         it("should return a record of entities", async () => {
             const result = await methodToTest();
             expect(result).toEqual(expected[methodToMock]);
+        });
+    });
+
+    describe("getMinistryEntity", () => {
+        const mockConsoleError = jest.spyOn(console, "error");
+
+        beforeAll(() => {
+            mockConsoleError.mockImplementation();
+        });
+
+        afterAll(() => mockConsoleError.mockRestore());
+
+        it("return a MinistryEntity", () => {
+            const expected = DATA_BRETAGNE_RECORDS.ministries[PROGRAM_ENTITIES[0].code_ministere];
+            const actual = dataBretagneService.getMinistryEntity(PROGRAM_ENTITIES[0], DATA_BRETAGNE_RECORDS.ministries);
+            expect(actual).toEqual(expected);
+        });
+
+        it("returns null if the program doesn't match any ministry", () => {
+            const expected = null;
+            const actual = dataBretagneService.getMinistryEntity(
+                { code_ministere: "NO_MIN" } as StateBudgetProgramEntity,
+                DATA_BRETAGNE_RECORDS.ministries,
+            );
+            expect(actual).toEqual(expected);
+        });
+        it("logs error if the program doesn't match any ministry", () => {
+            const PROGRAM = { code_ministere: "NO_MIN" } as StateBudgetProgramEntity;
+            dataBretagneService.getMinistryEntity(PROGRAM, DATA_BRETAGNE_RECORDS.ministries);
+            expect(mockConsoleError).toHaveBeenCalledWith(
+                `Ministry not found for program code: ${PROGRAM.code_ministere}`,
+            );
         });
     });
 });

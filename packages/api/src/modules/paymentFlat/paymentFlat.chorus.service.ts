@@ -4,25 +4,16 @@ import ChorusAdapter from "../providers/chorus/adapters/ChorusAdapter";
 import chorusService from "../providers/chorus/chorus.service";
 import ChorusLineEntity from "../providers/chorus/entities/ChorusLineEntity";
 import dataBretagneService from "../providers/dataBretagne/dataBretagne.service";
-import PaymentFlatAdapter from "./paymentFlatAdapter";
+import paymentFlatService from "./paymentFlat.service";
 
 // TODO: this was only created to extract chorus dependent process from paymentFlatService
 // This should be better thought and refactored
 class PaymentFlatChorusService {
     private BATCH_SIZE = 50000;
 
-    private async getAllDataBretagneData() {
-        const ministries = await dataBretagneService.getMinistriesRecord();
-        const programs = await dataBretagneService.findProgramsRecord();
-        const domainesFonct = await dataBretagneService.getDomaineFonctRecord();
-        const refsProgrammation = await dataBretagneService.getRefProgrammationRecord();
-
-        return { programs, ministries, domainesFonct, refsProgrammation };
-    }
-
     // init chorus data in paymentFlat (all exercises since 2017)
     public async init() {
-        const { programs, ministries, domainesFonct, refsProgrammation } = await this.getAllDataBretagneData();
+        const { programs, ministries, fonctionalDomains, programsRef } = await dataBretagneService.getAllDataRecords();
 
         const START_YEAR = 2017;
         const END_YEAR = new Date().getFullYear();
@@ -34,8 +25,8 @@ class PaymentFlatChorusService {
             chorusEntities = await this.toPaymentFlatChorusEntities(
                 programs,
                 ministries,
-                domainesFonct,
-                refsProgrammation,
+                fonctionalDomains,
+                programsRef,
                 year,
             );
 
@@ -58,8 +49,8 @@ class PaymentFlatChorusService {
     public async toPaymentFlatChorusEntities(
         programs,
         ministries,
-        domainesFonct,
-        refsProgrammation,
+        fonctionalDomains,
+        programsRef,
         exerciceBudgetaire?: number,
     ) {
         const chorusCursor = chorusService.cursorFind(exerciceBudgetaire);
@@ -72,8 +63,8 @@ class PaymentFlatChorusService {
                 document,
                 programs,
                 ministries,
-                domainesFonct,
-                refsProgrammation,
+                fonctionalDomains,
+                programsRef,
             );
 
             if (entities[paymentFlatEntity.uniqueId]) {
@@ -88,31 +79,19 @@ class PaymentFlatChorusService {
     }
 
     public async updatePaymentsFlatCollection(exerciceBudgetaire?: number) {
-        const { programs, ministries, domainesFonct, refsProgrammation } = await this.getAllDataBretagneData();
+        const { programs, ministries, fonctionalDomains, programsRef } = await dataBretagneService.getAllDataRecords();
 
         const chorusEntities: PaymentFlatEntity[] = await this.toPaymentFlatChorusEntities(
             programs,
             ministries,
-            domainesFonct,
-            refsProgrammation,
+            fonctionalDomains,
+            programsRef,
             exerciceBudgetaire,
         );
 
         for (let i = 0; i < chorusEntities.length; i += this.BATCH_SIZE) {
             const batchEntities = chorusEntities.slice(i, i + this.BATCH_SIZE);
-
-            const bulkWriteArray = batchEntities.map(entity => {
-                const DboWithoutId = PaymentFlatAdapter.toDbo(entity);
-                return {
-                    updateOne: {
-                        filter: { uniqueId: DboWithoutId.uniqueId },
-                        update: { $set: DboWithoutId },
-                        upsert: true,
-                    },
-                };
-            });
-
-            await paymentFlatPort.upsertMany(bulkWriteArray);
+            await paymentFlatService.upsertMany(batchEntities);
         }
         console.log("All documents inserted");
     }

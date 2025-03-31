@@ -7,12 +7,24 @@ import fonjepTiersPort from "../../../../src/dataProviders/db/providers/fonjep/f
 import fonjepPostesPort from "../../../../src/dataProviders/db/providers/fonjep/fonjep.postes.port";
 import fonjepTypePostePort from "../../../../src/dataProviders/db/providers/fonjep/fonjep.typePoste.port";
 import fonjepDispositifPort from "../../../../src/dataProviders/db/providers/fonjep/fonjep.dispositif.port";
+import dataBretagnePort from "../../../../src/dataProviders/api/dataBretagne/dataBretagne.port";
+import { DATA_BRETAGNE_DTOS, PROGRAMS } from "../../../__fixtures__/paymentsFlat.fixture";
+import stateBudgetProgramPort from "../../../../src/dataProviders/db/state-budget-program/stateBudgetProgram.port";
+import paymentFlatPort from "../../../../src/dataProviders/db/paymentFlat/paymentFlat.port";
 
-const FILEPATH = path.resolve(__dirname, "./__fixtures__/fonjep.xlsx");
+const FILEPATH = path.resolve(__dirname, "./__fixtures__/fonjep-new.xlsx");
 const EXPORT_DATE = new Date("2022-03-03").toISOString();
 
 describe("FonjepCli", () => {
     let cli: FonjepCli;
+
+    beforeEach(async () => {
+        // mock API call to DataBretagne
+        jest.spyOn(dataBretagnePort, "login").mockImplementation(jest.fn());
+        jest.spyOn(dataBretagnePort, "getCollection").mockImplementation(collection => DATA_BRETAGNE_DTOS[collection]);
+        await stateBudgetProgramPort.replace(PROGRAMS);
+    });
+
     describe("parse()", () => {
         beforeAll(async () => {
             cli = new FonjepCli();
@@ -75,6 +87,12 @@ describe("FonjepCli", () => {
                 _id: expect.any(ObjectId),
             }));
             expect(actualDispositif).toMatchSnapshot(expected);
+        });
+
+        it("should add FonjepPaymentFlat", async () => {
+            await cli.parse(FILEPATH, EXPORT_DATE);
+            const paymentsFlat = await paymentFlatPort.findAll();
+            expect(paymentsFlat.map(flat => ({ ...flat, _id: expect.any(String) }))).toMatchSnapshot();
         });
     });
 });

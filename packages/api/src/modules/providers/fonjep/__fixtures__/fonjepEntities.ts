@@ -6,7 +6,7 @@ import FonjepTypePosteEntity from "../entities/FonjepTypePosteEntity";
 import FonjepVersementEntity from "../entities/FonjepVersementEntity";
 
 export const TIER_ENTITY: FonjepTiersEntity = {
-    code: "Code",
+    code: "CodeAsso",
     raisonSociale: "Raison Sociale",
     estAssociation: "Oui",
     estCoFinanceurPostes: "Non",
@@ -18,7 +18,7 @@ export const TIER_ENTITY: FonjepTiersEntity = {
 };
 
 export const TIER_ENTITY_WITH_NULLS: FonjepTiersEntity = {
-    code: "Code",
+    code: "CodeAsso2",
     siretOuRidet: null,
     raisonSociale: "Raison Sociale",
     estAssociation: "Oui",
@@ -34,7 +34,7 @@ export const POSTE_ENTITY: FonjepPosteEntity = {
     dispositifId: 1,
     financeurPrincipalCode: "FinanceurPrincipalCode",
     financeurAttributeurCode: "FinanceurAttributeurCode",
-    associationBeneficiaireCode: "AssociationBeneficiaireCode",
+    associationBeneficiaireCode: TIER_ENTITY.code,
     pstStatutPosteLibelle: "PstStatutPosteLibelle",
     pstRaisonStatutLibelle: "PstRaisonStatutLibelle",
     associationImplantationCode: "AssociationImplantationCode",
@@ -51,7 +51,7 @@ export const POSTE_ENTITY_WITH_NULLS: FonjepPosteEntity = {
     dispositifId: null,
     financeurPrincipalCode: "FinanceurPrincipalCode",
     financeurAttributeurCode: "FinanceurAttributeurCode",
-    associationBeneficiaireCode: "AssociationBeneficiaireCode",
+    associationBeneficiaireCode: TIER_ENTITY_WITH_NULLS.code,
     pstStatutPosteLibelle: "PstStatutPosteLibelle",
     pstRaisonStatutLibelle: "PstRaisonStatutLibelle",
     associationImplantationCode: "AssociationImplantationCode",
@@ -64,7 +64,7 @@ export const POSTE_ENTITY_WITH_NULLS: FonjepPosteEntity = {
 };
 
 export const VERSEMENT_ENTITY: FonjepVersementEntity = {
-    posteCode: "Code",
+    posteCode: POSTE_ENTITY.code,
     periodeDebut: new Date("2022-01-12"),
     periodeFin: new Date("2022-12-14"),
     dateVersement: new Date("2022-04-15"),
@@ -73,7 +73,7 @@ export const VERSEMENT_ENTITY: FonjepVersementEntity = {
 };
 
 export const VERSEMENT_ENTITY_WITH_NULLS: FonjepVersementEntity = {
-    posteCode: "Code",
+    posteCode: POSTE_ENTITY_WITH_NULLS.code,
     periodeDebut: null,
     periodeFin: null,
     dateVersement: null,
