@@ -19,35 +19,28 @@ jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.typePoste.port");
 jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.dispositif.port");
 import FonjepParser from "./fonjep.parser";
 import fonjepService from "./fonjep.service";
-import { cp } from "fs";
-
-const MAPPED_DATA_ELEMENT = [
-    { foo: "foo1", bar: "bar1" },
-    { foo: "foo2", bar: "bar2" },
-];
-
-const MAPPED_DATA = [
-    MAPPED_DATA_ELEMENT,
-    MAPPED_DATA_ELEMENT,
-    MAPPED_DATA_ELEMENT,
-    MAPPED_DATA_ELEMENT,
-    MAPPED_DATA_ELEMENT,
-];
+import {
+    DISPOSITIF_DTO,
+    POSTE_DTO_WITH_DATE,
+    TIER_DTO,
+    TYPE_POSTE_DTO,
+    VERSEMENT_DTO_WITH_DATE,
+} from "./__fixtures__/fonjepDtos";
 
 const PARSED_DATA = {
-    tiers: MAPPED_DATA_ELEMENT,
-    postes: MAPPED_DATA_ELEMENT,
-    versements: MAPPED_DATA_ELEMENT,
-    typePoste: MAPPED_DATA_ELEMENT,
-    dispositifs: MAPPED_DATA_ELEMENT,
+    tiers: [TIER_DTO],
+    postes: [POSTE_DTO_WITH_DATE],
+    versements: [VERSEMENT_DTO_WITH_DATE],
+    typePoste: [TYPE_POSTE_DTO],
+    dispositifs: [DISPOSITIF_DTO],
 };
 
 const ENTITIES = {
-    tierEntities: [TIER_ENTITY, TIER_ENTITY],
-    posteEntities: [POSTE_ENTITY, POSTE_ENTITY],
-    versementEntities: [VERSEMENT_ENTITY, VERSEMENT_ENTITY],
-    typePosteEntities: [TYPE_POSTE_ENTITY, TYPE_POSTE_ENTITY],
-    dispositifEntities: [DISPOSITIF_ENTITY, DISPOSITIF_ENTITY],
+    tierEntities: [TIER_ENTITY],
+    posteEntities: [POSTE_ENTITY],
+    versementEntities: [VERSEMENT_ENTITY],
+    typePosteEntities: [TYPE_POSTE_ENTITY],
+    dispositifEntities: [DISPOSITIF_ENTITY],
 };
 
 describe("FonjepService", () => {

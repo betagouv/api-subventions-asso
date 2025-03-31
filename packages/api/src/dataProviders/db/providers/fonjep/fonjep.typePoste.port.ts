@@ -1,9 +1,8 @@
 import FonjepTypePosteEntity from "../../../../modules/providers/fonjep/entities/FonjepTypePosteEntity";
-import FonjepTypePosteDbo from "./dbo/fonjepTypePosteDbo";
 import { FonjepCorePort } from "./fonjep.core.port";
-import FonjepDboAdapter from "./fonjepDboAdapter";
 
-export class FonjepTypePostePort extends FonjepCorePort<FonjepTypePosteDbo> {
+// if dbo is equal to WithId<entity> then we just use the Entity as FonjepTypedDocument
+export class FonjepTypePostePort extends FonjepCorePort<FonjepTypePosteEntity> {
     readonly collectionName = "fonjepTypePoste";
 
     async createIndexes() {
@@ -11,7 +10,7 @@ export class FonjepTypePostePort extends FonjepCorePort<FonjepTypePosteDbo> {
     }
 
     public insertMany(entities: FonjepTypePosteEntity[]) {
-        return this.collection.insertMany(entities.map(entity => FonjepDboAdapter.toTypePosteDbo(entity)));
+        return this.collection.insertMany(entities);
     }
 
     public findByCode(code: string) {

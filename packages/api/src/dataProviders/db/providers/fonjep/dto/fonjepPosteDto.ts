@@ -1,17 +1,22 @@
+// null represents an empty cell in the file
+
 export default interface FonjepPosteDto {
-    // dates are excel dates (i.e. days since 1900-01-01)
-    Code: string | null;
+    Code: string;
+    Annee: number;
+    DateFinTriennalite: number; // dates in excel dates (i.e. days since 1900-01-01)
+    FinanceurPrincipalCode: string;
+    FinanceurAttributeurCode: string;
+    AssociationBeneficiaireCode: string;
     DispositifId: number | null;
     PstStatutPosteLibelle: string | null;
     PstRaisonStatutLibelle: string | null;
-    FinanceurPrincipalCode: string | null;
-    FinanceurAttributeurCode: string | null;
-    AssociationBeneficiaireCode: string | null;
     AssociationImplantationCode: string | null;
-    Annee: number | null;
     MontantSubvention: number | null;
-    DateFinTriennalite: number | null;
     PstTypePosteCode: string | null;
     PleinTemps: string | null;
     DoublementUniteCompte: string | null;
+}
+
+export interface FonjepPosteDtoWithJSDate extends Omit<FonjepPosteDto, "DateFinTriennalite"> {
+    DateFinTriennalite: Date;
 }

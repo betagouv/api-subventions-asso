@@ -1,66 +1,97 @@
-import { POSTE_DTOS, TIER_DTOS, VERSEMENT_DTOS, TYPE_POSTE_DTOS, DISPOSITIF_DTOS } from "../__fixtures__/fonjepDtos";
 import {
-    POSTE_ENTITIES,
-    TIER_ENTITIES,
-    VERSEMENT_ENTITIES,
-    TYPE_POSTE_ENTITIES,
-    DISPOSITIF_ENTITIES,
-} from "../__fixtures__/fonjepEntities";
-import FonjepTiersEntity from "../entities/FonjepTiersEntity";
-import FonjepPosteEntity from "../entities/FonjepPosteEntity";
-import FonjepVersementEntity from "../entities/FonjepVersementEntity";
-import FonjepTypePosteEntity from "../entities/FonjepTypePosteEntity";
-import FonjepDispositifEntity from "../entities/FonjepDispositifEntity";
-import FonjepEntityAdapter from "./FonjepEntityAdapter";
+    DISPOSITIF_DTOS,
+    POSTE_DTO_WITH_DATE,
+    TIER_DTOS,
+    TYPE_POSTE_DTOS,
+    VERSEMENT_DTO_WITH_DATE,
+} from "../__fixtures__/fonjepDtos";
 
-const TIER_INDICES = Array.from({ length: TIER_DTOS.length }, (_, i) => i);
-const POSTE_INDICES = Array.from({ length: POSTE_DTOS.length }, (_, i) => i);
-const VERSEMENT_INDICES = Array.from({ length: VERSEMENT_DTOS.length }, (_, i) => i);
-const TYPE_POSTE_INDICES = Array.from({ length: TYPE_POSTE_DTOS.length }, (_, i) => i);
-const DISPOSITIF_INDICES = Array.from({ length: DISPOSITIF_DTOS.length }, (_, i) => i);
+import FonjepEntityAdapter from "./FonjepEntityAdapter";
 
 describe("FonjepEntityAdapter", () => {
     describe("toFonjepTierEntity()", () => {
-        it.each(TIER_INDICES)("should return FonjepTiersEntity", index => {
-            const actual = FonjepEntityAdapter.toFonjepTierEntity(TIER_DTOS[index]);
-            const expected = TIER_ENTITIES[index];
-            expect(actual).toBeInstanceOf(FonjepTiersEntity);
+        it("should map FonjepTiersDto to FonjepTiersEntity correctly", () => {
+            const tier = TIER_DTOS[0];
+            const expected = {
+                code: tier.Code,
+                raisonSociale: tier.RaisonSociale,
+                estAssociation: tier.EstAssociation,
+                estCoFinanceurPostes: tier.EstCoFinanceurPostes,
+                estFinanceurPostes: tier.EstFinanceurPostes,
+                siretOuRidet: tier.SiretOuRidet,
+                codePostal: tier.CodePostal,
+                ville: tier.Ville,
+                contactEmail: tier.ContactEmail,
+            };
+
+            const actual = FonjepEntityAdapter.toFonjepTierEntity(tier);
             expect(actual).toEqual(expected);
         });
     });
 
     describe("toFonjepPosteEntity()", () => {
-        it.each(POSTE_INDICES)("should return FonjepPosteEntity", index => {
-            const actual = FonjepEntityAdapter.toFonjepPosteEntity(POSTE_DTOS[index]);
-            const expected = POSTE_ENTITIES[index];
-            expect(actual).toBeInstanceOf(FonjepPosteEntity);
+        it("should map FonjepPosteDto to FonjepPosteEntity correctly", () => {
+            const poste = POSTE_DTO_WITH_DATE;
+            const expected = {
+                code: poste.Code,
+                annee: poste.Annee,
+                associationBeneficiaireCode: poste.AssociationBeneficiaireCode,
+                financeurPrincipalCode: poste.FinanceurPrincipalCode,
+                financeurAttributeurCode: poste.FinanceurAttributeurCode,
+                dateFinTriennalite: poste.DateFinTriennalite,
+                dispositifId: poste.DispositifId,
+                pstStatutPosteLibelle: poste.PstStatutPosteLibelle,
+                pstRaisonStatutLibelle: poste.PstRaisonStatutLibelle,
+                associationImplantationCode: poste.AssociationImplantationCode,
+                montantSubvention: poste.MontantSubvention,
+                pstTypePosteCode: poste.PstTypePosteCode,
+                pleinTemps: poste.PleinTemps,
+                doublementUniteCompte: poste.DoublementUniteCompte,
+            };
+
+            const actual = FonjepEntityAdapter.toFonjepPosteEntity(poste);
             expect(actual).toEqual(expected);
         });
     });
 
     describe("toFonjepVersementEntity()", () => {
-        it.each(VERSEMENT_INDICES)("should return FonjepVersementEntity", index => {
-            const actual = FonjepEntityAdapter.toFonjepVersementEntity(VERSEMENT_DTOS[index]);
-            const expected = VERSEMENT_ENTITIES[index];
-            expect(actual).toBeInstanceOf(FonjepVersementEntity);
+        it("should map FonjepVersementDto to FonjepVersementEntity correctly", () => {
+            const versement = VERSEMENT_DTO_WITH_DATE;
+            const expected = {
+                posteCode: versement.PosteCode,
+                periodeDebut: versement.PeriodeDebut,
+                periodeFin: versement.PeriodeFin,
+                dateVersement: versement.DateVersement,
+                montantAPayer: versement.MontantAPayer,
+                montantPaye: versement.MontantPaye,
+            };
+
+            const actual = FonjepEntityAdapter.toFonjepVersementEntity(versement);
             expect(actual).toEqual(expected);
         });
     });
 
     describe("toFonjepTypePosteEntity()", () => {
-        it.each(TYPE_POSTE_INDICES)("should return FonjepTypePosteEntity", index => {
-            const actual = FonjepEntityAdapter.toFonjepTypePosteEntity(TYPE_POSTE_DTOS[index]);
-            const expected = TYPE_POSTE_ENTITIES[index];
-            expect(actual).toBeInstanceOf(FonjepTypePosteEntity);
+        it("should map FonjepTypePosteDto to FonjepTypePosteEntity correctly", () => {
+            const typePoste = TYPE_POSTE_DTOS[0];
+            const expected = {
+                code: typePoste.Code,
+                libelle: typePoste.Libelle,
+            };
+            const actual = FonjepEntityAdapter.toFonjepTypePosteEntity(typePoste);
             expect(actual).toEqual(expected);
         });
     });
 
     describe("toFonjepDispositifEntity()", () => {
-        it.each(DISPOSITIF_INDICES)("should return FonjepDispositifEntity", index => {
-            const actual = FonjepEntityAdapter.toFonjepDispositifEntity(DISPOSITIF_DTOS[index]);
-            const expected = DISPOSITIF_ENTITIES[index];
-            expect(actual).toBeInstanceOf(FonjepDispositifEntity);
+        it("should map FonjepDispositifDto to FonjepDispositifEntity correctly", () => {
+            const dispositif = DISPOSITIF_DTOS[0];
+            const expected = {
+                id: dispositif.ID,
+                libelle: dispositif.Libelle,
+                financeurCode: dispositif.FinanceurCode,
+            };
+            const actual = FonjepEntityAdapter.toFonjepDispositifEntity(dispositif);
             expect(actual).toEqual(expected);
         });
     });

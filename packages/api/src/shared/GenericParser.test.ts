@@ -50,7 +50,7 @@ describe("GenericParser", () => {
         });
 
         afterAll(() => {
-            jest.mocked(GenericParser.findValueAndOriginalKeyByPath).mockRestore();
+            findOriginalSpy.mockRestore();
         });
 
         it("gets original value and path", () => {
@@ -86,6 +86,41 @@ describe("GenericParser", () => {
             adaptByPathSpy.mockReturnValueOnce("adapted2");
             const expected = { value1: "adapted1", value2: "adapted2" };
             const actual = GenericParser.indexDataByPathObject(MAPPER, DATA);
+        });
+    });
+
+    describe("linkHeaderToData", () => {
+        it("trim headers", () => {
+            const HEADERS = ["  header1   "];
+            const DATA = ["value1"];
+            const expected = {
+                header1: "value1",
+            };
+            const actual = GenericParser.linkHeaderToData(HEADERS, DATA);
+            expect(actual).toEqual(expected);
+        });
+
+        it("links header to data and replace empty cells with empty string", () => {
+            const HEADERS = ["header1", "header2"];
+            const DATA = ["value1", undefined];
+            const expected = {
+                header1: "value1",
+                header2: "",
+            };
+            const actual = GenericParser.linkHeaderToData(HEADERS, DATA);
+            expect(actual).toEqual(expected);
+        });
+
+        it.each`
+            expected | allowNull
+            ${null}  | ${true}
+            ${""}    | ${false}
+        `("keep empty cells as null with allowNull option", ({ expected, allowNull }) => {
+            const HEADERS = ["header1", "header2"];
+            const DATA = ["value1", undefined];
+
+            const actual = GenericParser.linkHeaderToData(HEADERS, DATA, { allowNull: allowNull }).header2;
+            expect(actual).toEqual(expected);
         });
     });
 

@@ -1,9 +1,8 @@
 import FonjepTiersEntity from "../../../../modules/providers/fonjep/entities/FonjepTiersEntity";
-import FonjepTiersDbo from "./dbo/fonjepTiersDbo";
 import { FonjepCorePort } from "./fonjep.core.port";
-import fonjepDboAdapter from "./fonjepDboAdapter";
 
-export class FonjepTiersPort extends FonjepCorePort<FonjepTiersDbo> {
+// if dbo is equal to WithId<entity> then we just use the Entity as FonjepTypedDocument
+export class FonjepTiersPort extends FonjepCorePort<FonjepTiersEntity> {
     readonly collectionName = "fonjepTiers";
 
     async createIndexes() {
@@ -11,7 +10,7 @@ export class FonjepTiersPort extends FonjepCorePort<FonjepTiersDbo> {
     }
 
     public insertMany(entities: FonjepTiersEntity[]) {
-        return this.collection.insertMany(entities.map(entity => fonjepDboAdapter.toTierDbo(entity)));
+        return this.collection.insertMany(entities);
     }
 
     public findBySiretOuRidet(siretOuRidet: string) {

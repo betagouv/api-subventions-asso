@@ -1,3 +1,6 @@
-export default class FonjepTypePosteEntity {
-    constructor(public Code: string | null, public Libelle: string | null) {}
-}
+type FonjepTypePosteEntity = {
+    code: string;
+    libelle: string;
+};
+
+export default FonjepTypePosteEntity;

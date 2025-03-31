@@ -1,9 +1,8 @@
 import FonjepDispositifEntity from "../../../../modules/providers/fonjep/entities/FonjepDispositifEntity";
-import FonjepDispositifDbo from "./dbo/fonjepDispositifDbo";
 import { FonjepCorePort } from "./fonjep.core.port";
-import FonjepDboAdapter from "./fonjepDboAdapter";
 
-export class FonjepDispositif extends FonjepCorePort<FonjepDispositifDbo> {
+// if dbo is equal to WithId<entity> then we just use the Entity as FonjepTypedDocument
+export class FonjepDispositif extends FonjepCorePort<FonjepDispositifEntity> {
     readonly collectionName = "fonjepDispositif";
 
     async createIndexes() {
@@ -11,7 +10,7 @@ export class FonjepDispositif extends FonjepCorePort<FonjepDispositifDbo> {
     }
 
     public insertMany(entities: FonjepDispositifEntity[]) {
-        return this.collection.insertMany(entities.map(entity => FonjepDboAdapter.toDispositifDbo(entity)));
+        return this.collection.insertMany(entities);
     }
 
     public findByID(id: number) {
