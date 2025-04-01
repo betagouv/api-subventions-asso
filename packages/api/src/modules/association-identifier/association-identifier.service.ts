@@ -1,4 +1,4 @@
-import { MultipleAssociationError } from "core";
+import { MultipleAssociationsError } from "core";
 import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
 import Rna from "../../valueObjects/Rna";
 import Siren from "../../valueObjects/Siren";
@@ -24,7 +24,7 @@ export class AssociationIdentifierService {
         const identifiers = await this.getAssociationIdentifiers(id);
 
         if (identifiers.length > 1) {
-            throw new MultipleAssociationError();
+            throw new MultipleAssociationsError();
         } else if (identifiers.length === 0) {
             throw new Error("No association found with this identifier");
         }

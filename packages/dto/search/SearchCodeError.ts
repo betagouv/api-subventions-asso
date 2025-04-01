@@ -1,4 +1,4 @@
 export enum SearchCodeError {
     ID_NOT_ASSO,
-    MULTIPLE_ASSO,
+    MULTIPLE_ASSOS,
 }
