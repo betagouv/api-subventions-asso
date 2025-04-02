@@ -60,6 +60,10 @@
     {
       "from": "demande.champs.Q2hhbXAtMjM2MzQ5Ng==.value",
       "to": "date_fin"
+    },
+    {
+      "to": "exercice",
+      "value": 2024
     }
   ],
   "commonSchema": [
@@ -102,6 +106,10 @@
     {
       "from": "demande.champs.Q2hhbXAtMjMzNzMwNA==.value",
       "to": "contact.email"
+    },
+    {
+      "to": "exercice",
+      "value": 2024
     }
   ]
 }

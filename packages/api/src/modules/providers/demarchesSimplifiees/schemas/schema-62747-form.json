@@ -52,7 +52,11 @@
         { 
             "from": "demande.demarche.title",
             "to": "dispositif"
-        }
+        },
+    {
+      "to": "exercice",
+      "value": 2023
+    }
     ],
   "commonSchema": [
     {
@@ -86,6 +90,10 @@
     {
       "to": "dateTransmitted",
       "from": "demande.dateDepot"
+    },
+    {
+      "to": "exercice",
+      "value": 2023
     }
   ]
 }

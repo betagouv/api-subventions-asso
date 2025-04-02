@@ -52,6 +52,10 @@
     {
       "from": "demande.champs.Q2hhbXAtMzQyNjcw.value",
       "to": "contact.email"
+    },
+    {
+      "to": "exercice",
+      "value": 2023
     }
   ],
   "commonSchema": [
