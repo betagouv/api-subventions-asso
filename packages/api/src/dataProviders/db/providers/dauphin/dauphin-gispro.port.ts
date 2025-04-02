@@ -30,7 +30,7 @@ export class DauphinGisproPort extends MongoPort<DauphinGisproDbo> {
         return this.collection
             .find({
                 "dauphin.demandeur.SIRET.complet": siret.value,
-                "dauphin.exerciceBudgetaire": { $ne: 2023 }, // we lost access in 2023 so data of this year is incomplete and confusing
+                "dauphin.exerciceBudgetaire": { $lt: 2023 }, // we lost access in 2022 so data after this year is incomplete and confusing
             })
             .toArray();
     }
@@ -39,7 +39,7 @@ export class DauphinGisproPort extends MongoPort<DauphinGisproDbo> {
         return this.collection
             .find({
                 "dauphin.demandeur.SIRET.SIREN": siren.value,
-                "dauphin.exerciceBudgetaire": { $ne: 2023 }, // we lost access in 2023 so data of this year is incomplete and confusing
+                "dauphin.exerciceBudgetaire": { $lt: 2023 }, // we lost access in 2022 so data after this year is incomplete and confusing
             })
             .toArray();
     }
