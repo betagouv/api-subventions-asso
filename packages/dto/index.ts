@@ -3,6 +3,7 @@ export * from "./configurations";
 export * from "./stats";
 export * from "./user";
 export * from "./associations";
+export * from "./demandeSubvention";
 export * from "./etablissements";
 export * from "./payments";
 export * from "./auth";

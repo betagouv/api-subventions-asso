@@ -3,7 +3,7 @@ import { ProviderValues } from "../shared/ProviderValue";
 import { RnaDto } from "../shared/Rna";
 import { SirenDto } from "../shared/Siren";
 import { SiretDto } from "../shared/Siret";
-import { DemandeSubvention } from "../search/DemandeSubvention";
+import { DemandeSubvention } from "../demandeSubvention";
 import { Etablissement } from "../etablissements/Etablissement";
 import { Payment } from "../payments/Payment";
 import { ExtraitRcsDto } from "./ExtraitRcsDto";

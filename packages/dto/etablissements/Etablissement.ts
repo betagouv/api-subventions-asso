@@ -1,7 +1,7 @@
 import { InformationBancaire } from "../shared/InformationBancaire";
 import { Personne } from "../shared/Personne";
 import { ProviderValues } from "../shared/ProviderValue";
-import { DemandeSubvention } from "../search/DemandeSubvention";
+import { DemandeSubvention } from "../demandeSubvention";
 import { Payment } from "../payments/Payment";
 import { SimplifiedEtablissement } from "./SimplifiedEtablissement";
 
