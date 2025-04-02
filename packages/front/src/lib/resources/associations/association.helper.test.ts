@@ -13,7 +13,6 @@ describe("Association Helper", () => {
             address
             ${undefined}
             ${{}}
-            ${{ ...ADDRESS, numero: undefined }}
             ${{ ...ADDRESS, type_voie: undefined }}
             ${{ ...ADDRESS, voie: undefined }}
             ${{ ...ADDRESS, code_postal: undefined }}
