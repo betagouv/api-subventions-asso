@@ -1,5 +1,5 @@
 import { SiretDto } from "../shared/Siret";
-import { ApplicationStatus } from "../search/DemandeSubvention";
+import { ApplicationStatus } from "../demandeSubvention";
 
 export interface CommonApplicationDto {
     /**
