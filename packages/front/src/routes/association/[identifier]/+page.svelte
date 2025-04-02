@@ -48,6 +48,12 @@
                 Il semblerait que vous cherchiez une entreprise et non une association
             </Alert>
         </div>
+    {:else if error.httpCode === 400 && error?.data?.code === SearchCodeError.MULTIPLE_ASSOS}
+        <div class="fr-mb-3w">
+            <Alert type="warning" title="Attention">
+                Plusieurs associations ont été trouvées avec cet identifiant, merci d'en utiliser un plus spécifique
+            </Alert>
+        </div>
     {:else}
         <ErrorAlert message={error.message} />
     {/if}
