@@ -73,14 +73,21 @@ export class GenericParser {
         }, {} as TypeOut) as TypeOut;
     }
 
-    static linkHeaderToData<T = string>(headers: string[], data: T[]) {
+    static linkHeaderToData<T = string>(
+        headers: string[],
+        data: T[],
+        options: { allowNull: boolean } = { allowNull: false },
+    ) {
         return headers.reduce((acc, header, key) => {
             const value =
                 typeof data[key] === "string" ? (data[key] as string).replace(/&#32;/g, " ").trim() : data[key];
             const trimedHeader = typeof header === "string" ? header.trim() : header;
-            acc[trimedHeader] = value || "";
+            // quick fix to keep empty cells value as null
+            // https://github.com/orgs/betagouv/projects/38/views/1?pane=issue&itemId=103848824&issue=betagouv%7Capi-subventions-asso%7C3293
+            if (options.allowNull) acc[trimedHeader] = value || null;
+            else acc[trimedHeader] = value || "";
             return acc;
-        }, {} as DefaultObject<T | string>);
+        }, {} as DefaultObject<T | string | null>);
     }
 
     static findFiles(file: string) {

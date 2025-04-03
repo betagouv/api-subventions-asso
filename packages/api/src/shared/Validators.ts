@@ -52,7 +52,7 @@ export function areNumbersValid(numbers: unknown[]) {
     return numbers.every(isNumberValid);
 }
 
-export function isNumberValid(number: unknown) {
+export function isNumberValid(number: unknown): number is number {
     return typeof number === "number" && !isNaN(number);
 }
 
