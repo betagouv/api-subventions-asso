@@ -5,8 +5,8 @@ import FonjepTiersDto from "../../../dataProviders/db/providers/fonjep/dto/fonje
 import FonjepPosteDto, {
     FonjepPosteDtoWithJSDate,
 } from "../../../dataProviders/db/providers/fonjep/dto/fonjepPosteDto";
-import FonjepVersementDto, {
-    FonjepVersementDtoWithJSDate,
+import FonjepVersementDtoWithExcelDate, {
+    FonjepVersementDto,
 } from "../../../dataProviders/db/providers/fonjep/dto/fonjepVersementDto";
 import FonjepTypePosteDto from "../../../dataProviders/db/providers/fonjep/dto/fonjepTypePosteDto";
 import { isNumberValid } from "../../../shared/Validators";
@@ -26,7 +26,7 @@ export default class FonjepParser {
     public static parse(filePath: string): {
         tiers: FonjepTiersDto[];
         postes: FonjepPosteDtoWithJSDate[];
-        versements: FonjepVersementDtoWithJSDate[];
+        versements: FonjepVersementDto[];
         typePoste: FonjepTypePosteDto[];
         dispositifs: FonjepDispositifDto[];
     } {
@@ -44,13 +44,13 @@ export default class FonjepParser {
         const [tiers, postes, versements, typePoste, dispositifs] = this.mapHeaderToData(pages) as [
             FonjepTiersDto[],
             FonjepPosteDto[],
-            FonjepVersementDto[],
+            FonjepVersementDtoWithExcelDate[],
             FonjepTypePosteDto[],
             FonjepDispositifDto[],
         ];
 
         const versementsWithJSDate = versements.map(versement => {
-            const versementWithDate: Partial<FonjepVersementDtoWithJSDate> = {};
+            const versementWithDate: Partial<FonjepVersementDto> = {};
             if (isNumberValid(versement.PeriodeDebut)) {
                 versementWithDate.PeriodeDebut = GenericParser.ExcelDateToJSDate(versement.PeriodeDebut);
             }
@@ -60,7 +60,7 @@ export default class FonjepParser {
             if (isNumberValid(versement.DateVersement)) {
                 versementWithDate.DateVersement = GenericParser.ExcelDateToJSDate(versement.DateVersement);
             }
-            return { ...versement, ...versementWithDate } as FonjepVersementDtoWithJSDate;
+            return { ...versement, ...versementWithDate } as FonjepVersementDto;
         });
 
         const postesWithJSDate = postes.map(poste => {

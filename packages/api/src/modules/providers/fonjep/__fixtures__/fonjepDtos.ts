@@ -2,7 +2,7 @@ import FonjepDispositifDto from "../../../../dataProviders/db/providers/fonjep/d
 import FonjepPosteDto from "../../../../dataProviders/db/providers/fonjep/dto/fonjepPosteDto";
 import FonjepTiersDto from "../../../../dataProviders/db/providers/fonjep/dto/fonjepTiersDto";
 import FonjepTypePosteDto from "../../../../dataProviders/db/providers/fonjep/dto/fonjepTypePosteDto";
-import FonjepVersementDto from "../../../../dataProviders/db/providers/fonjep/dto/fonjepVersementDto";
+import FonjepVersementDtoWithExcelDate from "../../../../dataProviders/db/providers/fonjep/dto/fonjepVersementDto";
 
 export const TIER_DTO: FonjepTiersDto = {
     Code: "Code",
@@ -52,7 +52,7 @@ export const POSTE_DTO_WITH_DATE = {
 
 export const POSTE_DTO_WITH_NULL: FonjepPosteDto = { ...POSTE_DTO, DispositifId: null };
 
-export const VERSEMENT_DTO: FonjepVersementDto = {
+export const VERSEMENT_DTO: FonjepVersementDtoWithExcelDate = {
     PosteCode: "Code",
     PeriodeDebut: 44896,
     PeriodeFin: 44835,
@@ -68,7 +68,7 @@ export const VERSEMENT_DTO_WITH_DATE = {
     DateVersement: new Date("2022-04-15"),
 };
 
-export const VERSEMENT_DTO_WITH_NULL: FonjepVersementDto = {
+export const VERSEMENT_DTO_WITH_NULL: FonjepVersementDtoWithExcelDate = {
     PosteCode: "Code",
     PeriodeDebut: null,
     PeriodeFin: null,

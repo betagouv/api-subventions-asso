@@ -6,7 +6,7 @@ import FonjepDispositifEntity from "../entities/FonjepDispositifEntity";
 import FonjepDispositifDto from "../../../../dataProviders/db/providers/fonjep/dto/fonjepDispositifDto";
 import { FonjepPosteDtoWithJSDate } from "../../../../dataProviders/db/providers/fonjep/dto/fonjepPosteDto";
 import FonjepTypePosteDto from "../../../../dataProviders/db/providers/fonjep/dto/fonjepTypePosteDto";
-import { FonjepVersementDtoWithJSDate } from "../../../../dataProviders/db/providers/fonjep/dto/fonjepVersementDto";
+import { FonjepVersementDto } from "../../../../dataProviders/db/providers/fonjep/dto/fonjepVersementDto";
 import FonjepTiersDto from "../../../../dataProviders/db/providers/fonjep/dto/fonjepTiersDto";
 
 /**
@@ -49,7 +49,7 @@ export default class FonjepEntityAdapter {
         };
     }
 
-    static toFonjepVersementEntity(versement: FonjepVersementDtoWithJSDate): FonjepVersementEntity {
+    static toFonjepVersementEntity(versement: FonjepVersementDto): FonjepVersementEntity {
         return {
             posteCode: versement["PosteCode"],
             periodeDebut: versement["PeriodeDebut"],

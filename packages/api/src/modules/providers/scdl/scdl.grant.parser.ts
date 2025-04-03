@@ -189,7 +189,6 @@ export default class ScdlGrantParser {
         const entity: Partial<TypeOut> = {};
         const annotations: Record<string, { value: TypeIn; keyPath: string[] }> = {};
         for (const [key, path] of Object.entries(pathObject)) {
-            // console.log(key, path);
             // finds original value and path then adapt it
             const annotated: ValueWithPath<TypeIn> = GenericParser.findValueAndOriginalKeyByPath<TypeIn>(
                 data,
@@ -198,7 +197,6 @@ export default class ScdlGrantParser {
             // @ts-expect-error -- ts is scared that adapter may not exist in type
             adapter = path?.adapter || defaultAdapter;
             const adapted = adapter(annotated.value);
-            // console.log(adapted);
 
             // ensures that adaptation works on given data
             if (annotated.value && (adapted === null || adapted === undefined))

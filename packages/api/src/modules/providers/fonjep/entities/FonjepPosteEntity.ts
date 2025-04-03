@@ -2,15 +2,15 @@ type FonjepPosteEntity = {
     // code to join with fonjepVersement collection and get information about the payment
     code: string;
     // code to join with fonjepTier collection and get information about the recipient association
-    associationBeneficiaireCode: string;
+    associationBeneficiaireCode: string | null;
     // One of the three years of the triennality
-    annee: number;
+    annee: number | null;
     // every fonjep grant is triennial (given 3 years in a row)
-    dateFinTriennalite: Date;
+    dateFinTriennalite: Date | null;
     // code to join with fonjepTier collection and get information about the financer
-    financeurAttributeurCode: string;
+    financeurAttributeurCode: string | null;
     // code that determine program code (a.k.a bop)
-    financeurPrincipalCode: string;
+    financeurPrincipalCode: string | null;
     dispositifId: number | null;
     pstStatutPosteLibelle: string | null;
     pstRaisonStatutLibelle: string | null;

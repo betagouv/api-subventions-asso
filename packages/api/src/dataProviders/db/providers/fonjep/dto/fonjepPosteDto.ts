@@ -2,11 +2,11 @@
 
 export default interface FonjepPosteDto {
     Code: string;
-    Annee: number;
-    DateFinTriennalite: number; // dates in excel dates (i.e. days since 1900-01-01)
-    FinanceurPrincipalCode: string;
-    FinanceurAttributeurCode: string;
-    AssociationBeneficiaireCode: string;
+    Annee: number | null;
+    DateFinTriennalite: number | null; // dates in excel dates (i.e. days since 1900-01-01)
+    FinanceurPrincipalCode: string | null;
+    FinanceurAttributeurCode: string | null;
+    AssociationBeneficiaireCode: string | null;
     DispositifId: number | null;
     PstStatutPosteLibelle: string | null;
     PstRaisonStatutLibelle: string | null;

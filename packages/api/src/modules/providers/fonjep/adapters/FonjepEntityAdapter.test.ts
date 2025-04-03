@@ -55,7 +55,7 @@ describe("FonjepEntityAdapter", () => {
     });
 
     describe("toFonjepVersementEntity()", () => {
-        it("should map FonjepVersementDto to FonjepVersementEntity correctly", () => {
+        it("should map FonjepVersementDtoWithExcelDate to FonjepVersementEntity correctly", () => {
             const versement = VERSEMENT_DTO_WITH_DATE;
             const expected = {
                 posteCode: versement.PosteCode,
