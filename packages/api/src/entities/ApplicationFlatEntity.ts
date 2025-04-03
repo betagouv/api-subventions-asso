@@ -35,7 +35,7 @@ export default class ApplicationFlatEntity {
     public typeIdServiceInstructeur: StructureIdType;
     public idServiceInstructeur: string;
     public idBeneficiaire: string;
-    public typeIdBeneficiare: string;
+    public typeIdBeneficiaire: string;
     public exerciceBudgetaire: number;
     public pluriannualite: boolean;
     public anneesPluriannualite: number[];
@@ -80,7 +80,7 @@ export default class ApplicationFlatEntity {
         this.typeIdServiceInstructeur = asObject.typeIdServiceInstructeur;
         this.idServiceInstructeur = asObject.idServiceInstructeur;
         this.idBeneficiaire = asObject.idBeneficiaire;
-        this.typeIdBeneficiare = asObject.typeIdBeneficiare;
+        this.typeIdBeneficiaire = asObject.typeIdBeneficiaire;
         this.exerciceBudgetaire = asObject.exerciceBudgetaire;
         this.pluriannualite = asObject.pluriannualite;
         this.anneesPluriannualite = asObject.anneesPluriannualite;
@@ -130,7 +130,7 @@ type ApplicationFlatDraft = {
     typeIdServiceInstructeur: StructureIdType;
     idServiceInstructeur: string;
     idBeneficiaire: string;
-    typeIdBeneficiare: string;
+    typeIdBeneficiaire: string;
     exerciceBudgetaire: number;
     pluriannualite: boolean;
     anneesPluriannualite: number[];
