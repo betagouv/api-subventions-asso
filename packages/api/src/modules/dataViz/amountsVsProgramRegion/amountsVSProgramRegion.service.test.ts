@@ -1,8 +1,3 @@
-import {
-    PAYMENT_FLAT_ENTITY_WITH_NULLS,
-    PAYMENT_FLAT_ENTITY,
-} from "../../../dataProviders/db/paymentFlat/__fixtures__/paymentFlatEntity.fixture";
-import paymentFlatService from "../../paymentFlat/paymentFlat.service";
 import amountsVsProgramRegionService from "./amountsVsProgramRegion.service";
 import AmountsVsProgramRegionAdapter from "./amountsVsProgramRegion.adapter";
 import {
@@ -10,6 +5,11 @@ import {
     NOT_AGGREGATED_ENTITIES,
 } from "./__fixtures__/amountsVSProgramRegion.fixture";
 import amountsVsProgramRegionPort from "../../../dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
+import paymentFlatChorusService from "../../paymentFlat/paymentFlat.chorus.service";
+import {
+    PAYMENT_FLAT_ENTITY,
+    PAYMENT_FLAT_ENTITY_WITH_NULLS,
+} from "../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
 
 describe("amountsVSProgramRegionService", () => {
     describe("toAmountsVsProgramRegionEntities", () => {
@@ -42,7 +42,7 @@ describe("amountsVSProgramRegionService", () => {
             };
 
             mockCursorFindChorusOnly = jest
-                .spyOn(paymentFlatService, "cursorFindChorusOnly")
+                .spyOn(paymentFlatChorusService, "cursorFindChorusOnly")
                 .mockReturnValue(mockCursor);
 
             mockAdapter = jest.spyOn(AmountsVsProgramRegionAdapter, "toNotAggregatedEntity");

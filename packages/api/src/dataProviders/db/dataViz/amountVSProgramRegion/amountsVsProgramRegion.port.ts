@@ -1,12 +1,12 @@
+import AmountsVsProgramRegionAdapter from "../../../../modules/dataViz/amountsVsProgramRegion/amountsVsProgramRegion.adapter";
 import { AmountsVsProgramRegionDbo } from "../../../../modules/dataViz/amountsVsProgramRegion/entitiyAndDbo/amountsVsProgramRegion.dbo";
 import AmountsVsProgramRegionEntity from "../../../../modules/dataViz/amountsVsProgramRegion/entitiyAndDbo/amountsVsProgramRegion.entity";
 import MongoPort from "../../../../shared/MongoPort";
-import AmountsVsProgramRegionAdapter from "./amountsVsProgramRegion.adapter";
 
-export class AmountsVsProgramRegionPort extends MongoPort<AmountsVsProgramRegionDbo> {
+export class AmountsVsProgramRegionPort extends MongoPort<Omit<AmountsVsProgramRegionDbo, "_id">> {
     collectionName = "dv--montant-programme-region";
 
-    public async createIndexes(): Promise<void> {
+    public async createIndexes() {
         await this.collection.createIndex({ regionAttachementComptable: 1 });
         await this.collection.createIndex({ programme: 1 });
         await this.collection.createIndex({ exerciceBudgetaire: 1 });
@@ -27,7 +27,7 @@ export class AmountsVsProgramRegionPort extends MongoPort<AmountsVsProgramRegion
 
     public upsertOne(entity: AmountsVsProgramRegionEntity) {
         const updateDbo = AmountsVsProgramRegionAdapter.toDbo(entity);
-        const { _id, ...DboWithoutId } = updateDbo;
+        const { ...DboWithoutId } = updateDbo;
         return this.collection.updateOne(
             {
                 regionAttachementComptable: updateDbo.regionAttachementComptable,
@@ -50,7 +50,7 @@ export class AmountsVsProgramRegionPort extends MongoPort<AmountsVsProgramRegion
         if (!entities.length) return;
         const bulkWriteArray = entities.map(entity => {
             const updateDbo = AmountsVsProgramRegionAdapter.toDbo(entity);
-            const { _id, ...DboWithoutId } = updateDbo;
+            const { ...DboWithoutId } = updateDbo;
             return {
                 updateOne: {
                     filter: {

@@ -1,5 +1,129 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`PaymentFlatAdapter dboToEntity given dbo with nulls, should return a PaymentFlatEntity with nulls 1`] = `
+PaymentFlatEntity {
+  "actionCode": "AC123",
+  "actionLabel": "Label d'action Exemple",
+  "activityCode": "AC456",
+  "activityLabel": "Label d'activité Exemple",
+  "amount": 1000,
+  "attachementComptable": "BRET",
+  "centreFinancierCode": "AA01/0776-C001-4000",
+  "centreFinancierLibelle": "UO DGER XXXX-C001",
+  "ej": "EJ Exemple",
+  "exerciceBudgetaire": 2023,
+  "idEntrepriseBeneficiaire": Siren {
+    "siren": "123456789",
+  },
+  "idEtablissementBeneficiaire": Siret {
+    "siret": "12345678901234",
+  },
+  "idVersement": "12345678901234-EJ Exemple-2023",
+  "ministry": "Ministère Exemple",
+  "ministryAcronym": null,
+  "mission": "Mission Exemple",
+  "operationDate": 2023-04-01T00:00:00.000Z,
+  "programName": null,
+  "programNumber": 1,
+  "provider": "Fournisseur Exemple",
+  "regionAttachementComptable": "Bretagne",
+  "typeIdEntrepriseBeneficiaire": "siren",
+  "typeIdEtablissementBeneficiaire": "siret",
+  "uniqueId": "12345678901234-EJ Exemple-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
+}
+`;
+
+exports[`PaymentFlatAdapter dboToEntity given dbo without nulls, should return a PaymentFlatEntity without nulls 1`] = `
+PaymentFlatEntity {
+  "actionCode": "AC123",
+  "actionLabel": "Label d'action Exemple",
+  "activityCode": "AC456",
+  "activityLabel": "Label d'activité Exemple",
+  "amount": 1000,
+  "attachementComptable": "BRET",
+  "centreFinancierCode": "AA01/0776-C001-4000",
+  "centreFinancierLibelle": "UO DGER XXXX-C001",
+  "ej": "EJ Exemple",
+  "exerciceBudgetaire": 2023,
+  "idEntrepriseBeneficiaire": Siren {
+    "siren": "123456789",
+  },
+  "idEtablissementBeneficiaire": Siret {
+    "siret": "12345678901234",
+  },
+  "idVersement": "12345678901234-EJ Exemple-2023",
+  "ministry": "Ministère Exemple",
+  "ministryAcronym": "ME",
+  "mission": "Mission Exemple",
+  "operationDate": 2023-04-01T00:00:00.000Z,
+  "programName": "Programme Exemple",
+  "programNumber": 1,
+  "provider": "Fournisseur Exemple",
+  "regionAttachementComptable": "Bretagne",
+  "typeIdEntrepriseBeneficiaire": "siren",
+  "typeIdEtablissementBeneficiaire": "siret",
+  "uniqueId": "12345678901234-EJ Exemple-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
+}
+`;
+
+exports[`PaymentFlatAdapter toDbo given entity with nulls, should return a PaymentFlatDbo with nulls 1`] = `
+Object {
+  "action": "Label d'action Exemple",
+  "activite": "Label d'activité Exemple",
+  "attachementComptable": "N/A",
+  "codeAction": "0101-01-02",
+  "codeActivite": "077601003222",
+  "codeCentreFinancier": "AA01/0776-C001-4000",
+  "dateOperation": 2025-02-12T00:00:00.000Z,
+  "ej": "0001821732",
+  "exerciceBudgetaire": 2023,
+  "idEntrepriseBeneficiaire": "100000000",
+  "idEtablissementBeneficiaire": "10000000000001",
+  "idVersement": "10000000000001-0001821732-2023",
+  "libelleCentreFinancier": "UO DGER XXXX-C001",
+  "ministere": "Ministère Exemple",
+  "mission": "Mission Exemple",
+  "montant": 1000,
+  "numeroProgramme": 1,
+  "programme": null,
+  "provider": "chorus",
+  "regionAttachementComptable": "N/A",
+  "sigleMinistere": null,
+  "typeIdEntrepriseBeneficiaire": "siren",
+  "typeIdEtablissementBeneficiaire": "siret",
+  "uniqueId": "10000000000001-0001821732-2023-1-0101-01-02-077601003222-1739318400000-N/A-AA01/0776-C001-4000",
+}
+`;
+
+exports[`PaymentFlatAdapter toDbo given entity without nulls, should return a PaymentFlatDbo without nulls 1`] = `
+Object {
+  "action": "Label d'action Exemple",
+  "activite": "Label d'activité Exemple",
+  "attachementComptable": "BRET",
+  "codeAction": "0101-01-02",
+  "codeActivite": "077601003222",
+  "codeCentreFinancier": "AA01/0776-C001-4000",
+  "dateOperation": 2023-07-12T00:00:00.000Z,
+  "ej": "0001821732",
+  "exerciceBudgetaire": 2023,
+  "idEntrepriseBeneficiaire": "100000000",
+  "idEtablissementBeneficiaire": "10000000000001",
+  "idVersement": "10000000000001-0001821732-2023",
+  "libelleCentreFinancier": "UO DGER XXXX-C001",
+  "ministere": "Ministère Exemple",
+  "mission": "Mission Exemple",
+  "montant": 89988.3,
+  "numeroProgramme": 101,
+  "programme": "Programme Exemple",
+  "provider": "chorus",
+  "regionAttachementComptable": "Bretagne",
+  "sigleMinistere": "ME",
+  "typeIdEntrepriseBeneficiaire": "siren",
+  "typeIdEtablissementBeneficiaire": "siret",
+  "uniqueId": "10000000000001-0001821732-2023-101-0101-01-02-077601003222-1689120000000-BRET-AA01/0776-C001-4000",
+}
+`;
+
 exports[`PaymentFlatAdapter toPayment should return partial Payment entity 1`] = `
 Object {
   "activitee": Object {

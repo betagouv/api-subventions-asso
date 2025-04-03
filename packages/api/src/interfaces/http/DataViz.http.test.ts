@@ -13,6 +13,7 @@ describe("DataVizHttp", () => {
             amountsVsProgramRegionService,
             "getAmountsVsProgramRegionData",
         );
+
         beforeAll(() => {
             getAmountsVsProgramRegionDataSpy.mockResolvedValue(AmountsVsProgramRegionDtoList);
         });

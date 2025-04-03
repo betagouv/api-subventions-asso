@@ -38,7 +38,7 @@ export const PAYMENT_FLAT_ENTITY_WITH_NULLS = new PaymentFlatEntity(
     new Date("2025-02-12T00:00:00.000Z"), // operation date
     "AA01/0776-C001-4000", // centre financier code
     "UO DGER XXXX-C001", // centre financier libelle
-    "BRET", // attachement comptable
+    "N/A", // attachement comptable
     "0001821732", // EJ
     "chorus", // provider
     null, // program
