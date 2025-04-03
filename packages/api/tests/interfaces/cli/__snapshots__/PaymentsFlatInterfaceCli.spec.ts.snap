@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`PaymentsFlatCli init() should persist payments flat collection: Snapshot init 1`] = `
+exports[`PaymentsFlatCli initChorus() should persist payments flat collection: Snapshot init 1`] = `
 Array [
   Object {
     "_id": Any<ObjectId>,
