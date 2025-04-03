@@ -85,9 +85,8 @@ export const AMOUNTS_VS_PROGRAM_REGION_ENTITIES: AmountsVsProgramRegionEntity[] 
     },
 ];
 
-export const AMOUNTS_VS_PROGRAM_REGION_DBOS: AmountsVsProgramRegionDbo[] = [
+export const AMOUNTS_VS_PROGRAM_REGION_DBOS: Omit<AmountsVsProgramRegionDbo, "_id">[] = [
     {
-        _id: new ObjectId(),
         exerciceBudgetaire: 2023,
         programme: "1 - Programme Exemple",
         mission: "Mission Exemple",
@@ -95,7 +94,6 @@ export const AMOUNTS_VS_PROGRAM_REGION_DBOS: AmountsVsProgramRegionDbo[] = [
         regionAttachementComptable: "Bretagne",
     },
     {
-        _id: new ObjectId(),
         exerciceBudgetaire: 2023,
         programme: "1",
         mission: "Mission Exemple",
