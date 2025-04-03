@@ -1,7 +1,7 @@
 import { FindCursor } from "mongodb";
 import { AmountsVsProgramRegionDto } from "dto";
 import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
-import paymentFlatService from "../../paymentFlat/paymentFlat.service";
+import paymentFlatChorusService from "../../paymentFlat/paymentFlat.chorus.service";
 import amountsVsProgramRegionPort from "../../../dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
 import AmountsVsProgramRegionAdapter from "./amountsVsProgramRegion.adapter";
 import AmountsVsProgramRegionEntity from "./entitiyAndDbo/amountsVsProgramRegion.entity";
@@ -11,7 +11,7 @@ export class AmountsVsProgramRegionService {
         exerciceBudgetaire?: number,
     ): Promise<AmountsVsProgramRegionEntity[]> {
         const paymentFlatCursor: FindCursor<PaymentFlatEntity> =
-            paymentFlatService.cursorFindChorusOnly(exerciceBudgetaire);
+            paymentFlatChorusService.cursorFindChorusOnly(exerciceBudgetaire);
 
         const entities: Record<string, AmountsVsProgramRegionEntity> = {};
         while (await paymentFlatCursor.hasNext()) {

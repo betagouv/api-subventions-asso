@@ -1,3 +1,7 @@
+import DomaineFonctionnelEntity from "../../../../entities/DomaineFonctionnelEntity";
+import MinistryEntity from "../../../../entities/MinistryEntity";
+import RefProgrammationEntity from "../../../../entities/RefProgrammationEntity";
+import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
 import {
     DataBretagneDomaineFonctionnelDto,
     DataBretagneMinistryDto,
