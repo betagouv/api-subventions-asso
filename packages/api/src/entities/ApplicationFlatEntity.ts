@@ -24,48 +24,48 @@ export default class ApplicationFlatEntity {
     public idUnique: string; // idSubvention-exerciceBudgetaire TODO rename
     public idSubvention: string; // nomProvider-idSubventionProvider
     public idSubventionProvider: string;
-    idJointure?: string;
-    descriptionIdJointure?: string;
+    public idJointure?: string;
+    public descriptionIdJointure?: string;
     public provider: string;
-    nomAttribuant?: string;
-    typeIdAttribuant?: StructureIdType;
-    idAttribuant?: string;
-    nomAutoriteGestion?: string;
-    idAutoriteGestion?: string;
-    typeIdAutoriteGestion?: StructureIdType;
-    nomServiceInstructeur?: string;
-    typeIdServiceInstructeur?: StructureIdType;
-    idServiceInstructeur?: string;
-    idBeneficiaire: string;
-    typeIdBeneficiaire?: string;
+    public nomAttribuant?: string;
+    public typeIdAttribuant?: StructureIdType;
+    public idAttribuant?: string;
+    public nomAutoriteGestion?: string;
+    public idAutoriteGestion?: string;
+    public typeIdAutoriteGestion?: StructureIdType;
+    public nomServiceInstructeur?: string;
+    public typeIdServiceInstructeur?: StructureIdType;
+    public idServiceInstructeur?: string;
+    public idBeneficiaire: string;
+    public typeIdBeneficiaire?: string;
     public exerciceBudgetaire: number;
-    pluriannualite?: boolean;
+    public pluriannualite?: boolean;
     public anneesPluriannualite?: number[];
-    dateDecision?: Date;
-    dateConvention: Date;
-    referenceDecision?: string;
-    dateDepotDemande?: Date;
-    anneeDemande?: number;
-    dispositif?: string;
-    sousDispositif?: string;
-    statutLabel: ApplicationStatus;
-    objet?: string; // "Fonctionnement global" or actions. Actions should be handled with ActionFlat enventually
-    nature?: ApplicationNature;
+    public dateDecision?: Date;
+    public dateConvention: Date;
+    public referenceDecision?: string;
+    public dateDepotDemande?: Date;
+    public anneeDemande?: number;
+    public dispositif?: string;
+    public sousDispositif?: string;
+    public statutLabel: ApplicationStatus;
+    public objet?: string; // "Fonctionnement global" or actions. Actions should be handled with ActionFlat enventually
+    public nature?: ApplicationNature;
     public montantDemande: number;
-    montantAccorde?: number;
-    montantTotal?: number;
-    ej?: string;
-    idVersement?: string;
-    conditionsVersements?: PaymentCondition;
-    descriptionConditionsVersements?: string;
+    public montantAccorde?: number;
+    public montantTotal?: number;
+    public ej?: string;
+    public idVersement?: string;
+    public conditionsVersements?: PaymentCondition;
+    public descriptionConditionsVersements?: string;
     public datesPeriodeVersement?: Date | Date[]; // TODO ?
-    cofinancementsSollicites?: boolean;
+    public cofinancementsSollicites?: boolean;
     public nomsAttribuantsCofinanceurs?: string[];
     public typeIdCofinanceursSollicites?: StructureIdType[];
     public idCofinanceursSollicites?: string[];
-    idRAE?: string;
-    notificationUE?: boolean;
-    pourcentageSubvention?: number;
+    public idRAE?: string;
+    public notificationUE?: boolean;
+    public pourcentageSubvention?: number;
 
     constructor(asObject: ApplicationFlatDraft) {
         this.idSubventionProvider = asObject.idSubventionProvider;
