@@ -9,7 +9,7 @@ export default class ApplicationFlatAdapter {
     }
 
     public static toDemandeSubvention(entity: ApplicationFlatEntity): DemandeSubvention | null {
-        if (!entity.siret) return null
+        if (!entity.siret) return null;
 
         const toPv = <T>(value: T) =>
             ProviderValueAdapter.toProviderValue<T>(value, entity.provider, entity.dateConvention); // TODO bad date
@@ -23,12 +23,12 @@ export default class ApplicationFlatAdapter {
             date_commision: toPvOrUndefined(entity.dateDecision), // TODO surely not good
             pluriannualite: toPvOrUndefined(entity.pluriannualite),
             service_instructeur: toPv(entity.nomServiceInstructeur || ""),
-            siret: toPv(entity.idBeneficiaire), // TODO transform to ensure siret if possible
+            siret: toPv(entity.siret.value),
             sous_dispositif: toPvOrUndefined(entity.sousDispositif),
             status: toPv(entity.statutLabel || ""),
             statut_label: toPv(entity.statutLabel),
             transmis_le: toPvOrUndefined(entity.dateDepotDemande),
-            versementKey: toPvOrUndefined(entity.idVersement), // TODO check
+            versementKey: toPvOrUndefined(entity.idVersement),
             ej: toPvOrUndefined(entity.ej),
             creer_le: toPvOrUndefined(entity.dateDepotDemande),
             dispositif: toPvOrUndefined(entity.dispositif),

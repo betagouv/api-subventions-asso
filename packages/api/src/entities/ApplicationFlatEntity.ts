@@ -1,4 +1,6 @@
 import { ApplicationStatus } from "dto";
+import Siret from "../valueObjects/Siret";
+import Siren from "../valueObjects/Siren";
 
 type StructureIdType = "siret" | "siren" | "rid" | "ridet" | "tahiti" | "tahiti-t";
 
@@ -112,6 +114,17 @@ export default class ApplicationFlatEntity {
 
         this.idSubvention = `${this.provider}-${this.idSubventionProvider}`;
         this.idUnique = `${this.idSubvention} - ${this.exerciceBudgetaire}`;
+    }
+
+    get siret() {
+        if (this.typeIdBeneficiaire === "siret") return new Siret(this.idBeneficiaire);
+        return undefined;
+    }
+
+    get siren() {
+        if (this.typeIdBeneficiaire === "siren") return new Siren(this.idBeneficiaire);
+        if (this.typeIdBeneficiaire === "siret") return new Siret(this.idBeneficiaire.slice(0, 9));
+        return undefined;
     }
 }
 // careful, autoriteGestion != serviceInstructeur != attribuant
