@@ -19,7 +19,7 @@ enum PaymentCondition {
 // TODO where to accept null ?
 
 export default class ApplicationFlatEntity {
-    public idUnique: string; // idSubvention-exerciceBudgetaire
+    public idUnique: string; // idSubvention-exerciceBudgetaire TODO rename
     public idSubvention: string; // nomProvider-idSubventionProvider
     public idSubventionProvider: string;
     idJointure?: string;
@@ -34,19 +34,19 @@ export default class ApplicationFlatEntity {
     nomServiceInstructeur?: string;
     typeIdServiceInstructeur?: StructureIdType;
     idServiceInstructeur?: string;
-    idBeneficiaire?: string;
+    idBeneficiaire: string;
     typeIdBeneficiaire?: string;
     public exerciceBudgetaire: number;
     pluriannualite?: boolean;
     public anneesPluriannualite?: number[];
     dateDecision?: Date;
-    dateConvention?: Date;
+    dateConvention: Date;
     referenceDecision?: string;
     dateDepotDemande?: Date;
     anneeDemande?: number;
     dispositif?: string;
     sousDispositif?: string;
-    statutLabel?: ApplicationStatus;
+    statutLabel: ApplicationStatus;
     objet?: string; // "Fonctionnement global" or actions. Actions should be handled with ActionFlat enventually
     nature?: ApplicationNature;
     public montantDemande: number;
@@ -130,19 +130,19 @@ type ApplicationFlatDraft = {
     nomServiceInstructeur?: string; // Nom du service qui instruit la demande
     typeIdServiceInstructeur?: StructureIdType;
     idServiceInstructeur?: string;
-    idBeneficiaire?: string;
+    idBeneficiaire: string;
     typeIdBeneficiaire?: string;
     exerciceBudgetaire: number;
     pluriannualite?: boolean;
     anneesPluriannualite?: number[];
     dateDecision?: Date;
-    dateConvention?: Date;
+    dateConvention: Date; // TODO only mandatory because we need it for ProviderValue's date
     referenceDecision?: string;
     dateDepotDemande?: Date;
     anneeDemande?: number;
     dispositif?: string;
     sousDispositif?: string;
-    statutLabel?: ApplicationStatus;
+    statutLabel: ApplicationStatus;
     objet?: string;
     nature?: ApplicationNature;
     montantDemande: number;

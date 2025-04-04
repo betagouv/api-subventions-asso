@@ -9,10 +9,10 @@ export default class ApplicationFlatAdapter {
     }
 
     public static toApplication(entity: ApplicationFlatEntity): DemandeSubvention {
-        const toPvApplicationFlat = <T>(value: T) =>
+        const toPv = <T>(value: T) =>
             ProviderValueAdapter.toProviderValue<T>(value, entity.provider, entity.dateConvention); // TODO bad date
 
-        const toPvOrUndefined = value => (value ? toPvApplicationFlat(value) : undefined);
+        const toPvOrUndefined = value => (value ? toPv(value) : undefined);
 
         /* Pour l'instant on garde ej pour tous les providers sauf Fonjep qui prend idVersement 
         Il faudra convertir tous les versementKey en idVersement quand tout est connecté  */
@@ -20,11 +20,11 @@ export default class ApplicationFlatAdapter {
             annee_demande: toPvOrUndefined(entity.anneeDemande),
             date_commision: toPvOrUndefined(entity.dateDecision), // TODO surely not good
             pluriannualite: toPvOrUndefined(entity.pluriannualite),
-            service_instructeur: toPvApplicationFlat(entity.nomServiceInstructeur),
-            siret: toPvApplicationFlat(entity.idBeneficiaire), // TODO transform to ensure siret if possible
+            service_instructeur: toPv(entity.nomServiceInstructeur || ""),
+            siret: toPv(entity.idBeneficiaire), // TODO transform to ensure siret if possible
             sous_dispositif: toPvOrUndefined(entity.sousDispositif),
-            status: toPvApplicationFlat(entity.statutLabel),
-            statut_label: toPvApplicationFlat(entity.statutLabel),
+            status: toPv(entity.statutLabel || ""),
+            statut_label: toPv(entity.statutLabel),
             transmis_le: toPvOrUndefined(entity.dateDepotDemande),
             versementKey: toPvOrUndefined(entity.idVersement), // TODO check
             ej: toPvOrUndefined(entity.ej),
@@ -39,11 +39,11 @@ export default class ApplicationFlatAdapter {
             actions_proposee:
                 entity.objet === "Fonctionnement global" || entity.objet == undefined
                     ? undefined
-                    : [{ intitule: toPvApplicationFlat(entity.objet) }],
+                    : [{ intitule: toPv(entity.objet) }],
             co_financement: {
-                cofinanceur: toPvApplicationFlat(entity.nomsAttribuantsCofinanceurs.join(", ")),
-                cofinanceur_email: toPvApplicationFlat(""),
-                montants: toPvApplicationFlat(0),
+                cofinanceur: toPv(entity.nomsAttribuantsCofinanceurs?.join(", ") || ""),
+                cofinanceur_email: toPv(""),
+                montants: toPv(0), // TODO fake data but we won't know
             },
         };
     }
