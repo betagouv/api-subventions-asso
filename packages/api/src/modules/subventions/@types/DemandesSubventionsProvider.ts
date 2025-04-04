@@ -7,7 +7,7 @@ export default interface DemandesSubvenentionsProvider<T> extends Provider {
     isDemandesSubventionsProvider: boolean;
 
     // TODO: find a way to merge DemandeSubvention and Application...
-    rawToApplication: (rawApplication: RawApplication<T>) => DemandeSubvention;
+    rawToApplication: (rawApplication: RawApplication<T>) => DemandeSubvention | null;
 
     getDemandeSubvention(id: StructureIdentifier): Promise<DemandeSubvention[]>;
 }
