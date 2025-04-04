@@ -106,7 +106,8 @@ export class ApplicationFlatService
         let buffer: ApplicationFlatEntity[] = [];
         let counter = 0;
         const writeStream = new WritableStream({
-            async write(applicationFlatEntity: ApplicationFlatEntity) {
+            async write(applicationFlatEntity: ApplicationFlatEntity | null) {
+                if (!applicationFlatEntity) return;
                 if (buffer.length === CHUNK_SIZE) {
                     await applicationFlatPort.upsertMany(buffer);
                     counter += buffer.length;
