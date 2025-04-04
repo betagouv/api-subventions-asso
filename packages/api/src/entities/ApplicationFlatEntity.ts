@@ -22,48 +22,48 @@ export default class ApplicationFlatEntity {
     public idUnique: string; // idSubvention-exerciceBudgetaire
     public idSubvention: string; // nomProvider-idSubventionProvider
     public idSubventionProvider: string;
-    public idJointure: string;
-    public descriptionIdJointure: string;
+    idJointure?: string;
+    descriptionIdJointure?: string;
     public provider: string;
-    public nomAttribuant: string;
-    public typeIdAttribuant: StructureIdType;
-    public idAttribuant: string;
-    public nomAutoriteGestion: string;
-    public idAutoriteGestion: string;
-    public typeIdAutoriteGestion: StructureIdType;
-    public nomServiceInstructeur: string;
-    public typeIdServiceInstructeur: StructureIdType;
-    public idServiceInstructeur: string;
-    public idBeneficiaire: string;
-    public typeIdBeneficiaire: string;
+    nomAttribuant?: string;
+    typeIdAttribuant?: StructureIdType;
+    idAttribuant?: string;
+    nomAutoriteGestion?: string;
+    idAutoriteGestion?: string;
+    typeIdAutoriteGestion?: StructureIdType;
+    nomServiceInstructeur?: string;
+    typeIdServiceInstructeur?: StructureIdType;
+    idServiceInstructeur?: string;
+    idBeneficiaire?: string;
+    typeIdBeneficiaire?: string;
     public exerciceBudgetaire: number;
-    public pluriannualite: boolean;
-    public anneesPluriannualite: number[];
-    public dateDecision: Date;
-    public dateConvention: Date;
-    public referenceDecision: string;
-    public dateDepotDemande: Date;
-    public anneeDemande: number;
-    public dispositif: string;
-    public sousDispositif: string;
-    public statutLabel: ApplicationStatus;
-    public objet: string; // "Fonctionnement global" or actions. Actions should be handled with ActionFlat enventually
-    public nature: ApplicationNature;
+    pluriannualite?: boolean;
+    public anneesPluriannualite?: number[];
+    dateDecision?: Date;
+    dateConvention?: Date;
+    referenceDecision?: string;
+    dateDepotDemande?: Date;
+    anneeDemande?: number;
+    dispositif?: string;
+    sousDispositif?: string;
+    statutLabel?: ApplicationStatus;
+    objet?: string; // "Fonctionnement global" or actions. Actions should be handled with ActionFlat enventually
+    nature?: ApplicationNature;
     public montantDemande: number;
-    public montantAccorde: number;
-    public montantTotal: number;
-    public ej: string;
-    public idVersement: string;
-    public conditionsVersements: PaymentCondition;
-    public descriptionConditionsVersements: string;
-    public datesPeriodeVersement: Date | Date[]; // TODO ?
-    public cofinancementsSollicites: boolean;
-    public nomsAttribuantsCofinanceurs: string[];
-    public typeIdCofinanceursSollicites: StructureIdType[];
-    public idCofinanceursSollicites: string[];
-    public idRAE: string;
-    public notificationUE: boolean;
-    public pourcentageSubvention: number;
+    montantAccorde?: number;
+    montantTotal?: number;
+    ej?: string;
+    idVersement?: string;
+    conditionsVersements?: PaymentCondition;
+    descriptionConditionsVersements?: string;
+    public datesPeriodeVersement?: Date | Date[]; // TODO ?
+    cofinancementsSollicites?: boolean;
+    public nomsAttribuantsCofinanceurs?: string[];
+    public typeIdCofinanceursSollicites?: StructureIdType[];
+    public idCofinanceursSollicites?: string[];
+    idRAE?: string;
+    notificationUE?: boolean;
+    pourcentageSubvention?: number;
 
     constructor(asObject: ApplicationFlatDraft) {
         this.idSubventionProvider = asObject.idSubventionProvider;
@@ -114,49 +114,50 @@ export default class ApplicationFlatEntity {
         this.idUnique = `${this.idSubvention} - ${this.exerciceBudgetaire}`;
     }
 }
-
+// careful, autoriteGestion != serviceInstructeur != attribuant
+// for all typeId properties,
 type ApplicationFlatDraft = {
     idSubventionProvider: string;
-    idJointure: string;
-    descriptionIdJointure: string;
+    idJointure?: string;
+    descriptionIdJointure?: string; // description de l'idJointure et de la jointure que l'idJointure permets d'effectuer
     provider: string;
-    nomAttribuant: string;
-    typeIdAttribuant: StructureIdType;
-    idAttribuant: string;
-    nomAutoriteGestion: string;
-    idAutoriteGestion: string;
-    typeIdAutoriteGestion: StructureIdType;
-    nomServiceInstructeur: string;
-    typeIdServiceInstructeur: StructureIdType;
-    idServiceInstructeur: string;
-    idBeneficiaire: string;
-    typeIdBeneficiaire: string;
+    nomAttribuant?: string; // Nom de l'autorité administrative qui pilote le dispositif ou programme de subvention ou en delegue la gestion
+    typeIdAttribuant?: StructureIdType;
+    idAttribuant?: string;
+    nomAutoriteGestion?: string; // Si l'attribuant delegue la gestion, nom de l'autorité administrative qui gère le dispositif ou programme de subvention
+    idAutoriteGestion?: string;
+    typeIdAutoriteGestion?: StructureIdType;
+    nomServiceInstructeur?: string; // Nom du service qui instruit la demande
+    typeIdServiceInstructeur?: StructureIdType;
+    idServiceInstructeur?: string;
+    idBeneficiaire?: string;
+    typeIdBeneficiaire?: string;
     exerciceBudgetaire: number;
-    pluriannualite: boolean;
-    anneesPluriannualite: number[];
-    dateDecision: Date;
-    dateConvention: Date;
-    referenceDecision: string;
-    dateDepotDemande: Date;
-    anneeDemande: number;
-    dispositif: string;
-    sousDispositif: string;
-    statutLabel: ApplicationStatus;
-    objet: string;
-    nature: ApplicationNature;
+    pluriannualite?: boolean;
+    anneesPluriannualite?: number[];
+    dateDecision?: Date;
+    dateConvention?: Date;
+    referenceDecision?: string;
+    dateDepotDemande?: Date;
+    anneeDemande?: number;
+    dispositif?: string;
+    sousDispositif?: string;
+    statutLabel?: ApplicationStatus;
+    objet?: string;
+    nature?: ApplicationNature;
     montantDemande: number;
-    montantAccorde: number;
-    montantTotal: number;
-    ej: string;
-    idVersement: string;
-    conditionsVersements: PaymentCondition;
-    descriptionConditionsVersements: string;
-    datesPeriodeVersement: Date | Date[];
-    cofinancementsSollicites: boolean;
-    nomsAttribuantsCofinanceurs: string[];
-    typeIdCofinanceursSollicites: StructureIdType[];
-    idCofinanceursSollicites: string[];
-    idRAE: string;
-    notificationUE: boolean;
-    pourcentageSubvention: number;
+    montantAccorde?: number;
+    montantTotal?: number;
+    ej?: string;
+    idVersement?: string;
+    conditionsVersements?: PaymentCondition;
+    descriptionConditionsVersements?: string;
+    datesPeriodeVersement?: Date | Date[];
+    cofinancementsSollicites?: boolean;
+    nomsAttribuantsCofinanceurs?: string[];
+    typeIdCofinanceursSollicites?: StructureIdType[];
+    idCofinanceursSollicites?: string[];
+    idRAE?: string;
+    notificationUE?: boolean;
+    pourcentageSubvention?: number;
 };
