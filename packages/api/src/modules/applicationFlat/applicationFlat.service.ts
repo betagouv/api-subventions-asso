@@ -48,7 +48,7 @@ export class ApplicationFlatService
         }
         return requests
             .map(document => ApplicationFlatAdapter.toDemandeSubvention(document))
-            .filter(demande => !!demande);
+            .filter(demande => !!demande) as DemandeSubvention[];
     }
 
     /**
