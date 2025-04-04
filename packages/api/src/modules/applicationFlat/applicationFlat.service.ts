@@ -10,7 +10,7 @@ import ProviderCore from "../providers/ProviderCore";
 import DemandesSubventionsProvider from "../subventions/@types/DemandesSubventionsProvider";
 import GrantProvider from "../grant/@types/GrantProvider";
 import { applicationFlatProviders } from "../providers";
-import ApplicationFlatAdapter from "./applicationFlatAdapter";
+import ApplicationFlatAdapter from "./ApplicationFlatAdapter";
 import ApplicationFlatProvider from "./@types/applicationFlatProvider";
 
 export class ApplicationFlatService
