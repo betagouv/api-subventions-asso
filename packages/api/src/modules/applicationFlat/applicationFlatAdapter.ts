@@ -8,7 +8,9 @@ export default class ApplicationFlatAdapter {
         return this.toDemandeSubvention(rawApplication.data);
     }
 
-    public static toDemandeSubvention(entity: ApplicationFlatEntity): DemandeSubvention {
+    public static toDemandeSubvention(entity: ApplicationFlatEntity): DemandeSubvention | null {
+        if (!entity.siret) return null
+
         const toPv = <T>(value: T) =>
             ProviderValueAdapter.toProviderValue<T>(value, entity.provider, entity.dateConvention); // TODO bad date
 

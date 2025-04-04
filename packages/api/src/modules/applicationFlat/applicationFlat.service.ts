@@ -46,9 +46,9 @@ export class ApplicationFlatService
         } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
             requests.push(...(await applicationFlatPort.findBySiren(identifier.siren)));
         }
-        return requests.map(document => {
-            return ApplicationFlatAdapter.toDemandeSubvention(document);
-        });
+        return requests
+            .map(document => ApplicationFlatAdapter.toDemandeSubvention(document))
+            .filter(demande => !!demande);
     }
 
     /**
