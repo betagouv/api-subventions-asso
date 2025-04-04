@@ -2,14 +2,14 @@ import { ApplicationStatus } from "dto";
 import Siret from "../valueObjects/Siret";
 import Siren from "../valueObjects/Siren";
 
-type StructureIdType = "siret" | "siren" | "rid" | "ridet" | "tahiti" | "tahiti-t";
+export type StructureIdType = "siret" | "siren" | "rid" | "ridet" | "tahiti" | "tahiti-t";
 
-enum ApplicationNature {
+export enum ApplicationNature {
     MONEY = "MONEY",
     NATURE = "NATURE",
 }
 
-enum PaymentCondition {
+export enum PaymentCondition {
     UNIQUE = "UNIQUE",
     PHASED = "PHASED",
     OTHER = "OTHER",
