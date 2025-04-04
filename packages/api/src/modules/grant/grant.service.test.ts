@@ -141,6 +141,10 @@ describe("GrantService", () => {
             expect(mockAdapteRawGrant).toHaveBeenCalledTimes(calls);
         });
 
+        it("should filter out null adapted grants", () => {
+            // TODO
+        });
+
         it("should call toGrant", () => {
             grantService.adaptJoinedRawGrant(DEFAULT_JOINED_RAW_GRANT);
             expect(mockToGrant).toHaveBeenCalledWith(DEFAULT_JOINED_RAW_GRANT);
