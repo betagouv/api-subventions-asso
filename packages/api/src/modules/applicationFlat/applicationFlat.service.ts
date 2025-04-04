@@ -47,7 +47,7 @@ export class ApplicationFlatService
             requests.push(...(await applicationFlatPort.findBySiren(identifier.siren)));
         }
         return requests.map(document => {
-            return ApplicationFlatAdapter.toApplication(document);
+            return ApplicationFlatAdapter.toDemandeSubvention(document);
         });
     }
 

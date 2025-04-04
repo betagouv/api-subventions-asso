@@ -5,10 +5,10 @@ import ProviderValueAdapter from "../../shared/adapters/ProviderValueAdapter";
 
 export default class ApplicationFlatAdapter {
     public static rawToApplication(rawApplication: RawApplication<ApplicationFlatEntity>) {
-        return this.toApplication(rawApplication.data);
+        return this.toDemandeSubvention(rawApplication.data);
     }
 
-    public static toApplication(entity: ApplicationFlatEntity): DemandeSubvention {
+    public static toDemandeSubvention(entity: ApplicationFlatEntity): DemandeSubvention {
         const toPv = <T>(value: T) =>
             ProviderValueAdapter.toProviderValue<T>(value, entity.provider, entity.dateConvention); // TODO bad date
 
