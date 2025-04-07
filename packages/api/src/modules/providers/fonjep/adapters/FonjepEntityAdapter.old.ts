@@ -6,7 +6,6 @@ import fonjepService from "../fonjep.service.old";
 import FonjepPaymentEntity from "../entities/FonjepPaymentEntity.old";
 import { RawApplication, RawFullGrant, RawPayment } from "../../../grant/@types/rawGrant";
 import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
-import { DefaultObject } from "../../../../@types";
 
 // TO DO DANS LA SUITE : une fois applicationFlat et paymentFlat crées,
 // il faudra supprimer les métodes de cette classe qui ne sont plus pertinent

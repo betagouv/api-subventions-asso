@@ -136,6 +136,7 @@ export default class ScdlGrantParser {
         // TODO create errors for that (does not fit in the csv format)
         ScdlGrantParser.verifyMissingHeaders(SCDL_MAPPER, parsedChunk[0]);
 
+        let count = 0;
         for (const parsedData of parsedChunk) {
             const {
                 entity,
@@ -143,11 +144,18 @@ export default class ScdlGrantParser {
                 errors: errorsEntity,
             } = ScdlGrantParser.indexDataByPathAndAnnotate<string, ScdlStorableGrant>(SCDL_MAPPER, parsedData);
 
+            if (count === 0) console.log("First parsedData: ", parsedData);
+            if (count === 0) console.log("First entity: ", entity);
+            if (count === 0) console.log("First annotations: ", annotations);
+            if (count === 0) console.log("First errors: ", errors);
+
             // TODO make indexDataByPathAndAnnotate indicate if errors make us reject the line
             errors.push(...errorsEntity);
 
             // validates and saves annotated errors
             const validation = this.isGrantValid(entity as ScdlStorableGrant, annotations);
+            if (count === 0) console.log("First validation: ", validation);
+            count++;
             if (validation.valid) {
                 storableChunk.push({ ...this.cleanOptionalFields(entity as ScdlStorableGrant), __data__: parsedData });
             } else {

@@ -1,6 +1,10 @@
-import { DefaultObject } from "../../../../@types";
+import FonjepDispositifDto from "../../../../dataProviders/db/providers/fonjep/dto/fonjepDispositifDto";
+import FonjepPosteDto from "../../../../dataProviders/db/providers/fonjep/dto/fonjepPosteDto";
+import FonjepTiersDto from "../../../../dataProviders/db/providers/fonjep/dto/fonjepTiersDto";
+import FonjepTypePosteDto from "../../../../dataProviders/db/providers/fonjep/dto/fonjepTypePosteDto";
+import FonjepVersementDtoWithExcelDate from "../../../../dataProviders/db/providers/fonjep/dto/fonjepVersementDto";
 
-export const TIER_DTO = {
+export const TIER_DTO: FonjepTiersDto = {
     Code: "Code",
     RaisonSociale: "RaisonSociale",
     EstAssociation: "EstAssociation",
@@ -12,9 +16,19 @@ export const TIER_DTO = {
     ContactEmail: "ContactEmail",
 };
 
-export const TIER_DTO_WITH_NULLS = { ...TIER_DTO, Ville: null };
+export const TIER_DTO_WITH_NULL: FonjepTiersDto = {
+    Code: "Code",
+    RaisonSociale: null,
+    EstAssociation: null,
+    EstCoFinanceurPostes: null,
+    EstFinanceurPostes: null,
+    SiretOuRidet: null,
+    CodePostal: null,
+    Ville: null,
+    ContactEmail: null,
+};
 
-export const POSTE_DTO = {
+export const POSTE_DTO: FonjepPosteDto = {
     Code: "Code",
     DispositifId: 1,
     PstStatutPosteLibelle: "PstStatutPosteLibelle",
@@ -31,9 +45,14 @@ export const POSTE_DTO = {
     DoublementUniteCompte: "Non",
 };
 
-export const POSTE_DTO_WITH_NULLS = { ...POSTE_DTO, AssociationBeneficiaireCode: null };
+export const POSTE_DTO_WITH_DATE = {
+    ...POSTE_DTO,
+    DateFinTriennalite: new Date("2023-12-31"),
+};
 
-export const VERSEMENT_DTO = {
+export const POSTE_DTO_WITH_NULL: FonjepPosteDto = { ...POSTE_DTO, DispositifId: null };
+
+export const VERSEMENT_DTO: FonjepVersementDtoWithExcelDate = {
     PosteCode: "Code",
     PeriodeDebut: 44896,
     PeriodeFin: 44835,
@@ -42,29 +61,41 @@ export const VERSEMENT_DTO = {
     MontantPaye: 1000,
 };
 
-export const TYPE_POSTE_DTO = {
+export const VERSEMENT_DTO_WITH_DATE = {
+    ...VERSEMENT_DTO,
+    PeriodeDebut: new Date("2022-01-12"),
+    PeriodeFin: new Date("2022-12-14"),
+    DateVersement: new Date("2022-04-15"),
+};
+
+export const VERSEMENT_DTO_WITH_NULL: FonjepVersementDtoWithExcelDate = {
+    PosteCode: "Code",
+    PeriodeDebut: null,
+    PeriodeFin: null,
+    DateVersement: null,
+    MontantAPayer: null,
+    MontantPaye: null,
+};
+
+export const TYPE_POSTE_DTO: FonjepTypePosteDto = {
     Code: "Code",
     Libelle: "Libelle",
 };
 
-export const TYPE_POSTE_DTO_WITH_NULLS = { ...TYPE_POSTE_DTO, Libelle: null };
-
-export const DISPOSITIF_DTO = {
+export const DISPOSITIF_DTO: FonjepDispositifDto = {
     ID: 1,
     Libelle: "Libelle",
     FinanceurCode: "FinanceurCode",
 };
 
-export const DISPOSITIF_DTO_WITH_NULLS = { ...DISPOSITIF_DTO, FinanceurCode: null };
+export const TIER_DTOS = [TIER_DTO, TIER_DTO_WITH_NULL];
 
-export const VERSEMENT_DTO_WITH_NULLS = { ...VERSEMENT_DTO, MontantAPayer: null };
+export const POSTE_DTOS = [POSTE_DTO, POSTE_DTO_WITH_NULL];
+export const POSTE_DTOS_WITH_DATE = [POSTE_DTO, POSTE_DTO_WITH_DATE];
 
-export const TIER_DTOS = [TIER_DTO, TIER_DTO_WITH_NULLS];
+export const VERSEMENT_DTOS = [VERSEMENT_DTO, VERSEMENT_DTO_WITH_NULL];
+export const VERSEMENT_DTOS_WITH_DATE = [VERSEMENT_DTO, VERSEMENT_DTO_WITH_DATE];
 
-export const POSTE_DTOS = [POSTE_DTO, POSTE_DTO_WITH_NULLS];
+export const TYPE_POSTE_DTOS = [TYPE_POSTE_DTO];
 
-export const VERSEMENT_DTOS = [VERSEMENT_DTO, VERSEMENT_DTO_WITH_NULLS];
-
-export const TYPE_POSTE_DTOS = [TYPE_POSTE_DTO, TYPE_POSTE_DTO_WITH_NULLS];
-
-export const DISPOSITIF_DTOS = [DISPOSITIF_DTO, DISPOSITIF_DTO_WITH_NULLS];
+export const DISPOSITIF_DTOS = [DISPOSITIF_DTO];

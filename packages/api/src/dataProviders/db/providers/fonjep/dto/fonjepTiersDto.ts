@@ -1,7 +1,6 @@
+// null represents an empty cell in the file
 export default interface FonjepTiersDto {
-    [key: string]: any;
-
-    Code: string | null;
+    Code: string;
     RaisonSociale: string | null;
     EstAssociation: string | null;
     EstCoFinanceurPostes: string | null;
