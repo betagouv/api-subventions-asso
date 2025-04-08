@@ -45,6 +45,7 @@ export class UserAgentConnectService {
     async login(agentConnectUser: AgentConnectUser, tokenSet: TokenSet): Promise<UserWithJWTDto> {
         // TODO for more resilience try to get by agentConnectId first
         if (!agentConnectUser.email) throw new InternalServerError("email not contained in agent connect profile");
+        agentConnectUser.email = agentConnectUser.email.toLowerCase();
         const userWithSecrets: UserDbo | null = await userPort.getUserWithSecretsByEmail(agentConnectUser.email);
         const isNewUser = !userWithSecrets;
 

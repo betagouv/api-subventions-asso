@@ -112,6 +112,11 @@ describe("userAgentConnectService", () => {
             expect(userPort.getUserWithSecretsByEmail).toHaveBeenCalledWith(AC_USER.email);
         });
 
+        it("gets user from port with lowercase email", async () => {
+            await userAgentConnectService.login({ ...AC_USER, email: AC_USER.email.toUpperCase() }, TOKENSET);
+            expect(userPort.getUserWithSecretsByEmail).toHaveBeenCalledWith(AC_USER.email);
+        });
+
         it("updates user's jwt", async () => {
             await userAgentConnectService.login(AC_USER, TOKENSET);
             expect(userAuthService.updateJwt).toHaveBeenCalled();
