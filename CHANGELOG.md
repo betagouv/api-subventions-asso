@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.66.0](https://github.com/betagouv/api-subventions-asso/compare/v0.65.2...v0.66.0) (2025-04-08)
+
+### Bug Fixes
+
+-   [#3268](https://github.com/betagouv/api-subventions-asso/issues/3268) error message from api when multiple results with asso identifier ([#3297](https://github.com/betagouv/api-subventions-asso/issues/3297)) ([52a3bd5](https://github.com/betagouv/api-subventions-asso/commit/52a3bd5f29ffee8e099bc1d3d69b3dfd115cd9a0))
+-   **front:** [#2753](https://github.com/betagouv/api-subventions-asso/issues/2753) display asso address in asso page header ([#3292](https://github.com/betagouv/api-subventions-asso/issues/3292)) ([46ae717](https://github.com/betagouv/api-subventions-asso/commit/46ae71750f20c90f72176189e4e4566f85b4ebfb))
+
+### Features
+
+-   **api:** [#3269](https://github.com/betagouv/api-subventions-asso/issues/3269) specify ds forms exercises ([#3305](https://github.com/betagouv/api-subventions-asso/issues/3305)) ([3c34cbc](https://github.com/betagouv/api-subventions-asso/commit/3c34cbc6c15a77cab761fd0386d1cbec2f6b0494))
+-   **ci:** [#3243](https://github.com/betagouv/api-subventions-asso/issues/3243) upgrade ubuntu version ([#3290](https://github.com/betagouv/api-subventions-asso/issues/3290)) ([c647872](https://github.com/betagouv/api-subventions-asso/commit/c647872c4b29c63df510029d27edd632ed2d499a))
+
 ## [0.65.2](https://github.com/betagouv/api-subventions-asso/compare/v0.65.1...v0.65.2) (2025-04-08)
 
 ### Bug Fixes

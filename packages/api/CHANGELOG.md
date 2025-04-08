@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.66.0](https://github.com/betagouv/api-subventions-asso/compare/v0.65.2...v0.66.0) (2025-04-08)
+
+### Bug Fixes
+
+-   [#3268](https://github.com/betagouv/api-subventions-asso/issues/3268) error message from api when multiple results with asso identifier ([#3297](https://github.com/betagouv/api-subventions-asso/issues/3297)) ([52a3bd5](https://github.com/betagouv/api-subventions-asso/commit/52a3bd5f29ffee8e099bc1d3d69b3dfd115cd9a0))
+
+### Features
+
+-   **api:** [#3269](https://github.com/betagouv/api-subventions-asso/issues/3269) specify ds forms exercises ([#3305](https://github.com/betagouv/api-subventions-asso/issues/3305)) ([3c34cbc](https://github.com/betagouv/api-subventions-asso/commit/3c34cbc6c15a77cab761fd0386d1cbec2f6b0494))
+
 ## [0.65.2](https://github.com/betagouv/api-subventions-asso/compare/v0.65.1...v0.65.2) (2025-04-08)
 
 ### Bug Fixes
