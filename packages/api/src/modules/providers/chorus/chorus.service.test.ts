@@ -18,15 +18,16 @@ jest.mock("../../rna-siren/rnaSiren.service");
 const mockedRnaSirenService = jest.mocked(rnaSirenService);
 import { ENTITIES, PAYMENTS } from "./__fixtures__/ChorusFixtures";
 import CacheData from "../../../shared/Cache";
-import { BulkWriteResult, WithId } from "mongodb";
-import ChorusLineEntity from "./entities/ChorusLineEntity";
+import { BulkWriteResult } from "mongodb";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
 import Siren from "../../../valueObjects/Siren";
 import Siret from "../../../valueObjects/Siret";
 import Rna from "../../../valueObjects/Rna";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
-import { isObjectBindingPattern } from "typescript";
+import { ChorusLineDto } from "./adapters/chorusLineDto";
+import Tahitiet from "../../../valueObjects/Tahitiet";
+import Ridet from "../../../valueObjects/Ridet";
 
 describe("chorusService", () => {
     beforeAll(() => {
@@ -298,13 +299,11 @@ describe("chorusService", () => {
     describe("insertBatchChorusLine", () => {
         const EMPTY_ANSWER = { rejected: 0, created: 0 };
 
-        let mockIsAcceptedEntity: jest.SpyInstance;
-        let mockInsertMany: jest.SpyInstance;
+        const mockIsAcceptedEntity = jest.spyOn(chorusService, "isAcceptedEntity");
+        const mockInsertMany = jest.spyOn(chorusService, "upsertMany");
         beforeEach(() => {
-            mockIsAcceptedEntity = jest.spyOn(chorusService, "isAcceptedEntity").mockResolvedValue(true);
-            mockInsertMany = jest
-                .spyOn(chorusService, "upsertMany")
-                .mockResolvedValue(true as unknown as BulkWriteResult);
+            mockIsAcceptedEntity.mockResolvedValue(true);
+            mockInsertMany.mockResolvedValue(true as unknown as BulkWriteResult);
         });
 
         it("should call upsertMany", async () => {
@@ -318,10 +317,42 @@ describe("chorusService", () => {
         });
 
         it("should return response with created and rejected", async () => {
-            mockIsAcceptedEntity.mockReturnValueOnce(false);
+            mockIsAcceptedEntity.mockResolvedValueOnce(false);
             const expected = { ...EMPTY_ANSWER, created: ENTITIES.length - 1, rejected: 1 };
             const actual = await chorusService.insertBatchChorusLine(ENTITIES);
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("getEstablishmentIdentifierName", () => {
+        const mockIsRidet = jest.spyOn(Ridet, "isRidet");
+        const mockIsTahitiet = jest.spyOn(Tahitiet, "isTahitiet");
+        const mockIsSiret = jest.spyOn(Siret, "isSiret");
+
+        // Only mock isRidet, isTahitiet and isSiret
+        // If we wanted to be 100% unit testing we should create a mock in __mocks__ folder
+        beforeAll(() => {
+            mockIsRidet.mockReturnValue(true);
+            mockIsTahitiet.mockReturnValue(true);
+            mockIsSiret.mockReturnValue(true);
+        });
+
+        it.each`
+            siret          | ridetOrTahitiet | valueObject
+            ${"123456789"} | ${"#"}          | ${Siret}
+            ${"#"}         | ${"0482749145"} | ${Ridet}
+            ${"#"}         | ${"A1234569"}   | ${Tahitiet}
+        `("should return 'siret' if code taxe is not #", ({ siret, ridetOrTahitiet, valueObject }) => {
+            // When testing Tahitied we must force isRidet to false
+            if (valueObject === Tahitiet) mockIsRidet.mockReturnValueOnce(false);
+
+            const ENTITY = {
+                "Code taxe 1": siret,
+                "No TVA 3 (COM-RIDET ou TAHITI)": ridetOrTahitiet,
+            } as ChorusLineDto;
+            const expected = valueObject;
+            const actual = chorusService.getEstablishmentValueObject(ENTITY);
+            expect(actual).toBeInstanceOf(expected);
         });
     });
 });

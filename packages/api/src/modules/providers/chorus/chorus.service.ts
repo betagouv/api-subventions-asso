@@ -17,8 +17,12 @@ import Siren from "../../../valueObjects/Siren";
 import Siret from "../../../valueObjects/Siret";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import chorusLinePort from "../../../dataProviders/db/providers/chorus/chorus.line.port";
+import Ridet from "../../../valueObjects/Ridet";
+import Tahitiet from "../../../valueObjects/Tahitiet";
+import { establishmentIdType } from "../../../valueObjects/typeIdentifier";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
+import { ChorusLineDto } from "./adapters/chorusLineDto";
 
 export interface RejectedRequest {
     state: "rejected";
@@ -72,6 +76,14 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
             this.sirenBelongAssoCache.add(siren.value, sirenIsAsso);
             return sirenIsAsso;
         }
+    }
+
+    getEstablishmentValueObject(chorusLineDto: ChorusLineDto): establishmentIdType {
+        if (chorusLineDto["Code taxe 1"] === "#") {
+            if (Ridet.isRidet(chorusLineDto["No TVA 3 (COM-RIDET ou TAHITI)"]))
+                return new Ridet(chorusLineDto["No TVA 3 (COM-RIDET ou TAHITI)"]);
+            else return new Tahitiet(chorusLineDto["No TVA 3 (COM-RIDET ou TAHITI)"]);
+        } else return new Siret(chorusLineDto["Code taxe 1"]);
     }
 
     /**
