@@ -60,9 +60,9 @@ class PaymentFlatChorusService {
         */
         let chorusCursor;
         if (exerciceBudgetaire) {
-            chorusCursor = chorusService.cursorFindDataWithoutHash(exerciceBudgetaire);
+            chorusCursor = chorusService.cursorFind(exerciceBudgetaire);
         } else {
-            chorusCursor = chorusService.cursorFindDataWithoutHash();
+            chorusCursor = chorusService.cursorFind();
         }
         const entities: Record<string, PaymentFlatEntity> = {};
 

@@ -64,32 +64,32 @@ export default class PaymentFlatAdapter {
     }
 
     static dboToEntity(dbo: PaymentFlatDbo): PaymentFlatEntity {
-        /* question: je suis obligé pour comment je crée l'entité de recalculer regionAttachement,
-         idVersement and so on. C'est une bonne chose ?
-         */
-        return new PaymentFlatEntity(
-            dbo.exerciceBudgetaire,
-            dbo.typeIdEtablissementBeneficiaire,
-            // to adapt when we will have typeId != siret
-            new Siret(dbo.idEtablissementBeneficiaire),
-            dbo.typeIdEntrepriseBeneficiaire,
-            new Siren(dbo.idEntrepriseBeneficiaire),
-            dbo.montant,
-            dbo.dateOperation,
-            dbo.codeCentreFinancier,
-            dbo.libelleCentreFinancier,
-            dbo.attachementComptable,
-            dbo.ej,
-            dbo.provider,
-            dbo.programme,
-            dbo.numeroProgramme,
-            dbo.mission,
-            dbo.ministere,
-            dbo.sigleMinistere,
-            dbo.codeAction,
-            dbo.action,
-            dbo.codeActivite,
-            dbo.activite,
-        );
+        // TODO: choose between full english entity and full french entity but not a mix of two
+        return {
+            idVersement: dbo.idVersement,
+            uniqueId: dbo.uniqueId,
+            exerciceBudgetaire: dbo.exerciceBudgetaire,
+            typeIdEtablissementBeneficiaire: dbo.typeIdEtablissementBeneficiaire,
+            idEtablissementBeneficiaire: new Siret(dbo.idEtablissementBeneficiaire),
+            typeIdEntrepriseBeneficiaire: dbo.typeIdEntrepriseBeneficiaire,
+            idEntrepriseBeneficiaire: new Siren(dbo.idEntrepriseBeneficiaire),
+            ej: dbo.ej,
+            amount: dbo.montant,
+            operationDate: dbo.dateOperation,
+            centreFinancierCode: dbo.codeCentreFinancier,
+            centreFinancierLibelle: dbo.libelleCentreFinancier,
+            attachementComptable: dbo.attachementComptable,
+            regionAttachementComptable: dbo.regionAttachementComptable,
+            mission: dbo.mission,
+            programName: dbo.programme,
+            programNumber: dbo.numeroProgramme,
+            ministry: dbo.ministere,
+            ministryAcronym: dbo.sigleMinistere,
+            actionCode: dbo.codeAction,
+            actionLabel: dbo.action,
+            activityCode: dbo.codeActivite,
+            activityLabel: dbo.activite,
+            provider: dbo.provider,
+        };
     }
 }

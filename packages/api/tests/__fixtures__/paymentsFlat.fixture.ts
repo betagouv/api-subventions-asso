@@ -1,6 +1,6 @@
 import ChorusLineEntity from "../../src/modules/providers/chorus/entities/ChorusLineEntity";
 import { ENTITIES } from "../../src/modules/providers/chorus/__fixtures__/ChorusFixtures";
-import { ChorusLineDto } from "../../src/modules/providers/chorus/adapters/chorusLineDto";
+import { ChorusLineDto } from "../../src/modules/providers/chorus/@types/ChorusLineDto";
 export const CHORUS_LAST_UPDATE = new Date("2022-03-12");
 
 export const MOCK_DOCUMENTS: ChorusLineEntity[] = [

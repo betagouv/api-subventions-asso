@@ -1,26 +1,15 @@
 import Siren from "./Siren";
 import Rid from "./Rid";
-import Thaiti from "./Thaiti";
+import Tahiti from "./Tahiti";
 
 import Siret from "./Siret";
 import Ridet from "./Ridet";
-import ThaitiT from "./Thaiti-t";
+import Tahitiet from "./Tahitiet";
 
-export type typeIdEntreprise = "siren" | "rid" | "thaiti";
-export type typeIdEtablissement = "siret" | "ridet" | "thaiti-t";
+export type companyIdName = "siren" | "rid" | "tahiti";
+// tahitiet was defined by us because tahiti numbers doesn't have any name for their establishment identifier name (like siren - siret)
+export type establishmentIdName = "siret" | "ridet" | "tahitiet";
 
-export type idEtablissementType<T extends typeIdEtablissement> = T extends "siret"
-    ? Siret
-    : T extends "ridet"
-    ? Ridet
-    : T extends "thaiti-t"
-    ? ThaitiT
-    : never;
+export type establishmentIdType = Siret | Ridet | Tahitiet;
 
-export type idEntrepriseType<T extends typeIdEntreprise> = T extends "siren"
-    ? Siren
-    : T extends "rid"
-    ? Rid
-    : T extends "thaiti"
-    ? Thaiti
-    : never;
+export type companyIdType = Siren | Rid | Tahiti;

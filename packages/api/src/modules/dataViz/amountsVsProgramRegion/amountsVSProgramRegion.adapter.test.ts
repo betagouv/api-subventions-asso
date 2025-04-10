@@ -21,7 +21,7 @@ const EXPECTED_WITH_NULLS = {
     programme: String(PAYMENT_FLAT_ENTITY_WITH_NULLS.programNumber),
     mission: PAYMENT_FLAT_ENTITY_WITH_NULLS.mission,
     montant: PAYMENT_FLAT_ENTITY_WITH_NULLS.amount,
-    regionAttachementComptable: "N/A",
+    regionAttachementComptable: PAYMENT_FLAT_ENTITY_WITH_NULLS.regionAttachementComptable,
 };
 
 describe("AmountsVsProgramRegionAdapter", () => {

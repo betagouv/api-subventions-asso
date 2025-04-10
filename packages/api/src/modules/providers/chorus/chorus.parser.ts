@@ -7,7 +7,7 @@ import Siret from "../../../valueObjects/Siret";
 import { GenericParser } from "../../../shared/GenericParser";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import IChorusIndexedInformations from "./@types/IChorusIndexedInformations";
-import { ChorusLineDto } from "./adapters/chorusLineDto";
+import { ChorusLineDto } from "./@types/ChorusLineDto";
 
 export default class ChorusParser {
     static parse(content: Buffer) {
