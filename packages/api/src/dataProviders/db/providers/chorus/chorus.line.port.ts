@@ -82,15 +82,10 @@ export class ChorusLinePort extends MongoPort<ChorusLineEntity> {
         return this.collection.find(query, projection);
     }
 
-    public cursorFindDataWithoutHash(exerciceBudgetaire?: number) {
-        // In chorus database # are used instead of non siret identifier, we exclude here these data
-        if (!exerciceBudgetaire) {
-            return this.cursorFind({ "indexedInformations.siret": { $ne: "#" } });
-        } else
-            return this.cursorFind({
-                "indexedInformations.exercice": exerciceBudgetaire,
-                "indexedInformations.siret": { $ne: "#" },
-            });
+    public cursorFindOnExercise(exerciceBudgetaire: number) {
+        return this.cursorFind({
+            "indexedInformations.exercice": exerciceBudgetaire,
+        });
     }
 
     async createIndexes() {

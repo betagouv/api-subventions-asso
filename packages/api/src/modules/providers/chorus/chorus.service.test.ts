@@ -62,58 +62,51 @@ describe("chorusService", () => {
         });
     });
 
-    describe("Get payments", () => {
-        let toVersementArrayMock: jest.SpyInstance;
-        beforeAll(() => {
-            // @ts-expect-error: toPaymentArray is private
-            toVersementArrayMock = jest.spyOn(chorusService, "toPaymentArray");
-
-            toVersementArrayMock.mockImplementation(data => data);
-        });
-
-        afterAll(() => {
-            toVersementArrayMock.mockRestore();
-        });
-
-        describe("chorusCursorFindDataWithoutHash", () => {
-            it("should call chorusLinePort.findData with undefined", () => {
-                chorusService.cursorFindDataWithoutHash();
-                expect(mockedChorusLinePort.cursorFindDataWithoutHash).toHaveBeenCalledWith(undefined);
-            });
-
-            it("should call chorusLinePort.findData with exerciceBudgetaire", () => {
-                const exerciceBudgetaire = 2021;
-                chorusService.cursorFindDataWithoutHash(exerciceBudgetaire);
-                expect(mockedChorusLinePort.cursorFindDataWithoutHash).toHaveBeenCalledWith(exerciceBudgetaire);
-            });
-        });
-    });
-
-    describe("getProgramCode", () => {
-        const expected = 101;
-        const actual = chorusService.getProgramCode(ENTITIES[0]);
-        expect(actual).toEqual(expected);
-    });
-
     describe("toPaymentArray", () => {
-        let mockGetProgramCode: jest.SpyInstance;
-
-        beforeAll(() => {
-            mockGetProgramCode = jest
-                .spyOn(chorusService, "getProgramCode")
-                .mockReturnValue(PROGRAMS[0].code_programme);
-        });
+        const mockGetProgramCode = jest
+            .spyOn(chorusService, "getProgramCode")
+            .mockReturnValue(PROGRAMS[0].code_programme);
 
         afterAll(() => {
             mockGetProgramCode.mockRestore();
         });
 
+        it("should call getProgramCode", () => {
+            // @ts-expect-error: test private method
+            chorusService.toPaymentArray(ENTITIES);
+            ENTITIES.forEach((entity, index) => {
+                expect(mockGetProgramCode).toHaveBeenNthCalledWith(index + 1, entity);
+            });
+        });
+
+        // TODO: test this function
         it("should call toPayment for each entity", () => {
             // @ts-expect-error: test private method
             chorusService.toPaymentArray(ENTITIES);
             ENTITIES.forEach((entity, index) => {
                 expect(ChorusAdapter.toPayment).toHaveBeenNthCalledWith(index + 1, entity, PROGRAMS[0]);
             });
+        });
+    });
+
+    describe("cursorFind", () => {
+        it("should call chorusLinePort.cursorFind", () => {
+            chorusService.cursorFind();
+            expect(mockedChorusLinePort.cursorFind).toHaveBeenCalledWith({});
+        });
+
+        it("should call chorusLinePort.cursorFindOnExercise", () => {
+            const exerciceBudgetaire = 2021;
+            chorusService.cursorFind(exerciceBudgetaire);
+            expect(mockedChorusLinePort.cursorFindOnExercise).toHaveBeenCalledWith(exerciceBudgetaire);
+        });
+    });
+
+    describe("getProgramCode", () => {
+        it("should return code", () => {
+            const expected = PROGRAMS[0].code_programme;
+            const actual = chorusService.getProgramCode(ENTITIES[0]);
+            expect(actual).toEqual(expected);
         });
     });
 

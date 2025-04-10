@@ -135,8 +135,9 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
         return this.toPaymentArray(requests);
     }
 
-    public cursorFindDataWithoutHash(exerciceBudgetaire?: number) {
-        return chorusLinePort.cursorFindDataWithoutHash(exerciceBudgetaire);
+    public cursorFind(exerciceBudgetaire?: number) {
+        if (!exerciceBudgetaire) return chorusLinePort.cursorFind({});
+        else return chorusLinePort.cursorFindOnExercise(exerciceBudgetaire);
     }
 
     // TODO: unit test this
