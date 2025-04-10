@@ -193,3 +193,69 @@ Object {
   },
 }
 `;
+
+exports[`ChorusAdapter toPaymentFlatEntity should return PaymentFlatEntity when data is fully provided 1`] = `
+Object {
+  "actionCode": "0101-01-02",
+  "actionLabel": "Label d'action Exemple",
+  "activityCode": "077601003222",
+  "activityLabel": "Label d'activité Exemple",
+  "amount": 89988.3,
+  "attachementComptable": "BRET",
+  "centreFinancierCode": "AA01/0776-C001-4000",
+  "centreFinancierLibelle": "UO DGER XXXX-C001",
+  "ej": "0001821732",
+  "exerciceBudgetaire": 2023,
+  "idEntrepriseBeneficiaire": Siren {
+    "siren": "100000000",
+  },
+  "idEtablissementBeneficiaire": Siret {
+    "siret": "10000000000001",
+  },
+  "idVersement": "10000000000001-0001821732-2023",
+  "ministry": "Ministère Exemple",
+  "ministryAcronym": "ME",
+  "mission": "Mission Exemple",
+  "operationDate": 2023-07-12T00:00:00.000Z,
+  "programName": "Programme Exemple",
+  "programNumber": 101,
+  "provider": "chorus",
+  "regionAttachementComptable": "Bretagne",
+  "typeIdEntrepriseBeneficiaire": "siren",
+  "typeIdEtablissementBeneficiaire": "siret",
+  "uniqueId": "10000000000001-0001821732-2023-101-0101-01-02-077601003222-1689120000000-BRET-AA01/0776-C001-4000",
+}
+`;
+
+exports[`ChorusAdapter toPaymentFlatEntity should return PaymentFlatEntity with null when data is not fully provided 1`] = `
+Object {
+  "actionCode": "0101-01-02",
+  "actionLabel": "Label d'action Exemple",
+  "activityCode": "077601003222",
+  "activityLabel": "Label d'activité Exemple",
+  "amount": 89988.3,
+  "attachementComptable": "BRET",
+  "centreFinancierCode": "AA01/0776-C001-4000",
+  "centreFinancierLibelle": "UO DGER XXXX-C001",
+  "ej": "0001821732",
+  "exerciceBudgetaire": 2023,
+  "idEntrepriseBeneficiaire": Siren {
+    "siren": "100000000",
+  },
+  "idEtablissementBeneficiaire": Siret {
+    "siret": "10000000000001",
+  },
+  "idVersement": "10000000000001-0001821732-2023",
+  "ministry": "Ministère Exemple",
+  "ministryAcronym": "ME",
+  "mission": null,
+  "operationDate": 2023-07-12T00:00:00.000Z,
+  "programName": null,
+  "programNumber": 101,
+  "provider": "chorus",
+  "regionAttachementComptable": "Bretagne",
+  "typeIdEntrepriseBeneficiaire": "siren",
+  "typeIdEtablissementBeneficiaire": "siret",
+  "uniqueId": "10000000000001-0001821732-2023-101-0101-01-02-077601003222-1689120000000-BRET-AA01/0776-C001-4000",
+}
+`;
