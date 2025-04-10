@@ -3,7 +3,7 @@ import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapt
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 import ChorusAdapter from "./ChorusAdapter";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
-import { ENTITIES, PARSED_DATA, PAYMENTS } from "../__fixtures__/ChorusFixtures";
+import { ENTITIES, PAYMENTS } from "../__fixtures__/ChorusFixtures";
 import { RawPayment } from "../../../grant/@types/rawGrant";
 import PROGRAMS from "../../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
 import { ChorusLineDto } from "../@types/ChorusLineDto";
@@ -75,10 +75,11 @@ describe("ChorusAdapter", () => {
         });
     });
 
-    const now = new Date();
-    const toPV = (value: unknown, provider = "Chorus") => ProviderValueAdapter.toProviderValue(value, provider, now);
-
     describe("toPayment", () => {
+        const now = new Date();
+        const toPV = (value: unknown, provider = "Chorus") =>
+            ProviderValueAdapter.toProviderValue(value, provider, now);
+
         it("should return complet entity", () => {
             const entity = ENTITIES[0];
 
@@ -150,8 +151,7 @@ describe("ChorusAdapter", () => {
                 DATA_BRETAGNE_RECORDS.refsProgrammation,
             );
 
-            const expected = PAYMENT_FLAT_ENTITY;
-            expect(result).toEqual(expected);
+            expect(result).toMatchSnapshot();
         });
 
         it("should return PaymentFlatEntity with null when data is not fully provided", () => {
@@ -167,12 +167,7 @@ describe("ChorusAdapter", () => {
                 DATA_BRETAGNE_RECORDS.refsProgrammation,
             );
 
-            const expected = {
-                ...PAYMENT_FLAT_ENTITY,
-                programName: null,
-                mission: null,
-            };
-            expect(result).toEqual(expected);
+            expect(result).toMatchSnapshot();
         });
     });
 

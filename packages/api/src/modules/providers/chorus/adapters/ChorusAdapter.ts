@@ -10,10 +10,10 @@ import MinistryEntity from "../../../../entities/MinistryEntity";
 import DomaineFonctionnelEntity from "../../../../entities/DomaineFonctionnelEntity";
 import Siret from "../../../../valueObjects/Siret";
 import RefProgrammationEntity from "../../../../entities/RefProgrammationEntity";
-import PaymentFlatEntity from "../../../../entities/PaymentFlatEntity";
 import { GenericParser } from "../../../../shared/GenericParser";
 import { NestedDefaultObject, ParserInfo } from "../../../../@types";
 import { ChorusLineDto } from "../@types/ChorusLineDto";
+import PaymentFlatEntity from "../../../../entities/PaymentFlatEntity";
 import REGION_MAPPING from "./ChorusRegionMapping";
 
 export default class ChorusAdapter {
@@ -124,7 +124,7 @@ export default class ChorusAdapter {
                 return parseFloat(value.replaceAll(/[\r ]/, "").replace(",", "."));
             },
         },
-        dateOperation: {
+        operationDate: {
             path: ["Date de dernière opération sur la DP"],
             adapter: value => {
                 if (!value) return value;
@@ -184,25 +184,43 @@ export default class ChorusAdapter {
             refsProgrammation,
         );
 
-        const entityConstructorParameters = [
-            ...Object.values(
-                GenericParser.indexDataByPathObject(
-                    ChorusAdapter.chorusToPaymentFlatPath,
-                    chorusDocument.data as NestedDefaultObject<string>,
-                ),
-            ),
-            programEntity?.label_programme ?? null, // programName,
-            programCode, // programNumber,
-            programEntity?.mission ?? null, // mission,
-            ministryEntity?.nom_ministere ?? null, // ministry,
-            ministryEntity?.sigle_ministere ?? null, // ministryAcronym,
-            actionCode, // actionCode,
-            domaineFonctEntity?.libelle_action ?? null, // actionLabel,
-            activityCode ?? null, // activityCode,
-            refProgrammationEntity?.libelle_activite ?? null, // activityLabel,
-        ] as ConstructorParameters<typeof PaymentFlatEntity>;
+        // const chorusRawData = ;
 
-        return new PaymentFlatEntity(...entityConstructorParameters);
+        const rawDataWithDataBretagne: Omit<
+            PaymentFlatEntity,
+            "regionAttachementComptable" | "idVersement" | "uniqueId"
+        > = {
+            ...GenericParser.indexDataByPathObject(
+                ChorusAdapter.chorusToPaymentFlatPath,
+                chorusDocument.data as NestedDefaultObject<string>,
+            ),
+            programName: programEntity?.label_programme ?? null,
+            programNumber: programCode,
+            mission: programEntity?.mission ?? null,
+            ministry: ministryEntity?.nom_ministere ?? null,
+            ministryAcronym: ministryEntity?.sigle_ministere ?? null,
+            actionCode,
+            actionLabel: domaineFonctEntity?.libelle_action ?? null,
+            activityCode,
+            activityLabel: refProgrammationEntity?.libelle_activite ?? null,
+        };
+
+        const regionAttachementComptable = ChorusAdapter.getRegionAttachementComptable(
+            rawDataWithDataBretagne.attachementComptable,
+        );
+        const idVersement = `${rawDataWithDataBretagne.idEtablissementBeneficiaire}-${rawDataWithDataBretagne.ej}-${rawDataWithDataBretagne.exerciceBudgetaire}`;
+        const uniqueId = `${idVersement}-${
+            rawDataWithDataBretagne.programNumber
+        }-${actionCode}-${activityCode}-${rawDataWithDataBretagne.operationDate.getTime()}-${
+            rawDataWithDataBretagne.attachementComptable
+        }-${rawDataWithDataBretagne.centreFinancierCode}`;
+
+        return {
+            ...rawDataWithDataBretagne,
+            regionAttachementComptable,
+            idVersement,
+            uniqueId,
+        };
     }
 
     private static getProgramCodeAndEntity(

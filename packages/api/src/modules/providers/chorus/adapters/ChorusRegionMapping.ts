@@ -1,4 +1,4 @@
-export const REGION_MAPPING = {
+const REGION_MAPPING = {
     ADCE: "Administration Centrale",
     DEFE: "Administration Centrale",
     DILA: "Administration Centrale",

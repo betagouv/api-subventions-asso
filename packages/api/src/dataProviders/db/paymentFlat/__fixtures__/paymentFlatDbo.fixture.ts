@@ -1,11 +1,11 @@
 import { ObjectId } from "mongodb";
-import paymentFlatDbo from "../PaymentFlatDbo";
+import PaymentFlatDbo from "../PaymentFlatDbo";
 
-export const PAYMENT_FLAT_DBO: paymentFlatDbo = {
+export const PAYMENT_FLAT_DBO: PaymentFlatDbo = {
     _id: new ObjectId(),
+    idVersement: "12345678901234-EJ Exemple-2023",
     uniqueId: "12345678901234-EJ Exemple-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
     exerciceBudgetaire: 2023,
-    idVersement: "12345678901234-EJ Exemple-2023",
     typeIdEtablissementBeneficiaire: "siret",
     idEtablissementBeneficiaire: "12345678901234",
     typeIdEntrepriseBeneficiaire: "siren",
@@ -29,7 +29,7 @@ export const PAYMENT_FLAT_DBO: paymentFlatDbo = {
     regionAttachementComptable: "Bretagne",
 };
 
-export const PAYMENT_FLAT_DBO_WITH_NULLS: paymentFlatDbo = {
+export const PAYMENT_FLAT_DBO_WITH_NULLS: PaymentFlatDbo = {
     _id: new ObjectId(),
     uniqueId: "12345678901234-EJ Exemple-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
     exerciceBudgetaire: 2023,
