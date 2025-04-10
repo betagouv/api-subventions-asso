@@ -1,4 +1,5 @@
 import Tahiti from "./Tahiti";
+import { establishmentIdName } from "./typeIdentifier";
 
 export default class Tahitiet {
     private tahitiet: string;
@@ -16,7 +17,7 @@ export default class Tahitiet {
         return typeof tahitiet === "string" && regex.test(tahitiet);
     }
 
-    get name() {
+    get name(): "tahitiet" {
         return "tahitiet";
     }
 
@@ -24,7 +25,7 @@ export default class Tahitiet {
         return this.tahitiet;
     }
 
-    toThaiti() {
+    toTahiti() {
         return new Tahiti(this.tahitiet.slice(0, -3));
     }
 }

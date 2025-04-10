@@ -11,9 +11,12 @@ import DomaineFonctionnelEntity from "../../../../entities/DomaineFonctionnelEnt
 import Siret from "../../../../valueObjects/Siret";
 import RefProgrammationEntity from "../../../../entities/RefProgrammationEntity";
 import { GenericParser } from "../../../../shared/GenericParser";
-import { NestedDefaultObject, ParserInfo } from "../../../../@types";
 import { ChorusLineDto } from "../@types/ChorusLineDto";
 import PaymentFlatEntity from "../../../../entities/PaymentFlatEntity";
+import { ChorusPaymentFlatRaw } from "../@types/ChorusPaymentFlatRaw";
+import Ridet from "../../../../valueObjects/Ridet";
+import { establishmentIdType } from "../../../../valueObjects/typeIdentifier";
+import Tahitiet from "../../../../valueObjects/Tahitiet";
 import REGION_MAPPING from "./ChorusRegionMapping";
 
 export default class ChorusAdapter {
@@ -84,84 +87,97 @@ export default class ChorusAdapter {
         return region;
     }
 
-    public static chorusToPaymentFlatPath: { [key: string]: ParserInfo } = {
-        exerciceBudgetaire: {
-            path: ["Exercice comptable"],
-            adapter: value => {
-                if (!value) return value;
-                return parseInt(value, 10);
-            },
-        },
-        typeIdEtablissementBeneficiaire: {
-            path: ["Code taxe 1"],
-            adapter: value => {
-                if (Siret.isSiret(value)) return "siret";
-            },
-        },
-        idEtablissementBeneficiaire: {
-            path: ["Code taxe 1"],
-            adapter: value => {
-                if (value) return new Siret(value);
-            },
-        },
-        typeIdEntrepriseBeneficiaire: {
-            path: ["Code taxe 1"],
-            adapter: value => {
-                if (Siret.isSiret(value)) return "siren";
-            },
-        },
-        idEntrepriseBeneficiaire: {
-            path: ["Code taxe 1"],
-            adapter: value => {
-                if (value) return new Siret(value).toSiren();
-            },
-        },
-        amount: {
-            path: ["Montant payé"],
-            adapter: value => {
-                if (!value || typeof value === "number") return value;
+    private static getEstablishmentValueObject(chorusLineDto: ChorusLineDto): establishmentIdType {
+        if (chorusLineDto["Code taxe 1"] === "#") {
+            if (Ridet.isRidet(chorusLineDto["No TVA 3 (COM-RIDET ou TAHITI)"])) {
+                return new Ridet(chorusLineDto["No TVA 3 (COM-RIDET ou TAHITI)"]);
+            } else {
+                console.log(Tahitiet.isTahitiet.toString());
+                return new Tahitiet(chorusLineDto["No TVA 3 (COM-RIDET ou TAHITI)"]);
+            }
+        } else return new Siret(chorusLineDto["Code taxe 1"]);
+    }
 
-                return parseFloat(value.replaceAll(/[\r ]/, "").replace(",", "."));
-            },
-        },
-        operationDate: {
-            path: ["Date de dernière opération sur la DP"],
-            adapter: value => {
-                if (!value) return value;
-                if (value != parseInt(value, 10).toString()) {
-                    const [day, month, year] = value.split(/[/.]/).map(v => parseInt(v, 10));
-                    return new Date(Date.UTC(year, month - 1, day));
-                }
-                return GenericParser.ExcelDateToJSDate(parseInt(value, 10));
-            },
-        },
+    // TODO: add to ValueObject a getCompanyId that would abstract the notion of siren/rid/tahiti ?
+    private static getCompanyId(estabId: establishmentIdType) {
+        if (estabId instanceof Siret) {
+            return estabId.toSiren();
+        } else if (estabId instanceof Ridet) {
+            return estabId.toRid();
+        }
+        // Tahitiet
+        else {
+            return estabId.toTahiti();
+        }
+    }
 
-        centreFinancierCode: {
-            path: ["Centre financier CODE"],
-        },
-        centreFinancierLibelle: {
-            path: ["Centre financier"],
-        },
-        attachementComptable: {
-            path: ["Société"],
-        },
-        ej: {
-            path: ["N° EJ"],
-        },
-        provider: {
-            path: [],
-            adapter: () => "chorus",
-        },
-    };
+    private static getAmount(chorusLineDto: ChorusLineDto): number | null {
+        const amount = chorusLineDto["Montant payé"];
+        if (!amount || typeof amount === "number") return amount;
+        if (typeof amount === "string")
+            // @ts-expect-error: this should not be a string but was in the original code refactored with #3342
+            // Plus, after unit testing it it throws a TypeError because the RegExp doesn't have the g flag (added in #3342)
+            return parseFloat(amount.replaceAll(/[\r ]/g, "").replace(",", "."));
+        // this should never happen
+        else return null;
+    }
 
+    private static getOperationDate(chorusLineDto: ChorusLineDto): Date | null {
+        const operationDate = chorusLineDto["Date de dernière opération sur la DP"];
+
+        if (!operationDate) return null;
+
+        if (typeof operationDate === "number") {
+            return GenericParser.ExcelDateToJSDate(operationDate);
+        } else {
+            const operationDateFromStr = parseInt(operationDate, 10);
+            // if operationDate is DD/MM/YYYY ? Is this realy possible ? This code is old and was refactored in #3342
+            if (operationDate != operationDateFromStr.toString()) {
+                const [day, month, year] = operationDate.split(/[/.]/).map(v => parseInt(v, 10));
+                return new Date(Date.UTC(year, month - 1, day));
+            } else {
+                return GenericParser.ExcelDateToJSDate(parseInt(operationDate, 10));
+            }
+        }
+    }
+
+    private static getPaymentFlatRawData(data: ChorusLineDto): ChorusPaymentFlatRaw {
+        const exerciceBudgetaire = data["Exercice comptable"] ? parseInt(data["Exercice comptable"], 10) : null;
+        const idEtablissementBeneficiaire = this.getEstablishmentValueObject(data);
+        const idEntrepriseBeneficiaire = this.getCompanyId(idEtablissementBeneficiaire);
+        const typeIdEtablissementBeneficiaire = idEtablissementBeneficiaire.name;
+        const typeIdEntrepriseBeneficiaire = idEntrepriseBeneficiaire.name;
+
+        // all nullable error should be handled with issue #3345
+        return {
+            //@ts-expect-error: this should be nullable but was in the original code refactored with #3342
+            exerciceBudgetaire,
+            typeIdEtablissementBeneficiaire,
+            idEtablissementBeneficiaire,
+            typeIdEntrepriseBeneficiaire,
+            idEntrepriseBeneficiaire,
+            //@ts-expect-error: this should be nullable but was in the original code refactored with #3342
+            amount: this.getAmount(data),
+            //@ts-expect-error: this should be nullable but was in the original code refactored with #3342
+            operationDate: this.getOperationDate(data),
+            //@ts-expect-error: this should be nullable but was in the original code refactored with #3342
+            ej: data["N° EJ"],
+            centreFinancierCode: data["Centre financier CODE"],
+            centreFinancierLibelle: data["Centre financier"],
+            //@ts-expect-error: this should be nullable but was in the original code refactored with #3342
+            attachementComptable: data["Société"],
+        };
+    }
+
+    /**
+     *   /!\ DO NOT USE THIS DIRECTLY TO PERSIT IN PAYMENT FLAT DATABASE /!\
+     *
+     *   Create a PaymentFlatEntity from a ChorusLineEntity
+     *
+     *   To get a "full" PaymentFlatEntity in order to process persistance in database,
+     *   ensure to aggregate all PaymentFlatEntity by uniqueId and merge the amount
+     */
     public static toNotAggregatedChorusPaymentFlatEntity(
-        /*
-            create a PaymentFlatEntity from a ChorusLineEntity without
-            aggregating the data. To get "a real" PaymentFlat entity data have
-            to be groupbed by the unique key of paymentFlat that is not necessarily
-            the same as the unique key of the ChorusLineEntity.
-            */
-
         chorusDocument: ChorusLineEntity,
         programs: Record<string, StateBudgetProgramEntity>,
         ministries: Record<string, MinistryEntity>,
@@ -184,16 +200,11 @@ export default class ChorusAdapter {
             refsProgrammation,
         );
 
-        // const chorusRawData = ;
-
         const rawDataWithDataBretagne: Omit<
             PaymentFlatEntity,
             "regionAttachementComptable" | "idVersement" | "uniqueId"
         > = {
-            ...GenericParser.indexDataByPathObject(
-                ChorusAdapter.chorusToPaymentFlatPath,
-                chorusDocument.data as NestedDefaultObject<string>,
-            ),
+            ...this.getPaymentFlatRawData(chorusDocument.data as ChorusLineDto),
             programName: programEntity?.label_programme ?? null,
             programNumber: programCode,
             mission: programEntity?.mission ?? null,
@@ -203,23 +214,24 @@ export default class ChorusAdapter {
             actionLabel: domaineFonctEntity?.libelle_action ?? null,
             activityCode,
             activityLabel: refProgrammationEntity?.libelle_activite ?? null,
+            provider: "chorus", // TODO: get this from config / code => see #3338
         };
 
-        const regionAttachementComptable = ChorusAdapter.getRegionAttachementComptable(
-            rawDataWithDataBretagne.attachementComptable,
-        );
         const idVersement = `${rawDataWithDataBretagne.idEtablissementBeneficiaire}-${rawDataWithDataBretagne.ej}-${rawDataWithDataBretagne.exerciceBudgetaire}`;
         const uniqueId = `${idVersement}-${
             rawDataWithDataBretagne.programNumber
         }-${actionCode}-${activityCode}-${rawDataWithDataBretagne.operationDate.getTime()}-${
             rawDataWithDataBretagne.attachementComptable
         }-${rawDataWithDataBretagne.centreFinancierCode}`;
+        const regionAttachementComptable = ChorusAdapter.getRegionAttachementComptable(
+            rawDataWithDataBretagne.attachementComptable,
+        );
 
         return {
             ...rawDataWithDataBretagne,
-            regionAttachementComptable,
-            idVersement,
             uniqueId,
+            idVersement,
+            regionAttachementComptable,
         };
     }
 

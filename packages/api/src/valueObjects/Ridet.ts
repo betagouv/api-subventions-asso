@@ -14,7 +14,7 @@ export default class Ridet {
         return typeof ridet === "string" && /^\d{9,10}$/.test(ridet);
     }
 
-    get name() {
+    get name(): "ridet" {
         return "ridet";
     }
 

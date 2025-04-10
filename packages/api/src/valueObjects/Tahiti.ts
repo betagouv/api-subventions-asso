@@ -14,7 +14,7 @@ export default class Tahiti {
         return typeof tahiti === "string" && regex.test(tahiti);
     }
 
-    get name() {
+    get name(): "tahiti" {
         return "tahiti";
     }
 

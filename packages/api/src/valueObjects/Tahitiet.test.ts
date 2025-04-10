@@ -40,10 +40,10 @@ describe("Tahitiet", () => {
         });
     });
 
-    describe("toThaiti", () => {
+    describe("toTahiti", () => {
         it.each(THAITI_T_TO_THAITI_MAP)("should convert a Tahitiet to a Tahiti", (tahitiet, expected) => {
             const tahitietInstance = new Tahitiet(tahitiet);
-            const actual = tahitietInstance.toThaiti();
+            const actual = tahitietInstance.toTahiti();
             expect(actual).toBeInstanceOf(Tahiti);
             expect(actual.value).toBe(expected);
         });

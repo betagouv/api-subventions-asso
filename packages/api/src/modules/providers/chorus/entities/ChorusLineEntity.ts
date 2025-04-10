@@ -58,7 +58,7 @@ export default class ChorusLineEntity {
         public uniqueId: string,
         public updated: Date,
         public indexedInformations: IChorusIndexedInformations,
-        public data: ChorusLineDto | unknown,
+        public data: ChorusLineDto | unknown, // TODO: remove this unknown ??
         public _id?: ObjectId,
     ) {}
 }

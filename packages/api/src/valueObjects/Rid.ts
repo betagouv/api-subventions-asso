@@ -12,7 +12,7 @@ export default class Rid {
         return typeof rid === "string" && /^\d{6,7}$/.test(rid);
     }
 
-    get name() {
+    get name(): "rid" {
         return "rid";
     }
 
