@@ -15,6 +15,10 @@ export default class Siret {
         return typeof siret === "string" && /^\d{14}$/.test(siret);
     }
 
+    get name() {
+        return "siret";
+    }
+
     get value() {
         return this.siret;
     }

@@ -13,6 +13,10 @@ export default class Rna {
         return typeof rna === "string" && /^W\d[A-Z\d]\d{7}$/.test(rna);
     }
 
+    get name() {
+        return "rna";
+    }
+
     get value() {
         return this.rna;
     }

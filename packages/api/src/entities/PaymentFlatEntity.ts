@@ -1,10 +1,5 @@
 import * as Sentry from "@sentry/node";
-import {
-    idEntrepriseType,
-    idEtablissementType,
-    typeIdEntreprise,
-    typeIdEtablissement,
-} from "../valueObjects/typeIdentifier";
+import { companyIdType, establishmentIdType, companyIdName, establishmentIdName } from "../valueObjects/typeIdentifier";
 import { ParserInfo } from "../@types";
 import { GenericParser } from "../shared/GenericParser";
 import Siret from "../valueObjects/Siret";
@@ -140,21 +135,21 @@ export default class PaymentFlatEntity {
         },
     };
 
-    public regionAttachementComptable: string | "N/A" | "code region inconnu";
+    public regionAttachementComptable: string;
     public idVersement: string;
     public uniqueId: string;
 
     constructor(
         public exerciceBudgetaire: number,
-        public typeIdEtablissementBeneficiaire: typeIdEtablissement,
-        public idEtablissementBeneficiaire: idEtablissementType<typeIdEtablissement>,
-        public typeIdEntrepriseBeneficiaire: typeIdEntreprise,
-        public idEntrepriseBeneficiaire: idEntrepriseType<typeIdEntreprise>,
+        public typeIdEtablissementBeneficiaire: establishmentIdName,
+        public idEtablissementBeneficiaire: establishmentIdType,
+        public typeIdEntrepriseBeneficiaire: companyIdName,
+        public idEntrepriseBeneficiaire: companyIdType,
         public amount: number,
         public operationDate: Date,
-        public centreFinancierCode: string | "N/A",
-        public centreFinancierLibelle: string | "N/A" | null,
-        public attachementComptable: string | "N/A",
+        public centreFinancierCode: string,
+        public centreFinancierLibelle: string | null,
+        public attachementComptable: string,
         public ej: string,
         public provider: string,
         public programName: string | null,
