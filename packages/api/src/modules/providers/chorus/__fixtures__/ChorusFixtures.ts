@@ -196,6 +196,53 @@ export const RAW_DUPLICATE_V004 = [
     },
 ];
 
+export const ENTITY_WITH_RIDET = {
+    uniqueId: "de175292263fdd97b222a754309df07f",
+    indexedInformations: {
+        ej: "0001821732",
+        numPosteEJ: 2,
+        siret: DEFAULT_ASSOCIATION.siret,
+        codeBranche: "Z039",
+        branche: "Associations",
+        activitee: "Appels a projet",
+        codeActivitee: "3222",
+        numeroDemandePaiement: "000195567",
+        numPosteDP: 3,
+        codeSociete: "456",
+        exercice: 2023,
+        numeroTier: "ASSO 1",
+        centreFinancier: "UO DGER XXXX-C001",
+        codeCentreFinancier: "AA01/0776-C001-4000",
+        domaineFonctionnel: "Appels à projet",
+        codeDomaineFonctionnel: "0101-01-02",
+        amount: 89988.3,
+        dateOperation: new Date("2023-07-12T00:00:00.000Z"),
+    },
+    data: {
+        "N° EJ": "0001821732",
+        "Fournisseur payé (DP) CODE": "1000011111",
+        "Fournisseur payé (DP)": "ASSO 1",
+        "Branche CODE": "Z039",
+        Branche: "Associations",
+        "Code taxe 1": "#",
+        "No TVA 3 (COM-RIDET ou TAHITI)": "0231852001",
+        "Référentiel de programmation CODE": "BG00/077601003222",
+        "Référentiel de programmation": "Appels a projet",
+        "N° DP": "000195567",
+        Société: "HNOR",
+        "Exercice comptable": "2023",
+        "Date de dernière opération sur la DP": 45119,
+        "Centre financier CODE": "AA01/0776-C001-4000",
+        "Centre financier": "UO DGER XXXX-C001",
+        "Domaine fonctionnel CODE": "0101-01-02",
+        "Domaine fonctionnel": "Appels à projet",
+        "Montant payé": 89988.3,
+    } as ChorusLineDto,
+    _id: undefined,
+    provider: "Chorus",
+    updated: new Date("2020-01-01"),
+};
+
 export const ENTITIES: ChorusLineEntity[] = [
     {
         uniqueId: "de175292263fdd97b222a754309df07f",
