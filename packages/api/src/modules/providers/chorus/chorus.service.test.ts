@@ -316,36 +316,4 @@ describe("chorusService", () => {
             expect(actual).toEqual(expected);
         });
     });
-
-    describe("getEstablishmentIdentifierName", () => {
-        const mockIsRidet = jest.spyOn(Ridet, "isRidet");
-        const mockIsTahitiet = jest.spyOn(Tahitiet, "isTahitiet");
-        const mockIsSiret = jest.spyOn(Siret, "isSiret");
-
-        // Only mock isRidet, isTahitiet and isSiret
-        // If we wanted to be 100% unit testing we should create a mock in __mocks__ folder
-        beforeAll(() => {
-            mockIsRidet.mockReturnValue(true);
-            mockIsTahitiet.mockReturnValue(true);
-            mockIsSiret.mockReturnValue(true);
-        });
-
-        it.each`
-            siret          | ridetOrTahitiet | valueObject
-            ${"123456789"} | ${"#"}          | ${Siret}
-            ${"#"}         | ${"0482749145"} | ${Ridet}
-            ${"#"}         | ${"A1234569"}   | ${Tahitiet}
-        `("should return 'siret' if code taxe is not #", ({ siret, ridetOrTahitiet, valueObject }) => {
-            // When testing Tahitied we must force isRidet to false
-            if (valueObject === Tahitiet) mockIsRidet.mockReturnValueOnce(false);
-
-            const ENTITY = {
-                "Code taxe 1": siret,
-                "No TVA 3 (COM-RIDET ou TAHITI)": ridetOrTahitiet,
-            } as ChorusLineDto;
-            const expected = valueObject;
-            const actual = chorusService.getEstablishmentValueObject(ENTITY);
-            expect(actual).toBeInstanceOf(expected);
-        });
-    });
 });

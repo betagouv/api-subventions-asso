@@ -1,4 +1,5 @@
 import Tahiti from "./Tahiti";
+import { establishmentIdName } from "./typeIdentifier";
 
 export default class Tahitiet {
     private tahitiet: string;
