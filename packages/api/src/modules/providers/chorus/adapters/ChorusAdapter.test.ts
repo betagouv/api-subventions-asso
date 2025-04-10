@@ -6,9 +6,14 @@ import dataBretagneService from "../../dataBretagne/dataBretagne.service";
 import { ENTITIES, PARSED_DATA, PAYMENTS } from "../__fixtures__/ChorusFixtures";
 import { RawPayment } from "../../../grant/@types/rawGrant";
 import PROGRAMS from "../../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
-import { ChorusLineDto } from "./chorusLineDto";
+import { ChorusLineDto } from "../@types/ChorusLineDto";
 import { DATA_BRETAGNE_RECORDS } from "../../dataBretagne/__fixtures__/dataBretagne.fixture";
 import { PAYMENT_FLAT_ENTITY } from "../../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+import * as Sentry from "@sentry/node";
+
+jest.mock("@sentry/node", () => ({
+    captureException: jest.fn(),
+}));
 
 describe("ChorusAdapter", () => {
     const PROGRAM = PROGRAMS[0];
@@ -281,6 +286,39 @@ describe("ChorusAdapter", () => {
             );
 
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("getRegionAttachementComptable", () => {
+        const testCases = [
+            ["ADCE", "Administration Centrale"],
+            ["DOM1", "DOM-TOM"],
+            ["ALSA", "Grand Est"],
+            ["AQUI", "Nouvelle-Aquitaine"],
+            ["AUVE", "Auvergne-Rhône-Alpes"],
+        ];
+        it.each(testCases)("should return the region for a given valid region code", (regionCode, expected) => {
+            const actual = ChorusAdapter.getRegionAttachementComptable(regionCode);
+
+            expect(actual).toEqual(expected);
+        });
+
+        it("should return region name not found for an invalid region code", () => {
+            const actual = ChorusAdapter.getRegionAttachementComptable("INVALID");
+            const expected = "code region inconnu";
+            expect(actual).toBe(expected);
+        });
+
+        it("should call Sentry.captureException for an invalid region code", () => {
+            ChorusAdapter.getRegionAttachementComptable("INVALID");
+
+            expect(Sentry.captureException).toHaveBeenCalled();
+        });
+
+        it("should return N/A for a N/A region code", () => {
+            const actual = ChorusAdapter.getRegionAttachementComptable("N/A");
+            const expected = "N/A";
+            expect(actual).toBe(expected);
         });
     });
 });

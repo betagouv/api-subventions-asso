@@ -1,7 +1,7 @@
 import { ChorusPayment } from "dto";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
-import { ChorusLineDto } from "../adapters/chorusLineDto";
+import { ChorusLineDto } from "../@types/ChorusLineDto";
 
 export const HEADERS = [
     "N° EJ",

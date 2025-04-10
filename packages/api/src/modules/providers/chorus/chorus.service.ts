@@ -22,7 +22,7 @@ import Tahitiet from "../../../valueObjects/Tahitiet";
 import { establishmentIdType } from "../../../valueObjects/typeIdentifier";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
-import { ChorusLineDto } from "./adapters/chorusLineDto";
+import { ChorusLineDto } from "./@types/ChorusLineDto";
 
 export interface RejectedRequest {
     state: "rejected";

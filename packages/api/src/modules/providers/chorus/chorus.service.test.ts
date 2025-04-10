@@ -25,7 +25,7 @@ import Siren from "../../../valueObjects/Siren";
 import Siret from "../../../valueObjects/Siret";
 import Rna from "../../../valueObjects/Rna";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
-import { ChorusLineDto } from "./adapters/chorusLineDto";
+import { ChorusLineDto } from "./@types/ChorusLineDto";
 import Tahitiet from "../../../valueObjects/Tahitiet";
 import Ridet from "../../../valueObjects/Ridet";
 

@@ -1,3 +1,4 @@
+import Sentry from "@sentry/node";
 import { CommonPaymentDto, ChorusPayment } from "dto";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
@@ -7,11 +8,13 @@ import StateBudgetProgramDbo from "../../../../dataProviders/db/state-budget-pro
 import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
 import MinistryEntity from "../../../../entities/MinistryEntity";
 import DomaineFonctionnelEntity from "../../../../entities/DomaineFonctionnelEntity";
+import Siret from "../../../../valueObjects/Siret";
 import RefProgrammationEntity from "../../../../entities/RefProgrammationEntity";
 import PaymentFlatEntity from "../../../../entities/PaymentFlatEntity";
 import { GenericParser } from "../../../../shared/GenericParser";
-import { NestedDefaultObject } from "../../../../@types";
-import { ChorusLineDto } from "./chorusLineDto";
+import { NestedDefaultObject, ParserInfo } from "../../../../@types";
+import { ChorusLineDto } from "../@types/ChorusLineDto";
+import REGION_MAPPING from "./ChorusRegionMapping";
 
 export default class ChorusAdapter {
     static PROVIDER_NAME = "Chorus";
@@ -68,6 +71,89 @@ export default class ChorusAdapter {
         };
     }
 
+    public static getRegionAttachementComptable(attachementComptable: string | "N/A"): string | "N/A" {
+        if (attachementComptable == "N/A") return "N/A";
+
+        const region = REGION_MAPPING[attachementComptable];
+        if (region === undefined) {
+            const errorMessage = `Unknown region code: ${attachementComptable}`;
+            Sentry.captureException(new Error(errorMessage));
+            console.error(errorMessage);
+            return "code region inconnu";
+        }
+        return region;
+    }
+
+    public static chorusToPaymentFlatPath: { [key: string]: ParserInfo } = {
+        exerciceBudgetaire: {
+            path: ["Exercice comptable"],
+            adapter: value => {
+                if (!value) return value;
+                return parseInt(value, 10);
+            },
+        },
+        typeIdEtablissementBeneficiaire: {
+            path: ["Code taxe 1"],
+            adapter: value => {
+                if (Siret.isSiret(value)) return "siret";
+            },
+        },
+        idEtablissementBeneficiaire: {
+            path: ["Code taxe 1"],
+            adapter: value => {
+                if (value) return new Siret(value);
+            },
+        },
+        typeIdEntrepriseBeneficiaire: {
+            path: ["Code taxe 1"],
+            adapter: value => {
+                if (Siret.isSiret(value)) return "siren";
+            },
+        },
+        idEntrepriseBeneficiaire: {
+            path: ["Code taxe 1"],
+            adapter: value => {
+                if (value) return new Siret(value).toSiren();
+            },
+        },
+        amount: {
+            path: ["Montant payé"],
+            adapter: value => {
+                if (!value || typeof value === "number") return value;
+
+                return parseFloat(value.replaceAll(/[\r ]/, "").replace(",", "."));
+            },
+        },
+        dateOperation: {
+            path: ["Date de dernière opération sur la DP"],
+            adapter: value => {
+                if (!value) return value;
+                if (value != parseInt(value, 10).toString()) {
+                    const [day, month, year] = value.split(/[/.]/).map(v => parseInt(v, 10));
+                    return new Date(Date.UTC(year, month - 1, day));
+                }
+                return GenericParser.ExcelDateToJSDate(parseInt(value, 10));
+            },
+        },
+
+        centreFinancierCode: {
+            path: ["Centre financier CODE"],
+        },
+        centreFinancierLibelle: {
+            path: ["Centre financier"],
+        },
+        attachementComptable: {
+            path: ["Société"],
+        },
+        ej: {
+            path: ["N° EJ"],
+        },
+        provider: {
+            path: [],
+            adapter: () => "chorus",
+        },
+    };
+
     public static toNotAggregatedChorusPaymentFlatEntity(
         /*
             create a PaymentFlatEntity from a ChorusLineEntity without
@@ -101,7 +187,7 @@ export default class ChorusAdapter {
         const entityConstructorParameters = [
             ...Object.values(
                 GenericParser.indexDataByPathObject(
-                    PaymentFlatEntity.chorusToPaymentFlatPath,
+                    ChorusAdapter.chorusToPaymentFlatPath,
                     chorusDocument.data as NestedDefaultObject<string>,
                 ),
             ),
