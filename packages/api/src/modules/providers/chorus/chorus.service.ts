@@ -78,6 +78,14 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
         }
     }
 
+    getEstablishmentValueObject(chorusLineDto: ChorusLineDto): establishmentIdType {
+        if (chorusLineDto["Code taxe 1"] === "#") {
+            if (Ridet.isRidet(chorusLineDto["No TVA 3 (COM-RIDET ou TAHITI)"]))
+                return new Ridet(chorusLineDto["No TVA 3 (COM-RIDET ou TAHITI)"]);
+            else return new Tahitiet(chorusLineDto["No TVA 3 (COM-RIDET ou TAHITI)"]);
+        } else return new Siret(chorusLineDto["Code taxe 1"]);
+    }
+
     /**
      * @param entities /!\ entities must be validated upstream
      */
