@@ -137,7 +137,7 @@ describe("ChorusAdapter", () => {
         });
     });
 
-    describe("toPaymentFlatEntity", () => {
+    describe("toNotAggregatedChorusPaymentFlatEntity", () => {
         let mockGetPaymentFlatComplementaryData: jest.SpyInstance;
         beforeEach(() => {
             //@ts-expect-error : test private method
@@ -212,7 +212,12 @@ describe("ChorusAdapter", () => {
         });
 
         afterAll(() => {
-            jest.restoreAllMocks();
+            [
+                mockGetActionCodeAndEntity,
+                mockGetMinistryEntity,
+                mockGetActionCodeAndEntity,
+                mockGetActivityCodeAndEntity,
+            ].map(mock => mock.mockRestore());
         });
 
         it("gets StateBudgetProgramEntity", () => {
@@ -511,8 +516,62 @@ describe("ChorusAdapter", () => {
 
     // TODO: test this method
     describe("getPaymentFlatRawData", () => {
-        it("should be tested", () => {
-            expect(true).toEqual(false);
+        const SIRET_ESTAB = new Siret("12345678900018");
+        const SIREN_ESTAB = new Siren("123456789");
+        const CHORUS_LINE_DTO = CHORUS_LINE_ENTITY.data;
+        // @ts-expect-error: mock private method
+        const mockGetCompanyId = jest.spyOn(ChorusAdapter, "getCompanyId");
+        // @ts-expect-error: mock private method
+        const mockGetAmount = jest.spyOn(ChorusAdapter, "getAmount");
+        // @ts-expect-error: mock private method
+        const mockGetOperationDate = jest.spyOn(ChorusAdapter, "getOperationDate");
+        // @ts-expect-error: mock private method
+        const mockGetEstablishmentValueObject = jest.spyOn(ChorusAdapter, "getEstablishmentValueObject");
+
+        beforeEach(() => {
+            // mockGetEstablishmentValueObject = jest.spyOn(ChorusAdapter, "getEstablishmentValueObject");
+            mockGetEstablishmentValueObject.mockReturnValue(SIRET_ESTAB);
+            mockGetCompanyId.mockReturnValue(SIREN_ESTAB);
+            mockGetAmount.mockReturnValue(1000);
+            mockGetOperationDate.mockReturnValue(new Date("2025-02-02"));
+        });
+
+        // afterEach(() => {
+        //     [mockGetEstablishmentValueObject, mockGetCompanyId, mockGetAmount, mockGetOperationDate].forEach(mock => {
+        //         mock.mockClear();
+        //     });
+        // });
+
+        afterAll(() => {
+            [mockGetEstablishmentValueObject, mockGetCompanyId, mockGetAmount, mockGetOperationDate].forEach(mock => {
+                mock.mockRestore();
+            });
+        });
+
+        it("should get establishment value object", () => {
+            // @ts-expect-error: debug
+            console.log(ChorusAdapter.getEstablishmentValueObject.toString());
+            // @ts-expect-error: private method
+            ChorusAdapter.getPaymentFlatRawData(CHORUS_LINE_DTO);
+            expect(mockGetEstablishmentValueObject).toHaveBeenCalledWith(CHORUS_LINE_DTO);
+        });
+
+        it("should get company identifier", () => {
+            // @ts-expect-error: private method
+            ChorusAdapter.getPaymentFlatRawData(CHORUS_LINE_DTO);
+            expect(mockGetCompanyId).toHaveBeenCalledWith(SIRET_ESTAB);
+        });
+
+        it("should get the amount", () => {
+            // @ts-expect-error: private method
+            ChorusAdapter.getPaymentFlatRawData(CHORUS_LINE_DTO);
+            expect(mockGetAmount).toHaveBeenCalledWith(CHORUS_LINE_DTO);
+        });
+
+        it("should return PaymentFlatRawData", () => {
+            // @ts-expect-error: private method
+            const actual = ChorusAdapter.getPaymentFlatRawData(CHORUS_LINE_DTO);
+            expect(actual).toMatchSnapshot();
         });
     });
 });

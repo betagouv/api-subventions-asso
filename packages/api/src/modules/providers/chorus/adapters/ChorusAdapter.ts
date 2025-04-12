@@ -92,7 +92,6 @@ export default class ChorusAdapter {
             if (Ridet.isRidet(chorusLineDto["No TVA 3 (COM-RIDET ou TAHITI)"])) {
                 return new Ridet(chorusLineDto["No TVA 3 (COM-RIDET ou TAHITI)"]);
             } else {
-                console.log(Tahitiet.isTahitiet.toString());
                 return new Tahitiet(chorusLineDto["No TVA 3 (COM-RIDET ou TAHITI)"]);
             }
         } else return new Siret(chorusLineDto["Code taxe 1"]);

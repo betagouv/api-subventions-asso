@@ -179,14 +179,14 @@ describe("paymentFlatChorusService", () => {
             jest.restoreAllMocks();
         });
 
-        it("should call chorusCursorFind with no argument", async () => {
+        it("should call chorusCursorFind without exercise", async () => {
             await paymentFlatChorusService.toPaymentFlatChorusEntities(
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
                 DATA_BRETAGNE_RECORDS.domainesFonct,
                 DATA_BRETAGNE_RECORDS.refsProgrammation,
             );
-            expect(mockChorusCursorFind).toHaveBeenCalledWith();
+            expect(mockChorusCursorFind).toHaveBeenCalledWith(undefined);
         });
 
         it("should call chorusCursorFind with exercice", async () => {
