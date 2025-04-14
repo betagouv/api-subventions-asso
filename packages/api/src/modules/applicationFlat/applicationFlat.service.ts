@@ -26,6 +26,17 @@ export class ApplicationFlatService
         });
     }
 
+    async getEntitiesByIdentifier(identifier: StructureIdentifier) {
+        const requests: ApplicationFlatEntity[] = [];
+
+        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
+            requests.push(...(await applicationFlatPort.findBySiret(identifier.siret)));
+        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
+            requests.push(...(await applicationFlatPort.findBySiren(identifier.siren)));
+        }
+        return requests;
+    }
+
     /**
      * |-------------------------|
      * |    Application Part     |
@@ -39,13 +50,7 @@ export class ApplicationFlatService
     }
 
     async getDemandeSubvention(identifier: StructureIdentifier): Promise<DemandeSubvention[]> {
-        const requests: ApplicationFlatEntity[] = [];
-
-        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            requests.push(...(await applicationFlatPort.findBySiret(identifier.siret)));
-        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            requests.push(...(await applicationFlatPort.findBySiren(identifier.siren)));
-        }
+        const requests = await this.getEntitiesByIdentifier(identifier);
         return requests
             .map(document => ApplicationFlatAdapter.toDemandeSubvention(document))
             .filter(demande => !!demande) as DemandeSubvention[];
@@ -60,12 +65,7 @@ export class ApplicationFlatService
     isGrantProvider = true;
 
     async getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
-        let dbos: ApplicationFlatEntity[] = [];
-        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            dbos = await applicationFlatPort.findBySiret(identifier.siret);
-        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            dbos = await applicationFlatPort.findBySiren(identifier.siren);
-        }
+        const dbos = await this.getEntitiesByIdentifier(identifier);
 
         /* Pour l'instant on garde ej pour tous les providers sauf Fonjep qui prend idVersement 
         Il faudra convertir tous les versementKey en idVersement quand tout est connecté  */
@@ -85,10 +85,12 @@ export class ApplicationFlatService
 
     async updateApplicationsFlatCollection(exerciceBudgetaire?: number) {
         const START_YEAR = exerciceBudgetaire ?? 2017;
-        const END_YEAR = exerciceBudgetaire ?? new Date().getFullYear() + 3; // 3 is the most pluriannuality that we expect
+        const END_YEAR = exerciceBudgetaire ?? new Date().getFullYear() + 2;
+        // 3 is the most pluriannuality that we expect, so current year + 2
+
         for (const provider of applicationFlatProviders) {
             console.log(`---- saving application flat entities from provider '${provider.provider.name}' ----`);
-            await this.updateApplicationsFlatCollectionByProvider(provider, START_YEAR, END_YEAR)
+            await this._updateApplicationsFlatCollectionByProvider(provider, START_YEAR, END_YEAR)
                 .then(() => console.log(`update from provider '${provider.provider.name}' ended successfully`))
                 .catch((e: Error) =>
                     console.log(`update from provider '${provider.provider.name}' failed with error '${e.message}'`),
@@ -96,7 +98,7 @@ export class ApplicationFlatService
         }
     }
 
-    private async updateApplicationsFlatCollectionByProvider(
+    async _updateApplicationsFlatCollectionByProvider(
         provider: ApplicationFlatProvider,
         START_YEAR: number,
         END_YEAR: number,
