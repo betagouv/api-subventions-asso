@@ -112,8 +112,8 @@ export default class ApplicationFlatEntity {
         this.notificationUE = asObject.notificationUE;
         this.pourcentageSubvention = asObject.pourcentageSubvention;
 
-        this.idSubvention = `${this.provider}-${this.idSubventionProvider}`;
-        this.idUnique = `${this.idSubvention} - ${this.exerciceBudgetaire}`;
+        this.idSubvention = `${this.provider}--${this.idSubventionProvider}`;
+        this.idUnique = `${this.idSubvention}--${this.exerciceBudgetaire}`;
     }
 
     get siret() {
@@ -123,7 +123,7 @@ export default class ApplicationFlatEntity {
 
     get siren() {
         if (this.typeIdBeneficiaire === "siren") return new Siren(this.idBeneficiaire);
-        if (this.typeIdBeneficiaire === "siret") return new Siret(this.idBeneficiaire.slice(0, 9));
+        if (this.typeIdBeneficiaire === "siret") return new Siren(this.idBeneficiaire.slice(0, 9));
         return undefined;
     }
 }
