@@ -58,7 +58,7 @@ export default class ApplicationFlatEntity {
     public idVersement?: string;
     public conditionsVersements?: PaymentCondition;
     public descriptionConditionsVersements?: string;
-    public datesPeriodeVersement?: Date | Date[]; // TODO ?
+    public datesPeriodeVersement?: Date | Date[];
     public cofinancementsSollicites?: boolean;
     public nomsAttribuantsCofinanceurs?: string[];
     public typeIdCofinanceursSollicites?: StructureIdType[];
@@ -117,13 +117,16 @@ export default class ApplicationFlatEntity {
     }
 
     get siret() {
-        if (this.typeIdBeneficiaire === "siret") return new Siret(this.idBeneficiaire);
+        if (this.typeIdBeneficiaire === "siret" || Siret.isSiret(this.idBeneficiaire))
+            return new Siret(this.idBeneficiaire);
         return undefined;
     }
 
     get siren() {
-        if (this.typeIdBeneficiaire === "siren") return new Siren(this.idBeneficiaire);
-        if (this.typeIdBeneficiaire === "siret") return new Siren(this.idBeneficiaire.slice(0, 9));
+        if (this.typeIdBeneficiaire === "siren" || Siren.isSiren(this.idBeneficiaire))
+            return new Siren(this.idBeneficiaire);
+        if (this.typeIdBeneficiaire === "siret" || Siret.isSiret(this.idBeneficiaire))
+            return new Siren(this.idBeneficiaire.slice(0, 9));
         return undefined;
     }
 }
