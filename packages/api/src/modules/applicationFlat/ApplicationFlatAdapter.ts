@@ -1,15 +1,35 @@
 import { DemandeSubvention } from "dto";
-import ApplicationFlatEntity from "../../entities/ApplicationFlatEntity";
+import { WithId } from "mongodb";
+import { ApplicationFlatEntity } from "../../entities/ApplicationFlatEntity";
 import { RawApplication } from "../grant/@types/rawGrant";
 import ProviderValueAdapter from "../../shared/adapters/ProviderValueAdapter";
+import applicationFlatService from "./applicationFlat.service";
+
+// entities and draft are almost equal but we want ids to be built in constructor
+// and we want to be able to build with a properly types object
+type ApplicationFlatEntityDraft = Omit<ApplicationFlatEntity, "idUnique" | "idSubvention">;
 
 export default class ApplicationFlatAdapter {
     public static rawToApplication(rawApplication: RawApplication<ApplicationFlatEntity>) {
         return this.toDemandeSubvention(rawApplication.data);
     }
 
+    public static buildEntity(draft: ApplicationFlatEntityDraft): ApplicationFlatEntity {
+        return {
+            ...draft,
+            idSubvention: `${draft.provider}--${draft.idSubventionProvider}`,
+            idUnique: `${draft.provider}--${draft.idSubventionProvider}}--${draft.exerciceBudgetaire}`,
+        };
+    }
+
+    public static dboToEntity(dbo: WithId<ApplicationFlatEntity>) {
+        const { _id, ...entity } = dbo;
+        return entity;
+    }
+
     public static toDemandeSubvention(entity: ApplicationFlatEntity): DemandeSubvention | null {
-        if (!entity.siret) return null;
+        const siret = applicationFlatService.getSiret(entity);
+        if (!siret) return null;
 
         const toPv = <T>(value: T) =>
             ProviderValueAdapter.toProviderValue<T>(value, entity.provider, entity.dateConvention); // TODO bad date
@@ -23,7 +43,7 @@ export default class ApplicationFlatAdapter {
             date_commision: toPvOrUndefined(entity.dateDecision), // TODO surely not good
             pluriannualite: toPvOrUndefined(entity.pluriannualite),
             service_instructeur: toPv(entity.nomServiceInstructeur || ""),
-            siret: toPv(entity.siret.value),
+            siret: toPv(siret.value),
             sous_dispositif: toPvOrUndefined(entity.sousDispositif),
             status: toPv(entity.statutLabel || ""),
             statut_label: toPv(entity.statutLabel),

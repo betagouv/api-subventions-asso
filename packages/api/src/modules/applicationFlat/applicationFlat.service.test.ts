@@ -4,7 +4,7 @@ const mockProvider = { provider: { provider: { name: "prov1" } } };
 
 import applicationFlatPort from "../../dataProviders/db/applicationFlat/applicationFlat.port";
 import applicationFlatService from "./applicationFlat.service";
-import ApplicationFlatEntity from "../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../entities/ApplicationFlatEntity";
 import ApplicationFlatAdapter from "./ApplicationFlatAdapter";
 import { DemandeSubvention } from "dto";
 import { RawApplication } from "../grant/@types/rawGrant";
@@ -19,6 +19,7 @@ jest.mock("../providers", () => ({
 }));
 jest.mock("../../dataProviders/db/applicationFlat/applicationFlat.port");
 jest.mock("./ApplicationFlatAdapter");
+jest.mock("../../valueObjects/Siret");
 
 describe("ApplicationFlatService", () => {
     const FLAT_ENTITY = {} as ApplicationFlatEntity;
@@ -217,6 +218,32 @@ describe("ApplicationFlatService", () => {
         it("calls check in port", () => {
             applicationFlatService.isCollectionInitialized();
             expect(applicationFlatPort.hasBeenInitialized).toHaveBeenCalled();
+        });
+    });
+
+    describe("getSiret", () => {
+        beforeAll(() => {
+            jest.mocked(Siret.isSiret).mockReturnValueOnce(false);
+        });
+        afterAll(() => {
+            jest.mocked(Siret.isSiret).mockRestore();
+        });
+
+        const ENTITY = { idBeneficiaire: "123456789", typeIdBeneficiaire: "siret" } as unknown as ApplicationFlatEntity;
+        it("returns undefined if typeIdBeneficiaire is not siret", () => {
+            const actual = applicationFlatService.getSiret(ENTITY);
+            expect(actual).toBeUndefined();
+        });
+
+        it("returns undefined if not siret", () => {
+            jest.mocked(Siret.isSiret).mockReturnValueOnce(false);
+            const actual = applicationFlatService.getSiret(ENTITY);
+            expect(actual).toBeUndefined();
+        });
+
+        it("returns valueObject from entity", () => {
+            const actual = applicationFlatService.getSiret(ENTITY);
+            expect(actual).toMatchInlineSnapshot(`undefined`);
         });
     });
 });

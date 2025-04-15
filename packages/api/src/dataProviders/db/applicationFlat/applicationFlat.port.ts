@@ -2,7 +2,8 @@ import MongoPort from "../../../shared/MongoPort";
 import Siren from "../../../valueObjects/Siren";
 import Siret from "../../../valueObjects/Siret";
 import { DefaultObject } from "../../../@types";
-import ApplicationFlatEntity from "../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
+import ApplicationFlatAdapter from "../../../modules/applicationFlat/ApplicationFlatAdapter";
 
 export class ApplicationFlatPort extends MongoPort<ApplicationFlatEntity> {
     collectionName = "applications-flat";
@@ -42,7 +43,7 @@ export class ApplicationFlatPort extends MongoPort<ApplicationFlatEntity> {
     }
 
     public cursorFind(query: DefaultObject<unknown> = {}, projection: DefaultObject<unknown> = {}) {
-        return this.collection.find(query, projection).map(dbo => new ApplicationFlatEntity(dbo));
+        return this.collection.find(query, projection).map(dbo => ApplicationFlatAdapter.dboToEntity(dbo));
     }
 
     public async deleteAll() {
@@ -55,7 +56,7 @@ export class ApplicationFlatPort extends MongoPort<ApplicationFlatEntity> {
                 typeIdEtablissementBeneficiaire: "siret",
                 idEtablissementBeneficiaire: siret.value,
             })
-            .map(dbo => new ApplicationFlatEntity(dbo))
+            .map(dbo => ApplicationFlatAdapter.dboToEntity(dbo))
             .toArray();
     }
 
@@ -66,14 +67,14 @@ export class ApplicationFlatPort extends MongoPort<ApplicationFlatEntity> {
                 idBeneficiaire: new RegExp(`^${siren.value}\\d{0,5}`),
                 // TODO maybe we want an explicit property so that we can have an index
             })
-            .map(dbo => new ApplicationFlatEntity(dbo))
+            .map(dbo => ApplicationFlatAdapter.dboToEntity(dbo))
             .toArray();
     }
 
     public async findByEJ(ej: string) {
         return this.collection
             .find({ ej })
-            .map(dbo => new ApplicationFlatEntity(dbo))
+            .map(dbo => ApplicationFlatAdapter.dboToEntity(dbo))
             .toArray();
     }
 }

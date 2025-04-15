@@ -1,6 +1,6 @@
 import { Readable } from "stream";
 import { FindCursor, Document } from "mongodb";
-import ApplicationFlatEntity from "../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../entities/ApplicationFlatEntity";
 
 export function cursorToStream<T = Document>(
     findCursor: FindCursor<T>,

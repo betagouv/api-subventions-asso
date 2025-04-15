@@ -1,6 +1,6 @@
 import { DemandeSubvention } from "dto";
 import applicationFlatPort from "../../dataProviders/db/applicationFlat/applicationFlat.port";
-import ApplicationFlatEntity from "../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../entities/ApplicationFlatEntity";
 import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
 import { StructureIdentifier } from "../../@types";
@@ -10,6 +10,7 @@ import ProviderCore from "../providers/ProviderCore";
 import DemandesSubventionsProvider from "../subventions/@types/DemandesSubventionsProvider";
 import GrantProvider from "../grant/@types/GrantProvider";
 import { applicationFlatProviders } from "../providers";
+import Siret from "../../valueObjects/Siret";
 import ApplicationFlatAdapter from "./ApplicationFlatAdapter";
 import ApplicationFlatProvider from "./@types/applicationFlatProvider";
 
@@ -133,6 +134,12 @@ export class ApplicationFlatService
 
     isCollectionInitialized() {
         return applicationFlatPort.hasBeenInitialized();
+    }
+
+    getSiret(entity: ApplicationFlatEntity) {
+        if (entity.typeIdBeneficiaire === "siret" && Siret.isSiret(entity.idBeneficiaire))
+            return new Siret(entity.idBeneficiaire);
+        return undefined;
     }
 }
 
