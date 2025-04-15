@@ -84,18 +84,6 @@ export class AuthentificationHttp extends Controller {
         return this._login(req);
     }
 
-    @Post("/signup")
-    @SuccessResponse("201", "Signup successfully")
-    public async signup(@Body() body: FutureUserDto): Promise<SignupDtoResponse> {
-        const formatedBody = {
-            ...body,
-            email: body.email.toLocaleLowerCase(),
-        };
-        const user = await userCrudService.signup(formatedBody);
-        this.setStatus(201);
-        return { user };
-    }
-
     @Post("/activate")
     @SuccessResponse("200", "Account activation successfully")
     public async activate(
