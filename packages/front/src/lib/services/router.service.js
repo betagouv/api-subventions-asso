@@ -31,7 +31,6 @@ export const buildBreadcrumbs = path => {
         crumbs.push({ label: "Connexion", url: "/auth/login" });
         if (path.includes("reset-password")) crumbs.push({ label: "Réinitialisation de mot de passe" });
         if (path.includes("forget-password")) crumbs.push({ label: "Mot de passe perdu" });
-        if (path.includes("signup")) crumbs.push({ label: "Créer un compte" });
     }
     return crumbs;
 };
