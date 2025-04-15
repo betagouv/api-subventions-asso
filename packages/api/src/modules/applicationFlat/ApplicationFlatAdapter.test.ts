@@ -21,6 +21,12 @@ describe("ApplicationFlatAdapter", () => {
     });
 
     describe("toDemandeSubvention", () => {
+        it("returns null if no siret", () => {
+            jest.mocked(applicationFlatService.getSiret).mockReturnValueOnce(undefined);
+            const actual = ApplicationFlatAdapter.toDemandeSubvention(ENTITY);
+            expect(actual).toBeNull();
+        });
+
         it("adapts properly", () => {
             jest.mocked(applicationFlatService.getSiret).mockReturnValueOnce(new Siret("12345678901234"));
             const actual = ApplicationFlatAdapter.toDemandeSubvention(ENTITY);
@@ -29,12 +35,6 @@ describe("ApplicationFlatAdapter", () => {
     });
 
     describe("buildEntity", () => {
-        it("returns null if no siret", () => {
-            jest.mocked(applicationFlatService.getSiret).mockReturnValueOnce(undefined);
-            const actual = ApplicationFlatAdapter.buildEntity(DRAFT);
-            expect(actual).toBeNull();
-        });
-
         it("returns entity with ids", () => {
             const expected = ENTITY;
             const actual = ApplicationFlatAdapter.buildEntity(DRAFT);
