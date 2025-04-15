@@ -18,7 +18,7 @@ export default class ApplicationFlatAdapter {
         return {
             ...draft,
             idSubvention: `${draft.provider}--${draft.idSubventionProvider}`,
-            idUnique: `${draft.provider}--${draft.idSubventionProvider}}--${draft.exerciceBudgetaire}`,
+            idUnique: `${draft.provider}--${draft.idSubventionProvider}--${draft.exerciceBudgetaire}`,
         };
     }
 

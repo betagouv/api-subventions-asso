@@ -9,9 +9,9 @@ export default class ApplicationFlatCli extends CliController {
 
     async resyncExercice(exerciceBudgetaire: number) {
         // to ensure that scalingo console does not close
-        const ticTacInterval = setInterval(() => console.log("TIC"), 60000);
         if (!exerciceBudgetaire) throw new Error("Argument 'exercice budgetaire' is required");
 
+        const ticTacInterval = setInterval(() => console.log("TIC"), 60000);
         this.logger.logIC(`Resync application flat collection for exercice ${exerciceBudgetaire}`);
         await applicationsFlatService.updateApplicationsFlatCollection(exerciceBudgetaire);
         clearInterval(ticTacInterval);
