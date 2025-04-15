@@ -14,18 +14,6 @@ jest.mock("../providers/dataBretagne/dataBretagne.service");
 jest.mock("./paymentFlatAdapter");
 
 describe("paymentFlatChorusService", () => {
-    // beforeEach(() => {
-    //     //@ts-expect-error : private methode
-    //     mockGetAllDataBretagneData = jest.spyOn(paymentFlatChorusService, "getAllDataBretagneData");
-    //     mockGetAllDataBretagneData.mockResolvedValue(DATA_BRETAGNE_RECORDS);
-    //     mockToDbo = jest.spyOn(PaymentFlatAdapter, "toDbo");
-    //     mockToDbo.mockReturnValue(PAYMENT_FLAT_DBO);
-    //     mockEntities = [PAYMENT_FLAT_ENTITY, { ...PAYMENT_FLAT_ENTITY, exerciceBudgetaire: 2022 }];
-    //     mockToPaymentFlatChorusEntities = jest
-    //         .spyOn(paymentFlatChorusService, "toPaymentFlatChorusEntities")
-    //         .mockResolvedValue(mockEntities);
-    // });
-
     beforeAll(() => {
         jest.mocked(dataBretagneService.getMinistriesRecord).mockResolvedValue(DATA_BRETAGNE_RECORDS.ministries);
         jest.mocked(dataBretagneService.findProgramsRecord).mockResolvedValue(DATA_BRETAGNE_RECORDS.programs);

@@ -1,6 +1,5 @@
 import { Payment } from "dto";
 import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port";
-import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
 import PaymentProvider from "../payments/@types/PaymentProvider";
 import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
@@ -8,6 +7,7 @@ import { StructureIdentifier } from "../../@types";
 import { RawGrant, RawPayment } from "../grant/@types/rawGrant";
 import { ProviderEnum } from "../../@enums/ProviderEnum";
 import ProviderCore from "../providers/ProviderCore";
+import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 
 export class PaymentFlatService extends ProviderCore implements PaymentProvider<PaymentFlatEntity> {
@@ -80,7 +80,7 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider<
             provider: grant.provider,
             type: "payment",
             data: grant,
-            joinKey: grant.provider === "fonjep" ? grant.idVersement : grant.ej,
+            joinKey: grant.idVersement,
         }));
     }
 }

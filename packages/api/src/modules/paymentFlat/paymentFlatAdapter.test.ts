@@ -5,7 +5,6 @@ import {
 } from "./__fixtures__/paymentFlatEntity.fixture";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
-import { ObjectId } from "mongodb";
 import {
     PAYMENT_FLAT_DBO,
     PAYMENT_FLAT_DBO_WITH_NULLS,
@@ -40,7 +39,7 @@ describe("PaymentFlatAdapter", () => {
     describe("toPayment", () => {
         it("should return partial Payment entity", () => {
             const entity = PAYMENT_FLAT_ENTITY_WITH_NULLS;
-            const actual = PaymentFlatAdapter.toPayment(entity as PaymentFlatEntity);
+            const actual = PaymentFlatAdapter.toPayment(entity);
             expect(actual).toMatchSnapshot();
         });
     });

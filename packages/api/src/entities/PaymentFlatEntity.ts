@@ -14,7 +14,6 @@ type PaymentFlatEntity = {
     centreFinancierLibelle: string | null;
     attachementComptable: string;
     regionAttachementComptable: string;
-    ej: string;
     programName: string | null;
     programNumber: number;
     mission: string | null;
@@ -25,6 +24,10 @@ type PaymentFlatEntity = {
     activityCode: string | null;
     activityLabel: string | null;
     provider: string;
+    // don't know why ej is nullable. It is part of idVersement and should be mandatory
+    ej: string | null;
+    // don't know why codePoste is nullable. It is part of idVersement and should be mandatory
+    codePoste: string | null;
 };
 
 export default PaymentFlatEntity;
