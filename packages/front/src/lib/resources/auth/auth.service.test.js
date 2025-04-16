@@ -49,35 +49,6 @@ describe("authService", () => {
         };
     });
 
-    describe("signup()", () => {
-        const RES = {};
-        const USER = { email: "test@mail.fr", lastname: "", firstname: "" };
-
-        beforeAll(() => {
-            authPort.signup.mockResolvedValue(RES);
-        });
-        afterAll(() => authPort.signup.mockRestore());
-
-        it("calls port", async () => {
-            await authService.signup(USER);
-            expect(authPort.signup).toHaveBeenCalledWith(USER);
-        });
-
-        it("return result from port if success", async () => {
-            const expected = RES;
-            const actual = await authService.signup(USER);
-            expect(expected).toBe(actual);
-        });
-
-        it("rejects with error code from port if given", async () => {
-            const expected = 5;
-            const error = { data: { code: expected } };
-            authPort.signup.mockRejectedValueOnce(error);
-            const actual = authService.signup(USER);
-            await expect(actual).rejects.toBe(expected);
-        });
-    });
-
     describe("resetPassword()", () => {
         const RES = true;
         const PASSWORD = "very secret";

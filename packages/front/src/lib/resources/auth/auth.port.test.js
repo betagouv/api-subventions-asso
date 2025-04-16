@@ -12,28 +12,6 @@ vi.mock("dto", () => ({
 vi.mock("$lib/services/requests.service");
 
 describe("AuthPort", () => {
-    describe("signup()", () => {
-        const USER = { email: "test@mail.fr", lastname: "", firstname: "" };
-
-        it("calls signup route", async () => {
-            const PATH = "/auth/signup";
-            vi.mocked(requestsService.post).mockResolvedValueOnce({ data: {} });
-            await authPort.signup(USER);
-            expect(requestsService.post).toBeCalledWith(PATH, {
-                email: USER.email,
-                lastName: USER.lastname,
-                firstName: USER.firstname,
-            });
-        });
-
-        it("returns email if success", async () => {
-            vi.mocked(requestsService.post).mockResolvedValueOnce({ data: { email: USER.email } });
-            const actual = await authPort.signup(USER);
-            const expected = USER.email;
-            expect(actual).toBe(expected);
-        });
-    });
-
     describe("resetPassword()", () => {
         const PASSWORD = "very secret";
         const TOKEN = "123";
