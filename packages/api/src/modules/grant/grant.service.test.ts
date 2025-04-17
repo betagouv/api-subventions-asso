@@ -17,8 +17,8 @@ import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
 import paymentService from "../payments/payments.service";
 import subventionsService from "../subventions/subventions.service";
 import Siret from "../../valueObjects/Siret";
-jest.mock("../providers/scdl/scdl.service");
 
+jest.mock("../providers/scdl/scdl.service");
 jest.mock("@sentry/node");
 jest.mock("../providers");
 jest.mock("../../shared/Validators");
@@ -131,14 +131,41 @@ describe("GrantService", () => {
         });
 
         it.each`
-            arrayName                                  | joinedRawGrant                                                                                                                                               | calls
-            ${"payments"}                              | ${{ fullGrants: [], applications: [], payments: [RAW_PAYMENTS[0], RAW_PAYMENTS[1]] }}                                                                        | ${2}
-            ${"fullGrants"}                            | ${{ fullGrants: [RAW_FULL_GRANT, {} as RawFullGrant], applications: [], payments: [] }}                                                                      | ${2}
-            ${"application"}                           | ${{ fullGrants: [], applications: [RAW_APPLICATION, {} as RawApplication], payments: [] }}                                                                   | ${2}
-            ${"payments, fullGrants and applications"} | ${{ fullGrants: [RAW_FULL_GRANT, {} as RawFullGrant], applications: [RAW_APPLICATION, {} as RawApplication], payments: [RAW_PAYMENTS[0], RAW_PAYMENTS[1]] }} | ${6}
+            arrayName | joinedRawGrant | calls
+            ${"payments"} | ${{
+    fullGrants: [],
+    applications: [],
+    payments: [RAW_PAYMENTS[0], RAW_PAYMENTS[1]],
+}} | ${2}
+            ${"fullGrants"} | ${{
+    fullGrants: [RAW_FULL_GRANT, {} as RawFullGrant],
+    applications: [],
+    payments: [],
+}} | ${2}
+            ${"application"} | ${{
+    fullGrants: [],
+    applications: [RAW_APPLICATION, {} as RawApplication],
+    payments: [],
+}} | ${2}
+            ${"payments, fullGrants and applications"} | ${{
+    fullGrants: [RAW_FULL_GRANT, {} as RawFullGrant],
+    applications: [RAW_APPLICATION, {} as RawApplication],
+    payments: [RAW_PAYMENTS[0], RAW_PAYMENTS[1]],
+}} | ${6}
         `("should call adaptRawGrant for each $arrayName", ({ joinedRawGrant, calls }) => {
             grantService.adaptJoinedRawGrant(joinedRawGrant);
             expect(mockAdapteRawGrant).toHaveBeenCalledTimes(calls);
+        });
+
+        it("should filter out null adapted grants", () => {
+            mockAdapteRawGrant.mockReturnValue(null);
+            const actual = grantService.adaptJoinedRawGrant({
+                fullGrants: [{}, {}] as unknown as RawFullGrant[],
+                applications: [{}] as unknown as RawApplication[],
+                payments: [{}] as unknown as RawPayment[],
+            });
+            expect(mockToGrant).toHaveBeenCalledWith({ fullGrants: [], applications: [], payments: [] });
+            mockAdapteRawGrant.mockImplementation(rawGrant => rawGrant);
         });
 
         it("should call toGrant", () => {
@@ -149,16 +176,47 @@ describe("GrantService", () => {
 
     describe("toGrant", () => {
         it.each`
-            description                                     | joinedRawGrant                                                                                  | expected
-            ${"return undefined if no param"}               | ${undefined}                                                                                    | ${undefined}
-            ${"return undefined with empty object"}         | ${{}}                                                                                           | ${undefined}
-            ${"return undefined with properties undefined"} | ${{ fullGrants: undefined, applications: undefined, payments: undefined }}                      | ${undefined}
-            ${"return undefined with empty arrays"}         | ${{ fullGrants: [], applications: [], payments: [] }}                                           | ${undefined}
-            ${"return only payments"}                       | ${{ fullGrants: [], applications: [], payments: PAYMENTS }}                                     | ${{ application: null, payments: PAYMENTS }}
-            ${"return first grant + payments"}              | ${{ fullGrants: [GRANT, {} as Grant], applications: [], payments: PAYMENTS }}                   | ${{ application: GRANT.application, payments: [...(GRANT.payments as Payment[]), ...PAYMENTS] }}
-            ${"return first application + payments"}        | ${{ fullGrants: [], applications: [APPLICATION, {} as DemandeSubvention], payments: PAYMENTS }} | ${{ application: APPLICATION, payments: PAYMENTS }}
-            ${"return first grant"}                         | ${{ fullGrants: [GRANT, {} as Grant], applications: [], payments: [] }}                         | ${GRANT}
-            ${"return first application"}                   | ${{ fullGrants: [], applications: [APPLICATION, {} as DemandeSubvention], payments: [] }}       | ${{ application: APPLICATION, payments: null }}
+            description                             | joinedRawGrant | expected
+            ${"return undefined if no param"}       | ${undefined}   | ${undefined}
+            ${"return undefined with empty object"} | ${{}}          | ${undefined}
+            ${"return undefined with properties undefined"} | ${{
+    fullGrants: undefined,
+    applications: undefined,
+    payments: undefined,
+}} | ${undefined}
+            ${"return undefined with empty arrays"} | ${{
+    fullGrants: [],
+    applications: [],
+    payments: [],
+}} | ${undefined}
+            ${"return only payments"} | ${{
+    fullGrants: [],
+    applications: [],
+    payments: PAYMENTS,
+}} | ${{ application: null, payments: PAYMENTS }}
+            ${"return first grant + payments"} | ${{
+    fullGrants: [GRANT, {} as Grant],
+    applications: [],
+    payments: PAYMENTS,
+}} | ${{
+    application: GRANT.application,
+    payments: [...(GRANT.payments as Payment[]), ...PAYMENTS],
+}}
+            ${"return first application + payments"} | ${{
+    fullGrants: [],
+    applications: [APPLICATION, {} as DemandeSubvention],
+    payments: PAYMENTS,
+}} | ${{ application: APPLICATION, payments: PAYMENTS }}
+            ${"return first grant"} | ${{
+    fullGrants: [GRANT, {} as Grant],
+    applications: [],
+    payments: [],
+}} | ${GRANT}
+            ${"return first application"} | ${{
+    fullGrants: [],
+    applications: [APPLICATION, {} as DemandeSubvention],
+    payments: [],
+}} | ${{ application: APPLICATION, payments: null }}
         `("$description", ({ joinedRawGrant, expected }) => {
             const grant = grantService.toGrant(joinedRawGrant);
             expect(grant).toEqual(expected);

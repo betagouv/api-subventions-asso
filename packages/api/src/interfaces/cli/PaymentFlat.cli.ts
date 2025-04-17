@@ -21,7 +21,7 @@ export default class PaymentFlatCli extends CliController {
     // should only be used once, then sync with resyncExercise
     async initChorus() {
         if (await paymentsFlatService.isCollectionInitialized())
-            throw new Error("DB already initialized, used resyncExercice instead");
+            throw new Error("DB already initialized, use resyncExercice instead");
 
         this.logger.logIC("Create all payment flat collection");
         const ticTacInterval = setInterval(() => console.log("TIC"), 60000);
