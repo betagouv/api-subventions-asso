@@ -39,6 +39,7 @@ Object {
   "attachementComptable": "BRET",
   "centreFinancierCode": "AA01/0776-C001-4000",
   "centreFinancierLibelle": "UO DGER XXXX-C001",
+  "codePoste": null,
   "ej": "0001821732",
   "exerciceBudgetaire": 2023,
   "idEntrepriseBeneficiaire": Siren {
@@ -72,6 +73,7 @@ Object {
   "attachementComptable": "BRET",
   "centreFinancierCode": "AA01/0776-C001-4000",
   "centreFinancierLibelle": "UO DGER XXXX-C001",
+  "codePoste": null,
   "ej": "0001821732",
   "exerciceBudgetaire": 2023,
   "idEntrepriseBeneficiaire": Siren {

@@ -7,7 +7,6 @@ import {
     PAYMENT_FLAT_ENTITY,
     PAYMENT_FROM_PAYMENT_FLAT,
 } from "./__fixtures__/paymentFlatEntity.fixture";
-import { PAYMENT_FLAT_DBO } from "../../dataProviders/db/paymentFlat/__fixtures__/paymentFlatDbo.fixture";
 
 import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port";
 import Siren from "../../valueObjects/Siren";
@@ -53,7 +52,7 @@ describe("PaymentFlatService", () => {
     });
 
     describe("raw grant", () => {
-        const DATA = [{ ej: "EJ", provider: "chorus" }];
+        const DATA = [{ ej: "EJ", provider: "chorus", idVersement: "EJ" }];
 
         describe("getRawGrants", () => {
             const SIREN = new Siren("123456789");
@@ -75,19 +74,7 @@ describe("PaymentFlatService", () => {
 
             it("returns raw grant data", async () => {
                 const actual = await paymentFlatService.getRawGrants(IDENTIFIER);
-                expect(actual).toMatchInlineSnapshot(`
-                    Array [
-                      Object {
-                        "data": Object {
-                          "ej": "EJ",
-                          "provider": "chorus",
-                        },
-                        "joinKey": "EJ",
-                        "provider": "chorus",
-                        "type": "payment",
-                      },
-                    ]
-                `);
+                expect(actual).toMatchSnapshot();
             });
         });
     });

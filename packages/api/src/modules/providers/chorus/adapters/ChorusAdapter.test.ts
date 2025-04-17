@@ -549,8 +549,6 @@ describe("ChorusAdapter", () => {
         });
 
         it("should get establishment value object", () => {
-            // @ts-expect-error: debug
-            console.log(ChorusAdapter.getEstablishmentValueObject.toString());
             // @ts-expect-error: private method
             ChorusAdapter.getPaymentFlatRawData(CHORUS_LINE_DTO);
             expect(mockGetEstablishmentValueObject).toHaveBeenCalledWith(CHORUS_LINE_DTO);

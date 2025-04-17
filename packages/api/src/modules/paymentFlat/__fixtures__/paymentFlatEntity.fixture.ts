@@ -3,8 +3,9 @@ import DEFAULT_ASSOCIATION from "../../../../tests/__fixtures__/association.fixt
 import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
 import Siren from "../../../valueObjects/Siren";
 import Siret from "../../../valueObjects/Siret";
+import { ChorusPaymentFlatEntity } from "../../providers/chorus/@types/ChorusPaymentFlat";
 
-export const PAYMENT_FLAT_ENTITY: PaymentFlatEntity = {
+export const PAYMENT_FLAT_ENTITY: ChorusPaymentFlatEntity = {
     uniqueId: "UNIQUE_ID",
     idVersement: "ID_VERSEMENT", // id versement
     exerciceBudgetaire: 2023, // exerciceBudgetaire
@@ -19,6 +20,7 @@ export const PAYMENT_FLAT_ENTITY: PaymentFlatEntity = {
     attachementComptable: "BRET", // attachement comptable
     regionAttachementComptable: "Bretagne", // region attachement comptable
     ej: "0001821732", // EJ
+    codePoste: null,
     provider: "chorus", // provider
     programName: "Programme Exemple", // program
     programNumber: 101, // program number
@@ -31,7 +33,7 @@ export const PAYMENT_FLAT_ENTITY: PaymentFlatEntity = {
     activityLabel: "Label d'activité Exemple", // activity label
 };
 
-export const PAYMENT_FLAT_ENTITY_WITH_NULLS: PaymentFlatEntity = {
+export const PAYMENT_FLAT_ENTITY_WITH_NULLS: ChorusPaymentFlatEntity = {
     uniqueId: "UNIQUE_ID",
     idVersement: "ID_VERSEMENT", // id versement
     exerciceBudgetaire: 2023, // exerciceBudgetaire
@@ -46,6 +48,7 @@ export const PAYMENT_FLAT_ENTITY_WITH_NULLS: PaymentFlatEntity = {
     attachementComptable: "BRET", // attachement comptable
     regionAttachementComptable: "Bretagne", // region attachement comptable
     ej: "0001821732", // EJ
+    codePoste: null,
     provider: "chorus", // provider
     programName: null, // program
     programNumber: 101, // program number

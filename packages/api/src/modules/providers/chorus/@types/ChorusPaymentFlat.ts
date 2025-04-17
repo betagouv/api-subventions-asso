@@ -2,7 +2,7 @@ import PaymentFlatEntity from "../../../../entities/PaymentFlatEntity";
 
 // PaymentFlatEntity field directly extracted from ChorusLineDto
 export type ChorusPaymentFlatRaw = Pick<
-    PaymentFlatEntity,
+    ChorusPaymentFlatEntity,
     | "ej"
     | "exerciceBudgetaire"
     | "typeIdEtablissementBeneficiaire"
@@ -15,3 +15,6 @@ export type ChorusPaymentFlatRaw = Pick<
     | "centreFinancierLibelle"
     | "attachementComptable"
 >;
+
+// TODO: remove both codePoste and EJ from PaymentFlat ?
+export type ChorusPaymentFlatEntity = PaymentFlatEntity & { ej: string; codePoste: null };

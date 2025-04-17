@@ -12,8 +12,7 @@ import Siret from "../../../../valueObjects/Siret";
 import RefProgrammationEntity from "../../../../entities/RefProgrammationEntity";
 import { GenericParser } from "../../../../shared/GenericParser";
 import { ChorusLineDto } from "../@types/ChorusLineDto";
-import PaymentFlatEntity from "../../../../entities/PaymentFlatEntity";
-import { ChorusPaymentFlatRaw } from "../@types/ChorusPaymentFlatRaw";
+import { ChorusPaymentFlatEntity, ChorusPaymentFlatRaw } from "../@types/ChorusPaymentFlat";
 import Ridet from "../../../../valueObjects/Ridet";
 import { establishmentIdType } from "../../../../valueObjects/typeIdentifier";
 import Tahitiet from "../../../../valueObjects/Tahitiet";
@@ -182,7 +181,7 @@ export default class ChorusAdapter {
         ministries: Record<string, MinistryEntity>,
         domainesFonct: Record<string, DomaineFonctionnelEntity>,
         refsProgrammation: Record<string, RefProgrammationEntity>,
-    ): PaymentFlatEntity {
+    ): ChorusPaymentFlatEntity {
         const {
             programCode,
             activityCode,
@@ -200,8 +199,8 @@ export default class ChorusAdapter {
         );
 
         const rawDataWithDataBretagne: Omit<
-            PaymentFlatEntity,
-            "regionAttachementComptable" | "idVersement" | "uniqueId"
+            ChorusPaymentFlatEntity,
+            "codePoste" | "regionAttachementComptable" | "idVersement" | "uniqueId"
         > = {
             ...this.getPaymentFlatRawData(chorusDocument.data as ChorusLineDto),
             programName: programEntity?.label_programme ?? null,
@@ -231,6 +230,8 @@ export default class ChorusAdapter {
             uniqueId,
             idVersement,
             regionAttachementComptable,
+            // TODO: update architecture to avoid this : make ej/codePoste optionnal or remove them from PaymentFlat
+            codePoste: null,
         };
     }
 

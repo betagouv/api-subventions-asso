@@ -10,6 +10,7 @@ Object {
   "attachementComptable": "BRET",
   "centreFinancierCode": "AA01/0776-C001-4000",
   "centreFinancierLibelle": "UO DGER XXXX-C001",
+  "codePoste": null,
   "ej": "EJ Exemple",
   "exerciceBudgetaire": 2023,
   "idEntrepriseBeneficiaire": Siren {
@@ -43,6 +44,7 @@ Object {
   "attachementComptable": "BRET",
   "centreFinancierCode": "AA01/0776-C001-4000",
   "centreFinancierLibelle": "UO DGER XXXX-C001",
+  "codePoste": null,
   "ej": "EJ Exemple",
   "exerciceBudgetaire": 2023,
   "idEntrepriseBeneficiaire": Siren {
@@ -74,6 +76,7 @@ Object {
   "codeAction": "0101-01-02",
   "codeActivite": "077601003222",
   "codeCentreFinancier": "AA01/0776-C001-4000",
+  "codePoste": null,
   "dateOperation": 2023-07-12T00:00:00.000Z,
   "ej": "0001821732",
   "exerciceBudgetaire": 2023,
@@ -103,6 +106,7 @@ Object {
   "codeAction": "0101-01-02",
   "codeActivite": "077601003222",
   "codeCentreFinancier": "AA01/0776-C001-4000",
+  "codePoste": null,
   "dateOperation": 2023-07-12T00:00:00.000Z,
   "ej": "0001821732",
   "exerciceBudgetaire": 2023,
@@ -179,7 +183,7 @@ Object {
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "chorus",
     "type": "string",
-    "value": "0001821732",
+    "value": "ID_VERSEMENT",
   },
 }
 `;
