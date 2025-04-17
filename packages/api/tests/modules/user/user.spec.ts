@@ -102,45 +102,6 @@ describe("UserController, /user", () => {
         });
     });
 
-    describe("/auth/signup", () => {
-        it("prevents creating duplicate accounts - one at the time", async () => {
-            const res1 = await request(g.app)
-                .post("/auth/signup")
-                .send({
-                    email: "test.duplicate@beta.gouv.fr",
-                })
-                .set("Accept", "application/json");
-
-            const res2 = await request(g.app)
-                .post("/auth/signup")
-                .send({
-                    email: "test.duplicate@beta.gouv.fr",
-                })
-                .set("Accept", "application/json");
-
-            expect([res1.statusCode, res2.statusCode]).toContain(500);
-        });
-        it("prevents creating duplicate - fast requests", async () => {
-            const promise1 = request(g.app)
-                .post("/auth/signup")
-                .send({
-                    email: "test.duplicate@beta.gouv.fr",
-                })
-                .set("Accept", "application/json");
-
-            const promise2 = request(g.app)
-                .post("/auth/signup")
-                .send({
-                    email: "test.duplicate@beta.gouv.fr",
-                })
-                .set("Accept", "application/json");
-
-            const responses = await Promise.all([promise1, promise2]);
-
-            expect(responses.map(r => r.statusCode)).toContain(500);
-        });
-    });
-
     describe("updateNbRequests", () => {
         const TODAY = new Date();
         const ACTIVE_USER_EMAIL = "active.user@beta.gouv.fr";

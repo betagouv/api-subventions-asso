@@ -14,13 +14,6 @@ export class AuthService {
         this.connectedUser = connectedUser;
     }
 
-    signup(signupUser) {
-        if (!signupUser?.email) {
-            if (!signupUser?.email) return Promise.reject(SignupErrorCodes.EMAIL_NOT_VALID);
-        }
-        return authPort.signup(signupUser).catch(error => Promise.reject(error.data.code));
-    }
-
     resetPassword(token, password) {
         if (!token) return Promise.reject(ResetPasswordErrorCodes.INTERNAL_ERROR);
         return authPort.resetPassword(token, password).then(user => this.loginByUser(user));

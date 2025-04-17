@@ -34,55 +34,44 @@
     {/if}
 </div>
 
-<div class="bordered-frame fr-col-6 fr-col-offset-3 fr-p-8v fr-mt-12v">
-    <AgentConnectZone />
-    <form on:submit|preventDefault={() => controller.submit()}>
-        <fieldset class="fr-fieldset fr-mb-5w">
-            <legend class="fr-fieldset__legend fr-h5" id="login-legend">Se connecter à son compte</legend>
-            <div class="fr-fieldset__element fr-mt-4v">
-                <Input
-                    id="email-input"
-                    type="email"
-                    label="Email professionnel"
-                    autocomplete="email"
-                    bind:value={controller.email}
-                    required={true} />
-            </div>
-            <div class="fr-fieldset__element fr-mt-4v">
-                <PasswordInput label="Mot de passe" bind:value={controller.password} />
-                <p>
-                    <a href={controller.forgetPasswordUrl} class="fr-link">Mot de passe oublié ?</a>
-                </p>
-            </div>
+<div class="fr-p-8v fr-mt-12v">
+    <div class="fr-col-6 fr-col-offset-3">
+        <p>
+            ProConnect vous permet d’accéder à de nombreux services en ligne en utilisant l’un de vos comptes
+            professionnels existants.
+        </p>
+        <AgentConnectZone />
+        <form on:submit|preventDefault={() => controller.submit()}>
+            <fieldset class="fr-fieldset fr-mb-5w">
+                <legend class="fr-fieldset__legend fr-h5 text-center fr-p-0" id="login-legend">
+                    Veuillez saisir vos identifiants pour utiliser ce service :
+                </legend>
+                <div class="fr-fieldset__element fr-mt-2v">
+                    <Input
+                        id="email-input"
+                        type="email"
+                        label="Email professionnel"
+                        autocomplete="email"
+                        bind:value={controller.email}
+                        required={true} />
+                </div>
+                <div class="fr-fieldset__element fr-mt-2v">
+                    <PasswordInput label="Mot de passe" bind:value={controller.password} />
+                    <p>
+                        <a href={controller.forgetPasswordUrl} class="fr-link">Mot de passe oublié ?</a>
+                    </p>
+                </div>
 
-            <div class="fr-fieldset__element fr-mt-4v">
-                <ul class="fr-btns-group">
-                    <li>
-                        <Button title="Se connecter" htmlType="submit" trackerName="login.form.submit">
-                            Se connecter
-                        </Button>
-                    </li>
-                </ul>
-            </div>
-        </fieldset>
-    </form>
-    <div class="separator" />
-    <form on:submit|preventDefault={() => controller.signup()}>
-        <fieldset class="fr-fieldset fr-mt-3w fr-mb-5w">
-            <legend class="fr-fieldset__legend fr-h5" id="signup">Vous n'avez pas de compte ?</legend>
-            <div class="fr-fieldset__element">
-                <ul class="fr-btns-group">
-                    <li>
-                        <Button
-                            type="secondary"
-                            title="Créer un compte"
-                            htmlType="submit"
-                            trackerName="login.form.signup">
-                            Créer un compte
-                        </Button>
-                    </li>
-                </ul>
-            </div>
-        </fieldset>
-    </form>
+                <div class="fr-fieldset__element fr-mt-2v">
+                    <ul class="fr-btns-group">
+                        <li>
+                            <Button title="Se connecter" htmlType="submit" trackerName="login.form.submit">
+                                Se connecter
+                            </Button>
+                        </li>
+                    </ul>
+                </div>
+            </fieldset>
+        </form>
+    </div>
 </div>

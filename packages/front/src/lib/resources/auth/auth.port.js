@@ -3,13 +3,6 @@ import requestsService from "$lib/services/requests.service";
 export class AuthPort {
     BASE_PATH = "/auth";
 
-    signup(signupUser) {
-        const path = `${this.BASE_PATH}/signup`;
-        return requestsService
-            .post(path, { email: signupUser.email, lastName: signupUser.lastname, firstName: signupUser.firstname })
-            .then(result => result.data.email);
-    }
-
     async resetPassword(token, password) {
         const path = `${this.BASE_PATH}/reset-password`;
         return (await requestsService.post(path, { token, password })).data.user;

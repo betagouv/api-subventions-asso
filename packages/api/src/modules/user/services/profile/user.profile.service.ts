@@ -148,6 +148,7 @@ export class UserProfileService {
     }
 
     public async activate(resetToken: string, userInfo: UserActivationInfoDto): Promise<UserDto> {
+        // TODO remove if/when unused by consumers
         const userReset = await userResetPort.findByToken(resetToken);
 
         const tokenValidation = userActivationService.validateResetToken(userReset);
