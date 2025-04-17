@@ -197,7 +197,6 @@ describe("Dauphin Service", () => {
             //@ts-expect-error: mock
             mockBuildSearchHeader.mockImplementation(() => ({ headers: {} }));
             mockBuildFetchFromDateQuery.mockImplementation(jest.fn());
-            //@ts-expect-error: mock
             mockFormatAndReturnDto.mockImplementation(jest.fn(application => application));
         });
 

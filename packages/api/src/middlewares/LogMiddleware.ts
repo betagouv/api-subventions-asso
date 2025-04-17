@@ -1,7 +1,6 @@
 import winston from "winston";
 import expressWinston from "express-winston";
 import "winston-mongodb";
-import { ObjectId } from "mongodb";
 import { UserDto } from "dto";
 import { client } from "../shared/MongoConnection";
 
@@ -68,7 +67,6 @@ export const expressLogger = () =>
             // @ts-expect-error strange express-winston types
             // we convert _id into string as a workaround to winston-mongodb bug that serializes them to {}
             if (propName === "user" && req[propName]?._id) {
-                // @ts-expect-error strange express-winston types
                 recursiveFilter(req[propName]);
             }
 
