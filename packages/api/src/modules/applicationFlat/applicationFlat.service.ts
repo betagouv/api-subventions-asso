@@ -137,8 +137,8 @@ export class ApplicationFlatService
     }
 
     getSiret(entity: ApplicationFlatEntity) {
-        if (entity.typeIdBeneficiaire === "siret" && Siret.isSiret(entity.idBeneficiaire))
-            return new Siret(entity.idBeneficiaire);
+        if (entity.typeidEtablissementBeneficiaire === "siret" && Siret.isSiret(entity.idEtablissementBeneficiaire))
+            return new Siret(entity.idEtablissementBeneficiaire);
         return undefined;
     }
 }

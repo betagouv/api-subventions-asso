@@ -9,7 +9,7 @@ export class ApplicationFlatPort extends MongoPort<ApplicationFlatEntity> {
     collectionName = "applications-flat";
 
     public async createIndexes(): Promise<void> {
-        await this.collection.createIndex({ idBeneficiaire: 1 });
+        await this.collection.createIndex({ idEtablissementBeneficiaire: 1 });
         await this.collection.createIndex({ exerciceBudgetaire: 1 });
         await this.collection.createIndex({ idUnique: 1 }, { unique: true });
     }
@@ -63,8 +63,8 @@ export class ApplicationFlatPort extends MongoPort<ApplicationFlatEntity> {
     public async findBySiren(siren: Siren) {
         return this.collection
             .find({
-                typeIdBeneficiaire: "siret",
-                idBeneficiaire: new RegExp(`^${siren.value}\\d{5}`),
+                typeidEtablissementBeneficiaire: "siret",
+                idEtablissementBeneficiaire: new RegExp(`^${siren.value}\\d{5}`),
                 // TODO maybe we want an explicit property so that we can have an index
             })
             .map(dbo => ApplicationFlatAdapter.dboToEntity(dbo))

@@ -34,8 +34,8 @@ export type ApplicationFlatEntity = {
     nomServiceInstructeur?: string; // Nom du service qui instruit la demande
     typeIdServiceInstructeur?: StructureIdType;
     idServiceInstructeur?: string;
-    idBeneficiaire: string;
-    typeIdBeneficiaire?: string; // this id must be establishment level so no siren
+    idEtablissementBeneficiaire: string;
+    typeidEtablissementBeneficiaire?: string; // this id must be establishment level so no siren
     exerciceBudgetaire: number;
     pluriannualite?: boolean;
     anneesPluriannualite?: number[];

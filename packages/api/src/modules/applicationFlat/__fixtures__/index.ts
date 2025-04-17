@@ -17,7 +17,7 @@ export const DRAFT = {
     exerciceBudgetaire: 2015,
     idAttribuant: "123456789",
     idAutoriteGestion: "012345678",
-    idBeneficiaire: "12345678901234", // a siret here
+    idEtablissementBeneficiaire: "12345678901234", // a siret here
     idCofinanceursSollicites: [],
     idJointure: "joint001",
     idRAE: "RAEid",
@@ -42,7 +42,7 @@ export const DRAFT = {
     statutLabel: ApplicationStatus.GRANTED,
     typeIdAttribuant: undefined,
     typeIdAutoriteGestion: undefined,
-    typeIdBeneficiaire: "",
+    typeidEtablissementBeneficiaire: "",
     typeIdCofinanceursSollicites: [],
     typeIdServiceInstructeur: undefined,
 };
