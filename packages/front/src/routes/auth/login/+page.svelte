@@ -16,8 +16,6 @@
     const { error, showSuccessMessage, successMessage } = controller;
     onMount(() => controller.onMount(alertElement));
     $: controller.formElt = form;
-
-    // TODO intégrer nouvelle page
 </script>
 
 <h1 class="fr-mb-6w fr-h2">
