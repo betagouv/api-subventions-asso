@@ -28,6 +28,7 @@ export class ApplicationFlatPort extends MongoPort<ApplicationFlatEntity> {
     }
 
     public upsertMany(entities: ApplicationFlatEntity[]) {
+        if (!entities.length) return;
         const bulk = entities.map(e => ({
             updateOne: {
                 filter: { idUnique: e.idUnique },
