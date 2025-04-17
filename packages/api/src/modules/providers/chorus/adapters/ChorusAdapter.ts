@@ -1,5 +1,6 @@
 import Sentry from "@sentry/node";
 import { CommonPaymentDto, ChorusPayment } from "dto";
+import { getShortISODate } from "../../../../shared/helpers/DateHelper";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
@@ -218,7 +219,7 @@ export default class ChorusAdapter {
         const idVersement = `${rawDataWithDataBretagne.idEtablissementBeneficiaire}-${rawDataWithDataBretagne.ej}-${rawDataWithDataBretagne.exerciceBudgetaire}`;
         const uniqueId = `${idVersement}-${
             rawDataWithDataBretagne.programNumber
-        }-${actionCode}-${activityCode}-${rawDataWithDataBretagne.operationDate.getTime()}-${
+        }-${actionCode}-${activityCode}-${getShortISODate(rawDataWithDataBretagne.operationDate)}-${
             rawDataWithDataBretagne.attachementComptable
         }-${rawDataWithDataBretagne.centreFinancierCode}`;
         const regionAttachementComptable = ChorusAdapter.getRegionAttachementComptable(

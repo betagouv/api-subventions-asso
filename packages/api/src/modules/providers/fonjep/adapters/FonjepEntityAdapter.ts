@@ -20,6 +20,7 @@ import { FonjepPaymentFlatEntity } from "../entities/FonjepPaymentFlatEntity";
 import { DataBretagneRecords } from "../../dataBretagne/@types/DataBretagne";
 import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
+import { getShortISODate } from "../../../../shared/helpers/DateHelper";
 
 /**
  * Some of the nullIfEmpty calls have not been verified and were added base on every FonjepEntity type
@@ -121,9 +122,11 @@ export default class FonjepEntityAdapter {
     private static buildPaymentFlatIdVersement(data: {
         thirdParty: FonjepTiersEntity;
         position: FonjepPosteEntity;
-        payment: FonjepVersementEntity;
+        payment: PayedFonjepVersementEntity;
     }) {
-        return `${data.payment.posteCode}-${data.payment.dateVersement}-${data.position.annee}-${data.thirdParty.siretOuRidet}`;
+        return `${data.payment.posteCode}-${getShortISODate(data.payment.dateVersement)}-${data.position.annee}-${
+            data.thirdParty.siretOuRidet
+        }`;
     }
 
     // this should contain action and activity code like Chorus
