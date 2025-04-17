@@ -15,7 +15,7 @@ import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import configurationsPort from "../../../../dataProviders/db/configurations/configurations.port";
 import configurationsService, { CONFIGURATION_NAMES } from "../../../configurations/configurations.service";
 import { STALL_RGPD_CRON_6_MONTHS_DELETION } from "../../../../configurations/mail.conf";
-import statsPort from "../../../../dataProviders/db/stats/stats.port";
+import logsPort from "../../../../dataProviders/db/stats/stats.port";
 
 export class UserRgpdService {
     public async getAllData(userId: string): Promise<UserDataDto> {
@@ -63,7 +63,7 @@ export class UserRgpdService {
             phoneNumber: "",
         };
         const promises = Promise.all([
-            statsPort.anonymizeLogsByUser(user, disabledUser),
+            logsPort.anonymizeLogsByUser(user, disabledUser),
             userPort.update(disabledUser).then(r => !!r),
         ]);
 

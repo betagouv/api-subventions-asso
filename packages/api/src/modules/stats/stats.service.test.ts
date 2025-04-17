@@ -10,7 +10,7 @@ jest.mock("../../shared/helpers/UserHelper", () => {
 import statsService from "./stats.service";
 import * as DateHelper from "../../shared/helpers/DateHelper";
 import associationNameService from "../association-name/associationName.service";
-import statsPort from "../../dataProviders/db/stats/stats.port";
+import logsPort from "../../dataProviders/db/stats/stats.port";
 import statsAssociationsVisitPort from "../../dataProviders/db/stats/statsAssociationsVisit.port";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
 import userPort from "../../dataProviders/db/user/user.port";
@@ -119,7 +119,7 @@ describe("StatsService", () => {
     });
 
     describe("getRequestsPerMonthByYear()", () => {
-        const monthlyAvgRequestsOnPeriodMock = jest.spyOn(statsPort, "countRequestsPerMonthByYear");
+        const monthlyAvgRequestsOnPeriodMock = jest.spyOn(logsPort, "countRequestsPerMonthByYear");
 
         const YEAR = 2022;
         const CURR_YEAR = new Date().getFullYear();
@@ -136,14 +136,14 @@ describe("StatsService", () => {
 
         it("calls port", async () => {
             const expected = [YEAR, false];
-            const actual = statsPort.countRequestsPerMonthByYear;
+            const actual = logsPort.countRequestsPerMonthByYear;
             await statsService.getRequestsPerMonthByYear(YEAR, false);
             expect(actual).toHaveBeenCalledWith(...expected);
         });
 
         it("calls port with includesAdmin", async () => {
             const expected = [YEAR, true];
-            const actual = statsPort.countRequestsPerMonthByYear;
+            const actual = logsPort.countRequestsPerMonthByYear;
             await statsService.getRequestsPerMonthByYear(YEAR, true);
             expect(actual).toHaveBeenCalledWith(...expected);
         });
@@ -937,7 +937,7 @@ describe("StatsService", () => {
         const mailToLog = email => ({ meta: { req: { user: { email } } } });
         const LOGS = [{ meta: { req: { user: { email: "a@b.c" } } } }, { meta: { req: { user: { email: "d@e.f" } } } }];
         const portMock = jest
-            .spyOn(statsPort, "getLogsWithRegexUrl")
+            .spyOn(logsPort, "getLogsWithRegexUrl")
             // @ts-expect-error mock
             .mockReturnValue({ toArray: () => Promise.resolve(LOGS) });
         const RES = ["a@b.c", "d@e.f"];

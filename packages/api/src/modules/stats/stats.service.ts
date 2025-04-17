@@ -14,7 +14,7 @@ import rnaSirenService from "../rna-siren/rnaSiren.service";
 import Rna from "../../valueObjects/Rna";
 import associationIdentifierService from "../association-identifier/association-identifier.service";
 import statsAssociationsVisitPort from "../../dataProviders/db/stats/statsAssociationsVisit.port";
-import statsPort from "../../dataProviders/db/stats/stats.port";
+import logsPort from "../../dataProviders/db/stats/stats.port";
 import userAssociationVisitJoiner from "../../dataProviders/db/stats/UserAssociationVisits.joiner";
 import { UserWithAssociationVisitsEntity } from "./entities/UserWithAssociationVisitsEntity";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
@@ -70,7 +70,7 @@ class StatsService {
             };
         const lastMonthIndex1 = now.getFullYear() === year ? now.getMonth() + 1 : 12;
 
-        const countAsObjectIndex1 = await statsPort.countRequestsPerMonthByYear(year, includesAdmin);
+        const countAsObjectIndex1 = await logsPort.countRequestsPerMonthByYear(year, includesAdmin);
         const { countAsArray, sum } = countAsObjectIndex1.reduce(
             (acc, { _id: monthIdIndex1, nbOfRequests }) => {
                 acc.countAsArray[monthIdIndex1 - 1] = nbOfRequests;
@@ -286,7 +286,7 @@ class StatsService {
     }
 
     async getExportersEmails() {
-        const logs = await statsPort.getLogsWithRegexUrl(/extract-data$/).toArray();
+        const logs = await logsPort.getLogsWithRegexUrl(/extract-data$/).toArray();
         const emailSet = new Set(logs.map(log => log?.meta?.req?.user?.email).filter(email => !!email));
         return [...emailSet];
     }
@@ -300,11 +300,11 @@ class StatsService {
     }
 
     getAllLogUser(email: string) {
-        return statsPort.findByEmail(email);
+        return logsPort.findByEmail(email);
     }
 
     getAnonymizedLogsOnPeriod(start: Date, end: Date) {
-        return statsPort.getLogsOnPeriod(start, end).map(log => {
+        return logsPort.getLogsOnPeriod(start, end).map(log => {
             if (log.meta.req?.body?.email) delete log.meta.req.body.email;
             if (log.meta.req?.body?.firstName) delete log.meta.req.body.firstName;
             if (log.meta.req?.body?.lastName) delete log.meta.req.body.lastName;

@@ -1,4 +1,4 @@
-import statsPort, { StatsPort } from "../../../dataProviders/db/stats/stats.port";
+import logsPort from "../../../dataProviders/db/stats/stats.port";
 import { firstDayOfPeriod } from "../../../shared/helpers/DateHelper";
 import MongoPort from "../../../shared/MongoPort";
 
@@ -11,7 +11,7 @@ const dateFactory = (diff: number) => {
     return date;
 };
 
-describe("StatsPort", () => {
+describe("logsPort", () => {
     const mockToArray = jest.fn();
     let spyAggregate = jest.fn(() => ({ toArray: mockToArray }));
     let mockMongoPortCollection: jest.SpyInstance;
@@ -31,14 +31,14 @@ describe("StatsPort", () => {
 
         it("should call mongo with admin filters", async () => {
             mockToArray.mockReturnValueOnce([]);
-            await statsPort.countMedianRequestsOnPeriod(START, END, false);
+            await logsPort.countMedianRequestsOnPeriod(START, END, false);
 
             expect(spyAggregate.mock.calls).toMatchSnapshot();
         });
 
         it("should call mongo without admin filters", async () => {
             mockToArray.mockReturnValueOnce([]);
-            await statsPort.countMedianRequestsOnPeriod(START, END, true);
+            await logsPort.countMedianRequestsOnPeriod(START, END, true);
 
             expect(spyAggregate.mock.calls).toMatchSnapshot();
         });
@@ -46,7 +46,7 @@ describe("StatsPort", () => {
         it("should return median (odd)", async () => {
             mockToArray.mockReturnValueOnce([{ nbOfRequest: 1 }, { nbOfRequest: 2 }, { nbOfRequest: 3 }]);
             const expected = 2;
-            const actual = await statsPort.countMedianRequestsOnPeriod(START, END, true);
+            const actual = await logsPort.countMedianRequestsOnPeriod(START, END, true);
 
             expect(actual).toBe(expected);
         });
@@ -59,7 +59,7 @@ describe("StatsPort", () => {
                 { nbOfRequest: 4 },
             ]);
             const expected = 2.5;
-            const actual = await statsPort.countMedianRequestsOnPeriod(START, END, true);
+            const actual = await logsPort.countMedianRequestsOnPeriod(START, END, true);
 
             expect(actual).toBe(expected);
         });
@@ -75,14 +75,14 @@ describe("StatsPort", () => {
         beforeAll(() => mockToArray.mockResolvedValueOnce(MONGO_OUTPUT));
 
         it("calls mongo aggregation", async () => {
-            await statsPort.countRequestsPerMonthByYear(YEAR, false);
+            await logsPort.countRequestsPerMonthByYear(YEAR, false);
             expect(spyAggregate).toBeCalled();
         });
 
         it("returns port's result'", async () => {
             mockToArray.mockReturnValueOnce(MONGO_OUTPUT);
             const expected = MONGO_OUTPUT;
-            const actual = await statsPort.countRequestsPerMonthByYear(YEAR, false);
+            const actual = await logsPort.countRequestsPerMonthByYear(YEAR, false);
             expect(actual).toStrictEqual(expected);
         });
     });
