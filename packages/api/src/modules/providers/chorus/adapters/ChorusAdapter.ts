@@ -1,3 +1,4 @@
+import Sentry from "@sentry/node";
 import { CommonPaymentDto, ChorusPayment } from "dto";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
@@ -7,11 +8,16 @@ import StateBudgetProgramDbo from "../../../../dataProviders/db/state-budget-pro
 import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
 import MinistryEntity from "../../../../entities/MinistryEntity";
 import DomaineFonctionnelEntity from "../../../../entities/DomaineFonctionnelEntity";
+import Siret from "../../../../valueObjects/Siret";
 import RefProgrammationEntity from "../../../../entities/RefProgrammationEntity";
-import PaymentFlatEntity from "../../../../entities/PaymentFlatEntity";
 import { GenericParser } from "../../../../shared/GenericParser";
-import { NestedDefaultObject } from "../../../../@types";
-import { ChorusLineDto } from "./chorusLineDto";
+import { ChorusLineDto } from "../@types/ChorusLineDto";
+import PaymentFlatEntity from "../../../../entities/PaymentFlatEntity";
+import { ChorusPaymentFlatRaw } from "../@types/ChorusPaymentFlatRaw";
+import Ridet from "../../../../valueObjects/Ridet";
+import { establishmentIdType } from "../../../../valueObjects/typeIdentifier";
+import Tahitiet from "../../../../valueObjects/Tahitiet";
+import REGION_MAPPING from "./ChorusRegionMapping";
 
 export default class ChorusAdapter {
     static PROVIDER_NAME = "Chorus";
@@ -68,14 +74,109 @@ export default class ChorusAdapter {
         };
     }
 
-    public static toNotAggregatedChorusPaymentFlatEntity(
-        /*
-            create a PaymentFlatEntity from a ChorusLineEntity without
-            aggregating the data. To get "a real" PaymentFlat entity data have
-            to be groupbed by the unique key of paymentFlat that is not necessarily
-            the same as the unique key of the ChorusLineEntity.
-            */
+    public static getRegionAttachementComptable(attachementComptable: string | "N/A"): string | "N/A" {
+        if (attachementComptable == "N/A") return "N/A";
 
+        const region = REGION_MAPPING[attachementComptable];
+        if (region === undefined) {
+            const errorMessage = `Unknown region code: ${attachementComptable}`;
+            Sentry.captureException(new Error(errorMessage));
+            console.error(errorMessage);
+            return "code region inconnu";
+        }
+        return region;
+    }
+
+    private static getEstablishmentValueObject(chorusLineDto: ChorusLineDto): establishmentIdType {
+        if (chorusLineDto["Code taxe 1"] === "#") {
+            if (Ridet.isRidet(chorusLineDto["No TVA 3 (COM-RIDET ou TAHITI)"])) {
+                return new Ridet(chorusLineDto["No TVA 3 (COM-RIDET ou TAHITI)"]);
+            } else {
+                return new Tahitiet(chorusLineDto["No TVA 3 (COM-RIDET ou TAHITI)"]);
+            }
+        } else return new Siret(chorusLineDto["Code taxe 1"]);
+    }
+
+    // TODO: add to ValueObject a getCompanyId that would abstract the notion of siren/rid/tahiti ?
+    private static getCompanyId(estabId: establishmentIdType) {
+        if (estabId instanceof Siret) {
+            return estabId.toSiren();
+        } else if (estabId instanceof Ridet) {
+            return estabId.toRid();
+        }
+        // Tahitiet
+        else {
+            return estabId.toTahiti();
+        }
+    }
+
+    private static getAmount(chorusLineDto: ChorusLineDto): number | null {
+        const amount = chorusLineDto["Montant payé"];
+        if (!amount || typeof amount === "number") return amount;
+        if (typeof amount === "string")
+            // @ts-expect-error: this should not be a string but was in the original code refactored with #3342
+            // Plus, after unit testing it it throws a TypeError because the RegExp doesn't have the g flag (added in #3342)
+            return parseFloat(amount.replaceAll(/[\r ]/g, "").replace(",", "."));
+        // this should never happen
+        else return null;
+    }
+
+    private static getOperationDate(chorusLineDto: ChorusLineDto): Date | null {
+        const operationDate = chorusLineDto["Date de dernière opération sur la DP"];
+
+        if (!operationDate) return null;
+
+        if (typeof operationDate === "number") {
+            return GenericParser.ExcelDateToJSDate(operationDate);
+        } else {
+            const operationDateFromStr = parseInt(operationDate, 10);
+            // if operationDate is DD/MM/YYYY ? Is this realy possible ? This code is old and was refactored in #3342
+            if (operationDate != operationDateFromStr.toString()) {
+                const [day, month, year] = operationDate.split(/[/.]/).map(v => parseInt(v, 10));
+                return new Date(Date.UTC(year, month - 1, day));
+            } else {
+                return GenericParser.ExcelDateToJSDate(parseInt(operationDate, 10));
+            }
+        }
+    }
+
+    private static getPaymentFlatRawData(data: ChorusLineDto): ChorusPaymentFlatRaw {
+        const exerciceBudgetaire = data["Exercice comptable"] ? parseInt(data["Exercice comptable"], 10) : null;
+        const idEtablissementBeneficiaire = this.getEstablishmentValueObject(data);
+        const idEntrepriseBeneficiaire = this.getCompanyId(idEtablissementBeneficiaire);
+        const typeIdEtablissementBeneficiaire = idEtablissementBeneficiaire.name;
+        const typeIdEntrepriseBeneficiaire = idEntrepriseBeneficiaire.name;
+
+        // all nullable error should be handled with issue #3345
+        return {
+            //@ts-expect-error: this should be nullable but was in the original code refactored with #3342
+            exerciceBudgetaire,
+            typeIdEtablissementBeneficiaire,
+            idEtablissementBeneficiaire,
+            typeIdEntrepriseBeneficiaire,
+            idEntrepriseBeneficiaire,
+            //@ts-expect-error: this should be nullable but was in the original code refactored with #3342
+            amount: this.getAmount(data),
+            //@ts-expect-error: this should be nullable but was in the original code refactored with #3342
+            operationDate: this.getOperationDate(data),
+            //@ts-expect-error: this should be nullable but was in the original code refactored with #3342
+            ej: data["N° EJ"],
+            centreFinancierCode: data["Centre financier CODE"],
+            centreFinancierLibelle: data["Centre financier"],
+            //@ts-expect-error: this should be nullable but was in the original code refactored with #3342
+            attachementComptable: data["Société"],
+        };
+    }
+
+    /**
+     *   /!\ DO NOT USE THIS DIRECTLY TO PERSIT IN PAYMENT FLAT DATABASE /!\
+     *
+     *   Create a PaymentFlatEntity from a ChorusLineEntity
+     *
+     *   To get a "full" PaymentFlatEntity in order to process persistance in database,
+     *   ensure to aggregate all PaymentFlatEntity by uniqueId and merge the amount
+     */
+    public static toNotAggregatedChorusPaymentFlatEntity(
         chorusDocument: ChorusLineEntity,
         programs: Record<string, StateBudgetProgramEntity>,
         ministries: Record<string, MinistryEntity>,
@@ -98,25 +199,39 @@ export default class ChorusAdapter {
             refsProgrammation,
         );
 
-        const entityConstructorParameters = [
-            ...Object.values(
-                GenericParser.indexDataByPathObject(
-                    PaymentFlatEntity.chorusToPaymentFlatPath,
-                    chorusDocument.data as NestedDefaultObject<string>,
-                ),
-            ),
-            programEntity?.label_programme ?? null, // programName,
-            programCode, // programNumber,
-            programEntity?.mission ?? null, // mission,
-            ministryEntity?.nom_ministere ?? null, // ministry,
-            ministryEntity?.sigle_ministere ?? null, // ministryAcronym,
-            actionCode, // actionCode,
-            domaineFonctEntity?.libelle_action ?? null, // actionLabel,
-            activityCode ?? null, // activityCode,
-            refProgrammationEntity?.libelle_activite ?? null, // activityLabel,
-        ] as ConstructorParameters<typeof PaymentFlatEntity>;
+        const rawDataWithDataBretagne: Omit<
+            PaymentFlatEntity,
+            "regionAttachementComptable" | "idVersement" | "uniqueId"
+        > = {
+            ...this.getPaymentFlatRawData(chorusDocument.data as ChorusLineDto),
+            programName: programEntity?.label_programme ?? null,
+            programNumber: programCode,
+            mission: programEntity?.mission ?? null,
+            ministry: ministryEntity?.nom_ministere ?? null,
+            ministryAcronym: ministryEntity?.sigle_ministere ?? null,
+            actionCode,
+            actionLabel: domaineFonctEntity?.libelle_action ?? null,
+            activityCode,
+            activityLabel: refProgrammationEntity?.libelle_activite ?? null,
+            provider: "chorus", // TODO: get this from config / code => see #3338
+        };
 
-        return new PaymentFlatEntity(...entityConstructorParameters);
+        const idVersement = `${rawDataWithDataBretagne.idEtablissementBeneficiaire}-${rawDataWithDataBretagne.ej}-${rawDataWithDataBretagne.exerciceBudgetaire}`;
+        const uniqueId = `${idVersement}-${
+            rawDataWithDataBretagne.programNumber
+        }-${actionCode}-${activityCode}-${rawDataWithDataBretagne.operationDate.getTime()}-${
+            rawDataWithDataBretagne.attachementComptable
+        }-${rawDataWithDataBretagne.centreFinancierCode}`;
+        const regionAttachementComptable = ChorusAdapter.getRegionAttachementComptable(
+            rawDataWithDataBretagne.attachementComptable,
+        );
+
+        return {
+            ...rawDataWithDataBretagne,
+            uniqueId,
+            idVersement,
+            regionAttachementComptable,
+        };
     }
 
     private static getProgramCodeAndEntity(

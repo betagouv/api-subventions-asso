@@ -47,6 +47,14 @@ class PaymentFlatChorusService {
         }
     }
 
+    /**
+     *  Create a list of PaymentFlatEntity from ChorusLine collection
+     *  It aggregates NotAggregatedChorusPaymentFlatEntity having the same uniqueId, to calculate the total amount
+     */
+    // TODO: move this in ChorusAdapter ?
+    // We should rename this to toAggregatedPaymentFlat
+    // And explain somewhere that to be able to store a PaymentFlat from Chorus we need to aggregate some of them (and why)
+    // We should also rename ChorusAdapter.toNotAggregatedChorusPaymentFlatEntity to toPaymentFlatEntity because it is more accurate sementicaly
     public async toPaymentFlatChorusEntities(
         programs,
         ministries,
@@ -54,16 +62,7 @@ class PaymentFlatChorusService {
         refsProgrammation,
         exerciceBudgetaire?: number,
     ) {
-        /*
-        from the chorus collection, create a list of PaymentFlatEntity 
-        by aggregating NotAggregatedChorusPaymentFlatEntity having the same uniqueId
-        */
-        let chorusCursor;
-        if (exerciceBudgetaire) {
-            chorusCursor = chorusService.cursorFindDataWithoutHash(exerciceBudgetaire);
-        } else {
-            chorusCursor = chorusService.cursorFindDataWithoutHash();
-        }
+        const chorusCursor = chorusService.cursorFind(exerciceBudgetaire);
         const entities: Record<string, PaymentFlatEntity> = {};
 
         while (await chorusCursor.hasNext()) {

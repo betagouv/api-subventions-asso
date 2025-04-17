@@ -54,25 +54,18 @@ describe("chorusLinePort", () => {
         });
     });
 
-    describe("cursorFindData", () => {
-        let mockCursorFind: jest.SpyInstance;
+    describe("cursorFindOnExercise", () => {
+        const mockCursorFind = jest.spyOn(chorusLinePort, "cursorFind");
         beforeEach(() => {
-            mockCursorFind = jest.spyOn(chorusLinePort, "cursorFind").mockImplementation(jest.fn());
+            mockCursorFind.mockImplementation(jest.fn());
         });
         afterAll(() => {
             mockCursorFind.mockRestore();
         });
-        it("should call cursorFind without filters", () => {
-            chorusLinePort.cursorFindDataWithoutHash();
-            expect(mockCursorFind).toHaveBeenCalledWith({ "indexedInformations.siret": { $ne: "#" } });
-        });
-        it("should call cursorFind with filters", () => {
-            const exerciceBudgetaire = 2022;
-            chorusLinePort.cursorFindDataWithoutHash(exerciceBudgetaire);
-            expect(mockCursorFind).toHaveBeenCalledWith({
-                "indexedInformations.exercice": exerciceBudgetaire,
-                "indexedInformations.siret": { $ne: "#" },
-            });
+        it("should call cursorFind with filter", () => {
+            const exerciceBudgetaire = 2023;
+            chorusLinePort.cursorFindOnExercise(exerciceBudgetaire);
+            expect(mockCursorFind).toHaveBeenCalledWith({ "indexedInformations.exercice": exerciceBudgetaire });
         });
     });
 });

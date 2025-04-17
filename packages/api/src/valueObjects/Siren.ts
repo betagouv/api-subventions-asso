@@ -19,6 +19,10 @@ export default class Siren {
         return new Siren(siret.slice(0, 9));
     }
 
+    get name(): "siren" {
+        return "siren";
+    }
+
     get value() {
         return this.siren;
     }

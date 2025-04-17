@@ -169,9 +169,7 @@ describe("paymentFlatChorusService", () => {
                 }),
             };
 
-            mockChorusCursorFind = jest
-                .spyOn(chorusService, "cursorFindDataWithoutHash")
-                .mockReturnValue(mockCursor as any);
+            mockChorusCursorFind = jest.spyOn(chorusService, "cursorFind").mockReturnValue(mockCursor as any);
             mockToNotAggregatedChorusPaymentFlatEntity = jest
                 .spyOn(ChorusAdapter, "toNotAggregatedChorusPaymentFlatEntity")
                 .mockReturnValue({ ...PAYMENT_FLAT_ENTITY });
@@ -181,14 +179,14 @@ describe("paymentFlatChorusService", () => {
             jest.restoreAllMocks();
         });
 
-        it("should call chorusCursorFind with no argument", async () => {
+        it("should call chorusCursorFind without exercise", async () => {
             await paymentFlatChorusService.toPaymentFlatChorusEntities(
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
                 DATA_BRETAGNE_RECORDS.domainesFonct,
                 DATA_BRETAGNE_RECORDS.refsProgrammation,
             );
-            expect(mockChorusCursorFind).toHaveBeenCalledWith();
+            expect(mockChorusCursorFind).toHaveBeenCalledWith(undefined);
         });
 
         it("should call chorusCursorFind with exercice", async () => {

@@ -17,8 +17,12 @@ import Siren from "../../../valueObjects/Siren";
 import Siret from "../../../valueObjects/Siret";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import chorusLinePort from "../../../dataProviders/db/providers/chorus/chorus.line.port";
+import Ridet from "../../../valueObjects/Ridet";
+import Tahitiet from "../../../valueObjects/Tahitiet";
+import { establishmentIdType } from "../../../valueObjects/typeIdentifier";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
+import { ChorusLineDto } from "./@types/ChorusLineDto";
 
 export interface RejectedRequest {
     state: "rejected";
@@ -123,8 +127,9 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
         return this.toPaymentArray(requests);
     }
 
-    public cursorFindDataWithoutHash(exerciceBudgetaire?: number) {
-        return chorusLinePort.cursorFindDataWithoutHash(exerciceBudgetaire);
+    public cursorFind(exerciceBudgetaire?: number) {
+        if (!exerciceBudgetaire) return chorusLinePort.cursorFind({});
+        else return chorusLinePort.cursorFindOnExercise(exerciceBudgetaire);
     }
 
     // TODO: unit test this

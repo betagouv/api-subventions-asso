@@ -18,15 +18,16 @@ jest.mock("../../rna-siren/rnaSiren.service");
 const mockedRnaSirenService = jest.mocked(rnaSirenService);
 import { ENTITIES, PAYMENTS } from "./__fixtures__/ChorusFixtures";
 import CacheData from "../../../shared/Cache";
-import { BulkWriteResult, WithId } from "mongodb";
-import ChorusLineEntity from "./entities/ChorusLineEntity";
+import { BulkWriteResult } from "mongodb";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
 import Siren from "../../../valueObjects/Siren";
 import Siret from "../../../valueObjects/Siret";
 import Rna from "../../../valueObjects/Rna";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
-import { isObjectBindingPattern } from "typescript";
+import { ChorusLineDto } from "./@types/ChorusLineDto";
+import Tahitiet from "../../../valueObjects/Tahitiet";
+import Ridet from "../../../valueObjects/Ridet";
 
 describe("chorusService", () => {
     beforeAll(() => {
@@ -61,58 +62,51 @@ describe("chorusService", () => {
         });
     });
 
-    describe("Get payments", () => {
-        let toVersementArrayMock: jest.SpyInstance;
-        beforeAll(() => {
-            // @ts-expect-error: toPaymentArray is private
-            toVersementArrayMock = jest.spyOn(chorusService, "toPaymentArray");
-
-            toVersementArrayMock.mockImplementation(data => data);
-        });
-
-        afterAll(() => {
-            toVersementArrayMock.mockRestore();
-        });
-
-        describe("chorusCursorFindDataWithoutHash", () => {
-            it("should call chorusLinePort.findData with undefined", () => {
-                chorusService.cursorFindDataWithoutHash();
-                expect(mockedChorusLinePort.cursorFindDataWithoutHash).toHaveBeenCalledWith(undefined);
-            });
-
-            it("should call chorusLinePort.findData with exerciceBudgetaire", () => {
-                const exerciceBudgetaire = 2021;
-                chorusService.cursorFindDataWithoutHash(exerciceBudgetaire);
-                expect(mockedChorusLinePort.cursorFindDataWithoutHash).toHaveBeenCalledWith(exerciceBudgetaire);
-            });
-        });
-    });
-
-    describe("getProgramCode", () => {
-        const expected = 101;
-        const actual = chorusService.getProgramCode(ENTITIES[0]);
-        expect(actual).toEqual(expected);
-    });
-
     describe("toPaymentArray", () => {
-        let mockGetProgramCode: jest.SpyInstance;
-
-        beforeAll(() => {
-            mockGetProgramCode = jest
-                .spyOn(chorusService, "getProgramCode")
-                .mockReturnValue(PROGRAMS[0].code_programme);
-        });
+        const mockGetProgramCode = jest
+            .spyOn(chorusService, "getProgramCode")
+            .mockReturnValue(PROGRAMS[0].code_programme);
 
         afterAll(() => {
             mockGetProgramCode.mockRestore();
         });
 
+        it("should call getProgramCode", () => {
+            // @ts-expect-error: test private method
+            chorusService.toPaymentArray(ENTITIES);
+            ENTITIES.forEach((entity, index) => {
+                expect(mockGetProgramCode).toHaveBeenNthCalledWith(index + 1, entity);
+            });
+        });
+
+        // TODO: test this function
         it("should call toPayment for each entity", () => {
             // @ts-expect-error: test private method
             chorusService.toPaymentArray(ENTITIES);
             ENTITIES.forEach((entity, index) => {
                 expect(ChorusAdapter.toPayment).toHaveBeenNthCalledWith(index + 1, entity, PROGRAMS[0]);
             });
+        });
+    });
+
+    describe("cursorFind", () => {
+        it("should call chorusLinePort.cursorFind", () => {
+            chorusService.cursorFind();
+            expect(mockedChorusLinePort.cursorFind).toHaveBeenCalledWith({});
+        });
+
+        it("should call chorusLinePort.cursorFindOnExercise", () => {
+            const exerciceBudgetaire = 2021;
+            chorusService.cursorFind(exerciceBudgetaire);
+            expect(mockedChorusLinePort.cursorFindOnExercise).toHaveBeenCalledWith(exerciceBudgetaire);
+        });
+    });
+
+    describe("getProgramCode", () => {
+        it("should return code", () => {
+            const expected = PROGRAMS[0].code_programme;
+            const actual = chorusService.getProgramCode(ENTITIES[0]);
+            expect(actual).toEqual(expected);
         });
     });
 
@@ -298,13 +292,11 @@ describe("chorusService", () => {
     describe("insertBatchChorusLine", () => {
         const EMPTY_ANSWER = { rejected: 0, created: 0 };
 
-        let mockIsAcceptedEntity: jest.SpyInstance;
-        let mockInsertMany: jest.SpyInstance;
+        const mockIsAcceptedEntity = jest.spyOn(chorusService, "isAcceptedEntity");
+        const mockInsertMany = jest.spyOn(chorusService, "upsertMany");
         beforeEach(() => {
-            mockIsAcceptedEntity = jest.spyOn(chorusService, "isAcceptedEntity").mockResolvedValue(true);
-            mockInsertMany = jest
-                .spyOn(chorusService, "upsertMany")
-                .mockResolvedValue(true as unknown as BulkWriteResult);
+            mockIsAcceptedEntity.mockResolvedValue(true);
+            mockInsertMany.mockResolvedValue(true as unknown as BulkWriteResult);
         });
 
         it("should call upsertMany", async () => {
@@ -318,7 +310,7 @@ describe("chorusService", () => {
         });
 
         it("should return response with created and rejected", async () => {
-            mockIsAcceptedEntity.mockReturnValueOnce(false);
+            mockIsAcceptedEntity.mockResolvedValueOnce(false);
             const expected = { ...EMPTY_ANSWER, created: ENTITIES.length - 1, rejected: 1 };
             const actual = await chorusService.insertBatchChorusLine(ENTITIES);
             expect(actual).toEqual(expected);
