@@ -91,7 +91,7 @@ export class ApplicationFlatService
 
         for (const provider of applicationFlatProviders) {
             console.log(`---- saving application flat entities from provider '${provider.provider.name}' ----`);
-            await this._updateApplicationsFlatCollectionByProvider(provider, START_YEAR, END_YEAR)
+            await this.updateApplicationsFlatCollectionByProvider(provider, START_YEAR, END_YEAR)
                 .then(() => console.log(`update from provider '${provider.provider.name}' ended successfully`))
                 .catch((e: Error) =>
                     console.log(`update from provider '${provider.provider.name}' failed with error '${e.message}'`),
@@ -99,7 +99,7 @@ export class ApplicationFlatService
         }
     }
 
-    async _updateApplicationsFlatCollectionByProvider(
+    private async updateApplicationsFlatCollectionByProvider(
         provider: ApplicationFlatProvider,
         START_YEAR: number,
         END_YEAR: number,

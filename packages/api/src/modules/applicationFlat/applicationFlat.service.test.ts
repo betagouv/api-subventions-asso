@@ -164,7 +164,8 @@ describe("ApplicationFlatService", () => {
             it("updates for all providers with given exercise", async () => {
                 const updateByProviderSpy = jest.spyOn(
                     applicationFlatService,
-                    "_updateApplicationsFlatCollectionByProvider",
+                    // @ts-expect-error -- private method
+                    "updateApplicationsFlatCollectionByProvider",
                 );
                 const EXERCICE = 2042;
                 await applicationFlatService.updateApplicationsFlatCollection(EXERCICE);
@@ -176,7 +177,8 @@ describe("ApplicationFlatService", () => {
                 jest.setSystemTime(new Date("2020-03-22"));
                 const updateByProviderSpy = jest.spyOn(
                     applicationFlatService,
-                    "_updateApplicationsFlatCollectionByProvider",
+                    // @ts-expect-error -- private method
+                    "updateApplicationsFlatCollectionByProvider",
                 );
                 await applicationFlatService.updateApplicationsFlatCollection();
                 expect(updateByProviderSpy).toHaveBeenCalledWith(mockProvider, 2017, 2022);
@@ -203,12 +205,14 @@ describe("ApplicationFlatService", () => {
             const END = 2022;
 
             it("gets stream from provider", async () => {
-                await applicationFlatService._updateApplicationsFlatCollectionByProvider(PROVIDER, START, END);
+                // @ts-expect-error -- private method
+                await applicationFlatService.updateApplicationsFlatCollectionByProvider(PROVIDER, START, END);
                 expect(PROVIDER.getApplicationFlatStream).toHaveBeenCalledWith(START, END);
             });
 
             it("calls port's upsert as many times as necessary according to chunk size", async () => {
-                await applicationFlatService._updateApplicationsFlatCollectionByProvider(PROVIDER, START, END);
+                // @ts-expect-error -- private method
+                await applicationFlatService.updateApplicationsFlatCollectionByProvider(PROVIDER, START, END);
                 expect(applicationFlatPort.upsertMany).toHaveBeenCalledTimes(3);
             });
         });
