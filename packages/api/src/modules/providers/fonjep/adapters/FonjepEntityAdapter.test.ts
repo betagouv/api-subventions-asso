@@ -95,4 +95,15 @@ describe("FonjepEntityAdapter", () => {
             expect(actual).toEqual(expected);
         });
     });
+
+    describe("getBopFromFounderCode", () => {
+        it.each`
+            code         | expected
+            ${"10012"}   | ${361}
+            ${undefined} | ${undefined}
+        `("should return value", ({ code, expected }) => {
+            const actual = FonjepEntityAdapter.getBopFromFounderCode(code);
+            expect(actual).toEqual(expected);
+        });
+    });
 });

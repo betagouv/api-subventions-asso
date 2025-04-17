@@ -36,6 +36,12 @@ export default class FonjepCli extends CliController {
             dispositifEntities,
         );
 
+        await fonjepService.createPaymentFlatEntitiesFromCollections({
+            thirdParties: tierEntities,
+            positions: posteEntities,
+            payments: versementEntities,
+        });
+
         this.logger.logIC("Fonjep temps collections created");
 
         await fonjepService.applyTemporyCollection();

@@ -1,8 +1,11 @@
 import {
     DISPOSITIF_ENTITY,
+    POSTE_ENTITIES,
     POSTE_ENTITY,
+    TIER_ENTITIES,
     TIER_ENTITY,
     TYPE_POSTE_ENTITY,
+    VERSEMENT_ENTITIES,
     VERSEMENT_ENTITY,
 } from "./__fixtures__/fonjepEntities";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
@@ -26,6 +29,11 @@ import {
     TYPE_POSTE_DTO,
     VERSEMENT_DTO_WITH_DATE,
 } from "./__fixtures__/fonjepDtos";
+import FonjepVersementEntity from "./entities/FonjepVersementEntity";
+import dataBretagneService from "../dataBretagne/dataBretagne.service";
+import paymentFlatService from "../../paymentFlat/paymentFlat.service";
+import { DATA_BRETAGNE_RECORDS } from "../dataBretagne/__fixtures__/dataBretagne.fixture";
+import { PAYMENT_FLAT_ENTITY } from "../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
 
 const PARSED_DATA = {
     tiers: [TIER_DTO],
@@ -210,6 +218,152 @@ describe("FonjepService", () => {
         it("should call applyTemporyCollection on fonjepVersementsPort", async () => {
             await fonjepService.applyTemporyCollection();
             expect(fonjepVersementsPort.applyTemporyCollection).toHaveBeenCalled();
+        });
+    });
+
+    describe("isPaymentPayed", () => {
+        const PARTIAL_PAYMENT = {
+            montantPaye: 1000,
+            dateVersement: new Date("2025-04-12"),
+            periodeDebut: new Date("2025-01-13"),
+        };
+        it("return true if all payments properties defined", () => {
+            const expected = true;
+            // @ts-expect-error: test private method
+            const actual = fonjepService.isPaymentPayed(PARTIAL_PAYMENT);
+            expect(actual).toEqual(expected);
+        });
+
+        it.each`
+            field
+            ${"montantPaye"}
+            ${"dateVersement"}
+            ${"periodeDebut"}
+        `("return false if $field is not defined", ({ field }) => {
+            const expected = false;
+            const payment = { ...PARTIAL_PAYMENT, [field]: undefined };
+            // @ts-expect-error: test private method
+            const actual = fonjepService.isPaymentPayed(payment);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("validatePayment", () => {
+        // @ts-expect-error: mock private method
+        const mockIsPaymentPayed = jest.spyOn(fonjepService, "isPaymentPayed");
+
+        beforeAll(() => {
+            // @ts-expect-error: mock return value
+            mockIsPaymentPayed.mockReturnValue(true);
+        });
+
+        afterEach(() => {
+            mockIsPaymentPayed.mockClear();
+        });
+
+        it("return true if payed with posteCode defined", () => {
+            const expected = true;
+            // @ts-expect-error: test private method
+            const actual = fonjepService.validatePayment({ posteCode: "CODE_001" } as FonjepVersementEntity);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("createPaymentFlatEntitiesFromCollections", () => {
+        const mockValidatePayment: jest.SpyInstance<Boolean> = jest.spyOn(fonjepService as any, "validatePayment");
+        const mockGetAllDataRecords = jest.spyOn(dataBretagneService, "getAllDataRecords");
+        const mockToFonjepPaymentFlat = jest.spyOn(FonjepEntityAdapter, "toFonjepPaymentFlat");
+        const mockUpsertMay = jest.spyOn(paymentFlatService, "upsertMany");
+
+        beforeAll(() => {
+            mockValidatePayment.mockReturnValue(true);
+            mockGetAllDataRecords.mockResolvedValue(DATA_BRETAGNE_RECORDS);
+            // @ts-expect-error: mock adapter
+            mockToFonjepPaymentFlat.mockImplementation((_fonjepData, _dataBretagneDat) => PAYMENT_FLAT_ENTITY);
+            mockUpsertMay.mockImplementation(jest.fn());
+        });
+
+        afterEach(() => {
+            [mockUpsertMay, mockToFonjepPaymentFlat].map(mock => mock.mockClear());
+        });
+
+        afterAll(() => {
+            [mockValidatePayment, mockGetAllDataRecords, mockToFonjepPaymentFlat, mockUpsertMay].map(mock =>
+                mock.mockRestore(),
+            );
+        });
+
+        it("validates payments", async () => {
+            await fonjepService.createPaymentFlatEntitiesFromCollections({
+                thirdParties: TIER_ENTITIES,
+                positions: POSTE_ENTITIES,
+                payments: VERSEMENT_ENTITIES,
+            });
+
+            VERSEMENT_ENTITIES.forEach((entity, index) => {
+                expect(mockValidatePayment).toHaveBeenNthCalledWith(index + 1, entity);
+            });
+        });
+
+        it("fetches data bretagne records", () => {
+            fonjepService.createPaymentFlatEntitiesFromCollections({
+                thirdParties: TIER_ENTITIES,
+                positions: POSTE_ENTITIES,
+                payments: VERSEMENT_ENTITIES,
+            });
+
+            expect(mockGetAllDataRecords).toHaveBeenCalled();
+        });
+
+        it("adaptes payments to payments flat", async () => {
+            await fonjepService.createPaymentFlatEntitiesFromCollections({
+                thirdParties: TIER_ENTITIES,
+                positions: POSTE_ENTITIES,
+                payments: VERSEMENT_ENTITIES,
+            });
+
+            VERSEMENT_ENTITIES.forEach((entity, index) => {
+                expect(mockToFonjepPaymentFlat).toHaveBeenNthCalledWith(
+                    index + 1,
+                    {
+                        payment: entity,
+                        position: POSTE_ENTITIES[0], // matches entity.codePoste
+                        thirdParty: TIER_ENTITIES[0], // matches entity.codePoste
+                    },
+                    DATA_BRETAGNE_RECORDS,
+                );
+            });
+        });
+
+        it("persist payments flat in database", async () => {
+            await fonjepService.createPaymentFlatEntitiesFromCollections({
+                thirdParties: TIER_ENTITIES,
+                positions: POSTE_ENTITIES,
+                payments: VERSEMENT_ENTITIES,
+            });
+
+            // adapter has been mocked to return entity to simplify test
+            expect(mockUpsertMay).toHaveBeenCalledWith(VERSEMENT_ENTITIES.map(_entity => PAYMENT_FLAT_ENTITY));
+        });
+
+        it("filter valid payments", async () => {
+            await fonjepService.createPaymentFlatEntitiesFromCollections({
+                thirdParties: TIER_ENTITIES,
+                positions: POSTE_ENTITIES,
+                payments: [
+                    ...VERSEMENT_ENTITIES,
+                    {
+                        posteCode: "Code_NO_MATCH",
+                        periodeDebut: new Date("2022-01-12"),
+                        periodeFin: new Date("2022-12-14"),
+                        dateVersement: new Date("2022-04-15"),
+                        montantAPayer: 1000,
+                        montantPaye: 1000,
+                    },
+                ],
+            });
+
+            expect(mockToFonjepPaymentFlat).toHaveBeenCalledTimes(VERSEMENT_ENTITIES.length);
         });
     });
 });

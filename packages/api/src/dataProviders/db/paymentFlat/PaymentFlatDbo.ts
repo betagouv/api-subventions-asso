@@ -23,7 +23,8 @@ export default interface PaymentFlatDbo {
     mission: string | null;
     ministere: string | null;
     sigleMinistere: string | null;
-    codeAction: string;
+    // nullable since #3142 with the add of FonjepPaymentFlat
+    codeAction: string | null;
     action: string | null;
     codeActivite: string | null;
     activite: string | null;

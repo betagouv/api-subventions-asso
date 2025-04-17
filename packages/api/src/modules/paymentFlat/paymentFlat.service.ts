@@ -20,14 +20,24 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider<
         });
     }
 
+    /**
+     * |-------------------------|
+     * |     Database Part       |
+     * |-------------------------|
+     */
+
     public isCollectionInitialized() {
         return paymentFlatPort.hasBeenInitialized();
     }
 
+    public upsertMany(entities: PaymentFlatEntity[]) {
+        return paymentFlatPort.upsertMany(entities);
+    }
+
     /**
-     * |-------------------------|
-     * |     Payment Part        |
-     * |-------------------------|
+     * |--------------------------|
+     * |   Payment Provider Part  |
+     * |--------------------------|
      */
 
     isPaymentProvider = true;
@@ -60,7 +70,7 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider<
 
     /**
      * |-------------------------|
-     * |   Grant Part            |
+     * |   Grant Provider Part   |
      * |-------------------------|
      */
 

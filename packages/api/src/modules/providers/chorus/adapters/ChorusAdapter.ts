@@ -1,5 +1,6 @@
 import Sentry from "@sentry/node";
 import { CommonPaymentDto, ChorusPayment } from "dto";
+import { getShortISODate } from "../../../../shared/helpers/DateHelper";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
@@ -179,8 +180,8 @@ export default class ChorusAdapter {
         chorusDocument: ChorusLineEntity,
         programs: Record<string, StateBudgetProgramEntity>,
         ministries: Record<string, MinistryEntity>,
-        domainesFonct: Record<string, DomaineFonctionnelEntity>,
-        refsProgrammation: Record<string, RefProgrammationEntity>,
+        fonctionalDomains: Record<string, DomaineFonctionnelEntity>,
+        programsRef: Record<string, RefProgrammationEntity>,
     ): ChorusPaymentFlatEntity {
         const {
             programCode,
@@ -194,8 +195,8 @@ export default class ChorusAdapter {
             chorusDocument.data as ChorusLineDto,
             programs,
             ministries,
-            domainesFonct,
-            refsProgrammation,
+            fonctionalDomains,
+            programsRef,
         );
 
         const rawDataWithDataBretagne: Omit<
@@ -218,7 +219,7 @@ export default class ChorusAdapter {
         const idVersement = `${rawDataWithDataBretagne.idEtablissementBeneficiaire}-${rawDataWithDataBretagne.ej}-${rawDataWithDataBretagne.exerciceBudgetaire}`;
         const uniqueId = `${idVersement}-${
             rawDataWithDataBretagne.programNumber
-        }-${actionCode}-${activityCode}-${rawDataWithDataBretagne.operationDate.getTime()}-${
+        }-${actionCode}-${activityCode}-${getShortISODate(rawDataWithDataBretagne.operationDate)}-${
             rawDataWithDataBretagne.attachementComptable
         }-${rawDataWithDataBretagne.centreFinancierCode}`;
         const regionAttachementComptable = ChorusAdapter.getRegionAttachementComptable(
@@ -242,6 +243,7 @@ export default class ChorusAdapter {
         // trick to trim 0 at the beginning of the code
         // i.e "0161" => "161"
         const code = parseInt(chorusDto["Domaine fonctionnel CODE"]?.slice(1, 4));
+        console.log("code code", code, programs);
         const entity = programs[String(code)];
         if (!entity) {
             console.error(`Program not found for code: ${code}`);
@@ -252,10 +254,10 @@ export default class ChorusAdapter {
 
     private static getActivityCodeAndEntity(
         chorusDto: ChorusLineDto,
-        refsProgrammation: Record<string, RefProgrammationEntity>,
+        programsRef: Record<string, RefProgrammationEntity>,
     ) {
         const code = chorusDto["Référentiel de programmation CODE"]?.slice(-12);
-        const entity = refsProgrammation[code];
+        const entity = programsRef[code];
         if (!entity) {
             console.error(`RefProgrammation not found for code: ${code}`);
             return { code, entity: null };
@@ -265,24 +267,15 @@ export default class ChorusAdapter {
 
     private static getActionCodeAndEntity(
         chorusDto: ChorusLineDto,
-        domainesFonct: Record<string, DomaineFonctionnelEntity>,
+        fonctionalDomains: Record<string, DomaineFonctionnelEntity>,
     ) {
         const code = chorusDto["Domaine fonctionnel CODE"];
-        const entity = domainesFonct[code];
+        const entity = fonctionalDomains[code];
         if (!entity) {
             console.error(`DomaineFonctionnel not found for code: ${code}`);
             return { code, entity: null };
         }
         return { code, entity };
-    }
-
-    private static getMinistryEntity(program: StateBudgetProgramEntity, ministries: Record<string, MinistryEntity>) {
-        const entity = ministries[program.code_ministere];
-        if (!entity) {
-            console.error(`Ministry not found for program code: ${program.code_ministere}`);
-            return null;
-        }
-        return entity;
     }
 
     /**
@@ -292,8 +285,8 @@ export default class ChorusAdapter {
      * @param chorusDocument A ChorusLineDto object
      * @param programs state programs from state-budget-programs collection
      * @param ministries ministries from dataBretagne API
-     * @param domainesFonct domainesFonct from dataBretagne API
-     * @param refsProgrammation refsProgrammation from dataBretagne API
+     * @param fonctionalDomains fonctionalDomains from dataBretagne API
+     * @param programsRef programsRef from dataBretagne API
      *
      * @returns Object containing complementary data if found, otherwise null
      */
@@ -301,24 +294,24 @@ export default class ChorusAdapter {
         chorusDocument: ChorusLineDto,
         programs: Record<number, StateBudgetProgramEntity>,
         ministries: Record<string, MinistryEntity>,
-        domainesFonct: Record<string, DomaineFonctionnelEntity>,
-        refsProgrammation: Record<string, RefProgrammationEntity>,
+        fonctionalDomains: Record<string, DomaineFonctionnelEntity>,
+        programsRef: Record<string, RefProgrammationEntity>,
     ) {
         const { code: programCode, entity: programEntity } = this.getProgramCodeAndEntity(chorusDocument, programs);
-
+        console.log(programCode, programEntity);
         let ministryEntity: MinistryEntity | null = null;
         if (programEntity) {
-            ministryEntity = this.getMinistryEntity(programEntity, ministries);
+            ministryEntity = dataBretagneService.getMinistryEntity(programEntity, ministries);
         }
 
         const { code: activityCode, entity: refProgrammationEntity } = this.getActivityCodeAndEntity(
             chorusDocument,
-            refsProgrammation,
+            programsRef,
         );
 
         const { code: actionCode, entity: domaineFonctEntity } = this.getActionCodeAndEntity(
             chorusDocument,
-            domainesFonct,
+            fonctionalDomains,
         );
 
         return {

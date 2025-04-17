@@ -19,7 +19,7 @@ type PaymentFlatEntity = {
     mission: string | null;
     ministry: string | null;
     ministryAcronym: string | null;
-    actionCode: string;
+    actionCode: string | null;
     actionLabel: string | null;
     activityCode: string | null;
     activityLabel: string | null;

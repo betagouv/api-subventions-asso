@@ -1,6 +1,5 @@
 import { Payment } from "dto";
 import DEFAULT_ASSOCIATION from "../../../../tests/__fixtures__/association.fixture";
-import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
 import Siren from "../../../valueObjects/Siren";
 import Siret from "../../../valueObjects/Siret";
 import { ChorusPaymentFlatEntity } from "../../providers/chorus/@types/ChorusPaymentFlat";

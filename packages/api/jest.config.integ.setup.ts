@@ -29,6 +29,7 @@ import configurationsPort from "./src/dataProviders/db/configurations/configurat
 import { CONFIGURATION_NAMES } from "./src/modules/configurations/configurations.service";
 import { initAsyncServices } from "./src/shared/initAsyncServices";
 import { initTests } from "./jest.config.integ.init";
+import dataBretagnePort from "./src/dataProviders/api/dataBretagne/dataBretagne.port";
 
 /**
  *

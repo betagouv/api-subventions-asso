@@ -47,12 +47,17 @@ export const MOCK_DOCUMENTS: ChorusLineEntity[] = [
 
 export const PROGRAMS = [
     {
-        code_programme: 143,
+        code_programme: 163,
         label_programme: "programme_1",
         code_ministere: "A",
         mission: "mission_1",
     },
-
+    {
+        code_programme: 361,
+        label_programme: "programme_2",
+        code_ministere: "B",
+        mission: "mission_2",
+    },
     {
         code_programme: 224,
         label_programme: "programme_3",
@@ -64,6 +69,18 @@ export const PROGRAMS = [
         label_programme: "programme_4",
         code_ministere: "D",
         mission: "mission_4",
+    },
+    {
+        code_programme: 101,
+        label_programme: "programme_5",
+        code_ministere: "E",
+        mission: "mission_5",
+    },
+    {
+        code_programme: 143,
+        label_programme: "programme_6",
+        code_ministere: "F",
+        mission: "mission_6",
     },
 ];
 
@@ -78,6 +95,11 @@ export const MINISTRIES = [
         code: "B",
         label: "nom_ministere_2",
         sigle_ministere: "sigle_ministere_2",
+    },
+    {
+        code: "C",
+        label: "nom_ministere_3",
+        sigle_ministere: "sigle_ministere_3",
     },
     {
         code: "D",
@@ -102,6 +124,11 @@ export const DOMAINES_FONCT = [
         label: "libelle_action_3",
         code_programme: 224,
     },
+    {
+        code: "03354-04-25",
+        label: "libelle_action_4",
+        code_programme: 361,
+    },
 ];
 
 export const REFS_PROGRAMMATION = [
@@ -119,6 +146,11 @@ export const REFS_PROGRAMMATION = [
         code: "014701010101",
         label: "libelle_activite_4",
         code_programme: 147,
+    },
+    {
+        code: "053671010101",
+        label: "libelle_activite_3",
+        code_programme: 361,
     },
 ];
 export const DATA_BRETAGNE_DTOS = {

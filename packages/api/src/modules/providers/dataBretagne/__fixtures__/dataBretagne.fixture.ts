@@ -2,6 +2,7 @@ import DomaineFonctionnelEntity from "../../../../entities/DomaineFonctionnelEnt
 import MinistryEntity from "../../../../entities/MinistryEntity";
 import RefProgrammationEntity from "../../../../entities/RefProgrammationEntity";
 import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
+import { DataBretagneRecords } from "../@types/DataBretagne";
 
 export const PROGRAM_ENTITIES = [
     new StateBudgetProgramEntity("Mission Exemple", "Programme Exemple", "code", 163),
@@ -20,13 +21,8 @@ export const REF_PROGRAMMATION_ENTITIES: RefProgrammationEntity[] = [
     new RefProgrammationEntity("Label d'activité Exemple", "077601003222", 101),
 ];
 
-export const DATA_BRETAGNE_RECORDS: {
-    domainesFonct: Record<string, DomaineFonctionnelEntity>;
-    ministries: Record<string, MinistryEntity>;
-    programs: Record<string, StateBudgetProgramEntity>;
-    refsProgrammation: Record<string, RefProgrammationEntity>;
-} = {
-    domainesFonct: {
+export const DATA_BRETAGNE_RECORDS: DataBretagneRecords = {
+    fonctionalDomains: {
         [DOMAINE_FONCTIONNEL_ENTITIES[0].code_action]: DOMAINE_FONCTIONNEL_ENTITIES[0],
         [DOMAINE_FONCTIONNEL_ENTITIES[1].code_action]: DOMAINE_FONCTIONNEL_ENTITIES[1],
     },
@@ -40,7 +36,7 @@ export const DATA_BRETAGNE_RECORDS: {
         [PROGRAM_ENTITIES[1].code_programme]: PROGRAM_ENTITIES[1],
     },
 
-    refsProgrammation: {
+    programsRef: {
         [REF_PROGRAMMATION_ENTITIES[0].code_activite]: REF_PROGRAMMATION_ENTITIES[0],
         [REF_PROGRAMMATION_ENTITIES[1].code_activite]: REF_PROGRAMMATION_ENTITIES[1],
     },
