@@ -48,7 +48,7 @@ export const DRAFT = {
 };
 
 export const ENTITY = {
-    idUnique: "provider--subv001",
-    idSubvention: "provider--subv001--2015",
+    idUnique: "provider--subv001--2015",
+    idSubvention: "provider--subv001",
     ...DRAFT,
 } as ApplicationFlatEntity;
