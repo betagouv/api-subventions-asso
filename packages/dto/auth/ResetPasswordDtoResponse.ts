@@ -6,6 +6,7 @@ export enum ResetPasswordErrorCodes {
     USER_NOT_FOUND = 3,
     PASSWORD_FORMAT_INVALID = 4,
     INTERNAL_ERROR = 5,
+    PROCONNECT_NO_RESET = 6,
 }
 
 export interface ResetPasswordDtoPositiveResponse {

@@ -113,6 +113,11 @@ export class UserActivationService {
     async forgetPassword(email: string) {
         const user = await userPort.findByEmail(email.toLocaleLowerCase());
         if (!user) return; // Don't say user not found, for security reasons
+        if (user.agentConnectId)
+            throw new BadRequestError(
+                "ProConnect users should not use password",
+                ResetPasswordErrorCodes.PROCONNECT_NO_RESET,
+            );
 
         const resetResult = await this.resetUser(user);
 
