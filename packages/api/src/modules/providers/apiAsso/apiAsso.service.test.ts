@@ -11,6 +11,7 @@ import Siren from "../../../valueObjects/Siren";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import Rna from "../../../valueObjects/Rna";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
+
 jest.mock("../../../shared/helpers/ObjectHelper");
 const mockedObjectHelper = jest.mocked(ObjectHelper);
 
@@ -159,6 +160,24 @@ describe("ApiAssoService", () => {
         it("return documents", async () => {
             const expected = API_ASSO_RESPONSE.asso.documents;
             mockSendRequest.mockImplementationOnce(async () => API_ASSO_RESPONSE);
+            // @ts-expect-error: private method
+            const actual = await apiAssoService.fetchDocuments(ASSOCIATION_ID);
+            expect(actual).toEqual(expected);
+        });
+
+        it("turns single docs to array", async () => {
+            const expected = {
+                document_dac: ["something"],
+                document_rna: ["else"],
+            };
+            mockSendRequest.mockResolvedValue({
+                asso: {
+                    documents: {
+                        document_dac: "something",
+                        document_rna: "else",
+                    },
+                },
+            });
             // @ts-expect-error: private method
             const actual = await apiAssoService.fetchDocuments(ASSOCIATION_ID);
             expect(actual).toEqual(expected);
