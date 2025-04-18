@@ -21,7 +21,7 @@
             <div class="fr-mb-5w fr-mt-n4w">
                 <Spinner />
             </div>
-        {:then}
+        {:then _res}
             {#if $firstSubmitted}
                 <Alert type="success">
                     <p>
@@ -33,8 +33,14 @@
                     </p>
                 </Alert>
             {/if}
-        {:catch}
-            <Alert title="Attention" type="warning">Une erreur est survenue. Veuillez réessayer plus tard.</Alert>
+        {:catch error}
+            <Alert title="Attention" type="warning">
+                {#if ctrl.errorMsgByCode[error.code]}
+                    {ctrl.errorMsgByCode[error.code]}
+                {:else}
+                    Une erreur est survenue. Veuillez réessayer plus tard.
+                {/if}
+            </Alert>
         {/await}
 
         <form action="#" method="GET" on:submit|preventDefault={() => ctrl.onSubmit()}>
