@@ -109,9 +109,7 @@ describe("authService", () => {
         const RES = true;
         const EMAIL = "test@test.fr";
 
-        beforeAll(() => {
-            authPort.forgetPassword.mockResolvedValue(true);
-        });
+        beforeAll(() => authPort.forgetPassword.mockResolvedValue(true));
         afterAll(() => authPort.forgetPassword.mockRestore());
 
         it("rejects if no email", async () => {
@@ -127,7 +125,13 @@ describe("authService", () => {
         it("return result from port if success", async () => {
             const expected = RES;
             const actual = await authService.forgetPassword(EMAIL);
-            expect(expected).toBe(actual);
+            expect(actual).toBe(expected);
+        });
+
+        it("rejects if user is linked to proConnect", async () => {
+            authPort.forgetPassword.mockResolvedValueOnce({ agentConnectId: "something" });
+            const test = () => authService.forgetPassword();
+            await expect(test).rejects.toMatchInlineSnapshot(`undefined`);
         });
     });
 
