@@ -8,7 +8,7 @@ class StatsService {
         return statsAssociationsVisitPort.add(visit);
     }
 
-    async getUserLastSearchDate(userId) {
+    getUserLastSearchDate(userId) {
         return statsAssociationsVisitPort.getLastSearchDate(userId);
     }
 
