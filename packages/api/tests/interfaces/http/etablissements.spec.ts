@@ -13,6 +13,7 @@ import Siret from "../../../src/valueObjects/Siret";
 import Rna from "../../../src/valueObjects/Rna";
 import RnaSirenEntity from "../../../src/entities/RnaSirenEntity";
 import Siren from "../../../src/valueObjects/Siren";
+import statsAssociationsVisitPort from "../../../src/dataProviders/db/stats/statsAssociationsVisit.port";
 
 const g = global as unknown as { app: unknown };
 
@@ -101,15 +102,10 @@ describe("/etablissement", () => {
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
 
-            const actual = await statsService.getTopAssociationsByPeriod(1, beforeRequestTime, new Date());
-            const expected = [
-                {
-                    name: siretToSiren(OsirisRequestEntityFixture.legalInformations.siret),
-                    visits: 1,
-                },
-            ];
-
-            expect(actual).toEqual(expected);
+            const actual = (await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date()))[0];
+            expect(actual).toMatchObject({
+                associationIdentifier: OsirisRequestEntityFixture.legalInformations.siret.slice(0, 9),
+            });
         });
 
         it("should not add one visits on stats AssociationsVisit beacause user is admin", async () => {
@@ -118,8 +114,8 @@ describe("/etablissement", () => {
                 .get(`/etablissement/${OsirisRequestEntityFixture.legalInformations.siret}`)
                 .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
-            const actual = await statsService.getTopAssociationsByPeriod(1, beforeRequestTime, new Date());
 
+            const actual = await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date());
             expect(actual).toHaveLength(0);
         });
 
@@ -128,8 +124,8 @@ describe("/etablissement", () => {
             await request(g.app)
                 .get(`/etablissement/${OsirisRequestEntityFixture.legalInformations.siret}`)
                 .set("Accept", "application/json");
-            const actual = await statsService.getTopAssociationsByPeriod(1, beforeRequestTime, new Date());
 
+            const actual = await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date());
             expect(actual).toHaveLength(0);
         });
 
@@ -141,8 +137,8 @@ describe("/etablissement", () => {
             await request(g.app)
                 .get(`/etablissement/${OsirisRequestEntityFixture.legalInformations.siret}`)
                 .set("Accept", "application/json");
-            const actual = await statsService.getTopAssociationsByPeriod(1, beforeRequestTime, new Date());
 
+            const actual = await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date());
             expect(actual).toHaveLength(0);
         });
     });

@@ -48,8 +48,8 @@ jest.mock("../../../../shared/helpers/PortHelper", () => ({
     uniformizeId: jest.fn(token => token),
 }));
 
-import statsPort from "../../../../dataProviders/db/stats/stats.port";
-jest.mock("../../../../dataProviders/db/stats/stats.port");
+import logsPort from "../../../../dataProviders/db/stats/logs.port";
+jest.mock("../../../../dataProviders/db/stats/logs.port");
 
 describe("user rgpd service", () => {
     describe("getAllData", () => {
@@ -156,7 +156,7 @@ describe("user rgpd service", () => {
 
         it("should return true if update succeed", async () => {
             mockedUserPort.update.mockResolvedValueOnce(ANONYMIZED_USER);
-            jest.mocked(statsPort.anonymizeLogsByUser).mockResolvedValue(true);
+            jest.mocked(logsPort.anonymizeLogsByUser).mockResolvedValue(true);
             const expected = true;
             const actual = await userRgpdService.disable(USER);
             expect(actual).toEqual(expected);
@@ -185,7 +185,7 @@ describe("user rgpd service", () => {
 
         it("should anonymize logs too", async () => {
             await userRgpdService.disable(USER);
-            expect(jest.mocked(statsPort.anonymizeLogsByUser)).toHaveBeenCalledWith(USER, ANONYMIZED_USER);
+            expect(jest.mocked(logsPort.anonymizeLogsByUser)).toHaveBeenCalledWith(USER, ANONYMIZED_USER);
         });
     });
 
