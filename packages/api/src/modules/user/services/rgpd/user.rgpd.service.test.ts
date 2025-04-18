@@ -48,8 +48,8 @@ jest.mock("../../../../shared/helpers/PortHelper", () => ({
     uniformizeId: jest.fn(token => token),
 }));
 
-import logsPort from "../../../../dataProviders/db/stats/stats.port";
-jest.mock("../../../../dataProviders/db/stats/stats.port");
+import logsPort from "../../../../dataProviders/db/stats/logs.port";
+jest.mock("../../../../dataProviders/db/stats/logs.port");
 
 describe("user rgpd service", () => {
     describe("getAllData", () => {

@@ -1,10 +1,10 @@
-import logsPort from "../../dataProviders/db/stats/stats.port";
+import logsPort from "../../dataProviders/db/stats/logs.port";
 import statsAssociationsVisitPort from "../../dataProviders/db/stats/statsAssociationsVisit.port";
 import statsService from "./stats.service";
 import { FindCursor, ObjectId } from "mongodb";
 
 jest.mock("../../dataProviders/db/stats/statsAssociationsVisit.port");
-jest.mock("../../dataProviders/db/stats/stats.port");
+jest.mock("../../dataProviders/db/stats/logs.port");
 
 describe("StatsService", () => {
     // pass-through methods

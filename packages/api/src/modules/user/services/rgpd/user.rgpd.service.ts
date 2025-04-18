@@ -15,7 +15,7 @@ import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import configurationsPort from "../../../../dataProviders/db/configurations/configurations.port";
 import configurationsService, { CONFIGURATION_NAMES } from "../../../configurations/configurations.service";
 import { STALL_RGPD_CRON_6_MONTHS_DELETION } from "../../../../configurations/mail.conf";
-import logsPort from "../../../../dataProviders/db/stats/stats.port";
+import logsPort from "../../../../dataProviders/db/stats/logs.port";
 
 export class UserRgpdService {
     public async getAllData(userId: string): Promise<UserDataDto> {

@@ -2,7 +2,7 @@ import rnaSirenPort from "../dataProviders/db/rnaSiren/rnaSiren.port";
 import uniteLegalEntreprisePort from "../dataProviders/db/uniteLegalEntreprise/uniteLegalEntreprise.port";
 import uniteLegalNamePort from "../dataProviders/db/uniteLegalName/uniteLegalName.port";
 import configurationsPort from "../dataProviders/db/configurations/configurations.port";
-import logsPort from "../dataProviders/db/stats/stats.port";
+import logsPort from "../dataProviders/db/stats/logs.port";
 import statsAssociationsVisitPort from "../dataProviders/db/stats/statsAssociationsVisit.port";
 import userResetPort from "../dataProviders/db/user/user-reset.port";
 import userPort from "../dataProviders/db/user/user.port";

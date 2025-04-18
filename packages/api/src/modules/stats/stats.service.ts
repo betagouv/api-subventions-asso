@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import statsAssociationsVisitPort from "../../dataProviders/db/stats/statsAssociationsVisit.port";
-import logsPort from "../../dataProviders/db/stats/stats.port";
+import logsPort from "../../dataProviders/db/stats/logs.port";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
 
 class StatsService {
