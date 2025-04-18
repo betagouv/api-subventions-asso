@@ -237,13 +237,18 @@ export class ApiAssoService
 
         const result = await this.sendRequest<StructureDocumentDto>(`/proxy_db_asso/documents/${identifierValue}`);
 
+        let docs: DocumentsDto | undefined;
+
         if (typeof result == "string") {
             const parser = new XMLParser();
             const jsonResult = parser.parse(result) as StructureDocumentDto;
-            return jsonResult?.asso?.documents;
-        }
+            docs = jsonResult?.asso?.documents;
+        } else docs = result?.asso?.documents;
 
-        return result?.asso?.documents;
+        if (docs?.document_rna && !Array.isArray(docs?.document_rna)) docs.document_rna = [docs.document_rna];
+        if (docs?.document_dac && !Array.isArray(docs?.document_dac)) docs.document_dac = [docs.document_dac];
+
+        return docs;
     }
 
     private async findRibs(identifier: AssociationIdentifier) {
