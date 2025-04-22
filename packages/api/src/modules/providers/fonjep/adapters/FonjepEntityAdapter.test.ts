@@ -124,20 +124,20 @@ describe("FonjepEntityAdapter", () => {
         const UNIQUE_ID = "UNIQUE_ID";
         const PROGRAM_CODE = "163";
         // @ts-expect-error: mock private method
-        const mockBuildPaymentFlatIdVersement = jest.spyOn(FonjepEntityAdapter, "buildPaymentFlatIdVersement");
+        const mockBuildPaymentFlatPaymentId = jest.spyOn(FonjepEntityAdapter, "buildPaymentFlatPaymentId");
         // @ts-expect-error: mock private method
         const mockBuildPaymentFlatUniqueId = jest.spyOn(FonjepEntityAdapter, "buildPaymentFlatUniqueId");
         const mockGetBopFromFounderCode = jest.spyOn(FonjepEntityAdapter, "getBopFromFounderCode");
 
         beforeAll(() => {
-            mockBuildPaymentFlatIdVersement.mockReturnValue(PAYMENT_ID);
+            mockBuildPaymentFlatPaymentId.mockReturnValue(PAYMENT_ID);
             mockBuildPaymentFlatUniqueId.mockReturnValue(UNIQUE_ID);
             mockGetBopFromFounderCode.mockReturnValue(163);
             jest.mocked(dataBretagneService.getMinistryEntity).mockReturnValue(MINISTRY_ENTITIES[0]);
         });
 
         afterAll(() => {
-            [mockBuildPaymentFlatIdVersement, mockBuildPaymentFlatUniqueId, mockGetBopFromFounderCode].forEach(mock =>
+            [mockBuildPaymentFlatPaymentId, mockBuildPaymentFlatUniqueId, mockGetBopFromFounderCode].forEach(mock =>
                 mock.mockRestore(),
             );
             jest.mocked(dataBretagneService.getMinistryEntity).mockReset();
@@ -173,7 +173,7 @@ describe("FonjepEntityAdapter", () => {
                 { payment: VERSEMENT_ENTITY, position: POSTE_ENTITY, thirdParty: TIERS_ENTITY },
                 DATA_BRETAGNE_RECORDS,
             );
-            expect(mockBuildPaymentFlatIdVersement).toHaveBeenCalledWith({
+            expect(mockBuildPaymentFlatPaymentId).toHaveBeenCalledWith({
                 thirdParty: TIERS_ENTITY,
                 position: POSTE_ENTITY,
                 payment: VERSEMENT_ENTITY,
@@ -204,10 +204,10 @@ describe("FonjepEntityAdapter", () => {
         });
     });
 
-    describe("buildPaymentFlatIdVersement", () => {
+    describe("buildPaymentFlatPaymentId", () => {
         it("return idVersement", () => {
             // @ts-expect-error: test private method
-            const actual = FonjepEntityAdapter.buildPaymentFlatIdVersement({
+            const actual = FonjepEntityAdapter.buildPaymentFlatPaymentId({
                 thirdParty: TIERS_ENTITY,
                 position: POSTE_ENTITY,
                 payment: VERSEMENT_ENTITY,

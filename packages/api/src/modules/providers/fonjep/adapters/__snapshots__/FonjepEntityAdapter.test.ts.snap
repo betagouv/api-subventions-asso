@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`FonjepEntityAdapter buildPaymentFlatIdVersement return idVersement 1`] = `"Code-2022-04-15-2022-10000000000001"`;
+exports[`FonjepEntityAdapter buildPaymentFlatPaymentId return idVersement 1`] = `"Code-2022-04-15-2022-10000000000001"`;
 
 exports[`FonjepEntityAdapter buildPaymentFlatUniqueId return idVersement 1`] = `"PAYMENT_ID-163-2022-04-15"`;
 

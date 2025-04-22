@@ -120,12 +120,12 @@ export default class FonjepEntityAdapter {
         if (entity.ej !== GenericAdapter.NOT_APPLICABLE_VALUE) {
             throw new Error("You must extract a position code from a FonjepPaymentFlat entity");
         } else {
-            // cf buildPaymentFlatIdVersement
+            // cf buildPaymentFlatPaymentId
             return entity.idVersement.split("-")[0];
         }
     }
 
-    private static buildPaymentFlatIdVersement(data: {
+    private static buildPaymentFlatPaymentId(data: {
         thirdParty: FonjepTiersEntity;
         position: FonjepPosteEntity;
         payment: PayedFonjepVersementEntity;
@@ -183,7 +183,7 @@ export default class FonjepEntityAdapter {
 
             const ministry = dataBretagneService.getMinistryEntity(program, dataBretagneData.ministries);
 
-            const paymentId = this.buildPaymentFlatIdVersement({
+            const paymentId = this.buildPaymentFlatPaymentId({
                 thirdParty,
                 position,
                 payment,
