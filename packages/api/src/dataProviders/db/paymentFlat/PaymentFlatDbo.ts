@@ -16,8 +16,8 @@ export default interface PaymentFlatDbo {
     libelleCentreFinancier: string | "N/A" | null;
     attachementComptable: string | "N/A";
     regionAttachementComptable: string | "N/A" | "code region inconnu";
+    // TODO: invetiguate and make it mandatory
     ej: string | null;
-    codePoste: string | null;
     programme: string | null;
     numeroProgramme: number;
     mission: string | null;

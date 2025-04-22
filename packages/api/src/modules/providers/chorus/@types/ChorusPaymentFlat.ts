@@ -16,5 +16,7 @@ export type ChorusPaymentFlatRaw = Pick<
     | "attachementComptable"
 >;
 
-// TODO: remove both codePoste and EJ from PaymentFlat ?
-export type ChorusPaymentFlatEntity = PaymentFlatEntity & { ej: string; codePoste: null };
+// we override EJ as string and not nullable because when it's persisted in DB it must have EJ defined
+// TODO: investiguate and update PaymentFlatEntity nullable props (to make EJ only a string and always define)
+// => filter data before persisting in DB
+export type ChorusPaymentFlatEntity = PaymentFlatEntity & { ej: string };

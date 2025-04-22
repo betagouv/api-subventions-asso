@@ -15,6 +15,4 @@ export type PayedFonjepVersementEntity = FonjepVersementEntity & {
     montantPaye: number;
 };
 
-export type FullFonjepVersementEntity = PayedFonjepVersementEntity & { posteCode: string };
-
 export default FonjepVersementEntity;

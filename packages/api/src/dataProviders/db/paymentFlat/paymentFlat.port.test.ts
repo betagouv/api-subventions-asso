@@ -1,4 +1,4 @@
-import { PAYMENT_FLAT_ENTITY } from "../../../modules/paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../../modules/paymentFlat/__fixtures__/paymentFlatEntity.fixture";
 import PaymentFlatAdapter from "../../../modules/paymentFlat/paymentFlatAdapter";
 import { PAYMENT_FLAT_DBO } from "./__fixtures__/paymentFlatDbo.fixture";
 import paymentFlatPort from "./paymentFlat.port";
@@ -22,14 +22,14 @@ describe("PaymentFlat Port", () => {
 
     describe("insertOne()", () => {
         it("should call insertOne with the correct arguments", async () => {
-            await paymentFlatPort.insertOne(PAYMENT_FLAT_ENTITY);
+            await paymentFlatPort.insertOne(CHORUS_PAYMENT_FLAT_ENTITY);
             expect(mockInsertOne).toHaveBeenCalledWith(PAYMENT_FLAT_DBO);
         });
     });
 
     describe("upsertOne()", () => {
         it("should call toDbo()", async () => {
-            await paymentFlatPort.upsertOne(PAYMENT_FLAT_ENTITY);
+            await paymentFlatPort.upsertOne(CHORUS_PAYMENT_FLAT_ENTITY);
             expect(mockUpdateOne).toHaveBeenCalledWith(
                 { uniqueId: PAYMENT_FLAT_DBO.uniqueId },
                 { $set: PAYMENT_FLAT_DBO },

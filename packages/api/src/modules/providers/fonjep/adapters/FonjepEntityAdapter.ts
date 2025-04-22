@@ -1,9 +1,6 @@
 import FonjepTiersEntity from "../entities/FonjepTiersEntity";
 import FonjepPosteEntity from "../entities/FonjepPosteEntity";
-import FonjepVersementEntity, {
-    FullFonjepVersementEntity,
-    PayedFonjepVersementEntity,
-} from "../entities/FonjepVersementEntity";
+import FonjepVersementEntity, { PayedFonjepVersementEntity } from "../entities/FonjepVersementEntity";
 import FonjepTypePosteEntity from "../entities/FonjepTypePosteEntity";
 import FonjepDispositifEntity from "../entities/FonjepDispositifEntity";
 import FonjepDispositifDto from "../../../../dataProviders/db/providers/fonjep/dto/fonjepDispositifDto";
@@ -119,6 +116,15 @@ export default class FonjepEntityAdapter {
         };
     }
 
+    public static extractPositionCode(entity: FonjepPaymentFlatEntity) {
+        if (entity.ej !== GenericAdapter.NOT_APPLICABLE_VALUE) {
+            throw new Error("You must extract a position code from a FonjepPaymentFlat entity");
+        } else {
+            // cf buildPaymentFlatIdVersement
+            return entity.idVersement.split("-")[0];
+        }
+    }
+
     private static buildPaymentFlatIdVersement(data: {
         thirdParty: FonjepTiersEntity;
         position: FonjepPosteEntity;
@@ -135,7 +141,7 @@ export default class FonjepEntityAdapter {
         payment: PayedFonjepVersementEntity,
         program: StateBudgetProgramEntity,
     ) {
-        return `${paymentId}-${program.code_programme}-${payment.dateVersement.getTime()}`;
+        return `${paymentId}-${program.code_programme}-${getShortISODate(payment.dateVersement)}`;
     }
 
     /**
@@ -156,7 +162,7 @@ export default class FonjepEntityAdapter {
      *
      */
     static toFonjepPaymentFlat(
-        fonjepData: { payment: FullFonjepVersementEntity; position: FonjepPosteEntity; thirdParty: FonjepTiersEntity },
+        fonjepData: { payment: PayedFonjepVersementEntity; position: FonjepPosteEntity; thirdParty: FonjepTiersEntity },
         dataBretagneData: DataBretagneRecords,
     ): FonjepPaymentFlatEntity {
         const { payment, thirdParty, position } = fonjepData;
@@ -215,7 +221,6 @@ export default class FonjepEntityAdapter {
                 attachementComptable: GenericAdapter.NOT_APPLICABLE_VALUE,
                 regionAttachementComptable: GenericAdapter.NOT_APPLICABLE_VALUE,
                 ej: GenericAdapter.NOT_APPLICABLE_VALUE,
-                codePoste: payment.posteCode,
                 provider: this.PROVIDER_NAME,
                 programName: program.label_programme,
                 programNumber: program.code_programme,

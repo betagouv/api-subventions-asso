@@ -5,7 +5,7 @@ import ChorusAdapter from "../providers/chorus/adapters/ChorusAdapter";
 import chorusService from "../providers/chorus/chorus.service";
 import { DATA_BRETAGNE_RECORDS } from "../providers/dataBretagne/__fixtures__/dataBretagne.fixture";
 import dataBretagneService from "../providers/dataBretagne/dataBretagne.service";
-import { PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
+import { CHORUS_PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
 import paymentFlatChorusService from "./paymentFlat.chorus.service";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 
@@ -31,7 +31,7 @@ describe("paymentFlatChorusService", () => {
         let mockEntities;
 
         beforeEach(() => {
-            mockEntities = [PAYMENT_FLAT_ENTITY, { ...PAYMENT_FLAT_ENTITY, exerciceBudgetaire: 2022 }];
+            mockEntities = [CHORUS_PAYMENT_FLAT_ENTITY, { ...CHORUS_PAYMENT_FLAT_ENTITY, exerciceBudgetaire: 2022 }];
             mockGetAllDataBretagneData.mockResolvedValue(DATA_BRETAGNE_RECORDS);
             mockToPaymentFlatChorusEntities.mockResolvedValue(mockEntities);
         });
@@ -124,7 +124,7 @@ describe("paymentFlatChorusService", () => {
             mockChorusCursorFind = jest.spyOn(chorusService, "cursorFind").mockReturnValue(mockCursor as any);
             mockToNotAggregatedChorusPaymentFlatEntity = jest
                 .spyOn(ChorusAdapter, "toNotAggregatedChorusPaymentFlatEntity")
-                .mockReturnValue({ ...PAYMENT_FLAT_ENTITY });
+                .mockReturnValue({ ...CHORUS_PAYMENT_FLAT_ENTITY });
         });
 
         afterEach(() => {
@@ -180,7 +180,7 @@ describe("paymentFlatChorusService", () => {
                 DATA_BRETAGNE_RECORDS.fonctionalDomains,
                 DATA_BRETAGNE_RECORDS.programsRef,
             );
-            const expected = [{ ...PAYMENT_FLAT_ENTITY, amount: PAYMENT_FLAT_ENTITY.amount * 2 }];
+            const expected = [{ ...CHORUS_PAYMENT_FLAT_ENTITY, amount: CHORUS_PAYMENT_FLAT_ENTITY.amount * 2 }];
             expect(result).toEqual(expected);
         });
     });

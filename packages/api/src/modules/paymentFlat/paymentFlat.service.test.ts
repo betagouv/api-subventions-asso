@@ -3,8 +3,8 @@ import { DATA_BRETAGNE_RECORDS } from "../providers/dataBretagne/__fixtures__/da
 import paymentFlatService from "./paymentFlat.service";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 import {
-    LIST_PAYMENT_FLAT_ENTITY,
-    PAYMENT_FLAT_ENTITY,
+    LIST_CHORUS_PAYMENT_FLAT_ENTITY,
+    CHORUS_PAYMENT_FLAT_ENTITY,
     PAYMENT_FROM_PAYMENT_FLAT,
 } from "./__fixtures__/paymentFlatEntity.fixture";
 
@@ -26,14 +26,14 @@ describe("PaymentFlatService", () => {
     describe("rawToPayment", () => {
         it("should call PaymentFlatAdapter", () => {
             // @ts-expect-error: parameter type
-            const rawGrant = { data: PAYMENT_FLAT_ENTITY } as RawGrant;
+            const rawGrant = { data: CHORUS_PAYMENT_FLAT_ENTITY } as RawGrant;
             paymentFlatService.rawToPayment(rawGrant);
             expect(PaymentFlatAdapter.rawToPayment).toHaveBeenCalledWith(rawGrant);
         });
 
         it("should return Payment", () => {
             // @ts-expect-error: parameter type
-            const rawGrant = { data: PAYMENT_FLAT_ENTITY } as RawGrant;
+            const rawGrant = { data: CHORUS_PAYMENT_FLAT_ENTITY } as RawGrant;
             jest.mocked(PaymentFlatAdapter.rawToPayment).mockReturnValueOnce(PAYMENT_FROM_PAYMENT_FLAT);
             const expected = PAYMENT_FROM_PAYMENT_FLAT;
             const actual = paymentFlatService.rawToPayment(rawGrant);
@@ -44,8 +44,8 @@ describe("PaymentFlatService", () => {
     describe("toPaymentArray", () => {
         it("should call toPayment for each entity", () => {
             // @ts-expect-error: test private method
-            paymentFlatService.toPaymentArray(LIST_PAYMENT_FLAT_ENTITY);
-            LIST_PAYMENT_FLAT_ENTITY.forEach((entity, index) => {
+            paymentFlatService.toPaymentArray(LIST_CHORUS_PAYMENT_FLAT_ENTITY);
+            LIST_CHORUS_PAYMENT_FLAT_ENTITY.forEach((entity, index) => {
                 expect(PaymentFlatAdapter.toPayment).toHaveBeenNthCalledWith(index + 1, entity);
             });
         });

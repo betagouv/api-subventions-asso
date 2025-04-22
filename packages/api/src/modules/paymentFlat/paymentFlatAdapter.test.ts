@@ -1,6 +1,7 @@
 import {
-    PAYMENT_FLAT_ENTITY,
-    PAYMENT_FLAT_ENTITY_WITH_NULLS,
+    CHORUS_PAYMENT_FLAT_ENTITY,
+    CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS,
+    FONJEP_PAYMENT_FLAT_ENTITY,
     PAYMENT_FROM_PAYMENT_FLAT,
 } from "./__fixtures__/paymentFlatEntity.fixture";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
@@ -9,11 +10,14 @@ import {
     PAYMENT_FLAT_DBO,
     PAYMENT_FLAT_DBO_WITH_NULLS,
 } from "../../dataProviders/db/paymentFlat/__fixtures__/paymentFlatDbo.fixture";
+import FonjepEntityAdapter from "../providers/fonjep/adapters/FonjepEntityAdapter";
+
+jest.mock("../providers/fonjep/adapters/FonjepEntityAdapter");
 
 describe("PaymentFlatAdapter", () => {
     describe("rawToPayment", () => {
         //@ts-expect-error: parameter type
-        const RAW_PAYMENT: RawPayment<PaymentFlatEntity> = { data: PAYMENT_FLAT_ENTITY };
+        const RAW_PAYMENT: RawPayment<PaymentFlatEntity> = { data: CHORUS_PAYMENT_FLAT_ENTITY };
 
         const mockToPayment = jest.spyOn(PaymentFlatAdapter, "toPayment");
         beforeEach(() => {
@@ -37,20 +41,35 @@ describe("PaymentFlatAdapter", () => {
     });
 
     describe("toPayment", () => {
-        it("should return partial Payment entity", () => {
-            const entity = PAYMENT_FLAT_ENTITY_WITH_NULLS;
+        it("should return ChorusPayment", () => {
+            const entity = CHORUS_PAYMENT_FLAT_ENTITY;
             const actual = PaymentFlatAdapter.toPayment(entity);
+            expect(actual).toMatchSnapshot();
+        });
+        it("should return partial ChorusPayment", () => {
+            const entity = CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS;
+            const actual = PaymentFlatAdapter.toPayment(entity);
+            expect(actual).toMatchSnapshot();
+        });
+
+        it("should call fonjep position code when need", () => {
+            PaymentFlatAdapter.toPayment(FONJEP_PAYMENT_FLAT_ENTITY);
+            expect(FonjepEntityAdapter.extractPositionCode).toHaveBeenCalledWith(FONJEP_PAYMENT_FLAT_ENTITY);
+        });
+
+        it("should return FonjepPayment", () => {
+            const actual = PaymentFlatAdapter.toPayment(FONJEP_PAYMENT_FLAT_ENTITY);
             expect(actual).toMatchSnapshot();
         });
     });
 
     describe("toDbo", () => {
         it("given entity without nulls, should return a PaymentFlatDbo without nulls", () => {
-            const result = PaymentFlatAdapter.toDbo(PAYMENT_FLAT_ENTITY);
+            const result = PaymentFlatAdapter.toDbo(CHORUS_PAYMENT_FLAT_ENTITY);
             expect(result).toMatchSnapshot();
         });
         it("given entity with nulls, should return a PaymentFlatDbo with nulls", () => {
-            const result = PaymentFlatAdapter.toDbo(PAYMENT_FLAT_ENTITY_WITH_NULLS);
+            const result = PaymentFlatAdapter.toDbo(CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS);
             expect(result).toMatchSnapshot();
         });
     });

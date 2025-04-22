@@ -1,4 +1,8 @@
 import {
+    CHORUS_PAYMENT_FLAT_ENTITY,
+    FONJEP_PAYMENT_FLAT_ENTITY,
+} from "../../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+import {
     DISPOSITIF_DTOS,
     POSTE_DTO_WITH_DATE,
     TIER_DTOS,
@@ -104,6 +108,21 @@ describe("FonjepEntityAdapter", () => {
         `("should return value", ({ code, expected }) => {
             const actual = FonjepEntityAdapter.getBopFromFounderCode(code);
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("extractPositionCode", () => {
+        it("returns code poste", () => {
+            const expected = "CODE_POSTE"; // cf FONJEP_PAYMENT_FLAT fixture
+            const actual = FonjepEntityAdapter.extractPositionCode(FONJEP_PAYMENT_FLAT_ENTITY);
+            expect(actual).toEqual(expected);
+        });
+
+        it("throws error if not a FonjepPaymentFlatEntity", () => {
+            // @ts-expect-error: edge case with wrong parameter type
+            expect(() => FonjepEntityAdapter.extractPositionCode(CHORUS_PAYMENT_FLAT_ENTITY)).toThrowError(
+                "You must extract a position code from a FonjepPaymentFlat entity",
+            );
         });
     });
 });

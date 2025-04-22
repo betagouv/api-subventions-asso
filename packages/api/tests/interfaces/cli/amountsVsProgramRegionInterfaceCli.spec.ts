@@ -2,21 +2,21 @@ import { ObjectId } from "mongodb";
 import amountsVsProgramRegionPort from "../../../src/dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
 import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFlat.port";
 import AmountsVsProgramRegionCli from "../../../src/interfaces/cli/AmountsVsProgramRegion.cli";
-import { PAYMENT_FLAT_ENTITY } from "../../../src/modules/paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../../src/modules/paymentFlat/__fixtures__/paymentFlatEntity.fixture";
 import PaymentFlatEntity from "../../../src/entities/PaymentFlatEntity";
 
 const MOCK_DOCUMENTS: PaymentFlatEntity[] = [
     // the following two should be agregated together
-    { ...PAYMENT_FLAT_ENTITY, provider: "chorus", uniqueId: "1" },
-    { ...PAYMENT_FLAT_ENTITY, amount: 7000, provider: "chorus", uniqueId: "2" },
+    { ...CHORUS_PAYMENT_FLAT_ENTITY, provider: "chorus", uniqueId: "1" },
+    { ...CHORUS_PAYMENT_FLAT_ENTITY, amount: 7000, provider: "chorus", uniqueId: "2" },
 
     // the following two should be agregated together
-    { ...PAYMENT_FLAT_ENTITY, amount: 100_000, programNumber: 1234, provider: "chorus", uniqueId: "3" },
-    { ...PAYMENT_FLAT_ENTITY, amount: 30_000, programNumber: 1234, provider: "chorus", uniqueId: "4" },
+    { ...CHORUS_PAYMENT_FLAT_ENTITY, amount: 100_000, programNumber: 1234, provider: "chorus", uniqueId: "3" },
+    { ...CHORUS_PAYMENT_FLAT_ENTITY, amount: 30_000, programNumber: 1234, provider: "chorus", uniqueId: "4" },
 
     // the following two should be agregated together
     {
-        ...PAYMENT_FLAT_ENTITY,
+        ...CHORUS_PAYMENT_FLAT_ENTITY,
         amount: 34_000,
         attachementComptable: "HNOR",
         regionAttachementComptable: "Normandie",
@@ -25,7 +25,7 @@ const MOCK_DOCUMENTS: PaymentFlatEntity[] = [
         uniqueId: "5",
     },
     {
-        ...PAYMENT_FLAT_ENTITY,
+        ...CHORUS_PAYMENT_FLAT_ENTITY,
         amount: 34_000,
         attachementComptable: "BNOR",
         regionAttachementComptable: "Normandie",
@@ -36,7 +36,7 @@ const MOCK_DOCUMENTS: PaymentFlatEntity[] = [
 
     // this one should not be agregated
     {
-        ...PAYMENT_FLAT_ENTITY,
+        ...CHORUS_PAYMENT_FLAT_ENTITY,
         amount: 34_000,
         attachementComptable: "BNOR",
         regionAttachementComptable: "Normandie",

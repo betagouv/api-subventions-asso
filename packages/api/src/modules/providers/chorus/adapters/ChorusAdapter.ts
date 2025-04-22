@@ -201,7 +201,7 @@ export default class ChorusAdapter {
 
         const rawDataWithDataBretagne: Omit<
             ChorusPaymentFlatEntity,
-            "codePoste" | "regionAttachementComptable" | "idVersement" | "uniqueId"
+            "regionAttachementComptable" | "idVersement" | "uniqueId"
         > = {
             ...this.getPaymentFlatRawData(chorusDocument.data as ChorusLineDto),
             programName: programEntity?.label_programme ?? null,
@@ -231,8 +231,6 @@ export default class ChorusAdapter {
             uniqueId,
             idVersement,
             regionAttachementComptable,
-            // TODO: update architecture to avoid this : make ej/codePoste optionnal or remove them from PaymentFlat
-            codePoste: null,
         };
     }
 

@@ -13,10 +13,7 @@ import { FonjepPaymentFlatEntity } from "./entities/FonjepPaymentFlatEntity";
 import FonjepPosteEntity from "./entities/FonjepPosteEntity";
 import FonjepTiersEntity from "./entities/FonjepTiersEntity";
 import FonjepTypePosteEntity from "./entities/FonjepTypePosteEntity";
-import FonjepVersementEntity, {
-    FullFonjepVersementEntity,
-    PayedFonjepVersementEntity,
-} from "./entities/FonjepVersementEntity";
+import FonjepVersementEntity, { PayedFonjepVersementEntity } from "./entities/FonjepVersementEntity";
 import FonjepParser from "./fonjep.parser";
 
 export class FonjepService extends ProviderCore {
@@ -77,7 +74,7 @@ export class FonjepService extends ProviderCore {
      * @param payment Payment to validate
      * @returns A boolean that makes a payment valid in our system or not
      */
-    private validatePayment(payment: FonjepVersementEntity): payment is FullFonjepVersementEntity {
+    private validatePayment(payment: FonjepVersementEntity): payment is PayedFonjepVersementEntity {
         return Boolean(payment.posteCode) && this.isPaymentPayed(payment);
     }
 
@@ -88,7 +85,7 @@ export class FonjepService extends ProviderCore {
         payments: FonjepVersementEntity[];
     }) {
         // select only payments that has been payed and with codePoste (until https://github.com/betagouv/api-subventions-asso/issues/3299 will be done)
-        const validPayments: FullFonjepVersementEntity[] = collections.payments.filter(payment =>
+        const validPayments: PayedFonjepVersementEntity[] = collections.payments.filter(payment =>
             this.validatePayment(payment),
         );
 
@@ -109,7 +106,7 @@ export class FonjepService extends ProviderCore {
 
             acc.push(
                 FonjepEntityAdapter.toFonjepPaymentFlat(
-                    { payment: payment as FullFonjepVersementEntity, position, thirdParty },
+                    { payment: payment as PayedFonjepVersementEntity, position, thirdParty },
                     dataBretagneData,
                 ),
             );

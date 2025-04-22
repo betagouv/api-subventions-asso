@@ -10,7 +10,6 @@ Array [
     "codeAction": "0143-03-01",
     "codeActivite": "014303000102",
     "codeCentreFinancier": "AA01/0776-C001-4000",
-    "codePoste": null,
     "dateOperation": 2023-04-21T00:00:00.000Z,
     "ej": "EJ_egale",
     "exerciceBudgetaire": 2023,
@@ -28,7 +27,7 @@ Array [
     "sigleMinistere": null,
     "typeIdEntrepriseBeneficiaire": "siren",
     "typeIdEtablissementBeneficiaire": "siret",
-    "uniqueId": "12345678901212-EJ_egale-2023-143-0143-03-01-014303000102-1682035200000-BRET-AA01/0776-C001-4000",
+    "uniqueId": "12345678901212-EJ_egale-2023-143-0143-03-01-014303000102-2023-04-21-BRET-AA01/0776-C001-4000",
   },
   Object {
     "_id": Any<ObjectId>,
@@ -38,7 +37,6 @@ Array [
     "codeAction": "0101-01-02",
     "codeActivite": "077601003222",
     "codeCentreFinancier": "AA01/0776-C001-4000",
-    "codePoste": null,
     "dateOperation": 2023-07-12T00:00:00.000Z,
     "ej": "0001821732",
     "exerciceBudgetaire": 2022,
@@ -56,7 +54,7 @@ Array [
     "sigleMinistere": null,
     "typeIdEntrepriseBeneficiaire": "siren",
     "typeIdEtablissementBeneficiaire": "siret",
-    "uniqueId": "12345678901313-0001821732-2022-101-0101-01-02-077601003222-1689120000000-HNOR-AA01/0776-C001-4000",
+    "uniqueId": "12345678901313-0001821732-2022-101-0101-01-02-077601003222-2023-07-12-HNOR-AA01/0776-C001-4000",
   },
   Object {
     "_id": Any<ObjectId>,
@@ -66,7 +64,6 @@ Array [
     "codeAction": "0163-03",
     "codeActivite": "010200002004",
     "codeCentreFinancier": "AA99/0163-DR25-DR25",
-    "codePoste": null,
     "dateOperation": 2023-05-05T00:00:00.000Z,
     "ej": "0003823760",
     "exerciceBudgetaire": 2023,
@@ -84,7 +81,7 @@ Array [
     "sigleMinistere": "sigle_ministere_1",
     "typeIdEntrepriseBeneficiaire": "siren",
     "typeIdEtablissementBeneficiaire": "siret",
-    "uniqueId": "12345678901414-0003823760-2023-163-0163-03-010200002004-1683244800000-BRET-AA99/0163-DR25-DR25",
+    "uniqueId": "12345678901414-0003823760-2023-163-0163-03-010200002004-2023-05-05-BRET-AA99/0163-DR25-DR25",
   },
 ]
 `;
@@ -99,7 +96,6 @@ Array [
     "codeAction": "0143-03-01",
     "codeActivite": "014303000102",
     "codeCentreFinancier": "AA01/0776-C001-4000",
-    "codePoste": null,
     "dateOperation": 2023-04-21T00:00:00.000Z,
     "ej": "EJ_egale",
     "exerciceBudgetaire": 2023,
@@ -117,7 +113,7 @@ Array [
     "sigleMinistere": null,
     "typeIdEntrepriseBeneficiaire": "siren",
     "typeIdEtablissementBeneficiaire": "siret",
-    "uniqueId": "12345678901212-EJ_egale-2023-143-0143-03-01-014303000102-1682035200000-BRET-AA01/0776-C001-4000",
+    "uniqueId": "12345678901212-EJ_egale-2023-143-0143-03-01-014303000102-2023-04-21-BRET-AA01/0776-C001-4000",
   },
   Object {
     "_id": Any<ObjectId>,
@@ -127,7 +123,6 @@ Array [
     "codeAction": "0101-01-02",
     "codeActivite": "077601003222",
     "codeCentreFinancier": "AA01/0776-C001-4000",
-    "codePoste": null,
     "dateOperation": 2023-07-12T00:00:00.000Z,
     "ej": "0001821732",
     "exerciceBudgetaire": 2022,
@@ -145,7 +140,7 @@ Array [
     "sigleMinistere": null,
     "typeIdEntrepriseBeneficiaire": "siren",
     "typeIdEtablissementBeneficiaire": "siret",
-    "uniqueId": "12345678901313-0001821732-2022-101-0101-01-02-077601003222-1689120000000-HNOR-AA01/0776-C001-4000",
+    "uniqueId": "12345678901313-0001821732-2022-101-0101-01-02-077601003222-2023-07-12-HNOR-AA01/0776-C001-4000",
   },
   Object {
     "_id": Any<ObjectId>,
@@ -155,7 +150,6 @@ Array [
     "codeAction": "0163-03",
     "codeActivite": "010200002004",
     "codeCentreFinancier": "AA99/0163-DR25-DR25",
-    "codePoste": null,
     "dateOperation": 2023-05-05T00:00:00.000Z,
     "ej": "0003823760",
     "exerciceBudgetaire": 2023,
@@ -173,7 +167,7 @@ Array [
     "sigleMinistere": "sigle_ministere_1",
     "typeIdEntrepriseBeneficiaire": "siren",
     "typeIdEtablissementBeneficiaire": "siret",
-    "uniqueId": "12345678901414-0003823760-2023-163-0163-03-010200002004-1683244800000-BRET-AA99/0163-DR25-DR25",
+    "uniqueId": "12345678901414-0003823760-2023-163-0163-03-010200002004-2023-05-05-BRET-AA99/0163-DR25-DR25",
   },
 ]
 `;

@@ -3,8 +3,11 @@ import DEFAULT_ASSOCIATION from "../../../../tests/__fixtures__/association.fixt
 import Siren from "../../../valueObjects/Siren";
 import Siret from "../../../valueObjects/Siret";
 import { ChorusPaymentFlatEntity } from "../../providers/chorus/@types/ChorusPaymentFlat";
+import { GenericAdapter } from "../../../shared/GenericAdapter";
+import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
+import { FonjepPaymentFlatEntity } from "../../providers/fonjep/entities/FonjepPaymentFlatEntity";
 
-export const PAYMENT_FLAT_ENTITY: ChorusPaymentFlatEntity = {
+export const CHORUS_PAYMENT_FLAT_ENTITY: ChorusPaymentFlatEntity = {
     uniqueId: "UNIQUE_ID",
     idVersement: "ID_VERSEMENT", // id versement
     exerciceBudgetaire: 2023, // exerciceBudgetaire
@@ -19,7 +22,6 @@ export const PAYMENT_FLAT_ENTITY: ChorusPaymentFlatEntity = {
     attachementComptable: "BRET", // attachement comptable
     regionAttachementComptable: "Bretagne", // region attachement comptable
     ej: "0001821732", // EJ
-    codePoste: null,
     provider: "chorus", // provider
     programName: "Programme Exemple", // program
     programNumber: 101, // program number
@@ -32,7 +34,7 @@ export const PAYMENT_FLAT_ENTITY: ChorusPaymentFlatEntity = {
     activityLabel: "Label d'activité Exemple", // activity label
 };
 
-export const PAYMENT_FLAT_ENTITY_WITH_NULLS: ChorusPaymentFlatEntity = {
+export const CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS: ChorusPaymentFlatEntity = {
     uniqueId: "UNIQUE_ID",
     idVersement: "ID_VERSEMENT", // id versement
     exerciceBudgetaire: 2023, // exerciceBudgetaire
@@ -47,7 +49,6 @@ export const PAYMENT_FLAT_ENTITY_WITH_NULLS: ChorusPaymentFlatEntity = {
     attachementComptable: "BRET", // attachement comptable
     regionAttachementComptable: "Bretagne", // region attachement comptable
     ej: "0001821732", // EJ
-    codePoste: null,
     provider: "chorus", // provider
     programName: null, // program
     programNumber: 101, // program number
@@ -60,24 +61,57 @@ export const PAYMENT_FLAT_ENTITY_WITH_NULLS: ChorusPaymentFlatEntity = {
     activityLabel: "Label d'activité Exemple", // activity label
 };
 
-export const LIST_PAYMENT_FLAT_ENTITY = [PAYMENT_FLAT_ENTITY, PAYMENT_FLAT_ENTITY_WITH_NULLS];
+const FONJEP_PAYMENT_FLAT_ID_VERSEMENT = "CODE_POSTE-OPERATION_DATE-EXERCISE-IDENTIFIER";
+
+export const FONJEP_PAYMENT_FLAT_ENTITY: FonjepPaymentFlatEntity = {
+    idVersement: "CODE_POSTE-OPERATION_DATE-EXERCISE-IDENTIFIER",
+    uniqueId: `${FONJEP_PAYMENT_FLAT_ID_VERSEMENT}-163-PAYMENT_DATE`,
+    exerciceBudgetaire: 2023,
+    typeIdEtablissementBeneficiaire: "siret",
+    idEtablissementBeneficiaire: new Siret(DEFAULT_ASSOCIATION.siret),
+    typeIdEntrepriseBeneficiaire: "siren",
+    idEntrepriseBeneficiaire: new Siren(DEFAULT_ASSOCIATION.siren),
+    amount: 3752,
+    operationDate: new Date("2023-07-12T00:00:00.000Z"),
+    ej: GenericAdapter.NOT_APPLICABLE_VALUE,
+    centreFinancierCode: GenericAdapter.NOT_APPLICABLE_VALUE,
+    centreFinancierLibelle: GenericAdapter.NOT_APPLICABLE_VALUE,
+    attachementComptable: GenericAdapter.NOT_APPLICABLE_VALUE,
+    regionAttachementComptable: GenericAdapter.NOT_APPLICABLE_VALUE,
+    programName: "Programme Exemple",
+    programNumber: 163,
+    mission: "Mission Exemple",
+    ministry: "Ministère Exemple",
+    ministryAcronym: "ME",
+    actionCode: null,
+    actionLabel: "Développement de la vie associative",
+    activityCode: null,
+    activityLabel: "Label d'activité Exemple",
+    provider: "fonjep",
+};
+
+export const LIST_CHORUS_PAYMENT_FLAT_ENTITY: PaymentFlatEntity[] = [
+    CHORUS_PAYMENT_FLAT_ENTITY,
+    CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS,
+    FONJEP_PAYMENT_FLAT_ENTITY,
+];
 
 const buildProviderValue = value => ({
     value,
-    provider: PAYMENT_FLAT_ENTITY.provider,
+    provider: CHORUS_PAYMENT_FLAT_ENTITY.provider,
     type: typeof value,
     last_update: new Date("2025-02-04"),
 });
 
 export const PAYMENT_FROM_PAYMENT_FLAT: Payment = {
-    ej: buildProviderValue(PAYMENT_FLAT_ENTITY.ej),
-    versementKey: buildProviderValue(PAYMENT_FLAT_ENTITY.ej),
-    siret: buildProviderValue(PAYMENT_FLAT_ENTITY.idEtablissementBeneficiaire),
-    amount: buildProviderValue(PAYMENT_FLAT_ENTITY.amount),
-    dateOperation: buildProviderValue(PAYMENT_FLAT_ENTITY.operationDate),
-    programme: buildProviderValue(PAYMENT_FLAT_ENTITY.programNumber),
-    libelleProgramme: buildProviderValue(PAYMENT_FLAT_ENTITY.programName),
-    centreFinancier: buildProviderValue(PAYMENT_FLAT_ENTITY.centreFinancierLibelle),
-    domaineFonctionnel: buildProviderValue(PAYMENT_FLAT_ENTITY.actionLabel),
-    activitee: buildProviderValue(PAYMENT_FLAT_ENTITY.activityLabel),
+    ej: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.ej),
+    versementKey: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.ej),
+    siret: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.idEtablissementBeneficiaire),
+    amount: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.amount),
+    dateOperation: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.operationDate),
+    programme: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.programNumber),
+    libelleProgramme: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.programName),
+    centreFinancier: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.centreFinancierLibelle),
+    domaineFonctionnel: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.actionLabel),
+    activitee: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.activityLabel),
 };

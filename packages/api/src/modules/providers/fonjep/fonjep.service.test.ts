@@ -33,7 +33,7 @@ import FonjepVersementEntity from "./entities/FonjepVersementEntity";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import paymentFlatService from "../../paymentFlat/paymentFlat.service";
 import { DATA_BRETAGNE_RECORDS } from "../dataBretagne/__fixtures__/dataBretagne.fixture";
-import { PAYMENT_FLAT_ENTITY } from "../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
 
 const PARSED_DATA = {
     tiers: [TIER_DTO],
@@ -295,7 +295,7 @@ describe("FonjepService", () => {
             mockValidatePayment.mockReturnValue(true);
             mockGetAllDataRecords.mockResolvedValue(DATA_BRETAGNE_RECORDS);
             // @ts-expect-error: mock adapter
-            mockToFonjepPaymentFlat.mockImplementation((_fonjepData, _dataBretagneDat) => PAYMENT_FLAT_ENTITY);
+            mockToFonjepPaymentFlat.mockImplementation((_fonjepData, _dataBretagneDat) => CHORUS_PAYMENT_FLAT_ENTITY);
             mockUpsertMay.mockImplementation(jest.fn());
         });
 
@@ -359,7 +359,7 @@ describe("FonjepService", () => {
             });
 
             // adapter has been mocked to return entity to simplify test
-            expect(mockUpsertMay).toHaveBeenCalledWith(VERSEMENT_ENTITIES.map(_entity => PAYMENT_FLAT_ENTITY));
+            expect(mockUpsertMay).toHaveBeenCalledWith(VERSEMENT_ENTITIES.map(_entity => CHORUS_PAYMENT_FLAT_ENTITY));
         });
 
         it("filter valid payments", async () => {
