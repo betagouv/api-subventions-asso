@@ -243,7 +243,6 @@ export default class ChorusAdapter {
         // trick to trim 0 at the beginning of the code
         // i.e "0161" => "161"
         const code = parseInt(chorusDto["Domaine fonctionnel CODE"]?.slice(1, 4));
-        console.log("code code", code, programs);
         const entity = programs[String(code)];
         if (!entity) {
             console.error(`Program not found for code: ${code}`);
@@ -298,7 +297,6 @@ export default class ChorusAdapter {
         programsRef: Record<string, RefProgrammationEntity>,
     ) {
         const { code: programCode, entity: programEntity } = this.getProgramCodeAndEntity(chorusDocument, programs);
-        console.log(programCode, programEntity);
         let ministryEntity: MinistryEntity | null = null;
         if (programEntity) {
             ministryEntity = dataBretagneService.getMinistryEntity(programEntity, ministries);

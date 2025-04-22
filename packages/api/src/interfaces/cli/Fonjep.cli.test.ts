@@ -2,7 +2,7 @@ import FonjepCli from "./Fonjep.cli";
 import {
     DISPOSITIF_ENTITY,
     POSTE_ENTITY,
-    TIER_ENTITY,
+    TIERS_ENTITY,
     TYPE_POSTE_ENTITY,
     VERSEMENT_ENTITY,
 } from "../../modules/providers/fonjep/__fixtures__/fonjepEntities";
@@ -10,7 +10,7 @@ import fonjepService from "../../modules/providers/fonjep/fonjep.service";
 jest.mock("../../modules/providers/fonjep/fonjep.service");
 
 const ENTITIES = {
-    tierEntities: [TIER_ENTITY, TIER_ENTITY],
+    tierEntities: [TIERS_ENTITY, TIERS_ENTITY],
     posteEntities: [POSTE_ENTITY, POSTE_ENTITY],
     versementEntities: [VERSEMENT_ENTITY, VERSEMENT_ENTITY],
     typePosteEntities: [TYPE_POSTE_ENTITY, TYPE_POSTE_ENTITY],

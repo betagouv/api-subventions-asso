@@ -10,9 +10,7 @@ import DomaineFonctionnelEntity from "../../../entities/DomaineFonctionnelEntity
 import MinistryEntity from "../../../entities/MinistryEntity";
 import RefProgrammationEntity from "../../../entities/RefProgrammationEntity";
 import dataLogService from "../../data-log/dataLog.service";
-import { STATE_BUDGET_PROGRAM_DBOS } from "../../../dataProviders/db/state-budget-program/__fixtures__/StateBudgetProgramDbo.fixture";
-import { DATA_BRETAGNE_RECORDS, MINISTRY_ENTITIES, PROGRAM_ENTITIES } from "./__fixtures__/dataBretagne.fixture";
-import { MinistriesRecord } from "./@types/MinistriesRecord";
+import { DATA_BRETAGNE_RECORDS, PROGRAM_ENTITIES } from "./__fixtures__/dataBretagne.fixture";
 jest.mock("../../data-log/dataLog.service");
 
 const entities = {

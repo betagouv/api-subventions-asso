@@ -5,11 +5,13 @@ import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity
 import ProviderCore from "../ProviderCore";
 import MinistryEntity from "../../../entities/MinistryEntity";
 import dataLogService from "../../data-log/dataLog.service";
-import { ProgramsRecord } from "./@types/ProgramsRecord";
-import { MinistriesRecord } from "./@types/MinistriesRecord";
-import { FonctionalDomainsRecord } from "./@types/FonctionalDomainsRecord";
-import { ProgramsRefRecord } from "./@types/ProgramsRefRecord";
-import { DataBretagneRecords } from "./@types/DataBretagne";
+import {
+    DataBretagneRecords,
+    FonctionalDomainsRecord,
+    MinistriesRecord,
+    ProgramsRecord,
+    ProgramsRefRecord,
+} from "./@types/DataBretagne";
 
 /**
  * Service for interacting with the Data Bretagne API.
