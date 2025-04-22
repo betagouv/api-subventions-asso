@@ -3,14 +3,22 @@ import {
     FONJEP_PAYMENT_FLAT_ENTITY,
 } from "../../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
 import {
+    DATA_BRETAGNE_RECORDS,
+    MINISTRY_ENTITIES,
+    PROGRAM_ENTITIES,
+} from "../../dataBretagne/__fixtures__/dataBretagne.fixture";
+import {
     DISPOSITIF_DTOS,
     POSTE_DTO_WITH_DATE,
     TIER_DTOS,
     TYPE_POSTE_DTOS,
     VERSEMENT_DTO_WITH_DATE,
 } from "../__fixtures__/fonjepDtos";
+import { POSTE_ENTITY, TIERS_ENTITY, VERSEMENT_ENTITY } from "../__fixtures__/fonjepEntities";
 
 import FonjepEntityAdapter from "./FonjepEntityAdapter";
+import dataBretagneService from "../../dataBretagne/dataBretagne.service";
+jest.mock("../../dataBretagne/dataBretagne.service");
 
 describe("FonjepEntityAdapter", () => {
     describe("toFonjepTierEntity()", () => {
@@ -111,6 +119,76 @@ describe("FonjepEntityAdapter", () => {
         });
     });
 
+    describe("toFonjepPaymentFlat", () => {
+        const PAYMENT_ID = "PAYMENT_ID";
+        const UNIQUE_ID = "UNIQUE_ID";
+        const PROGRAM_CODE = "163";
+        // @ts-expect-error: mock private method
+        const mockBuildPaymentFlatIdVersement = jest.spyOn(FonjepEntityAdapter, "buildPaymentFlatIdVersement");
+        // @ts-expect-error: mock private method
+        const mockBuildPaymentFlatUniqueId = jest.spyOn(FonjepEntityAdapter, "buildPaymentFlatUniqueId");
+        const mockGetBopFromFounderCode = jest.spyOn(FonjepEntityAdapter, "getBopFromFounderCode");
+
+        beforeAll(() => {
+            mockBuildPaymentFlatIdVersement.mockReturnValue(PAYMENT_ID);
+            mockBuildPaymentFlatUniqueId.mockReturnValue(UNIQUE_ID);
+            mockGetBopFromFounderCode.mockReturnValue(163);
+            jest.mocked(dataBretagneService.getMinistryEntity).mockReturnValue(MINISTRY_ENTITIES[0]);
+        });
+
+        afterAll(() => {
+            [mockBuildPaymentFlatIdVersement, mockBuildPaymentFlatUniqueId, mockGetBopFromFounderCode].forEach(mock =>
+                mock.mockRestore(),
+            );
+            jest.mocked(dataBretagneService.getMinistryEntity).mockReset();
+        });
+
+        it("should throw error if no siretOuRidet field", () => {
+            expect(() =>
+                FonjepEntityAdapter.toFonjepPaymentFlat(
+                    {
+                        payment: VERSEMENT_ENTITY,
+                        position: POSTE_ENTITY,
+                        thirdParty: { ...TIERS_ENTITY, siretOuRidet: null },
+                    },
+                    DATA_BRETAGNE_RECORDS,
+                ),
+            ).toThrowError("Trying to create a FONJEP PaymentFlat without siret or ridet information");
+        });
+
+        it("should build unique ID", () => {
+            FonjepEntityAdapter.toFonjepPaymentFlat(
+                { payment: VERSEMENT_ENTITY, position: POSTE_ENTITY, thirdParty: TIERS_ENTITY },
+                DATA_BRETAGNE_RECORDS,
+            );
+            expect(mockBuildPaymentFlatUniqueId).toHaveBeenCalledWith({
+                paymentId: PAYMENT_ID,
+                payment: VERSEMENT_ENTITY,
+                program: DATA_BRETAGNE_RECORDS.programs[PROGRAM_CODE],
+            });
+        });
+
+        it("should build payment ID", () => {
+            FonjepEntityAdapter.toFonjepPaymentFlat(
+                { payment: VERSEMENT_ENTITY, position: POSTE_ENTITY, thirdParty: TIERS_ENTITY },
+                DATA_BRETAGNE_RECORDS,
+            );
+            expect(mockBuildPaymentFlatIdVersement).toHaveBeenCalledWith({
+                thirdParty: TIERS_ENTITY,
+                position: POSTE_ENTITY,
+                payment: VERSEMENT_ENTITY,
+            });
+        });
+
+        it("returns FonjepPaymentFlat entity", () => {
+            const actual = FonjepEntityAdapter.toFonjepPaymentFlat(
+                { payment: VERSEMENT_ENTITY, position: POSTE_ENTITY, thirdParty: TIERS_ENTITY },
+                DATA_BRETAGNE_RECORDS,
+            );
+            expect(actual).toMatchSnapshot();
+        });
+    });
+
     describe("extractPositionCode", () => {
         it("returns code poste", () => {
             const expected = "CODE_POSTE"; // cf FONJEP_PAYMENT_FLAT fixture
@@ -123,6 +201,29 @@ describe("FonjepEntityAdapter", () => {
             expect(() => FonjepEntityAdapter.extractPositionCode(CHORUS_PAYMENT_FLAT_ENTITY)).toThrowError(
                 "You must extract a position code from a FonjepPaymentFlat entity",
             );
+        });
+    });
+
+    describe("buildPaymentFlatIdVersement", () => {
+        it("return idVersement", () => {
+            // @ts-expect-error: test private method
+            const actual = FonjepEntityAdapter.buildPaymentFlatIdVersement({
+                thirdParty: TIERS_ENTITY,
+                position: POSTE_ENTITY,
+                payment: VERSEMENT_ENTITY,
+            });
+            expect(actual).toMatchSnapshot();
+        });
+    });
+    describe("buildPaymentFlatUniqueId", () => {
+        it("return idVersement", () => {
+            // @ts-expect-error: test private method
+            const actual = FonjepEntityAdapter.buildPaymentFlatUniqueId({
+                paymentId: "PAYMENT_ID",
+                payment: VERSEMENT_ENTITY,
+                program: PROGRAM_ENTITIES[0],
+            });
+            expect(actual).toMatchSnapshot();
         });
     });
 });

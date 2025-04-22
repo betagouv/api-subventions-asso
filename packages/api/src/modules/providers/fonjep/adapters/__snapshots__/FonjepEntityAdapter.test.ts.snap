@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FonjepEntityAdapter buildPaymentFlatIdVersement return idVersement 1`] = `"Code-2022-04-15-2022-10000000000001"`;
+
+exports[`FonjepEntityAdapter buildPaymentFlatUniqueId return idVersement 1`] = `"PAYMENT_ID-163-2022-04-15"`;
+
+exports[`FonjepEntityAdapter toFonjepPaymentFlat returns FonjepPaymentFlat entity 1`] = `
+Object {
+  "actionCode": null,
+  "actionLabel": null,
+  "activityCode": null,
+  "activityLabel": null,
+  "amount": 1000,
+  "attachementComptable": "N/A",
+  "centreFinancierCode": "N/A",
+  "centreFinancierLibelle": "N/A",
+  "ej": "N/A",
+  "exerciceBudgetaire": 2022,
+  "idEntrepriseBeneficiaire": Siren {
+    "siren": "100000000",
+  },
+  "idEtablissementBeneficiaire": Siret {
+    "siret": "10000000000001",
+  },
+  "idVersement": "PAYMENT_ID",
+  "ministry": "Ministère Exemple",
+  "ministryAcronym": "ME",
+  "mission": "Mission Exemple",
+  "operationDate": 2022-04-15T00:00:00.000Z,
+  "programName": "Programme Exemple",
+  "programNumber": 163,
+  "provider": "Fonjep",
+  "regionAttachementComptable": "N/A",
+  "typeIdEntrepriseBeneficiaire": "siren",
+  "typeIdEtablissementBeneficiaire": "siret",
+  "uniqueId": "UNIQUE_ID",
+}
+`;

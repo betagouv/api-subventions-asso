@@ -3,7 +3,7 @@ import FonjepDispositifEntity from "../entities/FonjepDispositifEntity";
 import FonjepPosteEntity from "../entities/FonjepPosteEntity";
 import FonjepTiersEntity from "../entities/FonjepTiersEntity";
 import FonjepTypePosteEntity from "../entities/FonjepTypePosteEntity";
-import FonjepVersementEntity from "../entities/FonjepVersementEntity";
+import FonjepVersementEntity, { PayedFonjepVersementEntity } from "../entities/FonjepVersementEntity";
 
 export const TIERS_ENTITY: FonjepTiersEntity = {
     code: "CodeAsso",
@@ -63,7 +63,7 @@ export const POSTE_ENTITY_WITH_NULLS: FonjepPosteEntity = {
     doublementUniteCompte: "Non",
 };
 
-export const VERSEMENT_ENTITY: FonjepVersementEntity = {
+export const VERSEMENT_ENTITY: PayedFonjepVersementEntity = {
     posteCode: POSTE_ENTITY.code,
     periodeDebut: new Date("2022-01-12"),
     periodeFin: new Date("2022-12-14"),

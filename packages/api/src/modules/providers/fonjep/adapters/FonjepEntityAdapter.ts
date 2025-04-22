@@ -53,7 +53,7 @@ export default class FonjepEntityAdapter {
      *
      * @returns The state financial program number
      */
-    static getBopFromFounderCode(code: number) {
+    static getBopFromFounderCode(code: number): number {
         return this.FOUNDER_CODE_TO_BOP_MAPPER[code];
     }
 
@@ -130,37 +130,22 @@ export default class FonjepEntityAdapter {
         position: FonjepPosteEntity;
         payment: PayedFonjepVersementEntity;
     }) {
-        return `${data.payment.posteCode}-${getShortISODate(data.payment.dateVersement)}-${data.position.annee}-${
-            data.thirdParty.siretOuRidet
+        const { thirdParty, position, payment } = data;
+        return `${payment.posteCode}-${getShortISODate(payment.dateVersement)}-${position.annee}-${
+            thirdParty.siretOuRidet
         }`;
     }
 
     // this should contain action and activity code like Chorus
-    private static buildPaymentFlatUniqueId(
-        paymentId: string,
-        payment: PayedFonjepVersementEntity,
-        program: StateBudgetProgramEntity,
-    ) {
+    private static buildPaymentFlatUniqueId(data: {
+        paymentId: string;
+        payment: PayedFonjepVersementEntity;
+        program: StateBudgetProgramEntity;
+    }) {
+        const { paymentId, payment, program } = data;
         return `${paymentId}-${program.code_programme}-${getShortISODate(payment.dateVersement)}`;
     }
 
-    /**
-     *
-     * uniqueId : idVersement + numero programme + code action + code activité + date opération
-     * idVersement : code poste + date convention + exercice budgétaire + siret
-     * idEtablissementBeneficiaire : siret
-     * idAssoBeneficiaire : siren à partir du siret
-     * montant: MontantPaye
-     * exerciceBudgetaire : Annee
-     * date_operation: DateVersement
-     * nom_programme: voir data bretagne
-     * numero_programme: tjs 163
-     * mission: data bretagne
-     * ministere: data bretagne
-     * sigle_ministere : data bretagne
-     * provider: fonjep
-     *
-     */
     static toFonjepPaymentFlat(
         fonjepData: { payment: PayedFonjepVersementEntity; position: FonjepPosteEntity; thirdParty: FonjepTiersEntity },
         dataBretagneData: DataBretagneRecords,
@@ -206,7 +191,7 @@ export default class FonjepEntityAdapter {
 
             // TODO: Another example where something nullable (Tier.FinanceurPrincipalCode) is required to build a unique ID
             // TODO: make FonjepTierEntity.financeurPrincipalCode mandatory and make it a number
-            const uniqueId = this.buildPaymentFlatUniqueId(paymentId, fonjepData.payment, program);
+            const uniqueId = this.buildPaymentFlatUniqueId({ paymentId, payment, program });
 
             return {
                 exerciceBudgetaire: position.annee as number,
