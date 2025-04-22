@@ -90,7 +90,7 @@ export const FONJEP_PAYMENT_FLAT_ENTITY: FonjepPaymentFlatEntity = {
     provider: "fonjep",
 };
 
-export const LIST_CHORUS_PAYMENT_FLAT_ENTITY: PaymentFlatEntity[] = [
+export const LIST_PAYMENT_FLAT_ENTITY: PaymentFlatEntity[] = [
     CHORUS_PAYMENT_FLAT_ENTITY,
     CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS,
     FONJEP_PAYMENT_FLAT_ENTITY,
