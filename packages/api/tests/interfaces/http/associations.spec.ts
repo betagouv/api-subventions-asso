@@ -31,13 +31,12 @@ import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fix
 import chorusLinePort from "../../../src/dataProviders/db/providers/chorus/chorus.line.port";
 import { ChorusFixtures } from "../../dataProviders/db/__fixtures__/chorus.fixtures";
 import fonjepPaymentPort from "../../../src/dataProviders/db/providers/fonjep/fonjep.payment.port.old";
-import FonjepSubventionEntity from "../../../src/modules/providers/fonjep/entities/FonjepSubventionEntity.old";
 import Rna from "../../../src/valueObjects/Rna";
 import Siret from "../../../src/valueObjects/Siret";
-import { Grant } from "dto";
 import miscScdlProducersPort from "../../../src/dataProviders/db/providers/scdl/miscScdlProducers.port";
 import RnaSirenEntity from "../../../src/entities/RnaSirenEntity";
 import Siren from "../../../src/valueObjects/Siren";
+import statsAssociationsVisitPort from "../../../src/dataProviders/db/stats/statsAssociationsVisit.port";
 
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
 
@@ -131,15 +130,12 @@ describe("/association", () => {
                 .get(`/association/${OsirisRequestEntityFixture.legalInformations.siret}`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
-            const actual = await statsService.getTopAssociationsByPeriod(1, beforeRequestTime, new Date());
-            const expected = [
-                {
-                    name: siretToSiren(OsirisRequestEntityFixture.legalInformations.siret),
-                    visits: 1,
-                },
-            ];
 
-            expect(actual).toEqual(expected);
+            const actual = (await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date()))[0];
+
+            expect(actual).toMatchObject({
+                associationIdentifier: OsirisRequestEntityFixture.legalInformations.siret.slice(0, 9),
+            });
         });
 
         it("should not add one visits on stats AssociationsVisit because user is admin", async () => {
@@ -148,8 +144,9 @@ describe("/association", () => {
                 .get(`/association/${OsirisRequestEntityFixture.legalInformations.siret}`)
                 .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
-            const actual = await statsService.getTopAssociationsByPeriod(1, beforeRequestTime, new Date());
+            // TODO test differently
 
+            const actual = await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date());
             expect(actual).toHaveLength(0);
         });
 
@@ -158,8 +155,9 @@ describe("/association", () => {
             await request(g.app)
                 .get(`/association/${OsirisRequestEntityFixture.legalInformations.siret}`)
                 .set("Accept", "application/json");
-            const actual = await statsService.getTopAssociationsByPeriod(1, beforeRequestTime, new Date());
+            // TODO test differently
 
+            const actual = await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date());
             expect(actual).toHaveLength(0);
         });
 
@@ -171,8 +169,8 @@ describe("/association", () => {
             await request(g.app)
                 .get(`/association/${OsirisRequestEntityFixture.legalInformations.siret}`)
                 .set("Accept", "application/json");
-            const actual = await statsService.getTopAssociationsByPeriod(1, beforeRequestTime, new Date());
 
+            const actual = await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date());
             expect(actual).toHaveLength(0);
             getAssoSpy.mockRestore();
         });

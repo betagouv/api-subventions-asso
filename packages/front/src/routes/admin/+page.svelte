@@ -8,12 +8,6 @@
             <h2>Bienvenue sur l'interface administrateur</h2>
         </div>
         <div class="fr-grid-row fr-grid-row--gutters">
-            <Card title="Données utilisateurs" url="/admin/users/metrics" size="6">
-                Vision globale sur les profils existants
-            </Card>
-            <Card title="Statistiques d'usage" url="/admin/stats" size="6">
-                Donne une vision détaillée sur les usages des utilisateurs inscrits
-            </Card>
             <Card title="Gestion des comptes utilisateurs" url="/admin/users/list" size="6">
                 Vous permet de consulter les noms de domaines et gérer les utilisateurs
             </Card>

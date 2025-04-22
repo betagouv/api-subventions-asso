@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require("../build/src/shared/MongoConnection");
-const { default: statsPort } = require("../build/src/dataProviders/db/stats/stats.port");
+const { default: logsPort } = require("../build/src/dataProviders/db/stats/stats.port");
 const {
     default: statsAssociationsVisitPort,
 } = require("../build/src/dataProviders/db/stats/statsAssociationsVisit.port");
@@ -14,7 +14,7 @@ module.exports = {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async up(db, client) {
         await connectDB();
-        const logsCursor = await statsPort.getLogsWithRegexUrl(/\/(association|etablissement)\/.{9,14}$/);
+        const logsCursor = await logsPort.getLogsWithRegexUrl(/\/(association|etablissement)\/.{9,14}$/);
 
         await statsAssociationsVisitPort.createIndexes();
         await rnaSirenPort.createIndexes();

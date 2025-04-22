@@ -2,7 +2,6 @@ import VisitsGroupByAssociation from "./__fixtures__/VisitsGroupByAssociationIde
 import statsAssociationsVisitPort from "./statsAssociationsVisit.port";
 import statsUniqueVisitByDay, { groupVisitByUser, keepOneUserVisitByDay } from "./statsUniqueVisitByDay.port";
 
-import MongoConnection from "../../../shared/MongoConnection";
 jest.mock("../../../shared/MongoConnection", () => ({
     collection: () => ({
         insertMany: jest.fn(),
