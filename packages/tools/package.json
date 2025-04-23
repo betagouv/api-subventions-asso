@@ -46,11 +46,5 @@
         "puppeteer": "^14.4.1",
         "qs": "^6.11.2",
         "signalr": "^2.4.3"
-    },
-    "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^5.62.0",
-        "@typescript-eslint/parser": "^5.62.0",
-        "eslint-config-prettier": "^8.10.0",
-        "eslint-plugin-import": "^2.29.1"
     }
 }
