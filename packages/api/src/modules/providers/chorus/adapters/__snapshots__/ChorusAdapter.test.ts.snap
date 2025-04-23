@@ -39,7 +39,6 @@ Object {
   "attachementComptable": "BRET",
   "centreFinancierCode": "AA01/0776-C001-4000",
   "centreFinancierLibelle": "UO DGER XXXX-C001",
-  "codePoste": null,
   "ej": "0001821732",
   "exerciceBudgetaire": 2023,
   "idEntrepriseBeneficiaire": Siren {
@@ -59,7 +58,7 @@ Object {
   "regionAttachementComptable": "Bretagne",
   "typeIdEntrepriseBeneficiaire": "siren",
   "typeIdEtablissementBeneficiaire": "siret",
-  "uniqueId": "10000000000001-0001821732-2023-101-0101-01-02-077601003222-1689120000000-BRET-AA01/0776-C001-4000",
+  "uniqueId": "10000000000001-0001821732-2023-101-0101-01-02-077601003222-2023-07-12-BRET-AA01/0776-C001-4000",
 }
 `;
 
@@ -73,7 +72,6 @@ Object {
   "attachementComptable": "BRET",
   "centreFinancierCode": "AA01/0776-C001-4000",
   "centreFinancierLibelle": "UO DGER XXXX-C001",
-  "codePoste": null,
   "ej": "0001821732",
   "exerciceBudgetaire": 2023,
   "idEntrepriseBeneficiaire": Siren {
@@ -93,7 +91,7 @@ Object {
   "regionAttachementComptable": "Bretagne",
   "typeIdEntrepriseBeneficiaire": "siren",
   "typeIdEtablissementBeneficiaire": "siret",
-  "uniqueId": "10000000000001-0001821732-2023-101-0101-01-02-077601003222-1689120000000-BRET-AA01/0776-C001-4000",
+  "uniqueId": "10000000000001-0001821732-2023-101-0101-01-02-077601003222-2023-07-12-BRET-AA01/0776-C001-4000",
 }
 `;
 

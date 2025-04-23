@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PaymentFlat Port buildUpsertOperation returns bulk operation 1`] = `
+Object {
+  "updateOne": Object {
+    "filter": Object {
+      "uniqueId": "12345678901234-EJ Exemple-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
+    },
+    "update": Object {
+      "$set": Object {
+        "action": "Label d'action Exemple",
+        "activite": "Label d'activité Exemple",
+        "attachementComptable": "BRET",
+        "codeAction": "AC123",
+        "codeActivite": "AC456",
+        "codeCentreFinancier": "AA01/0776-C001-4000",
+        "dateOperation": 2023-04-01T00:00:00.000Z,
+        "ej": "EJ Exemple",
+        "exerciceBudgetaire": 2023,
+        "idEntrepriseBeneficiaire": "123456789",
+        "idEtablissementBeneficiaire": "12345678901234",
+        "idVersement": "12345678901234-EJ Exemple-2023",
+        "libelleCentreFinancier": "UO DGER XXXX-C001",
+        "ministere": "Ministère Exemple",
+        "mission": "Mission Exemple",
+        "montant": 1000,
+        "numeroProgramme": 1,
+        "programme": "Programme Exemple",
+        "provider": "Fournisseur Exemple",
+        "regionAttachementComptable": "Bretagne",
+        "sigleMinistere": "ME",
+        "typeIdEntrepriseBeneficiaire": "siren",
+        "typeIdEtablissementBeneficiaire": "siret",
+        "uniqueId": "12345678901234-EJ Exemple-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
+      },
+    },
+    "upsert": true,
+  },
+}
+`;

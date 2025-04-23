@@ -3,10 +3,10 @@ import FonjepDispositifEntity from "../entities/FonjepDispositifEntity";
 import FonjepPosteEntity from "../entities/FonjepPosteEntity";
 import FonjepTiersEntity from "../entities/FonjepTiersEntity";
 import FonjepTypePosteEntity from "../entities/FonjepTypePosteEntity";
-import FonjepVersementEntity from "../entities/FonjepVersementEntity";
+import FonjepVersementEntity, { PayedFonjepVersementEntity } from "../entities/FonjepVersementEntity";
 
-export const TIER_ENTITY: FonjepTiersEntity = {
-    code: "Code",
+export const TIERS_ENTITY: FonjepTiersEntity = {
+    code: "CodeAsso",
     raisonSociale: "Raison Sociale",
     estAssociation: "Oui",
     estCoFinanceurPostes: "Non",
@@ -17,8 +17,8 @@ export const TIER_ENTITY: FonjepTiersEntity = {
     contactEmail: "john.doe@ille-et-vilaine.fr",
 };
 
-export const TIER_ENTITY_WITH_NULLS: FonjepTiersEntity = {
-    code: "Code",
+export const TIERS_ENTITY_WITH_NULLS: FonjepTiersEntity = {
+    code: "CodeAsso2",
     siretOuRidet: null,
     raisonSociale: "Raison Sociale",
     estAssociation: "Oui",
@@ -34,7 +34,7 @@ export const POSTE_ENTITY: FonjepPosteEntity = {
     dispositifId: 1,
     financeurPrincipalCode: "FinanceurPrincipalCode",
     financeurAttributeurCode: "FinanceurAttributeurCode",
-    associationBeneficiaireCode: "AssociationBeneficiaireCode",
+    associationBeneficiaireCode: TIERS_ENTITY.code,
     pstStatutPosteLibelle: "PstStatutPosteLibelle",
     pstRaisonStatutLibelle: "PstRaisonStatutLibelle",
     associationImplantationCode: "AssociationImplantationCode",
@@ -51,7 +51,7 @@ export const POSTE_ENTITY_WITH_NULLS: FonjepPosteEntity = {
     dispositifId: null,
     financeurPrincipalCode: "FinanceurPrincipalCode",
     financeurAttributeurCode: "FinanceurAttributeurCode",
-    associationBeneficiaireCode: "AssociationBeneficiaireCode",
+    associationBeneficiaireCode: TIERS_ENTITY_WITH_NULLS.code,
     pstStatutPosteLibelle: "PstStatutPosteLibelle",
     pstRaisonStatutLibelle: "PstRaisonStatutLibelle",
     associationImplantationCode: "AssociationImplantationCode",
@@ -63,8 +63,8 @@ export const POSTE_ENTITY_WITH_NULLS: FonjepPosteEntity = {
     doublementUniteCompte: "Non",
 };
 
-export const VERSEMENT_ENTITY: FonjepVersementEntity = {
-    posteCode: "Code",
+export const VERSEMENT_ENTITY: PayedFonjepVersementEntity = {
+    posteCode: POSTE_ENTITY.code,
     periodeDebut: new Date("2022-01-12"),
     periodeFin: new Date("2022-12-14"),
     dateVersement: new Date("2022-04-15"),
@@ -73,7 +73,7 @@ export const VERSEMENT_ENTITY: FonjepVersementEntity = {
 };
 
 export const VERSEMENT_ENTITY_WITH_NULLS: FonjepVersementEntity = {
-    posteCode: "Code",
+    posteCode: POSTE_ENTITY_WITH_NULLS.code,
     periodeDebut: null,
     periodeFin: null,
     dateVersement: null,
@@ -85,7 +85,7 @@ export const TYPE_POSTE_ENTITY: FonjepTypePosteEntity = { code: "Code", libelle:
 
 export const DISPOSITIF_ENTITY: FonjepDispositifEntity = { id: 1, libelle: "Libelle", financeurCode: "FinanceurCode" };
 
-export const TIER_ENTITIES = [TIER_ENTITY, TIER_ENTITY_WITH_NULLS];
+export const TIERS_ENTITIES = [TIERS_ENTITY, TIERS_ENTITY_WITH_NULLS];
 
 export const POSTE_ENTITIES = [POSTE_ENTITY, POSTE_ENTITY_WITH_NULLS];
 

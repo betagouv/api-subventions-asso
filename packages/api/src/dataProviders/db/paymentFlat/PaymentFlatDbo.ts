@@ -16,14 +16,15 @@ export default interface PaymentFlatDbo {
     libelleCentreFinancier: string | "N/A" | null;
     attachementComptable: string | "N/A";
     regionAttachementComptable: string | "N/A" | "code region inconnu";
+    // TODO: invetiguate and make it mandatory
     ej: string | null;
-    codePoste: string | null;
     programme: string | null;
     numeroProgramme: number;
     mission: string | null;
     ministere: string | null;
     sigleMinistere: string | null;
-    codeAction: string;
+    // nullable since #3142 with the add of FonjepPaymentFlat
+    codeAction: string | null;
     action: string | null;
     codeActivite: string | null;
     activite: string | null;

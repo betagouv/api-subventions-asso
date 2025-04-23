@@ -4,9 +4,14 @@ import stateBudgetProgramPort from "../../../dataProviders/db/state-budget-progr
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
 import ProviderCore from "../ProviderCore";
 import MinistryEntity from "../../../entities/MinistryEntity";
-import DomaineFonctionnelEntity from "../../../entities/DomaineFonctionnelEntity";
-import RefProgrammationEntity from "../../../entities/RefProgrammationEntity";
 import dataLogService from "../../data-log/dataLog.service";
+import {
+    DataBretagneRecords,
+    FonctionalDomainsRecord,
+    MinistriesRecord,
+    ProgramsRecord,
+    ProgramsRefRecord,
+} from "./@types/DataBretagne";
 
 /**
  * Service for interacting with the Data Bretagne API.
@@ -25,7 +30,7 @@ class DataBretagneService extends ProviderCore {
 
     // QUICK WIN FROM DEVELOP REBASE FOR #2313 -- WE MAY WANT TO HANDLE THIS IN A BETTER WAY
     async init() {
-        this.programsByCode = await dataBretagneService.findProgramsRecord();
+        this.programsByCode = await dataBretagneService.getProgramsRecord();
     }
 
     async login() {
@@ -41,11 +46,20 @@ class DataBretagneService extends ProviderCore {
         await dataLogService.addLog(dataBretagneService.provider.id, "api", new Date());
     }
 
+    async getAllDataRecords(): Promise<DataBretagneRecords> {
+        const ministries = await dataBretagneService.getMinistriesRecord();
+        const programs = await dataBretagneService.getProgramsRecord();
+        const fonctionalDomains = await dataBretagneService.getFonctionalDomainsRecord();
+        const programsRef = await dataBretagneService.getProgramsRefRecord();
+
+        return { programs, ministries, fonctionalDomains, programsRef };
+    }
+
     /**
      * Retrieves the programs record from the state budget.
      * @returns A promise that resolves to a record of state budget program entities, where the keys are program codes.
      */
-    async findProgramsRecord(): Promise<Record<number, StateBudgetProgramEntity>> {
+    async getProgramsRecord(): Promise<ProgramsRecord> {
         const programs = await stateBudgetProgramPort.findAll();
 
         return programs.reduce((acc, currentLine) => {
@@ -54,7 +68,7 @@ class DataBretagneService extends ProviderCore {
         }, {});
     }
 
-    async getMinistriesRecord(): Promise<Record<string, MinistryEntity>> {
+    async getMinistriesRecord(): Promise<MinistriesRecord> {
         await dataBretagnePort.login();
         const ministries = await dataBretagnePort.getMinistry();
         return ministries.reduce((acc, currentLine) => {
@@ -63,17 +77,17 @@ class DataBretagneService extends ProviderCore {
         }, {});
     }
 
-    async getDomaineFonctRecord(): Promise<Record<string, DomaineFonctionnelEntity>> {
+    async getFonctionalDomainsRecord(): Promise<FonctionalDomainsRecord> {
         await dataBretagnePort.login();
-        const domainesFonct = await dataBretagnePort.getDomaineFonctionnel();
+        const fonctionalDomains = await dataBretagnePort.getDomaineFonctionnel();
 
-        return domainesFonct.reduce((acc, currentLine) => {
+        return fonctionalDomains.reduce((acc, currentLine) => {
             acc[currentLine.code_action] = currentLine;
             return acc;
         }, {});
     }
 
-    async getRefProgrammationRecord(): Promise<Record<string, RefProgrammationEntity>> {
+    async getProgramsRefRecord(): Promise<ProgramsRefRecord> {
         await dataBretagnePort.login();
         const refsProgram = await dataBretagnePort.getRefProgrammation();
 
@@ -81,6 +95,15 @@ class DataBretagneService extends ProviderCore {
             acc[currentLine.code_activite] = currentLine;
             return acc;
         }, {});
+    }
+
+    public getMinistryEntity(program: StateBudgetProgramEntity, ministries: Record<string, MinistryEntity>) {
+        const entity = ministries[program?.code_ministere];
+        if (!entity) {
+            console.error(`Ministry not found for program code: ${program.code_ministere}`);
+            return null;
+        }
+        return entity;
     }
 }
 const dataBretagneService = new DataBretagneService();

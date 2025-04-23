@@ -30,8 +30,8 @@ describe("ChorusAdapter", () => {
         actionCode: "0101-01-02",
         programEntity: DATA_BRETAGNE_RECORDS.programs[101],
         ministryEntity: DATA_BRETAGNE_RECORDS.ministries["code"],
-        domaineFonctEntity: DATA_BRETAGNE_RECORDS.domainesFonct["0101-01-02"],
-        refProgrammationEntity: DATA_BRETAGNE_RECORDS.refsProgrammation["077601003222"],
+        domaineFonctEntity: DATA_BRETAGNE_RECORDS.fonctionalDomains["0101-01-02"],
+        refProgrammationEntity: DATA_BRETAGNE_RECORDS.programsRef["077601003222"],
     };
 
     const CHORUS_LINE_ENTITY = {
@@ -153,8 +153,8 @@ describe("ChorusAdapter", () => {
                 CHORUS_LINE_ENTITY,
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
-                DATA_BRETAGNE_RECORDS.domainesFonct,
-                DATA_BRETAGNE_RECORDS.refsProgrammation,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
             );
 
             expect(result).toMatchSnapshot();
@@ -169,8 +169,8 @@ describe("ChorusAdapter", () => {
                 { ...CHORUS_LINE_ENTITY } as unknown as ChorusLineEntity,
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
-                DATA_BRETAGNE_RECORDS.domainesFonct,
-                DATA_BRETAGNE_RECORDS.refsProgrammation,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
             );
 
             expect(result).toMatchSnapshot();
@@ -178,19 +178,15 @@ describe("ChorusAdapter", () => {
     });
 
     describe("getPaymentFlatComplementaryData", () => {
-        // @ts-expect-error: test private method
-        const mockGetProgramCodeAndEntity = jest.spyOn(ChorusAdapter, "getProgramCodeAndEntity");
-        // @ts-expect-error: test private method
-        const mockGetMinistryEntity = jest.spyOn(ChorusAdapter, "getMinistryEntity");
-        // @ts-expect-error: test private method
-        const mockGetActivityCodeAndEntity = jest.spyOn(ChorusAdapter, "getActivityCodeAndEntity");
-        // @ts-expect-error: test private method
-        const mockGetActionCodeAndEntity = jest.spyOn(ChorusAdapter, "getActionCodeAndEntity");
+        const mockGetMinistryEntity = jest.spyOn(dataBretagneService, "getMinistryEntity");
+        const mockGetProgramCodeAndEntity = jest.spyOn(ChorusAdapter as any, "getProgramCodeAndEntity");
+        const mockGetActivityCodeAndEntity = jest.spyOn(ChorusAdapter as any, "getActivityCodeAndEntity");
+        const mockGetActionCodeAndEntity = jest.spyOn(ChorusAdapter as any, "getActionCodeAndEntity");
 
         const CHORUS_DTO = {
-            // matches one of DATA_BRETAGNE_RECORDS.domainesFonct keys
+            // matches one of DATA_BRETAGNE_RECORDS.fonctionalDomains keys
             "Domaine fonctionnel CODE": "0163AC123",
-            // matches one of DATA_BRETAGNE_RECORDS.refsProgrammation keys
+            // matches one of DATA_BRETAGNE_RECORDS.programsRef keys
             "Référentiel de programmation CODE": "AC4560000000",
         };
 
@@ -199,9 +195,9 @@ describe("ChorusAdapter", () => {
         const PROG_CODE = PROGRAM.code_programme;
         // be careful that DATA_BRETAGNE_RECORDS.ministries as an entity which matches PROGRAM.code_ministere
         const MINISTRY = DATA_BRETAGNE_RECORDS.ministries[PROGRAM.code_ministere];
-        const DOMAINE_FONCT = DATA_BRETAGNE_RECORDS.domainesFonct[CHORUS_DTO["Domaine fonctionnel CODE"]];
+        const DOMAINE_FONCT = DATA_BRETAGNE_RECORDS.fonctionalDomains[CHORUS_DTO["Domaine fonctionnel CODE"]];
         const ACTION_CODE = DOMAINE_FONCT.code_action;
-        const REF_PROG = DATA_BRETAGNE_RECORDS.refsProgrammation[CHORUS_DTO["Référentiel de programmation CODE"]];
+        const REF_PROG = DATA_BRETAGNE_RECORDS.programsRef[CHORUS_DTO["Référentiel de programmation CODE"]];
         const ACTIVITY_CODE = REF_PROG.code_activite;
 
         beforeEach(() => {
@@ -226,8 +222,8 @@ describe("ChorusAdapter", () => {
                 CHORUS_DTO as ChorusLineDto,
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
-                DATA_BRETAGNE_RECORDS.domainesFonct,
-                DATA_BRETAGNE_RECORDS.refsProgrammation,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
             );
             expect(mockGetProgramCodeAndEntity).toHaveBeenCalledWith(CHORUS_DTO, DATA_BRETAGNE_RECORDS.programs);
         });
@@ -238,8 +234,8 @@ describe("ChorusAdapter", () => {
                 CHORUS_DTO as ChorusLineDto,
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
-                DATA_BRETAGNE_RECORDS.domainesFonct,
-                DATA_BRETAGNE_RECORDS.refsProgrammation,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
             );
             expect(mockGetMinistryEntity).toHaveBeenCalledWith(PROGRAM, DATA_BRETAGNE_RECORDS.ministries);
         });
@@ -250,10 +246,13 @@ describe("ChorusAdapter", () => {
                 CHORUS_DTO as ChorusLineDto,
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
-                DATA_BRETAGNE_RECORDS.domainesFonct,
-                DATA_BRETAGNE_RECORDS.refsProgrammation,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
             );
-            expect(mockGetActionCodeAndEntity).toHaveBeenCalledWith(CHORUS_DTO, DATA_BRETAGNE_RECORDS.domainesFonct);
+            expect(mockGetActionCodeAndEntity).toHaveBeenCalledWith(
+                CHORUS_DTO,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+            );
         });
 
         it("gets RefProgrammationEntity", () => {
@@ -262,13 +261,10 @@ describe("ChorusAdapter", () => {
                 CHORUS_DTO as ChorusLineDto,
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
-                DATA_BRETAGNE_RECORDS.domainesFonct,
-                DATA_BRETAGNE_RECORDS.refsProgrammation,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
             );
-            expect(mockGetActivityCodeAndEntity).toHaveBeenCalledWith(
-                CHORUS_DTO,
-                DATA_BRETAGNE_RECORDS.refsProgrammation,
-            );
+            expect(mockGetActivityCodeAndEntity).toHaveBeenCalledWith(CHORUS_DTO, DATA_BRETAGNE_RECORDS.programsRef);
         });
 
         it("returns complementary data from data bretagne", () => {
@@ -286,8 +282,8 @@ describe("ChorusAdapter", () => {
                 CHORUS_DTO as ChorusLineDto,
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
-                DATA_BRETAGNE_RECORDS.domainesFonct,
-                DATA_BRETAGNE_RECORDS.refsProgrammation,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
             );
 
             expect(actual).toEqual(expected);
@@ -519,14 +515,10 @@ describe("ChorusAdapter", () => {
         const SIRET_ESTAB = new Siret("12345678900018");
         const SIREN_ESTAB = new Siren("123456789");
         const CHORUS_LINE_DTO = CHORUS_LINE_ENTITY.data;
-        // @ts-expect-error: mock private method
-        const mockGetCompanyId = jest.spyOn(ChorusAdapter, "getCompanyId");
-        // @ts-expect-error: mock private method
-        const mockGetAmount = jest.spyOn(ChorusAdapter, "getAmount");
-        // @ts-expect-error: mock private method
-        const mockGetOperationDate = jest.spyOn(ChorusAdapter, "getOperationDate");
-        // @ts-expect-error: mock private method
-        const mockGetEstablishmentValueObject = jest.spyOn(ChorusAdapter, "getEstablishmentValueObject");
+        const mockGetCompanyId = jest.spyOn(ChorusAdapter as any, "getCompanyId");
+        const mockGetAmount = jest.spyOn(ChorusAdapter as any, "getAmount");
+        const mockGetOperationDate = jest.spyOn(ChorusAdapter as any, "getOperationDate");
+        const mockGetEstablishmentValueObject = jest.spyOn(ChorusAdapter as any, "getEstablishmentValueObject");
 
         beforeEach(() => {
             // mockGetEstablishmentValueObject = jest.spyOn(ChorusAdapter, "getEstablishmentValueObject");

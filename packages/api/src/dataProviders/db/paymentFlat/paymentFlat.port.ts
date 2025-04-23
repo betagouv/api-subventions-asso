@@ -32,7 +32,18 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
         return this.collection.updateOne({ uniqueId: updateDbo.uniqueId }, { $set: updateDbo }, { upsert: true });
     }
 
-    public upsertMany(bulk) {
+    private buildUpsertOperation(dbo: Omit<PaymentFlatDbo, "_id">) {
+        return {
+            updateOne: {
+                filter: { uniqueId: dbo.uniqueId },
+                update: { $set: dbo },
+                upsert: true,
+            },
+        };
+    }
+
+    public upsertMany(entities: PaymentFlatEntity[]) {
+        const bulk = entities.map(entity => this.buildUpsertOperation(PaymentFlatAdapter.toDbo(entity)));
         return this.collection.bulkWrite(bulk, { ordered: false });
     }
 

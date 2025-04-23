@@ -5,7 +5,7 @@ import ChorusAdapter from "../providers/chorus/adapters/ChorusAdapter";
 import chorusService from "../providers/chorus/chorus.service";
 import { DATA_BRETAGNE_RECORDS } from "../providers/dataBretagne/__fixtures__/dataBretagne.fixture";
 import dataBretagneService from "../providers/dataBretagne/dataBretagne.service";
-import { PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
+import { CHORUS_PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
 import paymentFlatChorusService from "./paymentFlat.chorus.service";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 
@@ -16,24 +16,22 @@ jest.mock("./paymentFlatAdapter");
 describe("paymentFlatChorusService", () => {
     beforeAll(() => {
         jest.mocked(dataBretagneService.getMinistriesRecord).mockResolvedValue(DATA_BRETAGNE_RECORDS.ministries);
-        jest.mocked(dataBretagneService.findProgramsRecord).mockResolvedValue(DATA_BRETAGNE_RECORDS.programs);
-        jest.mocked(dataBretagneService.getDomaineFonctRecord).mockResolvedValue(DATA_BRETAGNE_RECORDS.domainesFonct);
-        jest.mocked(dataBretagneService.getRefProgrammationRecord).mockResolvedValue(
-            DATA_BRETAGNE_RECORDS.refsProgrammation,
+        jest.mocked(dataBretagneService.getProgramsRecord).mockResolvedValue(DATA_BRETAGNE_RECORDS.programs);
+        jest.mocked(dataBretagneService.getFonctionalDomainsRecord).mockResolvedValue(
+            DATA_BRETAGNE_RECORDS.fonctionalDomains,
         );
+        jest.mocked(dataBretagneService.getProgramsRefRecord).mockResolvedValue(DATA_BRETAGNE_RECORDS.programsRef);
         jest.mocked(PaymentFlatAdapter.toDbo).mockReturnValue(PAYMENT_FLAT_DBO);
     });
 
     describe("updatePaymentsFlatCollection", () => {
         const mockToPaymentFlatChorusEntities = jest.spyOn(paymentFlatChorusService, "toPaymentFlatChorusEntities");
-        // @ts-expect-error: mock private method
-        const mockGetAllDataBretagneData = jest.spyOn(paymentFlatChorusService, "getAllDataBretagneData");
+        const mockGetAllDataBretagneData = jest.spyOn(dataBretagneService, "getAllDataRecords");
         const serviceMocks = [mockToPaymentFlatChorusEntities, mockGetAllDataBretagneData];
         let mockEntities;
 
         beforeEach(() => {
-            mockEntities = [PAYMENT_FLAT_ENTITY, { ...PAYMENT_FLAT_ENTITY, exerciceBudgetaire: 2022 }];
-            //@ts-expect-error : private methode
+            mockEntities = [CHORUS_PAYMENT_FLAT_ENTITY, { ...CHORUS_PAYMENT_FLAT_ENTITY, exerciceBudgetaire: 2022 }];
             mockGetAllDataBretagneData.mockResolvedValue(DATA_BRETAGNE_RECORDS);
             mockToPaymentFlatChorusEntities.mockResolvedValue(mockEntities);
         });
@@ -46,7 +44,7 @@ describe("paymentFlatChorusService", () => {
             serviceMocks.forEach(mock => mock.mockRestore());
         });
 
-        it("calls getAllDataBretagneData once", async () => {
+        it("calls getAllDataRecords once", async () => {
             await paymentFlatChorusService.updatePaymentsFlatCollection();
             expect(mockGetAllDataBretagneData).toHaveBeenCalledTimes(1);
         });
@@ -56,8 +54,8 @@ describe("paymentFlatChorusService", () => {
             expect(mockToPaymentFlatChorusEntities).toHaveBeenCalledWith(
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
-                DATA_BRETAGNE_RECORDS.domainesFonct,
-                DATA_BRETAGNE_RECORDS.refsProgrammation,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
                 undefined,
             );
         });
@@ -68,17 +66,10 @@ describe("paymentFlatChorusService", () => {
             expect(mockToPaymentFlatChorusEntities).toHaveBeenCalledWith(
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
-                DATA_BRETAGNE_RECORDS.domainesFonct,
-                DATA_BRETAGNE_RECORDS.refsProgrammation,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
                 exerciceBudgetaire,
             );
-        });
-
-        it("should call toDbo for each entity", async () => {
-            await paymentFlatChorusService.updatePaymentsFlatCollection();
-            mockEntities.map((entity, index) => {
-                expect(PaymentFlatAdapter.toDbo).toHaveBeenNthCalledWith(index + 1, entity);
-            });
         });
 
         it("should call upsertMany for each batch", async () => {
@@ -87,18 +78,9 @@ describe("paymentFlatChorusService", () => {
 
             await paymentFlatChorusService.updatePaymentsFlatCollection();
 
-            mockEntities.map((_entity, index) => {
-                // PAYMENT_FLAT_DBO is the mocked value of toDbo()
-                const expected = [
-                    {
-                        updateOne: {
-                            filter: { uniqueId: PAYMENT_FLAT_DBO.uniqueId },
-                            update: { $set: PAYMENT_FLAT_DBO },
-                            upsert: true,
-                        },
-                    },
-                ];
-                expect(paymentFlatPort.upsertMany).toHaveBeenNthCalledWith(index + 1, expected);
+            // works because BATCH_SIZE = 1
+            mockEntities.forEach((entity, index) => {
+                expect(paymentFlatPort.upsertMany).toHaveBeenNthCalledWith(index + 1, [entity]);
             });
         });
     });
@@ -114,24 +96,6 @@ describe("paymentFlatChorusService", () => {
             paymentFlatChorusService.cursorFindChorusOnly(exerciceBudgetaire);
             expect(paymentFlatPort.cursorFindChorusOnly).toHaveBeenCalledWith(exerciceBudgetaire);
         });
-    });
-
-    describe("getAllDataBretagneData", () => {
-        it("should return all data from dataBretagneService", async () => {
-            //@ts-expect-error : private methode
-            const result = await paymentFlatChorusService.getAllDataBretagneData();
-            const expected = DATA_BRETAGNE_RECORDS;
-            expect(result).toEqual(expected);
-        });
-
-        it.each(["getMinistriesRecord", "findProgramsRecord", "getDomaineFonctRecord", "getRefProgrammationRecord"])(
-            "should call %s",
-            async methodName => {
-                //@ts-expect-error : private methode
-                await paymentFlatChorusService.getAllDataBretagneData();
-                expect(dataBretagneService[methodName]).toHaveBeenCalledTimes(1);
-            },
-        );
     });
 
     describe("toPaymentFlatChorusEntities", () => {
@@ -160,7 +124,7 @@ describe("paymentFlatChorusService", () => {
             mockChorusCursorFind = jest.spyOn(chorusService, "cursorFind").mockReturnValue(mockCursor as any);
             mockToNotAggregatedChorusPaymentFlatEntity = jest
                 .spyOn(ChorusAdapter, "toNotAggregatedChorusPaymentFlatEntity")
-                .mockReturnValue({ ...PAYMENT_FLAT_ENTITY });
+                .mockReturnValue({ ...CHORUS_PAYMENT_FLAT_ENTITY });
         });
 
         afterEach(() => {
@@ -171,8 +135,8 @@ describe("paymentFlatChorusService", () => {
             await paymentFlatChorusService.toPaymentFlatChorusEntities(
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
-                DATA_BRETAGNE_RECORDS.domainesFonct,
-                DATA_BRETAGNE_RECORDS.refsProgrammation,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
             );
             expect(mockChorusCursorFind).toHaveBeenCalledWith(undefined);
         });
@@ -182,8 +146,8 @@ describe("paymentFlatChorusService", () => {
             await paymentFlatChorusService.toPaymentFlatChorusEntities(
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
-                DATA_BRETAGNE_RECORDS.domainesFonct,
-                DATA_BRETAGNE_RECORDS.refsProgrammation,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
                 exercice,
             );
             expect(mockChorusCursorFind).toHaveBeenCalledWith(exercice);
@@ -193,8 +157,8 @@ describe("paymentFlatChorusService", () => {
             await paymentFlatChorusService.toPaymentFlatChorusEntities(
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
-                DATA_BRETAGNE_RECORDS.domainesFonct,
-                DATA_BRETAGNE_RECORDS.refsProgrammation,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
             );
             expect(mockCursor.next).toHaveBeenCalledTimes(nDocuments);
         });
@@ -203,8 +167,8 @@ describe("paymentFlatChorusService", () => {
             await paymentFlatChorusService.toPaymentFlatChorusEntities(
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
-                DATA_BRETAGNE_RECORDS.domainesFonct,
-                DATA_BRETAGNE_RECORDS.refsProgrammation,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
             );
             expect(mockToNotAggregatedChorusPaymentFlatEntity).toHaveBeenCalledTimes(nDocuments);
         });
@@ -213,10 +177,10 @@ describe("paymentFlatChorusService", () => {
             const result = await paymentFlatChorusService.toPaymentFlatChorusEntities(
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
-                DATA_BRETAGNE_RECORDS.domainesFonct,
-                DATA_BRETAGNE_RECORDS.refsProgrammation,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
             );
-            const expected = [{ ...PAYMENT_FLAT_ENTITY, amount: PAYMENT_FLAT_ENTITY.amount * 2 }];
+            const expected = [{ ...CHORUS_PAYMENT_FLAT_ENTITY, amount: CHORUS_PAYMENT_FLAT_ENTITY.amount * 2 }];
             expect(result).toEqual(expected);
         });
     });

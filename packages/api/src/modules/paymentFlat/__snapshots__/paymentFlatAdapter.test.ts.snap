@@ -10,7 +10,6 @@ Object {
   "attachementComptable": "BRET",
   "centreFinancierCode": "AA01/0776-C001-4000",
   "centreFinancierLibelle": "UO DGER XXXX-C001",
-  "codePoste": null,
   "ej": "EJ Exemple",
   "exerciceBudgetaire": 2023,
   "idEntrepriseBeneficiaire": Siren {
@@ -44,7 +43,6 @@ Object {
   "attachementComptable": "BRET",
   "centreFinancierCode": "AA01/0776-C001-4000",
   "centreFinancierLibelle": "UO DGER XXXX-C001",
-  "codePoste": null,
   "ej": "EJ Exemple",
   "exerciceBudgetaire": 2023,
   "idEntrepriseBeneficiaire": Siren {
@@ -76,7 +74,6 @@ Object {
   "codeAction": "0101-01-02",
   "codeActivite": "077601003222",
   "codeCentreFinancier": "AA01/0776-C001-4000",
-  "codePoste": null,
   "dateOperation": 2023-07-12T00:00:00.000Z,
   "ej": "0001821732",
   "exerciceBudgetaire": 2023,
@@ -106,7 +103,6 @@ Object {
   "codeAction": "0101-01-02",
   "codeActivite": "077601003222",
   "codeCentreFinancier": "AA01/0776-C001-4000",
-  "codePoste": null,
   "dateOperation": 2023-07-12T00:00:00.000Z,
   "ej": "0001821732",
   "exerciceBudgetaire": 2023,
@@ -128,7 +124,114 @@ Object {
 }
 `;
 
-exports[`PaymentFlatAdapter toPayment should return partial Payment entity 1`] = `
+exports[`PaymentFlatAdapter toPayment should return ChorusPayment 1`] = `
+Object {
+  "activitee": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "chorus",
+    "type": "string",
+    "value": "Label d'activité Exemple",
+  },
+  "amount": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "chorus",
+    "type": "number",
+    "value": 89988.3,
+  },
+  "centreFinancier": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "chorus",
+    "type": "string",
+    "value": "UO DGER XXXX-C001",
+  },
+  "dateOperation": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "chorus",
+    "type": "object",
+    "value": 2023-07-12T00:00:00.000Z,
+  },
+  "domaineFonctionnel": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "chorus",
+    "type": "string",
+    "value": "Label d'action Exemple",
+  },
+  "ej": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "chorus",
+    "type": "string",
+    "value": "0001821732",
+  },
+  "libelleProgramme": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "chorus",
+    "type": "string",
+    "value": "Programme Exemple",
+  },
+  "programme": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "chorus",
+    "type": "number",
+    "value": 101,
+  },
+  "siret": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "chorus",
+    "type": "string",
+    "value": "10000000000001",
+  },
+  "versementKey": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "chorus",
+    "type": "string",
+    "value": "ID_VERSEMENT",
+  },
+}
+`;
+
+exports[`PaymentFlatAdapter toPayment should return FonjepPayment 1`] = `
+Object {
+  "amount": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "fonjep",
+    "type": "number",
+    "value": 3752,
+  },
+  "codePoste": undefined,
+  "dateOperation": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "fonjep",
+    "type": "object",
+    "value": 2023-07-12T00:00:00.000Z,
+  },
+  "libelleProgramme": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "fonjep",
+    "type": "string",
+    "value": "Programme Exemple",
+  },
+  "programme": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "fonjep",
+    "type": "number",
+    "value": 163,
+  },
+  "siret": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "fonjep",
+    "type": "string",
+    "value": "10000000000001",
+  },
+  "versementKey": Object {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "fonjep",
+    "type": "string",
+    "value": "CODE_POSTE-OPERATION_DATE-EXERCISE-IDENTIFIER",
+  },
+}
+`;
+
+exports[`PaymentFlatAdapter toPayment should return partial ChorusPayment 1`] = `
 Object {
   "activitee": Object {
     "last_update": 2023-07-12T00:00:00.000Z,

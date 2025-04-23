@@ -7,8 +7,8 @@ import {
 import amountsVsProgramRegionPort from "../../../dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
 import paymentFlatChorusService from "../../paymentFlat/paymentFlat.chorus.service";
 import {
-    PAYMENT_FLAT_ENTITY,
-    PAYMENT_FLAT_ENTITY_WITH_NULLS,
+    CHORUS_PAYMENT_FLAT_ENTITY,
+    CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS,
 } from "../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
 
 describe("amountsVSProgramRegionService", () => {
@@ -22,12 +22,12 @@ describe("amountsVSProgramRegionService", () => {
 
         beforeEach(() => {
             mockDocuments = [
-                PAYMENT_FLAT_ENTITY,
-                { ...PAYMENT_FLAT_ENTITY, amount: 7000 },
-                PAYMENT_FLAT_ENTITY_WITH_NULLS,
-                { ...PAYMENT_FLAT_ENTITY, exerciceBudgetaire: 2025 },
-                { ...PAYMENT_FLAT_ENTITY, programNumber: "programNumber" },
-                { ...PAYMENT_FLAT_ENTITY, regionAttachementComptable: "Occitanie" },
+                CHORUS_PAYMENT_FLAT_ENTITY,
+                { ...CHORUS_PAYMENT_FLAT_ENTITY, amount: 7000 },
+                CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS,
+                { ...CHORUS_PAYMENT_FLAT_ENTITY, exerciceBudgetaire: 2025 },
+                { ...CHORUS_PAYMENT_FLAT_ENTITY, programNumber: "programNumber" },
+                { ...CHORUS_PAYMENT_FLAT_ENTITY, regionAttachementComptable: "Occitanie" },
             ];
             nDocuments = mockDocuments.length;
 
