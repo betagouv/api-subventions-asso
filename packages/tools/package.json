@@ -40,7 +40,6 @@
         "fetch": "^1.1.0",
         "jquery": "^3.7.1",
         "jsdom": "^19.0.0",
-        "lint-staged": "^13.3.0",
         "node-fetch": "^3.3.2",
         "node-xlsx": "^0.24.0",
         "puppeteer": "^14.4.1",

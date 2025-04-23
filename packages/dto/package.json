@@ -41,9 +41,6 @@
     "bugs": {
         "url": "https://github.com/betagouv/datasubvention/issues"
     },
-    "devDependencies": {
-        "lint-staged": "^13.3.0"
-    },
     "dependencies": {
         "mongodb": "^6"
     }
