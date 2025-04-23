@@ -62,7 +62,6 @@
         "vite": "^5.4.11"
     },
     "devDependencies": {
-        "typescript": "^5.8.0",
         "@playwright/test": "^1.40.1",
         "eslint-plugin-svelte": "^2.35.1",
         "eslint-plugin-vitest": "^0.2.8",
