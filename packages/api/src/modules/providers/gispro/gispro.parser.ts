@@ -1,4 +1,4 @@
-import tqdm = require("tqdm");
+import tqdm from "tqdm";
 import { GenericParser } from "../../../shared/GenericParser";
 import { DefaultObject } from "../../../@types";
 import GisproLineEntity from "./entities/gisproLineEntity";

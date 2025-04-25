@@ -1,9 +1,10 @@
 import request from "supertest";
 import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
+import { App } from "supertest/types";
 
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
 
-const g = global as unknown as { app: unknown };
+const g = global as unknown as { app: App };
 
 const insertData = async () => {
     await dataLogPort.insertMany([

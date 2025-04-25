@@ -8,7 +8,7 @@
 </script>
 
 <div class="custom-notice-container">
-    {#await promise then _}
+    {#await promise then}
         {#if $mainInfoBanner.title || $mainInfoBanner.desc}
             <InformationBanner
                 bind:this={ctrl.component}

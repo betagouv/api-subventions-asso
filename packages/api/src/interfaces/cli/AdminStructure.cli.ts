@@ -21,7 +21,7 @@ export default class AdminStructureCli extends CliController {
 
         console.info("Start register in database ...");
 
-        const res = await adminStructureService.replaceAll(entities);
+        await adminStructureService.replaceAll(entities);
 
         console.info("Entries registered");
     }

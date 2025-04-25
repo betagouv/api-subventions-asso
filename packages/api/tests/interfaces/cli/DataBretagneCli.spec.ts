@@ -15,7 +15,7 @@ describe("DataBretagneCli", () => {
         jest.mocked(axios.request).mockReset();
     });
 
-    let cli = new DataBretagneCli();
+    const cli = new DataBretagneCli();
 
     describe("resync()", () => {
         it("should persist state budget programs", async () => {

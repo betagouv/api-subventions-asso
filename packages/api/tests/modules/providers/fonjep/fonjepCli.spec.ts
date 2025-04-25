@@ -47,7 +47,7 @@ describe("FonjepCli", () => {
         it("should create or replace versement collection", async () => {
             await cli.parse(FILEPATH, EXPORT_DATE);
             const actualVersement = await fonjepVersementPort.findAll();
-            const expected = actualVersement.map(_versement => ({
+            const expected = actualVersement.map(() => ({
                 _id: expect.any(ObjectId),
             }));
             expect(actualVersement).toMatchSnapshot(expected);
@@ -56,7 +56,7 @@ describe("FonjepCli", () => {
         it("should create or replace Tiers collection", async () => {
             await cli.parse(FILEPATH, EXPORT_DATE);
             const actualTiers = await fonjepTiersPort.findAll();
-            const expected = actualTiers.map(_tiers => ({
+            const expected = actualTiers.map(() => ({
                 _id: expect.any(ObjectId),
             }));
             expect(actualTiers).toMatchSnapshot(expected);
@@ -65,7 +65,7 @@ describe("FonjepCli", () => {
         it("should create or replace Poste collection", async () => {
             await cli.parse(FILEPATH, EXPORT_DATE);
             const actualPoste = await fonjepPostesPort.findAll();
-            const expected = actualPoste.map(_poste => ({
+            const expected = actualPoste.map(() => ({
                 _id: expect.any(ObjectId),
             }));
             expect(actualPoste).toMatchSnapshot(expected);
@@ -74,7 +74,7 @@ describe("FonjepCli", () => {
         it("should create or remplace TypePoste collection", async () => {
             await cli.parse(FILEPATH, EXPORT_DATE);
             const actualTypePoste = await fonjepTypePostePort.findAll();
-            const expected = actualTypePoste.map(_typePoste => ({
+            const expected = actualTypePoste.map(() => ({
                 _id: expect.any(ObjectId),
             }));
             expect(actualTypePoste).toMatchSnapshot(expected);
@@ -83,7 +83,7 @@ describe("FonjepCli", () => {
         it("should create or replace Dispositif collection", async () => {
             await cli.parse(FILEPATH, EXPORT_DATE);
             const actualDispositif = await fonjepDispositifPort.findAll();
-            const expected = actualDispositif.map(_dispositif => ({
+            const expected = actualDispositif.map(() => ({
                 _id: expect.any(ObjectId),
             }));
             expect(actualDispositif).toMatchSnapshot(expected);

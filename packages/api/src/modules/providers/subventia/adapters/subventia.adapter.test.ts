@@ -1,13 +1,9 @@
 import SubventiaAdapter from "./subventia.adapter";
 import SubventiaDto from "../@types/subventia.dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
-import { ApplicationStatus, ProviderValue } from "dto";
-import _ from "lodash";
+import { ApplicationStatus } from "dto";
 import { ObjectId } from "mongodb";
-import subventiaService from "../subventia.service";
-import { ENTITIES, RAW_APPLICATION } from "../__fixtures__/subventia.fixture";
-import { RawApplication } from "../../../grant/@types/rawGrant";
-import SubventiaEntity from "../@types/subventia.entity";
+import { RAW_APPLICATION } from "../__fixtures__/subventia.fixture";
 
 import { GenericParser } from "../../../../shared/GenericParser";
 
@@ -46,7 +42,7 @@ describe(SubventiaAdapter, () => {
 
     describe("applicationToEntity", () => {
         it("should call indexDataByPathObject", () => {
-            let mockIndexDataByPathObject = jest
+            const mockIndexDataByPathObject = jest
                 .spyOn(GenericParser, "indexDataByPathObject")
                 .mockReturnValue(entityIncomplete);
 

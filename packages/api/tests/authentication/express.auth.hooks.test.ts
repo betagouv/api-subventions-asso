@@ -1,7 +1,7 @@
-import passport = require("passport");
+import passport from "passport";
 import { Express } from "express";
-import passportLocal = require("passport-local");
-import passportJwt = require("passport-jwt");
+import passportLocal from "passport-local";
+import passportJwt from "passport-jwt";
 import { registerAuthMiddlewares } from "../../src/authentication/express.auth.hooks";
 import { ObjectId } from "mongodb";
 import userAuthService from "../../src/modules/user/services/auth/user.auth.service";
@@ -33,7 +33,8 @@ describe("express.auth.hooks", () => {
                 obj.callback = call;
             }
 
-            jest.spyOn(passportLocal, "Strategy").mockImplementation(strat as any);
+            // @ts-expect-error: mock
+            jest.spyOn(passportLocal, "Strategy").mockImplementation(strat);
             // @ts-expect-error: mock user
             jest.spyOn(userAuthService, "login").mockImplementation(email =>
                 Promise.resolve({
@@ -69,11 +70,13 @@ describe("express.auth.hooks", () => {
                 obj.callback = call;
             }
 
-            jest.spyOn(passportLocal, "Strategy").mockImplementation(strat as any);
+            // @ts-expect-error: mock
+            jest.spyOn(passportLocal, "Strategy").mockImplementation(strat);
             jest.spyOn(userAuthService, "login").mockRejectedValue(ERROR);
 
             passportMock.mockImplementation(name => {
                 if (name !== "login") return;
+
                 (obj.callback as (...args: unknown[]) => void)("test@beta.gouv.fr", "AAA", (...args: unknown[]) => {
                     expect(args[0]).toMatchObject(ERROR);
                     done();
@@ -92,8 +95,9 @@ describe("express.auth.hooks", () => {
                 obj.callback = call;
             }
 
-            jest.spyOn(passportJwt, "Strategy").mockImplementation(strat as any);
-            // @ts-expect-error
+            // @ts-expect-error: mock
+            jest.spyOn(passportJwt, "Strategy").mockImplementation(strat);
+            // @ts-expect-error: spy
             jest.spyOn(userAuthService, "authenticate").mockImplementation(async user => ({
                 email: user.email,
                 roles: [],
@@ -130,11 +134,13 @@ describe("express.auth.hooks", () => {
                 obj.callback = call;
             }
 
-            jest.spyOn(passportJwt, "Strategy").mockImplementation(strat as any);
+            //@ts-expect-error: mock
+            jest.spyOn(passportJwt, "Strategy").mockImplementation(strat);
             jest.spyOn(userAuthService, "authenticate").mockRejectedValue(ERROR);
 
             passportMock.mockImplementation(name => {
                 if (name === "login") return;
+
                 (obj.callback as (...args: unknown[]) => void)(
                     { headers: { "x-access-token": "TOKEN" } },
                     { email: "test@beta.gouv.fr" },

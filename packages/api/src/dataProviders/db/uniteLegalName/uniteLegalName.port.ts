@@ -57,7 +57,7 @@ export class UniteLegalNamePort extends MongoPort<UniteLegalNameDbo> {
                         update: { $set: UniteLegalNameAdapter.toDbo(e) },
                         upsert: true,
                     },
-                } as AnyBulkWriteOperation<UniteLegalNameDbo>),
+                }) as AnyBulkWriteOperation<UniteLegalNameDbo>,
         );
         return this.collection.bulkWrite(operations);
     }

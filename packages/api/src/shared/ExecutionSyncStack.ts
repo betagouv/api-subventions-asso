@@ -2,7 +2,9 @@ import { waitPromise } from "./helpers/WaitHelper";
 
 interface OperationStackLine<EntityType, OperationResultType> {
     entity: EntityType;
+
     resolver: (result: OperationResultType) => void;
+
     rejecter: (e: unknown) => void;
 }
 
@@ -16,6 +18,8 @@ export default class ExecutionSyncStack<EntityType, OperationResultType> {
 
     constructor(
         private operationExecutor: OperationExecutor<EntityType, OperationResultType>,
+        // why ?? this is used
+
         private waitIntervalMs: number = 0,
     ) {}
 

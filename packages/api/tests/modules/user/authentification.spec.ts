@@ -1,4 +1,4 @@
-import request = require("supertest");
+import request from "supertest";
 import { AgentTypeEnum, ResetPasswordErrorCodes } from "dto";
 import { createAndActiveUser, createUser, DEFAULT_PASSWORD, USER_EMAIL } from "../../__helpers__/userHelper";
 import { createResetToken } from "../../__helpers__/resetTokenHelper";
@@ -8,8 +8,9 @@ import userActivationService, {
     UserActivationService,
 } from "../../../src/modules/user/services/activation/user.activation.service";
 import userCrudService from "../../../src/modules/user/services/crud/user.crud.service";
+import { App } from "supertest/types";
 
-const g = global as unknown as { app: unknown };
+const g = global as unknown as { app: App };
 
 describe("AuthentificationController, /auth", () => {
     jest.spyOn(notifyService, "notify").mockResolvedValue(true);

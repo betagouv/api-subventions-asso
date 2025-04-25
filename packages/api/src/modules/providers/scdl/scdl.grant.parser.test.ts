@@ -1,7 +1,7 @@
 import ScdlGrantParser from "./scdl.grant.parser";
 import MiscScdlGrant from "./__fixtures__/MiscScdlGrant";
 import * as Validators from "../../../shared/Validators";
-import csvSyncParser = require("csv-parse/sync");
+import csvSyncParser from "csv-parse/sync";
 
 jest.mock("../../../shared/Validators");
 const mockedValidators = jest.mocked(Validators);
@@ -18,7 +18,6 @@ import { DefaultObject, ParserInfo, ParserPath } from "../../../@types";
 import { ScdlParsedGrant } from "./@types/ScdlParsedGrant";
 
 jest.mock("../../../shared/GenericParser");
-const mockedGenericParser = jest.mocked(GenericParser);
 jest.mock("csv-parse/sync");
 const mockedCsvLib = jest.mocked(csvSyncParser);
 
@@ -35,7 +34,7 @@ jest.mock("./scdl.mapper", () => {
 describe("ScdlGrantParser", () => {
     const BUFFER = Buffer.alloc(1);
     let isSiretSpy: jest.SpyInstance;
-    let isRnaSpy: jest.SpyInstance = jest.spyOn(Rna, "isRna");
+    const isRnaSpy: jest.SpyInstance = jest.spyOn(Rna, "isRna");
 
     let GRANT: ScdlParsedGrant = { ...MiscScdlGrant };
     const requirementTestsMocks: { [key: string]: jest.SpyInstance } = {};
@@ -44,7 +43,7 @@ describe("ScdlGrantParser", () => {
         isSiretSpy = jest.spyOn(Siret, "isSiret");
         // @ts-expect-error -- mock tests
         ScdlGrantParser.requirements.forEach(req => {
-            const spy = jest.fn(v => true);
+            const spy = jest.fn(() => true);
             req.test = spy;
             requirementTestsMocks[req.key] = spy;
         });
@@ -191,7 +190,7 @@ describe("ScdlGrantParser", () => {
         it("filters valid grants", () => {
             // @ts-expect-error -- mock private method
             const spyFilter = jest.spyOn(ScdlGrantParser, "convertValidateData");
-            jest.mocked(GenericParser.linkHeaderToData).mockReturnValue("TOTO" as unknown as Record<string, any>);
+            jest.mocked(GenericParser.linkHeaderToData).mockReturnValue("TOTO" as unknown as Record<string, unknown>);
             ScdlGrantParser.parseExcel(BUFFER);
             expect(spyFilter).toHaveBeenCalledWith(["TOTO", "TOTO"]);
             jest.mocked(GenericParser.linkHeaderToData).mockRestore();
@@ -399,7 +398,6 @@ describe("ScdlGrantParser", () => {
         it("also returns errors", () => {
             const pb: Problem = { field: "something", value: "something", message: "clarify problem" };
             isValidSpy.mockReturnValueOnce({ valid: false, problems: [pb] });
-            const expected = SCDL_STORABLE.length - 1;
             // @ts-expect-error -- mock private method
             const actual = ScdlGrantParser.convertValidateData(SCDL_STORABLE).errors;
             expect(actual).toMatchSnapshot();
@@ -408,7 +406,6 @@ describe("ScdlGrantParser", () => {
         it("also returns errors with problems in optional field so valid result", () => {
             const pb: Problem = { field: "something", value: "something", message: "clarify problem" };
             isValidSpy.mockReturnValueOnce({ valid: true, problems: [pb] });
-            const expected = SCDL_STORABLE.length - 1;
             // @ts-expect-error -- mock private method
             const actual = ScdlGrantParser.convertValidateData(SCDL_STORABLE).errors;
             expect(actual).toMatchSnapshot();

@@ -1,5 +1,4 @@
 vi.mock("svelte");
-import type { MainInfoBannerDto } from "dto";
 import { MainInfoBannerController } from "./MainInfoBanner.controller";
 import configurationsService from "$lib/resources/configurations/configurations.service";
 

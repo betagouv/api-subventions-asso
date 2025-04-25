@@ -1,7 +1,8 @@
 import request from "supertest";
 import { createAndGetAdminToken } from "../../__helpers__/tokenHelper";
+import { App } from "supertest/types";
 
-const g = global as unknown as { app: unknown };
+const g = global as unknown as { app: App };
 
 describe("Tools http interface", () => {
     describe("/tools/scdl/validate", () => {

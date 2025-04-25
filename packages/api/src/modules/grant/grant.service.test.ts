@@ -208,7 +208,7 @@ describe("GrantService", () => {
             mockGetRawGrants.mockResolvedValue(JOINED_RAW_GRANTS);
             mockAdapteJoinedRawGrant.mockReturnValue(GRANT);
             mockHandleMultiYearGrants.mockImplementation(grants => grants);
-            mockGroupGrantsByExercise.mockImplementation(grants => GROUPED_BY_EXERCISE_GRANTS);
+            mockGroupGrantsByExercise.mockImplementation(() => GROUPED_BY_EXERCISE_GRANTS);
             mockSortByGrantType.mockImplementation(arr => arr);
         });
 

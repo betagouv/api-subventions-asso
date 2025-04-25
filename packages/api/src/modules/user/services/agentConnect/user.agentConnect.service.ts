@@ -1,4 +1,4 @@
-import { FutureUserDto, UpdatableUser, UserDto, UserWithJWTDto } from "dto";
+import { UpdatableUser, UserDto, UserWithJWTDto } from "dto";
 import { Client, generators, Issuer, TokenSet } from "openid-client";
 import { ObjectId } from "mongodb";
 import { BadRequestError, InternalServerError } from "core";
@@ -10,9 +10,7 @@ import UserDbo from "../../../../dataProviders/db/user/UserDbo";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import { AgentConnectUser } from "../../@types/AgentConnectUser";
 import userCrudService from "../crud/user.crud.service";
-import { RoleEnum } from "../../../../@enums/Roles";
 import { removeHashPassword, removeSecrets } from "../../../../shared/helpers/PortHelper";
-import configurationsService from "../../../configurations/configurations.service";
 import { applyValidations, ValidationResult } from "../../../../shared/helpers/validation.helper";
 import agentConnectTokenPort from "../../../../dataProviders/db/user/acToken.port";
 import {
@@ -125,6 +123,7 @@ export class UserAgentConnectService {
         return applyValidations([
             {
                 value: data.firstName,
+                // @ts-expect-error: show since typescript update #3360
                 method: (value: string | undefined | null) => !value || value === user.firstName,
                 error: new BadRequestError(
                     "Un utilisateur lié à AgentConnect ne peut pas changer de prénom sur l'application",
@@ -132,6 +131,7 @@ export class UserAgentConnectService {
             },
             {
                 value: data.lastName,
+                // @ts-expect-error: show since typescript update #3360
                 method: (value: string | undefined | null) => !value || value === user.lastName,
                 error: new BadRequestError(
                     "Un utilisateur lié à AgentConnect ne peut pas changer de nom de famille sur l'application",

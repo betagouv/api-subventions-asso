@@ -37,11 +37,12 @@ describe("associationsService", () => {
     const getEtablissementsMock = jest.spyOn(etablissementService, "getEtablissements");
     const rnaSirenServiceFindOne = jest.spyOn(rnaSirenService, "find");
     // @ts-expect-error: mock private method
-    const aggregateMock = jest.spyOn(associationsService, "aggregate");
+    const aggregateMock: jest.SpyInstance = jest.spyOn(associationsService, "aggregate");
 
     let formatDataMock: jest.SpyInstance;
     beforeAll(() => {
-        formatDataMock = jest.spyOn(FormaterHelper, "formatData").mockImplementation(data => data as any);
+        // @ts-expect-error: mock
+        formatDataMock = jest.spyOn(FormaterHelper, "formatData").mockImplementation(data => data as unknown);
     });
 
     afterAll(() => {
@@ -49,26 +50,23 @@ describe("associationsService", () => {
     });
 
     // Could not find a way to restore manual mock (from __mocks__) after being changed in a single test (cf: getAssociationBySiren)
-    // eslint-disable-next-line import/namespace
+
     afterEach(() => (providers.default = DEFAULT_PROVIDERS));
 
     describe("getAssociation()", () => {
         it("should call aggregate", async () => {
-            // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(async () => [{}]);
             await associationsService.getAssociation(IDENTIFIER);
             expect(aggregateMock).toBeCalledTimes(1);
         });
 
         it("should throw not found error if aggregates return an empty array", async () => {
-            // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(() => []);
             const factoryTest = () => associationsService.getAssociation(IDENTIFIER);
             expect(factoryTest).rejects.toThrowError(new NotFoundError("Association not found"));
         });
 
         it("should call FormaterHelper.formatData()", async () => {
-            // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(() => [{}]);
             const expected = 1;
             await associationsService.getAssociation(IDENTIFIER);
@@ -112,21 +110,18 @@ describe("associationsService", () => {
 
     describe("getAssociation()", () => {
         it("should call aggregate", async () => {
-            // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(async () => [{}]);
             await associationsService.getAssociation(IDENTIFIER);
             const actual = aggregateMock.mock.calls.length;
             expect(actual).toEqual(1);
         });
         it("should throw not found error if aggregates return an empty array", async () => {
-            // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(() => []);
             expect(() => associationsService.getAssociation(IDENTIFIER)).rejects.toThrowError(
                 new NotFoundError("Association not found"),
             );
         });
         it("should call FormaterHelper.formatData()", async () => {
-            // @ts-expect-error: mock
             aggregateMock.mockImplementationOnce(() => [{}]);
             const expected = 1;
             await associationsService.getAssociation(IDENTIFIER);

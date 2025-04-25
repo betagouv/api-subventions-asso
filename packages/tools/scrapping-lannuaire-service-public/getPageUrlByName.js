@@ -17,7 +17,7 @@ module.exports = async function getPageUrlByName(name) {
         if (result.status != 200) {
             console.error({
                 status: result.status,
-                body: result.data
+                body: result.data,
             });
             return null;
         }

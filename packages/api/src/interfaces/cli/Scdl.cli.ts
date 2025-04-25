@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import csvSyncStringifier = require("csv-stringify/sync");
+import csvSyncStringifier from "csv-stringify/sync";
 import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
 import scdlService from "../../modules/providers/scdl/scdl.service";
 import MiscScdlGrantEntity from "../../modules/providers/scdl/entities/MiscScdlGrantEntity";

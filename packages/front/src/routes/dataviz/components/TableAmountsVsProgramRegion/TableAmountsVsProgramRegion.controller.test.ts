@@ -5,8 +5,8 @@ import { DTO, DTO_FORMATTED, VARS, HEADERS_ALL } from "../../__fixtures__/Amount
 
 import * as dataVizHelper from "../../dataViz.helper";
 import { TableAmountsVsProgramRegionController } from "./TableAmountsVsProgramRegion.controller";
-vi.spyOn(dataVizHelper, "groupAndSum").mockReturnValue([DTO[0]] as any);
-vi.spyOn(dataVizHelper, "filterYears").mockReturnValue([DTO[0]] as any);
+vi.spyOn(dataVizHelper, "groupAndSum").mockReturnValue([DTO[0]] as unknown);
+vi.spyOn(dataVizHelper, "filterYears").mockReturnValue([DTO[0]] as unknown);
 
 const A_LIST = [
     { regionAttachementComptable: "A", programme: "B", exerciceBudgetaire: 2020 },

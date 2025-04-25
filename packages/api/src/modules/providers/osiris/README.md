@@ -26,10 +26,10 @@ Les documents seront de multiples (nombreux !) fichiers excel, rangés dans le d
 
 ## Déployer les données
 
-**Attention :** dans la partie déploiement, les types de données s'appellent  `requests` et `actions``
+**Attention :** dans la partie déploiement, les types de données s'appellent `requests` et `actions``
 
 | côté Téléchargement | côté Déploiement |
-|---------------------|------------------|
+| ------------------- | ---------------- |
 | SuiviDossiers       | requests         |
 | SuiviActions        | actions          |
 

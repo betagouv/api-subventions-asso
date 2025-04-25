@@ -14,11 +14,10 @@ describe("importPipedriveData", () => {
     const mockBuffer = "buffer" as Buffer;
 
     let fsExistsSyncMock: jest.SpyInstance;
-    let fsReadFileSyncMock: jest.SpyInstance;
 
     beforeAll(() => {
+        jest.spyOn(fs, "readFileSync").mockReturnValue(mockBuffer);
         fsExistsSyncMock = jest.spyOn(fs, "existsSync").mockReturnValue(true);
-        fsReadFileSyncMock = jest.spyOn(fs, "readFileSync").mockReturnValue(mockBuffer);
     });
 
     it("fails if no file path given", () => {

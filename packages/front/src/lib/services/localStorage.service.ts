@@ -15,7 +15,7 @@ export class LocalStorageService {
         this._localStore.set(localStorageObject);
     }
 
-    getItem(key: string, defaultValue: any = null) {
+    getItem(key: string, defaultValue: unknown = null) {
         return derived(this._localStore, storage =>
             storage[key] !== undefined && storage[key] !== "undefined"
                 ? JSON.parse(storage[key] as string)

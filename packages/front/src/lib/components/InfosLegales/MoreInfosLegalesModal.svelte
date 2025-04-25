@@ -1,11 +1,14 @@
 <script lang="ts">
+    import type Store from "$lib/core/Store";
     import { data } from "$lib/store/modal.store";
     import Table from "$lib/dsfr/Table.svelte";
 
     import Alert from "$lib/dsfr/Alert.svelte";
     import ModalContent from "$lib/dsfr/ModalContent.svelte";
-    import type Store from "$lib/core/Store";
-    const dataWithType = data as unknown as Store<{ headers: any; rows: any }>;
+    const dataWithType = data as unknown as Store<{
+        headers: string[];
+        rows: string[][];
+    }>;
 </script>
 
 <ModalContent title="Détail des informations recueillies">

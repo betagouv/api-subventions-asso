@@ -9,75 +9,74 @@
 
  */
 
-
 .combobox-list {
-  position: relative;
+    position: relative;
 }
 
 .combobox .group {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .combobox .fr-input-wrap {
-  display: flex;
+    display: flex;
 }
 
 .combobox .fr-input-wrap .fr-input {
-  padding-right: 2.5rem !important;
-  cursor: pointer;
+    padding-right: 2.5rem !important;
+    cursor: pointer;
 }
 
 .combobox button {
-  pointer-events: none;
-  position: absolute;
-  right: 0.25rem;
-  top: .5rem;
+    pointer-events: none;
+    position: absolute;
+    right: 0.25rem;
+    top: 0.5rem;
 }
 
 .combobox button[aria-expanded="true"] .icon::before {
-  transform: rotate(180deg);
+    transform: rotate(180deg);
 }
 
 ul[role="listbox"] {
-  margin: 0;
-  padding: 0;
-  position: absolute;
-  list-style: none;
-  background-color: var(--background-default-grey);
-  display: none;
-  box-sizing: border-box;
-  border: 2px var(--border-default-grey) solid;
-  max-height: 250px;
-  width: 100%;
-  overflow: scroll;
-  overflow-x: hidden;
-  z-index: 1;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    list-style: none;
+    background-color: var(--background-default-grey);
+    display: none;
+    box-sizing: border-box;
+    border: 2px var(--border-default-grey) solid;
+    max-height: 250px;
+    width: 100%;
+    overflow: scroll;
+    overflow-x: hidden;
+    z-index: 1;
 }
 
 ul[role="listbox"] li[role="option"] {
-  margin: 0;
-  display: block;
-  padding: 0.5rem 1rem
+    margin: 0;
+    display: block;
+    padding: 0.5rem 1rem;
 }
 
 /* focus and hover styling */
 
 [role="listbox"].focus [role="option"][aria-selected="true"] {
-  background-color: var(--background-default-grey-active);
+    background-color: var(--background-default-grey-active);
 }
 
 [role="listbox"] [role="option"]:hover {
-  background-color: var(--background-default-grey-hover);
+    background-color: var(--background-default-grey-hover);
 }
 
 [role="listbox"].focus [role="option"][aria-selected="true"]:not(:last-child),
 [role="listbox"] [role="option"]:hover:not(:last-child) {
-  padding-bottom: calc(0.5rem - 2px);
-  border-bottom: 2px solid var(--border-default-grey);
+    padding-bottom: calc(0.5rem - 2px);
+    border-bottom: 2px solid var(--border-default-grey);
 }
 
 [role="listbox"].focus [role="option"][aria-selected="true"]:not(:first-child),
 [role="listbox"] [role="option"]:hover:not(:first-child) {
-  padding-top: calc(0.5rem - 2px);
-  border-top: 2px solid var(--border-default-grey);
+    padding-top: calc(0.5rem - 2px);
+    border-top: 2px solid var(--border-default-grey);
 }

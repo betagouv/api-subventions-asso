@@ -33,6 +33,7 @@ export class SireneStockUniteLegaleFileService {
         console.info(`Start downloading the file`);
 
         return new Promise<string>((resolve, reject) => {
+            // @ts-expect-error: make a type for response.data
             response.data.pipe(file);
 
             let currentLength = 0;
@@ -40,11 +41,12 @@ export class SireneStockUniteLegaleFileService {
                 console.info(`Downloading: ${(currentLength / 1_000_000).toFixed(2)} MB`);
             }, 5000);
 
+            // @ts-expect-error: make a type for response.data
             response.data.on("data", chunk => {
                 currentLength += chunk.length;
             });
             let hasErrorOccured = false;
-
+            // @ts-expect-error: make a type for response.data
             response.data.on("error", error => {
                 clearInterval(interval);
                 hasErrorOccured = true;

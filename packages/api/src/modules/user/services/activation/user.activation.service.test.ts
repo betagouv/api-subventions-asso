@@ -33,7 +33,6 @@ jest.mock("../../../notify/notify.service", () => ({
     notify: jest.fn(),
 }));
 const mockedNotifyService = jest.mocked(notifyService);
-import RandToken from "rand-token";
 import { UserServiceErrors } from "../../user.enum";
 
 jest.mock("rand-token", () => ({

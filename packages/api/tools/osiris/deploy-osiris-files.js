@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const child_process = require("child_process");
-const { execSync } = require("child_process");
-const { readdirSync } = require("fs");
+import child_process, { execSync } from "child_process";
+import { readdirSync } from "fs";
 
 // scalingo app name
 const appName = process.argv[2];

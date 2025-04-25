@@ -97,7 +97,7 @@ describe("Subventia Service", () => {
             const expected = groupedData;
             //@ts-expect-error : test private method
             const actual = subventiaService.groupByApplication(parsedData);
-            expect(actual).toEqual(groupedData);
+            expect(actual).toEqual(expected);
         });
     });
 
@@ -302,7 +302,7 @@ describe("Subventia Service", () => {
 
     describe("rawToCommon", () => {
         it("should call toCommon", () => {
-            const actual = subventiaService.rawToCommon(rawGrant[0]);
+            subventiaService.rawToCommon(rawGrant[0]);
             expect(mockToCommon).toHaveBeenCalledWith(rawGrant[0]["data"]);
         });
     });

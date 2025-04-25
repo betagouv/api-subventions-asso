@@ -12,7 +12,7 @@
 
 {#if $data.payments}
     <Table id={tableId} {headers}>
-        {#each $data.payments as payment, index}
+        {#each $data.payments as payment, index (index)}
             <TableRow id={tableId} {index} title="Détail des versements" hideTitle={true}>
                 <td class="primary">{valueOrHyphen(numberToEuro(payment.amount))}</td>
                 <td>{valueOrHyphen(payment.domaineFonctionnel)}</td>

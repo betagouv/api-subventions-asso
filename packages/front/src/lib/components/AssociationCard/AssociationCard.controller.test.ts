@@ -34,6 +34,8 @@ describe("AssociationCardController", () => {
             it("should call getFirstPartAddress()", () => {
                 const simplifiedAsso = { rna: RNA, address: {} };
                 const ctrl = new AssociationCardController(simplifiedAsso, "");
+                // TODO: #3374
+                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                 ctrl.street;
                 expect(AssociationHelper.getFirstPartAddress).toHaveBeenCalledOnce();
             });
@@ -43,6 +45,8 @@ describe("AssociationCardController", () => {
             it("should call getLastPartAddress()", () => {
                 const simplifiedAsso = { rna: RNA, address: {} };
                 const ctrl = new AssociationCardController(simplifiedAsso, "");
+                // TODO: #3374
+                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                 ctrl.city;
                 expect(AssociationHelper.getLastPartAddress).toHaveBeenCalledOnce();
             });

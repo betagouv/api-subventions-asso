@@ -1,4 +1,4 @@
-import { Response, Request } from "express";
+import { Response } from "express";
 import * as HttpHelper from "../shared/helpers/HttpHelper";
 import StatsAssoVisitMiddleware from "./StatsAssoVisitMiddleware";
 import statsSerivce from "../modules/stats/stats.service";
@@ -67,7 +67,6 @@ describe("StatsAssoVisitsMiddleware", () => {
             isRequestFromAdminMock.mockImplementationOnce(() => false);
             addAssociationVisitMock.mockImplementationOnce(async () => true);
 
-            const IDENTIFIER = "W123456789";
             const USER_ID = "USER_ID";
             const req = {
                 user: {

@@ -75,16 +75,15 @@ describe("SCDL Batch Import CLI", () => {
     let scdlBatchCli: ScdlBatchCli;
 
     beforeEach(() => {
-        jest.spyOn(process, "exit").mockImplementation((() => {}) as (code?: any) => never);
+        jest.spyOn(process, "exit").mockImplementation((() => {}) as (code?: unknown) => never);
         jest.mocked(scdlService.createProducer).mockResolvedValue();
     });
 
     describe("isConfig", () => {
         // @ts-expect-error: spy protected method
-        const mockvalidateFileConfig = jest.spyOn(ScdlBatchCli.prototype, "validateFileConfig");
+        const mockvalidateFileConfig: jest.SpyInstance = jest.spyOn(ScdlBatchCli.prototype, "validateFileConfig");
 
         beforeAll(() => {
-            //@ts-expect-error
             mockvalidateFileConfig.mockReturnValue(true);
         });
 
@@ -102,7 +101,6 @@ describe("SCDL Batch Import CLI", () => {
         `("return false with $value", ({ value }) => {
             // make one file invalid for last test
             if (value?.files?.length) {
-                // @ts-expect-error
                 mockvalidateFileConfig.mockReturnValueOnce(false);
             }
             const cli = new ScdlBatchCli();
@@ -123,14 +121,13 @@ describe("SCDL Batch Import CLI", () => {
 
     describe("validateFileConfig", () => {
         // @ts-expect-error: private method
-        const mockvalidateParseParams = jest.spyOn(ScdlBatchCli.prototype, "validateParseParams");
+        const mockvalidateParseParams: jest.SpyInstance = jest.spyOn(ScdlBatchCli.prototype, "validateParseParams");
 
         const PARSE_PARAMS = { producerSlug: "bretagne" };
 
         beforeEach(() => {
             jest.mocked(isStringValid).mockReturnValue(true);
             jest.mocked(isBooleanValid).mockReturnValue(true);
-            // @ts-expect-error
             mockvalidateParseParams.mockReturnValue(true);
             scdlBatchCli = new ScdlBatchCli();
         });
@@ -219,14 +216,14 @@ describe("SCDL Batch Import CLI", () => {
         });
 
         it("pushes delimiter error", () => {
-            // @ts-expect-error
+            // @ts-expect-error: test private method
             scdlBatchCli.validateCsvArgs({ producerSlug: "bretagne", delimiter: "a" });
             // @ts-expect-error: access private property
             expect(scdlBatchCli.fileConfigErrors).toContainEqual({ field: "delimiter" });
         });
 
         it("pushes quote error", () => {
-            // @ts-expect-error
+            // @ts-expect-error: test private method
             scdlBatchCli.validateCsvArgs({ producerSlug: "bretagne", quote: "a" });
             // @ts-expect-error: access private property
             expect(scdlBatchCli.fileConfigErrors).toContainEqual({ field: "quote" });
@@ -264,9 +261,9 @@ describe("SCDL Batch Import CLI", () => {
 
     describe("validateParseParams", () => {
         // @ts-expect-error: private method
-        const spyvalidateCsvArgs = jest.spyOn(ScdlBatchCli.prototype, "validateCsvArgs");
+        const spyvalidateCsvArgs: jest.SpyInstance = jest.spyOn(ScdlBatchCli.prototype, "validateCsvArgs");
         // @ts-expect-error: private method
-        const spyvalidateXlsArgs = jest.spyOn(ScdlBatchCli.prototype, "validateXlsArgs");
+        const spyvalidateXlsArgs: jest.SpyInstance = jest.spyOn(ScdlBatchCli.prototype, "validateXlsArgs");
 
         beforeAll(() => {
             jest.mocked(isStringValid).mockReturnValue(true);
@@ -420,14 +417,14 @@ describe("SCDL Batch Import CLI", () => {
         });
 
         it("resolves file config path", () => {
-            // @ts-expect-error:
+            // @ts-expect-error: test private method
             scdlBatchCli.processFile(FILES_CONFIG[0]);
             expect(path.resolve).toHaveBeenCalledWith(SCDL_FILE_PROCESSING_PATH);
         });
 
         describe("with add producer set to true", () => {
             it("add producer if it does not exist", async () => {
-                // @ts-expect-error:
+                // @ts-expect-error: test private method
                 await scdlBatchCli.processFile(FILES_CONFIG[0]);
                 expect(jest.mocked(scdlService.createProducer)).toHaveBeenCalledWith({
                     slug: FILES_CONFIG[0].parseParams.producerSlug,
@@ -440,7 +437,7 @@ describe("SCDL Batch Import CLI", () => {
             it("add an error to the list if producer already exist", async () => {
                 // @ts-expect-error: mock resolve value
                 jest.mocked(scdlService.getProducer).mockResolvedValueOnce({} as MiscScdlProducerEntity);
-                // @ts-expect-error:
+                // @ts-expect-error: test private method
                 await scdlBatchCli.processFile({ ...FILES_CONFIG[0] });
                 // @ts-expect-error: test protected property
                 expect(scdlBatchCli.errorList).toContain(
@@ -452,7 +449,7 @@ describe("SCDL Batch Import CLI", () => {
         it("calls parse when file type is CSV", async () => {
             jest.mocked(path.extname).mockReturnValue(`.${FileExtensionEnum.CSV}`);
             const FILE_CONF = { ...FILES_CONFIG[0] } as ScdlFileProcessingConfig<ScdlParseCsvArgs>;
-            // @ts-expect-error:
+            // @ts-expect-error: test private method
             await scdlBatchCli.processFile(FILE_CONF);
             expect(scdlBatchCli.parse).toHaveBeenCalledWith(
                 FILE_PATH,
@@ -469,7 +466,7 @@ describe("SCDL Batch Import CLI", () => {
             ${FileExtensionEnum.XLSX} | ${{ ...FILES_CONFIG[1], name: "scdl-import-bretagne-2025.xlsx" }}
         `("calls parseXls when file type is $type", async ({ type, fileConf }) => {
             jest.mocked(path.extname).mockReturnValue(`.${type}`);
-            // @ts-expect-error:
+            // @ts-expect-error: test private method
             await scdlBatchCli.processFile(fileConf);
             expect(scdlBatchCli.parseXls).toHaveBeenCalledWith(
                 FILE_PATH,
@@ -485,7 +482,7 @@ describe("SCDL Batch Import CLI", () => {
             const ERROR_MESSAGE = `Unsupported file type : ${FILE_PATH}`;
             jest.mocked(path.extname).mockReturnValue(`.json`);
             const FILE_CONF = FILES_CONFIG[0];
-            // @ts-expect-error:
+            // @ts-expect-error: test private method
             await scdlBatchCli.processFile(FILE_CONF);
             // @ts-expect-error: access protected property
             expect(scdlBatchCli.errorList).toContain(
@@ -496,7 +493,7 @@ describe("SCDL Batch Import CLI", () => {
 
     describe("import()", () => {
         // @ts-expect-error: private method
-        const mockIsConfig: jest.SpyInstance<Boolean> = jest.spyOn(ScdlBatchCli.prototype, "isConfig");
+        const mockIsConfig: jest.SpyInstance<boolean> = jest.spyOn(ScdlBatchCli.prototype, "isConfig");
         const mockLoadConfig: jest.SpyInstance<ScdlFileProcessingConfigList> = jest.spyOn(
             ScdlBatchCli.prototype,
             // @ts-expect-error: private met"Invalid configuration file: The config does not match the expected structure."hod
@@ -562,7 +559,7 @@ describe("SCDL Batch Import CLI", () => {
         it("displays log when all processing files succeed", async () => {
             const SUCCESS = [`Success importing ${FILES_CONFIG[0].name}`, `Success importing ${FILES_CONFIG[1].name}`];
             const spyConsoleLog = jest.spyOn(console, "log");
-            // @ts-expect-error
+            // @ts-expect-error: affect private prop
             scdlBatchCli.successList = SUCCESS;
             await scdlBatchCli.import();
             expect(spyConsoleLog).toHaveBeenNthCalledWith(1, "\n---------------Summary of Operations---------------");
@@ -574,9 +571,9 @@ describe("SCDL Batch Import CLI", () => {
             const SUCCESS = [`Success importing ${FILES_CONFIG[0].name}`];
             const ERRORS = [`Something went wrong with ${FILES_CONFIG[1].name}`];
             const spyConsoleLog = jest.spyOn(console, "log");
-            // @ts-expect-error
+            // @ts-expect-error: affect private prop
             scdlBatchCli.successList = SUCCESS;
-            // @ts-expect-error
+            // @ts-expect-error: affect private prop
             scdlBatchCli.errorList = ERRORS;
             await scdlBatchCli.import();
             expect(spyConsoleLog).toHaveBeenNthCalledWith(1, "\n---------------Summary of Operations---------------");

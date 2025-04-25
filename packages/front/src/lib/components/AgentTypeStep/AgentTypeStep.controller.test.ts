@@ -8,8 +8,7 @@ vi.mock("$lib/core/Dispatch", () => ({
     },
 }));
 vi.mock("$lib/core/Store", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- mock
-    const actual = (await vi.importActual("$lib/core/Store")) as any;
+    const actual = (await vi.importActual("$lib/core/Store")) as unknown;
     return {
         ...actual,
         derived: vi.fn(actual.derived),

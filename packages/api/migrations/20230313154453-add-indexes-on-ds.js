@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const {
     default: demarchesSimplifieesDataPort,
@@ -6,7 +5,6 @@ const {
 const {
     default: demarchesSimplifieesMapperPort,
 } = require("../build/src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port");
-/* eslint-enable @typescript-eslint/no-var-requires */
 
 module.exports = {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

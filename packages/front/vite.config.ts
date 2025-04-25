@@ -1,6 +1,5 @@
 import { fileURLToPath } from "url";
 import { readFileSync } from "fs";
-import path from "path";
 import { sentrySvelteKit } from "@sentry/sveltekit";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { defineConfig, loadEnv } from "vite";

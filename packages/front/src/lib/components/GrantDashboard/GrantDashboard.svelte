@@ -22,7 +22,7 @@
 
 {#await grantPromise}
     <Spinner description="Chargement des demandes de subventions en cours ..." />
-{:then _null}
+{:then}
     <div class="fr-grid-row fr-pt-4w fr-pb-2w flex space-between">
         <h2>Subventions</h2>
         <div class="baseline">
@@ -78,7 +78,7 @@
                     custom={true}
                     customColSizes={[12, 11, 11, 11, 13, 17, 11, 11]}
                     {headers}>
-                    {#each $rows as row, rowIndex}
+                    {#each $rows as row, rowIndex (rowIndex)}
                         {#key row}
                             <TableRow id={tableId} index={rowIndex}>
                                 <ApplicationRow

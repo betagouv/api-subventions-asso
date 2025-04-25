@@ -27,7 +27,9 @@ describe("StateBudgetProgram Port", () => {
 
         it("should call insertMany with the correct arguments", async () => {
             await stateBudgetProgramPort.replace(STATE_BUDGET_PROGRAM_ENTITIES);
-            expect(mockInsertMany).toHaveBeenCalledWith(STATE_BUDGET_PROGRAM_ENTITIES.map(entity => ({ ...entity, _id: expect.any(ObjectId)})));
+            expect(mockInsertMany).toHaveBeenCalledWith(
+                STATE_BUDGET_PROGRAM_ENTITIES.map(entity => ({ ...entity, _id: expect.any(ObjectId) })),
+            );
         });
     });
 

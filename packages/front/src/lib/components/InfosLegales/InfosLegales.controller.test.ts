@@ -5,7 +5,6 @@ import { dateToDDMMYYYY } from "$lib/helpers/dateHelper";
 import { getStatusBadgeOptions } from "$lib/resources/establishments/establishment.helper";
 vi.mock("$lib/resources/establishments/establishment.helper");
 vi.mock("$lib/resources/associations/association.helper", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const ASSOCIATION = await import("$lib/resources/associations/__fixtures__/Association");
     return {
         addressToOneLineString: address => address,

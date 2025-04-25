@@ -16,12 +16,15 @@ export class UniteLegalNameService {
     async searchBySirenSiretName(value: string) {
         if (Siret.isStartOfSiret(value)) value = Siren.fromPartialSiretStr(value).value;
         const associations = await uniteLegalNamePort.search(value);
-        const groupedNameByStructures = associations.reduce((acc, entity) => {
-            const sirenStr = entity.siren.value;
-            if (!acc[sirenStr]) acc[sirenStr] = [];
-            acc[sirenStr].push(entity);
-            return acc;
-        }, {} as Record<string, UniteLegalNameEntity[]>);
+        const groupedNameByStructures = associations.reduce(
+            (acc, entity) => {
+                const sirenStr = entity.siren.value;
+                if (!acc[sirenStr]) acc[sirenStr] = [];
+                acc[sirenStr].push(entity);
+                return acc;
+            },
+            {} as Record<string, UniteLegalNameEntity[]>,
+        );
 
         const fuseSearch = (names: UniteLegalNameEntity[]) => {
             const fuse = new Fuse(names, {

@@ -19,7 +19,7 @@ module.exports = async function getPhoneInAnnuairePage(url) {
         if (result.status != 200) {
             console.error({
                 status: result.status,
-                body: result.data
+                body: result.data,
             });
             return null;
         }

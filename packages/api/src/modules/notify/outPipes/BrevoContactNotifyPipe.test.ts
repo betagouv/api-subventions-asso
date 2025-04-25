@@ -7,9 +7,7 @@ import {
 } from "dto";
 import { API_BREVO_CONTACT_LIST } from "../../../configurations/apis.conf";
 import { NotificationType } from "../@types/NotificationType";
-import BrevoContactNotifyPipe, {
-    BrevoContactNotifyPipe as BrevoContactNotifyPipeClass,
-} from "./BrevoContactNotifyPipe";
+import BrevoContactNotifyPipe from "./BrevoContactNotifyPipe";
 import * as Brevo from "@getbrevo/brevo";
 jest.mock("@getbrevo/brevo");
 
@@ -25,9 +23,12 @@ describe("BrevoContactNotifyPipe", () => {
     const mockImportContacts = jest.spyOn(BrevoContactNotifyPipe.apiInstance, "importContacts");
 
     beforeAll(() => {
-        mockUpdateContact.mockResolvedValue({ body: { id: 1 } } as any);
-        mockDeleteContact.mockResolvedValue({ body: { id: 1 } } as any);
-        mockImportContacts.mockResolvedValue({ body: { id: 1 } } as any);
+        // @ts-expect-error: mock
+        mockUpdateContact.mockResolvedValue({ body: { id: 1 } } as unknown);
+        // @ts-expect-error: mock
+        mockDeleteContact.mockResolvedValue({ body: { id: 1 } } as unknown);
+        // @ts-expect-error: mock
+        mockImportContacts.mockResolvedValue({ body: { id: 1 } } as unknown);
         mockRequestContactImport.mockImplementation(() => ({}));
     });
 
@@ -63,7 +64,8 @@ describe("BrevoContactNotifyPipe", () => {
             createContactSpy = jest
                 // @ts-expect-error apiInstance is private attribute
                 .spyOn(BrevoContactNotifyPipe.apiInstance, "createContact")
-                .mockResolvedValue({ body: { id: 1 } } as any);
+                // @ts-expect-error: mock
+                .mockResolvedValue({ body: { id: 1 } } as unknown);
         });
 
         afterAll(() => {

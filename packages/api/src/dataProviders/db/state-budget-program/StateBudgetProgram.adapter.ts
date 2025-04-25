@@ -27,11 +27,6 @@ export default class StateBudgetProgramAdapter {
      * @returns The converted StateBudgetProgramEntity.
      */
     static toEntity(dbo: StateBudgetProgramDbo): StateBudgetProgramEntity {
-        return new StateBudgetProgramEntity(
-            dbo.mission,
-            dbo.label_programme,
-            dbo.code_ministere,
-            dbo.code_programme,
-        );
+        return new StateBudgetProgramEntity(dbo.mission, dbo.label_programme, dbo.code_ministere, dbo.code_programme);
     }
 }

@@ -8,7 +8,7 @@ import demarchesSimplifieesService from "../demarchesSimplifiees.service";
 jest.mock("../demarchesSimplifiees.service");
 
 describe("DemarchesSimplifieesEntityAdapter", () => {
-    // @ts-expect-error
+    // @ts-expect-error: spy
     const mapMock = jest.spyOn(DemarchesSimplifieesEntityAdapter, "mapSchema");
     const SIRET = "00000000000000";
     const DEMANDE = {
@@ -75,6 +75,7 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
         });
 
         it("sets annee_demande thanks to date_debut", () => {
+            // @ts-expect-error: mock
             mapMock.mockReturnValueOnce({ date_debut: new Date(2023, 10, 20) });
             const expected = 2023;
             const actual = DemarchesSimplifieesEntityAdapter.toSubvention(DEMANDE, MAPPING).annee_demande?.value;
@@ -83,6 +84,7 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
         });
 
         it("sets annee_demande prioritary to date_debut", () => {
+            // @ts-expect-error: mock
             mapMock.mockReturnValueOnce({ date_debut: new Date(2023, 10, 20), annee_demande: 2024 });
             const expected = 2024;
             const actual = DemarchesSimplifieesEntityAdapter.toSubvention(DEMANDE, MAPPING).annee_demande?.value;
@@ -133,6 +135,7 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
         const MAPPER = {};
 
         it("adapts to proper format", () => {
+            // @ts-expect-error: mock
             mapMock.mockReturnValueOnce({
                 dateTransmitted: new Date("2022-01-07"),
                 providerStatus: "sans_suite",
@@ -148,6 +151,7 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
         });
 
         it("sets exercice thanks to dateTransmitted", () => {
+            // @ts-expect-error: mock
             mapMock.mockReturnValueOnce({ dateTransmitted: new Date(2023, 10, 20) });
             const expected = 2023;
             const actual = DemarchesSimplifieesEntityAdapter.toCommon(DEMANDE, MAPPING).exercice;
@@ -156,6 +160,7 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
         });
 
         it("sets exercice prioritary to dateTransmitted", () => {
+            // @ts-expect-error: mock
             mapMock.mockReturnValueOnce({ dateTransmitted: new Date(2023, 10, 20), exercice: 2024 });
             const expected = 2024;
             const actual = DemarchesSimplifieesEntityAdapter.toCommon(DEMANDE, MAPPING).exercice;

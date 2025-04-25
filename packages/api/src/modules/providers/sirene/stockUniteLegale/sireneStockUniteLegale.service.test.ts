@@ -81,7 +81,6 @@ describe("SireneStockUniteLegaleService", () => {
     describe("saveBatchAssoData", () => {
         const BATCH = [1, 2] as unknown as SireneStockUniteLegaleEntity[];
         const ADAPTED_NAME_BATCH = ["one", "two"] as unknown as UniteLegalNameEntity[];
-        const ADAPTED_ENTITY_BATCH = ["1", "2"] as unknown as SireneStockUniteLegaleEntity[];
         let insertSpy: jest.SpyInstance;
 
         beforeAll(() => {

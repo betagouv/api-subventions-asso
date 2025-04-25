@@ -8,6 +8,8 @@
 
     const { paymentsAmount, paymentsRepartition } = controller;
 
+    // TODO: #3374
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     $: grants, controller.updateElements(grants);
 </script>
 

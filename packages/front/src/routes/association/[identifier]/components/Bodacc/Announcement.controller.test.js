@@ -23,6 +23,7 @@ describe("AnnouncementController", () => {
         it("should call _splitId()", () => {
             const controller = new AnnouncementController(ANNOUNCEMENT);
             const spySplitId = vi.spyOn(controller, "_splitId");
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             controller.publicationFile;
             expect(spySplitId).toHaveBeenCalledTimes(1);
         });

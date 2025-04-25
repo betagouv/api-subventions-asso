@@ -148,8 +148,8 @@ export default class OsirisCli {
         console.info(`
             ${validated.length}/${requests.length}
             ${result.insertedCount + result.upsertedCount} requests created and ${
-            result.modifiedCount + result.matchedCount
-        } requests updated
+                result.modifiedCount + result.matchedCount
+            } requests updated
             ${nbErrors} requests not valid
         `);
     }
@@ -184,8 +184,8 @@ export default class OsirisCli {
         console.info(`
             ${validated.length}/${actions.length}
             ${result.insertedCount + result.upsertedCount} actions created and ${
-            result.modifiedCount + result.matchedCount
-        } actions updated
+                result.modifiedCount + result.matchedCount
+            } actions updated
             ${nbErrors} actions not valid
         `);
     }

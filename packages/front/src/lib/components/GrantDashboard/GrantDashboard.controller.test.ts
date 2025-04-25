@@ -19,8 +19,6 @@ import type {
 } from "$lib/components/GrantDashboard/@types/DashboardGrant";
 import { grantCompareFn } from "$lib/components/GrantDashboard/sort.helper";
 import type { TableCell } from "$lib/dsfr/TableCell.types";
-import * as Store from "$lib/core/Store";
-import type { ReadStore } from "$lib/core/Store";
 
 vi.mock("$lib/helpers/identifierHelper");
 vi.mock("$lib/resources/establishments/establishment.service");
@@ -34,7 +32,7 @@ vi.mock("$lib/store/modal.store");
 vi.mock("./application.helper");
 vi.mock("./payments.helper");
 vi.mock("$lib/components/GrantDashboard/sort.helper", () => ({
-    grantCompareFn: [null, vi.fn((_a, _b, _sortOrder) => 0)],
+    grantCompareFn: [null, vi.fn(() => 0)],
 }));
 
 describe("GrantDashboard Controller", () => {

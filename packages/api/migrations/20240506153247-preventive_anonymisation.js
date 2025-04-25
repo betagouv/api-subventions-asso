@@ -97,6 +97,5 @@ module.exports = {
         await db.collection("log").bulkWrite(bulkWriteOps);
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     async down() {},
 };

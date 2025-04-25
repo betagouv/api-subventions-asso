@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { ObjectId } = require("mongodb");
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const asyncForEach = require("../build/src/shared/helpers/ArrayHelper").asyncForEach;

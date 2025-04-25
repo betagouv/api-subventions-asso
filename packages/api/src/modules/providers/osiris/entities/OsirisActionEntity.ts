@@ -55,7 +55,11 @@ export default class OsirisActionEntity extends OsirisActionEntityDbo {
         montants_versement_compensation: ["Montants et versements", "Compensation"],
     };
 
-    constructor(public indexedInformations: IOsirisActionsInformations, public data: unknown, public _id?: ObjectId) {
+    constructor(
+        public indexedInformations: IOsirisActionsInformations,
+        public data: unknown,
+        public _id?: ObjectId,
+    ) {
         super(indexedInformations, data, _id);
         this.indexedInformations.uniqueId = `${this.indexedInformations.osirisActionId}-${this.indexedInformations.exercise}`;
         const requestId = this.indexedInformations.osirisActionId.match(/^(.+)-\d+$/)?.[1];

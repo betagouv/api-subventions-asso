@@ -18,7 +18,7 @@
 
 {#await ctrl.promises}
     <Spinner description="Chargement des utilisateurs en cours ..." />
-{:then _promises}
+{:then}
     <h2 class="fr-h2 fr-mb-6w">{PAGE_ADMIN_USERS_ACCOUNT_NAME}</h2>
     <div class="fr-grid-row fr-mb-6w">
         <div class="fr-col-md-12">

@@ -1,7 +1,5 @@
 import ProviderValueAdapter from "../../../shared/adapters/ProviderValueAdapter";
 import avisSituationInseeService from "./avisSituationInsee.service";
-import rnaSirenService from "../../rna-siren/rnaSiren.service";
-import RnaSirenEntity from "../../../entities/RnaSirenEntity";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import Siren from "../../../valueObjects/Siren";
 
@@ -39,7 +37,8 @@ describe("AvisSituationInseeService", () => {
 
         it("should return object because value is save in cache", async () => {
             const expected = { 42: "youpi" };
-            cacheGetMock.mockImplementationOnce(() => [expected as unknown as any]);
+            // @ts-expect-error: mock
+            cacheGetMock.mockImplementationOnce(() => [expected]);
             cacheHasMock.mockImplementationOnce(() => true);
             // @ts-expect-error getInseeEtablissementsBySiren is private method
             const actual = await avisSituationInseeService.getInseeEtablissementsBySiren(SIREN);
@@ -114,8 +113,8 @@ describe("AvisSituationInseeService", () => {
 
     describe("getDocuments", () => {
         const getInseeEtablissementsBySirenMock = jest.spyOn<
-            any,
             // @ts-expect-error getInseeEtablissementsBySiren is private method
+            unknown,
             Promise<
                 | {
                       etablissements: {
@@ -130,6 +129,7 @@ describe("AvisSituationInseeService", () => {
         const IDENTIFIER = AssociationIdentifier.fromSiren(new Siren("000000000"));
 
         it("should return emtpy array because file not found in insee", async () => {
+            // @ts-expect-error: mock
             getInseeEtablissementsBySirenMock.mockImplementationOnce(async () => false);
 
             const actual = await avisSituationInseeService.getDocuments(IDENTIFIER);
@@ -138,6 +138,7 @@ describe("AvisSituationInseeService", () => {
         });
 
         it("should return empty array because nic not found", async () => {
+            // @ts-expect-error: mock
             getInseeEtablissementsBySirenMock.mockImplementationOnce(async () => ({
                 etablissements: [
                     {
@@ -153,6 +154,7 @@ describe("AvisSituationInseeService", () => {
         });
 
         it("should return result computed url with given siren and found nic", async () => {
+            // @ts-expect-error: mock
             getInseeEtablissementsBySirenMock.mockImplementationOnce(async () => ({
                 etablissements: [
                     {

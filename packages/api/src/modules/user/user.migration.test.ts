@@ -6,7 +6,7 @@ import UserMigrations, { EmailToLowerCaseAction } from "./user.migrations";
 import userAuthService from "./services/auth/user.auth.service";
 import userActivationService from "./services/activation/user.activation.service";
 jest.mock("./services/auth/user.auth.service");
-const mockedUserAuthService = jest.mocked(userAuthService, true);
+const mockedUserAuthService = jest.mocked(userAuthService);
 import userCrudService from "./services/crud/user.crud.service";
 jest.mock("./services/crud/user.crud.service");
 const mockedUserCrudService = jest.mocked(userCrudService);
@@ -58,7 +58,7 @@ describe("UserMigration", () => {
                 email: "test@datasubvention.beta.gou.fr",
                 _id: new ObjectId(),
             } as unknown as WithId<UserDto>;
-            mockedUserCrudService.delete.mockImplementationOnce(user => Promise.resolve(true));
+            mockedUserCrudService.delete.mockImplementationOnce(() => Promise.resolve(true));
             findUsersActionMock.mockImplementationOnce(async users =>
                 users.map((user: UserDto) => ({
                     action: EmailToLowerCaseAction.DELETE,

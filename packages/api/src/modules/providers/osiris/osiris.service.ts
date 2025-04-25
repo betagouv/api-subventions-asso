@@ -31,7 +31,7 @@ export enum VALID_REQUEST_ERROR_CODE {
 
 type OsirisRequestValidation = {
     message: string;
-    data: any;
+    data: unknown;
     code: VALID_REQUEST_ERROR_CODE;
 };
 
@@ -77,7 +77,7 @@ export class OsirisService
             const { rna, siret } = request.legalInformations;
             if (rna) rnaSirens.push({ rna: new Rna(rna), siren: new Siret(siret).toSiren() });
         }
-        const [metadataRequests, _metadataRnaSiren] = await Promise.all([
+        const [metadataRequests] = await Promise.all([
             osirisRequestPort.bulkUpsert(requests),
             rnaSirenService.insertMany(rnaSirens),
         ]);
@@ -299,6 +299,7 @@ export class OsirisService
             requests = await this.findBySiren(identifier.siren);
         }
 
+        // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
         return requests.map(request => ({
             provider: this.provider.id,
             type: "application",
@@ -308,6 +309,7 @@ export class OsirisService
     }
 
     rawToCommon(raw: RawGrant) {
+        // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
         return OsirisRequestAdapter.toCommon(raw.data as OsirisRequestEntity);
     }
 }

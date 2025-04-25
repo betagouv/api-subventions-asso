@@ -1,10 +1,11 @@
-import request = require("supertest");
+import request from "supertest";
 import { createAndGetUserToken } from "../__helpers__/tokenHelper";
 import rnaSirenService from "../../src/modules/rna-siren/rnaSiren.service";
 import Rna from "../../src/valueObjects/Rna";
 import Siren from "../../src/valueObjects/Siren";
+import { App } from "supertest/types";
 
-const g = global as unknown as { app: unknown };
+const g = global as unknown as { app: App };
 
 describe("RnaSirenController", () => {
     const RNA = new Rna("W123456789");

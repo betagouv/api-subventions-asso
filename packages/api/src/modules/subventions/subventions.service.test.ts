@@ -24,7 +24,7 @@ describe("SubventionsService", () => {
 
     afterEach(() => {
         // @ts-expect-error: mock
-        // eslint-disable-next-line import/namespace
+
         providers.demandesSubventionsProviders = DEMANDES_SUBVENTIONS_PROVIDERS;
     });
 

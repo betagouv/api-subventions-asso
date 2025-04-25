@@ -16,7 +16,9 @@
     <div class="fr-container">
         <div class="fr-notice__body">
             {#if title}<span class="fr-notice__title">{title}</span>{/if}
-            {#if desc} <span class="fr-notice__desc">{@html desc}</span>{/if}
+            {#if desc}
+                <!-- svelte/no-at-html-tags -->
+                <span class="fr-notice__desc">{@html desc}</span>{/if}
 
             {#if closeBtn}
                 <button on:click={() => dispatch("close")} class="fr-btn--close fr-btn" title="Masquer le message">

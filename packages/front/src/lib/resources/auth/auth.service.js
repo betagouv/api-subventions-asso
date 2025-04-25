@@ -55,13 +55,14 @@ export class AuthService {
             const user = await userService.getSelfUser();
             this.setUserInApp(user);
             return true;
-        } catch (_e) {
+        } catch {
             console.info("user not connected");
             return false;
         }
     }
 
     async logout() {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { url, _success } = await authPort.logout();
         this.connectedUser.set(null);
         crispService.resetSession();

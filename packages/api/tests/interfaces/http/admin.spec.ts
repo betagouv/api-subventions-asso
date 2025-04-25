@@ -1,4 +1,4 @@
-import request = require("supertest");
+import request from "supertest";
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import { RoleEnum } from "../../../src/@enums/Roles";
 import { createAndActiveUser } from "../../__helpers__/userHelper";
@@ -8,8 +8,9 @@ import UserDbo from "../../../src/dataProviders/db/user/UserDbo";
 import notifyService from "../../../src/modules/notify/notify.service";
 import userCrudService from "../../../src/modules/user/services/crud/user.crud.service";
 import userStatsService from "../../../src/modules/user/services/stats/user.stats.service";
+import { App } from "supertest/types";
 
-const g = global as unknown as { app: unknown };
+const g = global as unknown as { app: App };
 
 describe("AdminController, /admin", () => {
     const SIREN = "123456789";

@@ -29,15 +29,17 @@ export default class ScdlBatchCli extends ScdlCli {
     // store errors for each ScdlFileProcessingConfig format error
     protected fileConfigErrors: FileConfigErrors = [];
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private isConfig(obj: any): obj is ScdlFileProcessingConfigList {
         return Boolean(
             obj &&
                 Array.isArray(obj.files) &&
                 obj.files.length &&
-                obj.files.every((file: any) => this.validateFileConfig(file)),
+                obj.files.every(file => this.validateFileConfig(file)),
         );
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private validateFileConfig(file: any): file is ScdlFileProcessingConfig {
         if (!file)
             throw new Error(
@@ -79,7 +81,7 @@ export default class ScdlBatchCli extends ScdlCli {
         return true;
     }
 
-    private validateParseParams(params: any): params is ScdlParseParams {
+    private validateParseParams(params): params is ScdlParseParams {
         const errors: FileConfigErrors = [];
         if (typeof params != "object" || params instanceof Array) {
             errors.push({ field: "parseParams" });

@@ -1,4 +1,5 @@
-import request = require("supertest");
+import { App } from "supertest/types";
+import request from "supertest";
 import { createAndGetUserToken } from "../__helpers__/tokenHelper";
 import uniteLegalNamePort from "../../src/dataProviders/db/uniteLegalName/uniteLegalName.port";
 import AssociationNameFixture from "../__fixtures__/association-name.fixture";
@@ -6,7 +7,7 @@ import apiEntrepriseService from "../../src/modules/providers/apiEntreprise/apiE
 import dauphinService from "../../src/modules/providers/dauphin/dauphin.service";
 import rechercheEntreprisesPort from "../../src/dataProviders/api/rechercheEntreprises/rechercheEntreprises.port";
 
-const g = global as unknown as { app: unknown };
+const g = global as unknown as { app: App };
 
 describe("/search", () => {
     beforeAll(() => {

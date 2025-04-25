@@ -71,6 +71,7 @@ describe("ChorusParser", () => {
             .spyOn(ChorusParser, "hasMandatoryFields");
 
         beforeEach(() => {
+            // @ts-expect-error: mock
             mockHasUniqueKeyFields.mockReturnValue({ value: true });
         });
 
@@ -89,6 +90,7 @@ describe("ChorusParser", () => {
             ${["ej"]}
             ${["ej", "numPosteDP", "codeSociete"]}
         `("rejects because $missingProps unique key field(s) is/are missing", ({ missingProps }) => {
+            // @ts-expect-error: mock
             mockHasUniqueKeyFields.mockReturnValue({ value: false, hints: [missingProps] });
             const indexedInformations = ENTITIES[0].indexedInformations;
 
@@ -154,10 +156,10 @@ describe("ChorusParser", () => {
 
     describe("rowsToEntities", () => {
         // @ts-expect-error: protected
-        let originalBuildUniqueId = ChorusParser.buildUniqueId;
+        const originalBuildUniqueId = ChorusParser.buildUniqueId;
         const mockBuildUniqueId = jest.fn();
         // @ts-expect-error: protected
-        let originalValidateIndexedInformations = ChorusParser.isIndexedInformationsValid;
+        const originalValidateIndexedInformations = ChorusParser.isIndexedInformationsValid;
         const mockValidateIndexedInformations = jest.fn().mockReturnValue(true);
 
         const ROWS = [...PAGES];
@@ -203,7 +205,7 @@ describe("ChorusParser", () => {
 
     describe("isIndexedInformationsValid", () => {
         // @ts-expect-error: protected
-        let originalvalidateIndexedInformationsNEW = ChorusParser.validateIndexedInformations;
+        const originalvalidateIndexedInformationsNEW = ChorusParser.validateIndexedInformations;
         const mockedvalidateIndexedInformationsNEW = jest.fn().mockReturnValue(true);
 
         beforeAll(() => {
@@ -266,7 +268,7 @@ describe("ChorusParser", () => {
         // the current format has 3 tabs and the second one is "1. Extraction"
         it("should work with old format", () => {
             const CONTENT = "THIS IS A BUFFER";
-            // @ts-expect-error
+            // @ts-expect-error: mock
             ChorusParser.parse(CONTENT, () => true);
             expect(mockedGenericParser.xlsParseWithPageName).toHaveBeenCalledWith(CONTENT);
             mockedGenericParser.xlsParseWithPageName.mockReturnValueOnce([{ data: DATA, name: "1. Extraction" }]);
@@ -274,21 +276,21 @@ describe("ChorusParser", () => {
 
         it("should call GenericParser.xlsParse", () => {
             const CONTENT = "THIS IS A BUFFER";
-            // @ts-expect-error
+            // @ts-expect-error: mock
             ChorusParser.parse(CONTENT, () => true);
             expect(mockedGenericParser.xlsParseWithPageName).toHaveBeenCalledWith(CONTENT);
         });
 
         it("should rename empty headers", () => {
             const CONTENT = "THIS IS A BUFFER";
-            // @ts-expect-error
+            // @ts-expect-error: mock
             ChorusParser.parse(CONTENT, () => true);
             expect(mockedRenameEmptyHeaders).toHaveBeenCalledWith(HEADERS);
         });
 
         it("should transform rows to entities", () => {
             const CONTENT = "THIS IS A BUFFER";
-            // @ts-expect-error
+            // @ts-expect-error: mock
             ChorusParser.parse(CONTENT, () => true);
             expect(mockedRowsToEntities).toHaveBeenCalledWith(FILLED_HEADERS, DATA.slice(1));
         });

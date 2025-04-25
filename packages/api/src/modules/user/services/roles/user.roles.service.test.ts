@@ -70,7 +70,7 @@ describe("user roles service", () => {
         });
 
         it("should call userPort.update() with email as argument", async () => {
-            mockedUserPort.findByEmail.mockImplementationOnce(async email => USER_WITHOUT_SECRET);
+            mockedUserPort.findByEmail.mockImplementationOnce(async () => USER_WITHOUT_SECRET);
             await userRolesService.addRolesToUser(USER_EMAIL, [RoleEnum.admin]);
             expect(mockedUserPort.update).toHaveBeenCalledWith({
                 ...USER_WITHOUT_SECRET,

@@ -1,0 +1,14 @@
+# Ignore artifacts:
+build
+nodes_modules
+data-integration
+import-errors
+assets
+logs
+tsoa
+
+# Ignore files for PNPM, NPM and YARN
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+/static

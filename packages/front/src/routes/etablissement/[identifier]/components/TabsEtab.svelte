@@ -14,7 +14,7 @@
 <div class="tabs-etab">
     <Tabs {titles}>
         <svelte:fragment slot="tab-content">
-            {#each titles as _title, index}
+            {#each titles as _title, index (_title)}
                 <TabContent selected={index === 0} {index}>
                     {#if index === 0}
                         <GrantDashboard structureId={identifier} />

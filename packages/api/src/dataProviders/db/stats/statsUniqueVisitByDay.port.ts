@@ -10,9 +10,6 @@ export const groupVisitByUser = (result, visit) => {
 };
 
 export const keepOneUserVisitByDay = userVisits => {
-    const yourDate = new Date();
-    yourDate.toISOString().split("T")[0];
-
     return userVisits.reduce((result, visit) => {
         // assume that user do requests between 8am and 18pm and do not care about timezone (possibly -2 hours on the server)
         const date = new Date(visit.date).toISOString().split("T")[0];

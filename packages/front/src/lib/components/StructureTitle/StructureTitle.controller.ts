@@ -46,7 +46,7 @@ export class StructureTitleController {
         return this.nbEstabs == 1
             ? `${this.nbEstabs} établissement rattaché`
             : this.nbEstabs < 1
-            ? "aucun établissement rattaché"
-            : `${this.nbEstabs} établissements rattachés`;
+              ? "aucun établissement rattaché"
+              : `${this.nbEstabs} établissements rattachés`;
     }
 }

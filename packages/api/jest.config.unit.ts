@@ -47,8 +47,8 @@ export default Object.assign(baseConfig, {
             branches: 0,
             functions: 0,
             lines: 0,
-            statements: 0
-        }
+            statements: 0,
+        },
     },
 
     // A path to a custom dependency extractor
@@ -153,7 +153,7 @@ export default Object.assign(baseConfig, {
     // testLocationInResults: false,
 
     // The glob patterns Jest uses to detect test files
-    testMatch: ["<rootDir>/src/**/*.(spec|test).ts"]
+    testMatch: ["<rootDir>/src/**/*.(spec|test).ts"],
 
     // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
     // testPathIgnorePatterns: [

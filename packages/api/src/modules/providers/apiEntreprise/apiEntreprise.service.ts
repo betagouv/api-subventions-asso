@@ -128,7 +128,7 @@ export class ApiEntrepriseService extends ProviderCore {
                     this.RCS_EXTRACT_REASON,
                 )
             )?.data;
-        } catch (e) {
+        } catch {
             return null;
         }
     }

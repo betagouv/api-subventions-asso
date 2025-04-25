@@ -36,6 +36,8 @@ describe("ActivateAccountController", () => {
         };
 
         it("should call authService.activate() with given values but with confirmPwd removed", async () => {
+            // TODO: find a way to make eslint accept unused var with rest
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { confirmPwd: _confirmPwd, ...userWithoutConfirmPwd } = USER;
             controller = new ActivateAccountController(FAKE_TOKEN);
             await controller.onSubmit(USER);

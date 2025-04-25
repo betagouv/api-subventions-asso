@@ -3,7 +3,7 @@ import { ParserInfo } from "../../../@types";
 
 describe("scdl mapper", () => {
     describe("allocatorSiret adapter", () => {
-        const adapter = (SCDL_MAPPER.allocatorSiret as ParserInfo<any>).adapter as (v: any) => any;
+        const adapter = (SCDL_MAPPER.allocatorSiret as ParserInfo).adapter as (v: unknown) => unknown;
 
         it("returns siret directly if given directly", () => {
             const actual = adapter("23450002300028");
@@ -27,7 +27,7 @@ describe("scdl mapper", () => {
     });
 
     describe("associationSiret adapter", () => {
-        const adapter = (SCDL_MAPPER.associationSiret as ParserInfo<any>).adapter as (v: any) => any;
+        const adapter = (SCDL_MAPPER.associationSiret as ParserInfo).adapter as (v: unknown) => unknown;
 
         it("returns siret directly if given directly", () => {
             const actual = adapter("23450002300028");
@@ -51,7 +51,7 @@ describe("scdl mapper", () => {
     });
 
     describe("exercise adapter", () => {
-        const adapter = (SCDL_MAPPER.exercice as ParserInfo<any>).adapter as (v: any) => any;
+        const adapter = (SCDL_MAPPER.exercice as ParserInfo).adapter as (v: unknown) => unknown;
 
         it("returns undefined if falsy value", () => {
             const actual = adapter("");
@@ -75,7 +75,7 @@ describe("scdl mapper", () => {
     });
 
     describe("amount adapter", () => {
-        const adapter = (SCDL_MAPPER.amount as ParserInfo<any>).adapter as (v: any) => any;
+        const adapter = (SCDL_MAPPER.amount as ParserInfo).adapter as (v: unknown) => unknown;
 
         it("only keeps numbers from string", () => {
             const actual = adapter("2 098.56");

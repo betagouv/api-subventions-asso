@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const { default: dauphinGisproPort } = require("../build/src/dataProviders/db/providers/dauphin/dauphin-gispro.port");
 

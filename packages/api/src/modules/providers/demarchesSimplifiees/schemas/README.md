@@ -41,9 +41,9 @@ Les chemins sont lus par la fonction `get` du module `lodash` (cf [docs](https:/
 
 Les informations accessibles peuvent être à 3 niveaux dans la réponse Démarches Simplifiées.
 
--   dans les **champs et annotations** : auquel cas il faut bien reprendre dans l'attribut `from` le chemin complet en incluant l'identifiant technique du champ et le `.value`. _ex : `demande.champs.Q2hhbXAtMjM2MzQwMg==.value`_
--   dans les **métadonnées de la réponse** : ce sont souvent (voir service instructeur) des informations faciles à récupérer et communes à toutes les démarches. _ex : `demandeur.siret`_
--   dans les **métadonnées de la démarche** : pour l'instant seul le service est parfois utilisé comme service instructeur
+- dans les **champs et annotations** : auquel cas il faut bien reprendre dans l'attribut `from` le chemin complet en incluant l'identifiant technique du champ et le `.value`. _ex : `demande.champs.Q2hhbXAtMjM2MzQwMg==.value`_
+- dans les **métadonnées de la réponse** : ce sont souvent (voir service instructeur) des informations faciles à récupérer et communes à toutes les démarches. _ex : `demandeur.siret`_
+- dans les **métadonnées de la démarche** : pour l'instant seul le service est parfois utilisé comme service instructeur
 
 ## Règles métier
 
@@ -62,7 +62,7 @@ Les statuts démarches simplifiées ne sont pour l'instant pas vraiment interpr�
 
 ## Reste à faire
 
--   définir la correspondance des statuts
--   permettre d'avoir un schéma pour plusieurs démarches ou de faire hériter un schéma d'un autre
--   avoir un système d'adaptateur défini par champ ?
--   avoir un système de champ conditionnel ? On ne récupère pas de données contact qui existent parce qu'elles peuvent être dans des champs différents en fonction de la réponse à un troisième champ (la personne qui suit le dossier est-elle le responsable légal ou une tierce personne)
+- définir la correspondance des statuts
+- permettre d'avoir un schéma pour plusieurs démarches ou de faire hériter un schéma d'un autre
+- avoir un système d'adaptateur défini par champ ?
+- avoir un système de champ conditionnel ? On ne récupère pas de données contact qui existent parce qu'elles peuvent être dans des champs différents en fonction de la réponse à un troisième champ (la personne qui suit le dossier est-elle le responsable légal ou une tierce personne)

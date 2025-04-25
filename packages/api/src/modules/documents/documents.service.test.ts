@@ -13,7 +13,6 @@ import { ReadStream } from "node:fs";
 import Siren from "../../valueObjects/Siren";
 import Rna from "../../valueObjects/Rna";
 import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
-import Siret from "../../valueObjects/Siret";
 import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
 
 jest.mock("./document.adapter");
@@ -30,7 +29,7 @@ describe("Documents Service", () => {
 
     describe("getDocumentBySiren", () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
+        // @ts-expect-error
         const mockAggregateDocuments = jest.spyOn(documentsService, "aggregateDocuments") as jest.SpyInstance<
             Promise<(string | null)[]>,
             []
@@ -62,7 +61,7 @@ describe("Documents Service", () => {
             const expected = true;
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+            // @ts-expect-error
             const actual = documentsService.isDocumentProvider({
                 isDocumentProvider: true,
             });
@@ -82,7 +81,7 @@ describe("Documents Service", () => {
 
     describe("getDocumentProviders", () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
+        // @ts-expect-error
         const isDocumentProviderMock = jest.spyOn(documentsService, "isDocumentProvider") as jest.SpyInstance<
             boolean,
             []
@@ -94,7 +93,7 @@ describe("Documents Service", () => {
             isDocumentProviderMock.mockImplementation(() => false);
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+            // @ts-expect-error
             const actual = documentsService.getDocumentProviders();
 
             expect(actual).toHaveLength(expected);
@@ -106,7 +105,7 @@ describe("Documents Service", () => {
             isDocumentProviderMock.mockImplementation(() => true);
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+            // @ts-expect-error
             const actual = documentsService.getDocumentProviders();
 
             expect(actual).toHaveLength(expected);
@@ -121,7 +120,7 @@ describe("Documents Service", () => {
             });
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+            // @ts-expect-error
             const actual = documentsService.getDocumentProviders();
             expect(actual).toHaveLength(expected);
         });
@@ -139,7 +138,7 @@ describe("Documents Service", () => {
 
     describe("aggregateDocuments", () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
+        // @ts-expect-error
         const getDocumentProvidersMock = jest.spyOn(documentsService, "getDocumentProviders") as jest.SpyInstance<
             Provider[],
             []
@@ -156,7 +155,7 @@ describe("Documents Service", () => {
             ]);
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+            // @ts-expect-error
             await documentsService.aggregateDocuments(expected);
 
             expect(mock).toHaveBeenCalledWith(expected);
@@ -173,7 +172,7 @@ describe("Documents Service", () => {
             ]);
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+            // @ts-expect-error
             await documentsService.aggregateDocuments(expected);
 
             expect(mock).toHaveBeenCalledWith(expected);
@@ -255,7 +254,7 @@ describe("Documents Service", () => {
         const RES = "STREAM";
 
         beforeEach(() => {
-            // @ts-ignore
+            // @ts-expect-error: mock
             httpGetSpy = jest.spyOn(HTTP, "get").mockResolvedValue({ data: RES });
         });
 
@@ -350,7 +349,7 @@ describe("Documents Service", () => {
     });
 
     describe("safeGetRequestedDocumentFiles", () => {
-        const UNSAFE_DOCS = ["a", "b"] as any as DocumentRequestDto[];
+        const UNSAFE_DOCS = ["a", "b"] as unknown as DocumentRequestDto[];
         const STREAM = "STREAM" as unknown as ReadStream;
         let sanitizeSpy, getDocsSpy;
 
@@ -500,7 +499,6 @@ describe("Documents Service", () => {
                 url: "url",
                 nom,
             };
-            const expected = "/tmp/folder/typeDoc-problems.toto";
             // @ts-expect-error test private
             await documentsService.downloadDocument(FOLDER, DOC);
             expect(spyProtectPathTraversal).toHaveBeenCalledWith(nom);
@@ -518,7 +516,6 @@ describe("Documents Service", () => {
                 // @ts-expect-error downloadDocument
                 .mockResolvedValueOnce(pipeMock);
 
-            const expected = "/tmp/folder/typeDoc-problems.toto";
             // @ts-expect-error test private
             await documentsService.downloadDocument(FOLDER, DOC);
             expect(spyProtectPathTraversal).toHaveBeenCalledWith('nom/with/path"traversal"/and/problems.toto');

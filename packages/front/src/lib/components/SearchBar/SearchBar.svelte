@@ -8,7 +8,7 @@
     export let value: string | undefined = undefined;
     export let label = undefined;
 
-    const dispatch = createEventDispatcher();
+    const dispatch = createEventDispatcher<{ submit: string | undefined; reset: null }>();
 
     async function handleReset() {
         if (value === "") dispatch("reset");

@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import path from "path";
-import csvSyncStringifier = require("csv-stringify/sync");
+import csvSyncStringifier from "csv-stringify/sync";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../@types";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";

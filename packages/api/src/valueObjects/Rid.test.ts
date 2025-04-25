@@ -11,7 +11,7 @@ describe("Rid", () => {
         });
 
         it.each(INVALID_RID_LIST)("should throw an error for an invalid rid", rid => {
-            // @ts-expect-error
+            // @ts-expect-error: test edge cases
             expect(() => new Rid(rid)).toThrow(`Invalid Rid: ${rid}`);
         });
     });

@@ -86,6 +86,7 @@ describe("GenericParser", () => {
             adaptByPathSpy.mockReturnValueOnce("adapted2");
             const expected = { value1: "adapted1", value2: "adapted2" };
             const actual = GenericParser.indexDataByPathObject(MAPPER, DATA);
+            expect(actual).toEqual(expected);
         });
     });
 

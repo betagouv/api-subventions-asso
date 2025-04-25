@@ -1,10 +1,11 @@
-import request = require("supertest");
+import request from "supertest";
 import osirisRequestPort from "../../src/dataProviders/db/providers/osiris/osiris.request.port";
 import fonjepSubventionPort from "../../src/dataProviders/db/providers/fonjep/fonjep.subvention.port.old";
 import { SubventionEntity as FonjepEntityFixture } from "./providers/fonjep/__fixtures__/entity";
 import OsirisRequestEntityFixture from "./providers/osiris/__fixtures__/entity";
+import { App } from "supertest/types";
 
-const g = global as unknown as { app: unknown };
+const g = global as unknown as { app: App };
 
 describe("open-data/fournisseurs", () => {
     beforeEach(async () => {

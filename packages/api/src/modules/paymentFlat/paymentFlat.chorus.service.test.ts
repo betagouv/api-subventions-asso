@@ -121,7 +121,7 @@ describe("paymentFlatChorusService", () => {
                 }),
             };
 
-            mockChorusCursorFind = jest.spyOn(chorusService, "cursorFind").mockReturnValue(mockCursor as any);
+            mockChorusCursorFind = jest.spyOn(chorusService, "cursorFind").mockReturnValue(mockCursor as unknown);
             mockToNotAggregatedChorusPaymentFlatEntity = jest
                 .spyOn(ChorusAdapter, "toNotAggregatedChorusPaymentFlatEntity")
                 .mockReturnValue({ ...CHORUS_PAYMENT_FLAT_ENTITY });

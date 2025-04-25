@@ -4,7 +4,7 @@ import userService from "$lib/resources/users/user.service";
 import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionFormService";
 import { beforeNavigate, goto } from "$app/navigation";
 import { action, modal } from "$lib/store/modal.store";
-import localStorageService from "$lib/services/localStorage.service";
+// import localStorageService from "$lib/services/localStorage.service";
 
 export class ProfileController {
     agentTypeOptions = subscriptionFormService.agentTypeOptions;
@@ -58,7 +58,7 @@ export class ProfileController {
             //     localStorageService.setItem("hide-main-info-banner", true);
             // }
             this.saveStatus.set("saved");
-        } catch (_e) {
+        } catch {
             this.saveStatus.set("error");
         }
         this.showAlert();
@@ -72,7 +72,7 @@ export class ProfileController {
         try {
             this.deleteError.set(false);
             return userService.deleteCurrentUser();
-        } catch (e) {
+        } catch {
             this.deleteError.set(true);
         }
     }

@@ -3,7 +3,6 @@
 
     import Button from "$lib/dsfr/Button.svelte";
     import userService from "$lib/resources/users/user.service";
-    import Table from "$lib/dsfr/Table.svelte";
 
     export let usersStore;
 
@@ -25,7 +24,7 @@
             <th>Action</th>
         </thead>
         <tbody>
-            {#each $users as user}
+            {#each $users as user, index (index)}
                 <tr>
                     <td>
                         {user.email}

@@ -84,6 +84,7 @@ const providers = {
         getAssociationsBySiren: async () => [{}],
         getAssociationsBySiret: async () => [{}],
         getAssociationsByRna: async () => [{}],
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         getSpecificDocumentStream: async (_path: string) => new IncomingMessage(new Socket()),
     },
 };

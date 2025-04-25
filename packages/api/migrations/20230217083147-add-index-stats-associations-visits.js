@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const {
     default: statsAssociationsVisitPort,
 } = require("../build/src/dataProviders/db/stats/statsAssociationsVisit.port");
-/* eslint-enable @typescript-eslint/no-var-requires */
 
 module.exports = {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

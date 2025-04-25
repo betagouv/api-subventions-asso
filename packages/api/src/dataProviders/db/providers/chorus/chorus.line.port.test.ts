@@ -3,7 +3,7 @@ import MongoPort from "../../../../shared/MongoPort";
 import ChorusLineEntity from "../../../../modules/providers/chorus/entities/ChorusLineEntity";
 
 describe("chorusLinePort", () => {
-    let mockBulkWrite = jest.fn();
+    const mockBulkWrite = jest.fn();
 
     beforeAll(() => {
         jest

@@ -33,6 +33,7 @@ export default class ActivateAccountController {
     }
 
     onSubmit(values) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { confirmPwd: _confirmPwd, ...noConfirmValues } = values;
         return authService
             .activate(this.token, noConfirmValues)

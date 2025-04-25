@@ -20,7 +20,7 @@ export class UserConsumerService {
         try {
             await consumerTokenPort.create(new ConsumerToken(user._id, consumerToken));
             return user;
-        } catch (e) {
+        } catch {
             await userCrudService.delete(user._id.toString());
             throw new InternalServerError("Could not create consumer token", UserServiceErrors.CREATE_CONSUMER_TOKEN);
         }

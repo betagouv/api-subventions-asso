@@ -4,9 +4,11 @@ import { buildCsv, downloadCsv } from "$lib/helpers/csvHelper";
 import Store from "$lib/core/Store";
 
 export default class AdminUserAccountListController {
-    public promises: Promise<any>;
+    public promises: Promise<unknown>;
     public newDomain: Store<string>;
     public domainError: Store<boolean | undefined>;
+    // TODO: create a type for this
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public users: Store<any[]>;
 
     constructor() {
@@ -27,7 +29,7 @@ export default class AdminUserAccountListController {
         try {
             await adminService.addDomain(this.newDomain.value);
             this.domainError.set(false);
-        } catch (e) {
+        } catch {
             this.domainError.set(true);
         }
     }

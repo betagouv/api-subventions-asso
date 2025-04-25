@@ -3,8 +3,8 @@ export default {
     clearMocks: true,
     // A map from regular expressions to paths to transformers
     // transform: undefined,
-    transform:  {
-        "\\.(ts)$": "ts-jest"
+    transform: {
+        "\\.(ts)$": "ts-jest",
     },
-    modulePathIgnorePatterns: ["./build"]
+    modulePathIgnorePatterns: ["./build"],
 };

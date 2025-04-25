@@ -31,10 +31,10 @@
                 scrollable={false}
                 hideTitle={true}
                 title="Montant des subventions que l'Etat a versé">
-                {#each $groupedData as row, index}
+                {#each $groupedData as row, index (index)}
                     <TableRow id={tableId} {index}>
                         <td>{row.exerciceBudgetaire}</td>
-                        {#each $selectedColumns as col}
+                        {#each $selectedColumns as col, index (index)}
                             <td>{row[col]}</td>
                         {/each}
                         <td>{row.montant}</td>

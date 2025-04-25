@@ -1,3 +1,5 @@
+// TODO: make eslint ok with enum
+
 export enum UserServiceErrors {
     LOGIN_WRONG_PASSWORD_MATCH,
     LOGIN_UPDATE_JWT_FAIL,

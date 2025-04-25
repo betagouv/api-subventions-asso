@@ -13,20 +13,20 @@ describe("ExecutionSyncStack", () => {
         let executeOperationsMock: jest.SpyInstance;
 
         beforeAll(() => {
-            // @ts-ignore executeOperations is private method
+            // @ts-expect-error executeOperations is private method
             executeOperationsMock = jest.spyOn(stack, "executeOperations").mockReturnValue();
         });
 
         afterAll(() => {
             executeOperationsMock.mockRestore();
-            // @ts-ignore stackLines is private attribue
+            // @ts-expect-error stackLines is private attribue
             stack.stackLines.length = 0;
         });
 
         it("should add in stack array", async () => {
             stack.addOperation("hello");
 
-            // @ts-ignore stackLines is private attribue
+            // @ts-expect-error stackLines is private attribue
             expect(stack.stackLines).toHaveLength(1);
         });
 
@@ -49,40 +49,40 @@ describe("ExecutionSyncStack", () => {
         let operationExecutorMock: jest.SpyInstance;
 
         beforeAll(() => {
-            // @ts-ignore operationExecutor is private method
+            // @ts-expect-error operationExecutor is private method
             operationExecutorMock = jest.spyOn(stack, "operationExecutor");
         });
 
         beforeEach(() => {
-            // @ts-ignore inProgress is private attribue
+            // @ts-expect-error inProgress is private attribue
             stack.inProgress = false;
         });
 
         it("should not call operationExecutor", async () => {
-            // @ts-ignore inProgress is private attribue
+            // @ts-expect-error inProgress is private attribue
             stack.inProgress = true;
 
-            // @ts-ignore executeOperations is private method
+            // @ts-expect-error executeOperations is private method
             await stack.executeOperations();
 
             expect(operationExecutorMock).toBeCalledTimes(0);
         });
 
         it("should call operationExecutor", async () => {
-            // @ts-ignore stackLines is private attribut
+            // @ts-expect-error stackLines is private attribut
             stack.stackLines.push({
                 entity: "hello",
                 rejecter: jest.fn(),
                 resolver: jest.fn(),
             });
-            // @ts-ignore executeOperations is private method
+            // @ts-expect-error executeOperations is private method
             await stack.executeOperations();
 
             expect(operationExecutorMock).toBeCalledTimes(1);
         });
 
         it("should 3 call operationExecutor", async () => {
-            // @ts-ignore stackLines is private attribut
+            // @ts-expect-error stackLines is private attribut
             stack.stackLines.push(
                 {
                     entity: "hello",
@@ -100,7 +100,7 @@ describe("ExecutionSyncStack", () => {
                     resolver: jest.fn(),
                 },
             );
-            // @ts-ignore executeOperations is private method
+            // @ts-expect-error executeOperations is private method
             await stack.executeOperations();
 
             expect(operationExecutorMock).toBeCalledTimes(3);
@@ -108,7 +108,7 @@ describe("ExecutionSyncStack", () => {
 
         it("should check if all promise as been resolved", async () => {
             const resolver = jest.fn();
-            // @ts-ignore stackLines is private attribute
+            // @ts-expect-error stackLines is private attribute
             stack.stackLines.push(
                 {
                     entity: "hello",
@@ -126,7 +126,7 @@ describe("ExecutionSyncStack", () => {
                     resolver,
                 },
             );
-            // @ts-ignore executeOperations is private method
+            // @ts-expect-error executeOperations is private method
             await stack.executeOperations();
 
             expect(resolver).toBeCalledTimes(3);
@@ -135,7 +135,7 @@ describe("ExecutionSyncStack", () => {
         it("waits between each task", async () => {
             const TIME = 10;
             const timedStack = new ExecutionSyncStack(async entity => entity, TIME);
-            // @ts-ignore stackLines is private attribute
+            // @ts-expect-error stackLines is private attribute
             timedStack.stackLines.push(
                 {
                     entity: "hello",
@@ -153,7 +153,7 @@ describe("ExecutionSyncStack", () => {
                     resolver: jest.fn(),
                 },
             );
-            // @ts-ignore executeOperations is private method
+            // @ts-expect-error executeOperations is private method
             await timedStack.executeOperations();
 
             expect(waitPromise).toHaveBeenCalledTimes(3);

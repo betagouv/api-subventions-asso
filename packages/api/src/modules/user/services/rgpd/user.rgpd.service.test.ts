@@ -112,7 +112,7 @@ describe("user rgpd service", () => {
         it("should return associationVisits", async () => {
             const ASSOCIATION_VISITS = [{ userId: USER_WITHOUT_SECRET._id }];
             const expected = ASSOCIATION_VISITS.map(visit => ({ ...visit, userId: visit.userId.toString() }));
-            // @ts-expect-error
+            // @ts-expect-error: mock
             mockedStatsService.getAllVisitsUser.mockResolvedValueOnce(ASSOCIATION_VISITS);
             const actual = (await userRgpdService.getAllData(USER_WITHOUT_SECRET._id.toString())).statistics
                 .associationVisit;
@@ -267,11 +267,6 @@ describe("user rgpd service", () => {
                 STALL_RGPD_CRON_6_MONTHS_DELETION.getFullYear(),
                 STALL_RGPD_CRON_6_MONTHS_DELETION.getMonth() - 1,
                 STALL_RGPD_CRON_6_MONTHS_DELETION.getDate(),
-            );
-            const THEN = new Date(
-                STALL_RGPD_CRON_6_MONTHS_DELETION.getFullYear(),
-                STALL_RGPD_CRON_6_MONTHS_DELETION.getMonth() - 7,
-                STALL_RGPD_CRON_6_MONTHS_DELETION.getDate() - 1,
             );
             jest.setSystemTime(NOW);
             await userRgpdService.bulkDisableInactive();

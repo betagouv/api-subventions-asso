@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { ObjectId } = require("mongodb");
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const { printAtSameLine } = require("../build/src/shared/helpers/CliHelper");

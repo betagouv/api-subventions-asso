@@ -48,6 +48,7 @@ describe("DocumentHelper", () => {
             delete document.body;
             // @ts-expect-error -- mock window
             window.URL = {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 createObjectURL: vi.fn((..._args) => BLOB_URL),
                 revokeObjectURL: vi.fn(),
             };
@@ -56,6 +57,7 @@ describe("DocumentHelper", () => {
             document.body.removeChild = vi.fn();
 
             // @ts-expect-error -- mock window
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             document.createElement = vi.fn((..._args) => ELEMENT);
         });
 

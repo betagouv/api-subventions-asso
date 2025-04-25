@@ -56,13 +56,17 @@
         bottom: calc(-1 * calc(var(--size) / 2));
         left: 50%;
         margin-left: calc(-1 * calc(var(--size) / 2));
-        box-shadow: 0 0.5rem 0.5rem var(--shadow-color-one), 0 0.5rem 1rem var(--shadow-colo-two);
+        box-shadow:
+            0 0.5rem 0.5rem var(--shadow-color-one),
+            0 0.5rem 1rem var(--shadow-colo-two);
         background: var(--background-default-grey);
         rotate: 45deg;
     }
 
     .tooltip-content {
-        box-shadow: 0 0.5rem 0.5rem var(--shadow-color-one), 0 0.5rem 1rem var(--shadow-colo-two);
+        box-shadow:
+            0 0.5rem 0.5rem var(--shadow-color-one),
+            0 0.5rem 1rem var(--shadow-colo-two);
         background: var(--background-default-grey);
         border-radius: 10% / 20%;
         text-align: end;

@@ -128,14 +128,17 @@ export class GrantDashboardController {
 
     // Grants are expected to be ordered from API
     private splitGrantsByExercise(grants: FlatGrant[]) {
-        return grants.reduce((byExercise, grant) => {
-            let exercise;
-            if (grant.payments?.length) exercise = String(new Date(grant.payments[0].dateOperation).getFullYear());
-            else exercise = String((grant as OnlyApplication).application.annee_demande);
-            if (!byExercise[exercise]) byExercise[exercise] = [grant];
-            else byExercise[exercise].push(grant);
-            return byExercise;
-        }, {} as Record<string, FlatGrant[]>);
+        return grants.reduce(
+            (byExercise, grant) => {
+                let exercise;
+                if (grant.payments?.length) exercise = String(new Date(grant.payments[0].dateOperation).getFullYear());
+                else exercise = String((grant as OnlyApplication).application.annee_demande);
+                if (!byExercise[exercise]) byExercise[exercise] = [grant];
+                else byExercise[exercise].push(grant);
+                return byExercise;
+            },
+            {} as Record<string, FlatGrant[]>,
+        );
     }
 
     public async download() {

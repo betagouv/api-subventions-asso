@@ -7,11 +7,10 @@ jest.mock("../providers", () => ({
     ],
 }));
 
-import paymentService from "./payments.service";
 import Siren from "../../valueObjects/Siren";
 import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
-import paymentsService from "./payments.service";
 import { Payment } from "dto";
+import paymentsService from "./payments.service";
 
 describe("PaymentsService", () => {
     const PAYMENT_KEY = "J00034";
@@ -20,7 +19,7 @@ describe("PaymentsService", () => {
             const SIREN = new Siren("000000000");
             const expected = AssociationIdentifier.fromSiren(SIREN);
 
-            await paymentService.getPayments(expected);
+            await paymentsService.getPayments(expected);
 
             expect(getPaymentsMock).toHaveBeenCalledWith(expected);
         });
@@ -29,7 +28,7 @@ describe("PaymentsService", () => {
     describe("hasPayments()", () => {
         it("should return false", () => {
             const expected = false;
-            const actual = paymentService.hasPayments({
+            const actual = paymentsService.hasPayments({
                 // @ts-expect-error: test
                 versementKey: { value: undefined },
             });
@@ -38,7 +37,7 @@ describe("PaymentsService", () => {
 
         it("should return true", () => {
             const expected = true;
-            const actual = paymentService.hasPayments({
+            const actual = paymentsService.hasPayments({
                 // @ts-expect-error: test
                 versementKey: { value: PAYMENT_KEY },
             });

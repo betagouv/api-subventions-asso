@@ -52,7 +52,7 @@ export class AvisSituationInseeService extends ProviderCore implements DocumentP
             }
             this.requestCache.add(siren.value, false);
             return false;
-        } catch (e) {
+        } catch {
             return false;
         }
     }

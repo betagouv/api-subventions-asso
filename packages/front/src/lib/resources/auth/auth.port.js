@@ -24,7 +24,7 @@ export class AuthPort {
         return requestsService
             .get("/auth/logout")
             .then(res => ({ url: res.data || undefined, success: true }))
-            .catch(_error => ({ success: false }));
+            .catch(() => ({ success: false }));
     }
 
     forgetPassword(email) {

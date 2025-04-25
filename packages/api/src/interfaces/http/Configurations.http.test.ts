@@ -1,4 +1,3 @@
-import { MainInfoBannerDto } from "dto";
 import configurationsService from "../../modules/configurations/configurations.service";
 import { ConfigurationsHttp } from "./Configurations.http";
 

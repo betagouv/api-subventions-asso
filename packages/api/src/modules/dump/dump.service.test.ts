@@ -6,6 +6,7 @@ jest.mock("../user/services/crud/user.crud.service");
 jest.mock("../../dataProviders/db/dump/metabase-dump.port");
 jest.mock("../configurations/configurations.service");
 jest.mock("../stats/stats.service", () => ({
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     getAnonymizedLogsOnPeriod: jest.fn((..._args) => ({ hasNext: jest.fn(() => false) })),
     getAssociationsVisitsOnPeriod: jest.fn(() => []),
 }));
