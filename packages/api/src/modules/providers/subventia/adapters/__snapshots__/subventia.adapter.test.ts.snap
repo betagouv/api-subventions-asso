@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SubventiaAdapter toDemandeSubventionDto should return DemandeSubvention 1`] = `
-Object {
+{
   "annee_demande": 2023,
   "date_commision": 2023-04-01T00:00:00.000Z,
   "dispositif": "FIPDR",
-  "montants": Object {
+  "montants": {
     "accorde": 100,
     "demande": 600,
   },

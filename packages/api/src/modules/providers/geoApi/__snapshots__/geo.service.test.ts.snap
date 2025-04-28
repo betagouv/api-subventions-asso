@@ -1,14 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`GeoService generateAndSaveEntities inserts merged entities 1`] = `
-Array [
-  Object {
+[
+  {
     "departmentCode": "1",
     "departmentName": "dep1",
     "regionCode": "1",
     "regionName": "bigRegion",
   },
-  Object {
+  {
     "departmentCode": "2",
     "departmentName": "dep2",
     "regionCode": "1",

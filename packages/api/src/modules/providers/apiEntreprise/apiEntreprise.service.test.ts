@@ -85,7 +85,10 @@ describe("ApiEntrepriseService", () => {
         // I don't know why I have to specify <any> here... TS forces me to return a string in mock implementation.
         // Remove it and check error line 113
         // @ts-expect-error
-        let getEtablissementHeadcountMock = jest.spyOn<any>(apiEntrepriseService, "getEtablissementHeadcount");
+        let getEtablissementHeadcountMock: jest.SpyInstance = jest.spyOn(
+            apiEntrepriseService,
+            "getEtablissementHeadcount",
+        );
         const IDENTIFIER = EstablishmentIdentifier.fromSiret(SIRET, AssociationIdentifier.fromSiren(SIREN));
 
         afterAll(() => getEtablissementHeadcountMock.mockRestore());
@@ -146,7 +149,6 @@ describe("ApiEntrepriseService", () => {
                 .mockImplementationOnce(() => {
                     throw error;
                 })
-                // @ts-exect-error
                 .mockImplementationOnce(() => expected);
             try {
                 actual = await apiEntrepriseService.getHeadcount(IDENTIFIER);

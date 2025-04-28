@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`PaymentFlatService raw grant getRawGrants returns raw grant data 1`] = `
-Array [
-  Object {
-    "data": Object {
+[
+  {
+    "data": {
       "ej": "EJ",
       "idVersement": "EJ",
       "provider": "chorus",

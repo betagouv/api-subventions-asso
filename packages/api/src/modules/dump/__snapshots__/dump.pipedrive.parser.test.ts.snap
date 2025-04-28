@@ -1,14 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DumpPipedriveParser adapts adapts correctly 1`] = `
-Array [
-  Object {
+[
+  {
     "agentType": "DECONCENTRATED",
     "decentralizedLevel": "DEPARTMENTAL",
     "department": "69 - Rhône",
     "email": "prenom.nom@base.fr",
     "firstName": "Prenom",
-    "jobType": Array [
+    "jobType": [
       "SERVICE_HEAD",
       "EXPERT",
     ],
@@ -18,13 +18,13 @@ Array [
     "service": "",
     "structure": "UNIVERSITE",
   },
-  Object {
+  {
     "agentType": "CENTRAL_ADMIN",
     "decentralizedLevel": undefined,
     "department": "69 - Rhône",
     "email": "prenom2.nom2@base.fr",
     "firstName": "Prenom2",
-    "jobType": Array [],
+    "jobType": [],
     "lastName": "NOM2",
     "phoneNumber": "0600000000",
     "region": "Auvergne-Rhône-Alpes",

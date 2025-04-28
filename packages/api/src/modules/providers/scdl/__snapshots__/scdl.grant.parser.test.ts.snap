@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ScdlGrantParser convertValidateData also returns errors 1`] = `
-Array [
-  Object {
+[
+  {
     "UeNotification": false,
     "aidSystem": "65d5b6c7-102c-4440-ac3b-768f708edc0a",
     "allocatorName": "TEST_SOCLE_SCDL",
@@ -28,8 +28,8 @@ Array [
 `;
 
 exports[`ScdlGrantParser convertValidateData also returns errors with problems in optional field so valid result 1`] = `
-Array [
-  Object {
+[
+  {
     "UeNotification": false,
     "aidSystem": "65d5b6c7-102c-4440-ac3b-768f708edc0a",
     "allocatorName": "TEST_SOCLE_SCDL",
@@ -55,9 +55,9 @@ Array [
 `;
 
 exports[`ScdlGrantParser convertValidateData saves cleaned up optional fields  1`] = `
-Array [
-  Object {
-    "__data__": Object {
+[
+  {
+    "__data__": {
       "UeNotification": false,
       "aidSystem": "65d5b6c7-102c-4440-ac3b-768f708edc0a",
       "allocatorName": "TEST_SOCLE_SCDL",
@@ -77,8 +77,8 @@ Array [
     },
     "value": "clean",
   },
-  Object {
-    "__data__": Object {
+  {
+    "__data__": {
       "UeNotification": false,
       "aidSystem": "65d5b6c7-102c-4440-ac3b-768f708edz27",
       "allocatorName": "TEST_SOCLE_SCDL",
@@ -98,8 +98,8 @@ Array [
     },
     "value": "clean",
   },
-  Object {
-    "__data__": Object {
+  {
+    "__data__": {
       "UeNotification": false,
       "aidSystem": "65d5b6c7-102c-4440-ac3b-768f708endyu",
       "allocatorName": "TEST_SOCLE_SCDL",
@@ -119,8 +119,8 @@ Array [
     },
     "value": "clean",
   },
-  Object {
-    "__data__": Object {
+  {
+    "__data__": {
       "UeNotification": false,
       "aidSystem": "65d5b6c7-102c-4440-ac3b-768f708mpo8i",
       "allocatorName": "TEST_SOCLE_SCDL",
@@ -133,7 +133,7 @@ Array [
       "decisionReference": "2102804885",
       "grantPercentage": 1,
       "idRAE": "Non",
-      "object": "\\"A la mémoire des travailleurs chinois de la Grande guerre et du traité de Versailles\\"",
+      "object": ""A la mémoire des travailleurs chinois de la Grande guerre et du traité de Versailles"",
       "paymentConditions": "aide en numéraire",
       "paymentEndDate": 2019-10-25T00:00:00.000Z,
       "paymentStartDate": 2019-10-25T00:00:00.000Z,
@@ -144,10 +144,10 @@ Array [
 `;
 
 exports[`ScdlGrantParser convertValidateData should return storableChunk 1`] = `
-Array [
-  Object {
+[
+  {
     "UeNotification": false,
-    "__data__": Object {
+    "__data__": {
       "UeNotification": false,
       "aidSystem": "65d5b6c7-102c-4440-ac3b-768f708edc0a",
       "allocatorName": "TEST_SOCLE_SCDL",
@@ -181,9 +181,9 @@ Array [
     "paymentEndDate": 2019-05-20T00:00:00.000Z,
     "paymentStartDate": 2019-05-20T00:00:00.000Z,
   },
-  Object {
+  {
     "UeNotification": false,
-    "__data__": Object {
+    "__data__": {
       "UeNotification": false,
       "aidSystem": "65d5b6c7-102c-4440-ac3b-768f708edz27",
       "allocatorName": "TEST_SOCLE_SCDL",
@@ -217,9 +217,9 @@ Array [
     "paymentEndDate": 2022-02-14T00:00:00.000Z,
     "paymentStartDate": 2019-02-15T00:00:00.000Z,
   },
-  Object {
+  {
     "UeNotification": false,
-    "__data__": Object {
+    "__data__": {
       "UeNotification": false,
       "aidSystem": "65d5b6c7-102c-4440-ac3b-768f708endyu",
       "allocatorName": "TEST_SOCLE_SCDL",
@@ -253,9 +253,9 @@ Array [
     "paymentEndDate": 2019-05-30T00:00:00.000Z,
     "paymentStartDate": 2019-05-30T00:00:00.000Z,
   },
-  Object {
+  {
     "UeNotification": false,
-    "__data__": Object {
+    "__data__": {
       "UeNotification": false,
       "aidSystem": "65d5b6c7-102c-4440-ac3b-768f708mpo8i",
       "allocatorName": "TEST_SOCLE_SCDL",
@@ -268,7 +268,7 @@ Array [
       "decisionReference": "2102804885",
       "grantPercentage": 1,
       "idRAE": "Non",
-      "object": "\\"A la mémoire des travailleurs chinois de la Grande guerre et du traité de Versailles\\"",
+      "object": ""A la mémoire des travailleurs chinois de la Grande guerre et du traité de Versailles"",
       "paymentConditions": "aide en numéraire",
       "paymentEndDate": 2019-10-25T00:00:00.000Z,
       "paymentStartDate": 2019-10-25T00:00:00.000Z,
@@ -284,7 +284,7 @@ Array [
     "decisionReference": "2102804885",
     "grantPercentage": 1,
     "idRAE": "Non",
-    "object": "\\"A la mémoire des travailleurs chinois de la Grande guerre et du traité de Versailles\\"",
+    "object": ""A la mémoire des travailleurs chinois de la Grande guerre et du traité de Versailles"",
     "paymentConditions": "aide en numéraire",
     "paymentEndDate": 2019-10-25T00:00:00.000Z,
     "paymentStartDate": 2019-10-25T00:00:00.000Z,

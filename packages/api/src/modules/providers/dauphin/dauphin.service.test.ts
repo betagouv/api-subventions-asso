@@ -119,10 +119,10 @@ describe("Dauphin Service", () => {
             it("returns raw grant data", async () => {
                 const actual = await dauphinService.getRawGrants(ASSOCIATION_IDENTIFIER);
                 expect(actual).toMatchInlineSnapshot(`
-                    Array [
-                      Object {
-                        "data": Object {
-                          "gispro": Object {
+                    [
+                      {
+                        "data": {
+                          "gispro": {
                             "ej": "EJ",
                           },
                         },

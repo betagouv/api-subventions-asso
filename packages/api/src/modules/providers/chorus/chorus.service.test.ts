@@ -175,10 +175,10 @@ describe("chorusService", () => {
             it("returns raw grant data", async () => {
                 const actual = await chorusService.getRawGrants(IDENTIFIER);
                 expect(actual).toMatchInlineSnapshot(`
-                    Array [
-                      Object {
-                        "data": Object {
-                          "indexedInformations": Object {
+                    [
+                      {
+                        "data": {
+                          "indexedInformations": {
                             "ej": "EJ",
                           },
                         },

@@ -225,9 +225,9 @@ describe("isEtabIdentifierFromAssoMiddleware", () => {
         jest.mocked(associationService.isIdentifierFromAsso).mockResolvedValueOnce(false);
         await isEtabIdentifierFromAssoMiddleware(REQ_TMP, RES, NEXT);
         expect(ERROR_HANDLER_RES.mock.calls?.[0]).toMatchInlineSnapshot(`
-            Array [
+            [
               [Error: Votre recherche pointe vers une entité qui n'est pas une association],
-              Object {
+              {
                 "estabIdentifier": EstablishmentIdentifier {
                   "associationIdentifier": AssociationIdentifier {
                     "rna": undefined,
@@ -239,17 +239,17 @@ describe("isEtabIdentifierFromAssoMiddleware", () => {
                     "siret": "00000000100000",
                   },
                 },
-                "params": Object {
+                "params": {
                   "identifier": "00000000100000",
                 },
               },
               "RES",
               [MockFunction] {
-                "calls": Array [
-                  Array [],
+                "calls": [
+                  [],
                 ],
-                "results": Array [
-                  Object {
+                "results": [
+                  {
                     "type": "return",
                     "value": undefined,
                   },
@@ -266,9 +266,9 @@ describe("isEtabIdentifierFromAssoMiddleware", () => {
         );
         await isEtabIdentifierFromAssoMiddleware(REQ_TMP, RES, NEXT);
         expect(ERROR_HANDLER_RES.mock.calls?.[0]).toMatchInlineSnapshot(`
-            Array [
+            [
               [Error: haha],
-              Object {
+              {
                 "estabIdentifier": EstablishmentIdentifier {
                   "associationIdentifier": AssociationIdentifier {
                     "rna": undefined,
@@ -280,17 +280,17 @@ describe("isEtabIdentifierFromAssoMiddleware", () => {
                     "siret": "00000000100000",
                   },
                 },
-                "params": Object {
+                "params": {
                   "identifier": "00000000100000",
                 },
               },
               "RES",
               [MockFunction] {
-                "calls": Array [
-                  Array [],
+                "calls": [
+                  [],
                 ],
-                "results": Array [
-                  Object {
+                "results": [
+                  {
                     "type": "return",
                     "value": undefined,
                   },

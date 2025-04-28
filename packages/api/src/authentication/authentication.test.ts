@@ -12,7 +12,7 @@ import userActivationService from "../modules/user/services/activation/user.acti
 import userCrudService from "../modules/user/services/crud/user.crud.service";
 import userPort from "../dataProviders/db/user/user.port";
 jest.mock("../modules/user/services/auth/user.auth.service");
-const mockedUserAuthService = jest.mocked(userAuthService, true);
+const mockedUserAuthService = jest.mocked(userAuthService, { shallow: true });
 
 describe("expressAuthentication", () => {
     // Spys

@@ -467,14 +467,14 @@ describe("ScdlGrantParser", () => {
             ADAPTER_SPY.mockReturnValueOnce(null);
             const actual = ScdlGrantParser.indexDataByPathAndAnnotate(MAPPER, DATA).errors;
             expect(actual).toMatchInlineSnapshot(`
-                Array [
-                  Object {
+                [
+                  {
                     "field": "path.needs.adapting",
                     "lineRejected": "",
                     "message": "donnée non récupérable",
                     "other": "otherValue",
-                    "path": Object {
-                      "needs": Object {
+                    "path": {
+                      "needs": {
                         "adapting": "value-needs-adapting",
                       },
                     },
@@ -488,7 +488,7 @@ describe("ScdlGrantParser", () => {
         it("returns adapted data", () => {
             const actual = ScdlGrantParser.indexDataByPathAndAnnotate(MAPPER, DATA).entity;
             expect(actual).toMatchInlineSnapshot(`
-                Object {
+                {
                   "fieldWithAdapter": "value-needs-adapting--adapted",
                   "otherField": "otherValue",
                   "someField": "someValue",
@@ -499,23 +499,23 @@ describe("ScdlGrantParser", () => {
         it("returns annotations", () => {
             const actual = ScdlGrantParser.indexDataByPathAndAnnotate(MAPPER, DATA).annotations;
             expect(actual).toMatchInlineSnapshot(`
-                Object {
-                  "fieldWithAdapter": Object {
-                    "keyPath": Array [
+                {
+                  "fieldWithAdapter": {
+                    "keyPath": [
                       "path",
                       "needs",
                       "adapting",
                     ],
                     "value": "value-needs-adapting",
                   },
-                  "otherField": Object {
-                    "keyPath": Array [
+                  "otherField": {
+                    "keyPath": [
                       "other",
                     ],
                     "value": "otherValue",
                   },
-                  "someField": Object {
-                    "keyPath": Array [
+                  "someField": {
+                    "keyPath": [
                       "some",
                     ],
                     "value": "someValue",

@@ -1,27 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`BrevoContactNotifyPipe batchUsersDeleted should call deleteContact() for each user 1`] = `
-Array [
-  Array [
+[
+  [
     "test@datasubvention.gouv.fr",
   ],
-  Array [
+  [
     "test2@datasubvention.gouv.fr",
   ],
 ]
 `;
 
 exports[`BrevoContactNotifyPipe userDeleted should call deleteContact() 1`] = `
-Array [
+[
   "test@datasubvention.gouv.fr",
 ]
 `;
 
 exports[`BrevoContactNotifyPipe userUpdated should call updateContact() 1`] = `
-Array [
+[
   "test@datasubvention.gouv.fr",
   UpdateContact {
-    "attributes": Object {
+    "attributes": {
       "BUYER_PERSONNAE": "Gestionnaire administratif et financier,Chargé de mission / Expert métier",
       "CATEGORIE": "Agent public d’une collectivité territoriale",
       "COMPETENCE_TERRITORIALE": "Interdépartemental",
@@ -37,7 +37,7 @@ Array [
       "SERVICE": "SERVICE",
       "TELEPHONE": "+33625859685",
     },
-    "listIds": Array [
+    "listIds": [
       1,
     ],
   },

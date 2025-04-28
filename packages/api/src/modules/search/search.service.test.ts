@@ -41,10 +41,10 @@ describe("SearchService", () => {
             jest.mocked(searchCachePort.getResults).mockResolvedValue(RES);
             const actual = await searchService.getAssociationsKeys(SEARCH_TOKEN, PAGE);
             expect(actual).toMatchInlineSnapshot(`
-                Object {
+                {
                   "nbPages": 1,
                   "page": 2,
-                  "results": Array [
+                  "results": [
                     "something",
                   ],
                   "total": 1,
@@ -78,10 +78,10 @@ describe("SearchService", () => {
             jest.mocked(associationNameService.find).mockResolvedValue(RES);
             const actual = await searchService.getAssociationsKeys(SEARCH_TOKEN, PAGE);
             expect(actual).toMatchInlineSnapshot(`
-                Object {
+                {
                   "nbPages": 1,
                   "page": 2,
-                  "results": Array [],
+                  "results": [],
                   "total": 1,
                 }
             `);

@@ -1,27 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DemarchesSimplifieesDtoAdapter toEntities should return valid entity 1`] = `
-Array [
-  Object {
-    "demande": Object {
-      "annotations": Object {
-        "ID": Object {
+[
+  {
+    "demande": {
+      "annotations": {
+        "ID": {
           "label": "PLAI",
           "value": "YO",
         },
       },
-      "champs": Object {
-        "ID": Object {
+      "champs": {
+        "ID": {
           "label": "PLAI",
           "value": "YO",
         },
       },
-      "demandeur": Object {
+      "demandeur": {
         "siret": "00000000000000",
       },
     },
     "demarcheId": 12345,
-    "service": Object {
+    "service": {
       "nom": "Service jeunesse et prévention, Direction des affaires maritimes ",
       "organisme": "mairie de Mours, préfecture de l'Oise, ministère de la Culture",
     },

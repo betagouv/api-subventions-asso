@@ -375,11 +375,11 @@ describe("FonjepService", () => {
             it("returns raw grant data", async () => {
                 const actual = await fonjepService.getRawGrants(ASSOCIATION_ID);
                 expect(actual).toMatchInlineSnapshot(`
-                    Array [
-                      Object {
-                        "data": Object {
-                          "application": Object {
-                            "indexedInformations": Object {
+                    [
+                      {
+                        "data": {
+                          "application": {
+                            "indexedInformations": {
                               "annee_demande": 2042,
                               "code_poste": "EJ",
                             },

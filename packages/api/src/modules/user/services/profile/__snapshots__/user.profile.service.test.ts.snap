@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`user profile service validateUserProfileData() agentType should throw if agentType is wrong 1`] = `
-Object {
+{
   "error": [Error: Mauvaise valeur pour le type d'agent.
 Les valeurs possibles sont OPERATOR, CENTRAL_ADMIN, TERRITORIAL_COLLECTIVITY, DECONCENTRATED],
   "valid": false,
@@ -9,7 +9,7 @@ Les valeurs possibles sont OPERATOR, CENTRAL_ADMIN, TERRITORIAL_COLLECTIVITY, DE
 `;
 
 exports[`user profile service validateUserProfileData() password should throw password is wrong 1`] = `
-Object {
+{
   "error": [Error: Password is too weak, please use this rules:
 At least one digit [0-9]
 At least one lowercase character [a-z]
@@ -21,14 +21,14 @@ At least 8 characters in length, but no more than 32.],
 `;
 
 exports[`user profile service validateUserProfileData() region should throw an error 1`] = `
-Object {
+{
   "error": [Error: Mauvaise valeur pour la région.],
   "valid": false,
 }
 `;
 
 exports[`user profile service validateUserProfileData() registrationSrc should throw an error 1`] = `
-Object {
+{
   "error": [Error: Mauvaise valeur pour la provenance.
 Les valeurs possibles sont DEMO, SEARCH_ENGINE, COLLEAGUES_HIERARCHY, SOCIALS, OTHER],
   "valid": false,
@@ -36,20 +36,20 @@ Les valeurs possibles sont DEMO, SEARCH_ENGINE, COLLEAGUES_HIERARCHY, SOCIALS, O
 `;
 
 exports[`user profile service validateUserProfileData() structure should throw an error 1`] = `
-Object {
+{
   "error": [Error: Mauvaise valeur pour la structure.],
   "valid": false,
 }
 `;
 
 exports[`user profile service validateUserProfileData() territorialScope should throw an error 1`] = `
-Object {
+{
   "valid": true,
 }
 `;
 
 exports[`user profile service validateUserProfileData() typeJob should throw an error 1`] = `
-Object {
+{
   "error": [Error: Mauvaise valeur pour le type d'agent.
 Les valeurs possibles sont OPERATOR, CENTRAL_ADMIN, TERRITORIAL_COLLECTIVITY, DECONCENTRATED],
   "valid": false,

@@ -263,10 +263,10 @@ describe("Documents Service", () => {
             await documentsService.getGenericDocumentStream(HTTP, URL);
             const actual = httpGetSpy.mock.calls[0];
             expect(actual).toMatchInlineSnapshot(`
-                Array [
-                  "${documentsService.ACCEPTED_URLS[0]}",
-                  Object {
-                    "headers": Object {
+                [
+                  "https://lecompteasso.associations.gouv.fr/apim/api-asso/api/documents/",
+                  {
+                    "headers": {
                       "Referrer-Policy": "strict-origin-when-cross-origin",
                       "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
                       "content-type": "attachment",

@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`FonjepParser parse() should call createFonjepSubventionEntity with parsedData 1`] = `
-Object {
+{
   "Annee": 2017,
-  "Association": Object {
+  "Association": {
     "Code": "E920",
     "CodePostal": "00000",
     "ContactEmail": "exemple@beta.gouv.fr",
@@ -18,14 +18,14 @@ Object {
   "AssociationImplantationCode": "E920",
   "Code": "D00598",
   "DateFinTriennalite": 43100,
-  "Dispositif": Object {
+  "Dispositif": {
     "FinanceurCode": 10008,
     "ID": 3,
     "Libelle": "FONJEP Politique de la ville",
   },
   "DispositifId": 3,
   "DoublementUniteCompte": "Non",
-  "Financeur": Object {
+  "Financeur": {
     "Code": "16DIV",
     "CodePostal": "00000",
     "ContactEmail": "exemple@beta.gouv.fr",
@@ -43,7 +43,7 @@ Object {
   "PstRaisonStatutLibelle": "Reconduction",
   "PstStatutPosteLibelle": "Attribué",
   "PstTypePosteCode": "FONJEP",
-  "TypePoste": Object {
+  "TypePoste": {
     "Code": "FONJEP",
     "Libelle": "Poste FONJEP",
   },
@@ -53,8 +53,8 @@ Object {
 `;
 
 exports[`FonjepParser parse() should call createPaymentFonjep with payment data 1`] = `
-Array [
-  Object {
+[
+  {
     "DateVersement": 43070,
     "MontantAPayer": 3646,
     "MontantPaye": 3646,
@@ -70,8 +70,8 @@ Array [
 `;
 
 exports[`FonjepParser parse() should not save payments without DateVersement 1`] = `
-Array [
-  Object {
+[
+  {
     "DateVersement": 43070,
     "MontantAPayer": 3646,
     "MontantPaye": 3646,
@@ -87,8 +87,8 @@ Array [
 `;
 
 exports[`FonjepParser parse() should not save payments without MontantPaye 1`] = `
-Array [
-  Object {
+[
+  {
     "DateVersement": 43070,
     "MontantAPayer": 3646,
     "MontantPaye": 3646,
