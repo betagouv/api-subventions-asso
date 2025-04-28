@@ -113,9 +113,9 @@ describe("AvisSituationInseeService", () => {
     });
 
     describe("getDocuments", () => {
-        // @ts-expect-error: mock private method
         const getInseeEtablissementsBySirenMock: jest.SpyInstance = jest.spyOn(
             avisSituationInseeService,
+            // @ts-expect-error: mock private method
             "getInseeEtablissementsBySiren",
         );
 
