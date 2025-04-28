@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.67.0](https://github.com/betagouv/datasubvention/compare/v0.66.0...v0.67.0) (2025-04-28)
+
+### Features
+
+-   **front, api):** [#3329](https://github.com/betagouv/datasubvention/issues/3329) pro connect no reset pwd ([#3363](https://github.com/betagouv/datasubvention/issues/3363)) ([a6dc2df](https://github.com/betagouv/datasubvention/commit/a6dc2df3c6f0ccb6d47722f4f024e98ff6a2f57e))
+-   **front:** adapt login page ([4f425d3](https://github.com/betagouv/datasubvention/commit/4f425d34783a51f25a7420508d21cba3d1be318e))
+-   **front:** remove signup page ([01d1d9a](https://github.com/betagouv/datasubvention/commit/01d1d9afda7377ed286fe40895c795e8c90b0db1))
+
 # [0.66.0](https://github.com/betagouv/datasubvention/compare/v0.65.2...v0.66.0) (2025-04-08)
 
 ### Bug Fixes

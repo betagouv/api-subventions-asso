@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.67.0](https://github.com/betagouv/api-subventions-asso/compare/v0.66.0...v0.67.0) (2025-04-28)
+
+### Bug Fixes
+
+-   **api:** [#3366](https://github.com/betagouv/api-subventions-asso/issues/3366) compensate weird api asso formats ([#3367](https://github.com/betagouv/api-subventions-asso/issues/3367)) ([4347a2c](https://github.com/betagouv/api-subventions-asso/commit/4347a2cceb5bcc2013d89ab6596e9c8efa79c172))
+
+### Features
+
+-   **api:** [#3142](https://github.com/betagouv/api-subventions-asso/issues/3142) adapte fonjep to payment flat ([#3357](https://github.com/betagouv/api-subventions-asso/issues/3357)) ([15f92fb](https://github.com/betagouv/api-subventions-asso/commit/15f92fb4598bfa6cd52f6875ce3a7cc1dcbf639c))
+-   **api:** [#3302](https://github.com/betagouv/api-subventions-asso/issues/3302) handle fonjep payment flat ([#3352](https://github.com/betagouv/api-subventions-asso/issues/3352)) ([eb84a08](https://github.com/betagouv/api-subventions-asso/commit/eb84a08b62226359867304d296be548e603f1ad6))
+-   **api:** [#3342](https://github.com/betagouv/api-subventions-asso/issues/3342) handle ridet tahiti in chorus payment flat ([#3346](https://github.com/betagouv/api-subventions-asso/issues/3346)) ([32d1a67](https://github.com/betagouv/api-subventions-asso/commit/32d1a6780203607b4d14be775b58d6787f091518))
+-   **api:** remove self signup route ([db0bca0](https://github.com/betagouv/api-subventions-asso/commit/db0bca050b245cea579321e1b439404e4ac53599))
+-   **front, api):** [#3329](https://github.com/betagouv/api-subventions-asso/issues/3329) pro connect no reset pwd ([#3363](https://github.com/betagouv/api-subventions-asso/issues/3363)) ([a6dc2df](https://github.com/betagouv/api-subventions-asso/commit/a6dc2df3c6f0ccb6d47722f4f024e98ff6a2f57e))
+-   **front:** adapt login page ([4f425d3](https://github.com/betagouv/api-subventions-asso/commit/4f425d34783a51f25a7420508d21cba3d1be318e))
+-   **front:** remove signup page ([01d1d9a](https://github.com/betagouv/api-subventions-asso/commit/01d1d9afda7377ed286fe40895c795e8c90b0db1))
+
 # [0.66.0](https://github.com/betagouv/api-subventions-asso/compare/v0.65.2...v0.66.0) (2025-04-08)
 
 ### Bug Fixes

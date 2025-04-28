@@ -1,6 +1,6 @@
 {
     "name": "front",
-    "version": "0.66.0",
+    "version": "0.67.0",
     "description": "> TODO: description",
     "author": "Victor Serain <victor.serain@epitech.eu>",
     "homepage": "https://github.com/betagouv/api-subventions-asso/tree/main/packages/front#readme",
@@ -53,7 +53,7 @@
         "csv-stringify": "^6.4.5",
         "d3": "^7.9.0",
         "dotenv": "^14.3.2",
-        "dto": "^0.66.0",
+        "dto": "^0.67.0",
         "jitbit-html-sanitizer": "^0.2.1",
         "jsdom": "^22.1.0",
         "string-similarity": "^4.0.4",
@@ -62,7 +62,6 @@
         "vite": "^5.4.11"
     },
     "devDependencies": {
-        "typescript": "^5.5.0",
         "@playwright/test": "^1.40.1",
         "@typescript-eslint/eslint-plugin": "^5.62.0",
         "@typescript-eslint/parser": "^5.62.0",
@@ -75,6 +74,7 @@
         "lint-staged": "^13.3.0",
         "prettier-plugin-svelte": "^2.10.1",
         "tslib": "^2.6.2",
+        "typescript": "^5.5.0",
         "vitest": "^2.1.8"
     },
     "type": "module"
