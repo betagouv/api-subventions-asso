@@ -2,7 +2,9 @@ import request = require("supertest");
 import { createAndGetAdminToken } from "../__helpers__/tokenHelper";
 import { BadRequestErrorCode, BadRequestErrorMessage } from "core";
 
-const g = global as unknown as { app: unknown };
+import { App } from "supertest/types";
+
+const g = global as unknown as { app: App };
 
 describe("/config", () => {
     describe("email domains", () => {

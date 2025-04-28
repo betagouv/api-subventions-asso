@@ -9,7 +9,9 @@ import notifyService from "../../../src/modules/notify/notify.service";
 import userCrudService from "../../../src/modules/user/services/crud/user.crud.service";
 import userStatsService from "../../../src/modules/user/services/stats/user.stats.service";
 
-const g = global as unknown as { app: unknown };
+import { App } from "supertest/types";
+
+const g = global as unknown as { app: App };
 
 describe("AdminController, /admin", () => {
     const SIREN = "123456789";

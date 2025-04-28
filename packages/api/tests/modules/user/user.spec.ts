@@ -11,7 +11,9 @@ import userCrudService from "../../../src/modules/user/services/crud/user.crud.s
 import userStatsService from "../../../src/modules/user/services/stats/user.stats.service";
 import configurationsService from "../../../src/modules/configurations/configurations.service";
 
-const g = global as unknown as { app: unknown };
+import { App } from "supertest/types";
+
+const g = global as unknown as { app: App };
 
 describe("UserController, /user", () => {
     const SIREN = "123456789";

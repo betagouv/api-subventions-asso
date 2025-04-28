@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SCDL CLI addProducer() should create MiscScdlProducerEntity 1`] = `
-Object {
+{
   "_id": Any<ObjectId>,
   "lastUpdate": Any<Date>,
   "name": "Région Bretagne",
@@ -11,7 +11,7 @@ Object {
 `;
 
 exports[`SCDL CLI parsing edge cases should add grants with exercise from its own column 1`] = `
-Array [
+[
   2023,
   2023,
   2023,
@@ -19,10 +19,10 @@ Array [
 `;
 
 exports[`SCDL CLI parsing parse should add grants with exercise from conventionDate 1`] = `
-Array [
-  Object {
+[
+  {
     "UeNotification": false,
-    "__data__": Object {
+    "__data__": {
       "conditionsVersement": "UNIQUE",
       "dateConvention": "2019-05-10",
       "datesPeriodeVersement": "2019-05-20",
@@ -60,9 +60,9 @@ Array [
     "paymentStartDate": 2019-05-20T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
+  {
     "UeNotification": false,
-    "__data__": Object {
+    "__data__": {
       "conditionsVersement": "UNIQUE",
       "dateConvention": "2019-08-30",
       "datesPeriodeVersement": "2019-02-15/2022-02-14",
@@ -100,9 +100,9 @@ Array [
     "paymentStartDate": 2019-02-15T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
+  {
     "UeNotification": false,
-    "__data__": Object {
+    "__data__": {
       "conditionsVersement": "UNIQUE",
       "dateConvention": "2019-05-21",
       "datesPeriodeVersement": "2019-05-30",
@@ -140,9 +140,9 @@ Array [
     "paymentStartDate": 2019-05-30T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
+  {
     "UeNotification": false,
-    "__data__": Object {
+    "__data__": {
       "conditionsVersement": "UNIQUE",
       "dateConvention": "2019-10-21",
       "datesPeriodeVersement": "2019-10-25",
@@ -155,7 +155,7 @@ Array [
       "nomAttribuant": "TEST_SOCLE_SCDL",
       "nomBeneficiaire": "ANNO_3",
       "notificationUE": "non",
-      "object": "\\"A la mémoire des travailleurs chinois de la Grande guerre et du traité de Versailles\\"",
+      "object": ""A la mémoire des travailleurs chinois de la Grande guerre et du traité de Versailles"",
       "pourcentageSubvention": "1.00",
       "referenceDecision": "2102804885",
       "rnaBeneficiaire": "W123111256",
@@ -173,7 +173,7 @@ Array [
     "exercice": 2019,
     "grantPercentage": 1,
     "idRAE": "Non",
-    "object": "\\"A la mémoire des travailleurs chinois de la Grande guerre et du traité de Versailles\\"",
+    "object": ""A la mémoire des travailleurs chinois de la Grande guerre et du traité de Versailles"",
     "paymentConditions": "UNIQUE",
     "paymentEndDate": 2019-10-25T00:00:00.000Z,
     "paymentNature": "aide en numéraire",
@@ -184,10 +184,10 @@ Array [
 `;
 
 exports[`SCDL CLI parsing parse should add grants with exercise from its own column 1`] = `
-Array [
-  Object {
+[
+  {
     "UeNotification": false,
-    "__data__": Object {
+    "__data__": {
       "conditionsVersement": "UNIQUE",
       "dateConvention": "2019-05-10",
       "datesPeriodeVersement": "2019-05-20",
@@ -226,9 +226,9 @@ Array [
     "paymentStartDate": 2019-05-20T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
+  {
     "UeNotification": false,
-    "__data__": Object {
+    "__data__": {
       "conditionsVersement": "UNIQUE",
       "dateConvention": "2019-08-30",
       "datesPeriodeVersement": "2019-02-15/2022-02-14",
@@ -267,9 +267,9 @@ Array [
     "paymentStartDate": 2019-02-15T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
+  {
     "UeNotification": false,
-    "__data__": Object {
+    "__data__": {
       "conditionsVersement": "UNIQUE",
       "dateConvention": "2019-05-21",
       "datesPeriodeVersement": "2019-05-30",
@@ -308,9 +308,9 @@ Array [
     "paymentStartDate": 2019-05-30T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
+  {
     "UeNotification": false,
-    "__data__": Object {
+    "__data__": {
       "conditionsVersement": "UNIQUE",
       "dateConvention": "2019-10-21",
       "datesPeriodeVersement": "2019-10-25",
@@ -324,7 +324,7 @@ Array [
       "nomAttribuant": "TEST_SOCLE_SCDL",
       "nomBeneficiaire": "ANNO_3",
       "notificationUE": "non",
-      "object": "\\"A la mémoire des travailleurs chinois de la Grande guerre et du traité de Versailles\\"",
+      "object": ""A la mémoire des travailleurs chinois de la Grande guerre et du traité de Versailles"",
       "pourcentageSubvention": "1.00",
       "referenceDecision": "2102804885",
       "rnaBeneficiaire": "W123111256",
@@ -342,7 +342,7 @@ Array [
     "exercice": 2023,
     "grantPercentage": 1,
     "idRAE": "Non",
-    "object": "\\"A la mémoire des travailleurs chinois de la Grande guerre et du traité de Versailles\\"",
+    "object": ""A la mémoire des travailleurs chinois de la Grande guerre et du traité de Versailles"",
     "paymentConditions": "UNIQUE",
     "paymentEndDate": 2019-10-25T00:00:00.000Z,
     "paymentNature": "aide en numéraire",
@@ -353,9 +353,9 @@ Array [
 `;
 
 exports[`SCDL CLI parsing parseXls should add grants with exercise from conventionDate 1`] = `
-Array [
-  Object {
-    "__data__": Object {
+[
+  {
+    "__data__": {
       "% du mt de la subvention attribuée au bénéficiaire": 1,
       "Aide d'Etat (ou pas) notifiée à l'UE": "Aides ne relevant pas d'une aide d'état",
       "Conditions de versement": "selon règlement des subventions de la Région",
@@ -391,8 +391,8 @@ Array [
     "paymentStartDate": 2024-12-27T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
-    "__data__": Object {
+  {
+    "__data__": {
       "% du mt de la subvention attribuée au bénéficiaire": 1,
       "Aide d'Etat (ou pas) notifiée à l'UE": "Aides ne relevant pas d'une aide d'état",
       "Conditions de versement": "selon règlement des subventions de la Région",
@@ -428,8 +428,8 @@ Array [
     "paymentStartDate": 2024-12-27T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
-    "__data__": Object {
+  {
+    "__data__": {
       "% du mt de la subvention attribuée au bénéficiaire": 1,
       "Aide d'Etat (ou pas) notifiée à l'UE": "Aides ne relevant pas d'une aide d'état",
       "Conditions de versement": "selon règlement des subventions de la Région",
@@ -465,8 +465,8 @@ Array [
     "paymentStartDate": 2024-12-27T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
-    "__data__": Object {
+  {
+    "__data__": {
       "% du mt de la subvention attribuée au bénéficiaire": 1,
       "Aide d'Etat (ou pas) notifiée à l'UE": "Aides ne relevant pas d'une aide d'état",
       "Conditions de versement": "selon règlement des subventions de la Région",
@@ -502,8 +502,8 @@ Array [
     "paymentStartDate": 2024-12-27T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
-    "__data__": Object {
+  {
+    "__data__": {
       "% du mt de la subvention attribuée au bénéficiaire": 1,
       "Aide d'Etat (ou pas) notifiée à l'UE": "Aides ne relevant pas d'une aide d'état",
       "Conditions de versement": "selon règlement des subventions de la Région",
@@ -539,8 +539,8 @@ Array [
     "paymentStartDate": 2025-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
-    "__data__": Object {
+  {
+    "__data__": {
       "% du mt de la subvention attribuée au bénéficiaire": 1,
       "Aide d'Etat (ou pas) notifiée à l'UE": "Aides ne relevant pas d'une aide d'état",
       "Conditions de versement": "selon règlement des subventions de la Région",
@@ -576,8 +576,8 @@ Array [
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
-    "__data__": Object {
+  {
+    "__data__": {
       "% du mt de la subvention attribuée au bénéficiaire": 1,
       "Aide d'Etat (ou pas) notifiée à l'UE": "Aides ne relevant pas d'une aide d'état",
       "Conditions de versement": "selon règlement des subventions de la Région",
@@ -613,8 +613,8 @@ Array [
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
-    "__data__": Object {
+  {
+    "__data__": {
       "% du mt de la subvention attribuée au bénéficiaire": 1,
       "Aide d'Etat (ou pas) notifiée à l'UE": "Aides ne relevant pas d'une aide d'état",
       "Conditions de versement": "selon règlement des subventions de la Région",
@@ -650,8 +650,8 @@ Array [
     "paymentStartDate": 2025-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
-    "__data__": Object {
+  {
+    "__data__": {
       "% du mt de la subvention attribuée au bénéficiaire": 1,
       "Aide d'Etat (ou pas) notifiée à l'UE": "Aides ne relevant pas d'une aide d'état",
       "Conditions de versement": "selon règlement des subventions de la Région",
@@ -687,8 +687,8 @@ Array [
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
-    "__data__": Object {
+  {
+    "__data__": {
       "% du mt de la subvention attribuée au bénéficiaire": 1,
       "Aide d'Etat (ou pas) notifiée à l'UE": "Aides ne relevant pas d'une aide d'état",
       "Conditions de versement": "selon règlement des subventions de la Région",
@@ -728,9 +728,9 @@ Array [
 `;
 
 exports[`SCDL CLI parsing parseXls should add grants with exercise from its own column 1`] = `
-Array [
-  Object {
-    "__data__": Object {
+[
+  {
+    "__data__": {
       "% du mt de la subvention attribuée au bénéficiaire": 1,
       "Aide d'Etat (ou pas) notifiée à l'UE": "Aides ne relevant pas d'une aide d'état",
       "Conditions de versement": "selon règlement des subventions de la Région",
@@ -767,8 +767,8 @@ Array [
     "paymentStartDate": 2024-12-27T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
-    "__data__": Object {
+  {
+    "__data__": {
       "% du mt de la subvention attribuée au bénéficiaire": 1,
       "Aide d'Etat (ou pas) notifiée à l'UE": "Aides ne relevant pas d'une aide d'état",
       "Conditions de versement": "selon règlement des subventions de la Région",
@@ -805,8 +805,8 @@ Array [
     "paymentStartDate": 2024-12-27T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
-    "__data__": Object {
+  {
+    "__data__": {
       "% du mt de la subvention attribuée au bénéficiaire": 1,
       "Aide d'Etat (ou pas) notifiée à l'UE": "Aides ne relevant pas d'une aide d'état",
       "Conditions de versement": "selon règlement des subventions de la Région",
@@ -843,8 +843,8 @@ Array [
     "paymentStartDate": 2024-12-27T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
-    "__data__": Object {
+  {
+    "__data__": {
       "% du mt de la subvention attribuée au bénéficiaire": 1,
       "Aide d'Etat (ou pas) notifiée à l'UE": "Aides ne relevant pas d'une aide d'état",
       "Conditions de versement": "selon règlement des subventions de la Région",
@@ -881,8 +881,8 @@ Array [
     "paymentStartDate": 2024-12-27T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
-    "__data__": Object {
+  {
+    "__data__": {
       "% du mt de la subvention attribuée au bénéficiaire": 1,
       "Aide d'Etat (ou pas) notifiée à l'UE": "Aides ne relevant pas d'une aide d'état",
       "Conditions de versement": "selon règlement des subventions de la Région",
@@ -919,8 +919,8 @@ Array [
     "paymentStartDate": 2025-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
-    "__data__": Object {
+  {
+    "__data__": {
       "% du mt de la subvention attribuée au bénéficiaire": 1,
       "Aide d'Etat (ou pas) notifiée à l'UE": "Aides ne relevant pas d'une aide d'état",
       "Conditions de versement": "selon règlement des subventions de la Région",
@@ -957,8 +957,8 @@ Array [
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
-    "__data__": Object {
+  {
+    "__data__": {
       "% du mt de la subvention attribuée au bénéficiaire": 1,
       "Aide d'Etat (ou pas) notifiée à l'UE": "Aides ne relevant pas d'une aide d'état",
       "Conditions de versement": "selon règlement des subventions de la Région",
@@ -995,8 +995,8 @@ Array [
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
-    "__data__": Object {
+  {
+    "__data__": {
       "% du mt de la subvention attribuée au bénéficiaire": 1,
       "Aide d'Etat (ou pas) notifiée à l'UE": "Aides ne relevant pas d'une aide d'état",
       "Conditions de versement": "selon règlement des subventions de la Région",
@@ -1033,8 +1033,8 @@ Array [
     "paymentStartDate": 2025-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
-    "__data__": Object {
+  {
+    "__data__": {
       "% du mt de la subvention attribuée au bénéficiaire": 1,
       "Aide d'Etat (ou pas) notifiée à l'UE": "Aides ne relevant pas d'une aide d'état",
       "Conditions de versement": "selon règlement des subventions de la Région",
@@ -1071,8 +1071,8 @@ Array [
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
   },
-  Object {
-    "__data__": Object {
+  {
+    "__data__": {
       "% du mt de la subvention attribuée au bénéficiaire": 1,
       "Aide d'Etat (ou pas) notifiée à l'UE": "Aides ne relevant pas d'une aide d'état",
       "Conditions de versement": "selon règlement des subventions de la Région",

@@ -1,15 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SireneStockUniteLegaleCli import should persist asso names 1`] = `
-Array [
-  Object {
+[
+  {
     "_id": Any<ObjectId>,
     "name": "CENTRE MEDICO PSYCHO PEDAGOGIQUE",
     "searchKey": "300483146 - centre medico psycho pedagogique",
     "siren": "300483146",
     "updatedDate": 2012-08-01T00:00:00.000Z,
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "name": "EDUCATION POPULAIRE DU FAUBOURG VOSGES",
     "searchKey": "300846177 - education populaire du faubourg vosges",
@@ -20,12 +20,12 @@ Array [
 `;
 
 exports[`SireneStockUniteLegaleCli import should persist entreprises' siret 1`] = `
-Array [
-  Object {
+[
+  {
     "_id": Any<ObjectId>,
     "siren": "038995593",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "siren": "039084561",
   },
@@ -33,8 +33,8 @@ Array [
 `;
 
 exports[`SireneStockUniteLegaleCli import should persist sirene data 1`] = `
-Array [
-  Object {
+[
+  {
     "_id": Any<ObjectId>,
     "activitePrincipaleUniteLegale": "86.90F",
     "anneeCategorieEntreprise": "",
@@ -65,7 +65,7 @@ Array [
     "pseudonymeUniteLegale": "",
     "sexeUniteLegale": "",
     "sigleUniteLegale": "",
-    "siren": Object {
+    "siren": {
       "siren": "300483146",
     },
     "societeMissionUniteLegale": "",
@@ -73,7 +73,7 @@ Array [
     "trancheEffectifsUniteLegale": "",
     "unitePurgeeUniteLegale": "",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "activitePrincipaleUniteLegale": "55.20Z",
     "anneeCategorieEntreprise": "",
@@ -104,7 +104,7 @@ Array [
     "pseudonymeUniteLegale": "",
     "sexeUniteLegale": "",
     "sigleUniteLegale": "",
-    "siren": Object {
+    "siren": {
       "siren": "300846177",
     },
     "societeMissionUniteLegale": "",
