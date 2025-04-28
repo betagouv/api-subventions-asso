@@ -1,7 +1,5 @@
 import ProviderValueAdapter from "../../../shared/adapters/ProviderValueAdapter";
 import avisSituationInseeService from "./avisSituationInsee.service";
-import rnaSirenService from "../../rna-siren/rnaSiren.service";
-import RnaSirenEntity from "../../../entities/RnaSirenEntity";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import Siren from "../../../valueObjects/Siren";
 
