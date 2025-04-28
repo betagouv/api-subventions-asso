@@ -27,7 +27,7 @@
         "test:integration": "playwright test",
         "test:unit": "vitest run",
         "lint": "eslint --fix --ext .js,.ts,.svelte",
-        "lint:all": "eslint --fix --ext .js,.ts,.svelte ./{src,svelte,views}/**/*.{js,ts,svelte} ./{src,svelte,views}/*.{js,ts,svelte}",
+        "lint:all": "eslint . --fix --ext .js,.ts,.svelte",
         "prettier": "prettier --write",
         "prettier:all": "prettier --plugin-search-dir . --write .",
         "lint-format": "lint-staged"

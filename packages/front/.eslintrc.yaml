@@ -42,9 +42,9 @@ rules:
           varsIgnorePattern: "^_"
     "svelte/no-at-html-tags":
       - warn
-#ignorePatterns:
-#    - "*.test.ts"
-#    - "*.spec.ts"
-#    - node_modules
-#    - webpack.*
-#    - views/index.js
+ignorePatterns:
+   - "*.test.ts"
+   - .svelte-kit
+   - build
+   - static
+   - node_modules
