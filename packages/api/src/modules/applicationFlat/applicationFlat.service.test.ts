@@ -213,7 +213,7 @@ describe("ApplicationFlatService", () => {
             it("calls port's upsert as many times as necessary according to chunk size", async () => {
                 // @ts-expect-error -- private method
                 await applicationFlatService.updateApplicationsFlatCollectionByProvider(PROVIDER, START, END);
-                expect(applicationFlatPort.upsertMany).toHaveBeenCalledTimes(3);
+                expect(applicationFlatPort.upsertMany).toHaveBeenCalledTimes(3); // mock sends 2001 so 2 chunks + 1 remainder
             });
         });
     });
