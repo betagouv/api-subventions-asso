@@ -5,7 +5,7 @@ const headers = {
     "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
     "X-Frame-Options": "DENY",
     "X-Content-Type-Options": "nosniff",
-    "Cache-Control": "max-age 1800",
+    "Cache-Control": "max-age=1800",
     "Access-Control-Allow-Headers": "sentry-trace, baggage",
 };
 
