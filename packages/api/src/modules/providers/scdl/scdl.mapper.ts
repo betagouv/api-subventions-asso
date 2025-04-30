@@ -254,6 +254,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             ],
         ],
         adapter: value => {
+            if (typeof value === "number") return !!value;
             if (typeof value !== "string") return undefined;
             if (["oui", "true"].includes(value?.toLowerCase())) return true;
             if (["non", "false"].includes(value?.toLowerCase())) return false;
