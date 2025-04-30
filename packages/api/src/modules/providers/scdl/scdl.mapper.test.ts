@@ -1,9 +1,14 @@
 import { SCDL_MAPPER } from "./scdl.mapper";
 import { ParserInfo } from "../../../@types";
+import { property } from "lodash";
 
 describe("scdl mapper", () => {
-    describe("allocatorSiret adapter", () => {
-        const adapter = (SCDL_MAPPER.allocatorSiret as ParserInfo<any>).adapter as (v: any) => any;
+    describe.each`
+        propertyName
+        ${"allocatorSiret"}
+        ${"associationSiret"}
+    `("$propertyName adapter", ({ propertyName }) => {
+        const adapter = (SCDL_MAPPER[propertyName] as ParserInfo<any>).adapter as (v: any) => any;
 
         it("returns siret directly if given directly", () => {
             const actual = adapter("23450002300028");
@@ -24,29 +29,10 @@ describe("scdl mapper", () => {
             const actual = adapter("23450002300028.");
             expect(actual).toBe("23450002300028");
         });
-    });
 
-    describe("associationSiret adapter", () => {
-        const adapter = (SCDL_MAPPER.associationSiret as ParserInfo<any>).adapter as (v: any) => any;
-
-        it("returns siret directly if given directly", () => {
-            const actual = adapter("23450002300028");
-            expect(actual).toBe("23450002300028");
-        });
-
-        it("returns siret without decimals if present", () => {
-            const actual = adapter("23450002300028.0");
-            expect(actual).toBe("23450002300028");
-        });
-
-        it("returns siret without decimals if present with more precision", () => {
-            const actual = adapter("23450002300028.00");
-            expect(actual).toBe("23450002300028");
-        });
-
-        it("returns siret without point if present", () => {
-            const actual = adapter("23450002300028.");
-            expect(actual).toBe("23450002300028");
+        it("returns siret with zeros in the beginning ", () => {
+            const actual = adapter(450002300028);
+            expect(actual).toBe("00450002300028");
         });
     });
 
