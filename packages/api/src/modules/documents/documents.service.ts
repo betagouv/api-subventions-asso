@@ -3,7 +3,7 @@ import childProcess from "child_process";
 import { IncomingMessage } from "http";
 import { DocumentDto, DocumentRequestDto } from "dto";
 import * as Sentry from "@sentry/node";
-import mime = require("mime-types");
+import mime from "mime-types";
 import providers from "../providers";
 import { StructureIdentifier } from "../../@types";
 import { ProviderRequestService } from "../provider-request/providerRequest.service";
@@ -65,7 +65,7 @@ export class DocumentsService {
         const service = this.providersById[providerId] as DauphinService | ProviderCore;
         if ("getSpecificDocumentStream" in service) return service.getSpecificDocumentStream(docId);
         // TODO: refactor this to avoid typescript error on private access method
-        // @ts-expect-error: ok for now because it was any type before refactor
+        // @ts-expect-error: ok for now because it was unknown type before refactor
         return this.getGenericDocumentStream(service.http, docId);
     }
 
@@ -80,7 +80,7 @@ export class DocumentsService {
                 "Referrer-Policy": "strict-origin-when-cross-origin",
             },
         });
-        return res.data;
+        return res.data as IncomingMessage;
     }
 
     async getDocumentsFilesByIdentifier(identifier: StructureIdentifier) {

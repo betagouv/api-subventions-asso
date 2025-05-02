@@ -69,7 +69,7 @@ describe("RechercheEntreprisesPort", () => {
             // @ts-expect-error -- spy private
             const searchSpy = jest.spyOn(rechercheEntreprisesPort, "getSearchResult");
 
-            const result = await rechercheEntreprisesPort.search("example");
+            await rechercheEntreprisesPort.search("example");
 
             expect(searchSpy).toHaveBeenCalledTimes(2);
         });

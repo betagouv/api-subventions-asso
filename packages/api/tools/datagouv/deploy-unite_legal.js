@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const { asyncAppAction } = require("../helpers/scalingo.helper");
+import { asyncAppAction } from "../helpers/scalingo.helper";
 
 const main = () => {
     const appName = process.argv[2];

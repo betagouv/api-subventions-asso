@@ -11,8 +11,7 @@
             {#if $data.application.montants.accorde}
                 <span class="fr-text--bold">{numberToEuro($data.application.montants.accorde)}</span>
                 ont été accordés{#if $data.application.montants.demande}
-                    {" "}sur
-                    <span class="fr-text--bold">{numberToEuro($data.application.montants.demande)}</span>
+                    sur <span class="fr-text--bold">{numberToEuro($data.application.montants.demande)}</span>
                     demandés{/if}.
             {:else if $data.application.montants.demande}
                 <span class="fr-text--bold">{numberToEuro($data.application.montants.demande)}</span>
@@ -30,10 +29,10 @@
                 {$data.application.date_decision}
             </p>{/if}
     </section>
-    {#each $data.application?.actions_proposee || [] as action}
+    {#each $data.application?.actions_proposee || [] as action, index (index)}
         <section>
             <h4 class="fr-icon-arrow-right-line">{capitalizeFirstLetter(action.intitule)}</h4>
-            {#each action.objectifs?.split("\n") || [] as line}
+            {#each action.objectifs?.split("\n") || [] as line, index (index)}
                 {#if line.length}
                     <p>{line}</p>
                 {/if}

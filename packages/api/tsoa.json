@@ -1,17 +1,17 @@
 {
     "swagger": {
-		"outputDirectory": ".",
-		"entryFile": "./src/index.ts"
-	},
-	"entryFile": "src/index.ts",
-	"noImplicitAdditionalProperties": "throw-on-extras",
-	"controllerPathGlobs": ["src/interfaces/http/**/*.http.ts"],
-	"spec": {
-		"outputDirectory": "tsoa",
-		"specVersion": 3
-	},
-	"routes": {
-		"routesDir": "tsoa",
-		"authenticationModule": "./src/authentication/authentication.ts"
-	}
+        "outputDirectory": ".",
+        "entryFile": "./src/index.ts"
+    },
+    "entryFile": "src/index.ts",
+    "noImplicitAdditionalProperties": "throw-on-extras",
+    "controllerPathGlobs": ["src/interfaces/http/**/*.http.ts"],
+    "spec": {
+        "outputDirectory": "tsoa",
+        "specVersion": 3
+    },
+    "routes": {
+        "routesDir": "tsoa",
+        "authenticationModule": "./src/authentication/authentication.ts"
+    }
 }

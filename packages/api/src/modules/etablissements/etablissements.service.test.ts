@@ -4,9 +4,8 @@ import documentsService from "../documents/documents.service";
 import { SubventionsFlux } from "../subventions/@types/SubventionsFlux";
 import subventionsService from "../subventions/subventions.service";
 import paymentService from "../payments/payments.service";
-import { EtablissementAdapter } from "./EtablissementAdapter";
 import etablissementService from "./etablissements.service";
-import { BadRequestError, NotFoundError } from "core";
+import { NotFoundError } from "core";
 import grantService from "../grant/grant.service";
 import Siren from "../../valueObjects/Siren";
 import Siret from "../../valueObjects/Siret";
@@ -31,8 +30,8 @@ describe("EtablissementsService", () => {
             .spyOn(etablissementService, "scoreEtablisement") as asyncPrivateMock<number>
     ).mockResolvedValue(1);
 
-    // @ts-ignore because formatHelper does black magic
-    jest.spyOn(FormaterHelper, "formatData").mockImplementation((data, providerScore) => data);
+    // @ts-expect-error because formatHelper does black magic
+    jest.spyOn(FormaterHelper, "formatData").mockImplementation(data => data);
 
     describe("getEtablissement()", () => {
         it("should throw NotFoundError", async () => {

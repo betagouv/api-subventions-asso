@@ -8,7 +8,10 @@ import userActivationService from "./services/activation/user.activation.service
 import userCrudService from "./services/crud/user.crud.service";
 
 export enum EmailToLowerCaseAction {
+    // TODO: find a way to make enum no unused vars ok
+
     UPDATE = 1,
+
     DELETE = 2,
 }
 
@@ -29,12 +32,15 @@ export default class UserMigrations {
     }
 
     private groupUsersByEmail(users: UserDto[]): DefaultObject<UserDto[]> {
-        return users.reduce((usersBase, user) => {
-            if (!usersBase[user.email]) usersBase[user.email] = [];
-            usersBase[user.email].push(user);
+        return users.reduce(
+            (usersBase, user) => {
+                if (!usersBase[user.email]) usersBase[user.email] = [];
+                usersBase[user.email].push(user);
 
-            return usersBase;
-        }, {} as DefaultObject<UserDto[]>);
+                return usersBase;
+            },
+            {} as DefaultObject<UserDto[]>,
+        );
     }
 
     private groupUsersByStatus(users: UserDto[]) {

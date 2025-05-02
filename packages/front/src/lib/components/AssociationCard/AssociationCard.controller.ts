@@ -3,7 +3,7 @@ import { getFirstPartAddress, getLastPartAddress } from "$lib/resources/associat
 export default class AssociationCardController {
     constructor(public simplifiedAsso, public searchKey: string | undefined) {}
 
-    get url() {
+    get url(): string {
         const identifier =
             this.searchKey === this.simplifiedAsso.rna
                 ? this.simplifiedAsso.siren
@@ -14,15 +14,15 @@ export default class AssociationCardController {
         return `/association/${identifier}`;
     }
 
-    get street() {
+    get street(): string {
         return getFirstPartAddress(this.simplifiedAsso.address);
     }
 
-    get city() {
+    get city(): string {
         return getLastPartAddress(this.simplifiedAsso.address);
     }
 
-    get nbEtabsLabel() {
+    get nbEtabsLabel(): string {
         return this.simplifiedAsso.nbEtabs == 1
             ? `${this.simplifiedAsso.nbEtabs} établissement rattaché`
             : this.simplifiedAsso.nbEtabs < 1

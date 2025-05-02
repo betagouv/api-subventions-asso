@@ -1,6 +1,5 @@
 import request from "supertest";
 import { createAndGetAdminToken } from "../../__helpers__/tokenHelper";
-
 import { App } from "supertest/types";
 
 const g = global as unknown as { app: App };

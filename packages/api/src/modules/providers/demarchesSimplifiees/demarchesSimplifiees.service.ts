@@ -39,10 +39,13 @@ export class DemarchesSimplifieesService
     private async getSchemasByIds() {
         const schemas = await demarchesSimplifieesMapperPort.findAll();
 
-        return schemas.reduce((acc, schema) => {
-            acc[schema.demarcheId] = schema;
-            return acc;
-        }, {} as Record<string, DemarchesSimplifieesMapperEntity>);
+        return schemas.reduce(
+            (acc, schema) => {
+                acc[schema.demarcheId] = schema;
+                return acc;
+            },
+            {} as Record<string, DemarchesSimplifieesMapperEntity>,
+        );
     }
 
     private isDraft(entity: DemarchesSimplifieesDataEntity) {
@@ -210,6 +213,7 @@ export class DemarchesSimplifieesService
     }
 
     rawToCommon(raw: RawGrant) {
+        // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
         return DemarchesSimplifieesEntityAdapter.toCommon(raw.data.grant, raw.data.schema);
     }
 }

@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { AmountsVsProgramRegionDbo } from "../entitiyAndDbo/amountsVsProgramRegion.dbo";
 import AmountsVsProgramRegionEntity from "../entitiyAndDbo/amountsVsProgramRegion.entity";
 

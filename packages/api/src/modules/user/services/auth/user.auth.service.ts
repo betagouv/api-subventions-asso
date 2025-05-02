@@ -94,7 +94,7 @@ export class UserAuthService {
         try {
             user.jwt = updatedJwt;
             return (await userPort.update(user, true)) as UserWithJWTDto;
-        } catch (e) {
+        } catch {
             throw new InternalServerError(UserUpdateError.message, UserServiceErrors.LOGIN_UPDATE_JWT_FAIL);
         }
     }

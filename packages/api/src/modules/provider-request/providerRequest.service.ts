@@ -9,11 +9,11 @@ import RequestResponseAdapter from "./adapters/RequestResponseAdapter";
 export class ProviderRequestService {
     constructor(private providerId: string) {}
 
-    get<T = any>(url: string, option?: RequestConfig) {
+    get<T = unknown>(url: string, option?: RequestConfig) {
         return this.sendRequest<T>("GET", url, option);
     }
 
-    post<T = any, D = unknown>(url: string, data?: D, option?: RequestConfig) {
+    post<T = unknown, D = unknown>(url: string, data?: D, option?: RequestConfig) {
         if (data) {
             option = {
                 ...option,

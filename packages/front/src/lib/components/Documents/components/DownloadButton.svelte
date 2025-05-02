@@ -1,5 +1,4 @@
 <script lang="ts">
-    import Documents from "../Documents.svelte";
     import Button from "$lib/dsfr/Button.svelte";
     import Dispatch from "$lib/core/Dispatch";
     import DownloadButtonController from "$lib/components/Documents/components/DownloadButton.controller";

@@ -11,7 +11,7 @@
 </script>
 
 {#if cells}
-    {#each cells as cell}
+    {#each cells as cell, i (i)}
         <td
             class="clickable payment"
             on:click

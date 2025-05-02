@@ -225,9 +225,9 @@ describe("SubventiaValidator", () => {
 
     describe("sortDataByValidity", () => {
         //@ts-expect-error : test protected method
-        let mockIsSubventiaDtoValid: jest.SpyInstance = jest.spyOn(SubventiaValidator, "isSubventiaDtoValid");
+        const mockIsSubventiaDtoValid: jest.SpyInstance = jest.spyOn(SubventiaValidator, "isSubventiaDtoValid");
         //@ts-expect-error : test protected method
-        let mockFormatInvalids: jest.SpyInstance = jest.spyOn(SubventiaValidator, "formatInvalids");
+        const mockFormatInvalids: jest.SpyInstance = jest.spyOn(SubventiaValidator, "formatInvalids");
 
         beforeAll(() => {
             mockIsSubventiaDtoValid.mockReturnValue({ valid: true });

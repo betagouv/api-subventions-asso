@@ -47,7 +47,7 @@
                 headers={controller.headers}
                 headersSize={controller.headersSize}
                 scrollable={false}>
-                {#each $_contacts as contact, index}
+                {#each $_contacts as contact, index (index)}
                     <TableRow id={tableId} {index}>
                         <td>
                             {contact.civilite}

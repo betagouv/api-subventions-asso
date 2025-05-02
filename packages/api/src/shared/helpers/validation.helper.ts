@@ -3,11 +3,12 @@ import { BadRequestError } from "core";
 export type ValidationResult = { valid: false; error: Error } | { valid: true };
 export type ValidationCriteria<T> = {
     value: T;
+
     method: (value: T) => boolean;
     error: Error;
 };
 
-export type ValidationCriterias = ValidationCriteria<any>[];
+export type ValidationCriterias = ValidationCriteria<unknown | unknown[]>[];
 
 export function applyValidations(validations: ValidationCriterias): ValidationResult {
     let error: Error | undefined;

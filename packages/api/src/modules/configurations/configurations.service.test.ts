@@ -1,8 +1,6 @@
-import { isObjectBindingPattern } from "typescript";
 import { BadRequestError, ConflictError } from "core";
 import configurationsService, { ConfigurationsService, CONFIGURATION_NAMES } from "./configurations.service";
 import configurationsPort from "../../dataProviders/db/configurations/configurations.port";
-import { ObjectId } from "mongodb";
 
 describe("ConfigurationService", () => {
     jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
@@ -124,7 +122,7 @@ describe("ConfigurationService", () => {
         const INVALID_DOMAIN = "ille-e";
 
         beforeAll(() => {
-            getByNameMock.mockImplementation(async name => ({
+            getByNameMock.mockImplementation(async () => ({
                 data: [...PERSISTED_DOMAINS],
             }));
             upsertMock.mockImplementation(jest.fn());

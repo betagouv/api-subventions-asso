@@ -41,7 +41,7 @@
         return undefined;
     }
 
-    const dispatch = createEventDispatcher();
+    const dispatch = createEventDispatcher<{ sort: number }>();
 
     function handleSort(index) {
         dispatch("sort", index);
@@ -56,7 +56,7 @@
                     <caption class:fr-sr-only={hideTitle} aria-hidden={hideTitle}>{title}</caption>
                     <thead>
                         <tr>
-                            {#each headers as header, index}
+                            {#each headers as header, index (index)}
                                 {#if sortable}
                                     <th class={getHeaderSize(index)} style:width={getCustomWidth(index)}>
                                         <div class="fr-cell--sort">
@@ -79,9 +79,9 @@
                     </thead>
                     <tbody>
                         <slot>
-                            {#each rows as row, index}
+                            {#each rows as row, index (index)}
                                 <tr id="table-{id}-row-key-{index}" data-row-key={index}>
-                                    {#each row as cell}
+                                    {#each row as cell, index (index)}
                                         <td>{cell}</td>
                                     {/each}
                                 </tr>

@@ -3,7 +3,7 @@
     import { ProfileController } from "./Profile.controller";
     import DeleteUser from "./components/DeleteUser.svelte";
     import SignupModule from "./components/SignupModule.svelte";
-    import ResetPwdModule from "./components/ResetPwdModule/ResetPwdModule.svelte";
+    // import ResetPwdModule from "./components/ResetPwdModule/ResetPwdModule.svelte";
     import StructureFormStep from "$lib/components/StructureFormStep/StructureFormStep.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
     import Button from "$lib/dsfr/Button.svelte";

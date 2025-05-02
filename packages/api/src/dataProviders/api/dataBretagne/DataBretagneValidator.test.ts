@@ -9,7 +9,7 @@ import {
 
 describe("DataBretagneValidator", () => {
     describe(DataBretagneValidatorHelper, () => {
-        let requiredAttributes = ["code", "label"];
+        const requiredAttributes = ["code", "label"];
 
         describe("dropDuplicates", () => {
             it("should return a list without duplicates", () => {
@@ -55,7 +55,7 @@ describe("DataBretagneValidator", () => {
         });
 
         describe("validateNotNulls", () => {
-            let dtoInvalid = { ...DTOS["domaineFonct"], code: undefined };
+            const dtoInvalid = { ...DTOS["domaineFonct"], code: undefined };
 
             it("should return true when all required attributes are present", () => {
                 const result = DataBretagneValidatorHelper.validateNotNulls(DTOS["domaineFonct"], requiredAttributes);
@@ -70,7 +70,7 @@ describe("DataBretagneValidator", () => {
         });
 
         describe("sortByValidity", () => {
-            let dtoListWithInvalids = [
+            const dtoListWithInvalids = [
                 DTOS["domaineFonct"],
                 { ...DTOS["domaineFonct"], code: "code2" },
                 { ...DTOS["domaineFonct"], code: undefined },
@@ -78,7 +78,7 @@ describe("DataBretagneValidator", () => {
 
             let mockedValidateNotNulls: jest.SpyInstance;
 
-            let duplicatesCode = new Set(["code"]);
+            const duplicatesCode = new Set(["code"]);
 
             beforeEach(() => {
                 mockedValidateNotNulls = jest.spyOn(DataBretagneValidatorHelper, "validateNotNulls");

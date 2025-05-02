@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import xlsx from "node-xlsx";
-import csvSyncParser = require("csv-parse/sync");
+import { parse } from "csv-parse/sync";
 import {
     BeforeAdaptation,
     DefaultObject,
@@ -78,16 +78,19 @@ export class GenericParser {
         data: T[],
         options: { allowNull: boolean } = { allowNull: false },
     ) {
-        return headers.reduce((acc, header, key) => {
-            const value =
-                typeof data[key] === "string" ? (data[key] as string).replace(/&#32;/g, " ").trim() : data[key];
-            const trimedHeader = typeof header === "string" ? header.trim() : header;
-            // quick fix to keep empty cells value as null
-            // https://github.com/orgs/betagouv/projects/38/views/1?pane=issue&itemId=103848824&issue=betagouv%7Capi-subventions-asso%7C3293
-            if (options.allowNull) acc[trimedHeader] = value || null;
-            else acc[trimedHeader] = value || "";
-            return acc;
-        }, {} as DefaultObject<T | string | null>);
+        return headers.reduce(
+            (acc, header, key) => {
+                const value =
+                    typeof data[key] === "string" ? (data[key] as string).replace(/&#32;/g, " ").trim() : data[key];
+                const trimedHeader = typeof header === "string" ? header.trim() : header;
+                // quick fix to keep empty cells value as null
+                // https://github.com/orgs/betagouv/projects/38/views/1?pane=issue&itemId=103848824&issue=betagouv%7Capi-subventions-asso%7C3293
+                if (options.allowNull) acc[trimedHeader] = value || null;
+                else acc[trimedHeader] = value || "";
+                return acc;
+            },
+            {} as DefaultObject<T | string | null>,
+        );
     }
 
     static findFiles(file: string) {
@@ -106,7 +109,7 @@ export class GenericParser {
     }
 
     static csvParse(content: Buffer, delimiter = ";,"): string[][] {
-        return csvSyncParser.parse(content, {
+        return parse(content, {
             columns: false,
             skip_empty_lines: true,
             delimiter: Array.from(delimiter),
@@ -126,7 +129,7 @@ export class GenericParser {
         }));
     }
 
-    static xlsParseByPageName(content: Buffer): { [name: string]: any[][] } {
+    static xlsParseByPageName(content: Buffer): { [name: string]: unknown[][] } {
         const pagesWithName = GenericParser.xlsParseWithPageName(content);
         return pagesWithName.reduce(
             (pages, xlsPage) => ({

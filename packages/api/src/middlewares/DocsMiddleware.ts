@@ -9,7 +9,7 @@ export const docsMiddlewares = async () => [
         next();
     },
     swaggerUi.serve,
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+
     swaggerUi.setup(await import("../../tsoa/swagger.json"), {
         customCss: ".swagger-ui .topbar { display: none }",
         customSiteTitle: "Data Subvention",

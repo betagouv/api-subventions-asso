@@ -7,7 +7,7 @@ import rnaSirenService from "$lib/resources/open-source/rna-siren/rna-siren.serv
 
 export class EstablishmentController {
     titles = ["Subventions", "Contacts", "Pièces administratives", "Informations bancaires"];
-    promises: Promise<{ establishment: any }>;
+    promises: Promise<{ establishment: unknown }>;
 
     constructor(id: string) {
         this.promises = this.init(id);

@@ -1,4 +1,4 @@
-import { SignupErrorCodes, ResetPasswordErrorCodes } from "dto";
+import { ResetPasswordErrorCodes } from "dto";
 import authPort from "$lib/resources/auth/auth.port";
 import { goToUrl } from "$lib/services/router.service";
 import crispService from "$lib/services/crisp.service";
@@ -55,13 +55,14 @@ export class AuthService {
             const user = await userService.getSelfUser();
             this.setUserInApp(user);
             return true;
-        } catch (_e) {
+        } catch {
             console.info("user not connected");
             return false;
         }
     }
 
     async logout() {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { url, _success } = await authPort.logout();
         this.connectedUser.set(null);
         crispService.resetSession();

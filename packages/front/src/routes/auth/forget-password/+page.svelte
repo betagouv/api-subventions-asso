@@ -21,7 +21,7 @@
             <div class="fr-mb-5w fr-mt-n4w">
                 <Spinner />
             </div>
-        {:then _res}
+        {:then}
             {#if $firstSubmitted}
                 <Alert type="success">
                     <p>

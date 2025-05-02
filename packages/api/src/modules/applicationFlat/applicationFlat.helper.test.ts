@@ -16,8 +16,8 @@ describe("cursorToStream", () => {
 
     it("creates stream from cursor with adapter to transform it", () => {
         cursorToStream(CURSOR, ADAPTER);
-        const transformMethod = jest.mocked(CURSOR.stream).mock.calls[0][0]!.transform as unknown as Function;
-        const entity = "toto";
+        const transformMethod = jest.mocked(CURSOR.stream).mock.calls[0][0]!.transform as <T>(doc: T) => Document;
+        const entity = { foo: "bar" };
         transformMethod(entity);
         expect(ADAPTER).toHaveBeenCalledWith(entity);
     });

@@ -1,7 +1,6 @@
-
 export class TransactionalEmailsApi {
     setApiKey() {
-        return undefined
+        return undefined;
     }
 
     sendTransacEmail() {
@@ -10,9 +9,7 @@ export class TransactionalEmailsApi {
 }
 
 export enum TransactionalEmailsApiApiKeys {
-    apiKey = 0
+    apiKey = 0,
 }
 
-export class SendSmtpEmail { }
-
-
+export class SendSmtpEmail {}

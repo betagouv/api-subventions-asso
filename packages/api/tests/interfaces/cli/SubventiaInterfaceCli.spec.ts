@@ -20,7 +20,7 @@ describe("Subventia Cli", () => {
                 new Date("2024-03-12"),
             );
             const entities = await subventiaPort.findAll();
-            const expectedAny = entities.map(_entity => ({
+            const expectedAny = entities.map(() => ({
                 _id: expect.any(ObjectId),
             }));
 

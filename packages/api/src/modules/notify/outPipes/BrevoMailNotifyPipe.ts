@@ -80,7 +80,7 @@ export class BrevoMailNotifyPipe implements NotifyOutPipe {
         return this.sendMail(data.email, data, TemplateEnum.activated);
     }
 
-    async sendMail(email: string, params: Record<string, any>, templateId: number): Promise<boolean> {
+    async sendMail(email: string, params: Record<string, unknown>, templateId: number): Promise<boolean> {
         const sendSmtpEmail = new Brevo.SendSmtpEmail();
         sendSmtpEmail.templateId = templateId;
         sendSmtpEmail.sender = { name: "Data.Subvention", email: MAIL_USER };

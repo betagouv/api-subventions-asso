@@ -146,7 +146,6 @@ export class EtablissementHttp extends Controller {
      */
     @Hidden()
     @Get("/{identifier}/extract-data")
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async registerExtract(): Promise<boolean> {
         return true;
     }

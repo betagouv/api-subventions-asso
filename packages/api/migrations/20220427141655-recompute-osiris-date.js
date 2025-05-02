@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-var-requires*/
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const { printAtSameLine } = require("../build/src/shared/helpers/CliHelper");
 const osirisActionPort = require("../build/src/dataProviders/db/providers/osiris/osiris.action.port").default;
 const entity = require("../build/src/modules/providers/osiris/entities/OsirisRequestEntity").default;
 const { GenericParser } = require("../build/src/shared/GenericParser");
-/* eslint-enable @typescript-eslint/no-var-requires*/
 
 module.exports = {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

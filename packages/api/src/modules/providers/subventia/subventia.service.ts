@@ -108,7 +108,7 @@ export class SubventiaService implements DemandesSubventionsProvider<SubventiaEn
         } else if (id instanceof AssociationIdentifier && id.siren) {
             subventiaDbos = await subventiaPort.findBySiren(id.siren);
         }
-
+        // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
         return subventiaDbos.map(grant => ({
             provider: this.provider.id,
             type: "application",
@@ -117,6 +117,7 @@ export class SubventiaService implements DemandesSubventionsProvider<SubventiaEn
     }
 
     rawToCommon(raw: RawGrant): CommonApplicationDto {
+        // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
         return SubventiaAdapter.toCommon(raw.data as SubventiaDbo);
     }
 

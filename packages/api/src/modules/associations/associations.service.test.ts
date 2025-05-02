@@ -41,7 +41,8 @@ describe("associationsService", () => {
 
     let formatDataMock: jest.SpyInstance;
     beforeAll(() => {
-        formatDataMock = jest.spyOn(FormaterHelper, "formatData").mockImplementation(data => data as any);
+        // @ts-expect-error: mock
+        formatDataMock = jest.spyOn(FormaterHelper, "formatData").mockImplementation(data => data as unknown);
     });
 
     afterAll(() => {
@@ -49,7 +50,7 @@ describe("associationsService", () => {
     });
 
     // Could not find a way to restore manual mock (from __mocks__) after being changed in a single test (cf: getAssociationBySiren)
-    // eslint-disable-next-line import/namespace
+
     afterEach(() => (providers.default = DEFAULT_PROVIDERS));
 
     describe("getAssociation()", () => {

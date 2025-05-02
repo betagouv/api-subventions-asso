@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require("../build/src/shared/MongoConnection");
 
 const userPort = require("../build/src/dataProviders/db/user/user.port").default;

@@ -195,20 +195,23 @@ export default class OsirisRequestAdapter {
                 };
             });
 
-            data.territoires = territoires.reduce((acc, territoire) => {
-                if (
-                    acc.some(
-                        t =>
-                            t.status.value === territoire.status.value &&
-                            t.status.last_update === territoire.status.last_update &&
-                            t.commentaire.value === territoire.commentaire.value &&
-                            t.commentaire.last_update === territoire.commentaire.last_update,
+            data.territoires = territoires.reduce(
+                (acc, territoire) => {
+                    if (
+                        acc.some(
+                            t =>
+                                t.status.value === territoire.status.value &&
+                                t.status.last_update === territoire.status.last_update &&
+                                t.commentaire.value === territoire.commentaire.value &&
+                                t.commentaire.last_update === territoire.commentaire.last_update,
+                        )
                     )
-                )
-                    return acc;
+                        return acc;
 
-                return acc.concat(territoires);
-            }, [] as { status: ProviderValue<string>; commentaire: ProviderValue<string> }[]);
+                    return acc.concat(territoires);
+                },
+                [] as { status: ProviderValue<string>; commentaire: ProviderValue<string> }[],
+            );
 
             data.actions_proposee = entity.actions.map(action => ({
                 ej: action.indexedInformations.ej ? toPV(action.indexedInformations.ej) : undefined,

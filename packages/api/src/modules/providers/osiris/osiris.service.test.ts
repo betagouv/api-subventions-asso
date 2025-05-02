@@ -192,11 +192,9 @@ describe("OsirisService", () => {
     describe("validateAndComplete", () => {
         const REQUEST = { legalInformations: { siret: "12345678900001" } } as unknown as OsirisRequestEntity;
         let mockValidate: jest.SpyInstance;
-        let spyValidateAndComplete: jest.SpyInstance;
 
         beforeAll(() => {
             mockValidate = jest.spyOn(osirisService, "validRequest").mockReturnValue(true);
-            spyValidateAndComplete = jest.spyOn(osirisService, "validateAndComplete");
         });
         afterAll(() => mockValidate.mockRestore());
 

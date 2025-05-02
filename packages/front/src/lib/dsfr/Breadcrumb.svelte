@@ -12,7 +12,7 @@
                 <li>
                     <a class="fr-breadcrumb__link" href="/">Accueil</a>
                 </li>
-                {#each crumbs as crumb, index}
+                {#each crumbs as crumb, index (index)}
                     {#if index < crumbs.length - 1}
                         <li>
                             <a class="fr-breadcrumb__link" href={crumb.url}>{crumb.label}</a>

@@ -10,7 +10,7 @@ import { SubventiaDbo } from "../../modules/providers/subventia/@types/subventia
 import { ApplicationStatus } from "dto";
 jest.mock("../../shared/helpers/CliHelper");
 import { ParsedDataWithProblem } from "../../modules/providers/subventia/validators/@types/Validation";
-import csvSyncStringifier = require("csv-stringify/sync");
+import csvSyncStringifier from "csv-stringify/sync";
 import fs from "fs";
 import { normalize } from "path";
 
@@ -144,19 +144,19 @@ describe("SubventiaCli", () => {
         });
 
         it("should call ProcessSubventiaData", async () => {
-            //@ts-expect-error
+            //@ts-expect-error: mock
             await subventiaCli._parse(mockFile, mockLogs, mockExportDate);
             expect(subventiaService.processSubventiaData).toHaveBeenCalledWith(mockFile, mockExportDate);
         });
 
         it("should call persistEntities", async () => {
-            //@ts-expect-error
+            //@ts-expect-error: mock
             await subventiaCli._parse(mockFile, mockLogs, mockExportDate);
             expect(mockPersistEntities).toHaveBeenCalledWith(MOCK_ENTITIES);
         });
 
         it("should call exportErrors", async () => {
-            //@ts-expect-error
+            //@ts-expect-error: mock
             await subventiaCli._parse(mockFile, mockLogs, mockExportDate);
             expect(mockExportErrors).toHaveBeenCalledWith([], mockFile);
         });

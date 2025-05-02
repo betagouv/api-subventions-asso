@@ -2,10 +2,15 @@
     "extends": "./tsconfig.json",
     // 👇️ this may vary depending on how you
     // name your test files
-    "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts", "tests/**/*.spec.ts", "tests/**/*.test.ts", "**/__mocks__/*", "**/__fixtures__/*"],
+    "exclude": [
+        "src/**/*.spec.ts",
+        "src/**/*.test.ts",
+        "tests/**/*.spec.ts",
+        "tests/**/*.test.ts",
+        "**/__mocks__/*",
+        "**/__fixtures__/*"
+    ],
     "compilerOptions": {
-        "types": [
-            "reflect-metadata"
-        ]
+        "types": ["reflect-metadata"]
     }
 }

@@ -1,8 +1,8 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
-    import type Store from "$lib/core/Store";
+    import Store from "$lib/core/Store";
 
-    const dispatch = createEventDispatcher();
+    const dispatch = createEventDispatcher<{ change: number }>();
 
     export let totalPages: number;
     export let currentPage: Store<number>;
@@ -73,7 +73,7 @@
                 </a>
             </li>
         {/if}
-        {#each visibleLinks as visibleLink}
+        {#each visibleLinks as visibleLink, i (i)}
             {#if visibleLink}
                 <li>
                     <a

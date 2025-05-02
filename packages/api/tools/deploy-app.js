@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const child_process = require("child_process");
-const fs = require("fs");
-const path = require("path");
+import child_process from "child_process";
+import fs from "fs";
+import path from "path";
 
 const appName = process.argv[2];
 const envVarFile = process.argv[3];

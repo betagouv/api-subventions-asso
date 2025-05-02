@@ -39,13 +39,12 @@ export class ChorusLinePort extends MongoPort<ChorusLineEntity> {
                         update: { $set: e },
                         upsert: true,
                     },
-                } as AnyBulkWriteOperation<ChorusLineEntity>),
+                }) as AnyBulkWriteOperation<ChorusLineEntity>,
         );
         return this.collection.bulkWrite(operations);
     }
 
     public async update(entity: ChorusLineEntity) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { _id, ...entityWithoutId } = entity;
 
         await this.collection.updateOne({ uniqueId: entity.uniqueId }, { $set: entityWithoutId });
@@ -54,7 +53,6 @@ export class ChorusLinePort extends MongoPort<ChorusLineEntity> {
     }
 
     public async updateById(id: ObjectId, entity: ChorusLineEntity) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { _id, ...entityWithoutId } = entity;
 
         await this.collection.updateOne({ _id: id }, { $set: entityWithoutId });

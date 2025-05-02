@@ -18,7 +18,7 @@ describe("Tahitiet", () => {
         );
 
         it.each(INVALID_THAITI_T_LIST)("should throw an error for an invalid tahitiet", tahitiet => {
-            // @ts-expect-error
+            // @ts-expect-error: test edge cases
             expect(() => new Tahitiet(tahitiet)).toThrow(`Invalid Tahitiet: ${tahitiet}`);
         });
     });

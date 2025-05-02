@@ -7,12 +7,8 @@ jest.mock("./adapters/ChorusAdapter");
 import uniteLegalEntreprisesSerivce from "../uniteLegalEntreprises/uniteLegal.entreprises.service";
 jest.mock("../uniteLegalEntreprises/uniteLegal.entreprises.service");
 const mockedUniteLegalEntreprisesSerivce = jest.mocked(uniteLegalEntreprisesSerivce);
-import * as StringHelper from "../../../shared/helpers/StringHelper";
 jest.mock("../../../shared/helpers/StringHelper");
-const mockedStringHelper = jest.mocked(StringHelper);
-import * as SirenHelper from "../../../shared/helpers/SirenHelper";
 jest.mock("../../../shared/helpers/SirenHelper");
-const mockedSirenHelper = jest.mocked(SirenHelper);
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 jest.mock("../../rna-siren/rnaSiren.service");
 const mockedRnaSirenService = jest.mocked(rnaSirenService);
@@ -25,9 +21,6 @@ import Siren from "../../../valueObjects/Siren";
 import Siret from "../../../valueObjects/Siret";
 import Rna from "../../../valueObjects/Rna";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
-import { ChorusLineDto } from "./@types/ChorusLineDto";
-import Tahitiet from "../../../valueObjects/Tahitiet";
-import Ridet from "../../../valueObjects/Ridet";
 
 describe("chorusService", () => {
     beforeAll(() => {

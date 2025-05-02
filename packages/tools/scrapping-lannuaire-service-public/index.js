@@ -56,8 +56,8 @@ async function main() {
     const newFileBuffer = xlsx.build([
         {
             name: page.name,
-            data: [header, ...data]
-        }
+            data: [header, ...data],
+        },
     ]);
 
     fs.writeFileSync(userBddFilePath, newFileBuffer);

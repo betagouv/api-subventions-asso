@@ -10,7 +10,7 @@
 
 <Alert type="warning" {title}>
     <ul>
-        {#each duplicates as duplicate}
+        {#each duplicates as duplicate, index (index)}
             <li>
                 {ctrl.duplicateType}
                 <span class="fr-text--bold">

@@ -69,7 +69,8 @@ export default class SearchController {
         return nbAssos > 1 ? `${nbAssos} résultats trouvés.` : `${nbAssos} résultat trouvé.`;
     }
 
-    onSubmit(input: string) {
+    onSubmit(input?: string) {
+        if (!input) return;
         const trimmedInput = input.trim();
         this.inputSearch.set(trimmedInput);
         this.searchPromise.set(this.fetchAssociationFromName(trimmedInput, 1));

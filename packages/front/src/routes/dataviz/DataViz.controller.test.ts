@@ -4,11 +4,9 @@ vi.mock("$lib/resources/dataViz/dataViz.service");
 const mockedDataVizService = vi.mocked(dataVizService);
 
 describe("DataVizController", () => {
-    let controller: DataVizController;
-
     describe("constructor", () => {
         beforeEach(() => {
-            controller = new DataVizController();
+            new DataVizController();
         });
 
         it("should call getAmountsVsProramme", async () => {

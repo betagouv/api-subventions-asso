@@ -26,15 +26,8 @@ export default class StructureFormStepController {
     // private static errorMandatory = "Ce champ est obligatoire";
     private readonly dirty: { [key: string]: boolean };
 
-    private readonly validators: Record<string, (value: any) => string | undefined> = {
-        // service: (text: string) => {
-        //     if (!text) return StructureFormStepController.errorMandatory;
-        // },
-        // jobType: (jobs: string[] | null) => {
-        //     if (!jobs?.length) return StructureFormStepController.errorMandatory;
-        // },
+    private readonly validators: Record<string, (value: string) => string | undefined> = {
         phoneNumber: (number: string) => {
-            // if (!number) return StructureFormStepController.errorMandatory;
             if (number && !isPhoneNumber(number)) return "Entrez un numéro de téléphone valide";
         },
     };
@@ -134,7 +127,7 @@ export default class StructureFormStepController {
         }
     }
 
-    cleanSubStepValues(values: Record<string, any>, contextAgentType: AgentTypeEnum) {
+    cleanSubStepValues(values: Record<string, unknown>, contextAgentType: AgentTypeEnum) {
         const prefixes: string[] = [];
         for (const [agentType, prefix] of Object.entries(StructureFormStepController.subFieldsPrefixByAgentType)) {
             if (agentType === contextAgentType) continue;
@@ -148,7 +141,7 @@ export default class StructureFormStepController {
         values["structure"] = "";
     }
 
-    onUpdateContext(context: Context, values: Record<string, any>) {
+    onUpdateContext(context: Context, values: Record<string, unknown>) {
         if (context.agentType === this.currentAgentType) return;
         if (this.currentAgentType) this.cleanSubStepValues(values, context.agentType);
         this.currentAgentType = context.agentType;

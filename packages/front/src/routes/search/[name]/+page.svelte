@@ -15,6 +15,9 @@
         ctrl;
 
     let nbResultLabel;
+
+    // TODO: #3374
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     $: $associations, (nbResultLabel = ctrl.updateNbEtabsLabel());
 </script>
 
@@ -34,7 +37,7 @@
             </div>
         </div>
     </div>
-{:then _result}
+{:then}
     {#if $isLastSearchCompany}
         <div class="fr-grid-row fr-grid-row--center">
             <div class="fr-col-8">
@@ -62,7 +65,7 @@
         </div>
 
         <div class="fr-grid-row fr-grid-row--gutters search-layout">
-            {#each $associations.results as simplifiedAsso}
+            {#each $associations.results as simplifiedAsso (simplifiedAsso.siren)}
                 <AssociationCard {simplifiedAsso} searchKey={$inputSearch} />
             {/each}
         </div>

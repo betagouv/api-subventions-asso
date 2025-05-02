@@ -19,7 +19,7 @@ jest.mock("./adapters/ApiAssoDtoAdapter", () => ({
     rnaDocumentToDocument: jest.fn().mockImplementation(() => RnaDtoDocument),
     dacDocumentToDocument: jest.fn().mockImplementation(() => DacDtoDocument),
     dacDocumentToRib: jest.fn(),
-    toEtablissement: r => ({ ...r, siret: [{ value: r.id_siret }] } as unknown as Etablissement),
+    toEtablissement: r => ({ ...r, siret: [{ value: r.id_siret }] }) as unknown as Etablissement,
     rnaStructureToAssociation: jest.fn().mockImplementation(data => data),
     sirenStructureToAssociation: jest.fn().mockImplementation(data => data),
 }));
@@ -27,7 +27,7 @@ jest.mock("./adapters/ApiAssoDtoAdapter", () => ({
 describe("ApiAssoService", () => {
     let httpGetSpy: jest.SpyInstance;
     // @ts-expect-error: mock private method
-    let mockSendRequest = jest.spyOn(apiAssoService, "sendRequest") as jest.SpyInstance<any | null>;
+    let mockSendRequest = jest.spyOn(apiAssoService, "sendRequest") as jest.SpyInstance<unknown | null>;
 
     const RNA = "W750000000";
     const API_ASSO_RESPONSE = {
@@ -40,12 +40,12 @@ describe("ApiAssoService", () => {
     };
 
     beforeAll(() => {
-        // @ts-expect-error http is private attribute
+        //@ts-expect-error http is private attribute
         httpGetSpy = jest.spyOn(apiAssoService.http, "get");
     });
 
     describe("sendRequest", () => {
-        // @ts-ignore
+        // @ts-expect-error: access private prop
         const cache = apiAssoService.requestCache;
         const cacheHasMock = jest.spyOn(cache, "has");
         const cacheGetMock = jest.spyOn(cache, "get");
@@ -56,7 +56,7 @@ describe("ApiAssoService", () => {
             cacheHasMock.mockImplementationOnce(() => true);
             cacheGetMock.mockImplementationOnce(() => [expected]);
 
-            // @ts-ignore
+            // @ts-expect-error: test private method
             const actual = await apiAssoService.sendRequest("fake/route");
             expect(actual).toBe(expected);
         });
@@ -69,7 +69,7 @@ describe("ApiAssoService", () => {
             });
             cacheHasMock.mockImplementationOnce(() => false);
 
-            // @ts-ignore
+            // @ts-expect-error: test private method
             const actual = await apiAssoService.sendRequest("fake/route");
             expect(actual).toBe(expected);
         });
@@ -84,7 +84,7 @@ describe("ApiAssoService", () => {
             );
             cacheHasMock.mockImplementationOnce(() => false);
 
-            // @ts-ignore
+            // @ts-expect-error: test private method
             const actual = await apiAssoService.sendRequest("fake/route");
             expect(actual).toBe(expected);
         });
@@ -99,7 +99,7 @@ describe("ApiAssoService", () => {
             );
             cacheHasMock.mockImplementationOnce(() => false);
 
-            // @ts-ignore
+            // @ts-expect-error: test private method
             const actual = await apiAssoService.sendRequest("fake/route");
             expect(actual).toBe(expected);
         });
@@ -111,7 +111,7 @@ describe("ApiAssoService", () => {
             });
             cacheHasMock.mockImplementationOnce(() => false);
 
-            // @ts-ignore
+            // @ts-expect-error: test private method
             const actual = await apiAssoService.sendRequest("fake/route");
             expect(actual).toBe(expected);
         });
@@ -123,12 +123,14 @@ describe("ApiAssoService", () => {
         const ASSOCIATION_ID = AssociationIdentifier.fromRna(new Rna(RNA));
 
         beforeEach(() => {
+            // @ts-expect-error: mock
             mockSendRequest.mockResolvedValue({ identite: { id_rna: RNA, id_siren: SIREN } });
         });
 
         afterAll(() => mockSendRequest.mockReset());
 
         it("should return undefined identifiers if identite is undefined", async () => {
+            // @ts-expect-error: mock
             mockSendRequest.mockResolvedValueOnce({});
             const expected = { rna: undefined, siren: undefined };
             const actual = await apiAssoService.findRnaSirenByIdentifiers(ASSOCIATION_ID);
@@ -136,6 +138,7 @@ describe("ApiAssoService", () => {
         });
 
         it("should return identifiers", async () => {
+            // @ts-expect-error: mock
             mockSendRequest.mockResolvedValueOnce({
                 identite: {
                     id_rna: RNA,
@@ -170,6 +173,7 @@ describe("ApiAssoService", () => {
                 document_dac: ["something"],
                 document_rna: ["else"],
             };
+            // @ts-expect-error: mock
             mockSendRequest.mockResolvedValue({
                 asso: {
                     documents: {
@@ -184,7 +188,6 @@ describe("ApiAssoService", () => {
         });
 
         it("does not fail if no result from axios", async () => {
-            const expected = undefined;
             mockSendRequest.mockImplementationOnce(async () => null);
             // @ts-expect-error: private method
             const test = async () => await apiAssoService.fetchDocuments(ASSOCIATION_ID);
@@ -230,9 +233,9 @@ describe("ApiAssoService", () => {
 
             it("should return many associations", async () => {
                 const expected = 2;
-                // @ts-ignore mock fake data
+                // @ts-expect-error mock fake data
                 findAssociationBySirenMock.mockResolvedValueOnce({ data: true });
-                // @ts-ignore
+                // @ts-expect-error: mock
                 findAssociationByRnaMock.mockResolvedValueOnce({ data: true });
                 const actual = await apiAssoService.getAssociations(ASSOCIATION_ID);
                 expect(actual).toHaveLength(expected);
@@ -245,7 +248,7 @@ describe("ApiAssoService", () => {
 
             beforeAll(() => {
                 mockedObjectHelper.hasEmptyProperties.mockReturnValue(false);
-                // @ts-ignore sendRequest is private Method
+                // @ts-expect-error sendRequest is private Method
                 mockSendRequest = jest.spyOn(apiAssoService, "sendRequest").mockResolvedValue(null);
             });
 
@@ -254,7 +257,6 @@ describe("ApiAssoService", () => {
             });
 
             it("should send a request", async () => {
-                // @ts-ignore findAssociationByRna is private method
                 await apiAssoService.findAssociationByRna(RNA);
 
                 expect(mockSendRequest).toHaveBeenCalledTimes(1);
@@ -263,7 +265,6 @@ describe("ApiAssoService", () => {
             it("should return null if result without date", async () => {
                 const expected = null;
                 mockSendRequest.mockResolvedValue({ data: true, identite: { date_modif_rna: null } });
-                // @ts-ignore findAssociationByRna is private method
                 const actual = await apiAssoService.findAssociationByRna(RNA);
 
                 expect(actual).toBe(expected);
@@ -273,7 +274,6 @@ describe("ApiAssoService", () => {
                 mockedObjectHelper.hasEmptyProperties.mockReturnValueOnce(true);
                 const expected = null;
                 mockSendRequest.mockResolvedValue({ data: true, identite: {} });
-                // @ts-ignore findAssociationByRna is private method
                 const actual = await apiAssoService.findAssociationByRna(RNA);
                 expect(actual).toBe(expected);
             });
@@ -281,7 +281,6 @@ describe("ApiAssoService", () => {
             it("should use adapter", async () => {
                 const expected = { data: true, identite: { date_modif_rna: "smthg" } };
                 mockSendRequest.mockResolvedValue(expected);
-                // @ts-ignore findAssociationByRna is private method
                 await apiAssoService.findAssociationByRna(RNA);
 
                 expect(ApiAssoDtoAdapter.rnaStructureToAssociation).toBeCalledWith(expected);
@@ -300,7 +299,7 @@ describe("ApiAssoService", () => {
 
             beforeAll(() => {
                 mockedObjectHelper.hasEmptyProperties.mockReturnValue(false);
-                // @ts-ignore sendRequest is private Method
+                // @ts-expect-error sendRequest is private Method
                 mockSendRequest = jest.spyOn(apiAssoService, "sendRequest").mockResolvedValue(ASSO_WITH_STRUCTURES);
                 mockGetDefaultDateModifSiren = jest
                     // @ts-expect-error: mock private method
@@ -393,7 +392,7 @@ describe("ApiAssoService", () => {
         beforeAll(() => {
             // @ts-expect-error: mock private method
             findDocumentsMock = jest.spyOn(apiAssoService, "findDocuments");
-            // @ts-ignore findEtablissementsBySiren is private method
+            // @ts-expect-error findEtablissementsBySiren is private method
             findEtablissementsBySirenMock = jest.spyOn(apiAssoService, "findEtablissementsBySiren");
         });
 
@@ -420,7 +419,6 @@ describe("ApiAssoService", () => {
 
             it("should filter establishments by siret", async () => {
                 const expected = 1;
-                // @ts-ignore mock fake data
                 findEtablissementsBySirenMock.mockResolvedValueOnce([
                     { siret: [{ value: SIRET.value }] },
                     { siret: [{ value: SIREN.toSiret("00002").value }] },
@@ -438,12 +436,12 @@ describe("ApiAssoService", () => {
             let toEtablissementMock: jest.SpyInstance;
 
             beforeAll(() => {
-                // @ts-ignore sendRequest is private method
+                // @ts-expect-error sendRequest is private method
                 mockSendRequest = jest.spyOn(apiAssoService, "sendRequest").mockReturnValue(fixtureAsso);
                 mockGetDefaultDateModifSiren = jest
                     // @ts-expect-error: private method
                     .spyOn(apiAssoService, "getDefaultDateModifSiren")
-                    // @ts-expect-error:
+                    // @ts-expect-error: mock
                     .mockReturnValue("1900-01-01");
                 toEtablissementMock = jest
                     .spyOn(ApiAssoDtoAdapter, "toEtablissement")
@@ -457,7 +455,7 @@ describe("ApiAssoService", () => {
             });
 
             it("should send a request", async () => {
-                // @ts-ignore findEtablissementsBySiren is private method
+                // @ts-expect-error findEtablissementsBySiren is private method
                 await apiAssoService.findEtablissementsBySiren(SIREN);
 
                 expect(mockSendRequest).toBeCalledTimes(1);
@@ -465,7 +463,7 @@ describe("ApiAssoService", () => {
 
             it("should return empty array", async () => {
                 mockSendRequest.mockResolvedValueOnce(null);
-                // @ts-ignore findEtablissementsBySiren is private method
+                // @ts-expect-error findEtablissementsBySiren is private method
                 const actual = await apiAssoService.findEtablissementsBySiren(SIREN);
 
                 expect(actual).toHaveLength(0);
@@ -476,14 +474,14 @@ describe("ApiAssoService", () => {
                     date_modif_siren: null,
                     id_siren: null,
                 });
-                // @ts-ignore findEtablissementsBySiren is private method
+                // @ts-expect-error findEtablissementsBySiren is private method
                 const actual = await apiAssoService.findEtablissementsBySiren(SIREN);
 
                 expect(actual).toHaveLength(0);
             });
 
             it("should call adapter", async () => {
-                // @ts-ignore findEtablissementsBySiren is private method
+                // @ts-expect-error findEtablissementsBySiren is private method
                 await apiAssoService.findEtablissementsBySiren(SIREN);
 
                 expect(toEtablissementMock).toHaveBeenCalledTimes(2);
@@ -505,7 +503,7 @@ describe("ApiAssoService", () => {
         });
         beforeAll(() => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+            // @ts-expect-error
             apiAssoService.requestCache.destroy();
 
             httpGetSpy = jest.spyOn(axios, "get").mockResolvedValue({
@@ -533,7 +531,7 @@ describe("ApiAssoService", () => {
                     },
                 ];
 
-                // @ts-ignore filterRnaDocuments has private method
+                // @ts-expect-error filterRnaDocuments has private method
                 const actual = apiAssoService.filterRnaDocuments(documents);
 
                 expect(actual).toEqual(expected);
@@ -557,7 +555,7 @@ describe("ApiAssoService", () => {
                     },
                 ];
 
-                // @ts-ignore filterRnaDocuments has private method
+                // @ts-expect-error filterRnaDocuments has private method
                 const actual = apiAssoService.filterRnaDocuments(documents);
 
                 expect(actual).toEqual(expected);
@@ -585,7 +583,7 @@ describe("ApiAssoService", () => {
                     },
                 ];
 
-                // @ts-ignore filterDacDocuments has private method
+                // @ts-expect-error filterDacDocuments has private method
                 const actual = apiAssoService.filterDacDocuments(documents);
 
                 expect(actual).toEqual(expected);
@@ -611,7 +609,7 @@ describe("ApiAssoService", () => {
                     },
                 ];
 
-                // @ts-ignore filterDacDocuments has private method
+                // @ts-expect-error filterDacDocuments has private method
                 const actual = apiAssoService.filterDacDocuments(documents);
 
                 expect(actual).toEqual(expected);
@@ -639,7 +637,7 @@ describe("ApiAssoService", () => {
                     },
                 ];
 
-                // @ts-ignore filterRibsInDacDocuments has private method
+                // @ts-expect-error filterRibsInDacDocuments has private method
                 const actual = apiAssoService.filterRibsInDacDocuments(documents);
 
                 expect(actual).toEqual(expected);
@@ -670,7 +668,7 @@ describe("ApiAssoService", () => {
                     },
                 ];
 
-                // @ts-ignore filterActiveDacDocuments has private method
+                // @ts-expect-error filterActiveDacDocuments has private method
                 const actual = apiAssoService.filterActiveDacDocuments(documents);
 
                 expect(actual).toEqual(expected);
@@ -693,15 +691,15 @@ describe("ApiAssoService", () => {
             const fetchDocumentsMock: jest.SpyInstance = jest.spyOn(apiAssoService, "fetchDocuments");
 
             beforeAll(() => {
-                // @ts-ignore filterRnaDocuments has private method
+                // @ts-expect-error filterRnaDocuments has private method
                 mockFilterRnaDocuments.mockImplementation(() => []);
-                // @ts-ignore filterActiveDacDocuments has private method
+                // @ts-expect-error filterActiveDacDocuments has private method
                 mockFilterActiveDacDocuments.mockImplementation(() => []);
-                // @ts-ignore filterDacDocuments has private method
+                // @ts-expect-error filterDacDocuments has private method
                 mockFilterDacDocuments.mockImplementation(() => []);
-                // @ts-ignore filterRibsInDacDocuments has private method
+                // @ts-expect-error filterRibsInDacDocuments has private method
                 mockFilterRibsInDacDocuments.mockImplementation(() => []);
-                // @ts-ignore mockSendRequest is private method
+                // @ts-expect-error mockSendRequest is private method
                 mockSendRequest = jest.spyOn(apiAssoService, "sendRequest");
             });
 
@@ -718,7 +716,7 @@ describe("ApiAssoService", () => {
 
                 fetchDocumentsMock.mockResolvedValueOnce(documents);
 
-                // @ts-ignore findDocuments has private method
+                // @ts-expect-error findDocuments has private method
                 await apiAssoService.findDocuments(ASSOCIATION_ID);
 
                 expect(mockFilterRnaDocuments).toHaveBeenCalledWith(expected);
@@ -733,7 +731,7 @@ describe("ApiAssoService", () => {
 
                 fetchDocumentsMock.mockResolvedValueOnce(documents);
 
-                // @ts-ignore findDocuments has private method
+                // @ts-expect-error findDocuments has private method
                 await apiAssoService.findDocuments(ASSOCIATION_ID);
 
                 expect(mockFilterRnaDocuments).toHaveBeenCalledWith(expected);
@@ -754,7 +752,7 @@ describe("ApiAssoService", () => {
 
                 fetchDocumentsMock.mockResolvedValueOnce(documents);
 
-                // @ts-ignore findDocuments has private method
+                // @ts-expect-error findDocuments has private method
                 await apiAssoService.findDocuments(ASSOCIATION_ID);
 
                 expect(mockFilterActiveDacDocuments).toHaveBeenCalledWith(expected, ASSOCIATION_ID);
@@ -769,7 +767,7 @@ describe("ApiAssoService", () => {
 
                 fetchDocumentsMock.mockResolvedValueOnce(documents);
 
-                // @ts-ignore findDocuments has private method
+                // @ts-expect-error findDocuments has private method
                 await apiAssoService.findDocuments(ASSOCIATION_ID);
 
                 expect(mockFilterActiveDacDocuments).toHaveBeenCalledWith(expected, ASSOCIATION_ID);
@@ -792,7 +790,7 @@ describe("ApiAssoService", () => {
                 // @ts-expect-error: mock
                 mockFilterActiveDacDocuments.mockImplementationOnce(data => data);
 
-                // @ts-ignore findDocuments has private method
+                // @ts-expect-error findDocuments has private method
                 await apiAssoService.findDocuments(ASSOCIATION_ID);
 
                 expect(mockFilterDacDocuments).toHaveBeenCalledWith(expected);
@@ -816,7 +814,7 @@ describe("ApiAssoService", () => {
                 // @ts-expect-error: mock
                 mockFilterActiveDacDocuments.mockImplementationOnce(data => data);
 
-                // @ts-ignore findDocuments has private method
+                // @ts-expect-error findDocuments has private method
                 await apiAssoService.findDocuments(ASSOCIATION_ID);
 
                 expect(mockFilterRibsInDacDocuments).toHaveBeenCalledWith(expected);
@@ -836,7 +834,7 @@ describe("ApiAssoService", () => {
                 // @ts-expect-error: mock
                 mockFilterRnaDocuments.mockImplementationOnce(data => data);
 
-                // @ts-ignore findDocuments has private method
+                // @ts-expect-error findDocuments has private method
                 await apiAssoService.findDocuments(ASSOCIATION_ID);
 
                 expect(ApiAssoDtoAdapter.rnaDocumentToDocument).toHaveBeenCalledWith(expected);
@@ -860,7 +858,7 @@ describe("ApiAssoService", () => {
                 // @ts-expect-error: mock
                 mockFilterDacDocuments.mockImplementationOnce(data => data);
 
-                // @ts-ignore findDocuments has private method
+                // @ts-expect-error findDocuments has private method
                 await apiAssoService.findDocuments(ASSOCIATION_ID);
 
                 expect(ApiAssoDtoAdapter.dacDocumentToDocument).toHaveBeenCalledWith(expected);
@@ -886,7 +884,7 @@ describe("ApiAssoService", () => {
                 // @ts-expect-error: mock
                 ApiAssoDtoAdapter.dacDocumentToDocument.mockImplementationOnce(data => data);
 
-                // @ts-ignore findDocuments has private method
+                // @ts-expect-error findDocuments has private method
                 await apiAssoService.findDocuments(ASSOCIATION_ID);
 
                 expect(ApiAssoDtoAdapter.dacDocumentToRib).toHaveBeenCalledWith(expected);
@@ -924,7 +922,6 @@ describe("ApiAssoService", () => {
 
             it("should filter documents by siret", async () => {
                 const expected = 1;
-                // @ts-ignore mock fake data
                 findDocumentsMock.mockResolvedValueOnce([
                     { __meta__: { siret: SIRET.value } },
                     { __meta__: { siret: SIREN.toSiret("00002").value } },

@@ -21,8 +21,8 @@ export class RnaSirenHttp extends Controller {
         const identifier = Siret.isStartOfSiret(rna_ou_siren_ou_siret)
             ? new Siren(siretToSiren(rna_ou_siren_ou_siret))
             : Rna.isRna(rna_ou_siren_ou_siret)
-            ? new Rna(rna_ou_siren_ou_siret)
-            : new Siren(rna_ou_siren_ou_siret);
+              ? new Rna(rna_ou_siren_ou_siret)
+              : new Siren(rna_ou_siren_ou_siret);
         const entities = await rnaSirenService.find(identifier);
 
         if (!entities) return [];

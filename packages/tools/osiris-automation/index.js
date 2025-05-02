@@ -78,7 +78,7 @@ async function startExtractOsiris(year, reportName) {
 (async () => {
     // const osirisPuppeteer = new OsirisPuppeteer(OSIRIS_EMAIL, OSIRIS_PASSWORD, OSIRIS_URL);
     if (/\d{4}-\d{4}/.test(year)) {
-        const [_, firstOccurence, lastOccurence] = year.match(/(\d{4})-(\d{4})/);
+        const [, firstOccurence, lastOccurence] = year.match(/(\d{4})-(\d{4})/);
         const start = Math.min(firstOccurence, lastOccurence);
         const end = Math.max(firstOccurence, lastOccurence);
 

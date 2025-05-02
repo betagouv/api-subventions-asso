@@ -52,7 +52,7 @@ describe("userAgentConnectService", () => {
     let endSessionMock;
 
     beforeAll(() => {
-        clientConstructorMock = jest.fn((..._args) => {});
+        clientConstructorMock = jest.fn(() => {});
         endSessionMock = jest.fn();
         const mockIssuer = {
             Client: class Client {
@@ -161,7 +161,6 @@ describe("userAgentConnectService", () => {
                 const expectedUser = USER_WITHOUT_SECRET;
                 jest.mocked(removeSecrets).mockReturnValueOnce(USER_WITHOUT_SECRET);
                 await userAgentConnectService.login(AC_USER, TOKENSET);
-                const actual = jest.mocked(notifyService.notify).mock.calls[1];
                 expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.USER_UPDATED, expectedUser);
             });
         });

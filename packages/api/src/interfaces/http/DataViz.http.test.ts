@@ -9,7 +9,7 @@ describe("DataVizHttp", () => {
     const AmountsVsProgramRegionDtoList = AMOUNTS_VS_PROGRAM_REGION_ENTITIES as AmountsVsProgramRegionDto[];
 
     describe("getAmountsVsProgramRegion", () => {
-        let getAmountsVsProgramRegionDataSpy = jest.spyOn(
+        const getAmountsVsProgramRegionDataSpy = jest.spyOn(
             amountsVsProgramRegionService,
             "getAmountsVsProgramRegionData",
         );

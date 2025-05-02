@@ -46,6 +46,8 @@ export const statusAmountCmp = nullIsLowCmpBuilder((a: StatusAmount, b: StatusAm
     return a.montantAccorde - b.montantAccorde;
 });
 
+// TODO: make a type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const compareIngredients: CompareIngredient<any>[] = [
     { compareFn: strCompare, compareGetter: g => g.application?.postal_code }, // "Code postal"
     { compareFn: strCompare, compareGetter: g => g.application?.service_instructeur }, // "Instructeur"
@@ -63,7 +65,13 @@ const compareIngredients: CompareIngredient<any>[] = [
                 : undefined,
     }, // "Statut",
     { compareFn: positiveNumberCompare, compareGetter: g => g.payment?.total }, // "Versé",
-    { compareFn: positiveNumberCompare, compareGetter: g => g.payment?.programme?.code }, // "Programme",
+    {
+        compareFn: positiveNumberCompare,
+        compareGetter: g => {
+            if (typeof g.payment?.programme == "string") return typeof g.payment?.programme;
+            else return g.payment?.programme?.code;
+        },
+    }, // "Programme",
 ];
 
 // gets proper compare fonction and proper getter for proper attribute according to column index required

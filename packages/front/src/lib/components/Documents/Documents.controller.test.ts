@@ -252,7 +252,7 @@ describe("Documents.controller", () => {
         const DOCS = ["DOC1", "DOC2"];
 
         beforeAll(() => {
-            getterSpy = vi.spyOn(ctrl, "_getDocs").mockImplementation(vi.fn((..._args) => Promise.resolve(DOCS)));
+            getterSpy = vi.spyOn(ctrl, "_getDocs").mockImplementation(vi.fn(() => Promise.resolve(DOCS)));
             const RES = {};
             vi.mocked(ctrl._organizeDocuments).mockReturnValue(RES);
         });

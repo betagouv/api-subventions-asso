@@ -1,11 +1,9 @@
 import type { CookieOptions } from "express";
 import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Security } from "tsoa";
 import {
-    FutureUserDto,
     UserActivationInfoDto,
     LoginDtoResponse,
     ResetPasswordDtoResponse,
-    SignupDtoResponse,
     TokenValidationDtoResponse,
     ActivateDtoResponse,
 } from "dto";
@@ -14,7 +12,6 @@ import { IdentifiedRequest, LoginRequest } from "../../@types";
 import userAuthService from "../../modules/user/services/auth/user.auth.service";
 import userProfileService from "../../modules/user/services/profile/user.profile.service";
 import userActivationService from "../../modules/user/services/activation/user.activation.service";
-import userCrudService from "../../modules/user/services/crud/user.crud.service";
 import { DOMAIN } from "../../configurations/domain.conf";
 import { DEV } from "../../configurations/env.conf";
 import userAgentConnectService from "../../modules/user/services/agentConnect/user.agentConnect.service";
@@ -43,7 +40,6 @@ export class AuthentificationHttp extends Controller {
 
     @Post("/forget-password")
     public async forgetPassword(@Body() body: { email: string }): Promise<{ success: boolean }> {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         await userActivationService.forgetPassword(body.email.toLocaleLowerCase());
         return { success: true };
     }

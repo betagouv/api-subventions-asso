@@ -27,24 +27,24 @@ overrides:
       parserOptions:
           parser: "@typescript-eslint/parser"
     - files:
-        - "**/*.test.{j,t}s?(x)"
-        - "**/*.spec.{j,t}s?(x)"
+          - "**/*.test.{j,t}s?(x)"
+          - "**/*.spec.{j,t}s?(x)"
       env:
-        "vitest-globals/env": true
+          "vitest-globals/env": true
       globals:
-        vi: true
+          vi: true
 rules:
     import/order: error
+    "@typescript-eslint/no-empty-function": "warn"
     "@typescript-eslint/no-unused-vars":
         - "warn"
         - destructuredArrayIgnorePattern: "^_"
           argsIgnorePattern: "^_"
           varsIgnorePattern: "^_"
-    "svelte/no-at-html-tags":
-      - warn
+    "svelte/no-at-html-tags": "warn"
 ignorePatterns:
-   - "*.test.ts"
-   - .svelte-kit
-   - build
-   - static
-   - node_modules
+    - "*.test.ts"
+    - .svelte-kit
+    - build
+    - static
+    - node_modules

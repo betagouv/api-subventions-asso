@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { default: osirisPort } = require("../build/src/dataProviders/db/providers/osiris/osiris.request.port");
 const {
     default: associationNameRepository,

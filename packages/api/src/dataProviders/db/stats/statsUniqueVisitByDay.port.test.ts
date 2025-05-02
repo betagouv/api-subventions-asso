@@ -41,15 +41,15 @@ describe("StatsUniqueVisitByDay Port", () => {
                 //@ts-expect-error: mock
                 .mockImplementation(async () => associationVisits);
 
-            await statsUniqueVisitByDay.createCollectionFromStatsAssociationVisits(),
-                expect(mockFindGroupedByAssociationIdentifier).toHaveBeenCalledTimes(1);
+            await statsUniqueVisitByDay.createCollectionFromStatsAssociationVisits();
+            expect(mockFindGroupedByAssociationIdentifier).toHaveBeenCalledTimes(1);
         });
 
         it("should call _reduceToOneVisitByDayByUser()", async () => {
             const spyReduceToOneVisitByDayByUser = jest.spyOn(statsUniqueVisitByDay, "_reduceToOneVisitByDayByUser");
 
-            await statsUniqueVisitByDay.createCollectionFromStatsAssociationVisits(),
-                expect(spyReduceToOneVisitByDayByUser).toHaveBeenCalledWith(associationVisits);
+            await statsUniqueVisitByDay.createCollectionFromStatsAssociationVisits();
+            expect(spyReduceToOneVisitByDayByUser).toHaveBeenCalledWith(associationVisits);
         });
     });
 });

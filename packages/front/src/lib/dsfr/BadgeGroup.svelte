@@ -4,7 +4,7 @@
     export let badges = [];
 </script>
 
-{#each badges as badge}
+{#each badges as badge, index (index)}
     <ul class="fr-tags-group">
         <li>
             <Badge {...badge} />

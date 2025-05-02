@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const OsirisMigration = require("../build/src/modules/providers/osiris/osiris.migrations").default;
 

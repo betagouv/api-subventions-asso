@@ -14,7 +14,7 @@ import paymentService from "../payments/payments.service";
 jest.mock("../payments/payments.service");
 
 describe("GrantAdapter", () => {
-    const makePV = <T>(v: T) => ({ value: v } as ProviderValue<T>);
+    const makePV = <T>(v: T) => ({ value: v }) as ProviderValue<T>;
     const makePVs = <T>(v: T) => [{ value: v }] as ProviderValues<T>;
 
     describe("findSingleProperty", () => {
@@ -38,7 +38,7 @@ describe("GrantAdapter", () => {
 
         it("if single value and adapter, return adapted value", () => {
             const expected = "ADAPTED";
-            const ADAPTER = jest.fn(v => expected);
+            const ADAPTER = jest.fn(() => expected);
             // @ts-expect-error -- test private
             const actual = GrantAdapter.findSingleProperty([PAYMENT, PAYMENT, PAYMENT], PROPERTY, MULTIVALUE, ADAPTER);
             expect(actual).toBe(expected);

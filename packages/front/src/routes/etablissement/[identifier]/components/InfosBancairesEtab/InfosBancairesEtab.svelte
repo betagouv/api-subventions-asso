@@ -22,7 +22,7 @@
                 headersSize={["md", "lg", "md", "md"]}
                 bordered={false}
                 title="Informations bancaires">
-                {#each infosBancaires as element, index}
+                {#each infosBancaires as element, index (index)}
                     <TableRow id={tableId} {index}>
                         <td>{element.bic}</td>
                         <td>{element.iban}</td>

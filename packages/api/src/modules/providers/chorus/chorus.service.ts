@@ -17,12 +17,8 @@ import Siren from "../../../valueObjects/Siren";
 import Siret from "../../../valueObjects/Siret";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import chorusLinePort from "../../../dataProviders/db/providers/chorus/chorus.line.port";
-import Ridet from "../../../valueObjects/Ridet";
-import Tahitiet from "../../../valueObjects/Tahitiet";
-import { establishmentIdType } from "../../../valueObjects/typeIdentifier";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
-import { ChorusLineDto } from "./@types/ChorusLineDto";
 
 export interface RejectedRequest {
     state: "rejected";
@@ -160,6 +156,7 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
             entities = await chorusLinePort.findBySiren(identifier.siren);
         }
 
+        // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
         return entities.map(grant => ({
             provider: this.provider.id,
             type: "payment",

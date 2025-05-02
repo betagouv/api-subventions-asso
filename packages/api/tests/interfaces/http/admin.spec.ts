@@ -1,4 +1,4 @@
-import request = require("supertest");
+import request from "supertest";
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import { RoleEnum } from "../../../src/@enums/Roles";
 import { createAndActiveUser } from "../../__helpers__/userHelper";

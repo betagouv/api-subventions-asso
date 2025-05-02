@@ -1,4 +1,4 @@
-import csvSyncParser = require("csv-parse/sync");
+import csvSyncParser from "csv-parse/sync";
 import { isNumberValid } from "../../../shared/Validators";
 import { isValidDate } from "../../../shared/helpers/DateHelper";
 import Siret from "../../../valueObjects/Siret";
@@ -183,7 +183,7 @@ export default class ScdlGrantParser {
         data: NestedDefaultObject<TypeIn>,
     ) {
         const defaultAdapter = <T>(v: string | number | undefined): unknown => v as T;
-        let adapter: (v: TypeIn) => any;
+        let adapter: (v: TypeIn) => unknown;
         const errors: ParsedDataWithProblem[] = [];
 
         const entity: Partial<TypeOut> = {};
@@ -234,6 +234,8 @@ export default class ScdlGrantParser {
     ): void {
         if (DEV) {
             const missingKeys = Object.entries(pathObject)
+                // TODO: configure eslint to allow this
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 .filter(([key, path]) => {
                     const flatMapper = (Array.isArray(path) ? path : path.path).flat();
                     return !flatMapper.some(lib => lib in data);

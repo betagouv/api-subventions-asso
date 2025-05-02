@@ -1,11 +1,12 @@
+import crypto from "crypto";
+
 /**
  *
  *      ENVIRONMENT VARIABLES
  *
  */
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-process.env.JWT_SECRET = require("crypto").randomBytes(256).toString("base64");
+process.env.JWT_SECRET = crypto.randomBytes(256).toString("base64");
 process.env.BETA_GOUV_DOMAIN = "beta.gouv.fr";
 process.env.AGENT_CONNECT_ENABLED = "true";
 process.env.API_BREVO_TOKEN = "1FT47%TRADF!";
@@ -20,7 +21,6 @@ import { existsSync, mkdirSync } from "fs";
 import { Server } from "http";
 import axios from "axios";
 import { Issuer } from "openid-client";
-import * as Brevo from "@getbrevo/brevo";
 import db, { connectDB, client } from "./src/shared/MongoConnection";
 import { initIndexes } from "./src/shared/MongoInit";
 import { startServer } from "./src/server";
@@ -29,7 +29,6 @@ import configurationsPort from "./src/dataProviders/db/configurations/configurat
 import { CONFIGURATION_NAMES } from "./src/modules/configurations/configurations.service";
 import { initAsyncServices } from "./src/shared/initAsyncServices";
 import { initTests } from "./jest.config.integ.init";
-import dataBretagnePort from "./src/dataProviders/api/dataBretagne/dataBretagne.port";
 
 /**
  *
@@ -37,7 +36,6 @@ import dataBretagnePort from "./src/dataProviders/api/dataBretagne/dataBretagne.
  *
  */
 
-/* eslint-disable @typescript-eslint/no-empty-function */
 jest.spyOn(console, "info").mockImplementation(() => {});
 jest.mock("axios");
 jest.mock("./src/configurations/env.conf", () => ({ ENV: "test" }));
@@ -99,6 +97,7 @@ beforeAll(async () => {
     const mockIssuer = {
         Client: class Client {
             endSessionUrl(...args) {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 return jest.fn((..._args) => {})(...args);
             }
         },

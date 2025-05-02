@@ -5,7 +5,6 @@ import IFonjepIndexedInformations from "./@types/IFonjepIndexedInformations";
 import IFonjepPaymentIndexedInformations from "./@types/IFonjepPaymentIndexedInformations";
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity.old";
 import FonjepPaymentEntity from "./entities/FonjepPaymentEntity.old";
-import fonjepService from "./fonjep.service.old";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
 
 export default class FonjepParser {

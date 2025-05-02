@@ -6,7 +6,6 @@ import SpyInstance = jest.SpyInstance;
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
 import Siren from "../../../valueObjects/Siren";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
-import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
 
 jest.mock("axios", () => ({
     post: jest.fn(),
@@ -23,9 +22,7 @@ jest.mock("../../../dataProviders/db/providers/dauphin/dauphin-gispro.port", () 
 jest.mock("./adapters/DauphinDtoAdapter");
 
 const SIREN = new Siren("123456789");
-const SIRET = SIREN.toSiret("12345");
 const ASSOCIATION_IDENTIFIER = AssociationIdentifier.fromSiren(SIREN);
-const ESTABLISHMENT_IDENTIFIER = EstablishmentIdentifier.fromSiret(SIRET, ASSOCIATION_IDENTIFIER);
 
 jest.mock("./../../../configurations/apis.conf", () => ({
     DAUPHIN_USERNAME: "DAUPHIN_USERNAME",
@@ -399,7 +396,6 @@ describe("Dauphin Service", () => {
     });
 
     describe("documents", () => {
-        const DOC = "";
         let mockGetAuthToken: SpyInstance;
 
         beforeAll(() => {

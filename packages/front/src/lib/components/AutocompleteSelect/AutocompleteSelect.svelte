@@ -43,6 +43,9 @@
     let ctrl: ComboboxAutocomplete;
 
     onMount(() => (ctrl = new ComboboxAutocomplete(inputElement, buttonElement, listElement, storeValue)));
+
+    // TODO: #3374
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     $: options, tick().then(() => ctrl.initOptionsEvents());
 </script>
 
@@ -78,7 +81,7 @@
 
         <ul id={listId} role="listbox" aria-label={label} bind:this={listElement}>
             {#key options}
-                {#each options as option, i}
+                {#each options as option, i (i)}
                     <li role="option" aria-selected="false" id="{id}-option-{i}" data-option-value={option.value}>
                         {option.label}
                     </li>

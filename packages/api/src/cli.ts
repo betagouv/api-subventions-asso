@@ -65,13 +65,14 @@ async function main() {
         throw new Error(`Controller ${args[0]} not found`);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const instance = new Controller() as any;
+    const instance = new Controller() as unknown;
 
+    // @ts-expect-error: make a type for controller
     if (!instance[args[1]]) {
         throw new Error(`Method ${args[1]} not found in controller ${args[0]}`);
     }
 
+    // @ts-expect-error: make a type for controller
     const result = instance[args[1]].call(instance, ...args.slice(2));
 
     if (result instanceof Promise) {

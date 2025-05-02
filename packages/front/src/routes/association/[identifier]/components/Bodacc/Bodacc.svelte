@@ -23,7 +23,7 @@
 
     {#if announcements}
         <div class="fr-mt-17v">
-            {#each announcements as announcement}
+            {#each announcements as announcement, index (index)}
                 <Announcement {announcement} />
             {/each}
         </div>

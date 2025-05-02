@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const configRepo = require("../build/src/dataProviders/db/configurations/configurations.port").default;
 module.exports = {

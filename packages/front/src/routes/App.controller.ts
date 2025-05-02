@@ -1,5 +1,3 @@
-import type { Page } from "@sveltejs/kit";
-import type { UserDto } from "dto";
 import { setContext } from "svelte";
 import AppContext from "./AppContext";
 import trackerService from "$lib/services/tracker.service";
@@ -24,7 +22,7 @@ export class AppController {
         multipleSubscribes.subscribe(([$page, $connectedUser]) => {
             // the first trigger will have one of the two store null so we check for it before executing required script
             if ($page && $connectedUser) {
-                this.handleBannerDisplay(($page as Page).url.pathname, $connectedUser as UserDto);
+                this.handleBannerDisplay();
             }
         });
     }
@@ -33,13 +31,9 @@ export class AppController {
         setContext("app", AppContext);
     }
 
-    async handleBannerDisplay(url: string, user: UserDto) {
-        // if (["/user/profile", "/auth/login", "/auth/signup"].includes(url)) return this.displayBanner.set(false); // TODO clean in #2544
+    async handleBannerDisplay() {
         const localStorageHide = localStorageService.getItem("hide-main-info-banner", false);
         if (localStorageHide.value) return this.displayBanner.set(false);
-        // if (userService.isProfileFullyCompleted(user)) { // TODO clean in #2544
-        //     return this.displayBanner.set(false);
-        // }
         this.displayBanner.set(true);
     }
 }

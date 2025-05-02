@@ -15,12 +15,11 @@ import {
     DATA_ENTITIES as INTEG_DATA_ENTITIES,
     SCHEMAS as INTEG_SCHEMA,
 } from "../../../../tests/dataProviders/db/__fixtures__/demarchesSimplifiees.fixtures";
-import { DemarchesSimplifieesRawData, DemarchesSimplifieesRawGrant } from "./@types/DemarchesSimplifieesRawGrant";
+import { DemarchesSimplifieesRawData } from "./@types/DemarchesSimplifieesRawGrant";
 import lodash from "lodash";
 import Siren from "../../../valueObjects/Siren";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
-import Siret from "../../../valueObjects/Siret";
 jest.mock("lodash");
 
 describe("DemarchesSimplifieesService", () => {
@@ -36,14 +35,14 @@ describe("DemarchesSimplifieesService", () => {
         });
 
         it("should call demarchesSimplifieesMapperPort", async () => {
-            // @ts-ignore getSchemasByIds is private method
+            // @ts-expect-error getSchemasByIds is private method
             await demarchesSimplifieesService.getSchemasByIds();
 
             expect(demarchesSimplifieesMapperPort.findAll).toHaveBeenCalledTimes(1);
         });
 
         it("should return good data", async () => {
-            // @ts-ignore getSchemasByIds is private method
+            // @ts-expect-error getSchemasByIds is private method
             const actual = await demarchesSimplifieesService.getSchemasByIds();
 
             expect(actual).toEqual(

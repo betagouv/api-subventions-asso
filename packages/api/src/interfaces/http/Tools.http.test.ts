@@ -1,5 +1,5 @@
 import { ToolsHttp } from "./Tools.http";
-import csvSyncStringifier = require("csv-stringify/sync");
+import csvSyncStringifier from "csv-stringify/sync";
 import { ParsedDataWithProblem } from "../../modules/providers/scdl/@types/Validation";
 import scdlService from "../../modules/providers/scdl/scdl.service";
 
@@ -15,7 +15,7 @@ describe("Tools test", () => {
     const QUOTE = "'";
     const ERRORS = [{ a: 1, b: 2, c: 3, d: 4 }] as unknown as ParsedDataWithProblem[];
     const CSV_ERRORS = "a;b;c;d\n1;2;3;4";
-    let ctrl = new ToolsHttp();
+    const ctrl = new ToolsHttp();
     beforeAll(() => {
         jest.mocked(scdlService.parseXls).mockReturnValue({ errors: ERRORS, entities: [] });
         jest.mocked(scdlService.parseCsv).mockReturnValue({ errors: ERRORS, entities: [] });

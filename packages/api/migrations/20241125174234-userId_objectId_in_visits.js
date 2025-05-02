@@ -17,6 +17,5 @@ module.exports = {
         if (bulk.length) await db.collection("stats-association-visits").bulkWrite(bulk);
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     async down() {},
 };

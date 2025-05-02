@@ -69,7 +69,7 @@ describe("ApiAssoDtoAdapter", () => {
             );
 
             const expected = "222";
-            // @ts-expect-error
+            // @ts-expect-error: TODO fix this
             const actual = estab.contacts[0][0].value.telephone;
 
             expect(actual).toBe(expected);

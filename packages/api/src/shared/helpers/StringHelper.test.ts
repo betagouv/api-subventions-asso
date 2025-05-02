@@ -3,10 +3,7 @@ import crypto from "crypto";
 jest.mock("crypto", () => ({
     createHash: jest.fn(() => ({
         update: jest.fn(() => ({
-            digest: jest.fn(() => {
-                {
-                }
-            }),
+            digest: jest.fn(() => {}),
         })),
     })),
 }));

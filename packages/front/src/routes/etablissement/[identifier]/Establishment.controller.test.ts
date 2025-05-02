@@ -1,6 +1,6 @@
 import { EstablishmentController } from "./Establishment.controller";
 import associationService from "$lib/resources/associations/association.service";
-import { currentAssociation, currentAssoSimplifiedEtabs, currentIdentifiers } from "$lib/store/association.store";
+import { currentAssociation, currentAssoSimplifiedEtabs } from "$lib/store/association.store";
 import establishmentService from "$lib/resources/establishments/establishment.service";
 import rnaSirenService from "$lib/resources/open-source/rna-siren/rna-siren.service";
 
@@ -20,6 +20,7 @@ describe("Establishment Controller", () => {
 
     beforeAll(() => {
         vi.mocked(associationService.getEstablishments).mockResolvedValue([]);
+        // @ts-expect-error: mock
         vi.mocked(associationService.getAssociation).mockResolvedValue({});
         vi.mocked(establishmentService.getBySiret).mockResolvedValue({});
         vi.mocked(rnaSirenService.getAssociatedIdentifier).mockResolvedValue([]);

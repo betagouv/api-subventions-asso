@@ -12,7 +12,7 @@ describe("ApiEntrepriseService", () => {
     const HEADCOUNT_REASON = "Remonter l'effectif pour le service Data.Subvention";
     const RCS_EXTRACT_REASON = "Remonter l'extrait RCS d'une association pour Data.Subvention";
 
-    // @ts-expect-error
+    // @ts-expect-error: mock
     const sendRequestMock = jest.spyOn(apiEntrepriseService, "sendRequest");
 
     jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
@@ -82,9 +82,9 @@ describe("ApiEntrepriseService", () => {
     });
 
     describe("getHeadcount()", () => {
-        let getEtablissementHeadcountMock: jest.SpyInstance = jest.spyOn(
+        const getEtablissementHeadcountMock: jest.SpyInstance = jest.spyOn(
             apiEntrepriseService,
-            // @ts-expect-error: mock private method
+            //@ts-expect-error: mock private method
             "getEtablissementHeadcount",
         );
         const IDENTIFIER = EstablishmentIdentifier.fromSiret(SIRET, AssociationIdentifier.fromSiren(SIREN));
@@ -133,7 +133,7 @@ describe("ApiEntrepriseService", () => {
         it("should retry 5 times and return headcount", async () => {
             const error = { response: { status: 404 } };
             const expected = {};
-            let actual;
+
             getEtablissementHeadcountMock
                 .mockImplementationOnce(() => {
                     throw error;
@@ -147,10 +147,9 @@ describe("ApiEntrepriseService", () => {
                 .mockImplementationOnce(() => {
                     throw error;
                 })
+                // @ts-exect-error
                 .mockImplementationOnce(() => expected);
-            try {
-                actual = await apiEntrepriseService.getHeadcount(IDENTIFIER);
-            } catch (e) {}
+            const actual = await apiEntrepriseService.getHeadcount(IDENTIFIER);
             expect(actual).toEqual(expected);
         });
 
@@ -173,7 +172,7 @@ describe("ApiEntrepriseService", () => {
             // @ts-expect-error: private method
             jest.spyOn(apiEntrepriseService, "buildHeadcountUrl").mockImplementationOnce(() => HEADCOUNT_URL);
             sendRequestMock.mockImplementationOnce(jest.fn());
-            // @ts-expect-error
+            // @ts-expect-error: mock
             await apiEntrepriseService.getEtablissementHeadcount(SIRET);
             expect(sendRequestMock).toHaveBeenCalledWith(HEADCOUNT_URL, {}, HEADCOUNT_REASON, false);
         });
@@ -182,14 +181,14 @@ describe("ApiEntrepriseService", () => {
     describe("buildHeadcountUrl()", () => {
         it("should return a valid URL", () => {
             const expected = `v2/effectifs_mensuels_acoss_covid/2022/01/etablissement/${SIRET}`;
-            // @ts-expect-error
+            // @ts-expect-error: mock
             const actual = apiEntrepriseService.buildHeadcountUrl(SIRET);
             expect(actual).toEqual(expected);
         });
 
         it("should minus the date month", () => {
             const expected = `v2/effectifs_mensuels_acoss_covid/2021/12/etablissement/${SIRET}`;
-            // @ts-expect-error
+            // @ts-expect-error: mock
             const actual = apiEntrepriseService.buildHeadcountUrl(SIRET, 1);
             expect(actual).toEqual(expected);
         });
@@ -198,7 +197,7 @@ describe("ApiEntrepriseService", () => {
     describe("getExtractRcs", () => {
         it("should return rcs extract", async () => {
             const expected = {};
-            // @ts-expect-error
+            // @ts-expect-error: mock
             sendRequestMock.mockImplementationOnce(async () => ({ data: expected }));
             let actual;
             try {
@@ -211,7 +210,7 @@ describe("ApiEntrepriseService", () => {
 
         it("should call sendRequest() with valid URL", async () => {
             const expected = [`v3/infogreffe/rcs/unites_legales/${SIREN}/extrait_kbis`, {}, RCS_EXTRACT_REASON];
-            // @ts-expect-error
+            // @ts-expect-error: mock
             sendRequestMock.mockImplementationOnce(async () => expected);
             await apiEntrepriseService.getExtractRcs(SIREN);
             const actual = sendRequestMock.mock.calls[0];

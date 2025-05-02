@@ -11,13 +11,13 @@
     export let direction = undefined;
     export let download = false;
     export let noIcon = false;
-    // eslint-disable-next-line @typescript-eslint/no-empty-function -- default value
+
     export let onClick = () => {};
 </script>
 
 <div class="fr-col-md-{size} fr-col-12">
     <div
-        class={`fr-card`}
+        class="fr-card"
         class:fr-enlarge-link={!!url}
         class:fr-card--no-icon={noIcon}
         class:fr-card--horizontal={direction === "horizontal"}

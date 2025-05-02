@@ -1,0 +1,126 @@
+import eslint from "@eslint/js";
+import tseslint from "typescript-eslint";
+import globals from "globals";
+import importPlugin from "eslint-plugin-import";
+import prettier from "eslint-config-prettier";
+
+const ignores = [
+    // config files
+    // Sure, let's lint our lint config... :D
+    // ./eslint.config.js
+    ".DS_Store",
+    ".env",
+    ".env.*",
+    ".github",
+    ".vscode",
+
+    // TS builds
+    "build/**/*",
+    "tsoa/**/*",
+
+    // other project folders
+    "data/integration/**/*",
+    "import-errors/**/*",
+    "logs/**/*",
+
+    // npm
+    "node_modules/**/*",
+    "package-lock.json",
+
+    // TODO: could not turn off lint rule for migration
+    "migrations/**/*",
+];
+
+export default [
+    { ignores },
+    eslint.configs.recommended,
+    ...tseslint.configs.recommended,
+    importPlugin.flatConfigs.recommended,
+    prettier,
+    {
+        rules: {
+            "no-unused-vars": ["off"],
+            "@typescript-eslint/no-unused-vars": ["error", { ignoreRestSiblings: true }],
+        },
+    },
+    {
+        languageOptions: {
+            globals: {
+                ...globals.node,
+            },
+        },
+    },
+    {
+        files: ["**/*.{js,ts}"],
+        languageOptions: {
+            parser: tseslint.parser,
+        },
+    },
+    {
+        files: ["**/*.test.ts", "**/*.spec.ts"],
+        languageOptions: {
+            parser: tseslint.parser,
+            globals: {
+                ...globals.jest,
+            },
+        },
+    },
+    {
+        settings: {
+            "import/resolver": {
+                typescript: {
+                    alwaysTryTypes: true, // always try to resolve types under `<root>@types` directory even it doesn't contain any source code, like `@types/unist`
+                },
+            },
+        },
+    },
+    {
+        plugins: {
+            "@typescript-eslint": tseslint.plugin,
+        },
+    },
+];
+
+// export default tseslint.config(
+//     {
+//         ignores: [
+//             "**/*.test.ts",
+//             "**/*.spec.ts",
+//             "**/build",
+//             "**/migrations",
+//             "**/tsoa",
+//             "**/data-integration",
+//             "**/import-errors",
+//             "**/node_modules",
+//         ],
+//     },
+//     eslint.configs.recommended,
+//     tseslint.configs.recommended,
+//     importPlugin.flatConfigs.recommended,
+//     importPlugin.flatConfigs.typescript,
+//     eslintConfigPrettier,
+//     {
+//         languageOptions: {
+//             globals: {
+//                 ...globals.jest,
+//                 ...globals.node,
+//             },
+//             parser: tsParser,
+//         },
+//     },
+//     {
+//         plugins: {
+//             typescriptEslint,
+//             importPlugin,
+//         },
+//     },
+//     {
+//         settings: {
+//             "import/resolver": {
+//                 node: {
+//                     extensions: [".js", ".ts", ".mjs"],
+//                 },
+//             },
+//         },
+//     },
+// );

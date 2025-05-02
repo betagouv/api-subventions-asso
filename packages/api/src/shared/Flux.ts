@@ -1,6 +1,7 @@
 export default class Flux<T> {
     private prevData: T[] = [];
     private isClose = false;
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private onDataCb: (data: T) => unknown = (_data: T) => null;
     private onCloseCb: () => unknown = () => null;

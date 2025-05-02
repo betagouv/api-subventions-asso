@@ -32,7 +32,7 @@ export class GeoService extends ProviderCore {
 
     async generateAndSaveEntities() {
         const regionsMap = new Map<string, GeoRegionDto>();
-        const [departments, _] = await Promise.all([
+        const [departments] = await Promise.all([
             this.getAllDepartments(),
             this.getAllRegions().then(regions =>
                 regions.forEach((region: GeoRegionDto) => regionsMap.set(region.code, region)),
@@ -46,7 +46,7 @@ export class GeoService extends ProviderCore {
                         departmentCode: department.code,
                         regionCode: regionsMap.get(department.codeRegion)?.code,
                         regionName: regionsMap.get(department.codeRegion)?.nom,
-                    } as GeoEntity),
+                    }) as GeoEntity,
             )
             .filter(almostEntity => almostEntity.regionCode && almostEntity.regionName);
 

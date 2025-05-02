@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const { default: logsPort } = require("../build/src/dataProviders/db/stats/stats.port");
 const {
@@ -8,7 +7,6 @@ const { default: userPort } = require("../build/src/dataProviders/db/user/user.p
 const { getIdentifierType } = require("../build/src/shared/helpers/IdentifierHelper");
 const { siretToSiren } = require("../build/src/shared/helpers/SirenHelper");
 const { default: rnaSirenPort } = require("../build/src/dataProviders/db/rnaSiren/rnaSiren.port");
-/* eslint-enable @typescript-eslint/no-var-requires */
 
 module.exports = {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

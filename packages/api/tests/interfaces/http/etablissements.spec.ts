@@ -1,8 +1,6 @@
 import request from "supertest";
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import etablissementService from "../../../src/modules/etablissements/etablissements.service";
-import statsService from "../../../src/modules/stats/stats.service";
-import { siretToSiren } from "../../../src/shared/helpers/SirenHelper";
 import associationsService from "../../../src/modules/associations/associations.service";
 import { BadRequestError } from "core";
 import OsirisRequestEntityFixture from "../../modules/providers/osiris/__fixtures__/entity";
@@ -14,7 +12,6 @@ import Rna from "../../../src/valueObjects/Rna";
 import RnaSirenEntity from "../../../src/entities/RnaSirenEntity";
 import Siren from "../../../src/valueObjects/Siren";
 import statsAssociationsVisitPort from "../../../src/dataProviders/db/stats/statsAssociationsVisit.port";
-
 import { App } from "supertest/types";
 
 const g = global as unknown as { app: App };
@@ -99,7 +96,7 @@ describe("/etablissement", () => {
                     Siren.fromPartialSiretStr(OsirisRequestEntityFixture.legalInformations.siret),
                 ),
             );
-            const a = await request(g.app)
+            await request(g.app)
                 .get(`/etablissement/${OsirisRequestEntityFixture.legalInformations.siret}`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");

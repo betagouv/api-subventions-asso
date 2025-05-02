@@ -7,12 +7,11 @@ import { ObjectId } from "mongodb";
 import uniteLegalNamePort from "../../../src/dataProviders/db/uniteLegalName/uniteLegalName.port";
 import uniteLegalEntreprisePort from "../../../src/dataProviders/db/uniteLegalEntreprise/uniteLegalEntreprise.port";
 
-let ZIP_PATH = path.resolve(__dirname, "../../../src/modules/providers/sirene/__fixtures__");
+const ZIP_PATH = path.resolve(__dirname, "../../../src/modules/providers/sirene/__fixtures__");
 
 describe("SireneStockUniteLegaleCli", () => {
-    let getZipMock: jest.SpyInstance;
     beforeAll(() => {
-        getZipMock = jest.spyOn(sireneStockUniteLegaleApiPort, "getZip").mockImplementation(() =>
+        jest.spyOn(sireneStockUniteLegaleApiPort, "getZip").mockImplementation(() =>
             Promise.resolve({
                 data: fs.createReadStream(ZIP_PATH + "/StockUniteLegale_utf8.zip"),
                 status: 200,
@@ -25,7 +24,7 @@ describe("SireneStockUniteLegaleCli", () => {
         jest.restoreAllMocks();
     });
 
-    let cli = new SireneStockUniteLegaleCli();
+    const cli = new SireneStockUniteLegaleCli();
     describe("import", () => {
         it("should persist sirene data", async () => {
             await cli.import();

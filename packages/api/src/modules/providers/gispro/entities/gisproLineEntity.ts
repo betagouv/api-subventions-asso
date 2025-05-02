@@ -33,5 +33,9 @@ export default class GisproLineEntity implements Gispro {
         siret: { path: [["Code SIRET", "Code Siret"]] },
     };
 
-    constructor(public ej: string, public dauphinId: string, public siret: string) {}
+    constructor(
+        public ej: string,
+        public dauphinId: string,
+        public siret: string,
+    ) {}
 }
