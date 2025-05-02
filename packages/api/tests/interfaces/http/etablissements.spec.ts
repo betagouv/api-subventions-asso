@@ -15,7 +15,9 @@ import RnaSirenEntity from "../../../src/entities/RnaSirenEntity";
 import Siren from "../../../src/valueObjects/Siren";
 import statsAssociationsVisitPort from "../../../src/dataProviders/db/stats/statsAssociationsVisit.port";
 
-const g = global as unknown as { app: unknown };
+import { App } from "supertest/types";
+
+const g = global as unknown as { app: App };
 
 const ETABLISSEMENT_SIRET = SIRET_STR;
 

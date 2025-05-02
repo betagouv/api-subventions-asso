@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Subventia Cli _parse() should add entities 1`] = `
-Array [
-  Object {
-    "__data__": Array [
-      Object {
+[
+  {
+    "__data__": [
+      {
         "Date - Décision": 44810,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -21,7 +21,7 @@ Array [
         "Year": 2007,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44596,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -38,7 +38,7 @@ Array [
         "Year": 2002,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44636,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -55,7 +55,7 @@ Array [
         "Year": 2006,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44857,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -72,7 +72,7 @@ Array [
         "Year": 2001,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44725,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -89,7 +89,7 @@ Array [
         "Year": 2010,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44820,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -106,7 +106,7 @@ Array [
         "Year": 2008,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44636,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -123,7 +123,7 @@ Array [
         "Year": 2008,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44604,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -140,7 +140,7 @@ Array [
         "Year": 2015,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44808,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -157,7 +157,7 @@ Array [
         "Year": 2018,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44920,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -174,7 +174,7 @@ Array [
         "Year": 2007,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44631,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -191,7 +191,7 @@ Array [
         "Year": 2014,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44562,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -224,9 +224,9 @@ Array [
     "status": "SOLDE",
     "statut_label": "Accordé",
   },
-  Object {
-    "__data__": Array [
-      Object {
+  {
+    "__data__": [
+      {
         "Date - Décision": 44597,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -243,7 +243,7 @@ Array [
         "Year": 2022,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44899,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -260,7 +260,7 @@ Array [
         "Year": 2015,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44855,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -277,7 +277,7 @@ Array [
         "Year": 2011,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44904,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -294,7 +294,7 @@ Array [
         "Year": 2009,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44709,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -311,7 +311,7 @@ Array [
         "Year": 2009,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44704,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -328,7 +328,7 @@ Array [
         "Year": 2013,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44795,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -345,7 +345,7 @@ Array [
         "Year": 2020,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44742,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -362,7 +362,7 @@ Array [
         "Year": 2011,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44626,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -379,7 +379,7 @@ Array [
         "Year": 2008,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44616,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -396,7 +396,7 @@ Array [
         "Year": 2020,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44819,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -413,7 +413,7 @@ Array [
         "Year": 2013,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44843,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -446,9 +446,9 @@ Array [
     "status": "VOTE",
     "statut_label": "Accordé",
   },
-  Object {
-    "__data__": Array [
-      Object {
+  {
+    "__data__": [
+      {
         "Date - Décision": 44703,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -465,7 +465,7 @@ Array [
         "Year": 2002,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44800,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -482,7 +482,7 @@ Array [
         "Year": 2022,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44765,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -499,7 +499,7 @@ Array [
         "Year": 2020,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44744,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -516,7 +516,7 @@ Array [
         "Year": 2012,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44705,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -533,7 +533,7 @@ Array [
         "Year": 2019,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44893,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -550,7 +550,7 @@ Array [
         "Year": 2001,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44646,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -567,7 +567,7 @@ Array [
         "Year": 2009,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44679,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -584,7 +584,7 @@ Array [
         "Year": 2000,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44655,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -601,7 +601,7 @@ Array [
         "Year": 2014,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44837,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -618,7 +618,7 @@ Array [
         "Year": 2017,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44640,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -635,7 +635,7 @@ Array [
         "Year": 2013,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44603,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -668,9 +668,9 @@ Array [
     "status": "SOLDE",
     "statut_label": "Accordé",
   },
-  Object {
-    "__data__": Array [
-      Object {
+  {
+    "__data__": [
+      {
         "Date - Décision": 44878,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -687,7 +687,7 @@ Array [
         "Year": 2017,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44877,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -704,7 +704,7 @@ Array [
         "Year": 2014,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44717,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -721,7 +721,7 @@ Array [
         "Year": 2010,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44675,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -738,7 +738,7 @@ Array [
         "Year": 2011,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44904,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -755,7 +755,7 @@ Array [
         "Year": 2018,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44641,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -772,7 +772,7 @@ Array [
         "Year": 2004,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44669,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -789,7 +789,7 @@ Array [
         "Year": 2014,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44614,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -806,7 +806,7 @@ Array [
         "Year": 2012,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44752,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -823,7 +823,7 @@ Array [
         "Year": 2004,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44570,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -840,7 +840,7 @@ Array [
         "Year": 2012,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44917,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",
@@ -857,7 +857,7 @@ Array [
         "Year": 2006,
         "annee_demande": 2022,
       },
-      Object {
+      {
         "Date - Décision": 44600,
         "Date - Visa de recevabilité": "04/02/2022",
         "Date limite de début de réalisation": "01/01/2022",

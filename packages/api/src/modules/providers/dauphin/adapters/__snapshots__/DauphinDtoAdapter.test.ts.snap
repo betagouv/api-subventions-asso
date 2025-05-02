@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DauphinDtoAdapter toCommon returns proper result 1`] = `
-Object {
+{
   "dispositif": "titre - Politique de la ville",
   "exercice": 2022,
   "montant_accorde": 42,
@@ -14,85 +14,85 @@ Object {
 `;
 
 exports[`DauphinDtoAdapter toDocuments return proper result 1`] = `
-Array [
-  Object {
-    "__meta__": Object {},
-    "nom": Object {
+[
+  {
+    "__meta__": {},
+    "nom": {
       "last_update": 2022-02-01T00:00:00.000Z,
       "provider": "Dauphin",
       "type": "string",
       "value": "title1",
     },
-    "type": Object {
+    "type": {
       "last_update": 2022-02-01T00:00:00.000Z,
       "provider": "Dauphin",
       "type": "string",
       "value": "test1",
     },
-    "url": Object {
+    "url": {
       "last_update": 2022-02-01T00:00:00.000Z,
       "provider": "Dauphin",
       "type": "string",
       "value": "/document/dauphin/?url=https%3A%2F%2Fagent-dauphin.cget.gouv.fr%2Fpath1",
     },
   },
-  Object {
-    "__meta__": Object {},
-    "nom": Object {
+  {
+    "__meta__": {},
+    "nom": {
       "last_update": 2022-02-01T00:00:00.000Z,
       "provider": "Dauphin",
       "type": "string",
       "value": "title2",
     },
-    "type": Object {
+    "type": {
       "last_update": 2022-02-01T00:00:00.000Z,
       "provider": "Dauphin",
       "type": "string",
       "value": "test1",
     },
-    "url": Object {
+    "url": {
       "last_update": 2022-02-01T00:00:00.000Z,
       "provider": "Dauphin",
       "type": "string",
       "value": "/document/dauphin/?url=https%3A%2F%2Fagent-dauphin.cget.gouv.fr%2Fpath2",
     },
   },
-  Object {
-    "__meta__": Object {},
-    "nom": Object {
+  {
+    "__meta__": {},
+    "nom": {
       "last_update": 2022-02-01T00:00:00.000Z,
       "provider": "Dauphin",
       "type": "string",
       "value": "title1",
     },
-    "type": Object {
+    "type": {
       "last_update": 2022-02-01T00:00:00.000Z,
       "provider": "Dauphin",
       "type": "string",
       "value": "test1",
     },
-    "url": Object {
+    "url": {
       "last_update": 2022-02-01T00:00:00.000Z,
       "provider": "Dauphin",
       "type": "string",
       "value": "/document/dauphin/?url=https%3A%2F%2Fagent-dauphin.cget.gouv.fr%2Fpath1",
     },
   },
-  Object {
-    "__meta__": Object {},
-    "nom": Object {
+  {
+    "__meta__": {},
+    "nom": {
       "last_update": 2022-02-01T00:00:00.000Z,
       "provider": "Dauphin",
       "type": "string",
       "value": "title2",
     },
-    "type": Object {
+    "type": {
       "last_update": 2022-02-01T00:00:00.000Z,
       "provider": "Dauphin",
       "type": "string",
       "value": "test1",
     },
-    "url": Object {
+    "url": {
       "last_update": 2022-02-01T00:00:00.000Z,
       "provider": "Dauphin",
       "type": "string",

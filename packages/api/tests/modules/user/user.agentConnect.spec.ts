@@ -5,7 +5,9 @@ import userCrudService from "../../../src/modules/user/services/crud/user.crud.s
 import { AgentTypeEnum } from "dto";
 import userPort from "../../../src/dataProviders/db/user/user.port";
 
-const g = global as unknown as { app: unknown };
+import { App } from "supertest/types";
+
+const g = global as unknown as { app: App };
 
 describe("UserController, /user", () => {
     it("can update agentConnect user repeating name", async () => {

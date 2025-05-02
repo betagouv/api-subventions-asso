@@ -6,7 +6,9 @@ import apiEntrepriseService from "../../src/modules/providers/apiEntreprise/apiE
 import dauphinService from "../../src/modules/providers/dauphin/dauphin.service";
 import rechercheEntreprisesPort from "../../src/dataProviders/api/rechercheEntreprises/rechercheEntreprises.port";
 
-const g = global as unknown as { app: unknown };
+import { App } from "supertest/types";
+
+const g = global as unknown as { app: App };
 
 describe("/search", () => {
     beforeAll(() => {

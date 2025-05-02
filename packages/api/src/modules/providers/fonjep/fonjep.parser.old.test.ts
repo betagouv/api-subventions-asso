@@ -176,7 +176,6 @@ describe("FonjepParser", () => {
             mapHeaderToDataMock.mockImplementationOnce(() => DATA);
             FonjepParser.parse({} as Buffer, new Date("2022-03-03"));
             expect(createFonjepPaymentEntityMock).toHaveBeenCalledTimes(1);
-            // @ts-expect-error: test
             expect(createFonjepPaymentEntityMock.mock.lastCall).toMatchSnapshot([{ id: expect.any(String) }]);
         });
 
@@ -186,21 +185,18 @@ describe("FonjepParser", () => {
             mapHeaderToDataMock.mockImplementationOnce(() => DATA);
             FonjepParser.parse({} as Buffer, new Date("2022-03-03"));
             expect(createFonjepPaymentEntityMock).toHaveBeenCalledTimes(1);
-            // @ts-expect-error: test
             expect(createFonjepPaymentEntityMock.mock.lastCall).toMatchSnapshot([{ id: expect.any(String) }]);
         });
 
         it("should call createFonjepSubventionEntity with parsedData", () => {
             mapHeaderToDataMock.mockImplementationOnce(() => DATA_WITH_HEADER);
             FonjepParser.parse({} as Buffer, new Date("2022-03-03"));
-            // @ts-expect-error: test
             expect(createFonjepSubventionEntityMock.mock.calls[0][0]).toMatchSnapshot({ id: expect.any(String) });
         });
         it("should call createPaymentFonjep with payment data", () => {
             mapHeaderToDataMock.mockImplementationOnce(() => DATA_WITH_HEADER);
             FonjepParser.parse({} as Buffer, new Date("2022-03-03"));
             expect(createFonjepPaymentEntityMock).toHaveBeenCalledTimes(2);
-            // @ts-expect-error: test
             expect(createFonjepPaymentEntityMock.mock.lastCall).toMatchSnapshot([{ id: expect.any(String) }]);
         });
     });

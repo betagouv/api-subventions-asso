@@ -5,7 +5,9 @@ import { createAndGetUserToken } from "../../__helpers__/tokenHelper";
 
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
 
-const g = global as unknown as { app: unknown };
+import { App } from "supertest/types";
+
+const g = global as unknown as { app: App };
 
 const insertData = async () => {
     await amountsVsProgramRegionPort.upsertMany(AMOUNTS_VS_PROGRAM_REGION_ENTITIES);

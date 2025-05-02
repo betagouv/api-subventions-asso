@@ -224,25 +224,21 @@ describe("SubventiaValidator", () => {
     });
 
     describe("sortDataByValidity", () => {
-        let mockIsSubventiaDtoValid: jest.SpyInstance;
-        let mockFormatInvalids: jest.SpyInstance;
+        //@ts-expect-error : test protected method
+        let mockIsSubventiaDtoValid: jest.SpyInstance = jest.spyOn(SubventiaValidator, "isSubventiaDtoValid");
+        //@ts-expect-error : test protected method
+        let mockFormatInvalids: jest.SpyInstance = jest.spyOn(SubventiaValidator, "formatInvalids");
 
         beforeAll(() => {
-            mockIsSubventiaDtoValid = jest
-                //@ts-expect-error : test protected method
-                .spyOn(SubventiaValidator, "isSubventiaDtoValid")
-                .mockReturnValue({ valid: true });
-            mockFormatInvalids = jest
-                //@ts-expect-error : test protected method
-                .spyOn(SubventiaValidator, "formatInvalids")
-                .mockReturnValue([
-                    {
-                        ...INVALID_DATA_ROW,
-                        field: "Montant Ttc",
-                        value: "invalidNumber",
-                        message: "Montant Ttc is not a number",
-                    },
-                ]);
+            mockIsSubventiaDtoValid.mockReturnValue({ valid: true });
+            mockFormatInvalids.mockReturnValue([
+                {
+                    ...INVALID_DATA_ROW,
+                    field: "Montant Ttc",
+                    value: "invalidNumber",
+                    message: "Montant Ttc is not a number",
+                },
+            ]);
         });
 
         afterAll(() => {

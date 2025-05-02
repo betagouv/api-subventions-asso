@@ -94,10 +94,10 @@ describe("OsirisService", () => {
             it("returns raw grant data", async () => {
                 const actual = await osirisService.getRawGrants(ASSOCIATION_IDENTIFIER);
                 expect(actual).toMatchInlineSnapshot(`
-                    Array [
-                      Object {
-                        "data": Object {
-                          "providerInformations": Object {
+                    [
+                      {
+                        "data": {
+                          "providerInformations": {
                             "ej": "EJ",
                           },
                         },
@@ -156,9 +156,9 @@ describe("OsirisService", () => {
             await osirisService.bulkAddRequest(REQUESTS);
             const callArgs = jest.mocked(rnaSirenService.insertMany).mock.calls[0];
             expect(callArgs).toMatchInlineSnapshot(`
-                Array [
-                  Array [
-                    Object {
+                [
+                  [
+                    {
                       "rna": Rna {
                         "rna": "W000000001",
                       },
@@ -166,7 +166,7 @@ describe("OsirisService", () => {
                         "siren": "123456789",
                       },
                     },
-                    Object {
+                    {
                       "rna": Rna {
                         "rna": "W000000002",
                       },

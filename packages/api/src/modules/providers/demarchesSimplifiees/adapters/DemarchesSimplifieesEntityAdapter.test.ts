@@ -9,7 +9,7 @@ jest.mock("../demarchesSimplifiees.service");
 
 describe("DemarchesSimplifieesEntityAdapter", () => {
     // @ts-expect-error
-    const mapMock = jest.spyOn(DemarchesSimplifieesEntityAdapter, "mapSchema");
+    const mapMock: jest.SpyInstance = jest.spyOn(DemarchesSimplifieesEntityAdapter, "mapSchema");
     const SIRET = "00000000000000";
     const DEMANDE = {
         siret: SIRET,
@@ -140,7 +140,7 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
             // @ts-expect-error mock
             const actual = DemarchesSimplifieesEntityAdapter.toCommon(ENTITY, MAPPER);
             expect(actual).toMatchInlineSnapshot(`
-                Object {
+                {
                   "exercice": 2022,
                   "statut": "Inéligible",
                 }
@@ -178,8 +178,8 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
             // @ts-expect-error mock
             const actual = DemarchesSimplifieesEntityAdapter.mapSchema(ENTITY, MAPPER, KEY);
             expect(actual).toMatchInlineSnapshot(`
-                Object {
-                  "after": Object {
+                {
+                  "after": {
                     "nested": "a",
                     "same": "toujoursPareil",
                   },

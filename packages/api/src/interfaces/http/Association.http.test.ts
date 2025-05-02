@@ -235,26 +235,26 @@ describe("isAssoIdentifierFromAssoMiddleware", () => {
         jest.mocked(associationService.isIdentifierFromAsso).mockResolvedValueOnce(false);
         await isAssoIdentifierFromAssoMiddleware(REQ_TMP, RES, NEXT);
         expect(ERROR_HANDLER_RES.mock.calls?.[0]).toMatchInlineSnapshot(`
-            Array [
+            [
               [Error: Votre recherche pointe vers une entité qui n'est pas une association],
-              Object {
+              {
                 "assoIdentifier": AssociationIdentifier {
                   "rna": undefined,
                   "siren": Siren {
                     "siren": "000000001",
                   },
                 },
-                "params": Object {
+                "params": {
                   "identifier": "000000001",
                 },
               },
               "RES",
               [MockFunction] {
-                "calls": Array [
-                  Array [],
+                "calls": [
+                  [],
                 ],
-                "results": Array [
-                  Object {
+                "results": [
+                  {
                     "type": "return",
                     "value": undefined,
                   },
@@ -269,26 +269,26 @@ describe("isAssoIdentifierFromAssoMiddleware", () => {
         jest.mocked(associationIdentifierService.getOneAssociationIdentifier).mockRejectedValueOnce(new Error("haha"));
         await isAssoIdentifierFromAssoMiddleware(REQ_TMP, RES, NEXT);
         expect(ERROR_HANDLER_RES.mock.calls?.[0]).toMatchInlineSnapshot(`
-            Array [
+            [
               [Error: haha],
-              Object {
+              {
                 "assoIdentifier": AssociationIdentifier {
                   "rna": undefined,
                   "siren": Siren {
                     "siren": "000000001",
                   },
                 },
-                "params": Object {
+                "params": {
                   "identifier": "000000001",
                 },
               },
               "RES",
               [MockFunction] {
-                "calls": Array [
-                  Array [],
+                "calls": [
+                  [],
                 ],
-                "results": Array [
-                  Object {
+                "results": [
+                  {
                     "type": "return",
                     "value": undefined,
                   },

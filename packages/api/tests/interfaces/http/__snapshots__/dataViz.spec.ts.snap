@@ -1,37 +1,37 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DataVizHttp GET /dataviz/montant-versus-programme-region should return amounts versus program region data 1`] = `
-Object {
-  "amountsVersusProgramRegionData": Array [
-    Object {
+{
+  "amountsVersusProgramRegionData": [
+    {
       "exerciceBudgetaire": 2023,
       "mission": "Mission Exemple",
       "montant": 8000,
       "programme": "1 - Programme Exemple",
       "regionAttachementComptable": "Bretagne",
     },
-    Object {
+    {
       "exerciceBudgetaire": 2023,
       "mission": "Mission Exemple",
       "montant": 1000,
       "programme": "1",
       "regionAttachementComptable": "Normandie",
     },
-    Object {
+    {
       "exerciceBudgetaire": 2025,
       "mission": "Mission Exemple",
       "montant": 1000,
       "programme": "1 - Programme Exemple",
       "regionAttachementComptable": "Bretagne",
     },
-    Object {
+    {
       "exerciceBudgetaire": 2023,
       "mission": "Mission Exemple",
       "montant": 1000,
       "programme": "programNumber",
       "regionAttachementComptable": "Bretagne",
     },
-    Object {
+    {
       "exerciceBudgetaire": 2023,
       "mission": "Mission Exemple",
       "montant": 1000,

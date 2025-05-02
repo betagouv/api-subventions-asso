@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`GrantAdapter grantToExtractLine adapts correctly 1`] = `
-Object {
+{
   "action": "intituléAction",
   "askedAmount": 12000,
   "assoName": "nomRNA",
@@ -22,7 +22,7 @@ Object {
 `;
 
 exports[`GrantAdapter grantToExtractLine adapts correctly with no application 1`] = `
-Object {
+{
   "action": undefined,
   "askedAmount": undefined,
   "assoName": "nomRNA",
@@ -43,7 +43,7 @@ Object {
 `;
 
 exports[`GrantAdapter grantToExtractLine adapts correctly with no payment 1`] = `
-Object {
+{
   "action": "intituléAction",
   "askedAmount": 12000,
   "assoName": "nomRNA",

@@ -123,10 +123,16 @@ describe("FonjepEntityAdapter", () => {
         const PAYMENT_ID = "PAYMENT_ID";
         const UNIQUE_ID = "UNIQUE_ID";
         const PROGRAM_CODE = "163";
-        // @ts-expect-error: mock private method
-        const mockBuildPaymentFlatPaymentId = jest.spyOn(FonjepEntityAdapter, "buildPaymentFlatPaymentId");
-        // @ts-expect-error: mock private method
-        const mockBuildPaymentFlatUniqueId = jest.spyOn(FonjepEntityAdapter, "buildPaymentFlatUniqueId");
+        const mockBuildPaymentFlatPaymentId: jest.SpyInstance = jest.spyOn(
+            FonjepEntityAdapter,
+            // @ts-expect-error: mock private method
+            "buildPaymentFlatPaymentId",
+        );
+        const mockBuildPaymentFlatUniqueId: jest.SpyInstance = jest.spyOn(
+            FonjepEntityAdapter,
+            // @ts-expect-error: mock private method
+            "buildPaymentFlatUniqueId",
+        );
         const mockGetBopFromFounderCode = jest.spyOn(FonjepEntityAdapter, "getBopFromFounderCode");
 
         beforeAll(() => {

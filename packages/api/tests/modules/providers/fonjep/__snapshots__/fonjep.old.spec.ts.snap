@@ -5,10 +5,10 @@ exports[`FonjepCli parse() should create subventions 1`] = `2`;
 exports[`FonjepCli parse() should create versements 1`] = `8`;
 
 exports[`FonjepParser parse() should return an object with subventions and versements 1`] = `
-Object {
-  "payments": Array [
+{
+  "payments": [
     FonjepPaymentEntity {
-      "data": Object {
+      "data": {
         "DateVersement": 42761,
         "MontantAPayer": 1777,
         "MontantPaye": 1777,
@@ -20,7 +20,7 @@ Object {
         "siret": "00000000000000",
         "updated_at": 2022-03-03T00:00:00.000Z,
       },
-      "indexedInformations": Object {
+      "indexedInformations": {
         "bop": 163,
         "code_poste": "J10540",
         "date_versement": 2017-01-26T00:00:00.000Z,
@@ -32,12 +32,12 @@ Object {
         "unique_id": "00000000000000-J10540-2017-01-01T00:00:00.000Z",
         "updated_at": 2022-03-03T00:00:00.000Z,
       },
-      "legalInformations": Object {
+      "legalInformations": {
         "siret": "00000000000000",
       },
     },
     FonjepPaymentEntity {
-      "data": Object {
+      "data": {
         "DateVersement": 42852,
         "MontantAPayer": 1777,
         "MontantPaye": 1777,
@@ -49,7 +49,7 @@ Object {
         "siret": "00000000000000",
         "updated_at": 2022-03-03T00:00:00.000Z,
       },
-      "indexedInformations": Object {
+      "indexedInformations": {
         "bop": 163,
         "code_poste": "J10540",
         "date_versement": 2017-04-27T00:00:00.000Z,
@@ -61,12 +61,12 @@ Object {
         "unique_id": "00000000000000-J10540-2017-04-01T00:00:00.000Z",
         "updated_at": 2022-03-03T00:00:00.000Z,
       },
-      "legalInformations": Object {
+      "legalInformations": {
         "siret": "00000000000000",
       },
     },
     FonjepPaymentEntity {
-      "data": Object {
+      "data": {
         "DateVersement": 42927,
         "MontantAPayer": 1777,
         "MontantPaye": 1777,
@@ -78,7 +78,7 @@ Object {
         "siret": "00000000000000",
         "updated_at": 2022-03-03T00:00:00.000Z,
       },
-      "indexedInformations": Object {
+      "indexedInformations": {
         "bop": 163,
         "code_poste": "J10540",
         "date_versement": 2017-07-11T00:00:00.000Z,
@@ -90,12 +90,12 @@ Object {
         "unique_id": "00000000000000-J10540-2017-07-01T00:00:00.000Z",
         "updated_at": 2022-03-03T00:00:00.000Z,
       },
-      "legalInformations": Object {
+      "legalInformations": {
         "siret": "00000000000000",
       },
     },
     FonjepPaymentEntity {
-      "data": Object {
+      "data": {
         "DateVersement": 43027,
         "MontantAPayer": 1776,
         "MontantPaye": 1776,
@@ -107,7 +107,7 @@ Object {
         "siret": "00000000000000",
         "updated_at": 2022-03-03T00:00:00.000Z,
       },
-      "indexedInformations": Object {
+      "indexedInformations": {
         "bop": 163,
         "code_poste": "J10540",
         "date_versement": 2017-10-19T00:00:00.000Z,
@@ -119,12 +119,12 @@ Object {
         "unique_id": "00000000000000-J10540-2017-10-01T00:00:00.000Z",
         "updated_at": 2022-03-03T00:00:00.000Z,
       },
-      "legalInformations": Object {
+      "legalInformations": {
         "siret": "00000000000000",
       },
     },
     FonjepPaymentEntity {
-      "data": Object {
+      "data": {
         "DateVersement": 42761,
         "MontantAPayer": 1791,
         "MontantPaye": 1791,
@@ -136,7 +136,7 @@ Object {
         "siret": "00000000000000",
         "updated_at": 2022-03-03T00:00:00.000Z,
       },
-      "indexedInformations": Object {
+      "indexedInformations": {
         "bop": 163,
         "code_poste": "J02924",
         "date_versement": 2017-01-26T00:00:00.000Z,
@@ -148,12 +148,12 @@ Object {
         "unique_id": "00000000000000-J02924-2017-01-01T00:00:00.000Z",
         "updated_at": 2022-03-03T00:00:00.000Z,
       },
-      "legalInformations": Object {
+      "legalInformations": {
         "siret": "00000000000000",
       },
     },
     FonjepPaymentEntity {
-      "data": Object {
+      "data": {
         "DateVersement": 42852,
         "MontantAPayer": 1791,
         "MontantPaye": 1791,
@@ -165,7 +165,7 @@ Object {
         "siret": "00000000000000",
         "updated_at": 2022-03-03T00:00:00.000Z,
       },
-      "indexedInformations": Object {
+      "indexedInformations": {
         "bop": 163,
         "code_poste": "J02924",
         "date_versement": 2017-04-27T00:00:00.000Z,
@@ -177,12 +177,12 @@ Object {
         "unique_id": "00000000000000-J02924-2017-04-01T00:00:00.000Z",
         "updated_at": 2022-03-03T00:00:00.000Z,
       },
-      "legalInformations": Object {
+      "legalInformations": {
         "siret": "00000000000000",
       },
     },
     FonjepPaymentEntity {
-      "data": Object {
+      "data": {
         "DateVersement": 42927,
         "MontantAPayer": 1791,
         "MontantPaye": 1791,
@@ -194,7 +194,7 @@ Object {
         "siret": "00000000000000",
         "updated_at": 2022-03-03T00:00:00.000Z,
       },
-      "indexedInformations": Object {
+      "indexedInformations": {
         "bop": 163,
         "code_poste": "J02924",
         "date_versement": 2017-07-11T00:00:00.000Z,
@@ -206,12 +206,12 @@ Object {
         "unique_id": "00000000000000-J02924-2017-07-01T00:00:00.000Z",
         "updated_at": 2022-03-03T00:00:00.000Z,
       },
-      "legalInformations": Object {
+      "legalInformations": {
         "siret": "00000000000000",
       },
     },
     FonjepPaymentEntity {
-      "data": Object {
+      "data": {
         "DateVersement": 43027,
         "MontantAPayer": 1791,
         "MontantPaye": 1791,
@@ -223,7 +223,7 @@ Object {
         "siret": "00000000000000",
         "updated_at": 2022-03-03T00:00:00.000Z,
       },
-      "indexedInformations": Object {
+      "indexedInformations": {
         "bop": 163,
         "code_poste": "J02924",
         "date_versement": 2017-10-19T00:00:00.000Z,
@@ -235,16 +235,16 @@ Object {
         "unique_id": "00000000000000-J02924-2017-10-01T00:00:00.000Z",
         "updated_at": 2022-03-03T00:00:00.000Z,
       },
-      "legalInformations": Object {
+      "legalInformations": {
         "siret": "00000000000000",
       },
     },
   ],
-  "subventions": Array [
+  "subventions": [
     FonjepSubventionEntity {
-      "data": Object {
+      "data": {
         "Annee": 2017,
-        "Association": Object {
+        "Association": {
           "Code": 1,
           "CodePostal": "00000",
           "ContactEmail": "exemple@beta.gouv.fr",
@@ -259,14 +259,14 @@ Object {
         "AssociationImplantationCode": 1,
         "Code": "J10540",
         "DateFinTriennalite": 43465,
-        "Dispositif": Object {
+        "Dispositif": {
           "FinanceurCode": "10004",
           "ID": 1,
           "Libelle": "FONJEP Jeunesse éducation populaire",
         },
         "DispositifId": "1",
         "DoublementUniteCompte": "Non",
-        "Financeur": Object {
+        "Financeur": {
           "Code": 1,
           "CodePostal": "00000",
           "ContactEmail": "exemple@beta.gouv.fr",
@@ -284,14 +284,14 @@ Object {
         "PstRaisonStatutLibelle": "Reconduction",
         "PstStatutPosteLibelle": "Attribué",
         "PstTypePosteCode": "FONJEP",
-        "TypePoste": Object {
+        "TypePoste": {
           "Code": "FONJEP",
           "Libelle": "Poste FONJEP",
         },
         "id": "00000000000000-J10540-2018-12-31T00:00:00.000Z",
         "updated_at": 2022-03-03T00:00:00.000Z,
       },
-      "indexedInformations": Object {
+      "indexedInformations": {
         "annee_demande": 2017,
         "code_postal": "00000",
         "code_poste": "J10540",
@@ -309,15 +309,15 @@ Object {
         "updated_at": 2022-03-03T00:00:00.000Z,
         "ville": "Paris",
       },
-      "legalInformations": Object {
+      "legalInformations": {
         "name": "CENTRE D'INFO ****",
         "siret": "00000000000000",
       },
     },
     FonjepSubventionEntity {
-      "data": Object {
+      "data": {
         "Annee": 2017,
-        "Association": Object {
+        "Association": {
           "Code": 3,
           "CodePostal": "00000",
           "ContactEmail": "exemple@beta.gouv.fr",
@@ -332,14 +332,14 @@ Object {
         "AssociationImplantationCode": 3,
         "Code": "J02924",
         "DateFinTriennalite": 45657,
-        "Dispositif": Object {
+        "Dispositif": {
           "FinanceurCode": "10008",
           "ID": 3,
           "Libelle": "FONJEP Politique de la ville",
         },
         "DispositifId": 3,
         "DoublementUniteCompte": "Non",
-        "Financeur": Object {
+        "Financeur": {
           "Code": 3,
           "CodePostal": "00000",
           "ContactEmail": "exemple@beta.gouv.fr",
@@ -357,14 +357,14 @@ Object {
         "PstRaisonStatutLibelle": "Création",
         "PstStatutPosteLibelle": "Attribué",
         "PstTypePosteCode": "FONJEP",
-        "TypePoste": Object {
+        "TypePoste": {
           "Code": "FONJEP",
           "Libelle": "Poste FONJEP",
         },
         "id": "00000000000000-J02924-2024-12-31T00:00:00.000Z",
         "updated_at": 2022-03-03T00:00:00.000Z,
       },
-      "indexedInformations": Object {
+      "indexedInformations": {
         "annee_demande": 2017,
         "code_postal": "00000",
         "code_poste": "J02924",
@@ -382,7 +382,7 @@ Object {
         "updated_at": 2022-03-03T00:00:00.000Z,
         "ville": "Paris",
       },
-      "legalInformations": Object {
+      "legalInformations": {
         "name": "DES IDEES PLEIN LA TERRE",
         "siret": "00000000000000",
       },

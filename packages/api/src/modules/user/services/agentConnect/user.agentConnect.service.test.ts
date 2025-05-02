@@ -80,14 +80,14 @@ describe("userAgentConnectService", () => {
             await userAgentConnectService.initClient();
             const actual = clientConstructorMock.mock.calls[0][0];
             expect(actual).toMatchInlineSnapshot(`
-                Object {
+                {
                   "client_id": "mocked_client_id",
                   "client_secret": "mocked_client_secret",
                   "id_token_signed_response_alg": "ES256",
-                  "redirect_uris": Array [
+                  "redirect_uris": [
                     "http://my.front/auth/login",
                   ],
-                  "response_types": Array [
+                  "response_types": [
                     "code",
                   ],
                   "scope": "openid given_name family_name preferred_username birthdate email",
@@ -235,13 +235,13 @@ describe("userAgentConnectService", () => {
         it("creates user with userCrudService", async () => {
             await userAgentConnectService.createUserFromAgentConnect(AC_USER);
             expect(jest.mocked(userCrudService.createUser).mock.calls[0]).toMatchInlineSnapshot(`
-                Array [
-                  Object {
+                [
+                  {
                     "agentConnectId": "123456789",
                     "email": "mail@mail.com",
                     "firstName": "prénom1",
                     "lastName": "nom de famille",
-                    "roles": Array [
+                    "roles": [
                       "user",
                     ],
                   },
@@ -285,7 +285,7 @@ describe("userAgentConnectService", () => {
                 firstName: "something",
             });
             expect(actual).toMatchInlineSnapshot(`
-                Object {
+                {
                   "valid": true,
                 }
             `);
@@ -296,7 +296,7 @@ describe("userAgentConnectService", () => {
                 lastName: "something",
             });
             expect(actual).toMatchInlineSnapshot(`
-                Object {
+                {
                   "valid": true,
                 }
             `);

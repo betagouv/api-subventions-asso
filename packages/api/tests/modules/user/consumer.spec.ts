@@ -1,7 +1,9 @@
 import request = require("supertest");
 import { createAndGetConsumerToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
 
-const g = global as unknown as { app: unknown };
+import { App } from "supertest/types";
+
+const g = global as unknown as { app: App };
 
 describe("/consumer", () => {
     describe("GET /token", () => {

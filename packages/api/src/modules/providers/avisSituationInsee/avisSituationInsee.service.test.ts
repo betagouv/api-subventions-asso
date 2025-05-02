@@ -113,19 +113,11 @@ describe("AvisSituationInseeService", () => {
     });
 
     describe("getDocuments", () => {
-        const getInseeEtablissementsBySirenMock = jest.spyOn<
-            any,
-            // @ts-expect-error getInseeEtablissementsBySiren is private method
-            Promise<
-                | {
-                      etablissements: {
-                          nic: string;
-                          etablissementSiege: boolean;
-                      }[];
-                  }
-                | false
-            >
-        >(avisSituationInseeService, "getInseeEtablissementsBySiren");
+        const getInseeEtablissementsBySirenMock: jest.SpyInstance = jest.spyOn(
+            avisSituationInseeService,
+            // @ts-expect-error: mock private method
+            "getInseeEtablissementsBySiren",
+        );
 
         const IDENTIFIER = AssociationIdentifier.fromSiren(new Siren("000000000"));
 

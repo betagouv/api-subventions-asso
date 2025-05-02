@@ -1,23 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`user crud service listUsers returns proper result 1`] = `
-Array [
-  Object {
+[
+  {
     "_id": 1,
     "resetToken": "TOKEN1",
     "resetTokenDate": 2025-01-16T00:00:00.000Z,
     "resetUrl": "link/TOKEN1",
   },
-  Object {
+  {
     "_id": 2,
   },
-  Object {
+  {
     "_id": 3,
     "resetToken": "TOKEN3",
     "resetTokenDate": 2025-01-16T00:00:00.000Z,
     "resetUrl": "link/TOKEN3",
   },
-  Object {
+  {
     "_id": 4,
   },
 ]

@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Rgpd Cron removeInactiveUsers() should notify through mattermost 1`] = `
-Array [
-  Array [
+[
+  [
     "https://mattermost.incubateur.net/hooks/qefuswbp9fybdjf97yqxo93cqr",
-    Object {
+    {
       "channel": "datasubvention---comptes-app",
       "icon_emoji": "door",
       "text": "[test] Les comptes suivants ont été supprimés pour inactivité trop longue.
@@ -19,59 +19,59 @@ N'oubliez pas de supprimer toutes leurs données !",
 `;
 
 exports[`Rgpd Cron removeInactiveUsers() should notify users through brevo 1`] = `
-Array [
-  Array [
-    Object {
-      "bcc": Array [
-        Object {
+[
+  [
+    {
+      "bcc": [
+        {
           "email": "log@datasubvention.beta.gouv.fr",
           "name": "Data.Subvention Log",
         },
       ],
-      "params": Object {
+      "params": {
         "email": "old-user1@mail.com",
       },
-      "sender": Object {
+      "sender": {
         "email": "",
         "name": "Data.Subvention",
       },
       "templateId": 156,
-      "to": Array [
-        Object {
+      "to": [
+        {
           "email": "old-user1@mail.com",
         },
       ],
     },
-    Object {
-      "headers": Object {
+    {
+      "headers": {
         "content-type": "application/json",
       },
     },
   ],
-  Array [
-    Object {
-      "bcc": Array [
-        Object {
+  [
+    {
+      "bcc": [
+        {
           "email": "log@datasubvention.beta.gouv.fr",
           "name": "Data.Subvention Log",
         },
       ],
-      "params": Object {
+      "params": {
         "email": "old-user2@mail.com",
       },
-      "sender": Object {
+      "sender": {
         "email": "",
         "name": "Data.Subvention",
       },
       "templateId": 156,
-      "to": Array [
-        Object {
+      "to": [
+        {
           "email": "old-user2@mail.com",
         },
       ],
     },
-    Object {
-      "headers": Object {
+    {
+      "headers": {
         "content-type": "application/json",
       },
     },

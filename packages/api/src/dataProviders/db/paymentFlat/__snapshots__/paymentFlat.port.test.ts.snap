@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`PaymentFlat Port buildUpsertOperation returns bulk operation 1`] = `
-Object {
-  "updateOne": Object {
-    "filter": Object {
+{
+  "updateOne": {
+    "filter": {
       "uniqueId": "12345678901234-EJ Exemple-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
     },
-    "update": Object {
-      "$set": Object {
+    "update": {
+      "$set": {
         "action": "Label d'action Exemple",
         "activite": "Label d'activité Exemple",
         "attachementComptable": "BRET",

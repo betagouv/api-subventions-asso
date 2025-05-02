@@ -7,8 +7,8 @@
     "license": "MIT",
     "main": "lib/tools.js",
     "engines": {
-        "node": "18.17",
-        "npm": "9.6.7"
+        "node": "22.15.0",
+        "npm": "10.9.2"
     },
     "repository": {
         "type": "git",
@@ -46,11 +46,5 @@
         "puppeteer": "^14.4.1",
         "qs": "^6.11.2",
         "signalr": "^2.4.3"
-    },
-    "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^5.62.0",
-        "@typescript-eslint/parser": "^5.62.0",
-        "eslint-config-prettier": "^8.10.0",
-        "eslint-plugin-import": "^2.29.1"
     }
 }

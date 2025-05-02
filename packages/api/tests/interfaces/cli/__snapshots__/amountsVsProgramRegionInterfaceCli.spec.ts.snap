@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`AmountsVsProgramRegionCli init() should persist amounts vs program region collection: Snapshot init 1`] = `
-Array [
-  Object {
+[
+  {
     "_id": Any<ObjectId>,
     "exerciceBudgetaire": 2023,
     "mission": "Mission Exemple",
@@ -10,7 +10,7 @@ Array [
     "programme": "101 - Programme Exemple",
     "regionAttachementComptable": "Bretagne",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "exerciceBudgetaire": 2023,
     "mission": "Mission Exemple",
@@ -18,7 +18,7 @@ Array [
     "programme": "1234 - Programme Exemple",
     "regionAttachementComptable": "Bretagne",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "exerciceBudgetaire": 2021,
     "mission": "Mission Exemple",
@@ -26,7 +26,7 @@ Array [
     "programme": "101 - Programme Exemple",
     "regionAttachementComptable": "Normandie",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "exerciceBudgetaire": 2024,
     "mission": "Mission Exemple",
@@ -38,8 +38,8 @@ Array [
 `;
 
 exports[`AmountsVsProgramRegionCli resyncExercice() should persist amounts vs program region collection for the given exercice: Snapshot resyncExercice 1`] = `
-Array [
-  Object {
+[
+  {
     "_id": Any<ObjectId>,
     "exerciceBudgetaire": 2023,
     "mission": "Mission Exemple",
@@ -47,7 +47,7 @@ Array [
     "programme": "101 - Programme Exemple",
     "regionAttachementComptable": "Bretagne",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "exerciceBudgetaire": 2023,
     "mission": "Mission Exemple",

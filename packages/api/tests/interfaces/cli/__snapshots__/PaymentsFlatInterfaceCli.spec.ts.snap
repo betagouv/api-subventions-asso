@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`PaymentsFlatCli initChorus() should persist payments flat collection: Snapshot init 1`] = `
-Array [
-  Object {
+[
+  {
     "_id": Any<ObjectId>,
     "action": "libelle_action_1",
     "activite": "libelle_activite_1",
@@ -29,7 +29,7 @@ Array [
     "typeIdEtablissementBeneficiaire": "siret",
     "uniqueId": "12345678901212-EJ_egale-2023-143-0143-03-01-014303000102-2023-04-21-BRET-AA01/0776-C001-4000",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "action": null,
     "activite": null,
@@ -56,7 +56,7 @@ Array [
     "typeIdEtablissementBeneficiaire": "siret",
     "uniqueId": "12345678901313-0001821732-2022-101-0101-01-02-077601003222-2023-07-12-HNOR-AA01/0776-C001-4000",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "action": null,
     "activite": null,
@@ -87,8 +87,8 @@ Array [
 `;
 
 exports[`PaymentsFlatCli resyncExercice() should persist payments flat collection for the given exercice: Snapshot resyncExercice 1`] = `
-Array [
-  Object {
+[
+  {
     "_id": Any<ObjectId>,
     "action": "libelle_action_1",
     "activite": "libelle_activite_1",
@@ -115,7 +115,7 @@ Array [
     "typeIdEtablissementBeneficiaire": "siret",
     "uniqueId": "12345678901212-EJ_egale-2023-143-0143-03-01-014303000102-2023-04-21-BRET-AA01/0776-C001-4000",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "action": null,
     "activite": null,
@@ -142,7 +142,7 @@ Array [
     "typeIdEtablissementBeneficiaire": "siret",
     "uniqueId": "12345678901313-0001821732-2022-101-0101-01-02-077601003222-2023-07-12-HNOR-AA01/0776-C001-4000",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "action": null,
     "activite": null,

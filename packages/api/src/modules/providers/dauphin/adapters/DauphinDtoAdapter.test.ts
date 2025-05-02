@@ -127,7 +127,7 @@ describe("DauphinDtoAdapter", () => {
                     ],
                 },
             ]);
-            expect(actual).toMatchInlineSnapshot(`Array []`);
+            expect(actual).toMatchInlineSnapshot(`[]`);
         });
     });
 

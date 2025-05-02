@@ -81,15 +81,14 @@ describe("SCDL Batch Import CLI", () => {
 
     describe("isConfig", () => {
         // @ts-expect-error: spy protected method
-        const mockvalidateFileConfig = jest.spyOn(ScdlBatchCli.prototype, "validateFileConfig");
+        const mockValidateFileConfig: jest.SpyInstance = jest.spyOn(ScdlBatchCli.prototype, "validateFileConfig");
 
         beforeAll(() => {
-            //@ts-expect-error
-            mockvalidateFileConfig.mockReturnValue(true);
+            mockValidateFileConfig.mockReturnValue(true);
         });
 
         afterAll(() => {
-            mockvalidateFileConfig.mockRestore();
+            mockValidateFileConfig.mockRestore();
         });
 
         it.each`
@@ -102,8 +101,7 @@ describe("SCDL Batch Import CLI", () => {
         `("return false with $value", ({ value }) => {
             // make one file invalid for last test
             if (value?.files?.length) {
-                // @ts-expect-error
-                mockvalidateFileConfig.mockReturnValueOnce(false);
+                mockValidateFileConfig.mockReturnValueOnce(false);
             }
             const cli = new ScdlBatchCli();
             const expected = false;
@@ -123,19 +121,18 @@ describe("SCDL Batch Import CLI", () => {
 
     describe("validateFileConfig", () => {
         // @ts-expect-error: private method
-        const mockvalidateParseParams = jest.spyOn(ScdlBatchCli.prototype, "validateParseParams");
+        const mockValidateParseParams: jest.SpyInstance = jest.spyOn(ScdlBatchCli.prototype, "validateParseParams");
 
         const PARSE_PARAMS = { producerSlug: "bretagne" };
 
         beforeEach(() => {
             jest.mocked(isStringValid).mockReturnValue(true);
             jest.mocked(isBooleanValid).mockReturnValue(true);
-            // @ts-expect-error
-            mockvalidateParseParams.mockReturnValue(true);
+            mockValidateParseParams.mockReturnValue(true);
             scdlBatchCli = new ScdlBatchCli();
         });
 
-        afterAll(() => mockvalidateParseParams.mockRestore());
+        afterAll(() => mockValidateParseParams.mockRestore());
 
         it("throw if no file given", () => {
             // @ts-expect-error: test private method
@@ -158,7 +155,7 @@ describe("SCDL Batch Import CLI", () => {
         it("do not call validateParseParams if addProducer is set to false", () => {
             // @ts-expect-error: test private method
             scdlBatchCli.validateFileConfig({ name: "bretagne-2025", addProducer: false });
-            expect(mockvalidateParseParams).not.toHaveBeenCalled();
+            expect(mockValidateParseParams).not.toHaveBeenCalled();
         });
 
         it("returns true if file config is valid", () => {
@@ -171,7 +168,7 @@ describe("SCDL Batch Import CLI", () => {
         it("calls validateParseParams() is addProducer is set to true", () => {
             // @ts-expect-error: test private method
             scdlBatchCli.validateFileConfig({ name: "name", addProducer: true, parseParams: PARSE_PARAMS });
-            expect(mockvalidateParseParams).toHaveBeenCalledWith(PARSE_PARAMS);
+            expect(mockValidateParseParams).toHaveBeenCalledWith(PARSE_PARAMS);
         });
     });
 
@@ -264,9 +261,9 @@ describe("SCDL Batch Import CLI", () => {
 
     describe("validateParseParams", () => {
         // @ts-expect-error: private method
-        const spyvalidateCsvArgs = jest.spyOn(ScdlBatchCli.prototype, "validateCsvArgs");
+        const spyValidateCsvArgs: jest.SpyInstance = jest.spyOn(ScdlBatchCli.prototype, "validateCsvArgs");
         // @ts-expect-error: private method
-        const spyvalidateXlsArgs = jest.spyOn(ScdlBatchCli.prototype, "validateXlsArgs");
+        const spyValidateXlsArgs: jest.SpyInstance = jest.spyOn(ScdlBatchCli.prototype, "validateXlsArgs");
 
         beforeAll(() => {
             jest.mocked(isStringValid).mockReturnValue(true);
@@ -278,8 +275,8 @@ describe("SCDL Batch Import CLI", () => {
         });
 
         afterAll(() => {
-            spyvalidateCsvArgs.mockRestore();
-            spyvalidateXlsArgs.mockRestore();
+            spyValidateCsvArgs.mockRestore();
+            spyValidateXlsArgs.mockRestore();
         });
 
         it.each`
@@ -325,7 +322,7 @@ describe("SCDL Batch Import CLI", () => {
         `("calls validate csv specific args if present", ({ parseParams }) => {
             // @ts-expect-error: private method
             scdlBatchCli.validateParseParams(parseParams);
-            expect(spyvalidateCsvArgs).toHaveBeenCalledWith(parseParams);
+            expect(spyValidateCsvArgs).toHaveBeenCalledWith(parseParams);
         });
 
         it.each`
@@ -336,7 +333,7 @@ describe("SCDL Batch Import CLI", () => {
         `("calls validate xls specific args if present", ({ parseParams }) => {
             // @ts-expect-error: private method
             scdlBatchCli.validateParseParams(parseParams);
-            expect(spyvalidateXlsArgs).toHaveBeenCalledWith(parseParams);
+            expect(spyValidateXlsArgs).toHaveBeenCalledWith(parseParams);
         });
 
         // for each if else block

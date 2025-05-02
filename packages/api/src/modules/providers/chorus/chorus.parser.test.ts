@@ -66,7 +66,7 @@ describe("ChorusParser", () => {
     });
 
     describe("validateIndexedInformations", () => {
-        const mockHasUniqueKeyFields = jest
+        const mockHasUniqueKeyFields: jest.SpyInstance = jest
             // @ts-expect-error: ok
             .spyOn(ChorusParser, "hasMandatoryFields");
 

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`OsirisRequestAdapter toCommon returns proper result 1`] = `
-Object {
+{
   "dispositif": "DISPOSITIF",
   "exercice": 2023,
   "montant_accorde": 42,
@@ -14,16 +14,16 @@ Object {
 `;
 
 exports[`OsirisRequestAdapter toDemandeSubvention() should return a DemandeSubvention 1`] = `
-Object {
-  "actions_proposee": Array [],
-  "annee_demande": Object {
+{
+  "actions_proposee": [],
+  "annee_demande": {
     "last_update": 2022-01-01T00:00:00.000Z,
     "provider": "OSIRIS",
     "type": "number",
     "value": 2022,
   },
-  "contact": Object {
-    "email": Object {
+  "contact": {
+    "email": {
       "last_update": 2022-01-01T00:00:00.000Z,
       "provider": "OSIRIS",
       "type": "undefined",
@@ -31,122 +31,122 @@ Object {
     },
     "telephone": undefined,
   },
-  "date_commision": Object {
+  "date_commision": {
     "last_update": 2022-01-01T00:00:00.000Z,
     "provider": "OSIRIS",
     "type": "object",
     "value": 2022-01-01T00:00:00.000Z,
   },
-  "dispositif": Object {
+  "dispositif": {
     "last_update": 2022-01-01T00:00:00.000Z,
     "provider": "OSIRIS",
     "type": "undefined",
     "value": undefined,
   },
-  "ej": Object {
+  "ej": {
     "last_update": 2022-01-01T00:00:00.000Z,
     "provider": "OSIRIS",
     "type": "string",
     "value": "EJ00001",
   },
-  "montants": Object {
-    "accorde": Object {
+  "montants": {
+    "accorde": {
       "last_update": 2022-01-01T00:00:00.000Z,
       "provider": "OSIRIS",
       "type": "undefined",
       "value": undefined,
     },
-    "demande": Object {
+    "demande": {
       "last_update": 2022-01-01T00:00:00.000Z,
       "provider": "OSIRIS",
       "type": "undefined",
       "value": undefined,
     },
-    "propose": Object {
+    "propose": {
       "last_update": 2022-01-01T00:00:00.000Z,
       "provider": "OSIRIS",
       "type": "undefined",
       "value": undefined,
     },
-    "total": Object {
+    "total": {
       "last_update": 2022-01-01T00:00:00.000Z,
       "provider": "OSIRIS",
       "type": "undefined",
       "value": undefined,
     },
   },
-  "pluriannualite": Object {
+  "pluriannualite": {
     "last_update": 2022-01-01T00:00:00.000Z,
     "provider": "OSIRIS",
     "type": "undefined",
     "value": undefined,
   },
-  "service_instructeur": Object {
+  "service_instructeur": {
     "last_update": 2022-01-01T00:00:00.000Z,
     "provider": "OSIRIS",
     "type": "undefined",
     "value": undefined,
   },
-  "siret": Object {
+  "siret": {
     "last_update": 2022-01-01T00:00:00.000Z,
     "provider": "OSIRIS",
     "type": "string",
     "value": "10000000000001",
   },
-  "sous_dispositif": Object {
+  "sous_dispositif": {
     "last_update": 2022-01-01T00:00:00.000Z,
     "provider": "OSIRIS",
     "type": "undefined",
     "value": undefined,
   },
-  "status": Object {
+  "status": {
     "last_update": 2022-01-01T00:00:00.000Z,
     "provider": "OSIRIS",
     "type": "undefined",
     "value": undefined,
   },
-  "statut_label": Object {
+  "statut_label": {
     "last_update": 2022-01-01T00:00:00.000Z,
     "provider": "OSIRIS",
     "type": "string",
     "value": "NORMALIZED_LABEL",
   },
-  "territoires": Array [],
-  "versement": Object {
-    "acompte": Object {
+  "territoires": [],
+  "versement": {
+    "acompte": {
       "last_update": 2022-01-01T00:00:00.000Z,
       "provider": "OSIRIS",
       "type": "undefined",
       "value": undefined,
     },
-    "compensation": Object {
-      "n-1": Object {
+    "compensation": {
+      "n-1": {
         "last_update": 2022-01-01T00:00:00.000Z,
         "provider": "OSIRIS",
         "type": "undefined",
         "value": undefined,
       },
-      "reversement": Object {
+      "reversement": {
         "last_update": 2022-01-01T00:00:00.000Z,
         "provider": "OSIRIS",
         "type": "undefined",
         "value": undefined,
       },
     },
-    "realise": Object {
+    "realise": {
       "last_update": 2022-01-01T00:00:00.000Z,
       "provider": "OSIRIS",
       "type": "undefined",
       "value": undefined,
     },
-    "solde": Object {
+    "solde": {
       "last_update": 2022-01-01T00:00:00.000Z,
       "provider": "OSIRIS",
       "type": "undefined",
       "value": undefined,
     },
   },
-  "versementKey": Object {
+  "versementKey": {
     "last_update": 2022-01-01T00:00:00.000Z,
     "provider": "OSIRIS",
     "type": "string",
@@ -156,16 +156,16 @@ Object {
 `;
 
 exports[`OsirisRequestAdapter toDemandeSubvention() should set versementKey to undefined if no EJ 1`] = `
-Object {
-  "actions_proposee": Array [],
-  "annee_demande": Object {
+{
+  "actions_proposee": [],
+  "annee_demande": {
     "last_update": 2022-01-01T00:00:00.000Z,
     "provider": "OSIRIS",
     "type": "number",
     "value": 2022,
   },
-  "contact": Object {
-    "email": Object {
+  "contact": {
+    "email": {
       "last_update": 2022-01-01T00:00:00.000Z,
       "provider": "OSIRIS",
       "type": "undefined",
@@ -173,110 +173,110 @@ Object {
     },
     "telephone": undefined,
   },
-  "date_commision": Object {
+  "date_commision": {
     "last_update": 2022-01-01T00:00:00.000Z,
     "provider": "OSIRIS",
     "type": "string",
     "value": "2022-01-01T00:00:00.000Z",
   },
-  "dispositif": Object {
+  "dispositif": {
     "last_update": 2022-01-01T00:00:00.000Z,
     "provider": "OSIRIS",
     "type": "undefined",
     "value": undefined,
   },
   "ej": undefined,
-  "montants": Object {
-    "accorde": Object {
+  "montants": {
+    "accorde": {
       "last_update": 2022-01-01T00:00:00.000Z,
       "provider": "OSIRIS",
       "type": "undefined",
       "value": undefined,
     },
-    "demande": Object {
+    "demande": {
       "last_update": 2022-01-01T00:00:00.000Z,
       "provider": "OSIRIS",
       "type": "undefined",
       "value": undefined,
     },
-    "propose": Object {
+    "propose": {
       "last_update": 2022-01-01T00:00:00.000Z,
       "provider": "OSIRIS",
       "type": "undefined",
       "value": undefined,
     },
-    "total": Object {
+    "total": {
       "last_update": 2022-01-01T00:00:00.000Z,
       "provider": "OSIRIS",
       "type": "undefined",
       "value": undefined,
     },
   },
-  "pluriannualite": Object {
+  "pluriannualite": {
     "last_update": 2022-01-01T00:00:00.000Z,
     "provider": "OSIRIS",
     "type": "undefined",
     "value": undefined,
   },
-  "service_instructeur": Object {
+  "service_instructeur": {
     "last_update": 2022-01-01T00:00:00.000Z,
     "provider": "OSIRIS",
     "type": "undefined",
     "value": undefined,
   },
-  "siret": Object {
+  "siret": {
     "last_update": 2022-01-01T00:00:00.000Z,
     "provider": "OSIRIS",
     "type": "string",
     "value": "10000000000001",
   },
-  "sous_dispositif": Object {
+  "sous_dispositif": {
     "last_update": 2022-01-01T00:00:00.000Z,
     "provider": "OSIRIS",
     "type": "undefined",
     "value": undefined,
   },
-  "status": Object {
+  "status": {
     "last_update": 2022-01-01T00:00:00.000Z,
     "provider": "OSIRIS",
     "type": "undefined",
     "value": undefined,
   },
-  "statut_label": Object {
+  "statut_label": {
     "last_update": 2022-01-01T00:00:00.000Z,
     "provider": "OSIRIS",
     "type": "string",
     "value": "NORMALIZED_LABEL",
   },
-  "territoires": Array [],
-  "versement": Object {
-    "acompte": Object {
+  "territoires": [],
+  "versement": {
+    "acompte": {
       "last_update": 2022-01-01T00:00:00.000Z,
       "provider": "OSIRIS",
       "type": "undefined",
       "value": undefined,
     },
-    "compensation": Object {
-      "n-1": Object {
+    "compensation": {
+      "n-1": {
         "last_update": 2022-01-01T00:00:00.000Z,
         "provider": "OSIRIS",
         "type": "undefined",
         "value": undefined,
       },
-      "reversement": Object {
+      "reversement": {
         "last_update": 2022-01-01T00:00:00.000Z,
         "provider": "OSIRIS",
         "type": "undefined",
         "value": undefined,
       },
     },
-    "realise": Object {
+    "realise": {
       "last_update": 2022-01-01T00:00:00.000Z,
       "provider": "OSIRIS",
       "type": "undefined",
       "value": undefined,
     },
-    "solde": Object {
+    "solde": {
       "last_update": 2022-01-01T00:00:00.000Z,
       "provider": "OSIRIS",
       "type": "undefined",

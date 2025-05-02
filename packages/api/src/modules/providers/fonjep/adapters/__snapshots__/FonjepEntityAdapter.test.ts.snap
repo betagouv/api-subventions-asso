@@ -5,7 +5,7 @@ exports[`FonjepEntityAdapter buildPaymentFlatPaymentId return idVersement 1`] = 
 exports[`FonjepEntityAdapter buildPaymentFlatUniqueId return idVersement 1`] = `"PAYMENT_ID-163-2022-04-15"`;
 
 exports[`FonjepEntityAdapter toFonjepPaymentFlat returns FonjepPaymentFlat entity 1`] = `
-Object {
+{
   "actionCode": null,
   "actionLabel": null,
   "activityCode": null,

@@ -1,51 +1,51 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`open-data/fournisseurs should return a list of providers with name, description and last update 1`] = `
-Object {
-  "api": Array [
-    Object {
+{
+  "api": [
+    {
       "description": "L'API Asso est une API portée par la DJEPVA et la DNUM des ministères sociaux qui expose des données sur les associations issues du RNA, de l'INSEE (SIREN/SIRET) et du Compte Asso.",
       "name": "API ASSO",
     },
-    Object {
+    {
       "description": "Ce service permet d'obtenir, pour chaque entreprise et établissement, association ou organisme public inscrit au répertoire Sirene, une « fiche d'identité » comportant les informations mises à jour dans le répertoire SIRENE la veille de la consultation.",
       "name": "Avis de Situation Insee",
     },
-    Object {
+    {
       "description": "L'API Entreprise est une API portée par la Dinum qui permet d'exposer et partager des données relatives aux entreprises (dont les associations) issues de plusieurs sources (SIREN/SIRET, Banque de France, Infogreffe, Acoss...).",
       "name": "API Entreprise",
     },
-    Object {
+    {
       "description": "Dauphin est un système d'information développé par MGDIS permettant aux associations de déposer des demandes de subvention dans le cadre de la politique de la ville et aux services instructeurs d'effectuer de la co-instruction.",
       "name": "Dauphin",
     },
-    Object {
+    {
       "description": "",
       "name": "Démarches Simplifiées",
     },
-    Object {
+    {
       "description": "Le bulletin officiel des annonces civiles et commerciales",
       "name": "Bodacc",
     },
   ],
-  "raw": Array [
-    Object {
+  "raw": [
+    {
       "description": "Osiris est le système d'information permettant la gestion des subventions déposées via le Compte Asso par les services instructeurs (instruction, décision, édition des documents, demandes de mise en paiement).",
       "name": "OSIRIS",
     },
-    Object {
+    {
       "description": "L'extranet de gestion du Fonjep permet aux services instructeurs d'indiquer les décisions d'attribution des subventions Fonjep et aux associations bénéficiaires de transmettre les informations nécessaires à la mise en paiment des subventions par le Fonjep, il ne gère pas les demandes de subvention qui ne sont pas dématérialisées à ce jour.",
       "name": "Extranet FONJEP",
     },
-    Object {
+    {
       "description": "Chorus est un système d'information porté par l'AIFE pour les services de l'État qui permet de gérer les paiements des crédits État, que ce soit des commandes publiques ou des subventions et d'assurer la gestion financière du budget de l'État.",
       "name": "Chorus",
     },
-    Object {
+    {
       "description": "Données au format SCDL de divers producteurs en Open Data",
       "name": "Open Data SCDL",
     },
-    Object {
+    {
       "description": "CIPDR",
       "name": "Subventia",
     },

@@ -17,7 +17,14 @@ extends:
 ignorePatterns:
   - "*.test.ts"
   - "*.spec.ts"
+  - migrations
+  - build
+  - import-errors
+  - data-integration
+  - assets
+  - logs
   - node_modules
+
 rules:
   import/order: error
   "@typescript-eslint/no-unused-vars":

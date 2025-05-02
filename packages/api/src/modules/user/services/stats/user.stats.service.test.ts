@@ -104,10 +104,9 @@ describe("user stats service", () => {
         const UNTIL = new Date("2024-09-09");
 
         // @ts-expect-error: mock private method
-        const mockUpdateByDateSpy = jest.spyOn(userStatsService, "updateNbRequestsByDate");
+        const mockUpdateByDateSpy: jest.SpyInstance = jest.spyOn(userStatsService, "updateNbRequestsByDate");
 
         beforeAll(() => {
-            // @ts-expect-error -- private method
             mockUpdateByDateSpy.mockResolvedValue(null);
             jest.useFakeTimers().setSystemTime(UNTIL);
             jest.mocked(configurationsService.getLastUserStatsUpdate).mockResolvedValue(SINCE);
@@ -127,7 +126,7 @@ describe("user stats service", () => {
 
     describe("updateNbRequestsByDate", () => {
         // @ts-expect-error: mock private method
-        const mockUpdateNbRequestsInBrevo = jest.spyOn(userStatsService, "updateNbRequestsInBrevo");
+        const mockUpdateNbRequestsInBrevo: jest.SpyInstance = jest.spyOn(userStatsService, "updateNbRequestsInBrevo");
 
         beforeEach(() => {
             mockUpdateNbRequestsInBrevo.mockImplementation();

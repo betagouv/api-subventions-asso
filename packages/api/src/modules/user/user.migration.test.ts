@@ -6,7 +6,7 @@ import UserMigrations, { EmailToLowerCaseAction } from "./user.migrations";
 import userAuthService from "./services/auth/user.auth.service";
 import userActivationService from "./services/activation/user.activation.service";
 jest.mock("./services/auth/user.auth.service");
-const mockedUserAuthService = jest.mocked(userAuthService, true);
+const mockedUserAuthService = jest.mocked(userAuthService, { shallow: true });
 import userCrudService from "./services/crud/user.crud.service";
 jest.mock("./services/crud/user.crud.service");
 const mockedUserCrudService = jest.mocked(userCrudService);

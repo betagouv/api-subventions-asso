@@ -9,7 +9,9 @@ import userActivationService, {
 } from "../../../src/modules/user/services/activation/user.activation.service";
 import userCrudService from "../../../src/modules/user/services/crud/user.crud.service";
 
-const g = global as unknown as { app: unknown };
+import { App } from "supertest/types";
+
+const g = global as unknown as { app: App };
 
 describe("AuthentificationController, /auth", () => {
     jest.spyOn(notifyService, "notify").mockResolvedValue(true);

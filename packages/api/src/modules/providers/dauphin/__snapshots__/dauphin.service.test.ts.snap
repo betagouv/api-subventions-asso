@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Dauphin Service buildSearchHeader should build header 1`] = `
-Object {
-  "headers": Object {
+{
+  "headers": {
     "Referer": "https://agent-dauphin.cget.gouv.fr/referentiel-financement/public/",
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "accept": "application/json, text/plain, */*,application/vnd.mgdis.tiers-3.19.0+json",
@@ -15,14 +15,14 @@ Object {
 `;
 
 exports[`Dauphin Service documents findDauphinInternalId should call httpSpy with args 1`] = `
-Array [
+[
   "https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/search/fullText",
-  Object {
-    "facets": Object {
-      "famille": Array [
+  {
+    "facets": {
+      "famille": [
         "Association",
       ],
-      "status": Array [
+      "status": [
         "SUPPORTED",
       ],
     },
@@ -31,8 +31,8 @@ Array [
     "size": 1,
     "type": "tiers",
   },
-  Object {
-    "headers": Object {
+  {
+    "headers": {
       "Referer": "https://agent-dauphin.cget.gouv.fr/referentiel-financement/public/",
       "Referrer-Policy": "strict-origin-when-cross-origin",
       "accept": "application/json, text/plain, */*,application/vnd.mgdis.tiers-3.19.0+json",
@@ -46,10 +46,10 @@ Array [
 `;
 
 exports[`Dauphin Service documents getDocuments should call httpSpy with args 1`] = `
-Array [
+[
   "https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/DAUPHIN_ID?expand=pieces.documents",
-  Object {
-    "headers": Object {
+  {
+    "headers": {
       "Referer": "https://agent-dauphin.cget.gouv.fr/referentiel-financement/public/",
       "Referrer-Policy": "strict-origin-when-cross-origin",
       "accept": "application/json, text/plain, */*,application/vnd.mgdis.tiers-3.19.0+json",
@@ -63,10 +63,10 @@ Array [
 `;
 
 exports[`Dauphin Service documents getSpecificDocumentStream should call httpSpy with args 1`] = `
-Array [
+[
   "URL",
-  Object {
-    "headers": Object {
+  {
+    "headers": {
       "Referer": "https://agent-dauphin.cget.gouv.fr/referentiel-financement/public/",
       "Referrer-Policy": "strict-origin-when-cross-origin",
       "accept": "application/json, text/plain, */*, application/vnd.mgdis.tiers-3.19.0+json",
@@ -80,11 +80,11 @@ Array [
 `;
 
 exports[`Dauphin Service sendAuthRequest should call httpSpy 1`] = `
-Array [
+[
   "https://agent-dauphin.cget.gouv.fr/account-management/cget-agents/tokens",
   "username=DAUPHIN_USERNAME&password=DAUPHIN_PASSWORD&redirectTo=https%3A%2F%2Fagent-dauphin.cget.gouv.fr%2Fagents%2F%23%2Fcget%2Fhome%3FredirectTo%3Dportal.home",
-  Object {
-    "headers": Object {
+  {
+    "headers": {
       "Referer": "https://agent-dauphin.cget.gouv.fr/account-management/cget-agents/ux/",
       "Referrer-Policy": "strict-origin-when-cross-origin",
       "accept": "application/json, text/plain, */*",
@@ -96,13 +96,13 @@ Array [
 `;
 
 exports[`Dauphin Service updateApplicationCache should call httpSpy with args 1`] = `
-Array [
+[
   "https://agent-dauphin.cget.gouv.fr/referentiel-financement/api/tenants/cget/demandes-financement/tables/_search",
-  Object {
+  {
     "from": 0,
   },
-  Object {
-    "headers": Object {},
+  {
+    "headers": {},
   },
 ]
 `;

@@ -20,28 +20,28 @@ describe("chorusLinePort", () => {
             await chorusLinePort.upsertMany([{ uniqueId: 1 }, { uniqueId: 2 }] as unknown as ChorusLineEntity[]);
             const actual = mockBulkWrite.mock.calls[0];
             expect(actual).toMatchInlineSnapshot(`
-                Array [
-                  Array [
-                    Object {
-                      "updateOne": Object {
-                        "filter": Object {
+                [
+                  [
+                    {
+                      "updateOne": {
+                        "filter": {
                           "uniqueId": 1,
                         },
-                        "update": Object {
-                          "$set": Object {
+                        "update": {
+                          "$set": {
                             "uniqueId": 1,
                           },
                         },
                         "upsert": true,
                       },
                     },
-                    Object {
-                      "updateOne": Object {
-                        "filter": Object {
+                    {
+                      "updateOne": {
+                        "filter": {
                           "uniqueId": 2,
                         },
-                        "update": Object {
-                          "$set": Object {
+                        "update": {
+                          "$set": {
                             "uniqueId": 2,
                           },
                         },

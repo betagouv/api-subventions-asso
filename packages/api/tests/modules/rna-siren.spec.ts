@@ -4,7 +4,9 @@ import rnaSirenService from "../../src/modules/rna-siren/rnaSiren.service";
 import Rna from "../../src/valueObjects/Rna";
 import Siren from "../../src/valueObjects/Siren";
 
-const g = global as unknown as { app: unknown };
+import { App } from "supertest/types";
+
+const g = global as unknown as { app: App };
 
 describe("RnaSirenController", () => {
     const RNA = new Rna("W123456789");

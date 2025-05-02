@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ApiAssoDtoAdapter rnaStructureToAssociation should transform to association 1`] = `
-Object {
-  "adresse_siege_rna": Array [
-    Object {
+{
+  "adresse_siege_rna": [
+    {
       "last_update": 2023-01-12T00:00:00.000Z,
       "provider": "RNA",
       "type": "object",
-      "value": Object {
+      "value": {
         "code_postal": "42424",
         "commune": "Londre",
         "numero": "18",
@@ -16,72 +16,72 @@ Object {
       },
     },
   ],
-  "code_objet_social_1": Array [
-    Object {
+  "code_objet_social_1": [
+    {
       "last_update": 2023-01-12T00:00:00.000Z,
       "provider": "RNA",
       "type": "string",
       "value": "conduite d'activités économiques",
     },
   ],
-  "date_creation_rna": Array [
-    Object {
+  "date_creation_rna": [
+    {
       "last_update": 2023-01-12T00:00:00.000Z,
       "provider": "RNA",
       "type": "object",
       "value": 1998-02-07T00:00:00.000Z,
     },
   ],
-  "date_modification_rna": Array [
-    Object {
+  "date_modification_rna": [
+    {
       "last_update": 2023-01-12T00:00:00.000Z,
       "provider": "RNA",
       "type": "object",
       "value": 2023-01-12T00:00:00.000Z,
     },
   ],
-  "date_rup": Array [
-    Object {
+  "date_rup": [
+    {
       "last_update": 2023-01-12T00:00:00.000Z,
       "provider": "RNA",
       "type": "string",
       "value": "2018-05-13",
     },
   ],
-  "denomination_rna": Array [
-    Object {
+  "denomination_rna": [
+    {
       "last_update": 2023-01-12T00:00:00.000Z,
       "provider": "RNA",
       "type": "string",
       "value": "Asso qui n'existe pas",
     },
   ],
-  "nature": Array [
-    Object {
+  "nature": [
+    {
       "last_update": 2023-01-12T00:00:00.000Z,
       "provider": "RNA",
       "type": "string",
       "value": "Simplement déclarée",
     },
   ],
-  "objet_social": Array [
-    Object {
+  "objet_social": [
+    {
       "last_update": 2023-01-12T00:00:00.000Z,
       "provider": "RNA",
       "type": "string",
       "value": "Object social !",
     },
   ],
-  "rna": Array [
-    Object {
+  "rna": [
+    {
       "last_update": 2023-01-12T00:00:00.000Z,
       "provider": "RNA",
       "type": "string",
       "value": "W000000000",
     },
   ],
-  "rup": Array [
-    Object {
+  "rup": [
+    {
       "last_update": 2023-01-12T00:00:00.000Z,
       "provider": "RNA",
       "type": "boolean",
@@ -92,13 +92,13 @@ Object {
 `;
 
 exports[`ApiAssoDtoAdapter sirenStructureToAssociation should transform to association 1`] = `
-Object {
-  "adresse_siege_siren": Array [
-    Object {
+{
+  "adresse_siege_siren": [
+    {
       "last_update": 2019-11-28T00:00:00.000Z,
       "provider": "SIREN",
       "type": "object",
-      "value": Object {
+      "value": {
         "code_postal": "42424",
         "commune": "Londre",
         "numero": "18",
@@ -107,59 +107,59 @@ Object {
       },
     },
   ],
-  "categorie_juridique": Array [
-    Object {
+  "categorie_juridique": [
+    {
       "last_update": 2019-11-28T00:00:00.000Z,
       "provider": "SIREN",
       "type": "string",
       "value": "9220",
     },
   ],
-  "date_creation_siren": Array [
-    Object {
+  "date_creation_siren": [
+    {
       "last_update": 2019-11-28T00:00:00.000Z,
       "provider": "SIREN",
       "type": "object",
       "value": 1993-01-11T00:00:00.000Z,
     },
   ],
-  "date_modification_siren": Array [
-    Object {
+  "date_modification_siren": [
+    {
       "last_update": 2019-11-28T00:00:00.000Z,
       "provider": "SIREN",
       "type": "object",
       "value": 2019-11-28T00:00:00.000Z,
     },
   ],
-  "denomination_siren": Array [
-    Object {
+  "denomination_siren": [
+    {
       "last_update": 2019-11-28T00:00:00.000Z,
       "provider": "SIREN",
       "type": "string",
       "value": "Je suis un fause asso",
     },
   ],
-  "etablisements_siret": Array [
-    Object {
+  "etablisements_siret": [
+    {
       "last_update": 2019-11-28T00:00:00.000Z,
       "provider": "SIREN",
       "type": "object",
-      "value": Array [
+      "value": [
         "123004648000021",
         "123004648000013",
       ],
     },
   ],
-  "nic_siege": Array [
-    Object {
+  "nic_siege": [
+    {
       "last_update": 2019-11-28T00:00:00.000Z,
       "provider": "SIREN",
       "type": "string",
       "value": "00002",
     },
   ],
-  "siren": Array [
-    Object {
+  "siren": [
+    {
       "last_update": 2019-11-28T00:00:00.000Z,
       "provider": "SIREN",
       "type": "string",
@@ -170,13 +170,13 @@ Object {
 `;
 
 exports[`ApiAssoDtoAdapter toEtablissement should return etablissement with contact 1`] = `
-Object {
-  "adresse": Array [
-    Object {
+{
+  "adresse": [
+    {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "SIREN",
       "type": "object",
-      "value": Object {
+      "value": {
         "code_postal": undefined,
         "commune": undefined,
         "numero": undefined,
@@ -185,13 +185,13 @@ Object {
       },
     },
   ],
-  "contacts": Array [
-    Array [
-      Object {
+  "contacts": [
+    [
+      {
         "last_update": 2010-01-01T00:00:00.000Z,
         "provider": "Le Compte Asso",
         "type": "object",
-        "value": Object {
+        "value": {
           "civilite": undefined,
           "email": undefined,
           "nom": "Jedusor",
@@ -202,30 +202,30 @@ Object {
       },
     ],
   ],
-  "information_banquaire": Array [],
-  "nic": Array [
-    Object {
+  "information_banquaire": [],
+  "nic": [
+    {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "SIREN",
       "type": "string",
       "value": "00000",
     },
   ],
-  "ouvert": Array [
-    Object {
+  "ouvert": [
+    {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "SIREN",
       "type": "undefined",
       "value": undefined,
     },
   ],
-  "representants_legaux": Array [
-    Array [
-      Object {
+  "representants_legaux": [
+    [
+      {
         "last_update": 2010-01-01T00:00:00.000Z,
         "provider": "Le Compte Asso",
         "type": "object",
-        "value": Object {
+        "value": {
           "civilite": undefined,
           "email": undefined,
           "nom": "Jedusor",
@@ -236,16 +236,16 @@ Object {
       },
     ],
   ],
-  "siege": Array [
-    Object {
+  "siege": [
+    {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "SIREN",
       "type": "undefined",
       "value": undefined,
     },
   ],
-  "siret": Array [
-    Object {
+  "siret": [
+    {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "SIREN",
       "type": "string",
@@ -256,13 +256,13 @@ Object {
 `;
 
 exports[`ApiAssoDtoAdapter toEtablissement should return etablissement with rib 1`] = `
-Object {
-  "adresse": Array [
-    Object {
+{
+  "adresse": [
+    {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "SIREN",
       "type": "object",
-      "value": Object {
+      "value": {
         "code_postal": undefined,
         "commune": undefined,
         "numero": undefined,
@@ -271,58 +271,58 @@ Object {
       },
     },
   ],
-  "contacts": Array [],
-  "information_banquaire": Array [
-    Array [
-      Object {
+  "contacts": [],
+  "information_banquaire": [
+    [
+      {
         "last_update": 2010-01-01T00:00:00.000Z,
         "provider": "Le Compte Asso",
         "type": "object",
-        "value": Object {
+        "value": {
           "bic": "BIC_TEST",
           "iban": "TEST",
         },
       },
     ],
-    Array [
-      Object {
+    [
+      {
         "last_update": 2010-01-01T00:00:00.000Z,
         "provider": "Le Compte Asso",
         "type": "object",
-        "value": Object {
+        "value": {
           "bic": "BIC_TEST 2",
           "iban": "TEST 2",
         },
       },
     ],
   ],
-  "nic": Array [
-    Object {
+  "nic": [
+    {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "SIREN",
       "type": "string",
       "value": "00000",
     },
   ],
-  "ouvert": Array [
-    Object {
+  "ouvert": [
+    {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "SIREN",
       "type": "undefined",
       "value": undefined,
     },
   ],
-  "representants_legaux": Array [],
-  "siege": Array [
-    Object {
+  "representants_legaux": [],
+  "siege": [
+    {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "SIREN",
       "type": "undefined",
       "value": undefined,
     },
   ],
-  "siret": Array [
-    Object {
+  "siret": [
+    {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "SIREN",
       "type": "string",
@@ -333,13 +333,13 @@ Object {
 `;
 
 exports[`ApiAssoDtoAdapter toEtablissement should return etablissement without contact 1`] = `
-Object {
-  "adresse": Array [
-    Object {
+{
+  "adresse": [
+    {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "SIREN",
       "type": "object",
-      "value": Object {
+      "value": {
         "code_postal": undefined,
         "commune": undefined,
         "numero": undefined,
@@ -349,17 +349,17 @@ Object {
     },
   ],
   "contacts": undefined,
-  "information_banquaire": Array [],
-  "nic": Array [
-    Object {
+  "information_banquaire": [],
+  "nic": [
+    {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "SIREN",
       "type": "string",
       "value": "00001",
     },
   ],
-  "ouvert": Array [
-    Object {
+  "ouvert": [
+    {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "SIREN",
       "type": "undefined",
@@ -367,16 +367,16 @@ Object {
     },
   ],
   "representants_legaux": undefined,
-  "siege": Array [
-    Object {
+  "siege": [
+    {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "SIREN",
       "type": "undefined",
       "value": undefined,
     },
   ],
-  "siret": Array [
-    Object {
+  "siret": [
+    {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "SIREN",
       "type": "string",
@@ -387,13 +387,13 @@ Object {
 `;
 
 exports[`ApiAssoDtoAdapter toEtablissement should return etablissement without rib 1`] = `
-Object {
-  "adresse": Array [
-    Object {
+{
+  "adresse": [
+    {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "SIREN",
       "type": "object",
-      "value": Object {
+      "value": {
         "code_postal": undefined,
         "commune": undefined,
         "numero": undefined,
@@ -402,35 +402,35 @@ Object {
       },
     },
   ],
-  "contacts": Array [],
-  "information_banquaire": Array [],
-  "nic": Array [
-    Object {
+  "contacts": [],
+  "information_banquaire": [],
+  "nic": [
+    {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "SIREN",
       "type": "string",
       "value": "00001",
     },
   ],
-  "ouvert": Array [
-    Object {
+  "ouvert": [
+    {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "SIREN",
       "type": "undefined",
       "value": undefined,
     },
   ],
-  "representants_legaux": Array [],
-  "siege": Array [
-    Object {
+  "representants_legaux": [],
+  "siege": [
+    {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "SIREN",
       "type": "undefined",
       "value": undefined,
     },
   ],
-  "siret": Array [
-    Object {
+  "siret": [
+    {
       "last_update": 2010-01-01T00:00:00.000Z,
       "provider": "SIREN",
       "type": "string",

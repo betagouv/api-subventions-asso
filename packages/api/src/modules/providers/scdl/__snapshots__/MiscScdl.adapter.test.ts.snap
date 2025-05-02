@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`MiscScdlAdapter toCommon adapts properly 1`] = `
-Object {
+{
   "dispositif": "",
   "exercice": 2017,
   "montant_accorde": 47800.2,
@@ -13,10 +13,10 @@ Object {
 `;
 
 exports[`MiscScdlAdapter toDemandeSubvention adapts properly 1`] = `
-Object {
-  "actions_proposee": Array [
-    Object {
-      "intitule": Object {
+{
+  "actions_proposee": [
+    {
+      "intitule": {
         "last_update": 2023-10-13T00:00:00.000Z,
         "provider": "Région Bretagne",
         "type": "string",
@@ -24,57 +24,57 @@ Object {
       },
     },
   ],
-  "annee_demande": Object {
+  "annee_demande": {
     "last_update": 2023-10-13T00:00:00.000Z,
     "provider": "Région Bretagne",
     "type": "number",
     "value": 2017,
   },
-  "date_commision": Object {
+  "date_commision": {
     "last_update": 2023-10-13T00:00:00.000Z,
     "provider": "Région Bretagne",
     "type": "object",
     "value": 2017-06-27T00:00:00.000Z,
   },
-  "financeur_principal": Object {
+  "financeur_principal": {
     "last_update": 2023-10-13T00:00:00.000Z,
     "provider": "Région Bretagne",
     "type": "string",
     "value": "Région Bretagne",
   },
-  "montants": Object {
-    "accorde": Object {
+  "montants": {
+    "accorde": {
       "last_update": 2023-10-13T00:00:00.000Z,
       "provider": "Région Bretagne",
       "type": "number",
       "value": 47800.2,
     },
   },
-  "pluriannualite": Object {
+  "pluriannualite": {
     "last_update": 2023-10-13T00:00:00.000Z,
     "provider": "Région Bretagne",
     "type": "string",
     "value": "Oui",
   },
-  "service_instructeur": Object {
+  "service_instructeur": {
     "last_update": 2023-10-13T00:00:00.000Z,
     "provider": "Région Bretagne",
     "type": "string",
     "value": "Région Bretagne",
   },
-  "siret": Object {
+  "siret": {
     "last_update": 2023-10-13T00:00:00.000Z,
     "provider": "Région Bretagne",
     "type": "string",
     "value": "38047555800058",
   },
-  "status": Object {
+  "status": {
     "last_update": 2023-10-13T00:00:00.000Z,
     "provider": "Région Bretagne",
     "type": "string",
     "value": "Accordé",
   },
-  "statut_label": Object {
+  "statut_label": {
     "last_update": 2023-10-13T00:00:00.000Z,
     "provider": "Région Bretagne",
     "type": "string",

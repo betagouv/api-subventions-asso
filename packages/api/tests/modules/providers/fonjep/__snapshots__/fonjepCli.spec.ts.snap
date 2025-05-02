@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`FonjepCli parse() should add FonjepPaymentFlat 1`] = `
-Array [
-  Object {
+[
+  {
     "_id": Any<String>,
     "action": null,
     "activite": null,
@@ -29,7 +29,7 @@ Array [
     "typeIdEtablissementBeneficiaire": "siret",
     "uniqueId": "J10540-2017-01-26-2017-00000000000000-163-2017-01-26",
   },
-  Object {
+  {
     "_id": Any<String>,
     "action": null,
     "activite": null,
@@ -56,7 +56,7 @@ Array [
     "typeIdEtablissementBeneficiaire": "siret",
     "uniqueId": "J10540-2017-04-27-2017-00000000000000-163-2017-04-27",
   },
-  Object {
+  {
     "_id": Any<String>,
     "action": null,
     "activite": null,
@@ -83,7 +83,7 @@ Array [
     "typeIdEtablissementBeneficiaire": "siret",
     "uniqueId": "J10540-2017-07-11-2017-00000000000000-163-2017-07-11",
   },
-  Object {
+  {
     "_id": Any<String>,
     "action": null,
     "activite": null,
@@ -110,7 +110,7 @@ Array [
     "typeIdEtablissementBeneficiaire": "siret",
     "uniqueId": "J10540-2017-10-19-2017-00000000000000-163-2017-10-19",
   },
-  Object {
+  {
     "_id": Any<String>,
     "action": null,
     "activite": null,
@@ -137,7 +137,7 @@ Array [
     "typeIdEtablissementBeneficiaire": "siret",
     "uniqueId": "J23425-2017-01-26-2017-00000000000000-361-2017-01-26",
   },
-  Object {
+  {
     "_id": Any<String>,
     "action": null,
     "activite": null,
@@ -164,7 +164,7 @@ Array [
     "typeIdEtablissementBeneficiaire": "siret",
     "uniqueId": "J23425-2017-04-27-2017-00000000000000-361-2017-04-27",
   },
-  Object {
+  {
     "_id": Any<String>,
     "action": null,
     "activite": null,
@@ -191,7 +191,7 @@ Array [
     "typeIdEtablissementBeneficiaire": "siret",
     "uniqueId": "J23425-2017-07-11-2017-00000000000000-361-2017-07-11",
   },
-  Object {
+  {
     "_id": Any<String>,
     "action": null,
     "activite": null,
@@ -218,7 +218,7 @@ Array [
     "typeIdEtablissementBeneficiaire": "siret",
     "uniqueId": "J23425-2018-09-06-2017-00000000000000-361-2018-09-06",
   },
-  Object {
+  {
     "_id": Any<String>,
     "action": null,
     "activite": null,
@@ -245,7 +245,7 @@ Array [
     "typeIdEtablissementBeneficiaire": "siret",
     "uniqueId": "J02924-2017-01-26-2022-00000000000000-163-2017-01-26",
   },
-  Object {
+  {
     "_id": Any<String>,
     "action": null,
     "activite": null,
@@ -272,7 +272,7 @@ Array [
     "typeIdEtablissementBeneficiaire": "siret",
     "uniqueId": "J02924-2017-04-27-2022-00000000000000-163-2017-04-27",
   },
-  Object {
+  {
     "_id": Any<String>,
     "action": null,
     "activite": null,
@@ -299,7 +299,7 @@ Array [
     "typeIdEtablissementBeneficiaire": "siret",
     "uniqueId": "J02924-2017-07-11-2022-00000000000000-163-2017-07-11",
   },
-  Object {
+  {
     "_id": Any<String>,
     "action": null,
     "activite": null,
@@ -330,23 +330,23 @@ Array [
 `;
 
 exports[`FonjepCli parse() should create or remplace TypePoste collection 1`] = `
-Array [
-  Object {
+[
+  {
     "_id": Any<ObjectId>,
     "code": "DOUBLE",
     "libelle": "UNITE DE COMPTE DOUBLEE",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "code": "FONJEP",
     "libelle": "Poste FONJEP",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "code": "PSTEMP",
     "libelle": "POSTES EMPOI FONJEP (100 %)",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "code": "FONBIS",
     "libelle": "PROLONGATION PAS DE FRAIS",
@@ -355,50 +355,50 @@ Array [
 `;
 
 exports[`FonjepCli parse() should create or replace Dispositif collection 1`] = `
-Array [
-  Object {
+[
+  {
     "_id": Any<ObjectId>,
     "financeurCode": "10004",
     "id": 1,
     "libelle": "FONJEP Jeunesse éducation populaire",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "financeurCode": "10005",
     "id": 2,
     "libelle": "FONJEP Cohésion sociale",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "financeurCode": "10008",
     "id": 3,
     "libelle": "FONJEP Politique de la ville",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "financeurCode": "10009",
     "id": 4,
     "libelle": "FONJEP Guid'Asso",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "financeurCode": "10010",
     "id": 5,
     "libelle": "FONJEP Éducation à la citoyenneté et à la solidarité internationale (ECSI)",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "financeurCode": "10012",
     "id": 6,
     "libelle": "FONJEP Culture",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "financeurCode": "10016",
     "id": 7,
     "libelle": "FONJEP Centre de ressources et d'information des bénévoles",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "financeurCode": "10017",
     "id": 8,
@@ -408,8 +408,8 @@ Array [
 `;
 
 exports[`FonjepCli parse() should create or replace Poste collection 1`] = `
-Array [
-  Object {
+[
+  {
     "_id": Any<ObjectId>,
     "annee": 2017,
     "associationBeneficiaireCode": 1,
@@ -426,7 +426,7 @@ Array [
     "pstStatutPosteLibelle": "Attribué",
     "pstTypePosteCode": "FONJEP",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "annee": 2022,
     "associationBeneficiaireCode": 2,
@@ -443,7 +443,7 @@ Array [
     "pstStatutPosteLibelle": "Attribué",
     "pstTypePosteCode": "FONJEP",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "annee": 2017,
     "associationBeneficiaireCode": 3,
@@ -464,8 +464,8 @@ Array [
 `;
 
 exports[`FonjepCli parse() should create or replace Tiers collection 1`] = `
-Array [
-  Object {
+[
+  {
     "_id": Any<ObjectId>,
     "code": 1,
     "codePostal": "00000",
@@ -477,7 +477,7 @@ Array [
     "siretOuRidet": "00000000000000",
     "ville": "Paris",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "code": 2,
     "codePostal": "00000",
@@ -489,7 +489,7 @@ Array [
     "siretOuRidet": "00000000000000",
     "ville": "Paris",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "code": 3,
     "codePostal": "00000",
@@ -505,8 +505,8 @@ Array [
 `;
 
 exports[`FonjepCli parse() should create or replace versement collection 1`] = `
-Array [
-  Object {
+[
+  {
     "_id": Any<ObjectId>,
     "dateVersement": 2017-01-26T00:00:00.000Z,
     "montantAPayer": 1777,
@@ -515,7 +515,7 @@ Array [
     "periodeFin": 2017-03-31T00:00:00.000Z,
     "posteCode": "J10540",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "dateVersement": 2017-04-27T00:00:00.000Z,
     "montantAPayer": 1777,
@@ -524,7 +524,7 @@ Array [
     "periodeFin": 2017-06-30T00:00:00.000Z,
     "posteCode": "J10540",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "dateVersement": 2017-07-11T00:00:00.000Z,
     "montantAPayer": 1777,
@@ -533,7 +533,7 @@ Array [
     "periodeFin": 2017-09-30T00:00:00.000Z,
     "posteCode": "J10540",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "dateVersement": 2017-10-19T00:00:00.000Z,
     "montantAPayer": 1776,
@@ -542,7 +542,7 @@ Array [
     "periodeFin": 2017-12-31T00:00:00.000Z,
     "posteCode": "J10540",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "dateVersement": 2017-01-26T00:00:00.000Z,
     "montantAPayer": 1777,
@@ -551,7 +551,7 @@ Array [
     "periodeFin": 2017-03-31T00:00:00.000Z,
     "posteCode": "J23425",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "dateVersement": 2017-04-27T00:00:00.000Z,
     "montantAPayer": 1777,
@@ -560,7 +560,7 @@ Array [
     "periodeFin": 2017-06-30T00:00:00.000Z,
     "posteCode": "J23425",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "dateVersement": 2017-07-11T00:00:00.000Z,
     "montantAPayer": 1777,
@@ -569,7 +569,7 @@ Array [
     "periodeFin": 2017-09-30T00:00:00.000Z,
     "posteCode": "J23425",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "dateVersement": 2018-09-06T00:00:00.000Z,
     "montantAPayer": 1776,
@@ -578,7 +578,7 @@ Array [
     "periodeFin": 2017-12-31T00:00:00.000Z,
     "posteCode": "J23425",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "dateVersement": 2017-01-26T00:00:00.000Z,
     "montantAPayer": 1791,
@@ -587,7 +587,7 @@ Array [
     "periodeFin": 2017-03-31T00:00:00.000Z,
     "posteCode": "J02924",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "dateVersement": 2017-04-27T00:00:00.000Z,
     "montantAPayer": 1791,
@@ -596,7 +596,7 @@ Array [
     "periodeFin": 2017-06-30T00:00:00.000Z,
     "posteCode": "J02924",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "dateVersement": 2017-07-11T00:00:00.000Z,
     "montantAPayer": 1791,
@@ -605,7 +605,7 @@ Array [
     "periodeFin": 2017-09-30T00:00:00.000Z,
     "posteCode": "J02924",
   },
-  Object {
+  {
     "_id": Any<ObjectId>,
     "dateVersement": 2017-10-19T00:00:00.000Z,
     "montantAPayer": 1791,

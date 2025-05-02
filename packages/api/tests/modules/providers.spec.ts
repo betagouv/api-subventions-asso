@@ -4,7 +4,9 @@ import fonjepSubventionPort from "../../src/dataProviders/db/providers/fonjep/fo
 import { SubventionEntity as FonjepEntityFixture } from "./providers/fonjep/__fixtures__/entity";
 import OsirisRequestEntityFixture from "./providers/osiris/__fixtures__/entity";
 
-const g = global as unknown as { app: unknown };
+import { App } from "supertest/types";
+
+const g = global as unknown as { app: App };
 
 describe("open-data/fournisseurs", () => {
     beforeEach(async () => {

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ChorusAdapter getPaymentFlatRawData should return PaymentFlatRawData 1`] = `
-Object {
+{
   "amount": 1000,
   "attachementComptable": "BRET",
   "centreFinancierCode": "AA01/0776-C001-4000",
@@ -21,7 +21,7 @@ Object {
 `;
 
 exports[`ChorusAdapter toCommon returns proper result 1`] = `
-Object {
+{
   "bop": "0BOP",
   "date_debut": 2022-02-02T00:00:00.000Z,
   "exercice": 2022,
@@ -30,7 +30,7 @@ Object {
 `;
 
 exports[`ChorusAdapter toNotAggregatedChorusPaymentFlatEntity should return PaymentFlatEntity when data is fully provided 1`] = `
-Object {
+{
   "actionCode": "0101-01-02",
   "actionLabel": "Label d'action Exemple",
   "activityCode": "077601003222",
@@ -63,7 +63,7 @@ Object {
 `;
 
 exports[`ChorusAdapter toNotAggregatedChorusPaymentFlatEntity should return PaymentFlatEntity with null when data is not fully provided 1`] = `
-Object {
+{
   "actionCode": "0101-01-02",
   "actionLabel": "Label d'action Exemple",
   "activityCode": "077601003222",
@@ -96,94 +96,94 @@ Object {
 `;
 
 exports[`ChorusAdapter toPayment should return complet entity 1`] = `
-Object {
-  "activitee": Object {
+{
+  "activitee": {
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "Chorus",
     "type": "string",
     "value": "Appels a projet",
   },
-  "amount": Object {
+  "amount": {
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "Chorus",
     "type": "number",
     "value": 89988.3,
   },
-  "bop": Object {
+  "bop": {
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "Chorus",
     "type": "string",
     "value": "101",
   },
-  "branche": Object {
+  "branche": {
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "Chorus",
     "type": "string",
     "value": "Associations",
   },
-  "centreFinancier": Object {
+  "centreFinancier": {
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "Chorus",
     "type": "string",
     "value": "UO DGER XXXX-C001",
   },
-  "codeBranche": Object {
+  "codeBranche": {
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "Chorus",
     "type": "string",
     "value": "Z039",
   },
   "compte": undefined,
-  "dateOperation": Object {
+  "dateOperation": {
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "Chorus",
     "type": "object",
     "value": 2023-07-12T00:00:00.000Z,
   },
-  "domaineFonctionnel": Object {
+  "domaineFonctionnel": {
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "Chorus",
     "type": "string",
     "value": "Appels à projet",
   },
-  "ej": Object {
+  "ej": {
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "Chorus",
     "type": "string",
     "value": "0001821732",
   },
-  "libelleProgramme": Object {
+  "libelleProgramme": {
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "Data Bretagne",
     "type": "string",
     "value": "PROGRAM 101",
   },
-  "numeroDemandePaiement": Object {
+  "numeroDemandePaiement": {
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "Chorus",
     "type": "string",
     "value": "000195567",
   },
-  "numeroTier": Object {
+  "numeroTier": {
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "Chorus",
     "type": "string",
     "value": "ASSO 1",
   },
-  "programme": Object {
+  "programme": {
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "Data Bretagne",
     "type": "number",
     "value": 101,
   },
-  "siret": Object {
+  "siret": {
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "Chorus",
     "type": "string",
     "value": "10000000000001",
   },
   "type": undefined,
-  "versementKey": Object {
+  "versementKey": {
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "Chorus",
     "type": "string",

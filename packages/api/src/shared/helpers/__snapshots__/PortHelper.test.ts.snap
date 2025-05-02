@@ -1,18 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`removeHashPassword should remove only hash password in user 1`] = `
-Object {
+{
   "_id": Any<ObjectId>,
   "active": false,
   "agentType": "CENTRAL_ADMIN",
   "email": "test22@beta.gouv.fr",
-  "jobType": Array [],
-  "jwt": Object {
+  "jobType": [],
+  "jwt": {
     "expirateDate": Any<Date>,
     "token": "TOKEN",
   },
   "profileToComplete": false,
-  "roles": Array [
+  "roles": [
     "user",
   ],
   "signupAt": Any<Date>,
@@ -20,14 +20,14 @@ Object {
 `;
 
 exports[`removeSecrets should remove all secret in user 1`] = `
-Object {
+{
   "_id": Any<ObjectId>,
   "active": false,
   "agentType": "CENTRAL_ADMIN",
   "email": "test22@beta.gouv.fr",
-  "jobType": Array [],
+  "jobType": [],
   "profileToComplete": false,
-  "roles": Array [
+  "roles": [
     "user",
   ],
   "signupAt": Any<Date>,
