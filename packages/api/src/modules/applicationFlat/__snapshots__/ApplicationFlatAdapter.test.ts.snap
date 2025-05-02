@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ApplicationFlatAdapter toDemandeSubvention adapts properly 1`] = `
-Object {
-  "actions_proposee": Array [
-    Object {
-      "intitule": Object {
+{
+  "actions_proposee": [
+    {
+      "intitule": {
         "last_update": 2015-03-14T00:00:00.000Z,
         "provider": "provider",
         "type": "string",
@@ -12,125 +12,125 @@ Object {
       },
     },
   ],
-  "annee_demande": Object {
+  "annee_demande": {
     "last_update": 2015-03-14T00:00:00.000Z,
     "provider": "provider",
     "type": "number",
     "value": 2015,
   },
-  "co_financement": Object {
-    "cofinanceur": Object {
+  "co_financement": {
+    "cofinanceur": {
       "last_update": 2015-03-14T00:00:00.000Z,
       "provider": "provider",
       "type": "string",
       "value": "",
     },
-    "cofinanceur_email": Object {
+    "cofinanceur_email": {
       "last_update": 2015-03-14T00:00:00.000Z,
       "provider": "provider",
       "type": "string",
       "value": "",
     },
-    "montants": Object {
+    "montants": {
       "last_update": 2015-03-14T00:00:00.000Z,
       "provider": "provider",
       "type": "number",
       "value": 0,
     },
   },
-  "creer_le": Object {
+  "creer_le": {
     "last_update": 2015-03-14T00:00:00.000Z,
     "provider": "provider",
     "type": "object",
     "value": 2015-03-12T00:00:00.000Z,
   },
-  "date_commision": Object {
+  "date_commision": {
     "last_update": 2015-03-14T00:00:00.000Z,
     "provider": "provider",
     "type": "object",
     "value": 2015-03-13T00:00:00.000Z,
   },
-  "dispositif": Object {
+  "dispositif": {
     "last_update": 2015-03-14T00:00:00.000Z,
     "provider": "provider",
     "type": "string",
     "value": "dispositif",
   },
-  "ej": Object {
+  "ej": {
     "last_update": 2015-03-14T00:00:00.000Z,
     "provider": "provider",
     "type": "string",
     "value": "EJ0001",
   },
-  "financeur_principal": Object {
+  "financeur_principal": {
     "last_update": 2015-03-14T00:00:00.000Z,
     "provider": "provider",
     "type": "string",
     "value": "attribuant",
   },
-  "montants": Object {
-    "accorde": Object {
+  "montants": {
+    "accorde": {
       "last_update": 2015-03-14T00:00:00.000Z,
       "provider": "provider",
       "type": "number",
       "value": 15000,
     },
-    "demande": Object {
+    "demande": {
       "last_update": 2015-03-14T00:00:00.000Z,
       "provider": "provider",
       "type": "number",
       "value": 30000,
     },
-    "total": Object {
+    "total": {
       "last_update": 2015-03-14T00:00:00.000Z,
       "provider": "provider",
       "type": "number",
       "value": 50000,
     },
   },
-  "pluriannualite": Object {
+  "pluriannualite": {
     "last_update": 2015-03-14T00:00:00.000Z,
     "provider": "provider",
     "type": "boolean",
     "value": true,
   },
-  "service_instructeur": Object {
+  "service_instructeur": {
     "last_update": 2015-03-14T00:00:00.000Z,
     "provider": "provider",
     "type": "string",
     "value": "serviceInstructeur",
   },
-  "siret": Object {
+  "siret": {
     "last_update": 2015-03-14T00:00:00.000Z,
     "provider": "provider",
     "type": "string",
     "value": "12345678901234",
   },
-  "sous_dispositif": Object {
+  "sous_dispositif": {
     "last_update": 2015-03-14T00:00:00.000Z,
     "provider": "provider",
     "type": "string",
     "value": "sous-dispositif",
   },
-  "status": Object {
+  "status": {
     "last_update": 2015-03-14T00:00:00.000Z,
     "provider": "provider",
     "type": "string",
     "value": "Accordé",
   },
-  "statut_label": Object {
+  "statut_label": {
     "last_update": 2015-03-14T00:00:00.000Z,
     "provider": "provider",
     "type": "string",
     "value": "Accordé",
   },
-  "transmis_le": Object {
+  "transmis_le": {
     "last_update": 2015-03-14T00:00:00.000Z,
     "provider": "provider",
     "type": "object",
     "value": 2015-03-12T00:00:00.000Z,
   },
-  "versementKey": Object {
+  "versementKey": {
     "last_update": 2015-03-14T00:00:00.000Z,
     "provider": "provider",
     "type": "string",

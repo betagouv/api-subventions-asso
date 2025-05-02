@@ -134,9 +134,9 @@ describe("ApplicationFlatService", () => {
             it("converts found methods", async () => {
                 const actual = await applicationFlatService.getRawGrants(IDENTIFIER);
                 expect(actual).toMatchInlineSnapshot(`
-                    Array [
-                      Object {
-                        "data": Object {
+                    [
+                      {
+                        "data": {
                           "idVersement": "poste1",
                           "provider": "fonjep",
                         },
@@ -144,8 +144,8 @@ describe("ApplicationFlatService", () => {
                         "provider": "fonjep",
                         "type": "application",
                       },
-                      Object {
-                        "data": Object {
+                      {
+                        "data": {
                           "ej": "ej2",
                           "provider": "autre",
                         },
