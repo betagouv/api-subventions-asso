@@ -7,7 +7,6 @@ const { printAtSameLine } = require("../build/src/shared/helpers/CliHelper");
 const { siretToSiren } = require("../build/src/shared/helpers/SirenHelper");
 
 module.exports = {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async up(db, client) {
         console.log("Connecting to DB...");
         await connectDB();
@@ -36,12 +35,5 @@ module.exports = {
             printAtSameLine(counter.toString());
         }
         console.log("End of migration!");
-    },
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async down(db, client) {
-        // TODO write the statements to rollback your migration (if possible)
-        // Example:
-        // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
     },
 };

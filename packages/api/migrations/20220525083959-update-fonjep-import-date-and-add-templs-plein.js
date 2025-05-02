@@ -3,7 +3,6 @@ const { connectDB } = require("../build/src/shared/MongoConnection");
 const { printAtSameLine } = require("../build/src/shared/helpers/CliHelper");
 
 module.exports = {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async up(db, client) {
         console.log("Connecting to DB...");
         await connectDB();
@@ -27,12 +26,5 @@ module.exports = {
             counter++;
             printAtSameLine(counter.toString());
         }
-    },
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async down(db, client) {
-        // TODO write the statements to rollback your migration (if possible)
-        // Example:
-        // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
     },
 };

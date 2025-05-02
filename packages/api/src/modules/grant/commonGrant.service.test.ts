@@ -142,9 +142,8 @@ describe("CommonGrantService", () => {
                 ),
                 rawToCommonFragment: jest.fn(() => ({})),
 
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 aggregatePayments: jest.fn((..._args) => FINAL_PAYMENT),
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
                 chooseRawApplication: jest.fn((..._args) => SELECTED_APPLICATION),
             };
         });

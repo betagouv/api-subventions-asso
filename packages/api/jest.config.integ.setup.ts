@@ -97,7 +97,7 @@ beforeAll(async () => {
     const mockIssuer = {
         Client: class Client {
             endSessionUrl(...args) {
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                 
                 return jest.fn((..._args) => {})(...args);
             }
         },

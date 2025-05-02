@@ -4,8 +4,7 @@ const userPort = require("../build/src/dataProviders/db/user/user.port").default
 const asyncForEach = require("../build/src/shared/helpers/ArrayHelper").asyncForEach;
 
 module.exports = {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async up(db, client) {
+    async up(db) {
         await connectDB();
         const result = [];
         await db
@@ -56,12 +55,5 @@ module.exports = {
                     signupAt: new Date("2022-01-01"),
                 }),
         );
-    },
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async down(db, client) {
-        // TODO write the statements to rollback your migration (if possible)
-        // Example:
-        // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
     },
 };

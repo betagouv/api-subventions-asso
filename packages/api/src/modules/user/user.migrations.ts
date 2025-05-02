@@ -8,10 +8,7 @@ import userActivationService from "./services/activation/user.activation.service
 import userCrudService from "./services/crud/user.crud.service";
 
 export enum EmailToLowerCaseAction {
-    // TODO: find a way to make enum no unused vars ok
-
     UPDATE = 1,
-
     DELETE = 2,
 }
 

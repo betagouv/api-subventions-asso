@@ -13,11 +13,14 @@ const ignores = [
     ".github",
     ".vscode",
 
+    // all .md files
+    "**/*.md",
+
     // npm
     "node_modules/**/*",
     "package-lock.json",
 
-    // specific modules => document why we need this ?
+    // specific modules => document why do we need this ?
     "osiris-automation/cleaned_modules/**/*",
 ];
 
@@ -38,6 +41,20 @@ export default [
         files: ["**/*.{js}"],
         languageOptions: {
             parser: eslint.parser,
+        },
+    },
+    {
+        rules: {
+            "no-unused-vars": [
+                "error",
+                {
+                    ignoreRestSiblings: true,
+                    argsIgnorePattern: "^_",
+                    varsIgnorePattern: "^_",
+                    // for unknown reason, .js files in tools doesn't allow catch without error parameter
+                    caughtErrorsIgnorePattern: "^_",
+                },
+            ],
         },
     },
 ];

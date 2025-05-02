@@ -36,7 +36,7 @@ export class ProviderRequestService {
             })
             .then(async response => {
                 await this.createLog(url, date, response.status, type);
-                return RequestResponseAdapter.toRequestReponse(response);
+                return RequestResponseAdapter.toRequestReponse<T>(response);
             })
             .catch(async (error: AxiosError) => {
                 if (error.status) await this.createLog(url, date, error.status, type);

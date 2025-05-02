@@ -107,9 +107,9 @@ describe("StructureFormStepController", () => {
         it("updates errors store about dirty invalid fields", () => {
             const mocks = {
                 field1: vi.fn(),
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
                 field2: vi.fn((..._args) => "some error"),
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
                 field3: vi.fn((..._args) => "some error"),
             };
             // @ts-expect-error - mock private
@@ -132,7 +132,6 @@ describe("StructureFormStepController", () => {
             ${false} | ${true}  | ${"valid"}
         `("dispatches error if dirty field is invalid", ({ isDirty, isValid, expectedEvent }) => {
             const mocks = {
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 field: vi.fn((..._args) => (isValid ? undefined : "some error")),
             };
             // @ts-expect-error - mock private

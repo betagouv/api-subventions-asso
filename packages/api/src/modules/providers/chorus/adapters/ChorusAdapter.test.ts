@@ -521,13 +521,13 @@ describe("ChorusAdapter", () => {
         const SIRET_ESTAB = new Siret("12345678900018");
         const SIREN_ESTAB = new Siren("123456789");
         const CHORUS_LINE_DTO = CHORUS_LINE_ENTITY.data;
-        // @ts-expect-error: mock
+        // @ts-expect-error: mock private method
         const mockGetCompanyId = jest.spyOn(ChorusAdapter, "getCompanyId");
-        // @ts-expect-error: mock
+        // @ts-expect-error: mock private method
         const mockGetAmount = jest.spyOn(ChorusAdapter, "getAmount");
-        // @ts-expect-error: mock
+        // @ts-expect-error: mock private method
         const mockGetOperationDate = jest.spyOn(ChorusAdapter, "getOperationDate");
-        // @ts-expect-error: mock
+        // @ts-expect-error: mock private method
         const mockGetEstablishmentValueObject = jest.spyOn(ChorusAdapter, "getEstablishmentValueObject");
 
         beforeEach(() => {

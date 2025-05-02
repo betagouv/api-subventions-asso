@@ -26,8 +26,7 @@ class OsirisPuppeteer {
             this.page = await this.browser.newPage();
             try {
                 await this.page.goto(this.osirisUrl);
-                // eslint-disable-next-line no-unused-vars -- don't know why without parenthesis eslint yel
-            } catch (e) {
+            } catch (_e) {
                 await this.page.close();
                 await this.__wait(2000);
                 this.page = await this.browser.newPage();

@@ -17,6 +17,9 @@ const ignores = [
     // TS builds
     "build/**/*",
 
+    // all .md files
+    "**/*.md",
+
     // npm
     "node_modules/**/*",
     "package-lock.json",

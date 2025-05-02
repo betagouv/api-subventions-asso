@@ -15,8 +15,4 @@ module.exports = {
 
         await dauphinGisproPort.migrateDauphinCacheToDauphinGispro(console.log);
     },
-
-    async down() {
-        // TODO write the statements to rollback your migration (if possible)
-    },
 };

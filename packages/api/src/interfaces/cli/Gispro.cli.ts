@@ -35,7 +35,6 @@ export default class GisproCli extends CliController {
         GisproParser.parse(fileContent, parseInt(year), () => true);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected async _parse(file: string, logs: unknown[], exportDate: Date, ..._args) {
         this.logger.logIC("\nStart parse file: ", file);
 

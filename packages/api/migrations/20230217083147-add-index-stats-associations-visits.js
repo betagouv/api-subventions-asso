@@ -4,17 +4,9 @@ const {
 } = require("../build/src/dataProviders/db/stats/statsAssociationsVisit.port");
 
 module.exports = {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async up(db, client) {
+    async up() {
         await connectDB();
 
         await statsAssociationsVisitPort.createIndexes();
-    },
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async down(db, client) {
-        // TODO write the statements to rollback your migration (if possible)
-        // Example:
-        // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
     },
 };

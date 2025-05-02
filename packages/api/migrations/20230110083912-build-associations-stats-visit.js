@@ -9,8 +9,7 @@ const { siretToSiren } = require("../build/src/shared/helpers/SirenHelper");
 const { default: rnaSirenPort } = require("../build/src/dataProviders/db/rnaSiren/rnaSiren.port");
 
 module.exports = {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async up(db, client) {
+    async up() {
         await connectDB();
         const logsCursor = await logsPort.getLogsWithRegexUrl(/\/(association|etablissement)\/.{9,14}$/);
 
@@ -41,8 +40,7 @@ module.exports = {
         }
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async down(db, client) {
+    async down(db) {
         await connectDB();
         db.collection(statsAssociationsVisitPort.collectionName).drop();
     },

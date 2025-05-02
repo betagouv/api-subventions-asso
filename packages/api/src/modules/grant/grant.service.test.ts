@@ -159,7 +159,7 @@ describe("GrantService", () => {
 
         it("should filter out null adapted grants", () => {
             mockAdapteRawGrant.mockReturnValue(null);
-            const actual = grantService.adaptJoinedRawGrant({
+            grantService.adaptJoinedRawGrant({
                 fullGrants: [{}, {}] as unknown as RawFullGrant[],
                 applications: [{}] as unknown as RawApplication[],
                 payments: [{}] as unknown as RawPayment[],

@@ -21,6 +21,9 @@ const ignores = [
     "package/**/*",
     "**/static",
 
+    // all .md files
+    "**/*.md",
+
     // Ignore files for PNPM, NPM and YARN
     "pnpm-lock.yaml",
     "package-lock.json",
@@ -33,6 +36,14 @@ export default [
         files: ["**/*.svelte", "**/*.test.ts"],
         rules: {
             "no-unused-expressions": "off",
+            "@typescript-eslint/no-unused-vars": [
+                "error",
+                {
+                    ignoreRestSiblings: true,
+                    argsIgnorePattern: "^_",
+                    varsIgnorePattern: "^_",
+                },
+            ],
         },
     },
     eslint.configs.recommended,

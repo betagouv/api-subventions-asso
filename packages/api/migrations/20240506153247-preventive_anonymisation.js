@@ -96,6 +96,4 @@ module.exports = {
 
         await db.collection("log").bulkWrite(bulkWriteOps);
     },
-
-    async down() {},
 };

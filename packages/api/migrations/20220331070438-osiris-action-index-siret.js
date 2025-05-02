@@ -6,8 +6,7 @@ const enity = require("../build/src/modules/providers/osiris/entities/OsirisActi
 const { GenericParser } = require("../build/src/shared/GenericParser");
 
 module.exports = {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async up(db, client) {
+    async up() {
         console.log("Start Osris action indexed siret migration");
         await connectDB();
         await migrationManager.startMigration();
@@ -26,12 +25,5 @@ module.exports = {
         }
 
         await migrationManager.endMigration();
-    },
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async down(db, client) {
-        // TODO write the statements to rollback your migration (if possible)
-        // Example:
-        // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
     },
 };
