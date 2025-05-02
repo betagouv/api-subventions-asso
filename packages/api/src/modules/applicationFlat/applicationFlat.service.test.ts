@@ -133,28 +133,7 @@ describe("ApplicationFlatService", () => {
 
             it("converts found methods", async () => {
                 const actual = await applicationFlatService.getRawGrants(IDENTIFIER);
-                expect(actual).toMatchInlineSnapshot(`
-                    [
-                      {
-                        "data": {
-                          "idVersement": "poste1",
-                          "provider": "fonjep",
-                        },
-                        "joinKey": "poste1",
-                        "provider": "fonjep",
-                        "type": "application",
-                      },
-                      {
-                        "data": {
-                          "ej": "ej2",
-                          "provider": "autre",
-                        },
-                        "joinKey": "ej2",
-                        "provider": "autre",
-                        "type": "application",
-                      },
-                    ]
-                `);
+                expect(actual).toMatchSnapshot();
             });
         });
     });
