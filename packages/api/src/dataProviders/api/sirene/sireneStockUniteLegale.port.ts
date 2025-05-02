@@ -12,7 +12,7 @@ export class SireneStockUniteLegaleApiPort {
     }
 
     getZip() {
-        return this.http.get<ReadableStream>(this.URL, { responseType: "stream" });
+        return this.http.get(this.URL, { responseType: "stream" });
     }
 }
 

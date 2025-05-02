@@ -44,7 +44,6 @@ export default [
                 "error",
                 { ignoreRestSiblings: true, argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
             ],
-            "@typescript-eslint/no-explicit-any": "warn",
         },
     },
     {
