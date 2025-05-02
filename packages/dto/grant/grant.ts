@@ -1,5 +1,5 @@
-import { DemandeSubvention } from "../search";
-import { Payment } from "../payments/Payment";
+import { Payment } from "../payments";
+import { DemandeSubvention } from "../demandeSubvention";
 import { CommonApplicationDto, CommonPaymentDto } from "./common";
 
 export type PublishableApplicationDto = Omit<CommonApplicationDto, "montant_demande">;

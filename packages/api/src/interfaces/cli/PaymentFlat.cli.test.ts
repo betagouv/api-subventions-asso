@@ -34,7 +34,7 @@ describe("PaymentFlat Cli", () => {
         it("throws an error if collection has already been initialized", () => {
             mockIsCollectionInitialized.mockResolvedValueOnce(true);
             expect(async () => await paymentFlatCli.initChorus()).rejects.toThrowError(
-                "DB already initialized, used resyncExercice instead",
+                "DB already initialized, use resyncExercice instead",
             );
         });
 

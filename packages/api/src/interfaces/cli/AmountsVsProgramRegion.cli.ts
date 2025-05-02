@@ -10,7 +10,7 @@ export default class AmountsVsProgramRegionCli extends CliController {
     // should only be used once, then sync with resyncExercise
     async init() {
         if (await amountsVsProgramRegionService.isCollectionInitialized())
-            throw new Error("DB already initialized, used resyncExercice instead");
+            throw new Error("DB already initialized, use resyncExercice instead");
 
         this.logger.logIC("Create all amounts vs program region collection");
         return amountsVsProgramRegionService.init();

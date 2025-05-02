@@ -2,6 +2,7 @@ import DemandesSubventionsProvider from "../subventions/@types/DemandesSubventio
 import PaymentProvider from "../payments/@types/PaymentProvider";
 import GrantProvider from "../grant/@types/GrantProvider";
 import { FullGrantProvider } from "../grant/@types/FullGrantProvider";
+import ApplicationFlatProvider from "../applicationFlat/@types/applicationFlatProvider";
 import osirisService from "./osiris/osiris.service";
 import fonjepService from "./fonjep/fonjep.service.old";
 import chorusService from "./chorus/chorus.service";
@@ -47,3 +48,7 @@ export const fullGrantProviders = Object.values(providers).filter(
 export const grantProviders = Object.values(providers).filter(
     p => (p as GrantProvider).isGrantProvider,
 ) as GrantProvider[];
+
+export const applicationFlatProviders = Object.values(providers).filter(
+    p => (p as ApplicationFlatProvider).isApplicationFlatProvider,
+) as ApplicationFlatProvider[];

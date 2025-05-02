@@ -1,4 +1,4 @@
-import { RnaDto, SirenDto } from "dto";
+import type { RnaDto, SirenDto } from "dto";
 import { removeWhiteSpace } from "./stringHelper";
 
 export function isSiret(siret) {

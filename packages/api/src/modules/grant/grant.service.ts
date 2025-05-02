@@ -47,11 +47,14 @@ export class GrantService {
     }
 
     adaptJoinedRawGrant(joinedRawGrant: JoinedRawGrant) {
-        const payments = (joinedRawGrant.payments?.map(joined => this.adaptRawGrant(joined)) as Payment[]) || [];
-        const fullGrants = joinedRawGrant.fullGrants?.map(joined => this.adaptRawGrant(joined)) as Grant[] | [];
-        const applications = joinedRawGrant.applications?.map(joined => this.adaptRawGrant(joined)) as
-            | DemandeSubvention[]
-            | [];
+        const payments =
+            (joinedRawGrant.payments?.map(joined => this.adaptRawGrant(joined)).filter(p => !!p) as Payment[]) || [];
+        const fullGrants = joinedRawGrant.fullGrants
+            ?.map(joined => this.adaptRawGrant(joined))
+            .filter(fg => !!fg) as Grant[];
+        const applications = joinedRawGrant.applications
+            ?.map(joined => this.adaptRawGrant(joined))
+            .filter(a => !!a) as DemandeSubvention[];
         return this.toGrant({ fullGrants, applications, payments });
     }
 

@@ -1,5 +1,5 @@
 import { SiretDto } from "..";
-import { ProviderValue } from "../shared/ProviderValue";
+import { ProviderValue } from "../shared";
 import { Payment } from "../payments";
 
 export enum ApplicationStatus {

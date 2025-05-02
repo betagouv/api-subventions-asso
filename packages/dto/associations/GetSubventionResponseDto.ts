@@ -1,4 +1,4 @@
-import { DemandeSubvention } from "../search/DemandeSubvention";
+import { DemandeSubvention } from "../demandeSubvention";
 
 export interface GetSubventionSuccessResponseDto {
     subvention: DemandeSubvention;
