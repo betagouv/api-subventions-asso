@@ -97,7 +97,6 @@ beforeAll(async () => {
     const mockIssuer = {
         Client: class Client {
             endSessionUrl(...args) {
-                 
                 return jest.fn((..._args) => {})(...args);
             }
         },

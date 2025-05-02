@@ -33,9 +33,7 @@ const ignores = [
 export default [
     { ignores },
     {
-        files: ["**/*.svelte", "**/*.test.ts"],
         rules: {
-            "no-unused-expressions": "off",
             "@typescript-eslint/no-unused-vars": [
                 "error",
                 {
@@ -44,6 +42,12 @@ export default [
                     varsIgnorePattern: "^_",
                 },
             ],
+        },
+    },
+    {
+        files: ["**/*.svelte", "**/*.test.ts"],
+        rules: {
+            "no-unused-expressions": "off",
         },
     },
     eslint.configs.recommended,

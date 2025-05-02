@@ -62,7 +62,6 @@ export class AuthService {
     }
 
     async logout() {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { url, _success } = await authPort.logout();
         this.connectedUser.set(null);
         crispService.resetSession();
