@@ -12,7 +12,7 @@
     import DownloadButton from "$lib/components/Documents/components/DownloadButton.svelte";
     import DocumentSection from "$lib/components/Documents/components/DocumentSection.svelte";
 
-    // TODO: replace unknown with EstablishmentEntity when created
+    // TODO: replace unknown with EstablishmentEntity when created | linked to #2078
     export let resource: AssociationEntity | unknown;
     export let resourceType: ResourceType = "association";
 

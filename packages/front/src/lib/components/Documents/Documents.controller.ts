@@ -42,7 +42,7 @@ export class DocumentsController {
 
     constructor(
         public resourceType: ResourceType,
-        // TODO: replace unknown with EstablishmentEntity when created
+        // TODO: replace unknown with EstablishmentEntity when created | linked to #2078
         public resource: AssociationEntity | unknown,
         public currentAssociationIdentifiers: RnaSirenResponseDto[],
     ) {

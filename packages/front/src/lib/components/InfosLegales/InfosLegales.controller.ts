@@ -19,7 +19,7 @@ export default class InfosLegalesController {
     private _modification: string;
     private _modalData = {};
 
-    // TODO: create EstablishmentEntity / FlatenProviderValueEstablishment
+    // TODO: create EstablishmentEntity / FlatenProviderValueEstablishment | linked to #2078
     constructor(
         public association,
         public establishment: { siret: SiretDto; adresse: unknown } | undefined = undefined,
