@@ -78,6 +78,7 @@ export class DauphinService
             entities = await dauphinGisproPort.findBySiren(identifier.siren);
         }
 
+        // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
         return entities.map(entity => ({
             provider: this.provider.id,
             type: "application",
@@ -87,6 +88,7 @@ export class DauphinService
     }
 
     rawToCommon(rawGrant: RawGrant): CommonApplicationDto {
+        // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
         return DauphinDtoAdapter.toCommon(rawGrant.data as DauphinGisproDbo);
     }
 
@@ -114,12 +116,15 @@ export class DauphinService
                     )
                 ).data;
 
+                // @ts-expect-error: #3360 any replaced by unknown : make a type
                 if (!result || !result.hits) break;
 
+                // @ts-expect-error: #3360 any replaced by unknown : make a type
                 const applications = result.hits.hits;
                 fetched += applications.length;
 
                 if (totalToFetch === 0) {
+                    // @ts-expect-error: #3360 any replaced by unknown : make a type
                     totalToFetch = result.hits.total;
                     console.log(`found ${totalToFetch} applications to be fetched`);
                 }
@@ -250,6 +255,7 @@ export class DauphinService
         if (!dauphinInternalId) return [];
 
         const token = await this.getAuthToken();
+        // @ts-expect-error: #3360 any replaced by unknown : make a type
         const result = (
             await this.http.get(
                 `https://agent-dauphin.cget.gouv.fr/referentiel-tiers/cget/tiers/${dauphinInternalId}?expand=pieces.documents`,
@@ -280,13 +286,14 @@ export class DauphinService
                 this.buildSearchHeader(token),
             )
         ).data;
+        // @ts-expect-error: #3360 any replaced by unknown : make a type
         const properHit = res?.hits?.hits?.find(asso => asso._source.SIREN === siren.value);
         return properHit?._id?.match(/cget-(.*)/)?.[1];
     }
 
     async getSpecificDocumentStream(docUrl: string): Promise<IncomingMessage> {
         const token = await this.getAuthToken();
-
+        // @ts-expect-error: #3360 any replaced by unknown : make a type
         return (
             await this.http.get(docUrl, {
                 responseType: "stream",

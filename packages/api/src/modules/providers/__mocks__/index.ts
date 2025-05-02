@@ -84,6 +84,7 @@ const providers = {
         getAssociationsBySiren: async () => [{}],
         getAssociationsBySiret: async () => [{}],
         getAssociationsByRna: async () => [{}],
+
         getSpecificDocumentStream: async (_path: string) => new IncomingMessage(new Socket()),
     },
 };

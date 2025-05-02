@@ -12,6 +12,8 @@ export default class AgentTypeStepController {
     public readonly errorMessage: Store<string>;
     public readonly options: Option<AgentTypeEnum | "none">[] = subscriptionFormService.agentTypeOptions;
 
+    // TODO: make a type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     constructor(context?: any) {
         this.dispatch = Dispatch.getDispatcher();
         this.errorMessage = new Store("");

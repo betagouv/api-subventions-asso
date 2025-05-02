@@ -123,7 +123,6 @@ describe("DecentralizedSubStep", () => {
             let filterStructuresSpy: MockInstance;
 
             beforeAll(() => {
-                // @ts-expect-error mock
                 terrSpy = vi.spyOn(ctrl, methodName).mockImplementation(vi.fn());
                 // @ts-expect-error test private
                 filterStructuresSpy = vi.spyOn(ctrl, "filterStructureOptions").mockImplementation(vi.fn());
@@ -178,7 +177,7 @@ describe("DecentralizedSubStep", () => {
             { code: "10", name: "Netherland" },
         ];
 
-        const optionStore: Store<any[]> = new Store([]);
+        const optionStore: Store<unknown[]> = new Store([]);
         const serviceMethod = vi.fn(() => TERRITORIES);
         const transform = vi.fn(({ code, label }) => `${code} ${label}`);
 

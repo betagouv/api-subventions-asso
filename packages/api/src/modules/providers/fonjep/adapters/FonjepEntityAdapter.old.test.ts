@@ -70,7 +70,7 @@ describe("FonjepEntityAdapter", () => {
         it("should call toDemandeSubvention", () => {
             FonjepEntityAdapter.rawToGrant(
                 RAW_FULLGRANT,
-                FONJEP_PAYMENTS.map(_payment => PROGRAMS[1]),
+                FONJEP_PAYMENTS.map(() => PROGRAMS[1]),
             );
             expect(mockToDemandeSubvention).toHaveBeenCalledWith(FONJEP_APPLICATION);
         });
@@ -78,7 +78,7 @@ describe("FonjepEntityAdapter", () => {
         it("should call toPayment", () => {
             FonjepEntityAdapter.rawToGrant(
                 RAW_FULLGRANT,
-                FONJEP_PAYMENTS.map(_payment => PROGRAMS[1]),
+                FONJEP_PAYMENTS.map(() => PROGRAMS[1]),
             );
             expect(mockToPayment).toHaveBeenCalledTimes(FONJEP_PAYMENTS.length);
             FONJEP_PAYMENTS.forEach((payment, index) => {
@@ -90,7 +90,7 @@ describe("FonjepEntityAdapter", () => {
             const expected = GRANT;
             const actual = FonjepEntityAdapter.rawToGrant(
                 RAW_FULLGRANT,
-                FONJEP_PAYMENTS.map(_payment => PROGRAMS[1]),
+                FONJEP_PAYMENTS.map(() => PROGRAMS[1]),
             );
             expect(actual).toEqual(expected);
         });

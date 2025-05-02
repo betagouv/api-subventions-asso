@@ -41,7 +41,7 @@
         <h2 class="fr-h4">Vos dernières recherches</h2>
     </div>
     <div class="fr-grid-row fr-grid-row--gutters">
-        {#each $searchHistory.reverse() as search}
+        {#each $searchHistory.reverse() as search, index (index)}
             <AssociationCard simplifiedAsso={search} />
         {/each}
     </div>

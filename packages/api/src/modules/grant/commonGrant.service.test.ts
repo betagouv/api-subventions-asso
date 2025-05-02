@@ -47,7 +47,7 @@ describe("CommonGrantService", () => {
         const RAW = { provider: "goodProvider", data: {} };
         beforeAll(() => {
             commonGrantServiceTest = new CommonGrantService();
-            commonGrantServiceTest.providerMap = { goodProvider: { rawToCommon: jest.fn(_data => RES) } };
+            commonGrantServiceTest.providerMap = { goodProvider: { rawToCommon: jest.fn(() => RES) } };
         });
         it("calls provider's adapting method", () => {
             commonGrantServiceTest.rawToCommonFragment(RAW, true);
@@ -141,7 +141,9 @@ describe("CommonGrantService", () => {
                     (grants || []).filter(grant => Object.values(grant).some(key => key != "toFilterOut")),
                 ),
                 rawToCommonFragment: jest.fn(() => ({})),
+
                 aggregatePayments: jest.fn((..._args) => FINAL_PAYMENT),
+
                 chooseRawApplication: jest.fn((..._args) => SELECTED_APPLICATION),
             };
         });
@@ -175,10 +177,13 @@ describe("CommonGrantService", () => {
                 expect.any(Boolean),
             );
         });
+
         it("does not fail if no application nor full grant", () => {
             const test = () => commonGrantServiceTest.rawToCommon({ payments: RAW_PAYMENTS });
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             expect(test).resolves;
         });
+
         it("adapts all payments and full grants", () => {
             commonGrantServiceTest.rawToCommon(JOINED_RAW_GRANT);
             expect(commonGrantServiceTest.rawToCommonFragment).toHaveBeenCalledWith(
@@ -207,6 +212,7 @@ describe("CommonGrantService", () => {
         });
         it("does not fail if no payment nor full grant", () => {
             const test = () => commonGrantServiceTest.rawToCommon({ applications: RAW_APPLICATIONS });
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             expect(test).resolves;
         });
         it("returns null if neither application nor payment", () => {

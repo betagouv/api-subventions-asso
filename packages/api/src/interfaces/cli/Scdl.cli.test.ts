@@ -20,7 +20,7 @@ import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexE
 import MiscScdlProducer from "../../modules/providers/scdl/__fixtures__/MiscScdlProducer";
 import { ParsedDataWithProblem } from "../../modules/providers/scdl/@types/Validation";
 
-import csvSyncStringifier = require("csv-stringify/sync");
+import csvSyncStringifier from "csv-stringify/sync";
 import dataLogService from "../../modules/data-log/dataLog.service";
 jest.mock("../../modules/data-log/dataLog.service");
 
@@ -140,7 +140,7 @@ describe("ScdlCli", () => {
         });
 
         it("exports errors", async () => {
-            const ERRORS = "toto" as unknown as any[];
+            const ERRORS = "toto" as unknown as unknown[];
             // @ts-expect-error -- test private
             const exportSpy = jest.spyOn(cli, "exportErrors").mockReturnValueOnce(Promise.resolve());
             jest.mocked(parserMethod).mockReturnValueOnce({ entities: STORABLE_DATA_ARRAY, errors: ERRORS });

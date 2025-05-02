@@ -1,5 +1,3 @@
-import { DATA_BRETAGNE_RECORDS } from "../providers/dataBretagne/__fixtures__/dataBretagne.fixture";
-
 import paymentFlatService from "./paymentFlat.service";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 import {

@@ -179,9 +179,12 @@ describe("ChorusAdapter", () => {
 
     describe("getPaymentFlatComplementaryData", () => {
         const mockGetMinistryEntity = jest.spyOn(dataBretagneService, "getMinistryEntity");
-        const mockGetProgramCodeAndEntity = jest.spyOn(ChorusAdapter as any, "getProgramCodeAndEntity");
-        const mockGetActivityCodeAndEntity = jest.spyOn(ChorusAdapter as any, "getActivityCodeAndEntity");
-        const mockGetActionCodeAndEntity = jest.spyOn(ChorusAdapter as any, "getActionCodeAndEntity");
+        // @ts-expect-error: private method
+        const mockGetProgramCodeAndEntity = jest.spyOn(ChorusAdapter, "getProgramCodeAndEntity");
+        // @ts-expect-error: private method
+        const mockGetActivityCodeAndEntity = jest.spyOn(ChorusAdapter, "getActivityCodeAndEntity");
+        // @ts-expect-error: private method
+        const mockGetActionCodeAndEntity = jest.spyOn(ChorusAdapter, "getActionCodeAndEntity");
 
         const CHORUS_DTO = {
             // matches one of DATA_BRETAGNE_RECORDS.fonctionalDomains keys
@@ -201,9 +204,12 @@ describe("ChorusAdapter", () => {
         const ACTIVITY_CODE = REF_PROG.code_activite;
 
         beforeEach(() => {
+            // @ts-expect-error: mock
             mockGetProgramCodeAndEntity.mockReturnValue({ code: PROG_CODE, entity: PROGRAM });
             mockGetMinistryEntity.mockReturnValue(MINISTRY);
+            // @ts-expect-error: mock
             mockGetActionCodeAndEntity.mockReturnValue({ code: ACTION_CODE, entity: DOMAINE_FONCT });
+            // @ts-expect-error: mock
             mockGetActivityCodeAndEntity.mockReturnValue({ code: ACTIVITY_CODE, entity: REF_PROG });
         });
 
@@ -484,7 +490,7 @@ describe("ChorusAdapter", () => {
             const CHORUS_LINE_DTO = {
                 "Date de dernière opération sur la DP": 46959,
             };
-            // @ts-expect-error
+            // @ts-expect-error: mock
             const actual = ChorusAdapter.getOperationDate(CHORUS_LINE_DTO);
             const expected = JS_DATE;
             expect(actual).toEqual(expected);
@@ -495,7 +501,7 @@ describe("ChorusAdapter", () => {
             const CHORUS_LINE_DTO = {
                 "Date de dernière opération sur la DP": "02/02/2025",
             };
-            // @ts-expect-error
+            // @ts-expect-error: mock
             const actual = ChorusAdapter.getOperationDate(CHORUS_LINE_DTO);
             const expected = JS_DATE;
             expect(actual).toEqual(expected);
@@ -503,7 +509,7 @@ describe("ChorusAdapter", () => {
 
         it("should return null if field is not defined", () => {
             const CHORUS_LINE_DTO = {};
-            // @ts-expect-error
+            // @ts-expect-error: mock
             const actual = ChorusAdapter.getOperationDate(CHORUS_LINE_DTO);
             const expected = null;
             expect(actual).toEqual(expected);
@@ -515,24 +521,25 @@ describe("ChorusAdapter", () => {
         const SIRET_ESTAB = new Siret("12345678900018");
         const SIREN_ESTAB = new Siren("123456789");
         const CHORUS_LINE_DTO = CHORUS_LINE_ENTITY.data;
-        const mockGetCompanyId = jest.spyOn(ChorusAdapter as any, "getCompanyId");
-        const mockGetAmount = jest.spyOn(ChorusAdapter as any, "getAmount");
-        const mockGetOperationDate = jest.spyOn(ChorusAdapter as any, "getOperationDate");
-        const mockGetEstablishmentValueObject = jest.spyOn(ChorusAdapter as any, "getEstablishmentValueObject");
+        // @ts-expect-error: mock private method
+        const mockGetCompanyId = jest.spyOn(ChorusAdapter, "getCompanyId");
+        // @ts-expect-error: mock private method
+        const mockGetAmount = jest.spyOn(ChorusAdapter, "getAmount");
+        // @ts-expect-error: mock private method
+        const mockGetOperationDate = jest.spyOn(ChorusAdapter, "getOperationDate");
+        // @ts-expect-error: mock private method
+        const mockGetEstablishmentValueObject = jest.spyOn(ChorusAdapter, "getEstablishmentValueObject");
 
         beforeEach(() => {
-            // mockGetEstablishmentValueObject = jest.spyOn(ChorusAdapter, "getEstablishmentValueObject");
+            // @ts-expect-error: mock
             mockGetEstablishmentValueObject.mockReturnValue(SIRET_ESTAB);
+            // @ts-expect-error: mock
             mockGetCompanyId.mockReturnValue(SIREN_ESTAB);
+            // @ts-expect-error: mock
             mockGetAmount.mockReturnValue(1000);
+            // @ts-expect-error: mock
             mockGetOperationDate.mockReturnValue(new Date("2025-02-02"));
         });
-
-        // afterEach(() => {
-        //     [mockGetEstablishmentValueObject, mockGetCompanyId, mockGetAmount, mockGetOperationDate].forEach(mock => {
-        //         mock.mockClear();
-        //     });
-        // });
 
         afterAll(() => {
             [mockGetEstablishmentValueObject, mockGetCompanyId, mockGetAmount, mockGetOperationDate].forEach(mock => {

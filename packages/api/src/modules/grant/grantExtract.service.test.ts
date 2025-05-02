@@ -3,7 +3,7 @@ import { Association, Grant, SimplifiedEtablissement } from "dto";
 import grantService from "./grant.service";
 import associationsService from "../associations/associations.service";
 import GrantAdapter from "./grant.adapter";
-import csvStringifier = require("csv-stringify/sync");
+import csvStringifier from "csv-stringify/sync";
 import { ExtractHeaderLabel, GrantToExtract } from "./@types/GrantToExtract";
 import Siret from "../../valueObjects/Siret";
 import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";

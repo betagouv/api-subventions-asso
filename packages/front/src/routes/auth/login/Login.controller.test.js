@@ -2,7 +2,6 @@ import { LoginDtoErrorCodes } from "dto";
 import LoginController from "./Login.controller";
 import UnauthorizedError from "$lib/errors/UnauthorizedError";
 import authService from "$lib/resources/auth/auth.service";
-import { goToUrl } from "$lib/services/router.service";
 
 vi.mock("$lib/resources/auth/auth.service");
 vi.mock("$lib/services/router.service");

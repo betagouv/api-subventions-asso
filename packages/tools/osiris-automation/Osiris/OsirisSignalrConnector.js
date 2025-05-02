@@ -11,6 +11,7 @@ require("../cleaned_modules/signalR/jquery.signalR");
 
 class OsirisSignalrConnector {
     constructor(cookies, debug = false) {
+        // eslint-disable-next-line no-undef -- jquery stuff
         this.connection = $.hubConnection(`${window._origin}/OsirisSignalr/signalr`, { useDefaultPath: false });
         this.reportHubProxy = this.connection.createHubProxy("reporthub");
         this.connection.reconnectDelay = 1;

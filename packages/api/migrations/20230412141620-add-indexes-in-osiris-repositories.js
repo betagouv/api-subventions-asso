@@ -9,8 +9,4 @@ module.exports = {
         await osirisActionPort.createIndexes();
         await osirisRequestPort.createIndexes();
     },
-
-    async down() {
-        // No empty function
-    },
 };

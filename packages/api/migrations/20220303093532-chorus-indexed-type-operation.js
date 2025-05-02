@@ -6,14 +6,9 @@ const enity = require("../build/src/modules/providers/chorus/entities/ChorusLine
 const { GenericParser } = require("../build/src/shared/GenericParser");
 
 module.exports = {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async up(db, client) {
+    async up() {
         console.log("Start Chorus indexed typeOperation migration");
         await connectDB();
-        // TODO write your migration here.
-        // See https://github.com/seppevs/migrate-mongo/#creating-a-new-migration-script
-        // Example:
-        // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: true}});
         await migrationManager.startMigration();
 
         const cursor = port.cursorFind();
@@ -29,12 +24,5 @@ module.exports = {
         }
 
         await migrationManager.endMigration();
-    },
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async down(db, client) {
-        // TODO write the statements to rollback your migration (if possible)
-        // Example:
-        // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
     },
 };

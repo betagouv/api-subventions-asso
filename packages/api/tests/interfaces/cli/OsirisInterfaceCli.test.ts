@@ -65,7 +65,7 @@ describe("OsirisCli", () => {
 
         beforeEach(() => {
             controller = new OsirisCli();
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
+
             consoleWarn = jest.spyOn(console, "warn").mockImplementation(() => {});
         });
 

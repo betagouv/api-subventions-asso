@@ -66,7 +66,7 @@ export default class SubventiaValidator {
                 if (v) {
                     try {
                         GenericParser.ExcelDateToJSDate(parseInt(v as string, 10));
-                    } catch (e) {
+                    } catch {
                         return false;
                     }
                     return isValidDate(GenericParser.ExcelDateToJSDate(parseInt(v as string, 10)));
@@ -125,8 +125,11 @@ export default class SubventiaValidator {
             return {
                 ...invalid,
                 "Date - Décision": this.formatDate(invalid["Date - Décision"]),
+                // @ts-expect-error: make a type for invalid
                 "Date limite de début de réalisation": this.formatDate(invalid["Date limite de début de réalisation"]),
+                // @ts-expect-error: make a type for invalid
                 "Date limite de fin de réalisation": this.formatDate(invalid["Date limite de fin de réalisation"]),
+                // @ts-expect-error: make a type for invalid
                 "Date - Visa de recevabilité": this.formatDate(invalid["Date - Visa de recevabilité"]),
             };
         });

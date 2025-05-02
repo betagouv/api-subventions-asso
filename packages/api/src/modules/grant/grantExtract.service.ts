@@ -1,5 +1,5 @@
 import { SimplifiedEtablissement } from "dto";
-import csvStringifier = require("csv-stringify/sync");
+import csvStringifier from "csv-stringify/sync";
 import { BadRequestError } from "core";
 import { StructureIdentifier } from "../../@types";
 import associationsService from "../associations/associations.service";

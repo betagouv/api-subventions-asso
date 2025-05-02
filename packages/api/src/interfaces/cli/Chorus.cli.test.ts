@@ -3,8 +3,6 @@ jest.mock("fs");
 const mockedFs = jest.mocked(fs);
 import ChorusParser from "../../modules/providers/chorus/chorus.parser";
 jest.mock("../../modules/providers/chorus/chorus.parser");
-const mockedParser = jest.mocked(ChorusParser);
-import * as CliHelper from "../../shared/helpers/CliHelper";
 jest.mock("../../shared/helpers/CliHelper");
 import chorusService from "../../modules/providers/chorus/chorus.service";
 jest.mock("../../modules/providers/chorus/chorus.service");

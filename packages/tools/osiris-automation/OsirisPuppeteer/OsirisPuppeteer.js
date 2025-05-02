@@ -26,7 +26,7 @@ class OsirisPuppeteer {
             this.page = await this.browser.newPage();
             try {
                 await this.page.goto(this.osirisUrl);
-            } catch {
+            } catch (_e) {
                 await this.page.close();
                 await this.__wait(2000);
                 this.page = await this.browser.newPage();

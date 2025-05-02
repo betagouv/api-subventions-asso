@@ -117,7 +117,7 @@ describe("EtablissementHttp", () => {
     describe("getEtablissement", () => {
         const getEtablissementSpy = jest.spyOn(etablissementsService, "getEtablissement");
         it("should call service with args", async () => {
-            getEtablissementSpy.mockImplementationOnce(async () => ({ siret: SIRET } as unknown as Etablissement));
+            getEtablissementSpy.mockImplementationOnce(async () => ({ siret: SIRET }) as unknown as Etablissement);
             await controller.getEtablissement(SIRET.value, REQ);
             expect(getEtablissementSpy).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });

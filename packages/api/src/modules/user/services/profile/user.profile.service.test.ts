@@ -5,13 +5,7 @@ import {
     USER_SECRETS,
     USER_WITHOUT_SECRET,
 } from "../../__fixtures__/user.fixture";
-import {
-    AdminTerritorialLevel,
-    AgentTypeEnum,
-    RegistrationSrcTypeEnum,
-    UpdatableUser,
-    UserActivationInfoDto,
-} from "dto";
+import { AdminTerritorialLevel, AgentTypeEnum, UpdatableUser, UserActivationInfoDto } from "dto";
 import userProfileService from "./user.profile.service";
 
 import * as stringHelper from "../../../../shared/helpers/StringHelper";
@@ -177,10 +171,6 @@ describe("user profile service", () => {
             });
             it("should return true", () => {
                 const expected = { valid: true };
-                const input = {
-                    registrationSrc: [RegistrationSrcTypeEnum.SEARCH_ENGINE],
-                    ...validInput,
-                };
                 const actual = userProfileService.validateUserProfileData(validInput);
                 expect(actual).toEqual(expected);
             });
@@ -229,7 +219,6 @@ describe("user profile service", () => {
         });
 
         it("throws if agentConnectUpdate validation is falsy", async () => {
-            const expected = { ...USER_WITHOUT_SECRET, ...USER_ACTIVATION_INFO };
             const ERROR = new Error("test");
             jest.mocked(userAgentConnectService.agentConnectUpdateValidations).mockReturnValueOnce({
                 valid: false,
@@ -291,9 +280,9 @@ describe("user profile service", () => {
             mockValidateUserProfileData.mockReturnValue({ valid: true });
             mockSanitizeUserProfileData.mockImplementation(userInfo => userInfo);
 
-            mockedUserResetPort.findByToken.mockImplementation(async token => RESET_DOCUMENT);
-            mockedUserCrudService.getUserById.mockImplementation(async id => UNACTIVATED_USER);
-            mockedUserActivationService.validateResetToken.mockImplementation(token => ({ valid: true }));
+            mockedUserResetPort.findByToken.mockImplementation(async () => RESET_DOCUMENT);
+            mockedUserCrudService.getUserById.mockImplementation(async () => UNACTIVATED_USER);
+            mockedUserActivationService.validateResetToken.mockImplementation(() => ({ valid: true }));
             mockedUserAuthService.getHashPassword.mockImplementation(async password => Promise.resolve(password));
             // @ts-expect-error: unknown error
             mockedUserPort.update.mockImplementation(() => ({

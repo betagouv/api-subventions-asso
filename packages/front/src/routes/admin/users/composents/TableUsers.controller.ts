@@ -8,7 +8,7 @@ import { capitalizeFirstLetter } from "$lib/helpers/stringHelper";
 
 export default class TableUsersController {
     private selectedUserId: undefined | string;
-    public currentUser: UserDto;
+    public currentUser: UserDto | null;
     public users;
 
     constructor(usersStore: Store<UserDto[]>) {
@@ -28,19 +28,18 @@ export default class TableUsersController {
     deleteUser = async () => {
         try {
             await adminService.deleteUser(this.selectedUserId);
-            // @ts-expect-error UserDto's id should be string but api is not ready for this
             const index = this.users.value.findIndex(user => user._id === this.selectedUserId);
             this.users.value.splice(index, 1);
             // force child update by affecting a new array
             this.users.set([...this.users.value]);
-        } catch (e) {
+        } catch {
             console.log("Something went wrong! Could not delete user...");
         }
         this.selectedUserId = undefined;
     };
 
     isUserDisabled(user: UserDto) {
-        return user.email === this.currentUser.email;
+        return user.email === this.currentUser?.email;
     }
 
     prettyUserRoles(user: UserDto) {

@@ -7,22 +7,27 @@
 
     export let cells: TableCell[] | null;
 
+    // TODO: find a way with TS to infer type on key check (line 26-28)
+    // hint: type annotations is supposed to work with Svelte 5
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const notypecheck = (x: any) => x;
+
     const openModal = cells?.length;
     const cellsLength = 6;
 </script>
 
 {#if cells}
-    {#each cells as cell}
+    {#each cells as cell, i (i)}
         <td
             class="clickable application"
             on:click
             aria-controls={openModal ? "fr-modal" : ""}
             data-fr-opened={openModal ? "true" : "false"}>
             {#if cell.badge}
-                {#if cell.badge?.status}
-                    <StatusLabel status={cell.badge.status} />
+                {#if notypecheck(cell.badge).status}
+                    <StatusLabel status={notypecheck(cell.badge).status} />
                 {:else}
-                    <Badge small={true} {...cell.badge} />
+                    <Badge small={true} {...notypecheck(cell.badge)} />
                 {/if}
             {/if}
             {#if !cell.badge && !cell.title && !cell.desc}

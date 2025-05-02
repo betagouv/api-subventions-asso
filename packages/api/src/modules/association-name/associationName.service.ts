@@ -21,7 +21,7 @@ export class AssociationNameService {
         let associationNames: AssociationNameEntity[];
         let gotCompany = false;
         const searchEntreprisesCatch = (value: string) =>
-            rechercheEntreprisesService.searchForceAsso(value).catch(_e => {
+            rechercheEntreprisesService.searchForceAsso(value).catch(() => {
                 gotCompany = true;
                 return [];
             });
@@ -60,18 +60,21 @@ export class AssociationNameService {
                 ...(await searchEntreprisesCatch(value)),
             ].flat();
         }
-        const mergedAssociationName = associationNames.reduce((acc, associationName) => {
-            const id = `${associationName.rna?.value} - ${associationName.siren.value}`;
-            const oldValue = acc[id] || {};
-            acc[id] = new AssociationNameEntity(
-                oldValue.name || associationName.name,
-                oldValue.siren || associationName.siren,
-                oldValue.rna || associationName.rna,
-                oldValue.address || associationName.address,
-                oldValue.nbEtabs || associationName.nbEtabs,
-            );
-            return acc;
-        }, {} as Record<string, AssociationNameEntity>);
+        const mergedAssociationName = associationNames.reduce(
+            (acc, associationName) => {
+                const id = `${associationName.rna?.value} - ${associationName.siren.value}`;
+                const oldValue = acc[id] || {};
+                acc[id] = new AssociationNameEntity(
+                    oldValue.name || associationName.name,
+                    oldValue.siren || associationName.siren,
+                    oldValue.rna || associationName.rna,
+                    oldValue.address || associationName.address,
+                    oldValue.nbEtabs || associationName.nbEtabs,
+                );
+                return acc;
+            },
+            {} as Record<string, AssociationNameEntity>,
+        );
         const res = Object.values(mergedAssociationName);
         if (!res.length && gotCompany) throw new NotAssociationError();
         return res;

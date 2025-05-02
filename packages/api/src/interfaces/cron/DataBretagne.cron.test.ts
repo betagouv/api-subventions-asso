@@ -1,6 +1,5 @@
 import dataBretagneService from "../../modules/providers/dataBretagne/dataBretagne.service";
 import { DataBretagneCron } from "./DataBretagne.cron";
-import dataLogService from "../../modules/data-log/dataLog.service";
 
 jest.mock("../../modules/providers/dataBretagne/dataBretagne.service");
 

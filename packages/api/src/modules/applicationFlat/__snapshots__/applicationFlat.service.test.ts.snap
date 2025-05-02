@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApplicationFlatService grant part getRawGrants converts found methods 1`] = `
+[
+  {
+    "data": {
+      "idVersement": "poste1",
+      "provider": "fonjep",
+    },
+    "joinKey": "poste1",
+    "provider": "fonjep",
+    "type": "application",
+  },
+  {
+    "data": {
+      "ej": "ej2",
+      "provider": "autre",
+    },
+    "joinKey": "ej2",
+    "provider": "autre",
+    "type": "application",
+  },
+]
+`;

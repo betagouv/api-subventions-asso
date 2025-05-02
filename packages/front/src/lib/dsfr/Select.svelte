@@ -32,7 +32,7 @@
         {name}
         id={name}>
         <option value="" selected disabled hidden>Sélectionner une option</option>
-        {#each options as option, index}
+        {#each options as option, index (index)}
             <option value={option.value ? option.value : index}>{option.label ? option.label : option}</option>
         {/each}
     </select>

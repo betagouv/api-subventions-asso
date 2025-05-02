@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-namespace */
 import express, { NextFunction, Response } from "express";
 
 import { rateLimit } from "express-rate-limit";
@@ -9,7 +8,7 @@ import * as Sentry from "@sentry/node";
 
 import cors from "cors";
 
-import MongoStoreBuilder = require("connect-mongodb-session");
+import MongoStoreBuilder from "connect-mongodb-session";
 import { RegisterRoutes } from "../tsoa/routes";
 import { registerAuthMiddlewares } from "./authentication/express.auth.hooks";
 import { expressLogger } from "./middlewares/LogMiddleware";
@@ -35,6 +34,7 @@ async function factoryEndMiddleware(
     req: IdentifiedRequest,
     res: Response,
     next: NextFunction,
+
     middleware: (req: IdentifiedRequest, res: Response) => void,
 ) {
     res.on("finish", () => middleware(req, res));

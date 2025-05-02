@@ -48,7 +48,9 @@ export class UserProfileService {
             {
                 value: jobType,
                 method: jobType => {
+                    // @ts-expect-error: show since typescript update #3360
                     if (!jobType?.length) return true;
+                    // @ts-expect-error: show since typescript update #3360
                     return !jobType.find(type => !isInObjectValues(AgentJobTypeEnum, type));
                 },
                 error: new BadRequestError(dedent`Mauvaise valeur pour le type de poste.
@@ -69,7 +71,9 @@ export class UserProfileService {
             {
                 value: registrationSrc,
                 method: registrationSrc => {
+                    // @ts-expect-error: show since typescript update #3360
                     if (!registrationSrc?.length) return true;
+                    // @ts-expect-error: show since typescript update #3360
                     return !registrationSrc.find(value => !isInObjectValues(RegistrationSrcTypeEnum, value));
                 },
                 error: new BadRequestError(dedent`Mauvaise valeur pour la provenance.
@@ -81,6 +85,7 @@ export class UserProfileService {
         if (withPassword)
             validations.push({
                 value: password,
+                // @ts-expect-error: show since typescript update #3360
                 method: userCheckService.passwordValidator,
                 error: new BadRequestError(
                     UserCheckService.PASSWORD_VALIDATOR_MESSAGE,

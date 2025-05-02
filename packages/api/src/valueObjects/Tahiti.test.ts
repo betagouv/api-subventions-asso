@@ -11,7 +11,7 @@ describe("Tahiti", () => {
         });
 
         it.each(INVALID_THAITI_LIST)("should throw an error for an invalid tahiti", tahiti => {
-            // @ts-expect-error
+            // @ts-expect-error: test edge cases
             expect(() => new Tahiti(tahiti)).toThrow(`Invalid Tahiti: ${tahiti}`);
         });
     });

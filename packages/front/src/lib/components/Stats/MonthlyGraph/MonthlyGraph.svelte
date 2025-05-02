@@ -48,7 +48,7 @@
                     </div>
                 </div>
                 <div class="fr-col-3">
-                    {#each aggregateStats as stat}
+                    {#each aggregateStats as stat, index (index)}
                         <div class="fr-mb-5w">
                             <div class="fr-text--bold fr-text--xl fr-mb-0">{stat.value}</div>
                             <div class="fr-text--xs">{stat.message}</div>

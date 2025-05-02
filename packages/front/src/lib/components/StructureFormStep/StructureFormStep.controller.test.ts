@@ -1,6 +1,6 @@
 import { AgentTypeEnum, RegistrationSrcTypeEnum } from "dto";
 import type { MockInstance } from "vitest";
-import { beforeEach, SpyInstance } from "vitest";
+import { beforeEach } from "vitest";
 import StructureFormStepController from "./StructureFormStep.controller";
 import Dispatch from "$lib/core/Dispatch";
 import { isPhoneNumber } from "$lib/helpers/stringHelper";
@@ -34,7 +34,6 @@ describe("StructureFormStepController", () => {
             ${"jobTypeOptions"}
             ${"dirty"}
         `("inits $varName", ({ varName }) => {
-            // @ts-expect-error - mock
             expect(ctrl[varName]).toMatchSnapshot();
         });
 
@@ -108,7 +107,9 @@ describe("StructureFormStepController", () => {
         it("updates errors store about dirty invalid fields", () => {
             const mocks = {
                 field1: vi.fn(),
+
                 field2: vi.fn((..._args) => "some error"),
+
                 field3: vi.fn((..._args) => "some error"),
             };
             // @ts-expect-error - mock private
@@ -153,14 +154,12 @@ describe("StructureFormStepController", () => {
         let cleanerSpy: MockInstance;
 
         beforeEach(() => {
-            // @ts-expect-error mock
             cleanerSpy = vi.spyOn(ctrl, "cleanSubStepValues").mockImplementation(vi.fn());
             // @ts-expect-error private
             ctrl.currentAgentType = AgentTypeEnum.OPERATOR;
         });
 
         it("does nothing if no change of context agentType", () => {
-            // @ts-expect-error mock
             const substepSetSpy = vi.spyOn(ctrl.subStep, "set").mockImplementation(vi.fn());
             ctrl.onUpdateContext(CONTEXT, values);
             expect(cleanerSpy).not.toHaveBeenCalled();
@@ -186,7 +185,7 @@ describe("StructureFormStepController", () => {
     });
 
     describe("cleanSubStepValues", () => {
-        let values: Record<string, any>;
+        let values: Record<string, unknown>;
 
         beforeEach(() => {
             values = {
@@ -210,9 +209,9 @@ describe("StructureFormStepController", () => {
     });
 
     describe("onUpdateRegistrationSrc", () => {
-        let mockUpdate: SpyInstance;
+        const mockUpdate = vi.spyOn(StructureFormStepController.prototype, "onUpdate");
         beforeEach(() => {
-            mockUpdate = vi.spyOn(StructureFormStepController.prototype, "onUpdate").mockImplementation(vi.fn());
+            mockUpdate.mockImplementation(vi.fn());
         });
 
         afterAll(() => {

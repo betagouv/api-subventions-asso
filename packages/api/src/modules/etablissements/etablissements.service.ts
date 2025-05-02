@@ -43,16 +43,19 @@ export class EtablissementsService {
 
         if (!data.length) throw new NotFoundError();
 
-        const groupBySiret = data.reduce((acc, etablissement) => {
-            const siret = etablissement.siret[0].value;
+        const groupBySiret = data.reduce(
+            (acc, etablissement) => {
+                const siret = etablissement.siret[0].value;
 
-            if (!siret) return acc;
+                if (!siret) return acc;
 
-            if (!acc[siret]) acc[siret] = [];
-            acc[siret].push(etablissement);
+                if (!acc[siret]) acc[siret] = [];
+                acc[siret].push(etablissement);
 
-            return acc;
-        }, {} as DefaultObject<Etablissement[]>);
+                return acc;
+            },
+            {} as DefaultObject<Etablissement[]>,
+        );
         const etablissements = Object.values(groupBySiret).map(
             etablissements =>
                 // @ts-expect-error: transform DefaultObject to Etablissement

@@ -38,20 +38,23 @@ export default class FonjepCli extends CliController {
 
         const subventionRejected = [] as FonjepRejectedRequest[];
 
-        const subventionsResult = await subventions.reduce(async (acc, subvention, index) => {
-            const result = await acc;
-            const response = await fonjepService.createSubventionEntity(subvention);
+        const subventionsResult = await subventions.reduce(
+            async (acc, subvention, index) => {
+                const result = await acc;
+                const response = await fonjepService.createSubventionEntity(subvention);
 
-            CliHelper.printProgress(index + 1, subventions.length, "subventions");
+                CliHelper.printProgress(index + 1, subventions.length, "subventions");
 
-            if (response instanceof FonjepRejectedRequest) {
-                subventionRejected.push(response);
+                if (response instanceof FonjepRejectedRequest) {
+                    subventionRejected.push(response);
+                    return result;
+                }
+
+                result.push(response);
                 return result;
-            }
-
-            result.push(response);
-            return result;
-        }, Promise.resolve([]) as Promise<(FonjepRejectedRequest | CreateFonjepResponse)[]>);
+            },
+            Promise.resolve([]) as Promise<(FonjepRejectedRequest | CreateFonjepResponse)[]>,
+        );
 
         this.logger.logIC(`
             ${subventionsResult.length} subventions created
@@ -67,19 +70,22 @@ export default class FonjepCli extends CliController {
 
         const paymentRejected = [] as FonjepRejectedRequest[];
 
-        const paymentsResult = await payments.reduce(async (acc, payment, index) => {
-            const result = await acc;
-            const response = await fonjepService.createPaymentEntity(payment);
+        const paymentsResult = await payments.reduce(
+            async (acc, payment, index) => {
+                const result = await acc;
+                const response = await fonjepService.createPaymentEntity(payment);
 
-            CliHelper.printProgress(index + 1, payments.length, "payments");
+                CliHelper.printProgress(index + 1, payments.length, "payments");
 
-            if (response instanceof FonjepRejectedRequest) {
-                paymentRejected.push(response);
+                if (response instanceof FonjepRejectedRequest) {
+                    paymentRejected.push(response);
+                    return result;
+                }
+                result.push(response);
                 return result;
-            }
-            result.push(response);
-            return result;
-        }, Promise.resolve([]) as Promise<(FonjepRejectedRequest | CreateFonjepResponse)[]>);
+            },
+            Promise.resolve([]) as Promise<(FonjepRejectedRequest | CreateFonjepResponse)[]>,
+        );
 
         this.logger.logIC(`
             ${paymentsResult.length} payments created

@@ -1,10 +1,8 @@
-import request = require("supertest");
+import request from "supertest";
 import { getTokenByUser } from "../../__helpers__/tokenHelper";
-import { createUser, USER_EMAIL } from "../../__helpers__/userHelper";
+import { USER_EMAIL } from "../../__helpers__/userHelper";
 import userCrudService from "../../../src/modules/user/services/crud/user.crud.service";
 import { AgentTypeEnum } from "dto";
-import userPort from "../../../src/dataProviders/db/user/user.port";
-
 import { App } from "supertest/types";
 
 const g = global as unknown as { app: App };

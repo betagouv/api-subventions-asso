@@ -26,7 +26,7 @@
 
     if (!trackerName && !trackingDisable) console.error("Please add tracker name on button");
 
-    const dispatch = createEventDispatcher();
+    const dispatch = createEventDispatcher<{ click: null; submit: null }>();
 
     const classBySize = {
         small: "fr-btn--sm",

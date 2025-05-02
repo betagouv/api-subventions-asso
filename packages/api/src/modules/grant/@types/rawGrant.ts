@@ -1,4 +1,4 @@
-type DefaultObject = Record<string, any>;
+type DefaultObject = Record<string, unknown>;
 
 // TODO: rename RawGrant to RawData ?
 
@@ -6,7 +6,7 @@ export type RawGrant<T = DefaultObject> = {
     provider: string;
     // TODO: rename fullGrant to grant if we rename RawGrant to RawData ?
     type: "application" | "fullGrant" | "payment";
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- neither never nor unknown works
+
     data: T;
     joinKey?: string;
 };

@@ -11,6 +11,7 @@ import { ApiAssoDocumentFixture } from "../__fixtures__/ApiAssoDocumentFixture";
 import { sirenStructureFixture } from "../__fixtures__/SirenStructureFixture";
 import { rnaStructureFixture } from "../__fixtures__/RnaStructureFixture";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
+import { Personne } from "dto";
 
 describe("ApiAssoDtoAdapter", () => {
     describe("toEtablissement", () => {
@@ -69,8 +70,7 @@ describe("ApiAssoDtoAdapter", () => {
             );
 
             const expected = "222";
-            // @ts-expect-error
-            const actual = estab.contacts[0][0].value.telephone;
+            const actual = (estab.contacts as Personne[])[0][0].value.telephone;
 
             expect(actual).toBe(expected);
         });

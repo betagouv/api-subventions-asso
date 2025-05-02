@@ -1,6 +1,6 @@
 import { DemandeSubvention } from "dto";
 import * as Sentry from "@sentry/node";
-import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
+import { AnyRawGrant, RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import { StructureIdentifier } from "../../../@types";
@@ -61,7 +61,7 @@ export class ScdlGrantService implements DemandesSubventionsProvider<MiscScdlGra
         return this.getEntityByPromiseAndAdapt(dbRequestPromise, MiscScdlAdapter.toRawApplication);
     }
 
-    getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
+    getRawGrants(identifier: StructureIdentifier): Promise<AnyRawGrant[]> {
         let entites: Promise<MiscScdlGrantProducerEntity[]> = Promise.resolve([]);
 
         if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
@@ -74,6 +74,7 @@ export class ScdlGrantService implements DemandesSubventionsProvider<MiscScdlGra
             }
         }
 
+        // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
         return this.getRawGrantSubventionByPromise(entites);
     }
 
@@ -81,8 +82,8 @@ export class ScdlGrantService implements DemandesSubventionsProvider<MiscScdlGra
         return MiscScdlAdapter.rawToApplication(rawApplication);
     }
 
-    rawToCommon(rawGrant: RawGrant) {
-        return MiscScdlAdapter.toCommon(rawGrant.data as MiscScdlGrantEntity);
+    rawToCommon(rawGrant: RawGrant<MiscScdlGrantEntity>) {
+        return MiscScdlAdapter.toCommon(rawGrant.data);
     }
 }
 

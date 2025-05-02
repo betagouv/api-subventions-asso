@@ -178,10 +178,8 @@ describe("user crud service", () => {
             roles: [RoleEnum.user],
         };
 
-        let mockCreateUser: jest.SpyInstance;
-
         beforeAll(() => {
-            mockCreateUser = jest.spyOn(userCrudService, "createUser");
+            jest.spyOn(userCrudService, "createUser");
             jest.mocked(mockedUserPort.create).mockResolvedValue(USER_WITHOUT_SECRET);
             jest.mocked(mockedUserPort.createAndReturnWithJWT).mockResolvedValue({
                 ...USER_WITHOUT_SECRET,
@@ -254,29 +252,29 @@ describe("user crud service", () => {
         afterAll(() => mockCreateUser.mockRestore());
 
         it("should create a consumer", async () => {
-            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
-            mockedUserConsumerService.createConsumer.mockImplementationOnce(async () => ({} as UserDto));
+            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({}) as UserReset);
+            mockedUserConsumerService.createConsumer.mockImplementationOnce(async () => ({}) as UserDto);
             await userCrudService.signup({ email: USER_EMAIL }, RoleEnum.consumer);
             expect(mockedUserConsumerService.createConsumer).toHaveBeenCalled();
         });
 
         it("should create a user", async () => {
-            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
-            mockCreateUser.mockImplementationOnce(async () => ({} as UserDto));
+            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({}) as UserReset);
+            mockCreateUser.mockImplementationOnce(async () => ({}) as UserDto);
             await userCrudService.signup({ email: USER_EMAIL });
             expect(mockCreateUser).toHaveBeenCalled();
         });
 
         it("should create a reset token", async () => {
-            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
-            mockCreateUser.mockImplementationOnce(async () => ({} as UserDto));
+            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({}) as UserReset);
+            mockCreateUser.mockImplementationOnce(async () => ({}) as UserDto);
             await userCrudService.signup({ email: USER_EMAIL });
             expect(mockedUserActivationService.resetUser).toHaveBeenCalled();
         });
 
         it("should notify USER_CREATED", async () => {
-            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
-            mockCreateUser.mockImplementationOnce(async () => ({} as UserDto));
+            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({}) as UserReset);
+            mockCreateUser.mockImplementationOnce(async () => ({}) as UserDto);
             await userCrudService.signup({ email: USER_EMAIL });
             expect(mockedNotifyService.notify).toHaveBeenCalledWith(
                 NotificationType.USER_CREATED,
@@ -286,7 +284,7 @@ describe("user crud service", () => {
 
         it("should return a user", async () => {
             const expected = { email: USER_EMAIL };
-            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
+            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({}) as UserReset);
             mockCreateUser.mockImplementationOnce(async () => expected as UserDto);
             const actual = await userCrudService.signup({ email: USER_EMAIL });
             expect(actual).toEqual(expected);
@@ -319,7 +317,7 @@ describe("user crud service", () => {
 
         it("should call removeSecrets()", async () => {
             jest.mocked(userPort.getUserWithSecretsByEmail).mockResolvedValueOnce(USER_DBO);
-            const actual = await userCrudService.getUserWithoutSecret(EMAIL);
+            await userCrudService.getUserWithoutSecret(EMAIL);
             expect(portHelper.removeSecrets).toHaveBeenCalledTimes(1);
         });
 
@@ -358,7 +356,7 @@ describe("user crud service", () => {
         beforeAll(() => {
             findSpy = jest
                 .spyOn(userCrudService, "find")
-                .mockResolvedValue([1, 2, 3, 4].map(i => ({ _id: i } as unknown as UserDto)));
+                .mockResolvedValue([1, 2, 3, 4].map(i => ({ _id: i }) as unknown as UserDto));
             jest.mocked(userActivationService.buildResetPwdUrl).mockImplementation(t => `link/${t}`);
         });
 

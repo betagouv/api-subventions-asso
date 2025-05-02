@@ -12,11 +12,11 @@
 
 <div class="fr-grid-row flex space-between">
     <div class="fr-col-5">
-        <Select bind:selected={$selectedRegion} options={regionOptions} label={"Attachement comptable"} />
+        <Select bind:selected={$selectedRegion} options={regionOptions} label="Attachement comptable" />
     </div>
 
     <div class="fr-col-6">
-        <Select bind:selected={$selectedProgram} options={programOptions} label={"Programme"} />
+        <Select bind:selected={$selectedProgram} options={programOptions} label="Programme" />
     </div>
 </div>
 <div class="fr-grid-row">

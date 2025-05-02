@@ -1,7 +1,5 @@
 import { ToadScheduler } from "toad-scheduler";
 import { CronController } from "./@types/cron";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- test purposes
-import { ExampleCron } from "./interfaces/cron/_Example.cron";
 import { DemarchesSimplifieesCron } from "./interfaces/cron/DemarchesSimplifiees.cron";
 import { DumpCron } from "./interfaces/cron/Dump.cron";
 import { DEV } from "./configurations/env.conf";

@@ -63,7 +63,7 @@ describe("SCDL CLI", () => {
             it("should add grants with exercise from conventionDate", async () => {
                 await test("SCDL", MiscScdlProducer.slug, DATE_STR);
                 const grants = await miscScdlGrantPort.findAll();
-                const expectedAny = grants.map(grant => ({
+                const expectedAny = grants.map(() => ({
                     _id: expect.any(String),
                 }));
                 expect(grants).toMatchSnapshot(expectedAny);
@@ -72,7 +72,7 @@ describe("SCDL CLI", () => {
             it("should add grants with exercise from its own column", async () => {
                 await test("SCDL_WITH_EXERCICE", MiscScdlProducer.slug, DATE_STR);
                 const grants = await miscScdlGrantPort.findAll();
-                const expectedAny = grants.map(grant => ({
+                const expectedAny = grants.map(() => ({
                     _id: expect.any(String),
                 }));
                 expect(grants).toMatchSnapshot(expectedAny);

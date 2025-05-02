@@ -11,6 +11,7 @@
         overflow: hidden;
         overflow-wrap: anywhere;
         -webkit-line-clamp: 4;
+        line-clamp: 4;
         -webkit-box-orient: vertical;
     }
 </style>

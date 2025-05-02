@@ -25,7 +25,6 @@ describe("cronController decorator", () => {
     afterAll(() => axiosPostSpy.mockRestore());
 
     describe("newJob()", () => {
-        const JOB = {};
         const TASK = {};
         const JOB_CLASS = SimpleIntervalJob;
         const TASK_CLASS = Task;
@@ -45,7 +44,7 @@ describe("cronController decorator", () => {
         );
         afterAll(() => errorHandlerFactorySpy.mockRestore());
 
-        function testResult(schedule, JobClass, TaskClass, target: any = { constructor: { name: CLASS_NAME } }) {
+        function testResult(schedule, JobClass, TaskClass, target: unknown = { constructor: { name: CLASS_NAME } }) {
             const PROPERTY_KEY = "actionToRepeat";
             const DESCRIPTOR = {
                 value: () => {},
@@ -61,11 +60,13 @@ describe("cronController decorator", () => {
             ${"__intervalJobs__"}   | ${LongIntervalJob}
             ${"__intervalJobs__"}   | ${SimpleIntervalJob}
         `("populates proper attribute name '$attributeNameToPopulate'", ({ JobClass, attributeNameToPopulate }) => {
+            // @ts-expect-error: TODO: better define this test function
             const actual = testResult(SCHEDULE, JobClass, TASK_CLASS)[attributeNameToPopulate]?.length;
             expect(actual).toBe(1);
         });
 
         it("adds job in existing array", () => {
+            // @ts-expect-error: TODO: better define this test function
             const actual = testResult(SCHEDULE, JOB_CLASS, TASK_CLASS, {
                 [ATTRIBUTE_TO_FILL]: ["something"],
             })[ATTRIBUTE_TO_FILL]?.length;
@@ -78,7 +79,6 @@ describe("cronController decorator", () => {
         });
 
         it("task is constructed with proper task name", () => {
-            const expectedTaskName = "ClassName.actionToRepeat";
             testResult(SCHEDULE, JOB_CLASS, TASK_CLASS);
             expect(TASK_CLASS.prototype.constructor).toBeCalledWith(TASK_NAME, expect.anything(), ERROR_HANDLER_RESULT);
         });

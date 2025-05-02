@@ -52,7 +52,7 @@ export class DemarchesSimplifieesEntityAdapter {
         return this.toSubvention(entity, schema);
     }
 
-    private static nestedToProviderValues(object: any, toPv: (v: any) => ProviderValue<any>) {
+    private static nestedToProviderValues(object: object, toPv: (v: unknown) => ProviderValue<unknown>) {
         if (Array.isArray(object)) return object.map(v => this.nestedToProviderValues(v, toPv));
         if (object.constructor !== Object) return toPv(object);
         const res = {};

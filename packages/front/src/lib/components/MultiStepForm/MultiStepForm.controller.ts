@@ -15,6 +15,8 @@ export default class MultiStepFormController {
     }>;
     // used in component
     public isStepBlocked: ReadStore<boolean>;
+    // TODO: create a type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public data: Store<any[]>;
     public context: ReadStore<unknown>;
 

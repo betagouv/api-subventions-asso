@@ -1,6 +1,6 @@
-const findOneAndUpdateMock = jest.fn(async entity => ({ value: {} }));
+const findOneAndUpdateMock = jest.fn(async () => ({ value: {} }));
 
-const mongoMock = jest.mock("../../../../shared/MongoConnection", () => ({
+jest.mock("../../../../shared/MongoConnection", () => ({
     __esModule: true, // this property makes it work
     default: {
         collection: () => ({
@@ -9,12 +9,11 @@ const mongoMock = jest.mock("../../../../shared/MongoConnection", () => ({
         }),
     },
 }));
-import db from "../../../../shared/MongoConnection";
 import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
 import { MongoCnxError } from "../../../../shared/errors/MongoCnxError";
 import OsirisActionAdapter from "./osirisAction.adapter";
 import { OsirisActionPort } from "./osiris.action.port";
-import { ObjectId, WithId } from "mongodb";
+import { ObjectId } from "mongodb";
 
 const toDboMock = jest.spyOn(OsirisActionAdapter, "toDbo");
 const toEntityMock = jest.spyOn(OsirisActionAdapter, "toEntity");

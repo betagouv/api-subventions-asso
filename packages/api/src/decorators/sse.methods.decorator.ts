@@ -6,7 +6,7 @@ function factoryDecorator(method: "POST" | "GET" | "PUT" | "DELETE", route: stri
         target["__methods__"].push({
             method,
             route: route,
-            function: target[propertyKey] as any,
+            function: target[propertyKey] as unknown,
             securityRoles,
         });
     };

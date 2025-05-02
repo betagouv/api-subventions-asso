@@ -9,11 +9,11 @@ import RequestResponseAdapter from "./adapters/RequestResponseAdapter";
 export class ProviderRequestService {
     constructor(private providerId: string) {}
 
-    get<T = any>(url: string, option?: RequestConfig) {
+    get<T = unknown>(url: string, option?: RequestConfig) {
         return this.sendRequest<T>("GET", url, option);
     }
 
-    post<T = any, D = unknown>(url: string, data?: D, option?: RequestConfig) {
+    post<T = unknown, D = unknown>(url: string, data?: D, option?: RequestConfig) {
         if (data) {
             option = {
                 ...option,
@@ -36,7 +36,7 @@ export class ProviderRequestService {
             })
             .then(async response => {
                 await this.createLog(url, date, response.status, type);
-                return RequestResponseAdapter.toRequestReponse(response);
+                return RequestResponseAdapter.toRequestReponse<T>(response);
             })
             .catch(async (error: AxiosError) => {
                 if (error.status) await this.createLog(url, date, error.status, type);

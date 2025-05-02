@@ -29,12 +29,15 @@ export default class UserMigrations {
     }
 
     private groupUsersByEmail(users: UserDto[]): DefaultObject<UserDto[]> {
-        return users.reduce((usersBase, user) => {
-            if (!usersBase[user.email]) usersBase[user.email] = [];
-            usersBase[user.email].push(user);
+        return users.reduce(
+            (usersBase, user) => {
+                if (!usersBase[user.email]) usersBase[user.email] = [];
+                usersBase[user.email].push(user);
 
-            return usersBase;
-        }, {} as DefaultObject<UserDto[]>);
+                return usersBase;
+            },
+            {} as DefaultObject<UserDto[]>,
+        );
     }
 
     private groupUsersByStatus(users: UserDto[]) {

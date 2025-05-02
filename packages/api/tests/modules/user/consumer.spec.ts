@@ -1,6 +1,5 @@
-import request = require("supertest");
+import request from "supertest";
 import { createAndGetConsumerToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
-
 import { App } from "supertest/types";
 
 const g = global as unknown as { app: App };

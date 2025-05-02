@@ -58,13 +58,12 @@ describe("SireneStockUniteLegaleService", () => {
 
     describe("getAndParse", () => {
         let getExtractAndSaveFilesMock: jest.SpyInstance;
-        let parseCsvAndInsertMock: jest.SpyInstance;
         let deleteTemporaryFolderMock: jest.SpyInstance;
         beforeAll(() => {
+            jest.spyOn(SireneStockUniteLegaleParser, "parseCsvAndInsert").mockResolvedValue();
             getExtractAndSaveFilesMock = jest
                 .spyOn(sireneStockUniteLegaleFileService, "getExtractAndSaveFiles")
                 .mockResolvedValue();
-            parseCsvAndInsertMock = jest.spyOn(SireneStockUniteLegaleParser, "parseCsvAndInsert").mockResolvedValue();
             deleteTemporaryFolderMock = jest
                 .spyOn(sireneStockUniteLegaleFileService, "deleteTemporaryFolder")
                 .mockReturnValue();

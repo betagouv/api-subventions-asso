@@ -20,7 +20,6 @@ jest.mock("../sireneStockUniteLegale.service");
 jest.mock("../../../uniteLegalEntreprises/uniteLegal.entreprises.service");
 jest.mock("../../../../../entities/UniteLegalEntrepriseEntity");
 
-const NUMBER_DTOS_BEING_ASSOCIATIONS = 2;
 const NUMBER_DTOS_TO_SAVE = 3;
 
 describe("SireneStockUniteLegaleParser", () => {
@@ -50,7 +49,7 @@ describe("SireneStockUniteLegaleParser", () => {
         let mockFilePathValidator: jest.SpyInstance;
         let mockIsAsso: jest.SpyInstance;
         let mockIsCorrect: jest.SpyInstance;
-        let filePath = "file";
+        const filePath = "file";
         let mockStream: ReadStream;
 
         const mockSaveNonAsso = jest.fn();

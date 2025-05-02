@@ -2,7 +2,6 @@
     import SignupACController from "./SignupAC.controller";
     import ErrorAlert from "$lib/components/ErrorAlert.svelte";
     import MultiStepForm from "$lib/components/MultiStepForm/MultiStepForm.svelte";
-    import Alert from "$lib/dsfr/Alert.svelte";
 
     const controller = new SignupACController();
     const { errorMessage } = controller;

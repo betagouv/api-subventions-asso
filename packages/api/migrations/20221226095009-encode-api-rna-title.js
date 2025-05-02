@@ -2,8 +2,7 @@ const iconv = require("iconv-lite");
 const { connectDB } = require("../build/src/shared/MongoConnection");
 
 module.exports = {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async up(db, client) {
+    async up(db) {
         await connectDB();
         const collection = db.collection("association-name");
         const cursor = collection.find({
@@ -17,15 +16,10 @@ module.exports = {
             const { _id, ...entity } = doc;
             try {
                 await collection.findOneAndUpdate({ _id: _id }, { $set: entity });
-            } catch (e) {
+            } catch {
                 // avoid duplicate error after rename
                 continue;
             }
         }
-    },
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async down(db, client) {
-        // NOT IMPLEMENTED
     },
 };

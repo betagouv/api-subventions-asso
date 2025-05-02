@@ -8,7 +8,6 @@ import {
 import request from "supertest";
 import OsirisRequestEntityFixture from "../../modules/providers/osiris/__fixtures__/entity";
 import { compareByValueBuilder } from "../../../src/shared/helpers/ArrayHelper";
-import statsService from "../../../src/modules/stats/stats.service";
 import { siretToSiren } from "../../../src/shared/helpers/SirenHelper";
 import { BadRequestError } from "core";
 import associationsService from "../../../src/modules/associations/associations.service";
@@ -37,10 +36,9 @@ import miscScdlProducersPort from "../../../src/dataProviders/db/providers/scdl/
 import RnaSirenEntity from "../../../src/entities/RnaSirenEntity";
 import Siren from "../../../src/valueObjects/Siren";
 import statsAssociationsVisitPort from "../../../src/dataProviders/db/stats/statsAssociationsVisit.port";
+import { App } from "supertest/types";
 
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
-
-import { App } from "supertest/types";
 
 const g = global as unknown as { app: App };
 
@@ -241,6 +239,7 @@ describe("/association", () => {
                         // ...rawGrant.data, _id: expect.any(String) },
                         data: {
                             application: { ...rawGrant.data.application, _id: expect.any(String) },
+                            // @ts-expect-error: better type payments
                             payments: rawGrant.data.payments.map(payment => ({ ...payment, _id: expect.any(String) })),
                         },
                     };

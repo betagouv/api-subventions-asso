@@ -18,6 +18,8 @@ export default class DecentralizedSubStepController {
         { value: AdminTerritorialLevel.INTERREGIONAL, label: "Interrégional" },
         { value: AdminTerritorialLevel.OVERSEAS, label: "Collectivité d'outre-mer à statut particulier" },
     ];
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private dispatch: EventDispatcher<any>;
 
     constructor() {
@@ -27,9 +29,9 @@ export default class DecentralizedSubStepController {
         this.dispatch = Dispatch.getDispatcher();
     }
 
-    async init(data: Record<string, any> = {}): Promise<void> {
+    async init(data: Record<string, unknown> = {}): Promise<void> {
         this.allStructures = await subscriptionFormService.getStructures(AgentTypeEnum.DECONCENTRATED_ADMIN);
-        if (data.decentralizedLevel) this.setOptions(data.decentralizedLevel);
+        if (data.decentralizedLevel) this.setOptions(data.decentralizedLevel as AdminTerritorialLevel);
     }
 
     private setOptions(level: AdminTerritorialLevel) {

@@ -69,7 +69,7 @@ describe("AmountsVsProgramRegionCli", () => {
         jest.restoreAllMocks();
     });
 
-    let cli = new AmountsVsProgramRegionCli();
+    const cli = new AmountsVsProgramRegionCli();
 
     describe("init()", () => {
         it("should persist amounts vs program region collection", async () => {

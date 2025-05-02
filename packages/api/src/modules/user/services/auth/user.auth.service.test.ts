@@ -249,8 +249,8 @@ describe("user auth service", () => {
         });
 
         it("should notify USER_LOGGED", async () => {
-            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({} as UserReset));
-            mockedUserCrudService.createUser.mockImplementationOnce(async () => ({} as UserDto));
+            mockedUserActivationService.resetUser.mockImplementationOnce(async () => ({}) as UserReset);
+            mockedUserCrudService.createUser.mockImplementationOnce(async () => ({}) as UserDto);
             await userAuthService.login(USER_DBO.email, "PASSWORD");
             expect(mockedNotifyService.notify).toHaveBeenCalledWith(NotificationType.USER_LOGGED, {
                 email: USER_DBO.email,
@@ -270,7 +270,7 @@ describe("user auth service", () => {
 
         it("should call removeSecrets() when consumer", async () => {
             mockedUserPort.getUserWithSecretsByEmail.mockImplementationOnce(
-                async () => ({ ...CONSUMER_USER, ...USER_SECRETS } as UserDbo),
+                async () => ({ ...CONSUMER_USER, ...USER_SECRETS }) as UserDbo,
             );
             await userAuthService.authenticate({ ...DECODED_TOKEN, ...CONSUMER_USER }, USER_SECRETS.jwt.token);
             expect(portHelper.removeSecrets).toBeCalledTimes(1);

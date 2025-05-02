@@ -8,7 +8,7 @@ import demarchesSimplifieesService from "../demarchesSimplifiees.service";
 jest.mock("../demarchesSimplifiees.service");
 
 describe("DemarchesSimplifieesEntityAdapter", () => {
-    // @ts-expect-error
+    // @ts-expect-error: mock private method
     const mapMock: jest.SpyInstance = jest.spyOn(DemarchesSimplifieesEntityAdapter, "mapSchema");
     const SIRET = "00000000000000";
     const DEMANDE = {

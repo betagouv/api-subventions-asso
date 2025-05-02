@@ -1,4 +1,4 @@
-import request = require("supertest");
+import request from "supertest";
 import { createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import { createAndActiveUser, getDefaultUser } from "../../__helpers__/userHelper";
 import userPort from "../../../src/dataProviders/db/user/user.port";
@@ -10,7 +10,6 @@ import userActivationService from "../../../src/modules/user/services/activation
 import userCrudService from "../../../src/modules/user/services/crud/user.crud.service";
 import userStatsService from "../../../src/modules/user/services/stats/user.stats.service";
 import configurationsService from "../../../src/modules/configurations/configurations.service";
-
 import { App } from "supertest/types";
 
 const g = global as unknown as { app: App };

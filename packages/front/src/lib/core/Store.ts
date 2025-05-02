@@ -1,5 +1,17 @@
-import { get, writable, derived as nativeDerived, readable, type Unsubscriber } from "svelte/store";
-import type { Writable, Readable, Subscriber, Invalidator, StoresValues, Stores, Updater } from "svelte/store";
+import {
+    get,
+    writable,
+    derived as nativeDerived,
+    readable,
+    type Unsubscriber,
+    type Writable,
+    type Readable,
+    type Subscriber,
+    type Invalidator,
+    type StoresValues,
+    type Stores,
+    type Updater,
+} from "svelte/store";
 
 type GenericStore<T> = Writable<T> | Readable<T>;
 

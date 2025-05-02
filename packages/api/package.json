@@ -23,10 +23,8 @@
         "migration:new": "migrate-mongo create",
         "migration:status": "migrate-mongo status",
         "migration:apply": "migrate-mongo up",
-        "lint": "eslint --fix --ext .js,.ts",
-        "lint:all": "eslint . --fix --ext .js,.ts",
-        "prettier:all": "prettier --write ./{migrations,src,tests,tools}/**/*.{js,ts}",
-        "prettier": "prettier --write",
+        "lint:all": "eslint --fix",
+        "prettier": "prettier . --write",
         "lint-format": "lint-staged"
     },
     "lint-staged": {

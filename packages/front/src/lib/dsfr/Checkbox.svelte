@@ -14,7 +14,12 @@
 
     const descErrorElement = `${id}-desc-error`;
 
-    const dispatch = Dispatch.getDispatcher();
+    const dispatch = Dispatch.getDispatcher<{
+        label: string;
+        value: string;
+        hint?: string | undefined;
+        withHtml?: boolean | undefined;
+    }>();
 
     // if hints are necessary refer to radio component
 </script>
@@ -23,7 +28,7 @@
     <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="{id}-legend">
         {label}
     </legend>
-    {#each options as option, i}
+    {#each options as option, i (i)}
         <div class="fr-fieldset__element" class:fr-fieldset__element--inline={inline}>
             <div class="fr-checkbox-group">
                 <input

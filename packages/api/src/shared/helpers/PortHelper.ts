@@ -5,12 +5,14 @@ import { DefaultObject } from "../../@types";
 
 export const removeSecrets = <T extends Partial<UserDbo>>(user: T) => {
     if (!user) return user;
+
     const { hashPassword: _hashPwd, jwt: _jwt, ...userWithoutSecret } = user;
     return userWithoutSecret;
 };
 
 export const removeHashPassword = <T extends Partial<UserDbo>>(user: T) => {
     if (!user) return user;
+
     const { hashPassword: _hashPwd, ...userWithoutPwd } = user;
     return userWithoutPwd;
 };

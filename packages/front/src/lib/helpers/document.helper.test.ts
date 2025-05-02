@@ -56,6 +56,7 @@ describe("DocumentHelper", () => {
             document.body.removeChild = vi.fn();
 
             // @ts-expect-error -- mock window
+
             document.createElement = vi.fn((..._args) => ELEMENT);
         });
 

@@ -1,9 +1,8 @@
 import request from "supertest";
 import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
+import { App } from "supertest/types";
 
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
-
-import { App } from "supertest/types";
 
 const g = global as unknown as { app: App };
 

@@ -3,7 +3,7 @@ import subventiaPort from "./subventia.port";
 describe("SubventiaPort", () => {
     let getCollectionMock: jest.SpyInstance;
 
-    let collection = {
+    const collection = {
         insertOne: jest.fn(),
         findOne: jest.fn(),
         createIndex: jest.fn(),

@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="fr-grid-row fr-grid-row--gutters">
-            {#each $visibleEstablishments as establishment}
+            {#each $visibleEstablishments as establishment (establishment.siret)}
                 {#key establishment}
                     <!--Force re render svelte component-->
                     <EstablishmentCard

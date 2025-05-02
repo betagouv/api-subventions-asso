@@ -23,7 +23,7 @@
         {label}
         {#if hintHtml}<span class="fr-hint-text">{@html hintHtml}</span>{/if}
     </legend>
-    {#each options as option, i}
+    {#each options as option, i (i)}
         <div class="fr-fieldset__element" class:fr-fieldset__element--inline={inline}>
             <div class="fr-radio-group">
                 <input

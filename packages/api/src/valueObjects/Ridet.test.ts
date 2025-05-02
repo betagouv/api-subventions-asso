@@ -15,7 +15,7 @@ describe("Ridet", () => {
         });
 
         it.each(INVALID_RIDET_LIST)("should throw an error for an invalid ridet", ridet => {
-            // @ts-expect-error
+            // @ts-expect-error: test edge cases
             expect(() => new Ridet(ridet)).toThrow(`Invalid Ridet: ${ridet}`);
         });
     });

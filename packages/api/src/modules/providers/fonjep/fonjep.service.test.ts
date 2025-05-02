@@ -286,7 +286,8 @@ describe("FonjepService", () => {
     });
 
     describe("createPaymentFlatEntitiesFromCollections", () => {
-        const mockValidatePayment: jest.SpyInstance<Boolean> = jest.spyOn(fonjepService as any, "validatePayment");
+        // @ts-expect-error: mock private method
+        const mockValidatePayment: jest.SpyInstance<boolean> = jest.spyOn(fonjepService, "validatePayment");
         const mockGetAllDataRecords = jest.spyOn(dataBretagneService, "getAllDataRecords");
         const mockToFonjepPaymentFlat = jest.spyOn(FonjepEntityAdapter, "toFonjepPaymentFlat");
         const mockUpsertMay = jest.spyOn(paymentFlatService, "upsertMany");
@@ -295,7 +296,7 @@ describe("FonjepService", () => {
             mockValidatePayment.mockReturnValue(true);
             mockGetAllDataRecords.mockResolvedValue(DATA_BRETAGNE_RECORDS);
             // @ts-expect-error: mock adapter
-            mockToFonjepPaymentFlat.mockImplementation((_fonjepData, _dataBretagneDat) => CHORUS_PAYMENT_FLAT_ENTITY);
+            mockToFonjepPaymentFlat.mockImplementation(() => CHORUS_PAYMENT_FLAT_ENTITY);
             mockUpsertMay.mockImplementation(jest.fn());
         });
 
@@ -359,7 +360,7 @@ describe("FonjepService", () => {
             });
 
             // adapter has been mocked to return entity to simplify test
-            expect(mockUpsertMay).toHaveBeenCalledWith(VERSEMENT_ENTITIES.map(_entity => CHORUS_PAYMENT_FLAT_ENTITY));
+            expect(mockUpsertMay).toHaveBeenCalledWith(VERSEMENT_ENTITIES.map(() => CHORUS_PAYMENT_FLAT_ENTITY));
         });
 
         it("filter valid payments", async () => {

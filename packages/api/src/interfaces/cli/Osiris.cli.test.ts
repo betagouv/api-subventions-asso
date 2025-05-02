@@ -6,7 +6,7 @@ jest.mock("../../modules/providers/osiris/osiris.parser");
 jest.mock("../../modules/providers/osiris/osiris.service");
 
 describe("Osiris cli", () => {
-    let cli: OsirisCli = new OsirisCli();
+    const cli: OsirisCli = new OsirisCli();
 
     describe.each`
         resourceType  | methodToTest         | parserMethod                  | validateMethod                       | bulkAddMethod

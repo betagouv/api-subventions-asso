@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { ObjectId } = require("mongodb");
 const { connectDB } = require("../build/src/shared/MongoConnection");
 const { printAtSameLine } = require("../build/src/shared/helpers/CliHelper");
 
 module.exports = {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async up(db, client) {
+    async up(db) {
         console.log("Connecting to DB...");
         await connectDB();
         const fonjepCollection = db.collection("fonjep");
@@ -28,12 +26,5 @@ module.exports = {
             counter++;
             printAtSameLine(counter.toString());
         }
-    },
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async down(db, client) {
-        // TODO write the statements to rollback your migration (if possible)
-        // Example:
-        // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
     },
 };
