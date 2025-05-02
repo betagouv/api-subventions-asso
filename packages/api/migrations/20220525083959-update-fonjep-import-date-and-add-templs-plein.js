@@ -3,7 +3,7 @@ const { connectDB } = require("../build/src/shared/MongoConnection");
 const { printAtSameLine } = require("../build/src/shared/helpers/CliHelper");
 
 module.exports = {
-    async up(db, client) {
+    async up(db) {
         console.log("Connecting to DB...");
         await connectDB();
         const fonjepCollection = db.collection("fonjep");

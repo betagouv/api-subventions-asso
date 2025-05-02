@@ -5,7 +5,7 @@ const entity = require("../build/src/modules/providers/osiris/entities/OsirisReq
 const { GenericParser } = require("../build/src/shared/GenericParser");
 
 module.exports = {
-    async up(db, client) {
+    async up() {
         console.log("Connect to DB");
         await connectDB();
 

@@ -6,7 +6,7 @@ const enity = require("../build/src/modules/providers/chorus/entities/ChorusLine
 const { GenericParser } = require("../build/src/shared/GenericParser");
 
 module.exports = {
-    async up(db, client) {
+    async up() {
         console.log("Start Chorus indexed typeOperation migration");
         await connectDB();
         await migrationManager.startMigration();

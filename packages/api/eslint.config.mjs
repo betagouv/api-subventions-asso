@@ -29,9 +29,6 @@ const ignores = [
     // npm
     "node_modules/**/*",
     "package-lock.json",
-
-    // TODO: could not turn off lint rule for migration
-    "migrations/**/*",
 ];
 
 export default [
@@ -48,6 +45,12 @@ export default [
                 { ignoreRestSiblings: true, argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
             ],
             "@typescript-eslint/no-explicit-any": "warn",
+        },
+    },
+    {
+        files: ["migrations/**/*.js"],
+        rules: {
+            "@typescript-eslint/no-require-imports": "off",
         },
     },
     {

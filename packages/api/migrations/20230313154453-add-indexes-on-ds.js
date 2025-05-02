@@ -7,7 +7,7 @@ const {
 } = require("../build/src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port");
 
 module.exports = {
-    async up(db, client) {
+    async up() {
         await connectDB();
 
         await demarchesSimplifieesDataPort.createIndexes();

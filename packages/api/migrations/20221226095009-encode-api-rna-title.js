@@ -16,7 +16,7 @@ module.exports = {
             const { _id, ...entity } = doc;
             try {
                 await collection.findOneAndUpdate({ _id: _id }, { $set: entity });
-            } catch (e) {
+            } catch {
                 // avoid duplicate error after rename
                 continue;
             }

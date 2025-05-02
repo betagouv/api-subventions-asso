@@ -7,7 +7,7 @@ const { printAtSameLine } = require("../build/src/shared/helpers/CliHelper");
 const { siretToSiren } = require("../build/src/shared/helpers/SirenHelper");
 
 module.exports = {
-    async up(db, client) {
+    async up(db) {
         console.log("Connecting to DB...");
         await connectDB();
         const associationNameCollection = db.collection("association-name");
