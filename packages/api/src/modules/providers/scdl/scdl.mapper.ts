@@ -63,11 +63,13 @@ const dateAdapter = (date: BeforeAdaptation | undefined | null): Date | undefine
     return GenericParser.ExcelDateToJSDate(Number(date));
 };
 
-const removeTrailingDotZero = value => {
-    if (value?.includes(".")) {
-        return value.split(".")[0]; // Fix to remove ".0" from IDs when the CSV comes from a cell formatted as a float
+const properZeroNbInSiret = value => {
+    let workingValue = value;
+    if (workingValue?.includes(".")) {
+        return workingValue.split(".")[0]; // Fix to remove ".0" from IDs when the CSV comes from a cell formatted as a float
     }
-    return value;
+    if (workingValue.length < 14 && workingValue.length > 9) workingValue = workingValue.padStart(14, "0"); // puts zéros that could have been lost through number typing
+    return workingValue;
 };
 
 export const SCDL_MAPPER: ScdlGrantSchema = {
@@ -95,7 +97,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Id attribuant",
             ],
         ],
-        adapter: v => removeTrailingDotZero(v?.toString()),
+        adapter: v => properZeroNbInSiret(v?.toString()),
     },
     exercice: {
         // for now if no exercise column we will use conventionDate as default
@@ -162,7 +164,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "SIRET du bénéficiaire",
             ],
         ],
-        adapter: v => removeTrailingDotZero(v?.toString()),
+        adapter: v => properZeroNbInSiret(v?.toString()),
     },
     associationRna: [[...getMapperVariants("associationRna")]],
     object: [
@@ -254,6 +256,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             ],
         ],
         adapter: value => {
+            if (typeof value === "number") return !!value;
             if (typeof value !== "string") return undefined;
             if (["oui", "true"].includes(value?.toLowerCase())) return true;
             if (["non", "false"].includes(value?.toLowerCase())) return false;
