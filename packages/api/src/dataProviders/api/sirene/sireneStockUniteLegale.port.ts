@@ -1,4 +1,3 @@
-import { Stream } from "node:stream";
 import ProviderRequestFactory, {
     ProviderRequestService,
 } from "../../../modules/provider-request/providerRequest.service";
@@ -13,7 +12,7 @@ export class SireneStockUniteLegaleApiPort {
     }
 
     getZip() {
-        return this.http.get<Stream>(this.URL, { responseType: "stream" });
+        return this.http.get<ReadableStream>(this.URL, { responseType: "stream" });
     }
 }
 
