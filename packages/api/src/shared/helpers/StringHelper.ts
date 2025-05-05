@@ -33,3 +33,8 @@ export function sanitizeToPlainText(unsafe: string): string {
 export function getMD5(str: string) {
     return crypto.createHash("md5").update(str).digest("hex");
 }
+
+export function removeWhitespace(str: string) {
+    if (typeof str !== "string") return str;
+    return str.replace(/\s+/g, "");
+}
