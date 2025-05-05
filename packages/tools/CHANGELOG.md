@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.68.0](https://github.com/betagouv/api-subventions-asso/compare/v0.67.0...v0.68.0) (2025-05-05)
+
+**Note:** Version bump only for package tools
+
 # [0.67.0](https://github.com/betagouv/api-subventions-asso/compare/v0.66.0...v0.67.0) (2025-04-28)
 
 **Note:** Version bump only for package tools
@@ -15,11 +19,11 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
--   **tools:** [#3215](https://github.com/betagouv/api-subventions-asso/issues/3215) mettre à jour routes osiris dans le script ([#3216](https://github.com/betagouv/api-subventions-asso/issues/3216)) ([1ae1f1a](https://github.com/betagouv/api-subventions-asso/commit/1ae1f1aefb58d52fa3fd62fe7cd39ccbaf24f8a4))
+- **tools:** [#3215](https://github.com/betagouv/api-subventions-asso/issues/3215) mettre à jour routes osiris dans le script ([#3216](https://github.com/betagouv/api-subventions-asso/issues/3216)) ([1ae1f1a](https://github.com/betagouv/api-subventions-asso/commit/1ae1f1aefb58d52fa3fd62fe7cd39ccbaf24f8a4))
 
 ### Features
 
--   **api:** [#2785](https://github.com/betagouv/api-subventions-asso/issues/2785) new osiris data attributes ([#3197](https://github.com/betagouv/api-subventions-asso/issues/3197)) ([cc7f47f](https://github.com/betagouv/api-subventions-asso/commit/cc7f47fec4768b1b0c2b2ff67ca23786dac101a9))
+- **api:** [#2785](https://github.com/betagouv/api-subventions-asso/issues/2785) new osiris data attributes ([#3197](https://github.com/betagouv/api-subventions-asso/issues/3197)) ([cc7f47f](https://github.com/betagouv/api-subventions-asso/commit/cc7f47fec4768b1b0c2b2ff67ca23786dac101a9))
 
 # [0.64.0](https://github.com/betagouv/api-subventions-asso/compare/v0.63.1...v0.64.0) (2025-03-13)
 
@@ -81,13 +85,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Features
 
--   **api, tools:** [#2498](https://github.com/betagouv/api-subventions-asso/issues/2498) resilient doc import osiris ([382891e](https://github.com/betagouv/api-subventions-asso/commit/382891eea108964c31c5673ceebd72896ead7b63))
+- **api, tools:** [#2498](https://github.com/betagouv/api-subventions-asso/issues/2498) resilient doc import osiris ([382891e](https://github.com/betagouv/api-subventions-asso/commit/382891eea108964c31c5673ceebd72896ead7b63))
 
 # [0.52.0](https://github.com/betagouv/api-subventions-asso/compare/v0.51.3...v0.52.0) (2024-07-18)
 
 ### Features
 
--   **api:** [#2456](https://github.com/betagouv/api-subventions-asso/issues/2456) scdl parser accepts excel files ([#2483](https://github.com/betagouv/api-subventions-asso/issues/2483)) ([23e3506](https://github.com/betagouv/api-subventions-asso/commit/23e3506b66e61da85ed80973625c1ad829cb7965)), closes [#2318](https://github.com/betagouv/api-subventions-asso/issues/2318)
+- **api:** [#2456](https://github.com/betagouv/api-subventions-asso/issues/2456) scdl parser accepts excel files ([#2483](https://github.com/betagouv/api-subventions-asso/issues/2483)) ([23e3506](https://github.com/betagouv/api-subventions-asso/commit/23e3506b66e61da85ed80973625c1ad829cb7965)), closes [#2318](https://github.com/betagouv/api-subventions-asso/issues/2318)
 
 # [0.51.0](https://github.com/betagouv/api-subventions-asso/compare/v0.50.0...v0.51.0) (2024-07-01)
 
@@ -167,7 +171,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
--   **chore:** bash loop error ([a44ce8f](https://github.com/betagouv/api-subventions-asso/commit/a44ce8f3d5535fe5bd036a87ce2336791f84f0c4))
+- **chore:** bash loop error ([a44ce8f](https://github.com/betagouv/api-subventions-asso/commit/a44ce8f3d5535fe5bd036a87ce2336791f84f0c4))
 
 # [0.34.0](https://github.com/betagouv/api-subventions-asso/compare/v0.32.4...v0.34.0) (2023-08-09)
 
@@ -201,7 +205,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Features
 
--   homogenizes lint config ([90b43d1](https://github.com/betagouv/api-subventions-asso/commit/90b43d177873b3ad76c7c1da276340b82521c8f2))
+- homogenizes lint config ([90b43d1](https://github.com/betagouv/api-subventions-asso/commit/90b43d177873b3ad76c7c1da276340b82521c8f2))
 
 ## [0.29.1](https://github.com/betagouv/api-subventions-asso/compare/v0.29.0...v0.29.1) (2023-05-31)
 
@@ -215,9 +219,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Features
 
--   **tool:** manage error on osiris extraction ([6f49ac2](https://github.com/betagouv/api-subventions-asso/commit/6f49ac2f391ccd388ab8601e707ed10c5f5fb26a))
--   **tools:** add save current-posibilities ([e657f36](https://github.com/betagouv/api-subventions-asso/commit/e657f36c38ac09b4c2881e69b6cb5141e753b386))
--   **tools:** better error management ([59f9ed8](https://github.com/betagouv/api-subventions-asso/commit/59f9ed824beacecfda2eec9b990dc674926b86b3))
+- **tool:** manage error on osiris extraction ([6f49ac2](https://github.com/betagouv/api-subventions-asso/commit/6f49ac2f391ccd388ab8601e707ed10c5f5fb26a))
+- **tools:** add save current-posibilities ([e657f36](https://github.com/betagouv/api-subventions-asso/commit/e657f36c38ac09b4c2881e69b6cb5141e753b386))
+- **tools:** better error management ([59f9ed8](https://github.com/betagouv/api-subventions-asso/commit/59f9ed824beacecfda2eec9b990dc674926b86b3))
 
 # [0.27.0](https://github.com/betagouv/api-subventions-asso/compare/v0.26.2...v0.27.0) (2023-05-03)
 
@@ -317,32 +321,32 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
--   **api:** fix wrong year on osiris data ([#312](https://github.com/betagouv/api-subventions-asso/issues/312)) ([293f36d](https://github.com/betagouv/api-subventions-asso/commit/293f36d5f9a951f64d9e93f5931d209858bd5692))
--   **front:** fix error errorcode is not defined ([#302](https://github.com/betagouv/api-subventions-asso/issues/302)) ([776ff2d](https://github.com/betagouv/api-subventions-asso/commit/776ff2d06681aebd582a16fbfbfceaf8078f0c2a))
--   **front:** fix error on capitalize string ([#339](https://github.com/betagouv/api-subventions-asso/issues/339)) ([3326a01](https://github.com/betagouv/api-subventions-asso/commit/3326a010247dcd4a356280326f78aa1de0e6a45d))
+- **api:** fix wrong year on osiris data ([#312](https://github.com/betagouv/api-subventions-asso/issues/312)) ([293f36d](https://github.com/betagouv/api-subventions-asso/commit/293f36d5f9a951f64d9e93f5931d209858bd5692))
+- **front:** fix error errorcode is not defined ([#302](https://github.com/betagouv/api-subventions-asso/issues/302)) ([776ff2d](https://github.com/betagouv/api-subventions-asso/commit/776ff2d06681aebd582a16fbfbfceaf8078f0c2a))
+- **front:** fix error on capitalize string ([#339](https://github.com/betagouv/api-subventions-asso/issues/339)) ([3326a01](https://github.com/betagouv/api-subventions-asso/commit/3326a010247dcd4a356280326f78aa1de0e6a45d))
 
 ## [0.11.3](https://github.com/betagouv/api-subventions-asso/compare/v0.10.3...v0.11.3) (2022-07-07)
 
 ### Bug Fixes
 
--   **api:** fix wrong year on osiris data ([#312](https://github.com/betagouv/api-subventions-asso/issues/312)) ([293f36d](https://github.com/betagouv/api-subventions-asso/commit/293f36d5f9a951f64d9e93f5931d209858bd5692))
--   **front:** fix error errorcode is not defined ([#302](https://github.com/betagouv/api-subventions-asso/issues/302)) ([776ff2d](https://github.com/betagouv/api-subventions-asso/commit/776ff2d06681aebd582a16fbfbfceaf8078f0c2a))
--   **front:** fix error on capitalize string ([#339](https://github.com/betagouv/api-subventions-asso/issues/339)) ([3326a01](https://github.com/betagouv/api-subventions-asso/commit/3326a010247dcd4a356280326f78aa1de0e6a45d))
+- **api:** fix wrong year on osiris data ([#312](https://github.com/betagouv/api-subventions-asso/issues/312)) ([293f36d](https://github.com/betagouv/api-subventions-asso/commit/293f36d5f9a951f64d9e93f5931d209858bd5692))
+- **front:** fix error errorcode is not defined ([#302](https://github.com/betagouv/api-subventions-asso/issues/302)) ([776ff2d](https://github.com/betagouv/api-subventions-asso/commit/776ff2d06681aebd582a16fbfbfceaf8078f0c2a))
+- **front:** fix error on capitalize string ([#339](https://github.com/betagouv/api-subventions-asso/issues/339)) ([3326a01](https://github.com/betagouv/api-subventions-asso/commit/3326a010247dcd4a356280326f78aa1de0e6a45d))
 
 ## [0.11.2](https://github.com/betagouv/api-subventions-asso/compare/v0.10.3...v0.11.2) (2022-07-01)
 
 ### Bug Fixes
 
--   **api:** fix wrong year on osiris data ([#312](https://github.com/betagouv/api-subventions-asso/issues/312)) ([293f36d](https://github.com/betagouv/api-subventions-asso/commit/293f36d5f9a951f64d9e93f5931d209858bd5692))
--   **front:** fix error errorcode is not defined ([#302](https://github.com/betagouv/api-subventions-asso/issues/302)) ([776ff2d](https://github.com/betagouv/api-subventions-asso/commit/776ff2d06681aebd582a16fbfbfceaf8078f0c2a))
--   **front:** fix error on capitalize string ([#339](https://github.com/betagouv/api-subventions-asso/issues/339)) ([3326a01](https://github.com/betagouv/api-subventions-asso/commit/3326a010247dcd4a356280326f78aa1de0e6a45d))
+- **api:** fix wrong year on osiris data ([#312](https://github.com/betagouv/api-subventions-asso/issues/312)) ([293f36d](https://github.com/betagouv/api-subventions-asso/commit/293f36d5f9a951f64d9e93f5931d209858bd5692))
+- **front:** fix error errorcode is not defined ([#302](https://github.com/betagouv/api-subventions-asso/issues/302)) ([776ff2d](https://github.com/betagouv/api-subventions-asso/commit/776ff2d06681aebd582a16fbfbfceaf8078f0c2a))
+- **front:** fix error on capitalize string ([#339](https://github.com/betagouv/api-subventions-asso/issues/339)) ([3326a01](https://github.com/betagouv/api-subventions-asso/commit/3326a010247dcd4a356280326f78aa1de0e6a45d))
 
 ## [0.11.1](https://github.com/betagouv/api-subventions-asso/compare/v0.10.3...v0.11.1) (2022-06-30)
 
 ### Bug Fixes
 
--   **api:** fix wrong year on osiris data ([#312](https://github.com/betagouv/api-subventions-asso/issues/312)) ([293f36d](https://github.com/betagouv/api-subventions-asso/commit/293f36d5f9a951f64d9e93f5931d209858bd5692))
--   **front:** fix error errorcode is not defined ([#302](https://github.com/betagouv/api-subventions-asso/issues/302)) ([776ff2d](https://github.com/betagouv/api-subventions-asso/commit/776ff2d06681aebd582a16fbfbfceaf8078f0c2a))
+- **api:** fix wrong year on osiris data ([#312](https://github.com/betagouv/api-subventions-asso/issues/312)) ([293f36d](https://github.com/betagouv/api-subventions-asso/commit/293f36d5f9a951f64d9e93f5931d209858bd5692))
+- **front:** fix error errorcode is not defined ([#302](https://github.com/betagouv/api-subventions-asso/issues/302)) ([776ff2d](https://github.com/betagouv/api-subventions-asso/commit/776ff2d06681aebd582a16fbfbfceaf8078f0c2a))
 
 # [0.11.0](https://github.com/betagouv/api-subventions-asso/compare/v0.10.3...v0.11.0) (2022-06-21)
 
@@ -350,28 +354,28 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
--   **api:** fix wrong year on osiris data ([#312](https://github.com/betagouv/api-subventions-asso/issues/312)) ([293f36d](https://github.com/betagouv/api-subventions-asso/commit/293f36d5f9a951f64d9e93f5931d209858bd5692))
--   **front:** fix error errorcode is not defined ([#302](https://github.com/betagouv/api-subventions-asso/issues/302)) ([776ff2d](https://github.com/betagouv/api-subventions-asso/commit/776ff2d06681aebd582a16fbfbfceaf8078f0c2a))
+- **api:** fix wrong year on osiris data ([#312](https://github.com/betagouv/api-subventions-asso/issues/312)) ([293f36d](https://github.com/betagouv/api-subventions-asso/commit/293f36d5f9a951f64d9e93f5931d209858bd5692))
+- **front:** fix error errorcode is not defined ([#302](https://github.com/betagouv/api-subventions-asso/issues/302)) ([776ff2d](https://github.com/betagouv/api-subventions-asso/commit/776ff2d06681aebd582a16fbfbfceaf8078f0c2a))
 
 ## [0.10.7](https://github.com/betagouv/api-subventions-asso/compare/v0.10.3...v0.10.7) (2022-06-21)
 
 ### Bug Fixes
 
--   **api:** fix wrong year on osiris data ([#312](https://github.com/betagouv/api-subventions-asso/issues/312)) ([293f36d](https://github.com/betagouv/api-subventions-asso/commit/293f36d5f9a951f64d9e93f5931d209858bd5692))
--   **front:** fix error errorcode is not defined ([#302](https://github.com/betagouv/api-subventions-asso/issues/302)) ([776ff2d](https://github.com/betagouv/api-subventions-asso/commit/776ff2d06681aebd582a16fbfbfceaf8078f0c2a))
+- **api:** fix wrong year on osiris data ([#312](https://github.com/betagouv/api-subventions-asso/issues/312)) ([293f36d](https://github.com/betagouv/api-subventions-asso/commit/293f36d5f9a951f64d9e93f5931d209858bd5692))
+- **front:** fix error errorcode is not defined ([#302](https://github.com/betagouv/api-subventions-asso/issues/302)) ([776ff2d](https://github.com/betagouv/api-subventions-asso/commit/776ff2d06681aebd582a16fbfbfceaf8078f0c2a))
 
 ## [0.10.6](https://github.com/betagouv/api-subventions-asso/compare/v0.10.3...v0.10.6) (2022-06-21)
 
 ### Bug Fixes
 
--   **api:** fix wrong year on osiris data ([#312](https://github.com/betagouv/api-subventions-asso/issues/312)) ([293f36d](https://github.com/betagouv/api-subventions-asso/commit/293f36d5f9a951f64d9e93f5931d209858bd5692))
--   **front:** fix error errorcode is not defined ([#302](https://github.com/betagouv/api-subventions-asso/issues/302)) ([776ff2d](https://github.com/betagouv/api-subventions-asso/commit/776ff2d06681aebd582a16fbfbfceaf8078f0c2a))
+- **api:** fix wrong year on osiris data ([#312](https://github.com/betagouv/api-subventions-asso/issues/312)) ([293f36d](https://github.com/betagouv/api-subventions-asso/commit/293f36d5f9a951f64d9e93f5931d209858bd5692))
+- **front:** fix error errorcode is not defined ([#302](https://github.com/betagouv/api-subventions-asso/issues/302)) ([776ff2d](https://github.com/betagouv/api-subventions-asso/commit/776ff2d06681aebd582a16fbfbfceaf8078f0c2a))
 
 ## [0.10.5](https://github.com/betagouv/api-subventions-asso/compare/v0.10.3...v0.10.5) (2022-06-21)
 
 ### Bug Fixes
 
--   **front:** fix error errorcode is not defined ([#302](https://github.com/betagouv/api-subventions-asso/issues/302)) ([776ff2d](https://github.com/betagouv/api-subventions-asso/commit/776ff2d06681aebd582a16fbfbfceaf8078f0c2a))
+- **front:** fix error errorcode is not defined ([#302](https://github.com/betagouv/api-subventions-asso/issues/302)) ([776ff2d](https://github.com/betagouv/api-subventions-asso/commit/776ff2d06681aebd582a16fbfbfceaf8078f0c2a))
 
 ## [0.10.4](https://github.com/betagouv/api-subventions-asso/compare/v0.10.3...v0.10.4) (2022-06-14)
 
