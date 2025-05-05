@@ -144,11 +144,6 @@ export default class ScdlGrantParser {
                 errors: errorsEntity,
             } = ScdlGrantParser.indexDataByPathAndAnnotate<string, ScdlStorableGrant>(SCDL_MAPPER, parsedData);
 
-            if (count === 0) console.log("First parsedData: ", parsedData);
-            if (count === 0) console.log("First entity: ", entity);
-            if (count === 0) console.log("First annotations: ", annotations);
-            if (count === 0) console.log("First errors: ", errors);
-
             // TODO make indexDataByPathAndAnnotate indicate if errors make us reject the line
             errors.push(...errorsEntity);
 
