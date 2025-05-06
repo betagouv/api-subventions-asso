@@ -89,6 +89,13 @@ export default class ChorusAdapter {
 
     private static getEstablishmentValueObject(chorusLineDto: ChorusLineDto): establishmentIdType {
         if (chorusLineDto["Code taxe 1"] === "#") {
+            // special case spotted after handling ridet and tahiti in V0.67
+            // sometime chorus line doesn't any siret nor ridet or tahiti
+            if (chorusLineDto["No TVA 3 (COM-RIDET ou TAHITI)"] === "#") {
+                throw new Error(
+                    `Not able to retrieve an establishment identifier for chorus line with EJ ${chorusLineDto["N° EJ"]} for exercice ${chorusLineDto["Exercice comptable"]}`,
+                );
+            }
             if (Ridet.isRidet(chorusLineDto["No TVA 3 (COM-RIDET ou TAHITI)"])) {
                 return new Ridet(chorusLineDto["No TVA 3 (COM-RIDET ou TAHITI)"]);
             } else {

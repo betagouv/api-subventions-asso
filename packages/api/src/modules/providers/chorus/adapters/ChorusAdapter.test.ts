@@ -329,7 +329,7 @@ describe("ChorusAdapter", () => {
         });
     });
 
-    describe("getEstablishmentIdentifierName", () => {
+    describe("getEstablishmentValueObject", () => {
         const mockIsRidet = jest.fn().mockReturnValue(true);
         const mockIsTahitiet = jest.fn().mockReturnValue(true);
         const mockIsSiret = jest.fn().mockReturnValue(true);
@@ -340,6 +340,21 @@ describe("ChorusAdapter", () => {
             Ridet.isRidet = mockIsRidet;
             Siret.isSiret = mockIsSiret;
             Tahitiet.isTahitiet = mockIsTahitiet;
+        });
+
+        it("throws error if no SIRET or RIDET or TAHITI defined", () => {
+            // @ts-expect-error: partial chorus line dto
+            const ENTITY = {
+                "N° EJ": "123456789",
+                "Exercice comptable": 2023,
+                "Code taxe 1": "#",
+                "No TVA 3 (COM-RIDET ou TAHITI)": "#",
+            } as ChorusLineDto;
+
+            // @ts-expect-error: private method
+            expect(() => ChorusAdapter.getEstablishmentValueObject(ENTITY)).toThrow(
+                `Not able to retrieve an establishment identifier for chorus line with EJ ${ENTITY["N° EJ"]} for exercice ${ENTITY["Exercice comptable"]}`,
+            );
         });
 
         it.each`
