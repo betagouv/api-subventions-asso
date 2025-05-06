@@ -17,7 +17,9 @@ import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
 import paymentService from "../payments/payments.service";
 import subventionsService from "../subventions/subventions.service";
 import Siret from "../../valueObjects/Siret";
+import { refreshGrantAsyncServices } from "../../shared/initAsyncServices";
 
+jest.mock("../../shared/initAsyncServices");
 jest.mock("../providers/scdl/scdl.service");
 jest.mock("@sentry/node");
 jest.mock("../providers");
@@ -275,6 +277,11 @@ describe("GrantService", () => {
         });
 
         afterEach(() => mocks.forEach(mock => mock.mockClear()));
+
+        it("refresh grant async services before fetching new data", async () => {
+            await grantService.getGrants(ESTABLISHMENT_ID);
+            expect(refreshGrantAsyncServices).toHaveBeenCalled();
+        });
 
         it("should call getRawGrants", async () => {
             await grantService.getGrants(ESTABLISHMENT_ID);
