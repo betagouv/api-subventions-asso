@@ -28,7 +28,7 @@ export const mongoSessionStoreConfig = { uri: MONGO_URL, collection: "sessions",
 
 export default mongoClient.db(MONGO_DBNAME, { ignoreUndefined: true });
 
-if (ENV !== "test") {
+if (!["test", "dev"].includes(ENV)) {
     const events: string[] = [
         "serverOpening",
         "serverClosed",
