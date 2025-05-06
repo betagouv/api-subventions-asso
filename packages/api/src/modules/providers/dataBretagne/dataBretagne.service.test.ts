@@ -83,6 +83,7 @@ describe("Data Bretagne Service", function () {
     });
 
     describe("getAllDataRecords", () => {
+        const mockLogin = jest.spyOn(dataBretagnePort, "login").mockImplementation(jest.fn());
         const mockGetProgramsRecord = jest.spyOn(dataBretagneService, "getProgramsRecord");
         const mockGetMinistriesRecord = jest.spyOn(dataBretagneService, "getMinistriesRecord");
         const mockGetProgramsRefRecord = jest.spyOn(dataBretagneService, "getProgramsRefRecord");
@@ -102,6 +103,11 @@ describe("Data Bretagne Service", function () {
                 mockGetMinistriesRecord,
                 mockGetProgramsRefRecord,
             ].map(mock => mock.mockRestore());
+        });
+
+        it("should log in", async () => {
+            await dataBretagneService.getAllDataRecords();
+            expect(mockLogin).toHaveBeenCalledTimes(1);
         });
 
         it("should return all data from dataBretagneService", async () => {
@@ -138,24 +144,16 @@ describe("Data Bretagne Service", function () {
         [async () => dataBretagneService.getFonctionalDomainsRecord(), "getDomaineFonctionnel"],
         [async () => dataBretagneService.getProgramsRefRecord(), "getRefProgrammation"],
     ])("with %s", (methodToTest, methodToMock) => {
-        let mockLogin: jest.SpyInstance;
         let mockGetEntities: jest.SpyInstance;
 
         beforeEach(() => {
-            mockLogin = jest.spyOn(dataBretagnePort, "login").mockResolvedValue();
             mockGetEntities = jest
                 .spyOn(dataBretagnePort, methodToMock as keyof DataBretagnePort)
                 .mockResolvedValue(entities[methodToMock]);
         });
 
         afterAll(() => {
-            mockLogin.mockRestore();
             mockGetEntities.mockRestore();
-        });
-
-        it("should call login", async () => {
-            await methodToTest();
-            expect(mockLogin).toHaveBeenCalledTimes(1);
         });
 
         it("should call getEntities", async () => {

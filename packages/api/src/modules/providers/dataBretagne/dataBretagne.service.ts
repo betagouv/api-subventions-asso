@@ -47,8 +47,9 @@ class DataBretagneService extends ProviderCore {
     }
 
     async getAllDataRecords(): Promise<DataBretagneRecords> {
-        const ministries = await dataBretagneService.getMinistriesRecord();
+        await dataBretagneService.login();
         const programs = await dataBretagneService.getProgramsRecord();
+        const ministries = await dataBretagneService.getMinistriesRecord();
         const fonctionalDomains = await dataBretagneService.getFonctionalDomainsRecord();
         const programsRef = await dataBretagneService.getProgramsRefRecord();
 
@@ -61,7 +62,6 @@ class DataBretagneService extends ProviderCore {
      */
     async getProgramsRecord(): Promise<ProgramsRecord> {
         const programs = await stateBudgetProgramPort.findAll();
-
         return programs.reduce((acc, currentLine) => {
             acc[currentLine.code_programme] = currentLine;
             return acc;
@@ -69,7 +69,6 @@ class DataBretagneService extends ProviderCore {
     }
 
     async getMinistriesRecord(): Promise<MinistriesRecord> {
-        await dataBretagnePort.login();
         const ministries = await dataBretagnePort.getMinistry();
         return ministries.reduce((acc, currentLine) => {
             acc[currentLine.code_ministere] = currentLine;
@@ -78,9 +77,7 @@ class DataBretagneService extends ProviderCore {
     }
 
     async getFonctionalDomainsRecord(): Promise<FonctionalDomainsRecord> {
-        await dataBretagnePort.login();
         const fonctionalDomains = await dataBretagnePort.getDomaineFonctionnel();
-
         return fonctionalDomains.reduce((acc, currentLine) => {
             acc[currentLine.code_action] = currentLine;
             return acc;
@@ -88,7 +85,6 @@ class DataBretagneService extends ProviderCore {
     }
 
     async getProgramsRefRecord(): Promise<ProgramsRefRecord> {
-        await dataBretagnePort.login();
         const refsProgram = await dataBretagnePort.getRefProgrammation();
 
         return refsProgram.reduce((acc, currentLine) => {
