@@ -26,7 +26,7 @@ describe("paymentFlatChorusService", () => {
 
     describe("init", () => {
         const mockGetAllDataRecords = jest.spyOn(dataBretagneService, "getAllDataRecords");
-        const mockToPaymentFlatChorusEntities = jest.spyOn(paymentFlatChorusService, "toPaymentFlatChorusEntities");
+        const mockToPaymentFlatChorusEntities = jest.spyOn(paymentFlatChorusService, "toAggregatedPaymentFlatEntities");
         const CHORUS_PAYMENT_FLAT_ENTITIES = [CHORUS_PAYMENT_FLAT_ENTITY];
         beforeAll(() => {
             mockGetAllDataRecords.mockResolvedValue(DATA_BRETAGNE_RECORDS);
@@ -52,7 +52,7 @@ describe("paymentFlatChorusService", () => {
     });
 
     describe("updatePaymentsFlatCollection", () => {
-        const mockToPaymentFlatChorusEntities = jest.spyOn(paymentFlatChorusService, "toPaymentFlatChorusEntities");
+        const mockToPaymentFlatChorusEntities = jest.spyOn(paymentFlatChorusService, "toAggregatedPaymentFlatEntities");
         const mockGetAllDataBretagneData = jest.spyOn(dataBretagneService, "getAllDataRecords");
         const serviceMocks = [mockToPaymentFlatChorusEntities, mockGetAllDataBretagneData];
         let mockEntities;
@@ -76,7 +76,7 @@ describe("paymentFlatChorusService", () => {
             expect(mockGetAllDataBretagneData).toHaveBeenCalledTimes(1);
         });
 
-        it("calls toPaymentFlatChorusEntities with all data from dataBretagneService", async () => {
+        it("calls toAggregatedPaymentFlatEntities with all data from dataBretagneService", async () => {
             await paymentFlatChorusService.updatePaymentsFlatCollection();
             expect(mockToPaymentFlatChorusEntities).toHaveBeenCalledWith(
                 DATA_BRETAGNE_RECORDS.programs,
@@ -87,7 +87,7 @@ describe("paymentFlatChorusService", () => {
             );
         });
 
-        it("should call toPaymentFlatChorusEntities with all data from dataBretagneService and exerciceBudgetaire", async () => {
+        it("should call toAggregatedPaymentFlatEntities with all data from dataBretagneService and exerciceBudgetaire", async () => {
             const exerciceBudgetaire = 2022;
             await paymentFlatChorusService.updatePaymentsFlatCollection(exerciceBudgetaire);
             expect(mockToPaymentFlatChorusEntities).toHaveBeenCalledWith(
@@ -125,7 +125,7 @@ describe("paymentFlatChorusService", () => {
         });
     });
 
-    describe("toPaymentFlatChorusEntities", () => {
+    describe("toAggregatedPaymentFlatEntities", () => {
         let mockChorusCursorFind: jest.SpyInstance;
         let mockToNotAggregatedChorusPaymentFlatEntity: jest.SpyInstance;
 
@@ -150,7 +150,7 @@ describe("paymentFlatChorusService", () => {
 
             mockChorusCursorFind = jest.spyOn(chorusService, "cursorFind").mockReturnValue(mockCursor);
             mockToNotAggregatedChorusPaymentFlatEntity = jest
-                .spyOn(ChorusAdapter, "toNotAggregatedChorusPaymentFlatEntity")
+                .spyOn(ChorusAdapter, "toNotAggregatedPaymentFlatEntity")
                 .mockReturnValue({ ...CHORUS_PAYMENT_FLAT_ENTITY });
         });
 
@@ -159,7 +159,7 @@ describe("paymentFlatChorusService", () => {
         });
 
         it("should call chorusCursorFind without exercise", async () => {
-            await paymentFlatChorusService.toPaymentFlatChorusEntities(
+            await paymentFlatChorusService.toAggregatedPaymentFlatEntities(
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
                 DATA_BRETAGNE_RECORDS.fonctionalDomains,
@@ -170,7 +170,7 @@ describe("paymentFlatChorusService", () => {
 
         it("should call chorusCursorFind with exercice", async () => {
             const exercice = 2022;
-            await paymentFlatChorusService.toPaymentFlatChorusEntities(
+            await paymentFlatChorusService.toAggregatedPaymentFlatEntities(
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
                 DATA_BRETAGNE_RECORDS.fonctionalDomains,
@@ -181,7 +181,7 @@ describe("paymentFlatChorusService", () => {
         });
 
         it(`calls next for $nDocuments times`, async () => {
-            await paymentFlatChorusService.toPaymentFlatChorusEntities(
+            await paymentFlatChorusService.toAggregatedPaymentFlatEntities(
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
                 DATA_BRETAGNE_RECORDS.fonctionalDomains,
@@ -190,8 +190,8 @@ describe("paymentFlatChorusService", () => {
             expect(mockCursor.next).toHaveBeenCalledTimes(nDocuments);
         });
 
-        it("calls adapter.toNotAggregatedChorusPaymentFlatEntity for each documents", async () => {
-            await paymentFlatChorusService.toPaymentFlatChorusEntities(
+        it("calls adapter.toNotAggregatedPaymentFlatEntity for each documents", async () => {
+            await paymentFlatChorusService.toAggregatedPaymentFlatEntities(
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
                 DATA_BRETAGNE_RECORDS.fonctionalDomains,
@@ -201,7 +201,7 @@ describe("paymentFlatChorusService", () => {
         });
 
         it("should return an array of PaymentFlatEntity", async () => {
-            const result = await paymentFlatChorusService.toPaymentFlatChorusEntities(
+            const result = await paymentFlatChorusService.toAggregatedPaymentFlatEntities(
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
                 DATA_BRETAGNE_RECORDS.fonctionalDomains,

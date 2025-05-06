@@ -138,7 +138,7 @@ describe("ChorusAdapter", () => {
         });
     });
 
-    describe("toNotAggregatedChorusPaymentFlatEntity", () => {
+    describe("toNotAggregatedPaymentFlatEntity", () => {
         let mockGetPaymentFlatComplementaryData: jest.SpyInstance;
         beforeEach(() => {
             //@ts-expect-error : test private method
@@ -150,7 +150,7 @@ describe("ChorusAdapter", () => {
         });
 
         it("should return PaymentFlatEntity when data is fully provided", () => {
-            const result = ChorusAdapter.toNotAggregatedChorusPaymentFlatEntity(
+            const result = ChorusAdapter.toNotAggregatedPaymentFlatEntity(
                 CHORUS_LINE_ENTITY,
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
@@ -166,7 +166,7 @@ describe("ChorusAdapter", () => {
                 ...documentDataReturnedValue,
                 programEntity: undefined,
             });
-            const result = ChorusAdapter.toNotAggregatedChorusPaymentFlatEntity(
+            const result = ChorusAdapter.toNotAggregatedPaymentFlatEntity(
                 { ...CHORUS_LINE_ENTITY } as unknown as ChorusLineEntity,
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,

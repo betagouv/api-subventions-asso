@@ -31,7 +31,7 @@ exports[`ChorusAdapter toCommon returns proper result 1`] = `
 }
 `;
 
-exports[`ChorusAdapter toNotAggregatedChorusPaymentFlatEntity should return PaymentFlatEntity when data is fully provided 1`] = `
+exports[`ChorusAdapter toNotAggregatedPaymentFlatEntity should return PaymentFlatEntity when data is fully provided 1`] = `
 {
   "actionCode": "0101-01-02",
   "actionLabel": "Label d'action Exemple",
@@ -64,7 +64,7 @@ exports[`ChorusAdapter toNotAggregatedChorusPaymentFlatEntity should return Paym
 }
 `;
 
-exports[`ChorusAdapter toNotAggregatedChorusPaymentFlatEntity should return PaymentFlatEntity with null when data is not fully provided 1`] = `
+exports[`ChorusAdapter toNotAggregatedPaymentFlatEntity should return PaymentFlatEntity with null when data is not fully provided 1`] = `
 {
   "actionCode": "0101-01-02",
   "actionLabel": "Label d'action Exemple",
