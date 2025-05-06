@@ -24,6 +24,33 @@ describe("paymentFlatChorusService", () => {
         jest.mocked(PaymentFlatAdapter.toDbo).mockReturnValue(PAYMENT_FLAT_DBO);
     });
 
+    describe("init", () => {
+        const mockGetAllDataRecords = jest.spyOn(dataBretagneService, "getAllDataRecords");
+        const mockToPaymentFlatChorusEntities = jest.spyOn(paymentFlatChorusService, "toPaymentFlatChorusEntities");
+        const CHORUS_PAYMENT_FLAT_ENTITIES = [CHORUS_PAYMENT_FLAT_ENTITY];
+        beforeAll(() => {
+            mockGetAllDataRecords.mockResolvedValue(DATA_BRETAGNE_RECORDS);
+            mockToPaymentFlatChorusEntities.mockResolvedValue(CHORUS_PAYMENT_FLAT_ENTITIES);
+        });
+
+        it("retrieves DataBretagne data", async () => {
+            await paymentFlatChorusService.init();
+            expect(mockGetAllDataRecords).toHaveBeenCalledTimes(1);
+        });
+
+        it("adapte entities", async () => {
+            await paymentFlatChorusService.init();
+            expect(mockToPaymentFlatChorusEntities).toHaveBeenCalledTimes(new Date().getFullYear() - 2016); // number of years since 2017
+        });
+
+        it("insert payments flats", async () => {
+            await paymentFlatChorusService.init();
+            expect(paymentFlatPort.insertMany).toHaveBeenCalledTimes(
+                CHORUS_PAYMENT_FLAT_ENTITIES.length * new Date().getFullYear() - 2016, // number of years * number of entities for each year
+            );
+        });
+    });
+
     describe("updatePaymentsFlatCollection", () => {
         const mockToPaymentFlatChorusEntities = jest.spyOn(paymentFlatChorusService, "toPaymentFlatChorusEntities");
         const mockGetAllDataBretagneData = jest.spyOn(dataBretagneService, "getAllDataRecords");
