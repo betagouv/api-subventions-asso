@@ -245,7 +245,7 @@ export class GrantService {
         const grantsByType = this.groupRawGrantsByType(rawGrants);
 
         // order matters if we want fullGrants to be more accurate than applications in case of duplicates
-        // TODO: investiguate if duplicates is something that can happen
+        // TODO: investigate if duplicates is something that can happen
         grantsByType.fullGrants?.forEach(joiner(addFullGrant, addLonelyFullGrant));
         grantsByType.applications?.forEach(joiner(addApplication, addLonelyApplication));
         grantsByType.payments?.forEach(joiner(addPayment, addLonelyPayment));
