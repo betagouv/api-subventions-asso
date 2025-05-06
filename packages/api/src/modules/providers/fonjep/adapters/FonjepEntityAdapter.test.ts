@@ -2,11 +2,7 @@ import {
     CHORUS_PAYMENT_FLAT_ENTITY,
     FONJEP_PAYMENT_FLAT_ENTITY,
 } from "../../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
-import {
-    DATA_BRETAGNE_RECORDS,
-    MINISTRY_ENTITIES,
-    PROGRAM_ENTITIES,
-} from "../../dataBretagne/__fixtures__/dataBretagne.fixture";
+import { DATA_BRETAGNE_RECORDS, MINISTRY_ENTITIES } from "../../dataBretagne/__fixtures__/dataBretagne.fixture";
 import {
     DISPOSITIF_DTOS,
     POSTE_DTO_WITH_DATE,
@@ -18,6 +14,8 @@ import { POSTE_ENTITY, TIERS_ENTITY, VERSEMENT_ENTITY } from "../__fixtures__/fo
 
 import FonjepEntityAdapter from "./FonjepEntityAdapter";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
+import Siret from "../../../../valueObjects/Siret";
+import { GenericAdapter } from "../../../../shared/GenericAdapter";
 jest.mock("../../dataBretagne/dataBretagne.service");
 
 describe("FonjepEntityAdapter", () => {
@@ -138,7 +136,7 @@ describe("FonjepEntityAdapter", () => {
         beforeAll(() => {
             mockBuildPaymentFlatPaymentId.mockReturnValue(PAYMENT_ID);
             mockBuildPaymentFlatUniqueId.mockReturnValue(UNIQUE_ID);
-            mockGetBopFromFounderCode.mockReturnValue(163);
+            mockGetBopFromFounderCode.mockReturnValue(Number(PROGRAM_CODE));
             jest.mocked(dataBretagneService.getMinistryEntity).mockReturnValue(MINISTRY_ENTITIES[0]);
         });
 
@@ -167,10 +165,32 @@ describe("FonjepEntityAdapter", () => {
                 { payment: VERSEMENT_ENTITY, position: POSTE_ENTITY, thirdParty: TIERS_ENTITY },
                 DATA_BRETAGNE_RECORDS,
             );
+            const SIRET = new Siret(TIERS_ENTITY.siretOuRidet as string);
+            const SIREN = SIRET.toSiren();
             expect(mockBuildPaymentFlatUniqueId).toHaveBeenCalledWith({
-                paymentId: PAYMENT_ID,
-                payment: VERSEMENT_ENTITY,
-                program: DATA_BRETAGNE_RECORDS.programs[PROGRAM_CODE],
+                idVersement: PAYMENT_ID,
+                exerciceBudgetaire: POSTE_ENTITY.annee as number,
+                typeIdEtablissementBeneficiaire: "siret",
+                idEtablissementBeneficiaire: SIRET,
+                typeIdEntrepriseBeneficiaire: "siren",
+                idEntrepriseBeneficiaire: SIREN,
+                amount: VERSEMENT_ENTITY.montantPaye,
+                operationDate: VERSEMENT_ENTITY.dateVersement,
+                centreFinancierCode: GenericAdapter.NOT_APPLICABLE_VALUE,
+                centreFinancierLibelle: GenericAdapter.NOT_APPLICABLE_VALUE,
+                attachementComptable: GenericAdapter.NOT_APPLICABLE_VALUE,
+                regionAttachementComptable: GenericAdapter.NOT_APPLICABLE_VALUE,
+                ej: GenericAdapter.NOT_APPLICABLE_VALUE,
+                actionCode: GenericAdapter.NOT_APPLICABLE_VALUE,
+                actionLabel: GenericAdapter.NOT_APPLICABLE_VALUE,
+                activityCode: GenericAdapter.NOT_APPLICABLE_VALUE,
+                activityLabel: GenericAdapter.NOT_APPLICABLE_VALUE,
+                provider: "fonjep",
+                programName: DATA_BRETAGNE_RECORDS.programs[Number(PROGRAM_CODE)].label_programme,
+                programNumber: DATA_BRETAGNE_RECORDS.programs[Number(PROGRAM_CODE)].code_programme,
+                mission: DATA_BRETAGNE_RECORDS.programs[Number(PROGRAM_CODE)].mission,
+                ministry: MINISTRY_ENTITIES[0]?.nom_ministere || null,
+                ministryAcronym: MINISTRY_ENTITIES[0]?.sigle_ministere || null,
             });
         });
 
@@ -223,12 +243,9 @@ describe("FonjepEntityAdapter", () => {
     });
     describe("buildPaymentFlatUniqueId", () => {
         it("return idVersement", () => {
+            const { uniqueId, ...partialPaymentFlat } = FONJEP_PAYMENT_FLAT_ENTITY;
             // @ts-expect-error: test private method
-            const actual = FonjepEntityAdapter.buildPaymentFlatUniqueId({
-                paymentId: "PAYMENT_ID",
-                payment: VERSEMENT_ENTITY,
-                program: PROGRAM_ENTITIES[0],
-            });
+            const actual = FonjepEntityAdapter.buildPaymentFlatUniqueId(partialPaymentFlat);
             expect(actual).toMatchSnapshot();
         });
     });

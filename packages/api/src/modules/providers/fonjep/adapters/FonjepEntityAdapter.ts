@@ -15,7 +15,6 @@ import Siren from "../../../../valueObjects/Siren";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
 import { FonjepPaymentFlatEntity } from "../entities/FonjepPaymentFlatEntity";
 import { DataBretagneRecords } from "../../dataBretagne/@types/DataBretagne";
-import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
 import { getShortISODate } from "../../../../shared/helpers/DateHelper";
 
@@ -136,14 +135,18 @@ export default class FonjepEntityAdapter {
         }`;
     }
 
-    // this should contain action and activity code like Chorus
-    private static buildPaymentFlatUniqueId(data: {
-        paymentId: string;
-        payment: PayedFonjepVersementEntity;
-        program: StateBudgetProgramEntity;
-    }) {
-        const { paymentId, payment, program } = data;
-        return `${paymentId}-${program.code_programme}-${getShortISODate(payment.dateVersement)}`;
+    // this keeps the same structure as other providers payment flat uniqueId and add N/A for the missing fields
+    private static buildPaymentFlatUniqueId(partialPaymentFlat: Omit<FonjepPaymentFlatEntity, "uniqueId">) {
+        const keys = [
+            partialPaymentFlat.idVersement,
+            partialPaymentFlat.programNumber,
+            GenericAdapter.NOT_APPLICABLE_VALUE,
+            GenericAdapter.NOT_APPLICABLE_VALUE,
+            getShortISODate(partialPaymentFlat.operationDate),
+            GenericAdapter.NOT_APPLICABLE_VALUE,
+            GenericAdapter.NOT_APPLICABLE_VALUE,
+        ];
+        return keys.join("-");
     }
 
     static toFonjepPaymentFlat(
@@ -189,11 +192,8 @@ export default class FonjepEntityAdapter {
                 payment,
             });
 
-            // TODO: Another example where something nullable (Tier.FinanceurPrincipalCode) is required to build a unique ID
-            // TODO: make FonjepTierEntity.financeurPrincipalCode mandatory and make it a number
-            const uniqueId = this.buildPaymentFlatUniqueId({ paymentId, payment, program });
-
-            return {
+            const partialPaymentFlat = {
+                idVersement: paymentId,
                 exerciceBudgetaire: position.annee as number,
                 typeIdEtablissementBeneficiaire: estabIdType,
                 idEtablissementBeneficiaire: estabValueObjectId,
@@ -206,23 +206,23 @@ export default class FonjepEntityAdapter {
                 attachementComptable: GenericAdapter.NOT_APPLICABLE_VALUE,
                 regionAttachementComptable: GenericAdapter.NOT_APPLICABLE_VALUE,
                 ej: GenericAdapter.NOT_APPLICABLE_VALUE,
-                provider: this.PROVIDER_NAME,
+                actionCode: GenericAdapter.NOT_APPLICABLE_VALUE,
+                actionLabel: GenericAdapter.NOT_APPLICABLE_VALUE,
+                activityCode: GenericAdapter.NOT_APPLICABLE_VALUE,
+                activityLabel: GenericAdapter.NOT_APPLICABLE_VALUE,
+                provider: this.PROVIDER_NAME.toLowerCase(),
                 programName: program.label_programme,
                 programNumber: program.code_programme,
                 mission: program.mission,
                 ministry: ministry?.nom_ministere || null,
                 ministryAcronym: ministry?.sigle_ministere || null,
-
-                // as of #3142 we cannot find those fields in FONJEP data
-                // it is defined null because we believe that FONJEP can update its data (cf schemas_donnees.xlsx)
-                actionCode: null,
-                actionLabel: null,
-                activityCode: null,
-                activityLabel: null,
-
-                idVersement: paymentId,
-                uniqueId,
             };
+
+            // TODO: Another example where something nullable (Tier.FinanceurPrincipalCode) is required to build a unique ID
+            // TODO: make FonjepTierEntity.financeurPrincipalCode mandatory and make it a number
+            const uniqueId = this.buildPaymentFlatUniqueId(partialPaymentFlat);
+
+            return { uniqueId, ...partialPaymentFlat };
         }
     }
 }

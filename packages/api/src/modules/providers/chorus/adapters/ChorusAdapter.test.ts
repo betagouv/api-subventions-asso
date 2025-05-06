@@ -16,6 +16,7 @@ import Siren from "../../../../valueObjects/Siren";
 import Tahiti from "../../../../valueObjects/Tahiti";
 import Rid from "../../../../valueObjects/Rid";
 import { GenericParser } from "../../../../shared/GenericParser";
+import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
 
 jest.mock("@sentry/node", () => ({
     captureException: jest.fn(),
@@ -568,6 +569,15 @@ describe("ChorusAdapter", () => {
         it("should return PaymentFlatRawData", () => {
             // @ts-expect-error: private method
             const actual = ChorusAdapter.getPaymentFlatRawData(CHORUS_LINE_DTO);
+            expect(actual).toMatchSnapshot();
+        });
+    });
+
+    describe("buildUniqueId", () => {
+        it("return a uniqueId", () => {
+            const { uniqueId, ...partialPaymentFlat } = CHORUS_PAYMENT_FLAT_ENTITY;
+            // @ts-expect-error: test private method
+            const actual = ChorusAdapter.buildUniqueId(partialPaymentFlat);
             expect(actual).toMatchSnapshot();
         });
     });
