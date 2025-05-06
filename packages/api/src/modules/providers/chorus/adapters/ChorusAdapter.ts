@@ -20,6 +20,7 @@ import Tahitiet from "../../../../valueObjects/Tahitiet";
 import REGION_MAPPING from "./ChorusRegionMapping";
 
 export default class ChorusAdapter {
+    // TODO: get this from enum and in lower case
     static PROVIDER_NAME = "Chorus";
 
     public static rawToPayment(rawPayment: RawPayment<ChorusLineEntity>, program: Omit<StateBudgetProgramDbo, "_id">) {
@@ -213,25 +214,38 @@ export default class ChorusAdapter {
             actionLabel: domaineFonctEntity?.libelle_action ?? null,
             activityCode,
             activityLabel: refProgrammationEntity?.libelle_activite ?? null,
-            provider: "chorus", // TODO: get this from config / code => see #3338
+            provider: this.PROVIDER_NAME.toLowerCase(), // TODO: get this from config / code => see #3338
         };
 
         const idVersement = `${rawDataWithDataBretagne.idEtablissementBeneficiaire}-${rawDataWithDataBretagne.ej}-${rawDataWithDataBretagne.exerciceBudgetaire}`;
-        const uniqueId = `${idVersement}-${
-            rawDataWithDataBretagne.programNumber
-        }-${actionCode}-${activityCode}-${getShortISODate(rawDataWithDataBretagne.operationDate)}-${
-            rawDataWithDataBretagne.attachementComptable
-        }-${rawDataWithDataBretagne.centreFinancierCode}`;
         const regionAttachementComptable = ChorusAdapter.getRegionAttachementComptable(
             rawDataWithDataBretagne.attachementComptable,
         );
-
-        return {
-            ...rawDataWithDataBretagne,
-            uniqueId,
+        const partialPaymentFlat: Omit<ChorusPaymentFlatEntity, "uniqueId"> = {
             idVersement,
             regionAttachementComptable,
+            ...rawDataWithDataBretagne,
         };
+        const uniqueId = this.buildUniqueId(partialPaymentFlat);
+
+        return {
+            uniqueId,
+            ...partialPaymentFlat,
+        };
+    }
+
+    private static buildUniqueId(partialPaymentFlat: Omit<ChorusPaymentFlatEntity, "uniqueId">) {
+        const {
+            idVersement,
+            programNumber,
+            actionCode,
+            activityCode,
+            operationDate,
+            attachementComptable,
+            centreFinancierCode,
+        } = partialPaymentFlat;
+
+        return `${idVersement}-${programNumber}-${actionCode}-${activityCode}-${getShortISODate(operationDate)}-${attachementComptable}-${centreFinancierCode}`;
     }
 
     private static getProgramCodeAndEntity(
