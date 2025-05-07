@@ -14,7 +14,7 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider<
     constructor() {
         super({
             name: "Payment Flat",
-            type: ProviderEnum.raw,
+            type: ProviderEnum.technical,
             description: "PaymentFlat",
             id: "payment-flat",
         });
