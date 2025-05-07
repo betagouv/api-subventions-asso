@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.68.1](https://github.com/betagouv/api-subventions-asso/compare/v0.68.0...v0.68.1) (2025-05-07)
+
+### Bug Fixes
+
+- **api:** handle no estab identifier in chorus line payment flat ([f8b27a6](https://github.com/betagouv/api-subventions-asso/commit/f8b27a65ec1336f069572bd4261b7516958bb17b))
+- **api:** refresh async data in grant providers before fetching grants ([22b286f](https://github.com/betagouv/api-subventions-asso/commit/22b286f1a0c80a192ab726144e066246d8a21705))
+
 # [0.68.0](https://github.com/betagouv/api-subventions-asso/compare/v0.67.0...v0.68.0) (2025-05-05)
 
 ### Bug Fixes
