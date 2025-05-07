@@ -58,14 +58,21 @@ class PaymentFlatChorusService {
 
         while (await chorusCursor.hasNext()) {
             const document = (await chorusCursor.next()) as ChorusLineEntity;
+            let paymentFlatEntity;
 
-            const paymentFlatEntity = ChorusAdapter.toNotAggregatedChorusPaymentFlatEntity(
-                document,
-                programs,
-                ministries,
-                fonctionalDomains,
-                programsRef,
-            );
+            try {
+                paymentFlatEntity = ChorusAdapter.toNotAggregatedChorusPaymentFlatEntity(
+                    document,
+                    programs,
+                    ministries,
+                    fonctionalDomains,
+                    programsRef,
+                );
+            } catch (e) {
+                console.log((e as Error).message);
+                // means that a chorus line is not valid to be inserted in payment flat
+                continue;
+            }
 
             if (entities[paymentFlatEntity.uniqueId]) {
                 entities[paymentFlatEntity.uniqueId].amount = parseFloat(

@@ -14,6 +14,7 @@ import subventionsService from "../subventions/subventions.service";
 import { FullGrantProvider } from "./@types/FullGrantProvider";
 import { RawGrant, JoinedRawGrant, RawFullGrant, RawApplication, RawPayment, AnyRawGrant } from "./@types/rawGrant";
 import commonGrantService from "./commonGrant.service";
+import { refreshGrantAsyncServices } from "../../shared/initAsyncServices";
 
 export class GrantService {
     fullGrantProvidersById: Record<string, FullGrantProvider<unknown>>;
@@ -139,6 +140,7 @@ export class GrantService {
     // appeler adapter pour chaque join.application join.payment et join.fullGrant
     // implementer une classe GrantAdapter pour chaque adapter de demande et de paiment
     async getGrants(identifier: StructureIdentifier): Promise<Grant[]> {
+        await refreshGrantAsyncServices();
         const joinedRawGrants = await this.getRawGrants(identifier);
         const grants = joinedRawGrants.map(this.adaptJoinedRawGrant.bind(this)).filter(grant => grant) as Grant[];
         const groupByExerciseGrants = this.groupGrantsByExercise(this.handleMultiYearGrants(grants));
