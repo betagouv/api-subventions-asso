@@ -37,6 +37,12 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - **front:** adapt login page ([4f425d3](https://github.com/betagouv/api-subventions-asso/commit/4f425d34783a51f25a7420508d21cba3d1be318e))
 - **front:** remove signup page ([01d1d9a](https://github.com/betagouv/api-subventions-asso/commit/01d1d9afda7377ed286fe40895c795e8c90b0db1))
 
+## [0.66.1](https://github.com/betagouv/api-subventions-asso/compare/v0.66.0...v0.66.1) (2025-05-07)
+
+### Bug Fixes
+
+-   **api:** quick & dirty prevent too many calls to api asso in search ([088c89d](https://github.com/betagouv/api-subventions-asso/commit/088c89dd52a1699d054d3e02e286f3da1b3b6057))
+
 # [0.66.0](https://github.com/betagouv/api-subventions-asso/compare/v0.65.2...v0.66.0) (2025-04-08)
 
 ### Bug Fixes

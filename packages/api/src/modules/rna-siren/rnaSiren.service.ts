@@ -7,10 +7,10 @@ import Siren from "../../valueObjects/Siren";
 import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
 
 export class RnaSirenService {
-    async find(id: Rna | Siren): Promise<RnaSirenEntity[] | null> {
+    async find(id: Rna | Siren, offline = false): Promise<RnaSirenEntity[] | null> {
         const entities = await rnaSirenPort.find(id);
 
-        if (entities) return entities;
+        if (entities || offline) return entities;
 
         // If not rna siren matching search in API ASSO
         const { rna, siren } = await apiAssoService.findRnaSirenByIdentifiers(AssociationIdentifier.fromId(id));
