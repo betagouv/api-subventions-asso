@@ -15,6 +15,7 @@ import bodaccService from "./bodacc/bodacc.service";
 import Provider from "./@types/IProvider";
 import scdlGrantService from "./scdl/scdl.grant.service";
 import subventiaService from "./subventia/subventia.service";
+import chorusService from "./chorus/chorus.service";
 
 // TODO: Why not an array instead of an object ?
 const providers: { [key: string]: Provider } = {
@@ -27,6 +28,7 @@ const providers: { [key: string]: Provider } = {
     dauphinService,
     demarchesSimplifieesService,
     bodaccService,
+    chorusService,
     scdlGrantService,
     subventiaService,
 };

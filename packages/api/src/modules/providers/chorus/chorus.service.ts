@@ -3,7 +3,6 @@ import { WithId } from "mongodb";
 import { ASSO_BRANCHE } from "../../../shared/ChorusBrancheAccepted";
 import CacheData from "../../../shared/Cache";
 import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
-import PaymentProvider from "../../payments/@types/PaymentProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { RawGrant, RawPayment } from "../../grant/@types/rawGrant";
 import ProviderCore from "../ProviderCore";
@@ -15,7 +14,6 @@ import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifi
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import Siren from "../../../valueObjects/Siren";
 import Siret from "../../../valueObjects/Siret";
-import GrantProvider from "../../grant/@types/GrantProvider";
 import chorusLinePort from "../../../dataProviders/db/providers/chorus/chorus.line.port";
 import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
@@ -25,7 +23,7 @@ export interface RejectedRequest {
     result: { message: string; data: unknown };
 }
 
-export class ChorusService extends ProviderCore implements PaymentProvider<ChorusLineEntity>, GrantProvider {
+export class ChorusService extends ProviderCore {
     constructor() {
         super({
             name: "Chorus",
