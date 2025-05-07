@@ -39,7 +39,7 @@ export class UniteLegalNameService {
                 if (scoredMatchNamesBySiren.length) bestMatch = scoredMatchNamesBySiren[0].item;
             }
 
-            const rnaSirenEntities = await rnaSirenService.find(bestMatch.siren);
+            const rnaSirenEntities = await rnaSirenService.find(bestMatch.siren, true); // hotfix calls api asso way too much
             if (!rnaSirenEntities) return [AssociationNameAdapter.fromUniteLegalNameEntity(bestMatch)];
 
             return rnaSirenEntities?.map(entity => {
