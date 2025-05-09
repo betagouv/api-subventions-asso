@@ -14,7 +14,7 @@ export class SireneUniteLegaleDbPort extends MongoPort<SireneUniteLegaleDbo> {
         if (!entities.length) return;
         const bulk = entities.map(entity => ({
             updateOne: {
-                filter: { uniqueId: entity.siren.value },
+                filter: { siren: entity.siren.value },
                 update: { $set: SireneStockUniteLegaleAdapter.entityToDbo(entity) },
                 upsert: true,
             },
