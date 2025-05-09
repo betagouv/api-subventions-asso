@@ -1,5 +1,6 @@
 import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port";
 import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
+import { ChorusPaymentFlatEntity } from "../providers/chorus/@types/ChorusPaymentFlat";
 import ChorusAdapter from "../providers/chorus/adapters/ChorusAdapter";
 import chorusService from "../providers/chorus/chorus.service";
 import ChorusLineEntity from "../providers/chorus/entities/ChorusLineEntity";
@@ -22,7 +23,7 @@ class PaymentFlatChorusService {
         for (let year = START_YEAR; year <= END_YEAR; year++) {
             console.log(`init payment flat collection for exercise ${year}`);
 
-            chorusEntities = await this.toPaymentFlatChorusEntities(
+            chorusEntities = await this.toAggregatedPaymentFlatEntities(
                 programs,
                 ministries,
                 fonctionalDomains,
@@ -45,8 +46,7 @@ class PaymentFlatChorusService {
     // TODO: move this in ChorusAdapter ?
     // We should rename this to toAggregatedPaymentFlat
     // And explain somewhere that to be able to store a PaymentFlat from Chorus we need to aggregate some of them (and why)
-    // We should also rename ChorusAdapter.toNotAggregatedChorusPaymentFlatEntity to toPaymentFlatEntity because it is more accurate sementicaly
-    public async toPaymentFlatChorusEntities(
+    public async toAggregatedPaymentFlatEntities(
         programs,
         ministries,
         fonctionalDomains,
@@ -54,14 +54,14 @@ class PaymentFlatChorusService {
         exerciceBudgetaire?: number,
     ) {
         const chorusCursor = chorusService.cursorFind(exerciceBudgetaire);
-        const entities: Record<string, PaymentFlatEntity> = {};
+        const entities: Record<string, ChorusPaymentFlatEntity> = {};
 
         while (await chorusCursor.hasNext()) {
             const document = (await chorusCursor.next()) as ChorusLineEntity;
             let paymentFlatEntity;
 
             try {
-                paymentFlatEntity = ChorusAdapter.toNotAggregatedChorusPaymentFlatEntity(
+                paymentFlatEntity = ChorusAdapter.toNotAggregatedPaymentFlatEntity(
                     document,
                     programs,
                     ministries,
@@ -88,7 +88,7 @@ class PaymentFlatChorusService {
     public async updatePaymentsFlatCollection(exerciceBudgetaire?: number) {
         const { programs, ministries, fonctionalDomains, programsRef } = await dataBretagneService.getAllDataRecords();
 
-        const chorusEntities: PaymentFlatEntity[] = await this.toPaymentFlatChorusEntities(
+        const chorusEntities: PaymentFlatEntity[] = await this.toAggregatedPaymentFlatEntities(
             programs,
             ministries,
             fonctionalDomains,
