@@ -60,6 +60,6 @@ export const ENTITIES: SireneStockUniteLegaleEntity[] = [
 export const UNITE_LEGAL_ENTREPRISE_ENTITIES = [{ siren: new Siren(DTOS[2].siren) }];
 
 export const DBOS: SireneUniteLegaleDbo[] = [
-    { ...ENTITIES[0], _id: new ObjectId() },
-    { ...ENTITIES[1], _id: new ObjectId() },
+    { ...DTOS[0], _id: new ObjectId() },
+    { ...DTOS[1], _id: new ObjectId() },
 ];
