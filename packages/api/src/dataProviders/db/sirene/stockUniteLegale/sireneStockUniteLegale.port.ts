@@ -9,8 +9,16 @@ export class SireneUniteLegaleDbPort extends MongoPort<SireneStockUniteLegaleEnt
         await this.collection.createIndex({ siren: 1 }, { unique: true });
     }
 
-    public insertMany(dbos: SireneUniteLegaleDbo[] | SireneStockUniteLegaleEntity[]) {
-        return this.collection.insertMany(dbos);
+    public upsertMany(entities: SireneStockUniteLegaleEntity[]) {
+        if (!entities.length) return;
+        const bulk = entities.map(entity => ({
+            updateOne: {
+                filter: { uniqueId: entity.siren },
+                update: { $set: entity },
+                upsert: true,
+            },
+        }));
+        return this.collection.bulkWrite(bulk, { ordered: false });
     }
 
     public insertOne(dbo: SireneStockUniteLegaleEntity | SireneUniteLegaleDbo) {
