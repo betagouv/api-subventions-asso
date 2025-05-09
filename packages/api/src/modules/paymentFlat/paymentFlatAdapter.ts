@@ -21,10 +21,11 @@ export default class PaymentFlatAdapter {
 
         const toPvOrUndefined = value => (value ? toPvPaymentFlat(value) : undefined);
 
-        /* Pour l'instant on garde ej pour tous les providers sauf Fonjep qui prend idVersement 
-        Il faudra convertir tous les versementKey en idVersement quand tout est connecté  */
         const basePayment = {
-            versementKey: toPvOrUndefined(entity.idVersement),
+            /* Pour l'instant on garde ej pour tous les providers sauf Fonjep qui prend idVersement
+            Il faudra convertir tous les versementKey en idVersement quand tout est connecté  */
+            versementKey:
+                entity.provider === "fonjep" ? toPvPaymentFlat(entity.idVersement) : toPvPaymentFlat(entity.ej),
             siret: toPvOrUndefined(entity.idEtablissementBeneficiaire.toString()),
             amount: toPvOrUndefined(entity.amount),
             dateOperation: toPvOrUndefined(entity.operationDate),

@@ -14,7 +14,7 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider<
     constructor() {
         super({
             name: "Payment Flat",
-            type: ProviderEnum.raw,
+            type: ProviderEnum.technical,
             description: "PaymentFlat",
             id: "payment-flat",
         });
@@ -84,13 +84,13 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider<
             dbos = await paymentFlatPort.findBySiren(identifier.siren);
         }
 
-        /* Pour l'instant on garde ej pour tous les providers sauf Fonjep qui prend idVersement 
-        Il faudra convertir tous les versementKey en idVersement quand tout est connecté  */
         return dbos.map(grant => ({
-            provider: grant.provider,
+            provider: "payment-flat",
             type: "payment",
             data: grant,
-            joinKey: grant.idVersement,
+            /* Pour l'instant on garde ej pour tous les providers sauf Fonjep qui prend idVersement
+            Il faudra convertir tous les versementKey en idVersement quand tout est connecté  */
+            joinKey: grant.provider === "fonjep" ? grant.idVersement : grant.ej || undefined,
         }));
     }
 }

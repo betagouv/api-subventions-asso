@@ -2,7 +2,6 @@ import chorusService from "./chorus.service";
 import chorusLinePort from "../../../dataProviders/db/providers/chorus/chorus.line.port";
 jest.mock("../../../dataProviders/db/providers/chorus/chorus.line.port");
 const mockedChorusLinePort = jest.mocked(chorusLinePort);
-import ChorusAdapter from "./adapters/ChorusAdapter";
 jest.mock("./adapters/ChorusAdapter");
 import uniteLegalEntreprisesSerivce from "../uniteLegalEntreprises/uniteLegal.entreprises.service";
 jest.mock("../uniteLegalEntreprises/uniteLegal.entreprises.service");
@@ -12,15 +11,13 @@ jest.mock("../../../shared/helpers/SirenHelper");
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 jest.mock("../../rna-siren/rnaSiren.service");
 const mockedRnaSirenService = jest.mocked(rnaSirenService);
-import { ENTITIES, PAYMENTS } from "./__fixtures__/ChorusFixtures";
+import { ENTITIES } from "./__fixtures__/ChorusFixtures";
 import CacheData from "../../../shared/Cache";
 import { BulkWriteResult } from "mongodb";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
-import Siren from "../../../valueObjects/Siren";
 import Siret from "../../../valueObjects/Siret";
 import Rna from "../../../valueObjects/Rna";
-import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 
 describe("chorusService", () => {
     beforeAll(() => {
@@ -34,51 +31,6 @@ describe("chorusService", () => {
     describe("upsertMany", () => {
         it("should call port with entities", async () => {
             await chorusService.upsertMany(ENTITIES);
-        });
-    });
-
-    describe("rawToPayment", () => {
-        it("should call ChorusAdapter", () => {
-            // @ts-expect-error: parameter type
-            const rawGrant = { data: ENTITIES[0] } as RawGrant;
-            chorusService.rawToPayment(rawGrant);
-            expect(ChorusAdapter.rawToPayment).toHaveBeenCalledWith(rawGrant, PROGRAMS[0]);
-        });
-
-        it("should return ChorusPayment", () => {
-            // @ts-expect-error: parameter type
-            const rawGrant = { data: ENTITIES[0] } as RawGrant;
-            jest.mocked(ChorusAdapter.rawToPayment).mockReturnValueOnce(PAYMENTS[0]);
-            const expected = PAYMENTS[0];
-            const actual = chorusService.rawToPayment(rawGrant);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("toPaymentArray", () => {
-        const mockGetProgramCode = jest
-            .spyOn(chorusService, "getProgramCode")
-            .mockReturnValue(PROGRAMS[0].code_programme);
-
-        afterAll(() => {
-            mockGetProgramCode.mockRestore();
-        });
-
-        it("should call getProgramCode", () => {
-            // @ts-expect-error: test private method
-            chorusService.toPaymentArray(ENTITIES);
-            ENTITIES.forEach((entity, index) => {
-                expect(mockGetProgramCode).toHaveBeenNthCalledWith(index + 1, entity);
-            });
-        });
-
-        // TODO: test this function
-        it("should call toPayment for each entity", () => {
-            // @ts-expect-error: test private method
-            chorusService.toPaymentArray(ENTITIES);
-            ENTITIES.forEach((entity, index) => {
-                expect(ChorusAdapter.toPayment).toHaveBeenNthCalledWith(index + 1, entity, PROGRAMS[0]);
-            });
         });
     });
 
@@ -141,75 +93,6 @@ describe("chorusService", () => {
         it("should return true if document is found", async () => {
             const expected = true;
             const actual = await chorusService.sirenBelongAsso(SIREN);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("raw grant", () => {
-        const DATA = [{ indexedInformations: { ej: "EJ" } }];
-
-        describe("getRawGrants", () => {
-            const SIREN = new Siren("123456789");
-            const IDENTIFIER = AssociationIdentifier.fromSiren(SIREN);
-            let findBySirenMock;
-            beforeAll(
-                () =>
-                    (findBySirenMock = jest
-                        .spyOn(chorusLinePort, "findBySiren")
-                        // @ts-expect-error: mock
-                        .mockImplementation(jest.fn(() => DATA))),
-            );
-            afterAll(() => findBySirenMock.mockRestore());
-
-            it("should call findBySiren()", async () => {
-                await chorusService.getRawGrants(IDENTIFIER);
-            });
-
-            it("returns raw grant data", async () => {
-                const actual = await chorusService.getRawGrants(IDENTIFIER);
-                expect(actual).toMatchInlineSnapshot(`
-                    [
-                      {
-                        "data": {
-                          "indexedInformations": {
-                            "ej": "EJ",
-                          },
-                        },
-                        "joinKey": "EJ",
-                        "provider": "chorus",
-                        "type": "payment",
-                      },
-                    ]
-                `);
-            });
-        });
-    });
-
-    describe("rawToCommon", () => {
-        const RAW = "RAW";
-        const ADAPTED = {};
-
-        beforeAll(() => {
-            ChorusAdapter.toCommon
-                // @ts-expect-error: mock
-                .mockImplementation(input => input.toString());
-        });
-
-        afterAll(() => {
-            // @ts-expect-error: mock
-            ChorusAdapter.toCommon.mockReset();
-        });
-
-        it("calls adapter with data from raw grant", () => {
-            // @ts-expect-error: mock
-            chorusService.rawToCommon({ data: RAW });
-        });
-        it("returns result from adapter", () => {
-            // @ts-expect-error: mock
-            ChorusAdapter.toCommon.mockReturnValueOnce(ADAPTED);
-            const expected = ADAPTED;
-            // @ts-expect-error: mock
-            const actual = chorusService.rawToCommon({ data: RAW });
             expect(actual).toEqual(expected);
         });
     });

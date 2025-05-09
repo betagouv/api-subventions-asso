@@ -10,7 +10,7 @@ exports[`PaymentFlatAdapter dboToEntity given dbo with nulls, should return a Pa
   "attachementComptable": "BRET",
   "centreFinancierCode": "AA01/0776-C001-4000",
   "centreFinancierLibelle": "UO DGER XXXX-C001",
-  "ej": "EJ Exemple",
+  "ej": "0001821732",
   "exerciceBudgetaire": 2023,
   "idEntrepriseBeneficiaire": Siren {
     "siren": "123456789",
@@ -18,7 +18,7 @@ exports[`PaymentFlatAdapter dboToEntity given dbo with nulls, should return a Pa
   "idEtablissementBeneficiaire": Siret {
     "siret": "12345678901234",
   },
-  "idVersement": "12345678901234-EJ Exemple-2023",
+  "idVersement": "12345678901234-0001821732-2023",
   "ministry": "Ministère Exemple",
   "ministryAcronym": null,
   "mission": "Mission Exemple",
@@ -29,7 +29,7 @@ exports[`PaymentFlatAdapter dboToEntity given dbo with nulls, should return a Pa
   "regionAttachementComptable": "Bretagne",
   "typeIdEntrepriseBeneficiaire": "siren",
   "typeIdEtablissementBeneficiaire": "siret",
-  "uniqueId": "12345678901234-EJ Exemple-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
+  "uniqueId": "12345678901234-0001821732-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
 }
 `;
 
@@ -43,15 +43,15 @@ exports[`PaymentFlatAdapter dboToEntity given dbo without nulls, should return a
   "attachementComptable": "BRET",
   "centreFinancierCode": "AA01/0776-C001-4000",
   "centreFinancierLibelle": "UO DGER XXXX-C001",
-  "ej": "EJ Exemple",
+  "ej": "0001821732",
   "exerciceBudgetaire": 2023,
   "idEntrepriseBeneficiaire": Siren {
-    "siren": "123456789",
+    "siren": "100000000",
   },
   "idEtablissementBeneficiaire": Siret {
-    "siret": "12345678901234",
+    "siret": "10000000000001",
   },
-  "idVersement": "12345678901234-EJ Exemple-2023",
+  "idVersement": "12345678901234-0001821732-2023",
   "ministry": "Ministère Exemple",
   "ministryAcronym": "ME",
   "mission": "Mission Exemple",
@@ -62,7 +62,7 @@ exports[`PaymentFlatAdapter dboToEntity given dbo without nulls, should return a
   "regionAttachementComptable": "Bretagne",
   "typeIdEntrepriseBeneficiaire": "siren",
   "typeIdEtablissementBeneficiaire": "siret",
-  "uniqueId": "12345678901234-EJ Exemple-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
+  "uniqueId": "12345678901234-0001821732-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
 }
 `;
 
@@ -184,7 +184,7 @@ exports[`PaymentFlatAdapter toPayment should return ChorusPayment 1`] = `
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "chorus",
     "type": "string",
-    "value": "ID_VERSEMENT",
+    "value": "0001821732",
   },
 }
 `;
@@ -286,7 +286,7 @@ exports[`PaymentFlatAdapter toPayment should return partial ChorusPayment 1`] = 
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "chorus",
     "type": "string",
-    "value": "ID_VERSEMENT",
+    "value": "0001821732",
   },
 }
 `;

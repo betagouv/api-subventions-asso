@@ -9,7 +9,7 @@ exports[`PaymentFlatService raw grant getRawGrants returns raw grant data 1`] = 
       "provider": "chorus",
     },
     "joinKey": "EJ",
-    "provider": "chorus",
+    "provider": "payment-flat",
     "type": "payment",
   },
 ]

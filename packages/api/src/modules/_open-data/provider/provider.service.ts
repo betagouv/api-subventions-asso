@@ -14,7 +14,7 @@ class ProviderService {
             description: service.provider.description,
         };
         if (service.provider.type === ProviderEnum.api) providersInfos.api.push(providerInfo);
-        else providersInfos.raw.push(providerInfo);
+        else if (service.provider.type === ProviderEnum.raw) providersInfos.raw.push(providerInfo);
         return providersInfos;
     }
 }

@@ -1,15 +1,16 @@
 import { ObjectId } from "mongodb";
 import PaymentFlatDbo from "../PaymentFlatDbo";
+import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
 
 export const PAYMENT_FLAT_DBO: PaymentFlatDbo = {
     _id: new ObjectId(),
-    idVersement: "12345678901234-EJ Exemple-2023",
-    uniqueId: "12345678901234-EJ Exemple-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
+    idVersement: "12345678901234-0001821732-2023",
+    uniqueId: "12345678901234-0001821732-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
     exerciceBudgetaire: 2023,
     typeIdEtablissementBeneficiaire: "siret",
-    idEtablissementBeneficiaire: "12345678901234",
+    idEtablissementBeneficiaire: DEFAULT_ASSOCIATION.siret,
     typeIdEntrepriseBeneficiaire: "siren",
-    idEntrepriseBeneficiaire: "123456789",
+    idEntrepriseBeneficiaire: DEFAULT_ASSOCIATION.siren,
     montant: 1000,
     dateOperation: new Date("2023-04-01"),
     programme: "Programme Exemple",
@@ -17,7 +18,7 @@ export const PAYMENT_FLAT_DBO: PaymentFlatDbo = {
     mission: "Mission Exemple",
     ministere: "Ministère Exemple",
     sigleMinistere: "ME",
-    ej: "EJ Exemple",
+    ej: "0001821732",
     provider: "Fournisseur Exemple",
     codeAction: "AC123",
     action: "Label d'action Exemple",
@@ -31,9 +32,9 @@ export const PAYMENT_FLAT_DBO: PaymentFlatDbo = {
 
 export const PAYMENT_FLAT_DBO_WITH_NULLS: PaymentFlatDbo = {
     _id: new ObjectId(),
-    uniqueId: "12345678901234-EJ Exemple-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
+    uniqueId: "12345678901234-0001821732-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
     exerciceBudgetaire: 2023,
-    idVersement: "12345678901234-EJ Exemple-2023",
+    idVersement: "12345678901234-0001821732-2023",
     typeIdEtablissementBeneficiaire: "siret",
     idEtablissementBeneficiaire: "12345678901234",
     typeIdEntrepriseBeneficiaire: "siren",
@@ -45,7 +46,7 @@ export const PAYMENT_FLAT_DBO_WITH_NULLS: PaymentFlatDbo = {
     mission: "Mission Exemple",
     ministere: "Ministère Exemple",
     sigleMinistere: null,
-    ej: "EJ Exemple",
+    ej: "0001821732",
     provider: "Fournisseur Exemple",
     codeAction: "AC123",
     action: "Label d'action Exemple",

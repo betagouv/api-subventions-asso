@@ -1,23 +1,13 @@
-import { Payment } from "dto";
-import { WithId } from "mongodb";
 import { ASSO_BRANCHE } from "../../../shared/ChorusBrancheAccepted";
 import CacheData from "../../../shared/Cache";
 import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
-import PaymentProvider from "../../payments/@types/PaymentProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import { RawGrant, RawPayment } from "../../grant/@types/rawGrant";
 import ProviderCore from "../ProviderCore";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import uniteLegalEntreprisesService from "../uniteLegalEntreprises/uniteLegal.entreprises.service";
-import dataBretagneService from "../dataBretagne/dataBretagne.service";
-import { StructureIdentifier } from "../../../@types";
-import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
-import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import Siren from "../../../valueObjects/Siren";
 import Siret from "../../../valueObjects/Siret";
-import GrantProvider from "../../grant/@types/GrantProvider";
 import chorusLinePort from "../../../dataProviders/db/providers/chorus/chorus.line.port";
-import ChorusAdapter from "./adapters/ChorusAdapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 
 export interface RejectedRequest {
@@ -25,7 +15,7 @@ export interface RejectedRequest {
     result: { message: string; data: unknown };
 }
 
-export class ChorusService extends ProviderCore implements PaymentProvider<ChorusLineEntity>, GrantProvider {
+export class ChorusService extends ProviderCore {
     constructor() {
         super({
             name: "Chorus",
@@ -34,12 +24,6 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
                 "Chorus est un système d'information porté par l'AIFE pour les services de l'État qui permet de gérer les paiements des crédits État, que ce soit des commandes publiques ou des subventions et d'assurer la gestion financière du budget de l'État.",
             id: "chorus",
         });
-    }
-
-    public rawToPayment(rawGrant: RawPayment<ChorusLineEntity>) {
-        // get program
-        const program = dataBretagneService.programsByCode[this.getProgramCode(rawGrant.data)];
-        return ChorusAdapter.rawToPayment(rawGrant, program);
     }
 
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
@@ -92,35 +76,7 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
         if (chorusLine) return true;
 
         if (await uniteLegalEntreprisesService.isEntreprise(siren)) return false;
-        if (await rnaSirenService.find(siren)) return true;
-
-        return false;
-    }
-
-    /**
-     * |-------------------------|
-     * |     Payment Part        |
-     * |-------------------------|
-     */
-
-    isPaymentProvider = true;
-
-    async getPayments(identifier: StructureIdentifier): Promise<Payment[]> {
-        const requests: WithId<ChorusLineEntity>[] = [];
-
-        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            requests.push(...(await chorusLinePort.findBySiret(identifier.siret)));
-        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            requests.push(...(await chorusLinePort.findBySiren(identifier.siren)));
-        }
-
-        return this.toPaymentArray(requests);
-    }
-
-    async getPaymentsByKey(ej: string) {
-        const requests = await chorusLinePort.findByEJ(ej);
-
-        return this.toPaymentArray(requests);
+        return !!(await rnaSirenService.find(siren));
     }
 
     public cursorFind(exerciceBudgetaire?: number) {
@@ -131,42 +87,6 @@ export class ChorusService extends ProviderCore implements PaymentProvider<Choru
     // TODO: unit test this
     public getProgramCode(entity: ChorusLineEntity) {
         return parseInt(entity.indexedInformations.codeDomaineFonctionnel.slice(0, 4), 10); // for exemple codeDomaineFonctionnel = "0143-03-01", codeProgramme = 143
-    }
-
-    private toPaymentArray(documents: WithId<ChorusLineEntity>[]) {
-        return documents.map(document => {
-            const program = dataBretagneService.programsByCode[this.getProgramCode(document)];
-            return ChorusAdapter.toPayment(document, program);
-        });
-    }
-
-    /**
-     * |-------------------------|
-     * |   Grant Part            |
-     * |-------------------------|
-     */
-
-    isGrantProvider = true;
-
-    async getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
-        let entities: ChorusLineEntity[] = [];
-        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            entities = await chorusLinePort.findBySiret(identifier.siret);
-        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            entities = await chorusLinePort.findBySiren(identifier.siren);
-        }
-
-        // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
-        return entities.map(grant => ({
-            provider: this.provider.id,
-            type: "payment",
-            data: grant,
-            joinKey: grant.indexedInformations.ej,
-        }));
-    }
-
-    rawToCommon(raw: RawGrant) {
-        return ChorusAdapter.toCommon(raw.data as WithId<ChorusLineEntity>);
     }
 }
 
