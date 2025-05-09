@@ -1,4 +1,4 @@
-import { ObjectId } from "mongodb";
+import { WithoutId } from "mongodb";
 import UniteLegalNameEntity from "../../../entities/UniteLegalNameEntity";
 import Siren from "../../../valueObjects/Siren";
 import UniteLegalNameDbo from "./UniteLegalNameDbo";
@@ -14,13 +14,12 @@ export default class UniteLegalNameAdapter {
         );
     }
 
-    static toDbo(entity: UniteLegalNameEntity): UniteLegalNameDbo {
+    static toDbo(entity: UniteLegalNameEntity): WithoutId<UniteLegalNameDbo> {
         return {
             siren: entity.siren.value,
             name: entity.name,
             searchKey: entity.searchKey,
             updatedDate: entity.updatedDate,
-            _id: new ObjectId(entity.id),
         };
     }
 
