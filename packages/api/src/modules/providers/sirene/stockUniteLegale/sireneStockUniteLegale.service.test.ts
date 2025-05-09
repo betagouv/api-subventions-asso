@@ -8,6 +8,7 @@ import uniteLegalNameService from "../../uniteLegalName/uniteLegal.name.service"
 import { UniteLegalEntrepriseEntity } from "../../../../entities/UniteLegalEntrepriseEntity";
 import uniteLegalEntreprisesService from "../../uniteLegalEntreprises/uniteLegal.entreprises.service";
 import { BulkWriteResult } from "mongodb";
+import Siren from "../../../../valueObjects/Siren";
 
 const mockUniteLegalEntrepriseConstructor = jest.fn();
 
@@ -56,9 +57,9 @@ describe("SireneStockUniteLegaleService", () => {
         });
 
         it("should call insertOne", async () => {
-            const dbo = { siren: "123456789" } as unknown as SireneUniteLegaleDbo;
-            await sireneStockUniteLegaleService.insertOne(dbo);
-            expect(insertOneMock).toHaveBeenCalledWith(dbo);
+            const entity = { siren: new Siren("123456789") } as unknown as SireneStockUniteLegaleEntity;
+            await sireneStockUniteLegaleService.insertOne(entity);
+            expect(insertOneMock).toHaveBeenCalledWith(entity);
         });
     });
 
@@ -72,9 +73,9 @@ describe("SireneStockUniteLegaleService", () => {
         });
 
         it("should call upsertMany", async () => {
-            const dbos = [{ siren: "123456789" }] as unknown as SireneUniteLegaleDbo[];
-            await sireneStockUniteLegaleService.upsertMany(dbos);
-            expect(upsertMany).toHaveBeenCalledWith(dbos);
+            const entities = [{ siren: new Siren("123456789") }] as unknown as SireneStockUniteLegaleEntity[];
+            await sireneStockUniteLegaleService.upsertMany(entities);
+            expect(upsertMany).toHaveBeenCalledWith(entities);
         });
     });
 
