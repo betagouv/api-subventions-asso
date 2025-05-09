@@ -7,7 +7,8 @@ import SireneStockUniteLegaleAdapter from "./adapter/sireneStockUniteLegale.adap
 import uniteLegalNameService from "../../uniteLegalName/uniteLegal.name.service";
 import { UniteLegalEntrepriseEntity } from "../../../../entities/UniteLegalEntrepriseEntity";
 import uniteLegalEntreprisesService from "../../uniteLegalEntreprises/uniteLegal.entreprises.service";
-import { InsertManyResult } from "mongodb";
+import { BulkWriteResult } from "mongodb";
+import Siren from "../../../../valueObjects/Siren";
 
 const mockUniteLegalEntrepriseConstructor = jest.fn();
 
@@ -56,25 +57,25 @@ describe("SireneStockUniteLegaleService", () => {
         });
 
         it("should call insertOne", async () => {
-            const dbo = { siren: "123456789" } as unknown as SireneUniteLegaleDbo;
-            await sireneStockUniteLegaleService.insertOne(dbo);
-            expect(insertOneMock).toHaveBeenCalledWith(dbo);
+            const entity = { siren: new Siren("123456789") } as unknown as SireneStockUniteLegaleEntity;
+            await sireneStockUniteLegaleService.insertOne(entity);
+            expect(insertOneMock).toHaveBeenCalledWith(entity);
         });
     });
 
     describe("insertMany", () => {
-        let insertManyMock: jest.SpyInstance;
+        let upsertMany: jest.SpyInstance;
         beforeAll(() => {
-            insertManyMock = jest.spyOn(sireneStockUniteLegaleDbPort, "insertMany").mockImplementation(jest.fn());
+            upsertMany = jest.spyOn(sireneStockUniteLegaleDbPort, "upsertMany").mockImplementation(jest.fn());
         });
         afterAll(() => {
             jest.restoreAllMocks();
         });
 
-        it("should call insertMany", async () => {
-            const dbos = [{ siren: "123456789" }] as unknown as SireneUniteLegaleDbo[];
-            await sireneStockUniteLegaleService.insertMany(dbos);
-            expect(insertManyMock).toHaveBeenCalledWith(dbos);
+        it("should call upsertMany", async () => {
+            const entities = [{ siren: new Siren("123456789") }] as unknown as SireneStockUniteLegaleEntity[];
+            await sireneStockUniteLegaleService.upsertMany(entities);
+            expect(upsertMany).toHaveBeenCalledWith(entities);
         });
     });
 
@@ -85,8 +86,8 @@ describe("SireneStockUniteLegaleService", () => {
 
         beforeAll(() => {
             insertSpy = jest
-                .spyOn(sireneStockUniteLegaleService, "insertMany")
-                .mockResolvedValue("" as unknown as InsertManyResult<SireneUniteLegaleDbo>);
+                .spyOn(sireneStockUniteLegaleService, "upsertMany")
+                .mockResolvedValue("" as unknown as BulkWriteResult);
 
             jest.mocked(SireneStockUniteLegaleAdapter.entityToDbo).mockImplementation(
                 i => i.toString() as unknown as SireneUniteLegaleDbo,

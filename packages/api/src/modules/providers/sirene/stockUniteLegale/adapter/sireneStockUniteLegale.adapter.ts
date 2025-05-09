@@ -1,5 +1,3 @@
-import { ObjectId } from "mongodb";
-
 import SireneUniteLegaleDto from "../@types/SireneUniteLegaleDto";
 import { SireneStockUniteLegaleEntity } from "../../../../../entities/SireneStockUniteLegaleEntity";
 import { SireneUniteLegaleDbo } from "../@types/SireneUniteLegaleDbo";
@@ -18,7 +16,7 @@ export default class SireneStockUniteLegaleAdapter {
     static entityToDbo(entity: SireneStockUniteLegaleEntity): SireneUniteLegaleDbo {
         return {
             ...entity,
-            _id: new ObjectId(),
+            siren: entity.siren.value,
         };
     }
 
@@ -29,5 +27,12 @@ export default class SireneStockUniteLegaleAdapter {
             UniteLegalNameAdapter.buildSearchKey(entity.siren, entity.denominationUniteLegale),
             new Date(entity.dateDebut),
         );
+    }
+
+    static dboToEntity(dbo: SireneUniteLegaleDbo) {
+        return {
+            ...dbo,
+            siren: new Siren(dbo.siren),
+        };
     }
 }

@@ -65,9 +65,7 @@ exports[`SireneStockUniteLegaleCli import should persist sirene data 1`] = `
     "pseudonymeUniteLegale": "",
     "sexeUniteLegale": "",
     "sigleUniteLegale": "",
-    "siren": {
-      "siren": "300483146",
-    },
+    "siren": "300483146",
     "societeMissionUniteLegale": "",
     "statutDiffusionUniteLegale": "O",
     "trancheEffectifsUniteLegale": "",
@@ -104,9 +102,7 @@ exports[`SireneStockUniteLegaleCli import should persist sirene data 1`] = `
     "pseudonymeUniteLegale": "",
     "sexeUniteLegale": "",
     "sigleUniteLegale": "",
-    "siren": {
-      "siren": "300846177",
-    },
+    "siren": "300846177",
     "societeMissionUniteLegale": "",
     "statutDiffusionUniteLegale": "O",
     "trancheEffectifsUniteLegale": "",
