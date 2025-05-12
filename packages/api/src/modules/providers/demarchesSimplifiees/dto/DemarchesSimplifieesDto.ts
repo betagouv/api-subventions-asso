@@ -51,6 +51,7 @@ export interface DemarchesSimplifieesSuccessDto {
                 nom: string;
                 organisme: string;
             };
+            state: string;
         };
     };
     errors: undefined;

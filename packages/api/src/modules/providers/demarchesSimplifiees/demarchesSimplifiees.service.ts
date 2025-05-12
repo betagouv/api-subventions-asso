@@ -119,6 +119,10 @@ export class DemarchesSimplifieesService
                 throw new InternalServerError(result?.errors?.map(error => error.message).join(" - "));
             if (!result?.data?.demarche)
                 throw new InternalServerError("empty Démarches Simplifiées result (not normal with graphQL)");
+            if (result.data.demarche.state != "publiee") {
+                console.log(`demarche ${formId} a le statut '${result.data.demarche.state}', on passe`);
+                break;
+            }
 
             const entities = DemarchesSimplifieesDtoAdapter.toEntities(result, formId).filter(
                 entity => new Date(entity.demande.dateDerniereModification) > this.lastModified,
