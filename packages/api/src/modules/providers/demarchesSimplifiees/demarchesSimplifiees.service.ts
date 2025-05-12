@@ -20,12 +20,14 @@ import DemarchesSimplifieesMapperEntity from "./entities/DemarchesSimplifieesMap
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
 import { DemarchesSimplifieesRawData } from "./@types/DemarchesSimplifieesRawGrant";
 import DemarchesSimplifieesDataEntity from "./entities/DemarchesSimplifieesDataEntity";
+import configurationsService from "../../configurations/configurations.service";
 
 export class DemarchesSimplifieesService
     extends ProviderCore
     implements DemandesSubventionsProvider<DemarchesSimplifieesRawData>, GrantProvider
 {
     isDemandesSubventionsProvider = true;
+    lastModified: Date;
 
     constructor() {
         super({
@@ -34,6 +36,7 @@ export class DemarchesSimplifieesService
             description: "", // TODO
             id: "demarchesSimplifiees",
         });
+        this.lastModified = new Date(0);
     }
 
     private async getSchemasByIds() {
@@ -94,10 +97,13 @@ export class DemarchesSimplifieesService
 
     async updateAllForms() {
         const formsIds = await demarchesSimplifieesMapperPort.getAcceptedDemarcheIds();
+        const beginUpdating = new Date();
+        this.lastModified = await configurationsService.getLastDsUpdate();
 
         if (!formsIds) throw new Error("DS is not configured on this env, please add mapper");
 
         await asyncForEach(formsIds, formId => this.updateDataByFormId(formId));
+        await configurationsService.setLastDsUpdate(beginUpdating);
     }
 
     async updateDataByFormId(formId: number) {
@@ -111,7 +117,9 @@ export class DemarchesSimplifieesService
             if (!result?.data?.demarche)
                 throw new InternalServerError("empty Démarches Simplifiées result (not normal with graphQL)");
 
-            const entities = DemarchesSimplifieesDtoAdapter.toEntities(result, formId);
+            const entities = DemarchesSimplifieesDtoAdapter.toEntities(result, formId).filter(
+                entity => new Date(entity.demande.dateDerniereModification) > this.lastModified,
+            );
             await asyncForEach(entities, async entity => {
                 await demarchesSimplifieesDataPort.upsert(entity);
             });
