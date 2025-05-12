@@ -115,9 +115,7 @@ export class ConfigurationsService {
     }
 
     async setLastUserStatsUpdate(date: Date) {
-        await configurationsPort.upsert(CONFIGURATION_NAMES.LAST_USER_STATS_UPDATE, {
-            data: date,
-        });
+        await configurationsPort.upsert(CONFIGURATION_NAMES.LAST_USER_STATS_UPDATE, { data: date });
     }
 
     async updateMainInfoBanner(title?: string, desc?: string) {

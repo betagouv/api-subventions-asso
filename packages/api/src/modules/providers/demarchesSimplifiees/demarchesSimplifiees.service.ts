@@ -95,23 +95,16 @@ export class DemarchesSimplifieesService
     async updateAllForms() {
         const formsIds = await demarchesSimplifieesMapperPort.getAcceptedDemarcheIds();
 
-        if (!formsIds) {
-            throw new Error("DS is not configured on this env, please add mapper");
-        }
+        if (!formsIds) throw new Error("DS is not configured on this env, please add mapper");
 
-        await asyncForEach(formsIds, async formId => {
-            await this.updateDataByFormId(formId);
-        });
+        await asyncForEach(formsIds, formId => this.updateDataByFormId(formId));
     }
 
     async updateDataByFormId(formId: number) {
         let result: DemarchesSimplifieesDto;
         let nextCursor: string | undefined = undefined;
         do {
-            result = await this.sendQuery(GetDossiersByDemarcheId, {
-                demarcheNumber: formId,
-                after: nextCursor,
-            });
+            result = await this.sendQuery(GetDossiersByDemarcheId, { demarcheNumber: formId, after: nextCursor });
 
             if (result?.errors?.length)
                 throw new InternalServerError(result?.errors?.map(error => error.message).join(" - "));
