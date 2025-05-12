@@ -107,8 +107,11 @@ export class DemarchesSimplifieesService
     }
 
     async updateDataByFormId(formId: number) {
+        console.log(`Synchronisation de la démarche ${formId}`);
         let result: DemarchesSimplifieesDto;
         let nextCursor: string | undefined = undefined;
+        let bulk: DemarchesSimplifieesDataEntity[] = [];
+        const MAX_BULK = 1000;
         do {
             result = await this.sendQuery(GetDossiersByDemarcheId, { demarcheNumber: formId, after: nextCursor });
 
@@ -120,9 +123,12 @@ export class DemarchesSimplifieesService
             const entities = DemarchesSimplifieesDtoAdapter.toEntities(result, formId).filter(
                 entity => new Date(entity.demande.dateDerniereModification) > this.lastModified,
             );
-            await asyncForEach(entities, async entity => {
-                await demarchesSimplifieesDataPort.upsert(entity);
-            });
+            bulk.push(...entities);
+            if (bulk.length > MAX_BULK) {
+                await demarchesSimplifieesDataPort.bulkUpsert(bulk);
+                bulk = [];
+            }
+
             nextCursor = result?.data?.demarche?.dossiers?.pageInfo?.endCursor;
         } while (result?.data?.demarche?.dossiers?.pageInfo?.hasNextPage);
     }
