@@ -87,8 +87,18 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
     public async findBySiren(siren: Siren) {
         return this.collection
             .find({
-                typeIdEntrepriseBeneficiaire: "siren",
-                idEntrepriseBeneficiaire: new RegExp(`^${siren.value}\\d{5}`),
+                $expr: {
+                    $or: [
+                        {
+                            typeIdEntrepriseBeneficiaire: "siren",
+                            idEntrepriseBeneficiaire: siren.value,
+                        },
+                        {
+                            typeIdEtablissementBeneficiaire: "siret",
+                            idEntrepriseBeneficiaire: new RegExp(`^${siren.value}\\d{5}`),
+                        },
+                    ],
+                },
             })
             .map(PaymentFlatAdapter.dboToEntity)
             .toArray();
