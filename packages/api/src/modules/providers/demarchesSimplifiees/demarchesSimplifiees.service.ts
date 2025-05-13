@@ -121,14 +121,14 @@ export class DemarchesSimplifieesService
                 throw new InternalServerError("empty Démarches Simplifiées result (not normal with graphQL)");
             if (result.data.demarche.state != "publiee") {
                 console.log(`demarche ${formId} a le statut '${result.data.demarche.state}', on passe`);
-                break;
+                return;
             }
 
             const entities = DemarchesSimplifieesDtoAdapter.toEntities(result, formId).filter(
                 entity => new Date(entity.demande.dateDerniereModification) > this.lastModified,
             );
             bulk.push(...entities);
-            if (bulk.length > MAX_BULK) {
+            if (bulk.length >= MAX_BULK) {
                 await demarchesSimplifieesDataPort.bulkUpsert(bulk);
                 bulk = [];
             }
