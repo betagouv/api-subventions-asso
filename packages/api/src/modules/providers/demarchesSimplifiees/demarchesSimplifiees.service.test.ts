@@ -1,6 +1,7 @@
 jest.mock("../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port");
 jest.mock("../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port");
 jest.mock("./adapters/DemarchesSimplifieesEntityAdapter");
+jest.mock("../../configurations/configurations.service");
 
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
@@ -262,6 +263,8 @@ describe("DemarchesSimplifieesService", () => {
         let sendQueryMock: jest.SpyInstance;
         let toEntitiesMock: jest.SpyInstance;
         const DEMARCHE = { data: { demarche: { state: "publiee" } } };
+        const lastModified = new Date();
+        lastModified.setDate(lastModified.getDate() - 1);
         const DOSSIER = {
             siret: "12345678901234",
             demarcheId: 0,
@@ -281,6 +284,7 @@ describe("DemarchesSimplifieesService", () => {
                 state: null,
                 dateDepot: null,
                 datePassageEnInstruction: null,
+                dateDerniereModification: lastModified.toString(),
                 dateTraitement: null,
                 pdf: {
                     url: "",
@@ -297,6 +301,8 @@ describe("DemarchesSimplifieesService", () => {
         };
 
         beforeAll(() => {
+            demarchesSimplifieesService.lastModified = new Date();
+            demarchesSimplifieesService.lastModified.setDate(-1);
             sendQueryMock = jest
                 .spyOn(demarchesSimplifieesService, "sendQuery")
                 // @ts-expect-error mock
