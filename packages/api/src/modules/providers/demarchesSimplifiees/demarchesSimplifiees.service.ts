@@ -135,6 +135,7 @@ export class DemarchesSimplifieesService
 
             nextCursor = result?.data?.demarche?.dossiers?.pageInfo?.endCursor;
         } while (result?.data?.demarche?.dossiers?.pageInfo?.hasNextPage);
+        await demarchesSimplifieesDataPort.bulkUpsert(bulk);
     }
 
     async sendQuery(query: string, vars: DefaultObject) {
