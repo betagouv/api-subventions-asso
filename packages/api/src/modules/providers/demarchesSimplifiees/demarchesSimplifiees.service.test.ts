@@ -20,6 +20,7 @@ import lodash from "lodash";
 import Siren from "../../../valueObjects/Siren";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
+
 jest.mock("lodash");
 
 describe("DemarchesSimplifieesService", () => {
@@ -260,16 +261,47 @@ describe("DemarchesSimplifieesService", () => {
 
         let sendQueryMock: jest.SpyInstance;
         let toEntitiesMock: jest.SpyInstance;
+        const DEMARCHE = { data: { demarche: { state: "publiee" } } };
+        const DOSSIER = {
+            siret: "12345678901234",
+            demarcheId: 0,
+            demande: {
+                id: "",
+                demandeur: {
+                    siret: "09876543210987",
+                    association: undefined,
+                },
+                demarche: {
+                    title: "TitreDémarche",
+                },
+                groupeInstructeur: {
+                    label: "instructeurs",
+                },
+                motivation: null,
+                state: null,
+                dateDepot: null,
+                datePassageEnInstruction: null,
+                dateTraitement: null,
+                pdf: {
+                    url: "",
+                    filename: "",
+                    contentType: "",
+                },
+                champs: {},
+                annotations: {},
+            },
+            service: {
+                nom: "nomService",
+                organisme: "organismeService",
+            },
+        };
 
         beforeAll(() => {
             sendQueryMock = jest
                 .spyOn(demarchesSimplifieesService, "sendQuery")
                 // @ts-expect-error mock
-                .mockResolvedValue({ data: { demarche: {} } });
-            toEntitiesMock = jest
-                .spyOn(DemarchesSimplifieesDtoAdapter, "toEntities")
-                // @ts-expect-error disable ts form return type of toEntities
-                .mockImplementation(data => [data]);
+                .mockResolvedValue(DEMARCHE);
+            toEntitiesMock = jest.spyOn(DemarchesSimplifieesDtoAdapter, "toEntities").mockReturnValue([DOSSIER]);
             // @ts-expect-error mock
             demarchesSimplifieesDataPort.upsert.mockResolvedValue();
         });
@@ -283,27 +315,20 @@ describe("DemarchesSimplifieesService", () => {
 
         it("should call sendQuery", async () => {
             await demarchesSimplifieesService.updateDataByFormId(FORM_ID);
-
             expect(sendQueryMock).toHaveBeenCalledWith(GetDossiersByDemarcheId, { demarcheNumber: FORM_ID });
         });
 
         it("should call toEntities", async () => {
-            const expected = { data: { demarche: true } };
-
+            const expected = DEMARCHE;
             sendQueryMock.mockResolvedValueOnce(expected);
-
             await demarchesSimplifieesService.updateDataByFormId(FORM_ID);
-
             expect(toEntitiesMock).toBeCalledWith(expected, FORM_ID);
         });
 
         it("should upsert data", async () => {
             const expected = { data: { demarche: true } };
-
             sendQueryMock.mockResolvedValueOnce(expected);
-
             await demarchesSimplifieesService.updateDataByFormId(FORM_ID);
-
             expect(demarchesSimplifieesDataPort.upsert).toBeCalledWith(expected);
         });
     });
