@@ -1,3 +1,5 @@
+import configurationsService from "../../configurations/configurations.service";
+
 jest.mock("../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port");
 jest.mock("../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port");
 jest.mock("./adapters/DemarchesSimplifieesEntityAdapter");
@@ -255,6 +257,29 @@ describe("DemarchesSimplifieesService", () => {
             expect(updateDataByFormIdMock).toBeCalledWith(expected[0]);
             expect(updateDataByFormIdMock).toBeCalledWith(expected[1]);
         });
+
+        it("gets last update date", async () => {
+            await demarchesSimplifieesService.updateAllForms();
+            expect(configurationsService.getLastDsUpdate).toHaveBeenCalled();
+        });
+
+        it("sets last update date", async () => {
+            const DATE = new Date("2025-01-16");
+            const expected = DATE;
+            jest.mocked(configurationsService.getLastDsUpdate).mockResolvedValueOnce(DATE);
+            await demarchesSimplifieesService.updateAllForms();
+            const actual = demarchesSimplifieesService.lastModified;
+            expect(actual).toBe(expected);
+        });
+
+        it("saves new last update date", async () => {
+            const today = new Date("2025-05-13");
+            const expected = today;
+            jest.useFakeTimers().setSystemTime(today);
+            await demarchesSimplifieesService.updateAllForms();
+            const actual = jest.mocked(configurationsService.setLastDsUpdate).mock.calls?.[0]?.[0];
+            expect(actual).toEqual(expected);
+        });
     });
 
     describe("updateDataByFormId", () => {
@@ -262,7 +287,6 @@ describe("DemarchesSimplifieesService", () => {
 
         let sendQueryMock: jest.SpyInstance;
         let toEntitiesMock: jest.SpyInstance;
-        const DEMARCHE = { data: { demarche: { state: "publiee" } } };
         const lastModified = new Date();
         lastModified.setDate(lastModified.getDate() - 1);
         const DOSSIER = {
@@ -299,6 +323,15 @@ describe("DemarchesSimplifieesService", () => {
                 organisme: "organismeService",
             },
         };
+        const buildDemarche = (dossiers, isPublished = true) => ({
+            data: {
+                demarche: {
+                    state: isPublished ? "publiee" : "anyOtherStatus",
+                    dossiers: { nodes: [DOSSIER] },
+                },
+            },
+        });
+        const DEMARCHE = buildDemarche([DOSSIER]);
 
         beforeAll(() => {
             demarchesSimplifieesService.lastModified = new Date();
@@ -332,10 +365,34 @@ describe("DemarchesSimplifieesService", () => {
         });
 
         it("should upsert data", async () => {
-            const expected = { data: { demarche: true } };
-            sendQueryMock.mockResolvedValueOnce(expected);
+            const expected = [DOSSIER];
+            sendQueryMock.mockResolvedValueOnce(DEMARCHE);
             await demarchesSimplifieesService.updateDataByFormId(FORM_ID);
-            expect(demarchesSimplifieesDataPort.upsert).toBeCalledWith(expected);
+            expect(demarchesSimplifieesDataPort.bulkUpsert).toBeCalledWith(expected);
+        });
+
+        it("skips unpublished demarches - does not adapt nor insert", async () => {
+            sendQueryMock.mockResolvedValueOnce(buildDemarche([DOSSIER], false));
+            await demarchesSimplifieesService.updateDataByFormId(FORM_ID);
+            expect(demarchesSimplifieesDataPort.bulkUpsert).not.toHaveBeenCalled();
+            expect(toEntitiesMock).not.toHaveBeenCalled();
+        });
+
+        it("should bulkUpsert two times for 10001 demandes", async () => {
+            toEntitiesMock.mockReturnValueOnce(Array(2001).fill(DOSSIER));
+            await demarchesSimplifieesService.updateDataByFormId(FORM_ID);
+            expect(demarchesSimplifieesDataPort.bulkUpsert).toBeCalledTimes(2);
+        });
+
+        it("skips unchanged demandes - not in bulk upsert", async () => {
+            const oldDossier = {
+                ...DOSSIER,
+                demande: { ...DOSSIER.demande, dateDerniereModification: new Date(0).toString() },
+            };
+            toEntitiesMock.mockReturnValueOnce([oldDossier]);
+            const expected = [];
+            await demarchesSimplifieesService.updateDataByFormId(FORM_ID);
+            expect(demarchesSimplifieesDataPort.bulkUpsert).toBeCalledWith(expected);
         });
     });
 
