@@ -5,7 +5,7 @@ jest.mock("./adapters/DemarchesSimplifieesEntityAdapter");
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
 import demarchesSimplifieesService from "./demarchesSimplifiees.service";
-import DemarchesSimplifieesMapperEntity from "./entities/DemarchesSimplifieesMapperEntity";
+import DemarchesSimplifieesSchemaEntity from "./entities/DemarchesSimplifieesSchemaEntity";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import demarchesSimplifieesDataPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
 import demarchesSimplifieesMapperPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port";
@@ -382,7 +382,7 @@ describe("DemarchesSimplifieesService", () => {
         });
 
         it("should call upsert", async () => {
-            const expected = { data: true } as unknown as DemarchesSimplifieesMapperEntity;
+            const expected = { data: true } as unknown as DemarchesSimplifieesSchemaEntity;
 
             await demarchesSimplifieesService.addSchemaMapper(expected);
 

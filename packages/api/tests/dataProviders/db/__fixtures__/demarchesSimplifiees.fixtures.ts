@@ -1,5 +1,5 @@
 import DemarchesSimplifieesDataEntity from "../../../../src/modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesDataEntity";
-import DemarchesSimplifieesMapperEntity from "../../../../src/modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesMapperEntity";
+import DemarchesSimplifieesSchemaEntity from "../../../../src/modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesSchemaEntity";
 import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
 
 export const DATA_ENTITIES: DemarchesSimplifieesDataEntity[] = [
@@ -334,7 +334,7 @@ export const DATA_ENTITIES: DemarchesSimplifieesDataEntity[] = [
     },
 ];
 
-export const SCHEMAS: DemarchesSimplifieesMapperEntity[] = [
+export const SCHEMAS: DemarchesSimplifieesSchemaEntity[] = [
     {
         demarcheId: 62746,
         schema: [

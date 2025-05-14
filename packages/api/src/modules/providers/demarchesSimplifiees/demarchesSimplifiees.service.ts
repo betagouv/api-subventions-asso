@@ -16,7 +16,7 @@ import demarchesSimplifieesMapperPort from "../../../dataProviders/db/providers/
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import { DemarchesSimplifieesDto } from "./dto/DemarchesSimplifieesDto";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
-import DemarchesSimplifieesMapperEntity from "./entities/DemarchesSimplifieesMapperEntity";
+import DemarchesSimplifieesSchemaEntity from "./entities/DemarchesSimplifieesSchemaEntity";
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
 import { DemarchesSimplifieesRawData } from "./@types/DemarchesSimplifieesRawGrant";
 import DemarchesSimplifieesDataEntity from "./entities/DemarchesSimplifieesDataEntity";
@@ -44,7 +44,7 @@ export class DemarchesSimplifieesService
                 acc[schema.demarcheId] = schema;
                 return acc;
             },
-            {} as Record<string, DemarchesSimplifieesMapperEntity>,
+            {} as Record<string, DemarchesSimplifieesSchemaEntity>,
         );
     }
 
@@ -54,7 +54,7 @@ export class DemarchesSimplifieesService
 
     private async filterAndAdaptEntities<T>(
         entities: DemarchesSimplifieesDataEntity[],
-        adapter: (entity: DemarchesSimplifieesDataEntity, mapper: DemarchesSimplifieesMapperEntity) => T,
+        adapter: (entity: DemarchesSimplifieesDataEntity, mapper: DemarchesSimplifieesSchemaEntity) => T,
     ) {
         // TODO: I think we use schema and mapper to talk about the same thing here and we choose only one term
         const schemasByIds = await this.getSchemasByIds();
@@ -160,7 +160,7 @@ export class DemarchesSimplifieesService
         };
     }
 
-    addSchemaMapper(schema: DemarchesSimplifieesMapperEntity) {
+    addSchemaMapper(schema: DemarchesSimplifieesSchemaEntity) {
         return demarchesSimplifieesMapperPort.upsert(schema);
     }
 

@@ -4,7 +4,7 @@ import { ApplicationStatus, CommonApplicationDto, DemandeSubvention, ProviderVal
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import demarchesSimplifieesService from "../demarchesSimplifiees.service";
 import DemarchesSimplifieesDataEntity from "../entities/DemarchesSimplifieesDataEntity";
-import DemarchesSimplifieesMapperEntity from "../entities/DemarchesSimplifieesMapperEntity";
+import DemarchesSimplifieesSchemaEntity from "../entities/DemarchesSimplifieesSchemaEntity";
 import { isValidDate } from "../../../../shared/helpers/DateHelper";
 import { stringIsFloat } from "../../../../shared/helpers/StringHelper";
 import { DefaultObject } from "../../../../@types";
@@ -23,7 +23,7 @@ export class DemarchesSimplifieesEntityAdapter {
 
     private static mapSchema<T>(
         entity: DemarchesSimplifieesDataEntity,
-        mapper: DemarchesSimplifieesMapperEntity,
+        mapper: DemarchesSimplifieesSchemaEntity,
         schemaId: string,
     ): T {
         const subvention = { siret: entity.siret };
@@ -64,7 +64,7 @@ export class DemarchesSimplifieesEntityAdapter {
 
     static toSubvention(
         entity: DemarchesSimplifieesDataEntity,
-        mapper: DemarchesSimplifieesMapperEntity,
+        mapper: DemarchesSimplifieesSchemaEntity,
     ): DemandeSubvention {
         const toPv = ProviderValueFactory.buildProviderValueAdapter(
             demarchesSimplifieesService.provider.name,
@@ -89,7 +89,7 @@ export class DemarchesSimplifieesEntityAdapter {
 
     static toRawGrant(
         entity: DemarchesSimplifieesDataEntity,
-        mapper: DemarchesSimplifieesMapperEntity,
+        mapper: DemarchesSimplifieesSchemaEntity,
     ): DemarchesSimplifieesRawGrant {
         const joinKey = demarchesSimplifieesService.getJoinKey({ entity, schema: mapper });
 
@@ -103,7 +103,7 @@ export class DemarchesSimplifieesEntityAdapter {
 
     static toCommon(
         entity: DemarchesSimplifieesDataEntity,
-        mapper: DemarchesSimplifieesMapperEntity,
+        mapper: DemarchesSimplifieesSchemaEntity,
     ): CommonApplicationDto {
         const application: DefaultObject = DemarchesSimplifieesEntityAdapter.mapSchema(entity, mapper, "commonSchema");
 
