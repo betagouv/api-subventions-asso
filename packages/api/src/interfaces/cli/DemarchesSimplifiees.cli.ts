@@ -21,6 +21,6 @@ export default class DemarchesSimplifieesCli {
         const jsonSchema = fs.readFileSync(schemaJsonPath).toString();
 
         const schema = JSON.parse(jsonSchema) as DemarchesSimplifieesSchemaEntity;
-        await demarchesSimplifieesService.addSchemaMapper(schema);
+        await demarchesSimplifieesService.addSchema(schema);
     }
 }

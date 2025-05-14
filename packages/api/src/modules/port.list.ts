@@ -10,7 +10,7 @@ import consumerTokenPort from "../dataProviders/db/user/consumer-token.port";
 import chorusLinePort from "../dataProviders/db/providers/chorus/chorus.line.port";
 import dauphinGisproPort from "../dataProviders/db/providers/dauphin/dauphin-gispro.port";
 import demarchesSimplifieesDataPort from "../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
-import demarchesSimplifieesMapperPort from "../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port";
+import demarchesSimplifieesSchemaPort from "../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port";
 import fonjepSubventionPort from "../dataProviders/db/providers/fonjep/fonjep.subvention.port.old";
 import fonjepPaymentPort from "../dataProviders/db/providers/fonjep/fonjep.payment.port.old";
 import fonjepVersementsPort from "../dataProviders/db/providers/fonjep/fonjep.versements.port";
@@ -46,7 +46,7 @@ export const portsWithIndexes = [
     consumerTokenPort,
     chorusLinePort,
     demarchesSimplifieesDataPort,
-    demarchesSimplifieesMapperPort,
+    demarchesSimplifieesSchemaPort,
     statsAssociationsVisitPort,
     rnaSirenPort,
     uniteLegalEntreprisePort,
