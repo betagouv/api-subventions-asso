@@ -12,11 +12,11 @@ import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifi
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import demarchesSimplifieesDataPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
-import demarchesSimplifieesMapperPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port";
+import demarchesSimplifieesSchemaPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import { DemarchesSimplifieesDto } from "./dto/DemarchesSimplifieesDto";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
-import DemarchesSimplifieesMapperEntity from "./entities/DemarchesSimplifieesMapperEntity";
+import DemarchesSimplifieesSchemaEntity from "./entities/DemarchesSimplifieesSchemaEntity";
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
 import { DemarchesSimplifieesRawData } from "./@types/DemarchesSimplifieesRawGrant";
 import DemarchesSimplifieesDataEntity from "./entities/DemarchesSimplifieesDataEntity";
@@ -37,14 +37,14 @@ export class DemarchesSimplifieesService
     }
 
     private async getSchemasByIds() {
-        const schemas = await demarchesSimplifieesMapperPort.findAll();
+        const schemas = await demarchesSimplifieesSchemaPort.findAll();
 
         return schemas.reduce(
             (acc, schema) => {
                 acc[schema.demarcheId] = schema;
                 return acc;
             },
-            {} as Record<string, DemarchesSimplifieesMapperEntity>,
+            {} as Record<string, DemarchesSimplifieesSchemaEntity>,
         );
     }
 
@@ -54,9 +54,8 @@ export class DemarchesSimplifieesService
 
     private async filterAndAdaptEntities<T>(
         entities: DemarchesSimplifieesDataEntity[],
-        adapter: (entity: DemarchesSimplifieesDataEntity, mapper: DemarchesSimplifieesMapperEntity) => T,
+        adapter: (entity: DemarchesSimplifieesDataEntity, schema: DemarchesSimplifieesSchemaEntity) => T,
     ) {
-        // TODO: I think we use schema and mapper to talk about the same thing here and we choose only one term
         const schemasByIds = await this.getSchemasByIds();
         const reduceToValidEntities = (acc, entity) => {
             const schema = schemasByIds[entity.demarcheId];
@@ -93,10 +92,10 @@ export class DemarchesSimplifieesService
      */
 
     async updateAllForms() {
-        const formsIds = await demarchesSimplifieesMapperPort.getAcceptedDemarcheIds();
+        const formsIds = await demarchesSimplifieesSchemaPort.getAcceptedDemarcheIds();
 
         if (!formsIds) {
-            throw new Error("DS is not configured on this env, please add mapper");
+            throw new Error("DS is not configured on this env, please add schema");
         }
 
         await asyncForEach(formsIds, async formId => {
@@ -160,8 +159,8 @@ export class DemarchesSimplifieesService
         };
     }
 
-    addSchemaMapper(schema: DemarchesSimplifieesMapperEntity) {
-        return demarchesSimplifieesMapperPort.upsert(schema);
+    addSchema(schema: DemarchesSimplifieesSchemaEntity) {
+        return demarchesSimplifieesSchemaPort.upsert(schema);
     }
 
     /**
@@ -177,11 +176,16 @@ export class DemarchesSimplifieesService
     public getJoinKey(data: DemarchesSimplifieesRawData) {
         // TODO: rename schema to schemas and sub schema to default ?
         const schema = data.schema.schema;
+
         // EJ and versementKey are the same.
         // versementKey abstracts the EJ key that is not always the name of the joiner to match with payments
         // i.e: in Fonjep we use code_poste instead of EJ
-        const joinKeyFieldName = schema.find(field => field.to === "ej" || field.to === "versementKey")?.from;
 
+        const joinKeySchemaItem = schema.find(field => field.to === "ej" || field.to === "versementKey");
+        if (!joinKeySchemaItem) return;
+        if ("value" in joinKeySchemaItem) return joinKeySchemaItem.value;
+
+        const joinKeyFieldName = joinKeySchemaItem.from;
         let joinKey: string | undefined;
         if (joinKeyFieldName) joinKey = lodash.get(data.entity, joinKeyFieldName);
         return joinKey;

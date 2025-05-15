@@ -130,7 +130,7 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
 
     describe("toCommon", () => {
         const ENTITY = {};
-        const MAPPER = {};
+        const SCHEMA = {};
 
         it("adapts to proper format", () => {
             mapMock.mockReturnValueOnce({
@@ -138,7 +138,7 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
                 providerStatus: "sans_suite",
             });
             // @ts-expect-error mock
-            const actual = DemarchesSimplifieesEntityAdapter.toCommon(ENTITY, MAPPER);
+            const actual = DemarchesSimplifieesEntityAdapter.toCommon(ENTITY, SCHEMA);
             expect(actual).toMatchInlineSnapshot(`
                 {
                   "exercice": 2022,
@@ -166,7 +166,7 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
 
     describe("mapSchema", () => {
         const ENTITY = { before: "a", siret: "SIRET" };
-        const MAPPER = {
+        const SCHEMA = {
             key: [
                 { to: "after.nested", from: "before" },
                 { to: "after.same", value: "toujoursPareil" },
@@ -176,7 +176,7 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
 
         it("adapts to proper format", () => {
             // @ts-expect-error mock
-            const actual = DemarchesSimplifieesEntityAdapter.mapSchema(ENTITY, MAPPER, KEY);
+            const actual = DemarchesSimplifieesEntityAdapter.mapSchema(ENTITY, SCHEMA, KEY);
             expect(actual).toMatchInlineSnapshot(`
                 {
                   "after": {

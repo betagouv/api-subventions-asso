@@ -1,19 +1,19 @@
 import MongoPort from "../../../../shared/MongoPort";
-import DemarchesSimplifieesMapperEntity from "../../../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesMapperEntity";
+import DemarchesSimplifieesSchemaEntity from "../../../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesSchemaEntity";
 
-export class DemarchesSimplifieesMapperPort extends MongoPort<DemarchesSimplifieesMapperEntity> {
+export class DemarchesSimplifieesSchemaPort extends MongoPort<DemarchesSimplifieesSchemaEntity> {
     public collectionName = "demarches-simplifiees-schemas";
 
     async createIndexes() {
         await this.collection.createIndex({ demarcheId: 1 }, { unique: true });
     }
 
-    async upsert(entity: DemarchesSimplifieesMapperEntity) {
+    async upsert(entity: DemarchesSimplifieesSchemaEntity) {
         await this.collection.updateOne(
             {
                 demarcheId: entity.demarcheId,
             },
-            { $set: entity as Partial<DemarchesSimplifieesMapperEntity> },
+            { $set: entity as Partial<DemarchesSimplifieesSchemaEntity> },
             { upsert: true },
         );
     }
@@ -32,6 +32,6 @@ export class DemarchesSimplifieesMapperPort extends MongoPort<DemarchesSimplifie
     }
 }
 
-const demarchesSimplifieesMapperPort = new DemarchesSimplifieesMapperPort();
+const demarchesSimplifieesSchemaPort = new DemarchesSimplifieesSchemaPort();
 
-export default demarchesSimplifieesMapperPort;
+export default demarchesSimplifieesSchemaPort;

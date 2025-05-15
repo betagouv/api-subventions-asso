@@ -18,7 +18,7 @@ import {
     DATA_ENTITIES as DS_DATA_ENTITIES,
     SCHEMAS as DS_SCHEMAS,
 } from "../../dataProviders/db/__fixtures__/demarchesSimplifiees.fixtures";
-import demarchesSimplifieesMapperPort from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port";
+import demarchesSimplifieesSchemaPort from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port";
 import demarchesSimplifieesService from "../../../src/modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
 
 import miscScdlGrantPort from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.port";
@@ -60,7 +60,7 @@ const insertData = async () => {
     await dauphinGisproPort.upsert(DAUPHIN_GISPRO_DBOS[0]);
     await osirisRequestPort.add(OsirisRequestEntityFixture);
     await fonjepSubventionPort.create(FonjepSubventionFixture);
-    await demarchesSimplifieesMapperPort.upsert(DS_SCHEMAS[0]);
+    await demarchesSimplifieesSchemaPort.upsert(DS_SCHEMAS[0]);
     await demarchesSimplifieesDataPort.upsert(DS_DATA_ENTITIES[0]);
     // jest integ setup insert producers on app launch and may be defined at this point
     //@ts-expect-error: only for test

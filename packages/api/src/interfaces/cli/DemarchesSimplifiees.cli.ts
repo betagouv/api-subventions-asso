@@ -3,7 +3,7 @@ import fs from "fs";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../@types";
 import demarchesSimplifieesService from "../../modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
-import DemarchesSimplifieesMapperEntity from "../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesMapperEntity";
+import DemarchesSimplifieesSchemaEntity from "../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesSchemaEntity";
 
 @StaticImplements<CliStaticInterface>()
 export default class DemarchesSimplifieesCli {
@@ -20,7 +20,7 @@ export default class DemarchesSimplifieesCli {
 
         const jsonSchema = fs.readFileSync(schemaJsonPath).toString();
 
-        const schema = JSON.parse(jsonSchema) as DemarchesSimplifieesMapperEntity;
-        await demarchesSimplifieesService.addSchemaMapper(schema);
+        const schema = JSON.parse(jsonSchema) as DemarchesSimplifieesSchemaEntity;
+        await demarchesSimplifieesService.addSchema(schema);
     }
 }

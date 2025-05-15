@@ -4,7 +4,7 @@ import { ApplicationStatus, CommonApplicationDto, DemandeSubvention, ProviderVal
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import demarchesSimplifieesService from "../demarchesSimplifiees.service";
 import DemarchesSimplifieesDataEntity from "../entities/DemarchesSimplifieesDataEntity";
-import DemarchesSimplifieesMapperEntity from "../entities/DemarchesSimplifieesMapperEntity";
+import DemarchesSimplifieesSchemaEntity from "../entities/DemarchesSimplifieesSchemaEntity";
 import { isValidDate } from "../../../../shared/helpers/DateHelper";
 import { stringIsFloat } from "../../../../shared/helpers/StringHelper";
 import { DefaultObject } from "../../../../@types";
@@ -23,12 +23,12 @@ export class DemarchesSimplifieesEntityAdapter {
 
     private static mapSchema<T>(
         entity: DemarchesSimplifieesDataEntity,
-        mapper: DemarchesSimplifieesMapperEntity,
+        schema: DemarchesSimplifieesSchemaEntity,
         schemaId: string,
     ): T {
         const subvention = { siret: entity.siret };
 
-        mapper[schemaId].forEach(property => {
+        schema[schemaId].forEach(property => {
             if (property.value) return lodash.set(subvention, property.to, property.value);
 
             let value = lodash.get(entity, property.from);
@@ -64,14 +64,14 @@ export class DemarchesSimplifieesEntityAdapter {
 
     static toSubvention(
         entity: DemarchesSimplifieesDataEntity,
-        mapper: DemarchesSimplifieesMapperEntity,
+        schema: DemarchesSimplifieesSchemaEntity,
     ): DemandeSubvention {
         const toPv = ProviderValueFactory.buildProviderValueAdapter(
             demarchesSimplifieesService.provider.name,
             new Date(entity.demande.dateDerniereModification),
         );
 
-        const subvention: DefaultObject = DemarchesSimplifieesEntityAdapter.mapSchema(entity, mapper, "schema");
+        const subvention: DefaultObject = DemarchesSimplifieesEntityAdapter.mapSchema(entity, schema, "schema");
 
         if (!subvention.annee_demande) {
             if (subvention.exercice && isNumberValid(Number(subvention.exercice)))
@@ -89,23 +89,23 @@ export class DemarchesSimplifieesEntityAdapter {
 
     static toRawGrant(
         entity: DemarchesSimplifieesDataEntity,
-        mapper: DemarchesSimplifieesMapperEntity,
+        schema: DemarchesSimplifieesSchemaEntity,
     ): DemarchesSimplifieesRawGrant {
-        const joinKey = demarchesSimplifieesService.getJoinKey({ entity, schema: mapper });
+        const joinKey = demarchesSimplifieesService.getJoinKey({ entity, schema: schema });
 
         return {
             provider: demarchesSimplifieesService.provider.id,
             type: "application",
-            data: { entity, schema: mapper },
+            data: { entity, schema: schema },
             joinKey,
         };
     }
 
     static toCommon(
         entity: DemarchesSimplifieesDataEntity,
-        mapper: DemarchesSimplifieesMapperEntity,
+        schema: DemarchesSimplifieesSchemaEntity,
     ): CommonApplicationDto {
-        const application: DefaultObject = DemarchesSimplifieesEntityAdapter.mapSchema(entity, mapper, "commonSchema");
+        const application: DefaultObject = DemarchesSimplifieesEntityAdapter.mapSchema(entity, schema, "commonSchema");
 
         if (!application.exercice && application.dateTransmitted)
             application.exercice = new Date(application.dateTransmitted as string)?.getFullYear();

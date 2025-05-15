@@ -1,14 +1,14 @@
-jest.mock("../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port");
+jest.mock("../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port");
 jest.mock("../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port");
 jest.mock("./adapters/DemarchesSimplifieesEntityAdapter");
 
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
 import demarchesSimplifieesService from "./demarchesSimplifiees.service";
-import DemarchesSimplifieesMapperEntity from "./entities/DemarchesSimplifieesMapperEntity";
+import DemarchesSimplifieesSchemaEntity from "./entities/DemarchesSimplifieesSchemaEntity";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import demarchesSimplifieesDataPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
-import demarchesSimplifieesMapperPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port";
+import demarchesSimplifieesSchemaPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port";
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
 import { DATA_ENTITIES, SCHEMAS } from "./__fixtures__/DemarchesSimplifieesFixture";
 import {
@@ -26,7 +26,7 @@ describe("DemarchesSimplifieesService", () => {
     describe("getSchemasByIds", () => {
         beforeAll(() => {
             // @ts-expect-error mock
-            demarchesSimplifieesMapperPort.findAll.mockResolvedValue([
+            demarchesSimplifieesSchemaPort.findAll.mockResolvedValue([
                 {
                     demarcheId: 1,
                     schema: [],
@@ -34,11 +34,11 @@ describe("DemarchesSimplifieesService", () => {
             ]);
         });
 
-        it("should call demarchesSimplifieesMapperPort", async () => {
+        it("should call demarchesSimplifieesSchemaPort", async () => {
             // @ts-expect-error getSchemasByIds is private method
             await demarchesSimplifieesService.getSchemasByIds();
 
-            expect(demarchesSimplifieesMapperPort.findAll).toHaveBeenCalledTimes(1);
+            expect(demarchesSimplifieesSchemaPort.findAll).toHaveBeenCalledTimes(1);
         });
 
         it("should return good data", async () => {
@@ -219,26 +219,26 @@ describe("DemarchesSimplifieesService", () => {
 
         beforeAll(() => {
             // @ts-expect-error mock
-            demarchesSimplifieesMapperPort.getAcceptedDemarcheIds.mockResolvedValue([]);
+            demarchesSimplifieesSchemaPort.getAcceptedDemarcheIds.mockResolvedValue([]);
             updateDataByFormIdMock = jest.spyOn(demarchesSimplifieesService, "updateDataByFormId").mockResolvedValue();
         });
 
         afterAll(() => {
             // @ts-expect-error mock
-            demarchesSimplifieesMapperPort.getAcceptedDemarcheIds.mockRestore();
+            demarchesSimplifieesSchemaPort.getAcceptedDemarcheIds.mockRestore();
             updateDataByFormIdMock.mockRestore();
         });
 
         it("should get accepted forms ids", async () => {
             await demarchesSimplifieesService.updateAllForms();
-            expect(demarchesSimplifieesMapperPort.getAcceptedDemarcheIds).toHaveBeenCalledTimes(1);
+            expect(demarchesSimplifieesSchemaPort.getAcceptedDemarcheIds).toHaveBeenCalledTimes(1);
         });
 
         it("should throw error (ds is not configured)", async () => {
             // @ts-expect-error mock
-            demarchesSimplifieesMapperPort.getAcceptedDemarcheIds.mockResolvedValueOnce(null);
+            demarchesSimplifieesSchemaPort.getAcceptedDemarcheIds.mockResolvedValueOnce(null);
             await expect(() => demarchesSimplifieesService.updateAllForms()).rejects.toThrowError(
-                "DS is not configured on this env, please add mapper",
+                "DS is not configured on this env, please add schema",
             );
         });
 
@@ -246,7 +246,7 @@ describe("DemarchesSimplifieesService", () => {
             const expected = [12345, 12346];
 
             // @ts-expect-error mock
-            demarchesSimplifieesMapperPort.getAcceptedDemarcheIds.mockResolvedValueOnce(expected);
+            demarchesSimplifieesSchemaPort.getAcceptedDemarcheIds.mockResolvedValueOnce(expected);
 
             await demarchesSimplifieesService.updateAllForms();
 
@@ -278,7 +278,7 @@ describe("DemarchesSimplifieesService", () => {
             sendQueryMock.mockRestore();
             toEntitiesMock.mockRestore();
             // @ts-expect-error mock
-            demarchesSimplifieesMapperPort.upsert.mockRestore();
+            demarchesSimplifieesSchemaPort.upsert.mockRestore();
         });
 
         it("should call sendQuery", async () => {
@@ -370,23 +370,23 @@ describe("DemarchesSimplifieesService", () => {
         });
     });
 
-    describe("addSchemaMapper", () => {
+    describe("addSchema", () => {
         beforeAll(() => {
             // @ts-expect-error mock
-            demarchesSimplifieesMapperPort.upsert.mockResolvedValue();
+            demarchesSimplifieesSchemaPort.upsert.mockResolvedValue();
         });
 
         afterAll(() => {
             // @ts-expect-error mock
-            demarchesSimplifieesMapperPort.upsert.mockRestore();
+            demarchesSimplifieesSchemaPort.upsert.mockRestore();
         });
 
         it("should call upsert", async () => {
-            const expected = { data: true } as unknown as DemarchesSimplifieesMapperEntity;
+            const expected = { data: true } as unknown as DemarchesSimplifieesSchemaEntity;
 
-            await demarchesSimplifieesService.addSchemaMapper(expected);
+            await demarchesSimplifieesService.addSchema(expected);
 
-            expect(demarchesSimplifieesMapperPort.upsert).toBeCalledWith(expected);
+            expect(demarchesSimplifieesSchemaPort.upsert).toBeCalledWith(expected);
         });
     });
 
