@@ -59,7 +59,7 @@ describe("SireneStockUniteLegaleParser", () => {
             mockFilePathValidator = jest.spyOn(SireneStockUniteLegaleParser, "filePathValidator").mockReturnValue(true);
             jest.mocked(SireneStockUniteLegaleAdapter.dtoToEntity).mockReturnValue(ENTITIES[0]);
             jest.mocked(SireneStockUniteLegaleAdapter.entityToDbo).mockReturnValue(DBOS[0]);
-            jest.mocked(sireneStockUniteLegaleService.insertMany).mockImplementation(jest.fn());
+            jest.mocked(sireneStockUniteLegaleService.upsertMany).mockImplementation(jest.fn());
             mockStream = {
                 pipe: jest.fn().mockReturnThis(),
                 on: jest.fn().mockImplementation((event, cb) => {

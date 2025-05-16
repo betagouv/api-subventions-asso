@@ -3,7 +3,6 @@ import uniteLegalEntreprisesService from "../../uniteLegalEntreprises/uniteLegal
 import { UniteLegalEntrepriseEntity } from "../../../../entities/UniteLegalEntrepriseEntity";
 import uniteLegalNameService from "../../uniteLegalName/uniteLegal.name.service";
 import { SireneStockUniteLegaleEntity } from "../../../../entities/SireneStockUniteLegaleEntity";
-import { SireneUniteLegaleDbo } from "./@types/SireneUniteLegaleDbo";
 import SireneStockUniteLegaleParser from "./parser/sireneStockUniteLegale.parser";
 import SireneStockUniteLegaleAdapter from "./adapter/sireneStockUniteLegale.adapter";
 
@@ -18,7 +17,7 @@ export class SireneStockUniteLegaleService {
 
     public async _saveBatchAssoData(batchAssosToSave: SireneStockUniteLegaleEntity[]) {
         await Promise.all([
-            this.insertMany(batchAssosToSave),
+            this.upsertMany(batchAssosToSave),
             uniteLegalNameService.upsertMany(
                 batchAssosToSave.map(e => SireneStockUniteLegaleAdapter.entityToUniteLegaleNameEntity(e)),
             ),
@@ -31,12 +30,12 @@ export class SireneStockUniteLegaleService {
         );
     }
 
-    public insertOne(dbo: SireneUniteLegaleDbo | SireneStockUniteLegaleEntity) {
+    public insertOne(dbo: SireneStockUniteLegaleEntity) {
         return sireneUniteLegaleDbPort.insertOne(dbo);
     }
 
-    public insertMany(dbos: SireneUniteLegaleDbo[] | SireneStockUniteLegaleEntity[]) {
-        return sireneUniteLegaleDbPort.insertMany(dbos);
+    public upsertMany(dbos: SireneStockUniteLegaleEntity[]) {
+        return sireneUniteLegaleDbPort.upsertMany(dbos);
     }
 }
 

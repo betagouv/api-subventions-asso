@@ -27,12 +27,14 @@ import {
     DemarchesSimplifieesSingleSchemaSeed,
 } from "./entities/DemarchesSimplifieesSchemaSeedEntity";
 import { input } from "@inquirer/prompts";
+import configurationsService from "../../configurations/configurations.service";
 
 export class DemarchesSimplifieesService
     extends ProviderCore
     implements DemandesSubventionsProvider<DemarchesSimplifieesRawData>, GrantProvider
 {
     isDemandesSubventionsProvider = true;
+    lastModified: Date;
 
     constructor() {
         super({
@@ -41,6 +43,7 @@ export class DemarchesSimplifieesService
             description: "", // TODO
             id: "demarchesSimplifiees",
         });
+        this.lastModified = new Date(0);
     }
 
     private async getSchemasByIds() {
@@ -100,27 +103,42 @@ export class DemarchesSimplifieesService
 
     async updateAllForms() {
         const formsIds = await demarchesSimplifieesSchemaPort.getAcceptedDemarcheIds();
+        const beginUpdating = new Date();
+        this.lastModified = await configurationsService.getLastDsUpdate();
 
         if (!formsIds) {
             throw new Error("DS is not configured on this env, please add schema");
         }
 
-        await asyncForEach(formsIds, async formId => {
-            await this.updateDataByFormId(formId);
-        });
+        await asyncForEach(formsIds, formId => this.updateDataByFormId(formId));
+        await configurationsService.setLastDsUpdate(beginUpdating);
     }
 
     async updateDataByFormId(formId: number) {
+        console.log(`Synchronisation de la démarche ${formId}`);
         let result: DemarchesSimplifieesDto;
         let nextCursor: string | undefined = undefined;
+        let bulk: DemarchesSimplifieesDataEntity[] = [];
+        const MAX_BULK = 1000;
         do {
             result = await this.sendQuery(GetDossiersByDemarcheId, { demarcheNumber: formId, after: nextCursor });
-            const entities = DemarchesSimplifieesDtoAdapter.toEntities(result, formId);
-            await asyncForEach(entities, async entity => {
-                await demarchesSimplifieesDataPort.upsert(entity);
-            });
+            if (result.data.demarche.state != "publiee") {
+                console.log(`demarche ${formId} a le statut '${result.data.demarche.state}', on passe`);
+                return;
+            }
+
+            const entities = DemarchesSimplifieesDtoAdapter.toEntities(result, formId).filter(
+                entity => new Date(entity.demande.dateDerniereModification) > this.lastModified,
+            );
+            bulk.push(...entities);
+            if (bulk.length >= MAX_BULK) {
+                await demarchesSimplifieesDataPort.bulkUpsert(bulk);
+                bulk = [];
+            }
+
             nextCursor = result?.data?.demarche?.dossiers?.pageInfo?.endCursor;
         } while (result?.data?.demarche?.dossiers?.pageInfo?.hasNextPage);
+        await demarchesSimplifieesDataPort.bulkUpsert(bulk);
     }
 
     async sendQuery(query: string, vars: DefaultObject) {
