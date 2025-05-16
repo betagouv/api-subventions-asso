@@ -11,6 +11,7 @@ export enum CONFIGURATION_NAMES {
     ACCEPTED_EMAIL_DOMAINS = "ACCEPTED-EMAIL-DOMAINS",
     DUMP_PUBLISH_DATE = "DUMP-PUBLISH-DATE",
     LAST_RGPD_WARNED_DATE = "LAST-RGPD-WARNED-DATE",
+    LAST_DS_UPDATE_DATE = "LAST_DS_UPDATE_DATE",
     LAST_CHORUS_UPDATE_IMPORTED = "LAST-CHORUS-UPDATE-IMPORTED",
     LAST_USER_STATS_UPDATE = "LAST_USER_STATS_UPDATE",
     HOME_INFOS_BANNER = "HOME-INFOS-BANNER",
@@ -115,9 +116,18 @@ export class ConfigurationsService {
     }
 
     async setLastUserStatsUpdate(date: Date) {
-        await configurationsPort.upsert(CONFIGURATION_NAMES.LAST_USER_STATS_UPDATE, {
-            data: date,
-        });
+        await configurationsPort.upsert(CONFIGURATION_NAMES.LAST_USER_STATS_UPDATE, { data: date });
+    }
+
+    async getLastDsUpdate(): Promise<Date> {
+        return (
+            ((await configurationsPort.getByName(CONFIGURATION_NAMES.LAST_DS_UPDATE_DATE))?.data as Date) ||
+            new Date(1970)
+        );
+    }
+
+    async setLastDsUpdate(date: Date) {
+        await configurationsPort.upsert(CONFIGURATION_NAMES.LAST_DS_UPDATE_DATE, { data: date });
     }
 
     async updateMainInfoBanner(title?: string, desc?: string) {

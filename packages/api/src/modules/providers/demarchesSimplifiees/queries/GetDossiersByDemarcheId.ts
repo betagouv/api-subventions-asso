@@ -51,5 +51,6 @@ export default dedent`query getDemarche($demarcheNumber: Int!, $after: String) {
             nom
             organisme
         }
+        state
     } 
 }`;

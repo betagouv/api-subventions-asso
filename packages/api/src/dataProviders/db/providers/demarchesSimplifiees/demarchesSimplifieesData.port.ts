@@ -30,6 +30,19 @@ export class DemarchesSimplifieesDataPort extends MongoPort<DemarchesSimplifiees
             .find({ siret: new RegExp(`^${siren.value}\\d{5}`) }, { projection: { _id: 0 } })
             .toArray();
     }
+
+    bulkUpsert(entities: DemarchesSimplifieesDataEntity[]) {
+        const bulk = entities.map(entity => {
+            return {
+                updateOne: {
+                    filter: { "demande.id": entity.demande.id },
+                    update: { $set: entity },
+                    upsert: true,
+                },
+            };
+        });
+        return bulk.length ? this.collection.bulkWrite(bulk, { ordered: false }) : Promise.resolve();
+    }
 }
 
 const demarchesSimplifieesDataPort = new DemarchesSimplifieesDataPort();
