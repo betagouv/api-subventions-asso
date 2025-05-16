@@ -579,7 +579,6 @@ describe("DemarchesSimplifieesService", () => {
         it.each`
             seedProperty | value
             ${"from"}    | ${"where to get value"}
-            ${"value"}   | ${"value to copy"}
         `("returns $seedProperty singleSeed as it is", async ({ seedProperty, value }) => {
             const expected = { [seedProperty]: value };
             // @ts-expect-error -- test private method
@@ -591,17 +590,44 @@ describe("DemarchesSimplifieesService", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("makes prompt if property 'valueToPrompt", async () => {
+        it("makes prompt if property 'valueToPrompt'", async () => {
             // @ts-expect-error -- test private method
             await demarchesSimplifieesService.findIdByLabel({ valueToPrompt: true, to: "fieldName" }, EXAMPLE);
             expect(input).toHaveBeenCalled();
         });
 
-        it("return 'value' singleShema from prompt if property 'valueToPrompt", async () => {
+        it("makes prompt if property 'value'", async () => {
+            // @ts-expect-error -- test private method
+            await demarchesSimplifieesService.findIdByLabel({ value: "default", to: "fieldName" }, EXAMPLE);
+            expect(input).toHaveBeenCalled();
+        });
+
+        it("return 'value' singleShema from prompt if property 'valueToPrompt'", async () => {
             const expected = { value: USER_INPUT };
             // @ts-expect-error -- test private method
             const actual = await demarchesSimplifieesService.findIdByLabel(
                 { valueToPrompt: true, to: "fieldName" },
+                EXAMPLE,
+            );
+            expect(actual).toEqual(expected);
+        });
+
+        it("return 'value' singleShema from prompt if property 'value'", async () => {
+            const expected = { value: USER_INPUT };
+            // @ts-expect-error -- test private method
+            const actual = await demarchesSimplifieesService.findIdByLabel(
+                { value: "default", to: "fieldName" },
+                EXAMPLE,
+            );
+            expect(actual).toEqual(expected);
+        });
+
+        it("return 'value' from schema if nothing is input", async () => {
+            jest.mocked(input).mockResolvedValueOnce("");
+            const expected = { value: "default" };
+            // @ts-expect-error -- test private method
+            const actual = await demarchesSimplifieesService.findIdByLabel(
+                { value: "default", to: "fieldName" },
                 EXAMPLE,
             );
             expect(actual).toEqual(expected);

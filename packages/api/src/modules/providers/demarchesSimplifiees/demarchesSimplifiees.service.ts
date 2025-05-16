@@ -243,10 +243,12 @@ export class DemarchesSimplifieesService
         exampleDemarche: DemarchesSimplifieesDataEntity,
     ): Promise<{ value: string } | { from: string } | undefined> {
         if ("from" in champ) return { from: champ.from };
-        if ("value" in champ) return { value: champ.value };
-        if ("valueToPrompt" in champ) {
-            const inputValue = await input({ message: `Entrer une valeur figée pour le champ ${champ.to}` });
+        if ("valueToPrompt" in champ || "value" in champ) {
+            const inputValue = await input({
+                message: `Entrer une valeur figée pour le champ ${champ.to}`,
+            });
             if (inputValue) return { value: inputValue };
+            if ("value" in champ) return { value: champ.value };
             return;
         }
 
