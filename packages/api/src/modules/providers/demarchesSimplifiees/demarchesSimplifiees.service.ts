@@ -242,22 +242,26 @@ export class DemarchesSimplifieesService
         champ: DemarchesSimplifieesSingleSchemaSeed,
         exampleDemarche: DemarchesSimplifieesDataEntity,
     ): Promise<{ value: string } | { from: string } | undefined> {
+        // TODO test when multiple stuff are noted
         if ("from" in champ) return { from: champ.from };
+        if ("possibleLabels" in champ) {
+            for (const [id, field] of Object.entries(exampleDemarche.demande.annotations))
+                if (champ.possibleLabels.includes(field.label)) return { from: `demande.annotations.${id}.value` };
+            for (const [id, field] of Object.entries(exampleDemarche.demande.champs))
+                if (champ.possibleLabels.includes(field.label)) return { from: `demande.champs.${id}.value` };
+        }
         if ("valueToPrompt" in champ || "value" in champ) {
             const inputValue = await input({
                 message: `Entrer une valeur figée pour le champ ${champ.to}`,
+                default: "value" in champ ? String(champ.value) : undefined,
             });
             if (inputValue) return { value: inputValue };
-            if ("value" in champ) return { value: champ.value };
-            return;
+            if ("value" in champ && champ.value) return { value: champ.value };
         }
 
-        for (const [id, field] of Object.entries(exampleDemarche.demande.annotations))
-            if (champ.possibleLabels.includes(field.label)) return { from: `demande.annotations.${id}.value` };
-        for (const [id, field] of Object.entries(exampleDemarche.demande.champs))
-            if (champ.possibleLabels.includes(field.label)) return { from: `demande.champs.${id}.value` };
-
-        console.log(`no id found for target field ${champ.to}`);
+        console.log(`no instruction found for target field ${champ.to}`);
+        if (champ.to === "exercice")
+            console.log("L'exercice peut- être déduit de la date de début de projet si celle-ci est mappée");
         return;
     }
 
