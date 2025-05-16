@@ -107,16 +107,7 @@ export class DemarchesSimplifieesService
         let result: DemarchesSimplifieesDto;
         let nextCursor: string | undefined = undefined;
         do {
-            result = await this.sendQuery(GetDossiersByDemarcheId, {
-                demarcheNumber: formId,
-                after: nextCursor,
-            });
-
-            if (result?.errors?.length)
-                throw new InternalServerError(result?.errors?.map(error => error.message).join(" - "));
-            if (!result?.data?.demarche)
-                throw new InternalServerError("empty Démarches Simplifiées result (not normal with graphQL)");
-
+            result = await this.sendQuery(GetDossiersByDemarcheId, { demarcheNumber: formId, after: nextCursor });
             const entities = DemarchesSimplifieesDtoAdapter.toEntities(result, formId);
             await asyncForEach(entities, async entity => {
                 await demarchesSimplifieesDataPort.upsert(entity);
@@ -127,8 +118,9 @@ export class DemarchesSimplifieesService
 
     async sendQuery(query: string, vars: DefaultObject) {
         if (!DEMARCHES_SIMPLIFIEES_TOKEN) throw new InternalServerError("DEMARCHES_SIMPLIFIEES_TOKEN is not defined");
+        let result: { data: DemarchesSimplifieesDto };
         try {
-            const result = await this.http.post<DemarchesSimplifieesDto>(
+            result = await this.http.post<DemarchesSimplifieesDto>(
                 "https://www.demarches-simplifiees.fr/api/v2/graphql",
                 {
                     query,
@@ -139,12 +131,17 @@ export class DemarchesSimplifieesService
                     keepAlive: true,
                 },
             );
-
-            return result.data;
         } catch (e) {
             console.error(e);
             throw e;
         }
+
+        if (result.data?.errors?.length)
+            throw new InternalServerError(result.data.errors?.map(error => error.message).join(" - "));
+        if (!result.data?.data?.demarche)
+            throw new InternalServerError("empty Démarches Simplifiées result (not normal with graphQL)");
+
+        return result.data;
     }
 
     private buildSearchHeader(token: string) {

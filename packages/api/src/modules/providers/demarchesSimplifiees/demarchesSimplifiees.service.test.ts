@@ -311,12 +311,13 @@ describe("DemarchesSimplifieesService", () => {
     describe("sendQuery", () => {
         let postMock: jest.SpyInstance;
         let buildSearchHeaderMock: jest.SpyInstance;
+        const AXIOS_RES = { data: { data: { demarche: {} } } } as RequestResponse<unknown>;
 
         beforeAll(() => {
             postMock = jest
                 // @ts-expect-error http is private method
                 .spyOn(demarchesSimplifieesService.http, "post")
-                .mockResolvedValue({ data: 1 } as RequestResponse<unknown>);
+                .mockResolvedValue(AXIOS_RES);
             // @ts-expect-error buildSearchHeader is private method
             buildSearchHeaderMock = jest.spyOn(demarchesSimplifieesService, "buildSearchHeader");
         });
@@ -361,12 +362,21 @@ describe("DemarchesSimplifieesService", () => {
         });
 
         it("should return data", async () => {
-            const expected = { data: true };
-            postMock.mockResolvedValueOnce({ data: expected });
-
+            const expected = AXIOS_RES.data;
             const actual = await demarchesSimplifieesService.sendQuery("", {});
-
             expect(actual).toEqual(expected);
+        });
+
+        it("fails if graphQL errors", async () => {
+            postMock.mockResolvedValueOnce({ data: { errors: [{ message: "il y a des pbs" }] } });
+            const test = demarchesSimplifieesService.sendQuery("", {});
+            await expect(test).rejects.toThrowErrorMatchingSnapshot();
+        });
+
+        it("fails if empty demarche", async () => {
+            postMock.mockResolvedValueOnce({ data: { data: {} } });
+            const test = demarchesSimplifieesService.sendQuery("", {});
+            await expect(test).rejects.toThrowErrorMatchingSnapshot();
         });
     });
 

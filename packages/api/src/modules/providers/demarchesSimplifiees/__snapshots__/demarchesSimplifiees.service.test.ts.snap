@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DemarchesSimplifieesService sendQuery fails if empty demarche 1`] = `"empty Démarches Simplifiées result (not normal with graphQL)"`;
+
+exports[`DemarchesSimplifieesService sendQuery fails if graphQL errors 1`] = `"il y a des pbs"`;
+
+exports[`DemarchesSimplifieesService sendQuery fails if grphQL errors 1`] = `"il y a des pbs"`;
