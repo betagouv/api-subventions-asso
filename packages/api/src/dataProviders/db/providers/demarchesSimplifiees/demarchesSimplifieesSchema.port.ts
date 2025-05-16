@@ -10,9 +10,7 @@ export class DemarchesSimplifieesSchemaPort extends MongoPort<DemarchesSimplifie
 
     async upsert(entity: DemarchesSimplifieesSchemaEntity) {
         await this.collection.updateOne(
-            {
-                demarcheId: entity.demarcheId,
-            },
+            { demarcheId: entity.demarcheId },
             { $set: entity as Partial<DemarchesSimplifieesSchemaEntity> },
             { upsert: true },
         );
@@ -25,9 +23,7 @@ export class DemarchesSimplifieesSchemaPort extends MongoPort<DemarchesSimplifie
     getAcceptedDemarcheIds(): Promise<number[]> {
         return this.collection
             .find({})
-            .map(schema => {
-                return schema.demarcheId;
-            })
+            .map(schema => schema.demarcheId)
             .toArray();
     }
 }
