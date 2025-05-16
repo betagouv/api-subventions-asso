@@ -31,11 +31,7 @@ export default class DemarchesSimplifieesCli {
 
         const jsonSchema = fs.readFileSync(schemaModelJsonPath).toString();
         const schemaSeed = JSON.parse(jsonSchema) as DemarchesSimplifieesSchemaSeed;
-        const schema = {
-            schema: await demarchesSimplifieesService.buildSchema(schemaSeed.schema, demarcheId),
-            commonSchema: await demarchesSimplifieesService.buildSchema(schemaSeed.commonSchema, demarcheId),
-            demarcheId,
-        };
+        const schema = await demarchesSimplifieesService.buildFullSchema(schemaSeed, demarcheId);
 
         await demarchesSimplifieesService.addSchema(schema);
     }

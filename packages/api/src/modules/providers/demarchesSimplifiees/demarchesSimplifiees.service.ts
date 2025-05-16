@@ -22,7 +22,10 @@ import DemarchesSimplifieesSchemaEntity, {
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
 import { DemarchesSimplifieesRawData } from "./@types/DemarchesSimplifieesRawGrant";
 import DemarchesSimplifieesDataEntity from "./entities/DemarchesSimplifieesDataEntity";
-import { DemarchesSimplifieesSingleSchemaSeed } from "./entities/DemarchesSimplifieesSchemaSeedEntity";
+import {
+    DemarchesSimplifieesSchemaSeed,
+    DemarchesSimplifieesSingleSchemaSeed,
+} from "./entities/DemarchesSimplifieesSchemaSeedEntity";
 import { input } from "@inquirer/prompts";
 
 export class DemarchesSimplifieesService
@@ -254,6 +257,14 @@ export class DemarchesSimplifieesService
 
         console.log(`no id found for target field ${champ.to}`);
         return;
+    }
+
+    async buildFullSchema(schemaSeed: DemarchesSimplifieesSchemaSeed, demarcheId: number) {
+        return {
+            schema: await demarchesSimplifieesService.buildSchema(schemaSeed.schema, demarcheId),
+            commonSchema: await demarchesSimplifieesService.buildSchema(schemaSeed.commonSchema, demarcheId),
+            demarcheId,
+        };
     }
 }
 

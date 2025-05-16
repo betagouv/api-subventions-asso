@@ -1,4 +1,7 @@
-import { DemarchesSimplifieesSingleSchemaSeed } from "./entities/DemarchesSimplifieesSchemaSeedEntity";
+import {
+    DemarchesSimplifieesSchemaSeed,
+    DemarchesSimplifieesSingleSchemaSeed,
+} from "./entities/DemarchesSimplifieesSchemaSeedEntity";
 
 jest.mock("../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port");
 jest.mock("../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port");
@@ -9,7 +12,9 @@ jest.mock("@inquirer/prompts");
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
 import demarchesSimplifieesService from "./demarchesSimplifiees.service";
-import DemarchesSimplifieesSchemaEntity from "./entities/DemarchesSimplifieesSchemaEntity";
+import DemarchesSimplifieesSchemaEntity, {
+    DemarchesSimplifieesSingleSchema,
+} from "./entities/DemarchesSimplifieesSchemaEntity";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import demarchesSimplifieesDataPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
 import demarchesSimplifieesSchemaPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port";
@@ -625,6 +630,35 @@ describe("DemarchesSimplifieesService", () => {
                 EXAMPLE,
             );
             const expected = { from: "demande.champs.idC1.value" };
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("buildFullSchema", () => {
+        const FULL_SCHEMA = {
+            schema: "SCHEMA",
+            commonSchema: "COMMON_SCHEMA",
+        } as unknown as DemarchesSimplifieesSchemaSeed;
+        const DEMARCHE_ID = 98765;
+        const BUILT = "built" as unknown as DemarchesSimplifieesSingleSchema[];
+        let buildSchemaSpy: jest.SpyInstance;
+
+        beforeAll(() => {
+            buildSchemaSpy = jest.spyOn(demarchesSimplifieesService, "buildSchema").mockResolvedValue(BUILT);
+        });
+
+        afterAll(() => {
+            buildSchemaSpy.mockRestore();
+        });
+
+        it("calls buildsSchema for each schema", async () => {
+            await demarchesSimplifieesService.buildFullSchema(FULL_SCHEMA, DEMARCHE_ID);
+            expect(buildSchemaSpy).toHaveBeenCalledTimes(2);
+        });
+
+        it("returns full formed schema", async () => {
+            const expected = { schema: BUILT, commonSchema: BUILT, demarcheId: DEMARCHE_ID };
+            const actual = await demarchesSimplifieesService.buildFullSchema(FULL_SCHEMA, DEMARCHE_ID);
             expect(actual).toEqual(expected);
         });
     });
