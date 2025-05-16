@@ -20,6 +20,7 @@ export interface DemarchesSimplifieesSuccessDto {
                         };
                         motivation: string | null;
                         state: string | null;
+                        dateDerniereModification: string;
                         dateDepot: string | null;
                         datePassageEnInstruction: string | null;
                         dateTraitement: string | null;
@@ -50,6 +51,7 @@ export interface DemarchesSimplifieesSuccessDto {
                 nom: string;
                 organisme: string;
             };
+            state: string;
         };
     };
     errors: undefined;
