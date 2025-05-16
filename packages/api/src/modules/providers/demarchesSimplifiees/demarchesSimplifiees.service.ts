@@ -231,14 +231,14 @@ export class DemarchesSimplifieesService
         const exampleData = DemarchesSimplifieesDtoAdapter.toEntities(queryResult, formId)?.[0];
 
         for (const champ of schemaModel) {
-            const singleSchemaPart = await this.findIdByLabel(champ, exampleData);
+            const singleSchemaPart = await this.generateSchemaInstruction(champ, exampleData);
             if (!singleSchemaPart) continue;
             builtSchema.push({ ...singleSchemaPart, to: champ.to });
         }
         return builtSchema;
     }
 
-    private async findIdByLabel(
+    private async generateSchemaInstruction(
         champ: DemarchesSimplifieesSingleSchemaSeed,
         exampleDemarche: DemarchesSimplifieesDataEntity,
     ): Promise<{ value: string } | { from: string } | undefined> {

@@ -514,7 +514,7 @@ describe("DemarchesSimplifieesService", () => {
 
     describe("buildSchema", () => {
         let sendQuerySpy: jest.SpyInstance;
-        let findIdByLabelSpy: jest.SpyInstance;
+        let generateSchemaInstructionSpy: jest.SpyInstance;
         const SCHEMA_SEED = [{ to: 1 }, { to: 2 }] as unknown as DemarchesSimplifieesSingleSchemaSeed[];
         const FORM_ID = 12345;
         const QUERY_RESULT = "QUERY" as unknown as DemarchesSimplifieesSuccessDto;
@@ -522,9 +522,9 @@ describe("DemarchesSimplifieesService", () => {
 
         beforeAll(() => {
             sendQuerySpy = jest.spyOn(demarchesSimplifieesService, "sendQuery").mockResolvedValue(QUERY_RESULT);
-            findIdByLabelSpy = jest
+            generateSchemaInstructionSpy = jest
                 // @ts-expect-error -- spy private method
-                .spyOn(demarchesSimplifieesService, "findIdByLabel")
+                .spyOn(demarchesSimplifieesService, "generateSchemaInstruction")
                 // @ts-expect-error -- mock private method
                 .mockImplementation((c: DemarchesSimplifieesSingleSchemaSeed) => Promise.resolve({ from: c.to }));
         });
@@ -532,7 +532,7 @@ describe("DemarchesSimplifieesService", () => {
 
         afterAll(() => {
             sendQuerySpy.mockRestore();
-            findIdByLabelSpy.mockRestore();
+            generateSchemaInstructionSpy.mockRestore();
             jest.mocked(DemarchesSimplifieesDtoAdapter.toEntities).mockRestore();
         });
 
@@ -546,7 +546,7 @@ describe("DemarchesSimplifieesService", () => {
         });
         it("finds id fo each field", async () => {
             await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, FORM_ID);
-            expect(findIdByLabelSpy).toHaveBeenCalledTimes(2);
+            expect(generateSchemaInstructionSpy).toHaveBeenCalledTimes(2);
         });
         it("should returns aggregated results by field", async () => {
             const actual = await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, FORM_ID);
@@ -554,7 +554,7 @@ describe("DemarchesSimplifieesService", () => {
         });
     });
 
-    describe("findIdByLabel", () => {
+    describe("generateSchemaInstruction", () => {
         const EXAMPLE = {
             demande: {
                 champs: {
@@ -582,7 +582,7 @@ describe("DemarchesSimplifieesService", () => {
         `("returns $seedProperty singleSeed as it is", async ({ seedProperty, value }) => {
             const expected = { [seedProperty]: value };
             // @ts-expect-error -- test private method
-            const actual = await demarchesSimplifieesService.findIdByLabel(
+            const actual = await demarchesSimplifieesService.generateSchemaInstruction(
                 // @ts-expect-error -- test private method
                 { [seedProperty]: value, to: "fieldName" },
                 EXAMPLE,
@@ -592,20 +592,23 @@ describe("DemarchesSimplifieesService", () => {
 
         it("makes prompt if property 'valueToPrompt'", async () => {
             // @ts-expect-error -- test private method
-            await demarchesSimplifieesService.findIdByLabel({ valueToPrompt: true, to: "fieldName" }, EXAMPLE);
+            await demarchesSimplifieesService.generateSchemaInstruction(
+                { valueToPrompt: true, to: "fieldName" },
+                EXAMPLE,
+            );
             expect(input).toHaveBeenCalled();
         });
 
         it("makes prompt if property 'value'", async () => {
             // @ts-expect-error -- test private method
-            await demarchesSimplifieesService.findIdByLabel({ value: "default", to: "fieldName" }, EXAMPLE);
+            await demarchesSimplifieesService.generateSchemaInstruction({ value: "default", to: "fieldName" }, EXAMPLE);
             expect(input).toHaveBeenCalled();
         });
 
         it("return 'value' singleShema from prompt if property 'valueToPrompt'", async () => {
             const expected = { value: USER_INPUT };
             // @ts-expect-error -- test private method
-            const actual = await demarchesSimplifieesService.findIdByLabel(
+            const actual = await demarchesSimplifieesService.generateSchemaInstruction(
                 { valueToPrompt: true, to: "fieldName" },
                 EXAMPLE,
             );
@@ -615,7 +618,7 @@ describe("DemarchesSimplifieesService", () => {
         it("return 'value' singleShema from prompt if property 'value'", async () => {
             const expected = { value: USER_INPUT };
             // @ts-expect-error -- test private method
-            const actual = await demarchesSimplifieesService.findIdByLabel(
+            const actual = await demarchesSimplifieesService.generateSchemaInstruction(
                 { value: "default", to: "fieldName" },
                 EXAMPLE,
             );
@@ -626,7 +629,7 @@ describe("DemarchesSimplifieesService", () => {
             jest.mocked(input).mockResolvedValueOnce("");
             const expected = { value: "default" };
             // @ts-expect-error -- test private method
-            const actual = await demarchesSimplifieesService.findIdByLabel(
+            const actual = await demarchesSimplifieesService.generateSchemaInstruction(
                 { value: "default", to: "fieldName" },
                 EXAMPLE,
             );
@@ -635,7 +638,7 @@ describe("DemarchesSimplifieesService", () => {
 
         it("finds field from 'possibleLabels' in annotations", async () => {
             // @ts-expect-error -- test private method
-            const actual = await demarchesSimplifieesService.findIdByLabel(
+            const actual = await demarchesSimplifieesService.generateSchemaInstruction(
                 {
                     possibleLabels: ["labelA1", "labelA2"],
                     to: "fieldName",
@@ -648,7 +651,7 @@ describe("DemarchesSimplifieesService", () => {
 
         it("finds field from 'possibleLabels' in champs", async () => {
             // @ts-expect-error -- test private method
-            const actual = await demarchesSimplifieesService.findIdByLabel(
+            const actual = await demarchesSimplifieesService.generateSchemaInstruction(
                 {
                     possibleLabels: ["labelC1", "labelC2"],
                     to: "fieldName",
