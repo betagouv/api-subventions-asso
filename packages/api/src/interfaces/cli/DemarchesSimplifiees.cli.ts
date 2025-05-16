@@ -4,6 +4,7 @@ import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../@types";
 import demarchesSimplifieesService from "../../modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
 import DemarchesSimplifieesSchemaEntity from "../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesSchemaEntity";
+import { DemarchesSimplifieesSchemaSeed } from "../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesSchemaSeedEntity";
 
 @StaticImplements<CliStaticInterface>()
 export default class DemarchesSimplifieesCli {
@@ -20,6 +21,22 @@ export default class DemarchesSimplifieesCli {
         const jsonSchema = fs.readFileSync(schemaJsonPath).toString();
 
         const schema = JSON.parse(jsonSchema) as DemarchesSimplifieesSchemaEntity;
+        await demarchesSimplifieesService.addSchema(schema);
+    }
+
+    async generateSchema(schemaModelJsonPath: string, demarcheIdStr: number) {
+        const demarcheId = Number(demarcheIdStr);
+        if (!fs.existsSync(schemaModelJsonPath))
+            throw new Error("The schema json file are not found on path: " + schemaModelJsonPath);
+
+        const jsonSchema = fs.readFileSync(schemaModelJsonPath).toString();
+        const schemaSeed = JSON.parse(jsonSchema) as DemarchesSimplifieesSchemaSeed;
+        const schema = {
+            schema: await demarchesSimplifieesService.buildSchema(schemaSeed.schema, demarcheId),
+            commonSchema: await demarchesSimplifieesService.buildSchema(schemaSeed.commonSchema, demarcheId),
+            demarcheId,
+        };
+
         await demarchesSimplifieesService.addSchema(schema);
     }
 }

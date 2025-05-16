@@ -1,6 +1,10 @@
+import { DemarchesSimplifieesSingleSchemaSeed } from "./entities/DemarchesSimplifieesSchemaSeedEntity";
+
 jest.mock("../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port");
 jest.mock("../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port");
 jest.mock("./adapters/DemarchesSimplifieesEntityAdapter");
+jest.mock("./adapters/DemarchesSimplifieesDtoAdapter");
+jest.mock("@inquirer/prompts");
 
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
@@ -20,6 +24,10 @@ import lodash from "lodash";
 import Siren from "../../../valueObjects/Siren";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
+import { DemarchesSimplifieesSuccessDto } from "./dto/DemarchesSimplifieesDto";
+import DemarchesSimplifieesDataEntity from "./entities/DemarchesSimplifieesDataEntity";
+import { input } from "@inquirer/prompts";
+
 jest.mock("lodash");
 
 describe("DemarchesSimplifieesService", () => {
@@ -495,6 +503,128 @@ describe("DemarchesSimplifieesService", () => {
             const expected = COMMON;
             // @ts-expect-error mock
             const actual = demarchesSimplifieesService.rawToCommon(RAW);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("buildSchema", () => {
+        let sendQuerySpy: jest.SpyInstance;
+        let findIdByLabelSpy: jest.SpyInstance;
+        const SCHEMA_SEED = [{ to: 1 }, { to: 2 }] as unknown as DemarchesSimplifieesSingleSchemaSeed[];
+        const FORM_ID = 12345;
+        const QUERY_RESULT = "QUERY" as unknown as DemarchesSimplifieesSuccessDto;
+        const EXAMPLE = "EXAMPLE" as unknown as DemarchesSimplifieesDataEntity;
+
+        beforeAll(() => {
+            sendQuerySpy = jest.spyOn(demarchesSimplifieesService, "sendQuery").mockResolvedValue(QUERY_RESULT);
+            findIdByLabelSpy = jest
+                // @ts-expect-error -- spy private method
+                .spyOn(demarchesSimplifieesService, "findIdByLabel")
+                // @ts-expect-error -- mock private method
+                .mockImplementation((c: DemarchesSimplifieesSingleSchemaSeed) => Promise.resolve({ from: c.to }));
+        });
+        jest.mocked(DemarchesSimplifieesDtoAdapter.toEntities).mockReturnValue([EXAMPLE]);
+
+        afterAll(() => {
+            sendQuerySpy.mockRestore();
+            findIdByLabelSpy.mockRestore();
+            jest.mocked(DemarchesSimplifieesDtoAdapter.toEntities).mockRestore();
+        });
+
+        it("sends query", async () => {
+            await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, FORM_ID);
+            expect(sendQuerySpy).toHaveBeenCalledWith(GetDossiersByDemarcheId, { demarcheNumber: FORM_ID });
+        });
+        it("adapts entities (to get example)", async () => {
+            await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, FORM_ID);
+            expect(DemarchesSimplifieesDtoAdapter.toEntities).toHaveBeenCalledWith(QUERY_RESULT, FORM_ID);
+        });
+        it("finds id fo each field", async () => {
+            await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, FORM_ID);
+            expect(findIdByLabelSpy).toHaveBeenCalledTimes(2);
+        });
+        it("should returns aggregated results by field", async () => {
+            const actual = await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, FORM_ID);
+            expect(actual).toMatchSnapshot();
+        });
+    });
+
+    describe("findIdByLabel", () => {
+        const EXAMPLE = {
+            demande: {
+                champs: {
+                    idC3: { label: "labelC3", value: "don't care" },
+                    idC1: { label: "labelC1", value: "don't care" },
+                },
+                annotations: {
+                    idA3: { label: "labelA3", value: "don't care" },
+                    idA2: { label: "labelA2", value: "don't care" },
+                },
+            },
+        } as unknown as DemarchesSimplifieesDataEntity;
+        const USER_INPUT = "userInput";
+
+        beforeAll(() => {
+            jest.mocked(input).mockResolvedValue(USER_INPUT);
+        });
+        afterAll(() => {
+            jest.mocked(input).mockRestore();
+        });
+
+        it.each`
+            seedProperty | value
+            ${"from"}    | ${"where to get value"}
+            ${"value"}   | ${"value to copy"}
+        `("returns $seedProperty singleSeed as it is", async ({ seedProperty, value }) => {
+            const expected = { [seedProperty]: value };
+            // @ts-expect-error -- test private method
+            const actual = await demarchesSimplifieesService.findIdByLabel(
+                // @ts-expect-error -- test private method
+                { [seedProperty]: value, to: "fieldName" },
+                EXAMPLE,
+            );
+            expect(actual).toEqual(expected);
+        });
+
+        it("makes prompt if property 'valueToPrompt", async () => {
+            // @ts-expect-error -- test private method
+            await demarchesSimplifieesService.findIdByLabel({ valueToPrompt: true, to: "fieldName" }, EXAMPLE);
+            expect(input).toHaveBeenCalled();
+        });
+
+        it("return 'value' singleShema from prompt if property 'valueToPrompt", async () => {
+            const expected = { value: USER_INPUT };
+            // @ts-expect-error -- test private method
+            const actual = await demarchesSimplifieesService.findIdByLabel(
+                { valueToPrompt: true, to: "fieldName" },
+                EXAMPLE,
+            );
+            expect(actual).toEqual(expected);
+        });
+
+        it("finds field from 'possibleLabels' in annotations", async () => {
+            // @ts-expect-error -- test private method
+            const actual = await demarchesSimplifieesService.findIdByLabel(
+                {
+                    possibleLabels: ["labelA1", "labelA2"],
+                    to: "fieldName",
+                },
+                EXAMPLE,
+            );
+            const expected = { from: "demande.annotations.idA2.value" };
+            expect(actual).toEqual(expected);
+        });
+
+        it("finds field from 'possibleLabels' in champs", async () => {
+            // @ts-expect-error -- test private method
+            const actual = await demarchesSimplifieesService.findIdByLabel(
+                {
+                    possibleLabels: ["labelC1", "labelC2"],
+                    to: "fieldName",
+                },
+                EXAMPLE,
+            );
+            const expected = { from: "demande.champs.idC1.value" };
             expect(actual).toEqual(expected);
         });
     });

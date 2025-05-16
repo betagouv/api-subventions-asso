@@ -16,10 +16,14 @@ import demarchesSimplifieesSchemaPort from "../../../dataProviders/db/providers/
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import { DemarchesSimplifieesDto } from "./dto/DemarchesSimplifieesDto";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
-import DemarchesSimplifieesSchemaEntity from "./entities/DemarchesSimplifieesSchemaEntity";
+import DemarchesSimplifieesSchemaEntity, {
+    DemarchesSimplifieesSingleSchema,
+} from "./entities/DemarchesSimplifieesSchemaEntity";
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
 import { DemarchesSimplifieesRawData } from "./@types/DemarchesSimplifieesRawGrant";
 import DemarchesSimplifieesDataEntity from "./entities/DemarchesSimplifieesDataEntity";
+import { DemarchesSimplifieesSingleSchemaSeed } from "./entities/DemarchesSimplifieesSchemaSeedEntity";
+import { input } from "@inquirer/prompts";
 
 export class DemarchesSimplifieesService
     extends ProviderCore
@@ -216,6 +220,40 @@ export class DemarchesSimplifieesService
     rawToCommon(raw: RawGrant) {
         // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
         return DemarchesSimplifieesEntityAdapter.toCommon(raw.data.grant, raw.data.schema);
+    }
+
+    async buildSchema(schemaModel: DemarchesSimplifieesSingleSchemaSeed[], formId: number) {
+        const builtSchema: DemarchesSimplifieesSingleSchema[] = [];
+        const queryResult = await this.sendQuery(GetDossiersByDemarcheId, { demarcheNumber: formId });
+        const exampleData = DemarchesSimplifieesDtoAdapter.toEntities(queryResult, formId)?.[0];
+
+        for (const champ of schemaModel) {
+            const singleSchemaPart = await this.findIdByLabel(champ, exampleData);
+            if (!singleSchemaPart) continue;
+            builtSchema.push({ ...singleSchemaPart, to: champ.to });
+        }
+        return builtSchema;
+    }
+
+    private async findIdByLabel(
+        champ: DemarchesSimplifieesSingleSchemaSeed,
+        exampleDemarche: DemarchesSimplifieesDataEntity,
+    ): Promise<{ value: string } | { from: string } | undefined> {
+        if ("from" in champ) return { from: champ.from };
+        if ("value" in champ) return { value: champ.value };
+        if ("valueToPrompt" in champ) {
+            const inputValue = await input({ message: `Entrer une valeur figée pour le champ ${champ.to}` });
+            if (inputValue) return { value: inputValue };
+            return;
+        }
+
+        for (const [id, field] of Object.entries(exampleDemarche.demande.annotations))
+            if (champ.possibleLabels.includes(field.label)) return { from: `demande.annotations.${id}.value` };
+        for (const [id, field] of Object.entries(exampleDemarche.demande.champs))
+            if (champ.possibleLabels.includes(field.label)) return { from: `demande.champs.${id}.value` };
+
+        console.log(`no id found for target field ${champ.to}`);
+        return;
     }
 }
 
