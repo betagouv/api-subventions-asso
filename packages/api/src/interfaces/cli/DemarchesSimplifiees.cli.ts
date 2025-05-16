@@ -24,7 +24,7 @@ export default class DemarchesSimplifieesCli {
         await demarchesSimplifieesService.addSchema(schema);
     }
 
-    async generateSchema(schemaModelJsonPath: string, demarcheIdStr: number) {
+    async generateSchema(schemaModelJsonPath: string, demarcheIdStr: number, testDev = false) {
         const demarcheId = Number(demarcheIdStr);
         if (!fs.existsSync(schemaModelJsonPath))
             throw new Error("The schema json file are not found on path: " + schemaModelJsonPath);
@@ -33,6 +33,16 @@ export default class DemarchesSimplifieesCli {
         const schemaSeed = JSON.parse(jsonSchema) as DemarchesSimplifieesSchemaSeed;
         const schema = await demarchesSimplifieesService.buildFullSchema(schemaSeed, demarcheId);
 
-        await demarchesSimplifieesService.addSchema(schema);
+        if (testDev)
+            fs.writeFileSync(
+                // "/home/alice/telescoop/api-subventions-asso/perso/currentSchema.json"
+                "../../../currentSchema.json",
+                JSON.stringify(schema),
+                {
+                    flag: "w",
+                    encoding: "utf-8",
+                },
+            );
+        else await demarchesSimplifieesService.addSchema(schema);
     }
 }
