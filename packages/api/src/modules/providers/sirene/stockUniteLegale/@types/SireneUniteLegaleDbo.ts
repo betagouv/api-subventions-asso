@@ -1,4 +1,4 @@
-import { WithId } from "mongodb";
+import { OptionalId } from "mongodb";
 import { SireneStockUniteLegaleEntity } from "../../../../../entities/SireneStockUniteLegaleEntity";
 
-export type SireneUniteLegaleDbo = WithId<SireneStockUniteLegaleEntity>;
+export type SireneUniteLegaleDbo = Omit<OptionalId<SireneStockUniteLegaleEntity>, "siren"> & { siren: string };

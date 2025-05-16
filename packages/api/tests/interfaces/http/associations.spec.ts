@@ -18,7 +18,7 @@ import {
     DATA_ENTITIES as DS_DATA_ENTITIES,
     SCHEMAS as DS_SCHEMAS,
 } from "../../dataProviders/db/__fixtures__/demarchesSimplifiees.fixtures";
-import demarchesSimplifieesMapperPort from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesMapper.port";
+import demarchesSimplifieesSchemaPort from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port";
 import demarchesSimplifieesService from "../../../src/modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
 
 import miscScdlGrantPort from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.port";
@@ -27,8 +27,6 @@ import dauphinGisproPort from "../../../src/dataProviders/db/providers/dauphin/d
 import { DAUPHIN_GISPRO_DBOS } from "../../dataProviders/db/__fixtures__/dauphinGispro.fixtures";
 import rnaSirenService from "../../../src/modules/rna-siren/rnaSiren.service";
 import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
-import chorusLinePort from "../../../src/dataProviders/db/providers/chorus/chorus.line.port";
-import { ChorusFixtures } from "../../dataProviders/db/__fixtures__/chorus.fixtures";
 import fonjepPaymentPort from "../../../src/dataProviders/db/providers/fonjep/fonjep.payment.port.old";
 import Rna from "../../../src/valueObjects/Rna";
 import Siret from "../../../src/valueObjects/Siret";
@@ -37,6 +35,9 @@ import RnaSirenEntity from "../../../src/entities/RnaSirenEntity";
 import Siren from "../../../src/valueObjects/Siren";
 import statsAssociationsVisitPort from "../../../src/dataProviders/db/stats/statsAssociationsVisit.port";
 import { App } from "supertest/types";
+import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFlat.port";
+import { PAYMENT_FLAT_DBO } from "../../../src/dataProviders/db/paymentFlat/__fixtures__/paymentFlatDbo.fixture";
+import PaymentFlatAdapter from "../../../src/modules/paymentFlat/paymentFlatAdapter";
 
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
 
@@ -51,15 +52,15 @@ const insertData = async () => {
     );
 
     // PAYMENTS
-    await chorusLinePort.upsertMany(ChorusFixtures);
     await fonjepPaymentPort.create(FonjepPaymentFixture);
+    await paymentFlatPort.insertMany([PaymentFlatAdapter.dboToEntity(PAYMENT_FLAT_DBO)]);
 
     // APPLICATIONS
     // @ts-expect-error: DBO not fully mocked
     await dauphinGisproPort.upsert(DAUPHIN_GISPRO_DBOS[0]);
     await osirisRequestPort.add(OsirisRequestEntityFixture);
     await fonjepSubventionPort.create(FonjepSubventionFixture);
-    await demarchesSimplifieesMapperPort.upsert(DS_SCHEMAS[0]);
+    await demarchesSimplifieesSchemaPort.upsert(DS_SCHEMAS[0]);
     await demarchesSimplifieesDataPort.upsert(DS_DATA_ENTITIES[0]);
     // jest integ setup insert producers on app launch and may be defined at this point
     //@ts-expect-error: only for test

@@ -184,7 +184,7 @@ export default class ChorusAdapter {
      *   To get a "full" PaymentFlatEntity in order to process persistance in database,
      *   ensure to aggregate all PaymentFlatEntity by uniqueId and merge the amount
      */
-    public static toNotAggregatedChorusPaymentFlatEntity(
+    public static toNotAggregatedPaymentFlatEntity(
         chorusDocument: ChorusLineEntity,
         programs: Record<string, StateBudgetProgramEntity>,
         ministries: Record<string, MinistryEntity>,

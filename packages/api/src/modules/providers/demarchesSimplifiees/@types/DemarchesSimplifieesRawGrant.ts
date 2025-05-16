@@ -1,6 +1,6 @@
 import { RawGrant } from "../../../grant/@types/rawGrant";
 import DemarchesSimplifieesDataEntity from "../entities/DemarchesSimplifieesDataEntity";
-import DemarchesSimplifieesMapperEntity from "../entities/DemarchesSimplifieesMapperEntity";
+import DemarchesSimplifieesSchemaEntity from "../entities/DemarchesSimplifieesSchemaEntity";
 
 export interface DemarchesSimplifieesRawGrant extends RawGrant {
     data: DemarchesSimplifieesRawData;
@@ -8,5 +8,5 @@ export interface DemarchesSimplifieesRawGrant extends RawGrant {
 
 export type DemarchesSimplifieesRawData = {
     entity: DemarchesSimplifieesDataEntity;
-    schema: DemarchesSimplifieesMapperEntity;
+    schema: DemarchesSimplifieesSchemaEntity;
 };
