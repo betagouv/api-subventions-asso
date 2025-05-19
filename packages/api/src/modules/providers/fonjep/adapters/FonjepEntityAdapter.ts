@@ -138,6 +138,7 @@ export default class FonjepEntityAdapter {
     // this keeps the same structure as other providers payment flat uniqueId and add N/A for the missing fields
     private static buildPaymentFlatUniqueId(partialPaymentFlat: Omit<FonjepPaymentFlatEntity, "uniqueId">) {
         const keys = [
+            "fonjep",
             partialPaymentFlat.idVersement,
             partialPaymentFlat.programNumber,
             GenericAdapter.NOT_APPLICABLE_VALUE,

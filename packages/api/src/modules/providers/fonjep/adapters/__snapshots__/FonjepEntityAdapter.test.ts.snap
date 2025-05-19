@@ -2,7 +2,7 @@
 
 exports[`FonjepEntityAdapter buildPaymentFlatPaymentId return idVersement 1`] = `"Code-2022-04-15-2022-10000000000001"`;
 
-exports[`FonjepEntityAdapter buildPaymentFlatUniqueId return idVersement 1`] = `"CODE_POSTE-OPERATION_DATE-EXERCISE-IDENTIFIER-163-N/A-N/A-2023-07-12-N/A-N/A"`;
+exports[`FonjepEntityAdapter buildPaymentFlatUniqueId return idVersement 1`] = `"fonjep-CODE_POSTE-OPERATION_DATE-EXERCISE-IDENTIFIER-163-N/A-N/A-2023-07-12-N/A-N/A"`;
 
 exports[`FonjepEntityAdapter toFonjepPaymentFlat returns FonjepPaymentFlat entity 1`] = `
 {
