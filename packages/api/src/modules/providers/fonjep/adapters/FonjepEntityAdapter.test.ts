@@ -17,9 +17,15 @@ import dataBretagneService from "../../dataBretagne/dataBretagne.service";
 import Siret from "../../../../valueObjects/Siret";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
 jest.mock("../../dataBretagne/dataBretagne.service");
+import { removeWhitespace } from "../../../../shared/helpers/StringHelper";
+jest.mock("../../../../shared/helpers/StringHelper");
 
 describe("FonjepEntityAdapter", () => {
     describe("toFonjepTierEntity()", () => {
+        beforeAll(() => {
+            jest.mocked(removeWhitespace).mockImplementation(str => str);
+        });
+
         it("should map FonjepTiersDto to FonjepTiersEntity correctly", () => {
             const tier = TIER_DTOS[0];
             const expected = {
@@ -36,6 +42,18 @@ describe("FonjepEntityAdapter", () => {
 
             const actual = FonjepEntityAdapter.toFonjepTierEntity(tier);
             expect(actual).toEqual(expected);
+        });
+
+        it("call removeWhitespace if siretOrRidet is defined", () => {
+            const tier = TIER_DTOS[0];
+            FonjepEntityAdapter.toFonjepTierEntity(tier);
+            expect(removeWhitespace).toHaveBeenCalledWith(tier.SiretOuRidet);
+        });
+
+        it("should not call removeWhitespace if siretOrRidet is not defined", () => {
+            const tier = { ...TIER_DTOS[0], SiretOuRidet: null };
+            FonjepEntityAdapter.toFonjepTierEntity(tier);
+            expect(removeWhitespace).not.toHaveBeenCalled();
         });
     });
 

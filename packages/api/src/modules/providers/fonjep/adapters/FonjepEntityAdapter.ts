@@ -17,6 +17,7 @@ import { FonjepPaymentFlatEntity } from "../entities/FonjepPaymentFlatEntity";
 import { DataBretagneRecords } from "../../dataBretagne/@types/DataBretagne";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
 import { getShortISODate } from "../../../../shared/helpers/DateHelper";
+import { removeWhitespace } from "../../../../shared/helpers/StringHelper";
 
 /**
  * Some of the nullIfEmpty calls have not been verified and were added base on every FonjepEntity type
@@ -63,7 +64,7 @@ export default class FonjepEntityAdapter {
             estAssociation: tier["EstAssociation"],
             estCoFinanceurPostes: tier["EstCoFinanceurPostes"],
             estFinanceurPostes: tier["EstFinanceurPostes"],
-            siretOuRidet: tier["SiretOuRidet"],
+            siretOuRidet: tier["SiretOuRidet"] ? removeWhitespace(tier["SiretOuRidet"]) : null,
             codePostal: tier["CodePostal"],
             ville: tier["Ville"],
             contactEmail: tier["ContactEmail"],
