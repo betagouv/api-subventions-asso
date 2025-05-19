@@ -77,10 +77,8 @@ export default class ScdlCli {
         let duplicates: MiscScdlGrantEntity[] = [];
 
         try {
-            console.log("creates many grants...", scdlService.createManyGrants);
             await scdlService.createManyGrants(entities, producerSlug);
         } catch (e) {
-            console.log("error....", e);
             if (!(e instanceof DuplicateIndexError)) throw e;
             duplicates = (e as DuplicateIndexError<MiscScdlGrantEntity[]>).duplicates;
         }
