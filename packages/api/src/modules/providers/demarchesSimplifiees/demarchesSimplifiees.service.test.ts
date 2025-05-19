@@ -626,14 +626,17 @@ describe("DemarchesSimplifieesService", () => {
             await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, FORM_ID);
             expect(sendQuerySpy).toHaveBeenCalledWith(GetDossiersByDemarcheId, { demarcheNumber: FORM_ID });
         });
+
         it("adapts entities (to get example)", async () => {
             await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, FORM_ID);
             expect(DemarchesSimplifieesDtoAdapter.toEntities).toHaveBeenCalledWith(QUERY_RESULT, FORM_ID);
         });
+
         it("finds id fo each field", async () => {
             await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, FORM_ID);
             expect(generateSchemaInstructionSpy).toHaveBeenCalledTimes(2);
         });
+
         it("should returns aggregated results by field", async () => {
             const actual = await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, FORM_ID);
             expect(actual).toMatchSnapshot();
@@ -662,15 +665,11 @@ describe("DemarchesSimplifieesService", () => {
             jest.mocked(input).mockRestore();
         });
 
-        it.each`
-            seedProperty | value
-            ${"from"}    | ${"where to get value"}
-        `("returns $seedProperty singleSeed as it is", async ({ seedProperty, value }) => {
-            const expected = { [seedProperty]: value };
+        it("returns from singleSeed as it is", async () => {
+            const expected = { from: "where to get value" };
             // @ts-expect-error -- test private method
             const actual = await demarchesSimplifieesService.generateSchemaInstruction(
-                // @ts-expect-error -- test private method
-                { [seedProperty]: value, to: "fieldName" },
+                { from: "where to get value", to: "fieldName" },
                 EXAMPLE,
             );
             expect(actual).toEqual(expected);

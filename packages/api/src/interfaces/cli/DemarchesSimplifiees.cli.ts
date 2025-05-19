@@ -34,15 +34,10 @@ export default class DemarchesSimplifieesCli {
         const schema = await demarchesSimplifieesService.buildFullSchema(schemaSeed, demarcheId);
 
         if (testDev)
-            fs.writeFileSync(
-                // "/home/alice/telescoop/api-subventions-asso/perso/currentSchema.json"
-                "../../../currentSchema.json",
-                JSON.stringify(schema),
-                {
-                    flag: "w",
-                    encoding: "utf-8",
-                },
-            );
+            fs.writeFileSync("../../../schemaTest.json", JSON.stringify(schema), {
+                flag: "w",
+                encoding: "utf-8",
+            });
         else await demarchesSimplifieesService.addSchema(schema);
     }
 }

@@ -249,6 +249,8 @@ export class DemarchesSimplifieesService
         const exampleData = DemarchesSimplifieesDtoAdapter.toEntities(queryResult, formId)?.[0];
 
         for (const champ of schemaModel) {
+            if (!("to" in champ))
+                throw new Error(`"invalid schemaSeed. 'to' missing in seed item ${JSON.stringify(champ)}`);
             const singleSchemaPart = await this.generateSchemaInstruction(champ, exampleData);
             if (!singleSchemaPart) continue;
             builtSchema.push({ ...singleSchemaPart, to: champ.to });
@@ -274,7 +276,7 @@ export class DemarchesSimplifieesService
                 default: "value" in champ ? String(champ.value) : undefined,
             });
             if (inputValue) return { value: inputValue };
-            if ("value" in champ && champ.value) return { value: champ.value };
+            if ("value" in champ) return { value: champ.value };
         }
 
         console.log(`no instruction found for target field ${champ.to}`);
