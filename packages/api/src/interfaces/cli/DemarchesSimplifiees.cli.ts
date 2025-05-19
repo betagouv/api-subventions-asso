@@ -27,7 +27,7 @@ export default class DemarchesSimplifieesCli {
     async generateSchema(schemaModelJsonPath: string, demarcheIdStr: number, testDev = false) {
         const demarcheId = Number(demarcheIdStr);
         if (!fs.existsSync(schemaModelJsonPath))
-            throw new Error("The schema json file are not found on path: " + schemaModelJsonPath);
+            throw new Error("The schema JSON file is not found on path: " + schemaModelJsonPath);
 
         const jsonSchema = fs.readFileSync(schemaModelJsonPath).toString();
         const schemaSeed = JSON.parse(jsonSchema) as DemarchesSimplifieesSchemaSeed;
