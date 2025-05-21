@@ -64,6 +64,23 @@ export const POSTE_10006_ENTITY: FonjepPosteEntity = {
     doublementUniteCompte: "Non",
 };
 
+export const POSTE_WITHOUT_ASSOCIATION = {
+    code: "NA00004",
+    dispositifId: 1,
+    financeurPrincipalCode: "10006",
+    financeurAttributeurCode: "FinanceurAttributeurCode",
+    associationBeneficiaireCode: "NO_ASSOCIATION_CODE",
+    pstStatutPosteLibelle: "PstStatutPosteLibelle",
+    pstRaisonStatutLibelle: "PstRaisonStatutLibelle",
+    associationImplantationCode: "AssociationImplantationCode",
+    annee: 2022,
+    montantSubvention: 1000,
+    dateFinTriennalite: new Date("2023-12-31"),
+    pstTypePosteCode: "PstTypePosteCode",
+    pleinTemps: "Oui",
+    doublementUniteCompte: "Non",
+};
+
 export const POSTE_ENTITY_WITH_NULLS: FonjepPosteEntity = {
     code: "ZZ9980J",
     dispositifId: null,
@@ -92,6 +109,24 @@ export const VERSEMENT_ENTITY: PayedFonjepVersementEntity = {
 
 export const VERSEMENT_10006_ENTITY: PayedFonjepVersementEntity = {
     posteCode: POSTE_10006_ENTITY.code,
+    periodeDebut: new Date("2022-04-12"),
+    periodeFin: new Date("2022-12-14"),
+    dateVersement: new Date("2022-05-15"),
+    montantAPayer: 3000,
+    montantPaye: 3000,
+};
+
+export const VERSEMENT_WITHOUT_POSITION = {
+    posteCode: "NO_POSITION_CODE",
+    periodeDebut: new Date("2022-04-12"),
+    periodeFin: new Date("2022-12-14"),
+    dateVersement: new Date("2022-05-15"),
+    montantAPayer: 3000,
+    montantPaye: 3000,
+};
+
+export const VERSEMENT_WITHOUT_ASSOCIATION = {
+    posteCode: POSTE_WITHOUT_ASSOCIATION.code,
     periodeDebut: new Date("2022-04-12"),
     periodeFin: new Date("2022-12-14"),
     dateVersement: new Date("2022-05-15"),

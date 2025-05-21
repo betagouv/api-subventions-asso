@@ -3,12 +3,15 @@ import {
     POSTE_10006_ENTITY,
     POSTE_ENTITIES,
     POSTE_ENTITY,
+    POSTE_WITHOUT_ASSOCIATION,
     TIERS_ENTITIES,
     TIERS_ENTITY,
     TYPE_POSTE_ENTITY,
     VERSEMENT_10006_ENTITY,
     VERSEMENT_ENTITIES,
     VERSEMENT_ENTITY,
+    VERSEMENT_WITHOUT_ASSOCIATION,
+    VERSEMENT_WITHOUT_POSITION,
 } from "./__fixtures__/fonjepEntities";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
 jest.mock("./adapters/FonjepEntityAdapter");
@@ -324,21 +327,44 @@ describe("FonjepService", () => {
             });
         });
 
-        it("excluse payments with financeurPrincipalCode 10006", async () => {
+        it("exclude payment if no position found", async () => {
+            const PAYMENTS = [VERSEMENT_ENTITY, VERSEMENT_WITHOUT_POSITION];
+            await fonjepService.createPaymentFlatEntitiesFromCollections({
+                thirdParties: TIERS_ENTITIES,
+                positions: POSTE_ENTITIES,
+                payments: [VERSEMENT_ENTITY, VERSEMENT_WITHOUT_POSITION],
+            });
+
+            expect(mockUpsertMay.mock.calls[0][0].length).toEqual(PAYMENTS.length - 1);
+        });
+
+        it("exclude payment if no thirdParty found", async () => {
+            const PAYMENTS = [VERSEMENT_ENTITY, VERSEMENT_WITHOUT_ASSOCIATION];
+            await fonjepService.createPaymentFlatEntitiesFromCollections({
+                thirdParties: TIERS_ENTITIES,
+                positions: [...POSTE_ENTITIES, POSTE_WITHOUT_ASSOCIATION],
+                payments: PAYMENTS,
+            });
+
+            expect(mockUpsertMay.mock.calls[0][0].length).toEqual(PAYMENTS.length - 1);
+        });
+
+        it("exclude payments with financeurPrincipalCode 10006", async () => {
+            const PAYMENTS = [VERSEMENT_ENTITY, VERSEMENT_10006_ENTITY];
             await fonjepService.createPaymentFlatEntitiesFromCollections({
                 thirdParties: TIERS_ENTITIES,
                 positions: [...POSTE_ENTITIES, POSTE_10006_ENTITY],
-                payments: [...VERSEMENT_ENTITIES, VERSEMENT_10006_ENTITY],
+                payments: PAYMENTS,
             });
 
-            expect(mockUpsertMay.mock.calls[0][0].length).toEqual(VERSEMENT_ENTITIES.length);
+            expect(mockUpsertMay.mock.calls[0][0].length).toEqual(PAYMENTS.length - 1);
         });
 
         it("fetches data bretagne records", () => {
             fonjepService.createPaymentFlatEntitiesFromCollections({
                 thirdParties: TIERS_ENTITIES,
                 positions: POSTE_ENTITIES,
-                payments: VERSEMENT_ENTITIES,
+                payments: [VERSEMENT_ENTITY],
             });
 
             expect(mockGetAllDataRecords).toHaveBeenCalled();
@@ -348,51 +374,28 @@ describe("FonjepService", () => {
             await fonjepService.createPaymentFlatEntitiesFromCollections({
                 thirdParties: TIERS_ENTITIES,
                 positions: POSTE_ENTITIES,
-                payments: VERSEMENT_ENTITIES,
+                payments: [VERSEMENT_ENTITY],
             });
 
-            VERSEMENT_ENTITIES.forEach((entity, index) => {
-                expect(mockToFonjepPaymentFlat).toHaveBeenNthCalledWith(
-                    index + 1,
-                    {
-                        payment: entity,
-                        position: POSTE_ENTITIES[index], // matches entity.codePoste
-                        thirdParty: TIERS_ENTITIES[index], // matches entity.codePoste
-                    },
-                    DATA_BRETAGNE_RECORDS,
-                );
-            });
+            expect(mockToFonjepPaymentFlat).toHaveBeenCalledWith(
+                {
+                    payment: VERSEMENT_ENTITY,
+                    position: POSTE_ENTITIES[0], // matches entity.codePoste
+                    thirdParty: TIERS_ENTITIES[0], // matches entity.codePoste
+                },
+                DATA_BRETAGNE_RECORDS,
+            );
         });
 
         it("persist payments flat in database", async () => {
             await fonjepService.createPaymentFlatEntitiesFromCollections({
                 thirdParties: TIERS_ENTITIES,
                 positions: POSTE_ENTITIES,
-                payments: VERSEMENT_ENTITIES,
+                payments: [VERSEMENT_ENTITY],
             });
 
             // adapter has been mocked to return entity to simplify test
-            expect(mockUpsertMay).toHaveBeenCalledWith(VERSEMENT_ENTITIES.map(() => CHORUS_PAYMENT_FLAT_ENTITY));
-        });
-
-        it("filter valid payments", async () => {
-            await fonjepService.createPaymentFlatEntitiesFromCollections({
-                thirdParties: TIERS_ENTITIES,
-                positions: POSTE_ENTITIES,
-                payments: [
-                    ...VERSEMENT_ENTITIES,
-                    {
-                        posteCode: "Code_NO_MATCH",
-                        periodeDebut: new Date("2022-01-12"),
-                        periodeFin: new Date("2022-12-14"),
-                        dateVersement: new Date("2022-04-15"),
-                        montantAPayer: 1000,
-                        montantPaye: 1000,
-                    },
-                ],
-            });
-
-            expect(mockToFonjepPaymentFlat).toHaveBeenCalledTimes(VERSEMENT_ENTITIES.length);
+            expect(mockUpsertMay).toHaveBeenCalledWith([CHORUS_PAYMENT_FLAT_ENTITY]);
         });
     });
 });
