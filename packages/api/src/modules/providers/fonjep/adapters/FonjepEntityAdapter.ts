@@ -176,6 +176,7 @@ export default class FonjepEntityAdapter {
                 estabValueObjectId = new Ridet(estabId);
                 assoValueObjectId = estabValueObjectId.toRid();
             } else {
+                console.log(estabId);
                 throw new Error(
                     `Fonjep Tier with code ${position.code} has no siret or ridet and should not have been parsed`,
                 );
