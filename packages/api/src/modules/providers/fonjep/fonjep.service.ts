@@ -96,6 +96,10 @@ export class FonjepService extends ProviderCore {
 
         const fonjepFlatPayments = validPayments.reduce((acc, payment) => {
             const position = getPoste(payment.posteCode);
+
+            // Financer with code 10006 is not handled. See #3431
+            if (position?.financeurPrincipalCode === "10006") return acc;
+
             // cannot find thirdParty without associationBeneficiaireCode
             if (!position || !position.associationBeneficiaireCode) return acc;
 

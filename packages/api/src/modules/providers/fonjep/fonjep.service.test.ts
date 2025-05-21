@@ -1,10 +1,12 @@
 import {
     DISPOSITIF_ENTITY,
+    POSTE_10006_ENTITY,
     POSTE_ENTITIES,
     POSTE_ENTITY,
     TIERS_ENTITIES,
     TIERS_ENTITY,
     TYPE_POSTE_ENTITY,
+    VERSEMENT_10006_ENTITY,
     VERSEMENT_ENTITIES,
     VERSEMENT_ENTITY,
 } from "./__fixtures__/fonjepEntities";
@@ -322,6 +324,16 @@ describe("FonjepService", () => {
             });
         });
 
+        it("excluse payments with financeurPrincipalCode 10006", async () => {
+            await fonjepService.createPaymentFlatEntitiesFromCollections({
+                thirdParties: TIERS_ENTITIES,
+                positions: [...POSTE_ENTITIES, POSTE_10006_ENTITY],
+                payments: [...VERSEMENT_ENTITIES, VERSEMENT_10006_ENTITY],
+            });
+
+            expect(mockUpsertMay.mock.calls[0][0].length).toEqual(VERSEMENT_ENTITIES.length);
+        });
+
         it("fetches data bretagne records", () => {
             fonjepService.createPaymentFlatEntitiesFromCollections({
                 thirdParties: TIERS_ENTITIES,
@@ -344,8 +356,8 @@ describe("FonjepService", () => {
                     index + 1,
                     {
                         payment: entity,
-                        position: POSTE_ENTITIES[0], // matches entity.codePoste
-                        thirdParty: TIERS_ENTITIES[0], // matches entity.codePoste
+                        position: POSTE_ENTITIES[index], // matches entity.codePoste
+                        thirdParty: TIERS_ENTITIES[index], // matches entity.codePoste
                     },
                     DATA_BRETAGNE_RECORDS,
                 );
