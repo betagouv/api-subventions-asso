@@ -4,7 +4,7 @@ import { ApplicationStatus, CommonApplicationDto, DemandeSubvention, ProviderVal
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import demarchesSimplifieesService from "../demarchesSimplifiees.service";
 import DemarchesSimplifieesDataEntity from "../entities/DemarchesSimplifieesDataEntity";
-import DemarchesSimplifieesSchemaEntity from "../entities/DemarchesSimplifieesSchemaEntity";
+import DemarchesSimplifieesSchema from "../entities/DemarchesSimplifieesSchema";
 import { isValidDate } from "../../../../shared/helpers/DateHelper";
 import { stringIsFloat } from "../../../../shared/helpers/StringHelper";
 import { DefaultObject } from "../../../../@types";
@@ -23,7 +23,7 @@ export class DemarchesSimplifieesEntityAdapter {
 
     private static mapSchema<T>(
         entity: DemarchesSimplifieesDataEntity,
-        schema: DemarchesSimplifieesSchemaEntity,
+        schema: DemarchesSimplifieesSchema,
         schemaId: string,
     ): T {
         const subvention = { siret: entity.siret };
@@ -62,10 +62,7 @@ export class DemarchesSimplifieesEntityAdapter {
         return res;
     }
 
-    static toSubvention(
-        entity: DemarchesSimplifieesDataEntity,
-        schema: DemarchesSimplifieesSchemaEntity,
-    ): DemandeSubvention {
+    static toSubvention(entity: DemarchesSimplifieesDataEntity, schema: DemarchesSimplifieesSchema): DemandeSubvention {
         const toPv = ProviderValueFactory.buildProviderValueAdapter(
             demarchesSimplifieesService.provider.name,
             new Date(entity.demande.dateDerniereModification),
@@ -89,7 +86,7 @@ export class DemarchesSimplifieesEntityAdapter {
 
     static toRawGrant(
         entity: DemarchesSimplifieesDataEntity,
-        schema: DemarchesSimplifieesSchemaEntity,
+        schema: DemarchesSimplifieesSchema,
     ): DemarchesSimplifieesRawGrant {
         const joinKey = demarchesSimplifieesService.getJoinKey({ entity, schema: schema });
 
@@ -101,10 +98,7 @@ export class DemarchesSimplifieesEntityAdapter {
         };
     }
 
-    static toCommon(
-        entity: DemarchesSimplifieesDataEntity,
-        schema: DemarchesSimplifieesSchemaEntity,
-    ): CommonApplicationDto {
+    static toCommon(entity: DemarchesSimplifieesDataEntity, schema: DemarchesSimplifieesSchema): CommonApplicationDto {
         const application: DefaultObject = DemarchesSimplifieesEntityAdapter.mapSchema(entity, schema, "commonSchema");
 
         if (!application.exercice && application.dateTransmitted)

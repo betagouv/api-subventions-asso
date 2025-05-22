@@ -16,10 +16,15 @@ import demarchesSimplifieesSchemaPort from "../../../dataProviders/db/providers/
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import { DemarchesSimplifieesDto } from "./dto/DemarchesSimplifieesDto";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
-import DemarchesSimplifieesSchemaEntity from "./entities/DemarchesSimplifieesSchemaEntity";
+import DemarchesSimplifieesSchema, { DemarchesSimplifieesSchemaLine } from "./entities/DemarchesSimplifieesSchema";
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
 import { DemarchesSimplifieesRawData } from "./@types/DemarchesSimplifieesRawGrant";
 import DemarchesSimplifieesDataEntity from "./entities/DemarchesSimplifieesDataEntity";
+import {
+    DemarchesSimplifieesSchemaSeed,
+    DemarchesSimplifieesSchemaSeedLine,
+} from "./entities/DemarchesSimplifieesSchemaSeed";
+import { input } from "@inquirer/prompts";
 import configurationsService from "../../configurations/configurations.service";
 
 export class DemarchesSimplifieesService
@@ -47,7 +52,7 @@ export class DemarchesSimplifieesService
                 acc[schema.demarcheId] = schema;
                 return acc;
             },
-            {} as Record<string, DemarchesSimplifieesSchemaEntity>,
+            {} as Record<string, DemarchesSimplifieesSchema>,
         );
     }
 
@@ -57,7 +62,7 @@ export class DemarchesSimplifieesService
 
     private async filterAndAdaptEntities<T>(
         entities: DemarchesSimplifieesDataEntity[],
-        adapter: (entity: DemarchesSimplifieesDataEntity, schema: DemarchesSimplifieesSchemaEntity) => T,
+        adapter: (entity: DemarchesSimplifieesDataEntity, schema: DemarchesSimplifieesSchema) => T,
     ) {
         const schemasByIds = await this.getSchemasByIds();
         const reduceToValidEntities = (acc, entity) => {
@@ -115,11 +120,6 @@ export class DemarchesSimplifieesService
         const MAX_BULK = 1000;
         do {
             result = await this.sendQuery(GetDossiersByDemarcheId, { demarcheNumber: formId, after: nextCursor });
-
-            if (result?.errors?.length)
-                throw new InternalServerError(result?.errors?.map(error => error.message).join(" - "));
-            if (!result?.data?.demarche)
-                throw new InternalServerError("empty Démarches Simplifiées result (not normal with graphQL)");
             if (result.data.demarche.state != "publiee") {
                 console.log(`demarche ${formId} a le statut '${result.data.demarche.state}', on passe`);
                 return;
@@ -141,8 +141,9 @@ export class DemarchesSimplifieesService
 
     async sendQuery(query: string, vars: DefaultObject) {
         if (!DEMARCHES_SIMPLIFIEES_TOKEN) throw new InternalServerError("DEMARCHES_SIMPLIFIEES_TOKEN is not defined");
+        let result: { data: DemarchesSimplifieesDto };
         try {
-            const result = await this.http.post<DemarchesSimplifieesDto>(
+            result = await this.http.post<DemarchesSimplifieesDto>(
                 "https://www.demarches-simplifiees.fr/api/v2/graphql",
                 {
                     query,
@@ -153,12 +154,17 @@ export class DemarchesSimplifieesService
                     keepAlive: true,
                 },
             );
-
-            return result.data;
         } catch (e) {
             console.error(e);
             throw e;
         }
+
+        if (result.data?.errors?.length)
+            throw new InternalServerError(result.data.errors?.map(error => error.message).join(" - "));
+        if (!result.data?.data?.demarche)
+            throw new InternalServerError("empty Démarches Simplifiées result (not normal with graphQL)");
+
+        return result.data;
     }
 
     private buildSearchHeader(token: string) {
@@ -173,7 +179,7 @@ export class DemarchesSimplifieesService
         };
     }
 
-    addSchema(schema: DemarchesSimplifieesSchemaEntity) {
+    addSchema(schema: DemarchesSimplifieesSchema) {
         return demarchesSimplifieesSchemaPort.upsert(schema);
     }
 
@@ -233,6 +239,56 @@ export class DemarchesSimplifieesService
     rawToCommon(raw: RawGrant) {
         // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
         return DemarchesSimplifieesEntityAdapter.toCommon(raw.data.grant, raw.data.schema);
+    }
+
+    async buildSchema(schemaModel: DemarchesSimplifieesSchemaSeedLine[], formId: number) {
+        const builtSchema: DemarchesSimplifieesSchemaLine[] = [];
+        const queryResult = await this.sendQuery(GetDossiersByDemarcheId, { demarcheNumber: formId });
+        const exampleData = DemarchesSimplifieesDtoAdapter.toEntities(queryResult, formId)?.[0];
+
+        for (const champ of schemaModel) {
+            if (!("to" in champ))
+                throw new Error(`"invalid schemaSeed. 'to' missing in seed item ${JSON.stringify(champ)}`);
+            const singleSchemaPart = await this.generateSchemaInstruction(champ, exampleData);
+            if (!singleSchemaPart) continue;
+            builtSchema.push({ ...singleSchemaPart, to: champ.to });
+        }
+        return builtSchema;
+    }
+
+    private async generateSchemaInstruction(
+        champ: DemarchesSimplifieesSchemaSeedLine,
+        exampleDemarche: DemarchesSimplifieesDataEntity,
+    ): Promise<{ value: string } | { from: string } | undefined> {
+        // TODO test when multiple stuff are noted
+        if ("from" in champ) return { from: champ.from };
+        if ("possibleLabels" in champ) {
+            for (const [id, field] of Object.entries(exampleDemarche.demande.annotations))
+                if (champ.possibleLabels.includes(field.label)) return { from: `demande.annotations.${id}.value` };
+            for (const [id, field] of Object.entries(exampleDemarche.demande.champs))
+                if (champ.possibleLabels.includes(field.label)) return { from: `demande.champs.${id}.value` };
+        }
+        if ("valueToPrompt" in champ || "value" in champ) {
+            const inputValue = await input({
+                message: `Entrer une valeur figée pour le champ ${champ.to}`,
+                default: "value" in champ ? String(champ.value) : undefined,
+            });
+            if (inputValue) return { value: inputValue };
+            if ("value" in champ) return { value: champ.value };
+        }
+
+        console.log(`no instruction found for target field ${champ.to}`);
+        if (champ.to === "exercice")
+            console.log("L'exercice peut- être déduit de la date de début de projet si celle-ci est mappée");
+        return;
+    }
+
+    async buildFullSchema(schemaSeed: DemarchesSimplifieesSchemaSeed, demarcheId: number) {
+        return {
+            schema: await demarchesSimplifieesService.buildSchema(schemaSeed.schema, demarcheId),
+            commonSchema: await demarchesSimplifieesService.buildSchema(schemaSeed.commonSchema, demarcheId),
+            demarcheId,
+        };
     }
 }
 

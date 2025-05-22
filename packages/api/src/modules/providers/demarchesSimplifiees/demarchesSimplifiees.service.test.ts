@@ -1,13 +1,20 @@
+import {
+    DemarchesSimplifieesSchemaSeed,
+    DemarchesSimplifieesSchemaSeedLine,
+} from "./entities/DemarchesSimplifieesSchemaSeed";
+
 jest.mock("../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port");
 jest.mock("../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port");
 jest.mock("./adapters/DemarchesSimplifieesEntityAdapter");
+jest.mock("./adapters/DemarchesSimplifieesDtoAdapter");
+jest.mock("@inquirer/prompts");
 jest.mock("../../configurations/configurations.service");
 
 import configurationsService from "../../configurations/configurations.service";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
 import demarchesSimplifieesService from "./demarchesSimplifiees.service";
-import DemarchesSimplifieesSchemaEntity from "./entities/DemarchesSimplifieesSchemaEntity";
+import DemarchesSimplifieesSchema, { DemarchesSimplifieesSchemaLine } from "./entities/DemarchesSimplifieesSchema";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import demarchesSimplifieesDataPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
 import demarchesSimplifieesSchemaPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port";
@@ -22,6 +29,9 @@ import lodash from "lodash";
 import Siren from "../../../valueObjects/Siren";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
+import { DemarchesSimplifieesSuccessDto } from "./dto/DemarchesSimplifieesDto";
+import DemarchesSimplifieesDataEntity from "./entities/DemarchesSimplifieesDataEntity";
+import { input } from "@inquirer/prompts";
 
 jest.mock("lodash");
 
@@ -398,12 +408,13 @@ describe("DemarchesSimplifieesService", () => {
     describe("sendQuery", () => {
         let postMock: jest.SpyInstance;
         let buildSearchHeaderMock: jest.SpyInstance;
+        const AXIOS_RES = { data: { data: { demarche: {} } } } as RequestResponse<unknown>;
 
         beforeAll(() => {
             postMock = jest
                 // @ts-expect-error http is private method
                 .spyOn(demarchesSimplifieesService.http, "post")
-                .mockResolvedValue({ data: 1 } as RequestResponse<unknown>);
+                .mockResolvedValue(AXIOS_RES);
             // @ts-expect-error buildSearchHeader is private method
             buildSearchHeaderMock = jest.spyOn(demarchesSimplifieesService, "buildSearchHeader");
         });
@@ -448,12 +459,21 @@ describe("DemarchesSimplifieesService", () => {
         });
 
         it("should return data", async () => {
-            const expected = { data: true };
-            postMock.mockResolvedValueOnce({ data: expected });
-
+            const expected = AXIOS_RES.data;
             const actual = await demarchesSimplifieesService.sendQuery("", {});
-
             expect(actual).toEqual(expected);
+        });
+
+        it("fails if graphQL errors", async () => {
+            postMock.mockResolvedValueOnce({ data: { errors: [{ message: "il y a des pbs" }] } });
+            const test = demarchesSimplifieesService.sendQuery("", {});
+            await expect(test).rejects.toThrowErrorMatchingSnapshot();
+        });
+
+        it("fails if empty demarche", async () => {
+            postMock.mockResolvedValueOnce({ data: { data: {} } });
+            const test = demarchesSimplifieesService.sendQuery("", {});
+            await expect(test).rejects.toThrowErrorMatchingSnapshot();
         });
     });
 
@@ -469,7 +489,7 @@ describe("DemarchesSimplifieesService", () => {
         });
 
         it("should call upsert", async () => {
-            const expected = { data: true } as unknown as DemarchesSimplifieesSchemaEntity;
+            const expected = { data: true } as unknown as DemarchesSimplifieesSchema;
 
             await demarchesSimplifieesService.addSchema(expected);
 
@@ -572,6 +592,185 @@ describe("DemarchesSimplifieesService", () => {
             const expected = COMMON;
             // @ts-expect-error mock
             const actual = demarchesSimplifieesService.rawToCommon(RAW);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("buildSchema", () => {
+        let sendQuerySpy: jest.SpyInstance;
+        let generateSchemaInstructionSpy: jest.SpyInstance;
+        const SCHEMA_SEED = [{ to: 1 }, { to: 2 }] as unknown as DemarchesSimplifieesSchemaSeedLine[];
+        const FORM_ID = 12345;
+        const QUERY_RESULT = "QUERY" as unknown as DemarchesSimplifieesSuccessDto;
+        const EXAMPLE = "EXAMPLE" as unknown as DemarchesSimplifieesDataEntity;
+
+        beforeAll(() => {
+            sendQuerySpy = jest.spyOn(demarchesSimplifieesService, "sendQuery").mockResolvedValue(QUERY_RESULT);
+            generateSchemaInstructionSpy = jest
+                // @ts-expect-error -- spy private method
+                .spyOn(demarchesSimplifieesService, "generateSchemaInstruction")
+                // @ts-expect-error -- mock private method
+                .mockImplementation((c: DemarchesSimplifieesSchemaSeedLine) => Promise.resolve({ from: c.to }));
+        });
+        jest.mocked(DemarchesSimplifieesDtoAdapter.toEntities).mockReturnValue([EXAMPLE]);
+
+        afterAll(() => {
+            sendQuerySpy.mockRestore();
+            generateSchemaInstructionSpy.mockRestore();
+            jest.mocked(DemarchesSimplifieesDtoAdapter.toEntities).mockRestore();
+        });
+
+        it("sends query", async () => {
+            await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, FORM_ID);
+            expect(sendQuerySpy).toHaveBeenCalledWith(GetDossiersByDemarcheId, { demarcheNumber: FORM_ID });
+        });
+
+        it("adapts entities (to get example)", async () => {
+            await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, FORM_ID);
+            expect(DemarchesSimplifieesDtoAdapter.toEntities).toHaveBeenCalledWith(QUERY_RESULT, FORM_ID);
+        });
+
+        it("finds id fo each field", async () => {
+            await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, FORM_ID);
+            expect(generateSchemaInstructionSpy).toHaveBeenCalledTimes(2);
+        });
+
+        it("should returns aggregated results by field", async () => {
+            const actual = await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, FORM_ID);
+            expect(actual).toMatchSnapshot();
+        });
+    });
+
+    describe("generateSchemaInstruction", () => {
+        const EXAMPLE = {
+            demande: {
+                champs: {
+                    idC3: { label: "labelC3", value: "don't care" },
+                    idC1: { label: "labelC1", value: "don't care" },
+                },
+                annotations: {
+                    idA3: { label: "labelA3", value: "don't care" },
+                    idA2: { label: "labelA2", value: "don't care" },
+                },
+            },
+        } as unknown as DemarchesSimplifieesDataEntity;
+        const USER_INPUT = "userInput";
+
+        beforeAll(() => {
+            jest.mocked(input).mockResolvedValue(USER_INPUT);
+        });
+        afterAll(() => {
+            jest.mocked(input).mockRestore();
+        });
+
+        it("returns from singleSeed as it is", async () => {
+            const expected = { from: "where to get value" };
+            // @ts-expect-error -- test private method
+            const actual = await demarchesSimplifieesService.generateSchemaInstruction(
+                { from: "where to get value", to: "fieldName" },
+                EXAMPLE,
+            );
+            expect(actual).toEqual(expected);
+        });
+
+        it("makes prompt if property 'valueToPrompt'", async () => {
+            // @ts-expect-error -- test private method
+            await demarchesSimplifieesService.generateSchemaInstruction(
+                { valueToPrompt: true, to: "fieldName" },
+                EXAMPLE,
+            );
+            expect(input).toHaveBeenCalled();
+        });
+
+        it("makes prompt if property 'value'", async () => {
+            // @ts-expect-error -- test private method
+            await demarchesSimplifieesService.generateSchemaInstruction({ value: "default", to: "fieldName" }, EXAMPLE);
+            expect(input).toHaveBeenCalled();
+        });
+
+        it("return 'value' singleShema from prompt if property 'valueToPrompt'", async () => {
+            const expected = { value: USER_INPUT };
+            // @ts-expect-error -- test private method
+            const actual = await demarchesSimplifieesService.generateSchemaInstruction(
+                { valueToPrompt: true, to: "fieldName" },
+                EXAMPLE,
+            );
+            expect(actual).toEqual(expected);
+        });
+
+        it("return 'value' singleShema from prompt if property 'value'", async () => {
+            const expected = { value: USER_INPUT };
+            // @ts-expect-error -- test private method
+            const actual = await demarchesSimplifieesService.generateSchemaInstruction(
+                { value: "default", to: "fieldName" },
+                EXAMPLE,
+            );
+            expect(actual).toEqual(expected);
+        });
+
+        it("return 'value' from schema if nothing is input", async () => {
+            jest.mocked(input).mockResolvedValueOnce("");
+            const expected = { value: "default" };
+            // @ts-expect-error -- test private method
+            const actual = await demarchesSimplifieesService.generateSchemaInstruction(
+                { value: "default", to: "fieldName" },
+                EXAMPLE,
+            );
+            expect(actual).toEqual(expected);
+        });
+
+        it("finds field from 'possibleLabels' in annotations", async () => {
+            // @ts-expect-error -- test private method
+            const actual = await demarchesSimplifieesService.generateSchemaInstruction(
+                {
+                    possibleLabels: ["labelA1", "labelA2"],
+                    to: "fieldName",
+                },
+                EXAMPLE,
+            );
+            const expected = { from: "demande.annotations.idA2.value" };
+            expect(actual).toEqual(expected);
+        });
+
+        it("finds field from 'possibleLabels' in champs", async () => {
+            // @ts-expect-error -- test private method
+            const actual = await demarchesSimplifieesService.generateSchemaInstruction(
+                {
+                    possibleLabels: ["labelC1", "labelC2"],
+                    to: "fieldName",
+                },
+                EXAMPLE,
+            );
+            const expected = { from: "demande.champs.idC1.value" };
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("buildFullSchema", () => {
+        const FULL_SCHEMA = {
+            schema: "SCHEMA",
+            commonSchema: "COMMON_SCHEMA",
+        } as unknown as DemarchesSimplifieesSchemaSeed;
+        const DEMARCHE_ID = 98765;
+        const BUILT = "built" as unknown as DemarchesSimplifieesSchemaLine[];
+        let buildSchemaSpy: jest.SpyInstance;
+
+        beforeAll(() => {
+            buildSchemaSpy = jest.spyOn(demarchesSimplifieesService, "buildSchema").mockResolvedValue(BUILT);
+        });
+
+        afterAll(() => {
+            buildSchemaSpy.mockRestore();
+        });
+
+        it("calls buildsSchema for each schema", async () => {
+            await demarchesSimplifieesService.buildFullSchema(FULL_SCHEMA, DEMARCHE_ID);
+            expect(buildSchemaSpy).toHaveBeenCalledTimes(2);
+        });
+
+        it("returns full formed schema", async () => {
+            const expected = { schema: BUILT, commonSchema: BUILT, demarcheId: DEMARCHE_ID };
+            const actual = await demarchesSimplifieesService.buildFullSchema(FULL_SCHEMA, DEMARCHE_ID);
             expect(actual).toEqual(expected);
         });
     });
