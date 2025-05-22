@@ -138,13 +138,14 @@ export default class FonjepEntityAdapter {
     // this keeps the same structure as other providers payment flat uniqueId and add N/A for the missing fields
     private static buildPaymentFlatUniqueId(partialPaymentFlat: Omit<FonjepPaymentFlatEntity, "uniqueId">) {
         const keys = [
+            "fonjep",
             partialPaymentFlat.idVersement,
             partialPaymentFlat.programNumber,
-            GenericAdapter.NOT_APPLICABLE_VALUE,
-            GenericAdapter.NOT_APPLICABLE_VALUE,
+            GenericAdapter.NOT_APPLICABLE_VALUE, // action code
+            GenericAdapter.NOT_APPLICABLE_VALUE, // activity code
             getShortISODate(partialPaymentFlat.operationDate),
-            GenericAdapter.NOT_APPLICABLE_VALUE,
-            GenericAdapter.NOT_APPLICABLE_VALUE,
+            GenericAdapter.NOT_APPLICABLE_VALUE, // attachement comptable
+            GenericAdapter.NOT_APPLICABLE_VALUE, // centre financier code
         ];
         return keys.join("-");
     }

@@ -27,7 +27,7 @@ exports[`FonjepCli parse() should add FonjepPaymentFlat 1`] = `
     "sigleMinistere": "sigle_ministere_1",
     "typeIdEntrepriseBeneficiaire": "siren",
     "typeIdEtablissementBeneficiaire": "siret",
-    "uniqueId": "J10540-2017-01-26-2017-00000000000000-163-N/A-N/A-2017-01-26-N/A-N/A",
+    "uniqueId": "fonjep-J10540-2017-01-26-2017-00000000000000-163-N/A-N/A-2017-01-26-N/A-N/A",
   },
   {
     "_id": Any<String>,
@@ -54,7 +54,7 @@ exports[`FonjepCli parse() should add FonjepPaymentFlat 1`] = `
     "sigleMinistere": "sigle_ministere_1",
     "typeIdEntrepriseBeneficiaire": "siren",
     "typeIdEtablissementBeneficiaire": "siret",
-    "uniqueId": "J10540-2017-04-27-2017-00000000000000-163-N/A-N/A-2017-04-27-N/A-N/A",
+    "uniqueId": "fonjep-J10540-2017-04-27-2017-00000000000000-163-N/A-N/A-2017-04-27-N/A-N/A",
   },
   {
     "_id": Any<String>,
@@ -81,7 +81,7 @@ exports[`FonjepCli parse() should add FonjepPaymentFlat 1`] = `
     "sigleMinistere": "sigle_ministere_1",
     "typeIdEntrepriseBeneficiaire": "siren",
     "typeIdEtablissementBeneficiaire": "siret",
-    "uniqueId": "J10540-2017-07-11-2017-00000000000000-163-N/A-N/A-2017-07-11-N/A-N/A",
+    "uniqueId": "fonjep-J10540-2017-07-11-2017-00000000000000-163-N/A-N/A-2017-07-11-N/A-N/A",
   },
   {
     "_id": Any<String>,
@@ -108,7 +108,7 @@ exports[`FonjepCli parse() should add FonjepPaymentFlat 1`] = `
     "sigleMinistere": "sigle_ministere_1",
     "typeIdEntrepriseBeneficiaire": "siren",
     "typeIdEtablissementBeneficiaire": "siret",
-    "uniqueId": "J10540-2017-10-19-2017-00000000000000-163-N/A-N/A-2017-10-19-N/A-N/A",
+    "uniqueId": "fonjep-J10540-2017-10-19-2017-00000000000000-163-N/A-N/A-2017-10-19-N/A-N/A",
   },
   {
     "_id": Any<String>,
@@ -135,7 +135,7 @@ exports[`FonjepCli parse() should add FonjepPaymentFlat 1`] = `
     "sigleMinistere": "sigle_ministere_2",
     "typeIdEntrepriseBeneficiaire": "siren",
     "typeIdEtablissementBeneficiaire": "siret",
-    "uniqueId": "J23425-2017-01-26-2017-00000000000000-361-N/A-N/A-2017-01-26-N/A-N/A",
+    "uniqueId": "fonjep-J23425-2017-01-26-2017-00000000000000-361-N/A-N/A-2017-01-26-N/A-N/A",
   },
   {
     "_id": Any<String>,
@@ -162,7 +162,7 @@ exports[`FonjepCli parse() should add FonjepPaymentFlat 1`] = `
     "sigleMinistere": "sigle_ministere_2",
     "typeIdEntrepriseBeneficiaire": "siren",
     "typeIdEtablissementBeneficiaire": "siret",
-    "uniqueId": "J23425-2017-04-27-2017-00000000000000-361-N/A-N/A-2017-04-27-N/A-N/A",
+    "uniqueId": "fonjep-J23425-2017-04-27-2017-00000000000000-361-N/A-N/A-2017-04-27-N/A-N/A",
   },
   {
     "_id": Any<String>,
@@ -189,7 +189,7 @@ exports[`FonjepCli parse() should add FonjepPaymentFlat 1`] = `
     "sigleMinistere": "sigle_ministere_2",
     "typeIdEntrepriseBeneficiaire": "siren",
     "typeIdEtablissementBeneficiaire": "siret",
-    "uniqueId": "J23425-2017-07-11-2017-00000000000000-361-N/A-N/A-2017-07-11-N/A-N/A",
+    "uniqueId": "fonjep-J23425-2017-07-11-2017-00000000000000-361-N/A-N/A-2017-07-11-N/A-N/A",
   },
   {
     "_id": Any<String>,
@@ -216,7 +216,7 @@ exports[`FonjepCli parse() should add FonjepPaymentFlat 1`] = `
     "sigleMinistere": "sigle_ministere_2",
     "typeIdEntrepriseBeneficiaire": "siren",
     "typeIdEtablissementBeneficiaire": "siret",
-    "uniqueId": "J23425-2018-09-06-2017-00000000000000-361-N/A-N/A-2018-09-06-N/A-N/A",
+    "uniqueId": "fonjep-J23425-2018-09-06-2017-00000000000000-361-N/A-N/A-2018-09-06-N/A-N/A",
   },
   {
     "_id": Any<String>,
@@ -243,7 +243,7 @@ exports[`FonjepCli parse() should add FonjepPaymentFlat 1`] = `
     "sigleMinistere": "sigle_ministere_1",
     "typeIdEntrepriseBeneficiaire": "siren",
     "typeIdEtablissementBeneficiaire": "siret",
-    "uniqueId": "J02924-2017-01-26-2022-00000000000000-163-N/A-N/A-2017-01-26-N/A-N/A",
+    "uniqueId": "fonjep-J02924-2017-01-26-2022-00000000000000-163-N/A-N/A-2017-01-26-N/A-N/A",
   },
   {
     "_id": Any<String>,
@@ -270,7 +270,7 @@ exports[`FonjepCli parse() should add FonjepPaymentFlat 1`] = `
     "sigleMinistere": "sigle_ministere_1",
     "typeIdEntrepriseBeneficiaire": "siren",
     "typeIdEtablissementBeneficiaire": "siret",
-    "uniqueId": "J02924-2017-04-27-2022-00000000000000-163-N/A-N/A-2017-04-27-N/A-N/A",
+    "uniqueId": "fonjep-J02924-2017-04-27-2022-00000000000000-163-N/A-N/A-2017-04-27-N/A-N/A",
   },
   {
     "_id": Any<String>,
@@ -297,7 +297,7 @@ exports[`FonjepCli parse() should add FonjepPaymentFlat 1`] = `
     "sigleMinistere": "sigle_ministere_1",
     "typeIdEntrepriseBeneficiaire": "siren",
     "typeIdEtablissementBeneficiaire": "siret",
-    "uniqueId": "J02924-2017-07-11-2022-00000000000000-163-N/A-N/A-2017-07-11-N/A-N/A",
+    "uniqueId": "fonjep-J02924-2017-07-11-2022-00000000000000-163-N/A-N/A-2017-07-11-N/A-N/A",
   },
   {
     "_id": Any<String>,
@@ -324,7 +324,7 @@ exports[`FonjepCli parse() should add FonjepPaymentFlat 1`] = `
     "sigleMinistere": "sigle_ministere_1",
     "typeIdEntrepriseBeneficiaire": "siren",
     "typeIdEtablissementBeneficiaire": "siret",
-    "uniqueId": "J02924-2017-10-19-2022-00000000000000-163-N/A-N/A-2017-10-19-N/A-N/A",
+    "uniqueId": "fonjep-J02924-2017-10-19-2022-00000000000000-163-N/A-N/A-2017-10-19-N/A-N/A",
   },
 ]
 `;
