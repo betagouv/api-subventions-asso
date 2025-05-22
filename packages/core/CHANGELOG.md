@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.69.0](https://github.com/betagouv/datasubvention/compare/v0.66.1...v0.69.0) (2025-05-22)
+
+# [0.68.0](https://github.com/betagouv/datasubvention/compare/v0.67.0...v0.68.0) (2025-05-05)
+
+# [0.67.0](https://github.com/betagouv/datasubvention/compare/v0.66.0...v0.67.0) (2025-04-28)
+
+**Note:** Version bump only for package core
+
 # [0.68.0](https://github.com/betagouv/datasubvention/compare/v0.67.0...v0.68.0) (2025-05-05)
 
 **Note:** Version bump only for package core
