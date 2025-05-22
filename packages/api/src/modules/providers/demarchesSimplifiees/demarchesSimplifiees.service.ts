@@ -16,16 +16,14 @@ import demarchesSimplifieesSchemaPort from "../../../dataProviders/db/providers/
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import { DemarchesSimplifieesDto } from "./dto/DemarchesSimplifieesDto";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
-import DemarchesSimplifieesSchemaEntity, {
-    DemarchesSimplifieesSingleSchema,
-} from "./entities/DemarchesSimplifieesSchemaEntity";
+import DemarchesSimplifieesSchema, { DemarchesSimplifieesSchemaLine } from "./entities/DemarchesSimplifieesSchema";
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
 import { DemarchesSimplifieesRawData } from "./@types/DemarchesSimplifieesRawGrant";
 import DemarchesSimplifieesDataEntity from "./entities/DemarchesSimplifieesDataEntity";
 import {
     DemarchesSimplifieesSchemaSeed,
-    DemarchesSimplifieesSingleSchemaSeed,
-} from "./entities/DemarchesSimplifieesSchemaSeedEntity";
+    DemarchesSimplifieesSchemaSeedLine,
+} from "./entities/DemarchesSimplifieesSchemaSeed";
 import { input } from "@inquirer/prompts";
 import configurationsService from "../../configurations/configurations.service";
 
@@ -54,7 +52,7 @@ export class DemarchesSimplifieesService
                 acc[schema.demarcheId] = schema;
                 return acc;
             },
-            {} as Record<string, DemarchesSimplifieesSchemaEntity>,
+            {} as Record<string, DemarchesSimplifieesSchema>,
         );
     }
 
@@ -64,7 +62,7 @@ export class DemarchesSimplifieesService
 
     private async filterAndAdaptEntities<T>(
         entities: DemarchesSimplifieesDataEntity[],
-        adapter: (entity: DemarchesSimplifieesDataEntity, schema: DemarchesSimplifieesSchemaEntity) => T,
+        adapter: (entity: DemarchesSimplifieesDataEntity, schema: DemarchesSimplifieesSchema) => T,
     ) {
         const schemasByIds = await this.getSchemasByIds();
         const reduceToValidEntities = (acc, entity) => {
@@ -181,7 +179,7 @@ export class DemarchesSimplifieesService
         };
     }
 
-    addSchema(schema: DemarchesSimplifieesSchemaEntity) {
+    addSchema(schema: DemarchesSimplifieesSchema) {
         return demarchesSimplifieesSchemaPort.upsert(schema);
     }
 
@@ -243,8 +241,8 @@ export class DemarchesSimplifieesService
         return DemarchesSimplifieesEntityAdapter.toCommon(raw.data.grant, raw.data.schema);
     }
 
-    async buildSchema(schemaModel: DemarchesSimplifieesSingleSchemaSeed[], formId: number) {
-        const builtSchema: DemarchesSimplifieesSingleSchema[] = [];
+    async buildSchema(schemaModel: DemarchesSimplifieesSchemaSeedLine[], formId: number) {
+        const builtSchema: DemarchesSimplifieesSchemaLine[] = [];
         const queryResult = await this.sendQuery(GetDossiersByDemarcheId, { demarcheNumber: formId });
         const exampleData = DemarchesSimplifieesDtoAdapter.toEntities(queryResult, formId)?.[0];
 
@@ -259,7 +257,7 @@ export class DemarchesSimplifieesService
     }
 
     private async generateSchemaInstruction(
-        champ: DemarchesSimplifieesSingleSchemaSeed,
+        champ: DemarchesSimplifieesSchemaSeedLine,
         exampleDemarche: DemarchesSimplifieesDataEntity,
     ): Promise<{ value: string } | { from: string } | undefined> {
         // TODO test when multiple stuff are noted

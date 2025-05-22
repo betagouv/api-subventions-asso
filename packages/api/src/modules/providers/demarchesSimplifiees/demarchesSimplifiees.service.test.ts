@@ -1,7 +1,7 @@
 import {
     DemarchesSimplifieesSchemaSeed,
-    DemarchesSimplifieesSingleSchemaSeed,
-} from "./entities/DemarchesSimplifieesSchemaSeedEntity";
+    DemarchesSimplifieesSchemaSeedLine,
+} from "./entities/DemarchesSimplifieesSchemaSeed";
 
 jest.mock("../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port");
 jest.mock("../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port");
@@ -14,9 +14,7 @@ import configurationsService from "../../configurations/configurations.service";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
 import demarchesSimplifieesService from "./demarchesSimplifiees.service";
-import DemarchesSimplifieesSchemaEntity, {
-    DemarchesSimplifieesSingleSchema,
-} from "./entities/DemarchesSimplifieesSchemaEntity";
+import DemarchesSimplifieesSchema, { DemarchesSimplifieesSchemaLine } from "./entities/DemarchesSimplifieesSchema";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import demarchesSimplifieesDataPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
 import demarchesSimplifieesSchemaPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port";
@@ -491,7 +489,7 @@ describe("DemarchesSimplifieesService", () => {
         });
 
         it("should call upsert", async () => {
-            const expected = { data: true } as unknown as DemarchesSimplifieesSchemaEntity;
+            const expected = { data: true } as unknown as DemarchesSimplifieesSchema;
 
             await demarchesSimplifieesService.addSchema(expected);
 
@@ -601,7 +599,7 @@ describe("DemarchesSimplifieesService", () => {
     describe("buildSchema", () => {
         let sendQuerySpy: jest.SpyInstance;
         let generateSchemaInstructionSpy: jest.SpyInstance;
-        const SCHEMA_SEED = [{ to: 1 }, { to: 2 }] as unknown as DemarchesSimplifieesSingleSchemaSeed[];
+        const SCHEMA_SEED = [{ to: 1 }, { to: 2 }] as unknown as DemarchesSimplifieesSchemaSeedLine[];
         const FORM_ID = 12345;
         const QUERY_RESULT = "QUERY" as unknown as DemarchesSimplifieesSuccessDto;
         const EXAMPLE = "EXAMPLE" as unknown as DemarchesSimplifieesDataEntity;
@@ -612,7 +610,7 @@ describe("DemarchesSimplifieesService", () => {
                 // @ts-expect-error -- spy private method
                 .spyOn(demarchesSimplifieesService, "generateSchemaInstruction")
                 // @ts-expect-error -- mock private method
-                .mockImplementation((c: DemarchesSimplifieesSingleSchemaSeed) => Promise.resolve({ from: c.to }));
+                .mockImplementation((c: DemarchesSimplifieesSchemaSeedLine) => Promise.resolve({ from: c.to }));
         });
         jest.mocked(DemarchesSimplifieesDtoAdapter.toEntities).mockReturnValue([EXAMPLE]);
 
@@ -754,7 +752,7 @@ describe("DemarchesSimplifieesService", () => {
             commonSchema: "COMMON_SCHEMA",
         } as unknown as DemarchesSimplifieesSchemaSeed;
         const DEMARCHE_ID = 98765;
-        const BUILT = "built" as unknown as DemarchesSimplifieesSingleSchema[];
+        const BUILT = "built" as unknown as DemarchesSimplifieesSchemaLine[];
         let buildSchemaSpy: jest.SpyInstance;
 
         beforeAll(() => {

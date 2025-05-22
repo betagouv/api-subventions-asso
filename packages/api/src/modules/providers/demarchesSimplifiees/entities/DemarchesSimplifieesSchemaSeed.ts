@@ -1,10 +1,10 @@
-export type DemarchesSimplifieesSingleSchemaSeed =
+export type DemarchesSimplifieesSchemaSeedLine =
     | { to: string; possibleLabels: string[] }
     | { to: string; valueToPrompt: boolean }
     | { to: string; value: string }
     | { to: string; from: string };
 
 export type DemarchesSimplifieesSchemaSeed = {
-    schema: DemarchesSimplifieesSingleSchemaSeed[];
-    commonSchema: DemarchesSimplifieesSingleSchemaSeed[];
+    schema: DemarchesSimplifieesSchemaSeedLine[];
+    commonSchema: DemarchesSimplifieesSchemaSeedLine[];
 };
