@@ -4,6 +4,8 @@ import fonjepPostesPort from "../../../dataProviders/db/providers/fonjep/fonjep.
 import fonjepTiersPort from "../../../dataProviders/db/providers/fonjep/fonjep.tiers.port";
 import fonjepTypePostePort from "../../../dataProviders/db/providers/fonjep/fonjep.typePoste.port";
 import fonjepVersementsPort from "../../../dataProviders/db/providers/fonjep/fonjep.versements.port";
+import Ridet from "../../../valueObjects/Ridet";
+import Siret from "../../../valueObjects/Siret";
 import paymentFlatService from "../../paymentFlat/paymentFlat.service";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import ProviderCore from "../ProviderCore";
@@ -97,12 +99,15 @@ export class FonjepService extends ProviderCore {
         const fonjepFlatPayments = validPayments.reduce((acc, payment) => {
             const position = getPoste(payment.posteCode);
             // cannot find thirdParty without associationBeneficiaireCode
+            // it seems to be always defined in extract from 2025-03-31 => update the type ?
             if (!position || !position.associationBeneficiaireCode) return acc;
-
+            // Financer with code 10006 is not handled. See #3431
+            if (position?.financeurPrincipalCode === "10006") return acc;
             const thirdParty = getTier(position.associationBeneficiaireCode);
+            if (!thirdParty) return acc;
 
-            // filter valid fonjep payments
-            if (!thirdParty || !position) return acc;
+            // exclude weird siretOuRidet values in FONJEP export. See #3432
+            if (!Siret.isSiret(thirdParty?.siretOuRidet) && !Ridet.isRidet(thirdParty?.siretOuRidet)) return acc;
 
             acc.push(
                 FonjepEntityAdapter.toFonjepPaymentFlat(
