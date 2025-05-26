@@ -6,7 +6,7 @@ import scdlService from "../../modules/providers/scdl/scdl.service";
 import MiscScdlGrantEntity from "../../modules/providers/scdl/entities/MiscScdlGrantEntity";
 import { ScdlStorableGrant } from "../../modules/providers/scdl/@types/ScdlStorableGrant";
 import Siret from "../../valueObjects/Siret";
-import { ParsedDataWithProblem } from "../../modules/providers/scdl/@types/Validation";
+import { ParsedDataDuplicate, ParsedDataWithProblem } from "../../modules/providers/scdl/@types/Validation";
 import { DEV } from "../../configurations/env.conf";
 import dataLogService from "../../modules/data-log/dataLog.service";
 import { validateDate } from "../../shared/helpers/CliHelper";
@@ -99,7 +99,7 @@ export default class ScdlCli {
         console.log("Parsing ended successfully !");
     }
 
-    private async exportErrors(errors: ParsedDataWithProblem[], file: string) {
+    private async exportErrors(errors: (ParsedDataWithProblem | ParsedDataDuplicate)[], file: string) {
         if (!DEV) return;
 
         const fileName = path.basename(file);
