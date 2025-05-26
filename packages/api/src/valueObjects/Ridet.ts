@@ -10,7 +10,7 @@ export default class Ridet {
         this.ridet = ridet;
     }
 
-    static isRidet(ridet: string | undefined): boolean {
+    static isRidet(ridet: string | null | undefined): boolean {
         return typeof ridet === "string" && /^\d{9,10}$/.test(ridet);
     }
 

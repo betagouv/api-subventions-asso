@@ -30,7 +30,7 @@ export const TIERS_ENTITY_WITH_NULLS: FonjepTiersEntity = {
 };
 
 export const POSTE_ENTITY: FonjepPosteEntity = {
-    code: "Code",
+    code: "AB5400K",
     dispositifId: 1,
     financeurPrincipalCode: "FinanceurPrincipalCode",
     financeurAttributeurCode: "FinanceurAttributeurCode",
@@ -46,8 +46,43 @@ export const POSTE_ENTITY: FonjepPosteEntity = {
     doublementUniteCompte: "Non",
 };
 
+// use to test payment with financeurPrincipalCode 10006 exclusion in PaymentFlat creation process. Link to #3431
+export const POSTE_10006_ENTITY: FonjepPosteEntity = {
+    code: "FJ10006",
+    dispositifId: 1,
+    financeurPrincipalCode: "10006",
+    financeurAttributeurCode: "FinanceurAttributeurCode",
+    associationBeneficiaireCode: TIERS_ENTITY.code,
+    pstStatutPosteLibelle: "PstStatutPosteLibelle",
+    pstRaisonStatutLibelle: "PstRaisonStatutLibelle",
+    associationImplantationCode: "AssociationImplantationCode",
+    annee: 2022,
+    montantSubvention: 1000,
+    dateFinTriennalite: new Date("2023-12-31"),
+    pstTypePosteCode: "PstTypePosteCode",
+    pleinTemps: "Oui",
+    doublementUniteCompte: "Non",
+};
+
+export const POSTE_WITHOUT_ASSOCIATION = {
+    code: "NA00004",
+    dispositifId: 1,
+    financeurPrincipalCode: "10006",
+    financeurAttributeurCode: "FinanceurAttributeurCode",
+    associationBeneficiaireCode: "NO_ASSOCIATION_CODE",
+    pstStatutPosteLibelle: "PstStatutPosteLibelle",
+    pstRaisonStatutLibelle: "PstRaisonStatutLibelle",
+    associationImplantationCode: "AssociationImplantationCode",
+    annee: 2022,
+    montantSubvention: 1000,
+    dateFinTriennalite: new Date("2023-12-31"),
+    pstTypePosteCode: "PstTypePosteCode",
+    pleinTemps: "Oui",
+    doublementUniteCompte: "Non",
+};
+
 export const POSTE_ENTITY_WITH_NULLS: FonjepPosteEntity = {
-    code: "Code",
+    code: "ZZ9980J",
     dispositifId: null,
     financeurPrincipalCode: "FinanceurPrincipalCode",
     financeurAttributeurCode: "FinanceurAttributeurCode",
@@ -70,6 +105,33 @@ export const VERSEMENT_ENTITY: PayedFonjepVersementEntity = {
     dateVersement: new Date("2022-04-15"),
     montantAPayer: 1000,
     montantPaye: 1000,
+};
+
+export const VERSEMENT_10006_ENTITY: PayedFonjepVersementEntity = {
+    posteCode: POSTE_10006_ENTITY.code,
+    periodeDebut: new Date("2022-04-12"),
+    periodeFin: new Date("2022-12-14"),
+    dateVersement: new Date("2022-05-15"),
+    montantAPayer: 3000,
+    montantPaye: 3000,
+};
+
+export const VERSEMENT_WITHOUT_POSITION = {
+    posteCode: "NO_POSITION_CODE",
+    periodeDebut: new Date("2022-04-12"),
+    periodeFin: new Date("2022-12-14"),
+    dateVersement: new Date("2022-05-15"),
+    montantAPayer: 3000,
+    montantPaye: 3000,
+};
+
+export const VERSEMENT_WITHOUT_ASSOCIATION = {
+    posteCode: POSTE_WITHOUT_ASSOCIATION.code,
+    periodeDebut: new Date("2022-04-12"),
+    periodeFin: new Date("2022-12-14"),
+    dateVersement: new Date("2022-05-15"),
+    montantAPayer: 3000,
+    montantPaye: 3000,
 };
 
 export const VERSEMENT_ENTITY_WITH_NULLS: FonjepVersementEntity = {

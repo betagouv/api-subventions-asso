@@ -49,4 +49,26 @@ describe("StringHelper", () => {
             expect(digest).toHaveBeenCalledWith("hex");
         });
     });
+
+    describe("removeWhitespaces", () => {
+        it("removes whitespaces", () => {
+            const expected = "41116978200017";
+            const actual = StringHelper.removeWhitespace("411 169 782 00017");
+            expect(actual).toEqual(expected);
+        });
+
+        it.each`
+            value
+            ${123}
+            ${null}
+            ${undefined}
+            ${{}}
+            ${[]}
+            ${NaN}
+        `("return value if $value given", ({ value }) => {
+            const expected = value;
+            const actual = StringHelper.removeWhitespace(value);
+            expect(actual).toEqual(expected);
+        });
+    });
 });
