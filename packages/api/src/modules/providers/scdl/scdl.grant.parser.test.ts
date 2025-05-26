@@ -255,8 +255,8 @@ describe("ScdlGrantParser", () => {
                 valid: false,
                 problems: [
                     {
-                        field: "associationSiret-origin",
-                        value: "associationSiret-value",
+                        colonne: "associationSiret-origin",
+                        valeur: "associationSiret-value",
                         message: "SIRET du bénéficiaire manquant ou invalide",
                     },
                 ],
@@ -272,8 +272,8 @@ describe("ScdlGrantParser", () => {
                 valid: false,
                 problems: [
                     {
-                        field: "exercice-origin",
-                        value: "exercice-value",
+                        colonne: "exercice-origin",
+                        valeur: "exercice-value",
                         message: "L'exercice n'est pas un nombre",
                     },
                 ],
@@ -289,8 +289,8 @@ describe("ScdlGrantParser", () => {
                 valid: true,
                 problems: [
                     {
-                        field: "paymentStartDate-origin",
-                        value: "paymentStartDate-value",
+                        colonne: "paymentStartDate-origin",
+                        valeur: "paymentStartDate-value",
                         message: "La date de début de paiement est absente ou non valide",
                     },
                 ],
@@ -306,8 +306,8 @@ describe("ScdlGrantParser", () => {
                 valid: true,
                 problems: [
                     {
-                        field: "allocatorSiret-origin",
-                        value: "allocatorSiret-value",
+                        colonne: "allocatorSiret-origin",
+                        valeur: "allocatorSiret-value",
                         message: "SIRET de l'allocataire manquant ou invalide",
                     },
                 ],
@@ -324,13 +324,13 @@ describe("ScdlGrantParser", () => {
                 valid: false,
                 problems: [
                     {
-                        field: "amount-origin",
-                        value: "amount-value",
+                        colonne: "amount-origin",
+                        valeur: "amount-value",
                         message: "Le montant n'est pas un nombre",
                     },
                     {
-                        field: "paymentStartDate-origin",
-                        value: "paymentStartDate-value",
+                        colonne: "paymentStartDate-origin",
+                        valeur: "paymentStartDate-value",
                         message: "La date de début de paiement est absente ou non valide",
                     },
                 ],
@@ -417,7 +417,7 @@ describe("ScdlGrantParser", () => {
         });
 
         it("transforms errors", () => {
-            const pb: Problem = { field: "something", value: "something", message: "clarify problem" };
+            const pb: Problem = { colonne: "something", valeur: "something", message: "clarify problem" };
             isValidSpy.mockReturnValueOnce({ valid: false, problems: [pb] });
             // @ts-expect-error -- test private method
             const { problems } = ScdlGrantParser.convertValidateData(SCDL_STORABLE);
@@ -427,7 +427,7 @@ describe("ScdlGrantParser", () => {
         });
 
         it("also returns errors", () => {
-            const pb: Problem = { field: "something", value: "something", message: "clarify problem" };
+            const pb: Problem = { colonne: "something", valeur: "something", message: "clarify problem" };
             isValidSpy.mockReturnValueOnce({ valid: false, problems: [pb] });
             // @ts-expect-error -- mock private method
             const actual = ScdlGrantParser.convertValidateData(SCDL_STORABLE).problems;
@@ -435,7 +435,7 @@ describe("ScdlGrantParser", () => {
         });
 
         it("also returns errors with problems in optional field so valid result", () => {
-            const pb: Problem = { field: "something", value: "something", message: "clarify problem" };
+            const pb: Problem = { colonne: "something", valeur: "something", message: "clarify problem" };
             isValidSpy.mockReturnValueOnce({ valid: true, problems: [pb] });
             // @ts-expect-error -- mock private method
             const actual = ScdlGrantParser.convertValidateData(SCDL_STORABLE).problems;
