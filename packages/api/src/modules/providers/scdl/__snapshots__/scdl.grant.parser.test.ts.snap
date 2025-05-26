@@ -11,18 +11,18 @@ exports[`ScdlGrantParser convertValidateData also returns errors 1`] = `
     "associationName": "ANNO_1",
     "associationRna": "W123456789",
     "associationSiret": "13579246800043",
+    "bloquant": "oui",
+    "colonne": "something",
     "conventionDate": 2019-05-10T00:00:00.000Z,
     "decisionReference": "2102661732",
-    "field": "something",
     "grantPercentage": 1,
     "idRAE": "Non",
-    "lineRejected": "oui",
     "message": "clarify problem",
     "object": "Immigration et territoire de la politique de la ville - citoyenneté et héros militaires - Lutte contre les discriminations, le racisme et l'antisémitisme - Figures de réussite, figures de l'exemplarité républicaine : artistes",
     "paymentConditions": "aide en numéraire",
     "paymentEndDate": 2019-05-20T00:00:00.000Z,
     "paymentStartDate": 2019-05-20T00:00:00.000Z,
-    "value": "something",
+    "valeur": "something",
   },
 ]
 `;
@@ -38,18 +38,18 @@ exports[`ScdlGrantParser convertValidateData also returns errors with problems i
     "associationName": "ANNO_1",
     "associationRna": "W123456789",
     "associationSiret": "13579246800043",
+    "bloquant": "non",
+    "colonne": "something",
     "conventionDate": 2019-05-10T00:00:00.000Z,
     "decisionReference": "2102661732",
-    "field": "something",
     "grantPercentage": 1,
     "idRAE": "Non",
-    "lineRejected": "non",
     "message": "clarify problem",
     "object": "Immigration et territoire de la politique de la ville - citoyenneté et héros militaires - Lutte contre les discriminations, le racisme et l'antisémitisme - Figures de réussite, figures de l'exemplarité républicaine : artistes",
     "paymentConditions": "aide en numéraire",
     "paymentEndDate": 2019-05-20T00:00:00.000Z,
     "paymentStartDate": 2019-05-20T00:00:00.000Z,
-    "value": "something",
+    "valeur": "something",
   },
 ]
 `;
@@ -295,7 +295,7 @@ exports[`ScdlGrantParser convertValidateData should return storableChunk 1`] = `
 exports[`ScdlGrantParser indexDataByPathAndAnnotate pushes error if adapters loses data 1`] = `
 [
   {
-    "field": "path.needs.adapting",
+    "colonne": "path.needs.adapting",
     "message": "donnée non récupérable",
     "other": "otherValue",
     "path": {
@@ -304,7 +304,7 @@ exports[`ScdlGrantParser indexDataByPathAndAnnotate pushes error if adapters los
       },
     },
     "some": "someValue",
-    "value": "value-needs-adapting",
+    "valeur": "value-needs-adapting",
   },
 ]
 `;

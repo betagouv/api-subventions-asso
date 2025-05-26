@@ -76,8 +76,8 @@ export default class ScdlGrantParser {
         ScdlGrantParser.requirements.forEach(requirement => {
             if (requirement.test(grant[requirement.key])) return;
             problems.push({
-                field: originalWithPath[requirement.key].keyPath.join("."),
-                value: originalWithPath[requirement.key].value,
+                colonne: originalWithPath[requirement.key].keyPath.join("."),
+                valeur: originalWithPath[requirement.key].value,
                 message: requirement.message,
             });
             if (!requirement.optional) valid = false;
@@ -127,12 +127,11 @@ export default class ScdlGrantParser {
     }
 
     private static toDuplicateError(line: DefaultObject<string>): ParsedDataDuplicate {
-        return { ...line, field: "N/A", value: "N/A", message: "N/A", lineRejected: "N/A", duplicate: "oui" };
+        return { ...line, colonne: "N/A", valeur: "N/A", message: "N/A", bloquant: "N/A", doublon: "oui" };
     }
 
-    private static toFormatError(line: Omit<ParsedDataWithProblem, "duplicate">): ParsedDataWithProblem {
-        // @ts-expect-error: don't undertand why ts is angry
-        return { ...line, duplicate: "non" };
+    private static toFormatError(line: Omit<ParsedDataWithProblem, "doublon">): ParsedDataWithProblem {
+        return { ...line, doublon: "non" } as ParsedDataWithProblem;
     }
 
     static parseExcel(content: Buffer, pageName?: string, rowOffset = 0) {
@@ -171,7 +170,7 @@ export default class ScdlGrantParser {
                 errors: errorsEntity,
             } = ScdlGrantParser.indexDataByPathAndAnnotate<string, ScdlStorableGrant>(SCDL_MAPPER, parsedData);
             // TODO make indexDataByPathAndAnnotate indicate if errors make us reject the line
-            errors.push(...errorsEntity.map(error => ({ ...error, lineRejected: "non" })));
+            errors.push(...errorsEntity.map(error => ({ ...error, bloquant: "non" })));
 
             // validates and saves annotated errors
             const validation = this.isGrantValid(entity as ScdlStorableGrant, annotations);
@@ -184,7 +183,7 @@ export default class ScdlGrantParser {
                 errors.push({
                     ...parsedData,
                     ...pb,
-                    lineRejected: validation.valid ? "non" : "oui",
+                    bloquant: validation.valid ? "non" : "oui",
                 }),
             );
         }
@@ -206,7 +205,7 @@ export default class ScdlGrantParser {
     ) {
         const defaultAdapter = <T>(v: string | number | undefined): unknown => v as T;
         let adapter: (v: TypeIn) => unknown;
-        const errors: Omit<ParsedDataWithProblem, "lineRejected" | "duplicates">[] = [];
+        const errors: Omit<ParsedDataWithProblem, "bloquant" | "doublon">[] = [];
 
         const entity: Partial<TypeOut> = {};
         const annotations: Record<string, { value: TypeIn; keyPath: string[] }> = {};
@@ -221,13 +220,17 @@ export default class ScdlGrantParser {
             const adapted = adapter(annotated.value);
 
             // ensures that adaptation works on given data
-            if (annotated.value && (adapted === null || adapted === undefined))
+            if (annotated.value && (adapted === null || adapted === undefined)) {
+                const problem: Problem = {
+                    colonne: annotated.keyPath.join("."),
+                    valeur: annotated.value,
+                    message: "donnée non récupérable",
+                };
                 errors.push({
                     ...data,
-                    field: annotated.keyPath.join("."),
-                    value: annotated.value,
-                    message: "donnée non récupérable",
+                    ...problem,
                 });
+            }
 
             // saves adapted field in entity ; and original value and path to annotations to give feedback in validation later
             entity[key] = adapter(annotated.value);

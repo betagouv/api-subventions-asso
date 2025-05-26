@@ -1,19 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Tools http interface /tools/scdl/validate returns errors as csv 1`] = `
-"nomAttribuant,idAttribuant,dateConvention,termeConvention,referenceDecision,nomBeneficiaire,idBeneficiaire,rnaBeneficiaire,objet,section,montant,dates_versement,datesPeriodeVersement,idRAE,notificationUE,pourcentageSubvention,dispositifAide,field,value,message,lineRejected
-Ville d'Antibes,21060004500012,2021-06-05,2024-06-30,Convention délibération N° 1323-21,CEA DU PERSONNEL DE LA VILLE D'ANTIBES JUAN-LES-PINS,,,,fonctionnement,97176.97,2024-04-03;2024-05-27,2024-04-03/2024-05-27,,non,,,idBeneficiaire,,SIRET du bénéficiaire manquant ou invalide,oui
-Ville d'Antibes,21060004500012,2021-11-30,2025-08-31,Convention délibération N° 3086-21,ANTIBES RALLYE ASSOCIATION,41925390100013,,,fonctionnement,33000,Bonjour toto,Bonjour toto,,non,,,datesPeriodeVersement,Bonjour toto,donnée non récupérable,
-Ville d'Antibes,21060004500012,2021-11-30,2025-08-31,Convention délibération N° 3086-21,ANTIBES RALLYE ASSOCIATION,41925390100013,,,fonctionnement,33000,Bonjour toto,Bonjour toto,,non,,,datesPeriodeVersement,Bonjour toto,donnée non récupérable,
-Ville d'Antibes,21060004500012,2024-06-03,2024-06-03,Convention délibération N° 2024-17,ANTIBES BRIDGE ET JEUX DE L'ESPRIT,92391758700019,pas un rna,,fonctionnement,75000,2024-04-11,2024-04-11,,non,,,rnaBeneficiaire,pas un rna,Le RNA de l'association est absent ou erroné,non
+"nomAttribuant,idAttribuant,dateConvention,termeConvention,referenceDecision,nomBeneficiaire,idBeneficiaire,rnaBeneficiaire,objet,section,montant,dates_versement,datesPeriodeVersement,idRAE,notificationUE,pourcentageSubvention,dispositifAide,colonne,valeur,message,bloquant,doublon
+Ville d'Antibes,21060004500012,2024-06-03,2024-06-03,Convention délibération N° 2024-17,ANTIBES BRIDGE ET JEUX DE L'ESPRIT,92391758700019,pas un rna,,fonctionnement,75000,2024-04-11,2024-04-11,,non,,,N/A,N/A,N/A,N/A,oui
+Ville d'Antibes,21060004500012,2021-11-30,2025-08-31,Convention délibération N° 3086-21,AS FONTONNE ANTIBES-HOCKEY,42901366700028,,,fonctionnement,90000,2024-03-29,2024-03-29,,non,,,N/A,N/A,N/A,N/A,oui
+Ville d'Antibes,21060004500012,2021-06-05,2024-06-30,Convention délibération N° 1323-21,CEA DU PERSONNEL DE LA VILLE D'ANTIBES JUAN-LES-PINS,,,,fonctionnement,97176.97,2024-04-03;2024-05-27,2024-04-03/2024-05-27,,non,,,idBeneficiaire,,SIRET du bénéficiaire manquant ou invalide,oui,non
+Ville d'Antibes,21060004500012,2021-11-30,2025-08-31,Convention délibération N° 3086-21,ANTIBES RALLYE ASSOCIATION,41925390100013,,,fonctionnement,33000,Bonjour toto,Bonjour toto,,non,,,datesPeriodeVersement,Bonjour toto,donnée non récupérable,non,non
+Ville d'Antibes,21060004500012,2021-11-30,2025-08-31,Convention délibération N° 3086-21,ANTIBES RALLYE ASSOCIATION,41925390100013,,,fonctionnement,33000,Bonjour toto,Bonjour toto,,non,,,datesPeriodeVersement,Bonjour toto,donnée non récupérable,non,non
+Ville d'Antibes,21060004500012,2024-06-03,2024-06-03,Convention délibération N° 2024-17,ANTIBES BRIDGE ET JEUX DE L'ESPRIT,92391758700019,pas un rna,,fonctionnement,75000,2024-04-11,2024-04-11,,non,,,rnaBeneficiaire,pas un rna,Le RNA de l'association est absent ou erroné,non,non
+Ville d'Antibes,21060004500012,2024-06-03,2024-06-03,Convention délibération N° 2024-17,ANTIBES BRIDGE ET JEUX DE L'ESPRIT,92391758700019,pas un rna,,fonctionnement,75000,2024-04-11,2024-04-11,,non,,,rnaBeneficiaire,pas un rna,Le RNA de l'association est absent ou erroné,non,non
 "
 `;
 
 exports[`Tools http interface /tools/scdl/validate returns errors as excel 1`] = `
-"nomAttribuant,idAttribuant,dateConvention,termeConvention,referenceDecision,nomBeneficiaire,idBeneficiaire,rnaBeneficiaire,objet,section,montant,dates_versement,datesPeriodeVersement,idRAE,notificationUE,pourcentageSubvention,dispositifAide,field,value,message,lineRejected
-Ville d'Antibes,21060004500012,44352,45473,Convention délibération N° 1323-21,CEA DU PERSONNEL DE LA VILLE D'ANTIBES JUAN-LES-PINS,,,,fonctionnement,97176.97,2024-04-03;2024-05-27,2024-04-03/2024-05-27,,non,,,idBeneficiaire,,SIRET du bénéficiaire manquant ou invalide,oui
-Ville d'Antibes,21060004500012,44530,45900,Convention délibération N° 3086-21,ANTIBES RALLYE ASSOCIATION,41925390100013,,,fonctionnement,33000,Bonjour toto,Bonjour toto,,non,,,datesPeriodeVersement,Bonjour toto,donnée non récupérable,
-Ville d'Antibes,21060004500012,44530,45900,Convention délibération N° 3086-21,ANTIBES RALLYE ASSOCIATION,41925390100013,,,fonctionnement,33000,Bonjour toto,Bonjour toto,,non,,,datesPeriodeVersement,Bonjour toto,donnée non récupérable,
-Ville d'Antibes,21060004500012,45446,45446,Convention délibération N° 2024-17,ANTIBES BRIDGE ET JEUX DE L'ESPRIT,92391758700019,pas un rna,,fonctionnement,75000,45393,45393,,non,,,rnaBeneficiaire,pas un rna,Le RNA de l'association est absent ou erroné,non
+"nomAttribuant,idAttribuant,dateConvention,termeConvention,referenceDecision,nomBeneficiaire,idBeneficiaire,rnaBeneficiaire,objet,section,montant,dates_versement,datesPeriodeVersement,idRAE,notificationUE,pourcentageSubvention,dispositifAide,colonne,valeur,message,bloquant,doublon
+Ville d'Antibes,21060004500012,44530,45900,Convention délibération N° 3086-21,AS FONTONNE ANTIBES-HOCKEY,42901366700028,,,fonctionnement,90000,45380,45380,,non,,,N/A,N/A,N/A,N/A,oui
+Ville d'Antibes,21060004500012,44229,45473,Convention délibération N° 29-21,ASSOCIATION SPORTIVE AUTOMOBILE D'ANTIBES JUAN-LES-PINS,38033590100027,,,fonctionnement,135000,2024-01-25;2024-03-29,2024-01-25/2024-03-29,,non,,,N/A,N/A,N/A,N/A,oui
+Ville d'Antibes,21060004500012,44352,45473,Convention délibération N° 1323-21,CEA DU PERSONNEL DE LA VILLE D'ANTIBES JUAN-LES-PINS,,,,fonctionnement,97176.97,2024-04-03;2024-05-27,2024-04-03/2024-05-27,,non,,,idBeneficiaire,,SIRET du bénéficiaire manquant ou invalide,oui,non
+Ville d'Antibes,21060004500012,44530,45900,Convention délibération N° 3086-21,ANTIBES RALLYE ASSOCIATION,41925390100013,,,fonctionnement,33000,Bonjour toto,Bonjour toto,,non,,,datesPeriodeVersement,Bonjour toto,donnée non récupérable,non,non
+Ville d'Antibes,21060004500012,44530,45900,Convention délibération N° 3086-21,ANTIBES RALLYE ASSOCIATION,41925390100013,,,fonctionnement,33000,Bonjour toto,Bonjour toto,,non,,,datesPeriodeVersement,Bonjour toto,donnée non récupérable,non,non
+Ville d'Antibes,21060004500012,45446,45446,Convention délibération N° 2024-17,ANTIBES BRIDGE ET JEUX DE L'ESPRIT,92391758700019,pas un rna,,fonctionnement,75000,45393,45393,,non,,,rnaBeneficiaire,pas un rna,Le RNA de l'association est absent ou erroné,non,non
 "
 `;
