@@ -291,3 +291,20 @@ exports[`ScdlGrantParser convertValidateData should return storableChunk 1`] = `
   },
 ]
 `;
+
+exports[`ScdlGrantParser indexDataByPathAndAnnotate pushes error if adapters loses data 1`] = `
+[
+  {
+    "field": "path.needs.adapting",
+    "message": "donnée non récupérable",
+    "other": "otherValue",
+    "path": {
+      "needs": {
+        "adapting": "value-needs-adapting",
+      },
+    },
+    "some": "someValue",
+    "value": "value-needs-adapting",
+  },
+]
+`;
