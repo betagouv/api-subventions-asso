@@ -10,7 +10,7 @@ import { DEV } from "../../../configurations/env.conf";
 import { SCDL_MAPPER } from "./scdl.mapper";
 import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
 import { ScdlParsedGrant } from "./@types/ScdlParsedGrant";
-import { ParsedDataWithProblem, Problem, Validity } from "./@types/Validation";
+import { ParsedDataDuplicate, ParsedDataWithProblem, Problem, Validity } from "./@types/Validation";
 
 export default class ScdlGrantParser {
     protected static requirements: {
@@ -95,8 +95,22 @@ export default class ScdlGrantParser {
         return grant;
     }
 
+    private static findDuplicates(parsedChunk: DefaultObject<string>[]) {
+        const uniqueLines = new Set<string>();
+        const duplicatesLines: ParsedDataDuplicate[] = [];
+        let nbDuplicatesFound = 0;
+        for (const [index, line] of parsedChunk.entries()) {
+            uniqueLines.add(JSON.stringify(line));
+            if (index + 1 > uniqueLines.size + nbDuplicatesFound) {
+                duplicatesLines.push(ScdlGrantParser.toDuplicateError(line));
+                nbDuplicatesFound++;
+            }
+        }
+        return duplicatesLines;
+    }
+
     static parseCsv(chunk: Buffer, delimiter = ";", quote: boolean | string = '"') {
-        const parsedChunk = csvSyncParser.parse(chunk, {
+        const parsedChunk: DefaultObject<string>[] = csvSyncParser.parse(chunk, {
             columns: (header: string[]): string[] => header.map(h => h.trim()),
             skip_empty_lines: true,
             delimiter,
@@ -106,7 +120,19 @@ export default class ScdlGrantParser {
             bom: true,
         });
 
-        return ScdlGrantParser.convertValidateData(parsedChunk);
+        const duplicates = ScdlGrantParser.findDuplicates(parsedChunk);
+        const { entities, problems } = ScdlGrantParser.convertValidateData(parsedChunk);
+
+        return { entities, errors: [...duplicates, ...problems] };
+    }
+
+    private static toDuplicateError(line: DefaultObject<string>): ParsedDataDuplicate {
+        return { ...line, field: "N/A", value: "N/A", message: "N/A", lineRejected: "N/A", duplicate: "oui" };
+    }
+
+    private static toFormatError(line: Omit<ParsedDataWithProblem, "duplicate">): ParsedDataWithProblem {
+        // @ts-expect-error: don't undertand why ts is angry
+        return { ...line, duplicate: "non" };
     }
 
     static parseExcel(content: Buffer, pageName?: string, rowOffset = 0) {
@@ -122,42 +148,44 @@ export default class ScdlGrantParser {
         const headerRow = page[rowOffset] as string[];
         console.log("Map rows to entities...");
         const data = page.slice(rowOffset + 1).map(row => GenericParser.linkHeaderToData(headerRow, row));
-        return ScdlGrantParser.convertValidateData(data);
+        const duplicates = ScdlGrantParser.findDuplicates(data);
+        const { entities, problems } = ScdlGrantParser.convertValidateData(data);
+        return { entities, errors: [...duplicates, ...problems] };
     }
 
     protected static convertValidateData(parsedChunk): {
         entities: ScdlStorableGrant[];
-        errors: ParsedDataWithProblem[];
+        problems: ParsedDataWithProblem[];
     } {
         const storableChunk: ScdlStorableGrant[] = [];
         const invalidEntities: Partial<ScdlStorableGrant>[] = [];
-        const errors: ParsedDataWithProblem[] = [];
+        const errors: Omit<ParsedDataWithProblem, "duplicate">[] = [];
 
         // TODO create errors for that (does not fit in the csv format)
         ScdlGrantParser.verifyMissingHeaders(SCDL_MAPPER, parsedChunk[0]);
 
-        let count = 0;
         for (const parsedData of parsedChunk) {
             const {
                 entity,
                 annotations,
                 errors: errorsEntity,
             } = ScdlGrantParser.indexDataByPathAndAnnotate<string, ScdlStorableGrant>(SCDL_MAPPER, parsedData);
-
             // TODO make indexDataByPathAndAnnotate indicate if errors make us reject the line
-            errors.push(...errorsEntity);
+            errors.push(...errorsEntity.map(error => ({ ...error, lineRejected: "non" })));
 
             // validates and saves annotated errors
             const validation = this.isGrantValid(entity as ScdlStorableGrant, annotations);
-            if (count === 0) console.log("First validation: ", validation);
-            count++;
             if (validation.valid) {
                 storableChunk.push({ ...this.cleanOptionalFields(entity as ScdlStorableGrant), __data__: parsedData });
             } else {
                 invalidEntities.push(entity);
             }
             validation?.problems?.map((pb: Problem) =>
-                errors.push({ ...parsedData, ...pb, lineRejected: validation.valid ? "non" : "oui" }),
+                errors.push({
+                    ...parsedData,
+                    ...pb,
+                    lineRejected: validation.valid ? "non" : "oui",
+                }),
             );
         }
 
@@ -166,7 +194,7 @@ export default class ScdlGrantParser {
             console.log(`Here some of them: `, invalidEntities.slice(0, 3));
         }
 
-        return { entities: storableChunk, errors };
+        return { entities: storableChunk, problems: errors.map(error => ScdlGrantParser.toFormatError(error)) };
     }
 
     /*
@@ -179,12 +207,11 @@ export default class ScdlGrantParser {
     ) {
         const defaultAdapter = <T>(v: string | number | undefined): unknown => v as T;
         let adapter: (v: TypeIn) => unknown;
-        const errors: ParsedDataWithProblem[] = [];
+        const errors: Omit<ParsedDataWithProblem, "lineRejected" | "duplicates">[] = [];
 
         const entity: Partial<TypeOut> = {};
         const annotations: Record<string, { value: TypeIn; keyPath: string[] }> = {};
         for (const [key, path] of Object.entries(pathObject)) {
-            // console.log(key, path);
             // finds original value and path then adapt it
             const annotated: ValueWithPath<TypeIn> = GenericParser.findValueAndOriginalKeyByPath<TypeIn>(
                 data,
@@ -193,7 +220,6 @@ export default class ScdlGrantParser {
             // @ts-expect-error -- ts is scared that adapter may not exist in type
             adapter = path?.adapter || defaultAdapter;
             const adapted = adapter(annotated.value);
-            // console.log(adapted);
 
             // ensures that adaptation works on given data
             if (annotated.value && (adapted === null || adapted === undefined))
@@ -202,7 +228,6 @@ export default class ScdlGrantParser {
                     field: annotated.keyPath.join("."),
                     value: annotated.value,
                     message: "donnée non récupérable",
-                    lineRejected: "",
                 });
 
             // saves adapted field in entity ; and original value and path to annotations to give feedback in validation later
