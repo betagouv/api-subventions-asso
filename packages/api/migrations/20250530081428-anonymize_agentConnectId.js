@@ -9,4 +9,6 @@ module.exports = {
             },
         );
     },
+
+    async down() {},
 };
