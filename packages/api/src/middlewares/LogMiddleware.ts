@@ -21,17 +21,7 @@ function recursiveFilter(obj: object) {
     });
 }
 
-const requestWhitelist = [
-    "url",
-    "method",
-    "httpVersion",
-    "originalUrl",
-    "query",
-    "body",
-    "user",
-    "connection",
-    "headers",
-];
+const requestWhitelist = ["url", "method", "httpVersion", "originalUrl", "query", "body", "user", "headers"];
 
 export const expressLogger = () =>
     expressWinston.logger({
