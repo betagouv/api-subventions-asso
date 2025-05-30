@@ -21,17 +21,7 @@ function recursiveFilter(obj: object) {
     });
 }
 
-const requestWhitelist = [
-    "url",
-    "method",
-    "httpVersion",
-    "originalUrl",
-    "query",
-    "body",
-    "user",
-    "connection",
-    "headers",
-];
+const requestWhitelist = ["url", "method", "httpVersion", "originalUrl", "query", "body", "user", "headers"];
 
 export const expressLogger = () =>
     expressWinston.logger({
@@ -48,11 +38,21 @@ export const expressLogger = () =>
         ],
         meta: true,
         dynamicMeta: function (req) {
-            if ((req.user as UserDto)?._id == null) return {};
+            if (!req.user || (req.user as UserDto)?._id == null) return {};
             // completes generated meta in log, careful it overrides nested values
             const whiteReq = {};
             requestWhitelist.map(propertyName => (whiteReq[propertyName] = req[propertyName]));
-            return { req: { ...whiteReq, user: { ...req.user, _id: (req.user as UserDto)?._id?.toString() } } };
+            const { agentConnectId, ...anonymousUser } = req.user as UserDto;
+            return {
+                req: {
+                    ...whiteReq,
+                    user: {
+                        ...anonymousUser,
+                        _id: (req.user as UserDto)?._id?.toString(),
+                        isAgentConnect: !!agentConnectId,
+                    },
+                },
+            };
         },
         msg: "Request: HTTP {{req.method}} {{req.url}}; ipAddress {{req.connection.remoteAddress}}",
         requestWhitelist,
