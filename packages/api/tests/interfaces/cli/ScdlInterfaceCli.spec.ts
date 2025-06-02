@@ -6,6 +6,7 @@ import miscScdlProducersPort from "../../../src/dataProviders/db/providers/scdl/
 import miscScdlGrantPort from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.port";
 import MiscScdlProducer from "../../../src/modules/providers/scdl/__fixtures__/MiscScdlProducer";
 import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
+import { SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
 
 describe("SCDL CLI", () => {
     let cli: ScdlCli;
@@ -41,23 +42,23 @@ describe("SCDL CLI", () => {
     }
 
     describe("parsing", () => {
+        beforeEach(async () => {
+            await miscScdlProducersPort.create({
+                slug: MiscScdlProducer.slug,
+                name: MiscScdlProducer.name,
+                siret: MiscScdlProducer.siret,
+                lastUpdate: PRODUCER_CREATION_DATE,
+            });
+        });
+
         const PRODUCER_CREATION_DATE = new Date("2025-01-01");
         describe.each`
             methodName    | test
             ${"parse"}    | ${testParseCsv}
             ${"parseXls"} | ${testParseXls}
         `("$methodName", ({ test }) => {
-            beforeEach(async () => {
-                await miscScdlProducersPort.create({
-                    slug: MiscScdlProducer.slug,
-                    name: MiscScdlProducer.name,
-                    siret: MiscScdlProducer.siret,
-                    lastUpdate: PRODUCER_CREATION_DATE,
-                });
-            });
-
             it("should throw Error()", async () => {
-                expect(() => test("FAKE_ID", DATE_STR)).rejects.toThrowError(Error);
+                expect(() => test("FAKE_ID", DATE_STR)).rejects.toThrow(Error);
             });
 
             it("should add grants with exercise from conventionDate", async () => {
@@ -100,7 +101,7 @@ describe("SCDL CLI", () => {
 
         describe("edge cases", () => {
             it("should add grants with exercise from its own column", async () => {
-                await cli.addProducer(MiscScdlProducer.slug, MiscScdlProducer.name, MiscScdlProducer.siret);
+                // await cli.addProducer(MiscScdlProducer.slug, MiscScdlProducer.name, MiscScdlProducer.siret);
 
                 await cli.parseXls(
                     path.resolve(
@@ -115,6 +116,24 @@ describe("SCDL CLI", () => {
                 const grantExercices = grants.map(g => g.exercice);
                 expect(grantExercices).toMatchSnapshot();
             }, 20000);
+
+            it.each`
+                methodName    | test            | exercise
+                ${"parse"}    | ${testParseCsv} | ${2019}
+                ${"parseXls"} | ${testParseXls} | ${2023}
+            `(
+                "$methodName should throw error if one exercise from import contain less data that what exists in DB",
+                async ({ test, exercise }) => {
+                    await test("SCDL", MiscScdlProducer.slug, DATE_STR); // import all grants
+                    await miscScdlGrantPort.createMany([
+                        { ...SCDL_GRANT_DBOS[0], exercice: exercise, producerSlug: MiscScdlProducer.slug },
+                    ]); // add one more grant in DB
+
+                    await expect(async () => await test("SCDL", MiscScdlProducer.slug, DATE_STR)).rejects.toThrow(
+                        `You are trying to import less grants for exercise ${exercise} than what already exists in the database for producer ${MiscScdlProducer.slug}.`,
+                    );
+                },
+            );
         });
     });
 });

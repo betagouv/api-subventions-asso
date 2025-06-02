@@ -1,6 +1,8 @@
+import { ScdlGrantDbo } from "../dbo/ScdlGrantDbo";
+import MiscScdlGrantEntity from "../entities/MiscScdlGrantEntity";
 import MiscScdlProducer from "./MiscScdlProducer";
 
-export default {
+const MiscScdlGrant: MiscScdlGrantEntity = {
     producerSlug: MiscScdlProducer.slug,
     allocatorName: MiscScdlProducer.name,
     allocatorSiret: MiscScdlProducer.siret,
@@ -20,4 +22,8 @@ export default {
     UeNotification: true,
     grantPercentage: 0.5,
     aidSystem: "65d5b6c7-102c-4440-ac3b-768f708edc0a",
-};
+} as ScdlGrantDbo;
+
+export const MISC_SCDL_GRANT_DBO_FIXTURE: ScdlGrantDbo = { _id: "6836edb7fed76abae662757f", ...MiscScdlGrant };
+
+export default MiscScdlGrant;
