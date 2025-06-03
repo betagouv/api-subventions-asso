@@ -104,21 +104,20 @@ export default class ScdlCli {
      * @param entities Entities to persist
      */
     private async persist(producerSlug: string, entities: ScdlStorableGrant[]) {
-        let backupEnable = false;
         if (!entities || !entities.length) {
             throw new Error("Importation failed : no entities could be created from this file");
         }
 
-        const { grants } = await scdlService.validateAndGetLastExerciseGrants(producerSlug, entities);
-        if (grants && grants.length) backupEnable = true;
+        const { exercise: exerciseToImport, enableBackup: backupEnabled } =
+            await scdlService.validateAndGetLastExercise(producerSlug, entities);
 
-        if (backupEnable) await scdlService.cleanExercise(producerSlug, grants);
+        if (backupEnabled) await scdlService.cleanExercise(producerSlug, exerciseToImport);
 
         try {
             await this.persistEntities(entities, producerSlug);
-            if (backupEnable) await scdlService.dropBackup();
+            if (backupEnabled) await scdlService.dropBackup();
         } catch (e) {
-            if (backupEnable) {
+            if (backupEnabled) {
                 console.log("Importation failed, restoring previous exercise data");
                 await scdlService.restoreBackup(producerSlug);
             }

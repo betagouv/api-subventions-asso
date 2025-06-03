@@ -101,8 +101,6 @@ describe("SCDL CLI", () => {
 
         describe("edge cases", () => {
             it("should add grants with exercise from its own column", async () => {
-                // await cli.addProducer(MiscScdlProducer.slug, MiscScdlProducer.name, MiscScdlProducer.siret);
-
                 await cli.parseXls(
                     path.resolve(
                         __dirname,
@@ -122,7 +120,7 @@ describe("SCDL CLI", () => {
                 ${"parse"}    | ${testParseCsv} | ${2019}
                 ${"parseXls"} | ${testParseXls} | ${2023}
             `(
-                "$methodName should throw error if one exercise from import contain less data that what exists in DB",
+                "$methodName should throw error if one exercise from import contain less data that what exist in DB",
                 async ({ test, exercise }) => {
                     await test("SCDL", MiscScdlProducer.slug, DATE_STR); // import all grants
                     await miscScdlGrantPort.createMany([

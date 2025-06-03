@@ -30,9 +30,9 @@ export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
     }
 
     // we use bulk instead of deleteMany as $in might cause performance issues with large arrays
-    public async bulkFindDelete(ids: string[]) {
+    public async bulkFindDelete(slug: string, exercise: number) {
         const bulk = this.collection.initializeUnorderedBulkOp();
-        ids.forEach(id => bulk.find({ _id: id }).deleteOne());
+        bulk.find({ producerSlug: slug, exercice: exercise }).delete();
         return bulk.execute().catch(error => {
             throw error;
         });
@@ -65,7 +65,7 @@ export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
         await this.collection.deleteMany({ producerSlug: slug });
         await this.db
             .collection(this.backupCollectionName)
-            .aggregate([{ $match: {} }, { $out: this.collection }])
+            .aggregate([{ $out: this.collection }])
             .toArray();
         await this.createIndexes(); // backup seems to only copy the data, not the indexes
         await this.dropBackupCollection();

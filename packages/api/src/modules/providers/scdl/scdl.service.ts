@@ -70,11 +70,14 @@ export class ScdlService {
      *
      * @param slug Producer slug
      * @param entities Entities parsed from the current import
-     * @returns Last exercise number from the import
+     * @returns {
+     *              exercise: Last exercise number from the import
+     *              enableBackup: Boolean indicating if a backup should be created before importing entities
+     *          }
      * @throws Error if the import has less exercises than the existing ones in the database
      */
-    async validateAndGetLastExerciseGrants(slug: string, entities: ScdlStorableGrant[]) {
-        const exercises: Set<number> = entities.reduce((acc, entity) => {
+    async validateAndGetLastExercise(slug: string, importedEntities: ScdlStorableGrant[]) {
+        const exercises: Set<number> = importedEntities.reduce((acc, entity) => {
             return acc.add(entity.exercice);
         }, new Set<number>());
 
@@ -83,26 +86,28 @@ export class ScdlService {
         }
 
         const exercisesArray = [...exercises]; // transform Set to Array
-        const documents = await miscScdlGrantPort.findBySlugOnPeriod(slug, exercisesArray);
+        const documentsInDB = await miscScdlGrantPort.findBySlugOnPeriod(slug, exercisesArray);
 
-        console.log(`There are currently ${documents.length} documents for producer ${slug}`);
-        console.log(`The new import contains ${entities.length} entities`);
+        console.log(`There are currently ${documentsInDB.length} documents for producer ${slug}`);
+        console.log(`The new import contains ${importedEntities.length} entities`);
 
         exercisesArray.forEach(exercise => {
-            console.log(documents.length, entities.length, exercise);
             if (
-                documents.filter(doc => doc.exercice === exercise).length >
-                entities.filter(entity => entity.exercice === exercise).length
+                documentsInDB.filter(doc => doc.exercice === exercise).length >
+                importedEntities.filter(entity => entity.exercice === exercise).length
             ) {
                 throw new Error(
-                    `You are trying to import less grants for exercise ${exercise} than what already exists in the database for producer ${slug}.`,
+                    `You are trying to import less grants for exercise ${exercise} than what already exist in the database for producer ${slug}.`,
                 );
             }
         });
 
-        const lastExercise = exercisesArray.sort((a, b) => a - b).at(-1) as number;
-        // get the last exercise from the array
-        return { grants: documents.filter(grant => grant.exercice === lastExercise) };
+        const mostRecentExercise = exercisesArray.sort((a, b) => a - b).at(-1) as number;
+
+        return {
+            exercise: mostRecentExercise,
+            enableBackup: !!documentsInDB.find(doc => doc.exercice === mostRecentExercise),
+        };
     }
 
     /**
@@ -113,14 +118,14 @@ export class ScdlService {
      * @param producerSlug Producer slug
      * @param documents List of ScdlGrantDbo to delete from the collection
      */
-    async cleanExercise(producerSlug: string, documents: ScdlGrantDbo[]) {
+    async cleanExercise(producerSlug: string, exercise: number) {
         console.log("Creating backup for producer's data before importation");
         // backup producer data in case of bulk delete failure
         await miscScdlGrantPort.createBackupCollection(producerSlug);
 
         try {
             console.log("Deleting previously imported exercise data");
-            await miscScdlGrantPort.bulkFindDelete(documents.map(entity => entity._id));
+            await miscScdlGrantPort.bulkFindDelete(producerSlug, exercise);
         } catch (e) {
             console.log(`SCDL importation failed: ${(e as Error).message}`);
             console.log("Reimporting entities that might have been deleted during the importation process");
