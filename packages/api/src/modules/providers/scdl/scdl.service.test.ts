@@ -164,19 +164,33 @@ describe("ScdlService", () => {
     `("parser boilerplate $service", ({ service, parser, args }) => {
         const FILE_CONTENT = Buffer.from("toto");
         const RES = { errors: [], entities: [] };
+        let mockNormalizeErrors: jest.SpyInstance;
 
-        beforeAll(() => jest.mocked(parser).mockReturnValue(RES));
-        afterAll(() => jest.mocked(parser).mockRestore());
+        beforeAll(() => {
+            // @ts-expect-error: mock method
+            mockNormalizeErrors = jest.spyOn(scdlService, "normalizeErrors").mockImplementation(errors => errors);
+            jest.mocked(parser).mockReturnValue(RES);
+        });
+
+        afterAll(() => {
+            jest.mocked(parser).mockRestore();
+            mockNormalizeErrors.mockRestore();
+        });
 
         it("calls parser with given args", () => {
             scdlService[service](FILE_CONTENT, ...args);
             expect(parser).toHaveBeenCalledWith(FILE_CONTENT, ...args);
         });
 
+        it("normalizes errors", () => {
+            scdlService[service](FILE_CONTENT, ...args);
+            expect(mockNormalizeErrors).toHaveBeenCalledWith(RES.errors);
+        });
+
         it("returns res from parser", () => {
             const expected = RES;
             const actual = scdlService[service](FILE_CONTENT, ...args);
-            expect(actual).toBe(expected);
+            expect(actual).toEqual(expected);
         });
     });
 

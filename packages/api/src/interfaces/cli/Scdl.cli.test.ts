@@ -18,7 +18,7 @@ const mockedScdlService = jest.mocked(scdlService);
 import MiscScdlGrant from "../../modules/providers/scdl/__fixtures__/MiscScdlGrant";
 import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
 import MiscScdlProducer from "../../modules/providers/scdl/__fixtures__/MiscScdlProducer";
-import { ParsedDataWithProblem } from "../../modules/providers/scdl/@types/Validation";
+import { MixedParsedError, ParsedErrorFormat } from "../../modules/providers/scdl/@types/Validation";
 
 import csvSyncStringifier from "csv-stringify/sync";
 import dataLogService from "../../modules/data-log/dataLog.service";
@@ -256,7 +256,7 @@ describe("ScdlCli", () => {
 
     describe("end", () => {
         // @ts-expect-error: mock resolved value
-        const ERRORS = ["ERROR_1", "ERROR_2"] as ParsedDataWithProblem[];
+        const ERRORS = ["ERROR_1", "ERROR_2"] as MixedParsedError[];
 
         beforeEach(() => {
             console.log(cli);
@@ -266,7 +266,7 @@ describe("ScdlCli", () => {
 
         it("exports errors", async () => {
             // @ts-expect-error: mock errors
-            const ERRORS = ["ERROR_1", "ERROR_2"] as ParsedDataWithProblem[];
+            const ERRORS = ["ERROR_1", "ERROR_2"] as MixedParsedError[];
             // @ts-expect-error: test private method
             await cli.end({
                 file: FILE_PATH,
@@ -350,7 +350,7 @@ describe("ScdlCli", () => {
     });
 
     describe("exportErrors", () => {
-        const ERRORS: ParsedDataWithProblem[] = [];
+        const ERRORS: ParsedErrorFormat[] = [];
         const FILE = "path/file.csv";
         const STR_CONTENT = "azertyuiop";
         // normalize for windows and linux compatilibity

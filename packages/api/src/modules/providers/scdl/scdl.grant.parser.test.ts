@@ -13,7 +13,7 @@ import { SCDL_STORABLE } from "./__fixtures__/RawData";
 import Siret from "../../../valueObjects/Siret";
 import Rna from "../../../valueObjects/Rna";
 import { GenericParser } from "../../../shared/GenericParser";
-import { Problem } from "./@types/Validation";
+import { FormatProblem } from "./@types/Validation";
 import { DefaultObject, ParserInfo, ParserPath } from "../../../@types";
 import { ScdlParsedGrant } from "./@types/ScdlParsedGrant";
 
@@ -371,7 +371,6 @@ describe("ScdlGrantParser", () => {
         let indexAnnotateSpy: jest.SpyInstance;
         let cleanupSpy: jest.SpyInstance;
         let verifyMissingHeadersSpy: jest.SpyInstance;
-        let spyToFormatError: jest.SpyInstance;
 
         beforeAll(() => {
             const annotations = {};
@@ -390,8 +389,6 @@ describe("ScdlGrantParser", () => {
                 }));
             // @ts-expect-error -- protected method
             cleanupSpy = jest.spyOn(ScdlGrantParser, "cleanOptionalFields").mockImplementation(v => v);
-            // @ts-expect-error -- protected method
-            spyToFormatError = jest.spyOn(ScdlGrantParser, "toFormatError").mockImplementation(e => e);
         });
 
         afterAll(() => {
@@ -399,7 +396,6 @@ describe("ScdlGrantParser", () => {
             isValidSpy.mockRestore();
             cleanupSpy.mockRestore();
             indexAnnotateSpy.mockRestore();
-            spyToFormatError.mockRestore();
         });
 
         it("should return storableChunk", () => {
@@ -416,18 +412,8 @@ describe("ScdlGrantParser", () => {
             expect(actual).toBe(expected);
         });
 
-        it("transforms errors", () => {
-            const pb: Problem = { colonne: "something", valeur: "something", message: "clarify problem" };
-            isValidSpy.mockReturnValueOnce({ valid: false, problems: [pb] });
-            // @ts-expect-error -- test private method
-            const { problems } = ScdlGrantParser.convertValidateData(SCDL_STORABLE);
-            problems.forEach((problem, index) => {
-                expect(spyToFormatError).toHaveBeenNthCalledWith(index + 1, problem);
-            });
-        });
-
         it("also returns errors", () => {
-            const pb: Problem = { colonne: "something", valeur: "something", message: "clarify problem" };
+            const pb: FormatProblem = { colonne: "something", valeur: "something", message: "clarify problem" };
             isValidSpy.mockReturnValueOnce({ valid: false, problems: [pb] });
             // @ts-expect-error -- mock private method
             const actual = ScdlGrantParser.convertValidateData(SCDL_STORABLE).problems;
@@ -435,7 +421,7 @@ describe("ScdlGrantParser", () => {
         });
 
         it("also returns errors with problems in optional field so valid result", () => {
-            const pb: Problem = { colonne: "something", valeur: "something", message: "clarify problem" };
+            const pb: FormatProblem = { colonne: "something", valeur: "something", message: "clarify problem" };
             isValidSpy.mockReturnValueOnce({ valid: true, problems: [pb] });
             // @ts-expect-error -- mock private method
             const actual = ScdlGrantParser.convertValidateData(SCDL_STORABLE).problems;
@@ -538,28 +524,14 @@ describe("ScdlGrantParser", () => {
     });
 
     describe("findDuplicates", () => {
-        let spyToDuplicateError: jest.SpyInstance;
         // add two duplicates
         const PARSED_CHUNK = [...SCDL_STORABLE, SCDL_STORABLE[0], SCDL_STORABLE[1]];
 
-        beforeAll(() => {
-            // @ts-expect-error -- protected method
-            spyToDuplicateError = jest.spyOn(ScdlGrantParser, "toDuplicateError").mockImplementation(e => e);
-        });
-
-        afterAll(() => {
-            spyToDuplicateError.mockRestore();
-        });
-
-        it("transform errors", () => {
-            // @ts-expect-error: test private method
-            ScdlGrantParser.findDuplicates(PARSED_CHUNK);
-            expect(spyToDuplicateError).toHaveBeenNthCalledWith(1, SCDL_STORABLE[0]);
-            expect(spyToDuplicateError).toHaveBeenNthCalledWith(2, SCDL_STORABLE[1]);
-        });
-
         it("should return duplicates", () => {
-            const expected = [SCDL_STORABLE[0], SCDL_STORABLE[1]];
+            const expected = [
+                { ...SCDL_STORABLE[0], doublon: "oui", bloquant: "oui" },
+                { ...SCDL_STORABLE[1], doublon: "oui", bloquant: "oui" },
+            ];
             // @ts-expect-error: test private method
             const actual = ScdlGrantParser.findDuplicates(PARSED_CHUNK);
             expect(actual).toEqual(expected);
