@@ -16,13 +16,14 @@ import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
 import Siren from "../../valueObjects/Siren";
 import Rna from "../../valueObjects/Rna";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../shared/LegalCategoriesAccepted";
+import sireneStockUniteLegaleService from "../providers/sirene/stockUniteLegale/sireneStockUniteLegale.service";
 
 jest.mock("../providers/index");
 
 jest.mock("../providers/apiAsso/apiAsso.service");
-jest.mock("../rna-siren/rnaSiren.service");
 jest.mock("../providers/uniteLegalEntreprises/uniteLegal.entreprises.service");
 jest.mock("../../shared/LegalCategoriesAccepted", () => ({ LEGAL_CATEGORIES_ACCEPTED: "asso" }));
+jest.mock("../providers/sirene/stockUniteLegale/sireneStockUniteLegale.service");
 
 const DEFAULT_PROVIDERS = providers.default;
 
@@ -184,20 +185,20 @@ describe("associationsService", () => {
             expect(actual).toBeTruthy();
         });
 
+        it("should return true when siren is in sireneStockUniteLegale", async () => {
+            // @ts-expect-error: mock
+            jest.mocked(sireneStockUniteLegaleService.findOneBySiren).mockResolvedValueOnce(true);
+            const actual = await associationsService.isIdentifierFromAsso(IDENTIFIER_WITHOUT_RNA);
+            expect(actual).toBeTruthy();
+        });
+
         it("should return false when siren is in uniteLegalEntreprises", async () => {
+            // @ts-expect-error: mock
+            jest.mocked(sireneStockUniteLegaleService.findOneBySiren).mockResolvedValueOnce(false);
             // @ts-expect-error: mock
             uniteLegalEntreprisesService.isEntreprise.mockResolvedValueOnce(true);
             const actual = await associationsService.isIdentifierFromAsso(IDENTIFIER_WITHOUT_RNA);
             expect(actual).toBeFalsy();
-        });
-
-        it("should return true when siren is in rnaSirenService", async () => {
-            // @ts-expect-error: mock
-            uniteLegalEntreprisesService.isEntreprise.mockResolvedValueOnce(false);
-            // @ts-expect-error: mock
-            rnaSirenServiceFindOne.mockImplementationOnce(() => ({ rna: RNA, siren: SIREN }));
-            const actual = await associationsService.isIdentifierFromAsso(IDENTIFIER_WITHOUT_RNA);
-            expect(actual).toBeTruthy();
         });
 
         it("should return false when api asso return an association without categorie_juridique", async () => {
