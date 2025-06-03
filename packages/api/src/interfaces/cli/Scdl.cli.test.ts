@@ -18,7 +18,7 @@ const mockedScdlService = jest.mocked(scdlService);
 import MiscScdlGrant from "../../modules/providers/scdl/__fixtures__/MiscScdlGrant";
 import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
 import MiscScdlProducer from "../../modules/providers/scdl/__fixtures__/MiscScdlProducer";
-import { ParsedDataWithProblem } from "../../modules/providers/scdl/@types/Validation";
+import { ParsedErrorFormat } from "../../modules/providers/scdl/@types/Validation";
 
 import csvSyncStringifier from "csv-stringify/sync";
 import dataLogService from "../../modules/data-log/dataLog.service";
@@ -114,6 +114,15 @@ describe("ScdlCli", () => {
         ${"parse"}    | ${testParseCsv} | ${scdlService.parseCsv} | ${[FILE_CONTENT, DELIMETER, QUOTE]}
         ${"parseXls"} | ${testParseXls} | ${scdlService.parseXls} | ${[FILE_CONTENT, PAGE_NAME, ROW_OFFSET]}
     `("$methodName", ({ test, parserMethod, parserArgs }) => {
+        let persistSpy: jest.SpyInstance;
+        let exportErrorsSpy: jest.SpyInstance;
+        beforeEach(() => {
+            // @ts-expect-error: mock private method
+            exportErrorsSpy = jest.spyOn(cli, "exportErrors").mockResolvedValue({});
+            // @ts-expect-error -- test private
+            persistSpy = jest.spyOn(cli, "persistEntities").mockReturnValueOnce(Promise.resolve());
+        });
+
         it("sanitizes input", async () => {
             // @ts-expect-error -- test private
             const sanitizeSpy = jest.spyOn(cli, "validateGenericInput");
@@ -132,8 +141,6 @@ describe("ScdlCli", () => {
         });
 
         it("persists entities", async () => {
-            // @ts-expect-error -- test private
-            const persistSpy = jest.spyOn(cli, "persistEntities").mockReturnValueOnce(Promise.resolve());
             jest.mocked(parserMethod).mockReturnValueOnce({ entities: STORABLE_DATA_ARRAY });
             await test();
             expect(persistSpy).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug);
@@ -141,11 +148,9 @@ describe("ScdlCli", () => {
 
         it("exports errors", async () => {
             const ERRORS = "toto" as unknown as unknown[];
-            // @ts-expect-error -- test private
-            const exportSpy = jest.spyOn(cli, "exportErrors").mockReturnValueOnce(Promise.resolve());
             jest.mocked(parserMethod).mockReturnValueOnce({ entities: STORABLE_DATA_ARRAY, errors: ERRORS });
             await test();
-            expect(exportSpy).toHaveBeenCalledWith(ERRORS, FILE_PATH);
+            expect(exportErrorsSpy).toHaveBeenCalledWith(ERRORS, FILE_PATH);
         });
 
         it("logs import", async () => {
@@ -214,7 +219,7 @@ describe("ScdlCli", () => {
     });
 
     describe("exportErrors", () => {
-        const ERRORS: ParsedDataWithProblem[] = [];
+        const ERRORS: ParsedErrorFormat[] = [];
         const FILE = "path/file.csv";
         const STR_CONTENT = "azertyuiop";
         // normalize for windows and linux compatilibity

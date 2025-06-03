@@ -5,6 +5,8 @@ import MiscScdlProducerEntity from "./entities/MiscScdlProducerEntity";
 import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
 import ScdlGrantParser from "./scdl.grant.parser";
+import { GenericAdapter } from "../../../shared/GenericAdapter";
+import { MixedParsedError, ParsedErrorDuplicate, ParsedErrorFormat } from "./@types/Validation";
 
 export class ScdlService {
     producerNames: string[] = [];
@@ -59,11 +61,33 @@ export class ScdlService {
     }
 
     parseXls(fileContent: Buffer, pageName?: string, rowOffset = 0) {
-        return ScdlGrantParser.parseExcel(fileContent, pageName, rowOffset);
+        const { entities, errors } = ScdlGrantParser.parseExcel(fileContent, pageName, rowOffset);
+        return { entities, errors: this.normalizeErrors(errors) };
     }
 
     parseCsv(fileContent: Buffer, delimiter = ";", quote: string | boolean = '"') {
-        return ScdlGrantParser.parseCsv(fileContent, delimiter, quote);
+        const { entities, errors } = ScdlGrantParser.parseCsv(fileContent, delimiter, quote);
+        return { entities, errors: this.normalizeErrors(errors) };
+    }
+
+    /**
+     *
+     * @param errors Format or duplicates errors
+     * @returns Normalized errors. To be inserted in the same CSV it must share the same format
+     */
+    normalizeErrors(errors: (ParsedErrorDuplicate | ParsedErrorFormat)[]) {
+        const normalizedErrors: MixedParsedError[] = errors.map(error => {
+            if (error.message) {
+                error.doublon = "non";
+            }
+            if (error.doublon === "oui") {
+                error.colonne = GenericAdapter.NOT_APPLICABLE_VALUE;
+                error.valeur = GenericAdapter.NOT_APPLICABLE_VALUE;
+                error.message = GenericAdapter.NOT_APPLICABLE_VALUE;
+            }
+            return error as MixedParsedError;
+        });
+        return normalizedErrors;
     }
 }
 
