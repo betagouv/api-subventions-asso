@@ -70,7 +70,7 @@ export default class ScdlCli {
 
         const parsedQuote = quote === "false" ? false : quote;
         const { entities, errors } = scdlService.parseCsv(fileContent, delimiter, parsedQuote);
-
+        console.log(entities, errors);
         // persist data
         await this.persist(producerSlug, entities);
         // execute end of import methods
@@ -114,7 +114,10 @@ export default class ScdlCli {
         if (backupEnabled) await scdlService.cleanExercise(producerSlug, exerciseToImport);
 
         try {
-            await this.persistEntities(entities, producerSlug);
+            await this.persistEntities(
+                entities.filter(entity => entity.exercice === exerciseToImport), // only import most recent exercise
+                producerSlug,
+            );
             if (backupEnabled) await scdlService.dropBackup();
         } catch (e) {
             if (backupEnabled) {

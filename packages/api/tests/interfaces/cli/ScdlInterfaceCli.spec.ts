@@ -72,7 +72,7 @@ describe("SCDL CLI", () => {
 
             it("should add grants with exercise from its own column", async () => {
                 await test("SCDL_WITH_EXERCICE", MiscScdlProducer.slug, DATE_STR);
-                const grants = await miscScdlGrantPort.findAll();
+                const grants = await miscScdlGrantPort.findAll(); // only grants from 2023 as it only saves most recent exercise in multi exercise files
                 const expectedAny = grants.map(() => ({
                     _id: expect.any(String),
                 }));
@@ -128,7 +128,7 @@ describe("SCDL CLI", () => {
                     ]); // add one more grant in DB
 
                     await expect(async () => await test("SCDL", MiscScdlProducer.slug, DATE_STR)).rejects.toThrow(
-                        `You are trying to import less grants for exercise ${exercise} than what already exists in the database for producer ${MiscScdlProducer.slug}.`,
+                        `You are trying to import less grants for exercise ${exercise} than what already exist in the database for producer ${MiscScdlProducer.slug}.`,
                     );
                 },
             );
