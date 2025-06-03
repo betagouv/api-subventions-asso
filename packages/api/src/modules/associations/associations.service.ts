@@ -14,13 +14,13 @@ import documentsService from "../documents/documents.service";
 import paymentService from "../payments/payments.service";
 import subventionsService from "../subventions/subventions.service";
 import etablissementService from "../etablissements/etablissements.service";
-import rnaSirenService from "../rna-siren/rnaSiren.service";
 import uniteLegalEntreprisesService from "../providers/uniteLegalEntreprises/uniteLegal.entreprises.service";
 import apiAssoService from "../providers/apiAsso/apiAsso.service";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../shared/LegalCategoriesAccepted";
 import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
 import Siren from "../../valueObjects/Siren";
 import AssociationsProvider from "./@types/AssociationsProvider";
+import sireneStockUniteLegaleService from "../providers/sirene/stockUniteLegale/sireneStockUniteLegale.service";
 
 export class AssociationsService {
     private provider_score: DefaultObject<number> = {
@@ -76,10 +76,12 @@ export class AssociationsService {
             return false;
         }
 
+        // if we have in this record it is an asso
+        if (await sireneStockUniteLegaleService.findOneBySiren(siren)) return true;
+        // from record if it exists and is not an association, should be here
         if (await uniteLegalEntreprisesService.isEntreprise(siren)) return false;
-        // what follows will be useless when #554 is done (then maybe the helper will be redundant)
-        if (await rnaSirenService.find(siren)) return true;
 
+        // if asso is too recent to be on record we need api
         const asso = await apiAssoService.findAssociationBySiren(siren);
         return this.isCategoryFromAsso(asso?.categorie_juridique?.[0]?.value);
     }
