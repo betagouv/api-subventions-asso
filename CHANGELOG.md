@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.66.2](https://github.com/betagouv/api-subventions-asso/compare/v0.66.1...v0.66.2) (2025-06-04)
+
+### Bug Fixes
+
+-   **front:** dataviz title synthax ([fc4708c](https://github.com/betagouv/api-subventions-asso/commit/fc4708c764e4f264e0209e6283158a73770eaa73))
+
 ## [0.66.1](https://github.com/betagouv/api-subventions-asso/compare/v0.66.0...v0.66.1) (2025-05-07)
 
 ### Bug Fixes
