@@ -90,6 +90,31 @@ describe("GenericParser", () => {
         });
     });
 
+    describe("isCellEmpty", () => {
+        it.each`
+            value
+            ${"string"}
+            ${1234}
+        `("returns false when cell is not considered as empty", ({ value }) => {
+            const expected = false;
+            // @ts-expect-error: test private method
+            const actual = GenericParser.isCellEmpty(value);
+            expect(actual).toEqual(expected);
+        });
+
+        it.each`
+            value
+            ${""}
+            ${undefined}
+            ${null}
+        `("returns true when cell is considered as empty", ({ value }) => {
+            const expected = true;
+            // @ts-expect-error: test private method
+            const actual = GenericParser.isCellEmpty(value);
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("linkHeaderToData", () => {
         it("trim headers", () => {
             const HEADERS = ["  header1   "];
