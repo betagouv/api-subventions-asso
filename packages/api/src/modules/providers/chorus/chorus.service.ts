@@ -6,7 +6,7 @@ import Siren from "../../../valueObjects/Siren";
 import Siret from "../../../valueObjects/Siret";
 import chorusLinePort from "../../../dataProviders/db/providers/chorus/chorus.line.port";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
-import associationsService from "../../associations/associations.service";
+import associationHelper from "../../associations/associations.helper";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 
 export interface RejectedRequest {
@@ -33,7 +33,7 @@ export class ChorusService extends ProviderCore {
 
     /*
      * it is weird that this filter, that essentially accepts according to structure being an asso or not.
-     * The check about that should be associationService.isIdentifierFromAsso but we historically have this one
+     * The check about that should be associationHelper.isIdentifierFromAsso but we historically have this one
      * that use chorus specific data
      * */
     public async isAcceptedEntity(entity: ChorusLineEntity) {
@@ -69,7 +69,7 @@ export class ChorusService extends ProviderCore {
     }
 
     public sirenBelongAsso(siren: Siren): Promise<boolean> {
-        return associationsService.isIdentifierFromAsso(AssociationIdentifier.fromSiren(siren));
+        return associationHelper.isIdentifierFromAsso(AssociationIdentifier.fromSiren(siren));
     }
 
     public cursorFind(exerciceBudgetaire?: number) {

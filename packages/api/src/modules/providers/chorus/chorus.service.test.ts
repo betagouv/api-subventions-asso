@@ -14,8 +14,8 @@ import { BulkWriteResult } from "mongodb";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
 import Siret from "../../../valueObjects/Siret";
-import associationsService from "../../associations/associations.service";
-jest.mock("../../associations/associations.service");
+import associationHelper from "../../associations/associations.helper";
+jest.mock("../../associations/associations.helper");
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 
 describe("chorusService", () => {
@@ -58,15 +58,13 @@ describe("chorusService", () => {
         const SOME_PROMISE = Promise.resolve(true);
 
         beforeAll(() => {
-            jest.mocked(associationsService.isIdentifierFromAsso).mockReturnValue(SOME_PROMISE);
+            jest.mocked(associationHelper.isIdentifierFromAsso).mockReturnValue(SOME_PROMISE);
         });
         const SIREN = new Siret(ENTITIES[0].indexedInformations.siret).toSiren();
 
         it("calls associationService test with valueObject association identifier", () => {
             chorusService.sirenBelongAsso(SIREN);
-            expect(associationsService.isIdentifierFromAsso).toHaveBeenCalledWith(
-                AssociationIdentifier.fromSiren(SIREN),
-            );
+            expect(associationHelper.isIdentifierFromAsso).toHaveBeenCalledWith(AssociationIdentifier.fromSiren(SIREN));
         });
 
         it("returns result from associationServce's test", () => {
