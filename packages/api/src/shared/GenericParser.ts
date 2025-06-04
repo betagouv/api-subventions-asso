@@ -73,6 +73,11 @@ export class GenericParser {
         }, {} as TypeOut) as TypeOut;
     }
 
+    private static isCellEmpty(value: unknown): value is null {
+        if (value === null || value === undefined || value === "") return true;
+        return false;
+    }
+
     static linkHeaderToData<T = string>(
         headers: string[],
         data: T[],
@@ -84,9 +89,11 @@ export class GenericParser {
                     typeof data[key] === "string" ? (data[key] as string).replace(/&#32;/g, " ").trim() : data[key];
                 const trimedHeader = typeof header === "string" ? header.trim() : header;
                 // quick fix to keep empty cells value as null
-                // https://github.com/orgs/betagouv/projects/38/views/1?pane=issue&itemId=103848824&issue=betagouv%7Capi-subventions-asso%7C3293
-                if (options.allowNull) acc[trimedHeader] = value || null;
-                else acc[trimedHeader] = value || "";
+                if (options.allowNull) acc[trimedHeader] = this.isCellEmpty(value) ? null : value;
+                // Do we really want to keep remplacing empty cells with empty string for all parsed data ?
+                // https://github.com/betagouv/api-subventions-asso/issues/3293
+                else if (value === undefined || value === null) acc[trimedHeader] = "";
+                else acc[trimedHeader] = value;
                 return acc;
             },
             {} as DefaultObject<T | string | null>,
