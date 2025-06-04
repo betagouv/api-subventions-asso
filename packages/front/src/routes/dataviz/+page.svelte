@@ -21,7 +21,7 @@
     <div class="fr-container">
         <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-6">
-                <h2 class="fr-h4">Montant des subventions que l'Etat a versées</h2>
+                <h2 class="fr-h4">Montant des subventions que l'Etat a versé</h2>
                 <TableAmountsVsProgramRegion elements={result} />
             </div>
             <div class="fr-col-6">
@@ -33,7 +33,7 @@
                 <AmountsVsYear elements={result} />
             </div>
             <div class="fr-col-12">
-                <h2 class="fr-h4">Evolution des subventions versées selon la société d'attachement comptable.</h2>
+                <h2 class="fr-h4">Evolution des subventions versées selon la société de rattachement comptable.</h2>
                 <HistoAmountsVsRegionYear elements={result} />
             </div>
         </div>
