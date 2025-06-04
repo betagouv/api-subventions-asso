@@ -1,6 +1,6 @@
 import { ToolsHttp } from "./Tools.http";
 import csvSyncStringifier from "csv-stringify/sync";
-import { ParsedDataWithProblem } from "../../modules/providers/scdl/@types/Validation";
+import { MixedParsedError } from "../../modules/providers/scdl/@types/Validation";
 import scdlService from "../../modules/providers/scdl/scdl.service";
 
 jest.mock("../../modules/providers/scdl/scdl.service");
@@ -13,7 +13,7 @@ describe("Tools test", () => {
     const ROW_OFFSET = 42;
     const DELIMITER = ",";
     const QUOTE = "'";
-    const ERRORS = [{ a: 1, b: 2, c: 3, d: 4 }] as unknown as ParsedDataWithProblem[];
+    const ERRORS = [{ a: 1, b: 2, c: 3, d: 4 }] as unknown as MixedParsedError[];
     const CSV_ERRORS = "a;b;c;d\n1;2;3;4";
     const ctrl = new ToolsHttp();
     beforeAll(() => {
