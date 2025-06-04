@@ -71,21 +71,21 @@ describe("ScdlCli", () => {
             expect(() =>
                 // @ts-expect-error: test purpose
                 cli.addProducer(),
-            ).rejects.toThrowError("producer SLUG is mandatory");
+            ).rejects.toThrow("producer SLUG is mandatory");
         });
 
         it("should throw Error if no NAME", () => {
             expect(() =>
                 // @ts-expect-error: test purpose
                 cli.addProducer(PRODUCER_ENTITY.slug),
-            ).rejects.toThrowError("producer NAME is mandatory");
+            ).rejects.toThrow("producer NAME is mandatory");
         });
 
         it("should throw Error if no SIRET", () => {
             expect(() =>
                 // @ts-expect-error: test purpose
                 cli.addProducer(PRODUCER_ENTITY.slug, PRODUCER_ENTITY.name),
-            ).rejects.toThrowError("producer SIRET is mandatory");
+            ).rejects.toThrow("producer SIRET is mandatory");
         });
 
         it("should throw Error if SIRET is not valid", () => {
@@ -97,7 +97,7 @@ describe("ScdlCli", () => {
         it("should throw Error if producer already exists", () => {
             expect(() =>
                 cli.addProducer(PRODUCER_ENTITY.slug, PRODUCER_ENTITY.name, PRODUCER_ENTITY.siret),
-            ).rejects.toThrowError("Producer already exists");
+            ).rejects.toThrow("Producer already exists");
         });
     });
 
@@ -110,10 +110,20 @@ describe("ScdlCli", () => {
     }
 
     describe.each`
-        methodName    | test            | parserMethod            | parserArgs
-        ${"parse"}    | ${testParseCsv} | ${scdlService.parseCsv} | ${[FILE_CONTENT, DELIMETER, QUOTE]}
-        ${"parseXls"} | ${testParseXls} | ${scdlService.parseXls} | ${[FILE_CONTENT, PAGE_NAME, ROW_OFFSET]}
+        methodName    | test            | parserMethod  | parserArgs
+        ${"parse"}    | ${testParseCsv} | ${"parseCsv"} | ${[FILE_CONTENT, DELIMETER, QUOTE]}
+        ${"parseXls"} | ${testParseXls} | ${"parseXls"} | ${[FILE_CONTENT, PAGE_NAME, ROW_OFFSET]}
     `("$methodName", ({ test, parserMethod, parserArgs }) => {
+        const ERRORS = ["ERRORS"];
+
+        beforeEach(() => {
+            mockedScdlService[parserMethod].mockReturnValue({ entities: STORABLE_DATA_ARRAY, errors: ERRORS });
+            // @ts-expect-error: mock private method
+            jest.spyOn(cli, "end").mockResolvedValue();
+            // @ts-expect-error: mock private method
+            jest.spyOn(cli, "persist").mockResolvedValue();
+        });
+
         it("sanitizes input", async () => {
             // @ts-expect-error -- test private
             const sanitizeSpy = jest.spyOn(cli, "validateGenericInput");
@@ -126,31 +136,157 @@ describe("ScdlCli", () => {
             expect(fs.readFileSync).toHaveBeenCalledWith(FILE_PATH);
         });
 
-        it("should call parser", async () => {
+        it("parses file in entities", async () => {
             await test();
-            expect(parserMethod).toHaveBeenCalledWith(...parserArgs);
+            expect(scdlService[parserMethod]).toHaveBeenCalledWith(...parserArgs);
+        });
+
+        it("executes persistence process", async () => {
+            await test();
+            // @ts-expect-error: test private method
+            expect(cli.persist).toHaveBeenCalledWith(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
+        });
+
+        it("executes end of import process", async () => {
+            await test();
+            // @ts-expect-error: test private method
+            expect(cli.end).toHaveBeenCalledWith({
+                file: FILE_PATH,
+                errors: ERRORS,
+                producerSlug: PRODUCER_ENTITY.slug,
+                exportDate: EXPORT_DATE_STR,
+            });
+        });
+    });
+
+    describe("persist", () => {
+        const mockCleanExercise = jest.spyOn(scdlService, "cleanExercise");
+        const mockValidateAndGetLastExerciseGrants = jest.spyOn(scdlService, "validateAndGetLastExercise");
+        const mockRestoreBackup = jest.spyOn(scdlService, "restoreBackup");
+        const mockDropBackup = jest.spyOn(scdlService, "dropBackup");
+        const mockPersistEntities = jest.fn();
+
+        beforeEach(() => {
+            // @ts-expect-error: mock private method
+            cli.persistEntities = mockPersistEntities;
+            mockValidateAndGetLastExerciseGrants.mockResolvedValue({
+                exercise: STORABLE_DATA_ARRAY[0].exercice,
+                enableBackup: true,
+            });
+            mockCleanExercise.mockResolvedValue();
+            mockRestoreBackup.mockResolvedValue();
+        });
+
+        it.each`
+            entities
+            ${undefined}
+            ${[]}
+        `("throws error if no entities given", async ({ entities }) => {
+            // @ts-expect-error: test private method
+            await expect(async () => await cli.persist(PRODUCER_ENTITY.slug, entities)).rejects.toThrow(
+                "Importation failed : no entities could be created from this file",
+            );
+        });
+
+        it("validate import and retrieve grants from database for most recent exercise present in import file", async () => {
+            // @ts-expect-error: test private method
+            await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
+            expect(jest.mocked(scdlService.validateAndGetLastExercise)).toHaveBeenCalledWith(
+                PRODUCER_ENTITY.slug,
+                STORABLE_DATA_ARRAY,
+            );
+        });
+
+        it("clean database from grants from most recent exercise present in import file", async () => {
+            // @ts-expect-error: test private method
+            await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
+            expect(mockCleanExercise).toHaveBeenCalledWith(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY[0].exercice);
+        });
+
+        it("does not handle backup if first import (no data in DB)", async () => {
+            mockValidateAndGetLastExerciseGrants.mockResolvedValueOnce({
+                exercise: STORABLE_DATA_ARRAY[0].exercice,
+                enableBackup: false,
+            });
+            // @ts-expect-error: test private method
+            await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
+            expect(mockCleanExercise).not.toHaveBeenCalled();
+            expect(mockDropBackup).not.toHaveBeenCalled();
+        });
+
+        it("does not restore backup if first import failed (no previous data in DB)", async () => {
+            mockValidateAndGetLastExerciseGrants.mockResolvedValueOnce({
+                exercise: STORABLE_DATA_ARRAY[0].exercice,
+                enableBackup: false,
+            });
+            mockPersistEntities.mockRejectedValueOnce(new Error("Persistence failed"));
+            try {
+                // @ts-expect-error: test private method
+                await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
+            } catch {
+                expect(mockCleanExercise).not.toHaveBeenCalled();
+                expect(mockRestoreBackup).not.toHaveBeenCalled();
+            }
         });
 
         it("persists entities", async () => {
             // @ts-expect-error -- test private
             const persistSpy = jest.spyOn(cli, "persistEntities").mockReturnValueOnce(Promise.resolve());
-            jest.mocked(parserMethod).mockReturnValueOnce({ entities: STORABLE_DATA_ARRAY });
-            await test();
+            // @ts-expect-error: test private method
+            await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
             expect(persistSpy).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug);
         });
 
+        it("drops backup when persistence succeed", async () => {
+            // @ts-expect-error: test private method
+            await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
+            expect(mockPersistEntities).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug);
+        });
+
+        it("restores backup if persistence failed", async () => {
+            mockPersistEntities.mockRejectedValueOnce(new Error("Persistence failed"));
+            try {
+                // @ts-expect-error: test private method
+                await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
+            } catch {
+                expect(mockRestoreBackup).toHaveBeenCalledWith(PRODUCER_ENTITY.slug);
+            }
+        });
+    });
+
+    describe("end", () => {
+        // @ts-expect-error: mock resolved value
+        const ERRORS = ["ERROR_1", "ERROR_2"] as ParsedDataWithProblem[];
+
+        beforeEach(() => {
+            console.log(cli);
+            // @ts-expect-error: mock private method
+            cli.exportErrors = jest.fn();
+        });
+
         it("exports errors", async () => {
-            const ERRORS = "toto" as unknown as unknown[];
-            // @ts-expect-error -- test private
-            const exportSpy = jest.spyOn(cli, "exportErrors").mockReturnValueOnce(Promise.resolve());
-            jest.mocked(parserMethod).mockReturnValueOnce({ entities: STORABLE_DATA_ARRAY, errors: ERRORS });
-            await test();
-            expect(exportSpy).toHaveBeenCalledWith(ERRORS, FILE_PATH);
+            // @ts-expect-error: mock errors
+            const ERRORS = ["ERROR_1", "ERROR_2"] as ParsedDataWithProblem[];
+            // @ts-expect-error: test private method
+            await cli.end({
+                file: FILE_PATH,
+                errors: ERRORS,
+                producerSlug: PRODUCER_ENTITY.slug,
+                exportDate: EXPORT_DATE_STR,
+            });
+            // @ts-expect-error: method is mocked
+            expect(jest.mocked(cli.exportErrors)).toHaveBeenCalledWith(ERRORS, FILE_PATH);
         });
 
         it("logs import", async () => {
-            await test();
-            expect(dataLogService.addLog).toHaveBeenCalledWith(
+            // @ts-expect-error: test private method
+            await cli.end({
+                file: FILE_PATH,
+                errors: ERRORS,
+                producerSlug: PRODUCER_ENTITY.slug,
+                exportDate: EXPORT_DATE_STR,
+            });
+            expect(jest.mocked(dataLogService.addLog)).toHaveBeenCalledWith(
                 PRODUCER_ENTITY.slug,
                 FILE_PATH,
                 new Date(EXPORT_DATE_STR),

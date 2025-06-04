@@ -34,11 +34,20 @@ export default class ScdlCli {
         rowOffset: number | string = 0,
     ) {
         await this.validateGenericInput(producerSlug, exportDate);
-        const parsedRowOffset = typeof rowOffset === "number" ? rowOffset : parseInt(rowOffset);
         const fileContent = fs.readFileSync(file);
+
+        const parsedRowOffset = typeof rowOffset === "number" ? rowOffset : parseInt(rowOffset);
+        console.log("Before parsing XLSX file");
         const { entities, errors } = scdlService.parseXls(fileContent, pageName, parsedRowOffset);
-        await Promise.all([this.persistEntities(entities, producerSlug), this.exportErrors(errors, file)]);
-        await dataLogService.addLog(producerSlug, file, exportDate ? new Date(exportDate) : undefined);
+
+        console.log("Before persisting entities");
+        // persist data
+        await this.persist(producerSlug, entities);
+
+        console.log("Before executing end of import methods");
+
+        // execute end of import methods
+        await this.end({ file, producerSlug, exportDate, errors });
     }
 
     /**
@@ -58,10 +67,65 @@ export default class ScdlCli {
     ) {
         await this.validateGenericInput(producerSlug, exportDate);
         const fileContent = fs.readFileSync(file);
+
         const parsedQuote = quote === "false" ? false : quote;
         const { entities, errors } = scdlService.parseCsv(fileContent, delimiter, parsedQuote);
-        await Promise.all([this.persistEntities(entities, producerSlug), this.exportErrors(errors, file)]);
-        await dataLogService.addLog(producerSlug, file, exportDate ? new Date(exportDate) : undefined);
+        console.log(entities, errors);
+        // persist data
+        await this.persist(producerSlug, entities);
+        // execute end of import methods
+        await this.end({ file, producerSlug, exportDate, errors });
+    }
+
+    /**
+     * All shared methods to execute at the end of an import (shared between CSV and XLSX imports)
+     *
+     * @param params All required parameters to execute end of import methods
+     */
+    private async end(params: {
+        file: string;
+        errors: ParsedDataWithProblem[];
+        producerSlug: string;
+        exportDate: string | undefined;
+    }) {
+        const { file, errors, producerSlug, exportDate } = params;
+        await Promise.all([
+            this.exportErrors(errors, file),
+            dataLogService.addLog(producerSlug, file, exportDate ? new Date(exportDate) : undefined),
+        ]);
+    }
+
+    /**
+     *
+     * Contains the logic to persist scdl grants entities. This is shard between CSV and XLSX process
+     * Handle validation, persistence in DB, backups
+     *
+     * @param producerSlug (string) : Slug of the file producer
+     * @param entities Entities to persist
+     */
+    private async persist(producerSlug: string, entities: ScdlStorableGrant[]) {
+        if (!entities || !entities.length) {
+            throw new Error("Importation failed : no entities could be created from this file");
+        }
+
+        const { exercise: exerciseToImport, enableBackup: backupEnabled } =
+            await scdlService.validateAndGetLastExercise(producerSlug, entities);
+
+        if (backupEnabled) await scdlService.cleanExercise(producerSlug, exerciseToImport);
+
+        try {
+            await this.persistEntities(
+                entities.filter(entity => entity.exercice === exerciseToImport), // only import most recent exercise
+                producerSlug,
+            );
+            if (backupEnabled) await scdlService.dropBackup();
+        } catch (e) {
+            if (backupEnabled) {
+                console.log("Importation failed, restoring previous exercise data");
+                await scdlService.restoreBackup(producerSlug);
+            }
+            throw e;
+        }
     }
 
     private async validateGenericInput(producerSlug: string, exportDateStr?: string) {
@@ -84,8 +148,7 @@ export default class ScdlCli {
         }
 
         if (duplicates.length) {
-            console.log(`${duplicates.length} duplicated entries. Here are some of them: `);
-            console.log(duplicates.slice(0, 5));
+            console.log(`${duplicates.length} duplicated entries.`);
         } else {
             console.log(`No duplicates detected`);
         }

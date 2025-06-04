@@ -65,6 +65,84 @@ export class ScdlService {
     parseCsv(fileContent: Buffer, delimiter = ";", quote: string | boolean = '"') {
         return ScdlGrantParser.parseCsv(fileContent, delimiter, quote);
     }
+
+    /**
+     *
+     * @param slug Producer slug
+     * @param entities Entities parsed from the current import
+     * @returns {
+     *              exercise: Last exercise number from the import
+     *              enableBackup: Boolean indicating if a backup should be created before importing entities
+     *          }
+     * @throws Error if the import has less exercises than the existing ones in the database
+     */
+    async validateAndGetLastExercise(slug: string, importedEntities: ScdlStorableGrant[]) {
+        const exercises: Set<number> = importedEntities.reduce((acc, entity) => {
+            return acc.add(entity.exercice);
+        }, new Set<number>());
+
+        if (exercises.size === 0) {
+            throw new Error("You must provide an exercise to clean producer's data before import");
+        }
+
+        const exercisesArray = [...exercises]; // transform Set to Array
+        const documentsInDB = await miscScdlGrantPort.findBySlugOnPeriod(slug, exercisesArray);
+
+        console.log(`There are currently ${documentsInDB.length} documents for producer ${slug}`);
+        console.log(`The new import contains ${importedEntities.length} entities`);
+
+        exercisesArray.forEach(exercise => {
+            if (
+                documentsInDB.filter(doc => doc.exercice === exercise).length >
+                importedEntities.filter(entity => entity.exercice === exercise).length
+            ) {
+                throw new Error(
+                    `You are trying to import less grants for exercise ${exercise} than what already exist in the database for producer ${slug}.`,
+                );
+            }
+        });
+
+        const mostRecentExercise = exercisesArray.sort((a, b) => a - b).at(-1) as number;
+
+        return {
+            exercise: mostRecentExercise,
+            enableBackup: !!documentsInDB.find(doc => doc.exercice === mostRecentExercise),
+        };
+    }
+
+    /**
+     * Deletes given documents for a given producer slug
+     * This method is used to clean the producer's data before importing new grants.
+     * We don't have a unique id for the SCDL grant format, so we must delete all grants (for a given producer - and exercise : see validateAndGetLastExercise) before reimporting new - aggregated - data
+     *
+     * @param producerSlug Producer slug
+     * @param documents List of ScdlGrantDbo to delete from the collection
+     */
+    async cleanExercise(producerSlug: string, exercise: number) {
+        console.log("Creating backup for producer's data before importation");
+        // backup producer data in case of bulk delete failure
+        await miscScdlGrantPort.createBackupCollection(producerSlug);
+
+        try {
+            console.log("Deleting previously imported exercise data");
+            await miscScdlGrantPort.bulkFindDelete(producerSlug, exercise);
+        } catch (e) {
+            console.log(`SCDL importation failed: ${(e as Error).message}`);
+            console.log("Reimporting entities that might have been deleted during the importation process");
+            // merge the backup collection back to the main collection
+            await miscScdlGrantPort.applyBackupCollection(producerSlug);
+        }
+    }
+
+    async dropBackup() {
+        console.log("Droping backup collection");
+        return miscScdlGrantPort.dropBackupCollection();
+    }
+
+    async restoreBackup(producerSlug: string) {
+        console.log(`Restoring data from backup (for the producer " ${producerSlug})"`);
+        return miscScdlGrantPort.applyBackupCollection(producerSlug);
+    }
 }
 
 const scdlService = new ScdlService();
