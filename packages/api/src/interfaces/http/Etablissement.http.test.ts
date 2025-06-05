@@ -8,13 +8,13 @@ import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
 import establishmentIdentifierService from "../../modules/establishment-identifier/establishment-identifier.service";
 import grantExtractService from "../../modules/grant/grantExtract.service";
 import consumers from "stream/consumers";
-import associationService from "../../modules/associations/associations.service";
+import associationHelper from "../../modules/associations/associations.helper";
 import { errorHandler } from "../../middlewares/ErrorMiddleware";
 
 jest.mock("../../modules/establishment-identifier/establishment-identifier.service");
 jest.mock("../../modules/grant/grantExtract.service");
 jest.mock("../../middlewares/ErrorMiddleware");
-jest.mock("../../modules/associations/associations.service");
+jest.mock("../../modules/associations/associations.helper");
 
 const controller = new EtablissementHttp();
 const ID_STR = "00000000100000";
@@ -182,13 +182,13 @@ describe("isEtabIdentifierFromAssoMiddleware", () => {
 
     beforeAll(() => {
         jest.mocked(establishmentIdentifierService.getEstablishmentIdentifiers).mockResolvedValue(ESTABLISHMENT_ID);
-        jest.mocked(associationService.isIdentifierFromAsso).mockResolvedValue(true);
+        jest.mocked(associationHelper.isIdentifierFromAsso).mockResolvedValue(true);
         jest.mocked(errorHandler).mockReturnValue(ERROR_HANDLER_RES);
     });
 
     afterAll(() => {
         jest.mocked(establishmentIdentifierService.getEstablishmentIdentifiers).mockRestore();
-        jest.mocked(associationService.isIdentifierFromAsso).mockRestore();
+        jest.mocked(associationHelper.isIdentifierFromAsso).mockRestore();
         jest.mocked(errorHandler).mockRestore();
     });
 
@@ -199,7 +199,7 @@ describe("isEtabIdentifierFromAssoMiddleware", () => {
 
     it("calls service to check it is from asso", async () => {
         await isEtabIdentifierFromAssoMiddleware({ ...REQ }, RES, NEXT);
-        expect(associationService.isIdentifierFromAsso).toHaveBeenCalledWith(ASSOCIATION_ID);
+        expect(associationHelper.isIdentifierFromAsso).toHaveBeenCalledWith(ASSOCIATION_ID);
     });
 
     it("sets assoIdentifier in req", async () => {
@@ -222,7 +222,7 @@ describe("isEtabIdentifierFromAssoMiddleware", () => {
 
     it("if id not from asso, calls errorHandler", async () => {
         const REQ_TMP = { ...REQ };
-        jest.mocked(associationService.isIdentifierFromAsso).mockResolvedValueOnce(false);
+        jest.mocked(associationHelper.isIdentifierFromAsso).mockResolvedValueOnce(false);
         await isEtabIdentifierFromAssoMiddleware(REQ_TMP, RES, NEXT);
         expect(ERROR_HANDLER_RES.mock.calls?.[0]).toMatchInlineSnapshot(`
             [

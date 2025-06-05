@@ -1,5 +1,5 @@
 import { NotAssociationError } from "core";
-import associationsService from "../../../modules/associations/associations.service";
+import associationHelper from "../../../modules/associations/associations.helper";
 import AssociationNameEntity from "../../../modules/association-name/entities/AssociationNameEntity";
 import rechercheEntreprisesPort from "./rechercheEntreprises.port";
 import { RechercheEntreprisesResultDto } from "./RechercheEntreprisesDto";
@@ -13,7 +13,7 @@ export class RechercheEntreprisesService {
 
         for (const structure of apiResults) {
             if (!structure.nom_complet || !structure.siren) continue;
-            if (!associationsService.isCategoryFromAsso(structure.nature_juridique)) {
+            if (!associationHelper.isCategoryFromAsso(structure.nature_juridique)) {
                 foundCompany = true;
                 continue;
             }
