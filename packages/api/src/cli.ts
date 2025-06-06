@@ -22,7 +22,6 @@ import ScdlCli from "./interfaces/cli/Scdl.cli";
 import { initIndexes } from "./shared/MongoInit";
 import GeoCli from "./interfaces/cli/Geo.cli";
 import DataBretagneCli from "./interfaces/cli/DataBretagne.cli";
-import PaymentFlatCli from "./interfaces/cli/PaymentFlat.cli";
 import SireneStockUniteLegaleCli from "./interfaces/cli/SireneStockUniteLegale.cli";
 import AmountsVsProgramRegionCli from "./interfaces/cli/AmountsVsProgramRegion.cli";
 import ScdlBatchCli from "./interfaces/cli/ScdlBatch.cli";
@@ -51,7 +50,6 @@ async function main() {
         ScdlCli,
         GeoCli,
         DataBretagneCli,
-        PaymentFlatCli,
         SireneStockUniteLegaleCli,
         AmountsVsProgramRegionCli,
         ScdlBatchCli,
