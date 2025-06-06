@@ -46,7 +46,6 @@ export async function startServer(port = "8080", isTest = false) {
     const app = express();
 
     if (ENV !== "dev" && ENV !== "test") Sentry.init({ release: process.env.npm_package_version });
-    app.use(Sentry.Handlers.requestHandler());
     app.use(cookieParser());
     app.use(
         session({
@@ -108,7 +107,7 @@ export async function startServer(port = "8080", isTest = false) {
 
     app.use("/docs", ...(await docsMiddlewares()));
 
-    app.use(Sentry.Handlers.errorHandler());
+    Sentry.setupConnectErrorHandler(app);
 
     app.use(errorHandler(isTest));
 
