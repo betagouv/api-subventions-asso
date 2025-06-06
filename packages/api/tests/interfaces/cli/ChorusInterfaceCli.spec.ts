@@ -14,26 +14,24 @@ describe("ChorusCli", () => {
             controller = new ChorusCli();
         });
 
-        describe("new format", () => {
-            // file should have 6 associations and 1 company's payments
-            it("should save association but not companies' payments", async () => {
-                const expected = NB_ASSOS_IN_FILES;
-                const filePath = path.resolve(__dirname, "./__fixtures__/new-chorus-export.xlsx");
-                await controller.parse(filePath, EXPORT_DATE);
-                const actual = (await chorusLinePort.cursorFind().toArray()).length;
-                expect(actual).toEqual(expected);
-            });
+        // file should have 6 associations and 1 company's payments
+        it("should save association but not companies' payments", async () => {
+            const expected = NB_ASSOS_IN_FILES;
+            const filePath = path.resolve(__dirname, "./__fixtures__/new-chorus-export.xlsx");
+            await controller.parse(filePath, EXPORT_DATE);
+            const actual = (await chorusLinePort.cursorFind().toArray()).length;
+            expect(actual).toEqual(expected);
+        });
 
-            // rerun above test twice
-            it("should not save duplicates", async () => {
-                const expected = NB_ASSOS_IN_FILES;
-                await chorusLinePort.createIndexes();
-                const filePath = path.resolve(__dirname, "./__fixtures__/new-chorus-export.xlsx");
-                await controller.parse(filePath, EXPORT_DATE);
-                await controller.parse(filePath, EXPORT_DATE);
-                const actual = (await chorusLinePort.cursorFind().toArray()).length;
-                expect(actual).toEqual(expected);
-            });
+        // rerun above test twice
+        it("should not save duplicates", async () => {
+            const expected = NB_ASSOS_IN_FILES;
+            await chorusLinePort.createIndexes();
+            const filePath = path.resolve(__dirname, "./__fixtures__/new-chorus-export.xlsx");
+            await controller.parse(filePath, EXPORT_DATE);
+            await controller.parse(filePath, EXPORT_DATE);
+            const actual = (await chorusLinePort.cursorFind().toArray()).length;
+            expect(actual).toEqual(expected);
         });
 
         it("should register new import", async () => {
