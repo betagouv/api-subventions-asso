@@ -2,6 +2,7 @@ import ChorusCli from "../../../src/interfaces/cli/Chorus.cli";
 import path from "path";
 import chorusLinePort from "../../../src/dataProviders/db/providers/chorus/chorus.line.port";
 import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
+import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFlat.port";
 
 describe("ChorusCli", () => {
     describe("parse cli requests", () => {
@@ -44,6 +45,16 @@ describe("ChorusCli", () => {
                 integrationDate: expect.any(Date),
                 providerId: "chorus",
             });
+        });
+
+        it.skip("saves in paymentFlat", async () => {
+            // removes skip when #3467 is done
+            const expected = NB_ASSOS_IN_FILES;
+            await chorusLinePort.createIndexes();
+            const filePath = path.resolve(__dirname, "./__fixtures__/new-chorus-export.xlsx");
+            await controller.parse(filePath, EXPORT_DATE);
+            const actual = (await paymentFlatPort.cursorFind().toArray()).length;
+            expect(actual).toEqual(expected);
         });
     });
 });
