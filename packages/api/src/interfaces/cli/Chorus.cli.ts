@@ -7,6 +7,7 @@ import * as CliHelper from "../../shared/helpers/CliHelper";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";
 import CliController from "../../shared/CliController";
 import ChorusLineEntity from "../../modules/providers/chorus/entities/ChorusLineEntity";
+import paymentFlatChorusService from "../../modules/paymentFlat/paymentFlat.chorus.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class ChorusCli extends CliController {
@@ -35,8 +36,12 @@ export default class ChorusCli extends CliController {
 
         const fileContent = fs.readFileSync(file);
 
-        const entities = ChorusParser.parse(fileContent);
+        const entities: ChorusLineEntity[] = ChorusParser.parse(fileContent);
         const totalEntities = entities.length;
+        const exercicesSet = entities.reduce(
+            (set, entity) => set.add(entity.indexedInformations.exercice),
+            new Set<number>(),
+        );
 
         console.info(`\n${totalEntities} valid entities found in file.`);
 
@@ -64,9 +69,29 @@ export default class ChorusCli extends CliController {
 
         logger.push(`RESULT: ${JSON.stringify(finalResult)}`);
 
+        for (const exercise of exercicesSet) {
+            await this.resyncPaymentFlatByExercise(exercise);
+        }
+
         fs.writeFileSync(this.logFileParsePath, logger.join(""), {
             flag: "w",
             encoding: "utf-8",
         });
+    }
+
+    async resyncPaymentFlatByExercise(exercise: number) {
+        const ticTacInterval = setInterval(() => console.log("TIC"), 60000);
+        this.logger.logIC(`Resync payment flat collection for exercice ${exercise}`);
+        await paymentFlatChorusService.updatePaymentsFlatCollection(exercise);
+        clearInterval(ticTacInterval);
+    }
+
+    async resetPaymentFlat() {
+        if ((await paymentFlatChorusService.cursorFindChorusOnly().toArray()).length)
+            console.warn("DB already initialized, maybe you want to use 'resyncPaymentFlatByExercise' instead");
+        const ticTacInterval = setInterval(() => console.log("TIC"), 60000);
+        this.logger.logIC("Create payment flat entities from chorus");
+        await paymentFlatChorusService.init();
+        clearInterval(ticTacInterval);
     }
 }
