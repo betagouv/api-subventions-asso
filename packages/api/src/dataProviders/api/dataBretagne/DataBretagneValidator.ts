@@ -17,20 +17,16 @@ export class DataBretagneValidatorHelper {
     /**
      * Finds duplicate values of a specified attribute in a collection to identify data incoherence.
      * @param collection - The list to search for duplicates.
-     * @param attribute - The attribute to check for duplicates.
-     * @returns A Set containing the attributes values found more then once. An error is printed for each duplicate found.
+     * @param key - The attribute to check for duplicates.
+     * @returns A Set containing the attributes values found more than once. An error is printed for each duplicate found.
      */
-    static findDuplicateAttribute<T, K extends keyof T>(collection: T[], attribute: K): Set<T[K]> {
+    static findDuplicateByKey<T, K extends keyof T>(collection: T[], key: K): Set<T[K]> {
         const uniqueValues = new Set<T[K]>();
         const duplicates = new Set<T[K]>();
 
         let value: T[K];
         for (const item of collection) {
-            if (attribute === undefined) {
-                value = item as unknown as T[K];
-            } else {
-                value = item[attribute] as unknown as T[K];
-            }
+            value = key == undefined ? (item as unknown as T[K]) : item[key];
 
             if (uniqueValues.has(value)) {
                 duplicates.add(value);
@@ -55,7 +51,7 @@ export class DataBretagneValidatorHelper {
         duplicatesCode: Set<string>,
         requiredAttributes: string[],
     ): { valids: T[]; invalids: T[] } {
-        const sortedData = dtoListWithoutDuplicates.reduce<{
+        return dtoListWithoutDuplicates.reduce<{
             valids: T[];
             invalids: T[];
         }>(
@@ -67,8 +63,6 @@ export class DataBretagneValidatorHelper {
             },
             { valids: [], invalids: [] },
         );
-
-        return sortedData;
     }
 }
 
@@ -78,7 +72,7 @@ export class DataBretagneDomaineFonctionnelValidator extends DataBretagneValidat
         invalids: DataBretagneDomaineFonctionnelDto[];
     } {
         const dtoListWithoutDuplicates = this.dropDuplicates<DataBretagneDomaineFonctionnelDto>(dtoList);
-        const duplicatesCode = this.findDuplicateAttribute<DataBretagneDomaineFonctionnelDto, "code">(
+        const duplicatesCode = this.findDuplicateByKey<DataBretagneDomaineFonctionnelDto, "code">(
             dtoListWithoutDuplicates,
             "code",
         );
@@ -96,7 +90,7 @@ export class DataBretagneProgrammeValidator extends DataBretagneValidatorHelper 
         invalids: DataBretagneProgrammeDto[];
     } {
         const dtoListWithoutDuplicates = this.dropDuplicates<DataBretagneProgrammeDto>(dtoList);
-        const duplicatesCode = this.findDuplicateAttribute<DataBretagneProgrammeDto, "code">(
+        const duplicatesCode = this.findDuplicateByKey<DataBretagneProgrammeDto, "code">(
             dtoListWithoutDuplicates,
             "code",
         );
@@ -114,7 +108,7 @@ export class DataBretagneRefProgrammationValidator extends DataBretagneValidator
         invalids: DataBretagneRefProgrammationDto[];
     } {
         const dtoListWithoutDuplicates = this.dropDuplicates<DataBretagneRefProgrammationDto>(dtoList);
-        const duplicatesCode = this.findDuplicateAttribute<DataBretagneRefProgrammationDto, "code">(
+        const duplicatesCode = this.findDuplicateByKey<DataBretagneRefProgrammationDto, "code">(
             dtoListWithoutDuplicates,
             "code",
         );
@@ -132,7 +126,7 @@ export class DataBretagneMinistryValidator extends DataBretagneValidatorHelper {
         invalids: DataBretagneMinistryDto[];
     } {
         const dtoListWithoutDuplicates = this.dropDuplicates<DataBretagneMinistryDto>(dtoList);
-        const duplicatesCode = this.findDuplicateAttribute<DataBretagneMinistryDto, "code">(
+        const duplicatesCode = this.findDuplicateByKey<DataBretagneMinistryDto, "code">(
             dtoListWithoutDuplicates,
             "code",
         );
