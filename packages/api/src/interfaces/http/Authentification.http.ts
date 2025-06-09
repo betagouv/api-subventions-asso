@@ -12,8 +12,7 @@ import { IdentifiedRequest, LoginRequest } from "../../@types";
 import userAuthService from "../../modules/user/services/auth/user.auth.service";
 import userProfileService from "../../modules/user/services/profile/user.profile.service";
 import userActivationService from "../../modules/user/services/activation/user.activation.service";
-import { DOMAIN } from "../../configurations/domain.conf";
-import { DEV } from "../../configurations/env.conf";
+import { DEV, DOMAIN } from "../../configurations/env.conf";
 import userAgentConnectService from "../../modules/user/services/agentConnect/user.agentConnect.service";
 import { AGENT_CONNECT_ENABLED } from "../../configurations/agentConnect.conf";
 

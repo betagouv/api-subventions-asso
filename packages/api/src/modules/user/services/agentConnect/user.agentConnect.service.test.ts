@@ -9,20 +9,20 @@ import { NotificationType } from "../../../notify/@types/NotificationType";
 import { removeHashPassword, removeSecrets } from "../../../../shared/helpers/PortHelper";
 import { USER_DBO, USER_WITHOUT_PASSWORD, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import agentConnectTokenPort from "../../../../dataProviders/db/user/acToken.port";
-import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import { ObjectId } from "mongodb";
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 import configurationsService from "../../../configurations/configurations.service";
 import userCrudService from "../crud/user.crud.service";
 import { UserDto } from "dto";
 import { InternalServerError } from "core";
+import { FRONT_OFFICE_URL } from "../../../../configurations/env.conf";
 
 jest.mock("../../../../configurations/agentConnect.conf", () => ({
     AGENT_CONNECT_CLIENT_ID: "mocked_client_id",
     AGENT_CONNECT_CLIENT_SECRET: "mocked_client_secret",
     AGENT_CONNECT_URL: "agent-connect/url",
 }));
-jest.mock("../../../../configurations/front.conf", () => ({
+jest.mock("../../../../configurations/env.conf", () => ({
     FRONT_OFFICE_URL: "http://my.front",
 }));
 jest.mock("../../../notify/notify.service", () => ({

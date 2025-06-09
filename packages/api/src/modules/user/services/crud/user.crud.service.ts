@@ -12,11 +12,11 @@ import { RoleEnum } from "../../../../@enums/Roles";
 import userAuthService from "../auth/user.auth.service";
 import { UserNotPersisted } from "../../../../dataProviders/db/user/UserDbo";
 import userConsumerService from "../consumer/user.consumer.service";
-import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import userActivationService from "../activation/user.activation.service";
 import { removeSecrets } from "../../../../shared/helpers/PortHelper";
 import { UserServiceErrors } from "../../user.enum";
 import { getNewJwtExpireDate } from "../../user.helper";
+import { FRONT_OFFICE_URL } from "../../../../configurations/env.conf";
 
 export class UserCrudService {
     find(query: DefaultObject = {}) {
