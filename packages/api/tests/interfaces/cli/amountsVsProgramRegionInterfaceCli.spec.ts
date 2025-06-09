@@ -6,15 +6,15 @@ import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../../src/modules/paymentFlat/__f
 import PaymentFlatEntity from "../../../src/entities/PaymentFlatEntity";
 
 const MOCK_DOCUMENTS: PaymentFlatEntity[] = [
-    // the following two should be agregated together
+    // the following two should be aggregated together
     { ...CHORUS_PAYMENT_FLAT_ENTITY, provider: "chorus", uniqueId: "1" },
     { ...CHORUS_PAYMENT_FLAT_ENTITY, amount: 7000, provider: "chorus", uniqueId: "2" },
 
-    // the following two should be agregated together
+    // the following two should be aggregated together
     { ...CHORUS_PAYMENT_FLAT_ENTITY, amount: 100_000, programNumber: 1234, provider: "chorus", uniqueId: "3" },
     { ...CHORUS_PAYMENT_FLAT_ENTITY, amount: 30_000, programNumber: 1234, provider: "chorus", uniqueId: "4" },
 
-    // the following two should be agregated together
+    // the following two should be aggregated together
     {
         ...CHORUS_PAYMENT_FLAT_ENTITY,
         amount: 34_000,
@@ -34,7 +34,7 @@ const MOCK_DOCUMENTS: PaymentFlatEntity[] = [
         uniqueId: "6",
     },
 
-    // this one should not be agregated
+    // this one should not be aggregated
     {
         ...CHORUS_PAYMENT_FLAT_ENTITY,
         amount: 34_000,
