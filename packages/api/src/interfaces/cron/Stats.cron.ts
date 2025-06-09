@@ -9,6 +9,5 @@ export class StatsCron implements CronController {
     @AsyncCron({ cronExpression: "0 22 * * *" })
     updateUserNbRequests() {
         return userStatsService.updateNbRequests();
-        // TODO also update to brevo #1900
     }
 }
