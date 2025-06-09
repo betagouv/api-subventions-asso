@@ -61,9 +61,3 @@
         {/if}
     </div>
 </div>
-
-<style>
-    .min-height-3 {
-        min-height: 3lh;
-    }
-</style>

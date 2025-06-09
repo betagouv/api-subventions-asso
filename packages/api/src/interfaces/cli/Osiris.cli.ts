@@ -9,8 +9,6 @@ import OsirisRequestEntity from "../../modules/providers/osiris/entities/OsirisR
 import { COLORS } from "../../shared/LogOptions";
 import * as CliHelper from "../../shared/helpers/CliHelper";
 import { GenericParser } from "../../shared/GenericParser";
-import Siret from "../../identifierObjects/Siret";
-import Rna from "../../identifierObjects/Rna";
 import dataLogService from "../../modules/data-log/dataLog.service";
 
 @StaticImplements<CliStaticInterface>()
@@ -188,35 +186,5 @@ export default class OsirisCli {
             } actions updated
             ${nbErrors} actions not valid
         `);
-    }
-
-    async findBySiret(siretStr: string, format?: string) {
-        if (typeof siretStr !== "string") {
-            throw new Error("Parse command need siret args");
-        }
-
-        const siret = new Siret(siretStr);
-        const file = await osirisService.findBySiret(siret);
-
-        if (format === "json") {
-            console.info(JSON.stringify(file));
-        } else {
-            console.info(file);
-        }
-    }
-
-    async findByRna(rnaStr: string, format?: string) {
-        if (typeof rnaStr !== "string") {
-            throw new Error("Parse command need rna args");
-        }
-
-        const rna = new Rna(rnaStr);
-        const requests = await osirisService.findByRna(rna);
-
-        if (format === "json") {
-            console.info(JSON.stringify(requests));
-        } else {
-            console.info(requests);
-        }
     }
 }
