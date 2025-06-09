@@ -1,4 +1,4 @@
-import Sentry from "@sentry/node";
+import * as Sentry from "@sentry/node";
 import { CommonPaymentDto, ChorusPayment } from "dto";
 import { getShortISODate } from "../../../../shared/helpers/DateHelper";
 import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
