@@ -19,7 +19,7 @@ export class AssociationsHelper {
         } else if (id.siret) siren = id.siret.toSiren();
         else return false;
 
-        // if we have in this record it is an asso
+        // if we have it in this record it is an asso
         if (await sireneStockUniteLegaleService.findOneBySiren(siren)) return true;
         // from record if it exists and is not an association, should be here
         if (await uniteLegalEntreprisesService.isEntreprise(siren)) return false;
