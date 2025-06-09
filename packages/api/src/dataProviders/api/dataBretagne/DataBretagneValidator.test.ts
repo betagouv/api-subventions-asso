@@ -25,13 +25,13 @@ describe("DataBretagneValidator", () => {
                 expect(result).toEqual(expected);
             });
         });
-        describe("findDuplicateAttribute", () => {
+        describe("findDuplicateByKey", () => {
             it("should return an empty list when no duplicate attributes are found", () => {
                 const dtoList = [DTOS["domaineFonct"], { ...DTOS["domaineFonct"], code: "code2" }];
 
                 const expected = new Set();
 
-                const result = DataBretagneValidatorHelper.findDuplicateAttribute(dtoList, "code");
+                const result = DataBretagneValidatorHelper.findDuplicateByKey(dtoList, "code");
                 expect(result).toEqual(expected);
             });
 
@@ -40,7 +40,7 @@ describe("DataBretagneValidator", () => {
 
                 const expected = new Set(["code"]);
 
-                const result = DataBretagneValidatorHelper.findDuplicateAttribute(dtoList, "code");
+                const result = DataBretagneValidatorHelper.findDuplicateByKey(dtoList, "code");
                 expect(result).toEqual(expected);
             });
 
@@ -49,7 +49,7 @@ describe("DataBretagneValidator", () => {
 
                 const spy = jest.spyOn(console, "error");
 
-                DataBretagneValidatorHelper.findDuplicateAttribute(dtoList, "code");
+                DataBretagneValidatorHelper.findDuplicateByKey(dtoList, "code");
                 expect(spy).toHaveBeenCalledWith("Duplicate value found for code : code");
             });
         });
@@ -124,7 +124,7 @@ describe("DataBretagneValidator", () => {
                     .spyOn(DataBretagneValidatorHelper, "dropDuplicates")
                     .mockReturnValue([DTOS["entityName"]]);
                 mockedFindDuplicateAttribute = jest
-                    .spyOn(DataBretagneValidatorHelper, "findDuplicateAttribute")
+                    .spyOn(DataBretagneValidatorHelper, "findDuplicateByKey")
                     .mockReturnValue(new Set());
                 mockedSortDataByValidity = jest
                     .spyOn(DataBretagneValidatorHelper, "sortDataByValidity")
@@ -142,7 +142,7 @@ describe("DataBretagneValidator", () => {
                 expect(mockedDropDuplicates).toHaveBeenCalledWith([DTOS["entityName"]]);
             });
 
-            it("should call findDuplicateAttribute", () => {
+            it("should call findDuplicateByKey", () => {
                 Validator.validate([DTOS["entityName"]]);
                 expect(mockedFindDuplicateAttribute).toHaveBeenCalledWith([DTOS["entityName"]], "code");
             });
