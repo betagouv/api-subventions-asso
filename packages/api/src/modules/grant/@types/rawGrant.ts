@@ -1,6 +1,4 @@
-type DefaultObject = Record<string, unknown>;
-
-// TODO: rename RawGrant to RawData ?
+import { DefaultObject } from "../../../@types";
 
 export type RawGrant<T = DefaultObject> = {
     provider: string;
