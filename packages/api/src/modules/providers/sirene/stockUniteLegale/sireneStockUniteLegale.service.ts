@@ -5,6 +5,7 @@ import uniteLegalNameService from "../../uniteLegalName/uniteLegal.name.service"
 import { SireneStockUniteLegaleEntity } from "../../../../entities/SireneStockUniteLegaleEntity";
 import SireneStockUniteLegaleParser from "./parser/sireneStockUniteLegale.parser";
 import SireneStockUniteLegaleAdapter from "./adapter/sireneStockUniteLegale.adapter";
+import Siren from "../../../../valueObjects/Siren";
 
 export class SireneStockUniteLegaleService {
     public async parse(filePath: string) {
@@ -36,6 +37,10 @@ export class SireneStockUniteLegaleService {
 
     public upsertMany(dbos: SireneStockUniteLegaleEntity[]) {
         return sireneUniteLegaleDbPort.upsertMany(dbos);
+    }
+
+    public findOneBySiren(siren: Siren) {
+        return sireneUniteLegaleDbPort.findOneBySiren(siren);
     }
 }
 

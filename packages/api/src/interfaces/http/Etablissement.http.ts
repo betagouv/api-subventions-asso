@@ -15,7 +15,7 @@ import etablissementService from "../../modules/etablissements/etablissements.se
 import establishmentIdentifierService from "../../modules/establishment-identifier/establishment-identifier.service";
 import grantExtractService from "../../modules/grant/grantExtract.service";
 import { errorHandler } from "../../middlewares/ErrorMiddleware";
-import associationService from "../../modules/associations/associations.service";
+import associationHelper from "../../modules/associations/associations.helper";
 
 export async function isEtabIdentifierFromAssoMiddleware(req, _res, next) {
     /*
@@ -28,7 +28,7 @@ export async function isEtabIdentifierFromAssoMiddleware(req, _res, next) {
     try {
         const identifier = req.params.identifier;
         const estabIdentifier = await establishmentIdentifierService.getEstablishmentIdentifiers(identifier);
-        if (!(await associationService.isIdentifierFromAsso(estabIdentifier.associationIdentifier)))
+        if (!(await associationHelper.isIdentifierFromAsso(estabIdentifier.associationIdentifier)))
             throw new NotAssociationError();
         req.estabIdentifier = estabIdentifier;
     } catch (e) {
