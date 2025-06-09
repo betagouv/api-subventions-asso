@@ -9,4 +9,5 @@ export const BRANCHE_ACCEPTED: DefaultObject<boolean> = {
     Z039: true,
 };
 
+// it happens that we have fondations funded with this branch, see #3453
 export const ASSO_BRANCHE = "Z039";
