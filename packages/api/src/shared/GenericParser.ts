@@ -74,8 +74,7 @@ export class GenericParser {
     }
 
     private static isCellEmpty(value: unknown): value is null {
-        if (value === null || value === undefined || value === "") return true;
-        return false;
+        return value === null || value === undefined || value === ""
     }
 
     static linkHeaderToData<T = string>(
