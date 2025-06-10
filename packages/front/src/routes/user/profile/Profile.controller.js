@@ -1,7 +1,7 @@
 import QuitNoSaveModal from "./components/QuitNoSaveModal.svelte";
 import Store, { derived } from "$lib/core/Store";
 import userService from "$lib/resources/users/user.service";
-import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionFormService";
+import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionForm.service";
 import { beforeNavigate, goto } from "$app/navigation";
 import { action, modal } from "$lib/store/modal.store";
 // import localStorageService from "$lib/services/localStorage.service";

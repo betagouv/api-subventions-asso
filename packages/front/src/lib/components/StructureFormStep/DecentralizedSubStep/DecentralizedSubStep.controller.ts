@@ -3,7 +3,7 @@ import { AdminTerritorialLevel, AgentTypeEnum } from "dto";
 import type { EventDispatcher } from "svelte";
 import Store from "$lib/core/Store";
 import geoService from "$lib/resources/externals/geo/geo.service";
-import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionFormService";
+import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionForm.service";
 import Dispatch from "$lib/core/Dispatch";
 import type { Option } from "$lib/types/FieldOption";
 
