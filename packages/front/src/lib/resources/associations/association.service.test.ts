@@ -1,6 +1,7 @@
 import associationService from "./association.service";
 
 import associationPort from "./association.port";
+import type { PaginatedAssociationNameDto } from "dto";
 vi.mock("./association.port", () => ({
     default: {
         incExtractData: vi.fn(),
@@ -15,20 +16,19 @@ vi.mock("$lib/services/localStorage.service", () => ({
 }));
 
 import * as IdentifierHelper from "$lib/helpers/identifierHelper";
+import { siretToSiren } from "$lib/helpers/identifierHelper";
 vi.mock("$lib/helpers/identifierHelper");
 const mockedIdentifierHelper = vi.mocked(IdentifierHelper);
-import * as sirenHelper from "$lib/helpers/sirenHelper";
 vi.mock("$lib/helpers/sirenHelper");
-const mockedSirenHelper = vi.mocked(sirenHelper);
 vi.mock("$lib/services/searchHistory.service");
 vi.mock("$lib/resources/associations/association.helper");
 vi.mock("$lib/resources/associations/association.adapter");
-
 const ASSOCIATIONS = [{ rna: "W123455353", siren: "123456789" }];
 
 import * as providerValueHelper from "$lib/helpers/providerValueHelper";
 import { isAssociation } from "$lib/resources/associations/association.helper";
 import { updateSearchHistory } from "$lib/services/searchHistory.service";
+
 vi.mock("$lib/helpers/providerValueHelper", () => {
     return {
         flattenProviderValue: vi.fn(() => ASSOCIATIONS),
@@ -116,13 +116,13 @@ describe("AssociationService", () => {
         it("transform to siren if start of siret", async () => {
             mockedIdentifierHelper.isStartOfSiret.mockReturnValueOnce(true);
             await associationService._searchByIdentifier(SIREN);
-            expect(sirenHelper.siretToSiren).toHaveBeenCalledWith(SIREN);
+            expect(siretToSiren).toHaveBeenCalledWith(SIREN);
         });
 
         it("call getAssociation()", async () => {
             const transformedSiren = "test";
             mockedIdentifierHelper.isStartOfSiret.mockReturnValueOnce(true);
-            mockedSirenHelper.siretToSiren.mockReturnValueOnce(transformedSiren);
+            vi.mocked(siretToSiren).mockReturnValueOnce(transformedSiren);
             await associationService._searchByIdentifier(SIREN);
             expect(mockGetAssociation).toHaveBeenCalledWith(transformedSiren);
         });
@@ -168,7 +168,7 @@ describe("AssociationService", () => {
         });
 
         it("returns result from port", async () => {
-            const expected = "test";
+            const expected = "test" as unknown as PaginatedAssociationNameDto;
             mockedAssociationPort.search.mockResolvedValue(expected);
             const actual = await associationService._searchByText(SIREN);
             expect(actual).toBe(expected);
@@ -178,7 +178,9 @@ describe("AssociationService", () => {
     describe("search", () => {
         let mockByText, mockByIdentifier;
         beforeAll(() => {
-            mockByText = vi.spyOn(associationService, "_searchByText").mockResolvedValue([]);
+            mockByText = vi
+                .spyOn(associationService, "_searchByText")
+                .mockResolvedValue({} as unknown as PaginatedAssociationNameDto);
             mockByIdentifier = vi.spyOn(associationService, "_searchByIdentifier").mockResolvedValue([]);
         });
         afterAll(() => {
