@@ -4,7 +4,7 @@ import AmountsVsProgramRegionEntity from "./entitiyAndDbo/amountsVsProgramRegion
 
 export default class AmountsVsProgramRegionAdapter {
     static toNotAggregatedEntity(paymentFlatEntity: PaymentFlatEntity): AmountsVsProgramRegionEntity {
-        const amountsVsProgramRegionEntity = {
+        return {
             exerciceBudgetaire: paymentFlatEntity.exerciceBudgetaire,
             regionAttachementComptable: paymentFlatEntity.regionAttachementComptable,
             programme: paymentFlatEntity.programName
@@ -13,7 +13,6 @@ export default class AmountsVsProgramRegionAdapter {
             mission: paymentFlatEntity.mission,
             montant: paymentFlatEntity.amount,
         };
-        return amountsVsProgramRegionEntity;
     }
 
     static toDbo(entity: AmountsVsProgramRegionEntity): Omit<AmountsVsProgramRegionDbo, "_id"> {
