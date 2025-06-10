@@ -1,4 +1,4 @@
-import type { Siret } from "dto";
+import type { SiretDto } from "dto";
 import { toEstablishmentComponent } from "./establishment.adapter";
 import establishmentPort from "./establishment.port";
 import type { DocumentEntity } from "$lib/entities/DocumentEntity";
@@ -34,7 +34,7 @@ class EstablishmentService {
         return documentHelper.formatAndSortDocuments(documents);
     }
 
-    getGrantExtract(identifier: Siret) {
+    getGrantExtract(identifier: SiretDto) {
         return establishmentPort.getGrantExtract(identifier);
     }
 }
