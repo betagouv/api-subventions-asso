@@ -1,4 +1,4 @@
-import { MainInfoBannerDto } from "dto";
+import type { MainInfoBannerDto } from "dto";
 import configurationsPort from "./configurations.port";
 
 class ConfigurationsService {
