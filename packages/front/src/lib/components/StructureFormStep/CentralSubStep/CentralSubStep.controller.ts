@@ -1,6 +1,6 @@
 import { AgentTypeEnum } from "dto";
 import Store from "$lib/core/Store";
-import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionFormService";
+import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionForm.service";
 
 export default class CentralSubStepController {
     public options: Store<{ value: string; label: string }[]>;
