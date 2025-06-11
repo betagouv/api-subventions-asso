@@ -34,6 +34,7 @@
                                 data-fr-opened="false"
                                 aria-controls="modal-menu"
                                 aria-haspopup="menu"
+                                id="header__menu__button"
                                 title="Menu">
                                 Menu
                             </button>
@@ -109,8 +110,7 @@
         </div>
     </div>
 
-    <!-- TODO : fix aria-labelled-by -->
-    <div class="fr-header__menu fr-modal" id="modal-menu" aria-labelledby="button-825">
+    <div class="fr-header__menu fr-modal" id="modal-menu" aria-labelledby="header__menu__button">
         <div class="fr-container">
             <button class="fr-link--close fr-link" aria-controls="modal-menu">Fermer</button>
             <div class="fr-header__menu-links" />
