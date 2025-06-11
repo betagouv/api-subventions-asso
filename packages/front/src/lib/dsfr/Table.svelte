@@ -3,8 +3,6 @@
     import Button from "./Button.svelte";
     import { uuid } from "$lib/helpers/stringHelper";
 
-    // TODO: make it possible to has column with custom length
-
     export let id: string = uuid();
     export let title = "";
     export let hideTitle = false;
