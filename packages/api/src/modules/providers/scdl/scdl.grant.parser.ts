@@ -161,7 +161,6 @@ export default class ScdlGrantParser {
                 annotations,
                 errors: errorsEntity,
             } = ScdlGrantParser.indexDataByPathAndAnnotate<string, ScdlStorableGrant>(SCDL_MAPPER, parsedData);
-            // TODO make indexDataByPathAndAnnotate indicate if errors make us reject the line
             errors.push(
                 ...errorsEntity.map(
                     error => ({ ...error, bloquant: "non" }) as ParsedErrorFormat, // don't understand why TS needs me to define type here
@@ -252,9 +251,7 @@ export default class ScdlGrantParser {
     ): void {
         if (DEV) {
             const missingKeys = Object.entries(pathObject)
-                // TODO: configure eslint to allow this
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                .filter(([key, path]) => {
+                .filter(([_key, path]) => {
                     const flatMapper = (Array.isArray(path) ? path : path.path).flat();
                     return !flatMapper.some(lib => lib in data);
                 })
