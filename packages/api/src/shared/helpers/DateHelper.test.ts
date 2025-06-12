@@ -70,11 +70,19 @@ describe("DateHelper", () => {
         });
     });
 
-    describe("sameDateNextYear", () => {
-        it("returns proper date", () => {
-            const input = new Date(2021, 6, 9);
-            const expected = new Date(2022, 6, 9);
-            const actual = DateHelper.sameDateNextYear(input);
+    describe("modifyDateYear", () => {
+        const DATE = new Date("2025-06-12");
+        it.each`
+            diff   | expected
+            ${1}   | ${2026}
+            ${2}   | ${2027}
+            ${12}  | ${2037}
+            ${-1}  | ${2024}
+            ${-2}  | ${2023}
+            ${-12} | ${2013}
+            ${0}   | ${2025}
+        `("returns date with year diff $diff", ({ diff, expected }: { diff: number; expected: number }) => {
+            const actual = DateHelper.modifyDateYear(DATE, diff).getFullYear(); // test only full year to avoid timezone error
             expect(actual).toEqual(expected);
         });
     });
