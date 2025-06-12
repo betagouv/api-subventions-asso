@@ -4,7 +4,7 @@ exports[`ApplicationFlatService grant part getRawGrants converts found methods 1
 [
   {
     "data": {
-      "idVersement": "poste1",
+      "paymentId": "poste1",
       "provider": "fonjep",
     },
     "joinKey": "poste1",

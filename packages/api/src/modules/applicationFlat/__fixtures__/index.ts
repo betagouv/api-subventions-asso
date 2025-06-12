@@ -1,7 +1,64 @@
 import { ApplicationStatus } from "dto";
 import { ApplicationFlatEntity, ApplicationNature, PaymentCondition } from "../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatDbo } from "../../../dataProviders/db/applicationFlat/ApplicationFlatDbo";
+import { ObjectId } from "mongodb";
 
-export const DRAFT = {
+export const DRAFT_ENTITY: Omit<ApplicationFlatEntity, "uniqueId" | "applicationId"> = {
+    requestYear: 2015,
+    pluriannualYears: [2042, 2043, 2044],
+    cofinancingRequested: false,
+    paymentCondition: PaymentCondition.PHASED,
+    conventionDate: new Date("2015-03-14"),
+    decisionDate: new Date("2015-03-13"),
+    depositDate: new Date("2015-03-12"),
+    paymentPeriodDate: [new Date("2015-03-15"), new Date("2015-03-16")],
+    paymentConditionDesc: "conditions",
+    joinKeyDesc: "pour joindre",
+    system: "dispositif",
+    ej: "EJ0001",
+    financialYear: 2015,
+    allocatorId: "123456789",
+    managingAuthorityId: "012345678",
+    beneficiaryEstablishmentId: "12345678901234", // a siret here
+    confinancersId: [],
+    joinKeyId: "joint001",
+    idRAE: "RAEid",
+    instructiveDepartementId: "890123456",
+    applicationProviderId: "subv001",
+    paymentId: "idv",
+    grantedAmount: 15000,
+    requestedAmount: 30000,
+    totalAmount: 50000,
+    nature: ApplicationNature.NATURE,
+    allocatorName: "attribuant",
+    managingAuthorityName: "autoriteGestion",
+    instructiveDepartmentName: "serviceInstructeur",
+    cofinancersNames: [],
+    ueNotification: false,
+    object: "objet",
+    plurinannual: true,
+    applicationPercentage: 100,
+    provider: "provider",
+    decisionReference: "idDecision",
+    underSystem: "sous-dispositif",
+    statusLabel: ApplicationStatus.GRANTED,
+    allocatorIdType: undefined,
+    managingAuthorityIdType: undefined,
+    beneficiaryEstablishmentIdType: "",
+    cofinancersIdType: [],
+    instructiveDepartmentIdType: undefined,
+};
+
+export const ENTITY: ApplicationFlatEntity = {
+    uniqueId: "provider--subv001--2015",
+    applicationId: "provider--subv001",
+    ...DRAFT_ENTITY,
+} as ApplicationFlatEntity;
+
+export const DBO: ApplicationFlatDbo = {
+    _id: new ObjectId("684ad360b8e14612539db70c"),
+    idUnique: "provider--subv001--2015",
+    idSubvention: "provider--subv001",
     anneeDemande: 2015,
     anneesPluriannualite: [2042, 2043, 2044],
     cofinancementsSollicites: false,
@@ -36,19 +93,13 @@ export const DRAFT = {
     objet: "objet",
     pluriannualite: true,
     pourcentageSubvention: 100,
-    provider: "provider",
+    fournisseur: "provider",
     referenceDecision: "idDecision",
     sousDispositif: "sous-dispositif",
     statutLabel: ApplicationStatus.GRANTED,
     typeIdAttribuant: undefined,
     typeIdAutoriteGestion: undefined,
-    typeidEtablissementBeneficiaire: "",
+    typeIdEtablissementBeneficiaire: "",
     typeIdCofinanceursSollicites: [],
     typeIdServiceInstructeur: undefined,
 };
-
-export const ENTITY = {
-    idUnique: "provider--subv001--2015",
-    idSubvention: "provider--subv001",
-    ...DRAFT,
-} as ApplicationFlatEntity;
