@@ -11,10 +11,10 @@ import userAuthService from "../auth/user.auth.service";
 import userCheckService, { UserCheckService } from "../check/user.check.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import UserDbo from "../../../../dataProviders/db/user/UserDbo";
-import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import userCrudService from "../crud/user.crud.service";
 import { UserServiceErrors } from "../../user.enum";
 import { UserServiceError } from "../../@types/UserServiceError";
+import { FRONT_OFFICE_URL } from "../../../../configurations/env.conf";
 
 export class UserActivationService {
     public static RESET_TIMEOUT = 1000 * 60 * 60 * 24 * 10; // 10 days in ms

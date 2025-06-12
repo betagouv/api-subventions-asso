@@ -44,7 +44,7 @@ describe("cronController decorator", () => {
         );
         afterAll(() => errorHandlerFactorySpy.mockRestore());
 
-        function testResult(schedule, JobClass, TaskClass, target: unknown = { constructor: { name: CLASS_NAME } }) {
+        function testResult(schedule, JobClass, TaskClass, target: object = { constructor: { name: CLASS_NAME } }) {
             const PROPERTY_KEY = "actionToRepeat";
             const DESCRIPTOR = {
                 value: () => {},
@@ -60,13 +60,11 @@ describe("cronController decorator", () => {
             ${"__intervalJobs__"}   | ${LongIntervalJob}
             ${"__intervalJobs__"}   | ${SimpleIntervalJob}
         `("populates proper attribute name '$attributeNameToPopulate'", ({ JobClass, attributeNameToPopulate }) => {
-            // @ts-expect-error: TODO: better define this test function
             const actual = testResult(SCHEDULE, JobClass, TASK_CLASS)[attributeNameToPopulate]?.length;
             expect(actual).toBe(1);
         });
 
         it("adds job in existing array", () => {
-            // @ts-expect-error: TODO: better define this test function
             const actual = testResult(SCHEDULE, JOB_CLASS, TASK_CLASS, {
                 [ATTRIBUTE_TO_FILL]: ["something"],
             })[ATTRIBUTE_TO_FILL]?.length;

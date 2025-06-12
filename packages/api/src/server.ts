@@ -22,10 +22,9 @@ import UserActivityMiddleware from "./middlewares/UserActivityMiddleware";
 import { IdentifiedRequest } from "./@types";
 import { initCron } from "./cron";
 import { headersMiddleware } from "./middlewares/headersMiddleware";
-import { DEV, ENV } from "./configurations/env.conf";
+import { DEV, ENV, FRONT_OFFICE_URL } from "./configurations/env.conf";
 import { SESSION_SECRET } from "./configurations/agentConnect.conf";
 import { mongoSessionStoreConfig } from "./shared/MongoConnection";
-import { FRONT_OFFICE_URL } from "./configurations/front.conf";
 
 const appName = "api-subventions-asso";
 const MongoStore = MongoStoreBuilder(session);

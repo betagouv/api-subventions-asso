@@ -411,10 +411,7 @@ describe("DemarchesSimplifieesService", () => {
         const AXIOS_RES = { data: { data: { demarche: {} } } } as RequestResponse<unknown>;
 
         beforeAll(() => {
-            postMock = jest
-                // @ts-expect-error http is private method
-                .spyOn(demarchesSimplifieesService.http, "post")
-                .mockResolvedValue(AXIOS_RES);
+            postMock = jest.spyOn(demarchesSimplifieesService.http, "post").mockResolvedValue(AXIOS_RES);
             // @ts-expect-error buildSearchHeader is private method
             buildSearchHeaderMock = jest.spyOn(demarchesSimplifieesService, "buildSearchHeader");
         });

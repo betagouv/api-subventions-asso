@@ -11,11 +11,10 @@ import userPort from "../../../../dataProviders/db/user/user.port";
 import userCrudService from "../crud/user.crud.service";
 import { DefaultObject } from "../../../../@types";
 import userActivationService from "../activation/user.activation.service";
-import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import configurationsPort from "../../../../dataProviders/db/configurations/configurations.port";
 import configurationsService, { CONFIGURATION_NAMES } from "../../../configurations/configurations.service";
-import { STALL_RGPD_CRON_6_MONTHS_DELETION } from "../../../../configurations/mail.conf";
 import logsPort from "../../../../dataProviders/db/stats/logs.port";
+import { FRONT_OFFICE_URL, STALL_RGPD_CRON_6_MONTHS_DELETION } from "../../../../configurations/env.conf";
 
 export class UserRgpdService {
     public async getAllData(userId: string): Promise<UserDataDto> {

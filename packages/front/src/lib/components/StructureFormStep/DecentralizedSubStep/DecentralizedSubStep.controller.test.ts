@@ -2,10 +2,10 @@ import { type AdminStructureDto, AdminTerritorialLevel, AgentTypeEnum } from "dt
 import type { MockInstance } from "vitest";
 import DecentralizedSubStepController from "./DecentralizedSubStep.controller";
 import Store from "$lib/core/Store";
-import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionFormService";
+import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionForm.service";
 import geoService from "$lib/resources/externals/geo/geo.service";
 
-vi.mock("$lib/resources/auth/subscriptionForm/subscriptionFormService");
+vi.mock("$lib/resources/auth/subscriptionForm/subscriptionForm.service");
 vi.mock("$lib/resources/externals/geo/geo.service");
 vi.mock("$lib/core/Dispatch", () => ({
     default: {

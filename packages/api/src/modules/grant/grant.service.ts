@@ -207,7 +207,7 @@ export class GrantService {
 
     private joinGrants(rawGrants: AnyRawGrant[]): JoinedRawGrant[] {
         const byKey: Record<string, JoinedRawGrant> = {};
-        //TODO: improve JoinedRawGrant after investiguating duplicates possibilities
+        //TODO: improve JoinedRawGrant after investigating duplicates possibilities
         // i.e accept only { fullGrant: RawFullGrant , payments: RawPayment[] }
         // and { application: RawApplication, payments: RawPayment[] }
         const newJoinedRawGrant = () => ({

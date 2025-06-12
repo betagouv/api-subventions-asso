@@ -1,7 +1,7 @@
 import { isAssociation } from "$lib/resources/associations/association.helper";
 import associationService from "$lib/resources/associations/association.service";
 import { currentAssoSimplifiedEtabs, currentAssociation, currentIdentifiers } from "$lib/store/association.store";
-import { siretToSiren } from "$lib/helpers/sirenHelper";
+import { siretToSiren } from "$lib/helpers/identifierHelper";
 import establishmentService from "$lib/resources/establishments/establishment.service";
 import rnaSirenService from "$lib/resources/open-source/rna-siren/rna-siren.service";
 

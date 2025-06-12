@@ -42,8 +42,7 @@ export class AmountsVsProgramRegionService {
     }
 
     public async getAmountsVsProgramRegionData() {
-        const data = (await amountsVsProgramRegionPort.findAll()) as AmountsVsProgramRegionDto[];
-        return data;
+        return amountsVsProgramRegionPort.findAll() as Promise<AmountsVsProgramRegionDto[]>;
     }
 }
 

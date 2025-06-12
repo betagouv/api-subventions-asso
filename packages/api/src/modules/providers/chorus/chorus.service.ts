@@ -32,11 +32,6 @@ export class ChorusService extends ProviderCore {
         return chorusLinePort.upsertMany(entities);
     }
 
-    /*
-     * it is weird that this filter, that essentially accepts according to structure being an asso or not.
-     * The check about that should be associationService.isIdentifierFromAsso but we historically have this one
-     * that use chorus specific data
-     * */
     public async isAcceptedEntity(entity: ChorusLineEntity) {
         if (entity.indexedInformations.codeBranche === ASSO_BRANCHE) return true;
 

@@ -37,9 +37,7 @@ describe("Dauphin Service", () => {
     const DATA = [{ a: true }, { b: true }];
 
     beforeAll(() => {
-        // @ts-expect-error http is protected methode
         httpPostSpy = jest.spyOn(dauphinService.http, "post");
-        // @ts-expect-error http is protected methode
         httpGetSpy = jest.spyOn(dauphinService.http, "get");
         httpPostSpy.mockResolvedValue({
             data: {

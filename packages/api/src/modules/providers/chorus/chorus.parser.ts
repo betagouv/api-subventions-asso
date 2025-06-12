@@ -25,8 +25,7 @@ export default class ChorusParser {
         const headerRow = page[0] as string[];
         const headers = ChorusParser.renameEmptyHeaders(headerRow);
         console.log("Map rows to entities...");
-        const entities = this.rowsToEntities(headers, page.slice(1));
-        return entities;
+        return this.rowsToEntities(headers, page.slice(1));
     }
 
     // CHORUS exports have "double columns" sharing the same header (only the header for the first column is defined)

@@ -27,7 +27,6 @@ describe("ApiEntrepriseService", () => {
         const qsMock = jest.spyOn(qs, "stringify");
 
         beforeAll(() => {
-            // @ts-expect-error http is protected attribute
             httpGetSpy = jest.spyOn(apiEntrepriseService.http, "get");
         });
 

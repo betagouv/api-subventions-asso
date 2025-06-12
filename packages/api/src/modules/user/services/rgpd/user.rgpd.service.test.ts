@@ -40,7 +40,6 @@ const mockedNotifyService = jest.mocked(notifyService);
 import * as portHelper from "../../../../shared/helpers/PortHelper";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import userActivationService from "../activation/user.activation.service";
-import { STALL_RGPD_CRON_6_MONTHS_DELETION } from "../../../../configurations/mail.conf";
 import { UserDto } from "dto";
 
 jest.mock("../../../../shared/helpers/PortHelper", () => ({
@@ -49,6 +48,7 @@ jest.mock("../../../../shared/helpers/PortHelper", () => ({
 }));
 
 import logsPort from "../../../../dataProviders/db/stats/logs.port";
+import { STALL_RGPD_CRON_6_MONTHS_DELETION } from "../../../../configurations/env.conf";
 jest.mock("../../../../dataProviders/db/stats/logs.port");
 
 describe("user rgpd service", () => {

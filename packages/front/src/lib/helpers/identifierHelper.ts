@@ -62,3 +62,7 @@ export function getUniqueIdentifier(identifiers: { rna?: RnaDto | null; siren?: 
 
     return unique.values().next().value as string;
 }
+
+export function siretToSiren(siret) {
+    return siret.slice(0, 9);
+}

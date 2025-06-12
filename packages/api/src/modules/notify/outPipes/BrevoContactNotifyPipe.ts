@@ -22,8 +22,6 @@ const SENDIND_BLUE_CONTACT_LISTS = [Number(API_BREVO_CONTACT_LIST)];
 export class BrevoContactNotifyPipe implements NotifyOutPipe {
     private apiInstance: Brevo.ContactsApi;
 
-    // TODO track errors
-
     constructor() {
         this.apiInstance = new Brevo.ContactsApi();
         if (!API_BREVO_TOKEN) throw new Error("Brevo token must be defined before runtime");
@@ -87,8 +85,7 @@ export class BrevoContactNotifyPipe implements NotifyOutPipe {
 
         return sendCreation()
             .then(({ body }) => {
-                if (body?.id) return true;
-                return false;
+                return !!body?.id;
             })
             .catch(({ response, body: wrongBody }) => {
                 // The true body is contained in response.body, body of error is wrong

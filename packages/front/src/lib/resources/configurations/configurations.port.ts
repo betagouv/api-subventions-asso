@@ -1,4 +1,4 @@
-import { MainInfoBannerDto } from "dto";
+import type { MainInfoBannerDto } from "dto";
 import requestsService from "$lib/services/requests.service";
 
 class ConfigurationsPort {

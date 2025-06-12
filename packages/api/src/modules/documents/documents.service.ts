@@ -7,13 +7,13 @@ import mime from "mime-types";
 import providers from "../providers";
 import { StructureIdentifier } from "../../@types";
 import { ProviderRequestService } from "../provider-request/providerRequest.service";
-import { FRONT_OFFICE_URL } from "../../configurations/front.conf";
 import ProviderCore from "../providers/ProviderCore";
 import { DauphinService } from "../providers/dauphin/dauphin.service";
 import { providersById } from "../providers/providers.helper";
 import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
 import DocumentProvider from "./@types/DocumentsProvider";
 import { documentToDocumentRequest } from "./document.adapter";
+import { FRONT_OFFICE_URL } from "../../configurations/env.conf";
 
 export class DocumentsService {
     ACCEPTED_URLS = [
@@ -64,8 +64,6 @@ export class DocumentsService {
     getDocumentStream(providerId: string, docId: string): Promise<IncomingMessage> {
         const service = this.providersById[providerId] as DauphinService | ProviderCore;
         if ("getSpecificDocumentStream" in service) return service.getSpecificDocumentStream(docId);
-        // TODO: refactor this to avoid typescript error on private access method
-        // @ts-expect-error: ok for now because it was unknown type before refactor
         return this.getGenericDocumentStream(service.http, docId);
     }
 

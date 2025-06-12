@@ -17,7 +17,6 @@ export class UniteLegalEntreprisesService {
     }
 
     async isEntreprise(siren: Siren) {
-        //sirenIsEntreprise
         return !!(await uniteLegalEntreprisePort.findOneBySiren(siren));
     }
 }

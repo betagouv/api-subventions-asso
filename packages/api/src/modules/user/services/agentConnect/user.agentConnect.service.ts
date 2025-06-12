@@ -18,7 +18,8 @@ import {
     AGENT_CONNECT_CLIENT_SECRET,
     AGENT_CONNECT_URL,
 } from "../../../../configurations/agentConnect.conf";
-import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
+
+import { FRONT_OFFICE_URL } from "../../../../configurations/env.conf";
 
 export class UserAgentConnectService {
     private _client?: Client;
