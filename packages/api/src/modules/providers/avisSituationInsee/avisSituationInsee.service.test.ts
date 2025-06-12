@@ -16,7 +16,6 @@ describe("AvisSituationInseeService", () => {
         const SIREN = new Siren("000000000");
 
         beforeAll(() => {
-            // @ts-expect-error http is private method
             httpGetSpy = jest.spyOn(avisSituationInseeService.http, "get");
         });
 
