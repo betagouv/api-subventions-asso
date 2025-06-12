@@ -74,7 +74,7 @@ export class ApplicationFlatService
             provider: grant.provider,
             type: "application",
             data: grant,
-            joinKey: grant.provider === "fonjep" ? grant.idVersement : grant.ej,
+            joinKey: grant.provider === "fonjep" ? grant.paymentId : grant.ej,
         }));
     }
 
@@ -136,9 +136,15 @@ export class ApplicationFlatService
         return applicationFlatPort.hasBeenInitialized();
     }
 
+    /**
+     * Used to transform ApplicationFlat into old and soon to be depreciated DemandeSubvention which only works with siret
+     *
+     * @param entity ApplicationFlatEntity
+     * @returns Siret or undefined if establishment type is ridet or tahitiet
+     */
     getSiret(entity: ApplicationFlatEntity) {
-        if (entity.typeidEtablissementBeneficiaire === "siret" && Siret.isSiret(entity.idEtablissementBeneficiaire))
-            return new Siret(entity.idEtablissementBeneficiaire);
+        if (entity.beneficiaryEstablishmentIdType === "siret" && Siret.isSiret(entity.beneficiaryEstablishmentId))
+            return new Siret(entity.beneficiaryEstablishmentId);
         return undefined;
     }
 }
