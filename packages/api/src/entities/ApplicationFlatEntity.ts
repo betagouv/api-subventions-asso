@@ -1,6 +1,7 @@
 import { ApplicationStatus } from "dto";
+import { companyIdName, establishmentIdName } from "../valueObjects/typeIdentifier";
 
-export type StructureIdType = "siret" | "siren" | "rid" | "ridet" | "tahiti" | "tahiti-t";
+export type StructureIdType = companyIdName | establishmentIdName;
 
 export enum ApplicationNature {
     MONEY = "MONEY",
@@ -13,55 +14,50 @@ export enum PaymentCondition {
     OTHER = "OTHER",
 }
 
-// TODO where to accept null ?
-
-// careful, autoriteGestion != serviceInstructeur != attribuant
-// for all typeId properties,
 export type ApplicationFlatEntity = {
-    idUnique: string; // idSubvention-exerciceBudgetaire TODO rename
-    idSubvention: string; // nomProvider-idSubventionProvider
-
-    idSubventionProvider: string;
-    idJointure?: string;
-    descriptionIdJointure?: string; // description de l'idJointure et de la jointure que l'idJointure permets d'effectuer
+    uniqueId: string;
+    applicationId: string;
+    applicationProviderId: string;
+    joinKeyId?: string;
+    joinKeyDesc?: string;
     provider: string;
-    nomAttribuant?: string; // Nom de l'autorité administrative qui pilote le dispositif ou programme de subvention ou en delegue la gestion
-    typeIdAttribuant?: StructureIdType;
-    idAttribuant?: string;
-    nomAutoriteGestion?: string; // Si l'attribuant delegue la gestion, nom de l'autorité administrative qui gère le dispositif ou programme de subvention
-    idAutoriteGestion?: string;
-    typeIdAutoriteGestion?: StructureIdType;
-    nomServiceInstructeur?: string; // Nom du service qui instruit la demande
-    typeIdServiceInstructeur?: StructureIdType;
-    idServiceInstructeur?: string;
-    idEtablissementBeneficiaire: string;
-    typeidEtablissementBeneficiaire?: string; // this id must be establishment level so no siren
-    exerciceBudgetaire: number;
-    pluriannualite?: boolean;
-    anneesPluriannualite?: number[];
-    dateDecision?: Date;
-    dateConvention: Date; // TODO only mandatory because we need it for ProviderValue's date
-    referenceDecision?: string;
-    dateDepotDemande?: Date;
-    anneeDemande?: number;
-    dispositif?: string;
-    sousDispositif?: string;
-    statutLabel: ApplicationStatus;
-    objet?: string;
+    allocatorName?: string;
+    allocatorIdType?: StructureIdType;
+    allocatorId?: string;
+    managingAuthorityName?: string;
+    managingAuthorityId?: string;
+    managingAuthorityIdType?: StructureIdType;
+    instructiveDepartmentName?: string;
+    instructiveDepartmentIdType?: StructureIdType;
+    instructiveDepartementId?: string;
+    beneficiaryEstablishmentId: string;
+    beneficiaryEstablishmentIdType?: string;
+    financialYear: number;
+    plurinannual?: boolean;
+    pluriannualYears?: number[];
+    decisionDate?: Date;
+    conventionDate: Date;
+    decisionReference?: string;
+    depositDate?: Date;
+    requestYear?: number;
+    system?: string; // dispositif
+    underSystem?: string; // sous dispositif
+    statusLabel: ApplicationStatus;
+    object?: string;
     nature?: ApplicationNature;
-    montantDemande: number;
-    montantAccorde?: number;
-    montantTotal?: number;
+    requestedAmount: number;
+    grantedAmount?: number;
+    totalAmount?: number;
     ej?: string;
-    idVersement?: string;
-    conditionsVersements?: PaymentCondition;
-    descriptionConditionsVersements?: string;
-    datesPeriodeVersement?: Date | Date[];
-    cofinancementsSollicites?: boolean;
-    nomsAttribuantsCofinanceurs?: string[];
-    typeIdCofinanceursSollicites?: StructureIdType[];
-    idCofinanceursSollicites?: string[];
+    paymentId?: string;
+    paymentCondition?: PaymentCondition;
+    paymentConditionDesc?: string;
+    paymentPeriodDate?: Date | Date[];
+    cofinancingRequested?: boolean;
+    cofinancersNames?: string[];
+    cofinancersIdType?: StructureIdType[];
+    confinancersId?: string[];
     idRAE?: string;
-    notificationUE?: boolean;
-    pourcentageSubvention?: number;
+    ueNotification?: boolean;
+    applicationPercentage?: number;
 };
