@@ -1,4 +1,5 @@
 import { ApplicationStatus } from "dto";
+import { NOT_APPLICABLE } from "../shared/GenericAdapter";
 
 export type StructureIdType = "siret" | "siren" | "rid" | "ridet" | "tahiti" | "tahiti-t";
 
@@ -15,9 +16,13 @@ export enum PaymentCondition {
 
 // TODO where to accept null ?
 
+type OrNA<FlatType> = {
+    [prop in keyof FlatType]: FlatType[prop] | NOT_APPLICABLE;
+};
+
 // careful, autoriteGestion != serviceInstructeur != attribuant
 // for all typeId properties,
-export type ApplicationFlatEntity = {
+type FullApplicationFlatEntity = {
     idUnique: string; // idSubvention-exerciceBudgetaire TODO rename
     idSubvention: string; // nomProvider-idSubventionProvider
 
@@ -65,3 +70,5 @@ export type ApplicationFlatEntity = {
     notificationUE?: boolean;
     pourcentageSubvention?: number;
 };
+
+export type ApplicationFlatEntity = OrNA<FullApplicationFlatEntity>;
