@@ -1,4 +1,6 @@
 import { ApplicationStatus } from "dto";
+import { NOT_APPLICABLE } from "../shared/GenericAdapter";
+
 import { IdentifierIdName } from "../identifierObjects/@types/IdentifierName";
 
 export enum ApplicationNature {
@@ -12,7 +14,15 @@ export enum PaymentCondition {
     OTHER = "OTHER",
 }
 
-export type ApplicationFlatEntity = {
+// TODO where to accept null ?
+
+type OrNA<FlatType> = {
+    [prop in keyof FlatType]: FlatType[prop] | NOT_APPLICABLE;
+};
+
+// careful, autoriteGestion != serviceInstructeur != attribuant
+// for all typeId properties,
+export type FullApplicationFlatEntity = {
     uniqueId: string;
     applicationId: string;
     applicationProviderId: string;
@@ -60,3 +70,5 @@ export type ApplicationFlatEntity = {
     subventionPercentage?: number;
     updateDate: Date;
 };
+
+export type ApplicationFlatEntity = OrNA<FullApplicationFlatEntity>;
