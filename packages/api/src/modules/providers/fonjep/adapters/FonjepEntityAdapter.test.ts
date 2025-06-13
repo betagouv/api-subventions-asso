@@ -19,6 +19,8 @@ import { GenericAdapter } from "../../../../shared/GenericAdapter";
 jest.mock("../../dataBretagne/dataBretagne.service");
 import { removeWhitespace } from "../../../../shared/helpers/StringHelper";
 jest.mock("../../../../shared/helpers/StringHelper");
+import * as DateHelper from "../../../../shared/helpers/DateHelper";
+jest.mock("../../../../shared/helpers/DateHelper");
 
 describe("FonjepEntityAdapter", () => {
     describe("toFonjepTierEntity()", () => {
@@ -249,6 +251,21 @@ describe("FonjepEntityAdapter", () => {
     });
 
     describe("buildPaymentFlatPaymentId", () => {
+        const SHORT_DATE = "2024-06-12";
+        let mockGetConventionDate: jest.SpyInstance;
+
+        beforeEach(() => {
+            jest.mocked(DateHelper.getShortISODate).mockReturnValue(SHORT_DATE);
+            mockGetConventionDate = jest
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                .spyOn(FonjepEntityAdapter as any, "getConventionDate")
+                .mockReturnValue(new Date(SHORT_DATE));
+        });
+
+        afterAll(() => {
+            mockGetConventionDate.mockRestore();
+        });
+
         it("return idVersement", () => {
             // @ts-expect-error: test private method
             const actual = FonjepEntityAdapter.buildPaymentFlatPaymentId({
@@ -258,8 +275,51 @@ describe("FonjepEntityAdapter", () => {
             });
             expect(actual).toMatchSnapshot();
         });
+
+        it("calls getConventionDate", () => {
+            // @ts-expect-error: test private method
+            FonjepEntityAdapter.buildPaymentFlatPaymentId({
+                thirdParty: TIERS_ENTITY,
+                position: POSTE_ENTITY,
+                payment: VERSEMENT_ENTITY,
+            });
+            expect(mockGetConventionDate).toHaveBeenCalledWith(POSTE_ENTITY);
+        });
     });
+
+    describe("getConventionDate", () => {
+        beforeAll(() => {
+            jest.mocked(DateHelper.modifyDateYear).mockReturnValue(new Date("2020-12-31"));
+        });
+
+        afterAll(() => {
+            jest.mocked(DateHelper.modifyDateYear).mockReset();
+        });
+
+        it("calls modifyDateYear", () => {
+            // @ts-expect-error: test private method
+            FonjepEntityAdapter.getConventionDate(POSTE_ENTITY);
+            expect(DateHelper.modifyDateYear).toHaveBeenCalledWith(POSTE_ENTITY.dateFinTriennalite, -3);
+        });
+
+        it("throws error if position has no dateFinTriennalite", () => {
+            expect(() =>
+                // @ts-expect-error: test private method
+                FonjepEntityAdapter.getConventionDate({ ...POSTE_ENTITY, dateFinTriennalite: undefined }),
+            ).toThrow("We can't create FONJEP PaymentFlat without dateFinTriennalite");
+        });
+    });
+
     describe("buildPaymentFlatUniqueId", () => {
+        // let mockGetConventionDate
+        beforeEach(() => {
+            jest.mocked(DateHelper.getShortISODate).mockReturnValue("2023-07-12");
+        });
+
+        afterAll(() => {
+            jest.mocked(DateHelper.getShortISODate).mockReset();
+        });
+
         it("return idVersement", () => {
             const { uniqueId, ...partialPaymentFlat } = FONJEP_PAYMENT_FLAT_ENTITY;
             // @ts-expect-error: test private method

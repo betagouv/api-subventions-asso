@@ -16,7 +16,7 @@ import { GenericAdapter } from "../../../../shared/GenericAdapter";
 import { FonjepPaymentFlatEntity } from "../entities/FonjepPaymentFlatEntity";
 import { DataBretagneRecords } from "../../dataBretagne/@types/DataBretagne";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
-import { getShortISODate } from "../../../../shared/helpers/DateHelper";
+import { getShortISODate, modifyDateYear } from "../../../../shared/helpers/DateHelper";
 import { removeWhitespace } from "../../../../shared/helpers/StringHelper";
 
 /**
@@ -125,13 +125,18 @@ export default class FonjepEntityAdapter {
         }
     }
 
+    private static getConventionDate(position: FonjepPosteEntity): Date {
+        if (position.dateFinTriennalite) return modifyDateYear(position.dateFinTriennalite, -3);
+        throw new Error("We can't create FONJEP PaymentFlat without dateFinTriennalite");
+    }
+
     private static buildPaymentFlatPaymentId(data: {
         thirdParty: FonjepTiersEntity;
         position: FonjepPosteEntity;
         payment: PayedFonjepVersementEntity;
     }) {
         const { thirdParty, position, payment } = data;
-        return `${payment.posteCode}-${getShortISODate(payment.dateVersement)}-${position.annee}-${
+        return `${payment.posteCode}-${getShortISODate(FonjepEntityAdapter.getConventionDate(position))}-${position.annee}-${
             thirdParty.siretOuRidet
         }`;
     }
