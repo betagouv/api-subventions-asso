@@ -1,5 +1,7 @@
 import Rid from "./Rid";
 
+export const RIDET_NAME = "ridet";
+
 export default class Ridet {
     private ridet: string;
 
@@ -14,8 +16,12 @@ export default class Ridet {
         return typeof ridet === "string" && /^\d{9,10}$/.test(ridet);
     }
 
+    static getName(): "ridet" {
+        return RIDET_NAME;
+    }
+
     get name(): "ridet" {
-        return "ridet";
+        return RIDET_NAME;
     }
 
     get value() {

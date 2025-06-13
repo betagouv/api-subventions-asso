@@ -15,7 +15,7 @@ import { GenericParser } from "../../../../shared/GenericParser";
 import { ChorusLineDto } from "../@types/ChorusLineDto";
 import { ChorusPaymentFlatEntity, ChorusPaymentFlatRaw } from "../@types/ChorusPaymentFlat";
 import Ridet from "../../../../valueObjects/Ridet";
-import { establishmentIdType } from "../../../../valueObjects/typeIdentifier";
+import { EstablishmentIdType } from "../../../../valueObjects/@types/IdentifierType";
 import Tahitiet from "../../../../valueObjects/Tahitiet";
 import REGION_MAPPING from "./ChorusRegionMapping";
 
@@ -88,7 +88,7 @@ export default class ChorusAdapter {
         return region;
     }
 
-    private static getEstablishmentValueObject(chorusLineDto: ChorusLineDto): establishmentIdType {
+    private static getEstablishmentValueObject(chorusLineDto: ChorusLineDto): EstablishmentIdType {
         if (chorusLineDto["Code taxe 1"] === "#") {
             // special case spotted after handling ridet and tahiti in V0.67
             // sometime chorus line doesn't any siret nor ridet or tahiti
@@ -106,7 +106,7 @@ export default class ChorusAdapter {
     }
 
     // TODO: add to ValueObject a getCompanyId that would abstract the notion of siren/rid/tahiti ?
-    private static getCompanyId(estabId: establishmentIdType) {
+    private static getCompanyId(estabId: EstablishmentIdType) {
         if (estabId instanceof Siret) {
             return estabId.toSiren();
         } else if (estabId instanceof Ridet) {

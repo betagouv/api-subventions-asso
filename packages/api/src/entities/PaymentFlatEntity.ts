@@ -1,13 +1,14 @@
-import { companyIdType, establishmentIdType, companyIdName, establishmentIdName } from "../valueObjects/typeIdentifier";
+import { CompanyIdName, EstablishmentIdName } from "../valueObjects/@types/IdentifierName";
+import { CompanyIdType, EstablishmentIdType } from "../valueObjects/@types/IdentifierType";
 
 type PaymentFlatEntity = {
     idVersement: string;
     uniqueId: string;
     exerciceBudgetaire: number;
-    typeIdEtablissementBeneficiaire: establishmentIdName;
-    idEtablissementBeneficiaire: establishmentIdType;
-    typeIdEntrepriseBeneficiaire: companyIdName;
-    idEntrepriseBeneficiaire: companyIdType;
+    typeIdEtablissementBeneficiaire: EstablishmentIdName;
+    idEtablissementBeneficiaire: EstablishmentIdType;
+    typeIdEntrepriseBeneficiaire: CompanyIdName;
+    idEntrepriseBeneficiaire: CompanyIdType;
     amount: number;
     operationDate: Date;
     centreFinancierCode: string;

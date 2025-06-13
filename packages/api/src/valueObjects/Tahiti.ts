@@ -1,3 +1,5 @@
+export const TAHITI_NAME = "tahiti";
+
 export default class Tahiti {
     private tahiti: string;
 
@@ -14,8 +16,12 @@ export default class Tahiti {
         return typeof tahiti === "string" && regex.test(tahiti);
     }
 
+    static getName(): "tahiti" {
+        return TAHITI_NAME;
+    }
+
     get name(): "tahiti" {
-        return "tahiti";
+        return TAHITI_NAME;
     }
 
     get value() {

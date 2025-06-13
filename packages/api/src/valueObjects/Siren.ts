@@ -1,5 +1,7 @@
 import Siret from "./Siret";
 
+export const SIREN_NAME = "siren";
+
 export default class Siren {
     private siren: string;
 
@@ -19,8 +21,11 @@ export default class Siren {
         return new Siren(siret.slice(0, 9));
     }
 
+    static getName(): "siren" {
+        return SIREN_NAME;
+    }
     get name(): "siren" {
-        return "siren";
+        return SIREN_NAME;
     }
 
     get value() {
