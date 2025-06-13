@@ -1,5 +1,8 @@
 import AssociationIdentifier from "./AssociationIdentifier";
 import Siret from "./Siret";
+import Ridet from "./Ridet";
+import Tahitiet from "./Tahitiet";
+import { EstablishmentIdName } from "./@types/IdentifierName";
 
 export default class EstablishmentIdentifier {
     public siret?: Siret;
@@ -13,6 +16,13 @@ export default class EstablishmentIdentifier {
 
     static fromSiret(siret: Siret, associationIdentifier: AssociationIdentifier) {
         return new EstablishmentIdentifier(associationIdentifier, siret);
+    }
+
+    static getIdentifierType(identifier: string): EstablishmentIdName | null {
+        if (Siret.isSiret(identifier)) return Siret.getName();
+        if (Ridet.isRidet(identifier)) return Ridet.getName();
+        if (Tahitiet.isTahitiet(identifier)) return Tahitiet.getName();
+        return null;
     }
 
     toString(): string {

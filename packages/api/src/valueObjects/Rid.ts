@@ -1,3 +1,5 @@
+export const RID_NAME = "rid";
+
 export default class Rid {
     private rid: string;
 
@@ -12,8 +14,12 @@ export default class Rid {
         return typeof rid === "string" && /^\d{6,7}$/.test(rid);
     }
 
+    static getName(): "rid" {
+        return RID_NAME;
+    }
+
     get name(): "rid" {
-        return "rid";
+        return RID_NAME;
     }
 
     get value() {

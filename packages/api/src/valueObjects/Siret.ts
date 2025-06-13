@@ -1,5 +1,7 @@
 import Siren from "./Siren";
 
+export const SIRET_NAME = "siret";
+
 export default class Siret {
     private siret: string;
 
@@ -15,8 +17,12 @@ export default class Siret {
         return typeof siret === "string" && /^\d{14}$/.test(siret);
     }
 
+    static getName(): "siret" {
+        return SIRET_NAME;
+    }
+
     get name(): "siret" {
-        return "siret";
+        return SIRET_NAME;
     }
 
     get value() {

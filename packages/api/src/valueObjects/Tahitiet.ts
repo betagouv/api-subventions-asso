@@ -1,5 +1,7 @@
 import Tahiti from "./Tahiti";
 
+export const TAHITIET_NAME = "tahitiet"; // tahitiet was defined by us because tahiti numbers doesn't have any name for their establishment identifier name (like siren - siret)
+
 export default class Tahitiet {
     private tahitiet: string;
 
@@ -16,8 +18,12 @@ export default class Tahitiet {
         return typeof tahitiet === "string" && regex.test(tahitiet);
     }
 
+    static getName(): "tahitiet" {
+        return TAHITIET_NAME;
+    }
+
     get name(): "tahitiet" {
-        return "tahitiet";
+        return TAHITIET_NAME;
     }
 
     get value() {
