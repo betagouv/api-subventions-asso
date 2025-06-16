@@ -42,7 +42,7 @@ describe("ApplicationFlatAdapter", () => {
     });
 
     describe("dboToEntity", () => {
-        it("return entity", () => {
+        it("returns entity", () => {
             const expected = ENTITY;
             const actual = ApplicationFlatAdapter.dboToEntity(DBO);
             expect(actual).toEqual(expected);
