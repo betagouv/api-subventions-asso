@@ -8,7 +8,7 @@ export type ApplicationFlatDbo = {
     idSubvention: string; // nomProvider-idSubventionProvider
     idSubventionProvider: string; // id interne (du provider) d'identification d'une subvention permettant de faire le lien avec les actions. En cas de financement pluriannuel, cet identifiant est le même pour chaque exercice budgétaire. Dans le cas où la subvention concerne plusieurs bénéficiaires, cet identifiant est le même pour chaque bénéficiaire
     idJointure?: string; // id permettant de faire une jointure avec une autre source de données
-    descriptionIdJointure?: string; // description de l'idJointure et de la jointure que l'idJointure permets d'effectuer
+    descriptionIdJointure?: string; // description de l'idJointure et de la jointure que l'idJointure permet d'effectuer
     fournisseur: string; // Service fournisseur de la donnée
     nomAttribuant?: string; // Nom de l'autorité administrative qui pilote le dispositif ou programme de subvention ou en delegue la gestion
     typeIdAttribuant?: StructureIdType; // type identifiant de l'idAttribuant entre siren, siret, rid, ridet, tahiti, tahiti-t
