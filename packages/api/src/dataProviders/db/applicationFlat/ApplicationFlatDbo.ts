@@ -6,7 +6,7 @@ export type ApplicationFlatDbo = {
     _id: ObjectId;
     idUnique: string; // idSubvention - exerciceBudgetaire pour tous les fournisseurs sauf provider commançant par scdl. Un identifiant unique artificiellement crée pour provider commançant par scdl
     idSubvention: string; // nomProvider-idSubventionProvider
-    idSubventionProvider: string; // id interne (du provider) d'identification d'une subvention permettant de faire le lien avec les actions. En cas de financement pluriannuel, cet identifiant est le même pour chaque exercice budgetaire. Dans le cas la subvention concerne plusieurs béneficiares, cet idéntifiant est le même pour chaque béneficiaire
+    idSubventionProvider: string; // id interne (du provider) d'identification d'une subvention permettant de faire le lien avec les actions. En cas de financement pluriannuel, cet identifiant est le même pour chaque exercice budgétaire. Dans le cas où la subvention concerne plusieurs bénéficiaires, cet identifiant est le même pour chaque bénéficiaire
     idJointure?: string; // id permettant de faire une jointure avec une autre source de données
     descriptionIdJointure?: string; // description de l'idJointure et de la jointure que l'idJointure permets d'effectuer
     fournisseur: string; // Service fournisseur de la donnée
