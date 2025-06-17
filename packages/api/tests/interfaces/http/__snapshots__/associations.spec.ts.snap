@@ -3437,10 +3437,10 @@ exports[`/association /{identifier}/raw-grants should return raw grants with rna
           "ej": "0001821732",
           "exerciceBudgetaire": 2023,
           "idEntrepriseBeneficiaire": {
-            "siren": "100000000",
+            "identifier": "100000000",
           },
           "idEtablissementBeneficiaire": {
-            "siret": "10000000000001",
+            "identifier": "10000000000001",
           },
           "idVersement": "12345678901234-0001821732-2023",
           "ministry": "Ministère Exemple",
@@ -5739,10 +5739,10 @@ exports[`/association /{identifier}/raw-grants should return raw grants with sir
           "ej": "0001821732",
           "exerciceBudgetaire": 2023,
           "idEntrepriseBeneficiaire": {
-            "siren": "100000000",
+            "identifier": "100000000",
           },
           "idEtablissementBeneficiaire": {
-            "siret": "10000000000001",
+            "identifier": "10000000000001",
           },
           "idVersement": "12345678901234-0001821732-2023",
           "ministry": "Ministère Exemple",

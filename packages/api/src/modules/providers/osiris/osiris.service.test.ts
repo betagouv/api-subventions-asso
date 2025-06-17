@@ -160,18 +160,18 @@ describe("OsirisService", () => {
                   [
                     {
                       "rna": Rna {
-                        "rna": "W000000001",
+                        "identifier": "W000000001",
                       },
                       "siren": Siren {
-                        "siren": "123456789",
+                        "identifier": "123456789",
                       },
                     },
                     {
                       "rna": Rna {
-                        "rna": "W000000002",
+                        "identifier": "W000000002",
                       },
                       "siren": Siren {
-                        "siren": "123456789",
+                        "identifier": "123456789",
                       },
                     },
                   ],

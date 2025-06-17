@@ -223,7 +223,7 @@ describe("isAssoIdentifierFromAssoMiddleware", () => {
             AssociationIdentifier {
               "rna": undefined,
               "siren": Siren {
-                "siren": "000000001",
+                "identifier": "000000001",
               },
             }
         `);
@@ -240,7 +240,7 @@ describe("isAssoIdentifierFromAssoMiddleware", () => {
                 "assoIdentifier": AssociationIdentifier {
                   "rna": undefined,
                   "siren": Siren {
-                    "siren": "000000001",
+                    "identifier": "000000001",
                   },
                 },
                 "params": {
@@ -274,7 +274,7 @@ describe("isAssoIdentifierFromAssoMiddleware", () => {
                 "assoIdentifier": AssociationIdentifier {
                   "rna": undefined,
                   "siren": Siren {
-                    "siren": "000000001",
+                    "identifier": "000000001",
                   },
                 },
                 "params": {

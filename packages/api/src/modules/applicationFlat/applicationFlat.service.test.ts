@@ -19,7 +19,7 @@ jest.mock("../providers", () => ({
 }));
 jest.mock("../../dataProviders/db/applicationFlat/applicationFlat.port");
 jest.mock("./ApplicationFlatAdapter");
-jest.mock("../../valueObjects/Siret");
+jest.mock("../../identifierObjects/Siret");
 
 describe("ApplicationFlatService", () => {
     const FLAT_ENTITY = {} as ApplicationFlatEntity;

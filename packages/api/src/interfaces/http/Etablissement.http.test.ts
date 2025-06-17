@@ -210,11 +210,11 @@ describe("isEtabIdentifierFromAssoMiddleware", () => {
               "associationIdentifier": AssociationIdentifier {
                 "rna": undefined,
                 "siren": Siren {
-                  "siren": "000000001",
+                  "identifier": "000000001",
                 },
               },
               "siret": Siret {
-                "siret": "00000000100000",
+                "identifier": "00000000100000",
               },
             }
         `);
@@ -232,11 +232,11 @@ describe("isEtabIdentifierFromAssoMiddleware", () => {
                   "associationIdentifier": AssociationIdentifier {
                     "rna": undefined,
                     "siren": Siren {
-                      "siren": "000000001",
+                      "identifier": "000000001",
                     },
                   },
                   "siret": Siret {
-                    "siret": "00000000100000",
+                    "identifier": "00000000100000",
                   },
                 },
                 "params": {
@@ -273,11 +273,11 @@ describe("isEtabIdentifierFromAssoMiddleware", () => {
                   "associationIdentifier": AssociationIdentifier {
                     "rna": undefined,
                     "siren": Siren {
-                      "siren": "000000001",
+                      "identifier": "000000001",
                     },
                   },
                   "siret": Siret {
-                    "siret": "00000000100000",
+                    "identifier": "00000000100000",
                   },
                 },
                 "params": {

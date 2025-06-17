@@ -17,10 +17,10 @@ exports[`FonjepEntityAdapter toFonjepPaymentFlat returns FonjepPaymentFlat entit
   "ej": "N/A",
   "exerciceBudgetaire": 2022,
   "idEntrepriseBeneficiaire": Siren {
-    "siren": "100000000",
+    "identifier": "100000000",
   },
   "idEtablissementBeneficiaire": Siret {
-    "siret": "10000000000001",
+    "identifier": "10000000000001",
   },
   "idVersement": "PAYMENT_ID",
   "ministry": "Ministère Exemple",

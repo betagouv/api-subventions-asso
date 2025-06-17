@@ -1,6 +1,5 @@
-export abstract class ValueObject {
-    private identifier: string;
-    private static identifierName: string;
+export abstract class IdentifierObject {
+    protected identifier: string;
 
     constructor(identifier: string) {
         this.identifier = identifier;
@@ -8,19 +7,15 @@ export abstract class ValueObject {
 
     abstract get name(): string;
 
-    static getName() {
-        return this.identifierName;
-    }
-
-    get value() {
+    get value(): string {
         return this.identifier;
     }
 
-    toString() {
+    toString(): string {
         return this.value;
     }
 
-    equals(other: this) {
+    equals(other: this): boolean {
         return other.value === this.value;
     }
 }
