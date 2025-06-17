@@ -4,7 +4,7 @@ import qs from "qs";
 import { ExtraitRcsDto } from "dto";
 import { StructureIdentifiersError } from "core";
 import { API_ENTREPRISE_TOKEN } from "../../../configurations/apis.conf";
-import { DefaultObject, StructureIdentifier } from "../../../@types";
+import { DefaultObject } from "../../../@types";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import CacheData from "../../../shared/Cache";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
@@ -13,6 +13,7 @@ import Siret from "../../../valueObjects/Siret";
 import Siren from "../../../valueObjects/Siren";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
 import IApiEntrepriseHeadcount from "./@types/IApiEntrepriseHeadcount";
+import { StructureIdentifier } from "../../../valueObjects/@types/StructureIdentifier";
 
 export class ApiEntrepriseService extends ProviderCore {
     static API_URL = "https://entreprise.api.gouv.fr/";

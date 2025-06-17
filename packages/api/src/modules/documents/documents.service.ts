@@ -5,7 +5,6 @@ import { DocumentDto, DocumentRequestDto } from "dto";
 import * as Sentry from "@sentry/node";
 import mime from "mime-types";
 import providers from "../providers";
-import { StructureIdentifier } from "../../@types";
 import { ProviderRequestService } from "../provider-request/providerRequest.service";
 import { FRONT_OFFICE_URL } from "../../configurations/front.conf";
 import ProviderCore from "../providers/ProviderCore";
@@ -14,6 +13,7 @@ import { providersById } from "../providers/providers.helper";
 import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
 import DocumentProvider from "./@types/DocumentsProvider";
 import { documentToDocumentRequest } from "./document.adapter";
+import { StructureIdentifier } from "../../valueObjects/@types/StructureIdentifier";
 
 export class DocumentsService {
     ACCEPTED_URLS = [

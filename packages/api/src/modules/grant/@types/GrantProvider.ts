@@ -1,5 +1,5 @@
+import { StructureIdentifier } from "../../../valueObjects/@types/StructureIdentifier";
 import Provider from "../../providers/@types/IProvider";
-import { StructureIdentifier } from "../../../@types";
 import { RawGrant } from "./rawGrant";
 
 export default interface GrantProvider extends Provider {

@@ -4,7 +4,6 @@ import GrantProvider from "../../grant/@types/GrantProvider";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
-import { StructureIdentifier } from "../../../@types";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
 import subventiaPort from "../../../dataProviders/db/providers/subventia/subventia.port";
 import SubventiaParser from "./subventia.parser";
@@ -12,6 +11,7 @@ import SubventiaValidator from "./validators/subventia.validator";
 import SubventiaAdapter from "./adapters/subventia.adapter";
 import SubventiaEntity, { SubventiaDbo } from "./@types/subventia.entity";
 import SubventiaDto from "./@types/subventia.dto";
+import { StructureIdentifier } from "../../../valueObjects/@types/StructureIdentifier";
 
 export class SubventiaService implements DemandesSubventionsProvider<SubventiaEntity>, GrantProvider {
     provider = {

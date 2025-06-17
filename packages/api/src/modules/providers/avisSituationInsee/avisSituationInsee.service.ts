@@ -8,9 +8,9 @@ import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import ProviderCore from "../ProviderCore";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
-import { StructureIdentifier } from "../../../@types";
 import Siren from "../../../valueObjects/Siren";
 import Siret from "../../../valueObjects/Siret";
+import { StructureIdentifier } from "../../../valueObjects/@types/StructureIdentifier";
 
 interface AvisSituationCache {
     etablissements: {

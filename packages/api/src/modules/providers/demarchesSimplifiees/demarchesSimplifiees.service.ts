@@ -6,7 +6,7 @@ import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DEMARCHES_SIMPLIFIEES_TOKEN } from "../../../configurations/apis.conf";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
-import { DefaultObject, StructureIdentifier } from "../../../@types";
+import { DefaultObject } from "../../../@types";
 import ProviderCore from "../ProviderCore";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
@@ -26,6 +26,7 @@ import {
 } from "./entities/DemarchesSimplifieesSchemaSeed";
 import { input } from "@inquirer/prompts";
 import configurationsService from "../../configurations/configurations.service";
+import { StructureIdentifier } from "../../../valueObjects/@types/StructureIdentifier";
 
 export class DemarchesSimplifieesService
     extends ProviderCore

@@ -1,6 +1,6 @@
 import { ChorusPayment, DemandeSubvention, FonjepPayment, Payment } from "dto";
 import { paymentProviders } from "../providers";
-import { StructureIdentifier } from "../../@types";
+import { StructureIdentifier } from "../../valueObjects/@types/StructureIdentifier";
 
 export class PaymentsService {
     async getPayments(identifier: StructureIdentifier) {

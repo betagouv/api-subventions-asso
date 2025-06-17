@@ -1,7 +1,7 @@
 import { DocumentDto } from "dto";
 import Provider from "../../providers/@types/IProvider";
-import { StructureIdentifier } from "../../../@types";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
+import { StructureIdentifier } from "../../../valueObjects/@types/StructureIdentifier";
 
 export default interface DocumentProvider extends Provider {
     isDocumentProvider: boolean;

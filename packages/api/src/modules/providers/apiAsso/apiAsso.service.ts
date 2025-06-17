@@ -2,7 +2,7 @@ import { Association, Etablissement, DocumentDto } from "dto";
 import { XMLParser } from "fast-xml-parser";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import { DefaultObject, StructureIdentifier } from "../../../@types";
+import { DefaultObject } from "../../../@types";
 import { API_ASSO_URL, API_ASSO_TOKEN } from "../../../configurations/apis.conf";
 import CacheData from "../../../shared/Cache";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
@@ -24,6 +24,7 @@ import StructureDto, {
 } from "./dto/StructureDto";
 import { RnaStructureDto } from "./dto/RnaStructureDto";
 import { SirenStructureDto } from "./dto/SirenStructureDto";
+import { StructureIdentifier } from "../../../valueObjects/@types/StructureIdentifier";
 
 export class ApiAssoService
     extends ProviderCore

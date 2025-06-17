@@ -11,7 +11,6 @@ import ProviderCore from "../ProviderCore";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
-import { StructureIdentifier } from "../../../@types";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import Siret from "../../../valueObjects/Siret";
 import Siren from "../../../valueObjects/Siren";
@@ -20,6 +19,7 @@ import { osirisRequestPort, osirisActionPort } from "../../../dataProviders/db/p
 import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
+import { StructureIdentifier } from "../../../valueObjects/@types/StructureIdentifier";
 
 export enum VALID_REQUEST_ERROR_CODE {
     INVALID_SIRET = 1,

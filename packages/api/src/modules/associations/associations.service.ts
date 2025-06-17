@@ -2,7 +2,7 @@ import { ProviderValues, Association } from "dto";
 
 import * as Sentry from "@sentry/node";
 import { NotFoundError } from "core";
-import { DefaultObject, StructureIdentifier } from "../../@types";
+import { DefaultObject } from "../../@types";
 
 import providers from "../providers";
 import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
@@ -21,6 +21,7 @@ import { LEGAL_CATEGORIES_ACCEPTED } from "../../shared/LegalCategoriesAccepted"
 import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
 import Siren from "../../valueObjects/Siren";
 import AssociationsProvider from "./@types/AssociationsProvider";
+import { StructureIdentifier } from "../../valueObjects/@types/StructureIdentifier";
 
 export class AssociationsService {
     private provider_score: DefaultObject<number> = {

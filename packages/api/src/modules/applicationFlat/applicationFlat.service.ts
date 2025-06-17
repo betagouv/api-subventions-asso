@@ -3,7 +3,6 @@ import applicationFlatPort from "../../dataProviders/db/applicationFlat/applicat
 import { ApplicationFlatEntity } from "../../entities/ApplicationFlatEntity";
 import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
-import { StructureIdentifier } from "../../@types";
 import { RawGrant, RawApplication } from "../grant/@types/rawGrant";
 import { ProviderEnum } from "../../@enums/ProviderEnum";
 import ProviderCore from "../providers/ProviderCore";
@@ -13,6 +12,7 @@ import { applicationFlatProviders } from "../providers";
 import Siret from "../../valueObjects/Siret";
 import ApplicationFlatAdapter from "./ApplicationFlatAdapter";
 import ApplicationFlatProvider from "./@types/applicationFlatProvider";
+import { StructureIdentifier } from "../../valueObjects/@types/StructureIdentifier";
 
 export class ApplicationFlatService
     extends ProviderCore
