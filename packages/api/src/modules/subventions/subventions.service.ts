@@ -2,7 +2,7 @@ import { DemandeSubvention } from "dto";
 import Flux from "../../shared/Flux";
 import { demandesSubventionsProviders } from "../providers";
 import { SubventionsFlux } from "./@types/SubventionsFlux";
-import { StructureIdentifier } from "../../valueObjects/@types/StructureIdentifier";
+import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 
 export class SubventionsService {
     getDemandes(id: StructureIdentifier): Flux<SubventionsFlux> {

@@ -3,7 +3,7 @@ import { DRAFT, ENTITY } from "./__fixtures__";
 import ApplicationFlatAdapter from "./ApplicationFlatAdapter";
 import applicationFlatService from "./applicationFlat.service";
 import { ObjectId } from "mongodb";
-import Siret from "../../valueObjects/Siret";
+import Siret from "../../identifierObjects/Siret";
 
 jest.mock("./applicationFlat.service");
 

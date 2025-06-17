@@ -1,6 +1,6 @@
 import { Association } from "dto";
 import Provider from "../../providers/@types/IProvider";
-import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
 
 export default interface AssociationsProvider extends Provider {
     isAssociationsProvider: boolean;

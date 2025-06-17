@@ -14,7 +14,7 @@ import { POSTE_ENTITY, TIERS_ENTITY, VERSEMENT_ENTITY } from "../__fixtures__/fo
 
 import FonjepEntityAdapter from "./FonjepEntityAdapter";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
-import Siret from "../../../../valueObjects/Siret";
+import Siret from "../../../../identifierObjects/Siret";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
 jest.mock("../../dataBretagne/dataBretagne.service");
 import { removeWhitespace } from "../../../../shared/helpers/StringHelper";

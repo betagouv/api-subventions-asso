@@ -1,7 +1,7 @@
 import { Payment } from "dto";
 import { RawPayment } from "../../grant/@types/rawGrant";
 import GrantProvider from "../../grant/@types/GrantProvider";
-import { StructureIdentifier } from "../../../valueObjects/@types/StructureIdentifier";
+import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
 
 export default interface PaymentProvider<T> extends GrantProvider {
     isPaymentProvider: boolean;

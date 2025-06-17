@@ -1,6 +1,6 @@
-import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
-import Rna from "../../../valueObjects/Rna";
-import Siren from "../../../valueObjects/Siren";
+import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
+import Rna from "../../../identifierObjects/Rna";
+import Siren from "../../../identifierObjects/Siren";
 import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
 import osirisService, { InvalidOsirisRequestError, VALID_REQUEST_ERROR_CODE } from "./osiris.service";
 import { osirisActionPort, osirisRequestPort } from "../../../dataProviders/db/providers/osiris";

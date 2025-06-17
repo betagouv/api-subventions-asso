@@ -5,10 +5,10 @@ import associationsService from "../associations/associations.service";
 import GrantAdapter from "./grant.adapter";
 import csvStringifier from "csv-stringify/sync";
 import { ExtractHeaderLabel, GrantToExtract } from "./@types/GrantToExtract";
-import Siret from "../../valueObjects/Siret";
-import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
-import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
-import Siren from "../../valueObjects/Siren";
+import Siret from "../../identifierObjects/Siret";
+import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
+import Siren from "../../identifierObjects/Siren";
 
 jest.mock("./grant.service");
 jest.mock("../associations/associations.service");

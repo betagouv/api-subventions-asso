@@ -1,6 +1,6 @@
 import { WithoutId } from "mongodb";
 import UniteLegalNameEntity from "../../../entities/UniteLegalNameEntity";
-import Siren from "../../../valueObjects/Siren";
+import Siren from "../../../identifierObjects/Siren";
 import UniteLegalNameDbo from "./UniteLegalNameDbo";
 
 export default class UniteLegalNameAdapter {

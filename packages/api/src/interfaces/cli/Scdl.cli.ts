@@ -5,7 +5,7 @@ import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexE
 import scdlService from "../../modules/providers/scdl/scdl.service";
 import MiscScdlGrantEntity from "../../modules/providers/scdl/entities/MiscScdlGrantEntity";
 import { ScdlStorableGrant } from "../../modules/providers/scdl/@types/ScdlStorableGrant";
-import Siret from "../../valueObjects/Siret";
+import Siret from "../../identifierObjects/Siret";
 import {
     MixedParsedError,
     ParsedErrorDuplicate,

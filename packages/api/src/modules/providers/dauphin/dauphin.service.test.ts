@@ -4,8 +4,8 @@ import dauphinService from "./dauphin.service";
 import dauphinGisproPort from "../../../dataProviders/db/providers/dauphin/dauphin-gispro.port";
 import SpyInstance = jest.SpyInstance;
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
-import Siren from "../../../valueObjects/Siren";
-import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import Siren from "../../../identifierObjects/Siren";
+import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
 
 jest.mock("axios", () => ({
     post: jest.fn(),

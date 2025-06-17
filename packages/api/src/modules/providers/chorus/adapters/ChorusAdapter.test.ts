@@ -9,12 +9,12 @@ import PROGRAMS from "../../../../../tests/dataProviders/db/__fixtures__/stateBu
 import { ChorusLineDto } from "../@types/ChorusLineDto";
 import { DATA_BRETAGNE_RECORDS } from "../../dataBretagne/__fixtures__/dataBretagne.fixture";
 import * as Sentry from "@sentry/node";
-import Tahitiet from "../../../../valueObjects/Tahitiet";
-import Ridet from "../../../../valueObjects/Ridet";
-import Siret from "../../../../valueObjects/Siret";
-import Siren from "../../../../valueObjects/Siren";
-import Tahiti from "../../../../valueObjects/Tahiti";
-import Rid from "../../../../valueObjects/Rid";
+import Tahitiet from "../../../../identifierObjects/Tahitiet";
+import Ridet from "../../../../identifierObjects/Ridet";
+import Siret from "../../../../identifierObjects/Siret";
+import Siren from "../../../../identifierObjects/Siren";
+import Tahiti from "../../../../identifierObjects/Tahiti";
+import Rid from "../../../../identifierObjects/Rid";
 import { GenericParser } from "../../../../shared/GenericParser";
 import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
 

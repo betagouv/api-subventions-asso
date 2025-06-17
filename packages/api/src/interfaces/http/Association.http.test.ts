@@ -5,8 +5,8 @@ import { AssociationHttp, isAssoIdentifierFromAssoMiddleware } from "./Associati
 import consumers from "stream/consumers";
 import grantService from "../../modules/grant/grant.service";
 import associationIdentifierService from "../../modules/association-identifier/association-identifier.service";
-import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
-import Siren from "../../valueObjects/Siren";
+import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
+import Siren from "../../identifierObjects/Siren";
 import grantExtractService from "../../modules/grant/grantExtract.service";
 import { errorHandler } from "../../middlewares/ErrorMiddleware";
 

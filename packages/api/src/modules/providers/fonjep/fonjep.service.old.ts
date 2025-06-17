@@ -8,16 +8,16 @@ import { FullGrantProvider } from "../../grant/@types/FullGrantProvider";
 import { FullGrantData, RawApplication, RawFullGrant, RawGrant, RawPayment } from "../../grant/@types/rawGrant";
 import ProviderCore from "../ProviderCore";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
-import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
-import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
-import Siret from "../../../valueObjects/Siret";
+import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
+import Siret from "../../../identifierObjects/Siret";
 import fonjepSubventionPort from "../../../dataProviders/db/providers/fonjep/fonjep.subvention.port.old";
 import fonjepPaymentPort from "../../../dataProviders/db/providers/fonjep/fonjep.payment.port.old";
 import fonjepJoiner from "../../../dataProviders/db/providers/fonjep/fonjep.joiner.old";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter.old";
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity.old";
 import FonjepPaymentEntity from "./entities/FonjepPaymentEntity.old";
-import { StructureIdentifier } from "../../../valueObjects/@types/StructureIdentifier";
+import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
 
 export enum FONJEP_SERVICE_ERRORS {
     INVALID_ENTITY = 1,

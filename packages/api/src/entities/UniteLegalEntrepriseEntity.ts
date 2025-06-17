@@ -1,4 +1,4 @@
-import Siren from "../valueObjects/Siren";
+import Siren from "../identifierObjects/Siren";
 
 export class UniteLegalEntrepriseEntity {
     constructor(

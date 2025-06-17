@@ -10,10 +10,10 @@ import { FRONT_OFFICE_URL } from "../../configurations/front.conf";
 import ProviderCore from "../providers/ProviderCore";
 import { DauphinService } from "../providers/dauphin/dauphin.service";
 import { providersById } from "../providers/providers.helper";
-import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
+import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import DocumentProvider from "./@types/DocumentsProvider";
 import { documentToDocumentRequest } from "./document.adapter";
-import { StructureIdentifier } from "../../valueObjects/@types/StructureIdentifier";
+import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 
 export class DocumentsService {
     ACCEPTED_URLS = [

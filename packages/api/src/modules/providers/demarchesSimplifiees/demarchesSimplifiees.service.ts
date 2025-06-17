@@ -8,8 +8,8 @@ import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import { DefaultObject } from "../../../@types";
 import ProviderCore from "../ProviderCore";
-import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
-import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import demarchesSimplifieesDataPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
 import demarchesSimplifieesSchemaPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port";
@@ -26,7 +26,7 @@ import {
 } from "./entities/DemarchesSimplifieesSchemaSeed";
 import { input } from "@inquirer/prompts";
 import configurationsService from "../../configurations/configurations.service";
-import { StructureIdentifier } from "../../../valueObjects/@types/StructureIdentifier";
+import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
 
 export class DemarchesSimplifieesService
     extends ProviderCore

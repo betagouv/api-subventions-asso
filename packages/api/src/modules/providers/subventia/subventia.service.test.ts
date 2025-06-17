@@ -8,8 +8,8 @@ import { CommonApplicationDto, ApplicationStatus, DemandeSubvention } from "dto"
 import SubventiaDto from "./@types/subventia.dto";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import { ENTITIES } from "./__fixtures__/subventia.fixture";
-import Siren from "../../../valueObjects/Siren";
-import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import Siren from "../../../identifierObjects/Siren";
+import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
 
 jest.mock("./adapters/subventia.adapter");
 

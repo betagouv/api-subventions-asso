@@ -3,11 +3,11 @@ import scdlGrantService from "./scdl.grant.service";
 import MiscScdlAdapter from "./adapters/MiscScdl.adapter";
 import * as Sentry from "@sentry/node";
 import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
-import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
-import Rna from "../../../valueObjects/Rna";
-import Siren from "../../../valueObjects/Siren";
-import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
-import Siret from "../../../valueObjects/Siret";
+import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
+import Rna from "../../../identifierObjects/Rna";
+import Siren from "../../../identifierObjects/Siren";
+import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
+import Siret from "../../../identifierObjects/Siret";
 
 jest.mock("../../../dataProviders/db/providers/scdl/miscScdl.joiner", () => ({
     findByRna: jest.fn(),

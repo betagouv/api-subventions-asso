@@ -28,11 +28,11 @@ import { DAUPHIN_GISPRO_DBOS } from "../../dataProviders/db/__fixtures__/dauphin
 import rnaSirenService from "../../../src/modules/rna-siren/rnaSiren.service";
 import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
 import fonjepPaymentPort from "../../../src/dataProviders/db/providers/fonjep/fonjep.payment.port.old";
-import Rna from "../../../src/valueObjects/Rna";
-import Siret from "../../../src/valueObjects/Siret";
+import Rna from "../../../src/identifierObjects/Rna";
+import Siret from "../../../src/identifierObjects/Siret";
 import miscScdlProducersPort from "../../../src/dataProviders/db/providers/scdl/miscScdlProducers.port";
 import RnaSirenEntity from "../../../src/entities/RnaSirenEntity";
-import Siren from "../../../src/valueObjects/Siren";
+import Siren from "../../../src/identifierObjects/Siren";
 import statsAssociationsVisitPort from "../../../src/dataProviders/db/stats/statsAssociationsVisit.port";
 import { App } from "supertest/types";
 import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFlat.port";

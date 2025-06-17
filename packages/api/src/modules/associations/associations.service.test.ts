@@ -12,9 +12,9 @@ import { NotFoundError } from "core";
 import apiAssoService from "../providers/apiAsso/apiAsso.service";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 import uniteLegalEntreprisesService from "../providers/uniteLegalEntreprises/uniteLegal.entreprises.service";
-import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
-import Siren from "../../valueObjects/Siren";
-import Rna from "../../valueObjects/Rna";
+import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
+import Siren from "../../identifierObjects/Siren";
+import Rna from "../../identifierObjects/Rna";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../shared/LegalCategoriesAccepted";
 
 jest.mock("../providers/index");

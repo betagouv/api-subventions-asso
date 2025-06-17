@@ -1,5 +1,5 @@
-import { CompanyIdName, EstablishmentIdName } from "../valueObjects/@types/IdentifierName";
-import { CompanyIdType, EstablishmentIdType } from "../valueObjects/@types/IdentifierType";
+import { CompanyIdName, EstablishmentIdName } from "../identifierObjects/@types/IdentifierName";
+import { CompanyIdType, EstablishmentIdType } from "../identifierObjects/@types/IdentifierType";
 
 type PaymentFlatEntity = {
     idVersement: string;

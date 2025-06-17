@@ -9,8 +9,8 @@ import OsirisRequestEntity from "../../modules/providers/osiris/entities/OsirisR
 import { COLORS } from "../../shared/LogOptions";
 import * as CliHelper from "../../shared/helpers/CliHelper";
 import { GenericParser } from "../../shared/GenericParser";
-import Siret from "../../valueObjects/Siret";
-import Rna from "../../valueObjects/Rna";
+import Siret from "../../identifierObjects/Siret";
+import Rna from "../../identifierObjects/Rna";
 import dataLogService from "../../modules/data-log/dataLog.service";
 
 @StaticImplements<CliStaticInterface>()

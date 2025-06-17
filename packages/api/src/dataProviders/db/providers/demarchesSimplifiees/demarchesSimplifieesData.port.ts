@@ -1,6 +1,6 @@
 import MongoPort from "../../../../shared/MongoPort";
-import Siren from "../../../../valueObjects/Siren";
-import Siret from "../../../../valueObjects/Siret";
+import Siren from "../../../../identifierObjects/Siren";
+import Siret from "../../../../identifierObjects/Siret";
 import DemarchesSimplifieesDataEntity from "../../../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesDataEntity";
 
 export class DemarchesSimplifieesDataPort extends MongoPort<DemarchesSimplifieesDataEntity> {

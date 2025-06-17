@@ -1,14 +1,14 @@
 import { Payment } from "dto";
 import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port";
 import PaymentProvider from "../payments/@types/PaymentProvider";
-import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
-import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import { RawGrant, RawPayment } from "../grant/@types/rawGrant";
 import { ProviderEnum } from "../../@enums/ProviderEnum";
 import ProviderCore from "../providers/ProviderCore";
 import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
-import { StructureIdentifier } from "../../valueObjects/@types/StructureIdentifier";
+import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 
 export class PaymentFlatService extends ProviderCore implements PaymentProvider<PaymentFlatEntity> {
     constructor() {

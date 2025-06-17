@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { UniteLegalEntrepriseEntity } from "../../../entities/UniteLegalEntrepriseEntity";
-import Siren from "../../../valueObjects/Siren";
+import Siren from "../../../identifierObjects/Siren";
 import { UniteLegalEntrepriseDbo } from "./UniteLegalEntrepriseDbo";
 
 export class UniteLegalEntrepriseAdapter {

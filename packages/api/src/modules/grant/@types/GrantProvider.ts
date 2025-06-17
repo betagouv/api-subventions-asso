@@ -1,4 +1,4 @@
-import { StructureIdentifier } from "../../../valueObjects/@types/StructureIdentifier";
+import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
 import Provider from "../../providers/@types/IProvider";
 import { RawGrant } from "./rawGrant";
 

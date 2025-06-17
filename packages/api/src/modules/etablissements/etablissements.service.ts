@@ -13,11 +13,11 @@ import grantService from "../grant/grant.service";
 import paymentService from "../payments/payments.service";
 import documentsService from "../documents/documents.service";
 import ApiEntrepriseAdapter from "../providers/apiEntreprise/adapters/ApiEntrepriseAdapter";
-import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
-import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import { EtablissementAdapter } from "./EtablissementAdapter";
 import EtablissementProvider from "./@types/EtablissementProvider";
-import { StructureIdentifier } from "../../valueObjects/@types/StructureIdentifier";
+import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 
 export class EtablissementsService {
     private provider_score: DefaultObject<number> = {

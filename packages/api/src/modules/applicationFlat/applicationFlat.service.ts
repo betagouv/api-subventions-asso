@@ -1,18 +1,18 @@
 import { DemandeSubvention } from "dto";
 import applicationFlatPort from "../../dataProviders/db/applicationFlat/applicationFlat.port";
 import { ApplicationFlatEntity } from "../../entities/ApplicationFlatEntity";
-import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
-import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import { RawGrant, RawApplication } from "../grant/@types/rawGrant";
 import { ProviderEnum } from "../../@enums/ProviderEnum";
 import ProviderCore from "../providers/ProviderCore";
 import DemandesSubventionsProvider from "../subventions/@types/DemandesSubventionsProvider";
 import GrantProvider from "../grant/@types/GrantProvider";
 import { applicationFlatProviders } from "../providers";
-import Siret from "../../valueObjects/Siret";
+import Siret from "../../identifierObjects/Siret";
 import ApplicationFlatAdapter from "./ApplicationFlatAdapter";
 import ApplicationFlatProvider from "./@types/applicationFlatProvider";
-import { StructureIdentifier } from "../../valueObjects/@types/StructureIdentifier";
+import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 
 export class ApplicationFlatService
     extends ProviderCore

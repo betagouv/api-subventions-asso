@@ -4,9 +4,9 @@ import OsirisActionEntity from "../../../../src/modules/providers/osiris/entitie
 import OsirisRequestEntity from "../../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
 import osirisService, { OsirisService } from "../../../../src/modules/providers/osiris/osiris.service";
 import ProviderValueAdapter from "../../../../src/shared/adapters/ProviderValueAdapter";
-import AssociationIdentifier from "../../../../src/valueObjects/AssociationIdentifier";
-import Rna from "../../../../src/valueObjects/Rna";
-import Siren from "../../../../src/valueObjects/Siren";
+import AssociationIdentifier from "../../../../src/identifierObjects/AssociationIdentifier";
+import Rna from "../../../../src/identifierObjects/Rna";
+import Siren from "../../../../src/identifierObjects/Siren";
 import { ObjectId } from "mongodb";
 
 // TODO ensure this is proper integ test. It is historical test when we did not make a difference

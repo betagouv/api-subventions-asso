@@ -3,14 +3,14 @@ import * as Sentry from "@sentry/node";
 import { AnyRawGrant, RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
-import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
-import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import miscScdlJoiner from "../../../dataProviders/db/providers/scdl/miscScdl.joiner";
 import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
 import MiscScdlGrantProducerEntity from "./entities/MiscScdlGrantProducerEntity";
 import MiscScdlAdapter from "./adapters/MiscScdl.adapter";
-import { StructureIdentifier } from "../../../valueObjects/@types/StructureIdentifier";
+import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
 
 export class ScdlGrantService implements DemandesSubventionsProvider<MiscScdlGrantProducerEntity>, GrantProvider {
     isGrantProvider = true;

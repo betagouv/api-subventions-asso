@@ -10,10 +10,10 @@ import Provider from "../providers/@types/IProvider";
 import { ProviderRequestService } from "../provider-request/providerRequest.service";
 import { documentToDocumentRequest } from "./document.adapter";
 import { ReadStream } from "node:fs";
-import Siren from "../../valueObjects/Siren";
-import Rna from "../../valueObjects/Rna";
-import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
-import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
+import Siren from "../../identifierObjects/Siren";
+import Rna from "../../identifierObjects/Rna";
+import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 
 jest.mock("./document.adapter");
 jest.mock("fs");

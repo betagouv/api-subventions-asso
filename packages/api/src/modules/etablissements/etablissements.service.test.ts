@@ -7,10 +7,10 @@ import paymentService from "../payments/payments.service";
 import etablissementService from "./etablissements.service";
 import { NotFoundError } from "core";
 import grantService from "../grant/grant.service";
-import Siren from "../../valueObjects/Siren";
-import Siret from "../../valueObjects/Siret";
-import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
-import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
+import Siren from "../../identifierObjects/Siren";
+import Siret from "../../identifierObjects/Siret";
+import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 jest.mock("../grant/grant.service");
 
 type asyncPrivateMock<T> = jest.SpyInstance<Promise<T>>;

@@ -1,7 +1,7 @@
 import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
 import uniteLegalEntreprisePort from "../../../dataProviders/db/uniteLegalEntreprise/uniteLegalEntreprise.port";
 import { UniteLegalEntrepriseEntity } from "../../../entities/UniteLegalEntrepriseEntity";
-import Siren from "../../../valueObjects/Siren";
+import Siren from "../../../identifierObjects/Siren";
 
 export class UniteLegalEntreprisesService {
     async insertManyEntrepriseSiren(entities: UniteLegalEntrepriseEntity[]) {

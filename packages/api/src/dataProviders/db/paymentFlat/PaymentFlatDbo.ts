@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { CompanyIdName, EstablishmentIdName } from "../../../valueObjects/@types/IdentifierName";
+import { CompanyIdName, EstablishmentIdName } from "../../../identifierObjects/@types/IdentifierName";
 
 export default interface PaymentFlatDbo {
     _id: ObjectId;

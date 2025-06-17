@@ -18,10 +18,10 @@ import rnaSirenService from "../rna-siren/rnaSiren.service";
 import uniteLegalEntreprisesService from "../providers/uniteLegalEntreprises/uniteLegal.entreprises.service";
 import apiAssoService from "../providers/apiAsso/apiAsso.service";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../shared/LegalCategoriesAccepted";
-import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
-import Siren from "../../valueObjects/Siren";
+import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
+import Siren from "../../identifierObjects/Siren";
 import AssociationsProvider from "./@types/AssociationsProvider";
-import { StructureIdentifier } from "../../valueObjects/@types/StructureIdentifier";
+import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 
 export class AssociationsService {
     private provider_score: DefaultObject<number> = {

@@ -1,6 +1,6 @@
 import MongoPort from "../../../shared/MongoPort";
-import Siren from "../../../valueObjects/Siren";
-import Siret from "../../../valueObjects/Siret";
+import Siren from "../../../identifierObjects/Siren";
+import Siret from "../../../identifierObjects/Siret";
 import { DefaultObject } from "../../../@types";
 import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
 import ApplicationFlatAdapter from "../../../modules/applicationFlat/ApplicationFlatAdapter";

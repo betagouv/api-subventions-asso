@@ -3,7 +3,7 @@ import { MongoCnxError } from "../../../../shared/errors/MongoCnxError";
 import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
 import OsirisActionEntityDbo from "../../../../modules/providers/osiris/entities/OsirisActionEntityDbo";
 import MongoPort from "../../../../shared/MongoPort";
-import Siren from "../../../../valueObjects/Siren";
+import Siren from "../../../../identifierObjects/Siren";
 import OsirisActionAdapter from "./osirisAction.adapter";
 
 export class OsirisActionPort extends MongoPort<OsirisActionEntityDbo> {

@@ -5,8 +5,8 @@ import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import ProviderCore from "../ProviderCore";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import uniteLegalEntreprisesService from "../uniteLegalEntreprises/uniteLegal.entreprises.service";
-import Siren from "../../../valueObjects/Siren";
-import Siret from "../../../valueObjects/Siret";
+import Siren from "../../../identifierObjects/Siren";
+import Siret from "../../../identifierObjects/Siret";
 import chorusLinePort from "../../../dataProviders/db/providers/chorus/chorus.line.port";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 

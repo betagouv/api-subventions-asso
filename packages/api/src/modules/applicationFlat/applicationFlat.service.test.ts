@@ -1,4 +1,4 @@
-import Siren from "../../valueObjects/Siren";
+import Siren from "../../identifierObjects/Siren";
 
 const mockProvider = { provider: { provider: { name: "prov1" } } };
 
@@ -10,9 +10,9 @@ import { DemandeSubvention } from "dto";
 import { RawApplication } from "../grant/@types/rawGrant";
 
 import ApplicationFlatProvider from "./@types/applicationFlatProvider";
-import Siret from "../../valueObjects/Siret";
-import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
-import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
+import Siret from "../../identifierObjects/Siret";
+import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 
 jest.mock("../providers", () => ({
     applicationFlatProviders: [mockProvider],

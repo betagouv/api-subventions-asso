@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import FonjepSubventionEntity from "../../../../modules/providers/fonjep/entities/FonjepSubventionEntity.old";
-import Siret from "../../../../valueObjects/Siret";
-import Siren from "../../../../valueObjects/Siren";
+import Siret from "../../../../identifierObjects/Siret";
+import Siren from "../../../../identifierObjects/Siren";
 import { FonjepCorePort } from "./fonjep.core.port.old";
 
 export class FonjepSubventionPort extends FonjepCorePort<FonjepSubventionEntity> {

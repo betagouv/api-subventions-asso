@@ -14,7 +14,7 @@ import { FullGrantProvider } from "./@types/FullGrantProvider";
 import { RawGrant, JoinedRawGrant, RawFullGrant, RawApplication, RawPayment, AnyRawGrant } from "./@types/rawGrant";
 import commonGrantService from "./commonGrant.service";
 import { refreshGrantAsyncServices } from "../../shared/initAsyncServices";
-import { StructureIdentifier } from "../../valueObjects/@types/StructureIdentifier";
+import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 
 export class GrantService {
     fullGrantProvidersById: Record<string, FullGrantProvider<unknown>>;
