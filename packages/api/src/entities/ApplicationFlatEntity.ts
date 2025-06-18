@@ -32,16 +32,16 @@ export type ApplicationFlatEntity = {
     instructiveDepartementId?: string;
     beneficiaryEstablishmentId: string;
     beneficiaryEstablishmentIdType?: string;
-    financialYear: number;
-    plurinannual?: boolean;
+    budgetaryYear: number;
+    pluriannual?: boolean;
     pluriannualYears?: number[];
     decisionDate?: Date;
     conventionDate: Date;
     decisionReference?: string;
     depositDate?: Date;
     requestYear?: number;
-    system?: string; // dispositif
-    underSystem?: string; // sous dispositif
+    scheme?: string; // dispositif
+    subScheme?: string; // sous dispositif
     statusLabel: ApplicationStatus;
     object?: string;
     nature?: ApplicationNature;
@@ -52,12 +52,12 @@ export type ApplicationFlatEntity = {
     paymentId?: string;
     paymentCondition?: PaymentCondition;
     paymentConditionDesc?: string;
-    paymentPeriodDate?: Date | Date[];
+    paymentPeriodDates?: Date | Date[];
     cofinancingRequested?: boolean;
     cofinancersNames?: string[];
     cofinancersIdType?: StructureIdType[];
     confinancersId?: string[];
     idRAE?: string;
     ueNotification?: boolean;
-    applicationPercentage?: number;
+    subventionPercentage?: number;
 };
