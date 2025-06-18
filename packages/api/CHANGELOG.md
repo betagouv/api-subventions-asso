@@ -3,6 +3,61 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.69.1](https://github.com/betagouv/api-subventions-asso/compare/v0.66.2...v0.69.1) (2025-06-18)
+
+### Bug Fixes
+
+- **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) misc fixes 0.69 ([#3445](https://github.com/betagouv/api-subventions-asso/issues/3445)) ([3da89bc](https://github.com/betagouv/api-subventions-asso/commit/3da89bc67118588c6fa764b079a32d86de8325b9)), closes [#3344](https://github.com/betagouv/api-subventions-asso/issues/3344) [#3456](https://github.com/betagouv/api-subventions-asso/issues/3456)
+
+# [0.69.0](https://github.com/betagouv/api-subventions-asso/compare/v0.66.1...v0.69.0) (2025-05-22)
+
+### Bug Fixes
+
+- **api:** [#3304](https://github.com/betagouv/api-subventions-asso/issues/3304) sirene duplicate errors and nested siren ([#3409](https://github.com/betagouv/api-subventions-asso/issues/3409)) ([e5fc7f8](https://github.com/betagouv/api-subventions-asso/commit/e5fc7f83da132e8cb563cbe03ac2b0a72a3beaf2))
+
+### Features
+
+- **api:** [#3109](https://github.com/betagouv/api-subventions-asso/issues/3109) use paymentFlat instead of chorus ([#3398](https://github.com/betagouv/api-subventions-asso/issues/3398)) ([600afd1](https://github.com/betagouv/api-subventions-asso/commit/600afd184598378bc2838fce0882596fb464850e))
+- **api:** [#3334](https://github.com/betagouv/api-subventions-asso/issues/3334) define schema seed to quicky add similar DS 'demarches' ([#3425](https://github.com/betagouv/api-subventions-asso/issues/3425)) ([03b360e](https://github.com/betagouv/api-subventions-asso/commit/03b360ea2d3d69fe5149b1200eb34dc0a13b29ee))
+- **api:** [#3396](https://github.com/betagouv/api-subventions-asso/issues/3396) DS get active demarche, save last modified files ([#3423](https://github.com/betagouv/api-subventions-asso/issues/3423)) ([61af4e8](https://github.com/betagouv/api-subventions-asso/commit/61af4e840693c27abea07fa2d7f052f54b489083))
+- **api:** [#3397](https://github.com/betagouv/api-subventions-asso/issues/3397) add producer slug to payment flat unique id ([#3429](https://github.com/betagouv/api-subventions-asso/issues/3429)) ([b1b2708](https://github.com/betagouv/api-subventions-asso/commit/b1b27088bda24ff6f50372e386ab764f9092ec7a))
+
+## [0.68.1](https://github.com/betagouv/api-subventions-asso/compare/v0.68.0...v0.68.1) (2025-05-07)
+
+### Bug Fixes
+
+- **api:** handle no estab identifier in chorus line payment flat ([f8b27a6](https://github.com/betagouv/api-subventions-asso/commit/f8b27a65ec1336f069572bd4261b7516958bb17b))
+- **api:** refresh async data in grant providers before fetching grants ([22b286f](https://github.com/betagouv/api-subventions-asso/commit/22b286f1a0c80a192ab726144e066246d8a21705))
+
+### Features
+
+- **api:** [#3386](https://github.com/betagouv/api-subventions-asso/issues/3386) update paymentFlat uniqueId build for both chorus and fonjep ([#3399](https://github.com/betagouv/api-subventions-asso/issues/3399)) ([994f9dc](https://github.com/betagouv/api-subventions-asso/commit/994f9dc5443dfb5db4f77abcf6132836fc79d050))
+
+# [0.68.0](https://github.com/betagouv/api-subventions-asso/compare/v0.67.0...v0.68.0) (2025-05-05)
+
+### Bug Fixes
+
+- **api, front:** [#3380](https://github.com/betagouv/api-subventions-asso/issues/3380) remove warning on HTTP Header max-age ([#3379](https://github.com/betagouv/api-subventions-asso/issues/3379)) ([e7b0667](https://github.com/betagouv/api-subventions-asso/commit/e7b0667f9409dc999ed25718702424c4b03956c1))
+- **api:** [#3348](https://github.com/betagouv/api-subventions-asso/issues/3348) interpret 0-1 notificationUE and add missing leading 0 in siret ([#3389](https://github.com/betagouv/api-subventions-asso/issues/3389)) ([2987a1c](https://github.com/betagouv/api-subventions-asso/commit/2987a1c520fa71c7a5e4ba28673e7f634992a9ab))
+
+### Features
+
+- **api:** [#3144](https://github.com/betagouv/api-subventions-asso/issues/3144) application-flat code structure ([#3326](https://github.com/betagouv/api-subventions-asso/issues/3326)) ([55e6c8e](https://github.com/betagouv/api-subventions-asso/commit/55e6c8e59120b1f40d5cf3d76942215bfd107c10))
+
+# [0.67.0](https://github.com/betagouv/api-subventions-asso/compare/v0.66.0...v0.67.0) (2025-04-28)
+
+### Bug Fixes
+
+- **api:** [#3366](https://github.com/betagouv/api-subventions-asso/issues/3366) compensate weird api asso formats ([#3367](https://github.com/betagouv/api-subventions-asso/issues/3367)) ([4347a2c](https://github.com/betagouv/api-subventions-asso/commit/4347a2cceb5bcc2013d89ab6596e9c8efa79c172))
+
+### Features
+
+- **api:** [#3142](https://github.com/betagouv/api-subventions-asso/issues/3142) adapte fonjep to payment flat ([#3357](https://github.com/betagouv/api-subventions-asso/issues/3357)) ([15f92fb](https://github.com/betagouv/api-subventions-asso/commit/15f92fb4598bfa6cd52f6875ce3a7cc1dcbf639c))
+- **api:** [#3302](https://github.com/betagouv/api-subventions-asso/issues/3302) handle fonjep payment flat ([#3352](https://github.com/betagouv/api-subventions-asso/issues/3352)) ([eb84a08](https://github.com/betagouv/api-subventions-asso/commit/eb84a08b62226359867304d296be548e603f1ad6))
+- **api:** [#3342](https://github.com/betagouv/api-subventions-asso/issues/3342) handle ridet tahiti in chorus payment flat ([#3346](https://github.com/betagouv/api-subventions-asso/issues/3346)) ([32d1a67](https://github.com/betagouv/api-subventions-asso/commit/32d1a6780203607b4d14be775b58d6787f091518))
+- **api:** remove self signup route ([db0bca0](https://github.com/betagouv/api-subventions-asso/commit/db0bca050b245cea579321e1b439404e4ac53599))
+- **front, api):** [#3329](https://github.com/betagouv/api-subventions-asso/issues/3329) pro connect no reset pwd ([#3363](https://github.com/betagouv/api-subventions-asso/issues/3363)) ([a6dc2df](https://github.com/betagouv/api-subventions-asso/commit/a6dc2df3c6f0ccb6d47722f4f024e98ff6a2f57e))
+
 # [0.69.0](https://github.com/betagouv/api-subventions-asso/compare/v0.66.1...v0.69.0) (2025-05-22)
 
 ### Bug Fixes
