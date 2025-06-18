@@ -5,8 +5,8 @@ import { AssociationHttp, isAssoIdentifierFromAssoMiddleware } from "./Associati
 import consumers from "stream/consumers";
 import grantService from "../../modules/grant/grant.service";
 import associationIdentifierService from "../../modules/association-identifier/association-identifier.service";
-import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
-import Siren from "../../valueObjects/Siren";
+import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
+import Siren from "../../identifierObjects/Siren";
 import grantExtractService from "../../modules/grant/grantExtract.service";
 import { errorHandler } from "../../middlewares/ErrorMiddleware";
 
@@ -223,7 +223,7 @@ describe("isAssoIdentifierFromAssoMiddleware", () => {
             AssociationIdentifier {
               "rna": undefined,
               "siren": Siren {
-                "siren": "000000001",
+                "identifier": "000000001",
               },
             }
         `);
@@ -240,7 +240,7 @@ describe("isAssoIdentifierFromAssoMiddleware", () => {
                 "assoIdentifier": AssociationIdentifier {
                   "rna": undefined,
                   "siren": Siren {
-                    "siren": "000000001",
+                    "identifier": "000000001",
                   },
                 },
                 "params": {
@@ -274,7 +274,7 @@ describe("isAssoIdentifierFromAssoMiddleware", () => {
                 "assoIdentifier": AssociationIdentifier {
                   "rna": undefined,
                   "siren": Siren {
-                    "siren": "000000001",
+                    "identifier": "000000001",
                   },
                 },
                 "params": {

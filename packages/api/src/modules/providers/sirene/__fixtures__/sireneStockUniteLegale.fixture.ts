@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { SireneStockUniteLegaleEntity } from "../../../../entities/SireneStockUniteLegaleEntity";
-import Siren from "../../../../valueObjects/Siren";
+import Siren from "../../../../identifierObjects/Siren";
 import { SireneUniteLegaleDbo } from "../stockUniteLegale/@types/SireneUniteLegaleDbo";
 import SireneUniteLegaleDto from "../stockUniteLegale/@types/SireneUniteLegaleDto";
 

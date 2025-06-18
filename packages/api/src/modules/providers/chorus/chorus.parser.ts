@@ -3,7 +3,7 @@ import { BRANCHE_ACCEPTED } from "../../../shared/ChorusBrancheAccepted";
 import { isEJ } from "../../../shared/Validators";
 import { getMD5 } from "../../../shared/helpers/StringHelper";
 import { DefaultObject } from "../../../@types";
-import Siret from "../../../valueObjects/Siret";
+import Siret from "../../../identifierObjects/Siret";
 import { GenericParser } from "../../../shared/GenericParser";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import IChorusIndexedInformations from "./@types/IChorusIndexedInformations";

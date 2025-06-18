@@ -13,10 +13,10 @@ exports[`PaymentFlatAdapter dboToEntity given dbo with nulls, should return a Pa
   "ej": "0001821732",
   "exerciceBudgetaire": 2023,
   "idEntrepriseBeneficiaire": Siren {
-    "siren": "123456789",
+    "identifier": "123456789",
   },
   "idEtablissementBeneficiaire": Siret {
-    "siret": "12345678901234",
+    "identifier": "12345678901234",
   },
   "idVersement": "12345678901234-0001821732-2023",
   "ministry": "Ministère Exemple",
@@ -46,10 +46,10 @@ exports[`PaymentFlatAdapter dboToEntity given dbo without nulls, should return a
   "ej": "0001821732",
   "exerciceBudgetaire": 2023,
   "idEntrepriseBeneficiaire": Siren {
-    "siren": "100000000",
+    "identifier": "100000000",
   },
   "idEtablissementBeneficiaire": Siret {
-    "siret": "10000000000001",
+    "identifier": "10000000000001",
   },
   "idVersement": "12345678901234-0001821732-2023",
   "ministry": "Ministère Exemple",

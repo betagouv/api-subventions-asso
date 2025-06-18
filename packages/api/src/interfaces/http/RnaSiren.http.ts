@@ -2,9 +2,9 @@ import { Route, Get, Controller, Tags, Response } from "tsoa";
 import { RnaSirenResponseDto, GetRnaSirenErrorResponse } from "dto";
 import { siretToSiren } from "../../shared/helpers/SirenHelper";
 import rnaSirenService from "../../modules/rna-siren/rnaSiren.service";
-import Siren from "../../valueObjects/Siren";
-import Rna from "../../valueObjects/Rna";
-import Siret from "../../valueObjects/Siret";
+import Siren from "../../identifierObjects/Siren";
+import Rna from "../../identifierObjects/Rna";
+import Siret from "../../identifierObjects/Siret";
 
 @Route("open-data/rna-siren")
 @Tags("Open Data")

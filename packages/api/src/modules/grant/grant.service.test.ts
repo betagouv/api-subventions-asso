@@ -12,11 +12,11 @@ import scdlService from "../providers/scdl/scdl.service";
 import scdlGrantService from "../providers/scdl/scdl.grant.service";
 import { DemandeSubvention, Grant, Payment } from "dto";
 import { SIRET_STR } from "../../../tests/__fixtures__/association.fixture";
-import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
-import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import paymentService from "../payments/payments.service";
 import subventionsService from "../subventions/subventions.service";
-import Siret from "../../valueObjects/Siret";
+import Siret from "../../identifierObjects/Siret";
 import { refreshGrantAsyncServices } from "../../shared/initAsyncServices";
 
 jest.mock("../../shared/initAsyncServices");

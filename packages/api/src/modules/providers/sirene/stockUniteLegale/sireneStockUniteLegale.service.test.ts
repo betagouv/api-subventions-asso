@@ -8,7 +8,7 @@ import uniteLegalNameService from "../../uniteLegalName/uniteLegal.name.service"
 import { UniteLegalEntrepriseEntity } from "../../../../entities/UniteLegalEntrepriseEntity";
 import uniteLegalEntreprisesService from "../../uniteLegalEntreprises/uniteLegal.entreprises.service";
 import { BulkWriteResult } from "mongodb";
-import Siren from "../../../../valueObjects/Siren";
+import Siren from "../../../../identifierObjects/Siren";
 
 const mockUniteLegalEntrepriseConstructor = jest.fn();
 

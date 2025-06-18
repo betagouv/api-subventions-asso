@@ -1,4 +1,4 @@
-import Siren from "../../valueObjects/Siren";
+import Siren from "../../identifierObjects/Siren";
 
 const mockProvider = { provider: { provider: { name: "prov1" } } };
 
@@ -10,16 +10,16 @@ import { DemandeSubvention } from "dto";
 import { RawApplication } from "../grant/@types/rawGrant";
 
 import ApplicationFlatProvider from "./@types/applicationFlatProvider";
-import Siret from "../../valueObjects/Siret";
-import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
-import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
+import Siret from "../../identifierObjects/Siret";
+import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 
 jest.mock("../providers", () => ({
     applicationFlatProviders: [mockProvider],
 }));
 jest.mock("../../dataProviders/db/applicationFlat/applicationFlat.port");
 jest.mock("./ApplicationFlatAdapter");
-jest.mock("../../valueObjects/Siret");
+jest.mock("../../identifierObjects/Siret");
 
 describe("ApplicationFlatService", () => {
     const FLAT_ENTITY = {} as ApplicationFlatEntity;

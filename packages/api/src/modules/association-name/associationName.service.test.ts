@@ -4,9 +4,9 @@ import rnaSirenService from "../rna-siren/rnaSiren.service";
 import associationNameService from "./associationName.service";
 import rechercheEntreprisesService from "../../dataProviders/api/rechercheEntreprises/rechercheEntreprises.service";
 import AssociationNameEntity from "./entities/AssociationNameEntity";
-import Siren from "../../valueObjects/Siren";
-import Rna from "../../valueObjects/Rna";
-import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
+import Siren from "../../identifierObjects/Siren";
+import Rna from "../../identifierObjects/Rna";
+import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 
 jest.mock("../providers/uniteLegalName/uniteLegal.name.service");
 jest.mock("../rna-siren/rnaSiren.service");

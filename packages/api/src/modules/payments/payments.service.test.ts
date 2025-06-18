@@ -7,8 +7,8 @@ jest.mock("../providers", () => ({
     ],
 }));
 
-import Siren from "../../valueObjects/Siren";
-import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
+import Siren from "../../identifierObjects/Siren";
+import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import { Payment } from "dto";
 import paymentsService from "./payments.service";
 

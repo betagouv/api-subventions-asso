@@ -16,8 +16,8 @@ import CacheData from "../../../shared/Cache";
 import { BulkWriteResult } from "mongodb";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
-import Siret from "../../../valueObjects/Siret";
-import Rna from "../../../valueObjects/Rna";
+import Siret from "../../../identifierObjects/Siret";
+import Rna from "../../../identifierObjects/Rna";
 
 describe("chorusService", () => {
     beforeAll(() => {

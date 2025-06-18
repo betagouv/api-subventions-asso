@@ -12,10 +12,10 @@ import FonjepSubventionEntity from "./entities/FonjepSubventionEntity.old";
 import FonjepPaymentEntity from "./entities/FonjepPaymentEntity.old";
 import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
-import Siren from "../../../valueObjects/Siren";
-import Siret from "../../../valueObjects/Siret";
-import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
-import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
+import Siren from "../../../identifierObjects/Siren";
+import Siret from "../../../identifierObjects/Siret";
+import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
 
 jest.mock("./adapters/FonjepEntityAdapter.old");
 

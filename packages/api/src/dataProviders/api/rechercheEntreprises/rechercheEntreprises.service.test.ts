@@ -4,7 +4,7 @@ import { RechercheEntreprisesResultDto } from "./RechercheEntreprisesDto";
 import { RechercheEntreprisesAdapter } from "./RechercheEntreprisesAdapter";
 import AssociationNameEntity from "../../../modules/association-name/entities/AssociationNameEntity";
 import associationsService from "../../../modules/associations/associations.service";
-import Siren from "../../../valueObjects/Siren";
+import Siren from "../../../identifierObjects/Siren";
 
 // Mocking the external dependencies
 jest.mock("./RechercheEntreprisesAdapter");

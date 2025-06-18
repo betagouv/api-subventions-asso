@@ -5,7 +5,6 @@ import { providersById } from "../providers/providers.helper";
 import { demandesSubventionsProviders, fullGrantProviders, grantProviders, paymentProviders } from "../providers";
 import DemandesSubventionsProvider from "../subventions/@types/DemandesSubventionsProvider";
 import PaymentProvider from "../payments/@types/PaymentProvider";
-import { StructureIdentifier } from "../../@types";
 import scdlGrantService from "../providers/scdl/scdl.grant.service";
 import scdlService from "../providers/scdl/scdl.service";
 import paymentService from "../payments/payments.service";
@@ -15,6 +14,7 @@ import { FullGrantProvider } from "./@types/FullGrantProvider";
 import { RawGrant, JoinedRawGrant, RawFullGrant, RawApplication, RawPayment, AnyRawGrant } from "./@types/rawGrant";
 import commonGrantService from "./commonGrant.service";
 import { refreshGrantAsyncServices } from "../../shared/initAsyncServices";
+import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 
 export class GrantService {
     fullGrantProvidersById: Record<string, FullGrantProvider<unknown>>;

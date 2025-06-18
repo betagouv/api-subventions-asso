@@ -3,7 +3,7 @@ import { SiretDto, PublishableGrantDto, AssociationIdentifierDto, StructureIdent
 import openDataGrantService from "../../modules/_open-data/grant/openDataGrantService";
 import establishmentIdentifierService from "../../modules/establishment-identifier/establishment-identifier.service";
 import associationIdentifierService from "../../modules/association-identifier/association-identifier.service";
-import Siret from "../../valueObjects/Siret";
+import Siret from "../../identifierObjects/Siret";
 
 @Route("open-data/subventions")
 @Tags("Open Data")

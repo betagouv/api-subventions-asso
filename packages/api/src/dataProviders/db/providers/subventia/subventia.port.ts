@@ -1,6 +1,6 @@
 import MongoPort from "../../../../shared/MongoPort";
-import Siren from "../../../../valueObjects/Siren";
-import Siret from "../../../../valueObjects/Siret";
+import Siren from "../../../../identifierObjects/Siren";
+import Siret from "../../../../identifierObjects/Siret";
 import { SubventiaDbo } from "../../../../modules/providers/subventia/@types/subventia.entity";
 
 export class SubventiaPort extends MongoPort<Omit<SubventiaDbo, "_id">> {

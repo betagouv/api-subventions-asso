@@ -7,8 +7,8 @@ import {
 } from "./__fixtures__/paymentFlatEntity.fixture";
 
 import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port";
-import Siren from "../../valueObjects/Siren";
-import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
+import Siren from "../../identifierObjects/Siren";
+import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 
 jest.mock("./paymentFlatAdapter");
 jest.mock("../../dataProviders/db/paymentFlat/paymentFlat.port");

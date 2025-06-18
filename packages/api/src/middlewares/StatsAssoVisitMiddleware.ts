@@ -3,7 +3,7 @@ import { isRequestFromAdmin } from "../shared/helpers/HttpHelper";
 import statsService from "../modules/stats/stats.service";
 import { IdentifiedRequest } from "../@types";
 import { siretToSiren } from "../shared/helpers/SirenHelper";
-import Siret from "../valueObjects/Siret";
+import Siret from "../identifierObjects/Siret";
 
 const regexPath = new RegExp("/(association|etablissement)/([W0-9]{9,10}|\\d{14})$");
 

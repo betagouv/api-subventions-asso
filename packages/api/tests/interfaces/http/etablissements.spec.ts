@@ -7,10 +7,10 @@ import OsirisRequestEntityFixture from "../../modules/providers/osiris/__fixture
 import { osirisRequestPort } from "../../../src/dataProviders/db/providers/osiris";
 import DEFAULT_ASSOCIATION, { LONELY_RNA, SIRET_STR } from "../../__fixtures__/association.fixture";
 import rnaSirenPort from "../../../src/dataProviders/db/rnaSiren/rnaSiren.port";
-import Siret from "../../../src/valueObjects/Siret";
-import Rna from "../../../src/valueObjects/Rna";
+import Siret from "../../../src/identifierObjects/Siret";
+import Rna from "../../../src/identifierObjects/Rna";
 import RnaSirenEntity from "../../../src/entities/RnaSirenEntity";
-import Siren from "../../../src/valueObjects/Siren";
+import Siren from "../../../src/identifierObjects/Siren";
 import statsAssociationsVisitPort from "../../../src/dataProviders/db/stats/statsAssociationsVisit.port";
 import { App } from "supertest/types";
 

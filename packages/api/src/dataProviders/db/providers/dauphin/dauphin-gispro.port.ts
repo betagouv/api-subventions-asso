@@ -1,8 +1,8 @@
 import { Collection } from "mongodb";
 import MongoPort from "../../../../shared/MongoPort";
 import DauphinSubventionDto from "../../../../modules/providers/dauphin/dto/DauphinSubventionDto";
-import Siret from "../../../../valueObjects/Siret";
-import Siren from "../../../../valueObjects/Siren";
+import Siret from "../../../../identifierObjects/Siret";
+import Siren from "../../../../identifierObjects/Siren";
 import DauphinGisproDbo from "./DauphinGisproDbo";
 
 export class DauphinGisproPort extends MongoPort<DauphinGisproDbo> {

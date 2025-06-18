@@ -1,8 +1,8 @@
 import { MultipleAssociationsError } from "core";
-import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
-import Rna from "../../valueObjects/Rna";
-import Siren from "../../valueObjects/Siren";
-import Siret from "../../valueObjects/Siret";
+import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
+import Rna from "../../identifierObjects/Rna";
+import Siren from "../../identifierObjects/Siren";
+import Siret from "../../identifierObjects/Siret";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
 
 export class AssociationIdentifierService {

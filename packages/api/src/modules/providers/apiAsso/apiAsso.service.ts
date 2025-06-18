@@ -2,7 +2,7 @@ import { Association, Etablissement, DocumentDto } from "dto";
 import { XMLParser } from "fast-xml-parser";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import { DefaultObject, StructureIdentifier } from "../../../@types";
+import { DefaultObject } from "../../../@types";
 import { API_ASSO_URL, API_ASSO_TOKEN } from "../../../configurations/apis.conf";
 import CacheData from "../../../shared/Cache";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
@@ -11,10 +11,10 @@ import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import { hasEmptyProperties } from "../../../shared/helpers/ObjectHelper";
 import ProviderCore from "../ProviderCore";
-import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
-import Rna from "../../../valueObjects/Rna";
-import Siren from "../../../valueObjects/Siren";
-import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
+import Rna from "../../../identifierObjects/Rna";
+import Siren from "../../../identifierObjects/Siren";
+import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
 import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
 import StructureDto, {
     DocumentsDto,
@@ -24,6 +24,7 @@ import StructureDto, {
 } from "./dto/StructureDto";
 import { RnaStructureDto } from "./dto/RnaStructureDto";
 import { SirenStructureDto } from "./dto/SirenStructureDto";
+import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
 
 export class ApiAssoService
     extends ProviderCore

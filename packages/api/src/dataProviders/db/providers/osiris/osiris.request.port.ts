@@ -1,9 +1,9 @@
 import { FindOneAndUpdateOptions, ObjectId } from "mongodb";
 import OsirisRequestEntity from "../../../../modules/providers/osiris/entities/OsirisRequestEntity";
 import MongoPort from "../../../../shared/MongoPort";
-import Siret from "../../../../valueObjects/Siret";
-import Rna from "../../../../valueObjects/Rna";
-import Siren from "../../../../valueObjects/Siren";
+import Siret from "../../../../identifierObjects/Siret";
+import Rna from "../../../../identifierObjects/Rna";
+import Siren from "../../../../identifierObjects/Siren";
 
 export class OsirisRequestPort extends MongoPort<OsirisRequestEntity> {
     collectionName = "osiris-requests";

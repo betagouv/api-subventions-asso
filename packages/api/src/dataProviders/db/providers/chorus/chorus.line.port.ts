@@ -1,6 +1,6 @@
 import { AnyBulkWriteOperation, ObjectId, WithId } from "mongodb";
-import Siret from "../../../../valueObjects/Siret";
-import Siren from "../../../../valueObjects/Siren";
+import Siret from "../../../../identifierObjects/Siret";
+import Siren from "../../../../identifierObjects/Siren";
 import { DefaultObject } from "../../../../@types";
 import MongoPort from "../../../../shared/MongoPort";
 import ChorusLineEntity from "../../../../modules/providers/chorus/entities/ChorusLineEntity";

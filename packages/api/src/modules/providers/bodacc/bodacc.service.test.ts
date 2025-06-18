@@ -2,8 +2,8 @@ import BodaccAdapter from "./adapters/bodacc.adapter";
 import bodaccService from "./bodacc.service";
 import { BodaccDto } from "./dto/BodaccDto";
 
-import Siren from "../../../valueObjects/Siren";
-import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
+import Siren from "../../../identifierObjects/Siren";
+import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
 jest.mock("./../../../shared/helpers/SirenHelper", () => ({
     siretToSiren: jest.fn(siren => siren),
 }));

@@ -2,8 +2,8 @@ import db from "../../../../shared/MongoConnection";
 import { FullGrantData } from "../../../../modules/grant/@types/rawGrant";
 import FonjepSubventionEntity from "../../../../modules/providers/fonjep/entities/FonjepSubventionEntity.old";
 import FonjepPaymentEntity from "../../../../modules/providers/fonjep/entities/FonjepPaymentEntity.old";
-import Siret from "../../../../valueObjects/Siret";
-import Siren from "../../../../valueObjects/Siren";
+import Siret from "../../../../identifierObjects/Siret";
+import Siren from "../../../../identifierObjects/Siren";
 import fonjepPaymentPort from "./fonjep.payment.port.old";
 import fonjepSubventionPort from "./fonjep.subvention.port.old";
 

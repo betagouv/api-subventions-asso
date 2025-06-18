@@ -7,10 +7,10 @@ import { fixtureAsso } from "./__fixtures__/ApiAssoStructureFixture";
 import { SirenStructureDto } from "./dto/SirenStructureDto";
 import * as ObjectHelper from "../../../shared/helpers/ObjectHelper";
 import { DocumentsDto } from "./dto/StructureDto";
-import Siren from "../../../valueObjects/Siren";
-import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
-import Rna from "../../../valueObjects/Rna";
-import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
+import Siren from "../../../identifierObjects/Siren";
+import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
+import Rna from "../../../identifierObjects/Rna";
+import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
 
 jest.mock("../../../shared/helpers/ObjectHelper");
 const mockedObjectHelper = jest.mocked(ObjectHelper);

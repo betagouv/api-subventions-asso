@@ -1,6 +1,6 @@
 import AssociationNameEntity from "../../../modules/association-name/entities/AssociationNameEntity";
-import Rna from "../../../valueObjects/Rna";
-import Siren from "../../../valueObjects/Siren";
+import Rna from "../../../identifierObjects/Rna";
+import Siren from "../../../identifierObjects/Siren";
 import { RechercheEntreprisesResultDto } from "./RechercheEntreprisesDto";
 
 export class RechercheEntreprisesAdapter {

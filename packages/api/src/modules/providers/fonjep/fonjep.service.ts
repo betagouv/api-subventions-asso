@@ -4,8 +4,8 @@ import fonjepPostesPort from "../../../dataProviders/db/providers/fonjep/fonjep.
 import fonjepTiersPort from "../../../dataProviders/db/providers/fonjep/fonjep.tiers.port";
 import fonjepTypePostePort from "../../../dataProviders/db/providers/fonjep/fonjep.typePoste.port";
 import fonjepVersementsPort from "../../../dataProviders/db/providers/fonjep/fonjep.versements.port";
-import Ridet from "../../../valueObjects/Ridet";
-import Siret from "../../../valueObjects/Siret";
+import Ridet from "../../../identifierObjects/Ridet";
+import Siret from "../../../identifierObjects/Siret";
 import paymentFlatService from "../../paymentFlat/paymentFlat.service";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import ProviderCore from "../ProviderCore";

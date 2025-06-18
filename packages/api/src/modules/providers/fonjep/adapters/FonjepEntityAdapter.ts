@@ -8,10 +8,10 @@ import { FonjepPosteDtoWithJSDate } from "../../../../dataProviders/db/providers
 import FonjepTypePosteDto from "../../../../dataProviders/db/providers/fonjep/dto/fonjepTypePosteDto";
 import { FonjepVersementDto } from "../../../../dataProviders/db/providers/fonjep/dto/fonjepVersementDto";
 import FonjepTiersDto from "../../../../dataProviders/db/providers/fonjep/dto/fonjepTiersDto";
-import Siret from "../../../../valueObjects/Siret";
-import Ridet from "../../../../valueObjects/Ridet";
-import Rid from "../../../../valueObjects/Rid";
-import Siren from "../../../../valueObjects/Siren";
+import Siret from "../../../../identifierObjects/Siret";
+import Ridet from "../../../../identifierObjects/Ridet";
+import Rid from "../../../../identifierObjects/Rid";
+import Siren from "../../../../identifierObjects/Siren";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
 import { FonjepPaymentFlatEntity } from "../entities/FonjepPaymentFlatEntity";
 import { DataBretagneRecords } from "../../dataBretagne/@types/DataBretagne";

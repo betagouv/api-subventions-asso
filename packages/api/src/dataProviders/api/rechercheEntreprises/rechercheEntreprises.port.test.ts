@@ -3,7 +3,7 @@ import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccept
 import { ProviderRequestService } from "../../../modules/provider-request/providerRequest.service";
 import { RechercheEntreprisesDto } from "./RechercheEntreprisesDto";
 import { RequestResponse } from "../../../modules/provider-request/@types/RequestResponse";
-import Siren from "../../../valueObjects/Siren";
+import Siren from "../../../identifierObjects/Siren";
 
 describe("RechercheEntreprisesPort", () => {
     // @ts-expect-error http is private attribute

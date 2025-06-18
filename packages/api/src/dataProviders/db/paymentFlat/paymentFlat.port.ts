@@ -1,8 +1,8 @@
 import { FindCursor } from "mongodb";
 import MongoPort from "../../../shared/MongoPort";
 import { ChorusPaymentFlatEntity } from "../../../modules/providers/chorus/@types/ChorusPaymentFlat";
-import Siren from "../../../valueObjects/Siren";
-import Siret from "../../../valueObjects/Siret";
+import Siren from "../../../identifierObjects/Siren";
+import Siret from "../../../identifierObjects/Siret";
 import { DefaultObject } from "../../../@types";
 import PaymentFlatAdapter from "../../../modules/paymentFlat/paymentFlatAdapter";
 import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";

@@ -26,9 +26,9 @@ import {
 } from "../../../../tests/dataProviders/db/__fixtures__/demarchesSimplifiees.fixtures";
 import { DemarchesSimplifieesRawData } from "./@types/DemarchesSimplifieesRawGrant";
 import lodash from "lodash";
-import Siren from "../../../valueObjects/Siren";
-import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
-import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
+import Siren from "../../../identifierObjects/Siren";
+import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
 import { DemarchesSimplifieesSuccessDto } from "./dto/DemarchesSimplifieesDto";
 import DemarchesSimplifieesDataEntity from "./entities/DemarchesSimplifieesDataEntity";
 import { input } from "@inquirer/prompts";

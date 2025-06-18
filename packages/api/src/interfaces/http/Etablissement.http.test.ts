@@ -2,9 +2,9 @@ import { DemandeSubvention, Etablissement } from "dto";
 import Flux from "../../shared/Flux";
 import etablissementsService from "../../modules/etablissements/etablissements.service";
 import { EtablissementHttp, isEtabIdentifierFromAssoMiddleware } from "./Etablissement.http";
-import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
-import Siren from "../../valueObjects/Siren";
-import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
+import Siren from "../../identifierObjects/Siren";
+import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import establishmentIdentifierService from "../../modules/establishment-identifier/establishment-identifier.service";
 import grantExtractService from "../../modules/grant/grantExtract.service";
 import consumers from "stream/consumers";
@@ -210,11 +210,11 @@ describe("isEtabIdentifierFromAssoMiddleware", () => {
               "associationIdentifier": AssociationIdentifier {
                 "rna": undefined,
                 "siren": Siren {
-                  "siren": "000000001",
+                  "identifier": "000000001",
                 },
               },
               "siret": Siret {
-                "siret": "00000000100000",
+                "identifier": "00000000100000",
               },
             }
         `);
@@ -232,11 +232,11 @@ describe("isEtabIdentifierFromAssoMiddleware", () => {
                   "associationIdentifier": AssociationIdentifier {
                     "rna": undefined,
                     "siren": Siren {
-                      "siren": "000000001",
+                      "identifier": "000000001",
                     },
                   },
                   "siret": Siret {
-                    "siret": "00000000100000",
+                    "identifier": "00000000100000",
                   },
                 },
                 "params": {
@@ -273,11 +273,11 @@ describe("isEtabIdentifierFromAssoMiddleware", () => {
                   "associationIdentifier": AssociationIdentifier {
                     "rna": undefined,
                     "siren": Siren {
-                      "siren": "000000001",
+                      "identifier": "000000001",
                     },
                   },
                   "siret": Siret {
-                    "siret": "00000000100000",
+                    "identifier": "00000000100000",
                   },
                 },
                 "params": {

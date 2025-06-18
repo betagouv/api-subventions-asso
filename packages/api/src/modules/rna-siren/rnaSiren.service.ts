@@ -2,9 +2,9 @@ import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexE
 import rnaSirenPort from "../../dataProviders/db/rnaSiren/rnaSiren.port";
 import apiAssoService from "../providers/apiAsso/apiAsso.service";
 import RnaSirenEntity from "../../entities/RnaSirenEntity";
-import Rna from "../../valueObjects/Rna";
-import Siren from "../../valueObjects/Siren";
-import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
+import Rna from "../../identifierObjects/Rna";
+import Siren from "../../identifierObjects/Siren";
+import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 
 export class RnaSirenService {
     async find(id: Rna | Siren, offline = false): Promise<RnaSirenEntity[] | null> {

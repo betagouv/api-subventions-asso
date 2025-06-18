@@ -1,7 +1,7 @@
 import ProviderValueAdapter from "../../../shared/adapters/ProviderValueAdapter";
 import avisSituationInseeService from "./avisSituationInsee.service";
-import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
-import Siren from "../../../valueObjects/Siren";
+import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
+import Siren from "../../../identifierObjects/Siren";
 
 describe("AvisSituationInseeService", () => {
     describe("getInseeEtablissementsBySiren", () => {

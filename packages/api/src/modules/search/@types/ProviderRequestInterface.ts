@@ -1,5 +1,5 @@
-import Rna from "../../../valueObjects/Rna";
-import Siret from "../../../valueObjects/Siret";
+import Rna from "../../../identifierObjects/Rna";
+import Siret from "../../../identifierObjects/Siret";
 import RequestEntity from "../entities/RequestEntity";
 
 export default interface ProviderRequestInterface {

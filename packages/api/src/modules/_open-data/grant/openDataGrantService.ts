@@ -1,4 +1,4 @@
-import { StructureIdentifier } from "../../../@types";
+import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
 import grantService from "../../grant/grant.service";
 
 class OpenDataGrantService {

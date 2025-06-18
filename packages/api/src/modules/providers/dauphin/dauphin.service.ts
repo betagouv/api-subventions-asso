@@ -12,15 +12,15 @@ import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import ProviderCore from "../ProviderCore";
-import { StructureIdentifier } from "../../../@types";
-import EstablishmentIdentifier from "../../../valueObjects/EstablishmentIdentifier";
-import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
-import Siren from "../../../valueObjects/Siren";
+import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
+import Siren from "../../../identifierObjects/Siren";
 import GrantProvider from "../../grant/@types/GrantProvider";
 import dauphinGisproPort from "../../../dataProviders/db/providers/dauphin/dauphin-gispro.port";
 import DauphinGisproDbo from "../../../dataProviders/db/providers/dauphin/DauphinGisproDbo";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
+import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
 
 export class DauphinService
     extends ProviderCore

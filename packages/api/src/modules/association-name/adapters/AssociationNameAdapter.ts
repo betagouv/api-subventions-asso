@@ -1,5 +1,5 @@
 import UniteLegalNameEntity from "../../../entities/UniteLegalNameEntity";
-import Rna from "../../../valueObjects/Rna";
+import Rna from "../../../identifierObjects/Rna";
 import AssociationNameEntity from "../entities/AssociationNameEntity";
 
 export default class AssociationNameAdapter {

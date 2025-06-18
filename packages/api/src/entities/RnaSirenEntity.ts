@@ -1,5 +1,5 @@
-import Rna from "../valueObjects/Rna";
-import Siren from "../valueObjects/Siren";
+import Rna from "../identifierObjects/Rna";
+import Siren from "../identifierObjects/Siren";
 
 export default class RnaSirenEntity {
     constructor(

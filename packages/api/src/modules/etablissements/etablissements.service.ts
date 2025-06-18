@@ -3,7 +3,7 @@ import { ProviderValues, Etablissement } from "dto";
 import * as Sentry from "@sentry/node";
 import { NotFoundError } from "core";
 import OsirisRequestAdapter from "../providers/osiris/adapters/OsirisRequestAdapter";
-import { DefaultObject, StructureIdentifier } from "../../@types";
+import { DefaultObject } from "../../@types";
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import providers from "../providers";
 import FonjepEntityAdapter from "../providers/fonjep/adapters/FonjepEntityAdapter";
@@ -13,10 +13,11 @@ import grantService from "../grant/grant.service";
 import paymentService from "../payments/payments.service";
 import documentsService from "../documents/documents.service";
 import ApiEntrepriseAdapter from "../providers/apiEntreprise/adapters/ApiEntrepriseAdapter";
-import EstablishmentIdentifier from "../../valueObjects/EstablishmentIdentifier";
-import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
+import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
+import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import { EtablissementAdapter } from "./EtablissementAdapter";
 import EtablissementProvider from "./@types/EtablissementProvider";
+import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 
 export class EtablissementsService {
     private provider_score: DefaultObject<number> = {

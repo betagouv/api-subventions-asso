@@ -1,4 +1,4 @@
-import Siret from "../../../../valueObjects/Siret";
+import Siret from "../../../../identifierObjects/Siret";
 import { isNumberValid } from "../../../../shared/Validators";
 import { GenericParser } from "../../../../shared/GenericParser";
 import SubventiaDto from "../@types/subventia.dto";

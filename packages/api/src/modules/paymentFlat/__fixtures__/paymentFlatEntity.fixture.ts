@@ -1,7 +1,7 @@
 import { Payment } from "dto";
 import DEFAULT_ASSOCIATION from "../../../../tests/__fixtures__/association.fixture";
-import Siren from "../../../valueObjects/Siren";
-import Siret from "../../../valueObjects/Siret";
+import Siren from "../../../identifierObjects/Siren";
+import Siret from "../../../identifierObjects/Siret";
 import { ChorusPaymentFlatEntity } from "../../providers/chorus/@types/ChorusPaymentFlat";
 import { GenericAdapter } from "../../../shared/GenericAdapter";
 import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
