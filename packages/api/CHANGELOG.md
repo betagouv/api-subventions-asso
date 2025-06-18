@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.70.0](https://github.com/betagouv/api-subventions-asso/compare/v0.69.1...v0.70.0) (2025-06-18)
+
+### Bug Fixes
+
+- **api:** [#3451](https://github.com/betagouv/api-subventions-asso/issues/3451) do not convert cell value equal to 0 to null ([#3460](https://github.com/betagouv/api-subventions-asso/issues/3460)) ([c00cacd](https://github.com/betagouv/api-subventions-asso/commit/c00cacd450d118e9430d3a8fc246b073d7aa4e9a))
+- **api:** [#3483](https://github.com/betagouv/api-subventions-asso/issues/3483) use right date in paymentId ([#3484](https://github.com/betagouv/api-subventions-asso/issues/3484)) ([b4af65d](https://github.com/betagouv/api-subventions-asso/commit/b4af65d3516caa4a7e498de89454d2a42cc54ed1))
+
+### Features
+
+- **api:** [#3224](https://github.com/betagouv/api-subventions-asso/issues/3224) import fonjep payment flat ([#3433](https://github.com/betagouv/api-subventions-asso/issues/3433)) ([5bdbdfe](https://github.com/betagouv/api-subventions-asso/commit/5bdbdfe586757a5cb0fa5aff28d9867e47c291d6))
+- **api:** [#3395](https://github.com/betagouv/api-subventions-asso/issues/3395) update scdl validator with duplicates ([#3455](https://github.com/betagouv/api-subventions-asso/issues/3455)) ([4d7face](https://github.com/betagouv/api-subventions-asso/commit/4d7faceb16275cf40b7beef284d2efc970a0bd8e))
+- **api:** [#3407](https://github.com/betagouv/api-subventions-asso/issues/3407) protect agentconnectid in logs ([#3446](https://github.com/betagouv/api-subventions-asso/issues/3446)) ([85df82e](https://github.com/betagouv/api-subventions-asso/commit/85df82e19c191a204a7c1b68b50e0558bc4db395))
+- **api:** [#3428](https://github.com/betagouv/api-subventions-asso/issues/3428) validate scdl import and remove most recent exercise data ([#3452](https://github.com/betagouv/api-subventions-asso/issues/3452)) ([b33112d](https://github.com/betagouv/api-subventions-asso/commit/b33112dfe569a1d9ba610869852ccdb55a3636ea))
+
 ## [0.69.1](https://github.com/betagouv/api-subventions-asso/compare/v0.66.2...v0.69.1) (2025-06-18)
 
 ### Bug Fixes
