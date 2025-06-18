@@ -10,15 +10,24 @@ export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
         miscScdlProducer: "producerSlug",
     };
 
+    public findOneBySlug(slug: string) {
+        return this.collection.findOne({ producerSlug: slug });
+    }
+
     public async findAll() {
         return this.collection.find({}).toArray();
     }
 
     // retrieves documents over a period of exercise
-    public async findBySlugOnPeriod(slug: string, exercises: number[]) {
+    public async findBySlugOnPeriod(slug: string, exercises: number[]): Promise<MiscScdlGrantEntity[]> {
         if (exercises.length == 1)
-            return this.collection.find({ producerSlug: slug, exercice: exercises[0] }).toArray();
-        else return this.collection.find({ producerSlug: slug, exercice: { $in: exercises } }).toArray();
+            return await this.collection
+                .find({ producerSlug: slug, exercice: exercises[0] }, { projection: { _id: 0 } })
+                .toArray();
+        else
+            return this.collection
+                .find({ producerSlug: slug, exercice: { $in: exercises } }, { projection: { _id: 0 } })
+                .toArray();
     }
 
     public async createMany(entities: ScdlGrantDbo[]) {
@@ -30,9 +39,11 @@ export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
     }
 
     // we use bulk instead of deleteMany as $in might cause performance issues with large arrays
-    public async bulkFindDelete(slug: string, exercise: number) {
+    public async bulkFindDelete(slug: string, exercises: number[]) {
         const bulk = this.collection.initializeUnorderedBulkOp();
-        bulk.find({ producerSlug: slug, exercice: exercise }).delete();
+        exercises.forEach(exercise => {
+            bulk.find({ producerSlug: slug, exercice: exercise }).delete();
+        });
         return bulk.execute().catch(error => {
             throw error;
         });

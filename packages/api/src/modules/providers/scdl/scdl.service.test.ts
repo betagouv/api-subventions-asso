@@ -16,6 +16,7 @@ import { ObjectId } from "mongodb";
 import { SIRET_STR } from "../../../../tests/__fixtures__/association.fixture";
 import ScdlGrantParser from "./scdl.grant.parser";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
+import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
 
 describe("ScdlService", () => {
     const UNIQUE_ID = "UNIQUE_ID";
@@ -194,72 +195,76 @@ describe("ScdlService", () => {
         });
     });
 
-    describe("validateAndGetLastExercise", () => {
-        it("throws if no exercises found from entities", async () => {
-            await expect(async () => await scdlService.validateAndGetLastExercise(PRODUCER_SLUG, [])).rejects.toThrow(
-                "You must provide an exercise to clean producer's data before import",
-            );
+    describe("isProducerFirstImport", () => {
+        it("calls miscScdlGrantPort.hasGrantFromSlug()", async () => {
+            // @ts-expect-error: mock return value
+            jest.mocked(miscScdlGrantPort.findOneBySlug).mockResolvedValue({} as MiscScdlGrantEntity);
+            await scdlService.isProducerFirstImport(PRODUCER_SLUG);
+            expect(miscScdlGrantPort.findOneBySlug).toHaveBeenCalledWith(PRODUCER_SLUG);
         });
 
+        it.each`
+            expected | mockReturnValue
+            ${false} | ${{}}
+            ${true}  | ${undefined}
+            ${true}  | ${null}
+        `("returns $expected", async ({ expected, mockReturnValue }) => {
+            jest.mocked(miscScdlGrantPort.findOneBySlug).mockResolvedValue(mockReturnValue);
+            const actual = await scdlService.isProducerFirstImport(PRODUCER_SLUG);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("validateImport", () => {
         it.each`
             entities                                                                                        | documents                                                                                                           | exerciseWithError
             ${[{ exercice: 2023 }]}                                                                         | ${[{ exercice: 2023 }, { exercice: 2023 }]}                                                                         | ${2023}
             ${[{ exercice: 2023 }, { exercice: MOST_RECENT_EXERCISE }, { exercice: MOST_RECENT_EXERCISE }]} | ${[{ exercice: 2023 }, { exercice: 2023 }, { exercice: MOST_RECENT_EXERCISE }, { exercice: MOST_RECENT_EXERCISE }]} | ${2023}
             ${[{ exercice: 2023 }, { exercice: 2023 }, { exercice: MOST_RECENT_EXERCISE }]}                 | ${[{ exercice: 2023 }, { exercice: 2023 }, { exercice: MOST_RECENT_EXERCISE }, { exercice: MOST_RECENT_EXERCISE }]} | ${MOST_RECENT_EXERCISE}
         `("throws if less data in import file than in database", async ({ entities, documents, exerciseWithError }) => {
-            jest.mocked(miscScdlGrantPort).findBySlugOnPeriod.mockResolvedValueOnce(documents);
             await expect(
-                async () => await scdlService.validateAndGetLastExercise(MiscScdlProducerFixture.slug, entities),
+                async () =>
+                    await scdlService.validateImport(
+                        MiscScdlProducerFixture.slug,
+                        entities.map(entity => entity.exercice),
+                        entities,
+                        documents,
+                    ),
             ).rejects.toThrow(
                 `You are trying to import less grants for exercise ${exerciseWithError} than what already exist in the database for producer ${MiscScdlProducerFixture.slug}.`,
             );
         });
+    });
 
-        it("returns most recent exercise and enable backup", async () => {
-            jest.mocked(miscScdlGrantPort).findBySlugOnPeriod.mockResolvedValueOnce(GRANTS_DBO_ARRAY);
-            const expected = { exercise: MOST_RECENT_EXERCISE, enableBackup: true };
-            const actual = await scdlService.validateAndGetLastExercise(MiscScdlProducerFixture.slug, [
-                ...GRANTS_DBO_ARRAY,
-                {
-                    ...MISC_SCDL_GRANT_DBO_FIXTURE,
-                    amount: 12345,
-                    exercice: MOST_RECENT_EXERCISE,
-                },
-            ]); // add one more grant in import
-            expect(actual).toEqual(expected);
-        });
+    describe("getGrantOnPeriodBySlug", () => {
+        const EXERCISES = [2025];
 
-        it("returns most recent exercise and disable backup if no data in DB for that exercise", async () => {
-            jest.mocked(miscScdlGrantPort).findBySlugOnPeriod.mockResolvedValueOnce([MISC_SCDL_GRANT_DBO_FIXTURE]); // only year 2023 returned
-            const expected = { exercise: MOST_RECENT_EXERCISE, enableBackup: false };
-            const actual = await scdlService.validateAndGetLastExercise(MiscScdlProducerFixture.slug, [
-                ...GRANTS_DBO_ARRAY,
-            ]); // contains data for 2023 and 2024
-            expect(actual).toEqual(expected);
+        it("calls miscScdlGrantPort.findBySlugOnPeriod()", async () => {
+            await scdlService.getGrantOnPeriodBySlug(PRODUCER_SLUG, [2025]);
+            expect(miscScdlGrantPort.findBySlugOnPeriod).toHaveBeenCalledWith(PRODUCER_SLUG, EXERCISES);
         });
     });
 
-    describe("cleanExercise", () => {
+    describe("cleanExercises", () => {
+        const EXERCISES = [2022, 2023, 2024];
+
         beforeAll(() => {
             miscScdlGrantPort.findBySlugOnPeriod = jest.fn().mockResolvedValue(GRANTS_DBO_ARRAY);
         });
 
         it("creates backup for provider's data", async () => {
-            await scdlService.cleanExercise(MiscScdlProducerFixture.slug, GRANTS_DBO_ARRAY[0].exercice);
+            await scdlService.cleanExercises(MiscScdlProducerFixture.slug, EXERCISES);
             expect(miscScdlGrantPort.createBackupCollection).toHaveBeenCalledWith(PRODUCER_SLUG);
         });
 
-        it("delete provider's data for last exercise found in imported data", async () => {
-            await scdlService.cleanExercise(MiscScdlProducerFixture.slug, GRANTS_DBO_ARRAY[0].exercice);
-            expect(miscScdlGrantPort.bulkFindDelete).toHaveBeenCalledWith(
-                MiscScdlProducerFixture.slug,
-                GRANTS_DBO_ARRAY[0].exercice,
-            );
+        it("delete provider's data for given exercises", async () => {
+            await scdlService.cleanExercises(MiscScdlProducerFixture.slug, EXERCISES);
+            expect(miscScdlGrantPort.bulkFindDelete).toHaveBeenCalledWith(MiscScdlProducerFixture.slug, EXERCISES);
         });
 
         it("applies backup if bulkFindDelete throws an error", async () => {
             jest.mocked(miscScdlGrantPort).bulkFindDelete.mockRejectedValueOnce(new Error("Bulk delete failed"));
-            await scdlService.cleanExercise(MiscScdlProducerFixture.slug, LAST_EXERCISE_GRANTS[0].exercice);
+            await scdlService.cleanExercises(MiscScdlProducerFixture.slug, EXERCISES);
             expect(miscScdlGrantPort.applyBackupCollection).toHaveBeenCalledWith(PRODUCER_SLUG);
         });
     });
