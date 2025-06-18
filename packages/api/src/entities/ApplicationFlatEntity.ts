@@ -1,7 +1,5 @@
 import { ApplicationStatus } from "dto";
-import { companyIdName, establishmentIdName } from "../valueObjects/typeIdentifier";
-
-export type StructureIdType = companyIdName | establishmentIdName;
+import { IdentifierIdName } from "../identifierObjects/@types/IdentifierName";
 
 export enum ApplicationNature {
     MONEY = "MONEY",
@@ -22,13 +20,13 @@ export type ApplicationFlatEntity = {
     joinKeyDesc?: string;
     provider: string;
     allocatorName?: string;
-    allocatorIdType?: StructureIdType;
+    allocatorIdType?: IdentifierIdName;
     allocatorId?: string;
     managingAuthorityName?: string;
     managingAuthorityId?: string;
-    managingAuthorityIdType?: StructureIdType;
+    managingAuthorityIdType?: IdentifierIdName;
     instructiveDepartmentName?: string;
-    instructiveDepartmentIdType?: StructureIdType;
+    instructiveDepartmentIdType?: IdentifierIdName;
     instructiveDepartementId?: string;
     beneficiaryEstablishmentId: string;
     beneficiaryEstablishmentIdType?: string;
@@ -55,7 +53,7 @@ export type ApplicationFlatEntity = {
     paymentPeriodDates?: Date | Date[];
     cofinancingRequested?: boolean;
     cofinancersNames?: string[];
-    cofinancersIdType?: StructureIdType[];
+    cofinancersIdType?: IdentifierIdName[];
     confinancersId?: string[];
     idRAE?: string;
     ueNotification?: boolean;

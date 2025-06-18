@@ -1,6 +1,7 @@
 import { ApplicationStatus } from "dto";
-import { ApplicationNature, PaymentCondition, StructureIdType } from "../../../entities/ApplicationFlatEntity";
+import { ApplicationNature, PaymentCondition } from "../../../entities/ApplicationFlatEntity";
 import { ObjectId } from "mongodb";
+import { IdentifierIdName } from "../../../identifierObjects/@types/IdentifierName";
 
 export type ApplicationFlatDbo = {
     _id: ObjectId;
@@ -11,13 +12,13 @@ export type ApplicationFlatDbo = {
     descriptionIdJointure?: string; // description de l'idJointure et de la jointure que l'idJointure permet d'effectuer
     fournisseur: string; // Service fournisseur de la donnée
     nomAttribuant?: string; // Nom de l'autorité administrative qui pilote le dispositif ou programme de subvention ou en delegue la gestion
-    typeIdAttribuant?: StructureIdType; // type identifiant de l'idAttribuant entre siren, siret, rid, ridet, tahiti, tahiti-t
+    typeIdAttribuant?: IdentifierIdName; // type identifiant de l'idAttribuant entre siren, siret, rid, ridet, tahiti, tahiti-t
     idAttribuant?: string; // identifiant de l'autorité administrative qui pilote le dispositif ou programme de subvention ou en delegue la gestion
     nomAutoriteGestion?: string; // Si l'attribuant delegue la gestion, nom de l'autorité administrative qui gère le dispositif ou programme de subvention.
     idAutoriteGestion?: string; // Si l'attribuant delegue la gestion, identifiant de l'autorité administrative qui gère le dispositif ou programme de subvention.
-    typeIdAutoriteGestion?: StructureIdType;
+    typeIdAutoriteGestion?: IdentifierIdName;
     nomServiceInstructeur?: string; // Nom du service qui instruit la demande
-    typeIdServiceInstructeur?: StructureIdType;
+    typeIdServiceInstructeur?: IdentifierIdName;
     idServiceInstructeur?: string; // identifiant du service qui instruit la demande.
     idEtablissementBeneficiaire: string; // Identifiant de l'établissement de l'association qui demande la subvention
     typeIdEtablissementBeneficiaire?: string; // type identifiant de l'idBeneficiaire entre siret, ridet tahitiet
@@ -44,7 +45,7 @@ export type ApplicationFlatDbo = {
     datesPeriodeVersement?: Date | Date[];
     cofinancementsSollicites?: boolean; // Indiquer si d'autres subventions publiques ont été sollicités pour le même projet.
     nomsAttribuantsCofinanceurs?: string[]; // Liste des noms des attribuants cofinanceurs qui ont été sollicités pour le projet.
-    typeIdCofinanceursSollicites?: StructureIdType[];
+    typeIdCofinanceursSollicites?: IdentifierIdName[];
     idCofinanceursSollicites?: string[]; // Liste des identifiants des attribuants cofinanceurs qui ont été sollicités pour le projet
     idRAE?: string; // Numéro unique de référencement au répertoire des aides aux entreprises (RAE)
     notificationUE?: boolean; // Subvention attribuée au titre d’une aide de minimis notifiée à la Commission Européenne en vertu des dispositions du règlement n° 1407/2013 du 18 décembre 2013.
