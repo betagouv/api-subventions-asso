@@ -1,8 +1,7 @@
 import { DemandeSubvention } from "dto";
-import { DRAFT, ENTITY } from "./__fixtures__";
+import { DBO, DRAFT_ENTITY, ENTITY } from "./__fixtures__";
 import ApplicationFlatAdapter from "./ApplicationFlatAdapter";
 import applicationFlatService from "./applicationFlat.service";
-import { ObjectId } from "mongodb";
 import Siret from "../../identifierObjects/Siret";
 
 jest.mock("./applicationFlat.service");
@@ -37,15 +36,22 @@ describe("ApplicationFlatAdapter", () => {
     describe("buildEntity", () => {
         it("returns entity with ids", () => {
             const expected = ENTITY;
-            const actual = ApplicationFlatAdapter.buildEntity(DRAFT);
+            const actual = ApplicationFlatAdapter.buildEntity(DRAFT_ENTITY);
             expect(actual).toEqual(expected);
         });
     });
 
     describe("dboToEntity", () => {
-        it("removes _id", () => {
+        it("returns entity", () => {
             const expected = ENTITY;
-            const actual = ApplicationFlatAdapter.dboToEntity({ ...ENTITY, _id: new ObjectId() });
+            const actual = ApplicationFlatAdapter.dboToEntity(DBO);
+            expect(actual).toEqual(expected);
+        });
+    });
+    describe("entityToDbo", () => {
+        it("return dbo", () => {
+            const { _id, ...expected } = DBO;
+            const actual = ApplicationFlatAdapter.entityToDbo(ENTITY);
             expect(actual).toEqual(expected);
         });
     });

@@ -2,10 +2,11 @@ import MongoPort from "../../../shared/MongoPort";
 import Siren from "../../../identifierObjects/Siren";
 import Siret from "../../../identifierObjects/Siret";
 import { DefaultObject } from "../../../@types";
-import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
 import ApplicationFlatAdapter from "../../../modules/applicationFlat/ApplicationFlatAdapter";
+import { ApplicationFlatDbo } from "./ApplicationFlatDbo";
+import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
 
-export class ApplicationFlatPort extends MongoPort<ApplicationFlatEntity> {
+export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id">> {
     collectionName = "applications-flat";
 
     public async createIndexes(): Promise<void> {
@@ -20,27 +21,34 @@ export class ApplicationFlatPort extends MongoPort<ApplicationFlatEntity> {
     }
 
     public insertOne(entity: ApplicationFlatEntity) {
-        return this.collection.insertOne(entity);
+        return this.collection.insertOne(ApplicationFlatAdapter.entityToDbo(entity));
     }
 
     public upsertOne(entity: ApplicationFlatEntity) {
-        return this.collection.updateOne({ idUnique: entity.idUnique }, { $set: entity }, { upsert: true });
+        const dbo = ApplicationFlatAdapter.entityToDbo(entity);
+        return this.collection.updateOne({ idUnique: dbo.idUnique }, { $set: dbo }, { upsert: true });
     }
 
     public upsertMany(entities: ApplicationFlatEntity[]) {
         if (!entities.length) return;
-        const bulk = entities.map(e => ({
-            updateOne: {
-                filter: { idUnique: e.idUnique },
-                update: { $set: entities },
-                upsert: true,
-            },
-        }));
+        const bulk = entities.map(e => {
+            const dbo = ApplicationFlatAdapter.entityToDbo(e);
+            return {
+                updateOne: {
+                    filter: { idUnique: dbo.idUnique },
+                    update: { $set: entities },
+                    upsert: true,
+                },
+            };
+        });
         return this.collection.bulkWrite(bulk, { ordered: false });
     }
 
     public insertMany(entities: ApplicationFlatEntity[]) {
-        return this.collection.insertMany(entities, { ordered: false });
+        return this.collection.insertMany(
+            entities.map(e => ApplicationFlatAdapter.entityToDbo(e)),
+            { ordered: false },
+        );
     }
 
     public cursorFind(query: DefaultObject<unknown> = {}, projection: DefaultObject<unknown> = {}) {

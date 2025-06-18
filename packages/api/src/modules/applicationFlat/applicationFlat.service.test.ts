@@ -112,7 +112,7 @@ describe("ApplicationFlatService", () => {
         describe("getRawGrants", () => {
             let getEntitiesSpy;
             const [E1, E2] = [
-                { provider: "fonjep", idVersement: "poste1" },
+                { provider: "fonjep", paymentId: "poste1" },
                 { provider: "autre", ej: "ej2" },
             ] as unknown as ApplicationFlatEntity[];
             const IDENTIFIER = AssociationIdentifier.fromSiren(new Siren("987654321"));
