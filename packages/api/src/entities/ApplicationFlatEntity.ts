@@ -58,4 +58,5 @@ export type ApplicationFlatEntity = {
     idRAE?: string;
     ueNotification?: boolean;
     subventionPercentage?: number;
+    updateDate: Date;
 };
