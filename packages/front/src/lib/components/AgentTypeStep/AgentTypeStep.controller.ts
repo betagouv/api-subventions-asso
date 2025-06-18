@@ -1,7 +1,7 @@
 import type { AgentTypeEnum } from "dto";
 import Store from "$lib/core/Store";
 import Dispatch from "$lib/core/Dispatch";
-import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionFormService";
+import subscriptionFormService from "$lib/resources/auth/subscriptionForm/subscriptionForm.service";
 import type { Option } from "$lib/types/FieldOption";
 
 export default class AgentTypeStepController {

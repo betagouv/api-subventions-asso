@@ -1,5 +1,4 @@
 import * as StringHelper from "./stringHelper";
-import { isPhoneNumber } from "./stringHelper";
 
 describe("StringHelper", () => {
     describe("isHyphen", () => {
@@ -59,44 +58,44 @@ describe("StringHelper", () => {
         });
     });
 
-    describe("isPhoneNumber", () => {
+    describe("StringHelper.isPhoneNumber", () => {
         it("accepts phone number with + and space", () => {
-            expect(isPhoneNumber("+33 1 00 00 00 00")).toBeTruthy();
+            expect(StringHelper.isPhoneNumber("+33 1 00 00 00 00")).toBeTruthy();
         });
 
         it("accepts phone number with + and no separator", () => {
-            expect(isPhoneNumber("+33100000000")).toBeTruthy();
+            expect(StringHelper.isPhoneNumber("+33100000000")).toBeTruthy();
         });
 
         it("accepts phone number 0 and dash", () => {
-            expect(isPhoneNumber("01-00-00-00-00")).toBeTruthy();
+            expect(StringHelper.isPhoneNumber("01-00-00-00-00")).toBeTruthy();
         });
 
         it("accepts phone number 0 and dot", () => {
-            expect(isPhoneNumber("01.00.00.00.00")).toBeTruthy();
+            expect(StringHelper.isPhoneNumber("01.00.00.00.00")).toBeTruthy();
         });
 
         it("accepts phone number from Guadeloupe", () => {
-            expect(isPhoneNumber("+590 590 99 39 00")).toBeTruthy();
+            expect(StringHelper.isPhoneNumber("+590 590 99 39 00")).toBeTruthy();
         });
 
         it("rejects letters", () => {
-            expect(isPhoneNumber("01.00.aa.00.00")).toBeFalsy();
+            expect(StringHelper.isPhoneNumber("01.00.aa.00.00")).toBeFalsy();
         });
 
         // test skipped because it specifies French phone numbers only
         it.skip("rejects longer numbers", () => {
-            expect(isPhoneNumber("01.00.00.00.005")).toBeFalsy();
+            expect(StringHelper.isPhoneNumber("01.00.00.00.005")).toBeFalsy();
         });
 
         // test skipped because it specifies French phone numbers only
         it.skip("rejects shorter numbers", () => {
-            expect(isPhoneNumber("+331.00.00.00.0")).toBeFalsy();
+            expect(StringHelper.isPhoneNumber("+331.00.00.00.0")).toBeFalsy();
         });
 
         // test skipped because it specifies French phone numbers only
         it.skip("rejects disorganized", () => {
-            expect(isPhoneNumber("+331.0000.0.00.00")).toBeFalsy();
+            expect(StringHelper.isPhoneNumber("+331.0000.0.00.00")).toBeFalsy();
         });
     });
 

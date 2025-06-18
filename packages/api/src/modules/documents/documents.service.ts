@@ -64,8 +64,6 @@ export class DocumentsService {
     getDocumentStream(providerId: string, docId: string): Promise<IncomingMessage> {
         const service = this.providersById[providerId] as DauphinService | ProviderCore;
         if ("getSpecificDocumentStream" in service) return service.getSpecificDocumentStream(docId);
-        // TODO: refactor this to avoid typescript error on private access method
-        // @ts-expect-error: ok for now because it was unknown type before refactor
         return this.getGenericDocumentStream(service.http, docId);
     }
 

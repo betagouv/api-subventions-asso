@@ -4,8 +4,7 @@ import dataVizPort from "./dataViz.port";
 class DataVizService {
     async getAmountsVsProgramRegion(): Promise<AmountsVsProgramRegionDto[]> {
         try {
-            const result = await dataVizPort.getAmountsVsProgramRegion();
-            return result;
+            return await dataVizPort.getAmountsVsProgramRegion();
         } catch (e) {
             console.error(e);
             throw new Error("Aucune donnée trouvée");

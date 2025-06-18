@@ -1,5 +1,5 @@
 import { AgentTypeEnum } from "dto";
-import subscriptionFormPort from "$lib/resources/auth/subscriptionForm/subscriptionFormPort";
+import subscriptionFormPort from "$lib/resources/auth/subscriptionForm/subscriptionForm.port";
 
 export class SubscriptionFormService {
     public agentTypeOptions = [

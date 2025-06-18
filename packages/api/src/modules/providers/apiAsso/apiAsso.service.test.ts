@@ -40,7 +40,6 @@ describe("ApiAssoService", () => {
     };
 
     beforeAll(() => {
-        //@ts-expect-error http is private attribute
         httpGetSpy = jest.spyOn(apiAssoService.http, "get");
     });
 

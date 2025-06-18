@@ -71,7 +71,7 @@ export class ApiAssoService
 
         const structure = await this.sendRequest<StructureDto>(`/api/structure/${value}`);
         // TODO: investigate with JFM
-        // some times apiAsso return a 404
+        // sometimes apiAsso return a 404
         // ex: siren 422606285
         if (!structure?.identite) return { rna: undefined, siren: undefined };
 

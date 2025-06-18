@@ -63,7 +63,7 @@ export default class ApiAssoDtoAdapter {
         );
 
         // structure.identite.util_publique seems not to be implemented yet
-        // a workarround is to use the nature field that can be read to determine if the association is RUP
+        // a workaround is to use the nature field that can be read to determine if the association is RUP
         if (structure.identite?.nature === "Reconnue d'utilité publique") {
             structure.identite.util_publique = true;
         }

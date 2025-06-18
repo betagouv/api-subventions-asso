@@ -261,7 +261,6 @@ export class DemarchesSimplifieesService
         champ: DemarchesSimplifieesSchemaSeedLine,
         exampleDemarche: DemarchesSimplifieesDataEntity,
     ): Promise<{ value: string } | { from: string } | undefined> {
-        // TODO test when multiple stuff are noted
         if ("from" in champ) return { from: champ.from };
         if ("possibleLabels" in champ) {
             for (const [id, field] of Object.entries(exampleDemarche.demande.annotations))

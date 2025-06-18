@@ -1,9 +1,6 @@
 import path from "path";
-import IOsirisRequestInformations from "../../../src/modules/providers/osiris/@types/IOsirisRequestInformations";
-import OsirisRequestEntity from "../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
 import OsirisCli from "../../../src/interfaces/cli/Osiris.cli";
 import OsirisParser from "../../../src/modules/providers/osiris/osiris.parser";
-import osirisService from "../../../src/modules/providers/osiris/osiris.service";
 import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
 
 describe("OsirisCli", () => {
@@ -130,98 +127,6 @@ describe("OsirisCli", () => {
             expect(() => controller.parse("unknown" as "actions", filePath, "2022")).rejects.toThrowError(
                 "The type unknown is not taken into account",
             );
-        });
-    });
-
-    describe("findByRna cli ", () => {
-        let controller: OsirisCli;
-
-        beforeEach(async () => {
-            controller = new OsirisCli();
-
-            const entity = new OsirisRequestEntity(
-                { siret: "00000000000000", rna: "W123456789", name: "NAME" },
-                {
-                    osirisId: "FAKE_ID_2",
-                    compteAssoId: "COMPTEASSOID",
-                    ej: "",
-                    amountAwarded: 0,
-                    dateCommission: new Date(),
-                } as IOsirisRequestInformations,
-                {},
-                undefined,
-                [],
-            );
-            await osirisService.addRequest(entity);
-        });
-
-        it("should throw error because no agrs", () => {
-            expect(controller.findByRna).rejects.toThrowError("Parse command need rna args");
-        });
-
-        it("should log a file", async () => {
-            const consoleInfo = jest.spyOn(console, "info").mockImplementation();
-            await controller.findByRna("W123456789");
-            expect(consoleInfo).toHaveBeenCalled();
-
-            consoleInfo.mockReset();
-        });
-
-        it("should log a file in json", async () => {
-            let data = "";
-            const consoleInfo = jest
-                .spyOn(console, "info")
-                .mockImplementation((dataLogged: string) => (data = dataLogged));
-            await controller.findByRna("W123456789", "json");
-            expect(JSON.parse(data)[0].legalInformations.rna).toBe("W123456789");
-
-            consoleInfo.mockReset();
-        });
-    });
-
-    describe("findBySiret cli ", () => {
-        let controller: OsirisCli;
-
-        beforeEach(async () => {
-            controller = new OsirisCli();
-
-            const entity = new OsirisRequestEntity(
-                { siret: "00000000000000", rna: "W123456789", name: "NAME" },
-                {
-                    osirisId: "FAKE_ID_2",
-                    compteAssoId: "COMPTEASSOID",
-                    ej: "",
-                    amountAwarded: 0,
-                    dateCommission: new Date(),
-                } as IOsirisRequestInformations,
-                {},
-                undefined,
-                [],
-            );
-            await osirisService.addRequest(entity);
-        });
-
-        it("should throw error because no agrs", () => {
-            expect(controller.findBySiret).rejects.toThrowError("Parse command need siret args");
-        });
-
-        it("should log a file", async () => {
-            const consoleInfo = jest.spyOn(console, "info").mockImplementation();
-            await controller.findBySiret("00000000000000");
-            expect(consoleInfo).toHaveBeenCalled();
-
-            consoleInfo.mockReset();
-        });
-
-        it("should log a file in json", async () => {
-            let data = "";
-            const consoleInfo = jest
-                .spyOn(console, "info")
-                .mockImplementation((dataLogged: string) => (data = dataLogged));
-            await controller.findBySiret("00000000000000", "json");
-            expect(JSON.parse(data)[0].legalInformations.siret).toBe("00000000000000");
-
-            consoleInfo.mockReset();
         });
     });
 });

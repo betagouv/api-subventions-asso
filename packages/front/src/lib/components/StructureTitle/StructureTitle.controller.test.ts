@@ -1,4 +1,4 @@
-import { SiretDto } from "dto";
+import type { SiretDto } from "dto";
 import { StructureTitleController } from "./StructureTitle.controller";
 import * as associationHelper from "$lib/resources/associations/association.helper";
 import { getUniqueIdentifier } from "$lib/helpers/identifierHelper";

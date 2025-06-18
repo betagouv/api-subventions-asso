@@ -7,19 +7,19 @@ export class MiscScdlProducersPort extends MongoPort<MiscScdlProducerEntity> {
         miscScdlGrant: "slug",
     };
 
-    public async findAll() {
+    public findAll() {
         return this.collection.find({}, { projection: { _id: 0 } }).toArray() as Promise<MiscScdlProducerEntity[]>;
     }
 
-    public async findBySlug(slug: string) {
+    public findBySlug(slug: string) {
         return this.collection.findOne({ slug });
     }
 
-    public async create(entity: MiscScdlProducerEntity) {
+    public create(entity: MiscScdlProducerEntity) {
         return this.collection.insertOne(entity);
     }
 
-    public async update(slug: string, set: Partial<MiscScdlProducerEntity>) {
+    public update(slug: string, set: Partial<MiscScdlProducerEntity>) {
         return this.collection.updateOne({ slug }, { $set: set });
     }
 
