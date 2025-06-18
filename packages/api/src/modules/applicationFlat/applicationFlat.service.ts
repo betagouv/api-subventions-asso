@@ -8,10 +8,8 @@ import { ProviderEnum } from "../../@enums/ProviderEnum";
 import ProviderCore from "../providers/ProviderCore";
 import DemandesSubventionsProvider from "../subventions/@types/DemandesSubventionsProvider";
 import GrantProvider from "../grant/@types/GrantProvider";
-import { applicationFlatProviders } from "../providers";
 import Siret from "../../identifierObjects/Siret";
 import ApplicationFlatAdapter from "./ApplicationFlatAdapter";
-import ApplicationFlatProvider from "./@types/applicationFlatProvider";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 
 export class ApplicationFlatService
@@ -84,28 +82,8 @@ export class ApplicationFlatService
      * |-------------------------|
      */
 
-    async updateApplicationsFlatCollection(exerciceBudgetaire?: number) {
-        const START_YEAR = exerciceBudgetaire ?? 2017;
-        const END_YEAR = exerciceBudgetaire ?? new Date().getFullYear() + 2;
-        // 3 is the most pluriannuality that we expect, so current year + 2
-
-        for (const provider of applicationFlatProviders) {
-            console.log(`---- saving application flat entities from provider '${provider.provider.name}' ----`);
-            await this.updateApplicationsFlatCollectionByProvider(provider, START_YEAR, END_YEAR)
-                .then(() => console.log(`update from provider '${provider.provider.name}' ended successfully`))
-                .catch((e: Error) =>
-                    console.log(`update from provider '${provider.provider.name}' failed with error '${e.message}'`),
-                );
-        }
-    }
-
-    private async updateApplicationsFlatCollectionByProvider(
-        provider: ApplicationFlatProvider,
-        START_YEAR: number,
-        END_YEAR: number,
-    ) {
+    async saveFromStream(readStream: ReadableStream<ApplicationFlatEntity>) {
         const CHUNK_SIZE = 1000;
-        const readStream = provider.getApplicationFlatStream(START_YEAR, END_YEAR);
         let buffer: ApplicationFlatEntity[] = [];
         let counter = 0;
         const writeStream = new WritableStream({

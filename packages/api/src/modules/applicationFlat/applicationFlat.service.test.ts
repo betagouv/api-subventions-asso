@@ -1,7 +1,5 @@
 import Siren from "../../identifierObjects/Siren";
 
-const mockProvider = { provider: { provider: { name: "prov1" } } };
-
 import applicationFlatPort from "../../dataProviders/db/applicationFlat/applicationFlat.port";
 import applicationFlatService from "./applicationFlat.service";
 import { ApplicationFlatEntity } from "../../entities/ApplicationFlatEntity";
@@ -9,14 +7,10 @@ import ApplicationFlatAdapter from "./ApplicationFlatAdapter";
 import { DemandeSubvention } from "dto";
 import { RawApplication } from "../grant/@types/rawGrant";
 
-import ApplicationFlatProvider from "./@types/applicationFlatProvider";
 import Siret from "../../identifierObjects/Siret";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 
-jest.mock("../providers", () => ({
-    applicationFlatProviders: [mockProvider],
-}));
 jest.mock("../../dataProviders/db/applicationFlat/applicationFlat.port");
 jest.mock("./ApplicationFlatAdapter");
 jest.mock("../../identifierObjects/Siret");
@@ -139,32 +133,6 @@ describe("ApplicationFlatService", () => {
     });
 
     describe("applicationFlat part", () => {
-        describe("updateApplicationsFlatCollection", () => {
-            it("updates for all providers with given exercise", async () => {
-                const updateByProviderSpy = jest.spyOn(
-                    applicationFlatService,
-                    // @ts-expect-error -- private method
-                    "updateApplicationsFlatCollectionByProvider",
-                );
-                const EXERCICE = 2042;
-                await applicationFlatService.updateApplicationsFlatCollection(EXERCICE);
-                expect(updateByProviderSpy).toHaveBeenCalledWith(mockProvider, EXERCICE, EXERCICE);
-            });
-
-            it("updates for all providers and years from 2017 to now + 2 years", async () => {
-                jest.useFakeTimers();
-                jest.setSystemTime(new Date("2020-03-22"));
-                const updateByProviderSpy = jest.spyOn(
-                    applicationFlatService,
-                    // @ts-expect-error -- private method
-                    "updateApplicationsFlatCollectionByProvider",
-                );
-                await applicationFlatService.updateApplicationsFlatCollection();
-                expect(updateByProviderSpy).toHaveBeenCalledWith(mockProvider, 2017, 2022);
-                jest.useRealTimers();
-            });
-        });
-
         describe("updateApplicationsFlatCollectionByProvider", () => {
             const buildStream = () =>
                 new ReadableStream({
@@ -176,22 +144,9 @@ describe("ApplicationFlatService", () => {
                     },
                 });
             const ENTITY = {};
-            const PROVIDER = {
-                isApplicationFlatProvider: true,
-                getApplicationFlatStream: jest.fn((_start, _end) => buildStream()),
-            } as unknown as ApplicationFlatProvider;
-            const START = 2020;
-            const END = 2022;
-
-            it("gets stream from provider", async () => {
-                // @ts-expect-error -- private method
-                await applicationFlatService.updateApplicationsFlatCollectionByProvider(PROVIDER, START, END);
-                expect(PROVIDER.getApplicationFlatStream).toHaveBeenCalledWith(START, END);
-            });
 
             it("calls port's upsert as many times as necessary according to chunk size", async () => {
-                // @ts-expect-error -- private method
-                await applicationFlatService.updateApplicationsFlatCollectionByProvider(PROVIDER, START, END);
+                await applicationFlatService.saveFromStream(buildStream());
                 expect(applicationFlatPort.upsertMany).toHaveBeenCalledTimes(3); // mock sends 2001 so 2 chunks + 1 remainder
             });
         });
