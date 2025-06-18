@@ -1,14 +1,13 @@
-import { ASSO_BRANCHE } from "../../../shared/ChorusBrancheAccepted";
 import CacheData from "../../../shared/Cache";
 import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import ProviderCore from "../ProviderCore";
-import rnaSirenService from "../../rna-siren/rnaSiren.service";
-import uniteLegalEntreprisesService from "../uniteLegalEntreprises/uniteLegal.entreprises.service";
 import Siren from "../../../valueObjects/Siren";
 import Siret from "../../../valueObjects/Siret";
 import chorusLinePort from "../../../dataProviders/db/providers/chorus/chorus.line.port";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
+import associationHelper from "../../associations/associations.helper";
+import AssociationIdentifier from "../../../valueObjects/AssociationIdentifier";
 
 export interface RejectedRequest {
     state: "rejected";
@@ -34,12 +33,10 @@ export class ChorusService extends ProviderCore {
 
     /*
      * it is weird that this filter, that essentially accepts according to structure being an asso or not.
-     * The check about that should be associationService.isIdentifierFromAsso but we historically have this one
+     * The check about that should be associationHelper.isIdentifierFromAsso but we historically have this one
      * that use chorus specific data
      * */
     public async isAcceptedEntity(entity: ChorusLineEntity) {
-        if (entity.indexedInformations.codeBranche === ASSO_BRANCHE) return true;
-
         // quick fix to handle payments to assocations without siret but ridet or tahiti
         // there is cases where both siret and ridet/tahiti columns values are #
         // for now we insert all because we don't know the rules behind it
@@ -71,12 +68,8 @@ export class ChorusService extends ProviderCore {
         };
     }
 
-    public async sirenBelongAsso(siren: Siren): Promise<boolean> {
-        const chorusLine = await chorusLinePort.findOneBySiren(siren);
-        if (chorusLine) return true;
-
-        if (await uniteLegalEntreprisesService.isEntreprise(siren)) return false;
-        return !!(await rnaSirenService.find(siren));
+    public sirenBelongAsso(siren: Siren): Promise<boolean> {
+        return associationHelper.isIdentifierFromAsso(AssociationIdentifier.fromSiren(siren));
     }
 
     public cursorFind(exerciceBudgetaire?: number) {

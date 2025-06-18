@@ -2,7 +2,7 @@ import { ProviderValues, Association } from "dto";
 
 import * as Sentry from "@sentry/node";
 import { NotFoundError } from "core";
-import { DefaultObject, StructureIdentifier } from "../../@types";
+import { DefaultObject } from "../../@types";
 
 import providers from "../providers";
 import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
@@ -14,12 +14,7 @@ import documentsService from "../documents/documents.service";
 import paymentService from "../payments/payments.service";
 import subventionsService from "../subventions/subventions.service";
 import etablissementService from "../etablissements/etablissements.service";
-import rnaSirenService from "../rna-siren/rnaSiren.service";
-import uniteLegalEntreprisesService from "../providers/uniteLegalEntreprises/uniteLegal.entreprises.service";
-import apiAssoService from "../providers/apiAsso/apiAsso.service";
-import { LEGAL_CATEGORIES_ACCEPTED } from "../../shared/LegalCategoriesAccepted";
 import AssociationIdentifier from "../../valueObjects/AssociationIdentifier";
-import Siren from "../../valueObjects/Siren";
 import AssociationsProvider from "./@types/AssociationsProvider";
 
 export class AssociationsService {
@@ -60,33 +55,6 @@ export class AssociationsService {
 
     private getAssociationProviders() {
         return Object.values(providers).filter(p => this.isAssociationsProvider(p)) as AssociationsProvider[];
-    }
-    /*
-     * eventually should be used to filter chorus as well
-     * */
-    async isIdentifierFromAsso(id: StructureIdentifier): Promise<boolean> {
-        let siren: Siren;
-        if (id instanceof AssociationIdentifier) {
-            if (id.rna) return true;
-            if (id.siren) siren = id.siren;
-            else return false;
-        } else if (id.siret) {
-            siren = id.siret.toSiren();
-        } else {
-            return false;
-        }
-
-        if (await uniteLegalEntreprisesService.isEntreprise(siren)) return false;
-        // what follows will be useless when #554 is done (then maybe the helper will be redundant)
-        if (await rnaSirenService.find(siren)) return true;
-
-        const asso = await apiAssoService.findAssociationBySiren(siren);
-        return this.isCategoryFromAsso(asso?.categorie_juridique?.[0]?.value);
-    }
-
-    isCategoryFromAsso(category: string | undefined): boolean {
-        if (!category) return false;
-        return LEGAL_CATEGORIES_ACCEPTED.includes(category);
     }
 
     /**

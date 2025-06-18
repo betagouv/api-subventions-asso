@@ -3,13 +3,13 @@ import rechercheEntreprisesService from "./rechercheEntreprises.service";
 import { RechercheEntreprisesResultDto } from "./RechercheEntreprisesDto";
 import { RechercheEntreprisesAdapter } from "./RechercheEntreprisesAdapter";
 import AssociationNameEntity from "../../../modules/association-name/entities/AssociationNameEntity";
-import associationsService from "../../../modules/associations/associations.service";
+import associationHelper from "../../../modules/associations/associations.helper";
 import Siren from "../../../valueObjects/Siren";
 
 // Mocking the external dependencies
 jest.mock("./RechercheEntreprisesAdapter");
 jest.mock("./rechercheEntreprises.port");
-jest.mock("../../../modules/associations/associations.service");
+jest.mock("../../../modules/associations/associations.helper");
 
 const mockedRechercheEntreprisesAdapter = RechercheEntreprisesAdapter as jest.Mocked<
     typeof RechercheEntreprisesAdapter
@@ -20,11 +20,11 @@ describe("RechercheEntreprisesService", () => {
     const NAME = "Example";
 
     beforeAll(() => {
-        jest.mocked(associationsService.isCategoryFromAsso).mockReturnValue(true);
+        jest.mocked(associationHelper.isCategoryFromAsso).mockReturnValue(true);
     });
 
     afterAll(() => {
-        jest.mocked(associationsService.isCategoryFromAsso).mockRestore();
+        jest.mocked(associationHelper.isCategoryFromAsso).mockRestore();
     });
 
     describe("search", () => {
@@ -58,7 +58,7 @@ describe("RechercheEntreprisesService", () => {
                 { nom_complet: NAME, siren: SIREN.value, nature_juridique: "1234567890" },
             ];
             jest.mocked(rechercheEntreprisesPort.search).mockResolvedValueOnce(responseData);
-            jest.mocked(associationsService.isCategoryFromAsso).mockReturnValueOnce(false);
+            jest.mocked(associationHelper.isCategoryFromAsso).mockReturnValueOnce(false);
 
             const test = () => rechercheEntreprisesService.searchForceAsso("example");
 

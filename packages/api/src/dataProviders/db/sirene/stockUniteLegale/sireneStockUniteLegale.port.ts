@@ -2,6 +2,7 @@ import MongoPort from "../../../../shared/MongoPort";
 import { SireneUniteLegaleDbo } from "../../../../modules/providers/sirene/stockUniteLegale/@types/SireneUniteLegaleDbo";
 import { SireneStockUniteLegaleEntity } from "../../../../entities/SireneStockUniteLegaleEntity";
 import SireneStockUniteLegaleAdapter from "../../../../modules/providers/sirene/stockUniteLegale/adapter/sireneStockUniteLegale.adapter";
+import Siren from "../../../../valueObjects/Siren";
 
 export class SireneUniteLegaleDbPort extends MongoPort<SireneUniteLegaleDbo> {
     collectionName = "sirene";
@@ -36,6 +37,11 @@ export class SireneUniteLegaleDbPort extends MongoPort<SireneUniteLegaleDbo> {
     public async findAll(): Promise<SireneStockUniteLegaleEntity[]> {
         const dbos = await this.collection.find().toArray();
         return dbos.map(dbo => SireneStockUniteLegaleAdapter.dboToEntity(dbo));
+    }
+
+    public async findOneBySiren(siren: Siren): Promise<SireneStockUniteLegaleEntity | null> {
+        const dbo = await this.collection.findOne({ siren: siren.value });
+        return dbo ? SireneStockUniteLegaleAdapter.dboToEntity(dbo) : null;
     }
 
     public deleteAll() {
