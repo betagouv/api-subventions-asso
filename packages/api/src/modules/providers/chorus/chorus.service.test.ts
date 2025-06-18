@@ -1,23 +1,22 @@
 import chorusService from "./chorus.service";
 import chorusLinePort from "../../../dataProviders/db/providers/chorus/chorus.line.port";
+
 jest.mock("../../../dataProviders/db/providers/chorus/chorus.line.port");
 const mockedChorusLinePort = jest.mocked(chorusLinePort);
 jest.mock("./adapters/ChorusAdapter");
-import uniteLegalEntreprisesSerivce from "../uniteLegalEntreprises/uniteLegal.entreprises.service";
-jest.mock("../uniteLegalEntreprises/uniteLegal.entreprises.service");
-const mockedUniteLegalEntreprisesSerivce = jest.mocked(uniteLegalEntreprisesSerivce);
+
 jest.mock("../../../shared/helpers/StringHelper");
 jest.mock("../../../shared/helpers/SirenHelper");
-import rnaSirenService from "../../rna-siren/rnaSiren.service";
-jest.mock("../../rna-siren/rnaSiren.service");
-const mockedRnaSirenService = jest.mocked(rnaSirenService);
+
 import { ENTITIES } from "./__fixtures__/ChorusFixtures";
 import CacheData from "../../../shared/Cache";
 import { BulkWriteResult } from "mongodb";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
 import Siret from "../../../identifierObjects/Siret";
-import Rna from "../../../identifierObjects/Rna";
+import associationHelper from "../../associations/associations.helper";
+import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
+jest.mock("../../associations/associations.helper");
 
 describe("chorusService", () => {
     beforeAll(() => {
@@ -56,43 +55,21 @@ describe("chorusService", () => {
     });
 
     describe("sirenBelongAsso", () => {
+        const SOME_PROMISE = Promise.resolve(true);
+
+        beforeAll(() => {
+            jest.mocked(associationHelper.isIdentifierFromAsso).mockReturnValue(SOME_PROMISE);
+        });
         const SIREN = new Siret(ENTITIES[0].indexedInformations.siret).toSiren();
 
-        beforeEach(() => {
-            mockedUniteLegalEntreprisesSerivce.isEntreprise.mockResolvedValue(false);
-            mockedRnaSirenService.find.mockResolvedValue(null);
-            // @ts-expect-error: mock resolve value
-            mockedChorusLinePort.findOneBySiren.mockResolvedValue(ENTITIES[0]);
+        it("calls associationService test with valueObject association identifier", () => {
+            chorusService.sirenBelongAsso(SIREN);
+            expect(associationHelper.isIdentifierFromAsso).toHaveBeenCalledWith(AssociationIdentifier.fromSiren(SIREN));
         });
 
-        afterAll(() => {
-            mockedUniteLegalEntreprisesSerivce.isEntreprise.mockReset();
-            mockedRnaSirenService.find.mockReset();
-            mockedChorusLinePort.findOneBySiren.mockReset();
-        });
-
-        it("should return false if siren belongs to company", async () => {
-            mockedUniteLegalEntreprisesSerivce.isEntreprise.mockResolvedValueOnce(true);
-            mockedChorusLinePort.findOneBySiren.mockResolvedValueOnce(null);
-            const expected = false;
-            const actual = await chorusService.sirenBelongAsso(SIREN);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return true if a RNA is found", async () => {
-            mockedRnaSirenService.find.mockResolvedValueOnce([{ rna: new Rna("W700006589"), siren: SIREN }]);
-            const expected = true;
-            const actual = await chorusService.sirenBelongAsso(SIREN);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should call chorusLinePort.findOneBySiren()", async () => {
-            await chorusService.sirenBelongAsso(SIREN);
-        });
-
-        it("should return true if document is found", async () => {
-            const expected = true;
-            const actual = await chorusService.sirenBelongAsso(SIREN);
+        it("returns result from associationServce's test", () => {
+            const expected = SOME_PROMISE;
+            const actual = chorusService.sirenBelongAsso(SIREN);
             expect(actual).toEqual(expected);
         });
     });
@@ -113,11 +90,6 @@ describe("chorusService", () => {
         });
 
         const ACCEPTED_ENTITY = ENTITIES[0];
-        it("should return true if code is ASSO_BRANCHE", async () => {
-            const expected = true;
-            const actual = await chorusService.isAcceptedEntity(ACCEPTED_ENTITY);
-            expect(actual).toEqual(expected);
-        });
 
         it("should return true if siret is #", async () => {
             const ENTITY = {

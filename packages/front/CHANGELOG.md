@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.69.1](https://github.com/betagouv/datasubvention/compare/v0.66.2...v0.69.1) (2025-06-18)
+
+# [0.69.0](https://github.com/betagouv/datasubvention/compare/v0.66.1...v0.69.0) (2025-05-22)
+
+# [0.68.0](https://github.com/betagouv/datasubvention/compare/v0.67.0...v0.68.0) (2025-05-05)
+
+### Bug Fixes
+
+- **api, front:** [#3380](https://github.com/betagouv/datasubvention/issues/3380) remove warning on HTTP Header max-age ([#3379](https://github.com/betagouv/datasubvention/issues/3379)) ([e7b0667](https://github.com/betagouv/datasubvention/commit/e7b0667f9409dc999ed25718702424c4b03956c1))
+
+### Features
+
+- **api:** [#3144](https://github.com/betagouv/datasubvention/issues/3144) application-flat code structure ([#3326](https://github.com/betagouv/datasubvention/issues/3326)) ([55e6c8e](https://github.com/betagouv/datasubvention/commit/55e6c8e59120b1f40d5cf3d76942215bfd107c10))
+
+# [0.67.0](https://github.com/betagouv/datasubvention/compare/v0.66.0...v0.67.0) (2025-04-28)
+
+### Features
+
+- **front, api):** [#3329](https://github.com/betagouv/datasubvention/issues/3329) pro connect no reset pwd ([#3363](https://github.com/betagouv/datasubvention/issues/3363)) ([a6dc2df](https://github.com/betagouv/datasubvention/commit/a6dc2df3c6f0ccb6d47722f4f024e98ff6a2f57e))
+- **front:** adapt login page ([4f425d3](https://github.com/betagouv/datasubvention/commit/4f425d34783a51f25a7420508d21cba3d1be318e))
+- **front:** remove signup page ([01d1d9a](https://github.com/betagouv/datasubvention/commit/01d1d9afda7377ed286fe40895c795e8c90b0db1))
+
 # [0.69.0](https://github.com/betagouv/datasubvention/compare/v0.66.1...v0.69.0) (2025-05-22)
 
 # [0.68.0](https://github.com/betagouv/datasubvention/compare/v0.67.0...v0.68.0) (2025-05-05)
@@ -40,11 +62,12 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - **front, api):** [#3329](https://github.com/betagouv/datasubvention/issues/3329) pro connect no reset pwd ([#3363](https://github.com/betagouv/datasubvention/issues/3363)) ([a6dc2df](https://github.com/betagouv/datasubvention/commit/a6dc2df3c6f0ccb6d47722f4f024e98ff6a2f57e))
 - **front:** adapt login page ([4f425d3](https://github.com/betagouv/datasubvention/commit/4f425d34783a51f25a7420508d21cba3d1be318e))
 - **front:** remove signup page ([01d1d9a](https://github.com/betagouv/datasubvention/commit/01d1d9afda7377ed286fe40895c795e8c90b0db1))
+
 ## [0.66.2](https://github.com/betagouv/datasubvention/compare/v0.66.1...v0.66.2) (2025-06-04)
 
 ### Bug Fixes
 
--   **front:** dataviz title synthax ([fc4708c](https://github.com/betagouv/datasubvention/commit/fc4708c764e4f264e0209e6283158a73770eaa73))
+- **front:** dataviz title synthax ([fc4708c](https://github.com/betagouv/datasubvention/commit/fc4708c764e4f264e0209e6283158a73770eaa73))
 
 # [0.66.0](https://github.com/betagouv/datasubvention/compare/v0.65.2...v0.66.0) (2025-04-08)
 

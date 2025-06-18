@@ -22,6 +22,7 @@ jest.mock("../../../../entities/UniteLegalEntrepriseEntity", () => ({
         }
     },
 }));
+jest.mock("../../../../dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.port");
 
 jest.mock("node-stream-zip", () => {
     const mockExtract = jest.fn();
@@ -48,34 +49,18 @@ jest.mock("fs", () => {
 
 describe("SireneStockUniteLegaleService", () => {
     describe("insertOne", () => {
-        let insertOneMock: jest.SpyInstance;
-        beforeAll(() => {
-            insertOneMock = jest.spyOn(sireneStockUniteLegaleDbPort, "insertOne").mockImplementation(jest.fn());
-        });
-        afterAll(() => {
-            jest.restoreAllMocks();
-        });
-
         it("should call insertOne", async () => {
             const entity = { siren: new Siren("123456789") } as unknown as SireneStockUniteLegaleEntity;
             await sireneStockUniteLegaleService.insertOne(entity);
-            expect(insertOneMock).toHaveBeenCalledWith(entity);
+            expect(sireneStockUniteLegaleDbPort.insertOne).toHaveBeenCalledWith(entity);
         });
     });
 
     describe("insertMany", () => {
-        let upsertMany: jest.SpyInstance;
-        beforeAll(() => {
-            upsertMany = jest.spyOn(sireneStockUniteLegaleDbPort, "upsertMany").mockImplementation(jest.fn());
-        });
-        afterAll(() => {
-            jest.restoreAllMocks();
-        });
-
         it("should call upsertMany", async () => {
             const entities = [{ siren: new Siren("123456789") }] as unknown as SireneStockUniteLegaleEntity[];
             await sireneStockUniteLegaleService.upsertMany(entities);
-            expect(upsertMany).toHaveBeenCalledWith(entities);
+            expect(sireneStockUniteLegaleDbPort.upsertMany).toHaveBeenCalledWith(entities);
         });
     });
 
@@ -132,6 +117,22 @@ describe("SireneStockUniteLegaleService", () => {
         it("save entreprise entity", async () => {
             await sireneStockUniteLegaleService._saveBatchNonAssoData(BATCH);
             expect(uniteLegalEntreprisesService.insertManyEntrepriseSiren).toHaveBeenCalledWith(ADAPTED_ENTITY_BATCH);
+        });
+    });
+
+    describe("findOneBySiren", () => {
+        const SIREN = new Siren("123456789");
+
+        it("should call port", async () => {
+            await sireneStockUniteLegaleService.findOneBySiren(SIREN);
+            expect(sireneStockUniteLegaleDbPort.findOneBySiren).toHaveBeenCalledWith(SIREN);
+        });
+
+        it("should return res from port", async () => {
+            const expected = "ratata" as unknown as SireneStockUniteLegaleEntity;
+            jest.mocked(sireneStockUniteLegaleDbPort.findOneBySiren).mockResolvedValueOnce(expected);
+            const actual = await sireneStockUniteLegaleService.findOneBySiren(SIREN);
+            expect(actual).toBe(expected);
         });
     });
 });

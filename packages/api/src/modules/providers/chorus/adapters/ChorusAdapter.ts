@@ -224,7 +224,7 @@ export default class ChorusAdapter {
             provider: this.PROVIDER_NAME.toLowerCase(), // TODO: get this from config / code => see #3338
         };
 
-        const idVersement = `${rawDataWithDataBretagne.idEtablissementBeneficiaire}-${rawDataWithDataBretagne.ej}-${rawDataWithDataBretagne.exerciceBudgetaire}`;
+        const idVersement = `${rawDataWithDataBretagne.idEtablissementBeneficiaire.value}-${rawDataWithDataBretagne.ej}-${rawDataWithDataBretagne.exerciceBudgetaire}`;
         const regionAttachementComptable = ChorusAdapter.getRegionAttachementComptable(
             rawDataWithDataBretagne.attachementComptable,
         );

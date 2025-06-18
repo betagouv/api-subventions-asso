@@ -90,12 +90,16 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
                 $expr: {
                     $or: [
                         {
-                            typeIdEntrepriseBeneficiaire: "siren",
-                            idEntrepriseBeneficiaire: siren.value,
+                            $and: [
+                                { $eq: ["typeIdEtablissementBeneficiaire", "siret"] },
+                                { $eq: ["idEntrepriseBeneficiaire", new RegExp(`^${siren.value}\\d{5}`)] },
+                            ],
                         },
                         {
-                            typeIdEtablissementBeneficiaire: "siret",
-                            idEntrepriseBeneficiaire: new RegExp(`^${siren.value}\\d{5}`),
+                            $and: [
+                                { $eq: ["$typeIdEntrepriseBeneficiaire", "siren"] },
+                                { $eq: ["$idEntrepriseBeneficiaire", siren.value] },
+                            ],
                         },
                     ],
                 },
