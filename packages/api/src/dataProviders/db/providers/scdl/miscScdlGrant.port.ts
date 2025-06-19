@@ -39,7 +39,7 @@ export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
     }
 
     // we use bulk instead of deleteMany as $in might cause performance issues with large arrays
-    public async bulkFindDelete(slug: string, exercises: number[]) {
+    public async bulkFindDeleteByExercices(slug: string, exercises: number[]) {
         const bulk = this.collection.initializeUnorderedBulkOp();
         exercises.forEach(exercise => {
             bulk.find({ producerSlug: slug, exercice: exercise }).delete();

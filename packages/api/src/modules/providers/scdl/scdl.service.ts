@@ -145,7 +145,7 @@ export class ScdlService {
 
         try {
             console.log("Deleting previously imported exercise data");
-            await miscScdlGrantPort.bulkFindDelete(producerSlug, exercises);
+            await miscScdlGrantPort.bulkFindDeleteByExercices(producerSlug, exercises);
         } catch (e) {
             console.log(`SCDL importation failed: ${(e as Error).message}`);
             console.log("Reimporting entities that might have been deleted during the importation process");

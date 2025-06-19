@@ -259,11 +259,16 @@ describe("ScdlService", () => {
 
         it("delete provider's data for given exercises", async () => {
             await scdlService.cleanExercises(MiscScdlProducerFixture.slug, EXERCISES);
-            expect(miscScdlGrantPort.bulkFindDelete).toHaveBeenCalledWith(MiscScdlProducerFixture.slug, EXERCISES);
+            expect(miscScdlGrantPort.bulkFindDeleteByExercices).toHaveBeenCalledWith(
+                MiscScdlProducerFixture.slug,
+                EXERCISES,
+            );
         });
 
-        it("applies backup if bulkFindDelete throws an error", async () => {
-            jest.mocked(miscScdlGrantPort).bulkFindDelete.mockRejectedValueOnce(new Error("Bulk delete failed"));
+        it("applies backup if bulkFindDeleteByExercices throws an error", async () => {
+            jest.mocked(miscScdlGrantPort).bulkFindDeleteByExercices.mockRejectedValueOnce(
+                new Error("Bulk delete failed"),
+            );
             await scdlService.cleanExercises(MiscScdlProducerFixture.slug, EXERCISES);
             expect(miscScdlGrantPort.applyBackupCollection).toHaveBeenCalledWith(PRODUCER_SLUG);
         });
