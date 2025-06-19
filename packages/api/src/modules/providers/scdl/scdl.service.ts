@@ -126,7 +126,7 @@ export class ScdlService {
         });
     }
 
-    getGrantOnPeriodBySlug(producerSlug: string, exercices: number[]) {
+    getGrantsOnPeriodBySlug(producerSlug: string, exercices: number[]) {
         return miscScdlGrantPort.findBySlugOnPeriod(producerSlug, exercices);
     }
 

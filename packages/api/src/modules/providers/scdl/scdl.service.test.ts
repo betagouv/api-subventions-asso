@@ -236,11 +236,11 @@ describe("ScdlService", () => {
         });
     });
 
-    describe("getGrantOnPeriodBySlug", () => {
+    describe("getGrantsOnPeriodBySlug", () => {
         const EXERCISES = [2025];
 
         it("calls miscScdlGrantPort.findBySlugOnPeriod()", async () => {
-            await scdlService.getGrantOnPeriodBySlug(PRODUCER_SLUG, [2025]);
+            await scdlService.getGrantsOnPeriodBySlug(PRODUCER_SLUG, [2025]);
             expect(miscScdlGrantPort.findBySlugOnPeriod).toHaveBeenCalledWith(PRODUCER_SLUG, EXERCISES);
         });
     });

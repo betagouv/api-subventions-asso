@@ -165,7 +165,7 @@ describe("ScdlCli", () => {
         const GRANTS_ID_DB = [{ exercice: STORABLE_DATA_ARRAY[0].exercice } as MiscScdlGrantEntity];
         const mockCleanExercises = jest.spyOn(scdlService, "cleanExercises");
         const mockIsProducerFirstImport = jest.spyOn(scdlService, "isProducerFirstImport");
-        const mockGetGrantOnPeriodBySlug = jest.spyOn(scdlService, "getGrantOnPeriodBySlug");
+        const mockGetGrantOnPeriodBySlug = jest.spyOn(scdlService, "getGrantsOnPeriodBySlug");
         const mockValidateImport = jest.spyOn(scdlService, "validateImportCoverage");
         const mockRestoreBackup = jest.spyOn(scdlService, "restoreBackup");
         const mockDropBackup = jest.spyOn(scdlService, "dropBackup");
@@ -195,7 +195,7 @@ describe("ScdlCli", () => {
         it("retrieves documents in db for imported exercices", async () => {
             // @ts-expect-error: test private method
             await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
-            expect(jest.mocked(scdlService.getGrantOnPeriodBySlug)).toHaveBeenCalledWith(
+            expect(jest.mocked(scdlService.getGrantsOnPeriodBySlug)).toHaveBeenCalledWith(
                 PRODUCER_ENTITY.slug,
                 IMPORTED_DATA_EXERCISES,
             );
