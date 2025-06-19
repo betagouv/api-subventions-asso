@@ -7,6 +7,7 @@ import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
 import ScdlGrantParser from "./scdl.grant.parser";
 import { GenericAdapter } from "../../../shared/GenericAdapter";
 import { MixedParsedError, ParsedErrorDuplicate, ParsedErrorFormat } from "./@types/Validation";
+import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
 
 export class ScdlService {
     producerNames: string[] = [];
@@ -90,32 +91,30 @@ export class ScdlService {
         return normalizedErrors;
     }
 
+    async isProducerFirstImport(slug: string): Promise<boolean> {
+        return !(await miscScdlGrantPort.findOneBySlug(slug));
+    }
+
     /**
+     * Validates that the new import contain at least the same amount of data for each given exercise
      *
      * @param slug Producer slug
-     * @param entities Entities parsed from the current import
-     * @returns {
-     *              exercise: Last exercise number from the import
-     *              enableBackup: Boolean indicating if a backup should be created before importing entities
-     *          }
+     * @param exercices List of exercises contained in the import file
+     * @param importedEntities Entities parsed from the imported file
+     * @param docuemtnsInDB Entities fetched from DB concerning exercises
+     *
      * @throws Error if the import has less exercises than the existing ones in the database
      */
-    async validateAndGetLastExercise(slug: string, importedEntities: ScdlStorableGrant[]) {
-        const exercises: Set<number> = importedEntities.reduce((acc, entity) => {
-            return acc.add(entity.exercice);
-        }, new Set<number>());
-
-        if (exercises.size === 0) {
-            throw new Error("You must provide an exercise to clean producer's data before import");
-        }
-
-        const exercisesArray = [...exercises]; // transform Set to Array
-        const documentsInDB = await miscScdlGrantPort.findBySlugOnPeriod(slug, exercisesArray);
-
+    async validateImportCoverage(
+        slug: string,
+        exercices: number[],
+        importedEntities: ScdlStorableGrant[],
+        documentsInDB: MiscScdlGrantEntity[],
+    ) {
         console.log(`There are currently ${documentsInDB.length} documents for producer ${slug}`);
         console.log(`The new import contains ${importedEntities.length} entities`);
 
-        exercisesArray.forEach(exercise => {
+        exercices.forEach(exercise => {
             if (
                 documentsInDB.filter(doc => doc.exercice === exercise).length >
                 importedEntities.filter(entity => entity.exercice === exercise).length
@@ -125,13 +124,10 @@ export class ScdlService {
                 );
             }
         });
+    }
 
-        const mostRecentExercise = exercisesArray.sort((a, b) => a - b).at(-1) as number;
-
-        return {
-            exercise: mostRecentExercise,
-            enableBackup: !!documentsInDB.find(doc => doc.exercice === mostRecentExercise),
-        };
+    getGrantsOnPeriodBySlug(producerSlug: string, exercices: number[]) {
+        return miscScdlGrantPort.findBySlugOnPeriod(producerSlug, exercices);
     }
 
     /**
@@ -142,14 +138,14 @@ export class ScdlService {
      * @param producerSlug Producer slug
      * @param documents List of ScdlGrantDbo to delete from the collection
      */
-    async cleanExercise(producerSlug: string, exercise: number) {
+    async cleanExercises(producerSlug: string, exercises: number[]) {
         console.log("Creating backup for producer's data before importation");
         // backup producer data in case of bulk delete failure
         await miscScdlGrantPort.createBackupCollection(producerSlug);
 
         try {
             console.log("Deleting previously imported exercise data");
-            await miscScdlGrantPort.bulkFindDelete(producerSlug, exercise);
+            await miscScdlGrantPort.bulkFindDeleteByExercices(producerSlug, exercises);
         } catch (e) {
             console.log(`SCDL importation failed: ${(e as Error).message}`);
             console.log("Reimporting entities that might have been deleted during the importation process");

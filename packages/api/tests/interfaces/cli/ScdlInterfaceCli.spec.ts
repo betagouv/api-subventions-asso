@@ -10,11 +10,13 @@ import { SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtur
 
 describe("SCDL CLI", () => {
     let cli: ScdlCli;
-    const DATE_STR = "2022-12-12";
+    const FIRST_IMPORT_DATE = "2022-12-12";
+    const SECOND_IMPORT_DATE = "2024-12-12";
 
     beforeEach(() => {
         cli = new ScdlCli();
     });
+
     describe("addProducer()", () => {
         it("should create MiscScdlProducerEntity", async () => {
             await cli.addProducer(MiscScdlProducer.slug, MiscScdlProducer.name, MiscScdlProducer.siret);
@@ -58,11 +60,11 @@ describe("SCDL CLI", () => {
             ${"parseXls"} | ${testParseXls}
         `("$methodName", ({ test }) => {
             it("should throw Error()", async () => {
-                expect(() => test("FAKE_ID", DATE_STR)).rejects.toThrow(Error);
+                expect(() => test("FAKE_ID", FIRST_IMPORT_DATE)).rejects.toThrow(Error);
             });
 
             it("should add grants with exercise from conventionDate", async () => {
-                await test("SCDL", MiscScdlProducer.slug, DATE_STR);
+                await test("SCDL", MiscScdlProducer.slug, FIRST_IMPORT_DATE);
                 const grants = await miscScdlGrantPort.findAll();
                 const expectedAny = grants.map(() => ({
                     _id: expect.any(String),
@@ -71,7 +73,7 @@ describe("SCDL CLI", () => {
             });
 
             it("should add grants with exercise from its own column", async () => {
-                await test("SCDL_WITH_EXERCICE", MiscScdlProducer.slug, DATE_STR);
+                await test("SCDL_WITH_EXERCICE", MiscScdlProducer.slug, FIRST_IMPORT_DATE);
                 const grants = await miscScdlGrantPort.findAll(); // only grants from 2023 as it only saves most recent exercise in multi exercise files
                 const expectedAny = grants.map(() => ({
                     _id: expect.any(String),
@@ -87,15 +89,34 @@ describe("SCDL CLI", () => {
                 expect(actual).not.toEqual(PRODUCER_CREATION_DATE);
             });
 
-            it("should register new import", async () => {
-                await test("SCDL", MiscScdlProducer.slug, DATE_STR);
+            it("registers new import in data-log", async () => {
+                await test("SCDL", MiscScdlProducer.slug, FIRST_IMPORT_DATE);
                 const actual = await dataLogPort.findAll();
-                expect(actual?.[0]).toMatchObject({
-                    editionDate: new Date(DATE_STR),
-                    fileName: expect.any(String),
-                    integrationDate: expect.any(Date),
-                    providerId: MiscScdlProducer.slug,
-                });
+                expect(
+                    actual.map(dataLog => ({ ...dataLog, _id: expect.any(String), integrationDate: expect.any(Date) })),
+                ).toMatchSnapshot();
+            });
+
+            it("persists all data on first producer's importaton", async () => {
+                await test("SCDL", MiscScdlProducer.slug, FIRST_IMPORT_DATE);
+                const actual = await miscScdlGrantPort.findAll();
+                expect(actual?.[0]).toMatchSnapshot();
+            });
+
+            it("persists new data when data from imported exercises already in DB", async () => {
+                await test("SCDL", MiscScdlProducer.slug, FIRST_IMPORT_DATE);
+                await test("SCDL_SECOND_IMPORT", MiscScdlProducer.slug, SECOND_IMPORT_DATE);
+                const actual = await miscScdlGrantPort.findAll();
+                expect(actual).toMatchSnapshot();
+            });
+
+            it("throws an error when imported data contains less data what is persisted for a given exercice", async () => {
+                await test("SCDL", MiscScdlProducer.slug, FIRST_IMPORT_DATE);
+                await expect(test("SCDL_LESS_DATA", MiscScdlProducer.slug, SECOND_IMPORT_DATE)).rejects.toThrow(
+                    RegExp(
+                        "You are trying to import less grants for exercise 20\\d{2} than what already exist in the database for producer bretagne\\.",
+                    ),
+                );
             });
         });
 
@@ -107,7 +128,7 @@ describe("SCDL CLI", () => {
                         `../../../src/modules/providers/scdl/__fixtures__/SCDL_WITH_EXERCICE_ALT.xlsx`,
                     ),
                     MiscScdlProducer.slug,
-                    DATE_STR,
+                    FIRST_IMPORT_DATE,
                     "Sheet1",
                 );
                 const grants = await miscScdlGrantPort.findAll();
@@ -122,12 +143,14 @@ describe("SCDL CLI", () => {
             `(
                 "$methodName should throw error if one exercise from import contain less data that what exist in DB",
                 async ({ test, exercise }) => {
-                    await test("SCDL", MiscScdlProducer.slug, DATE_STR); // import all grants
+                    await test("SCDL", MiscScdlProducer.slug, FIRST_IMPORT_DATE); // import all grants
                     await miscScdlGrantPort.createMany([
                         { ...SCDL_GRANT_DBOS[0], exercice: exercise, producerSlug: MiscScdlProducer.slug },
                     ]); // add one more grant in DB
 
-                    await expect(async () => await test("SCDL", MiscScdlProducer.slug, DATE_STR)).rejects.toThrow(
+                    await expect(
+                        async () => await test("SCDL", MiscScdlProducer.slug, FIRST_IMPORT_DATE),
+                    ).rejects.toThrow(
                         `You are trying to import less grants for exercise ${exercise} than what already exist in the database for producer ${MiscScdlProducer.slug}.`,
                     );
                 },

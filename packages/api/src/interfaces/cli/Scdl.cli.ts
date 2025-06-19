@@ -41,15 +41,10 @@ export default class ScdlCli {
         const fileContent = fs.readFileSync(file);
 
         const parsedRowOffset = typeof rowOffset === "number" ? rowOffset : parseInt(rowOffset);
-        console.log("Before parsing XLSX file");
         const { entities, errors } = scdlService.parseXls(fileContent, pageName, parsedRowOffset);
 
-        console.log("Before persisting entities");
         // persist data
         await this.persist(producerSlug, entities);
-
-        console.log("Before executing end of import methods");
-
         // execute end of import methods
         await this.end({ file, producerSlug, exportDate, errors });
     }
@@ -74,7 +69,6 @@ export default class ScdlCli {
 
         const parsedQuote = quote === "false" ? false : quote;
         const { entities, errors } = scdlService.parseCsv(fileContent, delimiter, parsedQuote);
-        console.log(entities, errors);
         // persist data
         await this.persist(producerSlug, entities);
         // execute end of import methods
@@ -112,19 +106,29 @@ export default class ScdlCli {
             throw new Error("Importation failed : no entities could be created from this file");
         }
 
-        const { exercise: exerciseToImport, enableBackup: backupEnabled } =
-            await scdlService.validateAndGetLastExercise(producerSlug, entities);
+        const firstImport = await scdlService.isProducerFirstImport(producerSlug);
 
-        if (backupEnabled) await scdlService.cleanExercise(producerSlug, exerciseToImport);
+        if (!firstImport) {
+            const exercises: Set<number> = entities.reduce((acc, entity) => {
+                return acc.add(entity.exercice);
+            }, new Set<number>());
+
+            if (exercises.size === 0) {
+                throw new Error("You must provide an exercise to clean producer's data before import");
+            }
+
+            const exercisesArray = [...exercises]; // transform Set to Array
+            const documentsInDB = await scdlService.getGrantsOnPeriodBySlug(producerSlug, exercisesArray);
+
+            await scdlService.validateImportCoverage(producerSlug, exercisesArray, entities, documentsInDB);
+            await scdlService.cleanExercises(producerSlug, exercisesArray);
+        }
 
         try {
-            await this.persistEntities(
-                entities.filter(entity => entity.exercice === exerciseToImport), // only import most recent exercise
-                producerSlug,
-            );
-            if (backupEnabled) await scdlService.dropBackup();
+            await this.persistEntities(entities, producerSlug);
+            if (!firstImport) await scdlService.dropBackup();
         } catch (e) {
-            if (backupEnabled) {
+            if (!firstImport) {
                 console.log("Importation failed, restoring previous exercise data");
                 await scdlService.restoreBackup(producerSlug);
             }

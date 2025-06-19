@@ -22,6 +22,7 @@ import { MixedParsedError, ParsedErrorFormat } from "../../modules/providers/scd
 
 import csvSyncStringifier from "csv-stringify/sync";
 import dataLogService from "../../modules/data-log/dataLog.service";
+import MiscScdlGrantEntity from "../../modules/providers/scdl/entities/MiscScdlGrantEntity";
 jest.mock("../../modules/data-log/dataLog.service");
 
 jest.mock("csv-stringify/sync");
@@ -160,8 +161,12 @@ describe("ScdlCli", () => {
     });
 
     describe("persist", () => {
-        const mockCleanExercise = jest.spyOn(scdlService, "cleanExercise");
-        const mockValidateAndGetLastExerciseGrants = jest.spyOn(scdlService, "validateAndGetLastExercise");
+        const IMPORTED_DATA_EXERCISES: number[] = STORABLE_DATA_ARRAY.map(data => data.exercice);
+        const GRANTS_ID_DB = [{ exercice: STORABLE_DATA_ARRAY[0].exercice } as MiscScdlGrantEntity];
+        const mockCleanExercises = jest.spyOn(scdlService, "cleanExercises");
+        const mockIsProducerFirstImport = jest.spyOn(scdlService, "isProducerFirstImport");
+        const mockGetGrantOnPeriodBySlug = jest.spyOn(scdlService, "getGrantsOnPeriodBySlug");
+        const mockValidateImport = jest.spyOn(scdlService, "validateImportCoverage");
         const mockRestoreBackup = jest.spyOn(scdlService, "restoreBackup");
         const mockDropBackup = jest.spyOn(scdlService, "dropBackup");
         const mockPersistEntities = jest.fn();
@@ -169,11 +174,10 @@ describe("ScdlCli", () => {
         beforeEach(() => {
             // @ts-expect-error: mock private method
             cli.persistEntities = mockPersistEntities;
-            mockValidateAndGetLastExerciseGrants.mockResolvedValue({
-                exercise: STORABLE_DATA_ARRAY[0].exercice,
-                enableBackup: true,
-            });
-            mockCleanExercise.mockResolvedValue();
+            mockIsProducerFirstImport.mockResolvedValue(false);
+            mockGetGrantOnPeriodBySlug.mockResolvedValue(GRANTS_ID_DB);
+            mockValidateImport.mockResolvedValue();
+            mockCleanExercises.mockResolvedValue();
             mockRestoreBackup.mockResolvedValue();
         });
 
@@ -188,43 +192,48 @@ describe("ScdlCli", () => {
             );
         });
 
-        it("validate import and retrieve grants from database for most recent exercise present in import file", async () => {
+        it("retrieves documents in db for imported exercices", async () => {
             // @ts-expect-error: test private method
             await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
-            expect(jest.mocked(scdlService.validateAndGetLastExercise)).toHaveBeenCalledWith(
+            expect(jest.mocked(scdlService.getGrantsOnPeriodBySlug)).toHaveBeenCalledWith(
                 PRODUCER_ENTITY.slug,
+                IMPORTED_DATA_EXERCISES,
+            );
+        });
+
+        it("validates import", async () => {
+            // @ts-expect-error: test private method
+            await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
+            expect(jest.mocked(scdlService.validateImportCoverage)).toHaveBeenCalledWith(
+                PRODUCER_ENTITY.slug,
+                [STORABLE_DATA.exercice],
                 STORABLE_DATA_ARRAY,
+                GRANTS_ID_DB,
             );
         });
 
         it("clean database from grants from most recent exercise present in import file", async () => {
             // @ts-expect-error: test private method
             await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
-            expect(mockCleanExercise).toHaveBeenCalledWith(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY[0].exercice);
+            expect(mockCleanExercises).toHaveBeenCalledWith(PRODUCER_ENTITY.slug, IMPORTED_DATA_EXERCISES);
         });
 
         it("does not handle backup if first import (no data in DB)", async () => {
-            mockValidateAndGetLastExerciseGrants.mockResolvedValueOnce({
-                exercise: STORABLE_DATA_ARRAY[0].exercice,
-                enableBackup: false,
-            });
+            mockIsProducerFirstImport.mockResolvedValueOnce(true);
             // @ts-expect-error: test private method
             await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
-            expect(mockCleanExercise).not.toHaveBeenCalled();
+            expect(mockCleanExercises).not.toHaveBeenCalled();
             expect(mockDropBackup).not.toHaveBeenCalled();
         });
 
         it("does not restore backup if first import failed (no previous data in DB)", async () => {
-            mockValidateAndGetLastExerciseGrants.mockResolvedValueOnce({
-                exercise: STORABLE_DATA_ARRAY[0].exercice,
-                enableBackup: false,
-            });
+            mockIsProducerFirstImport.mockResolvedValueOnce(true);
             mockPersistEntities.mockRejectedValueOnce(new Error("Persistence failed"));
             try {
                 // @ts-expect-error: test private method
                 await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
             } catch {
-                expect(mockCleanExercise).not.toHaveBeenCalled();
+                expect(mockCleanExercises).not.toHaveBeenCalled();
                 expect(mockRestoreBackup).not.toHaveBeenCalled();
             }
         });
