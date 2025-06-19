@@ -29,7 +29,7 @@ type MandatoryApplicationFlatEntity = {
     beneficiaryEstablishmentIdType?: string;
     budgetaryYear: number;
     statusLabel: ApplicationStatus;
-    requestedAmount: number;
+    requestedAmount: number | null;
     grantedAmount?: number;
 };
 
@@ -48,20 +48,20 @@ type ApplicationFlatEntityToEnableNA = {
     pluriannual?: boolean;
     pluriannualYears?: number[];
     decisionDate?: Date;
-    conventionDate: Date;
+    conventionDate?: Date;
     decisionReference?: string;
     depositDate?: Date;
     requestYear?: number;
     scheme?: string; // dispositif
     subScheme?: string; // sous dispositif
     object?: string;
-    nature?: ApplicationNature;
+    nature: ApplicationNature;
     totalAmount?: number;
     ej?: string;
     paymentId?: string;
     paymentCondition?: PaymentCondition;
     paymentConditionDesc?: string;
-    paymentPeriodDates?: Date | Date[];
+    paymentPeriodDates?: Date[];
     cofinancingRequested?: boolean;
     cofinancersNames?: string[];
     cofinancersIdType?: IdentifierIdName[];
