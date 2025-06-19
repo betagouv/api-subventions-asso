@@ -16,8 +16,8 @@ export enum PaymentCondition {
 
 // TODO where to accept null ?
 
-type OrNA<FlatType> = {
-    [prop in keyof FlatType]: FlatType[prop] | NOT_APPLICABLE;
+type OrDefault<FlatType, DefaultType> = {
+    [prop in keyof FlatType]: FlatType[prop] | DefaultType;
 };
 
 type MandatoryApplicationFlatEntity = {
@@ -72,4 +72,5 @@ type ApplicationFlatEntityToEnableNA = {
     updateDate: Date;
 };
 
-export type ApplicationFlatEntity = MandatoryApplicationFlatEntity & OrNA<ApplicationFlatEntityToEnableNA>;
+export type ApplicationFlatEntity = MandatoryApplicationFlatEntity &
+    OrDefault<ApplicationFlatEntityToEnableNA, NOT_APPLICABLE | null>;
