@@ -110,7 +110,7 @@ describe("SCDL CLI", () => {
                 expect(actual).toMatchSnapshot();
             });
 
-            it("throw an error when imported data contains less data what is persisted for a given exercice", async () => {
+            it("throws an error when imported data contains less data what is persisted for a given exercice", async () => {
                 await test("SCDL", MiscScdlProducer.slug, FIRST_IMPORT_DATE);
                 await expect(test("SCDL_LESS_DATA", MiscScdlProducer.slug, SECOND_IMPORT_DATE)).rejects.toThrow(
                     RegExp(
