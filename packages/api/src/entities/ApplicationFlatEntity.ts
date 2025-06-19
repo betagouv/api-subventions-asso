@@ -2,6 +2,7 @@ import { ApplicationStatus } from "dto";
 import { NOT_APPLICABLE } from "../shared/GenericAdapter";
 
 import { IdentifierIdName } from "../identifierObjects/@types/IdentifierName";
+import { OrDefault } from "../shared/helpers/TypeHelper";
 
 export enum ApplicationNature {
     MONEY = "MONEY",
@@ -15,10 +16,6 @@ export enum PaymentCondition {
 }
 
 // TODO where to accept null ?
-
-type OrDefault<FlatType, DefaultType> = {
-    [prop in keyof FlatType]: FlatType[prop] | DefaultType;
-};
 
 type MandatoryApplicationFlatEntity = {
     uniqueId: string;
