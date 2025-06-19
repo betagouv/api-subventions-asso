@@ -203,12 +203,17 @@ describe("ScdlService", () => {
             expect(miscScdlGrantPort.findOneBySlug).toHaveBeenCalledWith(PRODUCER_SLUG);
         });
 
+        it("returns false if data already in db for the given producer slug", async () => {
+            jest.mocked(miscScdlGrantPort.findOneBySlug).mockResolvedValue({} as ScdlGrantDbo);
+            const actual = await scdlService.isProducerFirstImport(PRODUCER_SLUG);
+            expect(actual).toEqual(false);
+        });
+
         it.each`
             expected | mockReturnValue
-            ${false} | ${{}}
             ${true}  | ${undefined}
             ${true}  | ${null}
-        `("returns $expected", async ({ expected, mockReturnValue }) => {
+        `("returns $expected with $mockReturnValue", async ({ expected, mockReturnValue }) => {
             jest.mocked(miscScdlGrantPort.findOneBySlug).mockResolvedValue(mockReturnValue);
             const actual = await scdlService.isProducerFirstImport(PRODUCER_SLUG);
             expect(actual).toEqual(expected);
