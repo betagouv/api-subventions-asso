@@ -201,7 +201,7 @@ describe("ScdlCli", () => {
             );
         });
 
-        it("validate import", async () => {
+        it("validates import", async () => {
             // @ts-expect-error: test private method
             await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
             expect(jest.mocked(scdlService.validateImport)).toHaveBeenCalledWith(
