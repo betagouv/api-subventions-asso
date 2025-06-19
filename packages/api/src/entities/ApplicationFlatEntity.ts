@@ -20,15 +20,22 @@ type OrNA<FlatType> = {
     [prop in keyof FlatType]: FlatType[prop] | NOT_APPLICABLE;
 };
 
-// careful, autoriteGestion != serviceInstructeur != attribuant
-// for all typeId properties,
-export type FullApplicationFlatEntity = {
+type MandatoryApplicationFlatEntity = {
     uniqueId: string;
     applicationId: string;
     applicationProviderId: string;
+    provider: string;
+    beneficiaryEstablishmentId: string;
+    beneficiaryEstablishmentIdType?: string;
+    budgetaryYear: number;
+    statusLabel: ApplicationStatus;
+    requestedAmount: number;
+    grantedAmount?: number;
+};
+
+type ApplicationFlatEntityToEnableNA = {
     joinKeyId?: string;
     joinKeyDesc?: string;
-    provider: string;
     allocatorName?: string;
     allocatorIdType?: IdentifierIdName;
     allocatorId?: string;
@@ -38,9 +45,6 @@ export type FullApplicationFlatEntity = {
     instructiveDepartmentName?: string;
     instructiveDepartmentIdType?: IdentifierIdName;
     instructiveDepartementId?: string;
-    beneficiaryEstablishmentId: string;
-    beneficiaryEstablishmentIdType?: string;
-    budgetaryYear: number;
     pluriannual?: boolean;
     pluriannualYears?: number[];
     decisionDate?: Date;
@@ -50,11 +54,8 @@ export type FullApplicationFlatEntity = {
     requestYear?: number;
     scheme?: string; // dispositif
     subScheme?: string; // sous dispositif
-    statusLabel: ApplicationStatus;
     object?: string;
     nature?: ApplicationNature;
-    requestedAmount: number;
-    grantedAmount?: number;
     totalAmount?: number;
     ej?: string;
     paymentId?: string;
@@ -71,4 +72,4 @@ export type FullApplicationFlatEntity = {
     updateDate: Date;
 };
 
-export type ApplicationFlatEntity = OrNA<FullApplicationFlatEntity>;
+export type ApplicationFlatEntity = MandatoryApplicationFlatEntity & OrNA<ApplicationFlatEntityToEnableNA>;
