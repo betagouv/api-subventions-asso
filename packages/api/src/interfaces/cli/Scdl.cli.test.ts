@@ -166,7 +166,7 @@ describe("ScdlCli", () => {
         const mockCleanExercises = jest.spyOn(scdlService, "cleanExercises");
         const mockIsProducerFirstImport = jest.spyOn(scdlService, "isProducerFirstImport");
         const mockGetGrantOnPeriodBySlug = jest.spyOn(scdlService, "getGrantOnPeriodBySlug");
-        const mockValidateImport = jest.spyOn(scdlService, "validateImport");
+        const mockValidateImport = jest.spyOn(scdlService, "validateImportCoverage");
         const mockRestoreBackup = jest.spyOn(scdlService, "restoreBackup");
         const mockDropBackup = jest.spyOn(scdlService, "dropBackup");
         const mockPersistEntities = jest.fn();
@@ -204,7 +204,7 @@ describe("ScdlCli", () => {
         it("validates import", async () => {
             // @ts-expect-error: test private method
             await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
-            expect(jest.mocked(scdlService.validateImport)).toHaveBeenCalledWith(
+            expect(jest.mocked(scdlService.validateImportCoverage)).toHaveBeenCalledWith(
                 PRODUCER_ENTITY.slug,
                 [STORABLE_DATA.exercice],
                 STORABLE_DATA_ARRAY,

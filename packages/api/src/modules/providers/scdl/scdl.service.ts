@@ -96,16 +96,16 @@ export class ScdlService {
     }
 
     /**
+     * Validates that the new import contain at least the same amount of data for each given exercise
      *
      * @param slug Producer slug
-     * @param entities Entities parsed from the current import
-     * @returns {
-     *              exercise: Last exercise number from the import
-     *              enableBackup: Boolean indicating if a backup should be created before importing entities
-     *          }
+     * @param exercices List of exercises contained in the import file
+     * @param importedEntities Entities parsed from the imported file
+     * @param docuemtnsInDB Entities fetched from DB concerning exercises
+     *
      * @throws Error if the import has less exercises than the existing ones in the database
      */
-    async validateImport(
+    async validateImportCoverage(
         slug: string,
         exercices: number[],
         importedEntities: ScdlStorableGrant[],

@@ -215,7 +215,7 @@ describe("ScdlService", () => {
         });
     });
 
-    describe("validateImport", () => {
+    describe("validateImportCoverage", () => {
         it.each`
             entities                                                                                        | documents                                                                                                           | exerciseWithError
             ${[{ exercice: 2023 }]}                                                                         | ${[{ exercice: 2023 }, { exercice: 2023 }]}                                                                         | ${2023}
@@ -224,7 +224,7 @@ describe("ScdlService", () => {
         `("throws if less data in import file than in database", async ({ entities, documents, exerciseWithError }) => {
             await expect(
                 async () =>
-                    await scdlService.validateImport(
+                    await scdlService.validateImportCoverage(
                         MiscScdlProducerFixture.slug,
                         entities.map(entity => entity.exercice),
                         entities,
