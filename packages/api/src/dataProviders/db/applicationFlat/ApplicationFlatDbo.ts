@@ -6,6 +6,7 @@ import { OrDefault } from "../../../shared/helpers/TypeHelper";
 import { NOT_APPLICABLE } from "../../../shared/GenericAdapter";
 
 type MandatoryApplicationFlatDbo = {
+    __data__?: Record<string, unknown>;
     idUnique: string; // idSubvention - exerciceBudgetaire pour tous les fournisseurs sauf provider commançant par scdl. Un identifiant unique artificiellement crée pour provider commançant par scdl
     idSubvention: string; // nomProvider-idSubventionProvider
     idSubventionProvider: string; // id interne (du provider) d'identification d'une subvention permettant de faire le lien avec les actions. En cas de financement pluriannuel, cet identifiant est le même pour chaque exercice budgétaire. Dans le cas où la subvention concerne plusieurs bénéficiaires, cet identifiant est le même pour chaque bénéficiaire
