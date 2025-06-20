@@ -42,11 +42,11 @@ export const DRAFT_ENTITY: Omit<ApplicationFlatEntity, "uniqueId" | "application
     decisionReference: "idDecision",
     subScheme: "sous-dispositif",
     statusLabel: ApplicationStatus.GRANTED,
-    allocatorIdType: undefined,
-    managingAuthorityIdType: undefined,
+    allocatorIdType: null,
+    managingAuthorityIdType: null,
     beneficiaryEstablishmentIdType: "",
     cofinancersIdType: [],
-    instructiveDepartmentIdType: undefined,
+    instructiveDepartmentIdType: null,
     updateDate: new Date("2025-12-12"),
 };
 
@@ -98,10 +98,10 @@ export const DBO: ApplicationFlatDbo = {
     referenceDecision: "idDecision",
     sousDispositif: "sous-dispositif",
     statutLabel: ApplicationStatus.GRANTED,
-    typeIdAttribuant: undefined,
-    typeIdAutoriteGestion: undefined,
+    typeIdAttribuant: null,
+    typeIdAutoriteGestion: null,
     typeIdEtablissementBeneficiaire: "",
     typeIdCofinanceursSollicites: [],
-    typeIdServiceInstructeur: undefined,
+    typeIdServiceInstructeur: null,
     dateMiseAJour: new Date("2025-12-12"),
 };
