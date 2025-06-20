@@ -69,6 +69,7 @@ export default class ApplicationFlatAdapter {
 
     public static dboToEntity(dbo: ApplicationFlatDbo): ApplicationFlatEntity {
         return {
+            updateDate: dbo.dateMiseAJour,
             uniqueId: dbo.idUnique,
             applicationId: dbo.idSubvention,
             applicationProviderId: dbo.idSubventionProvider,
@@ -119,6 +120,7 @@ export default class ApplicationFlatAdapter {
 
     public static entityToDbo(entity: ApplicationFlatEntity): Omit<ApplicationFlatDbo, "_id"> {
         return {
+            dateMiseAJour: entity.updateDate,
             idUnique: entity.uniqueId,
             idSubvention: entity.applicationId,
             idSubventionProvider: entity.applicationProviderId,

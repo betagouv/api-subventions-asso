@@ -47,6 +47,7 @@ export const DRAFT_ENTITY: Omit<ApplicationFlatEntity, "uniqueId" | "application
     beneficiaryEstablishmentIdType: "",
     cofinancersIdType: [],
     instructiveDepartmentIdType: undefined,
+    updateDate: new Date("2025-12-12"),
 };
 
 export const ENTITY: ApplicationFlatEntity = {
@@ -102,4 +103,5 @@ export const DBO: ApplicationFlatDbo = {
     typeIdEtablissementBeneficiaire: "",
     typeIdCofinanceursSollicites: [],
     typeIdServiceInstructeur: undefined,
+    dateMiseAJour: new Date("2025-12-12"),
 };
