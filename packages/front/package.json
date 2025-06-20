@@ -24,7 +24,6 @@
         "prepare": "svelte-kit sync",
         "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
         "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-        "test:integration": "playwright test",
         "test:unit": "vitest run",
         "lint": "eslint --fix --ext .js,.ts,.svelte",
         "lint:all": "eslint --fix --ext .js,.ts,.svelte",
@@ -62,7 +61,6 @@
         "vite": "^5.4.11"
     },
     "devDependencies": {
-        "@playwright/test": "^1.40.1",
         "eslint-plugin-svelte": "^3.5.1",
         "eslint-plugin-vitest": "^0.5.4",
         "eslint-plugin-vitest-globals": "^1.5.0",
