@@ -30,7 +30,7 @@ export default class ApplicationFlatAdapter {
         if (!siret) return null;
 
         const toPv = <T>(value: T) =>
-            ProviderValueAdapter.toProviderValue<T>(value, entity.provider, entity.conventionDate); // TODO bad date
+            ProviderValueAdapter.toProviderValue<T>(value, entity.provider, entity.updateDate);
 
         const toPvOrUndefined = value => (value ? toPv(value) : undefined);
 
