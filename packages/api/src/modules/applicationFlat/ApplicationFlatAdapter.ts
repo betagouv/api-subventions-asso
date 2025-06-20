@@ -4,6 +4,7 @@ import { RawApplication } from "../grant/@types/rawGrant";
 import ProviderValueAdapter from "../../shared/adapters/ProviderValueAdapter";
 import applicationFlatService from "./applicationFlat.service";
 import { ApplicationFlatDbo } from "../../dataProviders/db/applicationFlat/ApplicationFlatDbo";
+import { GenericAdapter } from "../../shared/GenericAdapter";
 
 // entities and draft are almost equal but we want ids to be built in constructor
 // and we want to be able to build with a properly types object
@@ -29,7 +30,7 @@ export default class ApplicationFlatAdapter {
         if (!siret) return null;
 
         const toPv = <T>(value: T) =>
-            ProviderValueAdapter.toProviderValue<T>(value, entity.provider, entity.conventionDate); // TODO bad date
+            ProviderValueAdapter.toProviderValue<T>(value, entity.provider, entity.updateDate);
 
         const toPvOrUndefined = value => (value ? toPv(value) : undefined);
 
@@ -60,7 +61,11 @@ export default class ApplicationFlatAdapter {
                     ? undefined
                     : [{ intitule: toPv(entity.object) }],
             co_financement: {
-                cofinanceur: toPv(entity.cofinancersNames?.join(", ") || ""),
+                cofinanceur: toPv(
+                    entity.cofinancersNames === GenericAdapter.NOT_APPLICABLE_VALUE
+                        ? GenericAdapter.NOT_APPLICABLE_VALUE
+                        : entity.cofinancersNames?.join("|") || "",
+                ),
                 cofinanceur_email: toPv(""),
                 montants: toPv(0), // TODO fake data but we won't know
             },

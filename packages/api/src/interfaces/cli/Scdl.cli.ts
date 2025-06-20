@@ -142,14 +142,14 @@ export default class ScdlCli {
             throw new Error("Producer ID does not match any producer in database");
     }
 
-    private async persistEntities(entities: ScdlStorableGrant[], producerSlug: string) {
-        if (!entities || !entities.length) throw new Error("No entities could be created from this file");
+    private async persistEntities(storables: ScdlStorableGrant[], producerSlug: string) {
+        if (!storables || !storables.length) throw new Error("No entities could be created from this file");
 
-        console.log(`start persisting ${entities.length} grants`);
+        console.log(`start persisting ${storables.length} grants`);
         let duplicates: MiscScdlGrantEntity[] = [];
 
         try {
-            await scdlService.createManyGrants(entities, producerSlug);
+            await scdlService.createManyGrants(storables, producerSlug);
         } catch (e) {
             if (!(e instanceof DuplicateIndexError)) throw e;
             duplicates = (e as DuplicateIndexError<MiscScdlGrantEntity[]>).duplicates;

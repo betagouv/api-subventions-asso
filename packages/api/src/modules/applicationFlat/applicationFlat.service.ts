@@ -72,7 +72,7 @@ export class ApplicationFlatService
             provider: grant.provider,
             type: "application",
             data: grant,
-            joinKey: grant.provider === "fonjep" ? grant.paymentId : grant.ej,
+            joinKey: (grant.provider === "fonjep" ? grant.paymentId : grant.ej) ?? undefined,
         }));
     }
 
