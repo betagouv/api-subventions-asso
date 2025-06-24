@@ -6,7 +6,7 @@ import Rna from "../../../identifierObjects/Rna";
 import { BeforeAdaptation, DefaultObject, NestedDefaultObject, ParserInfo, ParserPath } from "../../../@types";
 import { GenericParser } from "../../../shared/GenericParser";
 import { ValueWithPath } from "../../../shared/@types/ValueWithPath";
-import { DEV } from "../../../configurations/env.conf";
+import { DEV, ENV } from "../../../configurations/env.conf";
 import { SCDL_MAPPER } from "./scdl.mapper";
 import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
 import { ScdlParsedGrant } from "./@types/ScdlParsedGrant";
@@ -249,7 +249,7 @@ export default class ScdlGrantParser {
         pathObject: DefaultObject<ParserPath | ParserInfo<TypeIn>>,
         data: NestedDefaultObject<TypeIn>,
     ): void {
-        if (DEV) {
+        if (DEV || ENV === "test") {
             const mandatoryHeaders = ScdlGrantParser.requirements
                 .filter(req => req.optional === false)
                 .map(req => req.key);
