@@ -38,7 +38,7 @@ import { initTests } from "./jest.config.integ.init";
 
 jest.spyOn(console, "info").mockImplementation(() => {});
 jest.mock("axios");
-jest.mock("./src/configurations/env.conf", () => ({ ENV: "test" }));
+jest.mock("./src/configurations/env.conf", () => ({ ENV: "test", DEV: true }));
 jest.mock("openid-client");
 jest.mock("express-session", () => ({
     __esModule: true,
