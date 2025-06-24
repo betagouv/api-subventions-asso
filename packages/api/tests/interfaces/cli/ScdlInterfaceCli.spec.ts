@@ -118,6 +118,14 @@ describe("SCDL CLI", () => {
                     ),
                 );
             });
+
+            it.each`
+                error                                                         | file
+                ${"Mandatory column associationSiret is missing."}            | ${"SCDL_ONE_MISSING_MANDATORY"}
+                ${"Mandatory columns associationSiret - amount are missing."} | ${"SCDL_MANY_MISSING_MANDATORY"}
+            `("throws an error if missing mandatory header is missing", async ({ error, file }) => {
+                await expect(test(file, MiscScdlProducer.slug, FIRST_IMPORT_DATE)).rejects.toThrow(error);
+            });
         });
 
         describe("edge cases", () => {

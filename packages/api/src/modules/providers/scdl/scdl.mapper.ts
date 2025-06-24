@@ -190,6 +190,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Montant voté",
                 "Montant décidé ligne",
                 "Montant accordé",
+                "montantAttribue",
             ],
         ],
         adapter: value => (value && typeof value === "string" ? parseFloat(value.replace(/[^0-9.]/, "")) : value),
