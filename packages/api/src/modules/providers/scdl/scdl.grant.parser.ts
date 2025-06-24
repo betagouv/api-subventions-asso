@@ -6,7 +6,7 @@ import Rna from "../../../identifierObjects/Rna";
 import { BeforeAdaptation, DefaultObject, NestedDefaultObject, ParserInfo, ParserPath } from "../../../@types";
 import { GenericParser } from "../../../shared/GenericParser";
 import { ValueWithPath } from "../../../shared/@types/ValueWithPath";
-import { DEV } from "../../../configurations/env.conf";
+import { DEV, ENV } from "../../../configurations/env.conf";
 import { SCDL_MAPPER } from "./scdl.mapper";
 import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
 import { ScdlParsedGrant } from "./@types/ScdlParsedGrant";
@@ -249,7 +249,10 @@ export default class ScdlGrantParser {
         pathObject: DefaultObject<ParserPath | ParserInfo<TypeIn>>,
         data: NestedDefaultObject<TypeIn>,
     ): void {
-        if (DEV) {
+        if (DEV || ENV === "test") {
+            const mandatoryHeaders = ScdlGrantParser.requirements
+                .filter(req => req.optional === false)
+                .map(req => req.key);
             const missingKeys = Object.entries(pathObject)
                 .filter(([_key, path]) => {
                     const flatMapper = (Array.isArray(path) ? path : path.path).flat();
@@ -262,6 +265,15 @@ export default class ScdlGrantParser {
                     `⚠️ Missing Headers Detected: ${missingKeys.length} column(s) are missing. Please check the following headers:`,
                 );
                 console.log(`  - ${missingKeys.join("\n  - ")}`);
+                const missingMandatories: string[] = [];
+                for (const key of missingKeys) {
+                    if (mandatoryHeaders.includes(key)) missingMandatories.push(key);
+                }
+                if (missingMandatories.length) {
+                    if (missingMandatories.length === 1)
+                        throw new Error(`Mandatory column ${missingMandatories[0]} is missing.`);
+                    throw new Error(`Mandatory columns ${missingMandatories.join(" - ")} are missing.`);
+                }
             }
         }
     }
