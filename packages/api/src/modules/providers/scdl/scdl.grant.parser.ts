@@ -28,7 +28,7 @@ export default class ScdlGrantParser {
         {
             key: "allocatorSiret",
             test: v => Siret.isSiret(v?.toString()),
-            message: "SIRET de l'allocataire manquant ou invalide",
+            message: "SIRET de l'attribuant manquant ou invalide",
             optional: true,
         },
         {
