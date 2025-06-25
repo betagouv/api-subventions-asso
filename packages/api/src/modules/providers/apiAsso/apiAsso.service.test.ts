@@ -391,7 +391,6 @@ describe("ApiAssoService", () => {
         beforeAll(() => {
             // @ts-expect-error: mock private method
             findDocumentsMock = jest.spyOn(apiAssoService, "findDocuments");
-            // @ts-expect-error findEtablissementsBySiren is private method
             findEtablissementsBySirenMock = jest.spyOn(apiAssoService, "findEtablissementsBySiren");
         });
 
@@ -454,17 +453,14 @@ describe("ApiAssoService", () => {
             });
 
             it("should send a request", async () => {
-                // @ts-expect-error findEtablissementsBySiren is private method
                 await apiAssoService.findEtablissementsBySiren(SIREN);
 
-                expect(mockSendRequest).toBeCalledTimes(1);
+                expect(mockSendRequest).toHaveBeenCalledTimes(1);
             });
 
             it("should return empty array", async () => {
                 mockSendRequest.mockResolvedValueOnce(null);
-                // @ts-expect-error findEtablissementsBySiren is private method
                 const actual = await apiAssoService.findEtablissementsBySiren(SIREN);
-
                 expect(actual).toHaveLength(0);
             });
 
@@ -473,23 +469,18 @@ describe("ApiAssoService", () => {
                     date_modif_siren: null,
                     id_siren: null,
                 });
-                // @ts-expect-error findEtablissementsBySiren is private method
                 const actual = await apiAssoService.findEtablissementsBySiren(SIREN);
-
                 expect(actual).toHaveLength(0);
             });
 
             it("should call adapter", async () => {
-                // @ts-expect-error findEtablissementsBySiren is private method
                 await apiAssoService.findEtablissementsBySiren(SIREN);
-
                 expect(toEtablissementMock).toHaveBeenCalledTimes(2);
             });
 
             it("should call getDefaultDateModifSiren()", async () => {
                 const STRUCTURE = { ...fixtureAsso, identite: { date_modif_siren: undefined } };
                 mockSendRequest.mockResolvedValueOnce(STRUCTURE);
-                // @ts-expect-error: private method
                 await apiAssoService.findEtablissementsBySiren(SIREN);
                 expect(mockGetDefaultDateModifSiren).toHaveBeenCalledWith(STRUCTURE);
             });
