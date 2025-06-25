@@ -2,6 +2,7 @@ import { isValidDate, shortISORegExp } from "../../../shared/helpers/DateHelper"
 import { GenericParser } from "../../../shared/GenericParser";
 import { BeforeAdaptation } from "../../../@types";
 import { ScdlGrantSchema } from "./@types/ScdlGrantSchema";
+import { capitalizeFirstLetter } from "../../../shared/helpers/StringHelper";
 
 const OFFICIAL_MAPPER = {
     allocatorName: "nomAttribuant",
@@ -25,8 +26,8 @@ const OFFICIAL_MAPPER = {
 };
 
 function getMapperVariants(prop): string[] {
-    const header = OFFICIAL_MAPPER[prop];
-    return [header, header.toLowerCase(), header.toUpperCase()];
+    const header = OFFICIAL_MAPPER[prop] as string;
+    return [header, header.toLowerCase(), header.toUpperCase(), capitalizeFirstLetter(header)];
 }
 
 const expandedShortISOPeriodRegExp = /\d{4}-[01]\d-[0-3]\d[/_]\d{4}-[01]\d-[0-3]\d/;
