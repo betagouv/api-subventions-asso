@@ -66,6 +66,7 @@ const dateAdapter = (date: BeforeAdaptation | undefined | null): Date | undefine
 
 const properZeroNbInSiret = value => {
     let workingValue = value;
+    workingValue = workingValue.replaceAll(/\s/g, "");
     if (workingValue?.includes(".")) {
         return workingValue.split(".")[0]; // Fix to remove ".0" from IDs when the CSV comes from a cell formatted as a float
     }
