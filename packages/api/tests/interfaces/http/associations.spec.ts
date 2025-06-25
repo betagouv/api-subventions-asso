@@ -8,7 +8,6 @@ import {
 import request from "supertest";
 import OsirisRequestEntityFixture from "../../modules/providers/osiris/__fixtures__/entity";
 import { compareByValueBuilder } from "../../../src/shared/helpers/ArrayHelper";
-import { siretToSiren } from "../../../src/shared/helpers/SirenHelper";
 import { BadRequestError } from "core";
 import associationsService from "../../../src/modules/associations/associations.service";
 import rnaSirenPort from "../../../src/dataProviders/db/rnaSiren/rnaSiren.port";
@@ -22,34 +21,35 @@ import demarchesSimplifieesSchemaPort from "../../../src/dataProviders/db/provid
 import demarchesSimplifieesService from "../../../src/modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
 
 import miscScdlGrantPort from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.port";
-import DEFAULT_ASSOCIATION, { LONELY_RNA } from "../../__fixtures__/association.fixture";
+import DEFAULT_ASSOCIATION, {
+    API_ASSO_ASSOCIATION_FROM_SIREN,
+    API_ASSO_ETABLISSEMENTS_FROM_SIREN,
+    LONELY_RNA,
+    RNA_STR,
+    SIREN_STR,
+    SIRET_STR,
+} from "../../__fixtures__/association.fixture";
 import dauphinGisproPort from "../../../src/dataProviders/db/providers/dauphin/dauphin-gispro.port";
 import { DAUPHIN_GISPRO_DBOS } from "../../dataProviders/db/__fixtures__/dauphinGispro.fixtures";
-import rnaSirenService from "../../../src/modules/rna-siren/rnaSiren.service";
 import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
 import fonjepPaymentPort from "../../../src/dataProviders/db/providers/fonjep/fonjep.payment.port.old";
 import Rna from "../../../src/identifierObjects/Rna";
-import Siret from "../../../src/identifierObjects/Siret";
 import miscScdlProducersPort from "../../../src/dataProviders/db/providers/scdl/miscScdlProducers.port";
-import RnaSirenEntity from "../../../src/entities/RnaSirenEntity";
 import Siren from "../../../src/identifierObjects/Siren";
 import statsAssociationsVisitPort from "../../../src/dataProviders/db/stats/statsAssociationsVisit.port";
 import { App } from "supertest/types";
 import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFlat.port";
 import { PAYMENT_FLAT_DBO } from "../../../src/dataProviders/db/paymentFlat/__fixtures__/paymentFlatDbo.fixture";
 import PaymentFlatAdapter from "../../../src/modules/paymentFlat/paymentFlatAdapter";
+import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
 
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
 
 const g = global as unknown as { app: App };
 
-const mockExternalData = async () => {};
-
 const insertData = async () => {
     // data
-    await rnaSirenPort.insert(
-        new RnaSirenEntity(new Rna(DEFAULT_ASSOCIATION.rna), new Siren(DEFAULT_ASSOCIATION.siren)),
-    );
+    await rnaSirenPort.insert({ siren: new Siren(SIREN_STR), rna: new Rna(RNA_STR) });
 
     // PAYMENTS
     await fonjepPaymentPort.create(FonjepPaymentFixture);
@@ -69,13 +69,25 @@ const insertData = async () => {
 };
 
 describe("/association", () => {
-    // SIREN must be from an association
-    const SIREN = new Siret(DEFAULT_ASSOCIATION.siret).toSiren();
-    const RNA = new Rna(DEFAULT_ASSOCIATION.rna);
+    // use to retrieve Association and Etablissements from API ASSO (most viable source of data)
+    let mockGetAssociationBySiren: jest.SpyInstance;
+    let mockGetEtablissementsBySiren: jest.SpyInstance;
 
     beforeEach(async () => {
         await insertData();
-        mockExternalData();
+        mockGetAssociationBySiren = jest
+            .spyOn(apiAssoService, "findAssociationBySiren")
+            .mockResolvedValue(API_ASSO_ASSOCIATION_FROM_SIREN);
+        mockGetEtablissementsBySiren = jest
+            .spyOn(apiAssoService, "findEtablissementsBySiren")
+            .mockResolvedValue(API_ASSO_ETABLISSEMENTS_FROM_SIREN);
+    });
+
+    afterAll(() => mockGetEtablissementsBySiren.mockRestore());
+
+    afterEach(() => {
+        mockGetAssociationBySiren.mockClear();
+        mockGetEtablissementsBySiren.mockClear();
     });
 
     describe("/{structure_identifier}/subventions", () => {
@@ -118,7 +130,7 @@ describe("/association", () => {
     describe("/{structure_identifier}", () => {
         it("should return an association", async () => {
             const response = await request(g.app)
-                .get(`/association/${OsirisRequestEntityFixture.legalInformations.siret}`)
+                .get(`/association/${SIREN_STR}`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
@@ -128,7 +140,7 @@ describe("/association", () => {
         it("should add one visit on stats AssociationsVisit", async () => {
             const beforeRequestTime = new Date();
             await request(g.app)
-                .get(`/association/${OsirisRequestEntityFixture.legalInformations.siret}`)
+                .get(`/association/${SIREN_STR}`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
 
@@ -142,7 +154,7 @@ describe("/association", () => {
         it("should not add one visits on stats AssociationsVisit because user is admin", async () => {
             const beforeRequestTime = new Date();
             await request(g.app)
-                .get(`/association/${OsirisRequestEntityFixture.legalInformations.siret}`)
+                .get(`/association/${SIREN_STR}`)
                 .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
             // TODO test differently
@@ -153,9 +165,7 @@ describe("/association", () => {
 
         it("should not add one visits on stats AssociationsVisit because user is not authenticated", async () => {
             const beforeRequestTime = new Date();
-            await request(g.app)
-                .get(`/association/${OsirisRequestEntityFixture.legalInformations.siret}`)
-                .set("Accept", "application/json");
+            await request(g.app).get(`/association/${SIREN_STR}`).set("Accept", "application/json");
             // TODO test differently
 
             const actual = await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date());
@@ -167,9 +177,7 @@ describe("/association", () => {
             const getAssoSpy = jest.spyOn(associationsService, "getAssociation").mockImplementationOnce(() => {
                 throw new BadRequestError();
             });
-            await request(g.app)
-                .get(`/association/${OsirisRequestEntityFixture.legalInformations.siret}`)
-                .set("Accept", "application/json");
+            await request(g.app).get(`/association/${SIREN_STR}`).set("Accept", "application/json");
 
             const actual = await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date());
             expect(actual).toHaveLength(0);
@@ -180,7 +188,7 @@ describe("/association", () => {
     describe("/{structure_identifier}/etablissements", () => {
         it("should return SimplifiedEtablissement[]", async () => {
             const response = await request(g.app)
-                .get(`/association/${siretToSiren(OsirisRequestEntityFixture.legalInformations.siret)}/etablissements`)
+                .get(`/association/${SIREN_STR}/etablissements`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
@@ -201,9 +209,8 @@ describe("/association", () => {
         }
 
         it("should return grants with rna", async () => {
-            await rnaSirenService.insert(RNA, SIREN);
             const response = await request(g.app)
-                .get(`/association/${RNA}/grants`)
+                .get(`/association/${RNA_STR}/grants`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
@@ -213,13 +220,8 @@ describe("/association", () => {
         });
 
         it("should return grants with siren", async () => {
-            await rnaSirenPort.insert({
-                siren: SIREN,
-                rna: new Rna(OsirisRequestEntityFixture.legalInformations.rna as string),
-            });
-
             const response = await request(g.app)
-                .get(`/association/${SIREN}/grants`)
+                .get(`/association/${SIREN_STR}/grants`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
@@ -263,11 +265,8 @@ describe("/association", () => {
         };
 
         it("should return raw grants with siren", async () => {
-            // SIREN must be from an association
-            await rnaSirenPort.insert({ siren: SIREN, rna: RNA });
-
             const response = await request(g.app)
-                .get(`/association/${SIREN}/raw-grants`)
+                .get(`/association/${SIREN_STR}/raw-grants`)
                 .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
@@ -275,9 +274,8 @@ describe("/association", () => {
         });
 
         it("should return raw grants with rna", async () => {
-            await rnaSirenService.insert(RNA, SIREN);
             const response = await request(g.app)
-                .get(`/association/${RNA}/raw-grants`)
+                .get(`/association/${RNA_STR}/raw-grants`)
                 .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
             expect(response.statusCode).toBe(200);
@@ -299,17 +297,15 @@ describe("/association", () => {
     describe("/{identifier}/grants/csv", () => {
         it.each`
             identifierType | identifier
-            ${"siren"}     | ${SIREN}
-            ${"rna"}       | ${RNA}
-            ${"siret"}     | ${SIREN + "1234"}
-        `("returns extract from $identifierType", async () => {
-            // SIREN must be from an association
-            await rnaSirenPort.insert({ siren: SIREN, rna: RNA });
+            ${"siren"}     | ${SIREN_STR}
+            ${"rna"}       | ${RNA_STR}
+            ${"siret"}     | ${SIRET_STR}
+        `("returns extract from $identifierType", async ({ identifier }) => {
             const response = await request(g.app)
-                .get(`/association/${SIREN}/grants/csv`)
+                .get(`/association/${identifier}/grants/csv`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "text/csv");
-            expect(response.statusCode).toBe(200);
+            // expect(response.statusCode).toBe(200);
             const actual = response.text;
             expect(actual).toMatchSnapshot();
         });

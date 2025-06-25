@@ -3,16 +3,19 @@ import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__
 import etablissementService from "../../../src/modules/etablissements/etablissements.service";
 import associationsService from "../../../src/modules/associations/associations.service";
 import { BadRequestError } from "core";
-import OsirisRequestEntityFixture from "../../modules/providers/osiris/__fixtures__/entity";
-import { osirisRequestPort } from "../../../src/dataProviders/db/providers/osiris";
-import DEFAULT_ASSOCIATION, { LONELY_RNA, SIRET_STR } from "../../__fixtures__/association.fixture";
+import DEFAULT_ASSOCIATION, {
+    API_ASSO_ETABLISSEMENTS_FROM_SIREN,
+    LONELY_RNA,
+    SIREN_STR,
+    SIRET_STR,
+} from "../../__fixtures__/association.fixture";
 import rnaSirenPort from "../../../src/dataProviders/db/rnaSiren/rnaSiren.port";
-import Siret from "../../../src/identifierObjects/Siret";
 import Rna from "../../../src/identifierObjects/Rna";
 import RnaSirenEntity from "../../../src/entities/RnaSirenEntity";
 import Siren from "../../../src/identifierObjects/Siren";
 import statsAssociationsVisitPort from "../../../src/dataProviders/db/stats/statsAssociationsVisit.port";
 import { App } from "supertest/types";
+import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
 
 const g = global as unknown as { app: App };
 
@@ -20,6 +23,10 @@ const ETABLISSEMENT_SIRET = SIRET_STR;
 
 describe("/etablissement", () => {
     const getSubventionsMock: jest.SpyInstance = jest.spyOn(etablissementService, "getSubventions");
+
+    beforeAll(async () => {
+        jest.spyOn(apiAssoService, "findEtablissementsBySiren").mockResolvedValue(API_ASSO_ETABLISSEMENTS_FROM_SIREN);
+    });
 
     beforeEach(async () => {
         await rnaSirenPort.insert(
@@ -72,7 +79,7 @@ describe("/etablissement", () => {
         it("should return grants", async () => {
             // SIREN must be from an association
             await rnaSirenPort.insert({
-                siren: new Siret(ETABLISSEMENT_SIRET).toSiren(),
+                siren: new Siren(DEFAULT_ASSOCIATION.siren),
                 rna: new Rna(DEFAULT_ASSOCIATION.rna),
             });
             const response = await request(g.app)
@@ -85,32 +92,24 @@ describe("/etablissement", () => {
     });
 
     describe("/siret", () => {
-        beforeEach(async () => {
-            await osirisRequestPort.add(OsirisRequestEntityFixture);
-        });
         it("should add one visits on stats AssociationsVisit", async () => {
             const beforeRequestTime = new Date();
-            await rnaSirenPort.insert(
-                new RnaSirenEntity(
-                    new Rna(LONELY_RNA),
-                    Siren.fromPartialSiretStr(OsirisRequestEntityFixture.legalInformations.siret),
-                ),
-            );
+            await rnaSirenPort.insert(new RnaSirenEntity(new Rna(LONELY_RNA), new Siren(SIREN_STR)));
             await request(g.app)
-                .get(`/etablissement/${OsirisRequestEntityFixture.legalInformations.siret}`)
+                .get(`/etablissement/${SIRET_STR}`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
 
             const actual = (await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date()))[0];
             expect(actual).toMatchObject({
-                associationIdentifier: OsirisRequestEntityFixture.legalInformations.siret.slice(0, 9),
+                associationIdentifier: SIRET_STR.slice(0, 9),
             });
         });
 
         it("should not add one visits on stats AssociationsVisit beacause user is admin", async () => {
             const beforeRequestTime = new Date();
             await request(g.app)
-                .get(`/etablissement/${OsirisRequestEntityFixture.legalInformations.siret}`)
+                .get(`/etablissement/${SIRET_STR}`)
                 .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
 
@@ -120,9 +119,7 @@ describe("/etablissement", () => {
 
         it("should not add one visits on stats AssociationsVisit beacause user is not authentified", async () => {
             const beforeRequestTime = new Date();
-            await request(g.app)
-                .get(`/etablissement/${OsirisRequestEntityFixture.legalInformations.siret}`)
-                .set("Accept", "application/json");
+            await request(g.app).get(`/etablissement/${SIRET_STR}`).set("Accept", "application/json");
 
             const actual = await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date());
             expect(actual).toHaveLength(0);
@@ -133,9 +130,7 @@ describe("/etablissement", () => {
             jest.spyOn(associationsService, "getAssociation").mockImplementationOnce(() => {
                 throw new BadRequestError();
             });
-            await request(g.app)
-                .get(`/etablissement/${OsirisRequestEntityFixture.legalInformations.siret}`)
-                .set("Accept", "application/json");
+            await request(g.app).get(`/etablissement/${SIRET_STR}`).set("Accept", "application/json");
 
             const actual = await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date());
             expect(actual).toHaveLength(0);
