@@ -4,7 +4,6 @@ import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { isAssociationName, isCompteAssoId, isOsirisActionId, isOsirisRequestId } from "../../../shared/Validators";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
-import ProviderRequestInterface from "../../search/@types/ProviderRequestInterface";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import ProviderCore from "../ProviderCore";
@@ -44,7 +43,6 @@ export class InvalidOsirisRequestError extends Error {
 export class OsirisService
     extends ProviderCore
     implements
-        ProviderRequestInterface,
         AssociationsProvider,
         EtablissementProvider,
         DemandesSubventionsProvider<OsirisRequestEntity>,
