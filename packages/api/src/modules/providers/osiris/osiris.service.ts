@@ -58,17 +58,6 @@ export class OsirisService
         });
     }
 
-    public async addRequest(request: OsirisRequestEntity): Promise<{ state: string; result: OsirisRequestEntity }> {
-        const { rna, siret } = request.legalInformations;
-
-        if (rna) await rnaSirenService.insert(new Rna(rna), new Siret(siret).toSiren());
-        const res = await osirisRequestPort.upsertOne(request);
-        return {
-            state: res.upsertedCount ? "created" : "updated",
-            result: request,
-        };
-    }
-
     public async bulkAddRequest(requests: OsirisRequestEntity[]): Promise<void | BulkWriteResult> {
         const rnaSirens: { rna: Rna; siren: Siren }[] = [];
         for (const request of requests) {
@@ -144,14 +133,6 @@ export class OsirisService
         }
 
         if (validation !== true) throw new InvalidOsirisRequestError(validation);
-    }
-
-    public async addAction(action: OsirisActionEntity): Promise<{ state: string; result: OsirisActionEntity }> {
-        const res = await osirisActionPort.upsertOne(action);
-        return {
-            state: res.upsertedCount ? "created" : "updated",
-            result: action,
-        };
     }
 
     public bulkAddActions(actions: OsirisActionEntity[]): Promise<void | BulkWriteResult> {

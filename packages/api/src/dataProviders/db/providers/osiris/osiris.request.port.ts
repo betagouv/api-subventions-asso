@@ -1,4 +1,4 @@
-import { FindOneAndUpdateOptions, ObjectId } from "mongodb";
+import { FindOneAndUpdateOptions } from "mongodb";
 import OsirisRequestEntity from "../../../../modules/providers/osiris/entities/OsirisRequestEntity";
 import MongoPort from "../../../../shared/MongoPort";
 import Siret from "../../../../identifierObjects/Siret";
@@ -58,16 +58,6 @@ export class OsirisRequestPort extends MongoPort<OsirisRequestEntity> {
         return bulk.length ? this.collection.bulkWrite(bulk, { ordered: false }) : Promise.resolve();
     }
 
-    public async findByMongoId(id: string): Promise<OsirisRequestEntity | null> {
-        return this.collection.findOne({ _id: new ObjectId(id) });
-    }
-
-    public findByUniqueId(uniqueId: string) {
-        return this.collection.findOne({
-            "providerInformations.uniqueId": uniqueId,
-        }) as unknown as Promise<OsirisRequestEntity | null>;
-    }
-
     public findBySiret(siret: Siret) {
         return this.collection
             .find({
@@ -92,6 +82,7 @@ export class OsirisRequestPort extends MongoPort<OsirisRequestEntity> {
             .toArray();
     }
 
+    // Only used in one migration, should be removed later ?
     public cursorFindRequests(query = {}) {
         return this.collection.find(query);
     }
