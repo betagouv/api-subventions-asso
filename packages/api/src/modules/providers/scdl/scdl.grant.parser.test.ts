@@ -308,7 +308,7 @@ describe("ScdlGrantParser", () => {
                     {
                         colonne: "allocatorSiret-origin",
                         valeur: "allocatorSiret-value",
-                        message: "SIRET de l'allocataire manquant ou invalide",
+                        message: "SIRET de l'attribuant manquant ou invalide",
                     },
                 ],
             };
