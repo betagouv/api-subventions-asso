@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.70.3](https://github.com/betagouv/api-subventions-asso/compare/v0.70.2...v0.70.3) (2025-06-25)
+
+### Bug Fixes
+
+- **api:** add new api asso domain for document ([c22c560](https://github.com/betagouv/api-subventions-asso/commit/c22c5606af3bd23dd7b4c595897e9f05dfb84a6b))
+
 ## [0.70.2](https://github.com/betagouv/api-subventions-asso/compare/v0.70.1...v0.70.2) (2025-06-24)
 
 ### Bug Fixes

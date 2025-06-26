@@ -18,6 +18,7 @@ import { StructureIdentifier } from "../../identifierObjects/@types/StructureIde
 export class DocumentsService {
     ACCEPTED_URLS = [
         "https://lecompteasso.associations.gouv.fr/apim/api-asso/api/documents/",
+        "https://siva-production.menjes.ate.info/apim/api-asso/api/documents/",
         "https://api-avis-situation-sirene.insee.fr/identification/pdf/",
     ];
 
