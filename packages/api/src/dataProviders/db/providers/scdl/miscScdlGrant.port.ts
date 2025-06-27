@@ -6,6 +6,7 @@ import { ScdlGrantDbo } from "../../../../modules/providers/scdl/dbo/ScdlGrantDb
 export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
     readonly collectionName = "misc-scdl-grant";
     readonly backupCollectionName = this.collectionName + "-backup";
+
     readonly joinIndexes = {
         miscScdlProducer: "producerSlug",
     };
