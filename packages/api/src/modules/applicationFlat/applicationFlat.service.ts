@@ -11,6 +11,7 @@ import GrantProvider from "../grant/@types/GrantProvider";
 import Siret from "../../identifierObjects/Siret";
 import ApplicationFlatAdapter from "./ApplicationFlatAdapter";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
+import { ReadableStream, WritableStream } from "node:stream/web";
 
 export class ApplicationFlatService
     extends ProviderCore
