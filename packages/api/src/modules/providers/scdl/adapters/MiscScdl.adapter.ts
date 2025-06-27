@@ -6,7 +6,7 @@ import { ScdlGrantEntity } from "../@types/ScdlGrantEntity";
 import { RawApplication } from "../../../grant/@types/rawGrant";
 import { ApplicationFlatEntity, ApplicationNature, PaymentCondition } from "../../../../entities/ApplicationFlatEntity";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
-import crypto from "crypto";
+import { ScdlGrantDbo } from "../dbo/ScdlGrantDbo";
 
 export default class MiscScdlAdapter {
     public static toDemandeSubvention(entity: MiscScdlGrantProducerEntity): DemandeSubvention {
@@ -90,50 +90,50 @@ export default class MiscScdlAdapter {
         return res;
     }
 
-    static toApplicationFlat(entity: MiscScdlGrantProducerEntity, lastUpdate: Date): ApplicationFlatEntity {
-        const dataHash = crypto.createHash("md5").update(JSON.stringify(entity)).digest("hex"); // TODO reather use same than in dbo to find back the raw data
-        const nature = MiscScdlAdapter.normalizePaymentNature(entity.paymentNature);
+    static dboToApplicationFlat(dbo: ScdlGrantDbo): ApplicationFlatEntity {
+        const dataHash = dbo._id.toString();
+        const nature = MiscScdlAdapter.normalizePaymentNature(dbo.paymentNature);
 
         return {
             requestYear: GenericAdapter.NOT_APPLICABLE_VALUE,
             pluriannualYears: GenericAdapter.NOT_APPLICABLE_VALUE,
 
             cofinancingRequested: GenericAdapter.NOT_APPLICABLE_VALUE,
-            paymentCondition: MiscScdlAdapter.normalizePaymentConditions(entity.paymentConditions),
-            conventionDate: entity.conventionDate ?? null,
+            paymentCondition: MiscScdlAdapter.normalizePaymentConditions(dbo.paymentConditions),
+            conventionDate: dbo.conventionDate ?? null,
             decisionDate: GenericAdapter.NOT_APPLICABLE_VALUE,
             depositDate: GenericAdapter.NOT_APPLICABLE_VALUE,
-            paymentPeriodDates: MiscScdlAdapter.getNormalizedPaymentDates(entity.paymentStartDate, dbo.paymentEndDate),
-            paymentConditionDesc: entity.paymentConditions ?? null, // potentially redundant but else info are missing
+            paymentPeriodDates: MiscScdlAdapter.getNormalizedPaymentDates(dbo.paymentStartDate, dbo.paymentEndDate),
+            paymentConditionDesc: dbo.paymentConditions ?? null, // potentially redundant but else info are missing
             joinKeyDesc: GenericAdapter.NOT_APPLICABLE_VALUE,
-            scheme: entity.aidSystem ?? null,
+            scheme: dbo.aidSystem ?? null,
             ej: GenericAdapter.NOT_APPLICABLE_VALUE,
-            budgetaryYear: entity.exercice,
-            allocatorId: entity.allocatorSiret,
+            budgetaryYear: dbo.exercice,
+            allocatorId: dbo.allocatorSiret,
             managingAuthorityId: null,
             confinancersId: GenericAdapter.NOT_APPLICABLE_VALUE,
-            beneficiaryEstablishmentId: entity.allocatorSiret,
+            beneficiaryEstablishmentId: dbo.allocatorSiret,
             joinKeyId: GenericAdapter.NOT_APPLICABLE_VALUE,
-            idRAE: entity.idRAE ?? null,
+            idRAE: dbo.idRAE ?? null,
             applicationId: GenericAdapter.NOT_APPLICABLE_VALUE,
             applicationProviderId: GenericAdapter.NOT_APPLICABLE_VALUE,
             instructiveDepartementId: GenericAdapter.NOT_APPLICABLE_VALUE,
-            uniqueId: `${entity.producerSlug}-${entity.exercice}-${dataHash}`,
+            uniqueId: `${dbo.producerSlug}-${dbo.exercice}-${dataHash}`,
             paymentId: GenericAdapter.NOT_APPLICABLE_VALUE,
-            grantedAmount: entity.amount, // TODO pourcentage subv ? I think not
+            grantedAmount: dbo.amount, // TODO pourcentage subv ? I think not
             requestedAmount: null,
-            totalAmount: entity.amount,
+            totalAmount: dbo.amount,
             nature: nature,
-            allocatorName: entity.allocatorName,
+            allocatorName: dbo.allocatorName,
             managingAuthorityName: GenericAdapter.NOT_APPLICABLE_VALUE,
             instructiveDepartmentName: GenericAdapter.NOT_APPLICABLE_VALUE,
             cofinancersNames: GenericAdapter.NOT_APPLICABLE_VALUE,
-            ueNotification: entity.UeNotification ?? null,
-            object: entity.object ?? null,
+            ueNotification: dbo.UeNotification ?? null,
+            object: dbo.object ?? null,
             pluriannual: GenericAdapter.NOT_APPLICABLE_VALUE,
-            subventionPercentage: entity.grantPercentage ?? null,
-            provider: `scdl-${entity.producerSlug}`,
-            decisionReference: entity.decisionReference ?? null,
+            subventionPercentage: dbo.grantPercentage ?? null,
+            provider: `scdl-${dbo.producerSlug}`,
+            decisionReference: dbo.decisionReference ?? null,
             subScheme: GenericAdapter.NOT_APPLICABLE_VALUE,
             statusLabel: ApplicationStatus.GRANTED,
             allocatorIdType: "siret",
@@ -141,7 +141,7 @@ export default class MiscScdlAdapter {
             cofinancersIdType: GenericAdapter.NOT_APPLICABLE_VALUE,
             instructiveDepartmentIdType: GenericAdapter.NOT_APPLICABLE_VALUE,
             beneficiaryEstablishmentIdType: "siret",
-            updateDate: lastUpdate,
+            updateDate: dbo.updateDate,
         };
     }
 }
