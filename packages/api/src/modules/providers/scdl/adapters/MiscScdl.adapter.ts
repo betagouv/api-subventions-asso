@@ -83,10 +83,10 @@ export default class MiscScdlAdapter {
         return null;
     }
 
-    private static getNormalizedPaymentDates(entity: MiscScdlGrantProducerEntity): Date[] {
+    private static getNormalizedPaymentDates(paymentStartDate?: Date, paymentEndDate?: Date): Date[] {
         const res: Date[] = [];
-        if (entity?.paymentStartDate) res.push(entity.paymentStartDate);
-        if (entity?.paymentEndDate) res.push(entity.paymentEndDate);
+        if (paymentStartDate) res.push(paymentStartDate);
+        if (paymentEndDate) res.push(paymentEndDate);
         return res;
     }
 
@@ -103,7 +103,7 @@ export default class MiscScdlAdapter {
             conventionDate: entity.conventionDate ?? null,
             decisionDate: GenericAdapter.NOT_APPLICABLE_VALUE,
             depositDate: GenericAdapter.NOT_APPLICABLE_VALUE,
-            paymentPeriodDates: MiscScdlAdapter.getNormalizedPaymentDates(entity),
+            paymentPeriodDates: MiscScdlAdapter.getNormalizedPaymentDates(entity.paymentStartDate, dbo.paymentEndDate),
             paymentConditionDesc: entity.paymentConditions ?? null, // potentially redundant but else info are missing
             joinKeyDesc: GenericAdapter.NOT_APPLICABLE_VALUE,
             scheme: entity.aidSystem ?? null,
