@@ -149,7 +149,8 @@ export default class ScdlCli {
         let duplicates: MiscScdlGrantEntity[] = [];
 
         try {
-            await scdlService.createManyGrants(storables, producerSlug);
+            const dbos = await scdlService.buildDbosFromStorables(storables, producerSlug);
+            await scdlService.saveDbos(dbos);
         } catch (e) {
             if (!(e instanceof DuplicateIndexError)) throw e;
             duplicates = (e as DuplicateIndexError<MiscScdlGrantEntity[]>).duplicates;

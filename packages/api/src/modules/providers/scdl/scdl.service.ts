@@ -33,7 +33,7 @@ export class ScdlService {
         return getMD5(`${producerSlug}-${JSON.stringify(grant.__data__)}`);
     }
 
-    async createManyGrants(grants: ScdlStorableGrant[], producerSlug: string) {
+    async buildDbosFromStorables(grants: ScdlStorableGrant[], producerSlug: string) {
         if (!producerSlug || typeof producerSlug !== "string")
             throw new Error("Could not save SCDL grants without a producer slug");
 
@@ -44,7 +44,7 @@ export class ScdlService {
         // should not happen but who knows
         if (!producer.name) throw new Error("Could not retrieve producer name");
 
-        const dboArray = grants.map(grant => {
+        return grants.map(grant => {
             return {
                 ...grant,
                 producerSlug: producer.slug,
@@ -53,8 +53,10 @@ export class ScdlService {
                 _id: this._buildGrantUniqueId(grant, producerSlug),
             } as ScdlGrantDbo;
         });
+    }
 
-        return miscScdlGrantPort.createMany(dboArray);
+    async saveDbos(dbos: ScdlGrantDbo[]) {
+        await miscScdlGrantPort.createMany(dbos);
     }
 
     updateProducer(slug, setObject) {
