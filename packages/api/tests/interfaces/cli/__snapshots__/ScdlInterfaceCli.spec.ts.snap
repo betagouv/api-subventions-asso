@@ -58,6 +58,7 @@ exports[`SCDL CLI parsing parse persists all data on first producer's importaton
   "paymentNature": "aide en numéraire",
   "paymentStartDate": 2019-05-20T00:00:00.000Z,
   "producerSlug": "bretagne",
+  "updateDate": Any<Date>,
 }
 `;
 
@@ -102,6 +103,7 @@ exports[`SCDL CLI parsing parse persists new data when data from imported exerci
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2019-05-20T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "UeNotification": false,
@@ -142,6 +144,7 @@ exports[`SCDL CLI parsing parse persists new data when data from imported exerci
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2019-02-15T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "UeNotification": false,
@@ -182,6 +185,7 @@ exports[`SCDL CLI parsing parse persists new data when data from imported exerci
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2019-05-30T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "UeNotification": false,
@@ -222,6 +226,7 @@ exports[`SCDL CLI parsing parse persists new data when data from imported exerci
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2019-10-25T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "UeNotification": false,
@@ -262,6 +267,7 @@ exports[`SCDL CLI parsing parse persists new data when data from imported exerci
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2019-10-25T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "UeNotification": false,
@@ -302,6 +308,7 @@ exports[`SCDL CLI parsing parse persists new data when data from imported exerci
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2019-10-25T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "UeNotification": false,
@@ -342,6 +349,7 @@ exports[`SCDL CLI parsing parse persists new data when data from imported exerci
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2019-10-25T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "UeNotification": false,
@@ -382,6 +390,7 @@ exports[`SCDL CLI parsing parse persists new data when data from imported exerci
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2019-10-25T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "UeNotification": false,
@@ -422,6 +431,7 @@ exports[`SCDL CLI parsing parse persists new data when data from imported exerci
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2019-10-25T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
 ]
 `;
@@ -479,6 +489,7 @@ exports[`SCDL CLI parsing parse should add grants with exercise from conventionD
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2019-05-20T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "UeNotification": false,
@@ -519,6 +530,7 @@ exports[`SCDL CLI parsing parse should add grants with exercise from conventionD
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2019-02-15T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "UeNotification": false,
@@ -559,6 +571,7 @@ exports[`SCDL CLI parsing parse should add grants with exercise from conventionD
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2019-05-30T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "UeNotification": false,
@@ -599,6 +612,7 @@ exports[`SCDL CLI parsing parse should add grants with exercise from conventionD
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2019-10-25T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
 ]
 `;
@@ -645,6 +659,7 @@ exports[`SCDL CLI parsing parse should add grants with exercise from its own col
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2019-05-20T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "UeNotification": false,
@@ -686,6 +701,7 @@ exports[`SCDL CLI parsing parse should add grants with exercise from its own col
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2019-02-15T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "UeNotification": false,
@@ -727,6 +743,7 @@ exports[`SCDL CLI parsing parse should add grants with exercise from its own col
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2019-05-30T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "UeNotification": false,
@@ -768,6 +785,7 @@ exports[`SCDL CLI parsing parse should add grants with exercise from its own col
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2019-10-25T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
 ]
 `;
@@ -809,6 +827,7 @@ exports[`SCDL CLI parsing parseXls persists all data on first producer's importa
   "paymentNature": "aide en numéraire",
   "paymentStartDate": 2024-12-27T00:00:00.000Z,
   "producerSlug": "bretagne",
+  "updateDate": Any<Date>,
 }
 `;
 
@@ -850,6 +869,7 @@ exports[`SCDL CLI parsing parseXls persists new data when data from imported exe
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2024-12-27T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -887,6 +907,7 @@ exports[`SCDL CLI parsing parseXls persists new data when data from imported exe
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2024-12-27T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -924,6 +945,7 @@ exports[`SCDL CLI parsing parseXls persists new data when data from imported exe
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2024-12-27T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -961,6 +983,7 @@ exports[`SCDL CLI parsing parseXls persists new data when data from imported exe
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2024-12-27T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -998,6 +1021,7 @@ exports[`SCDL CLI parsing parseXls persists new data when data from imported exe
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2025-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1035,6 +1059,7 @@ exports[`SCDL CLI parsing parseXls persists new data when data from imported exe
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1072,6 +1097,7 @@ exports[`SCDL CLI parsing parseXls persists new data when data from imported exe
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1109,6 +1135,7 @@ exports[`SCDL CLI parsing parseXls persists new data when data from imported exe
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2025-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1146,6 +1173,7 @@ exports[`SCDL CLI parsing parseXls persists new data when data from imported exe
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1183,6 +1211,7 @@ exports[`SCDL CLI parsing parseXls persists new data when data from imported exe
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1220,6 +1249,7 @@ exports[`SCDL CLI parsing parseXls persists new data when data from imported exe
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1257,6 +1287,7 @@ exports[`SCDL CLI parsing parseXls persists new data when data from imported exe
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1294,6 +1325,7 @@ exports[`SCDL CLI parsing parseXls persists new data when data from imported exe
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1331,6 +1363,7 @@ exports[`SCDL CLI parsing parseXls persists new data when data from imported exe
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1368,6 +1401,7 @@ exports[`SCDL CLI parsing parseXls persists new data when data from imported exe
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
 ]
 `;
@@ -1422,6 +1456,7 @@ exports[`SCDL CLI parsing parseXls should add grants with exercise from conventi
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2024-12-27T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1459,6 +1494,7 @@ exports[`SCDL CLI parsing parseXls should add grants with exercise from conventi
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2024-12-27T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1496,6 +1532,7 @@ exports[`SCDL CLI parsing parseXls should add grants with exercise from conventi
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2024-12-27T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1533,6 +1570,7 @@ exports[`SCDL CLI parsing parseXls should add grants with exercise from conventi
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2024-12-27T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1570,6 +1608,7 @@ exports[`SCDL CLI parsing parseXls should add grants with exercise from conventi
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2025-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1607,6 +1646,7 @@ exports[`SCDL CLI parsing parseXls should add grants with exercise from conventi
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1644,6 +1684,7 @@ exports[`SCDL CLI parsing parseXls should add grants with exercise from conventi
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1681,6 +1722,7 @@ exports[`SCDL CLI parsing parseXls should add grants with exercise from conventi
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2025-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1718,6 +1760,7 @@ exports[`SCDL CLI parsing parseXls should add grants with exercise from conventi
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1755,6 +1798,7 @@ exports[`SCDL CLI parsing parseXls should add grants with exercise from conventi
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
 ]
 `;
@@ -1798,6 +1842,7 @@ exports[`SCDL CLI parsing parseXls should add grants with exercise from its own 
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2024-12-27T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1836,6 +1881,7 @@ exports[`SCDL CLI parsing parseXls should add grants with exercise from its own 
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2024-12-27T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1874,6 +1920,7 @@ exports[`SCDL CLI parsing parseXls should add grants with exercise from its own 
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2024-12-27T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1912,6 +1959,7 @@ exports[`SCDL CLI parsing parseXls should add grants with exercise from its own 
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2024-12-27T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1950,6 +1998,7 @@ exports[`SCDL CLI parsing parseXls should add grants with exercise from its own 
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2025-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -1988,6 +2037,7 @@ exports[`SCDL CLI parsing parseXls should add grants with exercise from its own 
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -2026,6 +2076,7 @@ exports[`SCDL CLI parsing parseXls should add grants with exercise from its own 
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -2064,6 +2115,7 @@ exports[`SCDL CLI parsing parseXls should add grants with exercise from its own 
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2025-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -2102,6 +2154,7 @@ exports[`SCDL CLI parsing parseXls should add grants with exercise from its own 
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
   {
     "__data__": {
@@ -2140,6 +2193,7 @@ exports[`SCDL CLI parsing parseXls should add grants with exercise from its own 
     "paymentNature": "aide en numéraire",
     "paymentStartDate": 2026-12-16T00:00:00.000Z,
     "producerSlug": "bretagne",
+    "updateDate": Any<Date>,
   },
 ]
 `;
