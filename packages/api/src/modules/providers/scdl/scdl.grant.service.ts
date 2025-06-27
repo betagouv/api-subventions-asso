@@ -11,10 +11,20 @@ import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
 import MiscScdlGrantProducerEntity from "./entities/MiscScdlGrantProducerEntity";
 import MiscScdlAdapter from "./adapters/MiscScdl.adapter";
 import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
+import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
+import * as console from "node:console";
+import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
+import applicationFlatService from "../../applicationFlat/applicationFlat.service";
+import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
+import { ReadableStream, TransformStream } from "node:stream/web";
 
-export class ScdlGrantService implements DemandesSubventionsProvider<MiscScdlGrantProducerEntity>, GrantProvider {
+export class ScdlGrantService
+    implements DemandesSubventionsProvider<MiscScdlGrantProducerEntity>, GrantProvider, ApplicationFlatProvider
+{
     isGrantProvider = true;
     isDemandesSubventionsProvider = true;
+    isApplicationFlatProvider = true;
+
     provider = {
         name: "Open Data SCDL",
         type: ProviderEnum.raw,
@@ -84,6 +94,25 @@ export class ScdlGrantService implements DemandesSubventionsProvider<MiscScdlGra
 
     rawToCommon(rawGrant: RawGrant<MiscScdlGrantEntity>) {
         return MiscScdlAdapter.toCommon(rawGrant.data);
+    }
+
+    saveDbosToApplicationFlat(dbos: ScdlGrantDbo[]) {
+        const readStream = this.dbosToApplicationFlatStream(dbos);
+        return this.saveFlatFromStream(readStream);
+    }
+
+    dbosToApplicationFlatStream(dbos: ScdlGrantDbo[]) {
+        const stream: ReadableStream = ReadableStream.from(dbos);
+        return stream.pipeThrough(
+            new TransformStream<ScdlGrantDbo, ApplicationFlatEntity>({
+                start() {},
+                transform: (dbo, controller) => controller.enqueue(MiscScdlAdapter.dboToApplicationFlat(dbo)),
+            }),
+        );
+    }
+
+    async saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>): Promise<void> {
+        await applicationFlatService.saveFromStream(stream);
     }
 }
 

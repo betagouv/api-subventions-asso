@@ -8,6 +8,7 @@ import ScdlGrantParser from "./scdl.grant.parser";
 import { GenericAdapter } from "../../../shared/GenericAdapter";
 import { MixedParsedError, ParsedErrorDuplicate, ParsedErrorFormat } from "./@types/Validation";
 import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
+import applicationFlatPort from "../../../dataProviders/db/applicationFlat/applicationFlat.port";
 
 export class ScdlService {
     producerNames: string[] = [];
@@ -138,32 +139,38 @@ export class ScdlService {
      * We don't have a unique id for the SCDL grant format, so we must delete all grants (for a given producer - and exercise : see validateAndGetLastExercise) before reimporting new - aggregated - data
      *
      * @param producerSlug Producer slug
-     * @param documents List of ScdlGrantDbo to delete from the collection
+     * @param exercises list of exercises that will be saved and replaces
      */
     async cleanExercises(producerSlug: string, exercises: number[]) {
         console.log("Creating backup for producer's data before importation");
+        const applicationFlatProvider = `scdl-${producerSlug}`;
         // backup producer data in case of bulk delete failure
         await miscScdlGrantPort.createBackupCollection(producerSlug);
+        await applicationFlatPort.createBackupByProvider(applicationFlatProvider);
 
         try {
             console.log("Deleting previously imported exercise data");
+            await applicationFlatPort.bulkFindDeleteByExercises(applicationFlatProvider, exercises);
             await miscScdlGrantPort.bulkFindDeleteByExercices(producerSlug, exercises);
         } catch (e) {
             console.log(`SCDL importation failed: ${(e as Error).message}`);
             console.log("Reimporting entities that might have been deleted during the importation process");
             // merge the backup collection back to the main collection
             await miscScdlGrantPort.applyBackupCollection(producerSlug);
+            await applicationFlatPort.applyBackupCollection(applicationFlatProvider);
         }
     }
 
     async dropBackup() {
         console.log("Droping backup collection");
-        return miscScdlGrantPort.dropBackupCollection();
+        await miscScdlGrantPort.dropBackupCollection();
+        await applicationFlatPort.dropBackupCollection();
     }
 
     async restoreBackup(producerSlug: string) {
         console.log(`Restoring data from backup (for the producer " ${producerSlug})"`);
-        return miscScdlGrantPort.applyBackupCollection(producerSlug);
+        await miscScdlGrantPort.applyBackupCollection(producerSlug);
+        await applicationFlatPort.applyBackupCollection(`scdl-${producerSlug}`);
     }
 }
 

@@ -14,6 +14,7 @@ import {
 import { DEV } from "../../configurations/env.conf";
 import dataLogService from "../../modules/data-log/dataLog.service";
 import { validateDate } from "../../shared/helpers/CliHelper";
+import scdlGrantService from "../../modules/providers/scdl/scdl.grant.service";
 
 export default class ScdlCli {
     static cmdName = "scdl";
@@ -151,6 +152,7 @@ export default class ScdlCli {
         try {
             const dbos = await scdlService.buildDbosFromStorables(storables, producerSlug);
             await scdlService.saveDbos(dbos);
+            await scdlGrantService.saveDbosToApplicationFlat(dbos);
         } catch (e) {
             if (!(e instanceof DuplicateIndexError)) throw e;
             duplicates = (e as DuplicateIndexError<MiscScdlGrantEntity[]>).duplicates;
