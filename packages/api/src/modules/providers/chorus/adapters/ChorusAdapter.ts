@@ -89,20 +89,22 @@ export default class ChorusAdapter {
     }
 
     private static getEstablishmentValueObject(chorusLineDto: ChorusLineDto): EstablishmentIdType {
-        if (chorusLineDto["Code taxe 1"] === "#") {
+        const RIDET_TAHITIET_COLUMN_NAME = "No TVA 3 (COM-RIDET ou TAHITI)";
+        const SIRET_COLUMN_NAME = "Code taxe 1";
+        if (chorusLineDto[SIRET_COLUMN_NAME] === "#") {
             // special case spotted after handling ridet and tahiti in V0.67
-            // sometime chorus line doesn't any siret nor ridet or tahiti
-            if (chorusLineDto["No TVA 3 (COM-RIDET ou TAHITI)"] === "#") {
+            // sometime chorus line doesn't have any siret nor ridet or tahiti
+            if (chorusLineDto[RIDET_TAHITIET_COLUMN_NAME] === "#") {
                 throw new Error(
                     `Not able to retrieve an establishment identifier for chorus line with EJ ${chorusLineDto["N° EJ"]} for exercice ${chorusLineDto["Exercice comptable"]}`,
                 );
             }
-            if (Ridet.isRidet(chorusLineDto["No TVA 3 (COM-RIDET ou TAHITI)"])) {
-                return new Ridet(chorusLineDto["No TVA 3 (COM-RIDET ou TAHITI)"]);
+            if (Ridet.isRidet(chorusLineDto[RIDET_TAHITIET_COLUMN_NAME])) {
+                return new Ridet(chorusLineDto[RIDET_TAHITIET_COLUMN_NAME]);
             } else {
-                return new Tahitiet(chorusLineDto["No TVA 3 (COM-RIDET ou TAHITI)"]);
+                return new Tahitiet(chorusLineDto[RIDET_TAHITIET_COLUMN_NAME]);
             }
-        } else return new Siret(chorusLineDto["Code taxe 1"]);
+        } else return new Siret(chorusLineDto[SIRET_COLUMN_NAME]);
     }
 
     // TODO: add to ValueObject a getCompanyId that would abstract the notion of siren/rid/tahiti ?
