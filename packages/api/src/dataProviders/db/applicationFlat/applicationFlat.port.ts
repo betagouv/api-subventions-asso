@@ -32,12 +32,12 @@ export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id
 
     public upsertMany(entities: ApplicationFlatEntity[]) {
         if (!entities.length) return;
-        const bulk = entities.map(e => {
-            const dbo = ApplicationFlatAdapter.entityToDbo(e);
+        const bulk = entities.map(entity => {
+            const dbo = ApplicationFlatAdapter.entityToDbo(entity);
             return {
                 updateOne: {
                     filter: { idUnique: dbo.idUnique },
-                    update: { $set: entities },
+                    update: { $set: dbo },
                     upsert: true,
                 },
             };
@@ -130,6 +130,13 @@ export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id
             .toArray();
         await this.createIndexes(); // backup seems to only copy the data, not the indexes
         await this.dropBackupCollection();
+    }
+
+    async findAll() {
+        return this.collection
+            .find({})
+            .map(dbo => ApplicationFlatAdapter.dboToEntity(dbo))
+            .toArray();
     }
 }
 
