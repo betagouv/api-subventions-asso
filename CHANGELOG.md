@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.70.4](https://github.com/betagouv/api-subventions-asso/compare/v0.70.3...v0.70.4) (2025-06-30)
+
+### Bug Fixes
+
+- **api:** [#3551](https://github.com/betagouv/api-subventions-asso/issues/3551) disable broken scdl backup ([#3552](https://github.com/betagouv/api-subventions-asso/issues/3552)) ([f16f390](https://github.com/betagouv/api-subventions-asso/commit/f16f390f26a5d30cf3840001f2a600b567e3557f))
+- **api:** [#3553](https://github.com/betagouv/api-subventions-asso/issues/3553) fix payment duplicate collection name and disable payment flat for fonjep ([#3555](https://github.com/betagouv/api-subventions-asso/issues/3555)) ([668b890](https://github.com/betagouv/api-subventions-asso/commit/668b8902069dde03af856c2bf1fd6e658d179801))
+
 ## [0.70.3](https://github.com/betagouv/api-subventions-asso/compare/v0.70.2...v0.70.3) (2025-06-25)
 
 ### Bug Fixes
