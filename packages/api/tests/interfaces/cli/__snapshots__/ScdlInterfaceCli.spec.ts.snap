@@ -18,7 +18,7 @@ exports[`SCDL CLI parsing edge cases should add grants with exercise from its ow
 ]
 `;
 
-exports[`SCDL CLI parsing parse persists all data on first producer's importaton 1`] = `
+exports[`SCDL CLI parsing parse persists all data on first producer's importation 1`] = `
 {
   "UeNotification": false,
   "__data__": {
@@ -790,7 +790,7 @@ exports[`SCDL CLI parsing parse should add grants with exercise from its own col
 ]
 `;
 
-exports[`SCDL CLI parsing parseXls persists all data on first producer's importaton 1`] = `
+exports[`SCDL CLI parsing parseXls persists all data on first producer's importation 1`] = `
 {
   "__data__": {
     "% du mt de la subvention attribuée au bénéficiaire": 1,

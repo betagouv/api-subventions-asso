@@ -99,7 +99,7 @@ describe("SCDL CLI", () => {
                 ).toMatchSnapshot();
             });
 
-            it("persists all data on first producer's importaton", async () => {
+            it("persists all data on first producer's importation", async () => {
                 await test("SCDL", MiscScdlProducer.slug, FIRST_IMPORT_DATE);
                 const actual = await miscScdlGrantPort.findAll();
                 expect(actual?.[0]).toMatchSnapshot({ updateDate: expect.any(Date) });
