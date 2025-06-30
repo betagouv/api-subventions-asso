@@ -72,14 +72,15 @@ export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
      * Apply backup collection created in createBackupCollection
      * @param slug Producer slug
      */
-    public async applyBackupCollection(slug: string) {
-        await this.collection.deleteMany({ producerSlug: slug });
-        await this.db
-            .collection(this.backupCollectionName)
-            .aggregate([{ $out: this.collection }])
-            .toArray();
-        await this.createIndexes(); // backup seems to only copy the data, not the indexes
-        await this.dropBackupCollection();
+    public async applyBackupCollection(_slug: string) {
+        throw new Error("backup is disabled, please clean data manually for now");
+        // await this.collection.deleteMany({ producerSlug: slug });
+        // await this.db
+        //     .collection(this.backupCollectionName)
+        //     .aggregate([{ $out: this.collection }])
+        //     .toArray();
+        // await this.createIndexes(); // backup seems to only copy the data, not the indexes
+        // await this.dropBackupCollection();
     }
 
     async createIndexes() {
