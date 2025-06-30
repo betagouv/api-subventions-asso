@@ -4,7 +4,7 @@ import FonjepPaymentEntity from "../../../../modules/providers/fonjep/entities/F
 import { FonjepCorePort } from "./fonjep.core.port.old";
 
 export class FonjepPaymentPort extends FonjepCorePort<FonjepPaymentEntity> {
-    readonly collectionName = "fonjepVersement";
+    readonly collectionName = "fonjepPayment";
 
     readonly joinIndexes = {
         fonjepSubvention: "indexedInformations.joinKey",
