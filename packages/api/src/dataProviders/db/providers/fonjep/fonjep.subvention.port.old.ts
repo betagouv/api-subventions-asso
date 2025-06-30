@@ -8,7 +8,7 @@ export class FonjepSubventionPort extends FonjepCorePort<FonjepSubventionEntity>
     readonly collectionName = "fonjepSubvention";
 
     readonly joinIndexes = {
-        fonjepVersement: "indexedInformations.joinKey",
+        fonjepPayment: "indexedInformations.joinKey",
     };
 
     async createIndexes() {

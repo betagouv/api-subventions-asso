@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.70.5](https://github.com/betagouv/api-subventions-asso/compare/v0.70.4...v0.70.5) (2025-06-30)
+
+### Bug Fixes
+
+- **api:** fix fonjep joiner after renaming payment collection ([ad9f51f](https://github.com/betagouv/api-subventions-asso/commit/ad9f51f6bdcdb2cbc742c04904a693a33bf015e3))
+
 ## [0.70.4](https://github.com/betagouv/api-subventions-asso/compare/v0.70.3...v0.70.4) (2025-06-30)
 
 ### Bug Fixes
