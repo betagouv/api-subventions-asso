@@ -75,6 +75,7 @@ exports[`ScdlGrantParser convertValidateData saves cleaned up optional fields  1
       "paymentEndDate": 2019-05-20T00:00:00.000Z,
       "paymentStartDate": 2019-05-20T00:00:00.000Z,
     },
+    "updateDate": 2025-01-16T00:00:00.000Z,
     "value": "clean",
   },
   {
@@ -96,6 +97,7 @@ exports[`ScdlGrantParser convertValidateData saves cleaned up optional fields  1
       "paymentEndDate": 2022-02-14T00:00:00.000Z,
       "paymentStartDate": 2019-02-15T00:00:00.000Z,
     },
+    "updateDate": 2025-01-16T00:00:00.000Z,
     "value": "clean",
   },
   {
@@ -117,6 +119,7 @@ exports[`ScdlGrantParser convertValidateData saves cleaned up optional fields  1
       "paymentEndDate": 2019-05-30T00:00:00.000Z,
       "paymentStartDate": 2019-05-30T00:00:00.000Z,
     },
+    "updateDate": 2025-01-16T00:00:00.000Z,
     "value": "clean",
   },
   {
@@ -138,6 +141,7 @@ exports[`ScdlGrantParser convertValidateData saves cleaned up optional fields  1
       "paymentEndDate": 2019-10-25T00:00:00.000Z,
       "paymentStartDate": 2019-10-25T00:00:00.000Z,
     },
+    "updateDate": 2025-01-16T00:00:00.000Z,
     "value": "clean",
   },
 ]
