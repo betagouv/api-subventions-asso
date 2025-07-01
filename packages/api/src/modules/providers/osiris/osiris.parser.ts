@@ -18,7 +18,8 @@ export default class OsirisParser {
                 row,
                 OsirisRequestEntity.defaultMainCategory,
             ) as DefaultObject<DefaultObject<string | number>>;
-            data.Dossier["Exercice Budgetaire"] = year;
+
+            data.Dossier["Exercice Budgetaire"] = year; // why do we overwrite this ?
 
             const indexedInformations = GenericParser.indexDataByPathObject<string | number>(
                 OsirisRequestEntity.indexedProviderInformationsPath,
@@ -29,7 +30,9 @@ export default class OsirisParser {
                 data,
             ) as unknown as ILegalInformations;
 
-            indexedInformations.exercise = year;
+            indexedInformations.exercise = year; // why do we overwrite this again when it is already handled in GenericParser.indexDataByPathObject ?
+            // after looking at Osiris Request XLS we never have any exercise year, only start and end
+            // annual exercise start/end should be hable to give us the year of file / exercise
 
             return new OsirisRequestEntity(legalInformations, indexedInformations, data);
         });
