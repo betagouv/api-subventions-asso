@@ -28,6 +28,7 @@ jest.mock("../../modules/data-log/dataLog.service");
 import scdlGrantService from "../../modules/providers/scdl/scdl.grant.service";
 import applicationFlatService from "../../modules/applicationFlat/applicationFlat.service";
 jest.mock("../../modules/providers/scdl/scdl.grant.service");
+jest.mock("../../modules/applicationFlat/applicationFlat.service");
 
 jest.mock("csv-stringify/sync");
 
@@ -311,6 +312,14 @@ describe("ScdlCli", () => {
     });
 
     describe("persistEntities", () => {
+        beforeAll(() => {
+            jest.mocked(scdlService.buildDbosFromStorables).mockResolvedValue(DBOS);
+        });
+
+        afterAll(() => {
+            jest.mocked(scdlService.buildDbosFromStorables).mockRestore();
+        });
+
         it("should call scdlService.buildDbosFromStorables()", async () => {
             // @ts-expect-error -- test private
             await cli.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
