@@ -84,7 +84,7 @@ export class ApplicationFlatService
      */
 
     async saveFromStream(readStream: ReadableStream<ApplicationFlatEntity>) {
-        const CHUNK_SIZE = 1000;
+        const CHUNK_SIZE = 10000;
         let buffer: ApplicationFlatEntity[] = [];
         let counter = 0;
         const writeStream = new WritableStream({
