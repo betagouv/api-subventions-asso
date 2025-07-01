@@ -115,6 +115,11 @@ export class ApplicationFlatService
         return applicationFlatPort.hasBeenInitialized();
     }
 
+    async containsDataFromProvider(provider: string | RegExp) {
+        const cursor = applicationFlatPort.cursorFind({ provider });
+        return cursor.hasNext();
+    }
+
     /**
      * Used to transform ApplicationFlat into old and soon to be depreciated DemandeSubvention which only works with siret
      *

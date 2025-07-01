@@ -15,6 +15,7 @@ import { DEV } from "../../configurations/env.conf";
 import dataLogService from "../../modules/data-log/dataLog.service";
 import { validateDate } from "../../shared/helpers/CliHelper";
 import scdlGrantService from "../../modules/providers/scdl/scdl.grant.service";
+import applicationFlatService from "../../modules/applicationFlat/applicationFlat.service";
 
 export default class ScdlCli {
     static cmdName = "scdl";
@@ -188,5 +189,16 @@ export default class ScdlCli {
             if (err) console.log("Can't write to file");
             else console.log("fields with errors exported in " + path.resolve(outputPath));
         }
+    }
+
+    async initApplicationFlat() {
+        if (await applicationFlatService.containsDataFromProvider(/^scdl-/))
+            return console.warn(
+                "DB already initialized, maybe you want to manually empty collection before running this command",
+            );
+        const ticTacInterval = setInterval(() => console.log("TIC"), 60000);
+        console.log("Create application flat entities from scdl collection");
+        await scdlGrantService.initApplicationFlat();
+        clearInterval(ticTacInterval);
     }
 }

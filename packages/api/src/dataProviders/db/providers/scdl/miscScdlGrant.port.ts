@@ -19,6 +19,10 @@ export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
         return this.collection.find({}).toArray();
     }
 
+    public findAllCursor() {
+        return this.collection.find({});
+    }
+
     // retrieves documents over a period of exercise
     public async findBySlugOnPeriod(slug: string, exercises: number[]): Promise<MiscScdlGrantEntity[]> {
         if (exercises.length == 1)

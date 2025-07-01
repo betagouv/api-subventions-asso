@@ -183,4 +183,13 @@ describe("SCDL CLI", () => {
             );
         });
     });
+
+    describe.only("initApplicationFlat", () => {
+        it("creates proper applicationFlat entities in collection", async () => {
+            await miscScdlGrantPort.createMany(SCDL_GRANT_DBOS);
+            await cli.initApplicationFlat();
+            const actual = await applicationFlatPort.findAll();
+            expect(actual).toMatchSnapshot();
+        });
+    });
 });

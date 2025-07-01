@@ -10,6 +10,62 @@ exports[`SCDL CLI addProducer() should create MiscScdlProducerEntity 1`] = `
 }
 `;
 
+exports[`SCDL CLI initApplicationFlat creates proper applicationFlat entities in collection 1`] = `
+[
+  {
+    "allocatorId": "99000000000001",
+    "allocatorIdType": "siret",
+    "allocatorName": "GRANTOR_1",
+    "applicationId": "N/A",
+    "applicationProviderId": "N/A",
+    "beneficiaryEstablishmentId": "99000000000001",
+    "beneficiaryEstablishmentIdType": "siret",
+    "budgetaryYear": 2019,
+    "cofinancersIdType": "N/A",
+    "cofinancersNames": "N/A",
+    "cofinancingRequested": "N/A",
+    "confinancersId": "N/A",
+    "conventionDate": 2019-01-20T23:00:00.000Z,
+    "decisionDate": "N/A",
+    "decisionReference": "SP 21/01/2019",
+    "depositDate": "N/A",
+    "ej": "N/A",
+    "grantedAmount": 60854,
+    "idRAE": "NULL",
+    "instructiveDepartementId": "N/A",
+    "instructiveDepartmentIdType": "N/A",
+    "instructiveDepartmentName": "N/A",
+    "joinKeyDesc": "N/A",
+    "joinKeyId": "N/A",
+    "managingAuthorityId": null,
+    "managingAuthorityIdType": "N/A",
+    "managingAuthorityName": "N/A",
+    "nature": "MONEY",
+    "object": "2019-15081 - INSTITUT DE SOUDURE",
+    "paymentCondition": "UNIQUE",
+    "paymentConditionDesc": "unique",
+    "paymentId": "N/A",
+    "paymentPeriodDates": [
+      2019-01-20T23:00:00.000Z,
+    ],
+    "pluriannual": "N/A",
+    "pluriannualYears": "N/A",
+    "provider": "scdl-producer-1",
+    "requestYear": "N/A",
+    "requestedAmount": null,
+    "scheme": null,
+    "statusLabel": "Accordé",
+    "subScheme": "N/A",
+    "subventionPercentage": 1,
+    "totalAmount": 60854,
+    "ueNotification": null,
+    "uniqueId": "producer-1-2019-producer-1-
+            {"nomattribuant":"GRANTOR_1","idattribuant":"99000000000001","annee":2019,"numero_complet_engagement":"2020-000375-0000","code_tranche":"12103O001T14","referencedecision":"SP 21/01/2019","dateconvention":"2019-01-21 00:00:00","objet":"2019-15081 - INSTITUT DE SOUDURE INDUSTRIE","nombeneficiaire":"INSTITUT DE SOUDURE","idbeneficiaire":"10000000000001","montant":60854,"nature":"aide en numéraire","conditionsversement":"unique","datesperiodeversement":"2019-01-21 00:00:00","idrae":"NULL","notificationue":"NULL","pourcentagesubvention":1}",
+    "updateDate": 2025-01-16T00:00:00.000Z,
+  },
+]
+`;
+
 exports[`SCDL CLI parsing edge cases should add grants with exercise from its own column 1`] = `
 [
   2023,

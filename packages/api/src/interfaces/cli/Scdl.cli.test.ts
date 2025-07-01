@@ -26,6 +26,7 @@ import MiscScdlGrantEntity from "../../modules/providers/scdl/entities/MiscScdlG
 import { ScdlGrantDbo } from "../../modules/providers/scdl/dbo/ScdlGrantDbo";
 jest.mock("../../modules/data-log/dataLog.service");
 import scdlGrantService from "../../modules/providers/scdl/scdl.grant.service";
+import applicationFlatService from "../../modules/applicationFlat/applicationFlat.service";
 jest.mock("../../modules/providers/scdl/scdl.grant.service");
 
 jest.mock("csv-stringify/sync");
@@ -413,6 +414,32 @@ describe("ScdlCli", () => {
             // @ts-expect-error -- test private method
             cli.exportErrors(ERRORS, FILE);
             expect(fs.writeFileSync).toHaveBeenCalledWith(OUTPUT_PATH, STR_CONTENT, { flag: "w", encoding: "utf-8" });
+        });
+    });
+
+    describe("initApplicationFlat", () => {
+        it("checks if there is already data", async () => {
+            await cli.initApplicationFlat();
+            expect(applicationFlatService.containsDataFromProvider).toHaveBeenCalledWith(/^scdl-/);
+        });
+
+        it("if there is no data, call service", async () => {
+            jest.mocked(applicationFlatService.containsDataFromProvider).mockResolvedValueOnce(false);
+            await cli.initApplicationFlat();
+            expect(scdlGrantService.initApplicationFlat).toHaveBeenCalled();
+        });
+
+        it("if there is data, do not call service", async () => {
+            jest.mocked(applicationFlatService.containsDataFromProvider).mockResolvedValueOnce(true);
+            await cli.initApplicationFlat();
+            expect(scdlGrantService.initApplicationFlat).not.toHaveBeenCalled();
+        });
+
+        it("if there is data, show warning", async () => {
+            const spyConsole = jest.spyOn(console, "warn");
+            jest.mocked(applicationFlatService.containsDataFromProvider).mockResolvedValueOnce(true);
+            await cli.initApplicationFlat();
+            expect(spyConsole).toHaveBeenCalled();
         });
     });
 });

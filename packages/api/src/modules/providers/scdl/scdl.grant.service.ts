@@ -17,6 +17,8 @@ import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
 import { ReadableStream, TransformStream } from "node:stream/web";
+import miscScdlGrantPort from "../../../dataProviders/db/providers/scdl/miscScdlGrant.port";
+import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
 
 export class ScdlGrantService
     implements DemandesSubventionsProvider<MiscScdlGrantProducerEntity>, GrantProvider, ApplicationFlatProvider
@@ -113,6 +115,14 @@ export class ScdlGrantService
 
     async saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>): Promise<void> {
         await applicationFlatService.saveFromStream(stream);
+    }
+
+    async initApplicationFlat() {
+        const cursor = miscScdlGrantPort.findAllCursor();
+        const stream: ReadableStream<ApplicationFlatEntity> = cursorToStream(cursor, dbo =>
+            MiscScdlAdapter.dboToApplicationFlat(dbo),
+        );
+        return this.saveFlatFromStream(stream);
     }
 }
 

@@ -6,10 +6,12 @@ import { ApplicationFlatEntity } from "../../entities/ApplicationFlatEntity";
 import ApplicationFlatAdapter from "./ApplicationFlatAdapter";
 import { DemandeSubvention } from "dto";
 import { RawApplication } from "../grant/@types/rawGrant";
+import { ReadableStream } from "node:stream/web";
 
 import Siret from "../../identifierObjects/Siret";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
+import { FindCursor } from "mongodb";
 
 jest.mock("../../dataProviders/db/applicationFlat/applicationFlat.port");
 jest.mock("./ApplicationFlatAdapter");
@@ -182,6 +184,32 @@ describe("ApplicationFlatService", () => {
         it("returns valueObject from entity", () => {
             const actual = applicationFlatService.getSiret(ENTITY);
             expect(actual).toMatchInlineSnapshot(`undefined`);
+        });
+    });
+
+    describe("containsDataFromProvider", () => {
+        const CURSOR = { hasNext: jest.fn() } as unknown as FindCursor;
+        const PROVIDER = "PROV";
+
+        beforeAll(() => {
+            jest.mocked(applicationFlatPort.cursorFind).mockReturnValue(CURSOR);
+        });
+
+        afterAll(() => {
+            jest.mocked(applicationFlatPort.cursorFind).mockRestore();
+        });
+
+        it("gets cursor", async () => {
+            await applicationFlatService.containsDataFromProvider(PROVIDER);
+            expect(applicationFlatPort.cursorFind({ provider: PROVIDER }));
+        });
+
+        it("returns response from cursor's hasNext", async () => {
+            const expected = "toto" as unknown as boolean;
+            jest.mocked(CURSOR.hasNext).mockResolvedValue(expected);
+            const actual = await applicationFlatService.containsDataFromProvider(PROVIDER);
+            expect(CURSOR.hasNext).toHaveBeenCalled();
+            expect(actual).toBe(expected);
         });
     });
 });

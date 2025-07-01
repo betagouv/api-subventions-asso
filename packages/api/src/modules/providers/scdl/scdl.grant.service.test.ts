@@ -12,6 +12,9 @@ import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
 import { ReadableStream } from "node:stream/web";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
+import miscScdlGrantPort from "../../../dataProviders/db/providers/scdl/miscScdlGrant.port";
+import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
+import { FindCursor } from "mongodb";
 
 jest.mock("../../../dataProviders/db/providers/scdl/miscScdl.joiner", () => ({
     findByRna: jest.fn(),
@@ -21,6 +24,8 @@ jest.mock("../../../dataProviders/db/providers/scdl/miscScdl.joiner", () => ({
 jest.mock("./adapters/MiscScdl.adapter");
 jest.mock("@sentry/node");
 jest.mock("../../applicationFlat/applicationFlat.service");
+jest.mock("../../applicationFlat/applicationFlat.helper");
+jest.mock("../../../dataProviders/db/providers/scdl/miscScdlGrant.port");
 
 describe("ScdlGrantService", () => {
     describe("getEntityByPromiseAndAdapt", () => {
@@ -198,6 +203,47 @@ describe("ScdlGrantService", () => {
             const STREAM = "toto" as unknown as ReadableStream<ApplicationFlatEntity>;
             scdlGrantService.saveFlatFromStream(STREAM);
             expect(applicationFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);
+        });
+    });
+
+    describe("initApplicationFlat", () => {
+        let spySaveFromStream: jest.SpyInstance;
+        const CURSOR = "cursor" as unknown as FindCursor;
+        const STREAM = "stream" as unknown as ReadableStream;
+
+        beforeAll(() => {
+            jest.mocked(miscScdlGrantPort.findAllCursor).mockReturnValue(CURSOR);
+            jest.mocked(cursorToStream).mockReturnValue(STREAM);
+            spySaveFromStream = jest.spyOn(scdlGrantService, "saveFlatFromStream").mockResolvedValue();
+        });
+
+        afterAll(() => {
+            jest.mocked(miscScdlGrantPort.findAllCursor).mockRestore();
+            jest.mocked(cursorToStream).mockRestore();
+            spySaveFromStream.mockRestore();
+        });
+
+        it("get full cursor", async () => {
+            await scdlGrantService.initApplicationFlat();
+            expect(miscScdlGrantPort.findAllCursor).toHaveBeenCalled();
+        });
+
+        it("calls helper to generate stream", async () => {
+            await scdlGrantService.initApplicationFlat();
+            expect(cursorToStream).toHaveBeenCalledWith(CURSOR, expect.any(Function));
+        });
+
+        it("calls helper to generate stream with proper adapter", async () => {
+            await scdlGrantService.initApplicationFlat();
+            const adapterToTest = jest.mocked(cursorToStream).mock.calls[0][1];
+            const DBO = "dbo" as unknown as ScdlGrantDbo;
+            adapterToTest(DBO);
+            expect(MiscScdlAdapter.dboToApplicationFlat).toHaveBeenCalledWith(DBO);
+        });
+
+        it("saves stream", async () => {
+            await scdlGrantService.initApplicationFlat();
+            expect(spySaveFromStream).toHaveBeenCalledWith(STREAM);
         });
     });
 });
