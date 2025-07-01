@@ -35,8 +35,8 @@ export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
                 .toArray();
     }
 
-    public async createMany(entities: ScdlGrantDbo[]) {
-        return this.collection.insertMany(entities, { ordered: false }).catch(error => {
+    public async createMany(dbos: ScdlGrantDbo[]) {
+        return this.collection.insertMany(dbos, { ordered: false }).catch(error => {
             if (isMongoDuplicateError(error)) {
                 throw buildDuplicateIndexError<MiscScdlGrantEntity[]>(error);
             }
