@@ -38,7 +38,7 @@ describe("FonjepCli", () => {
         it("should create versements", async () => {
             const controller = new FonjepCli();
             await controller.parse(path.resolve(__dirname, "./__fixtures__/fonjep.xlsx"), EXPORT_DATE);
-            const actual = await db.collection("fonjepVersement").countDocuments();
+            const actual = await db.collection("fonjepPayment").countDocuments();
             expect(actual).toMatchSnapshot();
         });
 

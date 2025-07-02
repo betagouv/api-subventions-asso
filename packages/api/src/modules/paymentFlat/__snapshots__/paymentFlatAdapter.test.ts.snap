@@ -58,7 +58,7 @@ exports[`PaymentFlatAdapter dboToEntity given dbo without nulls, should return a
   "operationDate": 2023-04-01T00:00:00.000Z,
   "programName": "Programme Exemple",
   "programNumber": 1,
-  "provider": "Fournisseur Exemple",
+  "provider": "chorus",
   "regionAttachementComptable": "Bretagne",
   "typeIdEntrepriseBeneficiaire": "siren",
   "typeIdEtablissementBeneficiaire": "siret",

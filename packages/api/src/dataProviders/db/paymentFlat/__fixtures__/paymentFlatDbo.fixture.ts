@@ -19,7 +19,7 @@ export const PAYMENT_FLAT_DBO: PaymentFlatDbo = {
     ministere: "Ministère Exemple",
     sigleMinistere: "ME",
     ej: "0001821732",
-    provider: "Fournisseur Exemple",
+    provider: "chorus", // keep chorus here as long as payment-flat is limited to chorus to disable fonjep. See #3553
     codeAction: "AC123",
     action: "Label d'action Exemple",
     codeActivite: "AC456",

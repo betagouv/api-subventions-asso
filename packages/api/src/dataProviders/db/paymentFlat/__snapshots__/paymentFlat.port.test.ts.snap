@@ -26,7 +26,7 @@ exports[`PaymentFlat Port buildUpsertOperation returns bulk operation 1`] = `
         "montant": 1000,
         "numeroProgramme": 1,
         "programme": "Programme Exemple",
-        "provider": "Fournisseur Exemple",
+        "provider": "chorus",
         "regionAttachementComptable": "Bretagne",
         "sigleMinistere": "ME",
         "typeIdEntrepriseBeneficiaire": "siren",
