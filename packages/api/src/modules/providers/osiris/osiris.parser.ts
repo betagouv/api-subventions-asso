@@ -19,7 +19,7 @@ export default class OsirisParser {
                 OsirisRequestEntity.defaultMainCategory,
             ) as DefaultObject<DefaultObject<string | number>>;
 
-            data.Dossier["Exercice Budgetaire"] = year; // why do we overwrite this ?
+            data.Dossier["Exercice Budgetaire"] = year; // create artificial column to match IOsirisRequestInformations
 
             const indexedInformations = GenericParser.indexDataByPathObject<string | number>(
                 OsirisRequestEntity.indexedProviderInformationsPath,
@@ -29,10 +29,6 @@ export default class OsirisParser {
                 OsirisRequestEntity.indexedLegalInformationsPath,
                 data,
             ) as unknown as ILegalInformations;
-
-            indexedInformations.exercise = year; // why do we overwrite this again when it is already handled in GenericParser.indexDataByPathObject ?
-            // after looking at Osiris Request XLS we never have any exercise year, only start and end
-            // annual exercise start/end should be hable to give us the year of file / exercise
 
             return new OsirisRequestEntity(legalInformations, indexedInformations, data);
         });
@@ -52,13 +48,13 @@ export default class OsirisParser {
                 OsirisActionEntity.defaultMainCategory,
             ) as DefaultObject<DefaultObject<string | number>>;
             const dossier = data["Dossier/action"] || data["Dossier"];
-            dossier["Exercice Budgetaire"] = year;
+
+            dossier["Exercice Budgetaire"] = year; // add artificial column to match IOsirisActionsInformations
 
             const indexedInformations = GenericParser.indexDataByPathObject(
                 OsirisActionEntity.indexedInformationsPath,
                 data,
             ) as unknown as IOsirisActionsInformations;
-            indexedInformations.exercise = year;
 
             return new OsirisActionEntity(indexedInformations, data);
         });
