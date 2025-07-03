@@ -226,10 +226,6 @@ export class FonjepService
         return this.toPaymentArray(requests);
     }
 
-    async getPaymentsByKey(codePoste: string) {
-        return this.toPaymentArray(await fonjepPaymentPort.findByCodePoste(codePoste));
-    }
-
     /**
      * |----------------------------|
      * |    Grant Part              |
