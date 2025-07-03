@@ -92,7 +92,6 @@ export default class MiscScdlAdapter {
 
     static dboToApplicationFlat(dbo: ScdlGrantDbo): ApplicationFlatEntity {
         const dataHash = dbo._id.toString();
-        const nature = MiscScdlAdapter.normalizePaymentNature(dbo.paymentNature);
 
         return {
             requestYear: GenericAdapter.NOT_APPLICABLE_VALUE,
@@ -123,7 +122,7 @@ export default class MiscScdlAdapter {
             grantedAmount: dbo.amount, // TODO pourcentage subv ? I think not
             requestedAmount: null,
             totalAmount: dbo.amount,
-            nature: nature,
+            nature: MiscScdlAdapter.normalizePaymentNature(dbo.paymentNature),
             allocatorName: dbo.allocatorName,
             managingAuthorityName: GenericAdapter.NOT_APPLICABLE_VALUE,
             instructiveDepartmentName: GenericAdapter.NOT_APPLICABLE_VALUE,

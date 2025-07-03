@@ -31,7 +31,7 @@ type MandatoryApplicationFlatEntity = {
     updateDate: Date;
 };
 
-type ApplicationFlatEntityToEnableNA = {
+type OptionalApplicationFlatEntity = {
     joinKeyId: string;
     joinKeyDesc: string;
     allocatorName: string;
@@ -70,4 +70,4 @@ type ApplicationFlatEntityToEnableNA = {
 };
 
 export type ApplicationFlatEntity = MandatoryApplicationFlatEntity &
-    OrDefault<ApplicationFlatEntityToEnableNA, NOT_APPLICABLE | null>;
+    OrDefault<OptionalApplicationFlatEntity, NOT_APPLICABLE | null>;

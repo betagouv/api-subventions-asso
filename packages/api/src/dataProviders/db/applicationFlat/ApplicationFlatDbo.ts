@@ -20,7 +20,7 @@ type MandatoryApplicationFlatDbo = {
     dateMiseAJour: Date;
 };
 
-type ApplicationFlatDboToEnableNA = {
+type OptionalApplicationFlatDbo = {
     _id: ObjectId;
     idJointure: string; // id permettant de faire une jointure avec une autre source de données
     descriptionIdJointure: string; // description de l'idJointure et de la jointure que l'idJointure permet d'effectuer
@@ -61,4 +61,4 @@ type ApplicationFlatDboToEnableNA = {
 };
 
 export type ApplicationFlatDbo = MandatoryApplicationFlatDbo &
-    OrDefault<ApplicationFlatDboToEnableNA, NOT_APPLICABLE | null>;
+    OrDefault<OptionalApplicationFlatDbo, NOT_APPLICABLE | null>;
