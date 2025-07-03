@@ -17,7 +17,7 @@ export default class OsirisRequestEntity extends RequestEntity {
         [key: string]: ParserPath | ParserInfo<string | number>;
     } = {
         osirisId: [dossier, "N° Dossier Osiris"],
-        exercise: { path: [dossier, "Exercice Budgetaire"], adapter: OsirisRequestEntity.adaptsToNb },
+        exercise: { path: [dossier, "Exercice Budgetaire"] },
         compteAssoId: [dossier, "N° Dossier Compte Asso"],
         ej: [dossier, "N° EJ"],
         amountAwarded: {

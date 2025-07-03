@@ -1,0 +1,197 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OsirisParser parseActions returns osiris request entity 1`] = `
+[
+  OsirisActionEntity {
+    "_id": undefined,
+    "data": {
+      "Dossier/action": {
+        "Exercice Budgetaire": 2022,
+        "Numero Action Osiris": "DD59-23-0123-1",
+        "N° Dossier Compte Asso": "23-001234",
+      },
+    },
+    "indexedInformations": {
+      "compteAssoId": "LE_COMPTE_ASSO_ID",
+      "description": "description de l'action",
+      "ej": "EJ00001",
+      "exercise": 2022,
+      "intitule": "intitulé de l'action",
+      "montants_versement_accorde": 150000,
+      "montants_versement_attribue": 150000,
+      "montants_versement_compensation": 0,
+      "montants_versement_demande": 170000,
+      "montants_versement_propose": 150000,
+      "montants_versement_realise": 120000,
+      "montants_versement_total": 150000,
+      "nature_aide": "aide en numéraire",
+      "osirisActionId": "OSIRIS_ACTION_ID",
+      "requestUniqueId": "OSIRIS_ACTION_ID-2022",
+      "siret": "10000000000001",
+      "uniqueId": "OSIRIS_ACTION_ID-2022",
+    },
+  },
+  OsirisActionEntity {
+    "_id": undefined,
+    "data": {
+      "Dossier/action": {
+        "Exercice Budgetaire": 2022,
+        "Numero Action Osiris": "DD59-24-0456-1",
+        "N° Dossier Compte Asso": "24-005678",
+      },
+    },
+    "indexedInformations": {
+      "compteAssoId": "LE_COMPTE_ASSO_ID",
+      "description": "description de l'action",
+      "ej": "EJ00001",
+      "exercise": 2022,
+      "intitule": "intitulé de l'action",
+      "montants_versement_accorde": 150000,
+      "montants_versement_attribue": 150000,
+      "montants_versement_compensation": 0,
+      "montants_versement_demande": 170000,
+      "montants_versement_propose": 150000,
+      "montants_versement_realise": 120000,
+      "montants_versement_total": 150000,
+      "nature_aide": "aide en numéraire",
+      "osirisActionId": "OSIRIS_ACTION_ID",
+      "requestUniqueId": "OSIRIS_ACTION_ID-2022",
+      "siret": "10000000000001",
+      "uniqueId": "OSIRIS_ACTION_ID-2022",
+    },
+  },
+  OsirisActionEntity {
+    "_id": undefined,
+    "data": {
+      "Dossier/action": {
+        "Exercice Budgetaire": 2022,
+        "Numero Action Osiris": "DD59-25-0789-1",
+        "N° Dossier Compte Asso": "25-009101",
+      },
+    },
+    "indexedInformations": {
+      "compteAssoId": "LE_COMPTE_ASSO_ID",
+      "description": "description de l'action",
+      "ej": "EJ00001",
+      "exercise": 2022,
+      "intitule": "intitulé de l'action",
+      "montants_versement_accorde": 150000,
+      "montants_versement_attribue": 150000,
+      "montants_versement_compensation": 0,
+      "montants_versement_demande": 170000,
+      "montants_versement_propose": 150000,
+      "montants_versement_realise": 120000,
+      "montants_versement_total": 150000,
+      "nature_aide": "aide en numéraire",
+      "osirisActionId": "OSIRIS_ACTION_ID",
+      "requestUniqueId": "OSIRIS_ACTION_ID-2022",
+      "siret": "10000000000001",
+      "uniqueId": "OSIRIS_ACTION_ID-2022",
+    },
+  },
+]
+`;
+
+exports[`OsirisParser parseRequests returns osiris request entity 1`] = `
+[
+  OsirisRequestEntity {
+    "_id": undefined,
+    "actions": undefined,
+    "data": {
+      "Dossier": {
+        "Exercice Budgetaire": 2022,
+        "N° Dossier Compte Asso": "23-001234",
+        "N° Dossier Osiris": "CR-AAAA-23-0001",
+      },
+    },
+    "legalInformations": {
+      "name": "DEFAULT_ASSOCIATION",
+      "rna": "W000000000",
+      "siret": "10000000000001",
+    },
+    "provider": "Osiris",
+    "providerInformations": {
+      "amountAwarded": 0,
+      "compteAssoId": "LE_COMPTE_ASSO_ID",
+      "dateCommission": 2022-01-01T00:00:00.000Z,
+      "ej": "EJ00001",
+      "etablissementCodePostal": "75000",
+      "etablissementVoie": "rue Waldeck-Rousseau",
+      "exercise": 2022,
+      "osirisId": "OSIRIS_ID",
+      "uniqueId": "OSIRIS_ID-2022",
+    },
+    "providerMatchingKeys": [
+      "osirisId",
+      "compteAssoId",
+      "ej",
+    ],
+  },
+  OsirisRequestEntity {
+    "_id": undefined,
+    "actions": undefined,
+    "data": {
+      "Dossier": {
+        "Exercice Budgetaire": 2022,
+        "N° Dossier Compte Asso": "24-005678",
+        "N° Dossier Osiris": "CR-AAAA-24-0002",
+      },
+    },
+    "legalInformations": {
+      "name": "DEFAULT_ASSOCIATION",
+      "rna": "W000000000",
+      "siret": "10000000000001",
+    },
+    "provider": "Osiris",
+    "providerInformations": {
+      "amountAwarded": 0,
+      "compteAssoId": "LE_COMPTE_ASSO_ID",
+      "dateCommission": 2022-01-01T00:00:00.000Z,
+      "ej": "EJ00001",
+      "etablissementCodePostal": "75000",
+      "etablissementVoie": "rue Waldeck-Rousseau",
+      "exercise": 2022,
+      "osirisId": "OSIRIS_ID",
+      "uniqueId": "OSIRIS_ID-2022",
+    },
+    "providerMatchingKeys": [
+      "osirisId",
+      "compteAssoId",
+      "ej",
+    ],
+  },
+  OsirisRequestEntity {
+    "_id": undefined,
+    "actions": undefined,
+    "data": {
+      "Dossier": {
+        "Exercice Budgetaire": 2022,
+        "N° Dossier Compte Asso": "25-009101",
+        "N° Dossier Osiris": "CR-AAAA-25-0003",
+      },
+    },
+    "legalInformations": {
+      "name": "DEFAULT_ASSOCIATION",
+      "rna": "W000000000",
+      "siret": "10000000000001",
+    },
+    "provider": "Osiris",
+    "providerInformations": {
+      "amountAwarded": 0,
+      "compteAssoId": "LE_COMPTE_ASSO_ID",
+      "dateCommission": 2022-01-01T00:00:00.000Z,
+      "ej": "EJ00001",
+      "etablissementCodePostal": "75000",
+      "etablissementVoie": "rue Waldeck-Rousseau",
+      "exercise": 2022,
+      "osirisId": "OSIRIS_ID",
+      "uniqueId": "OSIRIS_ID-2022",
+    },
+    "providerMatchingKeys": [
+      "osirisId",
+      "compteAssoId",
+      "ej",
+    ],
+  },
+]
+`;

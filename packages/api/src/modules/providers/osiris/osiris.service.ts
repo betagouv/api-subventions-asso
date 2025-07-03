@@ -1,10 +1,7 @@
-import { Association, DemandeSubvention, Etablissement } from "dto";
+import { DemandeSubvention } from "dto";
 import { BulkWriteResult } from "mongodb";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { isAssociationName, isCompteAssoId, isOsirisActionId, isOsirisRequestId } from "../../../shared/Validators";
-import AssociationsProvider from "../../associations/@types/AssociationsProvider";
-import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
-import ProviderRequestInterface from "../../search/@types/ProviderRequestInterface";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import ProviderCore from "../ProviderCore";
@@ -43,12 +40,7 @@ export class InvalidOsirisRequestError extends Error {
 
 export class OsirisService
     extends ProviderCore
-    implements
-        ProviderRequestInterface,
-        AssociationsProvider,
-        EtablissementProvider,
-        DemandesSubventionsProvider<OsirisRequestEntity>,
-        GrantProvider
+    implements DemandesSubventionsProvider<OsirisRequestEntity>, GrantProvider
 {
     constructor() {
         super({
@@ -58,17 +50,6 @@ export class OsirisService
                 "Osiris est le système d'information permettant la gestion des subventions déposées via le Compte Asso par les services instructeurs (instruction, décision, édition des documents, demandes de mise en paiement).",
             id: "osiris",
         });
-    }
-
-    public async addRequest(request: OsirisRequestEntity): Promise<{ state: string; result: OsirisRequestEntity }> {
-        const { rna, siret } = request.legalInformations;
-
-        if (rna) await rnaSirenService.insert(new Rna(rna), new Siret(siret).toSiren());
-        const res = await osirisRequestPort.upsertOne(request);
-        return {
-            state: res.upsertedCount ? "created" : "updated",
-            result: request,
-        };
     }
 
     public async bulkAddRequest(requests: OsirisRequestEntity[]): Promise<void | BulkWriteResult> {
@@ -148,14 +129,6 @@ export class OsirisService
         if (validation !== true) throw new InvalidOsirisRequestError(validation);
     }
 
-    public async addAction(action: OsirisActionEntity): Promise<{ state: string; result: OsirisActionEntity }> {
-        const res = await osirisActionPort.upsertOne(action);
-        return {
-            state: res.upsertedCount ? "created" : "updated",
-            result: action,
-        };
-    }
-
     public bulkAddActions(actions: OsirisActionEntity[]): Promise<void | BulkWriteResult> {
         return osirisActionPort.bulkUpsert(actions);
     }
@@ -207,55 +180,6 @@ export class OsirisService
             request.actions = await osirisActionPort.findByRequestUniqueId(request.providerInformations.uniqueId);
         }
         return requests;
-    }
-
-    /**
-     * |-------------------------|
-     * |    Associations Part    |
-     * |-------------------------|
-     */
-
-    isAssociationsProvider = true;
-
-    async getAssociations(identifier: AssociationIdentifier): Promise<Association[]> {
-        let requests: OsirisRequestEntity[] = [];
-
-        if (identifier.siren) {
-            requests.push(...(await this.findBySiren(identifier.siren)));
-        }
-
-        if (identifier.rna) {
-            requests = [...new Set([...requests, ...(await this.findByRna(identifier.rna))])];
-        }
-
-        const associations = await Promise.all(
-            requests.map(async r =>
-                OsirisRequestAdapter.toAssociation(
-                    r,
-                    (await osirisActionPort.findByRequestUniqueId(r.providerInformations.uniqueId)) || undefined,
-                ),
-            ),
-        );
-
-        return associations;
-    }
-
-    /**
-     * |-------------------------|
-     * |   Etablisesement Part   |
-     * |-------------------------|
-     */
-
-    isEtablissementProvider = true;
-
-    async getEstablishments(identifier: StructureIdentifier): Promise<Etablissement[]> {
-        let requests: OsirisRequestEntity[] = [];
-        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            requests = await this.findBySiret(identifier.siret);
-        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            requests = await this.findBySiren(identifier.siren);
-        }
-        return requests.map(request => OsirisRequestAdapter.toEtablissement(request));
     }
 
     /**

@@ -65,14 +65,6 @@ export class OsirisActionPort extends MongoPort<OsirisActionEntityDbo> {
         return bulk.length ? this.collection.bulkWrite(bulk, { ordered: false }) : Promise.resolve();
     }
 
-    public async findByUniqueId(uniqueId: string) {
-        const dbo = await this.collection.findOne({
-            "indexedInformations.uniqueId": uniqueId,
-        });
-        if (!dbo) return null;
-        return OsirisActionAdapter.toEntity(dbo);
-    }
-
     public cursorFind(query = {}) {
         return this.collection.find(query);
     }
