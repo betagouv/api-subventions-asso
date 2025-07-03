@@ -1,4 +1,4 @@
-import { isValidDate, shortISORegExp } from "../../../shared/helpers/DateHelper";
+import { getShortISODate, isValidDate, shortISORegExp } from "../../../shared/helpers/DateHelper";
 import { GenericParser } from "../../../shared/GenericParser";
 import { BeforeAdaptation } from "../../../@types";
 import { ScdlGrantSchema } from "./@types/ScdlGrantSchema";
@@ -124,16 +124,31 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
         path: [[...CONVENTION_DATE_PATHS]],
         adapter: dateAdapter,
     },
-    decisionReference: [
-        [
-            ...getMapperVariants("decisionReference"),
-            "Référence de la décision",
-            "reference Decision",
-            "Référence délibération",
-            "ReferenceDecision",
-            "Référence décision 1",
+    decisionReference: {
+        path: [
+            [
+                ...getMapperVariants("decisionReference"),
+                "Référence de la décision",
+                "reference Decision",
+                "Référence délibération",
+                "ReferenceDecision",
+                "Référence décision 1",
+            ],
         ],
-    ],
+        // difficult to test if number will be an excel date or a simple number as decisionReference format has no standard
+        // a limit has been set to 2018 to current year for excel date to avoid transforming real number in date
+        adapter: value => {
+            if (!value) return undefined;
+            // sometime convention date is a date in excel format (number type)
+            if (typeof value === "number") {
+                const date = GenericParser.ExcelDateToJSDate(value);
+                const year = date.getFullYear();
+                if (year >= 2018 && year <= new Date().getFullYear()) {
+                    return getShortISODate(date);
+                } else return value;
+            } else return value;
+        },
+    },
     associationName: [
         [
             ...getMapperVariants("associationName"),
