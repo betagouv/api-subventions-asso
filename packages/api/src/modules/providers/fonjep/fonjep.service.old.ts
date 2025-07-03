@@ -1,8 +1,7 @@
-import { DemandeSubvention, Etablissement, Payment } from "dto";
+import { DemandeSubvention, Payment } from "dto";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { isAssociationName, areDates, areNumbersValid, areStringsValid } from "../../../shared/Validators";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
-import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
 import PaymentProvider from "../../payments/@types/PaymentProvider";
 import { FullGrantProvider } from "../../grant/@types/FullGrantProvider";
 import { FullGrantData, RawApplication, RawFullGrant, RawGrant, RawPayment } from "../../grant/@types/rawGrant";
@@ -40,7 +39,6 @@ export class FonjepService
     extends ProviderCore
     implements
         DemandesSubventionsProvider<FonjepSubventionEntity>,
-        EtablissementProvider,
         PaymentProvider<FonjepPaymentEntity>,
         FullGrantProvider<{ application: FonjepSubventionEntity; payments: FonjepPaymentEntity[] }>
 {
@@ -174,24 +172,6 @@ export class FonjepService
         }
 
         return entities.map(e => FonjepEntityAdapter.toDemandeSubvention(e));
-    }
-
-    /**
-     * |----------------------|
-     * |  Etablissement Part  |
-     * |----------------------|
-     */
-
-    isEtablissementProvider = true;
-
-    async getEstablishments(identifier: StructureIdentifier): Promise<Etablissement[]> {
-        let entities: FonjepSubventionEntity[] = [];
-        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            entities = await fonjepSubventionPort.findBySiret(identifier.siret);
-        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            entities = await fonjepSubventionPort.findBySiren(identifier.siren);
-        }
-        return entities.map(entity => FonjepEntityAdapter.toEtablissement(entity));
     }
 
     /**
