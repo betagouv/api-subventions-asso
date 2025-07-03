@@ -184,7 +184,7 @@ describe("SCDL CLI", () => {
         });
     });
 
-    describe.only("initApplicationFlat", () => {
+    describe("initApplicationFlat", () => {
         it("creates proper applicationFlat entities in collection", async () => {
             await miscScdlGrantPort.createMany(SCDL_GRANT_DBOS);
             await cli.initApplicationFlat();
