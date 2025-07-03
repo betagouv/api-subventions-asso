@@ -2131,7 +2131,7 @@ exports[`SCDL CLI parsing parseXls should add grants with exercise from its own 
     "associationSiret": "77625670900039",
     "conventionDate": 2023-01-15T00:00:00.000Z,
     "decisionReference": "CP-2022-12 / 03-110-7222",
-    "exercice": 2023,
+    "exercice": 2024,
     "grantPercentage": 1,
     "idRAE": "",
     "object": "FDC07 - Programme d'actions 2022 - 2(I) - Suivis faunistiques et amélioration de la sécurité à la chasse",
