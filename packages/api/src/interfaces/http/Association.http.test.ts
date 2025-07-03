@@ -1,5 +1,4 @@
 import { DemandeSubvention } from "dto";
-import Flux from "../../shared/Flux";
 import associationsService from "../../modules/associations/associations.service";
 import { AssociationHttp, isAssoIdentifierFromAssoMiddleware } from "./Association.http";
 import consumers from "stream/consumers";
@@ -35,24 +34,18 @@ describe("AssociationHttp", () => {
         const getSubventionsSpy = jest.spyOn(associationsService, "getSubventions");
         it("should call service with args", async () => {
             const subventions = [{}] as DemandeSubvention[];
-            const flux = new Flux(subventions);
-            flux.close();
             // @ts-expect-error: mock
-            getSubventionsSpy.mockReturnValueOnce(flux);
+            getSubventionsSpy.mockReturnValueOnce(subventions);
             await controller.getDemandeSubventions(IDENTIFIER.value, REQ);
             expect(getSubventionsSpy).toHaveBeenCalledWith(ASSOCIATION_ID);
         });
 
         it("should return a grant requests", async () => {
             const subventions = [{}] as DemandeSubvention[];
-            const flux = new Flux({ subventions });
-
             // @ts-expect-error: mock
-            getSubventionsSpy.mockImplementationOnce(() => flux);
+            getSubventionsSpy.mockReturnValueOnce(subventions);
             const expected = { subventions };
             const promise = controller.getDemandeSubventions(IDENTIFIER.value, REQ);
-            flux.close();
-
             expect(await promise).toEqual(expected);
         });
     });

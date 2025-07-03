@@ -92,11 +92,8 @@ export class EtablissementHttp extends Controller {
     ): Promise<GetSubventionsResponseDto> {
         const estabIdentifier = req.estabIdentifier;
 
-        const data = await etablissementService.getSubventions(estabIdentifier).toPromise();
-        const subventions = data
-            .map(subFlux => subFlux.subventions)
-            .flat()
-            .filter(subvention => subvention) as DemandeSubvention[];
+        const data = await etablissementService.getSubventions(estabIdentifier);
+        const subventions = data.flat().filter(subvention => subvention) as DemandeSubvention[];
         return { subventions };
     }
 

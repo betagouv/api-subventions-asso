@@ -77,14 +77,8 @@ export class AssociationHttp extends Controller {
         @Request() req,
     ): Promise<GetSubventionsResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
-        const flux = await associationService.getSubventions(associationIdentifiers);
-
-        if (!flux) return { subventions: null };
-        const result = await flux.toPromise();
-        const subventions = result
-            .map(fluxSub => fluxSub.subventions)
-            .filter(sub => sub)
-            .flat() as DemandeSubvention[];
+        const data = await associationService.getSubventions(associationIdentifiers);
+        const subventions = data.flat().filter(subvention => subvention) as DemandeSubvention[];
         return { subventions };
     }
 

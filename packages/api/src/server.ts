@@ -16,7 +16,6 @@ import { AssetsMiddleware } from "./middlewares/AssetsMiddleware";
 import { BodyParserJSON, BodyParserUrlEncoded } from "./middlewares/BodyParserMiddleware";
 import { docsMiddlewares } from "./middlewares/DocsMiddleware";
 import { errorHandler } from "./middlewares/ErrorMiddleware";
-import RegisterSSERoutes from "./sse";
 import StatsAssoVisitMiddleware, { StatsAssoVisitRoutesRegex } from "./middlewares/StatsAssoVisitMiddleware";
 import UserActivityMiddleware from "./middlewares/UserActivityMiddleware";
 import { IdentifiedRequest } from "./@types";
@@ -102,8 +101,6 @@ export async function startServer(port = "8080", isTest = false) {
     app.use(headersMiddleware);
 
     RegisterRoutes(app); // TSOA Part
-
-    RegisterSSERoutes(app); // SSE Part
 
     app.use("/docs", ...(await docsMiddlewares()));
 
