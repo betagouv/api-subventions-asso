@@ -24,6 +24,11 @@ describe("scdl mapper", () => {
             const actual = adapter("23450002300028.");
             expect(actual).toBe("23450002300028");
         });
+
+        it("returns siret without spaces if present", () => {
+            const actual = adapter("216 901 231 00011");
+            expect(actual).toBe("21690123100011");
+        });
     });
 
     describe("associationSiret adapter", () => {

@@ -64,8 +64,9 @@ const dateAdapter = (date: BeforeAdaptation | undefined | null): Date | undefine
     return GenericParser.ExcelDateToJSDate(Number(date));
 };
 
-const properZeroNbInSiret = value => {
+const cleanSiret = value => {
     let workingValue = value;
+    workingValue = workingValue.replaceAll(/\s/g, "");
     if (workingValue?.includes(".")) {
         return workingValue.split(".")[0]; // Fix to remove ".0" from IDs when the CSV comes from a cell formatted as a float
     }
@@ -98,7 +99,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Id attribuant",
             ],
         ],
-        adapter: v => properZeroNbInSiret(v?.toString()),
+        adapter: v => cleanSiret(v?.toString()),
     },
     exercice: {
         // for now if no exercise column we will use conventionDate as default
@@ -165,7 +166,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "SIRET du bénéficiaire",
             ],
         ],
-        adapter: v => properZeroNbInSiret(v?.toString()),
+        adapter: v => cleanSiret(v?.toString()),
     },
     associationRna: [[...getMapperVariants("associationRna")]],
     object: [
