@@ -1,7 +1,5 @@
-import Flux from "../../shared/Flux";
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import documentsService from "../documents/documents.service";
-import { SubventionsFlux } from "../subventions/@types/SubventionsFlux";
 import subventionsService from "../subventions/subventions.service";
 import paymentService from "../payments/payments.service";
 import etablissementService from "./etablissements.service";
@@ -11,6 +9,7 @@ import Siren from "../../identifierObjects/Siren";
 import Siret from "../../identifierObjects/Siret";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
+import { DemandeSubvention } from "dto";
 jest.mock("../grant/grant.service");
 
 type asyncPrivateMock<T> = jest.SpyInstance<Promise<T>>;
@@ -70,7 +69,8 @@ describe("EtablissementsService", () => {
         const getDemandesByEtablissementMock = jest.spyOn(subventionsService, "getDemandes");
 
         it("should call DemandeSubventionService.getByAssociation()", async () => {
-            getDemandesByEtablissementMock.mockImplementationOnce(() => new Flux<SubventionsFlux>());
+            // @ts-expect-error: mock resolved value
+            getDemandesByEtablissementMock.mockResolvedValueOnce([{} as DemandeSubvention]);
             etablissementService.getSubventions(ESTABLISHMENT_ID);
             expect(getDemandesByEtablissementMock).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });

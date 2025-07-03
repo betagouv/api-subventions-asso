@@ -9,5 +9,4 @@ export default interface PaymentProvider<T> extends GrantProvider {
     rawToPayment: (rawPayment: RawPayment<T>) => Payment;
 
     getPayments(identifier: StructureIdentifier): Promise<Payment[]>;
-    getPaymentsByKey(key: string): Promise<Payment[]>;
 }

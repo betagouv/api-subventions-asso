@@ -57,11 +57,6 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider<
         return this.toPaymentArray(requests);
     }
 
-    async getPaymentsByKey(ej: string) {
-        const requests = await paymentFlatPort.findByEJ(ej);
-        return this.toPaymentArray(requests);
-    }
-
     private toPaymentArray(documents: PaymentFlatEntity[]) {
         return documents.map(document => {
             return PaymentFlatAdapter.toPayment(document);
