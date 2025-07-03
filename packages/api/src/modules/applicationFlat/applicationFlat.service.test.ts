@@ -139,7 +139,8 @@ describe("ApplicationFlatService", () => {
             const buildStream = () =>
                 new ReadableStream({
                     start(controller) {
-                        for (const _i in Array(2001).fill(0)) {
+                        for (const _i in Array(20001).fill(0)) {
+                            // length depends on chunk size set in port
                             controller.enqueue(ENTITY);
                         }
                         controller.close();
