@@ -139,7 +139,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
         // a limit has been set to 2018 to current year for excel date to avoid transforming real number in date
         adapter: value => {
             if (!value) return undefined;
-            // sometime convention date is a date in excel format (number type)
+            // sometimes convention date is a date in excel format (number type)
             if (typeof value === "number") {
                 const date = GenericParser.ExcelDateToJSDate(value);
                 const year = date.getFullYear();
