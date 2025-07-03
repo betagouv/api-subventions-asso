@@ -5,7 +5,7 @@ export type ScdlGrantSchema = {
     allocatorSiret: ParserScheme;
     exercice: ParserScheme;
     conventionDate: ParserScheme;
-    decisionReference: ParserScheme;
+    decisionReference: ParserScheme<string | number>; // sometimes an excel date number
     associationName: ParserScheme;
     associationSiret: ParserScheme;
     associationRna: ParserScheme;
