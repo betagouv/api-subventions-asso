@@ -1,5 +1,4 @@
 import { DemandeSubvention, Etablissement } from "dto";
-import Flux from "../../shared/Flux";
 import etablissementsService from "../../modules/etablissements/etablissements.service";
 import { EtablissementHttp, isEtabIdentifierFromAssoMiddleware } from "./Etablissement.http";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
@@ -38,24 +37,18 @@ describe("EtablissementHttp", () => {
         const getSubventionsSpy = jest.spyOn(etablissementsService, "getSubventions");
         it("should call service with args", async () => {
             const subventions = [{}] as DemandeSubvention[];
-            const flux = new Flux({ subventions });
-            flux.close();
             // @ts-expect-error: mock
-            getSubventionsSpy.mockImplementationOnce(() => flux);
+            getSubventionsSpy.mockReturnValueOnce(subventions);
             await controller.getDemandeSubventions(SIRET.value, REQ);
             expect(getSubventionsSpy).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
 
         it("should return a grant requests", async () => {
             const subventions = [{}] as DemandeSubvention[];
-            const flux = new Flux({ subventions });
-
             // @ts-expect-error: mock
-            getSubventionsSpy.mockImplementationOnce(() => flux);
+            getSubventionsSpy.mockReturnValueOnce(subventions);
             const expected = { subventions };
             const promise = controller.getDemandeSubventions(SIRET.value, REQ);
-            flux.close();
-
             expect(await promise).toEqual(expected);
         });
     });

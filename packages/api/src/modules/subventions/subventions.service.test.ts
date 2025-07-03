@@ -30,27 +30,14 @@ describe("SubventionsService", () => {
 
     describe("getDemandes()", () => {
         it("should call getDemandeSubvention of providers", async () => {
-            await subventionsService.getDemandes(IDENTIFIER).toPromise();
+            await subventionsService.getDemandes(IDENTIFIER);
             expect(spy).toHaveBeenCalledWith(IDENTIFIER);
         });
 
-        it("should return a flux with subventions", async () => {
+        it("should return subventions", async () => {
             spy.mockResolvedValueOnce([{ id: "1" }]);
-            const result = await subventionsService.getDemandes(IDENTIFIER).toPromise();
-            expect(result).toEqual([
-                {
-                    __meta__: {
-                        totalProviders: 1,
-                    },
-                },
-                {
-                    __meta__: {
-                        totalProviders: 1,
-                        provider: "provider",
-                    },
-                    subventions: [{ id: "1" }],
-                },
-            ]);
+            const result = await subventionsService.getDemandes(IDENTIFIER);
+            expect(result).toEqual([[{ id: "1" }]]);
         });
     });
 });

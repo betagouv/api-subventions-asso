@@ -1,10 +1,9 @@
-import { NextFunction, Request } from "express";
-import SSEResponse from "../sse/@types/SSEResponse";
+import { NextFunction, Request, Response } from "express";
 
 export interface ControllerRouteDEF {
     method: "GET" | "POST" | "PUT" | "DELETE";
     route: string;
-    function: (req: Request, res: SSEResponse, next: NextFunction) => unknown;
+    function: (req: Request, res: Response, next: NextFunction) => unknown;
     securityRoles: string[];
 }
 
