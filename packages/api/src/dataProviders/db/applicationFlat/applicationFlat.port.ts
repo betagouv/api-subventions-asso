@@ -31,7 +31,7 @@ export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id
     }
 
     public upsertMany(entities: ApplicationFlatEntity[]) {
-        if (!entities.length) return;
+        if (!entities.length) return Promise.resolve();
         const bulk = entities.map(entity => {
             const dbo = ApplicationFlatAdapter.entityToDbo(entity);
             return {

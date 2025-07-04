@@ -12,10 +12,12 @@ import Siret from "../../identifierObjects/Siret";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import { FindCursor } from "mongodb";
+import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
 
 jest.mock("../../dataProviders/db/applicationFlat/applicationFlat.port");
 jest.mock("./ApplicationFlatAdapter");
 jest.mock("../../identifierObjects/Siret");
+jest.mock("../../shared/helpers/MongoHelper");
 
 describe("ApplicationFlatService", () => {
     const FLAT_ENTITY = {} as ApplicationFlatEntity;
@@ -135,22 +137,11 @@ describe("ApplicationFlatService", () => {
     });
 
     describe("applicationFlat part", () => {
-        describe("updateApplicationsFlatCollectionByProvider", () => {
-            const buildStream = () =>
-                new ReadableStream({
-                    start(controller) {
-                        for (const _i in Array(20001).fill(0)) {
-                            // length depends on chunk size set in port
-                            controller.enqueue(ENTITY);
-                        }
-                        controller.close();
-                    },
-                });
-            const ENTITY = {};
-
-            it("calls port's upsert as many times as necessary according to chunk size", async () => {
-                await applicationFlatService.saveFromStream(buildStream());
-                expect(applicationFlatPort.upsertMany).toHaveBeenCalledTimes(3); // mock sends 2001 so 2 chunks + 1 remainder
+        describe("saveFromStream", () => {
+            const STREAM = {} as unknown as ReadableStream;
+            it("calls mongo helper", async () => {
+                await applicationFlatService.saveFromStream(STREAM);
+                expect(insertStreamByBatch).toHaveBeenCalledWith(STREAM, applicationFlatPort.upsertMany, 10000);
             });
         });
     });
