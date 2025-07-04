@@ -25,6 +25,7 @@ import miscScdlProducersPort from "./db/providers/scdl/miscScdlProducers.port";
 import sireneStockUniteLegalePort from "./db/sirene/stockUniteLegale/sireneStockUniteLegale.port";
 import amountsVsProgramRegionPort from "./db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
 import dataLogPort from "./db/data-log/dataLog.port";
+import applicationFlatPort from "./db/applicationFlat/applicationFlat.port";
 
 export const portsWithIndexes = [
     userPort,
@@ -55,4 +56,5 @@ export const portsWithIndexes = [
     sireneStockUniteLegalePort,
     amountsVsProgramRegionPort,
     dataLogPort,
+    applicationFlatPort,
 ];

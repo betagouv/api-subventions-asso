@@ -151,6 +151,7 @@ export default class ScdlGrantParser {
         const storableChunk: ScdlStorableGrant[] = [];
         const invalidEntities: Partial<ScdlStorableGrant>[] = [];
         const errors: ParsedErrorFormat[] = [];
+        const updateDate = new Date();
 
         // TODO create errors for that (does not fit in the csv format)
         ScdlGrantParser.verifyMissingHeaders(SCDL_MAPPER, parsedChunk[0]);
@@ -170,7 +171,11 @@ export default class ScdlGrantParser {
             // validates and saves annotated errors
             const validation = this.isGrantValid(entity as ScdlStorableGrant, annotations);
             if (validation.valid) {
-                storableChunk.push({ ...this.cleanOptionalFields(entity as ScdlStorableGrant), __data__: parsedData });
+                storableChunk.push({
+                    ...this.cleanOptionalFields(entity as ScdlStorableGrant),
+                    __data__: parsedData,
+                    updateDate,
+                });
             } else {
                 invalidEntities.push(entity);
             }

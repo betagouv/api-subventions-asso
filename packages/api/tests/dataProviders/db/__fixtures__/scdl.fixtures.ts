@@ -67,5 +67,6 @@ export const SCDL_GRANT_DBOS: ScdlGrantDbo[] = [
         grantPercentage: 1,
         aidSystem: undefined,
         __data__: SCDL_RAW_DATAS[0],
+        updateDate: new Date("2025-01-16"),
     },
 ];

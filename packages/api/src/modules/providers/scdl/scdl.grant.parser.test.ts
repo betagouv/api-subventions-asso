@@ -389,6 +389,8 @@ describe("ScdlGrantParser", () => {
                 }));
             // @ts-expect-error -- protected method
             cleanupSpy = jest.spyOn(ScdlGrantParser, "cleanOptionalFields").mockImplementation(v => v);
+            const NOW = new Date("2025-01-16");
+            jest.useFakeTimers().setSystemTime(NOW);
         });
 
         afterAll(() => {
@@ -396,6 +398,7 @@ describe("ScdlGrantParser", () => {
             isValidSpy.mockRestore();
             cleanupSpy.mockRestore();
             indexAnnotateSpy.mockRestore();
+            jest.useRealTimers();
         });
 
         it("should return storableChunk", () => {
