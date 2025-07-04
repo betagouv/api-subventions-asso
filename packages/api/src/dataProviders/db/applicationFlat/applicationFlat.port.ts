@@ -5,6 +5,8 @@ import { DefaultObject } from "../../../@types";
 import ApplicationFlatAdapter from "../../../modules/applicationFlat/ApplicationFlatAdapter";
 import { ApplicationFlatDbo } from "./ApplicationFlatDbo";
 import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
+import { insertStreamByBatch } from "../../../shared/helpers/MongoHelper";
+import { Readable } from "stream";
 
 export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id">> {
     readonly collectionName = "applications-flat";
@@ -124,11 +126,11 @@ export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id
      */
     public async applyBackupCollection(provider: string) {
         await this.collection.deleteMany({ provider });
-        await this.db
-            .collection(this.backupCollectionName)
-            .aggregate([{ $merge: { into: this.collection } }])
-            .toArray();
-        await this.createIndexes(); // backup seems to only copy the data, not the indexes
+        await insertStreamByBatch(
+            Readable.toWeb(this.db.collection(this.backupCollectionName).find().stream()),
+            this.upsertMany,
+            10000,
+        );
         await this.dropBackupCollection();
     }
 
