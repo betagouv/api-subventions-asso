@@ -5875,26 +5875,11 @@ exports[`/association /{structure_identifier}/etablissements should return Simpl
             "voie": "rue Waldeck-Rousseau",
           },
         },
-        {
-          "last_update": "2022-01-02T00:00:00.000Z",
-          "provider": "Extranet FONJEP",
-          "type": "object",
-          "value": {
-            "code_postal": "75000",
-            "commune": "Paris",
-          },
-        },
       ],
       "nic": [
         {
           "last_update": "2022-01-01T00:00:00.000Z",
           "provider": "Osiris",
-          "type": "string",
-          "value": "00001",
-        },
-        {
-          "last_update": "2022-01-02T00:00:00.000Z",
-          "provider": "Extranet FONJEP",
           "type": "string",
           "value": "00001",
         },
@@ -5910,12 +5895,6 @@ exports[`/association /{structure_identifier}/etablissements should return Simpl
         {
           "last_update": "2022-01-01T00:00:00.000Z",
           "provider": "Osiris",
-          "type": "string",
-          "value": "10000000000001",
-        },
-        {
-          "last_update": "2022-01-02T00:00:00.000Z",
-          "provider": "Extranet FONJEP",
           "type": "string",
           "value": "10000000000001",
         },
