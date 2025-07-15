@@ -305,7 +305,7 @@ describe("/association", () => {
                 .get(`/association/${identifier}/grants/csv`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "text/csv");
-            // expect(response.statusCode).toBe(200);
+            expect(response.statusCode).toBe(200);
             const actual = response.text;
             expect(actual).toMatchSnapshot();
         });

@@ -53,62 +53,38 @@ describe("OsirisService", () => {
         jest.mocked(OsirisRequestAdapter.toDemandeSubvention).mockRestore();
     });
 
-    describe("findBySiret", () => {
+    describe.each`
+        method           | identifier
+        ${"findBySiret"} | ${SIRET}
+        ${"findBySiren"} | ${SIREN}
+        ${"findByRna"}   | ${RNA}
+    `("$method", ({ method, identifier }) => {
         beforeEach(() => {
-            jest.mocked(osirisRequestPort.findBySiret).mockResolvedValue([REQUEST_DBO]);
-            jest.mocked(osirisActionPort.findByRequestUniqueId).mockResolvedValue([ACTION_ENTITY]);
+            jest.mocked(osirisRequestPort[method]).mockResolvedValue([REQUEST_DBO]);
+
+            if (method === "findBySiren") {
+                // mock used in findBySiren
+                jest.mocked(osirisActionPort.findBySiren).mockResolvedValue([ACTION_ENTITY]);
+            } else {
+                // mock used in findBySiret & findByRna
+                jest.mocked(osirisActionPort.findByRequestUniqueId).mockResolvedValue([ACTION_ENTITY]);
+            }
         });
 
         it("returns request with actions", async () => {
             const expected = [{ ...REQUEST_DBO, actions: [ACTION_ENTITY] }];
-            const actual = await osirisService.findBySiret(SIRET);
+            const actual = await osirisService[method](identifier);
             expect(actual).toEqual(expected);
         });
 
         it("returns request without actions", async () => {
-            jest.mocked(osirisActionPort.findByRequestUniqueId).mockResolvedValue([]);
+            if (method === "findBySiren") {
+                jest.mocked(osirisActionPort.findBySiren).mockResolvedValue([]);
+            } else {
+                jest.mocked(osirisActionPort.findByRequestUniqueId).mockResolvedValue([]);
+            }
             const expected = [{ ...REQUEST_DBO, actions: [] }];
-            const actual = await osirisService.findBySiret(SIRET);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("findBySiren", () => {
-        beforeEach(() => {
-            jest.mocked(osirisRequestPort.findBySiren).mockResolvedValue([REQUEST_DBO]);
-            jest.mocked(osirisActionPort.findBySiren).mockResolvedValue([ACTION_ENTITY]);
-        });
-
-        it("returns request with actions", async () => {
-            const expected = [{ ...REQUEST_DBO, actions: [ACTION_ENTITY] }];
-            const actual = await osirisService.findBySiren(SIREN);
-            expect(actual).toEqual(expected);
-        });
-
-        it("returns request without actions", async () => {
-            jest.mocked(osirisActionPort.findBySiren).mockResolvedValue([]);
-            const expected = [{ ...REQUEST_DBO, actions: [] }];
-            const actual = await osirisService.findBySiren(SIREN);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("findByRna", () => {
-        beforeEach(() => {
-            jest.mocked(osirisRequestPort.findByRna).mockResolvedValue([REQUEST_DBO]);
-            jest.mocked(osirisActionPort.findByRequestUniqueId).mockResolvedValue([ACTION_ENTITY]);
-        });
-
-        it("returns request with actions", async () => {
-            const expected = [{ ...REQUEST_DBO, actions: [ACTION_ENTITY] }];
-            const actual = await osirisService.findByRna(RNA);
-            expect(actual).toEqual(expected);
-        });
-
-        it("returns request without actions", async () => {
-            jest.mocked(osirisActionPort.findByRequestUniqueId).mockResolvedValue([]);
-            const expected = [{ ...REQUEST_DBO, actions: [] }];
-            const actual = await osirisService.findByRna(RNA);
+            const actual = await osirisService[method](identifier);
             expect(actual).toEqual(expected);
         });
     });
