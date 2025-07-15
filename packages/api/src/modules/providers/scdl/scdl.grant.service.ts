@@ -25,7 +25,7 @@ export class ScdlGrantService
 {
     isGrantProvider = true;
     isDemandesSubventionsProvider = true;
-    isApplicationFlatProvider = true;
+    isApplicationFlatProvider = true as const;
 
     provider = {
         name: "Open Data SCDL",
