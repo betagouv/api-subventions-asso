@@ -85,7 +85,7 @@ export class ApplicationFlatService
      */
 
     async saveFromStream(readStream: ReadableStream<ApplicationFlatEntity>) {
-        return insertStreamByBatch(readStream, applicationFlatPort.upsertMany, 10000);
+        return insertStreamByBatch(readStream, batch => applicationFlatPort.upsertMany(batch), 10000);
     }
 
     isCollectionInitialized() {

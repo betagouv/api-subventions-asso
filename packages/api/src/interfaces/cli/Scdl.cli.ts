@@ -198,7 +198,10 @@ export default class ScdlCli {
             );
         const ticTacInterval = setInterval(() => console.log("TIC"), 60000);
         console.log("Create application flat entities from scdl collection");
-        await scdlGrantService.initApplicationFlat();
-        clearInterval(ticTacInterval);
+        try {
+            await scdlGrantService.initApplicationFlat();
+        } finally {
+            clearInterval(ticTacInterval);
+        }
     }
 }
