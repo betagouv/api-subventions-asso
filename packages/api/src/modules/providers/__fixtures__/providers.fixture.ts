@@ -20,7 +20,6 @@ const mockPaymentProvider = service => ({
     ...service,
     isPaymentProvider: true,
     rawToPayment: jest.fn(),
-    getPaymentsByKey: jest.fn().mockResolvedValue([]),
     getPayments: jest.fn().mockResolvedValue([]),
 });
 

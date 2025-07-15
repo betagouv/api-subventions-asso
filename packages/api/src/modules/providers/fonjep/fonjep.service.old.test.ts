@@ -24,7 +24,6 @@ const SIRET = SIREN.toSiret(`32010`);
 const ASSOCIATION_ID = AssociationIdentifier.fromSiren(SIREN);
 const ESTABLISHMENT_ID = EstablishmentIdentifier.fromSiret(SIRET, ASSOCIATION_ID);
 
-const CODE_POSTE = "J00034";
 const WRONG_SIRET = SIRET.value.slice(0, 6);
 const isSiretMock = jest.spyOn(Siret, "isSiret");
 const isAssociationNameMock = jest.spyOn(Validators, "isAssociationName");
@@ -293,23 +292,6 @@ describe("FonjepService", () => {
                 const actual = fonjepService.rawToGrant(RAW_FULLGRANT);
                 expect(actual).toEqual(expected);
             });
-        });
-    });
-
-    describe("getPaymentsByKey", () => {
-        const findByCodeMock = jest.spyOn(fonjepPaymentPort, "findByCodePoste");
-        let toPaymentArrayMock: jest.SpyInstance;
-
-        beforeAll(() => {
-            toPaymentArrayMock = jest.spyOn(fonjepService, "toPaymentArray");
-            toPaymentArrayMock.mockImplementation(data => data);
-        });
-
-        it("calls adapter", async () => {
-            // @ts-expect-error: mock
-            findByCodeMock.mockImplementationOnce(async () => [PaymentEntity]);
-            await fonjepService.getPaymentsByKey(CODE_POSTE);
-            expect(toPaymentArrayMock).toHaveBeenCalledWith([PaymentEntity]);
         });
     });
 
