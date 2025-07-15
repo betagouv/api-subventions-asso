@@ -5950,6 +5950,12 @@ exports[`/association /{structure_identifier}/etablissements should return Simpl
           "type": "string",
           "value": "00001",
         },
+        {
+          "last_update": "2025-06-25T00:00:00.000Z",
+          "provider": "API ASSO",
+          "type": "string",
+          "value": "00002",
+        },
       ],
       "ouvert": [
         {
