@@ -77,8 +77,8 @@ export class EtablissementsService {
         return grantService.getGrants(id);
     }
 
-    getSubventions(id: EstablishmentIdentifier) {
-        return subventionsService.getDemandes(id);
+    async getSubventions(id: EstablishmentIdentifier) {
+        return (await subventionsService.getDemandes(id)).flat().filter(subvention => subvention);
     }
 
     async getPayments(id: EstablishmentIdentifier) {

@@ -1,6 +1,5 @@
 import { Readable } from "stream";
 import {
-    DemandeSubvention,
     GetDocumentsResponseDto,
     GetEtablissementResponseDto,
     GetSubventionsResponseDto,
@@ -92,8 +91,7 @@ export class EtablissementHttp extends Controller {
     ): Promise<GetSubventionsResponseDto> {
         const estabIdentifier = req.estabIdentifier;
 
-        const data = await etablissementService.getSubventions(estabIdentifier);
-        const subventions = data.flat().filter(subvention => subvention) as DemandeSubvention[];
+        const subventions = await etablissementService.getSubventions(estabIdentifier);
         return { subventions };
     }
 

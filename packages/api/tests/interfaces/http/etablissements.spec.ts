@@ -37,7 +37,7 @@ describe("/etablissement", () => {
             const SUBVENTIONS = ["subventions"];
 
             beforeEach(() => {
-                getSubventionsMock.mockResolvedValueOnce([SUBVENTIONS]);
+                getSubventionsMock.mockResolvedValueOnce(SUBVENTIONS);
             });
 
             it("should return 200", async () => {

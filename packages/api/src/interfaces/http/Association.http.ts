@@ -6,7 +6,6 @@ import {
     GetSubventionsResponseDto,
     GetPaymentsResponseDto,
     GetDocumentsResponseDto,
-    DemandeSubvention,
     StructureIdentifierDto,
     AssociationIdentifierDto,
 } from "dto";
@@ -77,8 +76,7 @@ export class AssociationHttp extends Controller {
         @Request() req,
     ): Promise<GetSubventionsResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
-        const data = await associationService.getSubventions(associationIdentifiers);
-        const subventions = data.flat().filter(subvention => subvention) as DemandeSubvention[];
+        const subventions = await associationService.getSubventions(associationIdentifiers);
         return { subventions };
     }
 

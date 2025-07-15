@@ -71,8 +71,8 @@ export class AssociationsService {
      *
      */
 
-    getSubventions(identifier: AssociationIdentifier) {
-        return subventionsService.getDemandes(identifier);
+    async getSubventions(identifier: AssociationIdentifier) {
+        return (await subventionsService.getDemandes(identifier)).flat().filter(subvention => subvention);
     }
 
     getPayments(identifier: AssociationIdentifier) {
