@@ -151,6 +151,7 @@ export default class ScdlCli {
         let duplicates: MiscScdlGrantEntity[] = [];
 
         try {
+            // the cli builds dbo because objectId from misc-scdl collection is also used in application flat
             const dbos = await scdlService.buildDbosFromStorables(storables, producerSlug);
             await scdlService.saveDbos(dbos);
             await scdlGrantService.saveDbosToApplicationFlat(dbos);

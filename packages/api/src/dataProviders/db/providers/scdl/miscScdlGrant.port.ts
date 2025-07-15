@@ -36,6 +36,7 @@ export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
     }
 
     public async createMany(dbos: ScdlGrantDbo[]) {
+        // the port takes dbo directly because objectId from misc-scdl collection is also used in application flat
         return this.collection.insertMany(dbos, { ordered: false }).catch(error => {
             if (isMongoDuplicateError(error)) {
                 throw buildDuplicateIndexError<MiscScdlGrantEntity[]>(error);
