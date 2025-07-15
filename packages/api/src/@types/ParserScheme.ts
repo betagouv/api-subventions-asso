@@ -1,3 +1,3 @@
-import { ParserInfo, ParserPath } from ".";
+import { BeforeAdaptation, ParserInfo, ParserPath } from ".";
 
-export type ParserScheme = ParserInfo | ParserPath;
+export type ParserScheme<T extends BeforeAdaptation = string> = ParserInfo<T> | ParserPath;

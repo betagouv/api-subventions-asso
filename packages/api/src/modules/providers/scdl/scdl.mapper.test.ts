@@ -87,4 +87,34 @@ describe("scdl mapper", () => {
             expect(actual).toBe(2098.56);
         });
     });
+
+    describe("decisionReference adapter", () => {
+        const adapter = (SCDL_MAPPER.decisionReference as ParserInfo<string | number>).adapter as (
+            v: unknown,
+        ) => unknown;
+
+        it("return date from excel date", () => {
+            const actual = adapter(45628.541666666664);
+            expect(actual).toBe("2024-12-02");
+        });
+
+        it("return number if not in date range", () => {
+            const actual = adapter(3650);
+            expect(actual).toBe(3650);
+        });
+
+        it("returns string as it is", () => {
+            const actual = adapter("23-B0284-001");
+            expect(actual).toBe("23-B0284-001");
+        });
+
+        it.each`
+            value
+            ${null}
+            ${undefined}
+        `("returns undefined if value is not defined", ({ value }) => {
+            const actual = adapter(value);
+            expect(actual).toBe(undefined);
+        });
+    });
 });
