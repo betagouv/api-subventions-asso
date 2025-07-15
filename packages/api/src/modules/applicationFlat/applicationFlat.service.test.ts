@@ -139,9 +139,17 @@ describe("ApplicationFlatService", () => {
     describe("applicationFlat part", () => {
         describe("saveFromStream", () => {
             const STREAM = {} as unknown as ReadableStream;
+
             it("calls mongo helper", async () => {
                 await applicationFlatService.saveFromStream(STREAM);
-                expect(insertStreamByBatch).toHaveBeenCalledWith(STREAM, applicationFlatPort.upsertMany, 10000);
+                expect(insertStreamByBatch).toHaveBeenCalledWith(STREAM, expect.anything(), 10000);
+            });
+
+            it("calls mongo helper with flat upsert", async () => {
+                await applicationFlatService.saveFromStream(STREAM);
+                const methodCalledByHelper = jest.mocked(insertStreamByBatch).mock.calls[0][1];
+                await methodCalledByHelper([]);
+                expect(applicationFlatPort.upsertMany).toHaveBeenCalled();
             });
         });
     });
