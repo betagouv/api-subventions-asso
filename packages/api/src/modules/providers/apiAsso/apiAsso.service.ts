@@ -116,7 +116,7 @@ export class ApiAssoService
         return ApiAssoDtoAdapter.sirenStructureToAssociation(sirenStructure);
     }
 
-    private async findEtablissementsBySiren(siren: Siren): Promise<Etablissement[]> {
+    public async findEtablissementsBySiren(siren: Siren): Promise<Etablissement[]> {
         const structure = await this.sendRequest<StructureDto>(`/api/structure/${siren.value}`);
 
         if (!structure?.identite || !Object.keys(structure.identite).length || hasEmptyProperties(structure.identite))

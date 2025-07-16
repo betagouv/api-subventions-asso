@@ -18,7 +18,8 @@ export default class OsirisParser {
                 row,
                 OsirisRequestEntity.defaultMainCategory,
             ) as DefaultObject<DefaultObject<string | number>>;
-            data.Dossier["Exercice Budgetaire"] = year;
+
+            data.Dossier["Exercice Budgetaire"] = year; // create artificial column to match IOsirisRequestInformations
 
             const indexedInformations = GenericParser.indexDataByPathObject<string | number>(
                 OsirisRequestEntity.indexedProviderInformationsPath,
@@ -28,8 +29,6 @@ export default class OsirisParser {
                 OsirisRequestEntity.indexedLegalInformationsPath,
                 data,
             ) as unknown as ILegalInformations;
-
-            indexedInformations.exercise = year;
 
             return new OsirisRequestEntity(legalInformations, indexedInformations, data);
         });
@@ -49,13 +48,13 @@ export default class OsirisParser {
                 OsirisActionEntity.defaultMainCategory,
             ) as DefaultObject<DefaultObject<string | number>>;
             const dossier = data["Dossier/action"] || data["Dossier"];
-            dossier["Exercice Budgetaire"] = year;
+
+            dossier["Exercice Budgetaire"] = year; // add artificial column to match IOsirisActionsInformations
 
             const indexedInformations = GenericParser.indexDataByPathObject(
                 OsirisActionEntity.indexedInformationsPath,
                 data,
             ) as unknown as IOsirisActionsInformations;
-            indexedInformations.exercise = year;
 
             return new OsirisActionEntity(indexedInformations, data);
         });

@@ -1188,31 +1188,31 @@ exports[`/association /{identifier}/grants should return grants with siren 1`] =
 
 exports[`/association /{identifier}/grants/csv returns extract from rna 1`] = `
 "﻿Nom de l'association;RNA de l'association;Adresse de l'établissement;Exercice de la demande;Siret;Code postal demandeur;Service instructeur;Dispositif;Intitulé de l'action;Montant demandé;Montant accordé;Statut de la demande;Montant versé;Centre financier du dernier paiement;Date du dernier paiement;Programme des paiements
-DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2019;10000000000001;75000;GRANTOR_1;;2019-15081 - INSTITUT DE SOUDURE;;60854;Accordé;;;;
-DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2022;10000000000001;75000;XXX;Dispositif;;500;500;Accordé;1000;;2022-01-02;163 - PROGRAM 163
-DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2022;10000000000001;75000;Dauphin;Education – Sport - Jeunesse - Politique de la ville;INTITULE_PROJET;;7000;Accordé;;;;
-DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2022;10000000000001;75000;;;;;;;;;;
-DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2023;10000000000001;75000;Auvergne-Rhône-Alpes;Aide au projet ou au fonctionnement - Transmission culturelle (2023);Atelier d'arts plastiques et d’écriture en Hors temps scolaire ;1300;;Accordé;1000;UO DGER XXXX-C001;2023-04-01;1 - Programme Exemple
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2019;10000000000001;35000;GRANTOR_1;;2019-15081 - INSTITUT DE SOUDURE;;60854;Accordé;;;;
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;XXX;Dispositif;;500;500;Accordé;1000;;2022-01-02;163 - PROGRAM 163
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;Dauphin;Education – Sport - Jeunesse - Politique de la ville;INTITULE_PROJET;;7000;Accordé;;;;
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;;;;;;;;;;
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2023;10000000000001;35000;Auvergne-Rhône-Alpes;Aide au projet ou au fonctionnement - Transmission culturelle (2023);Atelier d'arts plastiques et d’écriture en Hors temps scolaire ;1300;;Accordé;1000;UO DGER XXXX-C001;2023-04-01;1 - Programme Exemple
 "
 `;
 
 exports[`/association /{identifier}/grants/csv returns extract from siren 1`] = `
 "﻿Nom de l'association;RNA de l'association;Adresse de l'établissement;Exercice de la demande;Siret;Code postal demandeur;Service instructeur;Dispositif;Intitulé de l'action;Montant demandé;Montant accordé;Statut de la demande;Montant versé;Centre financier du dernier paiement;Date du dernier paiement;Programme des paiements
-DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2019;10000000000001;75000;GRANTOR_1;;2019-15081 - INSTITUT DE SOUDURE;;60854;Accordé;;;;
-DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2022;10000000000001;75000;XXX;Dispositif;;500;500;Accordé;1000;;2022-01-02;163 - PROGRAM 163
-DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2022;10000000000001;75000;Dauphin;Education – Sport - Jeunesse - Politique de la ville;INTITULE_PROJET;;7000;Accordé;;;;
-DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2022;10000000000001;75000;;;;;;;;;;
-DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2023;10000000000001;75000;Auvergne-Rhône-Alpes;Aide au projet ou au fonctionnement - Transmission culturelle (2023);Atelier d'arts plastiques et d’écriture en Hors temps scolaire ;1300;;Accordé;1000;UO DGER XXXX-C001;2023-04-01;1 - Programme Exemple
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2019;10000000000001;35000;GRANTOR_1;;2019-15081 - INSTITUT DE SOUDURE;;60854;Accordé;;;;
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;XXX;Dispositif;;500;500;Accordé;1000;;2022-01-02;163 - PROGRAM 163
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;Dauphin;Education – Sport - Jeunesse - Politique de la ville;INTITULE_PROJET;;7000;Accordé;;;;
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;;;;;;;;;;
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2023;10000000000001;35000;Auvergne-Rhône-Alpes;Aide au projet ou au fonctionnement - Transmission culturelle (2023);Atelier d'arts plastiques et d’écriture en Hors temps scolaire ;1300;;Accordé;1000;UO DGER XXXX-C001;2023-04-01;1 - Programme Exemple
 "
 `;
 
 exports[`/association /{identifier}/grants/csv returns extract from siret 1`] = `
 "﻿Nom de l'association;RNA de l'association;Adresse de l'établissement;Exercice de la demande;Siret;Code postal demandeur;Service instructeur;Dispositif;Intitulé de l'action;Montant demandé;Montant accordé;Statut de la demande;Montant versé;Centre financier du dernier paiement;Date du dernier paiement;Programme des paiements
-DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2019;10000000000001;75000;GRANTOR_1;;2019-15081 - INSTITUT DE SOUDURE;;60854;Accordé;;;;
-DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2022;10000000000001;75000;XXX;Dispositif;;500;500;Accordé;1000;;2022-01-02;163 - PROGRAM 163
-DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2022;10000000000001;75000;Dauphin;Education – Sport - Jeunesse - Politique de la ville;INTITULE_PROJET;;7000;Accordé;;;;
-DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2022;10000000000001;75000;;;;;;;;;;
-DEFAULT_ASSOCIATION;W000000000;RUE WALDECK-ROUSSEAU 75000;2023;10000000000001;75000;Auvergne-Rhône-Alpes;Aide au projet ou au fonctionnement - Transmission culturelle (2023);Atelier d'arts plastiques et d’écriture en Hors temps scolaire ;1300;;Accordé;1000;UO DGER XXXX-C001;2023-04-01;1 - Programme Exemple
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2019;10000000000001;35000;GRANTOR_1;;2019-15081 - INSTITUT DE SOUDURE;;60854;Accordé;;;;
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;XXX;Dispositif;;500;500;Accordé;1000;;2022-01-02;163 - PROGRAM 163
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;Dauphin;Education – Sport - Jeunesse - Politique de la ville;INTITULE_PROJET;;7000;Accordé;;;;
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;;;;;;;;;;
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2023;10000000000001;35000;Auvergne-Rhône-Alpes;Aide au projet ou au fonctionnement - Transmission culturelle (2023);Atelier d'arts plastiques et d’écriture en Hors temps scolaire ;1300;;Accordé;1000;UO DGER XXXX-C001;2023-04-01;1 - Programme Exemple
 "
 `;
 
@@ -5823,36 +5823,74 @@ exports[`/association /{identifier}/raw-grants should return raw grants with sir
 exports[`/association /{structure_identifier} should return an association 1`] = `
 {
   "association": {
-    "denomination_rna": [
+    "adresse_siege_siren": [
       {
-        "last_update": "2022-01-01T00:00:00.000Z",
-        "provider": "Osiris",
+        "last_update": "2025-06-25T00:00:00.000Z",
+        "provider": "API ASSO",
+        "type": "object",
+        "value": {
+          "code_postal": "35000",
+          "commune": "Rennes",
+          "numero": "47",
+          "type_voie": "rue",
+          "voie": "d'Antrain",
+        },
+      },
+    ],
+    "categorie_juridique": [
+      {
+        "last_update": "2025-06-25T00:00:00.000Z",
+        "provider": "API ASSO",
         "type": "string",
-        "value": "DEFAULT_ASSOCIATION",
+        "value": "Association loi 1901",
+      },
+    ],
+    "date_creation_siren": [
+      {
+        "last_update": "2025-06-25T00:00:00.000Z",
+        "provider": "API ASSO",
+        "type": "object",
+        "value": "1986-10-14T00:00:00.000Z",
+      },
+    ],
+    "date_modification_siren": [
+      {
+        "last_update": "2025-06-25T00:00:00.000Z",
+        "provider": "API ASSO",
+        "type": "object",
+        "value": "2025-04-12T00:00:00.000Z",
+      },
+    ],
+    "denomination_siren": [
+      {
+        "last_update": "2025-06-25T00:00:00.000Z",
+        "provider": "API ASSO",
+        "type": "string",
+        "value": "L'Asso Imaginaire",
       },
     ],
     "etablisements_siret": [
       {
-        "last_update": "2022-01-01T00:00:00.000Z",
-        "provider": "Osiris",
+        "last_update": "2025-06-25T00:00:00.000Z",
+        "provider": "API ASSO",
         "type": "object",
         "value": [
           "10000000000001",
         ],
       },
     ],
-    "rna": [
+    "nic_siege": [
       {
-        "last_update": "2022-01-01T00:00:00.000Z",
-        "provider": "Osiris",
+        "last_update": "2025-06-25T00:00:00.000Z",
+        "provider": "API ASSO",
         "type": "string",
-        "value": "W000000000",
+        "value": "00001",
       },
     ],
     "siren": [
       {
-        "last_update": "2022-01-01T00:00:00.000Z",
-        "provider": "Osiris",
+        "last_update": "2025-06-25T00:00:00.000Z",
+        "provider": "API ASSO",
         "type": "string",
         "value": "100000000",
       },
@@ -5867,34 +5905,90 @@ exports[`/association /{structure_identifier}/etablissements should return Simpl
     {
       "adresse": [
         {
-          "last_update": "2022-01-01T00:00:00.000Z",
-          "provider": "Osiris",
+          "last_update": "2025-06-25T00:00:00.000Z",
+          "provider": "API ASSO",
           "type": "object",
           "value": {
-            "code_postal": "75000",
-            "voie": "rue Waldeck-Rousseau",
+            "code_postal": "35000",
+            "commune": "Rennes",
+            "numero": "47",
+            "type_voie": "rue",
+            "voie": "d'Antrain",
           },
+        },
+        {
+          "last_update": "2025-06-25T00:00:00.000Z",
+          "provider": "API ASSO",
+          "type": "object",
+          "value": {
+            "code_postal": "35700",
+            "commune": "Rennes",
+            "numero": "12",
+            "type_voie": "avenue",
+            "voie": "du Général Leclerc",
+          },
+        },
+      ],
+      "headcount": [
+        {
+          "last_update": "2025-06-25T00:00:00.000Z",
+          "provider": "API ASSO",
+          "type": "string",
+          "value": "12",
+        },
+        {
+          "last_update": "2025-06-25T00:00:00.000Z",
+          "provider": "API ASSO",
+          "type": "string",
+          "value": "0",
         },
       ],
       "nic": [
         {
-          "last_update": "2022-01-01T00:00:00.000Z",
-          "provider": "Osiris",
+          "last_update": "2025-06-25T00:00:00.000Z",
+          "provider": "API ASSO",
           "type": "string",
           "value": "00001",
+        },
+        {
+          "last_update": "2025-06-25T00:00:00.000Z",
+          "provider": "API ASSO",
+          "type": "string",
+          "value": "00002",
+        },
+      ],
+      "ouvert": [
+        {
+          "last_update": "2025-06-25T00:00:00.000Z",
+          "provider": "API ASSO",
+          "type": "boolean",
+          "value": true,
+        },
+        {
+          "last_update": "2025-06-25T00:00:00.000Z",
+          "provider": "API ASSO",
+          "type": "boolean",
+          "value": false,
         },
       ],
       "siege": [
         {
-          "last_update": "2022-01-01T00:00:00.000Z",
-          "provider": "Osiris",
-          "type": "undefined",
+          "last_update": "2025-06-25T00:00:00.000Z",
+          "provider": "API ASSO",
+          "type": "boolean",
+          "value": true,
+        },
+        {
+          "last_update": "2025-06-25T00:00:00.000Z",
+          "provider": "API ASSO",
+          "type": "boolean",
+          "value": false,
         },
       ],
       "siret": [
         {
-          "last_update": "2022-01-01T00:00:00.000Z",
-          "provider": "Osiris",
+          "last_update": "2025-06-25T00:00:00.000Z",
+          "provider": "API ASSO",
           "type": "string",
           "value": "10000000000001",
         },
