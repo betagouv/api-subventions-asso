@@ -10,7 +10,7 @@ import {
     TYPE_POSTE_DTOS,
     VERSEMENT_DTO_WITH_DATE,
 } from "../__fixtures__/fonjepDtos";
-import { POSTE_ENTITY, TIERS_ENTITY, VERSEMENT_ENTITY } from "../__fixtures__/fonjepEntities";
+import { DISPOSITIF_ENTITY, POSTE_ENTITY, TIERS_ENTITY, VERSEMENT_ENTITY } from "../__fixtures__/fonjepEntities";
 
 import FonjepEntityAdapter from "./FonjepEntityAdapter";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
@@ -20,6 +20,11 @@ jest.mock("../../dataBretagne/dataBretagne.service");
 import { removeWhitespace } from "../../../../shared/helpers/StringHelper";
 jest.mock("../../../../shared/helpers/StringHelper");
 import * as DateHelper from "../../../../shared/helpers/DateHelper";
+import FonjepPosteEntity from "../entities/FonjepPosteEntity";
+import FonjepDispositifEntity from "../entities/FonjepDispositifEntity";
+import FonjepTiersEntity from "../entities/FonjepTiersEntity";
+import EstablishmentIdentifier from "../../../../identifierObjects/EstablishmentIdentifier";
+jest.mock("../../../../identifierObjects/EstablishmentIdentifier");
 jest.mock("../../../../shared/helpers/DateHelper");
 
 describe("FonjepEntityAdapter", () => {
@@ -325,6 +330,79 @@ describe("FonjepEntityAdapter", () => {
             // @ts-expect-error: test private method
             const actual = FonjepEntityAdapter.buildPaymentFlatUniqueId(partialPaymentFlat);
             expect(actual).toMatchSnapshot();
+        });
+    });
+
+    describe("toFonjepApplicationFlat", () => {
+        const POSITION: FonjepPosteEntity = { ...POSTE_ENTITY };
+        const BENEFICIARY: FonjepTiersEntity = { ...TIERS_ENTITY };
+        const ALLOCATOR: FonjepTiersEntity = { ...TIERS_ENTITY, siretOuRidet: "20000000000001" };
+        const INSTRUCTOR: FonjepTiersEntity = { ...TIERS_ENTITY, siretOuRidet: "30000000000001" };
+        const SCHEME: FonjepDispositifEntity = { ...DISPOSITIF_ENTITY };
+
+        let mockGetConventionDate: jest.SpyInstance;
+        let mockGetIdentifierType: jest.SpyInstance;
+        beforeEach(() => {
+            mockGetIdentifierType = jest.spyOn(EstablishmentIdentifier, "getIdentifierType").mockReturnValue("siret");
+            mockGetConventionDate = jest
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                .spyOn(FonjepEntityAdapter as any, "getConventionDate")
+                .mockReturnValue(new Date("2021-12-31"));
+            jest.mocked(DateHelper.getShortISODate).mockReturnValue("2021-12-31");
+        });
+
+        afterEach(() => {
+            mockGetConventionDate.mockReset();
+        });
+
+        it("return application flat entity", () => {
+            const actual = FonjepEntityAdapter.toFonjepApplicationFlat({
+                position: POSITION,
+                beneficiary: BENEFICIARY,
+                allocator: ALLOCATOR,
+                instructor: INSTRUCTOR,
+                scheme: SCHEME,
+            });
+            expect(actual).toMatchSnapshot();
+        });
+
+        it("throws error if position has no budgetary year", () => {
+            expect(() =>
+                FonjepEntityAdapter.toFonjepApplicationFlat({
+                    position: { ...POSITION, annee: null },
+                    beneficiary: BENEFICIARY,
+                    allocator: ALLOCATOR,
+                    instructor: INSTRUCTOR,
+                    scheme: SCHEME,
+                }),
+            ).toThrow("FONJEP ApplicationFlat must have a budgetary year");
+        });
+
+        it("throws error if beneficiary has no siret or ridet", () => {
+            expect(() =>
+                FonjepEntityAdapter.toFonjepApplicationFlat({
+                    position: POSITION,
+                    beneficiary: { ...BENEFICIARY, siretOuRidet: null },
+                    allocator: ALLOCATOR,
+                    instructor: INSTRUCTOR,
+                    scheme: SCHEME,
+                }),
+            ).toThrow("FONJEP ApplicationFlat must have a beneficiary siret or ridet");
+        });
+
+        it("throws error if beneficiary has an invalid siret or ridet", () => {
+            mockGetIdentifierType.mockReturnValue(null);
+            expect(() =>
+                FonjepEntityAdapter.toFonjepApplicationFlat({
+                    position: POSITION,
+                    beneficiary: BENEFICIARY,
+                    allocator: ALLOCATOR,
+                    instructor: INSTRUCTOR,
+                    scheme: SCHEME,
+                }),
+            ).toThrow(
+                `FONJEP ApplicationFlat must have a valid beneficiary siret or ridet, given ${BENEFICIARY.siretOuRidet}.`,
+            );
         });
     });
 });

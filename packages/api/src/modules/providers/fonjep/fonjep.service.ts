@@ -4,8 +4,11 @@ import fonjepPostesPort from "../../../dataProviders/db/providers/fonjep/fonjep.
 import fonjepTiersPort from "../../../dataProviders/db/providers/fonjep/fonjep.tiers.port";
 import fonjepTypePostePort from "../../../dataProviders/db/providers/fonjep/fonjep.typePoste.port";
 import fonjepVersementsPort from "../../../dataProviders/db/providers/fonjep/fonjep.versements.port";
+import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
 import Ridet from "../../../identifierObjects/Ridet";
 import Siret from "../../../identifierObjects/Siret";
+import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
+import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import paymentFlatService from "../../paymentFlat/paymentFlat.service";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import ProviderCore from "../ProviderCore";
@@ -17,8 +20,9 @@ import FonjepTiersEntity from "./entities/FonjepTiersEntity";
 import FonjepTypePosteEntity from "./entities/FonjepTypePosteEntity";
 import FonjepVersementEntity, { PayedFonjepVersementEntity } from "./entities/FonjepVersementEntity";
 import FonjepParser from "./fonjep.parser";
+import { ReadableStream } from "node:stream/web";
 
-export class FonjepService extends ProviderCore {
+export class FonjepService extends ProviderCore implements ApplicationFlatProvider {
     constructor() {
         super({
             name: "Extranet FONJEP",
@@ -51,6 +55,48 @@ export class FonjepService extends ProviderCore {
 
         return { tierEntities, posteEntities, versementEntities, typePosteEntities, dispositifEntities };
     }
+
+    /**
+     * |----------------------------|
+     * |  Database Management      |
+     * |----------------------------|
+     */
+
+    useTemporyCollection(active: boolean) {
+        fonjepDispositifPort.useTemporyCollection(active);
+        fonjepPostesPort.useTemporyCollection(active);
+        fonjepTiersPort.useTemporyCollection(active);
+        fonjepTypePostePort.useTemporyCollection(active);
+        fonjepVersementsPort.useTemporyCollection(active);
+    }
+
+    async createFonjepCollections(
+        tierEntities: FonjepTiersEntity[],
+        posteEntities: FonjepPosteEntity[],
+        versementEntities: FonjepVersementEntity[],
+        typePosteEntities: FonjepTypePosteEntity[],
+        dispositifEntities: FonjepDispositifEntity[],
+    ) {
+        await fonjepTiersPort.insertMany(tierEntities);
+        await fonjepPostesPort.insertMany(posteEntities);
+        await fonjepVersementsPort.insertMany(versementEntities);
+        await fonjepTypePostePort.insertMany(typePosteEntities);
+        await fonjepDispositifPort.insertMany(dispositifEntities);
+    }
+
+    async applyTemporyCollection() {
+        await fonjepDispositifPort.applyTemporyCollection();
+        await fonjepPostesPort.applyTemporyCollection();
+        await fonjepTiersPort.applyTemporyCollection();
+        await fonjepTypePostePort.applyTemporyCollection();
+        await fonjepVersementsPort.applyTemporyCollection();
+    }
+
+    /**
+     * |----------------------------|
+     * |  PaymentFlat               |
+     * |----------------------------|
+     */
 
     /**
      * Check if payment has been payed
@@ -123,38 +169,23 @@ export class FonjepService extends ProviderCore {
 
     /**
      * |----------------------------|
-     * |  Database Management      |
+     * |  ApplicationFlat           |
      * |----------------------------|
      */
 
-    useTemporyCollection(active: boolean) {
-        fonjepDispositifPort.useTemporyCollection(active);
-        fonjepPostesPort.useTemporyCollection(active);
-        fonjepTiersPort.useTemporyCollection(active);
-        fonjepTypePostePort.useTemporyCollection(active);
-        fonjepVersementsPort.useTemporyCollection(active);
+    isApplicationFlatProvider = true as const;
+
+    createApplicationFlatEntitiesFromCollections(_collections: {
+        positions: FonjepPosteEntity[];
+    }): ApplicationFlatEntity[] {
+        return [];
+        // return collections.positions.map(position => {
+        //     return FonjepEntityAdapter.toFonjepApplicationFlat(position);
+        // });
     }
 
-    async createFonjepCollections(
-        tierEntities: FonjepTiersEntity[],
-        posteEntities: FonjepPosteEntity[],
-        versementEntities: FonjepVersementEntity[],
-        typePosteEntities: FonjepTypePosteEntity[],
-        dispositifEntities: FonjepDispositifEntity[],
-    ) {
-        await fonjepTiersPort.insertMany(tierEntities);
-        await fonjepPostesPort.insertMany(posteEntities);
-        await fonjepVersementsPort.insertMany(versementEntities);
-        await fonjepTypePostePort.insertMany(typePosteEntities);
-        await fonjepDispositifPort.insertMany(dispositifEntities);
-    }
-
-    async applyTemporyCollection() {
-        await fonjepDispositifPort.applyTemporyCollection();
-        await fonjepPostesPort.applyTemporyCollection();
-        await fonjepTiersPort.applyTemporyCollection();
-        await fonjepTypePostePort.applyTemporyCollection();
-        await fonjepVersementsPort.applyTemporyCollection();
+    saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>): void {
+        applicationFlatService.saveFromStream(stream);
     }
 }
 
