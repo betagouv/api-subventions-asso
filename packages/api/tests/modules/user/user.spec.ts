@@ -1,6 +1,6 @@
 import request from "supertest";
 import { createAndGetUserToken } from "../../__helpers__/tokenHelper";
-import { createAndActiveUser, getDefaultUser } from "../../__helpers__/userHelper";
+import { createAndActiveUser, DEFAULT_PASSWORD, getDefaultUser } from "../../__helpers__/userHelper";
 import userPort from "../../../src/dataProviders/db/user/user.port";
 import statsAssociationsVisitPort from "../../../src/dataProviders/db/stats/statsAssociationsVisit.port";
 import UserDbo from "../../../src/dataProviders/db/user/UserDbo";
@@ -11,6 +11,8 @@ import userCrudService from "../../../src/modules/user/services/crud/user.crud.s
 import userStatsService from "../../../src/modules/user/services/stats/user.stats.service";
 import configurationsService from "../../../src/modules/configurations/configurations.service";
 import { App } from "supertest/types";
+import UserCli from "../../../src/interfaces/cli/User.cli";
+import userAuthService from "../../../src/modules/user/services/auth/user.auth.service";
 
 const g = global as unknown as { app: App };
 
@@ -139,6 +141,23 @@ describe("UserController, /user", () => {
             await configurationsService.setLastUserStatsUpdate(unexpected);
             const actual = await configurationsService.getLastUserStatsUpdate();
             expect(actual).not.toBe(unexpected);
+        });
+    });
+
+    describe("createAdmin", () => {
+        const EMAIL = "super-great-admin@beta.gouv.fr";
+        const cli = new UserCli();
+
+        it("creates admin with required email", async () => {
+            await cli.createAdmin(EMAIL);
+            const actual = await userPort.findByEmail(EMAIL);
+            expect(actual).toMatchSnapshot({ _id: expect.any(ObjectId), signupAt: expect.any(Date) });
+        });
+
+        it("admin can login with default password", async () => {
+            await cli.createAdmin(EMAIL);
+            const test = userAuthService.login(EMAIL, DEFAULT_PASSWORD);
+            await expect(test).resolves.toBeTruthy(); // we mostly check that it resolves
         });
     });
 });

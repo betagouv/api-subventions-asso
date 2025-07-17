@@ -106,6 +106,19 @@ export class UserActivationService {
         return await userAuthService.updateJwt(userUpdated);
     }
 
+    /*
+     * to be used in cli not by normal users
+     * */
+    async setsPasswordAndActivate(user, password) {
+        const hashPassword = await userAuthService.getHashPassword(password);
+        return (await userPort.update({
+            _id: user._id,
+            hashPassword,
+            active: true,
+            profileToComplete: false,
+        })) as Omit<UserDbo, "hashPassword">;
+    }
+
     buildResetPwdUrl(token: string) {
         return `${FRONT_OFFICE_URL}/auth/reset-password/${token}`;
     }
