@@ -21,4 +21,5 @@ export default {
     grantPercentage: 0.5,
     aidSystem: "65d5b6c7-102c-4440-ac3b-768f708edc0a",
     producer: MiscScdlProducer,
+    updateDate: new Date("2022-06-06"),
 };

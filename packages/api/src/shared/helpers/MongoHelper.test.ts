@@ -1,6 +1,7 @@
 import { MongoServerError } from "mongodb";
-import { buildDuplicateIndexError, isMongoDuplicateError } from "./MongoHelper";
+import { buildDuplicateIndexError, insertStreamByBatch, isMongoDuplicateError } from "./MongoHelper";
 import { DuplicateIndexError } from "../errors/dbError/DuplicateIndexError";
+import { ReadableStream } from "node:stream/web";
 
 describe("MongoHelper", () => {
     describe("isMongoDuplicateError", () => {
@@ -43,6 +44,28 @@ describe("MongoHelper", () => {
             const expected = MONGO_SERVER_ERROR;
             const actual = buildDuplicateIndexError(MONGO_SERVER_ERROR);
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("insertStreamByBatch", () => {
+        const CHUNK_SIZE = 1000;
+        const NB_CHUNKS = 3;
+        const buildStream = () =>
+            new ReadableStream({
+                start(controller) {
+                    for (const _i in Array(CHUNK_SIZE * NB_CHUNKS - 1).fill(0)) {
+                        // length depends on chunk size set in port
+                        controller.enqueue(ENTITY);
+                    }
+                    controller.close();
+                },
+            });
+        const ENTITY = {};
+        const upsertSpy = jest.fn();
+
+        it("calls port's upsert as many times as necessary according to chunk size", async () => {
+            await insertStreamByBatch(buildStream(), upsertSpy, CHUNK_SIZE);
+            expect(upsertSpy).toHaveBeenCalledTimes(3); // mock sends 2001 so 2 chunks + 1 remainder
         });
     });
 });

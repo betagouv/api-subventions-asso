@@ -5,9 +5,12 @@ import { DefaultObject } from "../../../@types";
 import ApplicationFlatAdapter from "../../../modules/applicationFlat/ApplicationFlatAdapter";
 import { ApplicationFlatDbo } from "./ApplicationFlatDbo";
 import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
+import { insertStreamByBatch } from "../../../shared/helpers/MongoHelper";
+import { Readable } from "stream";
 
 export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id">> {
-    collectionName = "applications-flat";
+    readonly collectionName = "applications-flat";
+    readonly backupCollectionName = this.collectionName + "-backup";
 
     public async createIndexes(): Promise<void> {
         await this.collection.createIndex({ idEtablissementBeneficiaire: 1 });
@@ -30,13 +33,13 @@ export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id
     }
 
     public upsertMany(entities: ApplicationFlatEntity[]) {
-        if (!entities.length) return;
-        const bulk = entities.map(e => {
-            const dbo = ApplicationFlatAdapter.entityToDbo(e);
+        if (!entities.length) return Promise.resolve();
+        const bulk = entities.map(entity => {
+            const dbo = ApplicationFlatAdapter.entityToDbo(entity);
             return {
                 updateOne: {
                     filter: { idUnique: dbo.idUnique },
-                    update: { $set: entities },
+                    update: { $set: dbo },
                     upsert: true,
                 },
             };
@@ -83,6 +86,57 @@ export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id
     public async findByEJ(ej: string) {
         return this.collection
             .find({ ej })
+            .map(dbo => ApplicationFlatAdapter.dboToEntity(dbo))
+            .toArray();
+    }
+
+    // we use bulk instead of deleteMany as $in might cause performance issues with large arrays
+    public async bulkFindDeleteByExercises(provider: string, exercises: number[]) {
+        const bulk = this.collection.initializeUnorderedBulkOp();
+        exercises.forEach(exercise => {
+            bulk.find({ provider, exercise }).delete();
+        });
+        return bulk.execute().catch(error => {
+            throw error;
+        });
+    }
+
+    /**
+     * Save all given provider data in a backup collection
+     * @param provider provider
+     */
+    public async createBackupByProvider(provider: string) {
+        console.log(
+            `creating partial backup for provider '${provider}' for applicationFlat collection ${this.backupCollectionName}`,
+        );
+        return this.collection.aggregate([{ $match: { provider } }, { $out: this.backupCollectionName }]).toArray();
+    }
+
+    /**
+     * Drop the backup collection
+     */
+    public async dropBackupCollection() {
+        console.log(`Dropping backup collection ${this.backupCollectionName}`);
+        return this.db.collection(this.backupCollectionName).drop();
+    }
+
+    /**
+     * Apply backup collection created in createBackupCollection
+     * @param provider Producer slug
+     */
+    public async applyBackupCollection(provider: string) {
+        await this.collection.deleteMany({ provider });
+        await insertStreamByBatch(
+            Readable.toWeb(this.db.collection(this.backupCollectionName).find().stream()),
+            this.upsertMany,
+            10000,
+        );
+        await this.dropBackupCollection();
+    }
+
+    async findAll() {
+        return this.collection
+            .find({})
             .map(dbo => ApplicationFlatAdapter.dboToEntity(dbo))
             .toArray();
     }

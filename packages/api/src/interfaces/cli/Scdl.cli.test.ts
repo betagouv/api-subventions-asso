@@ -23,7 +23,12 @@ import { MixedParsedError, ParsedErrorFormat } from "../../modules/providers/scd
 import csvSyncStringifier from "csv-stringify/sync";
 import dataLogService from "../../modules/data-log/dataLog.service";
 import MiscScdlGrantEntity from "../../modules/providers/scdl/entities/MiscScdlGrantEntity";
+import { ScdlGrantDbo } from "../../modules/providers/scdl/dbo/ScdlGrantDbo";
 jest.mock("../../modules/data-log/dataLog.service");
+import scdlGrantService from "../../modules/providers/scdl/scdl.grant.service";
+import applicationFlatService from "../../modules/applicationFlat/applicationFlat.service";
+jest.mock("../../modules/providers/scdl/scdl.grant.service");
+jest.mock("../../modules/applicationFlat/applicationFlat.service");
 
 jest.mock("csv-stringify/sync");
 
@@ -39,6 +44,8 @@ describe("ScdlCli", () => {
     const UNIQUE_ID = "UNIQUE_ID";
     const FILE_PATH = "FILE_PATH";
     const STORABLE_DATA_ARRAY = [STORABLE_DATA];
+    const DBO: ScdlGrantDbo = { ...GRANT, __data__: {}, _id: "prov-toto" };
+    const DBOS: ScdlGrantDbo[] = [DBO];
     const DELIMETER = "%";
     const PAGE_NAME = "nom de feuille";
     const ROW_OFFSET = 4;
@@ -53,6 +60,7 @@ describe("ScdlCli", () => {
         mockedScdlService._buildGrantUniqueId.mockReturnValue(UNIQUE_ID);
         mockedScdlService.parseCsv.mockReturnValue({ entities: STORABLE_DATA_ARRAY, errors: [] });
         mockedScdlService.parseXls.mockReturnValue({ entities: STORABLE_DATA_ARRAY, errors: [] });
+
         cli = new ScdlCli();
     });
 
@@ -304,23 +312,41 @@ describe("ScdlCli", () => {
     });
 
     describe("persistEntities", () => {
-        it("should call scdlService.createManyGrants()", async () => {
+        beforeAll(() => {
+            jest.mocked(scdlService.buildDbosFromStorables).mockResolvedValue(DBOS);
+        });
+
+        afterAll(() => {
+            jest.mocked(scdlService.buildDbosFromStorables).mockRestore();
+        });
+
+        it("should call scdlService.buildDbosFromStorables()", async () => {
             // @ts-expect-error -- test private
             await cli.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
-            expect(scdlService.createManyGrants).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug);
+            expect(scdlService.buildDbosFromStorables).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug);
+        });
+
+        it("saves in scdl collection with saveDbos", async () => {
+            // @ts-expect-error -- test private
+            await cli.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
+            expect(scdlService.saveDbos).toHaveBeenCalledWith(DBOS);
+        });
+
+        it("saves in applicationFlat", async () => {
+            // @ts-expect-error -- test private
+            await cli.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
+            expect(scdlGrantService.saveDbosToApplicationFlat).toHaveBeenCalledWith(DBOS);
         });
 
         it("if DuplicateIndexError arises, doesn't fail and logs", async () => {
-            mockedScdlService.createManyGrants.mockRejectedValueOnce(
-                new DuplicateIndexError("error", [1, 2, 3, 4, 5, 6]),
-            );
+            mockedScdlService.saveDbos.mockRejectedValueOnce(new DuplicateIndexError("error", [1, 2, 3, 4, 5, 6]));
             // @ts-expect-error -- test private
             await cli.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
         });
 
         it("if another error arises, fail and throw it again", async () => {
             const ERROR = new Error("error");
-            mockedScdlService.createManyGrants.mockRejectedValueOnce(ERROR);
+            mockedScdlService.saveDbos.mockRejectedValueOnce(ERROR);
             // @ts-expect-error -- test private
             const test = () => cli.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
             await expect(test).rejects.toThrowError(ERROR);
@@ -397,6 +423,32 @@ describe("ScdlCli", () => {
             // @ts-expect-error -- test private method
             cli.exportErrors(ERRORS, FILE);
             expect(fs.writeFileSync).toHaveBeenCalledWith(OUTPUT_PATH, STR_CONTENT, { flag: "w", encoding: "utf-8" });
+        });
+    });
+
+    describe("initApplicationFlat", () => {
+        it("checks if there is already data", async () => {
+            await cli.initApplicationFlat();
+            expect(applicationFlatService.containsDataFromProvider).toHaveBeenCalledWith(/^scdl-/);
+        });
+
+        it("if there is no data, call service", async () => {
+            jest.mocked(applicationFlatService.containsDataFromProvider).mockResolvedValueOnce(false);
+            await cli.initApplicationFlat();
+            expect(scdlGrantService.initApplicationFlat).toHaveBeenCalled();
+        });
+
+        it("if there is data, do not call service", async () => {
+            jest.mocked(applicationFlatService.containsDataFromProvider).mockResolvedValueOnce(true);
+            await cli.initApplicationFlat();
+            expect(scdlGrantService.initApplicationFlat).not.toHaveBeenCalled();
+        });
+
+        it("if there is data, show warning", async () => {
+            const spyConsole = jest.spyOn(console, "warn");
+            jest.mocked(applicationFlatService.containsDataFromProvider).mockResolvedValueOnce(true);
+            await cli.initApplicationFlat();
+            expect(spyConsole).toHaveBeenCalled();
         });
     });
 });

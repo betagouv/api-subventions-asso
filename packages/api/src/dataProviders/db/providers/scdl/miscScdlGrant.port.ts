@@ -6,6 +6,7 @@ import { ScdlGrantDbo } from "../../../../modules/providers/scdl/dbo/ScdlGrantDb
 export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
     readonly collectionName = "misc-scdl-grant";
     readonly backupCollectionName = this.collectionName + "-backup";
+
     readonly joinIndexes = {
         miscScdlProducer: "producerSlug",
     };
@@ -16,6 +17,10 @@ export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
 
     public async findAll() {
         return this.collection.find({}).toArray();
+    }
+
+    public findAllCursor() {
+        return this.collection.find({});
     }
 
     // retrieves documents over a period of exercise
@@ -30,8 +35,9 @@ export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
                 .toArray();
     }
 
-    public async createMany(entities: ScdlGrantDbo[]) {
-        return this.collection.insertMany(entities, { ordered: false }).catch(error => {
+    public async createMany(dbos: ScdlGrantDbo[]) {
+        // the port takes dbo directly because objectId from misc-scdl collection is also used in application flat
+        return this.collection.insertMany(dbos, { ordered: false }).catch(error => {
             if (isMongoDuplicateError(error)) {
                 throw buildDuplicateIndexError<MiscScdlGrantEntity[]>(error);
             }

@@ -7,6 +7,7 @@ import miscScdlGrantPort from "../../../src/dataProviders/db/providers/scdl/misc
 import MiscScdlProducer from "../../../src/modules/providers/scdl/__fixtures__/MiscScdlProducer";
 import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
 import { SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
+import applicationFlatPort from "../../../src/dataProviders/db/applicationFlat/applicationFlat.port";
 
 describe("SCDL CLI", () => {
     let cli: ScdlCli;
@@ -68,6 +69,7 @@ describe("SCDL CLI", () => {
                 const grants = await miscScdlGrantPort.findAll();
                 const expectedAny = grants.map(() => ({
                     _id: expect.any(String),
+                    updateDate: expect.any(Date),
                 }));
                 expect(grants).toMatchSnapshot(expectedAny);
             });
@@ -77,6 +79,7 @@ describe("SCDL CLI", () => {
                 const grants = await miscScdlGrantPort.findAll(); // only grants from 2023 as it only saves most recent exercise in multi exercise files
                 const expectedAny = grants.map(() => ({
                     _id: expect.any(String),
+                    updateDate: expect.any(Date),
                 }));
                 expect(grants).toMatchSnapshot(expectedAny);
             });
@@ -97,17 +100,32 @@ describe("SCDL CLI", () => {
                 ).toMatchSnapshot();
             });
 
-            it("persists all data on first producer's importaton", async () => {
+            it("persists all data on first producer's importation", async () => {
                 await test("SCDL", MiscScdlProducer.slug, FIRST_IMPORT_DATE);
                 const actual = await miscScdlGrantPort.findAll();
-                expect(actual?.[0]).toMatchSnapshot();
+                expect(actual?.[0]).toMatchSnapshot({ updateDate: expect.any(Date) });
             });
 
             it("persists new data when data from imported exercises already in DB", async () => {
                 await test("SCDL", MiscScdlProducer.slug, FIRST_IMPORT_DATE);
                 await test("SCDL_SECOND_IMPORT", MiscScdlProducer.slug, SECOND_IMPORT_DATE);
                 const actual = await miscScdlGrantPort.findAll();
-                expect(actual).toMatchSnapshot();
+                const expectedAny = actual.map(() => ({ updateDate: expect.any(Date) }));
+                expect(actual).toMatchSnapshot(expectedAny);
+            });
+
+            it("persists all data in ApplicationFlat on first producer's importation", async () => {
+                await test("SCDL", MiscScdlProducer.slug, FIRST_IMPORT_DATE);
+                const actual = await applicationFlatPort.findAll();
+                expect(actual?.[0]).toMatchSnapshot({ updateDate: expect.any(Date) });
+            });
+
+            it("persists new data in ApplicationFlat when data from imported exercises already in DB", async () => {
+                await test("SCDL", MiscScdlProducer.slug, FIRST_IMPORT_DATE);
+                await test("SCDL_SECOND_IMPORT", MiscScdlProducer.slug, SECOND_IMPORT_DATE);
+                const actual = await applicationFlatPort.findAll();
+                const expectedAny = actual.map(() => ({ updateDate: expect.any(Date) }));
+                expect(actual).toMatchSnapshot(expectedAny);
             });
 
             it("throws an error when imported data contains less data what is persisted for a given exercice", async () => {
@@ -163,6 +181,15 @@ describe("SCDL CLI", () => {
                     );
                 },
             );
+        });
+    });
+
+    describe("initApplicationFlat", () => {
+        it("creates proper applicationFlat entities in collection", async () => {
+            await miscScdlGrantPort.createMany(SCDL_GRANT_DBOS);
+            await cli.initApplicationFlat();
+            const actual = await applicationFlatPort.findAll();
+            expect(actual).toMatchSnapshot();
         });
     });
 });

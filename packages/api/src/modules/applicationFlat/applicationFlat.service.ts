@@ -11,6 +11,8 @@ import GrantProvider from "../grant/@types/GrantProvider";
 import Siret from "../../identifierObjects/Siret";
 import ApplicationFlatAdapter from "./ApplicationFlatAdapter";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
+import { ReadableStream } from "node:stream/web";
+import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
 
 export class ApplicationFlatService
     extends ProviderCore
@@ -72,7 +74,7 @@ export class ApplicationFlatService
             provider: grant.provider,
             type: "application",
             data: grant,
-            joinKey: grant.provider === "fonjep" ? grant.paymentId : grant.ej,
+            joinKey: (grant.provider === "fonjep" ? grant.paymentId : grant.ej) ?? undefined,
         }));
     }
 
@@ -83,35 +85,16 @@ export class ApplicationFlatService
      */
 
     async saveFromStream(readStream: ReadableStream<ApplicationFlatEntity>) {
-        const CHUNK_SIZE = 1000;
-        let buffer: ApplicationFlatEntity[] = [];
-        let counter = 0;
-        const writeStream = new WritableStream({
-            async write(applicationFlatEntity: ApplicationFlatEntity | null) {
-                if (!applicationFlatEntity) return;
-                if (buffer.length === CHUNK_SIZE) {
-                    await applicationFlatPort.upsertMany(buffer);
-                    counter += buffer.length;
-                    buffer = [];
-                }
-                buffer.push(applicationFlatEntity);
-                counter += buffer.length;
-            },
-            async close() {
-                await applicationFlatPort.upsertMany(buffer);
-                console.log(`operations ended successfully, ${counter} application flat entities saved`);
-                // TODO differentiate counts inserts and updates?
-            },
-            async abort(err: Error) {
-                console.trace();
-                console.error(err);
-            },
-        });
-        await readStream.pipeTo(writeStream);
+        return insertStreamByBatch(readStream, batch => applicationFlatPort.upsertMany(batch), 10000);
     }
 
     isCollectionInitialized() {
         return applicationFlatPort.hasBeenInitialized();
+    }
+
+    async containsDataFromProvider(provider: string | RegExp) {
+        const cursor = applicationFlatPort.cursorFind({ provider });
+        return cursor.hasNext();
     }
 
     /**

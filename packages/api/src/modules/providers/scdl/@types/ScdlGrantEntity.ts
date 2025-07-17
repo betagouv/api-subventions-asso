@@ -18,6 +18,5 @@ export type ScdlGrantEntity = {
     UeNotification?: boolean;
     grantPercentage?: number;
     aidSystem?: string;
+    updateDate: Date;
 };
-
-export type EnhancedScdlGrantEntity = ScdlGrantEntity & { exercice: string };

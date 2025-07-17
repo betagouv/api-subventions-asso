@@ -14,6 +14,8 @@ import {
 import { DEV } from "../../configurations/env.conf";
 import dataLogService from "../../modules/data-log/dataLog.service";
 import { validateDate } from "../../shared/helpers/CliHelper";
+import scdlGrantService from "../../modules/providers/scdl/scdl.grant.service";
+import applicationFlatService from "../../modules/applicationFlat/applicationFlat.service";
 
 export default class ScdlCli {
     static cmdName = "scdl";
@@ -142,14 +144,17 @@ export default class ScdlCli {
             throw new Error("Producer ID does not match any producer in database");
     }
 
-    private async persistEntities(entities: ScdlStorableGrant[], producerSlug: string) {
-        if (!entities || !entities.length) throw new Error("No entities could be created from this file");
+    private async persistEntities(storables: ScdlStorableGrant[], producerSlug: string) {
+        if (!storables || !storables.length) throw new Error("No entities could be created from this file");
 
-        console.log(`start persisting ${entities.length} grants`);
+        console.log(`start persisting ${storables.length} grants`);
         let duplicates: MiscScdlGrantEntity[] = [];
 
         try {
-            await scdlService.createManyGrants(entities, producerSlug);
+            // the cli builds dbo because objectId from misc-scdl collection is also used in application flat
+            const dbos = await scdlService.buildDbosFromStorables(storables, producerSlug);
+            await scdlService.saveDbos(dbos);
+            await scdlGrantService.saveDbosToApplicationFlat(dbos);
         } catch (e) {
             if (!(e instanceof DuplicateIndexError)) throw e;
             duplicates = (e as DuplicateIndexError<MiscScdlGrantEntity[]>).duplicates;
@@ -184,6 +189,20 @@ export default class ScdlCli {
         } catch (err) {
             if (err) console.log("Can't write to file");
             else console.log("fields with errors exported in " + path.resolve(outputPath));
+        }
+    }
+
+    async initApplicationFlat() {
+        if (await applicationFlatService.containsDataFromProvider(/^scdl-/))
+            return console.warn(
+                "DB already initialized, maybe you want to manually empty collection before running this command",
+            );
+        const ticTacInterval = setInterval(() => console.log("TIC"), 60000);
+        console.log("Create application flat entities from scdl collection");
+        try {
+            await scdlGrantService.initApplicationFlat();
+        } finally {
+            clearInterval(ticTacInterval);
         }
     }
 }
