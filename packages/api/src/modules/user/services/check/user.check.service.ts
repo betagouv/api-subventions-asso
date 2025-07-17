@@ -39,7 +39,8 @@ export class UserCheckService {
      */
     async validateSanitizeUser(user: FutureUserDto) {
         try {
-            await userCheckService.validateEmailAndDomain(user.email);
+            if (user.agentConnectId) userCheckService.validateOnlyEmail(user.email);
+            else await userCheckService.validateEmailAndDomain(user.email);
         } catch (e) {
             if (e instanceof BadRequestError && e.code === UserServiceErrors.CREATE_EMAIL_GOUV) {
                 notifyService.notify(NotificationType.SIGNUP_BAD_DOMAIN, user);
