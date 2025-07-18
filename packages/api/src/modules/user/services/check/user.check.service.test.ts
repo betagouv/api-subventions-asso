@@ -12,6 +12,11 @@ jest.mock("../../../../shared/helpers/StringHelper");
 const mockedStringHelper = jest.mocked(stringHelper);
 import userRolesService from "../roles/user.roles.service";
 import { UserServiceErrors } from "../../user.enum";
+import notifyService from "../../../notify/notify.service";
+jest.mock("../../../notify/notify.service", () => ({
+    notify: jest.fn(), // I shouldn't have to do this but mocking didn't work
+}));
+import { NotificationType } from "../../../notify/@types/NotificationType";
 jest.mock("../roles/user.roles.service");
 const mockedUserRolesService = jest.mocked(userRolesService);
 
@@ -100,18 +105,21 @@ describe("user check service", () => {
     });
 
     describe("validateSanitizeUser", () => {
-        const mockValidateEmail = jest.spyOn(userCheckService, "validateEmailAndDomain");
+        const mockValidateEmailAndDomain = jest.spyOn(userCheckService, "validateEmailAndDomain");
+        const mockValidateEmailOnly = jest.spyOn(userCheckService, "validateOnlyEmail");
 
         beforeAll(() => {
             mockedUserPort.findByEmail.mockResolvedValue(null);
             mockedStringHelper.sanitizeToPlainText.mockReturnValue("safeString");
-            mockValidateEmail.mockResolvedValue(undefined);
+            mockValidateEmailAndDomain.mockResolvedValue(undefined);
+            mockValidateEmailOnly.mockReturnValue(undefined);
             mockedUserRolesService.validRoles.mockReturnValue(true);
         });
 
         afterAll(() => {
             jest.mocked(mockedUserPort.findByEmail).mockReset();
-            mockValidateEmail.mockRestore();
+            mockValidateEmailAndDomain.mockRestore();
+            mockValidateEmailOnly.mockRestore();
             mockedUserRolesService.validRoles.mockRestore();
             mockedStringHelper.sanitizeToPlainText.mockRestore();
         });
@@ -120,6 +128,31 @@ describe("user check service", () => {
             const roles = ["ratata", "tralala"];
             await userCheckService.validateSanitizeUser({ email: USER_EMAIL, roles });
             expect(mockedUserRolesService.validRoles).toHaveBeenCalledWith(roles);
+        });
+
+        it("validates email only if agent connect id is present", async () => {
+            await userCheckService.validateSanitizeUser({ email: USER_EMAIL, agentConnectId: "some-id" });
+            expect(mockValidateEmailOnly).toHaveBeenCalledWith(USER_EMAIL);
+        });
+
+        it("validates email and domain only if agent connect id is not present", async () => {
+            await userCheckService.validateSanitizeUser({ email: USER_EMAIL });
+            expect(mockValidateEmailAndDomain).toHaveBeenCalledWith(USER_EMAIL);
+        });
+
+        it("throws error if any", async () => {
+            const error = new Error("error message");
+            mockValidateEmailAndDomain.mockRejectedValueOnce(error);
+            const test = userCheckService.validateSanitizeUser({ email: USER_EMAIL });
+            await expect(test).rejects.toEqual(error);
+        });
+
+        it("notifies if bad domain error", async () => {
+            const USER = { email: USER_EMAIL };
+            const error = new BadRequestError("error message", UserServiceErrors.CREATE_EMAIL_GOUV);
+            mockValidateEmailAndDomain.mockRejectedValueOnce(error);
+            await userCheckService.validateSanitizeUser(USER).catch(_e => {});
+            expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.SIGNUP_BAD_DOMAIN, USER);
         });
 
         it.each`
