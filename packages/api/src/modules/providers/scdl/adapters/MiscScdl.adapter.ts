@@ -111,7 +111,7 @@ export default class MiscScdlAdapter {
             allocatorId: dbo.allocatorSiret,
             managingAuthorityId: null,
             confinancersId: GenericAdapter.NOT_APPLICABLE_VALUE,
-            beneficiaryEstablishmentId: dbo.allocatorSiret,
+            beneficiaryEstablishmentId: dbo.associationSiret,
             joinKeyId: GenericAdapter.NOT_APPLICABLE_VALUE,
             idRAE: dbo.idRAE ?? null,
             applicationId: GenericAdapter.NOT_APPLICABLE_VALUE,
