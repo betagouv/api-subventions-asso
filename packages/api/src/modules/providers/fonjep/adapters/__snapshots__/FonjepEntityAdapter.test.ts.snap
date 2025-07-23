@@ -44,7 +44,7 @@ exports[`FonjepEntityAdapter toFonjepApplicationFlat return application flat ent
   "provider": "fonjep",
   "requestYear": null,
   "requestedAmount": 1000,
-  "scheme": "Libelle",
+  "scheme": "FONJEP Jeunesse éducation populaire",
   "statusLabel": "Accordé",
   "subScheme": "N/A",
   "subventionPercentage": null,
