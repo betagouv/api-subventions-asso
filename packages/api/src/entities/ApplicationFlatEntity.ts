@@ -5,8 +5,8 @@ import { IdentifierIdName } from "../identifierObjects/@types/IdentifierName";
 import { OrDefault } from "../shared/helpers/TypeHelper";
 
 export enum ApplicationNature {
-    MONEY = "MONEY",
-    NATURE = "NATURE",
+    MONEY = "Aide en numéraire",
+    NATURE = "Aide en nature",
 }
 
 export enum PaymentCondition {
