@@ -11,6 +11,7 @@ import dataBretagnePort from "../../../../src/dataProviders/api/dataBretagne/dat
 import { DATA_BRETAGNE_DTOS, PROGRAMS } from "../../../__fixtures__/paymentsFlat.fixture";
 import stateBudgetProgramPort from "../../../../src/dataProviders/db/state-budget-program/stateBudgetProgram.port";
 import paymentFlatPort from "../../../../src/dataProviders/db/paymentFlat/paymentFlat.port";
+import applicationFlatPort from "../../../../src/dataProviders/db/applicationFlat/applicationFlat.port";
 
 const FILEPATH = path.resolve(__dirname, "./__fixtures__/fonjep-new.xlsx");
 const EXPORT_DATE = new Date("2022-03-03").toISOString();
@@ -44,7 +45,7 @@ describe("FonjepCli", () => {
             expect(actual).toBeUndefined();
         });
 
-        it("should create or replace versement collection", async () => {
+        it("should create or replace Versement collection", async () => {
             await cli.parse(FILEPATH, EXPORT_DATE);
             const actualVersement = await fonjepVersementPort.findAll();
             const expected = actualVersement.map(() => ({
@@ -93,6 +94,14 @@ describe("FonjepCli", () => {
             await cli.parse(FILEPATH, EXPORT_DATE);
             const paymentsFlat = await paymentFlatPort.findAll();
             expect(paymentsFlat.map(flat => ({ ...flat, _id: expect.any(String) }))).toMatchSnapshot();
+        });
+
+        it("should add FonjepApplicationFlat", async () => {
+            await cli.parse(FILEPATH, EXPORT_DATE);
+            const applications = await applicationFlatPort.findAll();
+            expect(
+                applications.map(flat => ({ ...flat, _id: expect.any(String), updateDate: expect.any(Date) })),
+            ).toMatchSnapshot();
         });
     });
 });

@@ -50,6 +50,26 @@ describe("FonjepCli", () => {
             );
         });
 
+        it("should call createPaymentFlatEntitiesFromCollections", async () => {
+            // @ts-expect-error: test private method
+            await cli._parse(FILEPATH, LOGS, EXPORT_DATE);
+            expect(fonjepService.createPaymentFlatEntitiesFromCollections).toHaveBeenCalledWith({
+                thirdParties: ENTITIES.tierEntities,
+                positions: ENTITIES.posteEntities,
+                payments: ENTITIES.versementEntities,
+            });
+        });
+
+        it("should call addToApplicationFlat", async () => {
+            // @ts-expect-error: test private method
+            await cli._parse(FILEPATH, LOGS, EXPORT_DATE);
+            expect(fonjepService.addToApplicationFlat).toHaveBeenCalledWith({
+                positions: ENTITIES.posteEntities,
+                schemes: ENTITIES.dispositifEntities,
+                thirdParties: ENTITIES.tierEntities,
+            });
+        });
+
         it("should call applyTemporyCollection", async () => {
             // @ts-expect-error: test private method
             await cli._parse(FILEPATH, LOGS, EXPORT_DATE);

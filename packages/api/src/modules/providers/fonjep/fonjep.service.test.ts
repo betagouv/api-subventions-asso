@@ -43,6 +43,10 @@ import paymentFlatService from "../../paymentFlat/paymentFlat.service";
 import { DATA_BRETAGNE_RECORDS } from "../dataBretagne/__fixtures__/dataBretagne.fixture";
 import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
 import { ENTITY as APPLICATION_FLAT_ENTITY } from "../../applicationFlat/__fixtures__";
+import { ReadableStream } from "node:stream/web";
+import applicationFlatService from "../../applicationFlat/applicationFlat.service";
+jest.mock("../../applicationFlat/applicationFlat.service");
+
 const PARSED_DATA = {
     tiers: [TIER_DTO],
     postes: [POSTE_DTO_WITH_DATE],
@@ -58,6 +62,9 @@ const ENTITIES = {
     typePosteEntities: [TYPE_POSTE_ENTITY],
     dispositifEntities: [DISPOSITIF_ENTITY],
 };
+
+const POSITIONS = [POSTE_ENTITY];
+const THIRD_PARTIES = [TIERS_ENTITY, ALLOCATOR, INSTRUCTOR];
 
 describe("FonjepService", () => {
     let mockParse: jest.SpyInstance;
@@ -434,6 +441,41 @@ describe("FonjepService", () => {
             });
 
             expect(actual).toEqual([{ ...APPLICATION_FLAT_ENTITY, updateDate: expect.any(Date) }]);
+        });
+    });
+
+    describe("addToApplicationFlat", () => {
+        let mockCreateApplicationFlat: jest.SpyInstance;
+        let mockSaveFlatFromStream: jest.SpyInstance;
+
+        beforeEach(() => {
+            mockCreateApplicationFlat = jest
+                .spyOn(fonjepService, "createApplicationFlatEntitiesFromCollections")
+                .mockReturnValue([APPLICATION_FLAT_ENTITY]);
+            mockSaveFlatFromStream = jest.spyOn(fonjepService, "saveFlatFromStream").mockImplementation(jest.fn());
+        });
+
+        afterAll(() => {
+            mockCreateApplicationFlat.mockRestore();
+            mockSaveFlatFromStream.mockRestore();
+        });
+
+        it("calls saveFlatFromStream with ApplicationFlat stream", async () => {
+            fonjepService.addToApplicationFlat({
+                positions: POSITIONS,
+                thirdParties: THIRD_PARTIES,
+                schemes: DISPOSITIF_ENTITIES,
+            });
+
+            expect(mockSaveFlatFromStream).toHaveBeenCalledWith(expect.any(ReadableStream));
+        });
+    });
+
+    describe("saveFlatFromStream", () => {
+        it("calls applicationFlatService.saveFromStream", () => {
+            const STREAM = ReadableStream.from([APPLICATION_FLAT_ENTITY]);
+            fonjepService.saveFlatFromStream(STREAM);
+            expect(applicationFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);
         });
     });
 });

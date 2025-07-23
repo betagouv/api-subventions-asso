@@ -175,6 +175,16 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
 
     isApplicationFlatProvider = true as const;
 
+    addToApplicationFlat(collections: {
+        positions: FonjepPosteEntity[];
+        thirdParties: FonjepTiersEntity[];
+        schemes: FonjepDispositifEntity[];
+    }) {
+        const applications: ApplicationFlatEntity[] = this.createApplicationFlatEntitiesFromCollections(collections);
+        const stream = ReadableStream.from(applications);
+        this.saveFlatFromStream(stream);
+    }
+
     createApplicationFlatEntitiesFromCollections(collections: {
         positions: FonjepPosteEntity[];
         thirdParties: FonjepTiersEntity[];
