@@ -242,16 +242,19 @@ export default class FonjepEntityAdapter {
         allocator: FonjepTiersEntity; // structure who handle the application payment
         instructor: FonjepTiersEntity; // structure who valid / instructs the application
         scheme: FonjepDispositifEntity;
-    }): Omit<ApplicationFlatEntity, "updateDate"> {
+    }): Omit<ApplicationFlatEntity, "updateDate"> | null {
         const { position, beneficiary, allocator, instructor, scheme } = entities;
         if (!position.annee) throw new Error("FONJEP ApplicationFlat must have a budgetary year");
         if (!beneficiary.siretOuRidet) throw new Error("FONJEP ApplicationFlat must have a beneficiary siret or ridet");
         const beneficiaryEstablishmentIdType =
             EstablishmentIdentifier.getIdentifierType(beneficiary.siretOuRidet) || null;
-        if (!beneficiaryEstablishmentIdType)
-            throw new Error(
+        if (!beneficiaryEstablishmentIdType) {
+            // TODO: this should not happen but has been encountered where rid was present in instead of ridet. See #3586
+            console.log(
                 `FONJEP ApplicationFlat must have a valid beneficiary siret or ridet, given ${beneficiary.siretOuRidet}.`,
             );
+            return null;
+        }
 
         const provider = this.PROVIDER_NAME.toLowerCase(); // replace this with #3338
         const applicationProviderId = `${position.code}-${getShortISODate(this.getConventionDate(position))}`;
