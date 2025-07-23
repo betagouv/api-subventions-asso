@@ -182,7 +182,7 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
     }) {
         const applications: ApplicationFlatEntity[] = this.createApplicationFlatEntitiesFromCollections(collections);
         const stream = ReadableStream.from(applications);
-        this.saveFlatFromStream(stream);
+        return this.saveFlatFromStream(stream);
     }
 
     createApplicationFlatEntitiesFromCollections(collections: {
@@ -234,13 +234,16 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
             }
         });
 
-        if (errors.length) errors.forEach(error => console.log(error));
+        if (errors.length) {
+            console.log(`${errors.length} positions that could not have been adapted to application flat`);
+            // errors.forEach(error => console.log(error)); uncomment this if you want to list to be displayed
+        }
 
         return applications;
     }
 
-    saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>): void {
-        applicationFlatService.saveFromStream(stream);
+    saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>) {
+        return applicationFlatService.saveFromStream(stream);
     }
 }
 
