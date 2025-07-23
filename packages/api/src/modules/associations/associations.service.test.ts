@@ -1,13 +1,11 @@
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import associationsService from "./associations.service";
-import { Etablissement, Payment, DocumentDto } from "dto";
+import { Etablissement, Payment, DocumentDto, DemandeSubvention } from "dto";
 import subventionService from "../subventions/subventions.service";
 import providers from "../providers";
 import etablissementService from "../etablissements/etablissements.service";
 import paymentService from "../payments/payments.service";
 import documentsService from "../documents/documents.service";
-import Flux from "../../shared/Flux";
-import { SubventionsFlux } from "../subventions/@types/SubventionsFlux";
 import { NotFoundError } from "core";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import Siren from "../../identifierObjects/Siren";
@@ -121,7 +119,8 @@ describe("associationsService", () => {
 
     describe("getSubventions()", () => {
         it("should call DemandeSubventionService.getByAssociation()", async () => {
-            getDemandesByAssociationMock.mockImplementationOnce(() => new Flux<SubventionsFlux>());
+            // @ts-expect-error: mock resolved value
+            getDemandesByAssociationMock.mockResolvedValueOnce([{} as DemandeSubvention]);
             await associationsService.getSubventions(IDENTIFIER);
             expect(getDemandesByAssociationMock).toHaveBeenCalledWith(IDENTIFIER);
         });

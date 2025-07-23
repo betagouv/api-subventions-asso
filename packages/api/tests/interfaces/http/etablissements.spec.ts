@@ -42,12 +42,9 @@ describe("/etablissement", () => {
         // TODO fix these tests
         describe("on success", () => {
             const SUBVENTIONS = ["subventions"];
-            const SUBVENTION_FLUX = [{ subventions: SUBVENTIONS }];
 
             beforeEach(() => {
-                getSubventionsMock.mockImplementationOnce(() => ({
-                    toPromise: async () => SUBVENTION_FLUX,
-                }));
+                getSubventionsMock.mockResolvedValueOnce(SUBVENTIONS);
             });
 
             it("should return 200", async () => {

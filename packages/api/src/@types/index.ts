@@ -4,6 +4,5 @@ export * from "./ParserInfo";
 export * from "./ParserScheme";
 export * from "./utils";
 export * from "./Cli.interface";
-export * from "./ControllerMethod";
 export * from "./ApiRequests";
 export * from "./TsoaApiError";
