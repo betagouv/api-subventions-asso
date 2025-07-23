@@ -175,13 +175,55 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
 
     isApplicationFlatProvider = true as const;
 
-    createApplicationFlatEntitiesFromCollections(_collections: {
+    createApplicationFlatEntitiesFromCollections(collections: {
         positions: FonjepPosteEntity[];
+        thirdParties: FonjepTiersEntity[];
+        schemes: FonjepDispositifEntity[];
     }): ApplicationFlatEntity[] {
-        return [];
-        // return collections.positions.map(position => {
-        //     return FonjepEntityAdapter.toFonjepApplicationFlat(position);
-        // });
+        const { positions, thirdParties, schemes } = collections;
+
+        const applications: ApplicationFlatEntity[] = [];
+        const errors: string[] = [];
+        const dateOfImport = new Date();
+
+        positions.forEach(position => {
+            const { allocator, beneficiary, instructor } = thirdParties.reduce(
+                (result, thirdParty) => {
+                    if (thirdParty.code === position.financeurPrincipalCode) result.allocator = thirdParty;
+                    if (thirdParty.code === position.associationBeneficiaireCode) result.beneficiary = thirdParty;
+                    if (thirdParty.code === position.financeurAttributeurCode) result.instructor = thirdParty;
+                    return result;
+                },
+                { allocator: undefined, beneficiary: undefined, instructor: undefined } as {
+                    allocator: FonjepTiersEntity | undefined;
+                    beneficiary: FonjepTiersEntity | undefined;
+                    instructor: FonjepTiersEntity | undefined;
+                },
+            );
+
+            const scheme = schemes.find(scheme => scheme.financeurCode === position.financeurPrincipalCode);
+
+            if (!allocator || !beneficiary || !instructor || !scheme) {
+                errors.push(
+                    `Could not find all required data to build ApplicationFlat for FONJEP position ${position.code}`,
+                );
+            } else {
+                applications.push({
+                    ...FonjepEntityAdapter.toFonjepApplicationFlat({
+                        position,
+                        allocator,
+                        beneficiary,
+                        instructor,
+                        scheme,
+                    }),
+                    updateDate: dateOfImport,
+                });
+            }
+        });
+
+        if (errors.length) errors.forEach(error => console.log(error));
+
+        return applications;
     }
 
     saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>): void {
