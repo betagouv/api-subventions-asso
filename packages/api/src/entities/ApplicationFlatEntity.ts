@@ -27,7 +27,7 @@ type MandatoryApplicationFlatEntity = {
     statusLabel: ApplicationStatus;
     requestedAmount: number | null;
     grantedAmount: number | null;
-    updateDate: Date;
+    updateDate: Date; // same as provider's raw data update date
 };
 
 type OptionalApplicationFlatEntity = {

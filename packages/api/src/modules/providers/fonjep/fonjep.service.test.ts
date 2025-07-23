@@ -1,5 +1,8 @@
 import {
+    ALLOCATOR,
+    DISPOSITIF_ENTITIES,
     DISPOSITIF_ENTITY,
+    INSTRUCTOR,
     POSTE_10006_ENTITY,
     POSTE_ENTITIES,
     POSTE_ENTITY,
@@ -39,7 +42,7 @@ import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import paymentFlatService from "../../paymentFlat/paymentFlat.service";
 import { DATA_BRETAGNE_RECORDS } from "../dataBretagne/__fixtures__/dataBretagne.fixture";
 import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
-
+import { ENTITY as APPLICATION_FLAT_ENTITY } from "../../applicationFlat/__fixtures__";
 const PARSED_DATA = {
     tiers: [TIER_DTO],
     postes: [POSTE_DTO_WITH_DATE],
@@ -396,6 +399,41 @@ describe("FonjepService", () => {
 
             // adapter has been mocked to return entity to simplify test
             expect(mockUpsertMay).toHaveBeenCalledWith([CHORUS_PAYMENT_FLAT_ENTITY]);
+        });
+    });
+
+    describe("createApplicationFlatEntitiesFromCollections", () => {
+        const POSITIONS = [POSTE_ENTITY];
+        const THIRD_PARTIES = [TIERS_ENTITY, ALLOCATOR, INSTRUCTOR];
+
+        beforeAll(() => {
+            jest.mocked(FonjepEntityAdapter.toFonjepApplicationFlat).mockReturnValue(APPLICATION_FLAT_ENTITY);
+        });
+
+        it("creates application flat for each position", () => {
+            fonjepService.createApplicationFlatEntitiesFromCollections({
+                positions: POSITIONS,
+                thirdParties: THIRD_PARTIES,
+                schemes: DISPOSITIF_ENTITIES,
+            });
+
+            expect(FonjepEntityAdapter.toFonjepApplicationFlat).toHaveBeenCalledWith({
+                position: POSTE_ENTITY,
+                beneficiary: TIERS_ENTITY,
+                allocator: ALLOCATOR,
+                instructor: INSTRUCTOR,
+                scheme: DISPOSITIF_ENTITIES[0],
+            });
+        });
+
+        it("creates application flat for each position", () => {
+            const actual = fonjepService.createApplicationFlatEntitiesFromCollections({
+                positions: POSITIONS,
+                thirdParties: THIRD_PARTIES,
+                schemes: DISPOSITIF_ENTITIES,
+            });
+
+            expect(actual).toEqual([{ ...APPLICATION_FLAT_ENTITY, updateDate: expect.any(Date) }]);
         });
     });
 });

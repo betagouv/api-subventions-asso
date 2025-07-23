@@ -17,6 +17,30 @@ export const TIERS_ENTITY: FonjepTiersEntity = {
     contactEmail: "john.doe@ille-et-vilaine.fr",
 };
 
+export const ALLOCATOR: FonjepTiersEntity = {
+    code: "10004",
+    raisonSociale: "Ministère des sports, de la jeunesse et de la vie associative",
+    estAssociation: "Non",
+    estCoFinanceurPostes: "Non",
+    estFinanceurPostes: "Oui",
+    siretOuRidet: "20000000000018",
+    codePostal: "75650",
+    ville: "Paris",
+    contactEmail: "mirabelle.prune@jeunesse-asso.fr",
+};
+
+export const INSTRUCTOR: FonjepTiersEntity = {
+    code: "78DDJ",
+    raisonSociale: "SDJES D'ILLE-ET-VILAINE",
+    estAssociation: "Non",
+    estCoFinanceurPostes: "Non",
+    estFinanceurPostes: "Oui",
+    siretOuRidet: "30000000000018",
+    codePostal: "35000",
+    ville: "Rennes",
+    contactEmail: "sdjes35@ac-rennes.fr",
+};
+
 export const TIERS_ENTITY_WITH_NULLS: FonjepTiersEntity = {
     code: "CodeAsso2",
     siretOuRidet: null,
@@ -32,8 +56,8 @@ export const TIERS_ENTITY_WITH_NULLS: FonjepTiersEntity = {
 export const POSTE_ENTITY: FonjepPosteEntity = {
     code: "AB5400K",
     dispositifId: 1,
-    financeurPrincipalCode: "FinanceurPrincipalCode",
-    financeurAttributeurCode: "FinanceurAttributeurCode",
+    financeurPrincipalCode: ALLOCATOR.code,
+    financeurAttributeurCode: INSTRUCTOR.code,
     associationBeneficiaireCode: TIERS_ENTITY.code,
     pstStatutPosteLibelle: "PstStatutPosteLibelle",
     pstRaisonStatutLibelle: "PstRaisonStatutLibelle",
@@ -145,9 +169,13 @@ export const VERSEMENT_ENTITY_WITH_NULLS: FonjepVersementEntity = {
 
 export const TYPE_POSTE_ENTITY: FonjepTypePosteEntity = { code: "Code", libelle: "Libelle" };
 
-export const DISPOSITIF_ENTITY: FonjepDispositifEntity = { id: 1, libelle: "Libelle", financeurCode: "FinanceurCode" };
+export const DISPOSITIF_ENTITY: FonjepDispositifEntity = {
+    id: 1,
+    libelle: "FONJEP Jeunesse éducation populaire",
+    financeurCode: "10004",
+};
 
-export const TIERS_ENTITIES = [TIERS_ENTITY, TIERS_ENTITY_WITH_NULLS];
+export const TIERS_ENTITIES = [TIERS_ENTITY, TIERS_ENTITY_WITH_NULLS, ALLOCATOR, INSTRUCTOR];
 
 export const POSTE_ENTITIES = [POSTE_ENTITY, POSTE_ENTITY_WITH_NULLS];
 
