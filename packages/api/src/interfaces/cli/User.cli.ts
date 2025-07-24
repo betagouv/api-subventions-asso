@@ -16,7 +16,7 @@ export default class UserCli {
 
             await userActivationService.setsPasswordAndActivate(user, DEFAULT_PASSWORD);
             console.info(
-                "User has been activated. Please change password the usual route if you are in production to ensure the password is not logged so at risk",
+                "User has been activated. Please change password with the usual route if you are in production to ensure the password is safe",
             );
         } catch (error: unknown) {
             const e = error as Error;
