@@ -11,3 +11,21 @@ At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\\\\]
 At least 8 characters in length, but no more than 32.",
 }
 `;
+
+exports[`UserController, /user createAdmin creates admin with required email 1`] = `
+{
+  "_id": Any<ObjectId>,
+  "active": true,
+  "email": "super-great-admin@beta.gouv.fr",
+  "firstName": null,
+  "lastActivityDate": null,
+  "lastName": null,
+  "nbVisits": 0,
+  "profileToComplete": false,
+  "roles": [
+    "admin",
+    "user",
+  ],
+  "signupAt": Any<Date>,
+}
+`;

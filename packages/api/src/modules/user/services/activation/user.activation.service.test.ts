@@ -26,7 +26,7 @@ import userCrudService from "../crud/user.crud.service";
 jest.mock("../crud/user.crud.service");
 const mockedUserCrudService = jest.mocked(userCrudService);
 import notifyService from "../../../notify/notify.service";
-import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
+import { DEFAULT_PASSWORD, USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 
 jest.mock("../../../notify/notify.service", () => ({
@@ -326,6 +326,32 @@ describe("user activation service", () => {
             };
             const actual = await userActivationService.resetPassword(PASSWORD, RESET_TOKEN);
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("setsPasswordAndActivate", () => {
+        const HASH = "toto-hashé";
+
+        beforeAll(() => {
+            jest.mocked(userAuthService.getHashPassword).mockResolvedValue(HASH);
+        });
+        afterAll(() => {
+            jest.mocked(userAuthService.getHashPassword).mockRestore();
+        });
+
+        it("hashes given password", async () => {
+            await userActivationService.setsPasswordAndActivate(USER_WITHOUT_SECRET, DEFAULT_PASSWORD);
+            expect(userAuthService.getHashPassword).toHaveBeenCalledWith(DEFAULT_PASSWORD);
+        });
+
+        it("updates user with activation and hashed password", async () => {
+            await userActivationService.setsPasswordAndActivate(USER_WITHOUT_SECRET, DEFAULT_PASSWORD);
+            expect(userPort.update).toHaveBeenCalledWith({
+                _id: USER_WITHOUT_SECRET._id,
+                hashPassword: HASH,
+                active: true,
+                profileToComplete: false,
+            });
         });
     });
 
