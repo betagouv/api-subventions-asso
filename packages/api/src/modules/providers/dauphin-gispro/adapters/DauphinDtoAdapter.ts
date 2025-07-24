@@ -58,8 +58,8 @@ export default class DauphinDtoAdapter {
         }
     }
 
-    private static getStatus(dauphinData: DauphinSubventionDto) {
-        return toStatusFactory(DauphinDtoAdapter._statusConversionArray)(dauphinData.virtualStatusLabel);
+    private static getStatus(rawStatus: string) {
+        return toStatusFactory(DauphinDtoAdapter._statusConversionArray)(rawStatus);
     }
 
     static rawToApplication(rawApplication: RawApplication<DauphinGisproDbo>) {
@@ -88,7 +88,7 @@ export default class DauphinDtoAdapter {
             dispositif: toPV(dispositif),
             ej: dbo.gispro?.ej ? toPV(dbo.gispro?.ej) : undefined,
             versementKey: dbo.gispro?.ej ? toPV(dbo.gispro?.ej) : undefined,
-            statut_label: toPV(DauphinDtoAdapter.getStatus(dauphinData)),
+            statut_label: toPV(DauphinDtoAdapter.getStatus(dauphinData.virtualStatusLabel)),
             status: toPV(dauphinData.virtualStatusLabel),
             annee_demande: toPV(dauphinData.exerciceBudgetaire),
             montants: {
@@ -154,7 +154,7 @@ export default class DauphinDtoAdapter {
             objet: dauphinData.intituleProjet,
             service_instructeur: DauphinDtoAdapter.getInstructorService(dauphinData),
             siret: dauphinData.demandeur.SIRET.complet,
-            statut: DauphinDtoAdapter.getStatus(dauphinData),
+            statut: DauphinDtoAdapter.getStatus(dauphinData.virtualStatusLabel),
         };
     }
 }
