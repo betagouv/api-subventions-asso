@@ -70,14 +70,14 @@ export default class MiscScdlAdapter {
     }
 
     private static normalizePaymentConditions(rawValue?: string): PaymentCondition | null {
-        if (!rawValue) return null;
+        if (typeof rawValue != "string") return null;
         if (rawValue.match(/unique/gi)) return PaymentCondition.UNIQUE;
         if (rawValue.match(/[eé]chelonn[eé]/gi)) return PaymentCondition.PHASED;
         return PaymentCondition.OTHER;
     }
 
     private static normalizePaymentNature(rawValue?: string): ApplicationNature | null {
-        if (!rawValue) return null;
+        if (typeof rawValue != "string") return null;
         if (rawValue.match(/(aide |versement )?(en )?num[ée]raire/gi)) return ApplicationNature.MONEY;
         if (rawValue.match(/(aide )?(en )?nature/gi)) return ApplicationNature.NATURE;
         return null;
