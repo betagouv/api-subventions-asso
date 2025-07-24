@@ -5,7 +5,7 @@ import Siret from "../../../../identifierObjects/Siret";
 import Siren from "../../../../identifierObjects/Siren";
 import DauphinGisproDbo from "./DauphinGisproDbo";
 
-export class DauphinGisproPort extends MongoPort<DauphinGisproDbo> {
+export class DauphinPort extends MongoPort<DauphinGisproDbo> {
     readonly collectionName = "dauphin-gispro";
 
     async createIndexes() {
@@ -113,6 +113,6 @@ export class DauphinGisproPort extends MongoPort<DauphinGisproDbo> {
     }
 }
 
-const dauphinGisproPort = new DauphinGisproPort();
+const dauphinPort = new DauphinPort();
 
-export default dauphinGisproPort;
+export default dauphinPort;
