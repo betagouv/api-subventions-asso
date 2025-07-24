@@ -9,7 +9,7 @@ import fonjepService from "./fonjep/fonjep.service.old";
 import apiAssoService from "./apiAsso/apiAsso.service";
 import avisSituationInseeService from "./avisSituationInsee/avisSituationInsee.service";
 import apiEntrepriseService from "./apiEntreprise/apiEntreprise.service";
-import dauphinService from "./dauphin/dauphin.service";
+import dauphinService from "./dauphin-gispro/dauphin.service";
 import demarchesSimplifieesService from "./demarchesSimplifiees/demarchesSimplifiees.service";
 import bodaccService from "./bodacc/bodacc.service";
 import Provider from "./@types/IProvider";

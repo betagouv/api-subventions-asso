@@ -1,7 +1,7 @@
 import { CliStaticInterface } from "../../@types";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { printAtSameLine } from "../../shared/helpers/CliHelper";
-import dauphinService from "../../modules/providers/dauphin/dauphin.service";
+import dauphinService from "../../modules/providers/dauphin-gispro/dauphin.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class DauphinCli {

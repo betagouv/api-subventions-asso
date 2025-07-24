@@ -6,7 +6,7 @@ import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DAUPHIN_PASSWORD, DAUPHIN_USERNAME } from "../../../configurations/apis.conf";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import configurationsService from "../../configurations/configurations.service";
-import Gispro from "../gispro/@types/Gispro";
+import GisproEntity from "../dauphin-gispro/@types/GisproEntity";
 import { formatIntToTwoDigits } from "../../../shared/helpers/StringHelper";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
@@ -16,7 +16,7 @@ import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIde
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
 import Siren from "../../../identifierObjects/Siren";
 import GrantProvider from "../../grant/@types/GrantProvider";
-import dauphinGisproPort from "../../../dataProviders/db/providers/dauphin/dauphin-gispro.port";
+import dauphinGisproPort from "../../../dataProviders/db/providers/dauphin/dauphin.port";
 import DauphinGisproDbo from "../../../dataProviders/db/providers/dauphin/DauphinGisproDbo";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
@@ -215,7 +215,7 @@ export class DauphinService
         return source as DauphinSubventionDto;
     }
 
-    async insertGisproApplicationEntity(gisproEntity: Gispro) {
+    async insertGisproApplicationEntity(gisproEntity: GisproEntity) {
         const entity = await dauphinGisproPort.findOneByDauphinId(gisproEntity.dauphinId);
 
         if (!entity) return;
