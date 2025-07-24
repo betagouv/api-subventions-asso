@@ -1,7 +1,7 @@
 import configurationsService from "../../configurations/configurations.service";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import dauphinService from "./dauphin.service";
-import dauphinGisproPort from "../../../dataProviders/db/providers/dauphin/dauphin.port";
+import dauphinPort from "../../../dataProviders/db/providers/dauphin/dauphin.port";
 import SpyInstance = jest.SpyInstance;
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
 import Siren from "../../../identifierObjects/Siren";
@@ -78,7 +78,7 @@ describe("Dauphin Service", () => {
         it("should return subventions", async () => {
             const expected = [{ fake: "data" }];
             // @ts-expect-error: mock return value
-            dauphinGisproPort.findBySiren.mockImplementationOnce(async () => expected);
+            dauphinPort.findBySiren.mockImplementationOnce(async () => expected);
             // @ts-expect-error: mock return value
             DauphinDtoAdapter.toDemandeSubvention.mockImplementationOnce(data => data);
             const actual = await dauphinService.getDemandeSubvention(ASSOCIATION_IDENTIFIER);
@@ -100,7 +100,7 @@ describe("Dauphin Service", () => {
             beforeAll(
                 () =>
                     (findBySirenMock = jest
-                        .spyOn(dauphinGisproPort, "findBySiren")
+                        .spyOn(dauphinPort, "findBySiren")
                         // @ts-expect-error: mock
                         .mockImplementation(jest.fn(() => DATA))),
             );
@@ -203,7 +203,7 @@ describe("Dauphin Service", () => {
 
         it("should call port.getLastImportDate()", async () => {
             await dauphinService.updateApplicationCache();
-            expect(dauphinGisproPort.getLastImportDate).toHaveBeenCalledTimes(1);
+            expect(dauphinPort.getLastImportDate).toHaveBeenCalledTimes(1);
         });
 
         it("should call getAuthToken", async () => {
@@ -241,8 +241,8 @@ describe("Dauphin Service", () => {
             const ENTITIES = [{ reference: "REF1" }, { reference: "REF2" }];
             // @ts-expect-error: private method
             await dauphinService.saveApplicationsInCache(ENTITIES);
-            expect(dauphinGisproPort.upsert).toHaveBeenNthCalledWith(1, { dauphin: ENTITIES[0] });
-            expect(dauphinGisproPort.upsert).toHaveBeenNthCalledWith(2, { dauphin: ENTITIES[1] });
+            expect(dauphinPort.upsert).toHaveBeenNthCalledWith(1, { dauphin: ENTITIES[0] });
+            expect(dauphinPort.upsert).toHaveBeenNthCalledWith(2, { dauphin: ENTITIES[1] });
         });
     });
 
