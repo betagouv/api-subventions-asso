@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.71.0](https://github.com/betagouv/api-subventions-asso/compare/v0.70.6...v0.71.0) (2025-07-24)
+
+### Bug Fixes
+
+- **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) do not validate email domain for pro connect users ([#3580](https://github.com/betagouv/api-subventions-asso/issues/3580)) ([0d3146b](https://github.com/betagouv/api-subventions-asso/commit/0d3146b727151f20aae12a36d4906de2c024c816))
+- **api:** [#3551](https://github.com/betagouv/api-subventions-asso/issues/3551) disable broken scdl backup ([#3552](https://github.com/betagouv/api-subventions-asso/issues/3552)) ([5887013](https://github.com/betagouv/api-subventions-asso/commit/5887013a91d38c42548d5bd654b7bcdf5fe073f8))
+- **api:** [#3553](https://github.com/betagouv/api-subventions-asso/issues/3553) fix payment duplicate collection name and disable payment flat for fonjep ([#3555](https://github.com/betagouv/api-subventions-asso/issues/3555)) ([0eb26f9](https://github.com/betagouv/api-subventions-asso/commit/0eb26f9d43d04111dd549ceb77f805e35d07da66))
+- **api:** scdl to flat mapping error ([b20d849](https://github.com/betagouv/api-subventions-asso/commit/b20d8495b947ebd9beac353bf07e1434b15fc831))
+
+### Features
+
+- **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) better case managment for finding headers ([#3532](https://github.com/betagouv/api-subventions-asso/issues/3532)) ([3c54c30](https://github.com/betagouv/api-subventions-asso/commit/3c54c3017598474d436b87f61366c5d2b6896663))
+- **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) give value for application flat nature enum ([#3576](https://github.com/betagouv/api-subventions-asso/issues/3576)) ([ca5af33](https://github.com/betagouv/api-subventions-asso/commit/ca5af33c0f37b730eb9a2a56431c86a4a7bff9b0))
+- **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) scdl mapper removes spaces in siret ([#3550](https://github.com/betagouv/api-subventions-asso/issues/3550)) ([95fb888](https://github.com/betagouv/api-subventions-asso/commit/95fb8889029d6a232e702cedb812fdd78bf4b274))
+- **api:** [#3450](https://github.com/betagouv/api-subventions-asso/issues/3450) [#3538](https://github.com/betagouv/api-subventions-asso/issues/3538) scdl as aplicationFlat ([#3502](https://github.com/betagouv/api-subventions-asso/issues/3502)) ([40dd04e](https://github.com/betagouv/api-subventions-asso/commit/40dd04e52acf406236cf33502f38690ef5a37227))
+- **api:** [#3505](https://github.com/betagouv/api-subventions-asso/issues/3505) flat provider calls flat service that persists data ([#3511](https://github.com/betagouv/api-subventions-asso/issues/3511)) ([e809521](https://github.com/betagouv/api-subventions-asso/commit/e80952189a7dcf114c58d3fa58909e335a58a710))
+- **api:** [#3506](https://github.com/betagouv/api-subventions-asso/issues/3506) update date in ApplicationFlat ([#3529](https://github.com/betagouv/api-subventions-asso/issues/3529)) ([f174493](https://github.com/betagouv/api-subventions-asso/commit/f174493a82b176be7dda69f4b5dfd8f26b269f25))
+- **api:** [#3533](https://github.com/betagouv/api-subventions-asso/issues/3533) handle excel date in scdl decisionReference adapter ([#3565](https://github.com/betagouv/api-subventions-asso/issues/3565)) ([5eca190](https://github.com/betagouv/api-subventions-asso/commit/5eca190e5c82c3c876371dff6fa93e1606dff095))
+
 ## [0.70.6](https://github.com/betagouv/api-subventions-asso/compare/v0.70.5...v0.70.6) (2025-07-02)
 
 ### Bug Fixes
