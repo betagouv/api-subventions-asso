@@ -1,7 +1,7 @@
 import configurationsService from "../../configurations/configurations.service";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import dauphinService from "./dauphin.service";
-import dauphinGisproPort from "../../../dataProviders/db/providers/dauphin/dauphin-gispro.port";
+import dauphinGisproPort from "../../../dataProviders/db/providers/dauphin/dauphin.port";
 import SpyInstance = jest.SpyInstance;
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
 import Siren from "../../../identifierObjects/Siren";
@@ -12,7 +12,7 @@ jest.mock("axios", () => ({
     get: jest.fn(),
 }));
 
-jest.mock("../../../dataProviders/db/providers/dauphin/dauphin-gispro.port", () => ({
+jest.mock("../../../dataProviders/db/providers/dauphin/dauphin.port", () => ({
     getLastImportDate: jest.fn(() => new Date()),
     upsert: jest.fn(),
     findBySiret: jest.fn(),

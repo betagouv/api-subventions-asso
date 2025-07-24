@@ -29,7 +29,7 @@ import DEFAULT_ASSOCIATION, {
     SIREN_STR,
     SIRET_STR,
 } from "../../__fixtures__/association.fixture";
-import dauphinGisproPort from "../../../src/dataProviders/db/providers/dauphin/dauphin-gispro.port";
+import dauphinGisproPort from "../../../src/dataProviders/db/providers/dauphin/dauphin.port";
 import { DAUPHIN_GISPRO_DBOS } from "../../dataProviders/db/__fixtures__/dauphinGispro.fixtures";
 import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
 import fonjepPaymentPort from "../../../src/dataProviders/db/providers/fonjep/fonjep.payment.port.old";

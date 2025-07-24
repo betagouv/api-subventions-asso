@@ -4,8 +4,8 @@ import tqdm from "tqdm";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../@types";
 import CliController from "../../shared/CliController";
-import GisproParser from "../../modules/providers/gispro/gispro.parser";
-import dauphinService from "../../modules/providers/dauphin/dauphin.service";
+import GisproParser from "../../modules/providers/dauphin-gispro/gispro.parser";
+import dauphinService from "../../modules/providers/dauphin-gispro/dauphin.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class GisproCli extends CliController {

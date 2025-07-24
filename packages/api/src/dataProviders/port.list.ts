@@ -8,7 +8,7 @@ import userResetPort from "./db/user/user-reset.port";
 import userPort from "./db/user/user.port";
 import consumerTokenPort from "./db/user/consumer-token.port";
 import chorusLinePort from "./db/providers/chorus/chorus.line.port";
-import dauphinGisproPort from "./db/providers/dauphin/dauphin-gispro.port";
+import dauphinGisproPort from "./db/providers/dauphin/dauphin.port";
 import demarchesSimplifieesDataPort from "./db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
 import demarchesSimplifieesSchemaPort from "./db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port";
 import fonjepSubventionPort from "./db/providers/fonjep/fonjep.subvention.port.old";

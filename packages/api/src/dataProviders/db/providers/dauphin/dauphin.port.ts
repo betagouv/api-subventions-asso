@@ -1,6 +1,6 @@
 import { Collection } from "mongodb";
 import MongoPort from "../../../../shared/MongoPort";
-import DauphinSubventionDto from "../../../../modules/providers/dauphin/dto/DauphinSubventionDto";
+import DauphinSubventionDto from "../../../../modules/providers/dauphin-gispro/dto/DauphinSubventionDto";
 import Siret from "../../../../identifierObjects/Siret";
 import Siren from "../../../../identifierObjects/Siren";
 import DauphinGisproDbo from "./DauphinGisproDbo";

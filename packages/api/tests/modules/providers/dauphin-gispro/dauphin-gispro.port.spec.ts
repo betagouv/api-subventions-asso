@@ -1,4 +1,4 @@
-import dauphinGisproPort from "../../../../src/dataProviders/db/providers/dauphin/dauphin-gispro.port";
+import dauphinGisproPort from "../../../../src/dataProviders/db/providers/dauphin/dauphin.port";
 import DauphinGisproDbo from "../../../../src/dataProviders/db/providers/dauphin/DauphinGisproDbo";
 
 const DATE = new Date();
