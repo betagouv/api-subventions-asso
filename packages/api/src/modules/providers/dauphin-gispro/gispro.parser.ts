@@ -1,6 +1,6 @@
 import tqdm from "tqdm";
 import { GenericParser } from "../../../shared/GenericParser";
-import { DefaultObject } from "../../../@types";
+import { DefaultObject, ParserInfo } from "../../../@types";
 import GisproEntity from "./@types/GisproEntity";
 
 export default class GisproParser {
@@ -47,10 +47,10 @@ export default class GisproParser {
         codeProjet: { path: [["Projet - Code dossier"]] },
     };
 
-    static parse(content: Buffer, configKey, validator: (entity: GisproEntity) => boolean) {
+    static parse(content: Buffer, exercise: number, validator: (entity: GisproEntity) => boolean = () => true) {
         console.log("Open and read file ...");
         const pages = GenericParser.xlsParse(content);
-        const page = pages[GisproParser.pageIndexByYear[configKey]];
+        const page = pages[GisproParser.pageIndexByYear[exercise]];
         console.log("Read file end");
 
         const header = page[0] as string[];

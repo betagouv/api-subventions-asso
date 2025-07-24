@@ -1,11 +1,11 @@
 import fs from "fs";
-import tqdm from "tqdm";
 
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../@types";
 import CliController from "../../shared/CliController";
 import GisproParser from "../../modules/providers/dauphin-gispro/gispro.parser";
 import dauphinService from "../../modules/providers/dauphin-gispro/dauphin.service";
+import gisproService from "../../modules/providers/dauphin-gispro/gispro.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class GisproCli extends CliController {
@@ -32,26 +32,16 @@ export default class GisproCli extends CliController {
 
         const fileContent = fs.readFileSync(file);
 
-        GisproParser.parse(fileContent, parseInt(year), () => true);
+        GisproParser.parse(fileContent, parseInt(year));
     }
 
     protected async _parse(file: string, logs: unknown[], exportDate: Date, ..._args) {
         this.logger.logIC("\nStart parse file: ", file);
 
-        const year = exportDate.getFullYear();
+        const exercise = exportDate.getFullYear();
 
         const fileContent = fs.readFileSync(file);
 
-        const entities = GisproParser.parse(fileContent, year, () => true);
-
-        this.logger.logIC(entities.length + " entities founds");
-
-        this.logger.logIC("Start save entities");
-
-        for await (const entity of tqdm(entities)) {
-            await dauphinService.insertGisproApplicationEntity(entity);
-        }
-
-        this.logger.logIC("\nEntities has been saved");
+        await gisproService.parseSaveXls(fileContent, exercise);
     }
 }
