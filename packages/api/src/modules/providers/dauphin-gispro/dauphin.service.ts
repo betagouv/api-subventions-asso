@@ -6,7 +6,6 @@ import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DAUPHIN_PASSWORD, DAUPHIN_USERNAME } from "../../../configurations/apis.conf";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import configurationsService from "../../configurations/configurations.service";
-import GisproEntity from "../dauphin-gispro/@types/GisproEntity";
 import { formatIntToTwoDigits } from "../../../shared/helpers/StringHelper";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
@@ -213,15 +212,6 @@ export class DauphinService
         source.codeActionProjet = source.referenceAdministrative.match(/(?:DA)?(\d{8})(?:-\d*)?/)?.[1];
 
         return source as DauphinSubventionDto;
-    }
-
-    async insertGisproApplicationEntity(gisproEntity: GisproEntity) {
-        const entity = await dauphinGisproPort.findOneByDauphinId(gisproEntity.dauphinId);
-
-        if (!entity) return;
-
-        entity.gispro = gisproEntity;
-        await dauphinGisproPort.upsert(entity);
     }
 
     migrateDauphinCacheToDauphinGispro(logger) {
