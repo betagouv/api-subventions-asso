@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`FonjepEntityAdapter buildPaymentFlatPaymentId return idVersement 1`] = `"AB5400K-2024-06-12-2022-10000000000001"`;
+exports[`FonjepEntityAdapter Flat formats buildFlatPaymentId return idVersement 1`] = `"AB5400K-2024-06-12-2022-10000000000001"`;
 
-exports[`FonjepEntityAdapter buildPaymentFlatUniqueId return idVersement 1`] = `"fonjep-CODE_POSTE-OPERATION_DATE-EXERCISE-IDENTIFIER-163-N/A-N/A-2023-07-12-N/A-N/A"`;
+exports[`FonjepEntityAdapter Flat formats buildPaymentFlatUniqueId return idVersement 1`] = `"fonjep-CODE_POSTE-OPERATION_DATE-EXERCISE-IDENTIFIER-163-N/A-N/A-2023-07-12-N/A-N/A"`;
 
-exports[`FonjepEntityAdapter toFonjepApplicationFlat return application flat entity 1`] = `
+exports[`FonjepEntityAdapter Flat formats toFonjepApplicationFlat return application flat entity 1`] = `
 {
   "allocatorId": "20000000000001",
   "allocatorIdType": "siret",
@@ -37,7 +37,7 @@ exports[`FonjepEntityAdapter toFonjepApplicationFlat return application flat ent
   "object": null,
   "paymentCondition": "PHASED",
   "paymentConditionDesc": null,
-  "paymentId": "TODO",
+  "paymentId": "PAYMENT_ID",
   "paymentPeriodDates": null,
   "pluriannual": true,
   "pluriannualYears": null,
@@ -54,7 +54,7 @@ exports[`FonjepEntityAdapter toFonjepApplicationFlat return application flat ent
 }
 `;
 
-exports[`FonjepEntityAdapter toFonjepPaymentFlat returns FonjepPaymentFlat entity 1`] = `
+exports[`FonjepEntityAdapter Flat formats toFonjepPaymentFlat returns FonjepPaymentFlat entity 1`] = `
 {
   "actionCode": "N/A",
   "actionLabel": "N/A",

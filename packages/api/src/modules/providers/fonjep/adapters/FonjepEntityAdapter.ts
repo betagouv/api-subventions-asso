@@ -123,7 +123,7 @@ export default class FonjepEntityAdapter {
         if (entity.ej !== GenericAdapter.NOT_APPLICABLE_VALUE) {
             throw new Error("You must extract a position code from a FonjepPaymentFlat entity");
         } else {
-            // cf buildPaymentFlatPaymentId
+            // cf buildFlatPaymentId
             return entity.idVersement.split("-")[0];
         }
     }
@@ -133,13 +133,9 @@ export default class FonjepEntityAdapter {
         throw new Error("We can't create FONJEP PaymentFlat without dateFinTriennalite");
     }
 
-    private static buildPaymentFlatPaymentId(data: {
-        thirdParty: FonjepTiersEntity;
-        position: FonjepPosteEntity;
-        payment: PayedFonjepVersementEntity;
-    }) {
-        const { thirdParty, position, payment } = data;
-        return `${payment.posteCode}-${getShortISODate(FonjepEntityAdapter.getConventionDate(position))}-${position.annee}-${
+    private static buildFlatPaymentId(data: { thirdParty: FonjepTiersEntity; position: FonjepPosteEntity }) {
+        const { thirdParty, position } = data;
+        return `${position.code}-${getShortISODate(FonjepEntityAdapter.getConventionDate(position))}-${position.annee}-${
             thirdParty.siretOuRidet
         }`;
     }
@@ -196,10 +192,9 @@ export default class FonjepEntityAdapter {
 
             const ministry = dataBretagneService.getMinistryEntity(program, dataBretagneData.ministries);
 
-            const paymentId = this.buildPaymentFlatPaymentId({
+            const paymentId = this.buildFlatPaymentId({
                 thirdParty,
                 position,
-                payment,
             });
 
             const partialPaymentFlat = {
@@ -260,6 +255,8 @@ export default class FonjepEntityAdapter {
         const applicationProviderId = `${position.code}-${getShortISODate(this.getConventionDate(position))}`;
         const applicationId = `${provider}-${applicationProviderId}`;
         const uniqueId = `${applicationId}-${position.annee}`;
+        const paymentId = this.buildFlatPaymentId({ thirdParty: beneficiary, position });
+
         const allocatorIdType = allocator.siretOuRidet
             ? EstablishmentIdentifier.getIdentifierType(allocator.siretOuRidet)
             : null;
@@ -302,7 +299,7 @@ export default class FonjepEntityAdapter {
             grantedAmount: position.montantSubvention,
             totalAmount: position.montantSubvention,
             ej: GenericAdapter.NOT_APPLICABLE_VALUE,
-            paymentId: "TODO",
+            paymentId,
             paymentCondition: PaymentCondition.PHASED,
             paymentConditionDesc: null,
             paymentPeriodDates: null,
