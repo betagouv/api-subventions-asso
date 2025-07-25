@@ -19,4 +19,8 @@ export default class DauphinCli {
     async updateCache() {
         await dauphinService.updateApplicationCache();
     }
+
+    initApplicationFlat() {
+        return dauphinService.feedApplicationFlat();
+    }
 }

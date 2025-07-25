@@ -1,4 +1,4 @@
-import { CommonApplicationDto, ApplicationStatus, DemandeSubvention, ProviderValue, DocumentDto } from "dto";
+import { ApplicationStatus, CommonApplicationDto, DemandeSubvention, DocumentDto, ProviderValue } from "dto";
 import DauphinSubventionDto from "../dto/DauphinSubventionDto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import dauphinService from "../dauphin.service";
@@ -7,6 +7,30 @@ import { toStatusFactory } from "../../providers.adapter";
 import DauphinGisproDbo from "../../../../dataProviders/db/providers/dauphin/DauphinGisproDbo";
 import DauphinDocumentDto from "../dto/DauphinDocumentDto";
 import { RawApplication } from "../../../grant/@types/rawGrant";
+import { ApplicationFlatEntity, ApplicationNature } from "../../../../entities/ApplicationFlatEntity";
+import { SimplifiedJoinedDauphinGispro } from "../@types/SimplifiedDauphinGispro";
+import { GenericAdapter } from "../../../../shared/GenericAdapter";
+
+export class InconsistentAggregationError extends Error {
+    public field: string;
+    public valueList: unknown[];
+    public codeDossier: string | undefined;
+    public referenceAdministrative: string[];
+
+    constructor(
+        field: string,
+        valueList: unknown[],
+        codeDossier: string | undefined,
+        referenceAdministrative: string[],
+    ) {
+        const message = `Les valeurs suivantes du champ ${field} devraient être identiques mais ne le sont pas pour le dossier de code ${codeDossier} et les codes action ${referenceAdministrative} : ${valueList}`;
+        super(message);
+        this.field = field;
+        this.valueList = valueList;
+        this.codeDossier = codeDossier;
+        this.referenceAdministrative = referenceAdministrative;
+    }
+}
 
 export default class DauphinDtoAdapter {
     private static _statusConversionArray: { label: ApplicationStatus; providerStatusList: string[] }[] = [
@@ -156,5 +180,79 @@ export default class DauphinDtoAdapter {
             siret: dauphinData.demandeur.SIRET.complet,
             statut: DauphinDtoAdapter.getStatus(dauphinData.virtualStatusLabel),
         };
+    }
+
+    public static simplifiedJoinedToApplicationFlat(simplified: SimplifiedJoinedDauphinGispro): ApplicationFlatEntity {
+        const getSingleValueOrNull = <T>(valueList: T[]) => (valueList.length === 1 ? valueList[0] : null);
+        const getSingleValueOrThrow = <T>(valueList: T[], field: string) => {
+            if (valueList.length === 0) return null;
+            if (valueList.length === 1) return valueList[0];
+            throw new InconsistentAggregationError(
+                field,
+                valueList,
+                simplified.codeDossier,
+                simplified.referenceAdministrative,
+            );
+        };
+
+        const localId = simplified.referenceAdministrative.join("|");
+        const dateDemandeStr = getSingleValueOrNull(simplified.dateDemande);
+        const dateDemande = dateDemandeStr ? new Date(dateDemandeStr) : null;
+        const status = getSingleValueOrThrow(
+            [...new Set(simplified.virtualStatusLabel.map(this.getStatus))],
+            "virtualStatusLabel",
+        ) as ApplicationStatus;
+        const ej = getSingleValueOrThrow(simplified.ej, "ej");
+
+        const adapted = {
+            allocatorId: null,
+            allocatorIdType: null,
+            allocatorName: simplified.financeurs.join("|"),
+            applicationId: "dauphin-" + localId,
+            applicationProviderId: localId,
+            beneficiaryEstablishmentId: simplified.siretDemandeur,
+            beneficiaryEstablishmentIdType: "siret",
+            budgetaryYear: simplified.exerciceBudgetaire,
+            cofinancersIdType: null,
+            cofinancersNames: null,
+            cofinancingRequested: null,
+            confinancersId: null,
+            conventionDate: null,
+            decisionDate: null,
+            decisionReference: null,
+            depositDate: dateDemande,
+            ej,
+            grantedAmount: simplified.montantAccorde || null,
+            // status === ApplicationStatus.GRANTED ? simplified.montantAccorde || null : GenericAdapter.NOT_APPLICABLE_VALUE,
+            idRAE: null,
+            instructiveDepartementId: null,
+            instructiveDepartmentIdType: null,
+            instructiveDepartmentName: simplified.instructorService.join("|"),
+            joinKeyDesc: null,
+            joinKeyId: null,
+            managingAuthorityId: GenericAdapter.NOT_APPLICABLE_VALUE,
+            managingAuthorityIdType: GenericAdapter.NOT_APPLICABLE_VALUE,
+            managingAuthorityName: GenericAdapter.NOT_APPLICABLE_VALUE,
+            nature: ApplicationNature.MONEY,
+            object: simplified.intituleProjet.join("|"),
+            paymentCondition: null,
+            paymentConditionDesc: null,
+            paymentId: [simplified.siretDemandeur, ej, simplified.exerciceBudgetaire].join(" - "),
+            paymentPeriodDates: null,
+            pluriannual: !(simplified.periode.length === 1 && simplified.periode[0] === "PONCTUELLE"), // TODO actual value need to be from dto
+            pluriannualYears: null,
+            provider: "dauphin",
+            requestYear: dateDemande?.getFullYear() || null,
+            requestedAmount: simplified.montantDemande,
+            scheme: simplified.thematique.join("|") + " - Politique de la ville",
+            statusLabel: status,
+            subScheme: null,
+            subventionPercentage: null,
+            totalAmount: null,
+            ueNotification: null,
+            uniqueId: "dauphin-" + localId + "-" + simplified.exerciceBudgetaire,
+            updateDate: new Date(simplified.updateDate),
+        };
+        return adapted;
     }
 }
