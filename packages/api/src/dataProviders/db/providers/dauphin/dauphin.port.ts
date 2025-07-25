@@ -1,12 +1,15 @@
-import { Collection } from "mongodb";
+import { Collection, FindCursor, WithId } from "mongodb";
 import MongoPort from "../../../../shared/MongoPort";
 import DauphinSubventionDto from "../../../../modules/providers/dauphin-gispro/dto/DauphinSubventionDto";
 import Siret from "../../../../identifierObjects/Siret";
 import Siren from "../../../../identifierObjects/Siren";
 import DauphinGisproDbo from "./DauphinGisproDbo";
+import { SimplifiedJoinedDauphinGispro } from "../../../../modules/providers/dauphin-gispro/@types/SimplifiedDauphinGispro";
 
 export class DauphinPort extends MongoPort<DauphinGisproDbo> {
     readonly collectionName = "dauphin-gispro";
+    readonly simplifiedTempCollectionName = "dauphinSimplified";
+    readonly simplifiedTempCollection = this.db.collection(this.simplifiedTempCollectionName);
 
     async createIndexes() {
         await this.collection.createIndex({ "dauphin.demandeur.SIRET.complet": 1 });
@@ -110,6 +113,132 @@ export class DauphinPort extends MongoPort<DauphinGisproDbo> {
         logger("Create new indexes");
         await this.createIndexes();
         logger("All new indexes have been created");
+    }
+
+    /* FLAT OPERATIONS */
+
+    async createSimplifiedDauphinBeforeJoin() {
+        await this.cleanTempCollection();
+
+        await this.collection
+            .aggregate(
+                [
+                    // only keep useful columns
+                    {
+                        $project: {
+                            exerciceBudgetaire: "$dauphin.exerciceBudgetaire",
+                            siretDemandeur: "$dauphin.demandeur.SIRET.complet",
+                            referenceAdministrative: "$dauphin.codeActionProjet",
+                            intituleProjet: "$dauphin.intituleProjet",
+                            periode: "$dauphin.periode",
+                            dateDemande: "$dauphin.dateDemande",
+                            thematique: "$dauphin.thematique.title",
+                            virtualStatusLabel: "$dauphin.virtualStatusLabel",
+                            description: "$dauphin.description.value",
+                            planFinancement: "$dauphin.planFinancement",
+                            updateDate: "$dauphin.updateDate",
+                        },
+                    },
+
+                    // filter budgetary lines according to anct doc
+                    { $unwind: { path: "$planFinancement" } },
+                    { $match: { "planFinancement.current": true } },
+                    { $addFields: { planFinancement_poste: "$planFinancement.recette.postes" } },
+                    { $unwind: { path: "$planFinancement_poste" } },
+                    { $match: { "planFinancement_poste.reference": "74" } },
+                    { $addFields: { planFinancement_sousPostes: "$planFinancement_poste.sousPostes" } },
+                    { $unwind: { path: "$planFinancement_sousPostes" } },
+                    { $match: { "planFinancement_sousPostes.reference": "74etat" } },
+                    { $addFields: { planFinancement_lignes: "$planFinancement_sousPostes.lignes" } },
+                    { $unwind: { path: "$planFinancement_lignes" } },
+                    {
+                        $match: {
+                            "planFinancement_lignes.financement.financeur.typeFinanceur": "FINANCEURPRIVILEGIE",
+                            "planFinancement_lignes.financement.financeur.titre": { $ne: "FONJEP" },
+                            // may need to be adapted according to discussions with ANCT
+                        },
+                    },
+
+                    // remove intermediary columns
+                    {
+                        $project: {
+                            planFinancement_sousPostes: 0,
+                            planFinancement_poste: 0,
+                            planFinancement: 0,
+                            _id: 0,
+                        },
+                    },
+                    { $out: this.simplifiedTempCollectionName },
+                ],
+                { allowDiskUse: true },
+            )
+            .toArray();
+    }
+
+    async joinGisproToSimplified() {
+        await this.simplifiedTempCollection
+            .aggregate([
+                // join gispro data
+                {
+                    $lookup: {
+                        from: "gispro",
+                        localField: "referenceAdministrative",
+                        foreignField: "codeActionDossier",
+                        as: "gispro",
+                    },
+                },
+
+                { $unwind: { path: "$gispro", preserveNullAndEmptyArrays: true } },
+
+                // create group parameter according to success of gispro join
+                { $addFields: { toJoinOn: { $ifNull: ["$gispro.codeProjet", "$referenceAdministrative"] } } },
+
+                // group action level into subvention level
+                {
+                    $group: {
+                        _id: {
+                            siretDemandeur: "$siretDemandeur",
+                            exerciceBudgetaire: "$exerciceBudgetaire",
+                            codeDossierOrAction: "$toJoinOn",
+                        },
+                        montantDemande: { $sum: "$planFinancement_lignes.montant.ht" },
+                        montantAccorde: { $sum: "$planFinancement_lignes.financement.montantVote.ht" }, // TODO "somme des montant voté - financeur sur le group by (regarde règles métier dans table correspondance dauphin
+                        // Attention! Le montant accordé n'est pas toujours présent et c'est normal car on l'a pas lorsque le statut est ""en cours d'instruction"". => N/A lorsque le statut est ""en cours d'instruction"". "
+
+                        referenceAdministrative: { $addToSet: "$referenceAdministrative" },
+                        intituleProjet: { $addToSet: "$intituleProjet" },
+                        thematique: { $addToSet: "$thematique" },
+                        financeurs: { $addToSet: "$planFinancement_lignes.financement.financeur.title" },
+                        instructorService: { $addToSet: "$gispro.directionGestionnaire" },
+
+                        periode: { $addToSet: "$periode" },
+                        virtualStatusLabel: { $addToSet: "$virtualStatusLabel" },
+                        ej: { $addToSet: "$gispro.ej" },
+
+                        dateDemande: { $addToSet: "$dateDemande" },
+                        codeDossier: { $first: "$gispro.codeProjet" },
+                        updateDate: { $min: "$updateDate" },
+                    },
+                },
+
+                // format nicely arguments that were in join
+                {
+                    $addFields: {
+                        siretDemandeur: "$_id.siretDemandeur",
+                        exerciceBudgetaire: "$_id.exerciceBudgetaire",
+                    },
+                },
+                { $out: this.simplifiedTempCollectionName },
+            ])
+            .toArray();
+    }
+
+    findAllTempCursor() {
+        return this.simplifiedTempCollection.find({}) as FindCursor<WithId<SimplifiedJoinedDauphinGispro>>;
+    }
+
+    async cleanTempCollection() {
+        await this.simplifiedTempCollection.deleteMany({});
     }
 }
 
