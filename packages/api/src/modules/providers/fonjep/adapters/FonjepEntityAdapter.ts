@@ -240,7 +240,7 @@ export default class FonjepEntityAdapter {
         position: FonjepPosteEntity;
         beneficiary: FonjepTiersEntity; // association who made the application
         allocator: FonjepTiersEntity; // structure who handle the application payment
-        instructor: FonjepTiersEntity; // structure who valid / instructs the application
+        instructor: FonjepTiersEntity; // structure who validates / instructs the application
         scheme: FonjepDispositifEntity;
     }): Omit<ApplicationFlatEntity, "updateDate"> | null {
         const { position, beneficiary, allocator, instructor, scheme } = entities;
