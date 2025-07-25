@@ -1,5 +1,8 @@
 import {
+    ALLOCATOR,
+    DISPOSITIF_ENTITIES,
     DISPOSITIF_ENTITY,
+    INSTRUCTOR,
     POSTE_10006_ENTITY,
     POSTE_ENTITIES,
     POSTE_ENTITY,
@@ -39,6 +42,10 @@ import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import paymentFlatService from "../../paymentFlat/paymentFlat.service";
 import { DATA_BRETAGNE_RECORDS } from "../dataBretagne/__fixtures__/dataBretagne.fixture";
 import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+import { ENTITY as APPLICATION_FLAT_ENTITY } from "../../applicationFlat/__fixtures__";
+import { ReadableStream } from "node:stream/web";
+import applicationFlatService from "../../applicationFlat/applicationFlat.service";
+jest.mock("../../applicationFlat/applicationFlat.service");
 
 const PARSED_DATA = {
     tiers: [TIER_DTO],
@@ -55,6 +62,9 @@ const ENTITIES = {
     typePosteEntities: [TYPE_POSTE_ENTITY],
     dispositifEntities: [DISPOSITIF_ENTITY],
 };
+
+const POSITIONS = [POSTE_ENTITY];
+const THIRD_PARTIES = [TIERS_ENTITY, ALLOCATOR, INSTRUCTOR];
 
 describe("FonjepService", () => {
     let mockParse: jest.SpyInstance;
@@ -396,6 +406,76 @@ describe("FonjepService", () => {
 
             // adapter has been mocked to return entity to simplify test
             expect(mockUpsertMay).toHaveBeenCalledWith([CHORUS_PAYMENT_FLAT_ENTITY]);
+        });
+    });
+
+    describe("createApplicationFlatEntitiesFromCollections", () => {
+        const POSITIONS = [POSTE_ENTITY];
+        const THIRD_PARTIES = [TIERS_ENTITY, ALLOCATOR, INSTRUCTOR];
+
+        beforeAll(() => {
+            jest.mocked(FonjepEntityAdapter.toFonjepApplicationFlat).mockReturnValue(APPLICATION_FLAT_ENTITY);
+        });
+
+        it("creates application flat for each position", () => {
+            fonjepService.createApplicationFlatEntitiesFromCollections({
+                positions: POSITIONS,
+                thirdParties: THIRD_PARTIES,
+                schemes: DISPOSITIF_ENTITIES,
+            });
+
+            expect(FonjepEntityAdapter.toFonjepApplicationFlat).toHaveBeenCalledWith({
+                position: POSTE_ENTITY,
+                beneficiary: TIERS_ENTITY,
+                allocator: ALLOCATOR,
+                instructor: INSTRUCTOR,
+                scheme: DISPOSITIF_ENTITIES[0],
+            });
+        });
+
+        it("creates application flat for each position", () => {
+            const actual = fonjepService.createApplicationFlatEntitiesFromCollections({
+                positions: POSITIONS,
+                thirdParties: THIRD_PARTIES,
+                schemes: DISPOSITIF_ENTITIES,
+            });
+
+            expect(actual).toEqual([{ ...APPLICATION_FLAT_ENTITY, updateDate: expect.any(Date) }]);
+        });
+    });
+
+    describe("addToApplicationFlat", () => {
+        let mockCreateApplicationFlat: jest.SpyInstance;
+        let mockSaveFlatFromStream: jest.SpyInstance;
+
+        beforeEach(() => {
+            mockCreateApplicationFlat = jest
+                .spyOn(fonjepService, "createApplicationFlatEntitiesFromCollections")
+                .mockReturnValue([APPLICATION_FLAT_ENTITY]);
+            mockSaveFlatFromStream = jest.spyOn(fonjepService, "saveFlatFromStream").mockImplementation(jest.fn());
+        });
+
+        afterAll(() => {
+            mockCreateApplicationFlat.mockRestore();
+            mockSaveFlatFromStream.mockRestore();
+        });
+
+        it("calls saveFlatFromStream with ApplicationFlat stream", async () => {
+            fonjepService.addToApplicationFlat({
+                positions: POSITIONS,
+                thirdParties: THIRD_PARTIES,
+                schemes: DISPOSITIF_ENTITIES,
+            });
+
+            expect(mockSaveFlatFromStream).toHaveBeenCalledWith(expect.any(ReadableStream));
+        });
+    });
+
+    describe("saveFlatFromStream", () => {
+        it("calls applicationFlatService.saveFromStream", () => {
+            const STREAM = ReadableStream.from([APPLICATION_FLAT_ENTITY]);
+            fonjepService.saveFlatFromStream(STREAM);
+            expect(applicationFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);
         });
     });
 });

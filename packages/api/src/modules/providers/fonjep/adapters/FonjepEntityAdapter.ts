@@ -18,6 +18,9 @@ import { DataBretagneRecords } from "../../dataBretagne/@types/DataBretagne";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
 import { getShortISODate, modifyDateYear } from "../../../../shared/helpers/DateHelper";
 import { removeWhitespace } from "../../../../shared/helpers/StringHelper";
+import { ApplicationFlatEntity, ApplicationNature, PaymentCondition } from "../../../../entities/ApplicationFlatEntity";
+import EstablishmentIdentifier from "../../../../identifierObjects/EstablishmentIdentifier";
+import { ApplicationStatus } from "dto";
 
 /**
  * Some of the nullIfEmpty calls have not been verified and were added base on every FonjepEntity type
@@ -120,7 +123,7 @@ export default class FonjepEntityAdapter {
         if (entity.ej !== GenericAdapter.NOT_APPLICABLE_VALUE) {
             throw new Error("You must extract a position code from a FonjepPaymentFlat entity");
         } else {
-            // cf buildPaymentFlatPaymentId
+            // cf buildFlatPaymentId
             return entity.idVersement.split("-")[0];
         }
     }
@@ -130,13 +133,9 @@ export default class FonjepEntityAdapter {
         throw new Error("We can't create FONJEP PaymentFlat without dateFinTriennalite");
     }
 
-    private static buildPaymentFlatPaymentId(data: {
-        thirdParty: FonjepTiersEntity;
-        position: FonjepPosteEntity;
-        payment: PayedFonjepVersementEntity;
-    }) {
-        const { thirdParty, position, payment } = data;
-        return `${payment.posteCode}-${getShortISODate(FonjepEntityAdapter.getConventionDate(position))}-${position.annee}-${
+    private static buildFlatPaymentId(data: { thirdParty: FonjepTiersEntity; position: FonjepPosteEntity }) {
+        const { thirdParty, position } = data;
+        return `${position.code}-${getShortISODate(FonjepEntityAdapter.getConventionDate(position))}-${position.annee}-${
             thirdParty.siretOuRidet
         }`;
     }
@@ -193,10 +192,9 @@ export default class FonjepEntityAdapter {
 
             const ministry = dataBretagneService.getMinistryEntity(program, dataBretagneData.ministries);
 
-            const paymentId = this.buildPaymentFlatPaymentId({
+            const paymentId = this.buildFlatPaymentId({
                 thirdParty,
                 position,
-                payment,
             });
 
             const partialPaymentFlat = {
@@ -231,5 +229,87 @@ export default class FonjepEntityAdapter {
 
             return { uniqueId, ...partialPaymentFlat };
         }
+    }
+
+    static toFonjepApplicationFlat(entities: {
+        position: FonjepPosteEntity;
+        beneficiary: FonjepTiersEntity; // association who made the application
+        allocator: FonjepTiersEntity; // structure who handle the application payment
+        instructor: FonjepTiersEntity; // structure who validates / instructs the application
+        scheme: FonjepDispositifEntity;
+    }): Omit<ApplicationFlatEntity, "updateDate"> | null {
+        const { position, beneficiary, allocator, instructor, scheme } = entities;
+        if (!position.annee) throw new Error("FONJEP ApplicationFlat must have a budgetary year");
+        if (!beneficiary.siretOuRidet) throw new Error("FONJEP ApplicationFlat must have a beneficiary siret or ridet");
+        const beneficiaryEstablishmentIdType =
+            EstablishmentIdentifier.getIdentifierType(beneficiary.siretOuRidet) || null;
+        if (!beneficiaryEstablishmentIdType) {
+            // TODO: this should not happen but has been encountered where rid was present in instead of ridet. See #3586
+            console.log(
+                `FONJEP ApplicationFlat must have a valid beneficiary siret or ridet, given ${beneficiary.siretOuRidet}.`,
+            );
+            return null;
+        }
+
+        const provider = this.PROVIDER_NAME.toLowerCase(); // replace this with #3338
+        const applicationProviderId = `${position.code}-${getShortISODate(this.getConventionDate(position))}`;
+        const applicationId = `${provider}-${applicationProviderId}`;
+        const uniqueId = `${applicationId}-${position.annee}`;
+        const paymentId = this.buildFlatPaymentId({ thirdParty: beneficiary, position });
+
+        const allocatorIdType = allocator.siretOuRidet
+            ? EstablishmentIdentifier.getIdentifierType(allocator.siretOuRidet)
+            : null;
+        const instructiveDepartmentIdType = instructor.siretOuRidet
+            ? EstablishmentIdentifier.getIdentifierType(instructor.siretOuRidet)
+            : null;
+
+        return {
+            uniqueId,
+            applicationId,
+            applicationProviderId,
+            provider,
+            joinKeyId: GenericAdapter.NOT_APPLICABLE_VALUE,
+            joinKeyDesc: GenericAdapter.NOT_APPLICABLE_VALUE,
+            allocatorName: allocator.raisonSociale,
+            allocatorId: allocator.siretOuRidet,
+            allocatorIdType,
+            managingAuthorityName: "FONJEP",
+            managingAuthorityId: null,
+            managingAuthorityIdType: null,
+            instructiveDepartmentName: instructor.raisonSociale,
+            instructiveDepartmentIdType,
+            instructiveDepartementId: instructor.siretOuRidet,
+            beneficiaryEstablishmentId: beneficiary.siretOuRidet,
+            beneficiaryEstablishmentIdType,
+            budgetaryYear: position.annee,
+            pluriannual: true,
+            pluriannualYears: null, // null for now, see #3575 for updates
+            decisionDate: null,
+            conventionDate: this.getConventionDate(position),
+            decisionReference: null,
+            depositDate: null,
+            requestYear: null,
+            scheme: scheme.libelle,
+            subScheme: GenericAdapter.NOT_APPLICABLE_VALUE,
+            statusLabel: ApplicationStatus.GRANTED,
+            object: null,
+            nature: ApplicationNature.MONEY,
+            requestedAmount: position.montantSubvention,
+            grantedAmount: position.montantSubvention,
+            totalAmount: position.montantSubvention,
+            ej: GenericAdapter.NOT_APPLICABLE_VALUE,
+            paymentId,
+            paymentCondition: PaymentCondition.PHASED,
+            paymentConditionDesc: null,
+            paymentPeriodDates: null,
+            cofinancingRequested: GenericAdapter.NOT_APPLICABLE_VALUE,
+            cofinancersNames: GenericAdapter.NOT_APPLICABLE_VALUE,
+            cofinancersIdType: GenericAdapter.NOT_APPLICABLE_VALUE,
+            confinancersId: GenericAdapter.NOT_APPLICABLE_VALUE,
+            idRAE: null,
+            ueNotification: null,
+            subventionPercentage: null,
+        };
     }
 }

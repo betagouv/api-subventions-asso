@@ -4,10 +4,10 @@
 
 Le projet utilise la stack technique suivante :
 
--   NodeJs
--   Typescript
--   Express
--   MongoDB
+- NodeJs
+- Typescript
+- Express
+- MongoDB
 
 L'architecture utilisée est une inspiration libre de la clean architecture (Voir aussi architecture Oignon et Hexagonale). Le concept n'est pas poussé à fond, pour une question de rapidité de mise en place et pour garder un maximum de souplesse en cas de changement radical du produit.
 
@@ -27,40 +27,45 @@ Vous devez ensuite installer les dépendances avec `npm install`.
 
 Ensuite, il vous faudra créer un fichier .env.local à la racine du projet api, avec au moins les variables d'environnement suivantes:
 
--   JWT_SECRET
--   MAIL_HOST
--   MAIL_PORT
--   MAIL_USER
--   MAIL_PASSWORD
+- JWT_SECRET
+- MAIL_HOST
+- MAIL_PORT
+- MAIL_USER
+- MAIL_PASSWORD
 
 Les autres variables utilisées sont :
 
--   API_ASSO_URL
--   API_ASSO_TOKEN
+- API_ASSO_URL
+- API_ASSO_TOKEN
 
 Pour se connecter à l'API Association
 
--   MONGO_DBNAME=datasubvention
+- MONGO_DBNAME=datasubvention
 
 Pour spécifier le nom de la base de donnée
 
--   API_ENTREPRISE_TOKEN
+- API_ENTREPRISE_TOKEN
 
 Pour se connecter à l'API Entreprise
 
--   API_BREVO_TOKEN
--   API_BREVO_CONTACT_LIST
+- API_BREVO_TOKEN
+- API_BREVO_CONTACT_LIST
 
 Pour utiliser les services Brevo (envoi de mail)
 
--   DAUPHIN_USERNAME
--   DAUPHIN_PASSWORD
+- DAUPHIN_USERNAME
+- DAUPHIN_PASSWORD
 
 Pour se connecter à DAUPHIN
 
--   SENTRY_AUTH_TOKEN
+- SENTRY_AUTH_TOKEN
 
 Pour utiliser le reporting de bug Sentry
+
+- DATA_BRETAGNE_USERNAME
+- DATA_BRETAGNE_PASSWORD
+
+Pour se connecter à l'API Data Bretagne
 
 Pour fonctionner l'api doit pouvoir se connecter à une base de données mongoDB v4.0 .  
 Par défaut, elle se connecte à l'url `mongodb://localhost:27017/api-subventions-asso`.  
@@ -110,8 +115,8 @@ AgentConnect ne fonctionne pas avec l'url `localhost`. Pour qu'AgentConnect fonc
 
 Les tâches récurrentes se basent sur le module [toad-scheduler](https://github.com/kibertoad/toad-scheduler). Il existe deux types de façon de programmer les tâches :
 
--   par un intervalle (_ex_ : `{ minutes: 3 }`"toutes le 3 minutes")
--   par une expression cron (_ex_ : `"0 0 1 * *"` tous les premiers du mois)
+- par un intervalle (_ex_ : `{ minutes: 3 }`"toutes le 3 minutes")
+- par une expression cron (_ex_ : `"0 0 1 * *"` tous les premiers du mois)
 
 Pour ajouter une tâche récurrente, il faut :
 
@@ -226,5 +231,5 @@ Pour ce faire, nous avons décidé d'utiliser le snapshot de Jest pour garder ce
 
 ### Package UNIX nécessaire
 
--   zip
--   tar
+- zip
+- tar

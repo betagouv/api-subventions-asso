@@ -1,10 +1,60 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`FonjepEntityAdapter buildPaymentFlatPaymentId return idVersement 1`] = `"AB5400K-2024-06-12-2022-10000000000001"`;
+exports[`FonjepEntityAdapter Flat formats buildFlatPaymentId return idVersement 1`] = `"AB5400K-2024-06-12-2022-10000000000001"`;
 
-exports[`FonjepEntityAdapter buildPaymentFlatUniqueId return idVersement 1`] = `"fonjep-CODE_POSTE-OPERATION_DATE-EXERCISE-IDENTIFIER-163-N/A-N/A-2023-07-12-N/A-N/A"`;
+exports[`FonjepEntityAdapter Flat formats buildPaymentFlatUniqueId return idVersement 1`] = `"fonjep-CODE_POSTE-OPERATION_DATE-EXERCISE-IDENTIFIER-163-N/A-N/A-2023-07-12-N/A-N/A"`;
 
-exports[`FonjepEntityAdapter toFonjepPaymentFlat returns FonjepPaymentFlat entity 1`] = `
+exports[`FonjepEntityAdapter Flat formats toFonjepApplicationFlat return application flat entity 1`] = `
+{
+  "allocatorId": "20000000000001",
+  "allocatorIdType": "siret",
+  "allocatorName": "Raison Sociale",
+  "applicationId": "fonjep-AB5400K-2021-12-31",
+  "applicationProviderId": "AB5400K-2021-12-31",
+  "beneficiaryEstablishmentId": "10000000000001",
+  "beneficiaryEstablishmentIdType": "siret",
+  "budgetaryYear": 2022,
+  "cofinancersIdType": "N/A",
+  "cofinancersNames": "N/A",
+  "cofinancingRequested": "N/A",
+  "confinancersId": "N/A",
+  "conventionDate": 2021-12-31T00:00:00.000Z,
+  "decisionDate": null,
+  "decisionReference": null,
+  "depositDate": null,
+  "ej": "N/A",
+  "grantedAmount": 1000,
+  "idRAE": null,
+  "instructiveDepartementId": "30000000000001",
+  "instructiveDepartmentIdType": "siret",
+  "instructiveDepartmentName": "Raison Sociale",
+  "joinKeyDesc": "N/A",
+  "joinKeyId": "N/A",
+  "managingAuthorityId": null,
+  "managingAuthorityIdType": null,
+  "managingAuthorityName": "FONJEP",
+  "nature": "Aide en numéraire",
+  "object": null,
+  "paymentCondition": "PHASED",
+  "paymentConditionDesc": null,
+  "paymentId": "PAYMENT_ID",
+  "paymentPeriodDates": null,
+  "pluriannual": true,
+  "pluriannualYears": null,
+  "provider": "fonjep",
+  "requestYear": null,
+  "requestedAmount": 1000,
+  "scheme": "FONJEP Jeunesse éducation populaire",
+  "statusLabel": "Accordé",
+  "subScheme": "N/A",
+  "subventionPercentage": null,
+  "totalAmount": 1000,
+  "ueNotification": null,
+  "uniqueId": "fonjep-AB5400K-2021-12-31-2022",
+}
+`;
+
+exports[`FonjepEntityAdapter Flat formats toFonjepPaymentFlat returns FonjepPaymentFlat entity 1`] = `
 {
   "actionCode": "N/A",
   "actionLabel": "N/A",

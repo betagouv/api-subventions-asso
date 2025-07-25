@@ -4,8 +4,11 @@ import fonjepPostesPort from "../../../dataProviders/db/providers/fonjep/fonjep.
 import fonjepTiersPort from "../../../dataProviders/db/providers/fonjep/fonjep.tiers.port";
 import fonjepTypePostePort from "../../../dataProviders/db/providers/fonjep/fonjep.typePoste.port";
 import fonjepVersementsPort from "../../../dataProviders/db/providers/fonjep/fonjep.versements.port";
+import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
 import Ridet from "../../../identifierObjects/Ridet";
 import Siret from "../../../identifierObjects/Siret";
+import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
+import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import paymentFlatService from "../../paymentFlat/paymentFlat.service";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import ProviderCore from "../ProviderCore";
@@ -17,8 +20,9 @@ import FonjepTiersEntity from "./entities/FonjepTiersEntity";
 import FonjepTypePosteEntity from "./entities/FonjepTypePosteEntity";
 import FonjepVersementEntity, { PayedFonjepVersementEntity } from "./entities/FonjepVersementEntity";
 import FonjepParser from "./fonjep.parser";
+import { ReadableStream } from "node:stream/web";
 
-export class FonjepService extends ProviderCore {
+export class FonjepService extends ProviderCore implements ApplicationFlatProvider {
     constructor() {
         super({
             name: "Extranet FONJEP",
@@ -51,6 +55,48 @@ export class FonjepService extends ProviderCore {
 
         return { tierEntities, posteEntities, versementEntities, typePosteEntities, dispositifEntities };
     }
+
+    /**
+     * |----------------------------|
+     * |  Database Management      |
+     * |----------------------------|
+     */
+
+    useTemporyCollection(active: boolean) {
+        fonjepDispositifPort.useTemporyCollection(active);
+        fonjepPostesPort.useTemporyCollection(active);
+        fonjepTiersPort.useTemporyCollection(active);
+        fonjepTypePostePort.useTemporyCollection(active);
+        fonjepVersementsPort.useTemporyCollection(active);
+    }
+
+    async createFonjepCollections(
+        tierEntities: FonjepTiersEntity[],
+        posteEntities: FonjepPosteEntity[],
+        versementEntities: FonjepVersementEntity[],
+        typePosteEntities: FonjepTypePosteEntity[],
+        dispositifEntities: FonjepDispositifEntity[],
+    ) {
+        await fonjepTiersPort.insertMany(tierEntities);
+        await fonjepPostesPort.insertMany(posteEntities);
+        await fonjepVersementsPort.insertMany(versementEntities);
+        await fonjepTypePostePort.insertMany(typePosteEntities);
+        await fonjepDispositifPort.insertMany(dispositifEntities);
+    }
+
+    async applyTemporyCollection() {
+        await fonjepDispositifPort.applyTemporyCollection();
+        await fonjepPostesPort.applyTemporyCollection();
+        await fonjepTiersPort.applyTemporyCollection();
+        await fonjepTypePostePort.applyTemporyCollection();
+        await fonjepVersementsPort.applyTemporyCollection();
+    }
+
+    /**
+     * |----------------------------|
+     * |  PaymentFlat               |
+     * |----------------------------|
+     */
 
     /**
      * Check if payment has been payed
@@ -123,38 +169,81 @@ export class FonjepService extends ProviderCore {
 
     /**
      * |----------------------------|
-     * |  Database Management      |
+     * |  ApplicationFlat           |
      * |----------------------------|
      */
 
-    useTemporyCollection(active: boolean) {
-        fonjepDispositifPort.useTemporyCollection(active);
-        fonjepPostesPort.useTemporyCollection(active);
-        fonjepTiersPort.useTemporyCollection(active);
-        fonjepTypePostePort.useTemporyCollection(active);
-        fonjepVersementsPort.useTemporyCollection(active);
+    isApplicationFlatProvider = true as const;
+
+    addToApplicationFlat(collections: {
+        positions: FonjepPosteEntity[];
+        thirdParties: FonjepTiersEntity[];
+        schemes: FonjepDispositifEntity[];
+    }) {
+        const applications: ApplicationFlatEntity[] = this.createApplicationFlatEntitiesFromCollections(collections);
+        const stream = ReadableStream.from(applications);
+        return this.saveFlatFromStream(stream);
     }
 
-    async createFonjepCollections(
-        tierEntities: FonjepTiersEntity[],
-        posteEntities: FonjepPosteEntity[],
-        versementEntities: FonjepVersementEntity[],
-        typePosteEntities: FonjepTypePosteEntity[],
-        dispositifEntities: FonjepDispositifEntity[],
-    ) {
-        await fonjepTiersPort.insertMany(tierEntities);
-        await fonjepPostesPort.insertMany(posteEntities);
-        await fonjepVersementsPort.insertMany(versementEntities);
-        await fonjepTypePostePort.insertMany(typePosteEntities);
-        await fonjepDispositifPort.insertMany(dispositifEntities);
+    createApplicationFlatEntitiesFromCollections(collections: {
+        positions: FonjepPosteEntity[];
+        thirdParties: FonjepTiersEntity[];
+        schemes: FonjepDispositifEntity[];
+    }): ApplicationFlatEntity[] {
+        const { positions, thirdParties, schemes } = collections;
+
+        const applications: ApplicationFlatEntity[] = [];
+        const errors: string[] = [];
+        const dateOfImport = new Date();
+
+        positions.forEach(position => {
+            const { allocator, beneficiary, instructor } = thirdParties.reduce(
+                (result, thirdParty) => {
+                    if (thirdParty.code === position.financeurPrincipalCode) result.allocator = thirdParty;
+                    if (thirdParty.code === position.associationBeneficiaireCode) result.beneficiary = thirdParty;
+                    if (thirdParty.code === position.financeurAttributeurCode) result.instructor = thirdParty;
+                    return result;
+                },
+                { allocator: undefined, beneficiary: undefined, instructor: undefined } as {
+                    allocator: FonjepTiersEntity | undefined;
+                    beneficiary: FonjepTiersEntity | undefined;
+                    instructor: FonjepTiersEntity | undefined;
+                },
+            );
+
+            const scheme = schemes.find(scheme => scheme.financeurCode === position.financeurPrincipalCode);
+            if (!allocator || !beneficiary || !instructor || !scheme) {
+                errors.push(
+                    `Could not find all required data to build ApplicationFlat for FONJEP position ${position.code}`,
+                );
+            } else {
+                const partialApplication = FonjepEntityAdapter.toFonjepApplicationFlat({
+                    position,
+                    allocator,
+                    beneficiary,
+                    instructor,
+                    scheme,
+                });
+                // TODO: remove this after #3586 is handled
+                if (partialApplication) {
+                    applications.push({
+                        ...partialApplication,
+                        updateDate: dateOfImport,
+                    });
+                }
+            }
+        });
+
+        if (errors.length) {
+            console.log(`${errors.length} positions that could not have been adapted to application flat`);
+            // errors.forEach(error => console.log(error)); uncomment this if you want to list to be displayed
+        }
+
+        return applications;
     }
 
-    async applyTemporyCollection() {
-        await fonjepDispositifPort.applyTemporyCollection();
-        await fonjepPostesPort.applyTemporyCollection();
-        await fonjepTiersPort.applyTemporyCollection();
-        await fonjepTypePostePort.applyTemporyCollection();
-        await fonjepVersementsPort.applyTemporyCollection();
+    saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>) {
+        return applicationFlatService.saveFromStream(stream);
     }
 }
 
