@@ -6,7 +6,6 @@ import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DAUPHIN_PASSWORD, DAUPHIN_USERNAME } from "../../../configurations/apis.conf";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import configurationsService from "../../configurations/configurations.service";
-import Gispro from "../gispro/@types/Gispro";
 import { formatIntToTwoDigits } from "../../../shared/helpers/StringHelper";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
@@ -16,11 +15,12 @@ import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIde
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
 import Siren from "../../../identifierObjects/Siren";
 import GrantProvider from "../../grant/@types/GrantProvider";
-import dauphinGisproPort from "../../../dataProviders/db/providers/dauphin/dauphin-gispro.port";
+import dauphinPort from "../../../dataProviders/db/providers/dauphin/dauphin.port";
 import DauphinGisproDbo from "../../../dataProviders/db/providers/dauphin/DauphinGisproDbo";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
+import dauphinFlatService from "./dauphin.flat.service";
 
 export class DauphinService
     extends ProviderCore
@@ -53,10 +53,10 @@ export class DauphinService
     async getDemandeSubvention(id: StructureIdentifier): Promise<DemandeSubvention[]> {
         let applications: DauphinGisproDbo[] = [];
         if (id instanceof EstablishmentIdentifier && id.siret) {
-            applications = await dauphinGisproPort.findBySiret(id.siret);
+            applications = await dauphinPort.findBySiret(id.siret);
             return applications.map(dto => DauphinDtoAdapter.toDemandeSubvention(dto));
         } else if (id instanceof AssociationIdentifier && id.siren) {
-            applications = await dauphinGisproPort.findBySiren(id.siren);
+            applications = await dauphinPort.findBySiren(id.siren);
         }
 
         return applications.map(dto => DauphinDtoAdapter.toDemandeSubvention(dto));
@@ -73,9 +73,9 @@ export class DauphinService
     async getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
         let entities: DauphinGisproDbo[] = [];
         if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            entities = await dauphinGisproPort.findBySiret(identifier.siret);
+            entities = await dauphinPort.findBySiret(identifier.siret);
         } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            entities = await dauphinGisproPort.findBySiren(identifier.siren);
+            entities = await dauphinPort.findBySiren(identifier.siren);
         }
 
         // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
@@ -99,7 +99,7 @@ export class DauphinService
      */
 
     async updateApplicationCache() {
-        const lastUpdateDate = await dauphinGisproPort.getLastImportDate();
+        const lastUpdateDate = await dauphinPort.getLastImportDate();
         console.log(`update cache from ${lastUpdateDate.toString()}`);
         const token = await this.getAuthToken();
         let totalToFetch = 0;
@@ -133,7 +133,10 @@ export class DauphinService
                     throw new Error("Something went wrong with dauphin results");
                 }
 
-                await this.saveApplicationsInCache(applications.map(this.formatAndReturnApplicationDto));
+                const updateDate = new Date();
+                await this.saveApplicationsInCache(
+                    applications.map(entity => this.formatAndReturnApplicationDto(entity, updateDate)),
+                );
 
                 console.log(`fetched ${applications.length} applications`);
             } catch (e) {
@@ -142,11 +145,12 @@ export class DauphinService
                 return [];
             }
         } while (fetched < totalToFetch);
+        await dauphinFlatService.feedApplicationFlat();
     }
 
     private saveApplicationsInCache(applications: DauphinSubventionDto[]) {
         return asyncForEach(applications, async application => {
-            await dauphinGisproPort.upsert({ dauphin: application });
+            await dauphinPort.upsert({ dauphin: application });
         });
     }
 
@@ -194,7 +198,7 @@ export class DauphinService
         };
     }
 
-    private formatAndReturnApplicationDto(hit) {
+    private formatAndReturnApplicationDto(hit, updateDate: Date) {
         const source = hit._source;
 
         if ("demandeur" in source) {
@@ -211,21 +215,13 @@ export class DauphinService
             });
         }
         source.codeActionProjet = source.referenceAdministrative.match(/(?:DA)?(\d{8})(?:-\d*)?/)?.[1];
+        source.updateDate = updateDate;
 
         return source as DauphinSubventionDto;
     }
 
-    async insertGisproApplicationEntity(gisproEntity: Gispro) {
-        const entity = await dauphinGisproPort.findOneByDauphinId(gisproEntity.dauphinId);
-
-        if (!entity) return;
-
-        entity.gispro = gisproEntity;
-        await dauphinGisproPort.upsert(entity);
-    }
-
     migrateDauphinCacheToDauphinGispro(logger) {
-        return dauphinGisproPort.migrateDauphinCacheToDauphinGispro(logger);
+        return dauphinPort.migrateDauphinCacheToDauphinGispro(logger);
     }
 
     // Documents

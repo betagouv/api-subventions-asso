@@ -1,5 +1,7 @@
 const { connectDB } = require("../build/src/shared/MongoConnection");
-const { default: dauphinGisproPort } = require("../build/src/dataProviders/db/providers/dauphin/dauphin-gispro.port");
+const {
+    default: dauphinGisproPort,
+} = require("../build/src/dataProviders/db/providers/dauphin-gispro/dauphin-gispro.port");
 
 module.exports = {
     async up() {

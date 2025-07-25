@@ -1,7 +1,8 @@
 import { CliStaticInterface } from "../../@types";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { printAtSameLine } from "../../shared/helpers/CliHelper";
-import dauphinService from "../../modules/providers/dauphin/dauphin.service";
+import dauphinService from "../../modules/providers/dauphin-gispro/dauphin.service";
+import dauphinFlatService from "../../modules/providers/dauphin-gispro/dauphin.flat.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class DauphinCli {
@@ -18,5 +19,9 @@ export default class DauphinCli {
 
     async updateCache() {
         await dauphinService.updateApplicationCache();
+    }
+
+    initApplicationFlat() {
+        return dauphinFlatService.feedApplicationFlat();
     }
 }
