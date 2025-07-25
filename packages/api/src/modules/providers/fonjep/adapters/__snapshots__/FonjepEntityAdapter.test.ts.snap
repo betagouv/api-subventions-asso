@@ -33,7 +33,7 @@ exports[`FonjepEntityAdapter Flat formats toFonjepApplicationFlat return applica
   "managingAuthorityId": null,
   "managingAuthorityIdType": null,
   "managingAuthorityName": "FONJEP",
-  "nature": "MONEY",
+  "nature": "Aide en numéraire",
   "object": null,
   "paymentCondition": "PHASED",
   "paymentConditionDesc": null,
