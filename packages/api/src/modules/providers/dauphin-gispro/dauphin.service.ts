@@ -132,7 +132,10 @@ export class DauphinService
                     throw new Error("Something went wrong with dauphin results");
                 }
 
-                await this.saveApplicationsInCache(applications.map(this.formatAndReturnApplicationDto));
+                const updateDate = new Date();
+                await this.saveApplicationsInCache(
+                    applications.map(entity => this.formatAndReturnApplicationDto(entity, updateDate)),
+                );
 
                 console.log(`fetched ${applications.length} applications`);
             } catch (e) {
@@ -193,7 +196,7 @@ export class DauphinService
         };
     }
 
-    private formatAndReturnApplicationDto(hit) {
+    private formatAndReturnApplicationDto(hit, updateDate: Date) {
         const source = hit._source;
 
         if ("demandeur" in source) {
@@ -210,6 +213,7 @@ export class DauphinService
             });
         }
         source.codeActionProjet = source.referenceAdministrative.match(/(?:DA)?(\d{8})(?:-\d*)?/)?.[1];
+        source.updateDate = updateDate;
 
         return source as DauphinSubventionDto;
     }
