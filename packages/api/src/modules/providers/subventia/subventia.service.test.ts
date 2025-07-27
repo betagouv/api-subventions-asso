@@ -10,7 +10,9 @@ import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import { ENTITIES } from "./__fixtures__/subventia.fixture";
 import Siren from "../../../identifierObjects/Siren";
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
-
+import applicationFlatService from "../../applicationFlat/applicationFlat.service";
+import { ReadableStream } from "node:stream/web";
+jest.mock("../../applicationFlat/applicationFlat.service");
 jest.mock("./adapters/subventia.adapter");
 
 describe("Subventia Service", () => {
@@ -318,6 +320,20 @@ describe("Subventia Service", () => {
         it("should call adapter rawToApplication", () => {
             subventiaService.rawToApplication(RAW_APPLICATION);
             expect(SubventiaAdapter.rawToApplication).toHaveBeenCalledWith(RAW_APPLICATION);
+        });
+    });
+
+    /**
+     * |---------------------------|
+     * |   Application Flat Part   |
+     * |---------------------------|
+     */
+
+    describe("saveFlatFromStream", () => {
+        it("sends stream to save applications", () => {
+            const STREAM = ReadableStream.from([]);
+            subventiaService.saveFlatFromStream(STREAM);
+            expect(applicationFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);
         });
     });
 });
