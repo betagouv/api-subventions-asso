@@ -3,7 +3,7 @@ import SubventiaDto from "../@types/subventia.dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { ApplicationStatus } from "dto";
 import { ObjectId } from "mongodb";
-import { RAW_APPLICATION } from "../__fixtures__/subventia.fixture";
+import { RAW_APPLICATION, SUBVENTIA_DBO } from "../__fixtures__/subventia.fixture";
 
 import { GenericParser } from "../../../../shared/GenericParser";
 
@@ -139,6 +139,13 @@ describe(SubventiaAdapter, () => {
         it("should call adapter", () => {
             SubventiaAdapter.rawToApplication(RAW_APPLICATION);
             expect(SubventiaAdapter.toDemandeSubventionDto).toHaveBeenCalledWith(RAW_APPLICATION.data);
+        });
+    });
+
+    describe("toApplicationFlat", () => {
+        it("returns application fat", () => {
+            const actual = SubventiaAdapter.toApplicationFlat(SUBVENTIA_DBO);
+            expect(actual).toMatchSnapshot();
         });
     });
 });
