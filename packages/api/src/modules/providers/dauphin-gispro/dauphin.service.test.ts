@@ -6,6 +6,7 @@ import SpyInstance = jest.SpyInstance;
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
 import Siren from "../../../identifierObjects/Siren";
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
+import dauphinFlatService from "./dauphin.flat.service";
 
 jest.mock("axios", () => ({
     post: jest.fn(),
@@ -20,6 +21,7 @@ jest.mock("../../../dataProviders/db/providers/dauphin/dauphin.port", () => ({
 }));
 
 jest.mock("./adapters/DauphinDtoAdapter");
+jest.mock("./dauphin.flat.service");
 
 const SIREN = new Siren("123456789");
 const ASSOCIATION_IDENTIFIER = AssociationIdentifier.fromSiren(SIREN);
@@ -230,9 +232,14 @@ describe("Dauphin Service", () => {
             expect(httpPostSpy.mock.calls[0]).toMatchSnapshot();
         });
 
-        it("should call mockSaveApplicationsInCache", async () => {
+        it("should call SaveApplicationsInCache", async () => {
             await dauphinService.updateApplicationCache();
             expect(mockSaveApplicationsInCache).toHaveBeenCalledTimes(1);
+        });
+
+        it("saves dauphin flat", async () => {
+            await dauphinService.updateApplicationCache();
+            expect(dauphinFlatService.feedApplicationFlat).toHaveBeenCalled();
         });
     });
 
@@ -283,6 +290,21 @@ describe("Dauphin Service", () => {
                 },
             });
             expect(actual).toEqual(expected);
+        });
+
+        it("adds 'updateDate' field", () => {
+            const updateDate = new Date("2002-08-12");
+            // @ts-expect-error: private method
+            const actual = dauphinService.formatAndReturnApplicationDto(
+                {
+                    _source: {
+                        referenceAdministrative: "01234567-3456",
+                    },
+                },
+                updateDate,
+            );
+            const expected = { updateDate };
+            expect(actual).toMatchObject(expected);
         });
     });
 
