@@ -54,7 +54,7 @@ export class DauphinFlatService extends ProviderCore implements ApplicationFlatP
                 "Les enregistrements suivants n'ont pas été sauvegardés car l'aggrégation était incohérente : ",
                 errors.map(
                     e =>
-                        `dossier n°${e.codeDossier}\trefAdmin ${e.referenceAdministrative} ont pour le champ ${e.field} les valeurs ${e.valueList}`,
+                        `dossier n°${e.codeDossier} et refAdmin n°${e.referenceAdministrative} ont pour le champ ${e.field} les valeurs ${e.valueList}`,
                     "\nEn conséquence la collection temporaire n'a pas été vidée.",
                 ),
             );

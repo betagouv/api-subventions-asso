@@ -4,7 +4,7 @@ import { DefaultObject, ParserInfo } from "../../../@types";
 import GisproEntity from "./@types/GisproEntity";
 
 export default class GisproParser {
-    static pageIndexByYear = {
+    static pageIndexByYear: { [year: number]: number } = {
         2018: 0,
         2019: 0,
         2020: 0,
