@@ -2,7 +2,7 @@ import * as fs from "fs";
 import path from "path";
 import csvSyncStringifier from "csv-stringify/sync";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
-import { CliStaticInterface } from "../../@types";
+import { ApplicationFlatCli, CliStaticInterface } from "../../@types";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";
 import * as CliHelper from "../../shared/helpers/CliHelper";
 import CliController from "../../shared/CliController";
@@ -12,7 +12,7 @@ import { ParsedDataWithProblem } from "../../modules/providers/subventia/validat
 import { DEV } from "../../configurations/env.conf";
 
 @StaticImplements<CliStaticInterface>()
-export default class SubventiaCli extends CliController {
+export default class SubventiaCli extends CliController implements ApplicationFlatCli {
     static cmdName = "subventia";
 
     protected _providerIdToLog = subventiaService.provider.id;
@@ -52,5 +52,13 @@ export default class SubventiaCli extends CliController {
             else console.log("fields with errors exported in " + path.resolve(outputPath));
         }
         console.log("error file written");
+    }
+
+    async initApplicationFlat() {
+        await subventiaService.initApplicationFlat();
+    }
+
+    syncApplicationFlat(_exercise: number) {
+        return console.error("Not implemented for Subventia. Exercise is not accurate in Subventia data.");
     }
 }

@@ -139,6 +139,14 @@ export class SubventiaService
 
     isApplicationFlatProvider = true as const;
 
+    async initApplicationFlat() {
+        const dbos = await subventiaPort.findAll();
+        const stream = ReadableStream.from(
+            dbos.map(dbo => ({ ...SubventiaAdapter.toApplicationFlat(dbo), updateDate: new Date() })),
+        );
+        return this.saveFlatFromStream(stream);
+    }
+
     saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>) {
         return applicationFlatService.saveFromStream(stream);
     }

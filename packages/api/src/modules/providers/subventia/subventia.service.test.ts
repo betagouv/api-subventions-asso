@@ -7,13 +7,15 @@ import SubventiaEntity, { SubventiaDbo } from "./@types/subventia.entity";
 import { CommonApplicationDto, ApplicationStatus, DemandeSubvention } from "dto";
 import SubventiaDto from "./@types/subventia.dto";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
-import { ENTITIES } from "./__fixtures__/subventia.fixture";
+import { ENTITIES, SUBVENTIA_DBO } from "./__fixtures__/subventia.fixture";
 import Siren from "../../../identifierObjects/Siren";
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import { ReadableStream } from "node:stream/web";
+import { ENTITY } from "../../applicationFlat/__fixtures__";
 jest.mock("../../applicationFlat/applicationFlat.service");
 jest.mock("./adapters/subventia.adapter");
+jest.mock("../../../dataProviders/db/providers/subventia/subventia.port");
 
 describe("Subventia Service", () => {
     const filePath = "path/to/file";
@@ -334,6 +336,36 @@ describe("Subventia Service", () => {
             const STREAM = ReadableStream.from([]);
             subventiaService.saveFlatFromStream(STREAM);
             expect(applicationFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);
+        });
+    });
+
+    describe("initApplicationFlat", () => {
+        let mockFindAll: jest.SpyInstance;
+        let mockToApplicationFlat: jest.SpyInstance;
+        let mockSaveFlatFromStream: jest.SpyInstance;
+
+        beforeEach(() => {
+            mockFindAll = jest.spyOn(SubventiaPort, "findAll").mockResolvedValue([SUBVENTIA_DBO]);
+            mockToApplicationFlat = jest.spyOn(SubventiaAdapter, "toApplicationFlat").mockReturnValue(ENTITY);
+            mockSaveFlatFromStream = jest.spyOn(subventiaService, "saveFlatFromStream").mockImplementation(jest.fn());
+        });
+
+        afterAll(() => mockSaveFlatFromStream.mockRestore());
+
+        it("fetches subventia dbos", async () => {
+            await subventiaService.initApplicationFlat();
+            expect(mockFindAll).toHaveBeenCalled();
+        });
+
+        it("adapts dbo to application flat", async () => {
+            await subventiaService.initApplicationFlat();
+            expect(mockToApplicationFlat).toHaveBeenCalledWith(SUBVENTIA_DBO);
+        });
+
+        it("calls saveFlatFromStream", async () => {
+            await subventiaService.initApplicationFlat();
+            // const STREAM = ReadableStream.from([{ ...ENTITY, updateDate: expect.any(Date) }]); // could not find a way to make this work
+            expect(mockSaveFlatFromStream.mock.calls[0][0]).toBeInstanceOf(ReadableStream);
         });
     });
 });
