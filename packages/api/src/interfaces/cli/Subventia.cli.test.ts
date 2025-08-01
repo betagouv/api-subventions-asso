@@ -233,4 +233,11 @@ describe("SubventiaCli", () => {
             expect(fs.writeFileSync).toHaveBeenCalledWith(OUTPUT_PATH, STR_CONTENT, { flag: "w", encoding: "utf-8" });
         });
     });
+
+    describe("initApplicationFlat", () => {
+        it("calls subventia service", async () => {
+            await subventiaCli.initApplicationFlat();
+            expect(subventiaService.initApplicationFlat).toHaveBeenCalled();
+        });
+    });
 });
