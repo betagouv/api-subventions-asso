@@ -11,10 +11,14 @@ import RnaSirenEntity from "../../../entities/RnaSirenEntity";
 import IOsirisRequestInformations from "./@types/IOsirisRequestInformations";
 import { ObjectId } from "mongodb";
 import IOsirisActionsInformations from "./@types/IOsirisActionsInformations";
+import { ReadableStream } from "stream/web";
+import { ENTITY } from "../../applicationFlat/__fixtures__";
+import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 
 jest.mock("./adapters/OsirisRequestAdapter");
 jest.mock("../../../dataProviders/db/providers/osiris");
 jest.mock("../../rna-siren/rnaSiren.service");
+jest.mock("../../applicationFlat/applicationFlat.service");
 
 const SIREN = new Siren("123456789");
 const SIRET = SIREN.toSiret("00000");
@@ -294,6 +298,15 @@ describe("OsirisService", () => {
             await osirisService.validateAndComplete(REQUEST);
             expect(mockValidate).toHaveBeenCalledTimes(1);
             expect(rnaSirenService.find).not.toHaveBeenCalled();
+        });
+    });
+
+    describe("saveFlatFromStream", () => {
+        it("calls application flat with stream", async () => {
+            const APPLICATIONS = [ENTITY];
+            const STREAM = ReadableStream.from(APPLICATIONS);
+            await osirisService.saveFlatFromStream(STREAM);
+            expect(applicationFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);
         });
     });
 });

@@ -17,6 +17,10 @@ import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
+import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
+import { ReadableStream } from "stream/web";
+import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
+import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 
 export enum VALID_REQUEST_ERROR_CODE {
     INVALID_SIRET = 1,
@@ -40,7 +44,7 @@ export class InvalidOsirisRequestError extends Error {
 
 export class OsirisService
     extends ProviderCore
-    implements DemandesSubventionsProvider<OsirisRequestEntity>, GrantProvider
+    implements DemandesSubventionsProvider<OsirisRequestEntity>, GrantProvider, ApplicationFlatProvider
 {
     constructor() {
         super({
@@ -235,6 +239,18 @@ export class OsirisService
     rawToCommon(raw: RawGrant) {
         // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
         return OsirisRequestAdapter.toCommon(raw.data as OsirisRequestEntity);
+    }
+
+    /**
+     * |--------------------------------|
+     * |   Application Flat Part        |
+     * |--------------------------------|
+     */
+
+    isApplicationFlatProvider = true as const;
+
+    saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>) {
+        applicationFlatService.saveFromStream(stream);
     }
 }
 
