@@ -410,6 +410,7 @@ describe("FonjepService", () => {
     });
 
     describe("createApplicationFlatEntitiesFromCollections", () => {
+        const EXPORT_DATE = new Date("2023-12-31");
         const POSITIONS = [POSTE_ENTITY];
         const THIRD_PARTIES = [TIERS_ENTITY, ALLOCATOR, INSTRUCTOR];
 
@@ -418,11 +419,14 @@ describe("FonjepService", () => {
         });
 
         it("creates application flat for each position", () => {
-            fonjepService.createApplicationFlatEntitiesFromCollections({
-                positions: POSITIONS,
-                thirdParties: THIRD_PARTIES,
-                schemes: DISPOSITIF_ENTITIES,
-            });
+            fonjepService.createApplicationFlatEntitiesFromCollections(
+                {
+                    positions: POSITIONS,
+                    thirdParties: THIRD_PARTIES,
+                    schemes: DISPOSITIF_ENTITIES,
+                },
+                EXPORT_DATE,
+            );
 
             expect(FonjepEntityAdapter.toFonjepApplicationFlat).toHaveBeenCalledWith({
                 position: POSTE_ENTITY,
@@ -434,17 +438,21 @@ describe("FonjepService", () => {
         });
 
         it("creates application flat for each position", () => {
-            const actual = fonjepService.createApplicationFlatEntitiesFromCollections({
-                positions: POSITIONS,
-                thirdParties: THIRD_PARTIES,
-                schemes: DISPOSITIF_ENTITIES,
-            });
+            const actual = fonjepService.createApplicationFlatEntitiesFromCollections(
+                {
+                    positions: POSITIONS,
+                    thirdParties: THIRD_PARTIES,
+                    schemes: DISPOSITIF_ENTITIES,
+                },
+                EXPORT_DATE,
+            );
 
             expect(actual).toEqual([{ ...APPLICATION_FLAT_ENTITY, updateDate: expect.any(Date) }]);
         });
     });
 
     describe("addToApplicationFlat", () => {
+        const EXPORT_DATE = new Date("2023-12-31");
         let mockCreateApplicationFlat: jest.SpyInstance;
         let mockSaveFlatFromStream: jest.SpyInstance;
 
@@ -461,11 +469,14 @@ describe("FonjepService", () => {
         });
 
         it("calls saveFlatFromStream with ApplicationFlat stream", async () => {
-            fonjepService.addToApplicationFlat({
-                positions: POSITIONS,
-                thirdParties: THIRD_PARTIES,
-                schemes: DISPOSITIF_ENTITIES,
-            });
+            fonjepService.addToApplicationFlat(
+                {
+                    positions: POSITIONS,
+                    thirdParties: THIRD_PARTIES,
+                    schemes: DISPOSITIF_ENTITIES,
+                },
+                EXPORT_DATE,
+            );
 
             expect(mockSaveFlatFromStream).toHaveBeenCalledWith(expect.any(ReadableStream));
         });

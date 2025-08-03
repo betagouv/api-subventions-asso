@@ -175,26 +175,34 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
 
     isApplicationFlatProvider = true as const;
 
-    addToApplicationFlat(collections: {
-        positions: FonjepPosteEntity[];
-        thirdParties: FonjepTiersEntity[];
-        schemes: FonjepDispositifEntity[];
-    }) {
-        const applications: ApplicationFlatEntity[] = this.createApplicationFlatEntitiesFromCollections(collections);
+    addToApplicationFlat(
+        collections: {
+            positions: FonjepPosteEntity[];
+            thirdParties: FonjepTiersEntity[];
+            schemes: FonjepDispositifEntity[];
+        },
+        exportDate: Date,
+    ) {
+        const applications: ApplicationFlatEntity[] = this.createApplicationFlatEntitiesFromCollections(
+            collections,
+            exportDate,
+        );
         const stream = ReadableStream.from(applications);
         return this.saveFlatFromStream(stream);
     }
 
-    createApplicationFlatEntitiesFromCollections(collections: {
-        positions: FonjepPosteEntity[];
-        thirdParties: FonjepTiersEntity[];
-        schemes: FonjepDispositifEntity[];
-    }): ApplicationFlatEntity[] {
+    createApplicationFlatEntitiesFromCollections(
+        collections: {
+            positions: FonjepPosteEntity[];
+            thirdParties: FonjepTiersEntity[];
+            schemes: FonjepDispositifEntity[];
+        },
+        exportDate: Date,
+    ): ApplicationFlatEntity[] {
         const { positions, thirdParties, schemes } = collections;
 
         const applications: ApplicationFlatEntity[] = [];
         const errors: string[] = [];
-        const dateOfImport = new Date();
 
         positions.forEach(position => {
             const { allocator, beneficiary, instructor } = thirdParties.reduce(
@@ -228,7 +236,7 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
                 if (partialApplication) {
                     applications.push({
                         ...partialApplication,
-                        updateDate: dateOfImport,
+                        updateDate: exportDate ? exportDate : new Date(),
                     });
                 }
             }

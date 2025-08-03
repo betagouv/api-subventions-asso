@@ -18,9 +18,11 @@ export default class FonjepCli extends CliController {
      *
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    protected async _parse(file: string, logs: unknown[], exportDate: Date) {
+    protected async _parse(file: string, logs: unknown[], exportDate: Date | undefined) {
         this.logger.logIC("\nStart parse file: ", file);
         this.logger.log(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
+
+        if (!exportDate) throw new Error("Export date is mandatory for fonjep import");
 
         const { tierEntities, posteEntities, versementEntities, typePosteEntities, dispositifEntities } =
             fonjepService.fromFileToEntities(file);
@@ -44,11 +46,14 @@ export default class FonjepCli extends CliController {
             payments: versementEntities,
         });
 
-        await fonjepService.addToApplicationFlat({
-            positions: posteEntities,
-            schemes: dispositifEntities,
-            thirdParties: tierEntities,
-        });
+        await fonjepService.addToApplicationFlat(
+            {
+                positions: posteEntities,
+                schemes: dispositifEntities,
+                thirdParties: tierEntities,
+            },
+            exportDate,
+        );
 
         this.logger.logIC("Fonjep temps collections created");
 
