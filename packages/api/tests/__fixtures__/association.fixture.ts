@@ -8,6 +8,7 @@ export const SIRET_STR = SIREN_STR + NIC_STR;
 export const RNA_STR = "W000000000";
 export const NAME = "L'Asso Imaginaire";
 export const LONELY_RNA = "W999999999";
+export const RIDET_STR = "1234567891";
 
 const DEFAULT_ASSOCIATION = {
     siren: SIREN_STR,

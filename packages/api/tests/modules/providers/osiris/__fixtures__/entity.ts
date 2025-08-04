@@ -4,7 +4,7 @@ import OsirisActionEntity from "../../../../../src/modules/providers/osiris/enti
 import OsirisRequestEntity from "../../../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
 import DEFAULT_ASSOCIATION from "../../../../__fixtures__/association.fixture";
 
-const OSIRIS_REQUEST_ENTITY = new OsirisRequestEntity(
+const OSIRIS_REQUEST_ENTITY: OsirisRequestEntity = new OsirisRequestEntity(
     { siret: DEFAULT_ASSOCIATION.siret, rna: DEFAULT_ASSOCIATION.rna, name: DEFAULT_ASSOCIATION.name },
     {
         osirisId: "OSIRIS_ID",
@@ -16,7 +16,7 @@ const OSIRIS_REQUEST_ENTITY = new OsirisRequestEntity(
         etablissementVoie: "rue Waldeck-Rousseau",
         etablissementCodePostal: "75000",
     } as IOsirisRequestInformations,
-    {},
+    { Dossier: { "Date Reception": 43549.44370065972, "Exercice Début": 2022, "Exercice Fin": 2025 } },
     undefined,
     [],
 );

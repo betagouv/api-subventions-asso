@@ -25,7 +25,7 @@ export default interface IOsirisRequestInformations extends IProviderInformation
     dispositif: string;
     sous_dispositif: string;
     status: string;
-    pluriannualite: string;
+    pluriannualite: "Pluriannuel" | "Annuel";
 
     montantsTotal: number;
     montantsDemande: number;

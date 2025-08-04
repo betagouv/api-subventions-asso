@@ -14,6 +14,10 @@ import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 import osirisService from "../osiris.service";
 import { toStatusFactory } from "../../providers.adapter";
 import { RawApplication } from "../../../grant/@types/rawGrant";
+import { ApplicationFlatEntity, ApplicationNature } from "../../../../entities/ApplicationFlatEntity";
+import Siret from "../../../../identifierObjects/Siret";
+import Ridet from "../../../../identifierObjects/Ridet";
+import { GenericParser } from "../../../../shared/GenericParser";
 
 export default class OsirisRequestAdapter {
     static PROVIDER_NAME = "Osiris";
@@ -254,5 +258,115 @@ export default class OsirisRequestAdapter {
             siret: entity.legalInformations.siret,
             statut: OsirisRequestAdapter.toStatus(entity.providerInformations.status),
         };
+    }
+
+    // find if identifier is a disguised Ridet or a native Siret
+    static getAssoIdType(identifier: string) {
+        // disguised ridet starts with 9900 or 99000
+        if (identifier.startsWith("9900")) return Ridet.getName();
+        else return Siret.getName();
+    }
+
+    // transform disguised Ridet into a valid Ridet
+    static cleanRidet(osirisRidet: string) {
+        const ridet = osirisRidet.replace(/^99/, "").replace(/^0+/, ""); // ridet is 9 or 10 digits. It removes the starting 9900 or 99000 used by osiris to convert ridet into siret
+        if (!Ridet.isRidet(ridet)) {
+            throw new Error("Cleaned Ridet is not valid");
+        }
+        return ridet;
+    }
+
+    static getPluriannualYears(entity: OsirisRequestEntity): number[] {
+        const startYear = (entity.data as unknown & { Dossier: { "Exercice Début": number; "Exercice Fin": number } })
+            .Dossier["Exercice Début"];
+        const endYear = (entity.data as unknown & { Dossier: { "Exercice Début": number; "Exercice Fin": number } })
+            .Dossier["Exercice Fin"];
+        const years: number[] = [];
+        for (let start = startYear; start <= endYear; start++) {
+            years.push(start);
+        }
+        return years;
+    }
+
+    // return all application cofinancers based on all linked actions
+    // return empty string if no cofinancers is found
+    static getCofinancers(actions: OsirisActionEntity[]) {
+        const cofinancersNames = Array.from(
+            actions.reduce((acc, action) => {
+                action.indexedInformations.cofinanceurs.split(";").forEach(cofinancer => acc.add(cofinancer));
+                return acc;
+            }, new Set<string>()),
+        )
+            .filter(str => str) // remove empty set value from the last trailing comma if exists
+            .join("|");
+        return cofinancersNames;
+    }
+
+    static toApplicationFlat(entity: OsirisRequestEntity, actions: OsirisActionEntity[]): ApplicationFlatEntity {
+        const provider = this.PROVIDER_NAME.toLowerCase();
+        const budgetaryYear = entity.providerInformations.exercise;
+        const applicationProviderId = entity.providerInformations.osirisId;
+        const applicationId = `${provider}-${applicationProviderId}`;
+        const uniqueId = `${applicationId}-${budgetaryYear}`;
+        const assoIdType = this.getAssoIdType(entity.legalInformations.siret);
+        const assoId =
+            assoIdType === Siret.getName()
+                ? entity.legalInformations.siret
+                : this.cleanRidet(entity.legalInformations.siret);
+        // TODO: make a DTO for OsirisRequest. See #3590
+        // @ts-expect-error: dto not available
+        const depositDate = GenericParser.ExcelDateToJSDate(entity.data["Date Reception"]);
+        const ej = entity.providerInformations.ej;
+        const paymentId = `${assoId}-${ej}-${budgetaryYear}`;
+        const cofinancersNames = this.getCofinancers(actions);
+
+        return {
+            uniqueId,
+            applicationId,
+            applicationProviderId,
+            provider,
+            joinKeyId: entity.providerInformations.compteAssoId,
+            joinKeyDesc: `N° dossier de l'outil "Le Compte Asso". Il permet de faire un lien entre la requête OSIRIS et le dossier du Compte Asso.`,
+            allocatorName: null,
+            allocatorIdType: null,
+            allocatorId: null,
+            managingAuthorityName: null,
+            managingAuthorityId: null,
+            managingAuthorityIdType: null,
+            instructiveDepartmentName: entity.providerInformations.service_instructeur,
+            instructiveDepartmentIdType: null,
+            instructiveDepartementId: null,
+            beneficiaryEstablishmentId: entity.legalInformations.siret,
+            beneficiaryEstablishmentIdType: assoId,
+            budgetaryYear,
+            pluriannual: entity.providerInformations.pluriannualite === "Pluriannuel" ? true : false,
+            pluriannualYears: this.getPluriannualYears(entity).join("|"),
+            decisionDate: entity.providerInformations.dateCommission,
+            conventionDate: null,
+            decisionReference: null,
+            depositDate,
+            requestYear: depositDate.getFullYear(),
+            scheme: entity.providerInformations.dispositif,
+            subScheme: entity.providerInformations.sous_dispositif,
+            statusLabel: this.toStatus(entity.providerInformations.status),
+            object: actions.map(action => action.indexedInformations.intitule).join("|"),
+            nature: ApplicationNature.MONEY,
+            requestedAmount: entity.providerInformations.montantsDemande,
+            grantedAmount: entity.providerInformations.montantsAccorde,
+            totalAmount: null,
+            ej,
+            paymentId,
+            paymentCondition: null,
+            paymentConditionDesc: null,
+            paymentPeriodDates: null,
+            cofinancersNames: cofinancersNames,
+            cofinancingRequested: cofinancersNames.length > 0 ? true : false,
+            cofinancersIdType: null,
+            confinancersId: null,
+            idRAE: null,
+            ueNotification: null,
+            subventionPercentage: null,
+            updateDate: new Date(), // TODO: how to get OSIRIS import date for each entity ?
+        } as ApplicationFlatEntity;
     }
 }
