@@ -8,12 +8,12 @@ import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import RnaSirenEntity from "../../../entities/RnaSirenEntity";
-import IOsirisRequestInformations from "./@types/IOsirisRequestInformations";
-import { ObjectId } from "mongodb";
-import IOsirisActionsInformations from "./@types/IOsirisActionsInformations";
 import { ReadableStream } from "stream/web";
 import { ENTITY } from "../../applicationFlat/__fixtures__";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
+import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
+import { REQUEST_DBO } from "./__fixtures__/osiris.request.fixtures";
+import { ACTION_ENTITY } from "./__fixtures__/osiris.action.fixtures";
 
 jest.mock("./adapters/OsirisRequestAdapter");
 jest.mock("../../../dataProviders/db/providers/osiris");
@@ -23,29 +23,6 @@ jest.mock("../../applicationFlat/applicationFlat.service");
 const SIREN = new Siren("123456789");
 const SIRET = SIREN.toSiret("00000");
 const RNA = new Rna("W123456789");
-
-const REQUEST_ENTITY = new OsirisRequestEntity(
-    { siret: SIRET.value, rna: RNA.value, name: "NAME" },
-    {
-        osirisId: "FAKE_ID_2",
-        ej: "",
-        amountAwarded: 0,
-        dateCommission: new Date(),
-        exercise: 2022,
-    } as IOsirisRequestInformations,
-    {},
-    undefined,
-    [],
-);
-const REQUEST_DBO = { _id: new ObjectId("685be74b0d6ac15b4e3ef6e7"), ...REQUEST_ENTITY };
-
-const ACTION_ENTITY = new OsirisActionEntity(
-    {
-        osirisActionId: "FAKE_ID_2-001",
-        exercise: 2022,
-    } as unknown as IOsirisActionsInformations,
-    {},
-);
 
 describe("OsirisService", () => {
     beforeAll(() => {
@@ -307,6 +284,67 @@ describe("OsirisService", () => {
             const STREAM = ReadableStream.from(APPLICATIONS);
             await osirisService.saveFlatFromStream(STREAM);
             expect(applicationFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);
+        });
+    });
+
+    describe("findRequestsByExercise", () => {
+        it("fetches requests for given exercise", async () => {
+            await osirisService.findRequestsByExercise(2022);
+            expect(osirisRequestPort.getAllByExercise).toHaveBeenCalledWith(2022);
+        });
+    });
+
+    describe("findActionsByExercise", () => {
+        it("fetches actions for given exercise", async () => {
+            await osirisService.findActionsByExercise(2022);
+            expect(osirisActionPort.getAllByExercise).toHaveBeenCalledWith(2022);
+        });
+    });
+
+    describe("getAllRequests", () => {
+        it("fetches all requests", async () => {
+            await osirisService.getAllRequests();
+            expect(osirisRequestPort.getAll).toHaveBeenCalled();
+        });
+    });
+
+    describe("getAllActions", () => {
+        it("fetches all actions", async () => {
+            await osirisService.getAllActions();
+            expect(osirisActionPort.getAll).toHaveBeenCalled();
+        });
+    });
+
+    describe("addApplicationsFlat", () => {
+        beforeEach(() => {
+            jest.mocked(OsirisRequestAdapter.toApplicationFlat).mockReturnValue(ENTITY);
+            jest.mocked(applicationFlatService.saveFromStream).mockResolvedValue();
+        });
+        it("adapts request with actions to application flat", async () => {
+            const REQUESTS = [{ request: { ...REQUEST_DBO }, actions: [ACTION_ENTITY] }];
+            await osirisService.addApplicationsFlat(REQUESTS);
+            expect(OsirisRequestAdapter.toApplicationFlat).toHaveBeenCalledWith(
+                REQUESTS[0].request,
+                REQUESTS[0].actions,
+            );
+        });
+
+        it("creates a stream of applications to be transmitted to application flat service", async () => {
+            const REQUESTS = [{ request: { ...REQUEST_DBO }, actions: [ACTION_ENTITY] }];
+            await osirisService.addApplicationsFlat(REQUESTS);
+            const stream = jest.mocked(applicationFlatService.saveFromStream).mock.calls[0][0] as ReadableStream;
+            const expected = [ENTITY];
+            const actual: ApplicationFlatEntity[] = [];
+            for await (const entity of stream) {
+                actual.push(entity);
+            }
+            expect(actual).toEqual(expected);
+        });
+
+        it("passes stream of applications to application flat service", async () => {
+            const REQUESTS = [{ request: { ...REQUEST_DBO }, actions: [ACTION_ENTITY] }];
+            await osirisService.addApplicationsFlat(REQUESTS);
+            expect(jest.mocked(applicationFlatService.saveFromStream).mock.calls[0][0]).toBeInstanceOf(ReadableStream);
         });
     });
 });

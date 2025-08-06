@@ -315,7 +315,7 @@ export default class OsirisRequestAdapter {
                 : this.cleanRidet(entity.legalInformations.siret);
         // TODO: make a DTO for OsirisRequest. See #3590
         // @ts-expect-error: dto not available
-        const depositDate = GenericParser.ExcelDateToJSDate(entity.data["Date Reception"]);
+        const depositDate = GenericParser.ExcelDateToJSDate(entity.data["Dossier"]["Date Reception"]);
         const ej = entity.providerInformations.ej;
         const paymentId = `${assoId}-${ej}-${budgetaryYear}`;
         const cofinancersNames = this.getCofinancers(actions);

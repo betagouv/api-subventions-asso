@@ -231,7 +231,7 @@ describe("OsirisRequestAdapter", () => {
         it("format excel date", () => {
             OsirisRequestAdapter.toApplicationFlat(OsirisEntity, ACTIONS);
             // @ts-expect-error: data is defined in mock
-            expect(mockExcelDateToJSDate).toHaveBeenCalledWith(OsirisEntity.data["Date Reception"]);
+            expect(mockExcelDateToJSDate).toHaveBeenCalledWith(OsirisEntity.data["Dossier"]["Date Reception"]);
         });
 
         it("retrieves the real ridet from the one disguised in siret by osiris", () => {

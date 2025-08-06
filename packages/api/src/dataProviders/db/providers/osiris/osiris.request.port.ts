@@ -86,6 +86,14 @@ export class OsirisRequestPort extends MongoPort<OsirisRequestEntity> {
     public cursorFindRequests(query = {}) {
         return this.collection.find(query);
     }
+
+    public async getAll() {
+        return this.cursorFindRequests().toArray();
+    }
+
+    async getAllByExercise(exercise: number) {
+        return this.cursorFindRequests({ "providerInformations.exercise": exercise }).toArray();
+    }
 }
 
 const osirisRequestPort: OsirisRequestPort = new OsirisRequestPort();

@@ -69,6 +69,14 @@ export class OsirisActionPort extends MongoPort<OsirisActionEntityDbo> {
         return this.collection.find(query);
     }
 
+    public async getAll() {
+        return this.cursorFind().toArray();
+    }
+
+    public async getAllByExercise(exercise: number) {
+        return this.cursorFind({ indexedInformations: { exercise } }).toArray();
+    }
+
     public async findByRequestUniqueId(requestUniqueId: string) {
         const dbos = await this.collection.find({ "indexedInformations.requestUniqueId": requestUniqueId }).toArray();
         return dbos.map(dbo => OsirisActionAdapter.toEntity(dbo));

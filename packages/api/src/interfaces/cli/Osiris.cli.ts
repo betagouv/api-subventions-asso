@@ -1,7 +1,7 @@
 import fs from "fs";
 
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
-import { CliStaticInterface } from "../../@types";
+import { ApplicationFlatCli, CliStaticInterface } from "../../@types";
 import OsirisParser from "../../modules/providers/osiris/osiris.parser";
 import osirisService, { InvalidOsirisRequestError } from "../../modules/providers/osiris/osiris.service";
 import OsirisActionEntity from "../../modules/providers/osiris/entities/OsirisActionEntity";
@@ -12,7 +12,7 @@ import { GenericParser } from "../../shared/GenericParser";
 import dataLogService from "../../modules/data-log/dataLog.service";
 
 @StaticImplements<CliStaticInterface>()
-export default class OsirisCli {
+export default class OsirisCli implements ApplicationFlatCli {
     static cmdName = "osiris";
 
     private logFileParsePath = {
@@ -186,5 +186,29 @@ export default class OsirisCli {
             } actions updated
             ${nbErrors} actions not valid
         `);
+    }
+
+    async initApplicationFlat() {
+        const actions = await osirisService.getAllActions();
+        const requests = await osirisService.getAllRequests();
+        return this.addApplicationsFlat(requests, actions);
+    }
+
+    async syncApplicationFlat(exercise: number) {
+        const actions = await osirisService.findActionsByExercise(exercise);
+        const requests = await osirisService.findRequestsByExercise(exercise);
+        return this.addApplicationsFlat(requests, actions);
+    }
+
+    async addApplicationsFlat(requests: OsirisRequestEntity[], actions: OsirisActionEntity[]) {
+        const requestsWithActions = requests.map(request => {
+            return {
+                request,
+                actions: actions.filter(
+                    a => a.indexedInformations.requestUniqueId === request.providerInformations.uniqueId,
+                ),
+            };
+        });
+        return osirisService.addApplicationsFlat(requestsWithActions);
     }
 }

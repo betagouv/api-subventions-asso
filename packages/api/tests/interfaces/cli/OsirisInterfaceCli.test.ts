@@ -2,6 +2,10 @@ import path from "path";
 import OsirisCli from "../../../src/interfaces/cli/Osiris.cli";
 import OsirisParser from "../../../src/modules/providers/osiris/osiris.parser";
 import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
+import { osirisActionPort, osirisRequestPort } from "../../../src/dataProviders/db/providers/osiris";
+import { REQUEST_DBO } from "../../../src/modules/providers/osiris/__fixtures__/osiris.request.fixtures";
+import { ACTION_DBO } from "../../../src/modules/providers/osiris/__fixtures__/osiris.action.fixtures";
+import applicationFlatPort from "../../../src/dataProviders/db/applicationFlat/applicationFlat.port";
 
 describe("OsirisCli", () => {
     const spys: jest.SpyInstance<unknown>[] = [];
@@ -127,6 +131,23 @@ describe("OsirisCli", () => {
             expect(() => controller.parse("unknown" as "actions", filePath, "2022")).rejects.toThrowError(
                 "The type unknown is not taken into account",
             );
+        });
+    });
+
+    describe("application flat commands", () => {
+        beforeEach(async () => {
+            await osirisRequestPort.add(REQUEST_DBO);
+            await osirisActionPort.add(ACTION_DBO);
+        });
+
+        describe("initApplicationFlat", () => {
+            it("creates applications flat from requests and actions", async () => {
+                await new OsirisCli().initApplicationFlat();
+                const applications = await applicationFlatPort.findAll();
+                expect(
+                    applications.map(application => ({ ...application, updateDate: expect.any(Date) })),
+                ).toMatchSnapshot();
+            });
         });
     });
 });

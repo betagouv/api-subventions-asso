@@ -133,6 +133,14 @@ export class OsirisService
         if (validation !== true) throw new InvalidOsirisRequestError(validation);
     }
 
+    public async getAllRequests() {
+        return osirisRequestPort.getAll();
+    }
+
+    async findRequestsByExercise(exercise: number) {
+        return osirisRequestPort.getAllByExercise(exercise);
+    }
+
     public bulkAddActions(actions: OsirisActionEntity[]): Promise<void | BulkWriteResult> {
         return osirisActionPort.bulkUpsert(actions);
     }
@@ -153,6 +161,14 @@ export class OsirisService
         }
 
         return true;
+    }
+
+    public async getAllActions() {
+        return osirisActionPort.getAll();
+    }
+
+    public async findActionsByExercise(exercise) {
+        return osirisActionPort.getAllByExercise(exercise);
     }
 
     public async findBySiret(siret: Siret) {
@@ -248,6 +264,14 @@ export class OsirisService
      */
 
     isApplicationFlatProvider = true as const;
+
+    addApplicationsFlat(requestsWithActions: { request: OsirisRequestEntity; actions: OsirisActionEntity[] }[]) {
+        const applications = requestsWithActions.map(({ request, actions }) =>
+            OsirisRequestAdapter.toApplicationFlat(request, actions),
+        );
+        const stream = ReadableStream.from(applications);
+        return applicationFlatService.saveFromStream(stream);
+    }
 
     saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>) {
         applicationFlatService.saveFromStream(stream);
