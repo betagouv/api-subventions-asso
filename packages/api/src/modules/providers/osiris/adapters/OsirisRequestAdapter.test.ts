@@ -245,9 +245,16 @@ describe("OsirisRequestAdapter", () => {
             expect(mockGetCofinancers).toHaveBeenCalledWith(ACTIONS);
         });
 
-        it("returns application flat", () => {
+        it("returns application flat with default date", () => {
+            jest.useFakeTimers().setSystemTime(new Date("2025-08-06"));
+            const actual = OsirisRequestAdapter.toApplicationFlat({ ...OsirisEntity, _id: undefined }, ACTIONS);
+            expect(actual).toMatchSnapshot();
+            jest.useFakeTimers().useRealTimers();
+        });
+
+        it("returns application flat with date from object id", () => {
             const actual = OsirisRequestAdapter.toApplicationFlat(OsirisEntity, ACTIONS);
-            expect(actual).toMatchSnapshot({ updateDate: expect.any(Date) });
+            expect(actual).toMatchSnapshot();
         });
     });
 });
