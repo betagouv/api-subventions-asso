@@ -296,9 +296,8 @@ export default class OsirisRequestAdapter {
                 action.indexedInformations.cofinanceurs.split(";").forEach(cofinancer => acc.add(cofinancer));
                 return acc;
             }, new Set<string>()),
-        )
-            .filter(str => str) // remove empty set value from the last trailing comma if exists
-            .join("|");
+        ).filter(str => str); // remove empty set value from the last trailing comma if exists
+
         return cofinancersNames;
     }
 

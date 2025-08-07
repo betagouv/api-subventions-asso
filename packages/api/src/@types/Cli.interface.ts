@@ -4,8 +4,8 @@ export interface CliStaticInterface {
 }
 
 export interface ApplicationFlatCli {
-    // adapte all subventia document
+    // adapte all provider's data
     initApplicationFlat(): void;
-    // adapte only subventia documents for given exercise
+    // adapte only provider's data for given exercise
     syncApplicationFlat(exercise: number);
 }
