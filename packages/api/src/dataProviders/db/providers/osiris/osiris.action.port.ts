@@ -16,6 +16,10 @@ export class OsirisActionPort extends MongoPort<OsirisActionEntity> {
         await this.collection.createIndex({ "indexedInformations.siret": 1 });
     }
 
+    joinIndexes = {
+        osirisRequestPort: "indexedInformations.requestUniqueId",
+    };
+
     // Action Part
     public async add(osirisAction: OsirisActionEntity) {
         await this.collection.insertOne(osirisAction);
