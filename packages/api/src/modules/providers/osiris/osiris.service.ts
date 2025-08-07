@@ -1,5 +1,5 @@
 import { DemandeSubvention } from "dto";
-import { BulkWriteResult } from "mongodb";
+import { AggregationCursor, BulkWriteResult } from "mongodb";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { isAssociationName, isCompteAssoId, isOsirisActionId, isOsirisRequestId } from "../../../shared/Validators";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
@@ -21,6 +21,8 @@ import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFla
 import { ReadableStream } from "stream/web";
 import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
+import osirisJoiner, { OsirisRequestWithActions } from "../../../dataProviders/db/providers/osiris/osiris.joiner";
+import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
 
 export enum VALID_REQUEST_ERROR_CODE {
     INVALID_SIRET = 1,
@@ -133,14 +135,6 @@ export class OsirisService
         if (validation !== true) throw new InvalidOsirisRequestError(validation);
     }
 
-    public async getAllRequests() {
-        return osirisRequestPort.getAll();
-    }
-
-    async findRequestsByExercise(exercise: number) {
-        return osirisRequestPort.getAllByExercise(exercise);
-    }
-
     public bulkAddActions(actions: OsirisActionEntity[]): Promise<void | BulkWriteResult> {
         return osirisActionPort.bulkUpsert(actions);
     }
@@ -161,14 +155,6 @@ export class OsirisService
         }
 
         return true;
-    }
-
-    public async getAllActions() {
-        return osirisActionPort.getAll();
-    }
-
-    public async findActionsByExercise(exercise) {
-        return osirisActionPort.getAllByExercise(exercise);
     }
 
     public async findBySiret(siret: Siret) {
@@ -265,16 +251,26 @@ export class OsirisService
 
     isApplicationFlatProvider = true as const;
 
-    addApplicationsFlat(requestsWithActions: { request: OsirisRequestEntity; actions: OsirisActionEntity[] }[]) {
-        const applications = requestsWithActions.map(({ request, actions }) =>
-            OsirisRequestAdapter.toApplicationFlat(request, actions),
-        );
-        const stream = ReadableStream.from(applications);
-        return applicationFlatService.saveFromStream(stream);
+    initApplicationFlat() {
+        const cursor = osirisJoiner.findAllCursor();
+        return this.saveFlatFromStream(this.createStream(cursor));
+    }
+
+    syncApplicationFlat(exercise: number) {
+        const cursor = osirisJoiner.findByExerciseCursor(exercise);
+        return this.saveFlatFromStream(this.createStream(cursor));
+    }
+
+    private createStream(cursor: AggregationCursor<OsirisRequestWithActions>) {
+        const stream: ReadableStream<ApplicationFlatEntity> = cursorToStream(cursor, requestWithActions => {
+            const { actions, ...request } = requestWithActions;
+            return OsirisRequestAdapter.toApplicationFlat(request, actions);
+        });
+        return stream;
     }
 
     saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>) {
-        applicationFlatService.saveFromStream(stream);
+        return applicationFlatService.saveFromStream(stream);
     }
 }
 

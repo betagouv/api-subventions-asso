@@ -155,8 +155,16 @@ describe("OsirisRequestAdapter", () => {
 
     describe("getCofinancers", () => {
         it("returns array of unique cofinancers", () => {
-            const expected =
-                "Direction départementale de Saône-et-Loire|DRAC|ARS|Bourgogne-Franche-Comté|Saône-et-Loire|Politque de la ville|CAF|Aides privées";
+            const expected = [
+                "Direction départementale de Saône-et-Loire",
+                "DRAC",
+                "ARS",
+                "Bourgogne-Franche-Comté",
+                "Saône-et-Loire",
+                "Politque de la ville",
+                "CAF",
+                "Aides privées",
+            ];
 
             const actual = OsirisRequestAdapter.getCofinancers([
                 {
@@ -175,8 +183,8 @@ describe("OsirisRequestAdapter", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("returns empty string if no cofinancers", () => {
-            const expected = "";
+        it("returns empty array if no cofinancers", () => {
+            const expected = [];
 
             const actual = OsirisRequestAdapter.getCofinancers([
                 {
@@ -216,7 +224,9 @@ describe("OsirisRequestAdapter", () => {
                 .spyOn(GenericParser, "ExcelDateToJSDate")
                 .mockReturnValue(new Date("2025-08-04"));
             mockCleanRidet = jest.spyOn(OsirisRequestAdapter, "cleanRidet").mockReturnValue(RIDET_STR);
-            mockGetCofinancers = jest.spyOn(OsirisRequestAdapter, "getCofinancers").mockReturnValue("CAF|ARS|DRAC");
+            mockGetCofinancers = jest
+                .spyOn(OsirisRequestAdapter, "getCofinancers")
+                .mockReturnValue(["CAF", "ARS", "DRAC"]);
         });
 
         afterAll(() => {

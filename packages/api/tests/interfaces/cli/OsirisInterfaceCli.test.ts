@@ -65,8 +65,10 @@ describe("OsirisCli", () => {
                 "../../modules/providers/osiris/__fixtures__/SuiviDossiers_test.xls",
             );
             await controller.parse("requests", filePath, "2022");
-            const requests = await osirisRequestPort.getAll();
-            expect(requests).toMatchSnapshot(requests.map(req => ({ ...req, updateDate: expect.any(Date) })));
+            const requests = await osirisRequestPort.cursorFindRequests().toArray();
+            expect(
+                requests.map(request => ({ ...request, _id: expect.any(String), updateDate: expect.any(Date) })),
+            ).toMatchSnapshot();
         });
     });
 
@@ -146,17 +148,31 @@ describe("OsirisCli", () => {
 
     describe("application flat commands", () => {
         beforeEach(async () => {
+            // jest.useFakeTimers().setSystemTime(new Date("2025-08-05"));
             await osirisRequestPort.add(REQUEST_DBO);
             await osirisActionPort.add(ACTION_DBO);
+            // jest.useFakeTimers().useRealTimers();
         });
 
         describe("initApplicationFlat", () => {
             it("creates applications flat from requests and actions", async () => {
                 await new OsirisCli().initApplicationFlat();
                 const applications = await applicationFlatPort.findAll();
-                expect(
-                    applications.map(application => ({ ...application, updateDate: expect.any(Date) })),
-                ).toMatchSnapshot();
+                expect(applications).toMatchSnapshot();
+            });
+        });
+
+        describe("syncApplicationFlat", () => {
+            it("creates applications flat from requests and actions", async () => {
+                await new OsirisCli().syncApplicationFlat(REQUEST_DBO.providerInformations.exercise);
+                const applications = await applicationFlatPort.findAll();
+                expect(applications).toMatchSnapshot();
+            });
+
+            it("creates no applications flat if given exercise match no requests", async () => {
+                await new OsirisCli().syncApplicationFlat(2000);
+                const applications = await applicationFlatPort.findAll();
+                expect(applications).toMatchSnapshot();
             });
         });
     });

@@ -114,7 +114,6 @@ export default class OsirisCli implements ApplicationFlatCli {
 
     async _parseRequest(contentFile: Buffer, year: number, logs: unknown[]) {
         const requests = OsirisParser.parseRequests(contentFile, year);
-        console.log("parsed requests: ", requests);
         let nbErrors = 0;
 
         let tictackClock = true;
@@ -141,7 +140,6 @@ export default class OsirisCli implements ApplicationFlatCli {
             ),
         );
 
-        console.log("validated requests", validated);
         const result = await osirisService.bulkAddRequest(validated);
         clearInterval(ticTacInterval);
         if (!result) return;
@@ -193,26 +191,10 @@ export default class OsirisCli implements ApplicationFlatCli {
     }
 
     async initApplicationFlat() {
-        const actions = await osirisService.getAllActions();
-        const requests = await osirisService.getAllRequests();
-        return this.addApplicationsFlat(requests, actions);
+        return await osirisService.initApplicationFlat();
     }
 
     async syncApplicationFlat(exercise: number) {
-        const actions = await osirisService.findActionsByExercise(exercise);
-        const requests = await osirisService.findRequestsByExercise(exercise);
-        return this.addApplicationsFlat(requests, actions);
-    }
-
-    async addApplicationsFlat(requests: OsirisRequestEntity[], actions: OsirisActionEntity[]) {
-        const requestsWithActions = requests.map(request => {
-            return {
-                request,
-                actions: actions.filter(
-                    a => a.indexedInformations.requestUniqueId === request.providerInformations.uniqueId,
-                ),
-            };
-        });
-        return osirisService.addApplicationsFlat(requestsWithActions);
+        return await osirisService.syncApplicationFlat(exercise);
     }
 }

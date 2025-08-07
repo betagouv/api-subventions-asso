@@ -83,17 +83,9 @@ export class OsirisRequestPort extends MongoPort<OsirisRequestEntity> {
             .toArray();
     }
 
-    // Only used in one migration, should be removed later ?
+    // used in migration and integration tests
     public cursorFindRequests(query = {}) {
         return this.collection.find(query);
-    }
-
-    public async getAll() {
-        return this.cursorFindRequests().toArray();
-    }
-
-    async getAllByExercise(exercise: number) {
-        return this.cursorFindRequests({ "providerInformations.exercise": exercise }).toArray();
     }
 }
 
