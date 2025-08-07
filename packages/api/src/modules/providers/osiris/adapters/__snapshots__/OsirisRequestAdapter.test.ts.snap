@@ -47,7 +47,7 @@ exports[`OsirisRequestAdapter toApplicationFlat returns application flat with da
   "totalAmount": null,
   "ueNotification": null,
   "uniqueId": "osiris-OSIRIS_ID-2022",
-  "updateDate": 2025-08-06T14:16:07.000Z,
+  "updateDate": 2025-01-01T00:00:00.000Z,
 }
 `;
 
@@ -98,7 +98,7 @@ exports[`OsirisRequestAdapter toApplicationFlat returns application flat with de
   "totalAmount": null,
   "ueNotification": null,
   "uniqueId": "osiris-OSIRIS_ID-2022",
-  "updateDate": 2025-08-06T00:00:00.000Z,
+  "updateDate": 2025-01-01T00:00:00.000Z,
 }
 `;
 

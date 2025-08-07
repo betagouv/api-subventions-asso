@@ -366,7 +366,7 @@ export default class OsirisRequestAdapter {
             idRAE: null,
             ueNotification: null,
             subventionPercentage: null,
-            updateDate: entity._id ? new Date(entity._id?.getTimestamp()) : new Date(), // TODO: how to get OSIRIS import date for each entity ?
+            updateDate: entity.updateDate,
         } as ApplicationFlatEntity;
     }
 }

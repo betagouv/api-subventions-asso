@@ -48,6 +48,7 @@ export const ACTION_ENTITY = new OsirisActionEntity(
         montants_versement_attribue: 0,
     } as IOsirisActionsInformations,
     {},
+    new Date("2025-08-05"),
 );
 
 export const ACTION_DBO = { ...ACTION_ENTITY, _id: new ObjectId("6891f6d57719a255a02f9140") };

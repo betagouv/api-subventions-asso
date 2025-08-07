@@ -7,6 +7,13 @@ import IOsirisRequestInformations from "./@types/IOsirisRequestInformations";
 import IOsirisActionsInformations from "./@types/IOsirisActionsInformations";
 
 export default class OsirisParser {
+    private static getUpdateDate(year: number) {
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        if (year >= currentYear) throw new Error("Given export year must be lower or equal to the current year");
+        return today;
+    }
+
     public static parseRequests(content: Buffer, year: number): OsirisRequestEntity[] {
         const data = GenericParser.xlsParse(content)[0];
         const headers = data.slice(0, 2) as string[][];
@@ -30,7 +37,7 @@ export default class OsirisParser {
                 data,
             ) as unknown as ILegalInformations;
 
-            return new OsirisRequestEntity(legalInformations, indexedInformations, data);
+            return new OsirisRequestEntity(legalInformations, indexedInformations, data, this.getUpdateDate(year));
         });
     }
 
@@ -56,7 +63,7 @@ export default class OsirisParser {
                 data,
             ) as unknown as IOsirisActionsInformations;
 
-            return new OsirisActionEntity(indexedInformations, data);
+            return new OsirisActionEntity(indexedInformations, data, this.getUpdateDate(year));
         });
     }
 

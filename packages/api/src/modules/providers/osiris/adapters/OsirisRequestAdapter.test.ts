@@ -247,7 +247,7 @@ describe("OsirisRequestAdapter", () => {
 
         it("returns application flat with default date", () => {
             jest.useFakeTimers().setSystemTime(new Date("2025-08-06"));
-            const actual = OsirisRequestAdapter.toApplicationFlat({ ...OsirisEntity, _id: undefined }, ACTIONS);
+            const actual = OsirisRequestAdapter.toApplicationFlat(OsirisEntity, ACTIONS);
             expect(actual).toMatchSnapshot();
             jest.useFakeTimers().useRealTimers();
         });

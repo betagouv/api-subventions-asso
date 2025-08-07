@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { ParserInfo, ParserPath } from "../../../../@types";
 import ILegalInformations from "../../../search/@types/ILegalInformations";
 import RequestEntity from "../../../search/entities/RequestEntity";
@@ -121,10 +120,11 @@ export default class OsirisRequestEntity extends RequestEntity {
         public legalInformations: ILegalInformations,
         public providerInformations: IOsirisRequestInformations,
         public data: unknown,
-        public _id?: ObjectId,
+        public updateDate: Date,
         public actions?: OsirisActionEntity[],
     ) {
         super(legalInformations);
+        this.updateDate = updateDate;
         this.providerInformations.uniqueId = `${this.providerInformations.osirisId}-${this.providerInformations.exercise}`;
     }
 }

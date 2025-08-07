@@ -58,6 +58,16 @@ describe("OsirisCli", () => {
                 providerId: "osiris",
             });
         });
+
+        it("persists requests", async () => {
+            const filePath = path.resolve(
+                __dirname,
+                "../../modules/providers/osiris/__fixtures__/SuiviDossiers_test.xls",
+            );
+            await controller.parse("requests", filePath, "2022");
+            const requests = await osirisRequestPort.getAll();
+            expect(requests).toMatchSnapshot(requests.map(req => ({ ...req, updateDate: expect.any(Date) })));
+        });
     });
 
     describe("parse cli actions", () => {

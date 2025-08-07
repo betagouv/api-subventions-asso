@@ -114,6 +114,7 @@ export default class OsirisCli implements ApplicationFlatCli {
 
     async _parseRequest(contentFile: Buffer, year: number, logs: unknown[]) {
         const requests = OsirisParser.parseRequests(contentFile, year);
+        console.log("parsed requests: ", requests);
         let nbErrors = 0;
 
         let tictackClock = true;
@@ -130,6 +131,7 @@ export default class OsirisCli implements ApplicationFlatCli {
                     .validateAndComplete(r)
                     .then(() => validated.push(r))
                     .catch((e: InvalidOsirisRequestError) => {
+                        console.log(`\n\nThis request is not registered because: ${e.validation.message}\n`);
                         logs.push(
                             `\n\nThis request is not registered because: ${e.validation.message}\n`,
                             JSON.stringify(e.validation.data, null, "\t"),
@@ -138,6 +140,8 @@ export default class OsirisCli implements ApplicationFlatCli {
                     }),
             ),
         );
+
+        console.log("validated requests", validated);
         const result = await osirisService.bulkAddRequest(validated);
         clearInterval(ticTacInterval);
         if (!result) return;

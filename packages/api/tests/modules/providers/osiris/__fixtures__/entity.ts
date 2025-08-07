@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import IOsirisActionsInformations from "../../../../../src/modules/providers/osiris/@types/IOsirisActionsInformations";
 import IOsirisRequestInformations from "../../../../../src/modules/providers/osiris/@types/IOsirisRequestInformations";
 import OsirisActionEntity from "../../../../../src/modules/providers/osiris/entities/OsirisActionEntity";
@@ -18,7 +17,7 @@ const OSIRIS_REQUEST_ENTITY: OsirisRequestEntity = new OsirisRequestEntity(
         etablissementCodePostal: "75000",
     } as IOsirisRequestInformations,
     { Dossier: { "Date Reception": 43549.44370065972, "Exercice Début": 2022, "Exercice Fin": 2025 } },
-    new ObjectId(),
+    new Date("2025"),
     [],
 );
 
@@ -43,6 +42,7 @@ export const OSIRIS_ACTION_ENTITY = new OsirisActionEntity(
         exercise: 2022,
     } as IOsirisActionsInformations,
     {},
+    new Date("2025"),
 );
 
 export default OSIRIS_REQUEST_ENTITY;

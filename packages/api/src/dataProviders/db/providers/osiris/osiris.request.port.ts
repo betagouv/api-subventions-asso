@@ -24,10 +24,9 @@ export class OsirisRequestPort extends MongoPort<OsirisRequestEntity> {
      * */
     public async update(osirisRequest: OsirisRequestEntity) {
         const options = { returnDocument: "after", includeResultMetadata: true } as FindOneAndUpdateOptions;
-        const { _id, ...requestWithoutId } = osirisRequest;
         const updateRes = await this.collection.findOneAndUpdate(
             { "providerInformations.uniqueId": osirisRequest.providerInformations.uniqueId },
-            { $set: requestWithoutId },
+            { $set: osirisRequest },
             options,
         );
         //@ts-expect-error -- mongo typing expects no metadata
@@ -36,21 +35,19 @@ export class OsirisRequestPort extends MongoPort<OsirisRequestEntity> {
 
     public upsertOne(osirisRequest: OsirisRequestEntity) {
         const options = { upsert: true } as FindOneAndUpdateOptions;
-        const { _id, ...requestWithoutId } = osirisRequest;
         return this.collection.updateOne(
             { "providerInformations.uniqueId": osirisRequest.providerInformations.uniqueId },
-            { $set: requestWithoutId },
+            { $set: osirisRequest },
             options,
         );
     }
 
     public async bulkUpsert(osirisRequests: OsirisRequestEntity[]) {
-        const bulk = osirisRequests.map(r => {
-            const { _id, ...requestWithoutId } = r;
+        const bulk = osirisRequests.map(request => {
             return {
                 updateOne: {
-                    filter: { "providerInformations.uniqueId": r.providerInformations.uniqueId },
-                    update: { $set: requestWithoutId },
+                    filter: { "providerInformations.uniqueId": request.providerInformations.uniqueId },
+                    update: { $set: request },
                     upsert: true,
                 },
             };
