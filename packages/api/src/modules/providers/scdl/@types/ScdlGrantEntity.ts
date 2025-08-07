@@ -1,5 +1,6 @@
 import { SiretDto } from "dto";
-export type ScdlGrantEntity = {
+import { ProviderDataEntity } from "../../../../@types/ProviderDataEntity";
+export interface ScdlGrantEntity extends ProviderDataEntity {
     allocatorName: string;
     allocatorSiret: SiretDto;
     exercice: number;
@@ -18,5 +19,4 @@ export type ScdlGrantEntity = {
     UeNotification?: boolean;
     grantPercentage?: number;
     aidSystem?: string;
-    updateDate: Date;
-};
+}
