@@ -360,7 +360,7 @@ export default class OsirisRequestAdapter {
             paymentConditionDesc: null,
             paymentPeriodDates: null,
             cofinancersNames: cofinancersNames,
-            cofinancingRequested: cofinancersNames.length > 0 ? true : false,
+            cofinancingRequested: cofinancersNames.length > 0,
             cofinancersIdType: null,
             confinancersId: null,
             idRAE: null,
