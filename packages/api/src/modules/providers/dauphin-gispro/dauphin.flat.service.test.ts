@@ -22,7 +22,7 @@ jest.mock("./adapters/DauphinDtoAdapter", () => {
 
 describe("dauphin flat service", () => {
     describe("generateTempJoinedCollection", () => {
-        it("calls port dauphin clarify", async () => {
+        it("calls port dauphin create simplifies collection", async () => {
             await dauphinFlatService.generateTempJoinedCollection();
             expect(dauphinPort.createSimplifiedDauphinBeforeJoin);
         });
