@@ -7,7 +7,7 @@ import DauphinGisproDbo from "./DauphinGisproDbo";
 import { SimplifiedJoinedDauphinGispro } from "../../../../modules/providers/dauphin-gispro/@types/SimplifiedDauphinGispro";
 
 export class DauphinPort extends MongoPort<DauphinGisproDbo> {
-    readonly collectionName = "dauphin-gispro";
+    readonly collectionName = "dauphin";
     readonly simplifiedTempCollectionName = "dauphinSimplified";
     readonly simplifiedTempCollection = this.db.collection(this.simplifiedTempCollectionName);
 
@@ -79,7 +79,7 @@ export class DauphinPort extends MongoPort<DauphinGisproDbo> {
         return result;
     }
 
-    async migrateDauphinCacheToDauphinGispro(logger: (message: string, writeOnSameLine?: boolean) => void) {
+    async migrateDauphinCacheToDauphin(logger: (message: string, writeOnSameLine?: boolean) => void) {
         const collection: Collection<DauphinGisproDbo> = this.db.collection("dauphin-caches");
         await collection.dropIndexes();
 
@@ -107,7 +107,7 @@ export class DauphinPort extends MongoPort<DauphinGisproDbo> {
         logger("All entities has been updated");
 
         logger("Rename collection");
-        await collection.rename("dauphin-gispro");
+        await collection.rename("dauphin");
         logger("Rename collection is finished");
 
         logger("Create new indexes");

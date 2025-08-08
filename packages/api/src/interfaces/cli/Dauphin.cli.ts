@@ -14,7 +14,7 @@ export default class DauphinCli {
             else printAtSameLine(message);
         };
 
-        await dauphinService.migrateDauphinCacheToDauphinGispro(logger);
+        await dauphinService.migrateDauphinCacheToDauphin(logger);
     }
 
     async updateCache() {

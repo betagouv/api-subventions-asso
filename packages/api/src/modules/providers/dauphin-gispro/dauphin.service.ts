@@ -220,8 +220,8 @@ export class DauphinService
         return source as DauphinSubventionDto;
     }
 
-    migrateDauphinCacheToDauphinGispro(logger) {
-        return dauphinPort.migrateDauphinCacheToDauphinGispro(logger);
+    migrateDauphinCacheToDauphin(logger) {
+        return dauphinPort.migrateDauphinCacheToDauphin(logger);
     }
 
     // Documents
