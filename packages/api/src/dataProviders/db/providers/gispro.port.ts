@@ -7,7 +7,15 @@ export class GisproPort extends MongoPort<GisproEntity> {
 
     public createIndexes(): void {
         this.collection.createIndex({ codeActionDossier: 1 });
-        this.collection.createIndex({ codeProjet: 1 }, { unique: true });
+        this.collection.createIndex(
+            {
+                siret: 1,
+                exercise: 1,
+                codeActionDossier: 1,
+            },
+            { unique: true },
+        );
+        this.collection.createIndex({ codeProjet: 1 });
     }
 
     async upsertMany(entities: GisproEntity[]) {
