@@ -27,13 +27,13 @@ type MandatoryApplicationFlatEntity = {
     budgetaryYear: number;
     statusLabel: ApplicationStatus;
     requestedAmount: number | null;
-    grantedAmount: number | null;
     updateDate: Date;
 };
 
 type OptionalApplicationFlatEntity = {
     joinKeyId: string;
     joinKeyDesc: string;
+    grantedAmount: number;
     allocatorName: string;
     allocatorIdType: IdentifierIdName;
     allocatorId: string;

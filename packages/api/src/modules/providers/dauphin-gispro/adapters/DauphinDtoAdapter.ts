@@ -202,7 +202,7 @@ export default class DauphinDtoAdapter {
             [...new Set(simplified.virtualStatusLabel.map(this.getStatus))],
             "virtualStatusLabel",
         ) as ApplicationStatus;
-        const ej = getSingleValueOrThrow(simplified.ej, "ej");
+        const ej = getSingleValueOrNull(simplified.ej);
 
         const adapted = {
             allocatorId: null,
@@ -222,8 +222,10 @@ export default class DauphinDtoAdapter {
             decisionReference: null,
             depositDate: dateDemande,
             ej,
-            grantedAmount: simplified.montantAccorde || null,
-            // status === ApplicationStatus.GRANTED ? simplified.montantAccorde || null : GenericAdapter.NOT_APPLICABLE_VALUE,
+            grantedAmount:
+                status === ApplicationStatus.GRANTED
+                    ? simplified.montantAccorde || null
+                    : GenericAdapter.NOT_APPLICABLE_VALUE,
             idRAE: null,
             instructiveDepartementId: null,
             instructiveDepartmentIdType: null,
