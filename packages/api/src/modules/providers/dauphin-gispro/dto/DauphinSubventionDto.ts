@@ -34,6 +34,7 @@ export default interface DauphinSubventionDto {
             SIREN: string;
         };
     };
+    periode: "PLURIANNUELLE" | "PONCTUELLE"; // TODO make type
 
     planFinancement: [
         {
@@ -41,18 +42,17 @@ export default interface DauphinSubventionDto {
             recette?: {
                 postes?: [
                     {
+                        reference: string;
                         sousPostes?: [
                             {
+                                reference: string;
                                 lignes?: [
                                     {
                                         dispositifEligible: boolean;
-                                        montant: {
-                                            ht: number;
-                                        };
+                                        montant: { ht: number };
                                         financement?: {
-                                            montantVote?: {
-                                                ht: number;
-                                            };
+                                            montantVote?: { ht: number };
+                                            financeur: { typeFinanceur: string; titre: string };
                                         };
                                     },
                                 ];
