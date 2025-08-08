@@ -415,6 +415,25 @@ describe("Dauphin Service", () => {
         });
     });
 
+    describe("formatAndReturnApplicationDto", () => {
+        const HIT = { _source: { referenceAdministrative: "DA12345678-01" } };
+        const UPDATE_DATE = new Date("2025-08-07");
+
+        it("adds codeActionProjet", () => {
+            const expected = { codeActionProjet: "12345678" };
+            // @ts-expect-error -- test private method
+            const actual = dauphinService.formatAndReturnApplicationDto(HIT, UPDATE_DATE);
+            expect(actual).toMatchObject(expected);
+        });
+
+        it("adds updateDate from arg", () => {
+            const expected = { updateDate: UPDATE_DATE };
+            // @ts-expect-error -- test private method
+            const actual = dauphinService.formatAndReturnApplicationDto(HIT, UPDATE_DATE);
+            expect(actual).toMatchObject(expected);
+        });
+    });
+
     describe("documents", () => {
         let mockGetAuthToken: SpyInstance;
 
