@@ -143,7 +143,7 @@ describe(SubventiaAdapter, () => {
     });
 
     describe("toApplicationFlat", () => {
-        it("returns application fat", () => {
+        it("returns application flat", () => {
             const actual = SubventiaAdapter.toApplicationFlat(SUBVENTIA_DBO);
             expect(actual).toMatchSnapshot();
         });
