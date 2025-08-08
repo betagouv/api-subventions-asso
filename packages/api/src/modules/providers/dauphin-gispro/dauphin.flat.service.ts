@@ -1,4 +1,3 @@
-import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import ProviderCore from "../ProviderCore";
 import dauphinPort from "../../../dataProviders/db/providers/dauphin/dauphin.port";
 import DauphinDtoAdapter, { InconsistentAggregationError } from "./adapters/DauphinDtoAdapter";
@@ -7,16 +6,11 @@ import { ReadableStream } from "stream/web";
 import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
+import { dauphinProviderSpec } from "./dauphin.provider";
 
 export class DauphinFlatService extends ProviderCore implements ApplicationFlatProvider {
     constructor() {
-        super({
-            name: "Dauphin",
-            type: ProviderEnum.api,
-            description:
-                "Dauphin est un système d'information développé par MGDIS permettant aux associations de déposer des demandes de subvention dans le cadre de la politique de la ville et aux services instructeurs d'effectuer de la co-instruction.",
-            id: "dauphin",
-        });
+        super(dauphinProviderSpec);
     }
 
     /**
