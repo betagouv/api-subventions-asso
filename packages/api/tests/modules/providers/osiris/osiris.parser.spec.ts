@@ -22,8 +22,8 @@ describe("OsirisParser", () => {
             const requests = OsirisParser.parseRequests(buffer, 2022);
             expect(requests[0]).toMatchObject({
                 legalInformations: {
-                    siret: "0",
-                    rna: "W0000000",
+                    siret: "12000000000018",
+                    rna: "W000000000",
                     name: "Lorem ipsum dolor sit amet,",
                 },
                 provider: "Osiris",
