@@ -35,6 +35,13 @@ export class GisproPort extends MongoPort<GisproEntity> {
         );
         return this.collection.bulkWrite(operations);
     }
+
+    /*
+     * @hidden private use for tests
+     * */
+    findAll() {
+        return this.collection.find({}).toArray();
+    }
 }
 
 const gisproPort = new GisproPort();
