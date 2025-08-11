@@ -21,7 +21,7 @@ export default class SubventiaAdapter {
                 application as DefaultObject<string | number>,
             ), // TODO <string|number>
             provider: subventiaService.provider.id,
-            exportDate: exportDate,
+            updateDate: exportDate,
         } as SubventiaEntity;
     }
 

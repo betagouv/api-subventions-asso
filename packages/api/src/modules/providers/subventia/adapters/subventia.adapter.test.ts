@@ -25,7 +25,7 @@ describe(SubventiaAdapter, () => {
     };
 
     const exportDate = new Date("2022-08-02T00:00:00.000Z");
-    const entity = { ...entityIncomplete, provider: "subventia", exportDate: exportDate };
+    const entity = { ...entityIncomplete, provider: "subventia", updateDate: exportDate };
     const dbo = { ...entity, __data__: [], _id: new ObjectId("60d5ec9af682fbd39a1b57a2") };
     const attributs = [
         "siret",

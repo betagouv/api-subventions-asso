@@ -50,7 +50,7 @@ describe("Subventia Service", () => {
             reference_demande: "ref1",
             montants_demande: 400,
             provider: "subventia",
-            exportDate: exportDate,
+            updateDate: exportDate,
             __data__: [ref1_value1, ref1_value2],
         },
         {
@@ -58,7 +58,7 @@ describe("Subventia Service", () => {
             reference_demande: "ref2",
             montants_demande: 200,
             provider: "subventia",
-            exportDate: exportDate,
+            updateDate: exportDate,
             __data__: [ref2_value1],
         },
     ] as SubventiaDbo[];
@@ -154,7 +154,7 @@ describe("Subventia Service", () => {
                 status: "Refused",
                 statut_label: ApplicationStatus.REFUSED,
                 provider: "subventia",
-                exportDate: exportDate,
+                updateDate: exportDate,
             });
         });
 
@@ -187,14 +187,14 @@ describe("Subventia Service", () => {
                 reference_demande: "ref1",
                 montants_demande: 400,
                 provider: "subventia",
-                exportDate: exportDate,
+                updateDate: exportDate,
                 siret: "12345678911234",
             });
             mockApplicationToEntity.mockReturnValueOnce({
                 reference_demande: "ref2",
                 montants_demande: 200,
                 provider: "subventia",
-                exportDate: exportDate,
+                updateDate: exportDate,
                 siret: "12345678911234",
             });
 

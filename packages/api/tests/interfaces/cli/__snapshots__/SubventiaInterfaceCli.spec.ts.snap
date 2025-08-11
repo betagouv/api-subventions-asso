@@ -213,7 +213,6 @@ exports[`Subventia Cli _parse() should add entities 1`] = `
     "annee_demande": 2022,
     "date_commision": 2022-09-06T00:00:00.000Z,
     "dispositif": "lot",
-    "exportDate": 2024-03-12T00:00:00.000Z,
     "montants_accorde": 7297669,
     "montants_demande": 174938378,
     "provider": "subventia",
@@ -223,6 +222,7 @@ exports[`Subventia Cli _parse() should add entities 1`] = `
     "sous_dispositif": "religious",
     "status": "SOLDE",
     "statut_label": "Accordé",
+    "updateDate": 2024-03-12T00:00:00.000Z,
   },
   {
     "__data__": [
@@ -435,7 +435,6 @@ exports[`Subventia Cli _parse() should add entities 1`] = `
     "annee_demande": 2022,
     "date_commision": 2022-02-05T00:00:00.000Z,
     "dispositif": "drive",
-    "exportDate": 2024-03-12T00:00:00.000Z,
     "montants_accorde": 42500,
     "montants_demande": 1935139487,
     "provider": "subventia",
@@ -445,6 +444,7 @@ exports[`Subventia Cli _parse() should add entities 1`] = `
     "sous_dispositif": "property",
     "status": "VOTE",
     "statut_label": "Accordé",
+    "updateDate": 2024-03-12T00:00:00.000Z,
   },
   {
     "__data__": [
@@ -657,7 +657,6 @@ exports[`Subventia Cli _parse() should add entities 1`] = `
     "annee_demande": 2022,
     "date_commision": 2022-05-22T00:00:00.000Z,
     "dispositif": "agency",
-    "exportDate": 2024-03-12T00:00:00.000Z,
     "montants_accorde": 86655,
     "montants_demande": 824957325,
     "provider": "subventia",
@@ -667,6 +666,7 @@ exports[`Subventia Cli _parse() should add entities 1`] = `
     "sous_dispositif": "where",
     "status": "SOLDE",
     "statut_label": "Accordé",
+    "updateDate": 2024-03-12T00:00:00.000Z,
   },
   {
     "__data__": [
@@ -879,7 +879,6 @@ exports[`Subventia Cli _parse() should add entities 1`] = `
     "annee_demande": 2022,
     "date_commision": 2022-11-13T00:00:00.000Z,
     "dispositif": "lay",
-    "exportDate": 2024-03-12T00:00:00.000Z,
     "montants_accorde": 6653345,
     "montants_demande": 9296405,
     "provider": "subventia",
@@ -889,6 +888,7 @@ exports[`Subventia Cli _parse() should add entities 1`] = `
     "sous_dispositif": "nation",
     "status": "INSTRUCTION",
     "statut_label": "En instruction",
+    "updateDate": 2024-03-12T00:00:00.000Z,
   },
 ]
 `;

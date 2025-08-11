@@ -18,7 +18,7 @@ export const SUBVENTIA_ENTITY: SubventiaEntity = {
     statut_label: ApplicationStatus.GRANTED,
     reference_demande: "REF DEMANDE",
     provider: "subventia",
-    exportDate: new Date("2024-07-01"),
+    updateDate: new Date("2024-07-01"),
 };
 
 export const ENTITIES: SubventiaEntity[] = [SUBVENTIA_ENTITY];
