@@ -51,6 +51,7 @@ export const grantProviders = Object.values(providers).filter(
     p => (p as GrantProvider).isGrantProvider,
 ) as GrantProvider[];
 
-export const applicationFlatProviders = Object.values(providers).filter(
+// TODO have a neater typing systm or drop this
+export const applicationFlatProviders = Object.values(providers as unknown as ApplicationFlatProvider[]).filter(
     p => (p as ApplicationFlatProvider).isApplicationFlatProvider,
 ) as ApplicationFlatProvider[];

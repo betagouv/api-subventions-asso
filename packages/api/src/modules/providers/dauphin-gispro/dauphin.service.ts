@@ -2,6 +2,7 @@ import { IncomingMessage } from "http";
 import qs from "qs";
 import { CommonApplicationDto, DemandeSubvention, DocumentDto } from "dto";
 import * as Sentry from "@sentry/node";
+import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DAUPHIN_PASSWORD, DAUPHIN_USERNAME } from "../../../configurations/apis.conf";
 import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import configurationsService from "../../configurations/configurations.service";
@@ -20,14 +21,19 @@ import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
 import dauphinFlatService from "./dauphin.flat.service";
-import { dauphinProviderSpec } from "./dauphin.provider";
 
 export class DauphinService
     extends ProviderCore
     implements DemandesSubventionsProvider<DauphinGisproDbo>, DocumentProvider, GrantProvider
 {
     constructor() {
-        super(dauphinProviderSpec);
+        super({
+            name: "Dauphin",
+            type: ProviderEnum.api,
+            description:
+                "Dauphin est un système d'information développé par MGDIS permettant aux associations de déposer des demandes de subvention dans le cadre de la politique de la ville et aux services instructeurs d'effectuer de la co-instruction.",
+            id: "dauphin",
+        });
     }
 
     /**

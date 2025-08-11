@@ -1,4 +1,3 @@
-import ProviderCore from "../ProviderCore";
 import dauphinPort from "../../../dataProviders/db/providers/dauphin/dauphin.port";
 import DauphinDtoAdapter, { InconsistentAggregationError } from "./adapters/DauphinDtoAdapter";
 import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
@@ -6,13 +5,8 @@ import { ReadableStream } from "stream/web";
 import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
-import { dauphinProviderSpec } from "./dauphin.provider";
 
-export class DauphinFlatService extends ProviderCore implements ApplicationFlatProvider {
-    constructor() {
-        super(dauphinProviderSpec);
-    }
-
+export class DauphinFlatService implements ApplicationFlatProvider {
     /**
      * |-------------------------|
      * |   Flat Part          |
