@@ -58,7 +58,7 @@ export interface DemandeSubvention {
         modalite_ou_dispositif?: ProviderValue<string>;
         indicateurs?: ProviderValue<string>;
         cofinanceurs?: {
-            noms: ProviderValue<string>;
+            noms: ProviderValue<string | undefined>;
             montant_demandes: ProviderValue<number>;
         };
         montants_versement?: {
