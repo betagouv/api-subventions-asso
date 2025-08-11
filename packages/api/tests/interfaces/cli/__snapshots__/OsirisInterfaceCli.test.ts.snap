@@ -230,11 +230,6 @@ Réalisé / Accordé": 0,
       "versementRealise": 0,
       "versementSolde": 3,
     },
-    "providerMatchingKeys": [
-      "osirisId",
-      "compteAssoId",
-      "ej",
-    ],
     "updateDate": Any<Date>,
   },
 ]

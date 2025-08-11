@@ -1,13 +1,13 @@
 import { ParserInfo, ParserPath } from "../../../../@types";
 import ILegalInformations from "../../../search/@types/ILegalInformations";
-import RequestEntity from "../../../search/entities/RequestEntity";
 import IOsirisRequestInformations from "../@types/IOsirisRequestInformations";
 import { GenericParser } from "../../../../shared/GenericParser";
 import OsirisActionEntity from "./OsirisActionEntity";
+import { ProviderDataEntity } from "../../../../@types/ProviderDataEntity";
 
 const dossier = ["Dossier/action", "Dossier"];
 
-export default class OsirisRequestEntity extends RequestEntity {
+export default class OsirisRequestEntity implements ProviderDataEntity {
     public static defaultMainCategory = "Dossier";
 
     public static adaptsToNb = value => (value ? (typeof value === "number" ? value : parseFloat(value)) : value);
@@ -114,8 +114,6 @@ export default class OsirisRequestEntity extends RequestEntity {
 
     public provider = "Osiris";
 
-    public providerMatchingKeys: string[] = ["osirisId", "compteAssoId", "ej"];
-
     constructor(
         public legalInformations: ILegalInformations,
         public providerInformations: IOsirisRequestInformations,
@@ -123,8 +121,6 @@ export default class OsirisRequestEntity extends RequestEntity {
         public updateDate: Date,
         public actions?: OsirisActionEntity[],
     ) {
-        super(legalInformations);
-        this.updateDate = updateDate;
         this.providerInformations.uniqueId = `${this.providerInformations.osirisId}-${this.providerInformations.exercise}`;
     }
 }

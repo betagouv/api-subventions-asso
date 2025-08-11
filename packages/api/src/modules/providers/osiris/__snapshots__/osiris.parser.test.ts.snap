@@ -120,11 +120,6 @@ exports[`OsirisParser parseRequests returns osiris request entities 1`] = `
       "osirisId": "OSIRIS_ID",
       "uniqueId": "OSIRIS_ID-2022",
     },
-    "providerMatchingKeys": [
-      "osirisId",
-      "compteAssoId",
-      "ej",
-    ],
     "updateDate": 2025-08-07T00:00:00.000Z,
   },
   OsirisRequestEntity {
@@ -153,11 +148,6 @@ exports[`OsirisParser parseRequests returns osiris request entities 1`] = `
       "osirisId": "OSIRIS_ID",
       "uniqueId": "OSIRIS_ID-2022",
     },
-    "providerMatchingKeys": [
-      "osirisId",
-      "compteAssoId",
-      "ej",
-    ],
     "updateDate": 2025-08-07T00:00:00.000Z,
   },
   OsirisRequestEntity {
@@ -186,11 +176,6 @@ exports[`OsirisParser parseRequests returns osiris request entities 1`] = `
       "osirisId": "OSIRIS_ID",
       "uniqueId": "OSIRIS_ID-2022",
     },
-    "providerMatchingKeys": [
-      "osirisId",
-      "compteAssoId",
-      "ej",
-    ],
     "updateDate": 2025-08-07T00:00:00.000Z,
   },
 ]

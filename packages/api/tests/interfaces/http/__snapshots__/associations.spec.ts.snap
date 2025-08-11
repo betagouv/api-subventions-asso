@@ -2976,11 +2976,6 @@ exports[`/association /{identifier}/raw-grants should return raw grants with rna
             "osirisId": "OSIRIS_ID",
             "uniqueId": "OSIRIS_ID-2022",
           },
-          "providerMatchingKeys": [
-            "osirisId",
-            "compteAssoId",
-            "ej",
-          ],
           "updateDate": "2025-01-01T00:00:00.000Z",
         },
         "joinKey": "EJ00001",
@@ -5286,11 +5281,6 @@ exports[`/association /{identifier}/raw-grants should return raw grants with sir
             "osirisId": "OSIRIS_ID",
             "uniqueId": "OSIRIS_ID-2022",
           },
-          "providerMatchingKeys": [
-            "osirisId",
-            "compteAssoId",
-            "ej",
-          ],
           "updateDate": "2025-01-01T00:00:00.000Z",
         },
         "joinKey": "EJ00001",
