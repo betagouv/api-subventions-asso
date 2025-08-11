@@ -266,5 +266,13 @@ describe("OsirisRequestAdapter", () => {
             const actual = OsirisRequestAdapter.toApplicationFlat(OsirisEntity, ACTIONS);
             expect(actual).toMatchSnapshot();
         });
+
+        it("nullify idVersement if EJ is missing", () => {
+            const actual = OsirisRequestAdapter.toApplicationFlat(
+                { ...OsirisEntity, providerInformations: { ...OsirisEntity.providerInformations, ej: undefined } },
+                ACTIONS,
+            );
+            expect(actual).toMatchSnapshot();
+        });
     });
 });

@@ -293,7 +293,9 @@ export default class OsirisRequestAdapter {
     static getCofinancers(actions: OsirisActionEntity[]) {
         const cofinancersNames = Array.from(
             actions.reduce((acc, action) => {
-                action.indexedInformations.cofinanceurs.split(";").forEach(cofinancer => acc.add(cofinancer));
+                const cofinancers = action.indexedInformations.cofinanceurs;
+                if (!cofinancers) return acc;
+                cofinancers.split(";").forEach(cofinancer => acc.add(cofinancer));
                 return acc;
             }, new Set<string>()),
         ).filter(str => str); // remove empty set value from the last trailing comma if exists
@@ -315,8 +317,16 @@ export default class OsirisRequestAdapter {
         // TODO: make a DTO for OsirisRequest. See #3590
         // @ts-expect-error: dto not available
         const depositDate = GenericParser.ExcelDateToJSDate(entity.data["Dossier"]["Date Reception"]);
-        const ej = entity.providerInformations.ej;
-        const paymentId = `${assoId}-${ej}-${budgetaryYear}`;
+
+        let ej: unknown = entity.providerInformations.ej;
+        let paymentId: string | null;
+        if (!ej) {
+            ej = null;
+            paymentId = null;
+        } else {
+            paymentId = `${assoId}-${ej}-${budgetaryYear}`;
+        }
+
         const cofinancersNames = this.getCofinancers(actions);
 
         return {

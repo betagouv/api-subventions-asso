@@ -3,7 +3,7 @@ import IProviderInformations from "../../../search/@types/IProviderInformations"
 export default interface IOsirisRequestInformations extends IProviderInformations {
     osirisId: string;
     compteAssoId: string;
-    ej: string;
+    ej?: string; // can be undefined, even with status to "granted"
     amountAwarded: number;
     dateCommission?: Date;
     exerciceDebut: Date;
