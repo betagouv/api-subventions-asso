@@ -241,7 +241,7 @@ export default class DauphinDtoAdapter {
             paymentConditionDesc: null,
             paymentId: [simplified.siretDemandeur, ej, simplified.exerciceBudgetaire].join(" - "),
             paymentPeriodDates: null,
-            pluriannual: !(simplified.periode.length === 1 && simplified.periode[0] === "PONCTUELLE"), // TODO actual value need to be from dto
+            pluriannual: !(simplified.periode.length === 1 && simplified.periode[0] === "PONCTUELLE"),
             pluriannualYears: null,
             provider: "dauphin",
             requestYear: dateDemande?.getFullYear() || null,

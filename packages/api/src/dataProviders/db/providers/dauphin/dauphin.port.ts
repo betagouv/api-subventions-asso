@@ -187,8 +187,7 @@ export class DauphinPort extends MongoPort<DauphinGisproDbo> {
                             codeDossierOrAction: "$toJoinOn",
                         },
                         montantDemande: { $sum: "$planFinancement_lignes.montant.ht" },
-                        montantAccorde: { $sum: "$planFinancement_lignes.financement.montantVote.ht" }, // TODO "somme des montant voté - financeur sur le group by (regarde règles métier dans table correspondance dauphin
-                        // Attention! Le montant accordé n'est pas toujours présent et c'est normal car on l'a pas lorsque le statut est ""en cours d'instruction"". => N/A lorsque le statut est ""en cours d'instruction"". "
+                        montantAccorde: { $sum: "$planFinancement_lignes.financement.montantVote.ht" },
 
                         referenceAdministrative: { $addToSet: "$referenceAdministrative" },
                         intituleProjet: { $addToSet: "$intituleProjet" },
