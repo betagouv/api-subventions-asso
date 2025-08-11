@@ -55,27 +55,12 @@ export class DauphinPort extends MongoPort<DauphinGisproDbo> {
 
     async getLastImportDate() {
         const result = await this.collection
-            .aggregate([
-                {
-                    $addFields: {
-                        dateVersion: { $toDate: "$dauphin._document.dateVersion" },
-                    },
-                },
-                {
-                    $sort: {
-                        dateVersion: -1,
-                    },
-                },
-                { $project: { dateVersion: "$dateVersion" } },
-                {
-                    $limit: 1,
-                },
-            ])
+            .aggregate([{ $sort: { "dauphin._document.dateVersion": -1 } }, { $limit: 1 }])
             .toArray()
             .then(arrs => {
                 return arrs[0] || null;
             });
-        if (result) return new Date(result.dateVersion);
+        if (result) return new Date(result.dauphin._document.dateVersion);
         return result;
     }
 
