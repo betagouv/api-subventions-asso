@@ -3,7 +3,6 @@
 exports[`Gispro Cli parse saves uniformized data from 2023 1`] = `
 [
   {
-    "_id": "689b4684e72a615e737589c6",
     "codeActionDossier": "00236035",
     "codeProjet": "7665P00119",
     "directionGestionnaire": "Hautes-Pyrénées",

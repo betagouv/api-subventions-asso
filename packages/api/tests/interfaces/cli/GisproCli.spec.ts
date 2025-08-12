@@ -12,7 +12,8 @@ describe("Gispro Cli", () => {
         it("saves uniformized data from 2023", async () => {
             await cli.parse(FILE_PATH, EXPORT_DATE_STR);
             const savedData = await gisproPort.findAll();
-            expect(savedData).toMatchSnapshot();
+            const noId = savedData.map(({ _id, ...rest }) => rest);
+            expect(noId).toMatchSnapshot();
         });
     });
 });
