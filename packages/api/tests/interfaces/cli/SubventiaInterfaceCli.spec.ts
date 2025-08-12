@@ -5,7 +5,6 @@ import { ObjectId } from "mongodb";
 import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
 import applicationFlatPort from "../../../src/dataProviders/db/applicationFlat/applicationFlat.port";
 import { SUBVENTIA_DBO } from "../../../src/modules/providers/subventia/__fixtures__/subventia.fixture";
-import { ApplicationFlatEntity } from "../../../src/entities/ApplicationFlatEntity";
 
 describe("Subventia Cli", () => {
     let cli: SubventiaCli;
@@ -51,12 +50,7 @@ describe("Subventia Cli", () => {
         it("creates applications flat from subventia dbos", async () => {
             await subventiaPort.create(SUBVENTIA_DBO);
             await cli.initApplicationFlat();
-            const cursor = await applicationFlatPort.cursorFind();
-            const applications: ApplicationFlatEntity[] = [];
-            while (await cursor.hasNext()) {
-                const application = (await cursor.next()) as ApplicationFlatEntity;
-                applications.push(application);
-            }
+            const applications = await applicationFlatPort.cursorFind().toArray();
             expect(applications).toMatchSnapshot();
         });
     });
