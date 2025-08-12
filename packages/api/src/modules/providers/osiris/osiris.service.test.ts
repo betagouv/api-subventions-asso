@@ -348,32 +348,4 @@ describe("OsirisService", () => {
             expect(mockSaveFlatFromStream).toHaveBeenCalledWith(STREAM);
         });
     });
-
-    // describe("addApplicationsFlat", () => {
-    //     const REQUESTS = [{ ...REQUEST_DBO, actions: [ACTION_ENTITY] }];
-    //     beforeEach(() => {
-    //         jest.mocked(OsirisRequestAdapter.toApplicationFlat).mockReturnValue(ENTITY);
-    //         jest.mocked(applicationFlatService.saveFromStream).mockResolvedValue();
-    //     });
-    //     it("adapts request with actions to application flat", async () => {
-    //         await osirisService.addApplicationsFlat(REQUESTS);
-    //         expect(OsirisRequestAdapter.toApplicationFlat).toHaveBeenCalledWith(REQUESTS[0]);
-    //     });
-
-    //     it("creates a stream of applications to be transmitted to application flat service", async () => {
-    //         await osirisService.addApplicationsFlat(REQUESTS);
-    //         const stream = jest.mocked(applicationFlatService.saveFromStream).mock.calls[0][0] as ReadableStream;
-    //         const expected = [ENTITY];
-    //         const actual: ApplicationFlatEntity[] = [];
-    //         for await (const entity of stream) {
-    //             actual.push(entity);
-    //         }
-    //         expect(actual).toEqual(expected);
-    //     });
-
-    //     it("passes stream of applications to application flat service", async () => {
-    //         await osirisService.addApplicationsFlat(REQUESTS);
-    //         expect(jest.mocked(applicationFlatService.saveFromStream).mock.calls[0][0]).toBeInstanceOf(ReadableStream);
-    //     });
-    // });
 });
