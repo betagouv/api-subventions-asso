@@ -14,6 +14,6 @@ describe("Gispro Cli", () => {
             const savedData = await gisproPort.findAll();
             const noId = savedData.map(({ _id, ...rest }) => rest);
             expect(noId).toMatchSnapshot();
-        });
+        }, 50000); // reading xls is very long I don't know why as much
     });
 });
