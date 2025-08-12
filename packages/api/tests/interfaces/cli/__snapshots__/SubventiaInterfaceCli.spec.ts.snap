@@ -935,7 +935,7 @@ exports[`Subventia Cli initApplicationFlat() creates applications flat from subv
     "requestYear": 1234,
     "requestedAmount": 1234,
     "scheme": "DISPOSITIF",
-    "statusLabel": "Refusé",
+    "statusLabel": "Accordé",
     "subScheme": "SOUS DISPOSITIF",
     "subventionPercentage": null,
     "totalAmount": "N/A",

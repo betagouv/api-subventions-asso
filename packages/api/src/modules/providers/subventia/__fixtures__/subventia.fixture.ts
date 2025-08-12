@@ -14,7 +14,7 @@ export const SUBVENTIA_ENTITY: SubventiaEntity = {
     montants_demande: 1234,
     dispositif: "DISPOSITIF",
     sous_dispositif: "SOUS DISPOSITIF",
-    status: "GRANTED",
+    status: "SOLDE",
     statut_label: ApplicationStatus.GRANTED,
     reference_demande: "REF DEMANDE",
     provider: "subventia",

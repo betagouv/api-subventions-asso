@@ -99,7 +99,7 @@ export default class SubventiaAdapter {
             requestYear: dbo.annee_demande,
             scheme,
             subScheme: dbo.sous_dispositif,
-            statusLabel: statusMapper[dbo.statut_label],
+            statusLabel: statusMapper[dbo.status],
             object: null,
             nature: ApplicationNature.MONEY,
             requestedAmount: dbo.montants_demande,

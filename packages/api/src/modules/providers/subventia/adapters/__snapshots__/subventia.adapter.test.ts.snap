@@ -41,7 +41,7 @@ exports[`SubventiaAdapter toApplicationFlat returns application flat 1`] = `
   "requestYear": 1234,
   "requestedAmount": 1234,
   "scheme": "DISPOSITIF",
-  "statusLabel": "Refusé",
+  "statusLabel": "Accordé",
   "subScheme": "SOUS DISPOSITIF",
   "subventionPercentage": null,
   "totalAmount": "N/A",
