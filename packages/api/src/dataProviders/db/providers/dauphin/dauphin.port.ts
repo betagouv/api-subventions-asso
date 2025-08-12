@@ -177,6 +177,13 @@ export class DauphinPort extends MongoPort<DauphinGisproDbo> {
                     },
                 },
 
+                // we can't interpret gispro data if we have several ; see #3595
+                {
+                    $addFields: {
+                        gispro: { $cond: { if: { $gt: [{ $size: "$gispro" }, 1] }, then: [], else: "$gispro" } },
+                    },
+                },
+
                 { $unwind: { path: "$gispro", preserveNullAndEmptyArrays: true } },
 
                 // create group parameter according to success of gispro join
