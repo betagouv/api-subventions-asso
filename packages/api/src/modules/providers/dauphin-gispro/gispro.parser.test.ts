@@ -13,6 +13,7 @@ describe("gispro parser", () => {
     const PAGES = [[], [HEADER, ...DATA]] as unknown as any[][];
     /* eslint-enable @typescript-eslint/no-explicit-any */
     const LINKED_DATA = [{ field: "data1" }, { field: "data2" }] as unknown as DefaultObject<string>;
+    const ENTITIES = [{ t: "entity1" }, { t: "entity2" }];
 
     describe("parse", () => {
         beforeAll(() => {
@@ -29,7 +30,9 @@ describe("gispro parser", () => {
                       }
                     | undefined,
             ) => DefaultObject<string | null>);
+            jest.mocked(GenericParser.indexDataByPathObject).mockReturnValue(ENTITIES[0]);
         });
+
         afterAll(() => {
             jest.mocked(GenericParser.xlsParse).mockRestore();
         });
@@ -57,15 +60,18 @@ describe("gispro parser", () => {
             );
         });
 
+        it("adds exercise", () => {
+            const expected = { exercise: EXERCISE };
+            const actual = GisproParser.parse(FILE_CONTENT, EXERCISE)[0];
+            expect(actual).toMatchObject(expected);
+        });
+
         describe("with validator", () => {
             const VALIDATOR = jest.fn().mockReturnValue(true);
-            const ENTITIES = ["entity1", "entity2"];
-
             beforeEach(() => {
                 jest.mocked(GenericParser.indexDataByPathObject).mockReturnValueOnce(ENTITIES[0]);
                 jest.mocked(GenericParser.indexDataByPathObject).mockReturnValueOnce(ENTITIES[1]);
             });
-
             it("validates entities", () => {
                 GisproParser.parse(FILE_CONTENT, EXERCISE, VALIDATOR);
                 expect(VALIDATOR).toHaveBeenCalledWith(ENTITIES[0]);

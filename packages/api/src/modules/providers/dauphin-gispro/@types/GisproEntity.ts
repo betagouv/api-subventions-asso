@@ -5,4 +5,7 @@ export default interface GisproEntity {
     siret: string;
     directionGestionnaire?: string;
     exercise: number;
+    typeProcédure?: string;
+    montant?: number;
+    typeBeneficiaire?: string;
 }

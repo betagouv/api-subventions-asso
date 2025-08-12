@@ -44,7 +44,10 @@ export default class GisproParser {
             adapter: value => value?.toString(),
         },
         siret: { path: [["Code SIRET", "Code Siret"]] },
-        codeProjet: { path: [["Projet - Code dossier"]] },
+        codeProjet: { path: [["Projet - Code dossier", "Code projet"]] },
+        typeProcedure: { path: [["Libellé de la famille de procédure"]] },
+        montant: { path: [["Montant engagé", "Mt engagé"]] },
+        typeBeneficiaire: { path: [["Type de tiers"]] },
     };
 
     static parse(content: Buffer, exercise: number, validator: (entity: GisproEntity) => boolean = () => true) {
@@ -65,6 +68,7 @@ export default class GisproParser {
                 GisproParser.indexedInformationsPath,
                 parsedData,
             ) as unknown as GisproEntity;
+            entity.exercise = exercise;
 
             if (validator(entity)) entities.push(entity);
         }
