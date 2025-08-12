@@ -96,7 +96,7 @@ export default class SubventiaAdapter {
             instructiveDepartementId: null,
             beneficiaryEstablishmentId: dbo.siret,
             beneficiaryEstablishmentIdType: Siret.getName(),
-            budgetaryYear: null,
+            budgetaryYear: null, // we should ask the provider how to get that in the futur
             pluriannual: null,
             pluriannualYears: null, // null for now, see #3575 for updates
             decisionDate: dbo.date_commission,
@@ -112,7 +112,7 @@ export default class SubventiaAdapter {
             requestedAmount: dbo.montants_demande,
             grantedAmount: dbo.montants_accorde,
             totalAmount: GenericAdapter.NOT_APPLICABLE_VALUE,
-            ej: null, // TODO: how to obtain this ?
+            ej: null, // TODO: we should ask provider how to get that in the futur
             paymentId: null, // requires ej and financial year
             paymentCondition: null,
             paymentConditionDesc: null,
