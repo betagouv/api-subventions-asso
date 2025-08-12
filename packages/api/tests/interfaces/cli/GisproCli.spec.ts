@@ -9,9 +9,9 @@ describe("Gispro Cli", () => {
     const EXPORT_DATE_STR = "2023-06-06";
 
     describe("parse", () => {
-        it("saves uniformized data from 2023", () => {
-            cli.parse(FILE_PATH, EXPORT_DATE_STR);
-            const savedData = gisproPort.findAll();
+        it("saves uniformized data from 2023", async () => {
+            await cli.parse(FILE_PATH, EXPORT_DATE_STR);
+            const savedData = await gisproPort.findAll();
             expect(savedData).toMatchSnapshot();
         });
     });
