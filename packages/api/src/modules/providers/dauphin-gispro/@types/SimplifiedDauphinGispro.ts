@@ -1,6 +1,7 @@
 import { SiretDto } from "dto";
+import { ProviderDataEntity } from "../../../../@types/ProviderDataEntity";
 
-export interface SimplifiedJoinedDauphinGispro {
+export interface SimplifiedJoinedDauphinGispro extends ProviderDataEntity {
     siretDemandeur: SiretDto;
     exerciceBudgetaire: number;
 
@@ -20,5 +21,4 @@ export interface SimplifiedJoinedDauphinGispro {
 
     dateDemande: Date[];
     codeDossier: string;
-    updateDate: Date;
 }
