@@ -349,7 +349,7 @@ export default class OsirisRequestAdapter {
             beneficiaryEstablishmentIdType: assoId,
             budgetaryYear,
             pluriannual: entity.providerInformations.pluriannualite === "Pluriannuel",
-            pluriannualYears: this.getPluriannualYears(entity).join("|"),
+            pluriannualYears: this.getPluriannualYears(entity),
             decisionDate: entity.providerInformations.dateCommission,
             conventionDate: null,
             decisionReference: null,
