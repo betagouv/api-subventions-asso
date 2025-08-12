@@ -63,13 +63,6 @@ export default class SubventiaAdapter {
         };
     }
 
-    public static getApplicatinStatus(status: string): ApplicationStatus {
-        if (status === "INSTRUCTION") return ApplicationStatus.PENDING;
-        if (status === "FININSTRUCTION") return ApplicationStatus.PENDING;
-        if (status === "VOTE") return ApplicationStatus.GRANTED;
-        return ApplicationStatus.REFUSED;
-    }
-
     public static toApplicationFlat(dbo: SubventiaDbo): ApplicationFlatEntity {
         const provider = this.PROVIDER_NAME.toLowerCase(); // replace this with #3338
         const applicationProviderId = dbo.reference_demande;
@@ -106,7 +99,7 @@ export default class SubventiaAdapter {
             requestYear: dbo.annee_demande,
             scheme,
             subScheme: dbo.sous_dispositif,
-            statusLabel: this.getApplicatinStatus(dbo.statut_label),
+            statusLabel: statusMapper[dbo.statut_label],
             object: null,
             nature: ApplicationNature.MONEY,
             requestedAmount: dbo.montants_demande,

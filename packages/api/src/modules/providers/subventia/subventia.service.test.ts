@@ -362,9 +362,10 @@ describe("Subventia Service", () => {
             expect(mockToApplicationFlat).toHaveBeenCalledWith(SUBVENTIA_DBO);
         });
 
-        it("calls saveFlatFromStream", async () => {
+        it("calls saveFlatFromStream with stream", async () => {
             await subventiaService.initApplicationFlat();
-            // const STREAM = ReadableStream.from([{ ...ENTITY, updateDate: expect.any(Date) }]); // could not find a way to make this work
+            // const STREAM = ReadableStream.from([ENTITY]); // could not find a way to make this work because started field is different for unknow reason
+            // expect(mockSaveFlatFromStream).toHaveBeenCalledWith(STREAM);
             expect(mockSaveFlatFromStream.mock.calls[0][0]).toBeInstanceOf(ReadableStream);
         });
     });
