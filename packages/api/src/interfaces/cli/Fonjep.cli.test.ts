@@ -29,7 +29,7 @@ describe("FonjepCli", () => {
         it("should call fromFileToEntities with the right arguments", async () => {
             // @ts-expect-error: test private method
             await cli._parse(FILEPATH, LOGS, EXPORT_DATE);
-            expect(fonjepService.fromFileToEntities).toHaveBeenCalledWith(FILEPATH);
+            expect(fonjepService.fromFileToEntities).toHaveBeenCalledWith(FILEPATH, EXPORT_DATE);
         });
 
         it("should call useTemporyCollection with true", async () => {

@@ -83,67 +83,69 @@ describe("FonjepService", () => {
     });
 
     describe("fromFileToEntities", () => {
+        const FILE_PATH = "/foo/bar";
+        const EXPORT_DATE = new Date("2025-08-11");
+
         it("should call FonjepParser.parse with the given file path", () => {
-            const filePath = "filePath";
-            fonjepService.fromFileToEntities(filePath);
-            expect(mockParse).toHaveBeenCalledWith(filePath);
+            fonjepService.fromFileToEntities(FILE_PATH, EXPORT_DATE);
+            expect(mockParse).toHaveBeenCalledWith(FILE_PATH);
         });
 
         it("should call toFonjepTierEntities the length of the parsed tiers", () => {
-            fonjepService.fromFileToEntities("filePath");
+            fonjepService.fromFileToEntities(FILE_PATH, EXPORT_DATE);
             expect(FonjepEntityAdapter.toFonjepTierEntity).toHaveBeenCalledTimes(PARSED_DATA.tiers.length);
         });
 
         it.each(PARSED_DATA.tiers)("should call toFonjepTierEntity with the given tier", tier => {
-            fonjepService.fromFileToEntities("filePath");
-            expect(FonjepEntityAdapter.toFonjepTierEntity).toHaveBeenCalledWith(tier);
+            fonjepService.fromFileToEntities(FILE_PATH, EXPORT_DATE);
+            expect(FonjepEntityAdapter.toFonjepTierEntity).toHaveBeenCalledWith(tier, EXPORT_DATE);
         });
 
         it("should call toFonjepPosteEntities the length of the parsed postes", () => {
-            fonjepService.fromFileToEntities("filePath");
+            fonjepService.fromFileToEntities(FILE_PATH, EXPORT_DATE);
             expect(FonjepEntityAdapter.toFonjepPosteEntity).toHaveBeenCalledTimes(PARSED_DATA.postes.length);
         });
 
         it.each(PARSED_DATA.postes)("should call toFonjepPosteEntity with the given poste", poste => {
-            fonjepService.fromFileToEntities("filePath");
-            expect(FonjepEntityAdapter.toFonjepPosteEntity).toHaveBeenCalledWith(poste);
+            fonjepService.fromFileToEntities(FILE_PATH, EXPORT_DATE);
+            expect(FonjepEntityAdapter.toFonjepPosteEntity).toHaveBeenCalledWith(poste, EXPORT_DATE);
         });
 
         it("should call toFonjepVersementEntities the length of the parsed versements", () => {
-            fonjepService.fromFileToEntities("filePath");
+            fonjepService.fromFileToEntities(FILE_PATH, EXPORT_DATE);
             expect(FonjepEntityAdapter.toFonjepVersementEntity).toHaveBeenCalledTimes(PARSED_DATA.versements.length);
         });
 
         it.each(PARSED_DATA.versements)("should call toFonjepVersementEntity with the given versement", versement => {
-            fonjepService.fromFileToEntities("filePath");
-            expect(FonjepEntityAdapter.toFonjepVersementEntity).toHaveBeenCalledWith(versement);
+            fonjepService.fromFileToEntities(FILE_PATH, EXPORT_DATE);
+            expect(FonjepEntityAdapter.toFonjepVersementEntity).toHaveBeenCalledWith(versement, EXPORT_DATE);
         });
 
         it("should call toFonjepTypePosteEntities the length of the parsed typePostes", () => {
-            fonjepService.fromFileToEntities("filePath");
+            fonjepService.fromFileToEntities(FILE_PATH, EXPORT_DATE);
             expect(FonjepEntityAdapter.toFonjepTypePosteEntity).toHaveBeenCalledTimes(PARSED_DATA.typePoste.length);
         });
 
         it.each(PARSED_DATA.typePoste)("should call toFonjepTypePosteEntity with the given typePoste", typePoste => {
-            fonjepService.fromFileToEntities("filePath");
-            expect(FonjepEntityAdapter.toFonjepTypePosteEntity).toHaveBeenCalledWith(typePoste);
+            fonjepService.fromFileToEntities(FILE_PATH, EXPORT_DATE);
+            expect(FonjepEntityAdapter.toFonjepTypePosteEntity).toHaveBeenCalledWith(typePoste, EXPORT_DATE);
         });
 
         it("should call toFonjepDispositifEntities the length of the parsed dispositifs", () => {
-            fonjepService.fromFileToEntities("filePath");
+            fonjepService.fromFileToEntities(FILE_PATH, EXPORT_DATE);
             expect(FonjepEntityAdapter.toFonjepDispositifEntity).toHaveBeenCalledTimes(PARSED_DATA.dispositifs.length);
         });
 
         it.each(PARSED_DATA.dispositifs)(
             "should call toFonjepDispositifEntity with the given dispositif",
             dispositif => {
-                fonjepService.fromFileToEntities("filePath");
-                expect(FonjepEntityAdapter.toFonjepDispositifEntity).toHaveBeenCalledWith(dispositif);
+                fonjepService.fromFileToEntities(FILE_PATH, EXPORT_DATE);
+                expect(FonjepEntityAdapter.toFonjepDispositifEntity).toHaveBeenCalledWith(dispositif, EXPORT_DATE);
             },
         );
 
         it("should return the entities", () => {
-            const actual = fonjepService.fromFileToEntities("filePath");
+            const actual = fonjepService.fromFileToEntities(FILE_PATH, EXPORT_DATE);
             const expected = ENTITIES;
 
             expect(actual).toEqual(expected);

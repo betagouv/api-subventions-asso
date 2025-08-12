@@ -28,6 +28,8 @@ jest.mock("../../../../identifierObjects/EstablishmentIdentifier");
 jest.mock("../../../../shared/helpers/DateHelper");
 
 describe("FonjepEntityAdapter", () => {
+    const EXPORT_DATE = new Date("2025-08-11");
+
     describe("toFonjepTierEntity()", () => {
         beforeAll(() => {
             jest.mocked(removeWhitespace).mockImplementation(str => str);
@@ -45,21 +47,22 @@ describe("FonjepEntityAdapter", () => {
                 codePostal: tier.CodePostal,
                 ville: tier.Ville,
                 contactEmail: tier.ContactEmail,
+                updateDate: EXPORT_DATE,
             };
 
-            const actual = FonjepEntityAdapter.toFonjepTierEntity(tier);
+            const actual = FonjepEntityAdapter.toFonjepTierEntity(tier, EXPORT_DATE);
             expect(actual).toEqual(expected);
         });
 
         it("call removeWhitespace if siretOrRidet is defined", () => {
             const tier = TIER_DTOS[0];
-            FonjepEntityAdapter.toFonjepTierEntity(tier);
+            FonjepEntityAdapter.toFonjepTierEntity(tier, EXPORT_DATE);
             expect(removeWhitespace).toHaveBeenCalledWith(tier.SiretOuRidet);
         });
 
         it("should not call removeWhitespace if siretOrRidet is not defined", () => {
             const tier = { ...TIER_DTOS[0], SiretOuRidet: null };
-            FonjepEntityAdapter.toFonjepTierEntity(tier);
+            FonjepEntityAdapter.toFonjepTierEntity(tier, EXPORT_DATE);
             expect(removeWhitespace).not.toHaveBeenCalled();
         });
     });
@@ -82,9 +85,10 @@ describe("FonjepEntityAdapter", () => {
                 pstTypePosteCode: poste.PstTypePosteCode,
                 pleinTemps: poste.PleinTemps,
                 doublementUniteCompte: poste.DoublementUniteCompte,
+                updateDate: EXPORT_DATE,
             };
 
-            const actual = FonjepEntityAdapter.toFonjepPosteEntity(poste);
+            const actual = FonjepEntityAdapter.toFonjepPosteEntity(poste, EXPORT_DATE);
             expect(actual).toEqual(expected);
         });
     });
@@ -99,9 +103,10 @@ describe("FonjepEntityAdapter", () => {
                 dateVersement: versement.DateVersement,
                 montantAPayer: versement.MontantAPayer,
                 montantPaye: versement.MontantPaye,
+                updateDate: EXPORT_DATE,
             };
 
-            const actual = FonjepEntityAdapter.toFonjepVersementEntity(versement);
+            const actual = FonjepEntityAdapter.toFonjepVersementEntity(versement, EXPORT_DATE);
             expect(actual).toEqual(expected);
         });
     });
@@ -112,8 +117,9 @@ describe("FonjepEntityAdapter", () => {
             const expected = {
                 code: typePoste.Code,
                 libelle: typePoste.Libelle,
+                updateDate: EXPORT_DATE,
             };
-            const actual = FonjepEntityAdapter.toFonjepTypePosteEntity(typePoste);
+            const actual = FonjepEntityAdapter.toFonjepTypePosteEntity(typePoste, EXPORT_DATE);
             expect(actual).toEqual(expected);
         });
     });
@@ -125,8 +131,9 @@ describe("FonjepEntityAdapter", () => {
                 id: dispositif.ID,
                 libelle: dispositif.Libelle,
                 financeurCode: dispositif.FinanceurCode,
+                updateDate: EXPORT_DATE,
             };
-            const actual = FonjepEntityAdapter.toFonjepDispositifEntity(dispositif);
+            const actual = FonjepEntityAdapter.toFonjepDispositifEntity(dispositif, EXPORT_DATE);
             expect(actual).toEqual(expected);
         });
     });

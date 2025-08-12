@@ -487,21 +487,25 @@ exports[`FonjepCli parse() should create or remplace TypePoste collection 1`] = 
     "_id": Any<ObjectId>,
     "code": "DOUBLE",
     "libelle": "UNITE DE COMPTE DOUBLEE",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
     "code": "FONJEP",
     "libelle": "Poste FONJEP",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
     "code": "PSTEMP",
     "libelle": "POSTES EMPOI FONJEP (100 %)",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
     "code": "FONBIS",
     "libelle": "PROLONGATION PAS DE FRAIS",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
 ]
 `;
@@ -513,48 +517,56 @@ exports[`FonjepCli parse() should create or replace Dispositif collection 1`] = 
     "financeurCode": "10004",
     "id": 1,
     "libelle": "FONJEP Jeunesse éducation populaire",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
     "financeurCode": "10005",
     "id": 2,
     "libelle": "FONJEP Cohésion sociale",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
     "financeurCode": "10008",
     "id": 3,
     "libelle": "FONJEP Politique de la ville",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
     "financeurCode": "10009",
     "id": 4,
     "libelle": "FONJEP Guid'Asso",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
     "financeurCode": "10010",
     "id": 5,
     "libelle": "FONJEP Éducation à la citoyenneté et à la solidarité internationale (ECSI)",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
     "financeurCode": "10012",
     "id": 6,
     "libelle": "FONJEP Culture",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
     "financeurCode": "10016",
     "id": 7,
     "libelle": "FONJEP Centre de ressources et d'information des bénévoles",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
     "financeurCode": "10017",
     "id": 8,
     "libelle": "FONJEP Jeunes",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
 ]
 `;
@@ -577,6 +589,7 @@ exports[`FonjepCli parse() should create or replace Poste collection 1`] = `
     "pstRaisonStatutLibelle": "Reconduction",
     "pstStatutPosteLibelle": "Attribué",
     "pstTypePosteCode": "FONJEP",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
@@ -594,6 +607,7 @@ exports[`FonjepCli parse() should create or replace Poste collection 1`] = `
     "pstRaisonStatutLibelle": "Création",
     "pstStatutPosteLibelle": "Attribué",
     "pstTypePosteCode": "FONJEP",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
@@ -611,6 +625,7 @@ exports[`FonjepCli parse() should create or replace Poste collection 1`] = `
     "pstRaisonStatutLibelle": "Création",
     "pstStatutPosteLibelle": "Attribué",
     "pstTypePosteCode": "FONJEP",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
 ]
 `;
@@ -627,6 +642,7 @@ exports[`FonjepCli parse() should create or replace Tiers collection 1`] = `
     "estFinanceurPostes": "Non",
     "raisonSociale": "ASSOCIATION 1",
     "siretOuRidet": "10000000000001",
+    "updateDate": 2022-03-03T00:00:00.000Z,
     "ville": "Rennes",
   },
   {
@@ -639,6 +655,7 @@ exports[`FonjepCli parse() should create or replace Tiers collection 1`] = `
     "estFinanceurPostes": "Oui",
     "raisonSociale": "Ministère des sports, de la jeunesse et de la vie associative",
     "siretOuRidet": "20000000000001",
+    "updateDate": 2022-03-03T00:00:00.000Z,
     "ville": "Paris",
   },
   {
@@ -651,6 +668,7 @@ exports[`FonjepCli parse() should create or replace Tiers collection 1`] = `
     "estFinanceurPostes": "Oui",
     "raisonSociale": "SDJES D'ILLE-ET-VILAINE",
     "siretOuRidet": "30000000000001",
+    "updateDate": 2022-03-03T00:00:00.000Z,
     "ville": "Rennes",
   },
   {
@@ -663,6 +681,7 @@ exports[`FonjepCli parse() should create or replace Tiers collection 1`] = `
     "estFinanceurPostes": "Non",
     "raisonSociale": "ASSOCIATION 2",
     "siretOuRidet": "11000000000001",
+    "updateDate": 2022-03-03T00:00:00.000Z,
     "ville": "Laval",
   },
 ]
@@ -678,6 +697,7 @@ exports[`FonjepCli parse() should create or replace Versement collection 1`] = `
     "periodeDebut": 2017-01-01T00:00:00.000Z,
     "periodeFin": 2017-03-31T00:00:00.000Z,
     "posteCode": "J10540",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
@@ -687,6 +707,7 @@ exports[`FonjepCli parse() should create or replace Versement collection 1`] = `
     "periodeDebut": 2017-04-01T00:00:00.000Z,
     "periodeFin": 2017-06-30T00:00:00.000Z,
     "posteCode": "J10540",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
@@ -696,6 +717,7 @@ exports[`FonjepCli parse() should create or replace Versement collection 1`] = `
     "periodeDebut": 2017-07-01T00:00:00.000Z,
     "periodeFin": 2017-09-30T00:00:00.000Z,
     "posteCode": "J10540",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
@@ -705,6 +727,7 @@ exports[`FonjepCli parse() should create or replace Versement collection 1`] = `
     "periodeDebut": 2017-10-01T00:00:00.000Z,
     "periodeFin": 2017-12-31T00:00:00.000Z,
     "posteCode": "J10540",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
@@ -714,6 +737,7 @@ exports[`FonjepCli parse() should create or replace Versement collection 1`] = `
     "periodeDebut": 2017-01-01T00:00:00.000Z,
     "periodeFin": 2017-03-31T00:00:00.000Z,
     "posteCode": "J23425",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
@@ -723,6 +747,7 @@ exports[`FonjepCli parse() should create or replace Versement collection 1`] = `
     "periodeDebut": 2017-04-01T00:00:00.000Z,
     "periodeFin": 2017-06-30T00:00:00.000Z,
     "posteCode": "J23425",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
@@ -732,6 +757,7 @@ exports[`FonjepCli parse() should create or replace Versement collection 1`] = `
     "periodeDebut": 2017-07-01T00:00:00.000Z,
     "periodeFin": 2017-09-30T00:00:00.000Z,
     "posteCode": "J23425",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
@@ -741,6 +767,7 @@ exports[`FonjepCli parse() should create or replace Versement collection 1`] = `
     "periodeDebut": 2017-10-01T00:00:00.000Z,
     "periodeFin": 2017-12-31T00:00:00.000Z,
     "posteCode": "J23425",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
@@ -750,6 +777,7 @@ exports[`FonjepCli parse() should create or replace Versement collection 1`] = `
     "periodeDebut": 2017-01-01T00:00:00.000Z,
     "periodeFin": 2017-03-31T00:00:00.000Z,
     "posteCode": "J02924",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
@@ -759,6 +787,7 @@ exports[`FonjepCli parse() should create or replace Versement collection 1`] = `
     "periodeDebut": 2017-04-01T00:00:00.000Z,
     "periodeFin": 2017-06-30T00:00:00.000Z,
     "posteCode": "J02924",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
@@ -768,6 +797,7 @@ exports[`FonjepCli parse() should create or replace Versement collection 1`] = `
     "periodeDebut": 2017-07-01T00:00:00.000Z,
     "periodeFin": 2017-09-30T00:00:00.000Z,
     "posteCode": "J02924",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
   {
     "_id": Any<ObjectId>,
@@ -777,6 +807,7 @@ exports[`FonjepCli parse() should create or replace Versement collection 1`] = `
     "periodeDebut": 2017-10-01T00:00:00.000Z,
     "periodeFin": 2017-12-31T00:00:00.000Z,
     "posteCode": "J02924",
+    "updateDate": 2022-03-03T00:00:00.000Z,
   },
 ]
 `;

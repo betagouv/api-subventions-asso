@@ -25,7 +25,7 @@ export default class FonjepCli extends CliController {
         if (!exportDate) throw new Error("Export date is mandatory for fonjep import");
 
         const { tierEntities, posteEntities, versementEntities, typePosteEntities, dispositifEntities } =
-            fonjepService.fromFileToEntities(file);
+            fonjepService.fromFileToEntities(file, exportDate);
 
         fonjepService.useTemporyCollection(true);
 

@@ -33,7 +33,10 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
         });
     }
 
-    public fromFileToEntities(filePath: string): {
+    public fromFileToEntities(
+        filePath: string,
+        exportDate: Date,
+    ): {
         tierEntities: FonjepTiersEntity[];
         posteEntities: FonjepPosteEntity[];
         versementEntities: FonjepVersementEntity[];
@@ -41,16 +44,20 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
         dispositifEntities: FonjepDispositifEntity[];
     } {
         const { tiers, postes, versements, typePoste, dispositifs } = FonjepParser.parse(filePath);
-        const tierEntities = tiers.map(tier => FonjepEntityAdapter.toFonjepTierEntity(tier));
+        const tierEntities = tiers.map(tier => FonjepEntityAdapter.toFonjepTierEntity(tier, exportDate));
 
-        const posteEntities = postes.map(poste => FonjepEntityAdapter.toFonjepPosteEntity(poste));
+        const posteEntities = postes.map(poste => FonjepEntityAdapter.toFonjepPosteEntity(poste, exportDate));
 
-        const versementEntities = versements.map(versement => FonjepEntityAdapter.toFonjepVersementEntity(versement));
+        const versementEntities = versements.map(versement =>
+            FonjepEntityAdapter.toFonjepVersementEntity(versement, exportDate),
+        );
 
-        const typePosteEntities = typePoste.map(typePoste => FonjepEntityAdapter.toFonjepTypePosteEntity(typePoste));
+        const typePosteEntities = typePoste.map(typePoste =>
+            FonjepEntityAdapter.toFonjepTypePosteEntity(typePoste, exportDate),
+        );
 
         const dispositifEntities = dispositifs.map(dispositif =>
-            FonjepEntityAdapter.toFonjepDispositifEntity(dispositif),
+            FonjepEntityAdapter.toFonjepDispositifEntity(dispositif, exportDate),
         );
 
         return { tierEntities, posteEntities, versementEntities, typePosteEntities, dispositifEntities };

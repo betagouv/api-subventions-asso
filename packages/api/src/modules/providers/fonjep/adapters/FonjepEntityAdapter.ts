@@ -60,7 +60,7 @@ export default class FonjepEntityAdapter {
         return this.FOUNDER_CODE_TO_BOP_MAPPER[code];
     }
 
-    static toFonjepTierEntity(tier: FonjepTiersDto): FonjepTiersEntity {
+    static toFonjepTierEntity(tier: FonjepTiersDto, updateDate: Date): FonjepTiersEntity {
         return {
             code: tier["Code"],
             raisonSociale: tier["RaisonSociale"],
@@ -71,10 +71,11 @@ export default class FonjepEntityAdapter {
             codePostal: tier["CodePostal"],
             ville: tier["Ville"],
             contactEmail: tier["ContactEmail"],
+            updateDate,
         };
     }
 
-    static toFonjepPosteEntity(poste: FonjepPosteDtoWithJSDate): FonjepPosteEntity {
+    static toFonjepPosteEntity(poste: FonjepPosteDtoWithJSDate, updateDate: Date): FonjepPosteEntity {
         return {
             code: poste["Code"],
             annee: poste["Annee"],
@@ -90,10 +91,11 @@ export default class FonjepEntityAdapter {
             pstTypePosteCode: poste["PstTypePosteCode"],
             pleinTemps: poste["PleinTemps"],
             doublementUniteCompte: poste["DoublementUniteCompte"],
+            updateDate,
         };
     }
 
-    static toFonjepVersementEntity(versement: FonjepVersementDto): FonjepVersementEntity {
+    static toFonjepVersementEntity(versement: FonjepVersementDto, updateDate: Date): FonjepVersementEntity {
         return {
             posteCode: versement["PosteCode"],
             periodeDebut: versement["PeriodeDebut"],
@@ -101,21 +103,24 @@ export default class FonjepEntityAdapter {
             dateVersement: versement["DateVersement"],
             montantAPayer: versement["MontantAPayer"],
             montantPaye: versement["MontantPaye"],
+            updateDate,
         };
     }
 
-    static toFonjepTypePosteEntity(typePoste: FonjepTypePosteDto): FonjepTypePosteEntity {
+    static toFonjepTypePosteEntity(typePoste: FonjepTypePosteDto, updateDate: Date): FonjepTypePosteEntity {
         return {
             code: typePoste["Code"],
             libelle: typePoste["Libelle"],
+            updateDate,
         };
     }
 
-    static toFonjepDispositifEntity(dispositif: FonjepDispositifDto): FonjepDispositifEntity {
+    static toFonjepDispositifEntity(dispositif: FonjepDispositifDto, updateDate: Date): FonjepDispositifEntity {
         return {
             id: dispositif["ID"],
             libelle: dispositif["Libelle"],
             financeurCode: dispositif["FinanceurCode"],
+            updateDate,
         };
     }
 
