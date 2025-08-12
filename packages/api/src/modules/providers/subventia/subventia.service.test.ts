@@ -343,6 +343,9 @@ describe("Subventia Service", () => {
         let mockFindAll: jest.SpyInstance;
         let mockToApplicationFlat: jest.SpyInstance;
         let mockSaveFlatFromStream: jest.SpyInstance;
+        const STREAM = [ENTITY];
+        // @ts-expect-error: mock return value
+        jest.spyOn(ReadableStream, "from").mockReturnValue([ENTITY]);
 
         beforeEach(() => {
             mockFindAll = jest.spyOn(SubventiaPort, "findAll").mockResolvedValue([SUBVENTIA_DBO]);
@@ -364,9 +367,7 @@ describe("Subventia Service", () => {
 
         it("calls saveFlatFromStream with stream", async () => {
             await subventiaService.initApplicationFlat();
-            // const STREAM = ReadableStream.from([ENTITY]); // could not find a way to make this work because started field is different for unknow reason
-            // expect(mockSaveFlatFromStream).toHaveBeenCalledWith(STREAM);
-            expect(mockSaveFlatFromStream.mock.calls[0][0]).toBeInstanceOf(ReadableStream);
+            expect(mockSaveFlatFromStream).toHaveBeenCalledWith(STREAM);
         });
     });
 });
