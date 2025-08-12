@@ -8,7 +8,7 @@ export class GisproService {
         console.log(entities.length + " entities founds");
         console.log("Start save entities");
 
-        await gisproPort.upsertMany(entities);
+        await gisproPort.insertMany(entities);
 
         console.log("\nEntities has been saved");
     }

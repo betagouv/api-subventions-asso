@@ -26,7 +26,7 @@ describe("gispro service", () => {
 
         it("calls port with entities to upsert them", async () => {
             await gisproService.parseSaveXls(FILE_CONTENT, EXERCISE);
-            expect(gisproPort.upsertMany).toHaveBeenCalledWith(ENTITIES);
+            expect(gisproPort.insertMany).toHaveBeenCalledWith(ENTITIES);
         });
     });
 });

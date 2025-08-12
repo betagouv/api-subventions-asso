@@ -111,7 +111,7 @@ describe("Dauphin cli", () => {
 
         it("saves adapted simple dauphin data", async () => {
             await dauphinPort.upsert({ dauphin: ENTITY1 as DauphinSubventionDto });
-            await gisproPort.upsertMany([GISPRO1]);
+            await gisproPort.insertMany([GISPRO1]);
             await cli.initApplicationFlat();
             const actual = await applicationFlatPort.findAll();
             expect(actual).toMatchSnapshot();
@@ -120,7 +120,7 @@ describe("Dauphin cli", () => {
         it("groups actions of same application", async () => {
             await dauphinPort.upsert({ dauphin: ENTITY1 as DauphinSubventionDto });
             await dauphinPort.upsert({ dauphin: ENTITY2 as DauphinSubventionDto });
-            await gisproPort.upsertMany([GISPRO1, GISPRO2]);
+            await gisproPort.insertMany([GISPRO1, GISPRO2]);
             await cli.initApplicationFlat();
             const actual = await applicationFlatPort.findAll();
             expect(actual).toMatchSnapshot();
@@ -210,7 +210,7 @@ describe("Dauphin cli", () => {
             await dauphinPort.upsert({
                 dauphin: { ...ENTITY1, planFinancement: biggerPlanFinancement } as DauphinSubventionDto,
             });
-            await gisproPort.upsertMany([GISPRO1]);
+            await gisproPort.insertMany([GISPRO1]);
             await cli.initApplicationFlat();
             const actual = await applicationFlatPort.findAll();
             expect(actual).toMatchSnapshot();
