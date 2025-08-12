@@ -223,5 +223,15 @@ describe("Dauphin cli", () => {
             const actual = await applicationFlatPort.findAll();
             expect(actual).toMatchSnapshot();
         });
+
+        it("keeps action-level dauphin data if several records are found from gispro", async () => {
+            await dauphinPort.upsert({ dauphin: ENTITY1 as DauphinSubventionDto });
+            await dauphinPort.upsert({ dauphin: ENTITY2 as DauphinSubventionDto });
+            await gisproPort.insertMany([GISPRO1, { ...GISPRO1, ej: "autreEJ" }]);
+
+            await cli.initApplicationFlat();
+            const actual = await applicationFlatPort.findAll();
+            expect(actual).toMatchSnapshot();
+        });
     });
 });
