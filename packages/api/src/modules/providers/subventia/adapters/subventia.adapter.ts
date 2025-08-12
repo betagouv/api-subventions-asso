@@ -26,7 +26,7 @@ export default class SubventiaAdapter {
     }
 
     public static toDemandeSubventionDto(entity: SubventiaEntity): DemandeSubvention {
-        const lastUpdateDate = new Date(entity["exportDate"]);
+        const lastUpdateDate = new Date(entity.updateDate);
         const toPV = ProviderValueFactory.buildProviderValueAdapter(subventiaService.provider.name, lastUpdateDate);
 
         return {
@@ -70,7 +70,7 @@ export default class SubventiaAdapter {
         return ApplicationStatus.REFUSED;
     }
 
-    public static toApplicationFlat(dbo: SubventiaDbo): Omit<ApplicationFlatEntity, "updateDate"> {
+    public static toApplicationFlat(dbo: SubventiaDbo): ApplicationFlatEntity {
         const provider = this.PROVIDER_NAME.toLowerCase(); // replace this with #3338
         const applicationProviderId = dbo.reference_demande;
         const applicationId = `${provider}-${applicationProviderId}`;
@@ -124,6 +124,7 @@ export default class SubventiaAdapter {
             idRAE: null,
             ueNotification: null,
             subventionPercentage: null,
+            updateDate: dbo.updateDate,
         };
     }
 }

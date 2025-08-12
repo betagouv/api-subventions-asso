@@ -55,7 +55,7 @@ describe("Subventia Cli", () => {
             const applications: ApplicationFlatEntity[] = [];
             while (await cursor.hasNext()) {
                 const application = (await cursor.next()) as ApplicationFlatEntity;
-                applications.push({ ...application, updateDate: expect.any(Date) });
+                applications.push(application);
             }
             expect(applications).toMatchSnapshot();
         });

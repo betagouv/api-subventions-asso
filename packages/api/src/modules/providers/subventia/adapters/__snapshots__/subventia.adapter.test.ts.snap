@@ -1,55 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SubventiaAdapter toApplicationFlat returns application fat 1`] = `
-{
-  "allocatorId": null,
-  "allocatorIdType": null,
-  "allocatorName": "CIPDR",
-  "applicationId": "subventia-REF DEMANDE",
-  "applicationProviderId": "REF DEMANDE",
-  "beneficiaryEstablishmentId": "10000000000001",
-  "beneficiaryEstablishmentIdType": "siret",
-  "budgetaryYear": null,
-  "cofinancersIdType": null,
-  "cofinancersNames": null,
-  "cofinancingRequested": null,
-  "confinancersId": null,
-  "conventionDate": null,
-  "decisionDate": 2024-05-01T00:00:00.000Z,
-  "decisionReference": null,
-  "depositDate": null,
-  "ej": null,
-  "grantedAmount": 1234,
-  "idRAE": null,
-  "instructiveDepartementId": null,
-  "instructiveDepartmentIdType": null,
-  "instructiveDepartmentName": "SERVICE INSTRUCTEUR",
-  "joinKeyDesc": "N/A",
-  "joinKeyId": "N/A",
-  "managingAuthorityId": "N/A",
-  "managingAuthorityIdType": "N/A",
-  "managingAuthorityName": "N/A",
-  "nature": "Aide en numéraire",
-  "object": null,
-  "paymentCondition": null,
-  "paymentConditionDesc": null,
-  "paymentId": null,
-  "paymentPeriodDates": null,
-  "pluriannual": null,
-  "pluriannualYears": null,
-  "provider": "subventia",
-  "requestYear": 1234,
-  "requestedAmount": 1234,
-  "scheme": "DISPOSITIF",
-  "statusLabel": "Refusé",
-  "subScheme": "SOUS DISPOSITIF",
-  "subventionPercentage": null,
-  "totalAmount": "N/A",
-  "ueNotification": null,
-  "uniqueId": "subventia-REF DEMANDE-null",
-}
-`;
-
 exports[`SubventiaAdapter toApplicationFlat returns application flat 1`] = `
 {
   "allocatorId": null,
@@ -97,6 +47,7 @@ exports[`SubventiaAdapter toApplicationFlat returns application flat 1`] = `
   "totalAmount": "N/A",
   "ueNotification": null,
   "uniqueId": "subventia-REF DEMANDE-null",
+  "updateDate": 2025-07-30T00:00:00.000Z,
 }
 `;
 

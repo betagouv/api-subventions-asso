@@ -941,7 +941,7 @@ exports[`Subventia Cli initApplicationFlat() creates applications flat from subv
     "totalAmount": "N/A",
     "ueNotification": null,
     "uniqueId": "subventia-REF DEMANDE-null",
-    "updateDate": Any<Date>,
+    "updateDate": 2025-07-30T00:00:00.000Z,
   },
 ]
 `;
