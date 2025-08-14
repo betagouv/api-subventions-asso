@@ -8,7 +8,7 @@ import providers from "../providers";
 import { ProviderRequestService } from "../provider-request/providerRequest.service";
 import { FRONT_OFFICE_URL } from "../../configurations/front.conf";
 import ProviderCore from "../providers/ProviderCore";
-import { DauphinService } from "../providers/dauphin/dauphin.service";
+import { DauphinService } from "../providers/dauphin-gispro/dauphin.service";
 import { providersById } from "../providers/providers.helper";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import DocumentProvider from "./@types/DocumentsProvider";

@@ -1,7 +1,7 @@
-import Gispro from "../../../../modules/providers/gispro/@types/Gispro";
-import DauphinSubventionDto from "../../../../modules/providers/dauphin/dto/DauphinSubventionDto";
+import GisproEntity from "../../../../modules/providers/dauphin-gispro/@types/GisproEntity";
+import DauphinSubventionDto from "../../../../modules/providers/dauphin-gispro/dto/DauphinSubventionDto";
 
 export default interface DauphinGisproDbo {
-    gispro?: Gispro;
+    gispro?: GisproEntity;
     dauphin: DauphinSubventionDto;
 }

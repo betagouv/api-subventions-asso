@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Gispro Cli parse saves uniformized data from 2023 1`] = `
+[
+  {
+    "codeActionDossier": "00236035",
+    "codeProjet": "7665P00119",
+    "directionGestionnaire": "Hautes-Pyrénées",
+    "ej": "2104093248",
+    "exercise": 2023,
+    "montant": 1200,
+    "siret": "41177507500046",
+    "typeBeneficiaire": "Association",
+    "typeProcedure": "Annuel",
+  },
+]
+`;

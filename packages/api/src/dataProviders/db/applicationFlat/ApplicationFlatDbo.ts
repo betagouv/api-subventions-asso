@@ -15,7 +15,6 @@ type MandatoryApplicationFlatDbo = {
     typeIdEtablissementBeneficiaire: string; // type identifiant de l'idBeneficiaire entre siret, ridet tahitiet
     statutLabel: ApplicationStatus;
     montantDemande: number | null; // Montant demandé par le demandeur pour un exercice budgetaire donné
-    montantAccorde: number | null; // Montant accordé au demandeur pour un exercice budgetaire donné
     dateMiseAJour: Date;
 };
 
@@ -23,6 +22,7 @@ type OptionalApplicationFlatDbo = {
     _id: ObjectId;
     exerciceBudgetaire: number; // subventia ne donne pas d'exercice budgétaire donc on est bloqué pour le moment
     idJointure: string; // id permettant de faire une jointure avec une autre source de données
+    montantAccorde: number; // Montant accordé au demandeur pour un exercice budgetaire donné
     descriptionIdJointure: string; // description de l'idJointure et de la jointure que l'idJointure permet d'effectuer
     nomAttribuant: string; // Nom de l'autorité administrative qui pilote le dispositif ou programme de subvention ou en delegue la gestion
     typeIdAttribuant: IdentifierIdName; // type identifiant de l'idAttribuant entre siren, siret, rid, ridet, tahiti, tahiti-t

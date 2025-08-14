@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`dauphin flat service feedApplicationFlat logs errors from InconsistentAggregationError 1`] = `
+[
+  "Les enregistrements suivants n'ont pas été sauvegardés car l'aggrégation était incohérente : ",
+  [
+    "dossier n°codeDossier1 et refAdmin n°refAdmin1 ont pour le champ field1 les valeurs val1.1,val1.2",
+    "dossier n°codeDossier2 et refAdmin n°refAdmin2.1,refAdmin2.2 ont pour le champ field2 les valeurs val2.1,val2.2",
+  ],
+]
+`;
