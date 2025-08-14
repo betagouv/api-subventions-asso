@@ -24,7 +24,6 @@ type MandatoryApplicationFlatEntity = {
     provider: string;
     beneficiaryEstablishmentId: string;
     beneficiaryEstablishmentIdType: string;
-    budgetaryYear: number;
     statusLabel: ApplicationStatus;
     requestedAmount: number | null;
     grantedAmount: number | null;
@@ -32,6 +31,7 @@ type MandatoryApplicationFlatEntity = {
 };
 
 type OptionalApplicationFlatEntity = {
+    budgetaryYear: number; // only optionnal for Subventia
     joinKeyId: string;
     joinKeyDesc: string;
     allocatorName: string;

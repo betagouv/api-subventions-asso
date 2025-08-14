@@ -7,11 +7,15 @@ import SubventiaEntity, { SubventiaDbo } from "./@types/subventia.entity";
 import { CommonApplicationDto, ApplicationStatus, DemandeSubvention } from "dto";
 import SubventiaDto from "./@types/subventia.dto";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
-import { ENTITIES } from "./__fixtures__/subventia.fixture";
+import { ENTITIES, SUBVENTIA_DBO } from "./__fixtures__/subventia.fixture";
 import Siren from "../../../identifierObjects/Siren";
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
-
+import applicationFlatService from "../../applicationFlat/applicationFlat.service";
+import { ReadableStream } from "node:stream/web";
+import { ENTITY } from "../../applicationFlat/__fixtures__";
+jest.mock("../../applicationFlat/applicationFlat.service");
 jest.mock("./adapters/subventia.adapter");
+jest.mock("../../../dataProviders/db/providers/subventia/subventia.port");
 
 describe("Subventia Service", () => {
     const filePath = "path/to/file";
@@ -46,7 +50,7 @@ describe("Subventia Service", () => {
             reference_demande: "ref1",
             montants_demande: 400,
             provider: "subventia",
-            exportDate: exportDate,
+            updateDate: exportDate,
             __data__: [ref1_value1, ref1_value2],
         },
         {
@@ -54,7 +58,7 @@ describe("Subventia Service", () => {
             reference_demande: "ref2",
             montants_demande: 200,
             provider: "subventia",
-            exportDate: exportDate,
+            updateDate: exportDate,
             __data__: [ref2_value1],
         },
     ] as SubventiaDbo[];
@@ -150,7 +154,7 @@ describe("Subventia Service", () => {
                 status: "Refused",
                 statut_label: ApplicationStatus.REFUSED,
                 provider: "subventia",
-                exportDate: exportDate,
+                updateDate: exportDate,
             });
         });
 
@@ -183,14 +187,14 @@ describe("Subventia Service", () => {
                 reference_demande: "ref1",
                 montants_demande: 400,
                 provider: "subventia",
-                exportDate: exportDate,
+                updateDate: exportDate,
                 siret: "12345678911234",
             });
             mockApplicationToEntity.mockReturnValueOnce({
                 reference_demande: "ref2",
                 montants_demande: 200,
                 provider: "subventia",
-                exportDate: exportDate,
+                updateDate: exportDate,
                 siret: "12345678911234",
             });
 
@@ -318,6 +322,52 @@ describe("Subventia Service", () => {
         it("should call adapter rawToApplication", () => {
             subventiaService.rawToApplication(RAW_APPLICATION);
             expect(SubventiaAdapter.rawToApplication).toHaveBeenCalledWith(RAW_APPLICATION);
+        });
+    });
+
+    /**
+     * |---------------------------|
+     * |   Application Flat Part   |
+     * |---------------------------|
+     */
+
+    describe("saveFlatFromStream", () => {
+        it("sends stream to save applications", () => {
+            const STREAM = ReadableStream.from([]);
+            subventiaService.saveFlatFromStream(STREAM);
+            expect(applicationFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);
+        });
+    });
+
+    describe("initApplicationFlat", () => {
+        let mockFindAll: jest.SpyInstance;
+        let mockToApplicationFlat: jest.SpyInstance;
+        let mockSaveFlatFromStream: jest.SpyInstance;
+        const STREAM = [ENTITY];
+        // @ts-expect-error: mock return value
+        jest.spyOn(ReadableStream, "from").mockReturnValue([ENTITY]);
+
+        beforeEach(() => {
+            mockFindAll = jest.spyOn(SubventiaPort, "findAll").mockResolvedValue([SUBVENTIA_DBO]);
+            mockToApplicationFlat = jest.spyOn(SubventiaAdapter, "toApplicationFlat").mockReturnValue(ENTITY);
+            mockSaveFlatFromStream = jest.spyOn(subventiaService, "saveFlatFromStream").mockImplementation(jest.fn());
+        });
+
+        afterAll(() => mockSaveFlatFromStream.mockRestore());
+
+        it("fetches subventia dbos", async () => {
+            await subventiaService.initApplicationFlat();
+            expect(mockFindAll).toHaveBeenCalled();
+        });
+
+        it("adapts dbo to application flat", async () => {
+            await subventiaService.initApplicationFlat();
+            expect(mockToApplicationFlat).toHaveBeenCalledWith(SUBVENTIA_DBO);
+        });
+
+        it("calls saveFlatFromStream with stream", async () => {
+            await subventiaService.initApplicationFlat();
+            expect(mockSaveFlatFromStream).toHaveBeenCalledWith(STREAM);
         });
     });
 });

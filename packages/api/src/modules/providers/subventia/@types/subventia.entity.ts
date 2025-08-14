@@ -1,8 +1,9 @@
 import { SiretDto, ApplicationStatus } from "dto";
 import { ObjectId } from "mongodb";
 import SubventiaDto from "./subventia.dto";
+import { ProviderDataEntity } from "../../../../@types/ProviderDataEntity";
 
-export default interface SubventiaEntity {
+export default interface SubventiaEntity extends ProviderDataEntity {
     service_instructeur: string;
     annee_demande: number;
     siret: SiretDto;
@@ -15,10 +16,11 @@ export default interface SubventiaEntity {
     statut_label: ApplicationStatus;
     reference_demande: string;
     provider: string;
-    exportDate: Date;
 }
+
 /* __data__ est un tableau de SubventiaDto car dans les données brutes, 
     il y a 12 lignes pour une même subvention. Une ligne par poste de dépense 
     (voir README.md pour plus de détails)
 */
+
 export type SubventiaDbo = SubventiaEntity & { _id: ObjectId; __data__: SubventiaDto[] };

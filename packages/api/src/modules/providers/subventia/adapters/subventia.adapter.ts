@@ -7,8 +7,13 @@ import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { DefaultObject, ParserInfo } from "../../../../@types";
 import { GenericParser } from "../../../../shared/GenericParser";
 import { RawApplication } from "../../../grant/@types/rawGrant";
+import { ApplicationFlatEntity, ApplicationNature } from "../../../../entities/ApplicationFlatEntity";
+import { GenericAdapter } from "../../../../shared/GenericAdapter";
+import Siret from "../../../../identifierObjects/Siret";
 
 export default class SubventiaAdapter {
+    static PROVIDER_NAME = "subventia";
+
     static applicationToEntity(application: SubventiaDto, exportDate: Date): SubventiaEntity {
         return {
             ...GenericParser.indexDataByPathObject<string | number>(
@@ -16,12 +21,12 @@ export default class SubventiaAdapter {
                 application as DefaultObject<string | number>,
             ), // TODO <string|number>
             provider: subventiaService.provider.id,
-            exportDate: exportDate,
+            updateDate: exportDate,
         } as SubventiaEntity;
     }
 
     public static toDemandeSubventionDto(entity: SubventiaEntity): DemandeSubvention {
-        const lastUpdateDate = new Date(entity["exportDate"]);
+        const lastUpdateDate = new Date(entity.updateDate);
         const toPV = ProviderValueFactory.buildProviderValueAdapter(subventiaService.provider.name, lastUpdateDate);
 
         return {
@@ -55,6 +60,64 @@ export default class SubventiaAdapter {
             service_instructeur: dbo["service_instructeur"],
             siret: dbo["siret"],
             statut: dbo["statut_label"],
+        };
+    }
+
+    public static toApplicationFlat(dbo: SubventiaDbo): ApplicationFlatEntity {
+        const provider = this.PROVIDER_NAME.toLowerCase(); // replace this with #3338
+        const applicationProviderId = dbo.reference_demande;
+        const applicationId = `${provider}-${applicationProviderId}`;
+        const uniqueId = `${applicationId}-null`; // we cannot assert financial year so we set it to null for now
+
+        const scheme = dbo.dispositif ? dbo.dispositif : "Subventions FIPD Intervention"; // null when application is rejected but seems always equal to "Subventions FIPD Intervention" when not
+
+        return {
+            uniqueId,
+            applicationId,
+            applicationProviderId,
+            provider,
+            joinKeyId: GenericAdapter.NOT_APPLICABLE_VALUE,
+            joinKeyDesc: GenericAdapter.NOT_APPLICABLE_VALUE,
+            allocatorName: "CIPDR",
+            allocatorId: null,
+            allocatorIdType: null,
+            managingAuthorityName: GenericAdapter.NOT_APPLICABLE_VALUE,
+            managingAuthorityId: GenericAdapter.NOT_APPLICABLE_VALUE,
+            managingAuthorityIdType: GenericAdapter.NOT_APPLICABLE_VALUE,
+            instructiveDepartmentName: dbo.service_instructeur,
+            instructiveDepartmentIdType: null,
+            instructiveDepartementId: null,
+            beneficiaryEstablishmentId: dbo.siret,
+            beneficiaryEstablishmentIdType: Siret.getName(),
+            budgetaryYear: null, // we should ask the provider how to get that in the futur
+            pluriannual: null,
+            pluriannualYears: null, // null for now, see #3575 for updates
+            decisionDate: dbo.date_commission,
+            conventionDate: null,
+            decisionReference: null,
+            depositDate: null,
+            requestYear: dbo.annee_demande,
+            scheme,
+            subScheme: dbo.sous_dispositif,
+            statusLabel: statusMapper[dbo.status],
+            object: null,
+            nature: ApplicationNature.MONEY,
+            requestedAmount: dbo.montants_demande,
+            grantedAmount: dbo.montants_accorde,
+            totalAmount: GenericAdapter.NOT_APPLICABLE_VALUE,
+            ej: null, // TODO: we should ask provider how to get that in the futur
+            paymentId: null, // requires ej and financial year
+            paymentCondition: null,
+            paymentConditionDesc: null,
+            paymentPeriodDates: null,
+            cofinancingRequested: null,
+            cofinancersNames: null,
+            cofinancersIdType: null,
+            confinancersId: null,
+            idRAE: null,
+            ueNotification: null,
+            subventionPercentage: null,
+            updateDate: dbo.updateDate,
         };
     }
 }

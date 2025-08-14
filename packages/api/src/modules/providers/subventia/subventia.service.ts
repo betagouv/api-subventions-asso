@@ -12,8 +12,14 @@ import SubventiaAdapter from "./adapters/subventia.adapter";
 import SubventiaEntity, { SubventiaDbo } from "./@types/subventia.entity";
 import SubventiaDto from "./@types/subventia.dto";
 import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
+import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
+import { ReadableStream } from "node:stream/web";
+import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
+import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 
-export class SubventiaService implements DemandesSubventionsProvider<SubventiaEntity>, GrantProvider {
+export class SubventiaService
+    implements DemandesSubventionsProvider<SubventiaEntity>, GrantProvider, ApplicationFlatProvider
+{
     provider = {
         name: "Subventia",
         type: ProviderEnum.raw,
@@ -123,6 +129,24 @@ export class SubventiaService implements DemandesSubventionsProvider<SubventiaEn
 
     rawToApplication(rawApplication: RawApplication<SubventiaEntity>) {
         return SubventiaAdapter.rawToApplication(rawApplication);
+    }
+
+    /**
+     * |---------------------------|
+     * |   Application Flat Part   |
+     * |---------------------------|
+     */
+
+    isApplicationFlatProvider = true as const;
+
+    async initApplicationFlat() {
+        const dbos = await subventiaPort.findAll();
+        const stream = ReadableStream.from(dbos.map(dbo => SubventiaAdapter.toApplicationFlat(dbo)));
+        return this.saveFlatFromStream(stream);
+    }
+
+    saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>) {
+        return applicationFlatService.saveFromStream(stream);
     }
 }
 
