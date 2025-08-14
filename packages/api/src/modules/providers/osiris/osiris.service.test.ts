@@ -8,40 +8,24 @@ import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import RnaSirenEntity from "../../../entities/RnaSirenEntity";
-import IOsirisRequestInformations from "./@types/IOsirisRequestInformations";
-import { ObjectId } from "mongodb";
-import IOsirisActionsInformations from "./@types/IOsirisActionsInformations";
+import { ReadableStream } from "stream/web";
+import { ENTITY } from "../../applicationFlat/__fixtures__";
+import applicationFlatService from "../../applicationFlat/applicationFlat.service";
+import { REQUEST_DBO } from "./__fixtures__/osiris.request.fixtures";
+import { ACTION_ENTITY } from "./__fixtures__/osiris.action.fixtures";
+import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
+import osirisJoiner from "../../../dataProviders/db/providers/osiris/osiris.joiner";
+import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
 
+jest.mock("../../applicationFlat/applicationFlat.helper");
 jest.mock("./adapters/OsirisRequestAdapter");
 jest.mock("../../../dataProviders/db/providers/osiris");
 jest.mock("../../rna-siren/rnaSiren.service");
+jest.mock("../../applicationFlat/applicationFlat.service");
 
 const SIREN = new Siren("123456789");
 const SIRET = SIREN.toSiret("00000");
 const RNA = new Rna("W123456789");
-
-const REQUEST_ENTITY = new OsirisRequestEntity(
-    { siret: SIRET.value, rna: RNA.value, name: "NAME" },
-    {
-        osirisId: "FAKE_ID_2",
-        ej: "",
-        amountAwarded: 0,
-        dateCommission: new Date(),
-        exercise: 2022,
-    } as IOsirisRequestInformations,
-    {},
-    undefined,
-    [],
-);
-const REQUEST_DBO = { _id: new ObjectId("685be74b0d6ac15b4e3ef6e7"), ...REQUEST_ENTITY };
-
-const ACTION_ENTITY = new OsirisActionEntity(
-    {
-        osirisActionId: "FAKE_ID_2-001",
-        exercise: 2022,
-    } as unknown as IOsirisActionsInformations,
-    {},
-);
 
 describe("OsirisService", () => {
     beforeAll(() => {
@@ -294,6 +278,74 @@ describe("OsirisService", () => {
             await osirisService.validateAndComplete(REQUEST);
             expect(mockValidate).toHaveBeenCalledTimes(1);
             expect(rnaSirenService.find).not.toHaveBeenCalled();
+        });
+    });
+
+    describe("saveFlatFromStream", () => {
+        it("calls application flat with stream", async () => {
+            const APPLICATIONS = [ENTITY];
+            const STREAM = ReadableStream.from(APPLICATIONS);
+            await osirisService.saveFlatFromStream(STREAM);
+            expect(applicationFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);
+        });
+    });
+
+    describe("createStream", () => {
+        const STREAM = ReadableStream.from([]);
+        const CURSOR = {}; // mocked AggregationCursor
+        beforeEach(() => {
+            jest.mocked(cursorToStream).mockReturnValue(STREAM);
+        });
+
+        it("creates stream from cursor", () => {
+            // @ts-expect-error: test private method with mocked cursor
+            osirisService.createStream(CURSOR);
+            expect(cursorToStream).toHaveBeenCalledWith(CURSOR, expect.any(Function));
+        });
+
+        it("returns stream", () => {
+            const expected = STREAM;
+            // @ts-expect-error: test private method with mocked cursor
+            const actual = osirisService.createStream(CURSOR);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe.each`
+        method                   | cursorMethod
+        ${"initApplicationFlat"} | ${"findAllCursor"}
+        ${"syncApplicationFlat"} | ${"findByExerciseCursor"}
+    `("$method", ({ method, cursorMethod }) => {
+        const STREAM: ReadableStream<ApplicationFlatEntity> = ReadableStream.from([]);
+        const CURSOR = { foo: "bar" };
+        let mockCreateStream: jest.SpyInstance;
+        let mockSaveFlatFromStream: jest.SpyInstance;
+
+        beforeEach(() => {
+            // @ts-expect-error: mock private method
+            mockCreateStream = jest.spyOn(osirisService, "createStream").mockReturnValue(STREAM);
+            mockSaveFlatFromStream = jest.spyOn(osirisService, "saveFlatFromStream").mockImplementation(jest.fn());
+            jest.spyOn(osirisJoiner, cursorMethod).mockReturnValue(CURSOR);
+        });
+
+        afterAll(() => {
+            mockCreateStream.mockRestore();
+            mockSaveFlatFromStream.mockRestore();
+        });
+
+        it("get cursor", async () => {
+            await osirisService[method]();
+            expect(osirisJoiner[cursorMethod]).toHaveBeenCalled();
+        });
+
+        it("create stream from cursor", async () => {
+            await osirisService[method]();
+            expect(mockCreateStream).toHaveBeenCalledWith(CURSOR);
+        });
+
+        it("send stream to be saved", async () => {
+            await osirisService[method]();
+            expect(mockSaveFlatFromStream).toHaveBeenCalledWith(STREAM);
         });
     });
 });

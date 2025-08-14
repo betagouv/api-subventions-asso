@@ -1,5 +1,5 @@
 import { DemandeSubvention } from "dto";
-import { BulkWriteResult } from "mongodb";
+import { AggregationCursor, BulkWriteResult } from "mongodb";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { isAssociationName, isCompteAssoId, isOsirisActionId, isOsirisRequestId } from "../../../shared/Validators";
 import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
@@ -17,6 +17,12 @@ import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
+import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
+import { ReadableStream } from "stream/web";
+import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
+import applicationFlatService from "../../applicationFlat/applicationFlat.service";
+import osirisJoiner, { OsirisRequestWithActions } from "../../../dataProviders/db/providers/osiris/osiris.joiner";
+import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
 
 export enum VALID_REQUEST_ERROR_CODE {
     INVALID_SIRET = 1,
@@ -40,7 +46,7 @@ export class InvalidOsirisRequestError extends Error {
 
 export class OsirisService
     extends ProviderCore
-    implements DemandesSubventionsProvider<OsirisRequestEntity>, GrantProvider
+    implements DemandesSubventionsProvider<OsirisRequestEntity>, GrantProvider, ApplicationFlatProvider
 {
     constructor() {
         super({
@@ -235,6 +241,36 @@ export class OsirisService
     rawToCommon(raw: RawGrant) {
         // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
         return OsirisRequestAdapter.toCommon(raw.data as OsirisRequestEntity);
+    }
+
+    /**
+     * |--------------------------------|
+     * |   Application Flat Part        |
+     * |--------------------------------|
+     */
+
+    isApplicationFlatProvider = true as const;
+
+    initApplicationFlat() {
+        const cursor = osirisJoiner.findAllCursor();
+        return this.saveFlatFromStream(this.createStream(cursor));
+    }
+
+    syncApplicationFlat(exercise: number) {
+        const cursor = osirisJoiner.findByExerciseCursor(exercise);
+        return this.saveFlatFromStream(this.createStream(cursor));
+    }
+
+    private createStream(cursor: AggregationCursor<OsirisRequestWithActions>) {
+        const stream: ReadableStream<ApplicationFlatEntity> = cursorToStream(cursor, requestWithActions => {
+            const { actions, ...request } = requestWithActions;
+            return OsirisRequestAdapter.toApplicationFlat(request, actions);
+        });
+        return stream;
+    }
+
+    saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>) {
+        return applicationFlatService.saveFromStream(stream);
     }
 }
 

@@ -1,7 +1,7 @@
 import fs from "fs";
 
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
-import { CliStaticInterface } from "../../@types";
+import { ApplicationFlatCli, CliStaticInterface } from "../../@types";
 import OsirisParser from "../../modules/providers/osiris/osiris.parser";
 import osirisService, { InvalidOsirisRequestError } from "../../modules/providers/osiris/osiris.service";
 import OsirisActionEntity from "../../modules/providers/osiris/entities/OsirisActionEntity";
@@ -12,7 +12,7 @@ import { GenericParser } from "../../shared/GenericParser";
 import dataLogService from "../../modules/data-log/dataLog.service";
 
 @StaticImplements<CliStaticInterface>()
-export default class OsirisCli {
+export default class OsirisCli implements ApplicationFlatCli {
     static cmdName = "osiris";
 
     private logFileParsePath = {
@@ -130,6 +130,7 @@ export default class OsirisCli {
                     .validateAndComplete(r)
                     .then(() => validated.push(r))
                     .catch((e: InvalidOsirisRequestError) => {
+                        console.log(`\n\nThis request is not registered because: ${e.validation.message}\n`);
                         logs.push(
                             `\n\nThis request is not registered because: ${e.validation.message}\n`,
                             JSON.stringify(e.validation.data, null, "\t"),
@@ -138,6 +139,7 @@ export default class OsirisCli {
                     }),
             ),
         );
+
         const result = await osirisService.bulkAddRequest(validated);
         clearInterval(ticTacInterval);
         if (!result) return;
@@ -186,5 +188,13 @@ export default class OsirisCli {
             } actions updated
             ${nbErrors} actions not valid
         `);
+    }
+
+    async initApplicationFlat() {
+        return await osirisService.initApplicationFlat();
+    }
+
+    async syncApplicationFlat(exercise: number) {
+        return await osirisService.syncApplicationFlat(exercise);
     }
 }

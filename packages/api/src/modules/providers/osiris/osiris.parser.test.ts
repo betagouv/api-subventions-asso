@@ -99,12 +99,15 @@ describe("OsirisParser", () => {
         });
 
         // this also test that the exercise is added to indexed informations
-        it("returns osiris request entity", () => {
+        it("returns osiris request entities", () => {
+            // to test that updateDate is equal to currentDate
+            jest.useFakeTimers().setSystemTime(new Date("2025-08-07"));
             const actual = OsirisParser.parseRequests(BUFFER, 2022);
 
             // could not mock only OsirisRequestEntity constructor to make this a unit test
             // static methods / properties are required during process and we cannot mock the totality of the class
             expect(actual).toMatchSnapshot();
+            jest.useFakeTimers().useRealTimers();
         });
     });
 
@@ -179,12 +182,25 @@ describe("OsirisParser", () => {
         });
 
         // this also test that the exercise is added to indexed informations
-        it("returns osiris request entity", () => {
+        it("returns osiris action entities", () => {
+            // to test that updateDate is equal to currentDate
+            jest.useFakeTimers().setSystemTime(new Date("2025-08-07"));
             const actual = OsirisParser.parseActions(BUFFER, 2022);
 
             // could not mock only OsirisActionEntity constructor to make this a unit test
             // static methods / properties are required during process and we cannot mock the totality of the class
             expect(actual).toMatchSnapshot();
+            jest.useFakeTimers().useRealTimers();
+        });
+    });
+
+    describe("getUpdateDate", () => {
+        it("throws if year is higher than current year", () => {
+            jest.useFakeTimers().setSystemTime(new Date("2025"));
+            // @ts-expect-error: private method
+            expect(() => OsirisParser.getUpdateDate(2026)).toThrow(
+                "Given export year must be lower or equal to the current year",
+            );
         });
     });
 });

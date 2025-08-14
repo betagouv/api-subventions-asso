@@ -1,9 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`OsirisParser parseActions returns osiris request entity 1`] = `
+exports[`OsirisParser parseActions returns osiris action entities 1`] = `
 [
   OsirisActionEntity {
-    "_id": undefined,
     "data": {
       "Dossier/action": {
         "Exercice Budgetaire": 2022,
@@ -30,9 +29,9 @@ exports[`OsirisParser parseActions returns osiris request entity 1`] = `
       "siret": "10000000000001",
       "uniqueId": "OSIRIS_ACTION_ID-2022",
     },
+    "updateDate": 2025-08-07T00:00:00.000Z,
   },
   OsirisActionEntity {
-    "_id": undefined,
     "data": {
       "Dossier/action": {
         "Exercice Budgetaire": 2022,
@@ -59,9 +58,9 @@ exports[`OsirisParser parseActions returns osiris request entity 1`] = `
       "siret": "10000000000001",
       "uniqueId": "OSIRIS_ACTION_ID-2022",
     },
+    "updateDate": 2025-08-07T00:00:00.000Z,
   },
   OsirisActionEntity {
-    "_id": undefined,
     "data": {
       "Dossier/action": {
         "Exercice Budgetaire": 2022,
@@ -88,14 +87,14 @@ exports[`OsirisParser parseActions returns osiris request entity 1`] = `
       "siret": "10000000000001",
       "uniqueId": "OSIRIS_ACTION_ID-2022",
     },
+    "updateDate": 2025-08-07T00:00:00.000Z,
   },
 ]
 `;
 
-exports[`OsirisParser parseRequests returns osiris request entity 1`] = `
+exports[`OsirisParser parseRequests returns osiris request entities 1`] = `
 [
   OsirisRequestEntity {
-    "_id": undefined,
     "actions": undefined,
     "data": {
       "Dossier": {
@@ -121,14 +120,9 @@ exports[`OsirisParser parseRequests returns osiris request entity 1`] = `
       "osirisId": "OSIRIS_ID",
       "uniqueId": "OSIRIS_ID-2022",
     },
-    "providerMatchingKeys": [
-      "osirisId",
-      "compteAssoId",
-      "ej",
-    ],
+    "updateDate": 2025-08-07T00:00:00.000Z,
   },
   OsirisRequestEntity {
-    "_id": undefined,
     "actions": undefined,
     "data": {
       "Dossier": {
@@ -154,14 +148,9 @@ exports[`OsirisParser parseRequests returns osiris request entity 1`] = `
       "osirisId": "OSIRIS_ID",
       "uniqueId": "OSIRIS_ID-2022",
     },
-    "providerMatchingKeys": [
-      "osirisId",
-      "compteAssoId",
-      "ej",
-    ],
+    "updateDate": 2025-08-07T00:00:00.000Z,
   },
   OsirisRequestEntity {
-    "_id": undefined,
     "actions": undefined,
     "data": {
       "Dossier": {
@@ -187,11 +176,7 @@ exports[`OsirisParser parseRequests returns osiris request entity 1`] = `
       "osirisId": "OSIRIS_ID",
       "uniqueId": "OSIRIS_ID-2022",
     },
-    "providerMatchingKeys": [
-      "osirisId",
-      "compteAssoId",
-      "ej",
-    ],
+    "updateDate": 2025-08-07T00:00:00.000Z,
   },
 ]
 `;

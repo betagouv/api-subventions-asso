@@ -1,12 +1,11 @@
 import { FindOneAndUpdateOptions } from "mongodb";
 import { MongoCnxError } from "../../../../shared/errors/MongoCnxError";
 import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
-import OsirisActionEntityDbo from "../../../../modules/providers/osiris/entities/OsirisActionEntityDbo";
 import MongoPort from "../../../../shared/MongoPort";
 import Siren from "../../../../identifierObjects/Siren";
 import OsirisActionAdapter from "./osirisAction.adapter";
 
-export class OsirisActionPort extends MongoPort<OsirisActionEntityDbo> {
+export class OsirisActionPort extends MongoPort<OsirisActionEntity> {
     collectionName = "osiris-actions";
 
     async createIndexes() {
@@ -17,9 +16,13 @@ export class OsirisActionPort extends MongoPort<OsirisActionEntityDbo> {
         await this.collection.createIndex({ "indexedInformations.siret": 1 });
     }
 
+    joinIndexes = {
+        osirisRequestPort: "indexedInformations.requestUniqueId",
+    };
+
     // Action Part
     public async add(osirisAction: OsirisActionEntity) {
-        await this.collection.insertOne(OsirisActionAdapter.toDbo(osirisAction));
+        await this.collection.insertOne(osirisAction);
         return osirisAction;
     }
 
@@ -28,36 +31,33 @@ export class OsirisActionPort extends MongoPort<OsirisActionEntityDbo> {
      * */
     public async update(osirisAction: OsirisActionEntity) {
         const options: FindOneAndUpdateOptions = { returnDocument: "after", includeResultMetadata: true };
-        const { _id, ...actionWithoutId } = OsirisActionAdapter.toDbo(osirisAction);
         const updateRes = await this.collection.findOneAndUpdate(
             { "indexedInformations.uniqueId": osirisAction.indexedInformations.uniqueId },
-            { $set: actionWithoutId },
+            { $set: osirisAction },
             options,
         );
 
         //@ts-expect-error -- mongo typing expects no metadata
         const dbo = updateRes?.value;
         if (!dbo) throw new MongoCnxError();
-        return OsirisActionAdapter.toEntity(dbo);
+        return dbo;
     }
 
     public upsertOne(osirisAction: OsirisActionEntity) {
         const options = { upsert: true } as FindOneAndUpdateOptions;
-        const { _id, ...actionWithoutId } = osirisAction;
         return this.collection.updateOne(
             { "indexedInformations.uniqueId": osirisAction.indexedInformations.uniqueId },
-            { $set: actionWithoutId },
+            { $set: osirisAction },
             options,
         );
     }
 
     public async bulkUpsert(osirisActions: OsirisActionEntity[]) {
-        const bulk = osirisActions.map(a => {
-            const { _id, ...actionWithoutId } = a;
+        const bulk = osirisActions.map(action => {
             return {
                 updateOne: {
-                    filter: { "indexedInformations.uniqueId": a.indexedInformations.uniqueId },
-                    update: { $set: actionWithoutId },
+                    filter: { "indexedInformations.uniqueId": action.indexedInformations.uniqueId },
+                    update: { $set: action },
                     upsert: true,
                 },
             };
@@ -66,7 +66,15 @@ export class OsirisActionPort extends MongoPort<OsirisActionEntityDbo> {
     }
 
     public cursorFind(query = {}) {
-        return this.collection.find(query);
+        return this.collection.find(query).map(dbo => OsirisActionAdapter.toEntity(dbo));
+    }
+
+    public async getAll() {
+        return this.cursorFind().toArray();
+    }
+
+    public async getAllByExercise(exercise: number) {
+        return this.cursorFind({ indexedInformations: { exercise } }).toArray();
     }
 
     public async findByRequestUniqueId(requestUniqueId: string) {

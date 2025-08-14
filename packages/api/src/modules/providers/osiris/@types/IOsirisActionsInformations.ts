@@ -38,7 +38,7 @@ export default interface IOsirisActionsInformations {
     modalite_ou_dispositif: string;
     indicateurs: string;
 
-    cofinanceurs: string;
+    cofinanceurs?: string;
     cofinanceurs_montant_demandes: number;
 
     montants_versement_total: number;

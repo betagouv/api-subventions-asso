@@ -6,12 +6,16 @@ jest.mock("../../modules/providers/osiris/osiris.parser");
 jest.mock("../../modules/providers/osiris/osiris.service");
 
 describe("Osiris cli", () => {
-    const cli: OsirisCli = new OsirisCli();
+    let cli: OsirisCli;
+
+    beforeEach(() => {
+        cli = new OsirisCli();
+    });
 
     describe.each`
-        resourceType  | methodToTest         | parserMethod                  | validateMethod                       | bulkAddMethod
-        ${"requests"} | ${cli._parseRequest} | ${OsirisParser.parseRequests} | ${osirisService.validateAndComplete} | ${osirisService.bulkAddRequest}
-        ${"actions"}  | ${cli._parseAction}  | ${OsirisParser.parseActions}  | ${osirisService.validAction}         | ${osirisService.bulkAddActions}
+        resourceType  | methodToTest       | parserMethod                  | validateMethod                       | bulkAddMethod
+        ${"requests"} | ${"_parseRequest"} | ${OsirisParser.parseRequests} | ${osirisService.validateAndComplete} | ${osirisService.bulkAddRequest}
+        ${"actions"}  | ${"_parseAction"}  | ${OsirisParser.parseActions}  | ${osirisService.validAction}         | ${osirisService.bulkAddActions}
     `("parse $resourceType", ({ resourceType, methodToTest, parserMethod, validateMethod, bulkAddMethod }) => {
         const CONTENT_FILE = Buffer.from("toto");
         const YEAR = 1789;
@@ -24,12 +28,12 @@ describe("Osiris cli", () => {
         });
 
         it("calls parser with content file", async () => {
-            await methodToTest(CONTENT_FILE, YEAR, []);
+            await cli[methodToTest](CONTENT_FILE, YEAR, []);
             expect(parserMethod).toHaveBeenCalledWith(CONTENT_FILE, YEAR);
         });
 
         it("validates all documents", async () => {
-            await methodToTest(CONTENT_FILE, YEAR, []);
+            await cli[methodToTest](CONTENT_FILE, YEAR, []);
             expect(validateMethod).toHaveBeenCalledWith(DOCS[0]);
             expect(validateMethod).toHaveBeenCalledWith(DOCS[1]);
         });
@@ -39,8 +43,27 @@ describe("Osiris cli", () => {
                 validateMethod.mockRejectedValueOnce({ validation: { message: "toto", data: "data" } });
             else validateMethod.mockReturnValueOnce(false);
 
-            await methodToTest(CONTENT_FILE, YEAR, []);
+            await cli[methodToTest](CONTENT_FILE, YEAR, []);
             expect(bulkAddMethod).toHaveBeenCalledWith([DOCS[1]]);
+        });
+    });
+
+    describe("initApplicationFlat", () => {
+        beforeEach(() => {
+            jest.spyOn(osirisService, "initApplicationFlat").mockImplementation(jest.fn());
+        });
+
+        it("calls addApplicationFlat with requests and actions", async () => {
+            await cli.initApplicationFlat();
+            expect(osirisService.initApplicationFlat).toHaveBeenCalled();
+        });
+    });
+
+    describe("syncApplicationsFlat", () => {
+        it("calls addApplicationFlat with requests and actions", async () => {
+            const EXERCISE = 2023;
+            await cli.syncApplicationFlat(EXERCISE);
+            expect(osirisService.syncApplicationFlat).toHaveBeenCalledWith(EXERCISE);
         });
     });
 });

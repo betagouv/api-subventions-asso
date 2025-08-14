@@ -2952,7 +2952,13 @@ exports[`/association /{identifier}/raw-grants should return raw grants with rna
         "data": {
           "_id": Any<String>,
           "actions": [],
-          "data": {},
+          "data": {
+            "Dossier": {
+              "Date Reception": 43549.44370065972,
+              "Exercice Début": 2022,
+              "Exercice Fin": 2025,
+            },
+          },
           "legalInformations": {
             "name": "DEFAULT_ASSOCIATION",
             "rna": "W000000000",
@@ -2970,11 +2976,7 @@ exports[`/association /{identifier}/raw-grants should return raw grants with rna
             "osirisId": "OSIRIS_ID",
             "uniqueId": "OSIRIS_ID-2022",
           },
-          "providerMatchingKeys": [
-            "osirisId",
-            "compteAssoId",
-            "ej",
-          ],
+          "updateDate": "2025-01-01T00:00:00.000Z",
         },
         "joinKey": "EJ00001",
         "provider": "osiris",
@@ -5255,7 +5257,13 @@ exports[`/association /{identifier}/raw-grants should return raw grants with sir
         "data": {
           "_id": Any<String>,
           "actions": [],
-          "data": {},
+          "data": {
+            "Dossier": {
+              "Date Reception": 43549.44370065972,
+              "Exercice Début": 2022,
+              "Exercice Fin": 2025,
+            },
+          },
           "legalInformations": {
             "name": "DEFAULT_ASSOCIATION",
             "rna": "W000000000",
@@ -5273,11 +5281,7 @@ exports[`/association /{identifier}/raw-grants should return raw grants with sir
             "osirisId": "OSIRIS_ID",
             "uniqueId": "OSIRIS_ID-2022",
           },
-          "providerMatchingKeys": [
-            "osirisId",
-            "compteAssoId",
-            "ej",
-          ],
+          "updateDate": "2025-01-01T00:00:00.000Z",
         },
         "joinKey": "EJ00001",
         "provider": "osiris",

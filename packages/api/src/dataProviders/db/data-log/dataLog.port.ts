@@ -23,6 +23,24 @@ class DataLogPort extends MongoPort<DataLogEntity> {
         return this.collection.find({}).toArray();
     }
 
+    async getLastImportByProvider(providerId: string) {
+        return (
+            await this.collection
+                .aggregate([
+                    {
+                        $match: {
+                            providerId,
+                        },
+                    },
+                    {
+                        $sort: { integrationDate: -1 },
+                    },
+                    { $limit: 1 },
+                ])
+                .toArray()
+        )[0].integrationDate;
+    }
+
     getProvidersLogOverview(): Promise<ProducerLogEntity[]> {
         return this.collection
             .aggregate([

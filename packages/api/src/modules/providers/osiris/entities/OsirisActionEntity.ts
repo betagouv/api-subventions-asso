@@ -1,9 +1,7 @@
-import { ObjectId } from "mongodb";
 import { ParserInfo, ParserPath } from "../../../../@types";
 import IOsirisActionsInformations from "../@types/IOsirisActionsInformations";
-import OsirisActionEntityDbo from "./OsirisActionEntityDbo";
 
-export default class OsirisActionEntity extends OsirisActionEntityDbo {
+export default class OsirisActionEntity {
     public static defaultMainCategory = "Dossier/action";
 
     public static indexedInformationsPath: {
@@ -58,9 +56,9 @@ export default class OsirisActionEntity extends OsirisActionEntityDbo {
     constructor(
         public indexedInformations: IOsirisActionsInformations,
         public data: unknown,
-        public _id?: ObjectId,
+        public updateDate: Date,
     ) {
-        super(indexedInformations, data, _id);
+        this.updateDate = updateDate;
         this.indexedInformations.uniqueId = `${this.indexedInformations.osirisActionId}-${this.indexedInformations.exercise}`;
         const requestId = this.indexedInformations.osirisActionId.match(/^(.+)-\d+$/)?.[1];
         const requestUniqueId = `${requestId ?? this.indexedInformations.osirisActionId}-${

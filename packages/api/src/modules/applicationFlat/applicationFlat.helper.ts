@@ -1,10 +1,10 @@
 import { Readable } from "stream";
-import { FindCursor, Document } from "mongodb";
+import { FindCursor, Document, AggregationCursor } from "mongodb";
 import { ApplicationFlatEntity } from "../../entities/ApplicationFlatEntity";
 import { ReadableStream } from "node:stream/web";
 
 export function cursorToStream<T = Document>(
-    findCursor: FindCursor<T>,
+    findCursor: FindCursor<T> | AggregationCursor<T>,
     adapter: (entity: T) => ApplicationFlatEntity | null,
 ) {
     // there are two types of stream and we want more modern web streams
