@@ -8,9 +8,13 @@ import DauphinCli from "../../../src/interfaces/cli/Dauphin.cli";
 describe("Dauphin cli", () => {
     // there are other methods but that are not meant to be used a lot anymore since
     // dauphin data is switched to osiris provider
+    let cli;
+
+    beforeEach(() => {
+        cli = new DauphinCli();
+    });
 
     describe("initApplicationFlat", () => {
-        const cli = new DauphinCli();
         const ENTITY1 = {
             exerciceBudgetaire: 2022,
             demandeur: { SIRET: { complet: "01234567890123", SIREN: "012345678" } },
@@ -109,19 +113,25 @@ describe("Dauphin cli", () => {
             exercise: 2022,
         } as GisproEntity;
 
-        it("keeps action-level dauphin data if several records are found from gispro", async () => {
-            await gisproPort.insertMany([GISPRO1, { ...GISPRO1, ej: "autreEJ" }]);
+        it("saves adapted simple dauphin data", async () => {
             await dauphinPort.upsert({ dauphin: ENTITY1 as DauphinSubventionDto });
-            await dauphinPort.upsert({ dauphin: ENTITY2 as DauphinSubventionDto });
-
+            await gisproPort.insertMany([GISPRO1]);
             await cli.initApplicationFlat();
             const actual = await applicationFlatPort.findAll();
             expect(actual).toMatchSnapshot();
         });
 
-        it("saves adapted simple dauphin data", async () => {
+        it("keeps action-level dauphin data if several records are found from gispro", async () => {
+            // for unknown reason mongodb driver sets the same _id for this two documents and fires a DuplicateError
+            await gisproPort.insertMany([
+                // @ts-expect-error: ok
+                { ...GISPRO1, _id: "foo" },
+                // @ts-expect-error: ok
+                { ...GISPRO1, _id: "bar", ej: "autreEJ" },
+            ]);
             await dauphinPort.upsert({ dauphin: ENTITY1 as DauphinSubventionDto });
-            await gisproPort.insertMany([GISPRO1]);
+            await dauphinPort.upsert({ dauphin: ENTITY2 as DauphinSubventionDto });
+
             await cli.initApplicationFlat();
             const actual = await applicationFlatPort.findAll();
             expect(actual).toMatchSnapshot();
