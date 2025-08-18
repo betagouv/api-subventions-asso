@@ -35,6 +35,7 @@ export class DemarchesSimplifieesEntityAdapter {
             const valueDate = [
                 moment(value, "DD MMMM YYYY", "fr", true).toDate(), // Use moment for read French date
                 moment(value, true), // use moment with strict params true, to force the reading of a date in js format and not an interpretation
+                new Date(value),
             ].find(date => isValidDate(date));
 
             if (value === undefined || value === "") return;
@@ -73,7 +74,7 @@ export class DemarchesSimplifieesEntityAdapter {
         if (!subvention.annee_demande) {
             if (subvention.exercice && isNumberValid(Number(subvention.exercice)))
                 subvention.annee_demande = subvention.exercice;
-            // DS doesn't always have an attribute with only year, so we get year from the start date
+            // DS often doesn't always have an attribute with only year, so we get year from the start date
             else if (subvention.date_debut && isValidDate(subvention.date_debut))
                 subvention.annee_demande = (subvention.date_debut as Date).getFullYear();
         }
@@ -108,7 +109,6 @@ export class DemarchesSimplifieesEntityAdapter {
         application.statut = toStatusFactory(DemarchesSimplifieesEntityAdapter._statusConversionArray)(
             application.providerStatus as string,
         );
-
         delete application.providerStatus;
 
         return application as unknown as CommonApplicationDto;
