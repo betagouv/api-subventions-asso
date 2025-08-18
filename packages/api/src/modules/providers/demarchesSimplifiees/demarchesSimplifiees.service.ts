@@ -204,12 +204,12 @@ export class DemarchesSimplifieesService
 
         const joinKeySchemaItem = schema.find(field => field.to === "ej" || field.to === "versementKey");
         if (!joinKeySchemaItem) return;
-        if ("value" in joinKeySchemaItem) return joinKeySchemaItem.value;
+        if ("value" in joinKeySchemaItem) return joinKeySchemaItem.value.toString();
 
         const joinKeyFieldName = joinKeySchemaItem.from;
         let joinKey: string | undefined;
         if (joinKeyFieldName) joinKey = lodash.get(data.entity, joinKeyFieldName);
-        return joinKey;
+        return joinKey?.toString();
     }
 
     /** RAW GRANT */
@@ -260,7 +260,7 @@ export class DemarchesSimplifieesService
     private async generateSchemaInstruction(
         champ: DemarchesSimplifieesSchemaSeedLine,
         exampleDemarche: DemarchesSimplifieesDataEntity,
-    ): Promise<{ value: string } | { from: string } | undefined> {
+    ): Promise<{ value: string | number } | { from: string } | undefined> {
         if ("from" in champ) return { from: champ.from };
         if ("possibleLabels" in champ) {
             for (const [id, field] of Object.entries(exampleDemarche.demande.annotations))
@@ -273,13 +273,13 @@ export class DemarchesSimplifieesService
                 message: `Entrer une valeur figée pour le champ ${champ.to}`,
                 default: "value" in champ ? String(champ.value) : undefined,
             });
-            if (inputValue) return { value: inputValue };
+            if (inputValue) return { value: parseFloat(inputValue) || inputValue };
             if ("value" in champ) return { value: champ.value };
         }
 
         console.log(`no instruction found for target field ${champ.to}`);
         if (champ.to === "exercice")
-            console.log("L'exercice peut- être déduit de la date de début de projet si celle-ci est mappée");
+            console.log("L'exercice peut être déduit de la date de début de projet si celle-ci est mappée");
         return;
     }
 

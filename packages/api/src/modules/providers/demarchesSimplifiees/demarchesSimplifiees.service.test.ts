@@ -652,6 +652,7 @@ describe("DemarchesSimplifieesService", () => {
             },
         } as unknown as DemarchesSimplifieesDataEntity;
         const USER_INPUT = "userInput";
+        const NUMBER_USER_INPUT = 42;
 
         beforeAll(() => {
             jest.mocked(input).mockResolvedValue(USER_INPUT);
@@ -686,7 +687,19 @@ describe("DemarchesSimplifieesService", () => {
         });
 
         it("return 'value' singleShema from prompt if property 'valueToPrompt'", async () => {
-            const expected = { value: USER_INPUT };
+            jest.mocked(input).mockResolvedValueOnce(NUMBER_USER_INPUT.toString());
+            const expected = { value: NUMBER_USER_INPUT };
+            // @ts-expect-error -- test private method
+            const actual = await demarchesSimplifieesService.generateSchemaInstruction(
+                { valueToPrompt: true, to: "fieldName" },
+                EXAMPLE,
+            );
+            expect(actual).toEqual(expected);
+        });
+
+        it("return number 'value' singleShema from prompt if property 'valueToPrompt'", async () => {
+            jest.mocked(input).mockResolvedValueOnce(NUMBER_USER_INPUT.toString());
+            const expected = { value: NUMBER_USER_INPUT };
             // @ts-expect-error -- test private method
             const actual = await demarchesSimplifieesService.generateSchemaInstruction(
                 { valueToPrompt: true, to: "fieldName" },
@@ -700,6 +713,17 @@ describe("DemarchesSimplifieesService", () => {
             // @ts-expect-error -- test private method
             const actual = await demarchesSimplifieesService.generateSchemaInstruction(
                 { value: "default", to: "fieldName" },
+                EXAMPLE,
+            );
+            expect(actual).toEqual(expected);
+        });
+
+        it("return number 'value' singleShema from prompt if property 'value'", async () => {
+            jest.mocked(input).mockResolvedValueOnce(NUMBER_USER_INPUT.toString());
+            const expected = { value: NUMBER_USER_INPUT };
+            // @ts-expect-error -- test private method
+            const actual = await demarchesSimplifieesService.generateSchemaInstruction(
+                { value: USER_INPUT, to: "fieldName" },
                 EXAMPLE,
             );
             expect(actual).toEqual(expected);

@@ -4,4 +4,4 @@ export default interface DemarchesSimplifieesSchema {
     commonSchema?: DemarchesSimplifieesSchemaLine[];
 }
 
-export type DemarchesSimplifieesSchemaLine = { to: string; from: string } | { to: string; value: string };
+export type DemarchesSimplifieesSchemaLine = { to: string; from: string } | { to: string; value: string | number };
