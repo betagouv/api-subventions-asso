@@ -164,7 +164,7 @@ export class DemarchesSimplifieesService
     }
 
     async updateDataByFormId(formId: number) {
-        console.log(`Synchronisation de la démarche ${formId}`);
+        console.log(`Syncing demarche ${formId}`);
 
         const schema = await demarchesSimplifieesSchemaPort.findById(formId);
         // TODO English or French?
@@ -173,6 +173,11 @@ export class DemarchesSimplifieesService
                 `demarche ${formId} is being synced but we do not have a schema for it. Skipping`,
             );
 
+        const upsertRawAndFlat = async (bulk: DemarchesSimplifieesDataEntity[], schema: DemarchesSimplifieesSchema) => {
+            await demarchesSimplifieesDataPort.bulkUpsert(bulk);
+            await this.bulkUpdateApplicationFlat(bulk, schema);
+        };
+
         let result: DemarchesSimplifieesDto;
         let nextCursor: string | undefined = undefined;
         let bulk: DemarchesSimplifieesDataEntity[] = [];
@@ -180,7 +185,7 @@ export class DemarchesSimplifieesService
         do {
             result = await this.sendQuery(GetDossiersByDemarcheId, { demarcheNumber: formId, after: nextCursor });
             if (result.data.demarche.state != "publiee") {
-                console.log(`demarche ${formId} a le statut '${result.data.demarche.state}', on passe`);
+                console.log(`demarche ${formId} has status '${result.data.demarche.state}'. skipping`);
                 return;
             }
 
@@ -189,16 +194,13 @@ export class DemarchesSimplifieesService
             );
             bulk.push(...entities);
             if (bulk.length >= MAX_BULK) {
-                // TODO extract this since it is repeated below ?
-                await demarchesSimplifieesDataPort.bulkUpsert(bulk);
-                await this.bulkUpdateApplicationFlat(bulk, schema);
+                await upsertRawAndFlat(bulk, schema);
                 bulk = [];
             }
 
             nextCursor = result?.data?.demarche?.dossiers?.pageInfo?.endCursor;
         } while (result?.data?.demarche?.dossiers?.pageInfo?.hasNextPage);
-        await demarchesSimplifieesDataPort.bulkUpsert(bulk);
-        await this.bulkUpdateApplicationFlat(bulk, schema);
+        await upsertRawAndFlat(bulk, schema);
     }
 
     async sendQuery(query: string, vars: DefaultObject) {

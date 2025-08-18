@@ -124,7 +124,6 @@ export class DemarchesSimplifieesEntityAdapter {
     static toFlat(entity: DemarchesSimplifieesDataEntity, schema: DemarchesSimplifieesSchema): ApplicationFlatEntity {
         const application: DefaultObject = DemarchesSimplifieesEntityAdapter.mapSchema(entity, schema, "flatSchema");
 
-        // TODO can this be factorized?
         application.statutLabel = toStatusFactory(DemarchesSimplifieesEntityAdapter._statusConversionArray)(
             application.status as string,
         );
