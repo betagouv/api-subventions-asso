@@ -27,10 +27,15 @@ import {
 import { input } from "@inquirer/prompts";
 import configurationsService from "../../configurations/configurations.service";
 import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
+import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
+import { ReadableStream } from "stream/web";
+import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
+import applicationFlatService from "../../applicationFlat/applicationFlat.service";
+import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
 
 export class DemarchesSimplifieesService
     extends ProviderCore
-    implements DemandesSubventionsProvider<DemarchesSimplifieesRawData>, GrantProvider
+    implements DemandesSubventionsProvider<DemarchesSimplifieesRawData>, GrantProvider, ApplicationFlatProvider
 {
     isDemandesSubventionsProvider = true;
     lastModified: Date;
@@ -44,6 +49,51 @@ export class DemarchesSimplifieesService
         });
         this.lastModified = new Date(0);
     }
+
+    /**
+     * |-------------------------|
+     * |   Flat                  |
+     * |-------------------------|
+     */
+    isApplicationFlatProvider = true as const;
+
+    async saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>): Promise<void> {
+        await applicationFlatService.saveFromStream(stream);
+    }
+
+    async initApplicationFlat() {
+        const cursor = demarchesSimplifieesDataPort.findAllCursor();
+        const schemasByIds = await this.getSchemasByIds();
+        const stream: ReadableStream<ApplicationFlatEntity> = cursorToStream(
+            cursor,
+            (dbo: DemarchesSimplifieesDataEntity) => this.toFlatAndValidate(dbo, schemasByIds[dbo.demarcheId]),
+        );
+        return this.saveFlatFromStream(stream);
+    }
+
+    toFlatAndValidate(dbo, schema): ApplicationFlatEntity | null {
+        if (!schema?.flatSchema || this.isDraft(dbo)) return null;
+        const res = DemarchesSimplifieesEntityAdapter.toFlat(dbo, schema);
+        // this is the only mandatory field that comes from 'champs' or 'annotations'
+        // which is why it is the only one that we chack
+        if (!res.requestedAmount) return null;
+        return res;
+    }
+
+    async bulkUpdateApplicationFlat(
+        entities: DemarchesSimplifieesDataEntity[],
+        schema: DemarchesSimplifieesSchema | null,
+    ) {
+        if (!schema) return;
+        const stream = ReadableStream.from(entities.map(e => this.toFlatAndValidate(e, schema)).filter(e => !!e));
+        return this.saveFlatFromStream(stream);
+    }
+
+    /**
+     * |-------------------------|
+     * |   Général               |
+     * |-------------------------|
+     */
 
     private async getSchemasByIds() {
         const schemas = await demarchesSimplifieesSchemaPort.findAll();
@@ -115,6 +165,14 @@ export class DemarchesSimplifieesService
 
     async updateDataByFormId(formId: number) {
         console.log(`Synchronisation de la démarche ${formId}`);
+
+        const schema = await demarchesSimplifieesSchemaPort.findById(formId);
+        // TODO English or French?
+        if (!schema)
+            throw new InternalServerError(
+                `demarche ${formId} is being synced but we do not have a schema for it. Skipping`,
+            );
+
         let result: DemarchesSimplifieesDto;
         let nextCursor: string | undefined = undefined;
         let bulk: DemarchesSimplifieesDataEntity[] = [];
@@ -131,13 +189,16 @@ export class DemarchesSimplifieesService
             );
             bulk.push(...entities);
             if (bulk.length >= MAX_BULK) {
+                // TODO extract this since it is repeated below ?
                 await demarchesSimplifieesDataPort.bulkUpsert(bulk);
+                await this.bulkUpdateApplicationFlat(bulk, schema);
                 bulk = [];
             }
 
             nextCursor = result?.data?.demarche?.dossiers?.pageInfo?.endCursor;
         } while (result?.data?.demarche?.dossiers?.pageInfo?.hasNextPage);
         await demarchesSimplifieesDataPort.bulkUpsert(bulk);
+        await this.bulkUpdateApplicationFlat(bulk, schema);
     }
 
     async sendQuery(query: string, vars: DefaultObject) {
@@ -283,12 +344,23 @@ export class DemarchesSimplifieesService
         return;
     }
 
-    async buildFullSchema(schemaSeed: DemarchesSimplifieesSchemaSeed, demarcheId: number) {
-        return {
-            schema: await demarchesSimplifieesService.buildSchema(schemaSeed.schema, demarcheId),
-            commonSchema: await demarchesSimplifieesService.buildSchema(schemaSeed.commonSchema, demarcheId),
-            demarcheId,
+    async buildFullSchema(
+        schemaSeed: DemarchesSimplifieesSchemaSeed,
+        demarcheId: number,
+    ): Promise<DemarchesSimplifieesSchema & { demarcheId: number }> {
+        const types = {
+            schema: "DemandeSubvention",
+            commonSchema: "CommonGrant",
+            flatSchema: "ApplicationFlat",
         };
+
+        const res = { demarcheId };
+        for (const schemaType of Object.keys(schemaSeed)) {
+            console.log(`Génération du schéma pour le type '${types[schemaType]}'`);
+            res[schemaType] = await demarchesSimplifieesService.buildSchema(schemaSeed[schemaType], demarcheId);
+            console.log("\n");
+        }
+        return res as DemarchesSimplifieesSchema & { demarcheId: number };
     }
 }
 
