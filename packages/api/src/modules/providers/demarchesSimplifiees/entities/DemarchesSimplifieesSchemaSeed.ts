@@ -7,4 +7,5 @@ export type DemarchesSimplifieesSchemaSeedLine =
 export type DemarchesSimplifieesSchemaSeed = {
     schema: DemarchesSimplifieesSchemaSeedLine[];
     commonSchema: DemarchesSimplifieesSchemaSeedLine[];
+    flatSchema: DemarchesSimplifieesSchemaSeedLine[];
 };
