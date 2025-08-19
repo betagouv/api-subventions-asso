@@ -1,4 +1,5 @@
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
+import { DefaultObject } from "../../../@types";
 import fonjepDispositifPort from "../../../dataProviders/db/providers/fonjep/fonjep.dispositif.port";
 import fonjepPostesPort from "../../../dataProviders/db/providers/fonjep/fonjep.postes.port";
 import fonjepTiersPort from "../../../dataProviders/db/providers/fonjep/fonjep.tiers.port";
@@ -7,6 +8,7 @@ import fonjepVersementsPort from "../../../dataProviders/db/providers/fonjep/fon
 import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
 import Ridet from "../../../identifierObjects/Ridet";
 import Siret from "../../../identifierObjects/Siret";
+import { addWithNull } from "../../../shared/helpers/NumberHelper";
 import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import paymentFlatService from "../../paymentFlat/paymentFlat.service";
@@ -14,7 +16,7 @@ import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import ProviderCore from "../ProviderCore";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
 import FonjepDispositifEntity from "./entities/FonjepDispositifEntity";
-import { FonjepPaymentFlatEntity } from "./entities/FonjepPaymentFlatEntity";
+import { FonjepApplicationFlatEntity, FonjepPaymentFlatEntity } from "./entities/FonjepFlatEntity";
 import FonjepPosteEntity from "./entities/FonjepPosteEntity";
 import FonjepTiersEntity from "./entities/FonjepTiersEntity";
 import FonjepTypePosteEntity from "./entities/FonjepTypePosteEntity";
@@ -190,12 +192,50 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
         },
         exportDate: Date,
     ) {
-        const applications: ApplicationFlatEntity[] = this.createApplicationFlatEntitiesFromCollections(
+        const applications: FonjepApplicationFlatEntity[] = this.createApplicationFlatEntitiesFromCollections(
             collections,
             exportDate,
         );
-        const stream = ReadableStream.from(applications);
+
+        const aggregatedApplications = this.processDuplicates(applications);
+
+        const stream = ReadableStream.from(aggregatedApplications);
         return this.saveFlatFromStream(stream);
+    }
+
+    private groupApplicationsByUniqueId(applications: FonjepApplicationFlatEntity[]) {
+        return applications.reduce(
+            (acc, application) => {
+                const uniqueId = application.uniqueId;
+                if (acc[uniqueId]) acc[uniqueId].push(application);
+                else acc[uniqueId] = [application];
+                return acc;
+            },
+            {} as DefaultObject<FonjepApplicationFlatEntity[]>,
+        );
+    }
+
+    // aggregate false fonjep application flat duplicates
+    private aggregateApplications(applications: FonjepApplicationFlatEntity[]) {
+        return applications.reduce((aggregate, application) => {
+            aggregate.grantedAmount = addWithNull(aggregate.grantedAmount, application.grantedAmount);
+            aggregate.requestedAmount = addWithNull(aggregate.requestedAmount, application.requestedAmount);
+            aggregate.totalAmount = addWithNull(aggregate.totalAmount, application.totalAmount);
+            return aggregate;
+        });
+    }
+
+    // fonjep has some duplicates regarding ApplicationFlat uniqueId.
+    // Positions never really close but are instead extended using the same codePoste
+    // It groups and sums the amount to make one application of it
+    processDuplicates(applications: FonjepApplicationFlatEntity[]): FonjepApplicationFlatEntity[] {
+        const groupByUniqueId = this.groupApplicationsByUniqueId(applications);
+
+        return Object.values(groupByUniqueId).reduce((aggregatedApplications, group) => {
+            const aggregate = this.aggregateApplications(group);
+            aggregatedApplications.push(aggregate);
+            return aggregatedApplications;
+        }, [] as FonjepApplicationFlatEntity[]);
     }
 
     createApplicationFlatEntitiesFromCollections(
@@ -205,10 +245,10 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
             schemes: FonjepDispositifEntity[];
         },
         exportDate: Date,
-    ): ApplicationFlatEntity[] {
+    ): FonjepApplicationFlatEntity[] {
         const { positions, thirdParties, schemes } = collections;
 
-        const applications: ApplicationFlatEntity[] = [];
+        const applications: FonjepApplicationFlatEntity[] = [];
         const errors: string[] = [];
 
         positions.forEach(position => {

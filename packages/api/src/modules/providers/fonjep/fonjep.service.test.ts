@@ -45,6 +45,8 @@ import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../paymentFlat/__fixtures__/payme
 import { ENTITY as APPLICATION_FLAT_ENTITY } from "../../applicationFlat/__fixtures__";
 import { ReadableStream } from "node:stream/web";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
+import * as NumberHelper from "../../../shared/helpers/NumberHelper";
+import { FonjepApplicationFlatEntity } from "./entities/FonjepFlatEntity";
 jest.mock("../../applicationFlat/applicationFlat.service");
 
 const PARSED_DATA = {
@@ -411,84 +413,191 @@ describe("FonjepService", () => {
         });
     });
 
-    describe("createApplicationFlatEntitiesFromCollections", () => {
-        const EXPORT_DATE = new Date("2023-12-31");
-        const POSITIONS = [POSTE_ENTITY];
-        const THIRD_PARTIES = [TIERS_ENTITY, ALLOCATOR, INSTRUCTOR];
+    describe("Application Flat", () => {
+        const FALSE_DUPLICATE_APPLICATION = {
+            ...APPLICATION_FLAT_ENTITY,
+            grantedAmount: 9000,
+            requestedAmount: 9000,
+            totalAmount: 9000,
+        };
+        const OTHER_APPLICATION = { ...APPLICATION_FLAT_ENTITY, uniqueId: "otherId" };
+        const APPLICATIONS = [
+            APPLICATION_FLAT_ENTITY as FonjepApplicationFlatEntity,
+            FALSE_DUPLICATE_APPLICATION as FonjepApplicationFlatEntity,
+            OTHER_APPLICATION as FonjepApplicationFlatEntity,
+        ];
+        const GROUPED_APPLICATIONS = {
+            [APPLICATION_FLAT_ENTITY.uniqueId]: [APPLICATION_FLAT_ENTITY, FALSE_DUPLICATE_APPLICATION],
+            [OTHER_APPLICATION.uniqueId]: [OTHER_APPLICATION],
+        };
 
-        beforeAll(() => {
-            jest.mocked(FonjepEntityAdapter.toFonjepApplicationFlat).mockReturnValue(APPLICATION_FLAT_ENTITY);
-        });
+        describe("createApplicationFlatEntitiesFromCollections", () => {
+            const EXPORT_DATE = new Date("2023-12-31");
+            const POSITIONS = [POSTE_ENTITY];
+            const THIRD_PARTIES = [TIERS_ENTITY, ALLOCATOR, INSTRUCTOR];
 
-        it("creates application flat for each position", () => {
-            fonjepService.createApplicationFlatEntitiesFromCollections(
-                {
-                    positions: POSITIONS,
-                    thirdParties: THIRD_PARTIES,
-                    schemes: DISPOSITIF_ENTITIES,
-                },
-                EXPORT_DATE,
-            );
+            beforeAll(() => {
+                jest.mocked(FonjepEntityAdapter.toFonjepApplicationFlat).mockReturnValue(
+                    APPLICATION_FLAT_ENTITY as FonjepApplicationFlatEntity,
+                );
+            });
 
-            expect(FonjepEntityAdapter.toFonjepApplicationFlat).toHaveBeenCalledWith({
-                position: POSTE_ENTITY,
-                beneficiary: TIERS_ENTITY,
-                allocator: ALLOCATOR,
-                instructor: INSTRUCTOR,
-                scheme: DISPOSITIF_ENTITIES[0],
+            it("creates application flat for each position", () => {
+                fonjepService.createApplicationFlatEntitiesFromCollections(
+                    {
+                        positions: POSITIONS,
+                        thirdParties: THIRD_PARTIES,
+                        schemes: DISPOSITIF_ENTITIES,
+                    },
+                    EXPORT_DATE,
+                );
+
+                expect(FonjepEntityAdapter.toFonjepApplicationFlat).toHaveBeenCalledWith({
+                    position: POSTE_ENTITY,
+                    beneficiary: TIERS_ENTITY,
+                    allocator: ALLOCATOR,
+                    instructor: INSTRUCTOR,
+                    scheme: DISPOSITIF_ENTITIES[0],
+                });
+            });
+
+            it("creates application flat for each position", () => {
+                const actual = fonjepService.createApplicationFlatEntitiesFromCollections(
+                    {
+                        positions: POSITIONS,
+                        thirdParties: THIRD_PARTIES,
+                        schemes: DISPOSITIF_ENTITIES,
+                    },
+                    EXPORT_DATE,
+                );
+
+                expect(actual).toEqual([{ ...APPLICATION_FLAT_ENTITY, updateDate: expect.any(Date) }]);
             });
         });
 
-        it("creates application flat for each position", () => {
-            const actual = fonjepService.createApplicationFlatEntitiesFromCollections(
-                {
-                    positions: POSITIONS,
-                    thirdParties: THIRD_PARTIES,
-                    schemes: DISPOSITIF_ENTITIES,
-                },
-                EXPORT_DATE,
-            );
+        describe("addToApplicationFlat", () => {
+            const EXPORT_DATE = new Date("2023-12-31");
+            const COLLECTIONS = {
+                positions: POSITIONS,
+                thirdParties: THIRD_PARTIES,
+                schemes: DISPOSITIF_ENTITIES,
+            };
+            const AGGREGATED_APPLICATIONS = [APPLICATION_FLAT_ENTITY as FonjepApplicationFlatEntity];
+            let mockCreateApplicationFlat: jest.SpyInstance;
+            let mockSaveFlatFromStream: jest.SpyInstance;
+            let mockProcessDuplicates: jest.SpyInstance;
 
-            expect(actual).toEqual([{ ...APPLICATION_FLAT_ENTITY, updateDate: expect.any(Date) }]);
+            beforeEach(() => {
+                mockCreateApplicationFlat = jest
+                    .spyOn(fonjepService, "createApplicationFlatEntitiesFromCollections")
+                    .mockReturnValue(APPLICATIONS);
+                mockProcessDuplicates = jest
+                    .spyOn(fonjepService, "processDuplicates")
+                    .mockReturnValue(AGGREGATED_APPLICATIONS);
+                mockSaveFlatFromStream = jest.spyOn(fonjepService, "saveFlatFromStream").mockImplementation(jest.fn());
+            });
+
+            afterAll(() => {
+                mockCreateApplicationFlat.mockRestore();
+                mockSaveFlatFromStream.mockRestore();
+                mockProcessDuplicates.mockRestore();
+            });
+
+            it("creates applications flat from collections", () => {
+                fonjepService.addToApplicationFlat(COLLECTIONS, EXPORT_DATE);
+                expect(mockCreateApplicationFlat).toHaveBeenCalledWith(COLLECTIONS, EXPORT_DATE);
+            });
+
+            it("aggregates applications by unique id to sum amount", () => {
+                fonjepService.addToApplicationFlat(COLLECTIONS, EXPORT_DATE);
+                expect(mockProcessDuplicates).toHaveBeenCalledWith(APPLICATIONS);
+            });
+
+            it("sends ApplicationFlat stream to be processed", async () => {
+                fonjepService.addToApplicationFlat(COLLECTIONS, EXPORT_DATE);
+
+                expect(mockSaveFlatFromStream).toHaveBeenCalledWith(expect.any(ReadableStream));
+            });
         });
-    });
 
-    describe("addToApplicationFlat", () => {
-        const EXPORT_DATE = new Date("2023-12-31");
-        let mockCreateApplicationFlat: jest.SpyInstance;
-        let mockSaveFlatFromStream: jest.SpyInstance;
-
-        beforeEach(() => {
-            mockCreateApplicationFlat = jest
-                .spyOn(fonjepService, "createApplicationFlatEntitiesFromCollections")
-                .mockReturnValue([APPLICATION_FLAT_ENTITY]);
-            mockSaveFlatFromStream = jest.spyOn(fonjepService, "saveFlatFromStream").mockImplementation(jest.fn());
+        describe("groupApplicationsByUniqueId", () => {
+            it("groups applications by uniqueId", () => {
+                const expected = GROUPED_APPLICATIONS;
+                // @ts-expect-error: test private method
+                const actual = fonjepService.groupApplicationsByUniqueId(APPLICATIONS);
+                expect(actual).toEqual(expected);
+            });
         });
 
-        afterAll(() => {
-            mockCreateApplicationFlat.mockRestore();
-            mockSaveFlatFromStream.mockRestore();
+        describe("aggregateApplications", () => {
+            const AGGREGATED_AMOUNT = 25000;
+
+            beforeEach(() => {
+                jest.spyOn(NumberHelper, "addWithNull").mockReturnValue(AGGREGATED_AMOUNT);
+            });
+
+            it("sums applications grantedAmount", () => {
+                const APPLICATIONS = [APPLICATION_FLAT_ENTITY, FALSE_DUPLICATE_APPLICATION];
+                const expected = {
+                    ...APPLICATIONS[0],
+                    grantedAmount: AGGREGATED_AMOUNT,
+                    requestedAmount: AGGREGATED_AMOUNT,
+                    totalAmount: AGGREGATED_AMOUNT,
+                };
+                // @ts-expect-error: test private method
+                const actual = fonjepService.aggregateApplications(APPLICATIONS);
+                expect(actual).toEqual(expected);
+            });
         });
 
-        it("calls saveFlatFromStream with ApplicationFlat stream", async () => {
-            fonjepService.addToApplicationFlat(
-                {
-                    positions: POSITIONS,
-                    thirdParties: THIRD_PARTIES,
-                    schemes: DISPOSITIF_ENTITIES,
-                },
-                EXPORT_DATE,
-            );
+        describe("processDuplicates", () => {
+            let mockGroupApplicationsByUniqueId: jest.SpyInstance;
+            let mockAggregateApplications: jest.SpyInstance;
 
-            expect(mockSaveFlatFromStream).toHaveBeenCalledWith(expect.any(ReadableStream));
+            beforeEach(() => {
+                mockGroupApplicationsByUniqueId = jest
+                    // @ts-expect-error: mock private method
+                    .spyOn(fonjepService, "groupApplicationsByUniqueId")
+                    // @ts-expect-error: mock return value
+                    .mockReturnValue(GROUPED_APPLICATIONS);
+                mockAggregateApplications = jest
+                    // @ts-expect-error: mock private method
+                    .spyOn(fonjepService, "aggregateApplications")
+                    // @ts-expect-error: mock return value
+                    .mockReturnValue(APPLICATION_FLAT_ENTITY);
+            });
+
+            afterAll(() => {
+                mockGroupApplicationsByUniqueId.mockRestore();
+                mockAggregateApplications.mockRestore();
+            });
+
+            it("get grouped applications by uniqueId", () => {
+                fonjepService.processDuplicates(APPLICATIONS);
+                expect(mockGroupApplicationsByUniqueId).toHaveBeenCalledWith(APPLICATIONS);
+            });
+
+            it("aggregates each group", () => {
+                fonjepService.processDuplicates(APPLICATIONS);
+                expect(mockAggregateApplications).toHaveBeenCalledTimes(Object.values(GROUPED_APPLICATIONS).length);
+            });
+
+            it("returns aggregated applications", () => {
+                mockAggregateApplications.mockReturnValueOnce(APPLICATION_FLAT_ENTITY);
+                mockAggregateApplications.mockReturnValueOnce(OTHER_APPLICATION);
+
+                const expected = [APPLICATION_FLAT_ENTITY, OTHER_APPLICATION];
+                const actual = fonjepService.processDuplicates(APPLICATIONS);
+                expect(actual).toEqual(expected);
+            });
         });
-    });
 
-    describe("saveFlatFromStream", () => {
-        it("calls applicationFlatService.saveFromStream", () => {
-            const STREAM = ReadableStream.from([APPLICATION_FLAT_ENTITY]);
-            fonjepService.saveFlatFromStream(STREAM);
-            expect(applicationFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);
+        describe("saveFlatFromStream", () => {
+            it("calls applicationFlatService.saveFromStream", () => {
+                const STREAM = ReadableStream.from([APPLICATION_FLAT_ENTITY]);
+                fonjepService.saveFlatFromStream(STREAM);
+                expect(applicationFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);
+            });
         });
     });
 });

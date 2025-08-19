@@ -13,12 +13,12 @@ import Ridet from "../../../../identifierObjects/Ridet";
 import Rid from "../../../../identifierObjects/Rid";
 import Siren from "../../../../identifierObjects/Siren";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
-import { FonjepPaymentFlatEntity } from "../entities/FonjepPaymentFlatEntity";
+import { FonjepApplicationFlatEntity, FonjepPaymentFlatEntity } from "../entities/FonjepFlatEntity";
 import { DataBretagneRecords } from "../../dataBretagne/@types/DataBretagne";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
 import { getShortISODate, modifyDateYear } from "../../../../shared/helpers/DateHelper";
 import { removeWhitespace } from "../../../../shared/helpers/StringHelper";
-import { ApplicationFlatEntity, ApplicationNature, PaymentCondition } from "../../../../entities/ApplicationFlatEntity";
+import { ApplicationNature, PaymentCondition } from "../../../../entities/ApplicationFlatEntity";
 import EstablishmentIdentifier from "../../../../identifierObjects/EstablishmentIdentifier";
 import { ApplicationStatus } from "dto";
 
@@ -242,7 +242,7 @@ export default class FonjepEntityAdapter {
         allocator: FonjepTiersEntity; // structure who handle the application payment
         instructor: FonjepTiersEntity; // structure who validates / instructs the application
         scheme: FonjepDispositifEntity;
-    }): Omit<ApplicationFlatEntity, "updateDate"> | null {
+    }): Omit<FonjepApplicationFlatEntity, "updateDate"> | null {
         const { position, beneficiary, allocator, instructor, scheme } = entities;
         if (!position.annee) throw new Error("FONJEP ApplicationFlat must have a budgetary year");
         if (!beneficiary.siretOuRidet) throw new Error("FONJEP ApplicationFlat must have a beneficiary siret or ridet");
@@ -297,7 +297,7 @@ export default class FonjepEntityAdapter {
             requestYear: null,
             scheme: scheme.libelle,
             subScheme: GenericAdapter.NOT_APPLICABLE_VALUE,
-            statusLabel: ApplicationStatus.GRANTED,
+            statusLabel: ApplicationStatus.GRANTED, // always GRANTED because FONJEP only concerns payments (means that application has been granted)
             object: null,
             nature: ApplicationNature.MONEY,
             requestedAmount: position.montantSubvention,
