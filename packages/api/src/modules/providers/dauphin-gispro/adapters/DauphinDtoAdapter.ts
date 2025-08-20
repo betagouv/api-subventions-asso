@@ -222,10 +222,6 @@ export default class DauphinDtoAdapter {
             decisionReference: null,
             depositDate: dateDemande,
             ej,
-            grantedAmount:
-                status === ApplicationStatus.GRANTED
-                    ? simplified.montantAccorde || null
-                    : GenericAdapter.NOT_APPLICABLE_VALUE,
             idRAE: null,
             instructiveDepartementId: null,
             instructiveDepartmentIdType: null,
@@ -246,6 +242,7 @@ export default class DauphinDtoAdapter {
             provider: "dauphin",
             requestYear: dateDemande?.getFullYear() || null,
             requestedAmount: simplified.montantDemande,
+            grantedAmount: simplified.montantAccorde || null,
             scheme: simplified.thematique.join("|") + " - Politique de la ville",
             statusLabel: status,
             subScheme: null,
