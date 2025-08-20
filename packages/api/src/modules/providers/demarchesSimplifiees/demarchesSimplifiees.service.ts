@@ -55,6 +55,7 @@ export class DemarchesSimplifieesService
      * |   Flat                  |
      * |-------------------------|
      */
+
     isApplicationFlatProvider = true as const;
 
     async saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>): Promise<void> {
@@ -71,7 +72,10 @@ export class DemarchesSimplifieesService
         return this.saveFlatFromStream(stream);
     }
 
-    toFlatAndValidate(dbo, schema): ApplicationFlatEntity | null {
+    toFlatAndValidate(
+        dbo: DemarchesSimplifieesDataEntity,
+        schema: DemarchesSimplifieesSchema,
+    ): ApplicationFlatEntity | null {
         if (!schema?.flatSchema || this.isDraft(dbo)) return null;
         const res = DemarchesSimplifieesEntityAdapter.toFlat(dbo, schema);
         // this is the only mandatory field that comes from 'champs' or 'annotations'
@@ -80,10 +84,7 @@ export class DemarchesSimplifieesService
         return res;
     }
 
-    async bulkUpdateApplicationFlat(
-        entities: DemarchesSimplifieesDataEntity[],
-        schema: DemarchesSimplifieesSchema | null,
-    ) {
+    bulkUpdateApplicationFlat(entities: DemarchesSimplifieesDataEntity[], schema: DemarchesSimplifieesSchema | null) {
         if (!schema) return;
         const stream = ReadableStream.from(entities.map(e => this.toFlatAndValidate(e, schema)).filter(e => !!e));
         return this.saveFlatFromStream(stream);
