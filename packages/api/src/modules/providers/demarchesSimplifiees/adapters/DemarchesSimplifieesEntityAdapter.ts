@@ -132,7 +132,7 @@ export class DemarchesSimplifieesEntityAdapter {
         // TODO should we try better to have exercise ?
 
         application.beneficiaryEstablishmentIdType = "siret";
-        application.provider = `demarches-simplifiees`;
+        application.provider = `demarches-simplifiees-${entity.demarcheId}`;
         application.beneficiaryEstablishmentId = (application.beneficiaryEstablishmentId as number).toString();
         application.applicationId = `${application.provider}-${application.applicationProviderId}`;
         application.uniqueId = `${application.applicationId}-${application.budgetaryYear}`;
