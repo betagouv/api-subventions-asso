@@ -13,7 +13,7 @@ import {
 } from "../../modules/providers/scdl/@types/Validation";
 import { DEV } from "../../configurations/env.conf";
 import dataLogService from "../../modules/data-log/dataLog.service";
-import { validateDate } from "../../shared/helpers/CliHelper";
+import { detectAndEncode, validateDate } from "../../shared/helpers/CliHelper";
 import scdlGrantService from "../../modules/providers/scdl/scdl.grant.service";
 import applicationFlatService from "../../modules/applicationFlat/applicationFlat.service";
 
@@ -33,14 +33,14 @@ export default class ScdlCli {
     }
 
     public async parseXls(
-        file: string,
+        filePath: string,
         producerSlug: string,
         exportDate: string | undefined = undefined,
         pageName: string | undefined = undefined,
         rowOffset: number | string = 0,
     ) {
         await this.validateGenericInput(producerSlug, exportDate);
-        const fileContent = fs.readFileSync(file);
+        const fileContent = detectAndEncode(filePath);
 
         const parsedRowOffset = typeof rowOffset === "number" ? rowOffset : parseInt(rowOffset);
         const { entities, errors } = scdlService.parseXls(fileContent, pageName, parsedRowOffset);
@@ -48,7 +48,7 @@ export default class ScdlCli {
         // persist data
         await this.persist(producerSlug, entities);
         // execute end of import methods
-        await this.end({ file, producerSlug, exportDate, errors });
+        await this.end({ file: filePath, producerSlug, exportDate, errors });
     }
 
     /**
@@ -60,21 +60,21 @@ export default class ScdlCli {
      * @param quote
      */
     public async parse(
-        file: string,
+        filePath: string,
         producerSlug: string,
         exportDate: string | undefined = undefined,
         delimiter = ";",
         quote = '"',
     ) {
         await this.validateGenericInput(producerSlug, exportDate);
-        const fileContent = fs.readFileSync(file);
+        const fileContent = detectAndEncode(filePath);
 
         const parsedQuote = quote === "false" ? false : quote;
         const { entities, errors } = scdlService.parseCsv(fileContent, delimiter, parsedQuote);
         // persist data
         await this.persist(producerSlug, entities);
         // execute end of import methods
-        await this.end({ file, producerSlug, exportDate, errors });
+        await this.end({ file: filePath, producerSlug, exportDate, errors });
     }
 
     /**

@@ -39,7 +39,7 @@ describe("ScdlCli", () => {
     };
     const GRANT = { ...MiscScdlGrant };
     const STORABLE_DATA = { ...GRANT, __data__: {} };
-    const FILE_CONTENT = "FILE_CONTENT";
+    const FILE_CONTENT = Buffer.from("FILE_CONTENT");
     const EXPORT_DATE_STR = "2023-03-23";
     const UNIQUE_ID = "UNIQUE_ID";
     const FILE_PATH = "FILE_PATH";
@@ -131,6 +131,7 @@ describe("ScdlCli", () => {
             jest.spyOn(cli, "end").mockResolvedValue();
             // @ts-expect-error: mock private method
             jest.spyOn(cli, "persist").mockResolvedValue();
+            jest.mocked(CliHelper.detectAndEncode).mockReturnValue(FILE_CONTENT);
         });
 
         it("sanitizes input", async () => {
@@ -140,9 +141,10 @@ describe("ScdlCli", () => {
             expect(sanitizeSpy).toHaveBeenCalledWith(PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
         });
 
-        it("reads file", async () => {
+        it("encode and read file", async () => {
+            // const spyDetectAndEncode = jest.spyOn(CliHelper, "detectAndEncode");
             await test();
-            expect(fs.readFileSync).toHaveBeenCalledWith(FILE_PATH);
+            expect(CliHelper.detectAndEncode).toHaveBeenCalledWith(FILE_PATH);
         });
 
         it("parses file in entities", async () => {
