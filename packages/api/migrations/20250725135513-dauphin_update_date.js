@@ -1,8 +1,8 @@
-const dauphinService = require("../build/src/modules/providers/dauphin-gispro/dauphin.service");
+const { getLastImportDate } = require("../build/src/dataProviders/db/providers/dauphin/dauphin.port");
 
 module.exports = {
     async up(db) {
-        const lastDate = await dauphinService.getLastImportDate();
+        const lastDate = await getLastImportDate();
         db.collection("dauphin-gispro").updateMany({}, { $set: { "dauphin.updateDate": lastDate } });
     },
 
