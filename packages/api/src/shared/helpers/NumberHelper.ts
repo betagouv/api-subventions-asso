@@ -5,8 +5,8 @@
  * @param next value to add
  * @returns aggregation of values, previous value or next value
  */
-export function addWithNull(toBeIncreased: number | null, toBeAdd: number | null) {
-    if (toBeIncreased && toBeAdd) return toBeIncreased + toBeAdd;
+export function addWithNull(toBeIncreased: number | null, toAdd: number | null) {
+    if (toBeIncreased && toAdd) return toBeIncreased + toAdd;
     if (toBeIncreased) return toBeIncreased;
-    return toBeAdd;
+    return toAdd;
 }
