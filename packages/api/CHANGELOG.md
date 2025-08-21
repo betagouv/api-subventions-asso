@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.72.0](https://github.com/betagouv/api-subventions-asso/compare/v0.71.0...v0.72.0) (2025-08-21)
+
+### Bug Fixes
+
+- **api:** scdl to flat adapter manages non string type ([baaa77a](https://github.com/betagouv/api-subventions-asso/commit/baaa77a3d5d4c08d7db806bac4e445f30ed15c12))
+
+### Features
+
+- **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) create provider data entity ([#3593](https://github.com/betagouv/api-subventions-asso/issues/3593)) ([dd2fc31](https://github.com/betagouv/api-subventions-asso/commit/dd2fc3117c3a0677dd71a5482cc47651acba1e45))
+- **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) revert not applicable granted amount ([#3601](https://github.com/betagouv/api-subventions-asso/issues/3601)) ([53e0c66](https://github.com/betagouv/api-subventions-asso/commit/53e0c66251c984a920459f10446b73b6c5ed2751))
+- **api:** [#2699](https://github.com/betagouv/api-subventions-asso/issues/2699) fonjep application flat ([#3582](https://github.com/betagouv/api-subventions-asso/issues/3582)) ([7d29de7](https://github.com/betagouv/api-subventions-asso/commit/7d29de74653ca594c028c6d1aff4cc082f486c5f))
+- **api:** [#3573](https://github.com/betagouv/api-subventions-asso/issues/3573) [#3541](https://github.com/betagouv/api-subventions-asso/issues/3541) dauphin adaptation to application flat ([#3587](https://github.com/betagouv/api-subventions-asso/issues/3587)) ([c1f5400](https://github.com/betagouv/api-subventions-asso/commit/c1f540004254585d4b886d25f85ea33dca19a130))
+- **api:** [#3574](https://github.com/betagouv/api-subventions-asso/issues/3574) add subventia to application flat ([#3588](https://github.com/betagouv/api-subventions-asso/issues/3588)) ([9ed2e07](https://github.com/betagouv/api-subventions-asso/commit/9ed2e07fa62de2cd2865f305e003a66a40ab5d66))
+- **api:** [#3589](https://github.com/betagouv/api-subventions-asso/issues/3589) osiris to application flat ([#3592](https://github.com/betagouv/api-subventions-asso/issues/3592)) ([ccdd12b](https://github.com/betagouv/api-subventions-asso/commit/ccdd12b06f6ddec2a3c5744fde4bc562d09b3599))
+- **api:** [#3602](https://github.com/betagouv/api-subventions-asso/issues/3602) detect and encode scdl files ([#3603](https://github.com/betagouv/api-subventions-asso/issues/3603)) ([f3cd704](https://github.com/betagouv/api-subventions-asso/commit/f3cd704ae7b61d61f83d67d6cd5f510687aac06b))
+- **api:** update scdl validation CLI logs ([a77cecb](https://github.com/betagouv/api-subventions-asso/commit/a77cecb30b0fa8a1cd2a2c16292363dd9ed29f90))
+
 # [0.71.0](https://github.com/betagouv/api-subventions-asso/compare/v0.70.6...v0.71.0) (2025-07-24)
 
 ### Bug Fixes

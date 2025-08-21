@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.72.0](https://github.com/betagouv/datasubvention/compare/v0.71.0...v0.72.0) (2025-08-21)
+
+### Features
+
+- **front:** [#3570](https://github.com/betagouv/datasubvention/issues/3570) redirect signup to home page when logged in ([#3578](https://github.com/betagouv/datasubvention/issues/3578)) ([c850e2d](https://github.com/betagouv/datasubvention/commit/c850e2dd4a7df42d904cef0d7ce15e030cbb3ae5))
+
 # [0.71.0](https://github.com/betagouv/datasubvention/compare/v0.70.6...v0.71.0) (2025-07-24)
 
 **Note:** Version bump only for package front
