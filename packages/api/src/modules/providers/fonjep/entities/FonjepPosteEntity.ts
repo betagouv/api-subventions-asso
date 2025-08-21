@@ -1,4 +1,6 @@
-type FonjepPosteEntity = {
+import { ProviderDataEntity } from "../../../../@types/ProviderDataEntity";
+
+interface FonjepPosteEntity extends ProviderDataEntity {
     // code to join with fonjepVersement collection and get information about the payment
     code: string;
     // code to join with fonjepTier collection and get information about the recipient association
@@ -19,6 +21,6 @@ type FonjepPosteEntity = {
     pstTypePosteCode: string | null;
     pleinTemps: string | null;
     doublementUniteCompte: string | null;
-};
+}
 
 export default FonjepPosteEntity;

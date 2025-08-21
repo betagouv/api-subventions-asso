@@ -15,6 +15,33 @@ export const TIERS_ENTITY: FonjepTiersEntity = {
     codePostal: "35700",
     ville: "Rennes",
     contactEmail: "john.doe@ille-et-vilaine.fr",
+    updateDate: new Date("2025-08-11"),
+};
+
+export const ALLOCATOR: FonjepTiersEntity = {
+    code: "10004",
+    raisonSociale: "Ministère des sports, de la jeunesse et de la vie associative",
+    estAssociation: "Non",
+    estCoFinanceurPostes: "Non",
+    estFinanceurPostes: "Oui",
+    siretOuRidet: "20000000000018",
+    codePostal: "75650",
+    ville: "Paris",
+    contactEmail: "mirabelle.prune@jeunesse-asso.fr",
+    updateDate: new Date("2025-08-11"),
+};
+
+export const INSTRUCTOR: FonjepTiersEntity = {
+    code: "78DDJ",
+    raisonSociale: "SDJES D'ILLE-ET-VILAINE",
+    estAssociation: "Non",
+    estCoFinanceurPostes: "Non",
+    estFinanceurPostes: "Oui",
+    siretOuRidet: "30000000000018",
+    codePostal: "35000",
+    ville: "Rennes",
+    contactEmail: "sdjes35@ac-rennes.fr",
+    updateDate: new Date("2025-08-11"),
 };
 
 export const TIERS_ENTITY_WITH_NULLS: FonjepTiersEntity = {
@@ -27,13 +54,14 @@ export const TIERS_ENTITY_WITH_NULLS: FonjepTiersEntity = {
     codePostal: "35700",
     ville: "Rennes",
     contactEmail: "john.doe@ille-et-vilaine.fr",
+    updateDate: new Date("2025-08-11"),
 };
 
 export const POSTE_ENTITY: FonjepPosteEntity = {
     code: "AB5400K",
     dispositifId: 1,
-    financeurPrincipalCode: "FinanceurPrincipalCode",
-    financeurAttributeurCode: "FinanceurAttributeurCode",
+    financeurPrincipalCode: ALLOCATOR.code,
+    financeurAttributeurCode: INSTRUCTOR.code,
     associationBeneficiaireCode: TIERS_ENTITY.code,
     pstStatutPosteLibelle: "PstStatutPosteLibelle",
     pstRaisonStatutLibelle: "PstRaisonStatutLibelle",
@@ -44,6 +72,7 @@ export const POSTE_ENTITY: FonjepPosteEntity = {
     pstTypePosteCode: "PstTypePosteCode",
     pleinTemps: "Oui",
     doublementUniteCompte: "Non",
+    updateDate: new Date("2025-08-11"),
 };
 
 // use to test payment with financeurPrincipalCode 10006 exclusion in PaymentFlat creation process. Link to #3431
@@ -62,6 +91,7 @@ export const POSTE_10006_ENTITY: FonjepPosteEntity = {
     pstTypePosteCode: "PstTypePosteCode",
     pleinTemps: "Oui",
     doublementUniteCompte: "Non",
+    updateDate: new Date("2025-08-11"),
 };
 
 export const POSTE_WITHOUT_ASSOCIATION = {
@@ -79,6 +109,7 @@ export const POSTE_WITHOUT_ASSOCIATION = {
     pstTypePosteCode: "PstTypePosteCode",
     pleinTemps: "Oui",
     doublementUniteCompte: "Non",
+    updateDate: new Date("2025-08-11"),
 };
 
 export const POSTE_ENTITY_WITH_NULLS: FonjepPosteEntity = {
@@ -96,6 +127,7 @@ export const POSTE_ENTITY_WITH_NULLS: FonjepPosteEntity = {
     pstTypePosteCode: "PstTypePosteCode",
     pleinTemps: "Oui",
     doublementUniteCompte: "Non",
+    updateDate: new Date("2025-08-11"),
 };
 
 export const VERSEMENT_ENTITY: PayedFonjepVersementEntity = {
@@ -105,6 +137,7 @@ export const VERSEMENT_ENTITY: PayedFonjepVersementEntity = {
     dateVersement: new Date("2022-04-15"),
     montantAPayer: 1000,
     montantPaye: 1000,
+    updateDate: new Date("2025-08-11"),
 };
 
 export const VERSEMENT_10006_ENTITY: PayedFonjepVersementEntity = {
@@ -114,6 +147,7 @@ export const VERSEMENT_10006_ENTITY: PayedFonjepVersementEntity = {
     dateVersement: new Date("2022-05-15"),
     montantAPayer: 3000,
     montantPaye: 3000,
+    updateDate: new Date("2025-08-11"),
 };
 
 export const VERSEMENT_WITHOUT_POSITION = {
@@ -123,6 +157,7 @@ export const VERSEMENT_WITHOUT_POSITION = {
     dateVersement: new Date("2022-05-15"),
     montantAPayer: 3000,
     montantPaye: 3000,
+    updateDate: new Date("2025-08-11"),
 };
 
 export const VERSEMENT_WITHOUT_ASSOCIATION = {
@@ -132,6 +167,7 @@ export const VERSEMENT_WITHOUT_ASSOCIATION = {
     dateVersement: new Date("2022-05-15"),
     montantAPayer: 3000,
     montantPaye: 3000,
+    updateDate: new Date("2025-08-11"),
 };
 
 export const VERSEMENT_ENTITY_WITH_NULLS: FonjepVersementEntity = {
@@ -141,13 +177,23 @@ export const VERSEMENT_ENTITY_WITH_NULLS: FonjepVersementEntity = {
     dateVersement: null,
     montantAPayer: 1000,
     montantPaye: null,
+    updateDate: new Date("2025-08-11"),
 };
 
-export const TYPE_POSTE_ENTITY: FonjepTypePosteEntity = { code: "Code", libelle: "Libelle" };
+export const TYPE_POSTE_ENTITY: FonjepTypePosteEntity = {
+    code: "Code",
+    libelle: "Libelle",
+    updateDate: new Date("2025-08-11"),
+};
 
-export const DISPOSITIF_ENTITY: FonjepDispositifEntity = { id: 1, libelle: "Libelle", financeurCode: "FinanceurCode" };
+export const DISPOSITIF_ENTITY: FonjepDispositifEntity = {
+    id: 1,
+    libelle: "FONJEP Jeunesse éducation populaire",
+    financeurCode: "10004",
+    updateDate: new Date("2025-08-11"),
+};
 
-export const TIERS_ENTITIES = [TIERS_ENTITY, TIERS_ENTITY_WITH_NULLS];
+export const TIERS_ENTITIES = [TIERS_ENTITY, TIERS_ENTITY_WITH_NULLS, ALLOCATOR, INSTRUCTOR];
 
 export const POSTE_ENTITIES = [POSTE_ENTITY, POSTE_ENTITY_WITH_NULLS];
 

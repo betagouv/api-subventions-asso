@@ -1,5 +1,5 @@
+import type { ReadableStream } from "node:stream/web";
 import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
-import { ReadableStream } from "node:stream/web";
 
 export default interface ApplicationFlatProvider {
     isApplicationFlatProvider: true;

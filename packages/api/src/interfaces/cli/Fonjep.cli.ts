@@ -18,12 +18,14 @@ export default class FonjepCli extends CliController {
      *
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    protected async _parse(file: string, logs: unknown[], exportDate: Date) {
+    protected async _parse(file: string, logs: unknown[], exportDate: Date | undefined) {
         this.logger.logIC("\nStart parse file: ", file);
         this.logger.log(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
 
+        if (!exportDate) throw new Error("Export date is mandatory for fonjep import");
+
         const { tierEntities, posteEntities, versementEntities, typePosteEntities, dispositifEntities } =
-            fonjepService.fromFileToEntities(file);
+            fonjepService.fromFileToEntities(file, exportDate);
 
         fonjepService.useTemporyCollection(true);
 
@@ -37,11 +39,21 @@ export default class FonjepCli extends CliController {
             dispositifEntities,
         );
 
+        // TODO: make PaymentFlat use the same ReadableStream architecture yo be ISO with ApplicationFlat ?
         await fonjepService.createPaymentFlatEntitiesFromCollections({
             thirdParties: tierEntities,
             positions: posteEntities,
             payments: versementEntities,
         });
+
+        await fonjepService.addToApplicationFlat(
+            {
+                positions: posteEntities,
+                schemes: dispositifEntities,
+                thirdParties: tierEntities,
+            },
+            exportDate,
+        );
 
         this.logger.logIC("Fonjep temps collections created");
 

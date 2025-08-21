@@ -6,7 +6,7 @@ import PaymentFlatDbo from "../../dataProviders/db/paymentFlat/PaymentFlatDbo";
 import Siren from "../../identifierObjects/Siren";
 import Siret from "../../identifierObjects/Siret";
 import { ChorusPaymentFlatEntity } from "../providers/chorus/@types/ChorusPaymentFlat";
-import { FonjepPaymentFlatEntity } from "../providers/fonjep/entities/FonjepPaymentFlatEntity";
+import { FonjepPaymentFlatEntity } from "../providers/fonjep/entities/FonjepFlatEntity";
 import FonjepEntityAdapter from "../providers/fonjep/adapters/FonjepEntityAdapter";
 import { GenericAdapter } from "../../shared/GenericAdapter";
 

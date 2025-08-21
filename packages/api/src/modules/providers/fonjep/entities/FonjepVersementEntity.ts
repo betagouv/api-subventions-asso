@@ -1,11 +1,13 @@
-type FonjepVersementEntity = {
+import { ProviderDataEntity } from "../../../../@types/ProviderDataEntity";
+
+interface FonjepVersementEntity extends ProviderDataEntity {
     posteCode: string;
     periodeDebut: Date | null;
     periodeFin: Date | null;
     dateVersement: Date | null;
     montantAPayer: number | null;
     montantPaye: number | null;
-};
+}
 
 export type PayedFonjepVersementEntity = FonjepVersementEntity & {
     periodeDebut: Date;

@@ -1,4 +1,6 @@
-type FonjepTiersEntity = {
+import { ProviderDataEntity } from "../../../../@types/ProviderDataEntity";
+
+interface FonjepTiersEntity extends ProviderDataEntity {
     code: string;
     siretOuRidet: string | null;
     raisonSociale: string | null;
@@ -8,6 +10,6 @@ type FonjepTiersEntity = {
     codePostal: string | null;
     ville: string | null;
     contactEmail: string | null;
-};
+}
 
 export default FonjepTiersEntity;

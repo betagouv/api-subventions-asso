@@ -29,7 +29,7 @@ describe("FonjepCli", () => {
         it("should call fromFileToEntities with the right arguments", async () => {
             // @ts-expect-error: test private method
             await cli._parse(FILEPATH, LOGS, EXPORT_DATE);
-            expect(fonjepService.fromFileToEntities).toHaveBeenCalledWith(FILEPATH);
+            expect(fonjepService.fromFileToEntities).toHaveBeenCalledWith(FILEPATH, EXPORT_DATE);
         });
 
         it("should call useTemporyCollection with true", async () => {
@@ -47,6 +47,29 @@ describe("FonjepCli", () => {
                 ENTITIES.versementEntities,
                 ENTITIES.typePosteEntities,
                 ENTITIES.dispositifEntities,
+            );
+        });
+
+        it("should call createPaymentFlatEntitiesFromCollections", async () => {
+            // @ts-expect-error: test private method
+            await cli._parse(FILEPATH, LOGS, EXPORT_DATE);
+            expect(fonjepService.createPaymentFlatEntitiesFromCollections).toHaveBeenCalledWith({
+                thirdParties: ENTITIES.tierEntities,
+                positions: ENTITIES.posteEntities,
+                payments: ENTITIES.versementEntities,
+            });
+        });
+
+        it("should call addToApplicationFlat", async () => {
+            // @ts-expect-error: test private method
+            await cli._parse(FILEPATH, LOGS, EXPORT_DATE);
+            expect(fonjepService.addToApplicationFlat).toHaveBeenCalledWith(
+                {
+                    positions: ENTITIES.posteEntities,
+                    schemes: ENTITIES.dispositifEntities,
+                    thirdParties: ENTITIES.tierEntities,
+                },
+                EXPORT_DATE,
             );
         });
 
