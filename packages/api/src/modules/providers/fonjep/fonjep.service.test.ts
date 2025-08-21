@@ -442,7 +442,7 @@ describe("FonjepService", () => {
                 );
             });
 
-            it("creates application flat for each position", () => {
+            it("uses adapter to create application from collections", () => {
                 fonjepService.createApplicationFlatEntitiesFromCollections(
                     {
                         positions: POSITIONS,
