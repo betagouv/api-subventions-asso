@@ -114,7 +114,9 @@ export class ScdlService {
         importedEntities: ScdlStorableGrant[],
         documentsInDB: MiscScdlGrantEntity[],
     ) {
-        console.log(`There are currently ${documentsInDB.length} documents for producer ${slug}`);
+        console.log(
+            `There are currently ${documentsInDB.length} documents for producer ${slug} in given exercice${exercices.length > 1 ? "s" : ""} ${exercices.join(" | ")}`,
+        );
         console.log(`The new import contains ${importedEntities.length} entities`);
 
         exercices.forEach(exercise => {
