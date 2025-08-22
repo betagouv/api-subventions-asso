@@ -5,7 +5,15 @@ import {
     SCHEMAS,
 } from "../../../../../tests/dataProviders/db/__fixtures__/demarchesSimplifiees.fixtures";
 import demarchesSimplifieesService from "../demarchesSimplifiees.service";
+import DemarchesSimplifieesSchema from "../entities/DemarchesSimplifieesSchema";
+import * as providerAdapter from "../../providers.adapter";
+
+const mockAdaptStatus = jest.fn();
+
 jest.mock("../demarchesSimplifiees.service");
+jest.mock("../../providers.adapter", () => ({
+    toStatusFactory: jest.fn(_conversionArray => mockAdaptStatus),
+}));
 
 describe("DemarchesSimplifieesEntityAdapter", () => {
     // @ts-expect-error: mock private method
@@ -60,6 +68,15 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
             const actual = DemarchesSimplifieesEntityAdapter.toSubvention(DEMANDE, MAPPING);
 
             expect(actual.siret.value).toBe(SIRET);
+        });
+
+        it("sets siret from mapping if given", () => {
+            const OTHER_SIRET = "09876543210987";
+            mapMock.mockReturnValueOnce({ siret: OTHER_SIRET });
+            const expected = OTHER_SIRET;
+            const actual = DemarchesSimplifieesEntityAdapter.toSubvention(DEMANDE, MAPPING).siret.value;
+
+            expect(actual).toBe(expected);
         });
 
         it("should use schema to build subvention", () => {
@@ -129,7 +146,7 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
     });
 
     describe("toCommon", () => {
-        const ENTITY = {};
+        const ENTITY = { siret: "12345678901234" };
         const SCHEMA = {};
 
         it("adapts to proper format", () => {
@@ -142,6 +159,7 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
             expect(actual).toMatchInlineSnapshot(`
                 {
                   "exercice": 2022,
+                  "siret": "12345678901234",
                   "statut": "Inéligible",
                 }
             `);
@@ -159,6 +177,23 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
             mapMock.mockReturnValueOnce({ dateTransmitted: new Date(2023, 10, 20), exercice: 2024 });
             const expected = 2024;
             const actual = DemarchesSimplifieesEntityAdapter.toCommon(DEMANDE, MAPPING).exercice;
+
+            expect(actual).toBe(expected);
+        });
+
+        it("sets siret from mapping if given", () => {
+            const OTHER_SIRET = "09876543210987";
+            mapMock.mockReturnValueOnce({ siret: OTHER_SIRET });
+            const expected = OTHER_SIRET;
+            const actual = DemarchesSimplifieesEntityAdapter.toCommon(DEMANDE, MAPPING).siret;
+
+            expect(actual).toBe(expected);
+        });
+
+        it("sets siret from entity if nothing from mapping", () => {
+            const expected = DEMANDE.siret;
+            mapMock.mockReturnValueOnce({});
+            const actual = DemarchesSimplifieesEntityAdapter.toCommon(DEMANDE, MAPPING).siret;
 
             expect(actual).toBe(expected);
         });
@@ -183,7 +218,6 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
                     "nested": "a",
                     "same": "toujoursPareil",
                   },
-                  "siret": "SIRET",
                 }
             `);
         });
@@ -217,6 +251,50 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
             // @ts-expect-error -- test private method
             const actual = DemarchesSimplifieesEntityAdapter.nestedToProviderValues(OBJECT, TO_PV);
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("toFlat", () => {
+        const SCHEMA = "SCHEMA" as unknown as DemarchesSimplifieesSchema;
+        const ADAPTED = {
+            beneficiaryEstablishmentId: 12345678901234,
+            provider: "producerSlug",
+            applicationProviderId: "blablablaHash",
+            budgetaryYear: 2024,
+            ej: "567",
+            depositDate: "2024-09-09",
+            status: "statut à adapter",
+        };
+
+        beforeAll(() => {
+            mapMock.mockReturnValue(ADAPTED);
+            mockAdaptStatus.mockReturnValue("statutAdapté");
+        });
+
+        afterAll(() => {
+            mapMock.mockRestore();
+            mockAdaptStatus.mockRestore();
+        });
+
+        it("maps schema", () => {
+            DemarchesSimplifieesEntityAdapter.toFlat(DEMANDE, SCHEMA);
+            expect(mapMock).toHaveBeenCalledWith(DEMANDE, SCHEMA, "flatSchema");
+        });
+
+        it("adapts status", () => {
+            const expected = ADAPTED.status;
+            DemarchesSimplifieesEntityAdapter.toFlat(DEMANDE, SCHEMA);
+            // @ts-expect-error -- private attribute
+            expect(providerAdapter.toStatusFactory).toHaveBeenCalledWith(
+                DemarchesSimplifieesEntityAdapter._statusConversionArray,
+            );
+            expect(mockAdaptStatus).toHaveBeenCalledWith(expected);
+        });
+
+        it("adapts built attributes", () => {
+            const ENTITY = { demarcheId: 987 } as DemarchesSimplifieesDataEntity;
+            const actual = DemarchesSimplifieesEntityAdapter.toFlat(ENTITY, SCHEMA);
+            expect(actual).toMatchSnapshot();
         });
     });
 });

@@ -137,7 +137,8 @@ export class DemarchesSimplifieesEntityAdapter {
         application.applicationId = `${application.provider}-${application.applicationProviderId}`;
         application.uniqueId = `${application.applicationId}-${application.budgetaryYear}`;
         application.paymentId = `${application.beneficiaryEstablishmentId}-${application.ej}-${application.budgetaryYear}`; //siret-EJ-exerciceBudgetaire
-        application.requestYear = new Date(application.depositDate as string).getFullYear();
+        application.depositDate = application.depositDate ? new Date(application.depositDate as string) : null;
+        application.requestYear = application.depositDate ? (application.depositDate as Date).getFullYear() : null;
 
         return application as unknown as ApplicationFlatEntity;
     }
