@@ -38,10 +38,10 @@ export const insertStreamByBatch = async <T>(
                 buffer = [];
             }
             buffer.push(entity);
-            counter += buffer.length;
         },
         async close() {
             await upsertMethod(buffer);
+            counter += buffer.length;
             console.log(`operations ended successfully, ${counter} entities saved`);
             // TODO differentiate counts inserts and updates?
         },

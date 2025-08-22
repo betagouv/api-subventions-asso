@@ -12,6 +12,8 @@ import { DemarchesSimplifieesRawData, DemarchesSimplifieesRawGrant } from "../@t
 import { RawApplication } from "../../../grant/@types/rawGrant";
 import { toStatusFactory } from "../../providers.adapter";
 import { isNumberValid } from "../../../../shared/Validators";
+import { ApplicationFlatEntity } from "../../../../entities/ApplicationFlatEntity";
+import { InternalServerError } from "core";
 
 export class DemarchesSimplifieesEntityAdapter {
     private static _statusConversionArray: { label: ApplicationStatus; providerStatusList: string[] }[] = [
@@ -26,7 +28,10 @@ export class DemarchesSimplifieesEntityAdapter {
         schema: DemarchesSimplifieesSchema,
         schemaId: string,
     ): T {
-        const subvention = { siret: entity.siret };
+        const subvention = {};
+        if (!schema[schemaId]) {
+            throw new InternalServerError(`no schema for type ${schemaId} and form ${schema.demarcheId}`);
+        }
 
         schema[schemaId].forEach(property => {
             if (property.value) return lodash.set(subvention, property.to, property.value);
@@ -35,6 +40,7 @@ export class DemarchesSimplifieesEntityAdapter {
             const valueDate = [
                 moment(value, "DD MMMM YYYY", "fr", true).toDate(), // Use moment for read French date
                 moment(value, true), // use moment with strict params true, to force the reading of a date in js format and not an interpretation
+                new Date(value),
             ].find(date => isValidDate(date));
 
             if (value === undefined || value === "") return;
@@ -70,10 +76,11 @@ export class DemarchesSimplifieesEntityAdapter {
 
         const subvention: DefaultObject = DemarchesSimplifieesEntityAdapter.mapSchema(entity, schema, "schema");
 
+        if (!subvention.siret) subvention.siret = entity.siret;
         if (!subvention.annee_demande) {
             if (subvention.exercice && isNumberValid(Number(subvention.exercice)))
                 subvention.annee_demande = subvention.exercice;
-            // DS doesn't always have an attribute with only year, so we get year from the start date
+            // DS often doesn't always have an attribute with only year, so we get year from the start date
             else if (subvention.date_debut && isValidDate(subvention.date_debut))
                 subvention.annee_demande = (subvention.date_debut as Date).getFullYear();
         }
@@ -101,6 +108,7 @@ export class DemarchesSimplifieesEntityAdapter {
     static toCommon(entity: DemarchesSimplifieesDataEntity, schema: DemarchesSimplifieesSchema): CommonApplicationDto {
         const application: DefaultObject = DemarchesSimplifieesEntityAdapter.mapSchema(entity, schema, "commonSchema");
 
+        if (!application.siret) application.siret = entity.siret;
         if (!application.exercice && application.dateTransmitted)
             application.exercice = new Date(application.dateTransmitted as string)?.getFullYear();
         delete application.dateTransmitted;
@@ -108,9 +116,30 @@ export class DemarchesSimplifieesEntityAdapter {
         application.statut = toStatusFactory(DemarchesSimplifieesEntityAdapter._statusConversionArray)(
             application.providerStatus as string,
         );
-
         delete application.providerStatus;
 
         return application as unknown as CommonApplicationDto;
+    }
+
+    static toFlat(entity: DemarchesSimplifieesDataEntity, schema: DemarchesSimplifieesSchema): ApplicationFlatEntity {
+        const application: DefaultObject = DemarchesSimplifieesEntityAdapter.mapSchema(entity, schema, "flatSchema");
+
+        application.statutLabel = toStatusFactory(DemarchesSimplifieesEntityAdapter._statusConversionArray)(
+            application.status as string,
+        );
+        delete application.status;
+
+        // TODO should we try better to have exercise ?
+
+        application.beneficiaryEstablishmentIdType = "siret";
+        application.provider = `demarches-simplifiees-${entity.demarcheId}`;
+        application.beneficiaryEstablishmentId = (application.beneficiaryEstablishmentId as number).toString();
+        application.applicationId = `${application.provider}-${application.applicationProviderId}`;
+        application.uniqueId = `${application.applicationId}-${application.budgetaryYear}`;
+        application.paymentId = `${application.beneficiaryEstablishmentId}-${application.ej}-${application.budgetaryYear}`; //siret-EJ-exerciceBudgetaire
+        application.depositDate = application.depositDate ? new Date(application.depositDate as string) : null;
+        application.requestYear = application.depositDate ? (application.depositDate as Date).getFullYear() : null;
+
+        return application as unknown as ApplicationFlatEntity;
     }
 }

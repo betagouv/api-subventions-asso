@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DemarchesSimplifieesEntityAdapter toFlat adapts built attributes 1`] = `
+{
+  "applicationId": "demarches-simplifiees-987-blablablaHash",
+  "applicationProviderId": "blablablaHash",
+  "beneficiaryEstablishmentId": "12345678901234",
+  "beneficiaryEstablishmentIdType": "siret",
+  "budgetaryYear": 2024,
+  "depositDate": 2024-09-09T00:00:00.000Z,
+  "ej": "567",
+  "paymentId": "12345678901234-567-2024",
+  "provider": "demarches-simplifiees-987",
+  "requestYear": 2024,
+  "statutLabel": "statutAdapté",
+  "uniqueId": "demarches-simplifiees-987-blablablaHash-2024",
+}
+`;
+
+exports[`DemarchesSimplifieesEntityAdapter toFlat adapts status 1`] = `
+[
+  undefined,
+]
+`;
