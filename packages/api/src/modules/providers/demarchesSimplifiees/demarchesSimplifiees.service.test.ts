@@ -126,7 +126,7 @@ describe("DemarchesSimplifieesService", () => {
             const DBO = "DBO" as unknown as DemarchesSimplifieesDataEntity;
             const SCHEMA = { flatSchema: {} } as DemarchesSimplifieesSchema;
             let isDraftSpy: jest.SpyInstance;
-            const ADAPTED = { requestedAmount: 456 } as ApplicationFlatEntity;
+            const ADAPTED = { requestedAmount: 456, budgetaryYear: 2004 } as ApplicationFlatEntity;
 
             beforeAll(() => {
                 // @ts-expect-error -- private method
@@ -150,7 +150,6 @@ describe("DemarchesSimplifieesService", () => {
             });
 
             it("returns null if draft", () => {
-                // TODO on devrait juste pas les stocker..?
                 isDraftSpy.mockReturnValueOnce(true);
                 const actual = demarchesSimplifieesService.toFlatAndValidate(DBO, SCHEMA);
                 expect(actual).toBeNull();
@@ -161,7 +160,17 @@ describe("DemarchesSimplifieesService", () => {
             });
 
             it("returns null if no requested amount", () => {
-                jest.mocked(DemarchesSimplifieesEntityAdapter.toFlat).mockReturnValueOnce({} as ApplicationFlatEntity);
+                jest.mocked(DemarchesSimplifieesEntityAdapter.toFlat).mockReturnValueOnce({
+                    budgetaryYear: 2004,
+                } as ApplicationFlatEntity);
+                const actual = demarchesSimplifieesService.toFlatAndValidate(DBO, SCHEMA);
+                expect(actual).toBeNull();
+            });
+
+            it("returns null if no budgtary year", () => {
+                jest.mocked(DemarchesSimplifieesEntityAdapter.toFlat).mockReturnValueOnce({
+                    requestedAmount: 1234,
+                } as ApplicationFlatEntity);
                 const actual = demarchesSimplifieesService.toFlatAndValidate(DBO, SCHEMA);
                 expect(actual).toBeNull();
             });

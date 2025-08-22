@@ -78,9 +78,10 @@ export class DemarchesSimplifieesService
     ): ApplicationFlatEntity | null {
         if (!schema?.flatSchema || this.isDraft(dbo)) return null;
         const res = DemarchesSimplifieesEntityAdapter.toFlat(dbo, schema);
-        // this is the only mandatory field that comes from 'champs' or 'annotations'
-        // which is why it is the only one that we chack
+        // those are the only mandatory field that comes from 'champs' or 'annotations'
+        // which is why it is the only one that we check here
         if (!res.requestedAmount) return null;
+        if (!res.budgetaryYear) return null;
         return res;
     }
 
