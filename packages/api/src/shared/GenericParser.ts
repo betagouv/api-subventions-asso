@@ -32,7 +32,7 @@ export class GenericParser {
             // checking all possible headers for this property
             else
                 oneLevelKey = (possibleKeys as string[]).find(
-                    possibleKey => objectToLookIn[possibleKey.trim()] != undefined,
+                    possibleKey => !["", undefined, null].includes(objectToLookIn[possibleKey.trim()]),
                 ); // TODO manage multiple valid case (with filters)
 
             if (!oneLevelKey || objectToLookIn[oneLevelKey.trim()] === undefined) return undefined;
@@ -74,7 +74,7 @@ export class GenericParser {
     }
 
     private static isCellEmpty(value: unknown): value is null {
-        return value === null || value === undefined || value === ""
+        return value === null || value === undefined || value === "";
     }
 
     static linkHeaderToData<T = string>(
