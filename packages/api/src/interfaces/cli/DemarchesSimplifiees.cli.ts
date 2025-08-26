@@ -15,7 +15,7 @@ export default class DemarchesSimplifieesCli {
     }
 
     initApplicationFlat() {
-        demarchesSimplifieesService.initApplicationFlat();
+        return demarchesSimplifieesService.initApplicationFlat();
     }
 
     async insertSchema(schemaJsonPath: string) {
