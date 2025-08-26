@@ -38,7 +38,7 @@ export default class DemarchesSimplifieesCli {
         const schema = await demarchesSimplifieesService.buildFullSchema(schemaSeed, demarcheId);
 
         if (testDev)
-            fs.writeFileSync("../../schemaTest.json", JSON.stringify(schema), {
+            fs.writeFileSync("../../schemaTest.json", JSON.stringify(schema, null, 4), {
                 flag: "w",
                 encoding: "utf-8",
             });
