@@ -2,23 +2,50 @@
 
 exports[`DemarchesSimplifieesEntityAdapter toFlat adapts built attributes 1`] = `
 {
+  "allocatorId": null,
+  "allocatorIdType": null,
+  "allocatorName": null,
   "applicationId": "demarches-simplifiees-987-blablablaHash",
   "applicationProviderId": "blablablaHash",
   "beneficiaryEstablishmentId": "12345678901234",
   "beneficiaryEstablishmentIdType": "siret",
   "budgetaryYear": 2024,
+  "cofinancersIdType": null,
+  "cofinancersNames": null,
+  "cofinancingRequested": null,
+  "confinancersId": null,
+  "conventionDate": null,
+  "decisionDate": null,
+  "decisionReference": null,
   "depositDate": 2024-09-09T00:00:00.000Z,
   "ej": "567",
+  "grantedAmount": null,
+  "idRAE": null,
+  "instructiveDepartementId": null,
+  "instructiveDepartmentIdType": null,
+  "instructiveDepartmentName": null,
+  "joinKeyDesc": null,
+  "joinKeyId": null,
+  "managingAuthorityId": null,
+  "managingAuthorityIdType": null,
+  "managingAuthorityName": null,
+  "nature": null,
+  "object": null,
+  "paymentCondition": null,
+  "paymentConditionDesc": null,
   "paymentId": "12345678901234-567-2024",
+  "paymentPeriodDates": null,
+  "pluriannual": null,
+  "pluriannualYears": null,
   "provider": "demarches-simplifiees-987",
   "requestYear": 2024,
-  "statutLabel": "statutAdapté",
+  "requestedAmount": null,
+  "scheme": null,
+  "statusLabel": "statutAdapté",
+  "subScheme": null,
+  "subventionPercentage": null,
+  "totalAmount": null,
+  "ueNotification": null,
   "uniqueId": "demarches-simplifiees-987-blablablaHash-2024",
 }
-`;
-
-exports[`DemarchesSimplifieesEntityAdapter toFlat adapts status 1`] = `
-[
-  undefined,
-]
 `;

@@ -7,6 +7,7 @@ import {
 import demarchesSimplifieesService from "../demarchesSimplifiees.service";
 import DemarchesSimplifieesSchema from "../entities/DemarchesSimplifieesSchema";
 import * as providerAdapter from "../../providers.adapter";
+import { ApplicationStatus } from "dto";
 
 const mockAdaptStatus = jest.fn();
 
@@ -64,6 +65,9 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
     });
 
     describe("toSubvention", () => {
+        beforeAll(() => mockAdaptStatus.mockResolvedValue(ApplicationStatus.GRANTED));
+        afterAll(() => mockAdaptStatus.mockRestore());
+
         it("should return subvention with siret", () => {
             const actual = DemarchesSimplifieesEntityAdapter.toSubvention(DEMANDE, MAPPING);
 
@@ -154,6 +158,7 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
                 dateTransmitted: new Date("2022-01-07"),
                 providerStatus: "sans_suite",
             });
+            mockAdaptStatus.mockReturnValueOnce(ApplicationStatus.INELIGIBLE);
             // @ts-expect-error mock
             const actual = DemarchesSimplifieesEntityAdapter.toCommon(ENTITY, SCHEMA);
             expect(actual).toMatchInlineSnapshot(`
@@ -284,8 +289,8 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
         it("adapts status", () => {
             const expected = ADAPTED.status;
             DemarchesSimplifieesEntityAdapter.toFlat(DEMANDE, SCHEMA);
-            // @ts-expect-error -- private attribute
             expect(providerAdapter.toStatusFactory).toHaveBeenCalledWith(
+                // @ts-expect-error -- private attribute
                 DemarchesSimplifieesEntityAdapter._statusConversionArray,
             );
             expect(mockAdaptStatus).toHaveBeenCalledWith(expected);
