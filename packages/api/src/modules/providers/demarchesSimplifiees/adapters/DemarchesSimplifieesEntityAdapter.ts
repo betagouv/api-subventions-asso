@@ -22,6 +22,46 @@ export class DemarchesSimplifieesEntityAdapter {
         { label: ApplicationStatus.INELIGIBLE, providerStatusList: ["sans_suite"] },
         { label: ApplicationStatus.PENDING, providerStatusList: ["en_instruction"] },
     ];
+    private static baseFlatWithNull: Partial<ApplicationFlatEntity> = {
+        allocatorId: null,
+        allocatorIdType: null,
+        allocatorName: null,
+        budgetaryYear: null,
+        cofinancersIdType: null,
+        cofinancersNames: null,
+        cofinancingRequested: null,
+        confinancersId: null,
+        conventionDate: null,
+        decisionDate: null,
+        decisionReference: null,
+        depositDate: null,
+        ej: null,
+        grantedAmount: null,
+        idRAE: null,
+        instructiveDepartementId: null,
+        instructiveDepartmentIdType: null,
+        instructiveDepartmentName: null,
+        joinKeyDesc: null,
+        joinKeyId: null,
+        managingAuthorityId: null,
+        managingAuthorityIdType: null,
+        managingAuthorityName: null,
+        nature: null,
+        object: null,
+        paymentCondition: null,
+        paymentConditionDesc: null,
+        paymentId: null,
+        paymentPeriodDates: null,
+        pluriannual: null,
+        pluriannualYears: null,
+        requestYear: null,
+        requestedAmount: null,
+        scheme: null,
+        subScheme: null,
+        subventionPercentage: null,
+        totalAmount: null,
+        ueNotification: null,
+    };
 
     private static mapSchema<T>(
         entity: DemarchesSimplifieesDataEntity,
@@ -122,9 +162,12 @@ export class DemarchesSimplifieesEntityAdapter {
     }
 
     static toFlat(entity: DemarchesSimplifieesDataEntity, schema: DemarchesSimplifieesSchema): ApplicationFlatEntity {
-        const application: DefaultObject = DemarchesSimplifieesEntityAdapter.mapSchema(entity, schema, "flatSchema");
+        const application: DefaultObject = {
+            ...DemarchesSimplifieesEntityAdapter.baseFlatWithNull,
+            ...DemarchesSimplifieesEntityAdapter.mapSchema(entity, schema, "flatSchema"),
+        };
 
-        application.statutLabel = toStatusFactory(DemarchesSimplifieesEntityAdapter._statusConversionArray)(
+        application.statusLabel = toStatusFactory(DemarchesSimplifieesEntityAdapter._statusConversionArray)(
             application.status as string,
         );
         delete application.status;
