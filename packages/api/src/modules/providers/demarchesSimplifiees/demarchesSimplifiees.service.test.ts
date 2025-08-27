@@ -804,46 +804,29 @@ describe("DemarchesSimplifieesService", () => {
     });
 
     describe("buildSchema", () => {
-        let sendQuerySpy: jest.SpyInstance;
         let generateSchemaInstructionSpy: jest.SpyInstance;
         const SCHEMA_SEED = [{ to: 1 }, { to: 2 }] as unknown as DemarchesSimplifieesSchemaSeedLine[];
-        const FORM_ID = 12345;
-        const QUERY_RESULT = "QUERY" as unknown as DemarchesSimplifieesSuccessDto;
         const EXAMPLE = "EXAMPLE" as unknown as DemarchesSimplifieesDataEntity;
 
         beforeAll(() => {
-            sendQuerySpy = jest.spyOn(demarchesSimplifieesService, "sendQuery").mockResolvedValue(QUERY_RESULT);
             generateSchemaInstructionSpy = jest
                 // @ts-expect-error -- spy private method
                 .spyOn(demarchesSimplifieesService, "generateSchemaInstruction")
                 // @ts-expect-error -- mock private method
                 .mockImplementation((c: DemarchesSimplifieesSchemaSeedLine) => Promise.resolve({ from: c.to }));
         });
-        jest.mocked(DemarchesSimplifieesDtoAdapter.toEntities).mockReturnValue([EXAMPLE]);
 
         afterAll(() => {
-            sendQuerySpy.mockRestore();
             generateSchemaInstructionSpy.mockRestore();
-            jest.mocked(DemarchesSimplifieesDtoAdapter.toEntities).mockRestore();
-        });
-
-        it("sends query", async () => {
-            await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, FORM_ID);
-            expect(sendQuerySpy).toHaveBeenCalledWith(GetDossiersByDemarcheId, { demarcheNumber: FORM_ID });
-        });
-
-        it("adapts entities (to get example)", async () => {
-            await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, FORM_ID);
-            expect(DemarchesSimplifieesDtoAdapter.toEntities).toHaveBeenCalledWith(QUERY_RESULT, FORM_ID);
         });
 
         it("finds id fo each field", async () => {
-            await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, FORM_ID);
+            await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, EXAMPLE);
             expect(generateSchemaInstructionSpy).toHaveBeenCalledTimes(2);
         });
 
         it("should returns aggregated results by field", async () => {
-            const actual = await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, FORM_ID);
+            const actual = await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, EXAMPLE);
             expect(actual).toMatchSnapshot();
         });
     });
@@ -984,14 +967,32 @@ describe("DemarchesSimplifieesService", () => {
         } as unknown as DemarchesSimplifieesSchemaSeed;
         const DEMARCHE_ID = 98765;
         const BUILT = "built" as unknown as DemarchesSimplifieesSchemaLine[];
+        const QUERY_RESULT = "QUERY" as unknown as DemarchesSimplifieesSuccessDto;
+        const EXAMPLE = "EXAMPLE" as unknown as DemarchesSimplifieesDataEntity;
+
         let buildSchemaSpy: jest.SpyInstance;
+        let sendQuerySpy: jest.SpyInstance;
 
         beforeAll(() => {
             buildSchemaSpy = jest.spyOn(demarchesSimplifieesService, "buildSchema").mockResolvedValue(BUILT);
+            sendQuerySpy = jest.spyOn(demarchesSimplifieesService, "sendQuery").mockResolvedValue(QUERY_RESULT);
+            jest.mocked(DemarchesSimplifieesDtoAdapter.toEntities).mockReturnValue([EXAMPLE]);
         });
 
         afterAll(() => {
             buildSchemaSpy.mockRestore();
+            sendQuerySpy.mockRestore();
+            jest.mocked(DemarchesSimplifieesDtoAdapter.toEntities).mockRestore();
+        });
+
+        it("sends query", async () => {
+            await demarchesSimplifieesService.buildFullSchema(FULL_SCHEMA, DEMARCHE_ID);
+            expect(sendQuerySpy).toHaveBeenCalledWith(GetDossiersByDemarcheId, { demarcheNumber: DEMARCHE_ID });
+        });
+
+        it("adapts entities (to get example)", async () => {
+            await demarchesSimplifieesService.buildFullSchema(FULL_SCHEMA, DEMARCHE_ID);
+            expect(DemarchesSimplifieesDtoAdapter.toEntities).toHaveBeenCalledWith(QUERY_RESULT, DEMARCHE_ID);
         });
 
         it("calls buildsSchema for each schema", async () => {

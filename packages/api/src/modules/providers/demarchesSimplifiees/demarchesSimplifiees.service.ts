@@ -307,10 +307,8 @@ export class DemarchesSimplifieesService
         return DemarchesSimplifieesEntityAdapter.toCommon(raw.data.grant, raw.data.schema);
     }
 
-    async buildSchema(schemaModel: DemarchesSimplifieesSchemaSeedLine[], formId: number) {
+    async buildSchema(schemaModel: DemarchesSimplifieesSchemaSeedLine[], exampleData: DemarchesSimplifieesDataEntity) {
         const builtSchema: DemarchesSimplifieesSchemaLine[] = [];
-        const queryResult = await this.sendQuery(GetDossiersByDemarcheId, { demarcheNumber: formId });
-        const exampleData = DemarchesSimplifieesDtoAdapter.toEntities(queryResult, formId)?.[0];
 
         for (const champ of schemaModel) {
             if (!("to" in champ))
@@ -357,11 +355,14 @@ export class DemarchesSimplifieesService
             commonSchema: "CommonGrant",
             flatSchema: "ApplicationFlat",
         };
+        const queryResult = await this.sendQuery(GetDossiersByDemarcheId, { demarcheNumber: demarcheId });
+        const exampleData = DemarchesSimplifieesDtoAdapter.toEntities(queryResult, demarcheId)?.[0];
 
         const res = { demarcheId };
+
         for (const schemaType of Object.keys(schemaSeed)) {
             console.log(`Génération du schéma pour le type '${types[schemaType]}'`);
-            res[schemaType] = await demarchesSimplifieesService.buildSchema(schemaSeed[schemaType], demarcheId);
+            res[schemaType] = await this.buildSchema(schemaSeed[schemaType], exampleData);
             console.log("\n");
         }
         return res as DemarchesSimplifieesSchema & { demarcheId: number };
