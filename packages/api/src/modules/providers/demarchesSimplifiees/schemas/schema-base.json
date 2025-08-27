@@ -1,38 +1,68 @@
 {
-    "schema": [
-        {
-            "from": "siret",
-            "to": "siret"
-        },
-        {
-            "from": "demande.state",
-            "to": "status"
-        },
-        {
-            "from": "demande.dateDepot",
-            "to": "transmis_le"
-        },
-        {
-            "from": "demande.demarche.title",
-            "to": "dispositif"
-        }
-    ],
-    "commonSchema": [
-        {
-            "to": "siret",
-            "from": "siret"
-        },
-        {
-            "to": "dispositif",
-            "from": "demande.demarche.title"
-        },
-        {
-            "to": "providerStatus",
-            "from": "demande.state"
-        },
-        {
-            "to": "dateTransmitted",
-            "from": "demande.dateDepot"
-        }
-    ]
+  "schema": [
+    {
+      "from": "siret",
+      "to": "siret"
+    },
+    {
+      "from": "demande.state",
+      "to": "status"
+    },
+    {
+      "from": "demande.dateDepot",
+      "to": "transmis_le"
+    },
+    {
+      "from": "demande.demarche.title",
+      "to": "dispositif"
+    }
+  ],
+  "commonSchema": [
+    {
+      "to": "siret",
+      "from": "siret"
+    },
+    {
+      "to": "dispositif",
+      "from": "demande.demarche.title"
+    },
+    {
+      "to": "providerStatus",
+      "from": "demande.state"
+    },
+    {
+      "to": "dateTransmitted",
+      "from": "demande.dateDepot"
+    }
+  ],
+  "flatSchema": [
+    {
+        "to": "depositDate",
+      "from" : "demande.dateDepot"
+    },
+    {
+        "to": "requestYear",
+      "from" : "demande.dateDepot"
+    },
+    {
+      "to": "scheme",
+      "from": "demande.demarche.title"
+    },
+    {
+      "to": "beneficiaryEstablishmentId",
+      "from": "siret"
+    },
+    {
+      "to": "beneficiaryEstablishmentIdType",
+      "value": "siret"
+    },
+    {
+      "to": "statusLabel",
+      "from": "demande.state"
+    },
+    {
+      "to": "updateDate",
+      "from": "demande.dateDerniereModification"
+    }
+  ]
 }
