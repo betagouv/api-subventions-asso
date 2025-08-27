@@ -70,7 +70,9 @@ Les `schemasSeed` sont lus à partir d'un fichier au format JSON. Les éléments
 Ces différentes façons de récupérer l'information sont prises en compte dans l'ordre indiqué. Par exemple, si `possibleLabels` et `value` sont renseignés, `value` ne sera pris en compte que si aucun label de `possibleLabels` n'a été trouvé dans les champs ou les annotations.
 
 > [!NOTE]
-> Cas typique : Le premier seed utilisé correspond aux différentes démarches du Ministère de la Culture.
+> Cas typique : Le premier seed utilisé correspond aux différentes démarches du Ministère de la Culture et couvre les
+> démarches n° 62744, 62746, 62747, 74747, 78102, 78125, 78126, 78128, 86113. À date du 27/08/2025 les seules autres
+> démarches sont donc 72319, 73407 et 79485.
 
 ## Règles métier
 
@@ -97,6 +99,25 @@ Les statuts de démarches simplifiées viennent du système lui-même (ni des ch
 
 > [!NOTE]
 > Les démarches "en_construction" sont simplement ignorées car les demandes n'ont pas encore été déposées/terminées par les associations
+
+## Les démarches déjà enregistrées via une seed
+
+/ signifie de ne rien rentrer pour cette question
+
+### conformément au schemaSeed `ministereCulture.json`
+
+
+| demarcheId | service_instructeur | exercice / budgetaryYear | commentaire                                                                             |
+|------------|---------------------|--------------------------|-----------------------------------------------------------------------------------------|
+| 62744      | /                   | 2023                     |                                                                                         |
+| 62746      | /                   | 2023                     |                                                                                         |
+| 62747      | /                   | 2023                     |                                                                                         |
+| 75747      | /                   |                          | ne contient pas d'exercice à strictement parler donc sera bloquant pour applicationFlat |
+| 78102      | /                   | 2024                     |                                                                                         |
+| 78125      | /                   | 2024                     |                                                                                         |
+| 78126      | /                   | 2024                     |                                                                                         |
+| 78128      | /                   | 2024                     |                                                                                         |
+| 86113      | /                   | 2024                     |                                                                                         |
 
 ## Reste à faire
 
