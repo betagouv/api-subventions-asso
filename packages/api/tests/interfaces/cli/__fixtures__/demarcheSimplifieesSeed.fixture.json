@@ -120,9 +120,8 @@
   ],
   "flatSchema": [
     {
-      "value": "Direction Régionale des Affaires Culturelles",
-      "to": "service_instructeur",
-      "comment": "// is this servce instructeur or allocator or managingAuthority?"
+      "value": "Direction instructrice",
+      "to": "service_instructeur"
     },
     {
       "from": "siret",

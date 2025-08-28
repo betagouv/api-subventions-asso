@@ -14,6 +14,10 @@ export default class DemarchesSimplifieesCli {
         await demarchesSimplifieesService.updateAllForms();
     }
 
+    initApplicationFlat() {
+        return demarchesSimplifieesService.initApplicationFlat();
+    }
+
     async insertSchema(schemaJsonPath: string) {
         if (!fs.existsSync(schemaJsonPath))
             throw new Error("The schema json file are not found on path: " + schemaJsonPath);
@@ -34,7 +38,7 @@ export default class DemarchesSimplifieesCli {
         const schema = await demarchesSimplifieesService.buildFullSchema(schemaSeed, demarcheId);
 
         if (testDev)
-            fs.writeFileSync("../../../schemaTest.json", JSON.stringify(schema), {
+            fs.writeFileSync("../../schemaTest.json", JSON.stringify(schema, null, 4), {
                 flag: "w",
                 encoding: "utf-8",
             });

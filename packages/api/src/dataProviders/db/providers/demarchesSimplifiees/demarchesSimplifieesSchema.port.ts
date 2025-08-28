@@ -26,6 +26,10 @@ export class DemarchesSimplifieesSchemaPort extends MongoPort<DemarchesSimplifie
             .map(schema => schema.demarcheId)
             .toArray();
     }
+
+    findById(demarcheId: number): Promise<DemarchesSimplifieesSchema | null> {
+        return this.collection.findOne({ demarcheId }, { projection: { _id: 0 } });
+    }
 }
 
 const demarchesSimplifieesSchemaPort = new DemarchesSimplifieesSchemaPort();
