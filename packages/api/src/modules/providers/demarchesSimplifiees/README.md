@@ -124,6 +124,8 @@ Les statuts de démarches simplifiées viennent du système lui-même (ni des ch
 ### défini
 
 - [ ] retirer les schémas `commonSchema` et `schema` quand les formats associés `commonGrant` et `DemandeSubvention` auront été dépréciés
+- [ ] préciser les mapping sur service_instructeur vs attribuant
+- [ ] intégrer la démarche 106489 du ministère de la culture. Il devrait correspondre au schéma mais on attend que soit ils nous donne un exercice global pour la démarche soit qu'ils aient ajouté un champ pour signifier l'exercice demande par demande (voir avec Sydney). Dans ce dernier cas, si le libellé ne correspond pas exactement au seed on pourra amender le seed.
 
 ### Hypothétique
 
