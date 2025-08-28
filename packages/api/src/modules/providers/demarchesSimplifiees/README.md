@@ -4,7 +4,7 @@
 
 1. Exécuter la requête Démarches Simplifiées sur postman avec la variables `demarcheId` correspondante.
 2. Mettre au regard le retour de cet appel avec les dto d'arrivée `DemandeSubvention` et `CommonApplicationDto`
-3. Reprendre un schéma, par exemple `schema-base.json`
+3. Reprendre un schéma, par exemple `schema-base.json` qui reprend les champs systématiques liés au système informatique de démarches simplifiées.
 4. Le compléter avec les champs spécifiques de chaque démarche.
 
 ## Format du schéma
@@ -106,18 +106,35 @@ Les statuts de démarches simplifiées viennent du système lui-même (ni des ch
 
 ### conformément au schemaSeed `ministereCulture.json`
 
+| demarcheId | service_instructeur | exercice / budgetaryYear                | commentaire                                                                             |
+|------------|---------------------|-----------------------------------------|-----------------------------------------------------------------------------------------|
+| 62744      | /                   | 2023                                    |                                                                                         |
+| 62746      | /                   | 2023                                    |                                                                                         |
+| 62747      | /                   | 2023                                    |                                                                                         |
+| 75747      | /                   |                                         | ne contient pas d'exercice à strictement parler donc sera bloquant pour applicationFlat |
+| 78102      | /                   | 2024                                    |                                                                                         |
+| 78125      | /                   | 2024                                    |                                                                                         |
+| 78126      | /                   | 2024                                    |                                                                                         |
+| 78128      | /                   | 2024                                    |                                                                                         |
+| 86113      | /                   | 2024                                    |                                                                                         |
+| 98722      | /                   | correspond à un champ mappé par le seed |                                                                                         |
+| 98775      | /                   | correspond à un champ mappé par le seed |                                                                                         |
+| 98744      | /                   | correspond à un champ mappé par le seed |                                                                                         |
+| 91587      | /                   | correspond à un champ mappé par le seed |                                                                                         |
 
-| demarcheId | service_instructeur | exercice / budgetaryYear | commentaire                                                                             |
-|------------|---------------------|--------------------------|-----------------------------------------------------------------------------------------|
-| 62744      | /                   | 2023                     |                                                                                         |
-| 62746      | /                   | 2023                     |                                                                                         |
-| 62747      | /                   | 2023                     |                                                                                         |
-| 75747      | /                   |                          | ne contient pas d'exercice à strictement parler donc sera bloquant pour applicationFlat |
-| 78102      | /                   | 2024                     |                                                                                         |
-| 78125      | /                   | 2024                     |                                                                                         |
-| 78126      | /                   | 2024                     |                                                                                         |
-| 78128      | /                   | 2024                     |                                                                                         |
-| 86113      | /                   | 2024                     |                                                                                         |
+## Les démarches avec leur schéma spécifique
+
+* 73407
+* 72319
+* 79485
+
+## todo mais je crois que c'est ministère de la culture
+
+98722
+98775
+98744
+91587
+
 
 ## Reste à faire
 
