@@ -1,5 +1,5 @@
-import { ApplicationStatus } from "dto";
-import { ApplicationFlatEntity, ApplicationNature, PaymentCondition } from "../../../entities/ApplicationFlatEntity";
+import { ApplicationNature, ApplicationStatus, PaymentCondition } from "dto";
+import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
 import { ApplicationFlatDbo } from "../../../dataProviders/db/applicationFlat/ApplicationFlatDbo";
 import { ObjectId } from "mongodb";
 
