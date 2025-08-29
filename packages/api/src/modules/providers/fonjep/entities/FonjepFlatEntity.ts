@@ -1,6 +1,6 @@
 import { ApplicationFlatEntity } from "../../../../entities/ApplicationFlatEntity";
 import PaymentFlatEntity from "../../../../entities/PaymentFlatEntity";
-import { NOT_APPLICABLE } from "../../../../shared/GenericAdapter";
+import { NOT_APPLICABLE } from "dto";
 
 export type FonjepPaymentFlatEntity = PaymentFlatEntity & {
     ej: NOT_APPLICABLE;

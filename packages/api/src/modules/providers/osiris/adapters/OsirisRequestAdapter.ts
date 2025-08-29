@@ -6,6 +6,7 @@ import {
     Etablissement,
     ProviderValue,
     RnaDto,
+    ApplicationNature,
 } from "dto";
 import { siretToNIC, siretToSiren } from "../../../../shared/helpers/SirenHelper";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
@@ -14,7 +15,7 @@ import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 import osirisService from "../osiris.service";
 import { toStatusFactory } from "../../providers.adapter";
 import { RawApplication } from "../../../grant/@types/rawGrant";
-import { ApplicationFlatEntity, ApplicationNature } from "../../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../../entities/ApplicationFlatEntity";
 import Siret from "../../../../identifierObjects/Siret";
 import Ridet from "../../../../identifierObjects/Ridet";
 import { GenericParser } from "../../../../shared/GenericParser";

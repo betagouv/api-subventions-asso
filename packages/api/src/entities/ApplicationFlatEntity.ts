@@ -1,19 +1,6 @@
-import { ApplicationStatus } from "dto";
-import { NOT_APPLICABLE } from "../shared/GenericAdapter";
+import { ApplicationNature, ApplicationStatus, NOT_APPLICABLE, OrDefault, PaymentCondition } from "dto";
 
 import { IdentifierIdName } from "../identifierObjects/@types/IdentifierName";
-import { OrDefault } from "../shared/helpers/TypeHelper";
-
-export enum ApplicationNature {
-    MONEY = "Aide en numéraire",
-    NATURE = "Aide en nature",
-}
-
-export enum PaymentCondition {
-    UNIQUE = "UNIQUE",
-    PHASED = "PHASED",
-    OTHER = "OTHER",
-}
 
 // TODO where to accept null ?
 

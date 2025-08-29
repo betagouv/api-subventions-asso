@@ -1,4 +1,11 @@
-import { ApplicationStatus, CommonApplicationDto, DemandeSubvention, DocumentDto, ProviderValue } from "dto";
+import {
+    ApplicationNature,
+    ApplicationStatus,
+    CommonApplicationDto,
+    DemandeSubvention,
+    DocumentDto,
+    ProviderValue,
+} from "dto";
 import DauphinSubventionDto from "../dto/DauphinSubventionDto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import dauphinService from "../dauphin.service";
@@ -7,7 +14,7 @@ import { toStatusFactory } from "../../providers.adapter";
 import DauphinGisproDbo from "../../../../dataProviders/db/providers/dauphin/DauphinGisproDbo";
 import DauphinDocumentDto from "../dto/DauphinDocumentDto";
 import { RawApplication } from "../../../grant/@types/rawGrant";
-import { ApplicationFlatEntity, ApplicationNature } from "../../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../../entities/ApplicationFlatEntity";
 import { SimplifiedJoinedDauphinGispro } from "../@types/SimplifiedDauphinGispro";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
 
