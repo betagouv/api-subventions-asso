@@ -1,4 +1,4 @@
-import { DemandeSubvention } from "dto";
+import { ApplicationFlatDto, DemandeSubvention } from "dto";
 import applicationFlatPort from "../../dataProviders/db/applicationFlat/applicationFlat.port";
 import { ApplicationFlatEntity } from "../../entities/ApplicationFlatEntity";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
@@ -107,6 +107,11 @@ export class ApplicationFlatService
         if (entity.beneficiaryEstablishmentIdType === "siret" && Siret.isSiret(entity.beneficiaryEstablishmentId))
             return new Siret(entity.beneficiaryEstablishmentId);
         return undefined;
+    }
+
+    async getApplicationsDto(identifier: StructureIdentifier): Promise<ApplicationFlatDto[]> {
+        const applications = await this.getEntitiesByIdentifier(identifier);
+        return applications.map(entity => ApplicationFlatAdapter.toDto(entity));
     }
 }
 

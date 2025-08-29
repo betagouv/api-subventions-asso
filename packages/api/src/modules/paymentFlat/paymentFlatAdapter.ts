@@ -1,4 +1,4 @@
-import { ChorusPayment, FonjepPayment, Payment } from "dto";
+import { ChorusPayment, FonjepPayment, Payment, PaymentFlatDto } from "dto";
 import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
 import { RawPayment } from "../grant/@types/rawGrant";
 import ProviderValueAdapter from "../../shared/adapters/ProviderValueAdapter";
@@ -138,5 +138,9 @@ export default class PaymentFlatAdapter {
                 activityLabel: dbo.activite,
                 provider: dbo.provider,
             };
+    }
+
+    static toDto(entity: PaymentFlatEntity) {
+        return PaymentFlatAdapter.toDbo(entity) as PaymentFlatDto;
     }
 }
