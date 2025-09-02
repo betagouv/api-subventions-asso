@@ -122,7 +122,7 @@
     {
       "value": "Direction Régionale des Affaires Culturelles",
       "to": "service_instructeur",
-      "comment": "// is this servce instructeur or allocator or managingAuthority?"
+      "comment": "// is this service instructeur or allocator or managingAuthority?"
     },
     {
       "from": "siret",

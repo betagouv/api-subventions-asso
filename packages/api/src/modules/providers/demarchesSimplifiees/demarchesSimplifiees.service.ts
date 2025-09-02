@@ -78,10 +78,12 @@ export class DemarchesSimplifieesService
     ): ApplicationFlatEntity | null {
         if (!schema?.flatSchema || this.isDraft(dbo)) return null;
         const res = DemarchesSimplifieesEntityAdapter.toFlat(dbo, schema);
+        const mandatoryFields = ["requestedAmount", "budgetaryYear"];
         // those are the only mandatory field that comes from 'champs' or 'annotations'
         // which is why it is the only one that we check here
-        if (!res.requestedAmount) return null;
-        if (!res.budgetaryYear) return null;
+        for (const f of mandatoryFields) {
+            if (!res[f]) return null;
+        }
         return res;
     }
 
@@ -355,6 +357,7 @@ export class DemarchesSimplifieesService
             commonSchema: "CommonGrant",
             flatSchema: "ApplicationFlat",
         };
+        // We need to have the technical field ids to create the schema and we get them through an example
         const queryResult = await this.sendQuery(GetDossiersByDemarcheId, { demarcheNumber: demarcheId });
         const exampleData = DemarchesSimplifieesDtoAdapter.toEntities(queryResult, demarcheId)?.[0];
 

@@ -3,7 +3,7 @@
 ## Ajouter des démarches
 
 1. Exécuter la requête Démarches Simplifiées sur postman avec la variables `demarcheId` correspondante.
-2. Mettre au regard le retour de cet appel avec les dto d'arrivée `DemandeSubvention` et `CommonApplicationDto`
+2. Mettre au regard le retour de cet appel avec les dto d'arrivée `DemandeSubvention`, `CommonApplicationDto` et `ApplicationFlatEntity`
 3. Reprendre un schéma, par exemple `schema-base.json` qui reprend les champs systématiques liés au système informatique de démarches simplifiées.
 4. Le compléter avec les champs spécifiques de chaque démarche.
 
@@ -20,19 +20,19 @@ Un schéma est construit ainsi
 }
 ```
 
-Au sein de chaque schéma, il faut un objet par champ à mapper. Certaines informations devront donc être mappés dans les trois attributs `schema`, `commonSchema` et `flatSchema`. Chaque objet de mapping peut avoir une des formes suivantes :
+Au sein de chaque schéma, il faut un objet par champ à mapper. Certaines informations devront donc être mappées dans les trois attributs `schema`, `commonSchema` et `flatSchema`. Chaque objet de mapping peut avoir une des formes suivantes :
 
 ```json
 {
     "from": chemin du champ côté démarche
-    "to": chemin du champ sur notre fromat
+    "to": chemin du champ sur notre format
 }
 ```
 
 ```json
 {
     "value": valeur directe pour toutes les demandes de la démarche
-    "to": chemin du champ sur notre fromat
+    "to": chemin du champ sur notre format
 }
 ```
 
@@ -65,7 +65,7 @@ Les `schemasSeed` sont lus à partir d'un fichier au format JSON. Les éléments
   Typiquement pour des champs lié au format de démarches DS
 - `possibleLabels` est un tableau listant les libellés des champs ou annotations dont il faut connaître l'identifiant pour savoir où chercher l'information
 - `valueToPrompt: true` pour faire rentrer à la personne qui lance le cli si elle change à chaque formulaire et ne se déduit pas du contenu de la démarche. Si on valide sans rien entrer, on considèrera que la valeur n'est pas remplie, et non pas remplie avec la valeur ""
-- `value` si une valeur est définissable à l'échelle de tous les formulaires du modèle. Ce sera considéré comme une valeur par défaut et une confirmation ou variation sera demandé à la personne qui lance le cli.
+- `value` si une valeur est définissable à l'échelle de tous les formulaires du modèle. Ce sera considéré comme une valeur par défaut et une confirmation ou variation sera demandée à la personne qui lance le cli.
 
 Ces différentes façons de récupérer l'information sont prises en compte dans l'ordre indiqué. Par exemple, si `possibleLabels` et `value` sont renseignés, `value` ne sera pris en compte que si aucun label de `possibleLabels` n'a été trouvé dans les champs ou les annotations.
 
@@ -102,25 +102,25 @@ Les statuts de démarches simplifiées viennent du système lui-même (ni des ch
 
 ## Les démarches déjà enregistrées via une seed
 
-/ signifie de ne rien rentrer pour cette question
+/ signifie de ne rien rentrer pour cette question. Ça prend alors la valeur par défaut ou acte qu'on sait pas
 
 ### conformément au schemaSeed `ministereCulture.json`
 
-| demarcheId | service_instructeur | exercice / budgetaryYear                | commentaire                                                                             |
-|------------|---------------------|-----------------------------------------|-----------------------------------------------------------------------------------------|
-| 62744      | /                   | 2023                                    |                                                                                         |
-| 62746      | /                   | 2023                                    |                                                                                         |
-| 62747      | /                   | 2023                                    |                                                                                         |
-| 75747      | /                   |                                         | ne contient pas d'exercice à strictement parler donc sera bloquant pour applicationFlat |
-| 78102      | /                   | 2024                                    |                                                                                         |
-| 78125      | /                   | 2024                                    |                                                                                         |
-| 78126      | /                   | 2024                                    |                                                                                         |
-| 78128      | /                   | 2024                                    |                                                                                         |
-| 86113      | /                   | 2024                                    |                                                                                         |
-| 98722      | /                   | correspond à un champ mappé par le seed |                                                                                         |
-| 98775      | /                   | correspond à un champ mappé par le seed |                                                                                         |
-| 98744      | /                   | correspond à un champ mappé par le seed |                                                                                         |
-| 91587      | /                   | correspond à un champ mappé par le seed |                                                                                         |
+| demarcheId | service_instructeur | exercice / budgetaryYear                | commentaire                                                                                                                                              |
+|------------|---------------------|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 62744      | /                   | 2023                                    |                                                                                                                                                          |
+| 62746      | /                   | 2023                                    |                                                                                                                                                          |
+| 62747      | /                   | 2023                                    |                                                                                                                                                          |
+| 75747      | /                   |                                         | ne contient pas d'exercice à strictement parler donc sera bloquant pour applicationFlat (on prend depuis un champ alernatif on n'a pas tout à fait rien) |
+| 78102      | /                   | 2024                                    |                                                                                                                                                          |
+| 78125      | /                   | 2024                                    |                                                                                                                                                          |
+| 78126      | /                   | 2024                                    |                                                                                                                                                          |
+| 78128      | /                   | 2024                                    |                                                                                                                                                          |
+| 86113      | /                   | 2024                                    |                                                                                                                                                          |
+| 98722      | /                   | correspond à un champ mappé par le seed |                                                                                                                                                          |
+| 98775      | /                   | correspond à un champ mappé par le seed |                                                                                                                                                          |
+| 98744      | /                   | correspond à un champ mappé par le seed |                                                                                                                                                          |
+| 91587      | /                   | correspond à un champ mappé par le seed |                                                                                                                                                          |
 
 ## Les démarches avec leur schéma spécifique
 
@@ -128,21 +128,13 @@ Les statuts de démarches simplifiées viennent du système lui-même (ni des ch
 * 72319
 * 79485
 
-## todo mais je crois que c'est ministère de la culture
-
-98722
-98775
-98744
-91587
-
-
 ## Reste à faire
 
 ### défini
 
 - [ ] retirer les schémas `commonSchema` et `schema` quand les formats associés `commonGrant` et `DemandeSubvention` auront été dépréciés
 - [ ] préciser les mapping sur service_instructeur vs attribuant
-- [ ] intégrer la démarche 106489 du ministère de la culture. Il devrait correspondre au schéma mais on attend que soit ils nous donne un exercice global pour la démarche soit qu'ils aient ajouté un champ pour signifier l'exercice demande par demande (voir avec Sydney). Dans ce dernier cas, si le libellé ne correspond pas exactement au seed on pourra amender le seed.
+- [ ] intégrer la démarche [106489 du ministère de la culture](https://github.com/betagouv/api-subventions-asso/issues/3448) . Il devrait correspondre au schéma mais on attend que soit ils nous donne un exercice global pour la démarche soit qu'ils aient ajouté un champ pour signifier l'exercice demande par demande (voir avec Sydney). Dans ce dernier cas, si le libellé ne correspond pas exactement au seed on pourra amender le seed.
 
 ### Hypothétique
 

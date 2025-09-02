@@ -1,13 +1,13 @@
 import fs from "fs";
 
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
-import { CliStaticInterface } from "../../@types";
+import { ApplicationFlatCli, CliStaticInterface } from "../../@types";
 import demarchesSimplifieesService from "../../modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
 import DemarchesSimplifieesSchema from "../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesSchema";
 import { DemarchesSimplifieesSchemaSeed } from "../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesSchemaSeed";
 
 @StaticImplements<CliStaticInterface>()
-export default class DemarchesSimplifieesCli {
+export default class DemarchesSimplifieesCli implements ApplicationFlatCli {
     static cmdName = "demarches-simplifiees";
 
     async updateAll() {
@@ -16,6 +16,10 @@ export default class DemarchesSimplifieesCli {
 
     initApplicationFlat() {
         return demarchesSimplifieesService.initApplicationFlat();
+    }
+
+    syncApplicationFlat(_exercise: number) {
+        throw new Error("DemarchesSimplifiees data hardly work by exercise.");
     }
 
     async insertSchema(schemaJsonPath: string) {

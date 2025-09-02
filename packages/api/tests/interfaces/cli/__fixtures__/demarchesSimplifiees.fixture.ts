@@ -1,5 +1,4 @@
 import DemarchesSimplifieesSchema from "../../../../src/modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesSchema";
-import { DemarchesSimplifieesSchemaSeed } from "../../../../src/modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesSchemaSeed";
 import { DemarchesSimplifieesSuccessDto } from "../../../../src/modules/providers/demarchesSimplifiees/dto/DemarchesSimplifieesDto";
 import { SIRET_STR } from "../../../__fixtures__/association.fixture";
 import DemarchesSimplifieesDataEntity from "../../../../src/modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesDataEntity";
@@ -55,12 +54,6 @@ export const SCHEMA: DemarchesSimplifieesSchema = {
             to: "applicationProviderId",
         },
     ],
-    // the two following schemas are not used by the cli, only after through http
-    commonSchema: [],
-    schema: [],
-};
-export const SEED: DemarchesSimplifieesSchemaSeed = {
-    flatSchema: [],
     // the two following schemas are not used by the cli, only after through http
     commonSchema: [],
     schema: [],
