@@ -27,10 +27,15 @@ import {
 import { input } from "@inquirer/prompts";
 import configurationsService from "../../configurations/configurations.service";
 import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
+import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
+import { ReadableStream } from "stream/web";
+import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
+import applicationFlatService from "../../applicationFlat/applicationFlat.service";
+import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
 
 export class DemarchesSimplifieesService
     extends ProviderCore
-    implements DemandesSubventionsProvider<DemarchesSimplifieesRawData>, GrantProvider
+    implements DemandesSubventionsProvider<DemarchesSimplifieesRawData>, GrantProvider, ApplicationFlatProvider
 {
     isDemandesSubventionsProvider = true;
     lastModified: Date;
@@ -44,6 +49,55 @@ export class DemarchesSimplifieesService
         });
         this.lastModified = new Date(0);
     }
+
+    /**
+     * |-------------------------|
+     * |   Flat                  |
+     * |-------------------------|
+     */
+
+    isApplicationFlatProvider = true as const;
+
+    async saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>): Promise<void> {
+        await applicationFlatService.saveFromStream(stream);
+    }
+
+    async initApplicationFlat() {
+        const cursor = demarchesSimplifieesDataPort.findAllCursor();
+        const schemasByIds = await this.getSchemasByIds();
+        const stream: ReadableStream<ApplicationFlatEntity> = cursorToStream(
+            cursor,
+            (dbo: DemarchesSimplifieesDataEntity) => this.toFlatAndValidate(dbo, schemasByIds[dbo.demarcheId]),
+        );
+        return this.saveFlatFromStream(stream);
+    }
+
+    toFlatAndValidate(
+        dbo: DemarchesSimplifieesDataEntity,
+        schema: DemarchesSimplifieesSchema,
+    ): ApplicationFlatEntity | null {
+        if (!schema?.flatSchema || this.isDraft(dbo)) return null;
+        const res = DemarchesSimplifieesEntityAdapter.toFlat(dbo, schema);
+        const mandatoryFields = ["requestedAmount", "budgetaryYear"];
+        // those are the only mandatory field that comes from 'champs' or 'annotations'
+        // which is why it is the only one that we check here
+        for (const f of mandatoryFields) {
+            if (!res[f]) return null;
+        }
+        return res;
+    }
+
+    bulkUpdateApplicationFlat(entities: DemarchesSimplifieesDataEntity[], schema: DemarchesSimplifieesSchema | null) {
+        if (!schema) return;
+        const stream = ReadableStream.from(entities.map(e => this.toFlatAndValidate(e, schema)).filter(e => !!e));
+        return this.saveFlatFromStream(stream);
+    }
+
+    /**
+     * |-------------------------|
+     * |   Général               |
+     * |-------------------------|
+     */
 
     private async getSchemasByIds() {
         const schemas = await demarchesSimplifieesSchemaPort.findAll();
@@ -114,7 +168,20 @@ export class DemarchesSimplifieesService
     }
 
     async updateDataByFormId(formId: number) {
-        console.log(`Synchronisation de la démarche ${formId}`);
+        console.log(`Syncing demarche ${formId}`);
+
+        const schema = await demarchesSimplifieesSchemaPort.findById(formId);
+        // TODO English or French?
+        if (!schema)
+            throw new InternalServerError(
+                `demarche ${formId} is being synced but we do not have a schema for it. Skipping`,
+            );
+
+        const upsertRawAndFlat = async (bulk: DemarchesSimplifieesDataEntity[], schema: DemarchesSimplifieesSchema) => {
+            await demarchesSimplifieesDataPort.bulkUpsert(bulk);
+            await this.bulkUpdateApplicationFlat(bulk, schema);
+        };
+
         let result: DemarchesSimplifieesDto;
         let nextCursor: string | undefined = undefined;
         let bulk: DemarchesSimplifieesDataEntity[] = [];
@@ -122,7 +189,7 @@ export class DemarchesSimplifieesService
         do {
             result = await this.sendQuery(GetDossiersByDemarcheId, { demarcheNumber: formId, after: nextCursor });
             if (result.data.demarche.state != "publiee") {
-                console.log(`demarche ${formId} a le statut '${result.data.demarche.state}', on passe`);
+                console.log(`demarche ${formId} has status '${result.data.demarche.state}'. skipping`);
                 return;
             }
 
@@ -131,13 +198,13 @@ export class DemarchesSimplifieesService
             );
             bulk.push(...entities);
             if (bulk.length >= MAX_BULK) {
-                await demarchesSimplifieesDataPort.bulkUpsert(bulk);
+                await upsertRawAndFlat(bulk, schema);
                 bulk = [];
             }
 
             nextCursor = result?.data?.demarche?.dossiers?.pageInfo?.endCursor;
         } while (result?.data?.demarche?.dossiers?.pageInfo?.hasNextPage);
-        await demarchesSimplifieesDataPort.bulkUpsert(bulk);
+        await upsertRawAndFlat(bulk, schema);
     }
 
     async sendQuery(query: string, vars: DefaultObject) {
@@ -204,12 +271,12 @@ export class DemarchesSimplifieesService
 
         const joinKeySchemaItem = schema.find(field => field.to === "ej" || field.to === "versementKey");
         if (!joinKeySchemaItem) return;
-        if ("value" in joinKeySchemaItem) return joinKeySchemaItem.value;
+        if ("value" in joinKeySchemaItem) return joinKeySchemaItem.value.toString();
 
         const joinKeyFieldName = joinKeySchemaItem.from;
         let joinKey: string | undefined;
         if (joinKeyFieldName) joinKey = lodash.get(data.entity, joinKeyFieldName);
-        return joinKey;
+        return joinKey?.toString();
     }
 
     /** RAW GRANT */
@@ -242,10 +309,8 @@ export class DemarchesSimplifieesService
         return DemarchesSimplifieesEntityAdapter.toCommon(raw.data.grant, raw.data.schema);
     }
 
-    async buildSchema(schemaModel: DemarchesSimplifieesSchemaSeedLine[], formId: number) {
+    async buildSchema(schemaModel: DemarchesSimplifieesSchemaSeedLine[], exampleData: DemarchesSimplifieesDataEntity) {
         const builtSchema: DemarchesSimplifieesSchemaLine[] = [];
-        const queryResult = await this.sendQuery(GetDossiersByDemarcheId, { demarcheNumber: formId });
-        const exampleData = DemarchesSimplifieesDtoAdapter.toEntities(queryResult, formId)?.[0];
 
         for (const champ of schemaModel) {
             if (!("to" in champ))
@@ -260,7 +325,7 @@ export class DemarchesSimplifieesService
     private async generateSchemaInstruction(
         champ: DemarchesSimplifieesSchemaSeedLine,
         exampleDemarche: DemarchesSimplifieesDataEntity,
-    ): Promise<{ value: string } | { from: string } | undefined> {
+    ): Promise<{ value: string | number } | { from: string } | undefined> {
         if ("from" in champ) return { from: champ.from };
         if ("possibleLabels" in champ) {
             for (const [id, field] of Object.entries(exampleDemarche.demande.annotations))
@@ -273,22 +338,37 @@ export class DemarchesSimplifieesService
                 message: `Entrer une valeur figée pour le champ ${champ.to}`,
                 default: "value" in champ ? String(champ.value) : undefined,
             });
-            if (inputValue) return { value: inputValue };
+            if (inputValue) return { value: parseFloat(inputValue) || inputValue };
             if ("value" in champ) return { value: champ.value };
         }
 
         console.log(`no instruction found for target field ${champ.to}`);
         if (champ.to === "exercice")
-            console.log("L'exercice peut- être déduit de la date de début de projet si celle-ci est mappée");
+            console.log("L'exercice peut être déduit de la date de début de projet si celle-ci est mappée");
         return;
     }
 
-    async buildFullSchema(schemaSeed: DemarchesSimplifieesSchemaSeed, demarcheId: number) {
-        return {
-            schema: await demarchesSimplifieesService.buildSchema(schemaSeed.schema, demarcheId),
-            commonSchema: await demarchesSimplifieesService.buildSchema(schemaSeed.commonSchema, demarcheId),
-            demarcheId,
+    async buildFullSchema(
+        schemaSeed: DemarchesSimplifieesSchemaSeed,
+        demarcheId: number,
+    ): Promise<DemarchesSimplifieesSchema & { demarcheId: number }> {
+        const types = {
+            schema: "DemandeSubvention",
+            commonSchema: "CommonGrant",
+            flatSchema: "ApplicationFlat",
         };
+        // We need to have the technical field ids to create the schema and we get them through an example
+        const queryResult = await this.sendQuery(GetDossiersByDemarcheId, { demarcheNumber: demarcheId });
+        const exampleData = DemarchesSimplifieesDtoAdapter.toEntities(queryResult, demarcheId)?.[0];
+
+        const res = { demarcheId };
+
+        for (const schemaType of Object.keys(schemaSeed)) {
+            console.log(`Génération du schéma pour le type '${types[schemaType]}'`);
+            res[schemaType] = await this.buildSchema(schemaSeed[schemaType], exampleData);
+            console.log("\n");
+        }
+        return res as DemarchesSimplifieesSchema & { demarcheId: number };
     }
 }
 

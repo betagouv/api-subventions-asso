@@ -67,5 +67,13 @@ describe("MongoHelper", () => {
             await insertStreamByBatch(buildStream(), upsertSpy, CHUNK_SIZE);
             expect(upsertSpy).toHaveBeenCalledTimes(3); // mock sends 2001 so 2 chunks + 1 remainder
         });
+
+        it("displays proper count of upserted data", async () => {
+            const consoleLogSpy = jest.spyOn(console, "log");
+            await insertStreamByBatch(buildStream(), upsertSpy, CHUNK_SIZE);
+            expect(consoleLogSpy).toHaveBeenCalledWith(
+                `operations ended successfully, ${CHUNK_SIZE * NB_CHUNKS - 1} entities saved`,
+            );
+        });
     });
 });
