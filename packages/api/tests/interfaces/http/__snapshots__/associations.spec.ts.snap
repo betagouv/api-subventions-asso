@@ -514,8 +514,8 @@ exports[`/association /{identifier}/grants should return grants with rna 1`] = `
         "transmis_le": {
           "last_update": "2023-07-26T08:49:43.000Z",
           "provider": "Démarches Simplifiées",
-          "type": "string",
-          "value": "2022-10-07T17:02:34+02:00",
+          "type": "object",
+          "value": "2022-10-07T15:02:34.000Z",
         },
         "versementKey": {
           "last_update": "2023-07-26T08:49:43.000Z",
@@ -1107,8 +1107,8 @@ exports[`/association /{identifier}/grants should return grants with siren 1`] =
         "transmis_le": {
           "last_update": "2023-07-26T08:49:43.000Z",
           "provider": "Démarches Simplifiées",
-          "type": "string",
-          "value": "2022-10-07T17:02:34+02:00",
+          "type": "object",
+          "value": "2022-10-07T15:02:34.000Z",
         },
         "versementKey": {
           "last_update": "2023-07-26T08:49:43.000Z",
@@ -6168,8 +6168,8 @@ exports[`/association /{structure_identifier}/subventions should return a list o
     "transmis_le": {
       "last_update": "2023-07-26T08:49:43.000Z",
       "provider": "Démarches Simplifiées",
-      "type": "string",
-      "value": "2022-10-07T17:02:34+02:00",
+      "type": "object",
+      "value": "2022-10-07T15:02:34.000Z",
     },
     "versementKey": {
       "last_update": "2023-07-26T08:49:43.000Z",

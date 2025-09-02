@@ -1,17 +1,25 @@
 import fs from "fs";
 
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
-import { CliStaticInterface } from "../../@types";
+import { ApplicationFlatCli, CliStaticInterface } from "../../@types";
 import demarchesSimplifieesService from "../../modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
 import DemarchesSimplifieesSchema from "../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesSchema";
 import { DemarchesSimplifieesSchemaSeed } from "../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesSchemaSeed";
 
 @StaticImplements<CliStaticInterface>()
-export default class DemarchesSimplifieesCli {
+export default class DemarchesSimplifieesCli implements ApplicationFlatCli {
     static cmdName = "demarches-simplifiees";
 
     async updateAll() {
         await demarchesSimplifieesService.updateAllForms();
+    }
+
+    initApplicationFlat() {
+        return demarchesSimplifieesService.initApplicationFlat();
+    }
+
+    syncApplicationFlat(_exercise: number) {
+        throw new Error("DemarchesSimplifiees data hardly work by exercise.");
     }
 
     async insertSchema(schemaJsonPath: string) {
@@ -34,7 +42,7 @@ export default class DemarchesSimplifieesCli {
         const schema = await demarchesSimplifieesService.buildFullSchema(schemaSeed, demarcheId);
 
         if (testDev)
-            fs.writeFileSync("../../../schemaTest.json", JSON.stringify(schema), {
+            fs.writeFileSync("../../schemaTest.json", JSON.stringify(schema, null, 4), {
                 flag: "w",
                 encoding: "utf-8",
             });
