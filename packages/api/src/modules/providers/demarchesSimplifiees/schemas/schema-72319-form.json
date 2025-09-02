@@ -1,111 +1,165 @@
 {
-    "demarcheId": 72319,
-    "schema": [
-        {
-            "to": "service_instructeur",
-            "from": "service.organisme"
-        },
-        {
-            "from": "siret",
-            "to": "siret"
-        },
-        {
-            "from": "demande.state",
-            "to": "status"
-        },
-        {
-            "from": "demande.champs.Q2hhbXAtMzYzNDkz.value",
-            "to": "actions_proposee[0].intitule"
-        },
-        {
-            "from": "demande.champs.Q2hhbXAtMjcxNjY1Ng==.value",
-            "to": "actions_proposee[0].objectifs"
-        },
-        {
-            "from": "demande.champs.Q2hhbXAtMzYzNDk3.value",
-            "to": "actions_proposee[0].description"
-        },
-        {
-            "from": "demande.champs.Q2hhbXAtMzEzMzI0MQ==.value",
-            "to": "montants.demande"
-        },
-        {
-            "from": "demande.champs.Q2hhbXAtMzYzNTIz.value",
-            "to": "montants.total"
-        },
-        {
-            "from": "demande.annotations.Q2hhbXAtMjcxNzMwNA==.value",
-            "to": "montants.accorde"
-        },
-        {
-            "from": "demande.annotations.Q2hhbXAtMjY3NDMxMA==.value",
-            "to": "ej"
-        },
-        {
-            "from": "demande.annotations.Q2hhbXAtMjY3NDMxMA==.value",
-            "to": "versementKey"
-        },
-        {
-            "from": "demande.annotations.Q2hhbXAtMjY3NDI3Ng==.value",
-            "to": "date_commision"
-        },
-        {
-            "from": "demande.dateDepot",
-            "to": "transmis_le"
-        },
-        {
-            "value": "Programme 177 « Hébergement, parcours vers le logement et insertion des personnes vulnérables »",
-            "to": "dispositif"
-        },
-        {
-            "from": "demande.champs.Q2hhbXAtMzYzNDg5.value",
-            "to": "date_debut"
-        },
-        {
-            "from": "demande.champs.Q2hhbXAtMjM2MzQ5Ng==.value",
-            "to": "date_fin"
-        },
-        {
-            "to": "exercice",
-            "value": 2023
-        }
-    ],
-    "commonSchema": [
-        {
-            "to": "siret",
-            "from": "siret"
-        },
-        {
-            "to": "service_instructeur",
-            "from": "service.organisme"
-        },
-        {
-            "to": "dispositif",
-            "value": "Programme 177 « Hébergement, parcours vers le logement et insertion des personnes vulnérables »"
-        },
-        {
-            "to": "montants.accorde",
-            "from": "demande.annotations.Q2hhbXAtMjcxNzMwNA==.value"
-        },
-        {
-            "to": "montants.demande",
-            "from": "demande.champs.Q2hhbXAtMzEzMzI0MQ==.value"
-        },
-        {
-            "to": "objet",
-            "from": "demande.champs.Q2hhbXAtMzYzNDkz.value"
-        },
-        {
-            "to": "providerStatus",
-            "from": "demande.state"
-        },
-        {
-            "to": "dateTransmitted",
-            "from": "demande.dateDepot"
-        },
-        {
-            "to": "exercice",
-            "value": 2023
-        }
-    ]
+  "demarcheId": 72319,
+  "schema": [
+    {
+      "to": "service_instructeur",
+      "from": "service.organisme"
+    },
+    {
+      "from": "siret",
+      "to": "siret"
+    },
+    {
+      "from": "demande.state",
+      "to": "status"
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtMzYzNDkz.value",
+      "to": "actions_proposee[0].intitule"
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtMjcxNjY1Ng==.value",
+      "to": "actions_proposee[0].objectifs"
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtMzYzNDk3.value",
+      "to": "actions_proposee[0].description"
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtMzEzMzI0MQ==.value",
+      "to": "montants.demande"
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtMzYzNTIz.value",
+      "to": "montants.total"
+    },
+    {
+      "from": "demande.annotations.Q2hhbXAtMjcxNzMwNA==.value",
+      "to": "montants.accorde"
+    },
+    {
+      "from": "demande.annotations.Q2hhbXAtMjY3NDMxMA==.value",
+      "to": "ej"
+    },
+    {
+      "from": "demande.annotations.Q2hhbXAtMjY3NDMxMA==.value",
+      "to": "versementKey"
+    },
+    {
+      "from": "demande.annotations.Q2hhbXAtMjY3NDI3Ng==.value",
+      "to": "date_commision"
+    },
+    {
+      "from": "demande.dateDepot",
+      "to": "transmis_le"
+    },
+    {
+      "value": "Programme 177 « Hébergement, parcours vers le logement et insertion des personnes vulnérables »",
+      "to": "dispositif"
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtMzYzNDg5.value",
+      "to": "date_debut"
+    },
+    {
+      "from": "demande.champs.Q2hhbXAtMjM2MzQ5Ng==.value",
+      "to": "date_fin"
+    },
+    {
+      "to": "exercice",
+      "value": 2023
+    }
+  ],
+  "commonSchema": [
+    {
+      "to": "siret",
+      "from": "siret"
+    },
+    {
+      "to": "service_instructeur",
+      "from": "service.organisme"
+    },
+    {
+      "to": "dispositif",
+      "value": "Programme 177 « Hébergement, parcours vers le logement et insertion des personnes vulnérables »"
+    },
+    {
+      "to": "montants.accorde",
+      "from": "demande.annotations.Q2hhbXAtMjcxNzMwNA==.value"
+    },
+    {
+      "to": "montants.demande",
+      "from": "demande.champs.Q2hhbXAtMzEzMzI0MQ==.value"
+    },
+    {
+      "to": "objet",
+      "from": "demande.champs.Q2hhbXAtMzYzNDkz.value"
+    },
+    {
+      "to": "providerStatus",
+      "from": "demande.state"
+    },
+    {
+      "to": "dateTransmitted",
+      "from": "demande.dateDepot"
+    },
+    {
+      "to": "exercice",
+      "value": 2023
+    }
+  ],
+  "flatSchema": [
+    {
+      "to": "depositDate",
+      "from": "demande.dateDepot"
+    },
+    {
+      "to": "requestYear",
+      "from": "demande.dateDepot"
+    },
+    {
+      "to": "scheme",
+      "from": "demande.demarche.title"
+    },
+    {
+      "to": "beneficiaryEstablishmentId",
+      "from": "siret"
+    },
+    {
+      "to": "beneficiaryEstablishmentIdType",
+      "value": "siret"
+    },
+    {
+      "to": "statusLabel",
+      "from": "demande.state"
+    },
+    {
+      "to": "updateDate",
+      "from": "demande.dateDerniereModification"
+    },
+    {
+      "to": "instructiveDepartmentName",
+      "from": "service.organisme"
+    },
+    {
+      "to": "requestedAmount",
+      "from": "demande.champs.Q2hhbXAtMzEzMzI0MQ==.value"
+    },
+    {
+      "to": "grantedAmount",
+      "from": "demande.annotations.Q2hhbXAtMjcxNzMwNA==.value"
+    },
+    {
+      "to": "totalAmount",
+      "from": "demande.champs.Q2hhbXAtMzYzNTIz.value"
+    },
+    {
+      "from": "demande.annotations.Q2hhbXAtMjY3NDMxMA==.value",
+      "to": "ej"
+    },
+    {
+      "value": "Programme 177 « Hébergement, parcours vers le logement et insertion des personnes vulnérables »",
+      "to": "scheme"
+    }
+  ]
 }
