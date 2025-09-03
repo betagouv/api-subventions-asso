@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.73.0](https://github.com/betagouv/api-subventions-asso/compare/v0.72.1...v0.73.0) (2025-09-03)
+
+### Features
+
+- **api:** [#3594](https://github.com/betagouv/api-subventions-asso/issues/3594) ds data to application flat ([#3599](https://github.com/betagouv/api-subventions-asso/issues/3599)) ([ab30cd1](https://github.com/betagouv/api-subventions-asso/commit/ab30cd17d9b7ccae6024de82ac5a050923e985e9))
+
 ## [0.72.3](https://github.com/betagouv/api-subventions-asso/compare/v0.72.2...v0.72.3) (2025-09-20)
 
 ### Bug Fixes
