@@ -107,9 +107,13 @@ export class AssociationHttp extends Controller {
      * @param req
      */
     @Get("/paiements")
-    public async getPaymentFlat(identifier: AssociationIdentifierDto, @Request() req): Promise<PaymentFlatDto[]> {
+    public async getPaymentFlat(
+        identifier: AssociationIdentifierDto,
+        @Request() req,
+    ): Promise<{ paiements: PaymentFlatDto[] }> {
         const associationIdentifiers = req.assoIdentifier;
-        return paymentFlatService.getPaymentsDto(associationIdentifiers);
+        const payments = await paymentFlatService.getPaymentsDto(associationIdentifiers);
+        return { paiements: payments };
     }
 
     /**
@@ -124,9 +128,10 @@ export class AssociationHttp extends Controller {
     public async getApplicationFlat(
         identifier: AssociationIdentifierDto,
         @Request() req,
-    ): Promise<ApplicationFlatDto[]> {
+    ): Promise<{ applications: ApplicationFlatDto[] }> {
         const associationIdentifiers = req.assoIdentifier;
-        return applicationFlatService.getApplicationsDto(associationIdentifiers);
+        const applications = await applicationFlatService.getApplicationsDto(associationIdentifiers);
+        return { applications };
     }
 
     /**

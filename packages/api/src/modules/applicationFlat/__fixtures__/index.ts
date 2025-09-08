@@ -2,6 +2,7 @@ import { ApplicationNature, ApplicationStatus, PaymentCondition } from "dto";
 import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
 import { ApplicationFlatDbo } from "../../../dataProviders/db/applicationFlat/ApplicationFlatDbo";
 import { ObjectId } from "mongodb";
+import DEFAULT_ASSOCIATION from "../../../../tests/__fixtures__/association.fixture";
 
 export const DRAFT_ENTITY: Omit<ApplicationFlatEntity, "uniqueId" | "applicationId"> = {
     requestYear: 2015,
@@ -19,7 +20,7 @@ export const DRAFT_ENTITY: Omit<ApplicationFlatEntity, "uniqueId" | "application
     budgetaryYear: 2015,
     allocatorId: "123456789",
     managingAuthorityId: "012345678",
-    beneficiaryEstablishmentId: "12345678901234", // a siret here
+    beneficiaryEstablishmentId: DEFAULT_ASSOCIATION.siret, // a siret here
     confinancersId: [],
     joinKeyId: "joint001",
     idRAE: "RAEid",
@@ -44,7 +45,7 @@ export const DRAFT_ENTITY: Omit<ApplicationFlatEntity, "uniqueId" | "application
     statusLabel: ApplicationStatus.GRANTED,
     allocatorIdType: null,
     managingAuthorityIdType: null,
-    beneficiaryEstablishmentIdType: "",
+    beneficiaryEstablishmentIdType: "siret",
     cofinancersIdType: [],
     instructiveDepartmentIdType: null,
     updateDate: new Date("2025-12-12"),
@@ -100,7 +101,7 @@ export const DBO: ApplicationFlatDbo = {
     statutLabel: ApplicationStatus.GRANTED,
     typeIdAttribuant: null,
     typeIdAutoriteGestion: null,
-    typeIdEtablissementBeneficiaire: "",
+    typeIdEtablissementBeneficiaire: "siret",
     typeIdCofinanceursSollicites: [],
     typeIdServiceInstructeur: null,
     dateMiseAJour: new Date("2025-12-12"),
