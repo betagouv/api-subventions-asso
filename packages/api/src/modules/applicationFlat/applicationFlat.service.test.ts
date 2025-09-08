@@ -106,7 +106,8 @@ describe("ApplicationFlatService", () => {
         });
     });
 
-    describe("grant part", () => {
+    // TODO: unskip when grant part is relevant or remove if not needed anymore
+    describe.skip("grant part", () => {
         describe("getRawGrants", () => {
             let getEntitiesSpy;
             const [E1, E2] = [

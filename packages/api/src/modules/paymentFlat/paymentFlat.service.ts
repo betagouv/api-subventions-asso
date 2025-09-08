@@ -81,22 +81,26 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider<
 
     isGrantProvider = true;
 
-    async getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
-        let dbos: PaymentFlatEntity[] = [];
-        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            dbos = await paymentFlatPort.findBySiret(identifier.siret);
-        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            dbos = await paymentFlatPort.findBySiren(identifier.siren);
-        }
+    async getRawGrants(_identifier: StructureIdentifier): Promise<RawGrant[]> {
+        return [];
 
-        return dbos.map(grant => ({
-            provider: "payment-flat",
-            type: "payment",
-            data: grant,
-            /* Pour l'instant on garde ej pour tous les providers sauf Fonjep qui prend idVersement
-            Il faudra convertir tous les versementKey en idVersement quand tout est connecté  */
-            joinKey: grant.provider === "fonjep" ? grant.idVersement : grant.ej || undefined,
-        }));
+        // TODO: uncomment this when all other providers will be deconnected from grant
+        // TODO: or remove this if grant process is not needed anymore
+        // let dbos: PaymentFlatEntity[] = [];
+        // if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
+        //     dbos = await paymentFlatPort.findBySiret(identifier.siret);
+        // } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
+        //     dbos = await paymentFlatPort.findBySiren(identifier.siren);
+        // }
+
+        // return dbos.map(grant => ({
+        //     provider: "payment-flat",
+        //     type: "payment",
+        //     data: grant,
+        //     /* Pour l'instant on garde ej pour tous les providers sauf Fonjep qui prend idVersement
+        //     Il faudra convertir tous les versementKey en idVersement quand tout est connecté  */
+        //     joinKey: grant.provider === "fonjep" ? grant.idVersement : grant.ej || undefined,
+        // }));
     }
 }
 

@@ -524,70 +524,7 @@ exports[`/association /{identifier}/grants should return grants with rna 1`] = `
           "value": 1821732,
         },
       },
-      "payments": [
-        {
-          "activitee": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "Label d'activité Exemple",
-          },
-          "amount": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "number",
-            "value": 1000,
-          },
-          "centreFinancier": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "UO DGER XXXX-C001",
-          },
-          "dateOperation": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "object",
-            "value": "2023-04-01T00:00:00.000Z",
-          },
-          "domaineFonctionnel": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "Label d'action Exemple",
-          },
-          "ej": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "0001821732",
-          },
-          "libelleProgramme": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "Programme Exemple",
-          },
-          "programme": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "number",
-            "value": 1,
-          },
-          "siret": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "10000000000001",
-          },
-          "versementKey": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "0001821732",
-          },
-        },
-      ],
+      "payments": null,
     },
   ],
 }
@@ -1117,70 +1054,7 @@ exports[`/association /{identifier}/grants should return grants with siren 1`] =
           "value": 1821732,
         },
       },
-      "payments": [
-        {
-          "activitee": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "Label d'activité Exemple",
-          },
-          "amount": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "number",
-            "value": 1000,
-          },
-          "centreFinancier": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "UO DGER XXXX-C001",
-          },
-          "dateOperation": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "object",
-            "value": "2023-04-01T00:00:00.000Z",
-          },
-          "domaineFonctionnel": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "Label d'action Exemple",
-          },
-          "ej": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "0001821732",
-          },
-          "libelleProgramme": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "Programme Exemple",
-          },
-          "programme": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "number",
-            "value": 1,
-          },
-          "siret": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "10000000000001",
-          },
-          "versementKey": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "0001821732",
-          },
-        },
-      ],
+      "payments": null,
     },
   ],
 }
@@ -1192,7 +1066,7 @@ L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2019;10000000000001;35000;GRANT
 L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;XXX;Dispositif;;500;500;Accordé;1000;;2022-01-02;163 - PROGRAM 163
 L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;Dauphin;Education – Sport - Jeunesse - Politique de la ville;INTITULE_PROJET;;7000;Accordé;;;;
 L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;;;;;;;;;;
-L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2023;10000000000001;35000;Auvergne-Rhône-Alpes;Aide au projet ou au fonctionnement - Transmission culturelle (2023);Atelier d'arts plastiques et d’écriture en Hors temps scolaire ;1300;;Accordé;1000;UO DGER XXXX-C001;2023-04-01;1 - Programme Exemple
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2023;10000000000001;35000;Auvergne-Rhône-Alpes;Aide au projet ou au fonctionnement - Transmission culturelle (2023);Atelier d'arts plastiques et d’écriture en Hors temps scolaire ;1300;;Accordé;;;;
 "
 `;
 
@@ -1202,7 +1076,7 @@ L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2019;10000000000001;35000;GRANT
 L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;XXX;Dispositif;;500;500;Accordé;1000;;2022-01-02;163 - PROGRAM 163
 L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;Dauphin;Education – Sport - Jeunesse - Politique de la ville;INTITULE_PROJET;;7000;Accordé;;;;
 L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;;;;;;;;;;
-L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2023;10000000000001;35000;Auvergne-Rhône-Alpes;Aide au projet ou au fonctionnement - Transmission culturelle (2023);Atelier d'arts plastiques et d’écriture en Hors temps scolaire ;1300;;Accordé;1000;UO DGER XXXX-C001;2023-04-01;1 - Programme Exemple
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2023;10000000000001;35000;Auvergne-Rhône-Alpes;Aide au projet ou au fonctionnement - Transmission culturelle (2023);Atelier d'arts plastiques et d’écriture en Hors temps scolaire ;1300;;Accordé;;;;
 "
 `;
 
@@ -1212,7 +1086,7 @@ L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2019;10000000000001;35000;GRANT
 L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;XXX;Dispositif;;500;500;Accordé;1000;;2022-01-02;163 - PROGRAM 163
 L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;Dauphin;Education – Sport - Jeunesse - Politique de la ville;INTITULE_PROJET;;7000;Accordé;;;;
 L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;;;;;;;;;;
-L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2023;10000000000001;35000;Auvergne-Rhône-Alpes;Aide au projet ou au fonctionnement - Transmission culturelle (2023);Atelier d'arts plastiques et d’écriture en Hors temps scolaire ;1300;;Accordé;1000;UO DGER XXXX-C001;2023-04-01;1 - Programme Exemple
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2023;10000000000001;35000;Auvergne-Rhône-Alpes;Aide au projet ou au fonctionnement - Transmission culturelle (2023);Atelier d'arts plastiques et d’écriture en Hors temps scolaire ;1300;;Accordé;;;;
 "
 `;
 
@@ -3424,44 +3298,7 @@ exports[`/association /{identifier}/raw-grants should return raw grants with rna
       },
     ],
     "fullGrants": [],
-    "payments": [
-      {
-        "data": {
-          "_id": Any<String>,
-          "actionCode": "AC123",
-          "actionLabel": "Label d'action Exemple",
-          "activityCode": "AC456",
-          "activityLabel": "Label d'activité Exemple",
-          "amount": 1000,
-          "attachementComptable": "BRET",
-          "centreFinancierCode": "AA01/0776-C001-4000",
-          "centreFinancierLibelle": "UO DGER XXXX-C001",
-          "ej": "0001821732",
-          "exerciceBudgetaire": 2023,
-          "idEntrepriseBeneficiaire": {
-            "identifier": "100000000",
-          },
-          "idEtablissementBeneficiaire": {
-            "identifier": "10000000000001",
-          },
-          "idVersement": "12345678901234-0001821732-2023",
-          "ministry": "Ministère Exemple",
-          "ministryAcronym": "ME",
-          "mission": "Mission Exemple",
-          "operationDate": "2023-04-01T00:00:00.000Z",
-          "programName": "Programme Exemple",
-          "programNumber": 1,
-          "provider": "chorus",
-          "regionAttachementComptable": "Bretagne",
-          "typeIdEntrepriseBeneficiaire": "siren",
-          "typeIdEtablissementBeneficiaire": "siret",
-          "uniqueId": "12345678901234-0001821732-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
-        },
-        "joinKey": "0001821732",
-        "provider": "payment-flat",
-        "type": "payment",
-      },
-    ],
+    "payments": [],
   },
   {
     "applications": [
@@ -5729,44 +5566,7 @@ exports[`/association /{identifier}/raw-grants should return raw grants with sir
       },
     ],
     "fullGrants": [],
-    "payments": [
-      {
-        "data": {
-          "_id": Any<String>,
-          "actionCode": "AC123",
-          "actionLabel": "Label d'action Exemple",
-          "activityCode": "AC456",
-          "activityLabel": "Label d'activité Exemple",
-          "amount": 1000,
-          "attachementComptable": "BRET",
-          "centreFinancierCode": "AA01/0776-C001-4000",
-          "centreFinancierLibelle": "UO DGER XXXX-C001",
-          "ej": "0001821732",
-          "exerciceBudgetaire": 2023,
-          "idEntrepriseBeneficiaire": {
-            "identifier": "100000000",
-          },
-          "idEtablissementBeneficiaire": {
-            "identifier": "10000000000001",
-          },
-          "idVersement": "12345678901234-0001821732-2023",
-          "ministry": "Ministère Exemple",
-          "ministryAcronym": "ME",
-          "mission": "Mission Exemple",
-          "operationDate": "2023-04-01T00:00:00.000Z",
-          "programName": "Programme Exemple",
-          "programNumber": 1,
-          "provider": "chorus",
-          "regionAttachementComptable": "Bretagne",
-          "typeIdEntrepriseBeneficiaire": "siren",
-          "typeIdEtablissementBeneficiaire": "siret",
-          "uniqueId": "12345678901234-0001821732-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
-        },
-        "joinKey": "0001821732",
-        "provider": "payment-flat",
-        "type": "payment",
-      },
-    ],
+    "payments": [],
   },
   {
     "applications": [

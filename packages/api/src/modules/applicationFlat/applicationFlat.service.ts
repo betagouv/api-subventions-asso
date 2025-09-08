@@ -3,20 +3,20 @@ import applicationFlatPort from "../../dataProviders/db/applicationFlat/applicat
 import { ApplicationFlatEntity } from "../../entities/ApplicationFlatEntity";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
-import { RawGrant, RawApplication } from "../grant/@types/rawGrant";
+import { RawApplication, RawGrant } from "../grant/@types/rawGrant";
 import { ProviderEnum } from "../../@enums/ProviderEnum";
 import ProviderCore from "../providers/ProviderCore";
 import DemandesSubventionsProvider from "../subventions/@types/DemandesSubventionsProvider";
-import GrantProvider from "../grant/@types/GrantProvider";
 import Siret from "../../identifierObjects/Siret";
 import ApplicationFlatAdapter from "./ApplicationFlatAdapter";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 import { ReadableStream } from "node:stream/web";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
+import GrantProvider from "../grant/@types/GrantProvider";
 
 export class ApplicationFlatService
     extends ProviderCore
-    implements DemandesSubventionsProvider<ApplicationFlatEntity>, GrantProvider
+    implements GrantProvider, DemandesSubventionsProvider<ApplicationFlatEntity>
 {
     constructor() {
         super({
@@ -65,17 +65,19 @@ export class ApplicationFlatService
 
     isGrantProvider = true;
 
-    async getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
-        const dbos = await this.getEntitiesByIdentifier(identifier);
-
-        /* Pour l'instant on garde ej pour tous les providers sauf Fonjep qui prend idVersement 
-        Il faudra convertir tous les versementKey en idVersement quand tout est connecté  */
-        return dbos.map(grant => ({
-            provider: grant.provider,
-            type: "application",
-            data: grant,
-            joinKey: (grant.provider === "fonjep" ? grant.paymentId : grant.ej) ?? undefined,
-        }));
+    async getRawGrants(_identifier: StructureIdentifier): Promise<RawGrant[]> {
+        return [];
+        // TODO: uncomment this when all other providers will be deconnected from grant
+        // TODO: or remove this if grant process is not needed anymore
+        //     const dbos = await this.getEntitiesByIdentifier(identifier);
+        //     /* Pour l'instant on garde ej pour tous les providers sauf Fonjep qui prend idVersement
+        //     Il faudra convertir tous les versementKey en idVersement quand tout est connecté  */
+        //     return dbos.map(grant => ({
+        //         provider: grant.provider,
+        //         type: "application",
+        //         data: grant,
+        //         joinKey: (grant.provider === "fonjep" ? grant.paymentId : grant.ej) ?? undefined,
+        //     }));
     }
 
     /**
