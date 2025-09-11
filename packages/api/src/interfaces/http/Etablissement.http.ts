@@ -7,6 +7,8 @@ import {
     GetGrantsResponseDto,
     EstablishmentIdentifierDto,
     SiretDto,
+    PaymentFlatDto,
+    ApplicationFlatDto,
 } from "dto";
 import { Route, Get, Controller, Tags, Security, Response, Produces, Middlewares, Hidden, Request } from "tsoa";
 import { NotAssociationError, HttpErrorInterface } from "core";
@@ -15,6 +17,8 @@ import establishmentIdentifierService from "../../modules/establishment-identifi
 import grantExtractService from "../../modules/grant/grantExtract.service";
 import { errorHandler } from "../../middlewares/ErrorMiddleware";
 import associationHelper from "../../modules/associations/associations.helper";
+import paymentFlatService from "../../modules/paymentFlat/paymentFlat.service";
+import applicationFlatService from "../../modules/applicationFlat/applicationFlat.service";
 
 export async function isEtabIdentifierFromAssoMiddleware(req, _res, next) {
     /*
@@ -110,6 +114,36 @@ export class EtablissementHttp extends Controller {
         const estabIdentifier = req.estabIdentifier;
         const payments = await etablissementService.getPayments(estabIdentifier);
         return { versements: payments };
+    }
+
+    /**
+     * Recherche les versements liés à un établissement, au format paymentFlat
+     *
+     * @summary Recherche les payments liés à une association
+     * @param identifier Identifiant Siren ou Rna
+     * @param req
+     */
+    @Get("/paiements")
+    public async getPaymentFlat(identifier: EstablishmentIdentifierDto, @Request() req): Promise<PaymentFlatDto[]> {
+        const associationIdentifiers = req.assoIdentifier;
+        return paymentFlatService.getPaymentsDto(associationIdentifiers);
+    }
+
+    /**
+     * Recherche les demandes de subventions liées à un établissement
+     *
+     * @summary Recherche les demandes de subventions liées à une association
+     * @param identifier Identifiant Siren ou Rna
+     * @param req
+     */
+    @Get("/applications")
+    @Response<HttpErrorInterface>("404")
+    public async getApplicationFlat(
+        identifier: EstablishmentIdentifierDto,
+        @Request() req,
+    ): Promise<ApplicationFlatDto[]> {
+        const associationIdentifiers = req.assoIdentifier;
+        return applicationFlatService.getApplicationsDto(associationIdentifiers);
     }
 
     /**

@@ -5,8 +5,8 @@ exports[`OsirisRequestAdapter toApplicationFlat nullify idVersement if EJ is mis
   "allocatorId": null,
   "allocatorIdType": null,
   "allocatorName": null,
-  "applicationId": "osiris-OSIRIS_ID",
-  "applicationProviderId": "OSIRIS_ID",
+  "applicationId": "osiris-DD71-24-0094",
+  "applicationProviderId": "DD71-24-0094",
   "beneficiaryEstablishmentId": "10000000000001",
   "beneficiaryEstablishmentIdType": "10000000000001",
   "budgetaryYear": 2022,
@@ -55,7 +55,7 @@ exports[`OsirisRequestAdapter toApplicationFlat nullify idVersement if EJ is mis
   "subventionPercentage": null,
   "totalAmount": null,
   "ueNotification": null,
-  "uniqueId": "osiris-OSIRIS_ID-2022",
+  "uniqueId": "osiris-DD71-24-0094-2022",
   "updateDate": 2025-01-01T00:00:00.000Z,
 }
 `;
@@ -65,8 +65,8 @@ exports[`OsirisRequestAdapter toApplicationFlat returns application flat with da
   "allocatorId": null,
   "allocatorIdType": null,
   "allocatorName": null,
-  "applicationId": "osiris-OSIRIS_ID",
-  "applicationProviderId": "OSIRIS_ID",
+  "applicationId": "osiris-DD71-24-0094",
+  "applicationProviderId": "DD71-24-0094",
   "beneficiaryEstablishmentId": "10000000000001",
   "beneficiaryEstablishmentIdType": "10000000000001",
   "budgetaryYear": 2022,
@@ -115,7 +115,7 @@ exports[`OsirisRequestAdapter toApplicationFlat returns application flat with da
   "subventionPercentage": null,
   "totalAmount": null,
   "ueNotification": null,
-  "uniqueId": "osiris-OSIRIS_ID-2022",
+  "uniqueId": "osiris-DD71-24-0094-2022",
   "updateDate": 2025-01-01T00:00:00.000Z,
 }
 `;
@@ -125,8 +125,8 @@ exports[`OsirisRequestAdapter toApplicationFlat returns application flat with de
   "allocatorId": null,
   "allocatorIdType": null,
   "allocatorName": null,
-  "applicationId": "osiris-OSIRIS_ID",
-  "applicationProviderId": "OSIRIS_ID",
+  "applicationId": "osiris-DD71-24-0094",
+  "applicationProviderId": "DD71-24-0094",
   "beneficiaryEstablishmentId": "10000000000001",
   "beneficiaryEstablishmentIdType": "10000000000001",
   "budgetaryYear": 2022,
@@ -175,7 +175,7 @@ exports[`OsirisRequestAdapter toApplicationFlat returns application flat with de
   "subventionPercentage": null,
   "totalAmount": null,
   "ueNotification": null,
-  "uniqueId": "osiris-OSIRIS_ID-2022",
+  "uniqueId": "osiris-DD71-24-0094-2022",
   "updateDate": 2025-01-01T00:00:00.000Z,
 }
 `;

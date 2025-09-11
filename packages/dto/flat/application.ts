@@ -1,8 +1,9 @@
-import { ApplicationNature, ApplicationStatus, OrDefault, PaymentCondition, NOT_APPLICABLE } from "dto";
 import { ObjectId } from "mongodb";
-import { IdentifierIdName } from "../../../identifierObjects/@types/IdentifierName";
+import { ApplicationStatus } from "../demandeSubvention";
+import { IdentifierIdName, NOT_APPLICABLE } from "./shared";
+import { OrDefault } from "../shared";
 
-type MandatoryApplicationFlatDbo = {
+type MandatoryApplicationFlatDto = {
     __data__?: Record<string, unknown>;
     idUnique: string; // idSubvention - exerciceBudgetaire pour tous les fournisseurs sauf provider commançant par scdl. Un identifiant unique artificiellement crée pour provider commançant par scdl
     idSubvention: string; // nomProvider-idSubventionProvider
@@ -16,7 +17,7 @@ type MandatoryApplicationFlatDbo = {
     dateMiseAJour: Date;
 };
 
-type OptionalApplicationFlatDbo = {
+type OptionalApplicationFlatDto = {
     _id: ObjectId;
     exerciceBudgetaire: number; // subventia ne donne pas d'exercice budgétaire donc on est bloqué pour le moment
     idJointure: string; // id permettant de faire une jointure avec une autre source de données
@@ -57,5 +58,16 @@ type OptionalApplicationFlatDbo = {
     dateMiseAJour: Date;
 };
 
-export type ApplicationFlatDbo = MandatoryApplicationFlatDbo &
-    OrDefault<OptionalApplicationFlatDbo, NOT_APPLICABLE | null>;
+export type ApplicationFlatDto = MandatoryApplicationFlatDto &
+    OrDefault<OptionalApplicationFlatDto, NOT_APPLICABLE | null>;
+
+export enum ApplicationNature {
+    MONEY = "Aide en numéraire",
+    NATURE = "Aide en nature",
+}
+
+export enum PaymentCondition {
+    UNIQUE = "UNIQUE",
+    PHASED = "PHASED",
+    OTHER = "OTHER",
+}
