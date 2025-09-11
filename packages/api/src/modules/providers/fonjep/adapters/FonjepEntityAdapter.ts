@@ -18,9 +18,8 @@ import { DataBretagneRecords } from "../../dataBretagne/@types/DataBretagne";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
 import { getShortISODate, modifyDateYear } from "../../../../shared/helpers/DateHelper";
 import { removeWhitespace } from "../../../../shared/helpers/StringHelper";
-import { ApplicationNature, PaymentCondition } from "../../../../entities/ApplicationFlatEntity";
 import EstablishmentIdentifier from "../../../../identifierObjects/EstablishmentIdentifier";
-import { ApplicationStatus } from "dto";
+import { ApplicationNature, ApplicationStatus, PaymentCondition } from "dto";
 
 /**
  * Some of the nullIfEmpty calls have not been verified and were added base on every FonjepEntity type
