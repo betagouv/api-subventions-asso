@@ -76,7 +76,7 @@ export const DBO: ApplicationFlatDbo = {
     exerciceBudgetaire: 2015,
     idAttribuant: "123456789",
     idAutoriteGestion: "012345678",
-    idEtablissementBeneficiaire: "12345678901234", // a siret here
+    idEtablissementBeneficiaire: DEFAULT_ASSOCIATION.siret, // a siret here
     idCofinanceursSollicites: [],
     idJointure: "joint001",
     idRAE: "RAEid",
