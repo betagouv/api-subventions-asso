@@ -1,6 +1,6 @@
 import { SiretDto } from "dto";
 import { DefaultObject, ParserInfo, ParserPath } from "../../../../@types";
-import IFonjepVersementIndexedInformations from "../@types/IFonjepPaymentIndexedInformations";
+import IFonjepVersementIndexedInformations from "../@types/FonjepPaymentIndexedInformations";
 import { GenericParser } from "../../../../shared/GenericParser";
 
 export default class FonjepPaymentEntity {

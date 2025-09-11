@@ -1,6 +1,6 @@
-import IProviderInformations from "../../../search/@types/IProviderInformations";
+import ProviderInformations from "../../../search/@types/ProviderInformations";
 
-export default interface IOsirisRequestInformations extends IProviderInformations {
+export default interface OsirisRequestInformations extends ProviderInformations {
     osirisId: string;
     compteAssoId: string;
     ej?: string; // can be undefined, even with status to "granted"

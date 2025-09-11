@@ -1,10 +1,10 @@
 import { DefaultObject } from "../../../@types";
-import ILegalInformations from "../../search/@types/ILegalInformations";
+import LegalInformations from "../../search/@types/LegalInformations";
 import { GenericParser } from "../../../shared/GenericParser";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
-import IOsirisRequestInformations from "./@types/IOsirisRequestInformations";
-import IOsirisActionsInformations from "./@types/IOsirisActionsInformations";
+import OsirisRequestInformations from "./@types/OsirisRequestInformations";
+import OsirisActionsInformations from "./@types/OsirisActionsInformations";
 
 export default class OsirisParser {
     private static getUpdateDate(year: number) {
@@ -31,11 +31,11 @@ export default class OsirisParser {
             const indexedInformations = GenericParser.indexDataByPathObject<string | number>(
                 OsirisRequestEntity.indexedProviderInformationsPath,
                 data,
-            ) as IOsirisRequestInformations;
+            ) as OsirisRequestInformations;
             const legalInformations = GenericParser.indexDataByPathObject(
                 OsirisRequestEntity.indexedLegalInformationsPath,
                 data,
-            ) as unknown as ILegalInformations;
+            ) as unknown as LegalInformations;
 
             return new OsirisRequestEntity(legalInformations, indexedInformations, data, this.getUpdateDate(year));
         });
@@ -61,7 +61,7 @@ export default class OsirisParser {
             const indexedInformations = GenericParser.indexDataByPathObject(
                 OsirisActionEntity.indexedInformationsPath,
                 data,
-            ) as unknown as IOsirisActionsInformations;
+            ) as unknown as OsirisActionsInformations;
 
             return new OsirisActionEntity(indexedInformations, data, this.getUpdateDate(year));
         });

@@ -1,6 +1,6 @@
-import IBudgetLine from "../../../search/@types/IBudgetLine";
+import BudgetLine from "../../../search/@types/BudgetLine";
 
-export default interface IChorusIndexedInformations extends IBudgetLine {
+export default interface ChorusIndexedInformations extends BudgetLine {
     numPosteEJ: number;
     codeBranche: string;
     branche: string;

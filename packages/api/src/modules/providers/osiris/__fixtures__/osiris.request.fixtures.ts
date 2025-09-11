@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
 import OsirisRequestEntity from "../entities/OsirisRequestEntity";
-import IOsirisRequestInformations from "../@types/IOsirisRequestInformations";
+import OsirisRequestInformations from "../@types/OsirisRequestInformations";
 
 export const OSIRIS_ID = "DR-CENT-21-0002";
 
@@ -41,7 +41,7 @@ export const REQUEST_ENTITY = new OsirisRequestEntity(
         versementRealise: 0,
         versementCompensationN1: 0,
         versementCompensationN: 0,
-    } as IOsirisRequestInformations,
+    } as OsirisRequestInformations,
     { Dossier: { "Date Reception": 43549.44370065972, "Exercice Début": 2021, "Exercice Fin": 2024 } },
     new Date("2025-08-05"),
     [],

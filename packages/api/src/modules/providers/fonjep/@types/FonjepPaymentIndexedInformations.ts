@@ -1,4 +1,4 @@
-export default interface IFonjepPaymentIndexedInformations {
+export default interface FonjepPaymentIndexedInformations {
     unique_id: string;
     updated_at: Date;
     code_poste: string;

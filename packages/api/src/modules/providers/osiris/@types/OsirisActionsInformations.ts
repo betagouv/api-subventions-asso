@@ -1,6 +1,6 @@
 import { SiretDto } from "dto";
 
-export default interface IOsirisActionsInformations {
+export default interface OsirisActionsInformations {
     osirisActionId: string;
     uniqueId: string;
     requestUniqueId: string;

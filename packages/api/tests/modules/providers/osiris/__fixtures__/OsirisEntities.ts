@@ -1,5 +1,5 @@
-import IOsirisActionsInformations from "../../../../../src/modules/providers/osiris/@types/IOsirisActionsInformations";
-import IOsirisRequestInformations from "../../../../../src/modules/providers/osiris/@types/IOsirisRequestInformations";
+import OsirisActionsInformations from "../../../../../src/modules/providers/osiris/@types/OsirisActionsInformations";
+import OsirisRequestInformations from "../../../../../src/modules/providers/osiris/@types/OsirisRequestInformations";
 import OsirisActionEntity from "../../../../../src/modules/providers/osiris/entities/OsirisActionEntity";
 import OsirisRequestEntity from "../../../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
 import DEFAULT_ASSOCIATION from "../../../../__fixtures__/association.fixture";
@@ -15,7 +15,7 @@ export const OSIRIS_REQUEST_ENTITY: OsirisRequestEntity = new OsirisRequestEntit
         exercise: 2022,
         etablissementVoie: "rue Waldeck-Rousseau",
         etablissementCodePostal: "75000",
-    } as IOsirisRequestInformations,
+    } as OsirisRequestInformations,
     { Dossier: { "Date Reception": 43549.44370065972, "Exercice Début": 2022, "Exercice Fin": 2025 } },
     new Date("2025"),
     [],
@@ -40,7 +40,7 @@ export const OSIRIS_ACTION_ENTITY = new OsirisActionEntity(
         montants_versement_realise: 120000,
         montants_versement_compensation: 0,
         exercise: 2022,
-    } as IOsirisActionsInformations,
+    } as OsirisActionsInformations,
     {},
     new Date("2025"),
 );
