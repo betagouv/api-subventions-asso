@@ -3,7 +3,7 @@ import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 import OsirisRequestEntityFixture, {
     OSIRIS_ACTION_ENTITY,
-} from "../../../../tests/modules/providers/osiris/__fixtures__/entity";
+} from "../../../../tests/modules/providers/osiris/__fixtures__/OsirisEntities";
 import { GenericParser } from "../../../shared/GenericParser";
 import { DefaultObject } from "../../../@types";
 jest.mock("../../../shared/GenericParser");

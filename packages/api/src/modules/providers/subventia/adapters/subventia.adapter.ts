@@ -1,4 +1,4 @@
-import { CommonApplicationDto, ApplicationStatus, DemandeSubvention } from "dto";
+import { CommonApplicationDto, ApplicationStatus, DemandeSubvention, ApplicationNature } from "dto";
 
 import subventiaService from "../subventia.service";
 import SubventiaDto from "../@types/subventia.dto";
@@ -7,7 +7,7 @@ import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { DefaultObject, ParserInfo } from "../../../../@types";
 import { GenericParser } from "../../../../shared/GenericParser";
 import { RawApplication } from "../../../grant/@types/rawGrant";
-import { ApplicationFlatEntity, ApplicationNature } from "../../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../../entities/ApplicationFlatEntity";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
 import Siret from "../../../../identifierObjects/Siret";
 
