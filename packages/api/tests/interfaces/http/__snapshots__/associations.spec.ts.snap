@@ -1,5 +1,65 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`/association /{identifier}/applications returns a list of applications flat 1`] = `
+[
+  {
+    "anneeDemande": 2015,
+    "anneesPluriannualite": [
+      2042,
+      2043,
+      2044,
+    ],
+    "cofinancementsSollicites": false,
+    "conditionsVersements": "PHASED",
+    "dateConvention": "2015-03-14T00:00:00.000Z",
+    "dateDecision": "2015-03-13T00:00:00.000Z",
+    "dateDepotDemande": "2015-03-12T00:00:00.000Z",
+    "dateMiseAJour": "2025-12-12T00:00:00.000Z",
+    "datesPeriodeVersement": [
+      "2015-03-15T00:00:00.000Z",
+      "2015-03-16T00:00:00.000Z",
+    ],
+    "descriptionConditionsVersements": "conditions",
+    "descriptionIdJointure": "pour joindre",
+    "dispositif": "dispositif",
+    "ej": "EJ0001",
+    "exerciceBudgetaire": 2015,
+    "fournisseur": "provider",
+    "idAttribuant": "123456789",
+    "idAutoriteGestion": "012345678",
+    "idCofinanceursSollicites": [],
+    "idEtablissementBeneficiaire": "10000000000001",
+    "idJointure": "joint001",
+    "idRAE": "RAEid",
+    "idServiceInstructeur": "890123456",
+    "idSubvention": "provider--subv001",
+    "idSubventionProvider": "subv001",
+    "idUnique": "provider--subv001--2015",
+    "idVersement": "idv",
+    "montantAccorde": 15000,
+    "montantDemande": 30000,
+    "montantTotal": 50000,
+    "nature": "Aide en nature",
+    "nomAttribuant": "attribuant",
+    "nomAutoriteGestion": "autoriteGestion",
+    "nomServiceInstructeur": "serviceInstructeur",
+    "nomsAttribuantsCofinanceurs": [],
+    "notificationUE": false,
+    "objet": "objet",
+    "pluriannualite": true,
+    "pourcentageSubvention": 100,
+    "referenceDecision": "idDecision",
+    "sousDispositif": "sous-dispositif",
+    "statutLabel": "Accordé",
+    "typeIdAttribuant": null,
+    "typeIdAutoriteGestion": null,
+    "typeIdCofinanceursSollicites": [],
+    "typeIdEtablissementBeneficiaire": "siret",
+    "typeIdServiceInstructeur": null,
+  },
+]
+`;
+
 exports[`/association /{identifier}/grants should return grants with rna 1`] = `
 {
   "subventions": [
@@ -301,7 +361,120 @@ exports[`/association /{identifier}/grants should return grants with rna 1`] = `
     },
     {
       "application": {
-        "actions_proposee": [],
+        "actions_proposee": [
+          {
+            "cofinanceurs": {
+              "montant_demandes": {
+                "last_update": "2022-01-01T00:00:00.000Z",
+                "provider": "OSIRIS",
+                "type": "undefined",
+              },
+              "noms": {
+                "last_update": "2022-01-01T00:00:00.000Z",
+                "provider": "OSIRIS",
+                "type": "undefined",
+              },
+            },
+            "description": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "string",
+              "value": "description de l'action",
+            },
+            "ej": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "string",
+              "value": "EJ00001",
+            },
+            "indicateurs": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "undefined",
+            },
+            "intitule": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "string",
+              "value": "intitulé de l'action",
+            },
+            "modalite_aide": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "undefined",
+            },
+            "modalite_ou_dispositif": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "undefined",
+            },
+            "montants_versement": {
+              "accorde": {
+                "last_update": "2022-01-01T00:00:00.000Z",
+                "provider": "OSIRIS",
+                "type": "number",
+                "value": 150000,
+              },
+              "attribue": {
+                "last_update": "2022-01-01T00:00:00.000Z",
+                "provider": "OSIRIS",
+                "type": "number",
+                "value": 150000,
+              },
+              "compensation": {
+                "last_update": "2022-01-01T00:00:00.000Z",
+                "provider": "OSIRIS",
+                "type": "number",
+                "value": 0,
+              },
+              "demande": {
+                "last_update": "2022-01-01T00:00:00.000Z",
+                "provider": "OSIRIS",
+                "type": "number",
+                "value": 170000,
+              },
+              "propose": {
+                "last_update": "2022-01-01T00:00:00.000Z",
+                "provider": "OSIRIS",
+                "type": "number",
+                "value": 150000,
+              },
+              "realise": {
+                "last_update": "2022-01-01T00:00:00.000Z",
+                "provider": "OSIRIS",
+                "type": "number",
+                "value": 120000,
+              },
+              "total": {
+                "last_update": "2022-01-01T00:00:00.000Z",
+                "provider": "OSIRIS",
+                "type": "number",
+                "value": 150000,
+              },
+            },
+            "nature_aide": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "string",
+              "value": "aide en numéraire",
+            },
+            "objectifs": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "undefined",
+            },
+            "objectifs_operationnels": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "undefined",
+            },
+            "rang": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "undefined",
+            },
+          },
+        ],
         "annee_demande": {
           "last_update": "2022-01-01T00:00:00.000Z",
           "provider": "OSIRIS",
@@ -386,7 +559,20 @@ exports[`/association /{identifier}/grants should return grants with rna 1`] = `
           "type": "string",
           "value": "",
         },
-        "territoires": [],
+        "territoires": [
+          {
+            "commentaire": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "undefined",
+            },
+            "status": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "undefined",
+            },
+          },
+        ],
         "versement": {
           "acompte": {
             "last_update": "2022-01-01T00:00:00.000Z",
@@ -524,70 +710,7 @@ exports[`/association /{identifier}/grants should return grants with rna 1`] = `
           "value": 1821732,
         },
       },
-      "payments": [
-        {
-          "activitee": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "Label d'activité Exemple",
-          },
-          "amount": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "number",
-            "value": 1000,
-          },
-          "centreFinancier": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "UO DGER XXXX-C001",
-          },
-          "dateOperation": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "object",
-            "value": "2023-04-01T00:00:00.000Z",
-          },
-          "domaineFonctionnel": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "Label d'action Exemple",
-          },
-          "ej": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "0001821732",
-          },
-          "libelleProgramme": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "Programme Exemple",
-          },
-          "programme": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "number",
-            "value": 1,
-          },
-          "siret": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "10000000000001",
-          },
-          "versementKey": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "0001821732",
-          },
-        },
-      ],
+      "payments": null,
     },
   ],
 }
@@ -894,7 +1017,120 @@ exports[`/association /{identifier}/grants should return grants with siren 1`] =
     },
     {
       "application": {
-        "actions_proposee": [],
+        "actions_proposee": [
+          {
+            "cofinanceurs": {
+              "montant_demandes": {
+                "last_update": "2022-01-01T00:00:00.000Z",
+                "provider": "OSIRIS",
+                "type": "undefined",
+              },
+              "noms": {
+                "last_update": "2022-01-01T00:00:00.000Z",
+                "provider": "OSIRIS",
+                "type": "undefined",
+              },
+            },
+            "description": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "string",
+              "value": "description de l'action",
+            },
+            "ej": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "string",
+              "value": "EJ00001",
+            },
+            "indicateurs": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "undefined",
+            },
+            "intitule": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "string",
+              "value": "intitulé de l'action",
+            },
+            "modalite_aide": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "undefined",
+            },
+            "modalite_ou_dispositif": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "undefined",
+            },
+            "montants_versement": {
+              "accorde": {
+                "last_update": "2022-01-01T00:00:00.000Z",
+                "provider": "OSIRIS",
+                "type": "number",
+                "value": 150000,
+              },
+              "attribue": {
+                "last_update": "2022-01-01T00:00:00.000Z",
+                "provider": "OSIRIS",
+                "type": "number",
+                "value": 150000,
+              },
+              "compensation": {
+                "last_update": "2022-01-01T00:00:00.000Z",
+                "provider": "OSIRIS",
+                "type": "number",
+                "value": 0,
+              },
+              "demande": {
+                "last_update": "2022-01-01T00:00:00.000Z",
+                "provider": "OSIRIS",
+                "type": "number",
+                "value": 170000,
+              },
+              "propose": {
+                "last_update": "2022-01-01T00:00:00.000Z",
+                "provider": "OSIRIS",
+                "type": "number",
+                "value": 150000,
+              },
+              "realise": {
+                "last_update": "2022-01-01T00:00:00.000Z",
+                "provider": "OSIRIS",
+                "type": "number",
+                "value": 120000,
+              },
+              "total": {
+                "last_update": "2022-01-01T00:00:00.000Z",
+                "provider": "OSIRIS",
+                "type": "number",
+                "value": 150000,
+              },
+            },
+            "nature_aide": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "string",
+              "value": "aide en numéraire",
+            },
+            "objectifs": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "undefined",
+            },
+            "objectifs_operationnels": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "undefined",
+            },
+            "rang": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "undefined",
+            },
+          },
+        ],
         "annee_demande": {
           "last_update": "2022-01-01T00:00:00.000Z",
           "provider": "OSIRIS",
@@ -979,7 +1215,20 @@ exports[`/association /{identifier}/grants should return grants with siren 1`] =
           "type": "string",
           "value": "",
         },
-        "territoires": [],
+        "territoires": [
+          {
+            "commentaire": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "undefined",
+            },
+            "status": {
+              "last_update": "2022-01-01T00:00:00.000Z",
+              "provider": "OSIRIS",
+              "type": "undefined",
+            },
+          },
+        ],
         "versement": {
           "acompte": {
             "last_update": "2022-01-01T00:00:00.000Z",
@@ -1117,70 +1366,7 @@ exports[`/association /{identifier}/grants should return grants with siren 1`] =
           "value": 1821732,
         },
       },
-      "payments": [
-        {
-          "activitee": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "Label d'activité Exemple",
-          },
-          "amount": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "number",
-            "value": 1000,
-          },
-          "centreFinancier": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "UO DGER XXXX-C001",
-          },
-          "dateOperation": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "object",
-            "value": "2023-04-01T00:00:00.000Z",
-          },
-          "domaineFonctionnel": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "Label d'action Exemple",
-          },
-          "ej": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "0001821732",
-          },
-          "libelleProgramme": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "Programme Exemple",
-          },
-          "programme": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "number",
-            "value": 1,
-          },
-          "siret": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "10000000000001",
-          },
-          "versementKey": {
-            "last_update": "2023-04-01T00:00:00.000Z",
-            "provider": "chorus",
-            "type": "string",
-            "value": "0001821732",
-          },
-        },
-      ],
+      "payments": null,
     },
   ],
 }
@@ -1191,8 +1377,8 @@ exports[`/association /{identifier}/grants/csv returns extract from rna 1`] = `
 L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2019;10000000000001;35000;GRANTOR_1;;2019-15081 - INSTITUT DE SOUDURE;;60854;Accordé;;;;
 L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;XXX;Dispositif;;500;500;Accordé;1000;;2022-01-02;163 - PROGRAM 163
 L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;Dauphin;Education – Sport - Jeunesse - Politique de la ville;INTITULE_PROJET;;7000;Accordé;;;;
-L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;;;;;;;;;;
-L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2023;10000000000001;35000;Auvergne-Rhône-Alpes;Aide au projet ou au fonctionnement - Transmission culturelle (2023);Atelier d'arts plastiques et d’écriture en Hors temps scolaire ;1300;;Accordé;1000;UO DGER XXXX-C001;2023-04-01;1 - Programme Exemple
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;;;intitulé de l'action;;;;;;;
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2023;10000000000001;35000;Auvergne-Rhône-Alpes;Aide au projet ou au fonctionnement - Transmission culturelle (2023);Atelier d'arts plastiques et d’écriture en Hors temps scolaire ;1300;;Accordé;;;;
 "
 `;
 
@@ -1201,8 +1387,8 @@ exports[`/association /{identifier}/grants/csv returns extract from siren 1`] = 
 L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2019;10000000000001;35000;GRANTOR_1;;2019-15081 - INSTITUT DE SOUDURE;;60854;Accordé;;;;
 L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;XXX;Dispositif;;500;500;Accordé;1000;;2022-01-02;163 - PROGRAM 163
 L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;Dauphin;Education – Sport - Jeunesse - Politique de la ville;INTITULE_PROJET;;7000;Accordé;;;;
-L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;;;;;;;;;;
-L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2023;10000000000001;35000;Auvergne-Rhône-Alpes;Aide au projet ou au fonctionnement - Transmission culturelle (2023);Atelier d'arts plastiques et d’écriture en Hors temps scolaire ;1300;;Accordé;1000;UO DGER XXXX-C001;2023-04-01;1 - Programme Exemple
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;;;intitulé de l'action;;;;;;;
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2023;10000000000001;35000;Auvergne-Rhône-Alpes;Aide au projet ou au fonctionnement - Transmission culturelle (2023);Atelier d'arts plastiques et d’écriture en Hors temps scolaire ;1300;;Accordé;;;;
 "
 `;
 
@@ -1211,9 +1397,66 @@ exports[`/association /{identifier}/grants/csv returns extract from siret 1`] = 
 L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2019;10000000000001;35000;GRANTOR_1;;2019-15081 - INSTITUT DE SOUDURE;;60854;Accordé;;;;
 L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;XXX;Dispositif;;500;500;Accordé;1000;;2022-01-02;163 - PROGRAM 163
 L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;Dauphin;Education – Sport - Jeunesse - Politique de la ville;INTITULE_PROJET;;7000;Accordé;;;;
-L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;;;;;;;;;;
-L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2023;10000000000001;35000;Auvergne-Rhône-Alpes;Aide au projet ou au fonctionnement - Transmission culturelle (2023);Atelier d'arts plastiques et d’écriture en Hors temps scolaire ;1300;;Accordé;1000;UO DGER XXXX-C001;2023-04-01;1 - Programme Exemple
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2022;10000000000001;35000;;;intitulé de l'action;;;;;;;
+L'Asso Imaginaire;;47 RUE D'ANTRAIN 35000 RENNES;2023;10000000000001;35000;Auvergne-Rhône-Alpes;Aide au projet ou au fonctionnement - Transmission culturelle (2023);Atelier d'arts plastiques et d’écriture en Hors temps scolaire ;1300;;Accordé;;;;
 "
+`;
+
+exports[`/association /{identifier}/paiements returns a list of payments flat 1`] = `
+[
+  {
+    "action": "Label d'action Exemple",
+    "activite": "Label d'activité Exemple",
+    "attachementComptable": "BRET",
+    "codeAction": "AC123",
+    "codeActivite": "AC456",
+    "codeCentreFinancier": "AA01/0776-C001-4000",
+    "dateOperation": "2023-04-01T00:00:00.000Z",
+    "ej": "0001821732",
+    "exerciceBudgetaire": 2023,
+    "idEntrepriseBeneficiaire": "100000000",
+    "idEtablissementBeneficiaire": "10000000000001",
+    "idVersement": "12345678901234-0001821732-2023",
+    "libelleCentreFinancier": "UO DGER XXXX-C001",
+    "ministere": "Ministère Exemple",
+    "mission": "Mission Exemple",
+    "montant": 1000,
+    "numeroProgramme": 1,
+    "programme": "Programme Exemple",
+    "provider": "chorus",
+    "regionAttachementComptable": "Bretagne",
+    "sigleMinistere": "ME",
+    "typeIdEntrepriseBeneficiaire": "siren",
+    "typeIdEtablissementBeneficiaire": "siret",
+    "uniqueId": "12345678901234-0001821732-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
+  },
+  {
+    "action": "Label d'action Exemple",
+    "activite": "Label d'activité Exemple",
+    "attachementComptable": "BRET",
+    "codeAction": "0101-01-02",
+    "codeActivite": "077601003222",
+    "codeCentreFinancier": "AA01/0776-C001-4000",
+    "dateOperation": "2023-07-12T00:00:00.000Z",
+    "ej": "0001821732",
+    "exerciceBudgetaire": 2023,
+    "idEntrepriseBeneficiaire": "100000000",
+    "idEtablissementBeneficiaire": "10000000000001",
+    "idVersement": "ID_VERSEMENT",
+    "libelleCentreFinancier": "UO DGER XXXX-C001",
+    "ministere": "Ministère Exemple",
+    "mission": "Mission Exemple",
+    "montant": 89988.3,
+    "numeroProgramme": 101,
+    "programme": "Programme Exemple",
+    "provider": "chorus",
+    "regionAttachementComptable": "Bretagne",
+    "sigleMinistere": "ME",
+    "typeIdEntrepriseBeneficiaire": "siren",
+    "typeIdEtablissementBeneficiaire": "siret",
+    "uniqueId": "UNIQUE_ID",
+  },
+]
 `;
 
 exports[`/association /{identifier}/raw-grants should return raw grants with rna 1`] = `
@@ -2951,7 +3194,31 @@ exports[`/association /{identifier}/raw-grants should return raw grants with rna
       {
         "data": {
           "_id": Any<String>,
-          "actions": [],
+          "actions": [
+            {
+              "data": {},
+              "indexedInformations": {
+                "compteAssoId": "LE_COMPTE_ASSO_ID",
+                "description": "description de l'action",
+                "ej": "EJ00001",
+                "exercise": 2022,
+                "intitule": "intitulé de l'action",
+                "montants_versement_accorde": 150000,
+                "montants_versement_attribue": 150000,
+                "montants_versement_compensation": 0,
+                "montants_versement_demande": 170000,
+                "montants_versement_propose": 150000,
+                "montants_versement_realise": 120000,
+                "montants_versement_total": 150000,
+                "nature_aide": "aide en numéraire",
+                "osirisActionId": "DD71-24-0094-01",
+                "requestUniqueId": "DD71-24-0094-2022",
+                "siret": "10000000000001",
+                "uniqueId": "DD71-24-0094-01-2022",
+              },
+              "updateDate": "2025-01-01T00:00:00.000Z",
+            },
+          ],
           "data": {
             "Dossier": {
               "Date Reception": 43549.44370065972,
@@ -2973,8 +3240,8 @@ exports[`/association /{identifier}/raw-grants should return raw grants with rna
             "etablissementCodePostal": "75000",
             "etablissementVoie": "rue Waldeck-Rousseau",
             "exercise": 2022,
-            "osirisId": "OSIRIS_ID",
-            "uniqueId": "OSIRIS_ID-2022",
+            "osirisId": "DD71-24-0094",
+            "uniqueId": "DD71-24-0094-2022",
           },
           "updateDate": "2025-01-01T00:00:00.000Z",
         },
@@ -3424,44 +3691,7 @@ exports[`/association /{identifier}/raw-grants should return raw grants with rna
       },
     ],
     "fullGrants": [],
-    "payments": [
-      {
-        "data": {
-          "_id": Any<String>,
-          "actionCode": "AC123",
-          "actionLabel": "Label d'action Exemple",
-          "activityCode": "AC456",
-          "activityLabel": "Label d'activité Exemple",
-          "amount": 1000,
-          "attachementComptable": "BRET",
-          "centreFinancierCode": "AA01/0776-C001-4000",
-          "centreFinancierLibelle": "UO DGER XXXX-C001",
-          "ej": "0001821732",
-          "exerciceBudgetaire": 2023,
-          "idEntrepriseBeneficiaire": {
-            "identifier": "100000000",
-          },
-          "idEtablissementBeneficiaire": {
-            "identifier": "10000000000001",
-          },
-          "idVersement": "12345678901234-0001821732-2023",
-          "ministry": "Ministère Exemple",
-          "ministryAcronym": "ME",
-          "mission": "Mission Exemple",
-          "operationDate": "2023-04-01T00:00:00.000Z",
-          "programName": "Programme Exemple",
-          "programNumber": 1,
-          "provider": "chorus",
-          "regionAttachementComptable": "Bretagne",
-          "typeIdEntrepriseBeneficiaire": "siren",
-          "typeIdEtablissementBeneficiaire": "siret",
-          "uniqueId": "12345678901234-0001821732-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
-        },
-        "joinKey": "0001821732",
-        "provider": "payment-flat",
-        "type": "payment",
-      },
-    ],
+    "payments": [],
   },
   {
     "applications": [
@@ -5256,7 +5486,31 @@ exports[`/association /{identifier}/raw-grants should return raw grants with sir
       {
         "data": {
           "_id": Any<String>,
-          "actions": [],
+          "actions": [
+            {
+              "data": {},
+              "indexedInformations": {
+                "compteAssoId": "LE_COMPTE_ASSO_ID",
+                "description": "description de l'action",
+                "ej": "EJ00001",
+                "exercise": 2022,
+                "intitule": "intitulé de l'action",
+                "montants_versement_accorde": 150000,
+                "montants_versement_attribue": 150000,
+                "montants_versement_compensation": 0,
+                "montants_versement_demande": 170000,
+                "montants_versement_propose": 150000,
+                "montants_versement_realise": 120000,
+                "montants_versement_total": 150000,
+                "nature_aide": "aide en numéraire",
+                "osirisActionId": "DD71-24-0094-01",
+                "requestUniqueId": "DD71-24-0094-2022",
+                "siret": "10000000000001",
+                "uniqueId": "DD71-24-0094-01-2022",
+              },
+              "updateDate": "2025-01-01T00:00:00.000Z",
+            },
+          ],
           "data": {
             "Dossier": {
               "Date Reception": 43549.44370065972,
@@ -5278,8 +5532,8 @@ exports[`/association /{identifier}/raw-grants should return raw grants with sir
             "etablissementCodePostal": "75000",
             "etablissementVoie": "rue Waldeck-Rousseau",
             "exercise": 2022,
-            "osirisId": "OSIRIS_ID",
-            "uniqueId": "OSIRIS_ID-2022",
+            "osirisId": "DD71-24-0094",
+            "uniqueId": "DD71-24-0094-2022",
           },
           "updateDate": "2025-01-01T00:00:00.000Z",
         },
@@ -5729,44 +5983,7 @@ exports[`/association /{identifier}/raw-grants should return raw grants with sir
       },
     ],
     "fullGrants": [],
-    "payments": [
-      {
-        "data": {
-          "_id": Any<String>,
-          "actionCode": "AC123",
-          "actionLabel": "Label d'action Exemple",
-          "activityCode": "AC456",
-          "activityLabel": "Label d'activité Exemple",
-          "amount": 1000,
-          "attachementComptable": "BRET",
-          "centreFinancierCode": "AA01/0776-C001-4000",
-          "centreFinancierLibelle": "UO DGER XXXX-C001",
-          "ej": "0001821732",
-          "exerciceBudgetaire": 2023,
-          "idEntrepriseBeneficiaire": {
-            "identifier": "100000000",
-          },
-          "idEtablissementBeneficiaire": {
-            "identifier": "10000000000001",
-          },
-          "idVersement": "12345678901234-0001821732-2023",
-          "ministry": "Ministère Exemple",
-          "ministryAcronym": "ME",
-          "mission": "Mission Exemple",
-          "operationDate": "2023-04-01T00:00:00.000Z",
-          "programName": "Programme Exemple",
-          "programNumber": 1,
-          "provider": "chorus",
-          "regionAttachementComptable": "Bretagne",
-          "typeIdEntrepriseBeneficiaire": "siren",
-          "typeIdEtablissementBeneficiaire": "siret",
-          "uniqueId": "12345678901234-0001821732-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
-        },
-        "joinKey": "0001821732",
-        "provider": "payment-flat",
-        "type": "payment",
-      },
-    ],
+    "payments": [],
   },
   {
     "applications": [
@@ -6323,7 +6540,120 @@ exports[`/association /{structure_identifier}/subventions should return a list o
     },
   },
   {
-    "actions_proposee": [],
+    "actions_proposee": [
+      {
+        "cofinanceurs": {
+          "montant_demandes": {
+            "last_update": "2022-01-01T00:00:00.000Z",
+            "provider": "OSIRIS",
+            "type": "undefined",
+          },
+          "noms": {
+            "last_update": "2022-01-01T00:00:00.000Z",
+            "provider": "OSIRIS",
+            "type": "undefined",
+          },
+        },
+        "description": {
+          "last_update": "2022-01-01T00:00:00.000Z",
+          "provider": "OSIRIS",
+          "type": "string",
+          "value": "description de l'action",
+        },
+        "ej": {
+          "last_update": "2022-01-01T00:00:00.000Z",
+          "provider": "OSIRIS",
+          "type": "string",
+          "value": "EJ00001",
+        },
+        "indicateurs": {
+          "last_update": "2022-01-01T00:00:00.000Z",
+          "provider": "OSIRIS",
+          "type": "undefined",
+        },
+        "intitule": {
+          "last_update": "2022-01-01T00:00:00.000Z",
+          "provider": "OSIRIS",
+          "type": "string",
+          "value": "intitulé de l'action",
+        },
+        "modalite_aide": {
+          "last_update": "2022-01-01T00:00:00.000Z",
+          "provider": "OSIRIS",
+          "type": "undefined",
+        },
+        "modalite_ou_dispositif": {
+          "last_update": "2022-01-01T00:00:00.000Z",
+          "provider": "OSIRIS",
+          "type": "undefined",
+        },
+        "montants_versement": {
+          "accorde": {
+            "last_update": "2022-01-01T00:00:00.000Z",
+            "provider": "OSIRIS",
+            "type": "number",
+            "value": 150000,
+          },
+          "attribue": {
+            "last_update": "2022-01-01T00:00:00.000Z",
+            "provider": "OSIRIS",
+            "type": "number",
+            "value": 150000,
+          },
+          "compensation": {
+            "last_update": "2022-01-01T00:00:00.000Z",
+            "provider": "OSIRIS",
+            "type": "number",
+            "value": 0,
+          },
+          "demande": {
+            "last_update": "2022-01-01T00:00:00.000Z",
+            "provider": "OSIRIS",
+            "type": "number",
+            "value": 170000,
+          },
+          "propose": {
+            "last_update": "2022-01-01T00:00:00.000Z",
+            "provider": "OSIRIS",
+            "type": "number",
+            "value": 150000,
+          },
+          "realise": {
+            "last_update": "2022-01-01T00:00:00.000Z",
+            "provider": "OSIRIS",
+            "type": "number",
+            "value": 120000,
+          },
+          "total": {
+            "last_update": "2022-01-01T00:00:00.000Z",
+            "provider": "OSIRIS",
+            "type": "number",
+            "value": 150000,
+          },
+        },
+        "nature_aide": {
+          "last_update": "2022-01-01T00:00:00.000Z",
+          "provider": "OSIRIS",
+          "type": "string",
+          "value": "aide en numéraire",
+        },
+        "objectifs": {
+          "last_update": "2022-01-01T00:00:00.000Z",
+          "provider": "OSIRIS",
+          "type": "undefined",
+        },
+        "objectifs_operationnels": {
+          "last_update": "2022-01-01T00:00:00.000Z",
+          "provider": "OSIRIS",
+          "type": "undefined",
+        },
+        "rang": {
+          "last_update": "2022-01-01T00:00:00.000Z",
+          "provider": "OSIRIS",
+          "type": "undefined",
+        },
+      },
+    ],
     "annee_demande": {
       "last_update": "2022-01-01T00:00:00.000Z",
       "provider": "OSIRIS",
@@ -6408,7 +6738,20 @@ exports[`/association /{structure_identifier}/subventions should return a list o
       "type": "string",
       "value": "",
     },
-    "territoires": [],
+    "territoires": [
+      {
+        "commentaire": {
+          "last_update": "2022-01-01T00:00:00.000Z",
+          "provider": "OSIRIS",
+          "type": "undefined",
+        },
+        "status": {
+          "last_update": "2022-01-01T00:00:00.000Z",
+          "provider": "OSIRIS",
+          "type": "undefined",
+        },
+      },
+    ],
     "versement": {
       "acompte": {
         "last_update": "2022-01-01T00:00:00.000Z",

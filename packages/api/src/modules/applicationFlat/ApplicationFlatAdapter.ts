@@ -1,4 +1,4 @@
-import { DemandeSubvention } from "dto";
+import { ApplicationFlatDto, DemandeSubvention } from "dto";
 import { ApplicationFlatEntity } from "../../entities/ApplicationFlatEntity";
 import { RawApplication } from "../grant/@types/rawGrant";
 import ProviderValueAdapter from "../../shared/adapters/ProviderValueAdapter";
@@ -172,5 +172,9 @@ export default class ApplicationFlatAdapter {
             notificationUE: entity.ueNotification,
             pourcentageSubvention: entity.subventionPercentage,
         };
+    }
+
+    static toDto(entity: ApplicationFlatEntity) {
+        return ApplicationFlatAdapter.entityToDbo(entity) as ApplicationFlatDto;
     }
 }

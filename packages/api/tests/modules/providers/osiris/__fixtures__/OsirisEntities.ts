@@ -4,10 +4,10 @@ import OsirisActionEntity from "../../../../../src/modules/providers/osiris/enti
 import OsirisRequestEntity from "../../../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
 import DEFAULT_ASSOCIATION from "../../../../__fixtures__/association.fixture";
 
-const OSIRIS_REQUEST_ENTITY: OsirisRequestEntity = new OsirisRequestEntity(
+export const OSIRIS_REQUEST_ENTITY: OsirisRequestEntity = new OsirisRequestEntity(
     { siret: DEFAULT_ASSOCIATION.siret, rna: DEFAULT_ASSOCIATION.rna, name: DEFAULT_ASSOCIATION.name },
     {
-        osirisId: "OSIRIS_ID",
+        osirisId: "DD71-24-0094",
         compteAssoId: "LE_COMPTE_ASSO_ID",
         ej: "EJ00001",
         amountAwarded: 0,
@@ -23,7 +23,7 @@ const OSIRIS_REQUEST_ENTITY: OsirisRequestEntity = new OsirisRequestEntity(
 
 export const OSIRIS_ACTION_ENTITY = new OsirisActionEntity(
     {
-        osirisActionId: "OSIRIS_ACTION_ID",
+        osirisActionId: "DD71-24-0094-01",
         requestUniqueId: OSIRIS_REQUEST_ENTITY.providerInformations.uniqueId,
         compteAssoId: OSIRIS_REQUEST_ENTITY.providerInformations.compteAssoId,
 

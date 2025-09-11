@@ -6,7 +6,10 @@ import {
     PaymentEntity as FonjepPaymentFixture,
 } from "../../modules/providers/fonjep/__fixtures__/entity";
 import request from "supertest";
-import OsirisRequestEntityFixture from "../../modules/providers/osiris/__fixtures__/entity";
+import {
+    OSIRIS_REQUEST_ENTITY,
+    OSIRIS_ACTION_ENTITY,
+} from "../../modules/providers/osiris/__fixtures__/OsirisEntities";
 import { compareByValueBuilder } from "../../../src/shared/helpers/ArrayHelper";
 import { BadRequestError } from "core";
 import associationsService from "../../../src/modules/associations/associations.service";
@@ -42,6 +45,13 @@ import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFl
 import { PAYMENT_FLAT_DBO } from "../../../src/dataProviders/db/paymentFlat/__fixtures__/paymentFlatDbo.fixture";
 import PaymentFlatAdapter from "../../../src/modules/paymentFlat/paymentFlatAdapter";
 import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
+import applicationFlatPort from "../../../src/dataProviders/db/applicationFlat/applicationFlat.port";
+import { ENTITY as APPLICATION_FLAT_ENTITY } from "../../../src/modules/applicationFlat/__fixtures__";
+import {
+    CHORUS_PAYMENT_FLAT_ENTITY,
+    FONJEP_PAYMENT_FLAT_ENTITY,
+} from "../../../src/modules/paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+import { osirisActionPort } from "../../../src/dataProviders/db/providers/osiris";
 
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
 
@@ -58,7 +68,8 @@ const insertData = async () => {
     // APPLICATIONS
     // @ts-expect-error: DBO not fully mocked
     await dauphinPort.upsert(DAUPHIN_GISPRO_DBOS[0]);
-    await osirisRequestPort.add(OsirisRequestEntityFixture);
+    await osirisRequestPort.add(OSIRIS_REQUEST_ENTITY);
+    await osirisActionPort.add(OSIRIS_ACTION_ENTITY);
     await fonjepSubventionPort.create(FonjepSubventionFixture);
     await demarchesSimplifieesSchemaPort.upsert(DS_SCHEMAS[0]);
     await demarchesSimplifieesDataPort.upsert(DS_DATA_ENTITIES[0]);
@@ -66,6 +77,8 @@ const insertData = async () => {
     //@ts-expect-error: only for test
     await miscScdlProducersPort.upsert(LOCAL_AUTHORITIES[0].slug, LOCAL_AUTHORITIES[0]);
     await miscScdlGrantPort.createMany(SCDL_GRANT_DBOS);
+    await applicationFlatPort.insertMany([APPLICATION_FLAT_ENTITY]);
+    await paymentFlatPort.insertMany([CHORUS_PAYMENT_FLAT_ENTITY, FONJEP_PAYMENT_FLAT_ENTITY]);
 };
 
 describe("/association", () => {
@@ -90,43 +103,6 @@ describe("/association", () => {
         mockGetEtablissementsBySiren.mockClear();
     });
 
-    describe("/{structure_identifier}/subventions", () => {
-        it("should return a list of subventions", async () => {
-            const response = await request(g.app)
-                .get(`/association/${DEFAULT_ASSOCIATION.siret}/subventions`)
-                .set("x-access-token", await createAndGetUserToken())
-                .set("Accept", "application/json");
-            expect(response.statusCode).toBe(200);
-
-            const subventions = response.body.subventions;
-            // Sort subventions (OSIRIS first) to avoid race test failure
-            subventions.sort(compareByValueBuilder("siret.provider"));
-
-            // replace date in Démarches Simplifiees
-            // avoid timezone date test failure
-            // use siret.provider to check on provider name by default
-            subventions.forEach(subvention => {
-                if (subvention.siret.provider === demarchesSimplifieesService.provider.name) {
-                    subvention.date_debut.value = expect.any(Date);
-                    subvention.date_fin.value = expect.any(Date);
-                }
-            });
-
-            expect(subventions).toMatchSnapshot();
-        });
-
-        it("should return empty array if RNA does not match a SIREN", async () => {
-            const response = await request(g.app)
-                .get(`/association/${LONELY_RNA}/subventions`)
-                .set("x-access-token", await createAndGetUserToken())
-                .set("Accept", "application/json");
-            expect(response.statusCode).toBe(200);
-
-            const actual = response.body.subventions;
-            expect(actual).toHaveLength(0);
-        });
-    });
-
     describe("/{structure_identifier}", () => {
         it("should return an association", async () => {
             const response = await request(g.app)
@@ -147,7 +123,7 @@ describe("/association", () => {
             const actual = (await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date()))[0];
 
             expect(actual).toMatchObject({
-                associationIdentifier: OsirisRequestEntityFixture.legalInformations.siret.slice(0, 9),
+                associationIdentifier: OSIRIS_REQUEST_ENTITY.legalInformations.siret.slice(0, 9),
             });
         });
 
@@ -182,6 +158,72 @@ describe("/association", () => {
             const actual = await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date());
             expect(actual).toHaveLength(0);
             getAssoSpy.mockRestore();
+        });
+    });
+
+    describe("/{structure_identifier}/subventions", () => {
+        it("should return a list of subventions", async () => {
+            const response = await request(g.app)
+                .get(`/association/${DEFAULT_ASSOCIATION.siret}/subventions`)
+                .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "application/json");
+            expect(response.statusCode).toBe(200);
+
+            const subventions = response.body.subventions;
+            // Sort subventions (OSIRIS first) to avoid race test failure
+            subventions.sort(compareByValueBuilder("siret.provider"));
+
+            // replace date in Démarches Simplifiees
+            // avoid timezone date test failure
+            // use siret.provider to check on provider name by default
+            subventions.forEach(subvention => {
+                if (subvention.siret.provider === demarchesSimplifieesService.provider.name) {
+                    subvention.date_debut.value = expect.any(Date);
+                    subvention.date_fin.value = expect.any(Date);
+                }
+            });
+
+            expect(subventions).toMatchSnapshot();
+        });
+
+        it("should return empty array if RNA does not match a SIREN", async () => {
+            const response = await request(g.app)
+                .get(`/association/${LONELY_RNA}/subventions`)
+                .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "application/json");
+
+            expect(response.statusCode).toBe(200);
+
+            const actual = response.body.subventions;
+            expect(actual).toHaveLength(0);
+        });
+    });
+
+    describe("/{identifier}/paiements", () => {
+        it("returns a list of payments flat", async () => {
+            const response = await request(g.app)
+                .get(`/association/${DEFAULT_ASSOCIATION.siret}/paiements`)
+                .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "application/json");
+            expect(response.statusCode).toBe(200);
+
+            const payments = response.body.paiements;
+
+            expect(payments).toMatchSnapshot();
+        });
+    });
+
+    describe("/{identifier}/applications", () => {
+        it("returns a list of applications flat", async () => {
+            const response = await request(g.app)
+                .get(`/association/${DEFAULT_ASSOCIATION.siret}/applications`)
+                .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "application/json");
+            expect(response.statusCode).toBe(200);
+
+            const applications = response.body.applications;
+
+            expect(applications).toMatchSnapshot();
         });
     });
 

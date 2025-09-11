@@ -1,10 +1,10 @@
-import { ApplicationStatus, DemandeSubvention, CommonApplicationDto } from "dto";
+import { ApplicationStatus, DemandeSubvention, CommonApplicationDto, ApplicationNature, PaymentCondition } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { sameDateNextYear } from "../../../../shared/helpers/DateHelper";
 import MiscScdlGrantProducerEntity from "../entities/MiscScdlGrantProducerEntity";
 import { ScdlGrantEntity } from "../@types/ScdlGrantEntity";
 import { RawApplication } from "../../../grant/@types/rawGrant";
-import { ApplicationFlatEntity, ApplicationNature, PaymentCondition } from "../../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../../entities/ApplicationFlatEntity";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
 import { ScdlGrantDbo } from "../dbo/ScdlGrantDbo";
 
