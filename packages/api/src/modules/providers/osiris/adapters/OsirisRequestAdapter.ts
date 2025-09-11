@@ -151,7 +151,7 @@ export default class OsirisRequestAdapter {
 
     static toDemandeSubvention(entity: OsirisRequestEntity): DemandeSubvention {
         const dataDate = new Date(Date.UTC(entity.providerInformations.exercise, 0));
-        const toPV = ProviderValueFactory.buildProviderValueAdapter(osirisService.provider.name, dataDate);
+        const toPV = ProviderValueFactory.buildProviderValueAdapter(osirisService.meta.name, dataDate);
 
         const EJ = entity.providerInformations.ej ? toPV(entity.providerInformations.ej) : undefined;
 

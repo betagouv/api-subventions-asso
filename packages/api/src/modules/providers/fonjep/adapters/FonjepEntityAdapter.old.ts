@@ -15,7 +15,7 @@ export default class FonjepEntityAdapter {
 
     static toDemandeSubvention(entity: FonjepSubventionEntity): DemandeSubvention {
         const dataDate = entity.indexedInformations.updated_at;
-        const toPV = ProviderValueFactory.buildProviderValueAdapter(fonjepService.provider.name, dataDate);
+        const toPV = ProviderValueFactory.buildProviderValueAdapter(fonjepService.meta.name, dataDate);
         const getSubventionStatus = () => {
             let status = entity.indexedInformations.status;
             const raison = entity.indexedInformations.raison;
@@ -43,7 +43,7 @@ export default class FonjepEntityAdapter {
 
     static toEtablissement(entity: FonjepSubventionEntity): Etablissement {
         const dataDate = entity.indexedInformations.updated_at;
-        const toPV = ProviderValueFactory.buildProviderValuesAdapter(fonjepService.provider.name, dataDate);
+        const toPV = ProviderValueFactory.buildProviderValuesAdapter(fonjepService.meta.name, dataDate);
 
         return {
             siret: toPV(entity.legalInformations.siret),
@@ -83,7 +83,7 @@ export default class FonjepEntityAdapter {
 
     static toPayment(entity: FonjepPaymentEntity, program: StateBudgetProgramEntity): FonjepPayment {
         const dataDate = entity.indexedInformations.updated_at;
-        const toPV = ProviderValueFactory.buildProviderValueAdapter(fonjepService.provider.name, dataDate);
+        const toPV = ProviderValueFactory.buildProviderValueAdapter(fonjepService.meta.name, dataDate);
 
         return {
             codePoste: toPV(entity.indexedInformations.code_poste),

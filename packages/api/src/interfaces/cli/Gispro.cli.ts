@@ -11,7 +11,7 @@ import gisproService from "../../modules/providers/dauphin-gispro/gispro.service
 export default class GisproCli extends CliController {
     static cmdName = "gispro";
 
-    protected _providerIdToLog = dauphinService.provider.id;
+    protected _providerIdToLog = dauphinService.meta.id;
 
     protected logFileParsePath = "./logs/gispro.parse.log.txt";
 
