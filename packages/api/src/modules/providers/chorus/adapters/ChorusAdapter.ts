@@ -235,7 +235,7 @@ export default class ChorusAdapter {
             regionAttachementComptable,
             ...rawDataWithDataBretagne,
         };
-        const uniqueId = this.buildUniqueId(partialPaymentFlat);
+        const uniqueId = this.buildFlatUniqueId(partialPaymentFlat);
 
         return {
             uniqueId,
@@ -243,7 +243,7 @@ export default class ChorusAdapter {
         };
     }
 
-    private static buildUniqueId(partialPaymentFlat: Omit<ChorusPaymentFlatEntity, "uniqueId">) {
+    private static buildFlatUniqueId(partialPaymentFlat: Omit<ChorusPaymentFlatEntity, "uniqueId">) {
         const {
             idVersement,
             programNumber,
@@ -254,7 +254,7 @@ export default class ChorusAdapter {
             centreFinancierCode,
         } = partialPaymentFlat;
 
-        return `${idVersement}-${programNumber}-${actionCode}-${activityCode}-${getShortISODate(operationDate)}-${attachementComptable}-${centreFinancierCode}`;
+        return `chorus-${idVersement}-${programNumber}-${actionCode}-${activityCode}-${getShortISODate(operationDate)}-${attachementComptable}-${centreFinancierCode}`;
     }
 
     private static getProgramCodeAndEntity(
