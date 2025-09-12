@@ -1,5 +1,5 @@
 import { ParserInfo, ParserPath } from "../../../../@types";
-import OsirisActionsInformations from "../@types/OsirisActionsInformations";
+import type OsirisActionsInformations from "../@types/OsirisActionsInformations";
 
 export default class OsirisActionEntity {
     public static defaultMainCategory = "Dossier/action";

@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
 import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
-import OsirisActionsInformations from "../@types/OsirisActionsInformations";
+import type OsirisActionsInformations from "../@types/OsirisActionsInformations";
 import { OSIRIS_ID } from "./osiris.request.fixtures";
 
 export const ACTION_ENTITY = new OsirisActionEntity(

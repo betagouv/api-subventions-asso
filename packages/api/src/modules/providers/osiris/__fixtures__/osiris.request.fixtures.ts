@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
 import OsirisRequestEntity from "../entities/OsirisRequestEntity";
-import OsirisRequestInformations from "../@types/OsirisRequestInformations";
+import type OsirisRequestInformations from "../@types/OsirisRequestInformations";
 
 export const OSIRIS_ID = "DR-CENT-21-0002";
 

@@ -1,4 +1,4 @@
-import ProviderInformations from "../../../search/@types/ProviderInformations";
+import type ProviderInformations from "../../../search/@types/ProviderInformations";
 
 export default interface OsirisRequestInformations extends ProviderInformations {
     osirisId: string;

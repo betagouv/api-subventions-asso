@@ -1,10 +1,10 @@
 import { DefaultObject } from "../../../@types";
-import LegalInformations from "../../search/@types/LegalInformations";
+import type LegalInformations from "../../search/@types/LegalInformations";
 import { GenericParser } from "../../../shared/GenericParser";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
-import OsirisRequestInformations from "./@types/OsirisRequestInformations";
-import OsirisActionsInformations from "./@types/OsirisActionsInformations";
+import type OsirisRequestInformations from "./@types/OsirisRequestInformations";
+import type OsirisActionsInformations from "./@types/OsirisActionsInformations";
 
 export default class OsirisParser {
     private static getUpdateDate(year: number) {

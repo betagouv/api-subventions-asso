@@ -6,7 +6,7 @@ import { DefaultObject } from "../../../@types";
 import Siret from "../../../identifierObjects/Siret";
 import { GenericParser } from "../../../shared/GenericParser";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
-import ChorusIndexedInformations from "./@types/ChorusIndexedInformations";
+import type ChorusIndexedInformations from "./@types/ChorusIndexedInformations";
 import { ChorusLineDto } from "./@types/ChorusLineDto";
 
 export default class ChorusParser {

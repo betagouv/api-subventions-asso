@@ -1,5 +1,5 @@
-import OsirisActionsInformations from "../../../../../src/modules/providers/osiris/@types/OsirisActionsInformations";
-import OsirisRequestInformations from "../../../../../src/modules/providers/osiris/@types/OsirisRequestInformations";
+import type OsirisActionsInformations from "../../../../../src/modules/providers/osiris/@types/OsirisActionsInformations";
+import type OsirisRequestInformations from "../../../../../src/modules/providers/osiris/@types/OsirisRequestInformations";
 import OsirisActionEntity from "../../../../../src/modules/providers/osiris/entities/OsirisActionEntity";
 import OsirisRequestEntity from "../../../../../src/modules/providers/osiris/entities/OsirisRequestEntity";
 import DEFAULT_ASSOCIATION from "../../../../__fixtures__/association.fixture";

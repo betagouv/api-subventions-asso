@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { ParserInfo } from "../../../../@types";
-import ChorusIndexedInformations from "../@types/ChorusIndexedInformations";
+import type ChorusIndexedInformations from "../@types/ChorusIndexedInformations";
 import { GenericParser } from "../../../../shared/GenericParser";
 import { ChorusLineDto } from "../@types/ChorusLineDto";
 

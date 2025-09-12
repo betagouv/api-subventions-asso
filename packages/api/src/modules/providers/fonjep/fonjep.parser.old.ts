@@ -1,8 +1,8 @@
 import { SiretDto } from "dto";
 import { DefaultObject, NestedDefaultObject } from "../../../@types";
 import { GenericParser } from "../../../shared/GenericParser";
-import FonjepIndexedInformations from "./@types/FonjepIndexedInformations";
-import FonjepPaymentIndexedInformations from "./@types/FonjepPaymentIndexedInformations";
+import type FonjepIndexedInformations from "./@types/FonjepIndexedInformations";
+import type FonjepPaymentIndexedInformations from "./@types/FonjepPaymentIndexedInformations";
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity.old";
 import FonjepPaymentEntity from "./entities/FonjepPaymentEntity.old";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";

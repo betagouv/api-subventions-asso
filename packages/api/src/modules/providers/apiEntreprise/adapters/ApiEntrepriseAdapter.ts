@@ -2,7 +2,7 @@ import { Etablissement } from "dto";
 import { getMonthFromFrenchStr } from "../../../../shared/helpers/DateHelper";
 import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
-import ApiEntrepriseHeadcount from "../@types/ApiEntrepriseHeadcount";
+import type ApiEntrepriseHeadcount from "../@types/ApiEntrepriseHeadcount";
 
 export default class ApiEntrepriseAdapter {
     static PROVIDER_NAME = "API Entreprise";

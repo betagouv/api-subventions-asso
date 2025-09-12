@@ -1,6 +1,6 @@
 import { SiretDto } from "dto";
 import { ParserInfo, ParserPath, DefaultObject } from "../../../../@types";
-import FonjepIndexedInformations from "../@types/FonjepIndexedInformations";
+import type FonjepIndexedInformations from "../@types/FonjepIndexedInformations";
 import { formatCP } from "../../../../shared/helpers/DataFormatHelper";
 import { GenericParser } from "../../../../shared/GenericParser";
 

@@ -12,7 +12,7 @@ import ProviderCore from "../ProviderCore";
 import Siret from "../../../identifierObjects/Siret";
 import Siren from "../../../identifierObjects/Siren";
 import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
-import ApiEntrepriseHeadcount from "./@types/ApiEntrepriseHeadcount";
+import type ApiEntrepriseHeadcount from "./@types/ApiEntrepriseHeadcount";
 import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
 
 export class ApiEntrepriseService extends ProviderCore {

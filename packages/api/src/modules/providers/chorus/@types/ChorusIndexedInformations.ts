@@ -1,4 +1,4 @@
-import BudgetLine from "../../../search/@types/BudgetLine";
+import type BudgetLine from "../../../search/@types/BudgetLine";
 
 export default interface ChorusIndexedInformations extends BudgetLine {
     numPosteEJ: number;
