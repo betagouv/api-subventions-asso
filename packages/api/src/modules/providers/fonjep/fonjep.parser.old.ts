@@ -1,8 +1,8 @@
 import { SiretDto } from "dto";
 import { DefaultObject, NestedDefaultObject } from "../../../@types";
 import { GenericParser } from "../../../shared/GenericParser";
-import IFonjepIndexedInformations from "./@types/IFonjepIndexedInformations";
-import IFonjepPaymentIndexedInformations from "./@types/IFonjepPaymentIndexedInformations";
+import type FonjepIndexedInformations from "./@types/FonjepIndexedInformations";
+import type FonjepPaymentIndexedInformations from "./@types/FonjepPaymentIndexedInformations";
 import FonjepSubventionEntity from "./entities/FonjepSubventionEntity.old";
 import FonjepPaymentEntity from "./entities/FonjepPaymentEntity.old";
 import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
@@ -36,7 +36,7 @@ export default class FonjepParser {
             // TODO <string|number>
             FonjepSubventionEntity.indexedProviderInformationsPath,
             parsedData,
-        ) as unknown as IFonjepIndexedInformations;
+        ) as unknown as FonjepIndexedInformations;
         indexedInformations.joinKey = indexedInformations.annee_demande + "-" + indexedInformations.code_poste;
         const legalInformations = GenericParser.indexDataByPathObject(
             FonjepSubventionEntity.indexedLegalInformationsPath,
@@ -50,7 +50,7 @@ export default class FonjepParser {
             // TODO <string|number>
             FonjepPaymentEntity.indexedProviderInformationsPath,
             data,
-        ) as unknown as IFonjepPaymentIndexedInformations;
+        ) as unknown as FonjepPaymentIndexedInformations;
         indexedInformations.joinKey =
             indexedInformations.periode_debut.getFullYear() + "-" + indexedInformations.code_poste;
         const legalInformations = GenericParser.indexDataByPathObject(

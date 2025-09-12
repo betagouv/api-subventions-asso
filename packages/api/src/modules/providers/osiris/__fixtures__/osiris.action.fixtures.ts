@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
 import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
-import IOsirisActionsInformations from "../@types/IOsirisActionsInformations";
+import type OsirisActionsInformations from "../@types/OsirisActionsInformations";
 import { OSIRIS_ID } from "./osiris.request.fixtures";
 
 export const ACTION_ENTITY = new OsirisActionEntity(
@@ -46,7 +46,7 @@ export const ACTION_ENTITY = new OsirisActionEntity(
         modalite_aide: "",
         modalite_ou_dispositif: "",
         montants_versement_attribue: 0,
-    } as IOsirisActionsInformations,
+    } as OsirisActionsInformations,
     {},
     new Date("2025-08-05"),
 );

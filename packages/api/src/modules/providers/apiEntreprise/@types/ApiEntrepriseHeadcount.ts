@@ -1,4 +1,4 @@
-export default interface IApiEntrepriseHeadcount {
+export default interface ApiEntrepriseHeadcount {
     siret: string;
     annee: string;
     mois: string;
