@@ -130,8 +130,8 @@ describe("ChorusAdapter", () => {
                 ej: toPV("FAKE"),
                 amount: toPV(0),
                 dateOperation: toPV(now),
-                programme: toPV(PROGRAM.code_programme, dataBretagneService.provider.name),
-                libelleProgramme: toPV(PROGRAM.label_programme, dataBretagneService.provider.name),
+                programme: toPV(PROGRAM.code_programme, dataBretagneService.meta.name),
+                libelleProgramme: toPV(PROGRAM.label_programme, dataBretagneService.meta.name),
             };
 
             expect(actual).toMatchObject(expected);

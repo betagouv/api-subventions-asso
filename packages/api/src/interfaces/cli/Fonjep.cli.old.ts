@@ -13,7 +13,7 @@ import CliController from "../../shared/CliController";
 @StaticImplements<CliStaticInterface>()
 export default class FonjepCli extends CliController {
     static cmdName = "fonjep-old";
-    protected _providerIdToLog = fonjepService.provider.id;
+    protected _providerIdToLog = fonjepService.meta.id;
     protected logFileParsePath = "./logs/fonjep.parse.log.txt";
 
     /**

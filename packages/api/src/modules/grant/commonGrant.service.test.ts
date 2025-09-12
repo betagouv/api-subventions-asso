@@ -1,10 +1,10 @@
 import { CommonGrantService } from "./commonGrant.service";
 
 jest.mock("../providers", () => ({
-    notGrandProvider: { provider: { id: "notGrant" } },
-    providerNoId: { provider: { id: null }, isGrantProvider: true },
-    providerNoMethod: { provider: { id: "providerNoMethod" }, isGrantProvider: true },
-    goodProvider: { provider: { id: "goodProvider" }, isGrantProvider: true, rawToCommon: jest.fn() },
+    notGrandProvider: { meta: { id: "notGrant" } },
+    providerNoId: { meta: { id: null }, isGrantProvider: true },
+    providerNoMethod: { meta: { id: "providerNoMethod" }, isGrantProvider: true },
+    goodProvider: { meta: { id: "goodProvider" }, isGrantProvider: true, rawToCommon: jest.fn() },
 }));
 
 describe("CommonGrantService", () => {
@@ -16,7 +16,7 @@ describe("CommonGrantService", () => {
         it("configures commonDto providers", () => {
             const expected = {
                 goodProvider: {
-                    provider: { id: "goodProvider" },
+                    meta: { id: "goodProvider" },
                     isGrantProvider: true,
                     rawToCommon: expect.any(Function),
                 },

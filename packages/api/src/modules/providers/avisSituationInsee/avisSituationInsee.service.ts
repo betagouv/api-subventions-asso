@@ -90,17 +90,17 @@ export class AvisSituationInseeService extends ProviderCore implements DocumentP
 
         return [
             {
-                type: ProviderValueAdapter.toProviderValue("Avis Situation Insee", this.provider.name, new Date()),
+                type: ProviderValueAdapter.toProviderValue("Avis Situation Insee", this.meta.name, new Date()),
                 url: ProviderValueAdapter.toProviderValue(
                     `${AvisSituationInseeService.DOC_PATH}/?url=${encodeURIComponent(
                         `${AvisSituationInseeService.API_URL}/pdf/${siret.value}`,
                     )}`,
-                    this.provider.name,
+                    this.meta.name,
                     new Date(),
                 ),
                 nom: ProviderValueAdapter.toProviderValue(
                     `Avis Situation Insee (${siret.value})`,
-                    this.provider.name,
+                    this.meta.name,
                     new Date(),
                 ),
                 __meta__: {

@@ -109,7 +109,7 @@ export default class OsirisCli implements ApplicationFlatCli {
         }
 
         // this assumes that extraction date is close enough to integration date. Is it?
-        await dataLogService.addLog(osirisService.provider.id, file, new Date());
+        await dataLogService.addLog(osirisService.meta.id, file, new Date());
     }
 
     async _parseRequest(contentFile: Buffer, year: number, logs: unknown[]) {
