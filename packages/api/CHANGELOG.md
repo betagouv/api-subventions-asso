@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.72.2](https://github.com/betagouv/api-subventions-asso/compare/v0.72.1...v0.72.2) (2025-09-12)
+
+### Bug Fixes
+
+- **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) hotfix chorus unique id ([#3640](https://github.com/betagouv/api-subventions-asso/issues/3640)) ([b29d64c](https://github.com/betagouv/api-subventions-asso/commit/b29d64c2bd5f7d1bba3a0c192a74244883e0ee23))
+
 ## [0.72.1](https://github.com/betagouv/api-subventions-asso/compare/v0.72.0...v0.72.1) (2025-08-22)
 
 ### Bug Fixes
