@@ -1,6 +1,6 @@
 import { SiretDto } from "dto";
 import { DefaultObject, ParserInfo, ParserPath } from "../../../../@types";
-import IFonjepVersementIndexedInformations from "../@types/IFonjepPaymentIndexedInformations";
+import type FonjepPaymentIndexedInformations from "../@types/FonjepPaymentIndexedInformations";
 import { GenericParser } from "../../../../shared/GenericParser";
 
 export default class FonjepPaymentEntity {
@@ -49,7 +49,7 @@ export default class FonjepPaymentEntity {
         public legalInformations: {
             siret: SiretDto;
         },
-        public indexedInformations: IFonjepVersementIndexedInformations,
+        public indexedInformations: FonjepPaymentIndexedInformations,
         public data: unknown,
     ) {}
 }
