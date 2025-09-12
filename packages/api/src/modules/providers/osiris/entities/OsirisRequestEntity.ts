@@ -1,6 +1,6 @@
 import { ParserInfo, ParserPath } from "../../../../@types";
-import ILegalInformations from "../../../search/@types/ILegalInformations";
-import IOsirisRequestInformations from "../@types/IOsirisRequestInformations";
+import type LegalInformations from "../../../search/@types/LegalInformations";
+import type OsirisRequestInformations from "../@types/OsirisRequestInformations";
 import { GenericParser } from "../../../../shared/GenericParser";
 import OsirisActionEntity from "./OsirisActionEntity";
 import { ProviderDataEntity } from "../../../../@types/ProviderDataEntity";
@@ -115,8 +115,8 @@ export default class OsirisRequestEntity implements ProviderDataEntity {
     public provider = "Osiris";
 
     constructor(
-        public legalInformations: ILegalInformations,
-        public providerInformations: IOsirisRequestInformations,
+        public legalInformations: LegalInformations,
+        public providerInformations: OsirisRequestInformations,
         public data: unknown,
         public updateDate: Date,
         public actions?: OsirisActionEntity[],

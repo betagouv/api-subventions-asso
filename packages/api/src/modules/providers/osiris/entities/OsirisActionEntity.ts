@@ -1,5 +1,5 @@
 import { ParserInfo, ParserPath } from "../../../../@types";
-import IOsirisActionsInformations from "../@types/IOsirisActionsInformations";
+import type OsirisActionsInformations from "../@types/OsirisActionsInformations";
 
 export default class OsirisActionEntity {
     public static defaultMainCategory = "Dossier/action";
@@ -54,7 +54,7 @@ export default class OsirisActionEntity {
     };
 
     constructor(
-        public indexedInformations: IOsirisActionsInformations,
+        public indexedInformations: OsirisActionsInformations,
         public data: unknown,
         public updateDate: Date,
     ) {

@@ -6,7 +6,7 @@ import { DefaultObject } from "../../../@types";
 import Siret from "../../../identifierObjects/Siret";
 import { GenericParser } from "../../../shared/GenericParser";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
-import IChorusIndexedInformations from "./@types/IChorusIndexedInformations";
+import type ChorusIndexedInformations from "./@types/ChorusIndexedInformations";
 import { ChorusLineDto } from "./@types/ChorusLineDto";
 
 export default class ChorusParser {
@@ -55,7 +55,7 @@ export default class ChorusParser {
                 // TODO <string|number>
                 ChorusLineEntity.indexedInformationsPath,
                 data,
-            ) as unknown as IChorusIndexedInformations;
+            ) as unknown as ChorusIndexedInformations;
 
             if (!this.isIndexedInformationsValid(indexedInformations)) return entities;
 
@@ -70,13 +70,13 @@ export default class ChorusParser {
         }, []);
     }
 
-    protected static buildUniqueId(info: IChorusIndexedInformations) {
+    protected static buildUniqueId(info: ChorusIndexedInformations) {
         const { ej, numPosteEJ, numeroDemandePaiement, exercice, codeSociete, numPosteDP } = info;
         // TODO: get chorus from enum #3410
         return getMD5(`${ej}-${numPosteEJ}-${numeroDemandePaiement}-${numPosteDP}-${codeSociete}-${exercice}`);
     }
 
-    protected static hasMandatoryFields(indexedInformations: IChorusIndexedInformations) {
+    protected static hasMandatoryFields(indexedInformations: ChorusIndexedInformations) {
         const missingFields: string[] = [];
 
         // those fields are "mandatory" because they are used to build the unique ID
@@ -121,7 +121,7 @@ export default class ChorusParser {
         return true;
     }
 
-    protected static isIndexedInformationsValid(indexedInformations: IChorusIndexedInformations) {
+    protected static isIndexedInformationsValid(indexedInformations: ChorusIndexedInformations) {
         try {
             return this.validateIndexedInformations(indexedInformations);
         } catch (e) {

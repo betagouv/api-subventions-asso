@@ -1,6 +1,6 @@
 import { SiretDto } from "dto";
 import { ParserInfo, ParserPath, DefaultObject } from "../../../../@types";
-import IFonjepIndexedInformations from "../@types/IFonjepIndexedInformations";
+import type FonjepIndexedInformations from "../@types/FonjepIndexedInformations";
 import { formatCP } from "../../../../shared/helpers/DataFormatHelper";
 import { GenericParser } from "../../../../shared/GenericParser";
 
@@ -57,7 +57,7 @@ export default class FonjepSubventionEntity {
             siret: SiretDto;
             name: string;
         },
-        public indexedInformations: IFonjepIndexedInformations,
+        public indexedInformations: FonjepIndexedInformations,
         public data: unknown,
     ) {}
 }

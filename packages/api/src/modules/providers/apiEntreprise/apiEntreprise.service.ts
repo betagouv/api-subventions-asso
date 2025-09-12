@@ -12,7 +12,7 @@ import ProviderCore from "../ProviderCore";
 import Siret from "../../../identifierObjects/Siret";
 import Siren from "../../../identifierObjects/Siren";
 import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
-import IApiEntrepriseHeadcount from "./@types/IApiEntrepriseHeadcount";
+import type ApiEntrepriseHeadcount from "./@types/ApiEntrepriseHeadcount";
 import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
 
 export class ApiEntrepriseService extends ProviderCore {
@@ -112,7 +112,7 @@ export class ApiEntrepriseService extends ProviderCore {
     }
 
     private async getEtablissementHeadcount(siret: Siret, subtractMonths = 0) {
-        return this.sendRequest<IApiEntrepriseHeadcount>(
+        return this.sendRequest<ApiEntrepriseHeadcount>(
             `${this.buildHeadcountUrl(siret, subtractMonths)}`,
             {},
             this.HEADCOUNT_REASON,

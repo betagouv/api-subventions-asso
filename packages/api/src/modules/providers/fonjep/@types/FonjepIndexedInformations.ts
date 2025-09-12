@@ -1,4 +1,4 @@
-export default interface IFonjepIndexedInformations {
+export default interface FonjepIndexedInformations {
     updated_at: Date;
     unique_id: string;
     code_poste: string;

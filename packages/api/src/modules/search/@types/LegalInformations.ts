@@ -1,6 +1,6 @@
 import { RnaDto, SiretDto } from "dto";
 
-export default interface ILegalInformations {
+export default interface LegalInformations {
     siret: SiretDto;
     rna?: RnaDto;
     name: string;

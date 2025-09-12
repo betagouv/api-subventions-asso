@@ -1,4 +1,4 @@
-export default interface IBudgetLine {
+export default interface BudgetLine {
     siret: string;
     ej: string;
     amount: number;
