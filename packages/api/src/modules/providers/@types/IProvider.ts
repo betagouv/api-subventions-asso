@@ -1,7 +1,7 @@
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 
 export default interface Provider {
-    provider: {
+    meta: {
         name: string;
         type: ProviderEnum;
         description: string;

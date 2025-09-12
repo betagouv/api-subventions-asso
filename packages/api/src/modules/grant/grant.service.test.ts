@@ -42,22 +42,22 @@ describe("GrantService", () => {
     const JOIN_KEY_1 = "JOIN_KEY_1";
     const JOIN_KEY_2 = "JOIN_KEY_2";
     const RAW_FULL_GRANT: RawFullGrant = {
-        provider: fullGrantProvidersFixtures[0].provider.id,
+        provider: fullGrantProvidersFixtures[0].meta.id,
         data: { application: {}, payments: [] },
         type: "fullGrant",
         joinKey: JOIN_KEY_1,
     };
     const RAW_APPLICATION: RawApplication = {
-        provider: applicationProvidersFixtures[0].provider.id,
+        provider: applicationProvidersFixtures[0].meta.id,
         data: {},
         type: "application",
         joinKey: JOIN_KEY_2,
     };
     const RAW_PAYMENTS: RawPayment[] = [
-        { provider: paymentProvidersFixtures[0].provider.id, data: {}, type: "payment", joinKey: JOIN_KEY_1 },
-        { provider: paymentProvidersFixtures[0].provider.id, data: {}, type: "payment", joinKey: JOIN_KEY_1 },
-        { provider: paymentProvidersFixtures[0].provider.id, data: {}, type: "payment", joinKey: JOIN_KEY_2 },
-        { provider: paymentProvidersFixtures[0].provider.id, data: {}, type: "payment", joinKey: JOIN_KEY_2 },
+        { provider: paymentProvidersFixtures[0].meta.id, data: {}, type: "payment", joinKey: JOIN_KEY_1 },
+        { provider: paymentProvidersFixtures[0].meta.id, data: {}, type: "payment", joinKey: JOIN_KEY_1 },
+        { provider: paymentProvidersFixtures[0].meta.id, data: {}, type: "payment", joinKey: JOIN_KEY_2 },
+        { provider: paymentProvidersFixtures[0].meta.id, data: {}, type: "payment", joinKey: JOIN_KEY_2 },
     ];
 
     const RAW_GRANTS: AnyRawGrant[] = [RAW_FULL_GRANT, RAW_APPLICATION, ...RAW_PAYMENTS];
@@ -81,14 +81,14 @@ describe("GrantService", () => {
     describe("adaptRawGrant", () => {
         beforeAll(() => {
             grantService.fullGrantProvidersById = {
-                [fullGrantProvidersFixtures[0].provider.id]: fullGrantProvidersFixtures[0],
+                [fullGrantProvidersFixtures[0].meta.id]: fullGrantProvidersFixtures[0],
             };
             grantService.applicationProvidersById = {
-                [applicationProvidersFixtures[0].provider.id]: applicationProvidersFixtures[0],
-                [applicationProvidersFixtures[1].provider.id]: applicationProvidersFixtures[1],
+                [applicationProvidersFixtures[0].meta.id]: applicationProvidersFixtures[0],
+                [applicationProvidersFixtures[1].meta.id]: applicationProvidersFixtures[1],
             };
             grantService.paymentProvidersById = {
-                [paymentProvidersFixtures[0].provider.id]: paymentProvidersFixtures[0],
+                [paymentProvidersFixtures[0].meta.id]: paymentProvidersFixtures[0],
             };
         });
 
@@ -103,9 +103,9 @@ describe("GrantService", () => {
         });
 
         it("should handle SCDL case", () => {
-            const oldScdlGrantServiceId = scdlGrantService.provider.id;
+            const oldScdlGrantServiceId = scdlGrantService.meta.id;
             // Use for SCDL adaptRawGrant specific treatment
-            scdlGrantService.provider.id = applicationProvidersFixtures[1].provider.id;
+            scdlGrantService.meta.id = applicationProvidersFixtures[1].meta.id;
             const APPLICATION_SCDL: RawApplication = {
                 provider: SCDL_PRODUCER_NAME,
                 data: {},
@@ -114,7 +114,7 @@ describe("GrantService", () => {
             };
             grantService.adaptRawGrant(APPLICATION_SCDL);
             expect(applicationProvidersFixtures[1].rawToApplication).toHaveBeenCalledWith(APPLICATION_SCDL);
-            scdlGrantService.provider.id = oldScdlGrantServiceId;
+            scdlGrantService.meta.id = oldScdlGrantServiceId;
         });
     });
 

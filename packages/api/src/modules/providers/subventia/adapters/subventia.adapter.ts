@@ -20,14 +20,14 @@ export default class SubventiaAdapter {
                 subventiaMapper as DefaultObject<ParserInfo<number | string>>,
                 application as DefaultObject<string | number>,
             ), // TODO <string|number>
-            provider: subventiaService.provider.id,
+            provider: subventiaService.meta.id,
             updateDate: exportDate,
         } as SubventiaEntity;
     }
 
     public static toDemandeSubventionDto(entity: SubventiaEntity): DemandeSubvention {
         const lastUpdateDate = new Date(entity.updateDate);
-        const toPV = ProviderValueFactory.buildProviderValueAdapter(subventiaService.provider.name, lastUpdateDate);
+        const toPV = ProviderValueFactory.buildProviderValueAdapter(subventiaService.meta.name, lastUpdateDate);
 
         return {
             siret: toPV(entity.siret),

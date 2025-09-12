@@ -20,7 +20,7 @@ import applicationFlatService from "../../applicationFlat/applicationFlat.servic
 export class SubventiaService
     implements DemandesSubventionsProvider<SubventiaEntity>, GrantProvider, ApplicationFlatProvider
 {
-    provider = {
+    meta = {
         name: "Subventia",
         type: ProviderEnum.raw,
         description: "CIPDR",
@@ -116,7 +116,7 @@ export class SubventiaService
         }
         // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
         return subventiaDbos.map(grant => ({
-            provider: this.provider.id,
+            provider: this.meta.id,
             type: "application",
             data: grant,
         }));

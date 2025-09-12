@@ -12,8 +12,8 @@ export class CommonGrantService {
         this.providerMap = {};
         for (const provider of Object.values(providers as unknown as { [serviceName: string]: GrantProvider })) {
             if (!provider.isGrantProvider) continue;
-            if (!provider?.provider?.id) continue;
-            if (provider[CommonGrantService.adapterMethod]) this.providerMap[provider.provider.id] = provider;
+            if (!provider?.meta?.id) continue;
+            if (provider[CommonGrantService.adapterMethod]) this.providerMap[provider.meta.id] = provider;
         }
     }
 

@@ -139,7 +139,7 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
             const EJ = "EJ";
             jest.mocked(demarchesSimplifieesService.getJoinKey).mockReturnValueOnce(EJ);
             const expected = {
-                provider: demarchesSimplifieesService.provider.id,
+                provider: demarchesSimplifieesService.meta.id,
                 type: "application",
                 data: { entity: DATA_ENTITIES[0], schema: SCHEMAS[0] },
                 joinKey: EJ,

@@ -27,7 +27,7 @@ export class ScdlGrantService
     isDemandesSubventionsProvider = true;
     isApplicationFlatProvider = true as const;
 
-    provider = {
+    meta = {
         name: "Open Data SCDL",
         type: ProviderEnum.raw,
         id: "miscScdl",

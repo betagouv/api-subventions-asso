@@ -38,7 +38,7 @@ export default class ChorusAdapter {
         const toPvDataBretagne = <T>(value: T) =>
             ProviderValueAdapter.toProviderValue<T>(
                 value,
-                dataBretagneService.provider.name,
+                dataBretagneService.meta.name,
                 entity.indexedInformations.dateOperation,
             );
 

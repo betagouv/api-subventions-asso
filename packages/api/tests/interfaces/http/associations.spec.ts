@@ -177,7 +177,7 @@ describe("/association", () => {
             // avoid timezone date test failure
             // use siret.provider to check on provider name by default
             subventions.forEach(subvention => {
-                if (subvention.siret.provider === demarchesSimplifieesService.provider.name) {
+                if (subvention.siret.provider === demarchesSimplifieesService.meta.name) {
                     subvention.date_debut.value = expect.any(Date);
                     subvention.date_fin.value = expect.any(Date);
                 }

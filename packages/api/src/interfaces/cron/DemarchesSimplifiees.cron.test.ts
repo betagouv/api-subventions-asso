@@ -4,7 +4,7 @@ import dataLogService from "../../modules/data-log/dataLog.service";
 
 jest.mock("../../modules/providers/demarchesSimplifiees/demarchesSimplifiees.service", () => ({
     updateAllForms: jest.fn(),
-    provider: { id: "mockedId" },
+    meta: { id: "mockedId" },
 }));
 jest.mock("../../modules/data-log/dataLog.service");
 

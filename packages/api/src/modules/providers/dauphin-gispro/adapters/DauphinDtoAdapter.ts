@@ -103,10 +103,7 @@ export default class DauphinDtoAdapter {
             dauphinData._document?.dateVersion ||
             dauphinData.history.events[dauphinData.history.events.length - 1]?.date ||
             dauphinData.history.begin.date;
-        const toPV = ProviderValueFactory.buildProviderValueAdapter(
-            dauphinService.provider.name,
-            new Date(lastUpdateDate),
-        );
+        const toPV = ProviderValueFactory.buildProviderValueAdapter(dauphinService.meta.name, new Date(lastUpdateDate));
 
         const montantDemande = DauphinDtoAdapter.getMontantDemande(dauphinData);
         const montantAccorde = DauphinDtoAdapter.getMontantAccorde(dauphinData);
@@ -161,7 +158,7 @@ export default class DauphinDtoAdapter {
             for (const doc of reference.documents) {
                 if (doc.error) continue;
                 const date = new Date(doc.expand.properties["entity:document:date"].value);
-                toPV = ProviderValueFactory.buildProviderValueAdapter(dauphinService.provider.name, new Date(date));
+                toPV = ProviderValueFactory.buildProviderValueAdapter(dauphinService.meta.name, new Date(date));
                 resultArray.push({
                     type: toPV(reference.libelle.value),
                     url: toPV(

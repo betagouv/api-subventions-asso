@@ -31,7 +31,7 @@ const mockGrantProvider = provider => ({
 
 export const fullGrantProvidersFixtures: FullGrantProvider<unknown>[] = [
     mockFullGrantProvider({
-        provider: {
+        meta: {
             id: "provider-fullgrant-1",
             name: "PROVIDER_FULLGRANT_1",
             description: "API PROVIDER",
@@ -39,7 +39,7 @@ export const fullGrantProvidersFixtures: FullGrantProvider<unknown>[] = [
         },
     }),
     mockFullGrantProvider({
-        provider: {
+        meta: {
             id: "provider-fullgrant-2",
             name: "PROVIDER_FULLGRANT_2",
             description: "RAW PROVIDER",
@@ -50,7 +50,7 @@ export const fullGrantProvidersFixtures: FullGrantProvider<unknown>[] = [
 
 export const applicationProvidersFixtures: DemandesSubventionsProvider<unknown>[] = [
     mockApplicationProvider({
-        provider: {
+        meta: {
             id: "provider-application-1",
             name: "PROVIDER_APPLICATION_1",
             description: "API PROVIDER",
@@ -58,7 +58,7 @@ export const applicationProvidersFixtures: DemandesSubventionsProvider<unknown>[
         },
     }),
     mockApplicationProvider({
-        provider: {
+        meta: {
             id: "provider-application-2",
             name: "PROVIDER_APPLICATION_2",
             description: "RAW PROVIDER",
@@ -69,7 +69,7 @@ export const applicationProvidersFixtures: DemandesSubventionsProvider<unknown>[
 
 export const paymentProvidersFixtures: PaymentProvider<unknown>[] = [
     mockPaymentProvider({
-        provider: {
+        meta: {
             id: "provider-payment-1",
             name: "PROVIDER_PAYMENT_1",
             description: "RAW PROVIDER",
@@ -77,7 +77,7 @@ export const paymentProvidersFixtures: PaymentProvider<unknown>[] = [
         },
     }),
     mockPaymentProvider({
-        provider: {
+        meta: {
             id: "provider-payment-2",
             name: "PROVIDER_PAYMENT_2",
             description: "RAW PROVIDER",

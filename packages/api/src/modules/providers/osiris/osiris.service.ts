@@ -231,7 +231,7 @@ export class OsirisService
 
         // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
         return requests.map(request => ({
-            provider: this.provider.id,
+            provider: this.meta.id,
             type: "application",
             data: request,
             joinKey: request?.providerInformations?.ej,

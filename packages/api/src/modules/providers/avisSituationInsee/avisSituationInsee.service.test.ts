@@ -156,17 +156,17 @@ describe("AvisSituationInseeService", () => {
                 {
                     type: ProviderValueAdapter.toProviderValue(
                         "Avis Situation Insee",
-                        avisSituationInseeService.provider.name,
+                        avisSituationInseeService.meta.name,
                         expect.any(Date),
                     ),
                     url: ProviderValueAdapter.toProviderValue(
                         `/document/avis_situation_api/?url=https%3A%2F%2Fapi-avis-situation-sirene.insee.fr%2Fidentification%2Fpdf%2F00000000011111`,
-                        avisSituationInseeService.provider.name,
+                        avisSituationInseeService.meta.name,
                         expect.any(Date),
                     ),
                     nom: ProviderValueAdapter.toProviderValue(
                         `Avis Situation Insee (00000000011111)`,
-                        avisSituationInseeService.provider.name,
+                        avisSituationInseeService.meta.name,
                         expect.any(Date),
                     ),
                     __meta__: {

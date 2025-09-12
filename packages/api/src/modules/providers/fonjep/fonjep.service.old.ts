@@ -224,7 +224,7 @@ export class FonjepService
         }
 
         return entities.map(grant => ({
-            provider: this.provider.id,
+            provider: this.meta.id,
             type: "fullGrant",
             data: grant,
             joinKey: `${grant.application.indexedInformations.code_poste} - ${grant.application.indexedInformations.annee_demande}`,

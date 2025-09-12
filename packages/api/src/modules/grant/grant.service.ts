@@ -38,7 +38,7 @@ export class GrantService {
                 // TODO: refactor multi producers provider
                 // scdl specificity -- providerService id (miscScdl) is different from producer name used as rawGrant.provider (i.e Ville de Paris)
                 if (scdlService.producerNames.includes(rawGrant.provider)) {
-                    provider = this.applicationProvidersById[scdlGrantService.provider.id];
+                    provider = this.applicationProvidersById[scdlGrantService.meta.id];
                 }
                 return provider.rawToApplication(rawGrant as RawApplication);
             }
