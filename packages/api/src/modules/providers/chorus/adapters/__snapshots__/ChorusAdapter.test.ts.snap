@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ChorusAdapter buildUniqueId return a uniqueId 1`] = `"ID_VERSEMENT-101-0101-01-02-077601003222-2023-07-12-BRET-AA01/0776-C001-4000"`;
+exports[`ChorusAdapter buildUniqueId return a uniqueId 1`] = `"chorus-ID_VERSEMENT-101-0101-01-02-077601003222-2023-07-12-BRET-AA01/0776-C001-4000"`;
 
 exports[`ChorusAdapter getPaymentFlatRawData should return PaymentFlatRawData 1`] = `
 {
@@ -60,7 +60,7 @@ exports[`ChorusAdapter toNotAggregatedPaymentFlatEntity should return PaymentFla
   "regionAttachementComptable": "Bretagne",
   "typeIdEntrepriseBeneficiaire": "siren",
   "typeIdEtablissementBeneficiaire": "siret",
-  "uniqueId": "10000000000001-0001821732-2023-101-0101-01-02-077601003222-2023-07-12-BRET-AA01/0776-C001-4000",
+  "uniqueId": "chorus-10000000000001-0001821732-2023-101-0101-01-02-077601003222-2023-07-12-BRET-AA01/0776-C001-4000",
 }
 `;
 
@@ -93,7 +93,7 @@ exports[`ChorusAdapter toNotAggregatedPaymentFlatEntity should return PaymentFla
   "regionAttachementComptable": "Bretagne",
   "typeIdEntrepriseBeneficiaire": "siren",
   "typeIdEtablissementBeneficiaire": "siret",
-  "uniqueId": "10000000000001-0001821732-2023-101-0101-01-02-077601003222-2023-07-12-BRET-AA01/0776-C001-4000",
+  "uniqueId": "chorus-10000000000001-0001821732-2023-101-0101-01-02-077601003222-2023-07-12-BRET-AA01/0776-C001-4000",
 }
 `;
 

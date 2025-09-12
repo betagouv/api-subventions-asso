@@ -592,7 +592,7 @@ describe("ChorusAdapter", () => {
         it("return a uniqueId", () => {
             const { uniqueId, ...partialPaymentFlat } = CHORUS_PAYMENT_FLAT_ENTITY;
             // @ts-expect-error: test private method
-            const actual = ChorusAdapter.buildUniqueId(partialPaymentFlat);
+            const actual = ChorusAdapter.buildFlatUniqueId(partialPaymentFlat);
             expect(actual).toMatchSnapshot();
         });
     });
