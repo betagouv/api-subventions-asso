@@ -80,7 +80,7 @@ export class DauphinService
 
         // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
         return entities.map(entity => ({
-            provider: this.provider.id,
+            provider: this.meta.id,
             type: "application",
             data: entity,
             joinKey: entity.gispro?.ej,

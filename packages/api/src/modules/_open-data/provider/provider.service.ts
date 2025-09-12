@@ -10,11 +10,11 @@ class ProviderService {
 
     private splitProvidersByType(providersInfos: ProvidersInfos, service: IProvider) {
         const providerInfo = {
-            name: service.provider.name,
-            description: service.provider.description,
+            name: service.meta.name,
+            description: service.meta.description,
         };
-        if (service.provider.type === ProviderEnum.api) providersInfos.api.push(providerInfo);
-        else if (service.provider.type === ProviderEnum.raw) providersInfos.raw.push(providerInfo);
+        if (service.meta.type === ProviderEnum.api) providersInfos.api.push(providerInfo);
+        else if (service.meta.type === ProviderEnum.raw) providersInfos.raw.push(providerInfo);
         return providersInfos;
     }
 }

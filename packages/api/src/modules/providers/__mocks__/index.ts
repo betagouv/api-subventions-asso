@@ -12,7 +12,7 @@ import {
 const providers = {
     // RAW service AssociationProvider + DemandeSubventionProvider
     serviceA: {
-        provider: {
+        meta: {
             name: "serviceA",
             id: "prov-A",
             type: ProviderEnum.raw,
@@ -29,7 +29,7 @@ const providers = {
     },
     // API service AssociationProvider + DemandeSubventionProvider
     serviceB: {
-        provider: {
+        meta: {
             name: "serviceB",
             id: "prov-B",
             type: ProviderEnum.api,
@@ -45,7 +45,7 @@ const providers = {
     },
     // API service AssociationProvider that returns null for all getAssociations()
     serviceC: {
-        provider: {
+        meta: {
             name: "serviceC",
             id: "prov-C",
             type: ProviderEnum.api,
@@ -59,7 +59,7 @@ const providers = {
     },
     // API service that is not either an AssociationProvider or DemandesSubventionsProvider
     serviceD: {
-        provider: {
+        meta: {
             name: "serviceD",
             id: "prov-D",
             type: ProviderEnum.api,
@@ -73,7 +73,7 @@ const providers = {
     },
     // RAW sercice that is not either an AssociationProvider or DemandesSubventionsProvider
     serviceE: {
-        provider: {
+        meta: {
             name: "serviceE",
             id: "prov-E",
             type: ProviderEnum.raw,

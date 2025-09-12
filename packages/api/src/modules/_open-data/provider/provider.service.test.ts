@@ -6,21 +6,21 @@ jest.mock("../../../../src/modules/providers/index", () => ({
     __esModule: true, // this property makes it work
     default: {
         serviceA: {
-            provider: {
+            meta: {
                 name: "serviceA",
                 type: ProviderEnum.raw,
                 description: "descriptionA",
             },
         },
         serviceB: {
-            provider: {
+            meta: {
                 name: "serviceB",
                 type: ProviderEnum.api,
                 description: "descriptionB",
             },
         },
         serviceC: {
-            provider: {
+            meta: {
                 name: "serviceC",
                 type: ProviderEnum.raw,
                 description: "descriptionC",
@@ -37,18 +37,18 @@ describe("ProviderService", () => {
             const expected = new ProvidersInfos(
                 [
                     {
-                        name: providers.serviceB.provider.name,
-                        description: providers.serviceB.provider.description,
+                        name: providers.serviceB.meta.name,
+                        description: providers.serviceB.meta.description,
                     },
                 ],
                 [
                     {
-                        name: providers.serviceA.provider.name,
-                        description: providers.serviceA.provider.description,
+                        name: providers.serviceA.meta.name,
+                        description: providers.serviceA.meta.description,
                     },
                     {
-                        name: providers.serviceC.provider.name,
-                        description: providers.serviceC.provider.description,
+                        name: providers.serviceC.meta.name,
+                        description: providers.serviceC.meta.description,
                     },
                 ],
             );

@@ -110,7 +110,7 @@ export class DemarchesSimplifieesEntityAdapter {
 
     static toSubvention(entity: DemarchesSimplifieesDataEntity, schema: DemarchesSimplifieesSchema): DemandeSubvention {
         const toPv = ProviderValueFactory.buildProviderValueAdapter(
-            demarchesSimplifieesService.provider.name,
+            demarchesSimplifieesService.meta.name,
             new Date(entity.demande.dateDerniereModification),
         );
 
@@ -138,7 +138,7 @@ export class DemarchesSimplifieesEntityAdapter {
         const joinKey = demarchesSimplifieesService.getJoinKey({ entity, schema: schema });
 
         return {
-            provider: demarchesSimplifieesService.provider.id,
+            provider: demarchesSimplifieesService.meta.id,
             type: "application",
             data: { entity, schema: schema },
             joinKey,
