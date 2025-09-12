@@ -5,7 +5,7 @@ import { BodaccDto } from "../dto/BodaccDto";
 
 export default class BodaccAdapter {
     static toAssociation(dto: BodaccDto) {
-        const toPVs = ProviderValueFactory.buildProviderValuesAdapter(bodaccService.provider.name, new Date());
+        const toPVs = ProviderValueFactory.buildProviderValuesAdapter(bodaccService.meta.name, new Date());
 
         return {
             siren: toPVs(dto.records[0].record.fields.registre[1]),

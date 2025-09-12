@@ -5,7 +5,7 @@ exports[`Providers Helper providersById should return providers by id 1`] = `
   "provider-application-1": {
     "getDemandeSubvention": [MockFunction],
     "isDemandesSubventionsProvider": true,
-    "provider": {
+    "meta": {
       "description": "API PROVIDER",
       "id": "provider-application-1",
       "name": "PROVIDER_APPLICATION_1",
@@ -16,7 +16,7 @@ exports[`Providers Helper providersById should return providers by id 1`] = `
   "provider-application-2": {
     "getDemandeSubvention": [MockFunction],
     "isDemandesSubventionsProvider": true,
-    "provider": {
+    "meta": {
       "description": "RAW PROVIDER",
       "id": "provider-application-2",
       "name": "PROVIDER_APPLICATION_2",
