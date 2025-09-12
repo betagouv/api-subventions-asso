@@ -73,7 +73,7 @@ export default class ChorusParser {
     protected static buildUniqueId(info: IChorusIndexedInformations) {
         const { ej, numPosteEJ, numeroDemandePaiement, exercice, codeSociete, numPosteDP } = info;
         // TODO: get chorus from enum #3410
-        return getMD5(`chorus-${ej}-${numPosteEJ}-${numeroDemandePaiement}-${numPosteDP}-${codeSociete}-${exercice}`);
+        return getMD5(`${ej}-${numPosteEJ}-${numeroDemandePaiement}-${numPosteDP}-${codeSociete}-${exercice}`);
     }
 
     protected static hasMandatoryFields(indexedInformations: IChorusIndexedInformations) {
