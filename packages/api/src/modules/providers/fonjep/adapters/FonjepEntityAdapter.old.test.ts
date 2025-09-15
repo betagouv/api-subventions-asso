@@ -161,12 +161,12 @@ describe("FonjepEntityAdapter", () => {
         });
     });
 
-    describe("toEtablissement()", () => {
+    describe("toEstablishment()", () => {
         const buildProviderValuesAdapterMock = jest.spyOn(ProviderValueFactory, "buildProviderValuesAdapter");
-        it("should return an Etablissement", () => {
+        it("should return an Establishment", () => {
             // @ts-expect-error: mock
             buildProviderValuesAdapterMock.mockImplementationOnce(() => value => [value]);
-            const actual = FonjepEntityAdapter.toEtablissement(SubventionEntity);
+            const actual = FonjepEntityAdapter.toEstablishment(SubventionEntity);
             expect(actual).toMatchSnapshot();
         });
     });

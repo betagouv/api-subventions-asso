@@ -1,6 +1,6 @@
-import { DemandeSubvention, Etablissement } from "dto";
-import etablissementsService from "../../modules/etablissements/etablissements.service";
-import { EtablissementHttp, isEtabIdentifierFromAssoMiddleware } from "./Etablissement.http";
+import { DemandeSubvention, Establishment } from "dto";
+import establishmentService from "../../modules/establishments/establishment.service";
+import { EstablishmentHttp, isEstabIdentifierFromAssoMiddleware } from "./Establishment.http";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import Siren from "../../identifierObjects/Siren";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
@@ -15,14 +15,14 @@ jest.mock("../../modules/grant/grantExtract.service");
 jest.mock("../../middlewares/ErrorMiddleware");
 jest.mock("../../modules/associations/associations.helper");
 
-const controller = new EtablissementHttp();
+const controller = new EstablishmentHttp();
 const ID_STR = "00000000100000";
 const SIREN = new Siren("000000001");
 const SIRET = SIREN.toSiret("00000");
 const ASSOCIATION_ID = AssociationIdentifier.fromSiren(SIREN);
 const ESTABLISHMENT_ID = EstablishmentIdentifier.fromSiret(SIRET, ASSOCIATION_ID);
 
-describe("EtablissementHttp", () => {
+describe("EstablishmentHttp", () => {
     const REQ = { params: { identifier: ID_STR }, estabIdentifier: ESTABLISHMENT_ID };
 
     beforeAll(() => {
@@ -34,7 +34,7 @@ describe("EtablissementHttp", () => {
     });
 
     describe("getDemandeSubventions", () => {
-        const getSubventionsSpy = jest.spyOn(etablissementsService, "getSubventions");
+        const getSubventionsSpy = jest.spyOn(establishmentService, "getSubventions");
         it("should call service with args", async () => {
             const subventions = [{}] as DemandeSubvention[];
             // @ts-expect-error: mock
@@ -54,7 +54,7 @@ describe("EtablissementHttp", () => {
     });
 
     describe("getPayments", () => {
-        const getSubventionsSpy = jest.spyOn(etablissementsService, "getPayments");
+        const getSubventionsSpy = jest.spyOn(establishmentService, "getPayments");
         it("should call service with args", async () => {
             getSubventionsSpy.mockImplementationOnce(jest.fn());
             await controller.getPaymentsEstablishement(SIRET.value, REQ);
@@ -72,7 +72,7 @@ describe("EtablissementHttp", () => {
     });
 
     describe("getDocuments", () => {
-        const getDocumentsSpy = jest.spyOn(etablissementsService, "getDocuments");
+        const getDocumentsSpy = jest.spyOn(establishmentService, "getDocuments");
         it("should call service with args", async () => {
             getDocumentsSpy.mockImplementationOnce(jest.fn());
             await controller.getDocuments(SIRET.value, REQ);
@@ -90,7 +90,7 @@ describe("EtablissementHttp", () => {
     });
 
     describe("getRibs", () => {
-        const getRibsSpy = jest.spyOn(etablissementsService, "getRibs");
+        const getRibsSpy = jest.spyOn(establishmentService, "getRibs");
         it("should call service with args", async () => {
             getRibsSpy.mockImplementationOnce(jest.fn());
             await controller.getRibs(SIRET.value, REQ);
@@ -107,20 +107,20 @@ describe("EtablissementHttp", () => {
         });
     });
 
-    describe("getEtablissement", () => {
-        const getEtablissementSpy = jest.spyOn(etablissementsService, "getEtablissement");
+    describe("getEstablishment", () => {
+        const getEstablishmentSpy = jest.spyOn(establishmentService, "getEstablishment");
         it("should call service with args", async () => {
-            getEtablissementSpy.mockImplementationOnce(async () => ({ siret: SIRET }) as unknown as Etablissement);
-            await controller.getEtablissement(SIRET.value, REQ);
-            expect(getEtablissementSpy).toHaveBeenCalledWith(ESTABLISHMENT_ID);
+            getEstablishmentSpy.mockImplementationOnce(async () => ({ siret: SIRET }) as unknown as Establishment);
+            await controller.getEstablishment(SIRET.value, REQ);
+            expect(getEstablishmentSpy).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
 
         it("should return an establishment", async () => {
             // @ts-expect-error: mock
-            getEtablissementSpy.mockImplementationOnce(() => etablissement);
-            const etablissement = {};
-            const expected = { etablissement };
-            const actual = await controller.getEtablissement(SIRET.value, REQ);
+            getEstablishmentSpy.mockImplementationOnce(() => establishment);
+            const establishment = {};
+            const expected = { etablissement: establishment };
+            const actual = await controller.getEstablishment(SIRET.value, REQ);
             expect(actual).toEqual(expected);
         });
     });
@@ -186,18 +186,18 @@ describe("isEtabIdentifierFromAssoMiddleware", () => {
     });
 
     it("gets formal id", async () => {
-        await isEtabIdentifierFromAssoMiddleware({ ...REQ }, RES, NEXT);
+        await isEstabIdentifierFromAssoMiddleware({ ...REQ }, RES, NEXT);
         expect(establishmentIdentifierService.getEstablishmentIdentifiers).toHaveBeenCalledWith(ID_STR);
     });
 
     it("calls service to check it is from asso", async () => {
-        await isEtabIdentifierFromAssoMiddleware({ ...REQ }, RES, NEXT);
+        await isEstabIdentifierFromAssoMiddleware({ ...REQ }, RES, NEXT);
         expect(associationHelper.isIdentifierFromAsso).toHaveBeenCalledWith(ASSOCIATION_ID);
     });
 
     it("sets assoIdentifier in req", async () => {
         const REQ_TMP = { ...REQ };
-        await isEtabIdentifierFromAssoMiddleware(REQ_TMP, RES, NEXT);
+        await isEstabIdentifierFromAssoMiddleware(REQ_TMP, RES, NEXT);
         expect(REQ_TMP.estabIdentifier).toMatchInlineSnapshot(`
             EstablishmentIdentifier {
               "associationIdentifier": AssociationIdentifier {
@@ -216,7 +216,7 @@ describe("isEtabIdentifierFromAssoMiddleware", () => {
     it("if id not from asso, calls errorHandler", async () => {
         const REQ_TMP = { ...REQ };
         jest.mocked(associationHelper.isIdentifierFromAsso).mockResolvedValueOnce(false);
-        await isEtabIdentifierFromAssoMiddleware(REQ_TMP, RES, NEXT);
+        await isEstabIdentifierFromAssoMiddleware(REQ_TMP, RES, NEXT);
         expect(ERROR_HANDLER_RES.mock.calls?.[0]).toMatchInlineSnapshot(`
             [
               [Error: Votre recherche pointe vers une entité qui n'est pas une association],
@@ -257,7 +257,7 @@ describe("isEtabIdentifierFromAssoMiddleware", () => {
         jest.mocked(establishmentIdentifierService.getEstablishmentIdentifiers).mockRejectedValueOnce(
             new Error("haha"),
         );
-        await isEtabIdentifierFromAssoMiddleware(REQ_TMP, RES, NEXT);
+        await isEstabIdentifierFromAssoMiddleware(REQ_TMP, RES, NEXT);
         expect(ERROR_HANDLER_RES.mock.calls?.[0]).toMatchInlineSnapshot(`
             [
               [Error: haha],

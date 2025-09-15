@@ -2,7 +2,7 @@ import { Adresse } from "../shared/Adresse";
 import { ProviderValues } from "../shared/ProviderValue";
 import { SiretDto } from "../shared/Siret";
 
-export interface SimplifiedEtablissement {
+export interface EstablishmentSimplified {
     siret: ProviderValues<SiretDto>;
     nic: ProviderValues<string>;
     siege?: ProviderValues<boolean>;

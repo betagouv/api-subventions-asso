@@ -1,5 +1,5 @@
 import grantExtractService from "./grantExtract.service";
-import { Association, Grant, SimplifiedEtablissement } from "dto";
+import { Association, Grant, EstablishmentSimplified } from "dto";
 import grantService from "./grant.service";
 import associationsService from "../associations/associations.service";
 import GrantAdapter from "./grant.adapter";
@@ -22,7 +22,7 @@ describe("GrantExtractService", () => {
         const SIRET = new Siret("12345678912345");
         const IDENTIFIER = EstablishmentIdentifier.fromSiret(SIRET, AssociationIdentifier.fromSiren(SIRET.toSiren()));
         const GRANTS = [1, 2, 3] as unknown as Grant[];
-        const ESTABS = [{ siret: [{ value: SIRET.value }] }] as unknown as SimplifiedEtablissement[];
+        const ESTABS = [{ siret: [{ value: SIRET.value }] }] as unknown as EstablishmentSimplified[];
         const ASSO = { denomination_siren: [{ value: "NomAsso" }] } as unknown as Association;
         const ESTABS_BY_SIRET = { [SIRET.value]: ESTABS[0] };
         let isSirenSpy: jest.SpyInstance;

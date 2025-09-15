@@ -12,7 +12,7 @@ interface Observation {
     date: string;
 }
 
-interface EtablissementPrincipal {
+interface EstablishmentPrincipal {
     activite: string;
     origine_fonds: string;
     mode_exploitation: string;
@@ -76,7 +76,7 @@ export default interface ExtractRcs {
     mandataires_sociaux: MandataireSocial[];
     observations: Observation[];
     nom_commercial: string;
-    etablissement_principal: EtablissementPrincipal;
+    etablissement_principal: EstablishmentPrincipal;
     capital: Capital;
     greffe: Greffe;
     personne_morale: PersonneMorale;

@@ -3,7 +3,7 @@ import {
     ApplicationStatus,
     Association,
     DemandeSubvention,
-    Etablissement,
+    Establishment,
     ProviderValue,
     RnaDto,
     ApplicationNature,
@@ -99,7 +99,7 @@ export default class OsirisRequestAdapter {
         };
     }
 
-    static toEtablissement(entity: OsirisRequestEntity): Etablissement {
+    static toEstablishment(entity: OsirisRequestEntity): Establishment {
         const dataDate = new Date(Date.UTC(entity.providerInformations.exercise, 0));
         const toPVs = ProviderValueFactory.buildProviderValuesAdapter(OsirisRequestAdapter.PROVIDER_NAME, dataDate);
 

@@ -124,18 +124,18 @@ describe("AssociationHttp", () => {
     });
 
     describe("getEstablishments", () => {
-        const getEtablissementSpy = jest.spyOn(associationsService, "getEstablishments");
+        const getEstablishmentSpy = jest.spyOn(associationsService, "getEstablishments");
         it("should call service with args", async () => {
-            getEtablissementSpy.mockImplementationOnce(jest.fn());
+            getEstablishmentSpy.mockImplementationOnce(jest.fn());
             await controller.getEstablishments(IDENTIFIER.value, REQ);
-            expect(getEtablissementSpy).toHaveBeenCalledWith(ASSOCIATION_ID);
+            expect(getEstablishmentSpy).toHaveBeenCalledWith(ASSOCIATION_ID);
         });
 
         it("should return establishments", async () => {
             // @ts-expect-error: mock
-            getEtablissementSpy.mockImplementationOnce(() => etablissements);
-            const etablissements = [{}];
-            const expected = { etablissements };
+            getEstablishmentSpy.mockImplementationOnce(() => establishments);
+            const establishments = [{}];
+            const expected = { etablissements: establishments };
             const actual = await controller.getEstablishments(IDENTIFIER.value, REQ);
             expect(actual).toEqual(expected);
         });

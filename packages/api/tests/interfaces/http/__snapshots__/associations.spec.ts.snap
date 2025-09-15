@@ -6124,7 +6124,7 @@ exports[`/association /{structure_identifier} should return an association 1`] =
 }
 `;
 
-exports[`/association /{structure_identifier}/etablissements should return SimplifiedEtablissement[] 1`] = `
+exports[`/association /{structure_identifier}/etablissements should return EstablishmentSimplified[] 1`] = `
 {
   "etablissements": [
     {

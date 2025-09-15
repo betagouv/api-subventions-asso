@@ -152,17 +152,17 @@ export default class ChorusAdapter {
 
     private static getPaymentFlatRawData(data: ChorusLineDto): ChorusPaymentFlatRaw {
         const exerciceBudgetaire = data["Exercice comptable"] ? parseInt(data["Exercice comptable"], 10) : null;
-        const idEtablissementBeneficiaire = this.getEstablishmentValueObject(data);
-        const idEntrepriseBeneficiaire = this.getCompanyId(idEtablissementBeneficiaire);
-        const typeIdEtablissementBeneficiaire = idEtablissementBeneficiaire.name;
+        const idEstablishmentBeneficiaire = this.getEstablishmentValueObject(data);
+        const idEntrepriseBeneficiaire = this.getCompanyId(idEstablishmentBeneficiaire);
+        const typeIdEstablishmentBeneficiaire = idEstablishmentBeneficiaire.name;
         const typeIdEntrepriseBeneficiaire = idEntrepriseBeneficiaire.name;
 
         // all nullable error should be handled with issue #3345
         return {
             //@ts-expect-error: this should be nullable but was in the original code refactored with #3342
             exerciceBudgetaire,
-            typeIdEtablissementBeneficiaire,
-            idEtablissementBeneficiaire,
+            typeIdEtablissementBeneficiaire: typeIdEstablishmentBeneficiaire,
+            idEtablissementBeneficiaire: idEstablishmentBeneficiaire,
             typeIdEntrepriseBeneficiaire,
             idEntrepriseBeneficiaire,
             //@ts-expect-error: this should be nullable but was in the original code refactored with #3342

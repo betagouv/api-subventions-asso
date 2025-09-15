@@ -1,4 +1,4 @@
-import { ProviderValues, Etablissement } from "dto";
+import { ProviderValues, Establishment } from "dto";
 
 import * as Sentry from "@sentry/node";
 import { NotFoundError } from "core";
@@ -15,11 +15,11 @@ import documentsService from "../documents/documents.service";
 import ApiEntrepriseAdapter from "../providers/apiEntreprise/adapters/ApiEntrepriseAdapter";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
-import { EtablissementAdapter } from "./EtablissementAdapter";
-import EtablissementProvider from "./@types/EtablissementProvider";
+import { EstablishmentAdapter } from "./EstablishmentAdapter";
+import EstablishmentProvider from "./@types/EstablishmentProvider";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 
-export class EtablissementsService {
+export class EstablishmentService {
     private provider_score: DefaultObject<number> = {
         [ApiAssoDtoAdapter.providerNameSiren]: 1,
         [ApiEntrepriseAdapter.PROVIDER_NAME]: 1,
@@ -27,50 +27,50 @@ export class EtablissementsService {
         [FonjepEntityAdapter.PROVIDER_NAME]: 0.5,
     };
 
-    async getEtablissement(identifier: EstablishmentIdentifier) {
+    async getEstablishment(identifier: EstablishmentIdentifier) {
         const data = await this.aggregate(identifier);
         if (!data.length) {
-            throw new NotFoundError("Etablissement not found");
+            throw new NotFoundError("Establishment not found");
         }
         return FormaterHelper.formatData(
-            // force TS typing because Etablissement[] is DefaultObject<ProviderValues>[]
+            // force TS typing because Establishment[] is DefaultObject<ProviderValues>[]
             data as unknown as DefaultObject<ProviderValues>[],
             this.provider_score,
-        ) as unknown as Etablissement;
+        ) as unknown as Establishment;
     }
 
-    async getEtablissements(identifier: AssociationIdentifier) {
+    async getEstablishments(identifier: AssociationIdentifier) {
         const data = await this.aggregate(identifier);
 
         if (!data.length) throw new NotFoundError();
 
         const groupBySiret = data.reduce(
-            (acc, etablissement) => {
-                const siret = etablissement.siret[0].value;
+            (acc, establishment) => {
+                const siret = establishment.siret[0].value;
 
                 if (!siret) return acc;
 
                 if (!acc[siret]) acc[siret] = [];
-                acc[siret].push(etablissement);
+                acc[siret].push(establishment);
 
                 return acc;
             },
-            {} as DefaultObject<Etablissement[]>,
+            {} as DefaultObject<Establishment[]>,
         );
-        const etablissements = Object.values(groupBySiret).map(
-            etablissements =>
-                // @ts-expect-error: transform DefaultObject to Etablissement
+        const establishments = Object.values(groupBySiret).map(
+            establishment =>
+                // @ts-expect-error: transform DefaultObject to Establishment
                 FormaterHelper.formatData(
-                    // @ts-expect-error: transform Etablissement[] to DefaultObject<ProviderValues>[]
-                    etablissements as DefaultObject<ProviderValues>[],
+                    // @ts-expect-error: transform Establishment[] to DefaultObject<ProviderValues>[]
+                    establishment as DefaultObject<ProviderValues>[],
                     this.provider_score,
-                ) as Etablissement,
+                ) as Establishment,
         );
 
-        const sortEtablissmentsByStatus = (etablisementA: Etablissement, etablisementB: Etablissement) =>
-            this.scoreEtablisement(etablisementB) - this.scoreEtablisement(etablisementA);
-        const sortedEtablissement = etablissements.sort(sortEtablissmentsByStatus); // The order is the "siege" first, the secondary is open, the third is closed.
-        return sortedEtablissement.map(etablissement => EtablissementAdapter.toSimplifiedEtablissement(etablissement));
+        const sortEstablishmentsByStatus = (establishmentA: Establishment, establishmentB: Establishment) =>
+            this.scoreEstablishment(establishmentB) - this.scoreEstablishment(establishmentA);
+        const sortedEstablishment = establishments.sort(sortEstablishmentsByStatus); // The order is the "siege" first, the secondary is open, the third is closed.
+        return sortedEstablishment.map(establishment => EstablishmentAdapter.toSimplifiedEstablishment(establishment));
     }
 
     getGrants(id: EstablishmentIdentifier) {
@@ -94,9 +94,9 @@ export class EtablissementsService {
     }
 
     private async aggregate(id: StructureIdentifier) {
-        const etablisementProviders = this.getEtablissementProviders();
+        const establishmentProviders = this.getEstablishmentProviders();
 
-        const promises = etablisementProviders.map(provider => {
+        const promises = establishmentProviders.map(provider => {
             try {
                 return provider.getEstablishments(id);
             } catch (e) {
@@ -108,23 +108,23 @@ export class EtablissementsService {
         return (await Promise.all(promises)).flat(2);
     }
 
-    private getEtablissementProviders() {
-        return Object.values(providers).filter(this.isEtablissementProvider);
+    private getEstablishmentProviders() {
+        return Object.values(providers).filter(this.isEstablishmentProvider);
     }
 
-    private isEtablissementProvider(data: unknown): data is EtablissementProvider {
-        return (data as EtablissementProvider).isEtablissementProvider;
+    private isEstablishmentProvider(data: unknown): data is EstablishmentProvider {
+        return (data as EstablishmentProvider).isEstablishmentProvider;
     }
 
-    private scoreEtablisement(etablisement: Etablissement) {
+    private scoreEstablishment(establishment: Establishment) {
         let score = 0;
 
-        if (etablisement.ouvert && etablisement.ouvert[0].value) score += 1;
-        if (etablisement.siege && etablisement.siege[0].value) score += 10;
+        if (establishment.ouvert && establishment.ouvert[0].value) score += 1;
+        if (establishment.siege && establishment.siege[0].value) score += 10;
         return score;
     }
 }
 
-const etablissementService = new EtablissementsService();
+const establishmentService = new EstablishmentService();
 
-export default etablissementService;
+export default establishmentService;

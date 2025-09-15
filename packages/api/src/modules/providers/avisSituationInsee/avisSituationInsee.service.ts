@@ -35,7 +35,7 @@ export class AvisSituationInseeService extends ProviderCore implements DocumentP
         });
     }
 
-    private async getInseeEtablissementsBySiren(siren: Siren): Promise<AvisSituationCache | false> {
+    private async getInseeEstablishmentsBySiren(siren: Siren): Promise<AvisSituationCache | false> {
         if (this.requestCache.has(siren.value)) return this.requestCache.get(siren.value)[0];
 
         try {
@@ -60,7 +60,7 @@ export class AvisSituationInseeService extends ProviderCore implements DocumentP
     isDocumentProvider = true;
 
     async findSiretSiege(siren: Siren): Promise<Siret> {
-        const data = await this.getInseeEtablissementsBySiren(siren);
+        const data = await this.getInseeEstablishmentsBySiren(siren);
         if (!data) throw new Error("No data found in Insee API");
 
         const nic = data.etablissements.find(e => e.etablissementSiege)?.nic;
