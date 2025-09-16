@@ -225,6 +225,7 @@ describe("FonjepEntityAdapter", () => {
                     mission: DATA_BRETAGNE_RECORDS.programs[Number(PROGRAM_CODE)].mission,
                     ministry: MINISTRY_ENTITIES[0]?.nom_ministere || null,
                     ministryAcronym: MINISTRY_ENTITIES[0]?.sigle_ministere || null,
+                    updateDate: VERSEMENT_ENTITY.updateDate,
                 });
             });
 

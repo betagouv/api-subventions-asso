@@ -76,6 +76,7 @@ export default class PaymentFlatAdapter {
             libelleCentreFinancier: entity.centreFinancierLibelle,
             attachementComptable: entity.attachementComptable,
             regionAttachementComptable: entity.regionAttachementComptable,
+            dateMiseAJour: entity.updateDate,
         };
     }
 
@@ -108,6 +109,7 @@ export default class PaymentFlatAdapter {
                 activityCode: dbo.codeActivite,
                 activityLabel: dbo.activite,
                 provider: dbo.provider,
+                updateDate: dbo.dateMiseAJour,
             };
         }
         // FonjepPaymentFlatEntity
@@ -137,6 +139,7 @@ export default class PaymentFlatAdapter {
                 activityCode: dbo.codeActivite,
                 activityLabel: dbo.activite,
                 provider: dbo.provider,
+                updateDate: dbo.dateMiseAJour,
             };
     }
 

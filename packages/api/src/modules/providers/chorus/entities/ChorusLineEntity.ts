@@ -56,7 +56,7 @@ export default class ChorusLineEntity {
 
     constructor(
         public uniqueId: string,
-        public updated: Date,
+        public updateDate: Date,
         public indexedInformations: ChorusIndexedInformations,
         public data: ChorusLineDto | unknown, // TODO: remove this unknown ??
         public _id?: ObjectId,
