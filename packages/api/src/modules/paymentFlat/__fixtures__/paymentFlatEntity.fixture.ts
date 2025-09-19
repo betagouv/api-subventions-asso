@@ -6,10 +6,11 @@ import { ChorusPaymentFlatEntity } from "../../providers/chorus/@types/ChorusPay
 import { GenericAdapter } from "../../../shared/GenericAdapter";
 import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
 import { FonjepPaymentFlatEntity } from "../../providers/fonjep/entities/FonjepFlatEntity";
+import { PAYMENT_ID } from "../../applicationFlat/__fixtures__";
 
 export const CHORUS_PAYMENT_FLAT_ENTITY: ChorusPaymentFlatEntity = {
     uniqueId: "UNIQUE_ID",
-    idVersement: "ID_VERSEMENT", // id versement
+    idVersement: PAYMENT_ID, // id versement
     exerciceBudgetaire: 2023, // exerciceBudgetaire
     typeIdEtablissementBeneficiaire: "siret", // typeIdEtablissementBeneficiaire
     idEtablissementBeneficiaire: new Siret(DEFAULT_ASSOCIATION.siret),
@@ -63,7 +64,7 @@ export const CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS: ChorusPaymentFlatEntity = {
     updateDate: new Date("2025-02-04"), // update date
 };
 
-const FONJEP_PAYMENT_FLAT_ID_VERSEMENT = "CODE_POSTE-OPERATION_DATE-EXERCISE-IDENTIFIER";
+export const FONJEP_PAYMENT_FLAT_ID_VERSEMENT = "CODE_POSTE-OPERATION_DATE-EXERCISE-IDENTIFIER";
 
 export const FONJEP_PAYMENT_FLAT_ENTITY: FonjepPaymentFlatEntity = {
     idVersement: "CODE_POSTE-OPERATION_DATE-EXERCISE-IDENTIFIER",

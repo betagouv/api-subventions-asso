@@ -101,8 +101,7 @@ describe("PaymentFlatService", () => {
         });
     });
 
-    // TODO: unskip when grant part is relevant or remove if not needed anymore
-    describe.skip("raw grant", () => {
+    describe("raw grant", () => {
         const DATA = [{ ej: "EJ", provider: "chorus", idVersement: "EJ" }];
 
         describe("getRawGrants", () => {

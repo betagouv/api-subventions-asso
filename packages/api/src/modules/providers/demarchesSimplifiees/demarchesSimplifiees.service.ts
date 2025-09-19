@@ -1,16 +1,9 @@
-import lodash from "lodash";
-import { DemandeSubvention } from "dto";
 import { InternalServerError } from "core";
-import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DEMARCHES_SIMPLIFIEES_TOKEN } from "../../../configurations/apis.conf";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
-import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import { DefaultObject } from "../../../@types";
 import ProviderCore from "../ProviderCore";
-import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
-import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
-import GrantProvider from "../../grant/@types/GrantProvider";
 import demarchesSimplifieesDataPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
 import demarchesSimplifieesSchemaPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
@@ -18,7 +11,6 @@ import { DemarchesSimplifieesDto } from "./dto/DemarchesSimplifieesDto";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
 import DemarchesSimplifieesSchema, { DemarchesSimplifieesSchemaLine } from "./entities/DemarchesSimplifieesSchema";
 import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
-import { DemarchesSimplifieesRawData } from "./@types/DemarchesSimplifieesRawGrant";
 import DemarchesSimplifieesDataEntity from "./entities/DemarchesSimplifieesDataEntity";
 import {
     DemarchesSimplifieesSchemaSeed,
@@ -26,18 +18,13 @@ import {
 } from "./entities/DemarchesSimplifieesSchemaSeed";
 import { input } from "@inquirer/prompts";
 import configurationsService from "../../configurations/configurations.service";
-import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
 import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
 import { ReadableStream } from "stream/web";
 import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
 
-export class DemarchesSimplifieesService
-    extends ProviderCore
-    implements DemandesSubventionsProvider<DemarchesSimplifieesRawData>, GrantProvider, ApplicationFlatProvider
-{
-    isDemandesSubventionsProvider = true;
+export class DemarchesSimplifieesService extends ProviderCore implements ApplicationFlatProvider {
     lastModified: Date;
 
     constructor() {
@@ -55,8 +42,6 @@ export class DemarchesSimplifieesService
      * |   Flat                  |
      * |-------------------------|
      */
-
-    isApplicationFlatProvider = true as const;
 
     async saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>): Promise<void> {
         await applicationFlatService.saveFromStream(stream);
@@ -113,39 +98,6 @@ export class DemarchesSimplifieesService
 
     private isDraft(entity: DemarchesSimplifieesDataEntity) {
         return entity && entity?.demande?.state === "en_construction";
-    }
-
-    private async filterAndAdaptEntities<T>(
-        entities: DemarchesSimplifieesDataEntity[],
-        adapter: (entity: DemarchesSimplifieesDataEntity, schema: DemarchesSimplifieesSchema) => T,
-    ) {
-        const schemasByIds = await this.getSchemasByIds();
-        const reduceToValidEntities = (acc, entity) => {
-            const schema = schemasByIds[entity.demarcheId];
-            if (!schema || this.isDraft(entity)) return acc;
-            acc.push(adapter(entity, schema));
-            return acc;
-        };
-        return entities.reduce(reduceToValidEntities, []) as T[];
-    }
-
-    private async entitiesToSubventions(entities: DemarchesSimplifieesDataEntity[]) {
-        return await this.filterAndAdaptEntities<DemandeSubvention>(
-            entities,
-            DemarchesSimplifieesEntityAdapter.toSubvention,
-        );
-    }
-
-    async getDemandeSubvention(id: StructureIdentifier): Promise<DemandeSubvention[]> {
-        let demandes: DemarchesSimplifieesDataEntity[] = [];
-
-        if (id instanceof EstablishmentIdentifier && id.siret) {
-            demandes = await demarchesSimplifieesDataPort.findBySiret(id.siret);
-        } else if (id instanceof AssociationIdentifier && id.siren) {
-            demandes = await demarchesSimplifieesDataPort.findBySiren(id.siren);
-        }
-
-        return this.entitiesToSubventions(demandes);
     }
 
     /**
@@ -249,64 +201,6 @@ export class DemarchesSimplifieesService
 
     addSchema(schema: DemarchesSimplifieesSchema) {
         return demarchesSimplifieesSchemaPort.upsert(schema);
-    }
-
-    /**
-     * |-------------------------|
-     * |       Grant Part        |
-     * |-------------------------|
-     */
-
-    isGrantProvider = true;
-
-    /** GRANT */
-
-    public getJoinKey(data: DemarchesSimplifieesRawData) {
-        // TODO: rename schema to schemas and sub schema to default ?
-        const schema = data.schema.schema;
-
-        // EJ and versementKey are the same.
-        // versementKey abstracts the EJ key that is not always the name of the joiner to match with payments
-        // i.e: in Fonjep we use code_poste instead of EJ
-
-        const joinKeySchemaItem = schema.find(field => field.to === "ej" || field.to === "versementKey");
-        if (!joinKeySchemaItem) return;
-        if ("value" in joinKeySchemaItem) return joinKeySchemaItem.value.toString();
-
-        const joinKeyFieldName = joinKeySchemaItem.from;
-        let joinKey: string | undefined;
-        if (joinKeyFieldName) joinKey = lodash.get(data.entity, joinKeyFieldName);
-        return joinKey?.toString();
-    }
-
-    /** RAW GRANT */
-
-    private async toRawGrants(providerGrants: DemarchesSimplifieesDataEntity[]) {
-        // améliorer l'adapter pour voir l'ej en joinKey
-        return await this.filterAndAdaptEntities<RawGrant>(
-            providerGrants,
-            DemarchesSimplifieesEntityAdapter.toRawGrant,
-        );
-    }
-
-    async getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
-        let entities: DemarchesSimplifieesDataEntity[] = [];
-        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            entities = await demarchesSimplifieesDataPort.findBySiret(identifier.siret);
-        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            entities = await demarchesSimplifieesDataPort.findBySiren(identifier.siren);
-        }
-
-        return await this.toRawGrants(entities);
-    }
-
-    rawToApplication(rawApplication: RawApplication<DemarchesSimplifieesRawData>) {
-        return DemarchesSimplifieesEntityAdapter.rawToApplication(rawApplication);
-    }
-
-    rawToCommon(raw: RawGrant) {
-        // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
-        return DemarchesSimplifieesEntityAdapter.toCommon(raw.data.grant, raw.data.schema);
     }
 
     async buildSchema(schemaModel: DemarchesSimplifieesSchemaSeedLine[], exampleData: DemarchesSimplifieesDataEntity) {

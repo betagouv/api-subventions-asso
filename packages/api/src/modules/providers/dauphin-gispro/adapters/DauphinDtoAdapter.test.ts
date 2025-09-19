@@ -9,69 +9,6 @@ jest.mock("../../providers.adapter", () => ({
 }));
 
 describe("DauphinDtoAdapter", () => {
-    describe("rawToApplication", () => {
-        // @ts-expect-error: parameter type
-        const RAW_APPLICATION: RawApplication = { data: { foo: "bar" } };
-        // @ts-expect-error: parameter type
-        const APPLICATION: DemandeSubvention = { foo: "bar" };
-        let mockToDemandeSubvention: jest.SpyInstance;
-
-        beforeAll(() => {
-            mockToDemandeSubvention = jest.spyOn(DauphinDtoAdapter, "toDemandeSubvention");
-            mockToDemandeSubvention.mockReturnValue(APPLICATION);
-        });
-
-        afterAll(() => {
-            mockToDemandeSubvention.mockRestore();
-        });
-
-        it("should call toDemandeSubvention", () => {
-            DauphinDtoAdapter.rawToApplication(RAW_APPLICATION);
-            expect(mockToDemandeSubvention).toHaveBeenCalledWith(RAW_APPLICATION.data);
-        });
-
-        it("should return DemandeSubvention", () => {
-            const expected = APPLICATION;
-            const actual = DauphinDtoAdapter.rawToApplication(RAW_APPLICATION);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("toDemandeSubvention()", () => {
-        const minDauphinEntity = {
-            dauphin: {
-                history: { begin: {}, events: [] },
-                demandeur: { SIRET: {} },
-                planFinancement: [],
-                financeursPrivilegies: [{ title: "title" }],
-            },
-        };
-
-        const buildDauphinEntityWithVirtualStatus = virtualStatus => {
-            return {
-                dauphin: {
-                    ...minDauphinEntity.dauphin,
-                    virtualStatusLabel: virtualStatus,
-                },
-            };
-        };
-
-        it("generates status translator", () => {
-            const PROVIDER_STATUS = "toto";
-            // @ts-expect-error: mock
-            DauphinDtoAdapter.toDemandeSubvention(buildDauphinEntityWithVirtualStatus(PROVIDER_STATUS));
-            expect(mockToStatus).toBeCalledWith(PROVIDER_STATUS);
-        });
-
-        it("uses status translator", () => {
-            const PROVIDER_STATUS = "toto";
-            // @ts-expect-error: mock
-            const res = DauphinDtoAdapter.toDemandeSubvention(buildDauphinEntityWithVirtualStatus(PROVIDER_STATUS));
-            const actual = res?.statut_label?.value;
-            expect(actual).toBe(mockLabel);
-        });
-    });
-
     describe("toDocuments", () => {
         const DAUPHIN_DOC = [
             {
@@ -128,29 +65,6 @@ describe("DauphinDtoAdapter", () => {
                 },
             ]);
             expect(actual).toMatchInlineSnapshot(`[]`);
-        });
-    });
-
-    describe("toCommon", () => {
-        it("returns proper result", () => {
-            // @ts-expect-error: mock
-            jest.spyOn(DauphinDtoAdapter, "getMontantDemande").mockReturnValueOnce(43);
-            // @ts-expect-error: mock
-            jest.spyOn(DauphinDtoAdapter, "getMontantAccorde").mockReturnValueOnce(42);
-            // @ts-expect-error: mock
-            jest.spyOn(DauphinDtoAdapter, "getInstructorService").mockReturnValueOnce("Service");
-
-            const INPUT = {
-                dauphin: {
-                    exerciceBudgetaire: 2022,
-                    intituleProjet: "projet",
-                    demandeur: { SIRET: { complet: "123456789" } },
-                    thematique: { title: "titre" },
-                },
-            };
-            // @ts-expect-error mock
-            const actual = DauphinDtoAdapter.toCommon(INPUT);
-            expect(actual).toMatchSnapshot();
         });
     });
 });

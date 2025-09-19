@@ -37,7 +37,7 @@ export default class ApplicationFlatAdapter {
         /* Pour l'instant on garde ej pour tous les providers sauf Fonjep qui prend idVersement 
         Il faudra convertir tous les versementKey en idVersement quand tout est connecté  */
         return {
-            annee_demande: toPvOrUndefined(entity.requestYear),
+            annee_demande: toPvOrUndefined(entity.budgetaryYear),
             date_commision: toPvOrUndefined(entity.decisionDate), // TODO surely not good
             pluriannualite: toPvOrUndefined(entity.pluriannual),
             service_instructeur: toPv(entity.instructiveDepartmentName || ""),

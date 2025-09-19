@@ -29,7 +29,6 @@ export interface RawFullGrant<T = FullGrantData> extends RawGrant<T> {
 export type AnyRawGrant = RawFullGrant | RawApplication | RawPayment;
 
 export type JoinedRawGrant = {
-    fullGrants?: RawFullGrant[];
     payments?: RawPayment[];
     applications?: RawApplication[];
 };

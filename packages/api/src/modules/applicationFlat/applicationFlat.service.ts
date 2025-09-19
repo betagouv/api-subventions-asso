@@ -21,7 +21,7 @@ export class ApplicationFlatService
     constructor() {
         super({
             name: "Application Flat",
-            type: ProviderEnum.raw,
+            type: ProviderEnum.technical,
             description: "ApplicationFlat",
             id: "application-flat",
         });
@@ -65,19 +65,14 @@ export class ApplicationFlatService
 
     isGrantProvider = true;
 
-    async getRawGrants(_identifier: StructureIdentifier): Promise<RawGrant[]> {
-        return [];
-        // TODO: uncomment this when all other providers will be deconnected from grant
-        // TODO: or remove this if grant process is not needed anymore
-        //     const dbos = await this.getEntitiesByIdentifier(identifier);
-        //     /* Pour l'instant on garde ej pour tous les providers sauf Fonjep qui prend idVersement
-        //     Il faudra convertir tous les versementKey en idVersement quand tout est connecté  */
-        //     return dbos.map(grant => ({
-        //         provider: grant.provider,
-        //         type: "application",
-        //         data: grant,
-        //         joinKey: (grant.provider === "fonjep" ? grant.paymentId : grant.ej) ?? undefined,
-        //     }));
+    async getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
+        const entities = await this.getEntitiesByIdentifier(identifier);
+        return entities.map(grant => ({
+            provider: "application-flat",
+            type: "application",
+            data: grant,
+            joinKey: grant.paymentId ?? undefined,
+        }));
     }
 
     /**
@@ -106,7 +101,10 @@ export class ApplicationFlatService
      * @returns Siret or undefined if establishment type is ridet or tahitiet
      */
     getSiret(entity: ApplicationFlatEntity) {
-        if (entity.beneficiaryEstablishmentIdType === "siret" && Siret.isSiret(entity.beneficiaryEstablishmentId))
+        if (
+            entity.beneficiaryEstablishmentIdType === Siret.getName() &&
+            Siret.isSiret(entity.beneficiaryEstablishmentId)
+        )
             return new Siret(entity.beneficiaryEstablishmentId);
         return undefined;
     }

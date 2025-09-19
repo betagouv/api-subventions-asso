@@ -8,16 +8,16 @@ exports[`ApplicationFlatService grant part getRawGrants converts found methods 1
       "provider": "fonjep",
     },
     "joinKey": "poste1",
-    "provider": "fonjep",
+    "provider": "application-flat",
     "type": "application",
   },
   {
     "data": {
-      "ej": "ej2",
+      "paymentId": "ej2",
       "provider": "autre",
     },
     "joinKey": "ej2",
-    "provider": "autre",
+    "provider": "application-flat",
     "type": "application",
   },
 ]

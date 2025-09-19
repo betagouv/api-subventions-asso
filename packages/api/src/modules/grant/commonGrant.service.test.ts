@@ -111,24 +111,15 @@ describe("CommonGrantService", () => {
 
     describe("rawToCommon", () => {
         const RAW_PAYMENTS = [{ p: 1 }, { p: "toFilterOut" }, { p: 2 }];
-        const RAW_FULL_GRANTS = [
-            { p: 3, a: 3 },
-            { p: 4, a: 4 },
-            { p: "toFilterOut", a: "toFilterOut" },
-        ];
         const RAW_APPLICATIONS = [{ a: 1 }, { a: 2 }, { a: "toFilterOut" }];
         const JOINED_RAW_GRANT = {
             payments: RAW_PAYMENTS,
             applications: RAW_APPLICATIONS,
-            fullGrants: RAW_FULL_GRANTS,
         };
-        const FILTERED_FULL_GRANTS = [
-            { p: 3, a: 3 },
-            { p: 4, a: 4 },
-        ];
+
         const FILTERED_APPLICATIONS = [{ a: 1 }, { a: 2 }];
 
-        const ADAPTED_PAYMENTS = [{ aP: 1 }, { aP: 2 }, { aP: 3 }, { aP: 4 }];
+        const ADAPTED_PAYMENTS = [{ aP: 1 }, { aP: 2 }];
         const SELECTED_APPLICATION = { a: 3, p: 3 };
 
         const FINAL_PAYMENT = { aP: 10 };
@@ -151,22 +142,17 @@ describe("CommonGrantService", () => {
 
         it.each`
             entity            | object              | nthCall
-            ${"full grants"}  | ${RAW_FULL_GRANTS}  | ${1}
-            ${"applications"} | ${RAW_APPLICATIONS} | ${2}
-            ${"payments"}     | ${RAW_PAYMENTS}     | ${3}
+            ${"applications"} | ${RAW_APPLICATIONS} | ${1}
+            ${"payments"}     | ${RAW_PAYMENTS}     | ${2}
         `("filters $entity", ({ object, nthCall }) => {
             commonGrantServiceTest.rawToCommon(JOINED_RAW_GRANT);
             expect(commonGrantServiceTest.filterAdaptable).toHaveBeenNthCalledWith(nthCall, object);
         });
 
         it("selects application from filtered applications and full grants", () => {
-            commonGrantServiceTest.filterAdaptable.mockReturnValueOnce(FILTERED_FULL_GRANTS);
             commonGrantServiceTest.filterAdaptable.mockReturnValueOnce(FILTERED_APPLICATIONS);
             commonGrantServiceTest.rawToCommon(JOINED_RAW_GRANT);
-            expect(commonGrantServiceTest.chooseRawApplication).toHaveBeenCalledWith([
-                ...FILTERED_APPLICATIONS,
-                ...FILTERED_FULL_GRANTS,
-            ]);
+            expect(commonGrantServiceTest.chooseRawApplication).toHaveBeenCalledWith([...FILTERED_APPLICATIONS]);
         });
         it("adapts selected application or full grant", () => {
             commonGrantServiceTest.rawToCommon(JOINED_RAW_GRANT);
@@ -196,17 +182,11 @@ describe("CommonGrantService", () => {
                 { a: 3, p: 3 },
                 expect.any(Boolean),
             );
-            expect(commonGrantServiceTest.rawToCommonFragment).toHaveBeenCalledWith(
-                { a: 4, p: 4 },
-                expect.any(Boolean),
-            );
         });
         it("aggregates adapted payments", () => {
             commonGrantServiceTest.rawToCommonFragment.mockReturnValueOnce({}); // applications
             commonGrantServiceTest.rawToCommonFragment.mockReturnValueOnce({ aP: 1 });
             commonGrantServiceTest.rawToCommonFragment.mockReturnValueOnce({ aP: 2 });
-            commonGrantServiceTest.rawToCommonFragment.mockReturnValueOnce({ aP: 3 });
-            commonGrantServiceTest.rawToCommonFragment.mockReturnValueOnce({ aP: 4 });
             commonGrantServiceTest.rawToCommon(JOINED_RAW_GRANT);
             expect(commonGrantServiceTest.aggregatePayments).toHaveBeenCalledWith(ADAPTED_PAYMENTS);
         });

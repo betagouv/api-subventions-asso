@@ -182,8 +182,6 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
      * |----------------------------|
      */
 
-    isApplicationFlatProvider = true as const;
-
     addToApplicationFlat(
         collections: {
             positions: FonjepPosteEntity[];

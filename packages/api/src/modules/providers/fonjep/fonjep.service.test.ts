@@ -42,7 +42,7 @@ import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import paymentFlatService from "../../paymentFlat/paymentFlat.service";
 import { DATA_BRETAGNE_RECORDS } from "../dataBretagne/__fixtures__/dataBretagne.fixture";
 import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
-import { ENTITY as APPLICATION_FLAT_ENTITY } from "../../applicationFlat/__fixtures__";
+import { APPLICATION_LINK_TO_FONJEP } from "../../applicationFlat/__fixtures__";
 import { ReadableStream } from "node:stream/web";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import * as NumberHelper from "../../../shared/helpers/NumberHelper";
@@ -415,19 +415,19 @@ describe("FonjepService", () => {
 
     describe("Application Flat", () => {
         const FALSE_DUPLICATE_APPLICATION = {
-            ...APPLICATION_FLAT_ENTITY,
+            ...APPLICATION_LINK_TO_FONJEP,
             grantedAmount: 9000,
             requestedAmount: 9000,
             totalAmount: 9000,
         };
-        const OTHER_APPLICATION = { ...APPLICATION_FLAT_ENTITY, uniqueId: "otherId" };
+        const OTHER_APPLICATION = { ...APPLICATION_LINK_TO_FONJEP, uniqueId: "otherId" };
         const APPLICATIONS = [
-            APPLICATION_FLAT_ENTITY as FonjepApplicationFlatEntity,
+            APPLICATION_LINK_TO_FONJEP as FonjepApplicationFlatEntity,
             FALSE_DUPLICATE_APPLICATION as FonjepApplicationFlatEntity,
             OTHER_APPLICATION as FonjepApplicationFlatEntity,
         ];
         const GROUPED_APPLICATIONS = {
-            [APPLICATION_FLAT_ENTITY.uniqueId]: [APPLICATION_FLAT_ENTITY, FALSE_DUPLICATE_APPLICATION],
+            [APPLICATION_LINK_TO_FONJEP.uniqueId]: [APPLICATION_LINK_TO_FONJEP, FALSE_DUPLICATE_APPLICATION],
             [OTHER_APPLICATION.uniqueId]: [OTHER_APPLICATION],
         };
 
@@ -438,7 +438,7 @@ describe("FonjepService", () => {
 
             beforeAll(() => {
                 jest.mocked(FonjepEntityAdapter.toFonjepApplicationFlat).mockReturnValue(
-                    APPLICATION_FLAT_ENTITY as FonjepApplicationFlatEntity,
+                    APPLICATION_LINK_TO_FONJEP as FonjepApplicationFlatEntity,
                 );
             });
 
@@ -471,7 +471,7 @@ describe("FonjepService", () => {
                     EXPORT_DATE,
                 );
 
-                expect(actual).toEqual([{ ...APPLICATION_FLAT_ENTITY, updateDate: expect.any(Date) }]);
+                expect(actual).toEqual([{ ...APPLICATION_LINK_TO_FONJEP, updateDate: expect.any(Date) }]);
             });
         });
 
@@ -482,7 +482,7 @@ describe("FonjepService", () => {
                 thirdParties: THIRD_PARTIES,
                 schemes: DISPOSITIF_ENTITIES,
             };
-            const AGGREGATED_APPLICATIONS = [APPLICATION_FLAT_ENTITY as FonjepApplicationFlatEntity];
+            const AGGREGATED_APPLICATIONS = [APPLICATION_LINK_TO_FONJEP as FonjepApplicationFlatEntity];
             let mockCreateApplicationFlat: jest.SpyInstance;
             let mockSaveFlatFromStream: jest.SpyInstance;
             let mockProcessDuplicates: jest.SpyInstance;
@@ -537,7 +537,7 @@ describe("FonjepService", () => {
             });
 
             it("sums applications grantedAmount", () => {
-                const APPLICATIONS = [APPLICATION_FLAT_ENTITY, FALSE_DUPLICATE_APPLICATION];
+                const APPLICATIONS = [APPLICATION_LINK_TO_FONJEP, FALSE_DUPLICATE_APPLICATION];
                 const expected = {
                     ...APPLICATIONS[0],
                     grantedAmount: AGGREGATED_AMOUNT,
@@ -564,7 +564,7 @@ describe("FonjepService", () => {
                     // @ts-expect-error: mock private method
                     .spyOn(fonjepService, "aggregateApplications")
                     // @ts-expect-error: mock return value
-                    .mockReturnValue(APPLICATION_FLAT_ENTITY);
+                    .mockReturnValue(APPLICATION_LINK_TO_FONJEP);
             });
 
             afterAll(() => {
@@ -583,10 +583,10 @@ describe("FonjepService", () => {
             });
 
             it("returns aggregated applications", () => {
-                mockAggregateApplications.mockReturnValueOnce(APPLICATION_FLAT_ENTITY);
+                mockAggregateApplications.mockReturnValueOnce(APPLICATION_LINK_TO_FONJEP);
                 mockAggregateApplications.mockReturnValueOnce(OTHER_APPLICATION);
 
-                const expected = [APPLICATION_FLAT_ENTITY, OTHER_APPLICATION];
+                const expected = [APPLICATION_LINK_TO_FONJEP, OTHER_APPLICATION];
                 const actual = fonjepService.processDuplicates(APPLICATIONS);
                 expect(actual).toEqual(expected);
             });
@@ -594,7 +594,7 @@ describe("FonjepService", () => {
 
         describe("saveFlatFromStream", () => {
             it("calls applicationFlatService.saveFromStream", () => {
-                const STREAM = ReadableStream.from([APPLICATION_FLAT_ENTITY]);
+                const STREAM = ReadableStream.from([APPLICATION_LINK_TO_FONJEP]);
                 fonjepService.saveFlatFromStream(STREAM);
                 expect(applicationFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);
             });

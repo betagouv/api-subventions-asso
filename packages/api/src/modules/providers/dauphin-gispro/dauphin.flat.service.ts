@@ -13,8 +13,6 @@ export class DauphinFlatService implements ApplicationFlatProvider {
      * |-------------------------|
      */
 
-    isApplicationFlatProvider = true as const;
-
     async generateTempJoinedCollection() {
         await dauphinPort.createSimplifiedDauphinBeforeJoin();
         await dauphinPort.joinGisproToSimplified();
