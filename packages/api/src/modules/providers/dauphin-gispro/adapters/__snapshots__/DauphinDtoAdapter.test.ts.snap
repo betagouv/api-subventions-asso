@@ -1,18 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DauphinDtoAdapter toCommon returns proper result 1`] = `
-{
-  "dispositif": "titre - Politique de la ville",
-  "exercice": 2022,
-  "montant_accorde": 42,
-  "montant_demande": 43,
-  "objet": "projet",
-  "service_instructeur": "Service",
-  "siret": "123456789",
-  "statut": "NORMALIZED_LABEL",
-}
-`;
-
 exports[`DauphinDtoAdapter toDocuments return proper result 1`] = `
 [
   {

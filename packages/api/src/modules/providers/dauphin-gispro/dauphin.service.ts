@@ -1,31 +1,24 @@
 import { IncomingMessage } from "http";
 import qs from "qs";
-import { CommonApplicationDto, DemandeSubvention, DocumentDto } from "dto";
+import { DocumentDto } from "dto";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DAUPHIN_PASSWORD, DAUPHIN_USERNAME } from "../../../configurations/apis.conf";
-import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import configurationsService from "../../configurations/configurations.service";
 import { formatIntToTwoDigits } from "../../../shared/helpers/StringHelper";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
-import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import ProviderCore from "../ProviderCore";
 import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
 import Siren from "../../../identifierObjects/Siren";
-import GrantProvider from "../../grant/@types/GrantProvider";
 import dauphinPort from "../../../dataProviders/db/providers/dauphin/dauphin.port";
-import DauphinGisproDbo from "../../../dataProviders/db/providers/dauphin/DauphinGisproDbo";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
 import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
 import dauphinFlatService from "./dauphin.flat.service";
 
-export class DauphinService
-    extends ProviderCore
-    implements DemandesSubventionsProvider<DauphinGisproDbo>, DocumentProvider, GrantProvider
-{
+export class DauphinService extends ProviderCore implements DocumentProvider {
     constructor() {
         super({
             name: "Dauphin",
@@ -42,55 +35,8 @@ export class DauphinService
      * |-------------------------|
      */
 
-    isDemandesSubventionsProvider = true;
     isDocumentProvider = false; // only while we no longer have access.
     // when we do again, be careful to skip "liste des dirigeants" because of political insecurities
-
-    rawToApplication(rawApplication: RawApplication<DauphinGisproDbo>) {
-        return DauphinDtoAdapter.rawToApplication(rawApplication);
-    }
-
-    async getDemandeSubvention(id: StructureIdentifier): Promise<DemandeSubvention[]> {
-        let applications: DauphinGisproDbo[] = [];
-        if (id instanceof EstablishmentIdentifier && id.siret) {
-            applications = await dauphinPort.findBySiret(id.siret);
-            return applications.map(dto => DauphinDtoAdapter.toDemandeSubvention(dto));
-        } else if (id instanceof AssociationIdentifier && id.siren) {
-            applications = await dauphinPort.findBySiren(id.siren);
-        }
-
-        return applications.map(dto => DauphinDtoAdapter.toDemandeSubvention(dto));
-    }
-
-    /**
-     * |-------------------------|
-     * |   Grant Part            |
-     * |-------------------------|
-     */
-
-    isGrantProvider = true;
-
-    async getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
-        let entities: DauphinGisproDbo[] = [];
-        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            entities = await dauphinPort.findBySiret(identifier.siret);
-        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            entities = await dauphinPort.findBySiren(identifier.siren);
-        }
-
-        // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
-        return entities.map(entity => ({
-            provider: this.meta.id,
-            type: "application",
-            data: entity,
-            joinKey: entity.gispro?.ej,
-        }));
-    }
-
-    rawToCommon(rawGrant: RawGrant): CommonApplicationDto {
-        // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
-        return DauphinDtoAdapter.toCommon(rawGrant.data as DauphinGisproDbo);
-    }
 
     /**
      * |-------------------------|

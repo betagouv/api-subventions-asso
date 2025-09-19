@@ -34,10 +34,6 @@ exports[`open-data/fournisseurs should return a list of providers with name, des
       "name": "OSIRIS",
     },
     {
-      "description": "L'extranet de gestion du Fonjep permet aux services instructeurs d'indiquer les décisions d'attribution des subventions Fonjep et aux associations bénéficiaires de transmettre les informations nécessaires à la mise en paiment des subventions par le Fonjep, il ne gère pas les demandes de subvention qui ne sont pas dématérialisées à ce jour.",
-      "name": "Extranet FONJEP",
-    },
-    {
       "description": "Chorus est un système d'information porté par l'AIFE pour les services de l'État qui permet de gérer les paiements des crédits État, que ce soit des commandes publiques ou des subventions et d'assurer la gestion financière du budget de l'État.",
       "name": "Chorus",
     },

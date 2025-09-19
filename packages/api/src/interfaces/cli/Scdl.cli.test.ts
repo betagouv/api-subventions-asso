@@ -278,7 +278,6 @@ describe("ScdlCli", () => {
         const ERRORS = ["ERROR_1", "ERROR_2"] as MixedParsedError[];
 
         beforeEach(() => {
-            console.log(cli);
             // @ts-expect-error: mock private method
             cli.exportErrors = jest.fn();
         });

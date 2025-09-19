@@ -54,10 +54,8 @@ export class CommonGrantService {
     }
 
     rawToCommon(joinedRawGrant: JoinedRawGrant, publishable = false): CommonGrantDto | null {
-        const rawFullGrants = this.filterAdaptable(joinedRawGrant?.fullGrants);
-
         let application: CommonApplicationDto | undefined = undefined;
-        const rawApplications = [...this.filterAdaptable(joinedRawGrant?.applications), ...rawFullGrants];
+        const rawApplications = [...this.filterAdaptable(joinedRawGrant?.applications)];
         if (rawApplications.length) {
             const chosenRawApplication = this.chooseRawApplication(rawApplications);
             application = this.rawToCommonFragment(chosenRawApplication, publishable);
@@ -65,7 +63,7 @@ export class CommonGrantService {
         if (publishable && application?.statut !== ApplicationStatus.GRANTED) application = undefined;
 
         let payment: CommonPaymentDto | undefined = undefined;
-        const rawPayments = [...this.filterAdaptable(joinedRawGrant?.payments), ...rawFullGrants];
+        const rawPayments = [...this.filterAdaptable(joinedRawGrant?.payments)];
         if (rawPayments.length) {
             const payments = rawPayments.map(rawData => this.rawToCommonFragment(rawData, publishable));
             payment = this.aggregatePayments(payments);

@@ -147,8 +147,6 @@ describe("SCDL Batch Import CLI", () => {
             // @ts-expect-error: test private method
             scdlBatchCli.validateFileConfig({ name: 123 });
             // @ts-expect-error: access private property
-            console.log(scdlBatchCli.fileConfigErrors);
-            // @ts-expect-error: access private property
             expect(scdlBatchCli.fileConfigErrors).toContainEqual(expected);
         });
 

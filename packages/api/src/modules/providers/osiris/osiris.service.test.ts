@@ -1,7 +1,5 @@
-import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
 import Rna from "../../../identifierObjects/Rna";
 import Siren from "../../../identifierObjects/Siren";
-import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
 import osirisService, { InvalidOsirisRequestError, VALID_REQUEST_ERROR_CODE } from "./osiris.service";
 import { osirisActionPort, osirisRequestPort } from "../../../dataProviders/db/providers/osiris";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
@@ -9,7 +7,7 @@ import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
 import RnaSirenEntity from "../../../entities/RnaSirenEntity";
 import { ReadableStream } from "stream/web";
-import { ENTITY } from "../../applicationFlat/__fixtures__";
+import { APPLICATION_LINK_TO_CHORUS } from "../../applicationFlat/__fixtures__";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import { REQUEST_DBO } from "./__fixtures__/osiris.request.fixtures";
 import { ACTION_ENTITY } from "./__fixtures__/osiris.action.fixtures";
@@ -28,15 +26,6 @@ const SIRET = SIREN.toSiret("00000");
 const RNA = new Rna("W123456789");
 
 describe("OsirisService", () => {
-    beforeAll(() => {
-        // @ts-expect-error: disable adapter
-        jest.mocked(OsirisRequestAdapter.toDemandeSubvention).mockReturnValue(entity => entity);
-    });
-
-    afterAll(() => {
-        jest.mocked(OsirisRequestAdapter.toDemandeSubvention).mockRestore();
-    });
-
     describe.each`
         method           | identifier
         ${"findBySiret"} | ${SIRET}
@@ -69,105 +58,6 @@ describe("OsirisService", () => {
             }
             const expected = [{ ...REQUEST_DBO, actions: [] }];
             const actual = await osirisService[method](identifier);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("rawToApplication", () => {
-        // @ts-expect-error: parameter type
-        const RAW_APPLICATION: RawApplication = { data: { foo: "bar" } };
-        // @ts-expect-error: parameter type
-        const APPLICATION: DemandeSubvention = { foo: "bar" };
-
-        it("should call OsirisRequestAdapter.rawToApplication", () => {
-            osirisService.rawToApplication(RAW_APPLICATION);
-            expect(OsirisRequestAdapter.rawToApplication).toHaveBeenCalledWith(RAW_APPLICATION);
-        });
-
-        it("should return DemandeSubvention", () => {
-            jest.mocked(OsirisRequestAdapter.rawToApplication).mockReturnValueOnce(APPLICATION);
-            const expected = APPLICATION;
-            const actual = osirisService.rawToApplication(RAW_APPLICATION);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("getDemandeSubventionBySiren", () => {
-        const SIREN = new Siren("123456789");
-        const ASSOCIATION_IDENTIFIER = AssociationIdentifier.fromSiren(SIREN);
-        const findBySirenMock = jest.spyOn(osirisService, "findBySiren");
-        it("should call findBySiren", async () => {
-            // @ts-expect-error: mock
-            findBySirenMock.mockImplementationOnce(jest.fn(() => [{}]));
-            await osirisService.getDemandeSubvention(ASSOCIATION_IDENTIFIER);
-            expect(findBySirenMock).toHaveBeenCalledWith(SIREN);
-        });
-    });
-
-    describe("getRawGrants", () => {
-        const DATA = [{ providerInformations: { ej: "EJ" } }];
-        const SIREN = new Siren("123456789");
-        const ASSOCIATION_IDENTIFIER = AssociationIdentifier.fromSiren(SIREN);
-        let findBySirenMock;
-        beforeAll(
-            () =>
-                (findBySirenMock = jest
-                    .spyOn(osirisService, "findBySiren")
-                    // @ts-expect-error: mock
-                    .mockImplementation(jest.fn(() => DATA))),
-        );
-        afterAll(() => findBySirenMock.mockRestore());
-
-        it("should call findBySiren()", async () => {
-            await osirisService.getRawGrants(ASSOCIATION_IDENTIFIER);
-            expect(findBySirenMock).toHaveBeenCalledWith(SIREN);
-        });
-
-        it("returns raw grant data", async () => {
-            const actual = await osirisService.getRawGrants(ASSOCIATION_IDENTIFIER);
-            expect(actual).toMatchInlineSnapshot(`
-                    [
-                      {
-                        "data": {
-                          "providerInformations": {
-                            "ej": "EJ",
-                          },
-                        },
-                        "joinKey": "EJ",
-                        "provider": "osiris",
-                        "type": "application",
-                      },
-                    ]
-                `);
-        });
-    });
-
-    describe("rawToCommon", () => {
-        const RAW = "RAW";
-        const ADAPTED = {};
-
-        beforeAll(() => {
-            OsirisRequestAdapter.toCommon
-                // @ts-expect-error: mock
-                .mockImplementation(input => input.toString());
-        });
-
-        afterAll(() => {
-            // @ts-expect-error: mock
-            OsirisRequestAdapter.toCommon.mockReset();
-        });
-
-        it("calls adapter with data from raw grant", () => {
-            // @ts-expect-error: mock
-            osirisService.rawToCommon({ data: RAW });
-            expect(OsirisRequestAdapter.toCommon).toHaveBeenCalledWith(RAW);
-        });
-        it("returns result from adapter", () => {
-            // @ts-expect-error: mock
-            OsirisRequestAdapter.toCommon.mockReturnValueOnce(ADAPTED);
-            const expected = ADAPTED;
-            // @ts-expect-error: mock
-            const actual = osirisService.rawToCommon({ data: RAW });
             expect(actual).toEqual(expected);
         });
     });
@@ -283,7 +173,7 @@ describe("OsirisService", () => {
 
     describe("saveFlatFromStream", () => {
         it("calls application flat with stream", async () => {
-            const APPLICATIONS = [ENTITY];
+            const APPLICATIONS = [APPLICATION_LINK_TO_CHORUS];
             const STREAM = ReadableStream.from(APPLICATIONS);
             await osirisService.saveFlatFromStream(STREAM);
             expect(applicationFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);

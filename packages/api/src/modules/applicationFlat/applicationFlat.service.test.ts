@@ -13,7 +13,7 @@ import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import { FindCursor } from "mongodb";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
-import { ENTITY as APPLICATION_FLAT_ENTITY, DBO as APPLICATION_FLAT_DBO } from "./__fixtures__";
+import { APPLICATION_LINK_TO_CHORUS, DBO as APPLICATION_FLAT_DBO } from "./__fixtures__";
 import DEFAULT_ASSOCIATION from "../../../tests/__fixtures__/association.fixture";
 
 jest.mock("../../dataProviders/db/applicationFlat/applicationFlat.port");
@@ -22,7 +22,7 @@ jest.mock("../../identifierObjects/Siret");
 jest.mock("../../shared/helpers/MongoHelper");
 
 describe("ApplicationFlatService", () => {
-    const APPLICATIONS = [APPLICATION_FLAT_ENTITY, APPLICATION_FLAT_ENTITY];
+    const APPLICATIONS = [APPLICATION_LINK_TO_CHORUS, APPLICATION_LINK_TO_CHORUS];
 
     describe.each`
         identifierType | rawIdentifier                  | findMethod                         | identifierConstructor
@@ -162,7 +162,7 @@ describe("ApplicationFlatService", () => {
             const RAW_GRANT = {
                 type: "application",
                 provider: "some",
-                data: APPLICATION_FLAT_ENTITY,
+                data: APPLICATION_LINK_TO_CHORUS,
                 joinKey: "ej",
             } as RawApplication<ApplicationFlatEntity>;
 
@@ -199,8 +199,8 @@ describe("ApplicationFlatService", () => {
 
             it("adapts all applications", async () => {
                 await applicationFlatService.getDemandeSubvention(IDENTIFIER);
-                expect(ApplicationFlatAdapter.toDemandeSubvention).toHaveBeenCalledWith(APPLICATION_FLAT_ENTITY);
-                expect(ApplicationFlatAdapter.toDemandeSubvention).toHaveBeenCalledWith(APPLICATION_FLAT_ENTITY);
+                expect(ApplicationFlatAdapter.toDemandeSubvention).toHaveBeenCalledWith(APPLICATION_LINK_TO_CHORUS);
+                expect(ApplicationFlatAdapter.toDemandeSubvention).toHaveBeenCalledWith(APPLICATION_LINK_TO_CHORUS);
             });
 
             it("returns non-null adapted applications", async () => {
@@ -214,13 +214,12 @@ describe("ApplicationFlatService", () => {
         });
     });
 
-    // TODO: unskip when grant part is relevant or remove if not needed anymore
-    describe.skip("grant part", () => {
+    describe("grant part", () => {
         describe("getRawGrants", () => {
             let getEntitiesSpy;
             const APPLICATIONS = [
                 { provider: "fonjep", paymentId: "poste1" },
-                { provider: "autre", ej: "ej2" },
+                { provider: "autre", paymentId: "ej2" },
             ] as unknown as ApplicationFlatEntity[];
             const IDENTIFIER = AssociationIdentifier.fromSiren(new Siren("987654321"));
 

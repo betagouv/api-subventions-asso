@@ -9,8 +9,9 @@ import ProviderCore from "../providers/ProviderCore";
 import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
+import GrantProvider from "../grant/@types/GrantProvider";
 
-export class PaymentFlatService extends ProviderCore implements PaymentProvider<PaymentFlatEntity> {
+export class PaymentFlatService extends ProviderCore implements PaymentProvider<PaymentFlatEntity>, GrantProvider {
     constructor() {
         super({
             name: "Payment Flat",
@@ -81,26 +82,21 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider<
 
     isGrantProvider = true;
 
-    async getRawGrants(_identifier: StructureIdentifier): Promise<RawGrant[]> {
-        return [];
+    async getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
+        // return [];
+        let dbos: PaymentFlatEntity[] = [];
+        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
+            dbos = await paymentFlatPort.findBySiret(identifier.siret);
+        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
+            dbos = await paymentFlatPort.findBySiren(identifier.siren);
+        }
 
-        // TODO: uncomment this when all other providers will be deconnected from grant
-        // TODO: or remove this if grant process is not needed anymore
-        // let dbos: PaymentFlatEntity[] = [];
-        // if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-        //     dbos = await paymentFlatPort.findBySiret(identifier.siret);
-        // } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-        //     dbos = await paymentFlatPort.findBySiren(identifier.siren);
-        // }
-
-        // return dbos.map(grant => ({
-        //     provider: "payment-flat",
-        //     type: "payment",
-        //     data: grant,
-        //     /* Pour l'instant on garde ej pour tous les providers sauf Fonjep qui prend idVersement
-        //     Il faudra convertir tous les versementKey en idVersement quand tout est connecté  */
-        //     joinKey: grant.provider === "fonjep" ? grant.idVersement : grant.ej || undefined,
-        // }));
+        return dbos.map(grant => ({
+            provider: "payment-flat",
+            type: "payment",
+            data: grant,
+            joinKey: grant.idVersement ?? undefined,
+        }));
     }
 }
 
