@@ -79,7 +79,12 @@ export default class ChorusCli extends CliController {
         });
     }
 
-    async resyncPaymentFlatByExercise(exercise: number) {
+    async resyncPaymentFlatByExercise(exercise: string | number) {
+        // string when directly called by the CLI and number when called in _parse
+        if (typeof exercise === "string") {
+            exercise = Number(exercise);
+        }
+        if (isNaN(exercise)) throw new Error("Exercise must be a valid number");
         const ticTacInterval = setInterval(() => console.log("TIC"), 60000);
         this.logger.logIC(`Resync payment flat collection for exercice ${exercise}`);
         await paymentFlatChorusService.updatePaymentsFlatCollection(exercise);

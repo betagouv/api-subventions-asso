@@ -54,7 +54,7 @@ class PaymentFlatChorusService {
         exerciceBudgetaire?: number,
     ) {
         const chorusCursor = chorusService.cursorFind(exerciceBudgetaire);
-        const entities: Record<string, ChorusPaymentFlatEntity> = {};
+        const entitiesByUniqueId: Record<string, ChorusPaymentFlatEntity> = {};
 
         while (await chorusCursor.hasNext()) {
             const document = (await chorusCursor.next()) as ChorusLineEntity;
@@ -74,15 +74,18 @@ class PaymentFlatChorusService {
                 continue;
             }
 
-            if (entities[paymentFlatEntity.uniqueId]) {
-                entities[paymentFlatEntity.uniqueId].amount = parseFloat(
-                    (entities[paymentFlatEntity.uniqueId].amount + paymentFlatEntity.amount).toFixed(2),
+            if (entitiesByUniqueId[paymentFlatEntity.uniqueId]) {
+                entitiesByUniqueId[paymentFlatEntity.uniqueId].amount = parseFloat(
+                    (entitiesByUniqueId[paymentFlatEntity.uniqueId].amount + paymentFlatEntity.amount).toFixed(2),
                 );
             } else {
-                entities[paymentFlatEntity.uniqueId] = paymentFlatEntity;
+                entitiesByUniqueId[paymentFlatEntity.uniqueId] = paymentFlatEntity;
             }
         }
-        return Object.values(entities);
+
+        const entities = Object.values(entitiesByUniqueId);
+        console.log(`${entities.length} documents transformed`);
+        return entities;
     }
 
     public async updatePaymentsFlatCollection(exerciceBudgetaire?: number) {
