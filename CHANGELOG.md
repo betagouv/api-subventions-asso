@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.72.3](https://github.com/betagouv/api-subventions-asso/compare/v0.72.2...v0.72.3) (2025-09-20)
+
+### Bug Fixes
+
+- **api:** cast exercise to number ([02a5863](https://github.com/betagouv/api-subventions-asso/commit/02a58632c9d292e073d52cc5d89218f8396e8111))
+
 ## [0.72.2](https://github.com/betagouv/api-subventions-asso/compare/v0.72.1...v0.72.2) (2025-09-12)
 
 ### Bug Fixes
