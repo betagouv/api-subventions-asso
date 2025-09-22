@@ -179,7 +179,7 @@ describe("ApplicationFlatService", () => {
             });
         });
 
-        describe("getDemandeSubvention", () => {
+        describe("getApplication", () => {
             let getEntitiesSpy;
             const IDENTIFIER = AssociationIdentifier.fromSiren(new Siren("987654321"));
 
@@ -193,12 +193,12 @@ describe("ApplicationFlatService", () => {
             });
 
             it("gets entities", async () => {
-                await applicationFlatService.getDemandeSubvention(IDENTIFIER);
+                await applicationFlatService.getApplication(IDENTIFIER);
                 expect(getEntitiesSpy).toHaveBeenCalledWith(IDENTIFIER);
             });
 
             it("adapts all applications", async () => {
-                await applicationFlatService.getDemandeSubvention(IDENTIFIER);
+                await applicationFlatService.getApplication(IDENTIFIER);
                 expect(ApplicationFlatAdapter.toDemandeSubvention).toHaveBeenCalledWith(APPLICATION_LINK_TO_CHORUS);
                 expect(ApplicationFlatAdapter.toDemandeSubvention).toHaveBeenCalledWith(APPLICATION_LINK_TO_CHORUS);
             });
@@ -208,7 +208,7 @@ describe("ApplicationFlatService", () => {
                 jest.mocked(ApplicationFlatAdapter.toDemandeSubvention).mockReturnValueOnce(null);
                 jest.mocked(ApplicationFlatAdapter.toDemandeSubvention).mockReturnValue(A2);
                 const expected = [A2];
-                const actual = await applicationFlatService.getDemandeSubvention(IDENTIFIER);
+                const actual = await applicationFlatService.getApplication(IDENTIFIER);
                 expect(actual).toEqual(expected);
             });
         });

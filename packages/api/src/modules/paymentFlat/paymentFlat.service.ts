@@ -3,7 +3,7 @@ import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port
 import PaymentProvider from "../payments/@types/PaymentProvider";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
-import { RawGrant, RawPayment } from "../grant/@types/rawGrant";
+import { RawPayment } from "../grant/@types/rawGrant";
 import { ProviderEnum } from "../../@enums/ProviderEnum";
 import ProviderCore from "../providers/ProviderCore";
 import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
@@ -11,7 +11,7 @@ import PaymentFlatAdapter from "./paymentFlatAdapter";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 import GrantProvider from "../grant/@types/GrantProvider";
 
-export class PaymentFlatService extends ProviderCore implements PaymentProvider<PaymentFlatEntity>, GrantProvider {
+export class PaymentFlatService extends ProviderCore implements PaymentProvider, GrantProvider {
     constructor() {
         super({
             name: "Payment Flat",
@@ -43,7 +43,7 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider<
 
     isPaymentProvider = true;
 
-    public rawToPayment(rawGrant: RawPayment<PaymentFlatEntity>) {
+    public rawToPayment(rawGrant: RawPayment) {
         return PaymentFlatAdapter.rawToPayment(rawGrant);
     }
 
@@ -82,7 +82,7 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider<
 
     isGrantProvider = true;
 
-    async getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
+    async getRawGrants(identifier: StructureIdentifier): Promise<RawPayment[]> {
         // return [];
         let dbos: PaymentFlatEntity[] = [];
         if (identifier instanceof EstablishmentIdentifier && identifier.siret) {

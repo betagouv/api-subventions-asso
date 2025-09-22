@@ -8,7 +8,7 @@ import {
 import { BadRequestError } from "core";
 import associationsService from "../../../src/modules/associations/associations.service";
 import rnaSirenPort from "../../../src/dataProviders/db/rnaSiren/rnaSiren.port";
-import { JoinedRawGrant, RawGrant } from "../../../src/modules/grant/@types/rawGrant";
+import { AnyRawGrant, JoinedRawGrant } from "../../../src/modules/grant/@types/rawGrant";
 import demarchesSimplifieesDataPort from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
 import {
     DATA_ENTITIES as DS_DATA_ENTITIES,
@@ -273,26 +273,12 @@ describe("/association", () => {
     describe("/{identifier}/raw-grants", () => {
         const anonymiseData = (data: JoinedRawGrant[] | null) => {
             if (!data) return null;
-            const expectAnyRawGrantId = (rawGrant: RawGrant) => {
-                // if FullGrant
-                if (rawGrant.data.application && rawGrant.data.payments) {
-                    return {
-                        ...rawGrant,
-
-                        // ...rawGrant.data, _id: expect.any(String) },
-                        data: {
-                            application: { ...rawGrant.data.application, _id: expect.any(String) },
-                            // @ts-expect-error: better type payments
-                            payments: rawGrant.data.payments.map(payment => ({ ...payment, _id: expect.any(String) })),
-                        },
-                    };
-                }
+            const expectAnyRawGrantId = (rawGrant: AnyRawGrant) => {
                 // if Application or Payment
-                else
-                    return {
-                        ...rawGrant,
-                        data: { ...rawGrant.data, _id: expect.any(String) },
-                    };
+                return {
+                    ...rawGrant,
+                    data: { ...rawGrant.data, _id: expect.any(String) },
+                };
             };
 
             const withoutIdGrants = data.map(joinedRawGrant => ({

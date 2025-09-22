@@ -13,6 +13,8 @@ import paymentService from "../payments/payments.service";
 import subventionsService from "../subventions/subventions.service";
 import Siret from "../../identifierObjects/Siret";
 import { refreshGrantAsyncServices } from "../../shared/initAsyncServices";
+import { APPLICATION_LINK_TO_CHORUS } from "../applicationFlat/__fixtures__";
+import { CHORUS_PAYMENT_FLAT_ENTITY } from "../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
 
 jest.mock("../../shared/initAsyncServices");
 jest.mock("../providers/scdl/scdl.service");
@@ -37,15 +39,35 @@ describe("GrantService", () => {
     const JOIN_KEY_2 = "JOIN_KEY_2";
     const RAW_APPLICATION: RawApplication = {
         provider: applicationProvidersFixtures[0].meta.id,
-        data: {},
+        data: APPLICATION_LINK_TO_CHORUS,
         type: "application",
         joinKey: JOIN_KEY_2,
     };
     const RAW_PAYMENTS: RawPayment[] = [
-        { provider: paymentProvidersFixtures[0].meta.id, data: {}, type: "payment", joinKey: JOIN_KEY_1 },
-        { provider: paymentProvidersFixtures[0].meta.id, data: {}, type: "payment", joinKey: JOIN_KEY_1 },
-        { provider: paymentProvidersFixtures[0].meta.id, data: {}, type: "payment", joinKey: JOIN_KEY_2 },
-        { provider: paymentProvidersFixtures[0].meta.id, data: {}, type: "payment", joinKey: JOIN_KEY_2 },
+        {
+            provider: paymentProvidersFixtures[0].meta.id,
+            data: CHORUS_PAYMENT_FLAT_ENTITY,
+            type: "payment",
+            joinKey: JOIN_KEY_1,
+        },
+        {
+            provider: paymentProvidersFixtures[0].meta.id,
+            data: CHORUS_PAYMENT_FLAT_ENTITY,
+            type: "payment",
+            joinKey: JOIN_KEY_1,
+        },
+        {
+            provider: paymentProvidersFixtures[0].meta.id,
+            data: CHORUS_PAYMENT_FLAT_ENTITY,
+            type: "payment",
+            joinKey: JOIN_KEY_2,
+        },
+        {
+            provider: paymentProvidersFixtures[0].meta.id,
+            data: CHORUS_PAYMENT_FLAT_ENTITY,
+            type: "payment",
+            joinKey: JOIN_KEY_2,
+        },
     ];
 
     const RAW_GRANTS: AnyRawGrant[] = [RAW_APPLICATION, ...RAW_PAYMENTS];
@@ -79,7 +101,7 @@ describe("GrantService", () => {
             grant              | provider                           | method
             ${RAW_APPLICATION} | ${applicationProvidersFixtures[0]} | ${"rawToApplication"}
             ${RAW_PAYMENTS[0]} | ${paymentProvidersFixtures[0]}     | ${"rawToPayment"}
-        `("should adapte RawFullGrant", ({ grant, provider, method }) => {
+        `("should adapte RawGrant", ({ grant, provider, method }) => {
             grantService.adaptRawGrant(grant);
             expect(provider[method]).toHaveBeenCalledWith(grant);
         });
@@ -90,7 +112,7 @@ describe("GrantService", () => {
 
         beforeAll(() => {
             mockToGrant = jest.spyOn(grantService, "toGrant").mockReturnValue(GRANT);
-            // @ts-expect-error: mock return value
+            // @ts-expect-error: mock
             mockAdapteRawGrant = jest.spyOn(grantService, "adaptRawGrant").mockImplementation(rawGrant => rawGrant);
         });
 

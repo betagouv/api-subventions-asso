@@ -1,6 +1,6 @@
 import { CommonApplicationDto, ApplicationStatus, CommonGrantDto, CommonPaymentDto } from "dto";
 import providers from "../providers";
-import { JoinedRawGrant, RawGrant } from "./@types/rawGrant";
+import { AnyRawGrant, JoinedRawGrant, RawApplication } from "./@types/rawGrant";
 import GrantProvider from "./@types/GrantProvider";
 
 export class CommonGrantService {
@@ -19,12 +19,12 @@ export class CommonGrantService {
 
     static adapterMethod = "rawToCommon";
 
-    private filterAdaptable(grants: RawGrant[] | undefined) {
+    private filterAdaptable(grants: AnyRawGrant[] | undefined) {
         if (!grants?.length) return [];
         return grants.filter(grant => grant.provider in this.providerMap);
     }
 
-    private rawToCommonFragment(rawGrant: RawGrant, publishable: boolean) {
+    private rawToCommonFragment(rawGrant: AnyRawGrant, publishable: boolean) {
         const providerId = rawGrant.provider;
         const adaptedGrant = this.providerMap[providerId][CommonGrantService.adapterMethod](rawGrant);
         if (publishable) adaptedGrant.montant_demande = undefined;
@@ -43,7 +43,7 @@ export class CommonGrantService {
         return result;
     }
 
-    private chooseRawApplication(rawApplications): RawGrant {
+    private chooseRawApplication(rawApplications): RawApplication {
         // here goes business logic about how to choose an application if several share same EJ
         // cf multi-funding & multi-annual applications
         // if we want to keep several applications it must be handled earlier in the process:

@@ -13,7 +13,7 @@ type ApplicationFlatEntityDraft = Omit<ApplicationFlatEntity, "uniqueId" | "appl
 const OVERALL_FUNCTIONING_ACTION = "Fonctionnement global";
 
 export default class ApplicationFlatAdapter {
-    public static rawToApplication(rawApplication: RawApplication<ApplicationFlatEntity>) {
+    public static rawToApplication(rawApplication: RawApplication) {
         return this.toDemandeSubvention(rawApplication.data);
     }
 

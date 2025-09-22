@@ -11,7 +11,7 @@ import FonjepEntityAdapter from "../providers/fonjep/adapters/FonjepEntityAdapte
 import { GenericAdapter } from "../../shared/GenericAdapter";
 
 export default class PaymentFlatAdapter {
-    public static rawToPayment(rawPayment: RawPayment<PaymentFlatEntity>) {
+    public static rawToPayment(rawPayment: RawPayment) {
         return this.toPayment(rawPayment.data);
     }
 

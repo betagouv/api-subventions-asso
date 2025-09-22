@@ -1,4 +1,4 @@
-import DemandesSubventionsProvider from "../subventions/@types/DemandesSubventionsProvider";
+import ApplicationProvider from "../subventions/@types/ApplicationProvider";
 import PaymentProvider from "../payments/@types/PaymentProvider";
 import GrantProvider from "../grant/@types/GrantProvider";
 import paymentFlatService from "../paymentFlat/paymentFlat.service";
@@ -33,13 +33,13 @@ const providers: { [key: string]: Provider } = {
 
 export default providers;
 
-export const demandesSubventionsProviders = Object.values(providers).filter(
-    p => (p as DemandesSubventionsProvider<unknown>).isDemandesSubventionsProvider,
-) as DemandesSubventionsProvider<unknown>[];
+export const applicationProviders = Object.values(providers).filter(
+    p => (p as ApplicationProvider).isApplicationProvider,
+) as ApplicationProvider[];
 
 export const paymentProviders = Object.values(providers).filter(
-    p => (p as PaymentProvider<unknown>).isPaymentProvider,
-) as PaymentProvider<unknown>[];
+    p => (p as PaymentProvider).isPaymentProvider,
+) as PaymentProvider[];
 
 export const grantProviders = Object.values(providers).filter(
     p => (p as GrantProvider).isGrantProvider,
