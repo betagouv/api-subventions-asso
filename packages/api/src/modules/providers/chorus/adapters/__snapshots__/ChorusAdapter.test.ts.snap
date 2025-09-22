@@ -61,6 +61,7 @@ exports[`ChorusAdapter toNotAggregatedPaymentFlatEntity should return PaymentFla
   "typeIdEntrepriseBeneficiaire": "siren",
   "typeIdEtablissementBeneficiaire": "siret",
   "uniqueId": "chorus-10000000000001-0001821732-2023-101-0101-01-02-077601003222-2023-07-12-BRET-AA01/0776-C001-4000",
+  "updateDate": 2020-01-01T00:00:00.000Z,
 }
 `;
 
@@ -94,6 +95,7 @@ exports[`ChorusAdapter toNotAggregatedPaymentFlatEntity should return PaymentFla
   "typeIdEntrepriseBeneficiaire": "siren",
   "typeIdEtablissementBeneficiaire": "siret",
   "uniqueId": "chorus-10000000000001-0001821732-2023-101-0101-01-02-077601003222-2023-07-12-BRET-AA01/0776-C001-4000",
+  "updateDate": 2020-01-01T00:00:00.000Z,
 }
 `;
 

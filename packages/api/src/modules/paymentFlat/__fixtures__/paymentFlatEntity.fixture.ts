@@ -32,6 +32,7 @@ export const CHORUS_PAYMENT_FLAT_ENTITY: ChorusPaymentFlatEntity = {
     actionLabel: "Label d'action Exemple", // action label
     activityCode: "077601003222", // activity code
     activityLabel: "Label d'activité Exemple", // activity label
+    updateDate: new Date("2025-02-04"), // update date
 };
 
 export const CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS: ChorusPaymentFlatEntity = {
@@ -59,6 +60,7 @@ export const CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS: ChorusPaymentFlatEntity = {
     actionLabel: "Label d'action Exemple", // action label
     activityCode: "077601003222", // activity code
     activityLabel: "Label d'activité Exemple", // activity label
+    updateDate: new Date("2025-02-04"), // update date
 };
 
 const FONJEP_PAYMENT_FLAT_ID_VERSEMENT = "CODE_POSTE-OPERATION_DATE-EXERCISE-IDENTIFIER";
@@ -88,6 +90,7 @@ export const FONJEP_PAYMENT_FLAT_ENTITY: FonjepPaymentFlatEntity = {
     activityCode: null,
     activityLabel: "Label d'activité Exemple",
     provider: "fonjep",
+    updateDate: new Date("2025-02-04"), // update date
 };
 
 export const LIST_PAYMENT_FLAT_ENTITY: PaymentFlatEntity[] = [

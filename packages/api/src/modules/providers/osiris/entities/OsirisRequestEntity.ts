@@ -3,7 +3,7 @@ import type LegalInformations from "../../../search/@types/LegalInformations";
 import type OsirisRequestInformations from "../@types/OsirisRequestInformations";
 import { GenericParser } from "../../../../shared/GenericParser";
 import OsirisActionEntity from "./OsirisActionEntity";
-import { ProviderDataEntity } from "../../../../@types/ProviderDataEntity";
+import type { ProviderDataEntity } from "../../../../@types/ProviderData";
 
 const dossier = ["Dossier/action", "Dossier"];
 

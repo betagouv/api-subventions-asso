@@ -1,7 +1,7 @@
 import { SiretDto, ApplicationStatus } from "dto";
 import { ObjectId } from "mongodb";
 import SubventiaDto from "./subventia.dto";
-import { ProviderDataEntity } from "../../../../@types/ProviderDataEntity";
+import type { ProviderDataEntity } from "../../../../@types/ProviderData";
 
 export default interface SubventiaEntity extends ProviderDataEntity {
     service_instructeur: string;

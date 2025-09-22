@@ -28,6 +28,7 @@ export const PAYMENT_FLAT_DBO: PaymentFlatDbo = {
     libelleCentreFinancier: "UO DGER XXXX-C001",
     attachementComptable: "BRET",
     regionAttachementComptable: "Bretagne",
+    dateMiseAJour: new Date("2025-02-04"),
 };
 
 export const PAYMENT_FLAT_DBO_WITH_NULLS: PaymentFlatDbo = {
@@ -56,4 +57,5 @@ export const PAYMENT_FLAT_DBO_WITH_NULLS: PaymentFlatDbo = {
     libelleCentreFinancier: "UO DGER XXXX-C001",
     attachementComptable: "BRET",
     regionAttachementComptable: "Bretagne",
+    dateMiseAJour: new Date("2025-02-04"),
 };

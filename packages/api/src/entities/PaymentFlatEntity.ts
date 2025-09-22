@@ -1,7 +1,8 @@
+import { ProviderDataEntity } from "../@types/ProviderData";
 import { CompanyIdName, EstablishmentIdName } from "../identifierObjects/@types/IdentifierName";
 import { CompanyIdType, EstablishmentIdType } from "../identifierObjects/@types/IdentifierType";
 
-type PaymentFlatEntity = {
+interface PaymentFlatEntity extends ProviderDataEntity {
     idVersement: string;
     uniqueId: string;
     exerciceBudgetaire: number;
@@ -27,6 +28,6 @@ type PaymentFlatEntity = {
     provider: string;
     // don't know why ej is nullable. It is part of idVersement and should be mandatory
     ej: string | null;
-};
+}
 
 export default PaymentFlatEntity;
