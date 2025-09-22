@@ -1,32 +1,22 @@
-import { DefaultObject } from "../../../@types";
+import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
+import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
 
-export type RawGrant<T = DefaultObject> = {
+export type RawGrant<T> = {
     provider: string;
-    // TODO: rename fullGrant to grant if we rename RawGrant to RawData ?
-    type: "application" | "fullGrant" | "payment";
-
+    type: "application" | "payment";
     data: T;
     joinKey?: string;
 };
 
-export interface RawApplication<T = DefaultObject> extends RawGrant<T> {
+export interface RawApplication extends RawGrant<ApplicationFlatEntity> {
     type: "application";
 }
 
-export interface RawPayment<T = DefaultObject> extends RawGrant<T> {
+export interface RawPayment extends RawGrant<PaymentFlatEntity> {
     type: "payment";
 }
 
-export type FullGrantData<T1 = DefaultObject, T2 = DefaultObject> = {
-    application: T1;
-    payments: T2[];
-};
-
-export interface RawFullGrant<T = FullGrantData> extends RawGrant<T> {
-    type: "fullGrant";
-}
-
-export type AnyRawGrant = RawFullGrant | RawApplication | RawPayment;
+export type AnyRawGrant = RawApplication | RawPayment;
 
 export type JoinedRawGrant = {
     payments?: RawPayment[];

@@ -3,10 +3,10 @@ import applicationFlatPort from "../../dataProviders/db/applicationFlat/applicat
 import { ApplicationFlatEntity } from "../../entities/ApplicationFlatEntity";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
-import { RawApplication, RawGrant } from "../grant/@types/rawGrant";
+import { RawApplication } from "../grant/@types/rawGrant";
 import { ProviderEnum } from "../../@enums/ProviderEnum";
 import ProviderCore from "../providers/ProviderCore";
-import DemandesSubventionsProvider from "../subventions/@types/DemandesSubventionsProvider";
+import ApplicationProvider from "../subventions/@types/ApplicationProvider";
 import Siret from "../../identifierObjects/Siret";
 import ApplicationFlatAdapter from "./ApplicationFlatAdapter";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
@@ -14,10 +14,7 @@ import { ReadableStream } from "node:stream/web";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
 import GrantProvider from "../grant/@types/GrantProvider";
 
-export class ApplicationFlatService
-    extends ProviderCore
-    implements GrantProvider, DemandesSubventionsProvider<ApplicationFlatEntity>
-{
+export class ApplicationFlatService extends ProviderCore implements GrantProvider, ApplicationProvider {
     constructor() {
         super({
             name: "Application Flat",
@@ -44,13 +41,13 @@ export class ApplicationFlatService
      * |-------------------------|
      */
 
-    isDemandesSubventionsProvider = true;
+    isApplicationProvider = true;
 
-    public rawToApplication(rawGrant: RawApplication<ApplicationFlatEntity>) {
+    public rawToApplication(rawGrant: RawApplication) {
         return ApplicationFlatAdapter.rawToApplication(rawGrant);
     }
 
-    async getDemandeSubvention(identifier: StructureIdentifier): Promise<DemandeSubvention[]> {
+    async getApplication(identifier: StructureIdentifier): Promise<DemandeSubvention[]> {
         const requests = await this.getEntitiesByIdentifier(identifier);
         return requests
             .map(document => ApplicationFlatAdapter.toDemandeSubvention(document))
@@ -65,7 +62,7 @@ export class ApplicationFlatService
 
     isGrantProvider = true;
 
-    async getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
+    async getRawGrants(identifier: StructureIdentifier): Promise<RawApplication[]> {
         const entities = await this.getEntitiesByIdentifier(identifier);
         return entities.map(grant => ({
             provider: "application-flat",

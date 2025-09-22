@@ -2,27 +2,27 @@ import * as Sentry from "@sentry/node";
 import { CommonGrantDto, Grant, DemandeSubvention, Payment } from "dto";
 import { RnaOnlyError } from "core";
 import { providersById } from "../providers/providers.helper";
-import { demandesSubventionsProviders, grantProviders, paymentProviders } from "../providers";
-import DemandesSubventionsProvider from "../subventions/@types/DemandesSubventionsProvider";
+import { applicationProviders, grantProviders, paymentProviders } from "../providers";
+import ApplicationProvider from "../subventions/@types/ApplicationProvider";
 import PaymentProvider from "../payments/@types/PaymentProvider";
 import paymentService from "../payments/payments.service";
 import subventionsService from "../subventions/subventions.service";
-import { RawGrant, JoinedRawGrant, RawFullGrant, RawApplication, RawPayment, AnyRawGrant } from "./@types/rawGrant";
+import { JoinedRawGrant, RawApplication, RawPayment, AnyRawGrant } from "./@types/rawGrant";
 import commonGrantService from "./commonGrant.service";
 import { refreshGrantAsyncServices } from "../../shared/initAsyncServices";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 
 export class GrantService {
-    applicationProvidersById: Record<string, DemandesSubventionsProvider<unknown>>;
-    paymentProvidersById: Record<string, PaymentProvider<unknown>>;
+    applicationProvidersById: Record<string, ApplicationProvider>;
+    paymentProvidersById: Record<string, PaymentProvider>;
 
     // Done in constructor to avoid circular dependency issue
     constructor() {
-        this.applicationProvidersById = providersById(demandesSubventionsProviders);
+        this.applicationProvidersById = providersById(applicationProviders);
         this.paymentProvidersById = providersById(paymentProviders);
     }
 
-    adaptRawGrant(rawGrant: RawGrant) {
+    adaptRawGrant(rawGrant: AnyRawGrant) {
         switch (rawGrant.type) {
             case "application": {
                 return this.applicationProvidersById[rawGrant.provider].rawToApplication(rawGrant as RawApplication);
@@ -108,8 +108,6 @@ export class GrantService {
         });
     }
 
-    // appeler adapter pour chaque join.application join.payment et join.fullGrant
-    // implementer une classe GrantAdapter pour chaque adapter de demande et de paiment
     async getGrants(identifier: StructureIdentifier): Promise<Grant[]> {
         await refreshGrantAsyncServices();
         const joinedRawGrants = await this.getRawGrants(identifier);
@@ -174,9 +172,6 @@ export class GrantService {
 
     private joinGrants(rawGrants: AnyRawGrant[]): JoinedRawGrant[] {
         const byKey: Record<string, JoinedRawGrant> = {};
-        //TODO: improve JoinedRawGrant after investigating duplicates possibilities
-        // i.e accept only { fullGrant: RawFullGrant , payments: RawPayment[] }
-        // and { application: RawApplication, payments: RawPayment[] }
         const newJoinedRawGrant = () => ({
             payments: [],
             applications: [],
@@ -188,16 +183,13 @@ export class GrantService {
             if (!byKey[rawGrant.joinKey]) addKey(rawGrant.joinKey);
             byKey[rawGrant.joinKey][prop].push(rawGrant);
         };
-        // TODO: make addApplicationOrSendMessage that will also check if there is already a fullGrant
-        const addOrSendMessage = type => (rawGrant: Required<RawFullGrant> | Required<RawApplication>) => {
+        const addOrSendMessage = type => (rawGrant: Required<RawApplication>) => {
             if (byKey[rawGrant.joinKey]?.[type]) this.sendDuplicateMessage(rawGrant.joinKey);
             else add(type)(rawGrant);
         };
         const addApplication = addOrSendMessage("applications");
         const addPayment = add("payments");
 
-        // TODO: do we want to keep transforming lonely grants into JoinedRawGrant format ?
-        // TODO: Do we realy have RawGrant without joinKey ? Is lonelyGrant a real thing ?
         const addLonely = prop => (rawGrant: AnyRawGrant) =>
             lonelyGrants.push({ ...newJoinedRawGrant(), [prop]: [rawGrant] });
         const addLonelyApplication = addLonely("applications");
