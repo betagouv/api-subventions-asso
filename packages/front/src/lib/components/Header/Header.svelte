@@ -76,6 +76,9 @@
                                     Paramètres d'affichage
                                 </button>
                             </li>
+                            <li>
+                                <a class="fr-btn" href="/scdl" title="scdl" rel="noopener">Déposer vos données SCDL</a>
+                            </li>
                             {#if $user?.roles?.includes("admin")}
                                 <li>
                                     <a class="fr-btn fr-link--icon-right" href="/admin" title="admin" rel="noopener">
