@@ -1,6 +1,5 @@
 import { Route, Get, Controller, Tags, Response } from "tsoa";
 import { RnaSirenResponseDto, GetRnaSirenErrorResponse } from "dto";
-import { siretToSiren } from "../../shared/helpers/SirenHelper";
 import rnaSirenService from "../../modules/rna-siren/rnaSiren.service";
 import Siren from "../../identifierObjects/Siren";
 import Rna from "../../identifierObjects/Rna";
@@ -19,7 +18,7 @@ export class RnaSirenHttp extends Controller {
     @Response<GetRnaSirenErrorResponse>(404, "Nous n'avons pas réussi à trouver une correspondance RNA-Siren")
     public async findBySiret(rna_ou_siren_ou_siret: string): Promise<RnaSirenResponseDto[]> {
         const identifier = Siret.isStartOfSiret(rna_ou_siren_ou_siret)
-            ? new Siren(siretToSiren(rna_ou_siren_ou_siret))
+            ? new Siren(rna_ou_siren_ou_siret.slice(0, 9))
             : Rna.isRna(rna_ou_siren_ou_siret)
               ? new Rna(rna_ou_siren_ou_siret)
               : new Siren(rna_ou_siren_ou_siret);

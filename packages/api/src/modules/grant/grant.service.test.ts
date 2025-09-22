@@ -26,7 +26,6 @@ jest.mock("../providers");
 jest.mock("../../shared/Validators");
 jest.mock("./commonGrant.service");
 jest.mock("../associations/associations.service");
-jest.mock("../../shared/helpers/SirenHelper");
 jest.mock("../subventions/subventions.service");
 jest.mock("../payments/payments.service");
 
