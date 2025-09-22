@@ -1,7 +1,8 @@
+import type { FlatDbo } from "../@types/FlatDbo";
 import { ObjectId } from "mongodb";
 import { CompanyIdName, EstablishmentIdName } from "../../../identifierObjects/@types/IdentifierName";
 
-export default interface PaymentFlatDbo {
+export default interface PaymentFlatDbo extends FlatDbo {
     _id: ObjectId;
     uniqueId: string;
     idVersement: string;
