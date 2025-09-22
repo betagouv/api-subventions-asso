@@ -1,8 +1,9 @@
+import type { FlatDbo } from "../@types/FlatDbo";
 import { ApplicationNature, ApplicationStatus, OrDefault, PaymentCondition, NOT_APPLICABLE } from "dto";
 import { ObjectId } from "mongodb";
 import { IdentifierIdName } from "../../../identifierObjects/@types/IdentifierName";
 
-type MandatoryApplicationFlatDbo = {
+interface MandatoryApplicationFlatDbo extends FlatDbo {
     __data__?: Record<string, unknown>;
     idUnique: string; // idSubvention - exerciceBudgetaire pour tous les fournisseurs sauf provider commançant par scdl. Un identifiant unique artificiellement crée pour provider commançant par scdl
     idSubvention: string; // nomProvider-idSubventionProvider
@@ -13,8 +14,7 @@ type MandatoryApplicationFlatDbo = {
     statutLabel: ApplicationStatus;
     montantDemande: number | null; // Montant demandé par le demandeur pour un exercice budgetaire donné
     montantAccorde: number | null; // Montant accordé au demandeur pour un exercice budgetaire donné
-    dateMiseAJour: Date;
-};
+}
 
 type OptionalApplicationFlatDbo = {
     _id: ObjectId;

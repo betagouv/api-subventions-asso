@@ -14,6 +14,7 @@ exports[`PaymentFlat Port buildUpsertOperation returns bulk operation 1`] = `
         "codeAction": "AC123",
         "codeActivite": "AC456",
         "codeCentreFinancier": "AA01/0776-C001-4000",
+        "dateMiseAJour": 2025-02-04T00:00:00.000Z,
         "dateOperation": 2023-04-01T00:00:00.000Z,
         "ej": "0001821732",
         "exerciceBudgetaire": 2023,

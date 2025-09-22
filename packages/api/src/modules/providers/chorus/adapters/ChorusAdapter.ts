@@ -224,6 +224,7 @@ export default class ChorusAdapter {
             activityCode,
             activityLabel: refProgrammationEntity?.libelle_activite ?? null,
             provider: this.PROVIDER_NAME.toLowerCase(), // TODO: get this from config / code => see #3338
+            updateDate: chorusDocument.updateDate,
         };
 
         const idVersement = `${rawDataWithDataBretagne.idEtablissementBeneficiaire.value}-${rawDataWithDataBretagne.ej}-${rawDataWithDataBretagne.exerciceBudgetaire}`;

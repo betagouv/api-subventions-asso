@@ -84,5 +84,6 @@ exports[`FonjepEntityAdapter Flat formats toFonjepPaymentFlat returns FonjepPaym
   "typeIdEntrepriseBeneficiaire": "siren",
   "typeIdEtablissementBeneficiaire": "siret",
   "uniqueId": "UNIQUE_ID",
+  "updateDate": 2025-08-11T00:00:00.000Z,
 }
 `;

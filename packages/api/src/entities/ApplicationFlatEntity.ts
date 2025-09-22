@@ -1,10 +1,11 @@
 import { ApplicationNature, ApplicationStatus, NOT_APPLICABLE, OrDefault, PaymentCondition } from "dto";
 
 import { IdentifierIdName } from "../identifierObjects/@types/IdentifierName";
+import { ProviderDataEntity } from "../@types/ProviderData";
 
 // TODO where to accept null ?
 
-type MandatoryApplicationFlatEntity = {
+interface MandatoryApplicationFlatEntity extends ProviderDataEntity {
     uniqueId: string;
     applicationId: string;
     applicationProviderId: string;
@@ -14,10 +15,7 @@ type MandatoryApplicationFlatEntity = {
     statusLabel: ApplicationStatus;
     requestedAmount: number | null;
     grantedAmount: number | null;
-    // this date is used to determine the data freshness
-    // same as provider's raw data update date
-    updateDate: Date;
-};
+}
 
 type OptionalApplicationFlatEntity = {
     budgetaryYear: number; // only optionnal for Subventia

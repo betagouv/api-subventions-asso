@@ -225,6 +225,7 @@ export default class FonjepEntityAdapter {
                 mission: program.mission,
                 ministry: ministry?.nom_ministere || null,
                 ministryAcronym: ministry?.sigle_ministere || null,
+                updateDate: payment.updateDate,
             };
 
             // TODO: Another example where something nullable (Tier.FinanceurPrincipalCode) is required to build a unique ID

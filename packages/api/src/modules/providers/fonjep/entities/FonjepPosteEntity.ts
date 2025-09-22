@@ -1,4 +1,4 @@
-import { ProviderDataEntity } from "../../../../@types/ProviderDataEntity";
+import type { ProviderDataEntity } from "../../../../@types/ProviderData";
 
 interface FonjepPosteEntity extends ProviderDataEntity {
     // code to join with fonjepVersement collection and get information about the payment
