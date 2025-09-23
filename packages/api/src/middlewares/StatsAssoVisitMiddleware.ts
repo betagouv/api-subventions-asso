@@ -11,7 +11,7 @@ export default async function StatsAssoVisitMiddleware(req: IdentifiedRequest, r
     const regexResult = regexPath.exec(req.originalUrl);
     if (!regexResult || !regexResult[2]) return;
 
-    const identifier = Siret.isSiret(regexResult[2]) ? new Siret(regexResult[2]).toSiren().value : regexResult[2];
+    const identifier = Siret.isSiret(regexResult[2]) ? Siret.getSiren(regexResult[2]) : regexResult[2];
     await statsService.addAssociationVisit({
         userId: req.user._id,
         associationIdentifier: identifier,

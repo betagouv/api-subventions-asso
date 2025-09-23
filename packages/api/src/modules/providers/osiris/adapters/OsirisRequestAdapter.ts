@@ -59,7 +59,7 @@ export default class OsirisRequestAdapter {
             actions.find(action => action.indexedInformations.federation)?.indexedInformations.licenciesFemmes;
 
         return {
-            siren: toPVs(new Siret(entity.legalInformations.siret).toSiren().value),
+            siren: toPVs(Siret.getSiren(entity.legalInformations.siret)),
             rna: entity.legalInformations.rna == undefined ? undefined : toPVs(entity.legalInformations.rna as RnaDto),
             denomination_rna: toPVs(entity.legalInformations.name),
             etablisements_siret: toPVs([entity.legalInformations.siret]),

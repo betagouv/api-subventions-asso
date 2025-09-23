@@ -68,4 +68,16 @@ describe("Siret", () => {
             expect(() => Siret.getNic(siret)).toThrow(`Invalid Siret : ${siret}`);
         });
     });
+
+    describe("getSiren", () => {
+        it("should return the siren for a valid siret", () => {
+            expect(Siret.getSiren("12345678901234")).toBe("123456789");
+            expect(Siret.getSiren("98765432109876")).toBe("987654321");
+        });
+
+        it.each(INVALID_SIRET_LIST)("should throw an error for an invalid siret", siret => {
+            // @ts-expect-error: test edge cases
+            expect(() => Siret.getSiren(siret)).toThrow(`Invalid Siret : ${siret}`);
+        });
+    });
 });

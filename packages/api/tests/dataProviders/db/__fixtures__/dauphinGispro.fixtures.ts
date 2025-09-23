@@ -209,7 +209,7 @@ export const DAUPHIN_GISPRO_DBOS = [
                     },
                 },
                 SIRET: {
-                    SIREN: new Siret(DEFAULT_ASSOCIATION.siret).toSiren().value,
+                    SIREN: Siret.getSiren(DEFAULT_ASSOCIATION.siret),
                     NIC: Siret.getNic(DEFAULT_ASSOCIATION.siret),
                     complet: DEFAULT_ASSOCIATION.siret,
                 },
@@ -448,7 +448,7 @@ export const DAUPHIN_GISPRO_DBOS = [
                         },
                     },
                     SIRET: {
-                        SIREN: new Siret(DEFAULT_ASSOCIATION.siret).toSiren().value,
+                        SIREN: Siret.getSiren(DEFAULT_ASSOCIATION.siret),
                         NIC: Siret.getNic(DEFAULT_ASSOCIATION.siret),
                         complet: DEFAULT_ASSOCIATION.siret,
                     },
