@@ -10,7 +10,6 @@ import Siret from "../../../identifierObjects/Siret";
 
 jest.mock("../../../dataProviders/db/uniteLegalName/uniteLegalName.port");
 jest.mock("../../rna-siren/rnaSiren.service");
-jest.mock("../../../shared/helpers/SirenHelper");
 jest.mock("../../../shared/Validators");
 
 const mockedUniteLegalNamePort = uniteLegalNamePort as jest.Mocked<typeof uniteLegalNamePort>;

@@ -4,9 +4,6 @@ import { BodaccDto } from "./dto/BodaccDto";
 
 import Siren from "../../../identifierObjects/Siren";
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
-jest.mock("./../../../shared/helpers/SirenHelper", () => ({
-    siretToSiren: jest.fn(siren => siren),
-}));
 
 describe("Bodacc Service", () => {
     const SIREN = new Siren("123456789");

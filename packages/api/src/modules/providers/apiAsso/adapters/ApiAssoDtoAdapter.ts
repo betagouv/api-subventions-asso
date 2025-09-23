@@ -1,5 +1,4 @@
 import { Etablissement, Association, DocumentDto, AssociationNature } from "dto";
-import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import {
     StructureDacDocumentDto,
@@ -11,6 +10,7 @@ import {
 import { isValidDate } from "../../../../shared/helpers/DateHelper";
 import { RnaStructureDto } from "../dto/RnaStructureDto";
 import { SirenStructureDto, SirenStructureEtablissementDto } from "../dto/SirenStructureDto";
+import Siret from "../../../../identifierObjects/Siret";
 
 export default class ApiAssoDtoAdapter {
     static providerNameRna = "RNA";
@@ -41,7 +41,7 @@ export default class ApiAssoDtoAdapter {
         return {
             denomination_siren: toPvs(structure.identite.nom),
             siren: toPvs(structure.identite.id_siren.toString()),
-            nic_siege: toPvs(siretToNIC(structure.identite.id_siret_siege.toString())),
+            nic_siege: toPvs(Siret.getNic(structure.identite.id_siret_siege.toString())),
             categorie_juridique: toPvs(structure.identite.id_forme_juridique.toString()),
             date_creation_siren: toPvs(ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_creation_sirene)),
             date_modification_siren: toPvs(ApiAssoDtoAdapter.apiDateToDate(structure.identite.date_modif_siren)),
@@ -118,7 +118,7 @@ export default class ApiAssoDtoAdapter {
 
         return {
             siret: toSirenPvs(etablissement.id_siret.toString()),
-            nic: toSirenPvs(siretToNIC(etablissement.id_siret.toString())),
+            nic: toSirenPvs(Siret.getNic(etablissement.id_siret.toString())),
             ouvert: toSirenPvs(etablissement.actif),
             siege: toSirenPvs(etablissement.est_siege),
             adresse: toSirenPvs({
