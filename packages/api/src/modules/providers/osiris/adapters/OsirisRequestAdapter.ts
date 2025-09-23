@@ -8,7 +8,6 @@ import {
     RnaDto,
     ApplicationNature,
 } from "dto";
-import { siretToNIC, siretToSiren } from "../../../../shared/helpers/SirenHelper";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
 import OsirisRequestEntity from "../entities/OsirisRequestEntity";
@@ -60,12 +59,12 @@ export default class OsirisRequestAdapter {
             actions.find(action => action.indexedInformations.federation)?.indexedInformations.licenciesFemmes;
 
         return {
-            siren: toPVs(siretToSiren(entity.legalInformations.siret)),
+            siren: toPVs(Siret.getSiren(entity.legalInformations.siret)),
             rna: entity.legalInformations.rna == undefined ? undefined : toPVs(entity.legalInformations.rna as RnaDto),
             denomination_rna: toPVs(entity.legalInformations.name),
             etablisements_siret: toPVs([entity.legalInformations.siret]),
             nic_siege: entity.providerInformations.etablissementSiege
-                ? toPVs(siretToNIC(entity.legalInformations.siret))
+                ? toPVs(Siret.getNic(entity.legalInformations.siret))
                 : undefined,
             federation: federation ? toPVs(federation) : undefined,
             licencies:
@@ -106,7 +105,7 @@ export default class OsirisRequestAdapter {
 
         return {
             siret: toPVs(entity.legalInformations.siret),
-            nic: toPVs(siretToNIC(entity.legalInformations.siret)),
+            nic: toPVs(Siret.getNic(entity.legalInformations.siret)),
             siege: toPVs(entity.providerInformations.etablissementSiege),
             adresse: toPVs({
                 voie: entity.providerInformations.etablissementVoie,

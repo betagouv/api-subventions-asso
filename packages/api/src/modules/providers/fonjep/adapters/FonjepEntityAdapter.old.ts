@@ -1,11 +1,11 @@
 import { ApplicationStatus, CommonFullGrantDto, DemandeSubvention, Etablissement, FonjepPayment, Grant } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
-import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import FonjepSubventionEntity from "../entities/FonjepSubventionEntity.old";
 import fonjepService from "../fonjep.service.old";
 import FonjepPaymentEntity from "../entities/FonjepPaymentEntity.old";
 import { RawApplication, RawFullGrant, RawPayment } from "../../../grant/@types/rawGrant";
 import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
+import Siret from "../../../../identifierObjects/Siret";
 
 // TO DO DANS LA SUITE : une fois applicationFlat et paymentFlat crées,
 // il faudra supprimer les métodes de cette classe qui ne sont plus pertinent
@@ -47,7 +47,7 @@ export default class FonjepEntityAdapter {
 
         return {
             siret: toPV(entity.legalInformations.siret),
-            nic: toPV(siretToNIC(entity.legalInformations.siret)),
+            nic: toPV(Siret.getNic(entity.legalInformations.siret)),
             adresse: toPV({
                 code_postal: entity.indexedInformations.code_postal,
                 commune: entity.indexedInformations.ville,

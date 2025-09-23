@@ -6,7 +6,6 @@ const mockedChorusLinePort = jest.mocked(chorusLinePort);
 jest.mock("./adapters/ChorusAdapter");
 
 jest.mock("../../../shared/helpers/StringHelper");
-jest.mock("../../../shared/helpers/SirenHelper");
 
 import { ENTITIES } from "./__fixtures__/ChorusFixtures";
 import CacheData from "../../../shared/Cache";

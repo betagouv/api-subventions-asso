@@ -31,4 +31,18 @@ export default class Siret extends IdentifierObject {
     toSiren() {
         return new Siren(this.identifier.slice(0, 9));
     }
+
+    static getNic(siret: string) {
+        if (!Siret.isSiret(siret)) {
+            throw new Error("Invalid Siret : " + siret);
+        }
+        return siret.slice(9, 14);
+    }
+
+    static getSiren(siret: string) {
+        if (!Siret.isSiret(siret)) {
+            throw new Error("Invalid Siret : " + siret);
+        }
+        return siret.slice(0, 9);
+    }
 }
