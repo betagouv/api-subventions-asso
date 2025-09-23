@@ -1,4 +1,4 @@
-import { Establismment, Association, DocumentDto, AssociationNature } from "dto";
+import { Establishment, Association, DocumentDto, AssociationNature } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import {
     StructureDacDocumentDto,
