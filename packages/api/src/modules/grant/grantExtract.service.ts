@@ -1,4 +1,4 @@
-import { SimplifiedEtablissement } from "dto";
+import { EstablishmentSimplified } from "dto";
 import csvStringifier from "csv-stringify/sync";
 import { BadRequestError } from "core";
 import associationsService from "../associations/associations.service";
@@ -22,7 +22,7 @@ class GrantExtractService {
             associationsService.getEstablishments(assoIdentifier),
         ]);
 
-        const estabBySiret: Record<string, SimplifiedEtablissement> = {};
+        const estabBySiret: Record<string, EstablishmentSimplified> = {};
         estabs.forEach(estab => (estabBySiret[estab.siret?.[0]?.value] = estab));
 
         const assoName = asso.denomination_rna?.[0]?.value ?? asso.denomination_siren?.[0]?.value;

@@ -1,4 +1,4 @@
-import { Association, ChorusPayment, Grant, Payment, SimplifiedEtablissement } from "dto";
+import { Association, ChorusPayment, Grant, Payment, EstablishmentSimplified } from "dto";
 import paymentService from "../payments/payments.service";
 import { GrantToExtract } from "./@types/GrantToExtract";
 
@@ -28,7 +28,7 @@ export default class GrantAdapter {
     static grantToExtractLine(
         grant: Grant,
         asso: Association,
-        estabBySiret: Record<string, SimplifiedEtablissement>,
+        estabBySiret: Record<string, EstablishmentSimplified>,
     ): GrantToExtract {
         const lastPayment = grant.payments?.sort(
             (p1, p2) => p2.dateOperation.value.getTime() - p1.dateOperation.value.getTime(),

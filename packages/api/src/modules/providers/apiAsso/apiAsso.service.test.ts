@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Etablissement } from "dto";
+import { Establishment } from "dto";
 import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
 import apiAssoService from "./apiAsso.service";
 import { DacDtoDocument, RnaDtoDocument } from "./__fixtures__/DtoDocumentFixture";
@@ -19,7 +19,7 @@ jest.mock("./adapters/ApiAssoDtoAdapter", () => ({
     rnaDocumentToDocument: jest.fn().mockImplementation(() => RnaDtoDocument),
     dacDocumentToDocument: jest.fn().mockImplementation(() => DacDtoDocument),
     dacDocumentToRib: jest.fn(),
-    toEtablissement: r => ({ ...r, siret: [{ value: r.id_siret }] }) as unknown as Etablissement,
+    toEstablishment: r => ({ ...r, siret: [{ value: r.id_siret }] }) as unknown as Establishment,
     rnaStructureToAssociation: jest.fn().mockImplementation(data => data),
     sirenStructureToAssociation: jest.fn().mockImplementation(data => data),
 }));
@@ -386,12 +386,12 @@ describe("ApiAssoService", () => {
 
     describe("getEstablishments part", () => {
         let findDocumentsMock: jest.SpyInstance;
-        let findEtablissementsBySirenMock: jest.SpyInstance;
+        let findEstablishmentsBySirenMock: jest.SpyInstance;
 
         beforeAll(() => {
             // @ts-expect-error: mock private method
             findDocumentsMock = jest.spyOn(apiAssoService, "findDocuments");
-            findEtablissementsBySirenMock = jest.spyOn(apiAssoService, "findEtablissementsBySiren");
+            findEstablishmentsBySirenMock = jest.spyOn(apiAssoService, "findEstablishmentsBySiren");
         });
 
         afterAll(() => {
@@ -403,21 +403,21 @@ describe("ApiAssoService", () => {
             const ASSOCIATION_ID = AssociationIdentifier.fromSiren(SIREN);
             const SIRET = SIREN.toSiret("00001");
             const ESTABLISHMENT_ID = EstablishmentIdentifier.fromSiret(SIRET, ASSOCIATION_ID);
-            it("should call findEtablissementsBySiren with Association identifier", async () => {
-                findEtablissementsBySirenMock.mockResolvedValueOnce([]);
+            it("should call findEstablishmentsBySiren with Association identifier", async () => {
+                findEstablishmentsBySirenMock.mockResolvedValueOnce([]);
                 await apiAssoService.getEstablishments(ASSOCIATION_ID);
-                expect(findEtablissementsBySirenMock).toHaveBeenCalledWith(SIREN);
+                expect(findEstablishmentsBySirenMock).toHaveBeenCalledWith(SIREN);
             });
 
-            it("should call findEtablissementsBySiren with Establishment identifier", async () => {
-                findEtablissementsBySirenMock.mockResolvedValueOnce([]);
+            it("should call findEstablishmentsBySiren with Establishment identifier", async () => {
+                findEstablishmentsBySirenMock.mockResolvedValueOnce([]);
                 await apiAssoService.getEstablishments(ESTABLISHMENT_ID);
-                expect(findEtablissementsBySirenMock).toHaveBeenCalledWith(SIREN);
+                expect(findEstablishmentsBySirenMock).toHaveBeenCalledWith(SIREN);
             });
 
             it("should filter establishments by siret", async () => {
                 const expected = 1;
-                findEtablissementsBySirenMock.mockResolvedValueOnce([
+                findEstablishmentsBySirenMock.mockResolvedValueOnce([
                     { siret: [{ value: SIRET.value }] },
                     { siret: [{ value: SIREN.toSiret("00002").value }] },
                 ]);
@@ -426,12 +426,12 @@ describe("ApiAssoService", () => {
             });
         });
 
-        describe("findEtablissementsBySiren", () => {
+        describe("findEstablishmentsBySiren", () => {
             const SIREN = new Siren("000000000");
 
             let mockSendRequest: jest.SpyInstance;
             let mockGetDefaultDateModifSiren: jest.SpyInstance;
-            let toEtablissementMock: jest.SpyInstance;
+            let toEstablishmentMock: jest.SpyInstance;
 
             beforeAll(() => {
                 // @ts-expect-error sendRequest is private method
@@ -441,26 +441,26 @@ describe("ApiAssoService", () => {
                     .spyOn(apiAssoService, "getDefaultDateModifSiren")
                     // @ts-expect-error: mock
                     .mockReturnValue("1900-01-01");
-                toEtablissementMock = jest
-                    .spyOn(ApiAssoDtoAdapter, "toEtablissement")
-                    .mockImplementation(data => data as unknown as Etablissement);
+                toEstablishmentMock = jest
+                    .spyOn(ApiAssoDtoAdapter, "toEstablishment")
+                    .mockImplementation(data => data as unknown as Establishment);
             });
 
             afterAll(() => {
                 mockSendRequest.mockRestore();
                 mockGetDefaultDateModifSiren.mockRestore();
-                toEtablissementMock.mockRestore();
+                toEstablishmentMock.mockRestore();
             });
 
             it("should send a request", async () => {
-                await apiAssoService.findEtablissementsBySiren(SIREN);
+                await apiAssoService.findEstablishmentsBySiren(SIREN);
 
                 expect(mockSendRequest).toHaveBeenCalledTimes(1);
             });
 
             it("should return empty array", async () => {
                 mockSendRequest.mockResolvedValueOnce(null);
-                const actual = await apiAssoService.findEtablissementsBySiren(SIREN);
+                const actual = await apiAssoService.findEstablishmentsBySiren(SIREN);
                 expect(actual).toHaveLength(0);
             });
 
@@ -469,19 +469,19 @@ describe("ApiAssoService", () => {
                     date_modif_siren: null,
                     id_siren: null,
                 });
-                const actual = await apiAssoService.findEtablissementsBySiren(SIREN);
+                const actual = await apiAssoService.findEstablishmentsBySiren(SIREN);
                 expect(actual).toHaveLength(0);
             });
 
             it("should call adapter", async () => {
-                await apiAssoService.findEtablissementsBySiren(SIREN);
-                expect(toEtablissementMock).toHaveBeenCalledTimes(2);
+                await apiAssoService.findEstablishmentsBySiren(SIREN);
+                expect(toEstablishmentMock).toHaveBeenCalledTimes(2);
             });
 
             it("should call getDefaultDateModifSiren()", async () => {
                 const STRUCTURE = { ...fixtureAsso, identite: { date_modif_siren: undefined } };
                 mockSendRequest.mockResolvedValueOnce(STRUCTURE);
-                await apiAssoService.findEtablissementsBySiren(SIREN);
+                await apiAssoService.findEstablishmentsBySiren(SIREN);
                 expect(mockGetDefaultDateModifSiren).toHaveBeenCalledWith(STRUCTURE);
             });
         });

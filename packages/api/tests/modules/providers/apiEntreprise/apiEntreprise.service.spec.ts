@@ -4,7 +4,7 @@
 // For now, integration test are disabled for this reason.
 
 describe("apiEntrepriseService", () => {
-    it("getEtablissementHeadcount() fetch headcount with SIRET", async () => {
+    it("getEstablishmentHeadcount() fetch headcount with SIRET", async () => {
         // const result = await apiEntrepriseService.getHeadcount("38203533500035");
         // expect(result).toMatchSnapshot();
         expect(true).toBe(true);

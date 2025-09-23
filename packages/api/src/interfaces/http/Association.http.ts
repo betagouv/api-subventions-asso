@@ -1,7 +1,7 @@
 import { Readable } from "stream";
 import {
     GetAssociationResponseDto,
-    GetEtablissementsResponseDto,
+    GetEstablishmentsResponseDto,
     GetGrantsResponseDto,
     GetSubventionsResponseDto,
     GetPaymentsResponseDto,
@@ -213,11 +213,11 @@ export class AssociationHttp extends Controller {
     public async getEstablishments(
         identifier: AssociationIdentifierDto,
         @Request() req,
-    ): Promise<GetEtablissementsResponseDto> {
+    ): Promise<GetEstablishmentsResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
 
-        const etablissements = await associationService.getEstablishments(associationIdentifiers);
-        return { etablissements };
+        const establishments = await associationService.getEstablishments(associationIdentifiers);
+        return { etablissements: establishments };
     }
 
     /**

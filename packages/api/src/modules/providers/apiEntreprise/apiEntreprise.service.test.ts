@@ -81,26 +81,26 @@ describe("ApiEntrepriseService", () => {
     });
 
     describe("getHeadcount()", () => {
-        const getEtablissementHeadcountMock: jest.SpyInstance = jest.spyOn(
+        const getEstablishmentHeadcountMock: jest.SpyInstance = jest.spyOn(
             apiEntrepriseService,
             //@ts-expect-error: mock private method
-            "getEtablissementHeadcount",
+            "getEstablishmentHeadcount",
         );
         const IDENTIFIER = EstablishmentIdentifier.fromSiret(SIRET, AssociationIdentifier.fromSiren(SIREN));
 
-        afterAll(() => getEtablissementHeadcountMock.mockRestore());
+        afterAll(() => getEstablishmentHeadcountMock.mockRestore());
 
-        it("should look for etablissement headcount given a SIRET", async () => {
-            getEtablissementHeadcountMock.mockImplementationOnce(jest.fn());
+        it("should look for establishment headcount given a SIRET", async () => {
+            getEstablishmentHeadcountMock.mockImplementationOnce(jest.fn());
             await apiEntrepriseService.getHeadcount(IDENTIFIER);
-            const actual = getEtablissementHeadcountMock.mock.calls.length;
+            const actual = getEstablishmentHeadcountMock.mock.calls.length;
             expect(actual).toEqual(1);
         });
 
         it("should not retry if error status not 404", async () => {
             const expected = { response: { status: 500 } };
             let actual;
-            getEtablissementHeadcountMock.mockImplementation(() => {
+            getEstablishmentHeadcountMock.mockImplementation(() => {
                 throw expected;
             });
             try {
@@ -108,15 +108,15 @@ describe("ApiEntrepriseService", () => {
             } catch (e) {
                 actual = e;
             }
-            expect(getEtablissementHeadcountMock).toHaveBeenCalledTimes(1);
+            expect(getEstablishmentHeadcountMock).toHaveBeenCalledTimes(1);
             expect(actual).toEqual(expected);
-            getEtablissementHeadcountMock.mockReset();
+            getEstablishmentHeadcountMock.mockReset();
         });
 
         it("should retry 5 times and throw error", async () => {
             const expected = { response: { status: 404 } };
             let actual;
-            getEtablissementHeadcountMock.mockImplementation(() => {
+            getEstablishmentHeadcountMock.mockImplementation(() => {
                 throw expected;
             });
             try {
@@ -124,16 +124,16 @@ describe("ApiEntrepriseService", () => {
             } catch (e) {
                 actual = e;
             }
-            expect(getEtablissementHeadcountMock).toHaveBeenCalledTimes(5);
+            expect(getEstablishmentHeadcountMock).toHaveBeenCalledTimes(5);
             expect(actual).toEqual(expected);
-            getEtablissementHeadcountMock.mockReset();
+            getEstablishmentHeadcountMock.mockReset();
         });
 
         it("should retry 5 times and return headcount", async () => {
             const error = { response: { status: 404 } };
             const expected = {};
 
-            getEtablissementHeadcountMock
+            getEstablishmentHeadcountMock
                 .mockImplementationOnce(() => {
                     throw error;
                 })
@@ -154,7 +154,7 @@ describe("ApiEntrepriseService", () => {
 
         it("should throw StructureIdentifiersError", async () => {
             const expected = new StructureIdentifiersError();
-            getEtablissementHeadcountMock.mockImplementationOnce(jest.fn());
+            getEstablishmentHeadcountMock.mockImplementationOnce(jest.fn());
             let actual;
             try {
                 await apiEntrepriseService.getHeadcount(AssociationIdentifier.fromSiren(SIREN));
@@ -165,14 +165,14 @@ describe("ApiEntrepriseService", () => {
         });
     });
 
-    describe("getEtablissementHeadcount()", () => {
+    describe("getEstablishmentHeadcount()", () => {
         it("should call sendRequest() with arguments", async () => {
             const HEADCOUNT_URL = "HEADCOUNT_URL";
             // @ts-expect-error: private method
             jest.spyOn(apiEntrepriseService, "buildHeadcountUrl").mockImplementationOnce(() => HEADCOUNT_URL);
             sendRequestMock.mockImplementationOnce(jest.fn());
             // @ts-expect-error: mock
-            await apiEntrepriseService.getEtablissementHeadcount(SIRET);
+            await apiEntrepriseService.getEstablishmentHeadcount(SIRET);
             expect(sendRequestMock).toHaveBeenCalledWith(HEADCOUNT_URL, {}, HEADCOUNT_REASON, false);
         });
     });

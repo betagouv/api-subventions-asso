@@ -1,6 +1,6 @@
 import { RnaDto, SirenDto } from "dto";
 
-export interface StructureEtablissementDto {
+export interface StructureEstablishmentDto {
     id_siret: number;
     id_siren: number;
     actif: boolean;
@@ -261,7 +261,7 @@ export default interface StructureDto {
         resultat: number;
         id_siret: number;
     }[];
-    etablissement: StructureEtablissementDto[];
+    etablissement: StructureEstablishmentDto[];
     rib: StructureRibDto[];
     commentaire?: {
         note: string;
