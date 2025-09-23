@@ -1,13 +1,13 @@
 import { Association } from "../associations";
 import { DemandeSubvention } from "../demandeSubvention";
-import { Etablissement } from "./Etablissement";
+import { Establishment } from "./Establishment";
 
-export interface EtablissementComplet extends Etablissement {
+export interface EstablishmentDetailed extends Establishment {
     association: Association;
     demandes_subventions: DemandeSubvention[] | null;
 }
 
-export interface EtablissementDtoResponse {
-    etablissement?: EtablissementComplet;
+export interface EstablishmentDtoResponse {
+    etablissement?: EstablishmentDetailed;
     message?: string;
 }

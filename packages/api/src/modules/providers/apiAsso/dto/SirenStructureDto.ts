@@ -1,4 +1,4 @@
-export interface SirenStructureEtablissementDto {
+export interface SirenStructureEstablishmentDto {
     actif: boolean;
     adresse: {
         cplt_1?: string;
@@ -61,5 +61,5 @@ export interface SirenStructureDto {
         };
     };
     nbEtabsActifs: number;
-    etablissement?: SirenStructureEtablissementDto[];
+    etablissement?: SirenStructureEstablishmentDto[];
 }

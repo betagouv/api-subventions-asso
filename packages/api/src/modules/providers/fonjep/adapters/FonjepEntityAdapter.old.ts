@@ -1,4 +1,4 @@
-import { ApplicationStatus, CommonFullGrantDto, DemandeSubvention, Etablissement, FonjepPayment, Grant } from "dto";
+import { ApplicationStatus, CommonFullGrantDto, DemandeSubvention, Establishment, FonjepPayment, Grant } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import FonjepSubventionEntity from "../entities/FonjepSubventionEntity.old";
 import fonjepService from "../fonjep.service.old";
@@ -41,7 +41,7 @@ export default class FonjepEntityAdapter {
         };
     }
 
-    static toEtablissement(entity: FonjepSubventionEntity): Etablissement {
+    static toEstablishment(entity: FonjepSubventionEntity): Establishment {
         const dataDate = entity.indexedInformations.updated_at;
         const toPV = ProviderValueFactory.buildProviderValuesAdapter(fonjepService.meta.name, dataDate);
 

@@ -6,7 +6,7 @@ import {
     Payment,
     ProviderValue,
     ProviderValues,
-    SimplifiedEtablissement,
+    EstablishmentSimplified,
 } from "dto";
 import { GrantToExtract } from "./@types/GrantToExtract";
 import paymentService from "../payments/payments.service";
@@ -109,7 +109,7 @@ describe("GrantAdapter", () => {
                 nic: makePVs("1234"),
                 adresse: makePVs({ code_postal: "31170" }),
             },
-        } as Record<string, SimplifiedEtablissement>;
+        } as Record<string, EstablishmentSimplified>;
 
         let adapted: GrantToExtract;
         let singlePropMock: jest.SpyInstance;

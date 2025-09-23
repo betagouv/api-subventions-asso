@@ -26,7 +26,7 @@ import demarchesSimplifieesService from "../../../src/modules/providers/demarche
 import miscScdlGrantPort from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.port";
 import DEFAULT_ASSOCIATION, {
     API_ASSO_ASSOCIATION_FROM_SIREN,
-    API_ASSO_ETABLISSEMENTS_FROM_SIREN,
+    API_ASSO_ESTABLISHMENTS_FROM_SIREN,
     LONELY_RNA,
     RNA_STR,
     SIREN_STR,
@@ -82,25 +82,25 @@ const insertData = async () => {
 };
 
 describe("/association", () => {
-    // use to retrieve Association and Etablissements from API ASSO (most viable source of data)
+    // use to retrieve Association and Establishments from API ASSO (most viable source of data)
     let mockGetAssociationBySiren: jest.SpyInstance;
-    let mockGetEtablissementsBySiren: jest.SpyInstance;
+    let mockGetEstablishmentsBySiren: jest.SpyInstance;
 
     beforeEach(async () => {
         await insertData();
         mockGetAssociationBySiren = jest
             .spyOn(apiAssoService, "findAssociationBySiren")
             .mockResolvedValue(API_ASSO_ASSOCIATION_FROM_SIREN);
-        mockGetEtablissementsBySiren = jest
-            .spyOn(apiAssoService, "findEtablissementsBySiren")
-            .mockResolvedValue(API_ASSO_ETABLISSEMENTS_FROM_SIREN);
+        mockGetEstablishmentsBySiren = jest
+            .spyOn(apiAssoService, "findEstablishmentsBySiren")
+            .mockResolvedValue(API_ASSO_ESTABLISHMENTS_FROM_SIREN);
     });
 
-    afterAll(() => mockGetEtablissementsBySiren.mockRestore());
+    afterAll(() => mockGetEstablishmentsBySiren.mockRestore());
 
     afterEach(() => {
         mockGetAssociationBySiren.mockClear();
-        mockGetEtablissementsBySiren.mockClear();
+        mockGetEstablishmentsBySiren.mockClear();
     });
 
     describe("/{structure_identifier}", () => {
@@ -228,7 +228,7 @@ describe("/association", () => {
     });
 
     describe("/{structure_identifier}/etablissements", () => {
-        it("should return SimplifiedEtablissement[]", async () => {
+        it("should return EstablishmentSimplified[]", async () => {
             const response = await request(g.app)
                 .get(`/association/${SIREN_STR}/etablissements`)
                 .set("x-access-token", await createAndGetUserToken())

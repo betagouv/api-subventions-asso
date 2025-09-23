@@ -13,7 +13,7 @@ import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import documentsService from "../documents/documents.service";
 import paymentService from "../payments/payments.service";
 import subventionsService from "../subventions/subventions.service";
-import etablissementService from "../etablissements/etablissements.service";
+import establishmentService from "../establishments/establishment.service";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import AssociationsProvider from "./@types/AssociationsProvider";
 
@@ -28,10 +28,6 @@ export class AssociationsService {
         const data = await this.aggregate(associationIdentifier);
         if (!data.length) throw new NotFoundError("Association not found");
         return FormaterHelper.formatData(data as DefaultObject<ProviderValues>[], this.provider_score) as Association;
-    }
-
-    getEtablissements(identifier: AssociationIdentifier) {
-        return etablissementService.getEtablissements(identifier);
     }
 
     private async aggregate(associationIdentifier: AssociationIdentifier) {
@@ -62,7 +58,7 @@ export class AssociationsService {
      */
 
     getEstablishments(identifier: AssociationIdentifier) {
-        return etablissementService.getEtablissements(identifier);
+        return establishmentService.getEstablishments(identifier);
     }
 
     /**

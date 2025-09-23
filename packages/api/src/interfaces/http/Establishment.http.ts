@@ -1,7 +1,7 @@
 import { Readable } from "stream";
 import {
     GetDocumentsResponseDto,
-    GetEtablissementResponseDto,
+    GetEstablishmentResponseDto,
     GetSubventionsResponseDto,
     GetPaymentsResponseDto,
     GetGrantsResponseDto,
@@ -12,7 +12,7 @@ import {
 } from "dto";
 import { Route, Get, Controller, Tags, Security, Response, Produces, Middlewares, Hidden, Request } from "tsoa";
 import { NotAssociationError, HttpErrorInterface } from "core";
-import etablissementService from "../../modules/etablissements/etablissements.service";
+import establishmentService from "../../modules/establishments/establishment.service";
 import establishmentIdentifierService from "../../modules/establishment-identifier/establishment-identifier.service";
 import grantExtractService from "../../modules/grant/grantExtract.service";
 import { errorHandler } from "../../middlewares/ErrorMiddleware";
@@ -20,7 +20,7 @@ import associationHelper from "../../modules/associations/associations.helper";
 import paymentFlatService from "../../modules/paymentFlat/paymentFlat.service";
 import applicationFlatService from "../../modules/applicationFlat/applicationFlat.service";
 
-export async function isEtabIdentifierFromAssoMiddleware(req, _res, next) {
+export async function isEstabIdentifierFromAssoMiddleware(req, _res, next) {
     /*
      * middleware that
      * * retrieves normalized identifier from param `identifier` and throws if identifier does not belong
@@ -42,10 +42,10 @@ export async function isEtabIdentifierFromAssoMiddleware(req, _res, next) {
 }
 
 @Route("etablissement/{identifier}")
-@Middlewares(isEtabIdentifierFromAssoMiddleware)
+@Middlewares(isEstabIdentifierFromAssoMiddleware)
 @Security("jwt")
-@Tags("Etablissement Controller")
-export class EtablissementHttp extends Controller {
+@Tags("Establishment Controller")
+export class EstablishmentHttp extends Controller {
     /**
      * Remonte les informations d'un établissement
      * @param identifier  Identifiant Siret
@@ -56,15 +56,15 @@ export class EtablissementHttp extends Controller {
         message: "You must provide a valid SIRET",
     })
     @Response<HttpErrorInterface>("404", "L'établissement n'a pas été trouvé", {
-        message: "Etablissement not found",
+        message: "Establishment not found",
     })
-    public async getEtablissement(
+    public async getEstablishment(
         identifier: EstablishmentIdentifierDto,
         @Request() req,
-    ): Promise<GetEtablissementResponseDto> {
+    ): Promise<GetEstablishmentResponseDto> {
         const estabIdentifier = req.estabIdentifier;
-        const etablissement = await etablissementService.getEtablissement(estabIdentifier);
-        return { etablissement };
+        const establishment = await establishmentService.getEstablishment(estabIdentifier);
+        return { etablissement: establishment };
     }
 
     /**
@@ -77,7 +77,7 @@ export class EtablissementHttp extends Controller {
     @Get("grants")
     public async getGrants(identifier: EstablishmentIdentifierDto, @Request() req): Promise<GetGrantsResponseDto> {
         const estabIdentifier = req.estabIdentifier;
-        const grants = await etablissementService.getGrants(estabIdentifier);
+        const grants = await establishmentService.getGrants(estabIdentifier);
         return { subventions: grants };
     }
 
@@ -95,7 +95,7 @@ export class EtablissementHttp extends Controller {
     ): Promise<GetSubventionsResponseDto> {
         const estabIdentifier = req.estabIdentifier;
 
-        const subventions = await etablissementService.getSubventions(estabIdentifier);
+        const subventions = await establishmentService.getSubventions(estabIdentifier);
         return { subventions };
     }
 
@@ -112,7 +112,7 @@ export class EtablissementHttp extends Controller {
         @Request() req,
     ): Promise<GetPaymentsResponseDto> {
         const estabIdentifier = req.estabIdentifier;
-        const payments = await etablissementService.getPayments(estabIdentifier);
+        const payments = await establishmentService.getPayments(estabIdentifier);
         return { versements: payments };
     }
 
@@ -159,14 +159,14 @@ export class EtablissementHttp extends Controller {
         @Request() req,
     ): Promise<GetDocumentsResponseDto> {
         const estabIdentifier = req.estabIdentifier;
-        const documents = await etablissementService.getDocuments(estabIdentifier);
+        const documents = await establishmentService.getDocuments(estabIdentifier);
         return { documents };
     }
 
     @Get("documents/rib")
     public async getRibs(identifier: EstablishmentIdentifierDto, @Request() req): Promise<GetDocumentsResponseDto> {
         const estabIdentifier = req.estabIdentifier;
-        const ribs = await etablissementService.getRibs(estabIdentifier);
+        const ribs = await establishmentService.getRibs(estabIdentifier);
         return { documents: ribs };
     }
 
