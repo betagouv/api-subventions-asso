@@ -14,7 +14,7 @@
 </script>
 
 <p class="text--xxl fr-mb-1w">
-    Total des versements réalisés en {year} :
+    Total des versements réalisés par l'État en {year} :
     <b>{$paymentsAmount}</b>
 </p>
 {#if $paymentsRepartition}
