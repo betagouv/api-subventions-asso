@@ -105,6 +105,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
         // for now if no exercise column we will use conventionDate as default
         path: [
             [
+                "excercice",
                 "Année de la demande",
                 ...getMapperVariants("exercice"),
                 "dateDecision_Tri",
