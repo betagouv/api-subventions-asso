@@ -4,11 +4,11 @@ import { RnaDto } from "../shared/Rna";
 import { SirenDto } from "../shared/Siren";
 import { SiretDto } from "../shared/Siret";
 import { DemandeSubvention } from "../demandeSubvention";
-import { Etablissement } from "../etablissements/Etablissement";
 import { Payment } from "../payments/Payment";
 import { ExtraitRcsDto } from "./ExtraitRcsDto";
 import { BodaccRecordDto } from "./BodaccRecordDto";
 import { AssociationNature } from "./AssociationNature";
+import { Establishment } from "../establishments";
 
 export interface Association {
     siren?: ProviderValues<SirenDto>;
@@ -57,7 +57,7 @@ export interface Association {
         ETPT?: ProviderValues<number>;
     };
     versements?: Payment[];
-    etablissements?: ({ demandes_subventions: DemandeSubvention[] | null } & Etablissement)[] | null;
+    etablissements?: ({ demandes_subventions: DemandeSubvention[] | null } & Establishment)[] | null;
     extrait_rcs?: ProviderValues<ExtraitRcsDto> | null;
     bodacc?: ProviderValues<BodaccRecordDto[]>;
 }

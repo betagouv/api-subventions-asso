@@ -4,7 +4,7 @@ import AssociationIdentifier from "../../../identifierObjects/AssociationIdentif
 import Siren from "../../../identifierObjects/Siren";
 
 describe("AvisSituationInseeService", () => {
-    describe("getInseeEtablissementsBySiren", () => {
+    describe("getInseeEstablishmentsBySiren", () => {
         let httpGetSpy: jest.SpyInstance;
         // @ts-expect-error requestCache is private attribute
         const cacheGetMock = jest.spyOn(avisSituationInseeService.requestCache, "get");
@@ -28,8 +28,8 @@ describe("AvisSituationInseeService", () => {
             const expected = false;
             cacheGetMock.mockImplementationOnce(() => [false]);
             cacheHasMock.mockImplementationOnce(() => true);
-            // @ts-expect-error getInseeEtablissementsBySiren is private method
-            const actual = await avisSituationInseeService.getInseeEtablissementsBySiren(SIREN);
+            // @ts-expect-error getInseeEstablishmentsBySiren is private method
+            const actual = await avisSituationInseeService.getInseeEstablishmentsBySiren(SIREN);
 
             expect(actual).toBe(expected);
         });
@@ -39,8 +39,8 @@ describe("AvisSituationInseeService", () => {
             // @ts-expect-error: mock
             cacheGetMock.mockImplementationOnce(() => [expected]);
             cacheHasMock.mockImplementationOnce(() => true);
-            // @ts-expect-error getInseeEtablissementsBySiren is private method
-            const actual = await avisSituationInseeService.getInseeEtablissementsBySiren(SIREN);
+            // @ts-expect-error getInseeEstablishmentsBySiren is private method
+            const actual = await avisSituationInseeService.getInseeEstablishmentsBySiren(SIREN);
 
             expect(actual).toBe(expected);
         });
@@ -51,8 +51,8 @@ describe("AvisSituationInseeService", () => {
             httpGetSpy.mockImplementationOnce(() => {
                 throw new Error();
             });
-            // @ts-expect-error getInseeEtablissementsBySiren is private method
-            const actual = await avisSituationInseeService.getInseeEtablissementsBySiren(SIREN);
+            // @ts-expect-error getInseeEstablishmentsBySiren is private method
+            const actual = await avisSituationInseeService.getInseeEstablishmentsBySiren(SIREN);
 
             expect(actual).toBe(expected);
         });
@@ -64,8 +64,8 @@ describe("AvisSituationInseeService", () => {
                 status: 200,
                 data: expected,
             }));
-            // @ts-expect-error getInseeEtablissementsBySiren is private method
-            const actual = await avisSituationInseeService.getInseeEtablissementsBySiren(SIREN);
+            // @ts-expect-error getInseeEstablishmentsBySiren is private method
+            const actual = await avisSituationInseeService.getInseeEstablishmentsBySiren(SIREN);
 
             expect(actual).toBe(expected);
         });
@@ -77,8 +77,8 @@ describe("AvisSituationInseeService", () => {
                 status: 200,
                 data: expected,
             }));
-            // @ts-expect-error getInseeEtablissementsBySiren is private method
-            await avisSituationInseeService.getInseeEtablissementsBySiren(SIREN);
+            // @ts-expect-error getInseeEstablishmentsBySiren is private method
+            await avisSituationInseeService.getInseeEstablishmentsBySiren(SIREN);
 
             expect(cacheAddMock).toHaveBeenCalledWith(SIREN.value, expected);
         });
@@ -90,8 +90,8 @@ describe("AvisSituationInseeService", () => {
                 status: 404,
                 data: false,
             }));
-            // @ts-expect-error getInseeEtablissementsBySiren is private method
-            const actual = await avisSituationInseeService.getInseeEtablissementsBySiren(SIREN);
+            // @ts-expect-error getInseeEstablishmentsBySiren is private method
+            const actual = await avisSituationInseeService.getInseeEstablishmentsBySiren(SIREN);
 
             expect(actual).toBe(expected);
         });
@@ -103,24 +103,24 @@ describe("AvisSituationInseeService", () => {
                 status: 404,
                 data: expected,
             }));
-            // @ts-expect-error getInseeEtablissementsBySiren is private method
-            await avisSituationInseeService.getInseeEtablissementsBySiren(SIREN);
+            // @ts-expect-error getInseeEstablishmentsBySiren is private method
+            await avisSituationInseeService.getInseeEstablishmentsBySiren(SIREN);
 
             expect(cacheAddMock).toHaveBeenCalledWith(SIREN.value, expected);
         });
     });
 
     describe("getDocuments", () => {
-        const getInseeEtablissementsBySirenMock: jest.SpyInstance = jest.spyOn(
+        const getInseeEstablishmentsBySirenMock: jest.SpyInstance = jest.spyOn(
             avisSituationInseeService,
             // @ts-expect-error: mock private method
-            "getInseeEtablissementsBySiren",
+            "getInseeEstablishmentsBySiren",
         );
 
         const IDENTIFIER = AssociationIdentifier.fromSiren(new Siren("000000000"));
 
         it("should return emtpy array because file not found in insee", async () => {
-            getInseeEtablissementsBySirenMock.mockImplementationOnce(async () => false);
+            getInseeEstablishmentsBySirenMock.mockImplementationOnce(async () => false);
 
             const actual = await avisSituationInseeService.getDocuments(IDENTIFIER);
 
@@ -128,7 +128,7 @@ describe("AvisSituationInseeService", () => {
         });
 
         it("should return empty array because nic not found", async () => {
-            getInseeEtablissementsBySirenMock.mockImplementationOnce(async () => ({
+            getInseeEstablishmentsBySirenMock.mockImplementationOnce(async () => ({
                 etablissements: [
                     {
                         etablissementSiege: false,
@@ -143,7 +143,7 @@ describe("AvisSituationInseeService", () => {
         });
 
         it("should return result computed url with given siren and found nic", async () => {
-            getInseeEtablissementsBySirenMock.mockImplementationOnce(async () => ({
+            getInseeEstablishmentsBySirenMock.mockImplementationOnce(async () => ({
                 etablissements: [
                     {
                         etablissementSiege: true,

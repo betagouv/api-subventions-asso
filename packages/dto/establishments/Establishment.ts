@@ -3,9 +3,9 @@ import { Personne } from "../shared/Personne";
 import { ProviderValues } from "../shared/ProviderValue";
 import { DemandeSubvention } from "../demandeSubvention";
 import { Payment } from "../payments/Payment";
-import { SimplifiedEtablissement } from "./SimplifiedEtablissement";
+import { EstablishmentSimplified } from "./EstablishmentSimplified";
 
-export interface Etablissement extends SimplifiedEtablissement {
+export interface Establishment extends EstablishmentSimplified {
     demandes_subventions?: DemandeSubvention[] | null;
     representants_legaux?: ProviderValues<Personne>[];
     contacts?: ProviderValues<Personne>[];

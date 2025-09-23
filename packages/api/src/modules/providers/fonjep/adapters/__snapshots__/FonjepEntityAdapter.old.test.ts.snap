@@ -34,7 +34,7 @@ exports[`FonjepEntityAdapter toDemandeSubvention() should return a DemandeSubven
 }
 `;
 
-exports[`FonjepEntityAdapter toEtablissement() should return an Etablissement 1`] = `
+exports[`FonjepEntityAdapter toEstablishment() should return an Establishment 1`] = `
 {
   "adresse": [
     {

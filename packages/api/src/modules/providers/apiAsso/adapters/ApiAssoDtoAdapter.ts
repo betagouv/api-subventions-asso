@@ -1,15 +1,15 @@
-import { Etablissement, Association, DocumentDto, AssociationNature } from "dto";
+import { Establishment, Association, DocumentDto, AssociationNature } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import {
     StructureDacDocumentDto,
-    StructureEtablissementDto,
+    StructureEstablishmentDto,
     StructureRepresentantLegalDto,
     StructureRibDto,
     StructureRnaDocumentDto,
 } from "../dto/StructureDto";
 import { isValidDate } from "../../../../shared/helpers/DateHelper";
 import { RnaStructureDto } from "../dto/RnaStructureDto";
-import { SirenStructureDto, SirenStructureEtablissementDto } from "../dto/SirenStructureDto";
+import { SirenStructureDto, SirenStructureEstablishmentDto } from "../dto/SirenStructureDto";
 import Siret from "../../../../identifierObjects/Siret";
 
 export default class ApiAssoDtoAdapter {
@@ -24,7 +24,7 @@ export default class ApiAssoDtoAdapter {
     }
 
     protected static formatEstablishementSiret(
-        establishments: SirenStructureEtablissementDto[] | SirenStructureEtablissementDto | undefined,
+        establishments: SirenStructureEstablishmentDto[] | SirenStructureEstablishmentDto | undefined,
     ) {
         if (!establishments) return [];
         return Array.isArray(establishments) ? establishments : [establishments];
@@ -92,12 +92,12 @@ export default class ApiAssoDtoAdapter {
         };
     }
 
-    static toEtablissement(
-        etablissement: StructureEtablissementDto,
+    static toEstablishment(
+        establishment: StructureEstablishmentDto,
         ribs: StructureRibDto[],
         representantsLegaux: StructureRepresentantLegalDto[],
         dateModif: string,
-    ): Etablissement {
+    ): Establishment {
         const toSirenPvs = ProviderValueFactory.buildProviderValuesAdapter(
             this.providerNameSiren,
             ApiAssoDtoAdapter.apiDateToDate(dateModif),
@@ -117,28 +117,28 @@ export default class ApiAssoDtoAdapter {
         });
 
         return {
-            siret: toSirenPvs(etablissement.id_siret.toString()),
-            nic: toSirenPvs(Siret.getNic(etablissement.id_siret.toString())),
-            ouvert: toSirenPvs(etablissement.actif),
-            siege: toSirenPvs(etablissement.est_siege),
+            siret: toSirenPvs(establishment.id_siret.toString()),
+            nic: toSirenPvs(Siret.getNic(establishment.id_siret.toString())),
+            ouvert: toSirenPvs(establishment.actif),
+            siege: toSirenPvs(establishment.est_siege),
             adresse: toSirenPvs({
-                numero: etablissement.adresse.num_voie?.toString(),
-                type_voie: etablissement.adresse.type_voie,
-                voie: etablissement.adresse.voie,
-                code_postal: etablissement.adresse.cp?.toString(),
-                commune: etablissement.adresse.commune,
+                numero: establishment.adresse.num_voie?.toString(),
+                type_voie: establishment.adresse.type_voie,
+                voie: establishment.adresse.voie,
+                code_postal: establishment.adresse.cp?.toString(),
+                commune: establishment.adresse.commune,
             }),
             information_banquaire: ribs
-                .filter(rib => rib.id_siret === etablissement.id_siret)
+                .filter(rib => rib.id_siret === establishment.id_siret)
                 .map(rib => toLCAPvs({ iban: rib.iban, bic: rib.bic })),
             representants_legaux: representantsLegaux
                 ? representantsLegaux
-                      .filter(r => r.id_siret === etablissement.id_siret)
+                      .filter(r => r.id_siret === establishment.id_siret)
                       .map(r => toLCAPvs(toContact(r)))
                 : undefined,
             contacts: representantsLegaux
                 ? representantsLegaux
-                      .filter(r => r.id_siret === etablissement.id_siret)
+                      .filter(r => r.id_siret === establishment.id_siret)
                       .map(r => toLCAPvs(toContact(r)))
                 : undefined,
         };

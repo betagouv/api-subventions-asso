@@ -1,9 +1,9 @@
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import associationsService from "./associations.service";
-import { Etablissement, Payment, DocumentDto, DemandeSubvention } from "dto";
+import { Establishment, Payment, DocumentDto, DemandeSubvention } from "dto";
 import subventionService from "../subventions/subventions.service";
 import providers from "../providers";
-import etablissementService from "../etablissements/etablissements.service";
+import establishmentService from "../establishments/establishment.service";
 import paymentService from "../payments/payments.service";
 import documentsService from "../documents/documents.service";
 import { NotFoundError } from "core";
@@ -22,7 +22,7 @@ describe("associationsService", () => {
     const getDemandesByAssociationMock = jest.spyOn(subventionService, "getDemandes");
     const getPaymentsByAssociationMock = jest.spyOn(paymentService, "getPayments");
     const getDocumentMock = jest.spyOn(documentsService, "getDocuments");
-    const getEtablissementsMock = jest.spyOn(etablissementService, "getEtablissements");
+    const getEstablishmentsMock = jest.spyOn(establishmentService, "getEstablishments");
     // @ts-expect-error: mock private method
     const aggregateMock: jest.SpyInstance = jest.spyOn(associationsService, "aggregate");
 
@@ -143,16 +143,16 @@ describe("associationsService", () => {
     });
 
     describe("getEstablishments()", () => {
-        it("should call etablissementService.getEtablissementsMock()", async () => {
-            getEtablissementsMock.mockImplementationOnce(() =>
-                Promise.resolve([{ etablissement: true } as unknown as Etablissement]),
+        it("should call establishmentService.getEstablishmentsMock()", async () => {
+            getEstablishmentsMock.mockImplementationOnce(() =>
+                Promise.resolve([{ establishment: true } as unknown as Establishment]),
             );
             await associationsService.getEstablishments(IDENTIFIER);
-            expect(getEtablissementsMock).toHaveBeenCalledWith(IDENTIFIER);
+            expect(getEstablishmentsMock).toHaveBeenCalledWith(IDENTIFIER);
         });
 
         it("should throw NotFoundError", async () => {
-            getEtablissementsMock.mockImplementationOnce(() => {
+            getEstablishmentsMock.mockImplementationOnce(() => {
                 return Promise.reject(new NotFoundError());
             });
             expect(() => associationsService.getEstablishments(IDENTIFIER)).rejects.toThrowError(NotFoundError);

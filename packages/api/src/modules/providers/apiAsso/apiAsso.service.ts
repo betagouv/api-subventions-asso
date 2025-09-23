@@ -1,4 +1,4 @@
-import { Association, Etablissement, DocumentDto } from "dto";
+import { Association, Establishment, DocumentDto } from "dto";
 import { XMLParser } from "fast-xml-parser";
 import * as Sentry from "@sentry/node";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
@@ -8,7 +8,7 @@ import CacheData from "../../../shared/Cache";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import AssociationsProvider from "../../associations/@types/AssociationsProvider";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
-import EtablissementProvider from "../../etablissements/@types/EtablissementProvider";
+import EstablishmentProvider from "../../establishments/@types/EstablishmentProvider";
 import { hasEmptyProperties } from "../../../shared/helpers/ObjectHelper";
 import ProviderCore from "../ProviderCore";
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
@@ -28,7 +28,7 @@ import { StructureIdentifier } from "../../../identifierObjects/@types/Structure
 
 export class ApiAssoService
     extends ProviderCore
-    implements AssociationsProvider, EtablissementProvider, DocumentProvider
+    implements AssociationsProvider, EstablishmentProvider, DocumentProvider
 {
     // API documented in part "contrat d'interface" https://lecompteasso.associations.gouv.fr/lapi-association/
     private requestCache = new CacheData<unknown>(CACHE_TIMES.ONE_DAY);
@@ -116,7 +116,7 @@ export class ApiAssoService
         return ApiAssoDtoAdapter.sirenStructureToAssociation(sirenStructure);
     }
 
-    public async findEtablissementsBySiren(siren: Siren): Promise<Etablissement[]> {
+    public async findEstablishmentsBySiren(siren: Siren): Promise<Establishment[]> {
         const structure = await this.sendRequest<StructureDto>(`/api/structure/${siren.value}`);
 
         if (!structure?.identite || !Object.keys(structure.identite).length || hasEmptyProperties(structure.identite))
@@ -132,7 +132,7 @@ export class ApiAssoService
         return establishments
             .filter(establishment => establishment)
             .map(establishment =>
-                ApiAssoDtoAdapter.toEtablissement(
+                ApiAssoDtoAdapter.toEstablishment(
                     establishment,
                     ribs,
                     structure.representant_legal,
@@ -309,14 +309,14 @@ export class ApiAssoService
      * |-------------------------|
      */
 
-    isEtablissementProvider = true;
+    isEstablishmentProvider = true;
 
-    async getEstablishments(identifier: StructureIdentifier): Promise<Etablissement[]> {
+    async getEstablishments(identifier: StructureIdentifier): Promise<Establishment[]> {
         if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            return this.findEtablissementsBySiren(identifier.siren);
+            return this.findEstablishmentsBySiren(identifier.siren);
         } else if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
             const siren = identifier.siret.toSiren();
-            const result = await this.findEtablissementsBySiren(siren);
+            const result = await this.findEstablishmentsBySiren(siren);
             return result.filter(establishment => establishment.siret[0].value == identifier.siret?.value);
         }
         return [];

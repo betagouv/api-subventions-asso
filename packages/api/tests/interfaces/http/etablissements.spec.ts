@@ -1,10 +1,10 @@
 import request from "supertest";
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
-import etablissementService from "../../../src/modules/etablissements/etablissements.service";
+import establishmentService from "../../../src/modules/establishments/establishment.service";
 import associationsService from "../../../src/modules/associations/associations.service";
 import { BadRequestError } from "core";
 import DEFAULT_ASSOCIATION, {
-    API_ASSO_ETABLISSEMENTS_FROM_SIREN,
+    API_ASSO_ESTABLISHMENTS_FROM_SIREN,
     LONELY_RNA,
     SIREN_STR,
     SIRET_STR,
@@ -22,10 +22,10 @@ const g = global as unknown as { app: App };
 const ETABLISSEMENT_SIRET = SIRET_STR;
 
 describe("/etablissement", () => {
-    const getSubventionsMock: jest.SpyInstance = jest.spyOn(etablissementService, "getSubventions");
+    const getSubventionsMock: jest.SpyInstance = jest.spyOn(establishmentService, "getSubventions");
 
     beforeAll(async () => {
-        jest.spyOn(apiAssoService, "findEtablissementsBySiren").mockResolvedValue(API_ASSO_ETABLISSEMENTS_FROM_SIREN);
+        jest.spyOn(apiAssoService, "findEstablishmentsBySiren").mockResolvedValue(API_ASSO_ESTABLISHMENTS_FROM_SIREN);
     });
 
     beforeEach(async () => {
