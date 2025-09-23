@@ -1,8 +1,8 @@
 import { Etablissement } from "dto";
 import { getMonthFromFrenchStr } from "../../../../shared/helpers/DateHelper";
-import { siretToNIC } from "../../../../shared/helpers/SirenHelper";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import type ApiEntrepriseHeadcount from "../@types/ApiEntrepriseHeadcount";
+import Siret from "../../../../identifierObjects/Siret";
 
 export default class ApiEntrepriseAdapter {
     static PROVIDER_NAME = "API Entreprise";
@@ -13,7 +13,7 @@ export default class ApiEntrepriseAdapter {
         );
         return {
             siret: toProviderValue(data.siret),
-            nic: toProviderValue(siretToNIC(data.siret)),
+            nic: toProviderValue(Siret.getNic(data.siret)),
             headcount: toProviderValue(data.effectifs_mensuels),
         };
     }
