@@ -282,7 +282,7 @@ describe("/association", () => {
             };
 
             const withoutIdGrants = data.map(joinedRawGrant => ({
-                applications: joinedRawGrant.applications?.map(expectAnyRawGrantId),
+                application: joinedRawGrant.application ? expectAnyRawGrantId(joinedRawGrant.application) : null,
                 payments: joinedRawGrant.payments?.map(expectAnyRawGrantId),
             }));
 

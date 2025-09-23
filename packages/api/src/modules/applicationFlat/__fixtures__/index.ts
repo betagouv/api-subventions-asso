@@ -3,10 +3,11 @@ import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
 import { ApplicationFlatDbo } from "../../../dataProviders/db/applicationFlat/ApplicationFlatDbo";
 import { ObjectId } from "mongodb";
 import DEFAULT_ASSOCIATION from "../../../../tests/__fixtures__/association.fixture";
-import { FONJEP_PAYMENT_FLAT_ID_VERSEMENT } from "../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+import {
+    CHORUS_PAYMENT_ID,
+    FONJEP_PAYMENT_FLAT_ID_VERSEMENT,
+} from "../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
 import Siret from "../../../identifierObjects/Siret";
-
-export const PAYMENT_ID = "1000000000019--subv001--2025";
 
 export const DRAFT_ENTITY: Omit<ApplicationFlatEntity, "uniqueId" | "applicationId"> = {
     requestYear: 2023,
@@ -30,7 +31,7 @@ export const DRAFT_ENTITY: Omit<ApplicationFlatEntity, "uniqueId" | "application
     idRAE: "RAEid",
     instructiveDepartementId: "890123456",
     applicationProviderId: "subv001",
-    paymentId: PAYMENT_ID,
+    paymentId: CHORUS_PAYMENT_ID,
     grantedAmount: 15000,
     requestedAmount: 30000,
     totalAmount: 50000,

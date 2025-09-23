@@ -1,7 +1,7 @@
 import grantService from "./grant.service";
 import commonGrantService from "./commonGrant.service";
 import mocked = jest.mocked;
-import { AnyRawGrant, JoinedRawGrant, RawApplication, RawPayment } from "./@types/rawGrant";
+import { JoinedRawGrant, RawApplication, RawPayment } from "./@types/rawGrant";
 import * as Sentry from "@sentry/node";
 import { applicationProvidersFixtures, paymentProvidersFixtures } from "../providers/__fixtures__/providers.fixture";
 import scdlService from "../providers/scdl/scdl.service";
@@ -15,6 +15,8 @@ import Siret from "../../identifierObjects/Siret";
 import { refreshGrantAsyncServices } from "../../shared/initAsyncServices";
 import { APPLICATION_LINK_TO_CHORUS } from "../applicationFlat/__fixtures__";
 import { CHORUS_PAYMENT_FLAT_ENTITY } from "../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+import applicationFlatService from "../applicationFlat/applicationFlat.service";
+import paymentFlatService from "../paymentFlat/paymentFlat.service";
 
 jest.mock("../../shared/initAsyncServices");
 jest.mock("../providers/scdl/scdl.service");
@@ -25,6 +27,8 @@ jest.mock("./commonGrant.service");
 jest.mock("../associations/associations.service");
 jest.mock("../subventions/subventions.service");
 jest.mock("../payments/payments.service");
+jest.mock("../applicationFlat/applicationFlat.service");
+jest.mock("../paymentFlat/paymentFlat.service");
 
 describe("GrantService", () => {
     const SCDL_PRODUCER_NAME = "SCDL_PRODUCER_NAME";
@@ -70,14 +74,13 @@ describe("GrantService", () => {
         },
     ];
 
-    const RAW_GRANTS: AnyRawGrant[] = [RAW_APPLICATION, ...RAW_PAYMENTS];
     const GRANTS_BY_TYPE = {
         applications: [RAW_APPLICATION],
         payments: RAW_PAYMENTS,
     };
 
     const DEFAULT_JOINED_RAW_GRANT = {
-        applications: [],
+        application: RAW_APPLICATION,
         payments: RAW_PAYMENTS.filter(rawPayment => rawPayment.joinKey === RAW_APPLICATION.joinKey),
     };
     const APPLICATION = { siret: SIRET_STR } as unknown as DemandeSubvention;
@@ -87,20 +90,10 @@ describe("GrantService", () => {
     const GRANT: Grant = { application: APPLICATION, payments: [{ bop: 101 } as Payment] };
 
     describe("adaptRawGrant", () => {
-        beforeAll(() => {
-            grantService.applicationProvidersById = {
-                [applicationProvidersFixtures[0].meta.id]: applicationProvidersFixtures[0],
-                [applicationProvidersFixtures[1].meta.id]: applicationProvidersFixtures[1],
-            };
-            grantService.paymentProvidersById = {
-                [paymentProvidersFixtures[0].meta.id]: paymentProvidersFixtures[0],
-            };
-        });
-
         it.each`
-            grant              | provider                           | method
-            ${RAW_APPLICATION} | ${applicationProvidersFixtures[0]} | ${"rawToApplication"}
-            ${RAW_PAYMENTS[0]} | ${paymentProvidersFixtures[0]}     | ${"rawToPayment"}
+            grant              | provider                  | method
+            ${RAW_APPLICATION} | ${applicationFlatService} | ${"rawToApplication"}
+            ${RAW_PAYMENTS[0]} | ${paymentFlatService}     | ${"rawToPayment"}
         `("should adapte RawGrant", ({ grant, provider, method }) => {
             grantService.adaptRawGrant(grant);
             expect(provider[method]).toHaveBeenCalledWith(grant);
@@ -124,17 +117,17 @@ describe("GrantService", () => {
         it.each`
             arrayName | joinedRawGrant | calls
             ${"payments"} | ${{
-    applications: [],
+    applications: null,
     payments: [RAW_PAYMENTS[0], RAW_PAYMENTS[1]],
 }} | ${2}
             ${"application"} | ${{
-    applications: [RAW_APPLICATION, {} as RawApplication],
+    application: RAW_APPLICATION,
     payments: [],
-}} | ${2}
-            ${"payments and applications"} | ${{
-    applications: [RAW_APPLICATION, {} as RawApplication],
+}} | ${1}
+            ${"payments and application"} | ${{
+    application: RAW_APPLICATION,
     payments: [RAW_PAYMENTS[0], RAW_PAYMENTS[1]],
-}} | ${4}
+}} | ${3}
         `("should call adaptRawGrant for each $arrayName", ({ joinedRawGrant, calls }) => {
             grantService.adaptJoinedRawGrant(joinedRawGrant);
             expect(mockAdapteRawGrant).toHaveBeenCalledTimes(calls);
@@ -143,10 +136,10 @@ describe("GrantService", () => {
         it("should filter out null adapted grants", () => {
             mockAdapteRawGrant.mockReturnValue(null);
             grantService.adaptJoinedRawGrant({
-                applications: [{}] as unknown as RawApplication[],
+                application: {} as unknown as RawApplication,
                 payments: [{}] as unknown as RawPayment[],
             });
-            expect(mockToGrant).toHaveBeenCalledWith({ applications: [], payments: [] });
+            expect(mockToGrant).toHaveBeenCalledWith({ application: null, payments: [] });
             mockAdapteRawGrant.mockImplementation(rawGrant => rawGrant);
         });
 
@@ -162,23 +155,23 @@ describe("GrantService", () => {
             ${"return undefined if no param"}       | ${undefined}   | ${undefined}
             ${"return undefined with empty object"} | ${{}}          | ${undefined}
             ${"return undefined with properties undefined"} | ${{
-    applications: undefined,
-    payments: undefined,
+    application: undefined,
+    payment: undefined,
 }} | ${undefined}
             ${"return undefined with empty arrays"} | ${{
-    applications: [],
+    application: null,
     payments: [],
 }} | ${undefined}
             ${"return only payments"} | ${{
-    applications: [],
+    application: null,
     payments: PAYMENTS,
 }} | ${{ application: null, payments: PAYMENTS }}
             ${"return first application + payments"} | ${{
-    applications: [APPLICATION, {} as DemandeSubvention],
+    application: APPLICATION,
     payments: PAYMENTS,
 }} | ${{ application: APPLICATION, payments: PAYMENTS }}
             ${"return first application"} | ${{
-    applications: [APPLICATION, {} as DemandeSubvention],
+    application: APPLICATION,
     payments: [],
 }} | ${{ application: APPLICATION, payments: null }}
         `("$description", ({ joinedRawGrant, expected }) => {
@@ -347,60 +340,46 @@ describe("GrantService", () => {
         });
     });
 
-    // JoinGrants test relies on groupRawGrantsByType return value.
-    // Every given param to joinGrants is used to make it seems real
     describe("joinGrants", () => {
-        let mockGroupRawGrantsByType: jest.SpyInstance;
         let mockSendDuplicateMessage: jest.SpyInstance;
 
         beforeAll(() => {
-            // @ts-expect-error: mock private method
-            mockGroupRawGrantsByType = jest.spyOn(grantService, "groupRawGrantsByType");
-            mockGroupRawGrantsByType.mockReturnValue(GRANTS_BY_TYPE);
             // @ts-expect-error: mock private method
             mockSendDuplicateMessage = jest.spyOn(grantService, "sendDuplicateMessage");
         });
 
         afterAll(() => {
-            mockGroupRawGrantsByType.mockRestore();
             mockSendDuplicateMessage.mockRestore();
-        });
-
-        it("should call groupRawGrantsByType", () => {
-            // @ts-expect-error: test private method
-            grantService.joinGrants(RAW_GRANTS);
-            expect(mockGroupRawGrantsByType).toHaveBeenCalledWith(RAW_GRANTS);
         });
 
         it("should return JoinedGrants", () => {
             const expected = [
-                { applications: [RAW_APPLICATION], payments: [RAW_PAYMENTS[2], RAW_PAYMENTS[3]] },
-                { applications: [], payments: [RAW_PAYMENTS[0], RAW_PAYMENTS[1]] },
+                { application: RAW_APPLICATION, payments: [RAW_PAYMENTS[2], RAW_PAYMENTS[3]] },
+                { application: undefined, payments: [RAW_PAYMENTS[0], RAW_PAYMENTS[1]] },
             ];
 
             // @ts-expect-error: test private method
-            const actual = grantService.joinGrants(RAW_GRANTS);
+            const actual = grantService.joinGrants(GRANTS_BY_TYPE);
             expect(actual).toEqual(expected);
         });
 
         it("should return JoinedGrants with lonely grants", () => {
-            const LONELY_APPLICATION = { ...RAW_APPLICATION, joinKey: undefined };
-            const LONELY_PAYMENT = { ...RAW_PAYMENTS[0], joinKey: undefined };
+            const LONELY_APPLICATION: RawApplication = { ...RAW_APPLICATION, joinKey: undefined };
+            const LONELY_PAYMENT: RawPayment = { ...RAW_PAYMENTS[0], joinKey: undefined };
             const GRANT_BY_TYPE_WITH_LONELY = {
                 applications: [RAW_APPLICATION, LONELY_APPLICATION],
                 payments: [...RAW_PAYMENTS, LONELY_PAYMENT],
             };
-            mockGroupRawGrantsByType.mockReturnValueOnce(GRANT_BY_TYPE_WITH_LONELY);
 
             const expected: JoinedRawGrant[] = [
-                { applications: [RAW_APPLICATION], payments: [RAW_PAYMENTS[2], RAW_PAYMENTS[3]] },
-                { applications: [], payments: [RAW_PAYMENTS[0], RAW_PAYMENTS[1]] },
-                { applications: [LONELY_APPLICATION], payments: [] },
-                { applications: [], payments: [LONELY_PAYMENT] },
+                { application: RAW_APPLICATION, payments: [RAW_PAYMENTS[2], RAW_PAYMENTS[3]] },
+                { application: undefined, payments: [RAW_PAYMENTS[0], RAW_PAYMENTS[1]] },
+                { application: LONELY_APPLICATION, payments: [] },
+                { application: undefined, payments: [LONELY_PAYMENT] },
             ];
 
             // @ts-expect-error: test private method
-            const actual = grantService.joinGrants([...RAW_GRANTS, LONELY_APPLICATION, LONELY_PAYMENT]);
+            const actual = grantService.joinGrants(GRANT_BY_TYPE_WITH_LONELY);
 
             expect(actual).toEqual(expected);
         });

@@ -112,7 +112,7 @@ exports[`PaymentFlatAdapter toDbo given entity without nulls, should return a Pa
   "exerciceBudgetaire": 2023,
   "idEntrepriseBeneficiaire": "100000000",
   "idEtablissementBeneficiaire": "10000000000001",
-  "idVersement": "1000000000019--subv001--2025",
+  "idVersement": "1000000000019--subv001--2023",
   "libelleCentreFinancier": "UO DGER XXXX-C001",
   "ministere": "Ministère Exemple",
   "mission": "Mission Exemple",
@@ -188,7 +188,7 @@ exports[`PaymentFlatAdapter toPayment should return ChorusPayment 1`] = `
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "chorus",
     "type": "string",
-    "value": "1000000000019--subv001--2025",
+    "value": "1000000000019--subv001--2023",
   },
 }
 `;
@@ -230,7 +230,7 @@ exports[`PaymentFlatAdapter toPayment should return FonjepPayment 1`] = `
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "fonjep",
     "type": "string",
-    "value": "CODE_POSTE-OPERATION_DATE-EXERCISE-IDENTIFIER",
+    "value": "S03351-2023-05-12-2023-10000000000001",
   },
 }
 `;

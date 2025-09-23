@@ -86,7 +86,7 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
     public async findBySiret(siret: Siret) {
         return this.collection
             .find({
-                provider: "chorus", // remove to enable fonjep when application flat is ready
+                provider: "fonjep", // remove to enable fonjep when application flat is ready
                 typeIdEtablissementBeneficiaire: siret.name,
                 idEtablissementBeneficiaire: siret.value,
             })
@@ -97,7 +97,7 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
     public async findBySiren(siren: Siren) {
         return this.collection
             .find({
-                provider: "chorus", // remove to enable fonjep when application flat is ready
+                provider: "fonjep", // remove to enable fonjep when application flat is ready
                 typeIdEntrepriseBeneficiaire: siren.name,
                 idEntrepriseBeneficiaire: siren.value,
             })

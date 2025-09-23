@@ -251,7 +251,7 @@ describe("FonjepEntityAdapter", () => {
 
         describe("extractPositionCode", () => {
             it("returns code poste", () => {
-                const expected = "CODE_POSTE"; // cf FONJEP_PAYMENT_FLAT fixture
+                const expected = "S03351"; // cf FONJEP_PAYMENT_FLAT fixture
                 const actual = FonjepEntityAdapter.extractPositionCode(FONJEP_PAYMENT_FLAT_ENTITY);
                 expect(actual).toEqual(expected);
             });
