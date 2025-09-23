@@ -20,5 +20,5 @@ export type AnyRawGrant = RawApplication | RawPayment;
 
 export type JoinedRawGrant = {
     payments?: RawPayment[];
-    applications?: RawApplication[];
+    application?: RawApplication | null;
 };

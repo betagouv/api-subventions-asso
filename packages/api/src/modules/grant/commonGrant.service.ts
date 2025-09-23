@@ -1,6 +1,6 @@
 import { CommonApplicationDto, ApplicationStatus, CommonGrantDto, CommonPaymentDto } from "dto";
 import providers from "../providers";
-import { AnyRawGrant, JoinedRawGrant, RawApplication } from "./@types/rawGrant";
+import { AnyRawGrant, JoinedRawGrant } from "./@types/rawGrant";
 import GrantProvider from "./@types/GrantProvider";
 
 export class CommonGrantService {
@@ -18,11 +18,6 @@ export class CommonGrantService {
     }
 
     static adapterMethod = "rawToCommon";
-
-    private filterAdaptable(grants: AnyRawGrant[] | undefined) {
-        if (!grants?.length) return [];
-        return grants.filter(grant => grant.provider in this.providerMap);
-    }
 
     private rawToCommonFragment(rawGrant: AnyRawGrant, publishable: boolean) {
         const providerId = rawGrant.provider;
@@ -43,28 +38,17 @@ export class CommonGrantService {
         return result;
     }
 
-    private chooseRawApplication(rawApplications): RawApplication {
-        // here goes business logic about how to choose an application if several share same EJ
-        // cf multi-funding & multi-annual applications
-        // if we want to keep several applications it must be handled earlier in the process:
-        // joinKey must be more precise
-        // if business logic depends on the provider, the logic should be in the provider's service
-        // and here we should group by provider to make those calls
-        return rawApplications[0];
-    }
-
     rawToCommon(joinedRawGrant: JoinedRawGrant, publishable = false): CommonGrantDto | null {
         let application: CommonApplicationDto | undefined = undefined;
-        const rawApplications = [...this.filterAdaptable(joinedRawGrant?.applications)];
-        if (rawApplications.length) {
-            const chosenRawApplication = this.chooseRawApplication(rawApplications);
-            application = this.rawToCommonFragment(chosenRawApplication, publishable);
+        const rawApplication = joinedRawGrant.application;
+        if (rawApplication) {
+            application = this.rawToCommonFragment(rawApplication, publishable);
         }
         if (publishable && application?.statut !== ApplicationStatus.GRANTED) application = undefined;
 
         let payment: CommonPaymentDto | undefined = undefined;
-        const rawPayments = [...this.filterAdaptable(joinedRawGrant?.payments)];
-        if (rawPayments.length) {
+        const rawPayments = joinedRawGrant.payments;
+        if (rawPayments?.length) {
             const payments = rawPayments.map(rawData => this.rawToCommonFragment(rawData, publishable));
             payment = this.aggregatePayments(payments);
         }

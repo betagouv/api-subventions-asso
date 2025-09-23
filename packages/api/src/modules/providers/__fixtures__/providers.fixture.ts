@@ -22,7 +22,7 @@ const mockGrantProvider = provider => ({
     getRawGrants: jest.fn().mockResolvedValue([]),
 });
 
-export const applicationProvidersFixtures: ApplicationProvider<unknown>[] = [
+export const applicationProvidersFixtures: ApplicationProvider[] = [
     mockApplicationProvider({
         meta: {
             id: "provider-application-1",
@@ -41,7 +41,7 @@ export const applicationProvidersFixtures: ApplicationProvider<unknown>[] = [
     }),
 ];
 
-export const paymentProvidersFixtures: PaymentProvider<unknown>[] = [
+export const paymentProvidersFixtures: PaymentProvider[] = [
     mockPaymentProvider({
         meta: {
             id: "provider-payment-1",

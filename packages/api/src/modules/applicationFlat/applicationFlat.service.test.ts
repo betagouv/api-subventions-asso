@@ -164,7 +164,7 @@ describe("ApplicationFlatService", () => {
                 provider: "some",
                 data: APPLICATION_LINK_TO_CHORUS,
                 joinKey: "ej",
-            } as RawApplication<ApplicationFlatEntity>;
+            } as RawApplication;
 
             it("calls adapter", () => {
                 applicationFlatService.rawToApplication(RAW_GRANT);

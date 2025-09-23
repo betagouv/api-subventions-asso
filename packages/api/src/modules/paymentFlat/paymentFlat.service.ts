@@ -83,7 +83,6 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider,
     isGrantProvider = true;
 
     async getRawGrants(identifier: StructureIdentifier): Promise<RawPayment[]> {
-        // return [];
         let dbos: PaymentFlatEntity[] = [];
         if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
             dbos = await paymentFlatPort.findBySiret(identifier.siret);

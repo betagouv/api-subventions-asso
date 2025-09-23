@@ -134,7 +134,7 @@ exports[`ApplicationFlatAdapter toDemandeSubvention adapts properly 1`] = `
     "last_update": 2025-12-12T00:00:00.000Z,
     "provider": "osiris",
     "type": "string",
-    "value": "1000000000019--subv001--2025",
+    "value": "1000000000019--subv001--2023",
   },
 }
 `;

@@ -2,7 +2,7 @@ import * as Sentry from "@sentry/node";
 import { CommonGrantDto, Grant, DemandeSubvention, Payment } from "dto";
 import { RnaOnlyError } from "core";
 import { providersById } from "../providers/providers.helper";
-import { applicationProviders, grantProviders, paymentProviders } from "../providers";
+import { applicationProviders, paymentProviders } from "../providers";
 import ApplicationProvider from "../subventions/@types/ApplicationProvider";
 import PaymentProvider from "../payments/@types/PaymentProvider";
 import paymentService from "../payments/payments.service";
@@ -11,6 +11,8 @@ import { JoinedRawGrant, RawApplication, RawPayment, AnyRawGrant } from "./@type
 import commonGrantService from "./commonGrant.service";
 import { refreshGrantAsyncServices } from "../../shared/initAsyncServices";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
+import applicationFlatService from "../applicationFlat/applicationFlat.service";
+import paymentFlatService from "../paymentFlat/paymentFlat.service";
 
 export class GrantService {
     applicationProvidersById: Record<string, ApplicationProvider>;
@@ -25,38 +27,38 @@ export class GrantService {
     adaptRawGrant(rawGrant: AnyRawGrant) {
         switch (rawGrant.type) {
             case "application": {
-                return this.applicationProvidersById[rawGrant.provider].rawToApplication(rawGrant as RawApplication);
+                return applicationFlatService.rawToApplication(rawGrant as RawApplication);
             }
             case "payment":
-                return this.paymentProvidersById[rawGrant.provider].rawToPayment(rawGrant as RawPayment);
+                return paymentFlatService.rawToPayment(rawGrant as RawPayment);
         }
     }
 
     adaptJoinedRawGrant(joinedRawGrant: JoinedRawGrant) {
         const payments =
             (joinedRawGrant.payments?.map(joined => this.adaptRawGrant(joined)).filter(p => !!p) as Payment[]) || [];
-        const applications = joinedRawGrant.applications
-            ?.map(joined => this.adaptRawGrant(joined))
-            .filter(a => !!a) as DemandeSubvention[];
-        return this.toGrant({ applications, payments });
+        const application = joinedRawGrant.application
+            ? (this.adaptRawGrant(joinedRawGrant.application) as DemandeSubvention)
+            : null;
+        return this.toGrant({ application, payments });
     }
 
     // TODO: #2477 only accept one grant or one application in JoinedRawGrants
     // and only accept lonely grant as it cannot be linked with other payments ?
     // https://github.com/betagouv/api-subventions-asso/issues/2477
-    toGrant(joinedGrant: { applications: DemandeSubvention[]; payments: Payment[] }): Grant | undefined {
+    toGrant(joinedGrant: { application: DemandeSubvention | null; payments: Payment[] }): Grant | undefined {
         if (!joinedGrant) return;
-        const { applications, payments } = joinedGrant;
+        const { application, payments } = joinedGrant;
 
-        const hasApplications = Boolean(applications?.length);
+        const hasApplication = !!application;
         const hasPayments = Boolean(payments?.length);
 
-        if (!hasApplications && !hasPayments) return;
+        if (!hasApplication && !hasPayments) return;
 
         if (hasPayments) {
-            if (!hasApplications) return { application: null, payments };
-            if (hasApplications) return { application: applications[0], payments };
-        } else return { application: applications[0], payments: null };
+            if (!hasApplication) return { application: null, payments };
+            if (hasApplication) return { application: application, payments };
+        } else return { application: application, payments: null };
     }
 
     /**
@@ -132,10 +134,9 @@ export class GrantService {
      */
     async getRawGrants(identifier: StructureIdentifier): Promise<JoinedRawGrant[]> {
         try {
-            const rawGrants = [
-                ...((await Promise.all(grantProviders.map(p => p.getRawGrants(identifier)))).flat() as AnyRawGrant[]),
-            ];
-            return this.joinGrants(rawGrants);
+            const rawApplications = await applicationFlatService.getRawGrants(identifier);
+            const rawPayments = await paymentFlatService.getRawGrants(identifier);
+            return this.joinGrants({ applications: rawApplications, payments: rawPayments });
         } catch (e) {
             // IMPROVE: returning empty array does not inform the user that we could not search for grants
             // it does not mean that the association does not receive any grants
@@ -150,61 +151,40 @@ export class GrantService {
         Sentry.captureMessage(`Duplicate joinKey found for grants or applications :  ${joinKey}`);
     }
 
-    private groupRawGrantsByType(rawGrants: AnyRawGrant[]) {
-        return rawGrants.reduce(
-            (acc, curr) => {
-                switch (curr.type) {
-                    case "application":
-                        acc["applications"].push(curr);
-                        break;
-                    case "payment":
-                        acc["payments"].push(curr);
-                        break;
-                }
-                return acc;
-            },
-            {
-                applications: [] as RawApplication[],
-                payments: [] as RawPayment[],
-            },
-        );
-    }
-
-    private joinGrants(rawGrants: AnyRawGrant[]): JoinedRawGrant[] {
+    private joinGrants(rawGrants: { applications: RawApplication[]; payments: RawPayment[] }): JoinedRawGrant[] {
         const byKey: Record<string, JoinedRawGrant> = {};
+        const lonelyGrants: JoinedRawGrant[] = [];
+
         const newJoinedRawGrant = () => ({
             payments: [],
-            applications: [],
+            application: undefined,
         });
+
         const addKey = key => (byKey[key] = newJoinedRawGrant());
-        const lonelyGrants: JoinedRawGrant[] = [];
 
         const add = prop => (rawGrant: Required<AnyRawGrant>) => {
             if (!byKey[rawGrant.joinKey]) addKey(rawGrant.joinKey);
             byKey[rawGrant.joinKey][prop].push(rawGrant);
         };
-        const addOrSendMessage = type => (rawGrant: Required<RawApplication>) => {
-            if (byKey[rawGrant.joinKey]?.[type]) this.sendDuplicateMessage(rawGrant.joinKey);
-            else add(type)(rawGrant);
-        };
-        const addApplication = addOrSendMessage("applications");
-        const addPayment = add("payments");
-
-        const addLonely = prop => (rawGrant: AnyRawGrant) =>
-            lonelyGrants.push({ ...newJoinedRawGrant(), [prop]: [rawGrant] });
-        const addLonelyApplication = addLonely("applications");
-        const addLonelyPayment = addLonely("payments");
-
-        const joiner = (add, addLonely) => grant => {
-            if (grant.joinKey) add(grant);
-            else addLonely(grant);
-        };
-
-        const grantsByType = this.groupRawGrantsByType(rawGrants);
 
         // order matters
-        grantsByType.applications?.forEach(joiner(addApplication, addLonelyApplication));
-        grantsByType.payments?.forEach(joiner(addPayment, addLonelyPayment));
+        rawGrants.applications?.forEach(application => {
+            if (application.joinKey) {
+                // should not happen with flat rework but we keep it just in case
+                if (byKey[application.joinKey]) {
+                    this.sendDuplicateMessage(application.joinKey);
+                    return;
+                }
+                addKey(application.joinKey);
+                byKey[application.joinKey].application = application;
+            } else lonelyGrants.push({ ...newJoinedRawGrant(), application });
+        });
+
+        rawGrants.payments?.forEach(payment => {
+            if (payment.joinKey)
+                add("payments")(payment as Required<AnyRawGrant>); // joinKey should be defined here
+            else lonelyGrants.push({ ...newJoinedRawGrant(), payments: [payment] });
+        });
 
         return [...Object.values(byKey), ...lonelyGrants];
     }
