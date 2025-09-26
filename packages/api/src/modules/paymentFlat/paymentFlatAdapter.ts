@@ -11,7 +11,7 @@ import FonjepEntityAdapter from "../providers/fonjep/adapters/FonjepEntityAdapte
 import { GenericAdapter } from "../../shared/GenericAdapter";
 
 export default class PaymentFlatAdapter {
-    public static rawToPayment(rawPayment: RawPayment<PaymentFlatEntity>) {
+    public static rawToPayment(rawPayment: RawPayment) {
         return this.toPayment(rawPayment.data);
     }
 
@@ -24,8 +24,7 @@ export default class PaymentFlatAdapter {
         const basePayment = {
             /* Pour l'instant on garde ej pour tous les providers sauf Fonjep qui prend idVersement
             Il faudra convertir tous les versementKey en idVersement quand tout est connecté  */
-            versementKey:
-                entity.provider === "fonjep" ? toPvPaymentFlat(entity.idVersement) : toPvPaymentFlat(entity.ej),
+            versementKey: toPvOrUndefined(entity.idVersement),
             siret: toPvOrUndefined(entity.idEtablissementBeneficiaire.toString()),
             amount: toPvOrUndefined(entity.amount),
             dateOperation: toPvOrUndefined(entity.operationDate),

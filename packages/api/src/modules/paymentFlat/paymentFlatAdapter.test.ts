@@ -5,19 +5,22 @@ import {
     PAYMENT_FROM_PAYMENT_FLAT,
 } from "./__fixtures__/paymentFlatEntity.fixture";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
-import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
 import {
     PAYMENT_FLAT_DBO,
     PAYMENT_FLAT_DBO_WITH_NULLS,
 } from "../../dataProviders/db/paymentFlat/__fixtures__/paymentFlatDbo.fixture";
 import FonjepEntityAdapter from "../providers/fonjep/adapters/FonjepEntityAdapter";
+import { RawPayment } from "../grant/@types/rawGrant";
 
 jest.mock("../providers/fonjep/adapters/FonjepEntityAdapter");
 
 describe("PaymentFlatAdapter", () => {
     describe("rawToPayment", () => {
-        //@ts-expect-error: parameter type
-        const RAW_PAYMENT: RawPayment<PaymentFlatEntity> = { data: CHORUS_PAYMENT_FLAT_ENTITY };
+        const RAW_PAYMENT: RawPayment = {
+            type: "payment",
+            provider: "payment-flat",
+            data: CHORUS_PAYMENT_FLAT_ENTITY,
+        };
 
         const mockToPayment = jest.spyOn(PaymentFlatAdapter, "toPayment");
         beforeEach(() => {

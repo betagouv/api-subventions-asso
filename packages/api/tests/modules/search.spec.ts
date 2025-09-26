@@ -4,7 +4,6 @@ import { createAndGetUserToken } from "../__helpers__/tokenHelper";
 import uniteLegalNamePort from "../../src/dataProviders/db/uniteLegalName/uniteLegalName.port";
 import AssociationNameFixture from "../__fixtures__/association-name.fixture";
 import apiEntrepriseService from "../../src/modules/providers/apiEntreprise/apiEntreprise.service";
-import dauphinService from "../../src/modules/providers/dauphin-gispro/dauphin.service";
 import rechercheEntreprisesPort from "../../src/dataProviders/api/rechercheEntreprises/rechercheEntreprises.port";
 
 const g = global as unknown as { app: App };
@@ -13,7 +12,6 @@ describe("/search", () => {
     beforeAll(() => {
         jest.spyOn(apiEntrepriseService, "getHeadcount").mockImplementation(async () => null);
         jest.spyOn(rechercheEntreprisesPort, "search").mockImplementation(async () => []);
-        jest.spyOn(dauphinService, "getDemandeSubvention").mockImplementation(async () => []);
     });
 
     describe("/associations/{input}", () => {

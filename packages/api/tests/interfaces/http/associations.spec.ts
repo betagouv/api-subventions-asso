@@ -1,27 +1,20 @@
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import osirisRequestPort from "../../../src/dataProviders/db/providers/osiris/osiris.request.port";
-import fonjepSubventionPort from "../../../src/dataProviders/db/providers/fonjep/fonjep.subvention.port.old";
-import {
-    SubventionEntity as FonjepSubventionFixture,
-    PaymentEntity as FonjepPaymentFixture,
-} from "../../modules/providers/fonjep/__fixtures__/entity";
 import request from "supertest";
 import {
     OSIRIS_REQUEST_ENTITY,
     OSIRIS_ACTION_ENTITY,
 } from "../../modules/providers/osiris/__fixtures__/OsirisEntities";
-import { compareByValueBuilder } from "../../../src/shared/helpers/ArrayHelper";
 import { BadRequestError } from "core";
 import associationsService from "../../../src/modules/associations/associations.service";
 import rnaSirenPort from "../../../src/dataProviders/db/rnaSiren/rnaSiren.port";
-import { JoinedRawGrant, RawGrant } from "../../../src/modules/grant/@types/rawGrant";
+import { AnyRawGrant, JoinedRawGrant } from "../../../src/modules/grant/@types/rawGrant";
 import demarchesSimplifieesDataPort from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
 import {
     DATA_ENTITIES as DS_DATA_ENTITIES,
     SCHEMAS as DS_SCHEMAS,
 } from "../../dataProviders/db/__fixtures__/demarchesSimplifiees.fixtures";
 import demarchesSimplifieesSchemaPort from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port";
-import demarchesSimplifieesService from "../../../src/modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
 
 import miscScdlGrantPort from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.port";
 import DEFAULT_ASSOCIATION, {
@@ -35,23 +28,35 @@ import DEFAULT_ASSOCIATION, {
 import dauphinPort from "../../../src/dataProviders/db/providers/dauphin/dauphin.port";
 import { DAUPHIN_GISPRO_DBOS } from "../../dataProviders/db/__fixtures__/dauphinGispro.fixtures";
 import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
-import fonjepPaymentPort from "../../../src/dataProviders/db/providers/fonjep/fonjep.payment.port.old";
 import Rna from "../../../src/identifierObjects/Rna";
 import miscScdlProducersPort from "../../../src/dataProviders/db/providers/scdl/miscScdlProducers.port";
 import Siren from "../../../src/identifierObjects/Siren";
 import statsAssociationsVisitPort from "../../../src/dataProviders/db/stats/statsAssociationsVisit.port";
 import { App } from "supertest/types";
 import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFlat.port";
-import { PAYMENT_FLAT_DBO } from "../../../src/dataProviders/db/paymentFlat/__fixtures__/paymentFlatDbo.fixture";
-import PaymentFlatAdapter from "../../../src/modules/paymentFlat/paymentFlatAdapter";
 import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
 import applicationFlatPort from "../../../src/dataProviders/db/applicationFlat/applicationFlat.port";
-import { ENTITY as APPLICATION_FLAT_ENTITY } from "../../../src/modules/applicationFlat/__fixtures__";
+import {
+    APPLICATION_LINK_TO_CHORUS,
+    APPLICATION_LINK_TO_FONJEP,
+} from "../../../src/modules/applicationFlat/__fixtures__";
 import {
     CHORUS_PAYMENT_FLAT_ENTITY,
     FONJEP_PAYMENT_FLAT_ENTITY,
 } from "../../../src/modules/paymentFlat/__fixtures__/paymentFlatEntity.fixture";
 import { osirisActionPort } from "../../../src/dataProviders/db/providers/osiris";
+import fonjepPostesPort from "../../../src/dataProviders/db/providers/fonjep/fonjep.postes.port";
+import {
+    DISPOSITIF_ENTITIES,
+    POSTE_ENTITIES,
+    TIERS_ENTITIES,
+    TYPE_POSTE_ENTITIES,
+    VERSEMENT_ENTITIES,
+} from "../../../src/modules/providers/fonjep/__fixtures__/fonjepEntities";
+import fonjepDispositifPort from "../../../src/dataProviders/db/providers/fonjep/fonjep.dispositif.port";
+import fonjepTiersPort from "../../../src/dataProviders/db/providers/fonjep/fonjep.tiers.port";
+import fonjepVersementsPort from "../../../src/dataProviders/db/providers/fonjep/fonjep.versements.port";
+import fonjepTypePostePort from "../../../src/dataProviders/db/providers/fonjep/fonjep.typePoste.port";
 
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
 
@@ -61,23 +66,28 @@ const insertData = async () => {
     // data
     await rnaSirenPort.insert({ siren: new Siren(SIREN_STR), rna: new Rna(RNA_STR) });
 
-    // PAYMENTS
-    await fonjepPaymentPort.create(FonjepPaymentFixture);
-    await paymentFlatPort.insertMany([PaymentFlatAdapter.dboToEntity(PAYMENT_FLAT_DBO)]);
+    // FONJEP
+    await fonjepPostesPort.insertMany(POSTE_ENTITIES);
+    await fonjepDispositifPort.insertMany(DISPOSITIF_ENTITIES);
+    await fonjepTiersPort.insertMany(TIERS_ENTITIES);
+    await fonjepVersementsPort.insertMany(VERSEMENT_ENTITIES);
+    await fonjepTypePostePort.insertMany(TYPE_POSTE_ENTITIES);
 
     // APPLICATIONS
     // @ts-expect-error: DBO not fully mocked
     await dauphinPort.upsert(DAUPHIN_GISPRO_DBOS[0]);
     await osirisRequestPort.add(OSIRIS_REQUEST_ENTITY);
     await osirisActionPort.add(OSIRIS_ACTION_ENTITY);
-    await fonjepSubventionPort.create(FonjepSubventionFixture);
     await demarchesSimplifieesSchemaPort.upsert(DS_SCHEMAS[0]);
     await demarchesSimplifieesDataPort.upsert(DS_DATA_ENTITIES[0]);
     // jest integ setup insert producers on app launch and may be defined at this point
     //@ts-expect-error: only for test
     await miscScdlProducersPort.upsert(LOCAL_AUTHORITIES[0].slug, LOCAL_AUTHORITIES[0]);
     await miscScdlGrantPort.createMany(SCDL_GRANT_DBOS);
-    await applicationFlatPort.insertMany([APPLICATION_FLAT_ENTITY]);
+
+    await applicationFlatPort.insertMany([APPLICATION_LINK_TO_CHORUS, APPLICATION_LINK_TO_FONJEP]);
+
+    // PAYMENT FLAT
     await paymentFlatPort.insertMany([CHORUS_PAYMENT_FLAT_ENTITY, FONJEP_PAYMENT_FLAT_ENTITY]);
 };
 
@@ -170,18 +180,6 @@ describe("/association", () => {
             expect(response.statusCode).toBe(200);
 
             const subventions = response.body.subventions;
-            // Sort subventions (OSIRIS first) to avoid race test failure
-            subventions.sort(compareByValueBuilder("siret.provider"));
-
-            // replace date in Démarches Simplifiees
-            // avoid timezone date test failure
-            // use siret.provider to check on provider name by default
-            subventions.forEach(subvention => {
-                if (subvention.siret.provider === demarchesSimplifieesService.meta.name) {
-                    subvention.date_debut.value = expect.any(Date);
-                    subvention.date_fin.value = expect.any(Date);
-                }
-            });
 
             expect(subventions).toMatchSnapshot();
         });
@@ -275,31 +273,16 @@ describe("/association", () => {
     describe("/{identifier}/raw-grants", () => {
         const anonymiseData = (data: JoinedRawGrant[] | null) => {
             if (!data) return null;
-            const expectAnyRawGrantId = (rawGrant: RawGrant) => {
-                // if FullGrant
-                if (rawGrant.data.application && rawGrant.data.payments) {
-                    return {
-                        ...rawGrant,
-
-                        // ...rawGrant.data, _id: expect.any(String) },
-                        data: {
-                            application: { ...rawGrant.data.application, _id: expect.any(String) },
-                            // @ts-expect-error: better type payments
-                            payments: rawGrant.data.payments.map(payment => ({ ...payment, _id: expect.any(String) })),
-                        },
-                    };
-                }
+            const expectAnyRawGrantId = (rawGrant: AnyRawGrant) => {
                 // if Application or Payment
-                else
-                    return {
-                        ...rawGrant,
-                        data: { ...rawGrant.data, _id: expect.any(String) },
-                    };
+                return {
+                    ...rawGrant,
+                    data: { ...rawGrant.data, _id: expect.any(String) },
+                };
             };
 
             const withoutIdGrants = data.map(joinedRawGrant => ({
-                fullGrants: joinedRawGrant.fullGrants?.map(expectAnyRawGrantId),
-                applications: joinedRawGrant.applications?.map(expectAnyRawGrantId),
+                application: joinedRawGrant.application ? expectAnyRawGrantId(joinedRawGrant.application) : null,
                 payments: joinedRawGrant.payments?.map(expectAnyRawGrantId),
             }));
 

@@ -1,19 +1,12 @@
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import { FullGrantProvider } from "../../grant/@types/FullGrantProvider";
 import PaymentProvider from "../../payments/@types/PaymentProvider";
-import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
+import ApplicationProvider from "../../subventions/@types/ApplicationProvider";
 
 const mockApplicationProvider = service => ({
     ...service,
-    isDemandesSubventionsProvider: true,
+    isApplicationProvider: true,
     rawToApplication: jest.fn(),
-    getDemandeSubvention: jest.fn().mockResolvedValue([]),
-});
-
-const mockFullGrantProvider = service => ({
-    ...service,
-    isFullGrantProvider: true,
-    rawToGrant: jest.fn().mockResolvedValue([]),
+    getApplication: jest.fn().mockResolvedValue([]),
 });
 
 const mockPaymentProvider = service => ({
@@ -29,26 +22,7 @@ const mockGrantProvider = provider => ({
     getRawGrants: jest.fn().mockResolvedValue([]),
 });
 
-export const fullGrantProvidersFixtures: FullGrantProvider<unknown>[] = [
-    mockFullGrantProvider({
-        meta: {
-            id: "provider-fullgrant-1",
-            name: "PROVIDER_FULLGRANT_1",
-            description: "API PROVIDER",
-            type: ProviderEnum.api,
-        },
-    }),
-    mockFullGrantProvider({
-        meta: {
-            id: "provider-fullgrant-2",
-            name: "PROVIDER_FULLGRANT_2",
-            description: "RAW PROVIDER",
-            type: ProviderEnum.raw,
-        },
-    }),
-];
-
-export const applicationProvidersFixtures: DemandesSubventionsProvider<unknown>[] = [
+export const applicationProvidersFixtures: ApplicationProvider[] = [
     mockApplicationProvider({
         meta: {
             id: "provider-application-1",
@@ -67,7 +41,7 @@ export const applicationProvidersFixtures: DemandesSubventionsProvider<unknown>[
     }),
 ];
 
-export const paymentProvidersFixtures: PaymentProvider<unknown>[] = [
+export const paymentProvidersFixtures: PaymentProvider[] = [
     mockPaymentProvider({
         meta: {
             id: "provider-payment-1",
@@ -86,8 +60,6 @@ export const paymentProvidersFixtures: PaymentProvider<unknown>[] = [
     }),
 ];
 
-export const grantProvidersFixtures = [
-    ...fullGrantProvidersFixtures,
-    ...applicationProvidersFixtures,
-    ...paymentProvidersFixtures,
-].map(mockGrantProvider);
+export const grantProvidersFixtures = [...applicationProvidersFixtures, ...paymentProvidersFixtures].map(
+    mockGrantProvider,
+);
