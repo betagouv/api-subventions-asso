@@ -20,7 +20,9 @@
                 </ul>
                 <p class="fr-mb-7v">
                     👉 Avant de commencer, nous vous recommandons de consulter
-                    <a href="/guide-preparation">guide de préparation des fichiers</a>
+                    <a href="https://www.notion.so/R-gles-de-format-SCDL-1281788663a380e1a57efdd9b324c1ba">
+                        guide de préparation des fichiers
+                    </a>
                     .
                 </p>
                 <p class="fr-mb-7v">
