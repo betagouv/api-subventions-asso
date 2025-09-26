@@ -76,6 +76,13 @@
                                     Paramètres d'affichage
                                 </button>
                             </li>
+                            {#if env != "prod"}
+                                <li>
+                                    <a class="fr-btn" href="/scdl" title="Déposer vos données SCDL" rel="noopener">
+                                        Déposer vos données SCDL
+                                    </a>
+                                </li>
+                            {/if}
                             {#if $user?.roles?.includes("admin")}
                                 <li>
                                     <a class="fr-btn fr-link--icon-right" href="/admin" title="admin" rel="noopener">
