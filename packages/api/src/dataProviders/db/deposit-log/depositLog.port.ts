@@ -19,7 +19,7 @@ class DepositLogPort extends MongoPort<DepositScdlLogDbo> {
         return DepositLogAdapter.dboToEntity(depositLogDbo);
     }
 
-    async deleteOneByUserId(userId: string) {
+    async deleteByUserId(userId: string) {
         const result = await this.collection.deleteOne({ userId });
         return result.deletedCount > 0;
     }

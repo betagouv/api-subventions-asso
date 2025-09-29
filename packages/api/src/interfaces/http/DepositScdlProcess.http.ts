@@ -1,4 +1,4 @@
-import { Controller, Get, Route, Security, Tags, Response, SuccessResponse, Request } from "tsoa";
+import { Controller, Get, Route, Security, Tags, Response, SuccessResponse, Request, Delete } from "tsoa";
 import { IdentifiedRequest } from "../../@types";
 import depositScdlProcessService from "../../modules/deposit-scdl-process/depositScdlProcess.service";
 import { DepositScdlLogDto } from "dto";
@@ -24,5 +24,18 @@ export class DepositScdlProcessHttp extends Controller {
             return null;
         }
         return DepositLogAdapter.entityToDto(depositScdlLog);
+    }
+
+    /**
+     * @summary Delete the deposit log information for the authenticated user if exists
+     * @returns {null} 204 - Deposit log (already) deleted
+     */
+    @Delete("/")
+    @Response("204", "no deposit log for this user")
+    @Response("401", "Unauthorized")
+    public async deleteDepositState(@Request() req: IdentifiedRequest): Promise<null> {
+        await depositScdlProcessService.deleteDepositState(req.user._id.toString());
+        this.setStatus(204);
+        return null;
     }
 }

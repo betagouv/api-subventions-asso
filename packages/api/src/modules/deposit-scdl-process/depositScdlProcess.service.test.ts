@@ -29,4 +29,25 @@ describe("DepositScdlProcessService", () => {
             expect(mockGetDepositState).toHaveBeenCalledWith(USER_ID);
         });
     });
+
+    describe("deleteDepositState", () => {
+        const mockDeleteDepositState = jest.spyOn(depositScdlProcessService, "deleteDepositState") as jest.SpyInstance<
+            Promise<void>,
+            [string]
+        >;
+
+        it("Should return an empty promise", async () => {
+            mockDeleteDepositState.mockImplementationOnce(() => Promise.resolve());
+
+            expect(await depositScdlProcessService.deleteDepositState(USER_ID)).toBeUndefined();
+        });
+
+        it("should call deleteDepositState with userId", async () => {
+            mockDeleteDepositState.mockImplementationOnce(() => Promise.resolve());
+
+            await depositScdlProcessService.deleteDepositState(USER_ID);
+
+            expect(mockDeleteDepositState).toHaveBeenCalledWith(USER_ID);
+        });
+    });
 });

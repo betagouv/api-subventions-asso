@@ -5,6 +5,11 @@ export class DepositScdlProcessService {
     public async getDepositState(userId: string): Promise<DepositScdlLogEntity | null> {
         return await depositLogPort.findOneByUserId(userId);
     }
+
+    public async deleteDepositState(userId: string): Promise<void> {
+        await depositLogPort.deleteByUserId(userId);
+        return;
+    }
 }
 
 const depositScdlProcessService = new DepositScdlProcessService();

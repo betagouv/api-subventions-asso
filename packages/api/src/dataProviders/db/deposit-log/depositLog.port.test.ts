@@ -40,7 +40,7 @@ describe("Deposit Log Port", () => {
     describe("deleteOneByUserId()", () => {
         it("should call deleteOneByUserId with the correct query", async () => {
             const query = "user123";
-            await depositLogPort.deleteOneByUserId(query);
+            await depositLogPort.deleteByUserId(query);
             expect(mockDeleteOne).toHaveBeenCalledWith({ userId: query });
         });
     });

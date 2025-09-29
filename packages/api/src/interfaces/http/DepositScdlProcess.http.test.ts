@@ -28,4 +28,19 @@ describe("DepositScdlProcessHttp", () => {
             expect(result).toEqual(DEPOSIT_LOG_DTO);
         });
     });
+
+    describe("deleteDepositState", () => {
+        const deleteDepositStateSpy = jest.spyOn(depositScdlProcessService, "deleteDepositState");
+        it("should call service with args", async () => {
+            deleteDepositStateSpy.mockReturnValueOnce(Promise.resolve());
+            await controller.deleteDepositState(REQ);
+            expect(deleteDepositStateSpy).toHaveBeenCalledWith(REQ.user._id.toString());
+        });
+
+        it("should return null after deleting the deposit log", async () => {
+            deleteDepositStateSpy.mockResolvedValueOnce(Promise.resolve());
+            const result = await controller.deleteDepositState(REQ);
+            expect(result).toEqual(null);
+        });
+    });
 });

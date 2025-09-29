@@ -40,11 +40,9 @@ describe("/parcours-depot", () => {
                 userId: userId,
             });
         });
-    }); // todo : voir archi où sont insérées les datas ? mock ou pas ? fonctionnement des snapshot
 
-    describe("GET /", () => {
         it("should return 204 when no deposit object exists", async () => {
-            await depositLogPort.deleteOneByUserId(userId);
+            await depositLogPort.deleteByUserId(userId);
             const response = await request(g.app)
                 .get(`/parcours-depot`)
                 .set("x-access-token", token)
@@ -52,6 +50,41 @@ describe("/parcours-depot", () => {
 
             expect(response.statusCode).toBe(204);
             expect(response.body).toEqual({});
+        });
+    }); // todo : voir archi où sont insérées les datas ? mock ou pas ? fonctionnement des snapshot
+
+    describe("DELETE /", () => {
+        it("should delete deposit log and return 204", async () => {
+            const existingLog = await depositLogPort.findOneByUserId(userId);
+            expect(existingLog).not.toBeNull();
+
+            const response = await request(g.app)
+                .delete(`/parcours-depot`)
+                .set("x-access-token", token)
+                .set("Accept", "application/json");
+
+            expect(response.statusCode).toBe(204);
+            expect(response.body).toEqual({});
+
+            const deletedLog = await depositLogPort.findOneByUserId(userId);
+            expect(deletedLog).toBeNull();
+        });
+
+        it("should return 204 if deposit log does not exist", async () => {
+            await depositLogPort.deleteByUserId(userId);
+            const existingLog = await depositLogPort.findOneByUserId(userId);
+            expect(existingLog).toBeNull();
+
+            const response = await request(g.app)
+                .delete("/parcours-depot")
+                .set("x-access-token", token)
+                .set("Accept", "application/json");
+
+            expect(response.status).toBe(204);
+            expect(response.body).toEqual({});
+
+            const deletedLog = await depositLogPort.findOneByUserId(userId);
+            expect(deletedLog).toBeNull();
         });
     });
 });
