@@ -145,14 +145,17 @@ export default class FonjepEntityAdapter {
     }
 
     // this keeps the same structure as other providers payment flat uniqueId and add N/A for the missing fields
-    private static buildPaymentFlatUniqueId(partialPaymentFlat: Omit<FonjepPaymentFlatEntity, "uniqueId">) {
+    private static buildPaymentFlatUniqueId(
+        partialPaymentFlat: Omit<FonjepPaymentFlatEntity, "uniqueId">,
+        beginningDate: Date,
+    ) {
         const keys = [
             "fonjep",
             partialPaymentFlat.idVersement,
             partialPaymentFlat.programNumber,
             GenericAdapter.NOT_APPLICABLE_VALUE, // action code
             GenericAdapter.NOT_APPLICABLE_VALUE, // activity code
-            getShortISODate(partialPaymentFlat.operationDate),
+            getShortISODate(beginningDate), // was operationDate to be ISO with CHORUS but it can be identical for every payment of the same year. See positionCode S05543
             GenericAdapter.NOT_APPLICABLE_VALUE, // attachement comptable
             GenericAdapter.NOT_APPLICABLE_VALUE, // centre financier code
         ];
@@ -230,7 +233,7 @@ export default class FonjepEntityAdapter {
 
             // TODO: Another example where something nullable (Tier.FinanceurPrincipalCode) is required to build a unique ID
             // TODO: make FonjepTierEntity.financeurPrincipalCode mandatory and make it a number
-            const uniqueId = this.buildPaymentFlatUniqueId(partialPaymentFlat);
+            const uniqueId = this.buildPaymentFlatUniqueId(partialPaymentFlat, payment.periodeDebut);
 
             return { uniqueId, ...partialPaymentFlat };
         }

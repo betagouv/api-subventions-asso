@@ -70,8 +70,8 @@ export const VERSEMENT_DTO_WITH_DATE = {
 
 export const VERSEMENT_DTO_WITH_NULL: FonjepVersementDtoWithExcelDate = {
     PosteCode: "Code",
-    PeriodeDebut: null,
-    PeriodeFin: null,
+    PeriodeDebut: 46896,
+    PeriodeFin: 46835,
     DateVersement: null,
     MontantAPayer: null,
     MontantPaye: null,

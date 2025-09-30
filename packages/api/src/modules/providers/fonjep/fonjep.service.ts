@@ -135,6 +135,14 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
         return Boolean(payment.posteCode) && this.isPaymentPayed(payment);
     }
 
+    // only used for test to generate payment-flat on demand
+    async getPaymentFlatCollections() {
+        const thirdParties = await fonjepTiersPort.findAll();
+        const positions = await fonjepPostesPort.findAll();
+        const payments = await fonjepVersementsPort.findAll();
+        return { thirdParties, positions, payments };
+    }
+
     // only those 3 FONJEP collections are used for payment part
     async createPaymentFlatEntitiesFromCollections(collections: {
         thirdParties: FonjepTiersEntity[];
@@ -147,12 +155,15 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
         );
 
         const getTier = (code: string) => collections.thirdParties.find(tier => tier.code === code);
-        const getPoste = (codeAsso: string) => collections.positions.find(poste => poste.code === codeAsso);
 
         const dataBretagneData = await dataBretagneService.getAllDataRecords();
 
         const fonjepFlatPayments = validPayments.reduce((acc, payment) => {
-            const position = getPoste(payment.posteCode);
+            const getPosition = (positionCode: string) =>
+                collections.positions.find(
+                    position => position.code === positionCode && position.annee === payment.periodeDebut.getFullYear(),
+                ); // added periodDebut check because there is many position with the same code. To choose the right one we need to match the payment year too
+            const position = getPosition(payment.posteCode);
             // cannot find thirdParty without associationBeneficiaireCode
             // it seems to be always defined in extract from 2025-03-31 => update the type ?
             if (!position || !position.associationBeneficiaireCode) return acc;

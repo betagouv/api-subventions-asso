@@ -62,7 +62,7 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
 
     // used in test
     public async findAll() {
-        return (await this.collection.find({})).toArray();
+        return (await this.collection.find({})).map(dbo => PaymentFlatAdapter.dboToEntity(dbo)).toArray();
     }
 
     public cursorFind(query: DefaultObject<unknown> = {}, projection: DefaultObject<unknown> = {}) {
