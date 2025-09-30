@@ -275,10 +275,12 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
                 },
             );
 
-            const scheme = schemes.find(scheme => scheme.financeurCode === position.financeurPrincipalCode);
-            if (!allocator || !beneficiary || !instructor || !scheme) {
+            const scheme = schemes.find(scheme => scheme.financeurCode == position.financeurPrincipalCode);
+
+            // only beneficiary is mandatory to create an application flat
+            if (!beneficiary) {
                 errors.push(
-                    `Could not find all required data to build ApplicationFlat for FONJEP position ${position.code}`,
+                    `Could not find informations on beneficiary to build ApplicationFlat for FONJEP position ${position.code}`,
                 );
             } else {
                 const partialApplication = FonjepEntityAdapter.toFonjepApplicationFlat({
