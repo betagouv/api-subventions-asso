@@ -11,7 +11,7 @@ export class RnaSirenService {
     async find(id: string | Rna | Siren, offline = false): Promise<RnaSirenEntity[] | null> {
         const rnaSiren = this.extractRnaOrSirenFromIdentifier(id);
 
-        const entities = rnaSiren ? await rnaSirenPort.find(rnaSiren) : null;
+        const entities = await rnaSirenPort.find(rnaSiren);
 
         if (entities || offline) return entities;
 
@@ -48,12 +48,12 @@ export class RnaSirenService {
     extractRnaOrSirenFromIdentifier(id: string | Rna | Siren): Rna | Siren {
         if (id instanceof Rna || id instanceof Siren) return id;
         if (Rna.isRna(id)) {
-            return id as unknown as Rna;
+            return new Rna(id);
         }
         if (Siren.isSiren(id)) {
-            return id as unknown as Siren;
+            return new Siren(id);
         }
-        return Siret.getSiren(id) as unknown as Siren;
+        return new Siren(Siret.getSiren(id));
     }
 }
 
