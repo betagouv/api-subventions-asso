@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.72.4](https://github.com/betagouv/api-subventions-asso/compare/v0.72.3...v0.72.4) (2025-10-01)
+
+### Bug Fixes
+
+- **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) payment-flat wrong index on identifier ([#3662](https://github.com/betagouv/api-subventions-asso/issues/3662)) ([589b742](https://github.com/betagouv/api-subventions-asso/commit/589b742f411454f78fefc030b6ed0dbc3685f158))
+
 ## [0.72.3](https://github.com/betagouv/api-subventions-asso/compare/v0.72.2...v0.72.3) (2025-09-20)
 
 ### Bug Fixes
