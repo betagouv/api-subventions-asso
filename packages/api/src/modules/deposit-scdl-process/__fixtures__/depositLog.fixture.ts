@@ -1,5 +1,5 @@
 import DepositScdlLogEntity from "../depositScdlLog.entity";
-import { DepositScdlLogDto } from "dto";
+import { CreateDepositScdlLogDto, DepositScdlLogDto } from "dto";
 import DepositScdlLogDbo from "../../../dataProviders/db/deposit-log/DepositScdlLogDbo";
 import { ObjectId } from "mongodb";
 
@@ -24,9 +24,11 @@ export const DEPOSIT_LOG_DBO: DepositScdlLogDbo = {
 };
 
 export const DEPOSIT_LOG_DTO: DepositScdlLogDto = {
-    userId: "68d6ab9b48ce4a950f7e96df",
-    step: 1,
     overwriteAlert: true,
     grantOrgSiret: "12345678901234",
     permissionAlert: false,
+};
+
+export const CREATE_DEPOSIT_LOG_DTO: CreateDepositScdlLogDto = {
+    overwriteAlert: true,
 };

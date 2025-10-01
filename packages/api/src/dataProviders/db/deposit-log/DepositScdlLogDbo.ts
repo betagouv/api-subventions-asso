@@ -5,7 +5,7 @@ export default interface DepositScdlLogDbo {
     userId: string;
     updateDate: Date;
     step: number;
-    overwriteAlert?: boolean;
+    overwriteAlert: boolean;
+    permissionAlert: boolean;
     grantOrgSiret?: string;
-    permissionAlert?: boolean;
 }

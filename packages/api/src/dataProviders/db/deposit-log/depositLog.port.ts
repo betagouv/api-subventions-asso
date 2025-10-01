@@ -16,6 +16,7 @@ class DepositLogPort extends MongoPort<DepositScdlLogDbo> {
 
     async findOneByUserId(userId: string): Promise<DepositScdlLogEntity | null> {
         const depositLogDbo = await this.collection.findOne({ userId });
+        if (!depositLogDbo) return null;
         return DepositLogAdapter.dboToEntity(depositLogDbo);
     }
 

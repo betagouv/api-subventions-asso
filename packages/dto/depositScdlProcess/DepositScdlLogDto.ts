@@ -1,8 +1,6 @@
-export interface DepositScdlLogDto {
-    // todo : props en francais
-    userId: string;
-    step: number;
-    overwriteAlert?: boolean;
+import { CreateDepositScdlLogDto } from "./CreateDepositScdlLogDto";
+
+export interface DepositScdlLogDto extends CreateDepositScdlLogDto {
     grantOrgSiret?: string;
-    permissionAlert?: boolean;
+    permissionAlert: boolean;
 }

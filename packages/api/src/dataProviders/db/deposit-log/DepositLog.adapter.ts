@@ -1,22 +1,18 @@
 import DepositScdlLogDbo from "./DepositScdlLogDbo";
 import { ObjectId } from "mongodb";
 import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/depositScdlLog.entity";
-import { DepositScdlLogDto } from "dto";
+import { CreateDepositScdlLogDto, DepositScdlLogDto } from "dto";
 
 export default class DepositLogAdapter {
-    static dboToEntity(dbo: DepositScdlLogDbo | null): DepositScdlLogEntity | null {
-        if (!dbo) {
-            return null;
-        }
-
+    static dboToEntity(dbo: DepositScdlLogDbo): DepositScdlLogEntity {
         return new DepositScdlLogEntity(
             dbo.userId,
             dbo.step,
             dbo.updateDate,
-            dbo._id.toString(),
             dbo.overwriteAlert,
-            dbo.grantOrgSiret,
             dbo.permissionAlert,
+            dbo._id.toString(),
+            dbo.grantOrgSiret,
         );
     }
 
@@ -33,18 +29,39 @@ export default class DepositLogAdapter {
         };
     }
 
-    static entityToDto(entity: DepositScdlLogEntity | null): DepositScdlLogDto | null {
+    static entityToDepositScdlLogDto(entity: DepositScdlLogEntity): DepositScdlLogDto {
         // todo: deplacer dans un dtoAdapter ?
-        if (!entity) {
-            return null;
-        }
-
         return {
-            userId: entity.userId,
-            step: entity.step,
             overwriteAlert: entity.overwriteAlert,
             grantOrgSiret: entity.grantOrgSiret,
             permissionAlert: entity.permissionAlert,
         };
+    }
+
+    static entityToCreateDepositScdlLogDto(entity: DepositScdlLogEntity): CreateDepositScdlLogDto {
+        // todo: deplacer dans un dtoAdapter ?
+        return {
+            overwriteAlert: entity.overwriteAlert,
+        };
+    }
+
+    static depositScdlLogDtoToEntity(dto: DepositScdlLogDto, userId: string, step: number): DepositScdlLogEntity {
+        return new DepositScdlLogEntity(
+            userId,
+            step,
+            undefined,
+            dto.overwriteAlert,
+            dto.permissionAlert,
+            undefined,
+            dto.grantOrgSiret,
+        );
+    }
+
+    static createDepositScdlLogDtoToEntity(
+        dto: CreateDepositScdlLogDto,
+        userId: string,
+        step: number,
+    ): DepositScdlLogEntity {
+        return new DepositScdlLogEntity(userId, step, undefined, dto.overwriteAlert, false);
     }
 }

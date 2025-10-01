@@ -35,6 +35,13 @@ describe("Deposit Log Port", () => {
             await depositLogPort.findOneByUserId(query);
             expect(mockFindOne).toHaveBeenCalledWith({ userId: query });
         });
+
+        it("should return null when no deposit is found", async () => {
+            mockFindOne.mockResolvedValueOnce(null);
+            const query = "user123";
+            const result = await depositLogPort.findOneByUserId(query);
+            expect(result).toBeNull();
+        });
     });
 
     describe("deleteOneByUserId()", () => {
