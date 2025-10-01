@@ -13,9 +13,18 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
     collectionName = "payments-flat";
 
     public async createIndexes(): Promise<void> {
-        await this.collection.createIndex({ siret: 1 });
-        await this.collection.createIndex({ dateOperation: 1 });
-        await this.collection.createIndex({ uniqueId: 1 }, { unique: true });
+        // use TS to avoid typo in index names
+        const uniqueIdIndex: keyof PaymentFlatDbo = "uniqueId";
+        const idEstabIndex: keyof PaymentFlatDbo = "idEtablissementBeneficiaire";
+        const typeIdEstabIndex: keyof PaymentFlatDbo = "typeIdEtablissementBeneficiaire";
+        const idCompanyIndex: keyof PaymentFlatDbo = "idEntrepriseBeneficiaire";
+        const typeIdCompanyIndex: keyof PaymentFlatDbo = "typeIdEntrepriseBeneficiaire";
+        const budgetaryYear: keyof PaymentFlatDbo = "exerciceBudgetaire";
+
+        await this.collection.createIndex({ [uniqueIdIndex]: 1 }, { unique: true });
+        await this.collection.createIndex({ [idEstabIndex]: 1, [typeIdEstabIndex]: 1 });
+        await this.collection.createIndex({ [idCompanyIndex]: 1, [typeIdCompanyIndex]: 1 });
+        await this.collection.createIndex({ [budgetaryYear]: 1 });
     }
 
     public async hasBeenInitialized() {
@@ -78,7 +87,7 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
         return this.collection
             .find({
                 provider: "chorus", // remove to enable fonjep when application flat is ready
-                typeIdEtablissementBeneficiaire: "siret",
+                typeIdEtablissementBeneficiaire: siret.name,
                 idEtablissementBeneficiaire: siret.value,
             })
             .map(PaymentFlatAdapter.dboToEntity)
@@ -89,22 +98,8 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
         return this.collection
             .find({
                 provider: "chorus", // remove to enable fonjep when application flat is ready
-                $expr: {
-                    $or: [
-                        {
-                            $and: [
-                                { $eq: ["typeIdEtablissementBeneficiaire", "siret"] },
-                                { $eq: ["idEntrepriseBeneficiaire", new RegExp(`^${siren.value}\\d{5}`)] },
-                            ],
-                        },
-                        {
-                            $and: [
-                                { $eq: ["$typeIdEntrepriseBeneficiaire", "siren"] },
-                                { $eq: ["$idEntrepriseBeneficiaire", siren.value] },
-                            ],
-                        },
-                    ],
-                },
+                typeIdEntrepriseBeneficiaire: siren.name,
+                idEntrepriseBeneficiaire: siren.value,
             })
             .map(PaymentFlatAdapter.dboToEntity)
             .toArray();
