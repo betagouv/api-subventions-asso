@@ -166,6 +166,12 @@ exports[`PaymentFlatAdapter toPayment should return ChorusPayment 1`] = `
     "type": "string",
     "value": "0001821732",
   },
+  "exerciceBudgetaire": {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "chorus",
+    "type": "number",
+    "value": 2023,
+  },
   "libelleProgramme": {
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "chorus",
@@ -207,6 +213,12 @@ exports[`PaymentFlatAdapter toPayment should return FonjepPayment 1`] = `
     "provider": "fonjep",
     "type": "object",
     "value": 2023-07-12T00:00:00.000Z,
+  },
+  "exerciceBudgetaire": {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "fonjep",
+    "type": "number",
+    "value": 2023,
   },
   "libelleProgramme": {
     "last_update": 2023-07-12T00:00:00.000Z,
@@ -272,6 +284,12 @@ exports[`PaymentFlatAdapter toPayment should return partial ChorusPayment 1`] = 
     "provider": "chorus",
     "type": "string",
     "value": "0001821732",
+  },
+  "exerciceBudgetaire": {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "chorus",
+    "type": "number",
+    "value": 2023,
   },
   "libelleProgramme": undefined,
   "programme": {

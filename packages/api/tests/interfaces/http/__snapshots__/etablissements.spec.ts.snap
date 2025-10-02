@@ -2,6 +2,7 @@
 
 exports[`/etablissement /siret/grants returns grants 1`] = `
 {
+  "count": 2,
   "subventions": [
     {
       "application": {
@@ -177,6 +178,12 @@ exports[`/etablissement /siret/grants returns grants 1`] = `
             "provider": "chorus",
             "type": "string",
             "value": "0001821732",
+          },
+          "exerciceBudgetaire": {
+            "last_update": "2023-07-12T00:00:00.000Z",
+            "provider": "chorus",
+            "type": "number",
+            "value": 2023,
           },
           "libelleProgramme": {
             "last_update": "2023-07-12T00:00:00.000Z",
@@ -362,6 +369,12 @@ exports[`/etablissement /siret/grants returns grants 1`] = `
             "type": "object",
             "value": "2023-07-12T00:00:00.000Z",
           },
+          "exerciceBudgetaire": {
+            "last_update": "2023-07-12T00:00:00.000Z",
+            "provider": "fonjep",
+            "type": "number",
+            "value": 2023,
+          },
           "libelleProgramme": {
             "last_update": "2023-07-12T00:00:00.000Z",
             "provider": "fonjep",
@@ -405,6 +418,12 @@ exports[`/etablissement /siret/grants returns grants 1`] = `
             "provider": "fonjep",
             "type": "object",
             "value": "2023-11-12T00:00:00.000Z",
+          },
+          "exerciceBudgetaire": {
+            "last_update": "2023-11-12T00:00:00.000Z",
+            "provider": "fonjep",
+            "type": "number",
+            "value": 2023,
           },
           "libelleProgramme": {
             "last_update": "2023-11-12T00:00:00.000Z",

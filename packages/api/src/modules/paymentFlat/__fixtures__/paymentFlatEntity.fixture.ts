@@ -137,6 +137,7 @@ const buildProviderValue = value => ({
 });
 
 export const PAYMENT_FROM_PAYMENT_FLAT: Payment = {
+    exerciceBudgetaire: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.exerciceBudgetaire),
     ej: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.ej),
     versementKey: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.ej),
     siret: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.idEtablissementBeneficiaire),
