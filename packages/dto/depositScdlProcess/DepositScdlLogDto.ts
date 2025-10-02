@@ -1,6 +1,5 @@
-import { CreateDepositScdlLogDto } from "./CreateDepositScdlLogDto";
-
-export interface DepositScdlLogDto extends CreateDepositScdlLogDto {
+export interface DepositScdlLogDto {
+    overwriteAlert?: boolean;
     grantOrgSiret?: string;
-    permissionAlert: boolean;
+    permissionAlert?: boolean;
 }

@@ -1,11 +1,11 @@
 import { ObjectId } from "mongodb";
 
 export default interface DepositScdlLogDbo {
-    _id: ObjectId;
-    userId: string;
+    _id?: ObjectId;
     updateDate: Date;
+    userId: string;
     step: number;
-    overwriteAlert: boolean;
-    permissionAlert: boolean;
+    overwriteAlert?: boolean;
+    permissionAlert?: boolean;
     grantOrgSiret?: string;
 }

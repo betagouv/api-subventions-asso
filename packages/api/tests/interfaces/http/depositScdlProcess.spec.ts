@@ -7,29 +7,20 @@ import DepositScdlLogEntity from "../../../src/modules/deposit-scdl-process/depo
 import {
     CREATE_DEPOSIT_LOG_DTO,
     DEPOSIT_LOG_DTO,
+    DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
 } from "../../../src/modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
+import { DepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
 
 const g = global as unknown as { app: App };
 
-let token;
-let userId;
-
-const insertData = async () => {
-    token = await createAndGetUserToken();
-    userId = (await getDefaultUser())?._id.toString();
-
-    await depositLogPort.insertOne(
-        new DepositScdlLogEntity(userId, 1, undefined, false, false, undefined, "12345678901234"),
-    );
-};
-
 describe("/parcours-depot", () => {
-    beforeEach(async () => {
-        await insertData();
-    });
-
     describe("GET /", () => {
         it("should return 200 with deposit object", async () => {
+            const token = await createAndGetUserToken();
+            const userId = (await getDefaultUser())!._id.toString();
+
+            await depositLogPort.insertOne(new DepositScdlLogEntity(userId, 1, undefined, true));
+
             const response = await request(g.app)
                 .get(`/parcours-depot`)
                 .set("x-access-token", token)
@@ -37,17 +28,15 @@ describe("/parcours-depot", () => {
 
             expect(response.statusCode).toBe(200);
             expect(response.body).toEqual({
-                grantOrgSiret: "12345678901234",
-                overwriteAlert: false,
-                permissionAlert: false,
+                overwriteAlert: true,
+                step: 1,
             });
         });
 
         it("should return 204 when no deposit object exists", async () => {
-            await depositLogPort.deleteByUserId(userId);
             const response = await request(g.app)
                 .get(`/parcours-depot`)
-                .set("x-access-token", token)
+                .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(204);
@@ -57,8 +46,10 @@ describe("/parcours-depot", () => {
 
     describe("DELETE /", () => {
         it("should delete deposit log and return 204", async () => {
-            const existingLog = await depositLogPort.findOneByUserId(userId);
-            expect(existingLog).not.toBeNull();
+            const token = await createAndGetUserToken();
+            const userId = (await getDefaultUser())!._id.toString();
+
+            await depositLogPort.insertOne(new DepositScdlLogEntity(userId, 1, undefined, true));
 
             const response = await request(g.app)
                 .delete(`/parcours-depot`)
@@ -73,7 +64,8 @@ describe("/parcours-depot", () => {
         });
 
         it("should return 204 if deposit log does not exist", async () => {
-            await depositLogPort.deleteByUserId(userId);
+            const token = await createAndGetUserToken();
+            const userId = (await getDefaultUser())!._id.toString();
             const existingLog = await depositLogPort.findOneByUserId(userId);
             expect(existingLog).toBeNull();
 
@@ -92,11 +84,10 @@ describe("/parcours-depot", () => {
 
     describe("POST /", () => {
         it("should create deposit log and return 201", async () => {
-            await depositLogPort.deleteByUserId(userId);
             const response = await request(g.app)
                 .post(`/parcours-depot`)
                 .send(CREATE_DEPOSIT_LOG_DTO)
-                .set("x-access-token", token)
+                .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(201);
@@ -104,8 +95,10 @@ describe("/parcours-depot", () => {
         });
 
         it("should return 409 when user already has deposit log", async () => {
-            const existingLog = await depositLogPort.findOneByUserId(userId);
-            expect(existingLog).not.toBeNull();
+            const token = await createAndGetUserToken();
+            const userId = (await getDefaultUser())!._id.toString();
+
+            await depositLogPort.insertOne(new DepositScdlLogEntity(userId, 1, undefined, true));
 
             const response = await request(g.app)
                 .post(`/parcours-depot`)
@@ -120,12 +113,10 @@ describe("/parcours-depot", () => {
         });
 
         it("should return bad request when wrong dto", async () => {
-            await depositLogPort.deleteByUserId(userId);
-
             const response = await request(g.app)
                 .post(`/parcours-depot`)
                 .send(DEPOSIT_LOG_DTO)
-                .set("x-access-token", token)
+                .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(400);
@@ -135,6 +126,74 @@ describe("/parcours-depot", () => {
                     message: expect.any(String),
                 }),
             );
+        });
+    });
+
+    describe("PATCH /step/{step}", () => {
+        it("should update deposit log and return 200", async () => {
+            const token = await createAndGetUserToken();
+            const userId = (await getDefaultUser())!._id.toString();
+
+            await depositLogPort.insertOne(new DepositScdlLogEntity(userId, 1, undefined, true));
+
+            const response = await request(g.app)
+                .patch(`/parcours-depot/step/2`)
+                .send(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2)
+                .set("x-access-token", token)
+                .set("Accept", "application/json");
+
+            const expected: DepositScdlLogResponseDto = {
+                grantOrgSiret: "12345678901234",
+                overwriteAlert: true,
+                step: 2,
+            };
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toEqual(expected);
+        });
+
+        it("should return conflict error when update inconsistent", async () => {
+            const token = await createAndGetUserToken();
+            const userId = (await getDefaultUser())!._id.toString();
+
+            const depositLogEntity = new DepositScdlLogEntity(userId, 2, undefined, true, "12345678901234");
+            await depositLogPort.insertOne(depositLogEntity);
+
+            const inconsistentDto: DepositScdlLogDto = {
+                overwriteAlert: true,
+            };
+
+            const response = await request(g.app)
+                .patch(`/parcours-depot/step/2`)
+                .send(inconsistentDto)
+                .set("x-access-token", token)
+                .set("Accept", "application/json");
+
+            expect(response.statusCode).toBe(409);
+
+            const existingLog = await depositLogPort.findOneByUserId(userId);
+            expect(existingLog).toEqual({
+                userId: depositLogEntity.userId,
+                step: depositLogEntity.step,
+                updateDate: existingLog?.updateDate,
+                grantOrgSiret: depositLogEntity.grantOrgSiret,
+                overwriteAlert: depositLogEntity.overwriteAlert,
+            });
+        });
+
+        it("should return bad request error when step don't exists", async () => {
+            const token = await createAndGetUserToken();
+            const userId = (await getDefaultUser())!._id.toString();
+
+            await depositLogPort.insertOne(new DepositScdlLogEntity(userId, 1, undefined, true));
+
+            const response = await request(g.app)
+                .patch(`/parcours-depot/step/9`)
+                .send(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2)
+                .set("x-access-token", token)
+                .set("Accept", "application/json");
+
+            expect(response.statusCode).toBe(400);
         });
     });
 });

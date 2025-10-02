@@ -1,3 +1,3 @@
 export interface CreateDepositScdlLogDto {
-    overwriteAlert: boolean;
+    overwriteAlert?: boolean;
 }

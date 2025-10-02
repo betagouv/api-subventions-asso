@@ -1,53 +1,142 @@
-import { DEPOSIT_LOG_DTO } from "./__fixtures__/depositLog.fixture";
+import {
+    CREATE_DEPOSIT_LOG_DTO,
+    DEPOSIT_LOG_ENTITY,
+    DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
+} from "./__fixtures__/depositLog.fixture";
 import depositScdlProcessService from "./depositScdlProcess.service";
-import { DepositScdlLogDto } from "dto";
+import DepositScdlLogEntity from "./depositScdlLog.entity";
+import { ConflictError, NotFoundError } from "core";
+import DepositLogAdapter from "../../dataProviders/db/deposit-log/DepositLog.adapter";
+import depositLogPort from "../../dataProviders/db/deposit-log/depositLog.port";
+
+jest.mock("./check/DepositScdlProcess.check.service");
+jest.mock("../../dataProviders/db/deposit-log/depositLog.port");
+jest.mock("../../dataProviders/db/deposit-log/DepositLog.adapter");
 
 describe("DepositScdlProcessService", () => {
     const USER_ID = "userId";
 
-    describe("getDepositState", () => {
-        const mockGetDepositState = jest.spyOn(depositScdlProcessService, "getDepositLog") as jest.SpyInstance<
-            Promise<DepositScdlLogDto | null>,
+    describe("getDepositLog", () => {
+        const mockGetDepositLog = jest.spyOn(depositScdlProcessService, "getDepositLog") as jest.SpyInstance<
+            Promise<DepositScdlLogEntity | null>,
             [string]
         >;
 
-        it("Should return a depositState", async () => {
-            const expected = DEPOSIT_LOG_DTO;
+        it("Should return a DepositLog", async () => {
+            const expected = DEPOSIT_LOG_ENTITY;
 
-            mockGetDepositState.mockImplementationOnce(() => Promise.resolve(expected));
+            mockGetDepositLog.mockImplementationOnce(() => Promise.resolve(expected));
 
             const actual = await depositScdlProcessService.getDepositLog(USER_ID);
 
             expect(expected).toEqual(actual);
         });
 
-        it("should call getDepositState with userId", async () => {
-            mockGetDepositState.mockImplementationOnce(() => Promise.resolve(null));
+        it("should call getDepositLog with userId", async () => {
+            mockGetDepositLog.mockImplementationOnce(() => Promise.resolve(null));
 
             await depositScdlProcessService.getDepositLog(USER_ID);
 
-            expect(mockGetDepositState).toHaveBeenCalledWith(USER_ID);
+            expect(mockGetDepositLog).toHaveBeenCalledWith(USER_ID);
         });
     });
 
-    describe("deleteDepositState", () => {
-        const mockDeleteDepositState = jest.spyOn(depositScdlProcessService, "deleteDepositLog") as jest.SpyInstance<
+    describe("deleteDepositLog", () => {
+        const mockDeleteDepositLog = jest.spyOn(depositScdlProcessService, "deleteDepositLog") as jest.SpyInstance<
             Promise<void>,
             [string]
         >;
 
         it("Should return an empty promise", async () => {
-            mockDeleteDepositState.mockImplementationOnce(() => Promise.resolve());
+            mockDeleteDepositLog.mockImplementationOnce(() => Promise.resolve());
 
             expect(await depositScdlProcessService.deleteDepositLog(USER_ID)).toBeUndefined();
         });
 
-        it("should call deleteDepositState with userId", async () => {
-            mockDeleteDepositState.mockImplementationOnce(() => Promise.resolve());
+        it("should call deleteDepositLog with userId", async () => {
+            mockDeleteDepositLog.mockImplementationOnce(() => Promise.resolve());
 
             await depositScdlProcessService.deleteDepositLog(USER_ID);
 
-            expect(mockDeleteDepositState).toHaveBeenCalledWith(USER_ID);
+            expect(mockDeleteDepositLog).toHaveBeenCalledWith(USER_ID);
+        });
+    });
+
+    describe("createDepositLog", () => {
+        const mockGetDepositLog = jest.spyOn(depositScdlProcessService, "getDepositLog") as jest.SpyInstance<
+            Promise<DepositScdlLogEntity | null>,
+            [string]
+        >;
+
+        it("Should return a DepositLog", async () => {
+            mockGetDepositLog.mockResolvedValueOnce(null);
+
+            const expected = {
+                userId: USER_ID,
+                step: 1,
+                overwriteAlert: true,
+                updateDate: new Date(),
+            };
+
+            jest.mocked(DepositLogAdapter.createDepositScdlLogDtoToEntity).mockReturnValue(expected);
+
+            const actual = await depositScdlProcessService.createDepositLog(CREATE_DEPOSIT_LOG_DTO, USER_ID);
+
+            expect(actual).toMatchObject(expected);
+        });
+
+        it("Should throw ConflictError when deposit log already exists", async () => {
+            mockGetDepositLog.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY);
+
+            await expect(
+                depositScdlProcessService.createDepositLog(CREATE_DEPOSIT_LOG_DTO, USER_ID),
+            ).rejects.toBeInstanceOf(ConflictError);
+        });
+    });
+
+    describe("updateDepositLog", () => {
+        const mockGetDepositLog = jest.spyOn(depositScdlProcessService, "getDepositLog") as jest.SpyInstance<
+            Promise<DepositScdlLogEntity | null>,
+            [string]
+        >;
+
+        afterEach(() => {
+            mockGetDepositLog.mockRestore();
+        });
+
+        it("Should return a DepositLog", async () => {
+            mockGetDepositLog.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY);
+            const step = 3;
+            const expected = {
+                userId: USER_ID,
+                step: step,
+                overwriteAlert: true,
+                updateDate: new Date(),
+            };
+
+            const mockUpdatePartial = jest.spyOn(depositLogPort, "updatePartial").mockResolvedValue(expected);
+
+            const actual = await depositScdlProcessService.updateDepositLog(
+                step,
+                DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
+                USER_ID,
+            );
+
+            expect(mockUpdatePartial).toHaveBeenCalledWith({
+                step,
+                userId: USER_ID,
+                ...DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
+            });
+
+            expect(actual).toMatchObject(expected);
+        });
+
+        it("Should throw NotFoundError when Deposit log not found", async () => {
+            mockGetDepositLog.mockResolvedValueOnce(null);
+
+            await expect(
+                depositScdlProcessService.updateDepositLog(2, CREATE_DEPOSIT_LOG_DTO, USER_ID),
+            ).rejects.toBeInstanceOf(NotFoundError);
         });
     });
 });

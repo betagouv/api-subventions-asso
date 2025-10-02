@@ -11,25 +11,23 @@ describe("DepositLogAdapter", () => {
             const now = new Date();
             const dbo: DepositScdlLogDbo = {
                 _id: new ObjectId(),
-                userId: "user123",
                 updateDate: now,
+                userId: "user123",
                 step: 1,
                 overwriteAlert: true,
-                grantOrgSiret: "12345678901234",
                 permissionAlert: false,
+                grantOrgSiret: "12345678901234",
             };
 
             const result = DepositLogAdapter.dboToEntity(dbo);
 
-            expect(result).not.toBeNull();
             expect(result).toEqual({
-                id: dbo._id.toString(),
                 userId: dbo.userId,
-                updateDate: dbo.updateDate,
                 step: dbo.step,
+                updateDate: dbo.updateDate,
                 overwriteAlert: dbo.overwriteAlert,
-                grantOrgSiret: dbo.grantOrgSiret,
                 permissionAlert: dbo.permissionAlert,
+                grantOrgSiret: dbo.grantOrgSiret,
             });
         });
     });
@@ -40,22 +38,14 @@ describe("DepositLogAdapter", () => {
 
             const result = DepositLogAdapter.toDbo(entity);
 
-            expect(result._id).toBeInstanceOf(ObjectId);
             expect(result).toEqual({
-                _id: result._id,
+                updateDate: result.updateDate,
                 userId: entity.userId,
-                updateDate: entity.updateDate,
                 step: entity.step,
                 overwriteAlert: entity.overwriteAlert,
-                grantOrgSiret: entity.grantOrgSiret,
                 permissionAlert: entity.permissionAlert,
+                grantOrgSiret: entity.grantOrgSiret,
             });
-        });
-
-        it("should convert DepositScdlLog to DepositLogDbo and generate new id", () => {
-            const result = DepositLogAdapter.toDbo(DEPOSIT_LOG_ENTITY);
-
-            expect(result._id).toBeInstanceOf(ObjectId);
         });
 
         it("should convert DepositScdlLog to DepositLogDbo and generate new date", () => {
@@ -70,7 +60,6 @@ describe("DepositLogAdapter", () => {
             const entity: DepositScdlLogEntity = DEPOSIT_LOG_ENTITY;
             const result = DepositLogAdapter.entityToDepositScdlLogDto(entity);
 
-            expect(result).not.toBeNull();
             expect(result).toEqual({
                 overwriteAlert: entity.overwriteAlert,
                 grantOrgSiret: entity.grantOrgSiret,
@@ -84,9 +73,22 @@ describe("DepositLogAdapter", () => {
             const entity: DepositScdlLogEntity = DEPOSIT_LOG_ENTITY;
             const result = DepositLogAdapter.entityToCreateDepositScdlLogDto(entity);
 
-            expect(result).not.toBeNull();
             expect(result).toEqual({
                 overwriteAlert: entity.overwriteAlert,
+            });
+        });
+    });
+
+    describe("entityToDepositScdlLogResponseDto", () => {
+        it("should convert DepositScdlLogEntity to DepositScdlLogResponseDto", () => {
+            const entity: DepositScdlLogEntity = DEPOSIT_LOG_ENTITY;
+            const result = DepositLogAdapter.entityToDepositScdlLogResponseDto(entity);
+
+            expect(result).toEqual({
+                overwriteAlert: entity.overwriteAlert,
+                grantOrgSiret: entity.grantOrgSiret,
+                permissionAlert: entity.permissionAlert,
+                step: entity.step,
             });
         });
     });
@@ -99,7 +101,7 @@ describe("DepositLogAdapter", () => {
                 permissionAlert: true,
             };
             const userId = "user123";
-            const step = 2;
+            const step = 3;
 
             const result = DepositLogAdapter.depositScdlLogDtoToEntity(dto, userId, step);
 
@@ -124,12 +126,10 @@ describe("DepositLogAdapter", () => {
 
             const result = DepositLogAdapter.createDepositScdlLogDtoToEntity(dto, userId, step);
 
-            expect(result).not.toBeNull();
             expect(result).toMatchObject({
                 userId: userId,
                 step: step,
                 overwriteAlert: dto.overwriteAlert,
-                permissionAlert: false,
             });
         });
     });

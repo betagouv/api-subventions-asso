@@ -4,11 +4,13 @@ import { IdentifiedRequest } from "../../@types";
 import { ObjectId } from "mongodb";
 import {
     CREATE_DEPOSIT_LOG_DTO,
-    DEPOSIT_LOG_DTO,
     DEPOSIT_LOG_ENTITY,
+    DEPOSIT_LOG_ENTITY_UPDATE,
+    DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
+    DEPOSIT_LOG_RESPONSE_DTO,
 } from "../../modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
 import DepositScdlLogEntity from "../../modules/deposit-scdl-process/depositScdlLog.entity";
-import { ConflictError } from "core";
+import { ConflictError, NotFoundError } from "core";
 
 const controller = new DepositScdlProcessHttp();
 
@@ -25,9 +27,9 @@ describe("DepositScdlProcessHttp", () => {
         });
 
         it("should return depositLogDto", async () => {
-            getDepositLogSpy.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY);
+            getDepositLogSpy.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_UPDATE);
             const result = await controller.getDepositLog(REQ);
-            expect(result).toEqual(DEPOSIT_LOG_DTO);
+            expect(result).toEqual(DEPOSIT_LOG_RESPONSE_DTO);
         });
     });
 
@@ -64,6 +66,39 @@ describe("DepositScdlProcessHttp", () => {
         it("should reject and throw ConcliftError when user has already a deposit in progress", async () => {
             createDepositLogSpy.mockRejectedValueOnce(new ConflictError("Deposit already exists"));
             await expect(controller.createDepositLog(CREATE_DEPOSIT_LOG_DTO, REQ)).rejects.toThrow(ConflictError);
+        });
+    });
+
+    describe("updateDepositLog", () => {
+        const STEP = 2;
+        const updateDepositLogSpy = jest.spyOn(depositScdlProcessService, "updateDepositLog");
+
+        it("should call service with args", async () => {
+            const depositScdlLog = {} as Promise<DepositScdlLogEntity>;
+            updateDepositLogSpy.mockReturnValueOnce(depositScdlLog);
+            await controller.updateDepositLog(STEP, DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, REQ);
+            expect(updateDepositLogSpy).toHaveBeenCalledWith(
+                STEP,
+                DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
+                REQ.user._id.toString(),
+            );
+        });
+
+        it("should return DepositScdlLogResponseDto", async () => {
+            updateDepositLogSpy.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_UPDATE);
+            const result = await controller.updateDepositLog(STEP, DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, REQ);
+            expect(result).toEqual({
+                step: STEP,
+                overwriteAlert: true,
+                grantOrgSiret: "12345678901234",
+            });
+        });
+
+        it("should reject and throw Error when error throw by service", async () => {
+            updateDepositLogSpy.mockRejectedValueOnce(new NotFoundError("an error"));
+            await expect(controller.updateDepositLog(STEP, DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, REQ)).rejects.toThrow(
+                NotFoundError,
+            );
         });
     });
 });

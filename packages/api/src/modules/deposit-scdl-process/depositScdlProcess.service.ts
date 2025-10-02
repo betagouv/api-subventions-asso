@@ -1,8 +1,8 @@
 import depositLogPort from "../../dataProviders/db/deposit-log/depositLog.port";
 import DepositScdlLogEntity from "./depositScdlLog.entity";
-import { CreateDepositScdlLogDto } from "dto";
+import { CreateDepositScdlLogDto, DepositScdlLogDto } from "dto";
 import DepositLogAdapter from "../../dataProviders/db/deposit-log/DepositLog.adapter";
-import { ConflictError } from "core";
+import { ConflictError, NotFoundError } from "core";
 import depositScdlProcessCheckService from "./check/DepositScdlProcess.check.service";
 
 export class DepositScdlProcessService {
@@ -33,6 +33,24 @@ export class DepositScdlProcessService {
         );
         await depositLogPort.insertOne(depositLogEntity);
         return depositLogEntity;
+    }
+
+    async updateDepositLog(
+        step: number,
+        depositScdlLogDto: DepositScdlLogDto,
+        userId: string,
+    ): Promise<DepositScdlLogEntity> {
+        const existingDepositLog = await this.getDepositLog(userId);
+        if (!existingDepositLog) {
+            throw new NotFoundError("No deposit log found for this user");
+        }
+        depositScdlProcessCheckService.validateUpdateConsistency(depositScdlLogDto, step);
+        const partialDepositLog: Partial<DepositScdlLogEntity> = {
+            step,
+            userId,
+            ...depositScdlLogDto,
+        };
+        return depositLogPort.updatePartial(partialDepositLog);
     }
 }
 

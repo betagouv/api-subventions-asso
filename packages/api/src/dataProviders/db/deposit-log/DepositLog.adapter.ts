@@ -1,7 +1,6 @@
 import DepositScdlLogDbo from "./DepositScdlLogDbo";
-import { ObjectId } from "mongodb";
 import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/depositScdlLog.entity";
-import { CreateDepositScdlLogDto, DepositScdlLogDto } from "dto";
+import { CreateDepositScdlLogDto, DepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
 
 export default class DepositLogAdapter {
     static dboToEntity(dbo: DepositScdlLogDbo): DepositScdlLogEntity {
@@ -10,22 +9,19 @@ export default class DepositLogAdapter {
             dbo.step,
             dbo.updateDate,
             dbo.overwriteAlert,
-            dbo.permissionAlert,
-            dbo._id.toString(),
             dbo.grantOrgSiret,
+            dbo.permissionAlert,
         );
     }
 
-    static toDbo(entity: DepositScdlLogEntity): DepositScdlLogDbo {
-        // todo : pq Omit<DepositScdlLogEntity, "id"> ne fonctionne pas ?
+    static toDbo(entity: DepositScdlLogEntity): Omit<DepositScdlLogDbo, "_id"> {
         return {
-            _id: new ObjectId(),
+            updateDate: new Date(),
             userId: entity.userId,
-            updateDate: entity.updateDate ?? new Date(),
             step: entity.step,
             overwriteAlert: entity.overwriteAlert,
-            grantOrgSiret: entity.grantOrgSiret,
             permissionAlert: entity.permissionAlert,
+            grantOrgSiret: entity.grantOrgSiret,
         };
     }
 
@@ -45,15 +41,23 @@ export default class DepositLogAdapter {
         };
     }
 
+    static entityToDepositScdlLogResponseDto(entity: DepositScdlLogEntity): DepositScdlLogResponseDto {
+        return {
+            overwriteAlert: entity.overwriteAlert,
+            grantOrgSiret: entity.grantOrgSiret,
+            permissionAlert: entity.permissionAlert,
+            step: entity.step,
+        };
+    }
+
     static depositScdlLogDtoToEntity(dto: DepositScdlLogDto, userId: string, step: number): DepositScdlLogEntity {
         return new DepositScdlLogEntity(
             userId,
             step,
             undefined,
             dto.overwriteAlert,
-            dto.permissionAlert,
-            undefined,
             dto.grantOrgSiret,
+            dto.permissionAlert,
         );
     }
 
@@ -62,6 +66,6 @@ export default class DepositLogAdapter {
         userId: string,
         step: number,
     ): DepositScdlLogEntity {
-        return new DepositScdlLogEntity(userId, step, undefined, dto.overwriteAlert, false);
+        return new DepositScdlLogEntity(userId, step, undefined, dto.overwriteAlert);
     }
 }
