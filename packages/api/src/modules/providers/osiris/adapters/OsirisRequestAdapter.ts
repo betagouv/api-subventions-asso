@@ -218,7 +218,7 @@ export default class OsirisRequestAdapter {
             instructiveDepartmentName: entity.providerInformations.service_instructeur,
             instructiveDepartmentIdType: null,
             instructiveDepartementId: null,
-            beneficiaryEstablishmentId: entity.legalInformations.siret,
+            beneficiaryEstablishmentId: assoId,
             beneficiaryEstablishmentIdType: assoIdType,
             budgetaryYear,
             pluriannual: entity.providerInformations.pluriannualite === "Pluriannuel",
