@@ -66,7 +66,7 @@ export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id
         return this.collection
             .find({
                 fournisseur: "fonjep",
-                typeIdEtablissementBeneficiaire: "siret",
+                typeIdEtablissementBeneficiaire: siret.name,
                 idEtablissementBeneficiaire: siret.value,
             })
             .map(dbo => ApplicationFlatAdapter.dboToEntity(dbo))
@@ -76,7 +76,7 @@ export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id
     public async findBySiren(siren: Siren) {
         return this.collection
             .find({
-                typeIdEtablissementBeneficiaire: "siret",
+                typeIdEtablissementBeneficiaire: Siret.getName(),
                 idEtablissementBeneficiaire: new RegExp(`^${siren.value}\\d{5}`),
                 // TODO maybe we want an explicit property so that we can have an index
             })
