@@ -79,7 +79,7 @@ export class EstablishmentHttp extends Controller {
         const estabIdentifier = req.estabIdentifier;
         const grants = await establishmentService.getGrants(estabIdentifier);
         return {
-            subventions: grants.filter(grant => grant.application?.annee_demande?.value === undefined),
+            subventions: grants,
             count: grants.length,
         };
     }

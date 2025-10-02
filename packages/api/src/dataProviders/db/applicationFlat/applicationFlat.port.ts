@@ -65,7 +65,6 @@ export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id
     public async findBySiret(siret: Siret) {
         return this.collection
             .find({
-                fournisseur: "fonjep",
                 typeIdEtablissementBeneficiaire: siret.name,
                 idEtablissementBeneficiaire: siret.value,
             })
