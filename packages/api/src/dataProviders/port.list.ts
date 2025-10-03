@@ -24,6 +24,7 @@ import sireneStockUniteLegalePort from "./db/sirene/stockUniteLegale/sireneStock
 import amountsVsProgramRegionPort from "./db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
 import dataLogPort from "./db/data-log/dataLog.port";
 import applicationFlatPort from "./db/applicationFlat/applicationFlat.port";
+import depositLogPort from "./db/deposit-log/depositLog.port";
 
 export const portsWithIndexes = [
     userPort,
@@ -53,4 +54,5 @@ export const portsWithIndexes = [
     amountsVsProgramRegionPort,
     dataLogPort,
     applicationFlatPort,
+    depositLogPort,
 ];
