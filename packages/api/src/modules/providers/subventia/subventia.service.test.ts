@@ -3,16 +3,13 @@ import SubventiaParser from "./subventia.parser";
 import SubventiaValidator from "./validators/subventia.validator";
 import SubventiaAdapter from "./adapters/subventia.adapter";
 import SubventiaPort from "../../../dataProviders/db/providers/subventia/subventia.port";
-import SubventiaEntity, { SubventiaDbo } from "./@types/subventia.entity";
-import { CommonApplicationDto, ApplicationStatus, DemandeSubvention } from "dto";
+import { SubventiaDbo } from "./@types/subventia.entity";
+import { ApplicationStatus } from "dto";
 import SubventiaDto from "./@types/subventia.dto";
-import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
-import { ENTITIES, SUBVENTIA_DBO } from "./__fixtures__/subventia.fixture";
-import Siren from "../../../identifierObjects/Siren";
-import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
+import { SUBVENTIA_DBO } from "./__fixtures__/subventia.fixture";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import { ReadableStream } from "node:stream/web";
-import { ENTITY } from "../../applicationFlat/__fixtures__";
+import { APPLICATION_LINK_TO_CHORUS } from "../../applicationFlat/__fixtures__";
 jest.mock("../../applicationFlat/applicationFlat.service");
 jest.mock("./adapters/subventia.adapter");
 jest.mock("../../../dataProviders/db/providers/subventia/subventia.port");
@@ -63,17 +60,8 @@ describe("Subventia Service", () => {
         },
     ] as SubventiaDbo[];
 
-    // @ts-expect-error: mock
-    const rawGrant = applications.map(grant => ({
-        provider: "subventia",
-        type: "application",
-        data: grant,
-    })) as RawGrant[];
-
     let mockFindBySiret: jest.SpyInstance;
     let mockFindBySiren: jest.SpyInstance;
-    let mockToDemandeSubventionDto: jest.SpyInstance;
-    let mockToCommon: jest.SpyInstance;
     let mockCreate: jest.SpyInstance;
 
     beforeAll(() => {
@@ -81,20 +69,12 @@ describe("Subventia Service", () => {
         mockFindBySiren = jest.spyOn(SubventiaPort, "findBySiren").mockResolvedValue(applications);
         //@ts-expect-error : resolved value type not valid
         mockCreate = jest.spyOn(SubventiaPort, "create").mockResolvedValue("FAKE_ID");
-        mockToDemandeSubventionDto = jest
-            .spyOn(SubventiaAdapter, "toDemandeSubventionDto")
-            .mockImplementation(data => data as unknown as DemandeSubvention);
-        mockToCommon = jest
-            .spyOn(SubventiaAdapter, "toCommon")
-            .mockImplementation(data => data as unknown as CommonApplicationDto);
     });
 
     afterAll(() => {
         mockFindBySiret.mockReset();
         mockFindBySiren.mockReset();
-        mockToDemandeSubventionDto.mockReset();
         mockCreate.mockRestore();
-        mockToCommon.mockRestore();
     });
 
     describe("groupByApplication", () => {
@@ -259,73 +239,6 @@ describe("Subventia Service", () => {
     });
 
     /**
-     * |-------------------------|
-     * |   Demande Part          |
-     * |-------------------------|
-     */
-
-    describe("getDemandeSubvention", () => {
-        const SIREN = new Siren("123456789");
-        const ASSOCIATION_IDENTIFIER = AssociationIdentifier.fromSiren(SIREN);
-        it("should call findBySiren", async () => {
-            await subventiaService.getDemandeSubvention(ASSOCIATION_IDENTIFIER);
-            expect(mockFindBySiren).toHaveBeenCalledWith(SIREN);
-        });
-
-        it("should call toDemandeSubventionDto for each result", async () => {
-            await subventiaService.getDemandeSubvention(ASSOCIATION_IDENTIFIER);
-            expect(mockToDemandeSubventionDto).toHaveBeenCalledTimes(2);
-        });
-
-        it("should return subventions", async () => {
-            const actual = await subventiaService.getDemandeSubvention(ASSOCIATION_IDENTIFIER);
-            const expected = applications;
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    /**
-     * |-------------------------|
-     * |   Raw Grant Part        |
-     * |-------------------------|
-     */
-
-    describe("getRawGrants", () => {
-        const SIREN = new Siren("123456789");
-        const ASSOCIATION_IDENTIFIER = AssociationIdentifier.fromSiren(SIREN);
-        it("should call findBySiren", async () => {
-            await subventiaService.getRawGrants(ASSOCIATION_IDENTIFIER);
-            expect(mockFindBySiren).toHaveBeenCalledWith(SIREN);
-        });
-
-        it("should return raw grants", async () => {
-            const actual = await subventiaService.getRawGrants(ASSOCIATION_IDENTIFIER);
-            const expected = rawGrant;
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("rawToCommon", () => {
-        it("should call toCommon", () => {
-            subventiaService.rawToCommon(rawGrant[0]);
-            expect(mockToCommon).toHaveBeenCalledWith(rawGrant[0]["data"]);
-        });
-    });
-
-    describe("rawToApplication", () => {
-        const RAW_APPLICATION: RawApplication<SubventiaEntity> = {
-            data: ENTITIES[0],
-            type: "application",
-            provider: "subventia",
-            joinKey: undefined,
-        };
-        it("should call adapter rawToApplication", () => {
-            subventiaService.rawToApplication(RAW_APPLICATION);
-            expect(SubventiaAdapter.rawToApplication).toHaveBeenCalledWith(RAW_APPLICATION);
-        });
-    });
-
-    /**
      * |---------------------------|
      * |   Application Flat Part   |
      * |---------------------------|
@@ -343,13 +256,15 @@ describe("Subventia Service", () => {
         let mockFindAll: jest.SpyInstance;
         let mockToApplicationFlat: jest.SpyInstance;
         let mockSaveFlatFromStream: jest.SpyInstance;
-        const STREAM = [ENTITY];
+        const STREAM = [APPLICATION_LINK_TO_CHORUS];
         // @ts-expect-error: mock return value
-        jest.spyOn(ReadableStream, "from").mockReturnValue([ENTITY]);
+        jest.spyOn(ReadableStream, "from").mockReturnValue([APPLICATION_LINK_TO_CHORUS]);
 
         beforeEach(() => {
             mockFindAll = jest.spyOn(SubventiaPort, "findAll").mockResolvedValue([SUBVENTIA_DBO]);
-            mockToApplicationFlat = jest.spyOn(SubventiaAdapter, "toApplicationFlat").mockReturnValue(ENTITY);
+            mockToApplicationFlat = jest
+                .spyOn(SubventiaAdapter, "toApplicationFlat")
+                .mockReturnValue(APPLICATION_LINK_TO_CHORUS);
             mockSaveFlatFromStream = jest.spyOn(subventiaService, "saveFlatFromStream").mockImplementation(jest.fn());
         });
 

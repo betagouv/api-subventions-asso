@@ -391,6 +391,7 @@ const buildProviderValue = value => ({
 // TODO: fill this with real data
 export const PAYMENTS: ChorusPayment[] = [
     {
+        exerciceBudgetaire: buildProviderValue(ENTITIES[0].indexedInformations.exercice),
         ej: buildProviderValue(ENTITIES[0].indexedInformations.ej),
         versementKey: buildProviderValue(ENTITIES[0].indexedInformations.ej),
         siret: buildProviderValue(ENTITIES[0].indexedInformations.siret),

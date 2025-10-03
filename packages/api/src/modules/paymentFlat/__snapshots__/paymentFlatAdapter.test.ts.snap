@@ -112,7 +112,7 @@ exports[`PaymentFlatAdapter toDbo given entity without nulls, should return a Pa
   "exerciceBudgetaire": 2023,
   "idEntrepriseBeneficiaire": "100000000",
   "idEtablissementBeneficiaire": "10000000000001",
-  "idVersement": "ID_VERSEMENT",
+  "idVersement": "1000000000019--subv001--2023",
   "libelleCentreFinancier": "UO DGER XXXX-C001",
   "ministere": "Ministère Exemple",
   "mission": "Mission Exemple",
@@ -166,6 +166,12 @@ exports[`PaymentFlatAdapter toPayment should return ChorusPayment 1`] = `
     "type": "string",
     "value": "0001821732",
   },
+  "exerciceBudgetaire": {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "chorus",
+    "type": "number",
+    "value": 2023,
+  },
   "libelleProgramme": {
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "chorus",
@@ -188,7 +194,7 @@ exports[`PaymentFlatAdapter toPayment should return ChorusPayment 1`] = `
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "chorus",
     "type": "string",
-    "value": "0001821732",
+    "value": "1000000000019--subv001--2023",
   },
 }
 `;
@@ -207,6 +213,12 @@ exports[`PaymentFlatAdapter toPayment should return FonjepPayment 1`] = `
     "provider": "fonjep",
     "type": "object",
     "value": 2023-07-12T00:00:00.000Z,
+  },
+  "exerciceBudgetaire": {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "fonjep",
+    "type": "number",
+    "value": 2023,
   },
   "libelleProgramme": {
     "last_update": 2023-07-12T00:00:00.000Z,
@@ -230,7 +242,7 @@ exports[`PaymentFlatAdapter toPayment should return FonjepPayment 1`] = `
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "fonjep",
     "type": "string",
-    "value": "CODE_POSTE-OPERATION_DATE-EXERCISE-IDENTIFIER",
+    "value": "S03351-2023-05-12-2023-10000000000001",
   },
 }
 `;
@@ -273,6 +285,12 @@ exports[`PaymentFlatAdapter toPayment should return partial ChorusPayment 1`] = 
     "type": "string",
     "value": "0001821732",
   },
+  "exerciceBudgetaire": {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "chorus",
+    "type": "number",
+    "value": 2023,
+  },
   "libelleProgramme": undefined,
   "programme": {
     "last_update": 2023-07-12T00:00:00.000Z,
@@ -290,7 +308,7 @@ exports[`PaymentFlatAdapter toPayment should return partial ChorusPayment 1`] = 
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "chorus",
     "type": "string",
-    "value": "0001821732",
+    "value": "ID_VERSEMENT",
   },
 }
 `;

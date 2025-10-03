@@ -1,9 +1,9 @@
 import { ApplicationStatus } from "dto";
-import type { DashboardGrant } from "$lib/components/GrantDashboard/@types/DashboardGrant";
+import type { SortableRow } from "$lib/components/GrantDashboard/@types/DashboardGrant";
 
 type CompareIngredient<T> = {
     compareFn: (a: T, b: T, orderInt: number) => number;
-    compareGetter: (g: DashboardGrant) => T;
+    compareGetter: (g: SortableRow) => T;
 };
 
 /*

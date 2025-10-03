@@ -27,21 +27,6 @@ describe("CommonGrantService", () => {
         });
     });
 
-    describe("filterAdaptable", () => {
-        it("returns empty list to undefined value", () => {
-            const actual = commonGrantServiceTest.filterAdaptable(undefined);
-            const expected = [];
-            expect(actual).toEqual(expected);
-        });
-        it("removes grants of providers that do not implement adapter's method", () => {
-            commonGrantServiceTest.providerMap = { goodProvider: {} };
-            const grants = [{ provider: "unknown" }, { provider: "goodProvider" }];
-            const expected = [{ provider: "goodProvider" }];
-            const actual = commonGrantServiceTest.filterAdaptable(grants);
-            expect(actual).toEqual(expected);
-        });
-    });
-
     describe("rawToCommonFragment", () => {
         const RES = { montant_demande: 42 };
         const RAW = { provider: "goodProvider", data: {} };
@@ -110,70 +95,34 @@ describe("CommonGrantService", () => {
     });
 
     describe("rawToCommon", () => {
-        const RAW_PAYMENTS = [{ p: 1 }, { p: "toFilterOut" }, { p: 2 }];
-        const RAW_FULL_GRANTS = [
-            { p: 3, a: 3 },
-            { p: 4, a: 4 },
-            { p: "toFilterOut", a: "toFilterOut" },
-        ];
-        const RAW_APPLICATIONS = [{ a: 1 }, { a: 2 }, { a: "toFilterOut" }];
+        const RAW_PAYMENTS = [{ p: 1 }, { p: 2 }];
+        const RAW_APPLICATION = { a: 1 };
         const JOINED_RAW_GRANT = {
             payments: RAW_PAYMENTS,
-            applications: RAW_APPLICATIONS,
-            fullGrants: RAW_FULL_GRANTS,
+            application: RAW_APPLICATION,
         };
-        const FILTERED_FULL_GRANTS = [
-            { p: 3, a: 3 },
-            { p: 4, a: 4 },
-        ];
-        const FILTERED_APPLICATIONS = [{ a: 1 }, { a: 2 }];
 
-        const ADAPTED_PAYMENTS = [{ aP: 1 }, { aP: 2 }, { aP: 3 }, { aP: 4 }];
-        const SELECTED_APPLICATION = { a: 3, p: 3 };
-
-        const FINAL_PAYMENT = { aP: 10 };
-        const FINAL_APPLICATION = { aP: 3, aA: 3 };
+        const ADAPTED_APPLICATION = { aA: 1 };
+        const ADAPTED_PAYMENTS = [{ aP: 1 }, { aP: 2 }];
+        const AGGREGATED_PAYMENTS = { aP: 3 };
+        const COMMON_GRANT = { ...ADAPTED_APPLICATION, ...AGGREGATED_PAYMENTS };
 
         beforeAll(() => {
             commonGrantServiceTest = {
                 rawToCommon: commonGrantServiceTest.rawToCommon,
-                filterAdaptable: jest.fn(grants =>
-                    (grants || []).filter(grant => Object.values(grant).some(key => key != "toFilterOut")),
-                ),
+
                 rawToCommonFragment: jest.fn(() => ({})),
 
-                aggregatePayments: jest.fn((..._args) => FINAL_PAYMENT),
-
-                chooseRawApplication: jest.fn((..._args) => SELECTED_APPLICATION),
+                aggregatePayments: jest.fn((..._args) => AGGREGATED_PAYMENTS),
             };
         });
         afterAll(() => (commonGrantServiceTest = new CommonGrantService()));
 
-        it.each`
-            entity            | object              | nthCall
-            ${"full grants"}  | ${RAW_FULL_GRANTS}  | ${1}
-            ${"applications"} | ${RAW_APPLICATIONS} | ${2}
-            ${"payments"}     | ${RAW_PAYMENTS}     | ${3}
-        `("filters $entity", ({ object, nthCall }) => {
-            commonGrantServiceTest.rawToCommon(JOINED_RAW_GRANT);
-            expect(commonGrantServiceTest.filterAdaptable).toHaveBeenNthCalledWith(nthCall, object);
-        });
-
-        it("selects application from filtered applications and full grants", () => {
-            commonGrantServiceTest.filterAdaptable.mockReturnValueOnce(FILTERED_FULL_GRANTS);
-            commonGrantServiceTest.filterAdaptable.mockReturnValueOnce(FILTERED_APPLICATIONS);
-            commonGrantServiceTest.rawToCommon(JOINED_RAW_GRANT);
-            expect(commonGrantServiceTest.chooseRawApplication).toHaveBeenCalledWith([
-                ...FILTERED_APPLICATIONS,
-                ...FILTERED_FULL_GRANTS,
-            ]);
-        });
         it("adapts selected application or full grant", () => {
             commonGrantServiceTest.rawToCommon(JOINED_RAW_GRANT);
-            commonGrantServiceTest.chooseRawApplication.mockReturnValueOnce(SELECTED_APPLICATION);
             expect(commonGrantServiceTest.rawToCommonFragment).toHaveBeenNthCalledWith(
                 1,
-                SELECTED_APPLICATION,
+                RAW_APPLICATION,
                 expect.any(Boolean),
             );
         });
@@ -186,32 +135,29 @@ describe("CommonGrantService", () => {
 
         it("adapts all payments and full grants", () => {
             commonGrantServiceTest.rawToCommon(JOINED_RAW_GRANT);
-            expect(commonGrantServiceTest.rawToCommonFragment).toHaveBeenCalledWith(
-                expect.anything(),
-                expect.anything(),
-            );
-            expect(commonGrantServiceTest.rawToCommonFragment).toHaveBeenCalledWith({ p: 1 }, expect.any(Boolean));
-            expect(commonGrantServiceTest.rawToCommonFragment).toHaveBeenCalledWith({ p: 2 }, expect.any(Boolean));
-            expect(commonGrantServiceTest.rawToCommonFragment).toHaveBeenCalledWith(
-                { a: 3, p: 3 },
+            expect(commonGrantServiceTest.rawToCommonFragment).toHaveBeenNthCalledWith(
+                1,
+                RAW_APPLICATION,
                 expect.any(Boolean),
             );
-            expect(commonGrantServiceTest.rawToCommonFragment).toHaveBeenCalledWith(
-                { a: 4, p: 4 },
-                expect.any(Boolean),
-            );
+            for (const [index, rawPayment] of RAW_PAYMENTS.entries()) {
+                expect(commonGrantServiceTest.rawToCommonFragment).toHaveBeenNthCalledWith(
+                    index + 2, // nth call start at 1 and index start at 0 so we need to +2 to omit the first call
+                    rawPayment,
+                    expect.any(Boolean),
+                );
+            }
         });
+
         it("aggregates adapted payments", () => {
             commonGrantServiceTest.rawToCommonFragment.mockReturnValueOnce({}); // applications
-            commonGrantServiceTest.rawToCommonFragment.mockReturnValueOnce({ aP: 1 });
-            commonGrantServiceTest.rawToCommonFragment.mockReturnValueOnce({ aP: 2 });
-            commonGrantServiceTest.rawToCommonFragment.mockReturnValueOnce({ aP: 3 });
-            commonGrantServiceTest.rawToCommonFragment.mockReturnValueOnce({ aP: 4 });
+            commonGrantServiceTest.rawToCommonFragment.mockReturnValueOnce(ADAPTED_PAYMENTS[0]);
+            commonGrantServiceTest.rawToCommonFragment.mockReturnValueOnce(ADAPTED_PAYMENTS[1]);
             commonGrantServiceTest.rawToCommon(JOINED_RAW_GRANT);
             expect(commonGrantServiceTest.aggregatePayments).toHaveBeenCalledWith(ADAPTED_PAYMENTS);
         });
         it("does not fail if no payment nor full grant", () => {
-            const test = () => commonGrantServiceTest.rawToCommon({ applications: RAW_APPLICATIONS });
+            const test = () => commonGrantServiceTest.rawToCommon({ application: RAW_APPLICATION });
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             expect(test).resolves;
         });
@@ -221,9 +167,11 @@ describe("CommonGrantService", () => {
             commonGrantServiceTest.rawToCommonFragment.mockReturnValue(null);
             expect(actual).toEqual(expected);
         });
+
         it("return grant: application and payment merged", () => {
-            const expected = { ...FINAL_APPLICATION, ...FINAL_PAYMENT };
-            commonGrantServiceTest.rawToCommonFragment.mockReturnValueOnce({ aA: 3 });
+            const expected = COMMON_GRANT;
+            commonGrantServiceTest.rawToCommonFragment.mockReturnValueOnce(ADAPTED_APPLICATION);
+            commonGrantServiceTest.aggregatePayments.mockReturnValue(AGGREGATED_PAYMENTS);
             const actual = commonGrantServiceTest.rawToCommon(JOINED_RAW_GRANT);
             expect(actual).toEqual(expected);
         });

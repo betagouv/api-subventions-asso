@@ -198,7 +198,6 @@ describe("SubventiaValidator", () => {
             };
             // @ts-expect-error : test invalid data
             const actual = SubventiaValidator.isSubventiaDtoValid({ ...PARSED_DATA_ROW, "Date - Décision": "50" });
-            console.log(actual);
             expect(actual).toEqual(expected);
         });
 

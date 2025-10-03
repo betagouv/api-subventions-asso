@@ -145,14 +145,17 @@ export default class FonjepEntityAdapter {
     }
 
     // this keeps the same structure as other providers payment flat uniqueId and add N/A for the missing fields
-    private static buildPaymentFlatUniqueId(partialPaymentFlat: Omit<FonjepPaymentFlatEntity, "uniqueId">) {
+    private static buildPaymentFlatUniqueId(
+        partialPaymentFlat: Omit<FonjepPaymentFlatEntity, "uniqueId">,
+        beginningDate: Date,
+    ) {
         const keys = [
             "fonjep",
             partialPaymentFlat.idVersement,
             partialPaymentFlat.programNumber,
             GenericAdapter.NOT_APPLICABLE_VALUE, // action code
             GenericAdapter.NOT_APPLICABLE_VALUE, // activity code
-            getShortISODate(partialPaymentFlat.operationDate),
+            getShortISODate(beginningDate), // was operationDate to be ISO with CHORUS but it can be identical for every payment of the same year. See positionCode S05543
             GenericAdapter.NOT_APPLICABLE_VALUE, // attachement comptable
             GenericAdapter.NOT_APPLICABLE_VALUE, // centre financier code
         ];
@@ -230,7 +233,7 @@ export default class FonjepEntityAdapter {
 
             // TODO: Another example where something nullable (Tier.FinanceurPrincipalCode) is required to build a unique ID
             // TODO: make FonjepTierEntity.financeurPrincipalCode mandatory and make it a number
-            const uniqueId = this.buildPaymentFlatUniqueId(partialPaymentFlat);
+            const uniqueId = this.buildPaymentFlatUniqueId(partialPaymentFlat, payment.periodeDebut);
 
             return { uniqueId, ...partialPaymentFlat };
         }
@@ -239,9 +242,9 @@ export default class FonjepEntityAdapter {
     static toFonjepApplicationFlat(entities: {
         position: FonjepPosteEntity;
         beneficiary: FonjepTiersEntity; // association who made the application
-        allocator: FonjepTiersEntity; // structure who handle the application payment
-        instructor: FonjepTiersEntity; // structure who validates / instructs the application
-        scheme: FonjepDispositifEntity;
+        allocator: FonjepTiersEntity | undefined; // structure who handle the application payment
+        instructor: FonjepTiersEntity | undefined; // structure who validates / instructs the application
+        scheme: FonjepDispositifEntity | undefined;
     }): Omit<FonjepApplicationFlatEntity, "updateDate"> | null {
         const { position, beneficiary, allocator, instructor, scheme } = entities;
         if (!position.annee) throw new Error("FONJEP ApplicationFlat must have a budgetary year");
@@ -262,10 +265,10 @@ export default class FonjepEntityAdapter {
         const uniqueId = `${applicationId}-${position.annee}`;
         const paymentId = this.buildFlatPaymentId({ thirdParty: beneficiary, position });
 
-        const allocatorIdType = allocator.siretOuRidet
+        const allocatorIdType = allocator?.siretOuRidet
             ? EstablishmentIdentifier.getIdentifierType(allocator.siretOuRidet)
             : null;
-        const instructiveDepartmentIdType = instructor.siretOuRidet
+        const instructiveDepartmentIdType = instructor?.siretOuRidet
             ? EstablishmentIdentifier.getIdentifierType(instructor.siretOuRidet)
             : null;
 
@@ -276,15 +279,15 @@ export default class FonjepEntityAdapter {
             provider,
             joinKeyId: GenericAdapter.NOT_APPLICABLE_VALUE,
             joinKeyDesc: GenericAdapter.NOT_APPLICABLE_VALUE,
-            allocatorName: allocator.raisonSociale,
-            allocatorId: allocator.siretOuRidet,
+            allocatorName: allocator?.raisonSociale ?? null,
+            allocatorId: allocator?.siretOuRidet ?? null,
             allocatorIdType,
             managingAuthorityName: "FONJEP",
             managingAuthorityId: null,
             managingAuthorityIdType: null,
-            instructiveDepartmentName: instructor.raisonSociale,
+            instructiveDepartmentName: instructor?.raisonSociale ?? null,
             instructiveDepartmentIdType,
-            instructiveDepartementId: instructor.siretOuRidet,
+            instructiveDepartementId: instructor?.siretOuRidet ?? null,
             beneficiaryEstablishmentId: beneficiary.siretOuRidet,
             beneficiaryEstablishmentIdType,
             budgetaryYear: position.annee,
@@ -295,7 +298,7 @@ export default class FonjepEntityAdapter {
             decisionReference: null,
             depositDate: null,
             requestYear: null,
-            scheme: scheme.libelle,
+            scheme: scheme?.libelle ?? null,
             subScheme: GenericAdapter.NOT_APPLICABLE_VALUE,
             statusLabel: ApplicationStatus.GRANTED, // always GRANTED because FONJEP only concerns payments (means that application has been granted)
             object: null,

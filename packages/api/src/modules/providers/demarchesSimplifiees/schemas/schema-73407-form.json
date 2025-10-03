@@ -149,9 +149,9 @@
       "to": "totalAmount",
       "from": "demande.champs.Q2hhbXAtMjM2MzUxNw=="
     },
-        {
-            "from": "demande.annotations.Q2hhbXAtMjY3NDMxMA==.value",
-            "to": "ej"
-        }
+    {
+        "from": "demande.annotations.Q2hhbXAtMjY3NDMxMA==.value",
+        "to": "ej"
+    }
   ]
 }

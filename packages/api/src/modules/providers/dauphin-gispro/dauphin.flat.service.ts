@@ -13,15 +13,15 @@ export class DauphinFlatService implements ApplicationFlatProvider {
      * |-------------------------|
      */
 
-    isApplicationFlatProvider = true as const;
-
     async generateTempJoinedCollection() {
         await dauphinPort.createSimplifiedDauphinBeforeJoin();
         await dauphinPort.joinGisproToSimplified();
     }
 
     async feedApplicationFlat() {
+        console.log("Generating simplified and joined collections...");
         await this.generateTempJoinedCollection();
+        console.log("Start transforming data into application...");
         const cursor = dauphinPort.findAllTempCursor();
         const errors: InconsistentAggregationError[] = [];
         const stream = cursorToStream(cursor, simplified => {
@@ -35,6 +35,7 @@ export class DauphinFlatService implements ApplicationFlatProvider {
                 throw e;
             }
         });
+        console.log("Initializing applicationFlat feed...");
         await this.saveFlatFromStream(stream);
 
         if (errors.length)

@@ -201,32 +201,35 @@ describe("FonjepEntityAdapter", () => {
                 );
                 const SIRET = new Siret(TIERS_ENTITY.siretOuRidet as string);
                 const SIREN = SIRET.toSiren();
-                expect(mockBuildPaymentFlatUniqueId).toHaveBeenCalledWith({
-                    idVersement: PAYMENT_ID,
-                    exerciceBudgetaire: POSTE_ENTITY.annee as number,
-                    typeIdEtablissementBeneficiaire: "siret",
-                    idEtablissementBeneficiaire: SIRET,
-                    typeIdEntrepriseBeneficiaire: "siren",
-                    idEntrepriseBeneficiaire: SIREN,
-                    amount: VERSEMENT_ENTITY.montantPaye,
-                    operationDate: VERSEMENT_ENTITY.dateVersement,
-                    centreFinancierCode: GenericAdapter.NOT_APPLICABLE_VALUE,
-                    centreFinancierLibelle: GenericAdapter.NOT_APPLICABLE_VALUE,
-                    attachementComptable: GenericAdapter.NOT_APPLICABLE_VALUE,
-                    regionAttachementComptable: GenericAdapter.NOT_APPLICABLE_VALUE,
-                    ej: GenericAdapter.NOT_APPLICABLE_VALUE,
-                    actionCode: GenericAdapter.NOT_APPLICABLE_VALUE,
-                    actionLabel: GenericAdapter.NOT_APPLICABLE_VALUE,
-                    activityCode: GenericAdapter.NOT_APPLICABLE_VALUE,
-                    activityLabel: GenericAdapter.NOT_APPLICABLE_VALUE,
-                    provider: "fonjep",
-                    programName: DATA_BRETAGNE_RECORDS.programs[Number(PROGRAM_CODE)].label_programme,
-                    programNumber: DATA_BRETAGNE_RECORDS.programs[Number(PROGRAM_CODE)].code_programme,
-                    mission: DATA_BRETAGNE_RECORDS.programs[Number(PROGRAM_CODE)].mission,
-                    ministry: MINISTRY_ENTITIES[0]?.nom_ministere || null,
-                    ministryAcronym: MINISTRY_ENTITIES[0]?.sigle_ministere || null,
-                    updateDate: VERSEMENT_ENTITY.updateDate,
-                });
+                expect(mockBuildPaymentFlatUniqueId).toHaveBeenCalledWith(
+                    {
+                        idVersement: PAYMENT_ID,
+                        exerciceBudgetaire: POSTE_ENTITY.annee as number,
+                        typeIdEtablissementBeneficiaire: "siret",
+                        idEtablissementBeneficiaire: SIRET,
+                        typeIdEntrepriseBeneficiaire: "siren",
+                        idEntrepriseBeneficiaire: SIREN,
+                        amount: VERSEMENT_ENTITY.montantPaye,
+                        operationDate: VERSEMENT_ENTITY.dateVersement,
+                        centreFinancierCode: GenericAdapter.NOT_APPLICABLE_VALUE,
+                        centreFinancierLibelle: GenericAdapter.NOT_APPLICABLE_VALUE,
+                        attachementComptable: GenericAdapter.NOT_APPLICABLE_VALUE,
+                        regionAttachementComptable: GenericAdapter.NOT_APPLICABLE_VALUE,
+                        ej: GenericAdapter.NOT_APPLICABLE_VALUE,
+                        actionCode: GenericAdapter.NOT_APPLICABLE_VALUE,
+                        actionLabel: GenericAdapter.NOT_APPLICABLE_VALUE,
+                        activityCode: GenericAdapter.NOT_APPLICABLE_VALUE,
+                        activityLabel: GenericAdapter.NOT_APPLICABLE_VALUE,
+                        provider: "fonjep",
+                        programName: DATA_BRETAGNE_RECORDS.programs[Number(PROGRAM_CODE)].label_programme,
+                        programNumber: DATA_BRETAGNE_RECORDS.programs[Number(PROGRAM_CODE)].code_programme,
+                        mission: DATA_BRETAGNE_RECORDS.programs[Number(PROGRAM_CODE)].mission,
+                        ministry: MINISTRY_ENTITIES[0]?.nom_ministere || null,
+                        ministryAcronym: MINISTRY_ENTITIES[0]?.sigle_ministere || null,
+                        updateDate: VERSEMENT_ENTITY.updateDate,
+                    },
+                    VERSEMENT_ENTITY.periodeDebut,
+                );
             });
 
             it("should build payment ID", () => {
@@ -251,7 +254,7 @@ describe("FonjepEntityAdapter", () => {
 
         describe("extractPositionCode", () => {
             it("returns code poste", () => {
-                const expected = "CODE_POSTE"; // cf FONJEP_PAYMENT_FLAT fixture
+                const expected = "S03351"; // cf FONJEP_PAYMENT_FLAT fixture
                 const actual = FonjepEntityAdapter.extractPositionCode(FONJEP_PAYMENT_FLAT_ENTITY);
                 expect(actual).toEqual(expected);
             });

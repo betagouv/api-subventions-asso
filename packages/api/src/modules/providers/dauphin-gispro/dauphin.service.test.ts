@@ -53,118 +53,6 @@ describe("Dauphin Service", () => {
 
     /**
      * |-------------------------|
-     * |   Demande Part          |
-     * |-------------------------|
-     */
-
-    describe("rawToApplication", () => {
-        // @ts-expect-error: parameter type
-        const RAW_APPLICATION: RawApplication = { data: { foo: "bar" } };
-        // @ts-expect-error: parameter type
-        const APPLICATION: DemandeSubvention = { foo: "bar" };
-
-        it("should call DauphinDtoAdapter.rawToApplication", () => {
-            dauphinService.rawToApplication(RAW_APPLICATION);
-            expect(DauphinDtoAdapter.rawToApplication).toHaveBeenCalledWith(RAW_APPLICATION);
-        });
-
-        it("should return DemandeSubvention", () => {
-            jest.mocked(DauphinDtoAdapter.rawToApplication).mockReturnValueOnce(APPLICATION);
-            const expected = APPLICATION;
-            const actual = dauphinService.rawToApplication(RAW_APPLICATION);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("getDemandeSubvention", () => {
-        it("should return subventions", async () => {
-            const expected = [{ fake: "data" }];
-            // @ts-expect-error: mock return value
-            dauphinPort.findBySiren.mockImplementationOnce(async () => expected);
-            // @ts-expect-error: mock return value
-            DauphinDtoAdapter.toDemandeSubvention.mockImplementationOnce(data => data);
-            const actual = await dauphinService.getDemandeSubvention(ASSOCIATION_IDENTIFIER);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    /**
-     * |-------------------------|
-     * |   Raw Grant Part        |
-     * |-------------------------|
-     */
-
-    describe("raw grant", () => {
-        const DATA = [{ gispro: { ej: "EJ" } }];
-
-        describe("getRawGrants", () => {
-            let findBySirenMock;
-            beforeAll(
-                () =>
-                    (findBySirenMock = jest
-                        .spyOn(dauphinPort, "findBySiren")
-                        // @ts-expect-error: mock
-                        .mockImplementation(jest.fn(() => DATA))),
-            );
-            afterAll(() => findBySirenMock.mockRestore());
-
-            it("should call findBySiren()", async () => {
-                await dauphinService.getRawGrants(ASSOCIATION_IDENTIFIER);
-                expect(findBySirenMock).toHaveBeenCalledWith(SIREN);
-            });
-
-            it("returns raw grant data", async () => {
-                const actual = await dauphinService.getRawGrants(ASSOCIATION_IDENTIFIER);
-                expect(actual).toMatchInlineSnapshot(`
-                    [
-                      {
-                        "data": {
-                          "gispro": {
-                            "ej": "EJ",
-                          },
-                        },
-                        "joinKey": "EJ",
-                        "provider": "dauphin",
-                        "type": "application",
-                      },
-                    ]
-                `);
-            });
-        });
-    });
-
-    describe("rawToCommon", () => {
-        const RAW = "RAW";
-        const ADAPTED = {};
-
-        beforeAll(() => {
-            DauphinDtoAdapter.toCommon
-                // @ts-expect-error: mock
-                .mockImplementation(input => input.toString());
-        });
-
-        afterAll(() => {
-            // @ts-expect-error: mock
-            DauphinDtoAdapter.toCommon.mockReset();
-        });
-
-        it("calls adapter with data from raw grant", () => {
-            // @ts-expect-error: mock
-            dauphinService.rawToCommon({ data: RAW });
-            expect(DauphinDtoAdapter.toCommon).toHaveBeenCalledWith(RAW);
-        });
-        it("returns result from adapter", () => {
-            // @ts-expect-error: mock
-            DauphinDtoAdapter.toCommon.mockReturnValueOnce(ADAPTED);
-            const expected = ADAPTED;
-            // @ts-expect-error: mock
-            const actual = dauphinService.rawToCommon({ data: RAW });
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    /**
-     * |-------------------------|
      * |   Caching Part          |
      * |-------------------------|
      */
@@ -194,7 +82,8 @@ describe("Dauphin Service", () => {
             //@ts-expect-error: mock
             mockBuildSearchHeader.mockImplementation(() => ({ headers: {} }));
             mockBuildFetchFromDateQuery.mockImplementation(jest.fn());
-            mockFormatAndReturnDto.mockImplementation(jest.fn(application => application));
+            // @ts-expect-error: ok
+            mockFormatAndReturnDto.mockImplementation(jest.fn((application, _updateDate) => application));
         });
 
         afterEach(() => {

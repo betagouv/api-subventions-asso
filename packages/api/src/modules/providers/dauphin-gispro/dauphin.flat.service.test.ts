@@ -139,7 +139,7 @@ describe("dauphin flat service", () => {
                 ]);
             });
             await dauphinFlatService.feedApplicationFlat();
-            const actual = logSpy.mock.calls[0];
+            const actual = logSpy.mock.calls.at(-1);
             expect(actual).toMatchSnapshot();
         });
 

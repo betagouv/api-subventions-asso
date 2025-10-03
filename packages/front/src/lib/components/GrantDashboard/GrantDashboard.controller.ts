@@ -3,7 +3,7 @@ import ApplicationInfoModal from "./Modals/ApplicationInfoModal.svelte";
 import PaymentsInfoModal from "./Modals/PaymentsInfoModal.svelte";
 import { getApplicationCells, getApplicationDashboardData, isGranted } from "./application.helper";
 import { getPaymentDashboardData, getPaymentsCells } from "./payments.helper";
-import type { FlatGrant, OnlyApplication } from "$lib/resources/@types/FlattenGrant";
+import type { FlatGrant } from "$lib/resources/@types/FlattenGrant";
 import { isSiret } from "$lib/helpers/identifierHelper";
 import associationPort from "$lib/resources/associations/association.port";
 import establishmentPort from "$lib/resources/establishments/establishment.port";
@@ -68,7 +68,7 @@ export class GrantDashboardController {
             if (exercise == null) return;
             this.selectedGrants.set(this.grantsByExercise[exercise]);
         });
-        this.selectedGrants.subscribe(grants => this.updateRows(grants));
+        this.selectedGrants.subscribe(grants => this.updateRows(grants as FlatGrant[]));
     }
 
     /*
@@ -128,14 +128,17 @@ export class GrantDashboardController {
 
     // Grants are expected to be ordered from API
     private splitGrantsByExercise(grants: FlatGrant[]) {
+        const byExercise: Record<string | number, FlatGrant[]> = {};
         return grants.reduce((byExercise, grant) => {
-            let exercise;
-            if (grant.payments?.length) exercise = String(new Date(grant.payments[0].dateOperation).getFullYear());
-            else exercise = String((grant as OnlyApplication).application.annee_demande);
-            if (!byExercise[exercise]) byExercise[exercise] = [grant];
-            else byExercise[exercise].push(grant);
+            const exercise = grant.application?.annee_demande ?? grant.payments?.[0]?.exerciceBudgetaire;
+            if (!exercise)
+                return byExercise; // improve this and display somewhere that some grants have no exercise
+            else {
+                if (!byExercise[exercise]) byExercise[exercise] = [grant];
+                else byExercise[exercise].push(grant);
+            }
             return byExercise;
-        }, {} as Record<string, FlatGrant[]>);
+        }, byExercise);
     }
 
     public async download() {

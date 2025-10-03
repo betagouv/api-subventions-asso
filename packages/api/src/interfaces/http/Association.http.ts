@@ -145,7 +145,7 @@ export class AssociationHttp extends Controller {
     public async getGrants(identifier: AssociationIdentifierDto, @Request() req): Promise<GetGrantsResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
         const grants = await grantService.getGrants(associationIdentifiers);
-        return { subventions: grants };
+        return { subventions: grants, count: grants.length };
     }
 
     /**
