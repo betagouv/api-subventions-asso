@@ -1,9 +1,9 @@
 import depositLogPort from "../../dataProviders/db/deposit-log/depositLog.port";
 import DepositScdlLogEntity from "./depositScdlLog.entity";
 import { CreateDepositScdlLogDto, DepositScdlLogDto } from "dto";
-import DepositLogAdapter from "../../dataProviders/db/deposit-log/DepositLog.adapter";
 import { ConflictError, NotFoundError } from "core";
 import depositScdlProcessCheckService from "./check/DepositScdlProcess.check.service";
+import DepositScdlLogDtoAdapter from "./depositScdlLog.dto.adapter";
 
 export class DepositScdlProcessService {
     FIRST_STEP = 1;
@@ -26,7 +26,7 @@ export class DepositScdlProcessService {
             throw new ConflictError("Deposit log already exists");
         }
         depositScdlProcessCheckService.validateCreate(createDepositScdlLogDto);
-        const depositLogEntity = DepositLogAdapter.createDepositScdlLogDtoToEntity(
+        const depositLogEntity = DepositScdlLogDtoAdapter.createDepositScdlLogDtoToEntity(
             createDepositScdlLogDto,
             userId,
             this.FIRST_STEP,

@@ -7,5 +7,5 @@ export default interface DepositScdlLogDbo {
     step: number;
     overwriteAlert?: boolean;
     permissionAlert?: boolean;
-    grantOrgSiret?: string;
+    allocatorSiret?: string;
 }

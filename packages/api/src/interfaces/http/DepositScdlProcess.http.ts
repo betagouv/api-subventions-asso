@@ -16,7 +16,7 @@ import {
 import { IdentifiedRequest } from "../../@types";
 import depositScdlProcessService from "../../modules/deposit-scdl-process/depositScdlProcess.service";
 import { CreateDepositScdlLogDto, DepositScdlLogResponseDto, DepositScdlLogDto } from "dto";
-import DepositLogAdapter from "../../dataProviders/db/deposit-log/DepositLog.adapter";
+import DepositScdlLogDtoAdapter from "../../modules/deposit-scdl-process/depositScdlLog.dto.adapter";
 
 @Route("/parcours-depot")
 @Security("jwt")
@@ -39,7 +39,7 @@ export class DepositScdlProcessHttp extends Controller {
             this.setStatus(204);
             return null;
         }
-        return DepositLogAdapter.entityToDepositScdlLogResponseDto(depositScdlLog);
+        return DepositScdlLogDtoAdapter.entityToDepositScdlLogResponseDto(depositScdlLog);
     }
 
     /**
@@ -61,7 +61,7 @@ export class DepositScdlProcessHttp extends Controller {
      * @summary Create a deposit log for the authenticated user
      * @param createDepositScdlLogDto
      * @param req
-     * @returns {DepositScdlLogDto} 201 - Deposit log created successfully
+     * @returns {DepositScdlLogResponseDto} 201 - Deposit log created successfully
      * @returns 400 - Bad Request, invalid payload
      * @returns 401 - Unauthorized
      * @returns 409 - Conflict, a deposit process already exists
@@ -74,13 +74,13 @@ export class DepositScdlProcessHttp extends Controller {
     public async createDepositLog(
         @Body() createDepositScdlLogDto: CreateDepositScdlLogDto,
         @Request() req: IdentifiedRequest,
-    ): Promise<CreateDepositScdlLogDto> {
+    ): Promise<DepositScdlLogResponseDto> {
         const newDepositLog = await depositScdlProcessService.createDepositLog(
             createDepositScdlLogDto,
             req.user._id.toString(),
         );
         this.setStatus(201);
-        return DepositLogAdapter.entityToCreateDepositScdlLogDto(newDepositLog);
+        return DepositScdlLogDtoAdapter.entityToDepositScdlLogResponseDto(newDepositLog);
     }
 
     /**
@@ -110,6 +110,6 @@ export class DepositScdlProcessHttp extends Controller {
             depositScdlLogDto,
             req.user._id.toString(),
         );
-        return DepositLogAdapter.entityToDepositScdlLogResponseDto(updatedDepositLog);
+        return DepositScdlLogDtoAdapter.entityToDepositScdlLogResponseDto(updatedDepositLog);
     }
 }

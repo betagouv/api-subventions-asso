@@ -8,7 +8,7 @@ export const DEPOSIT_LOG_ENTITY: DepositScdlLogEntity = {
     step: 1,
     updateDate: new Date("2025-09-26T00:00:00.000Z"),
     overwriteAlert: true,
-    grantOrgSiret: "12345678901234",
+    allocatorSiret: "12345678901234",
     permissionAlert: false,
 };
 
@@ -17,7 +17,7 @@ export const DEPOSIT_LOG_ENTITY_UPDATE: DepositScdlLogEntity = {
     step: 2,
     updateDate: new Date("2025-09-26T00:00:00.000Z"),
     overwriteAlert: true,
-    grantOrgSiret: "12345678901234",
+    allocatorSiret: "12345678901234",
 };
 
 export const DEPOSIT_LOG_DBO: DepositScdlLogDbo = {
@@ -27,25 +27,26 @@ export const DEPOSIT_LOG_DBO: DepositScdlLogDbo = {
     step: 1,
     overwriteAlert: true,
     permissionAlert: false,
-    grantOrgSiret: "12345678901234",
+    allocatorSiret: "12345678901234",
 };
 
 export const DEPOSIT_LOG_DTO: DepositScdlLogDto = {
     overwriteAlert: true,
-    grantOrgSiret: "12345678901234",
+    allocatorSiret: "12345678901234",
     permissionAlert: false,
 };
 
 export const CREATE_DEPOSIT_LOG_DTO: CreateDepositScdlLogDto = {
     overwriteAlert: true,
+    allocatorSiret: "12345678901234",
 };
 
 export const DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2: DepositScdlLogDto = {
-    grantOrgSiret: "12345678901234",
+    permissionAlert: true,
 };
 
 export const DEPOSIT_LOG_RESPONSE_DTO: DepositScdlLogResponseDto = {
-    step: 2,
+    step: 1,
     overwriteAlert: true,
-    grantOrgSiret: "12345678901234",
+    allocatorSiret: "12345678901234",
 };

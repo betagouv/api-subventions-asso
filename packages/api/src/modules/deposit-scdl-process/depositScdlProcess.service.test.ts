@@ -6,8 +6,8 @@ import {
 import depositScdlProcessService from "./depositScdlProcess.service";
 import DepositScdlLogEntity from "./depositScdlLog.entity";
 import { ConflictError, NotFoundError } from "core";
-import DepositLogAdapter from "../../dataProviders/db/deposit-log/DepositLog.adapter";
 import depositLogPort from "../../dataProviders/db/deposit-log/depositLog.port";
+import DepositScdlLogDtoAdapter from "./depositScdlLog.dto.adapter";
 
 jest.mock("./check/DepositScdlProcess.check.service");
 jest.mock("../../dataProviders/db/deposit-log/depositLog.port");
@@ -67,19 +67,21 @@ describe("DepositScdlProcessService", () => {
             Promise<DepositScdlLogEntity | null>,
             [string]
         >;
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
 
         it("Should return a DepositLog", async () => {
             mockGetDepositLog.mockResolvedValueOnce(null);
 
-            const expected = {
+            const expected: DepositScdlLogEntity = {
                 userId: USER_ID,
                 step: 1,
                 overwriteAlert: true,
                 updateDate: new Date(),
             };
 
-            jest.mocked(DepositLogAdapter.createDepositScdlLogDtoToEntity).mockReturnValue(expected);
-
+            jest.spyOn(DepositScdlLogDtoAdapter, "createDepositScdlLogDtoToEntity").mockReturnValue(expected);
             const actual = await depositScdlProcessService.createDepositLog(CREATE_DEPOSIT_LOG_DTO, USER_ID);
 
             expect(actual).toMatchObject(expected);

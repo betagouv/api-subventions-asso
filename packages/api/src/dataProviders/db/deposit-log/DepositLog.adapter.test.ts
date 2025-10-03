@@ -2,7 +2,6 @@ import DepositScdlLogDbo from "./DepositScdlLogDbo";
 import { ObjectId } from "mongodb";
 import DepositLogAdapter from "./DepositLog.adapter";
 import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/depositScdlLog.entity";
-import { CreateDepositScdlLogDto, DepositScdlLogDto } from "dto";
 import { DEPOSIT_LOG_ENTITY } from "../../../modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
 
 describe("DepositLogAdapter", () => {
@@ -16,7 +15,7 @@ describe("DepositLogAdapter", () => {
                 step: 1,
                 overwriteAlert: true,
                 permissionAlert: false,
-                grantOrgSiret: "12345678901234",
+                allocatorSiret: "12345678901234",
             };
 
             const result = DepositLogAdapter.dboToEntity(dbo);
@@ -27,7 +26,7 @@ describe("DepositLogAdapter", () => {
                 updateDate: dbo.updateDate,
                 overwriteAlert: dbo.overwriteAlert,
                 permissionAlert: dbo.permissionAlert,
-                grantOrgSiret: dbo.grantOrgSiret,
+                allocatorSiret: dbo.allocatorSiret,
             });
         });
     });
@@ -44,7 +43,7 @@ describe("DepositLogAdapter", () => {
                 step: entity.step,
                 overwriteAlert: entity.overwriteAlert,
                 permissionAlert: entity.permissionAlert,
-                grantOrgSiret: entity.grantOrgSiret,
+                allocatorSiret: entity.allocatorSiret,
             });
         });
 
@@ -52,85 +51,6 @@ describe("DepositLogAdapter", () => {
             const result = DepositLogAdapter.toDbo(DEPOSIT_LOG_ENTITY);
 
             expect(result.updateDate).toBeInstanceOf(Date);
-        });
-    });
-
-    describe("entityToDepositScdlLogDto", () => {
-        it("should convert DepositScdlLogEntity to DepositScdlLogDto", () => {
-            const entity: DepositScdlLogEntity = DEPOSIT_LOG_ENTITY;
-            const result = DepositLogAdapter.entityToDepositScdlLogDto(entity);
-
-            expect(result).toEqual({
-                overwriteAlert: entity.overwriteAlert,
-                grantOrgSiret: entity.grantOrgSiret,
-                permissionAlert: entity.permissionAlert,
-            });
-        });
-    });
-
-    describe("entityToCreateDepositScdlLogDto", () => {
-        it("should convert DepositScdlLogEntity to CreateDepositScdlLogDto", () => {
-            const entity: DepositScdlLogEntity = DEPOSIT_LOG_ENTITY;
-            const result = DepositLogAdapter.entityToCreateDepositScdlLogDto(entity);
-
-            expect(result).toEqual({
-                overwriteAlert: entity.overwriteAlert,
-            });
-        });
-    });
-
-    describe("entityToDepositScdlLogResponseDto", () => {
-        it("should convert DepositScdlLogEntity to DepositScdlLogResponseDto", () => {
-            const entity: DepositScdlLogEntity = DEPOSIT_LOG_ENTITY;
-            const result = DepositLogAdapter.entityToDepositScdlLogResponseDto(entity);
-
-            expect(result).toEqual({
-                overwriteAlert: entity.overwriteAlert,
-                grantOrgSiret: entity.grantOrgSiret,
-                permissionAlert: entity.permissionAlert,
-                step: entity.step,
-            });
-        });
-    });
-
-    describe("depositScdlLogDtoToEntity", () => {
-        it("should convert DepositScdlLogDto to DepositScdlLogEntity", () => {
-            const dto: DepositScdlLogDto = {
-                overwriteAlert: true,
-                grantOrgSiret: "12345678901234",
-                permissionAlert: true,
-            };
-            const userId = "user123";
-            const step = 3;
-
-            const result = DepositLogAdapter.depositScdlLogDtoToEntity(dto, userId, step);
-
-            expect(result).not.toBeNull();
-            expect(result).toMatchObject({
-                userId: userId,
-                step: step,
-                overwriteAlert: dto.overwriteAlert,
-                permissionAlert: dto.permissionAlert,
-                grantOrgSiret: dto.grantOrgSiret,
-            });
-        });
-    });
-
-    describe("createDepositScdlLogDtoToEntity", () => {
-        it("should convert CreateDepositScdlLogDto to DepositScdlLogEntity", () => {
-            const dto: CreateDepositScdlLogDto = {
-                overwriteAlert: true,
-            };
-            const userId = "user123";
-            const step = 1;
-
-            const result = DepositLogAdapter.createDepositScdlLogDtoToEntity(dto, userId, step);
-
-            expect(result).toMatchObject({
-                userId: userId,
-                step: step,
-                overwriteAlert: dto.overwriteAlert,
-            });
         });
     });
 });

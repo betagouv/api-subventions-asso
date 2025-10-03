@@ -6,52 +6,52 @@ import { DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2 } from "../__fixtures__/depositLog
 describe("DepositScdlProcess check service", () => {
     describe("validateCreate", () => {
         it("should accept valid data", () => {
-            const dto: CreateDepositScdlLogDto = { overwriteAlert: true };
+            const dto: CreateDepositScdlLogDto = { overwriteAlert: true, allocatorSiret: "12345678901234" };
 
-            const fn = () => depositScdlProcessCheckService.validateCreate(dto);
-
-            expect(fn).not.toThrow();
+            expect(() => depositScdlProcessCheckService.validateCreate(dto)).not.toThrow();
         });
 
         it("should throw BadRequestError if overwriteAlert is false", () => {
             const dto: CreateDepositScdlLogDto = { overwriteAlert: false };
 
-            const fn = () => depositScdlProcessCheckService.validateCreate(dto);
-
-            expect(fn).toThrow(BadRequestError);
-            expect(fn).toThrow("overwrite alert must be accepted");
+            expect(() => depositScdlProcessCheckService.validateCreate(dto)).toThrow(BadRequestError);
+            expect(() => depositScdlProcessCheckService.validateCreate(dto)).toThrow(
+                "overwrite alert must be accepted",
+            );
         });
     });
 
     describe("validateUpdateConsistency", () => {
         it("should accept valid data", () => {
-            const fn = () =>
-                depositScdlProcessCheckService.validateUpdateConsistency(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, 2);
-            expect(fn).not.toThrow();
+            expect(() =>
+                depositScdlProcessCheckService.validateUpdateConsistency(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, 2),
+            ).not.toThrow();
         });
 
         it("should throw BadRequestError if invalid step", () => {
-            const fn = () =>
-                depositScdlProcessCheckService.validateUpdateConsistency(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, 8);
-            expect(fn).toThrow(BadRequestError);
+            expect(() =>
+                depositScdlProcessCheckService.validateUpdateConsistency(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, 8),
+            ).toThrow(BadRequestError);
         });
 
         it("should throw ConflictError if inconsistency properties in step", () => {
-            const fn = () =>
-                depositScdlProcessCheckService.validateUpdateConsistency(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, 3);
-            expect(fn).toThrow(ConflictError);
+            expect(() =>
+                depositScdlProcessCheckService.validateUpdateConsistency(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, 1),
+            ).toThrow(ConflictError);
         });
 
         it("should throw ConflictError if not a siret", () => {
-            const wrongSiret: DepositScdlLogDto = { grantOrgSiret: "123456789" };
-            const fn = () => depositScdlProcessCheckService.validateUpdateConsistency(wrongSiret, 3);
-            expect(fn).toThrow(ConflictError);
+            const wrongSiret: DepositScdlLogDto = { allocatorSiret: "123456789" };
+            expect(() => depositScdlProcessCheckService.validateUpdateConsistency(wrongSiret, 1)).toThrow(
+                ConflictError,
+            );
         });
 
         it("should throw ConflictError if overwriteAlert not accepted", () => {
             const alertNotAccepted: DepositScdlLogDto = { overwriteAlert: false };
-            const fn = () => depositScdlProcessCheckService.validateUpdateConsistency(alertNotAccepted, 3);
-            expect(fn).toThrow(ConflictError);
+            expect(() => depositScdlProcessCheckService.validateUpdateConsistency(alertNotAccepted, 1)).toThrow(
+                ConflictError,
+            );
         });
     });
 });

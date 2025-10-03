@@ -90,7 +90,7 @@ describe("DepositScdlProcessHttp", () => {
             expect(result).toEqual({
                 step: STEP,
                 overwriteAlert: true,
-                grantOrgSiret: "12345678901234",
+                allocatorSiret: "12345678901234",
             });
         });
 

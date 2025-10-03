@@ -7,6 +7,9 @@ export class DepositScdlProcessCheckService {
         if (!dto.overwriteAlert) {
             throw new BadRequestError("overwrite alert must be accepted");
         }
+        if (!Siret.isSiret(dto.allocatorSiret)) {
+            throw new ConflictError("allocatorSiret must be a valid SIRET");
+        }
     }
 
     public validateUpdateConsistency(depositScdlLogDto: DepositScdlLogDto, step: number) {
@@ -16,9 +19,8 @@ export class DepositScdlProcessCheckService {
 
     private ensureExactPropertiesForStep(step: number, depositScdlLogDto: DepositScdlLogDto) {
         const allowedPropsByStep: Record<number, (keyof DepositScdlLogDto)[]> = {
-            1: ["overwriteAlert"],
-            2: ["grantOrgSiret"],
-            3: ["permissionAlert"],
+            1: ["overwriteAlert", "allocatorSiret"],
+            2: ["permissionAlert"], // todo : add fileName and server side validation
         };
 
         const allowedProps = allowedPropsByStep[step];
@@ -27,7 +29,7 @@ export class DepositScdlProcessCheckService {
         }
 
         const dtoKeys = Object.entries(depositScdlLogDto)
-            .filter(([_, value]) => value !== undefined)
+            .filter(([_key, value]) => value !== undefined)
             .map(([key]) => key);
 
         const isPropertiesInconsistant =
@@ -50,9 +52,9 @@ export class DepositScdlProcessCheckService {
                 throw new ConflictError("permissionAlert must be true");
             }
         }
-        if (depositScdlLogDto.grantOrgSiret !== undefined) {
-            if (!Siret.isSiret(depositScdlLogDto.grantOrgSiret)) {
-                throw new ConflictError("grantOrgSiret must be a valid SIRET");
+        if (depositScdlLogDto.allocatorSiret !== undefined) {
+            if (!Siret.isSiret(depositScdlLogDto.allocatorSiret)) {
+                throw new ConflictError("allocatorSiret must be a valid SIRET");
             }
         }
     }

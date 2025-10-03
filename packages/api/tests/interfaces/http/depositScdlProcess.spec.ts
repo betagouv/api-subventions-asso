@@ -8,6 +8,7 @@ import {
     CREATE_DEPOSIT_LOG_DTO,
     DEPOSIT_LOG_DTO,
     DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
+    DEPOSIT_LOG_RESPONSE_DTO,
 } from "../../../src/modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
 import { DepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
 
@@ -91,7 +92,7 @@ describe("/parcours-depot", () => {
                 .set("Accept", "application/json");
 
             expect(response.statusCode).toBe(201);
-            expect(response.body).toEqual(CREATE_DEPOSIT_LOG_DTO);
+            expect(response.body).toEqual(DEPOSIT_LOG_RESPONSE_DTO);
         });
 
         it("should return 409 when user already has deposit log", async () => {
@@ -134,7 +135,7 @@ describe("/parcours-depot", () => {
             const token = await createAndGetUserToken();
             const userId = (await getDefaultUser())!._id.toString();
 
-            await depositLogPort.insertOne(new DepositScdlLogEntity(userId, 1, undefined, true));
+            await depositLogPort.insertOne(new DepositScdlLogEntity(userId, 1, undefined, true, "12345678901234"));
 
             const response = await request(g.app)
                 .patch(`/parcours-depot/step/2`)
@@ -143,8 +144,9 @@ describe("/parcours-depot", () => {
                 .set("Accept", "application/json");
 
             const expected: DepositScdlLogResponseDto = {
-                grantOrgSiret: "12345678901234",
+                allocatorSiret: "12345678901234",
                 overwriteAlert: true,
+                permissionAlert: true,
                 step: 2,
             };
 
@@ -176,7 +178,7 @@ describe("/parcours-depot", () => {
                 userId: depositLogEntity.userId,
                 step: depositLogEntity.step,
                 updateDate: existingLog?.updateDate,
-                grantOrgSiret: depositLogEntity.grantOrgSiret,
+                allocatorSiret: depositLogEntity.allocatorSiret,
                 overwriteAlert: depositLogEntity.overwriteAlert,
             });
         });
