@@ -4,7 +4,7 @@ import { GenericAdapter } from "../../../../shared/GenericAdapter";
 import { ScdlGrantDbo } from "../dbo/ScdlGrantDbo";
 import Siret from "../../../../identifierObjects/Siret";
 import MiscScdlGrantEntity from "../entities/MiscScdlGrantEntity";
-import { ScdlGrantDto } from "dto/build/scdl/ScdlGrantDto";
+import { ScdlGrantDto } from "dto";
 
 export default class MiscScdlAdapter {
     private static normalizePaymentConditions(rawValue?: string): PaymentCondition | null {
