@@ -51,6 +51,10 @@ describe("AssociationHttp", () => {
     });
 
     describe("getGrants", () => {
+        beforeAll(() => {
+            jest.mocked(grantService.getGrants).mockResolvedValue([]);
+        });
+
         it("should call grantService.getGrants()", async () => {
             await controller.getGrants(IDENTIFIER.value, REQ);
             expect(grantService.getGrants).toHaveBeenCalledWith(ASSOCIATION_ID);

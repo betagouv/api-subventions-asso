@@ -19,7 +19,9 @@ export type FlatGrant = OnlyApplication | OnlyPayments | ApplicationWithPayments
 
 export type FlatPayment = FlatChorusPayment | FlatFonjepPayment;
 
+// reflect BasePayment without ProviderValue from DTO package
 interface FlatBasePayment {
+    exerciceBudgetaire: number;
     versementKey: string;
     siret: SiretDto;
     amount: number;
@@ -28,6 +30,7 @@ interface FlatBasePayment {
     libelleProgramme?: string;
 }
 
+// reflect ChorusPayment without ProviderValue from DTO package
 interface FlatChorusPayment extends FlatBasePayment {
     ej: string;
     centreFinancier?: string;
@@ -45,6 +48,7 @@ interface FlatChorusPayment extends FlatBasePayment {
     bop?: string;
 }
 
+// reflect FonjepPayment without ProviderValue from DTO package
 interface FlatFonjepPayment extends FlatBasePayment {
     codePoste: string;
     periodeDebut: string;
@@ -56,6 +60,7 @@ interface FlatFonjepPayment extends FlatBasePayment {
     bop?: number;
 }
 
+// reflect DemandeSubvention without ProviderValue from DTO package
 export interface FlatApplication {
     service_instructeur: string;
     siret: SiretDto;

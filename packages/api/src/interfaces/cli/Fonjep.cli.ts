@@ -61,4 +61,16 @@ export default class FonjepCli extends CliController {
 
         this.logger.logIC("Fonjep collections created or updated");
     }
+
+    // ONLY USED FOR TEST / CLEAN PURPOSE AFTER BUG DETECTION TO AVOID REIMPORTING FONJEP DATA
+    // creates all fonjep payment-flat from collection
+    async initPaymentFlat() {
+        const { thirdParties, positions, payments } = await fonjepService.getPaymentFlatCollections();
+        // TODO: make PaymentFlat use the same ReadableStream architecture yo be ISO with ApplicationFlat ?
+        await fonjepService.createPaymentFlatEntitiesFromCollections({
+            thirdParties,
+            positions,
+            payments,
+        });
+    }
 }

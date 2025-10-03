@@ -62,7 +62,7 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
 
     // used in test
     public async findAll() {
-        return (await this.collection.find({})).toArray();
+        return (await this.collection.find({})).map(dbo => PaymentFlatAdapter.dboToEntity(dbo)).toArray();
     }
 
     public cursorFind(query: DefaultObject<unknown> = {}, projection: DefaultObject<unknown> = {}) {
@@ -86,7 +86,6 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
     public async findBySiret(siret: Siret) {
         return this.collection
             .find({
-                provider: "chorus", // remove to enable fonjep when application flat is ready
                 typeIdEtablissementBeneficiaire: siret.name,
                 idEtablissementBeneficiaire: siret.value,
             })
@@ -97,7 +96,6 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
     public async findBySiren(siren: Siren) {
         return this.collection
             .find({
-                provider: "chorus", // remove to enable fonjep when application flat is ready
                 typeIdEntrepriseBeneficiaire: siren.name,
                 idEntrepriseBeneficiaire: siren.value,
             })

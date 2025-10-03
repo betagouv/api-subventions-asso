@@ -78,7 +78,10 @@ export class EstablishmentHttp extends Controller {
     public async getGrants(identifier: EstablishmentIdentifierDto, @Request() req): Promise<GetGrantsResponseDto> {
         const estabIdentifier = req.estabIdentifier;
         const grants = await establishmentService.getGrants(estabIdentifier);
-        return { subventions: grants };
+        return {
+            subventions: grants,
+            count: grants.length,
+        };
     }
 
     /**

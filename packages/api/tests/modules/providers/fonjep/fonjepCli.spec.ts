@@ -30,6 +30,20 @@ describe("FonjepCli", () => {
         beforeAll(async () => {
             cli = new FonjepCli();
         });
+
+        describe("test with all information arround one code poste", () => {
+            it("adds applications flat", async () => {
+                await cli.parse(path.resolve(__dirname, "./__fixtures__/fonjep-one-code-full.xlsx"), "2025-09-30");
+                const actual = await applicationFlatPort.findAll();
+                expect(actual).toMatchSnapshot();
+            });
+            it("adds payments flat", async () => {
+                await cli.parse(path.resolve(__dirname, "./__fixtures__/fonjep-one-code-full.xlsx"), "2025-09-30");
+                const actual = await paymentFlatPort.findAll();
+                expect(actual).toMatchSnapshot();
+            });
+        });
+
         it("should remove temporary collections", async () => {
             await cli.parse(FILEPATH, EXPORT_DATE);
             const collections = await db.listCollections().toArray();

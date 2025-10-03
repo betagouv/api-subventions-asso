@@ -9,7 +9,7 @@ exports[`OsirisCli application flat commands initApplicationFlat creates applica
     "applicationId": "osiris-DR-CENT-21-0002",
     "applicationProviderId": "DR-CENT-21-0002",
     "beneficiaryEstablishmentId": "10000000000001",
-    "beneficiaryEstablishmentIdType": "10000000000001",
+    "beneficiaryEstablishmentIdType": "siret",
     "budgetaryYear": 2023,
     "cofinancersIdType": null,
     "cofinancersNames": [
@@ -70,7 +70,7 @@ exports[`OsirisCli application flat commands syncApplicationFlat creates applica
     "applicationId": "osiris-DR-CENT-21-0002",
     "applicationProviderId": "DR-CENT-21-0002",
     "beneficiaryEstablishmentId": "10000000000001",
-    "beneficiaryEstablishmentIdType": "10000000000001",
+    "beneficiaryEstablishmentIdType": "siret",
     "budgetaryYear": 2023,
     "cofinancersIdType": null,
     "cofinancersNames": [
