@@ -4,10 +4,11 @@ import { IdentifiedRequest } from "../../@types";
 import { ObjectId } from "mongodb";
 import {
     CREATE_DEPOSIT_LOG_DTO,
-    DEPOSIT_LOG_ENTITY,
-    DEPOSIT_LOG_ENTITY_UPDATE,
+    DEPOSIT_LOG_ENTITY_STEP_1,
+    DEPOSIT_LOG_ENTITY_STEP_2,
     DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
     DEPOSIT_LOG_RESPONSE_DTO,
+    DEPOSIT_LOG_RESPONSE_DTO_STEP_2,
 } from "../../modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
 import DepositScdlLogEntity from "../../modules/deposit-scdl-process/depositScdlLog.entity";
 import { ConflictError, NotFoundError } from "core";
@@ -27,9 +28,9 @@ describe("DepositScdlProcessHttp", () => {
         });
 
         it("should return depositLogDto", async () => {
-            getDepositLogSpy.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_UPDATE);
+            getDepositLogSpy.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_2);
             const result = await controller.getDepositLog(REQ);
-            expect(result).toEqual(DEPOSIT_LOG_RESPONSE_DTO);
+            expect(result).toEqual(DEPOSIT_LOG_RESPONSE_DTO_STEP_2);
         });
     });
 
@@ -58,9 +59,9 @@ describe("DepositScdlProcessHttp", () => {
         });
 
         it("should return CreateDepositLogDto", async () => {
-            createDepositLogSpy.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY);
+            createDepositLogSpy.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_1);
             const result = await controller.createDepositLog(CREATE_DEPOSIT_LOG_DTO, REQ);
-            expect(result).toEqual(CREATE_DEPOSIT_LOG_DTO);
+            expect(result).toEqual(DEPOSIT_LOG_RESPONSE_DTO);
         });
 
         it("should reject and throw ConcliftError when user has already a deposit in progress", async () => {
@@ -85,12 +86,13 @@ describe("DepositScdlProcessHttp", () => {
         });
 
         it("should return DepositScdlLogResponseDto", async () => {
-            updateDepositLogSpy.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_UPDATE);
+            updateDepositLogSpy.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_2);
             const result = await controller.updateDepositLog(STEP, DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, REQ);
             expect(result).toEqual({
                 step: STEP,
                 overwriteAlert: true,
                 allocatorSiret: "12345678901234",
+                permissionAlert: true,
             });
         });
 

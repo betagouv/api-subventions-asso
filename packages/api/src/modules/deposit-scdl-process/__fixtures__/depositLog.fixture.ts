@@ -12,12 +12,21 @@ export const DEPOSIT_LOG_ENTITY: DepositScdlLogEntity = {
     permissionAlert: false,
 };
 
-export const DEPOSIT_LOG_ENTITY_UPDATE: DepositScdlLogEntity = {
+export const DEPOSIT_LOG_ENTITY_STEP_1: DepositScdlLogEntity = {
     userId: "68d6ab9b48ce4a950f7e96df",
-    step: 2,
+    step: 1,
     updateDate: new Date("2025-09-26T00:00:00.000Z"),
     overwriteAlert: true,
     allocatorSiret: "12345678901234",
+};
+
+export const DEPOSIT_LOG_ENTITY_STEP_2: DepositScdlLogEntity = {
+    userId: "68d6ab9b48ce4a950f7e96df",
+    step: 2,
+    updateDate: new Date("2025-09-26T00:00:00.000Z"),
+    permissionAlert: true,
+    allocatorSiret: "12345678901234",
+    overwriteAlert: true,
 };
 
 export const DEPOSIT_LOG_DBO: DepositScdlLogDbo = {
@@ -49,4 +58,11 @@ export const DEPOSIT_LOG_RESPONSE_DTO: DepositScdlLogResponseDto = {
     step: 1,
     overwriteAlert: true,
     allocatorSiret: "12345678901234",
+};
+
+export const DEPOSIT_LOG_RESPONSE_DTO_STEP_2: DepositScdlLogResponseDto = {
+    step: 2,
+    overwriteAlert: true,
+    allocatorSiret: "12345678901234",
+    permissionAlert: true,
 };
