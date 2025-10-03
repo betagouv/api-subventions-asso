@@ -15,12 +15,22 @@ const connectionOptions = {
 
 const mongoClient: mongoDB.MongoClient = new mongoDB.MongoClient(MONGO_URL, connectionOptions);
 
-export const connectDB = () =>
+export const connectDB = () => {
     mongoClient.connect().catch(reason => {
         console.log("MONGO CONNECTION ERROR\n");
         console.error(reason);
         process.exit(1);
     });
+
+    mongoClient.on("connectionClosed", event => {
+        console.log("Mongo connection closed, trying to reconnect...", event);
+        mongoClient.connect().catch(reason => {
+            console.log("MONGO CONNECTION ERROR\n");
+            console.error(reason);
+            process.exit(1);
+        });
+    });
+};
 
 export const client = mongoClient;
 
