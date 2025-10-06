@@ -16,3 +16,4 @@ export * from "./documents";
 export * from "./providers/dataLog";
 export * from "./dataViz";
 export * from "./flat";
+export * from "./depositScdlProcess";

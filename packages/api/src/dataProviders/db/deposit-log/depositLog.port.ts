@@ -1,0 +1,47 @@
+import MongoPort from "../../../shared/MongoPort";
+import DepositLogAdapter from "./DepositLog.adapter";
+import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/depositScdlLog.entity";
+import DepositScdlLogDbo from "./DepositScdlLogDbo";
+import { NotFoundError } from "core";
+
+class DepositLogPort extends MongoPort<DepositScdlLogDbo> {
+    collectionName = "deposit-log";
+
+    async createIndexes() {
+        await this.collection.createIndex({ userId: 1 }, { unique: true });
+    }
+
+    public insertOne(entity: DepositScdlLogEntity) {
+        return this.collection.insertOne(DepositLogAdapter.toDbo(entity));
+    }
+
+    async findOneByUserId(userId: string): Promise<DepositScdlLogEntity | null> {
+        const depositLogDbo = await this.collection.findOne({ userId });
+        if (!depositLogDbo) return null;
+        return DepositLogAdapter.dboToEntity(depositLogDbo);
+    }
+
+    async deleteByUserId(userId: string) {
+        const result = await this.collection.deleteOne({ userId });
+        return result.deletedCount > 0;
+    }
+
+    async updatePartial(data: Partial<DepositScdlLogEntity>): Promise<DepositScdlLogEntity> {
+        const { step, userId, ...toUpdate } = data;
+
+        const depositLogDbo = await this.collection.findOneAndUpdate(
+            { userId: userId },
+            { $set: { ...toUpdate, updateDate: new Date() }, $max: { step: step } },
+            { returnDocument: "after" },
+        );
+
+        if (!depositLogDbo) {
+            throw new NotFoundError("Deposit log not found");
+        }
+        return DepositLogAdapter.dboToEntity(depositLogDbo);
+    }
+}
+
+const depositLogPort = new DepositLogPort();
+
+export default depositLogPort;
