@@ -16,14 +16,23 @@ const connectionOptions = {
 const mongoClient: mongoDB.MongoClient = new mongoDB.MongoClient(MONGO_URL, connectionOptions);
 
 export const connectDB = () => {
-    mongoClient.connect().catch(reason => {
-        console.log("MONGO CONNECTION ERROR\n");
-        console.error(reason);
-        process.exit(1);
-    });
+    mongoClient
+        .connect()
+        .catch(reason => {
+            console.log("MONGO CONNECTION ERROR\n");
+            console.error(reason);
+            process.exit(1);
+        })
+        .finally(() => console.log("End of mongo connection process"));
+
+    mongoClient.on("connectionCreated", _event => console.log("datasub - connection created"));
+
+    mongoClient.on("close", _event => console.log("datasub - connection closed"));
+
+    mongoClient.on("serverClosed", _event => console.log("datasub - mongo server closed"));
 
     mongoClient.on("connectionClosed", event => {
-        console.log("Mongo connection closed, trying to reconnect...", event);
+        console.log("datasub - Mongo connection closed, trying to reconnect...", event);
         mongoClient.connect().catch(reason => {
             console.log("MONGO CONNECTION ERROR\n");
             console.error(reason);
