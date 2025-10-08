@@ -4,6 +4,7 @@ import userStatsService from "../../modules/user/services/stats/user.stats.servi
 import userActivationService from "../../modules/user/services/activation/user.activation.service";
 import userCrudService from "../../modules/user/services/crud/user.crud.service";
 import { DEFAULT_PASSWORD } from "../../../tests/__helpers__/userHelper";
+import userRgpdService from "../../modules/user/services/rgpd/user.rgpd.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class UserCli {
@@ -26,5 +27,13 @@ export default class UserCli {
 
     updateNbRequests() {
         return userStatsService.updateNbRequests();
+    }
+
+    warnInactivity() {
+        return userRgpdService.warnDisableInactive();
+    }
+
+    removeInactiveUsers() {
+        return userRgpdService.bulkDisableInactive();
     }
 }
