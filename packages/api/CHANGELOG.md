@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.74.0](https://github.com/betagouv/api-subventions-asso/compare/v0.72.4...v0.74.0) (2025-10-08)
+
+### Bug Fixes
+
+- **api:** [#3392](https://github.com/betagouv/api-subventions-asso/issues/3392) replace cast by instance ([#3658](https://github.com/betagouv/api-subventions-asso/issues/3658)) ([bb77f68](https://github.com/betagouv/api-subventions-asso/commit/bb77f68f580f1762e31630fb411d3d7511c98f80))
+- **api:** allow disk use for dauphin init application flat ([f616ee0](https://github.com/betagouv/api-subventions-asso/commit/f616ee017a077e6088f725baa9e7ebba343a3b44))
+- **api:** increase API call rate limit ([4a35622](https://github.com/betagouv/api-subventions-asso/commit/4a3562251eb0e0fc56c7f518e2057dd0f4c5e866))
+
+### Features
+
+- **api,dto:** [#3275](https://github.com/betagouv/api-subventions-asso/issues/3275) [#3524](https://github.com/betagouv/api-subventions-asso/issues/3524) add http controllers to serve flat data ([#3615](https://github.com/betagouv/api-subventions-asso/issues/3615)) ([6ccd8c5](https://github.com/betagouv/api-subventions-asso/commit/6ccd8c50fb28f842efda0fa8f9eaa240a482df68))
+- **api:** [#3507](https://github.com/betagouv/api-subventions-asso/issues/3507) add update date to payment flat ([#3644](https://github.com/betagouv/api-subventions-asso/issues/3644)) ([fcf706c](https://github.com/betagouv/api-subventions-asso/commit/fcf706ca683a638bf3718ee1bbabcd9aa90fb717))
+- **api:** [#3583](https://github.com/betagouv/api-subventions-asso/issues/3583) use flat as application and grant provider ([#3645](https://github.com/betagouv/api-subventions-asso/issues/3645)) ([3677c42](https://github.com/betagouv/api-subventions-asso/commit/3677c426bace40c5d868ead16fb04a3acb9f4a74))
+- **api:** [#3594](https://github.com/betagouv/api-subventions-asso/issues/3594) ds data to application flat ([#3599](https://github.com/betagouv/api-subventions-asso/issues/3599)) ([16d0ead](https://github.com/betagouv/api-subventions-asso/commit/16d0eadf80fb80205157d5625d7ae6d07fda0e1e))
+- **api:** [#3612](https://github.com/betagouv/api-subventions-asso/issues/3612) added scdl exercice path ([#3649](https://github.com/betagouv/api-subventions-asso/issues/3649)) ([0351396](https://github.com/betagouv/api-subventions-asso/commit/0351396173e8d9f934705010f946cf72698eb023))
+- **api:** [#3622](https://github.com/betagouv/api-subventions-asso/issues/3622) deposit process set up ([#3659](https://github.com/betagouv/api-subventions-asso/issues/3659)) ([67ba000](https://github.com/betagouv/api-subventions-asso/commit/67ba00048d8ce4e77014b7ef4321d8155565d374))
+- **api:** [#3652](https://github.com/betagouv/api-subventions-asso/issues/3652) add CLI methods to test CRONs ([#3669](https://github.com/betagouv/api-subventions-asso/issues/3669)) ([7194d6c](https://github.com/betagouv/api-subventions-asso/commit/7194d6c73febba2114c386ac5a91549f13138955))
+
 # [0.73.0](https://github.com/betagouv/api-subventions-asso/compare/v0.72.1...v0.73.0) (2025-09-03)
 
 ### Features

@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.74.0](https://github.com/betagouv/datasubvention/compare/v0.72.4...v0.74.0) (2025-10-08)
+
+### Features
+
+- **api:** [#3583](https://github.com/betagouv/datasubvention/issues/3583) use flat as application and grant provider ([#3645](https://github.com/betagouv/datasubvention/issues/3645)) ([3677c42](https://github.com/betagouv/datasubvention/commit/3677c426bace40c5d868ead16fb04a3acb9f4a74))
+- **front:** [#3617](https://github.com/betagouv/datasubvention/issues/3617) homepage deposit route ([#3650](https://github.com/betagouv/datasubvention/issues/3650)) ([b65cafa](https://github.com/betagouv/datasubvention/commit/b65cafaeedf7456ceb622ec981ab5082c7135dce))
+
 # [0.73.0](https://github.com/betagouv/datasubvention/compare/v0.72.1...v0.73.0) (2025-09-03)
 
 **Note:** Version bump only for package front
