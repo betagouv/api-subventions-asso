@@ -1,6 +1,6 @@
 import { CreateDepositScdlLogDto, DepositScdlLogDto } from "dto";
 import depositScdlProcessCheckService from "./DepositScdlProcess.check.service";
-import { BadRequestError, ConflictError } from "core";
+import { BadRequestError } from "core";
 import { DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2 } from "../__fixtures__/depositLog.fixture";
 
 describe("DepositScdlProcess check service", () => {
@@ -34,23 +34,23 @@ describe("DepositScdlProcess check service", () => {
             ).toThrow(BadRequestError);
         });
 
-        it("should throw ConflictError if inconsistency properties in step", () => {
+        it("should throw BadRequestError if inconsistency properties in step", () => {
             expect(() =>
                 depositScdlProcessCheckService.validateUpdateConsistency(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, 1),
-            ).toThrow(ConflictError);
+            ).toThrow(BadRequestError);
         });
 
-        it("should throw ConflictError if not a siret", () => {
+        it("should throw BadRequestError if not a siret", () => {
             const wrongSiret: DepositScdlLogDto = { allocatorSiret: "123456789" };
             expect(() => depositScdlProcessCheckService.validateUpdateConsistency(wrongSiret, 1)).toThrow(
-                ConflictError,
+                BadRequestError,
             );
         });
 
-        it("should throw ConflictError if overwriteAlert not accepted", () => {
+        it("should throw BadRequestError if overwriteAlert not accepted", () => {
             const alertNotAccepted: DepositScdlLogDto = { overwriteAlert: false };
             expect(() => depositScdlProcessCheckService.validateUpdateConsistency(alertNotAccepted, 1)).toThrow(
-                ConflictError,
+                BadRequestError,
             );
         });
     });

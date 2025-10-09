@@ -57,7 +57,7 @@ class RequestsService {
         const typedError = new ErrorClass(
             {
                 message: error?.response?.data.message || error.message,
-                code: error?.response?.data.code,
+                code: error?.response?.data.code || error.status,
             },
             error,
         );

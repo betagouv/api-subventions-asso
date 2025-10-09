@@ -1,4 +1,7 @@
 <script>
+    import DepositScdlController from "./DepositScdl.controller";
+
+    const controller = new DepositScdlController();
 </script>
 
 <div class="fr-container fr-mt-14v">
@@ -31,7 +34,7 @@
                 </p>
             </div>
             <div class="text-center">
-                <button class="fr-btn" type="button">Débuter</button>
+                <button on:click={controller.goToStep1} class="fr-btn" type="button">Débuter</button>
             </div>
         </div>
     </div>
