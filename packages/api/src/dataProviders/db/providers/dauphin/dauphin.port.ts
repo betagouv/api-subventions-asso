@@ -162,6 +162,9 @@ export class DauphinPort extends MongoPort<DauphinGisproDbo> {
                 { allowDiskUse: true },
             )
             .toArray();
+
+        // create index for gispro join used in joinGisproToSimplified()
+        await this.collection.createIndex({ referenceAdministrative: 1 });
     }
 
     async joinGisproToSimplified() {
