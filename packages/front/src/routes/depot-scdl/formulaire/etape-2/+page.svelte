@@ -1,5 +1,5 @@
 <script>
-    import StepTwoController from "./StepTwoController";
+    import StepTwoController from "./StepTwo.controller";
     import InfoBox from "$lib/components/InfoBox.svelte";
 
     const controller = new StepTwoController();

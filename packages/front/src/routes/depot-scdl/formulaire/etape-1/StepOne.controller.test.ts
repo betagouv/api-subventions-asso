@@ -1,4 +1,4 @@
-import StepOneController from "./StepOneController";
+import StepOneController from "./StepOne.controller";
 import * as routerService from "$lib/services/router.service";
 
 vi.mock("$lib/resources/auth/auth.service");

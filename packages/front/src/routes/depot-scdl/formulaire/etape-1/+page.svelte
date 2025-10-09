@@ -1,7 +1,7 @@
 <script>
     import Alert from "$lib/dsfr/Alert.svelte";
     import Checkbox from "$lib/dsfr/Checkbox.svelte";
-    import StepOneController from "./StepOneController";
+    import StepOneController from "./StepOne.controller";
 
     const checkboxOptions = [
         {

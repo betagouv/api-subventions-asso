@@ -1,5 +1,5 @@
 import * as routerService from "$lib/services/router.service";
-import StepTwoController from "./StepTwoController";
+import StepTwoController from "./StepTwo.controller";
 import depositLogService from "$lib/resources/deposit-log/depositLog.service";
 import type { CreateDepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
 import ConflictError from "../../../../lib/errors/ConflictError";
