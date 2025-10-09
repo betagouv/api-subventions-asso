@@ -1,5 +1,5 @@
 import StaticError from "./StaticError";
-import { NotFoundError, UnauthorizedError, BadRequestError } from "./index";
+import { ConflictError, NotFoundError, UnauthorizedError, BadRequestError } from "./index";
 
 export class ErrorsService {
     axiosErrorToError(e) {
@@ -11,6 +11,8 @@ export class ErrorsService {
                 return BadRequestError;
             case NotFoundError.httpCode:
                 return NotFoundError;
+            case ConflictError.httpCode:
+                return ConflictError;
         }
 
         return this._buildUnknownError(e.response?.status);
