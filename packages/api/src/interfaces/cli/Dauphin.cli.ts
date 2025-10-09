@@ -24,4 +24,9 @@ export default class DauphinCli {
     initApplicationFlat() {
         return dauphinFlatService.feedApplicationFlat();
     }
+
+    async prepareFlat() {
+        await dauphinFlatService.generateTempJoinedCollection();
+        console.log("dauphin simplified collection created");
+    }
 }

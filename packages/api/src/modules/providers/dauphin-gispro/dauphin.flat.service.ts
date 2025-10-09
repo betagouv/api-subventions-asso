@@ -14,14 +14,16 @@ export class DauphinFlatService implements ApplicationFlatProvider {
      */
 
     async generateTempJoinedCollection() {
+        console.log("creating simplified dauphin...");
         await dauphinPort.createSimplifiedDauphinBeforeJoin();
+        console.log("joining simplified dauphin with gispro data...");
         await dauphinPort.joinGisproToSimplified();
+        console.log("simplified collection created");
     }
 
     async feedApplicationFlat() {
-        console.log("Generating simplified and joined collections...");
-        await this.generateTempJoinedCollection();
-        console.log("Start transforming data into application...");
+        // await this.generateTempJoinedCollection();
+        console.log("Start transforming data into flat applications...");
         const cursor = dauphinPort.findAllTempCursor();
         const errors: InconsistentAggregationError[] = [];
         const stream = cursorToStream(cursor, simplified => {
