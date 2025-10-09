@@ -1,10 +1,12 @@
 <script>
     import StepTwoController from "./StepTwoController";
+    import InfoBox from "$lib/components/InfoBox.svelte";
 
     const controller = new StepTwoController();
 
     let inputValue = "";
     let touched = false;
+    const infoBoxTitle = "💡 Vous ne connaissez pas le SIRET de l’attribuant ?";
 
     $: isValid = inputValue && controller.isCorrectSiret(inputValue);
     $: hasError = touched && inputValue && !isValid;
@@ -34,20 +36,16 @@
     </div>
 </div>
 
-<div class="dsfr-doc-edit background-custom-alt-blue-france fr-p-8v fr-mb-6v">
-    <p class="fr-text--lg fr-text--bold">💡 Vous ne connaissez pas le SIRET de l’attribuant ?</p>
-
-    <div class="dsfr-doc-edit__description">
-        <p class="fr-mb-4v">Vous pouvez :</p>
-        <ul>
-            <li>regarder dans votre fichier Excel s'il y figure</li>
-            <li>
-                le rechercher sur
-                <a class="fr-link" href="https://annuaire-entreprises.data.gouv.fr/">Annuaire Entreprises →</a>
-            </li>
-        </ul>
-    </div>
-</div>
+<InfoBox title={infoBoxTitle}>
+    <p class="fr-mb-4v">Vous pouvez :</p>
+    <ul>
+        <li>regarder dans votre fichier Excel s'il y figure</li>
+        <li>
+            le rechercher sur
+            <a class="fr-link" href="https://annuaire-entreprises.data.gouv.fr/">Annuaire Entreprises →</a>
+        </li>
+    </ul>
+</InfoBox>
 
 <div>
     <button on:click={controller.goToStep1} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">Retour</button>
@@ -60,9 +58,3 @@
         Valider
     </button>
 </div>
-
-<style>
-    .background-custom-alt-blue-france {
-        background-color: var(--background-alt-blue-france);
-    }
-</style>
