@@ -19,6 +19,16 @@ describe("StepIndicatorController", () => {
             const controller = new StepIndicatorController(4, steps);
             expect(controller.currentStepTitle).toBe("");
         });
+
+        it("should update currentStepTitle when currentStep changes", () => {
+            const controller = new StepIndicatorController(1, steps);
+
+            controller.currentStep = 2;
+            expect(controller.currentStepTitle).toBe("step 2");
+
+            controller.currentStep = 3;
+            expect(controller.currentStepTitle).toBe("step 3");
+        });
     });
 
     describe("nextStepTitle", () => {
@@ -31,6 +41,16 @@ describe("StepIndicatorController", () => {
         it("should return empty string if currentStep is the last step", () => {
             const controller = new StepIndicatorController(3, steps);
             expect(controller.currentStepTitle).toBe("step 3");
+            expect(controller.nextStepTitle).toBe("");
+        });
+
+        it("should update nextStepTitle when currentStep changes", () => {
+            const controller = new StepIndicatorController(1, steps);
+
+            controller.currentStep = 2;
+            expect(controller.nextStepTitle).toBe("step 3");
+
+            controller.currentStep = 3;
             expect(controller.nextStepTitle).toBe("");
         });
     });

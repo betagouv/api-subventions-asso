@@ -2,15 +2,11 @@
     import StepIndicatorController from "$lib/components/StepIndicator/StepIndicator.controller";
 
     export let currentStep: number;
-    const stepsDesc = [
-        "Information sur la mise à jour des données",
-        "Pour qui déposez-vous ce jeu de données ?",
-        "Déposer votre fichier au format SCDL",
-        "Résumé de votre dépôt",
-        "Finalisation du dépôt",
-    ];
+    export let stepsDesc: string[];
 
     const controller = new StepIndicatorController(currentStep, stepsDesc);
+
+    $: controller.currentStep = currentStep;
 </script>
 
 <div class="fr-stepper">
