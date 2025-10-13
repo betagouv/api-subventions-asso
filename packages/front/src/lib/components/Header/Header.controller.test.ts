@@ -41,7 +41,7 @@ describe("HeaderController", () => {
             routerServiceMock.mockReturnValue(undefined);
             await controller.goToBeginOrResumeDeposit();
 
-            expect(routerServiceMock).toHaveBeenCalledWith("/depot-scdl/formulaire/reprise");
+            expect(routerServiceMock).toHaveBeenCalledWith("/depot-scdl/reprise");
         });
 
         it("should call goToUrl when no depositLog", async () => {

@@ -7,6 +7,7 @@ describe("DepositLogService", () => {
     vi.spyOn(depositLogPort, "getDepositLog");
     vi.spyOn(depositLogPort, "createDepositLog");
     vi.spyOn(depositLogPort, "updateDepositLog");
+    vi.spyOn(depositLogPort, "deleteDepositLog");
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -106,6 +107,30 @@ describe("DepositLogService", () => {
 
             await expect(depositLogService.updateDepositLog(1, {})).rejects.toThrow(mockError);
             expect(depositLogPort.updateDepositLog).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe("deleteDepositLog", () => {
+        it("should return no data", async () => {
+            const response = {
+                data: "",
+                status: 204,
+            } as AxiosResponse;
+
+            vi.mocked(depositLogPort.deleteDepositLog).mockResolvedValue(response);
+
+            const result = await depositLogService.deleteDepositLog();
+
+            expect(depositLogPort.deleteDepositLog).toHaveBeenCalledTimes(1);
+            expect(result).toEqual(null);
+        });
+
+        it("should throw error", async () => {
+            const mockError = new Error("error");
+            vi.mocked(depositLogPort.deleteDepositLog).mockRejectedValue(mockError);
+
+            await expect(depositLogService.deleteDepositLog()).rejects.toThrow(mockError);
+            expect(depositLogPort.deleteDepositLog).toHaveBeenCalledTimes(1);
         });
     });
 });

@@ -19,6 +19,10 @@ class DepositLogPort {
     updateDepositLog(step: number, depositLogRequest: DepositScdlLogDto) {
         return requestsService.patch(this.BASE_PATH + `/step/${step}`, depositLogRequest);
     }
+
+    deleteDepositLog() {
+        return requestsService.delete(this.BASE_PATH);
+    }
 }
 
 const depositLogPort = new DepositLogPort();

@@ -83,4 +83,25 @@ describe("DepositLogPort", () => {
             });
         });
     });
+
+    describe("DELETE methods", () => {
+        const mockDeleteResource = vi.spyOn(requestsService, "delete");
+
+        beforeAll(() => {
+            mockDeleteResource.mockResolvedValue({ data: "" } as AxiosResponse);
+        });
+
+        describe("deleteDepositLog", () => {
+            it("should call axios with route", () => {
+                depositLogPort.deleteDepositLog();
+                expect(mockDeleteResource).toHaveBeenCalledWith(DepositLogPort.BASE_PATH);
+            });
+
+            it("returns empty data", async () => {
+                const expected = { data: "" };
+                const actual = await depositLogPort.deleteDepositLog();
+                expect(actual).toEqual(expected);
+            });
+        });
+    });
 });

@@ -2,6 +2,7 @@ import { goToUrl } from "$lib/services/router.service";
 import authService from "$lib/resources/auth/auth.service";
 import depositLogService from "$lib/resources/deposit-log/depositLog.service";
 import type StaticError from "$lib/errors/StaticError";
+import { depositLogStore } from "$lib/store/depositLog.store";
 
 export default class HeaderController {
     async logout() {
@@ -16,7 +17,9 @@ export default class HeaderController {
         try {
             const depositLog = await depositLogService.getDepositLog();
             if (depositLog) {
-                return goToUrl("/depot-scdl/formulaire/reprise");
+                depositLogStore.set(depositLog);
+
+                return goToUrl("/depot-scdl/reprise");
             }
             return goToUrl("/depot-scdl");
         } catch (e) {

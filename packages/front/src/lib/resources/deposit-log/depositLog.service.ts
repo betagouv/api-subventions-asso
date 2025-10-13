@@ -20,6 +20,11 @@ class DepositLogService {
         const response = await depositLogPort.updateDepositLog(step, data);
         return response.data as DepositScdlLogResponseDto;
     }
+
+    async deleteDepositLog() {
+        await depositLogPort.deleteDepositLog();
+        return null;
+    }
 }
 
 const depositLogService = new DepositLogService();
