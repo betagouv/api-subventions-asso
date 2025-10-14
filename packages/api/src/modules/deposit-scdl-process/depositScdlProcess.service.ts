@@ -4,6 +4,7 @@ import { CreateDepositScdlLogDto, DepositScdlLogDto } from "dto";
 import { ConflictError, NotFoundError } from "core";
 import depositScdlProcessCheckService from "./check/DepositScdlProcess.check.service";
 import DepositScdlLogDtoAdapter from "./depositScdlLog.dto.adapter";
+import { DefaultObject } from "../../@types";
 
 export class DepositScdlProcessService {
     FIRST_STEP = 1;
@@ -51,6 +52,10 @@ export class DepositScdlProcessService {
             ...depositScdlLogDto,
         };
         return depositLogPort.updatePartial(partialDepositLog);
+    }
+
+    find(query: DefaultObject = {}): Promise<DepositScdlLogEntity[]> {
+        return depositLogPort.find(query);
     }
 }
 

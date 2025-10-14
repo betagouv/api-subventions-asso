@@ -142,6 +142,11 @@ export class MetabaseDumpPort {
     public cleanAfterDate(date: Date) {
         return this.db.collection("log").deleteMany({ timestamp: { $gt: date } });
     }
+
+    public async upsertDepositLogs(depositLogs: unknown[]) {
+        await this.db.collection("deposit-logs").deleteMany({});
+        return this.db.collection("deposit-logs").insertMany(depositLogs as Document[]);
+    }
 }
 
 const metabaseDumpPort = new MetabaseDumpPort();
