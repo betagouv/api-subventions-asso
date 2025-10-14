@@ -2,6 +2,7 @@ import * as mongoDB from "mongodb";
 import * as Sentry from "@sentry/node";
 import { MONGO_DBNAME, MONGO_URL, MONGO_PASSWORD, MONGO_USER } from "../configurations/mongo.conf";
 import { ENV } from "../configurations/env.conf";
+import mattermostNotifyPipe from "../modules/notify/outPipes/MattermostNotifyPipe";
 
 const connectionOptions = {
     auth:
@@ -16,6 +17,10 @@ const connectionOptions = {
 const mongoClient: mongoDB.MongoClient = new mongoDB.MongoClient(MONGO_URL, connectionOptions);
 
 export const connectDB = () => {
+    const notifyLostConnection = listener => {
+        mattermostNotifyPipe.connectionLost(listener);
+    };
+
     mongoClient
         .connect()
         .catch(reason => {
@@ -27,12 +32,33 @@ export const connectDB = () => {
 
     mongoClient.on("connectionCreated", _event => console.log("datasub - connection created"));
 
-    mongoClient.on("close", _event => console.log("datasub - connection closed"));
+    // trying to figure out why we have so many disconnections on production
+    // and for now we don't know which event would be fired on such disconnections
+    // TODO: only keeps one of those events if we figure out which one is the right one
 
-    mongoClient.on("serverClosed", _event => console.log("datasub - mongo server closed"));
+    mongoClient.on("close", event => {
+        console.log("datasub - connection closed");
+        notifyLostConnection(event);
+        mongoClient.connect().catch(reason => {
+            console.log("MONGO CONNECTION ERROR\n");
+            console.error(reason);
+            process.exit(1);
+        });
+    });
+
+    mongoClient.on("serverClosed", event => {
+        console.log("datasub - mongo server closed");
+        notifyLostConnection(event);
+        mongoClient.connect().catch(reason => {
+            console.log("MONGO CONNECTION ERROR\n");
+            console.error(reason);
+            process.exit(1);
+        });
+    });
 
     mongoClient.on("connectionClosed", event => {
         console.log("datasub - Mongo connection closed, trying to reconnect...", event);
+        notifyLostConnection(event);
         mongoClient.connect().catch(reason => {
             console.log("MONGO CONNECTION ERROR\n");
             console.error(reason);
