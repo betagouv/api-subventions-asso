@@ -163,6 +163,8 @@ export class DauphinPort extends MongoPort<DauphinGisproDbo> {
             )
             .toArray();
 
+        console.log("creating indexe for simplified dauphin...");
+
         // create index for gispro join used in joinGisproToSimplified()
         await this.collection.createIndex({ referenceAdministrative: 1 });
     }
@@ -228,6 +230,107 @@ export class DauphinPort extends MongoPort<DauphinGisproDbo> {
                         },
                     },
                     { $out: this.simplifiedTempCollectionName },
+                ],
+                {
+                    allowDiskUse: true,
+                },
+            )
+            .toArray();
+    }
+
+    // only used for debugging aggregate time out | remove this after finding the source
+    async joinGisproStep1() {
+        await this.simplifiedTempCollection
+            .aggregate(
+                [
+                    // join gispro data
+                    {
+                        $lookup: {
+                            from: "gispro",
+                            localField: "referenceAdministrative",
+                            foreignField: "codeActionDossier",
+                            as: "gispro",
+                        },
+                    },
+
+                    // we can't interpret gispro data if we have several ; see #3595
+                    {
+                        $addFields: {
+                            gispro: { $cond: { if: { $gt: [{ $size: "$gispro" }, 1] }, then: [], else: "$gispro" } },
+                        },
+                    },
+
+                    { $unwind: { path: "$gispro", preserveNullAndEmptyArrays: true } },
+                    // create group parameter according to success of gispro join
+                    { $addFields: { toJoinOn: { $ifNull: ["$gispro.codeProjet", "$referenceAdministrative"] } } },
+                ],
+                {
+                    allowDiskUse: true,
+                },
+            )
+            .toArray();
+    }
+
+    async joinGisproStep2() {
+        await this.simplifiedTempCollection
+            .aggregate(
+                [
+                    // join gispro data
+                    {
+                        $lookup: {
+                            from: "gispro",
+                            localField: "referenceAdministrative",
+                            foreignField: "codeActionDossier",
+                            as: "gispro",
+                        },
+                    },
+
+                    // we can't interpret gispro data if we have several ; see #3595
+                    {
+                        $addFields: {
+                            gispro: { $cond: { if: { $gt: [{ $size: "$gispro" }, 1] }, then: [], else: "$gispro" } },
+                        },
+                    },
+
+                    { $unwind: { path: "$gispro", preserveNullAndEmptyArrays: true } },
+
+                    // create group parameter according to success of gispro join
+                    { $addFields: { toJoinOn: { $ifNull: ["$gispro.codeProjet", "$referenceAdministrative"] } } },
+
+                    // group action level into subvention level
+                    {
+                        $group: {
+                            _id: {
+                                siretDemandeur: "$siretDemandeur",
+                                exerciceBudgetaire: "$exerciceBudgetaire",
+                                codeDossierOrAction: "$toJoinOn",
+                            },
+                            montantDemande: { $sum: "$planFinancement_lignes.montant.ht" },
+                            montantAccorde: { $sum: "$planFinancement_lignes.financement.montantVote.ht" },
+
+                            referenceAdministrative: { $addToSet: "$referenceAdministrative" },
+                            intituleProjet: { $addToSet: "$intituleProjet" },
+                            thematique: { $addToSet: "$thematique" },
+                            financeurs: { $addToSet: "$planFinancement_lignes.financement.financeur.title" },
+                            instructorService: { $addToSet: "$gispro.directionGestionnaire" },
+
+                            periode: { $addToSet: "$periode" },
+                            virtualStatusLabel: { $addToSet: "$virtualStatusLabel" },
+                            ej: { $addToSet: "$gispro.ej" },
+
+                            dateDemande: { $addToSet: "$dateDemande" },
+                            codeDossier: { $first: "$gispro.codeProjet" },
+                            updateDate: { $min: "$updateDate" },
+                        },
+                    },
+
+                    // format nicely arguments that were in join
+                    {
+                        $addFields: {
+                            siretDemandeur: "$_id.siretDemandeur",
+                            exerciceBudgetaire: "$_id.exerciceBudgetaire",
+                        },
+                    },
                 ],
                 {
                     allowDiskUse: true,
