@@ -7,20 +7,17 @@
     export let name = `password-input-${id}`;
     export let error = false;
     export let errorMsg: string | null = null;
+    export let forgetPasswordUrl = undefined;
 
     const descErrorElement = `${name}-desc-error`;
-    let showPassword = false;
-
-    $: iconClasses = `fr-icon--sm ${showPassword ? "fr-icon-eye-line" : "fr-icon-eye-off-line"}`;
 
     // define validation class
-    $: inputGroupClasses = `fr-input-wrap fr-input-group ${error ? "fr-input-group--error" : ""}`;
     $: inputClasses = `fr-password__input fr-input ${error ? "fr-input--error" : ""}`;
 </script>
 
 <div class="fr-password" id="password">
-    <div class={inputGroupClasses}>
-        <label class="fr-label" for="password-input">{label}</label>
+    <label class="fr-label" for="password-input">{label}</label>
+    <div class="fr-input-wrap">
         <input
             bind:value
             class={inputClasses}
@@ -38,16 +35,13 @@
         {/if}
     </div>
     <div class="fr-messages-group" id="password-input-messages-{id}" aria-live="polite" />
-    <div class="fr-password__checkbox fr-checkbox-group--sm">
-        <input
-            class="fr-sr-only"
-            bind:checked={showPassword}
-            aria-label="Afficher le mot de passe"
-            id="password-show-{id}"
-            type="checkbox" />
-        <label class="fr-password__checkbox fr-label" for="password-show-{id}">
-            <span class={iconClasses} />
-        </label>
-        <div class="fr-messages-group" id="password-show-messages-{id}" aria-live="polite" />
+    <div class="fr-password__checkbox fr-checkbox-group fr-checkbox-group--sm">
+        <input aria-label="Afficher le mot de passe" id="password-show" type="checkbox" />
+        <label class="fr-label" for="password-show">Afficher</label>
     </div>
+    {#if forgetPasswordUrl}
+        <p>
+            <a href={forgetPasswordUrl} class="fr-link">Mot de passe oublié ?</a>
+        </p>
+    {/if}
 </div>
