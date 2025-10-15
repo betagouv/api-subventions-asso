@@ -22,7 +22,7 @@ export class DauphinFlatService implements ApplicationFlatProvider {
     }
 
     async feedApplicationFlat() {
-        // await this.generateTempJoinedCollection();
+        await this.generateTempJoinedCollection();
         console.log("Start transforming data into flat applications...");
         const cursor = dauphinPort.findAllTempCursor();
         const errors: InconsistentAggregationError[] = [];
