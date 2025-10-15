@@ -33,6 +33,7 @@ class DepositLogPort extends MongoPort<DepositScdlLogDbo> {
         const lowerThan = new Date(date);
         lowerThan.setDate(date.getDate() + 1);
         const dbos = await this.collection.find({ updateDate: { $gte: greaterThan, $lt: lowerThan } }).toArray();
+        if (!dbos) return null;
         return dbos.map(dbo => DepositLogAdapter.dboToEntity(dbo));
     }
 
