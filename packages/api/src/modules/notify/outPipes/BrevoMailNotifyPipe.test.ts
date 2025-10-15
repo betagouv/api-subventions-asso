@@ -52,6 +52,18 @@ describe("BrevoMailNotify", () => {
         });
     });
 
+    describe("batchResumeDepositMail", () => {
+        beforeEach(() => (provider.sendMail = mockSendMail));
+        it("send mail for every user", async () => {
+            const EMAILS = ["EMAIL1", "EMAIL2", "EMAIL3"];
+            // @ts-expect-error -- test private
+            await provider.batchResumeDepositMail({ emails: EMAILS });
+            EMAILS.forEach((email, index) => {
+                expect(mockSendMail).toHaveBeenNthCalledWith(index + 1, email, {}, TemplateEnum.resumeDeposit);
+            });
+        });
+    });
+
     describe("sendMail()", () => {
         const PARAMS = { foo: "bar" };
         const TEMPLATE_ID = 1;
