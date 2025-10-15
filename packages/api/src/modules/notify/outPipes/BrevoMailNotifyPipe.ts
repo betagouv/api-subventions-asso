@@ -14,6 +14,7 @@ export enum TemplateEnum {
     warnDeletion = 155,
     activated = 135,
     creationAgentConnect = 171,
+    resumeDeposit = 262,
 }
 
 export class BrevoMailNotifyPipe implements NotifyOutPipe {
@@ -41,6 +42,8 @@ export class BrevoMailNotifyPipe implements NotifyOutPipe {
                 return this.warnUsersBeforeAutoDeletion(data);
             case NotificationType.USER_ACTIVATED:
                 return this.greetActivated(data);
+            case NotificationType.BATCH_DEPOSIT_RESUME:
+                return this.batchResumeDepositMail(data);
             default:
                 return Promise.resolve(false);
         }
@@ -70,6 +73,11 @@ export class BrevoMailNotifyPipe implements NotifyOutPipe {
             ),
         );
         return res.every(Boolean);
+    }
+
+    private async batchResumeDepositMail(data: NotificationDataTypes[NotificationType.BATCH_DEPOSIT_RESUME]) {
+        const promises = data.emails.map(email => this.sendMail(email, {}, TemplateEnum.resumeDeposit));
+        return (await Promise.all(promises)).every(bool => bool === true); // assert all mails were sent
     }
 
     private warnUsersBeforeAutoDeletion(data: NotificationDataTypes[NotificationType.WARN_NEW_USER_TO_BE_DELETED]) {
