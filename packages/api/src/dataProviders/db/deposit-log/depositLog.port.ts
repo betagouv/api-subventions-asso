@@ -22,6 +22,15 @@ class DepositLogPort extends MongoPort<DepositScdlLogDbo> {
         return DepositLogAdapter.dboToEntity(depositLogDbo);
     }
 
+    async findByDate(date: Date): Promise<DepositScdlLogEntity[] | null> {
+        const greaterThan = date;
+        const lowerThan = new Date(date);
+        lowerThan.setDate(date.getDate() + 1);
+        const dbos = await this.collection.find({ updateDate: { $gte: greaterThan, $lt: lowerThan } }).toArray();
+        if (!dbos) return null;
+        return dbos.map(dbo => DepositLogAdapter.dboToEntity(dbo));
+    }
+
     async deleteByUserId(userId: string) {
         const result = await this.collection.deleteOne({ userId });
         return result.deletedCount > 0;
