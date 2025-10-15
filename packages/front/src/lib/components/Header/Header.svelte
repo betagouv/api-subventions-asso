@@ -82,8 +82,7 @@
                                         class="fr-btn"
                                         href="/depot-scdl"
                                         title="Déposer vos données SCDL"
-                                        rel="noopener"
-                                        on:click|preventDefault={controller.goToBeginOrResumeDeposit}>
+                                        rel="noopener">
                                         Déposer vos données SCDL
                                     </a>
                                 </li>

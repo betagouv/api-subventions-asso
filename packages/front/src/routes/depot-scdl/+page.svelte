@@ -1,41 +1,89 @@
-<script>
-    import DepositScdlController from "./DepositScdl.controller";
+<script lang="ts">
+    import { depositLogStore } from "$lib/store/depositLog.store";
+    import WelcomeForm from "./components/WelcomeForm/WelcomeForm.svelte";
+    import ResumeForm from "./components/ResumeForm/ResumeForm.svelte";
+    import Step1 from "./components/Step1/Step1.svelte";
+    import Step2 from "./components/Step2/Step2.svelte";
+    import { onMount } from "svelte";
+    import { goToUrl } from "$lib/services/router.service";
 
-    const controller = new DepositScdlController();
+    const stepsDesc = [
+        "Information sur la mise à jour des données",
+        "Pour qui déposez-vous ce jeu de données ?",
+        "Déposer votre fichier au format SCDL",
+        "Résumé de votre dépôt",
+        "Finalisation du dépôt",
+    ];
+
+    let currentStep: number | null = null;
+    let currentView: "loading" | "welcome" | "resume" | "form" = "loading";
+
+    const stepComponents = { 1: Step1, 2: Step2 };
+
+    onMount(async () => {
+        if ($depositLogStore == null) {
+            currentView = "welcome";
+            currentStep = null;
+        } else {
+            currentView = "resume";
+            currentStep = $depositLogStore.step + 1;
+        }
+    });
+
+    $: currentStepComponent = currentStep ? stepComponents[currentStep] : stepComponents[1];
+
+    function startNewForm() {
+        currentView = "form";
+        currentStep = 1;
+    }
+
+    async function restartNewForm() {
+        currentView = "welcome";
+        currentStep = null;
+    }
+
+    function resumeForm() {
+        currentView = "form";
+        // currentStep = $depositLogStore!.step + 2; // todo faire une fonction claire
+        currentStep = $depositLogStore!.step + 1; // pour test
+    }
+
+    function nextStep() {
+        if (currentStep && currentStep < 5) {
+            currentStep++;
+        } // todo: else pour aller vers l'accueil
+    }
+
+    function prevStep() {
+        if (currentStep === 5) {
+            currentView = "welcome";
+            currentStep = null;
+            return goToUrl("/");
+        }
+        if (!currentStep || currentStep === 1) {
+            currentView = "welcome";
+            currentStep = null;
+            return;
+        }
+        currentStep--;
+    }
 </script>
 
-<div class="fr-container fr-mt-14v">
-    <div class="fr-grid-row fr-grid-row--center">
-        <div class="fr-col-12 fr-col-lg-9">
-            <h1 class="text-center fr-mb-10v">Bienvenue sur le parcours de dépôt de données de Data.Subvention</h1>
-            <div class="fr-text--bold fr-text--lead fr-mb-7v">
-                Déposez vos données de subventions en toute simplicité
-            </div>
-            <div class="fr-text">
-                <p class="fr-mb-7v">
-                    Contribuez à l'amélioration de la transparence et de la qualité des données publiques en partageant
-                    vos données de subventions au format SCDL. Notre parcours de dépôt vous accompagne pas à pas pour :
-                </p>
-                <ul class="fr-mb-7v">
-                    <li>Vérifier la conformité de vos fichiers avec le format SCDL</li>
-                    <li>Importer facilement vos données</li>
-                    <li>Suivre l'état de vos dépôts</li>
-                </ul>
-                <p class="fr-mb-7v">
-                    👉 Avant de commencer, nous vous recommandons de consulter
-                    <a href="https://www.notion.so/R-gles-de-format-SCDL-1281788663a380e1a57efdd9b324c1ba">
-                        guide de préparation des fichiers
-                    </a>
-                    .
-                </p>
-                <p class="fr-mb-7v">
-                    Merci pour votre contribution, qui permet d'améliorer la connaissance sur le financement public des
-                    associations et de faciliter la mutualisation des données entre Déposer vos données SCDListrations.
-                </p>
-            </div>
-            <div class="text-center">
-                <button on:click={controller.goToStep1} class="fr-btn" type="button">Débuter</button>
-            </div>
+<main>
+    <div class="fr-container fr-mt-14v">
+        <div class="fr-grid-row fr-grid-row--center">
+            {#if currentView === "welcome"}
+                <WelcomeForm on:start={startNewForm} />
+            {:else if currentView === "resume"}
+                <ResumeForm on:resume={resumeForm} on:restart={restartNewForm} />
+            {:else if currentView === "form" && currentStep}
+                <svelte:component
+                    this={currentStepComponent}
+                    {stepsDesc}
+                    {currentStep}
+                    on:nextStep={nextStep}
+                    on:prevStep={prevStep} />
+            {/if}
         </div>
     </div>
-</div>
+</main>
