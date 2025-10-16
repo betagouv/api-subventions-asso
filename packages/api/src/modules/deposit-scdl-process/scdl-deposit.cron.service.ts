@@ -1,4 +1,5 @@
 import depositLogPort from "../../dataProviders/db/deposit-log/depositLog.port";
+import { addDaysToDate } from "../../shared/helpers/DateHelper";
 import { NotificationType } from "../notify/@types/NotificationType";
 import notifyService from "../notify/notify.service";
 import userCrudService from "../user/services/crud/user.crud.service";
@@ -6,10 +7,7 @@ import userCrudService from "../user/services/crud/user.crud.service";
 class ScdlDepositCronService {
     // user that started a desposit 2 days ago
     async getUsersToNotify() {
-        const today = new Date();
-        const twoDaysAgo = new Date(today);
-        twoDaysAgo.setDate(today.getDate() - 2);
-        // setHours use local time and could be wrong
+        const twoDaysAgo = addDaysToDate(-2);
         twoDaysAgo.setUTCHours(0, 0, 0, 0);
         const deposits = await depositLogPort.findByDate(twoDaysAgo);
         return userCrudService.find({ userId: { $in: deposits?.map(deposit => deposit.userId) } });
