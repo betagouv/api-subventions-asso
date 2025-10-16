@@ -4,7 +4,7 @@ import GisproEntity from "../../../modules/providers/dauphin-gispro/@types/Gispr
 export class GisproPort extends MongoPort<GisproEntity> {
     public collectionName = "gispro";
 
-    public createIndexes(): void {
+    public async createIndexes() {
         this.collection.createIndex({ codeActionDossier: 1 });
         this.collection.createIndex({ codeProjet: 1 });
     }

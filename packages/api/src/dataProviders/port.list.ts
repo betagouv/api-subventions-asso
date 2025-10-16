@@ -25,6 +25,7 @@ import amountsVsProgramRegionPort from "./db/dataViz/amountVSProgramRegion/amoun
 import dataLogPort from "./db/data-log/dataLog.port";
 import applicationFlatPort from "./db/applicationFlat/applicationFlat.port";
 import depositLogPort from "./db/deposit-log/depositLog.port";
+import gisproPort from "./db/providers/gispro.port";
 
 export const portsWithIndexes = [
     userPort,
@@ -55,4 +56,6 @@ export const portsWithIndexes = [
     dataLogPort,
     applicationFlatPort,
     depositLogPort,
+    gisproPort,
+    dauphinPort,
 ];
