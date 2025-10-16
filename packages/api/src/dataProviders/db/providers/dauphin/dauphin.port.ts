@@ -107,8 +107,9 @@ export class DauphinPort extends MongoPort<DauphinGisproDbo> {
     /* FLAT OPERATIONS */
 
     async createSimplifiedDauphinBeforeJoin() {
+        console.log("cleaning simplified dauphin...");
         await this.cleanTempCollection();
-
+        console.log("creating simplified dauphin...");
         await this.collection
             .aggregate(
                 [
@@ -162,6 +163,10 @@ export class DauphinPort extends MongoPort<DauphinGisproDbo> {
                 { allowDiskUse: true },
             )
             .toArray();
+
+        console.log("creating indexe for simplified dauphin...");
+        // create index for gispro join used in joinGisproToSimplified()
+        await this.simplifiedTempCollection.createIndex({ referenceAdministrative: 1 });
     }
 
     async joinGisproToSimplified() {
