@@ -9,9 +9,8 @@ on:
         branches: [main, develop, PROD]
 
 env:
-  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-  PUBLIC_AGENT_CONNECT_ENABLED: false
-  PUBLIC_ENV: test
+    SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+    PUBLIC_ENV: test
 
 jobs:
     build:

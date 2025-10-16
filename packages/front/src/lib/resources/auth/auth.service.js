@@ -7,7 +7,6 @@ import { checkOrDropSearchHistory } from "$lib/services/searchHistory.service";
 import userService from "$lib/resources/users/user.service";
 import localStorageService from "$lib/services/localStorage.service";
 import { connectedUser } from "$lib/store/user.store";
-import { PUBLIC_AGENT_CONNECT_ENABLED } from "$env/static/public";
 
 export class AuthService {
     constructor() {
@@ -65,7 +64,7 @@ export class AuthService {
         const { url, _success } = await authPort.logout();
         this.connectedUser.set(null);
         crispService.resetSession();
-        if (PUBLIC_AGENT_CONNECT_ENABLED && url) return goToUrl(url);
+        if (url) return goToUrl(url);
         return goToUrl("/auth/login", false);
     }
 
