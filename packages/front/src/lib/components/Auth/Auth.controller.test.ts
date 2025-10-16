@@ -2,6 +2,7 @@ import { page } from "$lib/store/kit.store";
 import AuthController from "$lib/components/Auth/Auth.controller";
 import authService from "$lib/resources/auth/auth.service";
 import AuthLevels from "$lib/resources/auth/authLevels";
+import depositLogService from "$lib/resources/deposit-log/depositLog.service";
 
 vi.mock("$lib/store/kit.store", () => ({ page: { subscribe: vi.fn() } }));
 vi.mock("$lib/resources/auth/auth.service");
@@ -9,6 +10,7 @@ vi.mock("$lib/resources/auth/auth.service");
 describe("AuthController", () => {
     describe("init", () => {
         const authServiceMock = vi.spyOn(authService, "initUserInApp").mockImplementation(vi.fn);
+        vi.spyOn(depositLogService, "getDepositLog").mockImplementation(vi.fn());
 
         let controller;
 

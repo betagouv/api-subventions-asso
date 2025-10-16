@@ -78,7 +78,11 @@
                             </li>
                             {#if env != "prod"}
                                 <li>
-                                    <a class="fr-btn" href="/scdl" title="Déposer vos données SCDL" rel="noopener">
+                                    <a
+                                        class="fr-btn"
+                                        href="/depot-scdl"
+                                        title="Déposer vos données SCDL"
+                                        rel="noopener">
                                         Déposer vos données SCDL
                                     </a>
                                 </li>
