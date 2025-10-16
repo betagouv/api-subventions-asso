@@ -106,6 +106,22 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
             return false;
         }
     }
+
+    // bypass pipe architecture for production debugging
+    // notify DB connection lost
+    async connectionLost(listener) {
+        try {
+            return await this.sendMessage({
+                text: `La connexion au serveur mongoDB a été perdue`,
+                username: "Docteur Connector",
+                icon_emoji: "firecracker",
+                props: { card: `\`\`\`\n${listener}\n\`\`\`` },
+            });
+        } catch {
+            console.error("error sending mattermost log for DB connection lost");
+            return false;
+        }
+    }
 }
 
 const mattermostNotifyPipe = new MattermostNotifyPipe();
