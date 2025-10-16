@@ -17,7 +17,7 @@ export default class FonjepCli extends CliController {
      * @param exportDate Explicite date of import (any valid date string, like "YYYY-MM-DD")
      *
      */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     protected async _parse(file: string, logs: unknown[], exportDate: Date | undefined) {
         this.logger.logIC("\nStart parse file: ", file);
         this.logger.log(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
