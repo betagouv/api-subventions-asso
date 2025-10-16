@@ -7,7 +7,9 @@ import { NotificationType } from "../notify/@types/NotificationType";
 import userCrudService from "../user/services/crud/user.crud.service";
 import { UserDto } from "dto";
 import { ObjectId } from "mongodb";
+import * as DateHelper from "../../shared/helpers/DateHelper";
 
+jest.mock("../../shared/helpers/DateHelper");
 jest.mock("../user/services/crud/user.crud.service");
 jest.mock("../../dataProviders/db/deposit-log/depositLog.port");
 jest.mock("../notify/notify.service", () => ({
@@ -22,26 +24,19 @@ describe("ScdlDepositCronService", () => {
     const DEPOSIT_LOGS = [DEPOSIT_LOG_ENTITY, { ...DEPOSIT_LOG_ENTITY, userId: USERS[1]._id.toString() }];
 
     describe("getUsersToNotify", () => {
+        const TWO_DAYS_AGO = new Date("2025-10-13T00:00:00.000Z");
         let mockFindByDate: jest.SpyInstance;
         let mockFindUsers: jest.SpyInstance;
 
         beforeEach(() => {
             mockFindByDate = jest.spyOn(depositLogPort, "findByDate").mockResolvedValue(DEPOSIT_LOGS);
             mockFindUsers = jest.spyOn(userCrudService, "find").mockResolvedValue(USERS);
-        });
-
-        beforeAll(() => {
-            jest.useFakeTimers().setSystemTime(new Date("2025-10-15T04:00:00.000Z"));
-        });
-
-        afterAll(() => {
-            jest.useRealTimers();
+            jest.mocked(DateHelper.addDaysToDate).mockReturnValue(TWO_DAYS_AGO);
         });
 
         it("calls findByDate", async () => {
             await scdlDespositCronService.getUsersToNotify();
-            const date = new Date("2025-10-13");
-            expect(mockFindByDate).toHaveBeenCalledWith(date);
+            expect(mockFindByDate).toHaveBeenCalledWith(TWO_DAYS_AGO);
         });
 
         it("retrieves users", async () => {

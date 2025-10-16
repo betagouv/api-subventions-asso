@@ -15,7 +15,9 @@ class ScdlDepositCronService {
 
     // send mail to users to continue their deposit process
     async notifyUsers() {
+        console.log("getting users to notify to resume deposit process...");
         const users = await this.getUsersToNotify();
+        console.log("fires notification to send emails...");
         return notifyService.notify(NotificationType.BATCH_DEPOSIT_RESUME, { emails: users.map(u => u.email) });
     }
 }
