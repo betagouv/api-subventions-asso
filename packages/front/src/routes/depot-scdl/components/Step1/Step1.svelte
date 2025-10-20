@@ -1,5 +1,5 @@
 <script lang="ts">
-    import StepIndicator from "$lib/components/StepIndicator/StepIndicator.svelte";
+    import StepIndicator from "$lib/dsfr/StepIndicator/StepIndicator.svelte";
     import Checkbox from "$lib/dsfr/Checkbox.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
     import { createEventDispatcher } from "svelte";

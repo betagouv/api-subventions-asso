@@ -1,10 +1,11 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
-    import StepIndicator from "$lib/components/StepIndicator/StepIndicator.svelte";
+    import StepIndicator from "$lib/dsfr/StepIndicator/StepIndicator.svelte";
     import InfoBox from "$lib/components/InfoBox.svelte";
     import { isSiret } from "$lib/helpers/identifierHelper";
     import { depositLogStore } from "$lib/store/depositLog.store";
     import Step2Controller from "./Step2.controller";
+    import Input from "$lib/dsfr/Input.svelte";
 
     const ctrl = new Step2Controller();
 
@@ -19,7 +20,6 @@
 
     $: isValid = inputValue && isSiret(inputValue);
     $: hasError = touched && inputValue && !isValid;
-    $: inputStatus = touched ? (hasError ? "error" : isValid ? "valid" : "") : "";
     $: isDisabled = Boolean(!inputValue || hasError);
 
     async function handleValidate(inputValue: string) {
@@ -40,26 +40,17 @@
         <StepIndicator {currentStep} {stepsDesc}></StepIndicator>
     </div>
 
-    <div class="fr-input-group {inputStatus ? `fr-input-group--${inputStatus}` : ''} fr-mb-6v" id="input-group">
-        <label class="fr-label" for="text-input">
-            Indiquez le SIRET de l’attribuant :
-            <span class="fr-hint-text">
-                La collectivité ou l’organisme qui attribue les subventions dans ce fichier.
-            </span>
-        </label>
-        <input
-            bind:value={inputValue}
-            on:blur={() => (touched = true)}
-            class="fr-input"
-            aria-describedby="input-messages"
-            id="text-input"
-            type="text" />
-        <div class="fr-messages-group" id="input-messages" aria-live="polite">
-            {#if hasError}
-                <p class="fr-message fr-message--error" id="input-message-error">Le SIRET doit contenir 14 chiffres</p>
-            {/if}
-        </div>
-    </div>
+    <Input
+        id="siret"
+        name="siret"
+        type="text"
+        bind:value={inputValue}
+        label="Indiquez le SIRET de l’attribuant :"
+        hint="La collectivité ou l’organisme qui attribue les subventions dans ce fichier."
+        on:change
+        on:blur={() => (touched = true)}
+        error={hasError ? "true" : ""}
+        errorMsg="Le SIRET doit contenir 14 chiffres" />
 
     <InfoBox title={infoBoxTitle}>
         <p class="fr-mb-4v">Vous pouvez :</p>

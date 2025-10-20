@@ -1,5 +1,5 @@
 <script lang="ts">
-    import StepIndicatorController from "$lib/components/StepIndicator/StepIndicator.controller";
+    import StepIndicatorController from "$lib/dsfr/StepIndicator/StepIndicator.controller";
 
     export let currentStep: number;
     export let stepsDesc: string[];

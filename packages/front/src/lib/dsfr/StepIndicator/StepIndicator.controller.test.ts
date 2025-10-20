@@ -1,4 +1,4 @@
-import StepIndicatorController from "$lib/components/StepIndicator/StepIndicator.controller";
+import StepIndicatorController from "$lib/dsfr/StepIndicator/StepIndicator.controller";
 
 describe("StepIndicatorController", () => {
     const steps = ["step 1", "step 2", "step 3"];
