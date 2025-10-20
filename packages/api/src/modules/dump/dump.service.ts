@@ -49,7 +49,6 @@ export class DumpService {
         }
 
         const depositLogs = await depositScdlProcessService.find();
-        console.log("depositLogs: ", depositLogs.length);
 
         if (depositLogs.length) {
             await metabaseDumpPort.upsertDepositLogs(depositLogs);

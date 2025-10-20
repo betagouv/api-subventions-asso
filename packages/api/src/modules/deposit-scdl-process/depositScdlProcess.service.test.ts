@@ -149,15 +149,21 @@ describe("DepositScdlProcessService", () => {
         >;
 
         afterEach(() => {
-            mockFindDepositLog.mockRestore();
+            mockFindDepositLog.mockClear();
+        });
+
+        it("Should call find method", async () => {
+            mockFindDepositLog.mockResolvedValueOnce([DEPOSIT_LOG_ENTITY]);
+
+            await depositScdlProcessService.find();
+
+            expect(mockFindDepositLog).toHaveBeenCalled();
         });
 
         it("Should return DepositLogs", async () => {
             mockFindDepositLog.mockResolvedValueOnce([DEPOSIT_LOG_ENTITY]);
 
             const actual = await depositScdlProcessService.find();
-
-            expect(mockFindDepositLog).toHaveBeenCalled();
 
             expect(actual).toEqual([DEPOSIT_LOG_ENTITY]);
         });
