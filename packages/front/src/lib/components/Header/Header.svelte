@@ -76,7 +76,7 @@
                                     Paramètres d'affichage
                                 </button>
                             </li>
-                            {#if env != "prod"}
+                            {#if env != "prod" && $user}
                                 <li>
                                     <a
                                         class="fr-btn"
