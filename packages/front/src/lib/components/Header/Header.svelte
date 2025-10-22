@@ -4,12 +4,11 @@
     import HeaderController from "./Header.controller";
     import authService from "$lib/resources/auth/auth.service";
     import Button from "$lib/dsfr/Button.svelte";
-    import { version } from "$app/environment";
+
+    import appLogo from "$lib/assets/images/logo-data-subvention.png";
 
     const user = authService.getCurrentUserStore();
-    const { getName, getDescription, getEnv } = getContext<typeof AppContext>("app");
-    const name = getName();
-    const description = getDescription();
+    const { getEnv } = getContext<typeof AppContext>("app");
     const env = getEnv();
 
     const controller = new HeaderController();
@@ -20,7 +19,7 @@
         <div class="fr-container">
             <div class="fr-header__body-row">
                 <div class="fr-header__brand fr-enlarge-link">
-                    <div class="fr-header__brand-top">
+                    <div class="fr-header__brand-top fr-mr-3v">
                         <div class="fr-header__logo">
                             <p class="fr-logo">
                                 République
@@ -28,30 +27,9 @@
                                 Française
                             </p>
                         </div>
-                        <div class="fr-header__navbar">
-                            <button
-                                class="fr-btn--menu fr-btn"
-                                data-fr-opened="false"
-                                aria-controls="modal-menu"
-                                aria-haspopup="menu"
-                                id="header__menu__button"
-                                title="Menu">
-                                Menu
-                            </button>
-                        </div>
                     </div>
-                    <div class="fr-header__service">
-                        <a href="/" title="Accueil - {name}">
-                            <p class="fr-header__service-title">
-                                {name} - V{version}
-                            </p>
-                            {#if env != "prod"}
-                                <p class="stage">{env}</p>
-                            {/if}
-                        </a>
-                        <p class="fr-header__service-tagline">
-                            {description}
-                        </p>
+                    <div class="app-logo fr-header__service">
+                        <img src={appLogo} alt="Data.Subvention" title="Accueil - Data.Subvention" />
                     </div>
                 </div>
 
@@ -76,6 +54,7 @@
                                     Paramètres d'affichage
                                 </button>
                             </li>
+                            <!-- TODO: remove env check when feature will be ready -->
                             {#if env != "prod" && $user}
                                 <li>
                                     <a
@@ -117,6 +96,18 @@
                         </ul>
                     </div>
                 </div>
+
+                <div class="fr-header__navbar">
+                    <button
+                        class="fr-btn--menu fr-btn"
+                        data-fr-opened="false"
+                        aria-controls="modal-menu"
+                        aria-haspopup="menu"
+                        id="header__menu__button"
+                        title="Menu">
+                        Menu
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -130,7 +121,11 @@
 </header>
 
 <style>
-    .stage {
-        color: hsl(143deg 63.5% 33.8%);
+    .app-logo {
+        width: 160px;
+    }
+    .app-logo img {
+        width: 100%;
+        height: auto;
     }
 </style>
