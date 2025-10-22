@@ -18,7 +18,7 @@
     let selectedValues: string[] = [];
 </script>
 
-<div class="fr-col-12 fr-col-lg-11">
+<div>
     <div class="fr-mb-6v">
         <StepIndicator {currentStep} {stepsDesc}></StepIndicator>
     </div>

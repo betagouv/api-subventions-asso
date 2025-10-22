@@ -35,7 +35,7 @@
     // todo : add <form> dans template ?
 </script>
 
-<div class="fr-col-12 fr-col-lg-11">
+<div>
     <div class="fr-mb-6v">
         <StepIndicator {currentStep} {stepsDesc}></StepIndicator>
     </div>
@@ -52,16 +52,18 @@
         error={hasError ? "true" : ""}
         errorMsg="Le SIRET doit contenir 14 chiffres" />
 
-    <InfoBox title={infoBoxTitle}>
-        <p class="fr-mb-4v">Vous pouvez :</p>
-        <ul>
-            <li>regarder dans votre fichier Excel s'il y figure</li>
-            <li>
-                le rechercher sur
-                <a class="fr-link" href="https://annuaire-entreprises.data.gouv.fr/">Annuaire Entreprises →</a>
-            </li>
-        </ul>
-    </InfoBox>
+    <div class="fr-mb-6v">
+        <InfoBox title={infoBoxTitle}>
+            <p class="fr-mb-4v">Vous pouvez :</p>
+            <ul>
+                <li>regarder dans votre fichier Excel s'il y figure</li>
+                <li>
+                    le rechercher sur
+                    <a class="fr-link" href="https://annuaire-entreprises.data.gouv.fr/">Annuaire Entreprises →</a>
+                </li>
+            </ul>
+        </InfoBox>
+    </div>
 
     <div>
         <button on:click={() => dispatch("prevStep")} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">

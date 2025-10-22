@@ -70,19 +70,21 @@
 </script>
 
 <main>
-    <div class="fr-container fr-mt-14v">
+    <div class="fr-container">
         <div class="fr-grid-row fr-grid-row--center">
             {#if currentView === "welcome"}
                 <WelcomeForm on:start={startNewForm} />
             {:else if currentView === "resume"}
                 <ResumeForm on:resume={resumeForm} on:restart={restartNewForm} />
             {:else if currentView === "form" && currentStep}
-                <svelte:component
-                    this={currentStepComponent}
-                    {stepsDesc}
-                    {currentStep}
-                    on:nextStep={nextStep}
-                    on:prevStep={prevStep} />
+                <div class="fr-col-12 fr-col-lg-10">
+                    <svelte:component
+                        this={currentStepComponent}
+                        {stepsDesc}
+                        {currentStep}
+                        on:nextStep={nextStep}
+                        on:prevStep={prevStep} />
+                </div>
             {/if}
         </div>
     </div>

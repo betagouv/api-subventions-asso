@@ -2,7 +2,7 @@
     export let title;
 </script>
 
-<div class="background-custom-alt-blue-france fr-p-8v fr-mb-6v">
+<div class="background-custom-alt-blue-france fr-p-8v">
     {#if title}
         <p class="fr-text--lg fr-text--bold">{title}</p>
     {/if}
