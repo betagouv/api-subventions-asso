@@ -57,21 +57,20 @@ export class DepositScdlController {
     nextStep() {
         if (this.currentStep.value && this.currentStep.value < 5) {
             this.currentStep.set(this.currentStep.value + 1);
-        } // todo: else pour aller vers l'accueil
+        } else {
+            // do we want to use this method to restart a form after finishing one ?
+            this.startNewForm();
+        }
     }
 
     prevStep() {
-        // if form has been ended then start a new one
-        // TODO: maybe the previous button should be grayed / hidden ?
-        if (this.currentStep.value === 5) {
+        // cannot be null at this point
+        const step = this.currentStep.value as number;
+
+        if (step === 5 || step === 1) {
             return goToUrl("/");
         }
 
-        // is this actually a thing ?
-        if (!this.currentStep.value || this.currentStep.value === 1) {
-            return this.startNewForm();
-        }
-
-        this.currentStep.set(this.currentStep.value - 1);
+        this.currentStep.set(step - 1);
     }
 }

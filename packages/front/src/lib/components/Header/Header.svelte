@@ -4,17 +4,17 @@
     import HeaderController from "./Header.controller";
     import authService from "$lib/resources/auth/auth.service";
     import Button from "$lib/dsfr/Button.svelte";
-
+    import { version } from "$app/environment";
     import appLogo from "$lib/assets/images/logo-data-subvention.png";
 
     const user = authService.getCurrentUserStore();
-    const { getEnv } = getContext<typeof AppContext>("app");
+    const { getEnv, getName } = getContext<typeof AppContext>("app");
     const env = getEnv();
 
     const controller = new HeaderController();
 </script>
 
-<header class="fr-header" id="header-navigation">
+<header class="fr-header" id="header-navigation" role="banner">
     <div class="fr-header__body">
         <div class="fr-container">
             <div class="fr-header__body-row">
@@ -29,7 +29,26 @@
                         </div>
                     </div>
                     <div class="app-logo fr-header__service">
-                        <img src={appLogo} alt="Data.Subvention" title="Accueil - Data.Subvention" />
+                        <a href="/" title={"Accueil - " + getName()}>
+                            <p class="fr-header__service-title">
+                                <img src={appLogo} alt="Data.Subvention" title="Accueil - Data.Subvention" />
+                            </p>
+                        </a>
+                        {#if env != "prod"}
+                            <span class="stage">{env.toLocaleUpperCase()}</span>
+                            <span>{" - V" + version}</span>
+                        {/if}
+                    </div>
+                    <div class="fr-header__navbar">
+                        <button
+                            class="fr-btn--menu fr-btn"
+                            data-fr-opened="false"
+                            aria-controls="modal-menu"
+                            aria-haspopup="menu"
+                            id="header__menu__button"
+                            title="Menu">
+                            Menu
+                        </button>
                     </div>
                 </div>
 
@@ -96,18 +115,6 @@
                         </ul>
                     </div>
                 </div>
-
-                <div class="fr-header__navbar">
-                    <button
-                        class="fr-btn--menu fr-btn"
-                        data-fr-opened="false"
-                        aria-controls="modal-menu"
-                        aria-haspopup="menu"
-                        id="header__menu__button"
-                        title="Menu">
-                        Menu
-                    </button>
-                </div>
             </div>
         </div>
     </div>
@@ -121,11 +128,21 @@
 </header>
 
 <style>
-    .app-logo {
+    .stage {
+        color: hsl(143deg 63.5% 33.8%);
+    }
+
+    .app-logo > a > .fr-header__service-title {
         width: 160px;
     }
+
+    /* .app-logo > a > .fr-header__service-title */
+
     .app-logo img {
         width: 100%;
         height: auto;
+    }
+    .app-logo a {
+        display: flex;
     }
 </style>
