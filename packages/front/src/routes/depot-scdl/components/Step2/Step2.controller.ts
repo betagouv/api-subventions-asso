@@ -36,11 +36,15 @@ export default class Step2Controller {
         };
 
         try {
+            console.log(depositLogStore.value);
+
             const depositLog = depositLogStore.value
                 ? await depositLogService.updateDepositLog(this.DEPOSIT_LOG_STEP, data)
                 : await depositLogService.createDepositLog(data);
 
             depositLogStore.set(depositLog);
+
+            console.log(depositLog);
 
             return "success";
         } catch (e) {

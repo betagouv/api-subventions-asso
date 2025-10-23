@@ -68,8 +68,12 @@ export class DepositScdlController {
         // cannot be null at this point
         const step = this.currentStep.value as number;
 
-        if (step === 5 || step === 1) {
-            return goToUrl("/");
+        if (step === 5) {
+            goToUrl("/");
+        }
+
+        if (step === 1) {
+            this.restartNewForm();
         }
 
         this.currentStep.set(step - 1);

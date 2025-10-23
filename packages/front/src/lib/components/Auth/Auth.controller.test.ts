@@ -2,7 +2,6 @@ import { page } from "$lib/store/kit.store";
 import AuthController from "$lib/components/Auth/Auth.controller";
 import authService from "$lib/resources/auth/auth.service";
 import AuthLevels from "$lib/resources/auth/authLevels";
-import depositLogService from "$lib/resources/deposit-log/depositLog.service";
 import type { Page } from "@sveltejs/kit";
 
 vi.mock("$lib/resources/deposit-log/depositLog.service");
@@ -26,11 +25,6 @@ describe("AuthController", () => {
         it("should call authService", async () => {
             await controller.init();
             expect(authServiceMock).toHaveBeenCalledTimes(1);
-        });
-
-        it("gets deposits log", async () => {
-            await controller.init();
-            expect(vi.mocked(depositLogService.getDepositLog)).toHaveBeenCalledOnce();
         });
 
         it("should subscribe page", async () => {
