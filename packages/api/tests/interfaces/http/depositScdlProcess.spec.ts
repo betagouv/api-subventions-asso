@@ -154,7 +154,7 @@ describe("/parcours-depot", () => {
             expect(response.body).toEqual(expected);
         });
 
-        it("should return conflict error when update inconsistent", async () => {
+        it("should return BadRequest error when update inconsistent", async () => {
             const token = await createAndGetUserToken();
             const userId = (await getDefaultUser())!._id.toString();
 
@@ -171,7 +171,7 @@ describe("/parcours-depot", () => {
                 .set("x-access-token", token)
                 .set("Accept", "application/json");
 
-            expect(response.statusCode).toBe(409);
+            expect(response.statusCode).toBe(400);
 
             const existingLog = await depositLogPort.findOneByUserId(userId);
             expect(existingLog).toEqual({

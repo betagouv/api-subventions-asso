@@ -5,22 +5,21 @@
     import authService from "$lib/resources/auth/auth.service";
     import Button from "$lib/dsfr/Button.svelte";
     import { version } from "$app/environment";
+    import appLogo from "$lib/assets/images/logo-data-subvention.png";
 
     const user = authService.getCurrentUserStore();
-    const { getName, getDescription, getEnv } = getContext<typeof AppContext>("app");
-    const name = getName();
-    const description = getDescription();
+    const { getEnv, getName } = getContext<typeof AppContext>("app");
     const env = getEnv();
 
     const controller = new HeaderController();
 </script>
 
-<header class="fr-header" id="header-navigation">
+<header class="fr-header" id="header-navigation" role="banner">
     <div class="fr-header__body">
         <div class="fr-container">
             <div class="fr-header__body-row">
                 <div class="fr-header__brand fr-enlarge-link">
-                    <div class="fr-header__brand-top">
+                    <div class="fr-header__brand-top fr-mr-3v">
                         <div class="fr-header__logo">
                             <p class="fr-logo">
                                 République
@@ -28,30 +27,28 @@
                                 Française
                             </p>
                         </div>
-                        <div class="fr-header__navbar">
-                            <button
-                                class="fr-btn--menu fr-btn"
-                                data-fr-opened="false"
-                                aria-controls="modal-menu"
-                                aria-haspopup="menu"
-                                id="header__menu__button"
-                                title="Menu">
-                                Menu
-                            </button>
-                        </div>
                     </div>
-                    <div class="fr-header__service">
-                        <a href="/" title="Accueil - {name}">
+                    <div class="app-logo fr-header__service">
+                        <a href="/" title={"Accueil - " + getName()}>
                             <p class="fr-header__service-title">
-                                {name} - V{version}
+                                <img src={appLogo} alt="Data.Subvention" title="Accueil - Data.Subvention" />
                             </p>
-                            {#if env != "prod"}
-                                <p class="stage">{env}</p>
-                            {/if}
                         </a>
-                        <p class="fr-header__service-tagline">
-                            {description}
-                        </p>
+                        {#if env != "prod"}
+                            <span class="stage">{env.toLocaleUpperCase()}</span>
+                            <span>{" - V" + version}</span>
+                        {/if}
+                    </div>
+                    <div class="fr-header__navbar">
+                        <button
+                            class="fr-btn--menu fr-btn"
+                            data-fr-opened="false"
+                            aria-controls="modal-menu"
+                            aria-haspopup="menu"
+                            id="header__menu__button"
+                            title="Menu">
+                            Menu
+                        </button>
                     </div>
                 </div>
 
@@ -76,9 +73,14 @@
                                     Paramètres d'affichage
                                 </button>
                             </li>
-                            {#if env != "prod"}
+                            <!-- TODO: remove env check when feature will be ready -->
+                            {#if env != "prod" && $user}
                                 <li>
-                                    <a class="fr-btn" href="/scdl" title="Déposer vos données SCDL" rel="noopener">
+                                    <a
+                                        class="fr-btn"
+                                        href="/depot-scdl"
+                                        title="Déposer vos données SCDL"
+                                        rel="noopener">
                                         Déposer vos données SCDL
                                     </a>
                                 </li>
@@ -128,5 +130,19 @@
 <style>
     .stage {
         color: hsl(143deg 63.5% 33.8%);
+    }
+
+    .app-logo > a > .fr-header__service-title {
+        width: 160px;
+    }
+
+    /* .app-logo > a > .fr-header__service-title */
+
+    .app-logo img {
+        width: 100%;
+        height: auto;
+    }
+    .app-logo a {
+        display: flex;
     }
 </style>
