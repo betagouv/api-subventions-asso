@@ -31,7 +31,6 @@ export class DepositScdlController {
     }
 
     async onMount() {
-        console.log("onMount");
         if (depositLogStore.value == null) {
             this.currentView.set("welcome");
             this.currentStep.set(null);
