@@ -32,12 +32,15 @@ export class DepositScdlController {
 
     async onMount() {
         if (depositLogStore.value == null) {
-            this.currentView.set("welcome");
-            this.currentStep.set(null);
+            this.restartNewForm();
         } else {
-            this.currentView.set("resume");
-            this.currentStep.set((this.depositLog.value as DepositScdlLogResponseDto).step + 1);
+            this.displayResume();
         }
+    }
+
+    displayResume() {
+        this.currentView.set("resume");
+        this.currentStep.set((this.depositLog.value as DepositScdlLogResponseDto).step + 1); // only works not but we need to find a way to match form steps and deposit steps (api)
     }
 
     startNewForm() {
@@ -68,7 +71,7 @@ export class DepositScdlController {
         // cannot be null at this point
         const step = this.currentStep.value as number;
 
-        if (step === 5) {
+        if (step === this.lastStep) {
             goToUrl("/");
         }
 
