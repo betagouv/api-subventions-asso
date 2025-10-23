@@ -3,7 +3,7 @@ import { removeWhiteSpace } from "./stringHelper";
 
 export function isSiret(siret) {
     if (!siret) return false;
-    return /^\d{14}/.test(removeWhiteSpace(siret));
+    return /^\d{14}$/.test(removeWhiteSpace(siret));
 }
 
 export function isStartOfSiret(siret) {

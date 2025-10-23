@@ -1,5 +1,5 @@
 import { CreateDepositScdlLogDto, DepositScdlLogDto } from "dto";
-import { BadRequestError, ConflictError } from "core";
+import { BadRequestError } from "core";
 import Siret from "../../../identifierObjects/Siret";
 
 export class DepositScdlProcessCheckService {
@@ -8,7 +8,7 @@ export class DepositScdlProcessCheckService {
             throw new BadRequestError("overwrite alert must be accepted");
         }
         if (!Siret.isSiret(dto.allocatorSiret)) {
-            throw new ConflictError("allocatorSiret must be a valid SIRET");
+            throw new BadRequestError("allocatorSiret must be a valid SIRET");
         }
     }
 
@@ -37,24 +37,24 @@ export class DepositScdlProcessCheckService {
             !dtoKeys.every(key => allowedProps.includes(key as keyof DepositScdlLogDto));
 
         if (isPropertiesInconsistant) {
-            throw new ConflictError(`Step ${step} must contains this properties: ${allowedProps.join(", ")}`);
+            throw new BadRequestError(`Step ${step} must contains this properties: ${allowedProps.join(", ")}`);
         }
     }
 
     private validateFields(depositScdlLogDto: DepositScdlLogDto) {
         if (depositScdlLogDto.overwriteAlert !== undefined) {
             if (!depositScdlLogDto.overwriteAlert) {
-                throw new ConflictError("overwriteAlert must be true");
+                throw new BadRequestError("overwriteAlert must be true");
             }
         }
         if (depositScdlLogDto.permissionAlert !== undefined) {
             if (!depositScdlLogDto.permissionAlert) {
-                throw new ConflictError("permissionAlert must be true");
+                throw new BadRequestError("permissionAlert must be true");
             }
         }
         if (depositScdlLogDto.allocatorSiret !== undefined) {
             if (!Siret.isSiret(depositScdlLogDto.allocatorSiret)) {
-                throw new ConflictError("allocatorSiret must be a valid SIRET");
+                throw new BadRequestError("allocatorSiret must be a valid SIRET");
             }
         }
     }
