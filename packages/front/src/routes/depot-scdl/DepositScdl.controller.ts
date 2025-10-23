@@ -6,13 +6,14 @@ import type { ComponentType } from "svelte";
 import { derived } from "svelte/store";
 
 export class DepositScdlController {
+    private lastStep: number;
     public stepsDesc = [
         "Information sur la mise à jour des données",
         "Pour qui déposez-vous ce jeu de données ?",
         "Déposer votre fichier au format SCDL",
         "Résumé de votre dépôt",
         "Finalisation du dépôt",
-    ];
+    ]; // todo merge stepComponents with stepsDesc ?
     public stepComponents: Record<number, ComponentType>;
     public depositLog = depositLogStore;
     public currentStep: Store<number | null> = new Store(null);
@@ -21,6 +22,7 @@ export class DepositScdlController {
 
     constructor(stepComponents: Record<number, ComponentType>) {
         this.stepComponents = stepComponents;
+        this.lastStep = Object.keys(this.stepComponents).length;
         // @ts-expect-error: don't know how to fix that
         this.currentStepComponent = derived(this.currentStep, step => {
             if (!step) return this.stepComponents[1];
@@ -29,6 +31,7 @@ export class DepositScdlController {
     }
 
     async onMount() {
+        console.log("onMount");
         if (depositLogStore.value == null) {
             this.currentView.set("welcome");
             this.currentStep.set(null);
@@ -55,11 +58,10 @@ export class DepositScdlController {
     }
 
     nextStep() {
-        if (this.currentStep.value && this.currentStep.value < 5) {
+        if (this.currentStep.value && this.currentStep.value < this.lastStep) {
             this.currentStep.set(this.currentStep.value + 1);
         } else {
-            // do we want to use this method to restart a form after finishing one ?
-            this.startNewForm();
+            goToUrl("/");
         }
     }
 
