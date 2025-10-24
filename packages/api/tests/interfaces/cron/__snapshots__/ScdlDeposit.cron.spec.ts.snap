@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ScdlDeposit CRON notifyUsers send mail to users that started deposit 2 days ago 1`] = `
+{
+  "bcc": [
+    {
+      "email": "log@datasubvention.beta.gouv.fr",
+      "name": "Data.Subvention Log",
+    },
+  ],
+  "params": {},
+  "sender": {
+    "email": "mail-user@datasubvention",
+    "name": "Data.Subvention",
+  },
+  "templateId": 262,
+  "to": [
+    {
+      "email": "user@beta.gouv.fr",
+    },
+  ],
+}
+`;
