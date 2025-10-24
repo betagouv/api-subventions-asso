@@ -27,6 +27,10 @@ export class UserCrudService {
         return userPort.findByEmail(email);
     }
 
+    public findUsersByIdList(ids: string[]) {
+        return userPort.findByIds(ids);
+    }
+
     public getUserById(userId) {
         return userPort.findById(userId);
     }

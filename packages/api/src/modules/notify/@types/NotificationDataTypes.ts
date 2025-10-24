@@ -59,6 +59,9 @@ export interface NotificationDataTypes {
         email: string;
         activationLink: string;
     };
+    [NotificationType.BATCH_DEPOSIT_RESUME]: {
+        emails: string[];
+    };
     [NotificationType.STATS_NB_REQUESTS]: {
         email: string;
         nbVisits: number;

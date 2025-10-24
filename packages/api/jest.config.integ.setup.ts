@@ -10,6 +10,7 @@ process.env.JWT_SECRET = crypto.randomBytes(256).toString("base64");
 process.env.BETA_GOUV_DOMAIN = "beta.gouv.fr";
 process.env.AGENT_CONNECT_ENABLED = "true";
 process.env.API_BREVO_TOKEN = "1FT47%TRADF!";
+process.env.MAIL_USER = "mail-user@datasubvention";
 
 /**
  *

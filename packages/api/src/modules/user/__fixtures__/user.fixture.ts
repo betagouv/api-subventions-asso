@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 import { AgentJobTypeEnum, AgentTypeEnum, UserDto } from "dto";
 import { USER_EMAIL } from "../../../../tests/__helpers__/userHelper";
+import { UserNotPersisted } from "../../../dataProviders/db/user/UserDbo";
 
 export const SIGNED_TOKEN = "SIGNED_TOKEN";
 
@@ -21,6 +22,21 @@ export const USER_SECRETS = {
 };
 
 export const USER_DBO = { ...USER_WITHOUT_SECRET, ...USER_SECRETS };
+
+export const USER_NOT_PERSISTED: UserNotPersisted = {
+    email: USER_DBO.email,
+    roles: USER_DBO.roles,
+    signupAt: new Date(),
+    firstName: USER_DBO.firstName,
+    lastName: USER_DBO.lastName,
+    active: false,
+    profileToComplete: true,
+    agentType: AgentTypeEnum.CENTRAL_ADMIN,
+    jobType: [AgentJobTypeEnum.ADMINISTRATOR],
+    lastActivityDate: new Date(),
+    nbVisits: 0,
+    ...USER_SECRETS,
+};
 
 export const CONSUMER_USER = { ...USER_WITHOUT_SECRET, roles: ["user", "consumer"] };
 
