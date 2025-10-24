@@ -1,7 +1,11 @@
 import dumpService from "./dump.service";
 import metabaseDumpPort from "../../dataProviders/db/dump/metabase-dump.port";
 import userCrudService from "../user/services/crud/user.crud.service";
+import { DEPOSIT_LOG_ENTITY } from "../deposit-scdl-process/__fixtures__/depositLog.fixture";
+import depositScdlProcessService from "../deposit-scdl-process/depositScdlProcess.service";
+import { USER_DBO } from "../user/__fixtures__/user.fixture";
 
+jest.mock("../deposit-scdl-process/depositScdlProcess.service");
 jest.mock("../user/services/crud/user.crud.service");
 jest.mock("../../dataProviders/db/dump/metabase-dump.port");
 jest.mock("../configurations/configurations.service");
@@ -30,14 +34,28 @@ describe("dumpService", () => {
     });
 
     describe("publishStatsData", () => {
+        let mockPatchWithPipedriveData: jest.SpyInstance;
+        const DEPOSIT_LOGS = [DEPOSIT_LOG_ENTITY];
+        const USERS = [USER_DBO];
+
+        beforeAll(() => {
+            mockPatchWithPipedriveData = jest
+                // @ts-expect-error -- test private method
+                .spyOn(dumpService, "patchWithPipedriveData");
+
+            mockPatchWithPipedriveData.mockImplementation(jest.fn());
+            jest.mocked(depositScdlProcessService.find).mockResolvedValue(DEPOSIT_LOGS);
+            jest.mocked(userCrudService.find).mockResolvedValue(USERS);
+        });
+
         it("patches users with pipedrive", async () => {
-            // @ts-expect-error -- test private method
-            const patchSpy = jest.spyOn(dumpService, "patchWithPipedriveData");
-            const users = ["something"];
-            // @ts-expect-error -- mock typing
-            jest.mocked(userCrudService.find).mockResolvedValueOnce(users);
             await dumpService.publishStatsData();
-            expect(patchSpy).toHaveBeenCalled();
+            expect(mockPatchWithPipedriveData).toHaveBeenCalled();
+        });
+
+        it("publish deposit logs", async () => {
+            await dumpService.publishStatsData();
+            expect(metabaseDumpPort.upsertDepositLogs).toHaveBeenCalledWith(DEPOSIT_LOGS);
         });
     });
 });
