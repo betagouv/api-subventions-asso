@@ -9,7 +9,7 @@ class ScdlDepositCronService {
     async getUsersToNotify() {
         const twoDaysAgo = addDaysToDate(new Date(), -2);
         twoDaysAgo.setUTCHours(0, 0, 0, 0);
-        const deposits = await depositLogPort.findByDate(twoDaysAgo);
+        const deposits = await depositLogPort.findAllFromFullDay(twoDaysAgo);
         if (deposits) return userCrudService.findUsersByIdList(deposits?.map(deposit => deposit.userId));
         return null;
     }

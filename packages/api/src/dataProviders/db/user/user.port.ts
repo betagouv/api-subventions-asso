@@ -31,9 +31,8 @@ export class UserPort extends MongoPort<UserDbo> {
         return dbos.map(dbo => removeSecrets(dbo));
     }
 
-    async findByIds(ids: string[]) {
+    async findByIds(ids: string[]): Promise<Omit<UserDbo, "jwt" | "hashPassword">[]> {
         const objectIds = ids.map(id => new ObjectId(id));
-        console.log(objectIds);
         return this.collection.find({ _id: { $in: objectIds } }, { projection: { jwt: 0, hashPassword: 0 } }).toArray();
     }
 

@@ -58,21 +58,21 @@ describe("Deposit Log Port", () => {
         });
     });
 
-    describe("findByDate", () => {
+    describe("findAllFromFullDay", () => {
         const date = new Date("2025-10-15");
 
         it("calls find with the correct search query", async () => {
-            await depositLogPort.findByDate(date);
+            await depositLogPort.findAllFromFullDay(date);
             expect(mockFind).toHaveBeenCalledWith({ updateDate: { $gte: date, $lt: new Date("2025-10-16") } });
         });
 
         it("adapts dbos to entities", async () => {
-            await depositLogPort.findByDate(date);
+            await depositLogPort.findAllFromFullDay(date);
             expect(mockDboToEntity).toHaveBeenCalledWith(DEPOSIT_LOG_DBO);
         });
 
         it("returns entities", async () => {
-            const actual = await depositLogPort.findByDate(date);
+            const actual = await depositLogPort.findAllFromFullDay(date);
             const expected = [DEPOSIT_LOG_ENTITY];
             expect(actual).toEqual(expected);
         });
