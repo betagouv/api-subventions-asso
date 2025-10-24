@@ -26,11 +26,11 @@ describe("ScdlDepositCronService", () => {
     describe("getUsersToNotify", () => {
         const TWO_DAYS_AGO = new Date("2025-10-13T00:00:00.000Z");
         let mockFindByDate: jest.SpyInstance;
-        let mockFindUsers: jest.SpyInstance;
+        let mockFindUsersByIdList: jest.SpyInstance;
 
         beforeEach(() => {
-            mockFindByDate = jest.spyOn(depositLogPort, "findByDate").mockResolvedValue(DEPOSIT_LOGS);
-            mockFindUsers = jest.spyOn(userCrudService, "find").mockResolvedValue(USERS);
+            mockFindByDate = jest.spyOn(depositLogPort, "findAllFromFullDay").mockResolvedValue(DEPOSIT_LOGS);
+            mockFindUsersByIdList = jest.spyOn(userCrudService, "findUsersByIdList").mockResolvedValue(USERS);
             jest.mocked(DateHelper.addDaysToDate).mockReturnValue(TWO_DAYS_AGO);
         });
 
@@ -41,9 +41,7 @@ describe("ScdlDepositCronService", () => {
 
         it("retrieves users", async () => {
             await scdlDespositCronService.getUsersToNotify();
-            expect(mockFindUsers).toHaveBeenCalledWith({
-                userId: { $in: [DEPOSIT_LOGS[0].userId, DEPOSIT_LOGS[1].userId] },
-            });
+            expect(mockFindUsersByIdList).toHaveBeenCalledWith([DEPOSIT_LOGS[0].userId, DEPOSIT_LOGS[1].userId]);
         });
 
         it("returns entities", async () => {
