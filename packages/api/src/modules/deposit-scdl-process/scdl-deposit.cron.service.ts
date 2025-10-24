@@ -7,16 +7,18 @@ import userCrudService from "../user/services/crud/user.crud.service";
 class ScdlDepositCronService {
     // user that started a desposit 2 days ago
     async getUsersToNotify() {
-        const twoDaysAgo = addDaysToDate(-2);
+        const twoDaysAgo = addDaysToDate(new Date(), -2);
         twoDaysAgo.setUTCHours(0, 0, 0, 0);
         const deposits = await depositLogPort.findByDate(twoDaysAgo);
-        return userCrudService.find({ userId: { $in: deposits?.map(deposit => deposit.userId) } });
+        if (deposits) return userCrudService.findUsersByIdList(deposits?.map(deposit => deposit.userId));
+        return null;
     }
 
     // send mail to users to continue their deposit process
     async notifyUsers() {
         console.log("getting users to notify to resume deposit process...");
         const users = await this.getUsersToNotify();
+        if (!users) return;
         console.log("fires notification to send emails...");
         return notifyService.notify(NotificationType.BATCH_DEPOSIT_RESUME, { emails: users.map(u => u.email) });
     }
