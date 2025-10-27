@@ -3,6 +3,7 @@ import configurationsService from "../configurations/configurations.service";
 import statsService from "../stats/stats.service";
 import userCrudService from "../user/services/crud/user.crud.service";
 import metabaseDumpPort from "../../dataProviders/db/dump/metabase-dump.port";
+import depositScdlProcessService from "../deposit-scdl-process/depositScdlProcess.service";
 
 export class DumpService {
     // Dump logs, stats tables
@@ -45,6 +46,12 @@ export class DumpService {
         if (users.length) {
             await metabaseDumpPort.upsertUsers(users);
             await this.patchWithPipedriveData();
+        }
+
+        const depositLogs = await depositScdlProcessService.find();
+
+        if (depositLogs.length) {
+            await metabaseDumpPort.upsertDepositLogs(depositLogs);
         }
 
         await configurationsService.setLastPublishDumpDate(now);

@@ -8,6 +8,7 @@ import { NotFoundError } from "core";
 
 const mockInsertOne = jest.fn();
 const mockFindOne = jest.fn();
+const mockFind = jest.fn();
 const mockDeleteOne = jest.fn().mockResolvedValue({ acknowledged: true, deletedCount: 1 });
 const mockFindOneAndUpdate = jest.fn();
 
@@ -15,6 +16,7 @@ jest.mock("../../../shared/MongoConnection", () => ({
     collection: () => ({
         insertOne: mockInsertOne,
         findOne: mockFindOne,
+        find: mockFind,
         deleteOne: mockDeleteOne,
         findOneAndUpdate: mockFindOneAndUpdate,
     }),
@@ -44,6 +46,15 @@ describe("Deposit Log Port", () => {
             const query = "user123";
             const result = await depositLogPort.findOneByUserId(query);
             expect(result).toBeNull();
+        });
+    });
+
+    describe("find()", () => {
+        it("should call find", async () => {
+            const mockToArray = jest.fn().mockResolvedValue([DEPOSIT_LOG_ENTITY]);
+            mockFind.mockReturnValueOnce({ toArray: mockToArray });
+            await depositLogPort.find({});
+            expect(mockFind).toHaveBeenCalledWith({}, undefined);
         });
     });
 
