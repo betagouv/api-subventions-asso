@@ -64,7 +64,7 @@ describe("DepositScdlController", () => {
         it("set view and step", () => {
             controller.resumeForm();
             expect(controller.currentView.value).toEqual("form");
-            expect(controller.currentStep.value).toEqual(controller.depositLog.value.step + 1);
+            expect(controller.currentStep.value).toEqual(controller.depositLog.value.step + 2);
         });
     });
 
@@ -112,6 +112,13 @@ describe("DepositScdlController", () => {
             const expected = CURRENT_STEP - 1;
             const actual = controller.currentStep.value;
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("loading", () => {
+        it("set view", () => {
+            controller.loading();
+            expect(controller.currentView.value).toEqual("loading");
         });
     });
 });

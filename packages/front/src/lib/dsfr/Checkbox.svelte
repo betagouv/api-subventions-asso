@@ -4,7 +4,7 @@
 
     export let value: string[] = [];
 
-    export let label: string;
+    export let label: string | null = null;
     export let options: { label: string; value: string; hint?: string; withHtml?: boolean }[] = [];
     export let id = nanoid(7);
     export let name = `checkbox-${id}`;
@@ -25,9 +25,11 @@
 </script>
 
 <fieldset class="fr-fieldset" {id} aria-labelledby="{id}-legend {id}-messages" class:fr-fieldset--error={errorMsg}>
-    <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="{id}-legend">
-        {label}
-    </legend>
+    {#if label}
+        <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="{id}-legend">
+            {label}
+        </legend>
+    {/if}
     {#each options as option, i (i)}
         <div class="fr-fieldset__element" class:fr-fieldset__element--inline={inline}>
             <div class="fr-checkbox-group">

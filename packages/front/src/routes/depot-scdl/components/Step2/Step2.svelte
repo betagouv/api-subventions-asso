@@ -23,7 +23,6 @@
             dispatch("resumeForm");
         }
     }
-    // todo : add <form> dans template ?
 </script>
 
 <div>

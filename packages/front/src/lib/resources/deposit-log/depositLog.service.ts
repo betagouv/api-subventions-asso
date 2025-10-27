@@ -25,6 +25,13 @@ class DepositLogService {
         await depositLogPort.deleteDepositLog();
         return null;
     }
+
+    async postScdlFile(file: File, sheetName?: string): Promise<object> {
+        // todo : unimplemented
+        console.log("postScdlFile", file, sheetName);
+        // todo : ici soit on filtre le type de fichier et on appelle un endpoint ou un autre, soit c'est le back qui gère ?
+        return await new Promise(resolve => setTimeout(resolve, 5000));
+    }
 }
 
 const depositLogService = new DepositLogService();
