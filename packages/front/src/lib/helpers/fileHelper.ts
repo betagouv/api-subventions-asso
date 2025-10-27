@@ -39,6 +39,7 @@ type FileErrorCode = (typeof FileErrorCode)[keyof typeof FileErrorCode];
 
 export type FileValidationResult = {
     valid: boolean;
+    fileName: string;
     errorCode?: FileErrorCode;
 };
 
@@ -47,51 +48,94 @@ export async function validateFile(
     acceptedFormats: FileFormat[],
     maxSizeMB: number = 30,
 ): Promise<FileValidationResult> {
-    const fileExtension = "." + file.name.split(".").pop()?.toLowerCase();
+    const sizeResult = validateFileSize(file, maxSizeMB);
+    if (!sizeResult.valid) {
+        return sizeResult;
+    }
+
+    const formatResult = validateFileFormat(file, acceptedFormats);
+    if (!formatResult.valid) {
+        return formatResult;
+    }
+
+    const encodingResult = await validateFileEncoding(file);
+    if (!encodingResult.valid) {
+        return encodingResult;
+    }
+
+    return { valid: true, fileName: file.name };
+}
+
+export function validateFileSize(file: File, maxSizeMB: number): FileValidationResult {
+    const maxSizeBytes = maxSizeMB * 1024 * 1024;
+
+    if (file.size > maxSizeBytes) {
+        return {
+            valid: false,
+            errorCode: FileErrorCode.FILE_TOO_LARGE,
+            fileName: file.name,
+        };
+    }
+
+    return { valid: true, fileName: file.name };
+}
+
+export function validateFileFormat(file: File, acceptedFormats: FileFormat[]): FileValidationResult {
+    const fileExtension = getFileExtension(file.name);
 
     const isFormatValid = acceptedFormats.some(format => {
-        const allowedTypes = formatMap[format];
-
-        const extensions = allowedTypes.filter(type => type.startsWith("."));
-        const mimeTypes = allowedTypes.filter(type => !type.startsWith("."));
-
-        const hasValidExtension = extensions.includes(fileExtension);
-
-        const hasValidMimeType =
-            !file.type ||
-            mimeTypes.some(mime => {
-                if (mime.endsWith("/*")) {
-                    return file.type.startsWith(mime.replace("/*", "/"));
-                }
-                return file.type === mime;
-            });
-
-        return hasValidExtension && hasValidMimeType;
+        return isValidFormatForFile(file, format, fileExtension);
     });
 
     if (!isFormatValid) {
         return {
             valid: false,
             errorCode: FileErrorCode.INVALID_FORMAT,
+            fileName: file.name,
         };
     }
 
-    if (!(await verifyTextEncoding(file))) {
+    return { valid: true, fileName: file.name };
+}
+
+export async function validateFileEncoding(file: File): Promise<FileValidationResult> {
+    const isEncodingValid = await verifyTextEncoding(file);
+
+    if (!isEncodingValid) {
         return {
             valid: false,
             errorCode: FileErrorCode.INVALID_ENCODING,
+            fileName: file.name,
         };
     }
 
-    const maxSizeBytes = maxSizeMB * 1024 * 1024;
-    if (file.size > maxSizeBytes) {
-        return {
-            valid: false,
-            errorCode: FileErrorCode.FILE_TOO_LARGE,
-        };
-    }
+    return { valid: true, fileName: file.name };
+}
 
-    return { valid: true };
+function isValidFormatForFile(file: File, format: FileFormat, fileExtension: string): boolean {
+    const allowedTypes = formatMap[format];
+    const extensions = allowedTypes.filter(type => type.startsWith("."));
+    const mimeTypes = allowedTypes.filter(type => !type.startsWith("."));
+
+    const hasValidExtension = extensions.includes(fileExtension);
+    const hasValidMimeType = isValidMimeType(file.type, mimeTypes);
+
+    return hasValidExtension && hasValidMimeType;
+}
+
+function isValidMimeType(fileType: string, allowedMimeTypes: string[]): boolean {
+    if (!fileType) return true;
+
+    return allowedMimeTypes.some(mime => {
+        if (mime.endsWith("/*")) {
+            return fileType.startsWith(mime.replace("/*", "/"));
+        }
+        return fileType === mime;
+    });
+}
+
+function getFileExtension(fileName: string): string {
+    return "." + fileName.split(".").pop()?.toLowerCase();
 }
 
 export async function verifyTextEncoding(file: File): Promise<boolean> {

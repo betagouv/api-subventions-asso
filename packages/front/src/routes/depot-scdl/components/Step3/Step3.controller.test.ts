@@ -40,7 +40,7 @@ describe("Step3Controller", () => {
             const mockFileList = [mockFile] as unknown as FileList;
             const event = { detail: { files: mockFileList } } as CustomEvent<{ files: FileList | null }>;
 
-            validateFileMock.mockResolvedValue({ valid: true });
+            validateFileMock.mockResolvedValue({ valid: true, fileName: "test.csv" });
 
             await controller.handleFileChange(event);
 
@@ -57,6 +57,7 @@ describe("Step3Controller", () => {
             validateFileMock.mockResolvedValue({
                 valid: false,
                 errorCode: FileErrorCode.FILE_TOO_LARGE,
+                fileName: "test.csv",
             });
 
             await controller.handleFileChange(event);
@@ -76,6 +77,7 @@ describe("Step3Controller", () => {
             validateFileMock.mockResolvedValue({
                 valid: false,
                 errorCode: FileErrorCode.INVALID_FORMAT,
+                fileName: "test.pdf",
             });
 
             await controller.handleFileChange(event);
@@ -94,6 +96,7 @@ describe("Step3Controller", () => {
             validateFileMock.mockResolvedValue({
                 valid: false,
                 errorCode: FileErrorCode.INVALID_ENCODING,
+                fileName: "test.csv",
             });
 
             await controller.handleFileChange(event);
@@ -139,7 +142,7 @@ describe("Step3Controller", () => {
 
             const mockFileList = [mockFile] as unknown as FileList;
             const event = { detail: { files: mockFileList } } as CustomEvent<{ files: FileList | null }>;
-            validateFileMock.mockResolvedValue({ valid: true });
+            validateFileMock.mockResolvedValue({ valid: true, fileName: "test.xlsx" });
             await controller.handleFileChange(event);
 
             getExcelSheetNamesMock.mockResolvedValue(["Sheet1"]);
@@ -159,7 +162,7 @@ describe("Step3Controller", () => {
 
             const mockFileList = [mockFile] as unknown as FileList;
             const event = { detail: { files: mockFileList } } as CustomEvent<{ files: FileList | null }>;
-            validateFileMock.mockResolvedValue({ valid: true });
+            validateFileMock.mockResolvedValue({ valid: true, fileName: "test.xlsx" });
             await controller.handleFileChange(event);
 
             const sheets = ["Sheet1", "Sheet2", "Sheet3"];
@@ -187,7 +190,7 @@ describe("Step3Controller", () => {
 
             const mockFileList = [mockFile] as unknown as FileList;
             const fileEvent = { detail: { files: mockFileList } } as CustomEvent<{ files: FileList | null }>;
-            validateFileMock.mockResolvedValue({ valid: true });
+            validateFileMock.mockResolvedValue({ valid: true, fileName: "test.xlsx" });
             await controller.handleFileChange(fileEvent);
 
             const sheetEvent = { detail: selectedSheet } as CustomEvent<string>;
