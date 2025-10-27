@@ -3,6 +3,7 @@ import DepositLogAdapter from "./DepositLog.adapter";
 import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/depositScdlLog.entity";
 import DepositScdlLogDbo from "./DepositScdlLogDbo";
 import { NotFoundError } from "core";
+import { Filter, FindOptions } from "mongodb";
 
 class DepositLogPort extends MongoPort<DepositScdlLogDbo> {
     collectionName = "deposit-log";
@@ -53,6 +54,11 @@ class DepositLogPort extends MongoPort<DepositScdlLogDbo> {
             throw new NotFoundError("Deposit log not found");
         }
         return DepositLogAdapter.dboToEntity(depositLogDbo);
+    }
+
+    async find(query: Filter<DepositScdlLogDbo> = {}, options?: FindOptions): Promise<DepositScdlLogEntity[]> {
+        const dbos = await this.collection.find(query, options).toArray();
+        return dbos.map(dbo => DepositLogAdapter.dboToEntity(dbo));
     }
 }
 

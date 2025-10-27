@@ -7,8 +7,8 @@ import DepositLogAdapter from "./DepositLog.adapter";
 import { NotFoundError } from "core";
 
 const mockInsertOne = jest.fn();
-const mockFind = jest.fn();
 const mockFindOne = jest.fn();
+const mockFind = jest.fn();
 const mockDeleteOne = jest.fn().mockResolvedValue({ acknowledged: true, deletedCount: 1 });
 const mockFindOneAndUpdate = jest.fn();
 

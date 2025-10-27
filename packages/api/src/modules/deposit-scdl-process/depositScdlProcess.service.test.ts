@@ -141,4 +141,31 @@ describe("DepositScdlProcessService", () => {
             ).rejects.toBeInstanceOf(NotFoundError);
         });
     });
+
+    describe("find", () => {
+        const mockFindDepositLog = jest.spyOn(depositScdlProcessService, "find") as jest.SpyInstance<
+            Promise<DepositScdlLogEntity[]>,
+            []
+        >;
+
+        afterEach(() => {
+            mockFindDepositLog.mockClear();
+        });
+
+        it("Should call find method", async () => {
+            mockFindDepositLog.mockResolvedValueOnce([DEPOSIT_LOG_ENTITY]);
+
+            await depositScdlProcessService.find();
+
+            expect(mockFindDepositLog).toHaveBeenCalled();
+        });
+
+        it("Should return DepositLogs", async () => {
+            mockFindDepositLog.mockResolvedValueOnce([DEPOSIT_LOG_ENTITY]);
+
+            const actual = await depositScdlProcessService.find();
+
+            expect(actual).toEqual([DEPOSIT_LOG_ENTITY]);
+        });
+    });
 });
