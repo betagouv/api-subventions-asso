@@ -25,7 +25,7 @@
     let selectedValues: string[] = [];
 </script>
 
-<div class="fr-col-12 fr-col-lg-11">
+<div>
     <div class="fr-mb-6v">
         <StepIndicator {currentStep} {stepsDesc}></StepIndicator>
     </div>
@@ -36,7 +36,7 @@
             on:sheetSelected={e => ctrl.handleSheetSelected(e)}
             on:restartUpload={() => ctrl.handleRestartUpload()} />
     {:else}
-        <div class="fr-col-12 fr-col-lg-10">
+        <div>
             <div class="fr-mb-6v">
                 <Alert type="info">
                     <p>

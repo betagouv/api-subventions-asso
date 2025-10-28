@@ -1,7 +1,7 @@
 import Store from "$lib/core/Store";
 
 export default class SheetSelectorController {
-    public radioObj: { label: string; hintHtml: string; options: { label: string; value: string }[] };
+    public radioObj: { label: string; options: { label: string; value: string }[] };
 
     constructor(excelSheets: string[]) {
         const options = excelSheets.map(sheet => ({
@@ -11,7 +11,6 @@ export default class SheetSelectorController {
 
         this.radioObj = {
             label: "Veuillez sélectionner l’onglet à prendre en compte pour l’import des données :",
-            hintHtml: "Texte de description additionnel",
             options,
         };
     }

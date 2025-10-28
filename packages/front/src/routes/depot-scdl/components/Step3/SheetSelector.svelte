@@ -13,7 +13,7 @@
     const dispatch = createEventDispatcher<{ sheetSelected: string; restartUpload: void }>();
 </script>
 
-<div class="fr-col-12 fr-col-lg-10">
+<div>
     <div class="fr-mb-6v">
         <Alert type="info" title="Votre fichier contient plusieurs feuilles" />
 
