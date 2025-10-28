@@ -1,9 +1,27 @@
 import depositLogService from "$lib/resources/deposit-log/depositLog.service";
 import Step3Controller from "./Step3.controller";
-import { validateFile, getExcelSheetNames, FileErrorCode } from "$lib/helpers/fileHelper";
+import {
+    validateFile,
+    getExcelSheetNames,
+    FileErrorCode,
+    getFileExtension,
+    fileTypeEnum,
+} from "$lib/helpers/fileHelper";
 
 vi.mock("$lib/resources/deposit-log/depositLog.service");
-vi.mock("$lib/helpers/fileHelper");
+vi.mock("$lib/helpers/fileHelper", async () => {
+    const actual = await vi.importActual("$lib/helpers/fileHelper");
+    return {
+        ...actual,
+        ...actual,
+        validateFile: vi.fn(),
+        getExcelSheetNames: vi.fn(),
+        getFileExtension: vi.fn(),
+        EXCEL_EXT: actual.EXCEL_EXT,
+        CSV_EXT: actual.CSV_EXT,
+        FileErrorCode: actual.FileErrorCode,
+    };
+});
 
 describe("Step3Controller", () => {
     let controller: Step3Controller;
@@ -12,6 +30,7 @@ describe("Step3Controller", () => {
     const postScdlFileMock = vi.spyOn(depositLogService, "postScdlFile");
     const validateFileMock = vi.mocked(validateFile);
     const getExcelSheetNamesMock = vi.mocked(getExcelSheetNames);
+    const getFileExtensionMock = vi.mocked(getFileExtension);
 
     const createMockFile = (name: string, type: string): File => {
         return new File(["content"], name, { type });
@@ -40,7 +59,7 @@ describe("Step3Controller", () => {
             const mockFileList = [mockFile] as unknown as FileList;
             const event = { detail: { files: mockFileList } } as CustomEvent<{ files: FileList | null }>;
 
-            validateFileMock.mockResolvedValue({ valid: true, fileName: "test.csv" });
+            validateFileMock.mockResolvedValue({ valid: true, fileName: "test.csv", fileExtension: "csv" });
 
             await controller.handleFileChange(event);
 
@@ -58,6 +77,7 @@ describe("Step3Controller", () => {
                 valid: false,
                 errorCode: FileErrorCode.FILE_TOO_LARGE,
                 fileName: "test.csv",
+                fileExtension: "csv",
             });
 
             await controller.handleFileChange(event);
@@ -78,6 +98,7 @@ describe("Step3Controller", () => {
                 valid: false,
                 errorCode: FileErrorCode.INVALID_FORMAT,
                 fileName: "test.pdf",
+                fileExtension: "pdf",
             });
 
             await controller.handleFileChange(event);
@@ -97,6 +118,7 @@ describe("Step3Controller", () => {
                 valid: false,
                 errorCode: FileErrorCode.INVALID_ENCODING,
                 fileName: "test.csv",
+                fileExtension: "csv",
             });
 
             await controller.handleFileChange(event);
@@ -134,7 +156,24 @@ describe("Step3Controller", () => {
             expect(mockDispatch).not.toHaveBeenCalled();
         });
 
-        it("should upload file directly when one sheet", async () => {
+        it("should upload file directly when csv", async () => {
+            const mockFile = createMockFile("test.csv", "text/csv");
+
+            const mockFileList = [mockFile] as unknown as FileList;
+            const event = { detail: { files: mockFileList } } as CustomEvent<{ files: FileList | null }>;
+            validateFileMock.mockResolvedValue({ valid: true, fileName: "test.csv", fileExtension: "csv" });
+            await controller.handleFileChange(event);
+
+            getFileExtensionMock.mockReturnValue("csv");
+
+            await controller.handleValidate();
+
+            expect(mockDispatch).toHaveBeenCalledWith("loading");
+            expect(postScdlFileMock).toHaveBeenCalledWith(mockFile, fileTypeEnum.CSV, undefined);
+            expect(mockDispatch).toHaveBeenCalledWith("nextStep");
+        });
+
+        it("should upload file directly when excel with one sheet", async () => {
             const mockFile = createMockFile(
                 "test.xlsx",
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -142,15 +181,16 @@ describe("Step3Controller", () => {
 
             const mockFileList = [mockFile] as unknown as FileList;
             const event = { detail: { files: mockFileList } } as CustomEvent<{ files: FileList | null }>;
-            validateFileMock.mockResolvedValue({ valid: true, fileName: "test.xlsx" });
+            validateFileMock.mockResolvedValue({ valid: true, fileName: "test.xlsx", fileExtension: "xlsx" });
             await controller.handleFileChange(event);
 
             getExcelSheetNamesMock.mockResolvedValue(["Sheet1"]);
+            getFileExtensionMock.mockReturnValue("xlsx");
 
             await controller.handleValidate();
 
             expect(mockDispatch).toHaveBeenCalledWith("loading");
-            expect(postScdlFileMock).toHaveBeenCalledWith(mockFile, undefined);
+            expect(postScdlFileMock).toHaveBeenCalledWith(mockFile, fileTypeEnum.EXCEL, undefined);
             expect(mockDispatch).toHaveBeenCalledWith("nextStep");
         });
 
@@ -162,7 +202,7 @@ describe("Step3Controller", () => {
 
             const mockFileList = [mockFile] as unknown as FileList;
             const event = { detail: { files: mockFileList } } as CustomEvent<{ files: FileList | null }>;
-            validateFileMock.mockResolvedValue({ valid: true, fileName: "test.xlsx" });
+            validateFileMock.mockResolvedValue({ valid: true, fileName: "test.xlsx", fileExtension: "xlsx" });
             await controller.handleFileChange(event);
 
             const sheets = ["Sheet1", "Sheet2", "Sheet3"];
@@ -173,6 +213,7 @@ describe("Step3Controller", () => {
             expect(controller.excelSheets.value).toEqual(sheets);
             expect(controller.view.value).toBe("sheetSelector");
             expect(mockDispatch).not.toHaveBeenCalled();
+            expect(postScdlFileMock).not.toHaveBeenCalled();
         });
     });
 
@@ -190,7 +231,7 @@ describe("Step3Controller", () => {
 
             const mockFileList = [mockFile] as unknown as FileList;
             const fileEvent = { detail: { files: mockFileList } } as CustomEvent<{ files: FileList | null }>;
-            validateFileMock.mockResolvedValue({ valid: true, fileName: "test.xlsx" });
+            validateFileMock.mockResolvedValue({ valid: true, fileName: "test.xlsx", fileExtension: "xlsx" });
             await controller.handleFileChange(fileEvent);
 
             const sheetEvent = { detail: selectedSheet } as CustomEvent<string>;
@@ -198,7 +239,7 @@ describe("Step3Controller", () => {
             await controller.handleSheetSelected(sheetEvent);
 
             expect(mockDispatch).toHaveBeenCalledWith("loading");
-            expect(postScdlFileMock).toHaveBeenCalledWith(mockFile, selectedSheet);
+            expect(postScdlFileMock).toHaveBeenCalledWith(mockFile, fileTypeEnum.EXCEL, selectedSheet);
             expect(mockDispatch).toHaveBeenCalledWith("nextStep");
         });
     });

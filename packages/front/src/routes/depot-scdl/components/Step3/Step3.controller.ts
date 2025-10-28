@@ -1,4 +1,13 @@
-import { FileErrorCode, type FileFormat, getExcelSheetNames, validateFile } from "$lib/helpers/fileHelper";
+import {
+    CSV_EXT,
+    EXCEL_EXT,
+    FileErrorCode,
+    type FileFormat,
+    fileTypeEnum,
+    getExcelSheetNames,
+    getFileExtension,
+    validateFile,
+} from "$lib/helpers/fileHelper";
 import depositLogService from "$lib/resources/deposit-log/depositLog.service";
 import Store from "$lib/core/Store";
 
@@ -16,7 +25,6 @@ type DispatchFunction = <K extends keyof EventMap>(
 
 export default class Step3Controller {
     private selectedFile: File | null = null;
-    private selectedSheet: string | undefined = undefined;
     private MAX_MO_FILE_SIZE = 30;
     private readonly dispatch: DispatchFunction;
 
@@ -79,24 +87,30 @@ export default class Step3Controller {
         if (!file) {
             return;
         }
-        const sheetNames = await getExcelSheetNames(file);
 
-        if (sheetNames.length === 1) {
-            await this.uploadFile();
-        } else if (sheetNames.length > 1) {
-            this.excelSheets.set(sheetNames);
-            this.view.set("sheetSelector");
+        const fileExtension = getFileExtension(file.name);
+        if (fileExtension && EXCEL_EXT.includes(fileExtension)) {
+            const sheetNames = await getExcelSheetNames(file);
+            if (sheetNames.length > 1) {
+                this.excelSheets.set(sheetNames);
+                this.view.set("sheetSelector");
+                return;
+            }
+            await this.uploadFile(fileTypeEnum.EXCEL);
+        }
+        if (fileExtension === CSV_EXT) {
+            await this.uploadFile(fileTypeEnum.CSV);
         }
     }
 
     async handleSheetSelected(event: CustomEvent<string>) {
-        this.selectedSheet = event.detail;
-        await this.uploadFile();
+        const selectedSheet = event.detail;
+        await this.uploadFile(fileTypeEnum.EXCEL, selectedSheet);
     }
 
-    private async uploadFile() {
+    private async uploadFile(fileType: fileTypeEnum, selectedSheet?: string) {
         this.dispatch("loading");
-        await depositLogService.postScdlFile(this.selectedFile!, this.selectedSheet);
+        await depositLogService.postScdlFile(this.selectedFile!, fileType, selectedSheet);
         // todo : set depositLogStore
         this.dispatch("nextStep");
     }
@@ -105,7 +119,6 @@ export default class Step3Controller {
         this.selectedFile = null;
         this.noFileOrInvalid.set(true);
         this.excelSheets.set([]);
-        this.selectedSheet = undefined;
         this.view.set("upload");
     }
 }

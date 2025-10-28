@@ -25,6 +25,23 @@ describe("fileHelper", () => {
         } as unknown as File;
     };
 
+    describe("getFileExtension", () => {
+        it("should return the extension of a file in lowercase", () => {
+            expect(fileHelper.getFileExtension("document.CSV")).toBe("csv");
+            expect(fileHelper.getFileExtension("photo.JpG")).toBe("jpg");
+            expect(fileHelper.getFileExtension("archive.tar.Gz")).toBe("gz");
+        });
+
+        it("should return undefined if there is no extension", () => {
+            expect(fileHelper.getFileExtension("fileWithoutExtension")).toBeUndefined();
+            expect(fileHelper.getFileExtension("anotherfile.")).toBeUndefined();
+        });
+
+        it("should handle empty strings", () => {
+            expect(fileHelper.getFileExtension("")).toBeUndefined();
+        });
+    });
+
     describe("validateFile", () => {
         it("should return valid result for a valid file", async () => {
             const file = createMockFile("test.csv", 1024 * 1024, "text/csv");

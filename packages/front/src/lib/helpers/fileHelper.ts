@@ -27,7 +27,9 @@ export const formatMap: Record<string, string[]> = {
     video: [".mp4", ".avi", ".mov", ".wmv", ".flv", "video/*"],
 };
 
-const TEXT_EXT: string[] = ["txt", "csv", "json", "xml"];
+export const TEXT_EXT: string[] = ["txt", "csv", "json", "xml"];
+export const EXCEL_EXT: string[] = ["xls", "xlsx"];
+export const CSV_EXT: string = "csv";
 
 export const FileErrorCode = {
     INVALID_FORMAT: "INVALID_FORMAT",
@@ -35,13 +37,26 @@ export const FileErrorCode = {
     INVALID_ENCODING: "INVALID_ENCODING",
 };
 
+export enum fileTypeEnum {
+    CSV = "csv",
+    EXCEL = "excel",
+}
+
 type FileErrorCode = (typeof FileErrorCode)[keyof typeof FileErrorCode];
 
 export type FileValidationResult = {
     valid: boolean;
     fileName: string;
+    fileExtension?: string;
     errorCode?: FileErrorCode;
 };
+
+export function getFileExtension(fileName: string): string | undefined {
+    const parts = fileName.split(".");
+    if (parts.length < 2) return undefined;
+    const ext = parts.pop();
+    return ext && ext !== "" ? ext.toLowerCase() : undefined;
+}
 
 export async function validateFile(
     file: File,
@@ -63,10 +78,12 @@ export async function validateFile(
         return encodingResult;
     }
 
-    return { valid: true, fileName: file.name };
+    const fileExtension = getFileExtension(file.name);
+    return { valid: true, fileName: file.name, fileExtension };
 }
 
 export function validateFileSize(file: File, maxSizeMB: number): FileValidationResult {
+    const fileExtension = getFileExtension(file.name);
     const maxSizeBytes = maxSizeMB * 1024 * 1024;
 
     if (file.size > maxSizeBytes) {
@@ -74,10 +91,11 @@ export function validateFileSize(file: File, maxSizeMB: number): FileValidationR
             valid: false,
             errorCode: FileErrorCode.FILE_TOO_LARGE,
             fileName: file.name,
+            fileExtension,
         };
     }
 
-    return { valid: true, fileName: file.name };
+    return { valid: true, fileName: file.name, fileExtension };
 }
 
 export function validateFileFormat(file: File, acceptedFormats: FileFormat[]): FileValidationResult {
@@ -92,13 +110,15 @@ export function validateFileFormat(file: File, acceptedFormats: FileFormat[]): F
             valid: false,
             errorCode: FileErrorCode.INVALID_FORMAT,
             fileName: file.name,
+            fileExtension: fileExtension,
         };
     }
 
-    return { valid: true, fileName: file.name };
+    return { valid: true, fileName: file.name, fileExtension };
 }
 
 export async function validateFileEncoding(file: File): Promise<FileValidationResult> {
+    const fileExtension = getFileExtension(file.name);
     const isEncodingValid = await verifyTextEncoding(file);
 
     if (!isEncodingValid) {
@@ -106,18 +126,20 @@ export async function validateFileEncoding(file: File): Promise<FileValidationRe
             valid: false,
             errorCode: FileErrorCode.INVALID_ENCODING,
             fileName: file.name,
+            fileExtension,
         };
     }
 
-    return { valid: true, fileName: file.name };
+    return { valid: true, fileName: file.name, fileExtension };
 }
 
-function isValidFormatForFile(file: File, format: FileFormat, fileExtension: string): boolean {
+function isValidFormatForFile(file: File, format: FileFormat, fileExtension: string | undefined): boolean {
+    if (!fileExtension) return false;
     const allowedTypes = formatMap[format];
     const extensions = allowedTypes.filter(type => type.startsWith("."));
     const mimeTypes = allowedTypes.filter(type => !type.startsWith("."));
 
-    const hasValidExtension = extensions.includes(fileExtension);
+    const hasValidExtension = extensions.includes("." + fileExtension);
     const hasValidMimeType = isValidMimeType(file.type, mimeTypes);
 
     return hasValidExtension && hasValidMimeType;
@@ -134,12 +156,8 @@ function isValidMimeType(fileType: string, allowedMimeTypes: string[]): boolean 
     });
 }
 
-function getFileExtension(fileName: string): string {
-    return "." + fileName.split(".").pop()?.toLowerCase();
-}
-
 export async function verifyTextEncoding(file: File): Promise<boolean> {
-    const fileExtension = file.name.split(".").pop()?.toLowerCase();
+    const fileExtension = getFileExtension(file.name);
     if (fileExtension && TEXT_EXT.includes(fileExtension)) {
         try {
             const text = await file.text();

@@ -1,5 +1,6 @@
 import depositLogPort from "$lib/resources/deposit-log/depositLog.port";
 import type { CreateDepositScdlLogDto, DepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
+import { fileTypeEnum } from "$lib/helpers/fileHelper";
 
 class DepositLogService {
     async getDepositLog() {
@@ -26,10 +27,9 @@ class DepositLogService {
         return null;
     }
 
-    async postScdlFile(file: File, sheetName?: string): Promise<object> {
+    async postScdlFile(file: File, fileType: fileTypeEnum, sheetName?: string): Promise<object> {
         // todo : unimplemented
-        console.log("postScdlFile", file, sheetName);
-        // todo : ici soit on filtre le type de fichier et on appelle un endpoint ou un autre, soit c'est le back qui gère ?
+        console.log("postScdlFile", file, fileType, sheetName);
         return await new Promise(resolve => setTimeout(resolve, 5000));
     }
 }
