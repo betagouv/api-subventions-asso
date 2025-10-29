@@ -3,7 +3,7 @@ import request from "supertest";
 import { createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import depositLogPort from "../../../src/dataProviders/db/deposit-log/depositLog.port";
 import { getDefaultUser } from "../../__helpers__/userHelper";
-import DepositScdlLogEntity from "../../../src/modules/deposit-scdl-process/depositScdlLog.entity";
+import DepositScdlLogEntity from "../../../src/modules/deposit-scdl-process/entities/depositScdlLog.entity";
 import {
     CREATE_DEPOSIT_LOG_DTO,
     DEPOSIT_LOG_DTO,

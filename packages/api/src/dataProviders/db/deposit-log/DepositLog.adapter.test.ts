@@ -1,7 +1,7 @@
 import DepositScdlLogDbo from "./DepositScdlLogDbo";
 import { ObjectId } from "mongodb";
 import DepositLogAdapter from "./DepositLog.adapter";
-import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/depositScdlLog.entity";
+import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/entities/depositScdlLog.entity";
 import { DEPOSIT_LOG_ENTITY } from "../../../modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
 
 describe("DepositLogAdapter", () => {

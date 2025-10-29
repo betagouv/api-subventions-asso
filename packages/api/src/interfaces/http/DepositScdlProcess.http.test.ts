@@ -10,7 +10,7 @@ import {
     DEPOSIT_LOG_RESPONSE_DTO,
     DEPOSIT_LOG_RESPONSE_DTO_STEP_2,
 } from "../../modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
-import DepositScdlLogEntity from "../../modules/deposit-scdl-process/depositScdlLog.entity";
+import DepositScdlLogEntity from "../../modules/deposit-scdl-process/entities/depositScdlLog.entity";
 import { ConflictError, NotFoundError } from "core";
 
 const controller = new DepositScdlProcessHttp();

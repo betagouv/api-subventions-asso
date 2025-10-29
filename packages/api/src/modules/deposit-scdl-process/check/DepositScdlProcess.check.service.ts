@@ -20,7 +20,7 @@ export class DepositScdlProcessCheckService {
     private ensureExactPropertiesForStep(step: number, depositScdlLogDto: DepositScdlLogDto) {
         const allowedPropsByStep: Record<number, (keyof DepositScdlLogDto)[]> = {
             1: ["overwriteAlert", "allocatorSiret"],
-            2: ["permissionAlert"], // todo : add fileName and server side validation
+            2: ["permissionAlert"],
         };
 
         const allowedProps = allowedPropsByStep[step];

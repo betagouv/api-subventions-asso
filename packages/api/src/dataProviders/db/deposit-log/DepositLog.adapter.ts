@@ -1,5 +1,5 @@
 import DepositScdlLogDbo from "./DepositScdlLogDbo";
-import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/depositScdlLog.entity";
+import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/entities/depositScdlLog.entity";
 
 export default class DepositLogAdapter {
     static dboToEntity(dbo: DepositScdlLogDbo): DepositScdlLogEntity {

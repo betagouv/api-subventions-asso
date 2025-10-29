@@ -1,5 +1,5 @@
 import { DEPOSIT_LOG_ENTITY } from "./__fixtures__/depositLog.fixture";
-import DepositScdlLogEntity from "./depositScdlLog.entity";
+import DepositScdlLogEntity from "./entities/depositScdlLog.entity";
 import DepositScdlLogDtoAdapter from "./depositScdlLog.dto.adapter";
 import { CreateDepositScdlLogDto, DepositScdlLogDto } from "dto";
 

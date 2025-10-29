@@ -11,6 +11,7 @@ import { SCDL_MAPPER } from "./scdl.mapper";
 import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
 import { ScdlParsedGrant } from "./@types/ScdlParsedGrant";
 import { FormatProblem, ParsedErrorDuplicate, ParsedErrorFormat, Validity } from "./@types/Validation";
+import { SiretDto } from "dto";
 
 export default class ScdlGrantParser {
     protected static requirements: {
@@ -121,9 +122,9 @@ export default class ScdlGrantParser {
         });
 
         const duplicates = ScdlGrantParser.findDuplicates(parsedChunk);
-        const { entities, problems } = ScdlGrantParser.convertValidateData(parsedChunk);
+        const { entities, problems, allocatorSirets } = ScdlGrantParser.convertValidateData(parsedChunk);
 
-        return { entities, errors: [...duplicates, ...problems] };
+        return { entities, errors: [...duplicates, ...problems], allocatorSirets };
     }
 
     static parseExcel(content: Buffer, pageName?: string, rowOffset = 0) {
@@ -140,18 +141,20 @@ export default class ScdlGrantParser {
         console.log("Map rows to entities...");
         const data = page.slice(rowOffset + 1).map(row => GenericParser.linkHeaderToData(headerRow, row));
         const duplicates = ScdlGrantParser.findDuplicates(data);
-        const { entities, problems } = ScdlGrantParser.convertValidateData(data);
-        return { entities, errors: [...duplicates, ...problems] };
+        const { entities, problems, allocatorSirets } = ScdlGrantParser.convertValidateData(data);
+        return { entities, errors: [...duplicates, ...problems], allocatorSirets };
     }
 
     protected static convertValidateData(parsedChunk): {
         entities: ScdlStorableGrant[];
         problems: ParsedErrorFormat[];
+        allocatorSirets: SiretDto[];
     } {
         const storableChunk: ScdlStorableGrant[] = [];
         const invalidEntities: Partial<ScdlStorableGrant>[] = [];
         const errors: ParsedErrorFormat[] = [];
         const updateDate = new Date();
+        const allocatorSirets: Set<string> = new Set();
 
         // TODO create errors for that (does not fit in the csv format)
         ScdlGrantParser.verifyMissingHeaders(SCDL_MAPPER, parsedChunk[0]);
@@ -186,13 +189,17 @@ export default class ScdlGrantParser {
                     bloquant: validation.valid ? "non" : "oui",
                 }),
             );
+
+            if (entity.allocatorSiret != null) {
+                allocatorSirets.add(entity.allocatorSiret);
+            }
         }
 
         if (invalidEntities.length) {
             console.log(`WARNING : ${invalidEntities.length} entities invalid`);
         }
 
-        return { entities: storableChunk, problems: errors };
+        return { entities: storableChunk, problems: errors, allocatorSirets: Array.from(allocatorSirets) };
     }
 
     /*

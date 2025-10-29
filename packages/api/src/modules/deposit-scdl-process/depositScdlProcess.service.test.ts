@@ -4,7 +4,7 @@ import {
     DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
 } from "./__fixtures__/depositLog.fixture";
 import depositScdlProcessService from "./depositScdlProcess.service";
-import DepositScdlLogEntity from "./depositScdlLog.entity";
+import DepositScdlLogEntity from "./entities/depositScdlLog.entity";
 import { ConflictError, NotFoundError } from "core";
 import depositLogPort from "../../dataProviders/db/deposit-log/depositLog.port";
 import DepositScdlLogDtoAdapter from "./depositScdlLog.dto.adapter";

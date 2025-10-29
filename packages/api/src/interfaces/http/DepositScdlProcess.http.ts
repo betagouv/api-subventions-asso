@@ -12,6 +12,8 @@ import {
     Body,
     Patch,
     Path,
+    UploadedFile,
+    FormField,
 } from "tsoa";
 import { IdentifiedRequest } from "../../@types";
 import depositScdlProcessService from "../../modules/deposit-scdl-process/depositScdlProcess.service";
@@ -109,6 +111,28 @@ export class DepositScdlProcessHttp extends Controller {
             step,
             depositScdlLogDto,
             req.user._id.toString(),
+        );
+        return DepositScdlLogDtoAdapter.entityToDepositScdlLogResponseDto(updatedDepositLog);
+    }
+
+    /**
+     * @summary validate scd file the authenticated user
+     */
+    @Post("/scdl-file")
+    @SuccessResponse("200", "File processed and validation report generated")
+    public async validateScdlFile(
+        @UploadedFile() file: Express.Multer.File,
+        @FormField() depositScdlLogDto: DepositScdlLogDto,
+        @FormField() type: "csv" | "excel",
+        @Request() req: IdentifiedRequest,
+        @FormField() pageName?: string,
+    ): Promise<DepositScdlLogResponseDto> {
+        const updatedDepositLog = await depositScdlProcessService.validateScdlFile(
+            file,
+            depositScdlLogDto,
+            type,
+            req.user._id.toString(),
+            pageName,
         );
         return DepositScdlLogDtoAdapter.entityToDepositScdlLogResponseDto(updatedDepositLog);
     }
