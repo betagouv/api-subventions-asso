@@ -23,7 +23,7 @@ describe("ScdlDepositCronService", () => {
     ];
     const DEPOSIT_LOGS = [DEPOSIT_LOG_ENTITY, { ...DEPOSIT_LOG_ENTITY, userId: USERS[1]._id.toString() }];
 
-    describe("getUsersToNotify", () => {
+    describe("getUsersEmailToNotify", () => {
         const TWO_DAYS_AGO = new Date("2025-10-13T00:00:00.000Z");
         let mockFindByDate: jest.SpyInstance;
         let mockFindUsersByIdList: jest.SpyInstance;
@@ -35,18 +35,18 @@ describe("ScdlDepositCronService", () => {
         });
 
         it("calls findByDate", async () => {
-            await scdlDespositCronService.getUsersToNotify();
+            await scdlDespositCronService.getUsersEmailToNotify();
             expect(mockFindByDate).toHaveBeenCalledWith(TWO_DAYS_AGO);
         });
 
         it("retrieves users", async () => {
-            await scdlDespositCronService.getUsersToNotify();
+            await scdlDespositCronService.getUsersEmailToNotify();
             expect(mockFindUsersByIdList).toHaveBeenCalledWith([DEPOSIT_LOGS[0].userId, DEPOSIT_LOGS[1].userId]);
         });
 
         it("returns entities", async () => {
-            const actual = await scdlDespositCronService.getUsersToNotify();
-            const expected = USERS; // cf mock
+            const actual = await scdlDespositCronService.getUsersEmailToNotify();
+            const expected = USERS.map(user => user.email); // cf mock
             expect(actual).toEqual(expected);
         });
     });
@@ -55,7 +55,9 @@ describe("ScdlDepositCronService", () => {
         let mockGetUsersToNotify: jest.SpyInstance;
 
         beforeEach(() => {
-            mockGetUsersToNotify = jest.spyOn(scdlDespositCronService, "getUsersToNotify").mockResolvedValue(USERS);
+            mockGetUsersToNotify = jest
+                .spyOn(scdlDespositCronService, "getUsersEmailToNotify")
+                .mockResolvedValue(USERS.map(user => user.email));
         });
 
         afterAll(() => {
