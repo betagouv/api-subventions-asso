@@ -27,6 +27,8 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
                 return this.badEmailDomain(data);
             case NotificationType.FAILED_CRON:
                 return this.failedCron(data);
+            case NotificationType.DEPOSIT_UNFINISHED:
+                return this.depositUnfinished(data);
             default:
                 return Promise.resolve(false);
         }
@@ -121,6 +123,22 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
             console.error("error sending mattermost log for DB connection lost");
             return false;
         }
+    }
+
+    private depositUnfinished(data: NotificationDataTypes[NotificationType.DEPOSIT_UNFINISHED]) {
+        const message = `Bonjour Data.Subvention !\n
+        Voici la liste du jour des utilisateurs à relancer pour finaliser leur dépôt de données :\n
+        ${data.users.reduce((msg, user) => {
+            if (user.lastname && user.firstname) return `${msg}- ${user.email} (${user.firstname} ${user.lastname})\n`;
+            return `${msg}- ${user.email}\n`;
+        }, "")}`;
+
+        return this.sendMessage({
+            text: message,
+            channel: MattermostChannels.ACCOUNTS,
+            username: "Relance de dépôt de données",
+            icon_emoji: "bookmark_tabs",
+        });
     }
 }
 

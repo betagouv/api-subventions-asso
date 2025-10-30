@@ -1,6 +1,7 @@
 import axios from "axios";
 import { NotificationType } from "../@types/NotificationType";
 import { MattermostNotifyPipe } from "./MattermostNotifyPipe";
+import { SIRET_STR } from "../../../../tests/__fixtures__/association.fixture";
 
 jest.mock("axios");
 jest.mock("../../../configurations/env.conf", () => ({ ENV: "test" }));
@@ -117,6 +118,27 @@ describe("MattermostNotifyPipe", () => {
                 users: [
                     { email: "some@email.fr", firstname: "Prénom" },
                     { email: "some-other@email.fr", lastname: "Nom" },
+                ],
+            });
+            const actual = sendMessageSpy.mock.calls[0][0];
+            expect(actual).toMatchSnapshot();
+        });
+    });
+
+    describe("depositUnfinished", () => {
+        it("sends message with proper payload", async () => {
+            // @ts-expect-error -- private method
+            const sendMessageSpy = jest.spyOn(notifyPipe, "sendMessage").mockResolvedValueOnce(true);
+            // @ts-expect-error -- private method
+            await notifyPipe.depositUnfinished({
+                users: [
+                    { email: "some@email.fr", firstname: "John", lastname: "Doe", allocatorSiret: SIRET_STR },
+                    {
+                        email: "griffin@email.fr",
+                        firstname: "Petter",
+                        lastname: "Griffin",
+                        allocatorSiret: "23456665799999",
+                    },
                 ],
             });
             const actual = sendMessageSpy.mock.calls[0][0];
