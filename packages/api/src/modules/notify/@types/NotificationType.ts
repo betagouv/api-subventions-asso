@@ -14,4 +14,5 @@ export enum NotificationType {
     WARN_NEW_USER_TO_BE_DELETED,
     STATS_NB_REQUESTS,
     BATCH_DEPOSIT_RESUME,
+    DEPOSIT_UNFINISHED,
 }
