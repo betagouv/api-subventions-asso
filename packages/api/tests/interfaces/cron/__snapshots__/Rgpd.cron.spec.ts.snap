@@ -32,7 +32,7 @@ exports[`Rgpd Cron removeInactiveUsers() should notify users through brevo 1`] =
         "email": "old-user1@mail.com",
       },
       "sender": {
-        "email": "",
+        "email": "mail-user@datasubvention",
         "name": "Data.Subvention",
       },
       "templateId": 156,
@@ -60,7 +60,7 @@ exports[`Rgpd Cron removeInactiveUsers() should notify users through brevo 1`] =
         "email": "old-user2@mail.com",
       },
       "sender": {
-        "email": "",
+        "email": "mail-user@datasubvention",
         "name": "Data.Subvention",
       },
       "templateId": 156,

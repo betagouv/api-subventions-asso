@@ -139,7 +139,7 @@ describe("Rgpd Cron", () => {
                 [
                     {
                         templateId: 155,
-                        sender: { name: "Data.Subvention", email: "" },
+                        sender: { name: "Data.Subvention", email: process.env.MAIL_USER },
                         params: {
                             email: "old-user2@mail.com",
                             activationLink: expect.any(String),
