@@ -69,7 +69,6 @@ export interface NotificationDataTypes {
     [NotificationType.DEPOSIT_UNFINISHED]: {
         users: {
             email: string;
-            allocatorSiret: string;
             firstname?: string;
             lastname?: string;
         }[];
