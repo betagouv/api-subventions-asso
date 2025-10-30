@@ -458,9 +458,17 @@ describe("ApiAssoService", () => {
                 expect(mockSendRequest).toHaveBeenCalledTimes(1);
             });
 
-            it("should return empty array", async () => {
+            it("should retry once if empty structure", async () => {
+                const spyFn = jest.spyOn(apiAssoService, "findEtablissementsBySiren");
                 mockSendRequest.mockResolvedValueOnce(null);
-                const actual = await apiAssoService.findEtablissementsBySiren(SIREN);
+                await apiAssoService.findEtablissementsBySiren(SIREN, { retry: true });
+                expect(spyFn).toHaveBeenCalledTimes(2);
+            });
+
+            it("should return empty array if structure not defined even with retry", async () => {
+                mockSendRequest.mockResolvedValueOnce(null);
+                mockSendRequest.mockResolvedValueOnce(null);
+                const actual = await apiAssoService.findEtablissementsBySiren(SIREN, { retry: true });
                 expect(actual).toHaveLength(0);
             });
 
@@ -469,7 +477,7 @@ describe("ApiAssoService", () => {
                     date_modif_siren: null,
                     id_siren: null,
                 });
-                const actual = await apiAssoService.findEtablissementsBySiren(SIREN);
+                const actual = await apiAssoService.findEtablissementsBySiren(SIREN, { retry: false });
                 expect(actual).toHaveLength(0);
             });
 

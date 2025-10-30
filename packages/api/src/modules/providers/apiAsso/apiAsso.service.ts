@@ -116,11 +116,17 @@ export class ApiAssoService
         return ApiAssoDtoAdapter.sirenStructureToAssociation(sirenStructure);
     }
 
-    public async findEtablissementsBySiren(siren: Siren): Promise<Etablissement[]> {
+    public async findEtablissementsBySiren(
+        siren: Siren,
+        options: { retry: boolean } = { retry: true },
+    ): Promise<Etablissement[]> {
         const structure = await this.sendRequest<StructureDto>(`/api/structure/${siren.value}`);
 
-        if (!structure?.identite || !Object.keys(structure.identite).length || hasEmptyProperties(structure.identite))
-            return []; // sometimes an empty shell object if given by the api
+        if (!structure?.identite || !Object.keys(structure.identite).length || hasEmptyProperties(structure.identite)) {
+            if (!options.retry)
+                return []; // sometimes an empty shell object if given by the api
+            else return this.findEtablissementsBySiren(siren, { retry: false });
+        }
 
         if (!structure.identite.date_modif_siren)
             structure.identite.date_modif_siren = this.getDefaultDateModifSiren(structure);
