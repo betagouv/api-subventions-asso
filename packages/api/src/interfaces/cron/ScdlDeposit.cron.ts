@@ -11,4 +11,11 @@ export class ScdlDepositCron implements CronController {
     async notifyUsers() {
         return scdlDespositCronService.notifyUsers();
     }
+
+    // every day at 10pm
+    @AsyncCron({ cronExpression: "0 23 * * *" })
+    // notify users who have not completed their deposit process
+    async notifyTeam() {
+        return scdlDespositCronService.notifyTeam();
+    }
 }
