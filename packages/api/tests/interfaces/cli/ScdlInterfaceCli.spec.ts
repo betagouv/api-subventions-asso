@@ -1,7 +1,6 @@
 import path from "path";
 import { ObjectId } from "mongodb";
 import ScdlCli from "../../../src/interfaces/cli/Scdl.cli";
-import scdlService from "../../../src/modules/providers/scdl/scdl.service";
 import miscScdlProducersPort from "../../../src/dataProviders/db/providers/scdl/miscScdlProducers.port";
 import miscScdlGrantPort from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.port";
 import MiscScdlProducer from "../../../src/modules/providers/scdl/__fixtures__/MiscScdlProducer";
@@ -24,7 +23,7 @@ describe("SCDL CLI", () => {
         it("should create MiscScdlProducerEntity", async () => {
             await cli.addProducer(MiscScdlProducer.slug, MiscScdlProducer.name, MiscScdlProducer.siret);
             const document = await miscScdlProducersPort.findBySlug(MiscScdlProducer.slug);
-            expect(document).toMatchSnapshot({ _id: expect.any(ObjectId), lastUpdate: expect.any(Date) });
+            expect(document).toMatchSnapshot({ _id: expect.any(ObjectId) });
         });
     });
 
@@ -52,11 +51,9 @@ describe("SCDL CLI", () => {
                 slug: MiscScdlProducer.slug,
                 name: MiscScdlProducer.name,
                 siret: MiscScdlProducer.siret,
-                lastUpdate: PRODUCER_CREATION_DATE,
             });
         });
 
-        const PRODUCER_CREATION_DATE = new Date("2025-01-01");
         describe.each`
             methodName    | test
             ${"parse"}    | ${testParseCsv}
@@ -84,14 +81,6 @@ describe("SCDL CLI", () => {
                     updateDate: expect.any(Date),
                 }));
                 expect(grants).toMatchSnapshot(expectedAny);
-            });
-
-            // could not find another way to test the date update
-            // jest.useFakeTimers() does not work with mongoDB (at least findOne method) and crash the test
-            it("should update producer lastUpdate", async () => {
-                await test("SCDL", MiscScdlProducer.slug);
-                const actual = (await scdlService.getProducer(MiscScdlProducer.slug))?.lastUpdate;
-                expect(actual).not.toEqual(PRODUCER_CREATION_DATE);
             });
 
             it("registers new import in data-log", async () => {

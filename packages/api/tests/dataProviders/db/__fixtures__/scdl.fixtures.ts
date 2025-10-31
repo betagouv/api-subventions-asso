@@ -10,14 +10,12 @@ export const LOCAL_AUTHORITIES: WithId<MiscScdlProducerEntity>[] = [
         slug: "producer-1",
         name: GRANTORS[0].name,
         siret: GRANTORS[0].siret,
-        lastUpdate: new Date("2024-01-12"),
     },
     {
         _id: new ObjectId("3EBD6BDD2240C1F91E925EAD"),
         slug: "producer-2",
         name: GRANTORS[1].name,
         siret: GRANTORS[1].siret,
-        lastUpdate: new Date("2024-01-12"),
     },
 ];
 

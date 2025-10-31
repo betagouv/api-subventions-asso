@@ -3,7 +3,6 @@
 exports[`SCDL CLI addProducer() should create MiscScdlProducerEntity 1`] = `
 {
   "_id": Any<ObjectId>,
-  "lastUpdate": Any<Date>,
   "name": "Région Bretagne",
   "siret": "23350001600040",
   "slug": "bretagne",

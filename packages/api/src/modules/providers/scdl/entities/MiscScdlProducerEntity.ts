@@ -4,5 +4,4 @@ export default interface MiscScdlProducerEntity {
     slug: string;
     name: string;
     siret: SiretDto;
-    lastUpdate: Date;
 }

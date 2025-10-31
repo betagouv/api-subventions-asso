@@ -32,7 +32,7 @@ export default class ScdlCli {
         if (!siret) throw Error("producer SIRET is mandatory");
         if (!Siret.isSiret(siret)) throw Error("SIRET is not valid");
         if (await scdlService.getProducer(slug)) throw new Error("Producer already exists");
-        await scdlService.createProducer({ slug, name, siret, lastUpdate: new Date() });
+        await scdlService.createProducer({ slug, name, siret });
     }
 
     public async parseXls(
@@ -173,12 +173,6 @@ export default class ScdlCli {
             console.log(`No duplicates detected`);
         }
 
-        console.log("Updating producer's last update date");
-        // THOUGHTS: what do we want to do with lastUpdate ? Code was making possible to update it with a date lower than a previous one
-        // e.g if we import a file from 2018 with already 2024 data the lastUpdate will be 2018
-        // => always use new Date() in updateProducer
-        // but if we do that lastUpdate doesn't mean the most recent data date but only the "lastUpdate" stricto sensus
-        await scdlService.updateProducer(producerSlug, { lastUpdate: new Date() });
         console.log("Parsing ended successfully !");
     }
 

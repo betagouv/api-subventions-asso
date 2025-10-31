@@ -71,7 +71,6 @@ describe("ScdlCli", () => {
                 slug: PRODUCER_ENTITY.slug,
                 name: PRODUCER_ENTITY.name,
                 siret: PRODUCER_ENTITY.siret,
-                lastUpdate: expect.any(Date),
             });
         });
 
@@ -350,17 +349,6 @@ describe("ScdlCli", () => {
             // @ts-expect-error -- test private
             const test = () => cli.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
             await expect(test).rejects.toThrow(ERROR);
-        });
-
-        it("should call scdlService.updateProducer()", async () => {
-            const now = new Date();
-            jest.useFakeTimers().setSystemTime(now);
-            // @ts-expect-error -- test private
-            await cli.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug);
-            expect(scdlService.updateProducer).toHaveBeenCalledWith(PRODUCER_ENTITY.slug, {
-                lastUpdate: now,
-            });
-            jest.useRealTimers();
         });
     });
 

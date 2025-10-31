@@ -80,16 +80,6 @@ describe("ScdlService", () => {
         });
     });
 
-    describe("updateProducer()", () => {
-        it("should call miscScdlProducersPort.update()", async () => {
-            const SET_OBJECT = {
-                lastUpdate: new Date(),
-            };
-            await scdlService.updateProducer(MiscScdlProducerFixture.slug, SET_OBJECT);
-            expect(miscScdlProducersPort.update).toHaveBeenCalledWith(MiscScdlProducerFixture.slug, SET_OBJECT);
-        });
-    });
-
     describe("_buildGrantUniqueId()", () => {
         it("should call getMD5()", async () => {
             const DATA = {};
