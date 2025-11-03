@@ -16,6 +16,9 @@ import dataLogService from "../../modules/data-log/dataLog.service";
 import { detectAndEncode, validateDate } from "../../shared/helpers/CliHelper";
 import scdlGrantService from "../../modules/providers/scdl/scdl.grant.service";
 import applicationFlatService from "../../modules/applicationFlat/applicationFlat.service";
+import MiscScdlProducerEntity from "../../modules/providers/scdl/entities/MiscScdlProducerEntity";
+import notifyService from "../../modules/notify/notify.service";
+import { NotificationType } from "../../modules/notify/@types/NotificationType";
 
 export default class ScdlCli {
     static cmdName = "scdl";
@@ -39,7 +42,8 @@ export default class ScdlCli {
         pageName: string | undefined = undefined,
         rowOffset: number | string = 0,
     ) {
-        await this.validateGenericInput(producerSlug, exportDate);
+        const producer = await scdlService.getProducer(producerSlug);
+        await this.validateGenericInput(producer, exportDate);
         const fileContent = detectAndEncode(filePath);
 
         const parsedRowOffset = typeof rowOffset === "number" ? rowOffset : parseInt(rowOffset);
@@ -48,7 +52,7 @@ export default class ScdlCli {
         // persist data
         await this.persist(producerSlug, entities);
         // execute end of import methods
-        await this.end({ file: filePath, producerSlug, exportDate, errors });
+        await this.end({ file: filePath, producer: producer as MiscScdlProducerEntity, exportDate, errors });
     }
 
     /**
@@ -66,7 +70,8 @@ export default class ScdlCli {
         delimiter = ";",
         quote = '"',
     ) {
-        await this.validateGenericInput(producerSlug, exportDate);
+        const producer = await scdlService.getProducer(producerSlug);
+        await this.validateGenericInput(producer, exportDate);
         const fileContent = detectAndEncode(filePath);
 
         const parsedQuote = quote === "false" ? false : quote;
@@ -74,7 +79,7 @@ export default class ScdlCli {
         // persist data
         await this.persist(producerSlug, entities);
         // execute end of import methods
-        await this.end({ file: filePath, producerSlug, exportDate, errors });
+        await this.end({ file: filePath, producer: producer as MiscScdlProducerEntity, exportDate, errors });
     }
 
     /**
@@ -85,14 +90,17 @@ export default class ScdlCli {
     private async end(params: {
         file: string;
         errors: MixedParsedError[];
-        producerSlug: string;
+        producer: MiscScdlProducerEntity;
         exportDate: string | undefined;
     }) {
-        const { file, errors, producerSlug, exportDate } = params;
-        await Promise.all([
-            this.exportErrors(errors, file),
-            dataLogService.addLog(producerSlug, file, exportDate ? new Date(exportDate) : undefined),
-        ]);
+        const { file, errors, producer, exportDate: dateStr } = params;
+        const exportDate = dateStr ? new Date(dateStr) : undefined;
+        notifyService.notify(NotificationType.DATA_IMPORT_SUCCESS, {
+            providerName: producer.name,
+            providerSiret: producer.siret,
+            exportDate,
+        });
+        await Promise.all([this.exportErrors(errors, file), dataLogService.addLog(producer.slug, file, exportDate)]);
     }
 
     /**
@@ -138,10 +146,9 @@ export default class ScdlCli {
         }
     }
 
-    private async validateGenericInput(producerSlug: string, exportDateStr?: string) {
+    private async validateGenericInput(producer: MiscScdlProducerEntity | null, exportDateStr?: string) {
         if (exportDateStr) validateDate(exportDateStr);
-        if (!(await scdlService.getProducer(producerSlug)))
-            throw new Error("Producer ID does not match any producer in database");
+        if (!producer) throw new Error("Producer does not match any producer in database");
     }
 
     private async persistEntities(storables: ScdlStorableGrant[], producerSlug: string) {
