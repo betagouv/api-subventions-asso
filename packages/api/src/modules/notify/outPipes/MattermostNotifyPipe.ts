@@ -8,6 +8,7 @@ import { ENV } from "../../../configurations/env.conf";
 
 enum MattermostChannels {
     ACCOUNTS = "datasubvention---comptes-app",
+    PRODUCT = "datasubvention---produit",
 }
 
 export class MattermostNotifyPipe implements NotifyOutPipe {
@@ -29,6 +30,8 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
                 return this.failedCron(data);
             case NotificationType.DEPOSIT_UNFINISHED:
                 return this.depositUnfinished(data);
+            case NotificationType.DATA_IMPORT_SUCCESS:
+                return this.dataImportSuccess(data);
             default:
                 return Promise.resolve(false);
         }
@@ -45,6 +48,18 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
             console.error("error sending mattermost log");
             return false;
         }
+    }
+
+    private dataImportSuccess(data: NotificationDataTypes[NotificationType.DATA_IMPORT_SUCCESS]) {
+        const message = dedent`Import de données réussi pour le fournisseur **${data.providerName}**${
+            data.providerSiret ? ` (SIRET : \`${data.providerSiret}\`)` : ""
+        }${data.exportDate ? ` avec une date d'export au **${data.exportDate.toISOString().split("T")[0]}**` : ""}.`;
+        return this.sendMessage({
+            text: message,
+            channel: MattermostChannels.PRODUCT,
+            username: "Import de données",
+            icon_emoji: "white_check_mark",
+        });
     }
 
     private userDeleted(data: NotificationDataTypes[NotificationType.USER_DELETED]) {

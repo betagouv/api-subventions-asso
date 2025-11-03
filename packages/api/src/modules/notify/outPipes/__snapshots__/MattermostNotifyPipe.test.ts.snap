@@ -37,6 +37,15 @@ exports[`MattermostNotifyPipe depositUnfinished sends message with proper payloa
 }
 `;
 
+exports[`MattermostNotifyPipe dataImportSuccess sends message 1`] = `
+{
+  "channel": "datasubvention---produit",
+  "icon_emoji": "white_check_mark",
+  "text": "Import de données réussi pour le fournisseur **Ville de Rennes** (SIRET : \`12345678900012\`) avec une date d'export au **2025-09-03**.",
+  "username": "Import de données",
+}
+`;
+
 exports[`MattermostNotifyPipe userDeleted sends message with proper payload with false selfDeleted 1`] = `
 {
   "channel": "datasubvention---comptes-app",

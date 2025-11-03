@@ -143,4 +143,19 @@ describe("MattermostNotifyPipe", () => {
             expect(actual).toMatchSnapshot();
         });
     });
+
+    describe("dataImportSuccess", () => {
+        it("sends message", async () => {
+            // @ts-expect-error -- private method
+            const sendMessageSpy = jest.spyOn(notifyPipe, "sendMessage").mockResolvedValueOnce(true);
+            // @ts-expect-error -- private method
+            await notifyPipe.dataImportSuccess({
+                providerName: "Ville de Rennes",
+                providerSiret: "12345678900012",
+                exportDate: new Date("2025-09-03"),
+            });
+            const actual = sendMessageSpy.mock.calls[0][0];
+            expect(actual).toMatchSnapshot();
+        });
+    });
 });
