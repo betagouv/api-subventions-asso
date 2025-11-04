@@ -1,7 +1,7 @@
 import depositLogPort from "../../dataProviders/db/deposit-log/depositLog.port";
 import { addDaysToDate } from "../../shared/helpers/DateHelper";
-import { NotificationType } from "../notify/@types/NotificationType";
-import notifyService from "../notify/notify.service";
+// import { NotificationType } from "../notify/@types/NotificationType";
+// import notifyService from "../notify/notify.service";
 import userCrudService from "../user/services/crud/user.crud.service";
 
 class ScdlDepositCronService {
@@ -20,7 +20,10 @@ class ScdlDepositCronService {
         const users = await this.getUsersToNotify();
         if (!users) return;
         console.log("fires notification to send emails...");
-        return notifyService.notify(NotificationType.BATCH_DEPOSIT_RESUME, { emails: users.map(u => u.email) });
+
+        // TODO: enable this when template ready to be used
+        // return notifyService.notify(NotificationType.BATCH_DEPOSIT_RESUME, { emails: users.map(u => u.email) });
+        return;
     }
 }
 

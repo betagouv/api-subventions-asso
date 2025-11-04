@@ -16,7 +16,7 @@ describe("ScdlDeposit CRON", () => {
     describe("notifyUsers", () => {
         beforeEach(async () => {});
 
-        it("send mail to users that started deposit 2 days ago", async () => {
+        it.skip("send mail to users that started deposit 2 days ago", async () => {
             const now = new Date();
 
             const user = await userPort.create({
