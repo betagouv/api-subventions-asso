@@ -73,4 +73,9 @@ export interface NotificationDataTypes {
             lastname?: string;
         }[];
     };
+    [NotificationType.DATA_IMPORT_SUCCESS]: {
+        providerName: string;
+        providerSiret?: string;
+        exportDate?: Date;
+    };
 }

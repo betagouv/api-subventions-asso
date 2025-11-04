@@ -33,6 +33,7 @@ export interface NotifierMethodType {
     (type: NotificationType.STATS_NB_REQUESTS, data: NotificationDataTypes[NotificationType.STATS_NB_REQUESTS]);
     (type: NotificationType.BATCH_DEPOSIT_RESUME, data: NotificationDataTypes[NotificationType.BATCH_DEPOSIT_RESUME]);
     (type: NotificationType.DEPOSIT_UNFINISHED, data: NotificationDataTypes[NotificationType.DEPOSIT_UNFINISHED]);
+    (type: NotificationType.DATA_IMPORT_SUCCESS, data: NotificationDataTypes[NotificationType.DATA_IMPORT_SUCCESS]);
 }
 
 export interface NotifyOutPipe {

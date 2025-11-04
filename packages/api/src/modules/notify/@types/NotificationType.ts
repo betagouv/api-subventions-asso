@@ -15,4 +15,5 @@ export enum NotificationType {
     STATS_NB_REQUESTS,
     BATCH_DEPOSIT_RESUME,
     DEPOSIT_UNFINISHED,
+    DATA_IMPORT_SUCCESS,
 }
