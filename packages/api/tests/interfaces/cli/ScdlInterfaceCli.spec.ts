@@ -8,6 +8,8 @@ import MiscScdlProducer from "../../../src/modules/providers/scdl/__fixtures__/M
 import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
 import { SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
 import applicationFlatPort from "../../../src/dataProviders/db/applicationFlat/applicationFlat.port";
+import notifyService from "../../../src/modules/notify/notify.service";
+import { NotificationType } from "../../../src/modules/notify/@types/NotificationType";
 
 describe("SCDL CLI", () => {
     let cli: ScdlCli;
@@ -143,6 +145,16 @@ describe("SCDL CLI", () => {
                 ${"Mandatory columns associationSiret - amount are missing."} | ${"SCDL_MANY_MISSING_MANDATORY"}
             `("throws an error if missing mandatory header is missing", async ({ error, file }) => {
                 await expect(test(file, MiscScdlProducer.slug, FIRST_IMPORT_DATE)).rejects.toThrow(error);
+            });
+
+            it("notifies data import success", async () => {
+                const spyNotify = jest.spyOn(notifyService, "notify");
+                await test("SCDL", MiscScdlProducer.slug, FIRST_IMPORT_DATE);
+                expect(spyNotify).toHaveBeenCalledWith(NotificationType.DATA_IMPORT_SUCCESS, {
+                    providerName: MiscScdlProducer.name,
+                    providerSiret: MiscScdlProducer.siret,
+                    exportDate: new Date(FIRST_IMPORT_DATE),
+                });
             });
         });
 

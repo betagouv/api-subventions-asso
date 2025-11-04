@@ -19,7 +19,6 @@ import MiscScdlGrant from "../../modules/providers/scdl/__fixtures__/MiscScdlGra
 import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
 import MiscScdlProducer from "../../modules/providers/scdl/__fixtures__/MiscScdlProducer";
 import { MixedParsedError, ParsedErrorFormat } from "../../modules/providers/scdl/@types/Validation";
-
 import csvSyncStringifier from "csv-stringify/sync";
 import dataLogService from "../../modules/data-log/dataLog.service";
 import MiscScdlGrantEntity from "../../modules/providers/scdl/entities/MiscScdlGrantEntity";
@@ -29,7 +28,7 @@ import scdlGrantService from "../../modules/providers/scdl/scdl.grant.service";
 import applicationFlatService from "../../modules/applicationFlat/applicationFlat.service";
 jest.mock("../../modules/providers/scdl/scdl.grant.service");
 jest.mock("../../modules/applicationFlat/applicationFlat.service");
-
+jest.mock("../../modules/notify/notify.service", () => ({ notify: jest.fn() }));
 jest.mock("csv-stringify/sync");
 
 describe("ScdlCli", () => {
@@ -138,7 +137,7 @@ describe("ScdlCli", () => {
             // @ts-expect-error -- test private
             const sanitizeSpy = jest.spyOn(cli, "validateGenericInput");
             await test();
-            expect(sanitizeSpy).toHaveBeenCalledWith(PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
+            expect(sanitizeSpy).toHaveBeenCalledWith(PRODUCER_ENTITY, EXPORT_DATE_STR);
         });
 
         it("encode and read file", async () => {
@@ -164,7 +163,7 @@ describe("ScdlCli", () => {
             expect(cli.end).toHaveBeenCalledWith({
                 file: FILE_PATH,
                 errors: ERRORS,
-                producerSlug: PRODUCER_ENTITY.slug,
+                producer: PRODUCER_ENTITY,
                 exportDate: EXPORT_DATE_STR,
             });
         });
@@ -289,7 +288,7 @@ describe("ScdlCli", () => {
             await cli.end({
                 file: FILE_PATH,
                 errors: ERRORS,
-                producerSlug: PRODUCER_ENTITY.slug,
+                producer: PRODUCER_ENTITY,
                 exportDate: EXPORT_DATE_STR,
             });
             // @ts-expect-error: method is mocked
@@ -301,7 +300,7 @@ describe("ScdlCli", () => {
             await cli.end({
                 file: FILE_PATH,
                 errors: ERRORS,
-                producerSlug: PRODUCER_ENTITY.slug,
+                producer: PRODUCER_ENTITY,
                 exportDate: EXPORT_DATE_STR,
             });
             expect(jest.mocked(dataLogService.addLog)).toHaveBeenCalledWith(
@@ -350,7 +349,7 @@ describe("ScdlCli", () => {
             mockedScdlService.saveDbos.mockRejectedValueOnce(ERROR);
             // @ts-expect-error -- test private
             const test = () => cli.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
-            await expect(test).rejects.toThrowError(ERROR);
+            await expect(test).rejects.toThrow(ERROR);
         });
 
         it("should call scdlService.updateProducer()", async () => {
@@ -378,10 +377,10 @@ describe("ScdlCli", () => {
             expect(CliHelper.validateDate).not.toHaveBeenCalled();
         });
 
-        it("should throw Error when providerId does not match any provider in database", async () => {
+        it("should throw Error when provider is undefined", async () => {
             mockedScdlService.getProducer.mockResolvedValue(null);
             // @ts-expect-error -- test private
-            expect(() => cli.validateGenericInput("WRONG_ID")).rejects.toThrowError();
+            expect(() => cli.validateGenericInput(undefined)).rejects.toThrow();
         });
     });
 
