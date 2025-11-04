@@ -72,6 +72,7 @@ export interface NotificationDataTypes {
             firstname?: string;
             lastname?: string;
         }[];
+    };
     [NotificationType.DATA_IMPORT_SUCCESS]: {
         providerName: string;
         providerSiret?: string;
