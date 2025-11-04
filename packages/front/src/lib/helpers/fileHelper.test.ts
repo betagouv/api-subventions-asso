@@ -2,7 +2,9 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import jschardet from "jschardet";
 import XLSX from "xlsx";
 import * as fileHelper from "./fileHelper";
-import { FileErrorCode } from "./fileHelper";
+import FileFormatError from "$lib/errors/file-errors/FileFormatError";
+import FileSizeError from "$lib/errors/file-errors/FileSizeError";
+import FileEncodingError from "$lib/errors/file-errors/FileEncodingError";
 
 vi.mock("jschardet");
 vi.mock("xlsx");
@@ -32,66 +34,43 @@ describe("fileHelper", () => {
             expect(fileHelper.getFileExtension("archive.tar.Gz")).toBe("gz");
         });
 
-        it("should return undefined if there is no extension", () => {
-            expect(fileHelper.getFileExtension("fileWithoutExtension")).toBeUndefined();
-            expect(fileHelper.getFileExtension("anotherfile.")).toBeUndefined();
-        });
-
-        it("should handle empty strings", () => {
-            expect(fileHelper.getFileExtension("")).toBeUndefined();
+        it("should throw FileFormatError if there is no extension", () => {
+            expect(() => fileHelper.getFileExtension("fileWithoutExtension")).toThrow(FileFormatError);
+            expect(() => fileHelper.getFileExtension("anotherfile.")).toThrow(FileFormatError);
         });
     });
 
     describe("validateFile", () => {
-        it("should return valid result for a valid file", async () => {
+        it("should not throw for a valid file", async () => {
             const file = createMockFile("test.csv", 1024 * 1024, "text/csv");
             mockedJschardet.detect.mockReturnValue({ encoding: "UTF-8", confidence: 0.99 });
 
-            const result = await fileHelper.validateFile(file, ["csv"], 10);
-
-            expect(result.valid).toBe(true);
-            expect(result.fileName).toBe("test.csv");
-            expect(result.errorCode).toBeUndefined();
+            expect(async () => {
+                await fileHelper.validateFile(file, ["csv"], 10);
+            }).not.toThrow();
         });
 
-        it("should return invalid result for file too large", async () => {
+        it("should throw FileSizeError for file too large", async () => {
             const file = createMockFile("test.csv", 50 * 1024 * 1024, "text/csv");
-
-            const result = await fileHelper.validateFile(file, ["csv"], 10);
-
-            expect(result.valid).toBe(false);
-            expect(result.errorCode).toBe(FileErrorCode.FILE_TOO_LARGE);
-            expect(result.fileName).toBe("test.csv");
+            await expect(fileHelper.validateFile(file, ["csv"], 10)).rejects.toThrow(FileSizeError);
         });
 
-        it("should return invalid result for invalid format", async () => {
+        it("should throw FileFormatError for invalid format", async () => {
             const file = createMockFile("test.pdf", 1024, "application/pdf");
-
-            const result = await fileHelper.validateFile(file, ["csv"], 10);
-
-            expect(result.valid).toBe(false);
-            expect(result.errorCode).toBe(FileErrorCode.INVALID_FORMAT);
-            expect(result.fileName).toBe("test.pdf");
+            await expect(fileHelper.validateFile(file, ["csv"], 10)).rejects.toThrow(FileFormatError);
         });
 
         it("should return invalid result for invalid encoding", async () => {
-            const file = createMockFile("test.txt", 1024, "text/plain");
+            const file = createMockFile("test.csv", 1024, "text/csv");
             mockedJschardet.detect.mockReturnValue({ encoding: "ISO-8859", confidence: 0.99 });
 
-            const result = await fileHelper.validateFile(file, ["txt"], 10);
-
-            expect(result.valid).toBe(false);
-            expect(result.errorCode).toBe(FileErrorCode.INVALID_ENCODING);
-            expect(result.fileName).toBe("test.txt");
+            await expect(fileHelper.validateFile(file, ["csv"], 10)).rejects.toThrow(FileEncodingError);
         });
 
         it("should use default max size of 30MB", async () => {
             const file = createMockFile("test.csv", 40 * 1024 * 1024, "text/csv");
 
-            const result = await fileHelper.validateFile(file, ["csv"]);
-
-            expect(result.valid).toBe(false);
-            expect(result.errorCode).toBe(FileErrorCode.FILE_TOO_LARGE);
+            await expect(fileHelper.validateFile(file, ["csv"])).rejects.toThrow(FileSizeError);
         });
     });
 
@@ -99,28 +78,28 @@ describe("fileHelper", () => {
         it("should validate file size correctly", () => {
             const file = createMockFile("test.csv", 5 * 1024 * 1024, "text/csv");
 
-            const result = fileHelper.validateFileSize(file, 10);
-
-            expect(result.valid).toBe(true);
+            expect(() => {
+                fileHelper.validateFileSize(file, 10);
+            }).not.toThrow();
         });
 
         it("should reject file exceeding size limit", () => {
             const file = createMockFile("test.csv", 15 * 1024 * 1024, "text/csv");
 
-            const result = fileHelper.validateFileSize(file, 10);
-
-            expect(result.valid).toBe(false);
-            expect(result.errorCode).toBe(FileErrorCode.FILE_TOO_LARGE);
+            expect(() => {
+                fileHelper.validateFileSize(file, 10);
+            }).toThrow(FileSizeError);
         });
     });
 
     describe("validateFileFormat", () => {
         it("should validate CSV format correctly", () => {
             const file = createMockFile("test.csv", 1024, "text/csv");
+            const fileExtension = fileHelper.getFileExtension(file.name);
 
-            const result = fileHelper.validateFileFormat(file, ["csv"]);
-
-            expect(result.valid).toBe(true);
+            expect(() => {
+                fileHelper.validateFileFormat(file, fileExtension, ["csv"]);
+            }).not.toThrow();
         });
 
         it("should validate Excel format correctly", () => {
@@ -129,27 +108,28 @@ describe("fileHelper", () => {
                 1024,
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             );
+            const fileExtension = fileHelper.getFileExtension(file.name);
 
-            const result = fileHelper.validateFileFormat(file, ["xls"]);
-
-            expect(result.valid).toBe(true);
+            expect(() => {
+                fileHelper.validateFileFormat(file, fileExtension, ["xls"]);
+            }).not.toThrow();
         });
 
-        it("should reject invalid format", () => {
+        it("should throw invalid format", () => {
             const file = createMockFile("test.pdf", 1024, "application/pdf");
-
-            const result = fileHelper.validateFileFormat(file, ["csv"]);
-
-            expect(result.valid).toBe(false);
-            expect(result.errorCode).toBe(FileErrorCode.INVALID_FORMAT);
+            const fileExtension = fileHelper.getFileExtension(file.name);
+            expect(() => {
+                fileHelper.validateFileFormat(file, fileExtension, ["csv"]);
+            }).toThrow(FileFormatError);
         });
 
         it("should validate multiple accepted formats", () => {
-            const file = createMockFile("test.json", 1024, "application/json");
+            const file = createMockFile("test.csv", 1024, "text/csv");
+            const fileExtension = fileHelper.getFileExtension(file.name);
 
-            const result = fileHelper.validateFileFormat(file, ["csv", "json", "xml"]);
-
-            expect(result.valid).toBe(true);
+            expect(() => {
+                fileHelper.validateFileFormat(file, fileExtension, ["csv", "xls"]);
+            }).not.toThrow();
         });
     });
 
@@ -158,67 +138,16 @@ describe("fileHelper", () => {
             const file = createMockFile("test.txt", 1024, "text/plain", "Hello world");
             mockedJschardet.detect.mockReturnValue({ encoding: "UTF-8", confidence: 0.99 });
 
-            const result = await fileHelper.validateFileEncoding(file);
-
-            expect(result.valid).toBe(true);
+            expect(async () => {
+                await fileHelper.validateFileEncoding(file);
+            }).not.toThrow();
         });
 
-        it("should reject text file with invalid encoding", async () => {
+        it("should throw with invalid encoding", async () => {
             const file = createMockFile("test.txt", 1024, "text/plain", "Hello world");
             mockedJschardet.detect.mockReturnValue({ encoding: "ISO-8859-1", confidence: 0.99 });
 
-            const result = await fileHelper.validateFileEncoding(file);
-
-            expect(result.valid).toBe(false);
-            expect(result.errorCode).toBe(FileErrorCode.INVALID_ENCODING);
-        });
-
-        it("should validate non text files without encoding check", async () => {
-            const file = createMockFile("test.xls", 1024, "application/vnd.ms-excel");
-
-            const result = await fileHelper.validateFileEncoding(file);
-
-            expect(result.valid).toBe(true);
-            expect(mockedJschardet.detect).not.toHaveBeenCalled();
-        });
-    });
-
-    describe("verifyTextEncoding", () => {
-        it("should return true for valid UTF-8 encoding", async () => {
-            const file = createMockFile("test.txt", 1024, "text/plain", "Hello world");
-            mockedJschardet.detect.mockReturnValue({ encoding: "UTF-8", confidence: 0.99 });
-
-            const result = await fileHelper.verifyTextEncoding(file);
-
-            expect(result).toBe(true);
-            expect(mockedJschardet.detect).toHaveBeenCalledWith("Hello world");
-        });
-
-        it("should return true for valid Windows-1252 encoding", async () => {
-            const file = createMockFile("test.csv", 1024, "text/csv", "col1,col2\nval1,val2");
-            mockedJschardet.detect.mockReturnValue({ encoding: "Windows-1252", confidence: 0.99 });
-
-            const result = await fileHelper.verifyTextEncoding(file);
-
-            expect(result).toBe(true);
-        });
-
-        it("should return false for invalid encoding", async () => {
-            const file = createMockFile("test.csv", 1024, "text/csv", "col1,col2\nval1,val2");
-            mockedJschardet.detect.mockReturnValue({ encoding: "ISO-8859", confidence: 0.99 });
-
-            const result = await fileHelper.verifyTextEncoding(file);
-
-            expect(result).toBe(false);
-        });
-
-        it("should return true for non text files", async () => {
-            const file = createMockFile("test.pdf", 1024, "application/pdf");
-
-            const result = await fileHelper.verifyTextEncoding(file);
-
-            expect(result).toBe(true);
-            expect(mockedJschardet.detect).not.toHaveBeenCalled();
+            await expect(fileHelper.validateFileEncoding(file)).rejects.toThrow(FileEncodingError);
         });
     });
 

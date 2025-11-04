@@ -1,7 +1,6 @@
 import {
     CSV_EXT,
     EXCEL_EXT,
-    FileErrorCode,
     type FileFormat,
     fileTypeEnum,
     getExcelSheetNames,
@@ -10,6 +9,9 @@ import {
 } from "$lib/helpers/fileHelper";
 import depositLogService from "$lib/resources/deposit-log/depositLog.service";
 import Store from "$lib/core/Store";
+import FileSizeError from "$lib/errors/file-errors/FileSizeError";
+import FileFormatError from "$lib/errors/file-errors/FileFormatError";
+import FileEncodingError from "$lib/errors/file-errors/FileEncodingError";
 
 type EventMap = {
     prevStep: void;
@@ -54,20 +56,27 @@ export default class Step3Controller {
 
         const file = files[0];
 
-        const fileValidationResult = await validateFile(file, this.uploadConfig.acceptedFormats, this.MAX_MO_FILE_SIZE);
-        if (!fileValidationResult.valid) {
+        try {
+            await validateFile(file, this.uploadConfig.acceptedFormats, this.MAX_MO_FILE_SIZE);
+        } catch (error) {
             this.uploadError.set(true);
             this.noFileOrInvalid.set(true);
-            if (fileValidationResult.errorCode === FileErrorCode.FILE_TOO_LARGE) {
-                this.uploadErrorMessage.set("Le fichier est trop volumineux. Il doit faire moins de 30 Mo.");
-            } else if (fileValidationResult.errorCode === FileErrorCode.INVALID_FORMAT) {
+
+            if (error instanceof FileSizeError) {
+                this.uploadErrorMessage.set(
+                    `Le fichier est trop volumineux. Il doit faire moins de ${error.maxSizeMb} Mo.`,
+                );
+            } else if (error instanceof FileFormatError) {
                 this.uploadErrorMessage.set(
                     "Ce format de fichier n'est pas supporté. Veuillez déposer un fichier au format CSV, XLS ou XLSX.",
                 );
-            } else if (fileValidationResult.errorCode === FileErrorCode.INVALID_ENCODING) {
+            } else if (error instanceof FileEncodingError) {
                 this.uploadErrorMessage.set(
                     "Veuillez déposer un fichier au format CSV, XLS ou XLSX avec encodage UTF-8 ou Windows-1252.",
                 );
+            } else {
+                console.error("Unexpected validation error:", error);
+                this.uploadErrorMessage.set("Une erreur est survenue lors de la validation du fichier.");
             }
             return;
         }
