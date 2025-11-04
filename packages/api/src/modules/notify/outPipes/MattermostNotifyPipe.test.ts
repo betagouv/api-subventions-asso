@@ -1,7 +1,6 @@
 import axios from "axios";
 import { NotificationType } from "../@types/NotificationType";
 import { MattermostNotifyPipe } from "./MattermostNotifyPipe";
-import { SIRET_STR } from "../../../../tests/__fixtures__/association.fixture";
 
 jest.mock("axios");
 jest.mock("../../../configurations/env.conf", () => ({ ENV: "test" }));
@@ -132,12 +131,11 @@ describe("MattermostNotifyPipe", () => {
             // @ts-expect-error -- private method
             await notifyPipe.depositUnfinished({
                 users: [
-                    { email: "some@email.fr", firstname: "John", lastname: "Doe", allocatorSiret: SIRET_STR },
+                    { email: "some@email.fr", firstname: "John", lastname: "Doe" },
                     {
                         email: "griffin@email.fr",
                         firstname: "Petter",
                         lastname: "Griffin",
-                        allocatorSiret: "23456665799999",
                     },
                 ],
             });

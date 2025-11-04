@@ -167,6 +167,7 @@ describe("ScdlDepositCronService", () => {
             expect(mockGetUsersToNotify).toHaveBeenCalledTimes(1);
         });
 
+        // UNDO: when email template will be ready
         it.skip("notify all users", async () => {
             await scdlDespositCronService.notifyUsers();
             expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.BATCH_DEPOSIT_RESUME, {
