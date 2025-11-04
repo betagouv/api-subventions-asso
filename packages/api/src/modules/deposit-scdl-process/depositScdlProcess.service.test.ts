@@ -8,13 +8,36 @@ import DepositScdlLogEntity from "./entities/depositScdlLog.entity";
 import { ConflictError, NotFoundError } from "core";
 import depositLogPort from "../../dataProviders/db/deposit-log/depositLog.port";
 import DepositScdlLogDtoAdapter from "./depositScdlLog.dto.adapter";
+import scdlService from "../providers/scdl/scdl.service";
+import { ScdlStorableGrant } from "../providers/scdl/@types/ScdlStorableGrant";
+import { MixedParsedError } from "../providers/scdl/@types/Validation";
+import UploadedFileInfosEntity from "./entities/uploadedFileInfos.entity";
+import * as FileHelper from "../../shared/helpers/FileHelper";
 
 jest.mock("./check/DepositScdlProcess.check.service");
 jest.mock("../../dataProviders/db/deposit-log/depositLog.port");
 jest.mock("../../dataProviders/db/deposit-log/DepositLog.adapter");
+jest.mock("../providers/scdl/scdl.service.ts");
 
 describe("DepositScdlProcessService", () => {
+    afterEach(() => {
+        jest.resetAllMocks();
+    });
+
     const USER_ID = "userId";
+
+    const createMockFile = (originalname: string, buffer: Buffer = Buffer.from("test")): Express.Multer.File => ({
+        fieldname: "file",
+        originalname,
+        encoding: "7bit",
+        mimetype: "text/csv",
+        buffer,
+        size: buffer.length,
+        destination: "",
+        filename: "",
+        path: "",
+        stream: {} as never,
+    });
 
     describe("getDepositLog", () => {
         const mockGetDepositLog = jest.spyOn(depositScdlProcessService, "getDepositLog") as jest.SpyInstance<
@@ -102,10 +125,6 @@ describe("DepositScdlProcessService", () => {
             [string]
         >;
 
-        afterEach(() => {
-            mockGetDepositLog.mockRestore();
-        });
-
         it("Should return a DepositLog", async () => {
             mockGetDepositLog.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY);
             const step = 3;
@@ -139,6 +158,125 @@ describe("DepositScdlProcessService", () => {
             await expect(
                 depositScdlProcessService.updateDepositLog(2, CREATE_DEPOSIT_LOG_DTO, USER_ID),
             ).rejects.toBeInstanceOf(NotFoundError);
+        });
+    });
+
+    describe("validateScdlFile", () => {
+        const mockGetDepositLog = jest.spyOn(depositScdlProcessService, "getDepositLog") as jest.SpyInstance<
+            Promise<DepositScdlLogEntity | null>,
+            [string]
+        >;
+        const mockParseCsv = jest.spyOn(scdlService, "parseCsv") as jest.SpyInstance<
+            { entities: ScdlStorableGrant[]; errors: MixedParsedError[]; allocatorsSiret: string[] },
+            [fileContent: Buffer, delimiter?: string, quote?: string]
+        >;
+
+        it("Should return deposit log with correct informations", async () => {
+            const mockDate = new Date("2025-11-04T10:30:00Z");
+            jest.spyOn(global, "Date").mockImplementation(() => mockDate as never);
+            mockGetDepositLog.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY);
+            const step = 2;
+
+            const expected: DepositScdlLogEntity = {
+                userId: USER_ID,
+                step: step,
+                overwriteAlert: true,
+                updateDate: new Date(),
+                allocatorSiret: "12345678901234",
+            };
+
+            const file = createMockFile("test.csv");
+            const parsedResult = {
+                entities: [],
+                errors: [],
+                allocatorsSiret: ["12345678901234"],
+            };
+
+            mockParseCsv.mockReturnValueOnce(parsedResult);
+            const mockUpdatePartial = jest.spyOn(depositLogPort, "updatePartial").mockResolvedValue(expected);
+
+            const actual = await depositScdlProcessService.validateScdlFile(
+                file,
+                DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
+                USER_ID,
+            );
+
+            expect(mockUpdatePartial).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    step: 2,
+                    userId: "userId",
+                    permissionAlert: true,
+                    uploadedFileInfos: expect.any(UploadedFileInfosEntity),
+                }),
+            );
+
+            const actualCall = mockUpdatePartial.mock.calls[0][0];
+            expect(actualCall.uploadedFileInfos).toMatchObject({
+                fileName: "test.csv",
+                uploadDate: mockDate,
+                allocatorsSiret: ["12345678901234"],
+                errors: [],
+            });
+
+            expect(actual).toMatchObject(expected);
+        });
+    });
+
+    describe("parseFile", () => {
+        const mockDetectCsvDelimiter = jest.spyOn(FileHelper, "detectCsvDelimiter");
+        const mockParseCsv = jest.spyOn(scdlService, "parseCsv");
+        const mockParseXls = jest.spyOn(scdlService, "parseXls");
+
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it("should parse CSV file with detected delimiter", () => {
+            const file = createMockFile("test.csv");
+            const expectedDelimiter = ";";
+            const expectedResult = { entities: [], errors: [], allocatorsSiret: [] };
+
+            mockDetectCsvDelimiter.mockReturnValue(expectedDelimiter);
+            mockParseCsv.mockReturnValue(expectedResult);
+
+            // @ts-expect-error - test private method
+            const result = depositScdlProcessService.parseFile(file, undefined);
+
+            expect(mockDetectCsvDelimiter).toHaveBeenCalledWith(file.buffer);
+            expect(mockParseCsv).toHaveBeenCalledWith(file.buffer, expectedDelimiter);
+            expect(mockParseXls).not.toHaveBeenCalled();
+            expect(result).toBe(expectedResult);
+        });
+
+        it("should parse Excel file with pageName", () => {
+            const file = createMockFile("test.xlsx");
+            const pageName = "Sheet1";
+            const expectedResult = { entities: [], errors: [], allocatorsSiret: [] };
+
+            mockParseXls.mockReturnValue(expectedResult);
+
+            // @ts-expect-error - test private method
+            const result = depositScdlProcessService.parseFile(file, pageName);
+
+            expect(mockParseXls).toHaveBeenCalledWith(file.buffer, pageName);
+            expect(mockDetectCsvDelimiter).not.toHaveBeenCalled();
+            expect(mockParseCsv).not.toHaveBeenCalled();
+            expect(result).toBe(expectedResult);
+        });
+
+        it("should parse Excel file without pageName", () => {
+            const file = createMockFile("data.xls");
+            const expectedResult = { entities: [], errors: [], allocatorsSiret: [] };
+
+            mockParseXls.mockReturnValue(expectedResult);
+
+            // @ts-expect-error - test private method
+            const result = depositScdlProcessService.parseFile(file, undefined);
+
+            expect(mockParseXls).toHaveBeenCalledWith(file.buffer, undefined);
+            expect(mockDetectCsvDelimiter).not.toHaveBeenCalled();
+            expect(mockParseCsv).not.toHaveBeenCalled();
+            expect(result).toBe(expectedResult);
         });
     });
 

@@ -122,9 +122,9 @@ export default class ScdlGrantParser {
         });
 
         const duplicates = ScdlGrantParser.findDuplicates(parsedChunk);
-        const { entities, problems, allocatorSirets } = ScdlGrantParser.convertValidateData(parsedChunk);
+        const { entities, problems, allocatorsSiret } = ScdlGrantParser.convertValidateData(parsedChunk);
 
-        return { entities, errors: [...duplicates, ...problems], allocatorSirets };
+        return { entities, errors: [...duplicates, ...problems], allocatorsSiret };
     }
 
     static parseExcel(content: Buffer, pageName?: string, rowOffset = 0) {
@@ -141,20 +141,20 @@ export default class ScdlGrantParser {
         console.log("Map rows to entities...");
         const data = page.slice(rowOffset + 1).map(row => GenericParser.linkHeaderToData(headerRow, row));
         const duplicates = ScdlGrantParser.findDuplicates(data);
-        const { entities, problems, allocatorSirets } = ScdlGrantParser.convertValidateData(data);
-        return { entities, errors: [...duplicates, ...problems], allocatorSirets };
+        const { entities, problems, allocatorsSiret } = ScdlGrantParser.convertValidateData(data);
+        return { entities, errors: [...duplicates, ...problems], allocatorsSiret };
     }
 
     protected static convertValidateData(parsedChunk): {
         entities: ScdlStorableGrant[];
         problems: ParsedErrorFormat[];
-        allocatorSirets: SiretDto[];
+        allocatorsSiret: SiretDto[];
     } {
         const storableChunk: ScdlStorableGrant[] = [];
         const invalidEntities: Partial<ScdlStorableGrant>[] = [];
         const errors: ParsedErrorFormat[] = [];
         const updateDate = new Date();
-        const allocatorSirets: Set<string> = new Set();
+        const allocatorsSiret: Set<string> = new Set();
 
         // TODO create errors for that (does not fit in the csv format)
         ScdlGrantParser.verifyMissingHeaders(SCDL_MAPPER, parsedChunk[0]);
@@ -191,7 +191,7 @@ export default class ScdlGrantParser {
             );
 
             if (entity.allocatorSiret != null) {
-                allocatorSirets.add(entity.allocatorSiret);
+                allocatorsSiret.add(entity.allocatorSiret);
             }
         }
 
@@ -199,7 +199,7 @@ export default class ScdlGrantParser {
             console.log(`WARNING : ${invalidEntities.length} entities invalid`);
         }
 
-        return { entities: storableChunk, problems: errors, allocatorSirets: Array.from(allocatorSirets) };
+        return { entities: storableChunk, problems: errors, allocatorsSiret: Array.from(allocatorsSiret) };
     }
 
     /*

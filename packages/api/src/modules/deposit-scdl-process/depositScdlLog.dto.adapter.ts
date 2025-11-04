@@ -41,7 +41,7 @@ export default class DepositScdlLogDtoAdapter {
         return {
             fileName: entity.fileName,
             uploadDate: entity.uploadDate,
-            allocatorSiret: entity.allocatorSiret,
+            allocatorsSiret: entity.allocatorsSiret,
             errors: entity.errors,
             beginPaymentDate: entity.beginPaymentDate,
             endPaymentDate: entity.endPaymentDate,
@@ -73,7 +73,7 @@ export default class DepositScdlLogDtoAdapter {
         return {
             fileName: dto.fileName,
             uploadDate: dto.uploadDate,
-            allocatorSiret: dto.allocatorSiret,
+            allocatorsSiret: dto.allocatorsSiret,
             errors: dto.errors?.map(error => this.mixedParsedErrorDtoToEntity(error)),
             beginPaymentDate: dto.beginPaymentDate,
             endPaymentDate: dto.endPaymentDate,

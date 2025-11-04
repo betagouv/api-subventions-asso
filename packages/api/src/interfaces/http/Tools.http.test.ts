@@ -17,8 +17,8 @@ describe("Tools test", () => {
     const CSV_ERRORS = "a;b;c;d\n1;2;3;4";
     const ctrl = new ToolsHttp();
     beforeAll(() => {
-        jest.mocked(scdlService.parseXls).mockReturnValue({ errors: ERRORS, entities: [] });
-        jest.mocked(scdlService.parseCsv).mockReturnValue({ errors: ERRORS, entities: [] });
+        jest.mocked(scdlService.parseXls).mockReturnValue({ errors: ERRORS, entities: [], allocatorsSiret: [] });
+        jest.mocked(scdlService.parseCsv).mockReturnValue({ errors: ERRORS, entities: [], allocatorsSiret: [] });
         jest.mocked(csvSyncStringifier.stringify).mockReturnValue(CSV_ERRORS);
     });
 

@@ -12,6 +12,7 @@ import { DefaultObject } from "../../@types";
 export class DepositScdlProcessService {
     FIRST_STEP = 1;
     SECOND_STEP = 2;
+    CSV_EXT = ".csv";
 
     public async getDepositLog(userId: string): Promise<DepositScdlLogEntity | null> {
         return await depositLogPort.findOneByUserId(userId);
@@ -70,33 +71,42 @@ export class DepositScdlProcessService {
     async validateScdlFile(
         file: Express.Multer.File,
         depositScdlLogDto: DepositScdlLogDto,
-        type: "csv" | "excel",
         userId: string,
         pageName?: string | undefined,
     ): Promise<DepositScdlLogEntity> {
-        const existingDepositLog = await this.findAndValidateDepositLog(userId, depositScdlLogDto, this.SECOND_STEP);
+        await this.findAndValidateDepositLog(userId, depositScdlLogDto, this.SECOND_STEP);
 
-        const parsedResult = this.parseFile(file, type, pageName);
+        const parsedResult = this.parseFile(file, pageName);
 
-        existingDepositLog.uploadedFileInfos = new UploadedFileInfosEntity(
-            file.filename,
+        const uploadedFileInfos = new UploadedFileInfosEntity(
+            file.originalname,
             new Date(),
-            parsedResult.allocatorSirets,
+            parsedResult.allocatorsSiret,
             parsedResult.errors,
             undefined, // todo: add beginPaymentDate, endPaymentDate, parseableLines, existingLinesInDbOnSamePeriod
             undefined,
             undefined,
             undefined,
         );
-        existingDepositLog.overwriteAlert = depositScdlLogDto.overwriteAlert;
-        existingDepositLog.step = this.SECOND_STEP;
 
-        return depositLogPort.updatePartial(existingDepositLog);
+        return depositLogPort.updatePartial(
+            new DepositScdlLogEntity(
+                userId,
+                this.SECOND_STEP,
+                undefined,
+                undefined,
+                undefined,
+                depositScdlLogDto.permissionAlert,
+                uploadedFileInfos,
+            ),
+        );
     }
 
-    private parseFile(file: Express.Multer.File, type: "csv" | "excel", pageName: string | undefined) {
+    private parseFile(file: Express.Multer.File, pageName: string | undefined) {
         const fileContent = file.buffer;
-        if (type === "csv") {
+        const isCsv = file.originalname.toLowerCase().endsWith(this.CSV_EXT);
+
+        if (isCsv) {
             const delimiter = detectCsvDelimiter(fileContent);
             return scdlService.parseCsv(fileContent, delimiter);
         } else {

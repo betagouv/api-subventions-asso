@@ -61,13 +61,13 @@ export class ScdlService {
     }
 
     parseXls(fileContent: Buffer, pageName?: string, rowOffset = 0) {
-        const { entities, errors, allocatorSirets } = ScdlGrantParser.parseExcel(fileContent, pageName, rowOffset);
-        return { entities, errors: this.normalizeErrors(errors), allocatorSirets };
+        const { entities, errors, allocatorsSiret } = ScdlGrantParser.parseExcel(fileContent, pageName, rowOffset);
+        return { entities, errors: this.normalizeErrors(errors), allocatorsSiret };
     }
 
     parseCsv(fileContent: Buffer, delimiter = ";", quote: string | boolean = '"') {
-        const { entities, errors, allocatorSirets } = ScdlGrantParser.parseCsv(fileContent, delimiter, quote);
-        return { entities, errors: this.normalizeErrors(errors), allocatorSirets };
+        const { entities, errors, allocatorsSiret } = ScdlGrantParser.parseCsv(fileContent, delimiter, quote);
+        return { entities, errors: this.normalizeErrors(errors), allocatorsSiret };
     }
 
     /**

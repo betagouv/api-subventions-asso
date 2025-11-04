@@ -57,8 +57,8 @@ describe("ScdlCli", () => {
         mockedScdlService.getProducer.mockResolvedValue(PRODUCER_ENTITY);
         // @ts-expect-error: private method
         mockedScdlService._buildGrantUniqueId.mockReturnValue(UNIQUE_ID);
-        mockedScdlService.parseCsv.mockReturnValue({ entities: STORABLE_DATA_ARRAY, errors: [] });
-        mockedScdlService.parseXls.mockReturnValue({ entities: STORABLE_DATA_ARRAY, errors: [] });
+        mockedScdlService.parseCsv.mockReturnValue({ entities: STORABLE_DATA_ARRAY, errors: [], allocatorsSiret: [] });
+        mockedScdlService.parseXls.mockReturnValue({ entities: STORABLE_DATA_ARRAY, errors: [], allocatorsSiret: [] });
 
         cli = new ScdlCli();
     });

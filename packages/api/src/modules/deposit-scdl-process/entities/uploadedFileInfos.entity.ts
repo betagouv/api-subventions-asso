@@ -4,7 +4,7 @@ export default class UploadedFileInfosEntity {
     constructor(
         public fileName: string,
         public uploadDate: Date,
-        public allocatorSiret: string[],
+        public allocatorsSiret: string[],
         public errors?: MixedParsedError[],
         public beginPaymentDate?: Date,
         public endPaymentDate?: Date,
