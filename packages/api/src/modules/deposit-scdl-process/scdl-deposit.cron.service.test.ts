@@ -51,6 +51,37 @@ describe("ScdlDepositCronService", () => {
         });
     });
 
+    describe("notifyTeam", () => {
+        let mockGetUsersToMail: jest.SpyInstance;
+
+        beforeEach(() => {
+            mockGetUsersToMail = jest.spyOn(scdlDespositCronService, "getUsersToMail").mockResolvedValue(USERS);
+        });
+
+        afterAll(() => {
+            mockGetUsersToMail.mockRestore();
+        });
+
+        it("gets users to mail", async () => {
+            await scdlDespositCronService.notifyTeam();
+            expect(mockGetUsersToMail).toHaveBeenCalledTimes(1);
+        });
+
+        it("return undefined if no users found ", async () => {
+            mockGetUsersToMail.mockResolvedValueOnce(null);
+            const expected = undefined;
+            const actual = await scdlDespositCronService.notifyTeam();
+            expect(actual).toEqual(expected);
+        });
+
+        it("notify DEPOSIT_UNFINISHED", async () => {
+            await scdlDespositCronService.notifyTeam();
+            expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.DEPOSIT_UNFINISHED, {
+                users: USERS.map(user => ({ email: user.email, firstname: user.firstName, lastname: user.lastName })),
+            });
+        });
+    });
+
     describe("getUsersToMail", () => {
         const ID_LIST = DEPOSIT_LOGS.map(deposit => deposit.userId);
         let mockGetDepositsUserIdFromDate: jest.SpyInstance;
@@ -62,6 +93,10 @@ describe("ScdlDepositCronService", () => {
                 .spyOn(scdlDespositCronService, "getDepositsUserIdFromDate")
                 .mockResolvedValue(ID_LIST);
             jest.mocked(userCrudService.findUsersByIdList).mockResolvedValue(USERS);
+        });
+
+        afterAll(() => {
+            mockGetDepositsUserIdFromDate.mockRestore();
         });
 
         it("returns null if no user id found", async () => {
