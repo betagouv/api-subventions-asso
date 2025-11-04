@@ -63,6 +63,14 @@ describe("user crud service", () => {
         });
     });
 
+    describe("findUsersByIdList", () => {
+        it("fetch users by id list", async () => {
+            const ID_LIST = [""];
+            await userCrudService.findUsersByIdList(ID_LIST);
+            expect(mockedUserPort.findByIds).toHaveBeenCalledWith(ID_LIST);
+        });
+    });
+
     describe("findByEmail", () => {
         it("should call userPort.findByEmail", async () => {
             await userCrudService.findByEmail(USER_EMAIL);

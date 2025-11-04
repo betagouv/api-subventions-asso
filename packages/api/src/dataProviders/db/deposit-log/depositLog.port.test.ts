@@ -12,25 +12,34 @@ const mockFind = jest.fn();
 const mockDeleteOne = jest.fn().mockResolvedValue({ acknowledged: true, deletedCount: 1 });
 const mockFindOneAndUpdate = jest.fn();
 
+jest.mock("./DepositLog.adapter");
 jest.mock("../../../shared/MongoConnection", () => ({
     collection: () => ({
         insertOne: mockInsertOne,
+        find: mockFind.mockImplementation(() => ({ toArray: async () => [DEPOSIT_LOG_DBO] })),
         findOne: mockFindOne,
-        find: mockFind,
         deleteOne: mockDeleteOne,
         findOneAndUpdate: mockFindOneAndUpdate,
     }),
 }));
 
 describe("Deposit Log Port", () => {
+    let mockToDbo: jest.SpyInstance;
+    let mockDboToEntity: jest.SpyInstance;
     beforeEach(() => {
-        jest.spyOn(DepositLogAdapter, "toDbo").mockReturnValue(DEPOSIT_LOG_DBO);
+        mockToDbo = jest.spyOn(DepositLogAdapter, "toDbo").mockReturnValue(DEPOSIT_LOG_DBO);
+        mockDboToEntity = jest.spyOn(DepositLogAdapter, "dboToEntity").mockReturnValue(DEPOSIT_LOG_ENTITY);
     });
 
     describe("insertOne()", () => {
         it("should call insertOne with the correct argument", async () => {
             await depositLogPort.insertOne(DEPOSIT_LOG_ENTITY);
             expect(mockInsertOne).toHaveBeenCalledWith(DEPOSIT_LOG_DBO);
+        });
+
+        it("adapts to dbo before inserting", async () => {
+            await depositLogPort.insertOne(DEPOSIT_LOG_ENTITY);
+            expect(mockToDbo).toHaveBeenCalledWith(DEPOSIT_LOG_ENTITY);
         });
     });
 
@@ -49,12 +58,23 @@ describe("Deposit Log Port", () => {
         });
     });
 
-    describe("find()", () => {
-        it("should call find", async () => {
-            const mockToArray = jest.fn().mockResolvedValue([DEPOSIT_LOG_ENTITY]);
-            mockFind.mockReturnValueOnce({ toArray: mockToArray });
-            await depositLogPort.find({});
-            expect(mockFind).toHaveBeenCalledWith({}, undefined);
+    describe("findAllFromFullDay", () => {
+        const date = new Date("2025-10-15");
+
+        it("calls find with the correct search query", async () => {
+            await depositLogPort.findAllFromFullDay(date);
+            expect(mockFind).toHaveBeenCalledWith({ updateDate: { $gte: date, $lt: new Date("2025-10-16") } });
+        });
+
+        it("adapts dbos to entities", async () => {
+            await depositLogPort.findAllFromFullDay(date);
+            expect(mockDboToEntity).toHaveBeenCalledWith(DEPOSIT_LOG_DBO);
+        });
+
+        it("returns entities", async () => {
+            const actual = await depositLogPort.findAllFromFullDay(date);
+            const expected = [DEPOSIT_LOG_ENTITY];
+            expect(actual).toEqual(expected);
         });
     });
 
