@@ -1,0 +1,39 @@
+﻿nomAttribuant,idAttribuant,dateConvention,referenceDecision,nomBeneficiaire,idBeneficiaire,objet,montant,nature,conditionsVersement,datesPeriodeVersement,idRAE,notificationUE,pourcentageSubvention
+TEST_CSV,12345676541230,2017-11-28,2017_10_CP_001,nom beneficiaire 1,98765432100000,Objet 1 ,27346.88,aide en numéraire,échelonné,2017-11-28/2019-12-31,,non,1
+TEST_CSV,12345676541230,2017-12-09,2017_10_CP_002,nom beneficiaire 2,98765432100001,Objet 1 ,26748.0,aide en numéraire,échelonné,2017-09-12/2017-12-31,,non,1
+TEST_CSV,12345676541230,2017-12-12,2017_10_CP_003,nom beneficiaire 3,98765432100002,Objet 1 ,35000.0,aide en numéraire,échelonné,2017-12-12/fin-action,,non,1
+TEST_CSV,12345676541230,2018-04-25,2017_10_CP_004,nom beneficiaire 4,98765432100003,Objet 1 ,1850000.0,aide en numéraire,échelonné,,,non,1
+TEST_CSV,12345676541230,2018-09-04,2017_10_CP_005,nom beneficiaire 5,98765432100004,Objet 1 ,656000.0,aide en numéraire,échelonné,,,non,1
+TEST_CSV,12345676541230,2018-11-20,2017_10_CP_006,nom beneficiaire 6,98765432100005,Objet 1 ,26056.0,aide en numéraire,échelonné,2018-11-20/fin de l'action,,non,1
+TEST_CSV,12345676541230,2018-12-06,2017_10_CP_007,nom beneficiaire 7,98765432100006,Objet 1 ,32500.0,aide en numéraire,échelonné,2018-06-12/2018-12-31,,non,1
+TEST_CSV,12345676541230,2018-12-12,2017_10_CP_008,nom beneficiaire 8,98765432100007,Objet 1 ,42000.0,aide en numéraire,échelonné,2018-12-12/2018-12-31,,non,1
+TEST_CSV,12345676541230,2019-06-25,2017_10_CP_009,nom beneficiaire 9,98765432100008,Objet 1 ,32500.0,aide en numéraire,échelonné,2019-06-25/fin de l'action,,non,1
+TEST_CSV,12345676541230,2019-12-03,2017_10_CP_010,nom beneficiaire 10,98765432100009,Objet 1 ,36000.0,aide en numéraire,échelonné,2019-03-12/2019-12-31,,non,1
+TEST_CSV,12345676541230,,2017_10_CP_011,nom beneficiaire 11,98765432100010,Objet 1 ,33000.0,aide en numéraire,échelonné,,,non,1
+TEST_CSV,12345676541230,2019-03-07,2017_10_CP_012,nom beneficiaire 12,98765432100011,Objet 1 ,48979.0,en numéraire,échelonné,,,non,1
+TEST_CSV,12345676541230,2017-06-12,2017_10_CP_013,nom beneficiaire 13,98765432100012,Objet 1 ,50000.0,aide en numéraire,échelonné,2017-12-06/fin-action,,non,1
+TEST_CSV,12345676541230,2017-12-14,2017_10_CP_014,nom beneficiaire 14,98765432100013,Objet 1 ,70000.0,aide en numéraire,échelonné,2017-12-14/2018-06-30,,non,1
+TEST_CSV,12345676541230,2017-12-15,2017_10_CP_015,nom beneficiaire 15,98765432100014,Objet 1 ,33000.0,aide en numéraire,échelonné,2017-12-15/2018-06-30,,non,1
+TEST_CSV,12345676541230,2017-12-21,2017_10_CP_016,nom beneficiaire 16,98765432100015,Objet 1 ,89765.0,aide en numéraire,échelonné,2017-01-01/2017-12-31,,non,1
+TEST_CSV,12345676541230,2017-04-12,2017_10_CP_017,nom beneficiaire 17,98765432100016,Objet 1 ,35100.0,aide en numéraire,échelonné,2017-12-04/fin-action,,non,1
+TEST_CSV,12345676541230,2018-02-20,2017_10_CP_018,nom beneficiaire 18,98765432100017,Objet 1 ,100000.0,aide en numéraire,échelonné,2018-02-20/2018-06-30,,non,1
+TEST_CSV,12345676541230,2017-08-29,2017_10_CP_019,nom beneficiaire 19,98765432100018,Objet 1 ,70000.0,aide en numéraire,échelonné,2017-08-29/2017-12-31,,non,1
+TEST_CSV,12345676541230,2018-05-24,2017_10_CP_020,nom beneficiaire 20,98765432100019,Objet 1 ,25000.0,aide en numéraire,échelonné,2018-05-24/2020-12-31,,non,1
+TEST_CSV,12345676541230,2017-10-19,2017_10_CP_021,nom beneficiaire 21,98765432100020,Objet 1 ,150000.0,aide en numéraire,échelonné,2017-10-19/2017-12-31,,non,1
+TEST_CSV,12345676541230,2018-06-18,2017_10_CP_022,nom beneficiaire 22,98765432100021,Objet 1 ,30000.0,aide en numéraire,échelonné,2018-06-18/2018-12-31,,non,1
+TEST_CSV,12345676541230,2017-11-13,2017_10_CP_023,nom beneficiaire 23,98765432100022,Objet 1 ,60000.0,aide en numéraire,échelonné,2017-11-13/2018-12-31,,non,1
+TEST_CSV,12345676541230,2018-11-22,2017_10_CP_024,nom beneficiaire 24,98765432100023,Objet 1 ,150000.0,aide en numéraire,échelonné,2018-11-22/fin de l'action,,non,1
+TEST_CSV,12345676541230,2018-10-04,2017_10_CP_025,nom beneficiaire 25,98765432100024,Objet 1 ,35000.0,aide en numéraire,échelonné,2018-04-10/2018-09-30,,non,1
+TEST_CSV,12345676541230,2019-03-14,2017_10_CP_026,nom beneficiaire 26,98765432100025,Objet 1 ,32000.0,aide en numéraire,échelonné,01/01/2019,,non,1
+TEST_CSV,12345676541230,2018-11-20,2017_10_CP_027,nom beneficiaire 27,98765432100026,Objet 1 ,35029.0,aide en numéraire,échelonné,2018-11-20/fin de l'action,,non,1
+TEST_CSV,12345676541230,2019-06-21,2017_10_CP_028,nom beneficiaire 28,98765432100027,Objet 1 ,28000.0,aide en numéraire,échelonné,2019-06-21/fin de l'action,,non,1
+TEST_CSV,12345676541230,2018-11-28,2017_10_CP_029,nom beneficiaire 29,98765432100028,Objet 1 ,81895.0,aide en numéraire,échelonné,2019-01-01/2019-12-31,,non,1
+TEST_CSV,12345676541230,,2017_10_CP_030,nom beneficiaire 30,98765432100029,Objet 1 ,33000.0,aide en numéraire,échelonné,NC/2019-06-30,,non,1
+TEST_CSV,12345676541230,,2017_10_CP_031,nom beneficiaire 31,98765432100030,Objet 1 ,100000.0,aide en numéraire,échelonné,NC/2019-06-30,,non,1
+TEST_CSV,12345676541230,2020-02-12,2017_10_CP_032,nom beneficiaire 32,98765432100031,Objet 1 ,51000.0,en numéraire,échelonné,2020-02-12/2020-12-31,,non,1
+TEST_CSV,12345676541230,2017-11-16,2017_10_CP_033,nom beneficiaire 33,98765432100032,Objet 1 ,7000.0,aide en numéraire,échelonné,2017-11-16/2018-06-30,,non,1
+TEST_CSV,12345676541230,2017-12-15,2017_10_CP_034,nom beneficiaire 34,98765432100033,Objet 1 ,9000.0,aide en numéraire,échelonné,2017-12-15/2018-06-30,,non,1
+TEST_CSV,12345676541230,2018-01-24,2017_10_CP_035,nom beneficiaire 35,98765432100034,Objet 1 ,50000.0,aide en numéraire,échelonné,2018-01-24/2018-04-30,,non,1
+TEST_CSV,12345676541230,2018-06-03,2017_10_CP_036,nom beneficiaire 36,98765432100035,Objet 1 ,31110.0,aide en numéraire,échelonné,2018-03-06/2021-12-31,,non,1
+TEST_CSV,12345676541230,2018-06-25,2017_10_CP_037,nom beneficiaire 37,98765432100036,Objet 1 ,122000.0,aide en numéraire,échelonné,2018-06-25/2019-06-30,,non,1
+TEST_CSV,12345676541230,2018-07-23,2017_10_CP_038,nom beneficiaire 38,98765432100037,Objet 1 ,33750.0,aide en numéraire,échelonné,2018-07-23/2019-06-30,,non,1

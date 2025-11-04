@@ -11,8 +11,11 @@ import {
     DEPOSIT_LOG_RESPONSE_DTO,
 } from "../../../src/modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
 import { DepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
+import path from "path";
 
 const g = global as unknown as { app: App };
+
+const FILE_PATH = path.join(__dirname, "..", "..", "__fixtures__", "files");
 
 describe("/parcours-depot", () => {
     describe("GET /", () => {
@@ -194,6 +197,54 @@ describe("/parcours-depot", () => {
                 .send(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2)
                 .set("x-access-token", token)
                 .set("Accept", "application/json");
+
+            expect(response.statusCode).toBe(400);
+        });
+    });
+
+    describe("POST /fichier-scdl", () => {
+        it("should validate csv scdl file and update depositLog", async () => {
+            const token = await createAndGetUserToken();
+            const userId = (await getDefaultUser())!._id.toString();
+
+            await depositLogPort.insertOne(new DepositScdlLogEntity(userId, 1, undefined, true, "12345678901234"));
+
+            const csvPath = path.join(FILE_PATH, "test-csv-valid.csv");
+
+            const response = await request(g.app)
+                .post(`/parcours-depot/fichier-scdl`)
+                .attach("file", csvPath)
+                .field("depositScdlLogDto", JSON.stringify(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2))
+                .set("x-access-token", token);
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    allocatorSiret: "12345678901234",
+                    step: 2,
+                    uploadedFileInfos: expect.objectContaining({
+                        fileName: "test-csv-valid.csv",
+                        uploadDate: expect.any(String),
+                        allocatorsSiret: expect.arrayContaining([expect.any(String)]),
+                        errors: expect.any(Array),
+                    }),
+                }),
+            );
+        });
+
+        it("should return BadRequest error when scdl dto inconsistent", async () => {
+            const token = await createAndGetUserToken();
+            const userId = (await getDefaultUser())!._id.toString();
+
+            await depositLogPort.insertOne(new DepositScdlLogEntity(userId, 1, undefined, true, "12345678901234"));
+
+            const csvPath = path.join(FILE_PATH, "test-csv-valid.csv");
+
+            const response = await request(g.app)
+                .post(`/parcours-depot/fichier-scdl`)
+                .attach("file", csvPath)
+                .field("depositScdlLogDto", JSON.stringify({ permissionAlert: false }))
+                .set("x-access-token", token);
 
             expect(response.statusCode).toBe(400);
         });

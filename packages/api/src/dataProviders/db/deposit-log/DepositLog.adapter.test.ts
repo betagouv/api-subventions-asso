@@ -36,7 +36,7 @@ describe("DepositLogAdapter", () => {
 
         it("should convert DepositLogDbo with uploadFileInfos to DepositScdlLog", () => {
             const now = new Date();
-            const uploadFileInfos: UploadedFileInfosDbo = {
+            const uploadedFileInfos: UploadedFileInfosDbo = {
                 fileName: "test.csv",
                 uploadDate: now,
                 allocatorsSiret: ["12345678901234"],
@@ -54,7 +54,7 @@ describe("DepositLogAdapter", () => {
                 overwriteAlert: true,
                 permissionAlert: false,
                 allocatorSiret: "12345678901234",
-                uploadFileInfos: uploadFileInfos,
+                uploadedFileInfos: uploadedFileInfos,
             };
 
             const result = DepositLogAdapter.dboToEntity(dbo);
@@ -66,7 +66,7 @@ describe("DepositLogAdapter", () => {
                 overwriteAlert: dbo.overwriteAlert,
                 permissionAlert: dbo.permissionAlert,
                 allocatorSiret: dbo.allocatorSiret,
-                uploadedFileInfos: uploadFileInfos,
+                uploadedFileInfos: uploadedFileInfos,
             });
         });
     });
@@ -105,7 +105,7 @@ describe("DepositLogAdapter", () => {
                 overwriteAlert: entity.overwriteAlert,
                 permissionAlert: entity.permissionAlert,
                 allocatorSiret: entity.allocatorSiret,
-                uploadFileInfos: entity.uploadedFileInfos,
+                uploadedFileInfos: entity.uploadedFileInfos,
             });
         });
     });

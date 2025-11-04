@@ -115,6 +115,7 @@ describe("DepositScdlProcessHttp", () => {
     });
 
     describe("validateScdlFile", () => {
+        const depositLogFormFiled = JSON.stringify(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2);
         const validateScdlFileSpy = jest.spyOn(depositScdlProcessService, "validateScdlFile");
 
         const file: Express.Multer.File = {
@@ -133,7 +134,7 @@ describe("DepositScdlProcessHttp", () => {
             const depositScdlLog = {} as Promise<DepositScdlLogEntity>;
             validateScdlFileSpy.mockReturnValueOnce(depositScdlLog);
 
-            await controller.validateScdlFile(file, DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, REQ);
+            await controller.validateScdlFile(file, depositLogFormFiled, REQ);
             expect(validateScdlFileSpy).toHaveBeenCalledWith(
                 file,
                 DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
@@ -144,15 +145,13 @@ describe("DepositScdlProcessHttp", () => {
 
         it("should return DepositScdlLogResponseDto", async () => {
             validateScdlFileSpy.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_2);
-            const result = await controller.validateScdlFile(file, DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, REQ);
+            const result = await controller.validateScdlFile(file, depositLogFormFiled, REQ);
             expect(result).toEqual(DEPOSIT_LOG_RESPONSE_DTO_STEP_2);
         });
 
         it("should reject and throw Error when error throw by service", async () => {
             validateScdlFileSpy.mockRejectedValueOnce(new NotFoundError("an error"));
-            await expect(controller.validateScdlFile(file, DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, REQ)).rejects.toThrow(
-                NotFoundError,
-            );
+            await expect(controller.validateScdlFile(file, depositLogFormFiled, REQ)).rejects.toThrow(NotFoundError);
         });
     });
 });

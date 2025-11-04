@@ -10,7 +10,7 @@ export default class DepositLogAdapter {
             dbo.overwriteAlert,
             dbo.allocatorSiret,
             dbo.permissionAlert,
-            dbo.uploadFileInfos,
+            dbo.uploadedFileInfos,
         );
     }
 
@@ -22,7 +22,7 @@ export default class DepositLogAdapter {
             overwriteAlert: entity.overwriteAlert,
             permissionAlert: entity.permissionAlert,
             allocatorSiret: entity.allocatorSiret,
-            uploadFileInfos: entity.uploadedFileInfos,
+            uploadedFileInfos: entity.uploadedFileInfos,
         };
     }
 }

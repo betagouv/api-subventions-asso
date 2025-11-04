@@ -11,7 +11,6 @@ import { SCDL_MAPPER } from "./scdl.mapper";
 import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
 import { ScdlParsedGrant } from "./@types/ScdlParsedGrant";
 import { FormatProblem, ParsedErrorDuplicate, ParsedErrorFormat, Validity } from "./@types/Validation";
-import { SiretDto } from "dto";
 
 export default class ScdlGrantParser {
     protected static requirements: {
@@ -148,7 +147,7 @@ export default class ScdlGrantParser {
     protected static convertValidateData(parsedChunk): {
         entities: ScdlStorableGrant[];
         problems: ParsedErrorFormat[];
-        allocatorsSiret: SiretDto[];
+        allocatorsSiret: string[];
     } {
         const storableChunk: ScdlStorableGrant[] = [];
         const invalidEntities: Partial<ScdlStorableGrant>[] = [];

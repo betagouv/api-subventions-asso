@@ -124,20 +124,21 @@ export class DepositScdlProcessHttp extends Controller {
      *
      * @returns {DepositScdlLogResponseDto} 200 - Deposit log updated successfully with file parsing infos
      */
-    @Post("/scdl-file")
+    @Post("/fichier-scdl")
     @SuccessResponse("200", "File processed and validation report generated")
     @Response("400", "Bad Request, invalid payload")
     @Response("401", "Unauthorized")
     @Response("404", "No deposit log found for this user")
     public async validateScdlFile(
         @UploadedFile() file: Express.Multer.File,
-        @FormField() depositScdlLogDto: DepositScdlLogDto,
+        @FormField() depositScdlLogDto: string,
         @Request() req: IdentifiedRequest,
         @FormField() pageName?: string,
     ): Promise<DepositScdlLogResponseDto> {
+        const parsedDto = JSON.parse(depositScdlLogDto);
         const updatedDepositLog = await depositScdlProcessService.validateScdlFile(
             file,
-            depositScdlLogDto,
+            parsedDto,
             req.user._id.toString(),
             pageName,
         );

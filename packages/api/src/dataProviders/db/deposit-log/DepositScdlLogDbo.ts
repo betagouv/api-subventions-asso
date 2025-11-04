@@ -9,5 +9,5 @@ export default interface DepositScdlLogDbo {
     overwriteAlert?: boolean;
     permissionAlert?: boolean;
     allocatorSiret?: string;
-    uploadFileInfos?: UploadedFileInfosDbo;
+    uploadedFileInfos?: UploadedFileInfosDbo;
 }
