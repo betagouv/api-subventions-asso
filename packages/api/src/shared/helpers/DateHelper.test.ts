@@ -159,5 +159,12 @@ describe("DateHelper", () => {
             const actual = DateHelper.addDaysToDate(today, 1);
             expect(actual).toEqual(expected);
         });
+
+        it("should return seven days before", () => {
+            const today = new Date("2023-01-08");
+            const expected = new Date("2023-01-01");
+            const actual = DateHelper.addDaysToDate(today, -7);
+            expect(actual).toEqual(expected);
+        });
     });
 });

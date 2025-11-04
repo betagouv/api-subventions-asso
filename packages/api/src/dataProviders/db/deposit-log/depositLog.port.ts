@@ -29,9 +29,10 @@ class DepositLogPort extends MongoPort<DepositScdlLogDbo> {
      * @returns
      */
     async findAllFromFullDay(date: Date): Promise<DepositScdlLogEntity[] | null> {
-        const greaterThan = date;
-        const lowerThan = new Date(date);
-        lowerThan.setDate(date.getDate() + 1);
+        const greaterThan = new Date(date);
+        greaterThan.setUTCHours(0, 0, 0, 0);
+        const lowerThan = new Date(greaterThan);
+        lowerThan.setDate(lowerThan.getDate() + 1);
         const dbos = await this.collection.find({ updateDate: { $gte: greaterThan, $lt: lowerThan } }).toArray();
         return dbos.map(dbo => DepositLogAdapter.dboToEntity(dbo));
     }

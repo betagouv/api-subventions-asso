@@ -123,4 +123,24 @@ describe("MattermostNotifyPipe", () => {
             expect(actual).toMatchSnapshot();
         });
     });
+
+    describe("depositUnfinished", () => {
+        it("sends message with proper payload", async () => {
+            // @ts-expect-error -- private method
+            const sendMessageSpy = jest.spyOn(notifyPipe, "sendMessage").mockResolvedValueOnce(true);
+            // @ts-expect-error -- private method
+            await notifyPipe.depositUnfinished({
+                users: [
+                    { email: "some@email.fr", firstname: "John", lastname: "Doe" },
+                    {
+                        email: "griffin@email.fr",
+                        firstname: "Petter",
+                        lastname: "Griffin",
+                    },
+                ],
+            });
+            const actual = sendMessageSpy.mock.calls[0][0];
+            expect(actual).toMatchSnapshot();
+        });
+    });
 });
