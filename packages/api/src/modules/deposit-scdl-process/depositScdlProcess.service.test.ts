@@ -14,6 +14,7 @@ import { MixedParsedError } from "../providers/scdl/@types/Validation";
 import UploadedFileInfosEntity from "./entities/uploadedFileInfos.entity";
 import * as FileHelper from "../../shared/helpers/FileHelper";
 import { ScdlParsedInfos } from "../providers/scdl/@types/ScdlParsedInfos";
+import MiscScdlGrantEntity from "../providers/scdl/entities/MiscScdlGrantEntity";
 
 jest.mock("./check/DepositScdlProcess.check.service");
 jest.mock("../../dataProviders/db/deposit-log/depositLog.port");
@@ -171,11 +172,19 @@ describe("DepositScdlProcessService", () => {
             { entities: ScdlStorableGrant[]; errors: MixedParsedError[]; parsedInfos: ScdlParsedInfos },
             [fileContent: Buffer, delimiter?: string, quote?: string]
         >;
+        const mockgetGrantsOnPeriodByAllocator = jest.spyOn(
+            scdlService,
+            "getGrantsOnPeriodByAllocator",
+        ) as jest.SpyInstance<Promise<MiscScdlGrantEntity[]>, [allocatorSiret: string, exercices: number[]]>;
 
         it("Should return deposit log with correct informations", async () => {
             const mockDate = new Date("2025-11-04T10:30:00Z");
             jest.spyOn(global, "Date").mockImplementation(() => mockDate as never);
             mockGetDepositLog.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY);
+            mockgetGrantsOnPeriodByAllocator.mockResolvedValueOnce([
+                {} as MiscScdlGrantEntity,
+                {} as MiscScdlGrantEntity,
+            ]);
             const step = 2;
 
             const expected: DepositScdlLogEntity = {

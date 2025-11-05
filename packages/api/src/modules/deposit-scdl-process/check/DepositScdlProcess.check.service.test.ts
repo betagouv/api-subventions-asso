@@ -1,7 +1,7 @@
 import { CreateDepositScdlLogDto, DepositScdlLogDto } from "dto";
 import depositScdlProcessCheckService from "./DepositScdlProcess.check.service";
 import { BadRequestError } from "core";
-import { DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2 } from "../__fixtures__/depositLog.fixture";
+import { DEPOSIT_LOG_DTO, DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2 } from "../__fixtures__/depositLog.fixture";
 
 describe("DepositScdlProcess check service", () => {
     describe("validateCreate", () => {
@@ -23,9 +23,7 @@ describe("DepositScdlProcess check service", () => {
 
     describe("validateUpdateConsistency", () => {
         it("should accept valid data", () => {
-            expect(() =>
-                depositScdlProcessCheckService.validateUpdateConsistency(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, 2),
-            ).not.toThrow();
+            expect(() => depositScdlProcessCheckService.validateUpdateConsistency(DEPOSIT_LOG_DTO, 2)).not.toThrow();
         });
 
         it("should throw BadRequestError if invalid step", () => {

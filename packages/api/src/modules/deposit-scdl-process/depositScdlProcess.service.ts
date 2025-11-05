@@ -8,6 +8,7 @@ import scdlService from "../providers/scdl/scdl.service";
 import { detectCsvDelimiter } from "../../shared/helpers/FileHelper";
 import UploadedFileInfosEntity from "./entities/uploadedFileInfos.entity";
 import { DefaultObject } from "../../@types";
+import MiscScdlGrantEntity from "../providers/scdl/entities/MiscScdlGrantEntity";
 
 export class DepositScdlProcessService {
     FIRST_STEP = 1;
@@ -46,7 +47,12 @@ export class DepositScdlProcessService {
         depositScdlLogDto: DepositScdlLogDto,
         userId: string,
     ): Promise<DepositScdlLogEntity> {
-        await this.findAndValidateDepositLog(userId, depositScdlLogDto, step);
+        const existingDepositLog = await this.getDepositLog(userId);
+        if (!existingDepositLog) {
+            throw new NotFoundError("No deposit log found for this user");
+        }
+        depositScdlProcessCheckService.validateUpdateConsistency(depositScdlLogDto, step);
+
         const partialDepositLog: Partial<DepositScdlLogEntity> = {
             step,
             userId,
@@ -55,41 +61,35 @@ export class DepositScdlProcessService {
         return depositLogPort.updatePartial(partialDepositLog);
     }
 
-    private async findAndValidateDepositLog(
-        userId: string,
-        depositScdlLogDto: DepositScdlLogDto,
-        step: number,
-    ): Promise<DepositScdlLogEntity> {
-        const existingDepositLog = await this.getDepositLog(userId);
-        if (!existingDepositLog) {
-            throw new NotFoundError("No deposit log found for this user");
-        }
-        depositScdlProcessCheckService.validateUpdateConsistency(depositScdlLogDto, step);
-        return existingDepositLog;
-    }
-
     async validateScdlFile(
         file: Express.Multer.File,
         depositScdlLogDto: DepositScdlLogDto,
         userId: string,
         pageName?: string | undefined,
     ): Promise<DepositScdlLogEntity> {
-        /*const existingDepositLog = */ await this.findAndValidateDepositLog(
-            userId,
-            depositScdlLogDto,
-            this.SECOND_STEP,
-        );
+        const existingDepositLog = await this.getDepositLog(userId);
+        if (!existingDepositLog) {
+            throw new NotFoundError("No deposit log found for this user");
+        }
+        depositScdlLogDto.overwriteAlert = existingDepositLog.overwriteAlert;
+        depositScdlLogDto.allocatorSiret = existingDepositLog.allocatorSiret;
+
+        depositScdlProcessCheckService.validateUpdateConsistency(depositScdlLogDto, this.SECOND_STEP);
 
         const { parsedInfos, errors } = this.parseFile(file, pageName);
 
-        // const hasSameAllocatorSiret = !!existingDepositLog.allocatorSiret &&
-        //     parsedInfos.allocatorsSiret.length === 1 &&
-        //     parsedInfos.allocatorsSiret[0] === existingDepositLog.allocatorSiret
-        /*let*/ const existingLinesInDbOnSamePeriod = undefined;
-        // if (hasSameAllocatorSiret) {
-        //     const documentsInDB = await scdlService.getGrantsOnPeriodByAllocator(
-        //         existingDepositLog.allocatorSiret, parsedInfos.grantCoverageYears);
-        // }
+        const hasSameAllocatorSiret =
+            !!existingDepositLog.allocatorSiret &&
+            parsedInfos.allocatorsSiret.length === 1 &&
+            parsedInfos.allocatorsSiret[0] === existingDepositLog.allocatorSiret;
+        let existingLinesInDbOnSamePeriod: number | undefined;
+        if (hasSameAllocatorSiret) {
+            const documentsInDB: MiscScdlGrantEntity[] = await scdlService.getGrantsOnPeriodByAllocator(
+                parsedInfos.allocatorsSiret[0],
+                parsedInfos.grantCoverageYears,
+            );
+            existingLinesInDbOnSamePeriod = documentsInDB.length;
+        }
 
         const uploadedFileInfos = new UploadedFileInfosEntity(
             file.originalname,

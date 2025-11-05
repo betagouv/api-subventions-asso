@@ -64,10 +64,15 @@ export const DEPOSIT_LOG_DBO: DepositScdlLogDbo = {
 export const DEPOSIT_LOG_DTO: DepositScdlLogDto = {
     overwriteAlert: true,
     allocatorSiret: "12345678901234",
-    permissionAlert: false,
+    permissionAlert: true,
 };
 
 export const CREATE_DEPOSIT_LOG_DTO: CreateDepositScdlLogDto = {
+    overwriteAlert: true,
+    allocatorSiret: "12345678901234",
+};
+
+export const DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_1: DepositScdlLogDto = {
     overwriteAlert: true,
     allocatorSiret: "12345678901234",
 };

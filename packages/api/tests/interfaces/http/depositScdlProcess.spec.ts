@@ -7,6 +7,7 @@ import DepositScdlLogEntity from "../../../src/modules/deposit-scdl-process/enti
 import {
     CREATE_DEPOSIT_LOG_DTO,
     DEPOSIT_LOG_DTO,
+    DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_1,
     DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
     DEPOSIT_LOG_RESPONSE_DTO,
 } from "../../../src/modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
@@ -141,16 +142,15 @@ describe("/parcours-depot", () => {
             await depositLogPort.insertOne(new DepositScdlLogEntity(userId, 1, undefined, true, "12345678901234"));
 
             const response = await request(g.app)
-                .patch(`/parcours-depot/step/2`)
-                .send(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2)
+                .patch(`/parcours-depot/step/1`)
+                .send(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_1)
                 .set("x-access-token", token)
                 .set("Accept", "application/json");
 
             const expected: DepositScdlLogResponseDto = {
                 allocatorSiret: "12345678901234",
                 overwriteAlert: true,
-                permissionAlert: true,
-                step: 2,
+                step: 1,
             };
 
             expect(response.statusCode).toBe(200);
