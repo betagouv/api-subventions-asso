@@ -5,10 +5,10 @@ export default class UploadedFileInfosEntity {
         public fileName: string,
         public uploadDate: Date,
         public allocatorsSiret: string[],
-        public errors?: MixedParsedError[],
-        public beginPaymentDate?: Date,
-        public endPaymentDate?: Date,
-        public parseableLines?: number,
+        public grantCoverageYears: number[],
+        public parseableLines: number,
+        public totalLines: number,
         public existingLinesInDbOnSamePeriod?: number,
+        public errors?: MixedParsedError[],
     ) {}
 }

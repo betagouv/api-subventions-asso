@@ -26,6 +26,7 @@ import { ScdlGrantDbo } from "../../modules/providers/scdl/dbo/ScdlGrantDbo";
 jest.mock("../../modules/data-log/dataLog.service");
 import scdlGrantService from "../../modules/providers/scdl/scdl.grant.service";
 import applicationFlatService from "../../modules/applicationFlat/applicationFlat.service";
+import { ScdlParsedInfos } from "../../modules/providers/scdl/@types/ScdlParsedInfos";
 jest.mock("../../modules/providers/scdl/scdl.grant.service");
 jest.mock("../../modules/applicationFlat/applicationFlat.service");
 jest.mock("../../modules/notify/notify.service", () => ({ notify: jest.fn() }));
@@ -57,8 +58,16 @@ describe("ScdlCli", () => {
         mockedScdlService.getProducer.mockResolvedValue(PRODUCER_ENTITY);
         // @ts-expect-error: private method
         mockedScdlService._buildGrantUniqueId.mockReturnValue(UNIQUE_ID);
-        mockedScdlService.parseCsv.mockReturnValue({ entities: STORABLE_DATA_ARRAY, errors: [], allocatorsSiret: [] });
-        mockedScdlService.parseXls.mockReturnValue({ entities: STORABLE_DATA_ARRAY, errors: [], allocatorsSiret: [] });
+        mockedScdlService.parseCsv.mockReturnValue({
+            entities: STORABLE_DATA_ARRAY,
+            errors: [],
+            parsedInfos: {} as ScdlParsedInfos,
+        });
+        mockedScdlService.parseXls.mockReturnValue({
+            entities: STORABLE_DATA_ARRAY,
+            errors: [],
+            parsedInfos: {} as ScdlParsedInfos,
+        });
 
         cli = new ScdlCli();
     });

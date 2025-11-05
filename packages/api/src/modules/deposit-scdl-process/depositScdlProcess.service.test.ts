@@ -13,6 +13,7 @@ import { ScdlStorableGrant } from "../providers/scdl/@types/ScdlStorableGrant";
 import { MixedParsedError } from "../providers/scdl/@types/Validation";
 import UploadedFileInfosEntity from "./entities/uploadedFileInfos.entity";
 import * as FileHelper from "../../shared/helpers/FileHelper";
+import { ScdlParsedInfos } from "../providers/scdl/@types/ScdlParsedInfos";
 
 jest.mock("./check/DepositScdlProcess.check.service");
 jest.mock("../../dataProviders/db/deposit-log/depositLog.port");
@@ -167,7 +168,7 @@ describe("DepositScdlProcessService", () => {
             [string]
         >;
         const mockParseCsv = jest.spyOn(scdlService, "parseCsv") as jest.SpyInstance<
-            { entities: ScdlStorableGrant[]; errors: MixedParsedError[]; allocatorsSiret: string[] },
+            { entities: ScdlStorableGrant[]; errors: MixedParsedError[]; parsedInfos: ScdlParsedInfos },
             [fileContent: Buffer, delimiter?: string, quote?: string]
         >;
 
@@ -189,7 +190,13 @@ describe("DepositScdlProcessService", () => {
             const parsedResult = {
                 entities: [],
                 errors: [],
-                allocatorsSiret: ["12345678901234"],
+                parsedInfos: {
+                    allocatorsSiret: ["12345678901234"],
+                    grantCoverageYears: [2025],
+                    parseableLines: 0,
+                    totalLines: 0,
+                    existingLinesInDbOnSamePeriod: 0,
+                } as ScdlParsedInfos,
             };
 
             mockParseCsv.mockReturnValueOnce(parsedResult);
@@ -234,7 +241,7 @@ describe("DepositScdlProcessService", () => {
         it("should parse CSV file with detected delimiter", () => {
             const file = createMockFile("test.csv");
             const expectedDelimiter = ";";
-            const expectedResult = { entities: [], errors: [], allocatorsSiret: [] };
+            const expectedResult = { entities: [], errors: [], parsedInfos: {} as ScdlParsedInfos };
 
             mockDetectCsvDelimiter.mockReturnValue(expectedDelimiter);
             mockParseCsv.mockReturnValue(expectedResult);
@@ -251,7 +258,7 @@ describe("DepositScdlProcessService", () => {
         it("should parse Excel file with pageName", () => {
             const file = createMockFile("test.xlsx");
             const pageName = "Sheet1";
-            const expectedResult = { entities: [], errors: [], allocatorsSiret: [] };
+            const expectedResult = { entities: [], errors: [], parsedInfos: {} as ScdlParsedInfos };
 
             mockParseXls.mockReturnValue(expectedResult);
 
@@ -266,7 +273,7 @@ describe("DepositScdlProcessService", () => {
 
         it("should parse Excel file without pageName", () => {
             const file = createMockFile("data.xls");
-            const expectedResult = { entities: [], errors: [], allocatorsSiret: [] };
+            const expectedResult = { entities: [], errors: [], parsedInfos: {} as ScdlParsedInfos };
 
             mockParseXls.mockReturnValue(expectedResult);
 

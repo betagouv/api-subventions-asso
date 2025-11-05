@@ -97,11 +97,11 @@ describe("DepositScdlProcessHttp", () => {
                     fileName: "test.csv",
                     uploadDate: new Date("2025-11-03T00:00:00.000Z"),
                     allocatorsSiret: ["12345678901234"],
-                    errors: [],
-                    beginPaymentDate: undefined,
-                    endPaymentDate: undefined,
-                    parseableLines: undefined,
+                    grantCoverageYears: [2021, 2022],
+                    parseableLines: 200,
+                    totalLines: 202,
                     existingLinesInDbOnSamePeriod: undefined,
+                    errors: [],
                 },
             });
         });

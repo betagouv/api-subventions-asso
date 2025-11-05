@@ -40,11 +40,11 @@ describe("DepositLogAdapter", () => {
                 fileName: "test.csv",
                 uploadDate: now,
                 allocatorsSiret: ["12345678901234"],
-                errors: [],
-                beginPaymentDate: now,
-                endPaymentDate: now,
+                grantCoverageYears: [2019, 2200],
                 parseableLines: 123,
+                totalLines: 125,
                 existingLinesInDbOnSamePeriod: 145,
+                errors: [],
             };
             const dbo: DepositScdlLogDbo = {
                 _id: new ObjectId(),

@@ -74,19 +74,32 @@ export class DepositScdlProcessService {
         userId: string,
         pageName?: string | undefined,
     ): Promise<DepositScdlLogEntity> {
-        await this.findAndValidateDepositLog(userId, depositScdlLogDto, this.SECOND_STEP);
+        /*const existingDepositLog = */ await this.findAndValidateDepositLog(
+            userId,
+            depositScdlLogDto,
+            this.SECOND_STEP,
+        );
 
-        const parsedResult = this.parseFile(file, pageName);
+        const { parsedInfos, errors } = this.parseFile(file, pageName);
+
+        // const hasSameAllocatorSiret = !!existingDepositLog.allocatorSiret &&
+        //     parsedInfos.allocatorsSiret.length === 1 &&
+        //     parsedInfos.allocatorsSiret[0] === existingDepositLog.allocatorSiret
+        /*let*/ const existingLinesInDbOnSamePeriod = undefined;
+        // if (hasSameAllocatorSiret) {
+        //     const documentsInDB = await scdlService.getGrantsOnPeriodByAllocator(
+        //         existingDepositLog.allocatorSiret, parsedInfos.grantCoverageYears);
+        // }
 
         const uploadedFileInfos = new UploadedFileInfosEntity(
             file.originalname,
             new Date(),
-            parsedResult.allocatorsSiret,
-            parsedResult.errors,
-            undefined, // todo: add beginPaymentDate, endPaymentDate, parseableLines, existingLinesInDbOnSamePeriod
-            undefined,
-            undefined,
-            undefined,
+            parsedInfos.allocatorsSiret,
+            parsedInfos.grantCoverageYears,
+            parsedInfos.parseableLines,
+            parsedInfos.totalLines,
+            existingLinesInDbOnSamePeriod,
+            errors,
         );
 
         return depositLogPort.updatePartial(

@@ -69,11 +69,11 @@ describe("depositScdlLogDtoAdapter", () => {
                 fileName: entity.fileName,
                 uploadDate: entity.uploadDate,
                 allocatorsSiret: entity.allocatorsSiret,
-                errors: entity.errors,
-                beginPaymentDate: entity.beginPaymentDate,
-                endPaymentDate: entity.endPaymentDate,
+                grantCoverageYears: entity.grantCoverageYears,
                 parseableLines: entity.parseableLines,
+                totalLines: entity.totalLines,
                 existingLinesInDbOnSamePeriod: entity.existingLinesInDbOnSamePeriod,
+                errors: entity.errors,
             });
         });
     });
@@ -124,11 +124,11 @@ describe("depositScdlLogDtoAdapter", () => {
                     fileName: "test.xsl",
                     uploadDate: new Date(),
                     allocatorsSiret: ["12345678901234"],
-                    errors: [],
-                    beginPaymentDate: undefined,
-                    endPaymentDate: undefined,
-                    parseableLines: undefined,
+                    grantCoverageYears: [2020, 2021],
+                    parseableLines: 200,
+                    totalLines: 202,
                     existingLinesInDbOnSamePeriod: undefined,
+                    errors: [],
                 };
 
                 const result = DepositScdlLogDtoAdapter.uploadedFileInfosDtoToEntity(dto);
@@ -137,11 +137,11 @@ describe("depositScdlLogDtoAdapter", () => {
                     fileName: dto.fileName,
                     uploadDate: dto.uploadDate,
                     allocatorsSiret: dto.allocatorsSiret,
-                    errors: dto.errors,
-                    beginPaymentDate: dto.beginPaymentDate,
-                    endPaymentDate: dto.endPaymentDate,
+                    grantCoverageYears: dto.grantCoverageYears,
                     parseableLines: dto.parseableLines,
+                    totalLines: dto.totalLines,
                     existingLinesInDbOnSamePeriod: dto.existingLinesInDbOnSamePeriod,
+                    errors: dto.errors,
                 });
             });
         });

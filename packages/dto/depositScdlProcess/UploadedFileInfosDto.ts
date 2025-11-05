@@ -4,9 +4,9 @@ export interface UploadedFileInfosDto {
     fileName: string;
     uploadDate: Date;
     allocatorsSiret: string[];
-    errors?: MixedParsedErrorDto[];
-    beginPaymentDate?: Date;
-    endPaymentDate?: Date;
-    parseableLines?: number;
+    grantCoverageYears: number[];
+    parseableLines: number;
+    totalLines: number;
     existingLinesInDbOnSamePeriod?: number;
+    errors?: MixedParsedErrorDto[];
 }

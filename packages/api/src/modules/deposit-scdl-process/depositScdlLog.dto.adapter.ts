@@ -42,11 +42,11 @@ export default class DepositScdlLogDtoAdapter {
             fileName: entity.fileName,
             uploadDate: entity.uploadDate,
             allocatorsSiret: entity.allocatorsSiret,
-            errors: entity.errors,
-            beginPaymentDate: entity.beginPaymentDate,
-            endPaymentDate: entity.endPaymentDate,
+            grantCoverageYears: entity.grantCoverageYears,
             parseableLines: entity.parseableLines,
+            totalLines: entity.totalLines,
             existingLinesInDbOnSamePeriod: entity.existingLinesInDbOnSamePeriod,
+            errors: entity.errors,
         };
     }
 
@@ -74,11 +74,11 @@ export default class DepositScdlLogDtoAdapter {
             fileName: dto.fileName,
             uploadDate: dto.uploadDate,
             allocatorsSiret: dto.allocatorsSiret,
-            errors: dto.errors?.map(error => this.mixedParsedErrorDtoToEntity(error)),
-            beginPaymentDate: dto.beginPaymentDate,
-            endPaymentDate: dto.endPaymentDate,
+            grantCoverageYears: dto.grantCoverageYears,
             parseableLines: dto.parseableLines,
+            totalLines: dto.totalLines,
             existingLinesInDbOnSamePeriod: dto.existingLinesInDbOnSamePeriod,
+            errors: dto.errors?.map(error => this.mixedParsedErrorDtoToEntity(error)),
         };
     }
 

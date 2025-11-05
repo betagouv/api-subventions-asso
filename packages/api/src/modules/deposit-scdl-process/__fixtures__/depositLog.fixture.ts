@@ -32,11 +32,11 @@ export const DEPOSIT_LOG_ENTITY_STEP_2: DepositScdlLogEntity = {
         fileName: "test.csv",
         uploadDate: new Date("2025-11-03T00:00:00.000Z"),
         allocatorsSiret: ["12345678901234"],
-        errors: [],
-        beginPaymentDate: undefined,
-        endPaymentDate: undefined,
-        parseableLines: undefined,
+        grantCoverageYears: [2021, 2022],
+        parseableLines: 200,
+        totalLines: 202,
         existingLinesInDbOnSamePeriod: undefined,
+        errors: [],
     },
 };
 
@@ -44,11 +44,11 @@ export const UPLOADED_FILE_INFOS_ENTITY: UploadedFileInfosEntity = {
     fileName: "test.csv",
     uploadDate: new Date("2025-11-03T00:00:00.000Z"),
     allocatorsSiret: ["12345678901234"],
-    errors: [],
-    beginPaymentDate: undefined,
-    endPaymentDate: undefined,
-    parseableLines: undefined,
+    grantCoverageYears: [2021, 2022],
+    parseableLines: 200,
+    totalLines: 202,
     existingLinesInDbOnSamePeriod: undefined,
+    errors: [],
 };
 
 export const DEPOSIT_LOG_DBO: DepositScdlLogDbo = {
@@ -91,10 +91,10 @@ export const DEPOSIT_LOG_RESPONSE_DTO_STEP_2: DepositScdlLogResponseDto = {
         fileName: "test.csv",
         uploadDate: new Date("2025-11-03T00:00:00.000Z"),
         allocatorsSiret: ["12345678901234"],
-        errors: [],
-        beginPaymentDate: undefined,
-        endPaymentDate: undefined,
-        parseableLines: undefined,
+        grantCoverageYears: [2021, 2022],
+        parseableLines: 200,
+        totalLines: 202,
         existingLinesInDbOnSamePeriod: undefined,
+        errors: [],
     },
 };
