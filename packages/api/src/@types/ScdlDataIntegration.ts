@@ -1,4 +1,4 @@
-type BaseScdlParseArgs = { allocatorSiret: string; exportDate?: string };
+type BaseScdlParseArgs = { siret: string; exportDate?: string };
 export type ScdlParseCsvArgs = BaseScdlParseArgs & { delimiter?: string; quote?: string };
 export type ScdlParseXlsArgs = BaseScdlParseArgs & { pageName?: string; rowOffset?: number | string };
 

@@ -4,7 +4,7 @@ import MiscScdlProducerEntity from "../../../../modules/providers/scdl/entities/
 export class MiscScdlProducersPort extends MongoPort<MiscScdlProducerEntity> {
     readonly collectionName = "misc-scdl-producers";
     readonly joinIndexes = {
-        miscScdlGrant: "slug",
+        miscScdlGrant: "siret",
     };
 
     public findAll() {

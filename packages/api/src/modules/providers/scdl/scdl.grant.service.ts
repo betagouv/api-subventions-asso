@@ -16,6 +16,11 @@ export class ScdlGrantService implements ApplicationFlatProvider {
         description: "Données au format SCDL de divers producteurs en Open Data",
     };
 
+    async removeSlugFromUniqueId() {
+        const grants = await miscScdlGrantPort.findAll();
+        console.log("done !", grants.length);
+    }
+
     /**
      *
      *        APPLICATION FLAT PART
