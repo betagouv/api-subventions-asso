@@ -129,7 +129,6 @@ export default class ScdlBatchCli extends ScdlCli {
                     slug: producerSlug,
                     name: producerName as string,
                     siret: producerSiret as string,
-                    lastUpdate: new Date(),
                 });
                 this.successList.push(`added producer ${producerSlug}`);
             }

@@ -112,6 +112,7 @@ beforeAll(async () => {
 
     if (g.app) return;
 
+    console.warn("Initializing integration test database...");
     // setup database for initAsyncServices
     // everything will be droped after the first test from the afterEach below
     await initTests();

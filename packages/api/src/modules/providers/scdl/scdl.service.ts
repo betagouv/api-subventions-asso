@@ -60,10 +60,6 @@ export class ScdlService {
         await miscScdlGrantPort.createMany(dbos);
     }
 
-    updateProducer(slug, setObject) {
-        return miscScdlProducersPort.update(slug, setObject);
-    }
-
     parseXls(fileContent: Buffer, pageName?: string, rowOffset = 0) {
         const { entities, errors } = ScdlGrantParser.parseExcel(fileContent, pageName, rowOffset);
         return { entities, errors: this.normalizeErrors(errors) };
@@ -131,8 +127,8 @@ export class ScdlService {
         });
     }
 
-    getGrantsOnPeriodBySlug(producerSlug: string, exercices: number[]) {
-        return miscScdlGrantPort.findBySlugOnPeriod(producerSlug, exercices);
+    getGrantsOnPeriodByAllocator(allocatorSiret: string, exercices: number[]) {
+        return miscScdlGrantPort.findByAllocatorOnPeriod(allocatorSiret, exercices);
     }
 
     /**

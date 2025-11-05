@@ -71,7 +71,6 @@ describe("ScdlCli", () => {
                 slug: PRODUCER_ENTITY.slug,
                 name: PRODUCER_ENTITY.name,
                 siret: PRODUCER_ENTITY.siret,
-                lastUpdate: expect.any(Date),
             });
         });
 
@@ -154,7 +153,7 @@ describe("ScdlCli", () => {
         it("executes persistence process", async () => {
             await test();
             // @ts-expect-error: test private method
-            expect(cli.persist).toHaveBeenCalledWith(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
+            expect(cli.persist).toHaveBeenCalledWith(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
         });
 
         it("executes end of import process", async () => {
@@ -174,7 +173,7 @@ describe("ScdlCli", () => {
         const GRANTS_ID_DB = [{ exercice: STORABLE_DATA_ARRAY[0].exercice } as MiscScdlGrantEntity];
         const mockCleanExercises = jest.spyOn(scdlService, "cleanExercises");
         const mockIsProducerFirstImport = jest.spyOn(scdlService, "isProducerFirstImport");
-        const mockGetGrantOnPeriodBySlug = jest.spyOn(scdlService, "getGrantsOnPeriodBySlug");
+        const mockGetGrantOnPeriodByAllocator = jest.spyOn(scdlService, "getGrantsOnPeriodByAllocator");
         const mockValidateImport = jest.spyOn(scdlService, "validateImportCoverage");
         const mockRestoreBackup = jest.spyOn(scdlService, "restoreBackup");
         const mockDropBackup = jest.spyOn(scdlService, "dropBackup");
@@ -184,7 +183,7 @@ describe("ScdlCli", () => {
             // @ts-expect-error: mock private method
             cli.persistEntities = mockPersistEntities;
             mockIsProducerFirstImport.mockResolvedValue(false);
-            mockGetGrantOnPeriodBySlug.mockResolvedValue(GRANTS_ID_DB);
+            mockGetGrantOnPeriodByAllocator.mockResolvedValue(GRANTS_ID_DB);
             mockValidateImport.mockResolvedValue();
             mockCleanExercises.mockResolvedValue();
             mockRestoreBackup.mockResolvedValue();
@@ -196,23 +195,23 @@ describe("ScdlCli", () => {
             ${[]}
         `("throws error if no entities given", async ({ entities }) => {
             // @ts-expect-error: test private method
-            await expect(async () => await cli.persist(PRODUCER_ENTITY.slug, entities)).rejects.toThrow(
+            await expect(async () => await cli.persist(PRODUCER_ENTITY, entities)).rejects.toThrow(
                 "Importation failed : no entities could be created from this file",
             );
         });
 
         it("retrieves documents in db for imported exercices", async () => {
             // @ts-expect-error: test private method
-            await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
-            expect(jest.mocked(scdlService.getGrantsOnPeriodBySlug)).toHaveBeenCalledWith(
-                PRODUCER_ENTITY.slug,
+            await cli.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
+            expect(jest.mocked(scdlService.getGrantsOnPeriodByAllocator)).toHaveBeenCalledWith(
+                PRODUCER_ENTITY.siret,
                 IMPORTED_DATA_EXERCISES,
             );
         });
 
         it("validates import", async () => {
             // @ts-expect-error: test private method
-            await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
+            await cli.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
             expect(jest.mocked(scdlService.validateImportCoverage)).toHaveBeenCalledWith(
                 PRODUCER_ENTITY.slug,
                 [STORABLE_DATA.exercice],
@@ -223,14 +222,14 @@ describe("ScdlCli", () => {
 
         it("clean database from grants from most recent exercise present in import file", async () => {
             // @ts-expect-error: test private method
-            await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
+            await cli.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
             expect(mockCleanExercises).toHaveBeenCalledWith(PRODUCER_ENTITY.slug, IMPORTED_DATA_EXERCISES);
         });
 
         it("does not handle backup if first import (no data in DB)", async () => {
             mockIsProducerFirstImport.mockResolvedValueOnce(true);
             // @ts-expect-error: test private method
-            await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
+            await cli.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
             expect(mockCleanExercises).not.toHaveBeenCalled();
             expect(mockDropBackup).not.toHaveBeenCalled();
         });
@@ -240,7 +239,7 @@ describe("ScdlCli", () => {
             mockPersistEntities.mockRejectedValueOnce(new Error("Persistence failed"));
             try {
                 // @ts-expect-error: test private method
-                await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
+                await cli.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
             } catch {
                 expect(mockCleanExercises).not.toHaveBeenCalled();
                 expect(mockRestoreBackup).not.toHaveBeenCalled();
@@ -251,13 +250,13 @@ describe("ScdlCli", () => {
             // @ts-expect-error -- test private
             const persistSpy = jest.spyOn(cli, "persistEntities").mockReturnValueOnce(Promise.resolve());
             // @ts-expect-error: test private method
-            await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
+            await cli.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
             expect(persistSpy).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug);
         });
 
         it("drops backup when persistence succeed", async () => {
             // @ts-expect-error: test private method
-            await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
+            await cli.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
             expect(mockPersistEntities).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug);
         });
 
@@ -265,7 +264,7 @@ describe("ScdlCli", () => {
             mockPersistEntities.mockRejectedValueOnce(new Error("Persistence failed"));
             try {
                 // @ts-expect-error: test private method
-                await cli.persist(PRODUCER_ENTITY.slug, STORABLE_DATA_ARRAY);
+                await cli.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
             } catch {
                 expect(mockRestoreBackup).toHaveBeenCalledWith(PRODUCER_ENTITY.slug);
             }
@@ -350,17 +349,6 @@ describe("ScdlCli", () => {
             // @ts-expect-error -- test private
             const test = () => cli.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
             await expect(test).rejects.toThrow(ERROR);
-        });
-
-        it("should call scdlService.updateProducer()", async () => {
-            const now = new Date();
-            jest.useFakeTimers().setSystemTime(now);
-            // @ts-expect-error -- test private
-            await cli.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug);
-            expect(scdlService.updateProducer).toHaveBeenCalledWith(PRODUCER_ENTITY.slug, {
-                lastUpdate: now,
-            });
-            jest.useRealTimers();
         });
     });
 

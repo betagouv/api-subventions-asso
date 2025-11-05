@@ -24,14 +24,14 @@ export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
     }
 
     // retrieves documents over a period of exercise
-    public async findBySlugOnPeriod(slug: string, exercises: number[]): Promise<MiscScdlGrantEntity[]> {
+    public async findByAllocatorOnPeriod(siret: string, exercises: number[]): Promise<MiscScdlGrantEntity[]> {
         if (exercises.length == 1)
             return await this.collection
-                .find({ producerSlug: slug, exercice: exercises[0] }, { projection: { _id: 0 } })
+                .find({ allocatorSiret: siret, exercice: exercises[0] }, { projection: { _id: 0 } })
                 .toArray();
         else
             return this.collection
-                .find({ producerSlug: slug, exercice: { $in: exercises } }, { projection: { _id: 0 } })
+                .find({ allocatorSiret: siret, exercice: { $in: exercises } }, { projection: { _id: 0 } })
                 .toArray();
     }
 

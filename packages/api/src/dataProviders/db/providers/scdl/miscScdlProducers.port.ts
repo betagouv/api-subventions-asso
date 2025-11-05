@@ -19,10 +19,6 @@ export class MiscScdlProducersPort extends MongoPort<MiscScdlProducerEntity> {
         return this.collection.insertOne(entity);
     }
 
-    public update(slug: string, set: Partial<MiscScdlProducerEntity>) {
-        return this.collection.updateOne({ slug }, { $set: set });
-    }
-
     // only used in test - private should make typescript disallow the use
     private async upsert(slug: string, set: MiscScdlProducerEntity) {
         return this.collection.updateOne({ slug }, { $set: set }, { upsert: true });

@@ -428,7 +428,6 @@ describe("SCDL Batch Import CLI", () => {
                     slug: FILES_CONFIG[0].parseParams.producerSlug,
                     name: FILES_CONFIG[0].producerName,
                     siret: FILES_CONFIG[0].producerSiret,
-                    lastUpdate: expect.any(Date),
                 });
             });
 
