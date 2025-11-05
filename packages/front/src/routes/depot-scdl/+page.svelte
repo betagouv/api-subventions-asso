@@ -5,14 +5,16 @@
     import Step2 from "./components/Step2/Step2.svelte";
     import { onMount } from "svelte";
     import { DepositScdlController } from "./DepositScdl.controller";
+    import Step3 from "./components/Step3/Step3.svelte";
+    import Spinner from "$lib/components/Spinner.svelte";
 
-    const stepComponents = { 1: Step1, 2: Step2 };
+    const stepComponents = { 1: Step1, 2: Step2, 3: Step3 };
 
     const ctrl = new DepositScdlController(stepComponents);
-    const { currentStep, currentView, currentStepComponent, stepsDesc } = ctrl;
+    const { currentStep, currentView, currentStepComponent, stepsDesc, currentLoadingMessage } = ctrl;
 
     onMount(async () => {
-        ctrl.onMount();
+        await ctrl.onMount();
     });
 </script>
 
@@ -30,8 +32,11 @@
                         {stepsDesc}
                         currentStep={$currentStep}
                         on:nextStep={() => ctrl.nextStep()}
-                        on:prevStep={() => ctrl.prevStep()} />
+                        on:prevStep={() => ctrl.prevStep()}
+                        on:loading={() => ctrl.loading()} />
                 </div>
+            {:else if $currentView === "loading"}
+                <Spinner description={currentLoadingMessage} />
             {/if}
         </div>
     </div>

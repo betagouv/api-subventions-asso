@@ -19,6 +19,7 @@ export class DepositScdlController {
     public currentStep: Store<number | null> = new Store(null);
     public currentView: Store<"loading" | "welcome" | "resume" | "form"> = new Store("loading");
     public currentStepComponent: ReadStore<ComponentType>;
+    public currentLoadingMessage = "Veuillez patientez, nous analysons vos données";
 
     constructor(stepComponents: Record<number, ComponentType>) {
         this.stepComponents = stepComponents;
@@ -40,7 +41,7 @@ export class DepositScdlController {
 
     displayResume() {
         this.currentView.set("resume");
-        this.currentStep.set((this.depositLog.value as DepositScdlLogResponseDto).step + 1); // only works not but we need to find a way to match form steps and deposit steps (api)
+        this.currentStep.set((this.depositLog.value as DepositScdlLogResponseDto).step + 1); // todo: only works not but we need to find a way to match form steps and deposit steps (api)
     }
 
     startNewForm() {
@@ -55,8 +56,7 @@ export class DepositScdlController {
 
     resumeForm() {
         this.currentView.set("form");
-        // currentStep = $depositLogStore!.step + 2; // todo faire une fonction claire
-        this.currentStep.set(depositLogStore.value!.step + 1); // pour test
+        this.currentStep.set(depositLogStore.value!.step + 2);
     }
 
     nextStep() {
@@ -80,5 +80,9 @@ export class DepositScdlController {
         }
 
         this.currentStep.set(step - 1);
+    }
+
+    loading() {
+        this.currentView.set("loading");
     }
 }

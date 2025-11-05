@@ -45,7 +45,7 @@
     </div>
 
     <div class="fr-mb-6v">
-        <Checkbox options={checkboxOptions} label="" bind:value={selectedValues} />
+        <Checkbox options={checkboxOptions} bind:value={selectedValues} />
     </div>
     <div>
         <button on:click={() => dispatch("prevStep")} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">
