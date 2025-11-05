@@ -37,12 +37,12 @@ export default class ScdlCli {
 
     public async parseXls(
         filePath: string,
-        producerSlug: string,
+        allocatorSiret: string,
         exportDate: string | undefined = undefined,
         pageName: string | undefined = undefined,
         rowOffset: number | string = 0,
     ) {
-        const producer = await scdlService.getProducer(producerSlug);
+        const producer = await scdlService.getProducer(allocatorSiret);
         await this.validateGenericInput(producer, exportDate);
         const fileContent = detectAndEncode(filePath);
 
@@ -50,7 +50,7 @@ export default class ScdlCli {
         const { entities, errors } = scdlService.parseXls(fileContent, pageName, parsedRowOffset);
 
         // persist data
-        await this.persist(producerSlug, entities);
+        await this.persist(allocatorSiret, entities);
         // execute end of import methods
         await this.end({ file: filePath, producer: producer as MiscScdlProducerEntity, exportDate, errors });
     }
@@ -65,19 +65,19 @@ export default class ScdlCli {
      */
     public async parse(
         filePath: string,
-        producerSlug: string,
+        allocatorSiret: string,
         exportDate: string | undefined = undefined,
         delimiter = ";",
         quote = '"',
     ) {
-        const producer = await scdlService.getProducer(producerSlug);
+        const producer = await scdlService.getProducer(allocatorSiret);
         await this.validateGenericInput(producer, exportDate);
         const fileContent = detectAndEncode(filePath);
 
         const parsedQuote = quote === "false" ? false : quote;
         const { entities, errors } = scdlService.parseCsv(fileContent, delimiter, parsedQuote);
         // persist data
-        await this.persist(producerSlug, entities);
+        await this.persist((producer as MiscScdlProducerEntity).slug, entities);
         // execute end of import methods
         await this.end({ file: filePath, producer: producer as MiscScdlProducerEntity, exportDate, errors });
     }
@@ -100,7 +100,7 @@ export default class ScdlCli {
             providerSiret: producer.siret,
             exportDate,
         });
-        await Promise.all([this.exportErrors(errors, file), dataLogService.addLog(producer.slug, file, exportDate)]);
+        await Promise.all([this.exportErrors(errors, file), dataLogService.addLog(producer.name, file, exportDate)]);
     }
 
     /**
@@ -108,15 +108,15 @@ export default class ScdlCli {
      * Contains the logic to persist scdl grants entities. This is shard between CSV and XLSX process
      * Handle validation, persistence in DB, backups
      *
-     * @param producerSlug (string) : Slug of the file producer
+     * @param allocatorSiret (string) : Data producer's SIRET
      * @param entities Entities to persist
      */
-    private async persist(producerSlug: string, entities: ScdlStorableGrant[]) {
+    private async persist(allocatorSiret: string, entities: ScdlStorableGrant[]) {
         if (!entities || !entities.length) {
             throw new Error("Importation failed : no entities could be created from this file");
         }
 
-        const firstImport = await scdlService.isProducerFirstImport(producerSlug);
+        const firstImport = await scdlService.isProducerFirstImport(allocatorSiret);
 
         if (!firstImport) {
             const exercises: Set<number> = entities.reduce((acc, entity) => {
@@ -128,19 +128,19 @@ export default class ScdlCli {
             }
 
             const exercisesArray = [...exercises]; // transform Set to Array
-            const documentsInDB = await scdlService.getGrantsOnPeriodBySlug(producerSlug, exercisesArray);
+            const documentsInDB = await scdlService.getGrantsOnPeriodByAllocator(allocatorSiret, exercisesArray);
 
-            await scdlService.validateImportCoverage(producerSlug, exercisesArray, entities, documentsInDB);
-            await scdlService.cleanExercises(producerSlug, exercisesArray);
+            await scdlService.validateImportCoverage(allocatorSiret, exercisesArray, entities, documentsInDB);
+            await scdlService.cleanExercises(allocatorSiret, exercisesArray);
         }
 
         try {
-            await this.persistEntities(entities, producerSlug);
+            await this.persistEntities(entities, allocatorSiret);
             if (!firstImport) await scdlService.dropBackup();
         } catch (e) {
             if (!firstImport) {
                 console.log("Importation failed, restoring previous exercise data");
-                await scdlService.restoreBackup(producerSlug);
+                await scdlService.restoreBackup(allocatorSiret);
             }
             throw e;
         }

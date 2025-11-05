@@ -8,11 +8,11 @@ export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
     readonly backupCollectionName = this.collectionName + "-backup";
 
     readonly joinIndexes = {
-        miscScdlProducer: "producerSlug",
+        miscScdlProducer: "allocatorSiret",
     };
 
-    public findOneBySlug(slug: string) {
-        return this.collection.findOne({ producerSlug: slug });
+    public findOneByAllocatorSiret(siret: string) {
+        return this.collection.findOne({ allocatorSiret: siret });
     }
 
     public async findAll() {
@@ -23,15 +23,19 @@ export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
         return this.collection.find({});
     }
 
+    public getPaginate(skip: number, limit: 1000) {
+        return this.collection.find({}).skip(skip).limit(limit);
+    }
+
     // retrieves documents over a period of exercise
-    public async findBySlugOnPeriod(slug: string, exercises: number[]): Promise<MiscScdlGrantEntity[]> {
+    public async findByAllocatorOnPeriod(allocatorSiret: string, exercises: number[]): Promise<MiscScdlGrantEntity[]> {
         if (exercises.length == 1)
             return await this.collection
-                .find({ producerSlug: slug, exercice: exercises[0] }, { projection: { _id: 0 } })
+                .find({ allocatorSiret, exercice: exercises[0] }, { projection: { _id: 0 } })
                 .toArray();
         else
             return this.collection
-                .find({ producerSlug: slug, exercice: { $in: exercises } }, { projection: { _id: 0 } })
+                .find({ allocatorSiret, exercice: { $in: exercises } }, { projection: { _id: 0 } })
                 .toArray();
     }
 
@@ -45,10 +49,10 @@ export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
     }
 
     // we use bulk instead of deleteMany as $in might cause performance issues with large arrays
-    public async bulkFindDeleteByExercices(slug: string, exercises: number[]) {
+    public async bulkFindDeleteByExercices(allocatorSiret: string, exercises: number[]) {
         const bulk = this.collection.initializeUnorderedBulkOp();
         exercises.forEach(exercise => {
-            bulk.find({ producerSlug: slug, exercice: exercise }).delete();
+            bulk.find({ allocatorSiret, exercice: exercise }).delete();
         });
         return bulk.execute().catch(error => {
             throw error;
@@ -59,10 +63,10 @@ export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
      * Save all given producer data in a backup collection
      * @param slug Producer slug
      */
-    public createBackupCollection(slug: string) {
-        console.log(`creating backup for producer ${slug} in collection ${this.backupCollectionName}`);
+    public createBackupCollection(allocatorSiret: string) {
+        console.log(`creating backup for allocator SIRET ${allocatorSiret} in collection ${this.backupCollectionName}`);
         return this.collection
-            .aggregate([{ $match: { producerSlug: slug } }, { $out: this.backupCollectionName }])
+            .aggregate([{ $match: { allocatorSiret } }, { $out: this.backupCollectionName }])
             .toArray();
     }
 
@@ -78,9 +82,9 @@ export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
      * Apply backup collection created in createBackupCollection
      * @param slug Producer slug
      */
-    public async applyBackupCollection(_slug: string) {
+    public async applyBackupCollection(_allocatorSiret: string) {
         throw new Error("backup is disabled, please clean data manually for now");
-        // await this.collection.deleteMany({ producerSlug: slug });
+        // await this.collection.deleteMany({ allocatorSiret: _allocatorSiret });
         // await this.db
         //     .collection(this.backupCollectionName)
         //     .aggregate([{ $out: this.collection }])
@@ -92,7 +96,6 @@ export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
     async createIndexes() {
         await this.collection.createIndex({ associationSiret: 1 });
         await this.collection.createIndex({ associationRna: 1 });
-        await this.collection.createIndex({ producerSlug: 1 });
     }
 }
 

@@ -17,8 +17,8 @@ export class ScdlService {
         this.producerNames = (await this.getProducers()).map(producer => producer.name);
     }
 
-    getProducer(slug: string) {
-        return miscScdlProducersPort.findBySlug(slug);
+    getProducer(siret: string) {
+        return miscScdlProducersPort.findBySiret(siret);
     }
 
     getProducers() {
@@ -90,8 +90,8 @@ export class ScdlService {
         return normalizedErrors;
     }
 
-    async isProducerFirstImport(slug: string): Promise<boolean> {
-        return !(await miscScdlGrantPort.findOneBySlug(slug));
+    async isProducerFirstImport(siret: string): Promise<boolean> {
+        return !(await miscScdlGrantPort.findOneByAllocatorSiret(siret));
     }
 
     /**
@@ -105,13 +105,13 @@ export class ScdlService {
      * @throws Error if the import has less exercises than the existing ones in the database
      */
     async validateImportCoverage(
-        slug: string,
+        siret: string,
         exercices: number[],
         importedEntities: ScdlStorableGrant[],
         documentsInDB: MiscScdlGrantEntity[],
     ) {
         console.log(
-            `There are currently ${documentsInDB.length} documents for producer ${slug} in given exercice${exercices.length > 1 ? "s" : ""} ${exercices.join(" | ")}`,
+            `There are currently ${documentsInDB.length} documents for allocator SIRET ${siret} in given exercice${exercices.length > 1 ? "s" : ""} ${exercices.join(" | ")}`,
         );
         console.log(`The new import contains ${importedEntities.length} entities`);
 
@@ -121,14 +121,14 @@ export class ScdlService {
                 importedEntities.filter(entity => entity.exercice === exercise).length
             ) {
                 throw new Error(
-                    `You are trying to import less grants for exercise ${exercise} than what already exist in the database for producer ${slug}.`,
+                    `You are trying to import less grants for exercise ${exercise} than what already exist in the database for producer SIRET ${siret}.`,
                 );
             }
         });
     }
 
-    getGrantsOnPeriodBySlug(producerSlug: string, exercices: number[]) {
-        return miscScdlGrantPort.findBySlugOnPeriod(producerSlug, exercices);
+    getGrantsOnPeriodByAllocator(allocatorSiret: string, exercices: number[]) {
+        return miscScdlGrantPort.findByAllocatorOnPeriod(allocatorSiret, exercices);
     }
 
     /**
@@ -136,25 +136,25 @@ export class ScdlService {
      * This method is used to clean the producer's data before importing new grants.
      * We don't have a unique id for the SCDL grant format, so we must delete all grants (for a given producer - and exercise : see validateAndGetLastExercise) before reimporting new - aggregated - data
      *
-     * @param producerSlug Producer slug
+     * @param siret Producer siret
      * @param exercises list of exercises that will be saved and replaces
      */
-    async cleanExercises(producerSlug: string, exercises: number[]) {
+    async cleanExercises(siret: string, exercises: number[]) {
         console.log("Creating backup for producer's data before importation");
-        const applicationFlatProvider = `scdl-${producerSlug}`;
+        const applicationFlatProvider = `scdl-${siret}`;
         // backup producer data in case of bulk delete failure
-        await miscScdlGrantPort.createBackupCollection(producerSlug);
+        await miscScdlGrantPort.createBackupCollection(siret);
         await applicationFlatPort.createBackupByProvider(applicationFlatProvider);
 
         try {
             console.log("Deleting previously imported exercise data");
+            await miscScdlGrantPort.bulkFindDeleteByExercices(siret, exercises);
             await applicationFlatPort.bulkFindDeleteByExercises(applicationFlatProvider, exercises);
-            await miscScdlGrantPort.bulkFindDeleteByExercices(producerSlug, exercises);
         } catch (e) {
             console.log(`SCDL importation failed: ${(e as Error).message}`);
             console.log("Reimporting entities that might have been deleted during the importation process");
             // merge the backup collection back to the main collection
-            await miscScdlGrantPort.applyBackupCollection(producerSlug);
+            await miscScdlGrantPort.applyBackupCollection(siret);
             await applicationFlatPort.applyBackupCollection(applicationFlatProvider);
         }
     }
@@ -165,10 +165,10 @@ export class ScdlService {
         await applicationFlatPort.dropBackupCollection();
     }
 
-    async restoreBackup(producerSlug: string) {
-        console.log(`Restoring data from backup (for the producer " ${producerSlug})"`);
-        await miscScdlGrantPort.applyBackupCollection(producerSlug);
-        await applicationFlatPort.applyBackupCollection(`scdl-${producerSlug}`);
+    async restoreBackup(allocatorSiret: string) {
+        console.log(`Restoring data from backup (for the producer SIRET ${allocatorSiret})`);
+        await miscScdlGrantPort.applyBackupCollection(allocatorSiret);
+        await applicationFlatPort.applyBackupCollection(`scdl-${allocatorSiret}`);
     }
 }
 
