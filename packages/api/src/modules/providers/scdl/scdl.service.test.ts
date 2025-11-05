@@ -264,12 +264,15 @@ describe("ScdlService", () => {
         });
     });
 
-    describe("getGrantsOnPeriodBySlug", () => {
+    describe("getGrantsOnPeriodByAllocator", () => {
         const EXERCISES = [2025];
 
-        it("calls miscScdlGrantPort.findBySlugOnPeriod()", async () => {
-            await scdlService.getGrantsOnPeriodBySlug(PRODUCER_SLUG, [2025]);
-            expect(miscScdlGrantPort.findBySlugOnPeriod).toHaveBeenCalledWith(PRODUCER_SLUG, EXERCISES);
+        it("calls miscScdlGrantPort.findByAllocatorOnPeriod()", async () => {
+            await scdlService.getGrantsOnPeriodByAllocator(MiscScdlProducerFixture.siret, [2025]);
+            expect(miscScdlGrantPort.findByAllocatorOnPeriod).toHaveBeenCalledWith(
+                MiscScdlProducerFixture.siret,
+                EXERCISES,
+            );
         });
     });
 
@@ -277,7 +280,7 @@ describe("ScdlService", () => {
         const EXERCISES = [2022, 2023, 2024];
 
         beforeAll(() => {
-            miscScdlGrantPort.findBySlugOnPeriod = jest.fn().mockResolvedValue(GRANTS_DBO_ARRAY);
+            miscScdlGrantPort.findByAllocatorOnPeriod = jest.fn().mockResolvedValue(GRANTS_DBO_ARRAY);
         });
 
         it("creates backup for provider's data", async () => {

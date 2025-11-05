@@ -127,8 +127,8 @@ export class ScdlService {
         });
     }
 
-    getGrantsOnPeriodBySlug(producerSlug: string, exercices: number[]) {
-        return miscScdlGrantPort.findBySlugOnPeriod(producerSlug, exercices);
+    getGrantsOnPeriodByAllocator(allocatorSiret: string, exercices: number[]) {
+        return miscScdlGrantPort.findByAllocatorOnPeriod(allocatorSiret, exercices);
     }
 
     /**
