@@ -27,6 +27,7 @@ jest.mock("../../modules/data-log/dataLog.service");
 import scdlGrantService from "../../modules/providers/scdl/scdl.grant.service";
 import applicationFlatService from "../../modules/applicationFlat/applicationFlat.service";
 import { ScdlParsedInfos } from "../../modules/providers/scdl/@types/ScdlParsedInfos";
+import Siret from "../../identifierObjects/Siret";
 jest.mock("../../modules/providers/scdl/scdl.grant.service");
 jest.mock("../../modules/applicationFlat/applicationFlat.service");
 jest.mock("../../modules/notify/notify.service", () => ({ notify: jest.fn() }));
@@ -37,6 +38,7 @@ describe("ScdlCli", () => {
         _id: new ObjectId(),
         ...MiscScdlProducer,
     };
+    const PRODUCER_SIRET = new Siret(PRODUCER_ENTITY.siret);
     const GRANT = { ...MiscScdlGrant };
     const STORABLE_DATA = { ...GRANT, __data__: {} };
     const FILE_CONTENT = Buffer.from("FILE_CONTENT");
@@ -75,54 +77,33 @@ describe("ScdlCli", () => {
     describe("addProducer", () => {
         it("should call scdlService.createProducer()", async () => {
             mockedScdlService.getProducer.mockResolvedValue(null);
-            await cli.addProducer(PRODUCER_ENTITY.slug, PRODUCER_ENTITY.name, PRODUCER_ENTITY.siret);
-            expect(scdlService.createProducer).toHaveBeenCalledWith({
-                slug: PRODUCER_ENTITY.slug,
-                name: PRODUCER_ENTITY.name,
-                siret: PRODUCER_ENTITY.siret,
-            });
-        });
-
-        it("should throw Error if no ID", () => {
-            expect(() =>
-                // @ts-expect-error: test purpose
-                cli.addProducer(),
-            ).rejects.toThrow("producer SLUG is mandatory");
-        });
-
-        it("should throw Error if no NAME", () => {
-            expect(() =>
-                // @ts-expect-error: test purpose
-                cli.addProducer(PRODUCER_ENTITY.slug),
-            ).rejects.toThrow("producer NAME is mandatory");
+            await cli.addProducer(PRODUCER_ENTITY.siret);
+            expect(scdlService.createProducer).toHaveBeenCalledWith(PRODUCER_SIRET);
         });
 
         it("should throw Error if no SIRET", () => {
             expect(() =>
                 // @ts-expect-error: test purpose
-                cli.addProducer(PRODUCER_ENTITY.slug, PRODUCER_ENTITY.name),
-            ).rejects.toThrow("producer SIRET is mandatory");
+                cli.addProducer(),
+            ).rejects.toThrow("Invalid Siret : undefined");
         });
 
         it("should throw Error if SIRET is not valid", () => {
-            expect(() => cli.addProducer(PRODUCER_ENTITY.slug, PRODUCER_ENTITY.name, "1234")).rejects.toThrowError(
-                "SIRET is not valid",
-            );
+            const WRONG_SIRET = "1234";
+            expect(() => cli.addProducer(WRONG_SIRET)).rejects.toThrow(`Invalid Siret : ${WRONG_SIRET}`);
         });
 
         it("should throw Error if producer already exists", () => {
-            expect(() =>
-                cli.addProducer(PRODUCER_ENTITY.slug, PRODUCER_ENTITY.name, PRODUCER_ENTITY.siret),
-            ).rejects.toThrow("Producer already exists");
+            expect(() => cli.addProducer(PRODUCER_ENTITY.siret)).rejects.toThrow("Producer already exists");
         });
     });
 
     function testParseCsv() {
-        return cli.parse(FILE_PATH, PRODUCER_ENTITY.slug, EXPORT_DATE_STR, DELIMETER);
+        return cli.parse(FILE_PATH, PRODUCER_ENTITY.siret, EXPORT_DATE_STR, DELIMETER);
     }
 
     function testParseXls() {
-        return cli.parseXls(FILE_PATH, PRODUCER_ENTITY.slug, EXPORT_DATE_STR, PAGE_NAME, ROW_OFFSET);
+        return cli.parseXls(FILE_PATH, PRODUCER_ENTITY.siret, EXPORT_DATE_STR, PAGE_NAME, ROW_OFFSET);
     }
 
     describe.each`
@@ -260,13 +241,13 @@ describe("ScdlCli", () => {
             const persistSpy = jest.spyOn(cli, "persistEntities").mockReturnValueOnce(Promise.resolve());
             // @ts-expect-error: test private method
             await cli.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
-            expect(persistSpy).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug);
+            expect(persistSpy).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY);
         });
 
         it("drops backup when persistence succeed", async () => {
             // @ts-expect-error: test private method
             await cli.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
-            expect(mockPersistEntities).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug);
+            expect(mockPersistEntities).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY);
         });
 
         it("restores backup if persistence failed", async () => {

@@ -2,20 +2,26 @@ import { ObjectId, WithId } from "mongodb";
 import { ScdlGrantDbo } from "../../../../src/modules/providers/scdl/dbo/ScdlGrantDbo";
 import MiscScdlProducerEntity from "../../../../src/modules/providers/scdl/entities/MiscScdlProducerEntity";
 import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
-import GRANTORS from "../../../__fixtures__/grantor.fixture";
+import ALLOCATORS from "../../../__fixtures__/allocators.fixture";
 
 export const LOCAL_AUTHORITIES: WithId<MiscScdlProducerEntity>[] = [
     {
-        _id: new ObjectId("719B14C3B0291379121A06FE"),
+        _id: new ObjectId("690c946272df1a64ab637cd6"),
         slug: "producer-1",
-        name: GRANTORS[0].name,
-        siret: GRANTORS[0].siret,
+        name: ALLOCATORS[0].name,
+        siret: ALLOCATORS[0].siret,
     },
     {
-        _id: new ObjectId("3EBD6BDD2240C1F91E925EAD"),
+        _id: new ObjectId("690c945ecb7e7decfa0fb21f"),
         slug: "producer-2",
-        name: GRANTORS[1].name,
-        siret: GRANTORS[1].siret,
+        name: ALLOCATORS[1].name,
+        siret: ALLOCATORS[1].siret,
+    },
+    {
+        _id: new ObjectId("690c94598e2e9d5154fa349d"),
+        slug: "producer-3",
+        name: ALLOCATORS[2].name,
+        siret: ALLOCATORS[2].siret,
     },
 ];
 

@@ -11,8 +11,8 @@ export class MiscScdlProducersPort extends MongoPort<MiscScdlProducerEntity> {
         return this.collection.find({}, { projection: { _id: 0 } }).toArray() as Promise<MiscScdlProducerEntity[]>;
     }
 
-    public findBySlug(slug: string) {
-        return this.collection.findOne({ slug });
+    public findBySiret(siret: string) {
+        return this.collection.findOne({ siret });
     }
 
     public create(entity: MiscScdlProducerEntity) {

@@ -1,7 +1,6 @@
 import { getMD5 } from "../../../shared/helpers/StringHelper";
 import miscScdlGrantPort from "../../../dataProviders/db/providers/scdl/miscScdlGrant.port";
 import miscScdlProducersPort from "../../../dataProviders/db/providers/scdl/miscScdlProducers.port";
-import MiscScdlProducerEntity from "./entities/MiscScdlProducerEntity";
 import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
 import ScdlGrantParser from "./scdl.grant.parser";
@@ -9,6 +8,9 @@ import { GenericAdapter } from "../../../shared/GenericAdapter";
 import { MixedParsedError, ParsedErrorDuplicate, ParsedErrorFormat } from "./@types/Validation";
 import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
 import applicationFlatPort from "../../../dataProviders/db/applicationFlat/applicationFlat.port";
+import Siret from "../../../identifierObjects/Siret";
+import apiAssoService from "../apiAsso/apiAsso.service";
+import MiscScdlProducerEntity from "./entities/MiscScdlProducerEntity";
 
 export class ScdlService {
     producerNames: string[] = [];
@@ -17,41 +19,45 @@ export class ScdlService {
         this.producerNames = (await this.getProducers()).map(producer => producer.name);
     }
 
-    getProducer(slug: string) {
-        return miscScdlProducersPort.findBySlug(slug);
+    getProducer(siret: Siret) {
+        return miscScdlProducersPort.findBySiret(siret.toString());
     }
 
     getProducers() {
         return miscScdlProducersPort.findAll();
     }
 
-    async createProducer(entity: MiscScdlProducerEntity) {
-        await miscScdlProducersPort.create(entity);
-        this.producerNames.push(entity.name);
+    getSlugFromName(name: string) {
+        return name
+            .normalize("NFD") // used to decompose "combined graphemes". cf : https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
+            .replaceAll(/[\u0300-\u036f]/g, "") // removes accents
+            .replaceAll(/(\s|'|_)/g, "-") // replaces whitespaces, underscores and quotes  with hyphens
+            .toLowerCase();
+    }
+
+    async createProducer(siret: Siret) {
+        const asso = await apiAssoService.findAssociationBySiren(siret.toSiren());
+        const name: string | undefined = asso?.denomination_siren?.[0].value ?? asso?.denomination_rna?.[0].value;
+        if (!name) throw new Error(`Could not find allocator name with SIRET ${siret}`);
+        const slug = this.getSlugFromName(name);
+        const producer: MiscScdlProducerEntity = { siret: siret.toString(), slug, name };
+        await miscScdlProducersPort.create(producer);
+        this.producerNames.push(name);
+        return producer;
     }
 
     private _buildGrantUniqueId(grant: ScdlStorableGrant, producerSlug: string) {
         return getMD5(`${producerSlug}-${JSON.stringify(grant.__data__)}`);
     }
 
-    async buildDbosFromStorables(grants: ScdlStorableGrant[], producerSlug: string) {
-        if (!producerSlug || typeof producerSlug !== "string")
-            throw new Error("Could not save SCDL grants without a producer slug");
-
-        const producer = await this.getProducer(producerSlug);
-
-        if (!producer) throw new Error("Provider does not exists");
-
-        // should not happen but who knows
-        if (!producer.name) throw new Error("Could not retrieve producer name");
-
+    async buildDbosFromStorables(grants: ScdlStorableGrant[], producer: MiscScdlProducerEntity) {
         return grants.map(grant => {
             return {
                 ...grant,
                 producerSlug: producer.slug,
-                allocatorName: grant.allocatorName || producer.name,
-                allocatorSiret: grant.allocatorSiret || producer.siret,
-                _id: this._buildGrantUniqueId(grant, producerSlug),
+                allocatorName: producer.name,
+                allocatorSiret: producer.siret,
+                _id: this._buildGrantUniqueId(grant, producer.slug),
             } as ScdlGrantDbo;
         });
     }

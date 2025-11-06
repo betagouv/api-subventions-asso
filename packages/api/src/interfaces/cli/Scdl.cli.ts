@@ -26,23 +26,22 @@ export default class ScdlCli {
     // relative path refers to package's root
     static errorsFolderName = "./import-errors";
 
-    public async addProducer(slug: string, name: string, siret: string) {
-        if (!slug) throw Error("producer SLUG is mandatory");
-        if (!name) throw Error("producer NAME is mandatory");
-        if (!siret) throw Error("producer SIRET is mandatory");
-        if (!Siret.isSiret(siret)) throw Error("SIRET is not valid");
-        if (await scdlService.getProducer(slug)) throw new Error("Producer already exists");
-        await scdlService.createProducer({ slug, name, siret });
+    public async addProducer(siretStr: string) {
+        const siret = new Siret(siretStr);
+        if (await scdlService.getProducer(siret)) throw new Error("Producer already exists");
+        await scdlService.createProducer(siret);
     }
 
     public async parseXls(
         filePath: string,
-        producerSlug: string,
+        allocatorSiret: string,
         exportDate: string | undefined = undefined,
         pageName: string | undefined = undefined,
         rowOffset: number | string = 0,
     ) {
-        const producer = await scdlService.getProducer(producerSlug);
+        const siret = new Siret(allocatorSiret);
+        const producer = await scdlService.getProducer(siret);
+        console.log("parseXls producer : ", producer);
         await this.validateGenericInput(producer, exportDate);
         const fileContent = detectAndEncode(filePath);
 
@@ -65,12 +64,13 @@ export default class ScdlCli {
      */
     public async parse(
         filePath: string,
-        producerSlug: string,
+        allocatorSiret: string,
         exportDate: string | undefined = undefined,
         delimiter = ";",
         quote = '"',
     ) {
-        const producer = await scdlService.getProducer(producerSlug);
+        const siret = new Siret(allocatorSiret);
+        const producer = await scdlService.getProducer(siret);
         await this.validateGenericInput(producer, exportDate);
         const fileContent = detectAndEncode(filePath);
 
@@ -135,7 +135,7 @@ export default class ScdlCli {
         }
 
         try {
-            await this.persistEntities(entities, producer.slug);
+            await this.persistEntities(entities, producer);
             if (!firstImport) await scdlService.dropBackup();
         } catch (e) {
             if (!firstImport) {
@@ -151,7 +151,7 @@ export default class ScdlCli {
         if (!producer) throw new Error("Producer does not match any producer in database");
     }
 
-    private async persistEntities(storables: ScdlStorableGrant[], producerSlug: string) {
+    private async persistEntities(storables: ScdlStorableGrant[], producer: MiscScdlProducerEntity) {
         if (!storables || !storables.length) throw new Error("No entities could be created from this file");
 
         console.log(`start persisting ${storables.length} grants`);
@@ -159,7 +159,7 @@ export default class ScdlCli {
 
         try {
             // the cli builds dbo because objectId from misc-scdl collection is also used in application flat
-            const dbos = await scdlService.buildDbosFromStorables(storables, producerSlug);
+            const dbos = await scdlService.buildDbosFromStorables(storables, producer);
             await scdlService.saveDbos(dbos);
             await scdlGrantService.saveDbosToApplicationFlat(dbos);
         } catch (e) {
