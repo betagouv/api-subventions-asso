@@ -9,7 +9,7 @@ export default class FonjepPaymentEntity {
             path: ["siret"],
             adapter: value => {
                 if (!value) return value;
-                return value.replace(/ /g, "");
+                return String(value).replace(/ /g, "");
             },
         },
     };

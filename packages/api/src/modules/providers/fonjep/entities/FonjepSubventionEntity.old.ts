@@ -10,8 +10,7 @@ export default class FonjepSubventionEntity {
             path: ["Association", "SiretOuRidet"],
             adapter: value => {
                 if (!value) return value;
-
-                return value.replace(/ /g, "");
+                return String(value).replace(/ /g, "");
             },
         },
         name: ["Association", "RaisonSociale"],
