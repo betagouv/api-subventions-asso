@@ -30,7 +30,7 @@ export class ToolsHttp extends Controller {
     }
 
     private parseXls(file: Express.Multer.File, pageName?: string, rowOffset: number | string = 0) {
-        const parsedRowOffset = typeof rowOffset === "number" ? rowOffset : parseInt(rowOffset);
+        const parsedRowOffset = typeof rowOffset === "number" ? rowOffset : parseInt(rowOffset) || 0;
         const fileContent = file.buffer;
         const { errors } = scdlService.parseXls(fileContent, pageName, parsedRowOffset);
         return csvSyncStringifier.stringify(errors, { header: true });

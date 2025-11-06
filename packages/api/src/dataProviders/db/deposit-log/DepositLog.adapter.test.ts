@@ -1,8 +1,12 @@
 import DepositScdlLogDbo from "./DepositScdlLogDbo";
 import { ObjectId } from "mongodb";
 import DepositLogAdapter from "./DepositLog.adapter";
-import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/depositScdlLog.entity";
-import { DEPOSIT_LOG_ENTITY } from "../../../modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
+import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/entities/depositScdlLog.entity";
+import {
+    DEPOSIT_LOG_ENTITY,
+    DEPOSIT_LOG_ENTITY_STEP_2,
+} from "../../../modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
+import UploadedFileInfosDbo from "./UploadedFileInfosDbo";
 
 describe("DepositLogAdapter", () => {
     describe("dboToEntity", () => {
@@ -29,6 +33,42 @@ describe("DepositLogAdapter", () => {
                 allocatorSiret: dbo.allocatorSiret,
             });
         });
+
+        it("should convert DepositLogDbo with uploadFileInfos to DepositScdlLog", () => {
+            const now = new Date();
+            const uploadedFileInfos: UploadedFileInfosDbo = {
+                fileName: "test.csv",
+                uploadDate: now,
+                allocatorsSiret: ["12345678901234"],
+                grantCoverageYears: [2019, 2200],
+                parseableLines: 123,
+                totalLines: 125,
+                existingLinesInDbOnSamePeriod: 145,
+                errors: [],
+            };
+            const dbo: DepositScdlLogDbo = {
+                _id: new ObjectId(),
+                updateDate: now,
+                userId: "user123",
+                step: 1,
+                overwriteAlert: true,
+                permissionAlert: false,
+                allocatorSiret: "12345678901234",
+                uploadedFileInfos: uploadedFileInfos,
+            };
+
+            const result = DepositLogAdapter.dboToEntity(dbo);
+
+            expect(result).toEqual({
+                userId: dbo.userId,
+                step: dbo.step,
+                updateDate: dbo.updateDate,
+                overwriteAlert: dbo.overwriteAlert,
+                permissionAlert: dbo.permissionAlert,
+                allocatorSiret: dbo.allocatorSiret,
+                uploadedFileInfos: uploadedFileInfos,
+            });
+        });
     });
 
     describe("toDbo", () => {
@@ -51,6 +91,22 @@ describe("DepositLogAdapter", () => {
             const result = DepositLogAdapter.toDbo(DEPOSIT_LOG_ENTITY);
 
             expect(result.updateDate).toBeInstanceOf(Date);
+        });
+
+        it("should convert DepositScdlLog with uploadedFileInfos to DepositLogDbo", () => {
+            const entity: DepositScdlLogEntity = DEPOSIT_LOG_ENTITY_STEP_2;
+
+            const result = DepositLogAdapter.toDbo(entity);
+
+            expect(result).toEqual({
+                updateDate: result.updateDate,
+                userId: entity.userId,
+                step: entity.step,
+                overwriteAlert: entity.overwriteAlert,
+                permissionAlert: entity.permissionAlert,
+                allocatorSiret: entity.allocatorSiret,
+                uploadedFileInfos: entity.uploadedFileInfos,
+            });
         });
     });
 });

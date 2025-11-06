@@ -1,7 +1,8 @@
-import DepositScdlLogEntity from "../depositScdlLog.entity";
+import DepositScdlLogEntity from "../entities/depositScdlLog.entity";
 import { CreateDepositScdlLogDto, DepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
 import DepositScdlLogDbo from "../../../dataProviders/db/deposit-log/DepositScdlLogDbo";
 import { ObjectId } from "mongodb";
+import UploadedFileInfosEntity from "../entities/uploadedFileInfos.entity";
 
 export const DEPOSIT_LOG_ENTITY: DepositScdlLogEntity = {
     userId: "68d6ab9b48ce4a950f7e96df",
@@ -27,6 +28,27 @@ export const DEPOSIT_LOG_ENTITY_STEP_2: DepositScdlLogEntity = {
     permissionAlert: true,
     allocatorSiret: "12345678901234",
     overwriteAlert: true,
+    uploadedFileInfos: {
+        fileName: "test.csv",
+        uploadDate: new Date("2025-11-03T00:00:00.000Z"),
+        allocatorsSiret: ["12345678901234"],
+        grantCoverageYears: [2021, 2022],
+        parseableLines: 200,
+        totalLines: 202,
+        existingLinesInDbOnSamePeriod: undefined,
+        errors: [],
+    },
+};
+
+export const UPLOADED_FILE_INFOS_ENTITY: UploadedFileInfosEntity = {
+    fileName: "test.csv",
+    uploadDate: new Date("2025-11-03T00:00:00.000Z"),
+    allocatorsSiret: ["12345678901234"],
+    grantCoverageYears: [2021, 2022],
+    parseableLines: 200,
+    totalLines: 202,
+    existingLinesInDbOnSamePeriod: undefined,
+    errors: [],
 };
 
 export const DEPOSIT_LOG_DBO: DepositScdlLogDbo = {
@@ -42,10 +64,15 @@ export const DEPOSIT_LOG_DBO: DepositScdlLogDbo = {
 export const DEPOSIT_LOG_DTO: DepositScdlLogDto = {
     overwriteAlert: true,
     allocatorSiret: "12345678901234",
-    permissionAlert: false,
+    permissionAlert: true,
 };
 
 export const CREATE_DEPOSIT_LOG_DTO: CreateDepositScdlLogDto = {
+    overwriteAlert: true,
+    allocatorSiret: "12345678901234",
+};
+
+export const DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_1: DepositScdlLogDto = {
     overwriteAlert: true,
     allocatorSiret: "12345678901234",
 };
@@ -65,4 +92,14 @@ export const DEPOSIT_LOG_RESPONSE_DTO_STEP_2: DepositScdlLogResponseDto = {
     overwriteAlert: true,
     allocatorSiret: "12345678901234",
     permissionAlert: true,
+    uploadedFileInfos: {
+        fileName: "test.csv",
+        uploadDate: new Date("2025-11-03T00:00:00.000Z"),
+        allocatorsSiret: ["12345678901234"],
+        grantCoverageYears: [2021, 2022],
+        parseableLines: 200,
+        totalLines: 202,
+        existingLinesInDbOnSamePeriod: undefined,
+        errors: [],
+    },
 };

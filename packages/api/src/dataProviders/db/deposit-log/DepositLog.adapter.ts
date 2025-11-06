@@ -1,5 +1,5 @@
 import DepositScdlLogDbo from "./DepositScdlLogDbo";
-import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/depositScdlLog.entity";
+import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/entities/depositScdlLog.entity";
 
 export default class DepositLogAdapter {
     static dboToEntity(dbo: DepositScdlLogDbo): DepositScdlLogEntity {
@@ -10,6 +10,7 @@ export default class DepositLogAdapter {
             dbo.overwriteAlert,
             dbo.allocatorSiret,
             dbo.permissionAlert,
+            dbo.uploadedFileInfos,
         );
     }
 
@@ -21,6 +22,7 @@ export default class DepositLogAdapter {
             overwriteAlert: entity.overwriteAlert,
             permissionAlert: entity.permissionAlert,
             allocatorSiret: entity.allocatorSiret,
+            uploadedFileInfos: entity.uploadedFileInfos,
         };
     }
 }

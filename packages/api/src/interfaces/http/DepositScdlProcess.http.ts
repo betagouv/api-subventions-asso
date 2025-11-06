@@ -12,6 +12,8 @@ import {
     Body,
     Patch,
     Path,
+    UploadedFile,
+    FormField,
 } from "tsoa";
 import { IdentifiedRequest } from "../../@types";
 import depositScdlProcessService from "../../modules/deposit-scdl-process/depositScdlProcess.service";
@@ -99,7 +101,6 @@ export class DepositScdlProcessHttp extends Controller {
     @Response("400", "Bad Request, invalid payload")
     @Response("401", "Unauthorized")
     @Response("404", "No deposit log found for this user")
-    @Response("409", "Request conflicts with the current state of the deposit process")
     public async updateDepositLog(
         @Path() step: number,
         @Body() depositScdlLogDto: DepositScdlLogDto,
@@ -109,6 +110,37 @@ export class DepositScdlProcessHttp extends Controller {
             step,
             depositScdlLogDto,
             req.user._id.toString(),
+        );
+        return DepositScdlLogDtoAdapter.entityToDepositScdlLogResponseDto(updatedDepositLog);
+    }
+
+    /**
+     * @summary validate scdl file with parsing and update deposit logs
+     *
+     * @param file - The uploaded SCDL file to validate (CSV or Excel format)
+     * @param depositScdlLogDto - dto containing uploaded file infos
+     * @param req
+     * @param pageName - Optional page name for excel file with multiple sheets
+     *
+     * @returns {DepositScdlLogResponseDto} 200 - Deposit log updated successfully with file parsing infos
+     */
+    @Post("/fichier-scdl")
+    @SuccessResponse("200", "File processed and validation report generated")
+    @Response("400", "Bad Request, invalid payload")
+    @Response("401", "Unauthorized")
+    @Response("404", "No deposit log found for this user")
+    public async validateScdlFile(
+        @UploadedFile() file: Express.Multer.File,
+        @FormField() depositScdlLogDto: string,
+        @Request() req: IdentifiedRequest,
+        @FormField() pageName?: string,
+    ): Promise<DepositScdlLogResponseDto> {
+        const parsedDto = JSON.parse(depositScdlLogDto);
+        const updatedDepositLog = await depositScdlProcessService.validateScdlFile(
+            file,
+            parsedDto,
+            req.user._id.toString(),
+            pageName,
         );
         return DepositScdlLogDtoAdapter.entityToDepositScdlLogResponseDto(updatedDepositLog);
     }

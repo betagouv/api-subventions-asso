@@ -10,7 +10,7 @@ import {
     DEPOSIT_LOG_RESPONSE_DTO,
     DEPOSIT_LOG_RESPONSE_DTO_STEP_2,
 } from "../../modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
-import DepositScdlLogEntity from "../../modules/deposit-scdl-process/depositScdlLog.entity";
+import DepositScdlLogEntity from "../../modules/deposit-scdl-process/entities/depositScdlLog.entity";
 import { ConflictError, NotFoundError } from "core";
 
 const controller = new DepositScdlProcessHttp();
@@ -93,6 +93,16 @@ describe("DepositScdlProcessHttp", () => {
                 overwriteAlert: true,
                 allocatorSiret: "12345678901234",
                 permissionAlert: true,
+                uploadedFileInfos: {
+                    fileName: "test.csv",
+                    uploadDate: new Date("2025-11-03T00:00:00.000Z"),
+                    allocatorsSiret: ["12345678901234"],
+                    grantCoverageYears: [2021, 2022],
+                    parseableLines: 200,
+                    totalLines: 202,
+                    existingLinesInDbOnSamePeriod: undefined,
+                    errors: [],
+                },
             });
         });
 
@@ -101,6 +111,47 @@ describe("DepositScdlProcessHttp", () => {
             await expect(controller.updateDepositLog(STEP, DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2, REQ)).rejects.toThrow(
                 NotFoundError,
             );
+        });
+    });
+
+    describe("validateScdlFile", () => {
+        const depositLogFormFiled = JSON.stringify(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2);
+        const validateScdlFileSpy = jest.spyOn(depositScdlProcessService, "validateScdlFile");
+
+        const file: Express.Multer.File = {
+            fieldname: "file",
+            originalname: "test.csv",
+            encoding: "7bit",
+            mimetype: "text/csv",
+            size: 56,
+            buffer: Buffer.from("name,email\nJohn,john@example.com\nJane,jane@example.com", "utf-8"),
+            destination: "",
+            filename: "",
+            path: "",
+        } as unknown as Express.Multer.File;
+
+        it("should call service with args", async () => {
+            const depositScdlLog = {} as Promise<DepositScdlLogEntity>;
+            validateScdlFileSpy.mockReturnValueOnce(depositScdlLog);
+
+            await controller.validateScdlFile(file, depositLogFormFiled, REQ);
+            expect(validateScdlFileSpy).toHaveBeenCalledWith(
+                file,
+                DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
+                REQ.user._id.toString(),
+                undefined,
+            );
+        });
+
+        it("should return DepositScdlLogResponseDto", async () => {
+            validateScdlFileSpy.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_2);
+            const result = await controller.validateScdlFile(file, depositLogFormFiled, REQ);
+            expect(result).toEqual(DEPOSIT_LOG_RESPONSE_DTO_STEP_2);
+        });
+
+        it("should reject and throw Error when error throw by service", async () => {
+            validateScdlFileSpy.mockRejectedValueOnce(new NotFoundError("an error"));
+            await expect(controller.validateScdlFile(file, depositLogFormFiled, REQ)).rejects.toThrow(NotFoundError);
         });
     });
 });

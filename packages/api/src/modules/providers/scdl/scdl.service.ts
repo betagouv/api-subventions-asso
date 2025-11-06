@@ -61,13 +61,13 @@ export class ScdlService {
     }
 
     parseXls(fileContent: Buffer, pageName?: string, rowOffset = 0) {
-        const { entities, errors } = ScdlGrantParser.parseExcel(fileContent, pageName, rowOffset);
-        return { entities, errors: this.normalizeErrors(errors) };
+        const { entities, errors, parsedInfos } = ScdlGrantParser.parseExcel(fileContent, pageName, rowOffset);
+        return { entities, errors: this.normalizeErrors(errors), parsedInfos };
     }
 
     parseCsv(fileContent: Buffer, delimiter = ";", quote: string | boolean = '"') {
-        const { entities, errors } = ScdlGrantParser.parseCsv(fileContent, delimiter, quote);
-        return { entities, errors: this.normalizeErrors(errors) };
+        const { entities, errors, parsedInfos } = ScdlGrantParser.parseCsv(fileContent, delimiter, quote);
+        return { entities, errors: this.normalizeErrors(errors), parsedInfos };
     }
 
     /**
@@ -100,7 +100,7 @@ export class ScdlService {
      * @param slug Producer slug
      * @param exercices List of exercises contained in the import file
      * @param importedEntities Entities parsed from the imported file
-     * @param docuemtnsInDB Entities fetched from DB concerning exercises
+     * @param documentsInDB Entities fetched from DB concerning exercises
      *
      * @throws Error if the import has less exercises than the existing ones in the database
      */

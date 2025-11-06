@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import UploadedFileInfosDbo from "./UploadedFileInfosDbo";
 
 export default interface DepositScdlLogDbo {
     _id?: ObjectId;
@@ -8,4 +9,5 @@ export default interface DepositScdlLogDbo {
     overwriteAlert?: boolean;
     permissionAlert?: boolean;
     allocatorSiret?: string;
+    uploadedFileInfos?: UploadedFileInfosDbo;
 }

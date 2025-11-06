@@ -1,6 +1,6 @@
 import MongoPort from "../../../shared/MongoPort";
 import DepositLogAdapter from "./DepositLog.adapter";
-import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/depositScdlLog.entity";
+import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/entities/depositScdlLog.entity";
 import DepositScdlLogDbo from "./DepositScdlLogDbo";
 import { NotFoundError } from "core";
 import { Filter, FindOptions } from "mongodb";
