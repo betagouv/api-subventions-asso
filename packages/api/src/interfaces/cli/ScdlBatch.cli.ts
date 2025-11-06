@@ -19,6 +19,7 @@ import { FileExtensionEnum } from "../../@enums/FileExtensionEnum";
 import { isBooleanValid, isNumberValid, isShortISODateValid, isStringValid } from "../../shared/Validators";
 import scdlService from "../../modules/providers/scdl/scdl.service";
 import ScdlCli from "./Scdl.cli";
+import Siret from "../../identifierObjects/Siret";
 
 @StaticImplements<CliStaticInterface>()
 export default class ScdlBatchCli extends ScdlCli {
@@ -87,7 +88,7 @@ export default class ScdlBatchCli extends ScdlCli {
             errors.push({ field: "parseParams" });
         } else {
             // shared part
-            if (!isStringValid(params.producerSlug)) errors.push({ field: "producerSlug" });
+            if (!isStringValid(params.allocatorSiret)) errors.push({ field: "allocatorSiret" });
             if (params.exportDate && !isShortISODateValid(params.exportDate)) errors.push({ field: "exportDate" });
 
             // csv part
@@ -109,28 +110,22 @@ export default class ScdlBatchCli extends ScdlCli {
     }
 
     protected async processFile(fileConfig: ScdlFileProcessingConfig): Promise<void> {
-        const { name, parseParams, addProducer, producerName, producerSiret } = fileConfig;
+        const { name, parseParams, addProducer } = fileConfig;
 
         // just to be sure but everything is supposed to be checked before calling processFile
         if (!name) throw new Error("You must provide the file name for every file's configuration.");
         if (!parseParams) throw new Error("You must provide the file parameters for every file's configuration");
-        if (addProducer && (!producerName || !producerSiret))
-            throw new Error("You must provide the producer name and SIRET for a first import");
 
         const dirPath = path.resolve(SCDL_FILE_PROCESSING_PATH);
-        const { producerSlug, exportDate, ...optionalParams } = parseParams;
-
+        const { allocatorSiret, exportDate, ...optionalParams } = parseParams;
+        const siret = new Siret(allocatorSiret);
         if (addProducer) {
-            if (await scdlService.getProducer(producerSlug)) {
-                const message = `Producer with slug ${producerSlug} already exist. Used with file ${name}`;
+            if (await scdlService.getProducer(siret)) {
+                const message = `Producer with SIRET ${siret.toString()} already exist. Used with file ${name}`;
                 this.errorList.push(message);
             } else {
-                await scdlService.createProducer({
-                    slug: producerSlug,
-                    name: producerName as string,
-                    siret: producerSiret as string,
-                });
-                this.successList.push(`added producer ${producerSlug}`);
+                const producer = await scdlService.createProducer(siret);
+                this.successList.push(`added producer ${producer.name} for SIRET ${producer.siret}`);
             }
         }
 
@@ -140,17 +135,17 @@ export default class ScdlBatchCli extends ScdlCli {
             const filePath = path.join(dirPath, name);
             if (fileType === FileExtensionEnum.CSV) {
                 const { delimiter, quote } = optionalParams as ScdlParseCsvArgs;
-                await this.parse(filePath, producerSlug, exportDate, delimiter, quote);
+                await this.parse(filePath, allocatorSiret, exportDate, delimiter, quote);
             } else if (fileType === FileExtensionEnum.XLS || fileType === FileExtensionEnum.XLSX) {
                 const { pageName, rowOffset } = optionalParams as ScdlParseXlsArgs;
-                await this.parseXls(filePath, producerSlug, exportDate, pageName, rowOffset);
+                await this.parseXls(filePath, allocatorSiret, exportDate, pageName, rowOffset);
             } else {
                 console.error(`❌ Unsupported file type : ${name} (type: ${fileType})`);
                 throw new Error(`Unsupported file type : ${filePath}`);
             }
-            this.successList.push(`parse data of ${producerSlug} for file ${name}`);
+            this.successList.push(`parse data of ${allocatorSiret} for file ${name}`);
         } catch (e) {
-            this.errorList.push(`parse data of ${producerSlug} for file ${name} : ${(e as Error).message}`);
+            this.errorList.push(`parse data of ${allocatorSiret} for file ${name} : ${(e as Error).message}`);
         }
     }
 

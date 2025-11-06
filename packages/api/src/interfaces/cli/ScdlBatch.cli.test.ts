@@ -17,6 +17,9 @@ import MiscScdlProducerEntity from "../../modules/providers/scdl/entities/MiscSc
 import { FileExtensionEnum } from "../../@enums/FileExtensionEnum";
 
 import { isStringValid, isBooleanValid, isNumberValid, isShortISODateValid } from "../../shared/Validators";
+import MiscScdlProducer from "../../modules/providers/scdl/__fixtures__/MiscScdlProducer";
+import { LOCAL_AUTHORITIES } from "../../../tests/dataProviders/db/__fixtures__/scdl.fixtures";
+import Siret from "../../identifierObjects/Siret";
 
 jest.mock("../../modules/providers/scdl/scdl.service");
 jest.mock("../cli/Scdl.cli");
@@ -27,9 +30,7 @@ jest.mock("../../shared/Validators");
 const BASE_SCDL_FILE_CONFIG = {
     name: "scdl-import-bretagne-2025.csv",
     addProducer: true,
-    producerName: "Région Bretagne",
-    producerSiret: "23350001600040",
-    parseParams: { producerSlug: "bretagne" },
+    parseParams: { allocatorSiret: "23350001600040" },
 };
 
 const CSV_PARSE_PARMS = { delimiter: ",", quote: "'" };
@@ -51,22 +52,18 @@ const validConfigData: ScdlFileProcessingConfigList = {
     files: [
         {
             name: "donnees-a-integrer1.csv",
-            parseParams: { producerSlug: "producerSlug1", exportDate: "2025-01-13" },
+            parseParams: { allocatorSiret: LOCAL_AUTHORITIES[0].siret, exportDate: "2025-01-13" },
             addProducer: true,
-            producerName: "Test Producer 1",
-            producerSiret: "12345678901",
         },
         {
             name: "donnees-a-integrer2.csv",
-            parseParams: { producerSlug: "producerSlug2", exportDate: "2025-01-14" },
-            addProducer: true,
-            producerName: "Test Producer 2",
-            producerSiret: "12345678902",
+            parseParams: { allocatorSiret: LOCAL_AUTHORITIES[1].siret, exportDate: "2025-01-15" },
+            addProducer: false,
         },
         {
             name: "donnees-a-integrer3.csv",
-            parseParams: { producerSlug: "producerSlug2", exportDate: "2025-01-15" },
-            addProducer: false,
+            parseParams: { allocatorSiret: LOCAL_AUTHORITIES[2].siret, exportDate: "2025-01-17" },
+            addProducer: true,
         },
     ],
 };
@@ -76,7 +73,7 @@ describe("SCDL Batch Import CLI", () => {
 
     beforeEach(() => {
         jest.spyOn(process, "exit").mockImplementation((() => {}) as (code?: unknown) => never);
-        jest.mocked(scdlService.createProducer).mockResolvedValue();
+        jest.mocked(scdlService.createProducer).mockResolvedValue(MiscScdlProducer);
     });
 
     describe("isConfig", () => {
@@ -123,7 +120,7 @@ describe("SCDL Batch Import CLI", () => {
         // @ts-expect-error: private method
         const mockValidateParseParams: jest.SpyInstance = jest.spyOn(ScdlBatchCli.prototype, "validateParseParams");
 
-        const PARSE_PARAMS = { producerSlug: "bretagne" };
+        const PARSE_PARAMS = { allocatorSiret: LOCAL_AUTHORITIES[0] };
 
         beforeEach(() => {
             jest.mocked(isStringValid).mockReturnValue(true);
@@ -215,29 +212,29 @@ describe("SCDL Batch Import CLI", () => {
 
         it("pushes delimiter error", () => {
             // @ts-expect-error: test private method
-            scdlBatchCli.validateCsvArgs({ producerSlug: "bretagne", delimiter: "a" });
+            scdlBatchCli.validateCsvArgs({ allocatorSiret: LOCAL_AUTHORITIES[0].siret, delimiter: "a" });
             // @ts-expect-error: access private property
             expect(scdlBatchCli.fileConfigErrors).toContainEqual({ field: "delimiter" });
         });
 
         it("pushes quote error", () => {
             // @ts-expect-error: test private method
-            scdlBatchCli.validateCsvArgs({ producerSlug: "bretagne", quote: "a" });
+            scdlBatchCli.validateCsvArgs({ allocatorSiret: LOCAL_AUTHORITIES[0].siret, quote: "a" });
             // @ts-expect-error: access private property
             expect(scdlBatchCli.fileConfigErrors).toContainEqual({ field: "quote" });
         });
 
         it.each`
             parseParams
-            ${{ producerSlug: "bretagne", delimiter: ";", quote: '"' }}
-            ${{ producerSlug: "bretagne", delimiter: ";", quote: "'" }}
-            ${{ producerSlug: "bretagne", delimiter: ",", quote: '"' }}
-            ${{ producerSlug: "bretagne", delimiter: ",", quote: "'" }}
-            ${{ producerSlug: "bretagne", delimiter: ";" }}
-            ${{ producerSlug: "bretagne", delimiter: "," }}
-            ${{ producerSlug: "bretagne", quote: "'" }}
-            ${{ producerSlug: "bretagne", quote: '"' }}
-            ${{ producerSlug: "bretagne" }}
+            ${{ allocatorSiret: LOCAL_AUTHORITIES[0].siret, delimiter: ";", quote: '"' }}
+            ${{ allocatorSiret: LOCAL_AUTHORITIES[0].siret, delimiter: ";", quote: "'" }}
+            ${{ allocatorSiret: LOCAL_AUTHORITIES[0].siret, delimiter: ",", quote: '"' }}
+            ${{ allocatorSiret: LOCAL_AUTHORITIES[0].siret, delimiter: ",", quote: "'" }}
+            ${{ allocatorSiret: LOCAL_AUTHORITIES[0].siret, delimiter: ";" }}
+            ${{ allocatorSiret: LOCAL_AUTHORITIES[0].siret, delimiter: "," }}
+            ${{ allocatorSiret: LOCAL_AUTHORITIES[0].siret, quote: "'" }}
+            ${{ allocatorSiret: LOCAL_AUTHORITIES[0].siret, quote: '"' }}
+            ${{ allocatorSiret: LOCAL_AUTHORITIES[0].siret }}
         `("returns true if it is a valid ScdlParseCsvArgs", ({ parseParams }) => {
             const expected = true;
             // @ts-expect-error: test private method
@@ -281,7 +278,7 @@ describe("SCDL Batch Import CLI", () => {
             parseParams
             ${[]}
             ${undefined}
-            ${"bretagne"}
+            ${LOCAL_AUTHORITIES[0].siret}
         `("pushes error if parseParams is not valid", ({ parseParams }) => {
             // @ts-expect-error: private method
             scdlBatchCli.validateParseParams(parseParams);
@@ -289,12 +286,12 @@ describe("SCDL Batch Import CLI", () => {
             expect(scdlBatchCli.fileConfigErrors).toContainEqual({ field: "parseParams" });
         });
 
-        it("pushes error if producerSlug is not valid", () => {
+        it("pushes error if allocatorSiret is not valid", () => {
             jest.mocked(isStringValid).mockReturnValueOnce(false);
             // @ts-expect-error: private method
-            scdlBatchCli.validateParseParams({ producerSlug: 123 });
+            scdlBatchCli.validateParseParams({ allocatorSiret: 123 });
             // @ts-expect-error: private property
-            expect(scdlBatchCli.fileConfigErrors).toContainEqual({ field: "producerSlug" });
+            expect(scdlBatchCli.fileConfigErrors).toContainEqual({ field: "allocatorSiret" });
         });
 
         it("pushes error if exportDate is not valid", () => {
@@ -336,13 +333,13 @@ describe("SCDL Batch Import CLI", () => {
 
         // for each if else block
         it.each`
-            parseParams              | comment
-            ${undefined}             | ${"parseParam is not defined"}
-            ${[]}                    | ${"parseParam an array"}
-            ${{ producerSlug: 123 }} | ${"one of the field is not valid"}
+            parseParams                | comment
+            ${undefined}               | ${"parseParam is not defined"}
+            ${[]}                      | ${"parseParam an array"}
+            ${{ allocatorSiret: 123 }} | ${"one of the field is not valid"}
         `("return false if $comment", ({ parseParams }) => {
             // only mock one error to enter if block
-            if (parseParams?.producerSlug) jest.mocked(isStringValid).mockReturnValueOnce(false);
+            if (parseParams?.allocatorSiret) jest.mocked(isStringValid).mockReturnValueOnce(false);
             const expected = false;
             // @ts-expect-error: private method
             const actual = scdlBatchCli.validateParseParams(parseParams);
@@ -352,7 +349,10 @@ describe("SCDL Batch Import CLI", () => {
         it("return true if it's a valid ScdlParseParams", () => {
             const expected = true;
             // @ts-expect-error: private method
-            const actual = scdlBatchCli.validateParseParams({ producerSlug: "bretagne", exportDate: "2025-01-15" });
+            const actual = scdlBatchCli.validateParseParams({
+                allocatorSiret: LOCAL_AUTHORITIES[0].siret,
+                exportDate: "2025-01-15",
+            });
             expect(actual).toEqual(expected);
         });
     });
@@ -401,10 +401,10 @@ describe("SCDL Batch Import CLI", () => {
         });
 
         it.each`
-            fileConfig                                                                                 | errorMsg
-            ${{}}                                                                                      | ${"You must provide the file name for every file's configuration."}
-            ${{ name: "bretagne-2025" }}                                                               | ${"You must provide the file parameters for every file's configuration"}
-            ${{ name: "bretagne-2025", parseParams: { producerSlug: "bretagne" }, addProducer: true }} | ${"You must provide the producer name and SIRET for a first import"}
+            fileConfig                                                                                                   | errorMsg
+            ${{}}                                                                                                        | ${"You must provide the file name for every file's configuration."}
+            ${{ name: "bretagne-2025" }}                                                                                 | ${"You must provide the file parameters for every file's configuration"}
+            ${{ name: "bretagne-2025", parseParams: { allocatorSiret: LOCAL_AUTHORITIES[0].siret }, addProducer: true }} | ${"You must provide the producer's SIRET for a first import"}
         `("throws error if the file's config misses some mandatory", async ({ fileConfig, errorMsg }) => {
             try {
                 // @ts-expect-error: private method
@@ -424,11 +424,9 @@ describe("SCDL Batch Import CLI", () => {
             it("add producer if it does not exist", async () => {
                 // @ts-expect-error: test private method
                 await scdlBatchCli.processFile(FILES_CONFIG[0]);
-                expect(jest.mocked(scdlService.createProducer)).toHaveBeenCalledWith({
-                    slug: FILES_CONFIG[0].parseParams.producerSlug,
-                    name: FILES_CONFIG[0].producerName,
-                    siret: FILES_CONFIG[0].producerSiret,
-                });
+                expect(jest.mocked(scdlService.createProducer)).toHaveBeenCalledWith(
+                    new Siret(FILES_CONFIG[0].parseParams.allocatorSiret),
+                );
             });
 
             it("add an error to the list if producer already exist", async () => {
@@ -438,7 +436,7 @@ describe("SCDL Batch Import CLI", () => {
                 await scdlBatchCli.processFile({ ...FILES_CONFIG[0] });
                 // @ts-expect-error: test protected property
                 expect(scdlBatchCli.errorList).toContain(
-                    `Producer with slug ${FILES_CONFIG[0].parseParams.producerSlug} already exist. Used with file ${FILES_CONFIG[0].name}`,
+                    `Producer with SIRET ${FILES_CONFIG[0].parseParams.allocatorSiret} already exist. Used with file ${FILES_CONFIG[0].name}`,
                 );
             });
         });
@@ -450,7 +448,7 @@ describe("SCDL Batch Import CLI", () => {
             await scdlBatchCli.processFile(FILE_CONF);
             expect(scdlBatchCli.parse).toHaveBeenCalledWith(
                 FILE_PATH,
-                FILE_CONF.parseParams.producerSlug,
+                FILE_CONF.parseParams.allocatorSiret,
                 undefined,
                 FILE_CONF.parseParams.delimiter,
                 FILE_CONF.parseParams.quote,
@@ -467,7 +465,7 @@ describe("SCDL Batch Import CLI", () => {
             await scdlBatchCli.processFile(fileConf);
             expect(scdlBatchCli.parseXls).toHaveBeenCalledWith(
                 FILE_PATH,
-                fileConf.parseParams.producerSlug,
+                fileConf.parseParams.allocatorSiret,
                 undefined,
                 fileConf.parseParams.pageName,
                 fileConf.parseParams.rowOffset,
@@ -483,7 +481,7 @@ describe("SCDL Batch Import CLI", () => {
             await scdlBatchCli.processFile(FILE_CONF);
             // @ts-expect-error: access protected property
             expect(scdlBatchCli.errorList).toContain(
-                `parse data of ${FILE_CONF.parseParams.producerSlug} for file ${FILE_CONF.name} : ${ERROR_MESSAGE}`,
+                `parse data of ${FILE_CONF.parseParams.allocatorSiret} for file ${FILE_CONF.name} : ${ERROR_MESSAGE}`,
             );
         });
     });

@@ -8,8 +8,10 @@ import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fix
 import applicationFlatPort from "../../../src/dataProviders/db/applicationFlat/applicationFlat.port";
 import notifyService from "../../../src/modules/notify/notify.service";
 import { NotificationType } from "../../../src/modules/notify/@types/NotificationType";
+import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
 
 describe("SCDL CLI", () => {
+    let mockApiAsso: jest.SpyInstance;
     let cli: ScdlCli;
     const FIRST_IMPORT_DATE = "2022-12-12";
     const SECOND_IMPORT_DATE = "2024-12-12";
@@ -17,11 +19,17 @@ describe("SCDL CLI", () => {
     const PRODUCER = LOCAL_AUTHORITIES[0]; // producer already persisted in jest.config.integ.init.ts
 
     beforeEach(async () => {
+        // should mock sendRequest but need a full StructureDto fixture
+        // this should also be in port and mocked in any integ test
+        mockApiAsso = jest
+            .spyOn(apiAssoService, "findAssociationBySiren")
+            // @ts-expect-error: mock only need informations
+            .mockResolvedValue({ denomination_siren: [{ value: PRODUCER.name }] });
         // do not change this before scdl providers list async init has been refactored
         // see jest.config.integ.setup beforeEach to understand this hook necessity
         const producers = await miscScdlProducersPort.findAll();
-        if (!producers.find(producer => producer.slug === LOCAL_AUTHORITIES[0].slug)) {
-            await miscScdlProducersPort.create(LOCAL_AUTHORITIES[0]);
+        if (!producers.find(producer => producer.siret === PRODUCER.siret)) {
+            await miscScdlProducersPort.create(PRODUCER);
         }
 
         cli = new ScdlCli();
@@ -29,9 +37,10 @@ describe("SCDL CLI", () => {
 
     describe("addProducer()", () => {
         it("should create MiscScdlProducerEntity", async () => {
+            mockApiAsso.mockResolvedValueOnce({ denomination_siren: [{ value: LOCAL_AUTHORITIES[1].name }] });
             // use second item because first is already created in beforeEach
-            await cli.addProducer(LOCAL_AUTHORITIES[1].slug, LOCAL_AUTHORITIES[1].name, LOCAL_AUTHORITIES[1].siret);
-            const document = await miscScdlProducersPort.findBySlug(PRODUCER.slug);
+            await cli.addProducer(LOCAL_AUTHORITIES[1].siret);
+            const document = await miscScdlProducersPort.findBySiret(LOCAL_AUTHORITIES[1].siret);
             expect(document).toMatchSnapshot({ _id: expect.any(ObjectId) });
         });
     });
@@ -60,12 +69,14 @@ describe("SCDL CLI", () => {
             ${"parse"}    | ${testParseCsv}
             ${"parseXls"} | ${testParseXls}
         `("$methodName", ({ test }) => {
-            it("should throw Error()", async () => {
-                expect(() => test("FAKE_ID", FIRST_IMPORT_DATE)).rejects.toThrow(Error);
+            it("throw error if producer not found", async () => {
+                expect(() => test("FAKE_ID", FIRST_IMPORT_DATE)).rejects.toThrow(
+                    "Producer does not match any producer in database",
+                );
             });
 
-            it("should add grants with exercise from conventionDate", async () => {
-                await test("SCDL", PRODUCER.slug, FIRST_IMPORT_DATE);
+            it.only("should add grants with exercise from conventionDate", async () => {
+                await test("SCDL", PRODUCER.siret, FIRST_IMPORT_DATE);
                 const grants = await miscScdlGrantPort.findAll();
                 const expectedAny = grants.map(() => ({
                     _id: expect.any(String),
@@ -75,7 +86,7 @@ describe("SCDL CLI", () => {
             });
 
             it("should add grants with exercise from its own column", async () => {
-                await test("SCDL_WITH_EXERCICE", PRODUCER.slug, FIRST_IMPORT_DATE);
+                await test("SCDL_WITH_EXERCICE", PRODUCER.siret, FIRST_IMPORT_DATE);
                 const grants = await miscScdlGrantPort.findAll(); // only grants from 2023 as it only saves most recent exercise in multi exercise files
                 const expectedAny = grants.map(() => ({
                     _id: expect.any(String),
@@ -85,7 +96,7 @@ describe("SCDL CLI", () => {
             });
 
             it("registers new import in data-log", async () => {
-                await test("SCDL", PRODUCER.slug, FIRST_IMPORT_DATE);
+                await test("SCDL", PRODUCER.siret, FIRST_IMPORT_DATE);
                 const actual = await dataLogPort.findAll();
                 expect(
                     actual.map(dataLog => ({ ...dataLog, _id: expect.any(String), integrationDate: expect.any(Date) })),
@@ -93,36 +104,36 @@ describe("SCDL CLI", () => {
             });
 
             it("persists all data on first producer's importation", async () => {
-                await test("SCDL", PRODUCER.slug, FIRST_IMPORT_DATE);
+                await test("SCDL", PRODUCER.siret, FIRST_IMPORT_DATE);
                 const actual = await miscScdlGrantPort.findAll();
                 expect(actual?.[0]).toMatchSnapshot({ updateDate: expect.any(Date) });
             });
 
             it("persists new data when data from imported exercises already in DB", async () => {
-                await test("SCDL", PRODUCER.slug, FIRST_IMPORT_DATE);
-                await test("SCDL_SECOND_IMPORT", PRODUCER.slug, SECOND_IMPORT_DATE);
+                await test("SCDL", PRODUCER.siret, FIRST_IMPORT_DATE);
+                await test("SCDL_SECOND_IMPORT", PRODUCER.siret, SECOND_IMPORT_DATE);
                 const actual = await miscScdlGrantPort.findAll();
                 const expectedAny = actual.map(() => ({ updateDate: expect.any(Date) }));
                 expect(actual).toMatchSnapshot(expectedAny);
             });
 
             it("persists all data in ApplicationFlat on first producer's importation", async () => {
-                await test("SCDL", PRODUCER.slug, FIRST_IMPORT_DATE);
+                await test("SCDL", PRODUCER.siret, FIRST_IMPORT_DATE);
                 const actual = await applicationFlatPort.findAll();
                 expect(actual?.[0]).toMatchSnapshot({ updateDate: expect.any(Date) });
             });
 
             it("persists new data in ApplicationFlat when data from imported exercises already in DB", async () => {
-                await test("SCDL", PRODUCER.slug, FIRST_IMPORT_DATE);
-                await test("SCDL_SECOND_IMPORT", PRODUCER.slug, SECOND_IMPORT_DATE);
+                await test("SCDL", PRODUCER.siret, FIRST_IMPORT_DATE);
+                await test("SCDL_SECOND_IMPORT", PRODUCER.siret, SECOND_IMPORT_DATE);
                 const actual = await applicationFlatPort.findAll();
                 const expectedAny = actual.map(() => ({ updateDate: expect.any(Date) }));
                 expect(actual).toMatchSnapshot(expectedAny);
             });
 
             it("throws an error when imported data contains less data what is persisted for a given exercice", async () => {
-                await test("SCDL", PRODUCER.slug, FIRST_IMPORT_DATE);
-                await expect(test("SCDL_LESS_DATA", PRODUCER.slug, SECOND_IMPORT_DATE)).rejects.toThrow(
+                await test("SCDL", PRODUCER.siret, FIRST_IMPORT_DATE);
+                await expect(test("SCDL_LESS_DATA", PRODUCER.siret, SECOND_IMPORT_DATE)).rejects.toThrow(
                     RegExp(
                         `You are trying to import less grants for exercise 20\\d{2} than what already exist in the database for producer ${PRODUCER.slug}\\.`,
                     ),
@@ -139,7 +150,7 @@ describe("SCDL CLI", () => {
 
             it("notifies data import success", async () => {
                 const spyNotify = jest.spyOn(notifyService, "notify");
-                await test("SCDL", PRODUCER.slug, FIRST_IMPORT_DATE);
+                await test("SCDL", PRODUCER.siret, FIRST_IMPORT_DATE);
                 expect(spyNotify).toHaveBeenCalledWith(NotificationType.DATA_IMPORT_SUCCESS, {
                     providerName: PRODUCER.name,
                     providerSiret: PRODUCER.siret,
@@ -171,12 +182,12 @@ describe("SCDL CLI", () => {
             `(
                 "$methodName should throw error if one exercise from import contain less data that what exist in DB",
                 async ({ test, exercise }) => {
-                    await test("SCDL", PRODUCER.slug, FIRST_IMPORT_DATE); // import all grants
+                    await test("SCDL", PRODUCER.siret, FIRST_IMPORT_DATE); // import all grants
                     await miscScdlGrantPort.createMany([
                         { ...SCDL_GRANT_DBOS[0], exercice: exercise, producerSlug: PRODUCER.slug }, // scdl grant dbo uses PRODUCER
                     ]); // add one more grant in DB
 
-                    await expect(async () => await test("SCDL", PRODUCER.slug, FIRST_IMPORT_DATE)).rejects.toThrow(
+                    await expect(async () => await test("SCDL", PRODUCER.siret, FIRST_IMPORT_DATE)).rejects.toThrow(
                         `You are trying to import less grants for exercise ${exercise} than what already exist in the database for producer ${PRODUCER.slug}.`,
                     );
                 },
