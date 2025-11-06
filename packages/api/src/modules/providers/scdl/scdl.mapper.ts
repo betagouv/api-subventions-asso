@@ -80,6 +80,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             [
                 ...getMapperVariants("allocatorName"),
                 "Nom de l'attribuant",
+                "Nom de l'attribuant",
                 "nom Attribuant",
                 "NomAttribuant",
                 "Autorité administrative",
@@ -91,6 +92,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
         path: [
             [
                 ...getMapperVariants("allocatorSiret"),
+                "Identification de l'attributaire",
                 "Identification de l'attribuant (SIRET)",
                 "id  Attribuant",
                 "IdAttribuant",
@@ -172,6 +174,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Identification du bénéficiaire*",
                 "Numéro Siret",
                 "N° SIRET",
+                "N° SIRET (fusion)",
                 "identification du bénéficiaire (SIRET)",
                 "id Beneficiaire",
                 "IdBeneficiaire",
@@ -261,6 +264,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             "Numéro unique de référencement au répertoire des aides aux entreprises (RAE)",
             "ID RAE",
             "IdRAE",
+            "N° unique de référencement au RAE",
         ],
     ],
     UeNotification: {
@@ -272,6 +276,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Aide d'Etat notifiée à la Commission européenne, conformément aux dispositions du règlement (UE) n° 1407/2013 de la Commission du 18 décembre 2013",
                 "Notification UE",
                 "NotificationUE",
+                "Aide d'Etat (ou pas) notifiée à l'UE",
             ],
         ],
         adapter: value => {

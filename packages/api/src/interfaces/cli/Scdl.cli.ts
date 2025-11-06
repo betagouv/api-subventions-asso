@@ -129,7 +129,6 @@ export default class ScdlCli {
 
             const exercisesArray = [...exercises]; // transform Set to Array
             const documentsInDB = await scdlService.getGrantsOnPeriodByAllocator(producer.siret, exercisesArray);
-            console.log("doc in db", documentsInDB.length);
             await scdlService.validateImportCoverage(producer.slug, exercisesArray, entities, documentsInDB);
             await scdlService.cleanExercises(producer.slug, exercisesArray);
         }
