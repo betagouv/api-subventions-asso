@@ -41,7 +41,6 @@ export default class ScdlCli {
     ) {
         const siret = new Siret(allocatorSiret);
         const producer = await scdlService.getProducer(siret);
-        console.log("parseXls producer : ", producer);
         await this.validateGenericInput(producer, exportDate);
         const fileContent = detectAndEncode(filePath);
 

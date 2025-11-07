@@ -45,18 +45,18 @@ describe("SCDL CLI", () => {
         });
     });
 
-    function testParseCsv(fileNameNoExtension, producerSlug, exportDate) {
+    function testParseCsv(fileNameNoExtension, producerSiret, exportDate) {
         return cli.parse(
             path.resolve(__dirname, `../../../src/modules/providers/scdl/__fixtures__/${fileNameNoExtension}.csv`),
-            producerSlug,
+            producerSiret,
             exportDate,
         );
     }
 
-    function testParseXls(fileNameNoExtension, producerSlug, exportDate) {
+    function testParseXls(fileNameNoExtension, producerSiret, exportDate) {
         return cli.parseXls(
             path.resolve(__dirname, `../../../src/modules/providers/scdl/__fixtures__/${fileNameNoExtension}.xlsx`),
-            producerSlug,
+            producerSiret,
             exportDate,
             "Du 01-01-2023 au 30-06-2023",
             2,
@@ -69,13 +69,20 @@ describe("SCDL CLI", () => {
             ${"parse"}    | ${testParseCsv}
             ${"parseXls"} | ${testParseXls}
         `("$methodName", ({ test }) => {
+            it("throw error if SIRET not valid", async () => {
+                const INVALID_SIRET = 1234;
+                expect(() => test("FAKE_ID", INVALID_SIRET, FIRST_IMPORT_DATE)).rejects.toThrow(
+                    `Invalid Siret : ${INVALID_SIRET}`,
+                );
+            });
+
             it("throw error if producer not found", async () => {
-                expect(() => test("FAKE_ID", FIRST_IMPORT_DATE)).rejects.toThrow(
+                expect(() => test("FAKE_ID", "10000000012002", FIRST_IMPORT_DATE)).rejects.toThrow(
                     "Producer does not match any producer in database",
                 );
             });
 
-            it.only("should add grants with exercise from conventionDate", async () => {
+            it("should add grants with exercise from conventionDate", async () => {
                 await test("SCDL", PRODUCER.siret, FIRST_IMPORT_DATE);
                 const grants = await miscScdlGrantPort.findAll();
                 const expectedAny = grants.map(() => ({
@@ -145,7 +152,7 @@ describe("SCDL CLI", () => {
                 ${"Mandatory column associationSiret is missing."}            | ${"SCDL_ONE_MISSING_MANDATORY"}
                 ${"Mandatory columns associationSiret - amount are missing."} | ${"SCDL_MANY_MISSING_MANDATORY"}
             `("throws an error if missing mandatory header is missing", async ({ error, file }) => {
-                await expect(test(file, PRODUCER.slug, FIRST_IMPORT_DATE)).rejects.toThrow(error);
+                await expect(test(file, PRODUCER.siret, FIRST_IMPORT_DATE)).rejects.toThrow(error);
             });
 
             it("notifies data import success", async () => {
@@ -166,7 +173,7 @@ describe("SCDL CLI", () => {
                         __dirname,
                         `../../../src/modules/providers/scdl/__fixtures__/SCDL_WITH_EXERCICE_ALT.xlsx`,
                     ),
-                    PRODUCER.slug,
+                    PRODUCER.siret,
                     FIRST_IMPORT_DATE,
                     "Sheet1",
                 );
