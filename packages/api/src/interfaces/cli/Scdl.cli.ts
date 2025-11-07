@@ -95,7 +95,7 @@ export default class ScdlCli {
     }) {
         const { file, errors, producer, exportDate: dateStr } = params;
         const exportDate = dateStr ? new Date(dateStr) : undefined;
-        notifyService.notify(NotificationType.DATA_IMPORT_SUCCESS, {
+        await notifyService.notify(NotificationType.DATA_IMPORT_SUCCESS, {
             providerName: producer.name,
             providerSiret: producer.siret,
             exportDate,

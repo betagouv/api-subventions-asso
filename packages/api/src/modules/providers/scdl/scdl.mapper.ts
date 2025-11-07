@@ -43,6 +43,7 @@ const CONVENTION_DATE_PATHS = [
     "datedeConvention",
     "Date convention",
     "Date - Décision",
+    "Date signature de la convention",
 ];
 
 const PERIODE_VERSEMENT_PATHS = [
@@ -56,6 +57,7 @@ const PERIODE_VERSEMENT_PATHS = [
     "Date de versement",
     "Période de versement",
     "datesperiodeVersement",
+    "Date ou période de versement",
 ];
 
 const dateAdapter = (date: BeforeAdaptation | undefined | null): Date | undefined => {
@@ -85,6 +87,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "NomAttribuant",
                 "Autorité administrative",
                 "Nom attribuant",
+                "Nom de l'organisme attributaire",
             ],
         ],
     },
@@ -99,6 +102,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "SIRET autorité administrative",
                 "iAttribuant",
                 "Id attribuant",
+                "SIRET organisme attributaire",
             ],
         ],
         adapter: v => cleanSiret(v?.toString()),
@@ -183,6 +187,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "iBeneficiaire",
                 "Id bénéficiaire",
                 "SIRET du bénéficiaire",
+                "SIRET bénéficiaire",
             ],
         ],
         adapter: v => cleanSiret(v?.toString()),
@@ -212,6 +217,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Montant décidé ligne",
                 "Montant accordé",
                 "montantAttribue",
+                "Montant des Autorisations d'engagement",
             ],
         ],
         adapter: value => (value && typeof value === "string" ? parseFloat(value.replace(/[^0-9.]/, "")) : value),
