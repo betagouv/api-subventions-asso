@@ -41,7 +41,6 @@ export default class ScdlCli {
     ) {
         const siret = new Siret(allocatorSiret);
         const producer = await scdlService.getProducer(siret);
-        console.log("parseXls producer : ", producer);
         await this.validateGenericInput(producer, exportDate);
         const fileContent = detectAndEncode(filePath);
 
@@ -95,7 +94,7 @@ export default class ScdlCli {
     }) {
         const { file, errors, producer, exportDate: dateStr } = params;
         const exportDate = dateStr ? new Date(dateStr) : undefined;
-        notifyService.notify(NotificationType.DATA_IMPORT_SUCCESS, {
+        await notifyService.notify(NotificationType.DATA_IMPORT_SUCCESS, {
             providerName: producer.name,
             providerSiret: producer.siret,
             exportDate,
@@ -129,7 +128,6 @@ export default class ScdlCli {
 
             const exercisesArray = [...exercises]; // transform Set to Array
             const documentsInDB = await scdlService.getGrantsOnPeriodByAllocator(producer.siret, exercisesArray);
-            console.log("doc in db", documentsInDB.length);
             await scdlService.validateImportCoverage(producer.slug, exercisesArray, entities, documentsInDB);
             await scdlService.cleanExercises(producer.slug, exercisesArray);
         }

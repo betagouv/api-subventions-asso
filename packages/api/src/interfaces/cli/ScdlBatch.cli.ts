@@ -20,6 +20,7 @@ import { isBooleanValid, isNumberValid, isShortISODateValid, isStringValid } fro
 import scdlService from "../../modules/providers/scdl/scdl.service";
 import ScdlCli from "./Scdl.cli";
 import Siret from "../../identifierObjects/Siret";
+import { asyncForEach } from "../../shared/helpers/ArrayHelper";
 
 @StaticImplements<CliStaticInterface>()
 export default class ScdlBatchCli extends ScdlCli {
@@ -164,8 +165,10 @@ export default class ScdlBatchCli extends ScdlCli {
                         .slice(0, -1)}.`,
                 );
             }
-            const filePromises = config.files.map(fileConfig => this.processFile(fileConfig));
-            await Promise.all(filePromises);
+
+            // need to be sync in case we want to insert multiple year of the same allocator with different files
+            // race conditions would execute one without addProducer and throw an error
+            await asyncForEach(config.files, fileConfig => this.processFile(fileConfig));
         } catch (e) {
             // unexpected error that doesn't make use of errorList
             console.trace(`❌ Global execution failure : ${(e as Error).message}`);
