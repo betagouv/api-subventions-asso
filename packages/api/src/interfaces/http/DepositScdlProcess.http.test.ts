@@ -34,6 +34,22 @@ describe("DepositScdlProcessHttp", () => {
         });
     });
 
+    describe("generateExistingGrantsCsv", () => {
+        const generateExistingGrantsCsvSpy = jest.spyOn(depositScdlProcessService, "generateExistingGrantsCsv");
+
+        it("should call service with args", async () => {
+            generateExistingGrantsCsvSpy.mockResolvedValueOnce({ csv: "csv", fileName: "fileName.csv" });
+            await controller.generateExistingGrantsCsv(REQ);
+            expect(generateExistingGrantsCsvSpy).toHaveBeenCalledWith(REQ.user._id.toString());
+        });
+
+        it("should return a csv", async () => {
+            generateExistingGrantsCsvSpy.mockResolvedValueOnce({ csv: "csv", fileName: "fileName.csv" });
+            const result = await controller.generateExistingGrantsCsv(REQ);
+            expect(result).toEqual("csv");
+        });
+    });
+
     describe("deleteDepositLog", () => {
         const deleteDepositLogSpy = jest.spyOn(depositScdlProcessService, "deleteDepositLog");
         it("should call service with args", async () => {
@@ -100,7 +116,7 @@ describe("DepositScdlProcessHttp", () => {
                     grantCoverageYears: [2021, 2022],
                     parseableLines: 200,
                     totalLines: 202,
-                    existingLinesInDbOnSamePeriod: undefined,
+                    existingLinesInDbOnSamePeriod: 0,
                     errors: [],
                 },
             });

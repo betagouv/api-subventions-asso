@@ -8,7 +8,13 @@
     import SheetSelector from "./SheetSelector.svelte";
     import Step3Controller from "./Step3.controller";
 
-    const dispatch = createEventDispatcher<{ prevStep: void; nextStep: void; loading: void; error: string }>();
+    const dispatch = createEventDispatcher<{
+        prevStep: void;
+        nextStep: void;
+        loading: void;
+        endLoading: void;
+        error: string;
+    }>();
     const ctrl = new Step3Controller(dispatch);
     const { noFileOrInvalid, excelSheets, view, uploadErrorMessage, uploadError, uploadConfig } = ctrl;
 

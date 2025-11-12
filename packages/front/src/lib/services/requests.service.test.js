@@ -126,6 +126,33 @@ describe("RequestService", () => {
                 }),
             );
         });
+
+        it("should set multipart/form-data header when data is FormData", async () => {
+            const formData = new FormData();
+            formData.append("file", new Blob(["test"]));
+
+            await requestsService._sendRequest("post", "/path/to", null, formData);
+
+            expect(axiosRequestMock).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    headers: expect.objectContaining({
+                        "Content-Type": "multipart/form-data",
+                    }),
+                }),
+            );
+        });
+
+        it("should not set Content-Type header when data is not FormData", async () => {
+            const jsonData = { test: true };
+
+            await requestsService._sendRequest("post", "/path/to", null, jsonData);
+
+            expect(axiosRequestMock).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    headers: {},
+                }),
+            );
+        });
     });
 
     describe("_errorCatcher", () => {

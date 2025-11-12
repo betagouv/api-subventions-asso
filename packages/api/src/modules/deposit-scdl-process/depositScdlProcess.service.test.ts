@@ -1,7 +1,9 @@
 import {
     CREATE_DEPOSIT_LOG_DTO,
     DEPOSIT_LOG_ENTITY,
+    DEPOSIT_LOG_ENTITY_STEP_2,
     DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
+    UPLOADED_FILE_INFOS_ENTITY,
 } from "./__fixtures__/depositLog.fixture";
 import depositScdlProcessService from "./depositScdlProcess.service";
 import DepositScdlLogEntity from "./entities/depositScdlLog.entity";
@@ -15,6 +17,7 @@ import UploadedFileInfosEntity from "./entities/uploadedFileInfos.entity";
 import * as FileHelper from "../../shared/helpers/FileHelper";
 import { ScdlParsedInfos } from "../providers/scdl/@types/ScdlParsedInfos";
 import MiscScdlGrantEntity from "../providers/scdl/entities/MiscScdlGrantEntity";
+import MiscScdlGrant from "../providers/scdl/__fixtures__/MiscScdlGrant";
 
 jest.mock("./check/DepositScdlProcess.check.service");
 jest.mock("../../dataProviders/db/deposit-log/depositLog.port");
@@ -50,7 +53,7 @@ describe("DepositScdlProcessService", () => {
         it("Should return a DepositLog", async () => {
             const expected = DEPOSIT_LOG_ENTITY;
 
-            mockGetDepositLog.mockImplementationOnce(() => Promise.resolve(expected));
+            mockGetDepositLog.mockResolvedValueOnce(expected);
 
             const actual = await depositScdlProcessService.getDepositLog(USER_ID);
 
@@ -58,11 +61,59 @@ describe("DepositScdlProcessService", () => {
         });
 
         it("should call getDepositLog with userId", async () => {
-            mockGetDepositLog.mockImplementationOnce(() => Promise.resolve(null));
+            mockGetDepositLog.mockResolvedValueOnce(null);
 
             await depositScdlProcessService.getDepositLog(USER_ID);
 
             expect(mockGetDepositLog).toHaveBeenCalledWith(USER_ID);
+        });
+    });
+
+    describe("generateExistingGrantsCsv", () => {
+        const mockGetDepositLog = jest.spyOn(depositScdlProcessService, "getDepositLog") as jest.SpyInstance<
+            Promise<DepositScdlLogEntity | null>,
+            [string]
+        >;
+        const mockGetGrantsOnPeriodByAllocator = jest.spyOn(
+            scdlService,
+            "getGrantsOnPeriodByAllocator",
+        ) as jest.SpyInstance<Promise<MiscScdlGrantEntity[]>, [string, number[]]>;
+
+        it("Should return csv with filename", async () => {
+            mockGetDepositLog.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_2);
+            mockGetGrantsOnPeriodByAllocator.mockResolvedValueOnce([MiscScdlGrant]);
+
+            const mockDate = new Date("2025-11-04T10:30:00Z");
+            jest.spyOn(global, "Date").mockImplementation(() => mockDate as never);
+
+            const actual = await depositScdlProcessService.generateExistingGrantsCsv(USER_ID);
+
+            expect(actual.csv).toBe(
+                '"allocatorName","allocatorSiret","exercice","amount","associationSiret","associationName","associationRna","object","conventionDate","decisionReference","paymentNature","paymentConditions","paymentStartDate","paymentEndDate","idRAE","UeNotification","grantPercentage","aidSystem"\n' +
+                    '"Région Bretagne","23350001600040","2023","47800.2","38047555800058","Association Les Petits Débrouillards Bretagne","W123456789","Animations climat-énergie dans les lycées de la région","""2017-06-27T00:00:00.000Z""","2017-03-103","aide en numéraire","unique","""2017-03-14T00:00:00.000Z""","""2018-03-14T00:00:00.000Z""","12345","1","0.5","65d5b6c7-102c-4440-ac3b-768f708edc0a"\n',
+            );
+            expect(actual.fileName).toBe("existing-grants-12345678901234-2021-2022-20251104.csv");
+        });
+
+        it("Should throw NotFoundError when no depositLog", async () => {
+            mockGetDepositLog.mockResolvedValueOnce(null);
+
+            await expect(depositScdlProcessService.generateExistingGrantsCsv(USER_ID)).rejects.toThrow(NotFoundError);
+        });
+
+        it("Should throw NotFoundError when wrong uploadedFileInfos", async () => {
+            const uploadedFileInfosWithMultipleAllocatorsSiret = {
+                ...UPLOADED_FILE_INFOS_ENTITY,
+                allocatorsSiret: [...UPLOADED_FILE_INFOS_ENTITY.allocatorsSiret, "98765432101234"],
+            };
+
+            const depositLogWithMultipleAllocatorSiret = {
+                ...DEPOSIT_LOG_ENTITY_STEP_2,
+                uploadedFileInfos: uploadedFileInfosWithMultipleAllocatorsSiret,
+            };
+            mockGetDepositLog.mockResolvedValueOnce(depositLogWithMultipleAllocatorSiret);
+
+            await expect(depositScdlProcessService.generateExistingGrantsCsv(USER_ID)).rejects.toThrow(NotFoundError);
         });
     });
 
@@ -73,13 +124,13 @@ describe("DepositScdlProcessService", () => {
         >;
 
         it("Should return an empty promise", async () => {
-            mockDeleteDepositLog.mockImplementationOnce(() => Promise.resolve());
+            mockDeleteDepositLog.mockResolvedValueOnce();
 
             expect(await depositScdlProcessService.deleteDepositLog(USER_ID)).toBeUndefined();
         });
 
         it("should call deleteDepositLog with userId", async () => {
-            mockDeleteDepositLog.mockImplementationOnce(() => Promise.resolve());
+            mockDeleteDepositLog.mockResolvedValueOnce();
 
             await depositScdlProcessService.deleteDepositLog(USER_ID);
 

@@ -3,6 +3,8 @@ import { ApplicationFlatEntity } from "../../../../entities/ApplicationFlatEntit
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
 import { ScdlGrantDbo } from "../dbo/ScdlGrantDbo";
 import Siret from "../../../../identifierObjects/Siret";
+import MiscScdlGrantEntity from "../entities/MiscScdlGrantEntity";
+import { ScdlGrantDto } from "dto/build/scdl/ScdlGrantDto";
 
 export default class MiscScdlAdapter {
     private static normalizePaymentConditions(rawValue?: string): PaymentCondition | null {
@@ -77,6 +79,29 @@ export default class MiscScdlAdapter {
             instructiveDepartmentIdType: GenericAdapter.NOT_APPLICABLE_VALUE,
             beneficiaryEstablishmentIdType: Siret.getName(),
             updateDate: dbo.updateDate,
+        };
+    }
+
+    static miscScdlGrantEntityToDto(entity: MiscScdlGrantEntity): ScdlGrantDto {
+        return {
+            allocatorName: entity.allocatorName,
+            allocatorSiret: entity.allocatorSiret,
+            exercice: entity.exercice,
+            amount: entity.amount,
+            associationSiret: entity.associationSiret,
+            associationName: entity.associationName,
+            associationRna: entity.associationRna,
+            object: entity.object,
+            conventionDate: entity.conventionDate,
+            decisionReference: entity.decisionReference,
+            paymentNature: entity.paymentNature,
+            paymentConditions: entity.paymentConditions,
+            paymentStartDate: entity.paymentStartDate,
+            paymentEndDate: entity.paymentEndDate,
+            idRAE: entity.idRAE,
+            UeNotification: entity.UeNotification,
+            grantPercentage: entity.grantPercentage,
+            aidSystem: entity.aidSystem,
         };
     }
 }

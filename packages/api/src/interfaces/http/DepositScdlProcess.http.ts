@@ -45,6 +45,25 @@ export class DepositScdlProcessHttp extends Controller {
     }
 
     /**
+     * @summary return csv of SCDL grants associated with the allocator's SIRET and the exercise range of the SCDL file for the authenticated user
+     * @param req
+     * @returns {string} 200 - csv file content
+     * @returns 401 - Unauthorized
+     */
+    @Get("/donnees-existantes")
+    @SuccessResponse("200", "csv returned successfully")
+    @Response("401", "Unauthorized")
+    @Response("500", "Internal server error")
+    public async generateExistingGrantsCsv(@Request() req: IdentifiedRequest): Promise<string> {
+        const { csv, fileName } = await depositScdlProcessService.generateExistingGrantsCsv(req.user._id.toString());
+
+        this.setHeader("content-type", "text/csv; charset=utf-8");
+        this.setHeader("content-disposition", `attachment; filename=${fileName}`);
+        this.setHeader("Access-Control-Expose-Headers", "content-disposition");
+        return csv;
+    }
+
+    /**
      * @summary Delete the deposit log information for the authenticated user if exists
      * @param req
      * @returns {null} 204 - Deposit log deleted successfully

@@ -1,9 +1,10 @@
 import depositLogService from "$lib/resources/deposit-log/depositLog.service";
 import Step3Controller from "./Step3.controller";
-import { validateFile, getExcelSheetNames, getFileExtension, fileTypeEnum } from "$lib/helpers/fileHelper";
+import { validateFile, getExcelSheetNames, getFileExtension } from "$lib/helpers/fileHelper";
 import FileSizeError from "$lib/errors/file-errors/FileSizeError";
 import FileFormatError from "$lib/errors/file-errors/FileFormatError";
 import FileEncodingError from "$lib/errors/file-errors/FileEncodingError";
+import type { DepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
 
 vi.mock("$lib/resources/deposit-log/depositLog.service");
 vi.mock("$lib/helpers/fileHelper", async () => {
@@ -128,7 +129,7 @@ describe("Step3Controller", () => {
 
     describe("handleValidate", () => {
         beforeEach(() => {
-            postScdlFileMock.mockResolvedValue(Promise.resolve());
+            postScdlFileMock.mockResolvedValue({} as DepositScdlLogResponseDto);
         });
 
         it("should return when no file selected", async () => {
@@ -151,7 +152,11 @@ describe("Step3Controller", () => {
             await controller.handleValidate();
 
             expect(mockDispatch).toHaveBeenCalledWith("loading");
-            expect(postScdlFileMock).toHaveBeenCalledWith(mockFile, fileTypeEnum.CSV, undefined);
+            expect(postScdlFileMock).toHaveBeenCalledWith(
+                mockFile,
+                { permissionAlert: true } as DepositScdlLogDto,
+                undefined,
+            );
             expect(mockDispatch).toHaveBeenCalledWith("nextStep");
         });
 
@@ -172,7 +177,11 @@ describe("Step3Controller", () => {
             await controller.handleValidate();
 
             expect(mockDispatch).toHaveBeenCalledWith("loading");
-            expect(postScdlFileMock).toHaveBeenCalledWith(mockFile, fileTypeEnum.EXCEL, undefined);
+            expect(postScdlFileMock).toHaveBeenCalledWith(
+                mockFile,
+                { permissionAlert: true } as DepositScdlLogDto,
+                undefined,
+            );
             expect(mockDispatch).toHaveBeenCalledWith("nextStep");
         });
 
@@ -201,7 +210,7 @@ describe("Step3Controller", () => {
 
     describe("handleSheetSelected", () => {
         beforeEach(() => {
-            postScdlFileMock.mockResolvedValue(Promise.resolve());
+            postScdlFileMock.mockResolvedValue({ permissionAlert: true } as DepositScdlLogResponseDto);
         });
 
         it("should upload file with selected sheet", async () => {
@@ -221,7 +230,11 @@ describe("Step3Controller", () => {
             await controller.handleSheetSelected(sheetEvent);
 
             expect(mockDispatch).toHaveBeenCalledWith("loading");
-            expect(postScdlFileMock).toHaveBeenCalledWith(mockFile, fileTypeEnum.EXCEL, selectedSheet);
+            expect(postScdlFileMock).toHaveBeenCalledWith(
+                mockFile,
+                { permissionAlert: true } as DepositScdlLogDto,
+                selectedSheet,
+            );
             expect(mockDispatch).toHaveBeenCalledWith("nextStep");
         });
     });

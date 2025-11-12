@@ -5,11 +5,16 @@ class DepositLogPort {
     BASE_PATH = "/parcours-depot";
 
     getResource(resource?: string) {
-        return requestsService.get(`${this.BASE_PATH}/${resource ? "/" + resource : ""}`);
+        console.log(`${this.BASE_PATH}${resource ? "/" + resource : ""}`);
+        return requestsService.get(`${this.BASE_PATH}${resource ? "/" + resource : ""}`);
     }
 
     async getDepositLog() {
         return this.getResource();
+    }
+
+    async getGrantCsv() {
+        return this.getResource("donnees-existantes");
     }
 
     createDepositLog(depositLogRequest: CreateDepositScdlLogDto) {
@@ -22,6 +27,17 @@ class DepositLogPort {
 
     deleteDepositLog() {
         return requestsService.delete(this.BASE_PATH);
+    }
+
+    validateScdlFile(file: File, depositLog: DepositScdlLogDto, sheetName?: string) {
+        const formdata = new FormData();
+        formdata.append("file", file);
+        formdata.append("depositScdlLogDto", JSON.stringify(depositLog));
+        if (sheetName) {
+            formdata.append("sheetName", sheetName);
+        }
+
+        return requestsService.post(this.BASE_PATH + "/fichier-scdl", formdata);
     }
 }
 

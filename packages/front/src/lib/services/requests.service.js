@@ -40,12 +40,25 @@ class RequestsService {
     _sendRequest(type, path, params, data, requestOption = {}) {
         const axiosOption = { ...requestOption };
 
+        const isFormData = data instanceof FormData;
+
+        let headers = {};
+
+        if (isFormData) {
+            headers["Content-Type"] = "multipart/form-data";
+        }
+
+        if (axiosOption.headers) {
+            headers = { ...headers, ...axiosOption.headers };
+        }
+
         return axios.request({
             withCredentials: true,
             url: path,
             method: type,
             data,
             params,
+            headers,
             ...axiosOption,
         });
     }

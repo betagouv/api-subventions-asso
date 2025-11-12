@@ -13,6 +13,9 @@ import {
 } from "../../../src/modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
 import { DepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
 import path from "path";
+import miscScdlGrantPort from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.port";
+import { SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
+import UploadedFileInfosEntity from "../../../src/modules/deposit-scdl-process/entities/uploadedFileInfos.entity";
 
 const g = global as unknown as { app: App };
 
@@ -46,6 +49,72 @@ describe("/parcours-depot", () => {
 
             expect(response.statusCode).toBe(204);
             expect(response.body).toEqual({});
+        });
+    });
+
+    describe("GET /donnees-existantes", () => {
+        it("should return 200 and match expected csv", async () => {
+            await miscScdlGrantPort.createMany(SCDL_GRANT_DBOS);
+            const token = await createAndGetUserToken();
+            const userId = (await getDefaultUser())!._id.toString();
+
+            const uploadFileInfo = new UploadedFileInfosEntity(
+                "test.csv",
+                new Date(),
+                ["99000000000001"],
+                [2019, 2021],
+                12,
+                13,
+                1,
+                [],
+            );
+
+            await depositLogPort.insertOne(
+                new DepositScdlLogEntity(userId, 1, new Date(), true, "99000000000001", true, uploadFileInfo),
+            );
+
+            const response = await request(g.app)
+                .get(`/parcours-depot/donnees-existantes`)
+                .set("x-access-token", token)
+                .set("Accept", "text/csv")
+                .expect("Content-Type", /text\/csv/)
+                .expect(200);
+
+            expect(response.headers["content-disposition"]).toContain("attachment; filename=");
+            expect(response.text).toMatchSnapshot();
+        });
+
+        it("should return 200 and match expected filename", async () => {
+            await miscScdlGrantPort.createMany(SCDL_GRANT_DBOS);
+            const token = await createAndGetUserToken();
+            const userId = (await getDefaultUser())!._id.toString();
+
+            const uploadFileInfo = new UploadedFileInfosEntity(
+                "test.csv",
+                new Date(),
+                ["99000000000001"],
+                [2019, 2021],
+                12,
+                13,
+                1,
+                [],
+            );
+
+            await depositLogPort.insertOne(
+                new DepositScdlLogEntity(userId, 1, new Date(), true, "99000000000001", true, uploadFileInfo),
+            );
+
+            const response = await request(g.app)
+                .get(`/parcours-depot/donnees-existantes`)
+                .set("x-access-token", token)
+                .set("Accept", "text/csv")
+                .expect("Content-Type", /text\/csv/)
+                .expect(200);
+
+            const contentDisposition = response.headers["content-disposition"];
+            const fileName = contentDisposition!.split("filename=")[1];
+
+            expect(fileName).toMatch(/^existing-grants-99000000000001-2019-2021-\d{8}\.csv$/);
         });
     });
 

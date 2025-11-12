@@ -1,4 +1,4 @@
-import { AxiosResponse } from "axios";
+import type { AxiosResponse } from "axios";
 import requestsService from "$lib/services/requests.service";
 import depositLogPort from "$lib/resources/deposit-log/depositLog.port";
 import type { CreateDepositScdlLogDto, DepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
@@ -34,6 +34,13 @@ describe("DepositLogPort", () => {
                 expect(actual).toEqual(expected);
             });
         });
+
+        describe("getGrantCsv", () => {
+            it("should call axios with route", () => {
+                depositLogPort.getGrantCsv();
+                expect(mockGetResource).toHaveBeenCalledWith("donnees-existantes");
+            });
+        });
     });
 
     describe("POST methods", () => {
@@ -56,6 +63,25 @@ describe("DepositLogPort", () => {
                 const expected = { data: { step: 1, allocatorSiret: "12345678901234", overwriteAlert: true } };
                 const actual = await depositLogPort.createDepositLog({});
                 expect(actual).toEqual(expected);
+            });
+        });
+
+        describe("validateScdlFile", () => {
+            it("should call axios with route", () => {
+                const file = new File(["content"], "test.csv", { type: "text/csv" });
+                const dto = { permissionAlert: true } as DepositScdlLogDto;
+                const sheetName = "sheetname";
+                depositLogPort.validateScdlFile(file, dto, sheetName);
+                expect(mockPostResource).toHaveBeenCalledWith(
+                    DepositLogPort.BASE_PATH + "/fichier-scdl",
+                    expect.any(FormData),
+                );
+
+                const callArgs = mockPostResource.mock.calls[0];
+                const formData = callArgs[1] as FormData;
+
+                expect(formData.get("file")).toBe(file);
+                expect(formData.get("depositScdlLogDto")).toBe(JSON.stringify(dto));
             });
         });
     });

@@ -7,6 +7,6 @@ export interface UploadedFileInfosDto {
     grantCoverageYears: number[];
     parseableLines: number;
     totalLines: number;
-    existingLinesInDbOnSamePeriod?: number;
-    errors?: MixedParsedErrorDto[];
+    existingLinesInDbOnSamePeriod: number;
+    errors: MixedParsedErrorDto[];
 }

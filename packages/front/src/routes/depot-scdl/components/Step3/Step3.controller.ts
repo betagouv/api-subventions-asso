@@ -1,8 +1,6 @@
 import {
-    CSV_EXT,
     EXCEL_EXT,
     type FileFormat,
-    fileTypeEnum,
     getExcelSheetNames,
     getFileExtension,
     validateFile,
@@ -12,11 +10,15 @@ import Store from "$lib/core/Store";
 import FileSizeError from "$lib/errors/file-errors/FileSizeError";
 import FileFormatError from "$lib/errors/file-errors/FileFormatError";
 import FileEncodingError from "$lib/errors/file-errors/FileEncodingError";
+import { depositLogStore } from "$lib/store/depositLog.store";
+import type { DepositScdlLogDto } from "dto/depositScdlProcess/DepositScdlLogDto";
+import { scdlFileStore } from "$lib/store/scdlFile.store";
 
 type EventMap = {
     prevStep: void;
     nextStep: void;
     loading: void;
+    endLoading: void;
     error: string;
 };
 
@@ -28,6 +30,7 @@ type DispatchFunction = <K extends keyof EventMap>(
 export default class Step3Controller {
     private selectedFile: File | null = null;
     private MAX_MO_FILE_SIZE = 30;
+    private MIN_LOADING_TIME = 2000;
     private readonly dispatch: DispatchFunction;
 
     constructor(dispatch: DispatchFunction) {
@@ -55,6 +58,7 @@ export default class Step3Controller {
         }
 
         const file = files[0];
+        scdlFileStore.set(file);
 
         try {
             await validateFile(file, this.uploadConfig.acceptedFormats, this.MAX_MO_FILE_SIZE);
@@ -105,23 +109,44 @@ export default class Step3Controller {
                 this.view.set("sheetSelector");
                 return;
             }
-            await this.uploadFile(fileTypeEnum.EXCEL);
         }
-        if (fileExtension === CSV_EXT) {
-            await this.uploadFile(fileTypeEnum.CSV);
-        }
+        await this.uploadFile();
     }
 
     async handleSheetSelected(event: CustomEvent<string>) {
         const selectedSheet = event.detail;
-        await this.uploadFile(fileTypeEnum.EXCEL, selectedSheet);
+        await this.uploadFile(selectedSheet);
     }
 
-    private async uploadFile(fileType: fileTypeEnum, selectedSheet?: string) {
+    private async uploadFile(selectedSheet?: string) {
+        const startTime = Date.now();
         this.dispatch("loading");
-        await depositLogService.postScdlFile(this.selectedFile!, fileType, selectedSheet);
-        // todo : set depositLogStore
-        this.dispatch("nextStep");
+
+        const depositLog: DepositScdlLogDto = {
+            permissionAlert: true,
+        };
+
+        try {
+            const updatedDepositLog = await depositLogService.postScdlFile(
+                this.selectedFile!,
+                depositLog,
+                selectedSheet,
+            );
+            depositLogStore.set(updatedDepositLog);
+
+            const elapsed = Date.now() - startTime;
+            const remainingTime = this.MIN_LOADING_TIME - elapsed;
+
+            if (remainingTime > 0) {
+                await new Promise(resolve => setTimeout(resolve, remainingTime));
+            }
+
+            this.dispatch("nextStep");
+        } catch (e) {
+            console.error("Erreur lors de l'upload du fichier", e);
+            this.dispatch("endLoading");
+            // todo : error handling toast
+        }
     }
 
     handleRestartUpload() {
