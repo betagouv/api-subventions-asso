@@ -8,8 +8,9 @@
     import Step3 from "./components/Step3/Step3.svelte";
     import Spinner from "$lib/components/Spinner.svelte";
     import Step4 from "./components/Step4/Step4.svelte";
+    import Step5 from "./components/Step5/Step5.svelte";
 
-    const stepComponents = { 1: Step1, 2: Step2, 3: Step3, 4: Step4, 5: Step4 };
+    const stepComponents = { 1: Step1, 2: Step2, 3: Step3, 4: Step4, 5: Step5 };
 
     const ctrl = new DepositScdlController(stepComponents);
     const { currentStep, currentView, currentStepComponent, stepsDesc, currentLoadingMessage } = ctrl;
