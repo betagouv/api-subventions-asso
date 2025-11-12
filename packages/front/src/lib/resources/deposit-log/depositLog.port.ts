@@ -5,6 +5,7 @@ class DepositLogPort {
     BASE_PATH = "/parcours-depot";
 
     getResource(resource?: string) {
+        console.log(`${this.BASE_PATH}${resource ? "/" + resource : ""}`);
         return requestsService.get(`${this.BASE_PATH}${resource ? "/" + resource : ""}`);
     }
 
