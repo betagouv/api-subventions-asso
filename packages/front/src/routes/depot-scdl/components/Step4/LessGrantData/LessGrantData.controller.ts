@@ -1,0 +1,28 @@
+import { depositLogStore } from "$lib/store/depositLog.store";
+import depositLogService from "$lib/resources/deposit-log/depositLog.service";
+
+export default class LessGrantDataController {
+    public rangeStartYear: number;
+    public rangeEndYear: number;
+    public detectedLines: number;
+    public existingLinesInDb: number;
+
+    constructor() {
+        const uploadedFileInfos = depositLogStore.value!.uploadedFileInfos!;
+        this.rangeStartYear = Math.min(...uploadedFileInfos.grantCoverageYears);
+        this.rangeEndYear = Math.max(...uploadedFileInfos.grantCoverageYears);
+        this.detectedLines = uploadedFileInfos.parseableLines;
+        this.existingLinesInDb = uploadedFileInfos.existingLinesInDbOnSamePeriod;
+    }
+
+    async downloadGrantsCsv() {
+        const { csvData, fileName } = await depositLogService.getGrantCsv();
+        const blob = new Blob([csvData], { type: "text/csv; charset=utf-8" });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = fileName;
+        link.click();
+        window.URL.revokeObjectURL(url);
+    }
+}

@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { Multer } from "multer"; // hack to make Multer available in Express namespace. cf: https://github.com/DefinitelyTyped/DefinitelyTyped/issues/47780
 import depositLogPort from "../../dataProviders/db/deposit-log/depositLog.port";
 import DepositScdlLogEntity from "./entities/depositScdlLog.entity";
 import { CreateDepositScdlLogDto, DepositScdlLogDto } from "dto";
@@ -11,6 +9,9 @@ import { detectCsvDelimiter } from "../../shared/helpers/FileHelper";
 import UploadedFileInfosEntity from "./entities/uploadedFileInfos.entity";
 import { DefaultObject } from "../../@types";
 import MiscScdlGrantEntity from "../providers/scdl/entities/MiscScdlGrantEntity";
+import { Stringifier, stringify } from "csv-stringify";
+import MiscScdlAdapter from "../providers/scdl/adapters/MiscScdl.adapter";
+import { formatDateToYYYYMMDD } from "../../shared/helpers/DateHelper";
 
 export class DepositScdlProcessService {
     FIRST_STEP = 1;
@@ -84,7 +85,7 @@ export class DepositScdlProcessService {
             !!existingDepositLog.allocatorSiret &&
             parsedInfos.allocatorsSiret.length === 1 &&
             parsedInfos.allocatorsSiret[0] === existingDepositLog.allocatorSiret;
-        let existingLinesInDbOnSamePeriod: number | undefined;
+        let existingLinesInDbOnSamePeriod: number = 0;
         if (hasSameAllocatorSiret) {
             const documentsInDB: MiscScdlGrantEntity[] = await scdlService.getGrantsOnPeriodByAllocator(
                 parsedInfos.allocatorsSiret[0],
@@ -131,6 +132,56 @@ export class DepositScdlProcessService {
 
     find(query: DefaultObject = {}): Promise<DepositScdlLogEntity[]> {
         return depositLogPort.find(query);
+    }
+
+    async generateExistingGrantsCsv(userId: string): Promise<{ csv: string; fileName: string }> {
+        const existingDepositLog = await this.getDepositLog(userId);
+        if (!existingDepositLog) {
+            throw new NotFoundError("No deposit log found for this user");
+        }
+
+        const allocatorsSiret = existingDepositLog.uploadedFileInfos?.allocatorsSiret;
+        const exercices = existingDepositLog.uploadedFileInfos?.grantCoverageYears;
+
+        if (!allocatorsSiret || allocatorsSiret.length !== 1 || !exercices) {
+            throw new NotFoundError("cannot get existing grants");
+        }
+
+        const grants = await scdlService.getGrantsOnPeriodByAllocator(allocatorsSiret[0], exercices);
+
+        const stringifier = stringify({
+            header: true,
+            quoted: true,
+            quoted_empty: true,
+        });
+
+        grants.forEach(entity => {
+            // todo : generate db data as public scdl schema
+            const dto = MiscScdlAdapter.miscScdlGrantEntityToDto(entity);
+            stringifier.write(dto);
+        });
+        stringifier.end();
+
+        const csv = await this.streamToString(stringifier);
+        const fileName = this.getFilename(allocatorsSiret[0], exercices);
+        return { csv, fileName };
+    }
+
+    private getFilename(allocatorSiret: string, exercices: number[]): string {
+        const exercicesString = exercices.sort((a, b) => a - b).join("-");
+
+        const formattedDate = formatDateToYYYYMMDD(new Date());
+
+        return `existing-grants-${allocatorSiret}-${exercicesString}-${formattedDate}.csv`;
+    }
+
+    private async streamToString(stream: Stringifier): Promise<string> {
+        const chunks: string[] = [];
+
+        for await (const chunk of stream) {
+            chunks.push(chunk);
+        }
+        return chunks.join("");
     }
 }
 

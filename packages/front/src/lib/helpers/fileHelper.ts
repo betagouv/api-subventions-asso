@@ -18,12 +18,6 @@ export const formatMap: Record<FileFormat, string[]> = {
 
 export const TEXT_EXT: string[] = ["txt", "csv", "json", "xml"];
 export const EXCEL_EXT: string[] = ["xls", "xlsx"];
-export const CSV_EXT: string = "csv";
-
-export enum fileTypeEnum {
-    CSV = "csv",
-    EXCEL = "excel",
-}
 
 export function getFileExtension(fileName: string): string {
     const parts = fileName.split(".");

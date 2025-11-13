@@ -5,7 +5,7 @@ import {
 } from "./__fixtures__/depositLog.fixture";
 import DepositScdlLogEntity from "./entities/depositScdlLog.entity";
 import DepositScdlLogDtoAdapter from "./depositScdlLog.dto.adapter";
-import { CreateDepositScdlLogDto, DepositScdlLogDto, MixedParsedErrorDto } from "dto";
+import { CreateDepositScdlLogDto, DepositScdlLogDto, MixedParsedErrorDto, UploadedFileInfosDto } from "dto";
 
 describe("depositScdlLogDtoAdapter", () => {
     describe("entityToDepositScdlLogDto", () => {
@@ -120,14 +120,14 @@ describe("depositScdlLogDtoAdapter", () => {
 
         describe("uploadedFileInfosDtoToEntity", () => {
             it("should convert UploadedFileInfosDto to UploadedFileInfosEntity", () => {
-                const dto = {
+                const dto: UploadedFileInfosDto = {
                     fileName: "test.xsl",
                     uploadDate: new Date(),
                     allocatorsSiret: ["12345678901234"],
                     grantCoverageYears: [2020, 2021],
                     parseableLines: 200,
                     totalLines: 202,
-                    existingLinesInDbOnSamePeriod: undefined,
+                    existingLinesInDbOnSamePeriod: 0,
                     errors: [],
                 };
 

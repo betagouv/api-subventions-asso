@@ -17,7 +17,8 @@
 <div class="fr-col-12 fr-col-lg-11">
     <h1 class="text-center fr-mb-10v">Finalisez votre dépôt de données au format SCDL</h1>
 
-    {#if $depositLogStore?.step === 1}
+    <!--    temporarly behavior on version 1 -->
+    {#if $depositLogStore?.step === 1 || $depositLogStore?.step === 2}
         <div class="fr-text">
             <p class="fr-mb-7v">
                 Vous avez commencé un dépôt de données pour l’attribuant au SIRET n°

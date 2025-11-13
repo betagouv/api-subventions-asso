@@ -8,6 +8,7 @@ describe("DepositLogService", () => {
     vi.spyOn(depositLogPort, "createDepositLog");
     vi.spyOn(depositLogPort, "updateDepositLog");
     vi.spyOn(depositLogPort, "deleteDepositLog");
+    vi.spyOn(depositLogPort, "validateScdlFile");
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -131,6 +132,40 @@ describe("DepositLogService", () => {
 
             await expect(depositLogService.deleteDepositLog()).rejects.toThrow(mockError);
             expect(depositLogPort.deleteDepositLog).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe("postScdlFile", () => {
+        it("should return data", async () => {
+            const uploadedFileInfos = {};
+
+            const response = {
+                data: {
+                    overwriteAlert: true,
+                    allocatorSiret: "12345678901234",
+                    step: 2,
+                    permissionAlert: true,
+                    uploadedFileInfos,
+                } as DepositScdlLogResponseDto,
+                status: 200,
+            } as AxiosResponse;
+
+            vi.mocked(depositLogPort.validateScdlFile).mockResolvedValue(response);
+
+            const result = await depositLogService.postScdlFile({} as File, {} as DepositScdlLogDto);
+
+            expect(depositLogPort.validateScdlFile).toHaveBeenCalledTimes(1);
+            expect(result).toEqual(response.data as DepositScdlLogResponseDto);
+        });
+
+        it("should throw error", async () => {
+            const mockError = new Error("error");
+            vi.mocked(depositLogPort.validateScdlFile).mockRejectedValue(mockError);
+
+            await expect(depositLogService.postScdlFile({} as File, {} as DepositScdlLogDto)).rejects.toThrow(
+                mockError,
+            );
+            expect(depositLogPort.validateScdlFile).toHaveBeenCalledTimes(1);
         });
     });
 });

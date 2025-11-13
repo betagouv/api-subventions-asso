@@ -56,10 +56,16 @@ export class DepositScdlController {
 
     resumeForm() {
         this.currentView.set("form");
-        this.currentStep.set(depositLogStore.value!.step + 2);
+
+        // temporarly behavior to resume form
+        if (depositLogStore.value!.step === 1 || depositLogStore.value!.step === 2) {
+            const currentFormStep = 3;
+            this.currentStep.set(currentFormStep);
+        }
     }
 
     nextStep() {
+        this.currentView.set("form");
         if (this.currentStep.value && this.currentStep.value < this.lastStep) {
             this.currentStep.set(this.currentStep.value + 1);
         } else {
@@ -68,6 +74,7 @@ export class DepositScdlController {
     }
 
     prevStep() {
+        this.currentView.set("form");
         // cannot be null at this point
         const step = this.currentStep.value as number;
 
@@ -84,5 +91,9 @@ export class DepositScdlController {
 
     loading() {
         this.currentView.set("loading");
+    }
+
+    endLoading() {
+        this.currentView.set("form");
     }
 }

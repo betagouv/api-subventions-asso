@@ -207,7 +207,7 @@ export default class ScdlGrantParser {
             allocatorsSiret: Array.from(allocatorsSiret),
             grantCoverageYears: Array.from(grantCoverageYears),
             parseableLines: storableChunk.length,
-            totalLines: Math.max(parsedChunk.length - 1, 0),
+            totalLines: parsedChunk.length + 1, // + 1 for headers, empty lines are lost
         };
         return { entities: storableChunk, problems: errors, parsedInfos: parsedInfos };
     }

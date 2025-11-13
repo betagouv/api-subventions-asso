@@ -8,7 +8,7 @@ export default class UploadedFileInfosEntity {
         public grantCoverageYears: number[],
         public parseableLines: number,
         public totalLines: number,
-        public existingLinesInDbOnSamePeriod?: number,
-        public errors?: MixedParsedError[],
+        public existingLinesInDbOnSamePeriod: number,
+        public errors: MixedParsedError[],
     ) {}
 }
