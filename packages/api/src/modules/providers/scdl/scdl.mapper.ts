@@ -169,6 +169,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             "Nom attributaire",
             "NomBeneficiaire",
             "Nom bénéficiaire",
+            "Nom du b�n�ficiaire",
         ],
     ],
     associationSiret: {
@@ -188,6 +189,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Id bénéficiaire",
                 "SIRET du bénéficiaire",
                 "SIRET bénéficiaire",
+                "SIRET b�n�ficiaire",
             ],
         ],
         adapter: v => cleanSiret(v?.toString()),
