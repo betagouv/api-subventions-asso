@@ -168,11 +168,11 @@ export class DepositScdlProcessService {
     }
 
     private getFilename(allocatorSiret: string, exercices: number[]): string {
-        const firstExercice = exercices[0];
-        const lastExercice = exercices[exercices.length - 1];
+        const exercicesString = exercices.sort((a, b) => a - b).join("-");
 
         const formattedDate = formatDateToYYYYMMDD(new Date());
-        return `existing-grants-${allocatorSiret}-${firstExercice}-${lastExercice}-${formattedDate}.csv`;
+
+        return `existing-grants-${allocatorSiret}-${exercicesString}-${formattedDate}.csv`;
     }
 
     private async streamToString(stream: Stringifier): Promise<string> {
