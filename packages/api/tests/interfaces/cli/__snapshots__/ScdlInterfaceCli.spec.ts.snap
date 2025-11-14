@@ -1169,7 +1169,7 @@ exports[`SCDL CLI parsing parse registers new import in data-log 1`] = `
     "editionDate": 2022-12-12T00:00:00.000Z,
     "fileName": "SCDL.csv",
     "integrationDate": Any<Date>,
-    "providerId": "producer-1",
+    "providerId": "99000000000001",
   },
 ]
 `;
@@ -2963,7 +2963,7 @@ exports[`SCDL CLI parsing parseXls registers new import in data-log 1`] = `
     "editionDate": 2022-12-12T00:00:00.000Z,
     "fileName": "SCDL.xlsx",
     "integrationDate": Any<Date>,
-    "providerId": "producer-1",
+    "providerId": "99000000000001",
   },
 ]
 `;

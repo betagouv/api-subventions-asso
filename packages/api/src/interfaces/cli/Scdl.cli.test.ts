@@ -180,7 +180,7 @@ describe("ScdlCli", () => {
                 exportDate: EXPORT_DATE_STR,
             });
             expect(jest.mocked(dataLogService.addLog)).toHaveBeenCalledWith(
-                PRODUCER_ENTITY.slug,
+                PRODUCER_ENTITY.siret,
                 FILE_PATH,
                 new Date(EXPORT_DATE_STR),
             );
