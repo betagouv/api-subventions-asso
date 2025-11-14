@@ -20,13 +20,13 @@
         <p class="fr-mb-7v">
             👉 Avant de commencer, nous vous recommandons de consulter
             <a href="https://www.notion.so/R-gles-de-format-SCDL-1281788663a380e1a57efdd9b324c1ba">
-                guide de préparation des fichiers
+                notre guide de préparation des fichiers
             </a>
             .
         </p>
         <p class="fr-mb-7v">
             Merci pour votre contribution, qui permet d'améliorer la connaissance sur le financement public des
-            associations et de faciliter la mutualisation des données entre Déposer vos données SCDListrations.
+            associations et de faciliter la mutualisation des données entre administrations.
         </p>
     </div>
     <div class="text-center">

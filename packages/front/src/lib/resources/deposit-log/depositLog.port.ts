@@ -36,7 +36,13 @@ class DepositLogPort {
             formdata.append("sheetName", sheetName);
         }
 
-        return requestsService.post(this.BASE_PATH + "/fichier-scdl", formdata);
+        return requestsService.post(this.BASE_PATH + "/validation-fichier-scdl", formdata);
+    }
+
+    persistScdlFile(file: File) {
+        const formdata = new FormData();
+        formdata.append("file", file);
+        return requestsService.post(this.BASE_PATH + "/depot-fichier-scdl", formdata);
     }
 }
 

@@ -44,6 +44,10 @@ class DepositLogService {
             fileName: fileName,
         };
     }
+
+    async persistScdlFile(file: File) {
+        await depositLogPort.persistScdlFile(file);
+    }
 }
 
 const depositLogService = new DepositLogService();

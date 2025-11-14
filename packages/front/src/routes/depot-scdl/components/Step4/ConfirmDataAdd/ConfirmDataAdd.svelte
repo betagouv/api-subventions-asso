@@ -72,7 +72,7 @@
         {/if}
     </div>
 
-    <div class="fr-mb-4v fr-mt-4v">
+    <div class="fr-my-4v">
         <Checkbox options={checkboxOptions} bind:value={selectedValues} />
     </div>
 
