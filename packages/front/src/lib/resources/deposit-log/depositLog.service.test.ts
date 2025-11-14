@@ -9,6 +9,7 @@ describe("DepositLogService", () => {
     vi.spyOn(depositLogPort, "updateDepositLog");
     vi.spyOn(depositLogPort, "deleteDepositLog");
     vi.spyOn(depositLogPort, "validateScdlFile");
+    vi.spyOn(depositLogPort, "persistScdlFile");
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -166,6 +167,30 @@ describe("DepositLogService", () => {
                 mockError,
             );
             expect(depositLogPort.validateScdlFile).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe("persistScdlFile", () => {
+        it("should return void", async () => {
+            const response = {
+                data: null,
+                status: 204,
+            } as AxiosResponse;
+
+            vi.mocked(depositLogPort.persistScdlFile).mockResolvedValue(response);
+
+            const result = await depositLogService.persistScdlFile({} as File);
+
+            expect(depositLogPort.persistScdlFile).toHaveBeenCalledTimes(1);
+            expect(result).toBeUndefined();
+        });
+
+        it("should throw error", async () => {
+            const mockError = new Error("error");
+            vi.mocked(depositLogPort.persistScdlFile).mockRejectedValue(mockError);
+
+            await expect(depositLogService.persistScdlFile({} as File)).rejects.toThrow(mockError);
+            expect(depositLogPort.persistScdlFile).toHaveBeenCalledTimes(1);
         });
     });
 });

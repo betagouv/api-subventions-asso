@@ -73,7 +73,7 @@ describe("DepositLogPort", () => {
                 const sheetName = "sheetname";
                 depositLogPort.validateScdlFile(file, dto, sheetName);
                 expect(mockPostResource).toHaveBeenCalledWith(
-                    DepositLogPort.BASE_PATH + "/fichier-scdl",
+                    DepositLogPort.BASE_PATH + "/validation-fichier-scdl",
                     expect.any(FormData),
                 );
 
@@ -82,6 +82,22 @@ describe("DepositLogPort", () => {
 
                 expect(formData.get("file")).toBe(file);
                 expect(formData.get("depositScdlLogDto")).toBe(JSON.stringify(dto));
+            });
+        });
+
+        describe("persistScdlFile", () => {
+            it("should call axios with route", () => {
+                const file = new File(["content"], "test.csv", { type: "text/csv" });
+                depositLogPort.persistScdlFile(file);
+                expect(mockPostResource).toHaveBeenCalledWith(
+                    DepositLogPort.BASE_PATH + "/depot-fichier-scdl",
+                    expect.any(FormData),
+                );
+
+                const callArgs = mockPostResource.mock.calls[0];
+                const formData = callArgs[1] as FormData;
+
+                expect(formData.get("file")).toBe(file);
             });
         });
     });
