@@ -203,10 +203,6 @@ export class DepositScdlProcessService {
             producer = await scdlService.createProducer(siret);
         }
 
-        if (!producer) {
-            throw new Error(`Failed to retrieve producer for SIRET: ${siret.value}`);
-        }
-
         const { entities } = this.parseFile(file, existingDepositLog.uploadedFileInfos?.sheetName);
         await scdlService.persist(producer, entities);
 
