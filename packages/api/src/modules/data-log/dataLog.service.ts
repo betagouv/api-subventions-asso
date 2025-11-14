@@ -4,7 +4,7 @@ import dataLogPort from "../../dataProviders/db/data-log/dataLog.port";
 import { DataLogAdapter } from "./dataLog.adapter";
 
 class DataLogService {
-    addLog(providerId: string, filePath?: string, editionDate: Date | undefined = undefined) {
+    addLog(providerId: string, filePath?: string, editionDate: Date | undefined = undefined, userId?: string) {
         let fileName = filePath;
         if (fileName) {
             const realPath = path.parse(fileName);
@@ -16,6 +16,7 @@ class DataLogService {
             integrationDate: new Date(),
             editionDate: editionDate || undefined,
             fileName,
+            userId,
         });
     }
 

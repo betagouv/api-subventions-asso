@@ -96,7 +96,7 @@ export default class ScdlCli {
             providerSiret: producer.siret,
             exportDate,
         });
-        await Promise.all([this.exportErrors(errors, file), dataLogService.addLog(producer.slug, file, exportDate)]);
+        await Promise.all([this.exportErrors(errors, file), dataLogService.addLog(producer.siret, file, exportDate)]);
     }
 
     private async validateGenericInput(producer: MiscScdlProducerEntity | null, exportDateStr?: string) {
