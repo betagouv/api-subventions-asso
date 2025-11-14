@@ -47,6 +47,7 @@ export default class DepositScdlLogDtoAdapter {
             totalLines: entity.totalLines,
             existingLinesInDbOnSamePeriod: entity.existingLinesInDbOnSamePeriod,
             errors: entity.errors,
+            sheetName: entity.sheetName,
         };
     }
 
@@ -79,6 +80,7 @@ export default class DepositScdlLogDtoAdapter {
             totalLines: dto.totalLines,
             existingLinesInDbOnSamePeriod: dto.existingLinesInDbOnSamePeriod,
             errors: dto.errors?.map(error => this.mixedParsedErrorDtoToEntity(error)),
+            sheetName: dto.sheetName,
         };
     }
 

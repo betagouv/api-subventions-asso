@@ -9,4 +9,5 @@ export interface UploadedFileInfosDto {
     totalLines: number;
     existingLinesInDbOnSamePeriod: number;
     errors: MixedParsedErrorDto[];
+    sheetName?: string;
 }

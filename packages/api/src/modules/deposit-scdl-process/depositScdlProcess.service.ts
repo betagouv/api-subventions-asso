@@ -12,6 +12,8 @@ import MiscScdlGrantEntity from "../providers/scdl/entities/MiscScdlGrantEntity"
 import { Stringifier, stringify } from "csv-stringify";
 import MiscScdlAdapter from "../providers/scdl/adapters/MiscScdl.adapter";
 import { formatDateToYYYYMMDD } from "../../shared/helpers/DateHelper";
+import Siret from "../../identifierObjects/Siret";
+import MiscScdlProducerEntity from "../providers/scdl/entities/MiscScdlProducerEntity";
 
 export class DepositScdlProcessService {
     FIRST_STEP = 1;
@@ -103,6 +105,7 @@ export class DepositScdlProcessService {
             parsedInfos.totalLines,
             existingLinesInDbOnSamePeriod,
             errors,
+            pageName,
         );
 
         return depositLogPort.updatePartial(
@@ -182,6 +185,32 @@ export class DepositScdlProcessService {
             chunks.push(chunk);
         }
         return chunks.join("");
+    }
+
+    async parseAndPersistScdlFile(file: Express.Multer.File, userId: string) {
+        // todo : unit test
+        const existingDepositLog = await this.getDepositLog(userId);
+        if (!existingDepositLog) {
+            throw new NotFoundError("No deposit log found for this user");
+        }
+
+        await depositScdlProcessCheckService.finalCheckBeforePersist(existingDepositLog, file.originalname);
+
+        const siret = new Siret(existingDepositLog.allocatorSiret!);
+        let producer: MiscScdlProducerEntity | null = await scdlService.getProducer(siret);
+
+        if (!producer) {
+            producer = await scdlService.createProducer(siret);
+        }
+
+        const { entities } = this.parseFile(file, existingDepositLog.uploadedFileInfos?.sheetName);
+        await scdlService.persist(producer, entities);
+
+        // todo : data-log
+        // await dataLogService.addLog(userId, file.originalname)
+
+        // todo : don't delete deposit log to keep it for auditing but set a boolean to exclude it
+        return depositLogPort.deleteByUserId(userId);
     }
 }
 

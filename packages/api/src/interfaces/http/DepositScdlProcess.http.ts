@@ -28,18 +28,18 @@ export class DepositScdlProcessHttp extends Controller {
      * @summary Retrieves the deposit log information for the authenticated user if exists
      * @param req
      * @returns {DepositScdlLogResponseDto} 200 - The deposit log information for the authenticated user
-     * @returns {null} 204 - No deposit log found for the user
+     * @returns {void} 204 - No deposit log found for the user
      * @returns 401 - Unauthorized
      */
     @Get("/")
     @SuccessResponse("200", "Deposit log retrieved successfully")
     @Response("204", "No deposit log found for this user")
     @Response("401", "Unauthorized")
-    public async getDepositLog(@Request() req: IdentifiedRequest): Promise<DepositScdlLogResponseDto | null> {
+    public async getDepositLog(@Request() req: IdentifiedRequest): Promise<DepositScdlLogResponseDto | void> {
         const depositScdlLog = await depositScdlProcessService.getDepositLog(req.user._id.toString());
         if (!depositScdlLog) {
             this.setStatus(204);
-            return null;
+            return;
         }
         return DepositScdlLogDtoAdapter.entityToDepositScdlLogResponseDto(depositScdlLog);
     }
@@ -66,16 +66,15 @@ export class DepositScdlProcessHttp extends Controller {
     /**
      * @summary Delete the deposit log information for the authenticated user if exists
      * @param req
-     * @returns {null} 204 - Deposit log deleted successfully
+     * @returns {void} 204 - Deposit log deleted successfully
      * @returns 401 - Unauthorized
      */
     @Delete("/")
     @Response("204", "no deposit log for this user")
     @Response("401", "Unauthorized")
-    public async deleteDepositLog(@Request() req: IdentifiedRequest): Promise<null> {
+    public async deleteDepositLog(@Request() req: IdentifiedRequest): Promise<void> {
         await depositScdlProcessService.deleteDepositLog(req.user._id.toString());
         this.setStatus(204);
-        return null;
     }
 
     /**
@@ -143,7 +142,7 @@ export class DepositScdlProcessHttp extends Controller {
      *
      * @returns {DepositScdlLogResponseDto} 200 - Deposit log updated successfully with file parsing infos
      */
-    @Post("/fichier-scdl")
+    @Post("/validation-fichier-scdl")
     @SuccessResponse("200", "File processed and validation report generated")
     @Response("400", "Bad Request, invalid payload")
     @Response("401", "Unauthorized")
@@ -162,5 +161,26 @@ export class DepositScdlProcessHttp extends Controller {
             pageName,
         );
         return DepositScdlLogDtoAdapter.entityToDepositScdlLogResponseDto(updatedDepositLog);
+    }
+
+    /**
+     * @summary Parse and persist scdl file, then delete deposit log
+     *
+     * @param file - The uploaded SCDL file to validate (CSV or Excel format)
+     * @param req
+     *
+     * @returns {void} 204
+     */
+    @Post("/depot-fichier-scdl")
+    @SuccessResponse("204", "parse file successfully")
+    @Response("400", "Bad Request, invalid payload")
+    @Response("409", "Conflict, database state has changed since last parsing. Re-parsing required.")
+    public async parseAndPersistScdlFile(
+        // todo : integration test
+        @UploadedFile() file: Express.Multer.File,
+        @Request() req: IdentifiedRequest,
+    ): Promise<void> {
+        await depositScdlProcessService.parseAndPersistScdlFile(file, req.user._id.toString());
+        this.setStatus(204);
     }
 }

@@ -7,7 +7,7 @@ jest.mock("csv-stringify/sync", () => ({
 }));
 
 jest.mock("fs");
-const mockedFs = jest.mocked(fs);
+jest.mocked(fs);
 import * as CliHelper from "../../shared/helpers/CliHelper";
 jest.mock("../../shared/helpers/CliHelper");
 import ScdlCli from "./Scdl.cli";
@@ -16,13 +16,11 @@ import scdlService from "../../modules/providers/scdl/scdl.service";
 jest.mock("../../modules/providers/scdl/scdl.service");
 const mockedScdlService = jest.mocked(scdlService);
 import MiscScdlGrant from "../../modules/providers/scdl/__fixtures__/MiscScdlGrant";
-import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
 import MiscScdlProducer from "../../modules/providers/scdl/__fixtures__/MiscScdlProducer";
 import { MixedParsedError, ParsedErrorFormat } from "../../modules/providers/scdl/@types/Validation";
 import csvSyncStringifier from "csv-stringify/sync";
 import dataLogService from "../../modules/data-log/dataLog.service";
-import MiscScdlGrantEntity from "../../modules/providers/scdl/entities/MiscScdlGrantEntity";
-import { ScdlGrantDbo } from "../../modules/providers/scdl/dbo/ScdlGrantDbo";
+
 jest.mock("../../modules/data-log/dataLog.service");
 import scdlGrantService from "../../modules/providers/scdl/scdl.grant.service";
 import applicationFlatService from "../../modules/applicationFlat/applicationFlat.service";
@@ -43,11 +41,8 @@ describe("ScdlCli", () => {
     const STORABLE_DATA = { ...GRANT, __data__: {} };
     const FILE_CONTENT = Buffer.from("FILE_CONTENT");
     const EXPORT_DATE_STR = "2023-03-23";
-    const UNIQUE_ID = "UNIQUE_ID";
     const FILE_PATH = "FILE_PATH";
     const STORABLE_DATA_ARRAY = [STORABLE_DATA];
-    const DBO: ScdlGrantDbo = { ...GRANT, __data__: {}, _id: "prov-toto" };
-    const DBOS: ScdlGrantDbo[] = [DBO];
     const DELIMETER = "%";
     const PAGE_NAME = "nom de feuille";
     const ROW_OFFSET = 4;
@@ -56,10 +51,7 @@ describe("ScdlCli", () => {
     let cli: ScdlCli;
 
     beforeEach(() => {
-        mockedFs.readFileSync.mockReturnValue(FILE_CONTENT);
         mockedScdlService.getProducer.mockResolvedValue(PRODUCER_ENTITY);
-        // @ts-expect-error: private method
-        mockedScdlService._buildGrantUniqueId.mockReturnValue(UNIQUE_ID);
         mockedScdlService.parseCsv.mockReturnValue({
             entities: STORABLE_DATA_ARRAY,
             errors: [],
@@ -117,8 +109,7 @@ describe("ScdlCli", () => {
             mockedScdlService[parserMethod].mockReturnValue({ entities: STORABLE_DATA_ARRAY, errors: ERRORS });
             // @ts-expect-error: mock private method
             jest.spyOn(cli, "end").mockResolvedValue();
-            // @ts-expect-error: mock private method
-            jest.spyOn(cli, "persist").mockResolvedValue();
+            jest.spyOn(scdlService, "persist").mockResolvedValue();
             jest.mocked(CliHelper.detectAndEncode).mockReturnValue(FILE_CONTENT);
         });
 
@@ -142,8 +133,7 @@ describe("ScdlCli", () => {
 
         it("executes persistence process", async () => {
             await test();
-            // @ts-expect-error: test private method
-            expect(cli.persist).toHaveBeenCalledWith(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
+            expect(scdlService.persist).toHaveBeenCalledWith(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
         });
 
         it("executes end of import process", async () => {
@@ -155,109 +145,6 @@ describe("ScdlCli", () => {
                 producer: PRODUCER_ENTITY,
                 exportDate: EXPORT_DATE_STR,
             });
-        });
-    });
-
-    describe("persist", () => {
-        const IMPORTED_DATA_EXERCISES: number[] = STORABLE_DATA_ARRAY.map(data => data.exercice);
-        const GRANTS_ID_DB = [{ exercice: STORABLE_DATA_ARRAY[0].exercice } as MiscScdlGrantEntity];
-        const mockCleanExercises = jest.spyOn(scdlService, "cleanExercises");
-        const mockIsProducerFirstImport = jest.spyOn(scdlService, "isProducerFirstImport");
-        const mockGetGrantOnPeriodByAllocator = jest.spyOn(scdlService, "getGrantsOnPeriodByAllocator");
-        const mockValidateImport = jest.spyOn(scdlService, "validateImportCoverage");
-        const mockRestoreBackup = jest.spyOn(scdlService, "restoreBackup");
-        const mockDropBackup = jest.spyOn(scdlService, "dropBackup");
-        const mockPersistEntities = jest.fn();
-
-        beforeEach(() => {
-            // @ts-expect-error: mock private method
-            cli.persistEntities = mockPersistEntities;
-            mockIsProducerFirstImport.mockResolvedValue(false);
-            mockGetGrantOnPeriodByAllocator.mockResolvedValue(GRANTS_ID_DB);
-            mockValidateImport.mockResolvedValue();
-            mockCleanExercises.mockResolvedValue();
-            mockRestoreBackup.mockResolvedValue();
-        });
-
-        it.each`
-            entities
-            ${undefined}
-            ${[]}
-        `("throws error if no entities given", async ({ entities }) => {
-            // @ts-expect-error: test private method
-            await expect(async () => await cli.persist(PRODUCER_ENTITY, entities)).rejects.toThrow(
-                "Importation failed : no entities could be created from this file",
-            );
-        });
-
-        it("retrieves documents in db for imported exercices", async () => {
-            // @ts-expect-error: test private method
-            await cli.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
-            expect(jest.mocked(scdlService.getGrantsOnPeriodByAllocator)).toHaveBeenCalledWith(
-                PRODUCER_ENTITY.siret,
-                IMPORTED_DATA_EXERCISES,
-            );
-        });
-
-        it("validates import", async () => {
-            // @ts-expect-error: test private method
-            await cli.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
-            expect(jest.mocked(scdlService.validateImportCoverage)).toHaveBeenCalledWith(
-                PRODUCER_ENTITY.slug,
-                [STORABLE_DATA.exercice],
-                STORABLE_DATA_ARRAY,
-                GRANTS_ID_DB,
-            );
-        });
-
-        it("clean database from grants from most recent exercise present in import file", async () => {
-            // @ts-expect-error: test private method
-            await cli.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
-            expect(mockCleanExercises).toHaveBeenCalledWith(PRODUCER_ENTITY.slug, IMPORTED_DATA_EXERCISES);
-        });
-
-        it("does not handle backup if first import (no data in DB)", async () => {
-            mockIsProducerFirstImport.mockResolvedValueOnce(true);
-            // @ts-expect-error: test private method
-            await cli.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
-            expect(mockCleanExercises).not.toHaveBeenCalled();
-            expect(mockDropBackup).not.toHaveBeenCalled();
-        });
-
-        it("does not restore backup if first import failed (no previous data in DB)", async () => {
-            mockIsProducerFirstImport.mockResolvedValueOnce(true);
-            mockPersistEntities.mockRejectedValueOnce(new Error("Persistence failed"));
-            try {
-                // @ts-expect-error: test private method
-                await cli.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
-            } catch {
-                expect(mockCleanExercises).not.toHaveBeenCalled();
-                expect(mockRestoreBackup).not.toHaveBeenCalled();
-            }
-        });
-
-        it("persists entities", async () => {
-            // @ts-expect-error -- test private
-            const persistSpy = jest.spyOn(cli, "persistEntities").mockReturnValueOnce(Promise.resolve());
-            // @ts-expect-error: test private method
-            await cli.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
-            expect(persistSpy).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY);
-        });
-
-        it("drops backup when persistence succeed", async () => {
-            // @ts-expect-error: test private method
-            await cli.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
-            expect(mockPersistEntities).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY);
-        });
-
-        it("restores backup if persistence failed", async () => {
-            mockPersistEntities.mockRejectedValueOnce(new Error("Persistence failed"));
-            try {
-                // @ts-expect-error: test private method
-                await cli.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
-            } catch {
-                expect(mockRestoreBackup).toHaveBeenCalledWith(PRODUCER_ENTITY.slug);
-            }
         });
     });
 
@@ -297,48 +184,6 @@ describe("ScdlCli", () => {
                 FILE_PATH,
                 new Date(EXPORT_DATE_STR),
             );
-        });
-    });
-
-    describe("persistEntities", () => {
-        beforeAll(() => {
-            jest.mocked(scdlService.buildDbosFromStorables).mockResolvedValue(DBOS);
-        });
-
-        afterAll(() => {
-            jest.mocked(scdlService.buildDbosFromStorables).mockRestore();
-        });
-
-        it("should call scdlService.buildDbosFromStorables()", async () => {
-            // @ts-expect-error -- test private
-            await cli.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
-            expect(scdlService.buildDbosFromStorables).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug);
-        });
-
-        it("saves in scdl collection with saveDbos", async () => {
-            // @ts-expect-error -- test private
-            await cli.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
-            expect(scdlService.saveDbos).toHaveBeenCalledWith(DBOS);
-        });
-
-        it("saves in applicationFlat", async () => {
-            // @ts-expect-error -- test private
-            await cli.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
-            expect(scdlGrantService.saveDbosToApplicationFlat).toHaveBeenCalledWith(DBOS);
-        });
-
-        it("if DuplicateIndexError arises, doesn't fail and logs", async () => {
-            mockedScdlService.saveDbos.mockRejectedValueOnce(new DuplicateIndexError("error", [1, 2, 3, 4, 5, 6]));
-            // @ts-expect-error -- test private
-            await cli.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
-        });
-
-        it("if another error arises, fail and throw it again", async () => {
-            const ERROR = new Error("error");
-            mockedScdlService.saveDbos.mockRejectedValueOnce(ERROR);
-            // @ts-expect-error -- test private
-            const test = () => cli.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
-            await expect(test).rejects.toThrow(ERROR);
         });
     });
 

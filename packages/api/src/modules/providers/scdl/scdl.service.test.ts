@@ -1,6 +1,8 @@
 import scdlService from "./scdl.service";
 import miscScdlGrantPort from "../../../dataProviders/db/providers/scdl/miscScdlGrant.port";
 
+jest.mock("fs");
+
 jest.mock("../../../dataProviders/db/providers/scdl/miscScdlGrant.port");
 import miscScdlProducersPort from "../../../dataProviders/db/providers/scdl/miscScdlProducers.port";
 
@@ -18,9 +20,16 @@ import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
 import applicationFlatPort from "../../../dataProviders/db/applicationFlat/applicationFlat.port";
 import apiAssoService from "../apiAsso/apiAsso.service";
 import Siret from "../../../identifierObjects/Siret";
+import fs from "fs";
+import { ObjectId } from "mongodb";
+import scdlGrantService from "./scdl.grant.service";
+import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
+
+const mockedFs = jest.mocked(fs);
 
 jest.mock("../../../dataProviders/db/applicationFlat/applicationFlat.port");
 jest.mock("../apiAsso/apiAsso.service");
+
 describe("ScdlService", () => {
     const UNIQUE_ID = "UNIQUE_ID";
     const PRODUCER = { ...PRODUCER_FIXTURE };
@@ -36,6 +45,21 @@ describe("ScdlService", () => {
         },
     ];
     const GRANTS_DBO_ARRAY = [MISC_SCDL_GRANT_DBO_FIXTURE, ...LAST_EXERCISE_GRANTS];
+
+    const PRODUCER_ENTITY = {
+        _id: new ObjectId(),
+        ...PRODUCER_FIXTURE,
+    };
+    const FILE_CONTENT = Buffer.from("FILE_CONTENT");
+    const GRANT = { ...MiscScdlGrantFixture };
+    const STORABLE_DATA = { ...GRANT, __data__: {} };
+    const STORABLE_DATA_ARRAY = [STORABLE_DATA];
+    const DBO: ScdlGrantDbo = { ...GRANT, __data__: {}, _id: "prov-toto" };
+    const DBOS: ScdlGrantDbo[] = [DBO];
+
+    beforeEach(() => {
+        mockedFs.readFileSync.mockReturnValue(FILE_CONTENT);
+    });
 
     describe("init", () => {
         let mockGetProducers;
@@ -325,6 +349,144 @@ describe("ScdlService", () => {
         it("calls applyBackupCollection for applicationFlat", async () => {
             await scdlService.restoreBackup(PRODUCER_SLUG);
             expect(applicationFlatPort.applyBackupCollection).toHaveBeenCalledWith(`scdl-${PRODUCER_SLUG}`);
+        });
+    });
+
+    describe("persistEntities", () => {
+        let buildDbosFromStorablesSpy: jest.SpyInstance;
+        let saveDbosSpy: jest.SpyInstance;
+        let saveDbosToApplicationFlatSpy: jest.SpyInstance;
+
+        beforeEach(() => {
+            buildDbosFromStorablesSpy = jest.spyOn(scdlService, "buildDbosFromStorables").mockResolvedValue(DBOS);
+            saveDbosSpy = jest.spyOn(scdlService, "saveDbos").mockResolvedValue();
+            saveDbosToApplicationFlatSpy = jest
+                .spyOn(scdlGrantService, "saveDbosToApplicationFlat")
+                .mockResolvedValue();
+        });
+
+        afterEach(() => {
+            buildDbosFromStorablesSpy.mockRestore();
+            saveDbosToApplicationFlatSpy.mockRestore();
+            saveDbosSpy?.mockRestore();
+        });
+
+        it("should call scdlService.buildDbosFromStorables()", async () => {
+            await scdlService.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY);
+            expect(scdlService.buildDbosFromStorables).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY);
+        });
+
+        it("saves in scdl collection with saveDbos", async () => {
+            await scdlService.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY);
+            expect(scdlService.saveDbos).toHaveBeenCalledWith(DBOS);
+        });
+
+        it("saves in applicationFlat", async () => {
+            await scdlService.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY);
+            expect(scdlGrantService.saveDbosToApplicationFlat).toHaveBeenCalledWith(DBOS);
+        });
+
+        it("if DuplicateIndexError arises, doesn't fail and logs", async () => {
+            saveDbosSpy.mockRejectedValueOnce(new DuplicateIndexError("error", [1, 2, 3, 4, 5, 6]));
+            await scdlService.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY);
+        });
+
+        it("if another error arises, fail and throw it again", async () => {
+            const ERROR = new Error("error");
+            saveDbosSpy.mockRejectedValueOnce(ERROR);
+            await expect(scdlService.persistEntities(STORABLE_DATA_ARRAY, PRODUCER_ENTITY)).rejects.toThrow(ERROR);
+        });
+    });
+
+    describe("persist", () => {
+        const IMPORTED_DATA_EXERCISES: number[] = STORABLE_DATA_ARRAY.map(data => data.exercice);
+        const GRANTS_ID_DB = [{ exercice: STORABLE_DATA_ARRAY[0].exercice } as MiscScdlGrantEntity];
+        const mockCleanExercises = jest.spyOn(scdlService, "cleanExercises");
+        const mockIsProducerFirstImport = jest.spyOn(scdlService, "isProducerFirstImport");
+        const mockGetGrantOnPeriodByAllocator = jest.spyOn(scdlService, "getGrantsOnPeriodByAllocator");
+        const mockValidateImport = jest.spyOn(scdlService, "validateImportCoverage");
+        const mockRestoreBackup = jest.spyOn(scdlService, "restoreBackup");
+        const mockDropBackup = jest.spyOn(scdlService, "dropBackup");
+        const mockPersistEntities = jest.spyOn(scdlService, "persistEntities");
+
+        beforeEach(() => {
+            mockIsProducerFirstImport.mockResolvedValue(false);
+            mockGetGrantOnPeriodByAllocator.mockResolvedValue(GRANTS_ID_DB);
+            mockValidateImport.mockResolvedValue();
+            mockCleanExercises.mockResolvedValue();
+            mockRestoreBackup.mockResolvedValue();
+            mockPersistEntities.mockResolvedValue();
+        });
+
+        it.each`
+            entities
+            ${undefined}
+            ${[]}
+        `("throws error if no entities given", async ({ entities }) => {
+            await expect(async () => await scdlService.persist(PRODUCER_ENTITY, entities)).rejects.toThrow(
+                "Importation failed : no entities could be created from this file",
+            );
+        });
+
+        it("retrieves documents in db for imported exercices", async () => {
+            await scdlService.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
+            expect(jest.mocked(scdlService.getGrantsOnPeriodByAllocator)).toHaveBeenCalledWith(
+                PRODUCER_ENTITY.siret,
+                IMPORTED_DATA_EXERCISES,
+            );
+        });
+
+        it("validates import", async () => {
+            await scdlService.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
+            expect(jest.mocked(scdlService.validateImportCoverage)).toHaveBeenCalledWith(
+                PRODUCER_ENTITY.slug,
+                [STORABLE_DATA.exercice],
+                STORABLE_DATA_ARRAY,
+                GRANTS_ID_DB,
+            );
+        });
+
+        it("clean database from grants from most recent exercise present in import file", async () => {
+            await scdlService.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
+            expect(mockCleanExercises).toHaveBeenCalledWith(PRODUCER_ENTITY.slug, IMPORTED_DATA_EXERCISES);
+        });
+
+        it("does not handle backup if first import (no data in DB)", async () => {
+            mockIsProducerFirstImport.mockResolvedValueOnce(true);
+            await scdlService.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
+            expect(mockCleanExercises).not.toHaveBeenCalled();
+            expect(mockDropBackup).not.toHaveBeenCalled();
+        });
+
+        it("does not restore backup if first import failed (no previous data in DB)", async () => {
+            mockIsProducerFirstImport.mockResolvedValueOnce(true);
+            mockPersistEntities.mockRejectedValueOnce(new Error("Persistence failed"));
+            try {
+                await scdlService.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
+            } catch {
+                expect(mockCleanExercises).not.toHaveBeenCalled();
+                expect(mockRestoreBackup).not.toHaveBeenCalled();
+            }
+        });
+
+        it("persists entities", async () => {
+            const persistSpy = jest.spyOn(scdlService, "persistEntities").mockReturnValueOnce(Promise.resolve());
+            await scdlService.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
+            expect(persistSpy).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY);
+        });
+
+        it("drops backup when persistence succeed", async () => {
+            await scdlService.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
+            expect(mockPersistEntities).toHaveBeenCalledWith(STORABLE_DATA_ARRAY, PRODUCER_ENTITY);
+        });
+
+        it("restores backup if persistence failed", async () => {
+            mockPersistEntities.mockRejectedValueOnce(new Error("Persistence failed"));
+            try {
+                await scdlService.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
+            } catch {
+                expect(mockRestoreBackup).toHaveBeenCalledWith(PRODUCER_ENTITY.slug);
+            }
         });
     });
 });
