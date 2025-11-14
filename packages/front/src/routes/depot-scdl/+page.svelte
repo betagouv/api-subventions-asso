@@ -35,12 +35,12 @@
                         currentStep={$currentStep}
                         on:nextStep={() => ctrl.nextStep()}
                         on:prevStep={() => ctrl.prevStep()}
-                        on:loading={() => ctrl.loading()}
+                        on:loading={e => ctrl.loading(e.detail)}
                         on:endLoading={() => ctrl.endLoading()}
                         on:restartNewForm={() => ctrl.restartNewForm()} />
                 </div>
             {:else if $currentView === "loading"}
-                <Spinner description={currentLoadingMessage} />
+                <Spinner description={$currentLoadingMessage} />
             {/if}
         </div>
     </div>

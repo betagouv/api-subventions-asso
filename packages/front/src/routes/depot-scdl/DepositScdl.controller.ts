@@ -19,7 +19,7 @@ export class DepositScdlController {
     public currentStep: Store<number | null> = new Store(null);
     public currentView: Store<"loading" | "welcome" | "resume" | "form"> = new Store("loading");
     public currentStepComponent: ReadStore<ComponentType>;
-    public currentLoadingMessage = "Veuillez patientez, nous analysons vos données";
+    public currentLoadingMessage: Store<string> = new Store("Chargement en cours...");
 
     constructor(stepComponents: Record<number, ComponentType>) {
         this.stepComponents = stepComponents;
@@ -89,7 +89,8 @@ export class DepositScdlController {
         this.currentStep.set(step - 1);
     }
 
-    loading() {
+    loading(message: string) {
+        this.currentLoadingMessage.set(message);
         this.currentView.set("loading");
     }
 
