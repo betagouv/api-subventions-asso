@@ -11,6 +11,8 @@ import applicationFlatPort from "../../../dataProviders/db/applicationFlat/appli
 import Siret from "../../../identifierObjects/Siret";
 import apiAssoService from "../apiAsso/apiAsso.service";
 import MiscScdlProducerEntity from "./entities/MiscScdlProducerEntity";
+import scdlGrantService from "./scdl.grant.service";
+import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
 
 export class ScdlService {
     producerNames: string[] = [];
@@ -175,6 +177,73 @@ export class ScdlService {
         console.log(`Restoring data from backup (for the producer " ${producerSlug})"`);
         await miscScdlGrantPort.applyBackupCollection(producerSlug);
         await applicationFlatPort.applyBackupCollection(`scdl-${producerSlug}`);
+    }
+
+    /**
+     *
+     * Contains the logic to persist scdl grants entities. This is shard between CSV and XLSX process
+     * Handle validation, persistence in DB, backups
+     *
+     * @param producer Producer to persist data for
+     * @param entities Entities to persist
+     */
+    public async persist(producer: MiscScdlProducerEntity, entities: ScdlStorableGrant[]) {
+        if (!entities || !entities.length) {
+            throw new Error("Importation failed : no entities could be created from this file");
+        }
+
+        const firstImport = await this.isProducerFirstImport(producer.slug);
+
+        if (!firstImport) {
+            const exercises: Set<number> = entities.reduce((acc, entity) => {
+                return acc.add(entity.exercice);
+            }, new Set<number>());
+
+            if (exercises.size === 0) {
+                throw new Error("You must provide an exercise to clean producer's data before import");
+            }
+
+            const exercisesArray = [...exercises]; // transform Set to Array
+            const documentsInDB = await this.getGrantsOnPeriodByAllocator(producer.siret, exercisesArray);
+            await this.validateImportCoverage(producer.slug, exercisesArray, entities, documentsInDB);
+            await this.cleanExercises(producer.slug, exercisesArray);
+        }
+
+        try {
+            await this.persistEntities(entities, producer);
+            if (!firstImport) await this.dropBackup();
+        } catch (e) {
+            if (!firstImport) {
+                console.log("Importation failed, restoring previous exercise data");
+                await this.restoreBackup(producer.slug);
+            }
+            throw e;
+        }
+    }
+
+    public async persistEntities(storables: ScdlStorableGrant[], producer: MiscScdlProducerEntity) {
+        if (!storables || !storables.length) throw new Error("No entities could be created from this file");
+
+        console.log(`start persisting ${storables.length} grants`);
+        let duplicates: MiscScdlGrantEntity[] = [];
+
+        try {
+            // the cli builds dbo because objectId from misc-scdl collection is also used in application flat
+            const dbos = await this.buildDbosFromStorables(storables, producer);
+            await this.saveDbos(dbos);
+            await scdlGrantService.saveDbosToApplicationFlat(dbos);
+        } catch (e) {
+            if (!(e instanceof DuplicateIndexError)) throw e;
+            duplicates = (e as DuplicateIndexError<MiscScdlGrantEntity[]>).duplicates;
+        }
+
+        if (duplicates.length) {
+            console.log(`${duplicates.length} duplicated entries.`);
+        } else {
+            console.log(`No duplicates detected`);
+        }
+
+        console.log("Parsing ended successfully !");
     }
 }
 

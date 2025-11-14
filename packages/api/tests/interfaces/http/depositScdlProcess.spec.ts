@@ -281,7 +281,7 @@ describe("/parcours-depot", () => {
             const csvPath = path.join(FILE_PATH, "test-csv-valid.csv");
 
             const response = await request(g.app)
-                .post(`/parcours-depot/fichier-scdl`)
+                .post(`/parcours-depot/validation-fichier-scdl`)
                 .attach("file", csvPath)
                 .field("depositScdlLogDto", JSON.stringify(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2))
                 .set("x-access-token", token);
@@ -310,7 +310,7 @@ describe("/parcours-depot", () => {
             const csvPath = path.join(FILE_PATH, "test-csv-valid.csv");
 
             const response = await request(g.app)
-                .post(`/parcours-depot/fichier-scdl`)
+                .post(`/parcours-depot/validation-fichier-scdl`)
                 .attach("file", csvPath)
                 .field("depositScdlLogDto", JSON.stringify({ permissionAlert: false }))
                 .set("x-access-token", token);

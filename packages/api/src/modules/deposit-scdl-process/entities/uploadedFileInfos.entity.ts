@@ -10,5 +10,6 @@ export default class UploadedFileInfosEntity {
         public totalLines: number,
         public existingLinesInDbOnSamePeriod: number,
         public errors: MixedParsedError[],
+        public sheetName?: string,
     ) {}
 }

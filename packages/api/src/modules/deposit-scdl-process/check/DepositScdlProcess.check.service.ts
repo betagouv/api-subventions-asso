@@ -1,6 +1,9 @@
 import { CreateDepositScdlLogDto, DepositScdlLogDto } from "dto";
-import { BadRequestError } from "core";
+import { BadRequestError, ConflictError } from "core";
 import Siret from "../../../identifierObjects/Siret";
+import DepositScdlLogEntity from "../entities/depositScdlLog.entity";
+import MiscScdlGrantEntity from "../../providers/scdl/entities/MiscScdlGrantEntity";
+import scdlService from "../../providers/scdl/scdl.service";
 
 export class DepositScdlProcessCheckService {
     public validateCreate(dto: CreateDepositScdlLogDto) {
@@ -56,6 +59,61 @@ export class DepositScdlProcessCheckService {
             if (!Siret.isSiret(depositScdlLogDto.allocatorSiret)) {
                 throw new BadRequestError("allocatorSiret must be a valid SIRET");
             }
+        }
+    }
+
+    async finalCheckBeforePersist(depositLogEntity: DepositScdlLogEntity, filename: string) {
+        const parsedInfos = depositLogEntity.uploadedFileInfos;
+
+        if (!parsedInfos) {
+            throw new BadRequestError("uploadedFileInfos must be defined");
+        }
+
+        if (depositLogEntity.step !== 2) {
+            throw new BadRequestError("deposit must be in step 2");
+        }
+
+        if (depositLogEntity.overwriteAlert !== true) {
+            throw new BadRequestError("overwrite alert must be acknowledged");
+        }
+
+        if (depositLogEntity.allocatorSiret === undefined) {
+            throw new BadRequestError("allocator SIRET must be defined");
+        }
+
+        if (depositLogEntity.permissionAlert !== true) {
+            throw new BadRequestError("permission alert must be acknowledged");
+        }
+
+        if (parsedInfos.fileName !== filename) {
+            throw new BadRequestError(`filename mismatch: expected '${parsedInfos.fileName}', got '${filename}'`);
+        }
+
+        if (
+            parsedInfos.allocatorsSiret.length > 1 ||
+            parsedInfos.allocatorsSiret[0] !== depositLogEntity.allocatorSiret
+        ) {
+            throw new BadRequestError("allocator SIRET in file does not match deposit allocator SIRET");
+        }
+
+        const hasBlockingErrors = parsedInfos.errors.some(error => error.bloquant === "oui");
+        if (hasBlockingErrors) {
+            throw new BadRequestError("file contains blocking errors that must be resolved");
+        }
+
+        const documentsInDB: MiscScdlGrantEntity[] = await scdlService.getGrantsOnPeriodByAllocator(
+            parsedInfos.allocatorsSiret[0],
+            parsedInfos.grantCoverageYears,
+        );
+
+        if (documentsInDB.length > parsedInfos.parseableLines) {
+            throw new BadRequestError("The file contains less rows of data than what we have in the database.");
+        }
+
+        if (documentsInDB.length !== parsedInfos.existingLinesInDbOnSamePeriod) {
+            throw new ConflictError(
+                "The number of lines in the database does not match with the one detected during the previous parse",
+            );
         }
     }
 }

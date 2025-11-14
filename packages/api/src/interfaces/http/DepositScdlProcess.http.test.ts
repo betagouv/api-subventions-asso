@@ -61,7 +61,7 @@ describe("DepositScdlProcessHttp", () => {
         it("should return null after deleting the deposit log", async () => {
             deleteDepositLogSpy.mockResolvedValueOnce(Promise.resolve());
             const result = await controller.deleteDepositLog(REQ);
-            expect(result).toEqual(null);
+            expect(result).toBeUndefined();
         });
     });
 
@@ -168,6 +168,21 @@ describe("DepositScdlProcessHttp", () => {
         it("should reject and throw Error when error throw by service", async () => {
             validateScdlFileSpy.mockRejectedValueOnce(new NotFoundError("an error"));
             await expect(controller.validateScdlFile(file, depositLogFormFiled, REQ)).rejects.toThrow(NotFoundError);
+        });
+    });
+
+    describe("parseAndPersistScdlFile", () => {
+        const parseAndPersistScdlFileSpy = jest.spyOn(depositScdlProcessService, "parseAndPersistScdlFile");
+        it("should call service with args", async () => {
+            parseAndPersistScdlFileSpy.mockResolvedValueOnce(true);
+            await controller.parseAndPersistScdlFile({} as Express.Multer.File, REQ);
+            expect(parseAndPersistScdlFileSpy).toHaveBeenCalledWith({}, REQ.user._id.toString());
+        });
+
+        it("should return void after processing", async () => {
+            parseAndPersistScdlFileSpy.mockResolvedValueOnce(true);
+            const result = await controller.parseAndPersistScdlFile({} as Express.Multer.File, REQ);
+            expect(result).toBeUndefined();
         });
     });
 });

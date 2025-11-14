@@ -14,4 +14,5 @@ export default interface UploadedFileInfosDbo {
         bloquant: "oui" | "non";
         doublon: "oui" | "non";
     }[];
+    sheetName?: string;
 }
