@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.75.0](https://github.com/betagouv/datasubvention/compare/v0.74.0...v0.75.0) (2025-11-17)
+
+### Bug Fixes
+
+- **front:** [#0000](https://github.com/betagouv/datasubvention/issues/0000) customize spinner message ([#3715](https://github.com/betagouv/datasubvention/issues/3715)) ([d06a3df](https://github.com/betagouv/datasubvention/commit/d06a3dfed0a5346a1ee93cb7fc8f4538b3423a76))
+
+### Features
+
+- **front, api:** [#3626](https://github.com/betagouv/datasubvention/issues/3626) step 4 front ([#3709](https://github.com/betagouv/datasubvention/issues/3709)) ([15c93fd](https://github.com/betagouv/datasubvention/commit/15c93fd3c8f607c0edc4ed75c889fbaa753470e6))
+- **front:** [#3623](https://github.com/betagouv/datasubvention/issues/3623) deposit process step 3 ([#3690](https://github.com/betagouv/datasubvention/issues/3690)) ([4efacde](https://github.com/betagouv/datasubvention/commit/4efacdeaaeb6cbd90600c252c7b21634d90867cf))
+- **front:** [#3634](https://github.com/betagouv/datasubvention/issues/3634) step 5 front ([#3710](https://github.com/betagouv/datasubvention/issues/3710)) ([1d71ef9](https://github.com/betagouv/datasubvention/commit/1d71ef9602c77d673348e3b14d2b412a83ef3349))
+- **front:** [#3636](https://github.com/betagouv/datasubvention/issues/3636) refacto deposit form single page ([#3682](https://github.com/betagouv/datasubvention/issues/3682)) ([5073cb1](https://github.com/betagouv/datasubvention/commit/5073cb1b13d16a687610c46575f02503b7d00060))
+- **front:** [#3651](https://github.com/betagouv/datasubvention/issues/3651) update login page design ([#3676](https://github.com/betagouv/datasubvention/issues/3676)) ([a0b46f6](https://github.com/betagouv/datasubvention/commit/a0b46f6ae2732505bb089142b13648462782912d))
+
 # [0.74.0](https://github.com/betagouv/datasubvention/compare/v0.72.4...v0.74.0) (2025-10-08)
 
 ### Features

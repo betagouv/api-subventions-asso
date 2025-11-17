@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.75.0](https://github.com/betagouv/datasubvention/compare/v0.74.0...v0.75.0) (2025-11-17)
+
+### Features
+
+- **api:** [#3624](https://github.com/betagouv/datasubvention/issues/3624) step 4 api: ([#3693](https://github.com/betagouv/datasubvention/issues/3693)) ([4a7b75d](https://github.com/betagouv/datasubvention/commit/4a7b75d09e5de490e1b088e0d8e3093da777a37a))
+- **api:** [#3712](https://github.com/betagouv/datasubvention/issues/3712) persist deposit scdl file ([#3713](https://github.com/betagouv/datasubvention/issues/3713)) ([36ce362](https://github.com/betagouv/datasubvention/commit/36ce3624ff294dd9e0384bb98858593de65b3bb6))
+- **front, api:** [#3626](https://github.com/betagouv/datasubvention/issues/3626) step 4 front ([#3709](https://github.com/betagouv/datasubvention/issues/3709)) ([15c93fd](https://github.com/betagouv/datasubvention/commit/15c93fd3c8f607c0edc4ed75c889fbaa753470e6))
+
 # [0.74.0](https://github.com/betagouv/datasubvention/compare/v0.72.4...v0.74.0) (2025-10-08)
 
 ### Features
