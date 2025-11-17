@@ -109,41 +109,89 @@ From the `users` collection
 find({ roles: "consumer" });
 ```
 
-## NB OF ASSOCATION AND ESTABLISHMENT REQUESTS FROM GIVEN YEAR
+## LIST OF ENTRYPOINT OF INTEREST
+
+["association", "etablissement", "document", "open-data/subventions", "open-data", "search"]
+
+## NB OF REQUESTS FROM GIVEN YEAR GROUP BY MONTH
 
 From the log collection
 
 ```js
 [
-    { $match: { timestemp: { $gte: new Date("2024-01-01"), $lt: new Date("2025-01-01") } } },
+    { $match: { timestamp: { $gte: new Date("2024-01-01"), $lt: new Date("2025-01-01") } } },
     {
         $match:
             /**
              * query: The query in MQL.
              */
 
-            { "meta.req.url": /^\/association|\/etablissement/ },
+            { "meta.req.url": /^\/search/ }, // type of request from list of entry points above
+    },
+    {
+        $group: {
+            _id: { $month: "$timestamp" },
+            requests: { $sum: 1 },
+        },
     },
 ];
 ```
 
-## NB OF SEARCH REQUESTS FROM GIVEN YEAR
-
-From the log collection
+## SCDL ONLY ASSO (do not keep operators)
 
 ```js
 [
-    { $match: { timestemp: { $gte: new Date("2024-01-01"), $lt: new Date("2025-01-01") } } },
+<<<<<<< Updated upstream
+=======
+    { $match: { timestamp: { $gte: new Date("2024-01-01"), $lt: new Date("2025-01-01") } } },
+>>>>>>> Stashed changes
     {
-        $match:
-            /**
-             * query: The query in MQL.
-             */
-
-            { "meta.req.url": /^\/search/ },
+        $match: { exercice: 2023 },
     },
     {
-        $count: "total",
+        $lookup: {
+            from: "sirene",
+            let: { associationSiren: { $substr: ["$associationSiret", 0, 9] } },
+            pipeline: [{ $match: { $expr: { $eq: ["$$associationSiren", "$siren"] } } }, { $limit: 1 }],
+            as: "sirene",
+        },
+    },
+    {
+        $unwind: {
+            path: "$sirene",
+            preserveNullAndEmptyArrays: true,
+        },
+    },
+    {
+        $match: { sirene: { $ne: null } },
+    },
+];
+```
+
+## STATS CONSOMMATION API
+
+```js
+[
+    {
+        $match: {
+            timestamp: {
+                $gte: new Date("2024-01-01"),
+                $lt: new Date("2025-01-01"),
+            },
+        },
+    },
+    {
+        $match: {
+            "meta.req.url": /^\/association|\/etablissement/,
+            "meta.req.user._id": { $ne: null, $exists: true },
+        },
+    },
+    {
+        $group: {
+            _id: "$meta.req.user._id",
+            requests: { $push: "$$ROOT.meta.req.url" },
+            size: { $sum: 1 },
+        },
     },
 ];
 ```
