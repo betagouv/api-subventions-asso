@@ -11,7 +11,7 @@
     const dispatch = createEventDispatcher<{
         prevStep: void;
         nextStep: void;
-        loading: void;
+        loading: string;
         endLoading: void;
         error: string;
     }>();

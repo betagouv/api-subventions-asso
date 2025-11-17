@@ -151,7 +151,7 @@ describe("Step3Controller", () => {
 
             await controller.handleValidate();
 
-            expect(mockDispatch).toHaveBeenCalledWith("loading");
+            expect(mockDispatch).toHaveBeenCalledWith("loading", "Veuillez patientez, nous analysons vos données");
             expect(postScdlFileMock).toHaveBeenCalledWith(
                 mockFile,
                 { permissionAlert: true } as DepositScdlLogDto,
@@ -176,7 +176,7 @@ describe("Step3Controller", () => {
 
             await controller.handleValidate();
 
-            expect(mockDispatch).toHaveBeenCalledWith("loading");
+            expect(mockDispatch).toHaveBeenCalledWith("loading", "Veuillez patientez, nous analysons vos données");
             expect(postScdlFileMock).toHaveBeenCalledWith(
                 mockFile,
                 { permissionAlert: true } as DepositScdlLogDto,
@@ -229,7 +229,7 @@ describe("Step3Controller", () => {
 
             await controller.handleSheetSelected(sheetEvent);
 
-            expect(mockDispatch).toHaveBeenCalledWith("loading");
+            expect(mockDispatch).toHaveBeenCalledWith("loading", "Veuillez patientez, nous analysons vos données");
             expect(postScdlFileMock).toHaveBeenCalledWith(
                 mockFile,
                 { permissionAlert: true } as DepositScdlLogDto,

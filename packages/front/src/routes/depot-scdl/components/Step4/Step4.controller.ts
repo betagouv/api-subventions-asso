@@ -7,7 +7,7 @@ import { scdlFileStore } from "$lib/store/scdlFile.store";
 type EventMap = {
     prevStep: void;
     nextStep: void;
-    loading: void;
+    loading: string;
     endLoading: void;
     restartNewForm: void;
     error: string;
@@ -67,7 +67,7 @@ export default class Step4Controller {
 
     async submitDatas() {
         const startTime = Date.now();
-        this.dispatch("loading");
+        this.dispatch("loading", "Veuillez patientez, nous finalisons le dépôt de vos données");
 
         try {
             await depositLogService.persistScdlFile(this.scdlFile);

@@ -17,7 +17,7 @@ import { scdlFileStore } from "$lib/store/scdlFile.store";
 type EventMap = {
     prevStep: void;
     nextStep: void;
-    loading: void;
+    loading: string;
     endLoading: void;
     error: string;
 };
@@ -120,7 +120,7 @@ export default class Step3Controller {
 
     private async uploadFile(selectedSheet?: string) {
         const startTime = Date.now();
-        this.dispatch("loading");
+        this.dispatch("loading", "Veuillez patientez, nous analysons vos données");
 
         const depositLog: DepositScdlLogDto = {
             permissionAlert: true,
