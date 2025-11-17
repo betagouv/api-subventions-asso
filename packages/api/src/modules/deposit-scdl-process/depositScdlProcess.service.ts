@@ -16,6 +16,7 @@ import MiscScdlAdapter from "../providers/scdl/adapters/MiscScdl.adapter";
 import { formatDateToYYYYMMDD } from "../../shared/helpers/DateHelper";
 import Siret from "../../identifierObjects/Siret";
 import MiscScdlProducerEntity from "../providers/scdl/entities/MiscScdlProducerEntity";
+import dataLogService from "../data-log/dataLog.service";
 
 export class DepositScdlProcessService {
     FIRST_STEP = 1;
@@ -208,10 +209,8 @@ export class DepositScdlProcessService {
         const { entities } = this.parseFile(file, existingDepositLog.uploadedFileInfos?.sheetName);
         await scdlService.persist(producer, entities);
 
-        // todo : data-log
-        // await dataLogService.addLog(userId, file.originalname)
+        await dataLogService.addLog(producer.siret, file.originalname, undefined, userId);
 
-        // todo : don't delete deposit log to keep it for auditing but set a boolean to exclude it
         return depositLogPort.deleteByUserId(userId);
     }
 }

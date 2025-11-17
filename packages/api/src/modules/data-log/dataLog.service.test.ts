@@ -10,6 +10,7 @@ describe("dataLogService", () => {
         const PROVIDER_ID = "PROVIDER_ID";
         const EDITION_DATE = new Date("2022-02-02");
         const FILE_PATH = "/path/to/file.csv";
+        const USER_ID = "USER_ID";
 
         it("inserts log", async () => {
             await dataLogService.addLog(PROVIDER_ID, FILE_PATH, EDITION_DATE);
@@ -17,11 +18,12 @@ describe("dataLogService", () => {
         });
 
         it("inserts log", async () => {
-            await dataLogService.addLog(PROVIDER_ID, FILE_PATH, EDITION_DATE);
+            await dataLogService.addLog(PROVIDER_ID, FILE_PATH, EDITION_DATE, USER_ID);
             const actual = jest.mocked(dataLogPort.insert).mock.calls[0][0];
             expect(actual).toMatchObject({
                 providerId: PROVIDER_ID,
                 editionDate: EDITION_DATE,
+                userId: USER_ID,
             });
         });
 
