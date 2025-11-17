@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { Multer } from "multer"; // hack to make Multer available in Express namespace. cf: https://github.com/DefinitelyTyped/DefinitelyTyped/issues/47780
 import depositLogPort from "../../dataProviders/db/deposit-log/depositLog.port";
 import DepositScdlLogEntity from "./entities/depositScdlLog.entity";
 import { CreateDepositScdlLogDto, DepositScdlLogDto } from "dto";
