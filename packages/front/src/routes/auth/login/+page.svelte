@@ -60,8 +60,8 @@
     <form on:submit|preventDefault={() => controller.submit()}>
         <fieldset class="fr-fieldset">
             <legend class="fr-fieldset__legend fr-h5 text-center" id="login-legend">
-                Connectez-vous avez vos identifiants habituels <br />
-                (si vous n'avez pas encore basculer sur ProConnect)
+                Connectez-vous avec vos identifiants habituels <br />
+                (si vous n'avez pas encore basculé sur ProConnect)
             </legend>
             <div class="fr-fieldset__element fr-mt-2v">
                 <Input
