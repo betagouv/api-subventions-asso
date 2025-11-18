@@ -13,6 +13,10 @@ export default class Step2Controller {
     public inputValue: Store<string> = new Store("");
 
     constructor() {
+        if (depositLogStore.value?.allocatorSiret) {
+            this.inputValue.set(depositLogStore.value.allocatorSiret);
+        }
+
         this.hasError = derived([this.inputValue, this.touched], ([input, touched]) => {
             if (!input) {
                 this.setTouch(false);
@@ -36,15 +40,15 @@ export default class Step2Controller {
         };
 
         try {
-            console.log(depositLogStore.value);
-
-            const depositLog = depositLogStore.value
-                ? await depositLogService.updateDepositLog(this.DEPOSIT_LOG_STEP, data)
-                : await depositLogService.createDepositLog(data);
-
-            depositLogStore.set(depositLog);
-
-            console.log(depositLog);
+            if (depositLogStore.value !== null) {
+                if (depositLogStore.value?.allocatorSiret !== data.allocatorSiret) {
+                    const depositLog = await depositLogService.updateDepositLog(this.DEPOSIT_LOG_STEP, data);
+                    depositLogStore.set(depositLog);
+                }
+            } else {
+                const depositLog = await depositLogService.createDepositLog(data);
+                depositLogStore.set(depositLog);
+            }
 
             return "success";
         } catch (e) {
