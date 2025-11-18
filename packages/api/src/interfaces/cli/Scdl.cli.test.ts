@@ -190,13 +190,13 @@ describe("ScdlCli", () => {
     describe("validateGenericInput", () => {
         it("validates export date", async () => {
             // @ts-expect-error -- test private
-            cli.validateGenericInput(PRODUCER_ENTITY.slug, EXPORT_DATE_STR);
+            cli.validateGenericInput(PRODUCER_ENTITY.siret, EXPORT_DATE_STR);
             expect(CliHelper.validateDate).toHaveBeenCalledWith(EXPORT_DATE_STR);
         });
 
         it("does not validates date if undefined", async () => {
             // @ts-expect-error -- test private
-            cli.validateGenericInput(PRODUCER_ENTITY.slug);
+            cli.validateGenericInput(PRODUCER_ENTITY.siret);
             expect(CliHelper.validateDate).not.toHaveBeenCalled();
         });
 

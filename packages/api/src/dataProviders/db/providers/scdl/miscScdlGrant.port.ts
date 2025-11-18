@@ -61,7 +61,7 @@ export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
 
     /**
      * Save all given producer data in a backup collection
-     * @param slug Producer slug
+     * @param allocatorSiret Allocator SIRET
      */
     public createBackupCollection(allocatorSiret: string) {
         console.log(`creating backup for allocator SIRET ${allocatorSiret} in collection ${this.backupCollectionName}`);
@@ -80,7 +80,7 @@ export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
 
     /**
      * Apply backup collection created in createBackupCollection
-     * @param slug Producer slug
+     * @param siret Allocator SIRET
      */
     public async applyBackupCollection(_allocatorSiret: string) {
         throw new Error("backup is disabled, please clean data manually for now");

@@ -111,14 +111,13 @@ export default class ScdlBatchCli extends ScdlCli {
     }
 
     protected async processFile(fileConfig: ScdlFileProcessingConfig): Promise<void> {
-        const { name, parseParams, addProducer } = fileConfig;
+        const { name, allocatorSiret, exportDate, parseParams, addProducer } = fileConfig;
 
         // just to be sure but everything is supposed to be checked before calling processFile
         if (!name) throw new Error("You must provide the file name for every file's configuration.");
-        if (!parseParams) throw new Error("You must provide the file parameters for every file's configuration");
 
         const dirPath = path.resolve(SCDL_FILE_PROCESSING_PATH);
-        const { allocatorSiret, exportDate, ...optionalParams } = parseParams;
+
         const siret = new Siret(allocatorSiret);
         if (addProducer) {
             if (await scdlService.getProducer(siret)) {
@@ -135,10 +134,10 @@ export default class ScdlBatchCli extends ScdlCli {
             const fileType = path.extname(name).slice(1).toLowerCase();
             const filePath = path.join(dirPath, name);
             if (fileType === FileExtensionEnum.CSV) {
-                const { delimiter, quote } = optionalParams as ScdlParseCsvArgs;
+                const { delimiter, quote } = parseParams as ScdlParseCsvArgs;
                 await this.parse(filePath, allocatorSiret, exportDate, delimiter, quote);
             } else if (fileType === FileExtensionEnum.XLS || fileType === FileExtensionEnum.XLSX) {
-                const { pageName, rowOffset } = optionalParams as ScdlParseXlsArgs;
+                const { pageName, rowOffset } = parseParams as ScdlParseXlsArgs;
                 await this.parseXls(filePath, allocatorSiret, exportDate, pageName, rowOffset);
             } else {
                 console.error(`❌ Unsupported file type : ${name} (type: ${fileType})`);

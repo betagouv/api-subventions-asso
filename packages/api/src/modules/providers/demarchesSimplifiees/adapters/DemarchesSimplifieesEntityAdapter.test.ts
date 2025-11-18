@@ -79,7 +79,7 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
         const SCHEMA = "SCHEMA" as unknown as DemarchesSimplifieesSchema;
         const ADAPTED = {
             beneficiaryEstablishmentId: 12345678901234,
-            provider: "producerSlug",
+            provider: "demarches-simplifiees-1234",
             applicationProviderId: "blablablaHash",
             budgetaryYear: 2024,
             ej: "567",

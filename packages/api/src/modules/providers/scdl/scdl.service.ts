@@ -29,37 +29,30 @@ export class ScdlService {
         return miscScdlProducersPort.findAll();
     }
 
-    getSlugFromName(name: string) {
-        return name
-            .normalize("NFD") // used to decompose "combined graphemes". cf : https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
-            .replaceAll(/[\u0300-\u036f]/g, "") // removes accents
-            .replaceAll(/(\s|'|_)/g, "-") // replaces whitespaces, underscores and quotes  with hyphens
-            .toLowerCase();
-    }
-
     async createProducer(siret: Siret) {
         const asso = await apiAssoService.findAssociationBySiren(siret.toSiren());
         const name: string | undefined = asso?.denomination_siren?.[0].value ?? asso?.denomination_rna?.[0].value;
         if (!name) throw new Error(`Could not find allocator name with SIRET ${siret}`);
-        const slug = this.getSlugFromName(name);
-        const producer: MiscScdlProducerEntity = { siret: siret.toString(), slug, name };
+        const producer: MiscScdlProducerEntity = { siret: siret.toString(), name };
         await miscScdlProducersPort.create(producer);
         this.producerNames.push(name);
         return producer;
     }
 
-    private _buildGrantUniqueId(grant: ScdlStorableGrant, producerSlug: string) {
-        return getMD5(`${producerSlug}-${JSON.stringify(grant.__data__)}`);
+    private _buildGrantUniqueId(grant: ScdlStorableGrant, allocatorSiret: string) {
+        // allocatorSiret is supposed to be in __data__.
+        // Currently, the process accept it empty while it remains defined in the entrypoint
+        // The day we striclty accept SCDL format, allocatorSiret would always be defined and we could remove it from id genertation
+        return getMD5(`${allocatorSiret.toString()}-${JSON.stringify(grant.__data__)}`);
     }
 
     async buildDbosFromStorables(grants: ScdlStorableGrant[], producer: MiscScdlProducerEntity) {
         return grants.map(grant => {
             return {
                 ...grant,
-                producerSlug: producer.slug,
                 allocatorName: producer.name,
                 allocatorSiret: producer.siret,
-                _id: this._buildGrantUniqueId(grant, producer.slug),
+                _id: this._buildGrantUniqueId(grant, producer.siret),
             } as ScdlGrantDbo;
         });
     }
@@ -105,7 +98,7 @@ export class ScdlService {
     /**
      * Validates that the new import contain at least the same amount of data for each given exercise
      *
-     * @param slug Producer slug
+     * @param siret Producer SIRET
      * @param exercices List of exercises contained in the import file
      * @param importedEntities Entities parsed from the imported file
      * @param documentsInDB Entities fetched from DB concerning exercises
@@ -129,7 +122,7 @@ export class ScdlService {
                 importedEntities.filter(entity => entity.exercice === exercise).length
             ) {
                 throw new Error(
-                    `You are trying to import less grants for exercise ${exercise} than what already exist in the database for producer SIRET ${siret}.`,
+                    `You are trying to import less grants for exercise ${exercise} than what already exist in the database for producer's SIRET ${siret}.`,
                 );
             }
         });
@@ -140,7 +133,7 @@ export class ScdlService {
     }
 
     /**
-     * Deletes given documents for a given producer slug
+     * Deletes given documents for a given producer's SIRET
      * This method is used to clean the producer's data before importing new grants.
      * We don't have a unique id for the SCDL grant format, so we must delete all grants (for a given producer - and exercise : see validateAndGetLastExercise) before reimporting new - aggregated - data
      *
@@ -192,7 +185,7 @@ export class ScdlService {
             throw new Error("Importation failed : no entities could be created from this file");
         }
 
-        const firstImport = await this.isProducerFirstImport(producer.slug);
+        const firstImport = await this.isProducerFirstImport(producer.siret);
 
         if (!firstImport) {
             const exercises: Set<number> = entities.reduce((acc, entity) => {
@@ -205,8 +198,8 @@ export class ScdlService {
 
             const exercisesArray = [...exercises]; // transform Set to Array
             const documentsInDB = await this.getGrantsOnPeriodByAllocator(producer.siret, exercisesArray);
-            await this.validateImportCoverage(producer.slug, exercisesArray, entities, documentsInDB);
-            await this.cleanExercises(producer.slug, exercisesArray);
+            await this.validateImportCoverage(producer.siret, exercisesArray, entities, documentsInDB);
+            await this.cleanExercises(producer.siret, exercisesArray);
         }
 
         try {
@@ -215,7 +208,7 @@ export class ScdlService {
         } catch (e) {
             if (!firstImport) {
                 console.log("Importation failed, restoring previous exercise data");
-                await this.restoreBackup(producer.slug);
+                await this.restoreBackup(producer.siret);
             }
             throw e;
         }

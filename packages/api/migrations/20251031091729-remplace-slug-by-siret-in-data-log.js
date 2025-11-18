@@ -4,7 +4,7 @@ module.exports = {
         const promises = producers.map(producer => {
             return db
                 .collection("data-log")
-                .updateMany({ providerId: producer.slug }, { $set: { providerId: producer.name } });
+                .updateMany({ providerId: producer.slug }, { $set: { providerId: producer.siret } });
         });
         await Promise.all(promises);
     },
