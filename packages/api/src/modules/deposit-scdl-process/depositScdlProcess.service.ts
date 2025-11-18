@@ -1,7 +1,7 @@
 import depositLogPort from "../../dataProviders/db/deposit-log/depositLog.port";
 import DepositScdlLogEntity from "./entities/depositScdlLog.entity";
 import { CreateDepositScdlLogDto, DepositScdlLogDto } from "dto";
-import { ConflictError, NotFoundError } from "core";
+import { BadRequestError, ConflictError, NotFoundError } from "core";
 import depositScdlProcessCheckService from "./check/DepositScdlProcess.check.service";
 import DepositScdlLogDtoAdapter from "./depositScdlLog.dto.adapter";
 import scdlService from "../providers/scdl/scdl.service";
@@ -189,7 +189,6 @@ export class DepositScdlProcessService {
     }
 
     async parseAndPersistScdlFile(file: Express.Multer.File, userId: string) {
-        // todo : unit test
         const existingDepositLog = await this.getDepositLog(userId);
         if (!existingDepositLog) {
             throw new NotFoundError("No deposit log found for this user");
@@ -204,7 +203,13 @@ export class DepositScdlProcessService {
             producer = await scdlService.createProducer(siret);
         }
 
-        const { entities } = this.parseFile(file, existingDepositLog.uploadedFileInfos?.sheetName);
+        const { entities, errors } = this.parseFile(file, existingDepositLog.uploadedFileInfos?.sheetName);
+
+        const hasBlockingErrors = errors.some(error => error.bloquant === "oui");
+        if (hasBlockingErrors) {
+            throw new BadRequestError("file contains blocking errors that must be resolved");
+        }
+
         await scdlService.persist(producer, entities);
 
         await dataLogService.addLog(producer.siret, file.originalname, undefined, userId);
