@@ -7,7 +7,7 @@ import {
 } from "./__fixtures__/depositLog.fixture";
 import depositScdlProcessService from "./depositScdlProcess.service";
 import DepositScdlLogEntity from "./entities/depositScdlLog.entity";
-import { ConflictError, NotFoundError } from "core";
+import { BadRequestError, ConflictError, NotFoundError } from "core";
 import depositLogPort from "../../dataProviders/db/deposit-log/depositLog.port";
 import DepositScdlLogDtoAdapter from "./depositScdlLog.dto.adapter";
 import scdlService from "../providers/scdl/scdl.service";
@@ -18,6 +18,12 @@ import * as FileHelper from "../../shared/helpers/FileHelper";
 import { ScdlParsedInfos } from "../providers/scdl/@types/ScdlParsedInfos";
 import MiscScdlGrantEntity from "../providers/scdl/entities/MiscScdlGrantEntity";
 import MiscScdlGrant from "../providers/scdl/__fixtures__/MiscScdlGrant";
+import depositScdlProcessCheckService from "./check/DepositScdlProcess.check.service";
+import MiscScdlProducerEntity from "../providers/scdl/entities/MiscScdlProducerEntity";
+import Siret from "../../identifierObjects/Siret";
+import dataLogService from "../data-log/dataLog.service";
+import { DataLogEntity } from "../data-log/entities/dataLogEntity";
+import { InsertOneResult } from "mongodb";
 
 jest.mock("./check/DepositScdlProcess.check.service");
 jest.mock("../../dataProviders/db/deposit-log/depositLog.port");
@@ -371,6 +377,125 @@ describe("DepositScdlProcessService", () => {
             const actual = await depositScdlProcessService.find();
 
             expect(actual).toEqual([DEPOSIT_LOG_ENTITY]);
+        });
+    });
+
+    describe("parseAndPersistScdlFile", () => {
+        let persistMock;
+        let deletDepositMock;
+
+        const mockGetDepositLog = jest.spyOn(depositScdlProcessService, "getDepositLog") as jest.SpyInstance<
+            Promise<DepositScdlLogEntity | null>,
+            [string]
+        >;
+        const mockGetProducer = jest.spyOn(scdlService, "getProducer") as jest.SpyInstance<
+            Promise<MiscScdlProducerEntity | null>,
+            [Siret]
+        >;
+        const mockCreateProducer = jest.spyOn(scdlService, "createProducer") as jest.SpyInstance<
+            Promise<MiscScdlProducerEntity | null>,
+            [Siret]
+        >;
+        const mockParseCsv = jest.spyOn(scdlService, "parseCsv") as jest.SpyInstance<
+            { entities: ScdlStorableGrant[]; errors: MixedParsedError[]; parsedInfos: ScdlParsedInfos },
+            [fileContent: Buffer, delimiter?: string, quote?: string]
+        >;
+
+        beforeEach(() => {
+            jest.spyOn(depositScdlProcessCheckService, "finalCheckBeforePersist").mockResolvedValue(undefined);
+            persistMock = jest.spyOn(scdlService, "persist").mockResolvedValue(undefined);
+            deletDepositMock = jest.spyOn(depositLogPort, "deleteByUserId").mockResolvedValue(true);
+            jest.spyOn(dataLogService, "addLog").mockResolvedValue({} as InsertOneResult<DataLogEntity>);
+        });
+
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it("should throw not found error when not deposit log found", async () => {
+            const file = createMockFile("test.csv");
+            mockGetDepositLog.mockResolvedValueOnce(null);
+            await expect(depositScdlProcessService.parseAndPersistScdlFile(file, USER_ID)).rejects.toThrow(
+                NotFoundError,
+            );
+        });
+
+        it("should call createProducer if producer don't exists", async () => {
+            const file = createMockFile("test.csv");
+            const parsedResult = {
+                entities: [],
+                errors: [],
+                parsedInfos: {
+                    allocatorsSiret: ["12345678901234"],
+                    grantCoverageYears: [2025],
+                    parseableLines: 0,
+                    totalLines: 0,
+                    existingLinesInDbOnSamePeriod: 0,
+                } as ScdlParsedInfos,
+            };
+
+            mockParseCsv.mockReturnValueOnce(parsedResult);
+
+            mockGetDepositLog.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_2);
+            mockGetProducer.mockResolvedValueOnce(null);
+            mockCreateProducer.mockResolvedValueOnce({ siret: "12345678901234" } as MiscScdlProducerEntity);
+
+            await depositScdlProcessService.parseAndPersistScdlFile(file, USER_ID);
+
+            expect(mockCreateProducer).toHaveBeenCalledTimes(1);
+            expect(mockCreateProducer).toHaveBeenCalledWith(new Siret(DEPOSIT_LOG_ENTITY_STEP_2.allocatorSiret!));
+        });
+
+        it("should not persist when blocking errors", async () => {
+            const file = createMockFile("test.csv");
+            const parsedResult = {
+                entities: [],
+                errors: [{ bloquant: "oui" } as MixedParsedError],
+                parsedInfos: {
+                    allocatorsSiret: ["12345678901234"],
+                    grantCoverageYears: [2025],
+                    parseableLines: 0,
+                    totalLines: 0,
+                    existingLinesInDbOnSamePeriod: 0,
+                } as ScdlParsedInfos,
+            };
+
+            mockGetDepositLog.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_2);
+            mockGetProducer.mockResolvedValueOnce({ siret: "12345678901234" } as MiscScdlProducerEntity);
+
+            mockParseCsv.mockReturnValueOnce(parsedResult);
+
+            await expect(depositScdlProcessService.parseAndPersistScdlFile(file, USER_ID)).rejects.toThrow(
+                BadRequestError,
+            );
+
+            expect(persistMock).not.toHaveBeenCalled();
+            expect(deletDepositMock).not.toHaveBeenCalled();
+        });
+
+        it("should persist and delete deposit log", async () => {
+            const file = createMockFile("test.csv");
+            const parsedResult = {
+                entities: [],
+                errors: [],
+                parsedInfos: {
+                    allocatorsSiret: ["12345678901234"],
+                    grantCoverageYears: [2025],
+                    parseableLines: 0,
+                    totalLines: 0,
+                    existingLinesInDbOnSamePeriod: 0,
+                } as ScdlParsedInfos,
+            };
+
+            mockGetDepositLog.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_2);
+            mockGetProducer.mockResolvedValueOnce({ siret: "12345678901234" } as MiscScdlProducerEntity);
+
+            mockParseCsv.mockReturnValueOnce(parsedResult);
+
+            await depositScdlProcessService.parseAndPersistScdlFile(file, USER_ID);
+
+            expect(persistMock).toHaveBeenCalledTimes(1);
+            expect(deletDepositMock).toHaveBeenCalledTimes(1);
         });
     });
 });
