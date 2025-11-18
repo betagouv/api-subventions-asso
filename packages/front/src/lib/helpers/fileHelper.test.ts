@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import jschardet from "jschardet";
 import XLSX from "xlsx";
 import * as fileHelper from "./fileHelper";
 import FileFormatError from "$lib/errors/file-errors/FileFormatError";
@@ -9,7 +8,6 @@ import FileEncodingError from "$lib/errors/file-errors/FileEncodingError";
 vi.mock("jschardet");
 vi.mock("xlsx");
 
-const mockedJschardet = vi.mocked(jschardet);
 const mockedXLSX = vi.mocked(XLSX);
 
 describe("fileHelper", () => {
@@ -17,13 +15,35 @@ describe("fileHelper", () => {
         vi.clearAllMocks();
     });
 
-    const createMockFile = (name: string, size: number, type: string, content?: string): File => {
+    const createMockFile = (
+        name: string,
+        options?: { type?: string; size?: number },
+        content?: string | Uint8Array,
+    ): File => {
+        const type = options?.type || "text/csv";
+        let bytes: Uint8Array;
+
+        if (content instanceof Uint8Array) {
+            bytes = content;
+        } else {
+            const encoder = new TextEncoder();
+            bytes = encoder.encode(content ? content : "test content");
+        }
+
+        if (options?.size && options.size > bytes.length) {
+            const extra = new Uint8Array(options.size - bytes.length);
+            const combined = new Uint8Array(bytes.length + extra.length);
+            combined.set(bytes);
+            combined.set(extra, bytes.length);
+            bytes = combined;
+        }
+
         return {
             name,
-            size,
+            size: bytes.length,
             type,
-            text: vi.fn().mockResolvedValue(content || "test content"),
-            arrayBuffer: vi.fn().mockResolvedValue(new ArrayBuffer(8)),
+            text: vi.fn().mockResolvedValue(content instanceof Uint8Array ? "" : content),
+            arrayBuffer: vi.fn().mockResolvedValue(bytes.buffer),
         } as unknown as File;
     };
 
@@ -42,8 +62,7 @@ describe("fileHelper", () => {
 
     describe("validateFile", () => {
         it("should not throw for a valid file", async () => {
-            const file = createMockFile("test.csv", 1024 * 1024, "text/csv");
-            mockedJschardet.detect.mockReturnValue({ encoding: "UTF-8", confidence: 0.99 });
+            const file = createMockFile("test.csv");
 
             expect(async () => {
                 await fileHelper.validateFile(file, ["csv"], 10);
@@ -51,24 +70,24 @@ describe("fileHelper", () => {
         });
 
         it("should throw FileSizeError for file too large", async () => {
-            const file = createMockFile("test.csv", 50 * 1024 * 1024, "text/csv");
+            const file = createMockFile("test.csv", { type: "text/csv", size: 1024 * 1024 * 50 });
             await expect(fileHelper.validateFile(file, ["csv"], 10)).rejects.toThrow(FileSizeError);
         });
 
         it("should throw FileFormatError for invalid format", async () => {
-            const file = createMockFile("test.pdf", 1024, "application/pdf");
+            const file = createMockFile("test.pdf", { type: "application/pdf" });
             await expect(fileHelper.validateFile(file, ["csv"], 10)).rejects.toThrow(FileFormatError);
         });
 
         it("should return invalid result for invalid encoding", async () => {
-            const file = createMockFile("test.csv", 1024, "text/csv");
-            mockedJschardet.detect.mockReturnValue({ encoding: "ISO-8859", confidence: 0.99 });
+            const invalidBytes = new Uint8Array([0x80, 0x81, 0x82]);
+            const file = createMockFile("invalid.csv", {}, invalidBytes);
 
             await expect(fileHelper.validateFile(file, ["csv"], 10)).rejects.toThrow(FileEncodingError);
         });
 
         it("should use default max size of 30MB", async () => {
-            const file = createMockFile("test.csv", 40 * 1024 * 1024, "text/csv");
+            const file = createMockFile("test.csv", { size: 40 * 1024 * 1024 });
 
             await expect(fileHelper.validateFile(file, ["csv"])).rejects.toThrow(FileSizeError);
         });
@@ -76,7 +95,7 @@ describe("fileHelper", () => {
 
     describe("validateFileSize", () => {
         it("should validate file size correctly", () => {
-            const file = createMockFile("test.csv", 5 * 1024 * 1024, "text/csv");
+            const file = createMockFile("test.csv", { size: 5 * 1024 * 1024 });
 
             expect(() => {
                 fileHelper.validateFileSize(file, 10);
@@ -84,7 +103,7 @@ describe("fileHelper", () => {
         });
 
         it("should reject file exceeding size limit", () => {
-            const file = createMockFile("test.csv", 15 * 1024 * 1024, "text/csv");
+            const file = createMockFile("test.csv", { size: 15 * 1024 * 1024 });
 
             expect(() => {
                 fileHelper.validateFileSize(file, 10);
@@ -94,7 +113,7 @@ describe("fileHelper", () => {
 
     describe("validateFileFormat", () => {
         it("should validate CSV format correctly", () => {
-            const file = createMockFile("test.csv", 1024, "text/csv");
+            const file = createMockFile("test.csv");
             const fileExtension = fileHelper.getFileExtension(file.name);
 
             expect(() => {
@@ -103,11 +122,9 @@ describe("fileHelper", () => {
         });
 
         it("should validate Excel format correctly", () => {
-            const file = createMockFile(
-                "test.xlsx",
-                1024,
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            );
+            const file = createMockFile("test.xlsx", {
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            });
             const fileExtension = fileHelper.getFileExtension(file.name);
 
             expect(() => {
@@ -116,7 +133,7 @@ describe("fileHelper", () => {
         });
 
         it("should throw invalid format", () => {
-            const file = createMockFile("test.pdf", 1024, "application/pdf");
+            const file = createMockFile("test.pdf", { type: "application/pdf" });
             const fileExtension = fileHelper.getFileExtension(file.name);
             expect(() => {
                 fileHelper.validateFileFormat(file, fileExtension, ["csv"]);
@@ -124,7 +141,7 @@ describe("fileHelper", () => {
         });
 
         it("should validate multiple accepted formats", () => {
-            const file = createMockFile("test.csv", 1024, "text/csv");
+            const file = createMockFile("test.csv");
             const fileExtension = fileHelper.getFileExtension(file.name);
 
             expect(() => {
@@ -135,8 +152,7 @@ describe("fileHelper", () => {
 
     describe("validateFileEncoding", () => {
         it("should validate text file with valid encoding", async () => {
-            const file = createMockFile("test.txt", 1024, "text/plain", "Hello world");
-            mockedJschardet.detect.mockReturnValue({ encoding: "UTF-8", confidence: 0.99 });
+            const file = createMockFile("test.txt", { type: "text/plain" }, "Hello world");
 
             expect(async () => {
                 await fileHelper.validateFileEncoding(file);
@@ -144,8 +160,8 @@ describe("fileHelper", () => {
         });
 
         it("should throw with invalid encoding", async () => {
-            const file = createMockFile("test.txt", 1024, "text/plain", "Hello world");
-            mockedJschardet.detect.mockReturnValue({ encoding: "ISO-8859-1", confidence: 0.99 });
+            const invalidBytes = new Uint8Array([0x80, 0x81, 0x82]);
+            const file = createMockFile("test.txt", { type: "text/plain" }, invalidBytes);
 
             await expect(fileHelper.validateFileEncoding(file)).rejects.toThrow(FileEncodingError);
         });
@@ -153,11 +169,9 @@ describe("fileHelper", () => {
 
     describe("getExcelSheetNames", () => {
         it("should return sheet names from Excel file", async () => {
-            const file = createMockFile(
-                "test.xlsx",
-                1024,
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            );
+            const file = createMockFile("test.xlsx", {
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            });
             const mockArrayBuffer = new ArrayBuffer(8);
             vi.spyOn(file, "arrayBuffer").mockResolvedValue(mockArrayBuffer);
 
@@ -177,22 +191,18 @@ describe("fileHelper", () => {
         });
 
         it("should throw error when Excel file reading fails", async () => {
-            const file = createMockFile(
-                "test.xlsx",
-                1024,
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            );
+            const file = createMockFile("test.xlsx", {
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            });
             vi.spyOn(file, "arrayBuffer").mockRejectedValue(new Error("Read failed"));
 
             await expect(fileHelper.getExcelSheetNames(file)).rejects.toThrow("Error reading Excel file test.xlsx");
         });
 
         it("should handle Excel file with no sheets", async () => {
-            const file = createMockFile(
-                "test.xlsx",
-                1024,
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            );
+            const file = createMockFile("test.xlsx", {
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            });
             const mockArrayBuffer = new ArrayBuffer(8);
             vi.spyOn(file, "arrayBuffer").mockResolvedValue(mockArrayBuffer);
 

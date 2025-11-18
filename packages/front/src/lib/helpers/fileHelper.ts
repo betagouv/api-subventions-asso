@@ -57,14 +57,43 @@ export function validateFileFormat(file: File, fileExtension: string, acceptedFo
 }
 
 export async function validateFileEncoding(file: File): Promise<void> {
-    const text = await file.text();
-    const result = jschardet.detect(text);
-    const encoding = result?.encoding?.toLowerCase();
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = new Uint8Array(arrayBuffer);
 
-    const isValidEncoding = ["utf-8", "utf8", "windows-1252", "win1252"].includes(encoding);
+    if (isValidUTF8(buffer)) {
+        return;
+    }
 
-    if (!isValidEncoding) {
-        throw new FileEncodingError(file.name, ["UTF-8", "Windows-1252"]);
+    const text = new TextDecoder("latin1").decode(buffer);
+    const detection = jschardet.detect(text);
+    const enc = detection?.encoding?.toLowerCase();
+
+    const normalized =
+        enc === "utf-8" || enc === "utf8"
+            ? "utf-8"
+            : enc === "windows-1252" || enc === "win1252"
+              ? "windows-1252"
+              : enc === "iso-8859-1"
+                ? "windows-1252"
+                : null;
+
+    if (normalized === "utf-8") {
+        return;
+    }
+
+    if (normalized === "windows-1252") {
+        return;
+    }
+
+    throw new FileEncodingError(file.name, ["UTF-8", "Windows-1252"]);
+}
+
+function isValidUTF8(bytes: Uint8Array): boolean {
+    try {
+        new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+        return true;
+    } catch {
+        return false;
     }
 }
 
