@@ -142,7 +142,7 @@ describe("SCDL CLI", () => {
                 await test("SCDL", PRODUCER.siret, FIRST_IMPORT_DATE);
                 await expect(test("SCDL_LESS_DATA", PRODUCER.siret, SECOND_IMPORT_DATE)).rejects.toThrow(
                     RegExp(
-                        `You are trying to import less grants for exercise 20\\d{2} than what already exist in the database for producer ${PRODUCER.slug}\\.`,
+                        `You are trying to import less grants for exercise 20\\d{2} than what already exist in the database for producer's SIRET ${PRODUCER.siret}\\.`,
                     ),
                 );
             });
@@ -191,11 +191,11 @@ describe("SCDL CLI", () => {
                 async ({ test, exercise }) => {
                     await test("SCDL", PRODUCER.siret, FIRST_IMPORT_DATE); // import all grants
                     await miscScdlGrantPort.createMany([
-                        { ...SCDL_GRANT_DBOS[0], exercice: exercise, producerSlug: PRODUCER.slug }, // scdl grant dbo uses PRODUCER
+                        { ...SCDL_GRANT_DBOS[0], exercice: exercise, allocatorSiret: PRODUCER.siret }, // scdl grant dbo uses PRODUCER
                     ]); // add one more grant in DB
 
                     await expect(async () => await test("SCDL", PRODUCER.siret, FIRST_IMPORT_DATE)).rejects.toThrow(
-                        `You are trying to import less grants for exercise ${exercise} than what already exist in the database for producer ${PRODUCER.slug}.`,
+                        `You are trying to import less grants for exercise ${exercise} than what already exist in the database for producer's SIRET ${PRODUCER.siret}.`,
                     );
                 },
             );

@@ -3,23 +3,21 @@ import { ScdlGrantDbo } from "../../../../src/modules/providers/scdl/dbo/ScdlGra
 import MiscScdlProducerEntity from "../../../../src/modules/providers/scdl/entities/MiscScdlProducerEntity";
 import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
 import ALLOCATORS from "../../../__fixtures__/allocators.fixture";
+import { getMD5 } from "../../../../src/shared/helpers/StringHelper";
 
 export const LOCAL_AUTHORITIES: WithId<MiscScdlProducerEntity>[] = [
     {
         _id: new ObjectId("690c946272df1a64ab637cd6"),
-        slug: "producer-1",
         name: ALLOCATORS[0].name,
         siret: ALLOCATORS[0].siret,
     },
     {
         _id: new ObjectId("690c945ecb7e7decfa0fb21f"),
-        slug: "producer-2",
         name: ALLOCATORS[1].name,
         siret: ALLOCATORS[1].siret,
     },
     {
         _id: new ObjectId("690c94598e2e9d5154fa349d"),
-        slug: "producer-3",
         name: ALLOCATORS[2].name,
         siret: ALLOCATORS[2].siret,
     },
@@ -49,9 +47,8 @@ const SCDL_RAW_DATAS = [
 
 export const SCDL_GRANT_DBOS: ScdlGrantDbo[] = [
     {
-        _id: `${LOCAL_AUTHORITIES[0].slug}-
-            ${JSON.stringify(SCDL_RAW_DATAS[0])}`,
-        producerSlug: LOCAL_AUTHORITIES[0].slug,
+        _id: getMD5(`${LOCAL_AUTHORITIES[0].siret}-
+            ${JSON.stringify(SCDL_RAW_DATAS[0])}`),
         allocatorName: LOCAL_AUTHORITIES[0].name,
         allocatorSiret: LOCAL_AUTHORITIES[0].siret,
         exercice: 2019,

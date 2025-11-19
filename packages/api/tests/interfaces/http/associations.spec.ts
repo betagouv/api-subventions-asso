@@ -62,7 +62,7 @@ jest.mock("../../../src/modules/provider-request/providerRequest.service");
 
 const g = global as unknown as { app: App };
 
-const insertData = async () => {
+const insertData = async (firstTest: boolean) => {
     // data
     await rnaSirenPort.insert({ siren: new Siren(SIREN_STR), rna: new Rna(RNA_STR) });
 
@@ -80,9 +80,12 @@ const insertData = async () => {
     await osirisActionPort.add(OSIRIS_ACTION_ENTITY);
     await demarchesSimplifieesSchemaPort.upsert(DS_SCHEMAS[0]);
     await demarchesSimplifieesDataPort.upsert(DS_DATA_ENTITIES[0]);
-    // jest integ setup insert producers on app launch and may be defined at this point
-    //@ts-expect-error: only for test
-    await miscScdlProducersPort.upsert(LOCAL_AUTHORITIES[0].slug, LOCAL_AUTHORITIES[0]);
+
+    // producer is define for the first test run (needed in config file to init app)
+    if (!firstTest) {
+        await miscScdlProducersPort.create(LOCAL_AUTHORITIES[0]);
+    }
+
     await miscScdlGrantPort.createMany(SCDL_GRANT_DBOS);
 
     await applicationFlatPort.insertMany([APPLICATION_LINK_TO_CHORUS, APPLICATION_LINK_TO_FONJEP]);
@@ -95,9 +98,10 @@ describe("/association", () => {
     // use to retrieve Association and Establishments from API ASSO (most viable source of data)
     let mockGetAssociationBySiren: jest.SpyInstance;
     let mockGetEstablishmentsBySiren: jest.SpyInstance;
-
+    let firstTest = true;
     beforeEach(async () => {
-        await insertData();
+        await insertData(firstTest);
+        firstTest = false;
         mockGetAssociationBySiren = jest
             .spyOn(apiAssoService, "findAssociationBySiren")
             .mockResolvedValue(API_ASSO_ASSOCIATION_FROM_SIREN);

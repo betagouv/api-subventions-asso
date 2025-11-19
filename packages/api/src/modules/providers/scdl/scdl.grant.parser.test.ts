@@ -216,7 +216,6 @@ describe("ScdlGrantParser", () => {
 
     describe("isGrantValid", () => {
         const ORIGINAL_WITH_PATH = {
-            producerSlug: { value: "producerSlug-value", keyPath: ["producerSlug-origin"] },
             allocatorName: { value: "allocatorName-value", keyPath: ["allocatorName-origin"] },
             allocatorSiret: { value: "allocatorSiret-value", keyPath: ["allocatorSiret-origin"] },
             exercice: { value: "exercice-value", keyPath: ["exercice-origin"] },
