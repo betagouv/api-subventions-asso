@@ -1,5 +1,6 @@
 import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port";
 import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
+import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import { ChorusPaymentFlatEntity } from "../providers/chorus/@types/ChorusPaymentFlat";
 import ChorusAdapter from "../providers/chorus/adapters/ChorusAdapter";
 import chorusService from "../providers/chorus/chorus.service";
@@ -56,8 +57,17 @@ class PaymentFlatChorusService {
         const chorusCursor = chorusService.cursorFind(exerciceBudgetaire);
         const entitiesByUniqueId: Record<string, ChorusPaymentFlatEntity> = {};
 
+        const invalidDocuments: ChorusLineEntity[] = [];
         while (await chorusCursor.hasNext()) {
             const document = (await chorusCursor.next()) as ChorusLineEntity;
+
+            // filter chorus documents with wrong or weird establishment identifier
+            // that will make payment-flat adaptation fails
+            if (!EstablishmentIdentifier.getIdentifierType(document.indexedInformations.siret)) {
+                invalidDocuments.push(document);
+                continue;
+            }
+
             let paymentFlatEntity;
 
             try {
@@ -82,6 +92,14 @@ class PaymentFlatChorusService {
                 entitiesByUniqueId[paymentFlatEntity.uniqueId] = paymentFlatEntity;
             }
         }
+
+        console.log(`Set aside ${invalidDocuments.length} chorus document with invalid establishment identifier`);
+        console.log(
+            `Here are some of them : \n${invalidDocuments
+                .splice(0, 5)
+                .map(document => `- ${document.indexedInformations.siret} \n`)
+                .reduce((acc, str) => (acc += str), "")}`,
+        );
 
         const entities = Object.values(entitiesByUniqueId);
         console.log(`${entities.length} documents transformed`);
