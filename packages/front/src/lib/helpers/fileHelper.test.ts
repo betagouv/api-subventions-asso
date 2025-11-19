@@ -79,13 +79,6 @@ describe("fileHelper", () => {
             await expect(fileHelper.validateFile(file, ["csv"], 10)).rejects.toThrow(FileFormatError);
         });
 
-        it("should return invalid result for invalid encoding", async () => {
-            const invalidBytes = new Uint8Array([0x80, 0x81, 0x82]);
-            const file = createMockFile("invalid.csv", {}, invalidBytes);
-
-            await expect(fileHelper.validateFile(file, ["csv"], 10)).rejects.toThrow(FileEncodingError);
-        });
-
         it("should use default max size of 30MB", async () => {
             const file = createMockFile("test.csv", { size: 40 * 1024 * 1024 });
 

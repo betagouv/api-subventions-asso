@@ -19,6 +19,10 @@ export const formatMap: Record<FileFormat, string[]> = {
 export const TEXT_EXT: string[] = ["txt", "csv", "json", "xml"];
 export const EXCEL_EXT: string[] = ["xls", "xlsx"];
 
+const UTF8 = "utf-8";
+const WINDOWS_1252 = "windows-1252";
+const supportedEncodings = [UTF8, WINDOWS_1252];
+
 export function getFileExtension(fileName: string): string {
     const parts = fileName.split(".");
     if (parts.length < 2) throw new FileFormatError(fileName);
@@ -68,24 +72,22 @@ export async function validateFileEncoding(file: File): Promise<void> {
     const detection = jschardet.detect(text);
     const enc = detection?.encoding?.toLowerCase();
 
-    const normalized =
-        enc === "utf-8" || enc === "utf8"
-            ? "utf-8"
-            : enc === "windows-1252" || enc === "win1252"
-              ? "windows-1252"
-              : enc === "iso-8859-1"
-                ? "windows-1252"
-                : null;
+    const normalized = normalizeEncoding(enc);
 
-    if (normalized === "utf-8") {
-        return;
+    if (!normalized || !supportedEncodings.includes(normalized)) {
+        throw new FileEncodingError(file.name, supportedEncodings);
     }
+}
 
-    if (normalized === "windows-1252") {
-        return;
-    }
+function normalizeEncoding(enc: string | undefined): string | null {
+    const encodingMap: Record<string, string> = {
+        "utf-8": UTF8,
+        utf8: UTF8,
+        "windows-1252": WINDOWS_1252,
+        win1252: WINDOWS_1252,
+    };
 
-    throw new FileEncodingError(file.name, ["UTF-8", "Windows-1252"]);
+    return enc ? encodingMap[enc] || null : null;
 }
 
 function isValidUTF8(bytes: Uint8Array): boolean {
