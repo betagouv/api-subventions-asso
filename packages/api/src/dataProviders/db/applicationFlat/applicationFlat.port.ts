@@ -13,6 +13,7 @@ export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id
     readonly backupCollectionName = this.collectionName + "-backup";
 
     public async createIndexes(): Promise<void> {
+        await this.collection.createIndex({ fournisseur: 1 });
         await this.collection.createIndex({ idEtablissementBeneficiaire: 1 });
         await this.collection.createIndex({ exerciceBudgetaire: 1 });
         await this.collection.createIndex({ idUnique: 1 }, { unique: true });
