@@ -1,5 +1,4 @@
 <script lang="ts">
-    import StepIndicator from "$lib/dsfr/StepIndicator/StepIndicator.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
     import InfoBox from "$lib/components/InfoBox.svelte";
     import Checkbox from "$lib/dsfr/Checkbox.svelte";
@@ -18,9 +17,6 @@
     const ctrl = new Step3Controller(dispatch);
     const { noFileOrInvalid, excelSheets, view, uploadErrorMessage, uploadError, uploadConfig } = ctrl;
 
-    export let currentStep: number;
-    export let stepsDesc: string[];
-
     const infoBoxTitle = "Nous acceptons uniquement des fichiers au format CSV ou XLS. ";
     const checkboxOptions = [
         {
@@ -32,10 +28,6 @@
 </script>
 
 <div>
-    <div class="fr-mb-6v">
-        <StepIndicator {currentStep} {stepsDesc}></StepIndicator>
-    </div>
-
     {#if $view === "sheetSelector"}
         <SheetSelector
             excelSheets={$excelSheets}

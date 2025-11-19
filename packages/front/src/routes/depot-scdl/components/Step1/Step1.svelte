@@ -1,13 +1,9 @@
 <script lang="ts">
-    import StepIndicator from "$lib/dsfr/StepIndicator/StepIndicator.svelte";
     import Checkbox from "$lib/dsfr/Checkbox.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
     import { createEventDispatcher } from "svelte";
 
     const dispatch = createEventDispatcher<{ nextStep: void; prevStep: void }>();
-
-    export let currentStep: number;
-    export let stepsDesc: string[];
 
     const checkboxOptions = [
         {
@@ -19,10 +15,6 @@
 </script>
 
 <div>
-    <div class="fr-mb-6v">
-        <StepIndicator {currentStep} {stepsDesc}></StepIndicator>
-    </div>
-
     <div class="fr-mb-6v">
         <Alert type="warning" title="Alerte sur l’écrasement des données">
             Pour garantir la qualité et l'exhaustivité des données, nous vous demandons de <strong>
