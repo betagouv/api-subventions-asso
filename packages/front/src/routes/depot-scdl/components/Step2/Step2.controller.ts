@@ -40,7 +40,7 @@ export default class Step2Controller {
         };
 
         try {
-            if (depositLogStore.value !== null) {
+            if (depositLogStore.value) {
                 if (depositLogStore.value?.allocatorSiret !== data.allocatorSiret) {
                     const depositLog = await depositLogService.updateDepositLog(this.DEPOSIT_LOG_STEP, data);
                     depositLogStore.set(depositLog);
