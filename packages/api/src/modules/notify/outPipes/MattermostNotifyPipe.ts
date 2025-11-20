@@ -19,6 +19,7 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
     }
 
     notify(type, data) {
+        if (!["prod", "preprod"].includes(ENV)) Promise.resolve(true); // do nothing in dev mode
         switch (type) {
             case NotificationType.USER_DELETED:
                 return this.userDeleted(data);

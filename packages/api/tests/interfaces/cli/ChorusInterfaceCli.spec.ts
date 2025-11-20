@@ -14,10 +14,16 @@ import Siren from "../../../src/identifierObjects/Siren";
 
 describe("ChorusCli", () => {
     describe("parse cli requests", () => {
-        let controller: ChorusCli;
-        const EXPORT_DATE = "2023-12-06";
+        // it contains :
+        // - 5 associations document with specificities : 2 with wrong siret, 2 linked (resulting in a merge in paymentFlat)
+        // - 1 fondation document => filtered out
+        // - 1 company document => filtered out
+        const FILE_PATH = path.resolve(__dirname, "./__fixtures__/new-chorus-export.xlsx");
         // change this when you update the fixture
         const NB_ASSOS_IN_FILES = 5;
+
+        let controller: ChorusCli;
+        const EXPORT_DATE = "2023-12-06";
 
         beforeAll(async () => {
             jest.spyOn(apiAssoService, "findAssociationBySiren").mockImplementation((siren: Siren) => {
@@ -45,7 +51,7 @@ describe("ChorusCli", () => {
         // file should have 6 associations and 1 company's payments
         it("should save association but not companies' payments", async () => {
             const expected = NB_ASSOS_IN_FILES;
-            const filePath = path.resolve(__dirname, "./__fixtures__/new-chorus-export.xlsx");
+            const filePath = FILE_PATH;
             await controller.parse(filePath, EXPORT_DATE);
             const actual = (await chorusLinePort.cursorFind().toArray()).length;
             expect(actual).toEqual(expected);
@@ -55,7 +61,7 @@ describe("ChorusCli", () => {
         it("should not save duplicates", async () => {
             const expected = NB_ASSOS_IN_FILES;
             await chorusLinePort.createIndexes();
-            const filePath = path.resolve(__dirname, "./__fixtures__/new-chorus-export.xlsx");
+            const filePath = FILE_PATH;
             await controller.parse(filePath, EXPORT_DATE);
             await controller.parse(filePath, EXPORT_DATE);
             const actual = (await chorusLinePort.cursorFind().toArray()).length;
@@ -63,7 +69,7 @@ describe("ChorusCli", () => {
         });
 
         it("should register new import", async () => {
-            const filePath = path.resolve(__dirname, "./__fixtures__/new-chorus-export.xlsx");
+            const filePath = FILE_PATH;
             await controller.parse(filePath, EXPORT_DATE);
             const actual = await dataLogPort.findAll();
             expect(actual?.[0]).toMatchObject({
@@ -74,14 +80,14 @@ describe("ChorusCli", () => {
             });
         });
 
-        it.skip("saves in paymentFlat", async () => {
-            // removes skip when #3467 is done
-            const expected = NB_ASSOS_IN_FILES;
+        it("saves in paymentFlat", async () => {
             await chorusLinePort.createIndexes();
-            const filePath = path.resolve(__dirname, "./__fixtures__/new-chorus-export.xlsx");
+            const filePath = FILE_PATH;
             await controller.parse(filePath, EXPORT_DATE);
-            const actual = (await paymentFlatPort.cursorFind().toArray()).length;
-            expect(actual).toEqual(expected);
+            const payments = await paymentFlatPort.cursorFind().toArray();
+            // snapshot contains only 2 payments when we got 3 chorus documents
+            // it merges 2 payments sharing the same uniqueId
+            expect(payments.map(payment => ({ ...payment, updateDate: expect.any(Date) }))).toMatchSnapshot();
         });
     });
 });

@@ -30,7 +30,7 @@ jest.mock("../../shared/Validators");
 const BASE_SCDL_FILE_CONFIG = {
     name: "scdl-import-bretagne-2025.csv",
     addProducer: true,
-    parseParams: { allocatorSiret: "23350001600040" },
+    allocatorSiret: "23350001600040",
 };
 
 const CSV_PARSE_PARMS = { delimiter: ",", quote: "'" };
@@ -39,12 +39,12 @@ const XLS_PARSE_PARMS = { pageName: "Données au format SCDL", rowOffset: 2 };
 const FILES_CONFIG = [
     {
         ...BASE_SCDL_FILE_CONFIG,
-        parseParams: { ...BASE_SCDL_FILE_CONFIG.parseParams, ...CSV_PARSE_PARMS },
+        parseParams: { ...CSV_PARSE_PARMS },
     },
     {
         ...BASE_SCDL_FILE_CONFIG,
         name: "scdl-import-bretagne-2025.xls",
-        parseParams: { ...BASE_SCDL_FILE_CONFIG.parseParams, ...XLS_PARSE_PARMS },
+        parseParams: { ...XLS_PARSE_PARMS },
     },
 ];
 
@@ -52,17 +52,19 @@ const validConfigData: ScdlFileProcessingConfigList = {
     files: [
         {
             name: "donnees-a-integrer1.csv",
-            parseParams: { allocatorSiret: LOCAL_AUTHORITIES[0].siret, exportDate: "2025-01-13" },
+            allocatorSiret: LOCAL_AUTHORITIES[0].siret,
+            exportDate: "2025-01-13",
             addProducer: true,
         },
         {
             name: "donnees-a-integrer2.csv",
-            parseParams: { allocatorSiret: LOCAL_AUTHORITIES[1].siret, exportDate: "2025-01-15" },
-            addProducer: false,
+            allocatorSiret: LOCAL_AUTHORITIES[1].siret,
+            exportDate: "2025-01-15",
         },
         {
             name: "donnees-a-integrer3.csv",
-            parseParams: { allocatorSiret: LOCAL_AUTHORITIES[2].siret, exportDate: "2025-01-17" },
+            allocatorSiret: LOCAL_AUTHORITIES[2].siret,
+            exportDate: "2025-01-17",
             addProducer: true,
         },
     ],
@@ -401,10 +403,9 @@ describe("SCDL Batch Import CLI", () => {
         });
 
         it.each`
-            fileConfig                                                                                                   | errorMsg
-            ${{}}                                                                                                        | ${"You must provide the file name for every file's configuration."}
-            ${{ name: "bretagne-2025" }}                                                                                 | ${"You must provide the file parameters for every file's configuration"}
-            ${{ name: "bretagne-2025", parseParams: { allocatorSiret: LOCAL_AUTHORITIES[0].siret }, addProducer: true }} | ${"You must provide the producer's SIRET for a first import"}
+            fileConfig                                      | errorMsg
+            ${{}}                                           | ${"You must provide the file name for every file's configuration."}
+            ${{ name: "bretagne-2025", addProducer: true }} | ${"Invalid Siret : undefined"}
         `("throws error if the file's config misses some mandatory", async ({ fileConfig, errorMsg }) => {
             try {
                 // @ts-expect-error: private method
@@ -425,7 +426,7 @@ describe("SCDL Batch Import CLI", () => {
                 // @ts-expect-error: test private method
                 await scdlBatchCli.processFile(FILES_CONFIG[0]);
                 expect(jest.mocked(scdlService.createProducer)).toHaveBeenCalledWith(
-                    new Siret(FILES_CONFIG[0].parseParams.allocatorSiret),
+                    new Siret(FILES_CONFIG[0].allocatorSiret),
                 );
             });
 
@@ -436,7 +437,7 @@ describe("SCDL Batch Import CLI", () => {
                 await scdlBatchCli.processFile({ ...FILES_CONFIG[0] });
                 // @ts-expect-error: test protected property
                 expect(scdlBatchCli.errorList).toContain(
-                    `Producer with SIRET ${FILES_CONFIG[0].parseParams.allocatorSiret} already exist. Used with file ${FILES_CONFIG[0].name}`,
+                    `Producer with SIRET ${FILES_CONFIG[0].allocatorSiret} already exist. Used with file ${FILES_CONFIG[0].name}`,
                 );
             });
         });
@@ -448,10 +449,10 @@ describe("SCDL Batch Import CLI", () => {
             await scdlBatchCli.processFile(FILE_CONF);
             expect(scdlBatchCli.parse).toHaveBeenCalledWith(
                 FILE_PATH,
-                FILE_CONF.parseParams.allocatorSiret,
+                FILE_CONF.allocatorSiret,
                 undefined,
-                FILE_CONF.parseParams.delimiter,
-                FILE_CONF.parseParams.quote,
+                FILE_CONF.parseParams?.delimiter,
+                FILE_CONF.parseParams?.quote,
             );
         });
 
@@ -465,7 +466,7 @@ describe("SCDL Batch Import CLI", () => {
             await scdlBatchCli.processFile(fileConf);
             expect(scdlBatchCli.parseXls).toHaveBeenCalledWith(
                 FILE_PATH,
-                fileConf.parseParams.allocatorSiret,
+                fileConf.allocatorSiret,
                 undefined,
                 fileConf.parseParams.pageName,
                 fileConf.parseParams.rowOffset,
@@ -481,7 +482,7 @@ describe("SCDL Batch Import CLI", () => {
             await scdlBatchCli.processFile(FILE_CONF);
             // @ts-expect-error: access protected property
             expect(scdlBatchCli.errorList).toContain(
-                `parse data of ${FILE_CONF.parseParams.allocatorSiret} for file ${FILE_CONF.name} : ${ERROR_MESSAGE}`,
+                `parse data of ${FILE_CONF.allocatorSiret} for file ${FILE_CONF.name} : ${ERROR_MESSAGE}`,
             );
         });
     });

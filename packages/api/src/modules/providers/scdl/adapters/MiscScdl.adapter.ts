@@ -55,7 +55,7 @@ export default class MiscScdlAdapter {
             applicationId: GenericAdapter.NOT_APPLICABLE_VALUE,
             applicationProviderId: GenericAdapter.NOT_APPLICABLE_VALUE,
             instructiveDepartementId: GenericAdapter.NOT_APPLICABLE_VALUE,
-            uniqueId: `${dbo.producerSlug}-${dbo.exercice}-${dataHash}`,
+            uniqueId: `${dbo.allocatorSiret}-${dbo.exercice}-${dataHash}`,
             paymentId: GenericAdapter.NOT_APPLICABLE_VALUE,
             grantedAmount: dbo.amount, // TODO pourcentage subv ? I think not
             requestedAmount: null,
@@ -69,7 +69,7 @@ export default class MiscScdlAdapter {
             object: dbo.object ?? null,
             pluriannual: GenericAdapter.NOT_APPLICABLE_VALUE,
             subventionPercentage: dbo.grantPercentage ?? null,
-            provider: `scdl-${dbo.producerSlug}`,
+            provider: `scdl-${dbo.allocatorSiret}`,
             decisionReference: dbo.decisionReference ?? null,
             subScheme: GenericAdapter.NOT_APPLICABLE_VALUE,
             statusLabel: ApplicationStatus.GRANTED,

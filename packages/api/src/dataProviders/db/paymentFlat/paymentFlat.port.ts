@@ -20,11 +20,13 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
         const idCompanyIndex: keyof PaymentFlatDbo = "idEntrepriseBeneficiaire";
         const typeIdCompanyIndex: keyof PaymentFlatDbo = "typeIdEntrepriseBeneficiaire";
         const budgetaryYear: keyof PaymentFlatDbo = "exerciceBudgetaire";
+        const provider: keyof PaymentFlatDbo = "provider";
 
         await this.collection.createIndex({ [uniqueIdIndex]: 1 }, { unique: true });
         await this.collection.createIndex({ [idEstabIndex]: 1, [typeIdEstabIndex]: 1 });
         await this.collection.createIndex({ [idCompanyIndex]: 1, [typeIdCompanyIndex]: 1 });
         await this.collection.createIndex({ [budgetaryYear]: 1 });
+        await this.collection.createIndex({ [provider]: 1 });
     }
 
     public async hasBeenInitialized() {

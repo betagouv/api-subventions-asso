@@ -46,9 +46,22 @@ describe("Step2Controller", () => {
         it("should update existing depositLog", async () => {
             depositLogStore.set(DEPOSIT_LOG);
             updateDepositLogMock.mockResolvedValue(DEPOSIT_LOG);
+
+            controller.inputValue.set("98765432109876");
+
             await controller.handleValidate();
-            const data = { allocatorSiret: SIRET, overwriteAlert: true };
+            const data = { allocatorSiret: "98765432109876", overwriteAlert: true };
             expect(depositLogService.updateDepositLog).toHaveBeenCalledWith(1, data);
+        });
+
+        it("should not call update depositLog if siret is the same", async () => {
+            depositLogStore.set(DEPOSIT_LOG);
+            updateDepositLogMock.mockResolvedValue(DEPOSIT_LOG);
+
+            controller.inputValue.set("12345678901234");
+
+            await controller.handleValidate();
+            expect(depositLogService.updateDepositLog).not.toHaveBeenCalled();
         });
 
         it("should store deposit log", async () => {

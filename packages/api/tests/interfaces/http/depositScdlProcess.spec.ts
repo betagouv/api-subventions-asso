@@ -16,6 +16,8 @@ import path from "path";
 import miscScdlGrantPort from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.port";
 import { SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
 import UploadedFileInfosEntity from "../../../src/modules/deposit-scdl-process/entities/uploadedFileInfos.entity";
+import MiscScdlProducerEntity from "../../../src/modules/providers/scdl/entities/MiscScdlProducerEntity";
+import scdlService from "../../../src/modules/providers/scdl/scdl.service";
 
 const g = global as unknown as { app: App };
 
@@ -271,7 +273,7 @@ describe("/parcours-depot", () => {
         });
     });
 
-    describe("POST /fichier-scdl", () => {
+    describe("POST /validation-fichier-scdl", () => {
         it("should validate csv scdl file and update depositLog", async () => {
             const token = await createAndGetUserToken();
             const userId = (await getDefaultUser())!._id.toString();
@@ -316,6 +318,77 @@ describe("/parcours-depot", () => {
                 .set("x-access-token", token);
 
             expect(response.statusCode).toBe(400);
+        });
+    });
+
+    describe("POST /depot-fichier-scdl", () => {
+        it("should persist scdl file and delete depositLog", async () => {
+            // @ts-expect-error: mock - omit _id
+            jest.spyOn(scdlService, "getProducer").mockResolvedValueOnce({
+                siret: "12345676541230",
+            } as MiscScdlProducerEntity);
+
+            const token = await createAndGetUserToken();
+            const userId = (await getDefaultUser())!._id.toString();
+
+            const uploadFileInfo = new UploadedFileInfosEntity(
+                "test-csv-valid.csv",
+                new Date(),
+                ["12345676541230"],
+                [2019, 2021],
+                38,
+                39,
+                0,
+                [],
+            );
+            await depositLogPort.insertOne(
+                new DepositScdlLogEntity(userId, 2, undefined, true, "12345676541230", true, uploadFileInfo),
+            );
+
+            const csvPath = path.join(FILE_PATH, "test-csv-valid.csv");
+
+            const response = await request(g.app)
+                .post(`/parcours-depot/depot-fichier-scdl`)
+                .attach("file", csvPath)
+                .set("x-access-token", token);
+
+            expect(response.statusCode).toBe(204);
+            await expect(depositLogPort.findOneByUserId(userId)).resolves.toBeNull();
+        });
+
+        it("should not persist scdl file and delete depositLog when blocking error", async () => {
+            // @ts-expect-error: mock - omit _id
+            jest.spyOn(scdlService, "getProducer").mockResolvedValueOnce({
+                siret: "12345676541230",
+            } as MiscScdlProducerEntity);
+
+            const token = await createAndGetUserToken();
+            const userId = (await getDefaultUser())!._id.toString();
+
+            const uploadFileInfo = new UploadedFileInfosEntity(
+                "test-csv-invalid.csv",
+                new Date(),
+                ["12345676541230"],
+                [2019, 2021],
+                38,
+                39,
+                0,
+                [],
+            );
+            await depositLogPort.insertOne(
+                new DepositScdlLogEntity(userId, 2, undefined, true, "12345676541230", true, uploadFileInfo),
+            );
+
+            const csvPath = path.join(FILE_PATH, "test-csv-invalid.csv");
+
+            const response = await request(g.app)
+                .post(`/parcours-depot/depot-fichier-scdl`)
+                .attach("file", csvPath)
+                .set("x-access-token", token);
+
+            expect(response.statusCode).toBe(400);
+            await expect(depositLogPort.findOneByUserId(userId)).resolves.not.toBeNull();
+            await expect(miscScdlGrantPort.findAll()).resolves.toHaveLength(0);
         });
     });
 });

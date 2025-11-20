@@ -33,7 +33,7 @@ jest.mock("../apiAsso/apiAsso.service");
 describe("ScdlService", () => {
     const UNIQUE_ID = "UNIQUE_ID";
     const PRODUCER = { ...PRODUCER_FIXTURE };
-    const PRODUCER_SLUG = PRODUCER.slug;
+    const PRODUCER_SIRET = PRODUCER.siret;
     const MOST_RECENT_EXERCISE = 2024;
     const LAST_EXERCISE_GRANTS: ScdlGrantDbo[] = [
         { ...MISC_SCDL_GRANT_DBO_FIXTURE, exercice: MOST_RECENT_EXERCISE, _id: "6836ef39067ffc959c9b5ee8" },
@@ -83,20 +83,6 @@ describe("ScdlService", () => {
         });
     });
 
-    describe("getSlugFromName", () => {
-        it.each`
-            name                          | expected                      | comment
-            ${"COMMUNUE-DE-SAINT-BRIEUC"} | ${"communue-de-saint-brieuc"} | ${"lowercases all letters"}
-            ${"Commune de Saint-Brieuc"}  | ${"commune-de-saint-brieuc"}  | ${"replaces white space with hiphens"}
-            ${"Commune_de_Saint_Brieuc"}  | ${"commune-de-saint-brieuc"}  | ${"replaces white space with hiphens"}
-            ${"Departement de L'Oise"}    | ${"departement-de-l-oise"}    | ${"replaces single quote with hiphens"}
-            ${"Départémént de L'Oïsè"}    | ${"departement-de-l-oise"}    | ${"replaces accents"}
-        `("$comment", ({ name, expected, _comment }) => {
-            const actual = scdlService.getSlugFromName(name);
-            expect(actual).toEqual(expected);
-        });
-    });
-
     describe("getProvider()", () => {
         it("should call miscScdlProducersPort.create()", async () => {
             await scdlService.getProducer(new Siret(PRODUCER.siret));
@@ -126,8 +112,8 @@ describe("ScdlService", () => {
         it("should call getMD5()", async () => {
             const DATA = {};
             // @ts-expect-error: call private method
-            await scdlService._buildGrantUniqueId({ __data__: DATA }, PRODUCER.slug);
-            expect(jest.mocked(getMD5)).toHaveBeenCalledWith(`${PRODUCER.slug}-${JSON.stringify(DATA)}`);
+            await scdlService._buildGrantUniqueId({ __data__: DATA }, PRODUCER.siret);
+            expect(jest.mocked(getMD5)).toHaveBeenCalledWith(`${PRODUCER.siret}-${JSON.stringify(DATA)}`);
         });
     });
 
@@ -155,7 +141,7 @@ describe("ScdlService", () => {
         it("should call _buildGrantUniqueId()", async () => {
             const GRANTS = [{ ...MiscScdlGrantFixture, __data__: {} }];
             await scdlService.buildDbosFromStorables(GRANTS, PRODUCER);
-            expect(mockBuildGrantUniqueId).toHaveBeenCalledWith(GRANTS[0], PRODUCER.slug);
+            expect(mockBuildGrantUniqueId).toHaveBeenCalledWith(GRANTS[0], PRODUCER.siret);
         });
 
         it("returns data with allocator data from producer", async () => {
@@ -166,7 +152,6 @@ describe("ScdlService", () => {
                     _id: UNIQUE_ID,
                     allocatorName: PRODUCER.name,
                     allocatorSiret: PRODUCER.siret,
-                    producerSlug: PRODUCER.slug,
                 },
             ];
             const actual = await scdlService.buildDbosFromStorables(GRANTS, PRODUCER);
@@ -240,16 +225,16 @@ describe("ScdlService", () => {
     });
 
     describe("isProducerFirstImport", () => {
-        it("calls miscScdlGrantPort.hasGrantFromSlug()", async () => {
+        it("calls miscScdlGrantPort.findOneByAllocatorSiret()", async () => {
             // @ts-expect-error: mock return value
-            jest.mocked(miscScdlGrantPort.findOneBySlug).mockResolvedValue({} as MiscScdlGrantEntity);
-            await scdlService.isProducerFirstImport(PRODUCER_SLUG);
-            expect(miscScdlGrantPort.findOneBySlug).toHaveBeenCalledWith(PRODUCER_SLUG);
+            jest.mocked(miscScdlGrantPort.findOneByAllocatorSiret).mockResolvedValue({} as MiscScdlGrantEntity);
+            await scdlService.isProducerFirstImport(PRODUCER_SIRET);
+            expect(miscScdlGrantPort.findOneByAllocatorSiret).toHaveBeenCalledWith(PRODUCER_SIRET);
         });
 
-        it("returns false if data already in db for the given producer slug", async () => {
-            jest.mocked(miscScdlGrantPort.findOneBySlug).mockResolvedValue({} as ScdlGrantDbo);
-            const actual = await scdlService.isProducerFirstImport(PRODUCER_SLUG);
+        it("returns false if data already in db for the given producer SIRET", async () => {
+            jest.mocked(miscScdlGrantPort.findOneByAllocatorSiret).mockResolvedValue({} as ScdlGrantDbo);
+            const actual = await scdlService.isProducerFirstImport(PRODUCER_SIRET);
             expect(actual).toEqual(false);
         });
 
@@ -258,8 +243,8 @@ describe("ScdlService", () => {
             ${true}  | ${undefined}
             ${true}  | ${null}
         `("returns $expected with $mockReturnValue", async ({ expected, mockReturnValue }) => {
-            jest.mocked(miscScdlGrantPort.findOneBySlug).mockResolvedValue(mockReturnValue);
-            const actual = await scdlService.isProducerFirstImport(PRODUCER_SLUG);
+            jest.mocked(miscScdlGrantPort.findOneByAllocatorSiret).mockResolvedValue(mockReturnValue);
+            const actual = await scdlService.isProducerFirstImport(PRODUCER_SIRET);
             expect(actual).toEqual(expected);
         });
     });
@@ -274,13 +259,13 @@ describe("ScdlService", () => {
             await expect(
                 async () =>
                     await scdlService.validateImportCoverage(
-                        PRODUCER.slug,
+                        PRODUCER.siret,
                         entities.map(entity => entity.exercice),
                         entities,
                         documents,
                     ),
             ).rejects.toThrow(
-                `You are trying to import less grants for exercise ${exerciseWithError} than what already exist in the database for producer ${PRODUCER.slug}.`,
+                `You are trying to import less grants for exercise ${exerciseWithError} than what already exist in the database for producer's SIRET ${PRODUCER.siret}.`,
             );
         });
     });
@@ -302,29 +287,29 @@ describe("ScdlService", () => {
         });
 
         it("creates backup for provider's data", async () => {
-            await scdlService.cleanExercises(PRODUCER.slug, EXERCISES);
-            expect(miscScdlGrantPort.createBackupCollection).toHaveBeenCalledWith(PRODUCER_SLUG);
+            await scdlService.cleanExercises(PRODUCER.siret, EXERCISES);
+            expect(miscScdlGrantPort.createBackupCollection).toHaveBeenCalledWith(PRODUCER_SIRET);
         });
 
         it("delete provider's data for given exercises", async () => {
-            await scdlService.cleanExercises(PRODUCER.slug, EXERCISES);
-            expect(miscScdlGrantPort.bulkFindDeleteByExercices).toHaveBeenCalledWith(PRODUCER.slug, EXERCISES);
+            await scdlService.cleanExercises(PRODUCER.siret, EXERCISES);
+            expect(miscScdlGrantPort.bulkFindDeleteByExercices).toHaveBeenCalledWith(PRODUCER.siret, EXERCISES);
         });
 
         it("applies backup for scdl if bulkFindDeleteByExercices throws an error", async () => {
             jest.mocked(miscScdlGrantPort).bulkFindDeleteByExercices.mockRejectedValueOnce(
                 new Error("Bulk delete failed"),
             );
-            await scdlService.cleanExercises(PRODUCER.slug, EXERCISES);
-            expect(miscScdlGrantPort.applyBackupCollection).toHaveBeenCalledWith(PRODUCER_SLUG);
+            await scdlService.cleanExercises(PRODUCER.siret, EXERCISES);
+            expect(miscScdlGrantPort.applyBackupCollection).toHaveBeenCalledWith(PRODUCER_SIRET);
         });
 
         it("applies backup for applicationFlat if bulkFindDeleteByExercices throws an error", async () => {
             jest.mocked(miscScdlGrantPort).bulkFindDeleteByExercices.mockRejectedValueOnce(
                 new Error("Bulk delete failed"),
             );
-            await scdlService.cleanExercises(PRODUCER.slug, EXERCISES);
-            expect(applicationFlatPort.applyBackupCollection).toHaveBeenCalledWith(`scdl-${PRODUCER_SLUG}`);
+            await scdlService.cleanExercises(PRODUCER.siret, EXERCISES);
+            expect(applicationFlatPort.applyBackupCollection).toHaveBeenCalledWith(`scdl-${PRODUCER_SIRET}`);
         });
     });
 
@@ -342,13 +327,13 @@ describe("ScdlService", () => {
 
     describe("restoreBackup", () => {
         it("calls applyBackupCollection for scdl", async () => {
-            await scdlService.restoreBackup(PRODUCER_SLUG);
-            expect(miscScdlGrantPort.applyBackupCollection).toHaveBeenCalledWith(PRODUCER_SLUG);
+            await scdlService.restoreBackup(PRODUCER_SIRET);
+            expect(miscScdlGrantPort.applyBackupCollection).toHaveBeenCalledWith(PRODUCER_SIRET);
         });
 
         it("calls applyBackupCollection for applicationFlat", async () => {
-            await scdlService.restoreBackup(PRODUCER_SLUG);
-            expect(applicationFlatPort.applyBackupCollection).toHaveBeenCalledWith(`scdl-${PRODUCER_SLUG}`);
+            await scdlService.restoreBackup(PRODUCER_SIRET);
+            expect(applicationFlatPort.applyBackupCollection).toHaveBeenCalledWith(`scdl-${PRODUCER_SIRET}`);
         });
     });
 
@@ -439,7 +424,7 @@ describe("ScdlService", () => {
         it("validates import", async () => {
             await scdlService.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
             expect(jest.mocked(scdlService.validateImportCoverage)).toHaveBeenCalledWith(
-                PRODUCER_ENTITY.slug,
+                PRODUCER_ENTITY.siret,
                 [STORABLE_DATA.exercice],
                 STORABLE_DATA_ARRAY,
                 GRANTS_ID_DB,
@@ -448,7 +433,7 @@ describe("ScdlService", () => {
 
         it("clean database from grants from most recent exercise present in import file", async () => {
             await scdlService.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
-            expect(mockCleanExercises).toHaveBeenCalledWith(PRODUCER_ENTITY.slug, IMPORTED_DATA_EXERCISES);
+            expect(mockCleanExercises).toHaveBeenCalledWith(PRODUCER_ENTITY.siret, IMPORTED_DATA_EXERCISES);
         });
 
         it("does not handle backup if first import (no data in DB)", async () => {
@@ -485,7 +470,7 @@ describe("ScdlService", () => {
             try {
                 await scdlService.persist(PRODUCER_ENTITY, STORABLE_DATA_ARRAY);
             } catch {
-                expect(mockRestoreBackup).toHaveBeenCalledWith(PRODUCER_ENTITY.slug);
+                expect(mockRestoreBackup).toHaveBeenCalledWith(PRODUCER_ENTITY.siret);
             }
         });
     });
