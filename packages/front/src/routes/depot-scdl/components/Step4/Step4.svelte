@@ -1,5 +1,4 @@
 <script lang="ts">
-    import StepIndicator from "$lib/dsfr/StepIndicator/StepIndicator.svelte";
     import Step4Controller from "./Step4.controller";
     import InfoBox from "$lib/components/InfoBox.svelte";
     import MultipleAllocators from "./MultipleAllocators/MultipleAllocators.svelte";
@@ -18,16 +17,9 @@
     }>();
     const ctrl = new Step4Controller(dispatch);
     const { view } = ctrl;
-
-    export let currentStep: number;
-    export let stepsDesc: string[];
 </script>
 
 <div>
-    <div class="fr-mb-6v">
-        <StepIndicator {currentStep} {stepsDesc}></StepIndicator>
-    </div>
-
     <div class="fr-grid-row fr-grid-row--gutters">
         {#if $view === "multipleAllocator"}
             <MultipleAllocators

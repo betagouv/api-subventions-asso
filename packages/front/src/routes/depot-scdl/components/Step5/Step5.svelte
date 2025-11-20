@@ -1,20 +1,12 @@
 <script lang="ts">
-    import StepIndicator from "$lib/dsfr/StepIndicator/StepIndicator.svelte";
     import { createEventDispatcher } from "svelte";
     import InfoBox from "$lib/components/InfoBox.svelte";
     import { goToUrl } from "$lib/services/router.service";
 
     const dispatch = createEventDispatcher<{ restartNewForm: void }>();
-
-    export let currentStep: number;
-    export let stepsDesc: string[];
 </script>
 
 <div>
-    <div class="fr-mb-6v">
-        <StepIndicator {currentStep} {stepsDesc}></StepIndicator>
-    </div>
-
     <h1 class="fr-h3 text-center">Dépôt terminé avec succès !</h1>
 
     <p>

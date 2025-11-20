@@ -13,7 +13,7 @@ export class DepositScdlController {
         "Déposer votre fichier au format SCDL",
         "Résumé de votre dépôt",
         "Finalisation du dépôt",
-    ]; // todo merge stepComponents with stepsDesc ?
+    ];
     public stepComponents: Record<number, ComponentType>;
     public depositLog = depositLogStore;
     public currentStep: Store<number | null> = new Store(null);
@@ -75,8 +75,7 @@ export class DepositScdlController {
 
     prevStep() {
         this.currentView.set("form");
-        // cannot be null at this point
-        const step = this.currentStep.value as number;
+        const step = this.currentStep.value!;
 
         if (step === this.lastStep) {
             goToUrl("/");
