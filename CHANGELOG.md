@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.75.2](https://github.com/betagouv/api-subventions-asso/compare/v0.75.1...v0.75.2) (2025-11-20)
+
+### Bug Fixes
+
+- **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) prevent blocking errors and adding code coverage ([#3718](https://github.com/betagouv/api-subventions-asso/issues/3718)) ([b03c470](https://github.com/betagouv/api-subventions-asso/commit/b03c4707788014d21ec50f1b357ad7ed3fb79737))
+- **front:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) add siret into input ([#3722](https://github.com/betagouv/api-subventions-asso/issues/3722)) ([22a390e](https://github.com/betagouv/api-subventions-asso/commit/22a390e6e1a0fabdf514da77e5b2689459192ddd))
+- **front:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) encoding detection algo ([#3719](https://github.com/betagouv/api-subventions-asso/issues/3719)) ([f597793](https://github.com/betagouv/api-subventions-asso/commit/f597793d07039ca4f78ea05eb094160c56503530))
+
+### Features
+
+- **api:** [#3703](https://github.com/betagouv/api-subventions-asso/issues/3703) committee stats ([#3716](https://github.com/betagouv/api-subventions-asso/issues/3716)) ([bdf8998](https://github.com/betagouv/api-subventions-asso/commit/bdf89985ec2233d42b551d010f27ed37ac4ae30b))
+
 ## [0.75.1](https://github.com/betagouv/api-subventions-asso/compare/v0.75.0...v0.75.1) (2025-11-17)
 
 ### Bug Fixes

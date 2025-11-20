@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.75.2](https://github.com/betagouv/datasubvention/compare/v0.75.1...v0.75.2) (2025-11-20)
+
+### Bug Fixes
+
+- **front:** [#0000](https://github.com/betagouv/datasubvention/issues/0000) add siret into input ([#3722](https://github.com/betagouv/datasubvention/issues/3722)) ([22a390e](https://github.com/betagouv/datasubvention/commit/22a390e6e1a0fabdf514da77e5b2689459192ddd))
+- **front:** [#0000](https://github.com/betagouv/datasubvention/issues/0000) encoding detection algo ([#3719](https://github.com/betagouv/datasubvention/issues/3719)) ([f597793](https://github.com/betagouv/datasubvention/commit/f597793d07039ca4f78ea05eb094160c56503530))
+
 ## [0.75.1](https://github.com/betagouv/datasubvention/compare/v0.75.0...v0.75.1) (2025-11-17)
 
 ### Bug Fixes
