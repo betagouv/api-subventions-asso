@@ -10,6 +10,7 @@ describe("DepositLogService", () => {
     vi.spyOn(depositLogPort, "deleteDepositLog");
     vi.spyOn(depositLogPort, "validateScdlFile");
     vi.spyOn(depositLogPort, "persistScdlFile");
+    vi.spyOn(depositLogPort, "getGrantCsv");
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -167,6 +168,37 @@ describe("DepositLogService", () => {
                 mockError,
             );
             expect(depositLogPort.validateScdlFile).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe("getGrantCsv", () => {
+        it("should return data", async () => {
+            const response = {
+                data: "col1,col2,col3\ntoto,tata,1234\ntonton,tutu,4567",
+                status: 200,
+                headers: {
+                    "cache-control": "no-store",
+                    "content-disposition": "attachment; filename=existing-grants-22160001800016-2025-20251120.csv",
+                    "content-length": "126078",
+                    "content-type": "text/csv; charset=utf-8",
+                },
+            } as Partial<AxiosResponse>;
+
+            vi.mocked(depositLogPort.getGrantCsv).mockResolvedValue(response as AxiosResponse);
+
+            const result = await depositLogService.getGrantCsv();
+
+            expect(result).toEqual({
+                csvData: response.data,
+                fileName: "existing-grants-22160001800016-2025-20251120.csv",
+            });
+        });
+
+        it("should throw error", async () => {
+            const mockError = new Error("error");
+            vi.mocked(depositLogPort.getGrantCsv).mockRejectedValue(mockError);
+
+            await expect(depositLogService.getGrantCsv).rejects.toThrow(mockError);
         });
     });
 
