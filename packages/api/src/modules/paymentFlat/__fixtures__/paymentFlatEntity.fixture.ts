@@ -37,6 +37,8 @@ export const CHORUS_PAYMENT_FLAT_ENTITY: ChorusPaymentFlatEntity = {
     updateDate: new Date("2025-02-04"), // update date
 };
 
+export const LONELY_CHORUS_PAYMENT = { ...CHORUS_PAYMENT_FLAT_ENTITY, idVersement: "lonely-payment" };
+
 export const CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS: ChorusPaymentFlatEntity = {
     uniqueId: "UNIQUE_ID",
     idVersement: "ID_VERSEMENT", // id versement

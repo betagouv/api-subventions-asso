@@ -46,10 +46,10 @@ describe("EstablishmentService", () => {
         });
     });
 
-    describe("getGrants", () => {
-        it("should call grantService.getGrants()", () => {
-            establishmentService.getGrants(ESTABLISHMENT_ID);
-            expect(grantService.getGrants).toHaveBeenCalledWith(ESTABLISHMENT_ID);
+    describe("getOldGrants", () => {
+        it("should call grantService.getOldGrants()", () => {
+            establishmentService.getOldGrants(ESTABLISHMENT_ID);
+            expect(grantService.getOldGrants).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
     });
 

@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { ApplicationStatus } from "../demandeSubvention";
 import { IdentifierIdName, NOT_APPLICABLE } from "./shared";
 import { OrDefault } from "../shared";
@@ -15,11 +14,10 @@ type MandatoryApplicationFlatDto = {
     montantDemande: number | null; // Montant demandé par le demandeur pour un exercice budgetaire donné
     montantAccorde: number | null; // Montant accordé au demandeur pour un exercice budgetaire donné
     dateMiseAJour: Date;
+    exerciceBudgetaire: number | null; // subventia ne donne pas d'exercice budgétaire donc on est bloqué pour le moment
 };
 
 type OptionalApplicationFlatDto = {
-    _id: ObjectId;
-    exerciceBudgetaire: number; // subventia ne donne pas d'exercice budgétaire donc on est bloqué pour le moment
     idJointure: string; // id permettant de faire une jointure avec une autre source de données
     descriptionIdJointure: string; // description de l'idJointure et de la jointure que l'idJointure permet d'effectuer
     nomAttribuant: string; // Nom de l'autorité administrative qui pilote le dispositif ou programme de subvention ou en delegue la gestion

@@ -141,10 +141,7 @@ From the log collection
 
 ```js
 [
-<<<<<<< Updated upstream
-=======
     { $match: { timestamp: { $gte: new Date("2024-01-01"), $lt: new Date("2025-01-01") } } },
->>>>>>> Stashed changes
     {
         $match: { exercice: 2023 },
     },

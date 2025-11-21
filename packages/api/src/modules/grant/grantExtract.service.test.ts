@@ -1,5 +1,5 @@
 import grantExtractService from "./grantExtract.service";
-import { Association, Grant, EstablishmentSimplified } from "dto";
+import { Association, EstablishmentSimplified } from "dto";
 import grantService from "./grant.service";
 import associationsService from "../associations/associations.service";
 import GrantAdapter from "./grant.adapter";
@@ -9,6 +9,7 @@ import Siret from "../../identifierObjects/Siret";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import Siren from "../../identifierObjects/Siren";
+import { GrantFlatEntity } from "../../entities/GrantFlatEntity";
 
 jest.mock("./grant.service");
 jest.mock("../associations/associations.service");
@@ -21,7 +22,8 @@ describe("GrantExtractService", () => {
     describe("buildCsv", () => {
         const SIRET = new Siret("12345678912345");
         const IDENTIFIER = EstablishmentIdentifier.fromSiret(SIRET, AssociationIdentifier.fromSiren(SIRET.toSiren()));
-        const GRANTS = [1, 2, 3] as unknown as Grant[];
+        // @ts-expect-error: we don't care about the structure here
+        const GRANTS: GrantFlatEntity[] = [1, 2, 3];
         const ESTABS = [{ siret: [{ value: SIRET.value }] }] as unknown as EstablishmentSimplified[];
         const ASSO = { denomination_siren: [{ value: "NomAsso" }] } as unknown as Association;
         const ESTABS_BY_SIRET = { [SIRET.value]: ESTABS[0] };
@@ -58,11 +60,6 @@ describe("GrantExtractService", () => {
             expect(associationsService.getEstablishments).toHaveBeenCalledWith(IDENTIFIER.associationIdentifier);
         });
 
-        it("separates grants", async () => {
-            await grantExtractService.buildCsv(IDENTIFIER);
-            expect(grantService.handleMultiYearGrants).toHaveBeenCalledWith(GRANTS);
-        });
-
         it("calls adapter for each separated grant and gotten asso and estabsBySiret", async () => {
             await grantExtractService.buildCsv(IDENTIFIER);
             expect(GrantAdapter.grantToExtractLine).toHaveBeenCalledWith(1, ASSO, ESTABS_BY_SIRET);
@@ -85,7 +82,7 @@ describe("GrantExtractService", () => {
         });
 
         it("converts number to comma style", async () => {
-            jest.mocked(grantService.getGrants).mockResolvedValueOnce([1 as unknown as Grant]);
+            jest.mocked(grantService.getGrants).mockResolvedValueOnce([1 as unknown as GrantFlatEntity]);
             jest.mocked(GrantAdapter.grantToExtractLine).mockReturnValueOnce("1" as unknown as GrantToExtract);
 
             await grantExtractService.buildCsv(IDENTIFIER);

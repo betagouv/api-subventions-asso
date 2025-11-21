@@ -10,8 +10,9 @@ import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 import GrantProvider from "../grant/@types/GrantProvider";
+import { StructureProvider } from "../StructureProvider";
 
-export class PaymentFlatService extends ProviderCore implements PaymentProvider, GrantProvider {
+export class PaymentFlatService extends ProviderCore implements PaymentProvider, GrantProvider, StructureProvider {
     constructor() {
         super({
             name: "Payment Flat",
@@ -47,7 +48,7 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider,
         return PaymentFlatAdapter.rawToPayment(rawGrant);
     }
 
-    async getPaymentFlat(identifier: StructureIdentifier): Promise<PaymentFlatEntity[]> {
+    async getEntitiesByIdentifier(identifier: StructureIdentifier): Promise<PaymentFlatEntity[]> {
         const payments: PaymentFlatEntity[] = [];
 
         if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
@@ -59,12 +60,12 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider,
     }
 
     async getPayments(identifier: StructureIdentifier): Promise<Payment[]> {
-        const payments = await this.getPaymentFlat(identifier);
+        const payments = await this.getEntitiesByIdentifier(identifier);
         return this.toPaymentArray(payments);
     }
 
     async getPaymentsDto(identifier: StructureIdentifier): Promise<PaymentFlatDto[]> {
-        const payments: PaymentFlatEntity[] = await this.getPaymentFlat(identifier);
+        const payments: PaymentFlatEntity[] = await this.getEntitiesByIdentifier(identifier);
         return payments.map(entity => PaymentFlatAdapter.toDto(entity));
     }
 

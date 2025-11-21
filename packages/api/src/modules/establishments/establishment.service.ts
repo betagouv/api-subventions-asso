@@ -73,8 +73,8 @@ export class EstablishmentService {
         return sortedEstablishment.map(establishment => EstablishmentAdapter.toSimplifiedEstablishment(establishment));
     }
 
-    getGrants(id: EstablishmentIdentifier) {
-        return grantService.getGrants(id);
+    getOldGrants(id: EstablishmentIdentifier) {
+        return grantService.getOldGrants(id);
     }
 
     async getSubventions(id: EstablishmentIdentifier) {
