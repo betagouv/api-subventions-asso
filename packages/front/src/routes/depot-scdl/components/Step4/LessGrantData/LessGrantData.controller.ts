@@ -16,7 +16,7 @@ export default class LessGrantDataController {
     }
 
     async downloadGrantsCsv() {
-        const { csvData, fileName } = await depositLogService.getGrantCsv();
+        const { csvData, fileName } = await depositLogService.getCsv();
         const blob = new Blob([csvData], { type: "text/csv; charset=utf-8" });
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");

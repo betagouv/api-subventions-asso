@@ -31,8 +31,8 @@ class DepositLogService {
         return response.data as DepositScdlLogResponseDto;
     }
 
-    async getGrantCsv() {
-        const response = await depositLogPort.getGrantCsv();
+    async getCsv() {
+        const response = await depositLogPort.getExistingScdlDatas();
 
         const headers = response.headers;
         const contentDisposition = headers["content-disposition"];
