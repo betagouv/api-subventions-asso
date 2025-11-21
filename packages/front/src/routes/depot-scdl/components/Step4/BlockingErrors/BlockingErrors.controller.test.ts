@@ -2,7 +2,7 @@ import BlockingErrorsController from "./BlockingErrors.controller";
 import { depositLogStore } from "$lib/store/depositLog.store";
 import type { UploadedFileInfosDto } from "dto";
 import { stringify, type Input, type Options } from "csv-stringify/browser/esm/sync";
-import type { MockedFunction } from "vitest";
+import type { MockedFunction, MockInstance } from "vitest";
 
 vi.mock("$lib/stores/depositLogStore", () => ({
     depositLogStore: {
@@ -16,8 +16,8 @@ vi.mock("csv-stringify/browser/esm/sync", () => ({
 
 describe("BlockingErrorsController", () => {
     let controller: BlockingErrorsController;
-    let createObjectURLMock: ReturnType<typeof vi.fn>;
-    let revokeObjectURLMock: ReturnType<typeof vi.fn>;
+    let createObjectURLMock: MockInstance<(blob: Blob) => string>;
+    let revokeObjectURLMock: MockInstance<(url: string) => void>;
     let mockLink: Partial<HTMLAnchorElement>;
     let stringifyMock: MockedFunction<(input: Input, options?: Options) => string>;
     const errors = [
@@ -38,15 +38,12 @@ describe("BlockingErrorsController", () => {
 
         stringifyMock = vi.mocked(stringify);
 
-        createObjectURLMock = vi.fn().mockReturnValue("blob:created-url-for-csv-file-data");
-        revokeObjectURLMock = vi.fn();
+        createObjectURLMock = vi.fn<(blob: Blob) => string>().mockReturnValue("blob:created-url-for-csv-file-data");
+        revokeObjectURLMock = vi.fn<(url: string) => void>();
 
-        Object.defineProperty(window, "URL", {
-            value: {
-                createObjectURL: createObjectURLMock,
-                revokeObjectURL: revokeObjectURLMock,
-            },
-            writable: true,
+        vi.stubGlobal("URL", {
+            createObjectURL: createObjectURLMock,
+            revokeObjectURL: revokeObjectURLMock,
         });
 
         mockLink = {
@@ -61,7 +58,7 @@ describe("BlockingErrorsController", () => {
     describe("downloadErrorFile", () => {
         const mockCsvString =
             "valeur,colonne,bloquant,doublon,message\nvaleur 1,colonne 1,oui,non,error message\nvaleur 2,colonne 2,oui,non,error message";
-        it("should stringify has been called with errors array", async () => {
+        it("calls stringify with errors array", async () => {
             stringifyMock.mockReturnValue(mockCsvString);
 
             await controller.downloadErrorFile();
@@ -73,7 +70,7 @@ describe("BlockingErrorsController", () => {
             });
         });
 
-        it("should download errors array", async () => {
+        it("creates a CSV blob with correct MIME type", async () => {
             stringifyMock.mockReturnValue(mockCsvString);
 
             await controller.downloadErrorFile();
@@ -83,9 +80,24 @@ describe("BlockingErrorsController", () => {
             const blobCall = createObjectURLMock.mock.calls[0][0];
             expect(blobCall).toBeInstanceOf(Blob);
             expect(blobCall.type).toBe("text/csv; charset=utf-8");
+        });
+
+        it("triggers download of file", async () => {
+            stringifyMock.mockReturnValue(mockCsvString);
+
+            await controller.downloadErrorFile();
+
+            expect(createObjectURLMock).toHaveBeenCalledTimes(1);
 
             expect(mockLink.href).toBe("blob:created-url-for-csv-file-data");
             expect(mockLink.click).toHaveBeenCalledTimes(1);
+        });
+
+        it("revokes blob url after download", async () => {
+            stringifyMock.mockReturnValue(mockCsvString);
+
+            await controller.downloadErrorFile();
+
             expect(revokeObjectURLMock).toHaveBeenCalledWith("blob:created-url-for-csv-file-data");
         });
 
