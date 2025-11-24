@@ -15,8 +15,6 @@ export type ApplicationWithPayments = {
     payments: FlatPayment[];
 };
 
-export type FlatGrant = OnlyApplication | OnlyPayments | ApplicationWithPayments;
-
 export type FlatPayment = FlatChorusPayment | FlatFonjepPayment;
 
 // reflect BasePayment without ProviderValue from DTO package
