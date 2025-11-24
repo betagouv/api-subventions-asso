@@ -41,7 +41,13 @@
                 <li>regarder dans votre fichier Excel s'il y figure</li>
                 <li>
                     le rechercher sur
-                    <a class="fr-link" href="https://annuaire-entreprises.data.gouv.fr/">Annuaire Entreprises →</a>
+                    <a
+                        class="fr-link"
+                        href="https://annuaire-entreprises.data.gouv.fr/"
+                        target="_blank"
+                        rel="noopener noreferrer">
+                        Annuaire Entreprises
+                    </a>
                 </li>
             </ul>
         </InfoBox>

@@ -19,7 +19,10 @@
         </ul>
         <p class="fr-mb-7v">
             👉 Avant de commencer, nous vous recommandons de consulter
-            <a href="https://www.notion.so/R-gles-de-format-SCDL-1281788663a380e1a57efdd9b324c1ba">
+            <a
+                href="https://www.notion.so/R-gles-de-format-SCDL-1281788663a380e1a57efdd9b324c1ba"
+                target="_blank"
+                rel="noopener noreferrer">
                 notre guide de préparation des fichiers
             </a>
             .

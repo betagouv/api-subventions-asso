@@ -24,7 +24,13 @@
             données sur data.gouv.fr.
         </p>
 
-        <a class="fr-link" href="https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000034600552">Voir le texte de loi →</a>
+        <a
+            class="fr-link"
+            href="https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000034600552"
+            target="_blank"
+            rel="noopener noreferrer">
+            Voir le texte de loi
+        </a>
     </InfoBox>
 
     <div style="text-align: center;">

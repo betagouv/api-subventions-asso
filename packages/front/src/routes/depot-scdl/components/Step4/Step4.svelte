@@ -40,7 +40,9 @@
                     <br />
                     <a
                         class="fr-link"
-                        href="https://www.notion.so/R-gles-de-format-SCDL-1281788663a380e1a57efdd9b324c1ba">
+                        href="https://www.notion.so/R-gles-de-format-SCDL-1281788663a380e1a57efdd9b324c1ba"
+                        target="_blank"
+                        rel="noopener noreferrer">
                         Voir la documentation
                     </a>
                     <br />
@@ -49,7 +51,9 @@
                     Vous pouvez également nous contacter via le support Crisp ou prendre rendez-vous avec notre équipe.
                     Nous vous guiderons dans la mise à jour de votre fichier.
                     <br />
-                    <a class="fr-link" href="mailto:{ctrl.contactEmail}">Prendre rendez-vous</a>
+                    <a class="fr-link" href="mailto:{ctrl.contactEmail}" target="_blank" rel="noopener noreferrer">
+                        Prendre rendez-vous
+                    </a>
                 </p>
             </InfoBox>
         </div>
