@@ -1,9 +1,8 @@
-import type { StructureIdentifierDto } from "dto";
+import type { GrantFlatDto, StructureIdentifierDto } from "dto";
 import ApplicationInfoModal from "./Modals/ApplicationInfoModal.svelte";
 import PaymentsInfoModal from "./Modals/PaymentsInfoModal.svelte";
 import { getApplicationCells, getApplicationDashboardData, isGranted } from "./application.helper";
 import { getPaymentDashboardData, getPaymentsCells } from "./payments.helper";
-import type { FlatGrant } from "$lib/resources/@types/FlattenGrant";
 import { isSiret } from "$lib/helpers/identifierHelper";
 import associationPort from "$lib/resources/associations/association.port";
 import establishmentPort from "$lib/resources/establishments/establishment.port";
@@ -21,11 +20,11 @@ import type { Option } from "$lib/types/FieldOption";
 
 export class GrantDashboardController {
     public identifier: StructureIdentifierDto;
-    public grantPromise: Promise<FlatGrant[]> = returnInfinitePromise();
-    public grants: Store<FlatGrant[] | undefined> = new Store(undefined);
-    public grantsByExercise: Record<string, FlatGrant[]> = {};
+    public grantPromise: Promise<GrantFlatDto[]> = returnInfinitePromise();
+    public grants: Store<GrantFlatDto[] | undefined> = new Store(undefined);
+    public grantsByExercise: Record<string, GrantFlatDto[]> = {};
 
-    public selectedGrants: Store<FlatGrant[] | null> = new Store(null);
+    public selectedGrants: Store<GrantFlatDto[] | null> = new Store(null);
     public selectedExercise: Store<string | null> = new Store(null);
 
     // final rows displayed in view: can be updated with exercise filter and in a future with other filters
@@ -68,15 +67,15 @@ export class GrantDashboardController {
             if (exercise == null) return;
             this.selectedGrants.set(this.grantsByExercise[exercise]);
         });
-        this.selectedGrants.subscribe(grants => this.updateRows(grants as FlatGrant[]));
+        this.selectedGrants.subscribe(grants => this.updateRows(grants as GrantFlatDto[]));
     }
 
     /*
     initial processing of grants to split them by exercise and fill available exercises for select
      */
-    private processGrants(grants: FlatGrant[]) {
+    private processGrants(grants: GrantFlatDto[]) {
         this.grants.set(grants);
-        this.grantsByExercise = this.splitGrantsByExercise(this.grants.value as FlatGrant[]);
+        this.grantsByExercise = this.splitGrantsByExercise(this.grants.value as GrantFlatDto[]);
 
         this.exerciseOptions.set(this._buildExercices(Object.keys(this.grantsByExercise)));
         this.selectedExercise.set((this.exerciseOptions.value || []).slice(-1)?.[0]?.value);
@@ -99,7 +98,7 @@ export class GrantDashboardController {
         else return defaultContent;
     }
 
-    private updateRows(grants: FlatGrant[]) {
+    private updateRows(grants: GrantFlatDto[]) {
         if (!grants) return;
         this.rows.set(
             grants.map(grant => {
@@ -110,7 +109,7 @@ export class GrantDashboardController {
                     granted,
                     application: getApplicationDashboardData(grant.application),
                     payment: getPaymentDashboardData(grant.payments),
-                    flatGrant: grant,
+                    grant: grant,
                 };
             }),
         );
@@ -127,10 +126,10 @@ export class GrantDashboardController {
     }
 
     // Grants are expected to be ordered from API
-    private splitGrantsByExercise(grants: FlatGrant[]) {
-        const byExercise: Record<string | number, FlatGrant[]> = {};
+    private splitGrantsByExercise(grants: GrantFlatDto[]) {
+        const byExercise: Record<string | number, GrantFlatDto[]> = {};
         return grants.reduce((byExercise, grant) => {
-            const exercise = grant.application?.annee_demande ?? grant.payments?.[0]?.exerciceBudgetaire;
+            const exercise = grant.application?.exerciceBudgetaire ?? grant.payments?.[0]?.exerciceBudgetaire;
             if (!exercise)
                 return byExercise; // improve this and display somewhere that some grants have no exercise
             else {
@@ -152,17 +151,19 @@ export class GrantDashboardController {
         this.isExtractLoading.set(false);
     }
 
+    // Display payment modal for the clicked row
     public onPaymentClick(index) {
         if (!this.rows.value[index].paymentsCells) return;
         trackerService.buttonClickEvent("association-etablissement.dashbord.payment.more_information");
-        data.set({ payments: (this.rows.value as SortableRow[])[index].flatGrant.payments });
+        data.set({ payments: (this.rows.value as SortableRow[])[index].grant.payments });
         modal.set(PaymentsInfoModal);
     }
 
+    // Display application modal for the clicked row
     public onApplicationClick(index) {
         if (!this.rows.value[index].applicationCells) return;
         trackerService.buttonClickEvent("association-etablissement.dashbord.subvention.more_information");
-        data.set({ application: (this.rows.value as SortableRow[])[index].flatGrant.application });
+        data.set({ application: (this.rows.value as SortableRow[])[index].grant.application });
         modal.set(ApplicationInfoModal);
     }
 }

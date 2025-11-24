@@ -1,4 +1,4 @@
-import { AxiosResponse } from "axios";
+import type { AxiosResponse } from "axios";
 import establishmentPort from "./establishment.port";
 import requestsService from "$lib/services/requests.service";
 vi.mock("$lib/services/requests.service");
@@ -41,7 +41,7 @@ describe("EstablishmentPort", () => {
         describe("getGrants", () => {
             it("calls getResource", () => {
                 establishmentPort.getGrants(SIRET);
-                expect(mockGetResource).toHaveBeenCalledWith(SIRET, "grants");
+                expect(mockGetResource).toHaveBeenCalledWith(SIRET, "grants/v2");
             });
 
             it("returns subventions", async () => {

@@ -166,8 +166,11 @@ export class GrantService {
         );
 
         // add payments either to existing grant with application or create a new grant without
+        // uses different array to ease the findIndex
         Object.entries(groupedPayments).map(([paymentId, group]) => {
-            const index = grants.findIndex(grant => grant.application!.paymentId === paymentId);
+            const index = grants.findIndex(grant => {
+                return grant.application?.paymentId === paymentId;
+            });
             if (index >= 0) {
                 grants[index].payments = group;
             } else {

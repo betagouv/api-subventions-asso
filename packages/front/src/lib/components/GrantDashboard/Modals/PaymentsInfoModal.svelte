@@ -14,12 +14,12 @@
     <Table id={tableId} {headers}>
         {#each $data.payments as payment, index (index)}
             <TableRow id={tableId} {index} title="Détail des versements" hideTitle={true}>
-                <td class="primary">{valueOrHyphen(numberToEuro(payment.amount))}</td>
-                <td>{valueOrHyphen(payment.domaineFonctionnel)}</td>
-                <td>{valueOrHyphen(payment.activitee)}</td>
-                <td>{valueOrHyphen(payment.centreFinancier)}</td>
+                <td class="primary">{valueOrHyphen(numberToEuro(payment.montant))}</td>
+                <td>{valueOrHyphen(payment.action)}</td>
+                <td>{valueOrHyphen(payment.activite)}</td>
+                <td>{valueOrHyphen(payment.libelleCentreFinancier)}</td>
                 <td>{valueOrHyphen(dateToDDMMYYYY(new Date(payment.dateOperation)))}</td>
-                <td>{payment.programme ? `${payment.programme} - ${valueOrHyphen(payment.libelleProgramme)}` : "-"}</td>
+                <td>{payment.programme ? `${payment.numeroProgramme} - ${valueOrHyphen(payment.programme)}` : "-"}</td>
             </TableRow>
         {/each}
     </Table>
