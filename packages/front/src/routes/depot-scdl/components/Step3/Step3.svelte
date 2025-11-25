@@ -53,6 +53,7 @@
                     <p class="fr-mb-0">
                         Pour préparer votre fichier, vous pouvez vous appuyer
                         <a
+                            class="fr-link"
                             href="https://www.notion.so/R-gles-de-format-SCDL-1281788663a380e1a57efdd9b324c1ba"
                             target="_blank"
                             rel="noopener noreferrer">
