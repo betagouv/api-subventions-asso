@@ -1,5 +1,6 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
+    import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
 
     const dispatch = createEventDispatcher<{ start: void }>();
 </script>
@@ -19,13 +20,9 @@
         </ul>
         <p class="fr-mb-7v">
             👉 Avant de commencer, nous vous recommandons de consulter
-            <a
-                class="fr-link"
-                href="https://www.notion.so/R-gles-de-format-SCDL-1281788663a380e1a57efdd9b324c1ba"
-                target="_blank"
-                rel="noopener noreferrer">
+            <TargetBlankLink href="https://www.notion.so/R-gles-de-format-SCDL-1281788663a380e1a57efdd9b324c1ba">
                 notre guide de préparation des fichiers
-            </a>
+            </TargetBlankLink>
             .
         </p>
         <p class="fr-mb-7v">

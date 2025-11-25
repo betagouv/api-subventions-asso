@@ -2,6 +2,7 @@
     import { createEventDispatcher } from "svelte";
     import InfoBox from "$lib/components/InfoBox.svelte";
     import { goToUrl } from "$lib/services/router.service";
+    import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
 
     const dispatch = createEventDispatcher<{ restartNewForm: void }>();
 </script>
@@ -24,13 +25,9 @@
             données sur data.gouv.fr.
         </p>
 
-        <a
-            class="fr-link"
-            href="https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000034600552"
-            target="_blank"
-            rel="noopener noreferrer">
+        <TargetBlankLink href="https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000034600552">
             Voir le texte de loi
-        </a>
+        </TargetBlankLink>
     </InfoBox>
 
     <div style="text-align: center;">

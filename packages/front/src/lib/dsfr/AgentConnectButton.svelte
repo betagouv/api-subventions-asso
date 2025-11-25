@@ -1,4 +1,6 @@
 <script lang="ts">
+    import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
+
     export let link;
 </script>
 
@@ -10,13 +12,9 @@
         </button>
     </form>
     <p class="link">
-        <a
-            href="https://www.proconnect.gouv.fr/"
-            target="_blank"
-            rel="noopener"
-            title="Qu’est-ce que ProConnect ? - nouvelle fenêtre">
+        <TargetBlankLink href="https://www.proconnect.gouv.fr/" title="Qu’est-ce que ProConnect ? - nouvelle fenêtre">
             Qu’est-ce que ProConnect ?
-        </a>
+        </TargetBlankLink>
     </p>
 </div>
 

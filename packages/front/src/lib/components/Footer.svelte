@@ -1,6 +1,7 @@
 <script>
     import { getContext } from "svelte";
     import { PUBLIC_STATS_URL, PUBLIC_PRIVACY_POLICY_URL, PUBLIC_CGU_URL } from "$env/static/public";
+    import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
 
     const { getDescription, getRepo } = getContext("app");
 </script>
@@ -23,54 +24,42 @@
                 </p>
                 <p class="fr-footer__content-desc">
                     Le code source est ouvert et les contributions sont bienvenues.
-                    <a
-                        title="Voir le code source - nouvelle fenêtre"
-                        href={getRepo()}
-                        target="_blank"
-                        rel="noopener noreferrer">
+                    <TargetBlankLink href={getRepo()} title="Voir le code source - nouvelle fenêtre">
                         Voir le code source
-                    </a>
+                    </TargetBlankLink>
                 </p>
                 <ul class="fr-footer__content-list">
                     <li class="fr-footer__content-item">
-                        <a
+                        <TargetBlankLink
+                            href="https://info.gouv.fr"
                             class="fr-footer__content-link"
-                            target="_blank"
-                            rel="noopener external"
-                            title="info.gouv.fr - nouvelle fenêtre"
-                            href="https://info.gouv.fr">
+                            title="info.gouv.fr - nouvelle fenêtre">
                             info.gouv.fr
-                        </a>
+                        </TargetBlankLink>
                     </li>
                     <li class="fr-footer__content-item">
-                        <a
-                            class="fr-footer__content-link"
-                            target="_blank"
-                            rel="noopener external"
+                        <TargetBlankLink
+                            linkClass="fr-footer__content-link"
                             title="service-public.fr - nouvelle fenêtre"
                             href="https://service-public.fr">
                             service-public.fr
-                        </a>
+                        </TargetBlankLink>
                     </li>
                     <li class="fr-footer__content-item">
-                        <a
-                            class="fr-footer__content-link"
-                            target="_blank"
-                            rel="noopener external"
+                        <TargetBlankLink
+                            linkClass="fr-footer__content-link"
                             title="legifrance.gouv.fr - nouvelle fenêtre"
                             href="https://legifrance.gouv.fr">
                             legifrance.gouv.fr
-                        </a>
+                        </TargetBlankLink>
                     </li>
                     <li class="fr-footer__content-item">
-                        <a
-                            class="fr-footer__content-link"
-                            target="_blank"
-                            rel="noopener external"
-                            title="data.gouv.fr - nouvelle fenêtre"
-                            href="https://data.gouv.fr">
+                        <TargetBlankLink
+                            linkClass="fr-footer__content-link"
+                            href="https://data.gouv.fr"
+                            title="data.gouv.fr - nouvelle fenêtre">
                             data.gouv.fr
-                        </a>
+                        </TargetBlankLink>
                     </li>
                 </ul>
             </div>
@@ -81,36 +70,31 @@
                     <a class="fr-footer__bottom-link" href="/accessibilite">Accessibilité : non conforme</a>
                 </li>
                 <li class="fr-footer__bottom-item">
-                    <a
-                        class="fr-footer__bottom-link"
+                    <TargetBlankLink
+                        linkClass="fr-footer__bottom-link"
                         href={PUBLIC_PRIVACY_POLICY_URL}
-                        target="_blank"
-                        rel="noopener external"
                         title="Politique de confidentialité - nouvelle fenêtre">
                         Politique de confidentialité
-                    </a>
+                    </TargetBlankLink>
                 </li>
                 <li class="fr-footer__bottom-item">
-                    <a
-                        class="fr-footer__bottom-link"
+                    <TargetBlankLink
+                        linkClass="fr-footer__bottom-link"
                         href={PUBLIC_STATS_URL}
-                        target="_blank"
-                        rel="noopener external"
                         title="Statistiques d'usage - nouvelle fenêtre">
                         Statistiques d'usage
-                    </a>
+                    </TargetBlankLink>
                 </li>
                 <li class="fr-footer__bottom-item">
                     <a class="fr-footer__bottom-link" href="/mentions-legales">Mentions légales</a>
                 </li>
                 <li class="fr-footer__bottom-item">
-                    <a
-                        class="fr-footer__bottom-link"
+                    <TargetBlankLink
+                        linkClass="fr-footer__bottom-link"
                         href={PUBLIC_CGU_URL}
-                        target="_blank"
                         title="Conditions générales d'utilisation - nouvelle fenêtre">
                         Conditions générales d’utilisation
-                    </a>
+                    </TargetBlankLink>
                 </li>
                 <li class="fr-footer__bottom-item">
                     <a class="fr-footer__bottom-link" href="/contact">Contactez-nous</a>
@@ -133,13 +117,12 @@
             </ul>
             <div class="fr-footer__bottom-copy">
                 <p>
-                    Sauf mention contraire, tous les contenus de ce site sont sous <a
+                    Sauf mention contraire, tous les contenus de ce site sont sous
+                    <TargetBlankLink
                         href="https://github.com/etalab/licence-ouverte/blob/master/LO.md"
-                        target="_blank"
-                        title="licence etalab-2.0 - nouvelle fenêtre"
-                        rel="noopener external">
+                        title="licence etalab-2.0 - nouvelle fenêtre">
                         licence etalab-2.0
-                    </a>
+                    </TargetBlankLink>
                 </p>
             </div>
         </div>

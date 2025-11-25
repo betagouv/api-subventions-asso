@@ -6,6 +6,7 @@
     import { createEventDispatcher } from "svelte";
     import SheetSelector from "./SheetSelector.svelte";
     import Step3Controller from "./Step3.controller";
+    import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
 
     const dispatch = createEventDispatcher<{
         prevStep: void;
@@ -52,13 +53,10 @@
                     </p>
                     <p class="fr-mb-0">
                         Pour préparer votre fichier, vous pouvez vous appuyer
-                        <a
-                            class="fr-link"
-                            href="https://www.notion.so/R-gles-de-format-SCDL-1281788663a380e1a57efdd9b324c1ba"
-                            target="_blank"
-                            rel="noopener noreferrer">
+                        <TargetBlankLink
+                            href="https://www.notion.so/R-gles-de-format-SCDL-1281788663a380e1a57efdd9b324c1ba">
                             nos modèles SCDL
-                        </a>
+                        </TargetBlankLink>
                         .
                     </p>
                 </InfoBox>
