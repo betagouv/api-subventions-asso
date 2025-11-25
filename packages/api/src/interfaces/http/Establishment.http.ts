@@ -4,13 +4,26 @@ import {
     GetEstablishmentResponseDto,
     GetSubventionsResponseDto,
     GetPaymentsResponseDto,
-    GetGrantsResponseDto,
     EstablishmentIdentifierDto,
     SiretDto,
     PaymentFlatDto,
     ApplicationFlatDto,
+    GetOldGrantsResponseDto,
+    GetGrantsResponseDto,
 } from "dto";
-import { Route, Get, Controller, Tags, Security, Response, Produces, Middlewares, Hidden, Request } from "tsoa";
+import {
+    Route,
+    Get,
+    Controller,
+    Tags,
+    Security,
+    Response,
+    Produces,
+    Middlewares,
+    Hidden,
+    Request,
+    Deprecated,
+} from "tsoa";
 import { NotAssociationError, HttpErrorInterface } from "core";
 import establishmentService from "../../modules/establishments/establishment.service";
 import establishmentIdentifierService from "../../modules/establishment-identifier/establishment-identifier.service";
@@ -19,6 +32,7 @@ import { errorHandler } from "../../middlewares/ErrorMiddleware";
 import associationHelper from "../../modules/associations/associations.helper";
 import paymentFlatService from "../../modules/paymentFlat/paymentFlat.service";
 import applicationFlatService from "../../modules/applicationFlat/applicationFlat.service";
+import grantService from "../../modules/grant/grant.service";
 
 export async function isEstabIdentifierFromAssoMiddleware(req, _res, next) {
     /*
@@ -68,20 +82,37 @@ export class EstablishmentHttp extends Controller {
     }
 
     /**
-     *
-     * * @summary Recherche toutes les informations des subventions d'un établissement (demandes ET versements)
+     * @summary Recherche toutes les informations des subventions d'un établissement (demandes ET versements)
      * @param identifier  SIRET de l'établissement
      * @param req
      * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
      */
+    @Deprecated()
     @Get("grants")
-    public async getGrants(identifier: EstablishmentIdentifierDto, @Request() req): Promise<GetGrantsResponseDto> {
+    public async getOldGrants(
+        identifier: EstablishmentIdentifierDto,
+        @Request() req,
+    ): Promise<GetOldGrantsResponseDto> {
         const estabIdentifier = req.estabIdentifier;
-        const grants = await establishmentService.getGrants(estabIdentifier);
+        const grants = await establishmentService.getOldGrants(estabIdentifier);
         return {
             subventions: grants,
             count: grants.length,
         };
+    }
+
+    /**
+     *
+     * @summary Recherche toutes les informations des subventions d'une association (demandes ET versements)
+     * @param identifier RNA ou SIREN de l'association
+     * @param req
+     * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
+     */
+    @Get("/grants/v2")
+    public async getGrants(identifier: EstablishmentIdentifierDto, @Request() req): Promise<GetGrantsResponseDto> {
+        const estabIdentifier = req.estabIdentifier;
+        const grants = await grantService.getGrantsDto(estabIdentifier);
+        return { subventions: grants, count: grants.length };
     }
 
     /**
@@ -127,7 +158,10 @@ export class EstablishmentHttp extends Controller {
      * @param req
      */
     @Get("/paiements")
-    public async getPaymentFlat(identifier: EstablishmentIdentifierDto, @Request() req): Promise<PaymentFlatDto[]> {
+    public async getEntitiesByIdentifier(
+        identifier: EstablishmentIdentifierDto,
+        @Request() req,
+    ): Promise<PaymentFlatDto[]> {
         const associationIdentifiers = req.assoIdentifier;
         return paymentFlatService.getPaymentsDto(associationIdentifiers);
     }

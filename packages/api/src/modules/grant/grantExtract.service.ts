@@ -26,11 +26,10 @@ class GrantExtractService {
         estabs.forEach(estab => (estabBySiret[estab.siret?.[0]?.value] = estab));
 
         const assoName = asso.denomination_rna?.[0]?.value ?? asso.denomination_siren?.[0]?.value;
-        const separatedGrants = grantService.handleMultiYearGrants(grants);
 
         return {
             csv: csvStringifier.stringify(
-                separatedGrants.map(g => GrantAdapter.grantToExtractLine(g, asso, estabBySiret)),
+                grants.map(g => GrantAdapter.grantToExtractLine(g, asso, estabBySiret)),
                 {
                     header: true,
                     columns: ExtractHeaderLabel,

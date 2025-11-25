@@ -66,6 +66,17 @@ describe("/etablissement", () => {
         });
     });
 
+    describe("/{identifier}/grants/v2", () => {
+        it("should return grants with siren", async () => {
+            const response = await request(g.app)
+                .get(`/etablissement/${ETABLISSEMENT_SIRET}/grants/v2`)
+                .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "application/json");
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toMatchSnapshot();
+        });
+    });
+
     describe("/siret/grants", () => {
         it("returns grants", async () => {
             const response = await request(g.app)

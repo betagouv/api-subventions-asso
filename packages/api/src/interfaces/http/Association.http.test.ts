@@ -50,14 +50,33 @@ describe("AssociationHttp", () => {
         });
     });
 
-    describe("getGrants", () => {
+    describe("getOldGrants", () => {
         beforeAll(() => {
-            jest.mocked(grantService.getGrants).mockResolvedValue([]);
+            jest.mocked(grantService.getOldGrants).mockResolvedValue([]);
         });
 
-        it("should call grantService.getGrants()", async () => {
+        it("should call grantService.getOldGrants()", async () => {
+            await controller.getOldGrants(IDENTIFIER.value, REQ);
+            expect(grantService.getOldGrants).toHaveBeenCalledWith(ASSOCIATION_ID);
+        });
+    });
+
+    describe("getGrants", () => {
+        const GRANTS_DTO = [{ application: null, payments: [] }];
+
+        beforeEach(() => {
+            jest.mocked(grantService.getGrantsDto).mockResolvedValue(GRANTS_DTO);
+        });
+
+        it("fetches grants on dto format", async () => {
             await controller.getGrants(IDENTIFIER.value, REQ);
-            expect(grantService.getGrants).toHaveBeenCalledWith(ASSOCIATION_ID);
+            expect(grantService.getGrantsDto).toHaveBeenCalledWith(ASSOCIATION_ID);
+        });
+
+        it("returns subventions", async () => {
+            const expected = { subventions: GRANTS_DTO, count: 1 };
+            const actual = await controller.getGrants(IDENTIFIER.value, REQ);
+            expect(actual).toEqual(expected);
         });
     });
 

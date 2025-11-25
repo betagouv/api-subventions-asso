@@ -240,6 +240,27 @@ describe("/association", () => {
         });
     });
 
+    describe("/{identifier}/grants/v2", () => {
+        it("should return grants with rna", async () => {
+            const response = await request(g.app)
+                .get(`/association/${RNA_STR}/grants/v2`)
+                .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "application/json");
+            expect(response.statusCode).toBe(200);
+
+            expect(response.body).toMatchSnapshot();
+        });
+
+        it("should return grants with siren", async () => {
+            const response = await request(g.app)
+                .get(`/association/${SIREN_STR}/grants/v2`)
+                .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "application/json");
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toMatchSnapshot();
+        });
+    });
+
     describe("/{identifier}/grants", () => {
         // avoid test failure on date timezone
         function expectAnyApplicationDate(grants) {

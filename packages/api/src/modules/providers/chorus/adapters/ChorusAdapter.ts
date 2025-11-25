@@ -94,7 +94,7 @@ export default class ChorusAdapter {
         }
     }
 
-    private static getPaymentFlatRawData(data: ChorusLineDto): ChorusPaymentFlatRaw {
+    private static getEntitiesByIdentifierRawData(data: ChorusLineDto): ChorusPaymentFlatRaw {
         const exerciceBudgetaire = data["Exercice comptable"] ? parseInt(data["Exercice comptable"], 10) : null;
         const idEstablishmentBeneficiaire = this.getEstablishmentValueObject(data);
         const idEntrepriseBeneficiaire = this.getCompanyId(idEstablishmentBeneficiaire);
@@ -145,7 +145,7 @@ export default class ChorusAdapter {
             ministryEntity,
             domaineFonctEntity,
             refProgrammationEntity,
-        } = this.getPaymentFlatComplementaryData(
+        } = this.getEntitiesByIdentifierComplementaryData(
             chorusDocument.data as ChorusLineDto,
             programs,
             ministries,
@@ -157,7 +157,7 @@ export default class ChorusAdapter {
             ChorusPaymentFlatEntity,
             "regionAttachementComptable" | "idVersement" | "uniqueId"
         > = {
-            ...this.getPaymentFlatRawData(chorusDocument.data as ChorusLineDto),
+            ...this.getEntitiesByIdentifierRawData(chorusDocument.data as ChorusLineDto),
             programName: programEntity?.label_programme ?? null,
             programNumber: programCode,
             mission: programEntity?.mission ?? null,
@@ -255,7 +255,7 @@ export default class ChorusAdapter {
      *
      * @returns Object containing complementary data if found, otherwise null
      */
-    private static getPaymentFlatComplementaryData(
+    private static getEntitiesByIdentifierComplementaryData(
         chorusDocument: ChorusLineDto,
         programs: Record<number, StateBudgetProgramEntity>,
         ministries: Record<string, MinistryEntity>,
