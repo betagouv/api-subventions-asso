@@ -11,7 +11,19 @@ import {
     GetOldGrantsResponseDto,
     GetGrantsResponseDto,
 } from "dto";
-import { Route, Get, Controller, Tags, Security, Response, Produces, Middlewares, Hidden, Request } from "tsoa";
+import {
+    Route,
+    Get,
+    Controller,
+    Tags,
+    Security,
+    Response,
+    Produces,
+    Middlewares,
+    Hidden,
+    Request,
+    Deprecated,
+} from "tsoa";
 import { NotAssociationError, HttpErrorInterface } from "core";
 import establishmentService from "../../modules/establishments/establishment.service";
 import establishmentIdentifierService from "../../modules/establishment-identifier/establishment-identifier.service";
@@ -70,14 +82,12 @@ export class EstablishmentHttp extends Controller {
     }
 
     /**
-     *
-     * This method is now deprecated and should be replaced by /grants/v2
-     *
-     * @summary Deprecated - Recherche toutes les informations des subventions d'un établissement (demandes ET versements)
+     * @summary Recherche toutes les informations des subventions d'un établissement (demandes ET versements)
      * @param identifier  SIRET de l'établissement
      * @param req
      * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
      */
+    @Deprecated()
     @Get("grants")
     public async getOldGrants(
         identifier: EstablishmentIdentifierDto,
