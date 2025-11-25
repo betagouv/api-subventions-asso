@@ -122,7 +122,7 @@ describe("SCDL Batch Import CLI", () => {
         // @ts-expect-error: private method
         const mockValidateParseParams: jest.SpyInstance = jest.spyOn(ScdlBatchCli.prototype, "validateParseParams");
 
-        const PARSE_PARAMS = { allocatorSiret: LOCAL_AUTHORITIES[0] };
+        const PARSE_PARAMS = { delimiter: "," };
 
         beforeEach(() => {
             jest.mocked(isStringValid).mockReturnValue(true);
@@ -135,7 +135,7 @@ describe("SCDL Batch Import CLI", () => {
 
         it("throw if no file given", () => {
             // @ts-expect-error: test private method
-            expect(() => scdlBatchCli.validateFileConfig()).toThrowError(
+            expect(() => scdlBatchCli.validateFileConfig()).toThrow(
                 `You must provide a config file for SCDL batch import and name it ${SCDL_FILE_PROCESSING_CONFIG_FILENAME}`,
             );
         });
@@ -149,12 +149,6 @@ describe("SCDL Batch Import CLI", () => {
             expect(scdlBatchCli.fileConfigErrors).toContainEqual(expected);
         });
 
-        it("do not call validateParseParams if addProducer is set to false", () => {
-            // @ts-expect-error: test private method
-            scdlBatchCli.validateFileConfig({ name: "bretagne-2025", addProducer: false });
-            expect(mockValidateParseParams).not.toHaveBeenCalled();
-        });
-
         it("returns true if file config is valid", () => {
             const expected = true;
             // @ts-expect-error: test private method
@@ -162,9 +156,14 @@ describe("SCDL Batch Import CLI", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("calls validateParseParams() is addProducer is set to true", () => {
+        it("calls validateParseParams()", () => {
             // @ts-expect-error: test private method
-            scdlBatchCli.validateFileConfig({ name: "name", addProducer: true, parseParams: PARSE_PARAMS });
+            scdlBatchCli.validateFileConfig({
+                name: "name",
+                addProducer: true,
+                allocatorSiret: LOCAL_AUTHORITIES[0],
+                parseParams: PARSE_PARAMS,
+            });
             expect(mockValidateParseParams).toHaveBeenCalledWith(PARSE_PARAMS);
         });
     });
@@ -279,36 +278,11 @@ describe("SCDL Batch Import CLI", () => {
         it.each`
             parseParams
             ${[]}
-            ${undefined}
-            ${LOCAL_AUTHORITIES[0].siret}
         `("pushes error if parseParams is not valid", ({ parseParams }) => {
             // @ts-expect-error: private method
             scdlBatchCli.validateParseParams(parseParams);
             // @ts-expect-error: private property
             expect(scdlBatchCli.fileConfigErrors).toContainEqual({ field: "parseParams" });
-        });
-
-        it("pushes error if allocatorSiret is not valid", () => {
-            jest.mocked(isStringValid).mockReturnValueOnce(false);
-            // @ts-expect-error: private method
-            scdlBatchCli.validateParseParams({ allocatorSiret: 123 });
-            // @ts-expect-error: private property
-            expect(scdlBatchCli.fileConfigErrors).toContainEqual({ field: "allocatorSiret" });
-        });
-
-        it("pushes error if exportDate is not valid", () => {
-            jest.mocked(isShortISODateValid).mockReturnValueOnce(false);
-            // @ts-expect-error: private method
-            scdlBatchCli.validateParseParams({ exportDate: "2025" });
-            // @ts-expect-error: private property
-            expect(scdlBatchCli.fileConfigErrors).toContainEqual({ field: "exportDate" });
-        });
-
-        it("allows undefined exportDate", () => {
-            // @ts-expect-error: private method
-            scdlBatchCli.validateParseParams({ exportDate: undefined });
-            // @ts-expect-error: private property
-            expect(scdlBatchCli.fileConfigErrors).not.toContainEqual({ field: "exportDate" });
         });
 
         it.each`
@@ -334,17 +308,10 @@ describe("SCDL Batch Import CLI", () => {
         });
 
         // for each if else block
-        it.each`
-            parseParams                | comment
-            ${undefined}               | ${"parseParam is not defined"}
-            ${[]}                      | ${"parseParam an array"}
-            ${{ allocatorSiret: 123 }} | ${"one of the field is not valid"}
-        `("return false if $comment", ({ parseParams }) => {
-            // only mock one error to enter if block
-            if (parseParams?.allocatorSiret) jest.mocked(isStringValid).mockReturnValueOnce(false);
+        it("return false if parseParam is an array", () => {
             const expected = false;
             // @ts-expect-error: private method
-            const actual = scdlBatchCli.validateParseParams(parseParams);
+            const actual = scdlBatchCli.validateParseParams([]);
             expect(actual).toEqual(expected);
         });
 
@@ -352,8 +319,8 @@ describe("SCDL Batch Import CLI", () => {
             const expected = true;
             // @ts-expect-error: private method
             const actual = scdlBatchCli.validateParseParams({
-                allocatorSiret: LOCAL_AUTHORITIES[0].siret,
-                exportDate: "2025-01-15",
+                delimiter: ",",
+                quote: "'",
             });
             expect(actual).toEqual(expected);
         });
