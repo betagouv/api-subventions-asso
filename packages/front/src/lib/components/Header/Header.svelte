@@ -6,6 +6,7 @@
     import Button from "$lib/dsfr/Button.svelte";
     import { version } from "$app/environment";
     import appLogo from "$lib/assets/images/logo-data-subvention.png";
+    import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
 
     const user = authService.getCurrentUserStore();
     const { getEnv, getName } = getContext<typeof AppContext>("app");
@@ -56,14 +57,12 @@
                     <div class="fr-header__tools-links">
                         <ul class="fr-btns-group">
                             <li>
-                                <a
-                                    class="fr-btn fr-link--icon-right"
+                                <TargetBlankLink
+                                    linkClass="fr-btn fr-link--icon-right"
                                     href="https://github.com/betagouv/api-subventions-asso"
-                                    title="code source - nouvelle fenêtre"
-                                    target="_blank"
-                                    rel="noopener noreferrer">
+                                    title="code source - nouvelle fenêtre">
                                     Code source
-                                </a>
+                                </TargetBlankLink>
                             </li>
                             <li>
                                 <button

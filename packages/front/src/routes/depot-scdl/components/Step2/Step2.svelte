@@ -3,6 +3,7 @@
     import InfoBox from "$lib/components/InfoBox.svelte";
     import Step2Controller from "./Step2.controller";
     import Input from "$lib/dsfr/Input.svelte";
+    import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
 
     const ctrl = new Step2Controller();
     const { inputValue, hasError, isDisabled } = ctrl;
@@ -41,7 +42,9 @@
                 <li>regarder dans votre fichier Excel s'il y figure</li>
                 <li>
                     le rechercher sur
-                    <a class="fr-link" href="https://annuaire-entreprises.data.gouv.fr/">Annuaire Entreprises →</a>
+                    <TargetBlankLink href="https://annuaire-entreprises.data.gouv.fr/">
+                        Annuaire Entreprises
+                    </TargetBlankLink>
                 </li>
             </ul>
         </InfoBox>
