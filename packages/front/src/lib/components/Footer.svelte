@@ -32,7 +32,7 @@
                     <li class="fr-footer__content-item">
                         <TargetBlankLink
                             href="https://info.gouv.fr"
-                            class="fr-footer__content-link"
+                            linkClass="fr-footer__content-link"
                             title="info.gouv.fr - nouvelle fenêtre">
                             info.gouv.fr
                         </TargetBlankLink>

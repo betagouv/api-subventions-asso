@@ -35,8 +35,6 @@
                     </div>
                     <svelte:component
                         this={$currentStepComponent}
-                        {stepsDesc}
-                        currentStep={$currentStep}
                         on:nextStep={() => ctrl.nextStep()}
                         on:prevStep={() => ctrl.prevStep()}
                         on:loading={e => ctrl.loading(e.detail)}
