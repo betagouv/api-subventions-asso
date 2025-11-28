@@ -16,7 +16,7 @@ import {
     SCDL_FILE_PROCESSING_PATH,
 } from "../../configurations/scdlIntegration.conf";
 import { FileExtensionEnum } from "../../@enums/FileExtensionEnum";
-import { isBooleanValid, isNumberValid, isShortISODateValid, isStringValid } from "../../shared/Validators";
+import { isNumberValid, isShortISODateValid, isStringValid } from "../../shared/Validators";
 import scdlService from "../../modules/providers/scdl/scdl.service";
 import ScdlCli from "./Scdl.cli";
 import Siret from "../../identifierObjects/Siret";
@@ -49,7 +49,7 @@ export default class ScdlBatchCli extends ScdlCli {
             );
 
         if (!isStringValid(file.name)) this.fileConfigErrors.push({ field: "name" });
-        if (isBooleanValid(file.addProducer) && file.addProducer) this.validateParseParams(file.parseParams);
+        this.validateParseParams(file.parseParams);
 
         if (this.fileConfigErrors.length) return false;
         else return true;
@@ -84,14 +84,13 @@ export default class ScdlBatchCli extends ScdlCli {
     }
 
     private validateParseParams(params): params is ScdlParseParams {
+        // parseParam is optionnal
+        if (!params) return true;
+
         const errors: FileConfigErrors = [];
         if (typeof params != "object" || params instanceof Array) {
             errors.push({ field: "parseParams" });
         } else {
-            // shared part
-            if (!isStringValid(params.allocatorSiret)) errors.push({ field: "allocatorSiret" });
-            if (params.exportDate && !isShortISODateValid(params.exportDate)) errors.push({ field: "exportDate" });
-
             // csv part
             if (params.delimiter || params.quote) this.validateCsvArgs(params);
 
@@ -119,6 +118,10 @@ export default class ScdlBatchCli extends ScdlCli {
         const dirPath = path.resolve(SCDL_FILE_PROCESSING_PATH);
 
         const siret = new Siret(allocatorSiret);
+
+        if (exportDate && !isShortISODateValid(exportDate))
+            throw new Error("You must provide an export date in YYYY-MM-DD");
+
         if (addProducer) {
             if (await scdlService.getProducer(siret)) {
                 const message = `Producer with SIRET ${siret.toString()} already exist. Used with file ${name}`;
