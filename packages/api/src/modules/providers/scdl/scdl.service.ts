@@ -15,12 +15,6 @@ import scdlGrantService from "./scdl.grant.service";
 import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
 
 export class ScdlService {
-    producerNames: string[] = [];
-
-    async init() {
-        this.producerNames = (await this.getProducers()).map(producer => producer.name);
-    }
-
     getProducer(siret: Siret) {
         return miscScdlProducersPort.findBySiret(siret.toString());
     }
@@ -35,7 +29,6 @@ export class ScdlService {
         if (!name) throw new Error(`Could not find allocator name with SIRET ${siret}`);
         const producer: MiscScdlProducerEntity = { siret: siret.toString(), name };
         await miscScdlProducersPort.create(producer);
-        this.producerNames.push(name);
         return producer;
     }
 
