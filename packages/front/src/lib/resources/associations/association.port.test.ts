@@ -56,7 +56,7 @@ describe("AssociationPort", () => {
         describe("getGrants", () => {
             it("calls getResource", async () => {
                 await associationPort.getGrants(SIREN);
-                expect(mockGetResource).toHaveBeenCalledWith(SIREN, "grants");
+                expect(mockGetResource).toHaveBeenCalledWith(SIREN, "grants/v2");
             });
 
             it("should return subventions", async () => {
