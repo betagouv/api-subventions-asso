@@ -164,9 +164,7 @@ export class AssociationHttp extends Controller {
 
     /**
      *
-     * This method is now deprecated and should be replaced by /grants/v2
-     *
-     * @summary Deprectated - Recherche toutes les informations des subventions d'une association (demandes ET versements)
+     * @summary Recherche toutes les informations des subventions d'une association (demandes ET versements)
      * @param identifier RNA ou SIREN de l'association
      * @param req
      * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
