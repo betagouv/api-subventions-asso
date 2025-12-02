@@ -60,7 +60,7 @@
         "string-similarity": "4.0.4",
         "svelte": "4.2.8",
         "svelte-check": "3.6.2",
-        "vite": "5.4.11",
+        "vite": "5.4.21",
         "xlsx": "0.18.5"
     },
     "devDependencies": {
