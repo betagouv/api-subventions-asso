@@ -7,8 +7,6 @@
     "license": "MIT",
     "main": "lib/tools.js",
     "engines": {
-        "pnpm": "use-npm-instead",
-        "yarn": "use-npm-instead",
         "node": "22.15.0",
         "npm": "10.9.2"
     },
@@ -17,6 +15,7 @@
         "url": "git+https://github.com/betagouv/api-subventions-asso.git"
     },
     "scripts": {
+        "preinstall": "npx only-allow@1.2.2 npm",
         "test": "echo \"Error: run tests from root\"",
         "lint": "eslint --fix --ext .js",
         "lint:all": "eslint --fix --ext .js .",

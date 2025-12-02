@@ -8,8 +8,6 @@
     "main": "./build/index.js",
     "types": "./build/index.d.ts",
     "engines": {
-        "pnpm": "use-npm-instead",
-        "yarn": "use-npm-instead",
         "node": "22.15.0",
         "npm": "10.9.2"
     },
@@ -25,6 +23,7 @@
         "url": "git+https://github.com/betagouv/datasubvention.git"
     },
     "scripts": {
+        "preinstall": "npx only-allow@1.2.2 npm",
         "test": "echo 'no test in dto'",
         "prebuild": "rm -rf ./build/*",
         "build": "tsc --project ./",
