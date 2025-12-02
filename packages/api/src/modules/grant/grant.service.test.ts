@@ -4,7 +4,6 @@ import mocked = jest.mocked;
 import { JoinedRawGrant, RawApplication, RawPayment } from "./@types/rawGrant";
 import * as Sentry from "@sentry/node";
 import { applicationProvidersFixtures, paymentProvidersFixtures } from "../providers/__fixtures__/providers.fixture";
-import scdlService from "../providers/scdl/scdl.service";
 import { DemandeSubvention, Grant, Payment } from "dto";
 import { SIRET_STR } from "../../../tests/__fixtures__/association.fixture";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
@@ -12,7 +11,6 @@ import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier
 import paymentService from "../payments/payments.service";
 import subventionsService from "../subventions/subventions.service";
 import Siret from "../../identifierObjects/Siret";
-import { refreshGrantAsyncServices } from "../../shared/initAsyncServices";
 import { APPLICATION_LINK_TO_CHORUS, APPLICATION_LINK_TO_FONJEP } from "../applicationFlat/__fixtures__";
 import {
     CHORUS_PAYMENT_FLAT_ENTITY,
@@ -23,7 +21,6 @@ import {
 import applicationFlatService from "../applicationFlat/applicationFlat.service";
 import paymentFlatService from "../paymentFlat/paymentFlat.service";
 
-jest.mock("../../shared/initAsyncServices");
 jest.mock("../providers/scdl/scdl.service");
 jest.mock("@sentry/node");
 jest.mock("../providers");
@@ -36,11 +33,6 @@ jest.mock("../applicationFlat/applicationFlat.service");
 jest.mock("../paymentFlat/paymentFlat.service");
 
 describe("GrantService", () => {
-    const SCDL_PRODUCER_NAME = "SCDL_PRODUCER_NAME";
-    beforeAll(() => {
-        scdlService.producerNames = [SCDL_PRODUCER_NAME];
-    });
-
     const SIRET = new Siret(SIRET_STR);
     const ESTABLISHMENT_ID = EstablishmentIdentifier.fromSiret(SIRET, AssociationIdentifier.fromSiren(SIRET.toSiren()));
 
@@ -280,11 +272,6 @@ describe("GrantService", () => {
         });
 
         afterEach(() => mocks.forEach(mock => mock.mockClear()));
-
-        it("refresh grant async services before fetching new data", async () => {
-            await grantService.getOldGrants(ESTABLISHMENT_ID);
-            expect(refreshGrantAsyncServices).toHaveBeenCalled();
-        });
 
         it("should call getRawGrants", async () => {
             await grantService.getOldGrants(ESTABLISHMENT_ID);
