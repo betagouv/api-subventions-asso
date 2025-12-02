@@ -1,6 +1,5 @@
 <script>
     import { data } from "$lib/store/modal.store";
-    import { capitalizeFirstLetter } from "$lib/helpers/stringHelper";
     import { numberToEuro } from "$lib/helpers/dataHelper.js";
 </script>
 
@@ -32,12 +31,6 @@
     </section>
     {#if $data.application?.objet}
         <section>
-            <!-- <h4 class="fr-icon-arrow-right-line">{capitalizeFirstLetter(action.intitule)}</h4>
-            {#each action.objectifs?.split("\n") || [] as line, index (index)}
-                {#if line.length}
-                    <p>{line}</p>
-                {/if}
-            {/each} -->
             <p>{$data.application.objet}</p>
         </section>
     {/if}
@@ -60,16 +53,4 @@
     section h4:is([class*=" fr-fi-"], h4[class*=" fr-icon-"], h4[class^="fr-fi-"], h4[class^="fr-icon-"])::before {
         margin-right: 0.5rem;
     }
-
-    /* uncomment when showing establishment
-    .bigger-link {
-        position: relative;
-    }
-
-    .bigger-link > a::before {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        content: "";
-    }*/
 </style>
