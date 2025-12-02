@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import csvSyncStringifier from "csv-stringify/sync";
+import { stringify } from "csv-stringify/sync";
 import scdlService from "../../modules/providers/scdl/scdl.service";
 import Siret from "../../identifierObjects/Siret";
 import {
@@ -111,7 +111,7 @@ export default class ScdlCli {
         if (!fs.existsSync(ScdlCli.errorsFolderName)) fs.mkdirSync(ScdlCli.errorsFolderName);
         const outputPath = path.join(ScdlCli.errorsFolderName, fileName + "-errors.csv");
 
-        const csvContent = csvSyncStringifier.stringify(errors, { header: true });
+        const csvContent = stringify(errors, { header: true });
 
         try {
             fs.writeFileSync(outputPath, csvContent, { flag: "w", encoding: "utf-8" });

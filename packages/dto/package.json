@@ -5,8 +5,9 @@
     "author": "Victor Serain <victor.serain@epitech.eu>",
     "homepage": "https://github.com/betagouv/api-subventions-asso/tree/main/packages/dto#readme",
     "license": "ISC",
-    "main": "./build/index.js",
-    "types": "./build/index.d.ts",
+    "main": "index.js",
+    "types": "index",
+    "module": "index.js",
     "engines": {
         "node": "22.15.0",
         "npm": "10.9.2"

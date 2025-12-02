@@ -38,7 +38,7 @@ export default defineConfig(({ mode }) => {
         },
         build: {
             commonjsOptions: {
-                include: [/dto/, /node_modules/],
+                include: [/node_modules/],
             },
         },
     };

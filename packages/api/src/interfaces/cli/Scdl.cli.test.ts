@@ -18,7 +18,7 @@ const mockedScdlService = jest.mocked(scdlService);
 import MiscScdlGrant from "../../modules/providers/scdl/__fixtures__/MiscScdlGrant";
 import MiscScdlProducer from "../../modules/providers/scdl/__fixtures__/MiscScdlProducer";
 import { MixedParsedError, ParsedErrorFormat } from "../../modules/providers/scdl/@types/Validation";
-import csvSyncStringifier from "csv-stringify/sync";
+import { stringify } from "csv-stringify/sync";
 import dataLogService from "../../modules/data-log/dataLog.service";
 
 jest.mock("../../modules/data-log/dataLog.service");
@@ -215,11 +215,11 @@ describe("ScdlCli", () => {
         const OUTPUT_PATH = normalize("import-errors/file.csv-errors.csv");
 
         beforeAll(() => {
-            jest.mocked(csvSyncStringifier.stringify).mockReturnValue(STR_CONTENT);
+            jest.mocked(stringify).mockReturnValue(STR_CONTENT);
         });
 
         afterAll(() => {
-            jest.mocked(csvSyncStringifier.stringify).mockRestore();
+            jest.mocked(stringify).mockRestore();
         });
 
         it("creates folder if does not exist", () => {
@@ -239,7 +239,7 @@ describe("ScdlCli", () => {
         it("stringifies errors", () => {
             // @ts-expect-error -- test private method
             cli.exportErrors(ERRORS, FILE);
-            expect(csvSyncStringifier.stringify).toHaveBeenCalled();
+            expect(stringify).toHaveBeenCalled();
         });
 
         it("writes in proper path", () => {

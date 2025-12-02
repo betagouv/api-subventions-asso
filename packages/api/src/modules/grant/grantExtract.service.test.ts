@@ -3,7 +3,7 @@ import { Association, EstablishmentSimplified } from "dto";
 import grantService from "./grant.service";
 import associationsService from "../associations/associations.service";
 import GrantAdapter from "./grant.adapter";
-import csvStringifier from "csv-stringify/sync";
+import { stringify } from "csv-stringify/sync";
 import { ExtractHeaderLabel, GrantToExtract } from "./@types/GrantToExtract";
 import Siret from "../../identifierObjects/Siret";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
@@ -72,7 +72,7 @@ describe("GrantExtractService", () => {
             jest.mocked(GrantAdapter.grantToExtractLine).mockReturnValueOnce("2" as unknown as GrantToExtract);
             jest.mocked(GrantAdapter.grantToExtractLine).mockReturnValueOnce("3" as unknown as GrantToExtract);
             await grantExtractService.buildCsv(IDENTIFIER);
-            expect(csvStringifier.stringify).toHaveBeenCalledWith(expect.any(Array), {
+            expect(stringify).toHaveBeenCalledWith(expect.any(Array), {
                 header: true,
                 columns: ExtractHeaderLabel,
                 delimiter: ";",
@@ -88,7 +88,7 @@ describe("GrantExtractService", () => {
             await grantExtractService.buildCsv(IDENTIFIER);
             // @ts-expect-error -- ??
             const converter: (n: number) => string =
-                jest.mocked(csvStringifier.stringify).mock.calls[0][1]?.cast?.number ?? (() => "");
+                jest.mocked(stringify).mock.calls[0][1]?.cast?.number ?? (() => "");
             const expected = "20000012,3";
             const actual = converter(20000012.3);
             expect(actual).toBe(expected);
@@ -96,7 +96,7 @@ describe("GrantExtractService", () => {
 
         it("returns stringified csv", async () => {
             const expected = "csv";
-            jest.mocked(csvStringifier.stringify).mockReturnValueOnce(expected);
+            jest.mocked(stringify).mockReturnValueOnce(expected);
             const actual = (await grantExtractService.buildCsv(IDENTIFIER)).csv;
             expect(actual).toBe(expected);
         });
@@ -105,7 +105,7 @@ describe("GrantExtractService", () => {
             const FAKE_NOW = new Date("2022-01-01");
             jest.useFakeTimers().setSystemTime(FAKE_NOW);
             const expected = "DataSubvention-NomAsso-12345678912345-2022-01-01.csv";
-            jest.mocked(csvStringifier.stringify).mockReturnValueOnce(expected);
+            jest.mocked(stringify).mockReturnValueOnce(expected);
             const actual = (await grantExtractService.buildCsv(IDENTIFIER)).fileName;
             expect(actual).toBe(expected);
         });

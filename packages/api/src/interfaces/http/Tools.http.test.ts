@@ -1,5 +1,5 @@
 import { ToolsHttp } from "./Tools.http";
-import csvSyncStringifier from "csv-stringify/sync";
+import { stringify } from "csv-stringify/sync";
 import { MixedParsedError } from "../../modules/providers/scdl/@types/Validation";
 import scdlService from "../../modules/providers/scdl/scdl.service";
 import { ScdlParsedInfos } from "../../modules/providers/scdl/@types/ScdlParsedInfos";
@@ -28,7 +28,7 @@ describe("Tools test", () => {
             entities: [],
             parsedInfos: {} as ScdlParsedInfos,
         });
-        jest.mocked(csvSyncStringifier.stringify).mockReturnValue(CSV_ERRORS);
+        jest.mocked(stringify).mockReturnValue(CSV_ERRORS);
     });
 
     describe("parseXls", () => {
@@ -47,7 +47,7 @@ describe("Tools test", () => {
         it("stringifies errors from parser", () => {
             // @ts-expect-error -- spy private
             ctrl.parseXls(FILE, PAGE_NAME, ROW_OFFSET);
-            expect(csvSyncStringifier.stringify).toHaveBeenCalledWith(ERRORS, { header: true });
+            expect(stringify).toHaveBeenCalledWith(ERRORS, { header: true });
         });
 
         it("returns stringified errors", () => {
@@ -74,7 +74,7 @@ describe("Tools test", () => {
         it("stringifies errors from parser", () => {
             // @ts-expect-error -- spy private
             ctrl.parseCsv(FILE, DELIMITER, QUOTE);
-            expect(csvSyncStringifier.stringify).toHaveBeenCalledWith(ERRORS, { header: true });
+            expect(stringify).toHaveBeenCalledWith(ERRORS, { header: true });
         });
 
         it("returns stringified errors", () => {
