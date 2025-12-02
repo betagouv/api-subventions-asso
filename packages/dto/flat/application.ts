@@ -31,10 +31,10 @@ type OptionalApplicationFlatDto = {
     idServiceInstructeur: string; // identifiant du service qui instruit la demande.
     pluriannualite: boolean;
     anneesPluriannualite: number[];
-    dateDecision: Date; // Date de la commission statuant sur l'attribution ou le refus de la subvention.
-    dateConvention: Date; // Date de signature de la convention.
+    dateDecision: string; // Date de la commission statuant sur l'attribution ou le refus de la subvention.
+    dateConvention: string; // Date de signature de la convention.
     referenceDecision: string; // Identifiant interne de l’acte matérialisant la décision d’attribution de la subvention.
-    dateDepotDemande: Date;
+    dateDepotDemande: string;
     anneeDemande: number;
     dispositif: string; // Nom du dispositif de financement ou du programme de subvention (FIPDR, MILDECA, Fonds social européen...).
     sousDispositif: string;
@@ -45,7 +45,7 @@ type OptionalApplicationFlatDto = {
     idVersement: string; // Identifiant permettant de relier la demande de subvention aux versements.
     conditionsVersements: PaymentCondition;
     descriptionConditionsVersements: string;
-    datesPeriodeVersement: Date[];
+    datesPeriodeVersement: string[];
     cofinancementsSollicites: boolean; // Indiquer si d'autres subventions publiques ont été sollicités pour le même projet.
     nomsAttribuantsCofinanceurs: string[]; // Liste des noms des attribuants cofinanceurs qui ont été sollicités pour le projet.
     typeIdCofinanceursSollicites: IdentifierIdName[];
@@ -53,7 +53,7 @@ type OptionalApplicationFlatDto = {
     idRAE: string; // Numéro unique de référencement au répertoire des aides aux entreprises (RAE)
     notificationUE: boolean; // Subvention attribuée au titre d’une aide de minimis notifiée à la Commission Européenne en vertu des dispositions du règlement n° 1407/2013 du 18 décembre 2013.
     pourcentageSubvention: number; // Pourcentage du montant de la subvention attribuée au bénéficiaire
-    dateMiseAJour: Date;
+    dateMiseAJour: string;
 };
 
 export type ApplicationFlatDto = MandatoryApplicationFlatDto &
