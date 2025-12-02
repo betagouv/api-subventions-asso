@@ -1,3 +1,16 @@
+# Check for forbidden lockfiles (enforce pnpm-only usage)
+if [ -f "pnpm-lock.yaml" ] || [ -f "yarn.lock" ]; then
+  echo "❌ Error: pnpm/yarn lockfiles detected. This project uses pnpm exclusively."
+  echo ""
+  echo "Please remove the lockfile(s) and use npm:"
+  echo "  rm -f pnpm-lock.yaml yarn.lock"
+  echo "  npm install"
+  echo ""
+  echo "If you need to enable corepack:"
+  echo "  corepack enable"
+  exit 1
+fi
+
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
