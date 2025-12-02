@@ -8,6 +8,7 @@
         "npm": "10.9.2"
     },
     "scripts": {
+        "preinstall": "npx only-allow@1.2.2 npm",
         "dev": "lerna run dev",
         "build:front": "lerna run build --scope=front",
         "build:api": "lerna run build --scope=api",

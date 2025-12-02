@@ -15,6 +15,7 @@
         "url": "git+https://github.com/betagouv/datasubvention.git"
     },
     "scripts": {
+        "preinstall": "npx only-allow@1.2.2 npm",
         "dev": "vite dev --host dev.local",
         "vite:clean": "rm -r node_modules/.vite node_modules/.vitest",
         "start": "node ./build/index.js",
