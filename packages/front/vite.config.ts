@@ -20,8 +20,8 @@ export default defineConfig(({ mode }) => {
                     org: "betagouv",
                     project: "data-subvention-front",
                     url: "https://sentry.incubateur.net/",
-                    authToken: env.SENTRY_AUTH_TOKEN || env.SENTRY_AUTH_TOKEN,
-                    release: pkg.version,
+                    authToken: env.SENTRY_AUTH_TOKEN,
+                    release: undefined,
                 },
             }),
             sveltekit(),
@@ -37,6 +37,7 @@ export default defineConfig(({ mode }) => {
             include: ["dto"],
         },
         build: {
+            sourcemap: "hidden",
             commonjsOptions: {
                 include: [/node_modules/],
             },
