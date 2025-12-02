@@ -7,6 +7,8 @@
     "license": "MIT",
     "main": "lib/tools.js",
     "engines": {
+        "pnpm": "use-npm-instead",
+        "yarn": "use-npm-instead",
         "node": "22.15.0",
         "npm": "10.9.2"
     },
