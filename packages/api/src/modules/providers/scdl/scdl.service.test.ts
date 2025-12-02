@@ -61,28 +61,6 @@ describe("ScdlService", () => {
         mockedFs.readFileSync.mockReturnValue(FILE_CONTENT);
     });
 
-    describe("init", () => {
-        let mockGetProducers;
-
-        beforeAll(() => {
-            mockGetProducers = jest.spyOn(scdlService, "getProducers").mockResolvedValue([PRODUCER]);
-        });
-
-        afterAll(() => {
-            mockGetProducers.mockRestore();
-        });
-
-        it("should call getProducers", async () => {
-            await scdlService.init();
-            expect(mockGetProducers).toHaveBeenCalledTimes(1);
-        });
-
-        it("should set producerNames", async () => {
-            await scdlService.init();
-            expect(scdlService.producerNames).toEqual([PRODUCER.name]);
-        });
-    });
-
     describe("getProvider()", () => {
         it("should call miscScdlProducersPort.create()", async () => {
             await scdlService.getProducer(new Siret(PRODUCER.siret));

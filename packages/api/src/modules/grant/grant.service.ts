@@ -17,7 +17,6 @@ import paymentService from "../payments/payments.service";
 import subventionsService from "../subventions/subventions.service";
 import { JoinedRawGrant, RawApplication, RawPayment, AnyRawGrant } from "./@types/rawGrant";
 import commonGrantService from "./commonGrant.service";
-import { refreshGrantAsyncServices } from "../../shared/initAsyncServices";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 import applicationFlatService from "../applicationFlat/applicationFlat.service";
 import paymentFlatService from "../paymentFlat/paymentFlat.service";
@@ -121,7 +120,6 @@ export class GrantService {
 
     // use deprecated DemandeSubvention and Payment with ProviderValues
     async getOldGrants(identifier: StructureIdentifier): Promise<Grant[]> {
-        await refreshGrantAsyncServices();
         const joinedRawGrants = await this.getRawGrants(identifier);
         const grants = joinedRawGrants.map(this.adaptJoinedRawGrant.bind(this)).filter(grant => grant) as Grant[];
         const groupByExerciseGrants = this.groupGrantsByExercise(this.handleMultiYearGrants(grants));
