@@ -4,8 +4,9 @@
     "description": "Core package",
     "homepage": "https://github.com/betagouv/api-subventions-asso/tree/main/packages/core#readme",
     "license": "ISC",
-    "main": "./build/index.js",
-    "types": "./build/index.d.ts",
+    "main": "index.js",
+    "types": "index",
+    "module": "./build/index.js",
     "engines": {
         "node": "22.15.0",
         "npm": "10.9.2"
@@ -22,6 +23,7 @@
         "url": "git+https://github.com/betagouv/datasubvention.git"
     },
     "scripts": {
+        "preinstall": "npx only-allow@1.2.2 npm",
         "test": "echo 'no test in core'",
         "prebuild": "rm -rf ./build/*",
         "build": "tsc --project tsconfig.json",

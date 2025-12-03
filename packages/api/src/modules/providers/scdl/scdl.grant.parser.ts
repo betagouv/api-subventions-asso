@@ -1,4 +1,4 @@
-import csvSyncParser from "csv-parse/sync";
+import * as csvSyncParser from "csv-parse/sync";
 import { isNumberValid } from "../../../shared/Validators";
 import { isValidDate } from "../../../shared/helpers/DateHelper";
 import Siret from "../../../identifierObjects/Siret";

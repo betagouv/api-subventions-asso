@@ -1,5 +1,5 @@
 import jschardet from "jschardet";
-import XLSX from "xlsx";
+import * as XLSX from "xlsx";
 import FileFormatError from "$lib/errors/file-errors/FileFormatError";
 import FileSizeError from "$lib/errors/file-errors/FileSizeError";
 import FileEncodingError from "$lib/errors/file-errors/FileEncodingError";

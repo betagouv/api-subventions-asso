@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import path from "path";
-import csvSyncStringifier from "csv-stringify/sync";
+import { stringify } from "csv-stringify/sync";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { ApplicationFlatCli, CliStaticInterface } from "../../@types";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";
@@ -43,7 +43,7 @@ export default class SubventiaCli extends CliController implements ApplicationFl
         if (!fs.existsSync(SubventiaCli.errorsFolderName)) fs.mkdirSync(SubventiaCli.errorsFolderName);
         const outputPath = path.join(SubventiaCli.errorsFolderName, fileName + "-Errors.csv");
 
-        const csvContent = csvSyncStringifier.stringify(errors, { header: true });
+        const csvContent = stringify(errors, { header: true });
 
         try {
             fs.writeFileSync(outputPath, csvContent, { flag: "w", encoding: "utf-8" });
