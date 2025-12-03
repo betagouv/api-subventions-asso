@@ -23,6 +23,7 @@
         "url": "git+https://github.com/betagouv/datasubvention.git"
     },
     "scripts": {
+        "preinstall": "npx only-allow@1.2.2 npm",
         "test": "echo 'no test in dto'",
         "prebuild": "rm -rf ./build/*",
         "build": "tsc --project ./",
@@ -41,6 +42,6 @@
         "url": "https://github.com/betagouv/datasubvention/issues"
     },
     "dependencies": {
-        "mongodb": "^6"
+        "mongodb": "6"
     }
 }

@@ -5,6 +5,10 @@ on:
         types: [opened, synchronize, reopened, edited]
 
 jobs:
+    - name: Enable Corepack
+    shell: bash
+    run: corepack enable
+
     validate-pr-title:
         runs-on: ubuntu-latest
         steps:
