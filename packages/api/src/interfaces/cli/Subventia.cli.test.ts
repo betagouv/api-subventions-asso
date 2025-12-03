@@ -10,7 +10,7 @@ import { SubventiaDbo } from "../../modules/providers/subventia/@types/subventia
 import { ApplicationStatus } from "dto";
 jest.mock("../../shared/helpers/CliHelper");
 import { ParsedDataWithProblem } from "../../modules/providers/subventia/validators/@types/Validation";
-import csvSyncStringifier from "csv-stringify/sync";
+import { stringify } from "csv-stringify/sync";
 import fs from "fs";
 import { normalize } from "path";
 
@@ -200,11 +200,11 @@ describe("SubventiaCli", () => {
         const OUTPUT_PATH = normalize("import-errors/subventia-Errors.csv");
 
         beforeAll(() => {
-            jest.mocked(csvSyncStringifier.stringify).mockReturnValue(STR_CONTENT);
+            jest.mocked(stringify).mockReturnValue(STR_CONTENT);
         });
 
         afterAll(() => {
-            jest.mocked(csvSyncStringifier.stringify).mockRestore();
+            jest.mocked(stringify).mockRestore();
         });
 
         it("creates folder if it doesn't exist", async () => {
@@ -224,7 +224,7 @@ describe("SubventiaCli", () => {
         it("stringifies errors", async () => {
             // @ts-expect-error: protected
             await subventiaCli.exportErrors(ERRORS, FILE);
-            expect(csvSyncStringifier.stringify).toHaveBeenCalledWith(ERRORS, { header: true });
+            expect(stringify).toHaveBeenCalledWith(ERRORS, { header: true });
         });
 
         it("writes in proper path", async () => {

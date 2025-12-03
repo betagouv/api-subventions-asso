@@ -1,12 +1,12 @@
 {
     "compilerOptions": {
         "target": "es2022",
-        "module": "commonjs",
-        "outDir": "./build",
-        "moduleResolution": "node",
+        "module": "esnext",
+        "outDir": "build",
+        "moduleResolution": "node10",
         "forceConsistentCasingInFileNames": true,
         "esModuleInterop": true,
         "declaration": true
     },
-    "exclude": []
+    "exclude": ["build"]
 }

@@ -1,5 +1,5 @@
 import { EstablishmentSimplified } from "dto";
-import csvStringifier from "csv-stringify/sync";
+import { stringify } from "csv-stringify/sync";
 import { BadRequestError } from "core";
 import associationsService from "../associations/associations.service";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
@@ -28,7 +28,7 @@ class GrantExtractService {
         const assoName = asso.denomination_rna?.[0]?.value ?? asso.denomination_siren?.[0]?.value;
 
         return {
-            csv: csvStringifier.stringify(
+            csv: stringify(
                 grants.map(g => GrantAdapter.grantToExtractLine(g, asso, estabBySiret)),
                 {
                     header: true,
