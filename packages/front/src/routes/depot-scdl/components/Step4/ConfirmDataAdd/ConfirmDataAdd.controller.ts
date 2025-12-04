@@ -6,6 +6,7 @@ export default class ConfirmDataAddController {
     public existingLinesInDb: number;
     public rangeStartYear: number;
     public rangeEndYear: number;
+    public filename: string;
 
     constructor() {
         const depositLog = depositLogStore.value!;
@@ -14,6 +15,7 @@ export default class ConfirmDataAddController {
         this.existingLinesInDb = uploadedFileInfos.existingLinesInDbOnSamePeriod;
         this.rangeStartYear = Math.min(...uploadedFileInfos.grantCoverageYears);
         this.rangeEndYear = Math.max(...uploadedFileInfos.grantCoverageYears);
+        this.filename = uploadedFileInfos.fileName;
     }
 
     async downloadGrantsCsv() {
@@ -25,5 +27,13 @@ export default class ConfirmDataAddController {
         link.download = fileName;
         link.click();
         window.URL.revokeObjectURL(url);
+    }
+
+    async generateDownloadUrl() {
+        const data = await depositLogService.generateDownloadScdlFileUrl();
+        const link = document.createElement("a");
+        link.href = data.url;
+        link.download = this.filename;
+        link.click();
     }
 }

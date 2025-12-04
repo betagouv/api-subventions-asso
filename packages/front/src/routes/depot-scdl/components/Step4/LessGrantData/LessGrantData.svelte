@@ -1,12 +1,11 @@
 <script lang="ts">
     import Alert from "$lib/dsfr/Alert.svelte";
-    import { scdlFileStore } from "$lib/store/scdlFile.store";
     import LessGrantDataController from "./LessGrantData.controller";
     import { createEventDispatcher } from "svelte";
 
     const dispatch = createEventDispatcher<{ prevStep: void }>();
     const ctrl = new LessGrantDataController();
-    const { rangeStartYear, rangeEndYear, detectedLines, existingLinesInDb } = ctrl;
+    const { rangeStartYear, rangeEndYear, detectedLines, existingLinesInDb, filename } = ctrl;
 </script>
 
 <div class="fr-col-12 fr-col-md-8">
@@ -14,18 +13,13 @@
         <p>Compte tenu de ces erreurs votre fichier n’est pas pris en compte.</p>
     </Alert>
 
-    {#if $scdlFileStore}
-        <p>
-            <strong>Fichier ajouté :</strong>
-            <br />
-            <a
-                class="fr-link fr-link--download"
-                href={URL.createObjectURL($scdlFileStore)}
-                download={$scdlFileStore.name}>
-                {$scdlFileStore.name}
-            </a>
-        </p>
-    {/if}
+    <p>
+        <strong>Fichier ajouté :</strong>
+        <br />
+        <a class="fr-link fr-link--download" href="#" on:click|preventDefault={() => ctrl.generateDownloadUrl()}>
+            {filename}
+        </a>
+    </p>
 
     <p>
         <strong>Votre fichier comprend des données entre : janvier {rangeStartYear} et décembre {rangeEndYear}</strong>

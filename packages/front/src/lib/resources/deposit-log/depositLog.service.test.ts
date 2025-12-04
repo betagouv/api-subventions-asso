@@ -1,6 +1,6 @@
 import depositLogService from "$lib/resources/deposit-log/depositLog.service";
 import depositLogPort from "$lib/resources/deposit-log/depositLog.port";
-import type { CreateDepositScdlLogDto, DepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
+import type { CreateDepositScdlLogDto, DepositScdlLogDto, DepositScdlLogResponseDto, FileDownloadUrlDto } from "dto";
 import type { AxiosResponse } from "axios";
 
 describe("DepositLogService", () => {
@@ -11,6 +11,7 @@ describe("DepositLogService", () => {
     vi.spyOn(depositLogPort, "validateScdlFile");
     vi.spyOn(depositLogPort, "persistScdlFile");
     vi.spyOn(depositLogPort, "getExistingScdlDatas");
+    vi.spyOn(depositLogPort, "getFileDownloadUrl");
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -208,7 +209,7 @@ describe("DepositLogService", () => {
 
             vi.mocked(depositLogPort.persistScdlFile).mockResolvedValue(response);
 
-            const result = await depositLogService.persistScdlFile({} as File);
+            const result = await depositLogService.persistScdlFile();
 
             expect(depositLogPort.persistScdlFile).toHaveBeenCalledTimes(1);
             expect(result).toBeUndefined();
@@ -218,8 +219,34 @@ describe("DepositLogService", () => {
             const mockError = new Error("error");
             vi.mocked(depositLogPort.persistScdlFile).mockRejectedValue(mockError);
 
-            await expect(depositLogService.persistScdlFile({} as File)).rejects.toThrow(mockError);
+            await expect(depositLogService.persistScdlFile()).rejects.toThrow(mockError);
             expect(depositLogPort.persistScdlFile).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe("generateDownloadScdlFileUrl", () => {
+        it("should return data", async () => {
+            const response = {
+                data: {
+                    url: "presigned-url",
+                },
+                status: 200,
+            } as AxiosResponse;
+
+            vi.mocked(depositLogPort.getFileDownloadUrl).mockResolvedValue(response);
+
+            const result = await depositLogService.generateDownloadScdlFileUrl();
+
+            expect(depositLogPort.getFileDownloadUrl).toHaveBeenCalledTimes(1);
+            expect(result).toEqual(response.data as FileDownloadUrlDto);
+        });
+
+        it("should throw error", async () => {
+            const mockError = new Error("error");
+            vi.mocked(depositLogPort.getFileDownloadUrl).mockRejectedValue(mockError);
+
+            await expect(depositLogService.generateDownloadScdlFileUrl).rejects.toThrow(mockError);
+            expect(depositLogPort.getFileDownloadUrl).toHaveBeenCalledTimes(1);
         });
     });
 });

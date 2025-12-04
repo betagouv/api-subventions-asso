@@ -12,7 +12,6 @@ import FileFormatError from "$lib/errors/file-errors/FileFormatError";
 import FileEncodingError from "$lib/errors/file-errors/FileEncodingError";
 import { depositLogStore } from "$lib/store/depositLog.store";
 import type { DepositScdlLogDto } from "dto/depositScdlProcess/DepositScdlLogDto";
-import { scdlFileStore } from "$lib/store/scdlFile.store";
 
 type EventMap = {
     prevStep: void;
@@ -58,7 +57,6 @@ export default class Step3Controller {
         }
 
         const file = files[0];
-        scdlFileStore.set(file);
 
         try {
             await validateFile(file, this.uploadConfig.acceptedFormats, this.MAX_MO_FILE_SIZE);

@@ -2,7 +2,6 @@ import Store from "$lib/core/Store";
 import { depositLogStore } from "$lib/store/depositLog.store";
 import { getContext } from "svelte";
 import depositLogService from "$lib/resources/deposit-log/depositLog.service";
-import { scdlFileStore } from "$lib/store/scdlFile.store";
 
 type EventMap = {
     prevStep: void;
@@ -20,7 +19,6 @@ type DispatchFunction = <K extends keyof EventMap>(
 
 export default class Step4Controller {
     private MIN_LOADING_TIME = 2000;
-    private scdlFile = scdlFileStore.value!;
     private readonly dispatch: DispatchFunction;
     public view: Store<"confirmDataAdd" | "lessGrantData" | "multipleAllocator" | "blockingErrors" | "error"> =
         new Store("confirmDataAdd");
@@ -70,7 +68,7 @@ export default class Step4Controller {
         this.dispatch("loading", "Veuillez patientez, nous finalisons le dépôt de vos données");
 
         try {
-            await depositLogService.persistScdlFile(this.scdlFile);
+            await depositLogService.persistScdlFile();
 
             const elapsed = Date.now() - startTime;
             const remainingTime = this.MIN_LOADING_TIME - elapsed;
