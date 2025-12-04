@@ -1,7 +1,12 @@
 import type { AxiosResponse } from "axios";
 import requestsService from "$lib/services/requests.service";
 import depositLogPort from "$lib/resources/deposit-log/depositLog.port";
-import type { CreateDepositScdlLogDto, DepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
+import {
+    type CreateDepositScdlLogDto,
+    type DepositScdlLogDto,
+    type DepositScdlLogResponseDto,
+    type FileDownloadUrlDto,
+} from "dto";
 import DepositLogPort from "$lib/resources/deposit-log/depositLog.port";
 
 vi.mock("$lib/services/requests.service");
@@ -16,12 +21,6 @@ describe("DepositLogPort", () => {
     describe("GET methods", () => {
         const mockGetResource = vi.spyOn(depositLogPort, "getResource");
 
-        beforeAll(() => {
-            mockGetResource.mockResolvedValue({
-                data: { step: 1, allocatorSiret: "12345678901234", overwriteAlert: true } as DepositScdlLogResponseDto,
-            } as AxiosResponse);
-        });
-
         describe("getDepositLog", () => {
             it("should call axios with route", () => {
                 depositLogPort.getDepositLog();
@@ -29,6 +28,13 @@ describe("DepositLogPort", () => {
             });
 
             it("returns depositLog", async () => {
+                mockGetResource.mockResolvedValueOnce({
+                    data: {
+                        step: 1,
+                        allocatorSiret: "12345678901234",
+                        overwriteAlert: true,
+                    } as DepositScdlLogResponseDto,
+                } as AxiosResponse);
                 const expected = { data: { step: 1, allocatorSiret: "12345678901234", overwriteAlert: true } };
                 const actual = await depositLogPort.getDepositLog();
                 expect(actual).toEqual(expected);
@@ -39,6 +45,22 @@ describe("DepositLogPort", () => {
             it("should call axios with route", () => {
                 depositLogPort.getExistingScdlDatas();
                 expect(mockGetResource).toHaveBeenCalledWith("donnees-existantes");
+            });
+        });
+
+        describe("getFileDownloadUrl", () => {
+            it("should call axios with route", () => {
+                depositLogPort.getFileDownloadUrl();
+                expect(mockGetResource).toHaveBeenCalledWith("fichier-depose/url-de-telechargement");
+            });
+
+            it("returns FileDownloadUrlDto", async () => {
+                mockGetResource.mockResolvedValueOnce({
+                    data: { url: "presigned-url" } as FileDownloadUrlDto,
+                } as AxiosResponse);
+                const expected = { data: { url: "presigned-url" } };
+                const actual = await depositLogPort.getDepositLog();
+                expect(actual).toEqual(expected);
             });
         });
     });
@@ -87,17 +109,8 @@ describe("DepositLogPort", () => {
 
         describe("persistScdlFile", () => {
             it("should call axios with route", () => {
-                const file = new File(["content"], "test.csv", { type: "text/csv" });
-                depositLogPort.persistScdlFile(file);
-                expect(mockPostResource).toHaveBeenCalledWith(
-                    DepositLogPort.BASE_PATH + "/depot-fichier-scdl",
-                    expect.any(FormData),
-                );
-
-                const callArgs = mockPostResource.mock.calls[0];
-                const formData = callArgs[1] as FormData;
-
-                expect(formData.get("file")).toBe(file);
+                depositLogPort.persistScdlFile();
+                expect(mockPostResource).toHaveBeenCalledWith(DepositLogPort.BASE_PATH + "/depot-fichier-scdl");
             });
         });
     });

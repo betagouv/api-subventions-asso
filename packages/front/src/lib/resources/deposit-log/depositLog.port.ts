@@ -16,6 +16,10 @@ class DepositLogPort {
         return this.getResource("donnees-existantes");
     }
 
+    getFileDownloadUrl() {
+        return this.getResource("fichier-depose/url-de-telechargement");
+    }
+
     createDepositLog(depositLogRequest: CreateDepositScdlLogDto) {
         return requestsService.post(this.BASE_PATH, depositLogRequest);
     }
@@ -39,10 +43,8 @@ class DepositLogPort {
         return requestsService.post(this.BASE_PATH + "/validation-fichier-scdl", formdata);
     }
 
-    persistScdlFile(file: File) {
-        const formdata = new FormData();
-        formdata.append("file", file);
-        return requestsService.post(this.BASE_PATH + "/depot-fichier-scdl", formdata);
+    persistScdlFile() {
+        return requestsService.post(this.BASE_PATH + "/depot-fichier-scdl");
     }
 }
 
