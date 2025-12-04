@@ -24,6 +24,7 @@ import Siret from "../../identifierObjects/Siret";
 import dataLogService from "../data-log/dataLog.service";
 import { DataLogEntity } from "../data-log/entities/dataLogEntity";
 import { InsertOneResult } from "mongodb";
+import s3FileService from "../s3-file/s3Storage.service";
 
 jest.mock("./check/DepositScdlProcess.check.service");
 jest.mock("../../dataProviders/db/deposit-log/depositLog.port");
@@ -31,6 +32,49 @@ jest.mock("../../dataProviders/db/deposit-log/DepositLog.adapter");
 jest.mock("../providers/scdl/scdl.service.ts");
 
 describe("DepositScdlProcessService", () => {
+    const mockGetDepositLog = jest.spyOn(depositScdlProcessService, "getDepositLog") as jest.SpyInstance<
+        Promise<DepositScdlLogEntity | null>,
+        [string]
+    >;
+    const mockFindDepositLog = jest.spyOn(depositScdlProcessService, "find") as jest.SpyInstance<
+        Promise<DepositScdlLogEntity[]>,
+        []
+    >;
+
+    const mockGetGrantsOnPeriodByAllocator = jest.spyOn(
+        scdlService,
+        "getGrantsOnPeriodByAllocator",
+    ) as jest.SpyInstance<Promise<MiscScdlGrantEntity[]>, [string, number[]]>;
+    const mockDeleteDepositLog = jest.spyOn(depositLogPort, "deleteByUserId") as jest.SpyInstance<
+        Promise<boolean>,
+        [string]
+    >;
+
+    const mockS3DeleteUserFile = jest.spyOn(s3FileService, "deleteUserFile") as jest.SpyInstance<
+        Promise<void>,
+        [userId: string, fileName: string]
+    >;
+    const mockGetUserFile = jest.spyOn(s3FileService, "getUserFile") as jest.SpyInstance<
+        Promise<Express.Multer.File>,
+        [userId: string, fileName: string]
+    >;
+    const mockS3uploadAndReplaceUserFile = jest.spyOn(s3FileService, "uploadAndReplaceUserFile") as jest.SpyInstance<
+        Promise<string>,
+        [file: Express.Multer.File, userId: string]
+    >;
+
+    const mockParseCsv = jest.spyOn(scdlService, "parseCsv") as jest.SpyInstance<
+        { entities: ScdlStorableGrant[]; errors: MixedParsedError[]; parsedInfos: ScdlParsedInfos },
+        [fileContent: Buffer, delimiter?: string, quote?: string]
+    >;
+    const mockgetGrantsOnPeriodByAllocator = jest.spyOn(
+        scdlService,
+        "getGrantsOnPeriodByAllocator",
+    ) as jest.SpyInstance<Promise<MiscScdlGrantEntity[]>, [allocatorSiret: string, exercices: number[]]>;
+    const mockParseXls = jest.spyOn(scdlService, "parseXls");
+
+    const mockDetectCsvDelimiter = jest.spyOn(FileHelper, "detectCsvDelimiter");
+
     afterEach(() => {
         jest.resetAllMocks();
     });
@@ -51,11 +95,6 @@ describe("DepositScdlProcessService", () => {
     });
 
     describe("getDepositLog", () => {
-        const mockGetDepositLog = jest.spyOn(depositScdlProcessService, "getDepositLog") as jest.SpyInstance<
-            Promise<DepositScdlLogEntity | null>,
-            [string]
-        >;
-
         it("Should return a DepositLog", async () => {
             const expected = DEPOSIT_LOG_ENTITY;
 
@@ -76,15 +115,6 @@ describe("DepositScdlProcessService", () => {
     });
 
     describe("generateExistingGrantsCsv", () => {
-        const mockGetDepositLog = jest.spyOn(depositScdlProcessService, "getDepositLog") as jest.SpyInstance<
-            Promise<DepositScdlLogEntity | null>,
-            [string]
-        >;
-        const mockGetGrantsOnPeriodByAllocator = jest.spyOn(
-            scdlService,
-            "getGrantsOnPeriodByAllocator",
-        ) as jest.SpyInstance<Promise<MiscScdlGrantEntity[]>, [string, number[]]>;
-
         it("Should return csv with filename", async () => {
             mockGetDepositLog.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_2);
             mockGetGrantsOnPeriodByAllocator.mockResolvedValueOnce([MiscScdlGrant]);
@@ -124,35 +154,49 @@ describe("DepositScdlProcessService", () => {
     });
 
     describe("deleteDepositLog", () => {
-        const mockDeleteDepositLog = jest.spyOn(depositScdlProcessService, "deleteDepositLog") as jest.SpyInstance<
-            Promise<void>,
-            [string]
-        >;
-
         it("Should return an empty promise", async () => {
-            mockDeleteDepositLog.mockResolvedValueOnce();
+            mockGetDepositLog.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_2);
+            mockDeleteDepositLog.mockResolvedValueOnce(true);
+            mockS3DeleteUserFile.mockResolvedValueOnce();
 
             expect(await depositScdlProcessService.deleteDepositLog(USER_ID)).toBeUndefined();
         });
 
-        it("should call deleteDepositLog with userId", async () => {
-            mockDeleteDepositLog.mockResolvedValueOnce();
+        it("should call deleteByUserId with userId", async () => {
+            mockGetDepositLog.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_2);
+            mockDeleteDepositLog.mockResolvedValueOnce(true);
+            mockS3DeleteUserFile.mockResolvedValueOnce();
 
             await depositScdlProcessService.deleteDepositLog(USER_ID);
 
             expect(mockDeleteDepositLog).toHaveBeenCalledWith(USER_ID);
         });
+
+        it("should call deleteUserFile when deposit log exists", async () => {
+            mockGetDepositLog.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_2);
+            mockDeleteDepositLog.mockResolvedValueOnce(true);
+            mockS3DeleteUserFile.mockResolvedValueOnce();
+
+            await depositScdlProcessService.deleteDepositLog(USER_ID);
+
+            expect(mockS3DeleteUserFile).toHaveBeenCalledWith(
+                USER_ID,
+                DEPOSIT_LOG_ENTITY_STEP_2.uploadedFileInfos!.fileName,
+            );
+        });
+
+        it("should not call deleteUserFile when no deposit log", async () => {
+            mockGetDepositLog.mockResolvedValueOnce(null);
+            mockDeleteDepositLog.mockResolvedValueOnce(true);
+            mockS3DeleteUserFile.mockResolvedValueOnce();
+
+            await depositScdlProcessService.deleteDepositLog(USER_ID);
+
+            expect(mockS3DeleteUserFile).not.toHaveBeenCalled();
+        });
     });
 
     describe("createDepositLog", () => {
-        const mockGetDepositLog = jest.spyOn(depositScdlProcessService, "getDepositLog") as jest.SpyInstance<
-            Promise<DepositScdlLogEntity | null>,
-            [string]
-        >;
-        afterEach(() => {
-            jest.clearAllMocks();
-        });
-
         it("Should return a DepositLog", async () => {
             mockGetDepositLog.mockResolvedValueOnce(null);
 
@@ -179,11 +223,6 @@ describe("DepositScdlProcessService", () => {
     });
 
     describe("updateDepositLog", () => {
-        const mockGetDepositLog = jest.spyOn(depositScdlProcessService, "getDepositLog") as jest.SpyInstance<
-            Promise<DepositScdlLogEntity | null>,
-            [string]
-        >;
-
         it("Should return a DepositLog", async () => {
             mockGetDepositLog.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY);
             const step = 3;
@@ -221,19 +260,6 @@ describe("DepositScdlProcessService", () => {
     });
 
     describe("validateScdlFile", () => {
-        const mockGetDepositLog = jest.spyOn(depositScdlProcessService, "getDepositLog") as jest.SpyInstance<
-            Promise<DepositScdlLogEntity | null>,
-            [string]
-        >;
-        const mockParseCsv = jest.spyOn(scdlService, "parseCsv") as jest.SpyInstance<
-            { entities: ScdlStorableGrant[]; errors: MixedParsedError[]; parsedInfos: ScdlParsedInfos },
-            [fileContent: Buffer, delimiter?: string, quote?: string]
-        >;
-        const mockgetGrantsOnPeriodByAllocator = jest.spyOn(
-            scdlService,
-            "getGrantsOnPeriodByAllocator",
-        ) as jest.SpyInstance<Promise<MiscScdlGrantEntity[]>, [allocatorSiret: string, exercices: number[]]>;
-
         it("Should return deposit log with correct informations", async () => {
             const mockDate = new Date("2025-11-04T10:30:00Z");
             jest.spyOn(global, "Date").mockImplementation(() => mockDate as never);
@@ -242,6 +268,7 @@ describe("DepositScdlProcessService", () => {
                 {} as MiscScdlGrantEntity,
                 {} as MiscScdlGrantEntity,
             ]);
+            mockS3uploadAndReplaceUserFile.mockResolvedValue("userFileId");
             const step = 2;
 
             const expected: DepositScdlLogEntity = {
@@ -296,14 +323,6 @@ describe("DepositScdlProcessService", () => {
     });
 
     describe("parseFile", () => {
-        const mockDetectCsvDelimiter = jest.spyOn(FileHelper, "detectCsvDelimiter");
-        const mockParseCsv = jest.spyOn(scdlService, "parseCsv");
-        const mockParseXls = jest.spyOn(scdlService, "parseXls");
-
-        afterEach(() => {
-            jest.clearAllMocks();
-        });
-
         it("should parse CSV file with detected delimiter", () => {
             const file = createMockFile("test.csv");
             const expectedDelimiter = ";";
@@ -354,15 +373,6 @@ describe("DepositScdlProcessService", () => {
     });
 
     describe("find", () => {
-        const mockFindDepositLog = jest.spyOn(depositScdlProcessService, "find") as jest.SpyInstance<
-            Promise<DepositScdlLogEntity[]>,
-            []
-        >;
-
-        afterEach(() => {
-            mockFindDepositLog.mockClear();
-        });
-
         it("Should call find method", async () => {
             mockFindDepositLog.mockResolvedValueOnce([DEPOSIT_LOG_ENTITY]);
 
@@ -384,10 +394,6 @@ describe("DepositScdlProcessService", () => {
         let persistMock;
         let deletDepositMock;
 
-        const mockGetDepositLog = jest.spyOn(depositScdlProcessService, "getDepositLog") as jest.SpyInstance<
-            Promise<DepositScdlLogEntity | null>,
-            [string]
-        >;
         const mockGetProducer = jest.spyOn(scdlService, "getProducer") as jest.SpyInstance<
             Promise<MiscScdlProducerEntity | null>,
             [Siret]
@@ -396,16 +402,13 @@ describe("DepositScdlProcessService", () => {
             Promise<MiscScdlProducerEntity | null>,
             [Siret]
         >;
-        const mockParseCsv = jest.spyOn(scdlService, "parseCsv") as jest.SpyInstance<
-            { entities: ScdlStorableGrant[]; errors: MixedParsedError[]; parsedInfos: ScdlParsedInfos },
-            [fileContent: Buffer, delimiter?: string, quote?: string]
-        >;
-
         beforeEach(() => {
             jest.spyOn(depositScdlProcessCheckService, "finalCheckBeforePersist").mockResolvedValue(undefined);
             persistMock = jest.spyOn(scdlService, "persist").mockResolvedValue(undefined);
             deletDepositMock = jest.spyOn(depositLogPort, "deleteByUserId").mockResolvedValue(true);
             jest.spyOn(dataLogService, "addLog").mockResolvedValue({} as InsertOneResult<DataLogEntity>);
+            mockS3DeleteUserFile.mockResolvedValue();
+            mockGetUserFile.mockResolvedValue(createMockFile("test.csv"));
         });
 
         afterEach(() => {
@@ -413,15 +416,11 @@ describe("DepositScdlProcessService", () => {
         });
 
         it("should throw not found error when not deposit log found", async () => {
-            const file = createMockFile("test.csv");
             mockGetDepositLog.mockResolvedValueOnce(null);
-            await expect(depositScdlProcessService.parseAndPersistScdlFile(file, USER_ID)).rejects.toThrow(
-                NotFoundError,
-            );
+            await expect(depositScdlProcessService.parseAndPersistScdlFile(USER_ID)).rejects.toThrow(NotFoundError);
         });
 
         it("should call createProducer if producer don't exists", async () => {
-            const file = createMockFile("test.csv");
             const parsedResult = {
                 entities: [],
                 errors: [],
@@ -440,14 +439,13 @@ describe("DepositScdlProcessService", () => {
             mockGetProducer.mockResolvedValueOnce(null);
             mockCreateProducer.mockResolvedValueOnce({ siret: "12345678901234" } as MiscScdlProducerEntity);
 
-            await depositScdlProcessService.parseAndPersistScdlFile(file, USER_ID);
+            await depositScdlProcessService.parseAndPersistScdlFile(USER_ID);
 
             expect(mockCreateProducer).toHaveBeenCalledTimes(1);
             expect(mockCreateProducer).toHaveBeenCalledWith(new Siret(DEPOSIT_LOG_ENTITY_STEP_2.allocatorSiret!));
         });
 
         it("should not persist when blocking errors", async () => {
-            const file = createMockFile("test.csv");
             const parsedResult = {
                 entities: [],
                 errors: [{ bloquant: "oui" } as MixedParsedError],
@@ -465,16 +463,13 @@ describe("DepositScdlProcessService", () => {
 
             mockParseCsv.mockReturnValueOnce(parsedResult);
 
-            await expect(depositScdlProcessService.parseAndPersistScdlFile(file, USER_ID)).rejects.toThrow(
-                BadRequestError,
-            );
+            await expect(depositScdlProcessService.parseAndPersistScdlFile(USER_ID)).rejects.toThrow(BadRequestError);
 
             expect(persistMock).not.toHaveBeenCalled();
             expect(deletDepositMock).not.toHaveBeenCalled();
         });
 
         it("should persist and delete deposit log", async () => {
-            const file = createMockFile("test.csv");
             const parsedResult = {
                 entities: [],
                 errors: [],
@@ -492,7 +487,7 @@ describe("DepositScdlProcessService", () => {
 
             mockParseCsv.mockReturnValueOnce(parsedResult);
 
-            await depositScdlProcessService.parseAndPersistScdlFile(file, USER_ID);
+            await depositScdlProcessService.parseAndPersistScdlFile(USER_ID);
 
             expect(persistMock).toHaveBeenCalledTimes(1);
             expect(deletDepositMock).toHaveBeenCalledTimes(1);

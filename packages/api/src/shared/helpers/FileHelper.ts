@@ -19,3 +19,18 @@ export function detectCsvDelimiter(fileContent: Buffer): string {
     counts.sort((a, b) => b.count - a.count);
     return counts[0].count > 0 ? counts[0].delimiter : ";";
 }
+
+export function bufferToMulterFile(buffer: Buffer, filename: string, mimetype?: string): Express.Multer.File {
+    return {
+        buffer,
+        originalname: filename,
+        mimetype: mimetype,
+        fieldname: "file",
+        encoding: "7bit",
+        size: buffer.length,
+        destination: "",
+        filename: "",
+        path: "",
+        stream: {},
+    } as Express.Multer.File;
+}
