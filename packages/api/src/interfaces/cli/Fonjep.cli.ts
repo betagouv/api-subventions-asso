@@ -10,7 +10,7 @@ export default class FonjepCli extends CliController {
     protected logFileParsePath = "./logs/fonjep.parse.log.txt";
 
     /**
-     * @example npm run cli fonjep parse ./Extraction\ du\ 30-12-2022.xlsx 2022-12-30
+     * @example pnpm cli fonjep parse ./Extraction\ du\ 30-12-2022.xlsx 2022-12-30
      *
      * @param file Path to the file
      * @param logs is auto-injected by cli controller

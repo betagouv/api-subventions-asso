@@ -59,6 +59,10 @@ export default [
     vitest.configs.recommended,
     {
         languageOptions: {
+            parserOptions: {
+                project: true,
+                tsconfigRootDir: new URL(".", import.meta.url).pathname,
+            },
             globals: {
                 ...globals.browser,
                 ...globals.node, // Add this if you are using SvelteKit in non-SPA mode

@@ -1,4 +1,20 @@
-#!/bin/sh
+#!/usr/bin/env sh
+
+# Block npm/yarn lockfiles
+if [ -f "package-lock.json" ]; then
+  echo "❌ Error: package-lock.json detected!"
+  echo "This repository uses pnpm exclusively."
+  echo "Please remove package-lock.json and use 'pnpm install' instead."
+  exit 1
+fi
+
+if [ -f "yarn.lock" ]; then
+  echo "❌ Error: yarn.lock detected!"
+  echo "This repository uses pnpm exclusively."
+  echo "Please remove yarn.lock and use 'pnpm install' instead."
+  exit 1
+fi
+
 . "$(dirname "$0")/_/husky.sh"
 
-npm run lint-format
+pnpm lint-format

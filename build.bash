@@ -4,6 +4,6 @@ if [ -z "$PACKAGE" ]
 then
   npx lerna run build
 else
-  npm run build:$PACKAGE
+  pnpm build:$PACKAGE
 fi
 

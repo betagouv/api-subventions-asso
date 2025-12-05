@@ -1,6 +1,6 @@
 import * as mongoDB from "mongodb";
 import { AgentTypeEnum, TerritorialScopeEnum } from "dto";
-import { AnyBulkWriteOperation } from "mongodb";
+import { AnyBulkWriteOperation, Document } from "mongodb";
 
 import {
     MONGO_METABASE_DBNAME,

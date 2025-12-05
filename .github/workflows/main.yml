@@ -20,9 +20,9 @@ jobs:
             - uses: actions/setup-node@v3
               with:
                   node-version: "22.15"
-            - run: npm ci
-            - run: npm run build
-            - run: npm run generate
+            - run: pnpm ci
+            - run: pnpm build
+            - run: pnpm generate
             - uses: actions/cache@v3
               with:
                   path: |
@@ -45,7 +45,7 @@ jobs:
                       **/build/
                       **/node_modules/
                   key: ${{ runner.os }}-node-${{ github.run_id }}
-            - run: npm run lint
+            - run: pnpm lint
     tests-api-integ:
         runs-on: ubuntu-22.04
         needs: build
@@ -61,7 +61,7 @@ jobs:
                       **/build/
                       **/node_modules/
                   key: ${{ runner.os }}-node-${{ github.run_id }}
-            - run: npm run test:integ
+            - run: pnpm test:integ
               working-directory: "./packages/api"
     tests-api-unit:
         runs-on: ubuntu-22.04
@@ -78,7 +78,7 @@ jobs:
                       **/build/
                       **/node_modules/
                   key: ${{ runner.os }}-node-${{ github.run_id }}
-            - run: npm run test:unit
+            - run: pnpm test:unit
               working-directory: "./packages/api"
     tests-front:
         runs-on: ubuntu-22.04
@@ -95,5 +95,5 @@ jobs:
                       **/build/
                       **/node_modules/
                   key: ${{ runner.os }}-node-${{ github.run_id }}
-            - run: npm run test
+            - run: pnpm test
               working-directory: "./packages/front"

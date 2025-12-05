@@ -8,8 +8,10 @@
     "main": "./build/index.js",
     "types": "./build/index.d.ts",
     "engines": {
-        "node": "22.15.0",
-        "npm": "10.9.2"
+        "npm": "use-pnpm-instead",
+        "yarn": "use-pnpm-instead",
+        "pnpm": "10.x",
+        "node": "22.x"
     },
     "directories": {
         "build": "./build",
@@ -41,6 +43,7 @@
         "url": "https://github.com/betagouv/datasubvention/issues"
     },
     "dependencies": {
+        "@types/node": "24.10.1",
         "mongodb": "^6"
     }
 }

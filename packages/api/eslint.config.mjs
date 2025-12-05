@@ -25,10 +25,6 @@ const ignores = [
 
     // all .md files
     "**/*.md",
-
-    // npm
-    "node_modules/**/*",
-    "package-lock.json",
 ];
 
 export default [
@@ -52,8 +48,13 @@ export default [
             "@typescript-eslint/no-require-imports": "off",
         },
     },
+
     {
         languageOptions: {
+            parserOptions: {
+                project: true,
+                tsconfigRootDir: new URL(".", import.meta.url).pathname,
+            },
             globals: {
                 ...globals.node,
             },
