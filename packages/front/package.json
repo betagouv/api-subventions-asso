@@ -22,7 +22,7 @@
         "start": "node ./build/index.js",
         "build": "vite build -l warn",
         "preview": "vite preview",
-        "test": "npm run test:unit",
+        "test": "pnpm run test:unit",
         "prepare": "svelte-kit sync",
         "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
         "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
