@@ -100,6 +100,7 @@
         "passport": "^0.6.0",
         "passport-jwt": "^4.0.1",
         "passport-local": "^1.0.0",
+        "promise.any": "2.0.6",
         "qs": "^6.11.2",
         "rand-token": "^1.0.1",
         "reflect-metadata": "^0.1.14",
