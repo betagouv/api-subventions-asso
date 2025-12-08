@@ -8,8 +8,6 @@
     "main": "./build/index.js",
     "types": "./build/index.d.ts",
     "engines": {
-        "npm": "use-pnpm-instead",
-        "yarn": "use-pnpm-instead",
         "pnpm": "10.x",
         "node": "22.x"
     },

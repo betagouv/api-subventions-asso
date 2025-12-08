@@ -6,8 +6,6 @@
     "homepage": "https://github.com/betagouv/api-subventions-asso/tree/main/packages/tools#readme",
     "license": "MIT",
     "engines": {
-        "npm": "use-pnpm-instead",
-        "yarn": "use-pnpm-instead",
         "pnpm": "10.x",
         "node": "22.x"
     },

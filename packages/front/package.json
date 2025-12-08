@@ -7,8 +7,7 @@
     "license": "MIT",
     "private": true,
     "engines": {
-        "npm": "use-pnpm-instead",
-        "yarn": "use-pnpm-instead",
+       
         "pnpm": "10.x",
         "node": "22.x"
     },
