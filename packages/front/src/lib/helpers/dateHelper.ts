@@ -18,7 +18,7 @@ export const getMonthWithZero = day => ("0" + day).slice(-2);
 
 export const YEAR_START_LOGS = 2022;
 
-export const STATS_YEAR_CHOICES = [];
+export const STATS_YEAR_CHOICES: number[] = [];
 for (let year = YEAR_START_LOGS; year <= new Date().getFullYear(); year++) STATS_YEAR_CHOICES.push(year);
 
 export function formatDate(value) {
@@ -30,4 +30,32 @@ export function formatDate(value) {
         "  ",
         " ",
     );
+}
+
+/**
+ * format Date to full french date with hour
+ * ex: "5 décembre 2025 à 10h30"
+ * */
+export function dateToFullFrenchDateWithHour(date: Date | string): string {
+    const convertedDate = date instanceof Date ? date : new Date(date);
+
+    if (isNaN(convertedDate.getTime())) {
+        throw new RangeError(`invalid date: ${date}`);
+    }
+
+    const dateFormatter = new Intl.DateTimeFormat("fr-FR", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
+
+    const timeFormatter = new Intl.DateTimeFormat("fr-FR", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: false,
+    });
+
+    const formattedTime = timeFormatter.format(convertedDate).replace(":", "h");
+
+    return `${dateFormatter.format(convertedDate)} à ${formattedTime}`;
 }

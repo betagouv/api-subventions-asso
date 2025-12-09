@@ -18,21 +18,10 @@ export default class LessGrantDataController {
     }
 
     async downloadGrantsCsv() {
-        const { csvData, fileName } = await depositLogService.getCsv();
-        const blob = new Blob([csvData], { type: "text/csv; charset=utf-8" });
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = fileName;
-        link.click();
-        window.URL.revokeObjectURL(url);
+        await depositLogService.downloadGrantsCsv();
     }
 
     async generateDownloadUrl() {
-        const data = await depositLogService.generateDownloadScdlFileUrl();
-        const link = document.createElement("a");
-        link.href = data.url;
-        link.download = this.filename;
-        link.click();
+        await depositLogService.downloadScdlFile(this.filename);
     }
 }

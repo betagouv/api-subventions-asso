@@ -4,7 +4,11 @@ import {
     type DepositScdlLogDto,
     type DepositScdlLogResponseDto,
     type FileDownloadUrlDto,
+    type UploadedFileInfosDto,
 } from "dto";
+import { stringify } from "csv-stringify/browser/esm/sync";
+
+export type FileValidationState = "multipleAllocator" | "lessGrantData" | "blockingErrors" | "confirmDataAdd";
 
 class DepositLogService {
     async getDepositLog() {
@@ -54,9 +58,56 @@ class DepositLogService {
         await depositLogPort.persistScdlFile();
     }
 
-    async generateDownloadScdlFileUrl() {
+    async generateScdlFileUrl() {
         const response = await depositLogPort.getFileDownloadUrl();
         return response.data as FileDownloadUrlDto;
+    }
+
+    determineFileValidationState(declaredSiret: string, fileInfos: UploadedFileInfosDto): FileValidationState {
+        const hasMultipleAllocators =
+            fileInfos.allocatorsSiret.length > 1 || declaredSiret !== fileInfos.allocatorsSiret[0];
+        const hasLessGrantData = fileInfos.parseableLines < fileInfos.existingLinesInDbOnSamePeriod;
+        const hasBlockingErrors = fileInfos.errors.some(error => error.bloquant === "oui") ?? false;
+
+        if (hasMultipleAllocators) return "multipleAllocator";
+        if (hasLessGrantData) return "lessGrantData";
+        if (hasBlockingErrors) return "blockingErrors";
+        return "confirmDataAdd";
+    }
+
+    async downloadErrorFile(fileInfos: UploadedFileInfosDto) {
+        const csvErrors = stringify(fileInfos.errors, {
+            header: true,
+            quoted: true,
+            quoted_empty: true,
+        });
+
+        const blob = new Blob([csvErrors], { type: "text/csv; charset=utf-8" });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${fileInfos.fileName}.csv-errors.csv`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+    }
+
+    async downloadScdlFile(filename: string) {
+        const data = await this.generateScdlFileUrl();
+        const link = document.createElement("a");
+        link.href = data.url;
+        link.download = filename;
+        link.click();
+    }
+
+    async downloadGrantsCsv() {
+        const { csvData, fileName } = await this.getCsv();
+        const blob = new Blob([csvData], { type: "text/csv; charset=utf-8" });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = fileName;
+        link.click();
+        window.URL.revokeObjectURL(url);
     }
 }
 

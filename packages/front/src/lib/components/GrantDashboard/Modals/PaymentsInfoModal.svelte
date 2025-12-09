@@ -4,7 +4,7 @@
 
     import { data } from "$lib/store/modal.store";
     import { numberToEuro, valueOrHyphen } from "$lib/helpers/dataHelper.js";
-    import { dateToDDMMYYYY } from "$lib/helpers/dateHelper.js";
+    import { dateToDDMMYYYY } from "$lib/helpers/dateHelper";
 
     const headers = ["Montant", "Domaine fonctionnel", "Activité", "Centre financier", "Date", "Programme"];
     const tableId = "payments-modal";
