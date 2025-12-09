@@ -17,6 +17,9 @@ importers:
       lerna:
         specifier: ^9.0.3
         version: 9.0.3(@types/node@20.5.1)
+      prettier-plugin-svelte:
+        specifier: ^3.4.0
+        version: 3.4.0(prettier@3.7.3)(svelte@4.2.20)
     devDependencies:
       '@commitlint/cli':
         specifier: ^17.8.1

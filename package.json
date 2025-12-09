@@ -45,7 +45,8 @@
   "dependencies": {
     "axios": "^1.7.4",
     "d3": "^7.9.0",
-    "lerna": "^9.0.3"
+    "lerna": "^9.0.3",
+    "prettier-plugin-svelte": "^3.4.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.8.1",
