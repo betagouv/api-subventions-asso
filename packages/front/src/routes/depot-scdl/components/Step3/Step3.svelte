@@ -1,5 +1,4 @@
 <script lang="ts">
-    import StepIndicator from "$lib/dsfr/StepIndicator/StepIndicator.svelte";
     import Alert from "$lib/dsfr/Alert.svelte";
     import InfoBox from "$lib/components/InfoBox.svelte";
     import Checkbox from "$lib/dsfr/Checkbox.svelte";
@@ -7,6 +6,7 @@
     import { createEventDispatcher } from "svelte";
     import SheetSelector from "./SheetSelector.svelte";
     import Step3Controller from "./Step3.controller";
+    import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
 
     const dispatch = createEventDispatcher<{
         prevStep: void;
@@ -17,9 +17,6 @@
     }>();
     const ctrl = new Step3Controller(dispatch);
     const { noFileOrInvalid, excelSheets, view, uploadErrorMessage, uploadError, uploadConfig } = ctrl;
-
-    export let currentStep: number;
-    export let stepsDesc: string[];
 
     const infoBoxTitle = "Nous acceptons uniquement des fichiers au format CSV ou XLS. ";
     const checkboxOptions = [
@@ -32,10 +29,6 @@
 </script>
 
 <div>
-    <div class="fr-mb-6v">
-        <StepIndicator {currentStep} {stepsDesc}></StepIndicator>
-    </div>
-
     {#if $view === "sheetSelector"}
         <SheetSelector
             excelSheets={$excelSheets}
@@ -60,9 +53,10 @@
                     </p>
                     <p class="fr-mb-0">
                         Pour préparer votre fichier, vous pouvez vous appuyer
-                        <a href="https://www.notion.so/R-gles-de-format-SCDL-1281788663a380e1a57efdd9b324c1ba">
+                        <TargetBlankLink
+                            href="https://www.notion.so/R-gles-de-format-SCDL-1281788663a380e1a57efdd9b324c1ba">
                             nos modèles SCDL
-                        </a>
+                        </TargetBlankLink>
                         .
                     </p>
                 </InfoBox>

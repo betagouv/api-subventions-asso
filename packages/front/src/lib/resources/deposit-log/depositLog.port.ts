@@ -12,7 +12,7 @@ class DepositLogPort {
         return this.getResource();
     }
 
-    async getGrantCsv() {
+    async getExistingScdlDatas() {
         return this.getResource("donnees-existantes");
     }
 

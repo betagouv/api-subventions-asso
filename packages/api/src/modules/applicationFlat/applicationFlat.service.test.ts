@@ -4,7 +4,7 @@ import applicationFlatPort from "../../dataProviders/db/applicationFlat/applicat
 import applicationFlatService from "./applicationFlat.service";
 import { ApplicationFlatEntity } from "../../entities/ApplicationFlatEntity";
 import ApplicationFlatAdapter from "./ApplicationFlatAdapter";
-import { DemandeSubvention } from "dto";
+import { ApplicationFlatDto, DemandeSubvention } from "dto";
 import { RawApplication } from "../grant/@types/rawGrant";
 import { ReadableStream } from "node:stream/web";
 
@@ -73,7 +73,7 @@ describe("ApplicationFlatService", () => {
             mockGetEntitiesByIdentifier = jest
                 .spyOn(applicationFlatService, "getEntitiesByIdentifier")
                 .mockResolvedValue(APPLICATIONS);
-            jest.mocked(ApplicationFlatAdapter.toDto).mockReturnValue(APPLICATION_FLAT_DBO); // dbo is the same as dto
+            jest.mocked(ApplicationFlatAdapter.toDto).mockReturnValue(APPLICATION_FLAT_DBO as ApplicationFlatDto); // dbo is the same as dto
         });
 
         afterAll(() => {

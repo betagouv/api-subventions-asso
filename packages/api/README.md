@@ -21,9 +21,10 @@ Le code de logique métier doit être uniquement écrit dans les services. C'est
 
 ## Setup
 
-Pour utiliser l'api, vous devez au préalable avoir installé Node.js et NPM.
+Pour utiliser l'api, vous devez au préalable avoir installé Node.js et PNPM.
+Il faut forcer l'utilisation de PNPM comme gestionnaire de librairie en utilisant corepack (compris dans Node.js) : `corepack prepare pnpm@10.24.0 --activate`
 
-Vous devez ensuite installer les dépendances avec `npm install`.
+Vous devez ensuite installer les dépendances avec `pnpm install`.
 
 Ensuite, il vous faudra créer un fichier .env.local à la racine du projet api, avec au moins les variables d'environnement suivantes:
 
@@ -77,7 +78,7 @@ Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les c
 En partant d'une base de données vierge, il est nécessaire d'ajouter, en local, un nom de domaine accepté dans la collection `configurations` afin de permettre la création d'un utilisateur :
 `db.configurations.insertOne({name: "ACCEPTED-EMAIL-DOMAINS", data: ["beta.gouv.fr"]})`
 
-Pour build l'api il est nécessaire au préalable de build le dossier dto pour avoir accès au types. Pour ce faire executer un `npm run build:api` depuis la racine `/api-subventions-asso`.
+Pour build l'api il est nécessaire au préalable de build le dossier dto pour avoir accès au types. Pour ce faire executer un `pnpm build:api` depuis la racine `/api-subventions-asso`.
 
 ### Pour AgentConnect
 
@@ -96,16 +97,16 @@ AgentConnect ne fonctionne pas avec l'url `localhost`. Pour qu'AgentConnect fonc
 
 ## Démarrer l'api en local
 
-1. Run `npm run dev`
+1. Run `pnpm dev`
 2. Visit [http://dev.local:8080](http://dev.local:8080)
 
 ## Exécuter une commande CLI
 
-1. Run `npm run cli [controller name] [method name] [...arguments]`
+1. Run `pnpm cli [controller name] [method name] [...arguments]`
 
 ### Créer son utilisateur en local
 
-1. Exécutez `npm run cli user create [your email]`.
+1. Exécutez `pnpm cli user create [your email]`.
 2. Faites une requête HTTP POST `dev.local:8080/auth/forget-password` avec comme corps `{ "email": [your email] }` pour générer un token de réinitialisation de mot de passe.
 3. Allez dans la collection `user-reset` de mongodb user et copiez la valeur du token nouvellement généré.
 4. Faites ensuite une requête HTTP POST `dev.local:8080/auth/reset-password` avec comme corps `{ "password": [your new password], "token": [token from step 3] }` pour mettre à jour votre mot de passe.
@@ -191,7 +192,7 @@ La branche main représente la pre-prod et la branche PROD l'environnement en pr
 
 ### CI
 
-Chaque création de Pull-Request déclenche une série de commandes npm (build, lint, test) qui doivent toutes se terminer avec succès sans quoi la PR sera bloquée.
+Chaque création de Pull-Request déclenche une série de commandes pnpm (build, lint, test) qui doivent toutes se terminer avec succès sans quoi la PR sera bloquée.
 
 ## Tests et Coverage
 
@@ -201,7 +202,7 @@ Les tests sont divisés en deux parties :
 
 Les tests unitaires sont présents au plus proche du code testé. Leur nom doit se terminer par `.test.ts`. C'est sur ces tests qu'est exécuté le coverage, qui a une tolérance de 85%. Un exemple type est présent dans `/src/example.test.ts`. Il montre l'utilisation, si possible, de deux constantes `actual` et `expected` qui sont ensuite comparées via `expect(actual).toEqual(expected)`. Cette façon de faire force les tests à être unitaires et atomiques, en ne testant qu'une seule chose à la fois et en rendant le test lisible et compréhensible.
 
-Le coverage se teste avec la commande `npm run test:cov` qui parcours tous les fichiers `.test.ts` présents dans `./src `. Pour avoir le coverage sur un seul fichier, et ainsi s'assurer qu'un nouveau développement est bien couvert de test, on exécute la commande `npm run test:unit [my-test-name].test -- --coverage --collectCoverageFrom=[relative/patch/to/my-test-name].ts`.
+Le coverage se teste avec la commande `pnpm test:cov` qui parcours tous les fichiers `.test.ts` présents dans `./src `. Pour avoir le coverage sur un seul fichier, et ainsi s'assurer qu'un nouveau développement est bien couvert de test, on exécute la commande `pnpm test:unit [my-test-name].test -- --coverage --collectCoverageFrom=[relative/patch/to/my-test-name].ts`.
 
 Format de test à suivre :
 
@@ -227,7 +228,7 @@ describe("front end app unit tests examples", () => {
 
 Les tests d'intégration sont présents dans le dosser `test` à la racine du projet. Leur nom de fichier se termine par `spec.ts`. Ils ne doivent tester que les fonctionnalités de bout en bout. Comme les routes HTTP ou les CLI.
 
-Pour ce faire, nous avons décidé d'utiliser le snapshot de Jest pour garder ces tests simples et concis. Dans l'exemple type d'un test d'intégration présent dans `/tests/example.spec.ts` on y voit l'utilisation de `.toMatchSnapshot()` qui crée un snapshot à la première exécution et qui valide le test. Il faut dans un premier temps s'assurer via un test manuel que la fonctionnalité fonctionne bien correctement. Les autres exécutions de `.toMatchSnapshot()` vont ensuite comparer le snapshot présent (et versionné sur Github) à celui re-généré. Si le nouveau snapshot ne "match" pas le premier, et que c'est lié à une modification de la fonctionnalité, il est nécessaire de mettre à jour le snapshot. Pour ce faire, il faut utiliser l'option `--updateSnapshot` (ou `-u`) de Jest. La commande pour mettre à jour tout un fichier de test est la suivante : `npm run test:integ -- -u nom-du-fichier.spec`. Mais il est également possible de mettre à jour tous les fichiers tests en même temps (`npm run test:integ -- -u`) ou de mettre à jour le snapshot d'un seul test (a.k.a `describe`) au sein d'un fichier (`npm run test:integ -- nom-du-fichier.spec -u -t test-name`).
+Pour ce faire, nous avons décidé d'utiliser le snapshot de Jest pour garder ces tests simples et concis. Dans l'exemple type d'un test d'intégration présent dans `/tests/example.spec.ts` on y voit l'utilisation de `.toMatchSnapshot()` qui crée un snapshot à la première exécution et qui valide le test. Il faut dans un premier temps s'assurer via un test manuel que la fonctionnalité fonctionne bien correctement. Les autres exécutions de `.toMatchSnapshot()` vont ensuite comparer le snapshot présent (et versionné sur Github) à celui re-généré. Si le nouveau snapshot ne "match" pas le premier, et que c'est lié à une modification de la fonctionnalité, il est nécessaire de mettre à jour le snapshot. Pour ce faire, il faut utiliser l'option `--updateSnapshot` (ou `-u`) de Jest. La commande pour mettre à jour tout un fichier de test est la suivante : `pnpm test:integ -- -u nom-du-fichier.spec`. Mais il est également possible de mettre à jour tous les fichiers tests en même temps (`pnpm test:integ -- -u`) ou de mettre à jour le snapshot d'un seul test (a.k.a `describe`) au sein d'un fichier (`pnpm test:integ -- nom-du-fichier.spec -u -t test-name`).
 
 ### Package UNIX nécessaire
 

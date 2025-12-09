@@ -11,6 +11,7 @@
         "**/__fixtures__/*"
     ],
     "compilerOptions": {
-        "types": ["reflect-metadata"]
+        "types": ["reflect-metadata"],
+        "declaration": false /* Generate .d.ts files from TypeScript and JavaScript files in your project. */
     }
 }

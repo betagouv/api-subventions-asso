@@ -9,7 +9,9 @@ import grantExtractService from "../../modules/grant/grantExtract.service";
 import consumers from "stream/consumers";
 import associationHelper from "../../modules/associations/associations.helper";
 import { errorHandler } from "../../middlewares/ErrorMiddleware";
+import grantService from "../../modules/grant/grant.service";
 
+jest.mock("../../modules/grant/grant.service");
 jest.mock("../../modules/establishment-identifier/establishment-identifier.service");
 jest.mock("../../modules/grant/grantExtract.service");
 jest.mock("../../middlewares/ErrorMiddleware");
@@ -129,6 +131,25 @@ describe("EstablishmentHttp", () => {
         it("should return true", async () => {
             const expected = true;
             const actual = await controller.registerExtract();
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("getGrants", () => {
+        const GRANTS_DTO = [{ application: null, payments: [] }];
+
+        beforeEach(() => {
+            jest.mocked(grantService.getGrantsDto).mockResolvedValue(GRANTS_DTO);
+        });
+
+        it("fetches grants on dto format", async () => {
+            await controller.getGrants(SIRET.value, REQ);
+            expect(grantService.getGrantsDto).toHaveBeenCalledWith(ESTABLISHMENT_ID);
+        });
+
+        it("returns subventions", async () => {
+            const expected = { subventions: GRANTS_DTO, count: 1 };
+            const actual = await controller.getGrants(SIRET.value, REQ);
             expect(actual).toEqual(expected);
         });
     });

@@ -1,18 +1,19 @@
-import { Association, ChorusPayment, Grant, Payment, EstablishmentSimplified } from "dto";
-import paymentService from "../payments/payments.service";
+import { Association, EstablishmentSimplified } from "dto";
 import { GrantToExtract } from "./@types/GrantToExtract";
+import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
+import { GrantFlatEntity } from "../../entities/GrantFlatEntity";
 
 const getValue = v => v?.value;
 
 export default class GrantAdapter {
     private static findSingleProperty<T = string>(
-        payments: Payment[] | null,
+        payments: PaymentFlatEntity[] | null,
         property: string,
         multiValue: T,
-        adapter?: (v: Payment) => T,
+        adapter?: (v: PaymentFlatEntity) => T,
     ) {
-        if (!adapter) adapter = (v: Payment) => v[property];
-        const values = new Set(payments?.map(versement => versement[property].value));
+        if (!adapter) adapter = (v: PaymentFlatEntity) => v[property];
+        const values = new Set(payments?.map(versement => versement[property]));
         return values.size > 1 ? multiValue : payments?.length ? adapter(payments[0]) : undefined;
     }
 
@@ -26,38 +27,32 @@ export default class GrantAdapter {
     }
 
     static grantToExtractLine(
-        grant: Grant,
+        grant: GrantFlatEntity,
         asso: Association,
         estabBySiret: Record<string, EstablishmentSimplified>,
     ): GrantToExtract {
-        const lastPayment = grant.payments?.sort(
-            (p1, p2) => p2.dateOperation.value.getTime() - p1.dateOperation.value.getTime(),
+        const lastPayment: PaymentFlatEntity | undefined = grant.payments?.sort(
+            (p1, p2) => p2.operationDate.getTime() - p1.operationDate.getTime(),
         )?.[0];
+
+        const { application, payments } = grant;
 
         const aggregatedPayment = {
             program: GrantAdapter.findSingleProperty(
-                grant?.payments,
+                payments,
                 "programme",
                 "multi-programmes",
-                p => `${getValue(p.programme)} - ${getValue(p.libelleProgramme)}`,
+                p => `${p.programNumber} - ${p.programName}`,
             ),
-            /*
-            financialCenter: GrantAdapter.findSingleProperty(
-                 grant?.payments,
-                 "centreFinancier",
-                 "multi-centres financiers",
-                 p => getValue((p as ChorusPayment).centreFinancier),
-             ), // We do what we do te be iso with front implementation but I keep this because it seems more true
-            */
-            financialCenter: (lastPayment as ChorusPayment)?.centreFinancier?.value,
-            paidAmount: grant.payments?.reduce(
-                (currentSum: number, payment) => getValue(payment.amount) + currentSum,
-                0,
-            ),
-            paymentDate: lastPayment?.dateOperation?.value.toISOString().split("T")[0],
+            financialCenter: lastPayment
+                ? `${lastPayment.centreFinancierCode} - ${lastPayment.centreFinancierLibelle}`
+                : undefined,
+            paidAmount: payments.reduce((currentSum: number, payment) => payment.amount + currentSum, 0),
+            paymentDate: lastPayment?.operationDate.toISOString().split("T")[0],
         };
 
-        const siret = getValue(grant?.application?.siret);
+        const siret =
+            application?.beneficiaryEstablishmentId.toString() || lastPayment.idEntrepriseBeneficiaire.toString();
         return {
             // general part
             assoName: getValue(asso.denomination_rna?.[0]) ?? getValue(asso.denomination_siren?.[0]) ?? "",
@@ -65,18 +60,15 @@ export default class GrantAdapter {
             estabAddress: GrantAdapter.addressToOneLineString(getValue(estabBySiret[siret]?.adresse?.[0])),
 
             // application part
-            exercice:
-                grant?.application?.annee_demande?.value ??
-                paymentService.getPaymentExercise((grant?.payments as Payment[])?.[0]) ??
-                0,
-            action: getValue(grant?.application?.actions_proposee?.[0]?.intitule),
-            askedAmount: getValue(grant?.application?.montants?.demande),
-            grantedAmount: getValue(grant?.application?.montants?.accorde),
-            instructor: getValue(grant?.application?.service_instructeur),
-            measure: getValue(grant?.application?.dispositif),
+            exercice: grant.application?.budgetaryYear || lastPayment.exerciceBudgetaire,
+            action: grant.application?.object ?? undefined,
+            askedAmount: application?.requestedAmount ?? undefined,
+            grantedAmount: application?.grantedAmount ?? undefined,
+            instructor: application?.instructiveDepartmentName ?? undefined,
+            measure: application?.scheme ?? undefined,
             siret,
             postalCode: estabBySiret[siret]?.adresse?.[0]?.value?.code_postal,
-            status: getValue(grant?.application?.statut_label),
+            status: application?.statusLabel,
 
             // payment part
             ...aggregatedPayment,

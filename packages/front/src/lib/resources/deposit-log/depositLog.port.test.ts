@@ -35,9 +35,9 @@ describe("DepositLogPort", () => {
             });
         });
 
-        describe("getGrantCsv", () => {
+        describe("getExistingScdlDatas", () => {
             it("should call axios with route", () => {
-                depositLogPort.getGrantCsv();
+                depositLogPort.getExistingScdlDatas();
                 expect(mockGetResource).toHaveBeenCalledWith("donnees-existantes");
             });
         });

@@ -8,8 +8,10 @@
     "main": "./build/index.js",
     "types": "./build/index.d.ts",
     "engines": {
-        "node": "22.15.0",
-        "npm": "10.9.2"
+        "npm": "use-pnpm-instead",
+        "yarn": "use-pnpm-instead",
+        "pnpm": "10.x",
+        "node": "22.x"
     },
     "directories": {
         "build": "./build",
@@ -25,7 +27,7 @@
     "scripts": {
         "test": "echo 'no test in dto'",
         "prebuild": "rm -rf ./build/*",
-        "build": "tsc --project ./",
+        "build": "rm -rf ./build && tsc",
         "lint": "eslint --fix --ext .ts",
         "lint:all": "eslint --fix --ext .ts .",
         "prettier:all": "prettier . --write",
@@ -41,6 +43,7 @@
         "url": "https://github.com/betagouv/datasubvention/issues"
     },
     "dependencies": {
-        "mongodb": "^6"
+        "@types/node": "24.10.1",
+        "mongodb": "6.16.0"
     }
 }

@@ -26,10 +26,10 @@ Les documents seront de multiples (nombreux !) fichiers excel, rangés dans le d
 
 ## Déployer les données
 
-**Attention :** dans la partie déploiement, les types de données s'appellent  `requests` et `actions``
+**Attention :** dans la partie déploiement, les types de données s'appellent `requests` et `actions``
 
 | côté Téléchargement | côté Déploiement |
-|---------------------|------------------|
+| ------------------- | ---------------- |
 | SuiviDossiers       | requests         |
 | SuiviActions        | actions          |
 
@@ -41,7 +41,7 @@ chaque niveau.
 Exécuter depuis le package api
 
 ```bash
-npm run cli osiris parse [TYPE_DONNÉES] [CHEMIN_DES_FICHIERS] [YEAR]
+pnpm cli osiris parse [TYPE_DONNÉES] [CHEMIN_DES_FICHIERS] [YEAR]
 ```
 
 Si vous ne les avez pas modifés, le chemin sera (depuis le package api)

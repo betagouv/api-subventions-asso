@@ -66,25 +66,25 @@ describe("PaymentFlatService", () => {
     describe("getPayments", () => {
         const IDENTIFIER = AssociationIdentifier.fromSiren(new Siren(DEFAULT_ASSOCIATION.siren));
         const PAYMENTS_FLAT: PaymentFlatEntity[] = [CHORUS_PAYMENT_FLAT_ENTITY];
-        let mockGetPaymentFlat;
+        let mockgetEntitiesByIdentifier;
         let mockToPaymentArray;
 
         beforeEach(() => {
-            mockGetPaymentFlat = jest
-                .spyOn(paymentFlatService, "getPaymentFlat")
+            mockgetEntitiesByIdentifier = jest
+                .spyOn(paymentFlatService, "getEntitiesByIdentifier")
                 .mockResolvedValue([CHORUS_PAYMENT_FLAT_ENTITY]);
             // @ts-expect-error: mock private method
             mockToPaymentArray = jest.spyOn(paymentFlatService, "toPaymentArray").mockReturnValue([PAYMENTS[0]]);
         });
 
         afterAll(() => {
-            mockGetPaymentFlat.mockRestore();
+            mockgetEntitiesByIdentifier.mockRestore();
             mockToPaymentArray.mockRestore();
         });
 
         it("fetches payments flat", async () => {
             await paymentFlatService.getPayments(AssociationIdentifier.fromSiren(new Siren(DEFAULT_ASSOCIATION.siren)));
-            expect(mockGetPaymentFlat).toHaveBeenCalledWith(IDENTIFIER);
+            expect(mockgetEntitiesByIdentifier).toHaveBeenCalledWith(IDENTIFIER);
         });
 
         it("transforms payments flat to payments", async () => {
@@ -129,7 +129,7 @@ describe("PaymentFlatService", () => {
         });
     });
 
-    describe("getPaymentFlat", () => {
+    describe("getEntitiesByIdentifier", () => {
         const ASSO_IDENTIFIER = AssociationIdentifier.fromSiren(new Siren(DEFAULT_ASSOCIATION.siren));
         const ESTAB_IDENTIFIER = EstablishmentIdentifier.fromSiret(
             new Siret(DEFAULT_ASSOCIATION.siret),
@@ -142,7 +142,7 @@ describe("PaymentFlatService", () => {
             ${"siren"}     | ${ASSO_IDENTIFIER}  | ${paymentFlatPort.findBySiren}
         `("gets payments from $identifierName", async ({ identifierName, identifier, fnCalled }) => {
             fnCalled.mockReturnValue([]);
-            await paymentFlatService.getPaymentFlat(identifier);
+            await paymentFlatService.getEntitiesByIdentifier(identifier);
             expect(fnCalled).toHaveBeenCalledWith(identifier[identifierName]);
         });
 
@@ -157,7 +157,7 @@ describe("PaymentFlatService", () => {
             "returns empty array if identifier is neither AssociationIdentifier.siren or EstablishmentIdentifier.siret",
             async ({ value }) => {
                 const expected = [];
-                const actual = await paymentFlatService.getPaymentFlat(value);
+                const actual = await paymentFlatService.getEntitiesByIdentifier(value);
                 expect(actual).toEqual(expected);
             },
         );

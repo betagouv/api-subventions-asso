@@ -9,6 +9,7 @@
     import Spinner from "$lib/components/Spinner.svelte";
     import Step4 from "./components/Step4/Step4.svelte";
     import Step5 from "./components/Step5/Step5.svelte";
+    import StepIndicator from "$lib/dsfr/StepIndicator/StepIndicator.svelte";
 
     const stepComponents = { 1: Step1, 2: Step2, 3: Step3, 4: Step4, 5: Step5 };
 
@@ -29,10 +30,11 @@
                 <ResumeForm on:resume={() => ctrl.resumeForm()} on:restart={() => ctrl.restartNewForm()} />
             {:else if $currentView === "form" && $currentStep}
                 <div class="fr-col-12 fr-col-lg-10">
+                    <div class="fr-mb-6v">
+                        <StepIndicator currentStep={$currentStep} {stepsDesc}></StepIndicator>
+                    </div>
                     <svelte:component
                         this={$currentStepComponent}
-                        {stepsDesc}
-                        currentStep={$currentStep}
                         on:nextStep={() => ctrl.nextStep()}
                         on:prevStep={() => ctrl.prevStep()}
                         on:loading={e => ctrl.loading(e.detail)}

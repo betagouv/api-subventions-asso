@@ -15,10 +15,10 @@ interface MandatoryApplicationFlatEntity extends ProviderDataEntity {
     statusLabel: ApplicationStatus;
     requestedAmount: number | null;
     grantedAmount: number | null;
+    budgetaryYear: number | null; // only optionnal for Subventia
 }
 
 type OptionalApplicationFlatEntity = {
-    budgetaryYear: number; // only optionnal for Subventia
     joinKeyId: string;
     joinKeyDesc: string;
     allocatorName: string;

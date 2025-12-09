@@ -13,8 +13,12 @@ import { StructureIdentifier } from "../../identifierObjects/@types/StructureIde
 import { ReadableStream } from "node:stream/web";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
 import GrantProvider from "../grant/@types/GrantProvider";
+import { StructureProvider } from "../StructureProvider";
 
-export class ApplicationFlatService extends ProviderCore implements GrantProvider, ApplicationProvider {
+export class ApplicationFlatService
+    extends ProviderCore
+    implements GrantProvider, ApplicationProvider, StructureProvider
+{
     constructor() {
         super({
             name: "Application Flat",

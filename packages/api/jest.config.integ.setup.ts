@@ -28,7 +28,6 @@ import { startServer } from "./src/server";
 import { scheduler } from "./src/cron";
 import configurationsPort from "./src/dataProviders/db/configurations/configurations.port";
 import { CONFIGURATION_NAMES } from "./src/modules/configurations/configurations.service";
-import { initAsyncServices } from "./src/shared/initAsyncServices";
 import { initTests } from "./jest.config.integ.init";
 
 /**
@@ -113,10 +112,8 @@ beforeAll(async () => {
     if (g.app) return;
 
     console.warn("Initializing integration test database...");
-    // setup database for initAsyncServices
     // everything will be droped after the first test from the afterEach below
     await initTests();
-    await initAsyncServices();
 
     g.app = await startServer("1234", true);
     await initIndexes();

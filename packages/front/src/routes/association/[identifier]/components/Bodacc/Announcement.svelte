@@ -1,6 +1,7 @@
 <script>
     import AnnouncementController from "./Announcement.controller";
     import Callout from "$lib/dsfr/Callout.svelte";
+    import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
 
     export let announcement;
 
@@ -34,14 +35,12 @@
                 {controller.judgment}
             </p>
         </div>
-        <a
-            class="fr-text--sm"
+        <TargetBlankLink
+            linkClass="fr-text--sm"
             href={controller.publicationFile}
-            target="_blank"
-            rel="noopener external"
             title="Témoin de publication - nouvelle fenêtre">
             Témoin de publication
-        </a>
+        </TargetBlankLink>
     </Callout>
 </div>
 

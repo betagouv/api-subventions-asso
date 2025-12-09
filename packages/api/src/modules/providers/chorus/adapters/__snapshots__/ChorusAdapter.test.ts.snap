@@ -2,7 +2,7 @@
 
 exports[`ChorusAdapter buildUniqueId return a uniqueId 1`] = `"chorus-1000000000019--subv001--2023-101-0101-01-02-077601003222-2023-07-12-BRET-AA01/0776-C001-4000"`;
 
-exports[`ChorusAdapter getPaymentFlatRawData should return PaymentFlatRawData 1`] = `
+exports[`ChorusAdapter getEntitiesByIdentifierRawData should return PaymentFlatRawData 1`] = `
 {
   "amount": 1000,
   "attachementComptable": "BRET",

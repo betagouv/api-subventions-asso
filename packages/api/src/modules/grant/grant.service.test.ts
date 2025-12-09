@@ -4,7 +4,6 @@ import mocked = jest.mocked;
 import { JoinedRawGrant, RawApplication, RawPayment } from "./@types/rawGrant";
 import * as Sentry from "@sentry/node";
 import { applicationProvidersFixtures, paymentProvidersFixtures } from "../providers/__fixtures__/providers.fixture";
-import scdlService from "../providers/scdl/scdl.service";
 import { DemandeSubvention, Grant, Payment } from "dto";
 import { SIRET_STR } from "../../../tests/__fixtures__/association.fixture";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
@@ -12,13 +11,16 @@ import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier
 import paymentService from "../payments/payments.service";
 import subventionsService from "../subventions/subventions.service";
 import Siret from "../../identifierObjects/Siret";
-import { refreshGrantAsyncServices } from "../../shared/initAsyncServices";
-import { APPLICATION_LINK_TO_CHORUS } from "../applicationFlat/__fixtures__";
-import { CHORUS_PAYMENT_FLAT_ENTITY } from "../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+import { APPLICATION_LINK_TO_CHORUS, APPLICATION_LINK_TO_FONJEP } from "../applicationFlat/__fixtures__";
+import {
+    CHORUS_PAYMENT_FLAT_ENTITY,
+    FONJEP_PAYMENT_FLAT_ENTITY,
+    FONJEP_PAYMENT_FLAT_ENTITY_2,
+    LONELY_CHORUS_PAYMENT,
+} from "../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
 import applicationFlatService from "../applicationFlat/applicationFlat.service";
 import paymentFlatService from "../paymentFlat/paymentFlat.service";
 
-jest.mock("../../shared/initAsyncServices");
 jest.mock("../providers/scdl/scdl.service");
 jest.mock("@sentry/node");
 jest.mock("../providers");
@@ -31,11 +33,6 @@ jest.mock("../applicationFlat/applicationFlat.service");
 jest.mock("../paymentFlat/paymentFlat.service");
 
 describe("GrantService", () => {
-    const SCDL_PRODUCER_NAME = "SCDL_PRODUCER_NAME";
-    beforeAll(() => {
-        scdlService.producerNames = [SCDL_PRODUCER_NAME];
-    });
-
     const SIRET = new Siret(SIRET_STR);
     const ESTABLISHMENT_ID = EstablishmentIdentifier.fromSiret(SIRET, AssociationIdentifier.fromSiren(SIRET.toSiren()));
 
@@ -173,7 +170,7 @@ describe("GrantService", () => {
             ${"return first application"} | ${{
     application: APPLICATION,
     payments: [],
-}} | ${{ application: APPLICATION, payments: null }}
+}} | ${{ application: APPLICATION, payments: [] }}
         `("$description", ({ joinedRawGrant, expected }) => {
             const grant = grantService.toGrant(joinedRawGrant);
             expect(grant).toEqual(expected);
@@ -199,6 +196,49 @@ describe("GrantService", () => {
     });
 
     describe("getGrants", () => {
+        const ASSOCIATION_IDENTIFIER = AssociationIdentifier.fromSiren(SIRET.toSiren());
+
+        beforeEach(() => {
+            jest.mocked(applicationFlatService.getEntitiesByIdentifier).mockResolvedValue([
+                APPLICATION_LINK_TO_CHORUS,
+                APPLICATION_LINK_TO_FONJEP,
+            ]);
+            jest.mocked(paymentFlatService.getEntitiesByIdentifier).mockResolvedValue([
+                CHORUS_PAYMENT_FLAT_ENTITY,
+                LONELY_CHORUS_PAYMENT,
+                FONJEP_PAYMENT_FLAT_ENTITY,
+                FONJEP_PAYMENT_FLAT_ENTITY_2,
+            ]);
+        });
+
+        it("fetches applications", async () => {
+            await grantService.getGrants(ASSOCIATION_IDENTIFIER);
+            expect(applicationFlatService.getEntitiesByIdentifier).toHaveBeenCalledWith(ASSOCIATION_IDENTIFIER);
+        });
+
+        it("fetches payments", async () => {
+            await grantService.getGrants(ASSOCIATION_IDENTIFIER);
+            expect(paymentFlatService.getEntitiesByIdentifier).toHaveBeenCalledWith(ASSOCIATION_IDENTIFIER);
+        });
+
+        it("return grants", async () => {
+            const expected = [
+                {
+                    application: APPLICATION_LINK_TO_CHORUS,
+                    payments: [CHORUS_PAYMENT_FLAT_ENTITY],
+                },
+                {
+                    application: APPLICATION_LINK_TO_FONJEP,
+                    payments: [FONJEP_PAYMENT_FLAT_ENTITY, FONJEP_PAYMENT_FLAT_ENTITY_2],
+                },
+                { application: null, payments: [LONELY_CHORUS_PAYMENT] },
+            ];
+            const actual = await grantService.getGrants(ASSOCIATION_IDENTIFIER);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("getOldGrants", () => {
         const JOINED_RAW_GRANTS = [DEFAULT_JOINED_RAW_GRANT, {}];
         // @ts-expect-error: mock DemandeSubvention
         const GRANT_2 = { application: { siret: "10000000000002" } as DemandeSubvention, payments: [] };
@@ -233,28 +273,23 @@ describe("GrantService", () => {
 
         afterEach(() => mocks.forEach(mock => mock.mockClear()));
 
-        it("refresh grant async services before fetching new data", async () => {
-            await grantService.getGrants(ESTABLISHMENT_ID);
-            expect(refreshGrantAsyncServices).toHaveBeenCalled();
-        });
-
         it("should call getRawGrants", async () => {
-            await grantService.getGrants(ESTABLISHMENT_ID);
+            await grantService.getOldGrants(ESTABLISHMENT_ID);
             expect(mockGetRawGrants).toHaveBeenCalledWith(ESTABLISHMENT_ID);
         });
 
         it("should call adaptJoinedRawGrant", async () => {
-            await grantService.getGrants(ESTABLISHMENT_ID);
+            await grantService.getOldGrants(ESTABLISHMENT_ID);
             expect(mockAdapteJoinedRawGrant).toHaveBeenCalledTimes(JOINED_RAW_GRANTS.length);
         });
 
         it("should call handleMultiYearGrants", async () => {
-            await grantService.getGrants(ESTABLISHMENT_ID);
+            await grantService.getOldGrants(ESTABLISHMENT_ID);
             expect(mockHandleMultiYearGrants).toHaveBeenCalledWith([GRANT, GRANT]);
         });
 
         it("should call sortByGrantType", async () => {
-            await grantService.getGrants(ESTABLISHMENT_ID);
+            await grantService.getOldGrants(ESTABLISHMENT_ID);
             expect(mockSortByGrantType).toHaveBeenNthCalledWith(1, [GRANT]);
             expect(mockSortByGrantType).toHaveBeenNthCalledWith(2, [GRANT_2]);
         });

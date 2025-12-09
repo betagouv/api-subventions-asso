@@ -1,5 +1,4 @@
 <script lang="ts">
-    import StepIndicator from "$lib/dsfr/StepIndicator/StepIndicator.svelte";
     import Step4Controller from "./Step4.controller";
     import InfoBox from "$lib/components/InfoBox.svelte";
     import MultipleAllocators from "./MultipleAllocators/MultipleAllocators.svelte";
@@ -7,6 +6,7 @@
     import { createEventDispatcher } from "svelte";
     import BlockingErrors from "./BlockingErrors/BlockingErrors.svelte";
     import ConfirmDataAdd from "./ConfirmDataAdd/ConfirmDataAdd.svelte";
+    import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
 
     const dispatch = createEventDispatcher<{
         prevStep: void;
@@ -18,16 +18,9 @@
     }>();
     const ctrl = new Step4Controller(dispatch);
     const { view } = ctrl;
-
-    export let currentStep: number;
-    export let stepsDesc: string[];
 </script>
 
 <div>
-    <div class="fr-mb-6v">
-        <StepIndicator {currentStep} {stepsDesc}></StepIndicator>
-    </div>
-
     <div class="fr-grid-row fr-grid-row--gutters">
         {#if $view === "multipleAllocator"}
             <MultipleAllocators
@@ -46,18 +39,17 @@
                 <p>
                     Vous pouvez vous reporter à notre documentation pour plus d’informations.
                     <br />
-                    <a
-                        class="fr-link"
+                    <TargetBlankLink
                         href="https://www.notion.so/R-gles-de-format-SCDL-1281788663a380e1a57efdd9b324c1ba">
                         Voir la documentation
-                    </a>
+                    </TargetBlankLink>
                     <br />
                 </p>
                 <p class="fr-mb-4v">
                     Vous pouvez également nous contacter via le support Crisp ou prendre rendez-vous avec notre équipe.
                     Nous vous guiderons dans la mise à jour de votre fichier.
                     <br />
-                    <a class="fr-link" href="mailto:{ctrl.contactEmail}">Prendre rendez-vous</a>
+                    <TargetBlankLink href="mailto:{ctrl.contactEmail}">Prendre rendez-vous</TargetBlankLink>
                 </p>
             </InfoBox>
         </div>

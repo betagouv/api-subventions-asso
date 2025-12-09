@@ -1,5 +1,13 @@
 import * as Sentry from "@sentry/node";
-import { CommonGrantDto, Grant, DemandeSubvention, Payment } from "dto";
+import {
+    CommonGrantDto,
+    Grant,
+    DemandeSubvention,
+    Payment,
+    ApplicationFlatDto,
+    PaymentFlatDto,
+    GrantFlatDto,
+} from "dto";
 import { RnaOnlyError } from "core";
 import { providersById } from "../providers/providers.helper";
 import { applicationProviders, paymentProviders } from "../providers";
@@ -9,10 +17,13 @@ import paymentService from "../payments/payments.service";
 import subventionsService from "../subventions/subventions.service";
 import { JoinedRawGrant, RawApplication, RawPayment, AnyRawGrant } from "./@types/rawGrant";
 import commonGrantService from "./commonGrant.service";
-import { refreshGrantAsyncServices } from "../../shared/initAsyncServices";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 import applicationFlatService from "../applicationFlat/applicationFlat.service";
 import paymentFlatService from "../paymentFlat/paymentFlat.service";
+import { GrantFlatEntity } from "../../entities/GrantFlatEntity";
+import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
+import ApplicationFlatAdapter from "../applicationFlat/ApplicationFlatAdapter";
+import PaymentFlatAdapter from "../paymentFlat/paymentFlatAdapter";
 
 export class GrantService {
     applicationProvidersById: Record<string, ApplicationProvider>;
@@ -54,11 +65,8 @@ export class GrantService {
         const hasPayments = Boolean(payments?.length);
 
         if (!hasApplication && !hasPayments) return;
-
-        if (hasPayments) {
-            if (!hasApplication) return { application: null, payments };
-            if (hasApplication) return { application: application, payments };
-        } else return { application: application, payments: null };
+        if (!hasApplication) return { application: null, payments };
+        if (hasApplication) return { application: application, payments };
     }
 
     /**
@@ -110,8 +118,8 @@ export class GrantService {
         });
     }
 
-    async getGrants(identifier: StructureIdentifier): Promise<Grant[]> {
-        await refreshGrantAsyncServices();
+    // use deprecated DemandeSubvention and Payment with ProviderValues
+    async getOldGrants(identifier: StructureIdentifier): Promise<Grant[]> {
         const joinedRawGrants = await this.getRawGrants(identifier);
         const grants = joinedRawGrants.map(this.adaptJoinedRawGrant.bind(this)).filter(grant => grant) as Grant[];
         const groupByExerciseGrants = this.groupGrantsByExercise(this.handleMultiYearGrants(grants));
@@ -119,6 +127,56 @@ export class GrantService {
             .map(exercise => this.sortByGrantType(groupByExerciseGrants[exercise]))
             .flat();
         return sortedByTypeGrants;
+    }
+
+    async getGrantsDto(identifier: StructureIdentifier): Promise<GrantFlatDto[]> {
+        const grants = await this.getGrants(identifier);
+
+        return grants.map(grant => {
+            const { application, payments } = grant;
+            let applicationDto: ApplicationFlatDto | null = null;
+            let paymentsDto: PaymentFlatDto[] = [];
+            if (application) applicationDto = ApplicationFlatAdapter.toDto(application);
+            if (payments) paymentsDto = payments.map(PaymentFlatAdapter.toDto);
+            return { application: applicationDto, payments: paymentsDto };
+        });
+    }
+
+    async getGrants(identifier: StructureIdentifier): Promise<GrantFlatEntity[]> {
+        const applications = await applicationFlatService.getEntitiesByIdentifier(identifier);
+        const payments = await paymentFlatService.getEntitiesByIdentifier(identifier);
+
+        // init with applications
+        const grants: GrantFlatEntity[] = applications.map(application => ({
+            application,
+            payments: [] as PaymentFlatEntity[],
+        }));
+
+        // group payments by paymentId
+        const groupedPayments = payments.reduce(
+            (acc, payment) => {
+                const paymentId = payment.idVersement;
+                if (acc[paymentId]) acc[paymentId].push(payment);
+                else acc[paymentId] = [payment];
+                return acc;
+            },
+            {} as Record<string, PaymentFlatEntity[]>,
+        );
+
+        // add payments either to existing grant with application or create a new grant without
+        // uses different array to ease the findIndex
+        Object.entries(groupedPayments).map(([paymentId, group]) => {
+            const index = grants.findIndex(grant => {
+                return grant.application?.paymentId === paymentId;
+            });
+            if (index >= 0) {
+                grants[index].payments = group;
+            } else {
+                grants.push({ application: null, payments: group });
+            }
+        });
+
+        return grants;
     }
 
     /**
@@ -209,7 +267,7 @@ export class GrantService {
         const NO_YEAR = 0;
 
         if (application)
-            byYear[subventionsService.getSubventionExercise(application) ?? NO_YEAR] = { application, payments: null };
+            byYear[subventionsService.getSubventionExercise(application) ?? NO_YEAR] = { application, payments: [] };
 
         let year: number;
         for (const payment of payments ?? []) {

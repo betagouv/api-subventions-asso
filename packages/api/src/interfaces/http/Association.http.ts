@@ -10,8 +10,22 @@ import {
     AssociationIdentifierDto,
     ApplicationFlatDto,
     PaymentFlatDto,
+    GetOldGrantsResponseDto,
 } from "dto";
-import { Route, Get, Controller, Tags, Security, Response, Produces, Middlewares, Path, Request, Hidden } from "tsoa";
+import {
+    Route,
+    Get,
+    Controller,
+    Tags,
+    Security,
+    Response,
+    Produces,
+    Middlewares,
+    Path,
+    Request,
+    Hidden,
+    Deprecated,
+} from "tsoa";
 import { HttpErrorInterface, NotAssociationError } from "core";
 
 import associationService from "../../modules/associations/associations.service";
@@ -107,7 +121,7 @@ export class AssociationHttp extends Controller {
      * @param req
      */
     @Get("/paiements")
-    public async getPaymentFlat(
+    public async getPaymentsFlat(
         identifier: AssociationIdentifierDto,
         @Request() req,
     ): Promise<{ paiements: PaymentFlatDto[] }> {
@@ -135,16 +149,30 @@ export class AssociationHttp extends Controller {
     }
 
     /**
+     * @summary Recherche toutes les informations des subventions d'une association (demandes ET versements)
+     * @param identifier RNA ou SIREN de l'association
+     * @param req
+     * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
+     */
+    @Deprecated()
+    @Get("/grants")
+    public async getOldGrants(identifier: AssociationIdentifierDto, @Request() req): Promise<GetOldGrantsResponseDto> {
+        const associationIdentifiers = req.assoIdentifier;
+        const grants = await grantService.getOldGrants(associationIdentifiers);
+        return { subventions: grants, count: grants.length };
+    }
+
+    /**
      *
      * @summary Recherche toutes les informations des subventions d'une association (demandes ET versements)
      * @param identifier RNA ou SIREN de l'association
      * @param req
      * @returns Un tableau de subventions avec leur versements, de subventions sans versements et de versements sans subventions
      */
-    @Get("/grants")
+    @Get("/grants/v2")
     public async getGrants(identifier: AssociationIdentifierDto, @Request() req): Promise<GetGrantsResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
-        const grants = await grantService.getGrants(associationIdentifiers);
+        const grants = await grantService.getGrantsDto(associationIdentifiers);
         return { subventions: grants, count: grants.length };
     }
 
@@ -162,7 +190,6 @@ export class AssociationHttp extends Controller {
         const associationIdentifiers = req.assoIdentifier;
 
         const { csv, fileName } = await grantExtractService.buildCsv(associationIdentifiers);
-
         this.setHeader("Content-Type", "text/csv");
         this.setHeader("Content-Disposition", `inline; filename=${fileName}`);
         this.setHeader("Access-Control-Expose-Headers", "Content-Disposition");

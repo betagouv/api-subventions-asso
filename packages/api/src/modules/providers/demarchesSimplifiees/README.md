@@ -51,7 +51,7 @@ Les informations accessibles peuvent être à 3 niveaux dans la réponse Démarc
 Plusieurs démarches suivent en réalité la même forme, sont dupliquées les unes à partir des autres etc. Pour simplifier l'intégration, on décrit ces points communs dans une "seed". Ensuite, pour chaque nouvelle démarche qui ressemble assez, on peut utiliser la commande :
 
 ```bash
-npm run cli generateSchema <path_to_seed> <id_demarche> <testDev>
+pnpm cli generateSchema <path_to_seed> <id_demarche> <testDev>
 ```
 
 qui ajoute en base de données le schéma généré pour la démarche sélectionnée. En particulier, les identifiants techniques des champs et annotations seront trouvés à partir de leurs libellés. Ce système fonctionne donc si les noms de champs restent stables.
@@ -90,7 +90,7 @@ On a défini avec Alexandra qu'il y a deux cas possibles pour ce champ. Ou bien 
 Les statuts de démarches simplifiées viennent du système lui-même (ni des champs ni des annotations). Cependant, on ne peut pas être sûrs que les instructeurs utilisent cette fonctionnalité de manière homogène. Notamment, on ne sait pas si la sortie du statut "en instruction" est bien maintenue à jour. On a toutefois produit une correspondance :
 
 | statut côté Démarches Simplifiées | statut côté data.subv |
-|-----------------------------------|-----------------------|
+| --------------------------------- | --------------------- |
 | refuse                            | REFUSED               |
 | accepte                           | GRANTED               |
 | sans_suite                        | INELIGIBLE            |
@@ -107,7 +107,7 @@ Les statuts de démarches simplifiées viennent du système lui-même (ni des ch
 ### conformément au schemaSeed `ministereCulture.json`
 
 | demarcheId | service_instructeur | exercice / budgetaryYear                | commentaire                                                                                                                                              |
-|------------|---------------------|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ---------- | ------------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 62744      | /                   | 2023                                    |                                                                                                                                                          |
 | 62746      | /                   | 2023                                    |                                                                                                                                                          |
 | 62747      | /                   | 2023                                    |                                                                                                                                                          |
@@ -124,9 +124,9 @@ Les statuts de démarches simplifiées viennent du système lui-même (ni des ch
 
 ## Les démarches avec leur schéma spécifique
 
-* 73407
-* 72319
-* 79485
+- 73407
+- 72319
+- 79485
 
 ## Reste à faire
 

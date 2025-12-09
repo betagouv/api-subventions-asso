@@ -6,6 +6,8 @@
     import Button from "$lib/dsfr/Button.svelte";
     import { version } from "$app/environment";
     import appLogo from "$lib/assets/images/logo-data-subvention.png";
+    import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
+    import { resolve } from "$app/paths";
 
     const user = authService.getCurrentUserStore();
     const { getEnv, getName } = getContext<typeof AppContext>("app");
@@ -29,7 +31,7 @@
                         </div>
                     </div>
                     <div class="app-logo fr-header__service">
-                        <a href="/" title={"Accueil - " + getName()}>
+                        <a href={resolve("/")} title={"Accueil - " + getName()}>
                             <p class="fr-header__service-title">
                                 <img src={appLogo} alt="Data.Subvention" title="Accueil - Data.Subvention" />
                             </p>
@@ -56,14 +58,12 @@
                     <div class="fr-header__tools-links">
                         <ul class="fr-btns-group">
                             <li>
-                                <a
-                                    class="fr-btn fr-link--icon-right"
+                                <TargetBlankLink
+                                    linkClass="fr-btn fr-link--icon-right"
                                     href="https://github.com/betagouv/api-subventions-asso"
-                                    title="code source - nouvelle fenêtre"
-                                    target="_blank"
-                                    rel="noopener noreferrer">
+                                    title="code source - nouvelle fenêtre">
                                     Code source
-                                </a>
+                                </TargetBlankLink>
                             </li>
                             <li>
                                 <button
@@ -78,7 +78,7 @@
                                 <li>
                                     <a
                                         class="fr-btn"
-                                        href="/depot-scdl"
+                                        href={resolve("/depot-scdl")}
                                         title="Déposer vos données SCDL"
                                         rel="noopener">
                                         Déposer vos données SCDL
@@ -87,7 +87,11 @@
                             {/if}
                             {#if $user?.roles?.includes("admin")}
                                 <li>
-                                    <a class="fr-btn fr-link--icon-right" href="/admin" title="admin" rel="noopener">
+                                    <a
+                                        class="fr-btn fr-link--icon-right"
+                                        href={resolve("/admin")}
+                                        title="admin"
+                                        rel="noopener">
                                         Admin
                                     </a>
                                 </li>

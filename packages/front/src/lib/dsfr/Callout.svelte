@@ -1,5 +1,6 @@
 <script>
     import { getIconClass } from "./helper";
+    import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
 
     export let title;
     // possible values for titleSize : [2, 3, 4, 5, 6, "p"]
@@ -21,13 +22,8 @@
         <slot />
     </p>
     {#if href && labelAction}
-        <a
-            class={actionClasses}
-            {href}
-            target="_blank"
-            rel="noopener external"
-            title="{labelAction} - nouvelle fenêtre">
+        <TargetBlankLink linkClass={actionClasses} {href} title="{labelAction} - nouvelle fenêtre">
             {labelAction}
-        </a>
+        </TargetBlankLink>
     {/if}
 </div>
