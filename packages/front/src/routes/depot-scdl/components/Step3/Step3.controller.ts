@@ -47,6 +47,7 @@ export default class Step3Controller {
     public view: Store<"upload" | "sheetSelector"> = new Store("upload");
     public uploadErrorMessage: Store<string | undefined> = new Store(undefined);
     public uploadError: Store<boolean> = new Store(false);
+    public errorAlertVisible: Store<boolean> = new Store(false);
 
     async handleFileChange(event: CustomEvent<{ files: FileList | null }>) {
         const files = event.detail.files;
@@ -143,7 +144,7 @@ export default class Step3Controller {
         } catch (e) {
             console.error("Erreur lors de l'upload du fichier", e);
             this.dispatch("endLoading");
-            // todo : error handling toast
+            this.errorAlertVisible.set(true);
         }
     }
 
