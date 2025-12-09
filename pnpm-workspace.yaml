@@ -1,3 +1,5 @@
+shamefully-hoist: true
+
 packages:
     - "packages/*"
 
