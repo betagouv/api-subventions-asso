@@ -44,6 +44,6 @@
     },
     "dependencies": {
         "@types/node": "24.10.1",
-        "mongodb": "^6"
+        "mongodb": "6.16.0"
     }
 }
