@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.76.0](https://github.com/betagouv/datasubvention/compare/v0.75.2...v0.76.0) (2025-12-09)
+
+### Bug Fixes
+
+- **front:** [#0000](https://github.com/betagouv/datasubvention/issues/0000) fix invalid components props ([9a26848](https://github.com/betagouv/datasubvention/commit/9a268487ccfd5704a33e05b34393e34fea4c0d19))
+
+### Features
+
+- **api:** [#3678](https://github.com/betagouv/datasubvention/issues/3678) use grants v2 dashboard ([#3735](https://github.com/betagouv/datasubvention/issues/3735)) ([72e468b](https://github.com/betagouv/datasubvention/commit/72e468bf176da905a12a6cc64672894aa6e77f0b))
+- **front:** [#0000](https://github.com/betagouv/datasubvention/issues/0000) open links in new tab ([#3727](https://github.com/betagouv/datasubvention/issues/3727)) ([0464246](https://github.com/betagouv/datasubvention/commit/046424642a07e4305aa7781aafba3eee0de8d4dd))
+
 ## [0.75.2](https://github.com/betagouv/datasubvention/compare/v0.75.1...v0.75.2) (2025-11-20)
 
 ### Bug Fixes
