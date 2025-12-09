@@ -1,7 +1,19 @@
 import depositLogService from "$lib/resources/deposit-log/depositLog.service";
 import depositLogPort from "$lib/resources/deposit-log/depositLog.port";
-import type { CreateDepositScdlLogDto, DepositScdlLogDto, DepositScdlLogResponseDto, FileDownloadUrlDto } from "dto";
+import type {
+    CreateDepositScdlLogDto,
+    DepositScdlLogDto,
+    DepositScdlLogResponseDto,
+    FileDownloadUrlDto,
+    UploadedFileInfosDto,
+} from "dto";
 import type { AxiosResponse } from "axios";
+import type { MockedFunction, MockInstance } from "vitest";
+import { type Input, type Options, stringify } from "csv-stringify/browser/esm/sync";
+
+vi.mock("csv-stringify/browser/esm/sync", () => ({
+    stringify: vi.fn(),
+}));
 
 describe("DepositLogService", () => {
     vi.spyOn(depositLogPort, "getDepositLog");
@@ -224,7 +236,7 @@ describe("DepositLogService", () => {
         });
     });
 
-    describe("generateDownloadScdlFileUrl", () => {
+    describe("generateScdlFileUrl", () => {
         it("should return data", async () => {
             const response = {
                 data: {
@@ -235,7 +247,7 @@ describe("DepositLogService", () => {
 
             vi.mocked(depositLogPort.getFileDownloadUrl).mockResolvedValue(response);
 
-            const result = await depositLogService.generateDownloadScdlFileUrl();
+            const result = await depositLogService.generateScdlFileUrl();
 
             expect(depositLogPort.getFileDownloadUrl).toHaveBeenCalledTimes(1);
             expect(result).toEqual(response.data as FileDownloadUrlDto);
@@ -245,8 +257,239 @@ describe("DepositLogService", () => {
             const mockError = new Error("error");
             vi.mocked(depositLogPort.getFileDownloadUrl).mockRejectedValue(mockError);
 
-            await expect(depositLogService.generateDownloadScdlFileUrl).rejects.toThrow(mockError);
+            await expect(depositLogService.generateScdlFileUrl).rejects.toThrow(mockError);
             expect(depositLogPort.getFileDownloadUrl).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe("determineFileValidationState", () => {
+        const fileInfos: UploadedFileInfosDto = {
+            allocatorsSiret: ["98765432101234"],
+            errors: [],
+            existingLinesInDbOnSamePeriod: 125,
+            parseableLines: 123,
+            fileName: "test.csv",
+            uploadDate: new Date(),
+            grantCoverageYears: [2024],
+            totalLines: 124,
+        };
+
+        it("should return multipleAllocator when multiple allocators", () => {
+            expect(depositLogService.determineFileValidationState("12345678901234", fileInfos)).toBe(
+                "multipleAllocator",
+            );
+        });
+
+        it("should return lessGrantData when less grant data than in db", () => {
+            expect(depositLogService.determineFileValidationState("98765432101234", fileInfos)).toBe("lessGrantData");
+        });
+
+        it("should return blockingErrors when blocking errors", () => {
+            fileInfos.errors = [{ bloquant: "oui" } as never];
+            fileInfos.parseableLines = 125;
+
+            expect(depositLogService.determineFileValidationState("98765432101234", fileInfos)).toBe("blockingErrors");
+        });
+
+        it("should return confirmDataAdd when everything ok", () => {
+            fileInfos.errors = [];
+
+            expect(depositLogService.determineFileValidationState("98765432101234", fileInfos)).toBe("confirmDataAdd");
+        });
+    });
+
+    describe("downloadErrorFile", () => {
+        let createObjectURLMock: MockInstance<(blob: Blob) => string>;
+        let revokeObjectURLMock: MockInstance<(url: string) => void>;
+        let mockLink: Partial<HTMLAnchorElement>;
+        let stringifyMock: MockedFunction<(input: Input, options?: Options) => string>;
+
+        const errors = [{ bloquant: "oui" } as never];
+
+        const fileInfos: UploadedFileInfosDto = {
+            allocatorsSiret: ["98765432101234"],
+            errors: errors,
+            existingLinesInDbOnSamePeriod: 125,
+            parseableLines: 123,
+            fileName: "test.csv",
+            uploadDate: new Date(),
+            grantCoverageYears: [2024],
+            totalLines: 124,
+        };
+
+        const mockCsvString =
+            "valeur,colonne,bloquant,doublon,message\nvaleur 1,colonne 1,oui,non,error message\nvaleur 2,colonne 2,oui,non,error message";
+
+        beforeEach(() => {
+            stringifyMock = vi.mocked(stringify);
+
+            createObjectURLMock = vi.fn<(blob: Blob) => string>().mockReturnValue("blob:created-url-for-csv-file-data");
+            revokeObjectURLMock = vi.fn<(url: string) => void>();
+
+            vi.stubGlobal("URL", {
+                createObjectURL: createObjectURLMock,
+                revokeObjectURL: revokeObjectURLMock,
+            });
+
+            mockLink = {
+                href: "",
+                download: "",
+                click: vi.fn(),
+            };
+
+            vi.spyOn(document, "createElement").mockReturnValue(mockLink as HTMLAnchorElement);
+        });
+
+        it("calls stringify with errors array", async () => {
+            stringifyMock.mockReturnValue(mockCsvString);
+
+            await depositLogService.downloadErrorFile(fileInfos);
+
+            expect(stringifyMock).toHaveBeenCalledWith(errors, {
+                header: true,
+                quoted: true,
+                quoted_empty: true,
+            });
+        });
+
+        it("creates a CSV blob with correct MIME type", async () => {
+            stringifyMock.mockReturnValue(mockCsvString);
+
+            await depositLogService.downloadErrorFile(fileInfos);
+
+            expect(createObjectURLMock).toHaveBeenCalledTimes(1);
+
+            const blobCall = createObjectURLMock.mock.calls[0][0];
+            expect(blobCall).toBeInstanceOf(Blob);
+            expect(blobCall.type).toBe("text/csv; charset=utf-8");
+        });
+
+        it("triggers download of file", async () => {
+            stringifyMock.mockReturnValue(mockCsvString);
+
+            await depositLogService.downloadErrorFile(fileInfos);
+
+            expect(createObjectURLMock).toHaveBeenCalledTimes(1);
+
+            expect(mockLink.href).toBe("blob:created-url-for-csv-file-data");
+            expect(mockLink.click).toHaveBeenCalledTimes(1);
+        });
+
+        it("revokes blob url after download", async () => {
+            stringifyMock.mockReturnValue(mockCsvString);
+
+            await depositLogService.downloadErrorFile(fileInfos);
+
+            expect(revokeObjectURLMock).toHaveBeenCalledWith("blob:created-url-for-csv-file-data");
+        });
+
+        it("verify generated filename", async () => {
+            stringifyMock.mockReturnValue(mockCsvString);
+
+            await depositLogService.downloadErrorFile(fileInfos);
+
+            expect(mockLink.download).toBe(`${fileInfos.fileName}.csv-errors.csv`);
+        });
+    });
+
+    describe("downloadScdlFile", () => {
+        const generateDownloadScdlFileUrlMock = vi.spyOn(depositLogService, "generateScdlFileUrl");
+        let mockLink: Partial<HTMLAnchorElement>;
+
+        beforeEach(() => {
+            generateDownloadScdlFileUrlMock.mockResolvedValue({
+                url: "presigned-url/",
+            });
+
+            vi.stubGlobal("document", {
+                createElement: vi.fn().mockReturnValue(mockLink),
+            });
+
+            mockLink = {
+                href: "",
+                download: "",
+                click: vi.fn(),
+            };
+
+            vi.spyOn(document, "createElement").mockReturnValue(mockLink as HTMLAnchorElement);
+        });
+
+        afterEach(() => {
+            vi.unstubAllGlobals();
+        });
+
+        it("triggers download of file", async () => {
+            await depositLogService.downloadScdlFile("filename.csv");
+
+            expect(mockLink.href).toBe("presigned-url/");
+            expect(mockLink.download).toBe("filename.csv");
+            expect(mockLink.click).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe("downloadGrantCsv", () => {
+        const getGrantCsvMock = vi.spyOn(depositLogService, "getCsv");
+        let createObjectURLMock: MockInstance<(blob: Blob) => string>;
+        let revokeObjectURLMock: MockInstance<(url: string) => void>;
+
+        let mockLink: Partial<HTMLAnchorElement>;
+
+        const mockCsvData = "col1,col2,col3\ntoto,tata,1234\ntonton,tutu,4567";
+        const mockFileName = "test.csv";
+
+        beforeEach(() => {
+            getGrantCsvMock.mockResolvedValue({
+                csvData: mockCsvData,
+                fileName: mockFileName,
+            });
+
+            createObjectURLMock = vi.fn<(blob: Blob) => string>().mockReturnValue("blob:created-url-for-csv-file-data");
+            revokeObjectURLMock = vi.fn<(url: string) => void>();
+
+            vi.stubGlobal("URL", {
+                createObjectURL: createObjectURLMock,
+                revokeObjectURL: revokeObjectURLMock,
+            });
+
+            vi.stubGlobal("document", {
+                createElement: vi.fn().mockReturnValue(mockLink),
+                body: {
+                    appendChild: vi.fn(),
+                    removeChild: vi.fn(),
+                },
+            });
+
+            mockLink = {
+                href: "",
+                download: "",
+                click: vi.fn(),
+            };
+
+            vi.spyOn(document, "createElement").mockReturnValue(mockLink as HTMLAnchorElement);
+        });
+
+        it("creates a CSV blob with correct MIME type", async () => {
+            await depositLogService.downloadGrantsCsv();
+
+            expect(createObjectURLMock).toHaveBeenCalledTimes(1);
+
+            const blobCall = createObjectURLMock.mock.calls[0][0];
+            expect(blobCall).toBeInstanceOf(Blob);
+            expect(blobCall.type).toBe("text/csv; charset=utf-8");
+        });
+
+        it("triggers download of file", async () => {
+            await depositLogService.downloadGrantsCsv();
+
+            expect(mockLink.href).toBe("blob:created-url-for-csv-file-data");
+            expect(mockLink.download).toBe(mockFileName);
+            expect(mockLink.click).toHaveBeenCalledTimes(1);
+        });
+
+        it("revokes blob url after download", async () => {
+            await depositLogService.downloadGrantsCsv();
+
+            expect(revokeObjectURLMock).toHaveBeenCalledWith("blob:created-url-for-csv-file-data");
         });
     });
 });
