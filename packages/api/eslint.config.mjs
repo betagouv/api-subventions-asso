@@ -53,7 +53,6 @@ export default [
         languageOptions: {
             parserOptions: {
                 project: true,
-                tsconfigRootDir: new URL(".", import.meta.url).pathname,
             },
             globals: {
                 ...globals.node,

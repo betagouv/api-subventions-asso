@@ -57,7 +57,7 @@ export default class ScdlBatchCli extends ScdlCli {
 
     private validateXlsArgs(params: ScdlParseXlsArgs) {
         const errors: FileConfigErrors = [];
-        if (!isStringValid(params.pageName)) errors.push({ field: "pageName" });
+        if (params.pageName && !isStringValid(params.pageName)) errors.push({ field: "pageName" });
         if (params.rowOffset && !isNumberValid(Number(params.rowOffset))) errors.push({ field: "rowOffset" });
         if (errors.length) {
             this.fileConfigErrors = this.fileConfigErrors.concat(errors);
@@ -117,6 +117,7 @@ export default class ScdlBatchCli extends ScdlCli {
 
         const dirPath = path.resolve(SCDL_FILE_PROCESSING_PATH);
 
+        console.log(allocatorSiret);
         const siret = new Siret(allocatorSiret);
 
         if (exportDate && !isShortISODateValid(exportDate))
@@ -137,11 +138,17 @@ export default class ScdlBatchCli extends ScdlCli {
             const fileType = path.extname(name).slice(1).toLowerCase();
             const filePath = path.join(dirPath, name);
             if (fileType === FileExtensionEnum.CSV) {
-                const { delimiter, quote } = parseParams as ScdlParseCsvArgs;
-                await this.parse(filePath, allocatorSiret, exportDate, delimiter, quote);
+                if (!parseParams) this.parse(filePath, allocatorSiret, exportDate);
+                else {
+                    const { delimiter, quote } = parseParams as ScdlParseCsvArgs;
+                    await this.parse(filePath, allocatorSiret, exportDate, delimiter, quote);
+                }
             } else if (fileType === FileExtensionEnum.XLS || fileType === FileExtensionEnum.XLSX) {
-                const { pageName, rowOffset } = parseParams as ScdlParseXlsArgs;
-                await this.parseXls(filePath, allocatorSiret, exportDate, pageName, rowOffset);
+                if (!parseParams) this.parseXls(filePath, allocatorSiret, exportDate);
+                else {
+                    const { pageName, rowOffset } = parseParams as ScdlParseXlsArgs;
+                    await this.parseXls(filePath, allocatorSiret, exportDate, pageName, rowOffset);
+                }
             } else {
                 console.error(`❌ Unsupported file type : ${name} (type: ${fileType})`);
                 throw new Error(`Unsupported file type : ${filePath}`);

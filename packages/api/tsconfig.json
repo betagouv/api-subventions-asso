@@ -19,6 +19,6 @@
         "resolveJsonModule": true,
         "noImplicitAny": false
     },
-    "include": ["src/**/*", "tests/**/*"],
+    "include": ["src/**/*", "tests/**/*", "migrations/**/*"],
     "exclude": ["node_modules", "../../node_modules"]
 }
