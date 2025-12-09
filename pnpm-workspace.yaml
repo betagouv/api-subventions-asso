@@ -1,0 +1,13 @@
+packages:
+    - "packages/*"
+
+# Security window: block packages < 7 days old
+minimumReleaseAge: 10080  # 7 days in minutes (7 * 24 * 60)
+
+# only accept versions within minor semver range
+savePrefix: '~' 
+
+onlyBuiltDependencies:
+  - bcrypt
+  - tsc  
+        

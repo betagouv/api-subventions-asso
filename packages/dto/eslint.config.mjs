@@ -20,9 +20,10 @@ const ignores = [
     // all .md files
     "**/*.md",
 
-    // npm
-    "node_modules/**/*",
+    // Ignore files for PNPM, NPM and YARN
+    "pnpm-lock.yaml",
     "package-lock.json",
+    "yarn.lock",
 ];
 
 export default [

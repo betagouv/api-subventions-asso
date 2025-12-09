@@ -52,32 +52,38 @@ export class BrevoContactNotifyPipe implements NotifyOutPipe {
     }
 
     private userCreated(data: NotificationDataTypes[NotificationType.USER_CREATED]) {
+        const attributes = {
+            DATE_INSCRIPTION: data.signupAt,
+            COMPTE_ACTIVE: data.active,
+            SOURCE_IMPORT: "Data.Subvention",
+            LIEN_ACTIVATION: data.url,
+            PRENOM: data.firstname,
+            NOM: data.lastname,
+            IS_AGENT_CONNECT: data.isAgentConnect,
+        };
+
         const payload = {
-            attributes: {
-                DATE_INSCRIPTION: data.signupAt,
-                COMPTE_ACTIVE: data.active,
-                SOURCE_IMPORT: "Data.Subvention",
-                LIEN_ACTIVATION: data.url,
-                PRENOM: data.firstname,
-                NOM: data.lastname,
-                IS_AGENT_CONNECT: data.isAgentConnect,
-            },
+            attributes,
             listIds: SENDIND_BLUE_CONTACT_LISTS,
         };
 
         const sendCreation = () => {
-            return this.apiInstance
-                .createContact({
-                    email: data.email,
-                    ...payload,
-                })
-                .catch(e => {
-                    Sentry.captureException(e);
-                    throw e;
-                });
+            return (
+                this.apiInstance
+                    // @ts-expect-error: TypeScript definition are wrong, see https://developers.brevo.com/reference/createcontact
+                    .createContact({
+                        email: data.email,
+                        ...payload,
+                    })
+                    .catch(e => {
+                        Sentry.captureException(e);
+                        throw e;
+                    })
+            );
         };
 
         const sendUpdate = () =>
+            // @ts-expect-error: TypeScript definition are wrong, see https://developers.brevo.com/reference/createcontact
             this.apiInstance.updateContact(data.email, payload).catch(e => {
                 Sentry.captureException(e);
                 throw e;
@@ -118,7 +124,9 @@ export class BrevoContactNotifyPipe implements NotifyOutPipe {
     private userActivated(data: NotificationDataTypes[NotificationType.USER_ACTIVATED]) {
         const updateContact = new Brevo.UpdateContact();
         updateContact.attributes = {
+            // @ts-expect-error: TypeScript definition are wrong, see https://developers.brevo.com/reference/createcontact
             COMPTE_ACTIVE: true,
+            // @ts-expect-error: TypeScript definition are wrong, see https://developers.brevo.com/reference/createcontact
             LIEN_ACTIVATION: "",
         };
         updateContact.listIds = SENDIND_BLUE_CONTACT_LISTS;
@@ -263,6 +271,7 @@ export class BrevoContactNotifyPipe implements NotifyOutPipe {
         const updateContact = new Brevo.UpdateContact();
         const attributes: Record<string, string | boolean> = buildAttributesObject(data);
         attributes.COMPTE_ACTIVE = true;
+        // @ts-expect-error: TypeScript definition are wrong, see https://developers.brevo.com/reference/createcontact
         updateContact.attributes = attributes;
         updateContact.listIds = SENDIND_BLUE_CONTACT_LISTS;
         return this.apiInstance
