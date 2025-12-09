@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.76.1](https://github.com/betagouv/api-subventions-asso/compare/v0.76.0...v0.76.1) (2025-12-09)
+
+### Bug Fixes
+
+- **api:** remove slug from producers and fix batch ([cd7a5da](https://github.com/betagouv/api-subventions-asso/commit/cd7a5da1269c1f807a2265919fe6e1fc810ca60f))
+
 # [0.76.0](https://github.com/betagouv/api-subventions-asso/compare/v0.75.2...v0.76.0) (2025-12-09)
 
 ### Features
