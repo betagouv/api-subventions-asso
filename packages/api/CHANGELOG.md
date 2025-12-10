@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.76.4](https://github.com/betagouv/api-subventions-asso/compare/v0.76.3...v0.76.4) (2025-12-10)
+
+### Bug Fixes
+
+- **api:** cast fonjep old siret to string ([af75820](https://github.com/betagouv/api-subventions-asso/commit/af75820fd738db18ba55fe4cddfb1022be939c63))
+- **api:** force commonjs module resolution ([9135117](https://github.com/betagouv/api-subventions-asso/commit/913511776551b99575efe46d96f081af57a14f37))
+
 ## [0.76.3](https://github.com/betagouv/api-subventions-asso/compare/v0.76.2...v0.76.3) (2025-12-10)
 
 ### Bug Fixes
