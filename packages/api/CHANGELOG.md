@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.76.3](https://github.com/betagouv/api-subventions-asso/compare/v0.76.2...v0.76.3) (2025-12-10)
+
+### Bug Fixes
+
+- **api:** ts test issues and scdl app flat backup bulk ops ([6d9d433](https://github.com/betagouv/api-subventions-asso/commit/6d9d43315bbc4a851962323ee6b5f960747ddd45))
+
 ## [0.76.2](https://github.com/betagouv/api-subventions-asso/compare/v0.76.1...v0.76.2) (2025-12-10)
 
 ### Bug Fixes
