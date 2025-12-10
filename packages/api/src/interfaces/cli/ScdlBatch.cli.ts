@@ -117,7 +117,6 @@ export default class ScdlBatchCli extends ScdlCli {
 
         const dirPath = path.resolve(SCDL_FILE_PROCESSING_PATH);
 
-        console.log(allocatorSiret);
         const siret = new Siret(allocatorSiret);
 
         if (exportDate && !isShortISODateValid(exportDate))
@@ -138,13 +137,13 @@ export default class ScdlBatchCli extends ScdlCli {
             const fileType = path.extname(name).slice(1).toLowerCase();
             const filePath = path.join(dirPath, name);
             if (fileType === FileExtensionEnum.CSV) {
-                if (!parseParams) this.parse(filePath, allocatorSiret, exportDate);
+                if (!parseParams) await this.parse(filePath, allocatorSiret, exportDate);
                 else {
                     const { delimiter, quote } = parseParams as ScdlParseCsvArgs;
                     await this.parse(filePath, allocatorSiret, exportDate, delimiter, quote);
                 }
             } else if (fileType === FileExtensionEnum.XLS || fileType === FileExtensionEnum.XLSX) {
-                if (!parseParams) this.parseXls(filePath, allocatorSiret, exportDate);
+                if (!parseParams) await this.parseXls(filePath, allocatorSiret, exportDate);
                 else {
                     const { pageName, rowOffset } = parseParams as ScdlParseXlsArgs;
                     await this.parseXls(filePath, allocatorSiret, exportDate, pageName, rowOffset);
@@ -177,7 +176,10 @@ export default class ScdlBatchCli extends ScdlCli {
 
             // need to be sync in case we want to insert multiple year of the same allocator with different files
             // race conditions would execute one without addProducer and throw an error
-            await asyncForEach(config.files, fileConfig => this.processFile(fileConfig));
+            await asyncForEach(config.files, async fileConfig => {
+                console.log(`\n---------------Processing file: ${fileConfig.name}---------------`);
+                return this.processFile(fileConfig);
+            });
         } catch (e) {
             // unexpected error that doesn't make use of errorList
             console.trace(`❌ Global execution failure : ${(e as Error).message}`);

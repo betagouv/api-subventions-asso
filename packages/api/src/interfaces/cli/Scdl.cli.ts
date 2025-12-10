@@ -8,7 +8,7 @@ import {
     ParsedErrorDuplicate,
     ParsedErrorFormat,
 } from "../../modules/providers/scdl/@types/Validation";
-import { DEV } from "../../configurations/env.conf";
+import { DEV, PROD } from "../../configurations/env.conf";
 import dataLogService from "../../modules/data-log/dataLog.service";
 import { detectAndEncode, validateDate } from "../../shared/helpers/CliHelper";
 import scdlGrantService from "../../modules/providers/scdl/scdl.grant.service";
@@ -91,11 +91,15 @@ export default class ScdlCli {
     }) {
         const { file, errors, producer, exportDate: dateStr } = params;
         const exportDate = dateStr ? new Date(dateStr) : undefined;
-        await notifyService.notify(NotificationType.DATA_IMPORT_SUCCESS, {
-            providerName: producer.name,
-            providerSiret: producer.siret,
-            exportDate,
-        });
+
+        if (PROD) {
+            await notifyService.notify(NotificationType.DATA_IMPORT_SUCCESS, {
+                providerName: producer.name,
+                providerSiret: producer.siret,
+                exportDate,
+            });
+        }
+
         await Promise.all([this.exportErrors(errors, file), dataLogService.addLog(producer.siret, file, exportDate)]);
     }
 
