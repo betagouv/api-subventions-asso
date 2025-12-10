@@ -18,7 +18,7 @@ const mockedScdlService = jest.mocked(scdlService);
 import MiscScdlGrant from "../../modules/providers/scdl/__fixtures__/MiscScdlGrant";
 import MiscScdlProducer from "../../modules/providers/scdl/__fixtures__/MiscScdlProducer";
 import { MixedParsedError, ParsedErrorFormat } from "../../modules/providers/scdl/@types/Validation";
-import csvSyncStringifier from "csv-stringify/sync";
+import * as csvSyncStringifier from "csv-stringify/sync";
 import dataLogService from "../../modules/data-log/dataLog.service";
 
 jest.mock("../../modules/data-log/dataLog.service");

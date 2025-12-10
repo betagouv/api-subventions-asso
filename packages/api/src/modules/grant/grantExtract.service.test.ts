@@ -3,7 +3,7 @@ import { Association, EstablishmentSimplified } from "dto";
 import grantService from "./grant.service";
 import associationsService from "../associations/associations.service";
 import GrantAdapter from "./grant.adapter";
-import csvStringifier from "csv-stringify/sync";
+import * as csvStringifier from "csv-stringify/sync";
 import { ExtractHeaderLabel, GrantToExtract } from "./@types/GrantToExtract";
 import Siret from "../../identifierObjects/Siret";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";

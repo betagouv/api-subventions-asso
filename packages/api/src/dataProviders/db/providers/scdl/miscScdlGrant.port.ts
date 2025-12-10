@@ -52,7 +52,8 @@ export class MiscScdlGrantPort extends MongoPort<ScdlGrantDbo> {
     public async bulkFindDeleteByExercices(allocatorSiret: string, exercises: number[]) {
         const bulk = this.collection.initializeUnorderedBulkOp();
         exercises.forEach(exercise => {
-            bulk.find({ allocatorSiret, exercice: exercise }).delete();
+            const query: Partial<ScdlGrantDbo> = { allocatorSiret, exercice: exercise };
+            bulk.find(query).delete();
         });
         return bulk.execute().catch(error => {
             throw error;

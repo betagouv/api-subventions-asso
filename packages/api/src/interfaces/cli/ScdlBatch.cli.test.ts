@@ -182,7 +182,7 @@ describe("SCDL Batch Import CLI", () => {
             jest.mocked(isStringValid).mockReturnValueOnce(false);
             jest.mocked(isNumberValid).mockReturnValueOnce(false);
             // @ts-expect-error: test private method
-            scdlBatchCli.validateXlsArgs({ rowOffset: "not a number" });
+            scdlBatchCli.validateXlsArgs({ pageName: 123, rowOffset: "not a number" });
             // @ts-expect-error: access private property
             expect(scdlBatchCli.fileConfigErrors).toContainEqual({ field: "pageName" });
             // @ts-expect-error: access private property
@@ -194,7 +194,7 @@ describe("SCDL Batch Import CLI", () => {
             jest.mocked(isNumberValid).mockReturnValueOnce(false);
             const expected = false;
             // @ts-expect-error: test private method
-            const actual = scdlBatchCli.validateXlsArgs({ rowOffset: "not a number" });
+            const actual = scdlBatchCli.validateXlsArgs({ pageName: 123, rowOffset: "not a number" });
             expect(actual).toEqual(expected);
         });
 
@@ -512,10 +512,11 @@ describe("SCDL Batch Import CLI", () => {
             // @ts-expect-error: private property
             scdlBatchCli.errorList = ERRORS;
             await scdlBatchCli.import();
-            expect(spyConsoleLog).toHaveBeenNthCalledWith(1, "\n---------------Summary of Operations---------------");
-            expect(spyConsoleLog).toHaveBeenNthCalledWith(2, "⚠️ List of Errors :");
-            expect(spyConsoleLog).toHaveBeenNthCalledWith(3, `❌ ${ERRORS[0]}`);
-            expect(spyConsoleLog).toHaveBeenNthCalledWith(4, `❌ ${ERRORS[1]}`);
+            // first two are import files name logs
+            expect(spyConsoleLog).toHaveBeenNthCalledWith(3, "\n---------------Summary of Operations---------------");
+            expect(spyConsoleLog).toHaveBeenNthCalledWith(4, "⚠️ List of Errors :");
+            expect(spyConsoleLog).toHaveBeenNthCalledWith(5, `❌ ${ERRORS[0]}`);
+            expect(spyConsoleLog).toHaveBeenNthCalledWith(6, `❌ ${ERRORS[1]}`);
             spyConsoleLog.mockRestore();
         });
 
@@ -525,8 +526,8 @@ describe("SCDL Batch Import CLI", () => {
             // @ts-expect-error: affect private prop
             scdlBatchCli.successList = SUCCESS;
             await scdlBatchCli.import();
-            expect(spyConsoleLog).toHaveBeenNthCalledWith(1, "\n---------------Summary of Operations---------------");
-            expect(spyConsoleLog).toHaveBeenNthCalledWith(2, "🚀 All operations completed successfully! 🎯");
+            expect(spyConsoleLog).toHaveBeenNthCalledWith(3, "\n---------------Summary of Operations---------------");
+            expect(spyConsoleLog).toHaveBeenNthCalledWith(4, "🚀 All operations completed successfully! 🎯");
             spyConsoleLog.mockRestore();
         });
 
@@ -539,11 +540,12 @@ describe("SCDL Batch Import CLI", () => {
             // @ts-expect-error: affect private prop
             scdlBatchCli.errorList = ERRORS;
             await scdlBatchCli.import();
-            expect(spyConsoleLog).toHaveBeenNthCalledWith(1, "\n---------------Summary of Operations---------------");
-            expect(spyConsoleLog).toHaveBeenNthCalledWith(2, "✅ list of Success :");
-            expect(spyConsoleLog).toHaveBeenNthCalledWith(3, `➡️ ${SUCCESS[0]}`);
-            expect(spyConsoleLog).toHaveBeenNthCalledWith(4, "⚠️ List of Errors :");
-            expect(spyConsoleLog).toHaveBeenNthCalledWith(5, `❌ ${ERRORS[0]}`);
+
+            expect(spyConsoleLog).toHaveBeenNthCalledWith(3, "\n---------------Summary of Operations---------------");
+            expect(spyConsoleLog).toHaveBeenNthCalledWith(4, "✅ list of Success :");
+            expect(spyConsoleLog).toHaveBeenNthCalledWith(5, `➡️ ${SUCCESS[0]}`);
+            expect(spyConsoleLog).toHaveBeenNthCalledWith(6, "⚠️ List of Errors :");
+            expect(spyConsoleLog).toHaveBeenNthCalledWith(7, `❌ ${ERRORS[0]}`);
             spyConsoleLog.mockRestore();
         });
     });

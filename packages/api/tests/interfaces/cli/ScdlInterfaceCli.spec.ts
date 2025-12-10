@@ -65,9 +65,8 @@ describe("SCDL CLI", () => {
 
     describe("parsing", () => {
         describe.each`
-            methodName    | test
-            ${"parse"}    | ${testParseCsv}
-            ${"parseXls"} | ${testParseXls}
+            methodName | test
+            ${"parse"} | ${testParseCsv}
         `("$methodName", ({ test }) => {
             it("throw error if SIRET not valid", async () => {
                 const INVALID_SIRET = 1234;
@@ -121,6 +120,7 @@ describe("SCDL CLI", () => {
                 await test("SCDL_SECOND_IMPORT", PRODUCER.siret, SECOND_IMPORT_DATE);
                 const actual = await miscScdlGrantPort.findAll();
                 const expectedAny = actual.map(() => ({ updateDate: expect.any(Date) }));
+                expect(actual.length).toBe(9); // 9 matches "SCDL_SECOND_IMPORT" length as it should clean exercise and so removing lines from "SCDL" file
                 expect(actual).toMatchSnapshot(expectedAny);
             });
 

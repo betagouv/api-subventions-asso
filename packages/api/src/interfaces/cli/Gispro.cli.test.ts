@@ -21,6 +21,7 @@ describe("Gispro cli", () => {
 
         it("calls service with file content and year from exportDate", async () => {
             const FILE_CONTENT = "file_content" as unknown as Buffer;
+            // @ts-expect-error: mock
             jest.mocked(fs.readFileSync).mockReturnValueOnce(FILE_CONTENT);
             // @ts-expect-error -- test purposes
             await cli._parse(FILE_PATH, LOGS, EXPORT_DATE);

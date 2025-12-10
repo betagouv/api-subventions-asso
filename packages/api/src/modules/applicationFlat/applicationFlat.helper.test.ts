@@ -1,5 +1,5 @@
 import { cursorToStream } from "./applicationFlat.helper";
-import { FindCursor } from "mongodb";
+import { Document, FindCursor } from "mongodb";
 import { Readable } from "stream";
 
 jest.mock("stream");

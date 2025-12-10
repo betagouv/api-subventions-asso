@@ -4,7 +4,7 @@
         "skipLibCheck": true,
         "target": "es2022",
         "lib": ["es2023"],
-        "module": "nodenext",
+        "moduleResolution": "node10",
         "types": ["reflect-metadata", "jest", "multer"],
         "paths": {
             "~": ["./src"]
@@ -13,10 +13,10 @@
         "outDir": "build",
         "declaration": true,
         "esModuleInterop": true,
+        "resolveJsonModule": true,
         "forceConsistentCasingInFileNames": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "resolveJsonModule": true,
         "noImplicitAny": false
     },
     "include": ["src/**/*", "tests/**/*", "migrations/**/*"],

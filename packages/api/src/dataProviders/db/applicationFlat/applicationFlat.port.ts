@@ -95,7 +95,8 @@ export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id
     public async bulkFindDeleteByExercises(provider: string, exercises: number[]) {
         const bulk = this.collection.initializeUnorderedBulkOp();
         exercises.forEach(exercise => {
-            bulk.find({ provider, exercise }).delete();
+            const query: Partial<ApplicationFlatDbo> = { fournisseur: provider, exerciceBudgetaire: exercise };
+            bulk.find(query).delete();
         });
         return bulk.execute().catch(error => {
             throw error;

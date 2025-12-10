@@ -1,5 +1,5 @@
 import { EstablishmentSimplified } from "dto";
-import csvStringifier from "csv-stringify/sync";
+import * as csvStringifier from "csv-stringify/sync";
 import { BadRequestError } from "core";
 import associationsService from "../associations/associations.service";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";

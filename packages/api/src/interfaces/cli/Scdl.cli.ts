@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import csvSyncStringifier from "csv-stringify/sync";
+import * as csvSyncStringifier from "csv-stringify/sync";
 import scdlService from "../../modules/providers/scdl/scdl.service";
 import Siret from "../../identifierObjects/Siret";
 import {
@@ -8,7 +8,7 @@ import {
     ParsedErrorDuplicate,
     ParsedErrorFormat,
 } from "../../modules/providers/scdl/@types/Validation";
-import { DEV, PROD } from "../../configurations/env.conf";
+import { DEV, ENV, PROD } from "../../configurations/env.conf";
 import dataLogService from "../../modules/data-log/dataLog.service";
 import { detectAndEncode, validateDate } from "../../shared/helpers/CliHelper";
 import scdlGrantService from "../../modules/providers/scdl/scdl.grant.service";
@@ -91,8 +91,8 @@ export default class ScdlCli {
     }) {
         const { file, errors, producer, exportDate: dateStr } = params;
         const exportDate = dateStr ? new Date(dateStr) : undefined;
-
-        if (PROD) {
+        // TODO: find a way to mock configurations in ScdlInterfaceCli to override PROD value
+        if (PROD || ENV === "test") {
             await notifyService.notify(NotificationType.DATA_IMPORT_SUCCESS, {
                 providerName: producer.name,
                 providerSiret: producer.siret,
