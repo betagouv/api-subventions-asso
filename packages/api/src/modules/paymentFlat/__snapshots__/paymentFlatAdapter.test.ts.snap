@@ -30,6 +30,7 @@ exports[`PaymentFlatAdapter dboToEntity given dbo with nulls, should return a Pa
   "typeIdEntrepriseBeneficiaire": "siren",
   "typeIdEtablissementBeneficiaire": "siret",
   "uniqueId": "12345678901234-0001821732-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
+  "updateDate": 2025-02-04T00:00:00.000Z,
 }
 `;
 
@@ -63,6 +64,7 @@ exports[`PaymentFlatAdapter dboToEntity given dbo without nulls, should return a
   "typeIdEntrepriseBeneficiaire": "siren",
   "typeIdEtablissementBeneficiaire": "siret",
   "uniqueId": "12345678901234-0001821732-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
+  "updateDate": 2025-02-04T00:00:00.000Z,
 }
 `;
 
@@ -74,6 +76,7 @@ exports[`PaymentFlatAdapter toDbo given entity with nulls, should return a Payme
   "codeAction": "0101-01-02",
   "codeActivite": "077601003222",
   "codeCentreFinancier": "AA01/0776-C001-4000",
+  "dateMiseAJour": 2025-02-04T00:00:00.000Z,
   "dateOperation": 2023-07-12T00:00:00.000Z,
   "ej": "0001821732",
   "exerciceBudgetaire": 2023,
@@ -103,12 +106,13 @@ exports[`PaymentFlatAdapter toDbo given entity without nulls, should return a Pa
   "codeAction": "0101-01-02",
   "codeActivite": "077601003222",
   "codeCentreFinancier": "AA01/0776-C001-4000",
+  "dateMiseAJour": 2025-02-04T00:00:00.000Z,
   "dateOperation": 2023-07-12T00:00:00.000Z,
   "ej": "0001821732",
   "exerciceBudgetaire": 2023,
   "idEntrepriseBeneficiaire": "100000000",
   "idEtablissementBeneficiaire": "10000000000001",
-  "idVersement": "ID_VERSEMENT",
+  "idVersement": "1000000000019--subv001--2023",
   "libelleCentreFinancier": "UO DGER XXXX-C001",
   "ministere": "Ministère Exemple",
   "mission": "Mission Exemple",
@@ -162,6 +166,12 @@ exports[`PaymentFlatAdapter toPayment should return ChorusPayment 1`] = `
     "type": "string",
     "value": "0001821732",
   },
+  "exerciceBudgetaire": {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "chorus",
+    "type": "number",
+    "value": 2023,
+  },
   "libelleProgramme": {
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "chorus",
@@ -184,7 +194,7 @@ exports[`PaymentFlatAdapter toPayment should return ChorusPayment 1`] = `
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "chorus",
     "type": "string",
-    "value": "0001821732",
+    "value": "1000000000019--subv001--2023",
   },
 }
 `;
@@ -203,6 +213,12 @@ exports[`PaymentFlatAdapter toPayment should return FonjepPayment 1`] = `
     "provider": "fonjep",
     "type": "object",
     "value": 2023-07-12T00:00:00.000Z,
+  },
+  "exerciceBudgetaire": {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "fonjep",
+    "type": "number",
+    "value": 2023,
   },
   "libelleProgramme": {
     "last_update": 2023-07-12T00:00:00.000Z,
@@ -226,7 +242,7 @@ exports[`PaymentFlatAdapter toPayment should return FonjepPayment 1`] = `
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "fonjep",
     "type": "string",
-    "value": "CODE_POSTE-OPERATION_DATE-EXERCISE-IDENTIFIER",
+    "value": "S03351-2023-05-12-2023-10000000000001",
   },
 }
 `;
@@ -269,6 +285,12 @@ exports[`PaymentFlatAdapter toPayment should return partial ChorusPayment 1`] = 
     "type": "string",
     "value": "0001821732",
   },
+  "exerciceBudgetaire": {
+    "last_update": 2023-07-12T00:00:00.000Z,
+    "provider": "chorus",
+    "type": "number",
+    "value": 2023,
+  },
   "libelleProgramme": undefined,
   "programme": {
     "last_update": 2023-07-12T00:00:00.000Z,
@@ -286,7 +308,7 @@ exports[`PaymentFlatAdapter toPayment should return partial ChorusPayment 1`] = 
     "last_update": 2023-07-12T00:00:00.000Z,
     "provider": "chorus",
     "type": "string",
-    "value": "0001821732",
+    "value": "ID_VERSEMENT",
   },
 }
 `;

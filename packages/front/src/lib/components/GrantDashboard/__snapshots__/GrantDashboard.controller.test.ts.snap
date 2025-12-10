@@ -2,19 +2,10 @@
 
 exports[`GrantDashboard Controller > with a mocked constructor > splitGrantsByExercise > returns grants by exercise 1`] = `
 {
-  "2021": [
-    {
-      "payments": [
-        {
-          "dateOperation": "2021-08-14",
-        },
-      ],
-    },
-  ],
-  "2023": [
+  "2022": [
     {
       "application": {
-        "annee_demande": 2022,
+        "exerciceBudgetaire": 2022,
       },
       "payments": [
         {
@@ -29,7 +20,7 @@ exports[`GrantDashboard Controller > with a mocked constructor > splitGrantsByEx
   "2024": [
     {
       "application": {
-        "annee_demande": 2024,
+        "exerciceBudgetaire": 2024,
       },
     },
   ],

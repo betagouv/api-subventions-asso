@@ -1,10 +1,9 @@
 import request from "supertest";
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
-import etablissementService from "../../../src/modules/etablissements/etablissements.service";
 import associationsService from "../../../src/modules/associations/associations.service";
 import { BadRequestError } from "core";
 import DEFAULT_ASSOCIATION, {
-    API_ASSO_ETABLISSEMENTS_FROM_SIREN,
+    API_ASSO_ESTABLISHMENTS_FROM_SIREN,
     LONELY_RNA,
     SIREN_STR,
     SIRET_STR,
@@ -16,69 +15,70 @@ import Siren from "../../../src/identifierObjects/Siren";
 import statsAssociationsVisitPort from "../../../src/dataProviders/db/stats/statsAssociationsVisit.port";
 import { App } from "supertest/types";
 import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
+import applicationFlatPort from "../../../src/dataProviders/db/applicationFlat/applicationFlat.port";
+import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFlat.port";
+import {
+    APPLICATION_LINK_TO_CHORUS,
+    APPLICATION_LINK_TO_FONJEP,
+} from "../../../src/modules/applicationFlat/__fixtures__";
+import {
+    CHORUS_PAYMENT_FLAT_ENTITY,
+    FONJEP_PAYMENT_FLAT_ENTITY,
+    FONJEP_PAYMENT_FLAT_ENTITY_2,
+} from "../../../src/modules/paymentFlat/__fixtures__/paymentFlatEntity.fixture";
 
 const g = global as unknown as { app: App };
 
 const ETABLISSEMENT_SIRET = SIRET_STR;
 
-describe("/etablissement", () => {
-    const getSubventionsMock: jest.SpyInstance = jest.spyOn(etablissementService, "getSubventions");
+async function initData() {
+    await applicationFlatPort.insertMany([APPLICATION_LINK_TO_CHORUS, APPLICATION_LINK_TO_FONJEP]);
 
+    // PAYMENT FLAT
+    await paymentFlatPort.insertMany([
+        CHORUS_PAYMENT_FLAT_ENTITY,
+        FONJEP_PAYMENT_FLAT_ENTITY,
+        FONJEP_PAYMENT_FLAT_ENTITY_2,
+    ]);
+}
+
+describe("/etablissement", () => {
     beforeAll(async () => {
-        jest.spyOn(apiAssoService, "findEtablissementsBySiren").mockResolvedValue(API_ASSO_ETABLISSEMENTS_FROM_SIREN);
+        jest.spyOn(apiAssoService, "findEstablishmentsBySiren").mockResolvedValue(API_ASSO_ESTABLISHMENTS_FROM_SIREN);
     });
 
     beforeEach(async () => {
         await rnaSirenPort.insert(
             new RnaSirenEntity(new Rna(DEFAULT_ASSOCIATION.rna), new Siren(DEFAULT_ASSOCIATION.siren)),
         );
-    });
-
-    afterAll(() => {
-        getSubventionsMock.mockRestore();
+        await initData();
     });
 
     describe("/siret/subventions", () => {
-        // TODO fix these tests
-        describe("on success", () => {
-            const SUBVENTIONS = ["subventions"];
+        it("returns subventions", async () => {
+            const response = await request(g.app)
+                .get(`/etablissement/${ETABLISSEMENT_SIRET}/subventions`)
+                .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "application/json");
 
-            beforeEach(() => {
-                getSubventionsMock.mockResolvedValueOnce(SUBVENTIONS);
-            });
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toMatchSnapshot();
+        });
+    });
 
-            it("should return 200", async () => {
-                const actual = (
-                    await request(g.app)
-                        .get(`/etablissement/${ETABLISSEMENT_SIRET}/subventions`)
-                        .set("x-access-token", await createAndGetUserToken())
-                        .set("Accept", "application/json")
-                ).statusCode;
-
-                expect(actual).toBe(200);
-            });
-
-            it("should return an object with subventions", async () => {
-                const expected = { subventions: SUBVENTIONS };
-                const actual = (
-                    await request(g.app)
-                        .get(`/etablissement/${ETABLISSEMENT_SIRET}/subventions`)
-                        .set("x-access-token", await createAndGetUserToken())
-                        .set("Accept", "application/json")
-                ).body;
-
-                expect(actual).toEqual(expected);
-            });
+    describe("/{identifier}/grants/v2", () => {
+        it("should return grants with siren", async () => {
+            const response = await request(g.app)
+                .get(`/etablissement/${ETABLISSEMENT_SIRET}/grants/v2`)
+                .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "application/json");
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toMatchSnapshot();
         });
     });
 
     describe("/siret/grants", () => {
-        it("should return grants", async () => {
-            // SIREN must be from an association
-            await rnaSirenPort.insert({
-                siren: new Siren(DEFAULT_ASSOCIATION.siren),
-                rna: new Rna(DEFAULT_ASSOCIATION.rna),
-            });
+        it("returns grants", async () => {
             const response = await request(g.app)
                 .get(`/etablissement/${ETABLISSEMENT_SIRET}/grants`)
                 .set("x-access-token", await createAndGetUserToken())

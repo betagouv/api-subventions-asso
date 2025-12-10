@@ -20,11 +20,13 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
         const idCompanyIndex: keyof PaymentFlatDbo = "idEntrepriseBeneficiaire";
         const typeIdCompanyIndex: keyof PaymentFlatDbo = "typeIdEntrepriseBeneficiaire";
         const budgetaryYear: keyof PaymentFlatDbo = "exerciceBudgetaire";
+        const provider: keyof PaymentFlatDbo = "provider";
 
         await this.collection.createIndex({ [uniqueIdIndex]: 1 }, { unique: true });
         await this.collection.createIndex({ [idEstabIndex]: 1, [typeIdEstabIndex]: 1 });
         await this.collection.createIndex({ [idCompanyIndex]: 1, [typeIdCompanyIndex]: 1 });
         await this.collection.createIndex({ [budgetaryYear]: 1 });
+        await this.collection.createIndex({ [provider]: 1 });
     }
 
     public async hasBeenInitialized() {
@@ -62,7 +64,7 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
 
     // used in test
     public async findAll() {
-        return (await this.collection.find({})).toArray();
+        return (await this.collection.find({})).map(dbo => PaymentFlatAdapter.dboToEntity(dbo)).toArray();
     }
 
     public cursorFind(query: DefaultObject<unknown> = {}, projection: DefaultObject<unknown> = {}) {
@@ -86,7 +88,6 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
     public async findBySiret(siret: Siret) {
         return this.collection
             .find({
-                provider: "chorus", // remove to enable fonjep when application flat is ready
                 typeIdEtablissementBeneficiaire: siret.name,
                 idEtablissementBeneficiaire: siret.value,
             })
@@ -97,7 +98,6 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
     public async findBySiren(siren: Siren) {
         return this.collection
             .find({
-                provider: "chorus", // remove to enable fonjep when application flat is ready
                 typeIdEntrepriseBeneficiaire: siren.name,
                 idEntrepriseBeneficiaire: siren.value,
             })

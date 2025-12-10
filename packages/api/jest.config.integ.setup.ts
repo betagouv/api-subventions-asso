@@ -10,6 +10,7 @@ process.env.JWT_SECRET = crypto.randomBytes(256).toString("base64");
 process.env.BETA_GOUV_DOMAIN = "beta.gouv.fr";
 process.env.AGENT_CONNECT_ENABLED = "true";
 process.env.API_BREVO_TOKEN = "1FT47%TRADF!";
+process.env.MAIL_USER = "mail-user@datasubvention";
 
 /**
  *
@@ -27,7 +28,6 @@ import { startServer } from "./src/server";
 import { scheduler } from "./src/cron";
 import configurationsPort from "./src/dataProviders/db/configurations/configurations.port";
 import { CONFIGURATION_NAMES } from "./src/modules/configurations/configurations.service";
-import { initAsyncServices } from "./src/shared/initAsyncServices";
 import { initTests } from "./jest.config.integ.init";
 
 /**
@@ -111,10 +111,9 @@ beforeAll(async () => {
 
     if (g.app) return;
 
-    // setup database for initAsyncServices
+    console.warn("Initializing integration test database...");
     // everything will be droped after the first test from the afterEach below
     await initTests();
-    await initAsyncServices();
 
     g.app = await startServer("1234", true);
     await initIndexes();

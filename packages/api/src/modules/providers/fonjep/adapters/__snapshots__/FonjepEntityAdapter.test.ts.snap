@@ -2,7 +2,7 @@
 
 exports[`FonjepEntityAdapter Flat formats buildFlatPaymentId return idVersement 1`] = `"AB5400K-2024-06-12-2022-10000000000001"`;
 
-exports[`FonjepEntityAdapter Flat formats buildPaymentFlatUniqueId return idVersement 1`] = `"fonjep-CODE_POSTE-OPERATION_DATE-EXERCISE-IDENTIFIER-163-N/A-N/A-2023-07-12-N/A-N/A"`;
+exports[`FonjepEntityAdapter Flat formats buildPaymentFlatUniqueId return idVersement 1`] = `"fonjep-S03351-2023-05-12-2023-10000000000001-163-N/A-N/A-2023-07-12-N/A-N/A"`;
 
 exports[`FonjepEntityAdapter Flat formats toFonjepApplicationFlat return application flat entity 1`] = `
 {
@@ -84,5 +84,6 @@ exports[`FonjepEntityAdapter Flat formats toFonjepPaymentFlat returns FonjepPaym
   "typeIdEntrepriseBeneficiaire": "siren",
   "typeIdEtablissementBeneficiaire": "siret",
   "uniqueId": "UNIQUE_ID",
+  "updateDate": 2025-08-11T00:00:00.000Z,
 }
 `;

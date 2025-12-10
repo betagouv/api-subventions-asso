@@ -1,4 +1,4 @@
-import { DemandeSubvention } from "dto";
+import { ApplicationFlatDto, DemandeSubvention } from "dto";
 import { ApplicationFlatEntity } from "../../entities/ApplicationFlatEntity";
 import { RawApplication } from "../grant/@types/rawGrant";
 import ProviderValueAdapter from "../../shared/adapters/ProviderValueAdapter";
@@ -13,7 +13,7 @@ type ApplicationFlatEntityDraft = Omit<ApplicationFlatEntity, "uniqueId" | "appl
 const OVERALL_FUNCTIONING_ACTION = "Fonctionnement global";
 
 export default class ApplicationFlatAdapter {
-    public static rawToApplication(rawApplication: RawApplication<ApplicationFlatEntity>) {
+    public static rawToApplication(rawApplication: RawApplication) {
         return this.toDemandeSubvention(rawApplication.data);
     }
 
@@ -37,7 +37,7 @@ export default class ApplicationFlatAdapter {
         /* Pour l'instant on garde ej pour tous les providers sauf Fonjep qui prend idVersement 
         Il faudra convertir tous les versementKey en idVersement quand tout est connecté  */
         return {
-            annee_demande: toPvOrUndefined(entity.requestYear),
+            annee_demande: toPvOrUndefined(entity.budgetaryYear),
             date_commision: toPvOrUndefined(entity.decisionDate), // TODO surely not good
             pluriannualite: toPvOrUndefined(entity.pluriannual),
             service_instructeur: toPv(entity.instructiveDepartmentName || ""),
@@ -172,5 +172,9 @@ export default class ApplicationFlatAdapter {
             notificationUE: entity.ueNotification,
             pourcentageSubvention: entity.subventionPercentage,
         };
+    }
+
+    static toDto(entity: ApplicationFlatEntity) {
+        return ApplicationFlatAdapter.entityToDbo(entity) as ApplicationFlatDto;
     }
 }

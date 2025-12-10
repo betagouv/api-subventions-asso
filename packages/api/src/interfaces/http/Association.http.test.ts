@@ -50,10 +50,33 @@ describe("AssociationHttp", () => {
         });
     });
 
+    describe("getOldGrants", () => {
+        beforeAll(() => {
+            jest.mocked(grantService.getOldGrants).mockResolvedValue([]);
+        });
+
+        it("should call grantService.getOldGrants()", async () => {
+            await controller.getOldGrants(IDENTIFIER.value, REQ);
+            expect(grantService.getOldGrants).toHaveBeenCalledWith(ASSOCIATION_ID);
+        });
+    });
+
     describe("getGrants", () => {
-        it("should call grantService.getGrants()", async () => {
+        const GRANTS_DTO = [{ application: null, payments: [] }];
+
+        beforeEach(() => {
+            jest.mocked(grantService.getGrantsDto).mockResolvedValue(GRANTS_DTO);
+        });
+
+        it("fetches grants on dto format", async () => {
             await controller.getGrants(IDENTIFIER.value, REQ);
-            expect(grantService.getGrants).toHaveBeenCalledWith(ASSOCIATION_ID);
+            expect(grantService.getGrantsDto).toHaveBeenCalledWith(ASSOCIATION_ID);
+        });
+
+        it("returns subventions", async () => {
+            const expected = { subventions: GRANTS_DTO, count: 1 };
+            const actual = await controller.getGrants(IDENTIFIER.value, REQ);
+            expect(actual).toEqual(expected);
         });
     });
 
@@ -124,18 +147,18 @@ describe("AssociationHttp", () => {
     });
 
     describe("getEstablishments", () => {
-        const getEtablissementSpy = jest.spyOn(associationsService, "getEstablishments");
+        const getEstablishmentSpy = jest.spyOn(associationsService, "getEstablishments");
         it("should call service with args", async () => {
-            getEtablissementSpy.mockImplementationOnce(jest.fn());
+            getEstablishmentSpy.mockImplementationOnce(jest.fn());
             await controller.getEstablishments(IDENTIFIER.value, REQ);
-            expect(getEtablissementSpy).toHaveBeenCalledWith(ASSOCIATION_ID);
+            expect(getEstablishmentSpy).toHaveBeenCalledWith(ASSOCIATION_ID);
         });
 
         it("should return establishments", async () => {
             // @ts-expect-error: mock
-            getEtablissementSpy.mockImplementationOnce(() => etablissements);
-            const etablissements = [{}];
-            const expected = { etablissements };
+            getEstablishmentSpy.mockImplementationOnce(() => establishments);
+            const establishments = [{}];
+            const expected = { etablissements: establishments };
             const actual = await controller.getEstablishments(IDENTIFIER.value, REQ);
             expect(actual).toEqual(expected);
         });

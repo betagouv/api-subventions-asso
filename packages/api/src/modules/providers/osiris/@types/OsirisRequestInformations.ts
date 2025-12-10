@@ -1,0 +1,43 @@
+import type ProviderInformations from "../../../search/@types/ProviderInformations";
+
+export default interface OsirisRequestInformations extends ProviderInformations {
+    osirisId: string;
+    compteAssoId: string;
+    ej?: string; // can be undefined, even with status to "granted"
+    amountAwarded: number;
+    dateCommission?: Date;
+    exerciceDebut: Date;
+    etablissementSiege: boolean;
+    etablissementVoie: string;
+    etablissementCodePostal: string;
+    etablissementCommune: string;
+    etablissementIBAN: string;
+    etablissementBIC: string;
+
+    representantNom: string;
+    representantPrenom: string;
+    representantRole: string;
+    representantCivilite: string;
+    representantEmail: string;
+    representantPhone: string;
+
+    service_instructeur: string;
+    dispositif: string;
+    sous_dispositif: string;
+    status: string;
+    pluriannualite: "Pluriannuel" | "Annuel";
+
+    montantsTotal: number;
+    montantsDemande: number;
+    montantsPropose: number;
+    montantsAccorde: number;
+
+    versementAcompte: number;
+    versementSolde: number;
+    versementRealise: number;
+    versementCompensationN1: number;
+    versementCompensationN: number;
+
+    exercise: number;
+    uniqueId: string;
+}

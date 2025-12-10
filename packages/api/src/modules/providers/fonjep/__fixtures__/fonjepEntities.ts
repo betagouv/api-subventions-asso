@@ -172,8 +172,8 @@ export const VERSEMENT_WITHOUT_ASSOCIATION = {
 
 export const VERSEMENT_ENTITY_WITH_NULLS: FonjepVersementEntity = {
     posteCode: POSTE_ENTITY_WITH_NULLS.code,
-    periodeDebut: null,
-    periodeFin: null,
+    periodeDebut: new Date("2023-04-12"),
+    periodeFin: new Date("2023-04-12"),
     dateVersement: null,
     montantAPayer: 1000,
     montantPaye: null,

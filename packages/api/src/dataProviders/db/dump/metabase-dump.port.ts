@@ -1,6 +1,6 @@
 import * as mongoDB from "mongodb";
 import { AgentTypeEnum, TerritorialScopeEnum } from "dto";
-import { AnyBulkWriteOperation } from "mongodb";
+import { AnyBulkWriteOperation, Document } from "mongodb";
 
 import {
     MONGO_METABASE_DBNAME,
@@ -141,6 +141,11 @@ export class MetabaseDumpPort {
 
     public cleanAfterDate(date: Date) {
         return this.db.collection("log").deleteMany({ timestamp: { $gt: date } });
+    }
+
+    public async upsertDepositLogs(depositLogs: unknown[]) {
+        await this.db.collection("deposit-logs").deleteMany({});
+        return this.db.collection("deposit-logs").insertMany(depositLogs as Document[]);
     }
 }
 

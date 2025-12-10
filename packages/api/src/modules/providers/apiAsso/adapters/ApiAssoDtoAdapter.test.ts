@@ -2,7 +2,7 @@ import ApiAssoDtoAdapter from "./ApiAssoDtoAdapter";
 import { StructureRepresentantLegalDto } from "../dto/StructureDto";
 import {
     fixtureAsso,
-    fixtureEtablissements,
+    fixtureEstablishments,
     fixtureRepresentantLegal,
     fixtureRib,
 } from "../__fixtures__/ApiAssoStructureFixture";
@@ -14,10 +14,10 @@ import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { Personne } from "dto";
 
 describe("ApiAssoDtoAdapter", () => {
-    describe("toEtablissement", () => {
-        it("should return etablissement with rib", () => {
-            const actual = ApiAssoDtoAdapter.toEtablissement(
-                fixtureEtablissements[0],
+    describe("toEstablishment", () => {
+        it("should return establishment with rib", () => {
+            const actual = ApiAssoDtoAdapter.toEstablishment(
+                fixtureEstablishments[0],
                 fixtureRib,
                 [],
                 fixtureAsso.identite.date_modif_siren,
@@ -26,9 +26,9 @@ describe("ApiAssoDtoAdapter", () => {
             expect(actual).toMatchSnapshot();
         });
 
-        it("should return etablissement with contact", () => {
-            const actual = ApiAssoDtoAdapter.toEtablissement(
-                fixtureEtablissements[0],
+        it("should return establishment with contact", () => {
+            const actual = ApiAssoDtoAdapter.toEstablishment(
+                fixtureEstablishments[0],
                 [],
                 fixtureRepresentantLegal,
                 fixtureAsso.identite.date_modif_siren,
@@ -37,9 +37,9 @@ describe("ApiAssoDtoAdapter", () => {
             expect(actual).toMatchSnapshot();
         });
 
-        it("should return etablissement without rib", () => {
-            const actual = ApiAssoDtoAdapter.toEtablissement(
-                fixtureEtablissements[1],
+        it("should return establishment without rib", () => {
+            const actual = ApiAssoDtoAdapter.toEstablishment(
+                fixtureEstablishments[1],
                 fixtureRib,
                 [],
                 fixtureAsso.identite.date_modif_siren,
@@ -48,9 +48,9 @@ describe("ApiAssoDtoAdapter", () => {
             expect(actual).toMatchSnapshot();
         });
 
-        it("should return etablissement without contact", () => {
-            const actual = ApiAssoDtoAdapter.toEtablissement(
-                fixtureEtablissements[1],
+        it("should return establishment without contact", () => {
+            const actual = ApiAssoDtoAdapter.toEstablishment(
+                fixtureEstablishments[1],
                 [],
                 undefined as unknown as StructureRepresentantLegalDto[],
                 fixtureAsso.identite.date_modif_siren,
@@ -60,11 +60,11 @@ describe("ApiAssoDtoAdapter", () => {
         });
 
         it("should convert contact's phone number to string", () => {
-            const estab = ApiAssoDtoAdapter.toEtablissement(
-                fixtureEtablissements[1],
+            const estab = ApiAssoDtoAdapter.toEstablishment(
+                fixtureEstablishments[1],
                 [],
                 [
-                    { telephone: 222, id_siret: fixtureEtablissements[1].id_siret },
+                    { telephone: 222, id_siret: fixtureEstablishments[1].id_siret },
                 ] as unknown as StructureRepresentantLegalDto[],
                 fixtureAsso.identite.date_modif_siren,
             );

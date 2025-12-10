@@ -10,7 +10,7 @@ import { SubventiaDbo } from "../../modules/providers/subventia/@types/subventia
 import { ApplicationStatus } from "dto";
 jest.mock("../../shared/helpers/CliHelper");
 import { ParsedDataWithProblem } from "../../modules/providers/subventia/validators/@types/Validation";
-import csvSyncStringifier from "csv-stringify/sync";
+import * as csvSyncStringifier from "csv-stringify/sync";
 import fs from "fs";
 import { normalize } from "path";
 

@@ -1,11 +1,8 @@
-import DemandesSubventionsProvider from "../subventions/@types/DemandesSubventionsProvider";
+import ApplicationProvider from "../subventions/@types/ApplicationProvider";
 import PaymentProvider from "../payments/@types/PaymentProvider";
 import GrantProvider from "../grant/@types/GrantProvider";
-import { FullGrantProvider } from "../grant/@types/FullGrantProvider";
 import paymentFlatService from "../paymentFlat/paymentFlat.service";
-import ApplicationFlatProvider from "../applicationFlat/@types/applicationFlatProvider";
 import osirisService from "./osiris/osiris.service";
-import fonjepService from "./fonjep/fonjep.service.old";
 import apiAssoService from "./apiAsso/apiAsso.service";
 import avisSituationInseeService from "./avisSituationInsee/avisSituationInsee.service";
 import apiEntrepriseService from "./apiEntreprise/apiEntreprise.service";
@@ -16,11 +13,12 @@ import Provider from "./@types/IProvider";
 import scdlGrantService from "./scdl/scdl.grant.service";
 import subventiaService from "./subventia/subventia.service";
 import chorusService from "./chorus/chorus.service";
+import applicationFlatService from "../applicationFlat/applicationFlat.service";
 
 // TODO: Why not an array instead of an object ?
 const providers: { [key: string]: Provider } = {
     osirisService,
-    fonjepService,
+    applicationFlatService,
     paymentFlatService,
     apiAssoService,
     avisSituationInseeService,
@@ -35,23 +33,14 @@ const providers: { [key: string]: Provider } = {
 
 export default providers;
 
-export const demandesSubventionsProviders = Object.values(providers).filter(
-    p => (p as DemandesSubventionsProvider<unknown>).isDemandesSubventionsProvider,
-) as DemandesSubventionsProvider<unknown>[];
+export const applicationProviders = Object.values(providers).filter(
+    p => (p as ApplicationProvider).isApplicationProvider,
+) as ApplicationProvider[];
 
 export const paymentProviders = Object.values(providers).filter(
-    p => (p as PaymentProvider<unknown>).isPaymentProvider,
-) as PaymentProvider<unknown>[];
-
-export const fullGrantProviders = Object.values(providers).filter(
-    p => (p as FullGrantProvider<unknown>).isFullGrantProvider,
-) as FullGrantProvider<unknown>[];
+    p => (p as PaymentProvider).isPaymentProvider,
+) as PaymentProvider[];
 
 export const grantProviders = Object.values(providers).filter(
     p => (p as GrantProvider).isGrantProvider,
 ) as GrantProvider[];
-
-// TODO have a neater typing systm or drop this
-export const applicationFlatProviders = Object.values(providers as unknown as ApplicationFlatProvider[]).filter(
-    p => (p as ApplicationFlatProvider).isApplicationFlatProvider,
-) as ApplicationFlatProvider[];

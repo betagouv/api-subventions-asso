@@ -10,6 +10,7 @@
     import ApplicationRow from "$lib/components/GrantDashboard/ApplicationRow/ApplicationRow.svelte";
     import PaymentRow from "$lib/components/GrantDashboard/PaymentRow/PaymentRow.svelte";
     import TableRow from "$lib/dsfr/TableRow.svelte";
+    import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
 
     export let structureId;
 
@@ -50,14 +51,9 @@
             {/if}
         </div>
         <div class="align-bottom">
-            <a
-                on:click={ctrl.clickProviderLink}
-                class="fr-link"
-                href={ctrl.providerBlogUrl}
-                target="_blank"
-                rel="noopener external">
+            <TargetBlankLink href={ctrl.providerBlogUrl} on:click={ctrl.clickProviderLink}>
                 Quelles données retrouver dans Data.Subvention ?
-            </a>
+            </TargetBlankLink>
         </div>
     </div>
     <div class="fr-mt-6w compact-columns">

@@ -1,12 +1,12 @@
 import StructureDto, {
     StructureDacDocumentDto,
-    StructureEtablissementDto,
+    StructureEstablishmentDto,
     StructureRepresentantLegalDto,
     StructureRibDto,
     StructureRnaDocumentDto,
 } from "../dto/StructureDto";
 
-export const fixtureEtablissements = [
+export const fixtureEstablishments = [
     {
         id_siret: 50922194100000,
         adresse: {},
@@ -15,7 +15,7 @@ export const fixtureEtablissements = [
         id_siret: 50922194100001,
         adresse: {},
     },
-] as StructureEtablissementDto[];
+] as StructureEstablishmentDto[];
 
 export const fixtureDocumentRna = [
     {
@@ -84,7 +84,7 @@ export const fixtureAsso = {
         },
     },
     ribs: { rib: fixtureRib },
-    etablissement: fixtureEtablissements,
+    etablissement: fixtureEstablishments,
     document_rna: fixtureDocumentRna,
     document_dac: fixtureDocumentDac,
     reseau_affiliation: [],

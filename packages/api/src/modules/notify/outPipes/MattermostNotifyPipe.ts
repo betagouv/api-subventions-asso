@@ -8,6 +8,7 @@ import { ENV } from "../../../configurations/env.conf";
 
 enum MattermostChannels {
     ACCOUNTS = "datasubvention---comptes-app",
+    PRODUCT = "datasubvention---produit",
 }
 
 export class MattermostNotifyPipe implements NotifyOutPipe {
@@ -18,6 +19,7 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
     }
 
     notify(type, data) {
+        if (!["prod", "preprod"].includes(ENV)) Promise.resolve(true); // do nothing in dev mode
         switch (type) {
             case NotificationType.USER_DELETED:
                 return this.userDeleted(data);
@@ -27,6 +29,10 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
                 return this.badEmailDomain(data);
             case NotificationType.FAILED_CRON:
                 return this.failedCron(data);
+            case NotificationType.DEPOSIT_UNFINISHED:
+                return this.depositUnfinished(data);
+            case NotificationType.DATA_IMPORT_SUCCESS:
+                return this.dataImportSuccess(data);
             default:
                 return Promise.resolve(false);
         }
@@ -43,6 +49,18 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
             console.error("error sending mattermost log");
             return false;
         }
+    }
+
+    private dataImportSuccess(data: NotificationDataTypes[NotificationType.DATA_IMPORT_SUCCESS]) {
+        const message = dedent`Import de données réussi pour le fournisseur **${data.providerName}**${
+            data.providerSiret ? ` (SIRET : \`${data.providerSiret}\`)` : ""
+        }${data.exportDate ? ` avec une date d'export au **${data.exportDate.toISOString().split("T")[0]}**` : ""}.`;
+        return this.sendMessage({
+            text: message,
+            channel: MattermostChannels.PRODUCT,
+            username: "Import de données",
+            icon_emoji: "white_check_mark",
+        });
     }
 
     private userDeleted(data: NotificationDataTypes[NotificationType.USER_DELETED]) {
@@ -121,6 +139,22 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
             console.error("error sending mattermost log for DB connection lost");
             return false;
         }
+    }
+
+    private depositUnfinished(data: NotificationDataTypes[NotificationType.DEPOSIT_UNFINISHED]) {
+        const message = `Bonjour Data.Subvention !\n
+        Voici la liste du jour des utilisateurs à relancer pour finaliser leur dépôt de données :\n
+        ${data.users.reduce((msg, user) => {
+            if (user.lastname && user.firstname) return `${msg}- ${user.email} (${user.firstname} ${user.lastname})\n`;
+            return `${msg}- ${user.email}\n`;
+        }, "")}`;
+
+        return this.sendMessage({
+            text: message,
+            channel: MattermostChannels.ACCOUNTS,
+            username: "Relance de dépôt de données",
+            icon_emoji: "bookmark_tabs",
+        });
     }
 }
 

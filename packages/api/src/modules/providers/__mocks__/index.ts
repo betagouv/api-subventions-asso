@@ -4,7 +4,6 @@ import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { ProviderRequestService } from "../../provider-request/providerRequest.service";
 import {
     applicationProvidersFixtures,
-    fullGrantProvidersFixtures,
     grantProvidersFixtures,
     paymentProvidersFixtures,
 } from "../__fixtures__/providers.fixture";
@@ -12,14 +11,14 @@ import {
 const providers = {
     // RAW service AssociationProvider + DemandeSubventionProvider
     serviceA: {
-        provider: {
+        meta: {
             name: "serviceA",
             id: "prov-A",
             type: ProviderEnum.raw,
             description: "descriptionA",
         },
         isAssociationsProvider: true,
-        isDemandesSubventionsProvider: true,
+        isApplicationProvider: true,
         getAssociationsBySiren: () => [{}],
         getAssociationsBySiret: () => [{}],
         getAssociationsByRna: () => [{}],
@@ -29,14 +28,14 @@ const providers = {
     },
     // API service AssociationProvider + DemandeSubventionProvider
     serviceB: {
-        provider: {
+        meta: {
             name: "serviceB",
             id: "prov-B",
             type: ProviderEnum.api,
             description: "descriptionB",
         },
         isAssociationsProvider: true,
-        isDemandesSubventionsProvider: true,
+        isApplicationProvider: true,
         getAssociationsBySiren: () => [{}],
         getAssociationsBySiret: () => [{}],
         getAssociationsByRna: () => [{}],
@@ -45,42 +44,42 @@ const providers = {
     },
     // API service AssociationProvider that returns null for all getAssociations()
     serviceC: {
-        provider: {
+        meta: {
             name: "serviceC",
             id: "prov-C",
             type: ProviderEnum.api,
             description: "descriptionC",
         },
         isAssociationsProvider: true,
-        isDemandesSubventionsProvider: false,
+        isApplicationProvider: false,
         getAssociationsBySiren: async () => null,
         getAssociationsBySiret: async () => null,
         getAssociationsByRna: async () => null,
     },
-    // API service that is not either an AssociationProvider or DemandesSubventionsProvider
+    // API service that is not either an AssociationProvider or ApplicationProvider
     serviceD: {
-        provider: {
+        meta: {
             name: "serviceD",
             id: "prov-D",
             type: ProviderEnum.api,
             description: "descriptionD",
         },
         isAssociationsProvider: false,
-        isDemandesSubventionsProvider: false,
+        isApplicationProvider: false,
         getAssociationsBySiren: async () => [{}],
         getAssociationsBySiret: async () => [{}],
         getAssociationsByRna: async () => [{}],
     },
-    // RAW sercice that is not either an AssociationProvider or DemandesSubventionsProvider
+    // RAW sercice that is not either an AssociationProvider or ApplicationProvider
     serviceE: {
-        provider: {
+        meta: {
             name: "serviceE",
             id: "prov-E",
             type: ProviderEnum.raw,
             description: "descriptionE with getSpecificDocumentStream",
         },
         isAssociationsProvider: false,
-        isDemandesSubventionsProvider: false,
+        isApplicationProvider: false,
         getAssociationsBySiren: async () => [{}],
         getAssociationsBySiret: async () => [{}],
         getAssociationsByRna: async () => [{}],
@@ -91,7 +90,6 @@ const providers = {
 
 export default providers;
 
-export const fullGrantProviders = fullGrantProvidersFixtures;
-export const demandesSubventionsProviders = applicationProvidersFixtures;
+export const applicationProviders = applicationProvidersFixtures;
 export const paymentProviders = paymentProvidersFixtures;
 export const grantProviders = grantProvidersFixtures;

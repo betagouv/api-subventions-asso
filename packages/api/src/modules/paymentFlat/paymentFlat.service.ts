@@ -1,16 +1,18 @@
-import { Payment } from "dto";
+import { Payment, PaymentFlatDto } from "dto";
 import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port";
 import PaymentProvider from "../payments/@types/PaymentProvider";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
-import { RawGrant, RawPayment } from "../grant/@types/rawGrant";
+import { RawPayment } from "../grant/@types/rawGrant";
 import { ProviderEnum } from "../../@enums/ProviderEnum";
 import ProviderCore from "../providers/ProviderCore";
 import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
+import GrantProvider from "../grant/@types/GrantProvider";
+import { StructureProvider } from "../StructureProvider";
 
-export class PaymentFlatService extends ProviderCore implements PaymentProvider<PaymentFlatEntity> {
+export class PaymentFlatService extends ProviderCore implements PaymentProvider, GrantProvider, StructureProvider {
     constructor() {
         super({
             name: "Payment Flat",
@@ -42,19 +44,29 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider<
 
     isPaymentProvider = true;
 
-    public rawToPayment(rawGrant: RawPayment<PaymentFlatEntity>) {
+    public rawToPayment(rawGrant: RawPayment) {
         return PaymentFlatAdapter.rawToPayment(rawGrant);
     }
 
-    async getPayments(identifier: StructureIdentifier): Promise<Payment[]> {
-        const requests: PaymentFlatEntity[] = [];
+    async getEntitiesByIdentifier(identifier: StructureIdentifier): Promise<PaymentFlatEntity[]> {
+        const payments: PaymentFlatEntity[] = [];
 
         if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            requests.push(...(await paymentFlatPort.findBySiret(identifier.siret)));
+            payments.push(...(await paymentFlatPort.findBySiret(identifier.siret)));
         } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            requests.push(...(await paymentFlatPort.findBySiren(identifier.siren)));
+            payments.push(...(await paymentFlatPort.findBySiren(identifier.siren)));
         }
-        return this.toPaymentArray(requests);
+        return payments;
+    }
+
+    async getPayments(identifier: StructureIdentifier): Promise<Payment[]> {
+        const payments = await this.getEntitiesByIdentifier(identifier);
+        return this.toPaymentArray(payments);
+    }
+
+    async getPaymentsDto(identifier: StructureIdentifier): Promise<PaymentFlatDto[]> {
+        const payments: PaymentFlatEntity[] = await this.getEntitiesByIdentifier(identifier);
+        return payments.map(entity => PaymentFlatAdapter.toDto(entity));
     }
 
     private toPaymentArray(documents: PaymentFlatEntity[]) {
@@ -71,7 +83,7 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider<
 
     isGrantProvider = true;
 
-    async getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
+    async getRawGrants(identifier: StructureIdentifier): Promise<RawPayment[]> {
         let dbos: PaymentFlatEntity[] = [];
         if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
             dbos = await paymentFlatPort.findBySiret(identifier.siret);
@@ -83,9 +95,7 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider<
             provider: "payment-flat",
             type: "payment",
             data: grant,
-            /* Pour l'instant on garde ej pour tous les providers sauf Fonjep qui prend idVersement
-            Il faudra convertir tous les versementKey en idVersement quand tout est connecté  */
-            joinKey: grant.provider === "fonjep" ? grant.idVersement : grant.ej || undefined,
+            joinKey: grant.idVersement ?? undefined,
         }));
     }
 }

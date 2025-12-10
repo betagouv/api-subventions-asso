@@ -77,7 +77,6 @@ describe("expressAuthentication", () => {
                 nbVisits: 0,
             }),
         );
-        // @ts-expect-error: mock
         verifyMock.mockImplementation(VERIFY_DEFAULT_MOCK);
     });
 

@@ -43,6 +43,10 @@ export class DemarchesSimplifieesDataPort extends MongoPort<DemarchesSimplifiees
         });
         return bulk.length ? this.collection.bulkWrite(bulk, { ordered: false }) : Promise.resolve();
     }
+
+    findAllCursor() {
+        return this.collection.find({});
+    }
 }
 
 const demarchesSimplifieesDataPort = new DemarchesSimplifieesDataPort();

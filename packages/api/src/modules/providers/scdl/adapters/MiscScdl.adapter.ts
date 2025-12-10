@@ -1,74 +1,12 @@
-import { ApplicationStatus, DemandeSubvention, CommonApplicationDto } from "dto";
-import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
-import { sameDateNextYear } from "../../../../shared/helpers/DateHelper";
-import MiscScdlGrantProducerEntity from "../entities/MiscScdlGrantProducerEntity";
-import { ScdlGrantEntity } from "../@types/ScdlGrantEntity";
-import { RawApplication } from "../../../grant/@types/rawGrant";
-import { ApplicationFlatEntity, ApplicationNature, PaymentCondition } from "../../../../entities/ApplicationFlatEntity";
+import { ApplicationStatus, ApplicationNature, PaymentCondition } from "dto";
+import { ApplicationFlatEntity } from "../../../../entities/ApplicationFlatEntity";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
 import { ScdlGrantDbo } from "../dbo/ScdlGrantDbo";
+import Siret from "../../../../identifierObjects/Siret";
+import MiscScdlGrantEntity from "../entities/MiscScdlGrantEntity";
+import { ScdlGrantDto } from "dto";
 
 export default class MiscScdlAdapter {
-    public static toDemandeSubvention(entity: MiscScdlGrantProducerEntity): DemandeSubvention {
-        const lastUpdateDate = new Date(entity.producer.lastUpdate);
-        const toPV = ProviderValueFactory.buildProviderValueAdapter(entity.producer.name, lastUpdateDate);
-        const amount = toPV(entity.amount);
-
-        const commisionDate = entity.conventionDate ? toPV(entity.conventionDate) : toPV(new Date(entity.exercice));
-
-        return {
-            siret: toPV(entity.associationSiret),
-            service_instructeur: toPV(entity.allocatorName),
-            actions_proposee: [{ intitule: toPV(entity.object || "") }],
-            statut_label: toPV(MiscScdlAdapter._status(entity)),
-            status: toPV(MiscScdlAdapter._status(entity)),
-            montants: {
-                accorde: amount,
-            },
-            date_commision: commisionDate, // doubt
-            financeur_principal: toPV(entity.allocatorName),
-            annee_demande: toPV(entity.exercice), // doubt
-            pluriannualite: toPV(MiscScdlAdapter._multiannuality(entity)),
-        };
-    }
-
-    public static toCommon(entity: ScdlGrantEntity): CommonApplicationDto {
-        return {
-            exercice: entity.exercice,
-            dispositif: "",
-            montant_accorde: entity.amount,
-            objet: entity.object || "",
-            service_instructeur: entity.allocatorName,
-            siret: entity.allocatorSiret,
-            statut: MiscScdlAdapter._status(entity),
-        };
-    }
-
-    static rawToApplication(rawApplication: RawApplication<MiscScdlGrantProducerEntity>) {
-        return this.toDemandeSubvention(rawApplication.data);
-    }
-
-    static toRawApplication(entity: MiscScdlGrantProducerEntity) {
-        const rawApplication: RawApplication<MiscScdlGrantProducerEntity> = {
-            provider: entity.producer.name,
-            type: "application",
-            data: entity,
-        };
-
-        return rawApplication;
-    }
-
-    private static _multiannuality(entity: MiscScdlGrantProducerEntity) {
-        if (!entity.paymentEndDate || !entity.paymentStartDate) return "Non";
-        const startNextYear = sameDateNextYear(entity.paymentStartDate);
-        return entity.paymentEndDate >= startNextYear ? "Oui" : "Non";
-    }
-
-    private static _status(entity: MiscScdlGrantProducerEntity | ScdlGrantEntity) {
-        // not given by provider but this is the rule from Paris
-        return entity.amount > 0 ? ApplicationStatus.GRANTED : ApplicationStatus.REFUSED;
-    }
-
     private static normalizePaymentConditions(rawValue?: string): PaymentCondition | null {
         if (typeof rawValue != "string") return null;
         if (rawValue.match(/unique/gi)) return PaymentCondition.UNIQUE;
@@ -117,7 +55,7 @@ export default class MiscScdlAdapter {
             applicationId: GenericAdapter.NOT_APPLICABLE_VALUE,
             applicationProviderId: GenericAdapter.NOT_APPLICABLE_VALUE,
             instructiveDepartementId: GenericAdapter.NOT_APPLICABLE_VALUE,
-            uniqueId: `${dbo.producerSlug}-${dbo.exercice}-${dataHash}`,
+            uniqueId: `${dbo.allocatorSiret}-${dbo.exercice}-${dataHash}`,
             paymentId: GenericAdapter.NOT_APPLICABLE_VALUE,
             grantedAmount: dbo.amount, // TODO pourcentage subv ? I think not
             requestedAmount: null,
@@ -131,7 +69,7 @@ export default class MiscScdlAdapter {
             object: dbo.object ?? null,
             pluriannual: GenericAdapter.NOT_APPLICABLE_VALUE,
             subventionPercentage: dbo.grantPercentage ?? null,
-            provider: `scdl-${dbo.producerSlug}`,
+            provider: `scdl-${dbo.allocatorSiret}`,
             decisionReference: dbo.decisionReference ?? null,
             subScheme: GenericAdapter.NOT_APPLICABLE_VALUE,
             statusLabel: ApplicationStatus.GRANTED,
@@ -139,8 +77,31 @@ export default class MiscScdlAdapter {
             managingAuthorityIdType: GenericAdapter.NOT_APPLICABLE_VALUE,
             cofinancersIdType: GenericAdapter.NOT_APPLICABLE_VALUE,
             instructiveDepartmentIdType: GenericAdapter.NOT_APPLICABLE_VALUE,
-            beneficiaryEstablishmentIdType: "siret",
+            beneficiaryEstablishmentIdType: Siret.getName(),
             updateDate: dbo.updateDate,
+        };
+    }
+
+    static miscScdlGrantEntityToDto(entity: MiscScdlGrantEntity): ScdlGrantDto {
+        return {
+            allocatorName: entity.allocatorName,
+            allocatorSiret: entity.allocatorSiret,
+            exercice: entity.exercice,
+            amount: entity.amount,
+            associationSiret: entity.associationSiret,
+            associationName: entity.associationName,
+            associationRna: entity.associationRna,
+            object: entity.object,
+            conventionDate: entity.conventionDate,
+            decisionReference: entity.decisionReference,
+            paymentNature: entity.paymentNature,
+            paymentConditions: entity.paymentConditions,
+            paymentStartDate: entity.paymentStartDate,
+            paymentEndDate: entity.paymentEndDate,
+            idRAE: entity.idRAE,
+            UeNotification: entity.UeNotification,
+            grantPercentage: entity.grantPercentage,
+            aidSystem: entity.aidSystem,
         };
     }
 }

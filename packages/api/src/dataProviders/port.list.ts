@@ -11,8 +11,6 @@ import chorusLinePort from "./db/providers/chorus/chorus.line.port";
 import dauphinPort from "./db/providers/dauphin/dauphin.port";
 import demarchesSimplifieesDataPort from "./db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
 import demarchesSimplifieesSchemaPort from "./db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port";
-import fonjepSubventionPort from "./db/providers/fonjep/fonjep.subvention.port.old";
-import fonjepPaymentPort from "./db/providers/fonjep/fonjep.payment.port.old";
 import fonjepVersementsPort from "./db/providers/fonjep/fonjep.versements.port";
 import fonjepPostesPort from "./db/providers/fonjep/fonjep.postes.port";
 import fonjepTiersPort from "./db/providers/fonjep/fonjep.tiers.port";
@@ -26,6 +24,8 @@ import sireneStockUniteLegalePort from "./db/sirene/stockUniteLegale/sireneStock
 import amountsVsProgramRegionPort from "./db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
 import dataLogPort from "./db/data-log/dataLog.port";
 import applicationFlatPort from "./db/applicationFlat/applicationFlat.port";
+import depositLogPort from "./db/deposit-log/depositLog.port";
+import gisproPort from "./db/providers/gispro.port";
 
 export const portsWithIndexes = [
     userPort,
@@ -33,8 +33,6 @@ export const portsWithIndexes = [
     userResetPort,
     osirisRequestPort,
     osirisActionPort,
-    fonjepPaymentPort,
-    fonjepSubventionPort,
     fonjepVersementsPort,
     fonjepPostesPort,
     fonjepTiersPort,
@@ -57,4 +55,7 @@ export const portsWithIndexes = [
     amountsVsProgramRegionPort,
     dataLogPort,
     applicationFlatPort,
+    depositLogPort,
+    gisproPort,
+    dauphinPort,
 ];

@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.76.0](https://github.com/betagouv/datasubvention/compare/v0.75.2...v0.76.0) (2025-12-09)
+
+### Features
+
+- **api:** [#3583](https://github.com/betagouv/datasubvention/issues/3583) use flat as application and grant provider ([#3645](https://github.com/betagouv/datasubvention/issues/3645)) ([3b74f3c](https://github.com/betagouv/datasubvention/commit/3b74f3cfedf21133ce04f893edaea25a0c685ddb))
+- **api:** [#3677](https://github.com/betagouv/datasubvention/issues/3677) add new grant entrypoint with flats ([#3726](https://github.com/betagouv/datasubvention/issues/3726)) ([f352eff](https://github.com/betagouv/datasubvention/commit/f352effcd4e752394ce4fb9bbaf516ddf8d6f309))
+- **api:** [#3678](https://github.com/betagouv/datasubvention/issues/3678) use grants v2 dashboard ([#3735](https://github.com/betagouv/datasubvention/issues/3735)) ([72e468b](https://github.com/betagouv/datasubvention/commit/72e468bf176da905a12a6cc64672894aa6e77f0b))
+
+# [0.75.0](https://github.com/betagouv/datasubvention/compare/v0.74.0...v0.75.0) (2025-11-17)
+
+### Features
+
+- **api:** [#3624](https://github.com/betagouv/datasubvention/issues/3624) step 4 api: ([#3693](https://github.com/betagouv/datasubvention/issues/3693)) ([4a7b75d](https://github.com/betagouv/datasubvention/commit/4a7b75d09e5de490e1b088e0d8e3093da777a37a))
+- **api:** [#3712](https://github.com/betagouv/datasubvention/issues/3712) persist deposit scdl file ([#3713](https://github.com/betagouv/datasubvention/issues/3713)) ([36ce362](https://github.com/betagouv/datasubvention/commit/36ce3624ff294dd9e0384bb98858593de65b3bb6))
+- **front, api:** [#3626](https://github.com/betagouv/datasubvention/issues/3626) step 4 front ([#3709](https://github.com/betagouv/datasubvention/issues/3709)) ([15c93fd](https://github.com/betagouv/datasubvention/commit/15c93fd3c8f607c0edc4ed75c889fbaa753470e6))
+
+# [0.74.0](https://github.com/betagouv/datasubvention/compare/v0.72.4...v0.74.0) (2025-10-08)
+
+### Features
+
+- **api,dto:** [#3275](https://github.com/betagouv/datasubvention/issues/3275) [#3524](https://github.com/betagouv/datasubvention/issues/3524) add http controllers to serve flat data ([#3615](https://github.com/betagouv/datasubvention/issues/3615)) ([6ccd8c5](https://github.com/betagouv/datasubvention/commit/6ccd8c50fb28f842efda0fa8f9eaa240a482df68))
+- **api:** [#3583](https://github.com/betagouv/datasubvention/issues/3583) use flat as application and grant provider ([#3645](https://github.com/betagouv/datasubvention/issues/3645)) ([3677c42](https://github.com/betagouv/datasubvention/commit/3677c426bace40c5d868ead16fb04a3acb9f4a74))
+- **api:** [#3622](https://github.com/betagouv/datasubvention/issues/3622) deposit process set up ([#3659](https://github.com/betagouv/datasubvention/issues/3659)) ([67ba000](https://github.com/betagouv/datasubvention/commit/67ba00048d8ce4e77014b7ef4321d8155565d374))
+
+# [0.73.0](https://github.com/betagouv/datasubvention/compare/v0.72.1...v0.73.0) (2025-09-03)
+
+**Note:** Version bump only for package dto
+
 # [0.72.0](https://github.com/betagouv/datasubvention/compare/v0.71.0...v0.72.0) (2025-08-21)
 
 ### Features

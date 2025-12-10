@@ -240,7 +240,7 @@ export const ENTITY_WITH_RIDET = {
     } as ChorusLineDto,
     _id: undefined,
     provider: "Chorus",
-    updated: new Date("2020-01-01"),
+    updateDate: new Date("2020-01-01"),
 };
 
 export const ENTITIES: ChorusLineEntity[] = [
@@ -287,7 +287,7 @@ export const ENTITIES: ChorusLineEntity[] = [
         } as ChorusLineDto,
         _id: undefined,
         provider: "Chorus",
-        updated: new Date("2020-01-01"),
+        updateDate: new Date("2020-01-01"),
     },
     {
         uniqueId: "11d177d88edbd421e4eef4f2e8d42b28",
@@ -332,7 +332,7 @@ export const ENTITIES: ChorusLineEntity[] = [
         } as ChorusLineDto,
         _id: undefined,
         provider: "Chorus",
-        updated: new Date("2020-01-01"),
+        updateDate: new Date("2020-01-01"),
     },
     {
         uniqueId: "8fa4002caaa720f63bbe2acf525419c0",
@@ -377,7 +377,7 @@ export const ENTITIES: ChorusLineEntity[] = [
         } as ChorusLineDto,
         _id: undefined,
         provider: "Chorus",
-        updated: new Date("2020-01-01"),
+        updateDate: new Date("2020-01-01"),
     },
 ];
 
@@ -391,6 +391,7 @@ const buildProviderValue = value => ({
 // TODO: fill this with real data
 export const PAYMENTS: ChorusPayment[] = [
     {
+        exerciceBudgetaire: buildProviderValue(ENTITIES[0].indexedInformations.exercice),
         ej: buildProviderValue(ENTITIES[0].indexedInformations.ej),
         versementKey: buildProviderValue(ENTITIES[0].indexedInformations.ej),
         siret: buildProviderValue(ENTITIES[0].indexedInformations.siret),

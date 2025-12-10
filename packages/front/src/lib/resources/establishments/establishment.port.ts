@@ -1,7 +1,5 @@
-import type { AssociationIdentifierDto, DocumentDto, SiretDto } from "dto";
-import type { FlatGrant } from "$lib/resources/@types/FlattenGrant";
+import type { AssociationIdentifierDto, DocumentDto, GrantFlatDto, SiretDto } from "dto";
 import requestsService from "$lib/services/requests.service";
-import { flattenProviderValue } from "$lib/helpers/providerValueHelper";
 
 class EstablishmentPort {
     getResource(siret: SiretDto, resource?: string) {
@@ -21,9 +19,9 @@ class EstablishmentPort {
         return anwser?.data?.documents;
     }
 
-    async getGrants(siret: SiretDto): Promise<FlatGrant[]> {
-        const grants = (await this.getResource(siret, "grants")).data.subventions;
-        return flattenProviderValue(grants);
+    async getGrants(siret: SiretDto): Promise<GrantFlatDto[]> {
+        const grants = (await this.getResource(siret, "grants/v2")).data.subventions as GrantFlatDto[];
+        return grants;
     }
 
     async getGrantExtract(identifier: AssociationIdentifierDto) {

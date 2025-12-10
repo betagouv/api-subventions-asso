@@ -1,0 +1,62 @@
+<script lang="ts">
+    import { createEventDispatcher } from "svelte";
+    import InfoBox from "$lib/components/InfoBox.svelte";
+    import Step2Controller from "./Step2.controller";
+    import Input from "$lib/dsfr/Input.svelte";
+    import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
+
+    const ctrl = new Step2Controller();
+    const { inputValue, hasError, isDisabled } = ctrl;
+
+    const dispatch = createEventDispatcher<{ nextStep: void; prevStep: void; resumeForm: void }>();
+
+    const infoBoxTitle = "💡 Vous ne connaissez pas le SIRET de l’attribuant ?";
+
+    async function handleValidate() {
+        const result = await ctrl.handleValidate();
+        if (result === "success") {
+            dispatch("nextStep");
+        } else if (result === "resume") {
+            dispatch("resumeForm");
+        }
+    }
+</script>
+
+<div>
+    <Input
+        id="siret"
+        name="siret"
+        type="text"
+        bind:value={$inputValue}
+        label="Indiquez le SIRET de l’attribuant :"
+        hint="La collectivité ou l’organisme qui attribue les subventions dans ce fichier."
+        on:change
+        on:blur={() => ctrl.setTouch(true)}
+        error={$hasError ? "true" : ""}
+        errorMsg="Le SIRET doit contenir 14 chiffres" />
+
+    <div class="fr-mb-6v">
+        <InfoBox title={infoBoxTitle}>
+            <p class="fr-mb-4v">Vous pouvez :</p>
+            <ul>
+                <li>regarder dans votre fichier Excel s'il y figure</li>
+                <li>
+                    le rechercher sur
+                    <TargetBlankLink href="https://annuaire-entreprises.data.gouv.fr/">
+                        Annuaire Entreprises
+                    </TargetBlankLink>
+                </li>
+            </ul>
+        </InfoBox>
+    </div>
+
+    <div>
+        <button on:click={() => dispatch("prevStep")} class="fr-btn fr-btn--secondary fr-mr-3v" type="button">
+            Retour
+        </button>
+
+        <button on:click={() => handleValidate()} disabled={$isDisabled} class="fr-btn fr-mr-3v" type="button">
+            Valider
+        </button>
+    </div>
+</div>

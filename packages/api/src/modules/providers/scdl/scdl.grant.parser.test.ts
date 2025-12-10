@@ -1,7 +1,7 @@
 import ScdlGrantParser from "./scdl.grant.parser";
 import MiscScdlGrant from "./__fixtures__/MiscScdlGrant";
 import * as Validators from "../../../shared/Validators";
-import csvSyncParser from "csv-parse/sync";
+import * as csvSyncParser from "csv-parse/sync";
 
 jest.mock("../../../shared/Validators");
 const mockedValidators = jest.mocked(Validators);
@@ -179,12 +179,9 @@ describe("ScdlGrantParser", () => {
         });
 
         it("should apply header callback and trim column headers", () => {
-            const mockParse = jest.fn();
-            csvSyncParser.parse = mockParse;
-
             ScdlGrantParser.parseCsv(BUFFER);
 
-            expect(mockParse).toHaveBeenCalledWith(
+            expect(mockedCsvLib.parse).toHaveBeenCalledWith(
                 BUFFER,
                 expect.objectContaining({
                     columns: expect.any(Function),
@@ -197,12 +194,13 @@ describe("ScdlGrantParser", () => {
                 }),
             );
 
-            const firstCallArguments = mockParse.mock.calls[0];
+            const firstCallArguments = mockedCsvLib.parse.mock.calls[0];
             const optionsParam = firstCallArguments[1];
-            const columnsFunction = optionsParam.columns;
+            const columnsFunction = optionsParam!.columns!;
 
             // use cases
             const headers = ["  nomAttribuant  ", "objet\n"];
+            // @ts-expect-error: mock
             const trimmedHeaders = columnsFunction(headers);
 
             expect(trimmedHeaders).toEqual(["nomAttribuant", "objet"]);
@@ -216,7 +214,6 @@ describe("ScdlGrantParser", () => {
 
     describe("isGrantValid", () => {
         const ORIGINAL_WITH_PATH = {
-            producerSlug: { value: "producerSlug-value", keyPath: ["producerSlug-origin"] },
             allocatorName: { value: "allocatorName-value", keyPath: ["allocatorName-origin"] },
             allocatorSiret: { value: "allocatorSiret-value", keyPath: ["allocatorSiret-origin"] },
             exercice: { value: "exercice-value", keyPath: ["exercice-origin"] },

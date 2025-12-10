@@ -9,6 +9,12 @@ import {
 import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port";
 import Siren from "../../identifierObjects/Siren";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
+import DEFAULT_ASSOCIATION from "../../../tests/__fixtures__/association.fixture";
+import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
+import Siret from "../../identifierObjects/Siret";
+import Rna from "../../identifierObjects/Rna";
+import { PAYMENTS } from "../providers/chorus/__fixtures__/ChorusFixtures";
+import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
 
 jest.mock("./paymentFlatAdapter");
 jest.mock("../../dataProviders/db/paymentFlat/paymentFlat.port");
@@ -18,6 +24,14 @@ describe("PaymentFlatService", () => {
         it("calls port.hasBeenInitialized", () => {
             paymentFlatService.isCollectionInitialized();
             expect(paymentFlatPort.hasBeenInitialized).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe("upsertMany", () => {
+        it("calls port to upsert", async () => {
+            const ARRAY = [];
+            await paymentFlatService.upsertMany(ARRAY);
+            expect(paymentFlatPort.upsertMany).toHaveBeenCalledWith(ARRAY);
         });
     });
 
@@ -49,6 +63,44 @@ describe("PaymentFlatService", () => {
         });
     });
 
+    describe("getPayments", () => {
+        const IDENTIFIER = AssociationIdentifier.fromSiren(new Siren(DEFAULT_ASSOCIATION.siren));
+        const PAYMENTS_FLAT: PaymentFlatEntity[] = [CHORUS_PAYMENT_FLAT_ENTITY];
+        let mockgetEntitiesByIdentifier;
+        let mockToPaymentArray;
+
+        beforeEach(() => {
+            mockgetEntitiesByIdentifier = jest
+                .spyOn(paymentFlatService, "getEntitiesByIdentifier")
+                .mockResolvedValue([CHORUS_PAYMENT_FLAT_ENTITY]);
+            // @ts-expect-error: mock private method
+            mockToPaymentArray = jest.spyOn(paymentFlatService, "toPaymentArray").mockReturnValue([PAYMENTS[0]]);
+        });
+
+        afterAll(() => {
+            mockgetEntitiesByIdentifier.mockRestore();
+            mockToPaymentArray.mockRestore();
+        });
+
+        it("fetches payments flat", async () => {
+            await paymentFlatService.getPayments(AssociationIdentifier.fromSiren(new Siren(DEFAULT_ASSOCIATION.siren)));
+            expect(mockgetEntitiesByIdentifier).toHaveBeenCalledWith(IDENTIFIER);
+        });
+
+        it("transforms payments flat to payments", async () => {
+            await paymentFlatService.getPayments(AssociationIdentifier.fromSiren(new Siren(DEFAULT_ASSOCIATION.siren)));
+            expect(mockToPaymentArray).toHaveBeenCalledWith(PAYMENTS_FLAT);
+        });
+
+        it("returns payments", async () => {
+            const expected = [PAYMENTS[0]];
+            const actual = await paymentFlatService.getPayments(
+                AssociationIdentifier.fromSiren(new Siren(DEFAULT_ASSOCIATION.siren)),
+            );
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("raw grant", () => {
         const DATA = [{ ej: "EJ", provider: "chorus", idVersement: "EJ" }];
 
@@ -75,5 +127,39 @@ describe("PaymentFlatService", () => {
                 expect(actual).toMatchSnapshot();
             });
         });
+    });
+
+    describe("getEntitiesByIdentifier", () => {
+        const ASSO_IDENTIFIER = AssociationIdentifier.fromSiren(new Siren(DEFAULT_ASSOCIATION.siren));
+        const ESTAB_IDENTIFIER = EstablishmentIdentifier.fromSiret(
+            new Siret(DEFAULT_ASSOCIATION.siret),
+            ASSO_IDENTIFIER,
+        );
+
+        it.each`
+            identifierName | identifier          | fnCalled
+            ${"siret"}     | ${ESTAB_IDENTIFIER} | ${paymentFlatPort.findBySiret}
+            ${"siren"}     | ${ASSO_IDENTIFIER}  | ${paymentFlatPort.findBySiren}
+        `("gets payments from $identifierName", async ({ identifierName, identifier, fnCalled }) => {
+            fnCalled.mockReturnValue([]);
+            await paymentFlatService.getEntitiesByIdentifier(identifier);
+            expect(fnCalled).toHaveBeenCalledWith(identifier[identifierName]);
+        });
+
+        it.each`
+            value
+            ${AssociationIdentifier.fromRna(new Rna(DEFAULT_ASSOCIATION.rna))}
+            ${{}}
+            ${""}
+            ${null}
+            ${undefined}
+        `(
+            "returns empty array if identifier is neither AssociationIdentifier.siren or EstablishmentIdentifier.siret",
+            async ({ value }) => {
+                const expected = [];
+                const actual = await paymentFlatService.getEntitiesByIdentifier(value);
+                expect(actual).toEqual(expected);
+            },
+        );
     });
 });

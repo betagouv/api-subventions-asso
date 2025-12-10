@@ -1,5 +1,6 @@
 <script>
     import { getContext } from "svelte";
+    import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
 
     const { getContact } = getContext("app");
 </script>
@@ -8,8 +9,8 @@
 
 <p>
     Pour nous contacter, vous pouvez envoyer un message à l'adresse
-    <a title="Contactez-nous - nouvelle fenêtre" href="mailto:{getContact()}" target="_blank" rel="noopener noreferrer">
+    <TargetBlankLink href="mailto:{getContact()}" title="Contactez-nous - nouvelle fenêtre">
         {getContact()}
-    </a>
+    </TargetBlankLink>
     .
 </p>

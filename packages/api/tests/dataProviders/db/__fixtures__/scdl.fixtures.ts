@@ -2,22 +2,24 @@ import { ObjectId, WithId } from "mongodb";
 import { ScdlGrantDbo } from "../../../../src/modules/providers/scdl/dbo/ScdlGrantDbo";
 import MiscScdlProducerEntity from "../../../../src/modules/providers/scdl/entities/MiscScdlProducerEntity";
 import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
-import GRANTORS from "../../../__fixtures__/grantor.fixture";
+import ALLOCATORS from "../../../__fixtures__/allocators.fixture";
+import { getMD5 } from "../../../../src/shared/helpers/StringHelper";
 
 export const LOCAL_AUTHORITIES: WithId<MiscScdlProducerEntity>[] = [
     {
-        _id: new ObjectId("719B14C3B0291379121A06FE"),
-        slug: "producer-1",
-        name: GRANTORS[0].name,
-        siret: GRANTORS[0].siret,
-        lastUpdate: new Date("2024-01-12"),
+        _id: new ObjectId("690c946272df1a64ab637cd6"),
+        name: ALLOCATORS[0].name,
+        siret: ALLOCATORS[0].siret,
     },
     {
-        _id: new ObjectId("3EBD6BDD2240C1F91E925EAD"),
-        slug: "producer-2",
-        name: GRANTORS[1].name,
-        siret: GRANTORS[1].siret,
-        lastUpdate: new Date("2024-01-12"),
+        _id: new ObjectId("690c945ecb7e7decfa0fb21f"),
+        name: ALLOCATORS[1].name,
+        siret: ALLOCATORS[1].siret,
+    },
+    {
+        _id: new ObjectId("690c94598e2e9d5154fa349d"),
+        name: ALLOCATORS[2].name,
+        siret: ALLOCATORS[2].siret,
     },
 ];
 
@@ -45,9 +47,8 @@ const SCDL_RAW_DATAS = [
 
 export const SCDL_GRANT_DBOS: ScdlGrantDbo[] = [
     {
-        _id: `${LOCAL_AUTHORITIES[0].slug}-
-            ${JSON.stringify(SCDL_RAW_DATAS[0])}`,
-        producerSlug: LOCAL_AUTHORITIES[0].slug,
+        _id: getMD5(`${LOCAL_AUTHORITIES[0].siret}-
+            ${JSON.stringify(SCDL_RAW_DATAS[0])}`),
         allocatorName: LOCAL_AUTHORITIES[0].name,
         allocatorSiret: LOCAL_AUTHORITIES[0].siret,
         exercice: 2019,

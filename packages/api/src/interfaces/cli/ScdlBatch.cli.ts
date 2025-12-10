@@ -16,9 +16,11 @@ import {
     SCDL_FILE_PROCESSING_PATH,
 } from "../../configurations/scdlIntegration.conf";
 import { FileExtensionEnum } from "../../@enums/FileExtensionEnum";
-import { isBooleanValid, isNumberValid, isShortISODateValid, isStringValid } from "../../shared/Validators";
+import { isNumberValid, isShortISODateValid, isStringValid } from "../../shared/Validators";
 import scdlService from "../../modules/providers/scdl/scdl.service";
 import ScdlCli from "./Scdl.cli";
+import Siret from "../../identifierObjects/Siret";
+import { asyncForEach } from "../../shared/helpers/ArrayHelper";
 
 @StaticImplements<CliStaticInterface>()
 export default class ScdlBatchCli extends ScdlCli {
@@ -33,9 +35,9 @@ export default class ScdlBatchCli extends ScdlCli {
     private isConfig(obj: any): obj is ScdlFileProcessingConfigList {
         return Boolean(
             obj &&
-                Array.isArray(obj.files) &&
-                obj.files.length &&
-                obj.files.every(file => this.validateFileConfig(file)),
+            Array.isArray(obj.files) &&
+            obj.files.length &&
+            obj.files.every(file => this.validateFileConfig(file)),
         );
     }
 
@@ -47,7 +49,7 @@ export default class ScdlBatchCli extends ScdlCli {
             );
 
         if (!isStringValid(file.name)) this.fileConfigErrors.push({ field: "name" });
-        if (isBooleanValid(file.addProducer) && file.addProducer) this.validateParseParams(file.parseParams);
+        this.validateParseParams(file.parseParams);
 
         if (this.fileConfigErrors.length) return false;
         else return true;
@@ -55,7 +57,7 @@ export default class ScdlBatchCli extends ScdlCli {
 
     private validateXlsArgs(params: ScdlParseXlsArgs) {
         const errors: FileConfigErrors = [];
-        if (!isStringValid(params.pageName)) errors.push({ field: "pageName" });
+        if (params.pageName && !isStringValid(params.pageName)) errors.push({ field: "pageName" });
         if (params.rowOffset && !isNumberValid(Number(params.rowOffset))) errors.push({ field: "rowOffset" });
         if (errors.length) {
             this.fileConfigErrors = this.fileConfigErrors.concat(errors);
@@ -82,14 +84,13 @@ export default class ScdlBatchCli extends ScdlCli {
     }
 
     private validateParseParams(params): params is ScdlParseParams {
+        // parseParam is optionnal
+        if (!params) return true;
+
         const errors: FileConfigErrors = [];
         if (typeof params != "object" || params instanceof Array) {
             errors.push({ field: "parseParams" });
         } else {
-            // shared part
-            if (!isStringValid(params.producerSlug)) errors.push({ field: "producerSlug" });
-            if (params.exportDate && !isShortISODateValid(params.exportDate)) errors.push({ field: "exportDate" });
-
             // csv part
             if (params.delimiter || params.quote) this.validateCsvArgs(params);
 
@@ -109,29 +110,25 @@ export default class ScdlBatchCli extends ScdlCli {
     }
 
     protected async processFile(fileConfig: ScdlFileProcessingConfig): Promise<void> {
-        const { name, parseParams, addProducer, producerName, producerSiret } = fileConfig;
+        const { name, allocatorSiret, exportDate, parseParams, addProducer } = fileConfig;
 
         // just to be sure but everything is supposed to be checked before calling processFile
         if (!name) throw new Error("You must provide the file name for every file's configuration.");
-        if (!parseParams) throw new Error("You must provide the file parameters for every file's configuration");
-        if (addProducer && (!producerName || !producerSiret))
-            throw new Error("You must provide the producer name and SIRET for a first import");
 
         const dirPath = path.resolve(SCDL_FILE_PROCESSING_PATH);
-        const { producerSlug, exportDate, ...optionalParams } = parseParams;
+
+        const siret = new Siret(allocatorSiret);
+
+        if (exportDate && !isShortISODateValid(exportDate))
+            throw new Error("You must provide an export date in YYYY-MM-DD");
 
         if (addProducer) {
-            if (await scdlService.getProducer(producerSlug)) {
-                const message = `Producer with slug ${producerSlug} already exist. Used with file ${name}`;
+            if (await scdlService.getProducer(siret)) {
+                const message = `Producer with SIRET ${siret.toString()} already exist. Used with file ${name}`;
                 this.errorList.push(message);
             } else {
-                await scdlService.createProducer({
-                    slug: producerSlug,
-                    name: producerName as string,
-                    siret: producerSiret as string,
-                    lastUpdate: new Date(),
-                });
-                this.successList.push(`added producer ${producerSlug}`);
+                const producer = await scdlService.createProducer(siret);
+                this.successList.push(`added producer ${producer.name} for SIRET ${producer.siret}`);
             }
         }
 
@@ -140,18 +137,24 @@ export default class ScdlBatchCli extends ScdlCli {
             const fileType = path.extname(name).slice(1).toLowerCase();
             const filePath = path.join(dirPath, name);
             if (fileType === FileExtensionEnum.CSV) {
-                const { delimiter, quote } = optionalParams as ScdlParseCsvArgs;
-                await this.parse(filePath, producerSlug, exportDate, delimiter, quote);
+                if (!parseParams) await this.parse(filePath, allocatorSiret, exportDate);
+                else {
+                    const { delimiter, quote } = parseParams as ScdlParseCsvArgs;
+                    await this.parse(filePath, allocatorSiret, exportDate, delimiter, quote);
+                }
             } else if (fileType === FileExtensionEnum.XLS || fileType === FileExtensionEnum.XLSX) {
-                const { pageName, rowOffset } = optionalParams as ScdlParseXlsArgs;
-                await this.parseXls(filePath, producerSlug, exportDate, pageName, rowOffset);
+                if (!parseParams) await this.parseXls(filePath, allocatorSiret, exportDate);
+                else {
+                    const { pageName, rowOffset } = parseParams as ScdlParseXlsArgs;
+                    await this.parseXls(filePath, allocatorSiret, exportDate, pageName, rowOffset);
+                }
             } else {
                 console.error(`❌ Unsupported file type : ${name} (type: ${fileType})`);
                 throw new Error(`Unsupported file type : ${filePath}`);
             }
-            this.successList.push(`parse data of ${producerSlug} for file ${name}`);
+            this.successList.push(`parse data of ${allocatorSiret} for file ${name}`);
         } catch (e) {
-            this.errorList.push(`parse data of ${producerSlug} for file ${name} : ${(e as Error).message}`);
+            this.errorList.push(`parse data of ${allocatorSiret} for file ${name} : ${(e as Error).message}`);
         }
     }
 
@@ -170,8 +173,13 @@ export default class ScdlBatchCli extends ScdlCli {
                         .slice(0, -1)}.`,
                 );
             }
-            const filePromises = config.files.map(fileConfig => this.processFile(fileConfig));
-            await Promise.all(filePromises);
+
+            // need to be sync in case we want to insert multiple year of the same allocator with different files
+            // race conditions would execute one without addProducer and throw an error
+            await asyncForEach(config.files, async fileConfig => {
+                console.log(`\n---------------Processing file: ${fileConfig.name}---------------`);
+                return this.processFile(fileConfig);
+            });
         } catch (e) {
             // unexpected error that doesn't make use of errorList
             console.trace(`❌ Global execution failure : ${(e as Error).message}`);

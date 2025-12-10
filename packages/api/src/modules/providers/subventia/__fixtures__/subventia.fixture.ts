@@ -4,6 +4,7 @@ import SubventiaEntity from "../@types/subventia.entity";
 import { RawApplication } from "../../../grant/@types/rawGrant";
 import { ObjectId } from "mongodb";
 import SubventiaDto from "../@types/subventia.dto";
+import { APPLICATION_LINK_TO_CHORUS } from "../../../applicationFlat/__fixtures__";
 
 export const SUBVENTIA_ENTITY: SubventiaEntity = {
     service_instructeur: "SERVICE INSTRUCTEUR",
@@ -30,9 +31,9 @@ export const SUBVENTIA_DBO = {
     __data__: [{} as SubventiaDto],
 };
 
-export const RAW_APPLICATION: RawApplication<SubventiaEntity> = {
-    data: ENTITIES[0],
+export const RAW_APPLICATION: RawApplication = {
+    data: APPLICATION_LINK_TO_CHORUS,
     type: "application",
-    provider: "subventia",
+    provider: "application-flat",
     joinKey: undefined,
 };

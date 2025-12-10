@@ -1,23 +1,11 @@
-import { ApplicationStatus } from "dto";
-import { NOT_APPLICABLE } from "../shared/GenericAdapter";
+import { ApplicationNature, ApplicationStatus, NOT_APPLICABLE, OrDefault, PaymentCondition } from "dto";
 
 import { IdentifierIdName } from "../identifierObjects/@types/IdentifierName";
-import { OrDefault } from "../shared/helpers/TypeHelper";
-
-export enum ApplicationNature {
-    MONEY = "Aide en numéraire",
-    NATURE = "Aide en nature",
-}
-
-export enum PaymentCondition {
-    UNIQUE = "UNIQUE",
-    PHASED = "PHASED",
-    OTHER = "OTHER",
-}
+import { ProviderDataEntity } from "../@types/ProviderData";
 
 // TODO where to accept null ?
 
-type MandatoryApplicationFlatEntity = {
+interface MandatoryApplicationFlatEntity extends ProviderDataEntity {
     uniqueId: string;
     applicationId: string;
     applicationProviderId: string;
@@ -27,13 +15,10 @@ type MandatoryApplicationFlatEntity = {
     statusLabel: ApplicationStatus;
     requestedAmount: number | null;
     grantedAmount: number | null;
-    // this date is used to determine the data freshness
-    // same as provider's raw data update date
-    updateDate: Date;
-};
+    budgetaryYear: number | null; // only optionnal for Subventia
+}
 
 type OptionalApplicationFlatEntity = {
-    budgetaryYear: number; // only optionnal for Subventia
     joinKeyId: string;
     joinKeyDesc: string;
     allocatorName: string;

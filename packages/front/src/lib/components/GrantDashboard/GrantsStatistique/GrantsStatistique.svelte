@@ -10,11 +10,11 @@
 
     // TODO: #3374
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    $: grants, controller.updateElements(grants);
+    $: (grants, controller.updateElements(grants));
 </script>
 
 <p class="text--xxl fr-mb-1w">
-    Total des versements réalisés en {year} :
+    Total des versements réalisés par l'État en {year} :
     <b>{$paymentsAmount}</b>
 </p>
 {#if $paymentsRepartition}

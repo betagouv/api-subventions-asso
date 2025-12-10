@@ -59,8 +59,23 @@ export interface NotificationDataTypes {
         email: string;
         activationLink: string;
     };
+    [NotificationType.BATCH_DEPOSIT_RESUME]: {
+        emails: string[];
+    };
     [NotificationType.STATS_NB_REQUESTS]: {
         email: string;
         nbVisits: number;
     }[];
+    [NotificationType.DEPOSIT_UNFINISHED]: {
+        users: {
+            email: string;
+            firstname?: string;
+            lastname?: string;
+        }[];
+    };
+    [NotificationType.DATA_IMPORT_SUCCESS]: {
+        providerName: string;
+        providerSiret?: string;
+        exportDate?: Date;
+    };
 }

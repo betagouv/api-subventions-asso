@@ -159,5 +159,24 @@ describe("DateHelper", () => {
             const actual = DateHelper.addDaysToDate(today, 1);
             expect(actual).toEqual(expected);
         });
+
+        it("should return seven days before", () => {
+            const today = new Date("2023-01-08");
+            const expected = new Date("2023-01-01");
+            const actual = DateHelper.addDaysToDate(today, -7);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("formatDateToYYYYMMDD", () => {
+        it("should format a normal date correctly", () => {
+            const date = new Date(2025, 10, 10);
+            expect(DateHelper.formatDateToYYYYMMDD(date)).toBe("20251110");
+        });
+
+        it("should add leading zeros for single-digit month and day", () => {
+            const date = new Date(2025, 0, 5);
+            expect(DateHelper.formatDateToYYYYMMDD(date)).toBe("20250105");
+        });
     });
 });

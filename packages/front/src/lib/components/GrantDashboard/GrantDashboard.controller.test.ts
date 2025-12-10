@@ -1,7 +1,6 @@
 import { GrantDashboardController } from "./GrantDashboard.controller";
 import { getPaymentDashboardData, getPaymentsCells } from "./payments.helper";
 import { getApplicationCells, getApplicationDashboardData, isGranted } from "./application.helper";
-import type { FlatGrant } from "$lib/resources/@types/FlattenGrant";
 import { isSiret } from "$lib/helpers/identifierHelper";
 import establishmentService from "$lib/resources/establishments/establishment.service";
 import establishmentPort from "$lib/resources/establishments/establishment.port";
@@ -19,6 +18,7 @@ import type {
 } from "$lib/components/GrantDashboard/@types/DashboardGrant";
 import { grantCompareFn } from "$lib/components/GrantDashboard/sort.helper";
 import type { TableCell } from "$lib/dsfr/TableCell.types";
+import type { GrantFlatDto } from "dto";
 
 vi.mock("$lib/helpers/identifierHelper");
 vi.mock("$lib/resources/establishments/establishment.service");
@@ -40,17 +40,17 @@ describe("GrantDashboard Controller", () => {
     const INDEX = 1;
 
     const GRANT_FROM_2024 = () => ({
-        application: { annee_demande: 2024 },
+        application: { exerciceBudgetaire: 2024 },
     });
 
     const GRANT_FROM_2023 = () => ({
-        application: { annee_demande: 2022 },
+        application: { exerciceBudgetaire: 2022 },
         payments: [{ dateOperation: "2023-01-13" }, { dateOperation: "2023-04-21" }],
     });
 
     const GRANT_FROM_2021 = () => ({ payments: [{ dateOperation: "2021-08-14" }] });
 
-    const FLAT_GRANTS = () => [GRANT_FROM_2021(), GRANT_FROM_2023(), GRANT_FROM_2024()] as FlatGrant[];
+    const FLAT_GRANTS = () => [GRANT_FROM_2021(), GRANT_FROM_2023(), GRANT_FROM_2024()] as GrantFlatDto[];
 
     let CTRL: GrantDashboardController;
 
@@ -115,7 +115,7 @@ describe("GrantDashboard Controller", () => {
                 // @ts-expect-error -- test private
                 CTRL.initStores();
 
-                const GRANTS = "grants" as unknown as FlatGrant[];
+                const GRANTS = "grants" as unknown as GrantFlatDto[];
                 CTRL.selectedGrants.set(GRANTS);
                 expect(updateRowSpy).toHaveBeenCalledWith(GRANTS);
             });
@@ -265,7 +265,7 @@ describe("GrantDashboard Controller", () => {
                     {
                       "application": "a-a0",
                       "applicationCells": "ac-a0",
-                      "flatGrant": {
+                      "grant": {
                         "application": "a0",
                         "payments": "p0",
                       },
@@ -276,7 +276,7 @@ describe("GrantDashboard Controller", () => {
                     {
                       "application": "a-a1",
                       "applicationCells": "ac-a1",
-                      "flatGrant": {
+                      "grant": {
                         "application": "a1",
                         "payments": "p1",
                       },
@@ -325,13 +325,13 @@ describe("GrantDashboard Controller", () => {
             const SUBV = [
                 { application: "A0", payments: "P0" },
                 { application: "A1", payments: "P1" },
-            ] as unknown as FlatGrant[];
+            ] as unknown as GrantFlatDto[];
             const ROWS = [
-                { paymentsCells: "Pc0", applicationCells: "Ac0", flatGrant: SUBV[0] },
+                { paymentsCells: "Pc0", applicationCells: "Ac0", grant: SUBV[0] },
                 {
                     paymentsCells: "Pc1",
                     applicationCells: "Ac1",
-                    flatGrant: SUBV[1],
+                    grant: SUBV[1],
                 },
             ] as unknown as SortableRow[];
 

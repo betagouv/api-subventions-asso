@@ -1,13 +1,10 @@
-import { CommonApplicationDto, ApplicationStatus, DemandeSubvention } from "dto";
-
+import { ApplicationStatus, ApplicationNature } from "dto";
 import subventiaService from "../subventia.service";
 import SubventiaDto from "../@types/subventia.dto";
 import SubventiaEntity, { SubventiaDbo } from "../@types/subventia.entity";
-import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import { DefaultObject, ParserInfo } from "../../../../@types";
 import { GenericParser } from "../../../../shared/GenericParser";
-import { RawApplication } from "../../../grant/@types/rawGrant";
-import { ApplicationFlatEntity, ApplicationNature } from "../../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../../entities/ApplicationFlatEntity";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
 import Siret from "../../../../identifierObjects/Siret";
 
@@ -20,47 +17,9 @@ export default class SubventiaAdapter {
                 subventiaMapper as DefaultObject<ParserInfo<number | string>>,
                 application as DefaultObject<string | number>,
             ), // TODO <string|number>
-            provider: subventiaService.provider.id,
+            provider: subventiaService.meta.id,
             updateDate: exportDate,
         } as SubventiaEntity;
-    }
-
-    public static toDemandeSubventionDto(entity: SubventiaEntity): DemandeSubvention {
-        const lastUpdateDate = new Date(entity.updateDate);
-        const toPV = ProviderValueFactory.buildProviderValueAdapter(subventiaService.provider.name, lastUpdateDate);
-
-        return {
-            siret: toPV(entity.siret),
-            service_instructeur: toPV(entity.service_instructeur),
-            status: toPV(entity.status),
-            statut_label: toPV(entity.statut_label),
-            montants: {
-                accorde: toPV(entity.montants_accorde),
-                demande: toPV(entity.montants_demande),
-            },
-            date_commision: toPV(entity.date_commission),
-            annee_demande: toPV(entity.annee_demande),
-            dispositif: toPV(entity.dispositif),
-            sous_dispositif: toPV(entity.sous_dispositif),
-        };
-    }
-
-    // TODO: unit test
-    public static rawToApplication(rawApplication: RawApplication<SubventiaEntity>) {
-        return this.toDemandeSubventionDto(rawApplication.data);
-    }
-
-    public static toCommon(dbo: SubventiaDbo): CommonApplicationDto {
-        return {
-            dispositif: dbo["dispositif"],
-            exercice: dbo["annee_demande"],
-            montant_accorde: dbo["montants_accorde"],
-            montant_demande: dbo["montants_demande"],
-            objet: dbo["sous_dispositif"],
-            service_instructeur: dbo["service_instructeur"],
-            siret: dbo["siret"],
-            statut: dbo["statut_label"],
-        };
     }
 
     public static toApplicationFlat(dbo: SubventiaDbo): ApplicationFlatEntity {

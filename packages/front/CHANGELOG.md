@@ -3,6 +3,55 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.76.0](https://github.com/betagouv/datasubvention/compare/v0.75.2...v0.76.0) (2025-12-09)
+
+### Bug Fixes
+
+- **front:** [#0000](https://github.com/betagouv/datasubvention/issues/0000) fix invalid components props ([9a26848](https://github.com/betagouv/datasubvention/commit/9a268487ccfd5704a33e05b34393e34fea4c0d19))
+
+### Features
+
+- **api:** [#3678](https://github.com/betagouv/datasubvention/issues/3678) use grants v2 dashboard ([#3735](https://github.com/betagouv/datasubvention/issues/3735)) ([72e468b](https://github.com/betagouv/datasubvention/commit/72e468bf176da905a12a6cc64672894aa6e77f0b))
+- **front:** [#0000](https://github.com/betagouv/datasubvention/issues/0000) open links in new tab ([#3727](https://github.com/betagouv/datasubvention/issues/3727)) ([0464246](https://github.com/betagouv/datasubvention/commit/046424642a07e4305aa7781aafba3eee0de8d4dd))
+
+## [0.75.2](https://github.com/betagouv/datasubvention/compare/v0.75.1...v0.75.2) (2025-11-20)
+
+### Bug Fixes
+
+- **front:** [#0000](https://github.com/betagouv/datasubvention/issues/0000) add siret into input ([#3722](https://github.com/betagouv/datasubvention/issues/3722)) ([22a390e](https://github.com/betagouv/datasubvention/commit/22a390e6e1a0fabdf514da77e5b2689459192ddd))
+- **front:** [#0000](https://github.com/betagouv/datasubvention/issues/0000) encoding detection algo ([#3719](https://github.com/betagouv/datasubvention/issues/3719)) ([f597793](https://github.com/betagouv/datasubvention/commit/f597793d07039ca4f78ea05eb094160c56503530))
+
+## [0.75.1](https://github.com/betagouv/datasubvention/compare/v0.75.0...v0.75.1) (2025-11-17)
+
+### Bug Fixes
+
+- **font:** spelling mistakes correction ([f542512](https://github.com/betagouv/datasubvention/commit/f54251212d549f8f6b2647db2956861bc33e1685))
+
+# [0.75.0](https://github.com/betagouv/datasubvention/compare/v0.74.0...v0.75.0) (2025-11-17)
+
+### Bug Fixes
+
+- **front:** [#0000](https://github.com/betagouv/datasubvention/issues/0000) customize spinner message ([#3715](https://github.com/betagouv/datasubvention/issues/3715)) ([d06a3df](https://github.com/betagouv/datasubvention/commit/d06a3dfed0a5346a1ee93cb7fc8f4538b3423a76))
+
+### Features
+
+- **front, api:** [#3626](https://github.com/betagouv/datasubvention/issues/3626) step 4 front ([#3709](https://github.com/betagouv/datasubvention/issues/3709)) ([15c93fd](https://github.com/betagouv/datasubvention/commit/15c93fd3c8f607c0edc4ed75c889fbaa753470e6))
+- **front:** [#3623](https://github.com/betagouv/datasubvention/issues/3623) deposit process step 3 ([#3690](https://github.com/betagouv/datasubvention/issues/3690)) ([4efacde](https://github.com/betagouv/datasubvention/commit/4efacdeaaeb6cbd90600c252c7b21634d90867cf))
+- **front:** [#3634](https://github.com/betagouv/datasubvention/issues/3634) step 5 front ([#3710](https://github.com/betagouv/datasubvention/issues/3710)) ([1d71ef9](https://github.com/betagouv/datasubvention/commit/1d71ef9602c77d673348e3b14d2b412a83ef3349))
+- **front:** [#3636](https://github.com/betagouv/datasubvention/issues/3636) refacto deposit form single page ([#3682](https://github.com/betagouv/datasubvention/issues/3682)) ([5073cb1](https://github.com/betagouv/datasubvention/commit/5073cb1b13d16a687610c46575f02503b7d00060))
+- **front:** [#3651](https://github.com/betagouv/datasubvention/issues/3651) update login page design ([#3676](https://github.com/betagouv/datasubvention/issues/3676)) ([a0b46f6](https://github.com/betagouv/datasubvention/commit/a0b46f6ae2732505bb089142b13648462782912d))
+
+# [0.74.0](https://github.com/betagouv/datasubvention/compare/v0.72.4...v0.74.0) (2025-10-08)
+
+### Features
+
+- **api:** [#3583](https://github.com/betagouv/datasubvention/issues/3583) use flat as application and grant provider ([#3645](https://github.com/betagouv/datasubvention/issues/3645)) ([3677c42](https://github.com/betagouv/datasubvention/commit/3677c426bace40c5d868ead16fb04a3acb9f4a74))
+- **front:** [#3617](https://github.com/betagouv/datasubvention/issues/3617) homepage deposit route ([#3650](https://github.com/betagouv/datasubvention/issues/3650)) ([b65cafa](https://github.com/betagouv/datasubvention/commit/b65cafaeedf7456ceb622ec981ab5082c7135dce))
+
+# [0.73.0](https://github.com/betagouv/datasubvention/compare/v0.72.1...v0.73.0) (2025-09-03)
+
+**Note:** Version bump only for package front
+
 # [0.72.0](https://github.com/betagouv/datasubvention/compare/v0.71.0...v0.72.0) (2025-08-21)
 
 ### Features

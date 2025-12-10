@@ -1,5 +1,5 @@
-import { SimplifiedEtablissement } from "dto";
-import csvStringifier from "csv-stringify/sync";
+import { EstablishmentSimplified } from "dto";
+import * as csvStringifier from "csv-stringify/sync";
 import { BadRequestError } from "core";
 import associationsService from "../associations/associations.service";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
@@ -22,15 +22,14 @@ class GrantExtractService {
             associationsService.getEstablishments(assoIdentifier),
         ]);
 
-        const estabBySiret: Record<string, SimplifiedEtablissement> = {};
+        const estabBySiret: Record<string, EstablishmentSimplified> = {};
         estabs.forEach(estab => (estabBySiret[estab.siret?.[0]?.value] = estab));
 
         const assoName = asso.denomination_rna?.[0]?.value ?? asso.denomination_siren?.[0]?.value;
-        const separatedGrants = grantService.handleMultiYearGrants(grants);
 
         return {
             csv: csvStringifier.stringify(
-                separatedGrants.map(g => GrantAdapter.grantToExtractLine(g, asso, estabBySiret)),
+                grants.map(g => GrantAdapter.grantToExtractLine(g, asso, estabBySiret)),
                 {
                     header: true,
                     columns: ExtractHeaderLabel,

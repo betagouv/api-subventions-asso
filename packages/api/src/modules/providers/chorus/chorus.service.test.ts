@@ -6,12 +6,10 @@ const mockedChorusLinePort = jest.mocked(chorusLinePort);
 jest.mock("./adapters/ChorusAdapter");
 
 jest.mock("../../../shared/helpers/StringHelper");
-jest.mock("../../../shared/helpers/SirenHelper");
 
 import { ENTITIES } from "./__fixtures__/ChorusFixtures";
 import CacheData from "../../../shared/Cache";
 import { BulkWriteResult } from "mongodb";
-import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
 import Siret from "../../../identifierObjects/Siret";
 import associationHelper from "../../associations/associations.helper";
@@ -19,14 +17,6 @@ import AssociationIdentifier from "../../../identifierObjects/AssociationIdentif
 jest.mock("../../associations/associations.helper");
 
 describe("chorusService", () => {
-    beforeAll(() => {
-        // 101 and 102 used as chorus program in tests
-        dataBretagneService.programsByCode = {
-            [PROGRAMS[0].code_programme]: PROGRAMS[0],
-            [PROGRAMS[2].code_programme]: PROGRAMS[2],
-        };
-    });
-
     describe("upsertMany", () => {
         it("should call port with entities", async () => {
             await chorusService.upsertMany(ENTITIES);

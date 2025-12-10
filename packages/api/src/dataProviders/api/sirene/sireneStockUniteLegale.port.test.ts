@@ -28,7 +28,7 @@ describe("SireneStockUniteLegalePort", () => {
         it("should make a GET request for the zip file", async () => {
             await port.getZip();
             expect(port.http.get).toHaveBeenCalledWith(
-                "https://files.data.gouv.fr/insee-sirene/StockUniteLegale_utf8.zip",
+                "https://object.files.data.gouv.fr/data-pipeline-open/siren/stock/StockUniteLegale_utf8.zip",
                 { responseType: "stream" },
             );
         });

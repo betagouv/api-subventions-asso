@@ -1,31 +1,37 @@
-import { ApplicationStatus } from "dto";
-import { ApplicationFlatEntity, ApplicationNature, PaymentCondition } from "../../../entities/ApplicationFlatEntity";
+import { ApplicationNature, ApplicationStatus, PaymentCondition } from "dto";
+import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
 import { ApplicationFlatDbo } from "../../../dataProviders/db/applicationFlat/ApplicationFlatDbo";
 import { ObjectId } from "mongodb";
+import DEFAULT_ASSOCIATION from "../../../../tests/__fixtures__/association.fixture";
+import {
+    CHORUS_PAYMENT_ID,
+    FONJEP_PAYMENT_FLAT_ID_VERSEMENT,
+} from "../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+import Siret from "../../../identifierObjects/Siret";
 
 export const DRAFT_ENTITY: Omit<ApplicationFlatEntity, "uniqueId" | "applicationId"> = {
-    requestYear: 2015,
-    pluriannualYears: [2042, 2043, 2044],
+    requestYear: 2023,
+    pluriannualYears: [2022, 2023, 2024],
     cofinancingRequested: false,
     paymentCondition: PaymentCondition.PHASED,
-    conventionDate: new Date("2015-03-14"),
-    decisionDate: new Date("2015-03-13"),
-    depositDate: new Date("2015-03-12"),
-    paymentPeriodDates: [new Date("2015-03-15"), new Date("2015-03-16")],
+    conventionDate: new Date("2023-03-14"),
+    decisionDate: new Date("2023-03-13"),
+    depositDate: new Date("2023-03-12"),
+    paymentPeriodDates: [new Date("2023-03-15"), new Date("2023-03-16")],
     paymentConditionDesc: "conditions",
     joinKeyDesc: "pour joindre",
     scheme: "dispositif",
     ej: "EJ0001",
-    budgetaryYear: 2015,
+    budgetaryYear: 2023,
     allocatorId: "123456789",
     managingAuthorityId: "012345678",
-    beneficiaryEstablishmentId: "12345678901234", // a siret here
+    beneficiaryEstablishmentId: DEFAULT_ASSOCIATION.siret, // a siret here
     confinancersId: [],
     joinKeyId: "joint001",
     idRAE: "RAEid",
     instructiveDepartementId: "890123456",
     applicationProviderId: "subv001",
-    paymentId: "idv",
+    paymentId: CHORUS_PAYMENT_ID,
     grantedAmount: 15000,
     requestedAmount: 30000,
     totalAmount: 50000,
@@ -38,50 +44,63 @@ export const DRAFT_ENTITY: Omit<ApplicationFlatEntity, "uniqueId" | "application
     object: "objet",
     pluriannual: true,
     subventionPercentage: 100,
-    provider: "provider",
+    provider: "osiris",
     decisionReference: "idDecision",
     subScheme: "sous-dispositif",
     statusLabel: ApplicationStatus.GRANTED,
     allocatorIdType: null,
     managingAuthorityIdType: null,
-    beneficiaryEstablishmentIdType: "",
+    beneficiaryEstablishmentIdType: Siret.getName(),
     cofinancersIdType: [],
     instructiveDepartmentIdType: null,
     updateDate: new Date("2025-12-12"),
 };
 
-export const ENTITY: ApplicationFlatEntity = {
-    uniqueId: "provider--subv001--2015",
-    applicationId: "provider--subv001",
+// match chorus payment
+export const APPLICATION_LINK_TO_CHORUS: ApplicationFlatEntity = {
+    uniqueId: "osiris--subv001--2023",
+    applicationId: "osiris--subv001",
     ...DRAFT_ENTITY,
 } as ApplicationFlatEntity;
 
+export const APPLICATION_LINK_TO_FONJEP: ApplicationFlatEntity = {
+    uniqueId: "fonjep--subv002--2023",
+    applicationId: "fonjep--subv002",
+    ...{
+        ...DRAFT_ENTITY,
+        paymentId: FONJEP_PAYMENT_FLAT_ID_VERSEMENT,
+        ej: "N/A",
+        applicationProviderId: "subv002",
+        provider: "fonjep",
+    },
+};
+
 export const DBO: ApplicationFlatDbo = {
     _id: new ObjectId("684ad360b8e14612539db70c"),
-    idUnique: "provider--subv001--2015",
-    idSubvention: "provider--subv001",
-    anneeDemande: 2015,
-    anneesPluriannualite: [2042, 2043, 2044],
+    idUnique: APPLICATION_LINK_TO_CHORUS.uniqueId,
+    idSubvention: APPLICATION_LINK_TO_CHORUS.applicationId,
+    anneeDemande: APPLICATION_LINK_TO_CHORUS.requestYear,
+    anneesPluriannualite: APPLICATION_LINK_TO_CHORUS.pluriannualYears,
     cofinancementsSollicites: false,
     conditionsVersements: PaymentCondition.PHASED,
-    dateConvention: new Date("2015-03-14"),
-    dateDecision: new Date("2015-03-13"),
-    dateDepotDemande: new Date("2015-03-12"),
-    datesPeriodeVersement: [new Date("2015-03-15"), new Date("2015-03-16")],
+    dateConvention: APPLICATION_LINK_TO_CHORUS.conventionDate,
+    dateDecision: APPLICATION_LINK_TO_CHORUS.decisionDate,
+    dateDepotDemande: APPLICATION_LINK_TO_CHORUS.depositDate,
+    datesPeriodeVersement: APPLICATION_LINK_TO_CHORUS.paymentPeriodDates,
     descriptionConditionsVersements: "conditions",
     descriptionIdJointure: "pour joindre",
     dispositif: "dispositif",
     ej: "EJ0001",
-    exerciceBudgetaire: 2015,
+    exerciceBudgetaire: APPLICATION_LINK_TO_CHORUS.budgetaryYear,
     idAttribuant: "123456789",
     idAutoriteGestion: "012345678",
-    idEtablissementBeneficiaire: "12345678901234", // a siret here
+    idEtablissementBeneficiaire: DEFAULT_ASSOCIATION.siret, // a siret here
     idCofinanceursSollicites: [],
     idJointure: "joint001",
     idRAE: "RAEid",
     idServiceInstructeur: "890123456",
-    idSubventionProvider: "subv001",
-    idVersement: "idv",
+    idSubventionProvider: APPLICATION_LINK_TO_CHORUS.applicationProviderId,
+    idVersement: APPLICATION_LINK_TO_CHORUS.paymentId,
     montantAccorde: 15000,
     montantDemande: 30000,
     montantTotal: 50000,
@@ -94,13 +113,13 @@ export const DBO: ApplicationFlatDbo = {
     objet: "objet",
     pluriannualite: true,
     pourcentageSubvention: 100,
-    fournisseur: "provider",
+    fournisseur: APPLICATION_LINK_TO_CHORUS.provider,
     referenceDecision: "idDecision",
     sousDispositif: "sous-dispositif",
     statutLabel: ApplicationStatus.GRANTED,
     typeIdAttribuant: null,
     typeIdAutoriteGestion: null,
-    typeIdEtablissementBeneficiaire: "",
+    typeIdEtablissementBeneficiaire: "siret",
     typeIdCofinanceursSollicites: [],
     typeIdServiceInstructeur: null,
     dateMiseAJour: new Date("2025-12-12"),

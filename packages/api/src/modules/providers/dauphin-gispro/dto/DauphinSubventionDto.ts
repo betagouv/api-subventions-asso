@@ -1,4 +1,4 @@
-import { ProviderDataEntity } from "../../../../@types/ProviderDataEntity";
+import type { ProviderDataEntity } from "../../../../@types/ProviderData";
 
 export type DauphinPeriodeType = "PLURIANNUELLE" | "PONCTUELLE";
 

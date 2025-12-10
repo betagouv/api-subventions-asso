@@ -58,4 +58,20 @@ describe("ArrayHelper", () => {
             expect(actual).toEqual(expected);
         });
     });
+
+    describe("asyncForEach", () => {
+        it("executes array of promise synchronously", async () => {
+            const mockFn = jest.fn();
+            const array = ["one", "two", "three", " four", " five"];
+
+            await ArrayHelper.asyncForEach(
+                array,
+                async str => new Promise(resolve => setTimeout(() => resolve(mockFn(str)), 500)),
+            );
+
+            array.map((str, index) => {
+                expect(mockFn).toHaveBeenNthCalledWith(index + 1, str);
+            });
+        });
+    });
 });

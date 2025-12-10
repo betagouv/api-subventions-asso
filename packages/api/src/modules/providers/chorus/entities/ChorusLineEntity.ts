@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { ParserInfo } from "../../../../@types";
-import IChorusIndexedInformations from "../@types/IChorusIndexedInformations";
+import type ChorusIndexedInformations from "../@types/ChorusIndexedInformations";
 import { GenericParser } from "../../../../shared/GenericParser";
 import { ChorusLineDto } from "../@types/ChorusLineDto";
 
@@ -56,8 +56,8 @@ export default class ChorusLineEntity {
 
     constructor(
         public uniqueId: string,
-        public updated: Date,
-        public indexedInformations: IChorusIndexedInformations,
+        public updateDate: Date,
+        public indexedInformations: ChorusIndexedInformations,
         public data: ChorusLineDto | unknown, // TODO: remove this unknown ??
         public _id?: ObjectId,
     ) {}

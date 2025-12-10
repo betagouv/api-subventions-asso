@@ -1,20 +1,9 @@
-import {
-    CommonApplicationDto,
-    ApplicationStatus,
-    Association,
-    DemandeSubvention,
-    Etablissement,
-    ProviderValue,
-    RnaDto,
-} from "dto";
-import { siretToNIC, siretToSiren } from "../../../../shared/helpers/SirenHelper";
+import { ApplicationStatus, Association, Establishment, RnaDto, ApplicationNature } from "dto";
 import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
 import OsirisRequestEntity from "../entities/OsirisRequestEntity";
-import osirisService from "../osiris.service";
 import { toStatusFactory } from "../../providers.adapter";
-import { RawApplication } from "../../../grant/@types/rawGrant";
-import { ApplicationFlatEntity, ApplicationNature } from "../../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../../entities/ApplicationFlatEntity";
 import Siret from "../../../../identifierObjects/Siret";
 import Ridet from "../../../../identifierObjects/Ridet";
 import { GenericParser } from "../../../../shared/GenericParser";
@@ -59,12 +48,12 @@ export default class OsirisRequestAdapter {
             actions.find(action => action.indexedInformations.federation)?.indexedInformations.licenciesFemmes;
 
         return {
-            siren: toPVs(siretToSiren(entity.legalInformations.siret)),
+            siren: toPVs(Siret.getSiren(entity.legalInformations.siret)),
             rna: entity.legalInformations.rna == undefined ? undefined : toPVs(entity.legalInformations.rna as RnaDto),
             denomination_rna: toPVs(entity.legalInformations.name),
             etablisements_siret: toPVs([entity.legalInformations.siret]),
             nic_siege: entity.providerInformations.etablissementSiege
-                ? toPVs(siretToNIC(entity.legalInformations.siret))
+                ? toPVs(Siret.getNic(entity.legalInformations.siret))
                 : undefined,
             federation: federation ? toPVs(federation) : undefined,
             licencies:
@@ -99,13 +88,13 @@ export default class OsirisRequestAdapter {
         };
     }
 
-    static toEtablissement(entity: OsirisRequestEntity): Etablissement {
+    static toEstablishment(entity: OsirisRequestEntity): Establishment {
         const dataDate = new Date(Date.UTC(entity.providerInformations.exercise, 0));
         const toPVs = ProviderValueFactory.buildProviderValuesAdapter(OsirisRequestAdapter.PROVIDER_NAME, dataDate);
 
         return {
             siret: toPVs(entity.legalInformations.siret),
-            nic: toPVs(siretToNIC(entity.legalInformations.siret)),
+            nic: toPVs(Siret.getNic(entity.legalInformations.siret)),
             siege: toPVs(entity.providerInformations.etablissementSiege),
             adresse: toPVs({
                 voie: entity.providerInformations.etablissementVoie,
@@ -141,122 +130,6 @@ export default class OsirisRequestAdapter {
                           }),
                       ]
                     : [],
-        };
-    }
-
-    static rawToApplication(rawApplication: RawApplication<OsirisRequestEntity>) {
-        return this.toDemandeSubvention(rawApplication.data);
-    }
-
-    static toDemandeSubvention(entity: OsirisRequestEntity): DemandeSubvention {
-        const dataDate = new Date(Date.UTC(entity.providerInformations.exercise, 0));
-        const toPV = ProviderValueFactory.buildProviderValueAdapter(osirisService.provider.name, dataDate);
-
-        const EJ = entity.providerInformations.ej ? toPV(entity.providerInformations.ej) : undefined;
-
-        const data: DemandeSubvention = {
-            annee_demande: toPV(entity.providerInformations.exercise),
-            siret: toPV(entity.legalInformations.siret),
-            service_instructeur: toPV(entity.providerInformations.service_instructeur),
-            dispositif: toPV(entity.providerInformations.dispositif),
-            sous_dispositif: toPV(entity.providerInformations.sous_dispositif),
-            statut_label: toPV(OsirisRequestAdapter.toStatus(entity.providerInformations.status)),
-            status: toPV(entity.providerInformations.status),
-            pluriannualite: toPV(entity.providerInformations.pluriannualite),
-            ej: EJ,
-            versementKey: EJ,
-            date_commision: entity.providerInformations.dateCommission
-                ? toPV(entity.providerInformations.dateCommission)
-                : undefined,
-            contact: {
-                email: toPV(entity.providerInformations.representantEmail),
-                telephone: entity.providerInformations.representantPhone
-                    ? toPV(entity.providerInformations.representantPhone)
-                    : undefined,
-            },
-            montants: {
-                total: toPV(entity.providerInformations.montantsTotal),
-                demande: toPV(entity.providerInformations.montantsDemande),
-                propose: toPV(entity.providerInformations.montantsPropose),
-                accorde: toPV(entity.providerInformations.montantsAccorde),
-            },
-            versement: {
-                acompte: toPV(entity.providerInformations.versementAcompte),
-                solde: toPV(entity.providerInformations.versementSolde),
-                realise: toPV(entity.providerInformations.versementRealise),
-                compensation: {
-                    "n-1": toPV(entity.providerInformations.versementCompensationN1),
-                    reversement: toPV(entity.providerInformations.versementCompensationN),
-                },
-            },
-        };
-
-        if (entity.actions) {
-            const territoires = entity.actions.map(action => {
-                return {
-                    status: toPV(action.indexedInformations.territoireStatus),
-                    commentaire: toPV(action.indexedInformations.territoireCommentaire),
-                };
-            });
-
-            data.territoires = territoires.reduce(
-                (acc, territoire) => {
-                    if (
-                        acc.some(
-                            t =>
-                                t.status.value === territoire.status.value &&
-                                t.status.last_update === territoire.status.last_update &&
-                                t.commentaire.value === territoire.commentaire.value &&
-                                t.commentaire.last_update === territoire.commentaire.last_update,
-                        )
-                    )
-                        return acc;
-
-                    return acc.concat(territoires);
-                },
-                [] as { status: ProviderValue<string>; commentaire: ProviderValue<string> }[],
-            );
-
-            data.actions_proposee = entity.actions.map(action => ({
-                ej: action.indexedInformations.ej ? toPV(action.indexedInformations.ej) : undefined,
-                rang: toPV(action.indexedInformations.rang),
-                intitule: toPV(action.indexedInformations.intitule),
-                objectifs: toPV(action.indexedInformations.objectifs),
-                objectifs_operationnels: toPV(action.indexedInformations.objectifs_operationnels),
-                description: toPV(action.indexedInformations.description),
-                nature_aide: toPV(action.indexedInformations.nature_aide),
-                modalite_aide: toPV(action.indexedInformations.modalite_aide),
-                modalite_ou_dispositif: toPV(action.indexedInformations.modalite_ou_dispositif),
-                indicateurs: toPV(action.indexedInformations.indicateurs),
-                cofinanceurs: {
-                    noms: toPV(action.indexedInformations.cofinanceurs),
-                    montant_demandes: toPV(action.indexedInformations.cofinanceurs_montant_demandes),
-                },
-                montants_versement: {
-                    total: toPV(action.indexedInformations.montants_versement_total),
-                    demande: toPV(action.indexedInformations.montants_versement_demande),
-                    propose: toPV(action.indexedInformations.montants_versement_propose),
-                    accorde: toPV(action.indexedInformations.montants_versement_accorde),
-                    attribue: toPV(action.indexedInformations.montants_versement_attribue),
-                    realise: toPV(action.indexedInformations.montants_versement_realise),
-                    compensation: toPV(action.indexedInformations.montants_versement_compensation),
-                },
-            }));
-        }
-
-        return data;
-    }
-
-    static toCommon(entity: OsirisRequestEntity): CommonApplicationDto {
-        return {
-            dispositif: entity.providerInformations.dispositif,
-            exercice: entity.providerInformations.exercise,
-            montant_accorde: entity.providerInformations.montantsAccorde,
-            montant_demande: entity.providerInformations.montantsDemande,
-            objet: (entity.actions || []).map(action => action.indexedInformations.intitule).join(" – ") || "",
-            service_instructeur: entity.providerInformations.service_instructeur,
-            siret: entity.legalInformations.siret,
-            statut: OsirisRequestAdapter.toStatus(entity.providerInformations.status),
         };
     }
 
@@ -345,8 +218,8 @@ export default class OsirisRequestAdapter {
             instructiveDepartmentName: entity.providerInformations.service_instructeur,
             instructiveDepartmentIdType: null,
             instructiveDepartementId: null,
-            beneficiaryEstablishmentId: entity.legalInformations.siret,
-            beneficiaryEstablishmentIdType: assoId,
+            beneficiaryEstablishmentId: assoId,
+            beneficiaryEstablishmentIdType: assoIdType,
             budgetaryYear,
             pluriannual: entity.providerInformations.pluriannualite === "Pluriannuel",
             pluriannualYears: this.getPluriannualYears(entity),

@@ -8,5 +8,5 @@
         "esModuleInterop": true,
         "declaration": true
     },
-    "exclude": []
+    "exclude": ["node_modules/.pnpm"]
 }

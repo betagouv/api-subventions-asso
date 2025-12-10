@@ -1,27 +1,28 @@
-import { DemandeSubvention } from "dto";
+import { ApplicationFlatDto, DemandeSubvention } from "dto";
 import applicationFlatPort from "../../dataProviders/db/applicationFlat/applicationFlat.port";
 import { ApplicationFlatEntity } from "../../entities/ApplicationFlatEntity";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
-import { RawGrant, RawApplication } from "../grant/@types/rawGrant";
+import { RawApplication } from "../grant/@types/rawGrant";
 import { ProviderEnum } from "../../@enums/ProviderEnum";
 import ProviderCore from "../providers/ProviderCore";
-import DemandesSubventionsProvider from "../subventions/@types/DemandesSubventionsProvider";
-import GrantProvider from "../grant/@types/GrantProvider";
+import ApplicationProvider from "../subventions/@types/ApplicationProvider";
 import Siret from "../../identifierObjects/Siret";
 import ApplicationFlatAdapter from "./ApplicationFlatAdapter";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 import { ReadableStream } from "node:stream/web";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
+import GrantProvider from "../grant/@types/GrantProvider";
+import { StructureProvider } from "../StructureProvider";
 
 export class ApplicationFlatService
     extends ProviderCore
-    implements DemandesSubventionsProvider<ApplicationFlatEntity>, GrantProvider
+    implements GrantProvider, ApplicationProvider, StructureProvider
 {
     constructor() {
         super({
             name: "Application Flat",
-            type: ProviderEnum.raw,
+            type: ProviderEnum.technical,
             description: "ApplicationFlat",
             id: "application-flat",
         });
@@ -44,13 +45,13 @@ export class ApplicationFlatService
      * |-------------------------|
      */
 
-    isDemandesSubventionsProvider = true;
+    isApplicationProvider = true;
 
-    public rawToApplication(rawGrant: RawApplication<ApplicationFlatEntity>) {
+    public rawToApplication(rawGrant: RawApplication) {
         return ApplicationFlatAdapter.rawToApplication(rawGrant);
     }
 
-    async getDemandeSubvention(identifier: StructureIdentifier): Promise<DemandeSubvention[]> {
+    async getApplication(identifier: StructureIdentifier): Promise<DemandeSubvention[]> {
         const requests = await this.getEntitiesByIdentifier(identifier);
         return requests
             .map(document => ApplicationFlatAdapter.toDemandeSubvention(document))
@@ -65,16 +66,13 @@ export class ApplicationFlatService
 
     isGrantProvider = true;
 
-    async getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
-        const dbos = await this.getEntitiesByIdentifier(identifier);
-
-        /* Pour l'instant on garde ej pour tous les providers sauf Fonjep qui prend idVersement 
-        Il faudra convertir tous les versementKey en idVersement quand tout est connecté  */
-        return dbos.map(grant => ({
-            provider: grant.provider,
+    async getRawGrants(identifier: StructureIdentifier): Promise<RawApplication[]> {
+        const entities = await this.getEntitiesByIdentifier(identifier);
+        return entities.map(grant => ({
+            provider: "application-flat",
             type: "application",
             data: grant,
-            joinKey: (grant.provider === "fonjep" ? grant.paymentId : grant.ej) ?? undefined,
+            joinKey: grant.paymentId ?? undefined,
         }));
     }
 
@@ -104,9 +102,17 @@ export class ApplicationFlatService
      * @returns Siret or undefined if establishment type is ridet or tahitiet
      */
     getSiret(entity: ApplicationFlatEntity) {
-        if (entity.beneficiaryEstablishmentIdType === "siret" && Siret.isSiret(entity.beneficiaryEstablishmentId))
+        if (
+            entity.beneficiaryEstablishmentIdType === Siret.getName() &&
+            Siret.isSiret(entity.beneficiaryEstablishmentId)
+        )
             return new Siret(entity.beneficiaryEstablishmentId);
         return undefined;
+    }
+
+    async getApplicationsDto(identifier: StructureIdentifier): Promise<ApplicationFlatDto[]> {
+        const applications = await this.getEntitiesByIdentifier(identifier);
+        return applications.map(entity => ApplicationFlatAdapter.toDto(entity));
     }
 }
 

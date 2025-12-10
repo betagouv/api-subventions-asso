@@ -113,7 +113,66 @@
     {
       "to": "exercice",
       "valueToPrompt": true,
-      "possibleLabels": ["Votre demande d'aide concerne l'année:"]
+      "possibleLabels": [
+        "Votre demande d'aide concerne l'année:"
+      ]
+    }
+  ],
+  "flatSchema": [
+    {
+      "value": "Direction Régionale des Affaires Culturelles",
+      "to": "service_instructeur",
+      "comment": "// is this service instructeur or allocator or managingAuthority?"
+    },
+    {
+      "from": "siret",
+      "to": "beneficiaryEstablishmentId"
+    },
+    {
+      "from": "demande.state",
+      "to": "status"
+    },
+    {
+      "to": "grantedAmount",
+      "possibleLabels": [
+        "Montant de la subvention accordé"
+      ]
+    },
+    {
+      "to": "requestedAmount",
+      "possibleLabels": [
+        "... demander une subvention de",
+        "demander une subvention de"
+      ]
+    },
+    {
+      "to": "objet",
+      "possibleLabels": [
+        "Intitulé du projet"
+      ]
+    },
+    {
+      "to": "depositDate",
+      "from": "demande.dateDepot"
+    },
+    {
+      "to": "budgetaryYear",
+      "valueToPrompt": true,
+      "possibleLabels": [
+        "Votre demande d'aide concerne l'année:"
+      ]
+    },
+    {
+      "from": "demande.demarche.title",
+      "to": "scheme"
+    },
+    {
+      "from": "demande.dateDerniereModification",
+      "to":  "updateDate"
+    },
+    {
+      "from": "demande.id",
+      "to": "applicationProviderId"
     }
   ]
 }

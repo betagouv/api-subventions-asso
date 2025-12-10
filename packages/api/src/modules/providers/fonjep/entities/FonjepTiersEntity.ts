@@ -1,4 +1,4 @@
-import { ProviderDataEntity } from "../../../../@types/ProviderDataEntity";
+import type { ProviderDataEntity } from "../../../../@types/ProviderData";
 
 interface FonjepTiersEntity extends ProviderDataEntity {
     code: string;

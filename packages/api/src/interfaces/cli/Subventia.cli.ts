@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import path from "path";
-import csvSyncStringifier from "csv-stringify/sync";
+import * as csvSyncStringifier from "csv-stringify/sync";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { ApplicationFlatCli, CliStaticInterface } from "../../@types";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";
@@ -15,7 +15,7 @@ import { DEV } from "../../configurations/env.conf";
 export default class SubventiaCli extends CliController implements ApplicationFlatCli {
     static cmdName = "subventia";
 
-    protected _providerIdToLog = subventiaService.provider.id;
+    protected _providerIdToLog = subventiaService.meta.id;
 
     protected logFileParsePath = "./logs/subventia.parse.log.txt";
     static errorsFolderName = "./import-errors";

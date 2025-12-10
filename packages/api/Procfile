@@ -1,2 +1,2 @@
 
-postdeploy: npm run migration:apply
+postdeploy: pnpm migration:apply

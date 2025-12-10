@@ -103,5 +103,55 @@
             "to": "exercice",
             "value": 2023
         }
-    ]
+    ],
+  "flatSchema": [
+    {
+        "to": "depositDate",
+      "from" : "demande.dateDepot"
+    },
+    {
+        "to": "requestYear",
+      "from" : "demande.dateDepot"
+    },
+    {
+      "to": "scheme",
+      "from": "demande.demarche.title"
+    },
+    {
+      "to": "beneficiaryEstablishmentId",
+      "from": "siret"
+    },
+    {
+      "to": "beneficiaryEstablishmentIdType",
+      "value": "siret"
+    },
+    {
+      "to": "statusLabel",
+      "from": "demande.state"
+    },
+    {
+      "to": "updateDate",
+      "from": "demande.dateDerniereModification"
+    },
+    {
+      "to": "grantedAmount",
+      "from": "demande.annotations.Q2hhbXAtMjU0OTk4Mg=="
+    },
+    {
+      "to": "requestedAmount",
+      "from": "demande.champs.Q2hhbXAtMjcyMzAyMA=="
+    },
+    {
+      "to": "instructiveDepartmentName",
+      "from": "groupeInstructeur.label"
+    },
+    {
+      "to": "totalAmount",
+      "from": "demande.champs.Q2hhbXAtMjM2MzUxNw=="
+    },
+    {
+        "from": "demande.annotations.Q2hhbXAtMjY3NDMxMA==.value",
+        "to": "ej"
+    }
+  ]
 }

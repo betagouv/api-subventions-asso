@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import DEFAULT_ASSOCIATION from "../../../__fixtures__/association.fixture";
-import { siretToNIC, siretToSiren } from "../../../../src/shared/helpers/SirenHelper";
+import Siret from "../../../../src/identifierObjects/Siret";
 
 export const DAUPHIN_GISPRO_DBOS = [
     {
@@ -209,8 +209,8 @@ export const DAUPHIN_GISPRO_DBOS = [
                     },
                 },
                 SIRET: {
-                    SIREN: siretToSiren(DEFAULT_ASSOCIATION.siret),
-                    NIC: siretToNIC(DEFAULT_ASSOCIATION.siret),
+                    SIREN: Siret.getSiren(DEFAULT_ASSOCIATION.siret),
+                    NIC: Siret.getNic(DEFAULT_ASSOCIATION.siret),
                     complet: DEFAULT_ASSOCIATION.siret,
                 },
                 NAF: {
@@ -448,8 +448,8 @@ export const DAUPHIN_GISPRO_DBOS = [
                         },
                     },
                     SIRET: {
-                        SIREN: siretToSiren(DEFAULT_ASSOCIATION.siret),
-                        NIC: siretToNIC(DEFAULT_ASSOCIATION.siret),
+                        SIREN: Siret.getSiren(DEFAULT_ASSOCIATION.siret),
+                        NIC: Siret.getNic(DEFAULT_ASSOCIATION.siret),
                         complet: DEFAULT_ASSOCIATION.siret,
                     },
                     NAF: {

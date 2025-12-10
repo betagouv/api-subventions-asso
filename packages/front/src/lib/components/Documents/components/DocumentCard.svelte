@@ -1,6 +1,7 @@
 <script lang="ts">
     import { DocumentCardController } from "./DocumentCard.controller";
     import type { DocumentEntity } from "$lib/entities/DocumentEntity";
+    import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
 
     export let document: DocumentEntity;
     export let value: DocumentEntity | undefined = undefined;
@@ -45,15 +46,12 @@
 
     <div class="flex download-wrapper">
         <div class="fr-my-auto fr-mx-2w">
-            <a
-                class="fr-link"
+            <TargetBlankLink
                 href={document.url}
-                aria-describedby="description-document-{controller.checkBoxId}"
                 title="Télécharger"
-                target="_blank"
-                rel="noopener noreferrer">
+                ariaDescribedBy="description-document-{controller.checkBoxId}">
                 Télécharger
-            </a>
+            </TargetBlankLink>
         </div>
     </div>
 </div>

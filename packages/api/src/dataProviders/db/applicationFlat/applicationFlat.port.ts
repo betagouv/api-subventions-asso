@@ -13,6 +13,7 @@ export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id
     readonly backupCollectionName = this.collectionName + "-backup";
 
     public async createIndexes(): Promise<void> {
+        await this.collection.createIndex({ fournisseur: 1 });
         await this.collection.createIndex({ idEtablissementBeneficiaire: 1 });
         await this.collection.createIndex({ exerciceBudgetaire: 1 });
         await this.collection.createIndex({ idUnique: 1 }, { unique: true });
@@ -65,7 +66,7 @@ export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id
     public async findBySiret(siret: Siret) {
         return this.collection
             .find({
-                typeIdEtablissementBeneficiaire: "siret",
+                typeIdEtablissementBeneficiaire: siret.name,
                 idEtablissementBeneficiaire: siret.value,
             })
             .map(dbo => ApplicationFlatAdapter.dboToEntity(dbo))
@@ -75,7 +76,7 @@ export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id
     public async findBySiren(siren: Siren) {
         return this.collection
             .find({
-                typeidEtablissementBeneficiaire: "siret",
+                typeIdEtablissementBeneficiaire: Siret.getName(),
                 idEtablissementBeneficiaire: new RegExp(`^${siren.value}\\d{5}`),
                 // TODO maybe we want an explicit property so that we can have an index
             })
@@ -94,7 +95,8 @@ export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id
     public async bulkFindDeleteByExercises(provider: string, exercises: number[]) {
         const bulk = this.collection.initializeUnorderedBulkOp();
         exercises.forEach(exercise => {
-            bulk.find({ provider, exercise }).delete();
+            const query: Partial<ApplicationFlatDbo> = { fournisseur: provider, exerciceBudgetaire: exercise };
+            bulk.find(query).delete();
         });
         return bulk.execute().catch(error => {
             throw error;
@@ -122,10 +124,10 @@ export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id
 
     /**
      * Apply backup collection created in createBackupCollection
-     * @param provider Producer slug
+     * @param provider scdl-${allocatorSiret}
      */
-    public async applyBackupCollection(provider: string) {
-        await this.collection.deleteMany({ provider });
+    public async applyBackupCollection(providerId: string) {
+        await this.collection.deleteMany({ provider: providerId });
         await insertStreamByBatch(
             Readable.toWeb(this.db.collection(this.backupCollectionName).find().stream()),
             this.upsertMany,

@@ -16,6 +16,7 @@ describe("importPipedriveData", () => {
     let fsExistsSyncMock: jest.SpyInstance;
 
     beforeAll(() => {
+        // @ts-expect-error: mock
         jest.spyOn(fs, "readFileSync").mockReturnValue(mockBuffer);
         fsExistsSyncMock = jest.spyOn(fs, "existsSync").mockReturnValue(true);
     });
@@ -51,6 +52,7 @@ describe("importPipedriveData", () => {
     it("parses file content", () => {
         // @ts-expect-error -- mock
         const mockBuffer = "buffer" as Buffer;
+        // @ts-expect-error: mock
         jest.mocked(fs.readFileSync).mockReturnValueOnce(mockBuffer);
         dumpCli.importPipedriveData(FILE_PATH);
         expect(DumpPipedriveParser.parse).toHaveBeenCalledWith(mockBuffer);

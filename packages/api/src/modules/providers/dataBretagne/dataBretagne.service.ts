@@ -17,8 +17,6 @@ import {
  * Service for interacting with the Data Bretagne API.
  */
 class DataBretagneService extends ProviderCore {
-    programsByCode: Record<number, StateBudgetProgramEntity> = {};
-
     constructor() {
         super({
             name: "Data Bretagne",
@@ -26,11 +24,6 @@ class DataBretagneService extends ProviderCore {
             description: "Data Bretagne is the API for the state budget.",
             id: "data-bretagne",
         });
-    }
-
-    // QUICK WIN FROM DEVELOP REBASE FOR #2313 -- WE MAY WANT TO HANDLE THIS IN A BETTER WAY
-    async init() {
-        this.programsByCode = await dataBretagneService.getProgramsRecord();
     }
 
     async login() {
@@ -43,7 +36,7 @@ class DataBretagneService extends ProviderCore {
         // do not replace programs if empty
         if (!programs || !programs.length) throw new Error("Unhandled error from API Data Bretagne");
         await stateBudgetProgramPort.replace(programs);
-        await dataLogService.addLog(dataBretagneService.provider.id, "api", new Date());
+        await dataLogService.addLog(dataBretagneService.meta.id, "api", new Date());
     }
 
     async getAllDataRecords(): Promise<DataBretagneRecords> {

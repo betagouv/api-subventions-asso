@@ -3,7 +3,7 @@ import ProviderRequestFactory, {
 } from "../../../modules/provider-request/providerRequest.service";
 
 export class SireneStockUniteLegaleApiPort {
-    private URL = "https://files.data.gouv.fr/insee-sirene/StockUniteLegale_utf8.zip";
+    private URL = "https://object.files.data.gouv.fr/data-pipeline-open/siren/stock/StockUniteLegale_utf8.zip";
 
     private http: ProviderRequestService;
 

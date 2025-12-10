@@ -1,0 +1,177 @@
+{
+  "schema": [
+    {
+      "value": "Direction Régionale des Affaires Culturelles",
+      "to": "service_instructeur"
+    },
+    {
+      "from": "siret",
+      "to": "siret"
+    },
+    {
+      "from": "demande.state",
+      "to": "status"
+    },
+    {
+      "possibleLabels": [
+        "Intitulé du projet"
+      ],
+      "to": "actions_proposee[0].intitule"
+    },
+    {
+      "possibleLabels": [
+        "Objectifs du projet",
+        "Objectifs poursuivis et résultats attendus"
+      ],
+      "to": "actions_proposee[0].objectifs"
+    },
+    {
+      "possibleLabels": [
+        "Description du projet"
+      ],
+      "to": "actions_proposee[0].description"
+    },
+    {
+      "possibleLabels": [
+        "... demander une subvention de",
+        "demander une subvention de"
+      ],
+      "to": "montants.demande"
+    },
+    {
+      "possibleLabels": [
+        "Montant de la subvention accordé"
+      ],
+      "to": "montants.accorde"
+    },
+    {
+      "from": "demande.dateDepot",
+      "to": "transmis_le"
+    },
+    {
+      "possibleLabels": [
+        "Date de début du projet"
+      ],
+      "to": "date_debut"
+    },
+    {
+      "possibleLabels": [
+        "Date de fin du projet"
+      ],
+      "to": "date_fin"
+    },
+    {
+      "from": "demande.demarche.title",
+      "to": "dispositif"
+    },
+    {
+      "to": "exercice",
+      "valueToPrompt": true,
+      "possibleLabels": ["Votre demande d'aide concerne l'année:"]
+    }
+  ],
+  "commonSchema": [
+    {
+      "to": "siret",
+      "from": "siret"
+    },
+    {
+      "to": "service_instructeur",
+      "value": "Direction Régionale des Affaires Culturelles"
+    },
+    {
+      "to": "dispositif",
+      "from": "demande.demarche.title"
+    },
+    {
+      "to": "montant_accorde",
+      "possibleLabels": [
+        "Montant de la subvention accordé"
+      ]
+    },
+    {
+      "to": "montant_demande",
+      "possibleLabels": [
+        "... demander une subvention de",
+        "demander une subvention de"
+      ]
+    },
+    {
+      "to": "objet",
+      "possibleLabels": [
+        "Intitulé du projet"
+      ]
+    },
+    {
+      "to": "providerStatus",
+      "from": "demande.state"
+    },
+    {
+      "to": "dateTransmitted",
+      "from": "demande.dateDepot"
+    },
+    {
+      "to": "exercice",
+      "valueToPrompt": true,
+      "possibleLabels": [
+        "Votre demande d'aide concerne l'année:"
+      ]
+    }
+  ],
+  "flatSchema": [
+    {
+      "value": "Direction instructrice",
+      "to": "service_instructeur"
+    },
+    {
+      "from": "siret",
+      "to": "beneficiaryEstablishmentId"
+    },
+    {
+      "from": "demande.state",
+      "to": "status"
+    },
+    {
+      "to": "grantedAmount",
+      "possibleLabels": [
+        "Montant de la subvention accordé"
+      ]
+    },
+    {
+      "to": "requestedAmount",
+      "possibleLabels": [
+        "... demander une subvention de",
+        "demander une subvention de"
+      ]
+    },
+    {
+      "to": "objet",
+      "possibleLabels": [
+        "Intitulé du projet"
+      ]
+    },
+    {
+      "to": "depositDate",
+      "from": "demande.dateDepot"
+    },
+    {
+      "to": "budgetaryYear",
+      "valueToPrompt": true,
+      "possibleLabels": [
+        "Votre demande d'aide concerne l'année:"
+      ]
+    },
+    {
+      "from": "demande.demarche.title",
+      "to": "scheme"
+    },
+    {
+      "from": "demande.dateDerniereModification",
+      "to":  "updateDate"
+    },
+    {
+      "from": "demande.id",
+      "to": "applicationProviderId"
+    }
+  ]
+}

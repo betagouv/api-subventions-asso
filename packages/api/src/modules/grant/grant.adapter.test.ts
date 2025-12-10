@@ -1,20 +1,18 @@
 import GrantAdapter from "./grant.adapter";
-import {
-    ApplicationStatus,
-    Association,
-    Grant,
-    Payment,
-    ProviderValue,
-    ProviderValues,
-    SimplifiedEtablissement,
-} from "dto";
+import { Association, ProviderValues, EstablishmentSimplified } from "dto";
 import { GrantToExtract } from "./@types/GrantToExtract";
 import paymentService from "../payments/payments.service";
+import {
+    CHORUS_PAYMENT_FLAT_ENTITY,
+    LONELY_CHORUS_PAYMENT,
+} from "../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+import { APPLICATION_LINK_TO_CHORUS } from "../applicationFlat/__fixtures__";
+import { GrantFlatEntity } from "../../entities/GrantFlatEntity";
+import { addDaysToDate } from "../../shared/helpers/DateHelper";
 
 jest.mock("../payments/payments.service");
 
 describe("GrantAdapter", () => {
-    const makePV = <T>(v: T) => ({ value: v }) as ProviderValue<T>;
     const makePVs = <T>(v: T) => [{ value: v }] as ProviderValues<T>;
 
     describe("findSingleProperty", () => {
@@ -58,44 +56,22 @@ describe("GrantAdapter", () => {
     });
 
     describe("grantToExtractLine", () => {
-        const SIRET = "01234567891234";
+        const SIRET = CHORUS_PAYMENT_FLAT_ENTITY.idEtablissementBeneficiaire.toString();
 
-        const PAYMENT = {
-            programme: makePV("codePogramme"),
-            libelleProgramme: makePV("label"),
-            amount: makePV(2000),
-            annee_demande: makePV(2022),
-            dateOperation: makePV(new Date("2022-02-02")),
-            centreFinancier: makePV("centreFinancier2"),
-        } as unknown as Payment;
+        const LAST_PAYMENT_DATE = new Date("2025-11-20");
+
+        const PAYMENTS = [
+            // make it the "last payment"
+            { ...CHORUS_PAYMENT_FLAT_ENTITY, operationDate: new Date("2025-11-20") },
+            { ...LONELY_CHORUS_PAYMENT, operationDate: addDaysToDate(LAST_PAYMENT_DATE, -30) },
+        ];
+
+        const LAST_PAYMENT = PAYMENTS[0];
 
         const GRANT = {
-            application: {
-                siret: makePV(SIRET),
-                annee_demande: makePV(2022),
-                actions_proposee: [{ intitule: makePV("intituléAction") }],
-                montants: {
-                    demande: makePV(12000),
-                    accorde: makePV(10000),
-                },
-                service_instructeur: makePV("instructeur"),
-                dispositif: makePV("dispositif"),
-                statut_label: makePV(ApplicationStatus.GRANTED),
-            },
-            payments: [
-                PAYMENT,
-                {
-                    ...PAYMENT,
-                    dateOperation: makePV(new Date("2022-01-01")),
-                    centreFinancier: makePV("centreFinancier1"),
-                },
-                {
-                    ...PAYMENT,
-                    dateOperation: makePV(new Date("2022-03-03")),
-                    centreFinancier: makePV("centreFinancier3"),
-                },
-            ] as Payment[],
-        } as Grant;
+            application: APPLICATION_LINK_TO_CHORUS,
+            payments: PAYMENTS,
+        } as GrantFlatEntity;
 
         const ASSO = {
             denomination_rna: makePVs("nomRNA"),
@@ -109,7 +85,7 @@ describe("GrantAdapter", () => {
                 nic: makePVs("1234"),
                 adresse: makePVs({ code_postal: "31170" }),
             },
-        } as Record<string, SimplifiedEtablissement>;
+        } as Record<string, EstablishmentSimplified>;
 
         let adapted: GrantToExtract;
         let singlePropMock: jest.SpyInstance;
@@ -130,19 +106,19 @@ describe("GrantAdapter", () => {
         });
 
         it("chooses last financial center", () => {
-            const expected = "centreFinancier3";
+            const expected = `${LAST_PAYMENT.centreFinancierCode} - ${LAST_PAYMENT.centreFinancierLibelle}`;
             const actual = adapted.financialCenter;
             expect(actual).toBe(expected);
         });
 
         it("chooses last payment date", () => {
-            const expected = "2022-03-03";
+            const expected = "2025-11-20";
             const actual = adapted.paymentDate;
             expect(actual).toBe(expected);
         });
 
         it("paidAmount", () => {
-            const expected = 6000;
+            const expected = PAYMENTS[0].amount + PAYMENTS[1].amount;
             const actual = adapted.paidAmount;
             expect(actual).toBe(expected);
         });
@@ -163,8 +139,8 @@ describe("GrantAdapter", () => {
         it("adapts program in findSingleProperty", () => {
             GrantAdapter.grantToExtractLine(GRANT, ASSO, ESTAB_BY_SIRET);
             const adapter = singlePropMock.mock.calls?.[0]?.[3];
-            const expected = "code - libellé";
-            const actual = adapter({ programme: makePV("code"), libelleProgramme: makePV("libellé") });
+            const expected = `${LAST_PAYMENT.programNumber} - ${LAST_PAYMENT.programName}`;
+            const actual = adapter(PAYMENTS[0]);
             expect(actual).toBe(expected);
         });
 
@@ -192,11 +168,6 @@ describe("GrantAdapter", () => {
             expect(actual).toBe(expected);
         });
 
-        it("does not require payment exercise if info from application", () => {
-            GrantAdapter.grantToExtractLine(GRANT, ASSO, ESTAB_BY_SIRET);
-            expect(paymentService.getPaymentExercise).not.toHaveBeenCalled();
-        });
-
         it("adapts correctly with no application", () => {
             const actual = GrantAdapter.grantToExtractLine(
                 { payments: GRANT.payments, application: null },
@@ -206,21 +177,9 @@ describe("GrantAdapter", () => {
             expect(actual).toMatchSnapshot();
         });
 
-        it("gets exercise from paymentService if no application", () => {
-            const expected = 1990;
-            jest.mocked(paymentService.getPaymentExercise).mockReturnValueOnce(expected);
-            const actual = GrantAdapter.grantToExtractLine(
-                { payments: GRANT.payments, application: null },
-                ASSO,
-                ESTAB_BY_SIRET,
-            ).exercice;
-            expect(paymentService.getPaymentExercise).toHaveBeenCalledWith(GRANT.payments?.[0]);
-            expect(actual).toBe(expected);
-        });
-
         it("adapts correctly with no payment", () => {
             const actual = GrantAdapter.grantToExtractLine(
-                { application: GRANT.application, payments: null },
+                { application: GRANT.application, payments: [] },
                 ASSO,
                 ESTAB_BY_SIRET,
             );

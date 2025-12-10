@@ -1,14 +1,14 @@
 import { DemandeSubvention } from "dto";
-import { demandesSubventionsProviders } from "../providers";
+import { applicationProviders } from "../providers";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 
 export class SubventionsService {
     getDemandes(id: StructureIdentifier) {
-        const providers = demandesSubventionsProviders;
+        const providers = applicationProviders;
         return Promise.all(
             providers.reduce(
                 (promises, provider) => {
-                    promises.push(provider.getDemandeSubvention(id));
+                    promises.push(provider.getApplication(id));
                     return promises;
                 },
                 [] as Promise<DemandeSubvention[]>[],

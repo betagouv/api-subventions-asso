@@ -22,6 +22,30 @@ N'oubliez pas de supprimer toutes leurs données !",
 }
 `;
 
+exports[`MattermostNotifyPipe depositUnfinished sends message with proper payload 1`] = `
+{
+  "channel": "datasubvention---comptes-app",
+  "icon_emoji": "bookmark_tabs",
+  "text": "Bonjour Data.Subvention !
+
+        Voici la liste du jour des utilisateurs à relancer pour finaliser leur dépôt de données :
+
+        - some@email.fr (John Doe)
+- griffin@email.fr (Petter Griffin)
+",
+  "username": "Relance de dépôt de données",
+}
+`;
+
+exports[`MattermostNotifyPipe dataImportSuccess sends message 1`] = `
+{
+  "channel": "datasubvention---produit",
+  "icon_emoji": "white_check_mark",
+  "text": "Import de données réussi pour le fournisseur **Ville de Rennes** (SIRET : \`12345678900012\`) avec une date d'export au **2025-09-03**.",
+  "username": "Import de données",
+}
+`;
+
 exports[`MattermostNotifyPipe userDeleted sends message with proper payload with false selfDeleted 1`] = `
 {
   "channel": "datasubvention---comptes-app",

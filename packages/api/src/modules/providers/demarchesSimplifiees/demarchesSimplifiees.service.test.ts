@@ -9,6 +9,9 @@ jest.mock("./adapters/DemarchesSimplifieesEntityAdapter");
 jest.mock("./adapters/DemarchesSimplifieesDtoAdapter");
 jest.mock("@inquirer/prompts");
 jest.mock("../../configurations/configurations.service");
+jest.mock("../../applicationFlat/applicationFlat.service");
+jest.mock("../../applicationFlat/applicationFlat.helper");
+jest.mock("stream/web");
 
 import configurationsService from "../../configurations/configurations.service";
 import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
@@ -19,23 +22,199 @@ import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import demarchesSimplifieesDataPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
 import demarchesSimplifieesSchemaPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port";
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
-import { DATA_ENTITIES, SCHEMAS } from "./__fixtures__/DemarchesSimplifieesFixture";
-import {
-    DATA_ENTITIES as INTEG_DATA_ENTITIES,
-    SCHEMAS as INTEG_SCHEMA,
-} from "../../../../tests/dataProviders/db/__fixtures__/demarchesSimplifiees.fixtures";
-import { DemarchesSimplifieesRawData } from "./@types/DemarchesSimplifieesRawGrant";
-import lodash from "lodash";
-import Siren from "../../../identifierObjects/Siren";
-import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
-import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
+import { DATA_ENTITIES } from "./__fixtures__/DemarchesSimplifieesFixture";
 import { DemarchesSimplifieesSuccessDto } from "./dto/DemarchesSimplifieesDto";
 import DemarchesSimplifieesDataEntity from "./entities/DemarchesSimplifieesDataEntity";
 import { input } from "@inquirer/prompts";
+import applicationFlatService from "../../applicationFlat/applicationFlat.service";
+import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
+import { DefaultObject } from "../../../@types";
+import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
+import { FindCursor, WithId } from "mongodb";
+import { ReadableStream } from "stream/web";
 
 jest.mock("lodash");
 
 describe("DemarchesSimplifieesService", () => {
+    describe("flat part", () => {
+        const STREAM = {} as unknown as ReadableStream<ApplicationFlatEntity>;
+
+        describe("saveFlatFromStream", () => {
+            it("calls applicationFlatService", async () => {
+                await demarchesSimplifieesService.saveFlatFromStream(STREAM);
+                expect(applicationFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);
+            });
+        });
+
+        describe("initApplicationFlat", () => {
+            const DEMARCHE_ID = 42;
+            const CURSOR = "CURSOR" as unknown as FindCursor<WithId<DemarchesSimplifieesDataEntity>>; // TODO
+            const SCHEMA = { demarcheId: DEMARCHE_ID } as unknown as DemarchesSimplifieesSchema;
+            const SCHEMAS_DICT: DefaultObject<DemarchesSimplifieesSchema> = { [DEMARCHE_ID]: SCHEMA };
+            const ADAPTED = {} as unknown as ApplicationFlatEntity;
+            const DBO = { demarcheId: DEMARCHE_ID };
+
+            let getSchemasByIdSpy: jest.SpyInstance; // TODO mock
+            let toFlatAndValidateSpy: jest.SpyInstance;
+            let saveFlatSpy: jest.SpyInstance;
+
+            beforeEach(() => {
+                getSchemasByIdSpy = jest
+                    // @ts-expect-error - spy private
+                    .spyOn(demarchesSimplifieesService, "getSchemasByIds")
+                    // @ts-expect-error - spy private
+                    .mockResolvedValue(SCHEMAS_DICT);
+                toFlatAndValidateSpy = jest
+                    .spyOn(demarchesSimplifieesService, "toFlatAndValidate")
+                    .mockReturnValue(ADAPTED);
+                saveFlatSpy = jest
+                    .spyOn(demarchesSimplifieesService, "saveFlatFromStream")
+                    .mockReturnValue(Promise.resolve());
+
+                jest.mocked(demarchesSimplifieesDataPort.findAllCursor).mockReturnValue(CURSOR);
+                jest.mocked(cursorToStream).mockReturnValue(STREAM);
+            });
+
+            afterEach(() => {
+                getSchemasByIdSpy.mockRestore();
+                toFlatAndValidateSpy.mockRestore();
+                saveFlatSpy.mockRestore();
+            });
+
+            it("finds cursor", async () => {
+                await demarchesSimplifieesService.initApplicationFlat();
+                expect(demarchesSimplifieesDataPort.findAllCursor).toHaveBeenCalled();
+            });
+
+            it("gets schemas", async () => {
+                await demarchesSimplifieesService.initApplicationFlat();
+                expect(getSchemasByIdSpy).toHaveBeenCalled();
+            });
+
+            it("calls helper's cursorToStream with cursor", async () => {
+                await demarchesSimplifieesService.initApplicationFlat();
+                expect(cursorToStream).toHaveBeenCalledWith(CURSOR, expect.any(Function));
+            });
+
+            describe("adaptation", () => {
+                it("calls saveFlatAndValidate with each proper schema", async () => {
+                    await demarchesSimplifieesService.initApplicationFlat();
+                    const adapter = jest.mocked(cursorToStream).mock.calls[0][1];
+                    const expected = ADAPTED;
+                    const actual = adapter(DBO);
+                    expect(toFlatAndValidateSpy).toHaveBeenCalledWith(DBO, SCHEMA);
+                    expect(actual).toEqual(expected);
+                });
+            });
+
+            it("calls saveFlatFromStream with stream from helper", async () => {
+                await demarchesSimplifieesService.initApplicationFlat();
+                expect(saveFlatSpy).toHaveBeenCalledWith(STREAM);
+            });
+        });
+
+        describe("toFlatAndValidate", () => {
+            const DBO = "DBO" as unknown as DemarchesSimplifieesDataEntity;
+            const SCHEMA = { flatSchema: {} } as DemarchesSimplifieesSchema;
+            let isDraftSpy: jest.SpyInstance;
+            const ADAPTED = { requestedAmount: 456, budgetaryYear: 2004 } as ApplicationFlatEntity;
+
+            beforeAll(() => {
+                // @ts-expect-error -- private method
+                isDraftSpy = jest.spyOn(demarchesSimplifieesService, "isDraft").mockReturnValue(false);
+                jest.mocked(DemarchesSimplifieesEntityAdapter.toFlat).mockReturnValue(ADAPTED);
+            });
+
+            afterAll(() => {
+                isDraftSpy.mockRestore();
+                jest.mocked(DemarchesSimplifieesEntityAdapter.toFlat).mockRestore();
+            });
+
+            it("returns null if no flat schema", () => {
+                const actual = demarchesSimplifieesService.toFlatAndValidate(DBO, {} as DemarchesSimplifieesSchema);
+                expect(actual).toBeNull();
+            });
+
+            it("checks if is draft", () => {
+                demarchesSimplifieesService.toFlatAndValidate(DBO, SCHEMA);
+                expect(isDraftSpy).toHaveBeenCalledWith(DBO);
+            });
+
+            it("returns null if draft", () => {
+                isDraftSpy.mockReturnValueOnce(true);
+                const actual = demarchesSimplifieesService.toFlatAndValidate(DBO, SCHEMA);
+                expect(actual).toBeNull();
+            });
+
+            it("calls adapter", () => {
+                demarchesSimplifieesService.toFlatAndValidate(DBO, SCHEMA);
+            });
+
+            it("returns null if no requested amount", () => {
+                jest.mocked(DemarchesSimplifieesEntityAdapter.toFlat).mockReturnValueOnce({
+                    budgetaryYear: 2004,
+                } as ApplicationFlatEntity);
+                const actual = demarchesSimplifieesService.toFlatAndValidate(DBO, SCHEMA);
+                expect(actual).toBeNull();
+            });
+
+            it("returns null if no budgtary year", () => {
+                jest.mocked(DemarchesSimplifieesEntityAdapter.toFlat).mockReturnValueOnce({
+                    requestedAmount: 1234,
+                } as ApplicationFlatEntity);
+                const actual = demarchesSimplifieesService.toFlatAndValidate(DBO, SCHEMA);
+                expect(actual).toBeNull();
+            });
+
+            it("return res from adapter", () => {
+                const expected = ADAPTED;
+                const actual = demarchesSimplifieesService.toFlatAndValidate(DBO, SCHEMA);
+                expect(actual).toEqual(expected);
+            });
+        });
+
+        describe("bulkUpdateApplicationFlat", () => {
+            const ENTITIES = ["e1", "e2"] as unknown as DemarchesSimplifieesDataEntity[];
+            const SCHEMA = "SCHEMA" as unknown as DemarchesSimplifieesSchema;
+            const STREAM = "STREAM" as unknown as ReadableStream;
+            let saveSpy: jest.SpyInstance;
+            let adaptSpy: jest.SpyInstance;
+
+            beforeAll(() => {
+                saveSpy = jest
+                    .spyOn(demarchesSimplifieesService, "saveFlatFromStream")
+                    .mockReturnValue(Promise.resolve());
+                adaptSpy = jest
+                    .spyOn(demarchesSimplifieesService, "toFlatAndValidate")
+                    .mockImplementation(e => ((e as unknown as string) + "a") as unknown as ApplicationFlatEntity);
+                jest.mocked(ReadableStream.from).mockReturnValue(STREAM);
+            });
+            afterAll(() => {});
+
+            it("doesn't save anything if no schema", () => {
+                demarchesSimplifieesService.bulkUpdateApplicationFlat(ENTITIES, null);
+                expect(saveSpy).not.toHaveBeenCalled();
+            });
+
+            it("adapts each entity", () => {
+                demarchesSimplifieesService.bulkUpdateApplicationFlat(ENTITIES, SCHEMA);
+                expect(adaptSpy).toHaveBeenCalledWith(ENTITIES[0], SCHEMA);
+                expect(adaptSpy).toHaveBeenCalledWith(ENTITIES[1], SCHEMA);
+            });
+
+            it("creates stream from filtered adapted data", () => {
+                adaptSpy.mockReturnValueOnce(null);
+                demarchesSimplifieesService.bulkUpdateApplicationFlat(ENTITIES, SCHEMA);
+                expect(ReadableStream.from).toHaveBeenCalledWith(["e2a"]);
+            });
+
+            it("saves created stream", () => {
+                demarchesSimplifieesService.bulkUpdateApplicationFlat(ENTITIES, SCHEMA);
+                expect(saveSpy).toHaveBeenCalledWith(STREAM);
+            });
+        });
+    });
+
     describe("getSchemasByIds", () => {
         beforeAll(() => {
             // @ts-expect-error mock
@@ -85,144 +264,6 @@ describe("DemarchesSimplifieesService", () => {
             const expected = true;
             // @ts-expect-error: test private method
             const actual = demarchesSimplifieesService.isDraft(DATA_ENTITIES[0]);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("filterAndAdaptEntities", () => {
-        let mockGetSchemasByIds: jest.SpyInstance;
-        let mockIsDraft: jest.SpyInstance;
-        beforeAll(() => {
-            // @ts-expect-error: mock private method
-            mockGetSchemasByIds = jest.spyOn(demarchesSimplifieesService, "getSchemasByIds");
-            mockGetSchemasByIds.mockResolvedValue(SCHEMAS);
-            // @ts-expect-error: mock private method
-            mockIsDraft = jest.spyOn(demarchesSimplifieesService, "isDraft");
-            mockIsDraft.mockReturnValue(false);
-        });
-
-        afterAll(() => {
-            mockGetSchemasByIds.mockRestore();
-            mockIsDraft.mockRestore();
-        });
-
-        it("should get schemaByIds", async () => {
-            // @ts-expect-error: test private method
-            await demarchesSimplifieesService.filterAndAdaptEntities([], jest.fn());
-            expect(mockGetSchemasByIds).toHaveBeenCalledTimes(1);
-        });
-
-        it("should call isDraft()", async () => {
-            // @ts-expect-error: test private method
-            await demarchesSimplifieesService.filterAndAdaptEntities(DATA_ENTITIES, jest.fn());
-            expect(mockIsDraft).toHaveBeenCalledTimes(2);
-        });
-
-        it("should exclude drafts", async () => {
-            mockIsDraft.mockReturnValueOnce(true);
-            const expected = [DATA_ENTITIES[1]];
-            // @ts-expect-error: test private method
-            const actual = await demarchesSimplifieesService.filterAndAdaptEntities(
-                DATA_ENTITIES,
-                jest.fn(entity => entity),
-            );
-            expect(actual).toEqual(expected);
-        });
-
-        it("should call adapter", async () => {
-            const spyAdapter = jest.fn(entity => entity);
-            // @ts-expect-error: test private method
-            await demarchesSimplifieesService.filterAndAdaptEntities(DATA_ENTITIES, spyAdapter);
-            expect(spyAdapter).toHaveBeenCalledTimes(DATA_ENTITIES.length);
-        });
-    });
-
-    describe("entitiesToSubventions", () => {
-        let mockFilterAndAdaptEntities: jest.SpyInstance;
-        beforeAll(() => {
-            // @ts-expect-error: mock private method
-            mockFilterAndAdaptEntities = jest.spyOn(demarchesSimplifieesService, "filterAndAdaptEntities");
-            mockFilterAndAdaptEntities.mockImplementation(jest.fn());
-        });
-
-        afterAll(() => {
-            mockFilterAndAdaptEntities.mockRestore();
-        });
-
-        it("should call filterAndAdaptEntities()", async () => {
-            // @ts-expect-error: test private method
-            await demarchesSimplifieesService.entitiesToSubventions([]);
-            expect(mockFilterAndAdaptEntities).toHaveBeenCalledWith([], DemarchesSimplifieesEntityAdapter.toSubvention);
-        });
-    });
-
-    describe("getJoinKey", () => {
-        const RAW_DATA: DemarchesSimplifieesRawData = {
-            entity: INTEG_DATA_ENTITIES[0],
-            schema: INTEG_SCHEMA[0],
-        };
-        it("should call lodash.get", () => {
-            jest.mocked(lodash.get).mockReturnValueOnce("EJ");
-            const expected = [INTEG_DATA_ENTITIES[0], "demande.annotations.Q2hhbXAtMjY3NDMxMA==.value"];
-            demarchesSimplifieesService.getJoinKey(RAW_DATA);
-            expect(lodash.get).toHaveBeenCalledWith(...expected);
-        });
-
-        it("should return joinKey", () => {
-            jest.mocked(lodash.get).mockReturnValueOnce("EJ");
-            const expected = "EJ";
-            const actual = demarchesSimplifieesService.getJoinKey(RAW_DATA);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return undefined if no joinKey field", () => {
-            const expected = undefined;
-            const actual = demarchesSimplifieesService.getJoinKey({
-                ...RAW_DATA,
-                schema: { ...INTEG_SCHEMA[0], schema: [] },
-            });
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("getDemandeSubvention", () => {
-        const SIREN = new Siren("000000000");
-        const ASSOCIATION_IDENTIFIER = AssociationIdentifier.fromSiren(SIREN);
-        let entitiesToSubMock: jest.SpyInstance;
-
-        beforeAll(() => {
-            // @ts-expect-error mock
-            demarchesSimplifieesDataPort.findBySiren.mockResolvedValue([]);
-            entitiesToSubMock = jest
-                // @ts-expect-error entitiesToSubventions is private method
-                .spyOn(demarchesSimplifieesService, "entitiesToSubventions")
-                // @ts-expect-error disable ts form return type of entitiesToSubventions
-                .mockImplementation(data => data);
-        });
-
-        afterAll(() => {
-            // @ts-expect-error mock
-            demarchesSimplifieesDataPort.findBySiren.mockRestore();
-            entitiesToSubMock.mockRestore();
-        });
-
-        it("should call findBySiren", async () => {
-            await demarchesSimplifieesService.getDemandeSubvention(ASSOCIATION_IDENTIFIER);
-            expect(demarchesSimplifieesDataPort.findBySiren).toHaveBeenCalledWith(SIREN);
-            expect(demarchesSimplifieesDataPort.findBySiren).toBeCalledTimes(1);
-        });
-
-        it("should call entitiesToSubventions", async () => {
-            await demarchesSimplifieesService.getDemandeSubvention(ASSOCIATION_IDENTIFIER);
-            expect(entitiesToSubMock).toHaveBeenCalledWith([]);
-            expect(entitiesToSubMock).toBeCalledTimes(1);
-        });
-
-        it("should return entities", async () => {
-            const expected = [{ test: true }];
-            // @ts-expect-error mock
-            demarchesSimplifieesDataPort.findBySiren.mockResolvedValueOnce(expected);
-            const actual = await demarchesSimplifieesService.getDemandeSubvention(ASSOCIATION_IDENTIFIER);
             expect(actual).toEqual(expected);
         });
     });
@@ -292,10 +333,12 @@ describe("DemarchesSimplifieesService", () => {
     });
 
     describe("updateDataByFormId", () => {
-        const FORM_ID = 12345;
-
         let sendQueryMock: jest.SpyInstance;
         let toEntitiesMock: jest.SpyInstance;
+        let upsertFlatMock: jest.SpyInstance;
+
+        const FORM_ID = 12345;
+
         const lastModified = new Date();
         lastModified.setDate(lastModified.getDate() - 1);
         const DOSSIER = {
@@ -341,6 +384,7 @@ describe("DemarchesSimplifieesService", () => {
             },
         });
         const DEMARCHE = buildDemarche([DOSSIER]);
+        const SCHEMA = {} as DemarchesSimplifieesSchema;
 
         beforeAll(() => {
             demarchesSimplifieesService.lastModified = new Date();
@@ -352,6 +396,10 @@ describe("DemarchesSimplifieesService", () => {
             toEntitiesMock = jest.spyOn(DemarchesSimplifieesDtoAdapter, "toEntities").mockReturnValue([DOSSIER]);
             // @ts-expect-error mock
             demarchesSimplifieesDataPort.upsert.mockResolvedValue();
+            jest.mocked(demarchesSimplifieesSchemaPort.findById).mockResolvedValue(SCHEMA);
+            upsertFlatMock = jest
+                .spyOn(demarchesSimplifieesService, "bulkUpdateApplicationFlat")
+                .mockImplementation(jest.fn());
         });
 
         afterAll(() => {
@@ -359,6 +407,7 @@ describe("DemarchesSimplifieesService", () => {
             toEntitiesMock.mockRestore();
             // @ts-expect-error mock
             demarchesSimplifieesSchemaPort.upsert.mockRestore();
+            upsertFlatMock.mockRestore();
         });
 
         it("should call sendQuery", async () => {
@@ -377,7 +426,14 @@ describe("DemarchesSimplifieesService", () => {
             const expected = [DOSSIER];
             sendQueryMock.mockResolvedValueOnce(DEMARCHE);
             await demarchesSimplifieesService.updateDataByFormId(FORM_ID);
-            expect(demarchesSimplifieesDataPort.bulkUpsert).toBeCalledWith(expected);
+            expect(demarchesSimplifieesDataPort.bulkUpsert).toHaveBeenCalledWith(expected);
+        });
+
+        it("should upsert flat data", async () => {
+            const expected = [DOSSIER];
+            sendQueryMock.mockResolvedValueOnce(DEMARCHE);
+            await demarchesSimplifieesService.updateDataByFormId(FORM_ID);
+            expect(upsertFlatMock).toHaveBeenCalledWith(expected, SCHEMA);
         });
 
         it("skips unpublished demarches - does not adapt nor insert", async () => {
@@ -390,10 +446,16 @@ describe("DemarchesSimplifieesService", () => {
         it("should bulkUpsert two times for 10001 demandes", async () => {
             toEntitiesMock.mockReturnValueOnce(Array(2001).fill(DOSSIER));
             await demarchesSimplifieesService.updateDataByFormId(FORM_ID);
-            expect(demarchesSimplifieesDataPort.bulkUpsert).toBeCalledTimes(2);
+            expect(demarchesSimplifieesDataPort.bulkUpsert).toHaveBeenCalledTimes(2);
         });
 
-        it("skips unchanged demandes - not in bulk upsert", async () => {
+        it("should upsert flat two times for 10001 demandes", async () => {
+            toEntitiesMock.mockReturnValueOnce(Array(2001).fill(DOSSIER));
+            await demarchesSimplifieesService.updateDataByFormId(FORM_ID);
+            expect(upsertFlatMock).toHaveBeenCalledTimes(2);
+        });
+
+        it("skips unchanged demandes - not in bulk upsert nor flat upsert", async () => {
             const oldDossier = {
                 ...DOSSIER,
                 demande: { ...DOSSIER.demande, dateDerniereModification: new Date(0).toString() },
@@ -401,7 +463,8 @@ describe("DemarchesSimplifieesService", () => {
             toEntitiesMock.mockReturnValueOnce([oldDossier]);
             const expected = [];
             await demarchesSimplifieesService.updateDataByFormId(FORM_ID);
-            expect(demarchesSimplifieesDataPort.bulkUpsert).toBeCalledWith(expected);
+            expect(demarchesSimplifieesDataPort.bulkUpsert).toHaveBeenCalledWith(expected);
+            expect(upsertFlatMock).toHaveBeenCalledWith(expected, SCHEMA);
         });
     });
 
@@ -494,146 +557,30 @@ describe("DemarchesSimplifieesService", () => {
         });
     });
 
-    describe("toRawGrants", () => {
-        let mockFilterAndAdaptEntities: jest.SpyInstance;
-
-        beforeAll(() => {
-            // @ts-expect-error: mock private method
-            mockFilterAndAdaptEntities = jest.spyOn(demarchesSimplifieesService, "filterAndAdaptEntities");
-            mockFilterAndAdaptEntities.mockResolvedValue(DATA_ENTITIES);
-        });
-        it("call filterAndAdaptEntities()", async () => {
-            // @ts-expect-error: test private method
-            await demarchesSimplifieesService.toRawGrants(DATA_ENTITIES);
-            expect(mockFilterAndAdaptEntities).toHaveBeenCalledWith(
-                DATA_ENTITIES,
-                DemarchesSimplifieesEntityAdapter.toRawGrant,
-            );
-        });
-    });
-
-    const SIREN = new Siren("000000000");
-    const SIRET = SIREN.toSiret("00000");
-
-    describe.each`
-        IDENTIFIER                                                                          | spyToCall
-        ${AssociationIdentifier.fromSiren(SIREN)}                                           | ${demarchesSimplifieesDataPort.findBySiren}
-        ${EstablishmentIdentifier.fromSiret(SIRET, AssociationIdentifier.fromSiren(SIREN))} | ${demarchesSimplifieesDataPort.findBySiret}
-    `("getRawGrants", ({ IDENTIFIER, spyToCall }) => {
-        const DATA = ["G1", "G2"];
-        const RAW_DATA = ["g1", "g2"];
-        let toRawGrantsMock;
-
-        beforeAll(() => {
-            // @ts-expect-error mock private method
-            toRawGrantsMock = jest.spyOn(demarchesSimplifieesService, "toRawGrants").mockResolvedValue(RAW_DATA);
-            spyToCall.mockReturnValue(DATA);
-        });
-        afterAll(() => {
-            toRawGrantsMock.mockRestore();
-            spyToCall.mockReset();
-        });
-
-        it("gets data from port", async () => {
-            await demarchesSimplifieesService.getRawGrants(IDENTIFIER);
-            expect(spyToCall).toHaveBeenCalledWith(IDENTIFIER.siren || IDENTIFIER.siret);
-        });
-
-        it("call private helper", async () => {
-            await demarchesSimplifieesService.getRawGrants(IDENTIFIER);
-            expect(toRawGrantsMock).toHaveBeenCalledWith(DATA);
-        });
-
-        it("returns data from helper", async () => {
-            const expected = RAW_DATA;
-            const actual = await demarchesSimplifieesService.getRawGrants(IDENTIFIER);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("rawToApplication", () => {
-        // @ts-expect-error: parameter type
-        const RAW_APPLICATION: RawApplication = { data: { foo: "bar" } };
-        // @ts-expect-error: parameter type
-        const APPLICATION: DemandeSubvention = { foo: "bar" };
-
-        it("should call DemarchesSimplifieesEntityAdapter.rawToApplication", () => {
-            demarchesSimplifieesService.rawToApplication(RAW_APPLICATION);
-            expect(DemarchesSimplifieesEntityAdapter.rawToApplication).toHaveBeenCalledWith(RAW_APPLICATION);
-        });
-
-        it("should return DemandeSubvention", () => {
-            jest.mocked(DemarchesSimplifieesEntityAdapter.rawToApplication).mockReturnValueOnce(APPLICATION);
-            const expected = APPLICATION;
-            const actual = demarchesSimplifieesService.rawToApplication(RAW_APPLICATION);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("rawToCommon", () => {
-        const RAW = { data: { grant: "GRANT", schema: "SCHEMA" } };
-        const COMMON = "adapted";
-
-        // @ts-expect-error mock
-        beforeAll(() => DemarchesSimplifieesEntityAdapter.toCommon.mockReturnValue(COMMON));
-        // @ts-expect-error mock
-        afterAll(() => DemarchesSimplifieesEntityAdapter.toCommon.mockReset());
-
-        it("calls adapter with proper arguments", () => {
-            // @ts-expect-error mock
-            demarchesSimplifieesService.rawToCommon(RAW);
-            expect(DemarchesSimplifieesEntityAdapter.toCommon).toHaveBeenCalledWith("GRANT", "SCHEMA");
-        });
-
-        it("returns result from adapter", () => {
-            const expected = COMMON;
-            // @ts-expect-error mock
-            const actual = demarchesSimplifieesService.rawToCommon(RAW);
-            expect(actual).toEqual(expected);
-        });
-    });
-
     describe("buildSchema", () => {
-        let sendQuerySpy: jest.SpyInstance;
         let generateSchemaInstructionSpy: jest.SpyInstance;
         const SCHEMA_SEED = [{ to: 1 }, { to: 2 }] as unknown as DemarchesSimplifieesSchemaSeedLine[];
-        const FORM_ID = 12345;
-        const QUERY_RESULT = "QUERY" as unknown as DemarchesSimplifieesSuccessDto;
         const EXAMPLE = "EXAMPLE" as unknown as DemarchesSimplifieesDataEntity;
 
         beforeAll(() => {
-            sendQuerySpy = jest.spyOn(demarchesSimplifieesService, "sendQuery").mockResolvedValue(QUERY_RESULT);
             generateSchemaInstructionSpy = jest
                 // @ts-expect-error -- spy private method
                 .spyOn(demarchesSimplifieesService, "generateSchemaInstruction")
                 // @ts-expect-error -- mock private method
                 .mockImplementation((c: DemarchesSimplifieesSchemaSeedLine) => Promise.resolve({ from: c.to }));
         });
-        jest.mocked(DemarchesSimplifieesDtoAdapter.toEntities).mockReturnValue([EXAMPLE]);
 
         afterAll(() => {
-            sendQuerySpy.mockRestore();
             generateSchemaInstructionSpy.mockRestore();
-            jest.mocked(DemarchesSimplifieesDtoAdapter.toEntities).mockRestore();
-        });
-
-        it("sends query", async () => {
-            await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, FORM_ID);
-            expect(sendQuerySpy).toHaveBeenCalledWith(GetDossiersByDemarcheId, { demarcheNumber: FORM_ID });
-        });
-
-        it("adapts entities (to get example)", async () => {
-            await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, FORM_ID);
-            expect(DemarchesSimplifieesDtoAdapter.toEntities).toHaveBeenCalledWith(QUERY_RESULT, FORM_ID);
         });
 
         it("finds id fo each field", async () => {
-            await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, FORM_ID);
+            await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, EXAMPLE);
             expect(generateSchemaInstructionSpy).toHaveBeenCalledTimes(2);
         });
 
         it("should returns aggregated results by field", async () => {
-            const actual = await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, FORM_ID);
+            const actual = await demarchesSimplifieesService.buildSchema(SCHEMA_SEED, EXAMPLE);
             expect(actual).toMatchSnapshot();
         });
     });
@@ -652,6 +599,7 @@ describe("DemarchesSimplifieesService", () => {
             },
         } as unknown as DemarchesSimplifieesDataEntity;
         const USER_INPUT = "userInput";
+        const NUMBER_USER_INPUT = 42;
 
         beforeAll(() => {
             jest.mocked(input).mockResolvedValue(USER_INPUT);
@@ -686,7 +634,19 @@ describe("DemarchesSimplifieesService", () => {
         });
 
         it("return 'value' singleShema from prompt if property 'valueToPrompt'", async () => {
-            const expected = { value: USER_INPUT };
+            jest.mocked(input).mockResolvedValueOnce(NUMBER_USER_INPUT.toString());
+            const expected = { value: NUMBER_USER_INPUT };
+            // @ts-expect-error -- test private method
+            const actual = await demarchesSimplifieesService.generateSchemaInstruction(
+                { valueToPrompt: true, to: "fieldName" },
+                EXAMPLE,
+            );
+            expect(actual).toEqual(expected);
+        });
+
+        it("return number 'value' singleShema from prompt if property 'valueToPrompt'", async () => {
+            jest.mocked(input).mockResolvedValueOnce(NUMBER_USER_INPUT.toString());
+            const expected = { value: NUMBER_USER_INPUT };
             // @ts-expect-error -- test private method
             const actual = await demarchesSimplifieesService.generateSchemaInstruction(
                 { valueToPrompt: true, to: "fieldName" },
@@ -700,6 +660,17 @@ describe("DemarchesSimplifieesService", () => {
             // @ts-expect-error -- test private method
             const actual = await demarchesSimplifieesService.generateSchemaInstruction(
                 { value: "default", to: "fieldName" },
+                EXAMPLE,
+            );
+            expect(actual).toEqual(expected);
+        });
+
+        it("return number 'value' singleShema from prompt if property 'value'", async () => {
+            jest.mocked(input).mockResolvedValueOnce(NUMBER_USER_INPUT.toString());
+            const expected = { value: NUMBER_USER_INPUT };
+            // @ts-expect-error -- test private method
+            const actual = await demarchesSimplifieesService.generateSchemaInstruction(
+                { value: USER_INPUT, to: "fieldName" },
                 EXAMPLE,
             );
             expect(actual).toEqual(expected);
@@ -750,14 +721,32 @@ describe("DemarchesSimplifieesService", () => {
         } as unknown as DemarchesSimplifieesSchemaSeed;
         const DEMARCHE_ID = 98765;
         const BUILT = "built" as unknown as DemarchesSimplifieesSchemaLine[];
+        const QUERY_RESULT = "QUERY" as unknown as DemarchesSimplifieesSuccessDto;
+        const EXAMPLE = "EXAMPLE" as unknown as DemarchesSimplifieesDataEntity;
+
         let buildSchemaSpy: jest.SpyInstance;
+        let sendQuerySpy: jest.SpyInstance;
 
         beforeAll(() => {
             buildSchemaSpy = jest.spyOn(demarchesSimplifieesService, "buildSchema").mockResolvedValue(BUILT);
+            sendQuerySpy = jest.spyOn(demarchesSimplifieesService, "sendQuery").mockResolvedValue(QUERY_RESULT);
+            jest.mocked(DemarchesSimplifieesDtoAdapter.toEntities).mockReturnValue([EXAMPLE]);
         });
 
         afterAll(() => {
             buildSchemaSpy.mockRestore();
+            sendQuerySpy.mockRestore();
+            jest.mocked(DemarchesSimplifieesDtoAdapter.toEntities).mockRestore();
+        });
+
+        it("sends query", async () => {
+            await demarchesSimplifieesService.buildFullSchema(FULL_SCHEMA, DEMARCHE_ID);
+            expect(sendQuerySpy).toHaveBeenCalledWith(GetDossiersByDemarcheId, { demarcheNumber: DEMARCHE_ID });
+        });
+
+        it("adapts entities (to get example)", async () => {
+            await demarchesSimplifieesService.buildFullSchema(FULL_SCHEMA, DEMARCHE_ID);
+            expect(DemarchesSimplifieesDtoAdapter.toEntities).toHaveBeenCalledWith(QUERY_RESULT, DEMARCHE_ID);
         });
 
         it("calls buildsSchema for each schema", async () => {

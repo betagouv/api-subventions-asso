@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.76.0](https://github.com/betagouv/datasubvention/compare/v0.75.2...v0.76.0) (2025-12-09)
+
+### Features
+
+- **api:** [#3678](https://github.com/betagouv/datasubvention/issues/3678) use grants v2 dashboard ([#3735](https://github.com/betagouv/datasubvention/issues/3735)) ([72e468b](https://github.com/betagouv/datasubvention/commit/72e468bf176da905a12a6cc64672894aa6e77f0b))
+
+# [0.75.0](https://github.com/betagouv/datasubvention/compare/v0.74.0...v0.75.0) (2025-11-17)
+
+**Note:** Version bump only for package core
+
+# [0.74.0](https://github.com/betagouv/datasubvention/compare/v0.72.4...v0.74.0) (2025-10-08)
+
+**Note:** Version bump only for package core
+
+# [0.73.0](https://github.com/betagouv/datasubvention/compare/v0.72.1...v0.73.0) (2025-09-03)
+
+**Note:** Version bump only for package core
+
 # [0.72.0](https://github.com/betagouv/datasubvention/compare/v0.71.0...v0.72.0) (2025-08-21)
 
 **Note:** Version bump only for package core

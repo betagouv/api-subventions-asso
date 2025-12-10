@@ -4,7 +4,7 @@ import applicationFlatPort from "../../dataProviders/db/applicationFlat/applicat
 import applicationFlatService from "./applicationFlat.service";
 import { ApplicationFlatEntity } from "../../entities/ApplicationFlatEntity";
 import ApplicationFlatAdapter from "./ApplicationFlatAdapter";
-import { DemandeSubvention } from "dto";
+import { ApplicationFlatDto, DemandeSubvention } from "dto";
 import { RawApplication } from "../grant/@types/rawGrant";
 import { ReadableStream } from "node:stream/web";
 
@@ -13,6 +13,8 @@ import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import { FindCursor } from "mongodb";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
+import { APPLICATION_LINK_TO_CHORUS, DBO as APPLICATION_FLAT_DBO } from "./__fixtures__";
+import DEFAULT_ASSOCIATION from "../../../tests/__fixtures__/association.fixture";
 
 jest.mock("../../dataProviders/db/applicationFlat/applicationFlat.port");
 jest.mock("./ApplicationFlatAdapter");
@@ -20,137 +22,78 @@ jest.mock("../../identifierObjects/Siret");
 jest.mock("../../shared/helpers/MongoHelper");
 
 describe("ApplicationFlatService", () => {
-    const FLAT_ENTITY = {} as ApplicationFlatEntity;
-    describe("application part", () => {
-        const [E1, E2] = ["entity1", "entity2"] as unknown as ApplicationFlatEntity[];
-        describe.each`
-            identifierType | rawIdentifier                  | findMethod                         | identifierConstructor
-            ${"siret"}     | ${new Siret("12345678901234")} | ${applicationFlatPort.findBySiret} | ${EstablishmentIdentifier.fromSiret}
-            ${"siren"}     | ${new Siren("123456789")}      | ${applicationFlatPort.findBySiren} | ${AssociationIdentifier.fromSiren}
-        `("getEntitiesByIdentifier", ({ rawIdentifier, identifierConstructor, findMethod }) => {
-            beforeAll(() => {
-                findMethod.mockResolvedValue([E1, E2]);
-            });
-            afterAll(() => {
-                findMethod.mockRestore();
-            });
+    const APPLICATIONS = [APPLICATION_LINK_TO_CHORUS, APPLICATION_LINK_TO_CHORUS];
 
-            it("if identifier is $identifierType, call proper port method", async () => {
-                await applicationFlatService.getEntitiesByIdentifier(identifierConstructor(rawIdentifier));
-                expect(findMethod).toHaveBeenCalledWith(rawIdentifier);
-            });
-
-            it("returns entities", async () => {
-                const expected = [E1, E2];
-                const actual = await applicationFlatService.getEntitiesByIdentifier(
-                    identifierConstructor(rawIdentifier),
-                );
-                expect(actual).toEqual(expected);
-            });
+    describe.each`
+        identifierType | rawIdentifier                  | findMethod                         | identifierConstructor
+        ${"siret"}     | ${new Siret("12345678901234")} | ${applicationFlatPort.findBySiret} | ${EstablishmentIdentifier.fromSiret}
+        ${"siren"}     | ${new Siren("123456789")}      | ${applicationFlatPort.findBySiren} | ${AssociationIdentifier.fromSiren}
+    `("getEntitiesByIdentifier", ({ rawIdentifier, identifierConstructor, findMethod }) => {
+        beforeAll(() => {
+            findMethod.mockResolvedValue(APPLICATIONS);
+        });
+        afterAll(() => {
+            findMethod.mockRestore();
         });
 
-        describe("rawToApplication", () => {
-            const RAW_GRANT = {
-                type: "application",
-                provider: "some",
-                data: FLAT_ENTITY,
-                joinKey: "ej",
-            } as RawApplication<ApplicationFlatEntity>;
-
-            it("calls adapter", () => {
-                applicationFlatService.rawToApplication(RAW_GRANT);
-                expect(ApplicationFlatAdapter.rawToApplication).toHaveBeenCalledWith(RAW_GRANT);
-            });
-
-            it("returns adapter's result", () => {
-                const expected = "adapted" as unknown as DemandeSubvention;
-                jest.mocked(ApplicationFlatAdapter.rawToApplication).mockReturnValueOnce(expected);
-                const actual = applicationFlatService.rawToApplication(RAW_GRANT);
-                expect(actual).toBe(expected);
-            });
+        it("if identifier is $identifierType, call proper port method", async () => {
+            await applicationFlatService.getEntitiesByIdentifier(identifierConstructor(rawIdentifier));
+            expect(findMethod).toHaveBeenCalledWith(rawIdentifier);
         });
 
-        describe("getDemandeSubvention", () => {
-            let getEntitiesSpy;
-            const [E1, E2] = ["entity1", "entity2"] as unknown as ApplicationFlatEntity[];
-            const IDENTIFIER = AssociationIdentifier.fromSiren(new Siren("987654321"));
-
-            beforeAll(() => {
-                getEntitiesSpy = jest
-                    .spyOn(applicationFlatService, "getEntitiesByIdentifier")
-                    .mockResolvedValue([E1, E2]);
-            });
-            afterAll(() => {
-                getEntitiesSpy.mockRestore();
-            });
-
-            it("gets entities", async () => {
-                await applicationFlatService.getDemandeSubvention(IDENTIFIER);
-                expect(getEntitiesSpy).toHaveBeenCalledWith(IDENTIFIER);
-            });
-
-            it("adapts all applications", async () => {
-                await applicationFlatService.getDemandeSubvention(IDENTIFIER);
-                expect(ApplicationFlatAdapter.toDemandeSubvention).toHaveBeenCalledWith(E1);
-                expect(ApplicationFlatAdapter.toDemandeSubvention).toHaveBeenCalledWith(E2);
-            });
-
-            it("returns non-null adapted applications", async () => {
-                const A2 = "adapted 2" as unknown as DemandeSubvention;
-                jest.mocked(ApplicationFlatAdapter.toDemandeSubvention).mockReturnValueOnce(null);
-                jest.mocked(ApplicationFlatAdapter.toDemandeSubvention).mockReturnValue(A2);
-                const expected = [A2];
-                const actual = await applicationFlatService.getDemandeSubvention(IDENTIFIER);
-                expect(actual).toEqual(expected);
-            });
+        it("returns entities", async () => {
+            const expected = APPLICATIONS;
+            const actual = await applicationFlatService.getEntitiesByIdentifier(identifierConstructor(rawIdentifier));
+            expect(actual).toEqual(expected);
         });
     });
 
-    describe("grant part", () => {
-        describe("getRawGrants", () => {
-            let getEntitiesSpy;
-            const [E1, E2] = [
-                { provider: "fonjep", paymentId: "poste1" },
-                { provider: "autre", ej: "ej2" },
-            ] as unknown as ApplicationFlatEntity[];
-            const IDENTIFIER = AssociationIdentifier.fromSiren(new Siren("987654321"));
+    describe("saveFromStream", () => {
+        const STREAM = {} as unknown as ReadableStream;
 
-            beforeAll(() => {
-                getEntitiesSpy = jest
-                    .spyOn(applicationFlatService, "getEntitiesByIdentifier")
-                    .mockResolvedValue([E1, E2]);
-            });
-            afterAll(() => {
-                getEntitiesSpy.mockRestore();
-            });
+        it("calls mongo helper", async () => {
+            await applicationFlatService.saveFromStream(STREAM);
+            expect(insertStreamByBatch).toHaveBeenCalledWith(STREAM, expect.anything(), 10000);
+        });
 
-            it("gets entities", async () => {
-                await applicationFlatService.getRawGrants(IDENTIFIER);
-                expect(getEntitiesSpy).toHaveBeenCalledWith(IDENTIFIER);
-            });
-
-            it("converts found methods", async () => {
-                const actual = await applicationFlatService.getRawGrants(IDENTIFIER);
-                expect(actual).toMatchSnapshot();
-            });
+        it("calls mongo helper with flat upsert", async () => {
+            await applicationFlatService.saveFromStream(STREAM);
+            const methodCalledByHelper = jest.mocked(insertStreamByBatch).mock.calls[0][1];
+            await methodCalledByHelper([]);
+            expect(applicationFlatPort.upsertMany).toHaveBeenCalled();
         });
     });
 
-    describe("applicationFlat part", () => {
-        describe("saveFromStream", () => {
-            const STREAM = {} as unknown as ReadableStream;
+    describe("getApplicationDto", () => {
+        const IDENTIFIER = AssociationIdentifier.fromSiren(new Siren(DEFAULT_ASSOCIATION.siren));
 
-            it("calls mongo helper", async () => {
-                await applicationFlatService.saveFromStream(STREAM);
-                expect(insertStreamByBatch).toHaveBeenCalledWith(STREAM, expect.anything(), 10000);
-            });
+        let mockGetEntitiesByIdentifier;
 
-            it("calls mongo helper with flat upsert", async () => {
-                await applicationFlatService.saveFromStream(STREAM);
-                const methodCalledByHelper = jest.mocked(insertStreamByBatch).mock.calls[0][1];
-                await methodCalledByHelper([]);
-                expect(applicationFlatPort.upsertMany).toHaveBeenCalled();
-            });
+        beforeEach(() => {
+            mockGetEntitiesByIdentifier = jest
+                .spyOn(applicationFlatService, "getEntitiesByIdentifier")
+                .mockResolvedValue(APPLICATIONS);
+            jest.mocked(ApplicationFlatAdapter.toDto).mockReturnValue(APPLICATION_FLAT_DBO as ApplicationFlatDto); // dbo is the same as dto
+        });
+
+        afterAll(() => {
+            mockGetEntitiesByIdentifier.mockRestore();
+        });
+
+        it("fetches applications flat ", async () => {
+            await applicationFlatService.getApplicationsDto(IDENTIFIER);
+            expect(mockGetEntitiesByIdentifier).toHaveBeenCalledWith(IDENTIFIER);
+        });
+
+        it("adapts entities to dtos", async () => {
+            await applicationFlatService.getApplicationsDto(IDENTIFIER);
+            expect(ApplicationFlatAdapter.toDto).toHaveBeenCalledTimes(APPLICATIONS.length);
+        });
+
+        it("returns applications", async () => {
+            const expected = [APPLICATION_FLAT_DBO, APPLICATION_FLAT_DBO];
+            const actual = await applicationFlatService.getApplicationsDto(IDENTIFIER);
+            expect(actual).toEqual(expected);
         });
     });
 
@@ -210,6 +153,94 @@ describe("ApplicationFlatService", () => {
             const actual = await applicationFlatService.containsDataFromProvider(PROVIDER);
             expect(CURSOR.hasNext).toHaveBeenCalled();
             expect(actual).toBe(expected);
+        });
+    });
+
+    // DemandeSubvention DTO
+    describe("old application part", () => {
+        describe("rawToApplication", () => {
+            const RAW_GRANT = {
+                type: "application",
+                provider: "some",
+                data: APPLICATION_LINK_TO_CHORUS,
+                joinKey: "ej",
+            } as RawApplication;
+
+            it("calls adapter", () => {
+                applicationFlatService.rawToApplication(RAW_GRANT);
+                expect(ApplicationFlatAdapter.rawToApplication).toHaveBeenCalledWith(RAW_GRANT);
+            });
+
+            it("returns adapter's result", () => {
+                const expected = "adapted" as unknown as DemandeSubvention;
+                jest.mocked(ApplicationFlatAdapter.rawToApplication).mockReturnValueOnce(expected);
+                const actual = applicationFlatService.rawToApplication(RAW_GRANT);
+                expect(actual).toBe(expected);
+            });
+        });
+
+        describe("getApplication", () => {
+            let getEntitiesSpy;
+            const IDENTIFIER = AssociationIdentifier.fromSiren(new Siren("987654321"));
+
+            beforeAll(() => {
+                getEntitiesSpy = jest
+                    .spyOn(applicationFlatService, "getEntitiesByIdentifier")
+                    .mockResolvedValue(APPLICATIONS);
+            });
+            afterAll(() => {
+                getEntitiesSpy.mockRestore();
+            });
+
+            it("gets entities", async () => {
+                await applicationFlatService.getApplication(IDENTIFIER);
+                expect(getEntitiesSpy).toHaveBeenCalledWith(IDENTIFIER);
+            });
+
+            it("adapts all applications", async () => {
+                await applicationFlatService.getApplication(IDENTIFIER);
+                expect(ApplicationFlatAdapter.toDemandeSubvention).toHaveBeenCalledWith(APPLICATION_LINK_TO_CHORUS);
+                expect(ApplicationFlatAdapter.toDemandeSubvention).toHaveBeenCalledWith(APPLICATION_LINK_TO_CHORUS);
+            });
+
+            it("returns non-null adapted applications", async () => {
+                const A2 = "adapted 2" as unknown as DemandeSubvention;
+                jest.mocked(ApplicationFlatAdapter.toDemandeSubvention).mockReturnValueOnce(null);
+                jest.mocked(ApplicationFlatAdapter.toDemandeSubvention).mockReturnValue(A2);
+                const expected = [A2];
+                const actual = await applicationFlatService.getApplication(IDENTIFIER);
+                expect(actual).toEqual(expected);
+            });
+        });
+    });
+
+    describe("grant part", () => {
+        describe("getRawGrants", () => {
+            let getEntitiesSpy;
+            const APPLICATIONS = [
+                { provider: "fonjep", paymentId: "poste1" },
+                { provider: "autre", paymentId: "ej2" },
+            ] as unknown as ApplicationFlatEntity[];
+            const IDENTIFIER = AssociationIdentifier.fromSiren(new Siren("987654321"));
+
+            beforeAll(() => {
+                getEntitiesSpy = jest
+                    .spyOn(applicationFlatService, "getEntitiesByIdentifier")
+                    .mockResolvedValue(APPLICATIONS);
+            });
+            afterAll(() => {
+                getEntitiesSpy.mockRestore();
+            });
+
+            it("gets entities", async () => {
+                await applicationFlatService.getRawGrants(IDENTIFIER);
+                expect(getEntitiesSpy).toHaveBeenCalledWith(IDENTIFIER);
+            });
+
+            it("converts found methods", async () => {
+                const actual = await applicationFlatService.getRawGrants(IDENTIFIER);
+                expect(actual).toMatchSnapshot();
+            });
         });
     });
 });

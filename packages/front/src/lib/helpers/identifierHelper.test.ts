@@ -78,6 +78,14 @@ describe("IdentifierHelper", () => {
             expect(actual).toEqual(expected);
         });
 
+        it("should return false when siret more than 14 digits", () => {
+            const invalidSiret = "123456789012345";
+            vi.mocked(StringHelper.removeWhiteSpace).mockReturnValue(invalidSiret);
+            const expected = false;
+            const actual = IdentifierHelper.isSiret(invalidSiret);
+            expect(actual).toEqual(expected);
+        });
+
         it("should return false", () => {
             const invalidSiret = "Z2589647500018";
             vi.mocked(StringHelper.removeWhiteSpace).mockReturnValueOnce(invalidSiret);

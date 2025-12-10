@@ -6,18 +6,18 @@ import fonjepService from "../../modules/providers/fonjep/fonjep.service";
 @StaticImplements<CliStaticInterface>()
 export default class FonjepCli extends CliController {
     static cmdName = "fonjep";
-    protected _providerIdToLog = fonjepService.provider.id;
+    protected _providerIdToLog = fonjepService.meta.id;
     protected logFileParsePath = "./logs/fonjep.parse.log.txt";
 
     /**
-     * @example npm run cli fonjep parse ./Extraction\ du\ 30-12-2022.xlsx 2022-12-30
+     * @example pnpm cli fonjep parse ./Extraction\ du\ 30-12-2022.xlsx 2022-12-30
      *
      * @param file Path to the file
      * @param logs is auto-injected by cli controller
      * @param exportDate Explicite date of import (any valid date string, like "YYYY-MM-DD")
      *
      */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     protected async _parse(file: string, logs: unknown[], exportDate: Date | undefined) {
         this.logger.logIC("\nStart parse file: ", file);
         this.logger.log(`\n\n--------------------------------\n${file}\n--------------------------------\n\n`);
@@ -60,5 +60,17 @@ export default class FonjepCli extends CliController {
         await fonjepService.applyTemporyCollection();
 
         this.logger.logIC("Fonjep collections created or updated");
+    }
+
+    // ONLY USED FOR TEST / CLEAN PURPOSE AFTER BUG DETECTION TO AVOID REIMPORTING FONJEP DATA
+    // creates all fonjep payment-flat from collection
+    async initPaymentFlat() {
+        const { thirdParties, positions, payments } = await fonjepService.getPaymentFlatCollections();
+        // TODO: make PaymentFlat use the same ReadableStream architecture yo be ISO with ApplicationFlat ?
+        await fonjepService.createPaymentFlatEntitiesFromCollections({
+            thirdParties,
+            positions,
+            payments,
+        });
     }
 }

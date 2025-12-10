@@ -145,8 +145,8 @@ exports[`ApiAssoDtoAdapter sirenStructureToAssociation should transform to assoc
       "provider": "SIREN",
       "type": "object",
       "value": [
-        "123004648000021",
-        "123004648000013",
+        "12300464800021",
+        "12300464800013",
       ],
     },
   ],
@@ -155,7 +155,7 @@ exports[`ApiAssoDtoAdapter sirenStructureToAssociation should transform to assoc
       "last_update": 2019-11-28T00:00:00.000Z,
       "provider": "SIREN",
       "type": "string",
-      "value": "00002",
+      "value": "00021",
     },
   ],
   "siren": [
@@ -163,13 +163,13 @@ exports[`ApiAssoDtoAdapter sirenStructureToAssociation should transform to assoc
       "last_update": 2019-11-28T00:00:00.000Z,
       "provider": "SIREN",
       "type": "string",
-      "value": "1230046480",
+      "value": "123004648",
     },
   ],
 }
 `;
 
-exports[`ApiAssoDtoAdapter toEtablissement should return etablissement with contact 1`] = `
+exports[`ApiAssoDtoAdapter toEstablishment should return establishment with contact 1`] = `
 {
   "adresse": [
     {
@@ -255,7 +255,7 @@ exports[`ApiAssoDtoAdapter toEtablissement should return etablissement with cont
 }
 `;
 
-exports[`ApiAssoDtoAdapter toEtablissement should return etablissement with rib 1`] = `
+exports[`ApiAssoDtoAdapter toEstablishment should return establishment with rib 1`] = `
 {
   "adresse": [
     {
@@ -332,7 +332,7 @@ exports[`ApiAssoDtoAdapter toEtablissement should return etablissement with rib 
 }
 `;
 
-exports[`ApiAssoDtoAdapter toEtablissement should return etablissement without contact 1`] = `
+exports[`ApiAssoDtoAdapter toEstablishment should return establishment without contact 1`] = `
 {
   "adresse": [
     {
@@ -386,7 +386,7 @@ exports[`ApiAssoDtoAdapter toEtablissement should return etablissement without c
 }
 `;
 
-exports[`ApiAssoDtoAdapter toEtablissement should return etablissement without rib 1`] = `
+exports[`ApiAssoDtoAdapter toEstablishment should return establishment without rib 1`] = `
 {
   "adresse": [
     {

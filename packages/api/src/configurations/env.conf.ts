@@ -6,3 +6,4 @@ if (process.env.ENV !== "test") dotenv.config({ path: `.env.local`, override: tr
 
 export const ENV = process.env.ENV || "dev";
 export const DEV = process.env.NODE_ENV !== "production";
+export const PROD = process.env.NODE_ENV === "production";

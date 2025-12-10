@@ -3,7 +3,6 @@ import MiscScdlGrantEntity from "../entities/MiscScdlGrantEntity";
 import MiscScdlProducer from "./MiscScdlProducer";
 
 const MiscScdlGrant: MiscScdlGrantEntity = {
-    producerSlug: MiscScdlProducer.slug,
     allocatorName: MiscScdlProducer.name,
     allocatorSiret: MiscScdlProducer.siret,
     exercice: 2023,

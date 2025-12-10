@@ -3,6 +3,93 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.76.3](https://github.com/betagouv/api-subventions-asso/compare/v0.76.2...v0.76.3) (2025-12-10)
+
+### Bug Fixes
+
+- **api:** ts test issues and scdl app flat backup bulk ops ([6d9d433](https://github.com/betagouv/api-subventions-asso/commit/6d9d43315bbc4a851962323ee6b5f960747ddd45))
+
+## [0.76.2](https://github.com/betagouv/api-subventions-asso/compare/v0.76.1...v0.76.2) (2025-12-10)
+
+### Bug Fixes
+
+- **api:** scdl batch import async for each ([cf7b09f](https://github.com/betagouv/api-subventions-asso/commit/cf7b09fd90c56e0ad4bdc3dde3567a8cdcaa66c6))
+
+## [0.76.1](https://github.com/betagouv/api-subventions-asso/compare/v0.76.0...v0.76.1) (2025-12-09)
+
+### Bug Fixes
+
+- **api:** remove slug from producers and fix batch ([cd7a5da](https://github.com/betagouv/api-subventions-asso/commit/cd7a5da1269c1f807a2265919fe6e1fc810ca60f))
+
+# [0.76.0](https://github.com/betagouv/api-subventions-asso/compare/v0.75.2...v0.76.0) (2025-12-09)
+
+### Features
+
+- **api:** [#3583](https://github.com/betagouv/api-subventions-asso/issues/3583) use flat as application and grant provider ([#3645](https://github.com/betagouv/api-subventions-asso/issues/3645)) ([3b74f3c](https://github.com/betagouv/api-subventions-asso/commit/3b74f3cfedf21133ce04f893edaea25a0c685ddb))
+- **api:** [#3677](https://github.com/betagouv/api-subventions-asso/issues/3677) add new grant entrypoint with flats ([#3726](https://github.com/betagouv/api-subventions-asso/issues/3726)) ([f352eff](https://github.com/betagouv/api-subventions-asso/commit/f352effcd4e752394ce4fb9bbaf516ddf8d6f309))
+- **api:** [#3678](https://github.com/betagouv/api-subventions-asso/issues/3678) use grants v2 dashboard ([#3735](https://github.com/betagouv/api-subventions-asso/issues/3735)) ([72e468b](https://github.com/betagouv/api-subventions-asso/commit/72e468bf176da905a12a6cc64672894aa6e77f0b))
+
+## [0.75.2](https://github.com/betagouv/api-subventions-asso/compare/v0.75.1...v0.75.2) (2025-11-20)
+
+### Bug Fixes
+
+- **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) prevent blocking errors and adding code coverage ([#3718](https://github.com/betagouv/api-subventions-asso/issues/3718)) ([b03c470](https://github.com/betagouv/api-subventions-asso/commit/b03c4707788014d21ec50f1b357ad7ed3fb79737))
+
+### Features
+
+- **api:** [#3703](https://github.com/betagouv/api-subventions-asso/issues/3703) committee stats ([#3716](https://github.com/betagouv/api-subventions-asso/issues/3716)) ([bdf8998](https://github.com/betagouv/api-subventions-asso/commit/bdf89985ec2233d42b551d010f27ed37ac4ae30b))
+
+# [0.75.0](https://github.com/betagouv/api-subventions-asso/compare/v0.74.0...v0.75.0) (2025-11-17)
+
+### Bug Fixes
+
+- **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) fix multer not found in express namespace ([#3707](https://github.com/betagouv/api-subventions-asso/issues/3707)) ([1566f3c](https://github.com/betagouv/api-subventions-asso/commit/1566f3cc01d962aad8b3c64db3a4a436f85adc24))
+- **api:** multer type config ([0605f74](https://github.com/betagouv/api-subventions-asso/commit/0605f7420c1b8f0fa39f26105d4b4dcbc4c6f6f3))
+- **api:** reapply multer type with express fix ([09c46d4](https://github.com/betagouv/api-subventions-asso/commit/09c46d4328aca9874138c1cfe995fb3522cc40ca))
+- **api:** update sirene stock unite legal url download ([cd4b852](https://github.com/betagouv/api-subventions-asso/commit/cd4b8520d8f78e2aeb852be27b1cb2bdd144fda2))
+
+### Features
+
+- **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) update mapper for beneficiary name and siret ([#3711](https://github.com/betagouv/api-subventions-asso/issues/3711)) ([cc0fa35](https://github.com/betagouv/api-subventions-asso/commit/cc0fa3558162333219d36d6f4d0857eacb661b31))
+- **api:** [#3620](https://github.com/betagouv/api-subventions-asso/issues/3620) cron warn user after partial deposit ([#3681](https://github.com/betagouv/api-subventions-asso/issues/3681)) ([7657bc4](https://github.com/betagouv/api-subventions-asso/commit/7657bc488512f34a6eb03577fceb4934096ed636))
+- **api:** [#3621](https://github.com/betagouv/api-subventions-asso/issues/3621) warn team on users unfinished deposit ([#3695](https://github.com/betagouv/api-subventions-asso/issues/3695)) ([35cfd88](https://github.com/betagouv/api-subventions-asso/commit/35cfd889698f49a9bce74c5cce45055dd274a282))
+- **api:** [#3624](https://github.com/betagouv/api-subventions-asso/issues/3624) step 4 api: ([#3693](https://github.com/betagouv/api-subventions-asso/issues/3693)) ([4a7b75d](https://github.com/betagouv/api-subventions-asso/commit/4a7b75d09e5de490e1b088e0d8e3093da777a37a))
+- **api:** [#3625](https://github.com/betagouv/api-subventions-asso/issues/3625) add userId-into-data-log ([#3714](https://github.com/betagouv/api-subventions-asso/issues/3714)) ([cc270c1](https://github.com/betagouv/api-subventions-asso/commit/cc270c1485b526109a36e9d7dbddb3e761e8982b))
+- **api:** [#3652](https://github.com/betagouv/api-subventions-asso/issues/3652) [#3666](https://github.com/betagouv/api-subventions-asso/issues/3666) reconnect db after close and send message ([#3673](https://github.com/betagouv/api-subventions-asso/issues/3673)) ([f5de893](https://github.com/betagouv/api-subventions-asso/commit/f5de893fb1df08fe15711820ef2b69f00f5554b6))
+- **api:** [#3670](https://github.com/betagouv/api-subventions-asso/issues/3670) shrink init flat to lower process time ([#3671](https://github.com/betagouv/api-subventions-asso/issues/3671)) ([b3fe737](https://github.com/betagouv/api-subventions-asso/commit/b3fe7378904119fc29fdefa42525fb2f62a31d19))
+- **api:** [#3699](https://github.com/betagouv/api-subventions-asso/issues/3699) bis - create producer by siret ([#3706](https://github.com/betagouv/api-subventions-asso/issues/3706)) ([e744b75](https://github.com/betagouv/api-subventions-asso/commit/e744b75a17391110f121142ba1d237b44d995ae3))
+- **api:** [#3701](https://github.com/betagouv/api-subventions-asso/issues/3701) notify after scdl import ([#3702](https://github.com/betagouv/api-subventions-asso/issues/3702)) ([ae1fe86](https://github.com/betagouv/api-subventions-asso/commit/ae1fe8675666ebedb6e9462f5024dd763053143c))
+- **api:** [#3704](https://github.com/betagouv/api-subventions-asso/issues/3704) import batch scdl ([#3708](https://github.com/betagouv/api-subventions-asso/issues/3708)) ([f8fa6e1](https://github.com/betagouv/api-subventions-asso/commit/f8fa6e18d8e58d4040c0cdf80389385157e4310b))
+- **api:** [#3712](https://github.com/betagouv/api-subventions-asso/issues/3712) persist deposit scdl file ([#3713](https://github.com/betagouv/api-subventions-asso/issues/3713)) ([36ce362](https://github.com/betagouv/api-subventions-asso/commit/36ce3624ff294dd9e0384bb98858593de65b3bb6))
+- **back:** [#3655](https://github.com/betagouv/api-subventions-asso/issues/3655) deposit logs cron metabase ([#3675](https://github.com/betagouv/api-subventions-asso/issues/3675)) ([c2b1034](https://github.com/betagouv/api-subventions-asso/commit/c2b10342bf6aaf9e63dcfbad3b1fcc2fcf5a3cf6))
+- **front, api:** [#3626](https://github.com/betagouv/api-subventions-asso/issues/3626) step 4 front ([#3709](https://github.com/betagouv/api-subventions-asso/issues/3709)) ([15c93fd](https://github.com/betagouv/api-subventions-asso/commit/15c93fd3c8f607c0edc4ed75c889fbaa753470e6))
+- **front:** [#3636](https://github.com/betagouv/api-subventions-asso/issues/3636) refacto deposit form single page ([#3682](https://github.com/betagouv/api-subventions-asso/issues/3682)) ([5073cb1](https://github.com/betagouv/api-subventions-asso/commit/5073cb1b13d16a687610c46575f02503b7d00060))
+- **front:** [#3651](https://github.com/betagouv/api-subventions-asso/issues/3651) update login page design ([#3676](https://github.com/betagouv/api-subventions-asso/issues/3676)) ([a0b46f6](https://github.com/betagouv/api-subventions-asso/commit/a0b46f6ae2732505bb089142b13648462782912d))
+
+# [0.74.0](https://github.com/betagouv/api-subventions-asso/compare/v0.72.4...v0.74.0) (2025-10-08)
+
+### Bug Fixes
+
+- **api:** [#3392](https://github.com/betagouv/api-subventions-asso/issues/3392) replace cast by instance ([#3658](https://github.com/betagouv/api-subventions-asso/issues/3658)) ([bb77f68](https://github.com/betagouv/api-subventions-asso/commit/bb77f68f580f1762e31630fb411d3d7511c98f80))
+- **api:** allow disk use for dauphin init application flat ([f616ee0](https://github.com/betagouv/api-subventions-asso/commit/f616ee017a077e6088f725baa9e7ebba343a3b44))
+- **api:** increase API call rate limit ([4a35622](https://github.com/betagouv/api-subventions-asso/commit/4a3562251eb0e0fc56c7f518e2057dd0f4c5e866))
+
+### Features
+
+- **api,dto:** [#3275](https://github.com/betagouv/api-subventions-asso/issues/3275) [#3524](https://github.com/betagouv/api-subventions-asso/issues/3524) add http controllers to serve flat data ([#3615](https://github.com/betagouv/api-subventions-asso/issues/3615)) ([6ccd8c5](https://github.com/betagouv/api-subventions-asso/commit/6ccd8c50fb28f842efda0fa8f9eaa240a482df68))
+- **api:** [#3507](https://github.com/betagouv/api-subventions-asso/issues/3507) add update date to payment flat ([#3644](https://github.com/betagouv/api-subventions-asso/issues/3644)) ([fcf706c](https://github.com/betagouv/api-subventions-asso/commit/fcf706ca683a638bf3718ee1bbabcd9aa90fb717))
+- **api:** [#3583](https://github.com/betagouv/api-subventions-asso/issues/3583) use flat as application and grant provider ([#3645](https://github.com/betagouv/api-subventions-asso/issues/3645)) ([3677c42](https://github.com/betagouv/api-subventions-asso/commit/3677c426bace40c5d868ead16fb04a3acb9f4a74))
+- **api:** [#3594](https://github.com/betagouv/api-subventions-asso/issues/3594) ds data to application flat ([#3599](https://github.com/betagouv/api-subventions-asso/issues/3599)) ([16d0ead](https://github.com/betagouv/api-subventions-asso/commit/16d0eadf80fb80205157d5625d7ae6d07fda0e1e))
+- **api:** [#3612](https://github.com/betagouv/api-subventions-asso/issues/3612) added scdl exercice path ([#3649](https://github.com/betagouv/api-subventions-asso/issues/3649)) ([0351396](https://github.com/betagouv/api-subventions-asso/commit/0351396173e8d9f934705010f946cf72698eb023))
+- **api:** [#3622](https://github.com/betagouv/api-subventions-asso/issues/3622) deposit process set up ([#3659](https://github.com/betagouv/api-subventions-asso/issues/3659)) ([67ba000](https://github.com/betagouv/api-subventions-asso/commit/67ba00048d8ce4e77014b7ef4321d8155565d374))
+- **api:** [#3652](https://github.com/betagouv/api-subventions-asso/issues/3652) add CLI methods to test CRONs ([#3669](https://github.com/betagouv/api-subventions-asso/issues/3669)) ([7194d6c](https://github.com/betagouv/api-subventions-asso/commit/7194d6c73febba2114c386ac5a91549f13138955))
+
+# [0.73.0](https://github.com/betagouv/api-subventions-asso/compare/v0.72.1...v0.73.0) (2025-09-03)
+
+### Features
+
+- **api:** [#3594](https://github.com/betagouv/api-subventions-asso/issues/3594) ds data to application flat ([#3599](https://github.com/betagouv/api-subventions-asso/issues/3599)) ([ab30cd1](https://github.com/betagouv/api-subventions-asso/commit/ab30cd17d9b7ccae6024de82ac5a050923e985e9))
+
 ## [0.72.4](https://github.com/betagouv/api-subventions-asso/compare/v0.72.3...v0.72.4) (2025-10-01)
 
 ### Bug Fixes
@@ -20,6 +107,8 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 - **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) hotfix chorus unique id ([#3640](https://github.com/betagouv/api-subventions-asso/issues/3640)) ([b29d64c](https://github.com/betagouv/api-subventions-asso/commit/b29d64c2bd5f7d1bba3a0c192a74244883e0ee23))
+
+# [0.73.0](https://github.com/betagouv/api-subventions-asso/compare/v0.72.1...v0.73.0) (2025-09-03)
 
 ## [0.72.1](https://github.com/betagouv/api-subventions-asso/compare/v0.72.0...v0.72.1) (2025-08-22)
 

@@ -1,9 +1,9 @@
-import { ProviderDataEntity } from "../../../../@types/ProviderDataEntity";
+import type { ProviderDataEntity } from "../../../../@types/ProviderData";
 
 interface FonjepVersementEntity extends ProviderDataEntity {
     posteCode: string;
-    periodeDebut: Date | null;
-    periodeFin: Date | null;
+    periodeDebut: Date;
+    periodeFin: Date;
     dateVersement: Date | null;
     montantAPayer: number | null;
     montantPaye: number | null;

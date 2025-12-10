@@ -1,14 +1,8 @@
-import { DemandeSubvention } from "dto";
 import { AggregationCursor, BulkWriteResult } from "mongodb";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { isAssociationName, isCompteAssoId, isOsirisActionId, isOsirisRequestId } from "../../../shared/Validators";
-import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
-import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
 import ProviderCore from "../ProviderCore";
 import rnaSirenService from "../../rna-siren/rnaSiren.service";
-import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
-import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
-import GrantProvider from "../../grant/@types/GrantProvider";
 import Siret from "../../../identifierObjects/Siret";
 import Siren from "../../../identifierObjects/Siren";
 import Rna from "../../../identifierObjects/Rna";
@@ -16,7 +10,6 @@ import { osirisRequestPort, osirisActionPort } from "../../../dataProviders/db/p
 import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
-import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
 import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
 import { ReadableStream } from "stream/web";
 import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
@@ -44,10 +37,7 @@ export class InvalidOsirisRequestError extends Error {
     }
 }
 
-export class OsirisService
-    extends ProviderCore
-    implements DemandesSubventionsProvider<OsirisRequestEntity>, GrantProvider, ApplicationFlatProvider
-{
+export class OsirisService extends ProviderCore implements ApplicationFlatProvider {
     constructor() {
         super({
             name: "OSIRIS",
@@ -189,67 +179,10 @@ export class OsirisService
     }
 
     /**
-     * |------------------------------|
-     * | Demandes de Subventions Part |
-     * |------------------------------|
-     */
-
-    isDemandesSubventionsProvider = true;
-
-    rawToApplication(rawApplication: RawApplication<OsirisRequestEntity>) {
-        return OsirisRequestAdapter.rawToApplication(rawApplication);
-    }
-
-    async getDemandeSubvention(id: StructureIdentifier): Promise<DemandeSubvention[]> {
-        let requests: OsirisRequestEntity[] = [];
-        if (id instanceof EstablishmentIdentifier && id.siret) {
-            requests = await this.findBySiret(id.siret);
-        } else if (id instanceof AssociationIdentifier && id.siren) {
-            requests = await this.findBySiren(id.siren);
-        }
-
-        return Promise.all(requests.map(r => OsirisRequestAdapter.toDemandeSubvention(r)));
-    }
-
-    /**
-     * |-------------------------|
-     * |   Raw Grant Part        |
-     * |-------------------------|
-     */
-
-    isGrantProvider = true;
-
-    // TODO: add toRawApplication in adapter #2457
-    // https://github.com/betagouv/api-subventions-asso/issues/2457
-    async getRawGrants(identifier: StructureIdentifier): Promise<RawGrant[]> {
-        let requests: OsirisRequestEntity[] = [];
-        if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            requests = await this.findBySiret(identifier.siret);
-        } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            requests = await this.findBySiren(identifier.siren);
-        }
-
-        // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
-        return requests.map(request => ({
-            provider: this.provider.id,
-            type: "application",
-            data: request,
-            joinKey: request?.providerInformations?.ej,
-        }));
-    }
-
-    rawToCommon(raw: RawGrant) {
-        // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
-        return OsirisRequestAdapter.toCommon(raw.data as OsirisRequestEntity);
-    }
-
-    /**
      * |--------------------------------|
      * |   Application Flat Part        |
      * |--------------------------------|
      */
-
-    isApplicationFlatProvider = true as const;
 
     initApplicationFlat() {
         const cursor = osirisJoiner.findAllCursor();

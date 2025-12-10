@@ -1,11 +1,7 @@
-import { ObjectId, WithId } from "mongodb";
-import ProviderValueAdapter from "../../../../shared/adapters/ProviderValueAdapter";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 import ChorusAdapter from "./ChorusAdapter";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
-import { ENTITIES, PAYMENTS } from "../__fixtures__/ChorusFixtures";
-import { RawPayment } from "../../../grant/@types/rawGrant";
-import PROGRAMS from "../../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
+import { ENTITIES } from "../__fixtures__/ChorusFixtures";
 import { ChorusLineDto } from "../@types/ChorusLineDto";
 import { DATA_BRETAGNE_RECORDS } from "../../dataBretagne/__fixtures__/dataBretagne.fixture";
 import * as Sentry from "@sentry/node";
@@ -23,8 +19,6 @@ jest.mock("@sentry/node", () => ({
 }));
 
 describe("ChorusAdapter", () => {
-    const PROGRAM = PROGRAMS[0];
-
     const documentDataReturnedValue = {
         programCode: 101,
         activityCode: "077601003222",
@@ -40,113 +34,18 @@ describe("ChorusAdapter", () => {
         data: { ...(ENTITIES[0].data as ChorusLineDto), Société: "BRET" },
     };
 
-    describe("toCommon", () => {
-        it("returns proper result", () => {
-            const INPUT = {
-                indexedInformations: {
-                    amount: 42789,
-                    dateOperation: new Date("2022-02-02"),
-                    codeDomaineFonctionnel: "0BOP-other",
-                    exercice: 2022,
-                },
-            };
-            // @ts-expect-error mock
-            const actual = ChorusAdapter.toCommon(INPUT);
-            expect(actual).toMatchSnapshot();
-        });
-    });
-
-    describe("rawToPayment", () => {
-        //@ts-expect-error: parameter type
-        const RAW_PAYMENT: RawPayment<ChorusLineEntity> = { data: ENTITIES[0] };
-
-        let mockToPayment: jest.SpyInstance;
-        beforeAll(() => {
-            mockToPayment = jest.spyOn(ChorusAdapter, "toPayment");
-            mockToPayment.mockReturnValue(PAYMENTS[0]);
-        });
-
-        afterAll(() => {
-            mockToPayment.mockRestore();
-        });
-
-        it("should call toPayment()", () => {
-            ChorusAdapter.rawToPayment(RAW_PAYMENT, PROGRAM);
-            expect(ChorusAdapter.toPayment).toHaveBeenCalledWith(RAW_PAYMENT.data, PROGRAM);
-        });
-
-        it("should return Payment", () => {
-            const expected = PAYMENTS[0];
-            const actual = ChorusAdapter.rawToPayment(RAW_PAYMENT, PROGRAM);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("toPayment", () => {
-        const now = new Date();
-        const toPV = (value: unknown, provider = "Chorus") =>
-            ProviderValueAdapter.toProviderValue(value, provider, now);
-
-        it("should return complet entity", () => {
-            const entity = ENTITIES[0];
-
-            const actual = ChorusAdapter.toPayment(entity as WithId<ChorusLineEntity>, PROGRAM);
-
-            expect(actual).toMatchSnapshot();
-        });
-
-        it("should return partial entity", () => {
-            const entity = new ChorusLineEntity(
-                "UNIQUE_ID",
-                new Date("2021-01-01"),
-                {
-                    codeBranche: "FAKE",
-                    branche: "FAKE",
-                    centreFinancier: "FAKE",
-                    codeCentreFinancier: "FAKE",
-                    domaineFonctionnel: "FAKE",
-                    numeroDemandePaiement: "FAKE",
-                    codeSociete: "FAKE",
-                    exercice: 2023,
-                    codeDomaineFonctionnel: "FAKE",
-                    siret: "FAKE",
-                    ej: "FAKE",
-                    numPosteEJ: 1,
-                    numPosteDP: 2,
-                    amount: 0,
-                    dateOperation: now,
-                },
-                {} as ChorusLineDto,
-                "" as unknown as ObjectId,
-            );
-
-            const actual = ChorusAdapter.toPayment(entity as WithId<ChorusLineEntity>, PROGRAM);
-            const expected = {
-                codeBranche: toPV("FAKE"),
-                branche: toPV("FAKE"),
-                centreFinancier: toPV("FAKE"),
-                domaineFonctionnel: toPV("FAKE"),
-                siret: toPV("FAKE"),
-                ej: toPV("FAKE"),
-                amount: toPV(0),
-                dateOperation: toPV(now),
-                programme: toPV(PROGRAM.code_programme, dataBretagneService.provider.name),
-                libelleProgramme: toPV(PROGRAM.label_programme, dataBretagneService.provider.name),
-            };
-
-            expect(actual).toMatchObject(expected);
-        });
-    });
-
     describe("toNotAggregatedPaymentFlatEntity", () => {
-        let mockGetPaymentFlatComplementaryData: jest.SpyInstance;
+        let mockgetEntitiesByIdentifierComplementaryData: jest.SpyInstance;
         beforeEach(() => {
-            //@ts-expect-error : test private method
-            mockGetPaymentFlatComplementaryData = jest.spyOn(ChorusAdapter, "getPaymentFlatComplementaryData");
-            mockGetPaymentFlatComplementaryData.mockReturnValue(documentDataReturnedValue);
+            mockgetEntitiesByIdentifierComplementaryData = jest.spyOn(
+                ChorusAdapter,
+                //@ts-expect-error : test private method
+                "getEntitiesByIdentifierComplementaryData",
+            );
+            mockgetEntitiesByIdentifierComplementaryData.mockReturnValue(documentDataReturnedValue);
         });
         afterAll(() => {
-            mockGetPaymentFlatComplementaryData.mockRestore();
+            mockgetEntitiesByIdentifierComplementaryData.mockRestore();
         });
 
         it("should return PaymentFlatEntity when data is fully provided", () => {
@@ -162,7 +61,7 @@ describe("ChorusAdapter", () => {
         });
 
         it("should return PaymentFlatEntity with null when data is not fully provided", () => {
-            mockGetPaymentFlatComplementaryData.mockReturnValueOnce({
+            mockgetEntitiesByIdentifierComplementaryData.mockReturnValueOnce({
                 ...documentDataReturnedValue,
                 programEntity: undefined,
             });
@@ -178,7 +77,7 @@ describe("ChorusAdapter", () => {
         });
     });
 
-    describe("getPaymentFlatComplementaryData", () => {
+    describe("getEntitiesByIdentifierComplementaryData", () => {
         const mockGetMinistryEntity = jest.spyOn(dataBretagneService, "getMinistryEntity");
         // @ts-expect-error: private method
         const mockGetProgramCodeAndEntity = jest.spyOn(ChorusAdapter, "getProgramCodeAndEntity");
@@ -225,7 +124,7 @@ describe("ChorusAdapter", () => {
 
         it("gets StateBudgetProgramEntity", () => {
             // @ts-expect-error: private method
-            ChorusAdapter.getPaymentFlatComplementaryData(
+            ChorusAdapter.getEntitiesByIdentifierComplementaryData(
                 CHORUS_DTO as ChorusLineDto,
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
@@ -237,7 +136,7 @@ describe("ChorusAdapter", () => {
 
         it("gets MinistryEntity", () => {
             // @ts-expect-error: private method
-            ChorusAdapter.getPaymentFlatComplementaryData(
+            ChorusAdapter.getEntitiesByIdentifierComplementaryData(
                 CHORUS_DTO as ChorusLineDto,
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
@@ -249,7 +148,7 @@ describe("ChorusAdapter", () => {
 
         it("gets DomaineFonctionnelEntity", () => {
             // @ts-expect-error: private method
-            ChorusAdapter.getPaymentFlatComplementaryData(
+            ChorusAdapter.getEntitiesByIdentifierComplementaryData(
                 CHORUS_DTO as ChorusLineDto,
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
@@ -264,7 +163,7 @@ describe("ChorusAdapter", () => {
 
         it("gets RefProgrammationEntity", () => {
             // @ts-expect-error: private method
-            ChorusAdapter.getPaymentFlatComplementaryData(
+            ChorusAdapter.getEntitiesByIdentifierComplementaryData(
                 CHORUS_DTO as ChorusLineDto,
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
@@ -285,7 +184,7 @@ describe("ChorusAdapter", () => {
                 refProgrammationEntity: REF_PROG,
             };
             // @ts-expect-error: private method
-            const actual = ChorusAdapter.getPaymentFlatComplementaryData(
+            const actual = ChorusAdapter.getEntitiesByIdentifierComplementaryData(
                 CHORUS_DTO as ChorusLineDto,
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
@@ -533,7 +432,7 @@ describe("ChorusAdapter", () => {
     });
 
     // TODO: test this method
-    describe("getPaymentFlatRawData", () => {
+    describe("getEntitiesByIdentifierRawData", () => {
         const SIRET_ESTAB = new Siret("12345678900018");
         const SIREN_ESTAB = new Siren("123456789");
         const CHORUS_LINE_DTO = CHORUS_LINE_ENTITY.data;
@@ -565,25 +464,25 @@ describe("ChorusAdapter", () => {
 
         it("should get establishment value object", () => {
             // @ts-expect-error: private method
-            ChorusAdapter.getPaymentFlatRawData(CHORUS_LINE_DTO);
+            ChorusAdapter.getEntitiesByIdentifierRawData(CHORUS_LINE_DTO);
             expect(mockGetEstablishmentValueObject).toHaveBeenCalledWith(CHORUS_LINE_DTO);
         });
 
         it("should get company identifier", () => {
             // @ts-expect-error: private method
-            ChorusAdapter.getPaymentFlatRawData(CHORUS_LINE_DTO);
+            ChorusAdapter.getEntitiesByIdentifierRawData(CHORUS_LINE_DTO);
             expect(mockGetCompanyId).toHaveBeenCalledWith(SIRET_ESTAB);
         });
 
         it("should get the amount", () => {
             // @ts-expect-error: private method
-            ChorusAdapter.getPaymentFlatRawData(CHORUS_LINE_DTO);
+            ChorusAdapter.getEntitiesByIdentifierRawData(CHORUS_LINE_DTO);
             expect(mockGetAmount).toHaveBeenCalledWith(CHORUS_LINE_DTO);
         });
 
         it("should return PaymentFlatRawData", () => {
             // @ts-expect-error: private method
-            const actual = ChorusAdapter.getPaymentFlatRawData(CHORUS_LINE_DTO);
+            const actual = ChorusAdapter.getEntitiesByIdentifierRawData(CHORUS_LINE_DTO);
             expect(actual).toMatchSnapshot();
         });
     });

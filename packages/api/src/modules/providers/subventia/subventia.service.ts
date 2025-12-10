@@ -1,26 +1,17 @@
-import { CommonApplicationDto, DemandeSubvention } from "dto";
-import DemandesSubventionsProvider from "../../subventions/@types/DemandesSubventionsProvider";
-import GrantProvider from "../../grant/@types/GrantProvider";
-import { RawApplication, RawGrant } from "../../grant/@types/rawGrant";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
-import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
 import subventiaPort from "../../../dataProviders/db/providers/subventia/subventia.port";
 import SubventiaParser from "./subventia.parser";
 import SubventiaValidator from "./validators/subventia.validator";
 import SubventiaAdapter from "./adapters/subventia.adapter";
-import SubventiaEntity, { SubventiaDbo } from "./@types/subventia.entity";
+import { SubventiaDbo } from "./@types/subventia.entity";
 import SubventiaDto from "./@types/subventia.dto";
-import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
 import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
 import { ReadableStream } from "node:stream/web";
 import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 
-export class SubventiaService
-    implements DemandesSubventionsProvider<SubventiaEntity>, GrantProvider, ApplicationFlatProvider
-{
-    provider = {
+export class SubventiaService implements ApplicationFlatProvider {
+    meta = {
         name: "Subventia",
         type: ProviderEnum.raw,
         description: "CIPDR",
@@ -80,64 +71,10 @@ export class SubventiaService
     }
 
     /**
-     * |-------------------------|
-     * |   Demande Part          |
-     * |-------------------------|
-     */
-
-    isDemandesSubventionsProvider = true;
-
-    async getDemandeSubvention(id: StructureIdentifier): Promise<DemandeSubvention[]> {
-        const applications: SubventiaDbo[] = [];
-
-        if (id instanceof EstablishmentIdentifier && id.siret) {
-            applications.push(...(await subventiaPort.findBySiret(id.siret)));
-        } else if (id instanceof AssociationIdentifier && id.siren) {
-            applications.push(...(await subventiaPort.findBySiren(id.siren)));
-        }
-
-        return applications.map(dbo => SubventiaAdapter.toDemandeSubventionDto(dbo));
-    }
-
-    /**
-     * |-------------------------|
-     * |   Raw Grant Part        |
-     * |-------------------------|
-     */
-
-    isGrantProvider = true;
-
-    async getRawGrants(id: StructureIdentifier): Promise<RawGrant[]> {
-        let subventiaDbos: SubventiaDbo[] = [];
-        if (id instanceof EstablishmentIdentifier && id.siret) {
-            subventiaDbos = await subventiaPort.findBySiret(id.siret);
-        } else if (id instanceof AssociationIdentifier && id.siren) {
-            subventiaDbos = await subventiaPort.findBySiren(id.siren);
-        }
-        // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
-        return subventiaDbos.map(grant => ({
-            provider: this.provider.id,
-            type: "application",
-            data: grant,
-        }));
-    }
-
-    rawToCommon(raw: RawGrant): CommonApplicationDto {
-        // @ts-expect-error: something is broken in Raw Types since #3360 => #3375
-        return SubventiaAdapter.toCommon(raw.data as SubventiaDbo);
-    }
-
-    rawToApplication(rawApplication: RawApplication<SubventiaEntity>) {
-        return SubventiaAdapter.rawToApplication(rawApplication);
-    }
-
-    /**
      * |---------------------------|
      * |   Application Flat Part   |
      * |---------------------------|
      */
-
-    isApplicationFlatProvider = true as const;
 
     async initApplicationFlat() {
         const dbos = await subventiaPort.findAll();

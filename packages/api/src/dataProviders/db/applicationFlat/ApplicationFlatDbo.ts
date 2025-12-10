@@ -1,11 +1,9 @@
-import { ApplicationStatus } from "dto";
-import { ApplicationNature, PaymentCondition } from "../../../entities/ApplicationFlatEntity";
+import type { FlatDbo } from "../@types/FlatDbo";
+import { ApplicationNature, ApplicationStatus, OrDefault, PaymentCondition, NOT_APPLICABLE } from "dto";
 import { ObjectId } from "mongodb";
 import { IdentifierIdName } from "../../../identifierObjects/@types/IdentifierName";
-import { OrDefault } from "../../../shared/helpers/TypeHelper";
-import { NOT_APPLICABLE } from "../../../shared/GenericAdapter";
 
-type MandatoryApplicationFlatDbo = {
+interface MandatoryApplicationFlatDbo extends FlatDbo {
     __data__?: Record<string, unknown>;
     idUnique: string; // idSubvention - exerciceBudgetaire pour tous les fournisseurs sauf provider commançant par scdl. Un identifiant unique artificiellement crée pour provider commançant par scdl
     idSubvention: string; // nomProvider-idSubventionProvider
@@ -16,12 +14,11 @@ type MandatoryApplicationFlatDbo = {
     statutLabel: ApplicationStatus;
     montantDemande: number | null; // Montant demandé par le demandeur pour un exercice budgetaire donné
     montantAccorde: number | null; // Montant accordé au demandeur pour un exercice budgetaire donné
-    dateMiseAJour: Date;
-};
+    exerciceBudgetaire: number | null; // subventia ne donne pas d'exercice budgétaire donc on est bloqué pour le moment
+}
 
 type OptionalApplicationFlatDbo = {
     _id: ObjectId;
-    exerciceBudgetaire: number; // subventia ne donne pas d'exercice budgétaire donc on est bloqué pour le moment
     idJointure: string; // id permettant de faire une jointure avec une autre source de données
     descriptionIdJointure: string; // description de l'idJointure et de la jointure que l'idJointure permet d'effectuer
     nomAttribuant: string; // Nom de l'autorité administrative qui pilote le dispositif ou programme de subvention ou en delegue la gestion

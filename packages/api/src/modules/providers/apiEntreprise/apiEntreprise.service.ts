@@ -12,7 +12,7 @@ import ProviderCore from "../ProviderCore";
 import Siret from "../../../identifierObjects/Siret";
 import Siren from "../../../identifierObjects/Siren";
 import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
-import IApiEntrepriseHeadcount from "./@types/IApiEntrepriseHeadcount";
+import type ApiEntrepriseHeadcount from "./@types/ApiEntrepriseHeadcount";
 import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
 
 export class ApiEntrepriseService extends ProviderCore {
@@ -84,7 +84,7 @@ export class ApiEntrepriseService extends ProviderCore {
             // We retry a maximum of 5 times, going back from one month each time trying to find the last headcount saved
             while (retries < 5) {
                 try {
-                    headcount = await this.getEtablissementHeadcount(id.siret, retries);
+                    headcount = await this.getEstablishmentHeadcount(id.siret, retries);
                     retries = 5;
                 } catch (e) {
                     retries++;
@@ -111,8 +111,8 @@ export class ApiEntrepriseService extends ProviderCore {
         else return `v2/effectifs_mensuels_acoss_covid/${year}/${month}/etablissement/${siret.value}`;
     }
 
-    private async getEtablissementHeadcount(siret: Siret, subtractMonths = 0) {
-        return this.sendRequest<IApiEntrepriseHeadcount>(
+    private async getEstablishmentHeadcount(siret: Siret, subtractMonths = 0) {
+        return this.sendRequest<ApiEntrepriseHeadcount>(
             `${this.buildHeadcountUrl(siret, subtractMonths)}`,
             {},
             this.HEADCOUNT_REASON,
