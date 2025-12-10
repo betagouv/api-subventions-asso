@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.76.2](https://github.com/betagouv/api-subventions-asso/compare/v0.76.1...v0.76.2) (2025-12-10)
+
+### Bug Fixes
+
+- **api:** scdl batch import async for each ([cf7b09f](https://github.com/betagouv/api-subventions-asso/commit/cf7b09fd90c56e0ad4bdc3dde3567a8cdcaa66c6))
+
 ## [0.76.1](https://github.com/betagouv/api-subventions-asso/compare/v0.76.0...v0.76.1) (2025-12-09)
 
 ### Bug Fixes
