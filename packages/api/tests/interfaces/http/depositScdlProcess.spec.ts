@@ -18,12 +18,27 @@ import { SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtur
 import UploadedFileInfosEntity from "../../../src/modules/deposit-scdl-process/entities/uploadedFileInfos.entity";
 import MiscScdlProducerEntity from "../../../src/modules/providers/scdl/entities/MiscScdlProducerEntity";
 import scdlService from "../../../src/modules/providers/scdl/scdl.service";
+import { mockClient } from "aws-sdk-client-mock";
+import {
+    DeleteObjectCommand,
+    GetObjectCommand,
+    ListObjectsV2Command,
+    PutObjectCommand,
+    S3Client,
+} from "@aws-sdk/client-s3";
+import fs from "fs";
 
 const g = global as unknown as { app: App };
 
 const FILE_PATH = path.join(__dirname, "..", "..", "__fixtures__", "files");
 
+const s3Mock = mockClient(S3Client);
+
 describe("/parcours-depot", () => {
+    beforeEach(() => {
+        s3Mock.reset();
+    });
+
     describe("GET /", () => {
         it("should return 200 with deposit object", async () => {
             const token = await createAndGetUserToken();
@@ -120,12 +135,59 @@ describe("/parcours-depot", () => {
         });
     });
 
-    describe("DELETE /", () => {
-        it("should delete deposit log and return 204", async () => {
+    describe("GET /fichier-depose/url-de-telechargement", () => {
+        it("should return 200 with presigned url", async () => {
+            await miscScdlGrantPort.createMany(SCDL_GRANT_DBOS);
             const token = await createAndGetUserToken();
             const userId = (await getDefaultUser())!._id.toString();
 
-            await depositLogPort.insertOne(new DepositScdlLogEntity(userId, 1, undefined, true));
+            const uploadFileInfo = new UploadedFileInfosEntity(
+                "test.csv",
+                new Date(),
+                ["99000000000001"],
+                [2019, 2021],
+                12,
+                13,
+                1,
+                [],
+            );
+
+            await depositLogPort.insertOne(
+                new DepositScdlLogEntity(userId, 2, new Date(), true, "99000000000001", true, uploadFileInfo),
+            );
+
+            const response = await request(g.app)
+                .get("/parcours-depot/fichier-depose/url-de-telechargement")
+                .set("x-access-token", token)
+                .set("Accept", "application/json")
+                .expect(200);
+
+            expect(response.body).toEqual({
+                url: "http://mock-presigned-url",
+            });
+        });
+    });
+
+    describe("DELETE /", () => {
+        it("should delete deposit log and return 204", async () => {
+            s3Mock.on(DeleteObjectCommand).resolvesOnce({});
+
+            const token = await createAndGetUserToken();
+            const userId = (await getDefaultUser())!._id.toString();
+            const filename = "test-csv-valid.csv";
+            const uploadFileInfo = new UploadedFileInfosEntity(
+                filename,
+                new Date(),
+                ["12345676541230"],
+                [2019, 2021],
+                38,
+                39,
+                0,
+                [],
+            );
+            await depositLogPort.insertOne(
+                new DepositScdlLogEntity(userId, 1, undefined, true, "12345678901234", true, uploadFileInfo),
+            );
 
             const response = await request(g.app)
                 .delete(`/parcours-depot`)
@@ -275,6 +337,9 @@ describe("/parcours-depot", () => {
 
     describe("POST /validation-fichier-scdl", () => {
         it("should validate csv scdl file and update depositLog", async () => {
+            s3Mock.on(ListObjectsV2Command).resolvesOnce({});
+            s3Mock.on(PutObjectCommand).resolvesOnce({});
+
             const token = await createAndGetUserToken();
             const userId = (await getDefaultUser())!._id.toString();
 
@@ -323,6 +388,12 @@ describe("/parcours-depot", () => {
 
     describe("POST /depot-fichier-scdl", () => {
         it("should persist scdl file and delete depositLog", async () => {
+            const csvPath = path.join(FILE_PATH, "test-csv-valid.csv");
+            const stream: NodeJS.ReadableStream = fs.createReadStream(csvPath);
+
+            s3Mock.on(GetObjectCommand).resolvesOnce({ Body: stream as never, ContentType: "text/csv" });
+            s3Mock.on(DeleteObjectCommand).resolvesOnce({});
+
             // @ts-expect-error: mock - omit _id
             jest.spyOn(scdlService, "getProducer").mockResolvedValueOnce({
                 siret: "12345676541230",
@@ -345,11 +416,8 @@ describe("/parcours-depot", () => {
                 new DepositScdlLogEntity(userId, 2, undefined, true, "12345676541230", true, uploadFileInfo),
             );
 
-            const csvPath = path.join(FILE_PATH, "test-csv-valid.csv");
-
             const response = await request(g.app)
                 .post(`/parcours-depot/depot-fichier-scdl`)
-                .attach("file", csvPath)
                 .set("x-access-token", token);
 
             expect(response.statusCode).toBe(204);
@@ -357,6 +425,11 @@ describe("/parcours-depot", () => {
         });
 
         it("should not persist scdl file and delete depositLog when blocking error", async () => {
+            const csvPath = path.join(FILE_PATH, "test-csv-invalid.csv");
+            const stream: NodeJS.ReadableStream = fs.createReadStream(csvPath);
+
+            s3Mock.on(GetObjectCommand).resolvesOnce({ Body: stream as never, ContentType: "text/csv" });
+
             // @ts-expect-error: mock - omit _id
             jest.spyOn(scdlService, "getProducer").mockResolvedValueOnce({
                 siret: "12345676541230",
@@ -379,11 +452,8 @@ describe("/parcours-depot", () => {
                 new DepositScdlLogEntity(userId, 2, undefined, true, "12345676541230", true, uploadFileInfo),
             );
 
-            const csvPath = path.join(FILE_PATH, "test-csv-invalid.csv");
-
             const response = await request(g.app)
                 .post(`/parcours-depot/depot-fichier-scdl`)
-                .attach("file", csvPath)
                 .set("x-access-token", token);
 
             expect(response.statusCode).toBe(400);

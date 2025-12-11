@@ -50,6 +50,23 @@ describe("DepositScdlProcessHttp", () => {
         });
     });
 
+    describe("getFileDownloadUrl", () => {
+        const getFileDownloadUrlSpy = jest.spyOn(depositScdlProcessService, "getFileDownloadUrl");
+        const DOWNLOAD_URL = "https://presigned-url/file.csv";
+
+        it("should call service with args", async () => {
+            getFileDownloadUrlSpy.mockResolvedValueOnce(DOWNLOAD_URL);
+            await controller.getFileDownloadUrl(REQ);
+            expect(getFileDownloadUrlSpy).toHaveBeenCalledWith(REQ.user._id.toString());
+        });
+
+        it("should return FileDownloadUrlDto", async () => {
+            getFileDownloadUrlSpy.mockResolvedValueOnce(DOWNLOAD_URL);
+            const result = await controller.getFileDownloadUrl(REQ);
+            expect(result).toEqual({ url: DOWNLOAD_URL });
+        });
+    });
+
     describe("deleteDepositLog", () => {
         const deleteDepositLogSpy = jest.spyOn(depositScdlProcessService, "deleteDepositLog");
         it("should call service with args", async () => {
@@ -175,13 +192,13 @@ describe("DepositScdlProcessHttp", () => {
         const parseAndPersistScdlFileSpy = jest.spyOn(depositScdlProcessService, "parseAndPersistScdlFile");
         it("should call service with args", async () => {
             parseAndPersistScdlFileSpy.mockResolvedValueOnce(true);
-            await controller.parseAndPersistScdlFile({} as Express.Multer.File, REQ);
-            expect(parseAndPersistScdlFileSpy).toHaveBeenCalledWith({}, REQ.user._id.toString());
+            await controller.parseAndPersistScdlFile(REQ);
+            expect(parseAndPersistScdlFileSpy).toHaveBeenCalledWith(REQ.user._id.toString());
         });
 
         it("should return void after processing", async () => {
             parseAndPersistScdlFileSpy.mockResolvedValueOnce(true);
-            const result = await controller.parseAndPersistScdlFile({} as Express.Multer.File, REQ);
+            const result = await controller.parseAndPersistScdlFile(REQ);
             expect(result).toBeUndefined();
         });
     });

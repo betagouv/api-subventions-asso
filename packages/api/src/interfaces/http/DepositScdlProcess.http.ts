@@ -17,7 +17,7 @@ import {
 } from "tsoa";
 import { IdentifiedRequest } from "../../@types";
 import depositScdlProcessService from "../../modules/deposit-scdl-process/depositScdlProcess.service";
-import { CreateDepositScdlLogDto, DepositScdlLogResponseDto, DepositScdlLogDto } from "dto";
+import { CreateDepositScdlLogDto, DepositScdlLogResponseDto, DepositScdlLogDto, FileDownloadUrlDto } from "dto";
 import DepositScdlLogDtoAdapter from "../../modules/deposit-scdl-process/depositScdlLog.dto.adapter";
 
 @Route("/parcours-depot")
@@ -53,7 +53,6 @@ export class DepositScdlProcessHttp extends Controller {
     @Get("/donnees-existantes")
     @SuccessResponse("200", "csv returned successfully")
     @Response("401", "Unauthorized")
-    @Response("500", "Internal server error")
     public async generateExistingGrantsCsv(@Request() req: IdentifiedRequest): Promise<string> {
         const { csv, fileName } = await depositScdlProcessService.generateExistingGrantsCsv(req.user._id.toString());
 
@@ -61,6 +60,21 @@ export class DepositScdlProcessHttp extends Controller {
         this.setHeader("content-disposition", `attachment; filename=${fileName}`);
         this.setHeader("Access-Control-Expose-Headers", "content-disposition");
         return csv;
+    }
+
+    /**
+     * @summary return the presigned download url for the file currently being processed by the deposit process for the authenticated user
+     * @param req
+     * @returns {FileDownloadUrlDto} 200 - url content
+     * @returns 401 - Unauthorized
+     */
+    @Get("/fichier-depose/url-de-telechargement")
+    @SuccessResponse("200", "url returned successfully")
+    @Response("401", "Unauthorized")
+    @Response("404", "Not found")
+    public async getFileDownloadUrl(@Request() req: IdentifiedRequest): Promise<FileDownloadUrlDto> {
+        const url = await depositScdlProcessService.getFileDownloadUrl(req.user._id.toString());
+        return { url };
     }
 
     /**
@@ -166,7 +180,6 @@ export class DepositScdlProcessHttp extends Controller {
     /**
      * @summary Parse and persist scdl file, then delete deposit log
      *
-     * @param file - The uploaded SCDL file to validate (CSV or Excel format)
      * @param req
      *
      * @returns {void} 204
@@ -175,11 +188,8 @@ export class DepositScdlProcessHttp extends Controller {
     @SuccessResponse("204", "parse file successfully")
     @Response("400", "Bad Request, invalid payload")
     @Response("409", "Conflict, database state has changed since last parsing. Re-parsing required.")
-    public async parseAndPersistScdlFile(
-        @UploadedFile() file: Express.Multer.File,
-        @Request() req: IdentifiedRequest,
-    ): Promise<void> {
-        await depositScdlProcessService.parseAndPersistScdlFile(file, req.user._id.toString());
+    public async parseAndPersistScdlFile(@Request() req: IdentifiedRequest): Promise<void> {
+        await depositScdlProcessService.parseAndPersistScdlFile(req.user._id.toString());
         this.setStatus(204);
     }
 }

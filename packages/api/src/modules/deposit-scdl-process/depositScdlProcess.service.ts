@@ -15,6 +15,7 @@ import { formatDateToYYYYMMDD } from "../../shared/helpers/DateHelper";
 import Siret from "../../identifierObjects/Siret";
 import MiscScdlProducerEntity from "../providers/scdl/entities/MiscScdlProducerEntity";
 import dataLogService from "../data-log/dataLog.service";
+import s3StorageService from "../s3-file/s3Storage.service";
 
 export class DepositScdlProcessService {
     FIRST_STEP = 1;
@@ -26,6 +27,10 @@ export class DepositScdlProcessService {
     }
 
     public async deleteDepositLog(userId: string): Promise<void> {
+        const existingDepositLog = await this.getDepositLog(userId);
+        if (existingDepositLog && existingDepositLog.uploadedFileInfos) {
+            await s3StorageService.deleteUserFile(userId, existingDepositLog.uploadedFileInfos.fileName);
+        }
         await depositLogPort.deleteByUserId(userId);
         return;
     }
@@ -83,6 +88,8 @@ export class DepositScdlProcessService {
         depositScdlProcessCheckService.validateUpdateConsistency(depositScdlLogDto, this.SECOND_STEP);
 
         const { parsedInfos, errors } = this.parseFile(file, pageName);
+
+        await s3StorageService.uploadAndReplaceUserFile(file, userId);
 
         const hasSameAllocatorSiret =
             !!existingDepositLog.allocatorSiret &&
@@ -188,13 +195,25 @@ export class DepositScdlProcessService {
         return chunks.join("");
     }
 
-    async parseAndPersistScdlFile(file: Express.Multer.File, userId: string) {
+    public async getFileDownloadUrl(userId: string): Promise<string> {
+        const existingDepositLog = await this.getDepositLog(userId);
+
+        const fileName = existingDepositLog?.uploadedFileInfos?.fileName;
+
+        if (!fileName) {
+            throw new NotFoundError("No file found for this user");
+        }
+
+        return s3StorageService.getUserFileDownloadUrl(userId, fileName);
+    }
+
+    async parseAndPersistScdlFile(userId: string) {
         const existingDepositLog = await this.getDepositLog(userId);
         if (!existingDepositLog) {
             throw new NotFoundError("No deposit log found for this user");
         }
 
-        await depositScdlProcessCheckService.finalCheckBeforePersist(existingDepositLog, file.originalname);
+        await depositScdlProcessCheckService.finalCheckBeforePersist(existingDepositLog);
 
         const siret = new Siret(existingDepositLog.allocatorSiret!);
         let producer: MiscScdlProducerEntity | null = await scdlService.getProducer(siret);
@@ -202,6 +221,8 @@ export class DepositScdlProcessService {
         if (!producer) {
             producer = await scdlService.createProducer(siret);
         }
+
+        const file = await s3StorageService.getUserFile(userId, existingDepositLog.uploadedFileInfos!.fileName);
 
         const { entities, errors } = this.parseFile(file, existingDepositLog.uploadedFileInfos?.sheetName);
 
@@ -211,6 +232,8 @@ export class DepositScdlProcessService {
         }
 
         await scdlService.persist(producer, entities);
+
+        await s3StorageService.deleteUserFile(userId, existingDepositLog.uploadedFileInfos!.fileName);
 
         await dataLogService.addLog(producer.siret, file.originalname, undefined, userId);
 

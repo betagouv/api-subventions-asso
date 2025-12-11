@@ -9,3 +9,4 @@ export * from "./AssociationIdentifierDto";
 export * from "./EstablishementIdentifierDto";
 export * from "./StructureIdentifierDto";
 export * from "./helper";
+export * from "./FileDownloadUrlDto";

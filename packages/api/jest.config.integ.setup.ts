@@ -29,6 +29,8 @@ import { scheduler } from "./src/cron";
 import configurationsPort from "./src/dataProviders/db/configurations/configurations.port";
 import { CONFIGURATION_NAMES } from "./src/modules/configurations/configurations.service";
 import { initTests } from "./jest.config.integ.init";
+import { mockClient } from "aws-sdk-client-mock";
+import { S3Client } from "@aws-sdk/client-s3";
 
 /**
  *
@@ -82,6 +84,12 @@ jest.mock("@getbrevo/brevo", () => {
         UpdateContact,
     };
 });
+
+jest.mock("@aws-sdk/s3-request-presigner", () => ({
+    getSignedUrl: jest.fn().mockResolvedValue("http://mock-presigned-url")
+}));
+
+mockClient(S3Client);
 
 const g = global as unknown as { app?: Server };
 
