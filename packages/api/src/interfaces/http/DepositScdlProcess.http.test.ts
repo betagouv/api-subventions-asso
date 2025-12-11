@@ -52,17 +52,18 @@ describe("DepositScdlProcessHttp", () => {
 
     describe("getFileDownloadUrl", () => {
         const getFileDownloadUrlSpy = jest.spyOn(depositScdlProcessService, "getFileDownloadUrl");
+        const DOWNLOAD_URL = "https://presigned-url/file.csv";
 
         it("should call service with args", async () => {
-            getFileDownloadUrlSpy.mockResolvedValueOnce("https://presigned-url/file.csv");
+            getFileDownloadUrlSpy.mockResolvedValueOnce(DOWNLOAD_URL);
             await controller.getFileDownloadUrl(REQ);
             expect(getFileDownloadUrlSpy).toHaveBeenCalledWith(REQ.user._id.toString());
         });
 
         it("should return FileDownloadUrlDto", async () => {
-            getFileDownloadUrlSpy.mockResolvedValueOnce("https://presigned-url/file.csv");
+            getFileDownloadUrlSpy.mockResolvedValueOnce(DOWNLOAD_URL);
             const result = await controller.getFileDownloadUrl(REQ);
-            expect(result).toEqual({ url: "https://presigned-url/file.csv" });
+            expect(result).toEqual({ url: DOWNLOAD_URL });
         });
     });
 

@@ -25,6 +25,7 @@ import dataLogService from "../data-log/dataLog.service";
 import { DataLogEntity } from "../data-log/entities/dataLogEntity";
 import { InsertOneResult } from "mongodb";
 import s3FileService from "../s3-file/s3Storage.service";
+import { DefaultObject } from "../../@types";
 
 jest.mock("./check/DepositScdlProcess.check.service");
 jest.mock("../../dataProviders/db/deposit-log/depositLog.port");
@@ -32,52 +33,28 @@ jest.mock("../../dataProviders/db/deposit-log/DepositLog.adapter");
 jest.mock("../providers/scdl/scdl.service.ts");
 
 describe("DepositScdlProcessService", () => {
-    const mockGetDepositLog = jest.spyOn(depositScdlProcessService, "getDepositLog") as jest.SpyInstance<
-        Promise<DepositScdlLogEntity | null>,
-        [string]
-    >;
-    const mockFindDepositLog = jest.spyOn(depositScdlProcessService, "find") as jest.SpyInstance<
+    let mockGetDepositLog: jest.SpyInstance<Promise<DepositScdlLogEntity | null>, [string]>;
+    let mockFindDepositLog: jest.SpyInstance<
         Promise<DepositScdlLogEntity[]>,
-        []
+        [query?: DefaultObject<unknown> | undefined]
     >;
-
-    const mockGetGrantsOnPeriodByAllocator = jest.spyOn(
-        scdlService,
-        "getGrantsOnPeriodByAllocator",
-    ) as jest.SpyInstance<Promise<MiscScdlGrantEntity[]>, [string, number[]]>;
-    const mockDeleteDepositLog = jest.spyOn(depositLogPort, "deleteByUserId") as jest.SpyInstance<
-        Promise<boolean>,
-        [string]
-    >;
-
-    const mockS3DeleteUserFile = jest.spyOn(s3FileService, "deleteUserFile") as jest.SpyInstance<
-        Promise<void>,
-        [userId: string, fileName: string]
-    >;
-    const mockGetUserFile = jest.spyOn(s3FileService, "getUserFile") as jest.SpyInstance<
-        Promise<Express.Multer.File>,
-        [userId: string, fileName: string]
-    >;
-    const mockS3uploadAndReplaceUserFile = jest.spyOn(s3FileService, "uploadAndReplaceUserFile") as jest.SpyInstance<
-        Promise<string>,
-        [file: Express.Multer.File, userId: string]
-    >;
-
-    const mockParseCsv = jest.spyOn(scdlService, "parseCsv") as jest.SpyInstance<
+    let mockDeleteDepositLog: jest.SpyInstance<Promise<boolean>, [string]>;
+    let mockS3DeleteUserFile: jest.SpyInstance<Promise<void>, [userId: string, fileName: string]>;
+    let mockGetUserFile: jest.SpyInstance<Promise<Express.Multer.File>, [userId: string, fileName: string]>;
+    let mockS3uploadAndReplaceUserFile: jest.SpyInstance<Promise<string>, [file: Express.Multer.File, userId: string]>;
+    let mockParseCsv: jest.SpyInstance<
         { entities: ScdlStorableGrant[]; errors: MixedParsedError[]; parsedInfos: ScdlParsedInfos },
-        [fileContent: Buffer, delimiter?: string, quote?: string]
+        [fileContent: Buffer<ArrayBufferLike>, delimiter?: string | undefined, quote?: string | boolean | undefined]
     >;
-    const mockgetGrantsOnPeriodByAllocator = jest.spyOn(
-        scdlService,
-        "getGrantsOnPeriodByAllocator",
-    ) as jest.SpyInstance<Promise<MiscScdlGrantEntity[]>, [allocatorSiret: string, exercices: number[]]>;
-    const mockParseXls = jest.spyOn(scdlService, "parseXls");
-
-    const mockDetectCsvDelimiter = jest.spyOn(FileHelper, "detectCsvDelimiter");
-
-    afterEach(() => {
-        jest.resetAllMocks();
-    });
+    let mockGetGrantsOnPeriodByAllocator: jest.SpyInstance<
+        Promise<MiscScdlGrantEntity[]>,
+        [allocatorSiret: string, exercices: number[]]
+    >;
+    let mockParseXls: jest.SpyInstance<
+        { entities: ScdlStorableGrant[]; errors: MixedParsedError[]; parsedInfos: ScdlParsedInfos },
+        [fileContent: Buffer<ArrayBufferLike>, pageName?: string | undefined, rowOffset?: number | undefined]
+    >;
+    let mockDetectCsvDelimiter: jest.SpyInstance<string, [fileContent: Buffer<ArrayBufferLike>]>;
 
     const USER_ID = "userId";
 
@@ -92,6 +69,19 @@ describe("DepositScdlProcessService", () => {
         filename: "",
         path: "",
         stream: {} as never,
+    });
+
+    beforeEach(() => {
+        mockGetDepositLog = jest.spyOn(depositScdlProcessService, "getDepositLog");
+        mockFindDepositLog = jest.spyOn(depositScdlProcessService, "find");
+        mockGetGrantsOnPeriodByAllocator = jest.spyOn(scdlService, "getGrantsOnPeriodByAllocator");
+        mockDeleteDepositLog = jest.spyOn(depositLogPort, "deleteByUserId");
+        mockS3DeleteUserFile = jest.spyOn(s3FileService, "deleteUserFile");
+        mockGetUserFile = jest.spyOn(s3FileService, "getUserFile");
+        mockS3uploadAndReplaceUserFile = jest.spyOn(s3FileService, "uploadAndReplaceUserFile");
+        mockParseCsv = jest.spyOn(scdlService, "parseCsv");
+        mockParseXls = jest.spyOn(scdlService, "parseXls");
+        mockDetectCsvDelimiter = jest.spyOn(FileHelper, "detectCsvDelimiter");
     });
 
     describe("getDepositLog", () => {
@@ -264,7 +254,7 @@ describe("DepositScdlProcessService", () => {
             const mockDate = new Date("2025-11-04T10:30:00Z");
             jest.spyOn(global, "Date").mockImplementation(() => mockDate as never);
             mockGetDepositLog.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY);
-            mockgetGrantsOnPeriodByAllocator.mockResolvedValueOnce([
+            mockGetGrantsOnPeriodByAllocator.mockResolvedValueOnce([
                 {} as MiscScdlGrantEntity,
                 {} as MiscScdlGrantEntity,
             ]);

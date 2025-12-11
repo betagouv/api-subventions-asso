@@ -33,7 +33,6 @@ describe("S3 Port", () => {
 
     beforeEach(() => {
         s3Mock.reset();
-        jest.clearAllMocks();
         s3Port = new S3Port();
     });
 
@@ -68,7 +67,7 @@ describe("S3 Port", () => {
     });
 
     describe("getDownloadUrl", () => {
-        it("calls getSignedUrl with correct params", async () => {
+        it("generate download url", async () => {
             const expectedUrl = "https://presigned-url.example.com/test-file-key";
 
             mockGetSignedUrl.mockResolvedValueOnce(expectedUrl);
@@ -76,6 +75,15 @@ describe("S3 Port", () => {
             const result = await s3Port.getDownloadUrl(fileKey);
 
             expect(result).toEqual(expectedUrl);
+        });
+
+        it("calls getSignedUrl with correct params", async () => {
+            const expectedUrl = "https://presigned-url.example.com/test-file-key";
+
+            mockGetSignedUrl.mockResolvedValueOnce(expectedUrl);
+
+            await s3Port.getDownloadUrl(fileKey);
+
             expect(mockGetSignedUrl).toHaveBeenCalledWith(s3Port.s3Client, expect.any(GetObjectCommand), {
                 expiresIn: 60,
             });

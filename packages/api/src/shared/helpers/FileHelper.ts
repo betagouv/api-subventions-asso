@@ -1,4 +1,5 @@
 import jschardet from "jschardet";
+import { Readable } from "stream";
 
 export function detectCsvDelimiter(fileContent: Buffer): string {
     const sampleSize = Math.min(fileContent.length, 4096);
@@ -24,13 +25,13 @@ export function bufferToMulterFile(buffer: Buffer, filename: string, mimetype?: 
     return {
         buffer,
         originalname: filename,
-        mimetype: mimetype,
+        mimetype: mimetype || "application/octet-stream",
         fieldname: "file",
         encoding: "7bit",
         size: buffer.length,
         destination: "",
         filename: "",
         path: "",
-        stream: {},
-    } as Express.Multer.File;
+        stream: {} as Readable,
+    };
 }

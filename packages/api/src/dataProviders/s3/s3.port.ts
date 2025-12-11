@@ -27,6 +27,12 @@ export class S3Port {
         } as S3ClientConfig);
     }
 
+    /**
+     *  Uploads a file to S3 bucket.
+     * @param file - Express.Multer.File object containing file data.
+     * @param key - Key of the file in S3 bucket (path).
+     * @returns Key of the uploaded file.
+     * */
     async uploadFile(file: Express.Multer.File, key: string): Promise<string> {
         try {
             const command = new PutObjectCommand({
@@ -44,6 +50,12 @@ export class S3Port {
         }
     }
 
+    /**
+     * Generates a signed download URL for a file in S3 bucket.
+     * @param key - Key of the file in S3 bucket (path).
+     * @param expiresIn - URL expiration time in seconds (default: 60).
+     * @returns Signed URL for downloading the file.
+     */
     async getDownloadUrl(key: string, expiresIn: number = 60): Promise<string> {
         try {
             const command = new GetObjectCommand({
@@ -58,6 +70,11 @@ export class S3Port {
         }
     }
 
+    /**
+     * Deletes a file from S3 bucket.
+     * @param key - Key of the file to delete in S3 bucket (path).
+     * @returns Promise that resolves when file is deleted.
+     */
     async deleteFile(key: string): Promise<void> {
         try {
             const command = new DeleteObjectCommand({
@@ -72,6 +89,11 @@ export class S3Port {
         }
     }
 
+    /**
+     * Retrieves a file from S3 bucket with its metadata.
+     * @param key - Key of the file in S3 bucket (path).
+     * @returns File data object containing buffer, content type and key, or null if not found.
+     */
     async getFile(key: string): Promise<S3FileData | null> {
         try {
             const command = new GetObjectCommand({
@@ -104,6 +126,11 @@ export class S3Port {
         }
     }
 
+    /**
+     * Lists all files in S3 bucket with given prefix.
+     * @param prefix - Prefix to filter files (folder path).
+     * @returns Array of file keys matching the prefix.
+     */
     async listFiles(prefix: string): Promise<string[]> {
         try {
             const command = new ListObjectsV2Command({

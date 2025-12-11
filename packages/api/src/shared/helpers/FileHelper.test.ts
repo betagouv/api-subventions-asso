@@ -66,9 +66,18 @@ describe("FileHelper", () => {
 
             const result = bufferToMulterFile(testBuffer, testFilename, testMimetype);
 
-            expect(result.buffer).toBe(testBuffer);
-            expect(result.size).toBe(0);
-            expect(result.originalname).toBe(testFilename);
+            expect(result).toEqual({
+                buffer: testBuffer,
+                destination: "",
+                encoding: "7bit",
+                fieldname: "file",
+                filename: "",
+                mimetype: testMimetype,
+                originalname: testFilename,
+                path: "",
+                size: 0,
+                stream: {},
+            });
         });
     });
 });

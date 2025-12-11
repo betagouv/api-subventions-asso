@@ -18,7 +18,7 @@ export class S3StorageService {
 
     public async uploadUserFile(file: Express.Multer.File, userId: string): Promise<string> {
         const key = `${userId}/${file.originalname}`;
-        return await s3ClientPort.uploadFile(file, key);
+        return s3ClientPort.uploadFile(file, key);
     }
 
     public async getUserFileDownloadUrl(userId: string, fileName: string): Promise<string> {
