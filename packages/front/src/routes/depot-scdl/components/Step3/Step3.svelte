@@ -16,7 +16,8 @@
         error: string;
     }>();
     const ctrl = new Step3Controller(dispatch);
-    const { noFileOrInvalid, excelSheets, view, uploadErrorMessage, uploadError, uploadConfig } = ctrl;
+    const { noFileOrInvalid, excelSheets, view, uploadErrorMessage, uploadError, uploadConfig, errorAlertVisible } =
+        ctrl;
 
     const infoBoxTitle = "Nous acceptons uniquement des fichiers au format CSV ou XLS. ";
     const checkboxOptions = [
@@ -37,6 +38,17 @@
     {:else}
         <div>
             <div class="fr-mb-6v">
+                <Alert
+                    type="error"
+                    title="Une erreur empêche la lecture de votre fichier"
+                    closeButton={true}
+                    bind:visible={$errorAlertVisible}>
+                    <p>
+                        Merci de réessayer ultérieurement. Si le problème continue, vous pouvez recharger la page ou
+                        contacter notre support via Crisp.
+                    </p>
+                </Alert>
+
                 <Alert type="info">
                     <p>
                         Avant de déposer votre fichier, assurez-vous d’avoir intégré toutes les données à conserver, y
