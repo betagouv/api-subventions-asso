@@ -44,6 +44,21 @@ export async function startServer(port = "8080", isTest = false) {
     port = process.env.PORT || port;
     const app = express();
 
+    app.use(
+        cors(function (req, callback) {
+            const frontAuth = {
+                credentials: true,
+                origin: FRONT_OFFICE_URL,
+            };
+            const defaultAuth = {
+                credentials: false,
+                origin: true,
+            };
+            if (req?.headers.origin === FRONT_OFFICE_URL) return callback(null, frontAuth);
+            return callback(null, defaultAuth);
+        }),
+    );
+
     if (ENV !== "dev" && ENV !== "test") Sentry.init({ release: process.env.npm_package_version });
     app.use(cookieParser());
     app.use(
@@ -76,21 +91,6 @@ export async function startServer(port = "8080", isTest = false) {
     app.use(passport.initialize());
 
     await registerAuthMiddlewares(app); // Passport Part
-
-    app.use(
-        cors(function (req, callback) {
-            const frontAuth = {
-                credentials: true,
-                origin: FRONT_OFFICE_URL,
-            };
-            const defaultAuth = {
-                credentials: false,
-                origin: true,
-            };
-            if (req?.headers.origin === FRONT_OFFICE_URL) return callback(null, frontAuth);
-            return callback(null, defaultAuth);
-        }),
-    );
 
     StatsAssoVisitRoutesRegex.forEach(route =>
         app.use(route, (req, res, next) =>
