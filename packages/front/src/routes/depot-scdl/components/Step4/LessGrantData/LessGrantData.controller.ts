@@ -6,6 +6,7 @@ export default class LessGrantDataController {
     public rangeEndYear: number;
     public detectedLines: number;
     public existingLinesInDb: number;
+    public filename: string;
 
     constructor() {
         const uploadedFileInfos = depositLogStore.value!.uploadedFileInfos!;
@@ -13,16 +14,14 @@ export default class LessGrantDataController {
         this.rangeEndYear = Math.max(...uploadedFileInfos.grantCoverageYears);
         this.detectedLines = uploadedFileInfos.parseableLines;
         this.existingLinesInDb = uploadedFileInfos.existingLinesInDbOnSamePeriod;
+        this.filename = uploadedFileInfos.fileName;
     }
 
     async downloadGrantsCsv() {
-        const { csvData, fileName } = await depositLogService.getCsv();
-        const blob = new Blob([csvData], { type: "text/csv; charset=utf-8" });
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = fileName;
-        link.click();
-        window.URL.revokeObjectURL(url);
+        await depositLogService.downloadGrantsCsv();
+    }
+
+    async generateDownloadUrl() {
+        await depositLogService.downloadScdlFile(this.filename);
     }
 }

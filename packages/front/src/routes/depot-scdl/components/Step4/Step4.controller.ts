@@ -1,8 +1,7 @@
 import Store from "$lib/core/Store";
 import { depositLogStore } from "$lib/store/depositLog.store";
 import { getContext } from "svelte";
-import depositLogService from "$lib/resources/deposit-log/depositLog.service";
-import { scdlFileStore } from "$lib/store/scdlFile.store";
+import depositLogService, { type FileValidationState } from "$lib/resources/deposit-log/depositLog.service";
 
 type EventMap = {
     prevStep: void;
@@ -20,10 +19,8 @@ type DispatchFunction = <K extends keyof EventMap>(
 
 export default class Step4Controller {
     private MIN_LOADING_TIME = 2000;
-    private scdlFile = scdlFileStore.value!;
     private readonly dispatch: DispatchFunction;
-    public view: Store<"confirmDataAdd" | "lessGrantData" | "multipleAllocator" | "blockingErrors" | "error"> =
-        new Store("confirmDataAdd");
+    public view: Store<FileValidationState | "error"> = new Store("confirmDataAdd");
     app: { getContact: () => string };
 
     constructor(dispatch: DispatchFunction) {
@@ -37,20 +34,11 @@ export default class Step4Controller {
 
         const fileInfos = depositLog.uploadedFileInfos;
 
-        const hasMultipleAllocators =
-            fileInfos.allocatorsSiret.length > 1 || depositLog.allocatorSiret !== fileInfos.allocatorsSiret[0];
-        const hasLessGrantData = fileInfos.parseableLines < fileInfos.existingLinesInDbOnSamePeriod;
-        const hasBlockingErrors = fileInfos.errors.some(error => error.bloquant === "oui") ?? false;
-
-        if (hasMultipleAllocators) {
-            this.view.set("multipleAllocator");
-        } else if (hasLessGrantData) {
-            this.view.set("lessGrantData");
-        } else if (hasBlockingErrors) {
-            this.view.set("blockingErrors");
-        } else {
-            this.view.set("confirmDataAdd");
-        }
+        const fileValidationState = depositLogService.determineFileValidationState(
+            depositLog.allocatorSiret!,
+            fileInfos,
+        );
+        this.view.set(fileValidationState);
     }
 
     get contactEmail() {
@@ -70,7 +58,7 @@ export default class Step4Controller {
         this.dispatch("loading", "Veuillez patientez, nous finalisons le dépôt de vos données");
 
         try {
-            await depositLogService.persistScdlFile(this.scdlFile);
+            await depositLogService.persistScdlFile();
 
             const elapsed = Date.now() - startTime;
             const remainingTime = this.MIN_LOADING_TIME - elapsed;
