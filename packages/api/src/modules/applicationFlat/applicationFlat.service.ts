@@ -91,7 +91,7 @@ export class ApplicationFlatService
     }
 
     async containsDataFromProvider(provider: string | RegExp) {
-        const cursor = applicationFlatPort.cursorFind({ provider });
+        const cursor = applicationFlatPort.cursorFind({ fournisseur: provider });
         return cursor.hasNext();
     }
 

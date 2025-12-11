@@ -73,8 +73,7 @@
                                     Paramètres d'affichage
                                 </button>
                             </li>
-                            <!-- TODO: remove env check when feature will be ready -->
-                            {#if env != "prod" && $user}
+                            {#if $user}
                                 <li>
                                     <a
                                         class="fr-btn"
