@@ -1,12 +1,12 @@
 import ResumeFormController from "./ResumeForm.controller";
 import depositLogService from "$lib/resources/deposit-log/depositLog.service";
 import { depositLogStore } from "$lib/store/depositLog.store";
-import { expect } from "vitest";
+import { expect, type MockInstance } from "vitest";
+import type { UploadedFileInfosDto } from "dto";
 
-const deleteDepositLogMock = vi.spyOn(depositLogService, "deleteDepositLog");
-const downloadErrorFileMock = vi.spyOn(depositLogService, "downloadErrorFile");
-const downloadScdlFileMock = vi.spyOn(depositLogService, "downloadScdlFile");
-vi.spyOn(depositLogStore, "set");
+let deleteDepositLogMock: MockInstance<() => Promise<null>>;
+let downloadErrorFileMock: MockInstance<(fileInfos: UploadedFileInfosDto) => Promise<void>>;
+let downloadScdlFileMock: MockInstance<(filename: string) => Promise<void>>;
 
 describe("ResumeFormController", () => {
     beforeEach(() => {
@@ -26,14 +26,13 @@ describe("ResumeFormController", () => {
                 allocatorsSiret: ["12345678901234"],
             },
         };
-        vi.clearAllMocks();
+        deleteDepositLogMock = vi.spyOn(depositLogService, "deleteDepositLog");
+        downloadErrorFileMock = vi.spyOn(depositLogService, "downloadErrorFile");
+        downloadScdlFileMock = vi.spyOn(depositLogService, "downloadScdlFile");
+        vi.spyOn(depositLogStore, "set");
     });
 
     describe("constructor", () => {
-        beforeEach(() => {
-            vi.clearAllMocks();
-        });
-
         it("set allocatorSiret", () => {
             const controller = new ResumeFormController();
             expect(controller.allocatorSiret).toBe(depositLogStore.value?.allocatorSiret);
@@ -66,7 +65,6 @@ describe("ResumeFormController", () => {
 
         beforeEach(() => {
             controller = new ResumeFormController();
-            vi.clearAllMocks();
         });
 
         describe("handleRestartDeposit", () => {

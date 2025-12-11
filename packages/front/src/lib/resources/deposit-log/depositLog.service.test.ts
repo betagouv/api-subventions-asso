@@ -1,4 +1,4 @@
-import depositLogService from "$lib/resources/deposit-log/depositLog.service";
+import depositLogService, { FILE_VALIDATION_STATES } from "$lib/resources/deposit-log/depositLog.service";
 import depositLogPort from "$lib/resources/deposit-log/depositLog.port";
 import type {
     CreateDepositScdlLogDto,
@@ -266,7 +266,7 @@ describe("DepositLogService", () => {
         const fileInfos: UploadedFileInfosDto = {
             allocatorsSiret: ["98765432101234"],
             errors: [],
-            existingLinesInDbOnSamePeriod: 125,
+            existingLinesInDbOnSamePeriod: 122,
             parseableLines: 123,
             fileName: "test.csv",
             uploadDate: new Date(),
@@ -275,26 +275,38 @@ describe("DepositLogService", () => {
         };
 
         it("should return multipleAllocator when multiple allocators", () => {
-            expect(depositLogService.determineFileValidationState("12345678901234", fileInfos)).toBe(
-                "multipleAllocator",
-            );
+            const actual = depositLogService.determineFileValidationState("12345678901234", fileInfos);
+            const expected = FILE_VALIDATION_STATES.MULTIPLE_ALLOCATORS;
+
+            expect(actual).toEqual(expected);
         });
 
         it("should return lessGrantData when less grant data than in db", () => {
-            expect(depositLogService.determineFileValidationState("98765432101234", fileInfos)).toBe("lessGrantData");
+            fileInfos.existingLinesInDbOnSamePeriod = 124;
+
+            const actual = depositLogService.determineFileValidationState("98765432101234", fileInfos);
+            const expected = FILE_VALIDATION_STATES.LESS_GRANT_DATA;
+
+            expect(actual).toEqual(expected);
         });
 
         it("should return blockingErrors when blocking errors", () => {
             fileInfos.errors = [{ bloquant: "oui" } as never];
             fileInfos.parseableLines = 125;
 
-            expect(depositLogService.determineFileValidationState("98765432101234", fileInfos)).toBe("blockingErrors");
+            const actual = depositLogService.determineFileValidationState("98765432101234", fileInfos);
+            const expected = FILE_VALIDATION_STATES.BLOCKING_ERRORS;
+
+            expect(actual).toEqual(expected);
         });
 
         it("should return confirmDataAdd when everything ok", () => {
             fileInfos.errors = [];
 
-            expect(depositLogService.determineFileValidationState("98765432101234", fileInfos)).toBe("confirmDataAdd");
+            const actual = depositLogService.determineFileValidationState("98765432101234", fileInfos);
+            const expected = FILE_VALIDATION_STATES.CONFIRM_DATA_ADD;
+
+            expect(actual).toEqual(expected);
         });
     });
 
