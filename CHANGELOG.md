@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.76.5](https://github.com/betagouv/api-subventions-asso/compare/v0.76.4...v0.76.5) (2025-12-11)
+
+### Features
+
+- **api:** enable deposit log ([843bb41](https://github.com/betagouv/api-subventions-asso/commit/843bb417a2d2cb10888faae8b77050ddefb16e2e))
+
 ## [0.76.4](https://github.com/betagouv/api-subventions-asso/compare/v0.76.3...v0.76.4) (2025-12-10)
 
 ### Bug Fixes
