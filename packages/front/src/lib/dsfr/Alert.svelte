@@ -4,10 +4,6 @@
     export let small = false;
     export let closeButton = false;
     export let visible = true;
-
-    function closeAlert() {
-        visible = false;
-    }
 </script>
 
 {#if visible}
@@ -19,7 +15,11 @@
         <slot />
 
         {#if closeButton}
-            <button title="Masquer le message" on:click={closeAlert} type="button" class="fr-btn--close fr-btn">
+            <button
+                title="Masquer le message"
+                on:click={() => (visible = false)}
+                type="button"
+                class="fr-btn--close fr-btn">
                 Masquer le message
             </button>
         {/if}
