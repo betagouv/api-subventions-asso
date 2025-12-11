@@ -8,7 +8,13 @@ import {
 } from "dto";
 import { stringify } from "csv-stringify/browser/esm/sync";
 
-export type FileValidationState = "multipleAllocator" | "lessGrantData" | "blockingErrors" | "confirmDataAdd";
+export const FILE_VALIDATION_STATES = {
+    MULTIPLE_ALLOCATORS: "multipleAllocator",
+    LESS_GRANT_DATA: "lessGrantData",
+    BLOCKING_ERRORS: "blockingErrors",
+    CONFIRM_DATA_ADD: "confirmDataAdd",
+} as const;
+export type FileValidationState = (typeof FILE_VALIDATION_STATES)[keyof typeof FILE_VALIDATION_STATES];
 
 class DepositLogService {
     async getDepositLog() {
@@ -69,10 +75,10 @@ class DepositLogService {
         const hasLessGrantData = fileInfos.parseableLines < fileInfos.existingLinesInDbOnSamePeriod;
         const hasBlockingErrors = fileInfos.errors.some(error => error.bloquant === "oui") ?? false;
 
-        if (hasMultipleAllocators) return "multipleAllocator";
-        if (hasLessGrantData) return "lessGrantData";
-        if (hasBlockingErrors) return "blockingErrors";
-        return "confirmDataAdd";
+        if (hasMultipleAllocators) return FILE_VALIDATION_STATES.MULTIPLE_ALLOCATORS;
+        if (hasLessGrantData) return FILE_VALIDATION_STATES.LESS_GRANT_DATA;
+        if (hasBlockingErrors) return FILE_VALIDATION_STATES.BLOCKING_ERRORS;
+        return FILE_VALIDATION_STATES.CONFIRM_DATA_ADD;
     }
 
     async downloadErrorFile(fileInfos: UploadedFileInfosDto) {

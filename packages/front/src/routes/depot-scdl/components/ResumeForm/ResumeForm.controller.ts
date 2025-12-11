@@ -1,4 +1,7 @@
-import depositLogService, { type FileValidationState } from "$lib/resources/deposit-log/depositLog.service";
+import depositLogService, {
+    FILE_VALIDATION_STATES,
+    type FileValidationState,
+} from "$lib/resources/deposit-log/depositLog.service";
 import { depositLogStore } from "$lib/store/depositLog.store";
 import type { UploadedFileInfosDto } from "dto";
 import { dateToFullFrenchDateWithHour } from "$lib/helpers/dateHelper";
@@ -29,18 +32,18 @@ export default class ResumeFormController {
             this.currentView = depositLogService.determineFileValidationState(depositLog.allocatorSiret!, fileInfos);
             this.filename = fileInfos.fileName;
 
-            if (this.currentView === "multipleAllocator") {
+            if (this.currentView === FILE_VALIDATION_STATES.MULTIPLE_ALLOCATORS) {
                 this.subTitle = "Le SIRET attribuant de votre fichier ne correspond pas à celui indiqué";
                 this.descState =
                     "Nous avons détecté que votre fichier contient des données pour d’autres SIRET attribuant";
-            } else if (this.currentView === "lessGrantData") {
+            } else if (this.currentView === FILE_VALIDATION_STATES.LESS_GRANT_DATA) {
                 this.subTitle = "Votre fichier contient moins de lignes de données que ce que nous avons en base.";
                 this.descState =
                     "Nous avons détecté que votre fichier contient moins de lignes que ce que nous avons en base.";
-            } else if (this.currentView === "blockingErrors") {
+            } else if (this.currentView === FILE_VALIDATION_STATES.BLOCKING_ERRORS) {
                 this.subTitle = "Votre fichier contient des erreurs";
                 this.descState = "Nous avons détecté des erreurs dans votre fichiers.";
-            } else if (this.currentView === "confirmDataAdd") {
+            } else if (this.currentView === FILE_VALIDATION_STATES.CONFIRM_DATA_ADD) {
                 this.descState = "Il ne vous reste plus qu’à valider une étape pour finaliser le dépôt de vos données.";
             }
         }
