@@ -209,7 +209,7 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
         const aggregatedApplications = this.processDuplicates(applications);
 
         const stream = ReadableStream.from(aggregatedApplications);
-        return this.saveFlatFromStream(stream);
+        return this.saveApplicationsFromStream(stream);
     }
 
     private groupApplicationsByUniqueId(applications: FonjepApplicationFlatEntity[]) {
@@ -308,7 +308,7 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
         return applications;
     }
 
-    saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>) {
+    saveApplicationsFromStream(stream: ReadableStream<ApplicationFlatEntity>) {
         return applicationFlatService.saveFromStream(stream);
     }
 }

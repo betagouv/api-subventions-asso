@@ -46,7 +46,7 @@ describe("dauphin flat service", () => {
             generateTempCollectionSpy = jest
                 .spyOn(dauphinFlatService, "generateTempJoinedCollection")
                 .mockResolvedValue();
-            saveFlatSpy = jest.spyOn(dauphinFlatService, "saveFlatFromStream").mockResolvedValue();
+            saveFlatSpy = jest.spyOn(dauphinFlatService, "saveApplicationsFromStream").mockResolvedValue();
             jest.mocked(dauphinPort.findAllTempCursor).mockReturnValue(CURSOR);
             jest.mocked(cursorToStream).mockReturnValue(STREAM);
             jest.mocked(DauphinDtoAdapter.simplifiedJoinedToApplicationFlat).mockReturnValue(ADAPTED);
@@ -152,7 +152,7 @@ describe("dauphin flat service", () => {
     describe("savesFlatFromStream", () => {
         it("calls applicationFlat service", async () => {
             const STREAM = {} as unknown as ReadableStream<ApplicationFlatEntity>;
-            await dauphinFlatService.saveFlatFromStream(STREAM);
+            await dauphinFlatService.saveApplicationsFromStream(STREAM);
             expect(applicationFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);
         });
     });

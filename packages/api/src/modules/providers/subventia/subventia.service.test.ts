@@ -244,10 +244,10 @@ describe("Subventia Service", () => {
      * |---------------------------|
      */
 
-    describe("saveFlatFromStream", () => {
+    describe("saveApplicationsFromStream", () => {
         it("sends stream to save applications", () => {
             const STREAM = ReadableStream.from([]);
-            subventiaService.saveFlatFromStream(STREAM);
+            subventiaService.saveApplicationsFromStream(STREAM);
             expect(applicationFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);
         });
     });
@@ -255,7 +255,7 @@ describe("Subventia Service", () => {
     describe("initApplicationFlat", () => {
         let mockFindAll: jest.SpyInstance;
         let mockToApplicationFlat: jest.SpyInstance;
-        let mockSaveFlatFromStream: jest.SpyInstance;
+        let mocksaveApplicationsFromStream: jest.SpyInstance;
         const STREAM = [APPLICATION_LINK_TO_CHORUS];
         // @ts-expect-error: mock return value
         jest.spyOn(ReadableStream, "from").mockReturnValue([APPLICATION_LINK_TO_CHORUS]);
@@ -265,10 +265,12 @@ describe("Subventia Service", () => {
             mockToApplicationFlat = jest
                 .spyOn(SubventiaAdapter, "toApplicationFlat")
                 .mockReturnValue(APPLICATION_LINK_TO_CHORUS);
-            mockSaveFlatFromStream = jest.spyOn(subventiaService, "saveFlatFromStream").mockImplementation(jest.fn());
+            mocksaveApplicationsFromStream = jest
+                .spyOn(subventiaService, "saveApplicationsFromStream")
+                .mockImplementation(jest.fn());
         });
 
-        afterAll(() => mockSaveFlatFromStream.mockRestore());
+        afterAll(() => mocksaveApplicationsFromStream.mockRestore());
 
         it("fetches subventia dbos", async () => {
             await subventiaService.initApplicationFlat();
@@ -280,9 +282,9 @@ describe("Subventia Service", () => {
             expect(mockToApplicationFlat).toHaveBeenCalledWith(SUBVENTIA_DBO);
         });
 
-        it("calls saveFlatFromStream with stream", async () => {
+        it("calls saveApplicationsFromStream with stream", async () => {
             await subventiaService.initApplicationFlat();
-            expect(mockSaveFlatFromStream).toHaveBeenCalledWith(STREAM);
+            expect(mocksaveApplicationsFromStream).toHaveBeenCalledWith(STREAM);
         });
     });
 });

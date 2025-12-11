@@ -484,7 +484,7 @@ describe("FonjepService", () => {
             };
             const AGGREGATED_APPLICATIONS = [APPLICATION_LINK_TO_FONJEP as FonjepApplicationFlatEntity];
             let mockCreateApplicationFlat: jest.SpyInstance;
-            let mockSaveFlatFromStream: jest.SpyInstance;
+            let mocksaveApplicationsFromStream: jest.SpyInstance;
             let mockProcessDuplicates: jest.SpyInstance;
 
             beforeEach(() => {
@@ -494,12 +494,14 @@ describe("FonjepService", () => {
                 mockProcessDuplicates = jest
                     .spyOn(fonjepService, "processDuplicates")
                     .mockReturnValue(AGGREGATED_APPLICATIONS);
-                mockSaveFlatFromStream = jest.spyOn(fonjepService, "saveFlatFromStream").mockImplementation(jest.fn());
+                mocksaveApplicationsFromStream = jest
+                    .spyOn(fonjepService, "saveApplicationsFromStream")
+                    .mockImplementation(jest.fn());
             });
 
             afterAll(() => {
                 mockCreateApplicationFlat.mockRestore();
-                mockSaveFlatFromStream.mockRestore();
+                mocksaveApplicationsFromStream.mockRestore();
                 mockProcessDuplicates.mockRestore();
             });
 
@@ -516,7 +518,7 @@ describe("FonjepService", () => {
             it("sends ApplicationFlat stream to be processed", async () => {
                 fonjepService.addToApplicationFlat(COLLECTIONS, EXPORT_DATE);
 
-                expect(mockSaveFlatFromStream).toHaveBeenCalledWith(expect.any(ReadableStream));
+                expect(mocksaveApplicationsFromStream).toHaveBeenCalledWith(expect.any(ReadableStream));
             });
         });
 
@@ -592,10 +594,10 @@ describe("FonjepService", () => {
             });
         });
 
-        describe("saveFlatFromStream", () => {
+        describe("saveApplicationsFromStream", () => {
             it("calls applicationFlatService.saveFromStream", () => {
                 const STREAM = ReadableStream.from([APPLICATION_LINK_TO_FONJEP]);
-                fonjepService.saveFlatFromStream(STREAM);
+                fonjepService.saveApplicationsFromStream(STREAM);
                 expect(applicationFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);
             });
         });
