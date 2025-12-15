@@ -44,6 +44,7 @@ export async function startServer(port = "8080", isTest = false) {
     port = process.env.PORT || port;
     const app = express();
 
+    // must be before passport auth and other middlewares
     app.use(
         cors(function (req, callback) {
             const frontAuth = {
