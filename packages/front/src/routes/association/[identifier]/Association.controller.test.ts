@@ -2,6 +2,7 @@ vi.mock("svelte", async originalImport => {
     return {
         ...(await originalImport()),
         onDestroy: vi.fn(),
+        untrack: vi.fn(fn => fn()),
     };
 });
 import { AssociationController } from "./Association.controller";
