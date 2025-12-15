@@ -22,7 +22,12 @@ Le code de logique métier doit être uniquement écrit dans les services. C'est
 ## Setup
 
 Pour utiliser l'api, vous devez au préalable avoir installé Node.js et PNPM.
-Il faut forcer l'utilisation de PNPM comme gestionnaire de librairie en utilisant corepack (compris dans Node.js) : `corepack prepare pnpm@10.24.0 --activate`
+Il faut d'abord activer Corepack, puis forcer l'utilisation de PNPM comme gestionnaire de librairie :
+
+```bash
+corepack enable
+corepack prepare pnpm@10.24.0 --activate
+ ```
 
 Vous devez ensuite installer les dépendances avec `pnpm install`.
 
