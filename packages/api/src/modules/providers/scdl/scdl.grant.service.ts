@@ -24,7 +24,7 @@ export class ScdlGrantService implements ApplicationFlatProvider {
 
     saveDbosToApplicationFlat(dbos: ScdlGrantDbo[]) {
         const readStream = this.dbosToApplicationFlatStream(dbos);
-        return this.saveFlatFromStream(readStream);
+        return this.saveApplicationsFromStream(readStream);
     }
 
     dbosToApplicationFlatStream(dbos: ScdlGrantDbo[]) {
@@ -37,7 +37,7 @@ export class ScdlGrantService implements ApplicationFlatProvider {
         );
     }
 
-    async saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>): Promise<void> {
+    async saveApplicationsFromStream(stream: ReadableStream<ApplicationFlatEntity>): Promise<void> {
         await applicationFlatService.saveFromStream(stream);
     }
 
@@ -46,7 +46,7 @@ export class ScdlGrantService implements ApplicationFlatProvider {
         const stream: ReadableStream<ApplicationFlatEntity> = cursorToStream(cursor, dbo =>
             MiscScdlAdapter.dboToApplicationFlat(dbo),
         );
-        return this.saveFlatFromStream(stream);
+        return this.saveApplicationsFromStream(stream);
     }
 }
 

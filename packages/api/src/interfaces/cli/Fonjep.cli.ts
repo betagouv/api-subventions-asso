@@ -40,20 +40,17 @@ export default class FonjepCli extends CliController {
         );
 
         // TODO: make PaymentFlat use the same ReadableStream architecture yo be ISO with ApplicationFlat ?
-        await fonjepService.createPaymentFlatEntitiesFromCollections({
+        await fonjepService.addToPaymentFlat({
             thirdParties: tierEntities,
             positions: posteEntities,
             payments: versementEntities,
         });
 
-        await fonjepService.addToApplicationFlat(
-            {
-                positions: posteEntities,
-                schemes: dispositifEntities,
-                thirdParties: tierEntities,
-            },
-            exportDate,
-        );
+        await fonjepService.addToApplicationFlat({
+            positions: posteEntities,
+            schemes: dispositifEntities,
+            thirdParties: tierEntities,
+        });
 
         this.logger.logIC("Fonjep temps collections created");
 

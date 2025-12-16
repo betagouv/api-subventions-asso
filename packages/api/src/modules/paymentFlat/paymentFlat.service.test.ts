@@ -15,7 +15,9 @@ import Siret from "../../identifierObjects/Siret";
 import Rna from "../../identifierObjects/Rna";
 import { PAYMENTS } from "../providers/chorus/__fixtures__/ChorusFixtures";
 import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
+import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
 
+jest.mock("../../shared/helpers/MongoHelper");
 jest.mock("./paymentFlatAdapter");
 jest.mock("../../dataProviders/db/paymentFlat/paymentFlat.port");
 
@@ -161,5 +163,21 @@ describe("PaymentFlatService", () => {
                 expect(actual).toEqual(expected);
             },
         );
+    });
+
+    describe("saveFromStream", () => {
+        const STREAM = {} as unknown as ReadableStream;
+
+        it("calls mongo helper", async () => {
+            await paymentFlatService.saveFromStream(STREAM);
+            expect(insertStreamByBatch).toHaveBeenCalledWith(STREAM, expect.anything(), 10000);
+        });
+
+        it("calls mongo helper with flat upsert", async () => {
+            await paymentFlatService.saveFromStream(STREAM);
+            const methodCalledByHelper = jest.mocked(insertStreamByBatch).mock.calls[0][1];
+            await methodCalledByHelper([]);
+            expect(paymentFlatPort.upsertMany).toHaveBeenCalled();
+        });
     });
 });

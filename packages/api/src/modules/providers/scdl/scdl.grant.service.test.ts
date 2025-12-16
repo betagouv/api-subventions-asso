@@ -27,7 +27,7 @@ describe("ScdlGrantService", () => {
 
         beforeAll(() => {
             convertSpy = jest.spyOn(scdlGrantService, "dbosToApplicationFlatStream").mockReturnValue(STREAM);
-            saveSpy = jest.spyOn(scdlGrantService, "saveFlatFromStream").mockImplementation(jest.fn());
+            saveSpy = jest.spyOn(scdlGrantService, "saveApplicationsFromStream").mockImplementation(jest.fn());
         });
         afterAll(() => {
             convertSpy.mockRestore();
@@ -68,10 +68,10 @@ describe("ScdlGrantService", () => {
         });
     });
 
-    describe("saveFlatFromStream", () => {
+    describe("saveApplicationsFromStream", () => {
         it("saves through applicationFlat", () => {
             const STREAM = "toto" as unknown as ReadableStream<ApplicationFlatEntity>;
-            scdlGrantService.saveFlatFromStream(STREAM);
+            scdlGrantService.saveApplicationsFromStream(STREAM);
             expect(applicationFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);
         });
     });
@@ -84,7 +84,7 @@ describe("ScdlGrantService", () => {
         beforeAll(() => {
             jest.mocked(miscScdlGrantPort.findAllCursor).mockReturnValue(CURSOR);
             jest.mocked(cursorToStream).mockReturnValue(STREAM);
-            spySaveFromStream = jest.spyOn(scdlGrantService, "saveFlatFromStream").mockResolvedValue();
+            spySaveFromStream = jest.spyOn(scdlGrantService, "saveApplicationsFromStream").mockResolvedValue();
         });
 
         afterAll(() => {

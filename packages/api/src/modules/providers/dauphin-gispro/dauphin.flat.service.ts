@@ -39,7 +39,7 @@ export class DauphinFlatService implements ApplicationFlatProvider {
             }
         });
         console.log("Initializing applicationFlat feed...");
-        await this.saveFlatFromStream(stream);
+        await this.saveApplicationsFromStream(stream);
 
         if (errors.length)
             console.log(
@@ -53,7 +53,7 @@ export class DauphinFlatService implements ApplicationFlatProvider {
         else await dauphinPort.cleanTempCollection();
     }
 
-    async saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>): Promise<void> {
+    async saveApplicationsFromStream(stream: ReadableStream<ApplicationFlatEntity>): Promise<void> {
         await applicationFlatService.saveFromStream(stream);
     }
 }

@@ -8,12 +8,20 @@ import dataBretagneService from "../providers/dataBretagne/dataBretagne.service"
 import { CHORUS_PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
 import paymentFlatChorusService from "./paymentFlat.chorus.service";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
+import paymentFlatService from "./paymentFlat.service";
 
 jest.mock("../../dataProviders/db/paymentFlat/paymentFlat.port");
 jest.mock("../providers/dataBretagne/dataBretagne.service");
 jest.mock("./paymentFlatAdapter");
+jest.mock("./paymentFlat.service");
+jest.mock("../providers/chorus/chorus.service");
 
 describe("paymentFlatChorusService", () => {
+    const CHORUS_PAYMENTS_FLAT = [
+        CHORUS_PAYMENT_FLAT_ENTITY,
+        { ...CHORUS_PAYMENT_FLAT_ENTITY, exerciceBudgetaire: 2022 },
+    ];
+
     beforeAll(() => {
         jest.mocked(dataBretagneService.getMinistriesRecord).mockResolvedValue(DATA_BRETAGNE_RECORDS.ministries);
         jest.mocked(dataBretagneService.getProgramsRecord).mockResolvedValue(DATA_BRETAGNE_RECORDS.programs);
@@ -27,10 +35,16 @@ describe("paymentFlatChorusService", () => {
     describe("init", () => {
         const mockGetAllDataRecords = jest.spyOn(dataBretagneService, "getAllDataRecords");
         const mockToPaymentFlatChorusEntities = jest.spyOn(paymentFlatChorusService, "toAggregatedPaymentFlatEntities");
-        const CHORUS_PAYMENT_FLAT_ENTITIES = [CHORUS_PAYMENT_FLAT_ENTITY];
+        const mockAddToPaymentFlat = jest.spyOn(paymentFlatChorusService, "addToPaymentFlat");
+
         beforeAll(() => {
             mockGetAllDataRecords.mockResolvedValue(DATA_BRETAGNE_RECORDS);
-            mockToPaymentFlatChorusEntities.mockResolvedValue(CHORUS_PAYMENT_FLAT_ENTITIES);
+            mockToPaymentFlatChorusEntities.mockResolvedValue(CHORUS_PAYMENTS_FLAT);
+        });
+
+        afterAll(() => {
+            mockToPaymentFlatChorusEntities.mockRestore();
+            mockAddToPaymentFlat.mockRestore();
         });
 
         it("retrieves DataBretagne data", async () => {
@@ -43,32 +57,65 @@ describe("paymentFlatChorusService", () => {
             expect(mockToPaymentFlatChorusEntities).toHaveBeenCalledTimes(new Date().getFullYear() - 2016); // number of years since 2017
         });
 
-        it("insert payments flats", async () => {
+        it("adds payments flat", async () => {
             await paymentFlatChorusService.init();
-            expect(paymentFlatPort.insertMany).toHaveBeenCalledTimes(
-                CHORUS_PAYMENT_FLAT_ENTITIES.length * new Date().getFullYear() - 2016, // number of years * number of entities for each year
-            );
+            expect(mockAddToPaymentFlat).toHaveBeenCalledWith(CHORUS_PAYMENTS_FLAT);
+        });
+    });
+
+    describe("addToPaymentFlat", () => {
+        const STREAM = {} as ReadableStream;
+        let spySavePaymentsFromStream: jest.SpyInstance;
+        let mockFrom: jest.SpyInstance;
+        beforeEach(() => {
+            spySavePaymentsFromStream = jest
+                .spyOn(paymentFlatChorusService, "savePaymentsFromStream")
+                .mockImplementation();
+            mockFrom = jest.spyOn(ReadableStream, "from").mockReturnValue(STREAM);
+        });
+
+        afterEach(() => {
+            spySavePaymentsFromStream.mockRestore();
+        });
+
+        it("creates stream", async () => {
+            await paymentFlatChorusService.addToPaymentFlat(CHORUS_PAYMENTS_FLAT);
+            expect(mockFrom).toHaveBeenCalledWith(CHORUS_PAYMENTS_FLAT);
+        });
+
+        it("saves payments flat from", async () => {
+            const expected = STREAM;
+            await paymentFlatChorusService.addToPaymentFlat(CHORUS_PAYMENTS_FLAT);
+            expect(paymentFlatChorusService.savePaymentsFromStream).toHaveBeenCalledWith(expected);
+        });
+    });
+
+    describe("savePaymentsFromStream", () => {
+        it("save payments through payment flat service", async () => {
+            const STREAM = ReadableStream.from(CHORUS_PAYMENTS_FLAT);
+            await paymentFlatChorusService.savePaymentsFromStream(STREAM);
+            expect(paymentFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);
         });
     });
 
     describe("updatePaymentsFlatCollection", () => {
-        const mockToPaymentFlatChorusEntities = jest.spyOn(paymentFlatChorusService, "toAggregatedPaymentFlatEntities");
-        const mockGetAllDataBretagneData = jest.spyOn(dataBretagneService, "getAllDataRecords");
-        const serviceMocks = [mockToPaymentFlatChorusEntities, mockGetAllDataBretagneData];
-        let mockEntities;
+        let mockToPaymentFlatChorusEntities: jest.SpyInstance;
+        let mockAddToPaymentFlat: jest.SpyInstance;
+        let mockGetAllDataBretagneData: jest.SpyInstance;
 
         beforeEach(() => {
-            mockEntities = [CHORUS_PAYMENT_FLAT_ENTITY, { ...CHORUS_PAYMENT_FLAT_ENTITY, exerciceBudgetaire: 2022 }];
-            mockGetAllDataBretagneData.mockResolvedValue(DATA_BRETAGNE_RECORDS);
-            mockToPaymentFlatChorusEntities.mockResolvedValue(mockEntities);
-        });
-
-        afterEach(() => {
-            serviceMocks.forEach(mock => mock.mockClear());
+            mockGetAllDataBretagneData = jest
+                .spyOn(dataBretagneService, "getAllDataRecords")
+                .mockResolvedValue(DATA_BRETAGNE_RECORDS);
+            mockAddToPaymentFlat = jest.spyOn(paymentFlatChorusService, "addToPaymentFlat").mockImplementation();
+            mockToPaymentFlatChorusEntities = jest
+                .spyOn(paymentFlatChorusService, "toAggregatedPaymentFlatEntities")
+                .mockResolvedValue(CHORUS_PAYMENTS_FLAT);
         });
 
         afterAll(() => {
-            serviceMocks.forEach(mock => mock.mockRestore());
+            mockToPaymentFlatChorusEntities.mockRestore();
+            mockAddToPaymentFlat.mockRestore();
         });
 
         it("calls getAllDataRecords once", async () => {
@@ -99,16 +146,10 @@ describe("paymentFlatChorusService", () => {
             );
         });
 
-        it("should call upsertMany for each batch", async () => {
-            // @ts-expect-error: private var
-            paymentFlatChorusService.BATCH_SIZE = 1;
-
+        it("adds payments flat", async () => {
             await paymentFlatChorusService.updatePaymentsFlatCollection();
 
-            // works because BATCH_SIZE = 1
-            mockEntities.forEach((entity, index) => {
-                expect(paymentFlatPort.upsertMany).toHaveBeenNthCalledWith(index + 1, [entity]);
-            });
+            expect(paymentFlatChorusService.addToPaymentFlat).toHaveBeenCalledWith(CHORUS_PAYMENTS_FLAT);
         });
     });
 
@@ -159,6 +200,7 @@ describe("paymentFlatChorusService", () => {
         });
 
         it("should call chorusCursorFind without exercise", async () => {
+            console.log(paymentFlatChorusService.toAggregatedPaymentFlatEntities);
             await paymentFlatChorusService.toAggregatedPaymentFlatEntities(
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,

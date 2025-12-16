@@ -11,6 +11,7 @@ import PaymentFlatAdapter from "./paymentFlatAdapter";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 import GrantProvider from "../grant/@types/GrantProvider";
 import { StructureProvider } from "../StructureProvider";
+import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
 
 export class PaymentFlatService extends ProviderCore implements PaymentProvider, GrantProvider, StructureProvider {
     constructor() {
@@ -97,6 +98,10 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider,
             data: grant,
             joinKey: grant.idVersement ?? undefined,
         }));
+    }
+
+    saveFromStream(stream: ReadableStream<PaymentFlatEntity>) {
+        return insertStreamByBatch(stream, batch => paymentFlatPort.upsertMany(batch), 10000);
     }
 }
 

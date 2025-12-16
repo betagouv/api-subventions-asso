@@ -186,12 +186,12 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
 
     initApplicationFlat() {
         const cursor = osirisJoiner.findAllCursor();
-        return this.saveFlatFromStream(this.createStream(cursor));
+        return this.saveApplicationsFromStream(this.createStream(cursor));
     }
 
     syncApplicationFlat(exercise: number) {
         const cursor = osirisJoiner.findByExerciseCursor(exercise);
-        return this.saveFlatFromStream(this.createStream(cursor));
+        return this.saveApplicationsFromStream(this.createStream(cursor));
     }
 
     private createStream(cursor: AggregationCursor<OsirisRequestWithActions>) {
@@ -202,7 +202,7 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
         return stream;
     }
 
-    saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>) {
+    saveApplicationsFromStream(stream: ReadableStream<ApplicationFlatEntity>) {
         return applicationFlatService.saveFromStream(stream);
     }
 }
