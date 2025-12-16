@@ -3,6 +3,7 @@ vi.mock("svelte", async originalImport => {
     return {
         ...(await originalImport()),
         setContext: vi.fn(),
+        untrack: vi.fn(fn => fn()),
     };
 });
 import type { MockInstance } from "vitest";
@@ -65,9 +66,6 @@ describe("AppController", () => {
     });
 
     describe("handleBannerDisplay", () => {
-        // @ts-expect-error: not mandatory for the test
-        const USER = {} as UserDto;
-
         beforeEach(() => {
             controller = new AppController();
         });
@@ -79,21 +77,21 @@ describe("AppController", () => {
         });*/
 
         it("should call localStorageService", () => {
-            controller.handleBannerDisplay("/", USER);
+            controller.handleBannerDisplay();
             expect(localStorageService.getItem).toHaveBeenCalledWith("hide-main-info-banner", false);
         });
 
         it("should set displayBanner to false from localStorage", () => {
             // @ts-expect-error: mock
             vi.mocked(localStorageService).getItem.mockReturnValueOnce({ value: false });
-            controller.handleBannerDisplay("/", USER);
+            controller.handleBannerDisplay();
             expect(mockSetter).toHaveBeenCalledWith(true);
         });
 
         it("should set displayBanner to true from localStorage", () => {
             // @ts-expect-error: mock
             vi.mocked(localStorageService).getItem.mockReturnValueOnce({ value: "true" });
-            controller.handleBannerDisplay("/", USER);
+            controller.handleBannerDisplay();
             expect(mockSetter).toHaveBeenCalledWith(false);
         });
     });

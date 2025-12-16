@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import XLSX from "xlsx";
+import * as XLSX from "xlsx";
 import * as fileHelper from "./fileHelper";
 import FileFormatError from "$lib/errors/file-errors/FileFormatError";
 import FileSizeError from "$lib/errors/file-errors/FileSizeError";
