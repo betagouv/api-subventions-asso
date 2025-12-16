@@ -171,11 +171,11 @@ describe("OsirisService", () => {
         });
     });
 
-    describe("saveFlatFromStream", () => {
+    describe("saveApplicationsFromStream", () => {
         it("calls application flat with stream", async () => {
             const APPLICATIONS = [APPLICATION_LINK_TO_CHORUS];
             const STREAM = ReadableStream.from(APPLICATIONS);
-            await osirisService.saveFlatFromStream(STREAM);
+            await osirisService.saveApplicationsFromStream(STREAM);
             expect(applicationFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);
         });
     });
@@ -209,18 +209,20 @@ describe("OsirisService", () => {
         const STREAM: ReadableStream<ApplicationFlatEntity> = ReadableStream.from([]);
         const CURSOR = { foo: "bar" };
         let mockCreateStream: jest.SpyInstance;
-        let mockSaveFlatFromStream: jest.SpyInstance;
+        let mocksaveApplicationsFromStream: jest.SpyInstance;
 
         beforeEach(() => {
             // @ts-expect-error: mock private method
             mockCreateStream = jest.spyOn(osirisService, "createStream").mockReturnValue(STREAM);
-            mockSaveFlatFromStream = jest.spyOn(osirisService, "saveFlatFromStream").mockImplementation(jest.fn());
+            mocksaveApplicationsFromStream = jest
+                .spyOn(osirisService, "saveApplicationsFromStream")
+                .mockImplementation(jest.fn());
             jest.spyOn(osirisJoiner, cursorMethod).mockReturnValue(CURSOR);
         });
 
         afterAll(() => {
             mockCreateStream.mockRestore();
-            mockSaveFlatFromStream.mockRestore();
+            mocksaveApplicationsFromStream.mockRestore();
         });
 
         it("get cursor", async () => {
@@ -235,7 +237,7 @@ describe("OsirisService", () => {
 
         it("send stream to be saved", async () => {
             await osirisService[method]();
-            expect(mockSaveFlatFromStream).toHaveBeenCalledWith(STREAM);
+            expect(mocksaveApplicationsFromStream).toHaveBeenCalledWith(STREAM);
         });
     });
 });

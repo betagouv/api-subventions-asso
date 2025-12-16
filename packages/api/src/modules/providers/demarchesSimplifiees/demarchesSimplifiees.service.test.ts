@@ -39,9 +39,9 @@ describe("DemarchesSimplifieesService", () => {
     describe("flat part", () => {
         const STREAM = {} as unknown as ReadableStream<ApplicationFlatEntity>;
 
-        describe("saveFlatFromStream", () => {
+        describe("saveApplicationsFromStream", () => {
             it("calls applicationFlatService", async () => {
-                await demarchesSimplifieesService.saveFlatFromStream(STREAM);
+                await demarchesSimplifieesService.saveApplicationsFromStream(STREAM);
                 expect(applicationFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);
             });
         });
@@ -68,7 +68,7 @@ describe("DemarchesSimplifieesService", () => {
                     .spyOn(demarchesSimplifieesService, "toFlatAndValidate")
                     .mockReturnValue(ADAPTED);
                 saveFlatSpy = jest
-                    .spyOn(demarchesSimplifieesService, "saveFlatFromStream")
+                    .spyOn(demarchesSimplifieesService, "saveApplicationsFromStream")
                     .mockReturnValue(Promise.resolve());
 
                 jest.mocked(demarchesSimplifieesDataPort.findAllCursor).mockReturnValue(CURSOR);
@@ -107,7 +107,7 @@ describe("DemarchesSimplifieesService", () => {
                 });
             });
 
-            it("calls saveFlatFromStream with stream from helper", async () => {
+            it("calls saveApplicationsFromStream with stream from helper", async () => {
                 await demarchesSimplifieesService.initApplicationFlat();
                 expect(saveFlatSpy).toHaveBeenCalledWith(STREAM);
             });
@@ -182,7 +182,7 @@ describe("DemarchesSimplifieesService", () => {
 
             beforeAll(() => {
                 saveSpy = jest
-                    .spyOn(demarchesSimplifieesService, "saveFlatFromStream")
+                    .spyOn(demarchesSimplifieesService, "saveApplicationsFromStream")
                     .mockReturnValue(Promise.resolve());
                 adaptSpy = jest
                     .spyOn(demarchesSimplifieesService, "toFlatAndValidate")

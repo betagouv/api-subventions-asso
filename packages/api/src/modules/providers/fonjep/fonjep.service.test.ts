@@ -39,7 +39,6 @@ import {
 } from "./__fixtures__/fonjepDtos";
 import FonjepVersementEntity from "./entities/FonjepVersementEntity";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
-import paymentFlatService from "../../paymentFlat/paymentFlat.service";
 import { DATA_BRETAGNE_RECORDS } from "../dataBretagne/__fixtures__/dataBretagne.fixture";
 import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
 import { APPLICATION_LINK_TO_FONJEP } from "../../applicationFlat/__fixtures__";
@@ -309,24 +308,16 @@ describe("FonjepService", () => {
         const mockValidatePayment: jest.SpyInstance<boolean> = jest.spyOn(fonjepService, "validatePayment");
         const mockGetAllDataRecords = jest.spyOn(dataBretagneService, "getAllDataRecords");
         const mockToFonjepPaymentFlat = jest.spyOn(FonjepEntityAdapter, "toFonjepPaymentFlat");
-        const mockUpsertMay = jest.spyOn(paymentFlatService, "upsertMany");
 
         beforeAll(() => {
             mockValidatePayment.mockReturnValue(true);
             mockGetAllDataRecords.mockResolvedValue(DATA_BRETAGNE_RECORDS);
             // @ts-expect-error: mock adapter
             mockToFonjepPaymentFlat.mockImplementation(() => CHORUS_PAYMENT_FLAT_ENTITY);
-            mockUpsertMay.mockImplementation(jest.fn());
-        });
-
-        afterEach(() => {
-            [mockUpsertMay, mockToFonjepPaymentFlat].map(mock => mock.mockClear());
         });
 
         afterAll(() => {
-            [mockValidatePayment, mockGetAllDataRecords, mockToFonjepPaymentFlat, mockUpsertMay].map(mock =>
-                mock.mockRestore(),
-            );
+            [mockValidatePayment, mockGetAllDataRecords, mockToFonjepPaymentFlat].map(mock => mock.mockRestore());
         });
 
         it("validates payments", async () => {
@@ -343,35 +334,35 @@ describe("FonjepService", () => {
 
         it("exclude payment if no position found", async () => {
             const PAYMENTS = [VERSEMENT_ENTITY, VERSEMENT_WITHOUT_POSITION];
-            await fonjepService.createPaymentFlatEntitiesFromCollections({
+            const actual = await fonjepService.createPaymentFlatEntitiesFromCollections({
                 thirdParties: TIERS_ENTITIES,
                 positions: POSTE_ENTITIES,
                 payments: [VERSEMENT_ENTITY, VERSEMENT_WITHOUT_POSITION],
             });
 
-            expect(mockUpsertMay.mock.calls[0][0].length).toEqual(PAYMENTS.length - 1);
+            expect(actual.length).toEqual(PAYMENTS.length - 1);
         });
 
         it("exclude payment if no thirdParty found", async () => {
             const PAYMENTS = [VERSEMENT_ENTITY, VERSEMENT_WITHOUT_ASSOCIATION];
-            await fonjepService.createPaymentFlatEntitiesFromCollections({
+            const actual = await fonjepService.createPaymentFlatEntitiesFromCollections({
                 thirdParties: TIERS_ENTITIES,
                 positions: [...POSTE_ENTITIES, POSTE_WITHOUT_ASSOCIATION],
                 payments: PAYMENTS,
             });
 
-            expect(mockUpsertMay.mock.calls[0][0].length).toEqual(PAYMENTS.length - 1);
+            expect(actual.length).toEqual(PAYMENTS.length - 1);
         });
 
         it("exclude payments with financeurPrincipalCode 10006", async () => {
             const PAYMENTS = [VERSEMENT_ENTITY, VERSEMENT_10006_ENTITY];
-            await fonjepService.createPaymentFlatEntitiesFromCollections({
+            const actual = await fonjepService.createPaymentFlatEntitiesFromCollections({
                 thirdParties: TIERS_ENTITIES,
                 positions: [...POSTE_ENTITIES, POSTE_10006_ENTITY],
                 payments: PAYMENTS,
             });
 
-            expect(mockUpsertMay.mock.calls[0][0].length).toEqual(PAYMENTS.length - 1);
+            expect(actual.length).toEqual(PAYMENTS.length - 1);
         });
 
         it("fetches data bretagne records", () => {
@@ -401,15 +392,13 @@ describe("FonjepService", () => {
             );
         });
 
-        it("persist payments flat in database", async () => {
-            await fonjepService.createPaymentFlatEntitiesFromCollections({
+        it("returns payments flat", async () => {
+            const actual = await fonjepService.createPaymentFlatEntitiesFromCollections({
                 thirdParties: TIERS_ENTITIES,
                 positions: POSTE_ENTITIES,
                 payments: [VERSEMENT_ENTITY],
             });
-
-            // adapter has been mocked to return entity to simplify test
-            expect(mockUpsertMay).toHaveBeenCalledWith([CHORUS_PAYMENT_FLAT_ENTITY]);
+            expect(actual).toMatchSnapshot();
         });
     });
 
@@ -432,7 +421,6 @@ describe("FonjepService", () => {
         };
 
         describe("createApplicationFlatEntitiesFromCollections", () => {
-            const EXPORT_DATE = new Date("2023-12-31");
             const POSITIONS = [POSTE_ENTITY];
             const THIRD_PARTIES = [TIERS_ENTITY, ALLOCATOR, INSTRUCTOR];
 
@@ -443,14 +431,11 @@ describe("FonjepService", () => {
             });
 
             it("uses adapter to create application from collections", () => {
-                fonjepService.createApplicationFlatEntitiesFromCollections(
-                    {
-                        positions: POSITIONS,
-                        thirdParties: THIRD_PARTIES,
-                        schemes: DISPOSITIF_ENTITIES,
-                    },
-                    EXPORT_DATE,
-                );
+                fonjepService.createApplicationFlatEntitiesFromCollections({
+                    positions: POSITIONS,
+                    thirdParties: THIRD_PARTIES,
+                    schemes: DISPOSITIF_ENTITIES,
+                });
 
                 expect(FonjepEntityAdapter.toFonjepApplicationFlat).toHaveBeenCalledWith({
                     position: POSTE_ENTITY,
@@ -462,21 +447,17 @@ describe("FonjepService", () => {
             });
 
             it("creates application flat for each position", () => {
-                const actual = fonjepService.createApplicationFlatEntitiesFromCollections(
-                    {
-                        positions: POSITIONS,
-                        thirdParties: THIRD_PARTIES,
-                        schemes: DISPOSITIF_ENTITIES,
-                    },
-                    EXPORT_DATE,
-                );
+                const actual = fonjepService.createApplicationFlatEntitiesFromCollections({
+                    positions: POSITIONS,
+                    thirdParties: THIRD_PARTIES,
+                    schemes: DISPOSITIF_ENTITIES,
+                });
 
                 expect(actual).toEqual([{ ...APPLICATION_LINK_TO_FONJEP, updateDate: expect.any(Date) }]);
             });
         });
 
         describe("addToApplicationFlat", () => {
-            const EXPORT_DATE = new Date("2023-12-31");
             const COLLECTIONS = {
                 positions: POSITIONS,
                 thirdParties: THIRD_PARTIES,
@@ -484,7 +465,7 @@ describe("FonjepService", () => {
             };
             const AGGREGATED_APPLICATIONS = [APPLICATION_LINK_TO_FONJEP as FonjepApplicationFlatEntity];
             let mockCreateApplicationFlat: jest.SpyInstance;
-            let mockSaveFlatFromStream: jest.SpyInstance;
+            let mocksaveApplicationsFromStream: jest.SpyInstance;
             let mockProcessDuplicates: jest.SpyInstance;
 
             beforeEach(() => {
@@ -494,29 +475,31 @@ describe("FonjepService", () => {
                 mockProcessDuplicates = jest
                     .spyOn(fonjepService, "processDuplicates")
                     .mockReturnValue(AGGREGATED_APPLICATIONS);
-                mockSaveFlatFromStream = jest.spyOn(fonjepService, "saveFlatFromStream").mockImplementation(jest.fn());
+                mocksaveApplicationsFromStream = jest
+                    .spyOn(fonjepService, "saveApplicationsFromStream")
+                    .mockImplementation(jest.fn());
             });
 
             afterAll(() => {
                 mockCreateApplicationFlat.mockRestore();
-                mockSaveFlatFromStream.mockRestore();
+                mocksaveApplicationsFromStream.mockRestore();
                 mockProcessDuplicates.mockRestore();
             });
 
             it("creates applications flat from collections", () => {
-                fonjepService.addToApplicationFlat(COLLECTIONS, EXPORT_DATE);
-                expect(mockCreateApplicationFlat).toHaveBeenCalledWith(COLLECTIONS, EXPORT_DATE);
+                fonjepService.addToApplicationFlat(COLLECTIONS);
+                expect(mockCreateApplicationFlat).toHaveBeenCalledWith(COLLECTIONS);
             });
 
             it("aggregates applications by unique id to sum amount", () => {
-                fonjepService.addToApplicationFlat(COLLECTIONS, EXPORT_DATE);
+                fonjepService.addToApplicationFlat(COLLECTIONS);
                 expect(mockProcessDuplicates).toHaveBeenCalledWith(APPLICATIONS);
             });
 
             it("sends ApplicationFlat stream to be processed", async () => {
-                fonjepService.addToApplicationFlat(COLLECTIONS, EXPORT_DATE);
+                fonjepService.addToApplicationFlat(COLLECTIONS);
 
-                expect(mockSaveFlatFromStream).toHaveBeenCalledWith(expect.any(ReadableStream));
+                expect(mocksaveApplicationsFromStream).toHaveBeenCalledWith(expect.any(ReadableStream));
             });
         });
 
@@ -592,10 +575,10 @@ describe("FonjepService", () => {
             });
         });
 
-        describe("saveFlatFromStream", () => {
+        describe("saveApplicationsFromStream", () => {
             it("calls applicationFlatService.saveFromStream", () => {
                 const STREAM = ReadableStream.from([APPLICATION_LINK_TO_FONJEP]);
-                fonjepService.saveFlatFromStream(STREAM);
+                fonjepService.saveApplicationsFromStream(STREAM);
                 expect(applicationFlatService.saveFromStream).toHaveBeenCalledWith(STREAM);
             });
         });

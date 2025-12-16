@@ -43,7 +43,7 @@ export class DemarchesSimplifieesService extends ProviderCore implements Applica
      * |-------------------------|
      */
 
-    async saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>): Promise<void> {
+    async saveApplicationsFromStream(stream: ReadableStream<ApplicationFlatEntity>): Promise<void> {
         await applicationFlatService.saveFromStream(stream);
     }
 
@@ -54,7 +54,7 @@ export class DemarchesSimplifieesService extends ProviderCore implements Applica
             cursor,
             (dbo: DemarchesSimplifieesDataEntity) => this.toFlatAndValidate(dbo, schemasByIds[dbo.demarcheId]),
         );
-        return this.saveFlatFromStream(stream);
+        return this.saveApplicationsFromStream(stream);
     }
 
     toFlatAndValidate(
@@ -75,7 +75,7 @@ export class DemarchesSimplifieesService extends ProviderCore implements Applica
     bulkUpdateApplicationFlat(entities: DemarchesSimplifieesDataEntity[], schema: DemarchesSimplifieesSchema | null) {
         if (!schema) return;
         const stream = ReadableStream.from(entities.map(e => this.toFlatAndValidate(e, schema)).filter(e => !!e));
-        return this.saveFlatFromStream(stream);
+        return this.saveApplicationsFromStream(stream);
     }
 
     /**
