@@ -23,7 +23,7 @@ export class S3Port {
                 accessKeyId: S3_ACCESS_KEY,
                 secretAccessKey: S3_SECRET_KEY,
             },
-            forcePathStyle: true, // to MiniIo bucket in path, not in subdomain
+            forcePathStyle: true,
         } as S3ClientConfig);
     }
 
