@@ -53,10 +53,10 @@ export class S3Port {
     /**
      * Generates a signed download URL for a file in S3 bucket.
      * @param key - Key of the file in S3 bucket (path).
-     * @param expiresIn - URL expiration time in seconds (default: 60).
+     * @param expiresIn - URL expiration time in seconds (default: 240).
      * @returns Signed URL for downloading the file.
      */
-    async getDownloadUrl(key: string, expiresIn: number = 60): Promise<string> {
+    async getDownloadUrl(key: string, expiresIn: number = 240): Promise<string> {
         try {
             const command = new GetObjectCommand({
                 Bucket: S3_BUCKET,
