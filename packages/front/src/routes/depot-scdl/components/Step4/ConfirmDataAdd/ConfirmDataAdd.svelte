@@ -2,7 +2,6 @@
     import { createEventDispatcher } from "svelte";
     import ConfirmDataAddController from "./ConfirmDataAdd.controller";
     import Alert from "$lib/dsfr/Alert.svelte";
-    import { scdlFileStore } from "$lib/store/scdlFile.store";
     import Checkbox from "$lib/dsfr/Checkbox.svelte";
 
     const dispatch = createEventDispatcher<{ prevStep: void; submitDatas: void }>();
@@ -17,7 +16,7 @@
     let selectedValues: string[] = [];
 
     const ctrl = new ConfirmDataAddController();
-    const { addedLines, existingLinesInDb, rangeStartYear, rangeEndYear } = ctrl;
+    const { addedLines, existingLinesInDb, rangeStartYear, rangeEndYear, filename } = ctrl;
 </script>
 
 <div class="fr-col-12 fr-col-md-8">
@@ -33,13 +32,11 @@
         <Alert type="info" title="Vous êtes sur le point d’ajouter {addedLines} lignes." />
     {/if}
 
-    {#if $scdlFileStore}
-        <strong>Fichier ajouté :</strong>
-        <br />
-        <a class="fr-link fr-link--download" href={URL.createObjectURL($scdlFileStore)} download={$scdlFileStore.name}>
-            {$scdlFileStore.name}
-        </a>
-    {/if}
+    <strong>Fichier ajouté :</strong>
+    <br />
+    <a class="fr-link fr-link--download" href="#" on:click|preventDefault={() => ctrl.generateDownloadUrl()}>
+        {filename}
+    </a>
 
     <p>
         <strong>Votre fichier comprend des données entre : janvier {rangeStartYear} et décembre {rangeEndYear}</strong>

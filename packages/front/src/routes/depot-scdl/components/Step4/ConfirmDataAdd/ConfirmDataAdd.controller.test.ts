@@ -17,92 +17,71 @@ describe("ConfirmDataAddController", () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+        depositLogStore.value = {
+            uploadedFileInfos: {
+                fileName: "test.csv",
+                parseableLines: 165,
+                grantCoverageYears: [2025, 2024],
+                existingLinesInDbOnSamePeriod: 654,
+            } as UploadedFileInfosDto,
+            step: 1,
+        };
     });
 
     describe("constructor", () => {
         it("should set addedLines", async () => {
-            depositLogStore.value = {
-                uploadedFileInfos: {
-                    parseableLines: 165,
-                    grantCoverageYears: [2025, 2024],
-                    existingLinesInDbOnSamePeriod: 654,
-                } as UploadedFileInfosDto,
-                step: 1,
-            };
-
             controller = new ConfirmDataAddController();
 
             expect(controller.addedLines).toBe(165);
         });
 
         it("should set existingLinesInDb", async () => {
-            depositLogStore.value = {
-                uploadedFileInfos: {
-                    parseableLines: 165,
-                    grantCoverageYears: [2025, 2024],
-                    existingLinesInDbOnSamePeriod: 654,
-                } as UploadedFileInfosDto,
-                step: 1,
-            };
-
             controller = new ConfirmDataAddController();
 
             expect(controller.existingLinesInDb).toBe(654);
         });
 
         it("should set rangeStartYear", async () => {
-            depositLogStore.value = {
-                uploadedFileInfos: {
-                    parseableLines: 165,
-                    grantCoverageYears: [2025, 2024],
-                    existingLinesInDbOnSamePeriod: 654,
-                } as UploadedFileInfosDto,
-                step: 1,
-            };
-
             controller = new ConfirmDataAddController();
 
             expect(controller.rangeStartYear).toBe(2024);
         });
 
         it("should set rangeEndYear", async () => {
-            depositLogStore.value = {
-                uploadedFileInfos: {
-                    parseableLines: 165,
-                    grantCoverageYears: [2025, 2024],
-                    existingLinesInDbOnSamePeriod: 654,
-                } as UploadedFileInfosDto,
-                step: 1,
-            };
-
             controller = new ConfirmDataAddController();
 
             expect(controller.rangeEndYear).toBe(2025);
+        });
+
+        it("should set filename", async () => {
+            controller = new ConfirmDataAddController();
+
+            expect(controller.filename).toBe("test.csv");
         });
     });
 
     describe("functions", () => {
         const getGrantCsvMock = vi.spyOn(depositLogService, "getCsv");
+        const generateDownloadScdlFileUrlMock = vi.spyOn(depositLogService, "generateDownloadScdlFileUrl");
         let createObjectURLMock: MockInstance<(blob: Blob) => string>;
         let revokeObjectURLMock: MockInstance<(url: string) => void>;
-
         let mockLink: Partial<HTMLAnchorElement>;
 
         beforeEach(() => {
-            depositLogStore.value = {
-                uploadedFileInfos: {
-                    grantCoverageYears: [2019],
-                    existingLinesInDbOnSamePeriod: 456,
-                } as UploadedFileInfosDto,
-                step: 1,
-            };
-
             createObjectURLMock = vi.fn<(blob: Blob) => string>().mockReturnValue("blob:created-url-for-csv-file-data");
             revokeObjectURLMock = vi.fn<(url: string) => void>();
 
             vi.stubGlobal("URL", {
                 createObjectURL: createObjectURLMock,
                 revokeObjectURL: revokeObjectURLMock,
+            });
+
+            vi.stubGlobal("document", {
+                createElement: vi.fn().mockReturnValue(mockLink),
+                body: {
+                    appendChild: vi.fn(),
+                    removeChild: vi.fn(),
+                },
             });
 
             mockLink = {
@@ -114,6 +93,10 @@ describe("ConfirmDataAddController", () => {
             vi.spyOn(document, "createElement").mockReturnValue(mockLink as HTMLAnchorElement);
 
             controller = new ConfirmDataAddController();
+        });
+
+        afterEach(() => {
+            vi.unstubAllGlobals();
         });
 
         describe("downloadGrantsCsv", () => {
@@ -149,6 +132,22 @@ describe("ConfirmDataAddController", () => {
                 await controller.downloadGrantsCsv();
 
                 expect(revokeObjectURLMock).toHaveBeenCalledWith("blob:created-url-for-csv-file-data");
+            });
+        });
+
+        describe("generateDownloadUrl", () => {
+            beforeEach(() => {
+                generateDownloadScdlFileUrlMock.mockResolvedValue({
+                    url: "presigned-url",
+                });
+            });
+
+            it("triggers download of file", async () => {
+                await controller.generateDownloadUrl();
+
+                expect(mockLink.href).toBe("presigned-url");
+                expect(mockLink.download).toBe("test.csv");
+                expect(mockLink.click).toHaveBeenCalledTimes(1);
             });
         });
     });

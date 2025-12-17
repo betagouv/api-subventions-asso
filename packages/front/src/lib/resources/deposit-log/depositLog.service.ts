@@ -1,5 +1,10 @@
 import depositLogPort from "$lib/resources/deposit-log/depositLog.port";
-import type { CreateDepositScdlLogDto, DepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
+import {
+    type CreateDepositScdlLogDto,
+    type DepositScdlLogDto,
+    type DepositScdlLogResponseDto,
+    type FileDownloadUrlDto,
+} from "dto";
 
 class DepositLogService {
     async getDepositLog() {
@@ -45,8 +50,13 @@ class DepositLogService {
         };
     }
 
-    async persistScdlFile(file: File) {
-        await depositLogPort.persistScdlFile(file);
+    async persistScdlFile() {
+        await depositLogPort.persistScdlFile();
+    }
+
+    async generateDownloadScdlFileUrl() {
+        const response = await depositLogPort.getFileDownloadUrl();
+        return response.data as FileDownloadUrlDto;
     }
 }
 
