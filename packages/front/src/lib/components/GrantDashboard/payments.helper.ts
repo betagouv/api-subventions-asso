@@ -7,7 +7,7 @@ import type { PaymentFlatDto } from "dto";
 const MULTI = "multi";
 
 export const getPaymentsCells = (payments: PaymentFlatDto[] | null): TableCell[] | null => {
-    if (!payments) return null;
+    if (!payments?.length) return null;
     const lastPaymentDate = withTwoDigitYear(getLastPaymentsDate(payments));
 
     return [

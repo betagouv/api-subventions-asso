@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.76.6](https://github.com/betagouv/datasubvention/compare/v0.76.5...v0.76.6) (2025-12-17)
+
+### Bug Fixes
+
+- **front:** display attribuant name in instructor column for scdl data ([6005491](https://github.com/betagouv/datasubvention/commit/6005491f64c592c0e4cd5cdb4d28144efa842848))
+- **front:** hide payment row if payments is an empty array ([a8a69a2](https://github.com/betagouv/datasubvention/commit/a8a69a2e857fcedfbfda39e3aa2b7b7aba141c4f))
+
 ## [0.76.5](https://github.com/betagouv/datasubvention/compare/v0.76.4...v0.76.5) (2025-12-11)
 
 ### Features

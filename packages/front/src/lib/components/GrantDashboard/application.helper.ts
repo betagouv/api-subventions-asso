@@ -6,6 +6,10 @@ import { mapSiretPostCodeStore } from "$lib/store/association.store";
 import type { DashboardApplication } from "$lib/components/GrantDashboard/@types/DashboardGrant";
 import { NOT_APPLICABLE_VALUE } from "$lib/constants/values";
 
+export const isSCDL = (application: ApplicationFlatDto) => {
+    return !!application.fournisseur.match(new RegExp(/^scdl/));
+};
+
 export const getApplicationCells = (application: ApplicationFlatDto | null, accepted: boolean): TableCell[] | null => {
     if (!application) return null;
     else {
@@ -22,9 +26,13 @@ export const getApplicationCells = (application: ApplicationFlatDto | null, acce
               }
             : { desc: "-" };
 
+        const instructor = isSCDL(application)
+            ? application.nomAttribuant
+            : valueOrHyphen(application.nomServiceInstructeur);
+
         return [
             { desc: valueOrHyphen(mapSiretPostCodeStore.value.get(application.idEtablissementBeneficiaire as string)) },
-            { desc: valueOrHyphen(application.nomServiceInstructeur) },
+            { desc: instructor },
             { desc: valueOrHyphen(application.dispositif) },
             { desc: valueOrHyphen(application.objet) },
             requestedCell,

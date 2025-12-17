@@ -100,6 +100,7 @@ export class GrantDashboardController {
 
     private updateRows(grants: GrantFlatDto[]) {
         if (!grants) return;
+
         this.rows.set(
             grants.map(grant => {
                 const granted = isGranted(grant.application);
