@@ -62,7 +62,7 @@ export class DepositScdlProcessCheckService {
         }
     }
 
-    async finalCheckBeforePersist(depositLogEntity: DepositScdlLogEntity, filename: string) {
+    async finalCheckBeforePersist(depositLogEntity: DepositScdlLogEntity) {
         const parsedInfos = depositLogEntity.uploadedFileInfos;
 
         if (!parsedInfos) {
@@ -83,10 +83,6 @@ export class DepositScdlProcessCheckService {
 
         if (depositLogEntity.permissionAlert !== true) {
             throw new BadRequestError("permission alert must be acknowledged");
-        }
-
-        if (parsedInfos.fileName !== filename) {
-            throw new BadRequestError(`filename mismatch: expected '${parsedInfos.fileName}', got '${filename}'`);
         }
 
         if (
