@@ -51,9 +51,6 @@ export default [
 
     {
         languageOptions: {
-            parserOptions: {
-                project: true,
-            },
             globals: {
                 ...globals.node,
             },
