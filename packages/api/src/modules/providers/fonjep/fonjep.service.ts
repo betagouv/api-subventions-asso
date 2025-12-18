@@ -138,6 +138,14 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
     }
 
     // only used for test to generate payment-flat on demand
+    async getApplicationFlatCollections() {
+        const thirdParties = await fonjepTiersPort.findAll();
+        const positions = await fonjepPostesPort.findAll();
+        const schemes = await fonjepDispositifPort.findAll();
+        return { thirdParties, positions, schemes };
+    }
+
+    // only used for test to generate payment-flat on demand
     async getPaymentFlatCollections() {
         const thirdParties = await fonjepTiersPort.findAll();
         const positions = await fonjepPostesPort.findAll();
