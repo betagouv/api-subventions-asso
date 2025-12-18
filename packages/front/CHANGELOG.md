@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.77.0](https://github.com/betagouv/datasubvention/compare/v0.76.7...v0.77.0) (2025-12-18)
+
+### Bug Fixes
+
+- **api:** [#3664](https://github.com/betagouv/datasubvention/issues/3664) fix cors problem at authentication ([#3753](https://github.com/betagouv/datasubvention/issues/3753)) ([304dc4e](https://github.com/betagouv/datasubvention/commit/304dc4e60005e95c2a144d823cb1a978c86373a2))
+
+### Features
+
+- **front:** [#3734](https://github.com/betagouv/datasubvention/issues/3734) resume form with file storage ([#3749](https://github.com/betagouv/datasubvention/issues/3749)) ([08c89f8](https://github.com/betagouv/datasubvention/commit/08c89f86fd7365e7f55bb8cd7191619e53c018bd))
+- **front:** [#3746](https://github.com/betagouv/datasubvention/issues/3746) implement use s3 storage ([#3750](https://github.com/betagouv/datasubvention/issues/3750)) ([600f20f](https://github.com/betagouv/datasubvention/commit/600f20f629bb1838a0bc16f5f39d9aa6484bc641))
+
 ## [0.76.7](https://github.com/betagouv/datasubvention/compare/v0.76.6...v0.76.7) (2025-12-18)
 
 ### Bug Fixes
