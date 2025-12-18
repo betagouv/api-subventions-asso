@@ -4,7 +4,7 @@ export const valueOrNotFound = value => value || "Non trouvé";
 
 export const numberToEuro = value => {
     value = typeof value === "string" ? parseFloat(value) : value;
-    if (isNaN(value)) return;
+    if (value === null || isNaN(value)) return value; // null values passes the test
     const nbDigits = value % 1 ? 2 : 0;
     // maximumFractionDigits: check if value have digits if not digits no display N,00
     return value.toLocaleString("fr-FR", {

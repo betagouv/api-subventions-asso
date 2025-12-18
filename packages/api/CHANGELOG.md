@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.76.7](https://github.com/betagouv/api-subventions-asso/compare/v0.76.6...v0.76.7) (2025-12-18)
+
+### Features
+
+- **api:** add fonjep cli app flat initialization ([63b71cd](https://github.com/betagouv/api-subventions-asso/commit/63b71cda8a1c0fbdad95305c470cc4cdc0512cfc))
+
 ## [0.76.6](https://github.com/betagouv/api-subventions-asso/compare/v0.76.5...v0.76.6) (2025-12-17)
 
 ### Bug Fixes

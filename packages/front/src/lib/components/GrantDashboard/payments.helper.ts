@@ -9,7 +9,6 @@ const MULTI = "multi";
 export const getPaymentsCells = (payments: PaymentFlatDto[] | null): TableCell[] | null => {
     if (!payments?.length) return null;
     const lastPaymentDate = withTwoDigitYear(getLastPaymentsDate(payments));
-
     return [
         {
             title: valueOrHyphen(numberToEuro(getTotalPayment(payments))),
@@ -67,6 +66,6 @@ export const getLastPaymentsDate = (payments: PaymentFlatDto[]) => {
     });
 
     if (!orderedPayments.length) return null;
-
+    console.log(orderedPayments[0].dateOperation);
     return new Date(orderedPayments[0].dateOperation);
 };
