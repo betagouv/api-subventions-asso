@@ -85,7 +85,7 @@ describe("S3 Port", () => {
             await s3Port.getDownloadUrl(fileKey);
 
             expect(mockGetSignedUrl).toHaveBeenCalledWith(s3Port.s3Client, expect.any(GetObjectCommand), {
-                expiresIn: 60,
+                expiresIn: 240,
             });
         });
 

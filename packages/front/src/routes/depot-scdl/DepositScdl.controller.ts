@@ -57,10 +57,10 @@ export class DepositScdlController {
     resumeForm() {
         this.currentView.set("form");
 
-        // temporarly behavior to resume form
-        if (depositLogStore.value!.step === 1 || depositLogStore.value!.step === 2) {
-            const currentFormStep = 3;
-            this.currentStep.set(currentFormStep);
+        if (depositLogStore.value!.step === 1) {
+            this.currentStep.set(3);
+        } else if (depositLogStore.value!.step === 2) {
+            this.currentStep.set(4);
         }
     }
 
