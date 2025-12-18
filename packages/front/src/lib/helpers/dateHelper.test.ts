@@ -9,6 +9,14 @@ describe("DateHelper", () => {
         });
     });
 
+    describe("withTwoDigitYear", () => {
+        it("return formated year", () => {
+            const expected = "09/12/25";
+            const actual = dateHelper.withTwoDigitYear(new Date("2025/12/09"));
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe("dateToFullFrenchDateWithHour", () => {
         it("should return correct date format if param is type Date", () => {
             const dateToFormat = new Date(2025, 11, 5, 10, 30);
