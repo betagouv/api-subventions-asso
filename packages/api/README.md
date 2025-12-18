@@ -73,15 +73,49 @@ Pour utiliser le reporting de bug Sentry
 
 Pour se connecter à l'API Data Bretagne
 
-Pour fonctionner l'api doit pouvoir se connecter à une base de données mongoDB v4.0 .  
-Par défaut, elle se connecte à l'url `mongodb://localhost:27017/api-subventions-asso`.  
+### Installation de l'environnement local
+
+Le fichier `docker-compose.yml` définit l'ensemble des services dont le projet a besoin pour fonctionner en local avec un service mongoDb et un service S3.
+Avant de lancer `docker-compose up -d` s'assurer d'avoir défini les variables d'environnement pour Mongo et Minio.
+
+#### MongoDb
+
+Pour fonctionner l'api doit pouvoir se connecter à une base de données mongoDB.
+Par défaut, elle se connecte à l'url `mongodb://localhost:27017/api-subventions-asso`.
 Il est possible de paramétrer ces informations dans le fichier .env. Le nom des variables se trouve dans `configurations/mongo.conf.ts`.
-
-Vous pouvez utiliser docker pour simplifier l'installation de MongoDB avec les commandes suivantes :  
-`sudo docker run -d -p 27017:27017 mongo:4.0.3`
-
+Il est possible de restorer un dump de la base en utilisant le cli mongo : `mongorestore --db datasubvention <path/to/dump>`
 En partant d'une base de données vierge, il est nécessaire d'ajouter, en local, un nom de domaine accepté dans la collection `configurations` afin de permettre la création d'un utilisateur :
 `db.configurations.insertOne({name: "ACCEPTED-EMAIL-DOMAINS", data: ["beta.gouv.fr"]})`
+
+#### Object Storage S3
+
+Le service Minio est le server de stockage d'objets S3 local.
+Il est nécessaire de définir les variables d'environnement suivantes :
+- `MINIO_ROOT_USER`
+- `MINIO_ROOT_PASSWORD`
+- Pour permettre la connexion de l'api au s3, penser aussi à définir les variables d'environnement qui sont utilisée dans le fichier `api/src/configurations/s3.conf.ts`
+  et notamment les variables `S3_ACCESS_KEY` et `S3_SECRET_KEY` avec les valeurs utilisateurs définies.
+
+##### Accès
+
+- **API S3**: http://localhost:9000
+- **Console Web**: http://localhost:9001
+
+Il faut au préalable se connecter à la console web et créer le bucket avec le nom défini dans la variable `S3_BUCKET`
+
+- La console facilite la gestion du S3 mais il est aussi possible d'utiliser l'api via le cli `mc`.
+
+##### Liste de commandes client MiniIo
+
+- Pour éviter d'entrer le user à chaque commande, il est possible d'enregistrer l'url et les credentials sous un alias : `mc alias set <alias-name> http://127.0.0.1:9000 <user> <password>`
+- Il est possible de générer d'autres utilisateurs et de définir leurs droits :
+    - `mc admin user add local <user> <password>`
+    - `mc admin policy attach local readwrite --user <user>`
+- pour voir la liste des buckets : `mc ls local`
+- pour créer un bucket : `mc mb local/<bucket_name>`
+- pour upload un fichier : `mc cp <fichier_local> local/<bucket_name>/`
+- pour download un fichier : `mc cp local/nom-du-bucket/fichier.txt ./fichier.txt`
+
 
 Pour build l'api il est nécessaire au préalable de build le dossier dto pour avoir accès au types. Pour ce faire executer un `pnpm build:api` depuis la racine `/api-subventions-asso`.
 
