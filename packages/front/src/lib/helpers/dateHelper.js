@@ -1,9 +1,11 @@
+/**
+ *
+ * @param date Date to format
+ * @returns string that represents a french date DD/MM/YY
+ */
 export const withTwoDigitYear = date => {
     if (date instanceof Date) {
-        const localeDate = date.toLocaleDateString();
-        const last2Digit = localeDate.slice(-2);
-        const dateWithoutYear = localeDate.slice(0, 6);
-        return dateWithoutYear.concat(last2Digit);
+        return date.toLocaleDateString("fr-FR", { day: "numeric", month: "numeric", year: "2-digit" });
     } else return date;
 };
 

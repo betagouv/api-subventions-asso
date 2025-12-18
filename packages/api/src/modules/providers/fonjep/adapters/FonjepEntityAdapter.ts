@@ -252,7 +252,7 @@ export default class FonjepEntityAdapter {
         const beneficiaryEstablishmentIdType =
             EstablishmentIdentifier.getIdentifierType(beneficiary.siretOuRidet) || null;
         if (!beneficiaryEstablishmentIdType) {
-            // TODO: this should not happen but has been encountered where rid was present in instead of ridet. See #3586
+            // TODO: this should not happen but has been encountered where rid was present instead of ridet. See #3586
             console.log(
                 `FONJEP ApplicationFlat must have a valid beneficiary siret or ridet, given ${beneficiary.siretOuRidet}.`,
             );

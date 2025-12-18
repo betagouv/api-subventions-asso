@@ -6,11 +6,13 @@ import fonjepTiersPort from "../../../dataProviders/db/providers/fonjep/fonjep.t
 import fonjepTypePostePort from "../../../dataProviders/db/providers/fonjep/fonjep.typePoste.port";
 import fonjepVersementsPort from "../../../dataProviders/db/providers/fonjep/fonjep.versements.port";
 import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
+import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
 import Ridet from "../../../identifierObjects/Ridet";
 import Siret from "../../../identifierObjects/Siret";
 import { addWithNull } from "../../../shared/helpers/NumberHelper";
 import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
+import PaymentFlatProvider from "../../paymentFlat/@types/paymentFlatProvider";
 import paymentFlatService from "../../paymentFlat/paymentFlat.service";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import ProviderCore from "../ProviderCore";
@@ -24,7 +26,7 @@ import FonjepVersementEntity, { PayedFonjepVersementEntity } from "./entities/Fo
 import FonjepParser from "./fonjep.parser";
 import { ReadableStream } from "node:stream/web";
 
-export class FonjepService extends ProviderCore implements ApplicationFlatProvider {
+export class FonjepService extends ProviderCore implements ApplicationFlatProvider, PaymentFlatProvider {
     constructor() {
         super({
             name: "Extranet FONJEP",
@@ -136,6 +138,14 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
     }
 
     // only used for test to generate payment-flat on demand
+    async getApplicationFlatCollections() {
+        const thirdParties = await fonjepTiersPort.findAll();
+        const positions = await fonjepPostesPort.findAll();
+        const schemes = await fonjepDispositifPort.findAll();
+        return { thirdParties, positions, schemes };
+    }
+
+    // only used for test to generate payment-flat on demand
     async getPaymentFlatCollections() {
         const thirdParties = await fonjepTiersPort.findAll();
         const positions = await fonjepPostesPort.findAll();
@@ -158,7 +168,7 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
 
         const dataBretagneData = await dataBretagneService.getAllDataRecords();
 
-        const fonjepFlatPayments = validPayments.reduce((acc, payment) => {
+        const payments = validPayments.reduce((acc, payment) => {
             const getPosition = (positionCode: string) =>
                 collections.positions.find(
                     position => position.code === positionCode && position.annee === payment.periodeDebut.getFullYear(),
@@ -184,7 +194,18 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
             return acc;
         }, [] as FonjepPaymentFlatEntity[]);
 
-        await paymentFlatService.upsertMany(fonjepFlatPayments);
+        return payments;
+    }
+
+    async addToPaymentFlat(collections: {
+        thirdParties: FonjepTiersEntity[];
+        positions: FonjepPosteEntity[];
+        payments: FonjepVersementEntity[];
+    }) {
+        const payments = await this.createPaymentFlatEntitiesFromCollections(collections);
+
+        const stream = ReadableStream.from(payments);
+        return this.savePaymentsFromStream(stream);
     }
 
     /**
@@ -193,23 +214,18 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
      * |----------------------------|
      */
 
-    addToApplicationFlat(
-        collections: {
-            positions: FonjepPosteEntity[];
-            thirdParties: FonjepTiersEntity[];
-            schemes: FonjepDispositifEntity[];
-        },
-        exportDate: Date,
-    ) {
-        const applications: FonjepApplicationFlatEntity[] = this.createApplicationFlatEntitiesFromCollections(
-            collections,
-            exportDate,
-        );
+    addToApplicationFlat(collections: {
+        positions: FonjepPosteEntity[];
+        thirdParties: FonjepTiersEntity[];
+        schemes: FonjepDispositifEntity[];
+    }) {
+        const applications: FonjepApplicationFlatEntity[] =
+            this.createApplicationFlatEntitiesFromCollections(collections);
 
         const aggregatedApplications = this.processDuplicates(applications);
 
         const stream = ReadableStream.from(aggregatedApplications);
-        return this.saveFlatFromStream(stream);
+        return this.saveApplicationsFromStream(stream);
     }
 
     private groupApplicationsByUniqueId(applications: FonjepApplicationFlatEntity[]) {
@@ -247,14 +263,11 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
         }, [] as FonjepApplicationFlatEntity[]);
     }
 
-    createApplicationFlatEntitiesFromCollections(
-        collections: {
-            positions: FonjepPosteEntity[];
-            thirdParties: FonjepTiersEntity[];
-            schemes: FonjepDispositifEntity[];
-        },
-        exportDate: Date,
-    ): FonjepApplicationFlatEntity[] {
+    createApplicationFlatEntitiesFromCollections(collections: {
+        positions: FonjepPosteEntity[];
+        thirdParties: FonjepTiersEntity[];
+        schemes: FonjepDispositifEntity[];
+    }): FonjepApplicationFlatEntity[] {
         const { positions, thirdParties, schemes } = collections;
 
         const applications: FonjepApplicationFlatEntity[] = [];
@@ -294,7 +307,7 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
                 if (partialApplication) {
                     applications.push({
                         ...partialApplication,
-                        updateDate: exportDate ? exportDate : new Date(),
+                        updateDate: position.updateDate,
                     });
                 }
             }
@@ -308,8 +321,12 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
         return applications;
     }
 
-    saveFlatFromStream(stream: ReadableStream<ApplicationFlatEntity>) {
+    saveApplicationsFromStream(stream: ReadableStream<ApplicationFlatEntity>) {
         return applicationFlatService.saveFromStream(stream);
+    }
+
+    savePaymentsFromStream(stream: ReadableStream<PaymentFlatEntity>) {
+        return paymentFlatService.saveFromStream(stream);
     }
 }
 

@@ -40,20 +40,17 @@ export default class FonjepCli extends CliController {
         );
 
         // TODO: make PaymentFlat use the same ReadableStream architecture yo be ISO with ApplicationFlat ?
-        await fonjepService.createPaymentFlatEntitiesFromCollections({
+        await fonjepService.addToPaymentFlat({
             thirdParties: tierEntities,
             positions: posteEntities,
             payments: versementEntities,
         });
 
-        await fonjepService.addToApplicationFlat(
-            {
-                positions: posteEntities,
-                schemes: dispositifEntities,
-                thirdParties: tierEntities,
-            },
-            exportDate,
-        );
+        await fonjepService.addToApplicationFlat({
+            positions: posteEntities,
+            schemes: dispositifEntities,
+            thirdParties: tierEntities,
+        });
 
         this.logger.logIC("Fonjep temps collections created");
 
@@ -64,10 +61,22 @@ export default class FonjepCli extends CliController {
 
     // ONLY USED FOR TEST / CLEAN PURPOSE AFTER BUG DETECTION TO AVOID REIMPORTING FONJEP DATA
     // creates all fonjep payment-flat from collection
+    async initApplicationFlat() {
+        const { thirdParties, positions, schemes } = await fonjepService.getApplicationFlatCollections();
+        // TODO: make PaymentFlat use the same ReadableStream architecture yo be ISO with ApplicationFlat ?
+        await fonjepService.addToApplicationFlat({
+            thirdParties,
+            positions,
+            schemes,
+        });
+    }
+
+    // ONLY USED FOR TEST / CLEAN PURPOSE AFTER BUG DETECTION TO AVOID REIMPORTING FONJEP DATA
+    // creates all fonjep payment-flat from collection
     async initPaymentFlat() {
         const { thirdParties, positions, payments } = await fonjepService.getPaymentFlatCollections();
         // TODO: make PaymentFlat use the same ReadableStream architecture yo be ISO with ApplicationFlat ?
-        await fonjepService.createPaymentFlatEntitiesFromCollections({
+        await fonjepService.addToPaymentFlat({
             thirdParties,
             positions,
             payments,

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.76.7](https://github.com/betagouv/api-subventions-asso/compare/v0.76.6...v0.76.7) (2025-12-18)
+
+### Bug Fixes
+
+- **front:** fix mm/dd/yy date formating ([13284ae](https://github.com/betagouv/api-subventions-asso/commit/13284ae54b90ca693888d2b363f5f00062611d7e))
+- **front:** numberToEuro with null ([8965466](https://github.com/betagouv/api-subventions-asso/commit/89654660a8eb8770a19b0f30bbb55073fb21617f))
+
+### Features
+
+- **api:** add fonjep cli app flat initialization ([63b71cd](https://github.com/betagouv/api-subventions-asso/commit/63b71cda8a1c0fbdad95305c470cc4cdc0512cfc))
+
 ## [0.76.6](https://github.com/betagouv/api-subventions-asso/compare/v0.76.5...v0.76.6) (2025-12-17)
 
 ### Bug Fixes
