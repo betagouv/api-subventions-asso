@@ -5,6 +5,7 @@ import depositLogService, {
 import { depositLogStore } from "$lib/store/depositLog.store";
 import type { UploadedFileInfosDto } from "dto";
 import { dateToFullFrenchDateWithHour } from "$lib/helpers/dateHelper";
+import errorService from "$lib/services/error.service";
 
 export default class ResumeFormController {
     public fileInfos: UploadedFileInfosDto | undefined;
@@ -63,7 +64,7 @@ export default class ResumeFormController {
             depositLogStore.set(null);
             return true;
         } catch (e) {
-            console.error("Erreur lors de la réinitialisation du dépôt", e); // todo : error handling
+            errorService.handleError(e);
             return false;
         }
     }
