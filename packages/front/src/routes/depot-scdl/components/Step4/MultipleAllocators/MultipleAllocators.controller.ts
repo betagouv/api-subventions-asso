@@ -1,6 +1,7 @@
 import { depositLogStore } from "$lib/store/depositLog.store";
 import depositLogService from "$lib/resources/deposit-log/depositLog.service";
 import type { EventDispatcher } from "svelte";
+import errorService from "$lib/services/error.service";
 
 type EventMap = {
     prevStep: void;
@@ -25,7 +26,7 @@ export default class MultipleAllocatorsController {
             depositLogStore.set(null);
             this.dispatch("restartNewForm");
         } catch (e) {
-            console.error("Erreur lors de la réinitialisation du dépôt", e); // todo : error handling
+            errorService.handleError(e);
         }
     }
 }

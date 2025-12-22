@@ -15,6 +15,10 @@
 
     import SkipLinks from "$lib/dsfr/SkipLinks.svelte";
     import MainInfoBanner from "$lib/components/MainInfoBanner/MainInfoBanner.svelte";
+    import Alert from "$lib/dsfr/Alert.svelte";
+    import { errorStore, errorMessageStore } from "$lib/store/genericError.store";
+    import errorService from "$lib/services/error.service";
+    import { onMount } from "svelte";
 
     export let data;
 
@@ -26,6 +30,14 @@
         verbose: false,
         mode: "runtime",
     };
+
+    $: if ($page.url) {
+        errorService.clearError();
+    }
+
+    onMount(() => {
+        return ctrl.setupGlobalEventListeners();
+    });
 </script>
 
 <svelte:head>
@@ -53,6 +65,13 @@
                 <div class="fr-container fr-mb-8w">
                     <main id="content">
                         <Breadcrumb crumbs={data.crumbs} />
+                        {#if $errorStore}
+                            <div class="fr-container">
+                                <Alert type="error" title={$errorMessageStore.title}>
+                                    <p>{$errorMessageStore.message}</p>
+                                </Alert>
+                            </div>
+                        {/if}
                         <slot />
                     </main>
                 </div>
