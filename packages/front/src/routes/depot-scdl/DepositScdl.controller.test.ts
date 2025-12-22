@@ -5,7 +5,7 @@ import { DepositScdlController } from "./DepositScdl.controller";
 vi.mock("$lib/services/router.service");
 
 describe("DepositScdlController", () => {
-    let controller;
+    let controller: DepositScdlController;
     const COMPONENTS_LIST = { 1: "step1Component", 2: "step2Component", 3: "step3Component" };
     const DEPOSIT_LOG: DepositScdlLogResponseDto = {
         step: 1,
@@ -64,7 +64,7 @@ describe("DepositScdlController", () => {
         it("set view and step", () => {
             controller.resumeForm();
             expect(controller.currentView.value).toEqual("form");
-            expect(controller.currentStep.value).toEqual(controller.depositLog.value.step + 2);
+            expect(controller.currentStep.value).toEqual(controller.depositLog.value!.step + 2);
         });
     });
 
@@ -116,9 +116,21 @@ describe("DepositScdlController", () => {
     });
 
     describe("loading", () => {
-        it("set view", () => {
-            controller.loading();
-            expect(controller.currentView.value).toEqual("loading");
+        it("set loading message", () => {
+            controller.loading("a message");
+            expect(controller.currentLoadingMessage.value).toEqual("a message");
+        });
+
+        it("set isLoading", () => {
+            controller.loading("a message");
+            expect(controller.isLoading.value).toBe(true);
+        });
+    });
+
+    describe("endLoading", () => {
+        it("set isLoading", () => {
+            controller.endLoading();
+            expect(controller.isLoading.value).toBe(false);
         });
     });
 });

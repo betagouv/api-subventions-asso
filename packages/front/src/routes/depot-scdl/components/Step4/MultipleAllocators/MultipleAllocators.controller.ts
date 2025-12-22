@@ -1,5 +1,6 @@
 import { depositLogStore } from "$lib/store/depositLog.store";
 import depositLogService from "$lib/resources/deposit-log/depositLog.service";
+import type { EventDispatcher } from "svelte";
 
 type EventMap = {
     prevStep: void;
@@ -7,15 +8,10 @@ type EventMap = {
     error: string;
 };
 
-type DispatchFunction = <K extends keyof EventMap>(
-    type: K,
-    detail?: EventMap[K] extends void ? never : EventMap[K],
-) => void;
-
 export default class MultipleAllocatorsController {
-    private readonly dispatch: DispatchFunction;
+    private readonly dispatch: EventDispatcher<EventMap>;
 
-    constructor(dispatch: DispatchFunction) {
+    constructor(dispatch: EventDispatcher<EventMap>) {
         this.dispatch = dispatch;
     }
 

@@ -14,7 +14,7 @@
     const stepComponents = { 1: Step1, 2: Step2, 3: Step3, 4: Step4, 5: Step5 };
 
     const ctrl = new DepositScdlController(stepComponents);
-    const { currentStep, currentView, currentStepComponent, stepsDesc, currentLoadingMessage } = ctrl;
+    const { currentStep, currentView, currentStepComponent, stepsDesc, currentLoadingMessage, isLoading } = ctrl;
 
     onMount(async () => {
         await ctrl.onMount();
@@ -33,17 +33,43 @@
                     <div class="fr-mb-6v">
                         <StepIndicator currentStep={$currentStep} {stepsDesc}></StepIndicator>
                     </div>
-                    <svelte:component
-                        this={$currentStepComponent}
-                        on:nextStep={() => ctrl.nextStep()}
-                        on:prevStep={() => ctrl.prevStep()}
-                        on:loading={e => ctrl.loading(e.detail)}
-                        on:endLoading={() => ctrl.endLoading()}
-                        on:restartNewForm={() => ctrl.restartNewForm()} />
+                    <div class="form-container">
+                        <svelte:component
+                            this={$currentStepComponent}
+                            on:nextStep={() => ctrl.nextStep()}
+                            on:prevStep={() => ctrl.prevStep()}
+                            on:loading={e => ctrl.loading(e.detail)}
+                            on:endLoading={() => ctrl.endLoading()}
+                            on:restartNewForm={() => ctrl.restartNewForm()} />
+
+                        {#if $isLoading}
+                            <div class="loading-overlay">
+                                <Spinner description={$currentLoadingMessage} />
+                            </div>
+                        {/if}
+                    </div>
                 </div>
-            {:else if $currentView === "loading"}
-                <Spinner description={$currentLoadingMessage} />
             {/if}
         </div>
     </div>
 </main>
+
+<style>
+    .form-container {
+        position: relative;
+    }
+
+    .loading-overlay {
+        pointer-events: auto;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: white;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        z-index: 1000;
+    }
+</style>
