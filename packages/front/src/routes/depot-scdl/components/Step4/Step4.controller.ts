@@ -2,6 +2,7 @@ import Store from "$lib/core/Store";
 import { depositLogStore } from "$lib/store/depositLog.store";
 import { type EventDispatcher, getContext } from "svelte";
 import depositLogService, { type FileValidationState } from "$lib/resources/deposit-log/depositLog.service";
+import errorService from "$lib/services/error.service";
 
 type EventMap = {
     prevStep: void;
@@ -65,8 +66,7 @@ export default class Step4Controller {
             depositLogStore.set(null);
             this.dispatch("nextStep");
         } catch (e) {
-            console.error("Erreur lors de l'upload du fichier", e);
-            // todo : error handling toast
+            errorService.handleError(e);
         } finally {
             this.dispatch("endLoading");
         }
