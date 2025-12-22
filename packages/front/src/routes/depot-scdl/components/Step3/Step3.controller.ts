@@ -12,6 +12,7 @@ import FileFormatError from "$lib/errors/file-errors/FileFormatError";
 import FileEncodingError from "$lib/errors/file-errors/FileEncodingError";
 import { depositLogStore } from "$lib/store/depositLog.store";
 import type { DepositScdlLogDto } from "dto/depositScdlProcess/DepositScdlLogDto";
+import type { EventDispatcher } from "svelte";
 
 type EventMap = {
     prevStep: void;
@@ -21,18 +22,13 @@ type EventMap = {
     error: string;
 };
 
-type DispatchFunction = <K extends keyof EventMap>(
-    type: K,
-    detail?: EventMap[K] extends void ? never : EventMap[K],
-) => void;
-
 export default class Step3Controller {
     private selectedFile: File | null = null;
     private MAX_MO_FILE_SIZE = 30;
     private MIN_LOADING_TIME = 2000;
-    private readonly dispatch: DispatchFunction;
+    private readonly dispatch: EventDispatcher<EventMap>;
 
-    constructor(dispatch: DispatchFunction) {
+    constructor(dispatch: EventDispatcher<EventMap>) {
         this.dispatch = dispatch;
     }
 
@@ -143,8 +139,9 @@ export default class Step3Controller {
             this.dispatch("nextStep");
         } catch (e) {
             console.error("Erreur lors de l'upload du fichier", e);
-            this.dispatch("endLoading");
             this.errorAlertVisible.set(true);
+        } finally {
+            this.dispatch("endLoading");
         }
     }
 
