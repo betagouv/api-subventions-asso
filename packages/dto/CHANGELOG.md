@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.77.0](https://github.com/betagouv/datasubvention/compare/v0.76.7...v0.77.0) (2025-12-18)
+
+### Features
+
+- **api:** [#3628](https://github.com/betagouv/datasubvention/issues/3628) added deposit file saving in s3 storage and manage d… ([#3747](https://github.com/betagouv/datasubvention/issues/3747)) ([5e6949a](https://github.com/betagouv/datasubvention/commit/5e6949ab71e43ca4720040dc49881426906bf70c))
+
 ## [0.76.4](https://github.com/betagouv/datasubvention/compare/v0.76.3...v0.76.4) (2025-12-10)
 
 **Note:** Version bump only for package dto
