@@ -66,6 +66,5 @@ export const getLastPaymentsDate = (payments: PaymentFlatDto[]) => {
     });
 
     if (!orderedPayments.length) return null;
-    console.log(orderedPayments[0].dateOperation);
     return new Date(orderedPayments[0].dateOperation);
 };
