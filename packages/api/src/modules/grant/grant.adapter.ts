@@ -26,33 +26,49 @@ export default class GrantAdapter {
             .join(" ");
     }
 
+    static extractExerciseFromGrant(application, lastPayment): number | null {
+        if (application && application.budgetaryYear) return application.budgetaryYear;
+        if (lastPayment && lastPayment.exerciceBudgetaire) return lastPayment.exerciceBudgetaire;
+        return null;
+    }
+
     static grantToExtractLine(
         grant: GrantFlatEntity,
         asso: Association,
         estabBySiret: Record<string, EstablishmentSimplified>,
     ): GrantToExtract {
-        const lastPayment: PaymentFlatEntity | undefined = grant.payments?.sort(
-            (p1, p2) => p2.operationDate.getTime() - p1.operationDate.getTime(),
-        )?.[0];
+        if (!grant.application && grant.payments.length === 0) throw new Error("grant has no application nor payment");
 
         const { application, payments } = grant;
+        const lastPayment = grant.payments.length
+            ? grant.payments?.sort((p1, p2) => p2.operationDate.getTime() - p1.operationDate.getTime())?.[0]
+            : undefined;
 
-        const aggregatedPayment = {
-            program: GrantAdapter.findSingleProperty(
-                payments,
-                "programme",
-                "multi-programmes",
-                p => `${p.programNumber} - ${p.programName}`,
-            ),
-            financialCenter: lastPayment
-                ? `${lastPayment.centreFinancierCode} - ${lastPayment.centreFinancierLibelle}`
-                : undefined,
-            paidAmount: payments.reduce((currentSum: number, payment) => payment.amount + currentSum, 0),
-            paymentDate: lastPayment?.operationDate.toISOString().split("T")[0],
-        };
+        if (!application && !lastPayment) throw new Error("grant has no application nor payment");
 
-        const siret =
-            application?.beneficiaryEstablishmentId.toString() || lastPayment.idEntrepriseBeneficiaire.toString();
+        // if application undefined, at least one payment is present
+        const siret = application
+            ? application.beneficiaryEstablishmentId.toString()
+            : (lastPayment as PaymentFlatEntity).idEntrepriseBeneficiaire.toString();
+
+        const exercise = this.extractExerciseFromGrant(application, lastPayment);
+
+        let aggregatedPayment = {};
+        if (lastPayment)
+            aggregatedPayment = {
+                program: GrantAdapter.findSingleProperty(
+                    payments,
+                    "programme",
+                    "multi-programmes",
+                    p => `${p.programNumber} - ${p.programName}`,
+                ),
+                financialCenter: lastPayment
+                    ? `${lastPayment.centreFinancierCode} - ${lastPayment.centreFinancierLibelle}`
+                    : undefined,
+                paidAmount: payments.reduce((currentSum: number, payment) => payment.amount + currentSum, 0),
+                paymentDate: lastPayment?.operationDate.toISOString().split("T")[0],
+            };
+
         return {
             // general part
             assoName: getValue(asso.denomination_rna?.[0]) ?? getValue(asso.denomination_siren?.[0]) ?? "",
@@ -60,7 +76,7 @@ export default class GrantAdapter {
             estabAddress: GrantAdapter.addressToOneLineString(getValue(estabBySiret[siret]?.adresse?.[0])),
 
             // application part
-            exercice: grant.application?.budgetaryYear || lastPayment.exerciceBudgetaire,
+            exercice: exercise,
             action: grant.application?.object ?? undefined,
             askedAmount: application?.requestedAmount ?? undefined,
             grantedAmount: application?.grantedAmount ?? undefined,

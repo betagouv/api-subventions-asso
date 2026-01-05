@@ -1,6 +1,5 @@
 import GrantAdapter from "./grant.adapter";
 import { Association, ProviderValues, EstablishmentSimplified } from "dto";
-import { GrantToExtract } from "./@types/GrantToExtract";
 import paymentService from "../payments/payments.service";
 import {
     CHORUS_PAYMENT_FLAT_ENTITY,
@@ -34,7 +33,7 @@ describe("GrantAdapter", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("if single value and adapter, return adapted value", () => {
+        it("if single value and adapter, return actual value", () => {
             const expected = "ADAPTED";
             const ADAPTER = jest.fn(() => expected);
             // @ts-expect-error -- test private
@@ -87,46 +86,51 @@ describe("GrantAdapter", () => {
             },
         } as Record<string, EstablishmentSimplified>;
 
-        let adapted: GrantToExtract;
         let singlePropMock: jest.SpyInstance;
         let addressToOneLineStringMock: jest.SpyInstance;
+        let mockExtractExercise: jest.SpyInstance;
 
         beforeAll(() => {
             // @ts-expect-error -- mock
             singlePropMock = jest.spyOn(GrantAdapter, "findSingleProperty").mockReturnValue("aggregated");
+            mockExtractExercise = jest.spyOn(GrantAdapter, "extractExerciseFromGrant").mockReturnValue(2024);
             // @ts-expect-error -- mock
             addressToOneLineStringMock = jest.spyOn(GrantAdapter, "addressToOneLineString").mockReturnValue("adresse");
             jest.mocked(paymentService.getPaymentExercise).mockReturnValue(2022);
-
-            adapted = GrantAdapter.grantToExtractLine(GRANT, ASSO, ESTAB_BY_SIRET);
         });
 
         it("adapts correctly", () => {
-            expect(adapted).toMatchSnapshot();
+            const actual = GrantAdapter.grantToExtractLine(GRANT, ASSO, ESTAB_BY_SIRET);
+            expect(actual).toMatchSnapshot();
         });
 
         it("chooses last financial center", () => {
             const expected = `${LAST_PAYMENT.centreFinancierCode} - ${LAST_PAYMENT.centreFinancierLibelle}`;
-            const actual = adapted.financialCenter;
+            const actual = GrantAdapter.grantToExtractLine(GRANT, ASSO, ESTAB_BY_SIRET).financialCenter;
             expect(actual).toBe(expected);
         });
 
         it("chooses last payment date", () => {
             const expected = "2025-11-20";
-            const actual = adapted.paymentDate;
+            const actual = GrantAdapter.grantToExtractLine(GRANT, ASSO, ESTAB_BY_SIRET).paymentDate;
             expect(actual).toBe(expected);
+        });
+
+        it("extract budgetary exercise", () => {
+            GrantAdapter.grantToExtractLine(GRANT, ASSO, ESTAB_BY_SIRET);
+            expect(mockExtractExercise).toHaveBeenCalledWith(GRANT.application, LAST_PAYMENT);
         });
 
         it("paidAmount", () => {
             const expected = PAYMENTS[0].amount + PAYMENTS[1].amount;
-            const actual = adapted.paidAmount;
+            const actual = GrantAdapter.grantToExtractLine(GRANT, ASSO, ESTAB_BY_SIRET).paidAmount;
             expect(actual).toBe(expected);
         });
 
         it("calls findSingleProperty for program", () => {
             GrantAdapter.grantToExtractLine(GRANT, ASSO, ESTAB_BY_SIRET);
             const expected = "aggregated";
-            const actual = adapted.program;
+            const actual = GrantAdapter.grantToExtractLine(GRANT, ASSO, ESTAB_BY_SIRET).program;
             expect(singlePropMock).toHaveBeenCalledWith(
                 GRANT.payments,
                 "programme",
@@ -156,14 +160,14 @@ describe("GrantAdapter", () => {
 
         it("gets postalCode", () => {
             const expected = "31170";
-            const actual = adapted.postalCode;
+            const actual = GrantAdapter.grantToExtractLine(GRANT, ASSO, ESTAB_BY_SIRET).postalCode;
             expect(actual).toBe(expected);
         });
 
         it("gets formatted address", () => {
             GrantAdapter.grantToExtractLine(GRANT, ASSO, ESTAB_BY_SIRET);
             const expected = "adresse";
-            const actual = adapted.estabAddress;
+            const actual = GrantAdapter.grantToExtractLine(GRANT, ASSO, ESTAB_BY_SIRET).estabAddress;
             expect(addressToOneLineStringMock).toHaveBeenCalledWith({ code_postal: "31170" });
             expect(actual).toBe(expected);
         });
@@ -184,6 +188,18 @@ describe("GrantAdapter", () => {
                 ESTAB_BY_SIRET,
             );
             expect(actual).toMatchSnapshot();
+        });
+
+        // subventia application doesn't have budgetaryYear as of 2026/01/05
+        it("handle undefined exercise in both application and payment -- subventia edge case", () => {
+            mockExtractExercise.mockReturnValueOnce(null);
+            const actual = GrantAdapter.grantToExtractLine(
+                // @ts-expect-error: mock
+                { application: { ...GRANT.application, budgetaryYear: null }, payments: [] },
+                ASSO,
+                ESTAB_BY_SIRET,
+            );
+            expect(actual.exercice).toBeNull();
         });
     });
 });

@@ -7,7 +7,7 @@ export type GrantToExtract = {
     estabAddress: string;
 
     // application part
-    exercice: number;
+    exercice: number | null; // null for subventia application without associated payment
     siret: string;
     postalCode?: string;
     instructor?: string;
