@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.77.1](https://github.com/betagouv/api-subventions-asso/compare/v0.77.0...v0.77.1) (2026-01-05)
+
+### Bug Fixes
+
+- **api:** [#3764](https://github.com/betagouv/api-subventions-asso/issues/3764) grant extract with subventia application ([#3763](https://github.com/betagouv/api-subventions-asso/issues/3763)) ([66211a6](https://github.com/betagouv/api-subventions-asso/commit/66211a6573a91b8fa598ffb61e88ccd6358fcbfd))
+
 # [0.77.0](https://github.com/betagouv/api-subventions-asso/compare/v0.76.7...v0.77.0) (2025-12-18)
 
 ### Bug Fixes
