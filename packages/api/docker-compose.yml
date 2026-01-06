@@ -1,0 +1,33 @@
+name: data-sub-localdev
+
+services:
+  mongodb:
+    image: "mongo:8.0.3"
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - data-sub-mongodb-data:/data/db
+    env_file:
+      - .env.local
+  minio:
+    image: "minio/minio:latest"
+    container_name: minio-s3
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - data-sub-minio-data:/data/minio
+    env_file:
+      - .env.local
+    command:
+      - server
+      - /data/minio
+      - --console-address
+      - ":9001"
+volumes:
+  data-sub-mongodb-data:
+    driver: local
+  data-sub-minio-data:
+    driver: local
+
