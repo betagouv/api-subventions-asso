@@ -71,7 +71,8 @@ class DepositLogService {
 
     determineFileValidationState(declaredSiret: string, fileInfos: UploadedFileInfosDto): FileValidationState {
         const hasMultipleAllocators =
-            fileInfos.allocatorsSiret.length > 1 || declaredSiret !== fileInfos.allocatorsSiret[0];
+            fileInfos.allocatorsSiret.length > 1 ||
+            (fileInfos.allocatorsSiret.length === 1 && declaredSiret !== fileInfos.allocatorsSiret[0]);
         const hasLessGrantData = fileInfos.parseableLines < fileInfos.existingLinesInDbOnSamePeriod;
         const hasBlockingErrors = fileInfos.errors.some(error => error.bloquant === "oui") ?? false;
 
