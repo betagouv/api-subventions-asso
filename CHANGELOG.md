@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.77.2](https://github.com/betagouv/api-subventions-asso/compare/v0.77.1...v0.77.2) (2026-01-06)
+
+### Bug Fixes
+
+- **front:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) parse error routing on step 4 ([ca841ea](https://github.com/betagouv/api-subventions-asso/commit/ca841eaa7538ad46c17197bfabd9ea2bf230ec0a))
+
 ## [0.77.1](https://github.com/betagouv/api-subventions-asso/compare/v0.77.0...v0.77.1) (2026-01-05)
 
 ### Bug Fixes

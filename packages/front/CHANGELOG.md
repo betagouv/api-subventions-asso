@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.77.2](https://github.com/betagouv/datasubvention/compare/v0.77.1...v0.77.2) (2026-01-06)
+
+### Bug Fixes
+
+- **front:** [#0000](https://github.com/betagouv/datasubvention/issues/0000) parse error routing on step 4 ([ca841ea](https://github.com/betagouv/datasubvention/commit/ca841eaa7538ad46c17197bfabd9ea2bf230ec0a))
+
 # [0.77.0](https://github.com/betagouv/datasubvention/compare/v0.76.7...v0.77.0) (2025-12-18)
 
 ### Bug Fixes
