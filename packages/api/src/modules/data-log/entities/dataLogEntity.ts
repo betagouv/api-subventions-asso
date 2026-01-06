@@ -4,4 +4,7 @@ export type DataLogEntity = {
     editionDate?: Date; // date of file production or up to which date the file covers
     fileName?: string;
     userId?: string;
+    providerName?: string;
 };
+
+export type NewDataLogEntity = Omit<DataLogEntity, "integrationDate">;

@@ -2,22 +2,29 @@ import path from "path";
 import { DataLogDto } from "dto";
 import dataLogPort from "../../dataProviders/db/data-log/dataLog.port";
 import { DataLogAdapter } from "./dataLog.adapter";
+import { NewDataLogEntity } from "./entities/dataLogEntity";
 
 class DataLogService {
-    addLog(providerId: string, filePath?: string, editionDate: Date | undefined = undefined, userId?: string) {
-        let fileName = filePath;
-        if (fileName) {
-            const realPath = path.parse(fileName);
-            fileName = realPath?.base;
-        }
+    throwMissingProp(propName: string) {
+        throw new Error(`DataLogEntity must have a ${propName}.`);
+    }
 
-        return dataLogPort.insert({
-            providerId,
-            integrationDate: new Date(),
-            editionDate: editionDate || undefined,
-            fileName,
-            userId,
-        });
+    addFromFile(log: NewDataLogEntity) {
+        if (!log.fileName) throw new Error("DataLogEntity from file must have a fileName");
+        this.add({ ...log, fileName: path.parse(log.fileName).base });
+    }
+
+    addFromApi(log: NewDataLogEntity) {
+        if (log.fileName) throw new Error("DataLogEntity from API can't have a fileName");
+        this.add(log);
+    }
+
+    add(log: NewDataLogEntity) {
+        if (!log.providerId) this.throwMissingProp("providerId");
+        if (!log.providerName) this.throwMissingProp("providerName");
+        if (!log.userId) this.throwMissingProp("userId");
+
+        return dataLogPort.insert({ ...log, integrationDate: new Date() });
     }
 
     async getProvidersLogOverview(): Promise<DataLogDto[]> {

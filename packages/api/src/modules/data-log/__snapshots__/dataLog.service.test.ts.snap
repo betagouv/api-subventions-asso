@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`dataLogService add returns inserted log 1`] = `
+{
+  "editionDate": 2022-02-02T00:00:00.000Z,
+  "fileName": "/path/to/file.csv",
+  "integrationDate": Any<Date>,
+  "providerId": "provider-application-2",
+  "providerName": "PROVIDER_APPLICATION_2",
+  "userId": "user-123",
+}
+`;
