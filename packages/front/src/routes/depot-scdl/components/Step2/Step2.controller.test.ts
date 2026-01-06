@@ -79,14 +79,13 @@ describe("Step2Controller", () => {
             expect(actual).toBe(expected);
         });
 
-        it("should return resume when 400 error", async () => {
-            const expected = "error";
+        it("should return undefined when 400 error", async () => {
             const error = {
                 data: { code: 400, message: "Bad Request" },
             };
             createDepositLogMock.mockRejectedValue(error);
             const actual = await controller.handleValidate();
-            expect(actual).toBe(expected);
+            expect(actual).toBe(undefined);
         });
     });
 

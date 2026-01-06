@@ -7,6 +7,7 @@ import { page } from "$app/stores";
 import Store, { derived } from "$lib/core/Store";
 import { connectedUser } from "$lib/store/user.store";
 import errorService from "$lib/services/error.service";
+import { errorStore } from "$lib/store/genericError.store";
 
 export class AppController {
     element: HTMLElement | undefined = undefined;
@@ -41,7 +42,7 @@ export class AppController {
     public setupGlobalEventListeners(): () => void {
         const handleButtonClick = (event: Event) => {
             const target = event.target as HTMLElement;
-            if (target?.tagName === "BUTTON") {
+            if (target?.tagName === "BUTTON" && errorStore.value) {
                 errorService.clearError();
             }
         };
