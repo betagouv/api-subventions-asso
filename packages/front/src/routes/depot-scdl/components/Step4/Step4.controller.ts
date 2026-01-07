@@ -1,6 +1,6 @@
 import Store from "$lib/core/Store";
 import { depositLogStore } from "$lib/store/depositLog.store";
-import { getContext } from "svelte";
+import { type EventDispatcher, getContext } from "svelte";
 import depositLogService, { type FileValidationState } from "$lib/resources/deposit-log/depositLog.service";
 
 type EventMap = {
@@ -12,18 +12,13 @@ type EventMap = {
     error: string;
 };
 
-type DispatchFunction = <K extends keyof EventMap>(
-    type: K,
-    detail?: EventMap[K] extends void ? never : EventMap[K],
-) => void;
-
 export default class Step4Controller {
     private MIN_LOADING_TIME = 2000;
-    private readonly dispatch: DispatchFunction;
+    private readonly dispatch: EventDispatcher<EventMap>;
     public view: Store<FileValidationState | "error"> = new Store("confirmDataAdd");
     app: { getContact: () => string };
 
-    constructor(dispatch: DispatchFunction) {
+    constructor(dispatch: EventDispatcher<EventMap>) {
         this.dispatch = dispatch;
         this.app = getContext("app");
         const depositLog = depositLogStore.value!;
@@ -71,8 +66,9 @@ export default class Step4Controller {
             this.dispatch("nextStep");
         } catch (e) {
             console.error("Erreur lors de l'upload du fichier", e);
-            this.dispatch("endLoading");
             // todo : error handling toast
+        } finally {
+            this.dispatch("endLoading");
         }
     }
 }

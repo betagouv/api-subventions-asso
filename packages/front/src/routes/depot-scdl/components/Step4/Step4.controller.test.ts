@@ -167,7 +167,7 @@ describe("Step4Controller", () => {
                 persistScdlFileMock.mockResolvedValue();
                 await controller.submitDatas();
                 expect(mockDispatch).toHaveBeenCalledWith("nextStep");
-                expect(mockDispatch).toHaveBeenCalledTimes(2);
+                expect(mockDispatch).toHaveBeenCalledTimes(3);
             });
         });
     });
