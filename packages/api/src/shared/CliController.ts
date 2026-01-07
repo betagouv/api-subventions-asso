@@ -73,7 +73,7 @@ export default class CliController {
         throw new Error("_compare() need to be implemented by the child class");
     }
 
-    protected async _logImportSuccess(editionDate: Date, fileName?: string) {
+    protected async _logImportSuccess(editionDate: Date, fileName: string) {
         if (!this._serviceMeta) throw new Error("'_serviceMeta' needs to be defined by the child class");
         return dataLogService.addFromFile({
             providerId: this._serviceMeta.id,

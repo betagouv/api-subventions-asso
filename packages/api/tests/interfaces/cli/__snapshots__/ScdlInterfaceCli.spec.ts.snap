@@ -1006,6 +1006,7 @@ exports[`SCDL CLI parsing parse registers new import in data-log 1`] = `
     "integrationDate": Any<Date>,
     "providerId": "scdl-99000000000001",
     "providerName": "ALLOCATOR_1",
+    "source": "FILE",
   },
 ]
 `;

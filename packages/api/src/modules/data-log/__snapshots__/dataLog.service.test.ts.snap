@@ -7,6 +7,7 @@ exports[`dataLogService add returns inserted log 1`] = `
   "integrationDate": Any<Date>,
   "providerId": "provider-application-2",
   "providerName": "PROVIDER_APPLICATION_2",
+  "source": "FILE",
   "userId": "user-123",
 }
 `;

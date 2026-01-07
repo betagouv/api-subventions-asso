@@ -4,12 +4,12 @@ exports[`/open-data/fournisseurs /historique should return raw grants with rna 1
 [
   {
     "derniere_date_integration": "2022-05-01T00:00:00.000Z",
-    "identifiant_fournisseur": "prov2",
+    "identifiant_fournisseur": "provider-application-1",
     "premiere_date_integration": "2022-05-01T00:00:00.000Z",
   },
   {
     "derniere_date_integration": "2023-01-01T00:00:00.000Z",
-    "identifiant_fournisseur": "prov1",
+    "identifiant_fournisseur": "provider-application-2",
     "premiere_date_integration": "2022-01-01T00:00:00.000Z",
   },
 ]
