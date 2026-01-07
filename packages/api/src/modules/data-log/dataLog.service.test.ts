@@ -33,7 +33,6 @@ describe("dataLogService", () => {
             missingProp
             ${"providerId"}
             ${"providerName"}
-            ${"userId"}
         `("throws if $missingProp is missing", async ({ missingProp }) => {
             const INVALID_LOG = { ...RAW_DATA_LOG, [missingProp]: undefined };
             await expect(async () => dataLogService.add(INVALID_LOG)).rejects.toThrow();
@@ -81,9 +80,17 @@ describe("dataLogService", () => {
             await dataLogService.addFromFile(RAW_DATA_LOG);
             expect(mockAdd).toHaveBeenCalledWith({ ...RAW_DATA_LOG, fileName: "file.csv" });
         });
+
+        it("returns inserted log", async () => {
+            const expected = { ...RAW_DATA_LOG, integrationDate: expect.any(Date) };
+            mockAdd.mockResolvedValueOnce(expected);
+            const actual = await dataLogService.addFromFile(RAW_DATA_LOG);
+            expect(actual).toEqual(expected);
+        });
     });
 
     describe("addFromApi", () => {
+        const API_DATA_LOG = { ...RAW_DATA_LOG, fileName: undefined };
         let mockAdd: jest.SpyInstance;
         beforeAll(() => {
             mockAdd = jest.spyOn(dataLogService, "add").mockImplementation(jest.fn());
@@ -100,9 +107,15 @@ describe("dataLogService", () => {
         });
 
         it("calls add", async () => {
-            const API_DATA_LOG = { ...RAW_DATA_LOG, fileName: undefined };
             await dataLogService.addFromApi(API_DATA_LOG);
             expect(mockAdd).toHaveBeenCalledWith(API_DATA_LOG);
+        });
+
+        it("returns inserted log", async () => {
+            const expected = { ...API_DATA_LOG, integrationDate: expect.any(Date) };
+            mockAdd.mockResolvedValueOnce(expected);
+            const actual = await dataLogService.addFromApi(API_DATA_LOG);
+            expect(actual).toEqual(expected);
         });
     });
 

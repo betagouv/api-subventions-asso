@@ -11,18 +11,17 @@ class DataLogService {
 
     addFromFile(log: NewDataLogEntity) {
         if (!log.fileName) throw new Error("DataLogEntity from file must have a fileName");
-        this.add({ ...log, fileName: path.parse(log.fileName).base });
+        return this.add({ ...log, fileName: path.parse(log.fileName).base });
     }
 
     addFromApi(log: NewDataLogEntity) {
         if (log.fileName) throw new Error("DataLogEntity from API can't have a fileName");
-        this.add(log);
+        return this.add(log);
     }
 
     add(log: NewDataLogEntity) {
         if (!log.providerId) this.throwMissingProp("providerId");
         if (!log.providerName) this.throwMissingProp("providerName");
-        if (!log.userId) this.throwMissingProp("userId");
 
         return dataLogPort.insert({ ...log, integrationDate: new Date() });
     }

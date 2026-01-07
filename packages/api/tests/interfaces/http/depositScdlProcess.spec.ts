@@ -397,6 +397,7 @@ describe("/parcours-depot", () => {
             // @ts-expect-error: mock - omit _id
             jest.spyOn(scdlService, "getProducer").mockResolvedValueOnce({
                 siret: "12345676541230",
+                name: "Test Producer",
             } as MiscScdlProducerEntity);
 
             const token = await createAndGetUserToken();
@@ -412,15 +413,13 @@ describe("/parcours-depot", () => {
                 0,
                 [],
             );
+
             await depositLogPort.insertOne(
                 new DepositScdlLogEntity(userId, 2, undefined, true, "12345676541230", true, uploadFileInfo),
             );
 
-            const response = await request(g.app)
-                .post(`/parcours-depot/depot-fichier-scdl`)
-                .set("x-access-token", token);
+            await request(g.app).post(`/parcours-depot/depot-fichier-scdl`).set("x-access-token", token).expect(204);
 
-            expect(response.statusCode).toBe(204);
             await expect(depositLogPort.findOneByUserId(userId)).resolves.toBeNull();
         });
 

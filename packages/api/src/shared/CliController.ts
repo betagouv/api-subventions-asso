@@ -7,7 +7,7 @@ import { validateDate } from "./helpers/CliHelper";
 export default class CliController {
     protected logFileParsePath = "";
     protected logger = new CliLogger();
-    protected _providerIdToLog = "";
+    protected _serviceMeta = { id: "", name: "" };
 
     private validParseFile(file: string): boolean {
         if (typeof file != "string") {
@@ -74,7 +74,12 @@ export default class CliController {
     }
 
     protected async _logImportSuccess(editionDate: Date, fileName?: string) {
-        if (!this._providerIdToLog) throw new Error("'_providerIdToLog' needs to be defined by the child class");
-        return dataLogService.addLog(this._providerIdToLog, fileName, editionDate);
+        if (!this._serviceMeta) throw new Error("'_serviceMeta' needs to be defined by the child class");
+        return dataLogService.addFromFile({
+            providerId: this._serviceMeta.id,
+            providerName: this._serviceMeta.name,
+            fileName: fileName,
+            editionDate,
+        });
     }
 }

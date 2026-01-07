@@ -100,7 +100,15 @@ export default class ScdlCli {
             });
         }
 
-        await Promise.all([this.exportErrors(errors, file), dataLogService.addLog(producer.siret, file, exportDate)]);
+        await Promise.all([
+            this.exportErrors(errors, file),
+            dataLogService.addFromFile({
+                providerId: `scdl-${producer.siret}`,
+                providerName: producer.name,
+                fileName: file,
+                editionDate: exportDate,
+            }),
+        ]);
     }
 
     private async validateGenericInput(producer: MiscScdlProducerEntity | null, exportDateStr?: string) {

@@ -396,7 +396,7 @@ describe("DepositScdlProcessService", () => {
             jest.spyOn(depositScdlProcessCheckService, "finalCheckBeforePersist").mockResolvedValue(undefined);
             persistMock = jest.spyOn(scdlService, "persist").mockResolvedValue(undefined);
             deletDepositMock = jest.spyOn(depositLogPort, "deleteByUserId").mockResolvedValue(true);
-            jest.spyOn(dataLogService, "addLog").mockResolvedValue({} as InsertOneResult<DataLogEntity>);
+            jest.spyOn(dataLogService, "addFromFile").mockResolvedValue({} as InsertOneResult<DataLogEntity>);
             mockS3DeleteUserFile.mockResolvedValue();
             mockGetUserFile.mockResolvedValue(createMockFile("test.csv"));
         });

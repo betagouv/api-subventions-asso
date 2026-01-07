@@ -235,7 +235,12 @@ export class DepositScdlProcessService {
 
         await s3StorageService.deleteUserFile(userId, existingDepositLog.uploadedFileInfos!.fileName);
 
-        await dataLogService.addLog(producer.siret, file.originalname, undefined, userId);
+        await dataLogService.addFromFile({
+            providerId: `scdl-${producer.siret}`,
+            providerName: producer.name,
+            fileName: file.originalname,
+            userId: userId,
+        });
 
         return depositLogPort.deleteByUserId(userId);
     }

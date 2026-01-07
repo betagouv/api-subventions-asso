@@ -179,11 +179,12 @@ describe("ScdlCli", () => {
                 producer: PRODUCER_ENTITY,
                 exportDate: EXPORT_DATE_STR,
             });
-            expect(jest.mocked(dataLogService.addLog)).toHaveBeenCalledWith(
-                PRODUCER_ENTITY.siret,
-                FILE_PATH,
-                new Date(EXPORT_DATE_STR),
-            );
+            expect(jest.mocked(dataLogService.addFromFile)).toHaveBeenCalledWith({
+                providerId: `scdl-${PRODUCER_ENTITY.siret}`,
+                providerName: PRODUCER_ENTITY.name,
+                fileName: FILE_PATH,
+                editionDate: new Date(EXPORT_DATE_STR),
+            });
         });
     });
 
