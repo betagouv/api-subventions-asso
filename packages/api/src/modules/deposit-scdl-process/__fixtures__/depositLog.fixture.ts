@@ -36,7 +36,7 @@ export const DEPOSIT_LOG_ENTITY_STEP_2: DepositScdlLogEntity = {
         parseableLines: 200,
         totalLines: 202,
         existingLinesInDbOnSamePeriod: 0,
-        errors: [],
+        errorStats: { count: 0, errors: [] },
     },
 };
 
@@ -48,7 +48,7 @@ export const UPLOADED_FILE_INFOS_ENTITY: UploadedFileInfosEntity = {
     parseableLines: 200,
     totalLines: 202,
     existingLinesInDbOnSamePeriod: 0,
-    errors: [],
+    errorStats: { count: 0, errors: [] },
 };
 
 export const DEPOSIT_LOG_DBO: DepositScdlLogDbo = {
@@ -100,6 +100,6 @@ export const DEPOSIT_LOG_RESPONSE_DTO_STEP_2: DepositScdlLogResponseDto = {
         parseableLines: 200,
         totalLines: 202,
         existingLinesInDbOnSamePeriod: 0,
-        errors: [],
+        errorStats: { count: 0, errors: [] },
     },
 };

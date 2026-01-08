@@ -134,7 +134,7 @@ describe("DepositScdlProcessHttp", () => {
                     parseableLines: 200,
                     totalLines: 202,
                     existingLinesInDbOnSamePeriod: 0,
-                    errors: [],
+                    errorStats: { count: 0, errors: [] },
                 },
             });
         });

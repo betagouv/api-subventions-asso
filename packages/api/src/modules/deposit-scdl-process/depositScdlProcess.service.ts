@@ -16,6 +16,7 @@ import Siret from "../../identifierObjects/Siret";
 import MiscScdlProducerEntity from "../providers/scdl/entities/MiscScdlProducerEntity";
 import dataLogService from "../data-log/dataLog.service";
 import s3StorageService from "../s3-file/s3Storage.service";
+import ScdlErrorStats from "./entities/ScdlErrorStats";
 
 export class DepositScdlProcessService {
     FIRST_STEP = 1;
@@ -112,7 +113,7 @@ export class DepositScdlProcessService {
             parsedInfos.parseableLines,
             parsedInfos.totalLines,
             existingLinesInDbOnSamePeriod,
-            errors,
+            new ScdlErrorStats(errors),
             pageName,
         );
 

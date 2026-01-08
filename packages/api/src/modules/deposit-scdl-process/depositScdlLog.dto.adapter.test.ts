@@ -73,7 +73,7 @@ describe("depositScdlLogDtoAdapter", () => {
                 parseableLines: entity.parseableLines,
                 totalLines: entity.totalLines,
                 existingLinesInDbOnSamePeriod: entity.existingLinesInDbOnSamePeriod,
-                errors: entity.errors,
+                errorStats: entity.errorStats,
             });
         });
     });
@@ -128,7 +128,7 @@ describe("depositScdlLogDtoAdapter", () => {
                     parseableLines: 200,
                     totalLines: 202,
                     existingLinesInDbOnSamePeriod: 0,
-                    errors: [],
+                    errorStats: { count: 0, errors: [] },
                 };
 
                 const result = DepositScdlLogDtoAdapter.uploadedFileInfosDtoToEntity(dto);
@@ -141,7 +141,42 @@ describe("depositScdlLogDtoAdapter", () => {
                     parseableLines: dto.parseableLines,
                     totalLines: dto.totalLines,
                     existingLinesInDbOnSamePeriod: dto.existingLinesInDbOnSamePeriod,
-                    errors: dto.errors,
+                    errorStats: dto.errorStats,
+                });
+            });
+        });
+
+        describe("scdlErrorStatsDtoToEntity", () => {
+            it("should convert scdlErrorStatsDto to scdlErrorStats", () => {
+                const mixedError: MixedParsedErrorDto = {
+                    colonne: "colonne",
+                    valeur: "valeur",
+                    message: "message",
+                    bloquant: "oui",
+                    doublon: "non",
+                    otherProp: "une string",
+                    otherProp2: 2,
+                    otherProp3: true,
+                };
+
+                const dto = { count: 1, errors: [mixedError] };
+
+                const result = DepositScdlLogDtoAdapter.scdlErrorStatsDtoToEntity(dto);
+
+                expect(result).toEqual({
+                    count: dto.count,
+                    errors: [
+                        {
+                            colonne: mixedError.colonne,
+                            valeur: mixedError.valeur,
+                            message: mixedError.message,
+                            bloquant: mixedError.bloquant,
+                            doublon: mixedError.doublon,
+                            otherProp: mixedError.otherProp,
+                            otherProp2: mixedError.otherProp2,
+                            otherProp3: mixedError.otherProp3,
+                        },
+                    ],
                 });
             });
         });

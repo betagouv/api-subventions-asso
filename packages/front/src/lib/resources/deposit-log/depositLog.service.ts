@@ -74,7 +74,7 @@ class DepositLogService {
             fileInfos.allocatorsSiret.length > 1 ||
             (fileInfos.allocatorsSiret.length === 1 && declaredSiret !== fileInfos.allocatorsSiret[0]);
         const hasLessGrantData = fileInfos.parseableLines < fileInfos.existingLinesInDbOnSamePeriod;
-        const hasBlockingErrors = fileInfos.errors.some(error => error.bloquant === "oui") ?? false;
+        const hasBlockingErrors = fileInfos.errorStats.errors.some(error => error.bloquant === "oui") ?? false;
 
         if (hasMultipleAllocators) return FILE_VALIDATION_STATES.MULTIPLE_ALLOCATORS;
         if (hasLessGrantData) return FILE_VALIDATION_STATES.LESS_GRANT_DATA;
@@ -83,7 +83,7 @@ class DepositLogService {
     }
 
     async downloadErrorFile(fileInfos: UploadedFileInfosDto) {
-        const csvErrors = stringify(fileInfos.errors, {
+        const csvErrors = stringify(fileInfos.errorStats.errors, {
             header: true,
             quoted: true,
             quoted_empty: true,
