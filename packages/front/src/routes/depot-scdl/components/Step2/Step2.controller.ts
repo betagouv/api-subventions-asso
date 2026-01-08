@@ -4,6 +4,7 @@ import { depositLogStore } from "$lib/store/depositLog.store";
 import StaticError from "$lib/errors/StaticError";
 import Store, { derived, ReadStore } from "$lib/core/Store";
 import { isSiret } from "$lib/helpers/identifierHelper";
+import errorService from "$lib/services/error.service";
 
 export default class Step2Controller {
     private DEPOSIT_LOG_STEP = 1;
@@ -33,7 +34,7 @@ export default class Step2Controller {
         this.touched.set(bool);
     }
 
-    async handleValidate(): Promise<"success" | "resume" | "error"> {
+    async handleValidate(): Promise<"success" | "resume" | void> {
         const data: CreateDepositScdlLogDto = {
             overwriteAlert: true,
             allocatorSiret: this.inputValue.value.replace(/\s+/g, ""), // sanitize
@@ -53,12 +54,10 @@ export default class Step2Controller {
             return "success";
         } catch (e) {
             const typedError = (e as StaticError).data as { code?: number; message?: string }; // todo : create type
+            errorService.handleError(e);
             if (typedError.code === 409) {
                 return "resume";
-            } else if (typedError.code === 400) {
-                return "error";
             }
-            return "error";
         }
     }
 }

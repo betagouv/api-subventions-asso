@@ -142,6 +142,7 @@ export default class Step3Controller {
             this.errorAlertVisible.set(true);
         } finally {
             this.dispatch("endLoading");
+            this.errorAlertVisible.set(true);
         }
     }
 

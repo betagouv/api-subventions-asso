@@ -6,6 +6,8 @@ import localStorageService from "$lib/services/localStorage.service";
 import { page } from "$app/stores";
 import Store, { derived } from "$lib/core/Store";
 import { connectedUser } from "$lib/store/user.store";
+import errorService from "$lib/services/error.service";
+import { errorStore } from "$lib/store/genericError.store";
 
 export class AppController {
     element: HTMLElement | undefined = undefined;
@@ -35,5 +37,20 @@ export class AppController {
         const localStorageHide = localStorageService.getItem("hide-main-info-banner", false);
         if (localStorageHide.value) return this.displayBanner.set(false);
         this.displayBanner.set(true);
+    }
+
+    public setupGlobalEventListeners(): () => void {
+        const handleButtonClick = (event: Event) => {
+            const target = event.target as HTMLElement;
+            if (target?.tagName === "BUTTON" && errorStore.value) {
+                errorService.clearError();
+            }
+        };
+
+        document.addEventListener("click", handleButtonClick);
+
+        return () => {
+            document.removeEventListener("click", handleButtonClick);
+        };
     }
 }
