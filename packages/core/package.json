@@ -25,8 +25,8 @@
     },
     "scripts": {
         "test": "echo 'no test in core'",
-        "prebuild": "rm -rf ./build/*",
-        "build": "rm -rf ./build && tsc",
+        "prebuild": "rimraf build",
+        "build": "tsc",
         "lint": "eslint --fix --ext .ts",
         "lint:all": "eslint --fix --ext .ts .",
         "prettier": "prettier --write",
