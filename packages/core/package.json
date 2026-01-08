@@ -25,8 +25,7 @@
     },
     "scripts": {
         "test": "echo 'no test in core'",
-        "prebuild": "rimraf build",
-        "build": "tsc",
+        "build": "rimraf build && tsc",
         "lint": "eslint --fix --ext .ts",
         "lint:all": "eslint --fix --ext .ts .",
         "prettier": "prettier --write",
