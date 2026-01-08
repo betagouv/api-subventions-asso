@@ -191,6 +191,28 @@ export class UserService {}
 export class CreateUserDto {}
 ```
 
+#### Nom de variable et de function
+
+- camelCase
+
+```ts
+const myVar = "foo"
+
+myFunc() {
+ ...
+}
+```
+
+#### Constante
+
+- SCREAMING_SNAKE_CASE
+
+```ts
+
+MOCK_VALUE = "foo-bar-123"
+
+```
+
 ### API
 
 Le format des attributs de l'API est le snake_case.
