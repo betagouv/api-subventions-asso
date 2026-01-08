@@ -305,7 +305,7 @@ describe("DepositScdlProcessService", () => {
                 fileName: "test.csv",
                 uploadDate: mockDate,
                 allocatorsSiret: ["12345678901234"],
-                errors: [],
+                errorStats: { count: 0, errors: [] },
             });
 
             expect(actual).toMatchObject(expected);

@@ -1,4 +1,4 @@
-import { MixedParsedError } from "../../providers/scdl/@types/Validation";
+import ScdlErrorStats from "./ScdlErrorStats";
 
 export default class UploadedFileInfosEntity {
     constructor(
@@ -9,7 +9,7 @@ export default class UploadedFileInfosEntity {
         public parseableLines: number,
         public totalLines: number,
         public existingLinesInDbOnSamePeriod: number,
-        public errors: MixedParsedError[],
+        public errorStats: ScdlErrorStats,
         public sheetName?: string,
     ) {}
 }

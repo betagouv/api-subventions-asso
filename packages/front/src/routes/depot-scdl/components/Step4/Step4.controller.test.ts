@@ -36,7 +36,7 @@ describe("Step4Controller", () => {
                     allocatorsSiret: ["12345678901234"],
                     parseableLines: 123,
                     existingLinesInDbOnSamePeriod: 123,
-                    errors: [{ bloquant: "non" }],
+                    errorStats: { count: 1, errors: [{ bloquant: "non" }] },
                 } as unknown as UploadedFileInfosDto,
             };
         });
@@ -79,7 +79,10 @@ describe("Step4Controller", () => {
 
         it("should set view to blockingErrors when blocking errors", () => {
             // @ts-expect-error - disable type error for testing purpose
-            depositLogStore.value.uploadedFileInfos.errors = [{ bloquant: "oui" } as MixedParsedErrorDto];
+            depositLogStore.value.uploadedFileInfos.errorStats = {
+                count: 1,
+                errors: [{ bloquant: "oui" } as MixedParsedErrorDto],
+            };
 
             controller = new Step4Controller(mockDispatch);
 
@@ -102,7 +105,7 @@ describe("Step4Controller", () => {
                     allocatorsSiret: ["12345678901234"],
                     parseableLines: 123,
                     existingLinesInDbOnSamePeriod: 123,
-                    errors: [{ bloquant: "non" }],
+                    errorStats: { count: 1, errors: [{ bloquant: "non" }] },
                 } as unknown as UploadedFileInfosDto,
             };
 

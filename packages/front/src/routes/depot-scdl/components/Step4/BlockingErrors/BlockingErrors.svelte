@@ -15,6 +15,14 @@
         </p>
     </Alert>
 
+    {#if ctrl.isErrorReportTruncated}
+        <Alert type="warning" title="Le rapport d'erreur est trop long">
+            <p>
+                Le fichier SCDL contient {ctrl.errorCount} erreurs. Le rapport d'erreur à été tronqué aux 1000 premières lignes.
+            </p>
+        </Alert>
+    {/if}
+
     <a class="fr-link fr-link--download" href="/" on:click|preventDefault={() => ctrl.downloadErrorFile()}>
         Télécharger le rapport d'erreurs
     </a>

@@ -8,6 +8,8 @@ import {
 } from "dto";
 import UploadedFileInfosEntity from "./entities/uploadedFileInfos.entity";
 import { MixedParsedError } from "../providers/scdl/@types/Validation";
+import { ScdlErrorStatsDto } from "dto/depositScdlProcess";
+import ScdlErrorStats from "./entities/ScdlErrorStats";
 
 export default class DepositScdlLogDtoAdapter {
     static entityToDepositScdlLogDto(entity: DepositScdlLogEntity): DepositScdlLogDto {
@@ -46,7 +48,7 @@ export default class DepositScdlLogDtoAdapter {
             parseableLines: entity.parseableLines,
             totalLines: entity.totalLines,
             existingLinesInDbOnSamePeriod: entity.existingLinesInDbOnSamePeriod,
-            errors: entity.errors,
+            errorStats: entity.errorStats,
             sheetName: entity.sheetName,
         };
     }
@@ -79,8 +81,15 @@ export default class DepositScdlLogDtoAdapter {
             parseableLines: dto.parseableLines,
             totalLines: dto.totalLines,
             existingLinesInDbOnSamePeriod: dto.existingLinesInDbOnSamePeriod,
-            errors: dto.errors?.map(error => this.mixedParsedErrorDtoToEntity(error)),
+            errorStats: this.scdlErrorStatsDtoToEntity(dto.errorStats),
             sheetName: dto.sheetName,
+        };
+    }
+
+    static scdlErrorStatsDtoToEntity(dto: ScdlErrorStatsDto): ScdlErrorStats {
+        return {
+            count: dto.count,
+            errors: dto.errors?.map(error => this.mixedParsedErrorDtoToEntity(error)),
         };
     }
 
