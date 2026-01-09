@@ -103,7 +103,7 @@ export default class ScdlCli {
         await Promise.all([
             this.exportErrors(errors, file),
             dataLogService.addFromFile({
-                providerId: `scdl-${producer.siret}`,
+                providerId: producer.siret,
                 providerName: producer.name,
                 fileName: file,
                 editionDate: exportDate,

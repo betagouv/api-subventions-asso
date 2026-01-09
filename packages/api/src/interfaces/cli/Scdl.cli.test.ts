@@ -180,7 +180,7 @@ describe("ScdlCli", () => {
                 exportDate: EXPORT_DATE_STR,
             });
             expect(jest.mocked(dataLogService.addFromFile)).toHaveBeenCalledWith({
-                providerId: `scdl-${PRODUCER_ENTITY.siret}`,
+                providerId: PRODUCER_ENTITY.siret,
                 providerName: PRODUCER_ENTITY.name,
                 fileName: FILE_PATH,
                 editionDate: new Date(EXPORT_DATE_STR),
