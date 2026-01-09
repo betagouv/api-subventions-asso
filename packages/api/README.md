@@ -182,6 +182,70 @@ Le paramètre `schedule` des contrôleurs supporte un attribut qui précise si l
 Attention, s'il est désactivé, l'intervalle sera réinitialisé à chaque redémarrage de l'application (donc au moins à chaque mise en prod et crash de l'api)
 
 ## Conventions de Code
+### Guide de conventions de nommage
+
+Voici des conventions claires et robustes pour nommer fichiers, dossiers, classes, interfaces et types dans ce projet.
+
+#### Dossiers
+
+- Toujours en **kebab-case** (tout en minuscule, tirets pour séparer les mots). Exple: `open-source`
+
+#### Fichiers
+
+Format général :
+- **kebab-case + suffixe explicite**
+- Pas de majuscules ou underscores
+
+| Type de fichier | Suffixe recommandé | Exemple |
+|----------------|------------------|----------------------|
+| Controller     | `.controller.ts` | `user.controller.ts` |
+| Service        | `.service.ts`    | `auth.service.ts`    |
+| Routes         | `.routes.ts`     | `user.routes.ts`     |
+| Middleware     | `.middleware.ts` | `auth.middleware.ts` |
+| DTO            | `.dto.ts`        | `create-user.dto.ts` |
+| Validator      | `.validator.ts`  | `user.validator.ts`  |
+| Mapper         | `.mapper.ts`     | `user.mapper.ts`     |
+| Utils          | `.utils.ts`      | `date.utils.ts`      |
+| Config         | `.config.ts`     | `database.config.ts` |
+| Types          | `.types.ts`      | `user.types.ts`      |
+| Interface      | `.interface.ts`  | `user.interface.ts`  |
+| Enum           | `.enum.ts`       | `user-role.enum.ts`  |
+
+ Le suffixe décrit le **rôle** du fichier, pas uniquement son contenu.
+
+#### Classes, Interfaces et Types
+
+- **Classes / Interfaces / Types** → PascalCase
+
+```ts
+// user-service.ts
+export class UserService {}
+
+// create-user.dto.ts
+export class CreateUserDto {}
+```
+
+#### Nom de variable et de function
+
+- camelCase
+
+```ts
+const myVar = "foo"
+
+myFunc() {
+ ...
+}
+```
+
+#### Constante
+
+- SCREAMING_SNAKE_CASE
+
+```ts
+
+MOCK_VALUE = "foo-bar-123"
+
+```
 
 ### API
 
