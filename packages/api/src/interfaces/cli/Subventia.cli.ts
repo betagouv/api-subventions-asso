@@ -15,7 +15,7 @@ import { DEV } from "../../configurations/env.conf";
 export default class SubventiaCli extends CliController implements ApplicationFlatCli {
     static cmdName = "subventia";
 
-    protected _providerIdToLog = subventiaService.meta.id;
+    protected _serviceMeta = subventiaService.meta;
 
     protected logFileParsePath = "./logs/subventia.parse.log.txt";
     static errorsFolderName = "./import-errors";

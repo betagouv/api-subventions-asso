@@ -108,8 +108,13 @@ export default class OsirisCli implements ApplicationFlatCli {
             throw new Error(`The type ${type} is not taken into account`);
         }
 
-        // this assumes that extraction date is close enough to integration date. Is it?
-        await dataLogService.addLog(osirisService.meta.id, file, new Date());
+        await dataLogService.addFromFile({
+            providerId: osirisService.meta.id,
+            providerName: osirisService.meta.name,
+            fileName: file,
+            // this assumes that extraction date is close enough to integration date
+            editionDate: new Date(),
+        });
     }
 
     async _parseRequest(contentFile: Buffer, year: number, logs: unknown[]) {

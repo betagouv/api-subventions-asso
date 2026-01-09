@@ -14,7 +14,7 @@ export default class ChorusCli extends CliController {
     static cmdName = "chorus";
 
     protected logFileParsePath = "./logs/chorus.parse.log.txt";
-    protected _providerIdToLog = chorusService.meta.id;
+    protected _serviceMeta = chorusService.meta;
     protected batchSize = 1000;
 
     /**

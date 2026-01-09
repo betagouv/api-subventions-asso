@@ -10,6 +10,10 @@ export class DemarchesSimplifieesCron implements CronController {
     @AsyncCron({ cronExpression: "0 5 * * *" })
     async updateAll() {
         await demarchesSimplifieesService.updateAllForms();
-        await dataLogService.addLog(demarchesSimplifieesService.meta.id, "api", new Date());
+        await dataLogService.addFromApi({
+            providerId: demarchesSimplifieesService.meta.id,
+            providerName: demarchesSimplifieesService.meta.name,
+            editionDate: new Date(),
+        });
     }
 }

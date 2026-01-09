@@ -2,22 +2,29 @@ import path from "path";
 import { DataLogDto } from "dto";
 import dataLogPort from "../../dataProviders/db/data-log/dataLog.port";
 import { DataLogAdapter } from "./dataLog.adapter";
+import { ApiDataLogEntity, DataLogSource, FileDataLogEntity } from "./entities/dataLogEntity";
 
 class DataLogService {
-    addLog(providerId: string, filePath?: string, editionDate: Date | undefined = undefined, userId?: string) {
-        let fileName = filePath;
-        if (fileName) {
-            const realPath = path.parse(fileName);
-            fileName = realPath?.base;
-        }
+    throwMissingProp(propName: string) {
+        throw new Error(`DataLogEntity must have a ${propName}.`);
+    }
 
-        return dataLogPort.insert({
-            providerId,
-            integrationDate: new Date(),
-            editionDate: editionDate || undefined,
-            fileName,
-            userId,
-        });
+    addFromFile(log: Omit<FileDataLogEntity, "source" | "integrationDate">) {
+        if (!log.fileName) throw new Error("DataLogEntity from file must have a fileName");
+        return this.add({ ...log, fileName: path.parse(log.fileName).base, source: DataLogSource.FILE });
+    }
+
+    addFromApi(log: Omit<ApiDataLogEntity, "source" | "integrationDate">) {
+        // @ts-expect-error: guard to ensure no fileName is provided
+        if (log.fileName) throw new Error("DataLogEntity from API can't have a fileName");
+        return this.add({ ...log, source: DataLogSource.API });
+    }
+
+    add(log: Omit<FileDataLogEntity, "integrationDate"> | Omit<ApiDataLogEntity, "integrationDate">) {
+        if (!log.providerId) this.throwMissingProp("providerId");
+        if (!log.providerName) this.throwMissingProp("providerName");
+
+        return dataLogPort.insert({ ...log, integrationDate: new Date() });
     }
 
     async getProvidersLogOverview(): Promise<DataLogDto[]> {

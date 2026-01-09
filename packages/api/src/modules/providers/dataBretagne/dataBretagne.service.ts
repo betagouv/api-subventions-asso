@@ -36,7 +36,11 @@ class DataBretagneService extends ProviderCore {
         // do not replace programs if empty
         if (!programs || !programs.length) throw new Error("Unhandled error from API Data Bretagne");
         await stateBudgetProgramPort.replace(programs);
-        await dataLogService.addLog(dataBretagneService.meta.id, "api", new Date());
+        await dataLogService.addFromApi({
+            providerId: dataBretagneService.meta.id,
+            providerName: dataBretagneService.meta.name,
+            editionDate: new Date(),
+        });
     }
 
     async getAllDataRecords(): Promise<DataBretagneRecords> {

@@ -118,24 +118,28 @@ describe("CliController", () => {
     describe("logImportSuccess", () => {
         const EDITION_DATE = new Date("2023-02-02");
 
-        it("requires '_providerIdToLog'", async () => {
+        it("requires '_serviceMeta'", async () => {
             const ctrl = new CliController();
             // @ts-expect-error -- test protected value
-            ctrl._providerIdToLog = "";
+            ctrl._serviceMeta = undefined;
             // @ts-expect-error -- test protected method
             const test = () => ctrl._logImportSuccess(EDITION_DATE, FILENAME);
-            await expect(test).rejects.toThrowError(
-                new Error("'_providerIdToLog' needs to be defined by the child class"),
-            );
+            await expect(test).rejects.toThrow(new Error("'_serviceMeta' needs to be defined by the child class"));
         });
 
         it("logs import", async () => {
+            const SERVICE_META = { id: "providerId", name: "providerName" };
             const ctrl = new CliController();
             // @ts-expect-error -- test protected value
-            ctrl._providerIdToLog = "something";
+            ctrl._serviceMeta = SERVICE_META;
             // @ts-expect-error -- test protected method
             await ctrl._logImportSuccess(EDITION_DATE, FILENAME);
-            expect(dataLogService.addLog).toHaveBeenCalledWith("something", FILENAME, EDITION_DATE);
+            expect(dataLogService.addFromFile).toHaveBeenCalledWith({
+                providerId: SERVICE_META.id,
+                providerName: SERVICE_META.name,
+                fileName: FILENAME,
+                editionDate: EDITION_DATE,
+            });
         });
     });
 });

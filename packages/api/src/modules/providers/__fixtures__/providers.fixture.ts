@@ -22,23 +22,27 @@ const mockGrantProvider = provider => ({
     getRawGrants: jest.fn().mockResolvedValue([]),
 });
 
+export const API_PROVIDER = {
+    meta: {
+        id: "provider-application-1",
+        name: "PROVIDER_APPLICATION_1",
+        description: "API PROVIDER",
+        type: ProviderEnum.api,
+    },
+};
+
+export const RAW_PROVIDER = {
+    meta: {
+        id: "provider-application-2",
+        name: "PROVIDER_APPLICATION_2",
+        description: "RAW PROVIDER",
+        type: ProviderEnum.raw,
+    },
+};
+
 export const applicationProvidersFixtures: ApplicationProvider[] = [
-    mockApplicationProvider({
-        meta: {
-            id: "provider-application-1",
-            name: "PROVIDER_APPLICATION_1",
-            description: "API PROVIDER",
-            type: ProviderEnum.api,
-        },
-    }),
-    mockApplicationProvider({
-        meta: {
-            id: "provider-application-2",
-            name: "PROVIDER_APPLICATION_2",
-            description: "RAW PROVIDER",
-            type: ProviderEnum.raw,
-        },
-    }),
+    mockApplicationProvider(API_PROVIDER),
+    mockApplicationProvider(RAW_PROVIDER),
 ];
 
 export const paymentProvidersFixtures: PaymentProvider[] = [

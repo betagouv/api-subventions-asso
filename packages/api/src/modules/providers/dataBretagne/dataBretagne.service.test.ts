@@ -77,7 +77,11 @@ describe("Data Bretagne Service", function () {
             const date = new Date("2022-01-01");
             jest.useFakeTimers().setSystemTime(date);
             await dataBretagneService.resyncPrograms();
-            expect(dataLogService.addLog).toHaveBeenCalledWith("data-bretagne", "api", date);
+            expect(dataLogService.addFromApi).toHaveBeenCalledWith({
+                providerId: dataBretagneService.meta.id,
+                providerName: dataBretagneService.meta.name,
+                editionDate: date,
+            });
             jest.useRealTimers();
         });
     });

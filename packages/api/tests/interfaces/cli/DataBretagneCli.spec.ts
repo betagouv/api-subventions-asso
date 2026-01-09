@@ -33,7 +33,6 @@ describe("DataBretagneCli", () => {
             const actual = await dataLogPort.findAll();
             expect(actual?.[0]).toMatchObject({
                 editionDate: expect.any(Date),
-                fileName: "api",
                 integrationDate: expect.any(Date),
                 providerId: "data-bretagne",
             });
