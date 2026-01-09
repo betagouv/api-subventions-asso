@@ -4,14 +4,13 @@ import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../@types";
 import CliController from "../../shared/CliController";
 import GisproParser from "../../modules/providers/dauphin-gispro/gispro.parser";
-import dauphinService from "../../modules/providers/dauphin-gispro/dauphin.service";
 import gisproService from "../../modules/providers/dauphin-gispro/gispro.service";
 
 @StaticImplements<CliStaticInterface>()
 export default class GisproCli extends CliController {
     static cmdName = "gispro";
 
-    protected _serviceMeta = dauphinService.meta;
+    protected _serviceMeta = gisproService.meta;
 
     protected logFileParsePath = "./logs/gispro.parse.log.txt";
 
