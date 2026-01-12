@@ -2,6 +2,8 @@
     import Alert from "$lib/dsfr/Alert.svelte";
     import { createEventDispatcher } from "svelte";
     import BlockingErrorsController from "./BlockingErrors.controller";
+    import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
+    import InfoBox from "$lib/components/InfoBox.svelte";
 
     const dispatch = createEventDispatcher<{ prevStep: void }>();
     const ctrl = new BlockingErrorsController();
@@ -21,6 +23,16 @@
                 Le fichier SCDL contient {ctrl.errorCount} erreurs. Le rapport d'erreur à été tronqué aux 1000 premières lignes.
             </p>
         </Alert>
+
+        <InfoBox>
+            <div class="fr-mb-2v">
+                Avant de réimporter votre fichier, nous vous conseillons de consulter notre documentation pour vérifier
+                que votre fichier respecte ce format.
+            </div>
+            <TargetBlankLink href="https://www.notion.so/R-gles-de-format-SCDL-1281788663a380e1a57efdd9b324c1ba">
+                Documentation SCDL
+            </TargetBlankLink>
+        </InfoBox>
     {/if}
 
     <a class="fr-link fr-link--download" href="/" on:click|preventDefault={() => ctrl.downloadErrorFile()}>
