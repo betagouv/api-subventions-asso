@@ -89,7 +89,7 @@ export default class DepositScdlLogDtoAdapter {
     static scdlErrorStatsDtoToEntity(dto: ScdlErrorStatsDto): ScdlErrorStats {
         return {
             count: dto.count,
-            errors: dto.errors?.map(error => this.mixedParsedErrorDtoToEntity(error)),
+            errorSample: dto.errorSample?.map(error => this.mixedParsedErrorDtoToEntity(error)),
         };
     }
 

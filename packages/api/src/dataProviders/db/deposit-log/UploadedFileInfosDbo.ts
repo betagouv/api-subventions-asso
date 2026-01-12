@@ -8,7 +8,7 @@ export default interface UploadedFileInfosDbo {
     existingLinesInDbOnSamePeriod: number;
     errorStats: {
         count: number;
-        errors: {
+        errorSample: {
             [key: string]: unknown;
             colonne: string;
             valeur: unknown;

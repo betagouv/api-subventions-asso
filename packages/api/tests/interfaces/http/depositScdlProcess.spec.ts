@@ -365,7 +365,7 @@ describe("/parcours-depot", () => {
                         allocatorsSiret: expect.arrayContaining([expect.any(String)]),
                         errorStats: expect.objectContaining({
                             count: expect.any(Number),
-                            errors: expect.any(Array),
+                            errorSample: expect.any(Array),
                         }),
                     }),
                 }),

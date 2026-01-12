@@ -9,7 +9,7 @@ export default class BlockingErrorsController {
         const depositLog = depositLogStore.value!;
         const errorStats = depositLog.uploadedFileInfos!.errorStats;
         this.errorCount = errorStats.count;
-        if (errorStats.count > errorStats.errors.length) this.isErrorReportTruncated = true;
+        if (errorStats.count > errorStats.errorSample.length) this.isErrorReportTruncated = true;
     }
 
     async downloadErrorFile() {

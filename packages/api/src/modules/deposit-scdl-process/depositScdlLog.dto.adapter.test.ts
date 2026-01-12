@@ -128,7 +128,7 @@ describe("depositScdlLogDtoAdapter", () => {
                     parseableLines: 200,
                     totalLines: 202,
                     existingLinesInDbOnSamePeriod: 0,
-                    errorStats: { count: 0, errors: [] },
+                    errorStats: { count: 0, errorSample: [] },
                 };
 
                 const result = DepositScdlLogDtoAdapter.uploadedFileInfosDtoToEntity(dto);
@@ -159,13 +159,13 @@ describe("depositScdlLogDtoAdapter", () => {
                     otherProp3: true,
                 };
 
-                const dto = { count: 1, errors: [mixedError] };
+                const dto = { count: 1, errorSample: [mixedError] };
 
                 const result = DepositScdlLogDtoAdapter.scdlErrorStatsDtoToEntity(dto);
 
                 expect(result).toEqual({
                     count: dto.count,
-                    errors: [
+                    errorSample: [
                         {
                             colonne: mixedError.colonne,
                             valeur: mixedError.valeur,

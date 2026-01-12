@@ -179,7 +179,7 @@ describe("DepositScdlProcess check service", () => {
                     parseableLines: 200,
                     totalLines: 202,
                     existingLinesInDbOnSamePeriod: 0,
-                    errorStats: { count: 0, errors: [] },
+                    errorStats: { count: 0, errorSample: [] },
                 },
             };
 
@@ -205,7 +205,7 @@ describe("DepositScdlProcess check service", () => {
                     parseableLines: 200,
                     totalLines: 202,
                     existingLinesInDbOnSamePeriod: 0,
-                    errorStats: { count: 0, errors: [] },
+                    errorStats: { count: 0, errorSample: [] },
                 },
             };
 
@@ -233,7 +233,7 @@ describe("DepositScdlProcess check service", () => {
                     existingLinesInDbOnSamePeriod: 0,
                     errorStats: {
                         count: 1,
-                        errors: [
+                        errorSample: [
                             {
                                 bloquant: "oui",
                             } as MixedParsedError,
@@ -264,7 +264,7 @@ describe("DepositScdlProcess check service", () => {
                     parseableLines: 200,
                     totalLines: 201,
                     existingLinesInDbOnSamePeriod: 300,
-                    errorStats: { count: 0, errors: [] },
+                    errorStats: { count: 0, errorSample: [] },
                 },
             };
 
@@ -292,7 +292,7 @@ describe("DepositScdlProcess check service", () => {
                     parseableLines: 200,
                     totalLines: 201,
                     existingLinesInDbOnSamePeriod: 180,
-                    errorStats: { count: 0, errors: [] },
+                    errorStats: { count: 0, errorSample: [] },
                 },
             };
 

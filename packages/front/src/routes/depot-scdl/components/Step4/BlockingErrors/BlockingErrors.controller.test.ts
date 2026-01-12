@@ -19,7 +19,7 @@ beforeEach(() => {
         overwriteAlert: true,
         uploadedFileInfos: {
             fileName: "test.csv",
-            errorStats: { count: 0, errors: [] },
+            errorStats: { count: 0, errorSample: [] },
             parseableLines: 123,
             existingLinesInDbOnSamePeriod: 12,
             totalLines: 124,

@@ -92,7 +92,7 @@ export class DepositScdlProcessCheckService {
             throw new BadRequestError("allocator SIRET in file does not match deposit allocator SIRET");
         }
 
-        const hasBlockingErrors = parsedInfos.errorStats.errors.some(error => error.bloquant === "oui");
+        const hasBlockingErrors = parsedInfos.errorStats.errorSample.some(error => error.bloquant === "oui");
         if (hasBlockingErrors) {
             throw new BadRequestError("file contains blocking errors that must be resolved");
         }

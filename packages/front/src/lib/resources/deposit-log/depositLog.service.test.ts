@@ -265,7 +265,7 @@ describe("DepositLogService", () => {
     describe("determineFileValidationState", () => {
         const fileInfos: UploadedFileInfosDto = {
             allocatorsSiret: ["98765432101234"],
-            errorStats: { count: 0, errors: [] },
+            errorStats: { count: 0, errorSample: [] },
             existingLinesInDbOnSamePeriod: 122,
             parseableLines: 123,
             fileName: "test.csv",
@@ -291,7 +291,7 @@ describe("DepositLogService", () => {
         });
 
         it("should return blockingErrors when blocking errors", () => {
-            fileInfos.errorStats = { count: 1, errors: [{ bloquant: "oui" } as never] };
+            fileInfos.errorStats = { count: 1, errorSample: [{ bloquant: "oui" } as never] };
             fileInfos.parseableLines = 125;
 
             const actual = depositLogService.determineFileValidationState("98765432101234", fileInfos);
@@ -301,7 +301,7 @@ describe("DepositLogService", () => {
         });
 
         it("should return confirmDataAdd when everything ok", () => {
-            fileInfos.errorStats = { count: 0, errors: [] };
+            fileInfos.errorStats = { count: 0, errorSample: [] };
 
             const actual = depositLogService.determineFileValidationState("98765432101234", fileInfos);
             const expected = FILE_VALIDATION_STATES.CONFIRM_DATA_ADD;
@@ -316,7 +316,7 @@ describe("DepositLogService", () => {
         let mockLink: Partial<HTMLAnchorElement>;
         let stringifyMock: MockedFunction<(input: Input, options?: Options) => string>;
 
-        const errorStats = { count: 1, errors: [{ bloquant: "oui" } as never] };
+        const errorStats = { count: 1, errorSample: [{ bloquant: "oui" } as never] };
 
         const fileInfos: UploadedFileInfosDto = {
             allocatorsSiret: ["98765432101234"],
@@ -357,7 +357,7 @@ describe("DepositLogService", () => {
 
             await depositLogService.downloadErrorFile(fileInfos);
 
-            expect(stringifyMock).toHaveBeenCalledWith(errorStats.errors, {
+            expect(stringifyMock).toHaveBeenCalledWith(errorStats.errorSample, {
                 header: true,
                 quoted: true,
                 quoted_empty: true,

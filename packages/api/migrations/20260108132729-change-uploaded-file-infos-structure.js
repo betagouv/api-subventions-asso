@@ -9,7 +9,7 @@ module.exports = {
                     $set: {
                         "uploadedFileInfos.errorStats": {
                             count: { $size: "$uploadedFileInfos.errors" },
-                            errors: "$uploadedFileInfos.errors",
+                            errorSample: "$uploadedFileInfos.errors",
                         },
                     },
                 },
