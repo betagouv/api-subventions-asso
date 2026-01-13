@@ -17,7 +17,7 @@ module.exports = {
                     },
                 },
                 {
-                    $unset: ["uploadedFileInfos.errors"],
+                    $project: { "uploadedFileInfos.errors": 0 },
                 },
                 {
                     $merge: { into: "deposit-log" },
