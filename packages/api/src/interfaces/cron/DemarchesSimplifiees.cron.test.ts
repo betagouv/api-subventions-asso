@@ -4,7 +4,7 @@ import dataLogService from "../../modules/data-log/dataLog.service";
 
 jest.mock("../../modules/providers/demarchesSimplifiees/demarchesSimplifiees.service", () => ({
     updateAllForms: jest.fn(),
-    meta: { id: "mockedId" },
+    meta: { id: "mockedId", name: "mockedName" },
 }));
 jest.mock("../../modules/data-log/dataLog.service");
 
@@ -37,7 +37,11 @@ describe("DemarchesSimplifieesCron", () => {
             const date = new Date("2022-01-01");
             jest.useFakeTimers().setSystemTime(date);
             await controller.updateAll();
-            expect(dataLogService.addLog).toHaveBeenCalledWith("mockedId", "api", date);
+            expect(dataLogService.addFromApi).toHaveBeenCalledWith({
+                providerId: "mockedId",
+                providerName: "mockedName",
+                editionDate: date,
+            });
             jest.useRealTimers();
         });
     });

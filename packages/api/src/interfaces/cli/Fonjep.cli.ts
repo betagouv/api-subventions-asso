@@ -6,7 +6,7 @@ import fonjepService from "../../modules/providers/fonjep/fonjep.service";
 @StaticImplements<CliStaticInterface>()
 export default class FonjepCli extends CliController {
     static cmdName = "fonjep";
-    protected _providerIdToLog = fonjepService.meta.id;
+    protected _serviceMeta = fonjepService.meta;
     protected logFileParsePath = "./logs/fonjep.parse.log.txt";
 
     /**

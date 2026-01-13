@@ -1005,6 +1005,8 @@ exports[`SCDL CLI parsing parse registers new import in data-log 1`] = `
     "fileName": "SCDL.csv",
     "integrationDate": Any<Date>,
     "providerId": "99000000000001",
+    "providerName": "ALLOCATOR_1",
+    "source": "FILE",
   },
 ]
 `;
