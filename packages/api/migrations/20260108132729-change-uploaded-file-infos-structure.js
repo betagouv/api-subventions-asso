@@ -1,10 +1,13 @@
 module.exports = {
     async up(db) {
-        await db.collection("deposit-log").updateMany(
-            {
-                uploadedFileInfos: { $exists: true },
-            },
-            [
+        await db
+            .collection("deposit-log")
+            .aggregate([
+                {
+                    $match: {
+                        "uploadedFileInfos.errors": { $exists: true },
+                    },
+                },
                 {
                     $set: {
                         "uploadedFileInfos.errorStats": {
@@ -16,7 +19,10 @@ module.exports = {
                 {
                     $unset: ["uploadedFileInfos.errors"],
                 },
-            ],
-        );
+                {
+                    $merge: { into: "deposit-log" },
+                },
+            ])
+            .toArray();
     },
 };
