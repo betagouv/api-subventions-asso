@@ -82,21 +82,6 @@ describe("StringHelper", () => {
         it("rejects letters", () => {
             expect(StringHelper.isPhoneNumber("01.00.aa.00.00")).toBeFalsy();
         });
-
-        // test skipped because it specifies French phone numbers only
-        it.skip("rejects longer numbers", () => {
-            expect(StringHelper.isPhoneNumber("01.00.00.00.005")).toBeFalsy();
-        });
-
-        // test skipped because it specifies French phone numbers only
-        it.skip("rejects shorter numbers", () => {
-            expect(StringHelper.isPhoneNumber("+331.00.00.00.0")).toBeFalsy();
-        });
-
-        // test skipped because it specifies French phone numbers only
-        it.skip("rejects disorganized", () => {
-            expect(StringHelper.isPhoneNumber("+331.0000.0.00.00")).toBeFalsy();
-        });
     });
 
     describe("removeWhiteSpace", () => {

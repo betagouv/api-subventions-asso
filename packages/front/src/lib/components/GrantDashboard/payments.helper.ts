@@ -20,11 +20,11 @@ export const getPaymentsCells = (payments: PaymentFlatDto[] | null): TableCell[]
 
 export const getPaymentDashboardData = (payments: PaymentFlatDto[] | null): DashboardPayment | null => {
     if (!payments) return payments;
-    const dernier = getLastPaymentsDate(payments);
-    if (!dernier) return null;
+    const lastPaymentDate = getLastPaymentsDate(payments);
+    if (!lastPaymentDate) return null;
     return {
         total: getTotalPayment(payments),
-        dernier,
+        lastPaymentDate,
         programme: buildProgramme(payments),
     };
 };

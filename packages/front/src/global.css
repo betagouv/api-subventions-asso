@@ -79,3 +79,8 @@ html {
 .text-center {
     text-align: center;
 }
+
+/* COLORS */
+.high-blue-france {
+    color: var(--text-action-high-blue-france);
+}
