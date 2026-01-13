@@ -1,22 +1,34 @@
 module.exports = {
     async up(db) {
-        await db.collection("deposit-log").updateMany(
-            {
-                uploadedFileInfos: { $exists: true },
-            },
-            [
+        const documentsToUpdate = await db
+            .collection("deposit-log")
+            .find({
+                "uploadedFileInfos.errors": { $exists: true },
+            })
+            .toArray();
+
+        let updatedCount = 0;
+        for (const doc of documentsToUpdate) {
+            const errorsArray = doc.uploadedFileInfos.errors;
+            const errorStats = {
+                count: errorsArray.length,
+                errorSample: errorsArray,
+            };
+
+            await db.collection("deposit-log").updateOne(
+                { _id: doc._id },
                 {
                     $set: {
-                        "uploadedFileInfos.errorStats": {
-                            count: { $size: "$uploadedFileInfos.errors" },
-                            errorSample: "$uploadedFileInfos.errors",
-                        },
+                        "uploadedFileInfos.errorStats": errorStats,
+                    },
+                    $unset: {
+                        "uploadedFileInfos.errors": "",
                     },
                 },
-                {
-                    $unset: ["uploadedFileInfos.errors"],
-                },
-            ],
-        );
+            );
+            updatedCount++;
+        }
+
+        console.log(`${updatedCount} docs updated`);
     },
 };
