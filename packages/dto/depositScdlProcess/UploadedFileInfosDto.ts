@@ -1,4 +1,4 @@
-import { MixedParsedErrorDto } from "./MixedParsedErrorDto";
+import { ScdlErrorStatsDto } from "./ScdlErrorStatsDto";
 
 export interface UploadedFileInfosDto {
     fileName: string;
@@ -8,6 +8,6 @@ export interface UploadedFileInfosDto {
     parseableLines: number;
     totalLines: number;
     existingLinesInDbOnSamePeriod: number;
-    errors: MixedParsedErrorDto[];
+    errorStats: ScdlErrorStatsDto;
     sheetName?: string;
 }

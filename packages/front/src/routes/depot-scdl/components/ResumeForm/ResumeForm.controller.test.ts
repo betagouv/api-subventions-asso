@@ -17,7 +17,7 @@ describe("ResumeFormController", () => {
             overwriteAlert: true,
             uploadedFileInfos: {
                 fileName: "test.csv",
-                errors: [],
+                errorStats: { count: 0, errorSample: [] },
                 parseableLines: 123,
                 existingLinesInDbOnSamePeriod: 12,
                 totalLines: 124,
