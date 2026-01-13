@@ -138,7 +138,7 @@ importers:
                 specifier: ^1.4.6
                 version: 1.4.7
             core:
-                specifier: workspace:0.77.0
+                specifier: workspace:0.77.3
                 version: link:../core
             cors:
                 specifier: ^2.8.5
@@ -165,7 +165,7 @@ importers:
                 specifier: ^14.3.2
                 version: 14.3.2
             dto:
-                specifier: workspace:0.77.0
+                specifier: workspace:0.77.3
                 version: link:../dto
             express:
                 specifier: ^4.18.2
@@ -310,7 +310,7 @@ importers:
                 specifier: 24.10.1
                 version: 24.10.1
             dto:
-                specifier: workspace:0.77.0
+                specifier: workspace:0.77.3
                 version: link:../dto
 
     packages/dto:
@@ -358,7 +358,7 @@ importers:
                 specifier: ^14.3.2
                 version: 14.3.2
             dto:
-                specifier: workspace:0.77.0
+                specifier: workspace:0.77.3
                 version: link:../dto
             jitbit-html-sanitizer:
                 specifier: ^0.2.1
