@@ -2,7 +2,7 @@ module.exports = {
     async up(db) {
         await db.collection("deposit-log").updateMany(
             {
-                "uploadedFileInfos.errors": { $exists: true },
+                uploadedFileInfos: { $exists: true },
             },
             [
                 {
