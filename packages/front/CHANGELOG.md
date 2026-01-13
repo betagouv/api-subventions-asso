@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.77.3](https://github.com/betagouv/datasubvention/compare/v0.77.2...v0.77.3) (2026-01-13)
+
+### Bug Fixes
+
+- **api, front:** [#3773](https://github.com/betagouv/datasubvention/issues/3773) truncate scdl error in deposit log ([b022bf8](https://github.com/betagouv/datasubvention/commit/b022bf8d997ec7441b8eb098f590188a4f1ad281))
+- **api, front:** [#3773](https://github.com/betagouv/datasubvention/issues/3773) truncate scdl error in deposit log ([7bdfce3](https://github.com/betagouv/datasubvention/commit/7bdfce3eaab5e09e473360457555ce5e000772cf))
+- **api, front:** [#3773](https://github.com/betagouv/datasubvention/issues/3773) truncate scdl error in deposit log ([0b8b496](https://github.com/betagouv/datasubvention/commit/0b8b49682ec50dda923cd7f6ce9f044c1973fe69))
+
 ## [0.77.2](https://github.com/betagouv/datasubvention/compare/v0.77.1...v0.77.2) (2026-01-06)
 
 ### Bug Fixes

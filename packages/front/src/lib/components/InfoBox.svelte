@@ -1,5 +1,5 @@
-<script>
-    export let title;
+<script lang="ts">
+    export let title: string | null = null;
 </script>
 
 <div class="background-custom-alt-blue-france fr-p-8v fr-mb-4v">

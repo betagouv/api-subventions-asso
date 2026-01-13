@@ -44,7 +44,7 @@ describe("DepositLogAdapter", () => {
                 parseableLines: 123,
                 totalLines: 125,
                 existingLinesInDbOnSamePeriod: 145,
-                errors: [],
+                errorStats: { count: 0, errorSample: [] },
             };
             const dbo: DepositScdlLogDbo = {
                 _id: new ObjectId(),

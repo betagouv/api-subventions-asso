@@ -179,7 +179,7 @@ describe("DepositScdlProcess check service", () => {
                     parseableLines: 200,
                     totalLines: 202,
                     existingLinesInDbOnSamePeriod: 0,
-                    errors: [],
+                    errorStats: { count: 0, errorSample: [] },
                 },
             };
 
@@ -205,7 +205,7 @@ describe("DepositScdlProcess check service", () => {
                     parseableLines: 200,
                     totalLines: 202,
                     existingLinesInDbOnSamePeriod: 0,
-                    errors: [],
+                    errorStats: { count: 0, errorSample: [] },
                 },
             };
 
@@ -231,11 +231,14 @@ describe("DepositScdlProcess check service", () => {
                     parseableLines: 200,
                     totalLines: 202,
                     existingLinesInDbOnSamePeriod: 0,
-                    errors: [
-                        {
-                            bloquant: "oui",
-                        } as MixedParsedError,
-                    ],
+                    errorStats: {
+                        count: 1,
+                        errorSample: [
+                            {
+                                bloquant: "oui",
+                            } as MixedParsedError,
+                        ],
+                    },
                 },
             };
 
@@ -261,7 +264,7 @@ describe("DepositScdlProcess check service", () => {
                     parseableLines: 200,
                     totalLines: 201,
                     existingLinesInDbOnSamePeriod: 300,
-                    errors: [],
+                    errorStats: { count: 0, errorSample: [] },
                 },
             };
 
@@ -289,7 +292,7 @@ describe("DepositScdlProcess check service", () => {
                     parseableLines: 200,
                     totalLines: 201,
                     existingLinesInDbOnSamePeriod: 180,
-                    errors: [],
+                    errorStats: { count: 0, errorSample: [] },
                 },
             };
 

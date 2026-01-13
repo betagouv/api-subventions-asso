@@ -27,6 +27,7 @@ import {
     S3Client,
 } from "@aws-sdk/client-s3";
 import fs from "fs";
+import ScdlErrorStats from "../../../src/modules/deposit-scdl-process/entities/ScdlErrorStats";
 
 const g = global as unknown as { app: App };
 
@@ -83,7 +84,7 @@ describe("/parcours-depot", () => {
                 12,
                 13,
                 1,
-                [],
+                new ScdlErrorStats([]),
             );
 
             await depositLogPort.insertOne(
@@ -114,7 +115,7 @@ describe("/parcours-depot", () => {
                 12,
                 13,
                 1,
-                [],
+                new ScdlErrorStats([]),
             );
 
             await depositLogPort.insertOne(
@@ -149,7 +150,7 @@ describe("/parcours-depot", () => {
                 12,
                 13,
                 1,
-                [],
+                new ScdlErrorStats([]),
             );
 
             await depositLogPort.insertOne(
@@ -183,7 +184,7 @@ describe("/parcours-depot", () => {
                 38,
                 39,
                 0,
-                [],
+                new ScdlErrorStats([]),
             );
             await depositLogPort.insertOne(
                 new DepositScdlLogEntity(userId, 1, undefined, true, "12345678901234", true, uploadFileInfo),
@@ -362,7 +363,10 @@ describe("/parcours-depot", () => {
                         fileName: "test-csv-valid.csv",
                         uploadDate: expect.any(String),
                         allocatorsSiret: expect.arrayContaining([expect.any(String)]),
-                        errors: expect.any(Array),
+                        errorStats: expect.objectContaining({
+                            count: expect.any(Number),
+                            errorSample: expect.any(Array),
+                        }),
                     }),
                 }),
             );
@@ -410,7 +414,7 @@ describe("/parcours-depot", () => {
                 38,
                 39,
                 0,
-                [],
+                new ScdlErrorStats([]),
             );
             await depositLogPort.insertOne(
                 new DepositScdlLogEntity(userId, 2, undefined, true, "12345676541230", true, uploadFileInfo),
@@ -446,7 +450,7 @@ describe("/parcours-depot", () => {
                 38,
                 39,
                 0,
-                [],
+                new ScdlErrorStats([]),
             );
             await depositLogPort.insertOne(
                 new DepositScdlLogEntity(userId, 2, undefined, true, "12345676541230", true, uploadFileInfo),
