@@ -49,6 +49,7 @@ module.exports = {
                 { $set: { providerName: subventiaService.meta.name } },
             );
 
+        const bulkWriteOps = [];
         await db
             .collection(DATA_LOG_COLLECTION)
             .aggregate([
@@ -66,10 +67,21 @@ module.exports = {
                 },
                 { $addFields: { providerName: "$producer.name" } },
                 {
-                    $unset: "producer",
+                    $project: {
+                        _id: 1,
+                        providerName: 1,
+                    },
                 },
-                { $merge: DATA_LOG_COLLECTION },
             ])
-            .forEach(() => {});
+            .forEach(result => {
+                bulkWriteOps.push({
+                    updateOne: {
+                        filter: { _id: result._id },
+                        update: { $set: { providerName: result.providerName } },
+                    },
+                });
+            });
+
+        await db.collection(DATA_LOG_COLLECTION).bulkWrite(bulkWriteOps);
     },
 };
