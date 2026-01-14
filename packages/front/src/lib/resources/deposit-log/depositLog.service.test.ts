@@ -10,6 +10,8 @@ import type {
 import type { AxiosResponse } from "axios";
 import type { MockedFunction, MockInstance } from "vitest";
 import { type Input, type Options, stringify } from "csv-stringify/browser/esm/sync";
+import type { HeaderValidationResultDto } from "dto/build/depositScdlProcess/HeaderValidationResultDto";
+import { depositLogStore } from "$lib/store/depositLog.store";
 
 vi.mock("csv-stringify/browser/esm/sync", () => ({
     stringify: vi.fn(),
@@ -263,6 +265,7 @@ describe("DepositLogService", () => {
     });
 
     describe("determineFileValidationState", () => {
+        const headerValidationResult: HeaderValidationResultDto = { missingOptional: [], missingMandatory: [] };
         const fileInfos: UploadedFileInfosDto = {
             allocatorsSiret: ["98765432101234"],
             errorStats: { count: 0, errorSample: [] },
@@ -272,6 +275,7 @@ describe("DepositLogService", () => {
             uploadDate: new Date(),
             grantCoverageYears: [2024],
             totalLines: 124,
+            headerValidationResult,
         };
 
         it("should return multipleAllocator when multiple allocators", () => {
@@ -317,6 +321,7 @@ describe("DepositLogService", () => {
         let stringifyMock: MockedFunction<(input: Input, options?: Options) => string>;
 
         const errorStats = { count: 1, errorSample: [{ bloquant: "oui" } as never] };
+        const headerValidationResult: HeaderValidationResultDto = { missingOptional: [], missingMandatory: [] };
 
         const fileInfos: UploadedFileInfosDto = {
             allocatorsSiret: ["98765432101234"],
@@ -327,6 +332,7 @@ describe("DepositLogService", () => {
             uploadDate: new Date(),
             grantCoverageYears: [2024],
             totalLines: 124,
+            headerValidationResult,
         };
 
         const mockCsvString =
@@ -502,6 +508,46 @@ describe("DepositLogService", () => {
             await depositLogService.downloadGrantsCsv();
 
             expect(revokeObjectURLMock).toHaveBeenCalledWith("blob:created-url-for-csv-file-data");
+        });
+    });
+
+    describe("restartNewDeposit", () => {
+        let mockDispatch: ReturnType<typeof vi.fn>;
+
+        beforeEach(() => {
+            mockDispatch = vi.fn();
+        });
+
+        const deleteDepositLogMock = vi.spyOn(depositLogService, "deleteDepositLog");
+
+        it("should call dispatch with restartNewForm", async () => {
+            deleteDepositLogMock.mockResolvedValue(null);
+            await depositLogService.restartNewDeposit(mockDispatch);
+            expect(mockDispatch).toHaveBeenCalledWith("restartNewForm");
+            expect(mockDispatch).toHaveBeenCalledTimes(1);
+        });
+
+        it("should reset depositLogStore", async () => {
+            deleteDepositLogMock.mockResolvedValue(null);
+            await depositLogService.restartNewDeposit(mockDispatch);
+            expect(depositLogStore.value).toBeNull();
+        });
+
+        it("should not call disptach when service throw", async () => {
+            deleteDepositLogMock.mockRejectedValue(new Error("Error"));
+            await depositLogService.restartNewDeposit(mockDispatch);
+            expect(mockDispatch).not.toHaveBeenCalled();
+        });
+
+        it("should not reset deposit log store when service throw", async () => {
+            depositLogStore.value = {
+                step: 1,
+                allocatorSiret: "12345678901234",
+                uploadedFileInfos: {} as unknown as UploadedFileInfosDto,
+            };
+            deleteDepositLogMock.mockRejectedValue(new Error("Error"));
+            await depositLogService.restartNewDeposit(mockDispatch);
+            expect(depositLogStore.value).not.toBeNull();
         });
     });
 });

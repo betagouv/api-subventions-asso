@@ -24,6 +24,7 @@ import fs from "fs";
 import { ObjectId } from "mongodb";
 import scdlGrantService from "./scdl.grant.service";
 import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
+import { ScdlParsedInfos } from "./@types/ScdlParsedInfos";
 
 const mockedFs = jest.mocked(fs);
 
@@ -450,6 +451,48 @@ describe("ScdlService", () => {
             } catch {
                 expect(mockRestoreBackup).toHaveBeenCalledWith(PRODUCER_ENTITY.siret);
             }
+        });
+    });
+
+    describe("validateHeaders", () => {
+        let consoleWarnSpy: jest.SpyInstance;
+        let parsedInfos: ScdlParsedInfos;
+
+        beforeEach(() => {
+            parsedInfos = {
+                allocatorsSiret: [],
+                grantCoverageYears: [],
+                parseableLines: 0,
+                totalLines: 0,
+                headerValidationResult: {
+                    missingMandatory: [],
+                    missingOptional: [],
+                },
+            };
+            consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation();
+        });
+
+        afterEach(() => {
+            consoleWarnSpy.mockRestore();
+        });
+        const filePath = "/path/to/file.xlsx";
+
+        it("Throw error when required headers are missing", () => {
+            parsedInfos.headerValidationResult.missingMandatory = ["allocatorSiret", "exercice"];
+
+            expect(() => scdlService.validateHeaders(parsedInfos, filePath)).toThrow(
+                "Missing required headers in file /path/to/file.xlsx : allocatorSiret, exercice",
+            );
+        });
+
+        it("Log warning when optional headers are missing", () => {
+            parsedInfos.headerValidationResult.missingOptional = ["allocatorName", "idRAE"];
+
+            scdlService.validateHeaders(parsedInfos, filePath);
+
+            expect(consoleWarnSpy).toHaveBeenCalledWith(
+                "Missing optional headers in file /path/to/file.xlsx : allocatorName, idRAE",
+            );
         });
     });
 });

@@ -148,9 +148,9 @@ describe("SCDL CLI", () => {
             });
 
             it.each`
-                error                                                         | file
-                ${"Mandatory column associationSiret is missing."}            | ${"SCDL_ONE_MISSING_MANDATORY"}
-                ${"Mandatory columns associationSiret - amount are missing."} | ${"SCDL_MANY_MISSING_MANDATORY"}
+                error                                                                                           | file
+                ${"Missing required headers in file SCDL_ONE_MISSING_MANDATORY.csv : idBeneficiaire"}           | ${"SCDL_ONE_MISSING_MANDATORY"}
+                ${"Missing required headers in file SCDL_MANY_MISSING_MANDATORY.csv : idBeneficiaire, montant"} | ${"SCDL_MANY_MISSING_MANDATORY"}
             `("throws an error if missing mandatory header is missing", async ({ error, file }) => {
                 await expect(test(file, PRODUCER.siret, FIRST_IMPORT_DATE)).rejects.toThrow(error);
             });

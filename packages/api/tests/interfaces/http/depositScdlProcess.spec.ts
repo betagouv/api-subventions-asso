@@ -83,6 +83,7 @@ describe("/parcours-depot", () => {
                 [2019, 2021],
                 12,
                 13,
+                { missingOptional: [], missingMandatory: [] },
                 1,
                 new ScdlErrorStats([]),
             );
@@ -114,6 +115,7 @@ describe("/parcours-depot", () => {
                 [2019, 2021],
                 12,
                 13,
+                { missingOptional: [], missingMandatory: [] },
                 1,
                 new ScdlErrorStats([]),
             );
@@ -149,6 +151,7 @@ describe("/parcours-depot", () => {
                 [2019, 2021],
                 12,
                 13,
+                { missingOptional: [], missingMandatory: [] },
                 1,
                 new ScdlErrorStats([]),
             );
@@ -183,6 +186,7 @@ describe("/parcours-depot", () => {
                 [2019, 2021],
                 38,
                 39,
+                { missingOptional: [], missingMandatory: [] },
                 0,
                 new ScdlErrorStats([]),
             );
@@ -414,6 +418,7 @@ describe("/parcours-depot", () => {
                 [2019, 2021],
                 38,
                 39,
+                { missingOptional: [], missingMandatory: [] },
                 0,
                 new ScdlErrorStats([]),
             );
@@ -448,6 +453,7 @@ describe("/parcours-depot", () => {
                 [2019, 2021],
                 38,
                 39,
+                { missingOptional: [], missingMandatory: [] },
                 0,
                 new ScdlErrorStats([]),
             );

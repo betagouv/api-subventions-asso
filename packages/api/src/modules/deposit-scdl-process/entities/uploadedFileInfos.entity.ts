@@ -1,4 +1,5 @@
 import ScdlErrorStats from "./ScdlErrorStats";
+import { HeaderValidationResult } from "../../providers/scdl/@types/HeaderValidationResult";
 
 export default class UploadedFileInfosEntity {
     constructor(
@@ -8,6 +9,7 @@ export default class UploadedFileInfosEntity {
         public grantCoverageYears: number[],
         public parseableLines: number,
         public totalLines: number,
+        public headerValidationResult: HeaderValidationResult,
         public existingLinesInDbOnSamePeriod: number,
         public errorStats: ScdlErrorStats,
         public sheetName?: string,

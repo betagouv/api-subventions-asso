@@ -16,6 +16,7 @@ import { GenericParser } from "../../../shared/GenericParser";
 import { FormatProblem } from "./@types/Validation";
 import { DefaultObject, ParserInfo, ParserPath } from "../../../@types";
 import { ScdlParsedGrant } from "./@types/ScdlParsedGrant";
+import { SCDL_MAPPER } from "./scdl.mapper";
 
 jest.mock("../../../shared/GenericParser");
 jest.mock("csv-parse/sync");
@@ -25,8 +26,16 @@ jest.mock("./scdl.mapper", () => {
     const actual = jest.requireActual("./scdl.mapper");
     const mockedMapper = {};
     for (const key of Object.keys(actual.SCDL_MAPPER)) {
-        mockedMapper[key] = actual.SCDL_MAPPER[key];
-        if (mockedMapper[key].adapter) mockedMapper[key] = jest.fn(v => v);
+        const originalValue = actual.SCDL_MAPPER[key];
+
+        if (originalValue && typeof originalValue === "object" && originalValue.adapter) {
+            mockedMapper[key] = {
+                ...originalValue,
+                adapter: jest.fn(v => v),
+            };
+        } else {
+            mockedMapper[key] = originalValue;
+        }
     }
     return { SCDL_MAPPER: mockedMapper };
 });
@@ -374,7 +383,9 @@ describe("ScdlGrantParser", () => {
             for (const key of Object.keys(GRANT)) {
                 annotations[key] = { keyPath: [key], value: GRANT[key] };
             }
-            verifyMissingHeadersSpy = jest.spyOn(ScdlGrantParser, "verifyMissingHeaders").mockReturnValue(undefined);
+            verifyMissingHeadersSpy = jest
+                .spyOn(ScdlGrantParser, "verifyMissingHeaders")
+                .mockReturnValue({ missingMandatory: [], missingOptional: [] });
             // @ts-expect-error -- protected method
             isValidSpy = jest.spyOn(ScdlGrantParser, "isGrantValid").mockReturnValue({ valid: true });
             indexAnnotateSpy = jest
@@ -542,6 +553,64 @@ describe("ScdlGrantParser", () => {
             // @ts-expect-error: test private method
             const actual = ScdlGrantParser.findDuplicates(SCDL_STORABLE);
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("verifyMissingHeaders", () => {
+        let parsedHeaders;
+
+        beforeEach(() => {
+            parsedHeaders = {
+                nomAttribuant: "Département du Test",
+                idAttribuant: "12345678901234",
+                dateConvention: "2017-11-28",
+                referenceDecision: "ref",
+                nomBeneficiaire: "LIGUE POUR LA PROTECTION DES OISEAUX",
+                idBeneficiaire: "98765432101234",
+                objet: 'espaces naturels sensibles - projet "viticulture et biodiversité',
+                montant: "27346.88",
+                nature: "aide en numéraire",
+                conditionsVersement: "échelonné",
+                datesPeriodeVersement: "2017-11-28/2019-12-31",
+                idRAE: "",
+                notificationUE: "non",
+                pourcentageSubvention: "1",
+                rnaBeneficiaire: "",
+                dispositifAide: "",
+            };
+        });
+
+        it("returns empty missingMandatory and empty missingOptional when all headers", () => {
+            const result = ScdlGrantParser.verifyMissingHeaders(SCDL_MAPPER, parsedHeaders);
+            expect(result.missingMandatory).toEqual([]);
+            expect(result.missingOptional).toEqual([]);
+        });
+
+        it("returns amount in missingMandatory array", () => {
+            delete parsedHeaders.montant;
+
+            const result = ScdlGrantParser.verifyMissingHeaders(SCDL_MAPPER, parsedHeaders);
+            expect(result.missingMandatory).toEqual(["montant"]);
+        });
+
+        it("returns object in missingOptional headers", () => {
+            delete parsedHeaders.objet;
+
+            const result = ScdlGrantParser.verifyMissingHeaders(SCDL_MAPPER, parsedHeaders);
+            expect(result.missingOptional).toEqual(["objet"]);
+        });
+
+        it("returns all missingOptional and missingMandatory headers", () => {
+            delete parsedHeaders.montant;
+            delete parsedHeaders.idBeneficiaire;
+
+            delete parsedHeaders.nature;
+            delete parsedHeaders.notificationUE;
+            delete parsedHeaders.nomAttribuant;
+
+            const result = ScdlGrantParser.verifyMissingHeaders(SCDL_MAPPER, parsedHeaders);
+            expect(result.missingMandatory).toEqual(["idBeneficiaire", "montant"]);
+            expect(result.missingOptional).toEqual(["nomAttribuant", "nature", "notificationUE"]);
         });
     });
 });

@@ -42,7 +42,9 @@ export default class ScdlCli {
         const fileContent = detectAndEncode(filePath);
 
         const parsedRowOffset = typeof rowOffset === "number" ? rowOffset : parseInt(rowOffset);
-        const { entities, errors } = scdlService.parseXls(fileContent, pageName, parsedRowOffset);
+        const { entities, errors, parsedInfos } = scdlService.parseXls(fileContent, pageName, parsedRowOffset);
+
+        scdlService.validateHeaders(parsedInfos, path.basename(filePath));
 
         // persist data
         await scdlService.persist(producer as MiscScdlProducerEntity, entities);
@@ -71,7 +73,10 @@ export default class ScdlCli {
         const fileContent = detectAndEncode(filePath);
 
         const parsedQuote = quote === "false" ? false : quote;
-        const { entities, errors } = scdlService.parseCsv(fileContent, delimiter, parsedQuote);
+        const { entities, errors, parsedInfos } = scdlService.parseCsv(fileContent, delimiter, parsedQuote);
+
+        scdlService.validateHeaders(parsedInfos, path.basename(filePath));
+
         // persist data
         await scdlService.persist(producer as MiscScdlProducerEntity, entities);
         // execute end of import methods

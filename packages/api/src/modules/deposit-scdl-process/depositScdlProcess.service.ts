@@ -16,6 +16,9 @@ import Siret from "../../identifierObjects/Siret";
 import MiscScdlProducerEntity from "../providers/scdl/entities/MiscScdlProducerEntity";
 import dataLogService from "../data-log/dataLog.service";
 import s3StorageService from "../s3-file/s3Storage.service";
+import { ScdlParsedInfos } from "../providers/scdl/@types/ScdlParsedInfos";
+import { MixedParsedError } from "../providers/scdl/@types/Validation";
+import { ScdlStorableGrant } from "../providers/scdl/@types/ScdlStorableGrant";
 import ScdlErrorStats from "./entities/ScdlErrorStats";
 
 export class DepositScdlProcessService {
@@ -112,6 +115,7 @@ export class DepositScdlProcessService {
             parsedInfos.grantCoverageYears,
             parsedInfos.parseableLines,
             parsedInfos.totalLines,
+            parsedInfos.headerValidationResult,
             existingLinesInDbOnSamePeriod,
             new ScdlErrorStats(errors),
             pageName,
@@ -130,7 +134,14 @@ export class DepositScdlProcessService {
         );
     }
 
-    private parseFile(file: Express.Multer.File, pageName: string | undefined) {
+    private parseFile(
+        file: Express.Multer.File,
+        pageName: string | undefined,
+    ): {
+        entities: ScdlStorableGrant[];
+        errors: MixedParsedError[];
+        parsedInfos: ScdlParsedInfos;
+    } {
         const fileContent = file.buffer;
         const isCsv = file.originalname.toLowerCase().endsWith(this.CSV_EXT);
 

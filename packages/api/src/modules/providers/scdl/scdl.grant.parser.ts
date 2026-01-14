@@ -6,12 +6,13 @@ import Rna from "../../../identifierObjects/Rna";
 import { BeforeAdaptation, DefaultObject, NestedDefaultObject, ParserInfo, ParserPath } from "../../../@types";
 import { GenericParser } from "../../../shared/GenericParser";
 import { ValueWithPath } from "../../../shared/@types/ValueWithPath";
-import { DEV, ENV } from "../../../configurations/env.conf";
 import { SCDL_MAPPER } from "./scdl.mapper";
 import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
 import { ScdlParsedGrant } from "./@types/ScdlParsedGrant";
 import { FormatProblem, ParsedErrorDuplicate, ParsedErrorFormat, Validity } from "./@types/Validation";
 import { ScdlParsedInfos } from "./@types/ScdlParsedInfos";
+import { HeaderValidationResult } from "./@types/HeaderValidationResult";
+import { ScdlGrantSchema } from "./@types/ScdlGrantSchema";
 
 export default class ScdlGrantParser {
     protected static requirements: {
@@ -128,6 +129,7 @@ export default class ScdlGrantParser {
     }
 
     static parseExcel(content: Buffer, pageName?: string, rowOffset = 0) {
+        // todo : supprimer les rowOffset car parcours depot ne permet plus d'en placer et refuser les xls avec offset
         console.log("Open and read file ...");
         const pagesWithName = GenericParser.xlsParseWithPageName(content);
         console.log("Read file end");
@@ -145,6 +147,27 @@ export default class ScdlGrantParser {
         return { entities, errors: [...duplicates, ...problems], parsedInfos };
     }
 
+    private static createEmptyResultWithHeaderErrors(
+        totalLines: number,
+        headerValidation: HeaderValidationResult,
+    ): {
+        entities: ScdlStorableGrant[];
+        problems: ParsedErrorFormat[];
+        parsedInfos: ScdlParsedInfos;
+    } {
+        return {
+            entities: [],
+            problems: [],
+            parsedInfos: {
+                allocatorsSiret: [],
+                grantCoverageYears: [],
+                parseableLines: 0,
+                totalLines,
+                headerValidationResult: headerValidation,
+            },
+        };
+    }
+
     protected static convertValidateData(parsedChunk): {
         entities: ScdlStorableGrant[];
         problems: ParsedErrorFormat[];
@@ -157,8 +180,10 @@ export default class ScdlGrantParser {
         const allocatorsSiret: Set<string> = new Set();
         const grantCoverageYears: Set<number> = new Set();
 
-        // TODO create errors for that (does not fit in the csv format)
-        ScdlGrantParser.verifyMissingHeaders(SCDL_MAPPER, parsedChunk[0]);
+        const headerValidation = ScdlGrantParser.verifyMissingHeaders(SCDL_MAPPER, parsedChunk[0]);
+        if (headerValidation.missingMandatory.length > 0) {
+            return this.createEmptyResultWithHeaderErrors(parsedChunk.length, headerValidation);
+        }
 
         for (const parsedData of parsedChunk) {
             const {
@@ -208,6 +233,7 @@ export default class ScdlGrantParser {
             grantCoverageYears: Array.from(grantCoverageYears),
             parseableLines: storableChunk.length,
             totalLines: parsedChunk.length + 1, // + 1 for headers, empty lines are lost
+            headerValidationResult: headerValidation,
         };
         return { entities: storableChunk, problems: errors, parsedInfos: parsedInfos };
     }
@@ -259,44 +285,40 @@ export default class ScdlGrantParser {
     /**
      * USE ONLY FOR SCDL WHERE NESTED COLUMNS ARE NOT POSSIBLE
      *
-     * Verifies if any column headers is missing in the file and returns a list of the missing ones.
-     * For each missing header, the developer should check if it is a naming issue,
-     * and if so, add it to the SCDL mapper to prevent the data from being excluded from processing.
+     * Verifies if any column headers is missing in the file
      * @param pathObject
      * @param data
      *
-     * @returns void
+     * @returns HeaderValidationResult
      */
     static verifyMissingHeaders<TypeIn extends BeforeAdaptation>(
-        pathObject: DefaultObject<ParserPath | ParserInfo<TypeIn>>,
+        pathObject: ScdlGrantSchema,
         data: NestedDefaultObject<TypeIn>,
-    ): void {
-        if (DEV || ENV === "test") {
-            const mandatoryHeaders = ScdlGrantParser.requirements
-                .filter(req => req.optional === false)
-                .map(req => req.key);
-            const missingKeys = Object.entries(pathObject)
-                .filter(([_key, path]) => {
-                    const flatMapper = (Array.isArray(path) ? path : path.path).flat();
-                    return !flatMapper.some(lib => lib in data);
-                })
-                .map(([key]) => key);
+    ): HeaderValidationResult {
+        const mandatoryHeaders = ScdlGrantParser.requirements.filter(req => !req.optional).map(req => req.key);
+        const missingKeys = Object.entries(pathObject)
+            .filter(([_key, path]) => {
+                const flatMapper = (Array.isArray(path) ? path : path.path).flat();
+                return !flatMapper.some(lib => lib in data);
+            })
+            .map(([key]) => key);
 
-            if (missingKeys.length > 0) {
-                console.log(
-                    `⚠️ Missing Headers Detected: ${missingKeys.length} column(s) are missing. Please check the following headers:`,
-                );
-                console.log(`  - ${missingKeys.join("\n  - ")}`);
-                const missingMandatories: string[] = [];
-                for (const key of missingKeys) {
-                    if (mandatoryHeaders.includes(key)) missingMandatories.push(key);
-                }
-                if (missingMandatories.length) {
-                    if (missingMandatories.length === 1)
-                        throw new Error(`Mandatory column ${missingMandatories[0]} is missing.`);
-                    throw new Error(`Mandatory columns ${missingMandatories.join(" - ")} are missing.`);
-                }
+        const missingMandatories: string[] = [];
+        const missingOptional: string[] = [];
+        for (const key of missingKeys) {
+            const pathInfo = pathObject[key];
+            const displayName = pathInfo.displayName;
+
+            if (mandatoryHeaders.includes(key)) {
+                missingMandatories.push(displayName);
+            } else {
+                missingOptional.push(displayName);
             }
         }
+
+        return {
+            missingMandatory: missingMandatories,
+            missingOptional: missingOptional,
+        };
     }
 }

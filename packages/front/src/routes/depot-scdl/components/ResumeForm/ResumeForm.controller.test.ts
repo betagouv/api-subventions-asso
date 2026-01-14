@@ -19,6 +19,7 @@ describe("ResumeFormController", () => {
                 fileName: "test.csv",
                 errorStats: { count: 0, errorSample: [] },
                 parseableLines: 123,
+                headerValidationResult: { missingMandatory: [], missingOptional: [] },
                 existingLinesInDbOnSamePeriod: 12,
                 totalLines: 124,
                 uploadDate: new Date(),

@@ -35,6 +35,7 @@ export const DEPOSIT_LOG_ENTITY_STEP_2: DepositScdlLogEntity = {
         grantCoverageYears: [2021, 2022],
         parseableLines: 200,
         totalLines: 202,
+        headerValidationResult: { missingOptional: [], missingMandatory: [] },
         existingLinesInDbOnSamePeriod: 0,
         errorStats: { count: 0, errorSample: [] },
     },
@@ -47,6 +48,7 @@ export const UPLOADED_FILE_INFOS_ENTITY: UploadedFileInfosEntity = {
     grantCoverageYears: [2021, 2022],
     parseableLines: 200,
     totalLines: 202,
+    headerValidationResult: { missingOptional: [], missingMandatory: [] },
     existingLinesInDbOnSamePeriod: 0,
     errorStats: { count: 0, errorSample: [] },
 };
@@ -99,6 +101,7 @@ export const DEPOSIT_LOG_RESPONSE_DTO_STEP_2: DepositScdlLogResponseDto = {
         grantCoverageYears: [2021, 2022],
         parseableLines: 200,
         totalLines: 202,
+        headerValidationResult: { missingOptional: [], missingMandatory: [] },
         existingLinesInDbOnSamePeriod: 0,
         errorStats: { count: 0, errorSample: [] },
     },

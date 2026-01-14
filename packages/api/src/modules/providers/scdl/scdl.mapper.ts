@@ -33,13 +33,13 @@ function getMapperVariants(prop): string[] {
 const expandedShortISOPeriodRegExp = /\d{4}-[01]\d-[0-3]\d[/_]\d{4}-[01]\d-[0-3]\d/;
 
 const CONVENTION_DATE_PATHS = [
+    "dateConvention",
     ...getMapperVariants("conventionDate"),
     "datedeconvention",
     "Date de convention*",
     "Date de la convention",
     "Date de la convention de subvention (AAAA-MM-JJ)",
     "date Convention",
-    "DateConvention",
     "datedeConvention",
     "Date convention",
     "Date - Décision",
@@ -47,6 +47,7 @@ const CONVENTION_DATE_PATHS = [
 ];
 
 const PERIODE_VERSEMENT_PATHS = [
+    "datesPeriodeVersement",
     "Date de versement",
     "dateperiodedeversement",
     "dateperiodedversement",
@@ -80,6 +81,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
     allocatorName: {
         path: [
             [
+                "nomAttribuant",
                 ...getMapperVariants("allocatorName"),
                 "Nom de l'attribuant",
                 "Nom de l'attribuant",
@@ -90,21 +92,23 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Nom de l'organisme attributaire",
             ],
         ],
+        displayName: "nomAttribuant",
     },
     allocatorSiret: {
         path: [
             [
+                "idAttribuant",
                 ...getMapperVariants("allocatorSiret"),
                 "Identification de l'attributaire",
                 "Identification de l'attribuant (SIRET)",
                 "id  Attribuant",
-                "IdAttribuant",
                 "SIRET autorité administrative",
                 "iAttribuant",
                 "Id attribuant",
                 "SIRET organisme attributaire",
             ],
         ],
+        displayName: "idAttribuant",
         adapter: v => cleanSiret(v?.toString()),
     },
     exercice: {
@@ -122,6 +126,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 ...CONVENTION_DATE_PATHS,
             ],
         ],
+        displayName: "exercice",
         adapter: value => {
             if (!value) return undefined;
             if (value.toString().length === 4) return Number(value);
@@ -130,11 +135,13 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
     },
     conventionDate: {
         path: [[...CONVENTION_DATE_PATHS]],
+        displayName: "dateConvention",
         adapter: dateAdapter,
     },
     decisionReference: {
         path: [
             [
+                "referenceDecision",
                 ...getMapperVariants("decisionReference"),
                 "Référence de la décision",
                 "reference Decision",
@@ -143,6 +150,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Référence décision 1",
             ],
         ],
+        displayName: "referenceDecision",
         // difficult to test if number will be an excel date or a simple number as decisionReference format has no standard
         // a limit has been set to 2018 to current year for excel date to avoid transforming real number in date
         adapter: value => {
@@ -157,24 +165,28 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             } else return value;
         },
     },
-    associationName: [
-        [
-            ...getMapperVariants("associationName"),
-            "Nom du bénéficiaire*",
-            "Nom Bénéficiaire",
-            "NOM Bénéficiaire",
-            "Nom du bénéficiaire",
-            "nom Beneficiaire",
-            "nomBénéficiaire",
-            "Nom attributaire",
-            "NomBeneficiaire",
-            "Nom bénéficiaire",
-            "Nom du b�n�ficiaire",
+    associationName: {
+        path: [
+            [
+                "NomBeneficiaire",
+                ...getMapperVariants("associationName"),
+                "Nom du bénéficiaire*",
+                "Nom Bénéficiaire",
+                "NOM Bénéficiaire",
+                "Nom du bénéficiaire",
+                "nom Beneficiaire",
+                "nomBénéficiaire",
+                "Nom attributaire",
+                "Nom bénéficiaire",
+                "Nom du b�n�ficiaire",
+            ],
         ],
-    ],
+        displayName: "nomBeneficiaire",
+    },
     associationSiret: {
         path: [
             [
+                "IdBeneficiaire",
                 ...getMapperVariants("associationSiret"),
                 "Identification du bénéficiaire*",
                 "Numéro Siret",
@@ -182,7 +194,6 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "N° SIRET (fusion)",
                 "identification du bénéficiaire (SIRET)",
                 "id Beneficiaire",
-                "IdBeneficiaire",
                 "Id du bénéficiaire",
                 "N° SIRET attributaire",
                 "iBeneficiaire",
@@ -192,25 +203,33 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "SIRET b�n�ficiaire",
             ],
         ],
+        displayName: "idBeneficiaire",
         adapter: v => cleanSiret(v?.toString()),
     },
-    associationRna: [[...getMapperVariants("associationRna")]],
-    object: [
-        [
-            ...getMapperVariants("object"),
-            "objet",
-            "Objet",
-            "Objet de la convention",
-            "Objet du dossier",
-            "Objet de la subvention",
-            "Objet de l'aide",
-            "Objet convention",
-            "Nom du Projet",
+    associationRna: {
+        path: [["rnaBeneficiaire", ...getMapperVariants("associationRna")]],
+        displayName: "rnaBeneficiaire",
+    },
+    object: {
+        path: [
+            [
+                "objet",
+                ...getMapperVariants("object"),
+                "Objet",
+                "Objet de la convention",
+                "Objet du dossier",
+                "Objet de la subvention",
+                "Objet de l'aide",
+                "Objet convention",
+                "Nom du Projet",
+            ],
         ],
-    ],
+        displayName: "objet",
+    },
     amount: {
         path: [
             [
+                "montant",
                 ...getMapperVariants("amount"),
                 "Montant",
                 "Montant total de la subvention*",
@@ -222,23 +241,37 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Montant des Autorisations d'engagement",
             ],
         ],
+        displayName: "montant",
         adapter: value => (value && typeof value === "string" ? parseFloat(value.replace(/[^0-9.]/, "")) : value),
     },
-    paymentNature: [
-        [...getMapperVariants("paymentNature"), "Nature de la subvention", "Nature de l'aide", "Nature subvention"],
-    ],
-    paymentConditions: [
-        [
-            ...getMapperVariants("paymentConditions"),
-            "Conditions de versement*",
-            "Conditions de versement",
-            "conditions Versement",
-            "conditionVersement",
-            "ConditionsVersement",
+    paymentNature: {
+        path: [
+            [
+                "nature",
+                ...getMapperVariants("paymentNature"),
+                "Nature de la subvention",
+                "Nature de l'aide",
+                "Nature subvention",
+            ],
         ],
-    ],
+        displayName: "nature",
+    },
+    paymentConditions: {
+        path: [
+            [
+                "conditionsVersement",
+                ...getMapperVariants("paymentConditions"),
+                "Conditions de versement*",
+                "Conditions de versement",
+                "conditions Versement",
+                "conditionVersement",
+            ],
+        ],
+        displayName: "conditionsVersement",
+    },
     paymentStartDate: {
         path: [[...getMapperVariants("paymentStartDate"), ...PERIODE_VERSEMENT_PATHS]],
+        displayName: "datesPeriodeVersement",
         adapter: value => {
             // @ts-expect-error: with undefined it returns false, so we don't need to check it
             const parsedDate = shortISORegExp.test(value)
@@ -250,6 +283,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
     },
     paymentEndDate: {
         path: [[...getMapperVariants("paymentEndDate"), ...PERIODE_VERSEMENT_PATHS]],
+        displayName: "datesPeriodeVersement",
         adapter: value => {
             if (typeof value !== "string") {
                 return dateAdapter(value);
@@ -264,29 +298,33 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
             return isValidDate(parsedDate) ? parsedDate : null;
         },
     },
-    idRAE: [
-        [
-            ...getMapperVariants("idRAE"),
-            "Numéro de référencement au répertoire des entreprises",
-            "Numéro de référencement au répertoire des entreprises",
-            "Numéro unique de référencement au répertoire des aides aux entreprises (RAE)",
-            "ID RAE",
-            "IdRAE",
-            "N° unique de référencement au RAE",
+    idRAE: {
+        path: [
+            [
+                ...getMapperVariants("idRAE"),
+                "Numéro de référencement au répertoire des entreprises",
+                "Numéro de référencement au répertoire des entreprises",
+                "Numéro unique de référencement au répertoire des aides aux entreprises (RAE)",
+                "ID RAE",
+                "IdRAE",
+                "N° unique de référencement au RAE",
+            ],
         ],
-    ],
+        displayName: "idRAE",
+    },
     UeNotification: {
         path: [
             [
+                "NotificationUE",
                 ...getMapperVariants("UeNotification"),
                 "Aide notifiée Ã  l'Europe",
                 "Aides ne relevant pas d'une aide d'état",
                 "Aide d'Etat notifiée à la Commission européenne, conformément aux dispositions du règlement (UE) n° 1407/2013 de la Commission du 18 décembre 2013",
                 "Notification UE",
-                "NotificationUE",
                 "Aide d'Etat (ou pas) notifiée à l'UE",
             ],
         ],
+        displayName: "notificationUE",
         adapter: value => {
             if (typeof value === "number") return !!value;
             if (typeof value !== "string") return undefined;
@@ -298,15 +336,19 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
     grantPercentage: {
         path: [
             [
+                "PourcentageSubvention",
                 ...getMapperVariants("grantPercentage"),
                 "Pourcentage du montant de la subvention attribué au bénéficiaire*",
                 "% du mt de la subvention attribuée au bénéficiaire",
                 "Pourcentage du montant de la subvention attribuée au bénéficiaire",
                 "Pourcentage subvention",
-                "PourcentageSubvention",
             ],
         ],
+        displayName: "pourcentageSubvention",
         adapter: value => (value ? parseFloat(value) : value),
     },
-    aidSystem: [[...getMapperVariants("aidSystem")]],
+    aidSystem: {
+        path: [["dispositifAide", ...getMapperVariants("aidSystem")]],
+        displayName: "dispositifAide",
+    },
 };
