@@ -11,6 +11,7 @@
     import PaymentRow from "$lib/components/GrantDashboard/PaymentRow/PaymentRow.svelte";
     import TableRow from "$lib/dsfr/TableRow.svelte";
     import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
+    import Headers from "./Headers/Headers.svelte";
 
     export let structureId;
 
@@ -64,16 +65,13 @@
             <div class="negative-margin">
                 <Table
                     id={tableId}
-                    on:sort={event => ctrl.sortTable(event.detail)}
                     title="Tableau de subventions et leurs versements"
                     hideTitle={true}
-                    size="md"
-                    sortable={true}
+                    size="sm"
                     scrollable={false}
                     bordered={false}
-                    custom={true}
-                    customColSizes={[12, 11, 11, 11, 13, 17, 11, 11]}
-                    {headers}>
+                    custom={true}>
+                    <Headers on:sort={event => ctrl.sortTable(event.detail)} slot="headers" {headers} id={tableId} />
                     {#each $rows as row, rowIndex (rowIndex)}
                         {#key row}
                             <TableRow id={tableId} index={rowIndex}>

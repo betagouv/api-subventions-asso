@@ -10,7 +10,6 @@ export type DashboardApplication = {
     dispositif?: string;
     nomProjet: string;
     statut_label: ApplicationStatus;
-    annee_demande?: number;
 };
 
 export type DashboardProgram =
@@ -23,7 +22,7 @@ export type DashboardProgram =
 
 export type DashboardPayment = {
     total: number;
-    dernier: Date;
+    lastPaymentDate: Date;
     programme: DashboardProgram;
 };
 

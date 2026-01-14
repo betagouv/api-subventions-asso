@@ -32,7 +32,7 @@
 {/if}
 
 <style>
-    td {
+    td.payment {
         padding: 1rem 0.5rem;
     }
 

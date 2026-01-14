@@ -1,49 +1,22 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
-    import Button from "./Button.svelte";
     import { uuid } from "$lib/helpers/stringHelper";
 
     export let id: string = uuid();
     export let title = "";
     export let hideTitle = false;
     export let size: "sm" | "md" | "lg" = "md";
-    export let headers: string[];
-    export let headersSize: ("xs" | "sm" | "md" | "lg")[] | undefined = undefined;
     export let rows: string[][] = [];
     export let scrollable = true;
     export let bordered = true;
-    export let sortable = false;
+    // use custom layout (see CSS in the style)
     export let custom = false;
     export let multiline = false;
     // remove outer border
     export let customLight = false;
-    export let customColSizes: (string | number)[] = [];
 
     let tableClasses: string[] = ["fr-table", `fr-table--${size}`];
     if (!scrollable) tableClasses.push("fr-table--no-scroll");
     if (bordered) tableClasses.push("fr-table--bordered");
-
-    function getHeaderSize(index: number) {
-        if (!headersSize || (custom && customColSizes)) return undefined;
-        const size = headersSize[index];
-        if (["xs", "sm", "md", "lg"].includes(size)) return `fr-col--${size}`;
-        return undefined;
-    }
-
-    function getCustomWidth(index: number) {
-        if (!customColSizes || !custom) return undefined;
-        const size = customColSizes[index];
-        if (!size) return undefined;
-        if (typeof size === "number" || size.match(/^\d+$/)) return `${size}%`;
-        if (size.match(/^\d+%$/)) return size;
-        return undefined;
-    }
-
-    const dispatch = createEventDispatcher<{ sort: number }>();
-
-    function handleSort(index) {
-        dispatch("sort", index);
-    }
 </script>
 
 <div class={tableClasses.join(" ")} id="table-component-{id}" class:custom-table={custom}>
@@ -54,25 +27,7 @@
                     <caption class:fr-sr-only={hideTitle} aria-hidden={hideTitle}>{title}</caption>
                     <thead>
                         <tr>
-                            {#each headers as header, index (index)}
-                                {#if sortable}
-                                    <th class={getHeaderSize(index)} style:width={getCustomWidth(index)}>
-                                        <div class="fr-cell--sort">
-                                            <span class="fr-cell__title">{header}</span>
-                                            <Button
-                                                on:click={() => handleSort(index)}
-                                                id="table-{id}-{index}-sort-asc-desc"
-                                                styleClass="fr-btn--sort"
-                                                size="small"
-                                                trackingDisable={true} />
-                                        </div>
-                                    </th>
-                                {:else}
-                                    <th class={getHeaderSize(index)}>
-                                        {header}
-                                    </th>
-                                {/if}
-                            {/each}
+                            <slot name="headers"></slot>
                         </tr>
                     </thead>
                     <tbody>

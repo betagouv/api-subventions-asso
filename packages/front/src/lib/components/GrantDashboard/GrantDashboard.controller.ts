@@ -31,7 +31,7 @@ export class GrantDashboardController {
     public rows: Store<SortableRow[]> = new Store([]);
     public isExtractLoading: Store<boolean> = new Store(false);
     public exerciseOptions: Store<Option<string>[] | undefined> = new Store(undefined);
-    public headers: string[];
+    public headers: { name: string; tooltip?: string }[];
     private columnsSortOrder: number[];
 
     constructor(identifier: StructureIdentifierDto) {
@@ -40,15 +40,20 @@ export class GrantDashboardController {
         // if you change this please update applicationCellsLength and paymentsCellsLength
         // TODO create this from a applicationHeader + paymentHeader to simplify above comment THIS
         this.headers = [
-            "Code postal",
-            "Instructeur",
-            "Dispositif",
-            "Action",
-            "Demandé",
-            "Statut",
-            "Versé",
-            "Programme",
+            { name: "CP" },
+            { name: "Instructeur", tooltip: "Nom du service qui instruit la demande." },
+            { name: "Dispositif", tooltip: "Nom du dispositif de financement ou du programme de subvention." },
+            { name: "Action" },
+            { name: "Demandé" },
+            { name: "Statut" },
+            {
+                name: "Versé",
+                tooltip:
+                    "Le montant affiché correspond à la somme des versements sur l'exercice budgétaire sélectionné.",
+            },
+            { name: "Programme" },
         ];
+
         this.columnsSortOrder = Array(this.headers.length).fill(1);
 
         this.initStores();

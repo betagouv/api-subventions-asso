@@ -47,7 +47,7 @@
 {/if}
 
 <style>
-    td {
+    td.application {
         padding: 1rem 0.5rem;
     }
 

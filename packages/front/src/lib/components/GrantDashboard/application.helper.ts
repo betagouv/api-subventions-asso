@@ -49,13 +49,12 @@ export const getApplicationCells = (application: ApplicationFlatDto | null, acce
 
 export function getApplicationDashboardData(application: ApplicationFlatDto | null): DashboardApplication | null {
     if (!application) return application;
-    if (!application.anneeDemande) return null;
+    if (!application.exerciceBudgetaire) return null;
     const depositDate = application.dateDepotDemande
         ? application.dateDepotDemande === NOT_APPLICABLE_VALUE
             ? undefined
             : new Date(application.dateDepotDemande)
         : undefined;
-    const anneeDemande = application.anneeDemande === NOT_APPLICABLE_VALUE ? undefined : application.anneeDemande;
     return {
         montantAccorde: application.montantAccorde,
         montantDemande: application.montantDemande,
@@ -65,7 +64,6 @@ export function getApplicationDashboardData(application: ApplicationFlatDto | nu
         dispositif: application.dispositif ?? undefined,
         nomProjet: application.objet ?? "",
         statut_label: application.statutLabel,
-        annee_demande: anneeDemande,
     };
 }
 

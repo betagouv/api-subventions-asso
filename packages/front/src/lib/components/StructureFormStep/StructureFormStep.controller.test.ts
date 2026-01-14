@@ -38,18 +38,6 @@ describe("StructureFormStepController", () => {
         });
 
         describe("validators", () => {
-            it.skip.each`
-                varName          | emptyValue
-                ${"service"}     | ${""}
-                ${"jobType"}     | ${[]}
-                ${"phoneNumber"} | ${""}
-            `("empty $varName returns error", ({ varName, emptyValue }) => {
-                const expected = "Ce champ est obligatoire";
-                // @ts-expect-error - mock private
-                const actual = ctrl.validators[varName](emptyValue);
-                expect(actual).toBe(expected);
-            });
-
             it("returns error message if return from helper is false", () => {
                 vi.mocked(isPhoneNumber).mockReturnValueOnce(false);
                 // @ts-expect-error - mock private
@@ -61,16 +49,6 @@ describe("StructureFormStepController", () => {
                 vi.mocked(isPhoneNumber).mockReturnValueOnce(true);
                 // @ts-expect-error - mock private
                 const actual = ctrl.validators.phoneNumber("a phone number");
-                expect(actual).toBeUndefined();
-            });
-
-            it.skip.each`
-                varName      | correctValue
-                ${"service"} | ${"something"}
-                ${"jobType"} | ${["some1"]}
-            `("filled $varName returns undefined", ({ varName, correctValue }) => {
-                // @ts-expect-error - test private
-                const actual = ctrl.validators[varName](correctValue);
                 expect(actual).toBeUndefined();
             });
         });
