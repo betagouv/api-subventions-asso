@@ -18,7 +18,7 @@
 
     // TODO: #3374
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    $: $associations, (nbResultLabel = ctrl.updateNbEtabsLabel());
+    $: ($associations, (nbResultLabel = ctrl.updateNbEtabsLabel()));
 </script>
 
 <div class="fr-grid-row fr-grid-row--center fr-my-6v">
@@ -65,7 +65,7 @@
         </div>
 
         <div class="fr-grid-row fr-grid-row--gutters search-layout">
-            {#each $associations.results as simplifiedAsso (simplifiedAsso.siren)}
+            {#each $associations.results as simplifiedAsso}
                 <AssociationCard {simplifiedAsso} searchKey={$inputSearch} />
             {/each}
         </div>
