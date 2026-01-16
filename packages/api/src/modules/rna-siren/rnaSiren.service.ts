@@ -4,30 +4,39 @@ import apiAssoService from "../providers/apiAsso/apiAsso.service";
 import RnaSirenEntity from "../../entities/RnaSirenEntity";
 import Rna from "../../identifierObjects/Rna";
 import Siren from "../../identifierObjects/Siren";
-import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
-import Siret from "../../identifierObjects/Siret";
+import associationIdentifierService from "../association-identifier/association-identifier.service";
 
 export class RnaSirenService {
-    async find(id: string | Rna | Siren, offline = false): Promise<RnaSirenEntity[] | null> {
-        const rnaSiren = this.extractRnaOrSirenFromIdentifier(id);
+    async findFromUnknownIdentifier(str: string) {
+        const identifier = associationIdentifierService.identifierStringToEntity(str);
+        return this.find(identifier);
+    }
 
-        const entities = await rnaSirenPort.find(rnaSiren);
+    async find(identifier: Rna | Siren, offline = false): Promise<RnaSirenEntity[] | null> {
+        const entities = await rnaSirenPort.find(identifier);
 
         if (entities || offline) return entities;
 
-        // If not rna siren matching search in API ASSO
-        const { rna, siren } = await apiAssoService.findRnaSirenByIdentifiers(AssociationIdentifier.fromId(rnaSiren));
-
-        if (!rna || !siren) return null;
-        const result = await this.insert(rna, siren);
-        return result ? [result] : null;
+        const newEntity = await this.findFromApiAsso(identifier);
+        if (newEntity) return [newEntity];
+        return null;
     }
 
-    async insert(rna: Rna, siren: Siren) {
+    async findFromApiAsso(identifier: Rna | Siren): Promise<RnaSirenEntity | null> {
+        const rnaSiren = await apiAssoService.findRnaSiren(identifier);
+
+        if (!rnaSiren) return null;
+
+        const entity = new RnaSirenEntity(rnaSiren.rna, rnaSiren.siren);
+
+        await this.insert(entity);
+
+        return entity;
+    }
+
+    async insert(entity: RnaSirenEntity) {
         try {
-            const entity = new RnaSirenEntity(rna, siren);
             await rnaSirenPort.insert(entity);
-            return entity;
         } catch (e: unknown) {
             if (e instanceof DuplicateIndexError) return;
             throw e;
@@ -43,17 +52,6 @@ export class RnaSirenService {
             if (e instanceof DuplicateIndexError) return;
             throw e;
         }
-    }
-
-    extractRnaOrSirenFromIdentifier(id: string | Rna | Siren): Rna | Siren {
-        if (id instanceof Rna || id instanceof Siren) return id;
-        if (Rna.isRna(id)) {
-            return new Rna(id);
-        }
-        if (Siren.isSiren(id)) {
-            return new Siren(id);
-        }
-        return new Siren(Siret.getSiren(id));
     }
 }
 

@@ -14,6 +14,7 @@ export default class RnaSirenAdapter {
     }
 
     static toEntity(dbo: RnaSirenDbo): RnaSirenEntity {
+        // TOUGHTS: do we really want to keep the ID here ?
         return new RnaSirenEntity(new Rna(dbo.rna), new Siren(dbo.siren), dbo._id.toString());
     }
 }
