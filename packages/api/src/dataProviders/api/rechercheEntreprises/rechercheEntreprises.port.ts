@@ -7,7 +7,7 @@ import { RechercheEntreprisesDto, RechercheEntreprisesResultDto } from "./Recher
 export class RechercheEntreprisesPort {
     private static URL = "https://recherche-entreprises.api.gouv.fr/search";
     private http: ProviderRequestService;
-    private static natureJuridique = LEGAL_CATEGORIES_ACCEPTED.filter(id => id !== "92").join(",");
+    private static natureJuridique = LEGAL_CATEGORIES_ACCEPTED.join(",");
 
     constructor() {
         this.http = ProviderRequestFactory("recherche-entreprise");
