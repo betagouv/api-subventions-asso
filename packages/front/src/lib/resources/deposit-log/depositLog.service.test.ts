@@ -10,7 +10,7 @@ import type {
 import type { AxiosResponse } from "axios";
 import type { MockedFunction, MockInstance } from "vitest";
 import { type Input, type Options, stringify } from "csv-stringify/browser/esm/sync";
-import type { HeaderValidationResultDto } from "dto/build/depositScdlProcess/HeaderValidationResultDto";
+import type { MissingHeadersDto } from "dto/build/depositScdlProcess/MissingHeadersDto";
 import { depositLogStore } from "$lib/store/depositLog.store";
 
 vi.mock("csv-stringify/browser/esm/sync", () => ({
@@ -265,7 +265,7 @@ describe("DepositLogService", () => {
     });
 
     describe("determineFileValidationState", () => {
-        const headerValidationResult: HeaderValidationResultDto = { missingOptional: [], missingMandatory: [] };
+        const missingHeaders: MissingHeadersDto = { optional: [], mandatory: [] };
         const fileInfos: UploadedFileInfosDto = {
             allocatorsSiret: ["98765432101234"],
             errorStats: { count: 0, errorSample: [] },
@@ -275,7 +275,7 @@ describe("DepositLogService", () => {
             uploadDate: new Date(),
             grantCoverageYears: [2024],
             totalLines: 124,
-            headerValidationResult,
+            missingHeaders,
         };
 
         it("should return multipleAllocator when multiple allocators", () => {
@@ -321,7 +321,7 @@ describe("DepositLogService", () => {
         let stringifyMock: MockedFunction<(input: Input, options?: Options) => string>;
 
         const errorStats = { count: 1, errorSample: [{ bloquant: "oui" } as never] };
-        const headerValidationResult: HeaderValidationResultDto = { missingOptional: [], missingMandatory: [] };
+        const missingHeaders: MissingHeadersDto = { optional: [], mandatory: [] };
 
         const fileInfos: UploadedFileInfosDto = {
             allocatorsSiret: ["98765432101234"],
@@ -332,7 +332,7 @@ describe("DepositLogService", () => {
             uploadDate: new Date(),
             grantCoverageYears: [2024],
             totalLines: 124,
-            headerValidationResult,
+            missingHeaders,
         };
 
         const mockCsvString =

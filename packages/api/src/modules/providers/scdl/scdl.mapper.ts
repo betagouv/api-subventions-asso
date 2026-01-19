@@ -92,7 +92,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Nom de l'organisme attributaire",
             ],
         ],
-        displayName: "nomAttribuant",
+        officialName: "nomAttribuant",
     },
     allocatorSiret: {
         path: [
@@ -108,7 +108,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "SIRET organisme attributaire",
             ],
         ],
-        displayName: "idAttribuant",
+        officialName: "idAttribuant",
         adapter: v => cleanSiret(v?.toString()),
     },
     exercice: {
@@ -126,7 +126,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 ...CONVENTION_DATE_PATHS,
             ],
         ],
-        displayName: "exercice",
+        officialName: "exercice",
         adapter: value => {
             if (!value) return undefined;
             if (value.toString().length === 4) return Number(value);
@@ -135,7 +135,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
     },
     conventionDate: {
         path: [[...CONVENTION_DATE_PATHS]],
-        displayName: "dateConvention",
+        officialName: "dateConvention",
         adapter: dateAdapter,
     },
     decisionReference: {
@@ -150,7 +150,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Référence décision 1",
             ],
         ],
-        displayName: "referenceDecision",
+        officialName: "referenceDecision",
         // difficult to test if number will be an excel date or a simple number as decisionReference format has no standard
         // a limit has been set to 2018 to current year for excel date to avoid transforming real number in date
         adapter: value => {
@@ -181,7 +181,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Nom du b�n�ficiaire",
             ],
         ],
-        displayName: "nomBeneficiaire",
+        officialName: "nomBeneficiaire",
     },
     associationSiret: {
         path: [
@@ -203,12 +203,12 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "SIRET b�n�ficiaire",
             ],
         ],
-        displayName: "idBeneficiaire",
+        officialName: "idBeneficiaire",
         adapter: v => cleanSiret(v?.toString()),
     },
     associationRna: {
         path: [["rnaBeneficiaire", ...getMapperVariants("associationRna")]],
-        displayName: "rnaBeneficiaire",
+        officialName: "rnaBeneficiaire",
     },
     object: {
         path: [
@@ -224,7 +224,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Nom du Projet",
             ],
         ],
-        displayName: "objet",
+        officialName: "objet",
     },
     amount: {
         path: [
@@ -241,7 +241,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Montant des Autorisations d'engagement",
             ],
         ],
-        displayName: "montant",
+        officialName: "montant",
         adapter: value => (value && typeof value === "string" ? parseFloat(value.replace(/[^0-9.]/, "")) : value),
     },
     paymentNature: {
@@ -254,7 +254,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Nature subvention",
             ],
         ],
-        displayName: "nature",
+        officialName: "nature",
     },
     paymentConditions: {
         path: [
@@ -267,11 +267,11 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "conditionVersement",
             ],
         ],
-        displayName: "conditionsVersement",
+        officialName: "conditionsVersement",
     },
     paymentStartDate: {
         path: [[...getMapperVariants("paymentStartDate"), ...PERIODE_VERSEMENT_PATHS]],
-        displayName: "datesPeriodeVersement",
+        officialName: "datesPeriodeVersement",
         adapter: value => {
             // @ts-expect-error: with undefined it returns false, so we don't need to check it
             const parsedDate = shortISORegExp.test(value)
@@ -283,7 +283,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
     },
     paymentEndDate: {
         path: [[...getMapperVariants("paymentEndDate"), ...PERIODE_VERSEMENT_PATHS]],
-        displayName: "datesPeriodeVersement",
+        officialName: "datesPeriodeVersement",
         adapter: value => {
             if (typeof value !== "string") {
                 return dateAdapter(value);
@@ -310,7 +310,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "N° unique de référencement au RAE",
             ],
         ],
-        displayName: "idRAE",
+        officialName: "idRAE",
     },
     UeNotification: {
         path: [
@@ -324,7 +324,7 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Aide d'Etat (ou pas) notifiée à l'UE",
             ],
         ],
-        displayName: "notificationUE",
+        officialName: "notificationUE",
         adapter: value => {
             if (typeof value === "number") return !!value;
             if (typeof value !== "string") return undefined;
@@ -344,11 +344,11 @@ export const SCDL_MAPPER: ScdlGrantSchema = {
                 "Pourcentage subvention",
             ],
         ],
-        displayName: "pourcentageSubvention",
+        officialName: "pourcentageSubvention",
         adapter: value => (value ? parseFloat(value) : value),
     },
     aidSystem: {
         path: [["dispositifAide", ...getMapperVariants("aidSystem")]],
-        displayName: "dispositifAide",
+        officialName: "dispositifAide",
     },
 };

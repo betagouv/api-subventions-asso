@@ -43,7 +43,7 @@ describe("DepositLogAdapter", () => {
                 grantCoverageYears: [2019, 2200],
                 parseableLines: 123,
                 totalLines: 125,
-                headerValidationResult: { missingOptional: [], missingMandatory: [] },
+                missingHeaders: { optional: [], mandatory: [] },
                 existingLinesInDbOnSamePeriod: 145,
                 errorStats: { count: 0, errorSample: [] },
             };

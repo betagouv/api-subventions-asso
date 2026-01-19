@@ -234,14 +234,9 @@ export class ScdlService {
     }
 
     public validateHeaders(parsedInfos: ScdlParsedInfos, filename: string): void {
-        if (parsedInfos.headerValidationResult.missingOptional.length > 0) {
-            console.warn(
-                `Missing optional headers in file ${filename} : ${parsedInfos.headerValidationResult.missingOptional.join(", ")}`,
-            );
-        }
-        if (parsedInfos.headerValidationResult.missingMandatory.length > 0) {
+        if (parsedInfos.missingHeaders.mandatory.length > 0) {
             throw new Error(
-                `Missing required headers in file ${filename} : ${parsedInfos.headerValidationResult.missingMandatory.join(", ")}`,
+                `Missing required headers in file ${filename} : ${parsedInfos.missingHeaders.mandatory.join(", ")}`,
             );
         }
     }

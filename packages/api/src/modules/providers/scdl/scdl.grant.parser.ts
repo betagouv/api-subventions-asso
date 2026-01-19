@@ -11,7 +11,7 @@ import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
 import { ScdlParsedGrant } from "./@types/ScdlParsedGrant";
 import { FormatProblem, ParsedErrorDuplicate, ParsedErrorFormat, Validity } from "./@types/Validation";
 import { ScdlParsedInfos } from "./@types/ScdlParsedInfos";
-import { HeaderValidationResult } from "./@types/HeaderValidationResult";
+import { MissingHeaders } from "./@types/MissingHeaders";
 import { ScdlGrantSchema } from "./@types/ScdlGrantSchema";
 
 export default class ScdlGrantParser {
@@ -149,7 +149,7 @@ export default class ScdlGrantParser {
 
     private static createEmptyResultWithHeaderErrors(
         totalLines: number,
-        headerValidation: HeaderValidationResult,
+        headerValidation: MissingHeaders,
     ): {
         entities: ScdlStorableGrant[];
         problems: ParsedErrorFormat[];
@@ -163,7 +163,7 @@ export default class ScdlGrantParser {
                 grantCoverageYears: [],
                 parseableLines: 0,
                 totalLines,
-                headerValidationResult: headerValidation,
+                missingHeaders: headerValidation,
             },
         };
     }
@@ -181,7 +181,7 @@ export default class ScdlGrantParser {
         const grantCoverageYears: Set<number> = new Set();
 
         const headerValidation = ScdlGrantParser.verifyMissingHeaders(SCDL_MAPPER, parsedChunk[0]);
-        if (headerValidation.missingMandatory.length > 0) {
+        if (headerValidation.mandatory.length > 0) {
             return this.createEmptyResultWithHeaderErrors(parsedChunk.length, headerValidation);
         }
 
@@ -233,7 +233,7 @@ export default class ScdlGrantParser {
             grantCoverageYears: Array.from(grantCoverageYears),
             parseableLines: storableChunk.length,
             totalLines: parsedChunk.length + 1, // + 1 for headers, empty lines are lost
-            headerValidationResult: headerValidation,
+            missingHeaders: headerValidation,
         };
         return { entities: storableChunk, problems: errors, parsedInfos: parsedInfos };
     }
@@ -283,18 +283,16 @@ export default class ScdlGrantParser {
     }
 
     /**
-     * USE ONLY FOR SCDL WHERE NESTED COLUMNS ARE NOT POSSIBLE
-     *
      * Verifies if any column headers is missing in the file
      * @param pathObject
      * @param data
      *
-     * @returns HeaderValidationResult
+     * @returns MissingHeaders
      */
     static verifyMissingHeaders<TypeIn extends BeforeAdaptation>(
         pathObject: ScdlGrantSchema,
         data: NestedDefaultObject<TypeIn>,
-    ): HeaderValidationResult {
+    ): MissingHeaders {
         const mandatoryHeaders = ScdlGrantParser.requirements.filter(req => !req.optional).map(req => req.key);
         const missingKeys = Object.entries(pathObject)
             .filter(([_key, path]) => {
@@ -304,21 +302,21 @@ export default class ScdlGrantParser {
             .map(([key]) => key);
 
         const missingMandatories: string[] = [];
-        const missingOptional: string[] = [];
+        const optional: string[] = [];
         for (const key of missingKeys) {
             const pathInfo = pathObject[key];
-            const displayName = pathInfo.displayName;
+            const officialName = pathInfo.officialName;
 
             if (mandatoryHeaders.includes(key)) {
-                missingMandatories.push(displayName);
+                missingMandatories.push(officialName);
             } else {
-                missingOptional.push(displayName);
+                optional.push(officialName);
             }
         }
 
         return {
-            missingMandatory: missingMandatories,
-            missingOptional: missingOptional,
+            mandatory: missingMandatories,
+            optional: optional,
         };
     }
 }

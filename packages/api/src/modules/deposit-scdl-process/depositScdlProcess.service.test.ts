@@ -278,7 +278,7 @@ describe("DepositScdlProcessService", () => {
                     grantCoverageYears: [2025],
                     parseableLines: 0,
                     totalLines: 0,
-                    headerValidationResult: { missingOptional: [], missingMandatory: [] },
+                    missingHeaders: { optional: [], mandatory: [] },
                 } as ScdlParsedInfos,
             };
 
@@ -419,7 +419,7 @@ describe("DepositScdlProcessService", () => {
                     grantCoverageYears: [2025],
                     parseableLines: 0,
                     totalLines: 0,
-                    headerValidationResult: { missingMandatory: [], missingOptional: [] },
+                    missingHeaders: { mandatory: [], optional: [] },
                 } as ScdlParsedInfos,
             };
 
@@ -444,7 +444,7 @@ describe("DepositScdlProcessService", () => {
                     grantCoverageYears: [2025],
                     parseableLines: 0,
                     totalLines: 0,
-                    headerValidationResult: { missingMandatory: [], missingOptional: [] },
+                    missingHeaders: { mandatory: [], optional: [] },
                 } as ScdlParsedInfos,
             };
 
@@ -468,7 +468,7 @@ describe("DepositScdlProcessService", () => {
                     grantCoverageYears: [2025],
                     parseableLines: 0,
                     totalLines: 0,
-                    headerValidationResult: { missingMandatory: [], missingOptional: [] },
+                    missingHeaders: { mandatory: [], optional: [] },
                 } as ScdlParsedInfos,
             };
 

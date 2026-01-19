@@ -14,7 +14,7 @@
     </Alert>
 
     <p>
-        Pour analyser votre fichier nous avons besoin que les noms des colonnes (en première lignes) soient présentes et
+        Pour analyser votre fichier nous avons besoin que les noms des colonnes (en première ligne) soient présentes et
         correctement nommées
     </p>
     <p>

@@ -5,7 +5,7 @@ export type BeforeAdaptation = string | number; // only string for csv, string o
 
 export interface ParserInfo<TypeIn extends BeforeAdaptation = string, TypeOut = unknown> {
     path: ParserPath;
-    displayName?: string;
+    officialName?: string;
     adapter?: (value: TypeIn | undefined) => TypeOut;
 }
 

@@ -1,5 +1,5 @@
 import { ScdlErrorStatsDto } from "./ScdlErrorStatsDto";
-import { HeaderValidationResultDto } from "./HeaderValidationResultDto";
+import { MissingHeadersDto } from "./MissingHeadersDto";
 
 export interface UploadedFileInfosDto {
     fileName: string;
@@ -8,7 +8,7 @@ export interface UploadedFileInfosDto {
     grantCoverageYears: number[];
     parseableLines: number;
     totalLines: number;
-    headerValidationResult: HeaderValidationResultDto;
+    missingHeaders: MissingHeadersDto;
     existingLinesInDbOnSamePeriod: number;
     errorStats: ScdlErrorStatsDto;
     sheetName?: string;

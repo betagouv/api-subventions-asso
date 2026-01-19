@@ -464,9 +464,9 @@ describe("ScdlService", () => {
                 grantCoverageYears: [],
                 parseableLines: 0,
                 totalLines: 0,
-                headerValidationResult: {
-                    missingMandatory: [],
-                    missingOptional: [],
+                missingHeaders: {
+                    mandatory: [],
+                    optional: [],
                 },
             };
             consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation();
@@ -478,20 +478,10 @@ describe("ScdlService", () => {
         const filePath = "/path/to/file.xlsx";
 
         it("Throw error when required headers are missing", () => {
-            parsedInfos.headerValidationResult.missingMandatory = ["allocatorSiret", "exercice"];
+            parsedInfos.missingHeaders.mandatory = ["allocatorSiret", "exercice"];
 
             expect(() => scdlService.validateHeaders(parsedInfos, filePath)).toThrow(
                 "Missing required headers in file /path/to/file.xlsx : allocatorSiret, exercice",
-            );
-        });
-
-        it("Log warning when optional headers are missing", () => {
-            parsedInfos.headerValidationResult.missingOptional = ["allocatorName", "idRAE"];
-
-            scdlService.validateHeaders(parsedInfos, filePath);
-
-            expect(consoleWarnSpy).toHaveBeenCalledWith(
-                "Missing optional headers in file /path/to/file.xlsx : allocatorName, idRAE",
             );
         });
     });

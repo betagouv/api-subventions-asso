@@ -115,7 +115,7 @@ export class DepositScdlProcessService {
             parsedInfos.grantCoverageYears,
             parsedInfos.parseableLines,
             parsedInfos.totalLines,
-            parsedInfos.headerValidationResult,
+            parsedInfos.missingHeaders,
             existingLinesInDbOnSamePeriod,
             new ScdlErrorStats(errors),
             pageName,

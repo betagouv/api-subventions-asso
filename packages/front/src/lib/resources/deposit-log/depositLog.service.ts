@@ -78,7 +78,7 @@ class DepositLogService {
     }
 
     determineFileValidationState(declaredSiret: string, fileInfos: UploadedFileInfosDto): FileValidationState {
-        const hasMissingHeaders = fileInfos.headerValidationResult.missingMandatory.length > 0;
+        const hasMissingHeaders = fileInfos.missingHeaders.mandatory.length > 0;
         const hasMultipleAllocators =
             fileInfos.allocatorsSiret.length > 1 ||
             (fileInfos.allocatorsSiret.length === 1 && declaredSiret !== fileInfos.allocatorsSiret[0]);

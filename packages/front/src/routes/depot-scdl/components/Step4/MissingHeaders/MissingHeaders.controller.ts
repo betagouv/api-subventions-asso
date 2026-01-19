@@ -6,7 +6,7 @@ export default class MissingHeadersController {
 
     constructor() {
         const uploadedFileInfos = depositLogStore.value!.uploadedFileInfos!;
-        this.missingMandatoryHeaders = uploadedFileInfos.headerValidationResult.missingMandatory;
-        this.missingOptionalHeaders = uploadedFileInfos.headerValidationResult.missingOptional;
+        this.missingMandatoryHeaders = uploadedFileInfos.missingHeaders.mandatory;
+        this.missingOptionalHeaders = uploadedFileInfos.missingHeaders.optional;
     }
 }

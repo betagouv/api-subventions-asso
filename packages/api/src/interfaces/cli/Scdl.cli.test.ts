@@ -105,12 +105,15 @@ describe("ScdlCli", () => {
     `("$methodName", ({ test, parserMethod, parserArgs }) => {
         const ERRORS = ["ERRORS"];
 
+        let validateHeaderSpy: jest.SpyInstance<void, [parsedInfos: ScdlParsedInfos, filename: string]>;
+
         beforeEach(() => {
             mockedScdlService[parserMethod].mockReturnValue({ entities: STORABLE_DATA_ARRAY, errors: ERRORS });
             // @ts-expect-error: mock private method
             jest.spyOn(cli, "end").mockResolvedValue();
             jest.spyOn(scdlService, "persist").mockResolvedValue();
             jest.mocked(CliHelper.detectAndEncode).mockReturnValue(FILE_CONTENT);
+            validateHeaderSpy = jest.spyOn(scdlService, "validateHeaders").mockReturnValue();
         });
 
         it("sanitizes input", async () => {
@@ -145,6 +148,22 @@ describe("ScdlCli", () => {
                 producer: PRODUCER_ENTITY,
                 exportDate: EXPORT_DATE_STR,
             });
+        });
+
+        it("throw error when mandatory header is missing", async () => {
+            const parsedInfos = {
+                missingHeaders: { mandatory: ["col1"], optional: [] as string[] },
+            } as ScdlParsedInfos;
+            mockedScdlService[parserMethod].mockReturnValue({
+                entities: STORABLE_DATA_ARRAY,
+                errors: ERRORS,
+                parsedInfos,
+            });
+            validateHeaderSpy.mockImplementationOnce(() => {
+                throw new Error("mandatory header is missing");
+            });
+
+            await expect(test()).rejects.toThrow("mandatory header is missing");
         });
     });
 

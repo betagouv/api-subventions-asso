@@ -35,7 +35,7 @@ describe("Step4Controller", () => {
                 uploadedFileInfos: {
                     allocatorsSiret: ["12345678901234"],
                     parseableLines: 123,
-                    headerValidationResult: { missingMandatory: [], missingOptional: [] },
+                    missingHeaders: { mandatory: [], optional: [] },
                     existingLinesInDbOnSamePeriod: 123,
                     errorStats: { count: 1, errorSample: [{ bloquant: "non" }] },
                 } as unknown as UploadedFileInfosDto,
@@ -105,7 +105,7 @@ describe("Step4Controller", () => {
                 uploadedFileInfos: {
                     allocatorsSiret: ["12345678901234"],
                     parseableLines: 123,
-                    headerValidationResult: { missingMandatory: [], missingOptional: [] },
+                    missingHeaders: { mandatory: [], optional: [] },
                     existingLinesInDbOnSamePeriod: 123,
                     errorStats: { count: 1, errorSample: [{ bloquant: "non" }] },
                 } as unknown as UploadedFileInfosDto,
