@@ -17,20 +17,21 @@ import { data, modal } from "$lib/store/modal.store";
 import type { SortableRow } from "$lib/components/GrantDashboard/@types/DashboardGrant";
 import { grantCompareFn } from "$lib/components/GrantDashboard/sort.helper";
 import type { Option } from "$lib/types/FieldOption";
+import { getOrInit } from "$lib/helpers/array.helper";
 
 export class GrantDashboardController {
     public identifier: StructureIdentifierDto;
     public grantPromise: Promise<GrantFlatDto[]> = returnInfinitePromise();
     public grants: Store<GrantFlatDto[] | undefined> = new Store(undefined);
     public grantsByExercise: Record<string, GrantFlatDto[]> = {};
-
+    private UNKNOWN_EXERCISE = "unknown" as const;
     public selectedGrants: Store<GrantFlatDto[] | null> = new Store(null);
     public selectedExercise: Store<string | null> = new Store(null);
 
     // final rows displayed in view: can be updated with exercise filter and in a future with other filters
     public rows: Store<SortableRow[]> = new Store([]);
     public isExtractLoading: Store<boolean> = new Store(false);
-    public exerciseOptions: Store<Option<string>[] | undefined> = new Store(undefined);
+    public exerciseOptions: Store<Option<string | null>[] | undefined> = new Store(undefined);
     public headers: { name: string; tooltip?: string }[];
     private columnsSortOrder: number[];
 
@@ -66,10 +67,8 @@ export class GrantDashboardController {
     }
 
     private initStores() {
-        this.selectedGrants = new Store(null);
-        this.selectedExercise = new Store(null);
         this.selectedExercise.subscribe(exercise => {
-            if (exercise == null) return;
+            if (!exercise) return; // bypass the first execution when the store is not defined
             this.selectedGrants.set(this.grantsByExercise[exercise]);
         });
         this.selectedGrants.subscribe(grants => this.updateRows(grants as GrantFlatDto[]));
@@ -81,13 +80,30 @@ export class GrantDashboardController {
     private processGrants(grants: GrantFlatDto[]) {
         this.grants.set(grants);
         this.grantsByExercise = this.splitGrantsByExercise(this.grants.value as GrantFlatDto[]);
-
         this.exerciseOptions.set(this._buildExercices(Object.keys(this.grantsByExercise)));
-        this.selectedExercise.set((this.exerciseOptions.value || []).slice(-1)?.[0]?.value);
+        this.selectedExercise.set(this.getDefaultExercise());
     }
 
-    _buildExercices(exercices: string[]) {
-        return exercices.map(year => ({ value: year, label: `Exercice ${year} (année civile)` }));
+    private getDefaultExercise(): string | null {
+        const currentExercise = new Date().getFullYear().toString();
+        const exercises = (this.exerciseOptions.value as Option<string>[]).map(exercise => exercise.value);
+        if (!exercises || exercises.length === 0) return null;
+        if (exercises.find(year => year === currentExercise)) return currentExercise; // initialized to current exercise
+        const firstKnownExercise = exercises
+            .filter(exercise => exercise !== this.UNKNOWN_EXERCISE)
+            .sort()
+            .at(-1);
+        if (firstKnownExercise) return firstKnownExercise;
+        else return this.UNKNOWN_EXERCISE;
+    }
+
+    _buildExercices(exercices: (string | null)[]) {
+        return exercices.map(year => {
+            let label: string;
+            if (year === this.UNKNOWN_EXERCISE) label = `Exercice inconnu`;
+            else label = `Exercice ${year} (année civile)`;
+            return { value: year, label };
+        });
     }
 
     get providerBlogUrl() {
@@ -136,12 +152,9 @@ export class GrantDashboardController {
         const byExercise: Record<string | number, GrantFlatDto[]> = {};
         return grants.reduce((byExercise, grant) => {
             const exercise = grant.application?.exerciceBudgetaire ?? grant.payments?.[0]?.exerciceBudgetaire;
-            if (!exercise)
-                return byExercise; // improve this and display somewhere that some grants have no exercise
-            else {
-                if (!byExercise[exercise]) byExercise[exercise] = [grant];
-                else byExercise[exercise].push(grant);
-            }
+            if (!exercise) {
+                byExercise["unknown"] = getOrInit(byExercise["unknown"]).concat(grant);
+            } else byExercise[exercise] = getOrInit(byExercise[exercise]).concat(grant);
             return byExercise;
         }, byExercise);
     }
