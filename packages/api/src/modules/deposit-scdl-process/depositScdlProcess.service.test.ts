@@ -499,6 +499,7 @@ describe("DepositScdlProcessService", () => {
                     parseableLines: 0,
                     totalLines: 0,
                     existingLinesInDbOnSamePeriod: 0,
+                    missingHeaders: { mandatory: [], optional: [] },
                 } as ScdlParsedInfos,
             };
 
