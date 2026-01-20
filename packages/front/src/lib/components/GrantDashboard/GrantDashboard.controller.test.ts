@@ -48,7 +48,12 @@ describe("GrantDashboard Controller", () => {
         payments: [{ dateOperation: "2023-01-13" }, { dateOperation: "2023-04-21" }],
     });
 
-    const GRANT_FROM_2021 = () => ({ payments: [{ dateOperation: "2021-08-14" }] });
+    const GRANT_FROM_2021 = () => ({ payments: [{ exerciceBudgetaire: 2021, dateOperation: "2021-08-14" }] });
+
+    const UNKNOWN_EXERCICE_GRANT = () => ({
+        application: { exerciceBudgetaire: null },
+        payments: { exerciceBudgetaire: null },
+    });
 
     const FLAT_GRANTS = () => [GRANT_FROM_2021(), GRANT_FROM_2023(), GRANT_FROM_2024()] as GrantFlatDto[];
 
@@ -160,10 +165,60 @@ describe("GrantDashboard Controller", () => {
             });
         });
 
+        describe("getDefaultExercise", () => {
+            it("returns current exercice if found in available options", () => {
+                CTRL.exerciseOptions.set([{ value: "2025", label: "Exercice 2025" }]);
+                const expected = "2025";
+                // @ts-expect-error: test private method
+                const actual = CTRL.getDefaultExercise();
+                expect(actual).toEqual(expected);
+            });
+
+            it("returns most recent exercise available in options when current exercise is not present", () => {
+                CTRL.exerciseOptions.set([
+                    { value: "2023", label: "Exercice 2023" },
+                    { value: "2024", label: "Exercice 2024" },
+                    { value: "unknown", label: "Exercice inconnu" },
+                ]);
+                const expected = "2024";
+                // @ts-expect-error: test private method
+                const actual = CTRL.getDefaultExercise();
+                expect(actual).toEqual(expected);
+            });
+
+            it("sorts exercises options ASC when current exercise is not present", () => {
+                CTRL.exerciseOptions.set([
+                    { value: "2024", label: "Exercice 2024" },
+                    { value: "2023", label: "Exercice 2023" },
+                    { value: "unknown", label: "Exercice inconnu" },
+                ]);
+                const expected = "2024";
+                // @ts-expect-error: test private method
+                const actual = CTRL.getDefaultExercise();
+                expect(actual).toEqual(expected);
+            });
+
+            it("returns unknown exercise if only option", () => {
+                CTRL.exerciseOptions.set([{ value: "unknown", label: "Exercice inconnu" }]);
+                const expected = "unknown";
+                // @ts-expect-error: test private method
+                const actual = CTRL.getDefaultExercise();
+                expect(actual).toEqual(expected);
+            });
+
+            it("returns null if no options available", () => {
+                CTRL.exerciseOptions.set([]);
+                const expected = null;
+                // @ts-expect-error: test private method
+                const actual = CTRL.getDefaultExercise();
+                expect(actual).toEqual(expected);
+            });
+        });
+
         describe("splitGrantsByExercise", () => {
             it("returns grants by exercise", () => {
                 // @ts-expect-error: call private method
-                const actual = CTRL.splitGrantsByExercise(FLAT_GRANTS());
+                const actual = CTRL.splitGrantsByExercise([...FLAT_GRANTS(), UNKNOWN_EXERCICE_GRANT()]);
                 expect(actual).toMatchSnapshot();
             });
         });

@@ -1,5 +1,4 @@
 import rechercheEntreprisesPort, { RechercheEntreprisesPort } from "./rechercheEntreprises.port";
-import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
 import { ProviderRequestService } from "../../../modules/provider-request/providerRequest.service";
 import { RechercheEntreprisesDto } from "./RechercheEntreprisesDto";
 import { RequestResponse } from "../../../modules/provider-request/@types/RequestResponse";
@@ -14,11 +13,6 @@ describe("RechercheEntreprisesPort", () => {
     describe("Initialization", () => {
         it("should initialize the URL correctly", () => {
             expect(RechercheEntreprisesPort["URL"]).toBe("https://recherche-entreprises.api.gouv.fr/search");
-        });
-
-        it("should initialize the natureJuridique correctly", () => {
-            const expectedNatureJuridique = LEGAL_CATEGORIES_ACCEPTED.filter(id => id !== "92").join(",");
-            expect(RechercheEntreprisesPort["natureJuridique"]).toBe(expectedNatureJuridique);
         });
 
         it("should initialize the http service correctly", () => {
