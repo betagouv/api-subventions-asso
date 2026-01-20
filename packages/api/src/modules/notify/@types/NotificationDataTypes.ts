@@ -78,4 +78,10 @@ export interface NotificationDataTypes {
         providerSiret?: string;
         exportDate?: Date;
     };
+    [NotificationType.DEPOSIT_SCDL_SUCCESS]: {
+        providerName: string;
+        providerSiret: string;
+        grantCoverageYears: number[];
+        parsedLines: number;
+    };
 }

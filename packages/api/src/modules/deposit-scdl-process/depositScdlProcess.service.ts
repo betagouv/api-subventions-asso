@@ -17,6 +17,8 @@ import MiscScdlProducerEntity from "../providers/scdl/entities/MiscScdlProducerE
 import dataLogService from "../data-log/dataLog.service";
 import s3StorageService from "../s3-file/s3Storage.service";
 import ScdlErrorStats from "./entities/ScdlErrorStats";
+import notifyService from "../notify/notify.service";
+import { NotificationType } from "../notify/@types/NotificationType";
 
 export class DepositScdlProcessService {
     FIRST_STEP = 1;
@@ -225,7 +227,7 @@ export class DepositScdlProcessService {
 
         const file = await s3StorageService.getUserFile(userId, existingDepositLog.uploadedFileInfos!.fileName);
 
-        const { entities, errors } = this.parseFile(file, existingDepositLog.uploadedFileInfos?.sheetName);
+        const { entities, errors, parsedInfos } = this.parseFile(file, existingDepositLog.uploadedFileInfos?.sheetName);
 
         const hasBlockingErrors = errors.some(error => error.bloquant === "oui");
         if (hasBlockingErrors) {
@@ -241,6 +243,13 @@ export class DepositScdlProcessService {
             providerName: producer.name,
             fileName: file.originalname,
             userId: userId,
+        });
+
+        await notifyService.notify(NotificationType.DEPOSIT_SCDL_SUCCESS, {
+            providerName: producer.name,
+            providerSiret: producer.siret,
+            grantCoverageYears: parsedInfos.grantCoverageYears,
+            parsedLines: parsedInfos.parseableLines,
         });
 
         return depositLogPort.deleteByUserId(userId);

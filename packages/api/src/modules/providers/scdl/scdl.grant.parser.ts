@@ -205,7 +205,7 @@ export default class ScdlGrantParser {
 
         const parsedInfos: ScdlParsedInfos = {
             allocatorsSiret: Array.from(allocatorsSiret),
-            grantCoverageYears: Array.from(grantCoverageYears),
+            grantCoverageYears: Array.from(grantCoverageYears).sort((a, b) => a - b),
             parseableLines: storableChunk.length,
             totalLines: parsedChunk.length + 1, // + 1 for headers, empty lines are lost
         };

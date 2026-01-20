@@ -26,11 +26,17 @@ import { DataLogEntity } from "../data-log/entities/dataLogEntity";
 import { InsertOneResult } from "mongodb";
 import s3FileService from "../s3-file/s3Storage.service";
 import { DefaultObject } from "../../@types";
+import { NotificationType } from "../notify/@types/NotificationType";
+import notifyService from "../notify/notify.service";
 
 jest.mock("./check/DepositScdlProcess.check.service");
 jest.mock("../../dataProviders/db/deposit-log/depositLog.port");
 jest.mock("../../dataProviders/db/deposit-log/DepositLog.adapter");
 jest.mock("../providers/scdl/scdl.service.ts");
+
+jest.mock("../notify/notify.service", () => ({
+    notify: jest.fn().mockResolvedValue(true),
+}));
 
 describe("DepositScdlProcessService", () => {
     let mockGetDepositLog: jest.SpyInstance<Promise<DepositScdlLogEntity | null>, [string]>;
@@ -481,6 +487,36 @@ describe("DepositScdlProcessService", () => {
 
             expect(persistMock).toHaveBeenCalledTimes(1);
             expect(deletDepositMock).toHaveBeenCalledTimes(1);
+        });
+
+        it("should notify DEPOSIT_SCDL_SUCCESS", async () => {
+            const parsedResult = {
+                entities: [],
+                errors: [],
+                parsedInfos: {
+                    allocatorsSiret: ["12345678901234"],
+                    grantCoverageYears: [2025],
+                    parseableLines: 0,
+                    totalLines: 0,
+                    existingLinesInDbOnSamePeriod: 0,
+                } as ScdlParsedInfos,
+            };
+
+            mockGetDepositLog.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY_STEP_2);
+            mockGetProducer.mockResolvedValueOnce({
+                siret: "12345678901234",
+                name: "prov_name",
+            } as MiscScdlProducerEntity);
+
+            mockParseCsv.mockReturnValueOnce(parsedResult);
+
+            await depositScdlProcessService.parseAndPersistScdlFile(USER_ID);
+            expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.DEPOSIT_SCDL_SUCCESS, {
+                providerName: "prov_name",
+                providerSiret: "12345678901234",
+                grantCoverageYears: parsedResult.parsedInfos.grantCoverageYears,
+                parsedLines: parsedResult.parsedInfos.parseableLines,
+            });
         });
     });
 });

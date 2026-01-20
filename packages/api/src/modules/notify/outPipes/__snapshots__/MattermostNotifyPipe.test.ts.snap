@@ -22,6 +22,25 @@ N'oubliez pas de supprimer toutes leurs données !",
 }
 `;
 
+exports[`MattermostNotifyPipe dataImportSuccess sends message 1`] = `
+{
+  "channel": "datasubvention---produit",
+  "icon_emoji": "white_check_mark",
+  "text": "Import de données réussi pour le fournisseur **Ville de Rennes** (SIRET : \`12345678900012\`) avec une date d'export au **2025-09-03**.",
+  "username": "Import de données",
+}
+`;
+
+exports[`MattermostNotifyPipe depositScdlSuccess sends message 1`] = `
+{
+  "channel": "datasubvention---produit",
+  "icon_emoji": "white_check_mark",
+  "text": "Nouveau dépôt SCDL réalisé pour le fournisseur **Ville d'Angers** (SIRET : \`12345678900013\`) pour l'exercice 2023.
+123 données de subventions ont été déposées.",
+  "username": "Dépôt de données SCDL",
+}
+`;
+
 exports[`MattermostNotifyPipe depositUnfinished sends message with proper payload 1`] = `
 {
   "channel": "datasubvention---comptes-app",
@@ -34,15 +53,6 @@ exports[`MattermostNotifyPipe depositUnfinished sends message with proper payloa
 - griffin@email.fr (Petter Griffin)
 ",
   "username": "Relance de dépôt de données",
-}
-`;
-
-exports[`MattermostNotifyPipe dataImportSuccess sends message 1`] = `
-{
-  "channel": "datasubvention---produit",
-  "icon_emoji": "white_check_mark",
-  "text": "Import de données réussi pour le fournisseur **Ville de Rennes** (SIRET : \`12345678900012\`) avec une date d'export au **2025-09-03**.",
-  "username": "Import de données",
 }
 `;
 

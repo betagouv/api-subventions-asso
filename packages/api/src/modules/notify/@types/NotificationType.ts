@@ -16,4 +16,5 @@ export enum NotificationType {
     BATCH_DEPOSIT_RESUME,
     DEPOSIT_UNFINISHED,
     DATA_IMPORT_SUCCESS,
+    DEPOSIT_SCDL_SUCCESS,
 }

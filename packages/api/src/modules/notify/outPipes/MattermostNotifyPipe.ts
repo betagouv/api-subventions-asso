@@ -33,6 +33,8 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
                 return this.depositUnfinished(data);
             case NotificationType.DATA_IMPORT_SUCCESS:
                 return this.dataImportSuccess(data);
+            case NotificationType.DEPOSIT_SCDL_SUCCESS:
+                return this.depositScdlSuccess(data);
             default:
                 return Promise.resolve(false);
         }
@@ -59,6 +61,21 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
             text: message,
             channel: MattermostChannels.PRODUCT,
             username: "Import de données",
+            icon_emoji: "white_check_mark",
+        });
+    }
+
+    private depositScdlSuccess(data: NotificationDataTypes[NotificationType.DEPOSIT_SCDL_SUCCESS]) {
+        const message = dedent`
+        Nouveau dépôt SCDL réalisé pour le fournisseur **${data.providerName}**${
+            data.providerSiret ? ` (SIRET : \`${data.providerSiret}\`)` : ""
+        } pour ${data.grantCoverageYears.length === 1 ? "l'exercice" : "les exercices"} ${data.grantCoverageYears.join(", ")}.
+        ${data.parsedLines} ${data.parsedLines === 1 ? "donnée de subvention a été déposée" : "données de subventions ont été déposées"}.
+        `;
+        return this.sendMessage({
+            text: message,
+            channel: MattermostChannels.PRODUCT,
+            username: "Dépôt de données SCDL",
             icon_emoji: "white_check_mark",
         });
     }

@@ -158,4 +158,20 @@ describe("MattermostNotifyPipe", () => {
             expect(actual).toMatchSnapshot();
         });
     });
+
+    describe("depositScdlSuccess", () => {
+        it("sends message", async () => {
+            // @ts-expect-error -- private method
+            const sendMessageSpy = jest.spyOn(notifyPipe, "sendMessage").mockResolvedValueOnce(true);
+            // @ts-expect-error -- private method
+            await notifyPipe.depositScdlSuccess({
+                providerName: "Ville d'Angers",
+                providerSiret: "12345678900013",
+                parsedLines: 123,
+                grantCoverageYears: [2023],
+            });
+            const actual = sendMessageSpy.mock.calls[0][0];
+            expect(actual).toMatchSnapshot();
+        });
+    });
 });
