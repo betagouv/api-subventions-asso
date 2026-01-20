@@ -13,6 +13,7 @@ import apiAssoService from "../apiAsso/apiAsso.service";
 import MiscScdlProducerEntity from "./entities/MiscScdlProducerEntity";
 import scdlGrantService from "./scdl.grant.service";
 import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
+import { ScdlParsedInfos } from "./@types/ScdlParsedInfos";
 
 export class ScdlService {
     getProducer(siret: Siret) {
@@ -230,6 +231,14 @@ export class ScdlService {
         }
 
         console.log("Parsing ended successfully !");
+    }
+
+    public validateHeaders(parsedInfos: ScdlParsedInfos, filename: string): void {
+        if (parsedInfos.missingHeaders.mandatory.length > 0) {
+            throw new Error(
+                `Missing required headers in file ${filename} : ${parsedInfos.missingHeaders.mandatory.join(", ")}`,
+            );
+        }
     }
 }
 

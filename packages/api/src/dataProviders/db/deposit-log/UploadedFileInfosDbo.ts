@@ -5,6 +5,10 @@ export default interface UploadedFileInfosDbo {
     grantCoverageYears: number[];
     parseableLines: number;
     totalLines: number;
+    missingHeaders: {
+        mandatory: string[];
+        optional: string[];
+    };
     existingLinesInDbOnSamePeriod: number;
     errorStats: {
         count: number;

@@ -7,14 +7,22 @@ import {
     type UploadedFileInfosDto,
 } from "dto";
 import { stringify } from "csv-stringify/browser/esm/sync";
+import { depositLogStore } from "$lib/store/depositLog.store";
+import errorService from "$lib/services/error.service";
+import type { EventDispatcher } from "svelte";
 
 export const FILE_VALIDATION_STATES = {
+    MISSING_HEADERS: "missingHeaders",
     MULTIPLE_ALLOCATORS: "multipleAllocator",
     LESS_GRANT_DATA: "lessGrantData",
     BLOCKING_ERRORS: "blockingErrors",
     CONFIRM_DATA_ADD: "confirmDataAdd",
 } as const;
 export type FileValidationState = (typeof FILE_VALIDATION_STATES)[keyof typeof FILE_VALIDATION_STATES];
+
+type DepositEventMap = {
+    restartNewForm: void;
+};
 
 class DepositLogService {
     async getDepositLog() {
@@ -70,12 +78,14 @@ class DepositLogService {
     }
 
     determineFileValidationState(declaredSiret: string, fileInfos: UploadedFileInfosDto): FileValidationState {
+        const hasMissingHeaders = fileInfos.missingHeaders.mandatory.length > 0;
         const hasMultipleAllocators =
             fileInfos.allocatorsSiret.length > 1 ||
             (fileInfos.allocatorsSiret.length === 1 && declaredSiret !== fileInfos.allocatorsSiret[0]);
         const hasLessGrantData = fileInfos.parseableLines < fileInfos.existingLinesInDbOnSamePeriod;
         const hasBlockingErrors = fileInfos.errorStats.errorSample.some(error => error.bloquant === "oui") ?? false;
 
+        if (hasMissingHeaders) return FILE_VALIDATION_STATES.MISSING_HEADERS;
         if (hasMultipleAllocators) return FILE_VALIDATION_STATES.MULTIPLE_ALLOCATORS;
         if (hasLessGrantData) return FILE_VALIDATION_STATES.LESS_GRANT_DATA;
         if (hasBlockingErrors) return FILE_VALIDATION_STATES.BLOCKING_ERRORS;
@@ -115,6 +125,16 @@ class DepositLogService {
         link.download = fileName;
         link.click();
         window.URL.revokeObjectURL(url);
+    }
+
+    async restartNewDeposit(dispatch: EventDispatcher<DepositEventMap>) {
+        try {
+            await this.deleteDepositLog();
+            depositLogStore.set(null);
+            dispatch("restartNewForm");
+        } catch (e) {
+            errorService.handleError(e);
+        }
     }
 }
 

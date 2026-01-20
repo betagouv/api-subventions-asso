@@ -133,6 +133,7 @@ describe("DepositScdlProcessHttp", () => {
                     grantCoverageYears: [2021, 2022],
                     parseableLines: 200,
                     totalLines: 202,
+                    missingHeaders: { optional: [], mandatory: [] },
                     existingLinesInDbOnSamePeriod: 0,
                     errorStats: { count: 0, errorSample: [] },
                 },

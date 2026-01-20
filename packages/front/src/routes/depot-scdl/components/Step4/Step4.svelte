@@ -7,13 +7,13 @@
     import BlockingErrors from "./BlockingErrors/BlockingErrors.svelte";
     import ConfirmDataAdd from "./ConfirmDataAdd/ConfirmDataAdd.svelte";
     import TargetBlankLink from "$lib/components/TargetBlankLink.svelte";
+    import MissingHeaders from "./MissingHeaders/MissingHeaders.svelte";
 
     const dispatch = createEventDispatcher<{
         prevStep: void;
         nextStep: void;
         loading: void;
         endLoading: void;
-        error: string;
         restartNewForm: void;
     }>();
     const ctrl = new Step4Controller(dispatch);
@@ -22,7 +22,11 @@
 
 <div>
     <div class="fr-grid-row fr-grid-row--gutters">
-        {#if $view === "multipleAllocator"}
+        {#if $view === "missingHeaders"}
+            <MissingHeaders
+                on:prevStep={() => ctrl.handlePrevStep()}
+                on:restartNewForm={() => ctrl.handleRestartNewForm()} />
+        {:else if $view === "multipleAllocator"}
             <MultipleAllocators
                 on:prevStep={() => ctrl.handlePrevStep()}
                 on:restartNewForm={() => ctrl.handleRestartNewForm()} />

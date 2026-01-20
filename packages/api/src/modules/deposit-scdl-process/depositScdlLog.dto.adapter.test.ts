@@ -72,6 +72,7 @@ describe("depositScdlLogDtoAdapter", () => {
                 grantCoverageYears: entity.grantCoverageYears,
                 parseableLines: entity.parseableLines,
                 totalLines: entity.totalLines,
+                missingHeaders: entity.missingHeaders,
                 existingLinesInDbOnSamePeriod: entity.existingLinesInDbOnSamePeriod,
                 errorStats: entity.errorStats,
             });
@@ -127,6 +128,7 @@ describe("depositScdlLogDtoAdapter", () => {
                     grantCoverageYears: [2020, 2021],
                     parseableLines: 200,
                     totalLines: 202,
+                    missingHeaders: { optional: [], mandatory: [] },
                     existingLinesInDbOnSamePeriod: 0,
                     errorStats: { count: 0, errorSample: [] },
                 };

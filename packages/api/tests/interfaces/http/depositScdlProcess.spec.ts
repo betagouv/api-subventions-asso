@@ -83,6 +83,7 @@ describe("/parcours-depot", () => {
                 [2019, 2021],
                 12,
                 13,
+                { optional: [], mandatory: [] },
                 1,
                 new ScdlErrorStats([]),
             );
@@ -114,6 +115,7 @@ describe("/parcours-depot", () => {
                 [2019, 2021],
                 12,
                 13,
+                { optional: [], mandatory: [] },
                 1,
                 new ScdlErrorStats([]),
             );
@@ -149,6 +151,7 @@ describe("/parcours-depot", () => {
                 [2019, 2021],
                 12,
                 13,
+                { optional: [], mandatory: [] },
                 1,
                 new ScdlErrorStats([]),
             );
@@ -183,6 +186,7 @@ describe("/parcours-depot", () => {
                 [2019, 2021],
                 38,
                 39,
+                { optional: [], mandatory: [] },
                 0,
                 new ScdlErrorStats([]),
             );
@@ -388,6 +392,36 @@ describe("/parcours-depot", () => {
 
             expect(response.statusCode).toBe(400);
         });
+
+        it("Return depositLog with missing headers names", async () => {
+            s3Mock.on(ListObjectsV2Command).resolvesOnce({});
+            s3Mock.on(PutObjectCommand).resolvesOnce({});
+
+            const token = await createAndGetUserToken();
+            const userId = (await getDefaultUser())!._id.toString();
+
+            await depositLogPort.insertOne(new DepositScdlLogEntity(userId, 1, undefined, true, "12345678901234"));
+
+            const csvPath = path.join(FILE_PATH, "test-csv-invalid-headers-names.csv");
+
+            const response = await request(g.app)
+                .post(`/parcours-depot/validation-fichier-scdl`)
+                .attach("file", csvPath)
+                .field("depositScdlLogDto", JSON.stringify(DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2))
+                .set("x-access-token", token);
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    uploadedFileInfos: expect.objectContaining({
+                        missingHeaders: {
+                            mandatory: ["idBeneficiaire", "montant"],
+                            optional: ["nomBeneficiaire", "rnaBeneficiaire", "dispositifAide"],
+                        },
+                    }),
+                }),
+            );
+        });
     });
 
     describe("POST /depot-fichier-scdl", () => {
@@ -414,6 +448,7 @@ describe("/parcours-depot", () => {
                 [2019, 2021],
                 38,
                 39,
+                { optional: [], mandatory: [] },
                 0,
                 new ScdlErrorStats([]),
             );
@@ -448,6 +483,7 @@ describe("/parcours-depot", () => {
                 [2019, 2021],
                 38,
                 39,
+                { optional: [], mandatory: [] },
                 0,
                 new ScdlErrorStats([]),
             );

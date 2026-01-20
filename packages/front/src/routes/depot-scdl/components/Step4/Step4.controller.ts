@@ -10,7 +10,6 @@ type EventMap = {
     loading: string;
     endLoading: void;
     restartNewForm: void;
-    error: string;
 };
 
 export default class Step4Controller {

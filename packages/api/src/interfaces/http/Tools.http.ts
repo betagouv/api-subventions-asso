@@ -32,14 +32,16 @@ export class ToolsHttp extends Controller {
     private parseXls(file: Express.Multer.File, pageName?: string, rowOffset: number | string = 0) {
         const parsedRowOffset = typeof rowOffset === "number" ? rowOffset : parseInt(rowOffset) || 0;
         const fileContent = file.buffer;
-        const { errors } = scdlService.parseXls(fileContent, pageName, parsedRowOffset);
+        const { errors, parsedInfos } = scdlService.parseXls(fileContent, pageName, parsedRowOffset);
+        scdlService.validateHeaders(parsedInfos, file.originalname);
         return csvSyncStringifier.stringify(errors, { header: true });
     }
 
     private parseCsv(file: Express.Multer.File, delimiter = ";", quote = '"') {
         const fileContent = file.buffer;
         const parsedQuote = quote === "false" ? false : quote;
-        const { errors } = scdlService.parseCsv(fileContent, delimiter, parsedQuote);
+        const { errors, parsedInfos } = scdlService.parseCsv(fileContent, delimiter, parsedQuote);
+        scdlService.validateHeaders(parsedInfos, file.originalname);
         return csvSyncStringifier.stringify(errors, { header: true });
     }
 }
