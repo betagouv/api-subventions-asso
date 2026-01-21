@@ -170,13 +170,43 @@ describe("DateHelper", () => {
 
     describe("formatDateToYYYYMMDD", () => {
         it("should format a normal date correctly", () => {
-            const date = new Date(2025, 10, 10);
+            const date = new Date(Date.UTC(2025, 10, 10));
             expect(DateHelper.formatDateToYYYYMMDD(date)).toBe("20251110");
         });
 
         it("should add leading zeros for single-digit month and day", () => {
-            const date = new Date(2025, 0, 5);
+            const date = new Date(Date.UTC(2025, 0, 5));
             expect(DateHelper.formatDateToYYYYMMDD(date)).toBe("20250105");
+        });
+    });
+
+    describe("formatDateToYYYYMMDDWithDash", () => {
+        it("should format a normal date correctly", () => {
+            const date = new Date(Date.UTC(2025, 10, 10));
+            expect(DateHelper.formatDateToYYYYMMDDWithDash(date)).toBe("2025-11-10");
+        });
+
+        it("should add leading zeros for single-digit month and day", () => {
+            const date = new Date(Date.UTC(2025, 0, 5));
+            expect(DateHelper.formatDateToYYYYMMDDWithDash(date)).toBe("2025-01-05");
+        });
+    });
+
+    describe("formatIsoDateRangeWithSlash", () => {
+        it("should return the range formatted with a slash when both dates are provided", () => {
+            const start = new Date(Date.UTC(2020, 11, 20));
+            const end = new Date(Date.UTC(2020, 11, 30));
+            expect(DateHelper.formatIsoDateRangeWithSlash(start, end)).toBe("2020-12-20/2020-12-30");
+        });
+
+        it("should return only the formatted date if one of them is missing", () => {
+            const start = new Date(Date.UTC(2020, 11, 20));
+            expect(DateHelper.formatIsoDateRangeWithSlash(start, undefined)).toBe("2020-12-20");
+            expect(DateHelper.formatIsoDateRangeWithSlash(undefined, start)).toBe("2020-12-20");
+        });
+
+        it("should return undefined if both dates are missing", () => {
+            expect(DateHelper.formatIsoDateRangeWithSlash(undefined, undefined)).toBeUndefined();
         });
     });
 });

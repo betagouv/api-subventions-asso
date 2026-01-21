@@ -48,7 +48,7 @@ export const getMonthFromFrenchStr = (month: string) => {
 
 export const isValidDate = date => date instanceof Date && !isNaN(date as unknown as number);
 
-export const dateToUTCMonthYear = date => new Date(Date.UTC(date.getFullYear(), date.getMonth(), 1));
+export const dateToUTCMonthYear = date => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
 
 export const firstDayOfPeriod = (year: number, month = 0) => new Date(Date.UTC(year, month, 1));
 
@@ -58,14 +58,14 @@ export const oneYearAfterPeriod = (year: number, month: number | undefined = und
 };
 
 export const computeMonthBetweenDates = (dateA: Date, dateB: Date): number => {
-    return Math.abs(dateA.getMonth() - dateB.getMonth() + (dateA.getFullYear() - dateB.getFullYear()) * 12);
+    return Math.abs(dateA.getUTCMonth() - dateB.getUTCMonth() + (dateA.getUTCFullYear() - dateB.getUTCFullYear()) * 12);
 };
 
 export const sameDateNextYear = date => modifyDateYear(date, 1);
 
 export const modifyDateYear = (date: Date, diff: number): Date => {
     const modifiedDateYear = new Date(date);
-    modifiedDateYear.setFullYear(date.getFullYear() + diff);
+    modifiedDateYear.setUTCFullYear(date.getUTCFullYear() + diff);
     return modifiedDateYear;
 };
 
@@ -75,11 +75,29 @@ export const shortISORegExp = new RegExp(/\d{4}-[01]\d-[0-3]\d/);
 
 export const shortISOPeriodRegExp = new RegExp(/\d{4}-[01]\d-[0-3]\d\/\d{4}-[01]\d-[0-3]\d/);
 
-export const addDaysToDate = (date: Date, nbOfDays = 1) => new Date(new Date(date).setDate(date.getDate() + nbOfDays));
+export const addDaysToDate = (date: Date, nbOfDays = 1) =>
+    new Date(new Date(date).setUTCDate(date.getUTCDate() + nbOfDays));
 
 export function formatDateToYYYYMMDD(date: Date): string {
-    const yyyy = date.getFullYear();
-    const mm = String(date.getMonth() + 1).padStart(2, "0");
-    const dd = String(date.getDate()).padStart(2, "0");
+    const yyyy = date.getUTCFullYear();
+    const mm = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const dd = String(date.getUTCDate()).padStart(2, "0");
     return `${yyyy}${mm}${dd}`;
+}
+
+export function formatDateToYYYYMMDDWithDash(date: Date): string {
+    const yyyy = date.getUTCFullYear();
+    const mm = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const dd = String(date.getUTCDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+}
+
+export function formatIsoDateRangeWithSlash(startDate?: Date, endDate?: Date): string | undefined {
+    const start = startDate ? formatDateToYYYYMMDDWithDash(startDate) : null;
+    const end = endDate ? formatDateToYYYYMMDDWithDash(endDate) : null;
+
+    if (start && end) {
+        return `${start}/${end}`;
+    }
+    return start || end || undefined;
 }

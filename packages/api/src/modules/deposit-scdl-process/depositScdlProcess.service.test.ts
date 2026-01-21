@@ -120,10 +120,7 @@ describe("DepositScdlProcessService", () => {
 
             const actual = await depositScdlProcessService.generateExistingGrantsCsv(USER_ID);
 
-            expect(actual.csv).toBe(
-                '"allocatorName","allocatorSiret","exercice","amount","associationSiret","associationName","associationRna","object","conventionDate","decisionReference","paymentNature","paymentConditions","paymentStartDate","paymentEndDate","idRAE","UeNotification","grantPercentage","aidSystem"\n' +
-                    '"Région Bretagne","23350001600040","2023","47800.2","38047555800058","Association Les Petits Débrouillards Bretagne","W123456789","Animations climat-énergie dans les lycées de la région","""2017-06-27T00:00:00.000Z""","2017-03-103","aide en numéraire","unique","""2017-03-14T00:00:00.000Z""","""2018-03-14T00:00:00.000Z""","12345","1","0.5","65d5b6c7-102c-4440-ac3b-768f708edc0a"\n',
-            );
+            expect(actual.csv).toMatchSnapshot();
             expect(actual.fileName).toBe("existing-grants-12345678901234-2021-2022-20251104.csv");
         });
 

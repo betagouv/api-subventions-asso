@@ -181,8 +181,7 @@ export class DepositScdlProcessService {
         });
 
         grants.forEach(entity => {
-            // todo : generate db data as public scdl schema
-            const dto = MiscScdlAdapter.miscScdlGrantEntityToDto(entity);
+            const dto = MiscScdlAdapter.miscScdlGrantEntityToScdlStandard(entity);
             stringifier.write(dto);
         });
         stringifier.end();

@@ -1,9 +1,10 @@
-import { ApplicationStatus, ApplicationNature, PaymentCondition, ScdlGrantDto } from "dto";
+import { ApplicationStatus, ApplicationNature, PaymentCondition, ScdlGrantDto, ScdlGrantStandardDto } from "dto";
 import { ApplicationFlatEntity } from "../../../../entities/ApplicationFlatEntity";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
 import { ScdlGrantDbo } from "../dbo/ScdlGrantDbo";
 import Siret from "../../../../identifierObjects/Siret";
 import MiscScdlGrantEntity from "../entities/MiscScdlGrantEntity";
+import { formatDateToYYYYMMDDWithDash, formatIsoDateRangeWithSlash } from "../../../../shared/helpers/DateHelper";
 
 export default class MiscScdlAdapter {
     private static normalizePaymentConditions(rawValue?: string): PaymentCondition | null {
@@ -101,6 +102,29 @@ export default class MiscScdlAdapter {
             UeNotification: entity.UeNotification,
             grantPercentage: entity.grantPercentage,
             aidSystem: entity.aidSystem,
+        };
+    }
+
+    static miscScdlGrantEntityToScdlStandard(entity: MiscScdlGrantEntity): ScdlGrantStandardDto {
+        return {
+            nomAttribuant: entity.allocatorName,
+            idAttribuant: entity.allocatorSiret,
+            exercice: entity.exercice,
+            dateConvention: entity.conventionDate ? formatDateToYYYYMMDDWithDash(entity.conventionDate) : undefined,
+            referenceDecision: entity.decisionReference,
+            nomBeneficiaire: entity.associationName,
+            idBeneficiaire: entity.associationSiret,
+            rnaBeneficiaire: entity.associationRna,
+            objet: entity.object,
+            montant: entity.amount,
+            nature: entity.paymentNature,
+            conditionsVersement: entity.paymentConditions,
+            datePeriodeVersement: formatIsoDateRangeWithSlash(entity.paymentStartDate, entity.paymentEndDate),
+            idRAE: entity.idRAE,
+            notificationUE:
+                entity.UeNotification === true ? "oui" : entity.UeNotification === false ? "non" : undefined,
+            pourcentageSubvention: entity.grantPercentage,
+            dispositifAide: entity.aidSystem,
         };
     }
 }
