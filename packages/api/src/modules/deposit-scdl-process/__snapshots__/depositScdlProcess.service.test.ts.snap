@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DepositScdlProcessService generateExistingGrantsCsv Should return csv with filename 1`] = `
+""nomAttribuant","idAttribuant","exercice","dateConvention","referenceDecision","nomBeneficiaire","idBeneficiaire","rnaBeneficiaire","objet","montant","nature","conditionsVersement","datePeriodeVersement","idRAE","notificationUE","pourcentageSubvention","dispositifAide"
+"Région Bretagne","23350001600040","2023","2017-06-27","2017-03-103","Association Les Petits Débrouillards Bretagne","38047555800058","W123456789","Animations climat-énergie dans les lycées de la région","47800.2","aide en numéraire","unique","2017-03-14/2018-03-14","12345","oui","0.5","65d5b6c7-102c-4440-ac3b-768f708edc0a"
+"
+`;
