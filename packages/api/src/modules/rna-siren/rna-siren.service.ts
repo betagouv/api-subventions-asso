@@ -6,6 +6,7 @@ import Rna from "../../identifierObjects/Rna";
 import Siren from "../../identifierObjects/Siren";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import Siret from "../../identifierObjects/Siret";
+import { FullAssociationIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 
 export class RnaSirenService {
     async find(id: string | Rna | Siren, offline = false): Promise<RnaSirenEntity[] | null> {
@@ -34,7 +35,8 @@ export class RnaSirenService {
         }
     }
 
-    async insertMany(duos: { rna: Rna; siren: Siren }[]) {
+    // @TODO: only accept AssociationIdentifier and merge with insertManyAssociationIdentifier
+    async insertMany(duos: RnaSirenEntity[]) {
         const entities = duos.map(({ rna, siren }) => new RnaSirenEntity(rna, siren));
 
         try {
@@ -43,6 +45,16 @@ export class RnaSirenService {
             if (e instanceof DuplicateIndexError) return;
             throw e;
         }
+    }
+
+    async insertManyAssociationIdentifer(identifiers: AssociationIdentifier[]) {
+        const entities = identifiers
+            .filter(
+                (assoIdentifier): assoIdentifier is FullAssociationIdentifier =>
+                    !!(assoIdentifier.rna && assoIdentifier.siren),
+            )
+            .map(assoIdentifier => new RnaSirenEntity(assoIdentifier.rna, assoIdentifier.siren));
+        return this.insertMany(entities);
     }
 
     extractRnaOrSirenFromIdentifier(id: string | Rna | Siren): Rna | Siren {

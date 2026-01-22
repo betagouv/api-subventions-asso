@@ -5,13 +5,14 @@ import uniteLegalNamePort from "../../src/dataProviders/db/uniteLegalName/uniteL
 import AssociationNameFixture from "../__fixtures__/association-name.fixture";
 import apiEntrepriseService from "../../src/modules/providers/apiEntreprise/apiEntreprise.service";
 import rechercheEntreprisesPort from "../../src/dataProviders/api/rechercheEntreprises/rechercheEntreprises.port";
+import { EMPTY_RECHERCHE_ENTREPRISES_DTO } from "../../src/dataProviders/api/rechercheEntreprises/__fixtures__/RechercheEntreprises";
 
 const g = global as unknown as { app: App };
 
 describe("/search", () => {
     beforeAll(() => {
         jest.spyOn(apiEntrepriseService, "getHeadcount").mockImplementation(async () => null);
-        jest.spyOn(rechercheEntreprisesPort, "search").mockImplementation(async () => []);
+        jest.spyOn(rechercheEntreprisesPort, "search").mockImplementation(async () => EMPTY_RECHERCHE_ENTREPRISES_DTO);
     });
 
     describe("/associations/{input}", () => {

@@ -78,7 +78,7 @@ export async function startServer(port = "8080", isTest = false) {
 
     const limiter = rateLimit({
         windowMs: 60 * 1000, // 1 minute
-        limit: LIMIT, // Limit each IP to 80 requests per `window`
+        limit: LIMIT, // Limit each IP to X requests per `window`
         standardHeaders: "draft-7", // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
         legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
     });

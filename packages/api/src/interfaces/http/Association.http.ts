@@ -75,7 +75,6 @@ export class AssociationHttp extends Controller {
         @Request() req,
     ): Promise<GetAssociationResponseDto> {
         const associationIdentifiers = req.assoIdentifier;
-
         const association = await associationService.getAssociation(associationIdentifiers);
         return { association };
     }
@@ -188,7 +187,6 @@ export class AssociationHttp extends Controller {
     @Response<string>("200")
     public async getGrantsExtract(identifier: AssociationIdentifierDto, @Request() req): Promise<Readable> {
         const associationIdentifiers = req.assoIdentifier;
-
         const { csv, fileName } = await grantExtractService.buildCsv(associationIdentifiers);
         this.setHeader("Content-Type", "text/csv");
         this.setHeader("Content-Disposition", `inline; filename=${fileName}`);

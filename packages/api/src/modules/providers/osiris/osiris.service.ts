@@ -2,7 +2,7 @@ import { AggregationCursor, BulkWriteResult } from "mongodb";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { isAssociationName, isCompteAssoId, isOsirisActionId, isOsirisRequestId } from "../../../shared/Validators";
 import ProviderCore from "../ProviderCore";
-import rnaSirenService from "../../rna-siren/rnaSiren.service";
+import rnaSirenService from "../../rna-siren/rna-siren.service";
 import Siret from "../../../identifierObjects/Siret";
 import Siren from "../../../identifierObjects/Siren";
 import Rna from "../../../identifierObjects/Rna";
