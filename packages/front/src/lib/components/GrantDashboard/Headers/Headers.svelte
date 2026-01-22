@@ -8,18 +8,29 @@
 
     const dispatch = createEventDispatcher<{ sort: number }>();
 
-    let sortDirection: "none" | "ascending" | "descending" = "none";
+    let sortDirectionIndex: { index: number; sortDirection: "none" | "ascending" | "descending" }[] = headers.map(
+        (_header, index) => ({ index, sortDirection: "none" }),
+    );
 
     function handleSort(index) {
-        if (sortDirection === "none") sortDirection = "descending";
-        else if (sortDirection === "descending") sortDirection = "ascending";
-        else sortDirection = "descending";
+        const header = sortDirectionIndex.at(index) as {
+            index: number;
+            sortDirection: "none" | "ascending" | "descending";
+        };
+        if (header.sortDirection === "none") header.sortDirection = "descending";
+        else if (header.sortDirection === "descending") header.sortDirection = "ascending";
+        else header.sortDirection = "descending";
+
+        sortDirectionIndex.splice(index, 1, header);
+        // force svelte to rerender array change
+        sortDirectionIndex = sortDirectionIndex;
+
         dispatch("sort", index);
     }
 </script>
 
 {#each headers as header, index (index)}
-    <th aria-sort={sortDirection}>
+    <th aria-sort={sortDirectionIndex[index].sortDirection}>
         <div class="fr-cell--sort">
             <span class="fr-cell__title">{header.name}</span>
             {#if header.tooltip}
@@ -27,7 +38,10 @@
                 </span>
                 <Tooltip id="header-tooltip-{index}"><p>{header.tooltip}</p></Tooltip>
             {/if}
-            <ButtonSort on:click={() => handleSort(index)} id="table-{id}-{index}-sort-asc-desc" {sortDirection} />
+            <ButtonSort
+                on:click={() => handleSort(index)}
+                id="table-{id}-{index}-sort-asc-desc"
+                sortDirection={sortDirectionIndex[index].sortDirection} />
         </div>
     </th>
 {/each}
