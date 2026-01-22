@@ -2,8 +2,7 @@ import { Route, Get, Controller, Tags, Path, SuccessResponse, Response, Example 
 import { RnaSirenResponseDto } from "dto";
 import rnaSirenService from "../../modules/rna-siren/rnaSiren.service";
 import { IdentifierError } from "../../modules/association-identifier/IdentifierError";
-import { PathParamError } from "./@errors/PathParamError";
-
+import { PathParamError } from "core";
 @Route("open-data/rna-siren")
 @Tags("Open Data")
 export class RnaSirenHttp extends Controller {
@@ -29,7 +28,9 @@ export class RnaSirenHttp extends Controller {
             entities = await rnaSirenService.findFromUnknownIdentifier(identifier);
         } catch (e) {
             if (e instanceof IdentifierError) {
-                throw new PathParamError({ param: "identifier", value: identifier });
+                throw new PathParamError("identifier must be valid RNA, SIREN or SIRET", {
+                    value: identifier,
+                });
             } else throw e;
         }
 

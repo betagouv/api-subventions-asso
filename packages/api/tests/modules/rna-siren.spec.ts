@@ -51,11 +51,10 @@ describe("RnaSirenController", () => {
                 .get(`/open-data/rna-siren/invalid-identifier`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json")
-                .expect(400)
+                .expect(422)
                 .then(res =>
                     expect(res.body).toEqual({
-                        message: "Invalid Path Param",
-                        param: "identifier",
+                        message: "identifier must be valid RNA, SIREN or SIRET",
                         value: "invalid-identifier",
                     }),
                 );
