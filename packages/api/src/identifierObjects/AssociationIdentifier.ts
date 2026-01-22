@@ -1,3 +1,4 @@
+import { FullAssociationIdentifier } from "./@types/StructureIdentifier";
 import Rna from "./Rna";
 import Siren from "./Siren";
 
@@ -20,7 +21,7 @@ export default class AssociationIdentifier {
 
     static fromSirenAndRna(siren: Siren, rna: Rna) {
         // if siren ou rna pas ok erreur
-        return new AssociationIdentifier(rna, siren);
+        return new AssociationIdentifier(rna, siren) as FullAssociationIdentifier;
     }
 
     static fromId(id: Rna | Siren) {

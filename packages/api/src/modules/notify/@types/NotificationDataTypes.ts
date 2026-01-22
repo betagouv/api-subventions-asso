@@ -1,5 +1,6 @@
 import { FutureUserDto, UserActivationInfoDto } from "dto";
 import { NotificationType } from "./NotificationType";
+import { DefaultObject } from "../../../@types";
 
 export interface NotificationDataTypes {
     [NotificationType.USER_ALREADY_EXIST]: {
@@ -83,5 +84,14 @@ export interface NotificationDataTypes {
         providerSiret: string;
         grantCoverageYears: number[];
         parsedLines: number;
+    };
+    [NotificationType.EXTERNAL_API_ERROR]: {
+        message: string;
+        details: {
+            apiName: string;
+            pathParams?: (string | number | DefaultObject)[];
+            queryParams: { name: string; value: string }[];
+            examples: DefaultObject[];
+        };
     };
 }

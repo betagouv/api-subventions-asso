@@ -9,6 +9,7 @@ import { ENV } from "../../../configurations/env.conf";
 enum MattermostChannels {
     ACCOUNTS = "datasubvention---comptes-app",
     PRODUCT = "datasubvention---produit",
+    DEV = "datasubvention---dev",
 }
 
 export class MattermostNotifyPipe implements NotifyOutPipe {
@@ -35,6 +36,8 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
                 return this.dataImportSuccess(data);
             case NotificationType.DEPOSIT_SCDL_SUCCESS:
                 return this.depositScdlSuccess(data);
+            case NotificationType.EXTERNAL_API_ERROR:
+                return this.externalApiError(data);
             default:
                 return Promise.resolve(false);
         }
@@ -171,6 +174,31 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
             channel: MattermostChannels.ACCOUNTS,
             username: "Relance de dépôt de données",
             icon_emoji: "bookmark_tabs",
+        });
+    }
+
+    private externalApiError(data: NotificationDataTypes[NotificationType.EXTERNAL_API_ERROR]) {
+        let message = `L'API ${data.details.apiName} rencontre un problème : ${data.message}`;
+        if (data.details.pathParams || data.details.queryParams) {
+            message = message + "Informations complémentaires :";
+            if (data.details.pathParams)
+                message = message + `\n Paramètre(s) d'URL utilisé : ${data.details.pathParams.join("-")}`;
+            if (data.details.queryParams)
+                message =
+                    message +
+                    `\n Query HTTP utilisée(s) : ${data.details.queryParams.reduce((message, queryObj) => {
+                        return message + `\n ${queryObj.name}: ${queryObj.value}`;
+                    }, "")}`;
+        }
+        if (data.details.examples)
+            message =
+                message +
+                `${data.details.examples.reduce((message, example) => message + `${JSON.stringify(example)}`, "")}`;
+
+        return this.sendMessage({
+            text: message,
+            channel: MattermostChannels.DEV,
+            icon_emoji: "firecracker",
         });
     }
 }

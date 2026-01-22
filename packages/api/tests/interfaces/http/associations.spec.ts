@@ -57,6 +57,9 @@ import fonjepDispositifPort from "../../../src/dataProviders/db/providers/fonjep
 import fonjepTiersPort from "../../../src/dataProviders/db/providers/fonjep/fonjep.tiers.port";
 import fonjepVersementsPort from "../../../src/dataProviders/db/providers/fonjep/fonjep.versements.port";
 import fonjepTypePostePort from "../../../src/dataProviders/db/providers/fonjep/fonjep.typePoste.port";
+import AssociationIdentifier from "../../../src/identifierObjects/AssociationIdentifier";
+import rechercheEntreprisesPort from "../../../src/dataProviders/api/rechercheEntreprises/rechercheEntreprises.port";
+import { RECHERCHE_ENTREPRISES_DTO } from "../../../src/dataProviders/api/rechercheEntreprises/__fixtures__/RechercheEntreprises";
 
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
 
@@ -155,7 +158,7 @@ describe("/association", () => {
 
         it("should not add one visits on stats AssociationsVisit because user is not authenticated", async () => {
             const beforeRequestTime = new Date();
-            await request(g.app).get(`/association/${SIREN_STR}`).set("Accept", "application/json");
+            await request(g.app).get(`/associationresponse/${SIREN_STR}`).set("Accept", "application/json");
             // TODO test differently
 
             const actual = await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date());
@@ -344,6 +347,45 @@ describe("/association", () => {
         });
     });
 
+    // we assume that only testing one entrypoint is enough to test the middleware
+    // @THOUGHTS: should we test this elsewhere, and maybe creating its own file ?
+    describe("isAssoIdentifierFromAssoMiddleware", () => {
+        const API_RE_SIREN = "900000000";
+        let spyGetAssociation: jest.SpyInstance;
+        beforeEach(() => {
+            spyGetAssociation = jest.spyOn(associationsService, "getAssociation");
+            // set Recherche Entreprise to only search for one page
+            jest.spyOn(rechercheEntreprisesPort, "search").mockResolvedValue({
+                ...RECHERCHE_ENTREPRISES_DTO,
+                total_pages: 1,
+                page: 1,
+                total_results: 1,
+            });
+        });
+
+        it("fills AssociationIdentifier with rna-siren collection", async () => {
+            await request(g.app)
+                .get(`/association/${SIREN_STR}`)
+                .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "application/json");
+
+            expect(spyGetAssociation).toHaveBeenCalledWith(
+                AssociationIdentifier.fromSirenAndRna(new Siren(SIREN_STR), new Rna(RNA_STR)),
+            );
+        });
+
+        it("calls API Recherche Entreprise when rna-siren does not contains a match", async () => {
+            await request(g.app)
+                .get(`/association/${LONELY_RNA}`)
+                .set("x-access-token", await createAndGetUserToken())
+                .set("Accept", "application/json");
+
+            expect(spyGetAssociation).toHaveBeenCalledWith(
+                AssociationIdentifier.fromSirenAndRna(new Siren(API_RE_SIREN), new Rna(LONELY_RNA)),
+            );
+        });
+    });
+
     describe("/{identifier}/grants/csv", () => {
         it.each`
             identifierType | identifier
@@ -355,6 +397,7 @@ describe("/association", () => {
                 .get(`/association/${identifier}/grants/csv`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "text/csv");
+
             expect(response.statusCode).toBe(200);
             const actual = response.text;
             expect(actual).toMatchSnapshot();
