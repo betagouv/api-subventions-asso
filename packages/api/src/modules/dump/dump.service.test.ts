@@ -57,5 +57,10 @@ describe("dumpService", () => {
             await dumpService.publishStatsData();
             expect(metabaseDumpPort.upsertDepositLogs).toHaveBeenCalledWith(DEPOSIT_LOGS);
         });
+
+        it("publish data logs", async () => {
+            await dumpService.publishStatsData();
+            expect(metabaseDumpPort.upsertDataLog).toHaveBeenCalled();
+        });
     });
 });

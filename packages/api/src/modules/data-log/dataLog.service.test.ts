@@ -2,7 +2,8 @@ import dataLogService from "./dataLog.service";
 import dataLogPort from "../../dataProviders/db/data-log/dataLog.port";
 import { DataLogAdapter } from "./dataLog.adapter";
 import { RAW_PROVIDER } from "../providers/__fixtures__/providers.fixture";
-import { ApiDataLogEntity, DataLogSource, FileDataLogEntity } from "./entities/dataLogEntity";
+import { ApiDataLogEntity, DataLogEntity, DataLogSource, FileDataLogEntity } from "./entities/dataLogEntity";
+import { FindCursor, WithId } from "mongodb";
 
 jest.mock("../../dataProviders/db/data-log/dataLog.port");
 jest.mock("./dataLog.adapter");
@@ -159,6 +160,33 @@ describe("dataLogService", () => {
             const expected = ["1", "2", "3"];
             const actual = await dataLogService.getProvidersLogOverview();
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("findAllCursor", () => {
+        let mockCursor: Partial<FindCursor<WithId<DataLogEntity>>>;
+
+        beforeEach(() => {
+            mockCursor = {
+                hasNext: jest.fn(),
+                next: jest.fn(),
+            };
+
+            jest.mocked(dataLogPort.findAllCursor).mockReturnValue(mockCursor as FindCursor<WithId<DataLogEntity>>);
+        });
+
+        afterEach(() => {
+            jest.mocked(dataLogPort.findAllCursor).mockRestore();
+        });
+
+        it("should call the port's findAllCursor", () => {
+            dataLogService.findAllCursor();
+            expect(dataLogPort.findAllCursor).toHaveBeenCalled();
+        });
+
+        it("should return the cursor from the port", () => {
+            const actual = dataLogService.findAllCursor();
+            expect(actual).toBe(mockCursor);
         });
     });
 });
