@@ -78,23 +78,16 @@ export const shortISOPeriodRegExp = new RegExp(/\d{4}-[01]\d-[0-3]\d\/\d{4}-[01]
 export const addDaysToDate = (date: Date, nbOfDays = 1) =>
     new Date(new Date(date).setUTCDate(date.getUTCDate() + nbOfDays));
 
-export function formatDateToYYYYMMDD(date: Date): string {
+export function formatDateToYYYYMMDDWithSeparator(date: Date, separator: string) {
     const yyyy = date.getUTCFullYear();
     const mm = String(date.getUTCMonth() + 1).padStart(2, "0");
     const dd = String(date.getUTCDate()).padStart(2, "0");
-    return `${yyyy}${mm}${dd}`;
-}
-
-export function formatDateToYYYYMMDDWithDash(date: Date): string {
-    const yyyy = date.getUTCFullYear();
-    const mm = String(date.getUTCMonth() + 1).padStart(2, "0");
-    const dd = String(date.getUTCDate()).padStart(2, "0");
-    return `${yyyy}-${mm}-${dd}`;
+    return `${yyyy}${separator}${mm}${separator}${dd}`;
 }
 
 export function formatIsoDateRangeWithSlash(startDate?: Date, endDate?: Date): string | undefined {
-    const start = startDate ? formatDateToYYYYMMDDWithDash(startDate) : null;
-    const end = endDate ? formatDateToYYYYMMDDWithDash(endDate) : null;
+    const start = startDate ? formatDateToYYYYMMDDWithSeparator(startDate, "-") : null;
+    const end = endDate ? formatDateToYYYYMMDDWithSeparator(endDate, "-") : null;
 
     if (start && end) {
         return `${start}/${end}`;

@@ -168,27 +168,20 @@ describe("DateHelper", () => {
         });
     });
 
-    describe("formatDateToYYYYMMDD", () => {
+    describe("formatDateToYYYYMMDDWithSeparator", () => {
+        it("should add format with right separator", () => {
+            const date = new Date(Date.UTC(2025, 0, 5));
+            expect(DateHelper.formatDateToYYYYMMDDWithSeparator(date, "@")).toBe("2025@01@05");
+        });
+
         it("should format a normal date correctly", () => {
             const date = new Date(Date.UTC(2025, 10, 10));
-            expect(DateHelper.formatDateToYYYYMMDD(date)).toBe("20251110");
+            expect(DateHelper.formatDateToYYYYMMDDWithSeparator(date, "-")).toBe("2025-11-10");
         });
 
         it("should add leading zeros for single-digit month and day", () => {
             const date = new Date(Date.UTC(2025, 0, 5));
-            expect(DateHelper.formatDateToYYYYMMDD(date)).toBe("20250105");
-        });
-    });
-
-    describe("formatDateToYYYYMMDDWithDash", () => {
-        it("should format a normal date correctly", () => {
-            const date = new Date(Date.UTC(2025, 10, 10));
-            expect(DateHelper.formatDateToYYYYMMDDWithDash(date)).toBe("2025-11-10");
-        });
-
-        it("should add leading zeros for single-digit month and day", () => {
-            const date = new Date(Date.UTC(2025, 0, 5));
-            expect(DateHelper.formatDateToYYYYMMDDWithDash(date)).toBe("2025-01-05");
+            expect(DateHelper.formatDateToYYYYMMDDWithSeparator(date, "-")).toBe("2025-01-05");
         });
     });
 

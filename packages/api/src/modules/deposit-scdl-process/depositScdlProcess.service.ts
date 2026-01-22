@@ -11,7 +11,7 @@ import { DefaultObject } from "../../@types";
 import MiscScdlGrantEntity from "../providers/scdl/entities/MiscScdlGrantEntity";
 import { Stringifier, stringify } from "csv-stringify";
 import MiscScdlAdapter from "../providers/scdl/adapters/MiscScdl.adapter";
-import { formatDateToYYYYMMDD } from "../../shared/helpers/DateHelper";
+import { formatDateToYYYYMMDDWithSeparator } from "../../shared/helpers/DateHelper";
 import Siret from "../../identifierObjects/Siret";
 import MiscScdlProducerEntity from "../providers/scdl/entities/MiscScdlProducerEntity";
 import dataLogService from "../data-log/dataLog.service";
@@ -181,7 +181,7 @@ export class DepositScdlProcessService {
         });
 
         grants.forEach(entity => {
-            const dto = MiscScdlAdapter.miscScdlGrantEntityToScdlStandard(entity);
+            const dto = MiscScdlAdapter.grantToSCDL(entity);
             stringifier.write(dto);
         });
         stringifier.end();
@@ -194,7 +194,7 @@ export class DepositScdlProcessService {
     private getFilename(allocatorSiret: string, exercices: number[]): string {
         const exercicesString = exercices.sort((a, b) => a - b).join("-");
 
-        const formattedDate = formatDateToYYYYMMDD(new Date());
+        const formattedDate = formatDateToYYYYMMDDWithSeparator(new Date(), "");
 
         return `existing-grants-${allocatorSiret}-${exercicesString}-${formattedDate}.csv`;
     }

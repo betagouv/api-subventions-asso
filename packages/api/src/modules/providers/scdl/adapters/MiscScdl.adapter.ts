@@ -4,7 +4,7 @@ import { GenericAdapter } from "../../../../shared/GenericAdapter";
 import { ScdlGrantDbo } from "../dbo/ScdlGrantDbo";
 import Siret from "../../../../identifierObjects/Siret";
 import MiscScdlGrantEntity from "../entities/MiscScdlGrantEntity";
-import { formatDateToYYYYMMDDWithDash, formatIsoDateRangeWithSlash } from "../../../../shared/helpers/DateHelper";
+import { formatDateToYYYYMMDDWithSeparator, formatIsoDateRangeWithSlash } from "../../../../shared/helpers/DateHelper";
 
 export default class MiscScdlAdapter {
     private static normalizePaymentConditions(rawValue?: string): PaymentCondition | null {
@@ -105,12 +105,14 @@ export default class MiscScdlAdapter {
         };
     }
 
-    static miscScdlGrantEntityToScdlStandard(entity: MiscScdlGrantEntity): ScdlGrantStandardDto {
+    static grantToSCDL(entity: MiscScdlGrantEntity): ScdlGrantStandardDto {
         return {
             nomAttribuant: entity.allocatorName,
             idAttribuant: entity.allocatorSiret,
             exercice: entity.exercice,
-            dateConvention: entity.conventionDate ? formatDateToYYYYMMDDWithDash(entity.conventionDate) : undefined,
+            dateConvention: entity.conventionDate
+                ? formatDateToYYYYMMDDWithSeparator(entity.conventionDate, "-")
+                : undefined,
             referenceDecision: entity.decisionReference,
             nomBeneficiaire: entity.associationName,
             idBeneficiaire: entity.associationSiret,
