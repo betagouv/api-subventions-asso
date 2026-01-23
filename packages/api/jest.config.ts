@@ -1,4 +1,4 @@
-export default {
+const baseConfig = {
     // Automatically clear mock calls, instances and results before every test
     clearMocks: true,
     // A map from regular expressions to paths to transformers
@@ -8,3 +8,5 @@ export default {
     },
     modulePathIgnorePatterns: ["./build"],
 };
+
+export default baseConfig;

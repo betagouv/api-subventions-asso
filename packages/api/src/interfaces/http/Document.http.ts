@@ -1,8 +1,9 @@
+import type { DocumentRequestDto, StructureIdentifierDto } from "dto";
+import type { IdentifiedRequest } from "../../@types";
+
 import { Route, Get, Controller, Tags, Security, Response, Query, Path, Post, Body, Request } from "tsoa";
-import { DocumentRequestDto, StructureIdentifierDto } from "dto";
 import { HttpErrorInterface } from "core";
 import documentService from "../../modules/documents/documents.service";
-import { IdentifiedRequest } from "../../@types";
 import establishmentIdentifierService from "../../modules/establishment-identifier/establishment-identifier.service";
 import associationIdentifierService from "../../modules/association-identifier/association-identifier.service";
 
