@@ -1,8 +1,9 @@
-import { ConsumerTokenDtoPositiveResponse, ConsumerTokenDtoResponse, UserDto } from "dto";
+import type { ConsumerTokenDtoPositiveResponse, ConsumerTokenDtoResponse, UserDto } from "dto";
+import type { IdentifiedRequest } from "../../@types";
+
+import { RoleEnum } from "../../@enums/Roles";
 import { Controller, Get, Route, Security, Tags, Response, Request, Post, Body } from "tsoa";
 import { HttpErrorInterface } from "core";
-import { RoleEnum } from "../../@enums/Roles";
-import { IdentifiedRequest } from "../../@types";
 import userConsumerService from "../../modules/user/services/consumer/user.consumer.service";
 import userCrudService from "../../modules/user/services/crud/user.crud.service";
 
