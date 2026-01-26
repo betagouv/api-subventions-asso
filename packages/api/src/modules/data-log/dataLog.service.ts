@@ -31,6 +31,10 @@ class DataLogService {
         const overviews = await dataLogPort.getProvidersLogOverview();
         return overviews.map(overview => DataLogAdapter.overviewToDto(overview));
     }
+
+    findAllCursor() {
+        return dataLogPort.findAllCursor();
+    }
 }
 
 const dataLogService = new DataLogService();

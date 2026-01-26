@@ -1,6 +1,6 @@
 import * as mongoDB from "mongodb";
 import { AgentTypeEnum, TerritorialScopeEnum } from "dto";
-import { AnyBulkWriteOperation, Document } from "mongodb";
+import { AnyBulkWriteOperation, Document, FindCursor } from "mongodb";
 
 import {
     MONGO_METABASE_DBNAME,
@@ -8,6 +8,7 @@ import {
     MONGO_METABASE_URL,
     MONGO_METABASE_USER,
 } from "../../../configurations/mongo.conf";
+import { DataLogEntity } from "../../../modules/data-log/entities/dataLogEntity";
 
 export class MetabaseDumpPort {
     mongoClient: mongoDB.MongoClient;
@@ -146,6 +147,27 @@ export class MetabaseDumpPort {
     public async upsertDepositLogs(depositLogs: unknown[]) {
         await this.db.collection("deposit-logs").deleteMany({});
         return this.db.collection("deposit-logs").insertMany(depositLogs as Document[]);
+    }
+
+    public async upsertDataLog(dataLogCursor: FindCursor<DataLogEntity>) {
+        await this.db.collection("data-log").deleteMany({});
+
+        const batchSize = 1000;
+        let batch: Document[] = [];
+
+        while (await dataLogCursor.hasNext()) {
+            const doc = await dataLogCursor.next();
+            if (doc) batch.push(doc as Document);
+
+            if (batch.length >= batchSize) {
+                await this.db.collection("data-log").insertMany(batch);
+                batch = [];
+            }
+        }
+
+        if (batch.length > 0) {
+            await this.db.collection("data-log").insertMany(batch);
+        }
     }
 }
 

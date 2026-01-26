@@ -1,6 +1,7 @@
 import MongoPort from "../../../shared/MongoPort";
 import { DataLogEntity } from "../../../modules/data-log/entities/dataLogEntity";
 import { ProducerLogEntity } from "../../../modules/data-log/entities/producerLogEntity";
+import { FindCursor, WithId } from "mongodb";
 
 class DataLogPort extends MongoPort<DataLogEntity> {
     readonly collectionName = "data-log";
@@ -20,7 +21,11 @@ class DataLogPort extends MongoPort<DataLogEntity> {
     }
 
     async findAll() {
-        return this.collection.find({}).toArray();
+        return this.findAllCursor().toArray();
+    }
+
+    findAllCursor(): FindCursor<WithId<DataLogEntity>> {
+        return this.collection.find({});
     }
 
     async getLastImportByProvider(providerId: string) {

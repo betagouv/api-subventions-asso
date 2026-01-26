@@ -4,6 +4,7 @@ import statsService from "../stats/stats.service";
 import userCrudService from "../user/services/crud/user.crud.service";
 import metabaseDumpPort from "../../dataProviders/db/dump/metabase-dump.port";
 import depositScdlProcessService from "../deposit-scdl-process/depositScdlProcess.service";
+import dataLogService from "../data-log/dataLog.service";
 
 export class DumpService {
     // Dump logs, stats tables
@@ -53,6 +54,10 @@ export class DumpService {
         if (depositLogs.length) {
             await metabaseDumpPort.upsertDepositLogs(depositLogs);
         }
+
+        const dataLogCursor = dataLogService.findAllCursor();
+        // upsert for the moment because datalog structure still changing
+        await metabaseDumpPort.upsertDataLog(dataLogCursor);
 
         await configurationsService.setLastPublishDumpDate(now);
     }
