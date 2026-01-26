@@ -20,13 +20,15 @@
     <p>
         Or, votre fichier contient des données pour d’autres SIRET attribuant :
         <br />
-        <strong>
-            {#if $depositLogStore?.uploadedFileInfos}
-                {$depositLogStore.uploadedFileInfos.allocatorsSiret
-                    .filter(siret => siret !== $depositLogStore.allocatorSiret)
-                    .join(", ")}
+        {#if $depositLogStore?.uploadedFileInfos}
+            {@const filteredSirets = $depositLogStore.uploadedFileInfos.allocatorsSiret.filter(
+                siret => siret !== $depositLogStore.allocatorSiret,
+            )}
+            <strong>{filteredSirets?.slice(0, 12)?.join(", ")}</strong>
+            {#if filteredSirets.length > 12}...
+            {:else}.
             {/if}
-        </strong>
+        {/if}
     </p>
     <p>
         Pour des raisons de cohérence et de sécurité, vous ne pouvez déposer que des données correspondant au SIRET
