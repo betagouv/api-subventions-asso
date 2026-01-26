@@ -1,6 +1,6 @@
 import request from "supertest";
 import { createAndGetUserToken } from "../__helpers__/tokenHelper";
-import rnaSirenService from "../../src/modules/rna-siren/rnaSiren.service";
+import rnaSirenService from "../../src/modules/rna-siren/rna-siren.service";
 import Rna from "../../src/identifierObjects/Rna";
 import Siren from "../../src/identifierObjects/Siren";
 import { App } from "supertest/types";

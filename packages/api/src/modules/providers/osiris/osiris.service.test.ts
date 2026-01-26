@@ -4,7 +4,7 @@ import osirisService, { InvalidOsirisRequestError, VALID_REQUEST_ERROR_CODE } fr
 import { osirisActionPort, osirisRequestPort } from "../../../dataProviders/db/providers/osiris";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
-import rnaSirenService from "../../rna-siren/rnaSiren.service";
+import rnaSirenService from "../../rna-siren/rna-siren.service";
 import RnaSirenEntity from "../../../entities/RnaSirenEntity";
 import { ReadableStream } from "stream/web";
 import { APPLICATION_LINK_TO_CHORUS } from "../../applicationFlat/__fixtures__";
@@ -18,7 +18,7 @@ import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
 jest.mock("../../applicationFlat/applicationFlat.helper");
 jest.mock("./adapters/OsirisRequestAdapter");
 jest.mock("../../../dataProviders/db/providers/osiris");
-jest.mock("../../rna-siren/rnaSiren.service");
+jest.mock("../../rna-siren/rna-siren.service");
 jest.mock("../../applicationFlat/applicationFlat.service");
 
 const SIREN = new Siren("123456789");

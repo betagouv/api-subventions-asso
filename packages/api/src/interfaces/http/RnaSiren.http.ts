@@ -1,6 +1,6 @@
 import { Route, Get, Controller, Tags, Response } from "tsoa";
 import { RnaSirenResponseDto, GetRnaSirenErrorResponse } from "dto";
-import rnaSirenService from "../../modules/rna-siren/rnaSiren.service";
+import rnaSirenService from "../../modules/rna-siren/rna-siren.service";
 
 @Route("open-data/rna-siren")
 @Tags("Open Data")

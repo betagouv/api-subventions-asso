@@ -35,6 +35,7 @@ export interface NotifierMethodType {
     (type: NotificationType.DEPOSIT_UNFINISHED, data: NotificationDataTypes[NotificationType.DEPOSIT_UNFINISHED]);
     (type: NotificationType.DATA_IMPORT_SUCCESS, data: NotificationDataTypes[NotificationType.DATA_IMPORT_SUCCESS]);
     (type: NotificationType.DEPOSIT_SCDL_SUCCESS, data: NotificationDataTypes[NotificationType.DEPOSIT_SCDL_SUCCESS]);
+    (type: NotificationType.EXTERNAL_API_ERROR, data: NotificationDataTypes[NotificationType.EXTERNAL_API_ERROR]);
 }
 
 export interface NotifyOutPipe {

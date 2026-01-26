@@ -58,6 +58,10 @@ export default [
     ...svelte.configs["flat/recommended"],
     prettier,
     ...svelte.configs["flat/prettier"],
+    {
+        // sometimes we can't provide efficient ID or we only load list once
+        rules: { "svelte/require-each-key": "warn" },
+    },
     vitest.configs.recommended,
     {
         languageOptions: {
