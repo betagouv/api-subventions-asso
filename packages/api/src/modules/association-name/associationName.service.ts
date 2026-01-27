@@ -17,7 +17,6 @@ export class AssociationNameService {
     }
 
     async find(value: string): Promise<AssociationNameEntity[]> {
-        const lowerCaseValue = value.toLowerCase().trim();
         let associationNames: AssociationNameEntity[];
         let gotCompany = false;
         const searchEntreprisesCatch = (value: string) =>
@@ -27,15 +26,12 @@ export class AssociationNameService {
             });
 
         if (Rna.isRna(value) || Siren.isSiren(value)) {
-            let identifierType: string;
             let identifier: Rna | Siren;
 
             // from here we manipulate identifiers as object
             if (Rna.isRna(value)) {
-                identifierType = "rna";
                 identifier = new Rna(value);
             } else {
-                identifierType = "siren";
                 identifier = new Siren(value);
             }
             // For one rna it's possible to have many siren from match
@@ -44,21 +40,26 @@ export class AssociationNameService {
 
             // from here in loops we manipulate each found identifier as string
             const identifiers: string[] = rnaSirenEntities.length
-                ? rnaSirenEntities.map(entity => entity[identifierType.toLocaleLowerCase()].value) // See issue https://github.com/betagouv/api-subventions-asso/issues/2517
+                ? rnaSirenEntities.map(entity => entity[identifier.name].value) // See issue https://github.com/betagouv/api-subventions-asso/issues/2517
                 : [value];
 
-            associationNames = [
+            const promiseResults = [
                 ...(await Promise.all(
                     identifiers.map(identifierStr => uniteLegalNameService.searchBySirenSiretName(identifierStr)),
                 )),
                 ...(await Promise.all(identifiers.map(identifierStr => searchEntreprisesCatch(identifierStr)))),
-            ].flat();
+            ];
+
+            associationNames = promiseResults.flat();
         } else {
             // Siret Or Name
-            associationNames = [
-                ...(await uniteLegalNameService.searchBySirenSiretName(lowerCaseValue)),
+
+            const promiseResults = [
+                ...(await uniteLegalNameService.searchBySirenSiretName(value.toLowerCase().trim())),
                 ...(await searchEntreprisesCatch(value)),
-            ].flat();
+            ];
+
+            associationNames = promiseResults.flat();
         }
         const mergedAssociationName = associationNames.reduce(
             (acc, associationName) => {

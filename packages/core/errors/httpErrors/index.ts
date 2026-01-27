@@ -5,3 +5,4 @@ export * from "./HttpError";
 export * from "./InternalServerError";
 export * from "./UnauthorizedError";
 export * from "./NotFoundErrors";
+export * from "./UnprocessableContent";

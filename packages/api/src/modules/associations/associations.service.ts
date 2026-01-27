@@ -6,7 +6,6 @@ import { DefaultObject } from "../../@types";
 
 import providers from "../providers";
 import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
-import OsirisRequestAdapter from "../providers/osiris/adapters/OsirisRequestAdapter";
 
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 
@@ -21,7 +20,6 @@ export class AssociationsService {
     private provider_score: DefaultObject<number> = {
         [ApiAssoDtoAdapter.providerNameSiren]: 1,
         [ApiAssoDtoAdapter.providerNameRna]: 1,
-        [OsirisRequestAdapter.PROVIDER_NAME]: 0.5,
     };
 
     async getAssociation(associationIdentifier: AssociationIdentifier): Promise<Association> {

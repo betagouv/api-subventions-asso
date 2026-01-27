@@ -4,6 +4,7 @@ import Rna from "../../identifierObjects/Rna";
 import Siren from "../../identifierObjects/Siren";
 import Siret from "../../identifierObjects/Siret";
 import rnaSirenService from "../rna-siren/rnaSiren.service";
+import { IdentifierError } from "./IdentifierError";
 
 export class AssociationIdentifierService {
     async getAssociationIdentifiers(id: string): Promise<AssociationIdentifier[]> {
@@ -41,7 +42,7 @@ export class AssociationIdentifierService {
             return new Siret(id).toSiren();
         }
 
-        throw new Error("Invalid identifier");
+        throw new IdentifierError(id);
     }
 }
 

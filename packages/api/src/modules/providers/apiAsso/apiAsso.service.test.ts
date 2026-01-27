@@ -116,23 +116,23 @@ describe("ApiAssoService", () => {
         });
     });
 
-    describe("findRnaSirenByIdentifiers", () => {
-        const RNA = "W760938289";
-        const SIREN = "954983829";
-        const ASSOCIATION_ID = AssociationIdentifier.fromRna(new Rna(RNA));
+    describe("findRnaSiren", () => {
+        const RNA_STR = "W760938289";
+        const SIREN_STR = "954983829";
+        const RNA = new Rna(RNA_STR);
 
         beforeEach(() => {
             // @ts-expect-error: mock
-            mockSendRequest.mockResolvedValue({ identite: { id_rna: RNA, id_siren: SIREN } });
+            mockSendRequest.mockResolvedValue({ identite: { id_rna: RNA_STR, id_siren: SIREN_STR } });
         });
 
         afterAll(() => mockSendRequest.mockReset());
 
-        it("should return undefined identifiers if identite is undefined", async () => {
+        it("should return null if identite is undefined", async () => {
             // @ts-expect-error: mock
             mockSendRequest.mockResolvedValueOnce({});
-            const expected = { rna: undefined, siren: undefined };
-            const actual = await apiAssoService.findRnaSirenByIdentifiers(ASSOCIATION_ID);
+            const expected = null;
+            const actual = await apiAssoService.findRnaSiren(RNA);
             expect(actual).toEqual(expected);
         });
 
@@ -140,13 +140,13 @@ describe("ApiAssoService", () => {
             // @ts-expect-error: mock
             mockSendRequest.mockResolvedValueOnce({
                 identite: {
-                    id_rna: RNA,
-                    id_siren: SIREN,
+                    id_rna: RNA_STR,
+                    id_siren: SIREN_STR,
                 },
             });
 
-            const expected = { rna: new Rna(RNA), siren: new Siren(SIREN) };
-            const actual = await apiAssoService.findRnaSirenByIdentifiers(ASSOCIATION_ID);
+            const expected = { rna: new Rna(RNA_STR), siren: new Siren(SIREN_STR) };
+            const actual = await apiAssoService.findRnaSiren(RNA);
             expect(actual).toEqual(expected);
         });
     });

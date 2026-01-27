@@ -64,24 +64,26 @@ export class ApiAssoService
         }
     }
 
-    public async findRnaSirenByIdentifiers(identifier: AssociationIdentifier) {
-        const value = identifier.getValue(["siren", "rna"]);
+    public async findRnaSiren(identifier: Rna | Siren): Promise<{ rna: Rna; siren: Siren } | null> {
+        const structure = await this.sendRequest<StructureDto>(`/api/structure/${identifier.value}`);
+        let rna: Rna, siren: Siren;
+        // sometimes identite is not defined even if request status is 200
+        if (!structure?.identite) return null;
 
-        if (!value) return { rna: undefined, siren: undefined };
+        if (identifier.name === Rna.getName()) {
+            // API is not robust and sometimes SIREN is sent as number
+            const identiteSiren = structure.identite?.id_siren?.toString();
+            if (!identiteSiren) return null;
+            rna = identifier;
+            siren = new Siren(identiteSiren);
+        } else {
+            const identiteRna = structure?.identite?.id_rna;
+            if (!identiteRna) return null;
+            siren = identifier;
+            rna = new Rna(identiteRna);
+        }
 
-        const structure = await this.sendRequest<StructureDto>(`/api/structure/${value}`);
-        // TODO: investigate with JFM
-        // sometimes apiAsso return a 404
-        // ex: siren 422606285
-        if (!structure?.identite) return { rna: undefined, siren: undefined };
-
-        const rnaValue = structure?.identite?.id_rna;
-        const sirenValue = structure?.identite.id_siren?.toString(); // sometimes siren is string or number;
-
-        return {
-            rna: rnaValue ? new Rna(rnaValue) : undefined,
-            siren: sirenValue ? new Siren(sirenValue) : undefined,
-        };
+        return { rna, siren };
     }
 
     public async findAssociationByRna(rna: Rna): Promise<Association | null> {
