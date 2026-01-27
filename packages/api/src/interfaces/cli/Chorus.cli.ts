@@ -4,7 +4,6 @@ import { CliStaticInterface } from "../../@types";
 import ChorusParser from "../../modules/providers/chorus/chorus.parser";
 import chorusService from "../../modules/providers/chorus/chorus.service";
 import * as CliHelper from "../../shared/helpers/CliHelper";
-import { asyncForEach } from "../../shared/helpers/ArrayHelper";
 import CliController from "../../shared/CliController";
 import ChorusLineEntity from "../../modules/providers/chorus/entities/ChorusLineEntity";
 import paymentFlatChorusService from "../../modules/paymentFlat/paymentFlat.chorus.service";
@@ -20,7 +19,7 @@ export default class ChorusCli extends CliController {
     /**
      * Parse Chorus XLS files
      * @param file path to file
-     * @param batchSize La taille des paquets envoyés à mongo coup par coup
+     * @param logger
      */
     protected async _parse(file: string, logger) {
         if (typeof file !== "string") {
@@ -47,25 +46,37 @@ export default class ChorusCli extends CliController {
 
         console.info("Start register in database ...");
 
-        const batchNumber = Math.ceil(totalEntities / this.batchSize);
         const batchs: ChorusLineEntity[][] = [];
 
-        for (let i = 0; i < batchNumber; i++) {
-            batchs.push(entities.splice(-this.batchSize));
+        for (let i = 0; i < entities.length; i += this.batchSize) {
+            batchs.push(entities.slice(i, i + this.batchSize));
         }
 
         const finalResult = {
             created: 0,
             rejected: 0,
-            duplicates: 0,
         };
 
-        await asyncForEach(batchs, async (batch, index) => {
-            CliHelper.printProgress(index * 1000, totalEntities);
-            const result = await chorusService.insertBatchChorusLine(batch);
-            finalResult.created += result.created;
-            finalResult.rejected += result.rejected;
-        });
+        const CONCURRENT_LIMIT = 5;
+        console.info(`Processing ${batchs.length} batches with concurrency limit of ${CONCURRENT_LIMIT}`);
+
+        for (let i = 0; i < batchs.length; i += CONCURRENT_LIMIT) {
+            const currentBatches = batchs.slice(i, i + CONCURRENT_LIMIT);
+
+            const promises = currentBatches.map(async (batch, localIndex) => {
+                const globalIndex = i + localIndex;
+
+                CliHelper.printProgress((globalIndex + 1) * this.batchSize, totalEntities);
+                return await chorusService.insertBatchChorusLine(batch);
+            });
+
+            const results = await Promise.all(promises);
+
+            results.forEach(result => {
+                finalResult.created += result.created;
+                finalResult.rejected += result.rejected;
+            });
+        }
 
         logger.push(`RESULT: ${JSON.stringify(finalResult)}`);
 
