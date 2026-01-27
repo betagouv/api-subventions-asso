@@ -17,8 +17,15 @@ const connectionOptions = {
 const mongoClient: mongoDB.MongoClient = new mongoDB.MongoClient(MONGO_URL, connectionOptions);
 
 export const connectDB = () => {
+    let lastNotificationTime = 0;
+    const NOTIFICATION_COOLDOWN = 180000;
+
     const notifyLostConnection = listener => {
-        mattermostNotifyPipe.connectionLost(listener);
+        const now = Date.now();
+        if (now - lastNotificationTime > NOTIFICATION_COOLDOWN) {
+            mattermostNotifyPipe.connectionLost(listener);
+            lastNotificationTime = now;
+        }
     };
 
     mongoClient
