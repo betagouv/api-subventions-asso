@@ -82,6 +82,10 @@ module.exports = {
                 });
             });
 
-        await db.collection(DATA_LOG_COLLECTION).bulkWrite(bulkWriteOps);
+        if (bulkWriteOps.length > 0) {
+            await db.collection(DATA_LOG_COLLECTION).bulkWrite(bulkWriteOps);
+        } else {
+            console.log("No documents to update");
+        }
     },
 };
