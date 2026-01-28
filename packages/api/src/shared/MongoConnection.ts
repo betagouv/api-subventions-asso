@@ -12,6 +12,9 @@ const connectionOptions = {
                   password: MONGO_PASSWORD,
               }
             : undefined,
+    maxPoolSize: 15,
+    minPoolSize: 2,
+    maxIdleTimeMS: 2 * 60 * 1000,
 };
 
 const mongoClient: mongoDB.MongoClient = new mongoDB.MongoClient(MONGO_URL, connectionOptions);
@@ -40,11 +43,11 @@ export const connectDB = () => {
     if (ENV !== "test") {
         mongoClient.on("connectionCreated", _event => console.log("datasub - connection created"));
 
-        // trying to figure out why we have so many disconnections on production
-        // and for now we don't know which event would be fired on such disconnections
-        // TODO: only keeps one of those events if we figure out which one is the right one
+        // suppresion de l'évènement connectionClosed car l'ouverture et la fermeture des connexions sont le cycle de vie normal et souhaitable. Ca kill l'app :-(
+        // pourquoi on kill l'app a chaque erreur, ca ne se reconnecte pas tout seul c'est ca le pb ?
 
         mongoClient.on("close", event => {
+            // todo : cette evenement n'existe pas ?
             console.log("datasub - connection closed");
             notifyLostConnection(event);
             mongoClient.connect().catch(reason => {
@@ -56,16 +59,6 @@ export const connectDB = () => {
 
         mongoClient.on("serverClosed", event => {
             console.log("datasub - mongo server closed");
-            notifyLostConnection(event);
-            mongoClient.connect().catch(reason => {
-                console.log("MONGO CONNECTION ERROR\n");
-                console.error(reason);
-                process.exit(1);
-            });
-        });
-
-        mongoClient.on("connectionClosed", event => {
-            console.log("datasub - Mongo connection closed, trying to reconnect...", event);
             notifyLostConnection(event);
             mongoClient.connect().catch(reason => {
                 console.log("MONGO CONNECTION ERROR\n");
