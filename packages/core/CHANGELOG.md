@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.78.0](https://github.com/betagouv/datasubvention/compare/v0.77.2...v0.78.0) (2026-01-28)
+
+### Bug Fixes
+
+- **api, front:** [#3773](https://github.com/betagouv/datasubvention/issues/3773) truncate scdl error in deposit log ([#3778](https://github.com/betagouv/datasubvention/issues/3778)) ([31eaec3](https://github.com/betagouv/datasubvention/commit/31eaec3aee9100dd43b8ead9c0dd92167c111f55))
+
+### Features
+
+- [#3775](https://github.com/betagouv/datasubvention/issues/3775) replace rm -rf with rimraf in scripts ([#3776](https://github.com/betagouv/datasubvention/issues/3776)) ([4b9c6b4](https://github.com/betagouv/datasubvention/commit/4b9c6b458fd111ee1a795d4c4b0d8c21ecc68ee5))
+
 ## [0.77.3](https://github.com/betagouv/datasubvention/compare/v0.77.2...v0.77.3) (2026-01-13)
 
 **Note:** Version bump only for package core

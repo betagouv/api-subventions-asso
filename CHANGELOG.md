@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.78.0](https://github.com/betagouv/api-subventions-asso/compare/v0.77.2...v0.78.0) (2026-01-28)
+
+### Bug Fixes
+
+- **api, front:** [#3773](https://github.com/betagouv/api-subventions-asso/issues/3773) fix migration ([54fbf0e](https://github.com/betagouv/api-subventions-asso/commit/54fbf0ee55f6d7a0b857480aae302a1de9768eb3))
+- **api, front:** [#3773](https://github.com/betagouv/api-subventions-asso/issues/3773) truncate scdl error in deposit log ([#3778](https://github.com/betagouv/api-subventions-asso/issues/3778)) ([31eaec3](https://github.com/betagouv/api-subventions-asso/commit/31eaec3aee9100dd43b8ead9c0dd92167c111f55))
+- **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) populate new ScdlParsedInfos structure ([965c96b](https://github.com/betagouv/api-subventions-asso/commit/965c96bb1cc4a01ae25ff54b3c861160d9ffe159))
+- **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) use bulk write ops instead of aggregate merge ([#3780](https://github.com/betagouv/api-subventions-asso/issues/3780)) ([fe039f0](https://github.com/betagouv/api-subventions-asso/commit/fe039f02252421a03523052b4114aaf58bc41354))
+- **api:** [#3773](https://github.com/betagouv/api-subventions-asso/issues/3773) error deposit log ([#3781](https://github.com/betagouv/api-subventions-asso/issues/3781)) ([a24bd4e](https://github.com/betagouv/api-subventions-asso/commit/a24bd4e86687d97da34f14c65c08e3f7a04541fe))
+- **front:** make button sort in dashboard behave independently ([b9939cb](https://github.com/betagouv/api-subventions-asso/commit/b9939cb0229818ebca71bc950622d04b0598249a))
+- **front:** remove console log ([25d3bc0](https://github.com/betagouv/api-subventions-asso/commit/25d3bc0f6e00555706ff068e6817d4107fd587e8))
+
+### Features
+
+- [#3775](https://github.com/betagouv/api-subventions-asso/issues/3775) replace rm -rf with rimraf in scripts ([#3776](https://github.com/betagouv/api-subventions-asso/issues/3776)) ([4b9c6b4](https://github.com/betagouv/api-subventions-asso/commit/4b9c6b458fd111ee1a795d4c4b0d8c21ecc68ee5))
+- **api, front:** [#3777](https://github.com/betagouv/api-subventions-asso/issues/3777) prevent parse when mandatory headers ([#3786](https://github.com/betagouv/api-subventions-asso/issues/3786)) ([3954149](https://github.com/betagouv/api-subventions-asso/commit/3954149b6d998e1d9f46032bf88f666f6342feed))
+- **api:** [#3732](https://github.com/betagouv/api-subventions-asso/issues/3732) download grants in scdl format ([#3794](https://github.com/betagouv/api-subventions-asso/issues/3794)) ([4822b08](https://github.com/betagouv/api-subventions-asso/commit/4822b08b0d44116580cad31f0c2c3a63e2347fcb))
+- **api:** [#3766](https://github.com/betagouv/api-subventions-asso/issues/3766) add name to datalog collection ([#3771](https://github.com/betagouv/api-subventions-asso/issues/3771)) ([f0ec929](https://github.com/betagouv/api-subventions-asso/commit/f0ec929c42e2d700f4e80998269fa8ca05b554a9))
+- **api:** [#3767](https://github.com/betagouv/api-subventions-asso/issues/3767) dump datalog in metabase ([#3796](https://github.com/betagouv/api-subventions-asso/issues/3796)) ([e72e838](https://github.com/betagouv/api-subventions-asso/commit/e72e83853d39669b14777ee147c22d8506a9e30a))
+- **api:** [#3769](https://github.com/betagouv/api-subventions-asso/issues/3769) notify deposit scdl on mattermost ([#3793](https://github.com/betagouv/api-subventions-asso/issues/3793)) ([6b5dc85](https://github.com/betagouv/api-subventions-asso/commit/6b5dc850bb104884636954899aec0b2fd118df79))
+- **api:** [#3772](https://github.com/betagouv/api-subventions-asso/issues/3772) add debouncing on notify lost connection ([#3810](https://github.com/betagouv/api-subventions-asso/issues/3810)) ([b13c822](https://github.com/betagouv/api-subventions-asso/commit/b13c822fc4d97d4501284a86c98cb521b9a1e949))
+- **front:** [#3679](https://github.com/betagouv/api-subventions-asso/issues/3679) add tooltips to grant dashboard ([#3779](https://github.com/betagouv/api-subventions-asso/issues/3779)) ([bdc004b](https://github.com/betagouv/api-subventions-asso/commit/bdc004b086c8ddc200ac54416331132e275a8489))
+- **front:** [#3730](https://github.com/betagouv/api-subventions-asso/issues/3730) add error alert if parse fail ([#3751](https://github.com/betagouv/api-subventions-asso/issues/3751)) ([282350f](https://github.com/betagouv/api-subventions-asso/commit/282350f98229f2a7fc89ef6e3f3eeb7ebb598ea6))
+- **front:** [#3731](https://github.com/betagouv/api-subventions-asso/issues/3731) add global error alert ([#3762](https://github.com/betagouv/api-subventions-asso/issues/3762)) ([b1098ef](https://github.com/betagouv/api-subventions-asso/commit/b1098efdad8662d6b3f043d8c560b654c1369df9))
+- **front:** [#3770](https://github.com/betagouv/api-subventions-asso/issues/3770) display grant without budgetary year ([#3792](https://github.com/betagouv/api-subventions-asso/issues/3792)) ([87c352c](https://github.com/betagouv/api-subventions-asso/commit/87c352c034b6ab963cfd908ef157e718ddb82220))
+- **front:** [#3795](https://github.com/betagouv/api-subventions-asso/issues/3795) truncate multiple siret ([#3798](https://github.com/betagouv/api-subventions-asso/issues/3798)) ([027f6fc](https://github.com/betagouv/api-subventions-asso/commit/027f6fc55f2b5aa0128efa3246d2028ecc3d0778))
+
 ## [0.77.3](https://github.com/betagouv/api-subventions-asso/compare/v0.77.2...v0.77.3) (2026-01-13)
 
 ### Bug Fixes

@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.78.0](https://github.com/betagouv/datasubvention/compare/v0.77.2...v0.78.0) (2026-01-28)
+
+### Bug Fixes
+
+- **api, front:** [#3773](https://github.com/betagouv/datasubvention/issues/3773) truncate scdl error in deposit log ([#3778](https://github.com/betagouv/datasubvention/issues/3778)) ([31eaec3](https://github.com/betagouv/datasubvention/commit/31eaec3aee9100dd43b8ead9c0dd92167c111f55))
+- **front:** make button sort in dashboard behave independently ([b9939cb](https://github.com/betagouv/datasubvention/commit/b9939cb0229818ebca71bc950622d04b0598249a))
+- **front:** remove console log ([25d3bc0](https://github.com/betagouv/datasubvention/commit/25d3bc0f6e00555706ff068e6817d4107fd587e8))
+
+### Features
+
+- **api, front:** [#3777](https://github.com/betagouv/datasubvention/issues/3777) prevent parse when mandatory headers ([#3786](https://github.com/betagouv/datasubvention/issues/3786)) ([3954149](https://github.com/betagouv/datasubvention/commit/3954149b6d998e1d9f46032bf88f666f6342feed))
+- **front:** [#3679](https://github.com/betagouv/datasubvention/issues/3679) add tooltips to grant dashboard ([#3779](https://github.com/betagouv/datasubvention/issues/3779)) ([bdc004b](https://github.com/betagouv/datasubvention/commit/bdc004b086c8ddc200ac54416331132e275a8489))
+- **front:** [#3730](https://github.com/betagouv/datasubvention/issues/3730) add error alert if parse fail ([#3751](https://github.com/betagouv/datasubvention/issues/3751)) ([282350f](https://github.com/betagouv/datasubvention/commit/282350f98229f2a7fc89ef6e3f3eeb7ebb598ea6))
+- **front:** [#3731](https://github.com/betagouv/datasubvention/issues/3731) add global error alert ([#3762](https://github.com/betagouv/datasubvention/issues/3762)) ([b1098ef](https://github.com/betagouv/datasubvention/commit/b1098efdad8662d6b3f043d8c560b654c1369df9))
+- **front:** [#3770](https://github.com/betagouv/datasubvention/issues/3770) display grant without budgetary year ([#3792](https://github.com/betagouv/datasubvention/issues/3792)) ([87c352c](https://github.com/betagouv/datasubvention/commit/87c352c034b6ab963cfd908ef157e718ddb82220))
+- **front:** [#3795](https://github.com/betagouv/datasubvention/issues/3795) truncate multiple siret ([#3798](https://github.com/betagouv/datasubvention/issues/3798)) ([027f6fc](https://github.com/betagouv/datasubvention/commit/027f6fc55f2b5aa0128efa3246d2028ecc3d0778))
+
 ## [0.77.3](https://github.com/betagouv/datasubvention/compare/v0.77.2...v0.77.3) (2026-01-13)
 
 ### Bug Fixes
