@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.78.0](https://github.com/betagouv/datasubvention/compare/v0.77.2...v0.78.0) (2026-01-28)
+
+### Bug Fixes
+
+- **api, front:** [#3773](https://github.com/betagouv/datasubvention/issues/3773) truncate scdl error in deposit log ([#3778](https://github.com/betagouv/datasubvention/issues/3778)) ([31eaec3](https://github.com/betagouv/datasubvention/commit/31eaec3aee9100dd43b8ead9c0dd92167c111f55))
+
+### Features
+
+- [#3775](https://github.com/betagouv/datasubvention/issues/3775) replace rm -rf with rimraf in scripts ([#3776](https://github.com/betagouv/datasubvention/issues/3776)) ([4b9c6b4](https://github.com/betagouv/datasubvention/commit/4b9c6b458fd111ee1a795d4c4b0d8c21ecc68ee5))
+- **api, front:** [#3777](https://github.com/betagouv/datasubvention/issues/3777) prevent parse when mandatory headers ([#3786](https://github.com/betagouv/datasubvention/issues/3786)) ([3954149](https://github.com/betagouv/datasubvention/commit/3954149b6d998e1d9f46032bf88f666f6342feed))
+- **api:** [#3732](https://github.com/betagouv/datasubvention/issues/3732) download grants in scdl format ([#3794](https://github.com/betagouv/datasubvention/issues/3794)) ([4822b08](https://github.com/betagouv/datasubvention/commit/4822b08b0d44116580cad31f0c2c3a63e2347fcb))
+
 ## [0.77.3](https://github.com/betagouv/datasubvention/compare/v0.77.2...v0.77.3) (2026-01-13)
 
 ### Bug Fixes
