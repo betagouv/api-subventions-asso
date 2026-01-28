@@ -1,3 +1,6 @@
+import type { CreateDepositScdlLogDto, DepositScdlLogResponseDto, DepositScdlLogDto, FileDownloadUrlDto } from "dto";
+import type { IdentifiedRequest } from "../../@types";
+
 import {
     Controller,
     Get,
@@ -15,9 +18,7 @@ import {
     UploadedFile,
     FormField,
 } from "tsoa";
-import { IdentifiedRequest } from "../../@types";
 import depositScdlProcessService from "../../modules/deposit-scdl-process/depositScdlProcess.service";
-import { CreateDepositScdlLogDto, DepositScdlLogResponseDto, DepositScdlLogDto, FileDownloadUrlDto } from "dto";
 import DepositScdlLogDtoAdapter from "../../modules/deposit-scdl-process/depositScdlLog.dto.adapter";
 
 @Route("/parcours-depot")

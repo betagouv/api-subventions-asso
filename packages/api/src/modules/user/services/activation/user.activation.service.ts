@@ -17,6 +17,7 @@ import { UserServiceErrors } from "../../user.enum";
 import { UserServiceError } from "../../@types/UserServiceError";
 
 export class UserActivationService {
+    private DEFAULT_PASSWORD = "TMP_PASSWOrd;12345678";
     public static RESET_TIMEOUT = 1000 * 60 * 60 * 24 * 10; // 10 days in ms
 
     async refreshExpirationToken(user: UserDto) {
@@ -109,7 +110,7 @@ export class UserActivationService {
     /*
      * to be used in cli not by normal users
      * */
-    async setsPasswordAndActivate(user, password) {
+    async setsPasswordAndActivate(user, password = this.DEFAULT_PASSWORD) {
         const hashPassword = await userAuthService.getHashPassword(password);
         return (await userPort.update({
             _id: user._id,

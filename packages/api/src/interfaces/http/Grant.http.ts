@@ -1,9 +1,10 @@
+import type { SiretDto, PublishableGrantDto, AssociationIdentifierDto, StructureIdentifierDto } from "dto";
+
 import { Controller, Get, Route, Tags } from "tsoa";
-import { SiretDto, PublishableGrantDto, AssociationIdentifierDto, StructureIdentifierDto } from "dto";
+import Siret from "../../identifierObjects/Siret";
 import openDataGrantService from "../../modules/_open-data/grant/openDataGrantService";
 import establishmentIdentifierService from "../../modules/establishment-identifier/establishment-identifier.service";
 import associationIdentifierService from "../../modules/association-identifier/association-identifier.service";
-import Siret from "../../identifierObjects/Siret";
 
 @Route("open-data/subventions")
 @Tags("Open Data")

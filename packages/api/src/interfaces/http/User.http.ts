@@ -1,7 +1,8 @@
-import { GetRolesDtoResponse, UpdatableUser, UserDataDto, UserDto, UserDtoResponse } from "dto";
+import type { GetRolesDtoResponse, UpdatableUser, UserDataDto, UserDto, UserDtoResponse } from "dto";
+import type { IdentifiedRequest } from "../../@types";
+
 import { Route, Controller, Tags, Body, Security, Put, Request, Get, Delete, Response, Patch } from "tsoa";
 import { NotFoundError, HttpErrorInterface } from "core";
-import { IdentifiedRequest } from "../../@types";
 import userAuthService from "../../modules/user/services/auth/user.auth.service";
 import userRolesService from "../../modules/user/services/roles/user.roles.service";
 import userRgpdService from "../../modules/user/services/rgpd/user.rgpd.service";

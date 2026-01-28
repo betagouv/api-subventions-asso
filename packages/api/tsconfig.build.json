@@ -1,17 +1,14 @@
 {
     "extends": "./tsconfig.json",
-    // 👇️ this may vary depending on how you
-    // name your test files
     "exclude": [
         "src/**/*.spec.ts",
         "src/**/*.test.ts",
-        "tests/**/*.spec.ts",
-        "tests/**/*.test.ts",
+        "tests/**/*",
         "**/__mocks__/*",
-        "**/__fixtures__/*"
+        "**/__fixtures__/*",
+        "jest.config.*"
     ],
     "compilerOptions": {
-        "types": ["reflect-metadata"],
-        "declaration": false /* Generate .d.ts files from TypeScript and JavaScript files in your project. */
+        "types": ["reflect-metadata"]
     }
 }
