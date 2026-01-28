@@ -1,6 +1,6 @@
 {
     "name": "tools",
-    "version": "0.78.0",
+    "version": "0.78.1",
     "description": "Tools that are not directly use by the Data.Subvention project",
     "author": "Maxime Silvère Meunier <mxmeunier@gmail.com>",
     "homepage": "https://github.com/betagouv/api-subventions-asso/tree/main/packages/tools#readme",

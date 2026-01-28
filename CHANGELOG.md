@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.78.1](https://github.com/betagouv/api-subventions-asso/compare/v0.78.0...v0.78.1) (2026-01-28)
+
+### Bug Fixes
+
+- **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) fix failed bulkwrite to do only if documents to update ([534f502](https://github.com/betagouv/api-subventions-asso/commit/534f502f5141b8da05903d516b04124e4e2ecb15))
+
 # [0.78.0](https://github.com/betagouv/api-subventions-asso/compare/v0.77.2...v0.78.0) (2026-01-28)
 
 ### Bug Fixes
