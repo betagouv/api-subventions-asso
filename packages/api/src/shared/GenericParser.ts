@@ -74,7 +74,7 @@ export class GenericParser {
     }
 
     private static isCellEmpty(value: unknown): value is null {
-        return value === null || value === undefined || value === ""
+        return value === null || value === undefined || value === "";
     }
 
     static linkHeaderToData<T = string>(
@@ -128,7 +128,9 @@ export class GenericParser {
     }
 
     static xlsParseWithPageName(content: Buffer) {
-        const xls = xlsx.parse(content);
+        const xls = xlsx.parse(content, {
+            nodim: true,
+        });
         return xls.map(xlsPage => ({
             data: xlsPage.data.filter(row => (row as unknown[]).length),
             name: xlsPage.name,
