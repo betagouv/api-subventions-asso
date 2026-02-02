@@ -40,7 +40,7 @@ describe("Authentication http", () => {
                     AGENT_CONNECT_ENABLED: false,
                     __esModule: true,
                 }));
-                const { AuthentificationHttp: NoAcController } = await import("./Authentification.http");
+                const { AuthentificationHttp: NoAcController } = await import("./Authentification.http.ts");
                 noAcCtrl = new NoAcController();
             });
             afterAll(() => {
