@@ -6,6 +6,7 @@ import rechercheEntreprisesPort from "./rechercheEntreprises.port";
 import { RechercheEntreprisesAdapter } from "./RechercheEntreprisesAdapter";
 import notifyService from "../../../modules/notify/notify.service";
 import { RNA_STR, SIREN_STR } from "../../../../tests/__fixtures__/association.fixture";
+import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
 
 // Mocking the external dependencies
 jest.mock("./RechercheEntreprisesAdapter");
@@ -157,8 +158,29 @@ describe("RechercheEntreprisesService", () => {
      * low test coverage because it should be deleted soon
      */
     describe("notifyOrNot", () => {
-        it("calls notify", () => {
-            const spyNotify = jest.spyOn(notifyService, "notify");
+        const QUERY = RNA_STR;
+        let spyNotify: jest.SpyInstance;
+
+        beforeEach(() => {
+            spyNotify = jest.spyOn(notifyService, "notify");
+        });
+
+        it("does not notify when no errors found", () => {
+            // @ts-expect-error: private method
+            rechercheEntreprisesService.notifyOrNot(
+                [
+                    {
+                        nature_juridique: LEGAL_CATEGORIES_ACCEPTED[0],
+                        siren: SIREN_STR,
+                        nom_complet: "Example with NatureJuridique from LEGAL_CATEGORIES_ACCEPTED",
+                    },
+                ],
+                QUERY,
+            );
+            expect(spyNotify).not.toHaveBeenCalled();
+        });
+
+        it("calls notify when results contains data from other legal category than expected", () => {
             const ERRORS = [
                 {
                     nature_juridique: "9400",
@@ -166,7 +188,7 @@ describe("RechercheEntreprisesService", () => {
                     nom_complet: "Example with NatureJuridique not from LEGAL_CATEGORIES_ACCEPTED",
                 },
             ];
-            const QUERY = RNA_STR;
+
             // @ts-expect-error: private method
             rechercheEntreprisesService.notifyOrNot(ERRORS, QUERY);
             expect(spyNotify).toHaveBeenCalledWith(NotificationType.EXTERNAL_API_ERROR, {

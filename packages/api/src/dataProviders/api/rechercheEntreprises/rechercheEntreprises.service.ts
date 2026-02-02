@@ -28,6 +28,9 @@ export class RechercheEntreprisesService implements Provider {
         const errors = searchResult.filter(
             result => !result.nature_juridique || !LEGAL_CATEGORIES_ACCEPTED.includes(result.nature_juridique),
         );
+
+        if (errors.length === 0) return;
+
         notifyService.notify(NotificationType.EXTERNAL_API_ERROR, {
             message:
                 "API Recherche Entreprise retourne des structures non association malgré leur filtre sur la nature juridique",
