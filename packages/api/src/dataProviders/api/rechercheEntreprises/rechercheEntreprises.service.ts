@@ -18,9 +18,8 @@ export class RechercheEntreprisesService implements Provider {
     };
 
     private requestNextPage(response: RechercheEntreprisesDto): boolean {
-        const MAX_PAGES = Math.min(response.total_pages, 3);
-        if (response.page >= MAX_PAGES) return false;
-        else return true;
+        const MAX_PAGES = Math.min(response.total_pages, 3); // 3 was chosen by default but does not respond to a specific need
+        return response.page < MAX_PAGES;
     }
 
     // @TODO: remove this call start of april 2026 if nothing was notified
