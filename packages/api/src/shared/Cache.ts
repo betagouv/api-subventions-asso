@@ -5,24 +5,34 @@ interface CacheValue<T> {
 
 export default class CacheData<T> {
     private collection = new Map<string, CacheValue<T>[]>();
+    private lastGlobalCleanup = Date.now();
 
     constructor(private timeToCacheMS: number) {}
 
-    private cleanCache() {
-        const now = new Date().getTime();
-        this.collection.forEach((values, key) => {
-            const newValues = values.filter(value => value.validateDate > now);
+    private maybeCleanAll() {
+        const now = Date.now();
+        if (now - this.lastGlobalCleanup < this.timeToCacheMS) {
+            return;
+        }
 
-            if (!newValues.length) this.collection.delete(key);
-            else this.collection.set(key, newValues);
+        this.collection.forEach((values, key) => {
+            const validValues = values.filter(v => v.validateDate > now);
+
+            if (validValues.length === 0) {
+                this.collection.delete(key);
+            } else if (validValues.length !== values.length) {
+                this.collection.set(key, validValues);
+            }
         });
+
+        this.lastGlobalCleanup = now;
     }
 
     public add(key: string, value: T) {
-        this.cleanCache();
+        this.maybeCleanAll();
         const values = [
             {
-                validateDate: new Date().getTime() + this.timeToCacheMS,
+                validateDate: Date.now() + this.timeToCacheMS,
                 value,
             },
         ] as CacheValue<T>[];
@@ -32,15 +42,32 @@ export default class CacheData<T> {
     }
 
     public get(key: string): T[] {
-        this.cleanCache();
-
-        if (!this.collection.has(key)) return [];
-
-        return (this.collection.get(key) as CacheValue<T>[]).map(v => v.value);
+        this.maybeCleanAll();
+        return this.cleanKeyAndGet(key).map(value => value.value);
     }
 
     public has(key: string): boolean {
-        return !!this.get(key).length;
+        this.maybeCleanAll();
+        return this.cleanKeyAndGet(key).length > 0;
+    }
+
+    private cleanKeyAndGet(key: string): CacheValue<T>[] {
+        if (!this.collection.has(key)) return [];
+
+        const values = this.collection.get(key)!;
+        const now = new Date().getTime();
+
+        const validValues = values.filter(value => value.validateDate > now);
+
+        if (validValues.length !== values.length) {
+            if (validValues.length === 0) {
+                this.collection.delete(key);
+            } else {
+                this.collection.set(key, validValues);
+            }
+        }
+
+        return validValues;
     }
 
     public destroy() {

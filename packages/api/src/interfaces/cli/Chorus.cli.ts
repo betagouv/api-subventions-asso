@@ -7,6 +7,7 @@ import * as CliHelper from "../../shared/helpers/CliHelper";
 import CliController from "../../shared/CliController";
 import ChorusLineEntity from "../../modules/providers/chorus/entities/ChorusLineEntity";
 import paymentFlatChorusService from "../../modules/paymentFlat/paymentFlat.chorus.service";
+import { asyncForEach } from "../../shared/helpers/ArrayHelper";
 
 @StaticImplements<CliStaticInterface>()
 export default class ChorusCli extends CliController {
@@ -57,26 +58,12 @@ export default class ChorusCli extends CliController {
             rejected: 0,
         };
 
-        const CONCURRENT_LIMIT = 5;
-        console.info(`Processing ${batchs.length} batches with concurrency limit of ${CONCURRENT_LIMIT}`);
-
-        for (let i = 0; i < batchs.length; i += CONCURRENT_LIMIT) {
-            const currentBatches = batchs.slice(i, i + CONCURRENT_LIMIT);
-
-            const promises = currentBatches.map(async (batch, localIndex) => {
-                const globalIndex = i + localIndex;
-
-                CliHelper.printProgress((globalIndex + 1) * this.batchSize, totalEntities);
-                return await chorusService.insertBatchChorusLine(batch);
-            });
-
-            const results = await Promise.all(promises);
-
-            results.forEach(result => {
-                finalResult.created += result.created;
-                finalResult.rejected += result.rejected;
-            });
-        }
+        await asyncForEach(batchs, async (batch, index) => {
+            CliHelper.printProgress(index * this.batchSize, totalEntities);
+            const result = await chorusService.insertBatchChorusLine(batch);
+            finalResult.created += result.created;
+            finalResult.rejected += result.rejected;
+        });
 
         logger.push(`RESULT: ${JSON.stringify(finalResult)}`);
 
