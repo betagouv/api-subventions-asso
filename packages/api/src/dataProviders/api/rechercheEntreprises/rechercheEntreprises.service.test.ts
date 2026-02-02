@@ -1,70 +1,209 @@
-import rechercheEntreprisesPort from "./rechercheEntreprises.port";
-import rechercheEntreprisesService from "./rechercheEntreprises.service";
-import { RechercheEntreprisesResultDto } from "./RechercheEntreprisesDto";
-import { RechercheEntreprisesAdapter } from "./RechercheEntreprisesAdapter";
-import AssociationNameEntity from "../../../modules/association-name/entities/AssociationNameEntity";
+import { NotificationType } from "../../../modules/notify/@types/NotificationType";
+import { RechercheEntreprisesDto, RechercheEntreprisesResultDto } from "./RechercheEntreprisesDto";
 import Siren from "../../../identifierObjects/Siren";
-import associationHelper from "../../../modules/associations/associations.helper";
+import rechercheEntreprisesService from "./rechercheEntreprises.service";
+import rechercheEntreprisesPort from "./rechercheEntreprises.port";
+import { RechercheEntreprisesAdapter } from "./RechercheEntreprisesAdapter";
+import notifyService from "../../../modules/notify/notify.service";
+import { RNA_STR, SIREN_STR } from "../../../../tests/__fixtures__/association.fixture";
+import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
 
 // Mocking the external dependencies
 jest.mock("./RechercheEntreprisesAdapter");
 jest.mock("./rechercheEntreprises.port");
-jest.mock("../../../modules/associations/associations.helper");
-
-const mockedRechercheEntreprisesAdapter = RechercheEntreprisesAdapter as jest.Mocked<
-    typeof RechercheEntreprisesAdapter
->;
+jest.mock("../../../modules/notify/notify.service", () => ({
+    notify: jest.fn(),
+}));
 
 describe("RechercheEntreprisesService", () => {
     const SIREN = new Siren("123456789");
-    const NAME = "Example";
+    const NAME = "Bridge Familly";
 
-    beforeAll(() => {
-        jest.mocked(associationHelper.isCategoryFromAsso).mockReturnValue(true);
-    });
+    describe("getSearchResult", () => {
+        const RESULTS = [
+            { nom_complet: "EXAMPLE 1", siren: SIREN.value },
+            { nom_complet: "EXAMPLE 2", siren: "90000999" },
+        ];
 
-    afterAll(() => {
-        jest.mocked(associationHelper.isCategoryFromAsso).mockRestore();
+        const ASSO_NAME_ENTITY = { name: "Adapted Association Name" };
+
+        let mockSearch: jest.SpyInstance;
+        let mockNotifyOrNot: jest.SpyInstance;
+
+        beforeEach(() => {
+            // @ts-expect-error: mock return value
+            jest.spyOn(RechercheEntreprisesAdapter, "toAssociationNameEntity").mockReturnValue({
+                name: "Adapted Association Name",
+            });
+            mockSearch = jest.spyOn(rechercheEntreprisesService, "search").mockResolvedValue(RESULTS);
+            // @ts-expect-error: mock private method
+            mockNotifyOrNot = jest.spyOn(rechercheEntreprisesService, "notifyOrNot").mockImplementation(jest.fn());
+        });
+
+        afterAll(() => {
+            mockSearch.mockRestore();
+            mockNotifyOrNot.mockRestore();
+        });
+
+        it("fetch results from API", async () => {
+            await rechercheEntreprisesService.getSearchResult(SIREN.value);
+            expect(mockSearch).toHaveBeenCalledWith(SIREN.value);
+        });
+
+        // should be deleted in a few month (~ april 2026) if no notification received
+        it("notify or not the team", async () => {
+            await rechercheEntreprisesService.getSearchResult(SIREN.value);
+            expect(mockNotifyOrNot).toHaveBeenCalledTimes(1);
+        });
+
+        it("adapts all result to AssociationNameEntity", async () => {
+            await rechercheEntreprisesService.getSearchResult(SIREN.value);
+            RESULTS.forEach((result, index) => {
+                expect(RechercheEntreprisesAdapter.toAssociationNameEntity).toHaveBeenNthCalledWith(index + 1, result);
+            });
+        });
+
+        it("returns AssociationNameEntities", async () => {
+            const expected = [ASSO_NAME_ENTITY, ASSO_NAME_ENTITY];
+            const actual = await rechercheEntreprisesService.getSearchResult(SIREN.value);
+            expect(actual).toEqual(expected);
+        });
     });
 
     describe("search", () => {
-        it("should filter out results with missing nom_complet or siren fields", async () => {
-            const expected = new AssociationNameEntity(NAME, SIREN);
-            const responseData: RechercheEntreprisesResultDto[] = [
-                { nom_complet: NAME, siren: SIREN.value },
-                { nom_complet: undefined, siren: "987654321" },
-                { nom_complet: "Example 2", siren: undefined },
-                { nom_complet: undefined, siren: undefined },
-            ];
-            mockedRechercheEntreprisesAdapter.toAssociationNameEntity.mockReturnValueOnce(expected);
-            jest.mocked(rechercheEntreprisesPort.search).mockResolvedValueOnce(responseData);
+        const FIRST_PAGE_RESULTS: RechercheEntreprisesResultDto[] = [
+            { nom_complet: NAME, siren: SIREN.value },
+            { nom_complet: undefined, siren: "987654321" },
+        ];
 
-            const result = await rechercheEntreprisesService.searchForceAsso("example");
+        const SECOND_PAGE_RESULTS = [{ nom_complet: "Antibes Bridge", siren: "900009999" }];
 
-            expect(result).toEqual([expected]);
+        const RESPONSE_DETAILS = {
+            total_pages: 2,
+            page: 1,
+            per_page: 2,
+            total_results: 3,
+        };
+
+        const FIRST_PAGE_RESPONSE: RechercheEntreprisesDto = {
+            ...RESPONSE_DETAILS,
+            results: [...FIRST_PAGE_RESULTS],
+        };
+
+        const SECOND_PAGE_RESPONSE: RechercheEntreprisesDto = {
+            ...{ ...RESPONSE_DETAILS, page: 2 },
+            results: [...SECOND_PAGE_RESULTS],
+        };
+
+        let mockRequestNextPage: jest.SpyInstance;
+        let spySearch: jest.SpyInstance;
+
+        beforeEach(() => {
+            spySearch = jest.spyOn(rechercheEntreprisesService, "search");
+            // @ts-expect-error: mock private method
+            mockRequestNextPage = jest.spyOn(rechercheEntreprisesService, "requestNextPage");
+
+            // simulate two page response
+            mockRequestNextPage.mockReturnValueOnce(true);
+            mockRequestNextPage.mockReturnValueOnce(false);
+            jest.mocked(rechercheEntreprisesPort.search).mockResolvedValueOnce(FIRST_PAGE_RESPONSE);
+            jest.mocked(rechercheEntreprisesPort.search).mockResolvedValueOnce(SECOND_PAGE_RESPONSE);
         });
 
-        it("should use RechercheEntreprisesAdapter.toAssociationNameEntity to convert results", async () => {
-            const responseData: RechercheEntreprisesResultDto[] = [{ nom_complet: NAME, siren: SIREN.value }];
-            jest.mocked(rechercheEntreprisesPort.search).mockResolvedValueOnce(responseData);
-
-            await rechercheEntreprisesService.searchForceAsso("example");
-
-            expect(mockedRechercheEntreprisesAdapter.toAssociationNameEntity).toHaveBeenCalledWith(responseData[0]);
+        afterEach(() => {
+            spySearch.mockClear();
         });
 
-        it("raises error if single result is a company", async () => {
-            const responseData: RechercheEntreprisesResultDto[] = [
-                { nom_complet: NAME, siren: SIREN.value, nature_juridique: "1234567890" },
-            ];
-            jest.mocked(rechercheEntreprisesPort.search).mockResolvedValueOnce(responseData);
-            jest.mocked(associationHelper.isCategoryFromAsso).mockReturnValueOnce(false);
+        afterAll(() => {
+            mockRequestNextPage.mockRestore();
+            spySearch.mockRestore();
+        });
 
-            const test = () => rechercheEntreprisesService.searchForceAsso("example");
+        it("calls itself recursively when requestNextPage", async () => {
+            await rechercheEntreprisesService.search("Bridge");
+            expect(spySearch).toHaveBeenCalledTimes(2);
+        });
 
-            expect(test).rejects.toMatchInlineSnapshot(
-                `[Error: Votre recherche pointe vers une entité qui n'est pas une association]`,
+        it("returns concatened results from recursivity", async () => {
+            const actual = await rechercheEntreprisesService.search("Bridge");
+            const expected = [...SECOND_PAGE_RESULTS, ...FIRST_PAGE_RESULTS];
+            expect(actual.length).toEqual(expected.length);
+        });
+    });
+
+    describe("requestNextPage", () => {
+        it("returns true when response.page is lower than response.total_pages ", () => {
+            const expected = true;
+            // @ts-expect-error: private method
+            const actual = rechercheEntreprisesService.requestNextPage({ total_pages: 2, page: 1 });
+            expect(actual).toEqual(expected);
+        });
+
+        it("returns false if current page equals the maximum of pages requested (3)", () => {
+            const expected = false;
+            // @ts-expect-error: private method
+            const actual = rechercheEntreprisesService.requestNextPage({ total_pages: 4, page: 3 });
+            expect(actual).toEqual(expected);
+        });
+
+        it("returns false if response.page equals response.total_pages", () => {
+            const expected = false;
+            // @ts-expect-error: private method
+            const actual = rechercheEntreprisesService.requestNextPage({ total_pages: 2, page: 2 });
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    /**
+     * low test coverage because it should be deleted soon
+     */
+    describe("notifyOrNot", () => {
+        const QUERY = RNA_STR;
+        let spyNotify: jest.SpyInstance;
+
+        beforeEach(() => {
+            spyNotify = jest.spyOn(notifyService, "notify");
+        });
+
+        it("does not notify when no errors found", () => {
+            // @ts-expect-error: private method
+            rechercheEntreprisesService.notifyOrNot(
+                [
+                    {
+                        nature_juridique: LEGAL_CATEGORIES_ACCEPTED[0],
+                        siren: SIREN_STR,
+                        nom_complet: "Example with NatureJuridique from LEGAL_CATEGORIES_ACCEPTED",
+                    },
+                ],
+                QUERY,
             );
+            expect(spyNotify).not.toHaveBeenCalled();
+        });
+
+        it("calls notify when results contains data from other legal category than expected", () => {
+            const ERRORS = [
+                {
+                    nature_juridique: "9400",
+                    siren: SIREN_STR,
+                    nom_complet: "Example with NatureJuridique not from LEGAL_CATEGORIES_ACCEPTED",
+                },
+            ];
+
+            // @ts-expect-error: private method
+            rechercheEntreprisesService.notifyOrNot(ERRORS, QUERY);
+            expect(spyNotify).toHaveBeenCalledWith(NotificationType.EXTERNAL_API_ERROR, {
+                message:
+                    "API Recherche Entreprise retourne des structures non association malgré leur filtre sur la nature juridique",
+                details: {
+                    apiName: rechercheEntreprisesService.meta.name,
+                    queryParams: [{ name: "q", value: QUERY }],
+                    examples: ERRORS.slice(0, 4).map(error => ({
+                        siren: error.siren,
+                        nom: error.nom_complet,
+                        natureJuridique: error.nature_juridique,
+                    })),
+                },
+            });
         });
     });
 });

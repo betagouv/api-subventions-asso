@@ -1,6 +1,6 @@
 import { NotAssociationError } from "core";
 import uniteLegalNameService from "../providers/uniteLegalName/uniteLegal.name.service";
-import rnaSirenService from "../rna-siren/rnaSiren.service";
+import rnaSirenService from "../rna-siren/rna-siren.service";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import Rna from "../../identifierObjects/Rna";
 import Siren from "../../identifierObjects/Siren";
@@ -20,7 +20,7 @@ export class AssociationNameService {
         let associationNames: AssociationNameEntity[];
         let gotCompany = false;
         const searchEntreprisesCatch = (value: string) =>
-            rechercheEntreprisesService.searchForceAsso(value).catch(() => {
+            rechercheEntreprisesService.getSearchResult(value).catch(() => {
                 gotCompany = true;
                 return [];
             });

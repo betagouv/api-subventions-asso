@@ -1,8 +1,9 @@
 import { Route, Get, Controller, Tags, Path, SuccessResponse, Response, Example } from "tsoa";
 import { RnaSirenResponseDto } from "dto";
-import rnaSirenService from "../../modules/rna-siren/rnaSiren.service";
-import { IdentifierError } from "../../modules/association-identifier/IdentifierError";
 import { PathParamError } from "core";
+import { IdentifierError } from "../../modules/association-identifier/IdentifierError";
+import rnaSirenService from "../../modules/rna-siren/rna-siren.service";
+
 @Route("open-data/rna-siren")
 @Tags("Open Data")
 export class RnaSirenHttp extends Controller {

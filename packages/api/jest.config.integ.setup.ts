@@ -11,6 +11,7 @@ process.env.BETA_GOUV_DOMAIN = "beta.gouv.fr";
 process.env.AGENT_CONNECT_ENABLED = "true";
 process.env.API_BREVO_TOKEN = "1FT47%TRADF!";
 process.env.MAIL_USER = "mail-user@datasubvention";
+process.env.RATE_LIMIT = "50"; // 20 in real app but can break integration test. Still limiting to 50 as more than that means we should break routes / test file
 
 /**
  *
@@ -86,7 +87,7 @@ jest.mock("@getbrevo/brevo", () => {
 });
 
 jest.mock("@aws-sdk/s3-request-presigner", () => ({
-    getSignedUrl: jest.fn().mockResolvedValue("http://mock-presigned-url")
+    getSignedUrl: jest.fn().mockResolvedValue("http://mock-presigned-url"),
 }));
 
 mockClient(S3Client);

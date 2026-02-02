@@ -1,5 +1,5 @@
 import uniteLegalNamePort from "../../../dataProviders/db/uniteLegalName/uniteLegalName.port";
-import rnaSirenService from "../../rna-siren/rnaSiren.service";
+import rnaSirenService from "../../rna-siren/rna-siren.service";
 import UniteLegalNameEntity from "../../../entities/UniteLegalNameEntity";
 import uniteLegalNameService from "./uniteLegal.name.service";
 import AssociationNameEntity from "../../association-name/entities/AssociationNameEntity";
@@ -9,7 +9,7 @@ import AssociationIdentifier from "../../../identifierObjects/AssociationIdentif
 import Siret from "../../../identifierObjects/Siret";
 
 jest.mock("../../../dataProviders/db/uniteLegalName/uniteLegalName.port");
-jest.mock("../../rna-siren/rnaSiren.service");
+jest.mock("../../rna-siren/rna-siren.service");
 jest.mock("../../../shared/Validators");
 
 const mockedUniteLegalNamePort = uniteLegalNamePort as jest.Mocked<typeof uniteLegalNamePort>;

@@ -17,4 +17,5 @@ export enum NotificationType {
     DEPOSIT_UNFINISHED,
     DATA_IMPORT_SUCCESS,
     DEPOSIT_SCDL_SUCCESS,
+    EXTERNAL_API_ERROR,
 }

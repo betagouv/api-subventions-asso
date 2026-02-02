@@ -5,7 +5,7 @@ import apiAssoService from "../providers/apiAsso/apiAsso.service";
 import uniteLegalEntreprisesService from "../providers/uniteLegalEntreprises/uniteLegal.entreprises.service";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../shared/LegalCategoriesAccepted";
 import sireneStockUniteLegaleService from "../providers/sirene/stockUniteLegale/sireneStockUniteLegale.service";
-import rnaSirenService from "../rna-siren/rnaSiren.service";
+import rnaSirenService from "../rna-siren/rna-siren.service";
 import Rna from "../../identifierObjects/Rna";
 import Siren from "../../identifierObjects/Siren";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";

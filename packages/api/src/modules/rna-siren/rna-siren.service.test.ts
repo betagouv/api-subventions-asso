@@ -1,8 +1,10 @@
 import RnaSirenEntity from "../../entities/RnaSirenEntity";
+import { ASSOCIATION_IDENTIFIER } from "../../identifierObjects/__fixtures__/IdentifierFixture";
+import rnaSirenService from "./rna-siren.service";
+
 import Rna from "../../identifierObjects/Rna";
 import Siren from "../../identifierObjects/Siren";
 import apiAssoService from "../providers/apiAsso/apiAsso.service";
-import rnaSirenService from "./rnaSiren.service";
 import rnaSirenPort from "../../dataProviders/db/rnaSiren/rnaSiren.port";
 import associationIdentifierService from "../association-identifier/association-identifier.service";
 
@@ -14,6 +16,25 @@ describe("RnaSirenService", () => {
     const RNA = new Rna("W123456789");
     const SIREN = new Siren("123456789");
     const RNA_SIREN_ENTITY = new RnaSirenEntity(RNA, SIREN);
+
+    describe("insertManyAssociationIdentifer", () => {
+        let mockInsertMany: jest.SpyInstance;
+
+        beforeEach(() => {
+            mockInsertMany = jest.spyOn(rnaSirenService, "insertMany").mockImplementation(jest.fn());
+        });
+
+        afterAll(() => {
+            mockInsertMany.mockRestore();
+        });
+
+        it("tranform AssociationIdentifiers into RnaSirenEntities", () => {
+            rnaSirenService.insertManyAssociationIdentifer([ASSOCIATION_IDENTIFIER]);
+            expect(mockInsertMany).toHaveBeenCalledWith([
+                new RnaSirenEntity(ASSOCIATION_IDENTIFIER.rna, ASSOCIATION_IDENTIFIER.siren),
+            ]);
+        });
+    });
 
     describe("find", () => {
         let mockFindFromApiAsso: jest.SpyInstance;
