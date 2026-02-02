@@ -1,5 +1,5 @@
 import { BasePayment, ChorusPayment, FonjepPayment, Payment, PaymentFlatDto } from "dto";
-import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
+import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
 import { RawPayment } from "../grant/@types/rawGrant";
 import ProviderValueAdapter from "../../shared/adapters/ProviderValueAdapter";
 import PaymentFlatDbo from "../../dataProviders/db/paymentFlat/PaymentFlatDbo";

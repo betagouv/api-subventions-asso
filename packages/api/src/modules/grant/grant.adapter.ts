@@ -1,6 +1,6 @@
 import { Association, EstablishmentSimplified } from "dto";
 import { GrantToExtract } from "./@types/GrantToExtract";
-import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
+import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
 import { GrantFlatEntity } from "../../entities/GrantFlatEntity";
 
 const getValue = v => v?.value;

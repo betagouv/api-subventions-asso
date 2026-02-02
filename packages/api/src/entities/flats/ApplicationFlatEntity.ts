@@ -1,7 +1,6 @@
 import { ApplicationNature, ApplicationStatus, NOT_APPLICABLE, OrDefault, PaymentCondition } from "dto";
-
-import { IdentifierIdName } from "../identifierObjects/@types/IdentifierName";
-import { ProviderDataEntity } from "../@types/ProviderData";
+import { IdentifierIdName } from "../../identifierObjects/@types/IdentifierName";
+import { ProviderDataEntity } from "../../@types/ProviderData";
 
 // TODO where to accept null ?
 

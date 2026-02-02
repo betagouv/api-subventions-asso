@@ -7,7 +7,7 @@ import { isValidDate } from "../../../../shared/helpers/DateHelper";
 import { stringIsFloat } from "../../../../shared/helpers/StringHelper";
 import { DefaultObject } from "../../../../@types";
 import { toStatusFactory } from "../../providers.adapter";
-import { ApplicationFlatEntity } from "../../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../../entities/flats/ApplicationFlatEntity";
 import { InternalServerError } from "core";
 import Siret from "../../../../identifierObjects/Siret";
 

@@ -1,4 +1,4 @@
-import PaymentFlatEntity from "../../../../entities/PaymentFlatEntity";
+import PaymentFlatEntity from "../../../../entities/flats/PaymentFlatEntity";
 
 // PaymentFlatEntity field directly extracted from ChorusLineDto
 export type ChorusPaymentFlatRaw = Pick<

@@ -3,7 +3,7 @@ import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import dauphinService from "../dauphin.service";
 import { toStatusFactory } from "../../providers.adapter";
 import DauphinDocumentDto from "../dto/DauphinDocumentDto";
-import { ApplicationFlatEntity } from "../../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../../entities/flats/ApplicationFlatEntity";
 import { SimplifiedJoinedDauphinGispro } from "../@types/SimplifiedDauphinGispro";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
 import Siret from "../../../../identifierObjects/Siret";

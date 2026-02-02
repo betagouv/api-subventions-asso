@@ -1,5 +1,5 @@
 import { ApplicationFlatDto, DemandeSubvention } from "dto";
-import { ApplicationFlatEntity } from "../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../entities/flats/ApplicationFlatEntity";
 import { RawApplication } from "../grant/@types/rawGrant";
 import ProviderValueAdapter from "../../shared/adapters/ProviderValueAdapter";
 import applicationFlatService from "./applicationFlat.service";

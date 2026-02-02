@@ -21,7 +21,7 @@ import { StructureIdentifier } from "../../identifierObjects/@types/StructureIde
 import applicationFlatService from "../applicationFlat/applicationFlat.service";
 import paymentFlatService from "../paymentFlat/paymentFlat.service";
 import { GrantFlatEntity } from "../../entities/GrantFlatEntity";
-import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
+import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
 import ApplicationFlatAdapter from "../applicationFlat/ApplicationFlatAdapter";
 import PaymentFlatAdapter from "../paymentFlat/paymentFlatAdapter";
 

@@ -5,8 +5,8 @@ import fonjepPostesPort from "../../../dataProviders/db/providers/fonjep/fonjep.
 import fonjepTiersPort from "../../../dataProviders/db/providers/fonjep/fonjep.tiers.port";
 import fonjepTypePostePort from "../../../dataProviders/db/providers/fonjep/fonjep.typePoste.port";
 import fonjepVersementsPort from "../../../dataProviders/db/providers/fonjep/fonjep.versements.port";
-import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
-import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
+import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
+import PaymentFlatEntity from "../../../entities/flats/PaymentFlatEntity";
 import Ridet from "../../../identifierObjects/Ridet";
 import Siret from "../../../identifierObjects/Siret";
 import { addWithNull } from "../../../shared/helpers/NumberHelper";

@@ -1,6 +1,6 @@
 import scdlGrantService from "./scdl.grant.service";
 import MiscScdlAdapter from "./adapters/MiscScdl.adapter";
-import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 import { ReadableStream } from "node:stream/web";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";

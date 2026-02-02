@@ -4,7 +4,7 @@ import SubventiaDto from "../@types/subventia.dto";
 import SubventiaEntity, { SubventiaDbo } from "../@types/subventia.entity";
 import { DefaultObject, ParserInfo } from "../../../../@types";
 import { GenericParser } from "../../../../shared/GenericParser";
-import { ApplicationFlatEntity } from "../../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../../entities/flats/ApplicationFlatEntity";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
 import Siret from "../../../../identifierObjects/Siret";
 

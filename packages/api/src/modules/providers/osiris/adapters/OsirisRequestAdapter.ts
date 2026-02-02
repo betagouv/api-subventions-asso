@@ -3,7 +3,7 @@ import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import OsirisActionEntity from "../entities/OsirisActionEntity";
 import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 import { toStatusFactory } from "../../providers.adapter";
-import { ApplicationFlatEntity } from "../../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../../entities/flats/ApplicationFlatEntity";
 import Siret from "../../../../identifierObjects/Siret";
 import Ridet from "../../../../identifierObjects/Ridet";
 import { GenericParser } from "../../../../shared/GenericParser";

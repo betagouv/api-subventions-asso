@@ -1,5 +1,5 @@
 import { ApplicationStatus, ApplicationNature, PaymentCondition, ScdlGrantDto, ScdlGrantStandardDto } from "dto";
-import { ApplicationFlatEntity } from "../../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../../entities/flats/ApplicationFlatEntity";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
 import { ScdlGrantDbo } from "../dbo/ScdlGrantDbo";
 import Siret from "../../../../identifierObjects/Siret";

@@ -1,5 +1,5 @@
-import { ApplicationFlatEntity } from "../../../../entities/ApplicationFlatEntity";
-import PaymentFlatEntity from "../../../../entities/PaymentFlatEntity";
+import { ApplicationFlatEntity } from "../../../../entities/flats/ApplicationFlatEntity";
+import PaymentFlatEntity from "../../../../entities/flats/PaymentFlatEntity";
 import { NOT_APPLICABLE } from "dto";
 
 export type FonjepPaymentFlatEntity = PaymentFlatEntity & {

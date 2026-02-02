@@ -1,5 +1,5 @@
 import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port";
-import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
+import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import { ChorusPaymentFlatEntity } from "../providers/chorus/@types/ChorusPaymentFlat";
 import ChorusAdapter from "../providers/chorus/adapters/ChorusAdapter";

@@ -4,7 +4,7 @@ import Siren from "../../../identifierObjects/Siren";
 import Siret from "../../../identifierObjects/Siret";
 import { ChorusPaymentFlatEntity } from "../../providers/chorus/@types/ChorusPaymentFlat";
 import { GenericAdapter } from "../../../shared/GenericAdapter";
-import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
+import PaymentFlatEntity from "../../../entities/flats/PaymentFlatEntity";
 import { FonjepPaymentFlatEntity } from "../../providers/fonjep/entities/FonjepFlatEntity";
 
 export const CHORUS_PAYMENT_ID = "1000000000019--subv001--2023";

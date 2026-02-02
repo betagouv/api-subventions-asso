@@ -14,7 +14,7 @@ import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdenti
 import Siret from "../../identifierObjects/Siret";
 import Rna from "../../identifierObjects/Rna";
 import { PAYMENTS } from "../providers/chorus/__fixtures__/ChorusFixtures";
-import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
+import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
 
 jest.mock("../../shared/helpers/MongoHelper");

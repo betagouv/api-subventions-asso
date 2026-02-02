@@ -1,4 +1,4 @@
-import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
+import PaymentFlatEntity from "../../../entities/flats/PaymentFlatEntity";
 import { AmountsVsProgramRegionDbo } from "./entitiyAndDbo/amountsVsProgramRegion.dbo";
 import AmountsVsProgramRegionEntity from "./entitiyAndDbo/amountsVsProgramRegion.entity";
 

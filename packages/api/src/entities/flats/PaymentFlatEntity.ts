@@ -1,6 +1,6 @@
-import { ProviderDataEntity } from "../@types/ProviderData";
-import { CompanyIdName, EstablishmentIdName } from "../identifierObjects/@types/IdentifierName";
-import { CompanyIdType, EstablishmentIdType } from "../identifierObjects/@types/IdentifierType";
+import { ProviderDataEntity } from "../../@types/ProviderData";
+import { CompanyIdName, EstablishmentIdName } from "../../identifierObjects/@types/IdentifierName";
+import { CompanyIdType, EstablishmentIdType } from "../../identifierObjects/@types/IdentifierType";
 
 interface PaymentFlatEntity extends ProviderDataEntity {
     idVersement: string;

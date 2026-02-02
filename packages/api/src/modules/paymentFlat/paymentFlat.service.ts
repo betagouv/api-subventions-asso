@@ -6,7 +6,7 @@ import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdenti
 import { RawPayment } from "../grant/@types/rawGrant";
 import { ProviderEnum } from "../../@enums/ProviderEnum";
 import ProviderCore from "../providers/ProviderCore";
-import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
+import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
 import PaymentFlatAdapter from "./paymentFlatAdapter";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 import GrantProvider from "../grant/@types/GrantProvider";

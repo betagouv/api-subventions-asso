@@ -3,7 +3,7 @@ import amountsVsProgramRegionPort from "../../../src/dataProviders/db/dataViz/am
 import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFlat.port";
 import AmountsVsProgramRegionCli from "../../../src/interfaces/cli/AmountsVsProgramRegion.cli";
 import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../../src/modules/paymentFlat/__fixtures__/paymentFlatEntity.fixture";
-import PaymentFlatEntity from "../../../src/entities/PaymentFlatEntity";
+import PaymentFlatEntity from "../../../src/entities/flats/PaymentFlatEntity";
 
 const MOCK_DOCUMENTS: PaymentFlatEntity[] = [
     // the following two should be aggregated together
