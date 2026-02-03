@@ -13,21 +13,21 @@ describe("CacheData", () => {
         const cache = new CacheData<string>(1000);
         cache.add("test", "Hello World");
 
-        expect(cache.get("test")).toHaveLength(1);
+        expect(cache.get("test")).toEqual("Hello World");
     });
 
     it("should save in cache, but data has expired", () => {
         const cache = new CacheData<string>(0);
         cache.add("test", "Hello World");
 
-        expect(cache.get("test")).toHaveLength(0);
+        expect(cache.get("test")).toBeNull();
     });
 
     it("should delete all data", () => {
         const cache = new CacheData<string>(1000);
         cache.add("test", "Hello World");
         cache.destroy();
-        expect(cache.get("test")).toHaveLength(0);
+        expect(cache.get("test")).toBeNull();
     });
 
     it("should trigger global cleanup and remove all expired entries after cache expiration", () => {
@@ -41,10 +41,10 @@ describe("CacheData", () => {
 
         cache.add("key4", "value4");
 
-        expect(cache.get("key1")).toHaveLength(0);
-        expect(cache.get("key2")).toHaveLength(0);
-        expect(cache.get("key3")).toHaveLength(0);
-        expect(cache.get("key4")).toStrictEqual(["value4"]);
+        expect(cache.get("key1")).toBeNull();
+        expect(cache.get("key2")).toBeNull();
+        expect(cache.get("key3")).toBeNull();
+        expect(cache.get("key4")).toEqual("value4");
     });
 
     it("should cleanup only for expired cache", () => {
@@ -58,7 +58,7 @@ describe("CacheData", () => {
 
         jest.advanceTimersByTime(3000);
 
-        expect(cache.get("key1")).toEqual([]);
-        expect(cache.get("key2")).toEqual(["value2"]);
+        expect(cache.get("key1")).toBeNull();
+        expect(cache.get("key2")).toEqual("value2");
     });
 });

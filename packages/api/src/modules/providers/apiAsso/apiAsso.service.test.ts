@@ -51,7 +51,7 @@ describe("ApiAssoService", () => {
         it("should return cache data", async () => {
             const expected = "FAKEDATA";
 
-            cacheGetMock.mockImplementationOnce(() => [expected]);
+            cacheGetMock.mockImplementationOnce(() => expected);
 
             // @ts-expect-error: test private method
             const actual = await apiAssoService.sendRequest("fake/route");
@@ -78,7 +78,7 @@ describe("ApiAssoService", () => {
                     data: 1,
                 }),
             );
-            cacheGetMock.mockImplementationOnce(() => []);
+            cacheGetMock.mockImplementationOnce(() => null);
 
             // @ts-expect-error: test private method
             const actual = await apiAssoService.sendRequest("fake/route");
@@ -93,7 +93,7 @@ describe("ApiAssoService", () => {
                     data: "Error",
                 }),
             );
-            cacheGetMock.mockImplementationOnce(() => []);
+            cacheGetMock.mockImplementationOnce(() => null);
 
             // @ts-expect-error: test private method
             const actual = await apiAssoService.sendRequest("fake/route");
@@ -105,7 +105,7 @@ describe("ApiAssoService", () => {
             httpGetSpy.mockImplementationOnce(() => {
                 throw new Error("Error test");
             });
-            cacheGetMock.mockImplementationOnce(() => []);
+            cacheGetMock.mockImplementationOnce(() => null);
 
             // @ts-expect-error: test private method
             const actual = await apiAssoService.sendRequest("fake/route");

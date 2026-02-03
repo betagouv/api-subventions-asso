@@ -47,7 +47,7 @@ export class ChorusService extends ProviderCore {
             const siren = new Siret(entity.indexedInformations.siret).toSiren();
 
             const sirenBelongAssoValue = this.sirenBelongAssoCache.get(siren.value);
-            if (sirenBelongAssoValue.length) return sirenBelongAssoValue[0];
+            if (sirenBelongAssoValue !== null) return sirenBelongAssoValue;
 
             const sirenIsAsso = await this.sirenBelongAsso(siren);
 

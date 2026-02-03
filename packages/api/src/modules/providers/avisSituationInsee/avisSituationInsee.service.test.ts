@@ -24,7 +24,7 @@ describe("AvisSituationInseeService", () => {
 
         it("should return false because value is save in cache", async () => {
             const expected = false;
-            cacheGetMock.mockImplementationOnce(() => [false]);
+            cacheGetMock.mockImplementationOnce(() => false);
             // @ts-expect-error getInseeEstablishmentsBySiren is private method
             const actual = await avisSituationInseeService.getInseeEstablishmentsBySiren(SIREN);
 
@@ -34,7 +34,7 @@ describe("AvisSituationInseeService", () => {
         it("should return object because value is save in cache", async () => {
             const expected = { 42: "youpi" };
             // @ts-expect-error: mock
-            cacheGetMock.mockImplementationOnce(() => [expected]);
+            cacheGetMock.mockImplementationOnce(() => expected);
             // @ts-expect-error getInseeEstablishmentsBySiren is private method
             const actual = await avisSituationInseeService.getInseeEstablishmentsBySiren(SIREN);
 

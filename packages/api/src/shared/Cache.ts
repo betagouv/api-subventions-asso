@@ -4,45 +4,41 @@ interface CacheValue<T> {
 }
 
 export default class CacheData<T> {
-    private collection = new Map<string, CacheValue<T>[]>();
+    private collection = new Map<string, CacheValue<T>>();
     private lastGlobalCleanup = Date.now();
 
     constructor(private timeToCacheMS: number) {}
 
     public add(key: string, value: T) {
         this.maybeCleanAll();
-        const values = [
-            {
-                validateDate: Date.now() + this.timeToCacheMS,
-                value,
-            },
-        ] as CacheValue<T>[];
-        if (this.collection.has(key)) values.push(...(this.collection.get(key) as []));
+        const cacheValue = {
+            validateDate: Date.now() + this.timeToCacheMS,
+            value,
+        } as CacheValue<T>;
 
-        this.collection.set(key, values);
+        this.collection.set(key, cacheValue);
     }
 
-    public get(key: string): T[] {
+    public get(key: string): T | null {
         this.maybeCleanAll();
-        return this.cleanKeyAndGet(key).map(value => value.value);
+        const cacheValue = this.cleanKeyAndGet(key);
+        return cacheValue ? cacheValue.value : null;
     }
 
     public destroy() {
         this.collection.clear();
     }
 
-    private cleanKeyAndGet(key: string): CacheValue<T>[] {
-        if (!this.collection.has(key)) return [];
+    private cleanKeyAndGet(key: string): CacheValue<T> | null {
+        const value = this.collection.get(key)!;
+        if (!value) return null;
 
-        const values = this.collection.get(key)!;
-        const validValues = values.filter(v => v.validateDate > Date.now());
-
-        if (validValues.length === 0) {
+        if (value.validateDate <= Date.now()) {
             this.collection.delete(key);
-        } else if (validValues.length !== values.length) {
-            this.collection.set(key, validValues);
+            return null;
         }
-        return validValues;
+
+        return value;
     }
 
     private maybeCleanAll() {

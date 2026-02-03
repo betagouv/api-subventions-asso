@@ -44,8 +44,8 @@ export class ApiAssoService
     }
 
     private async sendRequest<T>(route: string): Promise<T | null> {
-        const requestValues = this.requestCache.get(route);
-        if (requestValues.length) return requestValues[0] as T;
+        const requestValue = this.requestCache.get(route);
+        if (requestValue !== null) return requestValue as T;
 
         try {
             const res = await this.http.get<T>(`${API_ASSO_URL}/${route}`, {
