@@ -11,6 +11,7 @@ export type DataLogEntity = {
     fileName?: string;
     userId?: string;
     providerName?: string;
+    isAdmin?: boolean;
 };
 
 export type FileDataLogEntity = DataLogEntity & { source: DataLogSource.FILE; fileName: string };

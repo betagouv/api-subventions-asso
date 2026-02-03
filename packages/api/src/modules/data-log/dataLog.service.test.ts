@@ -116,7 +116,7 @@ describe("dataLogService", () => {
         });
 
         it("throws if fileName is present", async () => {
-            await expect(() => dataLogService.addFromApi(DEFAULT_DATA_LOG_INFO)).toThrow(
+            expect(() => dataLogService.addFromApi(DEFAULT_DATA_LOG_INFO)).toThrow(
                 "DataLogEntity from API can't have a fileName",
             );
         });

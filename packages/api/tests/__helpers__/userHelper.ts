@@ -2,6 +2,7 @@ import { RoleEnum } from "../../src/@enums/Roles";
 import userActivationService from "../../src/modules/user/services/activation/user.activation.service";
 import userCrudService from "../../src/modules/user/services/crud/user.crud.service";
 import userAuthService from "../../src/modules/user/services/auth/user.auth.service";
+import { UserDto } from "dto";
 
 export const ADMIN_EMAIL = "admin@beta.gouv.fr";
 export const USER_EMAIL = "user@beta.gouv.fr";
@@ -30,3 +31,5 @@ export function createAdminUser() {
 export function getDefaultUser() {
     return userCrudService.findByEmail(USER_EMAIL);
 }
+
+export const isAdmin = (user: UserDto) => user.roles.includes(RoleEnum.admin);

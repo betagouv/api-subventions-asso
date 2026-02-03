@@ -23,11 +23,12 @@ import MiscScdlProducerEntity from "../providers/scdl/entities/MiscScdlProducerE
 import Siret from "../../identifierObjects/Siret";
 import dataLogService from "../data-log/dataLog.service";
 import { DataLogEntity } from "../data-log/entities/dataLogEntity";
-import { InsertOneResult } from "mongodb";
+import { InsertOneResult, ObjectId } from "mongodb";
 import s3FileService from "../s3-file/s3Storage.service";
 import { DefaultObject } from "../../@types";
 import { NotificationType } from "../notify/@types/NotificationType";
 import notifyService from "../notify/notify.service";
+import userDto from "dto/build/user/UserDto";
 
 jest.mock("./check/DepositScdlProcess.check.service");
 jest.mock("../../dataProviders/db/deposit-log/depositLog.port");
@@ -62,7 +63,8 @@ describe("DepositScdlProcessService", () => {
     >;
     let mockDetectCsvDelimiter: jest.SpyInstance<string, [fileContent: Buffer<ArrayBufferLike>]>;
 
-    const USER_ID = "userId";
+    const userId = new ObjectId();
+    const user = { _id: userId, roles: [] } as unknown as userDto;
 
     const createMockFile = (originalname: string, buffer: Buffer = Buffer.from("test")): Express.Multer.File => ({
         fieldname: "file",
@@ -96,7 +98,7 @@ describe("DepositScdlProcessService", () => {
 
             mockGetDepositLog.mockResolvedValueOnce(expected);
 
-            const actual = await depositScdlProcessService.getDepositLog(USER_ID);
+            const actual = await depositScdlProcessService.getDepositLog(userId.toString());
 
             expect(expected).toEqual(actual);
         });
@@ -104,9 +106,9 @@ describe("DepositScdlProcessService", () => {
         it("should call getDepositLog with userId", async () => {
             mockGetDepositLog.mockResolvedValueOnce(null);
 
-            await depositScdlProcessService.getDepositLog(USER_ID);
+            await depositScdlProcessService.getDepositLog(userId.toString());
 
-            expect(mockGetDepositLog).toHaveBeenCalledWith(USER_ID);
+            expect(mockGetDepositLog).toHaveBeenCalledWith(userId.toString());
         });
     });
 
@@ -118,7 +120,7 @@ describe("DepositScdlProcessService", () => {
             const mockDate = new Date("2025-11-04T10:30:00Z");
             jest.spyOn(global, "Date").mockImplementation(() => mockDate as never);
 
-            const actual = await depositScdlProcessService.generateExistingGrantsCsv(USER_ID);
+            const actual = await depositScdlProcessService.generateExistingGrantsCsv(userId.toString());
 
             expect(actual.csv).toMatchSnapshot();
             expect(actual.fileName).toBe("existing-grants-12345678901234-2021-2022-20251104.csv");
@@ -127,7 +129,9 @@ describe("DepositScdlProcessService", () => {
         it("Should throw NotFoundError when no depositLog", async () => {
             mockGetDepositLog.mockResolvedValueOnce(null);
 
-            await expect(depositScdlProcessService.generateExistingGrantsCsv(USER_ID)).rejects.toThrow(NotFoundError);
+            await expect(depositScdlProcessService.generateExistingGrantsCsv(userId.toString())).rejects.toThrow(
+                NotFoundError,
+            );
         });
 
         it("Should throw NotFoundError when wrong uploadedFileInfos", async () => {
@@ -142,7 +146,9 @@ describe("DepositScdlProcessService", () => {
             };
             mockGetDepositLog.mockResolvedValueOnce(depositLogWithMultipleAllocatorSiret);
 
-            await expect(depositScdlProcessService.generateExistingGrantsCsv(USER_ID)).rejects.toThrow(NotFoundError);
+            await expect(depositScdlProcessService.generateExistingGrantsCsv(userId.toString())).rejects.toThrow(
+                NotFoundError,
+            );
         });
     });
 
@@ -152,7 +158,7 @@ describe("DepositScdlProcessService", () => {
             mockDeleteDepositLog.mockResolvedValueOnce(true);
             mockS3DeleteUserFile.mockResolvedValueOnce();
 
-            expect(await depositScdlProcessService.deleteDepositLog(USER_ID)).toBeUndefined();
+            expect(await depositScdlProcessService.deleteDepositLog(userId.toString())).toBeUndefined();
         });
 
         it("should call deleteByUserId with userId", async () => {
@@ -160,9 +166,9 @@ describe("DepositScdlProcessService", () => {
             mockDeleteDepositLog.mockResolvedValueOnce(true);
             mockS3DeleteUserFile.mockResolvedValueOnce();
 
-            await depositScdlProcessService.deleteDepositLog(USER_ID);
+            await depositScdlProcessService.deleteDepositLog(userId.toString());
 
-            expect(mockDeleteDepositLog).toHaveBeenCalledWith(USER_ID);
+            expect(mockDeleteDepositLog).toHaveBeenCalledWith(userId.toString());
         });
 
         it("should call deleteUserFile when deposit log exists", async () => {
@@ -170,10 +176,10 @@ describe("DepositScdlProcessService", () => {
             mockDeleteDepositLog.mockResolvedValueOnce(true);
             mockS3DeleteUserFile.mockResolvedValueOnce();
 
-            await depositScdlProcessService.deleteDepositLog(USER_ID);
+            await depositScdlProcessService.deleteDepositLog(userId.toString());
 
             expect(mockS3DeleteUserFile).toHaveBeenCalledWith(
-                USER_ID,
+                userId.toString(),
                 DEPOSIT_LOG_ENTITY_STEP_2.uploadedFileInfos!.fileName,
             );
         });
@@ -183,7 +189,7 @@ describe("DepositScdlProcessService", () => {
             mockDeleteDepositLog.mockResolvedValueOnce(true);
             mockS3DeleteUserFile.mockResolvedValueOnce();
 
-            await depositScdlProcessService.deleteDepositLog(USER_ID);
+            await depositScdlProcessService.deleteDepositLog(userId.toString());
 
             expect(mockS3DeleteUserFile).not.toHaveBeenCalled();
         });
@@ -194,14 +200,14 @@ describe("DepositScdlProcessService", () => {
             mockGetDepositLog.mockResolvedValueOnce(null);
 
             const expected: DepositScdlLogEntity = {
-                userId: USER_ID,
+                userId: userId.toString(),
                 step: 1,
                 overwriteAlert: true,
                 updateDate: new Date(),
             };
 
             jest.spyOn(DepositScdlLogDtoAdapter, "createDepositScdlLogDtoToEntity").mockReturnValue(expected);
-            const actual = await depositScdlProcessService.createDepositLog(CREATE_DEPOSIT_LOG_DTO, USER_ID);
+            const actual = await depositScdlProcessService.createDepositLog(CREATE_DEPOSIT_LOG_DTO, userId.toString());
 
             expect(actual).toMatchObject(expected);
         });
@@ -210,7 +216,7 @@ describe("DepositScdlProcessService", () => {
             mockGetDepositLog.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY);
 
             await expect(
-                depositScdlProcessService.createDepositLog(CREATE_DEPOSIT_LOG_DTO, USER_ID),
+                depositScdlProcessService.createDepositLog(CREATE_DEPOSIT_LOG_DTO, userId.toString()),
             ).rejects.toBeInstanceOf(ConflictError);
         });
     });
@@ -220,7 +226,7 @@ describe("DepositScdlProcessService", () => {
             mockGetDepositLog.mockResolvedValueOnce(DEPOSIT_LOG_ENTITY);
             const step = 3;
             const expected = {
-                userId: USER_ID,
+                userId: userId.toString(),
                 step: step,
                 overwriteAlert: true,
                 updateDate: new Date(),
@@ -231,12 +237,12 @@ describe("DepositScdlProcessService", () => {
             const actual = await depositScdlProcessService.updateDepositLog(
                 step,
                 DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
-                USER_ID,
+                userId.toString(),
             );
 
             expect(mockUpdatePartial).toHaveBeenCalledWith({
                 step,
-                userId: USER_ID,
+                userId: userId.toString(),
                 ...DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
             });
 
@@ -247,7 +253,7 @@ describe("DepositScdlProcessService", () => {
             mockGetDepositLog.mockResolvedValueOnce(null);
 
             await expect(
-                depositScdlProcessService.updateDepositLog(2, CREATE_DEPOSIT_LOG_DTO, USER_ID),
+                depositScdlProcessService.updateDepositLog(2, CREATE_DEPOSIT_LOG_DTO, userId.toString()),
             ).rejects.toBeInstanceOf(NotFoundError);
         });
     });
@@ -265,7 +271,7 @@ describe("DepositScdlProcessService", () => {
             const step = 2;
 
             const expected: DepositScdlLogEntity = {
-                userId: USER_ID,
+                userId: userId.toString(),
                 step: step,
                 overwriteAlert: true,
                 updateDate: new Date(),
@@ -291,13 +297,13 @@ describe("DepositScdlProcessService", () => {
             const actual = await depositScdlProcessService.validateScdlFile(
                 file,
                 DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
-                USER_ID,
+                userId.toString(),
             );
 
             expect(mockUpdatePartial).toHaveBeenCalledWith(
                 expect.objectContaining({
                     step: 2,
-                    userId: "userId",
+                    userId: userId.toString(),
                     permissionAlert: true,
                     uploadedFileInfos: expect.any(UploadedFileInfosEntity),
                 }),
@@ -410,7 +416,7 @@ describe("DepositScdlProcessService", () => {
 
         it("should throw not found error when not deposit log found", async () => {
             mockGetDepositLog.mockResolvedValueOnce(null);
-            await expect(depositScdlProcessService.parseAndPersistScdlFile(USER_ID)).rejects.toThrow(NotFoundError);
+            await expect(depositScdlProcessService.parseAndPersistScdlFile(user)).rejects.toThrow(NotFoundError);
         });
 
         it("should call createProducer if producer don't exists", async () => {
@@ -432,7 +438,7 @@ describe("DepositScdlProcessService", () => {
             mockGetProducer.mockResolvedValueOnce(null);
             mockCreateProducer.mockResolvedValueOnce({ siret: "12345678901234" } as MiscScdlProducerEntity);
 
-            await depositScdlProcessService.parseAndPersistScdlFile(USER_ID);
+            await depositScdlProcessService.parseAndPersistScdlFile(user);
 
             expect(mockCreateProducer).toHaveBeenCalledTimes(1);
             expect(mockCreateProducer).toHaveBeenCalledWith(new Siret(DEPOSIT_LOG_ENTITY_STEP_2.allocatorSiret!));
@@ -456,7 +462,7 @@ describe("DepositScdlProcessService", () => {
 
             mockParseCsv.mockReturnValueOnce(parsedResult);
 
-            await expect(depositScdlProcessService.parseAndPersistScdlFile(USER_ID)).rejects.toThrow(BadRequestError);
+            await expect(depositScdlProcessService.parseAndPersistScdlFile(user)).rejects.toThrow(BadRequestError);
 
             expect(persistMock).not.toHaveBeenCalled();
             expect(deletDepositMock).not.toHaveBeenCalled();
@@ -480,7 +486,7 @@ describe("DepositScdlProcessService", () => {
 
             mockParseCsv.mockReturnValueOnce(parsedResult);
 
-            await depositScdlProcessService.parseAndPersistScdlFile(USER_ID);
+            await depositScdlProcessService.parseAndPersistScdlFile(user);
 
             expect(persistMock).toHaveBeenCalledTimes(1);
             expect(deletDepositMock).toHaveBeenCalledTimes(1);
@@ -508,7 +514,7 @@ describe("DepositScdlProcessService", () => {
 
             mockParseCsv.mockReturnValueOnce(parsedResult);
 
-            await depositScdlProcessService.parseAndPersistScdlFile(USER_ID);
+            await depositScdlProcessService.parseAndPersistScdlFile(user);
             expect(notifyService.notify).toHaveBeenCalledWith(NotificationType.DEPOSIT_SCDL_SUCCESS, {
                 providerName: "prov_name",
                 providerSiret: "12345678901234",

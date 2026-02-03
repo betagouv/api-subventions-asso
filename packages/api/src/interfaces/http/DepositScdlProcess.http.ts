@@ -189,7 +189,7 @@ export class DepositScdlProcessHttp extends Controller {
     @Response("400", "Bad Request, invalid payload")
     @Response("409", "Conflict, database state has changed since last parsing. Re-parsing required.")
     public async parseAndPersistScdlFile(@Request() req: IdentifiedRequest): Promise<void> {
-        await depositScdlProcessService.parseAndPersistScdlFile(req.user._id.toString());
+        await depositScdlProcessService.parseAndPersistScdlFile(req.user);
         this.setStatus(204);
     }
 }
