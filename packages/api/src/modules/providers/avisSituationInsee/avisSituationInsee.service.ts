@@ -36,7 +36,8 @@ export class AvisSituationInseeService extends ProviderCore implements DocumentP
     }
 
     private async getInseeEstablishmentsBySiren(siren: Siren): Promise<AvisSituationCache | false> {
-        if (this.requestCache.has(siren.value)) return this.requestCache.get(siren.value)[0];
+        const requestValues = this.requestCache.get(siren.value);
+        if (requestValues.length) return requestValues[0];
 
         try {
             const result = await this.http.get<{

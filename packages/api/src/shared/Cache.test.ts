@@ -13,7 +13,6 @@ describe("CacheData", () => {
         const cache = new CacheData<string>(1000);
         cache.add("test", "Hello World");
 
-        expect(cache.has("test")).toBeTruthy();
         expect(cache.get("test")).toHaveLength(1);
     });
 
@@ -21,7 +20,6 @@ describe("CacheData", () => {
         const cache = new CacheData<string>(0);
         cache.add("test", "Hello World");
 
-        expect(cache.has("test")).toBeFalsy();
         expect(cache.get("test")).toHaveLength(0);
     });
 
@@ -29,7 +27,6 @@ describe("CacheData", () => {
         const cache = new CacheData<string>(1000);
         cache.add("test", "Hello World");
         cache.destroy();
-        expect(cache.has("test")).toBeFalsy();
         expect(cache.get("test")).toHaveLength(0);
     });
 
@@ -44,10 +41,10 @@ describe("CacheData", () => {
 
         cache.add("key4", "value4");
 
-        expect(cache.has("key1")).toBe(false);
-        expect(cache.has("key2")).toBe(false);
-        expect(cache.has("key3")).toBe(false);
-        expect(cache.has("key4")).toBe(true);
+        expect(cache.get("key1")).toHaveLength(0);
+        expect(cache.get("key2")).toHaveLength(0);
+        expect(cache.get("key3")).toHaveLength(0);
+        expect(cache.get("key4")).toStrictEqual(["value4"]);
     });
 
     it("should cleanup only for expired cache", () => {
