@@ -1,8 +1,8 @@
 import { MandatoryFlatEntity } from "./FlatEntity";
 
 interface PaymentFlatEntity extends MandatoryFlatEntity {
-    idVersement: string;
-    exerciceBudgetaire: number;
+    paymentId: string;
+    budgetaryYear: number;
     amount: number;
     operationDate: Date;
     financialCenterCode: string;

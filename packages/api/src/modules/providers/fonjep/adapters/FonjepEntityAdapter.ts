@@ -128,7 +128,7 @@ export default class FonjepEntityAdapter {
             throw new Error("You must extract a position code from a FonjepPaymentFlat entity");
         } else {
             // cf buildFlatPaymentId
-            return entity.idVersement.split("-")[0];
+            return entity.paymentId.split("-")[0];
         }
     }
 
@@ -151,7 +151,7 @@ export default class FonjepEntityAdapter {
     ) {
         const keys = [
             "fonjep",
-            partialPaymentFlat.idVersement,
+            partialPaymentFlat.paymentId,
             partialPaymentFlat.programNumber,
             GenericAdapter.NOT_APPLICABLE_VALUE, // action code
             GenericAdapter.NOT_APPLICABLE_VALUE, // activity code
@@ -202,8 +202,8 @@ export default class FonjepEntityAdapter {
             });
 
             const partialPaymentFlat: Omit<FonjepPaymentFlatEntity, "uniqueId"> = {
-                idVersement: paymentId,
-                exerciceBudgetaire: position.annee as number,
+                paymentId: paymentId,
+                budgetaryYear: position.annee as number,
                 beneficiaryEstablishmentIdType: estabIdType,
                 beneficiaryEstablishmentId: estabId,
                 beneficiaryCompanyIdType: assoIdType,

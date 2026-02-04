@@ -22,8 +22,8 @@ export default class PaymentFlatAdapter {
         const toPvOrUndefined = value => (value ? toPvPaymentFlat(value) : undefined);
 
         const basePayment: BasePayment = {
-            exerciceBudgetaire: toPvPaymentFlat(entity.exerciceBudgetaire),
-            versementKey: toPvPaymentFlat(entity.idVersement),
+            exerciceBudgetaire: toPvPaymentFlat(entity.budgetaryYear),
+            versementKey: toPvPaymentFlat(entity.paymentId),
             siret: toPvPaymentFlat(entity.beneficiaryEstablishmentId.toString()),
             amount: toPvPaymentFlat(entity.amount),
             dateOperation: toPvPaymentFlat(entity.operationDate),
@@ -56,8 +56,8 @@ export default class PaymentFlatAdapter {
             typeIdEtablissementBeneficiaire: entity.beneficiaryEstablishmentIdType,
             idEtablissementBeneficiaire: entity.beneficiaryEstablishmentId.value,
             fournisseur: entity.provider,
-            idVersement: entity.idVersement,
-            exerciceBudgetaire: entity.exerciceBudgetaire,
+            idVersement: entity.paymentId,
+            exerciceBudgetaire: entity.budgetaryYear,
             montant: entity.amount,
             dateOperation: entity.operationDate,
             programme: entity.programName,
@@ -83,9 +83,9 @@ export default class PaymentFlatAdapter {
         // ChorusPaymentFlatEntity
         if (dbo.ej) {
             return {
-                idVersement: dbo.idVersement,
+                paymentId: dbo.idVersement,
                 uniqueId: dbo.idUnique,
-                exerciceBudgetaire: dbo.exerciceBudgetaire,
+                budgetaryYear: dbo.exerciceBudgetaire,
                 beneficiaryEstablishmentIdType: dbo.typeIdEtablissementBeneficiaire,
                 beneficiaryEstablishmentId: new Siret(dbo.idEtablissementBeneficiaire),
                 beneficiaryCompanyIdType: dbo.typeIdEntrepriseBeneficiaire,
@@ -113,9 +113,9 @@ export default class PaymentFlatAdapter {
         // FonjepPaymentFlatEntity
         else
             return {
-                idVersement: dbo.idVersement,
+                paymentId: dbo.idVersement,
                 uniqueId: dbo.idUnique,
-                exerciceBudgetaire: dbo.exerciceBudgetaire,
+                budgetaryYear: dbo.exerciceBudgetaire,
                 beneficiaryEstablishmentIdType: dbo.typeIdEtablissementBeneficiaire,
                 beneficiaryEstablishmentId: new Siret(dbo.idEtablissementBeneficiaire),
                 beneficiaryCompanyIdType: dbo.typeIdEntrepriseBeneficiaire,

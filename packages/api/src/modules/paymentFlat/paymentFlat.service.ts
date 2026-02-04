@@ -85,18 +85,18 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider,
     isGrantProvider = true;
 
     async getRawGrants(identifier: StructureIdentifier): Promise<RawPayment[]> {
-        let dbos: PaymentFlatEntity[] = [];
+        let entities: PaymentFlatEntity[] = [];
         if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            dbos = await paymentFlatPort.findBySiret(identifier.siret);
+            entities = await paymentFlatPort.findBySiret(identifier.siret);
         } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            dbos = await paymentFlatPort.findBySiren(identifier.siren);
+            entities = await paymentFlatPort.findBySiren(identifier.siren);
         }
 
-        return dbos.map(grant => ({
+        return entities.map(grant => ({
             provider: "payment-flat",
             type: "payment",
             data: grant,
-            joinKey: grant.idVersement ?? undefined,
+            joinKey: grant.paymentId ?? undefined,
         }));
     }
 

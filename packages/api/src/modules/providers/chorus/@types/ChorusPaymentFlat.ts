@@ -4,7 +4,7 @@ import PaymentFlatEntity from "../../../../entities/flats/PaymentFlatEntity";
 export type ChorusPaymentFlatRaw = Pick<
     ChorusPaymentFlatEntity,
     | "ej"
-    | "exerciceBudgetaire"
+    | "budgetaryYear"
     | "beneficiaryEstablishmentIdType"
     | "beneficiaryEstablishmentId"
     | "beneficiaryCompanyIdType"

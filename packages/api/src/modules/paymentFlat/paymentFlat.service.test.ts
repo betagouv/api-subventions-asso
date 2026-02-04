@@ -104,7 +104,7 @@ describe("PaymentFlatService", () => {
     });
 
     describe("raw grant", () => {
-        const DATA = [{ ej: "EJ", provider: "chorus", idVersement: "EJ" }];
+        const DATA = [{ ej: "EJ", provider: "chorus", paymentId: "EJ" }];
 
         describe("getRawGrants", () => {
             const SIREN = new Siren("123456789");

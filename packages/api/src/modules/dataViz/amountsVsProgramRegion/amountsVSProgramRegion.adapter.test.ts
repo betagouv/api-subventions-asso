@@ -9,7 +9,7 @@ import {
 import AmountsVsProgramRegionAdapter from "./amountsVsProgramRegion.adapter";
 
 const EXPECTED_WITHOUT_NULLS = {
-    exerciceBudgetaire: CHORUS_PAYMENT_FLAT_ENTITY.exerciceBudgetaire,
+    exerciceBudgetaire: CHORUS_PAYMENT_FLAT_ENTITY.budgetaryYear,
     programme: `${CHORUS_PAYMENT_FLAT_ENTITY.programNumber} - ${CHORUS_PAYMENT_FLAT_ENTITY.programName}`,
     mission: CHORUS_PAYMENT_FLAT_ENTITY.mission,
     montant: CHORUS_PAYMENT_FLAT_ENTITY.amount,
@@ -17,7 +17,7 @@ const EXPECTED_WITHOUT_NULLS = {
 };
 
 const EXPECTED_WITH_NULLS = {
-    exerciceBudgetaire: CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS.exerciceBudgetaire,
+    exerciceBudgetaire: CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS.budgetaryYear,
     programme: String(CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS.programNumber),
     mission: CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS.mission,
     montant: CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS.amount,

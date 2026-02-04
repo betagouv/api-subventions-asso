@@ -11,8 +11,8 @@ export const CHORUS_PAYMENT_ID = "1000000000019--subv001--2023";
 
 export const CHORUS_PAYMENT_FLAT_ENTITY: ChorusPaymentFlatEntity = {
     uniqueId: "UNIQUE_ID",
-    idVersement: CHORUS_PAYMENT_ID, // id versement
-    exerciceBudgetaire: 2023, // exerciceBudgetaire
+    paymentId: CHORUS_PAYMENT_ID, // id versement
+    budgetaryYear: 2023, // exerciceBudgetaire
     beneficiaryEstablishmentIdType: "siret", // beneficiaryEstablishmentIdType
     beneficiaryEstablishmentId: new Siret(DEFAULT_ASSOCIATION.siret),
     beneficiaryCompanyIdType: "siren", // beneficiaryCompanyIdType
@@ -37,12 +37,12 @@ export const CHORUS_PAYMENT_FLAT_ENTITY: ChorusPaymentFlatEntity = {
     updateDate: new Date("2025-02-04"), // update date
 };
 
-export const LONELY_CHORUS_PAYMENT = { ...CHORUS_PAYMENT_FLAT_ENTITY, idVersement: "lonely-payment" };
+export const LONELY_CHORUS_PAYMENT = { ...CHORUS_PAYMENT_FLAT_ENTITY, paymentId: "lonely-payment" };
 
 export const CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS: ChorusPaymentFlatEntity = {
     uniqueId: "UNIQUE_ID",
-    idVersement: "ID_VERSEMENT", // id versement
-    exerciceBudgetaire: 2023, // exerciceBudgetaire
+    paymentId: "ID_VERSEMENT", // id versement
+    budgetaryYear: 2023, // exerciceBudgetaire
     beneficiaryEstablishmentIdType: "siret", // beneficiaryEstablishmentIdType
     beneficiaryEstablishmentId: new Siret(DEFAULT_ASSOCIATION.siret),
     beneficiaryCompanyIdType: "siren", // beneficiaryCompanyIdType
@@ -70,9 +70,9 @@ export const CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS: ChorusPaymentFlatEntity = {
 export const FONJEP_PAYMENT_FLAT_ID_VERSEMENT = `S03351-2023-05-12-2023-${new Siret(DEFAULT_ASSOCIATION.siret)}`;
 
 export const FONJEP_PAYMENT_FLAT_ENTITY: FonjepPaymentFlatEntity = {
-    idVersement: FONJEP_PAYMENT_FLAT_ID_VERSEMENT,
+    paymentId: FONJEP_PAYMENT_FLAT_ID_VERSEMENT,
     uniqueId: `${FONJEP_PAYMENT_FLAT_ID_VERSEMENT}-163-2023-07-12`,
-    exerciceBudgetaire: 2023,
+    budgetaryYear: 2023,
     beneficiaryEstablishmentIdType: "siret",
     beneficiaryEstablishmentId: new Siret(DEFAULT_ASSOCIATION.siret),
     beneficiaryCompanyIdType: "siren",
@@ -98,9 +98,9 @@ export const FONJEP_PAYMENT_FLAT_ENTITY: FonjepPaymentFlatEntity = {
 };
 
 export const FONJEP_PAYMENT_FLAT_ENTITY_2: FonjepPaymentFlatEntity = {
-    idVersement: FONJEP_PAYMENT_FLAT_ID_VERSEMENT,
+    paymentId: FONJEP_PAYMENT_FLAT_ID_VERSEMENT,
     uniqueId: `${FONJEP_PAYMENT_FLAT_ID_VERSEMENT}-163-2023-11-12`,
-    exerciceBudgetaire: 2023,
+    budgetaryYear: 2023,
     beneficiaryEstablishmentIdType: "siret",
     beneficiaryEstablishmentId: new Siret(DEFAULT_ASSOCIATION.siret),
     beneficiaryCompanyIdType: "siren",
@@ -139,7 +139,7 @@ const buildProviderValue = value => ({
 });
 
 export const PAYMENT_FROM_PAYMENT_FLAT: Payment = {
-    exerciceBudgetaire: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.exerciceBudgetaire),
+    exerciceBudgetaire: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.budgetaryYear),
     ej: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.ej),
     versementKey: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.ej),
     siret: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.beneficiaryEstablishmentId),

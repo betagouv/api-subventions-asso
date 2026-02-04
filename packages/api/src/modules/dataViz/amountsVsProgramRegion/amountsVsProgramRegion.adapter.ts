@@ -5,7 +5,7 @@ import AmountsVsProgramRegionEntity from "./entitiyAndDbo/amountsVsProgramRegion
 export default class AmountsVsProgramRegionAdapter {
     static toNotAggregatedEntity(paymentFlatEntity: PaymentFlatEntity): AmountsVsProgramRegionEntity {
         return {
-            exerciceBudgetaire: paymentFlatEntity.exerciceBudgetaire,
+            exerciceBudgetaire: paymentFlatEntity.budgetaryYear,
             regionAttachementComptable: paymentFlatEntity.accountingAttachmentRegion ?? "code region inconnu",
             programme: paymentFlatEntity.programName
                 ? String(paymentFlatEntity.programNumber).concat(" - ", paymentFlatEntity.programName)

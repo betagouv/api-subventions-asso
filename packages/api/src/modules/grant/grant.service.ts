@@ -162,7 +162,7 @@ export class GrantService {
         // group payments by paymentId
         const groupedPayments = payments.reduce(
             (acc, payment) => {
-                const paymentId = payment.idVersement;
+                const paymentId = payment.paymentId;
                 if (acc[paymentId]) acc[paymentId].push(payment);
                 else acc[paymentId] = [payment];
                 return acc;

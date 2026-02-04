@@ -5,7 +5,7 @@ exports[`PaymentFlatService raw grant getRawGrants returns raw grant data 1`] = 
   {
     "data": {
       "ej": "EJ",
-      "idVersement": "EJ",
+      "paymentId": "EJ",
       "provider": "chorus",
     },
     "joinKey": "EJ",

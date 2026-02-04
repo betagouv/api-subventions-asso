@@ -204,8 +204,8 @@ describe("FonjepEntityAdapter", () => {
                 const SIREN = SIRET.toSiren();
                 expect(mockBuildPaymentFlatUniqueId).toHaveBeenCalledWith(
                     {
-                        idVersement: PAYMENT_ID,
-                        exerciceBudgetaire: POSTE_ENTITY.annee as number,
+                        paymentId: PAYMENT_ID,
+                        budgetaryYear: POSTE_ENTITY.annee as number,
                         beneficiaryEstablishmentIdType: "siret",
                         beneficiaryEstablishmentId: SIRET,
                         beneficiaryCompanyIdType: "siren",

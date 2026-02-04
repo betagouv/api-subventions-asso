@@ -96,7 +96,7 @@ export default class ChorusAdapter {
     }
 
     private static getEntitiesByIdentifierRawData(data: ChorusLineDto): ChorusPaymentFlatRaw {
-        const exerciceBudgetaire = data["Exercice comptable"] ? parseInt(data["Exercice comptable"], 10) : null;
+        const budgetaryYear = data["Exercice comptable"] ? parseInt(data["Exercice comptable"], 10) : null;
         const beneficiaryEstablishmentId = this.getEstablishmentValueObject(data);
         const beneficiaryCompanyId = this.getCompanyId(beneficiaryEstablishmentId);
         const beneficiaryEstablishmentIdType = beneficiaryEstablishmentId.name;
@@ -105,7 +105,7 @@ export default class ChorusAdapter {
         // all nullable error should be handled with issue #3345
         return {
             //@ts-expect-error: this should be nullable but was in the original code refactored with #3342
-            exerciceBudgetaire,
+            budgetaryYear,
             beneficiaryEstablishmentIdType,
             beneficiaryEstablishmentId,
             beneficiaryCompanyIdType,
@@ -156,7 +156,7 @@ export default class ChorusAdapter {
 
         const rawDataWithDataBretagne: Omit<
             ChorusPaymentFlatEntity,
-            "accountingAttachmentRegion" | "idVersement" | "uniqueId"
+            "accountingAttachmentRegion" | "paymentId" | "uniqueId"
         > = {
             ...this.getEntitiesByIdentifierRawData(chorusDocument.data as ChorusLineDto),
             programName: programEntity?.label_programme ?? null,
@@ -172,12 +172,12 @@ export default class ChorusAdapter {
             updateDate: chorusDocument.updateDate,
         };
 
-        const idVersement = `${rawDataWithDataBretagne.beneficiaryEstablishmentId.value}-${rawDataWithDataBretagne.ej}-${rawDataWithDataBretagne.exerciceBudgetaire}`;
+        const paymentId = `${rawDataWithDataBretagne.beneficiaryEstablishmentId.value}-${rawDataWithDataBretagne.ej}-${rawDataWithDataBretagne.budgetaryYear}`;
         const accountingAttachmentRegion = ChorusAdapter.getRegionAttachementComptable(
             rawDataWithDataBretagne.accountingAttachment,
         );
         const partialPaymentFlat: Omit<ChorusPaymentFlatEntity, "uniqueId"> = {
-            idVersement,
+            paymentId,
             accountingAttachmentRegion,
             ...rawDataWithDataBretagne,
         };
@@ -191,7 +191,7 @@ export default class ChorusAdapter {
 
     private static buildFlatUniqueId(partialPaymentFlat: Omit<ChorusPaymentFlatEntity, "uniqueId">) {
         const {
-            idVersement,
+            paymentId,
             programNumber,
             actionCode,
             activityCode,
@@ -200,7 +200,7 @@ export default class ChorusAdapter {
             financialCenterCode,
         } = partialPaymentFlat;
 
-        return `chorus-${idVersement}-${programNumber}-${actionCode}-${activityCode}-${getShortISODate(operationDate)}-${accountingAttachment}-${financialCenterCode}`;
+        return `chorus-${paymentId}-${programNumber}-${actionCode}-${activityCode}-${getShortISODate(operationDate)}-${accountingAttachment}-${financialCenterCode}`;
     }
 
     private static getProgramCodeAndEntity(

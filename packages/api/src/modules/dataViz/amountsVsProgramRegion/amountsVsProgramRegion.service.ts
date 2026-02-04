@@ -17,7 +17,7 @@ export class AmountsVsProgramRegionService {
         const entities: Record<string, AmountsVsProgramRegionEntity> = {};
         while (await paymentFlatCursor.hasNext()) {
             const document = (await paymentFlatCursor.next()) as PaymentFlatEntity;
-            const key = `${document.accountingAttachmentRegion}-${document.programName}-${document.programNumber}-${document.exerciceBudgetaire}`;
+            const key = `${document.accountingAttachmentRegion}-${document.programName}-${document.programNumber}-${document.budgetaryYear}`;
             if (entities[key]) {
                 entities[key].montant += parseFloat(document.amount.toFixed(2));
             } else {
