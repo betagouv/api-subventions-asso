@@ -38,7 +38,8 @@ export const USER_NOT_PERSISTED: UserNotPersisted = {
     ...USER_SECRETS,
 };
 
-export const CONSUMER_USER = { ...USER_WITHOUT_SECRET, roles: ["user", "consumer"] };
+export const CONSUMER_USER: UserDto = { ...USER_WITHOUT_SECRET, roles: ["user", "consumer"] };
+export const ADMIN_USER: UserDto = { ...USER_WITHOUT_SECRET, roles: ["user", "admin"] };
 
 export const ANONYMIZED_USER = {
     ...USER_WITHOUT_SECRET,

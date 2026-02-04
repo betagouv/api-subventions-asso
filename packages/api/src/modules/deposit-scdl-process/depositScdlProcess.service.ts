@@ -22,7 +22,7 @@ import { ScdlStorableGrant } from "../providers/scdl/@types/ScdlStorableGrant";
 import ScdlErrorStats from "./entities/ScdlErrorStats";
 import notifyService from "../notify/notify.service";
 import { NotificationType } from "../notify/@types/NotificationType";
-import { isAdmin } from "../../../tests/__helpers__/userHelper";
+import { isUserAdmin } from "../../shared/helpers/UserHelper";
 
 export class DepositScdlProcessService {
     FIRST_STEP = 1;
@@ -255,7 +255,7 @@ export class DepositScdlProcessService {
             providerName: producer.name,
             fileName: file.originalname,
             userId: userId,
-            isAdmin: isAdmin(user),
+            fromAdmin: isUserAdmin(user),
         });
 
         await notifyService.notify(NotificationType.DEPOSIT_SCDL_SUCCESS, {
