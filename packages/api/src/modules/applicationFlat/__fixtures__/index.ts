@@ -8,6 +8,7 @@ import {
     FONJEP_PAYMENT_FLAT_ID_VERSEMENT,
 } from "../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
 import Siret from "../../../identifierObjects/Siret";
+import Siren from "../../../identifierObjects/Siren";
 
 export const DRAFT_ENTITY: Omit<ApplicationFlatEntity, "uniqueId" | "applicationId"> = {
     requestYear: 2023,
@@ -25,7 +26,8 @@ export const DRAFT_ENTITY: Omit<ApplicationFlatEntity, "uniqueId" | "application
     budgetaryYear: 2023,
     allocatorId: "123456789",
     managingAuthorityId: "012345678",
-    beneficiaryEstablishmentId: DEFAULT_ASSOCIATION.siret, // a siret here
+    beneficiaryEstablishmentId: new Siret(DEFAULT_ASSOCIATION.siret), // a siret here
+    beneficiaryCompanyId: new Siren(DEFAULT_ASSOCIATION.siren),
     confinancersId: [],
     joinKeyId: "joint001",
     idRAE: "RAEid",
@@ -51,6 +53,7 @@ export const DRAFT_ENTITY: Omit<ApplicationFlatEntity, "uniqueId" | "application
     allocatorIdType: null,
     managingAuthorityIdType: null,
     beneficiaryEstablishmentIdType: Siret.getName(),
+    beneficiaryCompanyIdType: Siren.getName(),
     cofinancersIdType: [],
     instructiveDepartmentIdType: null,
     updateDate: new Date("2025-12-12"),
@@ -95,6 +98,7 @@ export const DBO: ApplicationFlatDbo = {
     idAttribuant: "123456789",
     idAutoriteGestion: "012345678",
     idEtablissementBeneficiaire: DEFAULT_ASSOCIATION.siret, // a siret here
+    idEntrepriseBeneficiaire: DEFAULT_ASSOCIATION.siren,
     idCofinanceursSollicites: [],
     idJointure: "joint001",
     idRAE: "RAEid",
@@ -119,7 +123,8 @@ export const DBO: ApplicationFlatDbo = {
     statutLabel: ApplicationStatus.GRANTED,
     typeIdAttribuant: null,
     typeIdAutoriteGestion: null,
-    typeIdEtablissementBeneficiaire: "siret",
+    typeIdEtablissementBeneficiaire: Siret.getName(),
+    typeIdEntrepriseBeneficiaire: Siren.getName(),
     typeIdCofinanceursSollicites: [],
     typeIdServiceInstructeur: null,
     dateMiseAJour: new Date("2025-12-12"),

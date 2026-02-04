@@ -1,15 +1,8 @@
-import { ProviderDataEntity } from "../../@types/ProviderData";
-import { CompanyIdName, EstablishmentIdName } from "../../identifierObjects/@types/IdentifierName";
-import { CompanyIdType, EstablishmentIdType } from "../../identifierObjects/@types/IdentifierType";
+import { MandatoryFlatEntity } from "./FlatEntity";
 
-interface PaymentFlatEntity extends ProviderDataEntity {
+interface PaymentFlatEntity extends MandatoryFlatEntity {
     idVersement: string;
-    uniqueId: string;
     exerciceBudgetaire: number;
-    typeIdEtablissementBeneficiaire: EstablishmentIdName;
-    idEtablissementBeneficiaire: EstablishmentIdType;
-    typeIdEntrepriseBeneficiaire: CompanyIdName;
-    idEntrepriseBeneficiaire: CompanyIdType;
     amount: number;
     operationDate: Date;
     centreFinancierCode: string;
@@ -25,9 +18,7 @@ interface PaymentFlatEntity extends ProviderDataEntity {
     actionLabel: string | null;
     activityCode: string | null;
     activityLabel: string | null;
-    provider: string;
-    // don't know why ej is nullable. It is part of idVersement and should be mandatory
-    ej: string | null;
+    ej: string | null; // FONJEP doesn't use EJ
 }
 
 export default PaymentFlatEntity;

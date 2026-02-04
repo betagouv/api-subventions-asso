@@ -30,6 +30,9 @@ export default class SubventiaAdapter {
 
         const scheme = dbo.dispositif ? dbo.dispositif : "Subventions FIPD Intervention"; // null when application is rejected but seems always equal to "Subventions FIPD Intervention" when not
 
+        const beneficiaryEstablishmentId = new Siret(dbo.siret);
+        const beneficiaryCompanyId = beneficiaryEstablishmentId.toSiren();
+
         return {
             uniqueId,
             applicationId,
@@ -46,8 +49,10 @@ export default class SubventiaAdapter {
             instructiveDepartmentName: dbo.service_instructeur,
             instructiveDepartmentIdType: null,
             instructiveDepartementId: null,
-            beneficiaryEstablishmentId: dbo.siret,
-            beneficiaryEstablishmentIdType: Siret.getName(),
+            beneficiaryEstablishmentId,
+            beneficiaryEstablishmentIdType: beneficiaryEstablishmentId.name,
+            beneficiaryCompanyId,
+            beneficiaryCompanyIdType: beneficiaryCompanyId.name,
             budgetaryYear: null, // we should ask the provider how to get that in the futur
             pluriannual: null,
             pluriannualYears: null, // null for now, see #3575 for updates

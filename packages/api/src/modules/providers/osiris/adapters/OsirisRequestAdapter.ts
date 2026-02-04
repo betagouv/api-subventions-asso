@@ -4,9 +4,10 @@ import OsirisActionEntity from "../entities/OsirisActionEntity";
 import OsirisRequestEntity from "../entities/OsirisRequestEntity";
 import { toStatusFactory } from "../../providers.adapter";
 import { ApplicationFlatEntity } from "../../../../entities/flats/ApplicationFlatEntity";
-import Siret from "../../../../identifierObjects/Siret";
-import Ridet from "../../../../identifierObjects/Ridet";
+import Siret, { SIRET_NAME } from "../../../../identifierObjects/Siret";
+import Ridet, { RIDET_NAME } from "../../../../identifierObjects/Ridet";
 import { GenericParser } from "../../../../shared/GenericParser";
+import { CompanyIdType, EstablishmentIdType } from "../../../../identifierObjects/@types/IdentifierType";
 
 export default class OsirisRequestAdapter {
     static PROVIDER_NAME = "Osiris";
@@ -134,7 +135,7 @@ export default class OsirisRequestAdapter {
     }
 
     // find if identifier is a disguised Ridet or a native Siret
-    static getAssoIdType(identifier: string) {
+    static getAssoIdType(identifier: string): typeof SIRET_NAME | typeof RIDET_NAME {
         // disguised ridet starts with 9900 or 99000
         if (identifier.startsWith("9900")) return Ridet.getName();
         else return Siret.getName();
@@ -182,11 +183,20 @@ export default class OsirisRequestAdapter {
         const applicationProviderId = entity.providerInformations.osirisId;
         const applicationId = `${provider}-${applicationProviderId}`;
         const uniqueId = `${applicationId}-${budgetaryYear}`;
-        const assoIdType = this.getAssoIdType(entity.legalInformations.siret);
-        const assoId =
-            assoIdType === Siret.getName()
-                ? entity.legalInformations.siret
-                : this.cleanRidet(entity.legalInformations.siret);
+        const estabIdType = this.getAssoIdType(entity.legalInformations.siret);
+
+        let assoId: CompanyIdType, estabId: EstablishmentIdType;
+
+        if (estabIdType === Siret.getName()) {
+            estabId = new Siret(entity.legalInformations.siret);
+            assoId = estabId.toSiren();
+        } else {
+            estabId = new Ridet(this.cleanRidet(entity.legalInformations.siret));
+            assoId = estabId.toRid();
+        }
+
+        const assoIdType = assoId.name;
+
         // TODO: make a DTO for OsirisRequest. See #3590
         // @ts-expect-error: dto not available
         const depositDate = GenericParser.ExcelDateToJSDate(entity.data["Dossier"]["Date Reception"]);
@@ -197,7 +207,7 @@ export default class OsirisRequestAdapter {
             ej = null;
             paymentId = null;
         } else {
-            paymentId = `${assoId}-${ej}-${budgetaryYear}`;
+            paymentId = `${estabId}-${ej}-${budgetaryYear}`;
         }
 
         const cofinancersNames = this.getCofinancers(actions);
@@ -218,8 +228,10 @@ export default class OsirisRequestAdapter {
             instructiveDepartmentName: entity.providerInformations.service_instructeur,
             instructiveDepartmentIdType: null,
             instructiveDepartementId: null,
-            beneficiaryEstablishmentId: assoId,
-            beneficiaryEstablishmentIdType: assoIdType,
+            beneficiaryEstablishmentId: estabId,
+            beneficiaryEstablishmentIdType: estabIdType,
+            beneficiaryCompanyId: assoId,
+            beneficiaryCompanyIdType: assoIdType,
             budgetaryYear,
             pluriannual: entity.providerInformations.pluriannualite === "Pluriannuel",
             pluriannualYears: this.getPluriannualYears(entity),

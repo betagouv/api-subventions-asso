@@ -13,10 +13,10 @@ export const CHORUS_PAYMENT_FLAT_ENTITY: ChorusPaymentFlatEntity = {
     uniqueId: "UNIQUE_ID",
     idVersement: CHORUS_PAYMENT_ID, // id versement
     exerciceBudgetaire: 2023, // exerciceBudgetaire
-    typeIdEtablissementBeneficiaire: "siret", // typeIdEtablissementBeneficiaire
-    idEtablissementBeneficiaire: new Siret(DEFAULT_ASSOCIATION.siret),
-    typeIdEntrepriseBeneficiaire: "siren", // typeIdEntrepriseBeneficiaire
-    idEntrepriseBeneficiaire: new Siren(DEFAULT_ASSOCIATION.siren),
+    beneficiaryEstablishmentIdType: "siret", // beneficiaryEstablishmentIdType
+    beneficiaryEstablishmentId: new Siret(DEFAULT_ASSOCIATION.siret),
+    beneficiaryCompanyIdType: "siren", // beneficiaryCompanyIdType
+    beneficiaryCompanyId: new Siren(DEFAULT_ASSOCIATION.siren),
     amount: 89988.3, // operation amount
     operationDate: new Date("2023-07-12T00:00:00.000Z"), // operation date
     centreFinancierCode: "AA01/0776-C001-4000", // centre financier code
@@ -43,10 +43,10 @@ export const CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS: ChorusPaymentFlatEntity = {
     uniqueId: "UNIQUE_ID",
     idVersement: "ID_VERSEMENT", // id versement
     exerciceBudgetaire: 2023, // exerciceBudgetaire
-    typeIdEtablissementBeneficiaire: "siret", // typeIdEtablissementBeneficiaire
-    idEtablissementBeneficiaire: new Siret(DEFAULT_ASSOCIATION.siret),
-    typeIdEntrepriseBeneficiaire: "siren", // typeIdEntrepriseBeneficiaire
-    idEntrepriseBeneficiaire: new Siren(DEFAULT_ASSOCIATION.siren),
+    beneficiaryEstablishmentIdType: "siret", // beneficiaryEstablishmentIdType
+    beneficiaryEstablishmentId: new Siret(DEFAULT_ASSOCIATION.siret),
+    beneficiaryCompanyIdType: "siren", // beneficiaryCompanyIdType
+    beneficiaryCompanyId: new Siren(DEFAULT_ASSOCIATION.siren),
     amount: 89988.3, // operation amount
     operationDate: new Date("2023-07-12T00:00:00.000Z"), // operation date
     centreFinancierCode: "AA01/0776-C001-4000", // centre financier code
@@ -73,10 +73,10 @@ export const FONJEP_PAYMENT_FLAT_ENTITY: FonjepPaymentFlatEntity = {
     idVersement: FONJEP_PAYMENT_FLAT_ID_VERSEMENT,
     uniqueId: `${FONJEP_PAYMENT_FLAT_ID_VERSEMENT}-163-2023-07-12`,
     exerciceBudgetaire: 2023,
-    typeIdEtablissementBeneficiaire: "siret",
-    idEtablissementBeneficiaire: new Siret(DEFAULT_ASSOCIATION.siret),
-    typeIdEntrepriseBeneficiaire: "siren",
-    idEntrepriseBeneficiaire: new Siren(DEFAULT_ASSOCIATION.siren),
+    beneficiaryEstablishmentIdType: "siret",
+    beneficiaryEstablishmentId: new Siret(DEFAULT_ASSOCIATION.siret),
+    beneficiaryCompanyIdType: "siren",
+    beneficiaryCompanyId: new Siren(DEFAULT_ASSOCIATION.siren),
     amount: 3752,
     operationDate: new Date("2023-07-12T00:00:00.000Z"),
     ej: GenericAdapter.NOT_APPLICABLE_VALUE,
@@ -101,10 +101,10 @@ export const FONJEP_PAYMENT_FLAT_ENTITY_2: FonjepPaymentFlatEntity = {
     idVersement: FONJEP_PAYMENT_FLAT_ID_VERSEMENT,
     uniqueId: `${FONJEP_PAYMENT_FLAT_ID_VERSEMENT}-163-2023-11-12`,
     exerciceBudgetaire: 2023,
-    typeIdEtablissementBeneficiaire: "siret",
-    idEtablissementBeneficiaire: new Siret(DEFAULT_ASSOCIATION.siret),
-    typeIdEntrepriseBeneficiaire: "siren",
-    idEntrepriseBeneficiaire: new Siren(DEFAULT_ASSOCIATION.siren),
+    beneficiaryEstablishmentIdType: "siret",
+    beneficiaryEstablishmentId: new Siret(DEFAULT_ASSOCIATION.siret),
+    beneficiaryCompanyIdType: "siren",
+    beneficiaryCompanyId: new Siren(DEFAULT_ASSOCIATION.siren),
     amount: 3752,
     operationDate: new Date("2023-11-12T00:00:00.000Z"),
     ej: GenericAdapter.NOT_APPLICABLE_VALUE,
@@ -142,7 +142,7 @@ export const PAYMENT_FROM_PAYMENT_FLAT: Payment = {
     exerciceBudgetaire: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.exerciceBudgetaire),
     ej: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.ej),
     versementKey: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.ej),
-    siret: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.idEtablissementBeneficiaire),
+    siret: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.beneficiaryEstablishmentId),
     amount: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.amount),
     dateOperation: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.operationDate),
     programme: buildProviderValue(CHORUS_PAYMENT_FLAT_ENTITY.programNumber),

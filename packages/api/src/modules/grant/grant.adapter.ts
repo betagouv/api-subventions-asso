@@ -49,7 +49,7 @@ export default class GrantAdapter {
         // if application undefined, at least one payment is present
         const siret = application
             ? application.beneficiaryEstablishmentId.toString()
-            : (lastPayment as PaymentFlatEntity).idEntrepriseBeneficiaire.toString();
+            : (lastPayment as PaymentFlatEntity).beneficiaryEstablishmentId.toString();
 
         const exercise = this.extractExerciseFromGrant(application, lastPayment);
 

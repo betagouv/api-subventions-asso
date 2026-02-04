@@ -6,19 +6,19 @@ exports[`ChorusAdapter getEntitiesByIdentifierRawData should return PaymentFlatR
 {
   "amount": 1000,
   "attachementComptable": "BRET",
+  "beneficiaryCompanyId": Siren {
+    "identifier": "123456789",
+  },
+  "beneficiaryCompanyIdType": "siren",
+  "beneficiaryEstablishmentId": Siret {
+    "identifier": "12345678900018",
+  },
+  "beneficiaryEstablishmentIdType": "siret",
   "centreFinancierCode": "AA01/0776-C001-4000",
   "centreFinancierLibelle": "UO DGER XXXX-C001",
   "ej": "0001821732",
   "exerciceBudgetaire": 2023,
-  "idEntrepriseBeneficiaire": Siren {
-    "identifier": "123456789",
-  },
-  "idEtablissementBeneficiaire": Siret {
-    "identifier": "12345678900018",
-  },
   "operationDate": 2025-02-02T00:00:00.000Z,
-  "typeIdEntrepriseBeneficiaire": "siren",
-  "typeIdEtablissementBeneficiaire": "siret",
 }
 `;
 
@@ -30,16 +30,18 @@ exports[`ChorusAdapter toNotAggregatedPaymentFlatEntity should return PaymentFla
   "activityLabel": "Label d'activité Exemple",
   "amount": 89988.3,
   "attachementComptable": "BRET",
+  "beneficiaryCompanyId": Siren {
+    "identifier": "100000000",
+  },
+  "beneficiaryCompanyIdType": "siren",
+  "beneficiaryEstablishmentId": Siret {
+    "identifier": "10000000000001",
+  },
+  "beneficiaryEstablishmentIdType": "siret",
   "centreFinancierCode": "AA01/0776-C001-4000",
   "centreFinancierLibelle": "UO DGER XXXX-C001",
   "ej": "0001821732",
   "exerciceBudgetaire": 2023,
-  "idEntrepriseBeneficiaire": Siren {
-    "identifier": "100000000",
-  },
-  "idEtablissementBeneficiaire": Siret {
-    "identifier": "10000000000001",
-  },
   "idVersement": "10000000000001-0001821732-2023",
   "ministry": "Ministère Exemple",
   "ministryAcronym": "ME",
@@ -49,8 +51,6 @@ exports[`ChorusAdapter toNotAggregatedPaymentFlatEntity should return PaymentFla
   "programNumber": 101,
   "provider": "chorus",
   "regionAttachementComptable": "Bretagne",
-  "typeIdEntrepriseBeneficiaire": "siren",
-  "typeIdEtablissementBeneficiaire": "siret",
   "uniqueId": "chorus-10000000000001-0001821732-2023-101-0101-01-02-077601003222-2023-07-12-BRET-AA01/0776-C001-4000",
   "updateDate": 2020-01-01T00:00:00.000Z,
 }
@@ -64,16 +64,18 @@ exports[`ChorusAdapter toNotAggregatedPaymentFlatEntity should return PaymentFla
   "activityLabel": "Label d'activité Exemple",
   "amount": 89988.3,
   "attachementComptable": "BRET",
+  "beneficiaryCompanyId": Siren {
+    "identifier": "100000000",
+  },
+  "beneficiaryCompanyIdType": "siren",
+  "beneficiaryEstablishmentId": Siret {
+    "identifier": "10000000000001",
+  },
+  "beneficiaryEstablishmentIdType": "siret",
   "centreFinancierCode": "AA01/0776-C001-4000",
   "centreFinancierLibelle": "UO DGER XXXX-C001",
   "ej": "0001821732",
   "exerciceBudgetaire": 2023,
-  "idEntrepriseBeneficiaire": Siren {
-    "identifier": "100000000",
-  },
-  "idEtablissementBeneficiaire": Siret {
-    "identifier": "10000000000001",
-  },
   "idVersement": "10000000000001-0001821732-2023",
   "ministry": "Ministère Exemple",
   "ministryAcronym": "ME",
@@ -83,8 +85,6 @@ exports[`ChorusAdapter toNotAggregatedPaymentFlatEntity should return PaymentFla
   "programNumber": 101,
   "provider": "chorus",
   "regionAttachementComptable": "Bretagne",
-  "typeIdEntrepriseBeneficiaire": "siren",
-  "typeIdEtablissementBeneficiaire": "siret",
   "uniqueId": "chorus-10000000000001-0001821732-2023-101-0101-01-02-077601003222-2023-07-12-BRET-AA01/0776-C001-4000",
   "updateDate": 2020-01-01T00:00:00.000Z,
 }

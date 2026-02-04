@@ -1,16 +1,12 @@
 import { ApplicationNature, ApplicationStatus, NOT_APPLICABLE, OrDefault, PaymentCondition } from "dto";
 import { IdentifierIdName } from "../../identifierObjects/@types/IdentifierName";
-import { ProviderDataEntity } from "../../@types/ProviderData";
+import { MandatoryFlatEntity } from "./FlatEntity";
 
 // TODO where to accept null ?
 
-interface MandatoryApplicationFlatEntity extends ProviderDataEntity {
-    uniqueId: string;
+interface MandatoryApplicationFlatEntity extends MandatoryFlatEntity {
     applicationId: string;
     applicationProviderId: string;
-    provider: string;
-    beneficiaryEstablishmentId: string;
-    beneficiaryEstablishmentIdType: string;
     statusLabel: ApplicationStatus;
     requestedAmount: number | null;
     grantedAmount: number | null;

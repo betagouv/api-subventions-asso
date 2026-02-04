@@ -25,6 +25,13 @@ export default class EstablishmentIdentifier {
         return null;
     }
 
+    static buildIdentifierFromString(identifier: string) {
+        if (Siret.isSiret(identifier)) return new Siret(identifier);
+        if (Ridet.isRidet(identifier)) return new Ridet(identifier);
+        if (Tahitiet.isTahitiet(identifier)) return new Tahitiet(identifier);
+        return null;
+    }
+
     toString(): string {
         if (!this.siret) throw new Error("No siret found in EstablishmentIdentifier");
         return this.siret?.value;

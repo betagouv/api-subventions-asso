@@ -167,30 +167,27 @@ export default class FonjepEntityAdapter {
         dataBretagneData: DataBretagneRecords,
     ): FonjepPaymentFlatEntity {
         const { payment, thirdParty, position } = fonjepData;
-        if (!thirdParty.siretOuRidet) {
+        const siretOuRidet = thirdParty.siretOuRidet;
+        if (!siretOuRidet) {
             throw new Error("Trying to create a FONJEP PaymentFlat without siret or ridet information");
         } else {
-            const estabId = thirdParty.siretOuRidet;
-            let estabIdType: "siret" | "ridet";
-            let assoIdType: "siren" | "rid";
-            let estabValueObjectId: Siret | Ridet;
-            let assoValueObjectId: Siren | Rid;
+            let estabId: Siret | Ridet;
+            let assoId: Siren | Rid;
 
-            if (Siret.isSiret(estabId)) {
-                estabIdType = "siret";
-                assoIdType = "siren";
-                estabValueObjectId = new Siret(estabId);
-                assoValueObjectId = estabValueObjectId.toSiren();
-            } else if (Ridet.isRidet(estabId)) {
-                estabIdType = "ridet";
-                assoIdType = "rid";
-                estabValueObjectId = new Ridet(estabId);
-                assoValueObjectId = estabValueObjectId.toRid();
+            if (Siret.isSiret(siretOuRidet)) {
+                estabId = new Siret(siretOuRidet);
+                assoId = estabId.toSiren();
+            } else if (Ridet.isRidet(siretOuRidet)) {
+                estabId = new Ridet(siretOuRidet);
+                assoId = estabId.toRid();
             } else {
                 throw new Error(
                     `Fonjep Tier with code ${position.code} has no siret or ridet and should not have been parsed`,
                 );
             }
+
+            const estabIdType = estabId.name;
+            const assoIdType = assoId.name;
 
             const program =
                 dataBretagneData.programs[
@@ -204,13 +201,13 @@ export default class FonjepEntityAdapter {
                 position,
             });
 
-            const partialPaymentFlat = {
+            const partialPaymentFlat: Omit<FonjepPaymentFlatEntity, "uniqueId"> = {
                 idVersement: paymentId,
                 exerciceBudgetaire: position.annee as number,
-                typeIdEtablissementBeneficiaire: estabIdType,
-                idEtablissementBeneficiaire: estabValueObjectId,
-                typeIdEntrepriseBeneficiaire: assoIdType,
-                idEntrepriseBeneficiaire: assoValueObjectId,
+                beneficiaryEstablishmentIdType: estabIdType,
+                beneficiaryEstablishmentId: estabId,
+                beneficiaryCompanyIdType: assoIdType,
+                beneficiaryCompanyId: assoId,
                 amount: payment.montantPaye,
                 operationDate: payment.dateVersement,
                 centreFinancierCode: GenericAdapter.NOT_APPLICABLE_VALUE,
@@ -249,15 +246,25 @@ export default class FonjepEntityAdapter {
         const { position, beneficiary, allocator, instructor, scheme } = entities;
         if (!position.annee) throw new Error("FONJEP ApplicationFlat must have a budgetary year");
         if (!beneficiary.siretOuRidet) throw new Error("FONJEP ApplicationFlat must have a beneficiary siret or ridet");
-        const beneficiaryEstablishmentIdType =
-            EstablishmentIdentifier.getIdentifierType(beneficiary.siretOuRidet) || null;
-        if (!beneficiaryEstablishmentIdType) {
+        const estabId = EstablishmentIdentifier.buildIdentifierFromString(beneficiary.siretOuRidet);
+        if (!estabId) {
             // TODO: this should not happen but has been encountered where rid was present instead of ridet. See #3586
             console.log(
                 `FONJEP ApplicationFlat must have a valid beneficiary siret or ridet, given ${beneficiary.siretOuRidet}.`,
             );
             return null;
         }
+
+        // TODO: make this available from EstablishmentIdentifier
+        let assoId: Siren | Rid;
+        if (estabId.name === Siret.getName()) {
+            assoId = (estabId as Siret).toSiren();
+        } else {
+            assoId = (estabId as Ridet).toRid();
+        }
+
+        const estabIdType = estabId.name;
+        const assoIdType = assoId.name;
 
         const provider = this.PROVIDER_NAME.toLowerCase(); // replace this with #3338
         const applicationProviderId = `${position.code}-${getShortISODate(this.getConventionDate(position))}`;
@@ -288,8 +295,10 @@ export default class FonjepEntityAdapter {
             instructiveDepartmentName: instructor?.raisonSociale ?? null,
             instructiveDepartmentIdType,
             instructiveDepartementId: instructor?.siretOuRidet ?? null,
-            beneficiaryEstablishmentId: beneficiary.siretOuRidet,
-            beneficiaryEstablishmentIdType,
+            beneficiaryEstablishmentId: estabId,
+            beneficiaryEstablishmentIdType: estabIdType,
+            beneficiaryCompanyId: assoId,
+            beneficiaryCompanyIdType: assoIdType,
             budgetaryYear: position.annee,
             pluriannual: true,
             pluriannualYears: null, // null for now, see #3575 for updates

@@ -102,11 +102,7 @@ export class ApplicationFlatService
      * @returns Siret or undefined if establishment type is ridet or tahitiet
      */
     getSiret(entity: ApplicationFlatEntity) {
-        if (
-            entity.beneficiaryEstablishmentIdType === Siret.getName() &&
-            Siret.isSiret(entity.beneficiaryEstablishmentId)
-        )
-            return new Siret(entity.beneficiaryEstablishmentId);
+        if (entity.beneficiaryEstablishmentId instanceof Siret) return entity.beneficiaryEstablishmentId;
         return undefined;
     }
 

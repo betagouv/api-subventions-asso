@@ -9,16 +9,18 @@ exports[`FonjepService createPaymentFlatEntitiesFromCollections returns payments
     "activityLabel": "Label d'activité Exemple",
     "amount": 89988.3,
     "attachementComptable": "BRET",
+    "beneficiaryCompanyId": Siren {
+      "identifier": "100000000",
+    },
+    "beneficiaryCompanyIdType": "siren",
+    "beneficiaryEstablishmentId": Siret {
+      "identifier": "10000000000001",
+    },
+    "beneficiaryEstablishmentIdType": "siret",
     "centreFinancierCode": "AA01/0776-C001-4000",
     "centreFinancierLibelle": "UO DGER XXXX-C001",
     "ej": "0001821732",
     "exerciceBudgetaire": 2023,
-    "idEntrepriseBeneficiaire": Siren {
-      "identifier": "100000000",
-    },
-    "idEtablissementBeneficiaire": Siret {
-      "identifier": "10000000000001",
-    },
     "idVersement": "1000000000019--subv001--2023",
     "ministry": "Ministère Exemple",
     "ministryAcronym": "ME",
@@ -28,8 +30,6 @@ exports[`FonjepService createPaymentFlatEntitiesFromCollections returns payments
     "programNumber": 101,
     "provider": "chorus",
     "regionAttachementComptable": "Bretagne",
-    "typeIdEntrepriseBeneficiaire": "siren",
-    "typeIdEtablissementBeneficiaire": "siret",
     "uniqueId": "UNIQUE_ID",
     "updateDate": 2025-02-04T00:00:00.000Z,
   },

@@ -31,6 +31,9 @@ export default class MiscScdlAdapter {
     static dboToApplicationFlat(dbo: ScdlGrantDbo): ApplicationFlatEntity {
         const dataHash = dbo._id.toString();
 
+        const beneficiaryEstablishmentId = new Siret(dbo.associationSiret);
+        const beneficiaryCompanyId = beneficiaryEstablishmentId.toSiren();
+
         return {
             requestYear: GenericAdapter.NOT_APPLICABLE_VALUE,
             pluriannualYears: GenericAdapter.NOT_APPLICABLE_VALUE,
@@ -49,7 +52,10 @@ export default class MiscScdlAdapter {
             allocatorId: dbo.allocatorSiret,
             managingAuthorityId: null,
             confinancersId: GenericAdapter.NOT_APPLICABLE_VALUE,
-            beneficiaryEstablishmentId: dbo.associationSiret,
+            beneficiaryEstablishmentId,
+            beneficiaryEstablishmentIdType: beneficiaryEstablishmentId.name,
+            beneficiaryCompanyId,
+            beneficiaryCompanyIdType: beneficiaryCompanyId.name,
             joinKeyId: GenericAdapter.NOT_APPLICABLE_VALUE,
             idRAE: dbo.idRAE ?? null,
             applicationId: GenericAdapter.NOT_APPLICABLE_VALUE,
@@ -77,7 +83,6 @@ export default class MiscScdlAdapter {
             managingAuthorityIdType: GenericAdapter.NOT_APPLICABLE_VALUE,
             cofinancersIdType: GenericAdapter.NOT_APPLICABLE_VALUE,
             instructiveDepartmentIdType: GenericAdapter.NOT_APPLICABLE_VALUE,
-            beneficiaryEstablishmentIdType: Siret.getName(),
             updateDate: dbo.updateDate,
         };
     }

@@ -105,14 +105,18 @@ export default class DauphinDtoAdapter {
         ) as ApplicationStatus;
         const ej = getSingleValueOrNull(simplified.ej);
 
+        const beneficiaryEstablishmentId = new Siret(simplified.siretDemandeur);
+        const beneficiaryCompanyId = beneficiaryEstablishmentId.toSiren();
         const adapted = {
             allocatorId: null,
             allocatorIdType: null,
             allocatorName: simplified.financeurs.join("|"),
             applicationId: "dauphin-" + localId,
             applicationProviderId: localId,
-            beneficiaryEstablishmentId: simplified.siretDemandeur,
-            beneficiaryEstablishmentIdType: Siret.getName(),
+            beneficiaryEstablishmentId,
+            beneficiaryEstablishmentIdType: beneficiaryEstablishmentId.name,
+            beneficiaryCompanyId,
+            beneficiaryCompanyIdType: beneficiaryCompanyId.name,
             budgetaryYear: simplified.exerciceBudgetaire,
             cofinancersIdType: null,
             cofinancersNames: null,

@@ -96,19 +96,19 @@ export default class ChorusAdapter {
 
     private static getEntitiesByIdentifierRawData(data: ChorusLineDto): ChorusPaymentFlatRaw {
         const exerciceBudgetaire = data["Exercice comptable"] ? parseInt(data["Exercice comptable"], 10) : null;
-        const idEstablishmentBeneficiaire = this.getEstablishmentValueObject(data);
-        const idEntrepriseBeneficiaire = this.getCompanyId(idEstablishmentBeneficiaire);
-        const typeIdEstablishmentBeneficiaire = idEstablishmentBeneficiaire.name;
-        const typeIdEntrepriseBeneficiaire = idEntrepriseBeneficiaire.name;
+        const beneficiaryEstablishmentId = this.getEstablishmentValueObject(data);
+        const beneficiaryCompanyId = this.getCompanyId(beneficiaryEstablishmentId);
+        const beneficiaryEstablishmentIdType = beneficiaryEstablishmentId.name;
+        const beneficiaryCompanyIdType = beneficiaryCompanyId.name;
 
         // all nullable error should be handled with issue #3345
         return {
             //@ts-expect-error: this should be nullable but was in the original code refactored with #3342
             exerciceBudgetaire,
-            typeIdEtablissementBeneficiaire: typeIdEstablishmentBeneficiaire,
-            idEtablissementBeneficiaire: idEstablishmentBeneficiaire,
-            typeIdEntrepriseBeneficiaire,
-            idEntrepriseBeneficiaire,
+            beneficiaryEstablishmentIdType,
+            beneficiaryEstablishmentId,
+            beneficiaryCompanyIdType,
+            beneficiaryCompanyId,
             //@ts-expect-error: this should be nullable but was in the original code refactored with #3342
             amount: this.getAmount(data),
             //@ts-expect-error: this should be nullable but was in the original code refactored with #3342
@@ -171,7 +171,7 @@ export default class ChorusAdapter {
             updateDate: chorusDocument.updateDate,
         };
 
-        const idVersement = `${rawDataWithDataBretagne.idEtablissementBeneficiaire.value}-${rawDataWithDataBretagne.ej}-${rawDataWithDataBretagne.exerciceBudgetaire}`;
+        const idVersement = `${rawDataWithDataBretagne.beneficiaryEstablishmentId.value}-${rawDataWithDataBretagne.ej}-${rawDataWithDataBretagne.exerciceBudgetaire}`;
         const regionAttachementComptable = ChorusAdapter.getRegionAttachementComptable(
             rawDataWithDataBretagne.attachementComptable,
         );

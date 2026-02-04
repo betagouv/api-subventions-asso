@@ -55,7 +55,7 @@ describe("GrantAdapter", () => {
     });
 
     describe("grantToExtractLine", () => {
-        const SIRET = CHORUS_PAYMENT_FLAT_ENTITY.idEtablissementBeneficiaire.toString();
+        const SIRET = CHORUS_PAYMENT_FLAT_ENTITY.beneficiaryEstablishmentId.toString();
 
         const LAST_PAYMENT_DATE = new Date("2025-11-20");
 

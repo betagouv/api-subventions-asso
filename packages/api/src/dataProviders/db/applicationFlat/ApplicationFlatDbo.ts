@@ -8,13 +8,10 @@ interface MandatoryApplicationFlatDbo extends FlatDbo {
     idUnique: string; // idSubvention - exerciceBudgetaire pour tous les fournisseurs sauf provider commançant par scdl. Un identifiant unique artificiellement crée pour provider commançant par scdl
     idSubvention: string; // nomProvider-idSubventionProvider
     idSubventionProvider: string; // id interne (du provider) d'identification d'une subvention permettant de faire le lien avec les actions. En cas de financement pluriannuel, cet identifiant est le même pour chaque exercice budgétaire. Dans le cas où la subvention concerne plusieurs bénéficiaires, cet identifiant est le même pour chaque bénéficiaire
-    fournisseur: string; // Service fournisseur de la donnée
-    idEtablissementBeneficiaire: string; // Identifiant de l'établissement de l'association qui demande la subvention
-    typeIdEtablissementBeneficiaire: string; // type identifiant de l'idBeneficiaire entre siret, ridet tahitiet
     statutLabel: ApplicationStatus;
     montantDemande: number | null; // Montant demandé par le demandeur pour un exercice budgetaire donné
     montantAccorde: number | null; // Montant accordé au demandeur pour un exercice budgetaire donné
-    exerciceBudgetaire: number | null; // subventia ne donne pas d'exercice budgétaire donc on est bloqué pour le moment
+    exerciceBudgetaire: number | null; // subventia ne donne pas d'exercice budgétaire donc on est bloqué pour le moment. Pourra être ajouté à FlatDbo une fois que subventia aura donné les exercices
 }
 
 type OptionalApplicationFlatDbo = {

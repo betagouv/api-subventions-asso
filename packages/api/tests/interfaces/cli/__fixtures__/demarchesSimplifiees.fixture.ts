@@ -4,6 +4,8 @@ import { SIRET_STR } from "../../../__fixtures__/association.fixture";
 import DemarchesSimplifieesDataEntity from "../../../../src/modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesDataEntity";
 import { ApplicationFlatEntity } from "../../../../src/entities/flats/ApplicationFlatEntity";
 import { ApplicationStatus } from "dto";
+import Siret from "../../../../src/identifierObjects/Siret";
+import Siren from "../../../../src/identifierObjects/Siren";
 
 export const DEMARCHE_ID = 42;
 export const SCHEMA: DemarchesSimplifieesSchema = {
@@ -172,8 +174,10 @@ export const DS_FLAT: ApplicationFlatEntity = {
     applicationId: "demarches-simplifiees-42-some-long-id",
     applicationProviderId: "some-long-id",
     provider: "demarches-simplifiees-42",
-    beneficiaryEstablishmentId: "10000000000001",
+    beneficiaryEstablishmentId: new Siret("10000000000001"),
     beneficiaryEstablishmentIdType: "siret",
+    beneficiaryCompanyId: new Siren("100000000"),
+    beneficiaryCompanyIdType: "siren",
     budgetaryYear: 2025,
     depositDate: new Date("2012-12-12T00:00:00.000Z"),
     requestYear: 2012,
