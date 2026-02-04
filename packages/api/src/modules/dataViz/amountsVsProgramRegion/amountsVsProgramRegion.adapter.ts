@@ -6,7 +6,7 @@ export default class AmountsVsProgramRegionAdapter {
     static toNotAggregatedEntity(paymentFlatEntity: PaymentFlatEntity): AmountsVsProgramRegionEntity {
         return {
             exerciceBudgetaire: paymentFlatEntity.exerciceBudgetaire,
-            regionAttachementComptable: paymentFlatEntity.regionAttachementComptable ?? "code region inconnu",
+            regionAttachementComptable: paymentFlatEntity.accountingAttachmentRegion ?? "code region inconnu",
             programme: paymentFlatEntity.programName
                 ? String(paymentFlatEntity.programNumber).concat(" - ", paymentFlatEntity.programName)
                 : String(paymentFlatEntity.programNumber),

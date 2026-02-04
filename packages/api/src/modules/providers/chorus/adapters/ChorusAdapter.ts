@@ -116,10 +116,10 @@ export default class ChorusAdapter {
             operationDate: this.getOperationDate(data),
             //@ts-expect-error: this should be nullable but was in the original code refactored with #3342
             ej: data["N° EJ"],
-            centreFinancierCode: data["Centre financier CODE"],
-            centreFinancierLibelle: data["Centre financier"],
+            financialCenterCode: data["Centre financier CODE"],
+            financialCenterLabel: data["Centre financier"],
             //@ts-expect-error: this should be nullable but was in the original code refactored with #3342
-            attachementComptable: data["Société"],
+            accountingAttachment: data["Société"],
         };
     }
 
@@ -156,7 +156,7 @@ export default class ChorusAdapter {
 
         const rawDataWithDataBretagne: Omit<
             ChorusPaymentFlatEntity,
-            "regionAttachementComptable" | "idVersement" | "uniqueId"
+            "accountingAttachmentRegion" | "idVersement" | "uniqueId"
         > = {
             ...this.getEntitiesByIdentifierRawData(chorusDocument.data as ChorusLineDto),
             programName: programEntity?.label_programme ?? null,
@@ -173,12 +173,12 @@ export default class ChorusAdapter {
         };
 
         const idVersement = `${rawDataWithDataBretagne.beneficiaryEstablishmentId.value}-${rawDataWithDataBretagne.ej}-${rawDataWithDataBretagne.exerciceBudgetaire}`;
-        const regionAttachementComptable = ChorusAdapter.getRegionAttachementComptable(
-            rawDataWithDataBretagne.attachementComptable,
+        const accountingAttachmentRegion = ChorusAdapter.getRegionAttachementComptable(
+            rawDataWithDataBretagne.accountingAttachment,
         );
         const partialPaymentFlat: Omit<ChorusPaymentFlatEntity, "uniqueId"> = {
             idVersement,
-            regionAttachementComptable,
+            accountingAttachmentRegion,
             ...rawDataWithDataBretagne,
         };
         const uniqueId = this.buildFlatUniqueId(partialPaymentFlat);
@@ -196,11 +196,11 @@ export default class ChorusAdapter {
             actionCode,
             activityCode,
             operationDate,
-            attachementComptable,
-            centreFinancierCode,
+            accountingAttachment,
+            financialCenterCode,
         } = partialPaymentFlat;
 
-        return `chorus-${idVersement}-${programNumber}-${actionCode}-${activityCode}-${getShortISODate(operationDate)}-${attachementComptable}-${centreFinancierCode}`;
+        return `chorus-${idVersement}-${programNumber}-${actionCode}-${activityCode}-${getShortISODate(operationDate)}-${accountingAttachment}-${financialCenterCode}`;
     }
 
     private static getProgramCodeAndEntity(

@@ -4,10 +4,10 @@ import { NOT_APPLICABLE } from "dto";
 
 export type FonjepPaymentFlatEntity = PaymentFlatEntity & {
     ej: NOT_APPLICABLE;
-    centreFinancierCode: NOT_APPLICABLE;
-    centreFinancierLibelle: NOT_APPLICABLE;
-    attachementComptable: NOT_APPLICABLE;
-    regionAttachementComptable: NOT_APPLICABLE;
+    financialCenterCode: NOT_APPLICABLE;
+    financialCenterLabel: NOT_APPLICABLE;
+    accountingAttachment: NOT_APPLICABLE;
+    accountingAttachmentRegion: NOT_APPLICABLE;
 };
 
 export type FonjepApplicationFlatEntity = ApplicationFlatEntity & { totalAmount: null | number };

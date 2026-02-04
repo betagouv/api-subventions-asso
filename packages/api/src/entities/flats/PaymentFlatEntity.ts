@@ -5,10 +5,10 @@ interface PaymentFlatEntity extends MandatoryFlatEntity {
     exerciceBudgetaire: number;
     amount: number;
     operationDate: Date;
-    centreFinancierCode: string;
-    centreFinancierLibelle: string | null;
-    attachementComptable: string;
-    regionAttachementComptable: string | null;
+    financialCenterCode: string;
+    financialCenterLabel: string | null;
+    accountingAttachment: string;
+    accountingAttachmentRegion: string | null;
     programName: string | null;
     programNumber: number;
     mission: string | null;

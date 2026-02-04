@@ -11,7 +11,7 @@ export type ChorusPaymentFlatRaw = Pick<
     | "beneficiaryCompanyId"
     | "amount"
     | "operationDate"
-    | "centreFinancierCode"
-    | "centreFinancierLibelle"
-    | "attachementComptable"
+    | "financialCenterCode"
+    | "financialCenterLabel"
+    | "accountingAttachment"
 >;

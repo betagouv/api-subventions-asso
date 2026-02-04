@@ -11,9 +11,10 @@ export type ChorusPaymentFlatRaw = Pick<
     | "beneficiaryCompanyId"
     | "amount"
     | "operationDate"
-    | "centreFinancierCode"
-    | "centreFinancierLibelle"
-    | "attachementComptable"
+    | "financialCenterCode"
+    | "financialCenterLabel"
+    | "accountingAttachment"
+    | "accountingAttachmentRegion"
 >;
 
 // we override EJ as string and not nullable because when it's persisted in DB it must have EJ defined

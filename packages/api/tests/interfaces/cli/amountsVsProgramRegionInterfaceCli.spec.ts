@@ -18,8 +18,8 @@ const MOCK_DOCUMENTS: PaymentFlatEntity[] = [
     {
         ...CHORUS_PAYMENT_FLAT_ENTITY,
         amount: 34_000,
-        attachementComptable: "HNOR",
-        regionAttachementComptable: "Normandie",
+        accountingAttachment: "HNOR",
+        accountingAttachmentRegion: "Normandie",
         exerciceBudgetaire: 2021,
         provider: "chorus",
         uniqueId: "5",
@@ -27,8 +27,8 @@ const MOCK_DOCUMENTS: PaymentFlatEntity[] = [
     {
         ...CHORUS_PAYMENT_FLAT_ENTITY,
         amount: 34_000,
-        attachementComptable: "BNOR",
-        regionAttachementComptable: "Normandie",
+        accountingAttachment: "BNOR",
+        accountingAttachmentRegion: "Normandie",
         exerciceBudgetaire: 2021,
         provider: "chorus",
         uniqueId: "6",
@@ -38,8 +38,8 @@ const MOCK_DOCUMENTS: PaymentFlatEntity[] = [
     {
         ...CHORUS_PAYMENT_FLAT_ENTITY,
         amount: 34_000,
-        attachementComptable: "BNOR",
-        regionAttachementComptable: "Normandie",
+        accountingAttachment: "BNOR",
+        accountingAttachmentRegion: "Normandie",
         exerciceBudgetaire: 2024,
         provider: "chorus",
         uniqueId: "7",
@@ -71,7 +71,7 @@ describe("AmountsVsProgramRegionCli", () => {
 
     const cli = new AmountsVsProgramRegionCli();
 
-    describe.only("init()", () => {
+    describe("init()", () => {
         it("should persist amounts vs program region collection", async () => {
             await cli.init();
             //@ts-expect-error protected method

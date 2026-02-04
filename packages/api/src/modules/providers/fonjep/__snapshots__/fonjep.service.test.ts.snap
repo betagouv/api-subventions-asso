@@ -3,12 +3,13 @@
 exports[`FonjepService createPaymentFlatEntitiesFromCollections returns payments flat 1`] = `
 [
   {
+    "accountingAttachment": "BRET",
+    "accountingAttachmentRegion": "Bretagne",
     "actionCode": "0101-01-02",
     "actionLabel": "Label d'action Exemple",
     "activityCode": "077601003222",
     "activityLabel": "Label d'activité Exemple",
     "amount": 89988.3,
-    "attachementComptable": "BRET",
     "beneficiaryCompanyId": Siren {
       "identifier": "100000000",
     },
@@ -17,10 +18,10 @@ exports[`FonjepService createPaymentFlatEntitiesFromCollections returns payments
       "identifier": "10000000000001",
     },
     "beneficiaryEstablishmentIdType": "siret",
-    "centreFinancierCode": "AA01/0776-C001-4000",
-    "centreFinancierLibelle": "UO DGER XXXX-C001",
     "ej": "0001821732",
     "exerciceBudgetaire": 2023,
+    "financialCenterCode": "AA01/0776-C001-4000",
+    "financialCenterLabel": "UO DGER XXXX-C001",
     "idVersement": "1000000000019--subv001--2023",
     "ministry": "Ministère Exemple",
     "ministryAcronym": "ME",
@@ -29,7 +30,6 @@ exports[`FonjepService createPaymentFlatEntitiesFromCollections returns payments
     "programName": "Programme Exemple",
     "programNumber": 101,
     "provider": "chorus",
-    "regionAttachementComptable": "Bretagne",
     "uniqueId": "UNIQUE_ID",
     "updateDate": 2025-02-04T00:00:00.000Z,
   },

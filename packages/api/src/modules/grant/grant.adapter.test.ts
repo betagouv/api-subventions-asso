@@ -105,7 +105,7 @@ describe("GrantAdapter", () => {
         });
 
         it("chooses last financial center", () => {
-            const expected = `${LAST_PAYMENT.centreFinancierCode} - ${LAST_PAYMENT.centreFinancierLibelle}`;
+            const expected = `${LAST_PAYMENT.financialCenterCode} - ${LAST_PAYMENT.financialCenterLabel}`;
             const actual = GrantAdapter.grantToExtractLine(GRANT, ASSO, ESTAB_BY_SIRET).financialCenter;
             expect(actual).toBe(expected);
         });

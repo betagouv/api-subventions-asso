@@ -27,7 +27,7 @@ describe("amountsVSProgramRegionService", () => {
                 CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS,
                 { ...CHORUS_PAYMENT_FLAT_ENTITY, exerciceBudgetaire: 2025 },
                 { ...CHORUS_PAYMENT_FLAT_ENTITY, programNumber: "programNumber" },
-                { ...CHORUS_PAYMENT_FLAT_ENTITY, regionAttachementComptable: "Occitanie" },
+                { ...CHORUS_PAYMENT_FLAT_ENTITY, accountingAttachmentRegion: "Occitanie" },
             ];
             nDocuments = mockDocuments.length;
 

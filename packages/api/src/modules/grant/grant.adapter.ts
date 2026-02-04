@@ -63,7 +63,7 @@ export default class GrantAdapter {
                     p => `${p.programNumber} - ${p.programName}`,
                 ),
                 financialCenter: lastPayment
-                    ? `${lastPayment.centreFinancierCode} - ${lastPayment.centreFinancierLibelle}`
+                    ? `${lastPayment.financialCenterCode} - ${lastPayment.financialCenterLabel}`
                     : undefined,
                 paidAmount: payments.reduce((currentSum: number, payment) => payment.amount + currentSum, 0),
                 paymentDate: lastPayment?.operationDate.toISOString().split("T")[0],

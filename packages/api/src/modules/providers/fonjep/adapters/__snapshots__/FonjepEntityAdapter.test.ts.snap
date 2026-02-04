@@ -62,12 +62,13 @@ exports[`FonjepEntityAdapter (flat part) toFonjepApplicationFlat return applicat
 
 exports[`FonjepEntityAdapter (flat part) toFonjepPaymentFlat returns FonjepPaymentFlat entity 1`] = `
 {
+  "accountingAttachment": "N/A",
+  "accountingAttachmentRegion": "N/A",
   "actionCode": "N/A",
   "actionLabel": "N/A",
   "activityCode": "N/A",
   "activityLabel": "N/A",
   "amount": 1000,
-  "attachementComptable": "N/A",
   "beneficiaryCompanyId": Siren {
     "identifier": "100000000",
   },
@@ -76,10 +77,10 @@ exports[`FonjepEntityAdapter (flat part) toFonjepPaymentFlat returns FonjepPayme
     "identifier": "10000000000001",
   },
   "beneficiaryEstablishmentIdType": "siret",
-  "centreFinancierCode": "N/A",
-  "centreFinancierLibelle": "N/A",
   "ej": "N/A",
   "exerciceBudgetaire": 2022,
+  "financialCenterCode": "N/A",
+  "financialCenterLabel": "N/A",
   "idVersement": "PAYMENT_ID",
   "ministry": "Ministère Exemple",
   "ministryAcronym": "ME",
@@ -88,7 +89,6 @@ exports[`FonjepEntityAdapter (flat part) toFonjepPaymentFlat returns FonjepPayme
   "programName": "Programme Exemple",
   "programNumber": 163,
   "provider": "fonjep",
-  "regionAttachementComptable": "N/A",
   "uniqueId": "UNIQUE_ID",
   "updateDate": 2025-08-11T00:00:00.000Z,
 }

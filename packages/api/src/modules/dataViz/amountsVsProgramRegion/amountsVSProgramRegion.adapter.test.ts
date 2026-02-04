@@ -13,7 +13,7 @@ const EXPECTED_WITHOUT_NULLS = {
     programme: `${CHORUS_PAYMENT_FLAT_ENTITY.programNumber} - ${CHORUS_PAYMENT_FLAT_ENTITY.programName}`,
     mission: CHORUS_PAYMENT_FLAT_ENTITY.mission,
     montant: CHORUS_PAYMENT_FLAT_ENTITY.amount,
-    regionAttachementComptable: CHORUS_PAYMENT_FLAT_ENTITY.regionAttachementComptable,
+    regionAttachementComptable: CHORUS_PAYMENT_FLAT_ENTITY.accountingAttachmentRegion,
 };
 
 const EXPECTED_WITH_NULLS = {
@@ -21,7 +21,7 @@ const EXPECTED_WITH_NULLS = {
     programme: String(CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS.programNumber),
     mission: CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS.mission,
     montant: CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS.amount,
-    regionAttachementComptable: CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS.regionAttachementComptable,
+    regionAttachementComptable: CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS.accountingAttachmentRegion,
 };
 
 describe("AmountsVsProgramRegionAdapter", () => {

@@ -2,12 +2,13 @@
 
 exports[`PaymentFlatAdapter dboToEntity given dbo with nulls, should return a PaymentFlatEntity with nulls 1`] = `
 {
+  "accountingAttachment": "BRET",
+  "accountingAttachmentRegion": "Bretagne",
   "actionCode": "AC123",
   "actionLabel": "Label d'action Exemple",
   "activityCode": "AC456",
   "activityLabel": "Label d'activité Exemple",
   "amount": 1000,
-  "attachementComptable": "BRET",
   "beneficiaryCompanyId": Siren {
     "identifier": "123456789",
   },
@@ -16,10 +17,10 @@ exports[`PaymentFlatAdapter dboToEntity given dbo with nulls, should return a Pa
     "identifier": "12345678901234",
   },
   "beneficiaryEstablishmentIdType": "siret",
-  "centreFinancierCode": "AA01/0776-C001-4000",
-  "centreFinancierLibelle": "UO DGER XXXX-C001",
   "ej": "0001821732",
   "exerciceBudgetaire": 2023,
+  "financialCenterCode": "AA01/0776-C001-4000",
+  "financialCenterLabel": "UO DGER XXXX-C001",
   "idVersement": "12345678901234-0001821732-2023",
   "ministry": "Ministère Exemple",
   "ministryAcronym": null,
@@ -28,7 +29,6 @@ exports[`PaymentFlatAdapter dboToEntity given dbo with nulls, should return a Pa
   "programName": null,
   "programNumber": 1,
   "provider": "Fournisseur Exemple",
-  "regionAttachementComptable": "Bretagne",
   "uniqueId": "12345678901234-0001821732-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
   "updateDate": 2025-02-04T00:00:00.000Z,
 }
@@ -36,12 +36,13 @@ exports[`PaymentFlatAdapter dboToEntity given dbo with nulls, should return a Pa
 
 exports[`PaymentFlatAdapter dboToEntity given dbo without nulls, should return a PaymentFlatEntity without nulls 1`] = `
 {
+  "accountingAttachment": "BRET",
+  "accountingAttachmentRegion": "Bretagne",
   "actionCode": "AC123",
   "actionLabel": "Label d'action Exemple",
   "activityCode": "AC456",
   "activityLabel": "Label d'activité Exemple",
   "amount": 1000,
-  "attachementComptable": "BRET",
   "beneficiaryCompanyId": Siren {
     "identifier": "100000000",
   },
@@ -50,10 +51,10 @@ exports[`PaymentFlatAdapter dboToEntity given dbo without nulls, should return a
     "identifier": "10000000000001",
   },
   "beneficiaryEstablishmentIdType": "siret",
-  "centreFinancierCode": "AA01/0776-C001-4000",
-  "centreFinancierLibelle": "UO DGER XXXX-C001",
   "ej": "0001821732",
   "exerciceBudgetaire": 2023,
+  "financialCenterCode": "AA01/0776-C001-4000",
+  "financialCenterLabel": "UO DGER XXXX-C001",
   "idVersement": "12345678901234-0001821732-2023",
   "ministry": "Ministère Exemple",
   "ministryAcronym": "ME",
@@ -62,7 +63,6 @@ exports[`PaymentFlatAdapter dboToEntity given dbo without nulls, should return a
   "programName": "Programme Exemple",
   "programNumber": 1,
   "provider": "chorus",
-  "regionAttachementComptable": "Bretagne",
   "uniqueId": "12345678901234-0001821732-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
   "updateDate": 2025-02-04T00:00:00.000Z,
 }
