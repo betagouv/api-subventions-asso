@@ -4,7 +4,7 @@ exports[`PaymentFlat Port buildUpsertOperation returns bulk operation 1`] = `
 {
   "updateOne": {
     "filter": {
-      "uniqueId": "12345678901234-0001821732-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
+      "idUnique": "12345678901234-0001821732-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
     },
     "update": {
       "$set": {
@@ -18,8 +18,10 @@ exports[`PaymentFlat Port buildUpsertOperation returns bulk operation 1`] = `
         "dateOperation": 2023-04-01T00:00:00.000Z,
         "ej": "0001821732",
         "exerciceBudgetaire": 2023,
+        "fournisseur": "chorus",
         "idEntrepriseBeneficiaire": "100000000",
         "idEtablissementBeneficiaire": "10000000000001",
+        "idUnique": "12345678901234-0001821732-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
         "idVersement": "12345678901234-0001821732-2023",
         "libelleCentreFinancier": "UO DGER XXXX-C001",
         "ministere": "Ministère Exemple",
@@ -27,12 +29,10 @@ exports[`PaymentFlat Port buildUpsertOperation returns bulk operation 1`] = `
         "montant": 1000,
         "numeroProgramme": 1,
         "programme": "Programme Exemple",
-        "provider": "chorus",
         "regionAttachementComptable": "Bretagne",
         "sigleMinistere": "ME",
         "typeIdEntrepriseBeneficiaire": "siren",
         "typeIdEtablissementBeneficiaire": "siret",
-        "uniqueId": "12345678901234-0001821732-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
       },
     },
     "upsert": true,

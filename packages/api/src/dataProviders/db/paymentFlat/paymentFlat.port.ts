@@ -14,13 +14,13 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
 
     public async createIndexes(): Promise<void> {
         // use TS to avoid typo in index names
-        const uniqueIdIndex: keyof PaymentFlatDbo = "uniqueId";
+        const uniqueIdIndex: keyof PaymentFlatDbo = "idUnique";
         const idEstabIndex: keyof PaymentFlatDbo = "idEtablissementBeneficiaire";
         const typeIdEstabIndex: keyof PaymentFlatDbo = "typeIdEtablissementBeneficiaire";
         const idCompanyIndex: keyof PaymentFlatDbo = "idEntrepriseBeneficiaire";
         const typeIdCompanyIndex: keyof PaymentFlatDbo = "typeIdEntrepriseBeneficiaire";
         const budgetaryYear: keyof PaymentFlatDbo = "exerciceBudgetaire";
-        const provider: keyof PaymentFlatDbo = "provider";
+        const provider: keyof PaymentFlatDbo = "fournisseur";
 
         await this.collection.createIndex({ [uniqueIdIndex]: 1 }, { unique: true });
         await this.collection.createIndex({ [idEstabIndex]: 1, [typeIdEstabIndex]: 1 });
@@ -40,13 +40,13 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
 
     public upsertOne(entity: PaymentFlatEntity) {
         const updateDbo = PaymentFlatAdapter.toDbo(entity);
-        return this.collection.updateOne({ uniqueId: updateDbo.uniqueId }, { $set: updateDbo }, { upsert: true });
+        return this.collection.updateOne({ idUnique: updateDbo.idUnique }, { $set: updateDbo }, { upsert: true });
     }
 
     private buildUpsertOperation(dbo: Omit<PaymentFlatDbo, "_id">) {
         return {
             updateOne: {
-                filter: { uniqueId: dbo.uniqueId },
+                filter: { idUnique: dbo.idUnique },
                 update: { $set: dbo },
                 upsert: true,
             },
@@ -73,10 +73,10 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
 
     public cursorFindChorusOnly(exerciceBudgetaire?: number) {
         if (!exerciceBudgetaire) {
-            return this.cursorFind({ provider: "chorus" }) as FindCursor<ChorusPaymentFlatEntity>;
+            return this.cursorFind({ fournisseur: "chorus" }) as FindCursor<ChorusPaymentFlatEntity>;
         } else
             return this.cursorFind({
-                provider: "chorus",
+                fournisseur: "chorus",
                 exerciceBudgetaire: exerciceBudgetaire,
             }) as FindCursor<ChorusPaymentFlatEntity>;
     }

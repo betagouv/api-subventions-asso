@@ -14,20 +14,21 @@ import Ridet from "../../../../identifierObjects/Ridet";
 import { EstablishmentIdType } from "../../../../identifierObjects/@types/IdentifierType";
 import Tahitiet from "../../../../identifierObjects/Tahitiet";
 import REGION_MAPPING from "./ChorusRegionMapping";
+import { NOT_APPLICABLE_VALUE } from "core";
 
 export default class ChorusAdapter {
     // TODO: get this from enum and in lower case
     static PROVIDER_NAME = "Chorus";
 
-    public static getRegionAttachementComptable(attachementComptable: string | "N/A"): string | "N/A" {
-        if (attachementComptable == "N/A") return "N/A";
+    public static getRegionAttachementComptable(attachementComptable: string) {
+        if (attachementComptable == NOT_APPLICABLE_VALUE) return NOT_APPLICABLE_VALUE;
 
         const region = REGION_MAPPING[attachementComptable];
         if (region === undefined) {
             const errorMessage = `Unknown region code: ${attachementComptable}`;
             Sentry.captureException(new Error(errorMessage));
             console.error(errorMessage);
-            return "code region inconnu";
+            return null;
         }
         return region;
     }

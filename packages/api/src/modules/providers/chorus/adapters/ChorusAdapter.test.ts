@@ -210,9 +210,9 @@ describe("ChorusAdapter", () => {
             expect(actual).toEqual(expected);
         });
 
-        it("should return region name not found for an invalid region code", () => {
+        it("returns null when given string doesn't match a region code", () => {
             const actual = ChorusAdapter.getRegionAttachementComptable("INVALID");
-            const expected = "code region inconnu";
+            const expected = null;
             expect(actual).toBe(expected);
         });
 

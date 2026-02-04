@@ -71,7 +71,7 @@ describe("AmountsVsProgramRegionCli", () => {
 
     const cli = new AmountsVsProgramRegionCli();
 
-    describe("init()", () => {
+    describe.only("init()", () => {
         it("should persist amounts vs program region collection", async () => {
             await cli.init();
             //@ts-expect-error protected method

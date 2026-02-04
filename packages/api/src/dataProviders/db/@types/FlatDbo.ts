@@ -1,10 +1,13 @@
 import { CompanyIdName, EstablishmentIdName } from "dto";
+import { ObjectId } from "mongodb";
 
 export interface FlatDbo {
-    dateMiseAJour: Date;
-    idEtablissementBeneficiaire: string; // Identifiant de l'établissement de l'association qui demande la subvention
-    typeIdEtablissementBeneficiaire: EstablishmentIdName; // type identifiant de l'idBeneficiaire entre siret, ridet tahitiet
+    _id: ObjectId;
+    idUnique: string;
+    fournisseur: string;
+    idEtablissementBeneficiaire: string;
+    typeIdEtablissementBeneficiaire: EstablishmentIdName;
     idEntrepriseBeneficiaire: string;
     typeIdEntrepriseBeneficiaire: CompanyIdName;
-    fournisseur: string; // Service fournisseur de la donnée
+    dateMiseAJour: Date;
 }

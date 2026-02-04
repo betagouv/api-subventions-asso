@@ -8,7 +8,7 @@ interface PaymentFlatEntity extends MandatoryFlatEntity {
     centreFinancierCode: string;
     centreFinancierLibelle: string | null;
     attachementComptable: string;
-    regionAttachementComptable: string;
+    regionAttachementComptable: string | null;
     programName: string | null;
     programNumber: number;
     mission: string | null;

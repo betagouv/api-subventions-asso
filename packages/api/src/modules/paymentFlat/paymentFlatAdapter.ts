@@ -50,12 +50,12 @@ export default class PaymentFlatAdapter {
 
     static toDbo(entity: PaymentFlatEntity): Omit<PaymentFlatDbo, "_id"> {
         return {
-            uniqueId: entity.uniqueId,
+            idUnique: entity.uniqueId,
             typeIdEntrepriseBeneficiaire: entity.beneficiaryCompanyIdType,
             idEntrepriseBeneficiaire: entity.beneficiaryCompanyId.value,
             typeIdEtablissementBeneficiaire: entity.beneficiaryEstablishmentIdType,
             idEtablissementBeneficiaire: entity.beneficiaryEstablishmentId.value,
-            provider: entity.provider,
+            fournisseur: entity.provider,
             idVersement: entity.idVersement,
             exerciceBudgetaire: entity.exerciceBudgetaire,
             montant: entity.amount,
@@ -84,7 +84,7 @@ export default class PaymentFlatAdapter {
         if (dbo.ej) {
             return {
                 idVersement: dbo.idVersement,
-                uniqueId: dbo.uniqueId,
+                uniqueId: dbo.idUnique,
                 exerciceBudgetaire: dbo.exerciceBudgetaire,
                 beneficiaryEstablishmentIdType: dbo.typeIdEtablissementBeneficiaire,
                 beneficiaryEstablishmentId: new Siret(dbo.idEtablissementBeneficiaire),
@@ -106,7 +106,7 @@ export default class PaymentFlatAdapter {
                 actionLabel: dbo.action,
                 activityCode: dbo.codeActivite,
                 activityLabel: dbo.activite,
-                provider: dbo.provider,
+                provider: dbo.fournisseur,
                 updateDate: dbo.dateMiseAJour,
             };
         }
@@ -114,7 +114,7 @@ export default class PaymentFlatAdapter {
         else
             return {
                 idVersement: dbo.idVersement,
-                uniqueId: dbo.uniqueId,
+                uniqueId: dbo.idUnique,
                 exerciceBudgetaire: dbo.exerciceBudgetaire,
                 beneficiaryEstablishmentIdType: dbo.typeIdEtablissementBeneficiaire,
                 beneficiaryEstablishmentId: new Siret(dbo.idEtablissementBeneficiaire),
@@ -136,7 +136,7 @@ export default class PaymentFlatAdapter {
                 actionLabel: dbo.action,
                 activityCode: dbo.codeActivite,
                 activityLabel: dbo.activite,
-                provider: dbo.provider,
+                provider: dbo.fournisseur,
                 updateDate: dbo.dateMiseAJour,
             };
     }

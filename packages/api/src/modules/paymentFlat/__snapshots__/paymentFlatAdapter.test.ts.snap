@@ -80,8 +80,10 @@ exports[`PaymentFlatAdapter toDbo given entity with nulls, should return a Payme
   "dateOperation": 2023-07-12T00:00:00.000Z,
   "ej": "0001821732",
   "exerciceBudgetaire": 2023,
+  "fournisseur": "chorus",
   "idEntrepriseBeneficiaire": "100000000",
   "idEtablissementBeneficiaire": "10000000000001",
+  "idUnique": "UNIQUE_ID",
   "idVersement": "ID_VERSEMENT",
   "libelleCentreFinancier": "UO DGER XXXX-C001",
   "ministere": "Ministère Exemple",
@@ -89,12 +91,10 @@ exports[`PaymentFlatAdapter toDbo given entity with nulls, should return a Payme
   "montant": 89988.3,
   "numeroProgramme": 101,
   "programme": null,
-  "provider": "chorus",
   "regionAttachementComptable": "Bretagne",
   "sigleMinistere": null,
   "typeIdEntrepriseBeneficiaire": "siren",
   "typeIdEtablissementBeneficiaire": "siret",
-  "uniqueId": "UNIQUE_ID",
 }
 `;
 
@@ -110,8 +110,10 @@ exports[`PaymentFlatAdapter toDbo given entity without nulls, should return a Pa
   "dateOperation": 2023-07-12T00:00:00.000Z,
   "ej": "0001821732",
   "exerciceBudgetaire": 2023,
+  "fournisseur": "chorus",
   "idEntrepriseBeneficiaire": "100000000",
   "idEtablissementBeneficiaire": "10000000000001",
+  "idUnique": "UNIQUE_ID",
   "idVersement": "1000000000019--subv001--2023",
   "libelleCentreFinancier": "UO DGER XXXX-C001",
   "ministere": "Ministère Exemple",
@@ -119,12 +121,10 @@ exports[`PaymentFlatAdapter toDbo given entity without nulls, should return a Pa
   "montant": 89988.3,
   "numeroProgramme": 101,
   "programme": "Programme Exemple",
-  "provider": "chorus",
   "regionAttachementComptable": "Bretagne",
   "sigleMinistere": "ME",
   "typeIdEntrepriseBeneficiaire": "siren",
   "typeIdEtablissementBeneficiaire": "siret",
-  "uniqueId": "UNIQUE_ID",
 }
 `;
 
