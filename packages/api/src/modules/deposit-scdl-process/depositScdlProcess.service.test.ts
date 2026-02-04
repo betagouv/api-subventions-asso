@@ -28,7 +28,7 @@ import s3FileService from "../s3-file/s3Storage.service";
 import { DefaultObject } from "../../@types";
 import { NotificationType } from "../notify/@types/NotificationType";
 import notifyService from "../notify/notify.service";
-import { CONSUMER_USER } from "../user/__fixtures__/user.fixture";
+import { USER_WITHOUT_SECRET } from "../user/__fixtures__/user.fixture";
 
 jest.mock("./check/DepositScdlProcess.check.service");
 jest.mock("../../dataProviders/db/deposit-log/depositLog.port");
@@ -63,8 +63,8 @@ describe("DepositScdlProcessService", () => {
     >;
     let mockDetectCsvDelimiter: jest.SpyInstance<string, [fileContent: Buffer<ArrayBufferLike>]>;
 
-    const USER_ID_STR = CONSUMER_USER._id.toString();
-    const USER = CONSUMER_USER;
+    const USER_ID_STR = USER_WITHOUT_SECRET._id.toString();
+    const USER = USER_WITHOUT_SECRET;
 
     const createMockFile = (originalname: string, buffer: Buffer = Buffer.from("test")): Express.Multer.File => ({
         fieldname: "file",
