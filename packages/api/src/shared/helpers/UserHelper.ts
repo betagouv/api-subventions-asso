@@ -3,6 +3,7 @@ import { UserDto } from "dto";
 import UserDbo from "../../dataProviders/db/user/UserDbo";
 import statsService from "../../modules/stats/stats.service";
 import { ONE_DAY_MS } from "./DateHelper";
+import { RoleEnum } from "../../@enums/Roles";
 
 export const isUserActif = async (user: WithId<UserDbo> | UserDbo | UserDto) => {
     const INACTIVE_THRESHOLD = 7 * ONE_DAY_MS;
@@ -11,3 +12,5 @@ export const isUserActif = async (user: WithId<UserDbo> | UserDbo | UserDto) => 
 
     return Date.now() - lastSearchDate.getTime() <= INACTIVE_THRESHOLD;
 };
+
+export const isUserAdmin = (user: UserDto) => user.roles.includes(RoleEnum.admin);

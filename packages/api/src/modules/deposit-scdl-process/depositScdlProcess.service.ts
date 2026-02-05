@@ -1,6 +1,6 @@
 import depositLogPort from "../../dataProviders/db/deposit-log/depositLog.port";
 import DepositScdlLogEntity from "./entities/depositScdlLog.entity";
-import { CreateDepositScdlLogDto, DepositScdlLogDto } from "dto";
+import { CreateDepositScdlLogDto, DepositScdlLogDto, UserDto } from "dto";
 import { BadRequestError, ConflictError, NotFoundError } from "core";
 import depositScdlProcessCheckService from "./check/DepositScdlProcess.check.service";
 import DepositScdlLogDtoAdapter from "./depositScdlLog.dto.adapter";
@@ -22,6 +22,7 @@ import { ScdlStorableGrant } from "../providers/scdl/@types/ScdlStorableGrant";
 import ScdlErrorStats from "./entities/ScdlErrorStats";
 import notifyService from "../notify/notify.service";
 import { NotificationType } from "../notify/@types/NotificationType";
+import { isUserAdmin } from "../../shared/helpers/UserHelper";
 
 export class DepositScdlProcessService {
     FIRST_STEP = 1;
@@ -220,7 +221,8 @@ export class DepositScdlProcessService {
         return s3StorageService.getUserFileDownloadUrl(userId, fileName);
     }
 
-    async parseAndPersistScdlFile(userId: string) {
+    async parseAndPersistScdlFile(user: UserDto) {
+        const userId = user._id.toString();
         const existingDepositLog = await this.getDepositLog(userId);
         if (!existingDepositLog) {
             throw new NotFoundError("No deposit log found for this user");
@@ -253,6 +255,7 @@ export class DepositScdlProcessService {
             providerName: producer.name,
             fileName: file.originalname,
             userId: userId,
+            fromAdmin: isUserAdmin(user),
         });
 
         await notifyService.notify(NotificationType.DEPOSIT_SCDL_SUCCESS, {

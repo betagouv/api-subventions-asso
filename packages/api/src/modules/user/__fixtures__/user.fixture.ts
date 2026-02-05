@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 import { AgentJobTypeEnum, AgentTypeEnum, UserDto } from "dto";
 import { USER_EMAIL } from "../../../../tests/__helpers__/userHelper";
 import { UserNotPersisted } from "../../../dataProviders/db/user/UserDbo";
+import { RoleEnum } from "../../../@enums/Roles";
 
 export const SIGNED_TOKEN = "SIGNED_TOKEN";
 
@@ -38,7 +39,7 @@ export const USER_NOT_PERSISTED: UserNotPersisted = {
     ...USER_SECRETS,
 };
 
-export const CONSUMER_USER = { ...USER_WITHOUT_SECRET, roles: ["user", "consumer"] };
+export const CONSUMER_USER: UserDto = { ...USER_WITHOUT_SECRET, roles: [RoleEnum.user, RoleEnum.consumer] };
 
 export const ANONYMIZED_USER = {
     ...USER_WITHOUT_SECRET,

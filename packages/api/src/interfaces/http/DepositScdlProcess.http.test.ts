@@ -194,7 +194,7 @@ describe("DepositScdlProcessHttp", () => {
         it("should call service with args", async () => {
             parseAndPersistScdlFileSpy.mockResolvedValueOnce(true);
             await controller.parseAndPersistScdlFile(REQ);
-            expect(parseAndPersistScdlFileSpy).toHaveBeenCalledWith(REQ.user._id.toString());
+            expect(parseAndPersistScdlFileSpy).toHaveBeenCalledWith(REQ.user);
         });
 
         it("should return void after processing", async () => {

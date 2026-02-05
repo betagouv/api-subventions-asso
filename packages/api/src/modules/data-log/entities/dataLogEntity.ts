@@ -11,6 +11,7 @@ export type DataLogEntity = {
     fileName?: string;
     userId?: string;
     providerName?: string;
+    fromAdmin?: boolean; // if action is performed by an admin user
 };
 
 export type FileDataLogEntity = DataLogEntity & { source: DataLogSource.FILE; fileName: string };
