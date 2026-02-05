@@ -8,6 +8,7 @@ import CliController from "../../shared/CliController";
 import ChorusLineEntity from "../../modules/providers/chorus/entities/ChorusLineEntity";
 import paymentFlatChorusService from "../../modules/paymentFlat/paymentFlat.chorus.service";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";
+import { runTransaction } from "../../shared/transaction";
 
 @StaticImplements<CliStaticInterface>()
 export default class ChorusCli extends CliController {
@@ -58,22 +59,24 @@ export default class ChorusCli extends CliController {
             rejected: 0,
         };
 
-        await asyncForEach(batchs, async (batch, index) => {
-            CliHelper.printProgress(index * this.batchSize, totalEntities);
-            const result = await chorusService.insertBatchChorusLine(batch);
-            finalResult.created += result.created;
-            finalResult.rejected += result.rejected;
-        });
+        await runTransaction(async () => {
+            await asyncForEach(batchs, async (batch, index) => {
+                CliHelper.printProgress(index * this.batchSize, totalEntities);
+                const result = await chorusService.insertBatchChorusLine(batch);
+                finalResult.created += result.created;
+                finalResult.rejected += result.rejected;
+            });
 
-        logger.push(`RESULT: ${JSON.stringify(finalResult)}`);
+            logger.push(`RESULT: ${JSON.stringify(finalResult)}`);
 
-        for (const exercise of exercicesSet) {
-            await this.resyncPaymentFlatByExercise(exercise);
-        }
+            for (const exercise of exercicesSet) {
+                await this.resyncPaymentFlatByExercise(exercise);
+            }
 
-        fs.writeFileSync(this.logFileParsePath, logger.join(""), {
-            flag: "w",
-            encoding: "utf-8",
+            fs.writeFileSync(this.logFileParsePath, logger.join(""), {
+                flag: "w",
+                encoding: "utf-8",
+            });
         });
     }
 

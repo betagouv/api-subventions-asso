@@ -3,16 +3,24 @@ name: data-sub-localdev
 services:
   mongodb:
     image: "mongo:8.0.3"
-    container_name: mongodb
+    command:
+      - --replSet
+      - rs0
+      - --bind_ip_all
     ports:
       - "27017:27017"
     volumes:
       - data-sub-mongodb-data:/data/db
+    healthcheck:
+      test: [ "CMD", "pgrep", "mongod" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
     env_file:
       - .env.local
   minio:
     image: "minio/minio:latest"
-    container_name: minio-s3
     ports:
       - "9000:9000"
       - "9001:9001"
@@ -25,6 +33,28 @@ services:
       - /data/minio
       - --console-address
       - ":9001"
+  mongo-init:
+    image: mongo:8.0.3
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    restart: "no"
+    command: >
+      mongosh --host mongodb:27017 --eval "
+        try {
+          rs.initiate({
+            _id: 'rs0',
+            members: [{ _id: 0, host: 'localhost:27017' }]
+          });
+          print('Replica set successfully initialized');
+        } catch(e) {
+          if (e.code === 23) {
+            print('Replica set already initialized');
+          } else {
+            throw e;
+          }
+        }
+      "
 volumes:
   data-sub-mongodb-data:
     driver: local

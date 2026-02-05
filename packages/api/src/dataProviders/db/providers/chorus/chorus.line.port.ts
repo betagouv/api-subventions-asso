@@ -4,6 +4,7 @@ import Siren from "../../../../identifierObjects/Siren";
 import { DefaultObject } from "../../../../@types";
 import MongoPort from "../../../../shared/MongoPort";
 import ChorusLineEntity from "../../../../modules/providers/chorus/entities/ChorusLineEntity";
+import { getCurrentSession } from "../../../../shared/transaction";
 
 export class ChorusLinePort extends MongoPort<ChorusLineEntity> {
     readonly collectionName = "chorus-line";
@@ -31,6 +32,8 @@ export class ChorusLinePort extends MongoPort<ChorusLineEntity> {
     }
 
     public async upsertMany(entities: ChorusLineEntity[]) {
+        const session = getCurrentSession();
+
         const operations = entities.map(
             e =>
                 ({
@@ -41,7 +44,7 @@ export class ChorusLinePort extends MongoPort<ChorusLineEntity> {
                     },
                 }) as AnyBulkWriteOperation<ChorusLineEntity>,
         );
-        return this.collection.bulkWrite(operations);
+        return this.collection.bulkWrite(operations, { session });
     }
 
     public async update(entity: ChorusLineEntity) {
