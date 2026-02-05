@@ -6,6 +6,7 @@ import { IdentifiedRequest } from "../../@types";
 import userRolesService from "../../modules/user/services/roles/user.roles.service";
 import userRgpdService from "../../modules/user/services/rgpd/user.rgpd.service";
 import userCrudService from "../../modules/user/services/crud/user.crud.service";
+import statsService from "../../modules/stats/stats.service";
 
 @Route("admin")
 @Tags("Admin Controller")
@@ -63,5 +64,15 @@ export class AdminHttp extends Controller {
         }
 
         return await userRgpdService.disableById(id, false);
+    }
+
+    /**
+     *
+     * @param year
+     * @returns
+     */
+    @Get("/stats/:year")
+    public async getDetailedStats(@Path() year: string = new Date().getFullYear().toString()) {
+        return await statsService.doStuff(year);
     }
 }

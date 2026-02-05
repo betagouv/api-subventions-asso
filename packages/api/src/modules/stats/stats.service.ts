@@ -39,6 +39,10 @@ class StatsService {
     getAssociationsVisitsOnPeriod(start: Date, end: Date) {
         return statsAssociationsVisitPort.findOnPeriod(start, end);
     }
+
+    doStuff(year: string) {
+        return year;
+    }
 }
 
 const statsService = new StatsService();
