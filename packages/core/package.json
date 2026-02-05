@@ -1,6 +1,6 @@
 {
     "name": "core",
-    "version": "0.78.0",
+    "version": "0.78.1",
     "description": "Core package",
     "homepage": "https://github.com/betagouv/api-subventions-asso/tree/main/packages/core#readme",
     "license": "ISC",
@@ -43,6 +43,6 @@
     },
     "dependencies": {
         "@types/node": "24.10.1",
-        "dto": "workspace:0.78.0"
+        "dto": "workspace:0.78.1"
     }
 }

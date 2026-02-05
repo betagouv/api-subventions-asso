@@ -1,6 +1,6 @@
 {
     "name": "front",
-    "version": "0.78.0",
+    "version": "0.78.1",
     "description": "> TODO: description",
     "author": "Victor Serain <victor.serain@epitech.eu>",
     "homepage": "https://github.com/betagouv/api-subventions-asso/tree/main/packages/front#readme",
@@ -54,7 +54,7 @@
         "csv-stringify": "^6.4.5",
         "d3": "^7.9.0",
         "dotenv": "^14.3.2",
-        "dto": "workspace:0.78.0",
+        "dto": "workspace:0.78.1",
         "jitbit-html-sanitizer": "^0.2.1",
         "jschardet": "^3.1.4",
         "jsdom": "^22.1.0",
