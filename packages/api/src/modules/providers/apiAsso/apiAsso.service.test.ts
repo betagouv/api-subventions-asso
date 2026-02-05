@@ -46,14 +46,12 @@ describe("ApiAssoService", () => {
     describe("sendRequest", () => {
         // @ts-expect-error: access private prop
         const cache = apiAssoService.requestCache;
-        const cacheHasMock = jest.spyOn(cache, "has");
         const cacheGetMock = jest.spyOn(cache, "get");
 
         it("should return cache data", async () => {
             const expected = "FAKEDATA";
 
-            cacheHasMock.mockImplementationOnce(() => true);
-            cacheGetMock.mockImplementationOnce(() => [expected]);
+            cacheGetMock.mockImplementationOnce(() => expected);
 
             // @ts-expect-error: test private method
             const actual = await apiAssoService.sendRequest("fake/route");
@@ -66,7 +64,6 @@ describe("ApiAssoService", () => {
                 status: 200,
                 data: expected,
             });
-            cacheHasMock.mockImplementationOnce(() => false);
 
             // @ts-expect-error: test private method
             const actual = await apiAssoService.sendRequest("fake/route");
@@ -81,7 +78,7 @@ describe("ApiAssoService", () => {
                     data: 1,
                 }),
             );
-            cacheHasMock.mockImplementationOnce(() => false);
+            cacheGetMock.mockImplementationOnce(() => null);
 
             // @ts-expect-error: test private method
             const actual = await apiAssoService.sendRequest("fake/route");
@@ -96,7 +93,7 @@ describe("ApiAssoService", () => {
                     data: "Error",
                 }),
             );
-            cacheHasMock.mockImplementationOnce(() => false);
+            cacheGetMock.mockImplementationOnce(() => null);
 
             // @ts-expect-error: test private method
             const actual = await apiAssoService.sendRequest("fake/route");
@@ -108,7 +105,7 @@ describe("ApiAssoService", () => {
             httpGetSpy.mockImplementationOnce(() => {
                 throw new Error("Error test");
             });
-            cacheHasMock.mockImplementationOnce(() => false);
+            cacheGetMock.mockImplementationOnce(() => null);
 
             // @ts-expect-error: test private method
             const actual = await apiAssoService.sendRequest("fake/route");

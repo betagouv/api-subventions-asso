@@ -50,8 +50,9 @@ export class ApiEntrepriseService extends ProviderCore {
 
         const fullURL = `${url}?${params}`;
 
-        if (this.requestCache.has(fullURL)) {
-            return this.requestCache.get(fullURL)[0] as T | null;
+        const requestValue = this.requestCache.get(fullURL);
+        if (requestValue !== null) {
+            return requestValue as T | null;
         }
 
         let result;
