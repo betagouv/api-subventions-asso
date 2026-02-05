@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.79.0](https://github.com/betagouv/datasubvention/compare/v0.78.1...v0.79.0) (2026-02-05)
+
+### Bug Fixes
+
+- **api:** [#3534](https://github.com/betagouv/datasubvention/issues/3534) multiple siren rna with undefined ([#3797](https://github.com/betagouv/datasubvention/issues/3797)) ([f1581de](https://github.com/betagouv/datasubvention/commit/f1581de1540e5ec687751d841c63407de24f0563))
+
 ## [0.78.1](https://github.com/betagouv/datasubvention/compare/v0.78.0...v0.78.1) (2026-01-28)
 
 **Note:** Version bump only for package front

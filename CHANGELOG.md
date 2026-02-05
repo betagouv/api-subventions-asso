@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.79.0](https://github.com/betagouv/api-subventions-asso/compare/v0.78.1...v0.79.0) (2026-02-05)
+
+### Bug Fixes
+
+- **api:** [#3534](https://github.com/betagouv/api-subventions-asso/issues/3534) multiple siren rna with undefined ([#3797](https://github.com/betagouv/api-subventions-asso/issues/3797)) ([f1581de](https://github.com/betagouv/api-subventions-asso/commit/f1581de1540e5ec687751d841c63407de24f0563))
+- **api:** [#3800](https://github.com/betagouv/api-subventions-asso/issues/3800) fix detect range parser xlsx ([#3801](https://github.com/betagouv/api-subventions-asso/issues/3801)) ([929dd77](https://github.com/betagouv/api-subventions-asso/commit/929dd7755cb560aa33daca3f000d4e7ee5753af9))
+
+### Features
+
+- **api:** [#3756](https://github.com/betagouv/api-subventions-asso/issues/3756) add admin info into datalog ([#3813](https://github.com/betagouv/api-subventions-asso/issues/3813)) ([b743302](https://github.com/betagouv/api-subventions-asso/commit/b743302122d20868bb63bf132cf69c2271a846ba))
+- **api:** [#3808](https://github.com/betagouv/api-subventions-asso/issues/3808) improve chorus import perf ([#3809](https://github.com/betagouv/api-subventions-asso/issues/3809)) ([04b6471](https://github.com/betagouv/api-subventions-asso/commit/04b6471f200d5a8eb4c6743706db016acc1cf1b0))
+
 ## [0.78.1](https://github.com/betagouv/api-subventions-asso/compare/v0.78.0...v0.78.1) (2026-01-28)
 
 ### Bug Fixes
