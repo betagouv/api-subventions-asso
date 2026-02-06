@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 import statsAssociationsVisitPort from "../../dataProviders/db/stats/statsAssociationsVisit.port";
 import logsPort from "../../dataProviders/db/stats/logs.port";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
+import { WinstonLog } from "../../@types/WinstonLog";
 
 class StatsService {
     addAssociationVisit(visit: AssociationVisitEntity) {
@@ -21,18 +22,22 @@ class StatsService {
     }
 
     getAnonymizedLogsOnPeriod(start: Date, end: Date) {
-        return logsPort.getLogsOnPeriod(start, end).map(log => {
-            if (log.meta.req?.body?.email) delete log.meta.req.body.email;
-            if (log.meta.req?.body?.firstName) delete log.meta.req.body.firstName;
-            if (log.meta.req?.body?.lastName) delete log.meta.req.body.lastName;
-            if (log.meta.req?.body?.phoneNumber) delete log.meta.req.body.phoneNumber;
-            if (log.meta.req?.user) {
-                // userId is needed for joins with another table, but is saved as a string because of a dependency bug
-                log.meta.req.userId = new ObjectId(log.meta.req.user._id);
-                delete log.meta.req.user;
-            }
+        const cursor = logsPort.getLogsOnPeriod(start, end);
+        return cursor.map(log => {
+            const logToAnonymize: WinstonLog & { meta: { req: { userId?: ObjectId } } } = { ...log };
+            if (logToAnonymize.meta.req?.body?.email) delete logToAnonymize.meta.req.body.email;
+            if (logToAnonymize.meta.req?.body?.firstName) delete logToAnonymize.meta.req.body.firstName;
+            if (logToAnonymize.meta.req?.body?.lastName) delete logToAnonymize.meta.req.body.lastName;
+            if (logToAnonymize.meta.req?.body?.phoneNumber) delete logToAnonymize.meta.req.body.phoneNumber;
 
-            return log;
+            if (logToAnonymize.meta.req?.user) {
+                // userId is needed for joins with another table, but is saved as a string because of a dependency bug
+                logToAnonymize.meta.req.userId = new ObjectId(logToAnonymize.meta.req.user._id);
+                delete logToAnonymize.meta.req.user;
+                return logToAnonymize;
+            } else {
+                return logToAnonymize;
+            }
         });
     }
 
@@ -40,8 +45,8 @@ class StatsService {
         return statsAssociationsVisitPort.findOnPeriod(start, end);
     }
 
-    doStuff(year: string) {
-        return year;
+    doStuff() {
+        return {};
     }
 }
 

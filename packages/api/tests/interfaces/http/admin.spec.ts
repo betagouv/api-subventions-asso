@@ -10,6 +10,9 @@ import userCrudService from "../../../src/modules/user/services/crud/user.crud.s
 import userStatsService from "../../../src/modules/user/services/stats/user.stats.service";
 
 import { App } from "supertest/types";
+import logsPort from "../../../src/dataProviders/db/stats/logs.port";
+import { LoggedMeta, WinstonLog } from "../../../src/@types/WinstonLog";
+import DEFAULT_ASSOCIATION from "../../__fixtures__/association.fixture";
 
 const g = global as unknown as { app: App };
 
@@ -132,6 +135,35 @@ describe("AdminController, /admin", () => {
                 _id: expect.any(String),
                 signupAt: expect.any(String),
             });
+        });
+    });
+
+    describe("GET /stats", () => {
+        const LOG_ENTRY = { level: "info", message: "Request for integration test" };
+        const entryFactory =
+            (date: Date) =>
+            (meta: LoggedMeta): WinstonLog => ({ ...LOG_ENTRY, timestamp: date, meta });
+
+        const YEAR_2025 = new Date("2025");
+        const METAS: LoggedMeta[] = [
+            {
+                req: {
+                    url: `/association/${DEFAULT_ASSOCIATION.rna}/grants/v2`,
+                    method: "GET",
+                },
+                res: {},
+                responseTime: 1,
+            },
+        ];
+        const LOGS = METAS.map(meta => entryFactory(YEAR_2025)(meta));
+
+        beforeEach(() => {
+            // @ts-expect-error: for test only
+            logsPort.addTestLog(LOGS);
+        });
+
+        it("returns detailed API statistiques", async () => {
+            request(g.app).get("admin/api-stats").expect(200);
         });
     });
 });

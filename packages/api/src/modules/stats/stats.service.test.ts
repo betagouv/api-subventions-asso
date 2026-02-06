@@ -48,11 +48,8 @@ describe("StatsService", () => {
         const START = new Date("1955-06-22");
         const END = new Date("1985-06-22");
 
-        beforeAll(() => {
+        beforeEach(() => {
             jest.mocked(logsPort.getLogsOnPeriod).mockReturnValue([LOG] as unknown as FindCursor);
-        });
-        afterAll(() => {
-            jest.mocked(logsPort.getLogsOnPeriod).mockRestore();
         });
 
         it("calls port", () => {
@@ -73,7 +70,8 @@ describe("StatsService", () => {
 
         it("sets user id as ObjectId", () => {
             const expected = new ObjectId(ID_STRING);
-            const actual = statsService.getAnonymizedLogsOnPeriod(START, END)[0].meta.req.userId;
+            const req = statsService.getAnonymizedLogsOnPeriod(START, END)[0].meta.req;
+            const actual = req.userId;
             expect(actual).toEqual(expected);
         });
 

@@ -71,8 +71,8 @@ export class AdminHttp extends Controller {
      * @param year
      * @returns
      */
-    @Get("/stats/:year")
-    public async getDetailedStats(@Path() year: string = new Date().getFullYear().toString()) {
-        return await statsService.doStuff(year);
+    @Get("/api-stats")
+    public async getDetailedStats() {
+        return await statsService.doStuff();
     }
 }
