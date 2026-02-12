@@ -45,8 +45,8 @@ class StatsService {
         return statsAssociationsVisitPort.findOnPeriod(start, end);
     }
 
-    doStuff() {
-        return {};
+    getConsumption() {
+        return logsPort.getConsumption();
     }
 }
 

@@ -72,7 +72,7 @@ export class AdminHttp extends Controller {
      * @returns
      */
     @Get("/api-stats")
-    public async getDetailedStats() {
-        return await statsService.doStuff();
+    public async getConsumption() {
+        return await statsService.getConsumption();
     }
 }

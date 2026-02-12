@@ -10,10 +10,10 @@ describe("Admin Controller", () => {
         cli = new AdminHttp();
     });
 
-    describe("getDetailedStats", () => {
+    describe("getConsumption", () => {
         it("calls statsService", async () => {
-            await cli.getDetailedStats();
-            expect(statsService.doStuff).toHaveBeenCalled();
+            await cli.getConsumption();
+            expect(statsService.getConsumption).toHaveBeenCalled();
         });
     });
 });

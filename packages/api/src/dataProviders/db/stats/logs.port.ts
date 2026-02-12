@@ -39,6 +39,50 @@ export class LogsPort extends MongoPort<WinstonLog> {
     }
 
     /**
+     * @returns List of URL grouped by year grouped by userId
+     */
+    public async getConsumption() {
+        // for performance reason, only get the last 3 year including the current year
+        const start = (new Date().getFullYear() - 2).toString();
+        return this.collection
+            .aggregate([
+                {
+                    $match: {
+                        timestamp: { $gt: new Date(`${start}-01-01`) },
+                        "meta.req.user._id": { $exists: true },
+                    },
+                },
+                {
+                    $group: {
+                        _id: {
+                            userId: "$meta.req.user._id",
+                            year: { $year: "$timestamp" },
+                        },
+                        requests: {
+                            $push: "$meta.req.url",
+                        },
+                    },
+                },
+                {
+                    $group: {
+                        _id: "$_id.userId",
+                        requestsByYear: {
+                            $push: { $concatArrays: [[{ $toString: "$_id.year" }, "$requests"]] },
+                        },
+                    },
+                },
+                {
+                    $project: {
+                        requestsByYear: {
+                            $arrayToObject: "$requestsByYear",
+                        },
+                    },
+                },
+            ])
+            .toArray() as Promise<{ _id: string; requestsByYear: Record<string, string[]> }[]>;
+    }
+
+    /**
      * Only used to insert logs for integ tests on API stats
      */
     private async addTestLog(logs: WinstonLog[]) {

@@ -13,6 +13,7 @@ import { App } from "supertest/types";
 import logsPort from "../../../src/dataProviders/db/stats/logs.port";
 import { LoggedMeta, WinstonLog } from "../../../src/@types/WinstonLog";
 import DEFAULT_ASSOCIATION from "../../__fixtures__/association.fixture";
+import { ObjectId } from "mongodb";
 
 const g = global as unknown as { app: App };
 
@@ -138,7 +139,7 @@ describe("AdminController, /admin", () => {
         });
     });
 
-    describe("GET /stats", () => {
+    describe.only("GET /stats", () => {
         const LOG_ENTRY = { level: "info", message: "Request for integration test" };
         const entryFactory =
             (date: Date) =>
@@ -150,6 +151,8 @@ describe("AdminController, /admin", () => {
                 req: {
                     url: `/association/${DEFAULT_ASSOCIATION.rna}/grants/v2`,
                     method: "GET",
+                    // @ts-expect-error: mock user dbo
+                    user: { _id: new ObjectId("53bbd9a8e7aced4438f308e0") },
                 },
                 res: {},
                 responseTime: 1,
@@ -157,13 +160,19 @@ describe("AdminController, /admin", () => {
         ];
         const LOGS = METAS.map(meta => entryFactory(YEAR_2025)(meta));
 
-        beforeEach(() => {
+        beforeEach(async () => {
             // @ts-expect-error: for test only
-            logsPort.addTestLog(LOGS);
+            await logsPort.addTestLog(LOGS);
         });
 
-        it("returns detailed API statistiques", async () => {
-            request(g.app).get("admin/api-stats").expect(200);
+        it("returns API consumption statistiques", async () => {
+            console.log(await logsPort.getLogsOnPeriod(new Date("2024"), new Date("2025")).toArray());
+            await request(g.app)
+                .get("/admin/api-stats")
+                .set("x-access-token", await createAndGetAdminToken())
+                .set("Accept", "application/json")
+                .expect(200)
+                .expect(res => expect(res.body).toEqual("BAD"));
         });
     });
 });

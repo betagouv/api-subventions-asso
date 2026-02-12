@@ -1,5 +1,6 @@
 import logsPort from "../../dataProviders/db/stats/logs.port";
 import statsAssociationsVisitPort from "../../dataProviders/db/stats/statsAssociationsVisit.port";
+import { USER_DBO } from "../user/__fixtures__/user.fixture";
 import statsService from "./stats.service";
 import { FindCursor, ObjectId } from "mongodb";
 
@@ -13,6 +14,7 @@ describe("StatsService", () => {
         ${"addAssociationVisit"}           | ${statsAssociationsVisitPort.add}               | ${1}
         ${"getUserLastSearchDate"}         | ${statsAssociationsVisitPort.getLastSearchDate} | ${1}
         ${"getAllVisitsUser"}              | ${statsAssociationsVisitPort.findByUserId}      | ${1}
+        ${"getAllLogUser"}                 | ${logsPort.findByEmail}                         | ${1}
         ${"getAllLogUser"}                 | ${logsPort.findByEmail}                         | ${1}
         ${"getAssociationsVisitsOnPeriod"} | ${statsAssociationsVisitPort.findOnPeriod}      | ${2}
     `("$methodToTest passes through $methodToCall", ({ methodToTest, methodToCall, nbArgs }) => {
@@ -78,6 +80,23 @@ describe("StatsService", () => {
         it("removes user's properties", () => {
             const actual = statsService.getAnonymizedLogsOnPeriod(START, END)[0].meta.req.user;
             expect(actual).toBeUndefined();
+        });
+    });
+
+    describe("getConsumption", () => {
+        const CONSUMPTION = [{ _id: USER_DBO._id.toString(), requestsByYear: { "2025": ["/associations/RNA"] } }];
+
+        beforeAll(() => jest.spyOn(logsPort, "getConsumption").mockResolvedValue(CONSUMPTION));
+
+        it("calls logPort.getConsumption()", () => {
+            statsService.getConsumption();
+            expect(logsPort.getConsumption).toHaveBeenCalledTimes(1);
+        });
+
+        it("returns consumption", async () => {
+            const expected = CONSUMPTION;
+            const actual = await statsService.getConsumption();
+            expect(actual).toEqual(expected);
         });
     });
 });
