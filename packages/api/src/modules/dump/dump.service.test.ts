@@ -5,6 +5,7 @@ import { DEPOSIT_LOG_ENTITY } from "../deposit-scdl-process/__fixtures__/deposit
 import depositScdlProcessService from "../deposit-scdl-process/depositScdlProcess.service";
 import { USER_DBO } from "../user/__fixtures__/user.fixture";
 
+jest.mock("../../modules/notify/notify.service", () => ({ notify: jest.fn() }));
 jest.mock("../deposit-scdl-process/depositScdlProcess.service");
 jest.mock("../user/services/crud/user.crud.service");
 jest.mock("../../dataProviders/db/dump/metabase-dump.port");
