@@ -71,8 +71,14 @@ export class AdminHttp extends Controller {
      * @param year
      * @returns
      */
-    @Get("/api-stats")
-    public async getConsumption() {
-        return await statsService.getConsumption();
+    @Get("/stats/consumers")
+    public async getConsumersStats() {
+        let result;
+        try {
+            result = await statsService.getConsumersConsumption();
+        } catch (e) {
+            console.log(e);
+        }
+        return result;
     }
 }

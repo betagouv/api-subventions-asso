@@ -39,47 +39,85 @@ export class LogsPort extends MongoPort<WinstonLog> {
     }
 
     /**
-     * @returns List of URL grouped by year grouped by userId
+     * Note: it was necessary to group by month to avoid to exceed MongoDB treshold on document size
+     *
+     * @returns List of URL grouped by month by year by userId
      */
-    public async getConsumption() {
-        // for performance reason, only get the last 3 year including the current year
-        const start = (new Date().getFullYear() - 2).toString();
-        return this.collection
-            .aggregate([
-                {
-                    $match: {
-                        timestamp: { $gt: new Date(`${start}-01-01`) },
-                        "meta.req.user._id": { $exists: true },
+    public async getConsumption(userIds: string[] = []) {
+        // for performance reason, only get last and current year
+        const startYear = String(new Date().getFullYear() - 1);
+        const startDate = new Date(startYear);
+
+        // increment this if you want stats for another route
+        const routesPrefix = ["association", "etablissement", "parcours-depot", "document", "search", "open-data"];
+
+        const aggregationQueries = [
+            {
+                $match: {
+                    "meta.req.user._id": { $in: userIds },
+                    timestamp: { $gte: startDate },
+                },
+            },
+            {
+                $project: {
+                    userId: "$meta.req.user._id",
+                    year: { $toString: { $year: "$timestamp" } },
+                    month: { $toString: { $month: "$timestamp" } },
+                    url: "$meta.req.url",
+                    prefix: {
+                        $arrayElemAt: [{ $split: ["$meta.req.url", "/"] }, 1],
                     },
                 },
-                {
-                    $group: {
-                        _id: {
-                            userId: "$meta.req.user._id",
-                            year: { $year: "$timestamp" },
-                        },
-                        requests: {
-                            $push: "$meta.req.url",
+            },
+            {
+                $match: {
+                    prefix: { $in: routesPrefix },
+                },
+            },
+            {
+                $group: {
+                    _id: {
+                        userId: "$userId",
+                        year: "$year",
+                        month: "$month",
+                        route: "$prefix",
+                    },
+                    urls: { $push: "$url" },
+                },
+            },
+            {
+                $group: {
+                    _id: {
+                        userId: "$_id.userId",
+                        year: "$_id.year",
+                        month: "$_id.month",
+                    },
+                    routes: {
+                        $push: {
+                            k: "$_id.route",
+                            v: "$urls",
                         },
                     },
                 },
-                {
-                    $group: {
-                        _id: "$_id.userId",
-                        requestsByYear: {
-                            $push: { $concatArrays: [[{ $toString: "$_id.year" }, "$requests"]] },
-                        },
-                    },
+            },
+            {
+                $project: {
+                    userId: "$_id.userId",
+                    year: "$_id.year",
+                    month: "$_id.month",
+                    routes: { $arrayToObject: "$routes" },
                 },
-                {
-                    $project: {
-                        requestsByYear: {
-                            $arrayToObject: "$requestsByYear",
-                        },
-                    },
-                },
-            ])
-            .toArray() as Promise<{ _id: string; requestsByYear: Record<string, string[]> }[]>;
+            },
+        ];
+
+        return this.collection.aggregate(aggregationQueries).toArray() as Promise<
+            {
+                userId: string;
+                year: string;
+                month: string;
+                routes: Record<string, string[]>;
+            }[]
+        >;
     }
 
     /**

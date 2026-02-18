@@ -211,7 +211,7 @@ export class EstablishmentHttp extends Controller {
      * Permet de logger le mail de l'utilisateur qui fait un extract
      */
     @Hidden()
-    @Get("/{identifier}/extract-data")
+    @Get("/extract-data")
     public async registerExtract(): Promise<boolean> {
         return true;
     }

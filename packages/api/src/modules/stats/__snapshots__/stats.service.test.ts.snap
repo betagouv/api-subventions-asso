@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`StatsService API CONSUMPTION PART formatConsumption returns formated stats 1`] = `
+{
+  "635132a527c9bfb8fc7c758e": {
+    "2025": {
+      "1": {
+        "association": {
+          "/association/RNA": 12,
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`StatsService API CONSUMPTION PART getAssociationRegExpMap returns regexp map 1`] = `
+Map {
+  "/association/:id" => /\\^\\\\/association\\\\/\\.\\[\\^/\\]\\*\\$/,
+  "/association/:id/subventions" => /\\^\\\\/association\\\\/\\.\\[\\^/\\]\\*\\\\/subventions/,
+  "/association/:id/versements" => /\\^\\\\/association\\\\/\\.\\[\\^/\\]\\*\\\\/versements/,
+  "/association/:id/paiements" => /\\^\\\\/association\\\\/\\.\\[\\^/\\]\\*\\\\/paiements/,
+  "/association/:id/applications" => /\\^\\\\/association\\\\/\\.\\[\\^/\\]\\*\\\\/applications/,
+  "/association/:id/grants" => /\\^\\\\/association\\\\/\\.\\[\\^/\\]\\*\\\\/grants\\$/,
+  "/association/:id/grants/v2" => /\\^\\\\/association\\\\/\\.\\[\\^/\\]\\*\\\\/grants\\\\/v2/,
+  "/association/:id/grants/csv" => /\\^\\\\/association\\\\/\\.\\[\\^/\\]\\*\\\\/grants\\\\/csv/,
+  "/association/:id/raw-grants" => /\\^\\\\/association\\\\/\\.\\[\\^/\\]\\*\\\\/raw-grants/,
+  "/association/:id/documents" => /\\^\\\\/association\\\\/\\.\\[\\^/\\]\\*\\\\/documents/,
+  "/association/:id/etablissements" => /\\^\\\\/association\\\\/\\.\\[\\^/\\]\\*\\\\/etablissements/,
+}
+`;
+
+exports[`StatsService API CONSUMPTION PART getDepositScdlProcessRegExpMap returns regexp map 1`] = `
+Map {
+  "/parcours-depot" => /\\^\\\\/parcours-depot\\$/,
+  "/parcours-depot/donnees-existantes" => /\\^\\\\/parcours-depot\\\\/donnees-existantes/,
+  "/parcours-depot/fichier-depose/url-de-telechargement" => /\\^\\\\/parcours-depot\\\\/fichier-depose\\\\/url-de-telechargement/,
+  "/parcours-depot/validation-fichier-scdl" => /\\^\\\\/parcours-depot\\\\/validation-fichier-scdl/,
+  "/parcours-depot/depot-fichier-scdl" => /\\^\\\\/parcours-depot\\\\/depot-fichier-scdl/,
+}
+`;
+
+exports[`StatsService API CONSUMPTION PART getEstablishmentRegExpMap returns regexp map 1`] = `
+Map {
+  "/etablissement/:id" => /\\^\\\\/etablissement\\\\/\\.\\[\\^/\\]\\*\\$/,
+  "/etablissement/:id/grants" => /\\^\\\\/etablissement\\\\/\\.\\[\\^/\\]\\*\\\\/grants\\$/,
+  "/etablissement/:id/grants/v2" => /\\^\\\\/etablissement\\\\/\\.\\[\\^/\\]\\*\\\\/grants\\\\/v2/,
+  "/etablissement/:id/subventions" => /\\^\\\\/etablissement\\\\/\\.\\[\\^/\\]\\*\\\\/subventions/,
+  "/etablissement/:id/versements" => /\\^\\\\/etablissement\\\\/\\.\\[\\^/\\]\\*\\\\/versements/,
+  "/etablissement/:id/paiements" => /\\^\\\\/etablissement\\\\/\\.\\[\\^/\\]\\*\\\\/paiements/,
+  "/etablissement/:id/applications" => /\\^\\\\/etablissement\\\\/\\.\\[\\^/\\]\\*\\\\/applications/,
+  "/etablissement/:id/documents" => /\\^\\\\/etablissement\\\\/\\.\\[\\^/\\]\\*\\\\/documents\\$/,
+  "/etablissement/:id/documents/rib" => /\\^\\\\/etablissement\\\\/\\.\\[\\^/\\]\\*\\\\/documents\\\\/rib/,
+  "/etablissement/:id/grants/csv" => /\\^\\\\/etablissement\\\\/\\.\\[\\^/\\]\\*\\\\/grants\\\\/csv/,
+}
+`;
+
+exports[`StatsService API CONSUMPTION PART getOpenDataRegExpMap returns regexp map 1`] = `
+Map {
+  "/document/downloads" => /\\^\\\\/document\\\\/downloads\\$/,
+  "/document/downloads/:id" => /\\^\\\\/document\\\\/downloads\\\\//,
+  "/document/:id" => /\\^\\\\/document\\\\/\\(\\?!downloads\\)/,
+}
+`;
+
+exports[`StatsService API CONSUMPTION PART getSearchRegExpMap returns regexp map 1`] = `
+Map {
+  "/search/associations/:input" => /\\^\\\\/search\\\\/associations\\\\//,
+}
+`;

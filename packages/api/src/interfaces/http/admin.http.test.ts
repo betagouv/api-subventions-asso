@@ -12,8 +12,8 @@ describe("Admin Controller", () => {
 
     describe("getConsumption", () => {
         it("calls statsService", async () => {
-            await cli.getConsumption();
-            expect(statsService.getConsumption).toHaveBeenCalled();
+            await cli.getConsumersStats();
+            expect(statsService.getConsumersConsumption).toHaveBeenCalled();
         });
     });
 });

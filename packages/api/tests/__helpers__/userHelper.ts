@@ -27,6 +27,10 @@ export function createAdminUser() {
     return userCrudService.createUser({ email: ADMIN_EMAIL, roles: [RoleEnum.user, RoleEnum.admin] });
 }
 
+export function createConsumerUser() {
+    return userCrudService.createUser({ email: USER_EMAIL, roles: [RoleEnum.user, RoleEnum.consumer] });
+}
+
 export function getDefaultUser() {
     return userCrudService.findByEmail(USER_EMAIL);
 }
