@@ -1,5 +1,4 @@
-import { Readable } from "stream";
-import {
+import type {
     GetAssociationResponseDto,
     GetEstablishmentsResponseDto,
     GetGrantsResponseDto,
@@ -12,6 +11,8 @@ import {
     PaymentFlatDto,
     GetOldGrantsResponseDto,
 } from "dto";
+
+import { Readable } from "stream";
 import {
     Route,
     Get,
