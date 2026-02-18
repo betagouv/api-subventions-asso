@@ -1,12 +1,12 @@
-import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
+import PaymentFlatEntity from "../../../entities/flats/PaymentFlatEntity";
 import { AmountsVsProgramRegionDbo } from "./entitiyAndDbo/amountsVsProgramRegion.dbo";
 import AmountsVsProgramRegionEntity from "./entitiyAndDbo/amountsVsProgramRegion.entity";
 
 export default class AmountsVsProgramRegionAdapter {
     static toNotAggregatedEntity(paymentFlatEntity: PaymentFlatEntity): AmountsVsProgramRegionEntity {
         return {
-            exerciceBudgetaire: paymentFlatEntity.exerciceBudgetaire,
-            regionAttachementComptable: paymentFlatEntity.regionAttachementComptable,
+            exerciceBudgetaire: paymentFlatEntity.budgetaryYear,
+            regionAttachementComptable: paymentFlatEntity.accountingAttachmentRegion ?? "code region inconnu",
             programme: paymentFlatEntity.programName
                 ? String(paymentFlatEntity.programNumber).concat(" - ", paymentFlatEntity.programName)
                 : String(paymentFlatEntity.programNumber),

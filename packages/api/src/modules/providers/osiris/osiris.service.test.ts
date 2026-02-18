@@ -13,7 +13,7 @@ import { REQUEST_DBO } from "./__fixtures__/osiris.request.fixtures";
 import { ACTION_ENTITY } from "./__fixtures__/osiris.action.fixtures";
 import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
 import osirisJoiner from "../../../dataProviders/db/providers/osiris/osiris.joiner";
-import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 
 jest.mock("../../applicationFlat/applicationFlat.helper");
 jest.mock("./adapters/OsirisRequestAdapter");

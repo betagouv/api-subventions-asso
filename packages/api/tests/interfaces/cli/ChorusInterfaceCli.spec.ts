@@ -84,7 +84,7 @@ describe("ChorusCli", () => {
             await chorusLinePort.createIndexes();
             const filePath = FILE_PATH;
             await controller.parse(filePath, EXPORT_DATE);
-            const payments = await paymentFlatPort.cursorFind().toArray();
+            const payments = await paymentFlatPort.findAll();
             // snapshot contains only 2 payments when we got 3 chorus documents
             // it merges 2 payments sharing the same uniqueId
             expect(payments.map(payment => ({ ...payment, updateDate: expect.any(Date) }))).toMatchSnapshot();

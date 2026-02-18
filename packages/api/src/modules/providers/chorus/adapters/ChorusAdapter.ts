@@ -14,20 +14,21 @@ import Ridet from "../../../../identifierObjects/Ridet";
 import { EstablishmentIdType } from "../../../../identifierObjects/@types/IdentifierType";
 import Tahitiet from "../../../../identifierObjects/Tahitiet";
 import REGION_MAPPING from "./ChorusRegionMapping";
+import { NOT_APPLICABLE_VALUE } from "core";
 
 export default class ChorusAdapter {
     // TODO: get this from enum and in lower case
     static PROVIDER_NAME = "Chorus";
 
-    public static getRegionAttachementComptable(attachementComptable: string | "N/A"): string | "N/A" {
-        if (attachementComptable == "N/A") return "N/A";
+    public static getRegionAttachementComptable(attachementComptable: string) {
+        if (attachementComptable == NOT_APPLICABLE_VALUE) return NOT_APPLICABLE_VALUE;
 
         const region = REGION_MAPPING[attachementComptable];
         if (region === undefined) {
             const errorMessage = `Unknown region code: ${attachementComptable}`;
             Sentry.captureException(new Error(errorMessage));
             console.error(errorMessage);
-            return "code region inconnu";
+            return null;
         }
         return region;
     }
@@ -95,30 +96,30 @@ export default class ChorusAdapter {
     }
 
     private static getEntitiesByIdentifierRawData(data: ChorusLineDto): ChorusPaymentFlatRaw {
-        const exerciceBudgetaire = data["Exercice comptable"] ? parseInt(data["Exercice comptable"], 10) : null;
-        const idEstablishmentBeneficiaire = this.getEstablishmentValueObject(data);
-        const idEntrepriseBeneficiaire = this.getCompanyId(idEstablishmentBeneficiaire);
-        const typeIdEstablishmentBeneficiaire = idEstablishmentBeneficiaire.name;
-        const typeIdEntrepriseBeneficiaire = idEntrepriseBeneficiaire.name;
+        const budgetaryYear = data["Exercice comptable"] ? parseInt(data["Exercice comptable"], 10) : null;
+        const beneficiaryEstablishmentId = this.getEstablishmentValueObject(data);
+        const beneficiaryCompanyId = this.getCompanyId(beneficiaryEstablishmentId);
+        const beneficiaryEstablishmentIdType = beneficiaryEstablishmentId.name;
+        const beneficiaryCompanyIdType = beneficiaryCompanyId.name;
 
         // all nullable error should be handled with issue #3345
         return {
             //@ts-expect-error: this should be nullable but was in the original code refactored with #3342
-            exerciceBudgetaire,
-            typeIdEtablissementBeneficiaire: typeIdEstablishmentBeneficiaire,
-            idEtablissementBeneficiaire: idEstablishmentBeneficiaire,
-            typeIdEntrepriseBeneficiaire,
-            idEntrepriseBeneficiaire,
+            budgetaryYear,
+            beneficiaryEstablishmentIdType,
+            beneficiaryEstablishmentId,
+            beneficiaryCompanyIdType,
+            beneficiaryCompanyId,
             //@ts-expect-error: this should be nullable but was in the original code refactored with #3342
             amount: this.getAmount(data),
             //@ts-expect-error: this should be nullable but was in the original code refactored with #3342
             operationDate: this.getOperationDate(data),
             //@ts-expect-error: this should be nullable but was in the original code refactored with #3342
             ej: data["N° EJ"],
-            centreFinancierCode: data["Centre financier CODE"],
-            centreFinancierLibelle: data["Centre financier"],
+            financialCenterCode: data["Centre financier CODE"],
+            financialCenterLabel: data["Centre financier"],
             //@ts-expect-error: this should be nullable but was in the original code refactored with #3342
-            attachementComptable: data["Société"],
+            accountingAttachment: data["Société"],
         };
     }
 
@@ -155,7 +156,7 @@ export default class ChorusAdapter {
 
         const rawDataWithDataBretagne: Omit<
             ChorusPaymentFlatEntity,
-            "regionAttachementComptable" | "idVersement" | "uniqueId"
+            "accountingAttachmentRegion" | "paymentId" | "uniqueId"
         > = {
             ...this.getEntitiesByIdentifierRawData(chorusDocument.data as ChorusLineDto),
             programName: programEntity?.label_programme ?? null,
@@ -171,13 +172,13 @@ export default class ChorusAdapter {
             updateDate: chorusDocument.updateDate,
         };
 
-        const idVersement = `${rawDataWithDataBretagne.idEtablissementBeneficiaire.value}-${rawDataWithDataBretagne.ej}-${rawDataWithDataBretagne.exerciceBudgetaire}`;
-        const regionAttachementComptable = ChorusAdapter.getRegionAttachementComptable(
-            rawDataWithDataBretagne.attachementComptable,
+        const paymentId = `${rawDataWithDataBretagne.beneficiaryEstablishmentId.value}-${rawDataWithDataBretagne.ej}-${rawDataWithDataBretagne.budgetaryYear}`;
+        const accountingAttachmentRegion = ChorusAdapter.getRegionAttachementComptable(
+            rawDataWithDataBretagne.accountingAttachment,
         );
         const partialPaymentFlat: Omit<ChorusPaymentFlatEntity, "uniqueId"> = {
-            idVersement,
-            regionAttachementComptable,
+            paymentId,
+            accountingAttachmentRegion,
             ...rawDataWithDataBretagne,
         };
         const uniqueId = this.buildFlatUniqueId(partialPaymentFlat);
@@ -190,16 +191,16 @@ export default class ChorusAdapter {
 
     private static buildFlatUniqueId(partialPaymentFlat: Omit<ChorusPaymentFlatEntity, "uniqueId">) {
         const {
-            idVersement,
+            paymentId,
             programNumber,
             actionCode,
             activityCode,
             operationDate,
-            attachementComptable,
-            centreFinancierCode,
+            accountingAttachment,
+            financialCenterCode,
         } = partialPaymentFlat;
 
-        return `chorus-${idVersement}-${programNumber}-${actionCode}-${activityCode}-${getShortISODate(operationDate)}-${attachementComptable}-${centreFinancierCode}`;
+        return `chorus-${paymentId}-${programNumber}-${actionCode}-${activityCode}-${getShortISODate(operationDate)}-${accountingAttachment}-${financialCenterCode}`;
     }
 
     private static getProgramCodeAndEntity(

@@ -1,6 +1,6 @@
 import { Readable } from "stream";
 import { FindCursor, Document, AggregationCursor } from "mongodb";
-import { ApplicationFlatEntity } from "../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../entities/flats/ApplicationFlatEntity";
 import { ReadableStream } from "node:stream/web";
 
 export function cursorToStream<T = Document>(

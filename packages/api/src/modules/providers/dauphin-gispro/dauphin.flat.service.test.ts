@@ -1,7 +1,7 @@
 import dauphinFlatService from "./dauphin.flat.service";
 import dauphinPort from "../../../dataProviders/db/providers/dauphin/dauphin.port";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
-import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 import { ReadableStream } from "stream/web";
 import { FindCursor, WithId } from "mongodb";
 import { SimplifiedJoinedDauphinGispro } from "./@types/SimplifiedDauphinGispro";

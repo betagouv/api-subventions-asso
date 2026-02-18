@@ -2,7 +2,7 @@ import dauphinPort from "../../../dataProviders/db/providers/dauphin/dauphin.por
 import DauphinDtoAdapter, { InconsistentAggregationError } from "./adapters/DauphinDtoAdapter";
 import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
 import { ReadableStream } from "stream/web";
-import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
 

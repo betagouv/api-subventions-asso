@@ -1,6 +1,5 @@
 import { ApplicationFlatDto, DemandeSubvention } from "dto";
 import applicationFlatPort from "../../dataProviders/db/applicationFlat/applicationFlat.port";
-import { ApplicationFlatEntity } from "../../entities/ApplicationFlatEntity";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import { RawApplication } from "../grant/@types/rawGrant";
@@ -14,6 +13,7 @@ import { ReadableStream } from "node:stream/web";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
 import GrantProvider from "../grant/@types/GrantProvider";
 import { StructureProvider } from "../StructureProvider";
+import { ApplicationFlatEntity } from "../../entities/flats/ApplicationFlatEntity";
 
 export class ApplicationFlatService
     extends ProviderCore
@@ -102,11 +102,7 @@ export class ApplicationFlatService
      * @returns Siret or undefined if establishment type is ridet or tahitiet
      */
     getSiret(entity: ApplicationFlatEntity) {
-        if (
-            entity.beneficiaryEstablishmentIdType === Siret.getName() &&
-            Siret.isSiret(entity.beneficiaryEstablishmentId)
-        )
-            return new Siret(entity.beneficiaryEstablishmentId);
+        if (entity.beneficiaryEstablishmentId instanceof Siret) return entity.beneficiaryEstablishmentId;
         return undefined;
     }
 

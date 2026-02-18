@@ -7,7 +7,13 @@ exports[`DemarchesSimplifieesEntityAdapter toFlat adapts built attributes 1`] = 
   "allocatorName": null,
   "applicationId": "demarches-simplifiees-987-blablablaHash",
   "applicationProviderId": "blablablaHash",
-  "beneficiaryEstablishmentId": "12345678901234",
+  "beneficiaryCompanyId": Siren {
+    "identifier": "123456789",
+  },
+  "beneficiaryCompanyIdType": "siren",
+  "beneficiaryEstablishmentId": Siret {
+    "identifier": "12345678901234",
+  },
   "beneficiaryEstablishmentIdType": "siret",
   "budgetaryYear": 2024,
   "cofinancersIdType": null,

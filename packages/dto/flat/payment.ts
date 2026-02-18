@@ -1,13 +1,8 @@
-import { CompanyIdName, EstablishmentIdName } from "./shared";
+import { CommonFlatDto } from "./shared";
 
-export interface PaymentFlatDto {
-    uniqueId: string;
+export interface PaymentFlatDto extends CommonFlatDto {
     idVersement: string;
     exerciceBudgetaire: number;
-    typeIdEtablissementBeneficiaire: EstablishmentIdName;
-    idEtablissementBeneficiaire: string;
-    typeIdEntrepriseBeneficiaire: CompanyIdName;
-    idEntrepriseBeneficiaire: string;
     montant: number;
     dateOperation: Date;
     codeCentreFinancier: string | "N/A";
@@ -24,5 +19,4 @@ export interface PaymentFlatDto {
     action: string | null;
     codeActivite: string | null;
     activite: string | null;
-    provider: string;
 }

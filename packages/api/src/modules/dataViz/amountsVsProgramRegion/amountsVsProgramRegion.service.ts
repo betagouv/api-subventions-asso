@@ -1,7 +1,7 @@
 import { FindCursor } from "mongodb";
 import { AmountsVsProgramRegionDto } from "dto";
 import { ChorusPaymentFlatEntity } from "../../providers/chorus/@types/ChorusPaymentFlat";
-import PaymentFlatEntity from "../../../entities/PaymentFlatEntity";
+import PaymentFlatEntity from "../../../entities/flats/PaymentFlatEntity";
 import paymentFlatChorusService from "../../paymentFlat/paymentFlat.chorus.service";
 import amountsVsProgramRegionPort from "../../../dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
 import AmountsVsProgramRegionAdapter from "./amountsVsProgramRegion.adapter";
@@ -17,7 +17,7 @@ export class AmountsVsProgramRegionService {
         const entities: Record<string, AmountsVsProgramRegionEntity> = {};
         while (await paymentFlatCursor.hasNext()) {
             const document = (await paymentFlatCursor.next()) as PaymentFlatEntity;
-            const key = `${document.regionAttachementComptable}-${document.programName}-${document.programNumber}-${document.exerciceBudgetaire}`;
+            const key = `${document.accountingAttachmentRegion}-${document.programName}-${document.programNumber}-${document.budgetaryYear}`;
             if (entities[key]) {
                 entities[key].montant += parseFloat(document.amount.toFixed(2));
             } else {

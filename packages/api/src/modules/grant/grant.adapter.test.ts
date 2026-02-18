@@ -55,7 +55,7 @@ describe("GrantAdapter", () => {
     });
 
     describe("grantToExtractLine", () => {
-        const SIRET = CHORUS_PAYMENT_FLAT_ENTITY.idEtablissementBeneficiaire.toString();
+        const SIRET = CHORUS_PAYMENT_FLAT_ENTITY.beneficiaryEstablishmentId.toString();
 
         const LAST_PAYMENT_DATE = new Date("2025-11-20");
 
@@ -105,7 +105,7 @@ describe("GrantAdapter", () => {
         });
 
         it("chooses last financial center", () => {
-            const expected = `${LAST_PAYMENT.centreFinancierCode} - ${LAST_PAYMENT.centreFinancierLibelle}`;
+            const expected = `${LAST_PAYMENT.financialCenterCode} - ${LAST_PAYMENT.financialCenterLabel}`;
             const actual = GrantAdapter.grantToExtractLine(GRANT, ASSO, ESTAB_BY_SIRET).financialCenter;
             expect(actual).toBe(expected);
         });

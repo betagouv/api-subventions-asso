@@ -1,7 +1,7 @@
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import MiscScdlAdapter from "./adapters/MiscScdl.adapter";
 import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
-import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
 import { ReadableStream, TransformStream } from "node:stream/web";

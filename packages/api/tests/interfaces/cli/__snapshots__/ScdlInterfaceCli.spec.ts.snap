@@ -16,7 +16,13 @@ exports[`SCDL CLI initApplicationFlat creates proper applicationFlat entities in
     "allocatorName": "ALLOCATOR_1",
     "applicationId": "N/A",
     "applicationProviderId": "N/A",
-    "beneficiaryEstablishmentId": "10000000000001",
+    "beneficiaryCompanyId": Siren {
+      "identifier": "100000000",
+    },
+    "beneficiaryCompanyIdType": "siren",
+    "beneficiaryEstablishmentId": Siret {
+      "identifier": "10000000000001",
+    },
     "beneficiaryEstablishmentIdType": "siret",
     "budgetaryYear": 2019,
     "cofinancersIdType": "N/A",
@@ -78,7 +84,13 @@ exports[`SCDL CLI parsing parse persists all data in ApplicationFlat on first pr
   "allocatorName": "ALLOCATOR_1",
   "applicationId": "N/A",
   "applicationProviderId": "N/A",
-  "beneficiaryEstablishmentId": "13579246800043",
+  "beneficiaryCompanyId": Siren {
+    "identifier": "135792468",
+  },
+  "beneficiaryCompanyIdType": "siren",
+  "beneficiaryEstablishmentId": Siret {
+    "identifier": "13579246800043",
+  },
   "beneficiaryEstablishmentIdType": "siret",
   "budgetaryYear": 2019,
   "cofinancersIdType": "N/A",
@@ -176,7 +188,13 @@ exports[`SCDL CLI parsing parse persists new data in ApplicationFlat when data f
     "allocatorName": "ALLOCATOR_1",
     "applicationId": "N/A",
     "applicationProviderId": "N/A",
-    "beneficiaryEstablishmentId": "13579246800043",
+    "beneficiaryCompanyId": Siren {
+      "identifier": "135792468",
+    },
+    "beneficiaryCompanyIdType": "siren",
+    "beneficiaryEstablishmentId": Siret {
+      "identifier": "13579246800043",
+    },
     "beneficiaryEstablishmentIdType": "siret",
     "budgetaryYear": 2019,
     "cofinancersIdType": "N/A",
@@ -227,7 +245,13 @@ exports[`SCDL CLI parsing parse persists new data in ApplicationFlat when data f
     "allocatorName": "ALLOCATOR_1",
     "applicationId": "N/A",
     "applicationProviderId": "N/A",
-    "beneficiaryEstablishmentId": "11223344500034",
+    "beneficiaryCompanyId": Siren {
+      "identifier": "112233445",
+    },
+    "beneficiaryCompanyIdType": "siren",
+    "beneficiaryEstablishmentId": Siret {
+      "identifier": "11223344500034",
+    },
     "beneficiaryEstablishmentIdType": "siret",
     "budgetaryYear": 2019,
     "cofinancersIdType": "N/A",
@@ -278,7 +302,13 @@ exports[`SCDL CLI parsing parse persists new data in ApplicationFlat when data f
     "allocatorName": "ALLOCATOR_1",
     "applicationId": "N/A",
     "applicationProviderId": "N/A",
-    "beneficiaryEstablishmentId": "98876554100014",
+    "beneficiaryCompanyId": Siren {
+      "identifier": "988765541",
+    },
+    "beneficiaryCompanyIdType": "siren",
+    "beneficiaryEstablishmentId": Siret {
+      "identifier": "98876554100014",
+    },
     "beneficiaryEstablishmentIdType": "siret",
     "budgetaryYear": 2019,
     "cofinancersIdType": "N/A",
@@ -329,7 +359,13 @@ exports[`SCDL CLI parsing parse persists new data in ApplicationFlat when data f
     "allocatorName": "ALLOCATOR_1",
     "applicationId": "N/A",
     "applicationProviderId": "N/A",
-    "beneficiaryEstablishmentId": "74185296300016",
+    "beneficiaryCompanyId": Siren {
+      "identifier": "741852963",
+    },
+    "beneficiaryCompanyIdType": "siren",
+    "beneficiaryEstablishmentId": Siret {
+      "identifier": "74185296300016",
+    },
     "beneficiaryEstablishmentIdType": "siret",
     "budgetaryYear": 2019,
     "cofinancersIdType": "N/A",
@@ -380,7 +416,13 @@ exports[`SCDL CLI parsing parse persists new data in ApplicationFlat when data f
     "allocatorName": "ALLOCATOR_1",
     "applicationId": "N/A",
     "applicationProviderId": "N/A",
-    "beneficiaryEstablishmentId": "74185296300016",
+    "beneficiaryCompanyId": Siren {
+      "identifier": "741852963",
+    },
+    "beneficiaryCompanyIdType": "siren",
+    "beneficiaryEstablishmentId": Siret {
+      "identifier": "74185296300016",
+    },
     "beneficiaryEstablishmentIdType": "siret",
     "budgetaryYear": 2020,
     "cofinancersIdType": "N/A",
@@ -431,7 +473,13 @@ exports[`SCDL CLI parsing parse persists new data in ApplicationFlat when data f
     "allocatorName": "ALLOCATOR_1",
     "applicationId": "N/A",
     "applicationProviderId": "N/A",
-    "beneficiaryEstablishmentId": "74185296300016",
+    "beneficiaryCompanyId": Siren {
+      "identifier": "741852963",
+    },
+    "beneficiaryCompanyIdType": "siren",
+    "beneficiaryEstablishmentId": Siret {
+      "identifier": "74185296300016",
+    },
     "beneficiaryEstablishmentIdType": "siret",
     "budgetaryYear": 2021,
     "cofinancersIdType": "N/A",
@@ -482,7 +530,13 @@ exports[`SCDL CLI parsing parse persists new data in ApplicationFlat when data f
     "allocatorName": "ALLOCATOR_1",
     "applicationId": "N/A",
     "applicationProviderId": "N/A",
-    "beneficiaryEstablishmentId": "74185296300016",
+    "beneficiaryCompanyId": Siren {
+      "identifier": "741852963",
+    },
+    "beneficiaryCompanyIdType": "siren",
+    "beneficiaryEstablishmentId": Siret {
+      "identifier": "74185296300016",
+    },
     "beneficiaryEstablishmentIdType": "siret",
     "budgetaryYear": 2022,
     "cofinancersIdType": "N/A",
@@ -533,7 +587,13 @@ exports[`SCDL CLI parsing parse persists new data in ApplicationFlat when data f
     "allocatorName": "ALLOCATOR_1",
     "applicationId": "N/A",
     "applicationProviderId": "N/A",
-    "beneficiaryEstablishmentId": "74185296300016",
+    "beneficiaryCompanyId": Siren {
+      "identifier": "741852963",
+    },
+    "beneficiaryCompanyIdType": "siren",
+    "beneficiaryEstablishmentId": Siret {
+      "identifier": "74185296300016",
+    },
     "beneficiaryEstablishmentIdType": "siret",
     "budgetaryYear": 2023,
     "cofinancersIdType": "N/A",
@@ -584,7 +644,13 @@ exports[`SCDL CLI parsing parse persists new data in ApplicationFlat when data f
     "allocatorName": "ALLOCATOR_1",
     "applicationId": "N/A",
     "applicationProviderId": "N/A",
-    "beneficiaryEstablishmentId": "74185296300016",
+    "beneficiaryCompanyId": Siren {
+      "identifier": "741852963",
+    },
+    "beneficiaryCompanyIdType": "siren",
+    "beneficiaryEstablishmentId": Siret {
+      "identifier": "74185296300016",
+    },
     "beneficiaryEstablishmentIdType": "siret",
     "budgetaryYear": 2023,
     "cofinancersIdType": "N/A",

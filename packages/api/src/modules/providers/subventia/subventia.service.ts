@@ -7,7 +7,7 @@ import { SubventiaDbo } from "./@types/subventia.entity";
 import SubventiaDto from "./@types/subventia.dto";
 import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
 import { ReadableStream } from "node:stream/web";
-import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 
 export class SubventiaService implements ApplicationFlatProvider {

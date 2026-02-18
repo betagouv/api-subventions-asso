@@ -1,19 +1,20 @@
-import PaymentFlatEntity from "../../../../entities/PaymentFlatEntity";
+import PaymentFlatEntity from "../../../../entities/flats/PaymentFlatEntity";
 
 // PaymentFlatEntity field directly extracted from ChorusLineDto
 export type ChorusPaymentFlatRaw = Pick<
     ChorusPaymentFlatEntity,
     | "ej"
-    | "exerciceBudgetaire"
-    | "typeIdEtablissementBeneficiaire"
-    | "idEtablissementBeneficiaire"
-    | "typeIdEntrepriseBeneficiaire"
-    | "idEntrepriseBeneficiaire"
+    | "budgetaryYear"
+    | "beneficiaryEstablishmentIdType"
+    | "beneficiaryEstablishmentId"
+    | "beneficiaryCompanyIdType"
+    | "beneficiaryCompanyId"
     | "amount"
     | "operationDate"
-    | "centreFinancierCode"
-    | "centreFinancierLibelle"
-    | "attachementComptable"
+    | "financialCenterCode"
+    | "financialCenterLabel"
+    | "accountingAttachment"
+    | "accountingAttachmentRegion"
 >;
 
 // we override EJ as string and not nullable because when it's persisted in DB it must have EJ defined

@@ -29,7 +29,7 @@ import { input } from "@inquirer/prompts";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
 import { DefaultObject } from "../../../@types";
-import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 import { FindCursor, WithId } from "mongodb";
 import { ReadableStream } from "stream/web";
 

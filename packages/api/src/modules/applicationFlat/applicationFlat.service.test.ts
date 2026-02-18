@@ -2,7 +2,7 @@ import Siren from "../../identifierObjects/Siren";
 
 import applicationFlatPort from "../../dataProviders/db/applicationFlat/applicationFlat.port";
 import applicationFlatService from "./applicationFlat.service";
-import { ApplicationFlatEntity } from "../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../entities/flats/ApplicationFlatEntity";
 import ApplicationFlatAdapter from "./ApplicationFlatAdapter";
 import { ApplicationFlatDto, DemandeSubvention } from "dto";
 import { RawApplication } from "../grant/@types/rawGrant";

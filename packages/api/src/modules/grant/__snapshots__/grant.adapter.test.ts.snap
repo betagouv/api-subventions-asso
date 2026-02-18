@@ -35,9 +35,9 @@ exports[`GrantAdapter grantToExtractLine adapts correctly with no application 1`
   "measure": undefined,
   "paidAmount": 179976.6,
   "paymentDate": "2025-11-20",
-  "postalCode": undefined,
+  "postalCode": "31170",
   "program": "aggregated",
-  "siret": "100000000",
+  "siret": "10000000000001",
   "status": undefined,
 }
 `;

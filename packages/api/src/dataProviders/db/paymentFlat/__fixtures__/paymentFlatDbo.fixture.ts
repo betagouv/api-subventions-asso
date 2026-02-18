@@ -5,7 +5,7 @@ import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.f
 export const PAYMENT_FLAT_DBO: PaymentFlatDbo = {
     _id: new ObjectId(),
     idVersement: "12345678901234-0001821732-2023",
-    uniqueId: "12345678901234-0001821732-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
+    idUnique: "12345678901234-0001821732-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
     exerciceBudgetaire: 2023,
     typeIdEtablissementBeneficiaire: "siret",
     idEtablissementBeneficiaire: DEFAULT_ASSOCIATION.siret,
@@ -19,7 +19,7 @@ export const PAYMENT_FLAT_DBO: PaymentFlatDbo = {
     ministere: "Ministère Exemple",
     sigleMinistere: "ME",
     ej: "0001821732",
-    provider: "chorus", // keep chorus here as long as payment-flat is limited to chorus to disable fonjep. See #3553
+    fournisseur: "chorus", // keep chorus here as long as payment-flat is limited to chorus to disable fonjep. See #3553
     codeAction: "AC123",
     action: "Label d'action Exemple",
     codeActivite: "AC456",
@@ -33,7 +33,7 @@ export const PAYMENT_FLAT_DBO: PaymentFlatDbo = {
 
 export const PAYMENT_FLAT_DBO_WITH_NULLS: PaymentFlatDbo = {
     _id: new ObjectId(),
-    uniqueId: "12345678901234-0001821732-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
+    idUnique: "12345678901234-0001821732-2023-1-AC123-AC456-1680307200000-BRET-AA01/0776-C001-4000",
     exerciceBudgetaire: 2023,
     idVersement: "12345678901234-0001821732-2023",
     typeIdEtablissementBeneficiaire: "siret",
@@ -48,7 +48,7 @@ export const PAYMENT_FLAT_DBO_WITH_NULLS: PaymentFlatDbo = {
     ministere: "Ministère Exemple",
     sigleMinistere: null,
     ej: "0001821732",
-    provider: "Fournisseur Exemple",
+    fournisseur: "Fournisseur Exemple",
     codeAction: "AC123",
     action: "Label d'action Exemple",
     codeActivite: "AC456",

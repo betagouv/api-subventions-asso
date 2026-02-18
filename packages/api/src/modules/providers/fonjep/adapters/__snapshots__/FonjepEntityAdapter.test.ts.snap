@@ -1,17 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`FonjepEntityAdapter Flat formats buildFlatPaymentId return idVersement 1`] = `"AB5400K-2024-06-12-2022-10000000000001"`;
+exports[`FonjepEntityAdapter (flat part) buildFlatPaymentId return idVersement 1`] = `"AB5400K-2024-06-12-2022-10000000000001"`;
 
-exports[`FonjepEntityAdapter Flat formats buildPaymentFlatUniqueId return idVersement 1`] = `"fonjep-S03351-2023-05-12-2023-10000000000001-163-N/A-N/A-2023-07-12-N/A-N/A"`;
+exports[`FonjepEntityAdapter (flat part) buildPaymentFlatUniqueId return idVersement 1`] = `"fonjep-S03351-2023-05-12-2023-10000000000001-163-N/A-N/A-2023-07-12-N/A-N/A"`;
 
-exports[`FonjepEntityAdapter Flat formats toFonjepApplicationFlat return application flat entity 1`] = `
+exports[`FonjepEntityAdapter (flat part) toFonjepApplicationFlat return application flat entity 1`] = `
 {
   "allocatorId": "20000000000001",
-  "allocatorIdType": "siret",
+  "allocatorIdType": undefined,
   "allocatorName": "Raison Sociale",
   "applicationId": "fonjep-AB5400K-2021-12-31",
   "applicationProviderId": "AB5400K-2021-12-31",
-  "beneficiaryEstablishmentId": "10000000000001",
+  "beneficiaryCompanyId": Siren {
+    "identifier": "100000000",
+  },
+  "beneficiaryCompanyIdType": "siren",
+  "beneficiaryEstablishmentId": Siret {
+    "identifier": "10000000000001",
+  },
   "beneficiaryEstablishmentIdType": "siret",
   "budgetaryYear": 2022,
   "cofinancersIdType": "N/A",
@@ -26,7 +32,7 @@ exports[`FonjepEntityAdapter Flat formats toFonjepApplicationFlat return applica
   "grantedAmount": 1000,
   "idRAE": null,
   "instructiveDepartementId": "30000000000001",
-  "instructiveDepartmentIdType": "siret",
+  "instructiveDepartmentIdType": undefined,
   "instructiveDepartmentName": "Raison Sociale",
   "joinKeyDesc": "N/A",
   "joinKeyId": "N/A",
@@ -54,35 +60,35 @@ exports[`FonjepEntityAdapter Flat formats toFonjepApplicationFlat return applica
 }
 `;
 
-exports[`FonjepEntityAdapter Flat formats toFonjepPaymentFlat returns FonjepPaymentFlat entity 1`] = `
+exports[`FonjepEntityAdapter (flat part) toFonjepPaymentFlat returns FonjepPaymentFlat entity 1`] = `
 {
+  "accountingAttachment": "N/A",
+  "accountingAttachmentRegion": "N/A",
   "actionCode": "N/A",
   "actionLabel": "N/A",
   "activityCode": "N/A",
   "activityLabel": "N/A",
   "amount": 1000,
-  "attachementComptable": "N/A",
-  "centreFinancierCode": "N/A",
-  "centreFinancierLibelle": "N/A",
-  "ej": "N/A",
-  "exerciceBudgetaire": 2022,
-  "idEntrepriseBeneficiaire": Siren {
+  "beneficiaryCompanyId": Siren {
     "identifier": "100000000",
   },
-  "idEtablissementBeneficiaire": Siret {
+  "beneficiaryCompanyIdType": "siren",
+  "beneficiaryEstablishmentId": Siret {
     "identifier": "10000000000001",
   },
-  "idVersement": "PAYMENT_ID",
+  "beneficiaryEstablishmentIdType": "siret",
+  "budgetaryYear": 2022,
+  "ej": "N/A",
+  "financialCenterCode": "N/A",
+  "financialCenterLabel": "N/A",
   "ministry": "Ministère Exemple",
   "ministryAcronym": "ME",
   "mission": "Mission Exemple",
   "operationDate": 2022-04-15T00:00:00.000Z,
+  "paymentId": "PAYMENT_ID",
   "programName": "Programme Exemple",
   "programNumber": 163,
   "provider": "fonjep",
-  "regionAttachementComptable": "N/A",
-  "typeIdEntrepriseBeneficiaire": "siren",
-  "typeIdEtablissementBeneficiaire": "siret",
   "uniqueId": "UNIQUE_ID",
   "updateDate": 2025-08-11T00:00:00.000Z,
 }
