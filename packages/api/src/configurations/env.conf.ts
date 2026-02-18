@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-export enum Environment {
+export enum EnvironmentEnum {
     DEV = "dev",
     PREPROD = "preprod",
     PROD = "prod",

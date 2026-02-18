@@ -39,9 +39,9 @@ describe("NotifyService", () => {
             // @ts-expect-error outPipes is private attributes
             notifyService.outPipes = [fakeOutPipe];
 
-            const expected = { email: "Fake email", templateId: 0 };
+            const datas = { email: "Fake email", templateId: 0 };
 
-            await notifyService.notify(NotificationType.TEST_EMAIL, expected);
+            await notifyService.notify(NotificationType.TEST_EMAIL, datas);
 
             expect(fakeOutPipe.notify).not.toHaveBeenCalled();
         });

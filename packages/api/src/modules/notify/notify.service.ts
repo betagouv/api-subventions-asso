@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/node";
 import { NotifyOutPipe, NotifierMethodType } from "./@types/NotifyOutPipe";
 import outPipes from "./outPipes";
-import { ENV, Environment } from "../../configurations/env.conf";
+import { ENV, EnvironmentEnum } from "../../configurations/env.conf";
 import { NOTIFICATION_ENV_CONFIG } from "./NotificationEnvConfig";
 import { NotificationType } from "./@types/NotificationType";
 
@@ -35,7 +35,7 @@ export class NotifyService {
         if (allowedEnvs) {
             return !allowedEnvs.some(env => env === ENV);
         } else {
-            return ENV === Environment.DEV || ENV === Environment.TEST;
+            return ENV === EnvironmentEnum.DEV || ENV === EnvironmentEnum.TEST;
         }
     }
 }
