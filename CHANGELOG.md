@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.80.0](https://github.com/betagouv/api-subventions-asso/compare/v0.79.0...v0.80.0) (2026-02-19)
+
+### Features
+
+- **api:** [#3733](https://github.com/betagouv/api-subventions-asso/issues/3733) detailed consumers stats ([#3826](https://github.com/betagouv/api-subventions-asso/issues/3826)) ([bca5e28](https://github.com/betagouv/api-subventions-asso/commit/bca5e2838675a1d3e6ab7b9f7b1f1a97d7584aaa))
+
 # [0.79.0](https://github.com/betagouv/api-subventions-asso/compare/v0.78.1...v0.79.0) (2026-02-05)
 
 ### Bug Fixes
