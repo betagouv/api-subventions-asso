@@ -1,11 +1,11 @@
 import searchService, { SearchService } from "./search.service";
 import searchCachePort from "../../dataProviders/db/search/search.port";
 import associationNameService from "../association-name/associationName.service";
-import AssociationNameDtoAdapter from "./adapters/AssociationNameDtoAdapter";
+import AssociationNameDtoMapper from "./mappers/association-name-dto.mapper";
 
 jest.mock("../../dataProviders/db/search/search.port");
 jest.mock("../association-name/associationName.service");
-jest.mock("./adapters/AssociationNameDtoAdapter");
+jest.mock("./mappers/association-name-dto.mapper");
 
 describe("SearchService", () => {
     describe("getAssociationsKeys", () => {
@@ -61,7 +61,7 @@ describe("SearchService", () => {
         it("save found results", async () => {
             const RES = ["something"];
             // @ts-expect-error -- test
-            jest.mocked(AssociationNameDtoAdapter.toDto).mockImplementationOnce(x => x);
+            jest.mocked(AssociationNameDtoMapper.toDto).mockImplementationOnce(x => x);
             jest.mocked(searchCachePort.getResults).mockResolvedValue(null);
             // @ts-expect-error -- test
             jest.mocked(associationNameService.find).mockResolvedValue(RES);
@@ -73,7 +73,7 @@ describe("SearchService", () => {
             const RES = ["something"];
             jest.mocked(searchCachePort.getResults).mockResolvedValue(null);
             // @ts-expect-error -- test
-            jest.mocked(AssociationNameDtoAdapter.toDto).mockImplementationOnce(x => x);
+            jest.mocked(AssociationNameDtoMapper.toDto).mockImplementationOnce(x => x);
             // @ts-expect-error -- test
             jest.mocked(associationNameService.find).mockResolvedValue(RES);
             const actual = await searchService.getAssociationsKeys(SEARCH_TOKEN, PAGE);

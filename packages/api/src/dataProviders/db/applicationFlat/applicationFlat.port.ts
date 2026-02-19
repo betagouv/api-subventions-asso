@@ -2,7 +2,7 @@ import MongoPort from "../../../shared/MongoPort";
 import Siren from "../../../identifierObjects/Siren";
 import Siret from "../../../identifierObjects/Siret";
 import { DefaultObject } from "../../../@types";
-import ApplicationFlatAdapter from "../../../modules/applicationFlat/ApplicationFlatAdapter";
+import ApplicationFlatMapper from "../../../modules/applicationFlat/application-flat.mapper";
 import { ApplicationFlatDbo } from "./ApplicationFlatDbo";
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 import { insertStreamByBatch } from "../../../shared/helpers/MongoHelper";
@@ -25,18 +25,18 @@ export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id
     }
 
     public insertOne(entity: ApplicationFlatEntity) {
-        return this.collection.insertOne(ApplicationFlatAdapter.entityToDbo(entity));
+        return this.collection.insertOne(ApplicationFlatMapper.entityToDbo(entity));
     }
 
     public upsertOne(entity: ApplicationFlatEntity) {
-        const dbo = ApplicationFlatAdapter.entityToDbo(entity);
+        const dbo = ApplicationFlatMapper.entityToDbo(entity);
         return this.collection.updateOne({ idUnique: dbo.idUnique }, { $set: dbo }, { upsert: true });
     }
 
     public upsertMany(entities: ApplicationFlatEntity[]) {
         if (!entities.length) return Promise.resolve();
         const bulk = entities.map(entity => {
-            const dbo = ApplicationFlatAdapter.entityToDbo(entity);
+            const dbo = ApplicationFlatMapper.entityToDbo(entity);
             return {
                 updateOne: {
                     filter: { idUnique: dbo.idUnique },
@@ -50,13 +50,13 @@ export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id
 
     public insertMany(entities: ApplicationFlatEntity[]) {
         return this.collection.insertMany(
-            entities.map(e => ApplicationFlatAdapter.entityToDbo(e)),
+            entities.map(e => ApplicationFlatMapper.entityToDbo(e)),
             { ordered: false },
         );
     }
 
     public cursorFind(query: DefaultObject<unknown> = {}, projection: DefaultObject<unknown> = {}) {
-        return this.collection.find(query, projection).map(dbo => ApplicationFlatAdapter.dboToEntity(dbo));
+        return this.collection.find(query, projection).map(dbo => ApplicationFlatMapper.dboToEntity(dbo));
     }
 
     public async deleteAll() {
@@ -69,7 +69,7 @@ export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id
                 typeIdEtablissementBeneficiaire: siret.name,
                 idEtablissementBeneficiaire: siret.value,
             })
-            .map(dbo => ApplicationFlatAdapter.dboToEntity(dbo))
+            .map(dbo => ApplicationFlatMapper.dboToEntity(dbo))
             .toArray();
     }
 
@@ -80,14 +80,14 @@ export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id
                 idEtablissementBeneficiaire: new RegExp(`^${siren.value}\\d{5}`),
                 // TODO maybe we want an explicit property so that we can have an index
             })
-            .map(dbo => ApplicationFlatAdapter.dboToEntity(dbo))
+            .map(dbo => ApplicationFlatMapper.dboToEntity(dbo))
             .toArray();
     }
 
     public async findByEJ(ej: string) {
         return this.collection
             .find({ ej })
-            .map(dbo => ApplicationFlatAdapter.dboToEntity(dbo))
+            .map(dbo => ApplicationFlatMapper.dboToEntity(dbo))
             .toArray();
     }
 
@@ -139,7 +139,7 @@ export class ApplicationFlatPort extends MongoPort<Omit<ApplicationFlatDbo, "_id
     async findAll() {
         return this.collection
             .find({})
-            .map(dbo => ApplicationFlatAdapter.dboToEntity(dbo))
+            .map(dbo => ApplicationFlatMapper.dboToEntity(dbo))
             .toArray();
     }
 }

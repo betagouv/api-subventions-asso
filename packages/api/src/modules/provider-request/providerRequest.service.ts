@@ -3,8 +3,8 @@ import providerRequestPort from "../../dataProviders/db/provider-request/provide
 import ProviderRequestLog from "./entities/ProviderRequestLog";
 import RequestConfig from "./@types/RequestConfig";
 import { RequestResponse } from "./@types/RequestResponse";
-import RequestConfigAdapter from "./adapters/RequestConfigAdapter";
-import RequestResponseAdapter from "./adapters/RequestResponseAdapter";
+import RequestConfigMapper from "./mappers/request-config.mapper";
+import RequestResponseMapper from "./mappers/request-response.mapper";
 
 export class ProviderRequestService {
     constructor(private providerId: string) {}
@@ -26,7 +26,7 @@ export class ProviderRequestService {
     private sendRequest<T>(type: "GET" | "POST", url: string, option?: RequestConfig): Promise<RequestResponse<T>> {
         const date = new Date();
 
-        const axiosOption = option ? RequestConfigAdapter.toAxiosRequestConfig(option) : {};
+        const axiosOption = option ? RequestConfigMapper.toAxiosRequestConfig(option) : {};
 
         return axios
             .request<T>({
@@ -36,7 +36,7 @@ export class ProviderRequestService {
             })
             .then(async response => {
                 await this.createLog(url, date, response.status, type);
-                return RequestResponseAdapter.toRequestReponse<T>(response);
+                return RequestResponseMapper.toRequestReponse<T>(response);
             })
             .catch(async (error: AxiosError) => {
                 if (error.status) await this.createLog(url, date, error.status, type);

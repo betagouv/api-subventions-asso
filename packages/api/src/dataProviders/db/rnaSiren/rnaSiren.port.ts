@@ -3,7 +3,7 @@ import Rna from "../../../identifierObjects/Rna";
 import { isMongoDuplicateError } from "../../../shared/helpers/MongoHelper";
 import RnaSirenEntity from "../../../entities/RnaSirenEntity";
 import MongoPort from "../../../shared/MongoPort";
-import RnaSirenAdapter from "./RnaSiren.adapter";
+import RnaSirenMapper from "./rna-siren.mapper";
 import RnaSirenDbo from "./RnaSirenDbo";
 
 export class RnaSirenPort extends MongoPort<RnaSirenDbo> {
@@ -19,7 +19,7 @@ export class RnaSirenPort extends MongoPort<RnaSirenDbo> {
         if (!entities.length) return;
         try {
             await this.collection.insertMany(
-                entities.map(e => RnaSirenAdapter.toDbo(e)),
+                entities.map(e => RnaSirenMapper.toDbo(e)),
                 { ordered: false },
             );
         } catch (e: unknown) {
@@ -33,7 +33,7 @@ export class RnaSirenPort extends MongoPort<RnaSirenDbo> {
 
     async insert(entity: RnaSirenEntity) {
         try {
-            await this.collection.insertOne(RnaSirenAdapter.toDbo(entity));
+            await this.collection.insertOne(RnaSirenMapper.toDbo(entity));
         } catch (e: unknown) {
             if (isMongoDuplicateError(e)) {
                 // One or many entities already exist in database but other entities have been saved
@@ -55,7 +55,7 @@ export class RnaSirenPort extends MongoPort<RnaSirenDbo> {
 
         if (!dbos.length) return null;
 
-        return dbos.map(dbo => RnaSirenAdapter.toEntity(dbo));
+        return dbos.map(dbo => RnaSirenMapper.toEntity(dbo));
     }
 }
 

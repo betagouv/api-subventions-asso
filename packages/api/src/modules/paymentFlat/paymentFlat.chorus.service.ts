@@ -2,7 +2,7 @@ import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port
 import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import { ChorusPaymentFlatEntity } from "../providers/chorus/@types/ChorusPaymentFlat";
-import ChorusAdapter from "../providers/chorus/adapters/ChorusAdapter";
+import ChorusMapper from "../providers/chorus/mappers/chorus.mapper";
 import chorusService from "../providers/chorus/chorus.service";
 import ChorusLineEntity from "../providers/chorus/entities/ChorusLineEntity";
 import dataBretagneService from "../providers/dataBretagne/dataBretagne.service";
@@ -71,7 +71,7 @@ class PaymentFlatChorusService implements PaymentFlatProvider {
             let paymentFlatEntity;
 
             try {
-                paymentFlatEntity = ChorusAdapter.toNotAggregatedPaymentFlatEntity(
+                paymentFlatEntity = ChorusMapper.toNotAggregatedPaymentFlatEntity(
                     document,
                     programs,
                     ministries,

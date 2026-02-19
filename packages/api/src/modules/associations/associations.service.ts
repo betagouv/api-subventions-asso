@@ -5,7 +5,7 @@ import { NotFoundError } from "core";
 import { DefaultObject } from "../../@types";
 
 import providers from "../providers";
-import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
+import ApiAssoDtoMapper from "../providers/apiAsso/mappers/api-asso-dto.mapper";
 
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 
@@ -18,8 +18,8 @@ import AssociationsProvider from "./@types/AssociationsProvider";
 
 export class AssociationsService {
     private provider_score: DefaultObject<number> = {
-        [ApiAssoDtoAdapter.providerNameSiren]: 1,
-        [ApiAssoDtoAdapter.providerNameRna]: 1,
+        [ApiAssoDtoMapper.providerNameSiren]: 1,
+        [ApiAssoDtoMapper.providerNameRna]: 1,
     };
 
     async getAssociation(associationIdentifier: AssociationIdentifier): Promise<Association> {

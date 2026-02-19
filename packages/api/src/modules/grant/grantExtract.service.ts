@@ -4,7 +4,7 @@ import { BadRequestError } from "core";
 import associationsService from "../associations/associations.service";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
-import GrantAdapter from "./grant.adapter";
+import GrantMapper from "./grant.mapper";
 import { ExtractHeaderLabel } from "./@types/GrantToExtract";
 import grantService from "./grant.service";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
@@ -29,7 +29,7 @@ class GrantExtractService {
 
         return {
             csv: csvStringifier.stringify(
-                grants.map(g => GrantAdapter.grantToExtractLine(g, asso, estabBySiret)),
+                grants.map(g => GrantMapper.grantToExtractLine(g, asso, estabBySiret)),
                 {
                     header: true,
                     columns: ExtractHeaderLabel,

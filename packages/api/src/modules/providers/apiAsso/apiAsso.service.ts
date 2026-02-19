@@ -15,7 +15,7 @@ import AssociationIdentifier from "../../../identifierObjects/AssociationIdentif
 import Rna from "../../../identifierObjects/Rna";
 import Siren from "../../../identifierObjects/Siren";
 import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
-import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
+import ApiAssoDtoMapper from "./mappers/api-asso-dto.mapper";
 import StructureDto, {
     DocumentsDto,
     StructureDacDocumentDto,
@@ -92,7 +92,7 @@ export class ApiAssoService
 
         if (!rnaStructure) return null;
         if (hasEmptyProperties(rnaStructure.identite) || !rnaStructure.identite.date_modif_rna) return null; // sometimes an empty shell object if given by the api
-        return ApiAssoDtoAdapter.rnaStructureToAssociation(rnaStructure);
+        return ApiAssoDtoMapper.rnaStructureToAssociation(rnaStructure);
     }
 
     private getDefaultDateModifSiren(structure: StructureDto | SirenStructureDto) {
@@ -109,14 +109,14 @@ export class ApiAssoService
             if (!structure || hasEmptyProperties(structure.identite)) return null;
             if (!structure.identite.date_modif_siren)
                 structure.identite.date_modif_siren = this.getDefaultDateModifSiren(structure);
-            return ApiAssoDtoAdapter.sirenStructureToAssociation(structure);
+            return ApiAssoDtoMapper.sirenStructureToAssociation(structure);
         }
         if (!sirenStructure?.identite || !Object.keys(sirenStructure.identite).length) return null; // sometimes an empty shell object if given by the api
 
         if (!sirenStructure.identite.date_modif_siren)
             sirenStructure.identite.date_modif_siren = this.getDefaultDateModifSiren(sirenStructure);
 
-        return ApiAssoDtoAdapter.sirenStructureToAssociation(sirenStructure);
+        return ApiAssoDtoMapper.sirenStructureToAssociation(sirenStructure);
     }
 
     public async findEstablishmentsBySiren(siren: Siren): Promise<Establishment[]> {
@@ -135,7 +135,7 @@ export class ApiAssoService
         return establishments
             .filter(establishment => establishment)
             .map(establishment =>
-                ApiAssoDtoAdapter.toEstablishment(
+                ApiAssoDtoMapper.toEstablishment(
                     establishment,
                     ribs,
                     structure.representant_legal,
@@ -260,7 +260,7 @@ export class ApiAssoService
         if (!documents) return [];
         const activeDacDocuments = this.filterActiveDacDocuments(documents.document_dac || [], identifier);
         const ribs = this.filterRibsInDacDocuments(activeDacDocuments);
-        return ribs.map(rib => ApiAssoDtoAdapter.dacDocumentToRib(rib));
+        return ribs.map(rib => ApiAssoDtoMapper.dacDocumentToRib(rib));
     }
 
     private async findDocuments(identifier: AssociationIdentifier): Promise<DocumentDto[]> {
@@ -274,9 +274,9 @@ export class ApiAssoService
         const ribs = this.filterRibsInDacDocuments(activeDacDocuments);
 
         return [
-            ...filteredRnaDocument.map(document => ApiAssoDtoAdapter.rnaDocumentToDocument(document)),
-            ...filteredDacDocument.map(document => ApiAssoDtoAdapter.dacDocumentToDocument(document)),
-            ...ribs.map(document => ApiAssoDtoAdapter.dacDocumentToRib(document)),
+            ...filteredRnaDocument.map(document => ApiAssoDtoMapper.rnaDocumentToDocument(document)),
+            ...filteredDacDocument.map(document => ApiAssoDtoMapper.dacDocumentToDocument(document)),
+            ...ribs.map(document => ApiAssoDtoMapper.dacDocumentToRib(document)),
         ];
     }
 

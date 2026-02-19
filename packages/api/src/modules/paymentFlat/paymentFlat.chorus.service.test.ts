@@ -1,18 +1,18 @@
 import { PAYMENT_FLAT_DBO } from "../../dataProviders/db/paymentFlat/__fixtures__/paymentFlatDbo.fixture";
 import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port";
 import { ENTITIES } from "../providers/chorus/__fixtures__/ChorusFixtures";
-import ChorusAdapter from "../providers/chorus/adapters/ChorusAdapter";
+import ChorusMapper from "../providers/chorus/mappers/chorus.mapper";
 import chorusService from "../providers/chorus/chorus.service";
 import { DATA_BRETAGNE_RECORDS } from "../providers/dataBretagne/__fixtures__/dataBretagne.fixture";
 import dataBretagneService from "../providers/dataBretagne/dataBretagne.service";
 import { CHORUS_PAYMENT_FLAT_ENTITY } from "./__fixtures__/paymentFlatEntity.fixture";
 import paymentFlatChorusService from "./paymentFlat.chorus.service";
-import PaymentFlatAdapter from "./paymentFlatAdapter";
+import PaymentFlatMapper from "./payment-flat.mapper";
 import paymentFlatService from "./paymentFlat.service";
 
 jest.mock("../../dataProviders/db/paymentFlat/paymentFlat.port");
 jest.mock("../providers/dataBretagne/dataBretagne.service");
-jest.mock("./paymentFlatAdapter");
+jest.mock("./payment-flat.mapper");
 jest.mock("./paymentFlat.service");
 jest.mock("../providers/chorus/chorus.service");
 
@@ -29,7 +29,7 @@ describe("paymentFlatChorusService", () => {
             DATA_BRETAGNE_RECORDS.fonctionalDomains,
         );
         jest.mocked(dataBretagneService.getProgramsRefRecord).mockResolvedValue(DATA_BRETAGNE_RECORDS.programsRef);
-        jest.mocked(PaymentFlatAdapter.toDbo).mockReturnValue(PAYMENT_FLAT_DBO);
+        jest.mocked(PaymentFlatMapper.toDbo).mockReturnValue(PAYMENT_FLAT_DBO);
     });
 
     describe("init", () => {
@@ -191,7 +191,7 @@ describe("paymentFlatChorusService", () => {
 
             mockChorusCursorFind = jest.spyOn(chorusService, "cursorFind").mockReturnValue(mockCursor);
             mockToNotAggregatedChorusPaymentFlatEntity = jest
-                .spyOn(ChorusAdapter, "toNotAggregatedPaymentFlatEntity")
+                .spyOn(ChorusMapper, "toNotAggregatedPaymentFlatEntity")
                 .mockReturnValue({ ...CHORUS_PAYMENT_FLAT_ENTITY });
         });
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Establishment } from "dto";
-import ApiAssoDtoAdapter from "./adapters/ApiAssoDtoAdapter";
+import ApiAssoDtoMapper from "./mappers/api-asso-dto.mapper";
 import apiAssoService from "./apiAsso.service";
 import { DacDtoDocument, RnaDtoDocument } from "./__fixtures__/DtoDocumentFixture";
 import { fixtureAsso } from "./__fixtures__/ApiAssoStructureFixture";
@@ -15,7 +15,7 @@ import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIde
 jest.mock("../../../shared/helpers/ObjectHelper");
 const mockedObjectHelper = jest.mocked(ObjectHelper);
 
-jest.mock("./adapters/ApiAssoDtoAdapter", () => ({
+jest.mock("./mappers/api-asso-dto.mapper", () => ({
     rnaDocumentToDocument: jest.fn().mockImplementation(() => RnaDtoDocument),
     dacDocumentToDocument: jest.fn().mockImplementation(() => DacDtoDocument),
     dacDocumentToRib: jest.fn(),
@@ -279,7 +279,7 @@ describe("ApiAssoService", () => {
                 mockSendRequest.mockResolvedValue(expected);
                 await apiAssoService.findAssociationByRna(RNA);
 
-                expect(ApiAssoDtoAdapter.rnaStructureToAssociation).toBeCalledWith(expected);
+                expect(ApiAssoDtoMapper.rnaStructureToAssociation).toBeCalledWith(expected);
             });
         });
 
@@ -339,7 +339,7 @@ describe("ApiAssoService", () => {
             it("should use adapter", async () => {
                 const expected = ASSO_WITH_STRUCTURES;
                 await apiAssoService.findAssociationBySiren(SIREN);
-                expect(ApiAssoDtoAdapter.sirenStructureToAssociation).toBeCalledWith(expected);
+                expect(ApiAssoDtoMapper.sirenStructureToAssociation).toBeCalledWith(expected);
             });
 
             it("should call getDefaultDateModifSiren()", async () => {
@@ -439,7 +439,7 @@ describe("ApiAssoService", () => {
                     // @ts-expect-error: mock
                     .mockReturnValue("1900-01-01");
                 toEstablishmentMock = jest
-                    .spyOn(ApiAssoDtoAdapter, "toEstablishment")
+                    .spyOn(ApiAssoDtoMapper, "toEstablishment")
                     .mockImplementation(data => data as unknown as Establishment);
             });
 
@@ -824,7 +824,7 @@ describe("ApiAssoService", () => {
                 // @ts-expect-error findDocuments has private method
                 await apiAssoService.findDocuments(ASSOCIATION_ID);
 
-                expect(ApiAssoDtoAdapter.rnaDocumentToDocument).toHaveBeenCalledWith(expected);
+                expect(ApiAssoDtoMapper.rnaDocumentToDocument).toHaveBeenCalledWith(expected);
             });
 
             it("should call ApiAssoDtoAdapter.dacDocumentToDocument with document_dac", async () => {
@@ -848,7 +848,7 @@ describe("ApiAssoService", () => {
                 // @ts-expect-error findDocuments has private method
                 await apiAssoService.findDocuments(ASSOCIATION_ID);
 
-                expect(ApiAssoDtoAdapter.dacDocumentToDocument).toHaveBeenCalledWith(expected);
+                expect(ApiAssoDtoMapper.dacDocumentToDocument).toHaveBeenCalledWith(expected);
             });
 
             it("should call ApiAssoDtoAdapter.dacDocumentToDocument with ribs document_dac", async () => {
@@ -869,12 +869,12 @@ describe("ApiAssoService", () => {
                 // @ts-expect-error: mock
                 mockFilterRibsInDacDocuments.mockImplementationOnce(data => data);
                 // @ts-expect-error: mock
-                ApiAssoDtoAdapter.dacDocumentToDocument.mockImplementationOnce(data => data);
+                ApiAssoDtoMapper.dacDocumentToDocument.mockImplementationOnce(data => data);
 
                 // @ts-expect-error findDocuments has private method
                 await apiAssoService.findDocuments(ASSOCIATION_ID);
 
-                expect(ApiAssoDtoAdapter.dacDocumentToRib).toHaveBeenCalledWith(expected);
+                expect(ApiAssoDtoMapper.dacDocumentToRib).toHaveBeenCalledWith(expected);
             });
         });
 

@@ -4,7 +4,7 @@ import { ChorusPaymentFlatEntity } from "../../../modules/providers/chorus/@type
 import Siren from "../../../identifierObjects/Siren";
 import Siret from "../../../identifierObjects/Siret";
 import { DefaultObject } from "../../../@types";
-import PaymentFlatAdapter from "../../../modules/paymentFlat/paymentFlatAdapter";
+import PaymentFlatMapper from "../../../modules/paymentFlat/payment-flat.mapper";
 import PaymentFlatEntity from "../../../entities/flats/PaymentFlatEntity";
 import PaymentFlatDbo from "./PaymentFlatDbo";
 
@@ -35,11 +35,11 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
     }
 
     public insertOne(entity: PaymentFlatEntity) {
-        return this.collection.insertOne(PaymentFlatAdapter.toDbo(entity));
+        return this.collection.insertOne(PaymentFlatMapper.toDbo(entity));
     }
 
     public upsertOne(entity: PaymentFlatEntity) {
-        const updateDbo = PaymentFlatAdapter.toDbo(entity);
+        const updateDbo = PaymentFlatMapper.toDbo(entity);
         return this.collection.updateOne({ idUnique: updateDbo.idUnique }, { $set: updateDbo }, { upsert: true });
     }
 
@@ -54,21 +54,21 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
     }
 
     public upsertMany(entities: PaymentFlatEntity[]) {
-        const bulk = entities.map(entity => this.buildUpsertOperation(PaymentFlatAdapter.toDbo(entity)));
+        const bulk = entities.map(entity => this.buildUpsertOperation(PaymentFlatMapper.toDbo(entity)));
         return this.collection.bulkWrite(bulk, { ordered: false });
     }
 
     public insertMany(entities: PaymentFlatEntity[]) {
-        return this.collection.insertMany(entities.map(entity => PaymentFlatAdapter.toDbo(entity), { ordered: false }));
+        return this.collection.insertMany(entities.map(entity => PaymentFlatMapper.toDbo(entity), { ordered: false }));
     }
 
     // used in test
     public async findAll() {
-        return (await this.collection.find({})).map(dbo => PaymentFlatAdapter.dboToEntity(dbo)).toArray();
+        return (await this.collection.find({})).map(dbo => PaymentFlatMapper.dboToEntity(dbo)).toArray();
     }
 
     public cursorFind(query: DefaultObject<unknown> = {}, projection: DefaultObject<unknown> = {}) {
-        return this.collection.find(query, projection).map(PaymentFlatAdapter.dboToEntity);
+        return this.collection.find(query, projection).map(PaymentFlatMapper.dboToEntity);
     }
 
     public cursorFindChorusOnly(exerciceBudgetaire?: number) {
@@ -91,7 +91,7 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
                 typeIdEtablissementBeneficiaire: siret.name,
                 idEtablissementBeneficiaire: siret.value,
             })
-            .map(PaymentFlatAdapter.dboToEntity)
+            .map(PaymentFlatMapper.dboToEntity)
             .toArray();
     }
 
@@ -101,12 +101,12 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
                 typeIdEntrepriseBeneficiaire: siren.name,
                 idEntrepriseBeneficiaire: siren.value,
             })
-            .map(PaymentFlatAdapter.dboToEntity)
+            .map(PaymentFlatMapper.dboToEntity)
             .toArray();
     }
 
     public async findByEJ(ej: string) {
-        return this.collection.find({ ej: ej }).map(PaymentFlatAdapter.dboToEntity).toArray();
+        return this.collection.find({ ej: ej }).map(PaymentFlatMapper.dboToEntity).toArray();
     }
 }
 

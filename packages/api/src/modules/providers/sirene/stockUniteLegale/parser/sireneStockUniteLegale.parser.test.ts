@@ -2,7 +2,7 @@ import SireneStockUniteLegaleParser from "./sireneStockUniteLegale.parser";
 import fs, { createReadStream, ReadStream } from "fs";
 import { parse } from "csv-parse";
 import { DTOS, DBOS, ENTITIES } from "../../__fixtures__/sireneStockUniteLegale.fixture";
-import SireneStockUniteLegaleAdapter from "../adapter/sireneStockUniteLegale.adapter";
+import SireneStockUniteLegaleMapper from "../mappers/sirene-stock-unite-legale.mapper";
 import sireneStockUniteLegaleService from "../sireneStockUniteLegale.service";
 
 jest.mock("fs", () => {
@@ -15,7 +15,7 @@ jest.mock("fs", () => {
 });
 
 jest.mock("csv-parse");
-jest.mock("../adapter/sireneStockUniteLegale.adapter");
+jest.mock("../mappers/sirene-stock-unite-legale.mapper");
 jest.mock("../sireneStockUniteLegale.service");
 jest.mock("../../../uniteLegalEntreprises/uniteLegal.entreprises.service");
 jest.mock("../../../../../entities/UniteLegalEntrepriseEntity");
@@ -57,8 +57,8 @@ describe("SireneStockUniteLegaleParser", () => {
 
         beforeAll(() => {
             mockFilePathValidator = jest.spyOn(SireneStockUniteLegaleParser, "filePathValidator").mockReturnValue(true);
-            jest.mocked(SireneStockUniteLegaleAdapter.dtoToEntity).mockReturnValue(ENTITIES[0]);
-            jest.mocked(SireneStockUniteLegaleAdapter.entityToDbo).mockReturnValue(DBOS[0]);
+            jest.mocked(SireneStockUniteLegaleMapper.dtoToEntity).mockReturnValue(ENTITIES[0]);
+            jest.mocked(SireneStockUniteLegaleMapper.entityToDbo).mockReturnValue(DBOS[0]);
             jest.mocked(sireneStockUniteLegaleService.upsertMany).mockImplementation(jest.fn());
             mockStream = {
                 pipe: jest.fn().mockReturnThis(),

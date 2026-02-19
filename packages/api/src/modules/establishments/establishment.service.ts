@@ -2,29 +2,29 @@ import { ProviderValues, Establishment } from "dto";
 
 import * as Sentry from "@sentry/node";
 import { NotFoundError } from "core";
-import OsirisRequestAdapter from "../providers/osiris/adapters/OsirisRequestAdapter";
+import OsirisRequestMapper from "../providers/osiris/mappers/osiris-request.mapper";
 import { DefaultObject } from "../../@types";
 import FormaterHelper from "../../shared/helpers/FormaterHelper";
 import providers from "../providers";
-import FonjepEntityAdapter from "../providers/fonjep/adapters/FonjepEntityAdapter";
+import FonjepEntityMapper from "../providers/fonjep/mappers/fonjep-entity.mapper";
 import subventionsService from "../subventions/subventions.service";
-import ApiAssoDtoAdapter from "../providers/apiAsso/adapters/ApiAssoDtoAdapter";
+import ApiAssoDtoMapper from "../providers/apiAsso/mappers/api-asso-dto.mapper";
 import grantService from "../grant/grant.service";
 import paymentService from "../payments/payments.service";
 import documentsService from "../documents/documents.service";
-import ApiEntrepriseAdapter from "../providers/apiEntreprise/adapters/ApiEntrepriseAdapter";
+import ApiEntrepriseMapper from "../providers/apiEntreprise/mappers/api-entreprise.mapper";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
-import { EstablishmentAdapter } from "./EstablishmentAdapter";
+import { EstablishmentMapper } from "./establishment.mapper";
 import EstablishmentProvider from "./@types/EstablishmentProvider";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 
 export class EstablishmentService {
     private provider_score: DefaultObject<number> = {
-        [ApiAssoDtoAdapter.providerNameSiren]: 1,
-        [ApiEntrepriseAdapter.PROVIDER_NAME]: 1,
-        [OsirisRequestAdapter.PROVIDER_NAME]: 0.5,
-        [FonjepEntityAdapter.PROVIDER_NAME]: 0.5,
+        [ApiAssoDtoMapper.providerNameSiren]: 1,
+        [ApiEntrepriseMapper.PROVIDER_NAME]: 1,
+        [OsirisRequestMapper.PROVIDER_NAME]: 0.5,
+        [FonjepEntityMapper.PROVIDER_NAME]: 0.5,
     };
 
     async getEstablishment(identifier: EstablishmentIdentifier) {
@@ -70,7 +70,7 @@ export class EstablishmentService {
         const sortEstablishmentsByStatus = (establishmentA: Establishment, establishmentB: Establishment) =>
             this.scoreEstablishment(establishmentB) - this.scoreEstablishment(establishmentA);
         const sortedEstablishment = establishments.sort(sortEstablishmentsByStatus); // The order is the "siege" first, the secondary is open, the third is closed.
-        return sortedEstablishment.map(establishment => EstablishmentAdapter.toSimplifiedEstablishment(establishment));
+        return sortedEstablishment.map(establishment => EstablishmentMapper.toSimplifiedEstablishment(establishment));
     }
 
     getOldGrants(id: EstablishmentIdentifier) {

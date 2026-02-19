@@ -1,7 +1,7 @@
 import { PaginatedAssociationNameDto } from "dto";
 import associationNameService from "../association-name/associationName.service";
 import searchPort from "../../dataProviders/db/search/search.port";
-import AssociationNameDtoAdapter from "./adapters/AssociationNameDtoAdapter";
+import AssociationNameDtoMapper from "./mappers/association-name-dto.mapper";
 
 export class SearchService {
     static PAGE_SIZE = 12;
@@ -25,7 +25,7 @@ export class SearchService {
 
         // nothing in cache
         const resultsEntities = await associationNameService.find(value);
-        const resultsDtos = resultsEntities.map(entity => AssociationNameDtoAdapter.toDto(entity));
+        const resultsDtos = resultsEntities.map(entity => AssociationNameDtoMapper.toDto(entity));
         const nbResults = resultsDtos.length;
         searchPort.saveResults(value, resultsDtos);
 

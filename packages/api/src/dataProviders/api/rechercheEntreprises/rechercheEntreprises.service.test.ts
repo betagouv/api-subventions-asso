@@ -3,13 +3,13 @@ import { RechercheEntreprisesDto, RechercheEntreprisesResultDto } from "./Recher
 import Siren from "../../../identifierObjects/Siren";
 import rechercheEntreprisesService from "./rechercheEntreprises.service";
 import rechercheEntreprisesPort from "./rechercheEntreprises.port";
-import { RechercheEntreprisesAdapter } from "./RechercheEntreprisesAdapter";
+import { RechercheEntreprisesMapper } from "./recherche-entreprises.mapper";
 import notifyService from "../../../modules/notify/notify.service";
 import { RNA_STR, SIREN_STR } from "../../../../tests/__fixtures__/association.fixture";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
 
 // Mocking the external dependencies
-jest.mock("./RechercheEntreprisesAdapter");
+jest.mock("./recherche-entreprises.mapper");
 jest.mock("./rechercheEntreprises.port");
 jest.mock("../../../modules/notify/notify.service", () => ({
     notify: jest.fn(),
@@ -32,7 +32,7 @@ describe("RechercheEntreprisesService", () => {
 
         beforeEach(() => {
             // @ts-expect-error: mock return value
-            jest.spyOn(RechercheEntreprisesAdapter, "toAssociationNameEntity").mockReturnValue({
+            jest.spyOn(RechercheEntreprisesMapper, "toAssociationNameEntity").mockReturnValue({
                 name: "Adapted Association Name",
             });
             mockSearch = jest.spyOn(rechercheEntreprisesService, "search").mockResolvedValue(RESULTS);
@@ -59,7 +59,7 @@ describe("RechercheEntreprisesService", () => {
         it("adapts all result to AssociationNameEntity", async () => {
             await rechercheEntreprisesService.getSearchResult(SIREN.value);
             RESULTS.forEach((result, index) => {
-                expect(RechercheEntreprisesAdapter.toAssociationNameEntity).toHaveBeenNthCalledWith(index + 1, result);
+                expect(RechercheEntreprisesMapper.toAssociationNameEntity).toHaveBeenNthCalledWith(index + 1, result);
             });
         });
 

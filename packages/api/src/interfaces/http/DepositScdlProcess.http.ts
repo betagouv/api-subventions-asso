@@ -19,7 +19,7 @@ import {
     FormField,
 } from "tsoa";
 import depositScdlProcessService from "../../modules/deposit-scdl-process/depositScdlProcess.service";
-import DepositScdlLogDtoAdapter from "../../modules/deposit-scdl-process/depositScdlLog.dto.adapter";
+import DepositScdlLogDtoMapper from "../../modules/deposit-scdl-process/deposit-scdl-log.dto.mapper";
 
 @Route("/parcours-depot")
 @Security("jwt")
@@ -42,7 +42,7 @@ export class DepositScdlProcessHttp extends Controller {
             this.setStatus(204);
             return;
         }
-        return DepositScdlLogDtoAdapter.entityToDepositScdlLogResponseDto(depositScdlLog);
+        return DepositScdlLogDtoMapper.entityToDepositScdlLogResponseDto(depositScdlLog);
     }
 
     /**
@@ -115,7 +115,7 @@ export class DepositScdlProcessHttp extends Controller {
             req.user._id.toString(),
         );
         this.setStatus(201);
-        return DepositScdlLogDtoAdapter.entityToDepositScdlLogResponseDto(newDepositLog);
+        return DepositScdlLogDtoMapper.entityToDepositScdlLogResponseDto(newDepositLog);
     }
 
     /**
@@ -144,7 +144,7 @@ export class DepositScdlProcessHttp extends Controller {
             depositScdlLogDto,
             req.user._id.toString(),
         );
-        return DepositScdlLogDtoAdapter.entityToDepositScdlLogResponseDto(updatedDepositLog);
+        return DepositScdlLogDtoMapper.entityToDepositScdlLogResponseDto(updatedDepositLog);
     }
 
     /**
@@ -175,7 +175,7 @@ export class DepositScdlProcessHttp extends Controller {
             req.user._id.toString(),
             pageName,
         );
-        return DepositScdlLogDtoAdapter.entityToDepositScdlLogResponseDto(updatedDepositLog);
+        return DepositScdlLogDtoMapper.entityToDepositScdlLogResponseDto(updatedDepositLog);
     }
 
     /**

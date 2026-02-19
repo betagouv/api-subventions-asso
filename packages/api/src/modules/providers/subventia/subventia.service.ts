@@ -2,7 +2,7 @@ import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import subventiaPort from "../../../dataProviders/db/providers/subventia/subventia.port";
 import SubventiaParser from "./subventia.parser";
 import SubventiaValidator from "./validators/subventia.validator";
-import SubventiaAdapter from "./adapters/subventia.adapter";
+import SubventiaMapper from "./mappers/subventia.mapper";
 import { SubventiaDbo } from "./@types/subventia.entity";
 import SubventiaDto from "./@types/subventia.dto";
 import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
@@ -34,7 +34,7 @@ export class SubventiaService implements ApplicationFlatProvider {
         const groupedLinesArr: SubventiaDto[][] = Object.values(grouped);
         const applications = groupedLinesArr.map(groupedLine => {
             const application = this.mergeToApplication(groupedLine);
-            const entity = SubventiaAdapter.applicationToEntity(application, exportDate);
+            const entity = SubventiaMapper.applicationToEntity(application, exportDate);
             return {
                 ...entity,
                 __data__: groupedLine,
@@ -78,7 +78,7 @@ export class SubventiaService implements ApplicationFlatProvider {
 
     async initApplicationFlat() {
         const dbos = await subventiaPort.findAll();
-        const stream = ReadableStream.from(dbos.map(dbo => SubventiaAdapter.toApplicationFlat(dbo)));
+        const stream = ReadableStream.from(dbos.map(dbo => SubventiaMapper.toApplicationFlat(dbo)));
         return this.saveApplicationsFromStream(stream);
     }
 

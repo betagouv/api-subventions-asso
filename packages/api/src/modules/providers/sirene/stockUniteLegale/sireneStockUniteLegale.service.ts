@@ -4,7 +4,7 @@ import { UniteLegalEntrepriseEntity } from "../../../../entities/UniteLegalEntre
 import uniteLegalNameService from "../../uniteLegalName/uniteLegal.name.service";
 import { SireneStockUniteLegaleEntity } from "../../../../entities/SireneStockUniteLegaleEntity";
 import SireneStockUniteLegaleParser from "./parser/sireneStockUniteLegale.parser";
-import SireneStockUniteLegaleAdapter from "./adapter/sireneStockUniteLegale.adapter";
+import SireneStockUniteLegaleMapper from "./mappers/sirene-stock-unite-legale.mapper";
 import Siren from "../../../../identifierObjects/Siren";
 
 export class SireneStockUniteLegaleService {
@@ -20,7 +20,7 @@ export class SireneStockUniteLegaleService {
         await Promise.all([
             this.upsertMany(batchAssosToSave),
             uniteLegalNameService.upsertMany(
-                batchAssosToSave.map(e => SireneStockUniteLegaleAdapter.entityToUniteLegaleNameEntity(e)),
+                batchAssosToSave.map(e => SireneStockUniteLegaleMapper.entityToUniteLegaleNameEntity(e)),
             ),
         ]);
     }

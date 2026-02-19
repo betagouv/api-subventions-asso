@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DataLog Mapper overviewToDto should return dto 1`] = `
+{
+  "derniere_date_edition": 2024-09-07T00:00:00.000Z,
+  "derniere_date_integration": 2024-09-11T00:00:00.000Z,
+  "identifiant_fournisseur": "providerId",
+  "premiere_date_integration": 2018-04-23T00:00:00.000Z,
+}
+`;

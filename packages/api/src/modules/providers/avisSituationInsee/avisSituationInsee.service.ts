@@ -2,7 +2,7 @@ import { DocumentDto } from "dto";
 
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import DocumentProvider from "../../documents/@types/DocumentsProvider";
-import ProviderValueAdapter from "../../../shared/adapters/ProviderValueAdapter";
+import ProviderValueMapper from "../../../shared/mappers/provider-value.mapper";
 import CacheData from "../../../shared/Cache";
 import { CACHE_TIMES } from "../../../shared/helpers/TimeHelper";
 import ProviderCore from "../ProviderCore";
@@ -91,15 +91,15 @@ export class AvisSituationInseeService extends ProviderCore implements DocumentP
 
         return [
             {
-                type: ProviderValueAdapter.toProviderValue("Avis Situation Insee", this.meta.name, new Date()),
-                url: ProviderValueAdapter.toProviderValue(
+                type: ProviderValueMapper.toProviderValue("Avis Situation Insee", this.meta.name, new Date()),
+                url: ProviderValueMapper.toProviderValue(
                     `${AvisSituationInseeService.DOC_PATH}/?url=${encodeURIComponent(
                         `${AvisSituationInseeService.API_URL}/pdf/${siret.value}`,
                     )}`,
                     this.meta.name,
                     new Date(),
                 ),
-                nom: ProviderValueAdapter.toProviderValue(
+                nom: ProviderValueMapper.toProviderValue(
                     `Avis Situation Insee (${siret.value})`,
                     this.meta.name,
                     new Date(),

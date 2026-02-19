@@ -7,7 +7,7 @@ import { RawPayment } from "../grant/@types/rawGrant";
 import { ProviderEnum } from "../../@enums/ProviderEnum";
 import ProviderCore from "../providers/ProviderCore";
 import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
-import PaymentFlatAdapter from "./paymentFlatAdapter";
+import PaymentFlatMapper from "./payment-flat.mapper";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 import GrantProvider from "../grant/@types/GrantProvider";
 import { StructureProvider } from "../StructureProvider";
@@ -46,7 +46,7 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider,
     isPaymentProvider = true;
 
     public rawToPayment(rawGrant: RawPayment) {
-        return PaymentFlatAdapter.rawToPayment(rawGrant);
+        return PaymentFlatMapper.rawToPayment(rawGrant);
     }
 
     async getEntitiesByIdentifier(identifier: StructureIdentifier): Promise<PaymentFlatEntity[]> {
@@ -67,12 +67,12 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider,
 
     async getPaymentsDto(identifier: StructureIdentifier): Promise<PaymentFlatDto[]> {
         const payments: PaymentFlatEntity[] = await this.getEntitiesByIdentifier(identifier);
-        return payments.map(entity => PaymentFlatAdapter.toDto(entity));
+        return payments.map(entity => PaymentFlatMapper.toDto(entity));
     }
 
     private toPaymentArray(documents: PaymentFlatEntity[]) {
         return documents.map(document => {
-            return PaymentFlatAdapter.toPayment(document);
+            return PaymentFlatMapper.toPayment(document);
         });
     }
 

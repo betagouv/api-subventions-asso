@@ -1,6 +1,6 @@
 import documentPort from "$lib/resources/document/document.port";
 import type { DocumentEntity } from "$lib/entities/DocumentEntity";
-import { DocumentAdapter } from "$lib/resources/document/document.adapter";
+import { DocumentMapper } from "$lib/resources/document/document.mapper";
 
 export class DocumentService {
     getAllDocs(identifier: string) {
@@ -8,7 +8,7 @@ export class DocumentService {
     }
 
     getSomeDocs(docsToRequest: DocumentEntity[]) {
-        const requests = docsToRequest.map(doc => DocumentAdapter.documentEntityToDocumentRequst(doc));
+        const requests = docsToRequest.map(doc => DocumentMapper.documentEntityToDocumentRequst(doc));
         return documentPort.getSomeDocs(requests);
     }
 }

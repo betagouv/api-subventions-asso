@@ -3,14 +3,14 @@ import DepositScdlLogEntity from "./entities/depositScdlLog.entity";
 import { CreateDepositScdlLogDto, DepositScdlLogDto, UserDto } from "dto";
 import { BadRequestError, ConflictError, NotFoundError } from "core";
 import depositScdlProcessCheckService from "./check/DepositScdlProcess.check.service";
-import DepositScdlLogDtoAdapter from "./depositScdlLog.dto.adapter";
+import DepositScdlLogDtoMapper from "./deposit-scdl-log.dto.mapper";
 import scdlService from "../providers/scdl/scdl.service";
 import { detectCsvDelimiter } from "../../shared/helpers/FileHelper";
 import UploadedFileInfosEntity from "./entities/uploadedFileInfos.entity";
 import { DefaultObject } from "../../@types";
 import MiscScdlGrantEntity from "../providers/scdl/entities/MiscScdlGrantEntity";
 import { Stringifier, stringify } from "csv-stringify";
-import MiscScdlAdapter from "../providers/scdl/adapters/MiscScdl.adapter";
+import MiscScdlMapper from "../providers/scdl/mappers/misc-scdl.mapper";
 import { formatDateToYYYYMMDDWithSeparator } from "../../shared/helpers/DateHelper";
 import Siret from "../../identifierObjects/Siret";
 import MiscScdlProducerEntity from "../providers/scdl/entities/MiscScdlProducerEntity";
@@ -51,7 +51,7 @@ export class DepositScdlProcessService {
             throw new ConflictError("Deposit log already exists");
         }
         depositScdlProcessCheckService.validateCreate(createDepositScdlLogDto);
-        const depositLogEntity = DepositScdlLogDtoAdapter.createDepositScdlLogDtoToEntity(
+        const depositLogEntity = DepositScdlLogDtoMapper.createDepositScdlLogDtoToEntity(
             createDepositScdlLogDto,
             userId,
             this.FIRST_STEP,
@@ -182,7 +182,7 @@ export class DepositScdlProcessService {
         });
 
         grants.forEach(entity => {
-            const dto = MiscScdlAdapter.grantToSCDL(entity);
+            const dto = MiscScdlMapper.grantToSCDL(entity);
             stringifier.write(dto);
         });
         stringifier.end();

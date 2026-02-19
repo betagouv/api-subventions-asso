@@ -16,7 +16,7 @@ import PaymentFlatProvider from "../../paymentFlat/@types/paymentFlatProvider";
 import paymentFlatService from "../../paymentFlat/paymentFlat.service";
 import dataBretagneService from "../dataBretagne/dataBretagne.service";
 import ProviderCore from "../ProviderCore";
-import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
+import FonjepEntityMapper from "./mappers/fonjep-entity.mapper";
 import FonjepDispositifEntity from "./entities/FonjepDispositifEntity";
 import { FonjepApplicationFlatEntity, FonjepPaymentFlatEntity } from "./entities/FonjepFlatEntity";
 import FonjepPosteEntity from "./entities/FonjepPosteEntity";
@@ -48,20 +48,20 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
         dispositifEntities: FonjepDispositifEntity[];
     } {
         const { tiers, postes, versements, typePoste, dispositifs } = FonjepParser.parse(filePath);
-        const tierEntities = tiers.map(tier => FonjepEntityAdapter.toFonjepTierEntity(tier, exportDate));
+        const tierEntities = tiers.map(tier => FonjepEntityMapper.toFonjepTierEntity(tier, exportDate));
 
-        const posteEntities = postes.map(poste => FonjepEntityAdapter.toFonjepPosteEntity(poste, exportDate));
+        const posteEntities = postes.map(poste => FonjepEntityMapper.toFonjepPosteEntity(poste, exportDate));
 
         const versementEntities = versements.map(versement =>
-            FonjepEntityAdapter.toFonjepVersementEntity(versement, exportDate),
+            FonjepEntityMapper.toFonjepVersementEntity(versement, exportDate),
         );
 
         const typePosteEntities = typePoste.map(typePoste =>
-            FonjepEntityAdapter.toFonjepTypePosteEntity(typePoste, exportDate),
+            FonjepEntityMapper.toFonjepTypePosteEntity(typePoste, exportDate),
         );
 
         const dispositifEntities = dispositifs.map(dispositif =>
-            FonjepEntityAdapter.toFonjepDispositifEntity(dispositif, exportDate),
+            FonjepEntityMapper.toFonjepDispositifEntity(dispositif, exportDate),
         );
 
         return { tierEntities, posteEntities, versementEntities, typePosteEntities, dispositifEntities };
@@ -186,7 +186,7 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
             if (!Siret.isSiret(thirdParty?.siretOuRidet) && !Ridet.isRidet(thirdParty?.siretOuRidet)) return acc;
 
             acc.push(
-                FonjepEntityAdapter.toFonjepPaymentFlat(
+                FonjepEntityMapper.toFonjepPaymentFlat(
                     { payment: payment as PayedFonjepVersementEntity, position, thirdParty },
                     dataBretagneData,
                 ),
@@ -296,7 +296,7 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
                     `Could not find informations on beneficiary to build ApplicationFlat for FONJEP position ${position.code}`,
                 );
             } else {
-                const partialApplication = FonjepEntityAdapter.toFonjepApplicationFlat({
+                const partialApplication = FonjepEntityMapper.toFonjepApplicationFlat({
                     position,
                     allocator,
                     beneficiary,

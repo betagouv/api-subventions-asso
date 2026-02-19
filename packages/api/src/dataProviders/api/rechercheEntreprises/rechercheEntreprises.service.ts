@@ -1,7 +1,7 @@
 import AssociationNameEntity from "../../../modules/association-name/entities/AssociationNameEntity";
 import rechercheEntreprisesPort from "./rechercheEntreprises.port";
 import { RechercheEntreprisesDto, RechercheEntreprisesResultDto } from "./RechercheEntreprisesDto";
-import { RechercheEntreprisesAdapter } from "./RechercheEntreprisesAdapter";
+import { RechercheEntreprisesMapper } from "./recherche-entreprises.mapper";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
 import notifyService from "../../../modules/notify/notify.service";
 import { NotificationType } from "../../../modules/notify/@types/NotificationType";
@@ -56,7 +56,7 @@ export class RechercheEntreprisesService implements Provider {
         return searchResult
             .filter(dto => dto.siren && dto.nom_complet)
             .map(dto =>
-                RechercheEntreprisesAdapter.toAssociationNameEntity(
+                RechercheEntreprisesMapper.toAssociationNameEntity(
                     dto as RechercheEntreprisesResultDto & { siren: string; nom_complet: string },
                 ),
             );

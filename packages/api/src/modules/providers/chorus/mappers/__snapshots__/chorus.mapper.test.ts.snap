@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ChorusMapper buildUniqueId return a uniqueId 1`] = `"chorus-1000000000019--subv001--2023-101-0101-01-02-077601003222-2023-07-12-BRET-AA01/0776-C001-4000"`;
+
+exports[`ChorusMapper getEntitiesByIdentifierRawData should return PaymentFlatRawData 1`] = `
+{
+  "accountingAttachment": "BRET",
+  "amount": 1000,
+  "beneficiaryCompanyId": Siren {
+    "identifier": "123456789",
+  },
+  "beneficiaryCompanyIdType": "siren",
+  "beneficiaryEstablishmentId": Siret {
+    "identifier": "12345678900018",
+  },
+  "beneficiaryEstablishmentIdType": "siret",
+  "budgetaryYear": 2023,
+  "ej": "0001821732",
+  "financialCenterCode": "AA01/0776-C001-4000",
+  "financialCenterLabel": "UO DGER XXXX-C001",
+  "operationDate": 2025-02-02T00:00:00.000Z,
+}
+`;
+
+exports[`ChorusMapper toNotAggregatedPaymentFlatEntity should return PaymentFlatEntity when data is fully provided 1`] = `
+{
+  "accountingAttachment": "BRET",
+  "accountingAttachmentRegion": "Bretagne",
+  "actionCode": "0101-01-02",
+  "actionLabel": "Label d'action Exemple",
+  "activityCode": "077601003222",
+  "activityLabel": "Label d'activité Exemple",
+  "amount": 89988.3,
+  "beneficiaryCompanyId": Siren {
+    "identifier": "100000000",
+  },
+  "beneficiaryCompanyIdType": "siren",
+  "beneficiaryEstablishmentId": Siret {
+    "identifier": "10000000000001",
+  },
+  "beneficiaryEstablishmentIdType": "siret",
+  "budgetaryYear": 2023,
+  "ej": "0001821732",
+  "financialCenterCode": "AA01/0776-C001-4000",
+  "financialCenterLabel": "UO DGER XXXX-C001",
+  "ministry": "Ministère Exemple",
+  "ministryAcronym": "ME",
+  "mission": "Mission Exemple",
+  "operationDate": 2023-07-12T00:00:00.000Z,
+  "paymentId": "10000000000001-0001821732-2023",
+  "programName": "Programme Exemple",
+  "programNumber": 101,
+  "provider": "chorus",
+  "uniqueId": "chorus-10000000000001-0001821732-2023-101-0101-01-02-077601003222-2023-07-12-BRET-AA01/0776-C001-4000",
+  "updateDate": 2020-01-01T00:00:00.000Z,
+}
+`;
+
+exports[`ChorusMapper toNotAggregatedPaymentFlatEntity should return PaymentFlatEntity with null when data is not fully provided 1`] = `
+{
+  "accountingAttachment": "BRET",
+  "accountingAttachmentRegion": "Bretagne",
+  "actionCode": "0101-01-02",
+  "actionLabel": "Label d'action Exemple",
+  "activityCode": "077601003222",
+  "activityLabel": "Label d'activité Exemple",
+  "amount": 89988.3,
+  "beneficiaryCompanyId": Siren {
+    "identifier": "100000000",
+  },
+  "beneficiaryCompanyIdType": "siren",
+  "beneficiaryEstablishmentId": Siret {
+    "identifier": "10000000000001",
+  },
+  "beneficiaryEstablishmentIdType": "siret",
+  "budgetaryYear": 2023,
+  "ej": "0001821732",
+  "financialCenterCode": "AA01/0776-C001-4000",
+  "financialCenterLabel": "UO DGER XXXX-C001",
+  "ministry": "Ministère Exemple",
+  "ministryAcronym": "ME",
+  "mission": null,
+  "operationDate": 2023-07-12T00:00:00.000Z,
+  "paymentId": "10000000000001-0001821732-2023",
+  "programName": null,
+  "programNumber": 101,
+  "provider": "chorus",
+  "uniqueId": "chorus-10000000000001-0001821732-2023-101-0101-01-02-077601003222-2023-07-12-BRET-AA01/0776-C001-4000",
+  "updateDate": 2020-01-01T00:00:00.000Z,
+}
+`;

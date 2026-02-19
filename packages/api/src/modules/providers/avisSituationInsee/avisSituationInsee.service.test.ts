@@ -1,4 +1,4 @@
-import ProviderValueAdapter from "../../../shared/adapters/ProviderValueAdapter";
+import ProviderValueMapper from "../../../shared/mappers/provider-value.mapper";
 import avisSituationInseeService from "./avisSituationInsee.service";
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
 import Siren from "../../../identifierObjects/Siren";
@@ -145,17 +145,17 @@ describe("AvisSituationInseeService", () => {
 
             const expected = [
                 {
-                    type: ProviderValueAdapter.toProviderValue(
+                    type: ProviderValueMapper.toProviderValue(
                         "Avis Situation Insee",
                         avisSituationInseeService.meta.name,
                         expect.any(Date),
                     ),
-                    url: ProviderValueAdapter.toProviderValue(
+                    url: ProviderValueMapper.toProviderValue(
                         `/document/avis_situation_api/?url=https%3A%2F%2Fapi-avis-situation-sirene.insee.fr%2Fidentification%2Fpdf%2F00000000011111`,
                         avisSituationInseeService.meta.name,
                         expect.any(Date),
                     ),
-                    nom: ProviderValueAdapter.toProviderValue(
+                    nom: ProviderValueMapper.toProviderValue(
                         `Avis Situation Insee (00000000011111)`,
                         avisSituationInseeService.meta.name,
                         expect.any(Date),

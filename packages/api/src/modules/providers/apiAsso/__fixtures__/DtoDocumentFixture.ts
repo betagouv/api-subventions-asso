@@ -1,22 +1,22 @@
-import ApiAssoDtoAdapter from "../adapters/ApiAssoDtoAdapter";
+import ApiAssoDtoMapper from "../mappers/api-asso-dto.mapper";
 
 export const RnaDtoDocument = {
     __meta__: {},
     nom: {
         last_update: new Date("2021-01-19T18:42:37.171Z"),
-        provider: ApiAssoDtoAdapter.providerNameRna,
+        provider: ApiAssoDtoMapper.providerNameRna,
         type: "string",
         value: "PV - ididididid",
     },
     type: {
         last_update: new Date("2021-01-19T18:42:37.171Z"),
-        provider: ApiAssoDtoAdapter.providerNameRna,
+        provider: ApiAssoDtoMapper.providerNameRna,
         type: "string",
         value: "PV",
     },
     url: {
         last_update: new Date("2021-01-19T18:42:37.171Z"),
-        provider: ApiAssoDtoAdapter.providerNameRna,
+        provider: ApiAssoDtoMapper.providerNameRna,
         type: "string",
         value: "/document/api_asso/?url=%2Ffake%2Furl",
     },
@@ -30,19 +30,19 @@ export const DacDtoDocument = {
     },
     nom: {
         last_update: new Date("2021-06-18T12:02:00.000Z"),
-        provider: ApiAssoDtoAdapter.providerNameLcaDocument,
+        provider: ApiAssoDtoMapper.providerNameLcaDocument,
         type: "string",
         value: "nom fake",
     },
     type: {
         last_update: new Date("2021-06-18T12:02:00.000Z"),
-        provider: ApiAssoDtoAdapter.providerNameLcaDocument,
+        provider: ApiAssoDtoMapper.providerNameLcaDocument,
         type: "string",
         value: "BPA",
     },
     url: {
         last_update: new Date("2021-06-18T12:02:00.000Z"),
-        provider: ApiAssoDtoAdapter.providerNameLcaDocument,
+        provider: ApiAssoDtoMapper.providerNameLcaDocument,
         type: "string",
         value: "/document/api_asso/?url=%2Ffake%2Furl",
     },

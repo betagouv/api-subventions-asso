@@ -1,7 +1,7 @@
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
 import MongoPort from "../../../shared/MongoPort";
 import StateBudgetProgramDbo from "./StateBudgetProgramDbo";
-import StateBudgetProgramAdapter from "./StateBudgetProgram.adapter";
+import StateBudgetProgramMapper from "./state-budget-program.mapper";
 
 /**
  * Represents a data provider for state budget programs.
@@ -27,7 +27,7 @@ export class StateBudgetProgramPort extends MongoPort<StateBudgetProgramDbo> {
 
         if (!dbo) throw new Error(`StateBudgetProgram with code ${code} not found`);
 
-        return StateBudgetProgramAdapter.toEntity(dbo);
+        return StateBudgetProgramMapper.toEntity(dbo);
     }
 
     /**
@@ -37,7 +37,7 @@ export class StateBudgetProgramPort extends MongoPort<StateBudgetProgramDbo> {
      */
     public async replace(programs: StateBudgetProgramEntity[]) {
         await this.collection.deleteMany({});
-        return this.collection.insertMany(programs.map(program => StateBudgetProgramAdapter.toDbo(program)));
+        return this.collection.insertMany(programs.map(program => StateBudgetProgramMapper.toDbo(program)));
     }
 
     /**
@@ -45,7 +45,7 @@ export class StateBudgetProgramPort extends MongoPort<StateBudgetProgramDbo> {
      * @returns A promise that resolves to an array of state budget program entities.
      */
     public async findAll(): Promise<StateBudgetProgramEntity[]> {
-        return this.collection.find().map(StateBudgetProgramAdapter.toEntity).toArray();
+        return this.collection.find().map(StateBudgetProgramMapper.toEntity).toArray();
     }
 }
 

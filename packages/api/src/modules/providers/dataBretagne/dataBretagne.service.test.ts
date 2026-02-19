@@ -5,7 +5,7 @@ import stateBudgetProgramPort from "../../../dataProviders/db/state-budget-progr
 jest.mock("../../../dataProviders/db/state-budget-program/stateBudgetProgram.port");
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
 import { PROGRAMS } from "../../../dataProviders/api/dataBretagne/__fixtures__/DataBretagne.fixture";
-import { DataBretagneProgrammeAdapter } from "../../../dataProviders/api/dataBretagne/DataBretagneAdapter";
+import { DataBretagneProgrammeMapper } from "../../../dataProviders/api/dataBretagne/data-bretagne.mapper";
 import DomaineFonctionnelEntity from "../../../entities/DomaineFonctionnelEntity";
 import MinistryEntity from "../../../entities/MinistryEntity";
 import RefProgrammationEntity from "../../../entities/RefProgrammationEntity";
@@ -51,7 +51,7 @@ describe("Data Bretagne Service", function () {
             new StateBudgetProgramEntity("label_theme", "label", "code_ministere", 1),
         ]);
         jest.mocked(stateBudgetProgramPort.findAll).mockResolvedValue(
-            PROGRAMS.map(DataBretagneProgrammeAdapter.toEntity),
+            PROGRAMS.map(DataBretagneProgrammeMapper.toEntity),
         );
     });
 
@@ -138,7 +138,7 @@ describe("Data Bretagne Service", function () {
         it("should return a record of state budget program entities", async () => {
             const programs = await dataBretagneService.getProgramsRecord();
             expect(programs).toEqual({
-                [PROGRAMS[0].code]: DataBretagneProgrammeAdapter.toEntity(PROGRAMS[0]),
+                [PROGRAMS[0].code]: DataBretagneProgrammeMapper.toEntity(PROGRAMS[0]),
             });
         });
     });

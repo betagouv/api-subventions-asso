@@ -1,5 +1,5 @@
 import type { SiretDto } from "dto";
-import { toEstablishmentComponent } from "./establishment.adapter";
+import { toEstablishmentComponent } from "./establishment.mapper";
 import establishmentPort from "./establishment.port";
 import type { DocumentEntity } from "$lib/entities/DocumentEntity";
 import documentHelper from "$lib/helpers/document.helper";

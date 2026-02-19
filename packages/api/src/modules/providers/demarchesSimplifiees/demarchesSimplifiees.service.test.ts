@@ -5,8 +5,8 @@ import {
 
 jest.mock("../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port");
 jest.mock("../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port");
-jest.mock("./adapters/DemarchesSimplifieesEntityAdapter");
-jest.mock("./adapters/DemarchesSimplifieesDtoAdapter");
+jest.mock("./mappers/demarches-simplifiees-entity.mapper");
+jest.mock("./mappers/demarches-simplifiees-dto.mapper");
 jest.mock("@inquirer/prompts");
 jest.mock("../../configurations/configurations.service");
 jest.mock("../../applicationFlat/applicationFlat.service");
@@ -14,8 +14,8 @@ jest.mock("../../applicationFlat/applicationFlat.helper");
 jest.mock("stream/web");
 
 import configurationsService from "../../configurations/configurations.service";
-import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
-import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
+import DemarchesSimplifieesDtoMapper from "./mappers/demarches-simplifiees-dto.mapper";
+import { DemarchesSimplifieesEntityMapper } from "./mappers/demarches-simplifiees-entity.mapper";
 import demarchesSimplifieesService from "./demarchesSimplifiees.service";
 import DemarchesSimplifieesSchema, { DemarchesSimplifieesSchemaLine } from "./entities/DemarchesSimplifieesSchema";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
@@ -122,12 +122,12 @@ describe("DemarchesSimplifieesService", () => {
             beforeAll(() => {
                 // @ts-expect-error -- private method
                 isDraftSpy = jest.spyOn(demarchesSimplifieesService, "isDraft").mockReturnValue(false);
-                jest.mocked(DemarchesSimplifieesEntityAdapter.toFlat).mockReturnValue(ADAPTED);
+                jest.mocked(DemarchesSimplifieesEntityMapper.toFlat).mockReturnValue(ADAPTED);
             });
 
             afterAll(() => {
                 isDraftSpy.mockRestore();
-                jest.mocked(DemarchesSimplifieesEntityAdapter.toFlat).mockRestore();
+                jest.mocked(DemarchesSimplifieesEntityMapper.toFlat).mockRestore();
             });
 
             it("returns null if no flat schema", () => {
@@ -151,7 +151,7 @@ describe("DemarchesSimplifieesService", () => {
             });
 
             it("returns null if no requested amount", () => {
-                jest.mocked(DemarchesSimplifieesEntityAdapter.toFlat).mockReturnValueOnce({
+                jest.mocked(DemarchesSimplifieesEntityMapper.toFlat).mockReturnValueOnce({
                     budgetaryYear: 2004,
                 } as ApplicationFlatEntity);
                 const actual = demarchesSimplifieesService.toFlatAndValidate(DBO, SCHEMA);
@@ -159,7 +159,7 @@ describe("DemarchesSimplifieesService", () => {
             });
 
             it("returns null if no budgtary year", () => {
-                jest.mocked(DemarchesSimplifieesEntityAdapter.toFlat).mockReturnValueOnce({
+                jest.mocked(DemarchesSimplifieesEntityMapper.toFlat).mockReturnValueOnce({
                     requestedAmount: 1234,
                 } as ApplicationFlatEntity);
                 const actual = demarchesSimplifieesService.toFlatAndValidate(DBO, SCHEMA);
@@ -393,7 +393,7 @@ describe("DemarchesSimplifieesService", () => {
                 .spyOn(demarchesSimplifieesService, "sendQuery")
                 // @ts-expect-error mock
                 .mockResolvedValue(DEMARCHE);
-            toEntitiesMock = jest.spyOn(DemarchesSimplifieesDtoAdapter, "toEntities").mockReturnValue([DOSSIER]);
+            toEntitiesMock = jest.spyOn(DemarchesSimplifieesDtoMapper, "toEntities").mockReturnValue([DOSSIER]);
             // @ts-expect-error mock
             demarchesSimplifieesDataPort.upsert.mockResolvedValue();
             jest.mocked(demarchesSimplifieesSchemaPort.findById).mockResolvedValue(SCHEMA);
@@ -730,13 +730,13 @@ describe("DemarchesSimplifieesService", () => {
         beforeAll(() => {
             buildSchemaSpy = jest.spyOn(demarchesSimplifieesService, "buildSchema").mockResolvedValue(BUILT);
             sendQuerySpy = jest.spyOn(demarchesSimplifieesService, "sendQuery").mockResolvedValue(QUERY_RESULT);
-            jest.mocked(DemarchesSimplifieesDtoAdapter.toEntities).mockReturnValue([EXAMPLE]);
+            jest.mocked(DemarchesSimplifieesDtoMapper.toEntities).mockReturnValue([EXAMPLE]);
         });
 
         afterAll(() => {
             buildSchemaSpy.mockRestore();
             sendQuerySpy.mockRestore();
-            jest.mocked(DemarchesSimplifieesDtoAdapter.toEntities).mockRestore();
+            jest.mocked(DemarchesSimplifieesDtoMapper.toEntities).mockRestore();
         });
 
         it("sends query", async () => {
@@ -746,7 +746,7 @@ describe("DemarchesSimplifieesService", () => {
 
         it("adapts entities (to get example)", async () => {
             await demarchesSimplifieesService.buildFullSchema(FULL_SCHEMA, DEMARCHE_ID);
-            expect(DemarchesSimplifieesDtoAdapter.toEntities).toHaveBeenCalledWith(QUERY_RESULT, DEMARCHE_ID);
+            expect(DemarchesSimplifieesDtoMapper.toEntities).toHaveBeenCalledWith(QUERY_RESULT, DEMARCHE_ID);
         });
 
         it("calls buildsSchema for each schema", async () => {

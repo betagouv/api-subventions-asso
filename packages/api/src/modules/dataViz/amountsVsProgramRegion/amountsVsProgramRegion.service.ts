@@ -4,7 +4,7 @@ import { ChorusPaymentFlatEntity } from "../../providers/chorus/@types/ChorusPay
 import PaymentFlatEntity from "../../../entities/flats/PaymentFlatEntity";
 import paymentFlatChorusService from "../../paymentFlat/paymentFlat.chorus.service";
 import amountsVsProgramRegionPort from "../../../dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
-import AmountsVsProgramRegionAdapter from "./amountsVsProgramRegion.adapter";
+import AmountsVsProgramRegionMapper from "./amounts-vs-program-region.mapper";
 import AmountsVsProgramRegionEntity from "./entitiyAndDbo/amountsVsProgramRegion.entity";
 
 export class AmountsVsProgramRegionService {
@@ -21,7 +21,7 @@ export class AmountsVsProgramRegionService {
             if (entities[key]) {
                 entities[key].montant += parseFloat(document.amount.toFixed(2));
             } else {
-                entities[key] = { ...AmountsVsProgramRegionAdapter.toNotAggregatedEntity(document) };
+                entities[key] = { ...AmountsVsProgramRegionMapper.toNotAggregatedEntity(document) };
             }
         }
         return Object.values(entities);

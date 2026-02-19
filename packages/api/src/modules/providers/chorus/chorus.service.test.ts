@@ -3,7 +3,7 @@ import chorusLinePort from "../../../dataProviders/db/providers/chorus/chorus.li
 
 jest.mock("../../../dataProviders/db/providers/chorus/chorus.line.port");
 const mockedChorusLinePort = jest.mocked(chorusLinePort);
-jest.mock("./adapters/ChorusAdapter");
+jest.mock("./mappers/chorus.mapper");
 
 jest.mock("../../../shared/helpers/StringHelper");
 

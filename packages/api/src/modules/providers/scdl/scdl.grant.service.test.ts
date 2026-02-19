@@ -1,5 +1,5 @@
 import scdlGrantService from "./scdl.grant.service";
-import MiscScdlAdapter from "./adapters/MiscScdl.adapter";
+import MiscScdlMapper from "./mappers/misc-scdl.mapper";
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 import { ReadableStream } from "node:stream/web";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
@@ -13,7 +13,7 @@ jest.mock("../../../dataProviders/db/providers/scdl/miscScdl.joiner", () => ({
     findBySiren: jest.fn(),
     findBySiret: jest.fn(),
 }));
-jest.mock("./adapters/MiscScdl.adapter");
+jest.mock("./mappers/misc-scdl.mapper");
 jest.mock("@sentry/node");
 jest.mock("../../applicationFlat/applicationFlat.service");
 jest.mock("../../applicationFlat/applicationFlat.helper");
@@ -50,14 +50,14 @@ describe("ScdlGrantService", () => {
         const adapterMock = jest.fn(
             (dbo: ScdlGrantDbo) => (dbo as unknown as string).slice(3, 4) as unknown as ApplicationFlatEntity,
         );
-        jest.mocked(MiscScdlAdapter.dboToApplicationFlat).mockImplementation(adapterMock);
+        jest.mocked(MiscScdlMapper.dboToApplicationFlat).mockImplementation(adapterMock);
 
         it("calls adapter for each scdlDbo", async () => {
             const res = scdlGrantService.dbosToApplicationFlatStream(DBOS);
             for await (const _chunk of res) {
                 /* to empty the stream */
             }
-            expect(MiscScdlAdapter.dboToApplicationFlat).toHaveBeenCalledTimes(2);
+            expect(MiscScdlMapper.dboToApplicationFlat).toHaveBeenCalledTimes(2);
         });
 
         it("returns stream with flat entities", async () => {
@@ -108,7 +108,7 @@ describe("ScdlGrantService", () => {
             const adapterToTest = jest.mocked(cursorToStream).mock.calls[0][1];
             const DBO = "dbo" as unknown as ScdlGrantDbo;
             adapterToTest(DBO);
-            expect(MiscScdlAdapter.dboToApplicationFlat).toHaveBeenCalledWith(DBO);
+            expect(MiscScdlMapper.dboToApplicationFlat).toHaveBeenCalledWith(DBO);
         });
 
         it("saves stream", async () => {

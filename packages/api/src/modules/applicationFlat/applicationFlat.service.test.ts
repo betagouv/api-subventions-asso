@@ -3,7 +3,7 @@ import Siren from "../../identifierObjects/Siren";
 import applicationFlatPort from "../../dataProviders/db/applicationFlat/applicationFlat.port";
 import applicationFlatService from "./applicationFlat.service";
 import { ApplicationFlatEntity } from "../../entities/flats/ApplicationFlatEntity";
-import ApplicationFlatAdapter from "./ApplicationFlatAdapter";
+import ApplicationFlatMapper from "./application-flat.mapper";
 import { ApplicationFlatDto, DemandeSubvention } from "dto";
 import { RawApplication } from "../grant/@types/rawGrant";
 import { ReadableStream } from "node:stream/web";
@@ -17,7 +17,7 @@ import { APPLICATION_LINK_TO_CHORUS, DBO as APPLICATION_FLAT_DBO } from "./__fix
 import DEFAULT_ASSOCIATION from "../../../tests/__fixtures__/association.fixture";
 
 jest.mock("../../dataProviders/db/applicationFlat/applicationFlat.port");
-jest.mock("./ApplicationFlatAdapter");
+jest.mock("./application-flat.mapper");
 jest.mock("../../identifierObjects/Siret");
 jest.mock("../../shared/helpers/MongoHelper");
 
@@ -73,7 +73,7 @@ describe("ApplicationFlatService", () => {
             mockGetEntitiesByIdentifier = jest
                 .spyOn(applicationFlatService, "getEntitiesByIdentifier")
                 .mockResolvedValue(APPLICATIONS);
-            jest.mocked(ApplicationFlatAdapter.toDto).mockReturnValue(APPLICATION_FLAT_DBO as ApplicationFlatDto); // dbo is the same as dto
+            jest.mocked(ApplicationFlatMapper.toDto).mockReturnValue(APPLICATION_FLAT_DBO as ApplicationFlatDto); // dbo is the same as dto
         });
 
         afterAll(() => {
@@ -87,7 +87,7 @@ describe("ApplicationFlatService", () => {
 
         it("adapts entities to dtos", async () => {
             await applicationFlatService.getApplicationsDto(IDENTIFIER);
-            expect(ApplicationFlatAdapter.toDto).toHaveBeenCalledTimes(APPLICATIONS.length);
+            expect(ApplicationFlatMapper.toDto).toHaveBeenCalledTimes(APPLICATIONS.length);
         });
 
         it("returns applications", async () => {
@@ -168,12 +168,12 @@ describe("ApplicationFlatService", () => {
 
             it("calls adapter", () => {
                 applicationFlatService.rawToApplication(RAW_GRANT);
-                expect(ApplicationFlatAdapter.rawToApplication).toHaveBeenCalledWith(RAW_GRANT);
+                expect(ApplicationFlatMapper.rawToApplication).toHaveBeenCalledWith(RAW_GRANT);
             });
 
             it("returns adapter's result", () => {
                 const expected = "adapted" as unknown as DemandeSubvention;
-                jest.mocked(ApplicationFlatAdapter.rawToApplication).mockReturnValueOnce(expected);
+                jest.mocked(ApplicationFlatMapper.rawToApplication).mockReturnValueOnce(expected);
                 const actual = applicationFlatService.rawToApplication(RAW_GRANT);
                 expect(actual).toBe(expected);
             });
@@ -199,14 +199,14 @@ describe("ApplicationFlatService", () => {
 
             it("adapts all applications", async () => {
                 await applicationFlatService.getApplication(IDENTIFIER);
-                expect(ApplicationFlatAdapter.toDemandeSubvention).toHaveBeenCalledWith(APPLICATION_LINK_TO_CHORUS);
-                expect(ApplicationFlatAdapter.toDemandeSubvention).toHaveBeenCalledWith(APPLICATION_LINK_TO_CHORUS);
+                expect(ApplicationFlatMapper.toDemandeSubvention).toHaveBeenCalledWith(APPLICATION_LINK_TO_CHORUS);
+                expect(ApplicationFlatMapper.toDemandeSubvention).toHaveBeenCalledWith(APPLICATION_LINK_TO_CHORUS);
             });
 
             it("returns non-null adapted applications", async () => {
                 const A2 = "adapted 2" as unknown as DemandeSubvention;
-                jest.mocked(ApplicationFlatAdapter.toDemandeSubvention).mockReturnValueOnce(null);
-                jest.mocked(ApplicationFlatAdapter.toDemandeSubvention).mockReturnValue(A2);
+                jest.mocked(ApplicationFlatMapper.toDemandeSubvention).mockReturnValueOnce(null);
+                jest.mocked(ApplicationFlatMapper.toDemandeSubvention).mockReturnValue(A2);
                 const expected = [A2];
                 const actual = await applicationFlatService.getApplication(IDENTIFIER);
                 expect(actual).toEqual(expected);

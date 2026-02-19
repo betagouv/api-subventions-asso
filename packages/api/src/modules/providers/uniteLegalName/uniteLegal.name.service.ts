@@ -2,7 +2,7 @@ import Fuse from "fuse.js";
 import uniteLegalNamePort from "../../../dataProviders/db/uniteLegalName/uniteLegalName.port";
 import UniteLegalNameEntity from "../../../entities/UniteLegalNameEntity";
 import rnaSirenService from "../../rna-siren/rna-siren.service";
-import AssociationNameAdapter from "../../association-name/adapters/AssociationNameAdapter";
+import AssociationNameMapper from "../../association-name/mappers/association-name.mapper";
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
 import Siret from "../../../identifierObjects/Siret";
 import Siren from "../../../identifierObjects/Siren";
@@ -43,11 +43,11 @@ export class UniteLegalNameService {
             }
 
             const rnaSirenEntities = await rnaSirenService.find(bestMatch.siren, true); // hotfix calls api asso way too much
-            if (!rnaSirenEntities) return [AssociationNameAdapter.fromUniteLegalNameEntity(bestMatch)];
+            if (!rnaSirenEntities) return [AssociationNameMapper.fromUniteLegalNameEntity(bestMatch)];
 
             return rnaSirenEntities?.map(entity => {
                 // For one siren its possible to have many rna from match
-                return AssociationNameAdapter.fromUniteLegalNameEntity(bestMatch, entity.rna);
+                return AssociationNameMapper.fromUniteLegalNameEntity(bestMatch, entity.rna);
             });
         });
         return (await Promise.all(rnaSirenPromises)).flat();

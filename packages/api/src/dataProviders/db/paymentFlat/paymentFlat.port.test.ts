@@ -2,7 +2,7 @@ import {
     CHORUS_PAYMENT_FLAT_ENTITY,
     LIST_PAYMENT_FLAT_ENTITY,
 } from "../../../modules/paymentFlat/__fixtures__/paymentFlatEntity.fixture";
-import PaymentFlatAdapter from "../../../modules/paymentFlat/paymentFlatAdapter";
+import PaymentFlatMapper from "../../../modules/paymentFlat/payment-flat.mapper";
 import { PAYMENT_FLAT_DBO } from "./__fixtures__/paymentFlatDbo.fixture";
 import paymentFlatPort from "./paymentFlat.port";
 const mockDeleteMany = jest.fn();
@@ -21,7 +21,7 @@ jest.mock("../../../shared/MongoConnection", () => ({
 
 describe("PaymentFlat Port", () => {
     beforeEach(() => {
-        jest.spyOn(PaymentFlatAdapter, "toDbo").mockReturnValue(PAYMENT_FLAT_DBO);
+        jest.spyOn(PaymentFlatMapper, "toDbo").mockReturnValue(PAYMENT_FLAT_DBO);
     });
 
     describe("insertOne()", () => {
@@ -52,7 +52,7 @@ describe("PaymentFlat Port", () => {
     describe("upsertMany", () => {
         // @ts-expect-error: mock private method
         const mockBuildUpsertOperation = jest.spyOn(paymentFlatPort, "buildUpsertOperation");
-        const mockToDbo = jest.spyOn(PaymentFlatAdapter, "toDbo");
+        const mockToDbo = jest.spyOn(PaymentFlatMapper, "toDbo");
 
         // @ts
         beforeAll(() =>

@@ -4,7 +4,7 @@ import AssociationsProvider from "../../associations/@types/AssociationsProvider
 import ProviderCore from "../ProviderCore";
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
 import Siren from "../../../identifierObjects/Siren";
-import BodaccAdapter from "./adapters/bodacc.adapter";
+import BodaccMapper from "./mappers/bodacc.mapper";
 import { BodaccDto } from "./dto/BodaccDto";
 
 export class BodaccService extends ProviderCore implements AssociationsProvider {
@@ -38,7 +38,7 @@ export class BodaccService extends ProviderCore implements AssociationsProvider 
         const bodaccDto = await this.sendRequest(identifier.siren);
         if (!bodaccDto || bodaccDto.total_count === 0) return [];
 
-        return [BodaccAdapter.toAssociation(bodaccDto)];
+        return [BodaccMapper.toAssociation(bodaccDto)];
     }
 }
 

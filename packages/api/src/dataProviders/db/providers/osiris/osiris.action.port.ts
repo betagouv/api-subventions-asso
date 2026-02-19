@@ -3,7 +3,7 @@ import { MongoCnxError } from "../../../../shared/errors/MongoCnxError";
 import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
 import MongoPort from "../../../../shared/MongoPort";
 import Siren from "../../../../identifierObjects/Siren";
-import OsirisActionAdapter from "./osirisAction.adapter";
+import OsirisActionMapper from "./osiris-action.mapper";
 
 export class OsirisActionPort extends MongoPort<OsirisActionEntity> {
     collectionName = "osiris-actions";
@@ -66,7 +66,7 @@ export class OsirisActionPort extends MongoPort<OsirisActionEntity> {
     }
 
     public cursorFind(query = {}) {
-        return this.collection.find(query).map(dbo => OsirisActionAdapter.toEntity(dbo));
+        return this.collection.find(query).map(dbo => OsirisActionMapper.toEntity(dbo));
     }
 
     public async getAll() {
@@ -79,14 +79,14 @@ export class OsirisActionPort extends MongoPort<OsirisActionEntity> {
 
     public async findByRequestUniqueId(requestUniqueId: string) {
         const dbos = await this.collection.find({ "indexedInformations.requestUniqueId": requestUniqueId }).toArray();
-        return dbos.map(dbo => OsirisActionAdapter.toEntity(dbo));
+        return dbos.map(dbo => OsirisActionMapper.toEntity(dbo));
     }
 
     public async findBySiren(siren: Siren) {
         const dbos = await this.collection
             .find({ "indexedInformations.siret": new RegExp(`^${siren.value}\\d{5}`) })
             .toArray();
-        return dbos.map(dbo => OsirisActionAdapter.toEntity(dbo));
+        return dbos.map(dbo => OsirisActionMapper.toEntity(dbo));
     }
 }
 

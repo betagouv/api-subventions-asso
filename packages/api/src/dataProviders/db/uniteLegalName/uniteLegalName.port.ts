@@ -2,7 +2,7 @@ import { AnyBulkWriteOperation } from "mongodb";
 import UniteLegalNameEntity from "../../../entities/UniteLegalNameEntity";
 import MongoPort from "../../../shared/MongoPort";
 import Siren from "../../../identifierObjects/Siren";
-import UniteLegalNameAdapter from "./UniteLegalName.adapter";
+import UniteLegalNameMapper from "./unite-legal-name.mapper";
 import UniteLegalNameDbo from "./UniteLegalNameDbo";
 
 export class UniteLegalNamePort extends MongoPort<UniteLegalNameDbo> {
@@ -18,7 +18,7 @@ export class UniteLegalNamePort extends MongoPort<UniteLegalNameDbo> {
             .find({
                 searchKey: { $regex: searchQuery },
             })
-            .map(doc => UniteLegalNameAdapter.toEntity(doc))
+            .map(doc => UniteLegalNameMapper.toEntity(doc))
             .toArray();
     }
 
@@ -35,13 +35,13 @@ export class UniteLegalNamePort extends MongoPort<UniteLegalNameDbo> {
         const dbo = await cursor.next();
         await cursor.close();
         if (!dbo) return null;
-        return UniteLegalNameAdapter.toEntity(dbo);
+        return UniteLegalNameMapper.toEntity(dbo);
     }
 
     upsert(entity: UniteLegalNameEntity) {
         return this.collection.updateOne(
             { searchKey: entity.searchKey },
-            { $set: UniteLegalNameAdapter.toDbo(entity) },
+            { $set: UniteLegalNameMapper.toDbo(entity) },
             {
                 upsert: true,
             },
@@ -54,7 +54,7 @@ export class UniteLegalNamePort extends MongoPort<UniteLegalNameDbo> {
                 ({
                     updateOne: {
                         filter: { searchKey: e.searchKey },
-                        update: { $set: UniteLegalNameAdapter.toDbo(e) },
+                        update: { $set: UniteLegalNameMapper.toDbo(e) },
                         upsert: true,
                     },
                 }) as AnyBulkWriteOperation<UniteLegalNameDbo>,

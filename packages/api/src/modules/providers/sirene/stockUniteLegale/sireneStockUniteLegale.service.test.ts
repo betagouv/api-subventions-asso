@@ -3,7 +3,7 @@ import { SireneUniteLegaleDbo } from "./@types/SireneUniteLegaleDbo";
 import sireneStockUniteLegaleService from "./sireneStockUniteLegale.service";
 import { SireneStockUniteLegaleEntity } from "../../../../entities/SireneStockUniteLegaleEntity";
 import UniteLegalNameEntity from "../../../../entities/UniteLegalNameEntity";
-import SireneStockUniteLegaleAdapter from "./adapter/sireneStockUniteLegale.adapter";
+import SireneStockUniteLegaleMapper from "./mappers/sirene-stock-unite-legale.mapper";
 import uniteLegalNameService from "../../uniteLegalName/uniteLegal.name.service";
 import { UniteLegalEntrepriseEntity } from "../../../../entities/UniteLegalEntrepriseEntity";
 import uniteLegalEntreprisesService from "../../uniteLegalEntreprises/uniteLegal.entreprises.service";
@@ -12,7 +12,7 @@ import Siren from "../../../../identifierObjects/Siren";
 
 const mockUniteLegalEntrepriseConstructor = jest.fn();
 
-jest.mock("./adapter/sireneStockUniteLegale.adapter");
+jest.mock("./mappers/sirene-stock-unite-legale.mapper");
 jest.mock("../../uniteLegalEntreprises/uniteLegal.entreprises.service");
 jest.mock("../../uniteLegalName/uniteLegal.name.service");
 jest.mock("../../../../entities/UniteLegalEntrepriseEntity", () => ({
@@ -74,7 +74,7 @@ describe("SireneStockUniteLegaleService", () => {
                 .spyOn(sireneStockUniteLegaleService, "upsertMany")
                 .mockResolvedValue("" as unknown as BulkWriteResult);
 
-            jest.mocked(SireneStockUniteLegaleAdapter.entityToDbo).mockImplementation(
+            jest.mocked(SireneStockUniteLegaleMapper.entityToDbo).mockImplementation(
                 i => i.toString() as unknown as SireneUniteLegaleDbo,
             );
         });
@@ -82,8 +82,8 @@ describe("SireneStockUniteLegaleService", () => {
 
         it("calls adapter to name", async () => {
             await sireneStockUniteLegaleService._saveBatchAssoData(BATCH);
-            expect(SireneStockUniteLegaleAdapter.entityToUniteLegaleNameEntity).toHaveBeenCalledWith(1);
-            expect(SireneStockUniteLegaleAdapter.entityToUniteLegaleNameEntity).toHaveBeenCalledWith(2);
+            expect(SireneStockUniteLegaleMapper.entityToUniteLegaleNameEntity).toHaveBeenCalledWith(1);
+            expect(SireneStockUniteLegaleMapper.entityToUniteLegaleNameEntity).toHaveBeenCalledWith(2);
         });
 
         it("saves sirene entity", async () => {
@@ -92,10 +92,10 @@ describe("SireneStockUniteLegaleService", () => {
         });
 
         it("saves name entity", async () => {
-            jest.mocked(SireneStockUniteLegaleAdapter.entityToUniteLegaleNameEntity).mockReturnValueOnce(
+            jest.mocked(SireneStockUniteLegaleMapper.entityToUniteLegaleNameEntity).mockReturnValueOnce(
                 "one" as unknown as UniteLegalNameEntity,
             );
-            jest.mocked(SireneStockUniteLegaleAdapter.entityToUniteLegaleNameEntity).mockReturnValueOnce(
+            jest.mocked(SireneStockUniteLegaleMapper.entityToUniteLegaleNameEntity).mockReturnValueOnce(
                 "two" as unknown as UniteLegalNameEntity,
             );
 
