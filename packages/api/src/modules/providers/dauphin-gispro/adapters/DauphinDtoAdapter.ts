@@ -83,7 +83,18 @@ export default class DauphinDtoAdapter {
         return resultArray;
     }
 
-    public static simplifiedJoinedToApplicationFlat(simplified: SimplifiedJoinedDauphinGispro): ApplicationFlatEntity {
+    public static simplifiedJoinedToApplicationFlat(
+        simplified: SimplifiedJoinedDauphinGispro,
+    ): ApplicationFlatEntity | null {
+        // rarely happens
+        // as of 2026-02-16 only 3 documents in dauphinSimplified are concerned
+        if (!simplified.siretDemandeur) {
+            console.warn(
+                `SimplifiedDauphin without siretDemandeur for id ${simplified._id.exerciceBudgetaire} and code ${simplified._id.codeDossierOrAction}`,
+            );
+            return null;
+        }
+
         const getSingleValueOrNull = <T>(valueList: T[]) => (valueList.length === 1 ? valueList[0] : null);
         const getSingleValueOrThrow = <T>(valueList: T[], field: string) => {
             if (valueList.length === 0) return null;
@@ -155,7 +166,8 @@ export default class DauphinDtoAdapter {
             totalAmount: null,
             ueNotification: null,
             uniqueId: "dauphin-" + localId + "-" + simplified.exerciceBudgetaire,
-            updateDate: new Date(simplified.updateDate),
+            // TODO: add updateDate in DauphinSubventionDto
+            updateDate: new Date(),
         };
         return adapted;
     }
