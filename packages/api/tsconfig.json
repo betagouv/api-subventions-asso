@@ -1,26 +1,42 @@
 {
+    // based on https://www.totaltypescript.com/tsconfig-cheat-sheet
     "compilerOptions": {
-        "strict": true,
+        /* Base Options: */
+        "esModuleInterop": true,
         "skipLibCheck": true,
         "target": "es2022",
+        "resolveJsonModule": true,
+        "moduleDetection": "force", // https://www.totaltypescript.com/cannot-redeclare-block-scoped-variable
+        "isolatedModules": true,
+        // "verbatimModuleSyntax": true,
+
+        /* Strictness */
+        "strict": true,
+
+        // @TODO: enable this
+        // "noUncheckedIndexedAccess": true,
+
+        /* Transpiling with TypeScript */
+        "module": "NodeNext",
+        "outDir": "build",
+        "rootDir": ".",
+
+        /* Running environment */
         "lib": ["es2023"],
-        "moduleResolution": "node10",
-        "module": "commonjs",
+
         "types": ["reflect-metadata", "jest", "multer"],
         "paths": {
             "~": ["./src"]
         },
-        "rootDir": "./",
-        "outDir": "build",
-        "declaration": true,
-        "esModuleInterop": true,
+
+        /* TypeScript rules */
+        "noImplicitAny": false,
         "rewriteRelativeImportExtensions": true,
-        "resolveJsonModule": true,
         "forceConsistentCasingInFileNames": true,
+
+        /* TSOA */
         "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "noImplicitAny": false
+        "emitDecoratorMetadata": true
     },
-    "include": ["src/**/*", "tests/**/*", "migrations/**/*", "jest.config.*.ts"],
-    "exclude": ["node_modules", "../../node_modules"]
+    "include": ["src/**/*", "test/**/*", "migrations/**/*", "jest.config.*"]
 }

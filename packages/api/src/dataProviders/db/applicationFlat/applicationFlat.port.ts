@@ -4,7 +4,7 @@ import Siret from "../../../identifierObjects/Siret";
 import { DefaultObject } from "../../../@types";
 import ApplicationFlatAdapter from "../../../modules/applicationFlat/ApplicationFlatAdapter";
 import { ApplicationFlatDbo } from "./ApplicationFlatDbo";
-import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 import { insertStreamByBatch } from "../../../shared/helpers/MongoHelper";
 import { Readable } from "stream";
 

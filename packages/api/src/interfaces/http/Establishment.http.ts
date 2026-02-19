@@ -1,5 +1,4 @@
-import { Readable } from "stream";
-import {
+import type {
     GetDocumentsResponseDto,
     GetEstablishmentResponseDto,
     GetSubventionsResponseDto,
@@ -11,6 +10,7 @@ import {
     GetOldGrantsResponseDto,
     GetGrantsResponseDto,
 } from "dto";
+
 import {
     Route,
     Get,
@@ -24,6 +24,7 @@ import {
     Request,
     Deprecated,
 } from "tsoa";
+import { Readable } from "stream";
 import { NotAssociationError, HttpErrorInterface } from "core";
 import establishmentService from "../../modules/establishments/establishment.service";
 import establishmentIdentifierService from "../../modules/establishment-identifier/establishment-identifier.service";
@@ -211,7 +212,7 @@ export class EstablishmentHttp extends Controller {
      * Permet de logger le mail de l'utilisateur qui fait un extract
      */
     @Hidden()
-    @Get("/{identifier}/extract-data")
+    @Get("/extract-data")
     public async registerExtract(): Promise<boolean> {
         return true;
     }

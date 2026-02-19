@@ -7,7 +7,13 @@ exports[`SubventiaAdapter toApplicationFlat returns application flat 1`] = `
   "allocatorName": "CIPDR",
   "applicationId": "subventia-REF DEMANDE",
   "applicationProviderId": "REF DEMANDE",
-  "beneficiaryEstablishmentId": "10000000000001",
+  "beneficiaryCompanyId": Siren {
+    "identifier": "100000000",
+  },
+  "beneficiaryCompanyIdType": "siren",
+  "beneficiaryEstablishmentId": Siret {
+    "identifier": "10000000000001",
+  },
   "beneficiaryEstablishmentIdType": "siret",
   "budgetaryYear": null,
   "cofinancersIdType": null,

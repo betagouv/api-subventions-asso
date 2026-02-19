@@ -1,33 +1,31 @@
 import type { FlatDbo } from "../@types/FlatDbo";
-import { ObjectId } from "mongodb";
-import { CompanyIdName, EstablishmentIdName } from "../../../identifierObjects/@types/IdentifierName";
 
-export default interface PaymentFlatDbo extends FlatDbo {
-    _id: ObjectId;
-    uniqueId: string;
+interface MandatoryPaymentFlatDbo extends FlatDbo {
+    exerciceBudgetaire: number; // not in flat dbo because it can be null in application flat
     idVersement: string;
-    exerciceBudgetaire: number;
-    typeIdEtablissementBeneficiaire: EstablishmentIdName;
-    idEtablissementBeneficiaire: string;
-    typeIdEntrepriseBeneficiaire: CompanyIdName;
-    idEntrepriseBeneficiaire: string;
     montant: number;
     dateOperation: Date;
-    codeCentreFinancier: string | "N/A";
-    libelleCentreFinancier: string | "N/A" | null;
-    attachementComptable: string | "N/A";
-    regionAttachementComptable: string | "N/A" | "code region inconnu";
-    // TODO: invetiguate and make it mandatory
+    numeroProgramme: number;
+}
+
+interface OptionalPaymentFlatDbo {
     ej: string | null;
     programme: string | null;
-    numeroProgramme: number;
     mission: string | null;
     ministere: string | null;
     sigleMinistere: string | null;
-    // nullable since #3142 with the add of FonjepPaymentFlat
     codeAction: string | null;
     action: string | null;
     codeActivite: string | null;
     activite: string | null;
-    provider: string;
+
+    // Chorus specific data
+    regionAttachementComptable: string | "N/A" | null;
+    codeCentreFinancier: string | "N/A";
+    libelleCentreFinancier: string | "N/A" | null;
+    attachementComptable: string | "N/A";
 }
+
+type PaymentFlatDbo = MandatoryPaymentFlatDbo & OptionalPaymentFlatDbo;
+
+export default PaymentFlatDbo;

@@ -6,7 +6,6 @@ import userActivationService from "../../modules/user/services/activation/user.a
 jest.mock("../../modules/user/services/crud/user.crud.service");
 jest.mock("../../modules/user/services/activation/user.activation.service");
 import { USER_WITHOUT_SECRET } from "../../modules/user/__fixtures__/user.fixture";
-import { DEFAULT_PASSWORD } from "../../../tests/__helpers__/userHelper";
 
 describe("User CLI", () => {
     let cli: UserCli;
@@ -40,7 +39,7 @@ describe("User CLI", () => {
 
         it("activates user", async () => {
             await cli.createAdmin(EMAIL);
-            expect(userActivationService.setsPasswordAndActivate).toHaveBeenCalledWith(USER, DEFAULT_PASSWORD);
+            expect(userActivationService.setsPasswordAndActivate).toHaveBeenCalledWith(USER);
         });
     });
 });

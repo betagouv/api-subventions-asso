@@ -4,7 +4,7 @@ import demarchesSimplifieesSchemaPort from "../../../src/dataProviders/db/provid
 import DemarchesSimplifieesCli from "../../../src/interfaces/cli/DemarchesSimplifiees.cli";
 import demarchesSimplifieesDataPort from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
 import applicationFlatPort from "../../../src/dataProviders/db/applicationFlat/applicationFlat.port";
-import { ApplicationFlatEntity } from "../../../src/entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../src/entities/flats/ApplicationFlatEntity";
 
 import * as inquirerPrompt from "@inquirer/prompts";
 

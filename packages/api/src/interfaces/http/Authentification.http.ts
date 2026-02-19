@@ -1,21 +1,22 @@
 import type { CookieOptions } from "express";
-import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Security } from "tsoa";
-import {
+import type {
     UserActivationInfoDto,
     LoginDtoResponse,
     ResetPasswordDtoResponse,
     TokenValidationDtoResponse,
     ActivateDtoResponse,
 } from "dto";
+import type { IdentifiedRequest, LoginRequest } from "../../@types";
+
+import { DEV } from "../../configurations/env.conf";
+import { DOMAIN } from "../../configurations/domain.conf";
+import { AGENT_CONNECT_ENABLED } from "../../configurations/agentConnect.conf";
+import { Route, Controller, Tags, Post, Body, SuccessResponse, Request, Get, Security } from "tsoa";
 import { BadRequestError, InternalServerError } from "core";
-import { IdentifiedRequest, LoginRequest } from "../../@types";
 import userAuthService from "../../modules/user/services/auth/user.auth.service";
 import userProfileService from "../../modules/user/services/profile/user.profile.service";
 import userActivationService from "../../modules/user/services/activation/user.activation.service";
-import { DOMAIN } from "../../configurations/domain.conf";
-import { DEV } from "../../configurations/env.conf";
 import userAgentConnectService from "../../modules/user/services/agentConnect/user.agentConnect.service";
-import { AGENT_CONNECT_ENABLED } from "../../configurations/agentConnect.conf";
 
 @Route("/auth")
 @Tags("Authentification Controller")

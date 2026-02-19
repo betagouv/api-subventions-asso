@@ -1,5 +1,5 @@
 import { BasePayment, ChorusPayment, FonjepPayment, Payment, PaymentFlatDto } from "dto";
-import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
+import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
 import { RawPayment } from "../grant/@types/rawGrant";
 import ProviderValueAdapter from "../../shared/adapters/ProviderValueAdapter";
 import PaymentFlatDbo from "../../dataProviders/db/paymentFlat/PaymentFlatDbo";
@@ -22,9 +22,9 @@ export default class PaymentFlatAdapter {
         const toPvOrUndefined = value => (value ? toPvPaymentFlat(value) : undefined);
 
         const basePayment: BasePayment = {
-            exerciceBudgetaire: toPvPaymentFlat(entity.exerciceBudgetaire),
-            versementKey: toPvPaymentFlat(entity.idVersement),
-            siret: toPvPaymentFlat(entity.idEtablissementBeneficiaire.toString()),
+            exerciceBudgetaire: toPvPaymentFlat(entity.budgetaryYear),
+            versementKey: toPvPaymentFlat(entity.paymentId),
+            siret: toPvPaymentFlat(entity.beneficiaryEstablishmentId.toString()),
             amount: toPvPaymentFlat(entity.amount),
             dateOperation: toPvPaymentFlat(entity.operationDate),
             programme: toPvPaymentFlat(entity.programNumber),
@@ -36,7 +36,7 @@ export default class PaymentFlatAdapter {
             // this will not be updated because Payment DTO is about to be remove and replaced with PaymentFlat
             const chorusPaymentPart = {
                 ej: toPvOrUndefined((entity as ChorusPaymentFlatEntity).ej),
-                centreFinancier: toPvOrUndefined(entity.centreFinancierLibelle),
+                centreFinancier: toPvOrUndefined(entity.financialCenterLabel),
                 domaineFonctionnel: toPvOrUndefined(entity.actionLabel),
                 activitee: toPvOrUndefined(entity.activityLabel),
             };
@@ -50,13 +50,14 @@ export default class PaymentFlatAdapter {
 
     static toDbo(entity: PaymentFlatEntity): Omit<PaymentFlatDbo, "_id"> {
         return {
-            typeIdEntrepriseBeneficiaire: entity.typeIdEntrepriseBeneficiaire,
-            idEntrepriseBeneficiaire: entity.idEntrepriseBeneficiaire.value,
-            typeIdEtablissementBeneficiaire: entity.typeIdEtablissementBeneficiaire,
-            idEtablissementBeneficiaire: entity.idEtablissementBeneficiaire.value,
-            uniqueId: entity.uniqueId,
-            idVersement: entity.idVersement,
-            exerciceBudgetaire: entity.exerciceBudgetaire,
+            idUnique: entity.uniqueId,
+            typeIdEntrepriseBeneficiaire: entity.beneficiaryCompanyIdType,
+            idEntrepriseBeneficiaire: entity.beneficiaryCompanyId.value,
+            typeIdEtablissementBeneficiaire: entity.beneficiaryEstablishmentIdType,
+            idEtablissementBeneficiaire: entity.beneficiaryEstablishmentId.value,
+            fournisseur: entity.provider,
+            idVersement: entity.paymentId,
+            exerciceBudgetaire: entity.budgetaryYear,
             montant: entity.amount,
             dateOperation: entity.operationDate,
             programme: entity.programName,
@@ -65,15 +66,14 @@ export default class PaymentFlatAdapter {
             ministere: entity.ministry,
             sigleMinistere: entity.ministryAcronym,
             ej: entity.ej,
-            provider: entity.provider,
             codeAction: entity.actionCode,
             action: entity.actionLabel,
             codeActivite: entity.activityCode,
             activite: entity.activityLabel,
-            codeCentreFinancier: entity.centreFinancierCode,
-            libelleCentreFinancier: entity.centreFinancierLibelle,
-            attachementComptable: entity.attachementComptable,
-            regionAttachementComptable: entity.regionAttachementComptable,
+            codeCentreFinancier: entity.financialCenterCode,
+            libelleCentreFinancier: entity.financialCenterLabel,
+            attachementComptable: entity.accountingAttachment,
+            regionAttachementComptable: entity.accountingAttachmentRegion,
             dateMiseAJour: entity.updateDate,
         };
     }
@@ -83,20 +83,20 @@ export default class PaymentFlatAdapter {
         // ChorusPaymentFlatEntity
         if (dbo.ej) {
             return {
-                idVersement: dbo.idVersement,
-                uniqueId: dbo.uniqueId,
-                exerciceBudgetaire: dbo.exerciceBudgetaire,
-                typeIdEtablissementBeneficiaire: dbo.typeIdEtablissementBeneficiaire,
-                idEtablissementBeneficiaire: new Siret(dbo.idEtablissementBeneficiaire),
-                typeIdEntrepriseBeneficiaire: dbo.typeIdEntrepriseBeneficiaire,
-                idEntrepriseBeneficiaire: new Siren(dbo.idEntrepriseBeneficiaire),
+                paymentId: dbo.idVersement,
+                uniqueId: dbo.idUnique,
+                budgetaryYear: dbo.exerciceBudgetaire,
+                beneficiaryEstablishmentIdType: dbo.typeIdEtablissementBeneficiaire,
+                beneficiaryEstablishmentId: new Siret(dbo.idEtablissementBeneficiaire),
+                beneficiaryCompanyIdType: dbo.typeIdEntrepriseBeneficiaire,
+                beneficiaryCompanyId: new Siren(dbo.idEntrepriseBeneficiaire),
                 ej: dbo.ej,
                 amount: dbo.montant,
                 operationDate: dbo.dateOperation,
-                centreFinancierCode: dbo.codeCentreFinancier,
-                centreFinancierLibelle: dbo.libelleCentreFinancier,
-                attachementComptable: dbo.attachementComptable,
-                regionAttachementComptable: dbo.regionAttachementComptable,
+                financialCenterCode: dbo.codeCentreFinancier,
+                financialCenterLabel: dbo.libelleCentreFinancier,
+                accountingAttachment: dbo.attachementComptable,
+                accountingAttachmentRegion: dbo.regionAttachementComptable,
                 mission: dbo.mission,
                 programName: dbo.programme,
                 programNumber: dbo.numeroProgramme,
@@ -106,27 +106,27 @@ export default class PaymentFlatAdapter {
                 actionLabel: dbo.action,
                 activityCode: dbo.codeActivite,
                 activityLabel: dbo.activite,
-                provider: dbo.provider,
+                provider: dbo.fournisseur,
                 updateDate: dbo.dateMiseAJour,
             };
         }
         // FonjepPaymentFlatEntity
         else
             return {
-                idVersement: dbo.idVersement,
-                uniqueId: dbo.uniqueId,
-                exerciceBudgetaire: dbo.exerciceBudgetaire,
-                typeIdEtablissementBeneficiaire: dbo.typeIdEtablissementBeneficiaire,
-                idEtablissementBeneficiaire: new Siret(dbo.idEtablissementBeneficiaire),
-                typeIdEntrepriseBeneficiaire: dbo.typeIdEntrepriseBeneficiaire,
-                idEntrepriseBeneficiaire: new Siren(dbo.idEntrepriseBeneficiaire),
+                paymentId: dbo.idVersement,
+                uniqueId: dbo.idUnique,
+                budgetaryYear: dbo.exerciceBudgetaire,
+                beneficiaryEstablishmentIdType: dbo.typeIdEtablissementBeneficiaire,
+                beneficiaryEstablishmentId: new Siret(dbo.idEtablissementBeneficiaire),
+                beneficiaryCompanyIdType: dbo.typeIdEntrepriseBeneficiaire,
+                beneficiaryCompanyId: new Siren(dbo.idEntrepriseBeneficiaire),
                 ej: GenericAdapter.NOT_APPLICABLE_VALUE,
                 amount: dbo.montant,
                 operationDate: dbo.dateOperation,
-                centreFinancierCode: dbo.codeCentreFinancier,
-                centreFinancierLibelle: dbo.libelleCentreFinancier,
-                attachementComptable: dbo.attachementComptable,
-                regionAttachementComptable: dbo.regionAttachementComptable,
+                financialCenterCode: dbo.codeCentreFinancier,
+                financialCenterLabel: dbo.libelleCentreFinancier,
+                accountingAttachment: dbo.attachementComptable,
+                accountingAttachmentRegion: dbo.regionAttachementComptable,
                 mission: dbo.mission,
                 programName: dbo.programme,
                 programNumber: dbo.numeroProgramme,
@@ -136,7 +136,7 @@ export default class PaymentFlatAdapter {
                 actionLabel: dbo.action,
                 activityCode: dbo.codeActivite,
                 activityLabel: dbo.activite,
-                provider: dbo.provider,
+                provider: dbo.fournisseur,
                 updateDate: dbo.dateMiseAJour,
             };
     }

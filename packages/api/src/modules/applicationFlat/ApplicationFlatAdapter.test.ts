@@ -3,10 +3,18 @@ import { DBO, DRAFT_ENTITY, APPLICATION_LINK_TO_CHORUS } from "./__fixtures__";
 import ApplicationFlatAdapter from "./ApplicationFlatAdapter";
 import applicationFlatService from "./applicationFlat.service";
 import Siret from "../../identifierObjects/Siret";
+import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 
+jest.mock("../../identifierObjects/EstablishmentIdentifier");
 jest.mock("./applicationFlat.service");
 
 describe("ApplicationFlatAdapter", () => {
+    beforeAll(() => {
+        jest.spyOn(EstablishmentIdentifier, "buildIdentifierFromString").mockReturnValue(
+            APPLICATION_LINK_TO_CHORUS.beneficiaryEstablishmentId,
+        );
+    });
+
     describe("rawToApplication", () => {
         const expected = "adapted" as unknown as DemandeSubvention;
         it("returns res from toDemandeSubvention", () => {
@@ -52,6 +60,7 @@ describe("ApplicationFlatAdapter", () => {
             expect(actual).toEqual(expected);
         });
     });
+
     describe("entityToDbo", () => {
         it("return dbo", () => {
             const { _id, ...expected } = DBO;

@@ -1,17 +1,17 @@
-import PaymentFlatEntity from "../../../../entities/PaymentFlatEntity";
+import PaymentFlatEntity from "../../../../entities/flats/PaymentFlatEntity";
 
 // PaymentFlatEntity field directly extracted from ChorusLineDto
 export type ChorusPaymentFlatRaw = Pick<
     PaymentFlatEntity,
     | "ej"
-    | "exerciceBudgetaire"
-    | "typeIdEtablissementBeneficiaire"
-    | "idEtablissementBeneficiaire"
-    | "typeIdEntrepriseBeneficiaire"
-    | "idEntrepriseBeneficiaire"
+    | "budgetaryYear"
+    | "beneficiaryEstablishmentIdType"
+    | "beneficiaryEstablishmentId"
+    | "beneficiaryCompanyIdType"
+    | "beneficiaryCompanyId"
     | "amount"
     | "operationDate"
-    | "centreFinancierCode"
-    | "centreFinancierLibelle"
-    | "attachementComptable"
+    | "financialCenterCode"
+    | "financialCenterLabel"
+    | "accountingAttachment"
 >;

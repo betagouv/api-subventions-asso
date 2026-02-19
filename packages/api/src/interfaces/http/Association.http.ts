@@ -1,5 +1,4 @@
-import { Readable } from "stream";
-import {
+import type {
     GetAssociationResponseDto,
     GetEstablishmentsResponseDto,
     GetGrantsResponseDto,
@@ -12,6 +11,8 @@ import {
     PaymentFlatDto,
     GetOldGrantsResponseDto,
 } from "dto";
+
+import { Readable } from "stream";
 import {
     Route,
     Get,
@@ -30,7 +31,7 @@ import { HttpErrorInterface, NotAssociationError } from "core";
 
 import associationService from "../../modules/associations/associations.service";
 import grantService from "../../modules/grant/grant.service";
-import { JoinedRawGrant } from "../../modules/grant/@types/rawGrant";
+import { JoinedRawGrantDto } from "../../modules/grant/@types/rawGrant";
 import associationIdentifierService from "../../modules/association-identifier/association-identifier.service";
 import grantExtractService from "../../modules/grant/grantExtract.service";
 import { errorHandler } from "../../middlewares/ErrorMiddleware";
@@ -208,10 +209,10 @@ export class AssociationHttp extends Controller {
     @Get("/raw-grants")
     @Security("jwt", ["admin"])
     @Response<HttpErrorInterface>("404")
-    public async getRawGrants(identifier: AssociationIdentifierDto, @Request() req): Promise<JoinedRawGrant[]> {
+    public async getRawGrants(identifier: AssociationIdentifierDto, @Request() req): Promise<JoinedRawGrantDto[]> {
         const associationIdentifiers = req.assoIdentifier;
 
-        return grantService.getRawGrants(associationIdentifiers);
+        return grantService.getRawGrantsDto(associationIdentifiers);
     }
 
     /**

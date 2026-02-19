@@ -7,9 +7,10 @@ import { isValidDate } from "../../../../shared/helpers/DateHelper";
 import { stringIsFloat } from "../../../../shared/helpers/StringHelper";
 import { DefaultObject } from "../../../../@types";
 import { toStatusFactory } from "../../providers.adapter";
-import { ApplicationFlatEntity } from "../../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../../entities/flats/ApplicationFlatEntity";
 import { InternalServerError } from "core";
 import Siret from "../../../../identifierObjects/Siret";
+import Siren from "../../../../identifierObjects/Siren";
 
 export class DemarchesSimplifieesEntityAdapter {
     private static _statusConversionArray: { label: ApplicationStatus; providerStatusList: string[] }[] = [
@@ -100,27 +101,37 @@ export class DemarchesSimplifieesEntityAdapter {
     }
 
     static toFlat(entity: DemarchesSimplifieesDataEntity, schema: DemarchesSimplifieesSchema): ApplicationFlatEntity {
-        const application: DefaultObject = {
+        const applicationFromSchema: DefaultObject = {
             ...DemarchesSimplifieesEntityAdapter.baseFlatWithNull,
             ...DemarchesSimplifieesEntityAdapter.mapSchema(entity, schema, "flatSchema"),
         };
 
+        const application: Partial<ApplicationFlatEntity> = {};
+
         application.statusLabel = toStatusFactory(DemarchesSimplifieesEntityAdapter._statusConversionArray)(
-            application.status as string,
+            applicationFromSchema.status as string,
         );
-        delete application.status;
+        delete applicationFromSchema.status;
 
         // TODO should we try better to have exercise ?
 
+        // ORDER MATTERS !
+        // @TODO: simplify this code...
         application.beneficiaryEstablishmentIdType = Siret.getName();
         application.provider = `demarches-simplifiees-${entity.demarcheId}`;
-        application.beneficiaryEstablishmentId = (application.beneficiaryEstablishmentId as number).toString();
-        application.applicationId = `${application.provider}-${application.applicationProviderId}`;
-        application.uniqueId = `${application.applicationId}-${application.budgetaryYear}`;
-        application.paymentId = `${application.beneficiaryEstablishmentId}-${application.ej}-${application.budgetaryYear}`; //siret-EJ-exerciceBudgetaire
-        application.depositDate = application.depositDate ? new Date(application.depositDate as string) : null;
+        application.beneficiaryEstablishmentId = new Siret(
+            String(applicationFromSchema.beneficiaryEstablishmentId as number), // DS returns Siret as numbers
+        );
+        application.beneficiaryCompanyIdType = Siren.getName();
+        application.beneficiaryCompanyId = (application.beneficiaryEstablishmentId as Siret).toSiren();
+        application.applicationId = `${application.provider}-${applicationFromSchema.applicationProviderId}`;
+        application.uniqueId = `${application.applicationId}-${applicationFromSchema.budgetaryYear}`;
+        application.paymentId = `${(application.beneficiaryEstablishmentId as Siret).toString()}-${applicationFromSchema.ej}-${applicationFromSchema.budgetaryYear}`; //siret-EJ-exerciceBudgetaire
+        application.depositDate = applicationFromSchema.depositDate
+            ? new Date(applicationFromSchema.depositDate as string)
+            : null;
         application.requestYear = application.depositDate ? (application.depositDate as Date).getFullYear() : null;
 
-        return application as unknown as ApplicationFlatEntity;
+        return { ...applicationFromSchema, ...application } as unknown as ApplicationFlatEntity;
     }
 }

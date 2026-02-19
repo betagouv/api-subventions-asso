@@ -7,7 +7,13 @@ exports[`OsirisRequestAdapter toApplicationFlat nullify idVersement if EJ is mis
   "allocatorName": null,
   "applicationId": "osiris-DD71-24-0094",
   "applicationProviderId": "DD71-24-0094",
-  "beneficiaryEstablishmentId": "10000000000001",
+  "beneficiaryCompanyId": Siren {
+    "identifier": "100000000",
+  },
+  "beneficiaryCompanyIdType": "siren",
+  "beneficiaryEstablishmentId": Siret {
+    "identifier": "10000000000001",
+  },
   "beneficiaryEstablishmentIdType": "siret",
   "budgetaryYear": 2022,
   "cofinancersIdType": null,
@@ -67,7 +73,13 @@ exports[`OsirisRequestAdapter toApplicationFlat returns application flat with da
   "allocatorName": null,
   "applicationId": "osiris-DD71-24-0094",
   "applicationProviderId": "DD71-24-0094",
-  "beneficiaryEstablishmentId": "10000000000001",
+  "beneficiaryCompanyId": Siren {
+    "identifier": "100000000",
+  },
+  "beneficiaryCompanyIdType": "siren",
+  "beneficiaryEstablishmentId": Siret {
+    "identifier": "10000000000001",
+  },
   "beneficiaryEstablishmentIdType": "siret",
   "budgetaryYear": 2022,
   "cofinancersIdType": null,
@@ -127,7 +139,13 @@ exports[`OsirisRequestAdapter toApplicationFlat returns application flat with de
   "allocatorName": null,
   "applicationId": "osiris-DD71-24-0094",
   "applicationProviderId": "DD71-24-0094",
-  "beneficiaryEstablishmentId": "10000000000001",
+  "beneficiaryCompanyId": Siren {
+    "identifier": "100000000",
+  },
+  "beneficiaryCompanyIdType": "siren",
+  "beneficiaryEstablishmentId": Siret {
+    "identifier": "10000000000001",
+  },
   "beneficiaryEstablishmentIdType": "siret",
   "budgetaryYear": 2022,
   "cofinancersIdType": null,

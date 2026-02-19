@@ -35,7 +35,7 @@ describe("PaymentFlat Port", () => {
         it("should call toDbo()", async () => {
             await paymentFlatPort.upsertOne(CHORUS_PAYMENT_FLAT_ENTITY);
             expect(mockUpdateOne).toHaveBeenCalledWith(
-                { uniqueId: PAYMENT_FLAT_DBO.uniqueId },
+                { idUnique: PAYMENT_FLAT_DBO.idUnique },
                 { $set: PAYMENT_FLAT_DBO },
                 { upsert: true },
             );
@@ -114,13 +114,16 @@ describe("PaymentFlat Port", () => {
 
         it("should call cursorFind with provider filter", () => {
             paymentFlatPort.cursorFindChorusOnly();
-            expect(mockCursorFind).toHaveBeenCalledWith({ provider: "chorus" });
+            expect(mockCursorFind).toHaveBeenCalledWith({ fournisseur: "chorus" });
         });
 
         it("should call cursorFind with provider and exerciceBudgetaire filter", () => {
             const exerciceBudgetaire = 2021;
             paymentFlatPort.cursorFindChorusOnly(exerciceBudgetaire);
-            expect(mockCursorFind).toHaveBeenCalledWith({ provider: "chorus", exerciceBudgetaire: exerciceBudgetaire });
+            expect(mockCursorFind).toHaveBeenCalledWith({
+                fournisseur: "chorus",
+                exerciceBudgetaire: exerciceBudgetaire,
+            });
         });
     });
 });

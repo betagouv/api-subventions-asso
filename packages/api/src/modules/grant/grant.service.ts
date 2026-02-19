@@ -15,13 +15,20 @@ import ApplicationProvider from "../subventions/@types/ApplicationProvider";
 import PaymentProvider from "../payments/@types/PaymentProvider";
 import paymentService from "../payments/payments.service";
 import subventionsService from "../subventions/subventions.service";
-import { JoinedRawGrant, RawApplication, RawPayment, AnyRawGrant } from "./@types/rawGrant";
+import {
+    JoinedRawGrant,
+    RawApplication,
+    RawPayment,
+    AnyRawGrant,
+    RawGrant,
+    JoinedRawGrantDto,
+} from "./@types/rawGrant";
 import commonGrantService from "./commonGrant.service";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 import applicationFlatService from "../applicationFlat/applicationFlat.service";
 import paymentFlatService from "../paymentFlat/paymentFlat.service";
 import { GrantFlatEntity } from "../../entities/GrantFlatEntity";
-import PaymentFlatEntity from "../../entities/PaymentFlatEntity";
+import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
 import ApplicationFlatAdapter from "../applicationFlat/ApplicationFlatAdapter";
 import PaymentFlatAdapter from "../paymentFlat/paymentFlatAdapter";
 
@@ -155,7 +162,7 @@ export class GrantService {
         // group payments by paymentId
         const groupedPayments = payments.reduce(
             (acc, payment) => {
-                const paymentId = payment.idVersement;
+                const paymentId = payment.paymentId;
                 if (acc[paymentId]) acc[paymentId].push(payment);
                 else acc[paymentId] = [payment];
                 return acc;
@@ -201,6 +208,33 @@ export class GrantService {
             if (e instanceof RnaOnlyError) return [] as JoinedRawGrant[];
             else throw e;
         }
+    }
+
+    /**
+     *
+     * Return RawGrants as DTO and not Entity
+     *
+     * @param identifier Rna, Siren or Siret
+     */
+    async getRawGrantsDto(identifier: StructureIdentifier): Promise<JoinedRawGrantDto[]> {
+        const rawGrants = await this.getRawGrants(identifier);
+        return rawGrants.map(grant => {
+            let application: RawGrant<ApplicationFlatDto> | null = null;
+            let payments: RawGrant<PaymentFlatDto>[] = [];
+            if (grant.application) {
+                application = {
+                    ...grant.application,
+                    data: ApplicationFlatAdapter.toDto(grant.application.data),
+                };
+            }
+            if (grant.payments?.length) {
+                payments = grant.payments.map(payment => ({
+                    ...payment,
+                    data: PaymentFlatAdapter.toDto(payment.data),
+                }));
+            }
+            return { application, payments };
+        });
     }
 
     // Use to spot grants or applications sharing the same joinKey (EJ or code_poste)

@@ -1,7 +1,7 @@
 import request from "supertest";
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import { RoleEnum } from "../../../src/@enums/Roles";
-import { createAndActiveUser } from "../../__helpers__/userHelper";
+import { createAndActiveUser, createConsumerUser } from "../../__helpers__/userHelper";
 import userPort from "../../../src/dataProviders/db/user/user.port";
 import statsAssociationsVisitPort from "../../../src/dataProviders/db/stats/statsAssociationsVisit.port";
 import UserDbo from "../../../src/dataProviders/db/user/UserDbo";
@@ -10,6 +10,9 @@ import userCrudService from "../../../src/modules/user/services/crud/user.crud.s
 import userStatsService from "../../../src/modules/user/services/stats/user.stats.service";
 
 import { App } from "supertest/types";
+import logsPort from "../../../src/dataProviders/db/stats/logs.port";
+import { LoggedMeta, WinstonLog } from "../../../src/@types/WinstonLog";
+import DEFAULT_ASSOCIATION from "../../__fixtures__/association.fixture";
 
 const g = global as unknown as { app: App };
 
@@ -132,6 +135,99 @@ describe("AdminController, /admin", () => {
                 _id: expect.any(String),
                 signupAt: expect.any(String),
             });
+        });
+    });
+
+    describe("GET /stats/consumers", () => {
+        const LOG_ENTRY = { level: "info", message: "Request for integration test" };
+        const entryFactory =
+            (date: Date) =>
+            (meta: LoggedMeta): WinstonLog => ({ ...LOG_ENTRY, timestamp: date, meta });
+
+        const CURRENT_DATE = new Date("2026-06-17");
+        const LAST_YEAR_DATE = new Date("2025-02-14");
+
+        function buildConsumerLogs(consumer) {
+            const METAS: LoggedMeta[] = [
+                {
+                    req: {
+                        url: `/association/${DEFAULT_ASSOCIATION.rna}/grants/v2`,
+                        // @ts-expect-error: mock user dbo
+                        user: { _id: consumer._id.toString() },
+                    },
+                },
+                {
+                    req: {
+                        url: `/association/${DEFAULT_ASSOCIATION.rna}`,
+                        // @ts-expect-error: mock user dbo
+                        user: { _id: consumer._id.toString() },
+                    },
+                },
+                {
+                    req: {
+                        url: `/association/${DEFAULT_ASSOCIATION.siren}`,
+                        // @ts-expect-error: mock user dbo
+                        user: { _id: consumer._id.toString() },
+                    },
+                },
+                {
+                    req: {
+                        url: `/etablissement/${DEFAULT_ASSOCIATION.siret}`,
+                        // @ts-expect-error: mock user dbo
+                        user: { _id: consumer._id.toString() },
+                    },
+                },
+                {
+                    req: {
+                        url: `/open-data/rna-siren/${DEFAULT_ASSOCIATION.siren}`,
+                        // @ts-expect-error: mock user dbo
+                        user: { _id: consumer._id.toString() },
+                    },
+                },
+                {
+                    req: {
+                        url: "/search/associations/recherche%20par%20nom",
+                        // @ts-expect-error: mock user dbo
+                        user: { _id: consumer._id.toString() },
+                    },
+                },
+                {
+                    req: {
+                        url: "/document/api-asso/?url=https%3A%2F%2Flecompteasso%3A%2F%2Flecompteasso",
+                        // @ts-expect-error: mock user dbo
+                        user: { _id: consumer._id.toString() },
+                    },
+                },
+                {
+                    req: {
+                        url: "/parcours-depot/depot-fichier-scdl",
+                        // @ts-expect-error: mock user dbo
+                        user: { _id: consumer._id.toString() },
+                    },
+                },
+            ];
+
+            const LOGS = [
+                ...METAS.map(meta => entryFactory(LAST_YEAR_DATE)(meta)),
+                ...METAS.map(meta => entryFactory(CURRENT_DATE)(meta)),
+            ];
+
+            return LOGS;
+        }
+
+        beforeEach(async () => {
+            const CONSUMER_USER = await createConsumerUser();
+            // @ts-expect-error: creates logs without winston
+            await logsPort.addTestLog(buildConsumerLogs(CONSUMER_USER));
+        });
+
+        it("returns API consumption statistiques", async () => {
+            await request(g.app)
+                .get("/admin/stats/consumers")
+                .set("x-access-token", await createAndGetAdminToken())
+                .set("Accept", "application/json")
+                .expect(200)
+                .expect(res => expect(res.body).toMatchSnapshot());
         });
     });
 });

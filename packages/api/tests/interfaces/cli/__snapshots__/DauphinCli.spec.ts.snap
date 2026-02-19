@@ -8,7 +8,13 @@ exports[`Dauphin cli initApplicationFlat filters out other allocators than expec
     "allocatorName": "",
     "applicationId": "dauphin-12345678",
     "applicationProviderId": "12345678",
-    "beneficiaryEstablishmentId": "01234567890123",
+    "beneficiaryCompanyId": Siren {
+      "identifier": "012345678",
+    },
+    "beneficiaryCompanyIdType": "siren",
+    "beneficiaryEstablishmentId": Siret {
+      "identifier": "01234567890123",
+    },
     "beneficiaryEstablishmentIdType": "siret",
     "budgetaryYear": 2022,
     "cofinancersIdType": null,
@@ -61,7 +67,13 @@ exports[`Dauphin cli initApplicationFlat groups actions of same application 1`] 
     "allocatorName": "",
     "applicationId": "dauphin-87654321|12345678",
     "applicationProviderId": "87654321|12345678",
-    "beneficiaryEstablishmentId": "01234567890123",
+    "beneficiaryCompanyId": Siren {
+      "identifier": "012345678",
+    },
+    "beneficiaryCompanyIdType": "siren",
+    "beneficiaryEstablishmentId": Siret {
+      "identifier": "01234567890123",
+    },
     "beneficiaryEstablishmentIdType": "siret",
     "budgetaryYear": 2022,
     "cofinancersIdType": null,
@@ -114,7 +126,13 @@ exports[`Dauphin cli initApplicationFlat keeps action-level dauphin data if noth
     "allocatorName": "",
     "applicationId": "dauphin-87654321",
     "applicationProviderId": "87654321",
-    "beneficiaryEstablishmentId": "01234567890123",
+    "beneficiaryCompanyId": Siren {
+      "identifier": "012345678",
+    },
+    "beneficiaryCompanyIdType": "siren",
+    "beneficiaryEstablishmentId": Siret {
+      "identifier": "01234567890123",
+    },
     "beneficiaryEstablishmentIdType": "siret",
     "budgetaryYear": 2022,
     "cofinancersIdType": null,
@@ -162,7 +180,13 @@ exports[`Dauphin cli initApplicationFlat keeps action-level dauphin data if noth
     "allocatorName": "",
     "applicationId": "dauphin-12345678",
     "applicationProviderId": "12345678",
-    "beneficiaryEstablishmentId": "01234567890123",
+    "beneficiaryCompanyId": Siren {
+      "identifier": "012345678",
+    },
+    "beneficiaryCompanyIdType": "siren",
+    "beneficiaryEstablishmentId": Siret {
+      "identifier": "01234567890123",
+    },
     "beneficiaryEstablishmentIdType": "siret",
     "budgetaryYear": 2022,
     "cofinancersIdType": null,
@@ -215,7 +239,13 @@ exports[`Dauphin cli initApplicationFlat keeps action-level dauphin data if seve
     "allocatorName": "",
     "applicationId": "dauphin-87654321",
     "applicationProviderId": "87654321",
-    "beneficiaryEstablishmentId": "01234567890123",
+    "beneficiaryCompanyId": Siren {
+      "identifier": "012345678",
+    },
+    "beneficiaryCompanyIdType": "siren",
+    "beneficiaryEstablishmentId": Siret {
+      "identifier": "01234567890123",
+    },
     "beneficiaryEstablishmentIdType": "siret",
     "budgetaryYear": 2022,
     "cofinancersIdType": null,
@@ -263,7 +293,13 @@ exports[`Dauphin cli initApplicationFlat keeps action-level dauphin data if seve
     "allocatorName": "",
     "applicationId": "dauphin-12345678",
     "applicationProviderId": "12345678",
-    "beneficiaryEstablishmentId": "01234567890123",
+    "beneficiaryCompanyId": Siren {
+      "identifier": "012345678",
+    },
+    "beneficiaryCompanyIdType": "siren",
+    "beneficiaryEstablishmentId": Siret {
+      "identifier": "01234567890123",
+    },
     "beneficiaryEstablishmentIdType": "siret",
     "budgetaryYear": 2022,
     "cofinancersIdType": null,
@@ -316,7 +352,13 @@ exports[`Dauphin cli initApplicationFlat saves adapted simple dauphin data 1`] =
     "allocatorName": "",
     "applicationId": "dauphin-12345678",
     "applicationProviderId": "12345678",
-    "beneficiaryEstablishmentId": "01234567890123",
+    "beneficiaryCompanyId": Siren {
+      "identifier": "012345678",
+    },
+    "beneficiaryCompanyIdType": "siren",
+    "beneficiaryEstablishmentId": Siret {
+      "identifier": "01234567890123",
+    },
     "beneficiaryEstablishmentIdType": "siret",
     "budgetaryYear": 2022,
     "cofinancersIdType": null,

@@ -3,7 +3,7 @@ import ProviderValueFactory from "../../../../shared/ProviderValueFactory";
 import dauphinService from "../dauphin.service";
 import { toStatusFactory } from "../../providers.adapter";
 import DauphinDocumentDto from "../dto/DauphinDocumentDto";
-import { ApplicationFlatEntity } from "../../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../../entities/flats/ApplicationFlatEntity";
 import { SimplifiedJoinedDauphinGispro } from "../@types/SimplifiedDauphinGispro";
 import { GenericAdapter } from "../../../../shared/GenericAdapter";
 import Siret from "../../../../identifierObjects/Siret";
@@ -105,14 +105,18 @@ export default class DauphinDtoAdapter {
         ) as ApplicationStatus;
         const ej = getSingleValueOrNull(simplified.ej);
 
+        const beneficiaryEstablishmentId = new Siret(simplified.siretDemandeur);
+        const beneficiaryCompanyId = beneficiaryEstablishmentId.toSiren();
         const adapted = {
             allocatorId: null,
             allocatorIdType: null,
             allocatorName: simplified.financeurs.join("|"),
             applicationId: "dauphin-" + localId,
             applicationProviderId: localId,
-            beneficiaryEstablishmentId: simplified.siretDemandeur,
-            beneficiaryEstablishmentIdType: Siret.getName(),
+            beneficiaryEstablishmentId,
+            beneficiaryEstablishmentIdType: beneficiaryEstablishmentId.name,
+            beneficiaryCompanyId,
+            beneficiaryCompanyIdType: beneficiaryCompanyId.name,
             budgetaryYear: simplified.exerciceBudgetaire,
             cofinancersIdType: null,
             cofinancersNames: null,

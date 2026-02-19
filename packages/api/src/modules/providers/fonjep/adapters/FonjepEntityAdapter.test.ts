@@ -24,6 +24,7 @@ import FonjepPosteEntity from "../entities/FonjepPosteEntity";
 import FonjepDispositifEntity from "../entities/FonjepDispositifEntity";
 import FonjepTiersEntity from "../entities/FonjepTiersEntity";
 import EstablishmentIdentifier from "../../../../identifierObjects/EstablishmentIdentifier";
+import { FonjepPaymentFlatEntity } from "../entities/FonjepFlatEntity";
 jest.mock("../../../../identifierObjects/EstablishmentIdentifier");
 jest.mock("../../../../shared/helpers/DateHelper");
 
@@ -149,7 +150,7 @@ describe("FonjepEntityAdapter", () => {
         });
     });
 
-    describe("Flat formats", () => {
+    describe("(flat part)", () => {
         const PAYMENT_ID = "PAYMENT_ID";
         const UNIQUE_ID = "UNIQUE_ID";
         const PROGRAM_CODE = "163";
@@ -203,18 +204,18 @@ describe("FonjepEntityAdapter", () => {
                 const SIREN = SIRET.toSiren();
                 expect(mockBuildPaymentFlatUniqueId).toHaveBeenCalledWith(
                     {
-                        idVersement: PAYMENT_ID,
-                        exerciceBudgetaire: POSTE_ENTITY.annee as number,
-                        typeIdEtablissementBeneficiaire: "siret",
-                        idEtablissementBeneficiaire: SIRET,
-                        typeIdEntrepriseBeneficiaire: "siren",
-                        idEntrepriseBeneficiaire: SIREN,
+                        paymentId: PAYMENT_ID,
+                        budgetaryYear: POSTE_ENTITY.annee as number,
+                        beneficiaryEstablishmentIdType: "siret",
+                        beneficiaryEstablishmentId: SIRET,
+                        beneficiaryCompanyIdType: "siren",
+                        beneficiaryCompanyId: SIREN,
                         amount: VERSEMENT_ENTITY.montantPaye,
                         operationDate: VERSEMENT_ENTITY.dateVersement,
-                        centreFinancierCode: GenericAdapter.NOT_APPLICABLE_VALUE,
-                        centreFinancierLibelle: GenericAdapter.NOT_APPLICABLE_VALUE,
-                        attachementComptable: GenericAdapter.NOT_APPLICABLE_VALUE,
-                        regionAttachementComptable: GenericAdapter.NOT_APPLICABLE_VALUE,
+                        financialCenterCode: GenericAdapter.NOT_APPLICABLE_VALUE,
+                        financialCenterLabel: GenericAdapter.NOT_APPLICABLE_VALUE,
+                        accountingAttachment: GenericAdapter.NOT_APPLICABLE_VALUE,
+                        accountingAttachmentRegion: GenericAdapter.NOT_APPLICABLE_VALUE,
                         ej: GenericAdapter.NOT_APPLICABLE_VALUE,
                         actionCode: GenericAdapter.NOT_APPLICABLE_VALUE,
                         actionLabel: GenericAdapter.NOT_APPLICABLE_VALUE,
@@ -227,7 +228,7 @@ describe("FonjepEntityAdapter", () => {
                         ministry: MINISTRY_ENTITIES[0]?.nom_ministere || null,
                         ministryAcronym: MINISTRY_ENTITIES[0]?.sigle_ministere || null,
                         updateDate: VERSEMENT_ENTITY.updateDate,
-                    },
+                    } as Omit<FonjepPaymentFlatEntity, "uniqueId">,
                     VERSEMENT_ENTITY.periodeDebut,
                 );
             });
@@ -351,13 +352,13 @@ describe("FonjepEntityAdapter", () => {
             const SCHEME: FonjepDispositifEntity = { ...DISPOSITIF_ENTITY };
 
             let mockGetConventionDate: jest.SpyInstance;
-            let mockGetIdentifierType: jest.SpyInstance;
+            let mockGetIdentifierConstructor: jest.SpyInstance;
             let mockBuildFlatPaymentId: jest.SpyInstance;
 
             beforeEach(() => {
-                mockGetIdentifierType = jest
-                    .spyOn(EstablishmentIdentifier, "getIdentifierType")
-                    .mockReturnValue("siret");
+                mockGetIdentifierConstructor = jest
+                    .spyOn(EstablishmentIdentifier, "buildIdentifierFromString")
+                    .mockReturnValue(new Siret(BENEFICIARY.siretOuRidet!));
                 mockGetConventionDate = jest
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     .spyOn(FonjepEntityAdapter as any, "getConventionDate")
@@ -421,7 +422,7 @@ describe("FonjepEntityAdapter", () => {
             });
 
             it("returns null if beneficiary has an invalid siret or ridet", () => {
-                mockGetIdentifierType.mockReturnValue(null);
+                mockGetIdentifierConstructor.mockReturnValue(null);
                 const expected = null;
                 const actual = FonjepEntityAdapter.toFonjepApplicationFlat({
                     position: POSITION,

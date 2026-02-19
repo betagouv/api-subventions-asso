@@ -3,7 +3,7 @@ import amountsVsProgramRegionPort from "../../../src/dataProviders/db/dataViz/am
 import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFlat.port";
 import AmountsVsProgramRegionCli from "../../../src/interfaces/cli/AmountsVsProgramRegion.cli";
 import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../../src/modules/paymentFlat/__fixtures__/paymentFlatEntity.fixture";
-import PaymentFlatEntity from "../../../src/entities/PaymentFlatEntity";
+import PaymentFlatEntity from "../../../src/entities/flats/PaymentFlatEntity";
 
 const MOCK_DOCUMENTS: PaymentFlatEntity[] = [
     // the following two should be aggregated together
@@ -18,18 +18,18 @@ const MOCK_DOCUMENTS: PaymentFlatEntity[] = [
     {
         ...CHORUS_PAYMENT_FLAT_ENTITY,
         amount: 34_000,
-        attachementComptable: "HNOR",
-        regionAttachementComptable: "Normandie",
-        exerciceBudgetaire: 2021,
+        accountingAttachment: "HNOR",
+        accountingAttachmentRegion: "Normandie",
+        budgetaryYear: 2021,
         provider: "chorus",
         uniqueId: "5",
     },
     {
         ...CHORUS_PAYMENT_FLAT_ENTITY,
         amount: 34_000,
-        attachementComptable: "BNOR",
-        regionAttachementComptable: "Normandie",
-        exerciceBudgetaire: 2021,
+        accountingAttachment: "BNOR",
+        accountingAttachmentRegion: "Normandie",
+        budgetaryYear: 2021,
         provider: "chorus",
         uniqueId: "6",
     },
@@ -38,9 +38,9 @@ const MOCK_DOCUMENTS: PaymentFlatEntity[] = [
     {
         ...CHORUS_PAYMENT_FLAT_ENTITY,
         amount: 34_000,
-        attachementComptable: "BNOR",
-        regionAttachementComptable: "Normandie",
-        exerciceBudgetaire: 2024,
+        accountingAttachment: "BNOR",
+        accountingAttachmentRegion: "Normandie",
+        budgetaryYear: 2024,
         provider: "chorus",
         uniqueId: "7",
     },

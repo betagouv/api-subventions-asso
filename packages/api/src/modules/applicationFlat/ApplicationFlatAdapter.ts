@@ -1,10 +1,14 @@
 import { ApplicationFlatDto, DemandeSubvention } from "dto";
-import { ApplicationFlatEntity } from "../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../entities/flats/ApplicationFlatEntity";
 import { RawApplication } from "../grant/@types/rawGrant";
 import ProviderValueAdapter from "../../shared/adapters/ProviderValueAdapter";
 import applicationFlatService from "./applicationFlat.service";
 import { ApplicationFlatDbo } from "../../dataProviders/db/applicationFlat/ApplicationFlatDbo";
 import { GenericAdapter } from "../../shared/GenericAdapter";
+import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
+import Siret from "../../identifierObjects/Siret";
+import Ridet from "../../identifierObjects/Ridet";
+import Tahitiet from "../../identifierObjects/Tahitiet";
 
 // entities and draft are almost equal but we want ids to be built in constructor
 // and we want to be able to build with a properly types object
@@ -73,6 +77,29 @@ export default class ApplicationFlatAdapter {
     }
 
     public static dboToEntity(dbo: ApplicationFlatDbo): ApplicationFlatEntity {
+        const beneficiaryEstablishmentIdType = dbo.typeIdEtablissementBeneficiaire;
+        const beneficiaryEstablishmentId = EstablishmentIdentifier.buildIdentifierFromString(
+            dbo.idEtablissementBeneficiaire,
+        );
+        // added after using identifier class instead of string in beneficiaryEstablishmentId
+        // this guard any miss conception / error in the applicationFlat collection
+        // this check could be removed after checking that applicationFlat persistence also check identifier validity
+        if (!beneficiaryEstablishmentId)
+            throw new Error(
+                `Failed to adapt ApplicationFlat DBO into Entity. Incorrect identifier ${dbo.idEtablissementBeneficiaire}`,
+            );
+
+        // TODO: make this available from EstablishmentIdentifier
+        let beneficiaryCompanyId;
+        if (beneficiaryEstablishmentIdType === Siret.getName()) {
+            beneficiaryCompanyId = (beneficiaryEstablishmentId as Siret).toSiren();
+        } else if (beneficiaryEstablishmentIdType === Ridet.getName()) {
+            beneficiaryCompanyId = (beneficiaryEstablishmentId as Ridet).toRid();
+        } else {
+            beneficiaryCompanyId = (beneficiaryEstablishmentId as Tahitiet).toTahiti();
+        }
+        const beneficiaryCompanyIdType = beneficiaryCompanyId.name;
+
         return {
             updateDate: dbo.dateMiseAJour,
             uniqueId: dbo.idUnique,
@@ -90,8 +117,10 @@ export default class ApplicationFlatAdapter {
             instructiveDepartmentName: dbo.nomServiceInstructeur,
             instructiveDepartmentIdType: dbo.typeIdServiceInstructeur,
             instructiveDepartementId: dbo.idServiceInstructeur,
-            beneficiaryEstablishmentId: dbo.idEtablissementBeneficiaire,
-            beneficiaryEstablishmentIdType: dbo.typeIdEtablissementBeneficiaire,
+            beneficiaryEstablishmentId,
+            beneficiaryEstablishmentIdType,
+            beneficiaryCompanyId,
+            beneficiaryCompanyIdType,
             budgetaryYear: dbo.exerciceBudgetaire,
             pluriannual: dbo.pluriannualite,
             pluriannualYears: dbo.anneesPluriannualite,
@@ -141,8 +170,10 @@ export default class ApplicationFlatAdapter {
             nomServiceInstructeur: entity.instructiveDepartmentName,
             typeIdServiceInstructeur: entity.instructiveDepartmentIdType,
             idServiceInstructeur: entity.instructiveDepartementId,
-            idEtablissementBeneficiaire: entity.beneficiaryEstablishmentId,
+            idEtablissementBeneficiaire: entity.beneficiaryEstablishmentId.toString(),
             typeIdEtablissementBeneficiaire: entity.beneficiaryEstablishmentIdType,
+            idEntrepriseBeneficiaire: entity.beneficiaryCompanyId.toString(),
+            typeIdEntrepriseBeneficiaire: entity.beneficiaryCompanyIdType,
             exerciceBudgetaire: entity.budgetaryYear,
             pluriannualite: entity.pluriannual,
             anneesPluriannualite: entity.pluriannualYears,

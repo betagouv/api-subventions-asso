@@ -12,7 +12,7 @@ import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
 import { ReadableStream } from "stream/web";
-import { ApplicationFlatEntity } from "../../../entities/ApplicationFlatEntity";
+import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import osirisJoiner, { OsirisRequestWithActions } from "../../../dataProviders/db/providers/osiris/osiris.joiner";
 import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
