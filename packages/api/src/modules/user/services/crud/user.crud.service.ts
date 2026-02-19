@@ -23,6 +23,10 @@ export class UserCrudService {
         return userPort.find(query);
     }
 
+    getConsumers() {
+        return this.find({ roles: RoleEnum.consumer });
+    }
+
     findByEmail(email: string) {
         return userPort.findByEmail(email);
     }

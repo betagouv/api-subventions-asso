@@ -49,6 +49,7 @@ jest.mock("../../../../shared/helpers/PortHelper", () => ({
 }));
 
 import logsPort from "../../../../dataProviders/db/stats/logs.port";
+import { WinstonLog } from "../../../../@types/WinstonLog";
 jest.mock("../../../../dataProviders/db/stats/logs.port");
 
 describe("user rgpd service", () => {
@@ -125,7 +126,8 @@ describe("user rgpd service", () => {
         });
 
         it("should getting return logs", async () => {
-            const expected = [{ _id: new ObjectId(), userId: new ObjectId() }];
+            // @ts-expect-error: mock logs
+            const expected = [{ _id: new ObjectId(), userId: new ObjectId() }] as WithId<WinstonLog>[];
             mockedStatsService.getAllLogUser.mockResolvedValueOnce(expected);
             const actual = (await userRgpdService.getAllData(USER_WITHOUT_SECRET._id.toString())).logs;
             expect(actual).toEqual(expected);

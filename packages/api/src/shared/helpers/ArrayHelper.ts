@@ -43,3 +43,38 @@ export const compare = (a, b) => {
 };
 
 export const joinEnum = obj => Object.values(obj).join(", ");
+
+/**
+ * Merge two Map object containing (key: string, value: any[])
+ */
+export const mergeMapArray = (mapA, mapB) => {
+    const valueError = new Error("mergeMapArray only merge map objects containing arrays");
+
+    for (const [key, valueB] of mapB) {
+        if (!Array.isArray(valueB)) throw valueError;
+        if (mapA.has(key)) {
+            const valueA = mapA.get(key);
+            if (!Array.isArray(valueA)) throw valueError;
+            else mapA.set(key, valueA.concat(valueB));
+        } else {
+            mapA.set(key, valueB);
+        }
+    }
+
+    return mapA;
+};
+
+/**
+ * Return a reducer to group an array of items by a property value
+ * @param key Property on which to perform the group by
+ * @returns Reduce function
+ */
+export const groupByKeyFactory = (key: string) => {
+    return (acc: Record<string, Record<string, unknown>[]>, obj: Record<string, unknown>) => {
+        const keyValue = obj[key]
+        if (typeof keyValue !== "string") throw new Error(`Items in array must have property "${key}" to perform the group by`);
+        const { [key]: _, ...rest } = obj;
+        (acc[keyValue] ??= []).push(rest);
+        return acc;
+    }
+};

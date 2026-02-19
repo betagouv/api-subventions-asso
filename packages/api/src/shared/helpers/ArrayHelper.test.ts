@@ -66,12 +66,62 @@ describe("ArrayHelper", () => {
 
             await ArrayHelper.asyncForEach(
                 array,
-                async str => new Promise(resolve => setTimeout(() => resolve(mockFn(str)), 500)),
+                async str => new Promise(resolve => setTimeout(() => resolve(mockFn(str)), 1)),
             );
 
             array.map((str, index) => {
                 expect(mockFn).toHaveBeenNthCalledWith(index + 1, str);
             });
+        });
+    });
+
+    describe("mergeMapArray", () => {
+        it.each([
+            {
+                mapA: new Map([["foo", ["baz", "bar"]]]),
+                mapB: new Map([["faa", ["baz", "bar"]]]),
+                expected: new Map([
+                    ["foo", ["baz", "bar"]],
+                    ["faa", ["baz", "bar"]],
+                ]),
+            },
+            {
+                mapA: new Map([["foo", ["baz", "bar"]]]),
+                mapB: new Map([["foo", ["baz", "doo"]]]),
+                expected: new Map([["foo", ["baz", "bar", "baz", "doo"]]]),
+            },
+        ])("merges map containing arrays", ({ mapA, mapB, expected }) => {
+            const actual = ArrayHelper.mergeMapArray(mapA, mapB);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("groupByKeyFactory", () => {
+        it("returns a reducer function", () => {
+            const reducer = ArrayHelper.groupByKeyFactory("key");
+            expect(reducer).toBeInstanceOf(Function);
+        });
+
+        it("returns a valid reducer", () => {
+            const expected = {
+                foo: [{ otherProp: "faa" }, { otherProp: "fuu" }],
+                baz: [{ otherProp: "buz" }, { otherProp: "boz" }],
+            };
+            const reducer = ArrayHelper.groupByKeyFactory("key");
+            const actual = [
+                { key: "foo", otherProp: "faa" },
+                { key: "foo", otherProp: "fuu" },
+                { key: "baz", otherProp: "buz" },
+                { key: "baz", otherProp: "boz" },
+            ].reduce(reducer, {});
+            expect(actual).toEqual(expected);
+        });
+
+        it("throws an error if items does not own given property", () => {
+            const reducer = ArrayHelper.groupByKeyFactory("key");
+            expect(() => [{}, {}].reduce(reducer, {})).toThrow(
+                `Items in array must have property "key" to perform the group by`,
+            );
         });
     });
 });

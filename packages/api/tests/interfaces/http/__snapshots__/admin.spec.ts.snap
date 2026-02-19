@@ -1,5 +1,58 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`AdminController, /admin GET /stats/consumers returns API consumption statistiques 1`] = `
+{
+  "user@beta.gouv.fr": {
+    "2025": {
+      "2": {
+        "association": {
+          "/association/:id": 2,
+          "/association/:id/grants/v2": 1,
+        },
+        "document": {
+          "/document/:id": 1,
+        },
+        "etablissement": {
+          "/etablissement/:id": 1,
+        },
+        "open-data": {
+          "/open-data/rna-siren": 1,
+        },
+        "parcours-depot": {
+          "/parcours-depot/depot-fichier-scdl": 1,
+        },
+        "search": {
+          "/search/associations/:input": 1,
+        },
+      },
+    },
+    "2026": {
+      "6": {
+        "association": {
+          "/association/:id": 2,
+          "/association/:id/grants/v2": 1,
+        },
+        "document": {
+          "/document/:id": 1,
+        },
+        "etablissement": {
+          "/etablissement/:id": 1,
+        },
+        "open-data": {
+          "/open-data/rna-siren": 1,
+        },
+        "parcours-depot": {
+          "/parcours-depot/depot-fichier-scdl": 1,
+        },
+        "search": {
+          "/search/associations/:input": 1,
+        },
+      },
+    },
+  },
+}
+`;
+
 exports[`AdminController, /admin GET /user/list-users should return UserRequestsSuccessResponse 1`] = `
 {
   "_id": Any<String>,
