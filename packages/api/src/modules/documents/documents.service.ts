@@ -12,7 +12,7 @@ import { DauphinService } from "../providers/dauphin-gispro/dauphin.service";
 import { providersById } from "../providers/providers.helper";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import DocumentProvider from "./@types/DocumentsProvider";
-import { documentToDocumentRequest } from "./document.adapter";
+import { documentToDocumentRequest } from "./document.mapper";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 
 export class DocumentsService {

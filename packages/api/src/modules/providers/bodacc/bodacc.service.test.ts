@@ -1,4 +1,4 @@
-import BodaccAdapter from "./adapters/bodacc.adapter";
+import BodaccMapper from "./mappers/bodacc.mapper";
 import bodaccService from "./bodacc.service";
 import { BodaccDto } from "./dto/BodaccDto";
 
@@ -20,7 +20,7 @@ describe("Bodacc Service", () => {
         records: [RECORD],
     } as BodaccDto;
 
-    const mockToAssociation = jest.spyOn(BodaccAdapter, "toAssociation").mockImplementation(jest.fn());
+    const mockToAssociation = jest.spyOn(BodaccMapper, "toAssociation").mockImplementation(jest.fn());
     let httpGetSpy: jest.SpyInstance;
 
     beforeAll(() => {
@@ -48,7 +48,7 @@ describe("Bodacc Service", () => {
             expect(mockSendRequest).toHaveBeenCalledWith(SIREN);
         });
 
-        it("should call BodaccAdapter.toAssociation", async () => {
+        it("should call BodaccMapper.toAssociation", async () => {
             await bodaccService.getAssociations(ASSOCIATION_ID);
             expect(mockToAssociation).toHaveBeenCalledWith(BODACC_DTO);
         });

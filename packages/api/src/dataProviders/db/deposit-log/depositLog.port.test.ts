@@ -3,7 +3,7 @@ import {
     DEPOSIT_LOG_DBO,
     DEPOSIT_LOG_ENTITY,
 } from "../../../modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
-import DepositLogAdapter from "./DepositLog.adapter";
+import DepositLogMapper from "./deposit-log.mapper";
 import { NotFoundError } from "core";
 
 const mockInsertOne = jest.fn();
@@ -12,7 +12,7 @@ const mockFind = jest.fn();
 const mockDeleteOne = jest.fn().mockResolvedValue({ acknowledged: true, deletedCount: 1 });
 const mockFindOneAndUpdate = jest.fn();
 
-jest.mock("./DepositLog.adapter");
+jest.mock("./deposit-log.mapper");
 jest.mock("../../../shared/MongoConnection", () => ({
     collection: () => ({
         insertOne: mockInsertOne,
@@ -27,8 +27,8 @@ describe("Deposit Log Port", () => {
     let mockToDbo: jest.SpyInstance;
     let mockDboToEntity: jest.SpyInstance;
     beforeEach(() => {
-        mockToDbo = jest.spyOn(DepositLogAdapter, "toDbo").mockReturnValue(DEPOSIT_LOG_DBO);
-        mockDboToEntity = jest.spyOn(DepositLogAdapter, "dboToEntity").mockReturnValue(DEPOSIT_LOG_ENTITY);
+        mockToDbo = jest.spyOn(DepositLogMapper, "toDbo").mockReturnValue(DEPOSIT_LOG_DBO);
+        mockDboToEntity = jest.spyOn(DepositLogMapper, "dboToEntity").mockReturnValue(DEPOSIT_LOG_ENTITY);
     });
 
     describe("insertOne()", () => {

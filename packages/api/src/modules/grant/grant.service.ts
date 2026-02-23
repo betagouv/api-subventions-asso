@@ -29,8 +29,8 @@ import applicationFlatService from "../applicationFlat/applicationFlat.service";
 import paymentFlatService from "../paymentFlat/paymentFlat.service";
 import { GrantFlatEntity } from "../../entities/GrantFlatEntity";
 import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
-import ApplicationFlatAdapter from "../applicationFlat/ApplicationFlatAdapter";
-import PaymentFlatAdapter from "../paymentFlat/paymentFlatAdapter";
+import ApplicationFlatMapper from "../applicationFlat/application-flat.mapper";
+import PaymentFlatMapper from "../paymentFlat/payment-flat.mapper";
 
 export class GrantService {
     applicationProvidersById: Record<string, ApplicationProvider>;
@@ -143,8 +143,8 @@ export class GrantService {
             const { application, payments } = grant;
             let applicationDto: ApplicationFlatDto | null = null;
             let paymentsDto: PaymentFlatDto[] = [];
-            if (application) applicationDto = ApplicationFlatAdapter.toDto(application);
-            if (payments) paymentsDto = payments.map(PaymentFlatAdapter.toDto);
+            if (application) applicationDto = ApplicationFlatMapper.toDto(application);
+            if (payments) paymentsDto = payments.map(PaymentFlatMapper.toDto);
             return { application: applicationDto, payments: paymentsDto };
         });
     }
@@ -224,13 +224,13 @@ export class GrantService {
             if (grant.application) {
                 application = {
                     ...grant.application,
-                    data: ApplicationFlatAdapter.toDto(grant.application.data),
+                    data: ApplicationFlatMapper.toDto(grant.application.data),
                 };
             }
             if (grant.payments?.length) {
                 payments = grant.payments.map(payment => ({
                     ...payment,
-                    data: PaymentFlatAdapter.toDto(payment.data),
+                    data: PaymentFlatMapper.toDto(payment.data),
                 }));
             }
             return { application, payments };

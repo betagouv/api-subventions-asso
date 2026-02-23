@@ -7,7 +7,7 @@ import Siret from "../../../identifierObjects/Siret";
 import Siren from "../../../identifierObjects/Siren";
 import Rna from "../../../identifierObjects/Rna";
 import { osirisRequestPort, osirisActionPort } from "../../../dataProviders/db/providers/osiris";
-import OsirisRequestAdapter from "./adapters/OsirisRequestAdapter";
+import OsirisRequestMapper from "./mappers/osiris-request.mapper";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
@@ -197,7 +197,7 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
     private createStream(cursor: AggregationCursor<OsirisRequestWithActions>) {
         const stream: ReadableStream<ApplicationFlatEntity> = cursorToStream(cursor, requestWithActions => {
             const { actions, ...request } = requestWithActions;
-            return OsirisRequestAdapter.toApplicationFlat(request, actions);
+            return OsirisRequestMapper.toApplicationFlat(request, actions);
         });
         return stream;
     }

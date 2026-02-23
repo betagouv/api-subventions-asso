@@ -13,11 +13,11 @@ jest.mock("../../../modules/provider-request/providerRequest.service", () => ({
 }));
 import { DataBretagnePort } from "./dataBretagne.port";
 import {
-    DataBretagneDomaineFonctionnelAdapter,
-    DataBretagneMinistryAdapter,
-    DataBretagneProgrammeAdapter,
-    DataBretagneRefProgrammationAdapter,
-} from "./DataBretagneAdapter";
+    DataBretagneDomaineFonctionnelMapper,
+    DataBretagneMinistryMapper,
+    DataBretagneProgrammeMapper,
+    DataBretagneRefProgrammationMapper,
+} from "./data-bretagne.mapper";
 import {
     DataBretagneDomaineFonctionnelDto,
     DataBretagneMinistryDto,
@@ -95,7 +95,7 @@ describe("Data Bretagne Port", () => {
             "programme",
             [DTOS["programme"]] as DataBretagneProgrammeDto[],
             new StateBudgetProgramEntity("mission", "label", "code_ministere", 132),
-            DataBretagneProgrammeAdapter,
+            DataBretagneProgrammeMapper,
             DataBretagneProgrammeValidator,
         ],
         [
@@ -103,7 +103,7 @@ describe("Data Bretagne Port", () => {
             "ministere",
             [DTOS["ministere"]] as DataBretagneMinistryDto[],
             new MinistryEntity("sigle_ministere", "code", "nom_ministere"),
-            DataBretagneMinistryAdapter,
+            DataBretagneMinistryMapper,
             DataBretagneMinistryValidator,
         ],
         [
@@ -111,7 +111,7 @@ describe("Data Bretagne Port", () => {
             "domaine-fonct",
             [DTOS["domaineFonct"]] as DataBretagneDomaineFonctionnelDto[],
             new DomaineFonctionnelEntity("action", "code_action", 122),
-            DataBretagneDomaineFonctionnelAdapter,
+            DataBretagneDomaineFonctionnelMapper,
             DataBretagneDomaineFonctionnelValidator,
         ],
         [
@@ -119,7 +119,7 @@ describe("Data Bretagne Port", () => {
             "ref-programmation",
             [DTOS["refProgrammation"]] as DataBretagneRefProgrammationDto[],
             new RefProgrammationEntity("label", "code", 121),
-            DataBretagneRefProgrammationAdapter,
+            DataBretagneRefProgrammationMapper,
             DataBretagneRefProgrammationValidator,
         ],
     ])("with %s", (methodToTest, collection, mockResolvedValueDto, MockReturnValueEntity, Adapter, Validator) => {

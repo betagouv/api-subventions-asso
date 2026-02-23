@@ -6,13 +6,13 @@ import { ReadableStream } from "stream/web";
 import { FindCursor, WithId } from "mongodb";
 import { SimplifiedJoinedDauphinGispro } from "./@types/SimplifiedDauphinGispro";
 import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
-import DauphinDtoAdapter, { InconsistentAggregationError } from "./adapters/DauphinDtoAdapter";
+import DauphinDtoMapper, { InconsistentAggregationError } from "./mappers/dauphin-dto.mapper";
 
 jest.mock("../../../dataProviders/db/providers/dauphin/dauphin.port");
 jest.mock("../../applicationFlat/applicationFlat.service");
 jest.mock("../../applicationFlat/applicationFlat.helper");
-jest.mock("./adapters/DauphinDtoAdapter", () => {
-    const actualAdapterModule = jest.requireActual("./adapters/DauphinDtoAdapter");
+jest.mock("./mappers/dauphin-dto.mapper", () => {
+    const actualAdapterModule = jest.requireActual("./mappers/dauphin-dto.mapper");
     return {
         __esModule: true, // Use it when dealing with esModules
         default: { simplifiedJoinedToApplicationFlat: jest.fn() },
@@ -49,7 +49,7 @@ describe("dauphin flat service", () => {
             saveFlatSpy = jest.spyOn(dauphinFlatService, "saveApplicationsFromStream").mockResolvedValue();
             jest.mocked(dauphinPort.findAllTempCursor).mockReturnValue(CURSOR);
             jest.mocked(cursorToStream).mockReturnValue(STREAM);
-            jest.mocked(DauphinDtoAdapter.simplifiedJoinedToApplicationFlat).mockReturnValue(ADAPTED);
+            jest.mocked(DauphinDtoMapper.simplifiedJoinedToApplicationFlat).mockReturnValue(ADAPTED);
         });
 
         afterEach(() => {
@@ -82,7 +82,7 @@ describe("dauphin flat service", () => {
 
             it("calls adapter", () => {
                 adapterToTest(SIMPLIFIED);
-                expect(DauphinDtoAdapter.simplifiedJoinedToApplicationFlat).toHaveBeenCalledWith(SIMPLIFIED);
+                expect(DauphinDtoMapper.simplifiedJoinedToApplicationFlat).toHaveBeenCalledWith(SIMPLIFIED);
             });
 
             it("returns adapted values", () => {
@@ -92,7 +92,7 @@ describe("dauphin flat service", () => {
             });
 
             it("returns null if InconsistentAggregationError is raised", () => {
-                jest.mocked(DauphinDtoAdapter.simplifiedJoinedToApplicationFlat).mockImplementationOnce(() => {
+                jest.mocked(DauphinDtoMapper.simplifiedJoinedToApplicationFlat).mockImplementationOnce(() => {
                     throw AGG_ERROR;
                 });
                 const actual = adapterToTest(SIMPLIFIED);
@@ -101,7 +101,7 @@ describe("dauphin flat service", () => {
 
             it("throws back other errors", () => {
                 const RANDOM_ERROR = new Error("random");
-                jest.mocked(DauphinDtoAdapter.simplifiedJoinedToApplicationFlat).mockImplementationOnce(() => {
+                jest.mocked(DauphinDtoMapper.simplifiedJoinedToApplicationFlat).mockImplementationOnce(() => {
                     throw RANDOM_ERROR;
                 });
                 let actual = undefined;
@@ -128,11 +128,11 @@ describe("dauphin flat service", () => {
                 return STREAM;
             });
             const logSpy = jest.spyOn(console, "log");
-            jest.mocked(DauphinDtoAdapter.simplifiedJoinedToApplicationFlat).mockImplementationOnce(() => {
+            jest.mocked(DauphinDtoMapper.simplifiedJoinedToApplicationFlat).mockImplementationOnce(() => {
                 throw new InconsistentAggregationError("field1", ["val1.1", "val1.2"], "codeDossier1", ["refAdmin1"]);
             });
-            jest.mocked(DauphinDtoAdapter.simplifiedJoinedToApplicationFlat).mockReturnValueOnce(ADAPTED);
-            jest.mocked(DauphinDtoAdapter.simplifiedJoinedToApplicationFlat).mockImplementationOnce(() => {
+            jest.mocked(DauphinDtoMapper.simplifiedJoinedToApplicationFlat).mockReturnValueOnce(ADAPTED);
+            jest.mocked(DauphinDtoMapper.simplifiedJoinedToApplicationFlat).mockImplementationOnce(() => {
                 throw new InconsistentAggregationError("field2", ["val2.1", "val2.2"], "codeDossier2", [
                     "refAdmin2.1",
                     "refAdmin2.2",

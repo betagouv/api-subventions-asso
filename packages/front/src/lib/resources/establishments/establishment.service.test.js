@@ -2,8 +2,8 @@ vi.mock("$lib/helpers/providerValueHelper");
 import establishmentService from "./establishment.service";
 import establishmentPort from "./establishment.port";
 vi.mock("./establishment.port");
-import * as establishmentAdapter from "./establishment.adapter";
-vi.mock("./establishment.adapter");
+import * as establishmentMapper from "./establishment.mapper.js";
+vi.mock("./establishment.mapper");
 import * as providerValuesHelper from "$lib/helpers/providerValueHelper";
 
 describe("establishmentService", () => {
@@ -24,7 +24,7 @@ describe("establishmentService", () => {
     describe("getBySiret", () => {
         const establishment = { contacts: CONTACTS };
         establishmentPort.getBySiret.mockImplementation(() => establishment);
-        establishmentAdapter.toEstablishmentComponent.mockImplementationOnce(establishment => establishment);
+        establishmentMapper.toEstablishmentComponent.mockImplementationOnce(establishment => establishment);
 
         it("should call EstablishmentPort", async () => {
             await establishmentService.getBySiret(SIRET);
@@ -43,7 +43,7 @@ describe("establishmentService", () => {
 
         it("should call toEstablishmentComponent for each establishment", async () => {
             await establishmentService.getBySiret(SIRET);
-            expect(establishmentAdapter.toEstablishmentComponent).toHaveBeenCalledTimes(1);
+            expect(establishmentMapper.toEstablishmentComponent).toHaveBeenCalledTimes(1);
         });
     });
 

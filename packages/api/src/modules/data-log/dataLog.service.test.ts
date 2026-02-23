@@ -1,12 +1,12 @@
 import dataLogService from "./dataLog.service";
 import dataLogPort from "../../dataProviders/db/data-log/dataLog.port";
-import { DataLogAdapter } from "./dataLog.adapter";
+import { DataLogMapper } from "./data-log.mapper";
 import { RAW_PROVIDER } from "../providers/__fixtures__/providers.fixture";
 import { ApiDataLogEntity, DataLogEntity, DataLogSource, FileDataLogEntity } from "./entities/dataLogEntity";
 import { FindCursor, WithId } from "mongodb";
 
 jest.mock("../../dataProviders/db/data-log/dataLog.port");
-jest.mock("./dataLog.adapter");
+jest.mock("./data-log.mapper");
 
 describe("dataLogService", () => {
     const FILE_PATH = "/path/to/file.csv";
@@ -151,12 +151,12 @@ describe("dataLogService", () => {
 
         it("adapts each log", async () => {
             await dataLogService.getProvidersLogOverview();
-            expect(DataLogAdapter.overviewToDto).toHaveBeenCalledTimes(3);
+            expect(DataLogMapper.overviewToDto).toHaveBeenCalledTimes(3);
         });
 
         it("returns adapted value", async () => {
             // @ts-expect-error -- test
-            jest.mocked(DataLogAdapter.overviewToDto).mockImplementation(v => v.toString());
+            jest.mocked(DataLogMapper.overviewToDto).mockImplementation(v => v.toString());
             const expected = ["1", "2", "3"];
             const actual = await dataLogService.getProvidersLogOverview();
             expect(actual).toEqual(expected);

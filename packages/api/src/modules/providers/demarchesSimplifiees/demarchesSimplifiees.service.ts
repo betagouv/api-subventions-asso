@@ -8,9 +8,9 @@ import demarchesSimplifieesDataPort from "../../../dataProviders/db/providers/de
 import demarchesSimplifieesSchemaPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import { DemarchesSimplifieesDto } from "./dto/DemarchesSimplifieesDto";
-import DemarchesSimplifieesDtoAdapter from "./adapters/DemarchesSimplifieesDtoAdapter";
+import DemarchesSimplifieesDtoMapper from "./mappers/demarches-simplifiees-dto.mapper";
 import DemarchesSimplifieesSchema, { DemarchesSimplifieesSchemaLine } from "./entities/DemarchesSimplifieesSchema";
-import { DemarchesSimplifieesEntityAdapter } from "./adapters/DemarchesSimplifieesEntityAdapter";
+import { DemarchesSimplifieesEntityMapper } from "./mappers/demarches-simplifiees-entity.mapper";
 import DemarchesSimplifieesDataEntity from "./entities/DemarchesSimplifieesDataEntity";
 import {
     DemarchesSimplifieesSchemaSeed,
@@ -62,7 +62,7 @@ export class DemarchesSimplifieesService extends ProviderCore implements Applica
         schema: DemarchesSimplifieesSchema,
     ): ApplicationFlatEntity | null {
         if (!schema?.flatSchema || this.isDraft(dbo)) return null;
-        const res = DemarchesSimplifieesEntityAdapter.toFlat(dbo, schema);
+        const res = DemarchesSimplifieesEntityMapper.toFlat(dbo, schema);
         const mandatoryFields = ["requestedAmount", "budgetaryYear"];
         // those are the only mandatory field that comes from 'champs' or 'annotations'
         // which is why it is the only one that we check here
@@ -145,7 +145,7 @@ export class DemarchesSimplifieesService extends ProviderCore implements Applica
                 return;
             }
 
-            const entities = DemarchesSimplifieesDtoAdapter.toEntities(result, formId).filter(
+            const entities = DemarchesSimplifieesDtoMapper.toEntities(result, formId).filter(
                 entity => new Date(entity.demande.dateDerniereModification) > this.lastModified,
             );
             bulk.push(...entities);
@@ -253,7 +253,7 @@ export class DemarchesSimplifieesService extends ProviderCore implements Applica
         };
         // We need to have the technical field ids to create the schema and we get them through an example
         const queryResult = await this.sendQuery(GetDossiersByDemarcheId, { demarcheNumber: demarcheId });
-        const exampleData = DemarchesSimplifieesDtoAdapter.toEntities(queryResult, demarcheId)?.[0];
+        const exampleData = DemarchesSimplifieesDtoMapper.toEntities(queryResult, demarcheId)?.[0];
 
         const res = { demarcheId };
 

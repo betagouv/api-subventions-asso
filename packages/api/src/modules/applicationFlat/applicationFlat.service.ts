@@ -7,7 +7,7 @@ import { ProviderEnum } from "../../@enums/ProviderEnum";
 import ProviderCore from "../providers/ProviderCore";
 import ApplicationProvider from "../subventions/@types/ApplicationProvider";
 import Siret from "../../identifierObjects/Siret";
-import ApplicationFlatAdapter from "./ApplicationFlatAdapter";
+import ApplicationFlatMapper from "./application-flat.mapper";
 import { StructureIdentifier } from "../../identifierObjects/@types/StructureIdentifier";
 import { ReadableStream } from "node:stream/web";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
@@ -48,13 +48,13 @@ export class ApplicationFlatService
     isApplicationProvider = true;
 
     public rawToApplication(rawGrant: RawApplication) {
-        return ApplicationFlatAdapter.rawToApplication(rawGrant);
+        return ApplicationFlatMapper.rawToApplication(rawGrant);
     }
 
     async getApplication(identifier: StructureIdentifier): Promise<DemandeSubvention[]> {
         const requests = await this.getEntitiesByIdentifier(identifier);
         return requests
-            .map(document => ApplicationFlatAdapter.toDemandeSubvention(document))
+            .map(document => ApplicationFlatMapper.toDemandeSubvention(document))
             .filter(demande => !!demande) as DemandeSubvention[];
     }
 
@@ -108,7 +108,7 @@ export class ApplicationFlatService
 
     async getApplicationsDto(identifier: StructureIdentifier): Promise<ApplicationFlatDto[]> {
         const applications = await this.getEntitiesByIdentifier(identifier);
-        return applications.map(entity => ApplicationFlatAdapter.toDto(entity));
+        return applications.map(entity => ApplicationFlatMapper.toDto(entity));
     }
 }
 

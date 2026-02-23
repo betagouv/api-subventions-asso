@@ -1,7 +1,7 @@
 import subventiaService from "./subventia.service";
 import SubventiaParser from "./subventia.parser";
 import SubventiaValidator from "./validators/subventia.validator";
-import SubventiaAdapter from "./adapters/subventia.adapter";
+import SubventiaMapper from "./mappers/subventia.mapper";
 import SubventiaPort from "../../../dataProviders/db/providers/subventia/subventia.port";
 import { SubventiaDbo } from "./@types/subventia.entity";
 import { ApplicationStatus } from "dto";
@@ -11,7 +11,7 @@ import applicationFlatService from "../../applicationFlat/applicationFlat.servic
 import { ReadableStream } from "node:stream/web";
 import { APPLICATION_LINK_TO_CHORUS } from "../../applicationFlat/__fixtures__";
 jest.mock("../../applicationFlat/applicationFlat.service");
-jest.mock("./adapters/subventia.adapter");
+jest.mock("./mappers/subventia.mapper");
 jest.mock("../../../dataProviders/db/providers/subventia/subventia.port");
 
 describe("Subventia Service", () => {
@@ -121,7 +121,7 @@ describe("Subventia Service", () => {
             //@ts-expect-error : test private method
             mockMergeToApplication = jest.spyOn(subventiaService, "mergeToApplication").mockReturnValue(ref1_value1);
 
-            mockApplicationToEntity = jest.spyOn(SubventiaAdapter, "applicationToEntity").mockReturnValue({
+            mockApplicationToEntity = jest.spyOn(SubventiaMapper, "applicationToEntity").mockReturnValue({
                 reference_demande: "ref1",
                 service_instructeur: "CIPDR",
                 annee_demande: 2023,
@@ -263,7 +263,7 @@ describe("Subventia Service", () => {
         beforeEach(() => {
             mockFindAll = jest.spyOn(SubventiaPort, "findAll").mockResolvedValue([SUBVENTIA_DBO]);
             mockToApplicationFlat = jest
-                .spyOn(SubventiaAdapter, "toApplicationFlat")
+                .spyOn(SubventiaMapper, "toApplicationFlat")
                 .mockReturnValue(APPLICATION_LINK_TO_CHORUS);
             mocksaveApplicationsFromStream = jest
                 .spyOn(subventiaService, "saveApplicationsFromStream")

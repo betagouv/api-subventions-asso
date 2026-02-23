@@ -1,15 +1,15 @@
-import ApiAssoDtoAdapter from "../../modules/providers/apiAsso/adapters/ApiAssoDtoAdapter";
-import ApiEntrepriseAdapter from "../../modules/providers/apiEntreprise/adapters/ApiEntrepriseAdapter";
-import FonjepEntityAdapter from "../../modules/providers/fonjep/adapters/FonjepEntityAdapter";
-import OsirisRequestAdapter from "../../modules/providers/osiris/adapters/OsirisRequestAdapter";
-import ProviderValueAdapter from "../adapters/ProviderValueAdapter";
+import ApiAssoDtoMapper from "../../modules/providers/apiAsso/mappers/api-asso-dto.mapper";
+import ApiEntrepriseMapper from "../../modules/providers/apiEntreprise/mappers/api-entreprise.mapper";
+import FonjepEntityMapper from "../../modules/providers/fonjep/mappers/fonjep-entity.mapper";
+import OsirisRequestMapper from "../../modules/providers/osiris/mappers/osiris-request.mapper";
+import ProviderValueMapper from "../mappers/provider-value.mapper";
 import FormaterHelper from "./FormaterHelper";
 
 const PROVIDER_SCORE = {
-    [ApiAssoDtoAdapter.providerNameSiren]: 1,
-    [ApiEntrepriseAdapter.PROVIDER_NAME]: 1,
-    [OsirisRequestAdapter.PROVIDER_NAME]: 0.5,
-    [FonjepEntityAdapter.PROVIDER_NAME]: 0.5,
+    [ApiAssoDtoMapper.providerNameSiren]: 1,
+    [ApiEntrepriseMapper.PROVIDER_NAME]: 1,
+    [OsirisRequestMapper.PROVIDER_NAME]: 0.5,
+    [FonjepEntityMapper.PROVIDER_NAME]: 0.5,
 };
 
 describe("FormaterHelper", () => {
@@ -151,7 +151,7 @@ describe("FormaterHelper", () => {
             ${DATA_TWO_PROVIDER} | ${true}
         `("should return an object of ProviderValues", ({ data, expected }) => {
             const result = FormaterHelper.formatData(data, PROVIDER_SCORE);
-            const actual = Object.values(result).every(ProviderValueAdapter.isProviderValues);
+            const actual = Object.values(result).every(ProviderValueMapper.isProviderValues);
             expect(actual).toEqual(expected);
         });
     });

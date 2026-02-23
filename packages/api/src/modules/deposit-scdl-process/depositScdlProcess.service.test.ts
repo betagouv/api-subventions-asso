@@ -9,7 +9,7 @@ import depositScdlProcessService from "./depositScdlProcess.service";
 import DepositScdlLogEntity from "./entities/depositScdlLog.entity";
 import { BadRequestError, ConflictError, NotFoundError } from "core";
 import depositLogPort from "../../dataProviders/db/deposit-log/depositLog.port";
-import DepositScdlLogDtoAdapter from "./depositScdlLog.dto.adapter";
+import DepositScdlLogDtoMapper from "./deposit-scdl-log.dto.mapper";
 import scdlService from "../providers/scdl/scdl.service";
 import { ScdlStorableGrant } from "../providers/scdl/@types/ScdlStorableGrant";
 import { MixedParsedError } from "../providers/scdl/@types/Validation";
@@ -32,7 +32,7 @@ import { USER_WITHOUT_SECRET } from "../user/__fixtures__/user.fixture";
 
 jest.mock("./check/DepositScdlProcess.check.service");
 jest.mock("../../dataProviders/db/deposit-log/depositLog.port");
-jest.mock("../../dataProviders/db/deposit-log/DepositLog.adapter");
+jest.mock("../../dataProviders/db/deposit-log/deposit-log.mapper");
 jest.mock("../providers/scdl/scdl.service.ts");
 
 jest.mock("../notify/notify.service", () => ({
@@ -206,7 +206,7 @@ describe("DepositScdlProcessService", () => {
                 updateDate: new Date(),
             };
 
-            jest.spyOn(DepositScdlLogDtoAdapter, "createDepositScdlLogDtoToEntity").mockReturnValue(expected);
+            jest.spyOn(DepositScdlLogDtoMapper, "createDepositScdlLogDtoToEntity").mockReturnValue(expected);
             const actual = await depositScdlProcessService.createDepositLog(CREATE_DEPOSIT_LOG_DTO, USER_ID_STR);
 
             expect(actual).toMatchObject(expected);

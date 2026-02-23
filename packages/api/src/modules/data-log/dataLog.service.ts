@@ -1,7 +1,7 @@
 import path from "path";
 import { DataLogDto } from "dto";
 import dataLogPort from "../../dataProviders/db/data-log/dataLog.port";
-import { DataLogAdapter } from "./dataLog.adapter";
+import { DataLogMapper } from "./data-log.mapper";
 import { ApiDataLogEntity, DataLogSource, FileDataLogEntity } from "./entities/dataLogEntity";
 
 class DataLogService {
@@ -29,7 +29,7 @@ class DataLogService {
 
     async getProvidersLogOverview(): Promise<DataLogDto[]> {
         const overviews = await dataLogPort.getProvidersLogOverview();
-        return overviews.map(overview => DataLogAdapter.overviewToDto(overview));
+        return overviews.map(overview => DataLogMapper.overviewToDto(overview));
     }
 
     findAllCursor() {

@@ -1,7 +1,7 @@
 import MongoPort from "../../../../shared/MongoPort";
 import { SireneUniteLegaleDbo } from "../../../../modules/providers/sirene/stockUniteLegale/@types/SireneUniteLegaleDbo";
 import { SireneStockUniteLegaleEntity } from "../../../../entities/SireneStockUniteLegaleEntity";
-import SireneStockUniteLegaleAdapter from "../../../../modules/providers/sirene/stockUniteLegale/adapter/sireneStockUniteLegale.adapter";
+import SireneStockUniteLegaleMapper from "../../../../modules/providers/sirene/stockUniteLegale/mappers/sirene-stock-unite-legale.mapper";
 import Siren from "../../../../identifierObjects/Siren";
 
 export class SireneUniteLegaleDbPort extends MongoPort<SireneUniteLegaleDbo> {
@@ -16,7 +16,7 @@ export class SireneUniteLegaleDbPort extends MongoPort<SireneUniteLegaleDbo> {
         const bulk = entities.map(entity => ({
             updateOne: {
                 filter: { siren: entity.siren.value },
-                update: { $set: SireneStockUniteLegaleAdapter.entityToDbo(entity) },
+                update: { $set: SireneStockUniteLegaleMapper.entityToDbo(entity) },
                 upsert: true,
             },
         }));
@@ -24,24 +24,24 @@ export class SireneUniteLegaleDbPort extends MongoPort<SireneUniteLegaleDbo> {
     }
 
     public insertOne(entity: SireneStockUniteLegaleEntity) {
-        return this.collection.insertOne(SireneStockUniteLegaleAdapter.entityToDbo(entity));
+        return this.collection.insertOne(SireneStockUniteLegaleMapper.entityToDbo(entity));
     }
 
     public updateOne(entity: SireneStockUniteLegaleEntity) {
         return this.collection.updateOne(
             { siren: entity.siren },
-            { $set: SireneStockUniteLegaleAdapter.entityToDbo(entity) },
+            { $set: SireneStockUniteLegaleMapper.entityToDbo(entity) },
         );
     }
 
     public async findAll(): Promise<SireneStockUniteLegaleEntity[]> {
         const dbos = await this.collection.find().toArray();
-        return dbos.map(dbo => SireneStockUniteLegaleAdapter.dboToEntity(dbo));
+        return dbos.map(dbo => SireneStockUniteLegaleMapper.dboToEntity(dbo));
     }
 
     public async findOneBySiren(siren: Siren): Promise<SireneStockUniteLegaleEntity | null> {
         const dbo = await this.collection.findOne({ siren: siren.value });
-        return dbo ? SireneStockUniteLegaleAdapter.dboToEntity(dbo) : null;
+        return dbo ? SireneStockUniteLegaleMapper.dboToEntity(dbo) : null;
     }
 
     public deleteAll() {

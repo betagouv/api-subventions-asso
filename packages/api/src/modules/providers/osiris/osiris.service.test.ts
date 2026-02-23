@@ -16,7 +16,7 @@ import osirisJoiner from "../../../dataProviders/db/providers/osiris/osiris.join
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 
 jest.mock("../../applicationFlat/applicationFlat.helper");
-jest.mock("./adapters/OsirisRequestAdapter");
+jest.mock("./mappers/osiris-request.mapper");
 jest.mock("../../../dataProviders/db/providers/osiris");
 jest.mock("../../rna-siren/rna-siren.service");
 jest.mock("../../applicationFlat/applicationFlat.service");

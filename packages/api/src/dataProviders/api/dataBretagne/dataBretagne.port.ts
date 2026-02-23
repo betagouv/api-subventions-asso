@@ -10,11 +10,11 @@ import {
     DataBretagneRefProgrammationDto,
 } from "./DataBretagneDto";
 import {
-    DataBretagneDomaineFonctionnelAdapter,
-    DataBretagneMinistryAdapter,
-    DataBretagneProgrammeAdapter,
-    DataBretagneRefProgrammationAdapter,
-} from "./DataBretagneAdapter";
+    DataBretagneDomaineFonctionnelMapper,
+    DataBretagneMinistryMapper,
+    DataBretagneProgrammeMapper,
+    DataBretagneRefProgrammationMapper,
+} from "./data-bretagne.mapper";
 import {
     DataBretagneDomaineFonctionnelValidator,
     DataBretagneMinistryValidator,
@@ -58,28 +58,28 @@ export class DataBretagnePort {
         const validData = DataBretagneProgrammeValidator.validate(
             await this.getCollection<DataBretagneProgrammeDto>("programme"),
         );
-        return validData.valids.map(DataBretagneProgrammeAdapter.toEntity);
+        return validData.valids.map(DataBretagneProgrammeMapper.toEntity);
     }
 
     async getMinistry() {
         const validData = DataBretagneMinistryValidator.validate(
             await this.getCollection<DataBretagneMinistryDto>("ministere"),
         );
-        return validData.valids.map(DataBretagneMinistryAdapter.toEntity);
+        return validData.valids.map(DataBretagneMinistryMapper.toEntity);
     }
 
     async getDomaineFonctionnel() {
         const validData = DataBretagneDomaineFonctionnelValidator.validate(
             await this.getCollection<DataBretagneDomaineFonctionnelDto>("domaine-fonct"),
         );
-        return validData.valids.map(DataBretagneDomaineFonctionnelAdapter.toEntity);
+        return validData.valids.map(DataBretagneDomaineFonctionnelMapper.toEntity);
     }
 
     async getRefProgrammation() {
         const validData = DataBretagneRefProgrammationValidator.validate(
             await this.getCollection<DataBretagneRefProgrammationDto>("ref-programmation"),
         );
-        return validData.valids.map(DataBretagneRefProgrammationAdapter.toEntity);
+        return validData.valids.map(DataBretagneRefProgrammationMapper.toEntity);
     }
 }
 

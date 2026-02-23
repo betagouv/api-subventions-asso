@@ -1,5 +1,5 @@
 import configurationsService from "../../configurations/configurations.service";
-import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
+import DauphinDtoMapper from "./mappers/dauphin-dto.mapper";
 import dauphinService from "./dauphin.service";
 import dauphinPort from "../../../dataProviders/db/providers/dauphin/dauphin.port";
 import SpyInstance = jest.SpyInstance;
@@ -20,7 +20,7 @@ jest.mock("../../../dataProviders/db/providers/dauphin/dauphin.port", () => ({
     findBySiren: jest.fn(),
 }));
 
-jest.mock("./adapters/DauphinDtoAdapter");
+jest.mock("./mappers/dauphin-dto.mapper");
 jest.mock("./dauphin.flat.service");
 
 const SIREN = new Siren("123456789");
@@ -369,7 +369,7 @@ describe("Dauphin Service", () => {
                 findIdMock = jest.spyOn(dauphinService, "findDauphinInternalId").mockResolvedValue(ID);
                 httpGetSpy.mockResolvedValue({ data: httpSpy_RES });
                 // @ts-expect-error: mock
-                DauphinDtoAdapter.toDocuments.mockReturnValue(ADAPTED_DOCS);
+                DauphinDtoMapper.toDocuments.mockReturnValue(ADAPTED_DOCS);
             });
 
             afterAll(() => {
@@ -400,7 +400,7 @@ describe("Dauphin Service", () => {
 
             it("should adapt result from httpSpy", async () => {
                 await dauphinService.getDocuments(ASSOCIATION_IDENTIFIER);
-                expect(DauphinDtoAdapter.toDocuments).toHaveBeenCalledWith(RAW_DOCS);
+                expect(DauphinDtoMapper.toDocuments).toHaveBeenCalledWith(RAW_DOCS);
             });
 
             it("returns documents from httpSpy", async () => {

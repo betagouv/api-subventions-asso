@@ -3,14 +3,14 @@ import ProviderValueFactory from "./ProviderValueFactory";
 describe("ProviderValueFactory", () => {
     describe("buildProviderValueAdapter", () => {
         it("should return function", () => {
-            const actual = ProviderValueFactory.buildProviderValueAdapter("TEST", new Date());
+            const actual = ProviderValueFactory.buildProviderValueMapper("TEST", new Date());
             const expected = expect.any(Function);
             expect(actual).toEqual(expected);
         });
 
         it("should return function", () => {
             const now = new Date();
-            const func = ProviderValueFactory.buildProviderValueAdapter("TEST", now);
+            const func = ProviderValueFactory.buildProviderValueMapper("TEST", now);
             const actual = func("STRING_VALUE");
             const expected = {
                 provider: "TEST",
@@ -24,14 +24,14 @@ describe("ProviderValueFactory", () => {
 
     describe("buildProviderValuesAdapter", () => {
         it("should return function", () => {
-            const actual = ProviderValueFactory.buildProviderValuesAdapter("TEST", new Date());
+            const actual = ProviderValueFactory.buildProviderValuesMapper("TEST", new Date());
             const expected = expect.any(Function);
             expect(actual).toEqual(expected);
         });
 
         it("should return function", () => {
             const now = new Date();
-            const func = ProviderValueFactory.buildProviderValuesAdapter("TEST", now);
+            const func = ProviderValueFactory.buildProviderValuesMapper("TEST", now);
             const actual = func("STRING_VALUE");
             const expected = expect.arrayContaining([
                 {

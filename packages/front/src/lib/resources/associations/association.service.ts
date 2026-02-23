@@ -1,11 +1,11 @@
 import type { AssociationIdentifierDto, PaginatedAssociationNameDto } from "dto";
 import type AssociationEntity from "./entities/AssociationEntity";
 import associationPort from "./association.port";
-import { toSearchHistory } from "./association.adapter";
+import { toSearchHistory } from "./association.mapper";
 import { isRna, isStartOfSiret, siretToSiren } from "$lib/helpers/identifierHelper";
 import { flattenProviderValue, getObjectWithMetadata } from "$lib/helpers/providerValueHelper";
 import { updateSearchHistory } from "$lib/services/searchHistory.service";
-import { toEstablishmentComponent } from "$lib/resources/establishments/establishment.adapter";
+import { toEstablishmentComponent } from "$lib/resources/establishments/establishment.mapper";
 import documentHelper from "$lib/helpers/document.helper";
 import { isAssociation } from "$lib/resources/associations/association.helper";
 

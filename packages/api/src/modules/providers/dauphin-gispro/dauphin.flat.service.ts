@@ -1,5 +1,5 @@
 import dauphinPort from "../../../dataProviders/db/providers/dauphin/dauphin.port";
-import DauphinDtoAdapter, { InconsistentAggregationError } from "./adapters/DauphinDtoAdapter";
+import DauphinDtoMapper, { InconsistentAggregationError } from "./mappers/dauphin-dto.mapper";
 import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
 import { ReadableStream } from "stream/web";
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
@@ -29,7 +29,7 @@ export class DauphinFlatService implements ApplicationFlatProvider {
         const errors: InconsistentAggregationError[] = [];
         const stream = cursorToStream(cursor, simplified => {
             try {
-                return DauphinDtoAdapter.simplifiedJoinedToApplicationFlat(simplified);
+                return DauphinDtoMapper.simplifiedJoinedToApplicationFlat(simplified);
             } catch (e) {
                 if (e instanceof InconsistentAggregationError) {
                     errors.push(e);

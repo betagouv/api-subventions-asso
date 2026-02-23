@@ -2,7 +2,7 @@ import grantExtractService from "./grantExtract.service";
 import { Association, EstablishmentSimplified } from "dto";
 import grantService from "./grant.service";
 import associationsService from "../associations/associations.service";
-import GrantAdapter from "./grant.adapter";
+import GrantMapper from "./grant.mapper";
 import * as csvStringifier from "csv-stringify/sync";
 import { ExtractHeaderLabel, GrantToExtract } from "./@types/GrantToExtract";
 import Siret from "../../identifierObjects/Siret";
@@ -14,7 +14,7 @@ import { GrantFlatEntity } from "../../entities/GrantFlatEntity";
 jest.mock("./grant.service");
 jest.mock("../associations/associations.service");
 jest.mock("../payments/payments.service");
-jest.mock("./grant.adapter");
+jest.mock("./grant.mapper");
 jest.mock("csv-stringify/sync");
 jest.mock("../../shared/Validators");
 
@@ -60,17 +60,17 @@ describe("GrantExtractService", () => {
             expect(associationsService.getEstablishments).toHaveBeenCalledWith(IDENTIFIER.associationIdentifier);
         });
 
-        it("calls adapter for each separated grant and gotten asso and estabsBySiret", async () => {
+        it("calls mapper for each separated grant and gotten asso and estabsBySiret", async () => {
             await grantExtractService.buildCsv(IDENTIFIER);
-            expect(GrantAdapter.grantToExtractLine).toHaveBeenCalledWith(1, ASSO, ESTABS_BY_SIRET);
-            expect(GrantAdapter.grantToExtractLine).toHaveBeenCalledWith(2, ASSO, ESTABS_BY_SIRET);
-            expect(GrantAdapter.grantToExtractLine).toHaveBeenCalledWith(3, ASSO, ESTABS_BY_SIRET);
+            expect(GrantMapper.grantToExtractLine).toHaveBeenCalledWith(1, ASSO, ESTABS_BY_SIRET);
+            expect(GrantMapper.grantToExtractLine).toHaveBeenCalledWith(2, ASSO, ESTABS_BY_SIRET);
+            expect(GrantMapper.grantToExtractLine).toHaveBeenCalledWith(3, ASSO, ESTABS_BY_SIRET);
         });
 
         it("stringifies adapted grants to csv", async () => {
-            jest.mocked(GrantAdapter.grantToExtractLine).mockReturnValueOnce("1" as unknown as GrantToExtract);
-            jest.mocked(GrantAdapter.grantToExtractLine).mockReturnValueOnce("2" as unknown as GrantToExtract);
-            jest.mocked(GrantAdapter.grantToExtractLine).mockReturnValueOnce("3" as unknown as GrantToExtract);
+            jest.mocked(GrantMapper.grantToExtractLine).mockReturnValueOnce("1" as unknown as GrantToExtract);
+            jest.mocked(GrantMapper.grantToExtractLine).mockReturnValueOnce("2" as unknown as GrantToExtract);
+            jest.mocked(GrantMapper.grantToExtractLine).mockReturnValueOnce("3" as unknown as GrantToExtract);
             await grantExtractService.buildCsv(IDENTIFIER);
             expect(csvStringifier.stringify).toHaveBeenCalledWith(expect.any(Array), {
                 header: true,
@@ -83,7 +83,7 @@ describe("GrantExtractService", () => {
 
         it("converts number to comma style", async () => {
             jest.mocked(grantService.getGrants).mockResolvedValueOnce([1 as unknown as GrantFlatEntity]);
-            jest.mocked(GrantAdapter.grantToExtractLine).mockReturnValueOnce("1" as unknown as GrantToExtract);
+            jest.mocked(GrantMapper.grantToExtractLine).mockReturnValueOnce("1" as unknown as GrantToExtract);
 
             await grantExtractService.buildCsv(IDENTIFIER);
             // @ts-expect-error -- ??

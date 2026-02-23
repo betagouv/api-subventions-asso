@@ -1,5 +1,5 @@
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import MiscScdlAdapter from "./adapters/MiscScdl.adapter";
+import MiscScdlMapper from "./mappers/misc-scdl.mapper";
 import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
@@ -32,7 +32,7 @@ export class ScdlGrantService implements ApplicationFlatProvider {
         return stream.pipeThrough(
             new TransformStream<ScdlGrantDbo, ApplicationFlatEntity>({
                 start() {},
-                transform: (dbo, controller) => controller.enqueue(MiscScdlAdapter.dboToApplicationFlat(dbo)),
+                transform: (dbo, controller) => controller.enqueue(MiscScdlMapper.dboToApplicationFlat(dbo)),
             }),
         );
     }
@@ -44,7 +44,7 @@ export class ScdlGrantService implements ApplicationFlatProvider {
     async initApplicationFlat() {
         const cursor = miscScdlGrantPort.findAllCursor();
         const stream: ReadableStream<ApplicationFlatEntity> = cursorToStream(cursor, dbo =>
-            MiscScdlAdapter.dboToApplicationFlat(dbo),
+            MiscScdlMapper.dboToApplicationFlat(dbo),
         );
         return this.saveApplicationsFromStream(stream);
     }

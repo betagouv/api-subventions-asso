@@ -1,7 +1,7 @@
 import MigrationPort from "../../../shared/MongoPort";
 import ProviderRequestLog from "../../../modules/provider-request/entities/ProviderRequestLog";
 import ProviderRequestLogDbo from "./ProviderRequestLogDbo";
-import ProviderRequestLogAdapter from "./ProviderRequestLog.adapter";
+import ProviderRequestLogMapper from "./provider-request-log.mapper";
 
 class ProviderRequestPort extends MigrationPort<ProviderRequestLogDbo> {
     public collectionName = "provider-request-log";
@@ -11,7 +11,7 @@ class ProviderRequestPort extends MigrationPort<ProviderRequestLogDbo> {
     }
 
     async create(entity: ProviderRequestLog) {
-        const dbo = ProviderRequestLogAdapter.fromEntity(entity);
+        const dbo = ProviderRequestLogMapper.fromEntity(entity);
 
         await this.collection.insertOne(dbo);
     }

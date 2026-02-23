@@ -1,5 +1,5 @@
 import MongoPort from "../../../shared/MongoPort";
-import DepositLogAdapter from "./DepositLog.adapter";
+import DepositLogMapper from "./deposit-log.mapper";
 import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/entities/depositScdlLog.entity";
 import DepositScdlLogDbo from "./DepositScdlLogDbo";
 import { NotFoundError } from "core";
@@ -13,13 +13,13 @@ class DepositLogPort extends MongoPort<DepositScdlLogDbo> {
     }
 
     public insertOne(entity: DepositScdlLogEntity) {
-        return this.collection.insertOne(DepositLogAdapter.toDbo(entity));
+        return this.collection.insertOne(DepositLogMapper.toDbo(entity));
     }
 
     async findOneByUserId(userId: string): Promise<DepositScdlLogEntity | null> {
         const depositLogDbo = await this.collection.findOne({ userId });
         if (!depositLogDbo) return null;
-        return DepositLogAdapter.dboToEntity(depositLogDbo);
+        return DepositLogMapper.dboToEntity(depositLogDbo);
     }
 
     /**
@@ -34,7 +34,7 @@ class DepositLogPort extends MongoPort<DepositScdlLogDbo> {
         const lowerThan = new Date(greaterThan);
         lowerThan.setDate(lowerThan.getDate() + 1);
         const dbos = await this.collection.find({ updateDate: { $gte: greaterThan, $lt: lowerThan } }).toArray();
-        return dbos.map(dbo => DepositLogAdapter.dboToEntity(dbo));
+        return dbos.map(dbo => DepositLogMapper.dboToEntity(dbo));
     }
 
     async deleteByUserId(userId: string) {
@@ -54,12 +54,12 @@ class DepositLogPort extends MongoPort<DepositScdlLogDbo> {
         if (!depositLogDbo) {
             throw new NotFoundError("Deposit log not found");
         }
-        return DepositLogAdapter.dboToEntity(depositLogDbo);
+        return DepositLogMapper.dboToEntity(depositLogDbo);
     }
 
     async find(query: Filter<DepositScdlLogDbo> = {}, options?: FindOptions): Promise<DepositScdlLogEntity[]> {
         const dbos = await this.collection.find(query, options).toArray();
-        return dbos.map(dbo => DepositLogAdapter.dboToEntity(dbo));
+        return dbos.map(dbo => DepositLogMapper.dboToEntity(dbo));
     }
 }
 

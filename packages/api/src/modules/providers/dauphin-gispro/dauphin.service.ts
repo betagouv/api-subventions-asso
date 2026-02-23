@@ -14,7 +14,7 @@ import AssociationIdentifier from "../../../identifierObjects/AssociationIdentif
 import Siren from "../../../identifierObjects/Siren";
 import dauphinPort from "../../../dataProviders/db/providers/dauphin/dauphin.port";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
-import DauphinDtoAdapter from "./adapters/DauphinDtoAdapter";
+import DauphinDtoMapper from "./mappers/dauphin-dto.mapper";
 import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
 import dauphinFlatService from "./dauphin.flat.service";
 
@@ -205,7 +205,7 @@ export class DauphinService extends ProviderCore implements DocumentProvider {
             )
         ).data.pieces;
 
-        return DauphinDtoAdapter.toDocuments(result);
+        return DauphinDtoMapper.toDocuments(result);
     }
 
     private async findDauphinInternalId(siren: Siren): Promise<string | undefined> {

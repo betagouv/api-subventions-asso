@@ -1,5 +1,5 @@
 import paymentFlatService from "./paymentFlat.service";
-import PaymentFlatAdapter from "./paymentFlatAdapter";
+import PaymentFlatMapper from "./payment-flat.mapper";
 import {
     LIST_PAYMENT_FLAT_ENTITY,
     CHORUS_PAYMENT_FLAT_ENTITY,
@@ -18,7 +18,7 @@ import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
 import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
 
 jest.mock("../../shared/helpers/MongoHelper");
-jest.mock("./paymentFlatAdapter");
+jest.mock("./payment-flat.mapper");
 jest.mock("../../dataProviders/db/paymentFlat/paymentFlat.port");
 
 describe("PaymentFlatService", () => {
@@ -42,13 +42,13 @@ describe("PaymentFlatService", () => {
             // @ts-expect-error: parameter type
             const rawGrant = { data: CHORUS_PAYMENT_FLAT_ENTITY } as RawGrant;
             paymentFlatService.rawToPayment(rawGrant);
-            expect(PaymentFlatAdapter.rawToPayment).toHaveBeenCalledWith(rawGrant);
+            expect(PaymentFlatMapper.rawToPayment).toHaveBeenCalledWith(rawGrant);
         });
 
         it("should return Payment", () => {
             // @ts-expect-error: parameter type
             const rawGrant = { data: CHORUS_PAYMENT_FLAT_ENTITY } as RawGrant;
-            jest.mocked(PaymentFlatAdapter.rawToPayment).mockReturnValueOnce(PAYMENT_FROM_PAYMENT_FLAT);
+            jest.mocked(PaymentFlatMapper.rawToPayment).mockReturnValueOnce(PAYMENT_FROM_PAYMENT_FLAT);
             const expected = PAYMENT_FROM_PAYMENT_FLAT;
             const actual = paymentFlatService.rawToPayment(rawGrant);
             expect(actual).toEqual(expected);
@@ -60,7 +60,7 @@ describe("PaymentFlatService", () => {
             // @ts-expect-error: test private method
             paymentFlatService.toPaymentArray(LIST_PAYMENT_FLAT_ENTITY);
             LIST_PAYMENT_FLAT_ENTITY.forEach((entity, index) => {
-                expect(PaymentFlatAdapter.toPayment).toHaveBeenNthCalledWith(index + 1, entity);
+                expect(PaymentFlatMapper.toPayment).toHaveBeenNthCalledWith(index + 1, entity);
             });
         });
     });

@@ -16,8 +16,8 @@ import {
     VERSEMENT_WITHOUT_ASSOCIATION,
     VERSEMENT_WITHOUT_POSITION,
 } from "./__fixtures__/fonjepEntities";
-import FonjepEntityAdapter from "./adapters/FonjepEntityAdapter";
-jest.mock("./adapters/FonjepEntityAdapter");
+import FonjepEntityMapper from "./mappers/fonjep-entity.mapper";
+jest.mock("./mappers/fonjep-entity.mapper");
 import fonjepTiersPort from "../../../dataProviders/db/providers/fonjep/fonjep.tiers.port";
 import fonjepPostesPort from "../../../dataProviders/db/providers/fonjep/fonjep.postes.port";
 import fonjepVersementsPort from "../../../dataProviders/db/providers/fonjep/fonjep.versements.port";
@@ -72,11 +72,11 @@ describe("FonjepService", () => {
     beforeAll(() => {
         mockParse = jest.spyOn(FonjepParser, "parse").mockReturnValue(PARSED_DATA);
 
-        jest.mocked(FonjepEntityAdapter.toFonjepTierEntity).mockReturnValue(TIERS_ENTITY);
-        jest.mocked(FonjepEntityAdapter.toFonjepPosteEntity).mockReturnValue(POSTE_ENTITY);
-        jest.mocked(FonjepEntityAdapter.toFonjepVersementEntity).mockReturnValue(VERSEMENT_ENTITY);
-        jest.mocked(FonjepEntityAdapter.toFonjepTypePosteEntity).mockReturnValue(TYPE_POSTE_ENTITY);
-        jest.mocked(FonjepEntityAdapter.toFonjepDispositifEntity).mockReturnValue(DISPOSITIF_ENTITY);
+        jest.mocked(FonjepEntityMapper.toFonjepTierEntity).mockReturnValue(TIERS_ENTITY);
+        jest.mocked(FonjepEntityMapper.toFonjepPosteEntity).mockReturnValue(POSTE_ENTITY);
+        jest.mocked(FonjepEntityMapper.toFonjepVersementEntity).mockReturnValue(VERSEMENT_ENTITY);
+        jest.mocked(FonjepEntityMapper.toFonjepTypePosteEntity).mockReturnValue(TYPE_POSTE_ENTITY);
+        jest.mocked(FonjepEntityMapper.toFonjepDispositifEntity).mockReturnValue(DISPOSITIF_ENTITY);
     });
 
     afterAll(() => {
@@ -94,54 +94,54 @@ describe("FonjepService", () => {
 
         it("should call toFonjepTierEntities the length of the parsed tiers", () => {
             fonjepService.fromFileToEntities(FILE_PATH, EXPORT_DATE);
-            expect(FonjepEntityAdapter.toFonjepTierEntity).toHaveBeenCalledTimes(PARSED_DATA.tiers.length);
+            expect(FonjepEntityMapper.toFonjepTierEntity).toHaveBeenCalledTimes(PARSED_DATA.tiers.length);
         });
 
         it.each(PARSED_DATA.tiers)("should call toFonjepTierEntity with the given tier", tier => {
             fonjepService.fromFileToEntities(FILE_PATH, EXPORT_DATE);
-            expect(FonjepEntityAdapter.toFonjepTierEntity).toHaveBeenCalledWith(tier, EXPORT_DATE);
+            expect(FonjepEntityMapper.toFonjepTierEntity).toHaveBeenCalledWith(tier, EXPORT_DATE);
         });
 
         it("should call toFonjepPosteEntities the length of the parsed postes", () => {
             fonjepService.fromFileToEntities(FILE_PATH, EXPORT_DATE);
-            expect(FonjepEntityAdapter.toFonjepPosteEntity).toHaveBeenCalledTimes(PARSED_DATA.postes.length);
+            expect(FonjepEntityMapper.toFonjepPosteEntity).toHaveBeenCalledTimes(PARSED_DATA.postes.length);
         });
 
         it.each(PARSED_DATA.postes)("should call toFonjepPosteEntity with the given poste", poste => {
             fonjepService.fromFileToEntities(FILE_PATH, EXPORT_DATE);
-            expect(FonjepEntityAdapter.toFonjepPosteEntity).toHaveBeenCalledWith(poste, EXPORT_DATE);
+            expect(FonjepEntityMapper.toFonjepPosteEntity).toHaveBeenCalledWith(poste, EXPORT_DATE);
         });
 
         it("should call toFonjepVersementEntities the length of the parsed versements", () => {
             fonjepService.fromFileToEntities(FILE_PATH, EXPORT_DATE);
-            expect(FonjepEntityAdapter.toFonjepVersementEntity).toHaveBeenCalledTimes(PARSED_DATA.versements.length);
+            expect(FonjepEntityMapper.toFonjepVersementEntity).toHaveBeenCalledTimes(PARSED_DATA.versements.length);
         });
 
         it.each(PARSED_DATA.versements)("should call toFonjepVersementEntity with the given versement", versement => {
             fonjepService.fromFileToEntities(FILE_PATH, EXPORT_DATE);
-            expect(FonjepEntityAdapter.toFonjepVersementEntity).toHaveBeenCalledWith(versement, EXPORT_DATE);
+            expect(FonjepEntityMapper.toFonjepVersementEntity).toHaveBeenCalledWith(versement, EXPORT_DATE);
         });
 
         it("should call toFonjepTypePosteEntities the length of the parsed typePostes", () => {
             fonjepService.fromFileToEntities(FILE_PATH, EXPORT_DATE);
-            expect(FonjepEntityAdapter.toFonjepTypePosteEntity).toHaveBeenCalledTimes(PARSED_DATA.typePoste.length);
+            expect(FonjepEntityMapper.toFonjepTypePosteEntity).toHaveBeenCalledTimes(PARSED_DATA.typePoste.length);
         });
 
         it.each(PARSED_DATA.typePoste)("should call toFonjepTypePosteEntity with the given typePoste", typePoste => {
             fonjepService.fromFileToEntities(FILE_PATH, EXPORT_DATE);
-            expect(FonjepEntityAdapter.toFonjepTypePosteEntity).toHaveBeenCalledWith(typePoste, EXPORT_DATE);
+            expect(FonjepEntityMapper.toFonjepTypePosteEntity).toHaveBeenCalledWith(typePoste, EXPORT_DATE);
         });
 
         it("should call toFonjepDispositifEntities the length of the parsed dispositifs", () => {
             fonjepService.fromFileToEntities(FILE_PATH, EXPORT_DATE);
-            expect(FonjepEntityAdapter.toFonjepDispositifEntity).toHaveBeenCalledTimes(PARSED_DATA.dispositifs.length);
+            expect(FonjepEntityMapper.toFonjepDispositifEntity).toHaveBeenCalledTimes(PARSED_DATA.dispositifs.length);
         });
 
         it.each(PARSED_DATA.dispositifs)(
             "should call toFonjepDispositifEntity with the given dispositif",
             dispositif => {
                 fonjepService.fromFileToEntities(FILE_PATH, EXPORT_DATE);
-                expect(FonjepEntityAdapter.toFonjepDispositifEntity).toHaveBeenCalledWith(dispositif, EXPORT_DATE);
+                expect(FonjepEntityMapper.toFonjepDispositifEntity).toHaveBeenCalledWith(dispositif, EXPORT_DATE);
             },
         );
 
@@ -307,7 +307,7 @@ describe("FonjepService", () => {
         // @ts-expect-error: mock private method
         const mockValidatePayment: jest.SpyInstance<boolean> = jest.spyOn(fonjepService, "validatePayment");
         const mockGetAllDataRecords = jest.spyOn(dataBretagneService, "getAllDataRecords");
-        const mockToFonjepPaymentFlat = jest.spyOn(FonjepEntityAdapter, "toFonjepPaymentFlat");
+        const mockToFonjepPaymentFlat = jest.spyOn(FonjepEntityMapper, "toFonjepPaymentFlat");
 
         beforeAll(() => {
             mockValidatePayment.mockReturnValue(true);
@@ -425,7 +425,7 @@ describe("FonjepService", () => {
             const THIRD_PARTIES = [TIERS_ENTITY, ALLOCATOR, INSTRUCTOR];
 
             beforeAll(() => {
-                jest.mocked(FonjepEntityAdapter.toFonjepApplicationFlat).mockReturnValue(
+                jest.mocked(FonjepEntityMapper.toFonjepApplicationFlat).mockReturnValue(
                     APPLICATION_LINK_TO_FONJEP as FonjepApplicationFlatEntity,
                 );
             });
@@ -437,7 +437,7 @@ describe("FonjepService", () => {
                     schemes: DISPOSITIF_ENTITIES,
                 });
 
-                expect(FonjepEntityAdapter.toFonjepApplicationFlat).toHaveBeenCalledWith({
+                expect(FonjepEntityMapper.toFonjepApplicationFlat).toHaveBeenCalledWith({
                     position: POSTE_ENTITY,
                     beneficiary: TIERS_ENTITY,
                     allocator: ALLOCATOR,

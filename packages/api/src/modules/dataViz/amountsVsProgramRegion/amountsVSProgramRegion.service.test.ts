@@ -1,5 +1,5 @@
 import amountsVsProgramRegionService from "./amountsVsProgramRegion.service";
-import AmountsVsProgramRegionAdapter from "./amountsVsProgramRegion.adapter";
+import AmountsVsProgramRegionMapper from "./amounts-vs-program-region.mapper";
 import {
     AMOUNTS_VS_PROGRAM_REGION_ENTITIES,
     NOT_AGGREGATED_ENTITIES,
@@ -13,7 +13,7 @@ import {
 
 describe("amountsVSProgramRegionService", () => {
     describe("toAmountsVsProgramRegionEntities", () => {
-        let mockAdapter: jest.SpyInstance;
+        let mockMapper: jest.SpyInstance;
         let mockCursorFindChorusOnly: jest.SpyInstance;
 
         let mockCursor;
@@ -45,21 +45,21 @@ describe("amountsVSProgramRegionService", () => {
                 .spyOn(paymentFlatChorusService, "cursorFindChorusOnly")
                 .mockReturnValue(mockCursor);
 
-            mockAdapter = jest.spyOn(AmountsVsProgramRegionAdapter, "toNotAggregatedEntity");
+            mockMapper = jest.spyOn(AmountsVsProgramRegionMapper, "toNotAggregatedEntity");
             //* NOT_AGGREGATED_ENTITIES[1] has the same agregation key (program, budgetExercice, region)
             // of NOT_AGGREGATED_ENTITIES[0]
             // and toNotAggregatedEntity is called only for new key
-            mockAdapter.mockReturnValueOnce(NOT_AGGREGATED_ENTITIES[0]);
-            mockAdapter.mockReturnValueOnce(NOT_AGGREGATED_ENTITIES[2]);
-            mockAdapter.mockReturnValueOnce(NOT_AGGREGATED_ENTITIES[3]);
-            mockAdapter.mockReturnValueOnce(NOT_AGGREGATED_ENTITIES[4]);
-            mockAdapter.mockReturnValueOnce(NOT_AGGREGATED_ENTITIES[5]);
+            mockMapper.mockReturnValueOnce(NOT_AGGREGATED_ENTITIES[0]);
+            mockMapper.mockReturnValueOnce(NOT_AGGREGATED_ENTITIES[2]);
+            mockMapper.mockReturnValueOnce(NOT_AGGREGATED_ENTITIES[3]);
+            mockMapper.mockReturnValueOnce(NOT_AGGREGATED_ENTITIES[4]);
+            mockMapper.mockReturnValueOnce(NOT_AGGREGATED_ENTITIES[5]);
 
-            mockAdapter.mockReturnValue(undefined);
+            mockMapper.mockReturnValue(undefined);
         });
 
         afterEach(() => {
-            mockAdapter.mockRestore();
+            mockMapper.mockRestore();
             mockCursorFindChorusOnly.mockRestore();
             mockCursor.next.mockRestore();
             mockCursor.hasNext.mockRestore();
@@ -93,7 +93,7 @@ describe("amountsVSProgramRegionService", () => {
         it("should call toNotAggregatedEntity for each first time occurrence of agregation key (program, year,region)", async () => {
             await amountsVsProgramRegionService.toAmountsVsProgramRegionEntities();
 
-            expect(mockAdapter).toHaveBeenCalledTimes(AMOUNTS_VS_PROGRAM_REGION_ENTITIES.length);
+            expect(mockMapper).toHaveBeenCalledTimes(AMOUNTS_VS_PROGRAM_REGION_ENTITIES.length);
         });
 
         it("should return the right entities", async () => {

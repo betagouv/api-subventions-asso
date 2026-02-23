@@ -1,6 +1,6 @@
 import { ProviderValue, ProviderValues } from "dto";
 import { DefaultObject } from "../../@types";
-import ProviderValueAdapter from "../adapters/ProviderValueAdapter";
+import ProviderValueMapper from "../mappers/provider-value.mapper";
 
 export default class FormaterHelper {
     private static sortAndFilter(
@@ -14,7 +14,7 @@ export default class FormaterHelper {
         return Object.entries(data).reduce((data, [key, value]) => {
             if (!value) return data;
 
-            if (ProviderValueAdapter.isProviderValues(value)) {
+            if (ProviderValueMapper.isProviderValues(value)) {
                 data[key] = filter(value).sort(sort);
             } else if (Array.isArray(value)) {
                 value.forEach((subvalue, index) => {
@@ -59,7 +59,7 @@ export default class FormaterHelper {
     private static merge(a: DefaultObject<unknown[]>, b: DefaultObject<unknown[]>) {
         const keys = this.getUniqueKeys(a, b);
         return keys.reduce((acc, key) => {
-            if (ProviderValueAdapter.isProviderValues(a[key] || b[key] || [])) {
+            if (ProviderValueMapper.isProviderValues(a[key] || b[key] || [])) {
                 acc[key] = [
                     ...((a[key]?.length ? a[key].flat() : []) as unknown[]),
                     ...((b[key]?.length ? b[key].flat() : []) as unknown[]),

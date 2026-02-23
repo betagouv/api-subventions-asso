@@ -1,4 +1,4 @@
-import AmountsVsProgramRegionAdapter from "../../../../modules/dataViz/amountsVsProgramRegion/amountsVsProgramRegion.adapter";
+import AmountsVsProgramRegionMapper from "../../../../modules/dataViz/amountsVsProgramRegion/amounts-vs-program-region.mapper";
 import { AmountsVsProgramRegionDbo } from "../../../../modules/dataViz/amountsVsProgramRegion/entitiyAndDbo/amountsVsProgramRegion.dbo";
 import AmountsVsProgramRegionEntity from "../../../../modules/dataViz/amountsVsProgramRegion/entitiyAndDbo/amountsVsProgramRegion.entity";
 import MongoPort from "../../../../shared/MongoPort";
@@ -22,11 +22,11 @@ export class AmountsVsProgramRegionPort extends MongoPort<Omit<AmountsVsProgramR
     }
 
     public insertOne(entity: AmountsVsProgramRegionEntity) {
-        return this.collection.insertOne(AmountsVsProgramRegionAdapter.toDbo(entity));
+        return this.collection.insertOne(AmountsVsProgramRegionMapper.toDbo(entity));
     }
 
     public upsertOne(entity: AmountsVsProgramRegionEntity) {
-        const updateDbo = AmountsVsProgramRegionAdapter.toDbo(entity);
+        const updateDbo = AmountsVsProgramRegionMapper.toDbo(entity);
         return this.collection.updateOne(
             {
                 regionAttachementComptable: updateDbo.regionAttachementComptable,
@@ -41,14 +41,14 @@ export class AmountsVsProgramRegionPort extends MongoPort<Omit<AmountsVsProgramR
     public insertMany(entities: AmountsVsProgramRegionEntity[]) {
         if (!entities.length) return;
         return this.collection.insertMany(
-            entities.map(entity => AmountsVsProgramRegionAdapter.toDbo(entity), { ordered: false }),
+            entities.map(entity => AmountsVsProgramRegionMapper.toDbo(entity), { ordered: false }),
         );
     }
 
     public upsertMany(entities: AmountsVsProgramRegionEntity[]) {
         if (!entities.length) return;
         const bulkWriteArray = entities.map(entity => {
-            const updateDbo = AmountsVsProgramRegionAdapter.toDbo(entity);
+            const updateDbo = AmountsVsProgramRegionMapper.toDbo(entity);
             return {
                 updateOne: {
                     filter: {
@@ -67,7 +67,7 @@ export class AmountsVsProgramRegionPort extends MongoPort<Omit<AmountsVsProgramR
 
     public async findAll() {
         const result = await this.collection.find({}).toArray();
-        return result.map(dbo => AmountsVsProgramRegionAdapter.toEntity(dbo));
+        return result.map(dbo => AmountsVsProgramRegionMapper.toEntity(dbo));
     }
 
     public async deleteAll() {

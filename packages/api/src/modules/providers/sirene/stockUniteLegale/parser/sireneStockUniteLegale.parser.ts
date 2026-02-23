@@ -3,7 +3,7 @@ import fs from "fs";
 import { parse } from "csv-parse";
 import SireneUniteLegaleDto from "../@types/SireneUniteLegaleDto";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../../../shared/LegalCategoriesAccepted";
-import SireneStockUniteLegaleAdapter from "../adapter/sireneStockUniteLegale.adapter";
+import SireneStockUniteLegaleMapper from "../mappers/sirene-stock-unite-legale.mapper";
 import Siren from "../../../../../identifierObjects/Siren";
 import { SireneStockUniteLegaleEntity } from "../../../../../entities/SireneStockUniteLegaleEntity";
 
@@ -35,7 +35,7 @@ export default class SireneStockUniteLegaleParser {
                     currentRow++;
                     if (!this.isCorrect(data)) return;
                     stream.pause();
-                    const entity = SireneStockUniteLegaleAdapter.dtoToEntity(data);
+                    const entity = SireneStockUniteLegaleMapper.dtoToEntity(data);
                     if (this.isAsso(data)) {
                         batchAssos.push(entity);
                         if (batchAssos.length === 1000) {

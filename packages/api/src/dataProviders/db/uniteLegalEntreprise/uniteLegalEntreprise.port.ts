@@ -2,7 +2,7 @@ import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../shared
 import MongoPort from "../../../shared/MongoPort";
 import { UniteLegalEntrepriseEntity } from "../../../entities/UniteLegalEntrepriseEntity";
 import Siren from "../../../identifierObjects/Siren";
-import { UniteLegalEntrepriseAdapter } from "./UniteLegalEntreprise.adapter";
+import { UniteLegalEntrepriseMapper } from "./unite-legal-entreprise.mapper";
 import { UniteLegalEntrepriseDbo } from "./UniteLegalEntrepriseDbo";
 
 export class UniteLegalEntreprisePort extends MongoPort<UniteLegalEntrepriseDbo> {
@@ -16,12 +16,12 @@ export class UniteLegalEntreprisePort extends MongoPort<UniteLegalEntrepriseDbo>
         const dbo = await this.collection.findOne({ siren: siren.value });
         if (!dbo) return null;
 
-        return UniteLegalEntrepriseAdapter.toEntity(dbo);
+        return UniteLegalEntrepriseMapper.toEntity(dbo);
     }
 
     async insertMany(entities: UniteLegalEntrepriseEntity[]) {
         try {
-            const dbos = entities.map(entity => UniteLegalEntrepriseAdapter.toDbo(entity));
+            const dbos = entities.map(entity => UniteLegalEntrepriseMapper.toDbo(entity));
             await this.collection.insertMany(dbos, { ordered: false });
         } catch (e: unknown) {
             if (isMongoDuplicateError(e)) {

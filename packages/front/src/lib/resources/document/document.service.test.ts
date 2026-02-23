@@ -1,9 +1,9 @@
 import type { DocumentEntity } from "$lib/entities/DocumentEntity";
 import documentService from "$lib/resources/document/document.service";
-import { DocumentAdapter } from "$lib/resources/document/document.adapter";
+import { DocumentMapper } from "$lib/resources/document/document.mapper";
 import documentPort from "$lib/resources/document/document.port";
 
-vi.mock("$lib/resources/document/document.adapter");
+vi.mock("$lib/resources/document/document.mapper");
 vi.mock("$lib/resources/document/document.port");
 
 describe("document service", () => {
@@ -12,16 +12,16 @@ describe("document service", () => {
 
         it("adapts each document", () => {
             documentService.getSomeDocs(DOCS);
-            expect(DocumentAdapter.documentEntityToDocumentRequst).toHaveBeenCalledTimes(2);
-            expect(DocumentAdapter.documentEntityToDocumentRequst).toHaveBeenCalledWith(DOCS[0]);
-            expect(DocumentAdapter.documentEntityToDocumentRequst).toHaveBeenCalledWith(DOCS[1]);
+            expect(DocumentMapper.documentEntityToDocumentRequst).toHaveBeenCalledTimes(2);
+            expect(DocumentMapper.documentEntityToDocumentRequst).toHaveBeenCalledWith(DOCS[0]);
+            expect(DocumentMapper.documentEntityToDocumentRequst).toHaveBeenCalledWith(DOCS[1]);
         });
 
         it("calls port with adapted documents as requests", () => {
-            vi.mocked(DocumentAdapter.documentEntityToDocumentRequst).mockReturnValueOnce(
+            vi.mocked(DocumentMapper.documentEntityToDocumentRequst).mockReturnValueOnce(
                 "1" as unknown as DocumentEntity,
             );
-            vi.mocked(DocumentAdapter.documentEntityToDocumentRequst).mockReturnValueOnce(
+            vi.mocked(DocumentMapper.documentEntityToDocumentRequst).mockReturnValueOnce(
                 "2" as unknown as DocumentEntity,
             );
             documentService.getSomeDocs(DOCS);

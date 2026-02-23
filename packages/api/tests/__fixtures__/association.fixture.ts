@@ -21,7 +21,7 @@ const DEFAULT_ASSOCIATION = {
  * API ASSO IS USED TO TEST ASSOCIATION HTTP INTERFACE
  */
 
-const apiAssoToPVs = ProviderValueFactory.buildProviderValuesAdapter(apiAssoService.meta.name, new Date("2025-06-25"));
+const apiAssoToPVs = ProviderValueFactory.buildProviderValuesMapper(apiAssoService.meta.name, new Date("2025-06-25"));
 
 const API_ASSO_ADDRESS = {
     numero: "47",
