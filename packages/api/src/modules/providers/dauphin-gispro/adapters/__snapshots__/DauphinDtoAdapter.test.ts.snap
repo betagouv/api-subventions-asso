@@ -1,5 +1,62 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`DauphinDtoAdapter simplifiedJoinedToApplicationFlat returns application flat 1`] = `
+{
+  "allocatorId": null,
+  "allocatorIdType": null,
+  "allocatorName": "financeur 1",
+  "applicationId": "dauphin-",
+  "applicationProviderId": "",
+  "beneficiaryCompanyId": Siren {
+    "identifier": "100000000",
+  },
+  "beneficiaryCompanyIdType": "siren",
+  "beneficiaryEstablishmentId": Siret {
+    "identifier": "10000000000001",
+  },
+  "beneficiaryEstablishmentIdType": "siret",
+  "budgetaryYear": 2022,
+  "cofinancersIdType": null,
+  "cofinancersNames": null,
+  "cofinancingRequested": null,
+  "confinancersId": null,
+  "conventionDate": null,
+  "decisionDate": null,
+  "decisionReference": null,
+  "depositDate": 2021-11-12T00:00:00.000Z,
+  "ej": "ej",
+  "grantedAmount": 800,
+  "idRAE": null,
+  "instructiveDepartementId": null,
+  "instructiveDepartmentIdType": null,
+  "instructiveDepartmentName": "instructor 1",
+  "joinKeyDesc": null,
+  "joinKeyId": null,
+  "managingAuthorityId": "N/A",
+  "managingAuthorityIdType": "N/A",
+  "managingAuthorityName": "N/A",
+  "nature": "Aide en numéraire",
+  "object": "intitule 1",
+  "paymentCondition": null,
+  "paymentConditionDesc": null,
+  "paymentId": "10000000000001 - ej - 2022",
+  "paymentPeriodDates": null,
+  "pluriannual": true,
+  "pluriannualYears": null,
+  "provider": "dauphin",
+  "requestYear": 2021,
+  "requestedAmount": 890,
+  "scheme": "thematique 1 - Politique de la ville",
+  "statusLabel": null,
+  "subScheme": null,
+  "subventionPercentage": null,
+  "totalAmount": null,
+  "ueNotification": null,
+  "uniqueId": "dauphin--2022",
+  "updateDate": Any<Date>,
+}
+`;
+
 exports[`DauphinDtoAdapter toDocuments return proper result 1`] = `
 [
   {
