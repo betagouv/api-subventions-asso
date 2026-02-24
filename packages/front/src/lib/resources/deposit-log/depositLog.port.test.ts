@@ -7,7 +7,6 @@ import {
     type DepositScdlLogResponseDto,
     type FileDownloadUrlDto,
 } from "dto";
-import DepositLogPort from "$lib/resources/deposit-log/depositLog.port";
 
 vi.mock("$lib/services/requests.service");
 const mockedRequestService = vi.mocked(requestsService);
@@ -78,7 +77,7 @@ describe("DepositLogPort", () => {
             it("should call axios with route", () => {
                 const param = {} as CreateDepositScdlLogDto;
                 depositLogPort.createDepositLog(param);
-                expect(mockPostResource).toHaveBeenCalledWith(DepositLogPort.BASE_PATH, param);
+                expect(mockPostResource).toHaveBeenCalledWith(depositLogPort.BASE_PATH, param);
             });
 
             it("returns depositLog", async () => {
@@ -95,7 +94,7 @@ describe("DepositLogPort", () => {
                 const sheetName = "sheetname";
                 depositLogPort.validateScdlFile(file, dto, sheetName);
                 expect(mockPostResource).toHaveBeenCalledWith(
-                    DepositLogPort.BASE_PATH + "/validation-fichier-scdl",
+                    depositLogPort.BASE_PATH + "/validation-fichier-scdl",
                     expect.any(FormData),
                 );
 
@@ -110,7 +109,7 @@ describe("DepositLogPort", () => {
         describe("persistScdlFile", () => {
             it("should call axios with route", () => {
                 depositLogPort.persistScdlFile();
-                expect(mockPostResource).toHaveBeenCalledWith(DepositLogPort.BASE_PATH + "/depot-fichier-scdl");
+                expect(mockPostResource).toHaveBeenCalledWith(depositLogPort.BASE_PATH + "/depot-fichier-scdl");
             });
         });
     });
@@ -128,7 +127,7 @@ describe("DepositLogPort", () => {
             it("should call axios with route", () => {
                 const param = {} as DepositScdlLogDto;
                 depositLogPort.updateDepositLog(1, param);
-                expect(mockPatchResource).toHaveBeenCalledWith(DepositLogPort.BASE_PATH + "/step/1", param);
+                expect(mockPatchResource).toHaveBeenCalledWith(depositLogPort.BASE_PATH + "/step/1", param);
             });
 
             it("returns depositLog", async () => {
@@ -149,7 +148,7 @@ describe("DepositLogPort", () => {
         describe("deleteDepositLog", () => {
             it("should call axios with route", () => {
                 depositLogPort.deleteDepositLog();
-                expect(mockDeleteResource).toHaveBeenCalledWith(DepositLogPort.BASE_PATH);
+                expect(mockDeleteResource).toHaveBeenCalledWith(depositLogPort.BASE_PATH);
             });
 
             it("returns empty data", async () => {

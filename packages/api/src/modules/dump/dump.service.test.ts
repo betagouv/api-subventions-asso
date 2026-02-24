@@ -1,9 +1,9 @@
-import dumpService from "./dump.service";
+import { DumpService } from "./dump.service";
 import metabaseDumpPort from "../../dataProviders/db/dump/metabase-dump.port";
 import userCrudService from "../user/services/crud/user.crud.service";
 import { DEPOSIT_LOG_ENTITY } from "../deposit-scdl-process/__fixtures__/depositLog.fixture";
-import depositScdlProcessService from "../deposit-scdl-process/depositScdlProcess.service";
 import { USER_DBO } from "../user/__fixtures__/user.fixture";
+import { createDepositScdlProcessService } from "../../../tests/__mocks__/deposit-log/deposit-scdl-process.service.mock";
 
 jest.mock("../deposit-scdl-process/depositScdlProcess.service");
 jest.mock("../user/services/crud/user.crud.service");
@@ -18,6 +18,13 @@ jest.mock("../../configurations/env.conf", () => ({
 }));
 
 describe("dumpService", () => {
+    const mockDepositScdlProcessService = createDepositScdlProcessService();
+    let dumpService: DumpService;
+
+    beforeEach(() => {
+        dumpService = new DumpService(mockDepositScdlProcessService);
+    });
+
     describe("patchWithPipedriveData", () => {
         it("calls port", () => {
             // @ts-expect-error -- test private
@@ -38,13 +45,13 @@ describe("dumpService", () => {
         const DEPOSIT_LOGS = [DEPOSIT_LOG_ENTITY];
         const USERS = [USER_DBO];
 
-        beforeAll(() => {
+        beforeEach(() => {
             mockPatchWithPipedriveData = jest
                 // @ts-expect-error -- test private method
                 .spyOn(dumpService, "patchWithPipedriveData");
 
             mockPatchWithPipedriveData.mockImplementation(jest.fn());
-            jest.mocked(depositScdlProcessService.find).mockResolvedValue(DEPOSIT_LOGS);
+            mockDepositScdlProcessService.findAll.mockResolvedValue(DEPOSIT_LOGS);
             jest.mocked(userCrudService.find).mockResolvedValue(USERS);
         });
 

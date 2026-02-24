@@ -1,15 +1,18 @@
 import fs from "fs";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../@types";
-import dumpService from "../../modules/dump/dump.service";
 import DumpPipedriveParser from "../../modules/dump/dump.pipedrive.parser";
+import { DumpService } from "../../modules/dump/dump.service";
+import { dumpService as defaultDumpService } from "../../configurations/di-container";
 
 @StaticImplements<CliStaticInterface>()
 export default class DumpCli {
     static cmdName = "dump";
 
+    constructor(private readonly dumpService: DumpService = defaultDumpService) {}
+
     public publishStatsData() {
-        return dumpService.publishStatsData();
+        return this.dumpService.publishStatsData();
     }
 
     public importPipedriveData(file: string) {
@@ -24,6 +27,6 @@ export default class DumpCli {
         console.info("\nStart parse file: ", file);
 
         const fileContent = fs.readFileSync(file);
-        return dumpService.importPipedriveData(DumpPipedriveParser.parse(fileContent));
+        return this.dumpService.importPipedriveData(DumpPipedriveParser.parse(fileContent));
     }
 }

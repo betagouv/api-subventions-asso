@@ -18,8 +18,8 @@ import {
     UploadedFile,
     FormField,
 } from "tsoa";
-import depositScdlProcessService from "../../modules/deposit-scdl-process/depositScdlProcess.service";
 import DepositScdlLogDtoMapper from "../../modules/deposit-scdl-process/deposit-scdl-log.dto.mapper";
+import { depositScdlProcessService } from "../../configurations/di-container";
 
 @Route("/parcours-depot")
 @Security("jwt")
