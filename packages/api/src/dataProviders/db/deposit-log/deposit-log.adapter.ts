@@ -4,8 +4,6 @@ import { DepositLogPort } from "./depositLog.port";
 import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/entities/depositScdlLog.entity";
 import DepositLogMapper from "./deposit-log.mapper";
 import { NotFoundError } from "core";
-import { Filter, FindOptions } from "mongodb";
-import { QueryFilter, QueryOptions } from "../../../shared/@types/query.types";
 import { InsertResult } from "../../../shared/@types/repository.types";
 
 class DepositLogAdapter extends MongoPort<DepositScdlLogDbo> implements DepositLogPort {
@@ -66,8 +64,8 @@ class DepositLogAdapter extends MongoPort<DepositScdlLogDbo> implements DepositL
         return DepositLogMapper.dboToEntity(depositLogDbo);
     }
 
-    async find(query: QueryFilter<DepositScdlLogDbo> = {}, options?: QueryOptions): Promise<DepositScdlLogEntity[]> {
-        const dbos = await this.collection.find(query as Filter<DepositScdlLogDbo>, options as FindOptions).toArray();
+    async findAll(): Promise<DepositScdlLogEntity[]> {
+        const dbos = await this.collection.find().toArray();
         return dbos.map(dbo => DepositLogMapper.dboToEntity(dbo));
     }
 }

@@ -51,7 +51,7 @@ describe("dumpService", () => {
                 .spyOn(dumpService, "patchWithPipedriveData");
 
             mockPatchWithPipedriveData.mockImplementation(jest.fn());
-            mockDepositScdlProcessService.find.mockResolvedValue(DEPOSIT_LOGS);
+            mockDepositScdlProcessService.findAll.mockResolvedValue(DEPOSIT_LOGS);
             jest.mocked(userCrudService.find).mockResolvedValue(USERS);
         });
 
