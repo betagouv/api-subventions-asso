@@ -121,7 +121,7 @@ class PaymentFlatChorusService implements PaymentFlatProvider {
             exerciceBudgetaire,
         );
 
-        this.addToPaymentFlat(payments);
+        await this.addToPaymentFlat(payments);
 
         console.log("All documents inserted");
     }
