@@ -1,4 +1,3 @@
-import depositLogPort from "../../dataProviders/db/deposit-log/depositLog.port";
 import DepositScdlLogEntity from "./entities/depositScdlLog.entity";
 import { CreateDepositScdlLogDto, DepositScdlLogDto, UserDto } from "dto";
 import { BadRequestError, ConflictError, NotFoundError } from "core";
@@ -23,14 +22,17 @@ import ScdlErrorStats from "./entities/ScdlErrorStats";
 import notifyService from "../notify/notify.service";
 import { NotificationType } from "../notify/@types/NotificationType";
 import { isUserAdmin } from "../../shared/helpers/UserHelper";
+import { DepositLogPort } from "../../dataProviders/db/deposit-log/depositLog.port";
 
 export class DepositScdlProcessService {
+    constructor(private readonly depositLogPort: DepositLogPort) {}
+
     FIRST_STEP = 1;
     SECOND_STEP = 2;
     CSV_EXT = ".csv";
 
     public async getDepositLog(userId: string): Promise<DepositScdlLogEntity | null> {
-        return await depositLogPort.findOneByUserId(userId);
+        return await this.depositLogPort.findOneByUserId(userId);
     }
 
     public async deleteDepositLog(userId: string): Promise<void> {
@@ -38,7 +40,7 @@ export class DepositScdlProcessService {
         if (existingDepositLog && existingDepositLog.uploadedFileInfos) {
             await s3StorageService.deleteUserFile(userId, existingDepositLog.uploadedFileInfos.fileName);
         }
-        await depositLogPort.deleteByUserId(userId);
+        await this.depositLogPort.deleteByUserId(userId);
         return;
     }
 
@@ -56,7 +58,7 @@ export class DepositScdlProcessService {
             userId,
             this.FIRST_STEP,
         );
-        await depositLogPort.insertOne(depositLogEntity);
+        await this.depositLogPort.insertOne(depositLogEntity);
         return depositLogEntity;
     }
 
@@ -76,7 +78,7 @@ export class DepositScdlProcessService {
             userId,
             ...depositScdlLogDto,
         };
-        return depositLogPort.updatePartial(partialDepositLog);
+        return this.depositLogPort.updatePartial(partialDepositLog);
     }
 
     async validateScdlFile(
@@ -124,7 +126,7 @@ export class DepositScdlProcessService {
             pageName,
         );
 
-        return depositLogPort.updatePartial(
+        return this.depositLogPort.updatePartial(
             new DepositScdlLogEntity(
                 userId,
                 this.SECOND_STEP,
@@ -157,7 +159,7 @@ export class DepositScdlProcessService {
     }
 
     find(query: DefaultObject = {}): Promise<DepositScdlLogEntity[]> {
-        return depositLogPort.find(query);
+        return this.depositLogPort.find(query);
     }
 
     async generateExistingGrantsCsv(userId: string): Promise<{ csv: string; fileName: string }> {
@@ -265,10 +267,6 @@ export class DepositScdlProcessService {
             parsedLines: parsedInfos.parseableLines,
         });
 
-        return depositLogPort.deleteByUserId(userId);
+        return this.depositLogPort.deleteByUserId(userId);
     }
 }
-
-const depositScdlProcessService = new DepositScdlProcessService();
-
-export default depositScdlProcessService;

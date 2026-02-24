@@ -1,4 +1,3 @@
-import depositScdlProcessService from "../../modules/deposit-scdl-process/depositScdlProcess.service";
 import { DepositScdlProcessHttp } from "./DepositScdlProcess.http";
 import { IdentifiedRequest } from "../../@types";
 import { ObjectId } from "mongodb";
@@ -12,6 +11,7 @@ import {
 } from "../../modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
 import DepositScdlLogEntity from "../../modules/deposit-scdl-process/entities/depositScdlLog.entity";
 import { ConflictError, NotFoundError } from "core";
+import { depositScdlProcessService } from "../../configurations/di-container";
 
 const controller = new DepositScdlProcessHttp();
 

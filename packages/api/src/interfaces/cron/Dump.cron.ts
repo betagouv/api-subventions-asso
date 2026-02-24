@@ -1,6 +1,6 @@
 import { AsyncCron } from "../../decorators/cronController.decorator";
 import { CronController } from "../../@types/cron";
-import dumpService from "../../modules/dump/dump.service";
+import { dumpService } from "../../configurations/di-container";
 
 export class DumpCron implements CronController {
     name = "dumpCron";
