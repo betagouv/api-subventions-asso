@@ -4,6 +4,7 @@ import { currentAssoSimplifiedEtabs, currentAssociation, currentIdentifiers } fr
 import { siretToSiren } from "$lib/helpers/identifierHelper";
 import establishmentService from "$lib/resources/establishments/establishment.service";
 import rnaSirenService from "$lib/resources/open-source/rna-siren/rna-siren.service";
+import type { RnaSirenResponseDto } from "dto";
 
 export class EstablishmentController {
     titles = ["Subventions", "Contacts", "Pièces administratives", "Informations bancaires"];
@@ -13,29 +14,33 @@ export class EstablishmentController {
         this.promises = this.init(id);
     }
 
-    async init(id: string) {
-        let associationUniqueIdentifier = siretToSiren(id);
+    async init(siret: string) {
+        const siren = siretToSiren(siret);
 
-        const associationIdentifiers = await rnaSirenService.getAssociatedIdentifier(siretToSiren(id));
-        if (associationIdentifiers.length > 1) {
-            // Usecase : multiple rna identifiers, old rules select the first one. Waiting to do better.
-            associationUniqueIdentifier = associationIdentifiers[0].rna;
+        const rnaSirenMatches = await rnaSirenService.getAssociatedIdentifier(siren);
+
+        let identifierToUse = siren;
+        let identifiers: RnaSirenResponseDto[];
+        if (!rnaSirenMatches) {
+            identifiers = [{ siren, rna: null }];
+        } else {
+            identifiers = rnaSirenMatches;
+            // we value rna more than siren to retrieve informations
+            identifierToUse = identifiers[0].rna;
         }
-        // if no link with other identifiers was found, keep initial identifier to do what we can
-        if (!associationIdentifiers.length) associationIdentifiers.push({ siren: associationUniqueIdentifier });
 
-        currentIdentifiers.set(associationIdentifiers);
+        currentIdentifiers.set(identifiers);
 
-        const associationPromise = associationService.getAssociation(associationUniqueIdentifier).then(asso => {
+        const associationPromise = associationService.getAssociation(identifierToUse).then(asso => {
             currentAssociation.set(asso);
             return asso;
         });
 
         const simplifiedEstablishmentPromise = associationService
-            .getEstablishments(associationUniqueIdentifier)
+            .getEstablishments(identifierToUse)
             .then(estabs => currentAssoSimplifiedEtabs.set(estabs));
 
-        const establishmentPromise = establishmentService.getBySiret(id);
+        const establishmentPromise = establishmentService.getBySiret(siret);
 
         return Promise.all([associationPromise, establishmentPromise, simplifiedEstablishmentPromise]).then(result => ({
             association: result[0],

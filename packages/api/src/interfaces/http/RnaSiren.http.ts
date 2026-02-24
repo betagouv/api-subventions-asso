@@ -22,7 +22,7 @@ export class RnaSirenHttp extends Controller {
     @SuccessResponse(200)
     @Response(204, "No Content")
     @Response<IdentifierError>(422, "Invalid Query String")
-    public async findByIdentifier(@Path() identifier: string): Promise<RnaSirenResponseDto[] | string> {
+    public async findByIdentifier(@Path() identifier: string): Promise<RnaSirenResponseDto[] | null> {
         let entities;
 
         try {
@@ -37,7 +37,7 @@ export class RnaSirenHttp extends Controller {
 
         if (!entities) {
             this.setStatus(204);
-            return [];
+            return null;
         }
 
         return entities.map(entity => ({
