@@ -30,7 +30,11 @@ class PaymentFlatChorusService implements PaymentFlatProvider {
                 year,
             );
 
-            this.addToPaymentFlat(payments);
+            // if no payments for year, we move on
+            // mainly used for current year if no data has been added yet
+            if (payments.length === 0) continue;
+
+            await this.addToPaymentFlat(payments);
             console.log("All documents inserted");
         }
     }
