@@ -22,7 +22,10 @@ describe("Dauphin cli", () => {
             await dauphinPort.upsert({ dauphin: ENTITY1 as DauphinSubventionDto });
             await gisproPort.insertMany([GISPRO1]);
             await cli.initApplicationFlat();
-            const actual = await applicationFlatPort.findAll();
+            const actual = (await applicationFlatPort.findAll()).map(flat => ({
+                ...flat,
+                updateDate: expect.any(Date),
+            }));
             expect(actual).toMatchSnapshot();
         });
 
@@ -38,7 +41,10 @@ describe("Dauphin cli", () => {
             await dauphinPort.upsert({ dauphin: ENTITY2 as DauphinSubventionDto });
 
             await cli.initApplicationFlat();
-            const actual = await applicationFlatPort.findAll();
+            const actual = (await applicationFlatPort.findAll()).map(flat => ({
+                ...flat,
+                updateDate: expect.any(Date),
+            }));
             expect(actual).toMatchSnapshot();
         });
 
@@ -47,7 +53,10 @@ describe("Dauphin cli", () => {
             await dauphinPort.upsert({ dauphin: ENTITY2 as DauphinSubventionDto });
             await gisproPort.insertMany([GISPRO1, GISPRO2]);
             await cli.initApplicationFlat();
-            const actual = await applicationFlatPort.findAll();
+            const actual = (await applicationFlatPort.findAll()).map(flat => ({
+                ...flat,
+                updateDate: expect.any(Date),
+            }));
             expect(actual).toMatchSnapshot();
         });
 
@@ -137,7 +146,10 @@ describe("Dauphin cli", () => {
             });
             await gisproPort.insertMany([GISPRO1]);
             await cli.initApplicationFlat();
-            const actual = await applicationFlatPort.findAll();
+            const actual = (await applicationFlatPort.findAll()).map(flat => ({
+                ...flat,
+                updateDate: expect.any(Date),
+            }));
             expect(actual).toMatchSnapshot();
         });
 
@@ -145,7 +157,10 @@ describe("Dauphin cli", () => {
             await dauphinPort.upsert({ dauphin: ENTITY1 as DauphinSubventionDto });
             await dauphinPort.upsert({ dauphin: ENTITY2 as DauphinSubventionDto });
             await cli.initApplicationFlat();
-            const actual = await applicationFlatPort.findAll();
+            const actual = (await applicationFlatPort.findAll()).map(flat => ({
+                ...flat,
+                updateDate: expect.any(Date),
+            }));
             expect(actual).toMatchSnapshot();
         });
     });
