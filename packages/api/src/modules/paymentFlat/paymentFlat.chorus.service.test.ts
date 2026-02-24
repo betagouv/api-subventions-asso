@@ -40,6 +40,7 @@ describe("paymentFlatChorusService", () => {
         beforeAll(() => {
             mockGetAllDataRecords.mockResolvedValue(DATA_BRETAGNE_RECORDS);
             mockToPaymentFlatChorusEntities.mockResolvedValue(CHORUS_PAYMENTS_FLAT);
+            mockAddToPaymentFlat.mockResolvedValue();
         });
 
         afterAll(() => {
@@ -67,6 +68,7 @@ describe("paymentFlatChorusService", () => {
         const STREAM = {} as ReadableStream;
         let spySavePaymentsFromStream: jest.SpyInstance;
         let mockFrom: jest.SpyInstance;
+
         beforeEach(() => {
             spySavePaymentsFromStream = jest
                 .spyOn(paymentFlatChorusService, "savePaymentsFromStream")
