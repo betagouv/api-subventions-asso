@@ -39,9 +39,9 @@ class PaymentFlatChorusService implements PaymentFlatProvider {
         }
     }
 
-    public async addToPaymentFlat(payments: ChorusPaymentFlatEntity[]) {
+    public addToPaymentFlat(payments: ChorusPaymentFlatEntity[]) {
         const stream = ReadableStream.from(payments);
-        await this.savePaymentsFromStream(stream);
+        return this.savePaymentsFromStream(stream);
     }
 
     /**
@@ -127,7 +127,7 @@ class PaymentFlatChorusService implements PaymentFlatProvider {
     }
 
     public savePaymentsFromStream(stream: ReadableStream<PaymentFlatEntity>) {
-        paymentFlatService.saveFromStream(stream);
+        return paymentFlatService.saveFromStream(stream);
     }
 
     public cursorFindChorusOnly(exerciceBudgetaire?: number) {
