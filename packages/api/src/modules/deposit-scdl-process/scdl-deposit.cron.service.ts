@@ -1,10 +1,12 @@
-import depositLogPort from "../../dataProviders/db/deposit-log/depositLog.port";
 import { addDaysToDate } from "../../shared/helpers/DateHelper";
 import { NotificationType } from "../notify/@types/NotificationType";
 import notifyService from "../notify/notify.service";
 import userCrudService from "../user/services/crud/user.crud.service";
+import { DepositLogPort } from "../../dataProviders/db/deposit-log/depositLog.port";
 
-class ScdlDepositCronService {
+export class ScdlDepositCronService {
+    constructor(private readonly depositLogPort: DepositLogPort) {}
+
     // user that started a desposit 2 days ago
     async getUsersEmailToNotify() {
         const twoDaysAgo = addDaysToDate(new Date(), -2);
@@ -16,7 +18,7 @@ class ScdlDepositCronService {
     }
 
     async getDepositsUserIdFromDate(date: Date) {
-        const deposits = await depositLogPort.findAllFromFullDay(date);
+        const deposits = await this.depositLogPort.findAllFromFullDay(date);
         if (!deposits) return null;
         return deposits.map(deposit => deposit.userId);
     }
@@ -50,6 +52,3 @@ class ScdlDepositCronService {
         // return notifyService.notify(NotificationType.BATCH_DEPOSIT_RESUME, { emails });
     }
 }
-
-const scdlDespositCronService = new ScdlDepositCronService();
-export default scdlDespositCronService;

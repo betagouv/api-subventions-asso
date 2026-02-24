@@ -5,10 +5,8 @@ import {
     DEPOSIT_LOG_PATCH_DTO_PARTIAL_STEP_2,
     UPLOADED_FILE_INFOS_ENTITY,
 } from "./__fixtures__/depositLog.fixture";
-import depositScdlProcessService from "./depositScdlProcess.service";
 import DepositScdlLogEntity from "./entities/depositScdlLog.entity";
 import { BadRequestError, ConflictError, NotFoundError } from "core";
-import depositLogPort from "../../dataProviders/db/deposit-log/depositLog.port";
 import DepositScdlLogDtoMapper from "./deposit-scdl-log.dto.mapper";
 import scdlService from "../providers/scdl/scdl.service";
 import { ScdlStorableGrant } from "../providers/scdl/@types/ScdlStorableGrant";
@@ -29,6 +27,9 @@ import { DefaultObject } from "../../@types";
 import { NotificationType } from "../notify/@types/NotificationType";
 import notifyService from "../notify/notify.service";
 import { USER_WITHOUT_SECRET } from "../user/__fixtures__/user.fixture";
+import { DepositLogPort } from "../../dataProviders/db/deposit-log/depositLog.port";
+import { DepositScdlProcessService } from "./depositScdlProcess.service";
+import { createMockDepositLogPort } from "../../../tests/__mocks__/deposit-log/deposit-log.port.mock";
 
 jest.mock("./check/DepositScdlProcess.check.service");
 jest.mock("../../dataProviders/db/deposit-log/depositLog.port");
@@ -40,12 +41,15 @@ jest.mock("../notify/notify.service", () => ({
 }));
 
 describe("DepositScdlProcessService", () => {
+    let mockDepositLogPort: jest.Mocked<DepositLogPort>;
+    let depositScdlProcessService: DepositScdlProcessService;
+
+    let mockDeleteDepositLog: jest.SpyInstance<Promise<boolean>, [string]>;
     let mockGetDepositLog: jest.SpyInstance<Promise<DepositScdlLogEntity | null>, [string]>;
     let mockFindDepositLog: jest.SpyInstance<
         Promise<DepositScdlLogEntity[]>,
         [query?: DefaultObject<unknown> | undefined]
     >;
-    let mockDeleteDepositLog: jest.SpyInstance<Promise<boolean>, [string]>;
     let mockS3DeleteUserFile: jest.SpyInstance<Promise<void>, [userId: string, fileName: string]>;
     let mockGetUserFile: jest.SpyInstance<Promise<Express.Multer.File>, [userId: string, fileName: string]>;
     let mockS3uploadAndReplaceUserFile: jest.SpyInstance<Promise<string>, [file: Express.Multer.File, userId: string]>;
@@ -80,10 +84,13 @@ describe("DepositScdlProcessService", () => {
     });
 
     beforeEach(() => {
+        mockDepositLogPort = createMockDepositLogPort();
+        depositScdlProcessService = new DepositScdlProcessService(mockDepositLogPort);
+
         mockGetDepositLog = jest.spyOn(depositScdlProcessService, "getDepositLog");
         mockFindDepositLog = jest.spyOn(depositScdlProcessService, "find");
         mockGetGrantsOnPeriodByAllocator = jest.spyOn(scdlService, "getGrantsOnPeriodByAllocator");
-        mockDeleteDepositLog = jest.spyOn(depositLogPort, "deleteByUserId");
+        mockDeleteDepositLog = mockDepositLogPort.deleteByUserId.mockResolvedValue(true);
         mockS3DeleteUserFile = jest.spyOn(s3FileService, "deleteUserFile");
         mockGetUserFile = jest.spyOn(s3FileService, "getUserFile");
         mockS3uploadAndReplaceUserFile = jest.spyOn(s3FileService, "uploadAndReplaceUserFile");
@@ -232,7 +239,7 @@ describe("DepositScdlProcessService", () => {
                 updateDate: new Date(),
             };
 
-            const mockUpdatePartial = jest.spyOn(depositLogPort, "updatePartial").mockResolvedValue(expected);
+            const mockUpdatePartial = mockDepositLogPort.updatePartial.mockResolvedValue(expected);
 
             const actual = await depositScdlProcessService.updateDepositLog(
                 step,
@@ -292,7 +299,7 @@ describe("DepositScdlProcessService", () => {
             };
 
             mockParseCsv.mockReturnValueOnce(parsedResult);
-            const mockUpdatePartial = jest.spyOn(depositLogPort, "updatePartial").mockResolvedValue(expected);
+            const mockUpdatePartial = mockDepositLogPort.updatePartial.mockResolvedValue(expected);
 
             const actual = await depositScdlProcessService.validateScdlFile(
                 file,
@@ -404,7 +411,7 @@ describe("DepositScdlProcessService", () => {
         beforeEach(() => {
             jest.spyOn(depositScdlProcessCheckService, "finalCheckBeforePersist").mockResolvedValue(undefined);
             persistMock = jest.spyOn(scdlService, "persist").mockResolvedValue(undefined);
-            deletDepositMock = jest.spyOn(depositLogPort, "deleteByUserId").mockResolvedValue(true);
+            deletDepositMock = mockDepositLogPort.deleteByUserId.mockResolvedValue(true);
             jest.spyOn(dataLogService, "addFromFile").mockResolvedValue({} as InsertOneResult<DataLogEntity>);
             mockS3DeleteUserFile.mockResolvedValue();
             mockGetUserFile.mockResolvedValue(createMockFile("test.csv"));

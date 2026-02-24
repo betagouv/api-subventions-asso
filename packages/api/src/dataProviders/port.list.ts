@@ -24,10 +24,11 @@ import sireneStockUniteLegalePort from "./db/sirene/stockUniteLegale/sireneStock
 import amountsVsProgramRegionPort from "./db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
 import dataLogPort from "./db/data-log/dataLog.port";
 import applicationFlatPort from "./db/applicationFlat/applicationFlat.port";
-import depositLogPort from "./db/deposit-log/depositLog.port";
 import gisproPort from "./db/providers/gispro.port";
+import depositLogAdapter from "./db/deposit-log/deposit-log.adapter";
 
 export const portsWithIndexes = [
+    // todo: replace by adapterList. Move to di-container.ts ?
     userPort,
     logsPort,
     userResetPort,
@@ -55,7 +56,7 @@ export const portsWithIndexes = [
     amountsVsProgramRegionPort,
     dataLogPort,
     applicationFlatPort,
-    depositLogPort,
+    depositLogAdapter,
     gisproPort,
     dauphinPort,
 ];

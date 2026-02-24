@@ -3,10 +3,12 @@ import configurationsService from "../configurations/configurations.service";
 import statsService from "../stats/stats.service";
 import userCrudService from "../user/services/crud/user.crud.service";
 import metabaseDumpPort from "../../dataProviders/db/dump/metabase-dump.port";
-import depositScdlProcessService from "../deposit-scdl-process/depositScdlProcess.service";
 import dataLogService from "../data-log/dataLog.service";
+import { DepositScdlProcessService } from "../deposit-scdl-process/depositScdlProcess.service";
 
 export class DumpService {
+    constructor(private readonly depositScdlProcessService: DepositScdlProcessService) {}
+
     // Dump logs, stats tables
     async publishStatsData() {
         if (ENV != "prod") return;
@@ -49,7 +51,7 @@ export class DumpService {
             await this.patchWithPipedriveData();
         }
 
-        const depositLogs = await depositScdlProcessService.find();
+        const depositLogs = await this.depositScdlProcessService.find();
 
         if (depositLogs.length) {
             await metabaseDumpPort.upsertDepositLogs(depositLogs);
@@ -70,7 +72,3 @@ export class DumpService {
         return metabaseDumpPort.patchWithPipedriveData();
     }
 }
-
-const dumpService = new DumpService();
-
-export default dumpService;
