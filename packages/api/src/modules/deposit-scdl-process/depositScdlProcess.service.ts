@@ -6,7 +6,6 @@ import DepositScdlLogDtoMapper from "./deposit-scdl-log.dto.mapper";
 import scdlService from "../providers/scdl/scdl.service";
 import { detectCsvDelimiter } from "../../shared/helpers/FileHelper";
 import UploadedFileInfosEntity from "./entities/uploadedFileInfos.entity";
-import { DefaultObject } from "../../@types";
 import MiscScdlGrantEntity from "../providers/scdl/entities/MiscScdlGrantEntity";
 import { Stringifier, stringify } from "csv-stringify";
 import MiscScdlMapper from "../providers/scdl/mappers/misc-scdl.mapper";
@@ -158,8 +157,8 @@ export class DepositScdlProcessService {
         }
     }
 
-    find(query: DefaultObject = {}): Promise<DepositScdlLogEntity[]> {
-        return this.depositLogPort.find(query);
+    findAll(): Promise<DepositScdlLogEntity[]> {
+        return this.depositLogPort.findAll();
     }
 
     async generateExistingGrantsCsv(userId: string): Promise<{ csv: string; fileName: string }> {

@@ -51,7 +51,7 @@ export class DumpService {
             await this.patchWithPipedriveData();
         }
 
-        const depositLogs = await this.depositScdlProcessService.find();
+        const depositLogs = await this.depositScdlProcessService.findAll();
 
         if (depositLogs.length) {
             await metabaseDumpPort.upsertDepositLogs(depositLogs);

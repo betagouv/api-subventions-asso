@@ -1,6 +1,4 @@
 import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/entities/depositScdlLog.entity";
-import DepositScdlLogDbo from "./DepositScdlLogDbo";
-import { QueryFilter, QueryOptions } from "../../../shared/@types/query.types";
 import { InsertResult } from "../../../shared/@types/repository.types";
 
 export interface DepositLogPort {
@@ -11,5 +9,5 @@ export interface DepositLogPort {
     findAllFromFullDay(date: Date): Promise<DepositScdlLogEntity[] | null>;
     deleteByUserId(userId: string): Promise<boolean>;
     updatePartial(data: Partial<DepositScdlLogEntity>): Promise<DepositScdlLogEntity>;
-    find(query?: QueryFilter<DepositScdlLogDbo>, options?: QueryOptions): Promise<DepositScdlLogEntity[]>;
+    findAll(): Promise<DepositScdlLogEntity[]>;
 }

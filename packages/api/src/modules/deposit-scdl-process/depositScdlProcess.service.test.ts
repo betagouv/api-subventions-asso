@@ -88,7 +88,7 @@ describe("DepositScdlProcessService", () => {
         depositScdlProcessService = new DepositScdlProcessService(mockDepositLogPort);
 
         mockGetDepositLog = jest.spyOn(depositScdlProcessService, "getDepositLog");
-        mockFindDepositLog = jest.spyOn(depositScdlProcessService, "find");
+        mockFindDepositLog = jest.spyOn(depositScdlProcessService, "findAll");
         mockGetGrantsOnPeriodByAllocator = jest.spyOn(scdlService, "getGrantsOnPeriodByAllocator");
         mockDeleteDepositLog = mockDepositLogPort.deleteByUserId.mockResolvedValue(true);
         mockS3DeleteUserFile = jest.spyOn(s3FileService, "deleteUserFile");
@@ -382,7 +382,7 @@ describe("DepositScdlProcessService", () => {
         it("Should call find method", async () => {
             mockFindDepositLog.mockResolvedValueOnce([DEPOSIT_LOG_ENTITY]);
 
-            await depositScdlProcessService.find();
+            await depositScdlProcessService.findAll();
 
             expect(mockFindDepositLog).toHaveBeenCalled();
         });
@@ -390,7 +390,7 @@ describe("DepositScdlProcessService", () => {
         it("Should return DepositLogs", async () => {
             mockFindDepositLog.mockResolvedValueOnce([DEPOSIT_LOG_ENTITY]);
 
-            const actual = await depositScdlProcessService.find();
+            const actual = await depositScdlProcessService.findAll();
 
             expect(actual).toEqual([DEPOSIT_LOG_ENTITY]);
         });
