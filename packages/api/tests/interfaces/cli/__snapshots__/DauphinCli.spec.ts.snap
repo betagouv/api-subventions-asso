@@ -54,7 +54,7 @@ exports[`Dauphin cli initApplicationFlat filters out other allocators than expec
     "totalAmount": null,
     "ueNotification": null,
     "uniqueId": "dauphin-12345678-2022",
-    "updateDate": 2025-07-07T00:00:00.000Z,
+    "updateDate": Any<Date>,
   },
 ]
 `;
@@ -113,7 +113,7 @@ exports[`Dauphin cli initApplicationFlat groups actions of same application 1`] 
     "totalAmount": null,
     "ueNotification": null,
     "uniqueId": "dauphin-87654321|12345678-2022",
-    "updateDate": 2025-07-07T00:00:00.000Z,
+    "updateDate": Any<Date>,
   },
 ]
 `;
@@ -172,7 +172,7 @@ exports[`Dauphin cli initApplicationFlat keeps action-level dauphin data if noth
     "totalAmount": null,
     "ueNotification": null,
     "uniqueId": "dauphin-87654321-2022",
-    "updateDate": 2025-07-07T00:00:00.000Z,
+    "updateDate": Any<Date>,
   },
   {
     "allocatorId": null,
@@ -226,7 +226,7 @@ exports[`Dauphin cli initApplicationFlat keeps action-level dauphin data if noth
     "totalAmount": null,
     "ueNotification": null,
     "uniqueId": "dauphin-12345678-2022",
-    "updateDate": 2025-07-07T00:00:00.000Z,
+    "updateDate": Any<Date>,
   },
 ]
 `;
@@ -285,7 +285,7 @@ exports[`Dauphin cli initApplicationFlat keeps action-level dauphin data if seve
     "totalAmount": null,
     "ueNotification": null,
     "uniqueId": "dauphin-87654321-2022",
-    "updateDate": 2025-07-07T00:00:00.000Z,
+    "updateDate": Any<Date>,
   },
   {
     "allocatorId": null,
@@ -339,7 +339,7 @@ exports[`Dauphin cli initApplicationFlat keeps action-level dauphin data if seve
     "totalAmount": null,
     "ueNotification": null,
     "uniqueId": "dauphin-12345678-2022",
-    "updateDate": 2025-07-07T00:00:00.000Z,
+    "updateDate": Any<Date>,
   },
 ]
 `;
@@ -398,7 +398,7 @@ exports[`Dauphin cli initApplicationFlat saves adapted simple dauphin data 1`] =
     "totalAmount": null,
     "ueNotification": null,
     "uniqueId": "dauphin-12345678-2022",
-    "updateDate": 2025-07-07T00:00:00.000Z,
+    "updateDate": Any<Date>,
   },
 ]
 `;

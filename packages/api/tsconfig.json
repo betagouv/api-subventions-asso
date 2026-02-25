@@ -38,5 +38,5 @@
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true
     },
-    "include": ["src/**/*", "test/**/*", "migrations/**/*", "jest.config.*"]
+    "include": ["src/**/*", "tests/**/*", "migrations/**/*", "jest.config.*"]
 }
