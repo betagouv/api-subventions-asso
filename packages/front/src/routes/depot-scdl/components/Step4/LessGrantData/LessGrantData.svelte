@@ -22,7 +22,9 @@
     </p>
 
     <p>
-        <strong>Votre fichier comprend des données entre : janvier {rangeStartYear} et décembre {rangeEndYear}</strong>
+        <strong>
+            Votre fichier comprend des données entre : l'exercice {rangeStartYear} et l'exercice {rangeEndYear}
+        </strong>
         <br />
         Ces dates sont données à titre indicatif. Elles ne garantissent pas que l’année soit complète.
     </p>

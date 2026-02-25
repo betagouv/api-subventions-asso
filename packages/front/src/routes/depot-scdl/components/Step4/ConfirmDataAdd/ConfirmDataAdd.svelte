@@ -8,7 +8,7 @@
 
     const checkboxOptions = [
         {
-            label: "Je confirme que mes données sont complètes et à jour et j’accepte que les anciennes données soient effacées et remplacées par ce nouveau jeu. <strong>Cette opération est irréversible.</strong>",
+            label: "Je confirme que mes données sont complètes et à jour et j’accepte que les anciennes données soient effacées et remplacées par ce nouveau jeu.",
             value: "complete",
             withHtml: true,
         },
@@ -22,11 +22,8 @@
 <div class="fr-col-12 fr-col-md-8">
     {#if existingLinesInDb > 0}
         <Alert
-            title="Vous êtes sur le point d’ajouter {addedLines} lignes et d’écraser les lignes déjà existantes dans notre base.">
-            <p>
-                Les données présentes actuellement dans notre base seront entièrement remplacées par celles contenues
-                dans le fichier que vous venez de déposer.
-            </p>
+            type="info"
+            title="Vous êtes sur le point d’ajouter {addedLines} lignes et de mettre à jour dans Data.Subvention les données associées à votre structure.">
         </Alert>
     {:else}
         <Alert type="info" title="Vous êtes sur le point d’ajouter {addedLines} lignes." />
@@ -39,9 +36,9 @@
     </a>
 
     <p>
-        <strong>Votre fichier comprend des données entre : janvier {rangeStartYear} et décembre {rangeEndYear}</strong>
-        <br />
-        Ces dates sont données à titre indicatif. Elles ne garantissent pas que l’année soit complète.
+        <strong>
+            Votre fichier comprend des données entre : l'exercice {rangeStartYear} et l'exercice {rangeEndYear}
+        </strong>
     </p>
 
     <p>
@@ -49,7 +46,7 @@
     </p>
 
     <div>
-        <strong>Nombre de lignes existantes dans la base : {existingLinesInDb}</strong>
+        <strong>Nombre de lignes déjà existantes dans notre base : {existingLinesInDb}</strong>
         <br />
 
         {#if existingLinesInDb > 0}
