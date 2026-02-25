@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.80.1](https://github.com/betagouv/api-subventions-asso/compare/v0.80.0...v0.80.1) (2026-02-25)
+
+### Bug Fixes
+
+- **api:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) fix v0.80 ([#3829](https://github.com/betagouv/api-subventions-asso/issues/3829)) ([700eeb4](https://github.com/betagouv/api-subventions-asso/commit/700eeb4e992260541fdfe77554b2a3ee59a397a5)), closes [#3827](https://github.com/betagouv/api-subventions-asso/issues/3827) [#3830](https://github.com/betagouv/api-subventions-asso/issues/3830)
+
+### Features
+
+- **front:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) hotfix wording deposit process ([#3836](https://github.com/betagouv/api-subventions-asso/issues/3836)) ([2a99d01](https://github.com/betagouv/api-subventions-asso/commit/2a99d019276d87e9ed283bdbefd060338e391dba))
+
 # [0.80.0](https://github.com/betagouv/api-subventions-asso/compare/v0.79.0...v0.80.0) (2026-02-19)
 
 ### Features
