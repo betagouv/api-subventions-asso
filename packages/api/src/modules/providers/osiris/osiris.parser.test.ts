@@ -32,7 +32,7 @@ describe("OsirisParser", () => {
         let indexDataCount = 0;
 
         beforeAll(() => {
-            jest.spyOn(GenericParser, "xlsxParse").mockReturnValue([DATA]); // data wrap in array because first xls page
+            jest.spyOn(GenericParser, "xlsxParse").mockReturnValue([{ name: "page1", data: DATA }]); // data wrap in array because first xls page
             // indexDataByPathObject is called twice, once for legal informations and once for indexed informations for each row
             jest.spyOn(GenericParser, "indexDataByPathObject").mockImplementation(() => {
                 let mockedData;
@@ -133,7 +133,7 @@ describe("OsirisParser", () => {
         const INDEXED_INFORMATIONS = OSIRIS_ACTION_ENTITY.indexedInformations;
 
         beforeAll(() => {
-            jest.spyOn(GenericParser, "xlsxParse").mockReturnValue([DATA]); // data wrap in array because first xls page
+            jest.spyOn(GenericParser, "xlsxParse").mockReturnValue([{ name: "page1", data: DATA }]); // data wrap in array because first xls page
             jest.spyOn(GenericParser, "indexDataByPathObject").mockReturnValue(INDEXED_INFORMATIONS);
 
             let rowCount = 0;

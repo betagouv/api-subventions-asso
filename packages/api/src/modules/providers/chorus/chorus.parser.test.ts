@@ -1,5 +1,5 @@
 import ChorusParser from "./chorus.parser";
-import { ENTITIES, FILLED_HEADERS, HEADERS, PAGES } from "./__fixtures__/ChorusFixtures";
+import { ENTITIES, FILLED_HEADERS, HEADERS, PAGES, EUROPEAN_PAGE } from "./__fixtures__/ChorusFixtures";
 import * as StringHelper from "../../../shared/helpers/StringHelper";
 import { BeforeAdaptation, DefaultObject } from "../../../@types";
 import { GenericParser } from "../../../shared/GenericParser";
@@ -12,6 +12,12 @@ jest.mock("../../../shared/helpers/StringHelper");
 const mockedStringHelper = jest.mocked(StringHelper);
 
 describe("ChorusParser", () => {
+    const NATIONAL_DATA = [HEADERS, ...PAGES];
+    const EUROPEAN_DATA = [HEADERS, ...EUROPEAN_PAGE];
+    const NATIONAL_HEADERS_AND_ROWS = {
+        headers: FILLED_HEADERS,
+        rows: NATIONAL_DATA.slice(2),
+    };
     describe("buildUniqueId", () => {
         it("call getMD5", () => {
             const info = ENTITIES[0].indexedInformations;
@@ -152,7 +158,7 @@ describe("ChorusParser", () => {
         });
     });
 
-    describe("rowsToEntities", () => {
+    describe("nationalDataToEntities", () => {
         // @ts-expect-error: protected
         const originalBuildUniqueId = ChorusParser.buildUniqueId;
         const mockBuildUniqueId = jest.fn();
@@ -188,7 +194,7 @@ describe("ChorusParser", () => {
             ${mockBuildUniqueId}
         `("should call $fn", ({ fn }) => {
             // @ts-expect-error: protected
-            ChorusParser.rowsToEntities([], ROWS);
+            ChorusParser.nationalDataToEntities({ headers: FILLED_HEADERS, rows: ROWS });
             expect(fn).toHaveBeenCalledTimes(ROWS.length);
         });
 
@@ -196,7 +202,7 @@ describe("ChorusParser", () => {
             mockValidateIndexedInformations.mockReturnValueOnce(false);
             const expected = ROWS.length - 1;
             // @ts-expect-error: protected
-            const actual = ChorusParser.rowsToEntities([], ROWS).length;
+            const actual = ChorusParser.nationalDataToEntities({ headers: FILLED_HEADERS, rows: ROWS }).length;
             expect(actual).toEqual(expected);
         });
     });
@@ -232,65 +238,92 @@ describe("ChorusParser", () => {
         });
     });
 
-    describe("parse()", () => {
-        // @ts-expect-error: protected
-        const originalRenameEmptyHeaders = ChorusParser.renameEmptyHeaders;
-        const mockedRenameEmptyHeaders = jest.fn();
-        // @ts-expect-error: protected
-        const originalRowsToEntities = ChorusParser.rowsToEntities;
-        const mockedRowsToEntities = jest.fn();
+    describe("getHeadersAndRows", () => {
+        const mockRenameEmptyHeaders: jest.Mock = jest.fn(() => FILLED_HEADERS);
+        beforeAll(() => {
+            // @ts-expect-error: mock private static method
+            ChorusParser.renameEmptyHeaders = mockRenameEmptyHeaders;
+        });
 
-        const DATA = [HEADERS, ...PAGES];
+        it("renames empty headers", () => {
+            // @ts-expect-error: test private static method
+            ChorusParser.getHeadersAndRows(NATIONAL_DATA);
+            expect(mockRenameEmptyHeaders).toHaveBeenCalledWith(NATIONAL_DATA[0]);
+        });
+
+        it("returns headers and rows", () => {
+            const expected = NATIONAL_HEADERS_AND_ROWS;
+            // @ts-expect-error: test private static method
+            const actual = ChorusParser.getHeadersAndRows(NATIONAL_DATA);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("parse()", () => {
+        const mockGetHeadersAndRows = jest.fn();
+        const mockedNationalDataToEntities = jest.fn();
+        const mockedEuropeanDataToEntities = jest.fn();
+
+        const FILE_CONTENT = "THIS IS A BUFFER";
+
+        const EUROPEAN_HEADERS_AND_ROWS = { headers: EUROPEAN_DATA[0], rows: EUROPEAN_DATA.slice(2) };
 
         beforeAll(() => {
             mockedGenericParser.xlsxParse.mockReturnValue([
                 { data: [[], []], name: "TAB" },
-                { data: DATA, name: "1. Extraction" },
+                { data: NATIONAL_DATA, name: "1. Extraction" },
+                { data: EUROPEAN_DATA, name: "2. Extraction FEHBE" },
             ]);
             // @ts-expect-error: protected
-            ChorusParser.renameEmptyHeaders = mockedRenameEmptyHeaders;
-            mockedRenameEmptyHeaders.mockReturnValue(FILLED_HEADERS);
+            ChorusParser.getHeadersAndRows = mockGetHeadersAndRows;
+
             // @ts-expect-error: protected
-            ChorusParser.rowsToEntities = mockedRowsToEntities;
-            mockedRowsToEntities.mockReturnValue(ENTITIES);
+            ChorusParser.nationalDataToEntities = mockedNationalDataToEntities;
+            mockedNationalDataToEntities.mockReturnValue(ENTITIES);
+            // @ts-expect-error: protected
+            ChorusParser.europeanDataToEntities = mockedEuropeanDataToEntities;
+            mockedEuropeanDataToEntities.mockReturnValue([]);
         });
 
-        afterAll(() => {
-            // @ts-expect-error: protected
-            ChorusParser.renameEmptyHeaders = originalRenameEmptyHeaders;
-            // @ts-expect-error: protected
-            ChorusParser.rowsToEntities = originalRowsToEntities;
+        beforeEach(() => {
+            mockGetHeadersAndRows.mockReturnValueOnce(NATIONAL_HEADERS_AND_ROWS);
+            mockGetHeadersAndRows.mockReturnValueOnce(EUROPEAN_HEADERS_AND_ROWS);
         });
 
         // we used to have a xlsx with only one tab called "1. Extraction"
         // the current format has 3 tabs and the second one is "1. Extraction"
         it("should work with old format", () => {
-            const CONTENT = "THIS IS A BUFFER";
             // @ts-expect-error: mock
-            ChorusParser.parse(CONTENT, () => true);
-            expect(mockedGenericParser.xlsxParse).toHaveBeenCalledWith(CONTENT);
-            mockedGenericParser.xlsxParse.mockReturnValueOnce([{ data: DATA, name: "1. Extraction" }]);
+            ChorusParser.parse(FILE_CONTENT, () => true);
+            expect(mockedGenericParser.xlsxParse).toHaveBeenCalledWith(FILE_CONTENT);
+            mockedGenericParser.xlsxParse.mockReturnValueOnce([
+                { data: NATIONAL_DATA, name: "1. Extraction" },
+                { name: "2. Extraction FEHBE", data: NATIONAL_DATA },
+            ]);
         });
 
         it("should call GenericParser.xlsxParse", () => {
-            const CONTENT = "THIS IS A BUFFER";
             // @ts-expect-error: mock
-            ChorusParser.parse(CONTENT, () => true);
-            expect(mockedGenericParser.xlsxParse).toHaveBeenCalledWith(CONTENT);
+            ChorusParser.parse(FILE_CONTENT, () => true);
+            expect(mockedGenericParser.xlsxParse).toHaveBeenCalledWith(FILE_CONTENT);
         });
 
-        it("should rename empty headers", () => {
-            const CONTENT = "THIS IS A BUFFER";
+        it("should get headers and rows from data", () => {
             // @ts-expect-error: mock
-            ChorusParser.parse(CONTENT, () => true);
-            expect(mockedRenameEmptyHeaders).toHaveBeenCalledWith(HEADERS);
+            ChorusParser.parse(FILE_CONTENT, () => true);
+            expect(mockGetHeadersAndRows).toHaveBeenNthCalledWith(1, NATIONAL_DATA);
+            expect(mockGetHeadersAndRows).toHaveBeenNthCalledWith(2, EUROPEAN_DATA);
         });
 
-        it("should transform rows to entities", () => {
-            const CONTENT = "THIS IS A BUFFER";
+        it("should transform chorus national rows to entities", () => {
             // @ts-expect-error: mock
-            ChorusParser.parse(CONTENT, () => true);
-            expect(mockedRowsToEntities).toHaveBeenCalledWith(FILLED_HEADERS, DATA.slice(1));
+            ChorusParser.parse(FILE_CONTENT, () => true);
+            expect(mockedNationalDataToEntities).toHaveBeenCalledWith(NATIONAL_HEADERS_AND_ROWS);
+        });
+        it("should transform chorus european rows to entities", () => {
+            // @ts-expect-error: mock
+            ChorusParser.parse(FILE_CONTENT, () => true);
+            expect(mockedEuropeanDataToEntities).toHaveBeenCalledWith(EUROPEAN_HEADERS_AND_ROWS);
         });
     });
 });
