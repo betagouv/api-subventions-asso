@@ -31,7 +31,7 @@ export default class FonjepParser {
         dispositifs: FonjepDispositifDto[];
     } {
         const fileContent = this.getBuffer(filePath);
-        const pagesWithName = GenericParser.xlsParseByPageName(fileContent);
+        const pagesWithName = GenericParser.xlsxParseByPageName(fileContent);
         const pages = [
             pagesWithName["Tiers"],
             pagesWithName["Poste"],

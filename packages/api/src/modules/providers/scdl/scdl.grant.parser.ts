@@ -131,7 +131,7 @@ export default class ScdlGrantParser {
     static parseExcel(content: Buffer, pageName?: string, rowOffset = 0) {
         // todo : supprimer les rowOffset car parcours depot ne permet plus d'en placer et refuser les xls avec offset
         console.log("Open and read file ...");
-        const pagesWithName = GenericParser.xlsParseWithPageName(content);
+        const pagesWithName = GenericParser.xlsxParse(content);
         console.log("Read file end");
 
         const extractionPage = pageName ? pagesWithName.find(page => page.name === pageName) : pagesWithName[0];

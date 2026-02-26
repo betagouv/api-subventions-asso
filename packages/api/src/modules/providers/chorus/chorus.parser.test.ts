@@ -243,7 +243,7 @@ describe("ChorusParser", () => {
         const DATA = [HEADERS, ...PAGES];
 
         beforeAll(() => {
-            mockedGenericParser.xlsParseWithPageName.mockReturnValue([
+            mockedGenericParser.xlsxParse.mockReturnValue([
                 { data: [[], []], name: "TAB" },
                 { data: DATA, name: "1. Extraction" },
             ]);
@@ -268,15 +268,15 @@ describe("ChorusParser", () => {
             const CONTENT = "THIS IS A BUFFER";
             // @ts-expect-error: mock
             ChorusParser.parse(CONTENT, () => true);
-            expect(mockedGenericParser.xlsParseWithPageName).toHaveBeenCalledWith(CONTENT);
-            mockedGenericParser.xlsParseWithPageName.mockReturnValueOnce([{ data: DATA, name: "1. Extraction" }]);
+            expect(mockedGenericParser.xlsxParse).toHaveBeenCalledWith(CONTENT);
+            mockedGenericParser.xlsxParse.mockReturnValueOnce([{ data: DATA, name: "1. Extraction" }]);
         });
 
-        it("should call GenericParser.xlsParse", () => {
+        it("should call GenericParser.xlsxParse", () => {
             const CONTENT = "THIS IS A BUFFER";
             // @ts-expect-error: mock
             ChorusParser.parse(CONTENT, () => true);
-            expect(mockedGenericParser.xlsParseWithPageName).toHaveBeenCalledWith(CONTENT);
+            expect(mockedGenericParser.xlsxParse).toHaveBeenCalledWith(CONTENT);
         });
 
         it("should rename empty headers", () => {

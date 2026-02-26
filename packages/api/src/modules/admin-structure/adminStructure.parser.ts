@@ -27,8 +27,7 @@ export default class AdminStructureParser {
     };
 
     public static parseXls(content: Buffer): AdminStructureEntity[] {
-        const data = GenericParser.xlsParse(content)[0]; // single page
-        const rows = data.slice(1);
+        const rows = GenericParser.xlsxParse(content)[0].data.slice(1); // single page
 
         const entities: AdminStructureEntity[] = [];
         for (const row of rows) {

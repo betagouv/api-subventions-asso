@@ -34,13 +34,11 @@ describe("OsirisCli", () => {
         });
 
         it("should throw error because no args", () => {
-            expect(controller.parse).rejects.toThrowError("Parse command need type, extractYear and file args");
+            expect(controller.parse).rejects.toThrow("Parse command need type, extractYear and file args");
         });
 
         it("should throw an error because the file does not exist", () => {
-            expect(() => controller.parse("requests", "fake/path", "2022")).rejects.toThrowError(
-                "File not found fake/path",
-            );
+            expect(() => controller.parse("requests", "fake/path", "2022")).rejects.toThrow("File not found fake/path");
         });
 
         it("should register new import", async () => {
@@ -101,13 +99,11 @@ describe("OsirisCli", () => {
         });
 
         it("should throw error because no args", () => {
-            expect(controller.parse).rejects.toThrowError("Parse command need type, extractYear and file args");
+            expect(controller.parse).rejects.toThrow("Parse command need type, extractYear and file args");
         });
 
         it("should throw an error because the file does not exist", () => {
-            expect(() => controller.parse("actions", "fake/path", "2022")).rejects.toThrowError(
-                "File not found fake/path",
-            );
+            expect(() => controller.parse("actions", "fake/path", "2022")).rejects.toThrow("File not found fake/path");
         });
 
         it("should register new import", async () => {
@@ -140,7 +136,7 @@ describe("OsirisCli", () => {
                 "../../modules/providers/osiris/__fixtures__/SuiviDossiers_test.xls",
             );
 
-            expect(() => controller.parse("unknown" as "actions", filePath, "2022")).rejects.toThrowError(
+            expect(() => controller.parse("unknown" as "actions", filePath, "2022")).rejects.toThrow(
                 "The type unknown is not taken into account",
             );
         });

@@ -173,7 +173,7 @@ describe("GenericParser", () => {
         });
     });
 
-    describe("xlsParseWithPageName", () => {
+    describe("xlsxParse", () => {
         beforeAll(() => {
             jest.mocked(xlsx.parse).mockReturnValue([
                 { data: [], name: "empty to ignore" },
@@ -187,7 +187,7 @@ describe("GenericParser", () => {
             jest.mocked(xlsx.parse).mockRestore();
         });
 
-        it("restores xls in proper format", () => {
+        it("return xlsx data for each page and removing empty rows", () => {
             const expected = [
                 { data: [], name: "empty to ignore" },
                 {
@@ -198,15 +198,15 @@ describe("GenericParser", () => {
                     name: "PAGE 2",
                 },
             ];
-            const actual = GenericParser.xlsParseWithPageName(null as unknown as Buffer);
+            const actual = GenericParser.xlsxParse(null as unknown as Buffer);
             expect(actual).toEqual(expected);
         });
     });
 
-    describe("xlsParse", () => {
-        let xlsParseWithPageNameSpy: jest.SpyInstance;
+    describe("xlsxParseByPageName", () => {
+        let xlsxParseSpy: jest.SpyInstance;
         beforeAll(() => {
-            xlsParseWithPageNameSpy = jest.spyOn(GenericParser, "xlsParseWithPageName").mockReturnValue([
+            xlsxParseSpy = jest.spyOn(GenericParser, "xlsxParse").mockReturnValue([
                 { data: [], name: "PAGE 1" },
                 {
                     data: [
@@ -218,38 +218,7 @@ describe("GenericParser", () => {
             ]);
         });
         afterAll(() => {
-            jest.mocked(xlsParseWithPageNameSpy).mockRestore();
-        });
-
-        it("restores data in proper format", () => {
-            const expected = [
-                [],
-                [
-                    ["h1", "h2"],
-                    ["r1", "r2"],
-                ],
-            ];
-            const actual = GenericParser.xlsParse(null as unknown as Buffer);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("xlsParseByPageName", () => {
-        let xlsParseWithPageNameSpy: jest.SpyInstance;
-        beforeAll(() => {
-            xlsParseWithPageNameSpy = jest.spyOn(GenericParser, "xlsParseWithPageName").mockReturnValue([
-                { data: [], name: "PAGE 1" },
-                {
-                    data: [
-                        ["h1", "h2"],
-                        ["r1", "r2"],
-                    ],
-                    name: "PAGE 2",
-                },
-            ]);
-        });
-        afterAll(() => {
-            jest.mocked(xlsParseWithPageNameSpy).mockRestore();
+            jest.mocked(xlsxParseSpy).mockRestore();
         });
 
         it("restores data in proper format", () => {
@@ -260,7 +229,7 @@ describe("GenericParser", () => {
                     ["r1", "r2"],
                 ],
             };
-            const actual = GenericParser.xlsParseByPageName(null as unknown as Buffer);
+            const actual = GenericParser.xlsxParseByPageName(null as unknown as Buffer);
             expect(actual).toEqual(expected);
         });
     });

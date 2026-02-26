@@ -123,11 +123,7 @@ export class GenericParser {
         });
     }
 
-    static xlsParse(content: Buffer) {
-        return GenericParser.xlsParseWithPageName(content).map(page => page.data);
-    }
-
-    static xlsParseWithPageName(content: Buffer) {
+    static xlsxParse(content: Buffer) {
         const xls = xlsx.parse(content, {
             nodim: true,
         });
@@ -137,8 +133,8 @@ export class GenericParser {
         }));
     }
 
-    static xlsParseByPageName(content: Buffer): { [name: string]: unknown[][] } {
-        const pagesWithName = GenericParser.xlsParseWithPageName(content);
+    static xlsxParseByPageName(content: Buffer): { [name: string]: unknown[][] } {
+        const pagesWithName = GenericParser.xlsxParse(content);
         return pagesWithName.reduce(
             (pages, xlsPage) => ({
                 ...pages,

@@ -17,7 +17,7 @@ describe("gispro parser", () => {
 
     describe("parse", () => {
         beforeAll(() => {
-            jest.mocked(GenericParser.xlsParse).mockReturnValue(PAGES);
+            jest.mocked(GenericParser.xlsxParse).mockReturnValue(PAGES);
             jest.replaceProperty(GisproParser, "pageIndexByYear", { [EXERCISE]: 1 });
             jest.mocked(GenericParser.linkHeaderToData).mockImplementation(((_header: unknown, data: string) => ({
                 field: "data" + data.charAt(3),
@@ -34,12 +34,12 @@ describe("gispro parser", () => {
         });
 
         afterAll(() => {
-            jest.mocked(GenericParser.xlsParse).mockRestore();
+            jest.mocked(GenericParser.xlsxParse).mockRestore();
         });
 
         it("calls xls parser", () => {
             GisproParser.parse(FILE_CONTENT, EXERCISE);
-            expect(GenericParser.xlsParse).toHaveBeenCalledWith(FILE_CONTENT);
+            expect(GenericParser.xlsxParse).toHaveBeenCalledWith(FILE_CONTENT);
         });
 
         it("links header to rows from proper page by year", () => {

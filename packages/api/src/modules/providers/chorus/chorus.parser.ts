@@ -12,7 +12,7 @@ import { ChorusLineDto } from "./@types/ChorusLineDto";
 export default class ChorusParser {
     static parse(content: Buffer) {
         console.log("Open and read file ...");
-        const pagesWithName = GenericParser.xlsParseWithPageName(content);
+        const pagesWithName = GenericParser.xlsxParse(content);
         console.log("Read file end");
 
         const extractionPage = pagesWithName.find(page => page.name.includes("Extraction"));

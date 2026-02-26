@@ -104,7 +104,7 @@ describe("FonjepParser", () => {
         beforeAll(() => {
             // @ts-expect-error: test private method
             mockGetBuffer = jest.spyOn(FonjepParser, "getBuffer").mockReturnValue(BUFFER);
-            mockXlsParse = jest.spyOn(GenericParser, "xlsParseByPageName").mockReturnValue(PAGES);
+            mockXlsParse = jest.spyOn(GenericParser, "xlsxParseByPageName").mockReturnValue(PAGES);
             // @ts-expect-error: test private method
             mockMapHeaderToData = jest.spyOn(FonjepParser, "mapHeaderToData").mockReturnValue(MAPPED_DATA);
         });
@@ -120,7 +120,7 @@ describe("FonjepParser", () => {
             expect(mockGetBuffer).toHaveBeenCalledWith(FILEPATH);
         });
 
-        it("should call xlsParse", () => {
+        it("should call xlsxParse", () => {
             FonjepParser.parse(FILEPATH);
             expect(mockXlsParse).toHaveBeenCalledWith(BUFFER);
         });
