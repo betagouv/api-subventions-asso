@@ -1,4 +1,4 @@
-import { Collection, FindCursor, WithId } from "mongodb";
+import { Collection, FindCursor } from "mongodb";
 import MongoPort from "../../../../shared/MongoPort";
 import DauphinSubventionDto from "../../../../modules/providers/dauphin-gispro/dto/DauphinSubventionDto";
 import Siret from "../../../../identifierObjects/Siret";
@@ -239,7 +239,7 @@ export class DauphinPort extends MongoPort<DauphinGisproDbo> {
     }
 
     findAllTempCursor() {
-        return this.simplifiedTempCollection.find({}) as FindCursor<WithId<SimplifiedJoinedDauphinGispro>>;
+        return this.simplifiedTempCollection.find({}) as unknown as FindCursor<SimplifiedJoinedDauphinGispro>;
     }
 
     async cleanTempCollection() {

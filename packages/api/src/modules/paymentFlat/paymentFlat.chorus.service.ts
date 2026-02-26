@@ -30,14 +30,18 @@ class PaymentFlatChorusService implements PaymentFlatProvider {
                 year,
             );
 
-            this.addToPaymentFlat(payments);
+            // if no payments for year, we move on
+            // mainly used for current year if no data has been added yet
+            if (payments.length === 0) continue;
+
+            await this.addToPaymentFlat(payments);
             console.log("All documents inserted");
         }
     }
 
-    public async addToPaymentFlat(payments: ChorusPaymentFlatEntity[]) {
+    public addToPaymentFlat(payments: ChorusPaymentFlatEntity[]) {
         const stream = ReadableStream.from(payments);
-        await this.savePaymentsFromStream(stream);
+        return this.savePaymentsFromStream(stream);
     }
 
     /**
@@ -117,13 +121,13 @@ class PaymentFlatChorusService implements PaymentFlatProvider {
             exerciceBudgetaire,
         );
 
-        this.addToPaymentFlat(payments);
+        await this.addToPaymentFlat(payments);
 
         console.log("All documents inserted");
     }
 
     public savePaymentsFromStream(stream: ReadableStream<PaymentFlatEntity>) {
-        paymentFlatService.saveFromStream(stream);
+        return paymentFlatService.saveFromStream(stream);
     }
 
     public cursorFindChorusOnly(exerciceBudgetaire?: number) {

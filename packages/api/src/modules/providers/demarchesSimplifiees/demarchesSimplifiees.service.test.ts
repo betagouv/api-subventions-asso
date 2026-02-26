@@ -148,6 +148,14 @@ describe("DemarchesSimplifieesService", () => {
 
             it("calls adapter", () => {
                 demarchesSimplifieesService.toFlatAndValidate(DBO, SCHEMA);
+                expect(DemarchesSimplifieesEntityAdapter.toFlat).toHaveBeenCalledWith(DBO, SCHEMA);
+            });
+
+            it("returns null if adapter returns null", () => {
+                jest.mocked(DemarchesSimplifieesEntityAdapter.toFlat).mockReturnValueOnce(null);
+                const expected = null;
+                const actual = demarchesSimplifieesService.toFlatAndValidate(DBO, SCHEMA);
+                expect(actual).toEqual(expected);
             });
 
             it("returns null if no requested amount", () => {

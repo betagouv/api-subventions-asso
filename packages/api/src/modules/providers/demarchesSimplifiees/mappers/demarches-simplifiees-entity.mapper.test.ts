@@ -102,6 +102,13 @@ describe("DemarchesSimplifieesEntityAdapter", () => {
             expect(mapMock).toHaveBeenCalledWith(DEMANDE, SCHEMA, "flatSchema");
         });
 
+        it("returns null if Siret is not valid", () => {
+            mapMock.mockReturnValueOnce({ ...ADAPTED, beneficiaryEstablishmentId: 100012 });
+            const expected = null;
+            const actual = DemarchesSimplifieesEntityAdapter.toFlat(DEMANDE, SCHEMA);
+            expect(actual).toEqual(expected);
+        });
+
         it("adapts status", () => {
             const expected = ADAPTED.status;
             DemarchesSimplifieesEntityMapper.toFlat(DEMANDE, SCHEMA);

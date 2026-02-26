@@ -100,7 +100,10 @@ export class DemarchesSimplifieesEntityMapper {
         return res;
     }
 
-    static toFlat(entity: DemarchesSimplifieesDataEntity, schema: DemarchesSimplifieesSchema): ApplicationFlatEntity {
+    static toFlat(
+        entity: DemarchesSimplifieesDataEntity,
+        schema: DemarchesSimplifieesSchema,
+    ): ApplicationFlatEntity | null {
         const applicationFromSchema: DefaultObject = {
             ...DemarchesSimplifieesEntityMapper.baseFlatWithNull,
             ...DemarchesSimplifieesEntityMapper.mapSchema(entity, schema, "flatSchema"),
@@ -113,15 +116,22 @@ export class DemarchesSimplifieesEntityMapper {
         );
         delete applicationFromSchema.status;
 
+        let beneficiaryEstablishmentId: Siret;
+        try {
+            beneficiaryEstablishmentId = new Siret(
+                String(applicationFromSchema.beneficiaryEstablishmentId as number), // DS returns Siret as numbers
+            );
+        } catch {
+            return null;
+        }
+
         // TODO should we try better to have exercise ?
 
         // ORDER MATTERS !
         // @TODO: simplify this code...
         application.beneficiaryEstablishmentIdType = Siret.getName();
         application.provider = `demarches-simplifiees-${entity.demarcheId}`;
-        application.beneficiaryEstablishmentId = new Siret(
-            String(applicationFromSchema.beneficiaryEstablishmentId as number), // DS returns Siret as numbers
-        );
+        application.beneficiaryEstablishmentId = beneficiaryEstablishmentId;
         application.beneficiaryCompanyIdType = Siren.getName();
         application.beneficiaryCompanyId = (application.beneficiaryEstablishmentId as Siret).toSiren();
         application.applicationId = `${application.provider}-${applicationFromSchema.applicationProviderId}`;

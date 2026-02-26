@@ -63,6 +63,7 @@ export class DemarchesSimplifieesService extends ProviderCore implements Applica
     ): ApplicationFlatEntity | null {
         if (!schema?.flatSchema || this.isDraft(dbo)) return null;
         const res = DemarchesSimplifieesEntityMapper.toFlat(dbo, schema);
+        if (!res) return res;
         const mandatoryFields = ["requestedAmount", "budgetaryYear"];
         // those are the only mandatory field that comes from 'champs' or 'annotations'
         // which is why it is the only one that we check here

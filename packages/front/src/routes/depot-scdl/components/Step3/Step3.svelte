@@ -44,15 +44,8 @@
                     closeButton={true}
                     bind:visible={$errorAlertVisible}>
                     <p>
-                        Merci de réessayer ultérieurement. Si le problème continue, vous pouvez recharger la page ou
-                        contacter notre support via Crisp.
-                    </p>
-                </Alert>
-
-                <Alert type="info">
-                    <p>
-                        Avant de déposer votre fichier, assurez-vous d’avoir intégré toutes les données à conserver, y
-                        compris pour les années précédentes.
+                        Merci de réessayer ultérieurement. Si le problème persiste, vous pouvez recharger la page ou
+                        contacter notre support via la bulle de chat.
                     </p>
                 </Alert>
             </div>

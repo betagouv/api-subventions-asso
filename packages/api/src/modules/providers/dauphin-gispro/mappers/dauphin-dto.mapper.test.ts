@@ -2,6 +2,7 @@ const mockLabel = "NORMALIZED_LABEL";
 const mockToStatus = jest.fn(() => mockLabel);
 
 import DauphinDtoMapper from "./dauphin-dto.mapper";
+import SIMPLIFIED_JOINED_DAUPHIN_GISPRO from "../@types/__fixture__/SimplifiedJoinedDauphinGispro.fixture";
 
 jest.mock("../../providers.mapper", () => ({
     toStatusFactory: () => mockToStatus,
@@ -65,6 +66,23 @@ describe("DauphinDtoAdapter", () => {
                 },
             ]);
             expect(actual).toMatchInlineSnapshot(`[]`);
+        });
+    });
+
+    describe("simplifiedJoinedToApplicationFlat", () => {
+        it("returns null if no siretDemandeur", () => {
+            const expected = null;
+            const actual = DauphinDtoMapper.simplifiedJoinedToApplicationFlat({
+                ...SIMPLIFIED_JOINED_DAUPHIN_GISPRO,
+                // @ts-expect-error: test edge case
+                siretDemandeur: null,
+            });
+            expect(actual).toEqual(expected);
+        });
+
+        it("returns application flat", () => {
+            const actual = DauphinDtoMapper.simplifiedJoinedToApplicationFlat(SIMPLIFIED_JOINED_DAUPHIN_GISPRO);
+            expect(actual).toMatchSnapshot({ updateDate: expect.any(Date) });
         });
     });
 });

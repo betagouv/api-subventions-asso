@@ -50,10 +50,11 @@
                     <br />
                 </p>
                 <p class="fr-mb-4v">
-                    Vous pouvez également nous contacter via le support Crisp ou prendre rendez-vous avec notre équipe.
-                    Nous vous guiderons dans la mise à jour de votre fichier.
+                    Vous pouvez également nous contacter via la bulle de chat ou participer à nos permanences mensuelles
+                    avec notre équipe. Nous vous guiderons dans la mise à jour de votre fichier.
                     <br />
-                    <TargetBlankLink href="mailto:{ctrl.contactEmail}">Prendre rendez-vous</TargetBlankLink>
+                    <TargetBlankLink href="mailto:{ctrl.contactEmail}">S'inscrire à la permanence</TargetBlankLink>
+                    <!-- todo : quel lien ?-->
                 </p>
             </InfoBox>
         </div>

@@ -1,6 +1,5 @@
 import { EstablishmentController } from "./Establishment.controller";
 import associationService from "$lib/resources/associations/association.service";
-import { currentAssociation, currentAssoSimplifiedEtabs } from "$lib/store/association.store";
 import establishmentService from "$lib/resources/establishments/establishment.service";
 import rnaSirenService from "$lib/resources/open-source/rna-siren/rna-siren.service";
 
@@ -16,49 +15,55 @@ vi.mock("$lib/store/association.store", () => ({
 describe("Establishment Controller", () => {
     const SIRET = "12345678900000";
     const SIREN = "123456789";
-    let controller;
+    const RNA = "W90000001";
 
-    beforeAll(() => {
-        vi.mocked(associationService.getEstablishments).mockResolvedValue([]);
-        // @ts-expect-error: mock
-        vi.mocked(associationService.getAssociation).mockResolvedValue({});
-        vi.mocked(establishmentService.getBySiret).mockResolvedValue({});
-        vi.mocked(rnaSirenService.getAssociatedIdentifier).mockResolvedValue([]);
-    });
+    let mockGetEstablishments, mockGetAssociation, mockGetBySiret, mockGetAssociatedIdentifier;
 
     beforeEach(() => {
-        controller = new EstablishmentController(SIRET);
+        mockGetEstablishments = vi.spyOn(associationService, "getEstablishments").mockResolvedValue([]);
+        // @ts-expect-error: mock
+        mockGetAssociation = vi.spyOn(associationService, "getAssociation").mockResolvedValue({});
+        mockGetBySiret = vi.spyOn(establishmentService, "getBySiret").mockResolvedValue({});
+        mockGetAssociatedIdentifier = vi
+            .spyOn(rnaSirenService, "getAssociatedIdentifier")
+            .mockResolvedValue([{ siren: SIREN, rna: RNA }]);
     });
 
     describe("constructor", () => {
-        describe.each`
-            name                           | service                | store                         | result
-            ${"association"}               | ${"getAssociation"}    | ${currentAssociation}         | ${{}}
-            ${"simplified establishments"} | ${"getEstablishments"} | ${currentAssoSimplifiedEtabs} | ${[]}
-        `("$name", ({ service, store, result }) => {
-            it("gets resource", async () => {
-                await controller.promises;
-                expect(associationService[service]).toHaveBeenCalledWith(SIREN);
-            });
-
-            it("sets store with received resource", async () => {
-                await controller.promises;
-                expect(store.set).toHaveBeenCalledWith(result);
-            });
+        const mockInit = vi.fn();
+        const originalInit = EstablishmentController.prototype.init;
+        beforeEach(() => {
+            EstablishmentController.prototype.init = mockInit;
         });
 
-        describe("etablissement", () => {
-            it("gets resource", async () => {
-                await controller.promises;
-                expect(establishmentService.getBySiret).toHaveBeenCalledWith(SIRET);
-            });
+        afterAll(() => (EstablishmentController.prototype.init = originalInit));
 
-            it("returns received resource", async () => {
-                const expected = {};
-                await controller.promises;
-                const actual = (await controller.promises).establishment;
-                expect(actual).toEqual(expected);
-            });
+        it("init class", () => {
+            new EstablishmentController(SIRET);
+            expect(mockInit).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    // init is called in construcor
+    describe("init", () => {
+        it("retrieve association information", async () => {
+            await new EstablishmentController(SIRET).promises;
+            expect(mockGetAssociation).toHaveBeenCalledWith(RNA);
+        });
+
+        it("retrieve association information from siren if no rna was found", async () => {
+            mockGetAssociatedIdentifier.mockResolvedValueOnce(null);
+            await new EstablishmentController(SIRET).promises;
+            expect(mockGetAssociation).toHaveBeenCalledWith(SIREN);
+        });
+
+        it("retrieve establishments information", async () => {
+            await new EstablishmentController(SIRET).promises;
+            expect(mockGetEstablishments).toHaveBeenCalledWith(RNA);
+        });
+        it("retrieve establishment information", async () => {
+            await new EstablishmentController(SIRET).promises;
+            expect(mockGetBySiret).toHaveBeenCalledWith(SIRET);
         });
     });
 });
