@@ -15,7 +15,7 @@ export default class OsirisParser {
     }
 
     public static parseRequests(content: Buffer, year: number): OsirisRequestEntity[] {
-        const data = GenericParser.xlsParse(content)[0];
+        const data = GenericParser.xlsxParse(content)[0].data;
         const headers = data.slice(0, 2) as string[][];
         const rows = data.slice(2, data.length - 1) as unknown[][]; // Delete Headers and footers
 
@@ -42,7 +42,7 @@ export default class OsirisParser {
     }
 
     public static parseActions(content: Buffer, year: number) {
-        const data = GenericParser.xlsParse(content)[0];
+        const data = GenericParser.xlsxParse(content)[0].data;
 
         const headers = data.slice(0, 2) as string[][];
 

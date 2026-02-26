@@ -5,13 +5,13 @@ import { DefaultObject } from "../../@types";
 export default class DumpPipedriveParser {
     static parse(content: Buffer) {
         console.log("Open and read file ...");
-        const pages = GenericParser.xlsParse(content);
+        const pages = GenericParser.xlsxParse(content);
         console.log("Read file end");
-        return DumpPipedriveParser.adapts(pages);
+        return DumpPipedriveParser.adapts(pages[0].data); // single page
     }
 
-    private static adapts(excelPages: (string | number)[][][]) {
-        const page = excelPages[0];
+    private static adapts(excelPage: (string | number)[][]) {
+        const page = excelPage;
         const headerRow = page.splice(0, 1)[0] as string[];
         console.log("Map rows to entities...");
         const entities = page.map(userRow => GenericParser.linkHeaderToData<string | number>(headerRow, userRow));

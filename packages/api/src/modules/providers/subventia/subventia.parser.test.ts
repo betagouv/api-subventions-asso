@@ -67,12 +67,15 @@ describe("SubventiaParser", () => {
             mockFilePathValidator = jest.spyOn(SubventiaParser, "filePathValidator").mockReturnValue(true);
             //@ts-expect-error : test private method
             mockGetBuffer = jest.spyOn(SubventiaParser, "getBuffer").mockReturnValue(BUFFER);
-            mockXlsParse = jest.spyOn(GenericParser, "xlsParse").mockReturnValue([
-                [
-                    ["header1", "header2"],
-                    ["value1", "value2"],
-                    ["value3", "value4"],
-                ],
+            mockXlsParse = jest.spyOn(GenericParser, "xlsxParse").mockReturnValue([
+                {
+                    data: [
+                        ["header1", "header2"],
+                        ["value1", "value2"],
+                        ["value3", "value4"],
+                    ],
+                    name: "page1",
+                },
             ]);
         });
 
@@ -92,7 +95,7 @@ describe("SubventiaParser", () => {
             expect(mockGetBuffer).toHaveBeenCalledWith("file");
         });
 
-        it("should call xlsParse", () => {
+        it("should call xlsxParse", () => {
             SubventiaParser.parse("file");
             expect(mockXlsParse).toHaveBeenCalledWith(BUFFER);
         });

@@ -73,7 +73,7 @@ describe("ScdlGrantParser", () => {
         let duplicateSpy: jest.SpyInstance;
 
         beforeEach(() => {
-            jest.mocked(GenericParser.xlsParseWithPageName).mockReturnValue([{ data: SHEET, name: "whateverName" }]);
+            jest.mocked(GenericParser.xlsxParse).mockReturnValue([{ data: SHEET, name: "whateverName" }]);
             validateSpy = jest
                 // @ts-expect-error: mock private method
                 .spyOn(ScdlGrantParser, "convertValidateData")
@@ -87,25 +87,25 @@ describe("ScdlGrantParser", () => {
         });
 
         afterAll(() => {
-            jest.mocked(GenericParser.xlsParseWithPageName).mockRestore();
+            jest.mocked(GenericParser.xlsxParse).mockRestore();
             validateSpy.mockRestore();
             duplicateSpy.mockRestore();
         });
 
         it("parses excel with page names", () => {
             ScdlGrantParser.parseExcel(BUFFER);
-            expect(GenericParser.xlsParseWithPageName).toHaveBeenCalledWith(BUFFER);
+            expect(GenericParser.xlsxParse).toHaveBeenCalledWith(BUFFER);
         });
 
         it("throws if empty page", () => {
-            jest.mocked(GenericParser.xlsParseWithPageName).mockReturnValueOnce([{ data: [], name: "first" }]);
+            jest.mocked(GenericParser.xlsxParse).mockReturnValueOnce([{ data: [], name: "first" }]);
             expect(() => ScdlGrantParser.parseExcel(BUFFER)).toThrowErrorMatchingInlineSnapshot(
                 `"no data in required page (default is first page)"`,
             );
         });
 
         it("reads proper page", () => {
-            jest.mocked(GenericParser.xlsParseWithPageName).mockReturnValueOnce([
+            jest.mocked(GenericParser.xlsxParse).mockReturnValueOnce([
                 { data: [], name: "first" },
                 {
                     data: SHEET,
@@ -122,7 +122,7 @@ describe("ScdlGrantParser", () => {
         });
 
         it("applies offset", () => {
-            jest.mocked(GenericParser.xlsParseWithPageName).mockReturnValueOnce([
+            jest.mocked(GenericParser.xlsxParse).mockReturnValueOnce([
                 {
                     data: [[], [], ...SHEET],
                     name: "whateverName",
