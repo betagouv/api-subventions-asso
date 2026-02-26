@@ -34,7 +34,7 @@ export default class ChorusParser {
     }
 
     private static getHeadersAndRows(data: string[][]) {
-        return { headers: ChorusParser.renameEmptyHeaders(data[0]), rows: data.slice(1) };
+        return { headers: ChorusParser.renameEmptyHeaders(data[0]), rows: data.slice(2) };
     }
 
     // CHORUS exports have "double columns" sharing the same header (only the header for the first column is defined)

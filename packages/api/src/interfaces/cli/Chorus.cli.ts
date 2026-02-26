@@ -86,6 +86,10 @@ export default class ChorusCli extends CliController {
         return chorusService.persistEuropeanEntities(entities);
     }
 
+    private async persistChorusFseEntities(entities: ChorusFseEntity[], logger) {
+        console.log("persisting chorus FSE entities...");
+    }
+
     async resyncPaymentFlatByExercise(exercise: string | number) {
         // string when directly called by the CLI and number when called in _parse
         if (typeof exercise === "string") {
