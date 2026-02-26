@@ -11,6 +11,7 @@ import {
     ParserPath,
 } from "../@types";
 import type { ValueWithPath } from "./@types/ValueWithPath";
+import { XlsxPage } from "../@types/XlsxPage";
 
 export class GenericParser {
     /*
@@ -123,7 +124,7 @@ export class GenericParser {
         });
     }
 
-    static xlsxParse(content: Buffer) {
+    static xlsxParse<T = any>(content: Buffer): XlsxPage<T>[] {
         const xls = xlsx.parse(content, {
             nodim: true,
         });

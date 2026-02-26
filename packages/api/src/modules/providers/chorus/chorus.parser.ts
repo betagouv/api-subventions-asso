@@ -8,30 +8,40 @@ import { GenericParser } from "../../../shared/GenericParser";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import type ChorusIndexedInformations from "./@types/ChorusIndexedInformations";
 import { ChorusLineDto } from "./@types/ChorusLineDto";
+import ChorusFseEntity from "./entities/ChorusFseEntity";
 
 export default class ChorusParser {
     static parse(content: Buffer) {
+        const NATIONAL_PAGE_NAME = "1. Extraction";
+        const EUROPEAN_PAGE_NAME = "2. Extraction FEHBE";
+
         console.log("Open and read file ...");
-        const pagesWithName = GenericParser.xlsxParse(content);
+        const pagesWithName = GenericParser.xlsxParse<string>(content);
         console.log("Read file end");
 
-        const extractionPage = pagesWithName.find(page => page.name.includes("Extraction"));
-        if (!extractionPage?.data) {
-            throw new Error("no data in Extraction tab");
+        const nationalData = pagesWithName.find(page => page.name === NATIONAL_PAGE_NAME)?.data;
+        if (!nationalData) {
+            throw new Error("No national data found in the file, please check if page name as changed.");
         }
 
-        const page = extractionPage.data;
+        const nationalEntities = this.nationalDataToEntities(this.getHeadersAndRows(nationalData));
 
-        const headerRow = page[0] as string[];
-        const headers = ChorusParser.renameEmptyHeaders(headerRow);
-        console.log("Map rows to entities...");
-        return this.rowsToEntities(headers, page.slice(1));
+        const europeanData = pagesWithName.find(page => page.name === EUROPEAN_PAGE_NAME)?.data;
+        if (!europeanData) {
+            throw new Error("No european data found in the file, please check if page name as changed.");
+        }
+        const europeanEntities = this.europeanDataToEntities(this.getHeadersAndRows(europeanData));
+        return { national: nationalEntities, european: europeanEntities };
+    }
+
+    private static getHeadersAndRows(data: string[][]) {
+        return { headers: ChorusParser.renameEmptyHeaders(data[0]), rows: data.slice(2) };
     }
 
     // CHORUS exports have "double columns" sharing the same header (only the header for the first column is defined)
     // Because it is always a code followed by its corresponding label we replace the header by two distinct headers :
     // LABEL + CODE | LABEL
-    protected static renameEmptyHeaders(headerRow) {
+    private static renameEmptyHeaders(headerRow) {
         const header: string[] = [];
         for (let i = 0; i < headerRow.length; i++) {
             // if header not defined, we take the previous one
@@ -47,36 +57,41 @@ export default class ChorusParser {
         return header;
     }
 
-    protected static rowsToEntities(headers, rows) {
+    private static europeanDataToEntities(_data: { headers: string[]; rows: string[][] }) {
+        return [] as ChorusFseEntity[];
+    }
+
+    private static nationalDataToEntities(data: { headers: string[]; rows: string[][] }) {
+        const { headers, rows } = data;
         return rows.reduce((entities, row, index, array) => {
-            const data = GenericParser.linkHeaderToData(headers, row) as DefaultObject<string>; // TODO <string|number>
+            const rowObject = GenericParser.linkHeaderToData(headers, row) as DefaultObject<string>; // TODO <string|number>
 
             const indexedInformations = GenericParser.indexDataByPathObject(
                 // TODO <string|number>
                 ChorusLineEntity.indexedInformationsPath,
-                data,
+                rowObject,
             ) as unknown as ChorusIndexedInformations;
 
             if (!this.isIndexedInformationsValid(indexedInformations)) return entities;
 
             const uniqueId = this.buildUniqueId(indexedInformations);
             entities.push(
-                new ChorusLineEntity(uniqueId, new Date(), indexedInformations, data as unknown as ChorusLineDto),
+                new ChorusLineEntity(uniqueId, new Date(), indexedInformations, rowObject as unknown as ChorusLineDto),
             );
 
             CliHelper.printAtSameLine(`${index + 1} entities parsed of ${array.length}`);
 
             return entities;
-        }, []);
+        }, [] as ChorusLineEntity[]);
     }
 
-    protected static buildUniqueId(info: ChorusIndexedInformations) {
+    private static buildUniqueId(info: ChorusIndexedInformations) {
         const { ej, numPosteEJ, numeroDemandePaiement, exercice, codeSociete, numPosteDP } = info;
         // TODO: get chorus from enum #3410
         return getMD5(`${ej}-${numPosteEJ}-${numeroDemandePaiement}-${numPosteDP}-${codeSociete}-${exercice}`);
     }
 
-    protected static hasMandatoryFields(indexedInformations: ChorusIndexedInformations) {
+    private static hasMandatoryFields(indexedInformations: ChorusIndexedInformations) {
         const missingFields: string[] = [];
 
         // those fields are "mandatory" because they are used to build the unique ID
@@ -90,7 +105,7 @@ export default class ChorusParser {
         } else return { value: true };
     }
 
-    protected static validateIndexedInformations(indexedInformations) {
+    private static validateIndexedInformations(indexedInformations) {
         if (!BRANCHE_ACCEPTED[indexedInformations.codeBranche]) {
             throw new Error(`The branch ${indexedInformations.codeBranche} is not accepted in data`);
         }
@@ -121,7 +136,7 @@ export default class ChorusParser {
         return true;
     }
 
-    protected static isIndexedInformationsValid(indexedInformations: ChorusIndexedInformations) {
+    private static isIndexedInformationsValid(indexedInformations: ChorusIndexedInformations) {
         try {
             return this.validateIndexedInformations(indexedInformations);
         } catch (e) {
