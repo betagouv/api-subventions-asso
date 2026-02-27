@@ -67,7 +67,11 @@ class PaymentFlatChorusService implements PaymentFlatProvider {
 
             // filter chorus documents with wrong or weird establishment identifier
             // that will make payment-flat adaptation fails
-            if (!EstablishmentIdentifier.getIdentifierType(document.indexedInformations.siret)) {
+            // # is valid as it means that another identifier is present in another column (ridet ou tahitiet)
+            if (
+                document.indexedInformations.siret !== "#" &&
+                !EstablishmentIdentifier.getIdentifierType(document.indexedInformations.siret)
+            ) {
                 invalidDocuments.push(document);
                 continue;
             }
