@@ -2,7 +2,8 @@ import * as mongoDB from "mongodb";
 import * as Sentry from "@sentry/node";
 import { MONGO_DBNAME, MONGO_URL, MONGO_PASSWORD, MONGO_USER } from "../configurations/mongo.conf";
 import { ENV } from "../configurations/env.conf";
-import mattermostNotifyPipe from "../modules/notify/outPipes/MattermostNotifyPipe";
+import notifyService from "../modules/notify/notify.service";
+import { NotificationType } from "../modules/notify/@types/NotificationType";
 
 const connectionOptions = {
     auth:
@@ -18,12 +19,12 @@ const mongoClient: mongoDB.MongoClient = new mongoDB.MongoClient(MONGO_URL, conn
 
 export const connectDB = () => {
     let lastNotificationTime = 0;
-    const NOTIFICATION_COOLDOWN = 180000;
+    const NOTIFICATION_COOLDOWN = 3 * 60 * 1000;
 
-    const notifyLostConnection = listener => {
+    const notifyLostConnection = (eventName: string) => {
         const now = Date.now();
         if (now - lastNotificationTime > NOTIFICATION_COOLDOWN) {
-            mattermostNotifyPipe.connectionLost(listener);
+            notifyService.notify(NotificationType.MONGO_CONNECTION_LOST, { eventName });
             lastNotificationTime = now;
         }
     };
@@ -42,21 +43,10 @@ export const connectDB = () => {
 
         // trying to figure out why we have so many disconnections on production
         // and for now we don't know which event would be fired on such disconnections
-        // TODO: only keeps one of those events if we figure out which one is the right one
-
-        mongoClient.on("close", event => {
-            console.log("datasub - connection closed");
-            notifyLostConnection(event);
-            mongoClient.connect().catch(reason => {
-                console.log("MONGO CONNECTION ERROR\n");
-                console.error(reason);
-                process.exit(1);
-            });
-        });
 
         mongoClient.on("serverClosed", event => {
-            console.log("datasub - mongo server closed");
-            notifyLostConnection(event);
+            console.log("datasub - mongo server closed", event);
+            notifyLostConnection("serverClosed");
             mongoClient.connect().catch(reason => {
                 console.log("MONGO CONNECTION ERROR\n");
                 console.error(reason);
@@ -66,7 +56,7 @@ export const connectDB = () => {
 
         mongoClient.on("connectionClosed", event => {
             console.log("datasub - Mongo connection closed, trying to reconnect...", event);
-            notifyLostConnection(event);
+            notifyLostConnection("connectionClosed");
             mongoClient.connect().catch(reason => {
                 console.log("MONGO CONNECTION ERROR\n");
                 console.error(reason);

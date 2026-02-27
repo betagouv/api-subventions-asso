@@ -8,6 +8,8 @@ import Siren from "../../../identifierObjects/Siren";
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
 import dauphinFlatService from "./dauphin.flat.service";
 
+jest.mock("../../notify/notify.service", () => ({ notify: jest.fn() }));
+
 jest.mock("axios", () => ({
     post: jest.fn(),
     get: jest.fn(),
