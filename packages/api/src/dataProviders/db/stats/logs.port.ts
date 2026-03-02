@@ -2,7 +2,6 @@ import { UserDto } from "dto";
 import MongoPort from "../../../shared/MongoPort";
 import { WinstonLog } from "../../../@types/WinstonLog";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: type this #3383
 export class LogsPort extends MongoPort<WinstonLog> {
     collectionName = "log";
 

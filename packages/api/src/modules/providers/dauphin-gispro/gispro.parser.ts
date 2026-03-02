@@ -53,7 +53,7 @@ export default class GisproParser {
     static parse(content: Buffer, exercise: number, validator: (entity: GisproEntity) => boolean = () => true) {
         console.log("Open and read file ...");
         const pages = GenericParser.xlsxParse(content);
-        const page = pages[GisproParser.pageIndexByYear[exercise]];
+        const page = pages[GisproParser.pageIndexByYear[exercise]].data;
         console.log("Read file end");
 
         const header = page[0] as string[];

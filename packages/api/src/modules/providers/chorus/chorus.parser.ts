@@ -9,6 +9,8 @@ import ChorusLineEntity from "./entities/ChorusLineEntity";
 import type ChorusIndexedInformations from "./@types/ChorusIndexedInformations";
 import { ChorusLineDto } from "./@types/ChorusLineDto";
 import ChorusFseEntity from "./entities/ChorusFseEntity";
+import { ChorusFseMapper } from "./mappers/chorus.fse.mapper";
+import { StrictChorusLineDto } from "./@types/StrictChorusLineDto";
 
 export default class ChorusParser {
     static parse(content: Buffer) {
@@ -25,7 +27,6 @@ export default class ChorusParser {
         }
 
         const nationalEntities = this.nationalDataToEntities(this.getHeadersAndRows(nationalData));
-
         const europeanData = pagesWithName.find(page => page.name === EUROPEAN_PAGE_NAME)?.data;
         if (!europeanData) {
             throw new Error("No european data found in the file, please check if page name as changed.");
@@ -35,9 +36,10 @@ export default class ChorusParser {
     }
 
     private static getHeadersAndRows(data: string[][]) {
-        return { headers: ChorusParser.renameEmptyHeaders(data[0]), rows: data.slice(2) };
+        return { headers: ChorusParser.renameEmptyHeaders(data[0]), rows: data.slice(1) };
     }
 
+    // UPDATE: this is not true for "Fournisseur payé (DP)" which does have any code related and the next empty cell correspond to the name of the structure
     // CHORUS exports have "double columns" sharing the same header (only the header for the first column is defined)
     // Because it is always a code followed by its corresponding label we replace the header by two distinct headers :
     // LABEL + CODE | LABEL
@@ -47,9 +49,15 @@ export default class ChorusParser {
             // if header not defined, we take the previous one
             if (!headerRow[i]) {
                 const name = header[i - 1] as string;
-                // we add CODE at the end of the previous header
-                header[i - 1] = `${name} CODE`;
-                header.push(name.replace("&#32;", " ").trim());
+
+                // special case
+                if (name === "Fournisseur payé (DP)") {
+                    header.push("Désignation de la structure");
+                } else {
+                    // we add CODE at the end of the previous header
+                    header[i - 1] = `${name} CODE`;
+                    header.push(name.replace("&#32;", " ").trim());
+                }
             } else {
                 header.push(headerRow[i].replace(/&#32;/g, " ").trim());
             }
@@ -57,8 +65,25 @@ export default class ChorusParser {
         return header;
     }
 
-    private static europeanDataToEntities(_data: { headers: string[]; rows: string[][] }) {
-        return [] as ChorusFseEntity[];
+    private static europeanDataToEntities(data: { headers: string[]; rows: string[][] }) {
+        const { headers, rows } = data;
+        return rows.reduce((entities, row) => {
+            const dto = GenericParser.linkHeaderToData(headers, row) as unknown as StrictChorusLineDto;
+            let entity: ChorusFseEntity;
+            try {
+                entity = ChorusFseMapper.dtoToEntity(dto);
+            } catch (e) {
+                console.log(
+                    `\n\nThis request is not registered because: ${(e as Error).message}\n`,
+                    JSON.stringify(dto, null, "\t"),
+                );
+                return entities;
+            }
+
+            entities.push(entity);
+
+            return entities;
+        }, [] as ChorusFseEntity[]);
     }
 
     private static nationalDataToEntities(data: { headers: string[]; rows: string[][] }) {

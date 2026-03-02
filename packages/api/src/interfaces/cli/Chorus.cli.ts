@@ -39,10 +39,7 @@ export default class ChorusCli extends CliController {
 
         const { national, european } = ChorusParser.parse(fileContent);
 
-        await Promise.all([
-            this.persistChorusEntities(national, logger),
-            this.persistChorusFseEntities(european, logger),
-        ]);
+        await Promise.all([this.persistChorusEntities(national, logger), this.persistChorusFseEntities(european)]);
     }
 
     private async persistChorusEntities(entities: ChorusLineEntity[], logger) {
@@ -84,10 +81,12 @@ export default class ChorusCli extends CliController {
             flag: "w",
             encoding: "utf-8",
         });
+
+        return;
     }
 
-    private async persistChorusFseEntities(entities: ChorusFseEntity[], logger) {
-        console.log("persisting chorus FSE entities...");
+    private async persistChorusFseEntities(entities: ChorusFseEntity[]) {
+        return chorusService.persistEuropeanEntities(entities);
     }
 
     async resyncPaymentFlatByExercise(exercise: string | number) {

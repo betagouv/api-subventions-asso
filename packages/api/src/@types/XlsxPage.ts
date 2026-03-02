@@ -1,1 +1,1 @@
-export type XlsxPage<T = any> = { name: string; data: T[][] };
+export type XlsxPage<T = unknown> = { name: string; data: T[][] };

@@ -3,15 +3,10 @@ import { ParserInfo } from "../../../../@types";
 import type ChorusIndexedInformations from "../@types/ChorusIndexedInformations";
 import { GenericParser } from "../../../../shared/GenericParser";
 import { ChorusLineDto } from "../@types/ChorusLineDto";
+import { santitizeFloat } from "../../../../shared/helpers/NumberHelper";
 
 export default class ChorusLineEntity {
     public provider = "Chorus";
-
-    private static santitizeFloat = value => {
-        if (!value || typeof value === "number") return value;
-
-        return parseFloat(value.replaceAll("\r", "").replaceAll(" ", "").replaceAll(",", "."));
-    };
 
     public static indexedInformationsPath: { [key: string]: ParserInfo } = {
         // TODO <string|number>
@@ -29,28 +24,22 @@ export default class ChorusLineEntity {
         codeSociete: { path: ["Société"] },
         exercice: {
             path: ["Exercice comptable"],
-            adapter: ChorusLineEntity.santitizeFloat,
+            adapter: santitizeFloat,
         },
         numeroTier: { path: ["Fournisseur payé (DP)"] },
+        // TODO: rajouter le nom de la structure (path: ["Nom de la structure"])
+        // anciennement ["Fournisseur payé (DP) CODE"] mais le nom n'était pas bon et pas utilisé
         centreFinancier: { path: ["Centre financier"] },
         codeCentreFinancier: { path: ["Centre financier CODE"] },
         domaineFonctionnel: { path: ["Domaine fonctionnel"] },
         codeDomaineFonctionnel: { path: ["Domaine fonctionnel CODE"] },
         amount: {
             path: [["EUR", "Montant payé"]],
-            adapter: ChorusLineEntity.santitizeFloat,
+            adapter: santitizeFloat,
         },
         dateOperation: {
             path: ["Date de dernière opération sur la DP"],
-            adapter: value => {
-                if (!value) return value;
-                if (value != parseInt(value, 10).toString()) {
-                    const [day, month, year] = value.split(/[/.]/).map(v => parseInt(v, 10));
-                    return new Date(Date.UTC(year, month - 1, day));
-                }
-
-                return GenericParser.ExcelDateToJSDate(parseInt(value, 10));
-            },
+            adapter: GenericParser.getDateFromXLSX,
         },
     };
 

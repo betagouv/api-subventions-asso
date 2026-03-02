@@ -10,3 +10,9 @@ export function addWithNull(toBeIncreased: number | null, toAdd: number | null) 
     if (toBeIncreased) return toBeIncreased;
     return toAdd;
 }
+
+export function santitizeFloat(value) {
+    if (!value || typeof value === "number") return value;
+
+    return parseFloat(value.replaceAll("\r", "").replaceAll(" ", "").replaceAll(",", "."));
+}

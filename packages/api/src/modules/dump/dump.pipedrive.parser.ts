@@ -7,7 +7,7 @@ export default class DumpPipedriveParser {
         console.log("Open and read file ...");
         const pages = GenericParser.xlsxParse(content);
         console.log("Read file end");
-        return DumpPipedriveParser.adapts(pages[0].data); // single page
+        return DumpPipedriveParser.adapts(pages[0].data as string[][]); // single page
     }
 
     private static adapts(excelPage: (string | number)[][]) {
