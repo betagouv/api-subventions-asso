@@ -1,6 +1,7 @@
 import GisproParser from "./gispro.parser";
 import { GenericParser } from "../../../shared/GenericParser";
 import { DefaultObject } from "../../../@types";
+import { XlsxPage } from "../../../@types/XlsxPage";
 
 jest.mock("../../../shared/GenericParser");
 
@@ -10,7 +11,10 @@ describe("gispro parser", () => {
     /* eslint-disable @typescript-eslint/no-explicit-any */
     const HEADER = "headers" as unknown as any[];
     const DATA = ["row1", "row2"] as unknown as any[][];
-    const PAGES = [[], [HEADER, ...DATA]] as unknown as any[][];
+    const PAGES = [
+        { name: "", data: [] },
+        { name: "", data: [HEADER, ...DATA] },
+    ] as XlsxPage[];
     /* eslint-enable @typescript-eslint/no-explicit-any */
     const LINKED_DATA = [{ field: "data1" }, { field: "data2" }] as unknown as DefaultObject<string>;
     const ENTITIES = [{ t: "entity1" }, { t: "entity2" }];

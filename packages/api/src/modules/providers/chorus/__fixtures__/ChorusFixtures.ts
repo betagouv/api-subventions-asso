@@ -2,6 +2,9 @@ import { ChorusPayment } from "dto";
 import ChorusLineEntity from "../entities/ChorusLineEntity";
 import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
 import { ChorusLineDto } from "../@types/ChorusLineDto";
+import { StrictChorusLineDto } from "../@types/StrictChorusLineDto";
+import Siret from "../../../../identifierObjects/Siret";
+import ChorusFseEntity from "../entities/ChorusFseEntity";
 
 export const HEADERS = [
     "N° EJ",
@@ -26,8 +29,8 @@ export const HEADERS = [
 export const FILLED_HEADERS = [
     "N° EJ",
     "N° poste EJ",
-    "Fournisseur payé (DP) CODE",
     "Fournisseur payé (DP)",
+    "Désignation de la structure",
     "Branche CODE",
     "Branche",
     "Code taxe 1",
@@ -165,11 +168,11 @@ export const PAGES = [
     ],
 ];
 
-export const PARSED_DATA = [
+export const PARSED_DATA: StrictChorusLineDto[] = [
     {
         "N° EJ": "0001821732",
-        "Fournisseur payé (DP) CODE": "1000011111",
-        "Fournisseur payé (DP)": "ASSO 1",
+        "Fournisseur payé (DP)": "1000011111",
+        "Désignation de la structure": "ASSO 1",
         "Branche CODE": "Z039",
         Branche: "Associations",
         "Code taxe 1": "32534654200001",
@@ -182,11 +185,16 @@ export const PARSED_DATA = [
         "Domaine fonctionnel": "1111-01-02",
         "Domaine fonctionnel CODE": "Appels à projet",
         "Montant payé": 89988.3,
+        "No TVA 3 (COM-RIDET ou TAHITI)": "#",
+        "Exercice comptable": "2025",
+        "N° poste DP": "23",
+        "N° poste EJ": "2",
+        Société: "SOCIETY",
     },
     {
         "N° EJ": "0002822326",
-        "Fournisseur payé (DP) CODE": "2000002222",
-        "Fournisseur payé (DP)": "ASSO 2",
+        "Fournisseur payé (DP)": "2000002222",
+        "Désignation de la structure": "ASSO 2",
         "Branche CODE": "Z039",
         Branche: "Associations",
         "Code taxe 1": "77568577900002",
@@ -199,11 +207,16 @@ export const PARSED_DATA = [
         "Domaine fonctionnel": "XXXX-C001",
         "Domaine fonctionnel CODE": "1111-01-02",
         "Montant payé": 89931.9,
+        "No TVA 3 (COM-RIDET ou TAHITI)": "#",
+        "Exercice comptable": "2025",
+        "N° poste DP": "23",
+        "N° poste EJ": "2",
+        Société: "SOCIETY",
     },
     {
         "N° EJ": "0003823760",
-        "Fournisseur payé (DP) CODE": "3000013333",
-        "Fournisseur payé (DP)": "ASSO 3",
+        "Fournisseur payé (DP)": "3000013333",
+        "Désignation de la structure": "ASSO 3",
         "Branche CODE": "Z039",
         Branche: "Associations",
         "Code taxe 1": "32984397300003",
@@ -216,6 +229,11 @@ export const PARSED_DATA = [
         "Domaine fonctionnel": "1234-03",
         "Domaine fonctionnel CODE": "Plan inv compétences",
         "Montant payé": 62655.2,
+        "No TVA 3 (COM-RIDET ou TAHITI)": "#",
+        "Exercice comptable": "2025",
+        "N° poste DP": "23",
+        "N° poste EJ": "2",
+        Société: "SOCIETY",
     },
 ];
 
@@ -224,8 +242,8 @@ export const RAW_DUPLICATE_V004 = [
     {
         "N° EJ": "2101766485",
         "N° poste EJ": "1",
-        "Fournisseur payé (DP) CODE": "1000321116",
-        "Fournisseur payé (DP)": "ASS GESTION",
+        "Fournisseur payé (DP)": "1000321116",
+        "Désignation de la structure": "ASS GESTION",
         "Branche CODE": "Z039",
         Branche: "Associations",
         "Code taxe 1": "11111111100010",
@@ -246,8 +264,8 @@ export const RAW_DUPLICATE_V004 = [
     {
         "N° EJ": "2101766485",
         "N° poste EJ": "1",
-        "Fournisseur payé (DP) CODE": "1000321116",
-        "Fournisseur payé (DP)": "ASS GESTION",
+        "Fournisseur payé (DP)": "1000321116",
+        "Désignation de la structure": "ASS GESTION",
         "Branche CODE": "Z039",
         Branche: "Associations",
         "Code taxe 1": "11111111100010",
@@ -281,7 +299,7 @@ export const ENTITY_WITH_RIDET = {
         numPosteDP: 3,
         codeSociete: "456",
         exercice: 2023,
-        numeroTier: "ASSO 1",
+        numeroTier: "1000011111",
         centreFinancier: "UO DGER XXXX-C001",
         codeCentreFinancier: "AA01/0776-C001-4000",
         domaineFonctionnel: "Appels à projet",
@@ -291,8 +309,8 @@ export const ENTITY_WITH_RIDET = {
     },
     data: {
         "N° EJ": "0001821732",
-        "Fournisseur payé (DP) CODE": "1000011111",
-        "Fournisseur payé (DP)": "ASSO 1",
+        "Fournisseur payé (DP)": "1000011111",
+        "Désignation de la structure": "ASSO 1",
         "Branche CODE": "Z039",
         Branche: "Associations",
         "Code taxe 1": "#",
@@ -308,11 +326,37 @@ export const ENTITY_WITH_RIDET = {
         "Domaine fonctionnel CODE": "0101-01-02",
         "Domaine fonctionnel": "Appels à projet",
         "Montant payé": 89988.3,
+        "N° poste DP": "1",
+        "N° poste EJ": "",
     } as ChorusLineDto,
     _id: undefined,
     provider: "Chorus",
     updateDate: new Date("2020-01-01"),
 };
+
+export const CHORUS_FSE_ENTITIES: ChorusFseEntity[] = [
+    {
+        societyCode: "BNOR",
+        paymentRequestNum: "500000744",
+        budgetaryYear: "2026",
+        paymentRequestPostNum: "2",
+        amount: 12017.88,
+        beneficiaryName: "MAISON EMPLOI FORMAT BASSIN",
+        branch: "Associations",
+        branchCode: "Z039",
+        ej: "#",
+        ejPostNum: "#",
+        financialCenter: "TG CALVADOS",
+        financialCenterCode: "BG00/L014",
+        functionalDomain: "Prog nat.Etat FSE+2021-27",
+        functionalDomainCode: "FSE00-14",
+        identifier: new Siret(DEFAULT_ASSOCIATION.siret),
+        operationDate: new Date("2026-01-15"),
+        paidSupplierId: "1000016402",
+        programRef: "N/A",
+        programRefCode: "BG00/N/A",
+    },
+];
 
 export const ENTITIES: ChorusLineEntity[] = [
     {
@@ -339,8 +383,8 @@ export const ENTITIES: ChorusLineEntity[] = [
         },
         data: {
             "N° EJ": "0001821732",
-            "Fournisseur payé (DP) CODE": "1000011111",
-            "Fournisseur payé (DP)": "ASSO 1",
+            "Fournisseur payé (DP)": "1000011111",
+            "Désignation de la structure": "ASSO 1",
             "Branche CODE": "Z039",
             Branche: "Associations",
             "Code taxe 1": DEFAULT_ASSOCIATION.siret,
@@ -384,8 +428,8 @@ export const ENTITIES: ChorusLineEntity[] = [
         },
         data: {
             "N° EJ": "0002822326",
-            "Fournisseur payé (DP) CODE": "2000002222",
-            "Fournisseur payé (DP)": "ASSO 2",
+            "Fournisseur payé (DP)": "2000002222",
+            "Désignation de la structure": "ASSO 2",
             "Branche CODE": "Z039",
             Branche: "Associations",
             "Code taxe 1": "77568577900002",
@@ -429,8 +473,8 @@ export const ENTITIES: ChorusLineEntity[] = [
         },
         data: {
             "N° EJ": "0003823760",
-            "Fournisseur payé (DP) CODE": "3000013333",
-            "Fournisseur payé (DP)": "ASSO 3",
+            "Fournisseur payé (DP)": "3000013333",
+            "Désignation de la structure": "ASSO 3",
             "Branche CODE": "Z039",
             Branche: "Associations",
             "Code taxe 1": "32984397300003",

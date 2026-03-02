@@ -102,7 +102,7 @@ describe("Chorus CLI", () => {
         it("should persist chorus fse entities", async () => {
             // @ts-expect-error: test protected method
             await controller._parse(FILE_PATH, LOGGER);
-            expect(mockPersistChorusFseEntities).toHaveBeenCalledWith(EUROPEAN_CHORUS_ENTITIES, LOGGER);
+            expect(mockPersistChorusFseEntities).toHaveBeenCalledWith(EUROPEAN_CHORUS_ENTITIES);
         });
     });
 

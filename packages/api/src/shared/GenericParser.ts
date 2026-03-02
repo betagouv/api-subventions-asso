@@ -124,7 +124,7 @@ export class GenericParser {
         });
     }
 
-    static xlsxParse<T = any>(content: Buffer): XlsxPage<T>[] {
+    static xlsxParse<T = unknown>(content: Buffer): XlsxPage<T>[] {
         const xls = xlsx.parse(content, {
             nodim: true,
         });
@@ -145,6 +145,7 @@ export class GenericParser {
         );
     }
 
+    // @REFACTO: move this elsewhere as most of the time used after the parse occur
     static ExcelDateToJSDate(serial: number) {
         const utc_days = Math.floor(serial - 25569);
         const utc_value = utc_days * 86400;
@@ -165,6 +166,20 @@ export class GenericParser {
         const minutes = Math.floor(total_seconds / 60) % 60;
 
         return new Date(Date.UTC(Number(year), Number(month) - 1, Number(date), hours, minutes, seconds));
+    }
+
+    // @REFACTO: move this elsewhere as most of the time used after the parse occur
+    static getDateFromXLSX(value): Date {
+        if (!value) return value;
+        const numValue = Number(value);
+
+        // means date is a string like yyyy/mm/dd
+        if (isNaN(numValue)) {
+            const [day, month, year] = value.split(/[/.]/).map(v => parseInt(v, 10));
+            return new Date(Date.UTC(year, month - 1, day));
+        } else {
+            return GenericParser.ExcelDateToJSDate(numValue);
+        }
     }
 
     static isEmptyRow = (row: string[]) => !row.map(column => column.trim()).filter(c => c).length;

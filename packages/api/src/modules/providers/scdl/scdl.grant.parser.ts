@@ -141,7 +141,9 @@ export default class ScdlGrantParser {
 
         const headerRow = page[rowOffset] as string[];
         console.log("Map rows to entities...");
-        const data = page.slice(rowOffset + 1).map(row => GenericParser.linkHeaderToData(headerRow, row));
+        const data = page
+            .slice(rowOffset + 1)
+            .map(row => GenericParser.linkHeaderToData(headerRow, row)) as DefaultObject<string>[];
         const duplicates = ScdlGrantParser.findDuplicates(data);
         const { entities, problems, parsedInfos } = ScdlGrantParser.convertValidateData(data);
         return { entities, errors: [...duplicates, ...problems], parsedInfos };

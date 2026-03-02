@@ -341,7 +341,7 @@ describe("/parcours-depot", () => {
     });
 
     describe("POST /validation-fichier-scdl", () => {
-        it("should validate csv scdl file and update depositLog", async () => {
+        it.only("should validate csv scdl file and update depositLog", async () => {
             s3Mock.on(ListObjectsV2Command).resolvesOnce({});
             s3Mock.on(PutObjectCommand).resolvesOnce({});
 
