@@ -22,7 +22,7 @@ describe("ChorusParser", () => {
     const EUROPEAN_DATA = [HEADERS, ...EUROPEAN_PAGE];
     const NATIONAL_HEADERS_AND_ROWS = {
         headers: FILLED_HEADERS,
-        rows: NATIONAL_DATA.slice(2),
+        rows: NATIONAL_DATA.slice(1),
     };
     describe("buildUniqueId", () => {
         it("call getMD5", () => {
