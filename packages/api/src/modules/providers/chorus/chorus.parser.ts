@@ -8,38 +8,56 @@ import { GenericParser } from "../../../shared/GenericParser";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import type ChorusIndexedInformations from "./@types/ChorusIndexedInformations";
 import { ChorusLineDto } from "./@types/ChorusLineDto";
+import ChorusFseEntity from "./entities/ChorusFseEntity";
+import { ChorusFseMapper } from "./mappers/chorus.fse.mapper";
+import { StrictChorusLineDto } from "./@types/StrictChorusLineDto";
 
 export default class ChorusParser {
     static parse(content: Buffer) {
+        const NATIONAL_PAGE_NAME = "1. Extraction";
+        const EUROPEAN_PAGE_NAME = "2. Extraction FEHBE";
+
         console.log("Open and read file ...");
-        const pagesWithName = GenericParser.xlsParseWithPageName(content);
+        const pagesWithName = GenericParser.xlsxParse<string>(content);
         console.log("Read file end");
 
-        const extractionPage = pagesWithName.find(page => page.name.includes("Extraction"));
-        if (!extractionPage?.data) {
-            throw new Error("no data in Extraction tab");
+        const nationalData = pagesWithName.find(page => page.name === NATIONAL_PAGE_NAME)?.data;
+        if (!nationalData) {
+            throw new Error("No national data found in the file, please check if page name as changed.");
         }
 
-        const page = extractionPage.data;
-
-        const headerRow = page[0] as string[];
-        const headers = ChorusParser.renameEmptyHeaders(headerRow);
-        console.log("Map rows to entities...");
-        return this.rowsToEntities(headers, page.slice(1));
+        const nationalEntities = this.nationalDataToEntities(this.getHeadersAndRows(nationalData));
+        const europeanData = pagesWithName.find(page => page.name === EUROPEAN_PAGE_NAME)?.data;
+        if (!europeanData) {
+            throw new Error("No european data found in the file, please check if page name as changed.");
+        }
+        const europeanEntities = this.europeanDataToEntities(this.getHeadersAndRows(europeanData));
+        return { national: nationalEntities, european: europeanEntities };
     }
 
+    private static getHeadersAndRows(data: string[][]) {
+        return { headers: ChorusParser.renameEmptyHeaders(data[0]), rows: data.slice(1) };
+    }
+
+    // UPDATE: this is not true for "Fournisseur payé (DP)" which does have any code related and the next empty cell correspond to the name of the structure
     // CHORUS exports have "double columns" sharing the same header (only the header for the first column is defined)
     // Because it is always a code followed by its corresponding label we replace the header by two distinct headers :
     // LABEL + CODE | LABEL
-    protected static renameEmptyHeaders(headerRow) {
+    private static renameEmptyHeaders(headerRow) {
         const header: string[] = [];
         for (let i = 0; i < headerRow.length; i++) {
             // if header not defined, we take the previous one
             if (!headerRow[i]) {
                 const name = header[i - 1] as string;
-                // we add CODE at the end of the previous header
-                header[i - 1] = `${name} CODE`;
-                header.push(name.replace("&#32;", " ").trim());
+
+                // special case
+                if (name === "Fournisseur payé (DP)") {
+                    header.push("Désignation de la structure");
+                } else {
+                    // we add CODE at the end of the previous header
+                    header[i - 1] = `${name} CODE`;
+                    header.push(name.replace("&#32;", " ").trim());
+                }
             } else {
                 header.push(headerRow[i].replace(/&#32;/g, " ").trim());
             }
@@ -47,36 +65,58 @@ export default class ChorusParser {
         return header;
     }
 
-    protected static rowsToEntities(headers, rows) {
+    private static europeanDataToEntities(data: { headers: string[]; rows: string[][] }) {
+        const { headers, rows } = data;
+        return rows.reduce((entities, row) => {
+            const dto = GenericParser.linkHeaderToData(headers, row) as unknown as StrictChorusLineDto;
+            let entity: ChorusFseEntity;
+            try {
+                entity = ChorusFseMapper.dtoToEntity(dto);
+            } catch (e) {
+                console.log(
+                    `\n\nThis request is not registered because: ${(e as Error).message}\n`,
+                    JSON.stringify(dto, null, "\t"),
+                );
+                return entities;
+            }
+
+            entities.push(entity);
+
+            return entities;
+        }, [] as ChorusFseEntity[]);
+    }
+
+    private static nationalDataToEntities(data: { headers: string[]; rows: string[][] }) {
+        const { headers, rows } = data;
         return rows.reduce((entities, row, index, array) => {
-            const data = GenericParser.linkHeaderToData(headers, row) as DefaultObject<string>; // TODO <string|number>
+            const rowObject = GenericParser.linkHeaderToData(headers, row) as DefaultObject<string>; // TODO <string|number>
 
             const indexedInformations = GenericParser.indexDataByPathObject(
                 // TODO <string|number>
                 ChorusLineEntity.indexedInformationsPath,
-                data,
+                rowObject,
             ) as unknown as ChorusIndexedInformations;
 
             if (!this.isIndexedInformationsValid(indexedInformations)) return entities;
 
             const uniqueId = this.buildUniqueId(indexedInformations);
             entities.push(
-                new ChorusLineEntity(uniqueId, new Date(), indexedInformations, data as unknown as ChorusLineDto),
+                new ChorusLineEntity(uniqueId, new Date(), indexedInformations, rowObject as unknown as ChorusLineDto),
             );
 
             CliHelper.printAtSameLine(`${index + 1} entities parsed of ${array.length}`);
 
             return entities;
-        }, []);
+        }, [] as ChorusLineEntity[]);
     }
 
-    protected static buildUniqueId(info: ChorusIndexedInformations) {
+    private static buildUniqueId(info: ChorusIndexedInformations) {
         const { ej, numPosteEJ, numeroDemandePaiement, exercice, codeSociete, numPosteDP } = info;
         // TODO: get chorus from enum #3410
         return getMD5(`${ej}-${numPosteEJ}-${numeroDemandePaiement}-${numPosteDP}-${codeSociete}-${exercice}`);
     }
 
-    protected static hasMandatoryFields(indexedInformations: ChorusIndexedInformations) {
+    private static hasMandatoryFields(indexedInformations: ChorusIndexedInformations) {
         const missingFields: string[] = [];
 
         // those fields are "mandatory" because they are used to build the unique ID
@@ -90,7 +130,7 @@ export default class ChorusParser {
         } else return { value: true };
     }
 
-    protected static validateIndexedInformations(indexedInformations) {
+    private static validateIndexedInformations(indexedInformations) {
         if (!BRANCHE_ACCEPTED[indexedInformations.codeBranche]) {
             throw new Error(`The branch ${indexedInformations.codeBranche} is not accepted in data`);
         }
@@ -121,7 +161,7 @@ export default class ChorusParser {
         return true;
     }
 
-    protected static isIndexedInformationsValid(indexedInformations: ChorusIndexedInformations) {
+    private static isIndexedInformationsValid(indexedInformations: ChorusIndexedInformations) {
         try {
             return this.validateIndexedInformations(indexedInformations);
         } catch (e) {

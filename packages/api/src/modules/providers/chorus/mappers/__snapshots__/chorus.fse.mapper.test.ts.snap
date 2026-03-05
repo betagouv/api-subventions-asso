@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ChorusFseMapper dtoToEntity returns ChorusFseEntity 1`] = `
+{
+  "amount": 89988.3,
+  "beneficiaryName": "ASSO 1",
+  "branch": "Associations",
+  "branchCode": "Z039",
+  "budgetaryYear": "2025",
+  "ej": "0001821732",
+  "ejPostNum": "2",
+  "financialCenter": "AA01/0776-C001-4000",
+  "financialCenterCode": "UO DGER XXXX-C001",
+  "functionalDomain": "1111-01-02",
+  "functionalDomainCode": "Appels à projet",
+  "identifier": Siret {
+    "identifier": "32534654200001",
+  },
+  "operationDate": 2026-03-03T00:00:00.000Z,
+  "paidSupplierId": "1000011111",
+  "paymentRequestNum": "000195567",
+  "paymentRequestPostNum": "23",
+  "programRef": "Appels a projet",
+  "programRefCode": "BG00/077601000201",
+  "societyCode": "SOCIETY",
+}
+`;

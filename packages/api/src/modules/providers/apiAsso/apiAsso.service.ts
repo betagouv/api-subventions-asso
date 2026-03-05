@@ -101,10 +101,10 @@ export class ApiAssoService
 
     public async findAssociationBySiren(siren: Siren): Promise<Association | null> {
         const sirenStructure = await this.sendRequest<SirenStructureDto>(`/api/siren/${siren.value}`);
-
         const isSirenStructureValid = structure => structure.etablissement && structure.etablissement.length;
 
         if (!sirenStructure || !isSirenStructureValid(sirenStructure)) {
+            console.log("pas valide");
             const structure = await this.sendRequest<SirenStructureDto>(`/api/structure/${siren.value}`);
             if (!structure || hasEmptyProperties(structure.identite)) return null;
             if (!structure.identite.date_modif_siren)
@@ -116,6 +116,7 @@ export class ApiAssoService
         if (!sirenStructure.identite.date_modif_siren)
             sirenStructure.identite.date_modif_siren = this.getDefaultDateModifSiren(sirenStructure);
 
+        console.log("before dto mapper");
         return ApiAssoDtoMapper.sirenStructureToAssociation(sirenStructure);
     }
 

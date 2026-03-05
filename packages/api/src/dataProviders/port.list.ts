@@ -26,6 +26,7 @@ import dataLogPort from "./db/data-log/dataLog.port";
 import applicationFlatPort from "./db/applicationFlat/applicationFlat.port";
 import depositLogPort from "./db/deposit-log/depositLog.port";
 import gisproPort from "./db/providers/gispro.port";
+import chorusFsePort from "./db/providers/chorus/chorus.fse.port";
 
 export const portsWithIndexes = [
     userPort,
@@ -44,6 +45,7 @@ export const portsWithIndexes = [
     configurationsPort,
     consumerTokenPort,
     chorusLinePort,
+    chorusFsePort,
     demarchesSimplifieesDataPort,
     demarchesSimplifieesSchemaPort,
     statsAssociationsVisitPort,

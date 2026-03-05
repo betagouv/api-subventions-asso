@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.81.0](https://github.com/betagouv/api-subventions-asso/compare/v0.80.1...v0.81.0) (2026-02-26)
+
+### Features
+
+- **api:** [#3803](https://github.com/betagouv/api-subventions-asso/issues/3803) refacto, mapper, port, adapter ([#3828](https://github.com/betagouv/api-subventions-asso/issues/3828)) ([809ad36](https://github.com/betagouv/api-subventions-asso/commit/809ad36ec2e79401ab7254acd230f474caa36b5a))
+
 ## [0.80.1](https://github.com/betagouv/api-subventions-asso/compare/v0.80.0...v0.80.1) (2026-02-25)
 
 ### Bug Fixes
