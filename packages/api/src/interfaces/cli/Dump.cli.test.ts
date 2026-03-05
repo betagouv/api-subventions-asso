@@ -1,28 +1,18 @@
+import { dumpService } from "../../configurations/di-container";
 jest.mock("../../modules/dump/dump.pipedrive.parser");
 jest.mock("../../modules/dump/dump.service");
 import fs from "fs";
 
 import DumpPipedriveParser from "../../modules/dump/dump.pipedrive.parser";
-
 import DumpCli from "./Dump.cli";
-import { createMockDumpService } from "../../../tests/__mocks__/dump/dump.service.mock";
-import { DumpService } from "../../modules/dump/dump.service";
 
 describe("importPipedriveData", () => {
-    let mockDumpService: jest.Mocked<DumpService>;
-    let dumpCli: DumpCli;
-
     const FILE_PATH = "path/file.xlsx";
-
+    const dumpCli = new DumpCli();
     // @ts-expect-error -- mock
     const mockBuffer = "buffer" as Buffer;
 
     let fsExistsSyncMock: jest.SpyInstance;
-
-    beforeEach(() => {
-        mockDumpService = createMockDumpService();
-        dumpCli = new DumpCli(mockDumpService);
-    });
 
     beforeAll(() => {
         // @ts-expect-error: mock
@@ -72,6 +62,6 @@ describe("importPipedriveData", () => {
         const parsedData = "buffer" as DefaultObject<string | number>;
         jest.mocked(DumpPipedriveParser.parse).mockReturnValueOnce(parsedData);
         dumpCli.importPipedriveData(FILE_PATH);
-        expect(mockDumpService.importPipedriveData).toHaveBeenCalledWith(parsedData);
+        expect(dumpService.importPipedriveData).toHaveBeenCalledWith(parsedData);
     });
 });
