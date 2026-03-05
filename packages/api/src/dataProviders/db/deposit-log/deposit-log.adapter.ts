@@ -4,7 +4,6 @@ import { DepositLogPort } from "./depositLog.port";
 import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/entities/depositScdlLog.entity";
 import DepositLogMapper from "./deposit-log.mapper";
 import { NotFoundError } from "core";
-import { InsertResult } from "../../../shared/@types/repository.types";
 
 class DepositLogAdapter extends MongoPort<DepositScdlLogDbo> implements DepositLogPort {
     collectionName = "deposit-log";
@@ -13,14 +12,11 @@ class DepositLogAdapter extends MongoPort<DepositScdlLogDbo> implements DepositL
         await this.collection.createIndex({ userId: 1 }, { unique: true });
     }
 
-    public async insertOne(entity: DepositScdlLogEntity): Promise<InsertResult> {
+    public async insertOne(entity: DepositScdlLogEntity): Promise<string> {
         const dbo = DepositLogMapper.toDbo(entity);
         const result = await this.collection.insertOne(dbo);
 
-        return {
-            acknowledged: result.acknowledged,
-            insertedId: result.insertedId.toString(),
-        };
+        return result.insertedId.toString();
     }
 
     async findOneByUserId(userId: string): Promise<DepositScdlLogEntity | null> {
