@@ -1,10 +1,10 @@
-import depositLogPort from "../../../src/dataProviders/db/deposit-log/depositLog.port";
 import userPort from "../../../src/dataProviders/db/user/user.port";
 import { ScdlDepositCron } from "../../../src/interfaces/cron/ScdlDeposit.cron";
 import { DEPOSIT_LOG_DBO } from "../../../src/modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
 import brevoMailNotifyPipe from "../../../src/modules/notify/outPipes/BrevoMailNotifyPipe";
 import { USER_DBO } from "../../../src/modules/user/__fixtures__/user.fixture";
 import { addDaysToDate } from "../../../src/shared/helpers/DateHelper";
+import depositLogAdapter from "../../../src/dataProviders/db/deposit-log/deposit-log.adapter";
 
 jest.mock("../../../src/modules/notify/outPipes/BrevoMailNotifyPipe");
 
@@ -20,7 +20,7 @@ describe("ScdlDeposit CRON", () => {
             const TODAY = new Date();
             const twoDaysAgo = addDaysToDate(TODAY, -2);
             await userPort.create({ ...USER_DBO, signupAt: addDaysToDate(TODAY, -10) });
-            await depositLogPort.insertOne({
+            await depositLogAdapter.insertOne({
                 ...DEPOSIT_LOG_DBO,
                 updateDate: twoDaysAgo,
                 userId: USER_DBO._id.toString(),
