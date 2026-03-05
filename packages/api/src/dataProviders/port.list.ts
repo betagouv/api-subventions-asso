@@ -28,7 +28,7 @@ import gisproPort from "./db/providers/gispro.port";
 import depositLogAdapter from "./db/deposit-log/deposit-log.adapter";
 
 export const portsWithIndexes = [
-    // todo: replace by adapterList. Move to di-container.ts ?
+    // TODO: handle adapter initialization from within and remove this file
     userPort,
     logsPort,
     userResetPort,
