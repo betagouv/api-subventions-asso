@@ -1,10 +1,9 @@
+import { dumpService } from "../../init-services";
 jest.mock("../../modules/dump/dump.pipedrive.parser");
 jest.mock("../../modules/dump/dump.service");
 import fs from "fs";
 
 import DumpPipedriveParser from "../../modules/dump/dump.pipedrive.parser";
-import dumpService from "../../modules/dump/dump.service";
-
 import DumpCli from "./Dump.cli";
 
 describe("importPipedriveData", () => {
