@@ -7,6 +7,8 @@ import depositLogAdapter from "../../../src/dataProviders/db/deposit-log/deposit
 import { ENV as _ENV, EnvironmentEnum } from "../../../src/configurations/env.conf";
 import brevoMailNotifyPipe from "../../../src/modules/notify/outPipes/BrevoMailNotifyPipe";
 
+jest.mock("../../../src/modules/notify/outPipes/BrevoMailNotifyPipe");
+
 describe("ScdlDeposit CRON", () => {
     let cron: ScdlDepositCron;
 

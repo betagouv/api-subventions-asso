@@ -37,6 +37,11 @@ describe("ScdlDepositCronService", () => {
         scdlDepositCronService = new ScdlDepositCronService(mockDepositLogPort);
     });
 
+    beforeEach(() => {
+        mockDepositLogPort = createMockDepositLogPort();
+        scdlDepositCronService = new ScdlDepositCronService(mockDepositLogPort);
+    });
+
     describe("getUsersEmailToNotify", () => {
         const TWO_DAYS_AGO = new Date("2025-10-13T00:00:00.000Z");
         let mockFindByDate: jest.SpyInstance;
