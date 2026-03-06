@@ -1,4 +1,4 @@
-import { dumpService } from "../../configurations/di-container";
+import { dumpService } from "../../init-services";
 jest.mock("../../modules/dump/dump.pipedrive.parser");
 jest.mock("../../modules/dump/dump.service");
 import fs from "fs";

@@ -1,4 +1,4 @@
-import { scdlDepositCronService } from "../../configurations/di-container";
+import { scdlDepositCronService } from "../../init-services";
 
 export default class DepositLogCli {
     static cmdName = "scdl-deposit";

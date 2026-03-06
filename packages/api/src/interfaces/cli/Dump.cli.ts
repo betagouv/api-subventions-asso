@@ -2,7 +2,7 @@ import fs from "fs";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../@types";
 import DumpPipedriveParser from "../../modules/dump/dump.pipedrive.parser";
-import { dumpService } from "../../configurations/di-container";
+import { dumpService } from "../../init-services";
 
 @StaticImplements<CliStaticInterface>()
 export default class DumpCli {
