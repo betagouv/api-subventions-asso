@@ -16,8 +16,16 @@
         error: string;
     }>();
     const ctrl = new Step3Controller(dispatch);
-    const { noFileOrInvalid, excelSheets, view, uploadErrorMessage, uploadError, uploadConfig, errorAlertVisible } =
-        ctrl;
+    const {
+        noFileOrInvalid,
+        excelSheets,
+        view,
+        uploadErrorMessage,
+        uploadError,
+        uploadConfig,
+        errorAlertVisible,
+        allocatorSiret,
+    } = ctrl;
 
     const infoBoxTitle = "Nous acceptons uniquement des fichiers au format CSV ou XLS. ";
     const checkboxOptions = [
@@ -44,27 +52,41 @@
                     closeButton={true}
                     bind:visible={$errorAlertVisible}>
                     <p>
-                        Merci de réessayer ultérieurement. Si le problème persiste, vous pouvez recharger la page ou
-                        contacter notre support via la bulle de chat.
+                        Nous vous invitons à réessayer de faire votre dépôt. Si le problème persiste, merci de bien
+                        vouloir contacter notre support via la bulle de chat.
                     </p>
                 </Alert>
             </div>
 
             <div class="fr-mb-6v">
                 <InfoBox title={infoBoxTitle}>
-                    <p>
+                    <p class="fr-mb-2v">
                         Les fichiers PDF ne permettent pas de traitement automatisé, car ils figent l'information sous
-                        forme de texte ou d'image, rendant les données difficilement exploitables.
+                        forme de texte ou d'image, rendant les données inexploitables. <br />
                     </p>
-                    <p class="fr-mb-0">
-                        Pour préparer votre fichier, vous pouvez vous appuyer
-                        <TargetBlankLink
-                            href="https://www.notion.so/R-gles-de-format-SCDL-1281788663a380e1a57efdd9b324c1ba">
-                            nos modèles SCDL
+                    <p class="fr-mb-4">
+                        Pour préparer votre fichier, vous pouvez vous appuyer sur
+                        <TargetBlankLink href="https://schema.data.gouv.fr/scdl/subventions/">
+                            notre modèle SCDL <!-- todo : en attente lien vers le gabarit xlsx + chgt blank link par download link ? -->
                         </TargetBlankLink>
                         .
                     </p>
+                    <h3 class="fr-text--lg fr-text--bold">Besoin d'aide ?</h3>
+                    <p class="fr-mb-0">
+                        Venez poser vos questions lors du webinaire d’accompagnement sur le dépôt de données au format
+                        SCDL :
+                        <TargetBlankLink
+                            href="https://datasubvention.beta.gouv.fr/permanence-scdl-creer-structurer-et-deposer-vos-donnees/">
+                            s'inscrire
+                        </TargetBlankLink>
+                    </p>
                 </InfoBox>
+            </div>
+
+            <div class="fr-mb-6v">
+                <span class="fr-text--bold">SIRET de l’attribuant indiqué :</span>
+                <br />
+                {allocatorSiret}
             </div>
 
             <div class="fr-mb-6v">
@@ -93,7 +115,7 @@
                     disabled={$noFileOrInvalid || !selectedValues.includes(checkboxOptions[0].value)}
                     class="fr-btn fr-mr-3v"
                     type="button">
-                    Valider
+                    Poursuivre l'import
                 </button>
             </div>
         </div>
