@@ -1,8 +1,8 @@
 import fs from "fs";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
 import { CliStaticInterface } from "../../@types";
-import dumpService from "../../modules/dump/dump.service";
 import DumpPipedriveParser from "../../modules/dump/dump.pipedrive.parser";
+import { dumpService } from "../../init-services";
 
 @StaticImplements<CliStaticInterface>()
 export default class DumpCli {

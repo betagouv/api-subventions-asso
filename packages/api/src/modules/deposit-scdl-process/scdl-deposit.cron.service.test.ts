@@ -1,5 +1,3 @@
-import scdlDespositCronService from "./scdl-deposit.cron.service";
-import depositLogPort from "../../dataProviders/db/deposit-log/depositLog.port";
 import { DEPOSIT_LOG_ENTITY } from "./__fixtures__/depositLog.fixture";
 import { USER_WITHOUT_SECRET } from "../user/__fixtures__/user.fixture";
 import notifyService from "../notify/notify.service";
@@ -8,6 +6,9 @@ import userCrudService from "../user/services/crud/user.crud.service";
 import { UserDto } from "dto";
 import { ObjectId } from "mongodb";
 import * as DateHelper from "../../shared/helpers/DateHelper";
+import { ScdlDepositCronService } from "./scdl-deposit.cron.service";
+import { DepositLogPort } from "../../dataProviders/db/deposit-log/depositLog.port";
+import { createMockDepositLogPort } from "../../../tests/__mocks__/deposit-log/deposit-log.port.mock";
 
 jest.mock("../../shared/helpers/DateHelper");
 jest.mock("../user/services/crud/user.crud.service");
@@ -23,13 +24,21 @@ describe("ScdlDepositCronService", () => {
     ];
     const DEPOSIT_LOGS = [DEPOSIT_LOG_ENTITY, { ...DEPOSIT_LOG_ENTITY, userId: USERS[1]._id.toString() }];
 
+    let mockDepositLogPort: jest.Mocked<DepositLogPort>;
+    let scdlDespositCronService: ScdlDepositCronService;
+
+    beforeEach(() => {
+        mockDepositLogPort = createMockDepositLogPort();
+        scdlDespositCronService = new ScdlDepositCronService(mockDepositLogPort);
+    });
+
     describe("getUsersEmailToNotify", () => {
         const TWO_DAYS_AGO = new Date("2025-10-13T00:00:00.000Z");
         let mockFindByDate: jest.SpyInstance;
         let mockFindUsersByIdList: jest.SpyInstance;
 
         beforeEach(() => {
-            mockFindByDate = jest.spyOn(depositLogPort, "findAllFromFullDay").mockResolvedValue(DEPOSIT_LOGS);
+            mockFindByDate = mockDepositLogPort.findAllFromFullDay.mockResolvedValue(DEPOSIT_LOGS);
             mockFindUsersByIdList = jest.spyOn(userCrudService, "findUsersByIdList").mockResolvedValue(USERS);
             jest.mocked(DateHelper.addDaysToDate).mockReturnValue(TWO_DAYS_AGO);
         });
@@ -126,17 +135,16 @@ describe("ScdlDepositCronService", () => {
 
     describe("getDepositsUserIdFromDate", () => {
         const DATE = new Date();
-        const mockFindAllFromFullDay = jest.spyOn(depositLogPort, "findAllFromFullDay");
         beforeEach(() => {
-            mockFindAllFromFullDay.mockResolvedValue(DEPOSIT_LOGS);
+            mockDepositLogPort.findAllFromFullDay.mockResolvedValue(DEPOSIT_LOGS);
         });
 
         it("gets deposits", async () => {
             await scdlDespositCronService.getDepositsUserIdFromDate(DATE);
-            expect(depositLogPort.findAllFromFullDay).toHaveBeenCalledWith(DATE);
+            expect(mockDepositLogPort.findAllFromFullDay).toHaveBeenCalledWith(DATE);
         });
         it("return null if no deposit on date", async () => {
-            mockFindAllFromFullDay.mockResolvedValueOnce(null);
+            mockDepositLogPort.findAllFromFullDay.mockResolvedValueOnce(null);
             const expected = null;
             const actual = await scdlDespositCronService.getDepositsUserIdFromDate(DATE);
             expect(actual).toEqual(expected);
