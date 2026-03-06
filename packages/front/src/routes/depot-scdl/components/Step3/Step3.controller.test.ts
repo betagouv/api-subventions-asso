@@ -5,6 +5,7 @@ import FileSizeError from "$lib/errors/file-errors/FileSizeError";
 import FileFormatError from "$lib/errors/file-errors/FileFormatError";
 import FileEncodingError from "$lib/errors/file-errors/FileEncodingError";
 import type { DepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
+import { depositLogStore } from "$lib/store/depositLog.store";
 
 vi.mock("$lib/resources/deposit-log/depositLog.service");
 vi.mock("$lib/helpers/fileHelper", async () => {
@@ -35,6 +36,11 @@ describe("Step3Controller", () => {
     };
 
     beforeEach(() => {
+        depositLogStore.value = {
+            step: 1,
+            allocatorSiret: "12345678901234",
+        };
+
         mockDispatch = vi.fn();
         controller = new Step3Controller(mockDispatch);
         clearUploadErrorSpy = vi.spyOn(controller, "clearUploadError");

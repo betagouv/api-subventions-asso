@@ -16,18 +16,19 @@
         <ul class="fr-mb-7v">
             <li>Vérifier la conformité de vos fichiers avec le format SCDL</li>
             <li>Importer facilement vos données</li>
-            <li>Suivre l'état de vos dépôts</li>
         </ul>
         <p class="fr-mb-7v">
-            👉 Avant de commencer, nous vous recommandons de consulter
-            <TargetBlankLink href="https://www.notion.so/R-gles-de-format-SCDL-1281788663a380e1a57efdd9b324c1ba">
-                notre guide de préparation des fichiers
+            👉 Avant de commencer, vous pouvez vous reporter à la documentation officielle pour plus d'informations :
+            <TargetBlankLink href="https://schema.data.gouv.fr/scdl/subventions/">
+                voir la documentation
             </TargetBlankLink>
             .
-        </p>
-        <p class="fr-mb-7v">
-            Merci pour votre contribution, qui permet d'améliorer la connaissance sur le financement public des
-            associations et de faciliter la mutualisation des données entre administrations.
+            <br />
+            👉 Vous pouvez également vous inscrire à un webinaire d'accompagnement au format SCDL :
+            <TargetBlankLink
+                href="https://datasubvention.beta.gouv.fr/permanence-scdl-creer-structurer-et-deposer-vos-donnees/">
+                s'inscrire
+            </TargetBlankLink>
         </p>
     </div>
     <div class="text-center">
