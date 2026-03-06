@@ -94,4 +94,7 @@ export interface NotificationDataTypes {
             examples: DefaultObject[];
         };
     };
+    [NotificationType.MONGO_CONNECTION_LOST]: {
+        eventName: string;
+    };
 }

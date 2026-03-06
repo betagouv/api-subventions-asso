@@ -36,6 +36,7 @@ export interface NotifierMethodType {
     (type: NotificationType.DATA_IMPORT_SUCCESS, data: NotificationDataTypes[NotificationType.DATA_IMPORT_SUCCESS]);
     (type: NotificationType.DEPOSIT_SCDL_SUCCESS, data: NotificationDataTypes[NotificationType.DEPOSIT_SCDL_SUCCESS]);
     (type: NotificationType.EXTERNAL_API_ERROR, data: NotificationDataTypes[NotificationType.EXTERNAL_API_ERROR]);
+    (type: NotificationType.MONGO_CONNECTION_LOST, data: NotificationDataTypes[NotificationType.MONGO_CONNECTION_LOST]);
 }
 
 export interface NotifyOutPipe {
