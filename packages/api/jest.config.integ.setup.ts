@@ -42,12 +42,12 @@ import { S3Client } from "@aws-sdk/client-s3";
 jest.spyOn(console, "info").mockImplementation(() => {});
 jest.mock("axios");
 jest.mock("./src/configurations/env.conf", () => ({
-    ENV: "test",
-    Environment: {
+    ENV: "test", // do not change this or it will break connectDB()
+    EnvironmentEnum: {
         TEST: "test",
         PREPROD: "preprod",
         PROD: "prod",
-        DEV: "dev"
+        DEV: "dev",
     },
 }));
 jest.mock("openid-client");
