@@ -63,7 +63,7 @@ describe("RechercheEntreprisesService", () => {
         it("throw error when queried by siren and structure is not from an association", async () => {
             jest.mocked(associationHelper.isCategoryFromAsso).mockReturnValue(false);
             expect(async () => await rechercheEntreprisesService.getSearchResult(SIREN.value)).rejects.toThrow(
-                NotAssociationError,
+                new NotAssociationError(),
             );
         });
 
