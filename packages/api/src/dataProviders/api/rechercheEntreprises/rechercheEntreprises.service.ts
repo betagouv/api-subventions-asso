@@ -8,7 +8,7 @@ import { NotificationType } from "../../../modules/notify/@types/NotificationTyp
 import Provider from "../../../modules/providers/@types/IProvider";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import associationHelper from "../../../modules/associations/associations.helper";
-import { NotAssociationError } from "core/errors/NotAssociationError";
+import { NotAssociationError } from "core";
 import Siren from "../../../identifierObjects/Siren";
 
 export class RechercheEntreprisesService implements Provider {
