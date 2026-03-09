@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/node";
 import { NotifyOutPipe, NotifierMethodType } from "./@types/NotifyOutPipe";
 import outPipes from "./outPipes";
-import { ENV, EnvironmentEnum } from "../../configurations/env.conf";
+import { ENV } from "../../configurations/env.conf";
 import { NOTIFICATION_ENV_CONFIG } from "./NotificationEnvConfig";
 import { NotificationType } from "./@types/NotificationType";
 
@@ -29,13 +29,13 @@ export class NotifyService {
     }
 
     private shouldSkipNotification(type: NotificationType): boolean {
-        // todo : unit test
         const allowedEnvs = NOTIFICATION_ENV_CONFIG[type];
 
         if (allowedEnvs) {
             return !allowedEnvs.some(env => env === ENV);
         } else {
-            return ENV === EnvironmentEnum.DEV || ENV === EnvironmentEnum.TEST;
+            console.warn(`No environment configuration found for notification type ${type}`);
+            return true;
         }
     }
 }
