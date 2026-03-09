@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.81.1](https://github.com/betagouv/api-subventions-asso/compare/v0.81.0...v0.81.1) (2026-03-09)
+
+### Bug Fixes
+
+- **api:** only check for category legal when query is a siren ([2ae2b17](https://github.com/betagouv/api-subventions-asso/commit/2ae2b179e03e7d8e6dc7ea9755b3a9a522b8ef18))
+
 # [0.81.0](https://github.com/betagouv/api-subventions-asso/compare/v0.80.1...v0.81.0) (2026-02-26)
 
 ### Features
