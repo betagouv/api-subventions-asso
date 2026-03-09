@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.81.2](https://github.com/betagouv/api-subventions-asso/compare/v0.81.1...v0.81.2) (2026-03-09)
+
+### Bug Fixes
+
+- **api:** import core as module ([385f8a5](https://github.com/betagouv/api-subventions-asso/commit/385f8a5588f9e209290078c14c239c997bea1bb2))
+
 ## [0.81.1](https://github.com/betagouv/api-subventions-asso/compare/v0.81.0...v0.81.1) (2026-03-09)
 
 ### Bug Fixes
