@@ -18,4 +18,5 @@ export enum NotificationType {
     DATA_IMPORT_SUCCESS,
     DEPOSIT_SCDL_SUCCESS,
     EXTERNAL_API_ERROR,
+    MONGO_CONNECTION_LOST,
 }

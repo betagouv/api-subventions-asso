@@ -20,7 +20,6 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
     }
 
     notify(type, data) {
-        if (!["prod", "preprod"].includes(ENV)) Promise.resolve(true); // do nothing in dev mode
         switch (type) {
             case NotificationType.USER_DELETED:
                 return this.userDeleted(data);
@@ -38,6 +37,8 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
                 return this.depositScdlSuccess(data);
             case NotificationType.EXTERNAL_API_ERROR:
                 return this.externalApiError(data);
+            case NotificationType.MONGO_CONNECTION_LOST:
+                return this.connectionLost(data);
             default:
                 return Promise.resolve(false);
         }
@@ -145,15 +146,13 @@ export class MattermostNotifyPipe implements NotifyOutPipe {
         }
     }
 
-    // bypass pipe architecture for production debugging
-    // notify DB connection lost
-    async connectionLost(listener) {
+    private async connectionLost({ eventName }) {
         try {
             return await this.sendMessage({
                 text: `La connexion au serveur mongoDB a été perdue`,
                 username: "Docteur Connector",
                 icon_emoji: "firecracker",
-                props: { card: `\`\`\`\n${listener}\n\`\`\`` },
+                props: { card: `\`\`\`\n${eventName}\n\`\`\`` },
             });
         } catch {
             console.error("error sending mattermost log for DB connection lost");

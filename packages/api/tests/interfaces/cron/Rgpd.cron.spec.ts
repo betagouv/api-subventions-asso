@@ -6,10 +6,16 @@ import axios from "axios";
 import brevoMailNotifyPipe from "../../../src/modules/notify/outPipes/BrevoMailNotifyPipe";
 import userResetPort from "../../../src/dataProviders/db/user/user-reset.port";
 import configurationsService, { CONFIGURATION_NAMES } from "../../../src/modules/configurations/configurations.service";
+import { ENV as _ENV, EnvironmentEnum } from "../../../src/configurations/env.conf";
 
 describe("Rgpd Cron", () => {
     const NOW = new Date();
     let cron: RgpdCron;
+
+    beforeEach(() => {
+        // @ts-expect-error: override jest config mock to test notifications pipes
+        _ENV = EnvironmentEnum.PROD;
+    });
 
     beforeEach(() => {
         cron = new RgpdCron();
