@@ -7,7 +7,7 @@ exports[`Rgpd Cron removeInactiveUsers() should notify through mattermost 1`] = 
     {
       "channel": "datasubvention---comptes-app",
       "icon_emoji": "door",
-      "text": "[test] Les comptes suivants ont été supprimés pour inactivité trop longue.
+      "text": "[prod] Les comptes suivants ont été supprimés pour inactivité trop longue.
 
 - Prénom NOM (old-user1@mail.com)
 - Prénom NOM (old-user2@mail.com) 

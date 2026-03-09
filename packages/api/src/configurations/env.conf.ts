@@ -1,6 +1,13 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+export enum EnvironmentEnum {
+    DEV = "dev",
+    PREPROD = "preprod",
+    PROD = "prod",
+    TEST = "test",
+}
+
 // do not override jest env var setup
 if (process.env.ENV !== "test") dotenv.config({ path: `.env.local`, override: true }); //https://stackoverflow.com/a/74622497
 
