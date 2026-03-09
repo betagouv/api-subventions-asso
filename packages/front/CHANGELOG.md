@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.81.2](https://github.com/betagouv/datasubvention/compare/v0.81.1...v0.81.2) (2026-03-09)
+
+### Features
+
+- **front:** [#0000](https://github.com/betagouv/datasubvention/issues/0000) hotfix wording deposit process 2 ([49d559c](https://github.com/betagouv/datasubvention/commit/49d559cee20f6f5b7be6eda681bcd2af7a047b16))
+- **front:** [#0000](https://github.com/betagouv/datasubvention/issues/0000) hotfix wording deposit process 2 ([3484b34](https://github.com/betagouv/datasubvention/commit/3484b342b3b51970625866cc72aba8e91ad1fb45))
+
 # [0.81.0](https://github.com/betagouv/datasubvention/compare/v0.80.1...v0.81.0) (2026-02-26)
 
 ### Features

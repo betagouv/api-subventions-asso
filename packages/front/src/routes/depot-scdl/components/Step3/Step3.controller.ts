@@ -30,6 +30,7 @@ export default class Step3Controller {
 
     constructor(dispatch: EventDispatcher<EventMap>) {
         this.dispatch = dispatch;
+        this.allocatorSiret = depositLogStore.value!.allocatorSiret!;
     }
 
     public uploadConfig = {
@@ -44,6 +45,7 @@ export default class Step3Controller {
     public uploadErrorMessage: Store<string | undefined> = new Store(undefined);
     public uploadError: Store<boolean> = new Store(false);
     public errorAlertVisible: Store<boolean> = new Store(false);
+    public allocatorSiret: string;
 
     async handleFileChange(event: CustomEvent<{ files: FileList | null }>) {
         const files = event.detail.files;
