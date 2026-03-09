@@ -7,8 +7,11 @@ import { RechercheEntreprisesMapper } from "./recherche-entreprises.mapper";
 import notifyService from "../../../modules/notify/notify.service";
 import { RNA_STR, SIREN_STR } from "../../../../tests/__fixtures__/association.fixture";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
+import associationHelper from "../../../modules/associations/associations.helper";
+import { NotAssociationError } from "core";
 
 // Mocking the external dependencies
+jest.mock("../../../modules/associations/associations.helper");
 jest.mock("./recherche-entreprises.mapper");
 jest.mock("./rechercheEntreprises.port");
 jest.mock("../../../modules/notify/notify.service", () => ({
@@ -31,6 +34,7 @@ describe("RechercheEntreprisesService", () => {
         let mockNotifyOrNot: jest.SpyInstance;
 
         beforeEach(() => {
+            jest.mocked(associationHelper.isCategoryFromAsso).mockReturnValue(true);
             // @ts-expect-error: mock return value
             jest.spyOn(RechercheEntreprisesMapper, "toAssociationNameEntity").mockReturnValue({
                 name: "Adapted Association Name",
@@ -56,8 +60,15 @@ describe("RechercheEntreprisesService", () => {
             expect(mockNotifyOrNot).toHaveBeenCalledTimes(1);
         });
 
+        it("throw error when queried by siren and structure is not from an association", async () => {
+            jest.mocked(associationHelper.isCategoryFromAsso).mockReturnValue(false);
+            expect(async () => await rechercheEntreprisesService.getSearchResult(SIREN.value)).rejects.toThrow(
+                NotAssociationError,
+            );
+        });
+
         it("adapts all result to AssociationNameEntity", async () => {
-            await rechercheEntreprisesService.getSearchResult(SIREN.value);
+            await rechercheEntreprisesService.getSearchResult("NAME_RESEARCH");
             RESULTS.forEach((result, index) => {
                 expect(RechercheEntreprisesMapper.toAssociationNameEntity).toHaveBeenNthCalledWith(index + 1, result);
             });
@@ -65,7 +76,7 @@ describe("RechercheEntreprisesService", () => {
 
         it("returns AssociationNameEntities", async () => {
             const expected = [ASSO_NAME_ENTITY, ASSO_NAME_ENTITY];
-            const actual = await rechercheEntreprisesService.getSearchResult(SIREN.value);
+            const actual = await rechercheEntreprisesService.getSearchResult("NAME_RESEARCH");
             expect(actual).toEqual(expected);
         });
     });
