@@ -3,7 +3,7 @@ import DataBretagneCli from "../../../src/interfaces/cli/DataBretagne.cli";
 import DataBretagneFixture from "../../__fixtures__/data-bretagne.fixture.json";
 import bopPort from "../../../src/dataProviders/db/state-budget-program/stateBudgetProgram.port";
 import { ObjectId } from "mongodb";
-import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
+import dataLogAdapter from "../../../src/dataProviders/db/data-log/data-log.adapter";
 
 describe("DataBretagneCli", () => {
     beforeEach(() => {
@@ -30,7 +30,7 @@ describe("DataBretagneCli", () => {
 
         it("should register new import", async () => {
             await cli.resync();
-            const actual = await dataLogPort.findAll();
+            const actual = await dataLogAdapter.findAll();
             expect(actual?.[0]).toMatchObject({
                 editionDate: expect.any(Date),
                 integrationDate: expect.any(Date),

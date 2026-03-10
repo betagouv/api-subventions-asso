@@ -1,10 +1,12 @@
 import path from "path";
 import { DataLogDto } from "dto";
-import dataLogPort from "../../dataProviders/db/data-log/dataLog.port";
 import { DataLogMapper } from "./data-log.mapper";
-import { ApiDataLogEntity, DataLogSource, FileDataLogEntity } from "./entities/dataLogEntity";
+import { ApiDataLogEntity, DataLogEntity, DataLogSource, FileDataLogEntity } from "./entities/dataLogEntity";
+import { DataLogPort } from "../../dataProviders/db/data-log/data-log.port";
 
-class DataLogService {
+export class DataLogService {
+    constructor(private readonly dataLogPort: DataLogPort) {}
+
     throwMissingProp(propName: string) {
         throw new Error(`DataLogEntity must have a ${propName}.`);
     }
@@ -24,18 +26,15 @@ class DataLogService {
         if (!log.providerId) this.throwMissingProp("providerId");
         if (!log.providerName) this.throwMissingProp("providerName");
 
-        return dataLogPort.insert({ ...log, integrationDate: new Date() });
+        return this.dataLogPort.insert({ ...log, integrationDate: new Date() });
     }
 
     async getProvidersLogOverview(): Promise<DataLogDto[]> {
-        const overviews = await dataLogPort.getProvidersLogOverview();
+        const overviews = await this.dataLogPort.getProvidersLogOverview();
         return overviews.map(overview => DataLogMapper.overviewToDto(overview));
     }
 
-    findAllCursor() {
-        return dataLogPort.findAllCursor();
+    findAllCursor(): AsyncIterable<DataLogEntity> {
+        return this.dataLogPort.findAllCursor();
     }
 }
-
-const dataLogService = new DataLogService();
-export default dataLogService;

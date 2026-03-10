@@ -19,13 +19,13 @@ import MiscScdlGrant from "../../modules/providers/scdl/__fixtures__/MiscScdlGra
 import MiscScdlProducer from "../../modules/providers/scdl/__fixtures__/MiscScdlProducer";
 import { MixedParsedError, ParsedErrorFormat } from "../../modules/providers/scdl/@types/Validation";
 import * as csvSyncStringifier from "csv-stringify/sync";
-import dataLogService from "../../modules/data-log/dataLog.service";
 
 jest.mock("../../modules/data-log/dataLog.service");
 import scdlGrantService from "../../modules/providers/scdl/scdl.grant.service";
 import applicationFlatService from "../../modules/applicationFlat/applicationFlat.service";
 import { ScdlParsedInfos } from "../../modules/providers/scdl/@types/ScdlParsedInfos";
 import Siret from "../../identifierObjects/Siret";
+import { dataLogService } from "../../init-services/init-data-log-services";
 jest.mock("../../modules/providers/scdl/scdl.grant.service");
 jest.mock("../../modules/applicationFlat/applicationFlat.service");
 jest.mock("../../modules/notify/notify.service", () => ({ notify: jest.fn() }));
@@ -49,6 +49,7 @@ describe("ScdlCli", () => {
     const QUOTE = '"';
 
     let cli: ScdlCli;
+    let mockAddFromFile: jest.SpyInstance;
 
     beforeEach(() => {
         mockedScdlService.getProducer.mockResolvedValue(PRODUCER_ENTITY);
@@ -62,6 +63,7 @@ describe("ScdlCli", () => {
             errors: [],
             parsedInfos: {} as ScdlParsedInfos,
         });
+        mockAddFromFile = jest.spyOn(dataLogService, "addFromFile").mockResolvedValue("id");
 
         cli = new ScdlCli();
     });
@@ -198,7 +200,8 @@ describe("ScdlCli", () => {
                 producer: PRODUCER_ENTITY,
                 exportDate: EXPORT_DATE_STR,
             });
-            expect(jest.mocked(dataLogService.addFromFile)).toHaveBeenCalledWith({
+
+            expect(mockAddFromFile).toHaveBeenCalledWith({
                 providerId: PRODUCER_ENTITY.siret,
                 providerName: PRODUCER_ENTITY.name,
                 fileName: FILE_PATH,

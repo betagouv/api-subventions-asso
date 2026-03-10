@@ -1,6 +1,6 @@
 import demarchesSimplifieesService from "../../modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
 import { DemarchesSimplifieesCron } from "./DemarchesSimplifiees.cron";
-import dataLogService from "../../modules/data-log/dataLog.service";
+import { dataLogService } from "../../init-services/init-data-log-services";
 
 jest.mock("../../modules/providers/demarchesSimplifiees/demarchesSimplifiees.service", () => ({
     updateAllForms: jest.fn(),
@@ -17,15 +17,17 @@ describe("DemarchesSimplifieesCron", () => {
 
     describe("updateAll", () => {
         let serviceMock: jest.SpyInstance;
+        let mockAddFromApi: jest.SpyInstance;
         const RESULT = "res";
 
         beforeAll(() => {
             // @ts-expect-error mock
             serviceMock = jest.spyOn(demarchesSimplifieesService, "updateAllForms").mockReturnValue(RESULT);
+            mockAddFromApi = jest.spyOn(dataLogService, "addFromApi").mockResolvedValue("id");
         });
 
         afterAll(() => {
-            serviceMock.mockRestore();
+            jest.restoreAllMocks();
         });
 
         it("calls service", async () => {
@@ -37,7 +39,7 @@ describe("DemarchesSimplifieesCron", () => {
             const date = new Date("2022-01-01");
             jest.useFakeTimers().setSystemTime(date);
             await controller.updateAll();
-            expect(dataLogService.addFromApi).toHaveBeenCalledWith({
+            expect(mockAddFromApi).toHaveBeenCalledWith({
                 providerId: "mockedId",
                 providerName: "mockedName",
                 editionDate: date,

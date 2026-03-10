@@ -1,7 +1,7 @@
 import path from "path";
 import OsirisCli from "../../../src/interfaces/cli/Osiris.cli";
 import OsirisParser from "../../../src/modules/providers/osiris/osiris.parser";
-import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
+import dataLogAdapter from "../../../src/dataProviders/db/data-log/data-log.adapter";
 import { osirisActionPort, osirisRequestPort } from "../../../src/dataProviders/db/providers/osiris";
 import { REQUEST_DBO } from "../../../src/modules/providers/osiris/__fixtures__/osiris.request.fixtures";
 import { ACTION_DBO } from "../../../src/modules/providers/osiris/__fixtures__/osiris.action.fixtures";
@@ -48,7 +48,7 @@ describe("OsirisCli", () => {
             );
             await controller.parse("requests", filePath, "2022");
 
-            const actual = await dataLogPort.findAll();
+            const actual = await dataLogAdapter.findAll();
             expect(actual?.[0]).toMatchObject({
                 editionDate: expect.any(Date),
                 fileName: "SuiviDossiers_test.xls",
@@ -113,7 +113,7 @@ describe("OsirisCli", () => {
             );
             await controller.parse("actions", filePath, "2022");
 
-            const actual = await dataLogPort.findAll();
+            const actual = await dataLogAdapter.findAll();
             expect(actual?.[0]).toMatchObject({
                 editionDate: expect.any(Date),
                 fileName: "SuiviActions_test.xls",

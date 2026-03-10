@@ -1,15 +1,15 @@
-import amountsVsProgramRegionPort from "../../../src/dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
 import { AMOUNTS_VS_PROGRAM_REGION_ENTITIES } from "../../../src/modules/dataViz/amountsVsProgramRegion/__fixtures__/amountsVSProgramRegion.fixture";
 import request from "supertest";
 import { createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import { App } from "supertest/types";
+import amountsVsProgramRegionAdapter from "../../../src/dataProviders/db/dataViz/amountVSProgramRegion/amounts-vs-program-region.adapter";
 
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
 
 const g = global as unknown as { app: App };
 
 const insertData = async () => {
-    await amountsVsProgramRegionPort.upsertMany(AMOUNTS_VS_PROGRAM_REGION_ENTITIES);
+    await amountsVsProgramRegionAdapter.upsertMany(AMOUNTS_VS_PROGRAM_REGION_ENTITIES);
 };
 
 describe("DataVizHttp", () => {

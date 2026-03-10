@@ -1,6 +1,6 @@
 import * as mongoDB from "mongodb";
 import { AgentTypeEnum, TerritorialScopeEnum } from "dto";
-import { AnyBulkWriteOperation, Document, FindCursor } from "mongodb";
+import { AnyBulkWriteOperation, Document } from "mongodb";
 
 import {
     MONGO_METABASE_DBNAME,
@@ -149,15 +149,14 @@ export class MetabaseDumpPort {
         return this.db.collection("deposit-logs").insertMany(depositLogs as Document[]);
     }
 
-    public async upsertDataLog(dataLogCursor: FindCursor<DataLogEntity>) {
+    public async upsertDataLog(dataLogs: AsyncIterable<DataLogEntity>) {
         await this.db.collection("data-log").deleteMany({});
 
         const batchSize = 1000;
         let batch: Document[] = [];
 
-        while (await dataLogCursor.hasNext()) {
-            const doc = await dataLogCursor.next();
-            if (doc) batch.push(doc as Document);
+        for await (const doc of dataLogs) {
+            batch.push(doc as Document);
 
             if (batch.length >= batchSize) {
                 await this.db.collection("data-log").insertMany(batch);

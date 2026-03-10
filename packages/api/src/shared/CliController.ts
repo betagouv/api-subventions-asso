@@ -1,8 +1,8 @@
 import fs from "fs";
-import dataLogService from "../modules/data-log/dataLog.service";
 import CliLogger from "./CliLogger";
 import { GenericParser } from "./GenericParser";
 import { validateDate } from "./helpers/CliHelper";
+import { dataLogService } from "../init-services/init-data-log-services";
 
 export default class CliController {
     protected logFileParsePath = "";

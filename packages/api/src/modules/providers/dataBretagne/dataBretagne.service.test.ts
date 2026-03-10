@@ -9,9 +9,8 @@ import { DataBretagneProgrammeMapper } from "../../../dataProviders/api/dataBret
 import DomaineFonctionnelEntity from "../../../entities/DomaineFonctionnelEntity";
 import MinistryEntity from "../../../entities/MinistryEntity";
 import RefProgrammationEntity from "../../../entities/RefProgrammationEntity";
-import dataLogService from "../../data-log/dataLog.service";
 import { DATA_BRETAGNE_RECORDS, PROGRAM_ENTITIES } from "./__fixtures__/dataBretagne.fixture";
-jest.mock("../../data-log/dataLog.service");
+import { dataLogService } from "../../../init-services/init-data-log-services";
 
 const entities = {
     getDomaineFonctionnel: [
@@ -46,6 +45,8 @@ const expected = {
 };
 
 describe("Data Bretagne Service", function () {
+    let mockAddFromApi: jest.SpyInstance;
+
     beforeAll(() => {
         jest.mocked(dataBretagnePort.getStateBudgetPrograms).mockResolvedValue([
             new StateBudgetProgramEntity("label_theme", "label", "code_ministere", 1),
@@ -53,6 +54,7 @@ describe("Data Bretagne Service", function () {
         jest.mocked(stateBudgetProgramPort.findAll).mockResolvedValue(
             PROGRAMS.map(DataBretagneProgrammeMapper.toEntity),
         );
+        mockAddFromApi = jest.spyOn(dataLogService, "addFromApi").mockResolvedValue("added from api");
     });
 
     describe("resyncPrograms", () => {
@@ -77,7 +79,7 @@ describe("Data Bretagne Service", function () {
             const date = new Date("2022-01-01");
             jest.useFakeTimers().setSystemTime(date);
             await dataBretagneService.resyncPrograms();
-            expect(dataLogService.addFromApi).toHaveBeenCalledWith({
+            expect(mockAddFromApi).toHaveBeenCalledWith({
                 providerId: dataBretagneService.meta.id,
                 providerName: dataBretagneService.meta.name,
                 editionDate: date,

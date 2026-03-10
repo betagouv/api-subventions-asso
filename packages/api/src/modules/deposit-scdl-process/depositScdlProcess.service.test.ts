@@ -19,9 +19,6 @@ import MiscScdlGrant from "../providers/scdl/__fixtures__/MiscScdlGrant";
 import depositScdlProcessCheckService from "./check/DepositScdlProcess.check.service";
 import MiscScdlProducerEntity from "../providers/scdl/entities/MiscScdlProducerEntity";
 import Siret from "../../identifierObjects/Siret";
-import dataLogService from "../data-log/dataLog.service";
-import { DataLogEntity } from "../data-log/entities/dataLogEntity";
-import { InsertOneResult } from "mongodb";
 import s3FileService from "../s3-file/s3Storage.service";
 import { DefaultObject } from "../../@types";
 import { NotificationType } from "../notify/@types/NotificationType";
@@ -30,6 +27,7 @@ import { USER_WITHOUT_SECRET } from "../user/__fixtures__/user.fixture";
 import { DepositLogPort } from "../../dataProviders/db/deposit-log/depositLog.port";
 import { DepositScdlProcessService } from "./depositScdlProcess.service";
 import { createMockDepositLogPort } from "../../../tests/__mocks__/deposit-log/deposit-log.port.mock";
+import { dataLogService } from "../../init-services/init-data-log-services";
 
 jest.mock("./check/DepositScdlProcess.check.service");
 jest.mock("../../dataProviders/db/deposit-log/depositLog.port");
@@ -412,7 +410,7 @@ describe("DepositScdlProcessService", () => {
             jest.spyOn(depositScdlProcessCheckService, "finalCheckBeforePersist").mockResolvedValue(undefined);
             persistMock = jest.spyOn(scdlService, "persist").mockResolvedValue(undefined);
             deletDepositMock = mockDepositLogPort.deleteByUserId.mockResolvedValue(true);
-            jest.spyOn(dataLogService, "addFromFile").mockResolvedValue({} as InsertOneResult<DataLogEntity>);
+            jest.spyOn(dataLogService, "addFromFile").mockResolvedValue("id" as string);
             mockS3DeleteUserFile.mockResolvedValue();
             mockGetUserFile.mockResolvedValue(createMockFile("test.csv"));
         });

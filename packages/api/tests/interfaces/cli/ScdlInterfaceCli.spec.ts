@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import ScdlCli from "../../../src/interfaces/cli/Scdl.cli";
 import miscScdlProducersPort from "../../../src/dataProviders/db/providers/scdl/miscScdlProducers.port";
 import miscScdlGrantPort from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.port";
-import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
+import dataLogAdapter from "../../../src/dataProviders/db/data-log/data-log.adapter";
 import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
 import applicationFlatPort from "../../../src/dataProviders/db/applicationFlat/applicationFlat.port";
 import notifyService from "../../../src/modules/notify/notify.service";
@@ -103,7 +103,7 @@ describe("SCDL CLI", () => {
 
             it("registers new import in data-log", async () => {
                 await test("SCDL", PRODUCER.siret, FIRST_IMPORT_DATE);
-                const actual = await dataLogPort.findAll();
+                const actual = await dataLogAdapter.findAll();
                 expect(
                     actual.map(dataLog => ({ ...dataLog, _id: expect.any(String), integrationDate: expect.any(Date) })),
                 ).toMatchSnapshot();

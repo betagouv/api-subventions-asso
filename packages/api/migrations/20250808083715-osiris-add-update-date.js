@@ -1,8 +1,8 @@
-const { default: dataLogPort } = require("../build/src/dataProviders/db/data-log/dataLog.port.js");
+const { default: dataLogAdapter } = require("../build/src/dataProviders/db/data-log/data-log.adapter");
 
 module.exports = {
     async up(db) {
-        const lastDate = await dataLogPort.getLastImportByProvider("osiris");
+        const lastDate = await dataLogAdapter.getLastImportByProvider("osiris");
         await db.collection("osiris-requests").updateMany({}, { $set: { updateDate: lastDate } });
         await db.collection("osiris-actions").updateMany({}, { $set: { updateDate: lastDate } });
     },

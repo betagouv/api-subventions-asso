@@ -1,8 +1,8 @@
 import fs from "fs";
 import CliController from "./CliController";
 import { GenericParser } from "./GenericParser";
-import dataLogService from "../modules/data-log/dataLog.service";
 import { validateDate } from "./helpers/CliHelper";
+import { dataLogService } from "../init-services/init-data-log-services";
 
 jest.mock("./helpers/CliHelper");
 jest.mock("../modules/data-log/dataLog.service");
@@ -12,10 +12,15 @@ describe("CliController", () => {
     const FILENAME = "FILENAME";
     const EXPORT_DATE = "2024/07/30";
     const existsSyncMock = jest.spyOn(fs, "existsSync");
-    const writeFileSyncMock = jest.spyOn(fs, "writeFileSync").mockImplementation(() => ({}));
+    jest.spyOn(fs, "writeFileSync").mockImplementation(() => ({}));
+    let mockAddFromFile: jest.SpyInstance;
+
+    beforeAll(() => {
+        mockAddFromFile = jest.spyOn(dataLogService, "addFromFile").mockResolvedValue("id");
+    });
 
     afterAll(() => {
-        writeFileSyncMock.mockRestore();
+        jest.restoreAllMocks();
     });
 
     describe("valideParseFile()", () => {
@@ -134,7 +139,7 @@ describe("CliController", () => {
             ctrl._serviceMeta = SERVICE_META;
             // @ts-expect-error -- test protected method
             await ctrl._logImportSuccess(EDITION_DATE, FILENAME);
-            expect(dataLogService.addFromFile).toHaveBeenCalledWith({
+            expect(mockAddFromFile).toHaveBeenCalledWith({
                 providerId: SERVICE_META.id,
                 providerName: SERVICE_META.name,
                 fileName: FILENAME,

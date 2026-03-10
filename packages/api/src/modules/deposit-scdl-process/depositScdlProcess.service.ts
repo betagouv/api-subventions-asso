@@ -12,7 +12,6 @@ import MiscScdlMapper from "../providers/scdl/mappers/misc-scdl.mapper";
 import { formatDateToYYYYMMDDWithSeparator } from "../../shared/helpers/DateHelper";
 import Siret from "../../identifierObjects/Siret";
 import MiscScdlProducerEntity from "../providers/scdl/entities/MiscScdlProducerEntity";
-import dataLogService from "../data-log/dataLog.service";
 import s3StorageService from "../s3-file/s3Storage.service";
 import { ScdlParsedInfos } from "../providers/scdl/@types/ScdlParsedInfos";
 import { MixedParsedError } from "../providers/scdl/@types/Validation";
@@ -22,6 +21,7 @@ import notifyService from "../notify/notify.service";
 import { NotificationType } from "../notify/@types/NotificationType";
 import { isUserAdmin } from "../../shared/helpers/UserHelper";
 import { DepositLogPort } from "../../dataProviders/db/deposit-log/depositLog.port";
+import { dataLogService } from "../../init-services/init-data-log-services";
 
 export class DepositScdlProcessService {
     constructor(private readonly depositLogPort: DepositLogPort) {}

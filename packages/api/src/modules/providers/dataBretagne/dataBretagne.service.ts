@@ -4,7 +4,6 @@ import stateBudgetProgramPort from "../../../dataProviders/db/state-budget-progr
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
 import ProviderCore from "../ProviderCore";
 import MinistryEntity from "../../../entities/MinistryEntity";
-import dataLogService from "../../data-log/dataLog.service";
 import {
     DataBretagneRecords,
     FonctionalDomainsRecord,
@@ -12,6 +11,7 @@ import {
     ProgramsRecord,
     ProgramsRefRecord,
 } from "./@types/DataBretagne";
+import { dataLogService } from "../../../init-services/init-data-log-services";
 
 /**
  * Service for interacting with the Data Bretagne API.

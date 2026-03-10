@@ -9,7 +9,7 @@ import OsirisRequestEntity from "../../modules/providers/osiris/entities/OsirisR
 import { COLORS } from "../../shared/LogOptions";
 import * as CliHelper from "../../shared/helpers/CliHelper";
 import { GenericParser } from "../../shared/GenericParser";
-import dataLogService from "../../modules/data-log/dataLog.service";
+import { dataLogService } from "../../init-services/init-data-log-services";
 
 @StaticImplements<CliStaticInterface>()
 export default class OsirisCli implements ApplicationFlatCli {

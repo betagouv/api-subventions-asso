@@ -1,7 +1,7 @@
 import ChorusCli from "../../../src/interfaces/cli/Chorus.cli";
 import path from "path";
 import chorusLinePort from "../../../src/dataProviders/db/providers/chorus/chorus.line.port";
-import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
+import dataLogAdapter from "../../../src/dataProviders/db/data-log/data-log.adapter";
 import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFlat.port";
 import uniteLegalEntreprisePort from "../../../src/dataProviders/db/uniteLegalEntreprise/uniteLegalEntreprise.port";
 import sireneUniteLegaleDbPort from "../../../src/dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.port";
@@ -78,7 +78,7 @@ describe("ChorusCli", () => {
         it("should register new import", async () => {
             const filePath = FILE_PATH;
             await controller.parse(filePath, EXPORT_DATE);
-            const actual = await dataLogPort.findAll();
+            const actual = await dataLogAdapter.findAll();
             expect(actual?.[0]).toMatchObject({
                 editionDate: new Date(EXPORT_DATE),
                 fileName: "new-chorus-export.xlsx",

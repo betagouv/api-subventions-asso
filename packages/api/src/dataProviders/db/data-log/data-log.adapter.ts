@@ -1,9 +1,9 @@
 import MongoPort from "../../../shared/MongoPort";
 import { DataLogEntity } from "../../../modules/data-log/entities/dataLogEntity";
 import { ProducerLogEntity } from "../../../modules/data-log/entities/producerLogEntity";
-import { FindCursor, WithId } from "mongodb";
+import { DataLogPort } from "./data-log.port";
 
-class DataLogPort extends MongoPort<DataLogEntity> {
+class DataLogAdapter extends MongoPort<DataLogEntity> implements DataLogPort {
     readonly collectionName = "data-log";
 
     async createIndexes() {
@@ -13,22 +13,27 @@ class DataLogPort extends MongoPort<DataLogEntity> {
     }
 
     async insert(entity: DataLogEntity) {
-        return this.collection.insertOne(entity);
+        const result = await this.collection.insertOne(entity);
+        return result.insertedId.toString();
     }
 
     async insertMany(entities: DataLogEntity[]) {
-        return this.collection.insertMany(entities);
+        const result = await this.collection.insertMany(entities);
+        return Object.values(result.insertedIds).map(id => id.toString());
     }
 
-    async findAll() {
-        return this.findAllCursor().toArray();
+    async findAll(): Promise<DataLogEntity[]> {
+        const result = await this.collection.find().toArray();
+        return result.map(({ _id, ...entity }) => entity as DataLogEntity);
     }
 
-    findAllCursor(): FindCursor<WithId<DataLogEntity>> {
-        return this.collection.find({});
+    findAllCursor(): AsyncIterable<DataLogEntity> {
+        const cursor = this.collection.find({});
+
+        return cursor.map(({ _id, ...entity }) => entity as DataLogEntity);
     }
 
-    async getLastImportByProvider(providerId: string) {
+    async getLastImportByProvider(providerId: string): Promise<Date> {
         return (
             await this.collection
                 .aggregate([
@@ -70,5 +75,6 @@ class DataLogPort extends MongoPort<DataLogEntity> {
     }
 }
 
-const dataLogPort = new DataLogPort();
-export default dataLogPort;
+const dataLogAdapter = new DataLogAdapter();
+
+export default dataLogAdapter;

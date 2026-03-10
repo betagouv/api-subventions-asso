@@ -2,7 +2,7 @@ import { Controller, Get, Route, Tags } from "tsoa";
 import { DataLogDto } from "dto";
 import ProvidersInfos from "../../modules/_open-data/provider/entities/ProvidersInfos";
 import providerService from "../../modules/_open-data/provider/provider.service";
-import dataLogService from "../../modules/data-log/dataLog.service";
+import { dataLogService } from "../../init-services/init-data-log-services";
 
 @Route("open-data/fournisseurs")
 @Tags("Open Data")

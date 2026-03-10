@@ -1,9 +1,13 @@
-import AmountsVsProgramRegionMapper from "../../../../modules/dataViz/amountsVsProgramRegion/amounts-vs-program-region.mapper";
-import { AmountsVsProgramRegionDbo } from "../../../../modules/dataViz/amountsVsProgramRegion/entitiyAndDbo/amountsVsProgramRegion.dbo";
 import AmountsVsProgramRegionEntity from "../../../../modules/dataViz/amountsVsProgramRegion/entitiyAndDbo/amountsVsProgramRegion.entity";
+import AmountsVsProgramRegionMapper from "../../../../modules/dataViz/amountsVsProgramRegion/amounts-vs-program-region.mapper";
 import MongoPort from "../../../../shared/MongoPort";
+import { AmountsVsProgramRegionDbo } from "../../../../modules/dataViz/amountsVsProgramRegion/entitiyAndDbo/amountsVsProgramRegion.dbo";
+import { AmountsVsProgramRegionPort } from "./amounts-vs-program-region.port";
 
-export class AmountsVsProgramRegionPort extends MongoPort<Omit<AmountsVsProgramRegionDbo, "_id">> {
+class AmountsVsProgramRegionAdapter
+    extends MongoPort<Omit<AmountsVsProgramRegionDbo, "_id">>
+    implements AmountsVsProgramRegionPort
+{
     collectionName = "dv--montant-programme-region";
 
     public async createIndexes() {
@@ -16,18 +20,19 @@ export class AmountsVsProgramRegionPort extends MongoPort<Omit<AmountsVsProgramR
         );
     }
 
-    public async hasBeenInitialized() {
+    public async hasBeenInitialized(): Promise<boolean> {
         const dbo = await this.collection.findOne({});
         return !!dbo;
     }
 
-    public insertOne(entity: AmountsVsProgramRegionEntity) {
-        return this.collection.insertOne(AmountsVsProgramRegionMapper.toDbo(entity));
+    public async insertOne(entity: AmountsVsProgramRegionEntity): Promise<string> {
+        const result = await this.collection.insertOne(AmountsVsProgramRegionMapper.toDbo(entity));
+        return result.insertedId.toString();
     }
 
-    public upsertOne(entity: AmountsVsProgramRegionEntity) {
+    public async upsertOne(entity: AmountsVsProgramRegionEntity): Promise<string | undefined> {
         const updateDbo = AmountsVsProgramRegionMapper.toDbo(entity);
-        return this.collection.updateOne(
+        const result = await this.collection.updateOne(
             {
                 regionAttachementComptable: updateDbo.regionAttachementComptable,
                 programme: updateDbo.programme,
@@ -36,16 +41,18 @@ export class AmountsVsProgramRegionPort extends MongoPort<Omit<AmountsVsProgramR
             { $set: updateDbo },
             { upsert: true },
         );
+        return result.upsertedId?.toString();
     }
 
-    public insertMany(entities: AmountsVsProgramRegionEntity[]) {
+    public async insertMany(entities: AmountsVsProgramRegionEntity[]): Promise<string[] | undefined> {
         if (!entities.length) return;
-        return this.collection.insertMany(
+        const result = await this.collection.insertMany(
             entities.map(entity => AmountsVsProgramRegionMapper.toDbo(entity), { ordered: false }),
         );
+        return Object.values(result.insertedIds).map(id => id.toString());
     }
 
-    public upsertMany(entities: AmountsVsProgramRegionEntity[]) {
+    public async upsertMany(entities: AmountsVsProgramRegionEntity[]): Promise<string[] | undefined> {
         if (!entities.length) return;
         const bulkWriteArray = entities.map(entity => {
             const updateDbo = AmountsVsProgramRegionMapper.toDbo(entity);
@@ -62,18 +69,21 @@ export class AmountsVsProgramRegionPort extends MongoPort<Omit<AmountsVsProgramR
             };
         });
 
-        return this.collection.bulkWrite(bulkWriteArray, { ordered: false });
+        const result = await this.collection.bulkWrite(bulkWriteArray, { ordered: false });
+        return Object.values(result.insertedIds).map(id => id.toString());
     }
 
-    public async findAll() {
+    public async findAll(): Promise<AmountsVsProgramRegionEntity[]> {
         const result = await this.collection.find({}).toArray();
         return result.map(dbo => AmountsVsProgramRegionMapper.toEntity(dbo));
     }
 
-    public async deleteAll() {
-        await this.collection.deleteMany({});
+    public async deleteAll(): Promise<boolean> {
+        const result = await this.collection.deleteMany({});
+        return result.deletedCount > 0;
     }
 }
 
-const amountsVsProgramRegionPort = new AmountsVsProgramRegionPort();
-export default amountsVsProgramRegionPort;
+const amountsVsProgramRegionAdapter = new AmountsVsProgramRegionAdapter();
+
+export default amountsVsProgramRegionAdapter;

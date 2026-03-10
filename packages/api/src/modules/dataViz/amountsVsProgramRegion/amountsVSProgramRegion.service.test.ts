@@ -1,17 +1,27 @@
-import amountsVsProgramRegionService from "./amountsVsProgramRegion.service";
 import AmountsVsProgramRegionMapper from "./amounts-vs-program-region.mapper";
 import {
     AMOUNTS_VS_PROGRAM_REGION_ENTITIES,
     NOT_AGGREGATED_ENTITIES,
 } from "./__fixtures__/amountsVSProgramRegion.fixture";
-import amountsVsProgramRegionPort from "../../../dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
 import paymentFlatChorusService from "../../paymentFlat/paymentFlat.chorus.service";
 import {
     CHORUS_PAYMENT_FLAT_ENTITY,
     CHORUS_PAYMENT_FLAT_ENTITY_WITH_NULLS,
 } from "../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+import { AmountsVsProgramRegionService } from "./amountsVsProgramRegion.service";
+import { AmountsVsProgramRegionPort } from "../../../dataProviders/db/dataViz/amountVSProgramRegion/amounts-vs-program-region.port";
+import { createMockAmountsVsRegionPort } from "../../../../tests/__mocks__/amounts-vs-program-region/amounts-vs-program-region.port.mock";
 
 describe("amountsVSProgramRegionService", () => {
+    let amountsVsProgramRegionService: AmountsVsProgramRegionService;
+    let mockAmountsVsProgramRegionPort: jest.Mocked<AmountsVsProgramRegionPort>;
+
+    beforeEach(() => {
+        mockAmountsVsProgramRegionPort = createMockAmountsVsRegionPort();
+        amountsVsProgramRegionService = new AmountsVsProgramRegionService(mockAmountsVsProgramRegionPort);
+        jest.clearAllMocks();
+    });
+
     describe("toAmountsVsProgramRegionEntities", () => {
         let mockMapper: jest.SpyInstance;
         let mockCursorFindChorusOnly: jest.SpyInstance;
@@ -113,7 +123,7 @@ describe("amountsVSProgramRegionService", () => {
                 .spyOn(amountsVsProgramRegionService, "toAmountsVsProgramRegionEntities")
                 .mockResolvedValue(AMOUNTS_VS_PROGRAM_REGION_ENTITIES);
 
-            mockInsertMany = jest.spyOn(amountsVsProgramRegionPort, "insertMany").mockImplementation(jest.fn());
+            mockInsertMany = mockAmountsVsProgramRegionPort.insertMany.mockImplementation(jest.fn());
         });
 
         afterAll(() => {
@@ -143,7 +153,7 @@ describe("amountsVSProgramRegionService", () => {
                 .spyOn(amountsVsProgramRegionService, "toAmountsVsProgramRegionEntities")
                 .mockResolvedValue(AMOUNTS_VS_PROGRAM_REGION_ENTITIES);
 
-            mockUpsertMany = jest.spyOn(amountsVsProgramRegionPort, "upsertMany").mockImplementation(jest.fn());
+            mockUpsertMany = mockAmountsVsProgramRegionPort.upsertMany.mockImplementation(jest.fn());
         });
 
         afterEach(() => {
@@ -175,9 +185,9 @@ describe("amountsVSProgramRegionService", () => {
         let mockHasBeenInitialized: jest.SpyInstance;
 
         beforeEach(() => {
-            mockHasBeenInitialized = jest
-                .spyOn(amountsVsProgramRegionPort, "hasBeenInitialized")
-                .mockReturnValue(Promise.resolve(true));
+            mockHasBeenInitialized = mockAmountsVsProgramRegionPort.hasBeenInitialized.mockReturnValue(
+                Promise.resolve(true),
+            );
         });
 
         afterEach(() => {
@@ -195,9 +205,7 @@ describe("amountsVSProgramRegionService", () => {
         let mockFindAll: jest.SpyInstance;
 
         beforeEach(() => {
-            mockFindAll = jest
-                .spyOn(amountsVsProgramRegionPort, "findAll")
-                .mockResolvedValue(AMOUNTS_VS_PROGRAM_REGION_ENTITIES);
+            mockFindAll = mockAmountsVsProgramRegionPort.findAll.mockResolvedValue(AMOUNTS_VS_PROGRAM_REGION_ENTITIES);
         });
 
         afterEach(() => {

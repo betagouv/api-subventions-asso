@@ -1,7 +1,7 @@
 import { Controller, Get, Route, Security, Tags, Response } from "tsoa";
 import { GetAmountsVsProgramRegionResponseDto } from "dto";
 import { HttpErrorInterface } from "core";
-import amountsVsProgramRegionService from "../../modules/dataViz/amountsVsProgramRegion/amountsVsProgramRegion.service";
+import { amountsVsProgramRegionService } from "../../init-services/init-amount-vs-program-region-services";
 
 @Route("dataviz")
 @Security("jwt")

@@ -1,7 +1,7 @@
 import { CliStaticInterface } from "../../@types";
 import { StaticImplements } from "../../decorators/staticImplements.decorator";
-import amountsVsProgramRegionService from "../../modules/dataViz/amountsVsProgramRegion/amountsVsProgramRegion.service";
 import CliController from "../../shared/CliController";
+import { amountsVsProgramRegionService } from "../../init-services/init-amount-vs-program-region-services";
 
 @StaticImplements<CliStaticInterface>()
 export default class AmountsVsProgramRegionCli extends CliController {

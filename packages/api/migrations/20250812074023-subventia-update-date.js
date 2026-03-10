@@ -1,8 +1,8 @@
-const { default: dataLogPort } = require("../build/src/dataProviders/db/data-log/dataLog.port.js");
+const { default: dataLogAdapter } = require("../build/src/dataProviders/db/data-log/dataLog.adapter.js");
 
 module.exports = {
     async up(db) {
-        const lastDate = await dataLogPort.getLastImportByProvider("subventia").catch(_e => new Date());
+        const lastDate = await dataLogAdapter.getLastImportByProvider("subventia").catch(_e => new Date());
         await db.collection("subventia").updateMany({}, { $rename: { exportDate: "updateDate" } });
         await db.collection("subventia").updateMany({}, { $set: { updateDate: lastDate } });
     },

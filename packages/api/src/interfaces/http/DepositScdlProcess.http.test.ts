@@ -11,7 +11,7 @@ import {
 } from "../../modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
 import DepositScdlLogEntity from "../../modules/deposit-scdl-process/entities/depositScdlLog.entity";
 import { ConflictError, NotFoundError } from "core";
-import { depositScdlProcessService } from "../../init-services";
+import { depositScdlProcessService } from "../../init-services/init-deposit-scdl-services";
 
 const controller = new DepositScdlProcessHttp();
 

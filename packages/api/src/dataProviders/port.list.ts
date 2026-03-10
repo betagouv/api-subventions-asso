@@ -21,12 +21,12 @@ import { osirisActionPort, osirisRequestPort } from "./db/providers/osiris";
 import miscScdlGrantPort from "./db/providers/scdl/miscScdlGrant.port";
 import miscScdlProducersPort from "./db/providers/scdl/miscScdlProducers.port";
 import sireneStockUniteLegalePort from "./db/sirene/stockUniteLegale/sireneStockUniteLegale.port";
-import amountsVsProgramRegionPort from "./db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
-import dataLogPort from "./db/data-log/dataLog.port";
 import applicationFlatPort from "./db/applicationFlat/applicationFlat.port";
 import gisproPort from "./db/providers/gispro.port";
 import depositLogAdapter from "./db/deposit-log/deposit-log.adapter";
 import chorusFsePort from "./db/providers/chorus/chorus.fse.port";
+import amountsVsProgramRegionAdapter from "./db/dataViz/amountVSProgramRegion/amounts-vs-program-region.adapter";
+import dataLogAdapter from "./db/data-log/data-log.adapter";
 
 export const portsWithIndexes = [
     // TODO: handle adapter initialization from within and remove this file
@@ -55,8 +55,8 @@ export const portsWithIndexes = [
     uniteLegalNamePort,
     paymentFlatPort,
     sireneStockUniteLegalePort,
-    amountsVsProgramRegionPort,
-    dataLogPort,
+    amountsVsProgramRegionAdapter,
+    dataLogAdapter,
     applicationFlatPort,
     depositLogAdapter,
     gisproPort,

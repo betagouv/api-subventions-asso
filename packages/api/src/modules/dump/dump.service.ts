@@ -3,8 +3,8 @@ import configurationsService from "../configurations/configurations.service";
 import statsService from "../stats/stats.service";
 import userCrudService from "../user/services/crud/user.crud.service";
 import metabaseDumpPort from "../../dataProviders/db/dump/metabase-dump.port";
-import dataLogService from "../data-log/dataLog.service";
 import { DepositScdlProcessService } from "../deposit-scdl-process/depositScdlProcess.service";
+import { dataLogService } from "../../init-services/init-data-log-services";
 
 export class DumpService {
     constructor(private readonly depositScdlProcessService: DepositScdlProcessService) {}
