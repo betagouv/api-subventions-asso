@@ -9,7 +9,7 @@ export default class SubventiaParser {
 
         console.info("\nStart parse file: ", filePath);
 
-        const data = GenericParser.xlsParse(fileContent)[0];
+        const data = GenericParser.xlsxParse(fileContent)[0].data; // single page
         const headers = data[0] as string[];
         const parsedData = data.slice(1).map(row => GenericParser.linkHeaderToData(headers, row)) as SubventiaDto[];
 

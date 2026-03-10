@@ -7,16 +7,22 @@ jest.mock("./mappers/chorus.mapper");
 
 jest.mock("../../../shared/helpers/StringHelper");
 
-import { ENTITIES } from "./__fixtures__/ChorusFixtures";
+import { CHORUS_FSE_ENTITIES, ENTITIES } from "./__fixtures__/ChorusFixtures";
 import CacheData from "../../../shared/Cache";
 import { BulkWriteResult } from "mongodb";
 import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudgetProgram";
 import Siret from "../../../identifierObjects/Siret";
 import associationHelper from "../../associations/associations.helper";
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
+import chorusFsePort from "../../../dataProviders/db/providers/chorus/chorus.fse.port";
 jest.mock("../../associations/associations.helper");
 
 describe("chorusService", () => {
+    beforeEach(() => {
+        // @ts-expect-error: reassign private cache
+        chorusService.sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
+    });
+
     describe("upsertMany", () => {
         it("should call port with entities", async () => {
             await chorusService.upsertMany(ENTITIES);
@@ -52,12 +58,18 @@ describe("chorusService", () => {
         });
         const SIREN = new Siret(ENTITIES[0].indexedInformations.siret).toSiren();
 
-        it("calls associationService test with valueObject association identifier", () => {
+        it("calls associationService test with valueObject association identifier", async () => {
             chorusService.sirenBelongAsso(SIREN);
             expect(associationHelper.isIdentifierFromAsso).toHaveBeenCalledWith(AssociationIdentifier.fromSiren(SIREN));
         });
 
-        it("returns result from associationServce's test", () => {
+        it("add result to cache", async () => {
+            await chorusService.sirenBelongAsso(SIREN);
+            // @ts-expect-error: private cache
+            expect(chorusService.sirenBelongAssoCache.get(SIREN.value)).toEqual(true);
+        });
+
+        it("returns result from associationServce's test", async () => {
             const expected = SOME_PROMISE;
             const actual = chorusService.sirenBelongAsso(SIREN);
             expect(actual).toEqual(expected);
@@ -69,8 +81,6 @@ describe("chorusService", () => {
         let mockSirenBelongAsso: jest.SpyInstance;
 
         beforeEach(() => {
-            // @ts-expect-error: reassign private cache
-            chorusService.sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
             mockSirenBelongAsso = jest.spyOn(chorusService, "sirenBelongAsso");
             mockSirenBelongAsso.mockResolvedValue(true);
         });
@@ -152,6 +162,55 @@ describe("chorusService", () => {
             const expected = { ...EMPTY_ANSWER, created: ENTITIES.length - 1, rejected: 1 };
             const actual = await chorusService.insertBatchChorusLine(ENTITIES);
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("isEntityAccepted", () => {
+        const ENTITY = CHORUS_FSE_ENTITIES[0];
+        const IS_ASSO = true;
+        let mockSirenBelongAsso;
+        beforeEach(() => {
+            mockSirenBelongAsso = jest.spyOn(chorusService, "sirenBelongAsso").mockResolvedValue(IS_ASSO);
+        });
+
+        afterAll(() => mockSirenBelongAsso.mockRestore());
+
+        it("check value in cache", async () => {
+            const actual = await chorusService.isEntityAccepted(ENTITY);
+            expect(actual).toEqual(IS_ASSO);
+        });
+
+        it("check if siren belong to asso", async () => {
+            await chorusService.isEntityAccepted(ENTITY);
+            expect(mockSirenBelongAsso).toHaveBeenCalledWith((ENTITY.identifier as Siret).toSiren());
+        });
+
+        it("returns result", async () => {
+            const actual = await chorusService.isEntityAccepted(ENTITY);
+            expect(actual).toEqual(IS_ASSO);
+        });
+    });
+
+    describe("persistEuropeanEntities", () => {
+        // test with more than one
+        const ENTITIES = [...CHORUS_FSE_ENTITIES, ...CHORUS_FSE_ENTITIES];
+        let mockIsEntityAccepted;
+
+        beforeEach(() => {
+            mockIsEntityAccepted = jest.spyOn(chorusService, "isEntityAccepted").mockResolvedValue(true);
+            jest.spyOn(chorusFsePort, "upsertMany").mockResolvedValue();
+        });
+
+        afterAll(() => mockIsEntityAccepted.mockRestore());
+
+        it("filters entities", async () => {
+            await chorusService.persistEuropeanEntities(ENTITIES);
+            expect(mockIsEntityAccepted).toHaveBeenCalledTimes(ENTITIES.length);
+        });
+
+        it("pass entities to port", async () => {
+            await chorusService.persistEuropeanEntities(ENTITIES);
+            expect(chorusFsePort.upsertMany).toHaveBeenCalledWith(ENTITIES);
         });
     });
 });
