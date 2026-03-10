@@ -26,6 +26,7 @@ import dataLogPort from "./db/data-log/dataLog.port";
 import applicationFlatPort from "./db/applicationFlat/applicationFlat.port";
 import gisproPort from "./db/providers/gispro.port";
 import depositLogAdapter from "./db/deposit-log/deposit-log.adapter";
+import chorusFsePort from "./db/providers/chorus/chorus.fse.port";
 
 export const portsWithIndexes = [
     // TODO: handle adapter initialization from within and remove this file
@@ -45,6 +46,7 @@ export const portsWithIndexes = [
     configurationsPort,
     consumerTokenPort,
     chorusLinePort,
+    chorusFsePort,
     demarchesSimplifieesDataPort,
     demarchesSimplifieesSchemaPort,
     statsAssociationsVisitPort,

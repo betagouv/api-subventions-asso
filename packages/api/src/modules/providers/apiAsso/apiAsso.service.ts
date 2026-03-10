@@ -101,7 +101,6 @@ export class ApiAssoService
 
     public async findAssociationBySiren(siren: Siren): Promise<Association | null> {
         const sirenStructure = await this.sendRequest<SirenStructureDto>(`/api/siren/${siren.value}`);
-
         const isSirenStructureValid = structure => structure.etablissement && structure.etablissement.length;
 
         if (!sirenStructure || !isSirenStructureValid(sirenStructure)) {

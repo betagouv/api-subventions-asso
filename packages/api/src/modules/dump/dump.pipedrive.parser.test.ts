@@ -58,7 +58,7 @@ describe("DumpPipedriveParser", () => {
                 ],
             ];
             // @ts-expect-error test private
-            const actual = DumpPipedriveParser.adapts([[headers, ...values]]);
+            const actual = DumpPipedriveParser.adapts([headers, ...values]);
             expect(actual).toMatchSnapshot();
         });
     });

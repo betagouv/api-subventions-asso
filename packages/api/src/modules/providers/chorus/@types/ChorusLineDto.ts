@@ -1,7 +1,4 @@
 export interface ChorusLineDto {
-    // data is in excel format i.e. the number of days since 1900-01-01
-    [key: string]: string | number | null;
-
     "N° EJ": string | null;
     "N° poste EJ": string | null;
     "Code taxe 1": string;
@@ -15,11 +12,12 @@ export interface ChorusLineDto {
     Société: string | null;
     "Exercice comptable": string | null;
     "Fournisseur payé (DP)": string | null;
-    "Fournisseur payé (DP) CODE": string | null;
+    "Désignation de la structure": string | null;
     "Centre financier": string | null;
     "Centre financier CODE": string;
     "Domaine fonctionnel": string | null;
     "Domaine fonctionnel CODE": string;
     "Montant payé": number | null;
+    // Excel number
     "Date de dernière opération sur la DP": number | null | string;
 }

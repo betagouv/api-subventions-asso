@@ -1,6 +1,7 @@
 import GisproParser from "./gispro.parser";
 import { GenericParser } from "../../../shared/GenericParser";
 import { DefaultObject } from "../../../@types";
+import { XlsxPage } from "../../../@types/XlsxPage";
 
 jest.mock("../../../shared/GenericParser");
 
@@ -10,14 +11,17 @@ describe("gispro parser", () => {
     /* eslint-disable @typescript-eslint/no-explicit-any */
     const HEADER = "headers" as unknown as any[];
     const DATA = ["row1", "row2"] as unknown as any[][];
-    const PAGES = [[], [HEADER, ...DATA]] as unknown as any[][];
+    const PAGES = [
+        { name: "", data: [] },
+        { name: "", data: [HEADER, ...DATA] },
+    ] as XlsxPage[];
     /* eslint-enable @typescript-eslint/no-explicit-any */
     const LINKED_DATA = [{ field: "data1" }, { field: "data2" }] as unknown as DefaultObject<string>;
     const ENTITIES = [{ t: "entity1" }, { t: "entity2" }];
 
     describe("parse", () => {
         beforeAll(() => {
-            jest.mocked(GenericParser.xlsParse).mockReturnValue(PAGES);
+            jest.mocked(GenericParser.xlsxParse).mockReturnValue(PAGES);
             jest.replaceProperty(GisproParser, "pageIndexByYear", { [EXERCISE]: 1 });
             jest.mocked(GenericParser.linkHeaderToData).mockImplementation(((_header: unknown, data: string) => ({
                 field: "data" + data.charAt(3),
@@ -34,12 +38,12 @@ describe("gispro parser", () => {
         });
 
         afterAll(() => {
-            jest.mocked(GenericParser.xlsParse).mockRestore();
+            jest.mocked(GenericParser.xlsxParse).mockRestore();
         });
 
         it("calls xls parser", () => {
             GisproParser.parse(FILE_CONTENT, EXERCISE);
-            expect(GenericParser.xlsParse).toHaveBeenCalledWith(FILE_CONTENT);
+            expect(GenericParser.xlsxParse).toHaveBeenCalledWith(FILE_CONTENT);
         });
 
         it("links header to rows from proper page by year", () => {

@@ -8,6 +8,8 @@ import ChorusLineEntity from "./entities/ChorusLineEntity";
 import associationHelper from "../../associations/associations.helper";
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
 import Siret from "../../../identifierObjects/Siret";
+import ChorusFseEntity from "./entities/ChorusFseEntity";
+import chorusFsePort from "../../../dataProviders/db/providers/chorus/chorus.fse.port";
 
 export interface RejectedRequest {
     state: "rejected";
@@ -46,13 +48,25 @@ export class ChorusService extends ProviderCore {
         } else {
             const siren = new Siret(entity.indexedInformations.siret).toSiren();
 
-            const sirenBelongAssoValue = this.sirenBelongAssoCache.get(siren.value);
-            if (sirenBelongAssoValue !== null) return sirenBelongAssoValue;
+            const cache = this.sirenBelongAssoCache.get(siren.value);
+            if (cache !== null) return cache;
 
-            const sirenIsAsso = await this.sirenBelongAsso(siren);
+            return this.sirenBelongAsso(siren);
+        }
+    }
 
-            this.sirenBelongAssoCache.add(siren.value, sirenIsAsso);
-            return sirenIsAsso;
+    // will replace isAcceptedEntity when ChorusLine will be refactored to match new ChorusFseEntity process
+    public async isEntityAccepted(entity: ChorusFseEntity) {
+        const siret = entity.identifier;
+        if (siret instanceof Siret) {
+            const siren = siret.toSiren();
+            const cache = this.sirenBelongAssoCache.get(siren.value);
+            if (cache !== null) return cache;
+
+            return this.sirenBelongAsso(siren);
+        } else {
+            // @TODO: handle ridet/tahitied validation
+            return false;
         }
     }
 
@@ -69,8 +83,10 @@ export class ChorusService extends ProviderCore {
         };
     }
 
-    public sirenBelongAsso(siren: Siren): Promise<boolean> {
-        return associationHelper.isIdentifierFromAsso(AssociationIdentifier.fromSiren(siren));
+    public async sirenBelongAsso(siren: Siren): Promise<boolean> {
+        const result = await associationHelper.isIdentifierFromAsso(AssociationIdentifier.fromSiren(siren));
+        this.sirenBelongAssoCache.add(siren.value, result);
+        return result;
     }
 
     public cursorFind(exerciceBudgetaire?: number) {
@@ -81,6 +97,11 @@ export class ChorusService extends ProviderCore {
     // TODO: unit test this
     public getProgramCode(entity: ChorusLineEntity) {
         return parseInt(entity.indexedInformations.codeDomaineFonctionnel.slice(0, 4), 10); // for exemple codeDomaineFonctionnel = "0143-03-01", codeProgramme = 143
+    }
+
+    public async persistEuropeanEntities(entities: ChorusFseEntity[]) {
+        const validEntities = await asyncFilter(entities, entity => this.isEntityAccepted(entity));
+        return chorusFsePort.upsertMany(validEntities);
     }
 }
 

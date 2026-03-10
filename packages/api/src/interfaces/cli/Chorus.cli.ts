@@ -8,6 +8,7 @@ import CliController from "../../shared/CliController";
 import ChorusLineEntity from "../../modules/providers/chorus/entities/ChorusLineEntity";
 import paymentFlatChorusService from "../../modules/paymentFlat/paymentFlat.chorus.service";
 import { asyncForEach } from "../../shared/helpers/ArrayHelper";
+import ChorusFseEntity from "../../modules/providers/chorus/entities/ChorusFseEntity";
 
 @StaticImplements<CliStaticInterface>()
 export default class ChorusCli extends CliController {
@@ -36,7 +37,12 @@ export default class ChorusCli extends CliController {
 
         const fileContent = fs.readFileSync(file);
 
-        const entities: ChorusLineEntity[] = ChorusParser.parse(fileContent);
+        const { national, european } = ChorusParser.parse(fileContent);
+
+        await Promise.all([this.persistChorusEntities(national, logger), this.persistChorusFseEntities(european)]);
+    }
+
+    private async persistChorusEntities(entities: ChorusLineEntity[], logger) {
         const totalEntities = entities.length;
         const exercicesSet = entities.reduce(
             (set, entity) => set.add(entity.indexedInformations.exercice),
@@ -75,6 +81,12 @@ export default class ChorusCli extends CliController {
             flag: "w",
             encoding: "utf-8",
         });
+
+        return;
+    }
+
+    private async persistChorusFseEntities(entities: ChorusFseEntity[]) {
+        return chorusService.persistEuropeanEntities(entities);
     }
 
     async resyncPaymentFlatByExercise(exercise: string | number) {

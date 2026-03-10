@@ -4,7 +4,6 @@ import chorusLinePort from "../../../src/dataProviders/db/providers/chorus/choru
 import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
 import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFlat.port";
 import uniteLegalEntreprisePort from "../../../src/dataProviders/db/uniteLegalEntreprise/uniteLegalEntreprise.port";
-import { UniteLegalEntrepriseEntity } from "../../../src/entities/UniteLegalEntrepriseEntity";
 import sireneUniteLegaleDbPort from "../../../src/dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.port";
 import { SireneStockUniteLegaleEntity } from "../../../src/entities/SireneStockUniteLegaleEntity";
 import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
@@ -15,6 +14,7 @@ import chorusService from "../../../src/modules/providers/chorus/chorus.service"
 import { ENTITIES } from "../../../src/modules/providers/chorus/__fixtures__/ChorusFixtures";
 import stateBudgetProgramPort from "../../../src/dataProviders/db/state-budget-program/stateBudgetProgram.port";
 import PROGRAMS from "../../dataProviders/db/__fixtures__/stateBudgetProgram";
+import chorusFsePort from "../../../src/dataProviders/db/providers/chorus/chorus.fse.port";
 
 describe("ChorusCli", () => {
     // it contains :
@@ -34,17 +34,18 @@ describe("ChorusCli", () => {
 
         await Promise.all([
             stateBudgetProgramPort.replace(PROGRAMS),
-            // make siren 325346542 belong to asso
-            sireneUniteLegaleDbPort.insertOne({ siren: new Siren("325346542") } as SireneStockUniteLegaleEntity),
-            // make siren 094130101 belong to an entreprise
-            uniteLegalEntreprisePort.insertMany([new UniteLegalEntrepriseEntity(new Siren("094130101"))]),
+            // make siren 100000000 belong to asso
+            sireneUniteLegaleDbPort.insertOne({ siren: new Siren("100000000") } as SireneStockUniteLegaleEntity),
+            // make siren 30000000 belong to an entreprise
+            uniteLegalEntreprisePort.insertMany([{ siren: new Siren("300000000") }]),
         ]);
     });
 
     describe("_parse()", () => {
         beforeAll(async () => {
             jest.spyOn(apiAssoService, "findAssociationBySiren").mockImplementation((siren: Siren) => {
-                if (siren.value === "775685779")
+                if (["200000000"].includes(siren.value))
+                    // one for chorus and chorus FSE
                     return Promise.resolve({
                         categorie_juridique: [{ value: LEGAL_CATEGORIES_ACCEPTED[0] }],
                     } as Association);
@@ -55,7 +56,6 @@ describe("ChorusCli", () => {
             });
         });
 
-        // file should have 6 associations and 1 company's payments
         it("should save association but not companies' payments", async () => {
             const expected = NB_ASSOS_IN_FILES;
             const filePath = FILE_PATH;
@@ -85,6 +85,13 @@ describe("ChorusCli", () => {
                 integrationDate: expect.any(Date),
                 providerId: "chorus",
             });
+        });
+
+        it("saves european chorus data", async () => {
+            const filePath = FILE_PATH;
+            await controller.parse(filePath, EXPORT_DATE);
+            const actual = await chorusFsePort.findAll();
+            expect(actual).toMatchSnapshot();
         });
 
         it("saves in paymentFlat", async () => {
