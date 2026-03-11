@@ -359,7 +359,7 @@ describe("user activation service", () => {
         it("returns expected url", () => {
             const TOKEN = "toto";
             const actual = userActivationService.buildResetPwdUrl(TOKEN);
-            expect(actual).toMatchInlineSnapshot(`"http://dev.local:5173/auth/reset-password/toto"`);
+            expect(actual).toMatchInlineSnapshot(`"http://localhost:5173/auth/reset-password/toto"`);
         });
     });
 

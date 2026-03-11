@@ -115,8 +115,8 @@ export async function startServer(port = "8080", isTest = false) {
 
     if (DEV) {
         //@ts-expect-error : No type
-        return app.listen(port, "dev.local", () => {
-            if (!isTest) console.log(`${appName} listening at http://dev.local:${port}`);
+        return app.listen(port, "localhost", () => {
+            if (!isTest) console.log(`${appName} listening at http://localhost:${port}`);
         });
     }
 

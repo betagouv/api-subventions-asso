@@ -163,7 +163,7 @@ describe("Rgpd Cron", () => {
             ]);
             const actualLink = (actual[0][0].params as { email: string; activationLink: string }).activationLink;
             const actualLinkMatch = actualLink.match(
-                /^http:\/\/dev\.local:5173\/auth\/reset-password\/(.*)/,
+                /^http:\/\/localhost:5173\/auth\/reset-password\/(.*)/,
             ) as RegExpMatchArray; // we know that a link as been provided and that the match will find it
             const actualToken = actualLinkMatch[1];
             const foundReset = await userResetPort.findByToken(actualToken as string);
