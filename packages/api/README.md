@@ -27,7 +27,7 @@ Il faut d'abord activer Corepack, puis forcer l'utilisation de PNPM comme gestio
 ```bash
 corepack enable
 corepack prepare pnpm@10.24.0 --activate
- ```
+```
 
 Vous devez ensuite installer les dépendances avec `pnpm install`.
 
@@ -91,6 +91,7 @@ En partant d'une base de données vierge, il est nécessaire d'ajouter, en local
 
 Le service Minio est le server de stockage d'objets S3 local.
 Il est nécessaire de définir les variables d'environnement suivantes :
+
 - `MINIO_ROOT_USER`
 - `MINIO_ROOT_PASSWORD`
 - Pour permettre la connexion de l'api au s3, penser aussi à définir les variables d'environnement qui sont utilisée dans le fichier `api/src/configurations/s3.conf.ts`
@@ -116,7 +117,6 @@ Il faut au préalable se connecter à la console web et créer le bucket avec le
 - pour upload un fichier : `mc cp <fichier_local> local/<bucket_name>/`
 - pour download un fichier : `mc cp local/nom-du-bucket/fichier.txt ./fichier.txt`
 
-
 Pour build l'api il est nécessaire au préalable de build le dossier dto pour avoir accès au types. Pour ce faire executer un `pnpm build:api` depuis la racine `/api-subventions-asso`.
 
 ### Pour AgentConnect
@@ -128,16 +128,12 @@ AgentConnect ne fonctionne pas avec l'url `localhost`. Pour qu'AgentConnect fonc
     - AGENT_CONNECT_CLIENT_ID
     - AGENT_CONNECT_CLIENT_SECRET
     - AGENT_CONNECT_URL : https://fca.integ01.dev-agentconnect.fr/api/v2 en local et préprod
-2. mettre en place un alias qui redirige `dev.local` vers `localhost`. Pour cela, ajouter au fichier `/etc/hosts` la ligne
-    ```
-    127.0.0.1 dev.local
-    ```
-    Dans l'absolu il faut que l'alias corresponde à ce qui a été renseigné lors de la demande des client_id et client_secret utilisés.
+2. Les URI de redirection et déconnexion sont définies sur le compte partenaire ProConnect avec le compte dev
 
 ## Démarrer l'api en local
 
 1. Run `pnpm dev`
-2. Visit [http://dev.local:8080](http://dev.local:8080)
+2. Visit [http://localhost:8080](http://localhost:8080)
 
 ## Exécuter une commande CLI
 
@@ -146,10 +142,10 @@ AgentConnect ne fonctionne pas avec l'url `localhost`. Pour qu'AgentConnect fonc
 ### Créer son utilisateur en local
 
 1. Exécutez `pnpm cli user create [your email]`.
-2. Faites une requête HTTP POST `dev.local:8080/auth/forget-password` avec comme corps `{ "email": [your email] }` pour générer un token de réinitialisation de mot de passe.
+2. Faites une requête HTTP POST `localhost:8080/auth/forget-password` avec comme corps `{ "email": [your email] }` pour générer un token de réinitialisation de mot de passe.
 3. Allez dans la collection `user-reset` de mongodb user et copiez la valeur du token nouvellement généré.
-4. Faites ensuite une requête HTTP POST `dev.local:8080/auth/reset-password` avec comme corps `{ "password": [your new password], "token": [token from step 3] }` pour mettre à jour votre mot de passe.
-5. Enfin, pour vous connecter, faite une requête HTTP POST `dev.local:8080/auth/login` avec comme corps de requête `{ "email": [your email]}, "password": [password defined in step 4] }`
+4. Faites ensuite une requête HTTP POST `localhost:8080/auth/reset-password` avec comme corps `{ "password": [your new password], "token": [token from step 3] }` pour mettre à jour votre mot de passe.
+5. Enfin, pour vous connecter, faite une requête HTTP POST `localhost:8080/auth/login` avec comme corps de requête `{ "email": [your email]}, "password": [password defined in step 4] }`
 
 ## Mettre en place une tâche récurrente
 
@@ -182,6 +178,7 @@ Le paramètre `schedule` des contrôleurs supporte un attribut qui précise si l
 Attention, s'il est désactivé, l'intervalle sera réinitialisé à chaque redémarrage de l'application (donc au moins à chaque mise en prod et crash de l'api)
 
 ## Conventions de Code
+
 ### Guide de conventions de nommage
 
 Voici des conventions claires et robustes pour nommer fichiers, dossiers, classes, interfaces et types dans ce projet.
@@ -193,25 +190,26 @@ Voici des conventions claires et robustes pour nommer fichiers, dossiers, classe
 #### Fichiers
 
 Format général :
+
 - **kebab-case + suffixe explicite**
 - Pas de majuscules ou underscores
 
-| Type de fichier | Suffixe recommandé | Exemple |
-|----------------|------------------|----------------------|
-| Controller     | `.controller.ts` | `user.controller.ts` |
-| Service        | `.service.ts`    | `auth.service.ts`    |
-| Routes         | `.routes.ts`     | `user.routes.ts`     |
-| Middleware     | `.middleware.ts` | `auth.middleware.ts` |
-| DTO            | `.dto.ts`        | `create-user.dto.ts` |
-| Validator      | `.validator.ts`  | `user.validator.ts`  |
-| Mapper         | `.mapper.ts`     | `user.mapper.ts`     |
-| Utils          | `.utils.ts`      | `date.utils.ts`      |
-| Config         | `.config.ts`     | `database.config.ts` |
-| Types          | `.types.ts`      | `user.types.ts`      |
-| Interface      | `.interface.ts`  | `user.interface.ts`  |
-| Enum           | `.enum.ts`       | `user-role.enum.ts`  |
+| Type de fichier | Suffixe recommandé | Exemple              |
+| --------------- | ------------------ | -------------------- |
+| Controller      | `.controller.ts`   | `user.controller.ts` |
+| Service         | `.service.ts`      | `auth.service.ts`    |
+| Routes          | `.routes.ts`       | `user.routes.ts`     |
+| Middleware      | `.middleware.ts`   | `auth.middleware.ts` |
+| DTO             | `.dto.ts`          | `create-user.dto.ts` |
+| Validator       | `.validator.ts`    | `user.validator.ts`  |
+| Mapper          | `.mapper.ts`       | `user.mapper.ts`     |
+| Utils           | `.utils.ts`        | `date.utils.ts`      |
+| Config          | `.config.ts`       | `database.config.ts` |
+| Types           | `.types.ts`        | `user.types.ts`      |
+| Interface       | `.interface.ts`    | `user.interface.ts`  |
+| Enum            | `.enum.ts`         | `user-role.enum.ts`  |
 
- Le suffixe décrit le **rôle** du fichier, pas uniquement son contenu.
+Le suffixe décrit le **rôle** du fichier, pas uniquement son contenu.
 
 #### Classes, Interfaces et Types
 
@@ -242,9 +240,7 @@ myFunc() {
 - SCREAMING_SNAKE_CASE
 
 ```ts
-
-MOCK_VALUE = "foo-bar-123"
-
+MOCK_VALUE = "foo-bar-123";
 ```
 
 ### API

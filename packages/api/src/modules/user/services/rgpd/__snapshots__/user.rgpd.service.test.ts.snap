@@ -22,14 +22,14 @@ exports[`user rgpd service warnDisableInactive notifies WARN_NEW_USER_TO_BE_DELE
   [
     12,
     {
-      "activationLink": "http://dev.local:5173/auth/reset-password/FAKE_TOKEN",
+      "activationLink": "http://localhost:5173/auth/reset-password/FAKE_TOKEN",
       "email": "user@beta.gouv.fr",
     },
   ],
   [
     12,
     {
-      "activationLink": "http://dev.local:5173/auth/reset-password/FAKE_TOKEN",
+      "activationLink": "http://localhost:5173/auth/reset-password/FAKE_TOKEN",
       "email": "user@beta.gouv.fr",
     },
   ],
