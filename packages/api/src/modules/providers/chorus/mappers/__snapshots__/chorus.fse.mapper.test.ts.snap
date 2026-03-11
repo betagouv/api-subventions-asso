@@ -6,7 +6,7 @@ exports[`ChorusFseMapper dtoToEntity returns ChorusFseEntity 1`] = `
   "beneficiaryName": "ASSO 1",
   "branch": "Associations",
   "branchCode": "Z039",
-  "budgetaryYear": "2025",
+  "budgetaryYear": 2025,
   "ej": "0001821732",
   "ejPostNum": "2",
   "financialCenter": "AA01/0776-C001-4000",
@@ -23,5 +23,6 @@ exports[`ChorusFseMapper dtoToEntity returns ChorusFseEntity 1`] = `
   "programRef": "Appels a projet",
   "programRefCode": "BG00/077601000201",
   "societyCode": "SOCIETY",
+  "updateDate": Any<Date>,
 }
 `;

@@ -93,14 +93,21 @@ describe("ChorusCli", () => {
             const filePath = FILE_PATH;
             await controller.parse(filePath, EXPORT_DATE);
             const actual = await chorusFseAdapter.findAll();
-            expect(actual).toMatchSnapshot();
+            expect(actual.map(entity => ({ ...entity, updateDate: expect.any(Date) }))).toMatchSnapshot();
+        });
+
+        it("syncs payment flat with european data", async () => {
+            const filePath = FILE_PATH;
+            await controller.parse(filePath, EXPORT_DATE);
+            const actual = await paymentFlatAdapter.findByProvider("chorus-fse");
+            expect(actual.map(dbo => ({ ...dbo, updateDate: expect.any(Date) }))).toMatchSnapshot();
         });
 
         it("saves in paymentFlat", async () => {
             await chorusAdapter.createIndexes();
             const filePath = FILE_PATH;
             await controller.parse(filePath, EXPORT_DATE);
-            const payments = await paymentFlatAdapter.findAll();
+            const payments = await paymentFlatAdapter.findByProvider("chorus");
             // snapshot only 2 payments when we got 3 chorus documents
             // it merges 2 payments sharing the same uniqueId
             expect(payments.map(payment => ({ ...payment, updateDate: expect.any(Date) }))).toMatchSnapshot();

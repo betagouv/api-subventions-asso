@@ -10,13 +10,17 @@ import AssociationIdentifier from "../../../identifierObjects/AssociationIdentif
 import Siret from "../../../identifierObjects/Siret";
 import ChorusFseEntity from "./entities/ChorusFseEntity";
 import chorusFseAdapter from "../../../dataProviders/db/providers/chorus/chorus.fse.adapter";
+import PaymentFlatProvider from "../../paymentFlat/@types/paymentFlatProvider";
+import paymentFlatService from "../../paymentFlat/paymentFlat.service";
+import PaymentFlatEntity from "../../../entities/flats/PaymentFlatEntity";
+import { ChorusFseMapper } from "./mappers/chorus.fse.mapper";
 
 export interface RejectedRequest {
     state: "rejected";
     result: { message: string; data: unknown };
 }
 
-export class ChorusService extends ProviderCore {
+export class ChorusService extends ProviderCore implements PaymentFlatProvider {
     constructor() {
         super({
             name: "Chorus",
@@ -101,7 +105,17 @@ export class ChorusService extends ProviderCore {
 
     public async persistEuropeanEntities(entities: ChorusFseEntity[]) {
         const validEntities = await asyncFilter(entities, entity => this.isEntityAccepted(entity));
-        return chorusFseAdapter.upsertMany(validEntities);
+        await chorusFseAdapter.upsertMany(validEntities);
+        return this.syncFlat(validEntities);
+    }
+
+    public savePaymentsFromStream(stream: ReadableStream<PaymentFlatEntity>) {
+        return paymentFlatService.saveFromStream(stream);
+    }
+
+    public syncFlat(entities: ChorusFseEntity[]) {
+        const stream = ReadableStream.from(entities.map(ChorusFseMapper.toPaymentFlat));
+        return this.savePaymentsFromStream(stream);
     }
 }
 

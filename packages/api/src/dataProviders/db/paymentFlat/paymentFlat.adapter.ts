@@ -62,6 +62,13 @@ export class PaymentFlatAdapter extends MongoAdapter<Omit<PaymentFlatDbo, "_id">
         await this.collection.insertMany(entities.map(entity => PaymentFlatMapper.toDbo(entity), { ordered: false }));
     }
 
+    // only used in test
+    public async findByProvider(provider: string) {
+        return (await this.collection.find({ fournisseur: provider }))
+            .map(dbo => PaymentFlatMapper.dboToEntity(dbo))
+            .toArray();
+    }
+
     // used in test
     public findAll(): Promise<PaymentFlatEntity[]> {
         return this.collection

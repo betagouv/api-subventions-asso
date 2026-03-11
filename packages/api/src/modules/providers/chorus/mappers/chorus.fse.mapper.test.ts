@@ -29,7 +29,7 @@ describe("ChorusFseMapper", () => {
 
         it("returns ChorusFseEntity", () => {
             const actual = ChorusFseMapper.dtoToEntity(CHORUS_DTO);
-            expect(actual).toMatchSnapshot();
+            expect(actual).toMatchSnapshot({ updateDate: expect.any(Date) });
         });
     });
 });

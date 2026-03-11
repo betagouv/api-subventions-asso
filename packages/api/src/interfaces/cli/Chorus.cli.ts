@@ -82,7 +82,7 @@ export default class ChorusCli extends CliController {
         return;
     }
 
-    private async persistChorusFseEntities(entities: ChorusFseEntity[]) {
+    private persistChorusFseEntities(entities: ChorusFseEntity[]) {
         return chorusService.persistEuropeanEntities(entities);
     }
 
