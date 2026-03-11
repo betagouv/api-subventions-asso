@@ -355,6 +355,7 @@ export const CHORUS_FSE_ENTITIES: ChorusFseEntity[] = [
         paidSupplierId: "1000016402",
         programRef: "N/A",
         programRefCode: "BG00/N/A",
+        updateDate: new Date("2025-12-24"),
     },
 ];
 

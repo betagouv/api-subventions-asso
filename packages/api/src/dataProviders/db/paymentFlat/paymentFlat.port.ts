@@ -62,6 +62,13 @@ export class PaymentFlatPort extends MongoPort<Omit<PaymentFlatDbo, "_id">> {
         return this.collection.insertMany(entities.map(entity => PaymentFlatMapper.toDbo(entity), { ordered: false }));
     }
 
+    // only used in test
+    public async findByProvider(provider: string) {
+        return (await this.collection.find({ fournisseur: provider }))
+            .map(dbo => PaymentFlatMapper.dboToEntity(dbo))
+            .toArray();
+    }
+
     // used in test
     public async findAll() {
         return (await this.collection.find({})).map(dbo => PaymentFlatMapper.dboToEntity(dbo)).toArray();

@@ -194,14 +194,16 @@ describe("chorusService", () => {
     describe("persistEuropeanEntities", () => {
         // test with more than one
         const ENTITIES = [...CHORUS_FSE_ENTITIES, ...CHORUS_FSE_ENTITIES];
-        let mockIsEntityAccepted;
+        let mockSyncFlat: jest.SpyInstance;
+        let mockIsEntityAccepted: jest.SpyInstance;
 
         beforeEach(() => {
+            mockSyncFlat = jest.spyOn(chorusService, "syncFlat").mockResolvedValue();
             mockIsEntityAccepted = jest.spyOn(chorusService, "isEntityAccepted").mockResolvedValue(true);
             jest.spyOn(chorusFsePort, "upsertMany").mockResolvedValue();
         });
 
-        afterAll(() => mockIsEntityAccepted.mockRestore());
+        afterAll(() => [mockIsEntityAccepted, mockSyncFlat].map(mock => mock.mockRestore()));
 
         it("filters entities", async () => {
             await chorusService.persistEuropeanEntities(ENTITIES);

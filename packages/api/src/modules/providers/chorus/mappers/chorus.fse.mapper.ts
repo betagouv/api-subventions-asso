@@ -1,12 +1,17 @@
+import { MandatoryFlatEntity } from "../../../../entities/flats/FlatEntity";
+import PaymentFlatEntity from "../../../../entities/flats/PaymentFlatEntity";
+import EstablishmentIdentifier from "../../../../identifierObjects/EstablishmentIdentifier";
 import Ridet from "../../../../identifierObjects/Ridet";
 import Siret from "../../../../identifierObjects/Siret";
 import Tahitiet from "../../../../identifierObjects/Tahitiet";
 import { BRANCHE_ACCEPTED } from "../../../../shared/ChorusBrancheAccepted";
+import { GenericAdapter } from "../../../../shared/GenericAdapter";
 import { GenericParser } from "../../../../shared/GenericParser";
-import { isValidDate } from "../../../../shared/helpers/DateHelper";
+import { getShortISODate, isValidDate } from "../../../../shared/helpers/DateHelper";
 import { santitizeFloat } from "../../../../shared/helpers/NumberHelper";
 import { StrictChorusLineDto } from "../@types/StrictChorusLineDto";
 import ChorusFseEntity from "../entities/ChorusFseEntity";
+import ChorusMapper from "./chorus.mapper";
 
 export class ChorusFseMapper {
     private static getIdentifier(dto: StrictChorusLineDto): Siret | Ridet | Tahitiet {
@@ -50,7 +55,7 @@ export class ChorusFseMapper {
             paymentRequestNum: dto["N° DP"],
             paymentRequestPostNum: dto["N° poste DP"],
             societyCode: dto["Société"],
-            budgetaryYear: dto["Exercice comptable"],
+            budgetaryYear: Number(dto["Exercice comptable"]),
             paidSupplierId: dto["Fournisseur payé (DP)"],
             beneficiaryName: dto["Désignation de la structure"],
             financialCenter: dto["Centre financier"],
@@ -59,6 +64,61 @@ export class ChorusFseMapper {
             functionalDomainCode: dto["Domaine fonctionnel CODE"],
             amount,
             operationDate,
+            updateDate: new Date(),
         };
+    }
+
+    static toPaymentFlat(entity: ChorusFseEntity): PaymentFlatEntity {
+        const PROGRAM_NAMES_MAP = new Map([
+            ["FSE", "Fond solidaire européen"],
+            ["FTJ", "Fond transition juste"],
+        ]);
+
+        const beneficiaryEstablishmentId = entity.identifier;
+        const beneficiaryEstablishmentIdType = entity.identifier.name;
+        const beneficiaryCompanyId = EstablishmentIdentifier.getAssociationIdentifier(entity.identifier);
+        const beneficiaryCompanyIdType = beneficiaryCompanyId.name;
+
+        const programNumber = entity.functionalDomainCode.slice(0, 3);
+
+        const optionalFields = {
+            budgetaryYear: Number(entity.budgetaryYear),
+            amount: entity.amount,
+            operationDate: entity.operationDate,
+            financialCenterCode: entity.financialCenterCode,
+            financialCenterLabel: entity.financialCenter,
+            accountingAttachment: entity.societyCode,
+            accountingAttachmentRegion: ChorusMapper.getRegionAttachementComptable(entity.societyCode),
+            programName: PROGRAM_NAMES_MAP.get(programNumber) ?? "",
+            // @TODO: rename PaymentFlat.programNumber into programCode to be more accurate
+            programNumber,
+            mission: GenericAdapter.NOT_APPLICABLE_VALUE,
+            ministry: GenericAdapter.NOT_APPLICABLE_VALUE,
+            ministryAcronym: GenericAdapter.NOT_APPLICABLE_VALUE,
+            actionCode: entity.functionalDomainCode,
+            actionLabel: entity.functionalDomain,
+            activityCode: GenericAdapter.NOT_APPLICABLE_VALUE,
+            activityLabel: GenericAdapter.NOT_APPLICABLE_VALUE,
+            ej: GenericAdapter.NOT_APPLICABLE_VALUE,
+        };
+        // this keeps the same structure as other providers payment flat uniqueId and add N/A for the missing fields
+        // @TODO: get rid of this id structure with N/A ??
+        const paymentId = `${beneficiaryEstablishmentId.value}-${GenericAdapter.NOT_APPLICABLE_VALUE}-${entity.budgetaryYear}`;
+
+        // this keeps the same structure as other providers payment flat uniqueId and add N/A for the missing fields
+        // @TODO: if the structure must be kept, make this a helper with partial<paymentFlat> as entry
+        const uniqueId = `chorus-fse-${paymentId}-${optionalFields.programNumber}-${optionalFields.actionCode}-${optionalFields.activityCode}-${getShortISODate(optionalFields.operationDate)}-${optionalFields.accountingAttachment}-${optionalFields.financialCenterCode}`;
+
+        const mandatoryFields: MandatoryFlatEntity = {
+            uniqueId,
+            beneficiaryEstablishmentIdType,
+            beneficiaryEstablishmentId,
+            beneficiaryCompanyIdType,
+            beneficiaryCompanyId,
+            provider: "chorus-fse",
+            updateDate: entity.updateDate,
+        };
+
+        return { ...mandatoryFields, ...optionalFields, paymentId, uniqueId };
     }
 }

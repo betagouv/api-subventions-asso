@@ -10,7 +10,8 @@ interface PaymentFlatEntity extends MandatoryFlatEntity {
     accountingAttachment: string;
     accountingAttachmentRegion: string | null;
     programName: string | null;
-    programNumber: number;
+    // @TODO: rename to programCode
+    programNumber: number | string;
     mission: string | null;
     ministry: string | null;
     ministryAcronym: string | null;

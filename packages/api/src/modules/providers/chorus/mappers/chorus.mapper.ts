@@ -15,6 +15,8 @@ import { EstablishmentIdType } from "../../../../identifierObjects/@types/Identi
 import Tahitiet from "../../../../identifierObjects/Tahitiet";
 import REGION_MAPPING from "./ChorusRegionMapping";
 import { NOT_APPLICABLE_VALUE } from "core";
+import ChorusFseEntity from "../entities/ChorusFseEntity";
+import EstablishmentIdentifier from "../../../../identifierObjects/EstablishmentIdentifier";
 
 export default class ChorusMapper {
     // TODO: get this from enum and in lower case
@@ -98,7 +100,7 @@ export default class ChorusMapper {
     private static getEntitiesByIdentifierRawData(data: ChorusLineDto): ChorusPaymentFlatRaw {
         const budgetaryYear = data["Exercice comptable"] ? parseInt(data["Exercice comptable"], 10) : null;
         const beneficiaryEstablishmentId = this.getEstablishmentValueObject(data);
-        const beneficiaryCompanyId = this.getCompanyId(beneficiaryEstablishmentId);
+        const beneficiaryCompanyId = EstablishmentIdentifier.getAssociationIdentifier(beneficiaryEstablishmentId);
         const beneficiaryEstablishmentIdType = beneficiaryEstablishmentId.name;
         const beneficiaryCompanyIdType = beneficiaryCompanyId.name;
 
@@ -201,6 +203,15 @@ export default class ChorusMapper {
         } = partialPaymentFlat;
 
         return `chorus-${paymentId}-${programNumber}-${actionCode}-${activityCode}-${getShortISODate(operationDate)}-${accountingAttachment}-${financialCenterCode}`;
+    }
+
+    private static getProgramCode(entity: ChorusFseEntity) {
+        // trick to trim 0 at the beginning of the code
+        return parseInt(entity.functionalDomainCode.slice(1, 4));
+    }
+
+    private static getActivityCode(entity: ChorusFseEntity) {
+        return entity.programRefCode.slice(-12);
     }
 
     private static getProgramCodeAndEntity(

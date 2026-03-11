@@ -9,14 +9,14 @@ import Tahitiet from "../../../../identifierObjects/Tahitiet";
 import Ridet from "../../../../identifierObjects/Ridet";
 import Siret from "../../../../identifierObjects/Siret";
 import Siren from "../../../../identifierObjects/Siren";
-import Tahiti from "../../../../identifierObjects/Tahiti";
-import Rid from "../../../../identifierObjects/Rid";
 import { GenericParser } from "../../../../shared/GenericParser";
 import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+import EstablishmentIdentifier from "../../../../identifierObjects/EstablishmentIdentifier";
 
 jest.mock("@sentry/node", () => ({
     captureException: jest.fn(),
 }));
+jest.mock("../../../../identifierObjects/EstablishmentIdentifier");
 
 describe("ChorusMapper", () => {
     const documentDataReturnedValue = {
@@ -37,6 +37,9 @@ describe("ChorusMapper", () => {
     describe("toNotAggregatedPaymentFlatEntity", () => {
         let mockgetEntitiesByIdentifierComplementaryData: jest.SpyInstance;
         beforeEach(() => {
+            jest.mocked(EstablishmentIdentifier.getAssociationIdentifier).mockReturnValue(
+                new Siret(ENTITIES[0].indexedInformations.siret).toSiren(),
+            );
             mockgetEntitiesByIdentifierComplementaryData = jest.spyOn(
                 ChorusMapper,
                 //@ts-expect-error : test private method
@@ -277,76 +280,6 @@ describe("ChorusMapper", () => {
         });
     });
 
-    describe("getCompanyId", () => {
-        let RID, TAHITI, SIREN;
-        const mockToRid = jest.spyOn(Ridet.prototype, "toRid");
-        const mockToTahiti = jest.spyOn(Tahitiet.prototype, "toTahiti");
-        const mockToSiren = jest.spyOn(Siret.prototype, "toSiren");
-        const mockIsRidet = jest.spyOn(Ridet, "isRidet");
-        const mockIsSiret = jest.spyOn(Siret, "isSiret");
-        const mockIsTahiti = jest.spyOn(Tahiti, "isTahiti");
-        const mockIsTahitiet = jest.spyOn(Tahitiet, "isTahitiet");
-        const mockIsSiren = jest.spyOn(Siren, "isSiren");
-        const mockIsRid = jest.spyOn(Rid, "isRid");
-
-        // Only partial mock of ValueObject classes
-        // If we wanted to be 100% unit testing we should create a mock in __mocks__ folder
-        beforeAll(() => {
-            RID = new Rid("0482749");
-            TAHITI = new Tahiti("A12345");
-            SIREN = new Siren("123456789");
-            mockToRid.mockReturnValue(RID);
-            mockToTahiti.mockReturnValue(TAHITI);
-            mockToSiren.mockReturnValue(SIREN);
-
-            mockIsRidet.mockReturnValue(true);
-            mockIsTahitiet.mockReturnValue(true);
-            mockIsSiret.mockReturnValue(true);
-
-            // only used in the new ValueObject() to bypass the check in constructor
-            mockIsRid.mockReturnValue(true);
-            mockIsTahiti.mockReturnValue(true);
-            mockIsSiren.mockReturnValue(true);
-        });
-
-        afterAll(() => {
-            [
-                mockIsRid,
-                mockIsRidet,
-                mockIsSiren,
-                mockIsSiret,
-                mockIsTahiti,
-                mockIsTahitiet,
-                mockToRid,
-                mockToTahiti,
-                mockToSiren,
-            ].forEach(mock => {
-                mock.mockRestore();
-            });
-        });
-
-        it("should return Siren with Siren", () => {
-            // @ts-expect-error: private method
-            const actual = ChorusMapper.getCompanyId(new Siret("12345678900018"));
-            const expected = SIREN;
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return Rid with Ridet", () => {
-            // @ts-expect-error: private method
-            const actual = ChorusMapper.getCompanyId(new Ridet("0482749145"));
-            const expected = RID;
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return Tahiti with Tahitiet", () => {
-            // @ts-expect-error: private method
-            const actual = ChorusMapper.getCompanyId(new Tahitiet("A12345697"));
-            const expected = TAHITI;
-            expect(actual).toEqual(expected);
-        });
-    });
-
     describe("getAmount", () => {
         it("should return amount with value", () => {
             const CHORUS_LINE_DTO = {
@@ -437,8 +370,6 @@ describe("ChorusMapper", () => {
         const SIREN_ESTAB = new Siren("123456789");
         const CHORUS_LINE_DTO = CHORUS_LINE_ENTITY.data;
         // @ts-expect-error: mock private method
-        const mockGetCompanyId = jest.spyOn(ChorusMapper, "getCompanyId");
-        // @ts-expect-error: mock private method
         const mockGetAmount = jest.spyOn(ChorusMapper, "getAmount");
         // @ts-expect-error: mock private method
         const mockGetOperationDate = jest.spyOn(ChorusMapper, "getOperationDate");
@@ -446,10 +377,9 @@ describe("ChorusMapper", () => {
         const mockGetEstablishmentValueObject = jest.spyOn(ChorusMapper, "getEstablishmentValueObject");
 
         beforeEach(() => {
+            jest.mocked(EstablishmentIdentifier.getAssociationIdentifier).mockReturnValue(SIREN_ESTAB);
             // @ts-expect-error: mock
             mockGetEstablishmentValueObject.mockReturnValue(SIRET_ESTAB);
-            // @ts-expect-error: mock
-            mockGetCompanyId.mockReturnValue(SIREN_ESTAB);
             // @ts-expect-error: mock
             mockGetAmount.mockReturnValue(1000);
             // @ts-expect-error: mock
@@ -457,7 +387,7 @@ describe("ChorusMapper", () => {
         });
 
         afterAll(() => {
-            [mockGetEstablishmentValueObject, mockGetCompanyId, mockGetAmount, mockGetOperationDate].forEach(mock => {
+            [mockGetEstablishmentValueObject, mockGetAmount, mockGetOperationDate].forEach(mock => {
                 mock.mockRestore();
             });
         });
@@ -471,7 +401,7 @@ describe("ChorusMapper", () => {
         it("should get company identifier", () => {
             // @ts-expect-error: private method
             ChorusMapper.getEntitiesByIdentifierRawData(CHORUS_LINE_DTO);
-            expect(mockGetCompanyId).toHaveBeenCalledWith(SIRET_ESTAB);
+            expect(EstablishmentIdentifier.getAssociationIdentifier).toHaveBeenCalledWith(SIRET_ESTAB);
         });
 
         it("should get the amount", () => {
