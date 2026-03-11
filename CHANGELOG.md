@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.81.3](https://github.com/betagouv/api-subventions-asso/compare/v0.81.1...v0.81.3) (2026-03-11)
+
+### Bug Fixes
+
+- **api:** import core as module ([385f8a5](https://github.com/betagouv/api-subventions-asso/commit/385f8a5588f9e209290078c14c239c997bea1bb2))
+
+### Features
+
+- **api:** enable user notification partial deposit ([320d95b](https://github.com/betagouv/api-subventions-asso/commit/320d95b56200ae28615afffc01d2ecc68b8fd469))
+- **front:** [#0000](https://github.com/betagouv/api-subventions-asso/issues/0000) hotfix wording deposit process 2 ([#3843](https://github.com/betagouv/api-subventions-asso/issues/3843)) ([adc6330](https://github.com/betagouv/api-subventions-asso/commit/adc6330d722c6542e7fef23d253e619b9b11e475))
+
 ## [0.81.2](https://github.com/betagouv/api-subventions-asso/compare/v0.81.1...v0.81.2) (2026-03-09)
 
 ### Bug Fixes
