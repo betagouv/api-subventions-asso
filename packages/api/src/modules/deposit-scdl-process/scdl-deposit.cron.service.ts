@@ -45,9 +45,7 @@ class ScdlDepositCronService {
         console.log("getting users to notify to resume deposit process...");
         const emails = await this.getUsersEmailToNotify();
         if (!emails) return;
-        return;
-        // TODO: uncomment when email template will be ready
-        // return notifyService.notify(NotificationType.BATCH_DEPOSIT_RESUME, { emails });
+        return notifyService.notify(NotificationType.BATCH_DEPOSIT_RESUME, { emails });
     }
 }
 
