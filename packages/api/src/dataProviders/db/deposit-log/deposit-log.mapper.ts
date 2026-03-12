@@ -15,8 +15,10 @@ export default class DepositLogMapper {
     }
 
     static toDbo(entity: DepositScdlLogEntity): Omit<DepositScdlLogDbo, "_id"> {
+        // @TODO: define updateDate on Entity creation, not DBO
+        const updateDate = entity.updateDate ?? new Date();
         return {
-            updateDate: new Date(),
+            updateDate,
             userId: entity.userId,
             step: entity.step,
             overwriteAlert: entity.overwriteAlert,

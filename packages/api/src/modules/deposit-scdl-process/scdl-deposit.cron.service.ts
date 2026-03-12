@@ -1,4 +1,4 @@
-import { addDaysToDate } from "../../shared/helpers/DateHelper";
+import { addDaysToDate, lastDayInMonth, sameDateLastYear } from "../../shared/helpers/DateHelper";
 import { NotificationType } from "../notify/@types/NotificationType";
 import notifyService from "../notify/notify.service";
 import userCrudService from "../user/services/crud/user.crud.service";
@@ -48,5 +48,21 @@ export class ScdlDepositCronService {
         const emails = await this.getUsersEmailToNotify();
         if (!emails) return;
         return notifyService.notify(NotificationType.BATCH_DEPOSIT_RESUME, { emails });
+    }
+
+    async getDepositsSameMonthLastYear() {
+        const lastYear = sameDateLastYear(new Date());
+        const start = new Date(lastYear);
+        start.setDate(1);
+        const end = new Date(lastYear);
+        end.setDate(lastDayInMonth(start));
+        return this.depositLogPort.findFromPeriod(start, end);
+    }
+
+    async notifyDepositRenewal() {
+        const deposits = await this.getDepositsSameMonthLastYear();
+        if (!deposits) return;
+        const users = await userCrudService.findUsersByIdList(deposits.map(deposit => deposit.userId));
+        return notifyService.notify(NotificationType.BATCH_DEPOSIT_RENEWAL, { emails: users.map(user => user.email) });
     }
 }

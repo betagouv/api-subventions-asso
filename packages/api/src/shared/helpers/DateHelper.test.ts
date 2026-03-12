@@ -202,4 +202,27 @@ describe("DateHelper", () => {
             expect(DateHelper.formatIsoDateRangeWithSlash(undefined, undefined)).toBeUndefined();
         });
     });
+
+    describe("sameDateLastYear", () => {
+        it("return year minus one year", () => {
+            const today = new Date("2026-01-01");
+            const expected = new Date("2025-01-01");
+            const actual = DateHelper.sameDateLastYear(today);
+            expect(actual).toEqual(expected);
+        });
+    });
+
+    describe("lastDayInMonth", () => {
+        it("return last day when given date is already on the last day", () => {
+            const expected = 28;
+            const actual = DateHelper.lastDayInMonth(new Date("2026-02-28"));
+            expect(actual).toEqual(expected);
+        });
+
+        it("returns last day in month", () => {
+            const expected = 28;
+            const actual = DateHelper.lastDayInMonth(new Date("2026-02-01"));
+            expect(actual).toEqual(expected);
+        });
+    });
 });

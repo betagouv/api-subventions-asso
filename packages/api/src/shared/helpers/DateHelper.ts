@@ -63,6 +63,8 @@ export const computeMonthBetweenDates = (dateA: Date, dateB: Date): number => {
 
 export const sameDateNextYear = date => modifyDateYear(date, 1);
 
+export const sameDateLastYear = date => modifyDateYear(date, -1);
+
 export const modifyDateYear = (date: Date, diff: number): Date => {
     const modifiedDateYear = new Date(date);
     modifiedDateYear.setUTCFullYear(date.getUTCFullYear() + diff);
@@ -93,4 +95,16 @@ export function formatIsoDateRangeWithSlash(startDate?: Date, endDate?: Date): s
         return `${start}/${end}`;
     }
     return start || end || undefined;
+}
+
+export function lastDayInMonth(date: Date) {
+    const cloneDate = new Date(date);
+    const month = cloneDate.getMonth();
+
+    let lastDay: number = cloneDate.getDate();
+    while (cloneDate.getMonth() === month) {
+        lastDay = cloneDate.getDate();
+        cloneDate.setDate(cloneDate.getDate() + 1);
+    }
+    return lastDay;
 }

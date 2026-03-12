@@ -78,6 +78,21 @@ describe("Deposit Log Port", () => {
         });
     });
 
+    describe("findFromPeriod", () => {
+        const START = new Date("2026-03-01");
+        const END = new Date("2026-03-10");
+
+        it("calls find with period", async () => {
+            await depositLogAdapter.findFromPeriod(START, END);
+            expect(mockFind).toHaveBeenCalledWith({ updateDate: { $gte: START, $lte: END } });
+        });
+
+        it("transforms dbo to entity", async () => {
+            await depositLogAdapter.findFromPeriod(START, END);
+            expect(mockDboToEntity).toHaveBeenNthCalledWith(1, DEPOSIT_LOG_DBO);
+        });
+    });
+
     describe("deleteOneByUserId()", () => {
         it("should call deleteOneByUserId with the correct arguments", async () => {
             const query = "user123";
