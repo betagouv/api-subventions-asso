@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.81.4](https://github.com/betagouv/api-subventions-asso/compare/v0.81.3...v0.81.4) (2026-03-13)
+
+### Bug Fixes
+
+- **front:** [#3852](https://github.com/betagouv/api-subventions-asso/issues/3852) display payment modal headers again ([#3854](https://github.com/betagouv/api-subventions-asso/issues/3854)) ([84a2a02](https://github.com/betagouv/api-subventions-asso/commit/84a2a02f80cefd5d8e9c50387ea186070145b039))
+
 ## [0.81.3](https://github.com/betagouv/api-subventions-asso/compare/v0.81.1...v0.81.3) (2026-03-11)
 
 ### Bug Fixes
