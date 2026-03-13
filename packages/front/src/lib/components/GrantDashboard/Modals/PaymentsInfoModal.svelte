@@ -11,7 +11,12 @@
 </script>
 
 {#if $data.payments}
-    <Table id={tableId} {headers}>
+    <Table id={tableId}>
+        <slot slot="headers">
+            {#each headers as header (header)}
+                <th>{header}</th>
+            {/each}
+        </slot>
         {#each $data.payments as payment, index (index)}
             <TableRow id={tableId} {index} title="Détail des versements" hideTitle={true}>
                 <td class="primary">{valueOrHyphen(numberToEuro(payment.montant))}</td>
