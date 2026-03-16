@@ -51,13 +51,15 @@ export class RechercheEntreprisesService implements Provider {
     async getSearchResult(query): Promise<AssociationNameEntity[]> {
         const searchResult = (await this.search(query)).filter(dto => dto.siren && dto.nom_complet);
 
+        if (searchResult.length === 0) return [];
+
         if (Siren.isSiren(query)) {
             // this notify the team if API Recherche Entreprise returns structure not from the LEGAL_CATEGORIES_ACCEPTED
             // this was double checked and we decided to trust the API with its nature_juridique query filter
             // @TODO: remove this call start of april 2026 if nothing was notified
             if (searchResult.length > 1) this.notifyOrNot(searchResult, query); // this should not be called anymore as we called from siren or rna
             const dto = searchResult[0];
-            if (!associationHelper.isCategoryFromAsso(dto.nature_juridique)) throw new NotAssociationError();
+            if (!associationHelper.isCategoryFromAsso(dto?.nature_juridique)) throw new NotAssociationError();
             return [
                 RechercheEntreprisesMapper.toAssociationNameEntity(
                     dto as RechercheEntreprisesResultDto & { siren: string; nom_complet: string },
