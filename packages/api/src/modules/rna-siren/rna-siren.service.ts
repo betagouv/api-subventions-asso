@@ -1,5 +1,5 @@
 import { DuplicateIndexError } from "../../shared/errors/dbError/DuplicateIndexError";
-import rnaSirenPort from "../../dataProviders/db/rnaSiren/rnaSiren.port";
+import rnaSirenAdapter from "../../dataProviders/db/rnaSiren/rnaSiren.adapter";
 import apiAssoService from "../providers/apiAsso/apiAsso.service";
 import RnaSirenEntity from "../../entities/RnaSirenEntity";
 import Rna from "../../identifierObjects/Rna";
@@ -16,7 +16,7 @@ export class RnaSirenService {
     }
 
     async find(identifier: Rna | Siren, offline = false): Promise<RnaSirenEntity[] | null> {
-        const entities = await rnaSirenPort.find(identifier);
+        const entities = await rnaSirenAdapter.find(identifier);
 
         if (entities || offline) return entities;
 
@@ -39,7 +39,7 @@ export class RnaSirenService {
 
     async insert(entity: RnaSirenEntity) {
         try {
-            await rnaSirenPort.insert(entity);
+            await rnaSirenAdapter.insert(entity);
         } catch (e: unknown) {
             if (e instanceof DuplicateIndexError) return;
             throw e;
@@ -51,7 +51,7 @@ export class RnaSirenService {
         const entities = duos.map(({ rna, siren }) => new RnaSirenEntity(rna, siren));
 
         try {
-            return rnaSirenPort.insertMany(entities);
+            return rnaSirenAdapter.insertMany(entities);
         } catch (e: unknown) {
             if (e instanceof DuplicateIndexError) return;
             throw e;

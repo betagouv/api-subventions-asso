@@ -1,7 +1,7 @@
 import { UserDto } from "dto";
 import { BadRequestError, InternalServerError } from "core";
 import { RoleEnum } from "../../../../@enums/Roles";
-import userPort from "../../../../dataProviders/db/user/user.port";
+import userAdapter from "../../../../dataProviders/db/user/user.adapter";
 import { UserServiceErrors } from "../../user.enum";
 
 export class UserRolesService {
@@ -19,7 +19,7 @@ export class UserRolesService {
 
     async addRolesToUser(user: UserDto | string, roles: RoleEnum[]): Promise<{ user: UserDto }> {
         if (typeof user === "string") {
-            const foundUser = await userPort.findByEmail(user);
+            const foundUser = await userAdapter.findByEmail(user);
             if (!foundUser) {
                 throw new InternalServerError("An error has occurred");
             }
@@ -32,7 +32,7 @@ export class UserRolesService {
             throw new BadRequestError(`Role ${invalidRole} is not valid`, UserServiceErrors.ROLE_NOT_FOUND);
         }
 
-        return { user: await userPort.update({ ...user, roles: [...new Set([...user.roles, ...roles])] }) };
+        return { user: await userAdapter.update({ ...user, roles: [...new Set([...user.roles, ...roles])] }) };
     }
 }
 

@@ -1,8 +1,8 @@
 import chorusService from "./chorus.service";
-import chorusLinePort from "../../../dataProviders/db/providers/chorus/chorus.line.port";
+import chorusLineAdapter from "../../../dataProviders/db/providers/chorus/chorus.line.adapter";
 
-jest.mock("../../../dataProviders/db/providers/chorus/chorus.line.port");
-const mockedChorusLinePort = jest.mocked(chorusLinePort);
+jest.mock("../../../dataProviders/db/providers/chorus/chorus.line.adapter");
+const mockedChorusLinePort = jest.mocked(chorusLineAdapter);
 jest.mock("./mappers/chorus.mapper");
 
 jest.mock("../../../shared/helpers/StringHelper");
@@ -14,7 +14,7 @@ import PROGRAMS from "../../../../tests/dataProviders/db/__fixtures__/stateBudge
 import Siret from "../../../identifierObjects/Siret";
 import associationHelper from "../../associations/associations.helper";
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
-import chorusFsePort from "../../../dataProviders/db/providers/chorus/chorus.fse.port";
+import chorusFseAdapter from "../../../dataProviders/db/providers/chorus/chorus.fse.adapter";
 jest.mock("../../associations/associations.helper");
 
 describe("chorusService", () => {
@@ -198,7 +198,7 @@ describe("chorusService", () => {
 
         beforeEach(() => {
             mockIsEntityAccepted = jest.spyOn(chorusService, "isEntityAccepted").mockResolvedValue(true);
-            jest.spyOn(chorusFsePort, "upsertMany").mockResolvedValue();
+            jest.spyOn(chorusFseAdapter, "upsertMany").mockResolvedValue();
         });
 
         afterAll(() => mockIsEntityAccepted.mockRestore());
@@ -210,7 +210,7 @@ describe("chorusService", () => {
 
         it("pass entities to port", async () => {
             await chorusService.persistEuropeanEntities(ENTITIES);
-            expect(chorusFsePort.upsertMany).toHaveBeenCalledWith(ENTITIES);
+            expect(chorusFseAdapter.upsertMany).toHaveBeenCalledWith(ENTITIES);
         });
     });
 });

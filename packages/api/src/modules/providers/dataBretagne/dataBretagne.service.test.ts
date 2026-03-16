@@ -1,8 +1,8 @@
 import dataBretagneService from "./dataBretagne.service";
-import dataBretagnePort, { DataBretagnePort } from "../../../dataProviders/api/dataBretagne/dataBretagne.port";
-jest.mock("../../../dataProviders/api/dataBretagne/dataBretagne.port");
-import stateBudgetProgramPort from "../../../dataProviders/db/state-budget-program/stateBudgetProgram.port";
-jest.mock("../../../dataProviders/db/state-budget-program/stateBudgetProgram.port");
+import dataBretagneAdapter, { DataBretagneAdapter } from "../../../dataProviders/api/dataBretagne/dataBretagne.adapter";
+jest.mock("../../../dataProviders/api/dataBretagne/dataBretagne.adapter");
+import stateBudgetProgramAdapter from "../../../dataProviders/db/state-budget-program/stateBudgetProgram.adapter";
+jest.mock("../../../dataProviders/db/state-budget-program/stateBudgetProgram.adapter");
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
 import { PROGRAMS } from "../../../dataProviders/api/dataBretagne/__fixtures__/DataBretagne.fixture";
 import { DataBretagneProgrammeMapper } from "../../../dataProviders/api/dataBretagne/data-bretagne.mapper";
@@ -47,10 +47,10 @@ const expected = {
 
 describe("Data Bretagne Service", function () {
     beforeAll(() => {
-        jest.mocked(dataBretagnePort.getStateBudgetPrograms).mockResolvedValue([
+        jest.mocked(dataBretagneAdapter.getStateBudgetPrograms).mockResolvedValue([
             new StateBudgetProgramEntity("label_theme", "label", "code_ministere", 1),
         ]);
-        jest.mocked(stateBudgetProgramPort.findAll).mockResolvedValue(
+        jest.mocked(stateBudgetProgramAdapter.findAll).mockResolvedValue(
             PROGRAMS.map(DataBretagneProgrammeMapper.toEntity),
         );
     });
@@ -58,16 +58,16 @@ describe("Data Bretagne Service", function () {
     describe("resyncPrograms", () => {
         it("should call dataBretagnePort.getStateBudgetPrograms", async () => {
             await dataBretagneService.resyncPrograms();
-            expect(jest.mocked(dataBretagnePort.getStateBudgetPrograms)).toHaveBeenCalledTimes(1);
+            expect(jest.mocked(dataBretagneAdapter.getStateBudgetPrograms)).toHaveBeenCalledTimes(1);
         });
 
         it("should call stateBudgetProgramPort.replace", async () => {
             await dataBretagneService.resyncPrograms();
-            expect(jest.mocked(stateBudgetProgramPort).replace).toHaveBeenCalledTimes(1);
+            expect(jest.mocked(stateBudgetProgramAdapter).replace).toHaveBeenCalledTimes(1);
         });
 
         it("should throw error if no program", async () => {
-            jest.mocked(dataBretagnePort.getStateBudgetPrograms).mockResolvedValueOnce([]);
+            jest.mocked(dataBretagneAdapter.getStateBudgetPrograms).mockResolvedValueOnce([]);
             expect(() => dataBretagneService.resyncPrograms()).rejects.toThrowError(
                 "Unhandled error from API Data Bretagne",
             );
@@ -87,7 +87,7 @@ describe("Data Bretagne Service", function () {
     });
 
     describe("getAllDataRecords", () => {
-        const mockLogin = jest.spyOn(dataBretagnePort, "login").mockImplementation(jest.fn());
+        const mockLogin = jest.spyOn(dataBretagneAdapter, "login").mockImplementation(jest.fn());
         const mockGetProgramsRecord = jest.spyOn(dataBretagneService, "getProgramsRecord");
         const mockGetMinistriesRecord = jest.spyOn(dataBretagneService, "getMinistriesRecord");
         const mockGetProgramsRefRecord = jest.spyOn(dataBretagneService, "getProgramsRefRecord");
@@ -132,7 +132,7 @@ describe("Data Bretagne Service", function () {
     describe("getProgramsRecord", () => {
         it("should call stateBudgetProgramPort.find", async () => {
             await dataBretagneService.getProgramsRecord();
-            expect(jest.mocked(stateBudgetProgramPort.findAll)).toHaveBeenCalledTimes(1);
+            expect(jest.mocked(stateBudgetProgramAdapter.findAll)).toHaveBeenCalledTimes(1);
         });
 
         it("should return a record of state budget program entities", async () => {
@@ -152,7 +152,7 @@ describe("Data Bretagne Service", function () {
 
         beforeEach(() => {
             mockGetEntities = jest
-                .spyOn(dataBretagnePort, methodToMock as keyof DataBretagnePort)
+                .spyOn(dataBretagneAdapter, methodToMock as keyof DataBretagneAdapter)
                 .mockResolvedValue(entities[methodToMock]);
         });
 

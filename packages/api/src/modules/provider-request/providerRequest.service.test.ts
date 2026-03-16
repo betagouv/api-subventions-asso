@@ -1,8 +1,8 @@
 import axios from "axios";
 import ProviderRequestFactory, { ProviderRequestService } from "./providerRequest.service";
-import providerRequestPort from "../../dataProviders/db/provider-request/providerRequest.port";
+import providerRequestAdapter from "../../dataProviders/db/provider-request/providerRequest.adapter";
 
-jest.mock("../../dataProviders/db/provider-request/providerRequest.port");
+jest.mock("../../dataProviders/db/provider-request/providerRequest.adapter");
 
 describe("ProviderRequestService", () => {
     let providerRequestService: ProviderRequestService;
@@ -47,7 +47,7 @@ describe("ProviderRequestService", () => {
         let portCreateSpy: jest.SpyInstance;
 
         beforeAll(() => {
-            portCreateSpy = jest.spyOn(providerRequestPort, "create").mockResolvedValue();
+            portCreateSpy = jest.spyOn(providerRequestAdapter, "create").mockResolvedValue();
         });
 
         it("should call port", async () => {

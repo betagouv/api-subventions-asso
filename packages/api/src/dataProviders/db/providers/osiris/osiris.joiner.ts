@@ -1,22 +1,22 @@
 import { AggregationCursor } from "mongodb";
 import db from "../../../../shared/MongoConnection";
-import osirisActionPort from "./osiris.action.port";
-import osirisRequestPort from "./osiris.request.port";
+import osirisActionAdapter from "./osiris.action.adapter";
+import osirisRequestAdapter from "./osiris.request.adapter";
 import OsirisRequestEntity from "../../../../modules/providers/osiris/entities/OsirisRequestEntity";
 import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
 
 export type OsirisRequestWithActions = OsirisRequestEntity & { actions: OsirisActionEntity[] };
 
 export class OsirisJoiner {
-    applicationCollection = db.collection(osirisRequestPort.collectionName);
+    applicationCollection = db.collection(osirisRequestAdapter.collectionName);
 
     private get joinPipeline() {
         return [
             {
                 $lookup: {
-                    from: osirisActionPort.collectionName,
-                    localField: osirisRequestPort.joinIndexes.osirisActionPort,
-                    foreignField: osirisActionPort.joinIndexes.osirisRequestPort,
+                    from: osirisActionAdapter.collectionName,
+                    localField: osirisRequestAdapter.joinIndexes.osirisActionPort,
+                    foreignField: osirisActionAdapter.joinIndexes.osirisRequestPort,
                     as: "actions",
                 },
             },

@@ -1,5 +1,5 @@
 import { DumpService } from "./dump.service";
-import metabaseDumpPort from "../../dataProviders/db/dump/metabase-dump.port";
+import metabaseDumpAdapter from "../../dataProviders/db/dump/metabase-dump.adapter";
 import userCrudService from "../user/services/crud/user.crud.service";
 import { DEPOSIT_LOG_ENTITY } from "../deposit-scdl-process/__fixtures__/depositLog.fixture";
 import { USER_DBO } from "../user/__fixtures__/user.fixture";
@@ -8,7 +8,7 @@ import { createDepositScdlProcessService } from "../../../tests/__mocks__/deposi
 jest.mock("../../modules/notify/notify.service", () => ({ notify: jest.fn() }));
 jest.mock("../deposit-scdl-process/depositScdlProcess.service");
 jest.mock("../user/services/crud/user.crud.service");
-jest.mock("../../dataProviders/db/dump/metabase-dump.port");
+jest.mock("../../dataProviders/db/dump/metabase-dump.adapter");
 jest.mock("../configurations/configurations.service");
 jest.mock("../stats/stats.service", () => ({
     getAnonymizedLogsOnPeriod: jest.fn((..._args) => ({ hasNext: jest.fn(() => false) })),
@@ -30,14 +30,14 @@ describe("dumpService", () => {
         it("calls port", () => {
             // @ts-expect-error -- test private
             dumpService.patchWithPipedriveData();
-            expect(metabaseDumpPort.patchWithPipedriveData).toHaveBeenCalled();
+            expect(metabaseDumpAdapter.patchWithPipedriveData).toHaveBeenCalled();
         });
     });
 
     describe("importPipedriveData", () => {
         it("calls port with arg", () => {
             dumpService.importPipedriveData([]);
-            expect(metabaseDumpPort.savePipedrive).toHaveBeenCalledWith([]);
+            expect(metabaseDumpAdapter.savePipedrive).toHaveBeenCalledWith([]);
         });
     });
 
@@ -63,12 +63,12 @@ describe("dumpService", () => {
 
         it("publish deposit logs", async () => {
             await dumpService.publishStatsData();
-            expect(metabaseDumpPort.upsertDepositLogs).toHaveBeenCalledWith(DEPOSIT_LOGS);
+            expect(metabaseDumpAdapter.upsertDepositLogs).toHaveBeenCalledWith(DEPOSIT_LOGS);
         });
 
         it("publish data logs", async () => {
             await dumpService.publishStatsData();
-            expect(metabaseDumpPort.upsertDataLog).toHaveBeenCalled();
+            expect(metabaseDumpAdapter.upsertDataLog).toHaveBeenCalled();
         });
     });
 });

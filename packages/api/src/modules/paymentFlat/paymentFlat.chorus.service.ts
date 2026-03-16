@@ -1,4 +1,4 @@
-import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port";
+import paymentFlatAdapter from "../../dataProviders/db/paymentFlat/paymentFlat.adapter";
 import PaymentFlatEntity from "../../entities/flats/PaymentFlatEntity";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import { ChorusPaymentFlatEntity } from "../providers/chorus/@types/ChorusPaymentFlat";
@@ -131,7 +131,7 @@ class PaymentFlatChorusService implements PaymentFlatProvider {
     }
 
     public cursorFindChorusOnly(exerciceBudgetaire?: number) {
-        return paymentFlatPort.cursorFindChorusOnly(exerciceBudgetaire);
+        return paymentFlatAdapter.cursorFindChorusOnly(exerciceBudgetaire);
     }
 }
 

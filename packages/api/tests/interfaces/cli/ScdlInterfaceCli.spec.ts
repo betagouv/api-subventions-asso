@@ -1,11 +1,11 @@
 import path from "path";
 import { ObjectId } from "mongodb";
 import ScdlCli from "../../../src/interfaces/cli/Scdl.cli";
-import miscScdlProducersPort from "../../../src/dataProviders/db/providers/scdl/miscScdlProducers.port";
-import miscScdlGrantPort from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.port";
-import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
+import miscScdlProducersAdapter from "../../../src/dataProviders/db/providers/scdl/miscScdlProducers.adapter";
+import miscScdlGrantAdapter from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.adapter";
+import dataLogAdapter from "../../../src/dataProviders/db/data-log/dataLog.adapter";
 import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
-import applicationFlatPort from "../../../src/dataProviders/db/applicationFlat/applicationFlat.port";
+import applicationFlatAdapter from "../../../src/dataProviders/db/applicationFlat/applicationFlat.adapter";
 import notifyService from "../../../src/modules/notify/notify.service";
 import { NotificationType } from "../../../src/modules/notify/@types/NotificationType";
 import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
@@ -27,9 +27,9 @@ describe("SCDL CLI", () => {
             .mockResolvedValue({ denomination_siren: [{ value: PRODUCER.name }] });
         // do not change this before scdl providers list async init has been refactored
         // see jest.config.integ.setup beforeEach to understand this hook necessity
-        const producers = await miscScdlProducersPort.findAll();
+        const producers = await miscScdlProducersAdapter.findAll();
         if (!producers.find(producer => producer.siret === PRODUCER.siret)) {
-            await miscScdlProducersPort.create(PRODUCER);
+            await miscScdlProducersAdapter.create(PRODUCER);
         }
 
         cli = new ScdlCli();
@@ -40,7 +40,7 @@ describe("SCDL CLI", () => {
             mockApiAsso.mockResolvedValueOnce({ denomination_siren: [{ value: LOCAL_AUTHORITIES[1].name }] });
             // use second item because first is already created in beforeEach
             await cli.addProducer(LOCAL_AUTHORITIES[1].siret);
-            const document = await miscScdlProducersPort.findBySiret(LOCAL_AUTHORITIES[1].siret);
+            const document = await miscScdlProducersAdapter.findBySiret(LOCAL_AUTHORITIES[1].siret);
             expect(document).toMatchSnapshot({ _id: expect.any(ObjectId) });
         });
     });
@@ -83,7 +83,7 @@ describe("SCDL CLI", () => {
 
             it("should add grants with exercise from conventionDate", async () => {
                 await test("SCDL", PRODUCER.siret, FIRST_IMPORT_DATE);
-                const grants = await miscScdlGrantPort.findAll();
+                const grants = await miscScdlGrantAdapter.findAll();
                 const expectedAny = grants.map(() => ({
                     _id: expect.any(String),
                     updateDate: expect.any(Date),
@@ -93,7 +93,7 @@ describe("SCDL CLI", () => {
 
             it("should add grants with exercise from its own column", async () => {
                 await test("SCDL_WITH_EXERCICE", PRODUCER.siret, FIRST_IMPORT_DATE);
-                const grants = await miscScdlGrantPort.findAll(); // only grants from 2023 as it only saves most recent exercise in multi exercise files
+                const grants = await miscScdlGrantAdapter.findAll(); // only grants from 2023 as it only saves most recent exercise in multi exercise files
                 const expectedAny = grants.map(() => ({
                     _id: expect.any(String),
                     updateDate: expect.any(Date),
@@ -103,7 +103,7 @@ describe("SCDL CLI", () => {
 
             it("registers new import in data-log", async () => {
                 await test("SCDL", PRODUCER.siret, FIRST_IMPORT_DATE);
-                const actual = await dataLogPort.findAll();
+                const actual = await dataLogAdapter.findAll();
                 expect(
                     actual.map(dataLog => ({ ...dataLog, _id: expect.any(String), integrationDate: expect.any(Date) })),
                 ).toMatchSnapshot();
@@ -111,14 +111,14 @@ describe("SCDL CLI", () => {
 
             it("persists all data on first producer's importation", async () => {
                 await test("SCDL", PRODUCER.siret, FIRST_IMPORT_DATE);
-                const actual = await miscScdlGrantPort.findAll();
+                const actual = await miscScdlGrantAdapter.findAll();
                 expect(actual?.[0]).toMatchSnapshot({ updateDate: expect.any(Date) });
             });
 
             it("persists new data when data from imported exercises already in DB", async () => {
                 await test("SCDL", PRODUCER.siret, FIRST_IMPORT_DATE);
                 await test("SCDL_SECOND_IMPORT", PRODUCER.siret, SECOND_IMPORT_DATE);
-                const actual = await miscScdlGrantPort.findAll();
+                const actual = await miscScdlGrantAdapter.findAll();
                 const expectedAny = actual.map(() => ({ updateDate: expect.any(Date) }));
                 expect(actual.length).toBe(9); // 9 matches "SCDL_SECOND_IMPORT" length as it should clean exercise and so removing lines from "SCDL" file
                 expect(actual).toMatchSnapshot(expectedAny);
@@ -126,14 +126,14 @@ describe("SCDL CLI", () => {
 
             it("persists all data in ApplicationFlat on first producer's importation", async () => {
                 await test("SCDL", PRODUCER.siret, FIRST_IMPORT_DATE);
-                const actual = await applicationFlatPort.findAll();
+                const actual = await applicationFlatAdapter.findAll();
                 expect(actual?.[0]).toMatchSnapshot({ updateDate: expect.any(Date) });
             });
 
             it("persists new data in ApplicationFlat when data from imported exercises already in DB", async () => {
                 await test("SCDL", PRODUCER.siret, FIRST_IMPORT_DATE);
                 await test("SCDL_SECOND_IMPORT", PRODUCER.siret, SECOND_IMPORT_DATE);
-                const actual = await applicationFlatPort.findAll();
+                const actual = await applicationFlatAdapter.findAll();
                 const expectedAny = actual.map(() => ({ updateDate: expect.any(Date) }));
                 expect(actual).toMatchSnapshot(expectedAny);
             });
@@ -177,7 +177,7 @@ describe("SCDL CLI", () => {
                     FIRST_IMPORT_DATE,
                     "Sheet1",
                 );
-                const grants = await miscScdlGrantPort.findAll();
+                const grants = await miscScdlGrantAdapter.findAll();
                 const grantExercices = grants.map(g => g.exercice);
                 expect(grantExercices).toMatchSnapshot();
             }, 20000);
@@ -190,7 +190,7 @@ describe("SCDL CLI", () => {
                 "$methodName should throw error if one exercise from import contain less data that what exist in DB",
                 async ({ test, exercise }) => {
                     await test("SCDL", PRODUCER.siret, FIRST_IMPORT_DATE); // import all grants
-                    await miscScdlGrantPort.createMany([
+                    await miscScdlGrantAdapter.createMany([
                         { ...SCDL_GRANT_DBOS[0], exercice: exercise, allocatorSiret: PRODUCER.siret }, // scdl grant dbo uses PRODUCER
                     ]); // add one more grant in DB
 
@@ -204,9 +204,9 @@ describe("SCDL CLI", () => {
 
     describe("initApplicationFlat", () => {
         it("creates proper applicationFlat entities in collection", async () => {
-            await miscScdlGrantPort.createMany(SCDL_GRANT_DBOS);
+            await miscScdlGrantAdapter.createMany(SCDL_GRANT_DBOS);
             await cli.initApplicationFlat();
-            const actual = await applicationFlatPort.findAll();
+            const actual = await applicationFlatAdapter.findAll();
             expect(actual).toMatchSnapshot();
         });
     });

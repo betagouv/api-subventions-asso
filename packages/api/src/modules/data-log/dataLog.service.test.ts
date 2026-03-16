@@ -1,11 +1,11 @@
 import dataLogService from "./dataLog.service";
-import dataLogPort from "../../dataProviders/db/data-log/dataLog.port";
+import dataLogAdapter from "../../dataProviders/db/data-log/dataLog.adapter";
 import { DataLogMapper } from "./data-log.mapper";
 import { RAW_PROVIDER } from "../providers/__fixtures__/providers.fixture";
 import { ApiDataLogEntity, DataLogEntity, DataLogSource, FileDataLogEntity } from "./entities/dataLogEntity";
 import { FindCursor, WithId } from "mongodb";
 
-jest.mock("../../dataProviders/db/data-log/dataLog.port");
+jest.mock("../../dataProviders/db/data-log/dataLog.adapter");
 jest.mock("./data-log.mapper");
 
 describe("dataLogService", () => {
@@ -48,13 +48,13 @@ describe("dataLogService", () => {
             const DATE_NOW = new Date("2024-04-04");
             jest.useFakeTimers().setSystemTime(DATE_NOW);
             await dataLogService.add(FILE_DATA_LOG);
-            expect(dataLogPort.insert).toHaveBeenCalledWith({ ...FILE_DATA_LOG, integrationDate: DATE_NOW });
+            expect(dataLogAdapter.insert).toHaveBeenCalledWith({ ...FILE_DATA_LOG, integrationDate: DATE_NOW });
             jest.useRealTimers();
         });
 
         it("returns inserted log", async () => {
             await dataLogService.add(FILE_DATA_LOG);
-            const actual = jest.mocked(dataLogPort.insert).mock.calls[0][0];
+            const actual = jest.mocked(dataLogAdapter.insert).mock.calls[0][0];
             expect(actual).toMatchSnapshot({ integrationDate: expect.any(Date) });
         });
     });
@@ -137,16 +137,16 @@ describe("dataLogService", () => {
     describe("getProvidersLogOverview", () => {
         beforeAll(() => {
             // @ts-expect-error -- mock
-            jest.mocked(dataLogPort.getProvidersLogOverview).mockResolvedValue([1, 2, 3]);
+            jest.mocked(dataLogAdapter.getProvidersLogOverview).mockResolvedValue([1, 2, 3]);
         });
 
         afterAll(() => {
-            jest.mocked(dataLogPort.getProvidersLogOverview).mockRestore();
+            jest.mocked(dataLogAdapter.getProvidersLogOverview).mockRestore();
         });
 
         it("gets data from port", async () => {
             await dataLogService.getProvidersLogOverview();
-            expect(dataLogPort.getProvidersLogOverview).toHaveBeenCalled();
+            expect(dataLogAdapter.getProvidersLogOverview).toHaveBeenCalled();
         });
 
         it("adapts each log", async () => {
@@ -172,16 +172,16 @@ describe("dataLogService", () => {
                 next: jest.fn(),
             };
 
-            jest.mocked(dataLogPort.findAllCursor).mockReturnValue(mockCursor as FindCursor<WithId<DataLogEntity>>);
+            jest.mocked(dataLogAdapter.findAllCursor).mockReturnValue(mockCursor as FindCursor<WithId<DataLogEntity>>);
         });
 
         afterEach(() => {
-            jest.mocked(dataLogPort.findAllCursor).mockRestore();
+            jest.mocked(dataLogAdapter.findAllCursor).mockRestore();
         });
 
         it("should call the port's findAllCursor", () => {
             dataLogService.findAllCursor();
-            expect(dataLogPort.findAllCursor).toHaveBeenCalled();
+            expect(dataLogAdapter.findAllCursor).toHaveBeenCalled();
         });
 
         it("should return the cursor from the port", () => {

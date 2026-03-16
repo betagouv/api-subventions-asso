@@ -1,10 +1,10 @@
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import { DefaultObject } from "../../../@types";
-import fonjepDispositifPort from "../../../dataProviders/db/providers/fonjep/fonjep.dispositif.port";
-import fonjepPostesPort from "../../../dataProviders/db/providers/fonjep/fonjep.postes.port";
-import fonjepTiersPort from "../../../dataProviders/db/providers/fonjep/fonjep.tiers.port";
-import fonjepTypePostePort from "../../../dataProviders/db/providers/fonjep/fonjep.typePoste.port";
-import fonjepVersementsPort from "../../../dataProviders/db/providers/fonjep/fonjep.versements.port";
+import fonjepDispositifAdapter from "../../../dataProviders/db/providers/fonjep/fonjep.dispositif.adapter";
+import fonjepPostesAdapter from "../../../dataProviders/db/providers/fonjep/fonjep.postes.adapter";
+import fonjepTiersAdapter from "../../../dataProviders/db/providers/fonjep/fonjep.tiers.adapter";
+import fonjepTypePosteAdapter from "../../../dataProviders/db/providers/fonjep/fonjep.typePoste.adapter";
+import fonjepVersementsAdapter from "../../../dataProviders/db/providers/fonjep/fonjep.versements.adapter";
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 import PaymentFlatEntity from "../../../entities/flats/PaymentFlatEntity";
 import Ridet from "../../../identifierObjects/Ridet";
@@ -74,11 +74,11 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
      */
 
     useTemporyCollection(active: boolean) {
-        fonjepDispositifPort.useTemporyCollection(active);
-        fonjepPostesPort.useTemporyCollection(active);
-        fonjepTiersPort.useTemporyCollection(active);
-        fonjepTypePostePort.useTemporyCollection(active);
-        fonjepVersementsPort.useTemporyCollection(active);
+        fonjepDispositifAdapter.useTemporyCollection(active);
+        fonjepPostesAdapter.useTemporyCollection(active);
+        fonjepTiersAdapter.useTemporyCollection(active);
+        fonjepTypePosteAdapter.useTemporyCollection(active);
+        fonjepVersementsAdapter.useTemporyCollection(active);
     }
 
     async createFonjepCollections(
@@ -88,19 +88,19 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
         typePosteEntities: FonjepTypePosteEntity[],
         dispositifEntities: FonjepDispositifEntity[],
     ) {
-        await fonjepTiersPort.insertMany(tierEntities);
-        await fonjepPostesPort.insertMany(posteEntities);
-        await fonjepVersementsPort.insertMany(versementEntities);
-        await fonjepTypePostePort.insertMany(typePosteEntities);
-        await fonjepDispositifPort.insertMany(dispositifEntities);
+        await fonjepTiersAdapter.insertMany(tierEntities);
+        await fonjepPostesAdapter.insertMany(posteEntities);
+        await fonjepVersementsAdapter.insertMany(versementEntities);
+        await fonjepTypePosteAdapter.insertMany(typePosteEntities);
+        await fonjepDispositifAdapter.insertMany(dispositifEntities);
     }
 
     async applyTemporyCollection() {
-        await fonjepDispositifPort.applyTemporyCollection();
-        await fonjepPostesPort.applyTemporyCollection();
-        await fonjepTiersPort.applyTemporyCollection();
-        await fonjepTypePostePort.applyTemporyCollection();
-        await fonjepVersementsPort.applyTemporyCollection();
+        await fonjepDispositifAdapter.applyTemporyCollection();
+        await fonjepPostesAdapter.applyTemporyCollection();
+        await fonjepTiersAdapter.applyTemporyCollection();
+        await fonjepTypePosteAdapter.applyTemporyCollection();
+        await fonjepVersementsAdapter.applyTemporyCollection();
     }
 
     /**
@@ -139,17 +139,17 @@ export class FonjepService extends ProviderCore implements ApplicationFlatProvid
 
     // only used for test to generate payment-flat on demand
     async getApplicationFlatCollections() {
-        const thirdParties = await fonjepTiersPort.findAll();
-        const positions = await fonjepPostesPort.findAll();
-        const schemes = await fonjepDispositifPort.findAll();
+        const thirdParties = await fonjepTiersAdapter.findAll();
+        const positions = await fonjepPostesAdapter.findAll();
+        const schemes = await fonjepDispositifAdapter.findAll();
         return { thirdParties, positions, schemes };
     }
 
     // only used for test to generate payment-flat on demand
     async getPaymentFlatCollections() {
-        const thirdParties = await fonjepTiersPort.findAll();
-        const positions = await fonjepPostesPort.findAll();
-        const payments = await fonjepVersementsPort.findAll();
+        const thirdParties = await fonjepTiersAdapter.findAll();
+        const positions = await fonjepPostesAdapter.findAll();
+        const payments = await fonjepVersementsAdapter.findAll();
         return { thirdParties, positions, payments };
     }
 

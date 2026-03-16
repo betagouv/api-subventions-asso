@@ -6,7 +6,7 @@ import rnaSirenService from "../../rna-siren/rna-siren.service";
 import Siret from "../../../identifierObjects/Siret";
 import Siren from "../../../identifierObjects/Siren";
 import Rna from "../../../identifierObjects/Rna";
-import { osirisRequestPort, osirisActionPort } from "../../../dataProviders/db/providers/osiris";
+import { osirisRequestAdapter, osirisActionAdapter } from "../../../dataProviders/db/providers/osiris";
 import OsirisRequestMapper from "./mappers/osiris-request.mapper";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
@@ -55,7 +55,7 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
             if (rna) rnaSirens.push({ rna: new Rna(rna), siren: new Siret(siret).toSiren() });
         }
         const [metadataRequests] = await Promise.all([
-            osirisRequestPort.bulkUpsert(requests),
+            osirisRequestAdapter.bulkUpsert(requests),
             rnaSirenService.insertMany(rnaSirens),
         ]);
 
@@ -126,7 +126,7 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
     }
 
     public bulkAddActions(actions: OsirisActionEntity[]): Promise<void | BulkWriteResult> {
-        return osirisActionPort.bulkUpsert(actions);
+        return osirisActionAdapter.bulkUpsert(actions);
     }
 
     public validAction(action: OsirisActionEntity) {
@@ -148,18 +148,18 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
     }
 
     public async findBySiret(siret: Siret) {
-        const requests = await osirisRequestPort.findBySiret(siret);
+        const requests = await osirisRequestAdapter.findBySiret(siret);
 
         for (const request of requests) {
-            request.actions = await osirisActionPort.findByRequestUniqueId(request.providerInformations.uniqueId);
+            request.actions = await osirisActionAdapter.findByRequestUniqueId(request.providerInformations.uniqueId);
         }
         return requests;
     }
 
     public async findBySiren(siren: Siren) {
-        const requests = await osirisRequestPort.findBySiren(siren);
+        const requests = await osirisRequestAdapter.findBySiren(siren);
 
-        const actions = await osirisActionPort.findBySiren(siren);
+        const actions = await osirisActionAdapter.findBySiren(siren);
 
         for (const request of requests) {
             request.actions = actions.filter(
@@ -170,10 +170,10 @@ export class OsirisService extends ProviderCore implements ApplicationFlatProvid
     }
 
     public async findByRna(rna: Rna) {
-        const requests = await osirisRequestPort.findByRna(rna);
+        const requests = await osirisRequestAdapter.findByRna(rna);
 
         for (const request of requests) {
-            request.actions = await osirisActionPort.findByRequestUniqueId(request.providerInformations.uniqueId);
+            request.actions = await osirisActionAdapter.findByRequestUniqueId(request.providerInformations.uniqueId);
         }
         return requests;
     }

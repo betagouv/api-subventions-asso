@@ -1,4 +1,4 @@
-import sireneUniteLegaleDbPort from "../../../../dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.port";
+import sireneUniteLegaleDbAdapter from "../../../../dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.adapter";
 import uniteLegalEntreprisesService from "../../uniteLegalEntreprises/uniteLegal.entreprises.service";
 import { UniteLegalEntrepriseEntity } from "../../../../entities/UniteLegalEntrepriseEntity";
 import uniteLegalNameService from "../../uniteLegalName/uniteLegal.name.service";
@@ -32,15 +32,15 @@ export class SireneStockUniteLegaleService {
     }
 
     public insertOne(dbo: SireneStockUniteLegaleEntity) {
-        return sireneUniteLegaleDbPort.insertOne(dbo);
+        return sireneUniteLegaleDbAdapter.insertOne(dbo);
     }
 
     public upsertMany(dbos: SireneStockUniteLegaleEntity[]) {
-        return sireneUniteLegaleDbPort.upsertMany(dbos);
+        return sireneUniteLegaleDbAdapter.upsertMany(dbos);
     }
 
     public findOneBySiren(siren: Siren) {
-        return sireneUniteLegaleDbPort.findOneBySiren(siren);
+        return sireneUniteLegaleDbAdapter.findOneBySiren(siren);
     }
 }
 

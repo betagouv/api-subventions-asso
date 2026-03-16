@@ -1,7 +1,7 @@
 import Rna from "../../../identifierObjects/Rna";
 import Siren from "../../../identifierObjects/Siren";
 import osirisService, { InvalidOsirisRequestError, VALID_REQUEST_ERROR_CODE } from "./osiris.service";
-import { osirisActionPort, osirisRequestPort } from "../../../dataProviders/db/providers/osiris";
+import { osirisActionAdapter, osirisRequestAdapter } from "../../../dataProviders/db/providers/osiris";
 import OsirisActionEntity from "./entities/OsirisActionEntity";
 import OsirisRequestEntity from "./entities/OsirisRequestEntity";
 import rnaSirenService from "../../rna-siren/rna-siren.service";
@@ -33,14 +33,14 @@ describe("OsirisService", () => {
         ${"findByRna"}   | ${RNA}
     `("$method", ({ method, identifier }) => {
         beforeEach(() => {
-            jest.mocked(osirisRequestPort[method]).mockResolvedValue([REQUEST_DBO]);
+            jest.mocked(osirisRequestAdapter[method]).mockResolvedValue([REQUEST_DBO]);
 
             if (method === "findBySiren") {
                 // mock used in findBySiren
-                jest.mocked(osirisActionPort.findBySiren).mockResolvedValue([ACTION_ENTITY]);
+                jest.mocked(osirisActionAdapter.findBySiren).mockResolvedValue([ACTION_ENTITY]);
             } else {
                 // mock used in findBySiret & findByRna
-                jest.mocked(osirisActionPort.findByRequestUniqueId).mockResolvedValue([ACTION_ENTITY]);
+                jest.mocked(osirisActionAdapter.findByRequestUniqueId).mockResolvedValue([ACTION_ENTITY]);
             }
         });
 
@@ -52,9 +52,9 @@ describe("OsirisService", () => {
 
         it("returns request without actions", async () => {
             if (method === "findBySiren") {
-                jest.mocked(osirisActionPort.findBySiren).mockResolvedValue([]);
+                jest.mocked(osirisActionAdapter.findBySiren).mockResolvedValue([]);
             } else {
-                jest.mocked(osirisActionPort.findByRequestUniqueId).mockResolvedValue([]);
+                jest.mocked(osirisActionAdapter.findByRequestUniqueId).mockResolvedValue([]);
             }
             const expected = [{ ...REQUEST_DBO, actions: [] }];
             const actual = await osirisService[method](identifier);
@@ -70,7 +70,7 @@ describe("OsirisService", () => {
 
         it("calls osiris port", async () => {
             await osirisService.bulkAddRequest(REQUESTS);
-            expect(osirisRequestPort.bulkUpsert).toHaveBeenCalledWith(REQUESTS);
+            expect(osirisRequestAdapter.bulkUpsert).toHaveBeenCalledWith(REQUESTS);
         });
 
         it("calls rna siren", async () => {
@@ -106,7 +106,7 @@ describe("OsirisService", () => {
 
         it("calls port", async () => {
             await osirisService.bulkAddActions(ACTIONS);
-            expect(osirisActionPort.bulkUpsert).toHaveBeenCalledWith(ACTIONS);
+            expect(osirisActionAdapter.bulkUpsert).toHaveBeenCalledWith(ACTIONS);
         });
     });
 

@@ -1,6 +1,6 @@
 import Siren from "../../identifierObjects/Siren";
 
-import applicationFlatPort from "../../dataProviders/db/applicationFlat/applicationFlat.port";
+import applicationFlatAdapter from "../../dataProviders/db/applicationFlat/applicationFlat.adapter";
 import applicationFlatService from "./applicationFlat.service";
 import { ApplicationFlatEntity } from "../../entities/flats/ApplicationFlatEntity";
 import ApplicationFlatMapper from "./application-flat.mapper";
@@ -16,7 +16,7 @@ import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
 import { APPLICATION_LINK_TO_CHORUS, DBO as APPLICATION_FLAT_DBO } from "./__fixtures__";
 import DEFAULT_ASSOCIATION from "../../../tests/__fixtures__/association.fixture";
 
-jest.mock("../../dataProviders/db/applicationFlat/applicationFlat.port");
+jest.mock("../../dataProviders/db/applicationFlat/applicationFlat.adapter");
 jest.mock("./application-flat.mapper");
 jest.mock("../../identifierObjects/Siret");
 jest.mock("../../shared/helpers/MongoHelper");
@@ -25,9 +25,9 @@ describe("ApplicationFlatService", () => {
     const APPLICATIONS = [APPLICATION_LINK_TO_CHORUS, APPLICATION_LINK_TO_CHORUS];
 
     describe.each`
-        identifierType | rawIdentifier                  | findMethod                         | identifierConstructor
-        ${"siret"}     | ${new Siret("12345678901234")} | ${applicationFlatPort.findBySiret} | ${EstablishmentIdentifier.fromSiret}
-        ${"siren"}     | ${new Siren("123456789")}      | ${applicationFlatPort.findBySiren} | ${AssociationIdentifier.fromSiren}
+        identifierType | rawIdentifier                  | findMethod                            | identifierConstructor
+        ${"siret"}     | ${new Siret("12345678901234")} | ${applicationFlatAdapter.findBySiret} | ${EstablishmentIdentifier.fromSiret}
+        ${"siren"}     | ${new Siren("123456789")}      | ${applicationFlatAdapter.findBySiren} | ${AssociationIdentifier.fromSiren}
     `("getEntitiesByIdentifier", ({ rawIdentifier, identifierConstructor, findMethod }) => {
         beforeAll(() => {
             findMethod.mockResolvedValue(APPLICATIONS);
@@ -60,7 +60,7 @@ describe("ApplicationFlatService", () => {
             await applicationFlatService.saveFromStream(STREAM);
             const methodCalledByHelper = jest.mocked(insertStreamByBatch).mock.calls[0][1];
             await methodCalledByHelper([]);
-            expect(applicationFlatPort.upsertMany).toHaveBeenCalled();
+            expect(applicationFlatAdapter.upsertMany).toHaveBeenCalled();
         });
     });
 
@@ -100,7 +100,7 @@ describe("ApplicationFlatService", () => {
     describe("isCollectionInitialized", () => {
         it("calls check in port", () => {
             applicationFlatService.isCollectionInitialized();
-            expect(applicationFlatPort.hasBeenInitialized).toHaveBeenCalled();
+            expect(applicationFlatAdapter.hasBeenInitialized).toHaveBeenCalled();
         });
     });
 
@@ -135,16 +135,16 @@ describe("ApplicationFlatService", () => {
         const PROVIDER = "PROV";
 
         beforeAll(() => {
-            jest.mocked(applicationFlatPort.cursorFind).mockReturnValue(CURSOR);
+            jest.mocked(applicationFlatAdapter.cursorFind).mockReturnValue(CURSOR);
         });
 
         afterAll(() => {
-            jest.mocked(applicationFlatPort.cursorFind).mockRestore();
+            jest.mocked(applicationFlatAdapter.cursorFind).mockRestore();
         });
 
         it("gets cursor", async () => {
             await applicationFlatService.containsDataFromProvider(PROVIDER);
-            expect(applicationFlatPort.cursorFind({ provider: PROVIDER }));
+            expect(applicationFlatAdapter.cursorFind({ provider: PROVIDER }));
         });
 
         it("returns response from cursor's hasNext", async () => {

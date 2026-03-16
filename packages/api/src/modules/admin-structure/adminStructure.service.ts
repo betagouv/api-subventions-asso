@@ -1,11 +1,11 @@
 import { AgentTypeEnum } from "dto";
 import { BadRequestError } from "core";
-import adminStructurePort from "../../dataProviders/db/admin-structure/adminStructure.port";
+import adminStructureAdapter from "../../dataProviders/db/admin-structure/adminStructure.adapter";
 import AdminStructureEntity from "./entities/AdminStructureEntity";
 
 export class AdminStructureService {
     getAdminStructureByAgentType(agentType: AgentTypeEnum) {
-        return adminStructurePort.findAllByAgentType(agentType);
+        return adminStructureAdapter.findAllByAgentType(agentType);
     }
 
     async getAdminStructureByStringAgentType(agentType: string) {
@@ -14,13 +14,13 @@ export class AdminStructureService {
     }
 
     async replaceAll(entries: AdminStructureEntity[]) {
-        const oldEntries = await adminStructurePort.findAll();
-        await adminStructurePort.deleteAll();
+        const oldEntries = await adminStructureAdapter.findAll();
+        await adminStructureAdapter.deleteAll();
         try {
-            return await adminStructurePort.insertMany(entries);
+            return await adminStructureAdapter.insertMany(entries);
         } catch (e) {
             console.error("Error while inserting new data. Revert to previous state");
-            await adminStructurePort.insertMany(oldEntries);
+            await adminStructureAdapter.insertMany(oldEntries);
             throw e;
         }
     }

@@ -1,10 +1,10 @@
 import { RgpdCron } from "../../../src/interfaces/cron/Rgpd.cron";
-import userPort from "../../../src/dataProviders/db/user/user.port";
+import userAdapter from "../../../src/dataProviders/db/user/user.adapter";
 import { USER_DBO } from "../../../src/modules/user/__fixtures__/user.fixture";
 import brevoContactNotifyPipe from "../../../src/modules/notify/outPipes/BrevoContactNotifyPipe";
 import axios from "axios";
 import brevoMailNotifyPipe from "../../../src/modules/notify/outPipes/BrevoMailNotifyPipe";
-import userResetPort from "../../../src/dataProviders/db/user/user-reset.port";
+import userResetAdapter from "../../../src/dataProviders/db/user/user-reset.adapter";
 import configurationsService, { CONFIGURATION_NAMES } from "../../../src/modules/configurations/configurations.service";
 import { ENV as _ENV, EnvironmentEnum } from "../../../src/configurations/env.conf";
 
@@ -27,26 +27,26 @@ describe("Rgpd Cron", () => {
         beforeEach(async () => {
             await Promise.all([
                 // last activity more than two years ago
-                userPort.create({
+                userAdapter.create({
                     ...USER_DBO,
                     email: "old-user1@mail.com",
                     lastActivityDate: new Date("2020-12-12"),
                 }),
                 // user just came to the solution
-                userPort.create({
+                userAdapter.create({
                     ...USER_DBO,
                     email: "new-user@mail.com",
                     lastActivityDate: new Date(NOW),
                 }),
                 // user never activated for 6 months
-                userPort.create({
+                userAdapter.create({
                     ...USER_DBO,
                     email: "old-user2@mail.com",
                     signupAt: new Date(NOW.getFullYear(), NOW.getMonth() - 6, -1),
                     lastActivityDate: null,
                 }),
                 // user activated account more than 6 months ago
-                userPort.create({
+                userAdapter.create({
                     ...USER_DBO,
                     email: "normal-user@mail.com",
                     signupAt: new Date(NOW.getFullYear(), NOW.getMonth() - 10),
@@ -57,7 +57,7 @@ describe("Rgpd Cron", () => {
 
         it("should disable users that did not use the app for 2 years", async () => {
             await cron.removeInactiveUsers();
-            const users = await userPort.findAll();
+            const users = await userAdapter.findAll();
             const expected = [
                 {
                     firstName: "",
@@ -113,20 +113,20 @@ describe("Rgpd Cron", () => {
         beforeEach(async () => {
             await Promise.all([
                 // user just came to the solution
-                userPort.create({
+                userAdapter.create({
                     ...USER_DBO,
                     email: "new-user@mail.com",
                     lastActivityDate: new Date(NOW),
                 }),
                 // user never activated for 5 months
-                userPort.create({
+                userAdapter.create({
                     ...USER_DBO,
                     email: "old-user2@mail.com",
                     signupAt: new Date(NOW.getFullYear(), NOW.getMonth() - 5),
                     lastActivityDate: null,
                 }),
                 // user activated for 5 months that came
-                userPort.create({
+                userAdapter.create({
                     ...USER_DBO,
                     email: "normal-user@mail.com",
                     lastActivityDate: new Date(NOW),
@@ -166,7 +166,7 @@ describe("Rgpd Cron", () => {
                 /^http:\/\/localhost:5173\/auth\/reset-password\/(.*)/,
             ) as RegExpMatchArray; // we know that a link as been provided and that the match will find it
             const actualToken = actualLinkMatch[1];
-            const foundReset = await userResetPort.findByToken(actualToken as string);
+            const foundReset = await userResetAdapter.findByToken(actualToken as string);
             expect(foundReset).not.toBeNull();
         });
 

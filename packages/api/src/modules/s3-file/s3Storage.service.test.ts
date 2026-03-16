@@ -1,14 +1,14 @@
 import { S3StorageService } from "./s3Storage.service";
 import { S3FileData } from "../../@types/S3FileData";
 
-jest.mock("../../dataProviders/s3/s3.port", () => ({
+jest.mock("../../dataProviders/s3/s3.adapter", () => ({
     listFiles: jest.fn(),
     deleteFile: jest.fn(),
     uploadFile: jest.fn(),
     getDownloadUrl: jest.fn(),
     getFile: jest.fn(),
 }));
-import s3ClientPort from "../../dataProviders/s3/s3.port";
+import s3ClientAdapter from "../../dataProviders/s3/s3.adapter";
 
 jest.mock("../../shared/helpers/FileHelper", () => ({
     bufferToMulterFile: jest.fn(),
@@ -16,7 +16,7 @@ jest.mock("../../shared/helpers/FileHelper", () => ({
 import { bufferToMulterFile } from "../../shared/helpers/FileHelper";
 import { NotFoundError } from "core";
 
-const mockS3ClientPort = s3ClientPort as jest.Mocked<typeof s3ClientPort>;
+const mockS3ClientPort = s3ClientAdapter as jest.Mocked<typeof s3ClientAdapter>;
 
 const createMockFile = (originalname: string, buffer: Buffer = Buffer.from("test")): Express.Multer.File => ({
     fieldname: "file",

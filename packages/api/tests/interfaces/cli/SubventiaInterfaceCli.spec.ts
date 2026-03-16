@@ -1,9 +1,9 @@
 import path from "node:path";
 import SubventiaCli from "../../../src/interfaces/cli/Subventia.cli";
-import subventiaPort from "../../../src/dataProviders/db/providers/subventia/subventia.port";
+import subventiaAdapter from "../../../src/dataProviders/db/providers/subventia/subventia.adapter";
 import { ObjectId } from "mongodb";
-import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
-import applicationFlatPort from "../../../src/dataProviders/db/applicationFlat/applicationFlat.port";
+import dataLogAdapter from "../../../src/dataProviders/db/data-log/dataLog.adapter";
+import applicationFlatAdapter from "../../../src/dataProviders/db/applicationFlat/applicationFlat.adapter";
 import { SUBVENTIA_DBO } from "../../../src/modules/providers/subventia/__fixtures__/subventia.fixture";
 
 describe("Subventia Cli", () => {
@@ -21,7 +21,7 @@ describe("Subventia Cli", () => {
                 "",
                 new Date("2024-03-12"),
             );
-            const entities = await subventiaPort.findAll();
+            const entities = await subventiaAdapter.findAll();
             const expectedAny = entities.map(() => ({
                 _id: expect.any(ObjectId),
             }));
@@ -36,7 +36,7 @@ describe("Subventia Cli", () => {
             );
             const EXPORT_DATE = "2024-03-12";
             await cli.parse(path.resolve(__dirname, filePath), "2024-03-12");
-            const actual = await dataLogPort.findAll();
+            const actual = await dataLogAdapter.findAll();
             expect(actual?.[0]).toMatchObject({
                 editionDate: new Date(EXPORT_DATE),
                 fileName: "SUBVENTIA.xlsx",
@@ -48,9 +48,9 @@ describe("Subventia Cli", () => {
 
     describe("initApplicationFlat()", () => {
         it("creates applications flat from subventia dbos", async () => {
-            await subventiaPort.create(SUBVENTIA_DBO);
+            await subventiaAdapter.create(SUBVENTIA_DBO);
             await cli.initApplicationFlat();
-            const applications = await applicationFlatPort.cursorFind().toArray();
+            const applications = await applicationFlatAdapter.cursorFind().toArray();
             expect(applications).toMatchSnapshot();
         });
     });

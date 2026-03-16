@@ -2,13 +2,13 @@ import userAgentConnectService, { UserAgentConnectService } from "./user.agentCo
 import { AGENT_CONNECT_URL } from "../../../../configurations/agentConnect.conf";
 import { Issuer, TokenSet } from "openid-client";
 import { AgentConnectTokenDbo, AgentConnectUser } from "../../@types/AgentConnectUser";
-import userPort from "../../../../dataProviders/db/user/user.port";
+import userAdapter from "../../../../dataProviders/db/user/user.adapter";
 import userAuthService from "../auth/user.auth.service";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import { removeHashPassword, removeSecrets } from "../../../../shared/helpers/PortHelper";
 import { USER_DBO, USER_WITHOUT_PASSWORD, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
-import agentConnectTokenPort from "../../../../dataProviders/db/user/acToken.port";
+import agentConnectTokenAdapter from "../../../../dataProviders/db/user/acToken.adapter";
 import { FRONT_OFFICE_URL } from "../../../../configurations/front.conf";
 import { ObjectId } from "mongodb";
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
@@ -30,8 +30,8 @@ jest.mock("../../../notify/notify.service", () => ({
 }));
 jest.mock("../../../../shared/helpers/PortHelper");
 jest.mock("../crud/user.crud.service");
-jest.mock("../../../../dataProviders/db/user/user.port");
-jest.mock("../../../../dataProviders/db/user/acToken.port");
+jest.mock("../../../../dataProviders/db/user/user.adapter");
+jest.mock("../../../../dataProviders/db/user/acToken.adapter");
 jest.mock("../../../configurations/configurations.service");
 jest.mock("../auth/user.auth.service");
 
@@ -109,12 +109,12 @@ describe("userAgentConnectService", () => {
 
         it("gets user from port", async () => {
             await userAgentConnectService.login(AC_USER, TOKENSET);
-            expect(userPort.getUserWithSecretsByEmail).toHaveBeenCalledWith(AC_USER.email);
+            expect(userAdapter.getUserWithSecretsByEmail).toHaveBeenCalledWith(AC_USER.email);
         });
 
         it("gets user from port with lowercase email", async () => {
             await userAgentConnectService.login({ ...AC_USER, email: AC_USER.email.toUpperCase() }, TOKENSET);
-            expect(userPort.getUserWithSecretsByEmail).toHaveBeenCalledWith(AC_USER.email);
+            expect(userAdapter.getUserWithSecretsByEmail).toHaveBeenCalledWith(AC_USER.email);
         });
 
         it("updates user's jwt", async () => {
@@ -145,11 +145,11 @@ describe("userAgentConnectService", () => {
 
         describe("known user", () => {
             beforeAll(() => {
-                jest.mocked(userPort.getUserWithSecretsByEmail).mockResolvedValue(USER_DBO);
+                jest.mocked(userAdapter.getUserWithSecretsByEmail).mockResolvedValue(USER_DBO);
             });
 
             afterAll(() => {
-                jest.mocked(userPort.getUserWithSecretsByEmail).mockReset();
+                jest.mocked(userAdapter.getUserWithSecretsByEmail).mockReset();
             });
 
             it("removes password from retrieved user", async () => {
@@ -182,12 +182,12 @@ describe("userAgentConnectService", () => {
 
         it("gets last token", async () => {
             await userAgentConnectService.getLogoutUrl(USER_WITHOUT_SECRET);
-            expect(agentConnectTokenPort.findLastActive).toHaveBeenCalledWith(USER_WITHOUT_SECRET._id);
+            expect(agentConnectTokenAdapter.findLastActive).toHaveBeenCalledWith(USER_WITHOUT_SECRET._id);
         });
 
         it("removes previous tokens", async () => {
             await userAgentConnectService.getLogoutUrl(USER_WITHOUT_SECRET);
-            expect(agentConnectTokenPort.deleteAllByUserId).toHaveBeenCalledWith(USER_WITHOUT_SECRET._id);
+            expect(agentConnectTokenAdapter.deleteAllByUserId).toHaveBeenCalledWith(USER_WITHOUT_SECRET._id);
         });
 
         it("returns null if no token found", async () => {
@@ -201,14 +201,14 @@ describe("userAgentConnectService", () => {
                 state: expect.any(String),
                 post_logout_redirect_uri: `${FRONT_OFFICE_URL}/`,
             };
-            jest.mocked(agentConnectTokenPort.findLastActive).mockResolvedValueOnce(TOKEN);
+            jest.mocked(agentConnectTokenAdapter.findLastActive).mockResolvedValueOnce(TOKEN);
             await userAgentConnectService.getLogoutUrl(USER_WITHOUT_SECRET);
             expect(endSessionMock).toHaveBeenCalledWith(expected);
         });
 
         it("returns generated url", async () => {
             const expected = "logout/token";
-            jest.mocked(agentConnectTokenPort.findLastActive).mockResolvedValueOnce(TOKEN);
+            jest.mocked(agentConnectTokenAdapter.findLastActive).mockResolvedValueOnce(TOKEN);
             endSessionMock.mockReturnValue(expected);
             const actual = await userAgentConnectService.getLogoutUrl(USER_WITHOUT_SECRET);
             expect(actual).toBe(expected);
@@ -313,7 +313,7 @@ describe("userAgentConnectService", () => {
         it("upserts token", async () => {
             // @ts-expect-error -- private method
             await userAgentConnectService.saveTokenSet("ID" as ObjectId, { id_token: "TOKEN" });
-            const actual = jest.mocked(agentConnectTokenPort.upsert).mock.calls[0][0];
+            const actual = jest.mocked(agentConnectTokenAdapter.upsert).mock.calls[0][0];
             expect(actual).toMatchObject({
                 creationDate: expect.any(Date),
                 token: "TOKEN",

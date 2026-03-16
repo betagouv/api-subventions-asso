@@ -1,18 +1,18 @@
 import { UserDto } from "dto";
-import userPort from "../../../../dataProviders/db/user/user.port";
+import userAdapter from "../../../../dataProviders/db/user/user.adapter";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import notifyService from "../../../notify/notify.service";
 import userCrudService from "../crud/user.crud.service";
 import configurationsService from "../../../configurations/configurations.service";
-import statsAssociationsVisitPort from "../../../../dataProviders/db/stats/statsAssociationsVisit.port";
+import statsAssociationsVisitAdapter from "../../../../dataProviders/db/stats/statsAssociationsVisit.adapter";
 
 export class UserStatsService {
     public countTotalUsersOnDate(date, withAdmin = false) {
-        return userPort.countTotalUsersOnDate(date, withAdmin);
+        return userAdapter.countTotalUsersOnDate(date, withAdmin);
     }
 
     public findByPeriod(begin: Date, end: Date, withAdmin = false) {
-        return userPort.findByPeriod(begin, end, withAdmin);
+        return userAdapter.findByPeriod(begin, end, withAdmin);
     }
 
     public getUsersWithStats(): Promise<UserDto[]> {
@@ -25,14 +25,14 @@ export class UserStatsService {
     }
 
     private async updateNbRequestsByDate(since: Date, until: Date) {
-        const countByUser = (await statsAssociationsVisitPort.findGroupedByUserIdentifierOnPeriod(since, until)).map(
+        const countByUser = (await statsAssociationsVisitAdapter.findGroupedByUserIdentifierOnPeriod(since, until)).map(
             ({ _id, associationVisits }) => ({
                 _id,
                 count: associationVisits.length,
             }),
         );
 
-        await userPort.updateNbRequests(countByUser);
+        await userAdapter.updateNbRequests(countByUser);
         await configurationsService.setLastUserStatsUpdate(until);
 
         // should we await this ? to ensure we got feedback from Brevo update ?
@@ -41,7 +41,7 @@ export class UserStatsService {
     }
 
     private async updateNbRequestsInBrevo(usersId: string[]) {
-        const partialUsers = (await userPort.findPartialUsersById(usersId, ["email", "nbVisits"])) as Pick<
+        const partialUsers = (await userAdapter.findPartialUsersById(usersId, ["email", "nbVisits"])) as Pick<
             UserDto,
             "email" | "nbVisits"
         >[];

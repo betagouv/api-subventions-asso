@@ -1,5 +1,5 @@
 import AssociationNameEntity from "../../../modules/association-name/entities/AssociationNameEntity";
-import rechercheEntreprisesPort from "./rechercheEntreprises.port";
+import rechercheEntreprisesAdapter from "./rechercheEntreprises.adapter";
 import { RechercheEntreprisesDto, RechercheEntreprisesResultDto } from "./RechercheEntreprisesDto";
 import { RechercheEntreprisesMapper } from "./recherche-entreprises.mapper";
 import { LEGAL_CATEGORIES_ACCEPTED } from "../../../shared/LegalCategoriesAccepted";
@@ -78,7 +78,7 @@ export class RechercheEntreprisesService implements Provider {
      *   /!\ recursive function /!\
      */
     async search(query: string, page = 1): Promise<RechercheEntreprisesResultDto[]> {
-        const response = await rechercheEntreprisesPort.search(query, page);
+        const response = await rechercheEntreprisesAdapter.search(query, page);
         const results = response?.results;
         if (!response || !results) return [];
 

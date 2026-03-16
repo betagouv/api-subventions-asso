@@ -6,7 +6,7 @@ import {
     PAYMENT_FROM_PAYMENT_FLAT,
 } from "./__fixtures__/paymentFlatEntity.fixture";
 
-import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port";
+import paymentFlatAdapter from "../../dataProviders/db/paymentFlat/paymentFlat.adapter";
 import Siren from "../../identifierObjects/Siren";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import DEFAULT_ASSOCIATION from "../../../tests/__fixtures__/association.fixture";
@@ -19,13 +19,13 @@ import { insertStreamByBatch } from "../../shared/helpers/MongoHelper";
 
 jest.mock("../../shared/helpers/MongoHelper");
 jest.mock("./payment-flat.mapper");
-jest.mock("../../dataProviders/db/paymentFlat/paymentFlat.port");
+jest.mock("../../dataProviders/db/paymentFlat/paymentFlat.adapter");
 
 describe("PaymentFlatService", () => {
     describe("isCollectionInitialized", () => {
         it("calls port.hasBeenInitialized", () => {
             paymentFlatService.isCollectionInitialized();
-            expect(paymentFlatPort.hasBeenInitialized).toHaveBeenCalledTimes(1);
+            expect(paymentFlatAdapter.hasBeenInitialized).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -33,7 +33,7 @@ describe("PaymentFlatService", () => {
         it("calls port to upsert", async () => {
             const ARRAY = [];
             await paymentFlatService.upsertMany(ARRAY);
-            expect(paymentFlatPort.upsertMany).toHaveBeenCalledWith(ARRAY);
+            expect(paymentFlatAdapter.upsertMany).toHaveBeenCalledWith(ARRAY);
         });
     });
 
@@ -113,7 +113,7 @@ describe("PaymentFlatService", () => {
             beforeAll(
                 () =>
                     (findBySirenMock = jest
-                        .spyOn(paymentFlatPort, "findBySiren")
+                        .spyOn(paymentFlatAdapter, "findBySiren")
                         // @ts-expect-error: mock
                         .mockImplementation(jest.fn(() => DATA))),
             );
@@ -140,8 +140,8 @@ describe("PaymentFlatService", () => {
 
         it.each`
             identifierName | identifier          | fnCalled
-            ${"siret"}     | ${ESTAB_IDENTIFIER} | ${paymentFlatPort.findBySiret}
-            ${"siren"}     | ${ASSO_IDENTIFIER}  | ${paymentFlatPort.findBySiren}
+            ${"siret"}     | ${ESTAB_IDENTIFIER} | ${paymentFlatAdapter.findBySiret}
+            ${"siren"}     | ${ASSO_IDENTIFIER}  | ${paymentFlatAdapter.findBySiren}
         `("gets payments from $identifierName", async ({ identifierName, identifier, fnCalled }) => {
             fnCalled.mockReturnValue([]);
             await paymentFlatService.getEntitiesByIdentifier(identifier);
@@ -177,7 +177,7 @@ describe("PaymentFlatService", () => {
             await paymentFlatService.saveFromStream(STREAM);
             const methodCalledByHelper = jest.mocked(insertStreamByBatch).mock.calls[0][1];
             await methodCalledByHelper([]);
-            expect(paymentFlatPort.upsertMany).toHaveBeenCalled();
+            expect(paymentFlatAdapter.upsertMany).toHaveBeenCalled();
         });
     });
 });

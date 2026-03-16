@@ -1,7 +1,7 @@
 import { MainInfoBannerDto } from "dto";
 import { BadRequestError, ConflictError } from "core";
 import { REGEX_MAIL_DOMAIN } from "../user/user.constant";
-import configurationsPort from "../../dataProviders/db/configurations/configurations.port";
+import configurationsAdapter from "../../dataProviders/db/configurations/configurations.adapter";
 import { DauphinTokenDataEntity, DauphinTokenAvailableTime } from "./entities";
 import ConfigurationEntity from "./entities/ConfigurationEntity";
 
@@ -31,21 +31,21 @@ export class ConfigurationsService {
     }
 
     updateConfigEntity<T>(name: string, data: T) {
-        return configurationsPort.upsert(name, { data });
+        return configurationsAdapter.upsert(name, { data });
     }
 
     getDauphinToken() {
-        return configurationsPort.getByName<DauphinTokenDataEntity>(CONFIGURATION_NAMES.DAUPHIN_TOKEN);
+        return configurationsAdapter.getByName<DauphinTokenDataEntity>(CONFIGURATION_NAMES.DAUPHIN_TOKEN);
     }
 
     async setDauphinToken(token: string) {
-        await configurationsPort.upsert(CONFIGURATION_NAMES.DAUPHIN_TOKEN, {
+        await configurationsAdapter.upsert(CONFIGURATION_NAMES.DAUPHIN_TOKEN, {
             data: token,
         });
     }
 
     getDauphinTokenAvailableTime() {
-        return configurationsPort.getByName<DauphinTokenAvailableTime>(CONFIGURATION_NAMES.DAUPHIN_TOKEN_AVAILABLE);
+        return configurationsAdapter.getByName<DauphinTokenAvailableTime>(CONFIGURATION_NAMES.DAUPHIN_TOKEN_AVAILABLE);
     }
 
     /**
@@ -62,9 +62,9 @@ export class ConfigurationsService {
 
     async addEmailDomain(domain: string, throwOnConflict = true) {
         if (!this.isDomainValid(domain)) throw new BadRequestError();
-        const document = await configurationsPort.getByName<string[]>(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS);
+        const document = await configurationsAdapter.getByName<string[]>(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS);
         if (!document) {
-            await configurationsPort.upsert(
+            await configurationsAdapter.upsert(
                 CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS,
                 this.createEmptyConfigEntity(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS, [domain]),
             );
@@ -75,7 +75,7 @@ export class ConfigurationsService {
             return domain;
         }
 
-        await configurationsPort.upsert(
+        await configurationsAdapter.upsert(
             CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS,
             this.generateConfiguationEntity(document, [...document.data, domain]),
         );
@@ -83,12 +83,14 @@ export class ConfigurationsService {
     }
 
     async getEmailDomains() {
-        return (await configurationsPort.getByName<string[]>(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS))?.data || [];
+        return (
+            (await configurationsAdapter.getByName<string[]>(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS))?.data || []
+        );
     }
 
     async isDomainAccepted(domainOrEmail: string) {
         const domain = domainOrEmail.split("@")[1];
-        const persistedDomains = (await configurationsPort.getByName(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS))
+        const persistedDomains = (await configurationsAdapter.getByName(CONFIGURATION_NAMES.ACCEPTED_EMAIL_DOMAINS))
             ?.data as string[];
         return persistedDomains.some(
             presistedDomain => domain == presistedDomain || domain.endsWith("." + presistedDomain),
@@ -97,52 +99,52 @@ export class ConfigurationsService {
 
     async getLastPublishDumpDate(): Promise<Date> {
         return (
-            ((await configurationsPort.getByName(CONFIGURATION_NAMES.DUMP_PUBLISH_DATE))?.data as Date) ||
+            ((await configurationsAdapter.getByName(CONFIGURATION_NAMES.DUMP_PUBLISH_DATE))?.data as Date) ||
             new Date(1970)
         );
     }
 
     async setLastPublishDumpDate(date: Date) {
-        return configurationsPort.upsert(CONFIGURATION_NAMES.DUMP_PUBLISH_DATE, {
+        return configurationsAdapter.upsert(CONFIGURATION_NAMES.DUMP_PUBLISH_DATE, {
             data: date,
         });
     }
 
     async getLastUserStatsUpdate(): Promise<Date> {
         return (
-            ((await configurationsPort.getByName(CONFIGURATION_NAMES.LAST_USER_STATS_UPDATE))?.data as Date) ||
+            ((await configurationsAdapter.getByName(CONFIGURATION_NAMES.LAST_USER_STATS_UPDATE))?.data as Date) ||
             new Date(1970)
         );
     }
 
     async setLastUserStatsUpdate(date: Date) {
-        await configurationsPort.upsert(CONFIGURATION_NAMES.LAST_USER_STATS_UPDATE, { data: date });
+        await configurationsAdapter.upsert(CONFIGURATION_NAMES.LAST_USER_STATS_UPDATE, { data: date });
     }
 
     async getLastDsUpdate(): Promise<Date> {
         return (
-            ((await configurationsPort.getByName(CONFIGURATION_NAMES.LAST_DS_UPDATE_DATE))?.data as Date) ||
+            ((await configurationsAdapter.getByName(CONFIGURATION_NAMES.LAST_DS_UPDATE_DATE))?.data as Date) ||
             new Date(1970)
         );
     }
 
     async setLastDsUpdate(date: Date) {
-        await configurationsPort.upsert(CONFIGURATION_NAMES.LAST_DS_UPDATE_DATE, { data: date });
+        await configurationsAdapter.upsert(CONFIGURATION_NAMES.LAST_DS_UPDATE_DATE, { data: date });
     }
 
     async updateMainInfoBanner(title?: string, desc?: string) {
         const newBannerConfig: MainInfoBannerDto = { title: title, desc: desc };
 
-        const bannerConfig = await configurationsPort.getByName<MainInfoBannerDto>(
+        const bannerConfig = await configurationsAdapter.getByName<MainInfoBannerDto>(
             CONFIGURATION_NAMES.HOME_INFOS_BANNER,
         );
         if (!bannerConfig) {
-            await configurationsPort.upsert(
+            await configurationsAdapter.upsert(
                 CONFIGURATION_NAMES.HOME_INFOS_BANNER,
                 this.createEmptyConfigEntity(CONFIGURATION_NAMES.HOME_INFOS_BANNER, newBannerConfig),
             );
         } else {
-            await configurationsPort.upsert(
+            await configurationsAdapter.upsert(
                 CONFIGURATION_NAMES.HOME_INFOS_BANNER,
                 this.generateConfiguationEntity(bannerConfig, newBannerConfig),
             );
@@ -151,7 +153,7 @@ export class ConfigurationsService {
     }
 
     async getMainInfoBanner(): Promise<MainInfoBannerDto> {
-        const bannerConfig = await configurationsPort.getByName<MainInfoBannerDto>(
+        const bannerConfig = await configurationsAdapter.getByName<MainInfoBannerDto>(
             CONFIGURATION_NAMES.HOME_INFOS_BANNER,
         );
         return bannerConfig?.data || {};

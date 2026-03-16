@@ -5,7 +5,7 @@ import userCrudService from "../crud/user.crud.service";
 import userAuthService from "../auth/user.auth.service";
 import { RoleEnum } from "../../../../@enums/Roles";
 import { ConsumerToken } from "../../entities/ConsumerToken";
-import consumerTokenPort from "../../../../dataProviders/db/user/consumer-token.port";
+import consumerTokenAdapter from "../../../../dataProviders/db/user/consumer-token.adapter";
 import { UserServiceErrors } from "../../user.enum";
 
 export class UserConsumerService {
@@ -18,7 +18,7 @@ export class UserConsumerService {
             { expiration: false },
         );
         try {
-            await consumerTokenPort.create(new ConsumerToken(user._id, consumerToken));
+            await consumerTokenAdapter.create(new ConsumerToken(user._id, consumerToken));
             return user;
         } catch {
             await userCrudService.delete(user._id.toString());
@@ -27,7 +27,7 @@ export class UserConsumerService {
     }
 
     async findConsumerToken(userId: ObjectId): Promise<string> {
-        const token = await consumerTokenPort.findToken(userId);
+        const token = await consumerTokenAdapter.findToken(userId);
         if (!token) {
             throw new NotFoundError("Aucun token d'authentification n'a été trouvé");
         }

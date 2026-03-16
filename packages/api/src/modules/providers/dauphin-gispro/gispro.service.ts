@@ -1,5 +1,5 @@
 import GisproParser from "./gispro.parser";
-import gisproPort from "../../../dataProviders/db/providers/gispro.port";
+import gisproAdapter from "../../../dataProviders/db/providers/gispro.adapter";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import Provider from "../@types/IProvider";
 
@@ -17,7 +17,7 @@ export class GisproService implements Provider {
         console.log(entities.length + " entities founds");
         console.log("Start save entities");
 
-        await gisproPort.insertMany(entities);
+        await gisproAdapter.insertMany(entities);
 
         console.log("\nEntities has been saved");
     }

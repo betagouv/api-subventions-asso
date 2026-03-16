@@ -9,7 +9,7 @@ import {
     UnauthorizedError,
     LoginError,
 } from "core";
-import userPort from "../../../../dataProviders/db/user/user.port";
+import userAdapter from "../../../../dataProviders/db/user/user.adapter";
 import { JWT_EXPIRES_TIME, JWT_SECRET } from "../../../../configurations/jwt.conf";
 import UserDbo from "../../../../dataProviders/db/user/UserDbo";
 import notifyService from "../../../notify/notify.service";
@@ -28,7 +28,7 @@ export class UserAuthService {
 
     // Only used in tests
     public async findJwtByEmail(email: string): Promise<{ jwt: { token: string; expirateDate: Date } }> {
-        const userWithSecrets = await userPort.getUserWithSecretsByEmail(email);
+        const userWithSecrets = await userAdapter.getUserWithSecretsByEmail(email);
 
         if (!userWithSecrets) {
             throw new NotFoundError("User not found");
@@ -42,7 +42,7 @@ export class UserAuthService {
     }
 
     public async findJwtByUser(user: UserDto) {
-        const userDbo = await userPort.getUserWithSecretsById(user._id);
+        const userDbo = await userAdapter.getUserWithSecretsById(user._id);
         return userDbo?.jwt;
     }
 
@@ -66,7 +66,7 @@ export class UserAuthService {
             throw new BadRequestError(UserCheckService.PASSWORD_VALIDATOR_MESSAGE, UserErrorCodes.INVALID_PASSWORD);
         }
 
-        const userUpdated = await userPort.update({
+        const userUpdated = await userAdapter.update({
             ...user,
             hashPassword: await this.getHashPassword(password),
             active: true,
@@ -75,14 +75,14 @@ export class UserAuthService {
     }
 
     public async logout(user: UserDto) {
-        const userWithSecrets = await userPort.getUserWithSecretsByEmail(user.email);
+        const userWithSecrets = await userAdapter.getUserWithSecretsByEmail(user.email);
 
         if (!userWithSecrets?.jwt) {
             // No jwt, so user is already disconnected
             return user;
         }
 
-        return userPort.update({ ...user, jwt: null });
+        return userAdapter.update({ ...user, jwt: null });
     }
 
     async updateJwt(user: Omit<UserDbo, "hashPassword">): Promise<UserWithJWTDto> {
@@ -93,14 +93,14 @@ export class UserAuthService {
 
         try {
             user.jwt = updatedJwt;
-            return (await userPort.update(user, true)) as UserWithJWTDto;
+            return (await userAdapter.update(user, true)) as UserWithJWTDto;
         } catch {
             throw new InternalServerError(UserUpdateError.message, UserServiceErrors.LOGIN_UPDATE_JWT_FAIL);
         }
     }
 
     async login(email: string, password: string): Promise<Omit<UserDbo, "hashPassword">> {
-        const user = await userPort.getUserWithSecretsByEmail(email);
+        const user = await userAdapter.getUserWithSecretsByEmail(email);
 
         if (!user) throw new LoginError();
         if (!user.hashPassword)
@@ -124,7 +124,7 @@ export class UserAuthService {
 
     async authenticate(tokenPayload, token): Promise<UserDto> {
         // Find the user associated with the email provided by the user
-        const user = await userPort.getUserWithSecretsByEmail(tokenPayload.email);
+        const user = await userAdapter.getUserWithSecretsByEmail(tokenPayload.email);
         if (!user) throw new NotFoundError("User not found", UserServiceErrors.USER_NOT_FOUND);
 
         if (!tokenPayload[UserConsumerService.CONSUMER_TOKEN_PROP]) {

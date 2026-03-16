@@ -3,7 +3,7 @@ import { AmountsVsProgramRegionDto } from "dto";
 import { ChorusPaymentFlatEntity } from "../../providers/chorus/@types/ChorusPaymentFlat";
 import PaymentFlatEntity from "../../../entities/flats/PaymentFlatEntity";
 import paymentFlatChorusService from "../../paymentFlat/paymentFlat.chorus.service";
-import amountsVsProgramRegionPort from "../../../dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
+import amountsVsProgramRegionAdapter from "../../../dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.adapter";
 import AmountsVsProgramRegionMapper from "./amounts-vs-program-region.mapper";
 import AmountsVsProgramRegionEntity from "./entitiyAndDbo/amountsVsProgramRegion.entity";
 
@@ -29,20 +29,20 @@ export class AmountsVsProgramRegionService {
 
     public async init() {
         const entities = await this.toAmountsVsProgramRegionEntities();
-        await amountsVsProgramRegionPort.insertMany(entities);
+        await amountsVsProgramRegionAdapter.insertMany(entities);
     }
 
     public async updateCollection(exerciceBudgetaire?: number) {
         const entities = await this.toAmountsVsProgramRegionEntities(exerciceBudgetaire);
-        await amountsVsProgramRegionPort.upsertMany(entities);
+        await amountsVsProgramRegionAdapter.upsertMany(entities);
     }
 
     public isCollectionInitialized() {
-        return amountsVsProgramRegionPort.hasBeenInitialized();
+        return amountsVsProgramRegionAdapter.hasBeenInitialized();
     }
 
     public async getAmountsVsProgramRegionData() {
-        return amountsVsProgramRegionPort.findAll() as Promise<AmountsVsProgramRegionDto[]>;
+        return amountsVsProgramRegionAdapter.findAll() as Promise<AmountsVsProgramRegionDto[]>;
     }
 }
 

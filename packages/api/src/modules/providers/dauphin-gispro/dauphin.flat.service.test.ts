@@ -1,5 +1,5 @@
 import dauphinFlatService from "./dauphin.flat.service";
-import dauphinPort from "../../../dataProviders/db/providers/dauphin/dauphin.port";
+import dauphinAdapter from "../../../dataProviders/db/providers/dauphin/dauphin.adapter";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 import { ReadableStream } from "stream/web";
@@ -8,7 +8,7 @@ import { SimplifiedJoinedDauphinGispro } from "./@types/SimplifiedDauphinGispro"
 import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
 import DauphinDtoMapper, { InconsistentAggregationError } from "./mappers/dauphin-dto.mapper";
 
-jest.mock("../../../dataProviders/db/providers/dauphin/dauphin.port");
+jest.mock("../../../dataProviders/db/providers/dauphin/dauphin.adapter");
 jest.mock("../../applicationFlat/applicationFlat.service");
 jest.mock("../../applicationFlat/applicationFlat.helper");
 jest.mock("./mappers/dauphin-dto.mapper", () => {
@@ -24,12 +24,12 @@ describe("dauphin flat service", () => {
     describe("generateTempJoinedCollection", () => {
         it("calls port dauphin create simplifies collection", async () => {
             await dauphinFlatService.generateTempJoinedCollection();
-            expect(dauphinPort.createSimplifiedDauphinBeforeJoin);
+            expect(dauphinAdapter.createSimplifiedDauphinBeforeJoin);
         });
 
         it("calls port gispo join", async () => {
             await dauphinFlatService.generateTempJoinedCollection();
-            expect(dauphinPort.joinGisproToSimplified);
+            expect(dauphinAdapter.joinGisproToSimplified);
         });
     });
 
@@ -47,7 +47,7 @@ describe("dauphin flat service", () => {
                 .spyOn(dauphinFlatService, "generateTempJoinedCollection")
                 .mockResolvedValue();
             saveFlatSpy = jest.spyOn(dauphinFlatService, "saveApplicationsFromStream").mockResolvedValue();
-            jest.mocked(dauphinPort.findAllTempCursor).mockReturnValue(CURSOR);
+            jest.mocked(dauphinAdapter.findAllTempCursor).mockReturnValue(CURSOR);
             jest.mocked(cursorToStream).mockReturnValue(STREAM);
             jest.mocked(DauphinDtoMapper.simplifiedJoinedToApplicationFlat).mockReturnValue(ADAPTED);
         });
@@ -64,7 +64,7 @@ describe("dauphin flat service", () => {
 
         it("get cursor from temp collection", async () => {
             await dauphinFlatService.feedApplicationFlat();
-            expect(dauphinPort.findAllTempCursor).toHaveBeenCalled();
+            expect(dauphinAdapter.findAllTempCursor).toHaveBeenCalled();
         });
 
         it("calls cursor to stream", async () => {
@@ -145,7 +145,7 @@ describe("dauphin flat service", () => {
 
         it("cleans temp collection if no InconsistentAggregationError was risen", async () => {
             await dauphinFlatService.feedApplicationFlat();
-            expect(dauphinPort.cleanTempCollection).toHaveBeenCalled();
+            expect(dauphinAdapter.cleanTempCollection).toHaveBeenCalled();
         });
     });
 

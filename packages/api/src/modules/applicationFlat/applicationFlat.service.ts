@@ -1,5 +1,5 @@
 import { ApplicationFlatDto, DemandeSubvention } from "dto";
-import applicationFlatPort from "../../dataProviders/db/applicationFlat/applicationFlat.port";
+import applicationFlatAdapter from "../../dataProviders/db/applicationFlat/applicationFlat.adapter";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import { RawApplication } from "../grant/@types/rawGrant";
@@ -32,9 +32,9 @@ export class ApplicationFlatService
         const requests: ApplicationFlatEntity[] = [];
 
         if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            requests.push(...(await applicationFlatPort.findBySiret(identifier.siret)));
+            requests.push(...(await applicationFlatAdapter.findBySiret(identifier.siret)));
         } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            requests.push(...(await applicationFlatPort.findBySiren(identifier.siren)));
+            requests.push(...(await applicationFlatAdapter.findBySiren(identifier.siren)));
         }
         return requests;
     }
@@ -83,15 +83,15 @@ export class ApplicationFlatService
      */
 
     async saveFromStream(readStream: ReadableStream<ApplicationFlatEntity>) {
-        return insertStreamByBatch(readStream, batch => applicationFlatPort.upsertMany(batch), 10000);
+        return insertStreamByBatch(readStream, batch => applicationFlatAdapter.upsertMany(batch), 10000);
     }
 
     isCollectionInitialized() {
-        return applicationFlatPort.hasBeenInitialized();
+        return applicationFlatAdapter.hasBeenInitialized();
     }
 
     async containsDataFromProvider(provider: string | RegExp) {
-        const cursor = applicationFlatPort.cursorFind({ fournisseur: provider });
+        const cursor = applicationFlatAdapter.cursorFind({ fournisseur: provider });
         return cursor.hasNext();
     }
 

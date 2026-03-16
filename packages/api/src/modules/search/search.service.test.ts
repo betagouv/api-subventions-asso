@@ -1,9 +1,9 @@
 import searchService, { SearchService } from "./search.service";
-import searchCachePort from "../../dataProviders/db/search/search.port";
+import searchCacheAdapter from "../../dataProviders/db/search/search.adapter";
 import associationNameService from "../association-name/associationName.service";
 import AssociationNameDtoMapper from "./mappers/association-name-dto.mapper";
 
-jest.mock("../../dataProviders/db/search/search.port");
+jest.mock("../../dataProviders/db/search/search.adapter");
 jest.mock("../association-name/associationName.service");
 jest.mock("./mappers/association-name-dto.mapper");
 
@@ -26,7 +26,7 @@ describe("SearchService", () => {
             jest.setSystemTime(DATE_NOW);
             const LIMIT_DATE = new Date(2024, 0, 1);
             await searchService.getAssociationsKeys(SEARCH_TOKEN, PAGE);
-            expect(searchCachePort.getResults).toHaveBeenCalledWith(
+            expect(searchCacheAdapter.getResults).toHaveBeenCalledWith(
                 SEARCH_TOKEN,
                 PAGE,
                 SearchService.PAGE_SIZE,
@@ -38,7 +38,7 @@ describe("SearchService", () => {
         it("returns results from cache if any", async () => {
             const RES = { results: ["something"], total: 1 };
             // @ts-expect-error -- test
-            jest.mocked(searchCachePort.getResults).mockResolvedValue(RES);
+            jest.mocked(searchCacheAdapter.getResults).mockResolvedValue(RES);
             const actual = await searchService.getAssociationsKeys(SEARCH_TOKEN, PAGE);
             expect(actual).toMatchInlineSnapshot(`
                 {
@@ -53,7 +53,7 @@ describe("SearchService", () => {
         });
 
         it("gets fresh result if nothing from cache", async () => {
-            jest.mocked(searchCachePort.getResults).mockResolvedValue(null);
+            jest.mocked(searchCacheAdapter.getResults).mockResolvedValue(null);
             await searchService.getAssociationsKeys(SEARCH_TOKEN, PAGE);
             expect(associationNameService.find).toHaveBeenCalledWith(SEARCH_TOKEN);
         });
@@ -62,16 +62,16 @@ describe("SearchService", () => {
             const RES = ["something"];
             // @ts-expect-error -- test
             jest.mocked(AssociationNameDtoMapper.toDto).mockImplementationOnce(x => x);
-            jest.mocked(searchCachePort.getResults).mockResolvedValue(null);
+            jest.mocked(searchCacheAdapter.getResults).mockResolvedValue(null);
             // @ts-expect-error -- test
             jest.mocked(associationNameService.find).mockResolvedValue(RES);
             await searchService.getAssociationsKeys(SEARCH_TOKEN, PAGE);
-            expect(searchCachePort.saveResults).toHaveBeenCalledWith(SEARCH_TOKEN, RES);
+            expect(searchCacheAdapter.saveResults).toHaveBeenCalledWith(SEARCH_TOKEN, RES);
         });
 
         it("return truncated and annotated results", async () => {
             const RES = ["something"];
-            jest.mocked(searchCachePort.getResults).mockResolvedValue(null);
+            jest.mocked(searchCacheAdapter.getResults).mockResolvedValue(null);
             // @ts-expect-error -- test
             jest.mocked(AssociationNameDtoMapper.toDto).mockImplementationOnce(x => x);
             // @ts-expect-error -- test
@@ -91,7 +91,7 @@ describe("SearchService", () => {
     describe("cleanCache", () => {
         it("calls service", async () => {
             await searchService.cleanCache();
-            expect(searchCachePort.deleteAll).toHaveBeenCalled();
+            expect(searchCacheAdapter.deleteAll).toHaveBeenCalled();
         });
     });
 });

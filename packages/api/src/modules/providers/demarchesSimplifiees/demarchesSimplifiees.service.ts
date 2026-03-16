@@ -4,8 +4,8 @@ import { DEMARCHES_SIMPLIFIEES_TOKEN } from "../../../configurations/apis.conf";
 import { asyncForEach } from "../../../shared/helpers/ArrayHelper";
 import { DefaultObject } from "../../../@types";
 import ProviderCore from "../ProviderCore";
-import demarchesSimplifieesDataPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
-import demarchesSimplifieesSchemaPort from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port";
+import demarchesSimplifieesDataAdapter from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.adapter";
+import demarchesSimplifieesSchemaAdapter from "../../../dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.adapter";
 import GetDossiersByDemarcheId from "./queries/GetDossiersByDemarcheId";
 import { DemarchesSimplifieesDto } from "./dto/DemarchesSimplifieesDto";
 import DemarchesSimplifieesDtoMapper from "./mappers/demarches-simplifiees-dto.mapper";
@@ -48,7 +48,7 @@ export class DemarchesSimplifieesService extends ProviderCore implements Applica
     }
 
     async initApplicationFlat() {
-        const cursor = demarchesSimplifieesDataPort.findAllCursor();
+        const cursor = demarchesSimplifieesDataAdapter.findAllCursor();
         const schemasByIds = await this.getSchemasByIds();
         const stream: ReadableStream<ApplicationFlatEntity> = cursorToStream(
             cursor,
@@ -86,7 +86,7 @@ export class DemarchesSimplifieesService extends ProviderCore implements Applica
      */
 
     private async getSchemasByIds() {
-        const schemas = await demarchesSimplifieesSchemaPort.findAll();
+        const schemas = await demarchesSimplifieesSchemaAdapter.findAll();
 
         return schemas.reduce(
             (acc, schema) => {
@@ -108,7 +108,7 @@ export class DemarchesSimplifieesService extends ProviderCore implements Applica
      */
 
     async updateAllForms() {
-        const formsIds = await demarchesSimplifieesSchemaPort.getAcceptedDemarcheIds();
+        const formsIds = await demarchesSimplifieesSchemaAdapter.getAcceptedDemarcheIds();
         const beginUpdating = new Date();
         this.lastModified = await configurationsService.getLastDsUpdate();
 
@@ -123,7 +123,7 @@ export class DemarchesSimplifieesService extends ProviderCore implements Applica
     async updateDataByFormId(formId: number) {
         console.log(`Syncing demarche ${formId}`);
 
-        const schema = await demarchesSimplifieesSchemaPort.findById(formId);
+        const schema = await demarchesSimplifieesSchemaAdapter.findById(formId);
         // TODO English or French?
         if (!schema)
             throw new InternalServerError(
@@ -131,7 +131,7 @@ export class DemarchesSimplifieesService extends ProviderCore implements Applica
             );
 
         const upsertRawAndFlat = async (bulk: DemarchesSimplifieesDataEntity[], schema: DemarchesSimplifieesSchema) => {
-            await demarchesSimplifieesDataPort.bulkUpsert(bulk);
+            await demarchesSimplifieesDataAdapter.bulkUpsert(bulk);
             await this.bulkUpdateApplicationFlat(bulk, schema);
         };
 
@@ -201,7 +201,7 @@ export class DemarchesSimplifieesService extends ProviderCore implements Applica
     }
 
     addSchema(schema: DemarchesSimplifieesSchema) {
-        return demarchesSimplifieesSchemaPort.upsert(schema);
+        return demarchesSimplifieesSchemaAdapter.upsert(schema);
     }
 
     async buildSchema(schemaModel: DemarchesSimplifieesSchemaSeedLine[], exampleData: DemarchesSimplifieesDataEntity) {

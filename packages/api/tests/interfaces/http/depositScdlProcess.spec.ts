@@ -12,7 +12,7 @@ import {
 } from "../../../src/modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
 import { DepositScdlLogDto, DepositScdlLogResponseDto } from "dto";
 import path from "path";
-import miscScdlGrantPort from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.port";
+import miscScdlGrantAdapter from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.adapter";
 import { SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
 import UploadedFileInfosEntity from "../../../src/modules/deposit-scdl-process/entities/uploadedFileInfos.entity";
 import MiscScdlProducerEntity from "../../../src/modules/providers/scdl/entities/MiscScdlProducerEntity";
@@ -72,7 +72,7 @@ describe("/parcours-depot", () => {
 
     describe("GET /donnees-existantes", () => {
         it("should return 200 and match expected csv", async () => {
-            await miscScdlGrantPort.createMany(SCDL_GRANT_DBOS);
+            await miscScdlGrantAdapter.createMany(SCDL_GRANT_DBOS);
             const token = await createAndGetUserToken();
             const userId = (await getDefaultUser())!._id.toString();
 
@@ -104,7 +104,7 @@ describe("/parcours-depot", () => {
         });
 
         it("should return 200 and match expected filename", async () => {
-            await miscScdlGrantPort.createMany(SCDL_GRANT_DBOS);
+            await miscScdlGrantAdapter.createMany(SCDL_GRANT_DBOS);
             const token = await createAndGetUserToken();
             const userId = (await getDefaultUser())!._id.toString();
 
@@ -140,7 +140,7 @@ describe("/parcours-depot", () => {
 
     describe("GET /fichier-depose/url-de-telechargement", () => {
         it("should return 200 with presigned url", async () => {
-            await miscScdlGrantPort.createMany(SCDL_GRANT_DBOS);
+            await miscScdlGrantAdapter.createMany(SCDL_GRANT_DBOS);
             const token = await createAndGetUserToken();
             const userId = (await getDefaultUser())!._id.toString();
 
@@ -497,7 +497,7 @@ describe("/parcours-depot", () => {
 
             expect(response.statusCode).toBe(400);
             await expect(depositLogAdapter.findOneByUserId(userId)).resolves.not.toBeNull();
-            await expect(miscScdlGrantPort.findAll()).resolves.toHaveLength(0);
+            await expect(miscScdlGrantAdapter.findAll()).resolves.toHaveLength(0);
         });
     });
 });

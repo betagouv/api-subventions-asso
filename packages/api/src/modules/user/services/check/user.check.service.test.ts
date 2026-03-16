@@ -4,9 +4,9 @@ import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
 import configurationsService from "../../../configurations/configurations.service";
 jest.mock("../../../configurations/configurations.service");
 const mockedConfigurationsService = jest.mocked(configurationsService);
-import userPort from "../../../../dataProviders/db/user/user.port";
-jest.mock("../../../../dataProviders/db/user/user.port");
-const mockedUserPort = jest.mocked(userPort);
+import userAdapter from "../../../../dataProviders/db/user/user.adapter";
+jest.mock("../../../../dataProviders/db/user/user.adapter");
+const mockedUserAdapter = jest.mocked(userAdapter);
 import * as stringHelper from "../../../../shared/helpers/StringHelper";
 jest.mock("../../../../shared/helpers/StringHelper");
 const mockedStringHelper = jest.mocked(stringHelper);
@@ -109,7 +109,7 @@ describe("user check service", () => {
         const mockValidateEmailOnly = jest.spyOn(userCheckService, "validateOnlyEmail");
 
         beforeAll(() => {
-            mockedUserPort.findByEmail.mockResolvedValue(null);
+            mockedUserAdapter.findByEmail.mockResolvedValue(null);
             mockedStringHelper.sanitizeToPlainText.mockReturnValue("safeString");
             mockValidateEmailAndDomain.mockResolvedValue(undefined);
             mockValidateEmailOnly.mockReturnValue(undefined);
@@ -117,7 +117,7 @@ describe("user check service", () => {
         });
 
         afterAll(() => {
-            jest.mocked(mockedUserPort.findByEmail).mockReset();
+            jest.mocked(mockedUserAdapter.findByEmail).mockReset();
             mockValidateEmailAndDomain.mockRestore();
             mockValidateEmailOnly.mockRestore();
             mockedUserRolesService.validRoles.mockRestore();

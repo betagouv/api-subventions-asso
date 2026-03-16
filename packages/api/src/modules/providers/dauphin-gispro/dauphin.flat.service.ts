@@ -1,4 +1,4 @@
-import dauphinPort from "../../../dataProviders/db/providers/dauphin/dauphin.port";
+import dauphinAdapter from "../../../dataProviders/db/providers/dauphin/dauphin.adapter";
 import DauphinDtoMapper, { InconsistentAggregationError } from "./mappers/dauphin-dto.mapper";
 import ApplicationFlatProvider from "../../applicationFlat/@types/applicationFlatProvider";
 import { ReadableStream } from "stream/web";
@@ -15,9 +15,9 @@ export class DauphinFlatService implements ApplicationFlatProvider {
 
     async generateTempJoinedCollection() {
         console.log("creating simplified dauphin...");
-        await dauphinPort.createSimplifiedDauphinBeforeJoin();
+        await dauphinAdapter.createSimplifiedDauphinBeforeJoin();
         console.log("joining simplified dauphin with gispro data...");
-        await dauphinPort.joinGisproToSimplified();
+        await dauphinAdapter.joinGisproToSimplified();
         console.log("simplified collection created");
     }
 
@@ -25,7 +25,7 @@ export class DauphinFlatService implements ApplicationFlatProvider {
         console.log("Generating simplified and joined collections...");
         await this.generateTempJoinedCollection();
         console.log("Start transforming data into application...");
-        const cursor = dauphinPort.findAllTempCursor();
+        const cursor = dauphinAdapter.findAllTempCursor();
         const errors: InconsistentAggregationError[] = [];
         const stream = cursorToStream(cursor, simplified => {
             try {
@@ -50,7 +50,7 @@ export class DauphinFlatService implements ApplicationFlatProvider {
                     "\nEn conséquence la collection temporaire n'a pas été vidée.",
                 ),
             );
-        else await dauphinPort.cleanTempCollection();
+        else await dauphinAdapter.cleanTempCollection();
     }
 
     async saveApplicationsFromStream(stream: ReadableStream<ApplicationFlatEntity>): Promise<void> {

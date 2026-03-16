@@ -12,7 +12,7 @@ import ProviderCore from "../ProviderCore";
 import EstablishmentIdentifier from "../../../identifierObjects/EstablishmentIdentifier";
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
 import Siren from "../../../identifierObjects/Siren";
-import dauphinPort from "../../../dataProviders/db/providers/dauphin/dauphin.port";
+import dauphinAdapter from "../../../dataProviders/db/providers/dauphin/dauphin.adapter";
 import DauphinSubventionDto from "./dto/DauphinSubventionDto";
 import DauphinDtoMapper from "./mappers/dauphin-dto.mapper";
 import { StructureIdentifier } from "../../../identifierObjects/@types/StructureIdentifier";
@@ -45,7 +45,7 @@ export class DauphinService extends ProviderCore implements DocumentProvider {
      */
 
     async updateApplicationCache() {
-        const lastUpdateDate = await dauphinPort.getLastImportDate();
+        const lastUpdateDate = await dauphinAdapter.getLastImportDate();
         console.log(`update cache from ${lastUpdateDate.toString()}`);
         const token = await this.getAuthToken();
         let totalToFetch = 0;
@@ -96,7 +96,7 @@ export class DauphinService extends ProviderCore implements DocumentProvider {
 
     private saveApplicationsInCache(applications: DauphinSubventionDto[]) {
         return asyncForEach(applications, async application => {
-            await dauphinPort.upsert({ dauphin: application });
+            await dauphinAdapter.upsert({ dauphin: application });
         });
     }
 
@@ -167,7 +167,7 @@ export class DauphinService extends ProviderCore implements DocumentProvider {
     }
 
     migrateDauphinCacheToDauphin(logger) {
-        return dauphinPort.migrateDauphinCacheToDauphin(logger);
+        return dauphinAdapter.migrateDauphinCacheToDauphin(logger);
     }
 
     // Documents

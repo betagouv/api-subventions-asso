@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
-import statsAssociationsVisitPort from "../../dataProviders/db/stats/statsAssociationsVisit.port";
-import logsPort from "../../dataProviders/db/stats/logs.port";
+import statsAssociationsVisitAdapter from "../../dataProviders/db/stats/statsAssociationsVisit.adapter";
+import logsAdapter from "../../dataProviders/db/stats/logs.adapter";
 import AssociationVisitEntity from "./entities/AssociationVisitEntity";
 import { WinstonLog } from "../../@types/WinstonLog";
 import RouteTypesEnum from "./@types/RouteTypesEnum";
@@ -9,23 +9,23 @@ import userCrudService from "../user/services/crud/user.crud.service";
 
 class StatsService {
     addAssociationVisit(visit: AssociationVisitEntity) {
-        return statsAssociationsVisitPort.add(visit);
+        return statsAssociationsVisitAdapter.add(visit);
     }
 
     getUserLastSearchDate(userId) {
-        return statsAssociationsVisitPort.getLastSearchDate(userId);
+        return statsAssociationsVisitAdapter.getLastSearchDate(userId);
     }
 
     getAllVisitsUser(userId: string) {
-        return statsAssociationsVisitPort.findByUserId(userId);
+        return statsAssociationsVisitAdapter.findByUserId(userId);
     }
 
     getAllLogUser(email: string) {
-        return logsPort.findByEmail(email);
+        return logsAdapter.findByEmail(email);
     }
 
     getAnonymizedLogsOnPeriod(start: Date, end: Date) {
-        const cursor = logsPort.getLogsOnPeriod(start, end);
+        const cursor = logsAdapter.getLogsOnPeriod(start, end);
         return cursor.map(log => {
             const logToAnonymize: WinstonLog & { meta: { req: { userId?: ObjectId } } } = { ...log };
             if (logToAnonymize.meta.req?.body?.email) delete logToAnonymize.meta.req.body.email;
@@ -45,7 +45,7 @@ class StatsService {
     }
 
     getAssociationsVisitsOnPeriod(start: Date, end: Date) {
-        return statsAssociationsVisitPort.findOnPeriod(start, end);
+        return statsAssociationsVisitAdapter.findOnPeriod(start, end);
     }
 
     /**
@@ -264,7 +264,7 @@ class StatsService {
 
     async getConsumersConsumption() {
         const consumers = await userCrudService.getConsumers();
-        const consumption = await logsPort.getConsumption(consumers.map(user => user._id.toString()));
+        const consumption = await logsAdapter.getConsumption(consumers.map(user => user._id.toString()));
         const consumptionByUserId = this.formatConsumption(consumption);
         const consumptionByEmail = {};
         for (const consumerId in consumptionByUserId) {

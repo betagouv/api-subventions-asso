@@ -20,10 +20,10 @@ import jwt from "jsonwebtoken";
 jest.mock("bcrypt");
 const mockedBcrypt = jest.mocked(bcrypt);
 
-import userPort from "../../../../dataProviders/db/user/user.port";
+import userAdapter from "../../../../dataProviders/db/user/user.adapter";
 
-jest.mock("../../../../dataProviders/db/user/user.port");
-const mockedUserPort = jest.mocked(userPort);
+jest.mock("../../../../dataProviders/db/user/user.adapter");
+const mockedUserAdapter = jest.mocked(userAdapter);
 import {
     CONSUMER_USER,
     SIGNED_TOKEN,
@@ -33,7 +33,7 @@ import {
 } from "../../__fixtures__/user.fixture";
 import { BadRequestError, UnauthorizedError, LoginError } from "core";
 
-jest.mock("../../../../dataProviders/db/user/user.port");
+jest.mock("../../../../dataProviders/db/user/user.adapter");
 import * as portHelper from "../../../../shared/helpers/PortHelper";
 
 jest.mock("../../../../shared/helpers/PortHelper", () => ({
@@ -75,9 +75,9 @@ describe("user auth service", () => {
     });
 
     describe("findJwtByUser", () => {
-        it("should call userPort", async () => {
+        it("should call userAdapter", async () => {
             await userAuthService.findJwtByUser({ _id: USER_ID } as UserDto);
-            expect(userPort.getUserWithSecretsById).toHaveBeenCalledWith(USER_ID);
+            expect(userAdapter.getUserWithSecretsById).toHaveBeenCalledWith(USER_ID);
         });
     });
 
@@ -133,7 +133,7 @@ describe("user auth service", () => {
         it("should update user", async () => {
             mockedUserCheckService.passwordValidator.mockReturnValue(true);
             await userAuthService.updatePassword(USER_WITHOUT_SECRET, PASSWORD);
-            expect(userPort.update).toHaveBeenCalledWith({
+            expect(userAdapter.update).toHaveBeenCalledWith({
                 ...USER_WITHOUT_SECRET,
                 hashPassword: PASSWORD,
             });
@@ -144,7 +144,7 @@ describe("user auth service", () => {
         const mockBuildJWTToken = jest.spyOn(userAuthService, "buildJWTToken");
 
         it("should generate new token and update user", async () => {
-            mockedUserPort.update.mockResolvedValueOnce(JSON.parse(JSON.stringify(USER_DBO)));
+            mockedUserAdapter.update.mockResolvedValueOnce(JSON.parse(JSON.stringify(USER_DBO)));
             // minus two days
             const oldDate = new Date(Date.now() - 172800001);
             jwtVerifyMock.mockImplementation(() => ({
@@ -153,12 +153,12 @@ describe("user auth service", () => {
             }));
             await userAuthService.updateJwt(USER_DBO);
             expect(mockBuildJWTToken).toHaveBeenCalledTimes(1);
-            expect(userPort.update).toHaveBeenCalledTimes(1);
+            expect(userAdapter.update).toHaveBeenCalledTimes(1);
         });
 
         it("should return user", async () => {
             // @ts-expect-error test mock
-            mockedUserPort.update.mockResolvedValueOnce("USER WITH JWT");
+            mockedUserAdapter.update.mockResolvedValueOnce("USER WITH JWT");
             const expected = "USER WITH JWT";
             const actual = await userAuthService.updateJwt(USER_DBO);
             expect(actual).toEqual(expected);
@@ -167,23 +167,23 @@ describe("user auth service", () => {
 
     describe("logout", () => {
         beforeAll(() =>
-            mockedUserPort.getUserWithSecretsByEmail.mockImplementation(async () => ({
+            mockedUserAdapter.getUserWithSecretsByEmail.mockImplementation(async () => ({
                 ...USER_WITHOUT_SECRET,
                 jwt: { token: "", expirateDate: new Date() },
                 hashPassword: "",
             })),
         );
 
-        afterAll(() => mockedUserPort.getUserWithSecretsByEmail.mockReset());
+        afterAll(() => mockedUserAdapter.getUserWithSecretsByEmail.mockReset());
 
-        it("should call userPort.getUserWithSecretsByEmail()", async () => {
+        it("should call userAdapter.getUserWithSecretsByEmail()", async () => {
             await userAuthService.logout(USER_WITHOUT_SECRET);
-            expect(mockedUserPort.getUserWithSecretsByEmail).toHaveBeenCalledTimes(1);
+            expect(mockedUserAdapter.getUserWithSecretsByEmail).toHaveBeenCalledTimes(1);
         });
 
-        it("should call userPort.update()", async () => {
+        it("should call userAdapter.update()", async () => {
             await userAuthService.logout(USER_WITHOUT_SECRET);
-            expect(mockedUserPort.update).toHaveBeenCalledTimes(1);
+            expect(mockedUserAdapter.update).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -194,23 +194,23 @@ describe("user auth service", () => {
             mockedBcrypt.compare.mockImplementation(() => true);
             // @ts-expect-error: test mock
             mockUpdateJwt.mockResolvedValue("USER WITH JWT");
-            mockedUserPort.getUserWithSecretsByEmail.mockImplementation(async () => USER_DBO);
+            mockedUserAdapter.getUserWithSecretsByEmail.mockImplementation(async () => USER_DBO);
         });
 
         afterEach(() => {
             mockUpdateJwt.mockReset();
-            mockedUserPort.getUserWithSecretsByEmail.mockReset();
+            mockedUserAdapter.getUserWithSecretsByEmail.mockReset();
         });
 
         it("should throw an Error if user not found", async () => {
-            mockedUserPort.getUserWithSecretsByEmail.mockImplementationOnce(async () => null);
+            mockedUserAdapter.getUserWithSecretsByEmail.mockImplementationOnce(async () => null);
             const expected = new LoginError();
             const test = async () => await userAuthService.login(USER_DBO.email, "PASSWORD");
             await expect(test).rejects.toMatchObject(expected);
         });
 
         it("should throw UnauthorizedError if user does not have a password set", async () => {
-            mockedUserPort.getUserWithSecretsByEmail.mockImplementationOnce(async () => ({
+            mockedUserAdapter.getUserWithSecretsByEmail.mockImplementationOnce(async () => ({
                 ...USER_DBO,
                 hashPassword: undefined,
             }));
@@ -223,7 +223,7 @@ describe("user auth service", () => {
         });
 
         it("should throw an Error if user is not active", async () => {
-            mockedUserPort.getUserWithSecretsByEmail.mockImplementationOnce(async () => ({
+            mockedUserAdapter.getUserWithSecretsByEmail.mockImplementationOnce(async () => ({
                 ...USER_DBO,
                 active: false,
             }));
@@ -262,14 +262,14 @@ describe("user auth service", () => {
     describe("authenticate", () => {
         const DECODED_TOKEN = { ...USER_WITHOUT_SECRET, now: (d => new Date(d.setDate(d.getDate() + 1)))(new Date()) };
         it("should throw error if user does not exist", async () => {
-            mockedUserPort.getUserWithSecretsByEmail.mockImplementationOnce(jest.fn());
+            mockedUserAdapter.getUserWithSecretsByEmail.mockImplementationOnce(jest.fn());
             const expected = { message: "User not found", code: UserServiceErrors.USER_NOT_FOUND };
             const test = async () => await userAuthService.authenticate(DECODED_TOKEN, USER_SECRETS.jwt.token);
             await expect(test).rejects.toMatchObject(expected);
         });
 
         it("should call removeSecrets() when consumer", async () => {
-            mockedUserPort.getUserWithSecretsByEmail.mockImplementationOnce(
+            mockedUserAdapter.getUserWithSecretsByEmail.mockImplementationOnce(
                 async () => ({ ...CONSUMER_USER, ...USER_SECRETS }) as UserDbo,
             );
             await userAuthService.authenticate({ ...DECODED_TOKEN, ...CONSUMER_USER }, USER_SECRETS.jwt.token);
@@ -277,13 +277,13 @@ describe("user auth service", () => {
         });
 
         it("should call removeSecrets() when user", async () => {
-            mockedUserPort.getUserWithSecretsByEmail.mockImplementationOnce(async () => USER_DBO);
+            mockedUserAdapter.getUserWithSecretsByEmail.mockImplementationOnce(async () => USER_DBO);
             await userAuthService.authenticate(DECODED_TOKEN, USER_SECRETS.jwt.token);
             expect(portHelper.removeSecrets).toBeCalledTimes(1);
         });
 
         it("should return UserServiceError if user not active", async () => {
-            mockedUserPort.getUserWithSecretsByEmail.mockImplementationOnce(async () => ({
+            mockedUserAdapter.getUserWithSecretsByEmail.mockImplementationOnce(async () => ({
                 ...USER_DBO,
                 active: false,
             }));
@@ -293,7 +293,7 @@ describe("user auth service", () => {
         });
 
         it("should return UserServiceError if token has expired", async () => {
-            mockedUserPort.getUserWithSecretsByEmail.mockImplementationOnce(async () => USER_DBO);
+            mockedUserAdapter.getUserWithSecretsByEmail.mockImplementationOnce(async () => USER_DBO);
             const expected = {
                 message: "JWT has expired, please login try again",
                 code: UserServiceErrors.LOGIN_UPDATE_JWT_FAIL,

@@ -3,7 +3,7 @@ import { createAndGetUserToken } from "../__helpers__/tokenHelper";
 import Rna from "../../src/identifierObjects/Rna";
 import Siren from "../../src/identifierObjects/Siren";
 import { App } from "supertest/types";
-import rnaSirenPort from "../../src/dataProviders/db/rnaSiren/rnaSiren.port";
+import rnaSirenAdapter from "../../src/dataProviders/db/rnaSiren/rnaSiren.adapter";
 import RnaSirenEntity from "../../src/entities/RnaSirenEntity";
 
 const g = global as unknown as { app: App };
@@ -14,7 +14,7 @@ describe("RnaSirenController", () => {
     const SIREN = new Siren("123456789");
 
     beforeEach(async () => {
-        await rnaSirenPort.insert(new RnaSirenEntity(RNA, SIREN));
+        await rnaSirenAdapter.insert(new RnaSirenEntity(RNA, SIREN));
     });
 
     describe("GET /open-data/rna-siren/{identifier}", () => {

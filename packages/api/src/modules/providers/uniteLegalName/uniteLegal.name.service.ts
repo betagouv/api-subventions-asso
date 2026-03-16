@@ -1,5 +1,5 @@
 import Fuse from "fuse.js";
-import uniteLegalNamePort from "../../../dataProviders/db/uniteLegalName/uniteLegalName.port";
+import uniteLegalNameAdapter from "../../../dataProviders/db/uniteLegalName/uniteLegalName.adapter";
 import UniteLegalNameEntity from "../../../entities/UniteLegalNameEntity";
 import rnaSirenService from "../../rna-siren/rna-siren.service";
 import AssociationNameMapper from "../../association-name/mappers/association-name.mapper";
@@ -10,12 +10,12 @@ import Siren from "../../../identifierObjects/Siren";
 export class UniteLegalNameService {
     async getNameFromIdentifier(identifier: AssociationIdentifier): Promise<UniteLegalNameEntity | null> {
         if (!identifier.siren) return null;
-        return uniteLegalNamePort.findOneBySiren(identifier.siren);
+        return uniteLegalNameAdapter.findOneBySiren(identifier.siren);
     }
 
     async searchBySirenSiretName(value: string) {
         if (Siret.isStartOfSiret(value)) value = Siren.fromPartialSiretStr(value).value;
-        const associations = await uniteLegalNamePort.search(value);
+        const associations = await uniteLegalNameAdapter.search(value);
         const groupedNameByStructures = associations.reduce(
             (acc, entity) => {
                 const sirenStr = entity.siren.value;
@@ -54,11 +54,11 @@ export class UniteLegalNameService {
     }
 
     upsert(entity: UniteLegalNameEntity) {
-        return uniteLegalNamePort.upsert(entity);
+        return uniteLegalNameAdapter.upsert(entity);
     }
 
     upsertMany(entities: UniteLegalNameEntity[]) {
-        return uniteLegalNamePort.upsertMany(entities);
+        return uniteLegalNameAdapter.upsertMany(entities);
     }
 }
 

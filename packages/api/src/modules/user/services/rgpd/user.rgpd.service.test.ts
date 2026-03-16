@@ -1,11 +1,11 @@
 import userRgpdService from "./user.rgpd.service";
-import consumerTokenPort from "../../../../dataProviders/db/user/consumer-token.port";
+import consumerTokenAdapter from "../../../../dataProviders/db/user/consumer-token.adapter";
 import * as Sentry from "@sentry/node";
 
 jest.mock("@sentry/node");
 
-jest.mock("../../../../dataProviders/db/user/consumer-token.port");
-const mockedConsumerTokenPort = jest.mocked(consumerTokenPort);
+jest.mock("../../../../dataProviders/db/user/consumer-token.adapter");
+const mockedConsumerTokenAdapter = jest.mocked(consumerTokenAdapter);
 import statsService from "../../../stats/stats.service";
 
 jest.mock("../../../stats/stats.service");
@@ -17,18 +17,18 @@ const mockedUserCrudService = jest.mocked(userCrudService);
 import { ANONYMIZED_USER, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import { NotFoundError } from "core";
 import { ObjectId } from "mongodb";
-import userResetPort from "../../../../dataProviders/db/user/user-reset.port";
+import userResetAdapter from "../../../../dataProviders/db/user/user-reset.adapter";
 
-jest.mock("../../../../dataProviders/db/user/user-reset.port");
-const mockedUserResetPort = jest.mocked(userResetPort);
-import userPort from "../../../../dataProviders/db/user/user.port";
+jest.mock("../../../../dataProviders/db/user/user-reset.adapter");
+const mockedUserResetAdapter = jest.mocked(userResetAdapter);
+import userAdapter from "../../../../dataProviders/db/user/user.adapter";
 
-jest.mock("../../../../dataProviders/db/user/user.port");
-const mockedUserPort = jest.mocked(userPort);
+jest.mock("../../../../dataProviders/db/user/user.adapter");
+const mockedUserAdapter = jest.mocked(userAdapter);
 import notifyService from "../../../notify/notify.service";
 
-jest.mock("../../../../dataProviders/db/configurations/configurations.port");
-import configurationsPort from "../../../../dataProviders/db/configurations/configurations.port";
+jest.mock("../../../../dataProviders/db/configurations/configurations.adapter");
+import configurationsAdapter from "../../../../dataProviders/db/configurations/configurations.adapter";
 
 jest.mock("../../../configurations/configurations.service");
 import configurationsService from "../../../configurations/configurations.service";
@@ -48,22 +48,22 @@ jest.mock("../../../../shared/helpers/PortHelper", () => ({
     uniformizeId: jest.fn(token => token),
 }));
 
-import logsPort from "../../../../dataProviders/db/stats/logs.port";
+import logsAdapter from "../../../../dataProviders/db/stats/logs.adapter";
 import { WinstonLog } from "../../../../@types/WinstonLog";
-jest.mock("../../../../dataProviders/db/stats/logs.port");
+jest.mock("../../../../dataProviders/db/stats/logs.adapter");
 
 describe("user rgpd service", () => {
     describe("getAllData", () => {
         beforeEach(() => {
             mockedUserCrudService.getUserById.mockResolvedValue(USER_WITHOUT_SECRET);
-            mockedUserResetPort.findByUserId.mockResolvedValue([]);
-            mockedConsumerTokenPort.find.mockResolvedValue([]);
+            mockedUserResetAdapter.findByUserId.mockResolvedValue([]);
+            mockedConsumerTokenAdapter.find.mockResolvedValue([]);
             mockedStatsService.getAllVisitsUser.mockResolvedValue([]);
             mockedStatsService.getAllLogUser.mockResolvedValue([]);
         });
 
         afterAll(() => {
-            mockedConsumerTokenPort.find.mockReset();
+            mockedConsumerTokenAdapter.find.mockReset();
             mockedStatsService.getAllVisitsUser.mockReset();
             mockedStatsService.getAllLogUser.mockReset();
         });
@@ -81,19 +81,19 @@ describe("user rgpd service", () => {
 
         it("should call userResetPort.findByUserId()", async () => {
             await userRgpdService.getAllData(USER_WITHOUT_SECRET._id.toString());
-            expect(mockedUserResetPort.findByUserId).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
+            expect(mockedUserResetAdapter.findByUserId).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
         });
 
         it("should call consumerTokenPort.find()", async () => {
             await userRgpdService.getAllData(USER_WITHOUT_SECRET._id.toString());
-            expect(mockedConsumerTokenPort.find).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
+            expect(mockedConsumerTokenAdapter.find).toBeCalledWith(USER_WITHOUT_SECRET._id.toString());
         });
 
         it("should call uniformizeId()", async () => {
             const USER_ID = new ObjectId();
             const _ID = new ObjectId();
 
-            mockedUserResetPort.findByUserId.mockResolvedValueOnce([
+            mockedUserResetAdapter.findByUserId.mockResolvedValueOnce([
                 // @ts-expect-error: mock return value
                 {
                     userId: USER_ID,
@@ -138,11 +138,11 @@ describe("user rgpd service", () => {
         const USER = USER_WITHOUT_SECRET;
 
         beforeEach(() => {
-            mockedUserPort.update.mockResolvedValue({} as UserDto);
+            mockedUserAdapter.update.mockResolvedValue({} as UserDto);
         });
 
         afterEach(() => {
-            mockedUserPort.update.mockReset();
+            mockedUserAdapter.update.mockReset();
         });
 
         it("should return false if no user", async () => {
@@ -153,12 +153,12 @@ describe("user rgpd service", () => {
 
         it("should call update", async () => {
             await userRgpdService.disable(USER);
-            expect(mockedUserPort.update).toHaveBeenCalledWith(ANONYMIZED_USER);
+            expect(mockedUserAdapter.update).toHaveBeenCalledWith(ANONYMIZED_USER);
         });
 
         it("should return true if update succeed", async () => {
-            mockedUserPort.update.mockResolvedValueOnce(ANONYMIZED_USER);
-            jest.mocked(logsPort.anonymizeLogsByUser).mockResolvedValue(true);
+            mockedUserAdapter.update.mockResolvedValueOnce(ANONYMIZED_USER);
+            jest.mocked(logsAdapter.anonymizeLogsByUser).mockResolvedValue(true);
             const expected = true;
             const actual = await userRgpdService.disable(USER);
             expect(actual).toEqual(expected);
@@ -187,7 +187,7 @@ describe("user rgpd service", () => {
 
         it("should anonymize logs too", async () => {
             await userRgpdService.disable(USER);
-            expect(jest.mocked(logsPort.anonymizeLogsByUser)).toHaveBeenCalledWith(USER, ANONYMIZED_USER);
+            expect(jest.mocked(logsAdapter.anonymizeLogsByUser)).toHaveBeenCalledWith(USER, ANONYMIZED_USER);
         });
     });
 
@@ -227,14 +227,14 @@ describe("user rgpd service", () => {
         let disableMock: jest.SpyInstance;
 
         beforeAll(() => {
-            jest.mocked(userPort.findInactiveSince).mockResolvedValue([USER_WITHOUT_SECRET]);
-            jest.mocked(userPort.findNotActivatedSince).mockResolvedValue([{ ...USER_WITHOUT_SECRET }]);
+            jest.mocked(userAdapter.findInactiveSince).mockResolvedValue([USER_WITHOUT_SECRET]);
+            jest.mocked(userAdapter.findNotActivatedSince).mockResolvedValue([{ ...USER_WITHOUT_SECRET }]);
             disableMock = jest.spyOn(userRgpdService, "disable").mockResolvedValue(true);
         });
 
         afterAll(() => {
-            jest.mocked(userPort.findInactiveSince).mockReset();
-            jest.mocked(userPort.findNotActivatedSince).mockReset();
+            jest.mocked(userAdapter.findInactiveSince).mockReset();
+            jest.mocked(userAdapter.findNotActivatedSince).mockReset();
             disableMock.mockReset();
         });
 
@@ -244,7 +244,7 @@ describe("user rgpd service", () => {
             const THEN = new Date("2022-01-12");
             jest.setSystemTime(NOW);
             await userRgpdService.bulkDisableInactive();
-            expect(userPort.findInactiveSince).toHaveBeenCalledWith(THEN);
+            expect(userAdapter.findInactiveSince).toHaveBeenCalledWith(THEN);
             jest.useRealTimers();
         });
 
@@ -254,7 +254,7 @@ describe("user rgpd service", () => {
             const THEN = new Date("2023-07-12");
             jest.setSystemTime(NOW);
             await userRgpdService.bulkDisableInactive();
-            expect(userPort.findNotActivatedSince).toHaveBeenCalledWith(THEN);
+            expect(userAdapter.findNotActivatedSince).toHaveBeenCalledWith(THEN);
             jest.useRealTimers();
         });
 
@@ -277,8 +277,8 @@ describe("user rgpd service", () => {
         });
 
         it("does not notify if no result", async () => {
-            jest.mocked(userPort.findInactiveSince).mockResolvedValueOnce([]);
-            jest.mocked(userPort.findNotActivatedSince).mockResolvedValueOnce([]);
+            jest.mocked(userAdapter.findInactiveSince).mockResolvedValueOnce([]);
+            jest.mocked(userAdapter.findNotActivatedSince).mockResolvedValueOnce([]);
             await userRgpdService.bulkDisableInactive();
             expect(notifyService.notify).not.toHaveBeenCalled();
         });
@@ -299,7 +299,10 @@ describe("user rgpd service", () => {
             NOW = new Date("2024-01-12");
             THEN = new Date("2023-08-12");
             jest.setSystemTime(NOW);
-            jest.mocked(userPort.findNotActivatedSince).mockResolvedValue([USER_WITHOUT_SECRET, USER_WITHOUT_SECRET]);
+            jest.mocked(userAdapter.findNotActivatedSince).mockResolvedValue([
+                USER_WITHOUT_SECRET,
+                USER_WITHOUT_SECRET,
+            ]);
             resetMock = jest.spyOn(userActivationService, "resetUser").mockResolvedValue({
                 userId: new ObjectId(),
                 token: "FAKE_TOKEN",
@@ -308,22 +311,22 @@ describe("user rgpd service", () => {
         });
 
         afterAll(() => {
-            jest.mocked(userPort.findNotActivatedSince).mockReset();
+            jest.mocked(userAdapter.findNotActivatedSince).mockReset();
             resetMock.mockReset();
             jest.useRealTimers();
         });
 
         it("finds users never seen for 5 month", async () => {
             await userRgpdService.warnDisableInactive();
-            expect(userPort.findNotActivatedSince).toHaveBeenCalledWith(THEN, undefined);
+            expect(userAdapter.findNotActivatedSince).toHaveBeenCalledWith(THEN, undefined);
         });
 
         it("finds users never seen for 5 month since last call", async () => {
             const DATE = new Date("2023-05-01");
             // @ts-expect-error -- partial mock
-            jest.mocked(configurationsPort.getByName).mockResolvedValueOnce({ data: DATE });
+            jest.mocked(configurationsAdapter.getByName).mockResolvedValueOnce({ data: DATE });
             await userRgpdService.warnDisableInactive();
-            expect(userPort.findNotActivatedSince).toHaveBeenCalledWith(THEN, DATE);
+            expect(userAdapter.findNotActivatedSince).toHaveBeenCalledWith(THEN, DATE);
         });
 
         it("calls reset for each found user", async () => {

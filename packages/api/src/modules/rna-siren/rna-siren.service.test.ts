@@ -5,12 +5,12 @@ import rnaSirenService from "./rna-siren.service";
 import Rna from "../../identifierObjects/Rna";
 import Siren from "../../identifierObjects/Siren";
 import apiAssoService from "../providers/apiAsso/apiAsso.service";
-import rnaSirenPort from "../../dataProviders/db/rnaSiren/rnaSiren.port";
+import rnaSirenAdapter from "../../dataProviders/db/rnaSiren/rnaSiren.adapter";
 import associationIdentifierService from "../association-identifier/association-identifier.service";
 
 jest.mock("../association-identifier/association-identifier.service");
 jest.mock("../providers/apiAsso/apiAsso.service");
-jest.mock("../../dataProviders/db/rnaSiren/rnaSiren.port");
+jest.mock("../../dataProviders/db/rnaSiren/rnaSiren.adapter");
 
 describe("RnaSirenService", () => {
     const RNA = new Rna("W123456789");
@@ -45,7 +45,7 @@ describe("RnaSirenService", () => {
 
         beforeEach(() => {
             mockFindFromApiAsso.mockClear();
-            jest.mocked(rnaSirenPort.find).mockResolvedValue([RNA_SIREN_ENTITY]);
+            jest.mocked(rnaSirenAdapter.find).mockResolvedValue([RNA_SIREN_ENTITY]);
         });
 
         afterAll(() => {
@@ -54,7 +54,7 @@ describe("RnaSirenService", () => {
 
         it("search for entities already persisted in database", async () => {
             await rnaSirenService.find(RNA);
-            expect(rnaSirenPort.find).toHaveBeenCalledWith(RNA);
+            expect(rnaSirenAdapter.find).toHaveBeenCalledWith(RNA);
         });
 
         it("returns entities from database", async () => {
@@ -64,13 +64,13 @@ describe("RnaSirenService", () => {
         });
 
         it("search for a match from API ASSO when no entities found in database", async () => {
-            jest.mocked(rnaSirenPort.find).mockResolvedValueOnce(null);
+            jest.mocked(rnaSirenAdapter.find).mockResolvedValueOnce(null);
             await rnaSirenService.find(RNA);
             expect(mockFindFromApiAsso).toHaveBeenCalledWith(RNA);
         });
 
         it("return wrapped entity from API ASSO", async () => {
-            jest.mocked(rnaSirenPort.find).mockResolvedValueOnce(null);
+            jest.mocked(rnaSirenAdapter.find).mockResolvedValueOnce(null);
             const actual = await rnaSirenService.find(RNA);
             const expected = [RNA_SIREN_ENTITY];
             expect(actual).toEqual(expected);
@@ -123,7 +123,7 @@ describe("RnaSirenService", () => {
         it("persists new match from API ASSO", async () => {
             jest.mocked(apiAssoService.findRnaSiren).mockResolvedValue({ rna: RNA, siren: SIREN });
             await rnaSirenService.findFromApiAsso(RNA);
-            expect(rnaSirenPort.insert).toHaveBeenCalledWith(RNA_SIREN_ENTITY);
+            expect(rnaSirenAdapter.insert).toHaveBeenCalledWith(RNA_SIREN_ENTITY);
         });
 
         it("returns new entity", async () => {
