@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.81.5](https://github.com/betagouv/api-subventions-asso/compare/v0.81.4...v0.81.5) (2026-03-16)
+
+### Bug Fixes
+
+- **api:** do not throw NotAssociationError based on missing RNA ([94ead13](https://github.com/betagouv/api-subventions-asso/commit/94ead13170858ca1f3f15cbc09709c781e15ef3d))
+
 ## [0.81.3](https://github.com/betagouv/api-subventions-asso/compare/v0.81.1...v0.81.3) (2026-03-11)
 
 ### Bug Fixes
