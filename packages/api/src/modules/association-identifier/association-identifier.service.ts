@@ -13,9 +13,10 @@ export class AssociationIdentifierService {
         const reResult = await rechercheEntreprisesService.getSearchResult(identifier.value);
         if (reResult.length === 0) return [AssociationIdentifier.fromId(identifier)];
         if (identifier.name === Siren.getName())
-            return reResult
-                .filter(entity => entity.rna)
-                .map(entity => AssociationIdentifier.fromSirenAndRna(identifier, entity.rna!));
+            return reResult.map(entity => {
+                if (entity.rna) return AssociationIdentifier.fromSirenAndRna(identifier, entity.rna!);
+                else return AssociationIdentifier.fromSiren(identifier);
+            });
         else return reResult.map(entity => AssociationIdentifier.fromSirenAndRna(entity.siren, identifier));
     }
 
