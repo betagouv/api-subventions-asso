@@ -63,7 +63,7 @@ export class AssociationController {
     getRnaSirenDuplicates(rna, siren) {
         if (rna) {
             rnaSirenService.getAssociatedIdentifier(rna).then(mapping => {
-                if (mapping.length > 1) {
+                if (mapping && mapping.length > 1) {
                     this.duplicatesFromRna.set(mapping.map(rnaSiren => rnaSiren.siren));
                 }
             });
@@ -71,7 +71,7 @@ export class AssociationController {
 
         if (siren) {
             rnaSirenService.getAssociatedIdentifier(siren).then(mapping => {
-                if (mapping.length > 1) {
+                if (mapping && mapping.length > 1) {
                     this.duplicatesFromSiren.set(mapping.map(rnaSiren => rnaSiren.rna));
                 }
             });
