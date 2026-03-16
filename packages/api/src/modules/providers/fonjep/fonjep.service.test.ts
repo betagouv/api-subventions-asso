@@ -18,16 +18,16 @@ import {
 } from "./__fixtures__/fonjepEntities";
 import FonjepEntityMapper from "./mappers/fonjep-entity.mapper";
 jest.mock("./mappers/fonjep-entity.mapper");
-import fonjepTiersPort from "../../../dataProviders/db/providers/fonjep/fonjep.tiers.port";
-import fonjepPostesPort from "../../../dataProviders/db/providers/fonjep/fonjep.postes.port";
-import fonjepVersementsPort from "../../../dataProviders/db/providers/fonjep/fonjep.versements.port";
-import fonjepTypePostePort from "../../../dataProviders/db/providers/fonjep/fonjep.typePoste.port";
-import fonjepDispositifPort from "../../../dataProviders/db/providers/fonjep/fonjep.dispositif.port";
-jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.tiers.port");
-jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.postes.port");
-jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.versements.port");
-jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.typePoste.port");
-jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.dispositif.port");
+import fonjepTiersAdapter from "../../../dataProviders/db/providers/fonjep/fonjep.tiers.adapter";
+import fonjepPostesAdapter from "../../../dataProviders/db/providers/fonjep/fonjep.postes.adapter";
+import fonjepVersementsAdapter from "../../../dataProviders/db/providers/fonjep/fonjep.versements.adapter";
+import fonjepTypePosteAdapter from "../../../dataProviders/db/providers/fonjep/fonjep.typePoste.adapter";
+import fonjepDispositifAdapter from "../../../dataProviders/db/providers/fonjep/fonjep.dispositif.adapter";
+jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.tiers.adapter");
+jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.postes.adapter");
+jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.versements.adapter");
+jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.typePoste.adapter");
+jest.mock("../../../dataProviders/db/providers/fonjep/fonjep.dispositif.adapter");
 import FonjepParser from "./fonjep.parser";
 import fonjepService from "./fonjep.service";
 import {
@@ -157,85 +157,85 @@ describe("FonjepService", () => {
         it("should call useTemporyCollection on fonjepDispositifPort", () => {
             const active = true;
             fonjepService.useTemporyCollection(active);
-            expect(fonjepDispositifPort.useTemporyCollection).toHaveBeenCalledWith(active);
+            expect(fonjepDispositifAdapter.useTemporyCollection).toHaveBeenCalledWith(active);
         });
 
         it("should call useTemporyCollection on fonjepPostesPort", () => {
             const active = true;
             fonjepService.useTemporyCollection(active);
-            expect(fonjepPostesPort.useTemporyCollection).toHaveBeenCalledWith(active);
+            expect(fonjepPostesAdapter.useTemporyCollection).toHaveBeenCalledWith(active);
         });
 
         it("should call useTemporyCollection on fonjepTiersPort", () => {
             const active = true;
             fonjepService.useTemporyCollection(active);
-            expect(fonjepTiersPort.useTemporyCollection).toHaveBeenCalledWith(active);
+            expect(fonjepTiersAdapter.useTemporyCollection).toHaveBeenCalledWith(active);
         });
 
         it("should call useTemporyCollection on fonjepTypePostePort", () => {
             const active = true;
             fonjepService.useTemporyCollection(active);
-            expect(fonjepTypePostePort.useTemporyCollection).toHaveBeenCalledWith(active);
+            expect(fonjepTypePosteAdapter.useTemporyCollection).toHaveBeenCalledWith(active);
         });
 
         it("should call useTemporyCollection on fonjepVersementsPort", () => {
             const active = true;
             fonjepService.useTemporyCollection(active);
-            expect(fonjepVersementsPort.useTemporyCollection).toHaveBeenCalledWith(active);
+            expect(fonjepVersementsAdapter.useTemporyCollection).toHaveBeenCalledWith(active);
         });
     });
 
     describe("createFonjepCollections", () => {
         it("should call insertMany on fonjepTiersPort with the given tierEntities", async () => {
             await fonjepService.createFonjepCollections(ENTITIES.tierEntities, [], [], [], []);
-            expect(fonjepTiersPort.insertMany).toHaveBeenCalledWith(ENTITIES.tierEntities);
+            expect(fonjepTiersAdapter.insertMany).toHaveBeenCalledWith(ENTITIES.tierEntities);
         });
 
         it("should call insertMany on fonjepPostesPort with the given posteEntities", async () => {
             await fonjepService.createFonjepCollections([], ENTITIES.posteEntities, [], [], []);
-            expect(fonjepPostesPort.insertMany).toHaveBeenCalledWith(ENTITIES.posteEntities);
+            expect(fonjepPostesAdapter.insertMany).toHaveBeenCalledWith(ENTITIES.posteEntities);
         });
 
         it("should call insertMany on fonjepVersementsPort with the given versementEntities", async () => {
             await fonjepService.createFonjepCollections([], [], ENTITIES.versementEntities, [], []);
-            expect(fonjepVersementsPort.insertMany).toHaveBeenCalledWith(ENTITIES.versementEntities);
+            expect(fonjepVersementsAdapter.insertMany).toHaveBeenCalledWith(ENTITIES.versementEntities);
         });
 
         it("should call insertMany on fonjepTypePostePort with the given typePosteEntities", async () => {
             await fonjepService.createFonjepCollections([], [], [], ENTITIES.typePosteEntities, []);
-            expect(fonjepTypePostePort.insertMany).toHaveBeenCalledWith(ENTITIES.typePosteEntities);
+            expect(fonjepTypePosteAdapter.insertMany).toHaveBeenCalledWith(ENTITIES.typePosteEntities);
         });
 
         it("should call insertMany on fonjepDispositifPort with the given dispositifEntities", async () => {
             await fonjepService.createFonjepCollections([], [], [], [], ENTITIES.dispositifEntities);
-            expect(fonjepDispositifPort.insertMany).toHaveBeenCalledWith(ENTITIES.dispositifEntities);
+            expect(fonjepDispositifAdapter.insertMany).toHaveBeenCalledWith(ENTITIES.dispositifEntities);
         });
     });
 
     describe("applyTemporyCollection", () => {
         it("should call applyTemporyCollection on fonjepDispositifPort", async () => {
             await fonjepService.applyTemporyCollection();
-            expect(fonjepDispositifPort.applyTemporyCollection).toHaveBeenCalled();
+            expect(fonjepDispositifAdapter.applyTemporyCollection).toHaveBeenCalled();
         });
 
         it("should call applyTemporyCollection on fonjepPostesPort", async () => {
             await fonjepService.applyTemporyCollection();
-            expect(fonjepPostesPort.applyTemporyCollection).toHaveBeenCalled();
+            expect(fonjepPostesAdapter.applyTemporyCollection).toHaveBeenCalled();
         });
 
         it("should call applyTemporyCollection on fonjepTiersPort", async () => {
             await fonjepService.applyTemporyCollection();
-            expect(fonjepTiersPort.applyTemporyCollection).toHaveBeenCalled();
+            expect(fonjepTiersAdapter.applyTemporyCollection).toHaveBeenCalled();
         });
 
         it("should call applyTemporyCollection on fonjepTypePostePort", async () => {
             await fonjepService.applyTemporyCollection();
-            expect(fonjepTypePostePort.applyTemporyCollection).toHaveBeenCalled();
+            expect(fonjepTypePosteAdapter.applyTemporyCollection).toHaveBeenCalled();
         });
 
         it("should call applyTemporyCollection on fonjepVersementsPort", async () => {
             await fonjepService.applyTemporyCollection();
-            expect(fonjepVersementsPort.applyTemporyCollection).toHaveBeenCalled();
+            expect(fonjepVersementsAdapter.applyTemporyCollection).toHaveBeenCalled();
         });
     });
 

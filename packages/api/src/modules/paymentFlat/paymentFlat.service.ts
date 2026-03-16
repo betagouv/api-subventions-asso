@@ -1,5 +1,5 @@
 import { Payment, PaymentFlatDto } from "dto";
-import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port";
+import paymentFlatAdapter from "../../dataProviders/db/paymentFlat/paymentFlat.adapter";
 import PaymentProvider from "../payments/@types/PaymentProvider";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
@@ -30,11 +30,11 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider,
      */
 
     public isCollectionInitialized() {
-        return paymentFlatPort.hasBeenInitialized();
+        return paymentFlatAdapter.hasBeenInitialized();
     }
 
     public upsertMany(entities: PaymentFlatEntity[]) {
-        return paymentFlatPort.upsertMany(entities);
+        return paymentFlatAdapter.upsertMany(entities);
     }
 
     /**
@@ -53,9 +53,9 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider,
         const payments: PaymentFlatEntity[] = [];
 
         if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            payments.push(...(await paymentFlatPort.findBySiret(identifier.siret)));
+            payments.push(...(await paymentFlatAdapter.findBySiret(identifier.siret)));
         } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            payments.push(...(await paymentFlatPort.findBySiren(identifier.siren)));
+            payments.push(...(await paymentFlatAdapter.findBySiren(identifier.siren)));
         }
         return payments;
     }
@@ -87,9 +87,9 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider,
     async getRawGrants(identifier: StructureIdentifier): Promise<RawPayment[]> {
         let entities: PaymentFlatEntity[] = [];
         if (identifier instanceof EstablishmentIdentifier && identifier.siret) {
-            entities = await paymentFlatPort.findBySiret(identifier.siret);
+            entities = await paymentFlatAdapter.findBySiret(identifier.siret);
         } else if (identifier instanceof AssociationIdentifier && identifier.siren) {
-            entities = await paymentFlatPort.findBySiren(identifier.siren);
+            entities = await paymentFlatAdapter.findBySiren(identifier.siren);
         }
 
         return entities.map(grant => ({
@@ -101,7 +101,7 @@ export class PaymentFlatService extends ProviderCore implements PaymentProvider,
     }
 
     saveFromStream(stream: ReadableStream<PaymentFlatEntity>) {
-        return insertStreamByBatch(stream, batch => paymentFlatPort.upsertMany(batch), 10000);
+        return insertStreamByBatch(stream, batch => paymentFlatAdapter.upsertMany(batch), 10000);
     }
 }
 

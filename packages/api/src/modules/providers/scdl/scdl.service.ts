@@ -1,13 +1,13 @@
 import { getMD5 } from "../../../shared/helpers/StringHelper";
-import miscScdlGrantPort from "../../../dataProviders/db/providers/scdl/miscScdlGrant.port";
-import miscScdlProducersPort from "../../../dataProviders/db/providers/scdl/miscScdlProducers.port";
+import miscScdlGrantAdapter from "../../../dataProviders/db/providers/scdl/miscScdlGrant.adapter";
+import miscScdlProducersAdapter from "../../../dataProviders/db/providers/scdl/miscScdlProducers.adapter";
 import { ScdlStorableGrant } from "./@types/ScdlStorableGrant";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
 import ScdlGrantParser from "./scdl.grant.parser";
 import { GenericAdapter } from "../../../shared/GenericAdapter";
 import { MixedParsedError, ParsedErrorDuplicate, ParsedErrorFormat } from "./@types/Validation";
 import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
-import applicationFlatPort from "../../../dataProviders/db/applicationFlat/applicationFlat.port";
+import applicationFlatAdapter from "../../../dataProviders/db/applicationFlat/applicationFlat.adapter";
 import Siret from "../../../identifierObjects/Siret";
 import apiAssoService from "../apiAsso/apiAsso.service";
 import MiscScdlProducerEntity from "./entities/MiscScdlProducerEntity";
@@ -17,11 +17,11 @@ import { ScdlParsedInfos } from "./@types/ScdlParsedInfos";
 
 export class ScdlService {
     getProducer(siret: Siret) {
-        return miscScdlProducersPort.findBySiret(siret.toString());
+        return miscScdlProducersAdapter.findBySiret(siret.toString());
     }
 
     getProducers() {
-        return miscScdlProducersPort.findAll();
+        return miscScdlProducersAdapter.findAll();
     }
 
     async createProducer(siret: Siret) {
@@ -29,7 +29,7 @@ export class ScdlService {
         const name: string | undefined = asso?.denomination_siren?.[0].value ?? asso?.denomination_rna?.[0].value;
         if (!name) throw new Error(`Could not find allocator name with SIRET ${siret}`);
         const producer: MiscScdlProducerEntity = { siret: siret.toString(), name };
-        await miscScdlProducersPort.create(producer);
+        await miscScdlProducersAdapter.create(producer);
         return producer;
     }
 
@@ -52,7 +52,7 @@ export class ScdlService {
     }
 
     async saveDbos(dbos: ScdlGrantDbo[]) {
-        await miscScdlGrantPort.createMany(dbos);
+        await miscScdlGrantAdapter.createMany(dbos);
     }
 
     parseXls(fileContent: Buffer, pageName?: string, rowOffset = 0) {
@@ -86,7 +86,7 @@ export class ScdlService {
     }
 
     async isProducerFirstImport(siret: string): Promise<boolean> {
-        return !(await miscScdlGrantPort.findOneByAllocatorSiret(siret));
+        return !(await miscScdlGrantAdapter.findOneByAllocatorSiret(siret));
     }
 
     /**
@@ -123,7 +123,7 @@ export class ScdlService {
     }
 
     getGrantsOnPeriodByAllocator(allocatorSiret: string, exercices: number[]) {
-        return miscScdlGrantPort.findByAllocatorOnPeriod(allocatorSiret, exercices);
+        return miscScdlGrantAdapter.findByAllocatorOnPeriod(allocatorSiret, exercices);
     }
 
     /**
@@ -138,32 +138,32 @@ export class ScdlService {
         console.log("Creating backup for producer's data before importation");
         const applicationFlatProvider = `scdl-${siret}`;
         // backup producer data in case of bulk delete failure
-        await miscScdlGrantPort.createBackupCollection(siret);
-        await applicationFlatPort.createBackupByProvider(applicationFlatProvider);
+        await miscScdlGrantAdapter.createBackupCollection(siret);
+        await applicationFlatAdapter.createBackupByProvider(applicationFlatProvider);
 
         try {
             console.log("Deleting previously imported exercise data");
-            await miscScdlGrantPort.bulkFindDeleteByExercices(siret, exercises);
-            await applicationFlatPort.bulkFindDeleteByExercises(applicationFlatProvider, exercises);
+            await miscScdlGrantAdapter.bulkFindDeleteByExercices(siret, exercises);
+            await applicationFlatAdapter.bulkFindDeleteByExercises(applicationFlatProvider, exercises);
         } catch (e) {
             console.log(`SCDL importation failed: ${(e as Error).message}`);
             console.log("Reimporting entities that might have been deleted during the importation process");
             // merge the backup collection back to the main collection
-            await miscScdlGrantPort.applyBackupCollection(siret);
-            await applicationFlatPort.applyBackupCollection(applicationFlatProvider);
+            await miscScdlGrantAdapter.applyBackupCollection(siret);
+            await applicationFlatAdapter.applyBackupCollection(applicationFlatProvider);
         }
     }
 
     async dropBackup() {
         console.log("Droping backup collection");
-        await miscScdlGrantPort.dropBackupCollection();
-        await applicationFlatPort.dropBackupCollection();
+        await miscScdlGrantAdapter.dropBackupCollection();
+        await applicationFlatAdapter.dropBackupCollection();
     }
 
     async restoreBackup(allocatorSiret: string) {
         console.log(`Restoring data from backup (for the producer SIRET ${allocatorSiret})`);
-        await miscScdlGrantPort.applyBackupCollection(allocatorSiret);
-        await applicationFlatPort.applyBackupCollection(`scdl-${allocatorSiret}`);
+        await miscScdlGrantAdapter.applyBackupCollection(allocatorSiret);
+        await applicationFlatAdapter.applyBackupCollection(`scdl-${allocatorSiret}`);
     }
 
     /**

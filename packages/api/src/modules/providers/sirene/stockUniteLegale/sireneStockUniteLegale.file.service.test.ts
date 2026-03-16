@@ -1,5 +1,5 @@
 import sireneStockUniteLegaleFileService from "./sireneStockUniteLegale.file.service";
-import sireneStockUniteLegaleApiPort from "../../../../dataProviders/api/sirene/sireneStockUniteLegale.port";
+import sireneStockUniteLegaleApiAdapter from "../../../../dataProviders/api/sirene/sireneStockUniteLegale.adapter";
 import { Readable } from "stream";
 import fs from "fs";
 import StreamZip from "node-stream-zip";
@@ -95,7 +95,7 @@ describe("SireneStockUniteLegaleService", () => {
     describe("getAndSaveZip", () => {
         let getZipMock: jest.SpyInstance;
         beforeAll(() => {
-            getZipMock = jest.spyOn(sireneStockUniteLegaleApiPort, "getZip").mockResolvedValue({
+            getZipMock = jest.spyOn(sireneStockUniteLegaleApiAdapter, "getZip").mockResolvedValue({
                 data: new Readable({
                     read() {
                         this.push("chunk1");
@@ -144,7 +144,7 @@ describe("SireneStockUniteLegaleService", () => {
 
         it("should call getZip", async () => {
             await sireneStockUniteLegaleFileService.getAndSaveZip();
-            expect(sireneStockUniteLegaleApiPort.getZip).toHaveBeenCalledTimes(1);
+            expect(sireneStockUniteLegaleApiAdapter.getZip).toHaveBeenCalledTimes(1);
         });
 
         it("should download and write the data to the file without errors", async () => {

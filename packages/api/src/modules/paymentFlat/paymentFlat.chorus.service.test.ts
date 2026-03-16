@@ -1,5 +1,5 @@
 import { PAYMENT_FLAT_DBO } from "../../dataProviders/db/paymentFlat/__fixtures__/paymentFlatDbo.fixture";
-import paymentFlatPort from "../../dataProviders/db/paymentFlat/paymentFlat.port";
+import paymentFlatAdapter from "../../dataProviders/db/paymentFlat/paymentFlat.adapter";
 import { ENTITIES } from "../providers/chorus/__fixtures__/ChorusFixtures";
 import ChorusMapper from "../providers/chorus/mappers/chorus.mapper";
 import chorusService from "../providers/chorus/chorus.service";
@@ -10,7 +10,7 @@ import paymentFlatChorusService from "./paymentFlat.chorus.service";
 import PaymentFlatMapper from "./payment-flat.mapper";
 import paymentFlatService from "./paymentFlat.service";
 
-jest.mock("../../dataProviders/db/paymentFlat/paymentFlat.port");
+jest.mock("../../dataProviders/db/paymentFlat/paymentFlat.adapter");
 jest.mock("../providers/dataBretagne/dataBretagne.service");
 jest.mock("./payment-flat.mapper");
 jest.mock("./paymentFlat.service");
@@ -158,13 +158,13 @@ describe("paymentFlatChorusService", () => {
     describe("cursorFindChorusOnly", () => {
         it("should call chorusLinePort.cursorFindChorusOnly with undefined", () => {
             paymentFlatChorusService.cursorFindChorusOnly();
-            expect(paymentFlatPort.cursorFindChorusOnly).toHaveBeenCalledWith(undefined);
+            expect(paymentFlatAdapter.cursorFindChorusOnly).toHaveBeenCalledWith(undefined);
         });
 
         it("should call chorusLinePort.findData with exerciceBudgetaire", () => {
             const exerciceBudgetaire = 2021;
             paymentFlatChorusService.cursorFindChorusOnly(exerciceBudgetaire);
-            expect(paymentFlatPort.cursorFindChorusOnly).toHaveBeenCalledWith(exerciceBudgetaire);
+            expect(paymentFlatAdapter.cursorFindChorusOnly).toHaveBeenCalledWith(exerciceBudgetaire);
         });
     });
 

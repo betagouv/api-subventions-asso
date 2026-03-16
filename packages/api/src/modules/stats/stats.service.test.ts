@@ -1,6 +1,6 @@
 import { RNA_STR, SIREN_STR } from "../../../tests/__fixtures__/association.fixture";
-import logsPort from "../../dataProviders/db/stats/logs.port";
-import statsAssociationsVisitPort from "../../dataProviders/db/stats/statsAssociationsVisit.port";
+import logsAdapter from "../../dataProviders/db/stats/logs.adapter";
+import statsAssociationsVisitAdapter from "../../dataProviders/db/stats/statsAssociationsVisit.adapter";
 import { CONSUMER_USER } from "../user/__fixtures__/user.fixture";
 import userCrudService from "../user/services/crud/user.crud.service";
 import RouteTypesEnum from "./@types/RouteTypesEnum";
@@ -8,19 +8,19 @@ import statsService from "./stats.service";
 import { FindCursor, ObjectId } from "mongodb";
 
 jest.mocked("../user/services/crud/user.crud.service");
-jest.mock("../../dataProviders/db/stats/statsAssociationsVisit.port");
-jest.mock("../../dataProviders/db/stats/logs.port");
+jest.mock("../../dataProviders/db/stats/statsAssociationsVisit.adapter");
+jest.mock("../../dataProviders/db/stats/logs.adapter");
 
 describe("StatsService", () => {
     // pass-through methods
     describe.each`
-        methodToTest                       | methodToCall                                    | nbArgs
-        ${"addAssociationVisit"}           | ${statsAssociationsVisitPort.add}               | ${1}
-        ${"getUserLastSearchDate"}         | ${statsAssociationsVisitPort.getLastSearchDate} | ${1}
-        ${"getAllVisitsUser"}              | ${statsAssociationsVisitPort.findByUserId}      | ${1}
-        ${"getAllLogUser"}                 | ${logsPort.findByEmail}                         | ${1}
-        ${"getAllLogUser"}                 | ${logsPort.findByEmail}                         | ${1}
-        ${"getAssociationsVisitsOnPeriod"} | ${statsAssociationsVisitPort.findOnPeriod}      | ${2}
+        methodToTest                       | methodToCall                                       | nbArgs
+        ${"addAssociationVisit"}           | ${statsAssociationsVisitAdapter.add}               | ${1}
+        ${"getUserLastSearchDate"}         | ${statsAssociationsVisitAdapter.getLastSearchDate} | ${1}
+        ${"getAllVisitsUser"}              | ${statsAssociationsVisitAdapter.findByUserId}      | ${1}
+        ${"getAllLogUser"}                 | ${logsAdapter.findByEmail}                         | ${1}
+        ${"getAllLogUser"}                 | ${logsAdapter.findByEmail}                         | ${1}
+        ${"getAssociationsVisitsOnPeriod"} | ${statsAssociationsVisitAdapter.findOnPeriod}      | ${2}
     `("$methodToTest passes through $methodToCall", ({ methodToTest, methodToCall, nbArgs }) => {
         const ARGS = ["a", "b"].slice(0, nbArgs);
         it("calls methodToCall", async () => {
@@ -55,12 +55,12 @@ describe("StatsService", () => {
         const END = new Date("1985-06-22");
 
         beforeEach(() => {
-            jest.mocked(logsPort.getLogsOnPeriod).mockReturnValue([LOG] as unknown as FindCursor);
+            jest.mocked(logsAdapter.getLogsOnPeriod).mockReturnValue([LOG] as unknown as FindCursor);
         });
 
         it("calls port", () => {
             statsService.getAnonymizedLogsOnPeriod(START, END);
-            expect(logsPort.getLogsOnPeriod).toHaveBeenCalledWith(START, END);
+            expect(logsAdapter.getLogsOnPeriod).toHaveBeenCalledWith(START, END);
         });
 
         it.each`
@@ -174,7 +174,7 @@ describe("StatsService", () => {
                     .mockReturnValue(FORMATTED_CONSUMPTION);
             });
 
-            beforeAll(() => jest.spyOn(logsPort, "getConsumption").mockResolvedValue(CONSUMPTIONS));
+            beforeAll(() => jest.spyOn(logsAdapter, "getConsumption").mockResolvedValue(CONSUMPTIONS));
 
             it("fetch consumer users", async () => {
                 await statsService.getConsumersConsumption();
@@ -183,7 +183,7 @@ describe("StatsService", () => {
 
             it("calls logPort.getUsersUrlByYear()", async () => {
                 await statsService.getConsumersConsumption();
-                expect(logsPort.getConsumption).toHaveBeenCalledWith([CONSUMER_USER._id.toString()]);
+                expect(logsAdapter.getConsumption).toHaveBeenCalledWith([CONSUMER_USER._id.toString()]);
             });
 
             it("format consumption", async () => {

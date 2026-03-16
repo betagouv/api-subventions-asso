@@ -1,6 +1,6 @@
 import { PaginatedAssociationNameDto } from "dto";
 import associationNameService from "../association-name/associationName.service";
-import searchPort from "../../dataProviders/db/search/search.port";
+import searchAdapter from "../../dataProviders/db/search/search.adapter";
 import AssociationNameDtoMapper from "./mappers/association-name-dto.mapper";
 
 export class SearchService {
@@ -8,7 +8,7 @@ export class SearchService {
     static CACHE_LIFESPAN_MS = 24 * 60 * 60 * 1000;
 
     public async getAssociationsKeys(value: string, page = 1): Promise<PaginatedAssociationNameDto> {
-        const resultsFromCache = await searchPort.getResults(
+        const resultsFromCache = await searchAdapter.getResults(
             value,
             page,
             SearchService.PAGE_SIZE,
@@ -27,7 +27,7 @@ export class SearchService {
         const resultsEntities = await associationNameService.find(value);
         const resultsDtos = resultsEntities.map(entity => AssociationNameDtoMapper.toDto(entity));
         const nbResults = resultsDtos.length;
-        searchPort.saveResults(value, resultsDtos);
+        searchAdapter.saveResults(value, resultsDtos);
 
         return {
             nbPages: Math.ceil(nbResults / SearchService.PAGE_SIZE),
@@ -38,7 +38,7 @@ export class SearchService {
     }
 
     public cleanCache() {
-        return searchPort.deleteAll();
+        return searchAdapter.deleteAll();
     }
 }
 

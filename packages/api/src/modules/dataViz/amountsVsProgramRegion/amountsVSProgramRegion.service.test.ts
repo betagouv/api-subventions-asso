@@ -4,7 +4,7 @@ import {
     AMOUNTS_VS_PROGRAM_REGION_ENTITIES,
     NOT_AGGREGATED_ENTITIES,
 } from "./__fixtures__/amountsVSProgramRegion.fixture";
-import amountsVsProgramRegionPort from "../../../dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
+import amountsVsProgramRegionAdapter from "../../../dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.adapter";
 import paymentFlatChorusService from "../../paymentFlat/paymentFlat.chorus.service";
 import {
     CHORUS_PAYMENT_FLAT_ENTITY,
@@ -113,7 +113,7 @@ describe("amountsVSProgramRegionService", () => {
                 .spyOn(amountsVsProgramRegionService, "toAmountsVsProgramRegionEntities")
                 .mockResolvedValue(AMOUNTS_VS_PROGRAM_REGION_ENTITIES);
 
-            mockInsertMany = jest.spyOn(amountsVsProgramRegionPort, "insertMany").mockImplementation(jest.fn());
+            mockInsertMany = jest.spyOn(amountsVsProgramRegionAdapter, "insertMany").mockImplementation(jest.fn());
         });
 
         afterAll(() => {
@@ -143,7 +143,7 @@ describe("amountsVSProgramRegionService", () => {
                 .spyOn(amountsVsProgramRegionService, "toAmountsVsProgramRegionEntities")
                 .mockResolvedValue(AMOUNTS_VS_PROGRAM_REGION_ENTITIES);
 
-            mockUpsertMany = jest.spyOn(amountsVsProgramRegionPort, "upsertMany").mockImplementation(jest.fn());
+            mockUpsertMany = jest.spyOn(amountsVsProgramRegionAdapter, "upsertMany").mockImplementation(jest.fn());
         });
 
         afterEach(() => {
@@ -176,7 +176,7 @@ describe("amountsVSProgramRegionService", () => {
 
         beforeEach(() => {
             mockHasBeenInitialized = jest
-                .spyOn(amountsVsProgramRegionPort, "hasBeenInitialized")
+                .spyOn(amountsVsProgramRegionAdapter, "hasBeenInitialized")
                 .mockReturnValue(Promise.resolve(true));
         });
 
@@ -196,7 +196,7 @@ describe("amountsVSProgramRegionService", () => {
 
         beforeEach(() => {
             mockFindAll = jest
-                .spyOn(amountsVsProgramRegionPort, "findAll")
+                .spyOn(amountsVsProgramRegionAdapter, "findAll")
                 .mockResolvedValue(AMOUNTS_VS_PROGRAM_REGION_ENTITIES);
         });
 

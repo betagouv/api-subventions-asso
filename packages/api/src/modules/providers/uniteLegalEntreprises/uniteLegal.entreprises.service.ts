@@ -1,5 +1,5 @@
 import { DuplicateIndexError } from "../../../shared/errors/dbError/DuplicateIndexError";
-import uniteLegalEntreprisePort from "../../../dataProviders/db/uniteLegalEntreprise/uniteLegalEntreprise.port";
+import uniteLegalEntrepriseAdapter from "../../../dataProviders/db/uniteLegalEntreprise/uniteLegalEntreprise.adapter";
 import { UniteLegalEntrepriseEntity } from "../../../entities/UniteLegalEntrepriseEntity";
 import Siren from "../../../identifierObjects/Siren";
 
@@ -8,7 +8,7 @@ export class UniteLegalEntreprisesService {
         if (!entities.length) return;
 
         try {
-            await uniteLegalEntreprisePort.insertMany(entities);
+            await uniteLegalEntrepriseAdapter.insertMany(entities);
         } catch (error: unknown) {
             if (error instanceof DuplicateIndexError) return; // One or many entities already exist in database but other entities have been saved
 
@@ -17,7 +17,7 @@ export class UniteLegalEntreprisesService {
     }
 
     async isEntreprise(siren: Siren) {
-        return !!(await uniteLegalEntreprisePort.findOneBySiren(siren));
+        return !!(await uniteLegalEntrepriseAdapter.findOneBySiren(siren));
     }
 }
 

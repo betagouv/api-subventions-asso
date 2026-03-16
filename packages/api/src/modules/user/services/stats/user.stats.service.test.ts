@@ -1,15 +1,15 @@
 import userStatsService from "./user.stats.service";
-import userPort from "../../../../dataProviders/db/user/user.port";
-jest.mock("../../../../dataProviders/db/user/user.port");
-const mockedUserPort = jest.mocked(userPort);
+import userAdapter from "../../../../dataProviders/db/user/user.adapter";
+jest.mock("../../../../dataProviders/db/user/user.adapter");
+const mockedUserAdapter = jest.mocked(userAdapter);
 import userCrudService from "../crud/user.crud.service";
 jest.mock("../crud/user.crud.service");
 import { UserDto } from "dto";
 import notifyService from "../../../notify/notify.service";
 jest.mock("../../../notify/notify.service", () => ({ notify: jest.fn() }));
 import { NotificationType } from "../../../notify/@types/NotificationType";
-import statsAssociationsVisitPort from "../../../../dataProviders/db/stats/statsAssociationsVisit.port";
-jest.mock("../../../../dataProviders/db/stats/statsAssociationsVisit.port");
+import statsAssociationsVisitAdapter from "../../../../dataProviders/db/stats/statsAssociationsVisit.adapter";
+jest.mock("../../../../dataProviders/db/stats/statsAssociationsVisit.adapter");
 import configurationsService from "../../../configurations/configurations.service";
 jest.mock("../../../configurations/configurations.service");
 
@@ -28,27 +28,27 @@ const COUNT_BY_USER = [
 ];
 
 describe("user stats service", () => {
-    beforeAll(() => mockedUserPort.findPartialUsersById.mockResolvedValue(OMIT_ID_PARTIAL_USERS));
+    beforeAll(() => mockedUserAdapter.findPartialUsersById.mockResolvedValue(OMIT_ID_PARTIAL_USERS));
 
     describe("countTotalUsersOnDate()", () => {
         const PORT_RETURN = 5;
         const DATE = new Date();
         const WITH_ADMIN = true;
 
-        beforeAll(() => mockedUserPort.countTotalUsersOnDate.mockResolvedValue(PORT_RETURN));
-        afterAll(() => mockedUserPort.countTotalUsersOnDate.mockRestore());
+        beforeAll(() => mockedUserAdapter.countTotalUsersOnDate.mockResolvedValue(PORT_RETURN));
+        afterAll(() => mockedUserAdapter.countTotalUsersOnDate.mockRestore());
 
-        it("should call port with given args", async () => {
+        it("should call adapter with given args", async () => {
             await userStatsService.countTotalUsersOnDate(DATE, WITH_ADMIN);
-            expect(mockedUserPort.countTotalUsersOnDate).toBeCalledWith(DATE, WITH_ADMIN);
+            expect(mockedUserAdapter.countTotalUsersOnDate).toBeCalledWith(DATE, WITH_ADMIN);
         });
 
-        it("should call port with default", async () => {
+        it("should call adapter with default", async () => {
             await userStatsService.countTotalUsersOnDate(DATE);
-            expect(mockedUserPort.countTotalUsersOnDate).toBeCalledWith(DATE, false);
+            expect(mockedUserAdapter.countTotalUsersOnDate).toBeCalledWith(DATE, false);
         });
 
-        it("should return port's return value", async () => {
+        it("should return adapter's return value", async () => {
             const expected = PORT_RETURN;
             const actual = await userStatsService.countTotalUsersOnDate(DATE);
             expect(actual).toBe(expected);
@@ -62,20 +62,20 @@ describe("user stats service", () => {
         const WITH_ADMIN = true;
 
         // @ts-expect-error: mock return value
-        beforeAll(() => mockedUserPort.findByPeriod.mockResolvedValue(PORT_RETURN));
-        afterAll(() => mockedUserPort.findByPeriod.mockReset());
+        beforeAll(() => mockedUserAdapter.findByPeriod.mockResolvedValue(PORT_RETURN));
+        afterAll(() => mockedUserAdapter.findByPeriod.mockReset());
 
-        it("should call port with given args", async () => {
+        it("should call adapter with given args", async () => {
             await userStatsService.findByPeriod(BEGIN, END, WITH_ADMIN);
-            expect(mockedUserPort.findByPeriod).toBeCalledWith(BEGIN, END, WITH_ADMIN);
+            expect(mockedUserAdapter.findByPeriod).toBeCalledWith(BEGIN, END, WITH_ADMIN);
         });
 
-        it("should call port with default", async () => {
+        it("should call adapter with default", async () => {
             await userStatsService.findByPeriod(BEGIN, END);
-            expect(mockedUserPort.findByPeriod).toBeCalledWith(BEGIN, END, false);
+            expect(mockedUserAdapter.findByPeriod).toBeCalledWith(BEGIN, END, false);
         });
 
-        it("should return port's return value", async () => {
+        it("should return adapter's return value", async () => {
             const expected = PORT_RETURN;
             const actual = await userStatsService.findByPeriod(BEGIN, END);
             expect(actual).toBe(expected);
@@ -130,7 +130,7 @@ describe("user stats service", () => {
 
         beforeEach(() => {
             mockUpdateNbRequestsInBrevo.mockImplementation();
-            jest.mocked(statsAssociationsVisitPort.findGroupedByUserIdentifierOnPeriod).mockResolvedValue([
+            jest.mocked(statsAssociationsVisitAdapter.findGroupedByUserIdentifierOnPeriod).mockResolvedValue([
                 { _id: COUNT_BY_USER[0]._id, associationVisits: Array(COUNT_BY_USER[0].count) },
                 { _id: COUNT_BY_USER[1]._id, associationVisits: Array(COUNT_BY_USER[1].count) },
             ]);
@@ -146,13 +146,16 @@ describe("user stats service", () => {
         it("retrieve users requests number", async () => {
             // @ts-expect-error: test private method
             await userStatsService.updateNbRequestsByDate(SINCE, UNTIL);
-            expect(statsAssociationsVisitPort.findGroupedByUserIdentifierOnPeriod).toHaveBeenCalledWith(SINCE, UNTIL);
+            expect(statsAssociationsVisitAdapter.findGroupedByUserIdentifierOnPeriod).toHaveBeenCalledWith(
+                SINCE,
+                UNTIL,
+            );
         });
 
         it("update users requests number in database", async () => {
             // @ts-expect-error: test private method
             await userStatsService.updateNbRequestsByDate(SINCE, UNTIL);
-            expect(userPort.updateNbRequests).toHaveBeenCalledWith(COUNT_BY_USER);
+            expect(userAdapter.updateNbRequests).toHaveBeenCalledWith(COUNT_BY_USER);
         });
 
         it("notify brevo to update users requests", async () => {
@@ -167,12 +170,12 @@ describe("user stats service", () => {
             const USERS_ID = COUNT_BY_USER.map(element => element._id);
             // @ts-expect-error: test protected method
             await userStatsService.updateNbRequestsInBrevo(USERS_ID);
-            expect(userPort.findPartialUsersById).toHaveBeenCalledWith(USERS_ID, ["email", "nbVisits"]);
+            expect(userAdapter.findPartialUsersById).toHaveBeenCalledWith(USERS_ID, ["email", "nbVisits"]);
         });
 
         it("should notify STATS_NB_REQUESTS", async () => {
             const expected = OMIT_ID_PARTIAL_USERS;
-            jest.spyOn(userPort, "findPartialUsersById").mockResolvedValue(expected);
+            jest.spyOn(userAdapter, "findPartialUsersById").mockResolvedValue(expected);
             // @ts-expect-error: test protected method
             await userStatsService.updateNbRequestsInBrevo(COUNT_BY_USER);
             expect(jest.mocked(notifyService.notify)).toHaveBeenCalledWith(

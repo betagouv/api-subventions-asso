@@ -1,10 +1,10 @@
 import { App } from "supertest/types";
 import request from "supertest";
 import { createAndGetUserToken } from "../__helpers__/tokenHelper";
-import uniteLegalNamePort from "../../src/dataProviders/db/uniteLegalName/uniteLegalName.port";
+import uniteLegalNameAdapter from "../../src/dataProviders/db/uniteLegalName/uniteLegalName.adapter";
 import AssociationNameFixture from "../__fixtures__/association-name.fixture";
 import apiEntrepriseService from "../../src/modules/providers/apiEntreprise/apiEntreprise.service";
-import rechercheEntreprisesPort from "../../src/dataProviders/api/rechercheEntreprises/rechercheEntreprises.port";
+import rechercheEntreprisesAdapter from "../../src/dataProviders/api/rechercheEntreprises/rechercheEntreprises.adapter";
 import { EMPTY_RECHERCHE_ENTREPRISES_DTO } from "../../src/dataProviders/api/rechercheEntreprises/__fixtures__/RechercheEntreprises";
 
 const g = global as unknown as { app: App };
@@ -12,12 +12,14 @@ const g = global as unknown as { app: App };
 describe("/search", () => {
     beforeAll(() => {
         jest.spyOn(apiEntrepriseService, "getHeadcount").mockImplementation(async () => null);
-        jest.spyOn(rechercheEntreprisesPort, "search").mockImplementation(async () => EMPTY_RECHERCHE_ENTREPRISES_DTO);
+        jest.spyOn(rechercheEntreprisesAdapter, "search").mockImplementation(
+            async () => EMPTY_RECHERCHE_ENTREPRISES_DTO,
+        );
     });
 
     describe("/associations/{input}", () => {
         beforeEach(async () => {
-            Promise.all(AssociationNameFixture.map(fixture => uniteLegalNamePort.upsert(fixture)));
+            Promise.all(AssociationNameFixture.map(fixture => uniteLegalNameAdapter.upsert(fixture)));
         });
 
         it("should return 200", async () => {

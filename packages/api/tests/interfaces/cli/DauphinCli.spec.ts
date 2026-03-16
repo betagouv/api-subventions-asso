@@ -1,7 +1,7 @@
-import dauphinPort from "../../../src/dataProviders/db/providers/dauphin/dauphin.port";
-import gisproPort from "../../../src/dataProviders/db/providers/gispro.port";
+import dauphinAdapter from "../../../src/dataProviders/db/providers/dauphin/dauphin.adapter";
+import gisproAdapter from "../../../src/dataProviders/db/providers/gispro.adapter";
 import DauphinSubventionDto from "../../../src/modules/providers/dauphin-gispro/dto/DauphinSubventionDto";
-import applicationFlatPort from "../../../src/dataProviders/db/applicationFlat/applicationFlat.port";
+import applicationFlatAdapter from "../../../src/dataProviders/db/applicationFlat/applicationFlat.adapter";
 import DauphinCli from "../../../src/interfaces/cli/Dauphin.cli";
 import { DAUPHIN_ENTITIES, GISPRO_ENTITIES } from "./__fixtures__/dauphinGispro.fixture";
 
@@ -19,10 +19,10 @@ describe("Dauphin cli", () => {
         const [GISPRO1, GISPRO2] = GISPRO_ENTITIES;
 
         it("saves adapted simple dauphin data", async () => {
-            await dauphinPort.upsert({ dauphin: ENTITY1 as DauphinSubventionDto });
-            await gisproPort.insertMany([GISPRO1]);
+            await dauphinAdapter.upsert({ dauphin: ENTITY1 as DauphinSubventionDto });
+            await gisproAdapter.insertMany([GISPRO1]);
             await cli.initApplicationFlat();
-            const actual = (await applicationFlatPort.findAll()).map(flat => ({
+            const actual = (await applicationFlatAdapter.findAll()).map(flat => ({
                 ...flat,
                 updateDate: expect.any(Date),
             }));
@@ -31,17 +31,17 @@ describe("Dauphin cli", () => {
 
         it("keeps action-level dauphin data if several records are found from gispro", async () => {
             // for unknown reason mongodb driver sets the same _id for this two documents and fires a DuplicateError
-            await gisproPort.insertMany([
+            await gisproAdapter.insertMany([
                 // @ts-expect-error: ok
                 { ...GISPRO1, _id: "foo" },
                 // @ts-expect-error: ok
                 { ...GISPRO1, _id: "bar", ej: "autreEJ" },
             ]);
-            await dauphinPort.upsert({ dauphin: ENTITY1 as DauphinSubventionDto });
-            await dauphinPort.upsert({ dauphin: ENTITY2 as DauphinSubventionDto });
+            await dauphinAdapter.upsert({ dauphin: ENTITY1 as DauphinSubventionDto });
+            await dauphinAdapter.upsert({ dauphin: ENTITY2 as DauphinSubventionDto });
 
             await cli.initApplicationFlat();
-            const actual = (await applicationFlatPort.findAll()).map(flat => ({
+            const actual = (await applicationFlatAdapter.findAll()).map(flat => ({
                 ...flat,
                 updateDate: expect.any(Date),
             }));
@@ -49,11 +49,11 @@ describe("Dauphin cli", () => {
         });
 
         it("groups actions of same application", async () => {
-            await dauphinPort.upsert({ dauphin: ENTITY1 as DauphinSubventionDto });
-            await dauphinPort.upsert({ dauphin: ENTITY2 as DauphinSubventionDto });
-            await gisproPort.insertMany([GISPRO1, GISPRO2]);
+            await dauphinAdapter.upsert({ dauphin: ENTITY1 as DauphinSubventionDto });
+            await dauphinAdapter.upsert({ dauphin: ENTITY2 as DauphinSubventionDto });
+            await gisproAdapter.insertMany([GISPRO1, GISPRO2]);
             await cli.initApplicationFlat();
-            const actual = (await applicationFlatPort.findAll()).map(flat => ({
+            const actual = (await applicationFlatAdapter.findAll()).map(flat => ({
                 ...flat,
                 updateDate: expect.any(Date),
             }));
@@ -141,12 +141,12 @@ describe("Dauphin cli", () => {
                     },
                 },
             ];
-            await dauphinPort.upsert({
+            await dauphinAdapter.upsert({
                 dauphin: { ...ENTITY1, planFinancement: biggerPlanFinancement } as DauphinSubventionDto,
             });
-            await gisproPort.insertMany([GISPRO1]);
+            await gisproAdapter.insertMany([GISPRO1]);
             await cli.initApplicationFlat();
-            const actual = (await applicationFlatPort.findAll()).map(flat => ({
+            const actual = (await applicationFlatAdapter.findAll()).map(flat => ({
                 ...flat,
                 updateDate: expect.any(Date),
             }));
@@ -154,10 +154,10 @@ describe("Dauphin cli", () => {
         });
 
         it("keeps action-level dauphin data if nothing is found from gispro", async () => {
-            await dauphinPort.upsert({ dauphin: ENTITY1 as DauphinSubventionDto });
-            await dauphinPort.upsert({ dauphin: ENTITY2 as DauphinSubventionDto });
+            await dauphinAdapter.upsert({ dauphin: ENTITY1 as DauphinSubventionDto });
+            await dauphinAdapter.upsert({ dauphin: ENTITY2 as DauphinSubventionDto });
             await cli.initApplicationFlat();
-            const actual = (await applicationFlatPort.findAll()).map(flat => ({
+            const actual = (await applicationFlatAdapter.findAll()).map(flat => ({
                 ...flat,
                 updateDate: expect.any(Date),
             }));

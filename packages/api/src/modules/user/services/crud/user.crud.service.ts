@@ -2,10 +2,10 @@ import { FutureUserDto, SignupErrorCodes, UserDto, UserWithJWTDto, UserWithReset
 import { BadRequestError, InternalServerError, NotFoundError } from "core";
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
 import { DefaultObject } from "../../../../@types";
-import userPort from "../../../../dataProviders/db/user/user.port";
+import userAdapter from "../../../../dataProviders/db/user/user.adapter";
 import userCheckService from "../check/user.check.service";
-import userResetPort from "../../../../dataProviders/db/user/user-reset.port";
-import consumerTokenPort from "../../../../dataProviders/db/user/consumer-token.port";
+import userResetAdapter from "../../../../dataProviders/db/user/user-reset.adapter";
+import consumerTokenAdapter from "../../../../dataProviders/db/user/consumer-token.adapter";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import { RoleEnum } from "../../../../@enums/Roles";
@@ -20,7 +20,7 @@ import { getNewJwtExpireDate } from "../../user.helper";
 
 export class UserCrudService {
     find(query: DefaultObject = {}) {
-        return userPort.find(query);
+        return userAdapter.find(query);
     }
 
     getConsumers() {
@@ -28,15 +28,15 @@ export class UserCrudService {
     }
 
     findByEmail(email: string) {
-        return userPort.findByEmail(email);
+        return userAdapter.findByEmail(email);
     }
 
     public findUsersByIdList(ids: string[]) {
-        return userPort.findByIds(ids);
+        return userAdapter.findByIds(ids);
     }
 
     public getUserById(userId) {
-        return userPort.findById(userId);
+        return userAdapter.findById(userId);
     }
 
     public async update(user: Partial<UserDto> & Pick<UserDto, "email">): Promise<UserDto> {
@@ -45,7 +45,7 @@ export class UserCrudService {
         if (fullUser?.agentConnectId) userCheckService.validateOnlyEmail(user.email);
         else await userCheckService.validateEmailAndDomain(user.email);
 
-        return await userPort.update(user);
+        return await userAdapter.update(user);
     }
 
     public async delete(userId: string): Promise<boolean> {
@@ -53,11 +53,11 @@ export class UserCrudService {
 
         if (!user) return false;
 
-        if (!(await userPort.delete(user))) return false;
+        if (!(await userAdapter.delete(user))) return false;
 
         const deletePromises = [
-            userResetPort.removeAllByUserId(user._id),
-            consumerTokenPort.deleteAllByUserId(user._id),
+            userResetAdapter.removeAllByUserId(user._id),
+            consumerTokenAdapter.deleteAllByUserId(user._id),
         ];
 
         return (await Promise.all(deletePromises)).every(success => success);
@@ -67,7 +67,7 @@ export class UserCrudService {
         const users = await this.find();
         return await Promise.all(
             users.map(async user => {
-                const reset = await userResetPort.findOneByUserId(user._id);
+                const reset = await userResetAdapter.findOneByUserId(user._id);
                 if (!reset || userActivationService.isResetExpired(reset)) return user;
                 return {
                     ...user,
@@ -108,7 +108,7 @@ export class UserCrudService {
             active: !!userObject.agentConnectId,
         } as UserNotPersisted;
 
-        const createdUser = withJWT ? await userPort.createAndReturnWithJWT(user) : await userPort.create(user);
+        const createdUser = withJWT ? await userAdapter.createAndReturnWithJWT(user) : await userAdapter.create(user);
 
         if (!createdUser)
             throw new InternalServerError("The user could not be created", UserServiceErrors.CREATE_USER_WRONG);
@@ -152,7 +152,7 @@ export class UserCrudService {
     }
 
     async getUserWithoutSecret(email: string) {
-        const withSecrets = await userPort.getUserWithSecretsByEmail(email);
+        const withSecrets = await userAdapter.getUserWithSecretsByEmail(email);
         if (!withSecrets) throw new NotFoundError("User not found");
         return removeSecrets(withSecrets);
     }

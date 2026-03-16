@@ -3,7 +3,7 @@ import { Client, generators, Issuer, TokenSet } from "openid-client";
 import { ObjectId } from "mongodb";
 import { BadRequestError, InternalServerError } from "core";
 import { DuplicateIndexError } from "../../../../shared/errors/dbError/DuplicateIndexError";
-import userPort from "../../../../dataProviders/db/user/user.port";
+import userAdapter from "../../../../dataProviders/db/user/user.adapter";
 import userAuthService from "../auth/user.auth.service";
 import notifyService from "../../../notify/notify.service";
 import UserDbo from "../../../../dataProviders/db/user/UserDbo";
@@ -12,7 +12,7 @@ import { AgentConnectUser } from "../../@types/AgentConnectUser";
 import userCrudService from "../crud/user.crud.service";
 import { removeHashPassword, removeSecrets } from "../../../../shared/helpers/PortHelper";
 import { applyValidations, ValidationResult } from "../../../../shared/helpers/validation.helper";
-import agentConnectTokenPort from "../../../../dataProviders/db/user/acToken.port";
+import agentConnectTokenAdapter from "../../../../dataProviders/db/user/acToken.adapter";
 import {
     AGENT_CONNECT_CLIENT_ID,
     AGENT_CONNECT_CLIENT_SECRET,
@@ -44,7 +44,7 @@ export class UserAgentConnectService {
         // TODO for more resilience try to get by agentConnectId first
         if (!agentConnectUser.email) throw new InternalServerError("email not contained in agent connect profile");
         agentConnectUser.email = agentConnectUser.email.toLowerCase();
-        const userWithSecrets: UserDbo | null = await userPort.getUserWithSecretsByEmail(agentConnectUser.email);
+        const userWithSecrets: UserDbo | null = await userAdapter.getUserWithSecretsByEmail(agentConnectUser.email);
         const isNewUser = !userWithSecrets;
 
         let user: Omit<UserDbo, "hashPassword"> = isNewUser
@@ -70,8 +70,8 @@ export class UserAgentConnectService {
 
     async getLogoutUrl(user: UserDto) {
         if (!this.client) throw new InternalServerError("AgentConnect client is not initialized");
-        const tokenDbo = await agentConnectTokenPort.findLastActive(user._id);
-        agentConnectTokenPort.deleteAllByUserId(user._id);
+        const tokenDbo = await agentConnectTokenAdapter.findLastActive(user._id);
+        agentConnectTokenAdapter.deleteAllByUserId(user._id);
         if (!tokenDbo) return null;
         return this.client.endSessionUrl({
             id_token_hint: tokenDbo.token,
@@ -142,7 +142,7 @@ export class UserAgentConnectService {
 
     private async saveTokenSet(userId: ObjectId, tokenSet: TokenSet) {
         if (!tokenSet.id_token) throw new InternalServerError("invalid tokenSet to save");
-        return agentConnectTokenPort.upsert({
+        return agentConnectTokenAdapter.upsert({
             userId,
             token: tokenSet.id_token,
             creationDate: new Date(),

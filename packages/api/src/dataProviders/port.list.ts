@@ -1,64 +1,64 @@
-import rnaSirenPort from "./db/rnaSiren/rnaSiren.port";
-import uniteLegalEntreprisePort from "./db/uniteLegalEntreprise/uniteLegalEntreprise.port";
-import uniteLegalNamePort from "./db/uniteLegalName/uniteLegalName.port";
-import configurationsPort from "./db/configurations/configurations.port";
-import logsPort from "./db/stats/logs.port";
-import statsAssociationsVisitPort from "./db/stats/statsAssociationsVisit.port";
-import userResetPort from "./db/user/user-reset.port";
-import userPort from "./db/user/user.port";
-import consumerTokenPort from "./db/user/consumer-token.port";
-import chorusLinePort from "./db/providers/chorus/chorus.line.port";
-import dauphinPort from "./db/providers/dauphin/dauphin.port";
-import demarchesSimplifieesDataPort from "./db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
-import demarchesSimplifieesSchemaPort from "./db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port";
-import fonjepVersementsPort from "./db/providers/fonjep/fonjep.versements.port";
-import fonjepPostesPort from "./db/providers/fonjep/fonjep.postes.port";
-import fonjepTiersPort from "./db/providers/fonjep/fonjep.tiers.port";
-import fonjepTypePostePort from "./db/providers/fonjep/fonjep.typePoste.port";
-import fonjepDispositifPort from "./db/providers/fonjep/fonjep.dispositif.port";
-import paymentFlatPort from "./db/paymentFlat/paymentFlat.port";
-import { osirisActionPort, osirisRequestPort } from "./db/providers/osiris";
-import miscScdlGrantPort from "./db/providers/scdl/miscScdlGrant.port";
-import miscScdlProducersPort from "./db/providers/scdl/miscScdlProducers.port";
-import sireneStockUniteLegalePort from "./db/sirene/stockUniteLegale/sireneStockUniteLegale.port";
-import amountsVsProgramRegionPort from "./db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
-import dataLogPort from "./db/data-log/dataLog.port";
-import applicationFlatPort from "./db/applicationFlat/applicationFlat.port";
-import gisproPort from "./db/providers/gispro.port";
+import rnaSirenAdapter from "./db/rnaSiren/rnaSiren.adapter";
+import uniteLegalEntrepriseAdapter from "./db/uniteLegalEntreprise/uniteLegalEntreprise.adapter";
+import uniteLegalNameAdapter from "./db/uniteLegalName/uniteLegalName.adapter";
+import configurationsAdapter from "./db/configurations/configurations.adapter";
+import logsAdapter from "./db/stats/logs.adapter";
+import statsAssociationsVisitAdapter from "./db/stats/statsAssociationsVisit.adapter";
+import userResetAdapter from "./db/user/user-reset.adapter";
+import userAdapter from "./db/user/user.adapter";
+import consumerTokenAdapter from "./db/user/consumer-token.adapter";
+import chorusLineAdapter from "./db/providers/chorus/chorus.line.adapter";
+import dauphinAdapter from "./db/providers/dauphin/dauphin.adapter";
+import demarchesSimplifieesDataAdapter from "./db/providers/demarchesSimplifiees/demarchesSimplifieesData.adapter";
+import demarchesSimplifieesSchemaAdapter from "./db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.adapter";
+import fonjepVersementsAdapter from "./db/providers/fonjep/fonjep.versements.adapter";
+import fonjepPostesAdapter from "./db/providers/fonjep/fonjep.postes.adapter";
+import fonjepTiersAdapter from "./db/providers/fonjep/fonjep.tiers.adapter";
+import fonjepTypePosteAdapter from "./db/providers/fonjep/fonjep.typePoste.adapter";
+import fonjepDispositifAdapter from "./db/providers/fonjep/fonjep.dispositif.adapter";
+import paymentFlatAdapter from "./db/paymentFlat/paymentFlat.adapter";
+import { osirisActionAdapter, osirisRequestAdapter } from "./db/providers/osiris";
+import miscScdlGrantAdapter from "./db/providers/scdl/miscScdlGrant.adapter";
+import miscScdlProducersAdapter from "./db/providers/scdl/miscScdlProducers.adapter";
+import sireneStockUniteLegaleAdapter from "./db/sirene/stockUniteLegale/sireneStockUniteLegale.adapter";
+import amountsVsProgramRegionAdapter from "./db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.adapter";
+import dataLogAdapter from "./db/data-log/dataLog.adapter";
+import applicationFlatAdapter from "./db/applicationFlat/applicationFlat.adapter";
+import gisproAdapter from "./db/providers/gispro.adapter";
 import depositLogAdapter from "./db/deposit-log/deposit-log.adapter";
-import chorusFsePort from "./db/providers/chorus/chorus.fse.port";
+import chorusFseAdapter from "./db/providers/chorus/chorus.fse.adapter";
 
 export const portsWithIndexes = [
     // TODO: handle adapter initialization from within and remove this file
-    userPort,
-    logsPort,
-    userResetPort,
-    osirisRequestPort,
-    osirisActionPort,
-    fonjepVersementsPort,
-    fonjepPostesPort,
-    fonjepTiersPort,
-    fonjepTypePostePort,
-    fonjepDispositifPort,
-    dauphinPort,
-    miscScdlGrantPort,
-    miscScdlProducersPort,
-    configurationsPort,
-    consumerTokenPort,
-    chorusLinePort,
-    chorusFsePort,
-    demarchesSimplifieesDataPort,
-    demarchesSimplifieesSchemaPort,
-    statsAssociationsVisitPort,
-    rnaSirenPort,
-    uniteLegalEntreprisePort,
-    uniteLegalNamePort,
-    paymentFlatPort,
-    sireneStockUniteLegalePort,
-    amountsVsProgramRegionPort,
-    dataLogPort,
-    applicationFlatPort,
+    userAdapter,
+    logsAdapter,
+    userResetAdapter,
+    osirisRequestAdapter,
+    osirisActionAdapter,
+    fonjepVersementsAdapter,
+    fonjepPostesAdapter,
+    fonjepTiersAdapter,
+    fonjepTypePosteAdapter,
+    fonjepDispositifAdapter,
+    dauphinAdapter,
+    miscScdlGrantAdapter,
+    miscScdlProducersAdapter,
+    configurationsAdapter,
+    consumerTokenAdapter,
+    chorusLineAdapter,
+    chorusFseAdapter,
+    demarchesSimplifieesDataAdapter,
+    demarchesSimplifieesSchemaAdapter,
+    statsAssociationsVisitAdapter,
+    rnaSirenAdapter,
+    uniteLegalEntrepriseAdapter,
+    uniteLegalNameAdapter,
+    paymentFlatAdapter,
+    sireneStockUniteLegaleAdapter,
+    amountsVsProgramRegionAdapter,
+    dataLogAdapter,
+    applicationFlatAdapter,
     depositLogAdapter,
-    gisproPort,
-    dauphinPort,
+    gisproAdapter,
+    dauphinAdapter,
 ];

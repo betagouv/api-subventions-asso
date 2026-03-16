@@ -1,10 +1,10 @@
 import gisproService from "./gispro.service";
 import GisproParser from "./gispro.parser";
-import gisproPort from "../../../dataProviders/db/providers/gispro.port";
+import gisproAdapter from "../../../dataProviders/db/providers/gispro.adapter";
 import GisproEntity from "./@types/GisproEntity";
 
 jest.mock("./gispro.parser");
-jest.mock("../../../dataProviders/db/providers/gispro.port");
+jest.mock("../../../dataProviders/db/providers/gispro.adapter");
 
 describe("gispro service", () => {
     describe("parseSaveXls", () => {
@@ -26,7 +26,7 @@ describe("gispro service", () => {
 
         it("calls port with entities to upsert them", async () => {
             await gisproService.parseSaveXls(FILE_CONTENT, EXERCISE);
-            expect(gisproPort.insertMany).toHaveBeenCalledWith(ENTITIES);
+            expect(gisproAdapter.insertMany).toHaveBeenCalledWith(ENTITIES);
         });
     });
 });

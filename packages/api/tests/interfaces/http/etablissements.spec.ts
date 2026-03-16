@@ -8,15 +8,15 @@ import DEFAULT_ASSOCIATION, {
     SIREN_STR,
     SIRET_STR,
 } from "../../__fixtures__/association.fixture";
-import rnaSirenPort from "../../../src/dataProviders/db/rnaSiren/rnaSiren.port";
+import rnaSirenAdapter from "../../../src/dataProviders/db/rnaSiren/rnaSiren.adapter";
 import Rna from "../../../src/identifierObjects/Rna";
 import RnaSirenEntity from "../../../src/entities/RnaSirenEntity";
 import Siren from "../../../src/identifierObjects/Siren";
-import statsAssociationsVisitPort from "../../../src/dataProviders/db/stats/statsAssociationsVisit.port";
+import statsAssociationsVisitAdapter from "../../../src/dataProviders/db/stats/statsAssociationsVisit.adapter";
 import { App } from "supertest/types";
 import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
-import applicationFlatPort from "../../../src/dataProviders/db/applicationFlat/applicationFlat.port";
-import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFlat.port";
+import applicationFlatAdapter from "../../../src/dataProviders/db/applicationFlat/applicationFlat.adapter";
+import paymentFlatAdapter from "../../../src/dataProviders/db/paymentFlat/paymentFlat.adapter";
 import {
     APPLICATION_LINK_TO_CHORUS,
     APPLICATION_LINK_TO_FONJEP,
@@ -32,10 +32,10 @@ const g = global as unknown as { app: App };
 const ETABLISSEMENT_SIRET = SIRET_STR;
 
 async function initData() {
-    await applicationFlatPort.insertMany([APPLICATION_LINK_TO_CHORUS, APPLICATION_LINK_TO_FONJEP]);
+    await applicationFlatAdapter.insertMany([APPLICATION_LINK_TO_CHORUS, APPLICATION_LINK_TO_FONJEP]);
 
     // PAYMENT FLAT
-    await paymentFlatPort.insertMany([
+    await paymentFlatAdapter.insertMany([
         CHORUS_PAYMENT_FLAT_ENTITY,
         FONJEP_PAYMENT_FLAT_ENTITY,
         FONJEP_PAYMENT_FLAT_ENTITY_2,
@@ -48,7 +48,7 @@ describe("/etablissement", () => {
     });
 
     beforeEach(async () => {
-        await rnaSirenPort.insert(
+        await rnaSirenAdapter.insert(
             new RnaSirenEntity(new Rna(DEFAULT_ASSOCIATION.rna), new Siren(DEFAULT_ASSOCIATION.siren)),
         );
         await initData();
@@ -91,13 +91,13 @@ describe("/etablissement", () => {
     describe("/siret", () => {
         it("should add one visits on stats AssociationsVisit", async () => {
             const beforeRequestTime = new Date();
-            await rnaSirenPort.insert(new RnaSirenEntity(new Rna(LONELY_RNA), new Siren(SIREN_STR)));
+            await rnaSirenAdapter.insert(new RnaSirenEntity(new Rna(LONELY_RNA), new Siren(SIREN_STR)));
             await request(g.app)
                 .get(`/etablissement/${SIRET_STR}`)
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
 
-            const actual = (await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date()))[0];
+            const actual = (await statsAssociationsVisitAdapter.findOnPeriod(beforeRequestTime, new Date()))[0];
             expect(actual).toMatchObject({
                 associationIdentifier: SIRET_STR.slice(0, 9),
             });
@@ -110,7 +110,7 @@ describe("/etablissement", () => {
                 .set("x-access-token", await createAndGetAdminToken())
                 .set("Accept", "application/json");
 
-            const actual = await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date());
+            const actual = await statsAssociationsVisitAdapter.findOnPeriod(beforeRequestTime, new Date());
             expect(actual).toHaveLength(0);
         });
 
@@ -118,7 +118,7 @@ describe("/etablissement", () => {
             const beforeRequestTime = new Date();
             await request(g.app).get(`/etablissement/${SIRET_STR}`).set("Accept", "application/json");
 
-            const actual = await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date());
+            const actual = await statsAssociationsVisitAdapter.findOnPeriod(beforeRequestTime, new Date());
             expect(actual).toHaveLength(0);
         });
 
@@ -129,7 +129,7 @@ describe("/etablissement", () => {
             });
             await request(g.app).get(`/etablissement/${SIRET_STR}`).set("Accept", "application/json");
 
-            const actual = await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date());
+            const actual = await statsAssociationsVisitAdapter.findOnPeriod(beforeRequestTime, new Date());
             expect(actual).toHaveLength(0);
         });
     });

@@ -1,10 +1,10 @@
 import ChorusCli from "../../../src/interfaces/cli/Chorus.cli";
 import path from "path";
-import chorusLinePort from "../../../src/dataProviders/db/providers/chorus/chorus.line.port";
-import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
-import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFlat.port";
-import uniteLegalEntreprisePort from "../../../src/dataProviders/db/uniteLegalEntreprise/uniteLegalEntreprise.port";
-import sireneUniteLegaleDbPort from "../../../src/dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.port";
+import chorusLineAdapter from "../../../src/dataProviders/db/providers/chorus/chorus.line.adapter";
+import dataLogAdapter from "../../../src/dataProviders/db/data-log/dataLog.adapter";
+import paymentFlatAdapter from "../../../src/dataProviders/db/paymentFlat/paymentFlat.adapter";
+import uniteLegalEntrepriseAdapter from "../../../src/dataProviders/db/uniteLegalEntreprise/uniteLegalEntreprise.adapter";
+import sireneUniteLegaleDbAdapter from "../../../src/dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.adapter";
 import { SireneStockUniteLegaleEntity } from "../../../src/entities/SireneStockUniteLegaleEntity";
 import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
 import { Association } from "dto";
@@ -12,9 +12,9 @@ import { LEGAL_CATEGORIES_ACCEPTED } from "../../../src/shared/LegalCategoriesAc
 import Siren from "../../../src/identifierObjects/Siren";
 import chorusService from "../../../src/modules/providers/chorus/chorus.service";
 import { ENTITIES } from "../../../src/modules/providers/chorus/__fixtures__/ChorusFixtures";
-import stateBudgetProgramPort from "../../../src/dataProviders/db/state-budget-program/stateBudgetProgram.port";
+import stateBudgetProgramAdapter from "../../../src/dataProviders/db/state-budget-program/stateBudgetProgram.adapter";
 import PROGRAMS from "../../dataProviders/db/__fixtures__/stateBudgetProgram";
-import chorusFsePort from "../../../src/dataProviders/db/providers/chorus/chorus.fse.port";
+import chorusFseAdapter from "../../../src/dataProviders/db/providers/chorus/chorus.fse.adapter";
 
 describe("ChorusCli", () => {
     // it contains :
@@ -33,11 +33,11 @@ describe("ChorusCli", () => {
         controller = new ChorusCli();
 
         await Promise.all([
-            stateBudgetProgramPort.replace(PROGRAMS),
+            stateBudgetProgramAdapter.replace(PROGRAMS),
             // make siren 100000000 belong to asso
-            sireneUniteLegaleDbPort.insertOne({ siren: new Siren("100000000") } as SireneStockUniteLegaleEntity),
+            sireneUniteLegaleDbAdapter.insertOne({ siren: new Siren("100000000") } as SireneStockUniteLegaleEntity),
             // make siren 30000000 belong to an entreprise
-            uniteLegalEntreprisePort.insertMany([{ siren: new Siren("300000000") }]),
+            uniteLegalEntrepriseAdapter.insertMany([{ siren: new Siren("300000000") }]),
         ]);
     });
 
@@ -60,25 +60,25 @@ describe("ChorusCli", () => {
             const expected = NB_ASSOS_IN_FILES;
             const filePath = FILE_PATH;
             await controller.parse(filePath, EXPORT_DATE);
-            const actual = (await chorusLinePort.cursorFind().toArray()).length;
+            const actual = (await chorusLineAdapter.cursorFind().toArray()).length;
             expect(actual).toEqual(expected);
         });
 
         // rerun above test twice
         it("should not save duplicates", async () => {
             const expected = NB_ASSOS_IN_FILES;
-            await chorusLinePort.createIndexes();
+            await chorusLineAdapter.createIndexes();
             const filePath = FILE_PATH;
             await controller.parse(filePath, EXPORT_DATE);
             await controller.parse(filePath, EXPORT_DATE);
-            const actual = (await chorusLinePort.cursorFind().toArray()).length;
+            const actual = (await chorusLineAdapter.cursorFind().toArray()).length;
             expect(actual).toEqual(expected);
         });
 
         it("should register new import", async () => {
             const filePath = FILE_PATH;
             await controller.parse(filePath, EXPORT_DATE);
-            const actual = await dataLogPort.findAll();
+            const actual = await dataLogAdapter.findAll();
             expect(actual?.[0]).toMatchObject({
                 editionDate: new Date(EXPORT_DATE),
                 fileName: "new-chorus-export.xlsx",
@@ -90,15 +90,15 @@ describe("ChorusCli", () => {
         it("saves european chorus data", async () => {
             const filePath = FILE_PATH;
             await controller.parse(filePath, EXPORT_DATE);
-            const actual = await chorusFsePort.findAll();
+            const actual = await chorusFseAdapter.findAll();
             expect(actual).toMatchSnapshot();
         });
 
         it("saves in paymentFlat", async () => {
-            await chorusLinePort.createIndexes();
+            await chorusLineAdapter.createIndexes();
             const filePath = FILE_PATH;
             await controller.parse(filePath, EXPORT_DATE);
-            const payments = await paymentFlatPort.findAll();
+            const payments = await paymentFlatAdapter.findAll();
             // snapshot only 2 payments when we got 3 chorus documents
             // it merges 2 payments sharing the same uniqueId
             expect(payments.map(payment => ({ ...payment, updateDate: expect.any(Date) }))).toMatchSnapshot();
@@ -114,7 +114,7 @@ describe("ChorusCli", () => {
                 })),
             );
             await controller.resyncPaymentFlatByExercise(2025);
-            const actual = await paymentFlatPort.findAll();
+            const actual = await paymentFlatAdapter.findAll();
             expect(actual).toMatchSnapshot();
         });
     });
@@ -133,7 +133,7 @@ describe("ChorusCli", () => {
             ]);
 
             await controller.resetPaymentFlat();
-            const actual = await paymentFlatPort.findAll();
+            const actual = await paymentFlatAdapter.findAll();
             expect(actual).toMatchSnapshot();
         });
     });

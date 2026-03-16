@@ -1,9 +1,9 @@
 import { DS_DTO, DS_ENTITY, DS_FLAT, SCHEMA } from "./__fixtures__/demarchesSimplifiees.fixture";
 import demarchesSimplifieesService from "../../../src/modules/providers/demarchesSimplifiees/demarchesSimplifiees.service";
-import demarchesSimplifieesSchemaPort from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port";
+import demarchesSimplifieesSchemaAdapter from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.adapter";
 import DemarchesSimplifieesCli from "../../../src/interfaces/cli/DemarchesSimplifiees.cli";
-import demarchesSimplifieesDataPort from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
-import applicationFlatPort from "../../../src/dataProviders/db/applicationFlat/applicationFlat.port";
+import demarchesSimplifieesDataAdapter from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.adapter";
+import applicationFlatAdapter from "../../../src/dataProviders/db/applicationFlat/applicationFlat.adapter";
 import { ApplicationFlatEntity } from "../../../src/entities/flats/ApplicationFlatEntity";
 
 import * as inquirerPrompt from "@inquirer/prompts";
@@ -22,28 +22,28 @@ describe("DemarchesSimplifieesCli", () => {
 
     describe("on data", () => {
         beforeEach(async () => {
-            await demarchesSimplifieesSchemaPort.upsert(SCHEMA);
+            await demarchesSimplifieesSchemaAdapter.upsert(SCHEMA);
         });
 
         describe("updateAll", () => {
             it("inserts new application", async () => {
                 await cli.updateAll();
-                const actual = await demarchesSimplifieesDataPort.findAllCursor().toArray();
+                const actual = await demarchesSimplifieesDataAdapter.findAllCursor().toArray();
                 expect(actual).toMatchObject([{ ...DS_ENTITY, _id: expect.anything() }]);
             });
 
             it("inserts new application in flat collections", async () => {
                 await cli.updateAll();
-                const actual = await applicationFlatPort.findAll();
+                const actual = await applicationFlatAdapter.findAll();
                 expect(actual).toMatchObject([DS_FLAT]);
             });
 
             it("updates existing application", async () => {
                 const OLD_ENTITY = JSON.parse(JSON.stringify(DS_ENTITY));
                 OLD_ENTITY.demande.champs["Q2hhbXAtMjUwNjg0MA=="].value = "2500";
-                await demarchesSimplifieesDataPort.upsert(OLD_ENTITY);
+                await demarchesSimplifieesDataAdapter.upsert(OLD_ENTITY);
                 await cli.updateAll();
-                const actual = await demarchesSimplifieesDataPort.findAllCursor().toArray();
+                const actual = await demarchesSimplifieesDataAdapter.findAllCursor().toArray();
                 expect(actual).toMatchObject([DS_ENTITY]);
             });
 
@@ -52,9 +52,9 @@ describe("DemarchesSimplifieesCli", () => {
                     ...DS_FLAT,
                     requestedAmount: 2500,
                 } as unknown as ApplicationFlatEntity; // TODO
-                await applicationFlatPort.upsertOne(OLD_ENTITY);
+                await applicationFlatAdapter.upsertOne(OLD_ENTITY);
                 await cli.updateAll();
-                const actual = await applicationFlatPort.findAll();
+                const actual = await applicationFlatAdapter.findAll();
                 expect(actual).toMatchObject([DS_FLAT]);
             });
 
@@ -63,7 +63,7 @@ describe("DemarchesSimplifieesCli", () => {
                 DRAFT_DTO.data.demarche.state = "en_construction";
                 sendHttpQueryMock.mockResolvedValueOnce(DRAFT_DTO);
                 await cli.updateAll();
-                const actual = (await demarchesSimplifieesDataPort.findAllCursor().toArray()).length;
+                const actual = (await demarchesSimplifieesDataAdapter.findAllCursor().toArray()).length;
                 expect(actual).toBe(0);
             });
 
@@ -74,23 +74,23 @@ describe("DemarchesSimplifieesCli", () => {
             `("does not save flat application with no $mandatoryAttr", async ({ mandatoryAttr }) => {
                 const SCHEMA_MISSING = JSON.parse(JSON.stringify(SCHEMA));
                 SCHEMA_MISSING.flatSchema = SCHEMA_MISSING.flatSchema.filter(s => s.to != mandatoryAttr);
-                await demarchesSimplifieesSchemaPort.upsert(SCHEMA_MISSING);
+                await demarchesSimplifieesSchemaAdapter.upsert(SCHEMA_MISSING);
 
                 await cli.updateAll();
-                const actual = await applicationFlatPort.findAll();
+                const actual = await applicationFlatAdapter.findAll();
                 expect(actual.length).toBe(0);
             });
         });
 
         describe("initApplicationFlat", () => {
             beforeEach(async () => {
-                await demarchesSimplifieesSchemaPort.upsert(SCHEMA);
-                await demarchesSimplifieesDataPort.upsert(DS_ENTITY);
+                await demarchesSimplifieesSchemaAdapter.upsert(SCHEMA);
+                await demarchesSimplifieesDataAdapter.upsert(DS_ENTITY);
             });
 
             it("creates flat application for each ds application", async () => {
                 await cli.initApplicationFlat();
-                const actual = await applicationFlatPort.findAll();
+                const actual = await applicationFlatAdapter.findAll();
                 expect(actual).toMatchObject([DS_FLAT]);
             });
 
@@ -101,10 +101,10 @@ describe("DemarchesSimplifieesCli", () => {
             `("ignores application with no $mandatoryAttr", async ({ mandatoryAttr }) => {
                 const SCHEMA_MISSING = JSON.parse(JSON.stringify(SCHEMA));
                 SCHEMA_MISSING.flatSchema = SCHEMA_MISSING.flatSchema.filter(s => s.to != mandatoryAttr);
-                await demarchesSimplifieesSchemaPort.upsert(SCHEMA_MISSING);
+                await demarchesSimplifieesSchemaAdapter.upsert(SCHEMA_MISSING);
 
                 await cli.initApplicationFlat();
-                const actual = (await applicationFlatPort.findAll()).length;
+                const actual = (await applicationFlatAdapter.findAll()).length;
                 expect(actual).toBe(0);
             });
         });
@@ -130,7 +130,7 @@ describe("DemarchesSimplifieesCli", () => {
                 await cli.generateSchema(PATH, 42);
 
                 // I only test flat schema because it is what is meant to remain
-                const actual = (await demarchesSimplifieesSchemaPort.findAll()).map(s => s.flatSchema);
+                const actual = (await demarchesSimplifieesSchemaAdapter.findAll()).map(s => s.flatSchema);
                 expect(actual).toMatchObject([SCHEMA.flatSchema]);
             });
         });

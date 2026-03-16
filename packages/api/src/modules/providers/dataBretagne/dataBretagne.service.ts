@@ -1,6 +1,6 @@
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
-import dataBretagnePort from "../../../dataProviders/api/dataBretagne/dataBretagne.port";
-import stateBudgetProgramPort from "../../../dataProviders/db/state-budget-program/stateBudgetProgram.port";
+import dataBretagneAdapter from "../../../dataProviders/api/dataBretagne/dataBretagne.adapter";
+import stateBudgetProgramAdapter from "../../../dataProviders/db/state-budget-program/stateBudgetProgram.adapter";
 import StateBudgetProgramEntity from "../../../entities/StateBudgetProgramEntity";
 import ProviderCore from "../ProviderCore";
 import MinistryEntity from "../../../entities/MinistryEntity";
@@ -27,15 +27,15 @@ class DataBretagneService extends ProviderCore {
     }
 
     async login() {
-        return dataBretagnePort.login();
+        return dataBretagneAdapter.login();
     }
 
     async resyncPrograms() {
-        await dataBretagnePort.login();
-        const programs = await dataBretagnePort.getStateBudgetPrograms();
+        await dataBretagneAdapter.login();
+        const programs = await dataBretagneAdapter.getStateBudgetPrograms();
         // do not replace programs if empty
         if (!programs || !programs.length) throw new Error("Unhandled error from API Data Bretagne");
-        await stateBudgetProgramPort.replace(programs);
+        await stateBudgetProgramAdapter.replace(programs);
         await dataLogService.addFromApi({
             providerId: dataBretagneService.meta.id,
             providerName: dataBretagneService.meta.name,
@@ -58,7 +58,7 @@ class DataBretagneService extends ProviderCore {
      * @returns A promise that resolves to a record of state budget program entities, where the keys are program codes.
      */
     async getProgramsRecord(): Promise<ProgramsRecord> {
-        const programs = await stateBudgetProgramPort.findAll();
+        const programs = await stateBudgetProgramAdapter.findAll();
         return programs.reduce((acc, currentLine) => {
             acc[currentLine.code_programme] = currentLine;
             return acc;
@@ -66,7 +66,7 @@ class DataBretagneService extends ProviderCore {
     }
 
     async getMinistriesRecord(): Promise<MinistriesRecord> {
-        const ministries = await dataBretagnePort.getMinistry();
+        const ministries = await dataBretagneAdapter.getMinistry();
         return ministries.reduce((acc, currentLine) => {
             acc[currentLine.code_ministere] = currentLine;
             return acc;
@@ -74,7 +74,7 @@ class DataBretagneService extends ProviderCore {
     }
 
     async getFonctionalDomainsRecord(): Promise<FonctionalDomainsRecord> {
-        const fonctionalDomains = await dataBretagnePort.getDomaineFonctionnel();
+        const fonctionalDomains = await dataBretagneAdapter.getDomaineFonctionnel();
         return fonctionalDomains.reduce((acc, currentLine) => {
             acc[currentLine.code_action] = currentLine;
             return acc;
@@ -82,7 +82,7 @@ class DataBretagneService extends ProviderCore {
     }
 
     async getProgramsRefRecord(): Promise<ProgramsRefRecord> {
-        const refsProgram = await dataBretagnePort.getRefProgrammation();
+        const refsProgram = await dataBretagneAdapter.getRefProgrammation();
 
         return refsProgram.reduce((acc, currentLine) => {
             acc[currentLine.code_activite] = currentLine;

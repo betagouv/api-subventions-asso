@@ -1,5 +1,5 @@
 import request from "supertest";
-import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
+import dataLogAdapter from "../../../src/dataProviders/db/data-log/dataLog.adapter";
 import { App } from "supertest/types";
 import { API_PROVIDER, RAW_PROVIDER } from "../../../src/modules/providers/__fixtures__/providers.fixture";
 import { DataLogSource } from "../../../src/modules/data-log/entities/dataLogEntity";
@@ -9,7 +9,7 @@ jest.mock("../../../src/modules/provider-request/providerRequest.service");
 const g = global as unknown as { app: App };
 
 const insertData = async () => {
-    await dataLogPort.insertMany([
+    await dataLogAdapter.insertMany([
         {
             editionDate: new Date("2022-01-01"),
             integrationDate: new Date("2022-01-01"),

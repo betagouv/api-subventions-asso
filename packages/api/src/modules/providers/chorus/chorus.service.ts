@@ -3,13 +3,13 @@ import { asyncFilter } from "../../../shared/helpers/ArrayHelper";
 import { ProviderEnum } from "../../../@enums/ProviderEnum";
 import ProviderCore from "../ProviderCore";
 import Siren from "../../../identifierObjects/Siren";
-import chorusLinePort from "../../../dataProviders/db/providers/chorus/chorus.line.port";
+import chorusLineAdapter from "../../../dataProviders/db/providers/chorus/chorus.line.adapter";
 import ChorusLineEntity from "./entities/ChorusLineEntity";
 import associationHelper from "../../associations/associations.helper";
 import AssociationIdentifier from "../../../identifierObjects/AssociationIdentifier";
 import Siret from "../../../identifierObjects/Siret";
 import ChorusFseEntity from "./entities/ChorusFseEntity";
-import chorusFsePort from "../../../dataProviders/db/providers/chorus/chorus.fse.port";
+import chorusFseAdapter from "../../../dataProviders/db/providers/chorus/chorus.fse.adapter";
 
 export interface RejectedRequest {
     state: "rejected";
@@ -30,7 +30,7 @@ export class ChorusService extends ProviderCore {
     private sirenBelongAssoCache = new CacheData<boolean>(1000 * 60 * 60);
 
     public async upsertMany(entities: ChorusLineEntity[]) {
-        return chorusLinePort.upsertMany(entities);
+        return chorusLineAdapter.upsertMany(entities);
     }
 
     /*
@@ -90,8 +90,8 @@ export class ChorusService extends ProviderCore {
     }
 
     public cursorFind(exerciceBudgetaire?: number) {
-        if (!exerciceBudgetaire) return chorusLinePort.cursorFind({});
-        else return chorusLinePort.cursorFindOnExercise(exerciceBudgetaire);
+        if (!exerciceBudgetaire) return chorusLineAdapter.cursorFind({});
+        else return chorusLineAdapter.cursorFindOnExercise(exerciceBudgetaire);
     }
 
     // TODO: unit test this
@@ -101,7 +101,7 @@ export class ChorusService extends ProviderCore {
 
     public async persistEuropeanEntities(entities: ChorusFseEntity[]) {
         const validEntities = await asyncFilter(entities, entity => this.isEntityAccepted(entity));
-        return chorusFsePort.upsertMany(validEntities);
+        return chorusFseAdapter.upsertMany(validEntities);
     }
 }
 

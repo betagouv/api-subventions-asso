@@ -9,7 +9,7 @@ import { AgentTypeEnum } from "dto";
 import userAuthService from "../modules/user/services/auth/user.auth.service";
 import userActivationService from "../modules/user/services/activation/user.activation.service";
 import userCrudService from "../modules/user/services/crud/user.crud.service";
-import userPort from "../dataProviders/db/user/user.port";
+import userAdapter from "../dataProviders/db/user/user.adapter";
 jest.mock("../modules/user/services/auth/user.auth.service");
 const mockedUserAuthService = jest.mocked(userAuthService, { shallow: true });
 
@@ -18,7 +18,7 @@ describe("expressAuthentication", () => {
     const verifyMock = jest.spyOn(jwt, "verify");
     const refreshExpirationTokenMock = jest.spyOn(userActivationService, "refreshExpirationToken");
     const findByEmailMock = jest.spyOn(userCrudService, "findByEmail");
-    const updateMock = jest.spyOn(userPort, "update");
+    const updateMock = jest.spyOn(userAdapter, "update");
     const SPYS = [verifyMock, findByEmailMock, findByEmailMock, refreshExpirationTokenMock, updateMock];
 
     const DEFAULT_REQ = {

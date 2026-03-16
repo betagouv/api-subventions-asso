@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
-import amountsVsProgramRegionPort from "../../../src/dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.port";
-import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFlat.port";
+import amountsVsProgramRegionAdapter from "../../../src/dataProviders/db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.adapter";
+import paymentFlatAdapter from "../../../src/dataProviders/db/paymentFlat/paymentFlat.adapter";
 import AmountsVsProgramRegionCli from "../../../src/interfaces/cli/AmountsVsProgramRegion.cli";
 import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../../src/modules/paymentFlat/__fixtures__/paymentFlatEntity.fixture";
 import PaymentFlatEntity from "../../../src/entities/flats/PaymentFlatEntity";
@@ -47,7 +47,7 @@ const MOCK_DOCUMENTS: PaymentFlatEntity[] = [
 ];
 
 const insertData = async () => {
-    await paymentFlatPort.upsertMany(MOCK_DOCUMENTS);
+    await paymentFlatAdapter.upsertMany(MOCK_DOCUMENTS);
 };
 
 function sortResultForSnapshot(a, b) {
@@ -61,7 +61,7 @@ function sortResultForSnapshot(a, b) {
 
 describe("AmountsVsProgramRegionCli", () => {
     beforeEach(async () => {
-        await amountsVsProgramRegionPort.deleteAll();
+        await amountsVsProgramRegionAdapter.deleteAll();
         await insertData();
     });
 
@@ -75,7 +75,7 @@ describe("AmountsVsProgramRegionCli", () => {
         it("should persist amounts vs program region collection", async () => {
             await cli.init();
             //@ts-expect-error protected method
-            const amountsVsProgramRegion = (await amountsVsProgramRegionPort.collection.find({}).toArray())
+            const amountsVsProgramRegion = (await amountsVsProgramRegionAdapter.collection.find({}).toArray())
                 .map(amountsVsProgramRegion => ({
                     ...amountsVsProgramRegion,
                     _id: expect.any(ObjectId),
@@ -91,7 +91,7 @@ describe("AmountsVsProgramRegionCli", () => {
             const exerciceStr = "2023";
             await cli.resyncExercice(exerciceStr);
             //@ts-expect-error protected method
-            const amountsVsProgramRegion = (await amountsVsProgramRegionPort.collection.find({}).toArray())
+            const amountsVsProgramRegion = (await amountsVsProgramRegionAdapter.collection.find({}).toArray())
                 .map(amountsVsProgramRegion => ({
                     ...amountsVsProgramRegion,
                     _id: expect.any(ObjectId),

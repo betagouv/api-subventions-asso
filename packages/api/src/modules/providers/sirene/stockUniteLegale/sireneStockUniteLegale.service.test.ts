@@ -1,4 +1,4 @@
-import sireneStockUniteLegaleDbPort from "../../../../dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.port";
+import sireneStockUniteLegaleDbAdapter from "../../../../dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.adapter";
 import { SireneUniteLegaleDbo } from "./@types/SireneUniteLegaleDbo";
 import sireneStockUniteLegaleService from "./sireneStockUniteLegale.service";
 import { SireneStockUniteLegaleEntity } from "../../../../entities/SireneStockUniteLegaleEntity";
@@ -22,7 +22,7 @@ jest.mock("../../../../entities/UniteLegalEntrepriseEntity", () => ({
         }
     },
 }));
-jest.mock("../../../../dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.port");
+jest.mock("../../../../dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.adapter");
 
 jest.mock("node-stream-zip", () => {
     const mockExtract = jest.fn();
@@ -52,7 +52,7 @@ describe("SireneStockUniteLegaleService", () => {
         it("should call insertOne", async () => {
             const entity = { siren: new Siren("123456789") } as unknown as SireneStockUniteLegaleEntity;
             await sireneStockUniteLegaleService.insertOne(entity);
-            expect(sireneStockUniteLegaleDbPort.insertOne).toHaveBeenCalledWith(entity);
+            expect(sireneStockUniteLegaleDbAdapter.insertOne).toHaveBeenCalledWith(entity);
         });
     });
 
@@ -60,7 +60,7 @@ describe("SireneStockUniteLegaleService", () => {
         it("should call upsertMany", async () => {
             const entities = [{ siren: new Siren("123456789") }] as unknown as SireneStockUniteLegaleEntity[];
             await sireneStockUniteLegaleService.upsertMany(entities);
-            expect(sireneStockUniteLegaleDbPort.upsertMany).toHaveBeenCalledWith(entities);
+            expect(sireneStockUniteLegaleDbAdapter.upsertMany).toHaveBeenCalledWith(entities);
         });
     });
 
@@ -125,12 +125,12 @@ describe("SireneStockUniteLegaleService", () => {
 
         it("should call port", async () => {
             await sireneStockUniteLegaleService.findOneBySiren(SIREN);
-            expect(sireneStockUniteLegaleDbPort.findOneBySiren).toHaveBeenCalledWith(SIREN);
+            expect(sireneStockUniteLegaleDbAdapter.findOneBySiren).toHaveBeenCalledWith(SIREN);
         });
 
         it("should return res from port", async () => {
             const expected = "ratata" as unknown as SireneStockUniteLegaleEntity;
-            jest.mocked(sireneStockUniteLegaleDbPort.findOneBySiren).mockResolvedValueOnce(expected);
+            jest.mocked(sireneStockUniteLegaleDbAdapter.findOneBySiren).mockResolvedValueOnce(expected);
             const actual = await sireneStockUniteLegaleService.findOneBySiren(SIREN);
             expect(actual).toBe(expected);
         });

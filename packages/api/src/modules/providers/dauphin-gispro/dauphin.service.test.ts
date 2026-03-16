@@ -1,7 +1,7 @@
 import configurationsService from "../../configurations/configurations.service";
 import DauphinDtoMapper from "./mappers/dauphin-dto.mapper";
 import dauphinService from "./dauphin.service";
-import dauphinPort from "../../../dataProviders/db/providers/dauphin/dauphin.port";
+import dauphinAdapter from "../../../dataProviders/db/providers/dauphin/dauphin.adapter";
 import SpyInstance = jest.SpyInstance;
 import { RequestResponse } from "../../provider-request/@types/RequestResponse";
 import Siren from "../../../identifierObjects/Siren";
@@ -15,7 +15,7 @@ jest.mock("axios", () => ({
     get: jest.fn(),
 }));
 
-jest.mock("../../../dataProviders/db/providers/dauphin/dauphin.port", () => ({
+jest.mock("../../../dataProviders/db/providers/dauphin/dauphin.adapter", () => ({
     getLastImportDate: jest.fn(() => new Date()),
     upsert: jest.fn(),
     findBySiret: jest.fn(),
@@ -96,7 +96,7 @@ describe("Dauphin Service", () => {
 
         it("should call port.getLastImportDate()", async () => {
             await dauphinService.updateApplicationCache();
-            expect(dauphinPort.getLastImportDate).toHaveBeenCalledTimes(1);
+            expect(dauphinAdapter.getLastImportDate).toHaveBeenCalledTimes(1);
         });
 
         it("should call getAuthToken", async () => {
@@ -139,8 +139,8 @@ describe("Dauphin Service", () => {
             const ENTITIES = [{ reference: "REF1" }, { reference: "REF2" }];
             // @ts-expect-error: private method
             await dauphinService.saveApplicationsInCache(ENTITIES);
-            expect(dauphinPort.upsert).toHaveBeenNthCalledWith(1, { dauphin: ENTITIES[0] });
-            expect(dauphinPort.upsert).toHaveBeenNthCalledWith(2, { dauphin: ENTITIES[1] });
+            expect(dauphinAdapter.upsert).toHaveBeenNthCalledWith(1, { dauphin: ENTITIES[0] });
+            expect(dauphinAdapter.upsert).toHaveBeenNthCalledWith(2, { dauphin: ENTITIES[1] });
         });
     });
 

@@ -1,4 +1,4 @@
-import userPort from "../../../src/dataProviders/db/user/user.port";
+import userAdapter from "../../../src/dataProviders/db/user/user.adapter";
 import { ScdlDepositCron } from "../../../src/interfaces/cron/ScdlDeposit.cron";
 import { DEPOSIT_LOG_DBO } from "../../../src/modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
 import brevoMailNotifyPipe from "../../../src/modules/notify/outPipes/BrevoMailNotifyPipe";
@@ -19,7 +19,7 @@ describe("ScdlDeposit CRON", () => {
         beforeEach(async () => {
             const TODAY = new Date();
             const twoDaysAgo = addDaysToDate(TODAY, -2);
-            await userPort.create({ ...USER_DBO, signupAt: addDaysToDate(TODAY, -10) });
+            await userAdapter.create({ ...USER_DBO, signupAt: addDaysToDate(TODAY, -10) });
             await depositLogAdapter.insertOne({
                 ...DEPOSIT_LOG_DBO,
                 updateDate: twoDaysAgo,

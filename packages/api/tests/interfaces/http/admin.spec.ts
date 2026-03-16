@@ -2,15 +2,15 @@ import request from "supertest";
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import { RoleEnum } from "../../../src/@enums/Roles";
 import { createAndActiveUser, createConsumerUser } from "../../__helpers__/userHelper";
-import userPort from "../../../src/dataProviders/db/user/user.port";
-import statsAssociationsVisitPort from "../../../src/dataProviders/db/stats/statsAssociationsVisit.port";
+import userAdapter from "../../../src/dataProviders/db/user/user.adapter";
+import statsAssociationsVisitAdapter from "../../../src/dataProviders/db/stats/statsAssociationsVisit.adapter";
 import UserDbo from "../../../src/dataProviders/db/user/UserDbo";
 import notifyService from "../../../src/modules/notify/notify.service";
 import userCrudService from "../../../src/modules/user/services/crud/user.crud.service";
 import userStatsService from "../../../src/modules/user/services/stats/user.stats.service";
 
 import { App } from "supertest/types";
-import logsPort from "../../../src/dataProviders/db/stats/logs.port";
+import logsAdapter from "../../../src/dataProviders/db/stats/logs.adapter";
 import { LoggedMeta, WinstonLog } from "../../../src/@types/WinstonLog";
 import DEFAULT_ASSOCIATION from "../../__fixtures__/association.fixture";
 
@@ -105,19 +105,19 @@ describe("AdminController, /admin", () => {
             const TODAY = new Date();
             const ACTIVE_USER_EMAIL = "active.user@beta.gouv.fr";
             await createAndActiveUser(ACTIVE_USER_EMAIL);
-            const ACTIVE_USER = (await userPort.findByEmail(ACTIVE_USER_EMAIL)) as UserDbo;
+            const ACTIVE_USER = (await userAdapter.findByEmail(ACTIVE_USER_EMAIL)) as UserDbo;
             await Promise.all([
-                statsAssociationsVisitPort.add({
+                statsAssociationsVisitAdapter.add({
                     associationIdentifier: SIREN,
                     userId: ACTIVE_USER._id,
                     date: new Date(new Date(TODAY).setDate(TODAY.getDate() - 12)),
                 }),
-                statsAssociationsVisitPort.add({
+                statsAssociationsVisitAdapter.add({
                     associationIdentifier: SIREN,
                     userId: ACTIVE_USER._id,
                     date: new Date(new Date(TODAY).setDate(TODAY.getDate() - 6)),
                 }),
-                statsAssociationsVisitPort.add({
+                statsAssociationsVisitAdapter.add({
                     associationIdentifier: SIREN,
                     userId: ACTIVE_USER._id,
                     date: TODAY,
@@ -218,7 +218,7 @@ describe("AdminController, /admin", () => {
         beforeEach(async () => {
             const CONSUMER_USER = await createConsumerUser();
             // @ts-expect-error: creates logs without winston
-            await logsPort.addTestLog(buildConsumerLogs(CONSUMER_USER));
+            await logsAdapter.addTestLog(buildConsumerLogs(CONSUMER_USER));
         });
 
         it("returns API consumption statistiques", async () => {

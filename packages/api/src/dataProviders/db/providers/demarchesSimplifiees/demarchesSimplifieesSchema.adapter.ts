@@ -1,0 +1,37 @@
+import MongoPort from "../../../../shared/MongoPort";
+import DemarchesSimplifieesSchema from "../../../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesSchema";
+
+export class DemarchesSimplifieesSchemaAdapter extends MongoPort<DemarchesSimplifieesSchema> {
+    public collectionName = "demarches-simplifiees-schemas";
+
+    async createIndexes() {
+        await this.collection.createIndex({ demarcheId: 1 }, { unique: true });
+    }
+
+    async upsert(entity: DemarchesSimplifieesSchema) {
+        await this.collection.updateOne(
+            { demarcheId: entity.demarcheId },
+            { $set: entity as Partial<DemarchesSimplifieesSchema> },
+            { upsert: true },
+        );
+    }
+
+    findAll() {
+        return this.collection.find({}, { projection: { _id: 0 } }).toArray();
+    }
+
+    getAcceptedDemarcheIds(): Promise<number[]> {
+        return this.collection
+            .find({})
+            .map(schema => schema.demarcheId)
+            .toArray();
+    }
+
+    findById(demarcheId: number): Promise<DemarchesSimplifieesSchema | null> {
+        return this.collection.findOne({ demarcheId }, { projection: { _id: 0 } });
+    }
+}
+
+const demarchesSimplifieesSchemaAdapter = new DemarchesSimplifieesSchemaAdapter();
+
+export default demarchesSimplifieesSchemaAdapter;

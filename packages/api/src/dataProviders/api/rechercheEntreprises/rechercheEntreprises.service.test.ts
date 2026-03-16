@@ -2,7 +2,7 @@ import { NotificationType } from "../../../modules/notify/@types/NotificationTyp
 import { RechercheEntreprisesDto, RechercheEntreprisesResultDto } from "./RechercheEntreprisesDto";
 import Siren from "../../../identifierObjects/Siren";
 import rechercheEntreprisesService from "./rechercheEntreprises.service";
-import rechercheEntreprisesPort from "./rechercheEntreprises.port";
+import rechercheEntreprisesAdapter from "./rechercheEntreprises.adapter";
 import { RechercheEntreprisesMapper } from "./recherche-entreprises.mapper";
 import notifyService from "../../../modules/notify/notify.service";
 import { RNA_STR, SIREN_STR } from "../../../../tests/__fixtures__/association.fixture";
@@ -13,7 +13,7 @@ import { NotAssociationError } from "core";
 // Mocking the external dependencies
 jest.mock("../../../modules/associations/associations.helper");
 jest.mock("./recherche-entreprises.mapper");
-jest.mock("./rechercheEntreprises.port");
+jest.mock("./rechercheEntreprises.adapter");
 jest.mock("../../../modules/notify/notify.service", () => ({
     notify: jest.fn(),
 }));
@@ -117,8 +117,8 @@ describe("RechercheEntreprisesService", () => {
             // simulate two page response
             mockRequestNextPage.mockReturnValueOnce(true);
             mockRequestNextPage.mockReturnValueOnce(false);
-            jest.mocked(rechercheEntreprisesPort.search).mockResolvedValueOnce(FIRST_PAGE_RESPONSE);
-            jest.mocked(rechercheEntreprisesPort.search).mockResolvedValueOnce(SECOND_PAGE_RESPONSE);
+            jest.mocked(rechercheEntreprisesAdapter.search).mockResolvedValueOnce(FIRST_PAGE_RESPONSE);
+            jest.mocked(rechercheEntreprisesAdapter.search).mockResolvedValueOnce(SECOND_PAGE_RESPONSE);
         });
 
         afterEach(() => {

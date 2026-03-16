@@ -1,4 +1,4 @@
-import osirisRequestPort from "./osiris.request.port";
-import osirisActionPort from "./osiris.action.port";
+import osirisRequestAdapter from "./osiris.request.adapter";
+import osirisActionAdapter from "./osiris.action.adapter";
 
-export { osirisRequestPort, osirisActionPort };
+export { osirisRequestAdapter, osirisActionAdapter };

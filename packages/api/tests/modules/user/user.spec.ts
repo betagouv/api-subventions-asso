@@ -1,8 +1,8 @@
 import request from "supertest";
 import { createAndGetUserToken } from "../../__helpers__/tokenHelper";
 import { createAndActiveUser, DEFAULT_PASSWORD, getDefaultUser } from "../../__helpers__/userHelper";
-import userPort from "../../../src/dataProviders/db/user/user.port";
-import statsAssociationsVisitPort from "../../../src/dataProviders/db/stats/statsAssociationsVisit.port";
+import userAdapter from "../../../src/dataProviders/db/user/user.adapter";
+import statsAssociationsVisitAdapter from "../../../src/dataProviders/db/stats/statsAssociationsVisit.adapter";
 import UserDbo from "../../../src/dataProviders/db/user/UserDbo";
 import { ObjectId } from "mongodb";
 import notifyService from "../../../src/modules/notify/notify.service";
@@ -89,7 +89,7 @@ describe("UserController, /user", () => {
                 .set("Accept", "application/json")
                 .expect(204);
 
-            const user = await userPort.findById(userId?.toString() as string);
+            const user = await userAdapter.findById(userId?.toString() as string);
             expect(user).toMatchObject({
                 signupAt: expect.any(Date),
                 _id: expect.any(ObjectId),
@@ -111,22 +111,22 @@ describe("UserController, /user", () => {
 
         beforeEach(async () => {
             await createAndActiveUser(ACTIVE_USER_EMAIL);
-            const ACTIVE_USER = (await userPort.findByEmail(ACTIVE_USER_EMAIL)) as UserDbo;
-            await userPort.update({ nbVisits: 40 });
+            const ACTIVE_USER = (await userAdapter.findByEmail(ACTIVE_USER_EMAIL)) as UserDbo;
+            await userAdapter.update({ nbVisits: 40 });
             await configurationsService.setLastUserStatsUpdate(new Date(new Date(TODAY).setDate(TODAY.getDate() - 11)));
 
             await Promise.all([
-                statsAssociationsVisitPort.add({
+                statsAssociationsVisitAdapter.add({
                     associationIdentifier: SIREN,
                     userId: ACTIVE_USER._id,
                     date: new Date(new Date(TODAY).setDate(TODAY.getDate() - 12)),
                 }),
-                statsAssociationsVisitPort.add({
+                statsAssociationsVisitAdapter.add({
                     associationIdentifier: SIREN,
                     userId: ACTIVE_USER._id,
                     date: new Date(new Date(TODAY).setDate(TODAY.getDate() - 6)),
                 }),
-                statsAssociationsVisitPort.add({
+                statsAssociationsVisitAdapter.add({
                     associationIdentifier: SIREN,
                     userId: ACTIVE_USER._id,
                     date: TODAY,
@@ -150,7 +150,7 @@ describe("UserController, /user", () => {
 
         it("creates admin with required email", async () => {
             await cli.createAdmin(EMAIL);
-            const actual = await userPort.findByEmail(EMAIL);
+            const actual = await userAdapter.findByEmail(EMAIL);
             expect(actual).toMatchSnapshot({ _id: expect.any(ObjectId), signupAt: expect.any(Date) });
         });
 

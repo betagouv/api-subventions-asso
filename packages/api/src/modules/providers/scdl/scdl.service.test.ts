@@ -1,12 +1,12 @@
 import scdlService from "./scdl.service";
-import miscScdlGrantPort from "../../../dataProviders/db/providers/scdl/miscScdlGrant.port";
+import miscScdlGrantAdapter from "../../../dataProviders/db/providers/scdl/miscScdlGrant.adapter";
 
 jest.mock("fs");
 
-jest.mock("../../../dataProviders/db/providers/scdl/miscScdlGrant.port");
-import miscScdlProducersPort from "../../../dataProviders/db/providers/scdl/miscScdlProducers.port";
+jest.mock("../../../dataProviders/db/providers/scdl/miscScdlGrant.adapter");
+import miscScdlProducersAdapter from "../../../dataProviders/db/providers/scdl/miscScdlProducers.adapter";
 
-jest.mock("../../../dataProviders/db/providers/scdl/miscScdlProducers.port");
+jest.mock("../../../dataProviders/db/providers/scdl/miscScdlProducers.adapter");
 import { getMD5 } from "../../../shared/helpers/StringHelper";
 
 jest.mock("../../../shared/helpers/StringHelper");
@@ -17,7 +17,7 @@ import PRODUCER_FIXTURE from "./__fixtures__/MiscScdlProducer";
 import ScdlGrantParser from "./scdl.grant.parser";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
 import MiscScdlGrantEntity from "./entities/MiscScdlGrantEntity";
-import applicationFlatPort from "../../../dataProviders/db/applicationFlat/applicationFlat.port";
+import applicationFlatAdapter from "../../../dataProviders/db/applicationFlat/applicationFlat.adapter";
 import apiAssoService from "../apiAsso/apiAsso.service";
 import Siret from "../../../identifierObjects/Siret";
 import fs from "fs";
@@ -28,7 +28,7 @@ import { ScdlParsedInfos } from "./@types/ScdlParsedInfos";
 
 const mockedFs = jest.mocked(fs);
 
-jest.mock("../../../dataProviders/db/applicationFlat/applicationFlat.port");
+jest.mock("../../../dataProviders/db/applicationFlat/applicationFlat.adapter");
 jest.mock("../apiAsso/apiAsso.service");
 
 describe("ScdlService", () => {
@@ -65,14 +65,14 @@ describe("ScdlService", () => {
     describe("getProvider()", () => {
         it("should call miscScdlProducersPort.create()", async () => {
             await scdlService.getProducer(new Siret(PRODUCER.siret));
-            expect(miscScdlProducersPort.findBySiret).toHaveBeenCalledWith(PRODUCER.siret);
+            expect(miscScdlProducersAdapter.findBySiret).toHaveBeenCalledWith(PRODUCER.siret);
         });
     });
 
     describe("getProducers", () => {
         it("should call findAll", async () => {
             await scdlService.getProducers();
-            expect(miscScdlProducersPort.findAll).toHaveBeenCalledTimes(1);
+            expect(miscScdlProducersAdapter.findAll).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -83,7 +83,7 @@ describe("ScdlService", () => {
                 denomination_siren: [{ value: PRODUCER.name }],
             });
             await scdlService.createProducer(new Siret(PRODUCER.siret));
-            expect(miscScdlProducersPort.create).toHaveBeenCalledWith(PRODUCER);
+            expect(miscScdlProducersAdapter.create).toHaveBeenCalledWith(PRODUCER);
         });
     });
 
@@ -162,7 +162,7 @@ describe("ScdlService", () => {
         it("should call miscScdlGrantPort.createMany with allocator data from grant", async () => {
             const GRANTS = "DBOS" as unknown as ScdlGrantDbo[];
             await scdlService.saveDbos(GRANTS);
-            expect(miscScdlGrantPort.createMany).toHaveBeenCalledWith(GRANTS);
+            expect(miscScdlGrantAdapter.createMany).toHaveBeenCalledWith(GRANTS);
         });
     });
 
@@ -206,13 +206,13 @@ describe("ScdlService", () => {
     describe("isProducerFirstImport", () => {
         it("calls miscScdlGrantPort.findOneByAllocatorSiret()", async () => {
             // @ts-expect-error: mock return value
-            jest.mocked(miscScdlGrantPort.findOneByAllocatorSiret).mockResolvedValue({} as MiscScdlGrantEntity);
+            jest.mocked(miscScdlGrantAdapter.findOneByAllocatorSiret).mockResolvedValue({} as MiscScdlGrantEntity);
             await scdlService.isProducerFirstImport(PRODUCER_SIRET);
-            expect(miscScdlGrantPort.findOneByAllocatorSiret).toHaveBeenCalledWith(PRODUCER_SIRET);
+            expect(miscScdlGrantAdapter.findOneByAllocatorSiret).toHaveBeenCalledWith(PRODUCER_SIRET);
         });
 
         it("returns false if data already in db for the given producer SIRET", async () => {
-            jest.mocked(miscScdlGrantPort.findOneByAllocatorSiret).mockResolvedValue({} as ScdlGrantDbo);
+            jest.mocked(miscScdlGrantAdapter.findOneByAllocatorSiret).mockResolvedValue({} as ScdlGrantDbo);
             const actual = await scdlService.isProducerFirstImport(PRODUCER_SIRET);
             expect(actual).toEqual(false);
         });
@@ -222,7 +222,7 @@ describe("ScdlService", () => {
             ${true}  | ${undefined}
             ${true}  | ${null}
         `("returns $expected with $mockReturnValue", async ({ expected, mockReturnValue }) => {
-            jest.mocked(miscScdlGrantPort.findOneByAllocatorSiret).mockResolvedValue(mockReturnValue);
+            jest.mocked(miscScdlGrantAdapter.findOneByAllocatorSiret).mockResolvedValue(mockReturnValue);
             const actual = await scdlService.isProducerFirstImport(PRODUCER_SIRET);
             expect(actual).toEqual(expected);
         });
@@ -254,7 +254,7 @@ describe("ScdlService", () => {
 
         it("calls miscScdlGrantPort.findByAllocatorOnPeriod()", async () => {
             await scdlService.getGrantsOnPeriodByAllocator(PRODUCER.siret, [2025]);
-            expect(miscScdlGrantPort.findByAllocatorOnPeriod).toHaveBeenCalledWith(PRODUCER.siret, EXERCISES);
+            expect(miscScdlGrantAdapter.findByAllocatorOnPeriod).toHaveBeenCalledWith(PRODUCER.siret, EXERCISES);
         });
     });
 
@@ -262,57 +262,57 @@ describe("ScdlService", () => {
         const EXERCISES = [2022, 2023, 2024];
 
         beforeAll(() => {
-            miscScdlGrantPort.findByAllocatorOnPeriod = jest.fn().mockResolvedValue(GRANTS_DBO_ARRAY);
+            miscScdlGrantAdapter.findByAllocatorOnPeriod = jest.fn().mockResolvedValue(GRANTS_DBO_ARRAY);
         });
 
         it("creates backup for provider's data", async () => {
             await scdlService.cleanExercises(PRODUCER.siret, EXERCISES);
-            expect(miscScdlGrantPort.createBackupCollection).toHaveBeenCalledWith(PRODUCER_SIRET);
+            expect(miscScdlGrantAdapter.createBackupCollection).toHaveBeenCalledWith(PRODUCER_SIRET);
         });
 
         it("delete provider's data for given exercises", async () => {
             await scdlService.cleanExercises(PRODUCER.siret, EXERCISES);
-            expect(miscScdlGrantPort.bulkFindDeleteByExercices).toHaveBeenCalledWith(PRODUCER.siret, EXERCISES);
+            expect(miscScdlGrantAdapter.bulkFindDeleteByExercices).toHaveBeenCalledWith(PRODUCER.siret, EXERCISES);
         });
 
         it("applies backup for scdl if bulkFindDeleteByExercices throws an error", async () => {
-            jest.mocked(miscScdlGrantPort).bulkFindDeleteByExercices.mockRejectedValueOnce(
+            jest.mocked(miscScdlGrantAdapter).bulkFindDeleteByExercices.mockRejectedValueOnce(
                 new Error("Bulk delete failed"),
             );
             await scdlService.cleanExercises(PRODUCER.siret, EXERCISES);
-            expect(miscScdlGrantPort.applyBackupCollection).toHaveBeenCalledWith(PRODUCER_SIRET);
+            expect(miscScdlGrantAdapter.applyBackupCollection).toHaveBeenCalledWith(PRODUCER_SIRET);
         });
 
         it("applies backup for applicationFlat if bulkFindDeleteByExercices throws an error", async () => {
-            jest.mocked(miscScdlGrantPort).bulkFindDeleteByExercices.mockRejectedValueOnce(
+            jest.mocked(miscScdlGrantAdapter).bulkFindDeleteByExercices.mockRejectedValueOnce(
                 new Error("Bulk delete failed"),
             );
             await scdlService.cleanExercises(PRODUCER.siret, EXERCISES);
-            expect(applicationFlatPort.applyBackupCollection).toHaveBeenCalledWith(`scdl-${PRODUCER_SIRET}`);
+            expect(applicationFlatAdapter.applyBackupCollection).toHaveBeenCalledWith(`scdl-${PRODUCER_SIRET}`);
         });
     });
 
     describe("dropBackup", () => {
         it("calls dropBackupCollection for scdl", async () => {
             await scdlService.dropBackup();
-            expect(miscScdlGrantPort.dropBackupCollection).toHaveBeenCalledTimes(1);
+            expect(miscScdlGrantAdapter.dropBackupCollection).toHaveBeenCalledTimes(1);
         });
 
         it("calls dropBackupCollection for applicationFlat", async () => {
             await scdlService.dropBackup();
-            expect(applicationFlatPort.dropBackupCollection).toHaveBeenCalledTimes(1);
+            expect(applicationFlatAdapter.dropBackupCollection).toHaveBeenCalledTimes(1);
         });
     });
 
     describe("restoreBackup", () => {
         it("calls applyBackupCollection for scdl", async () => {
             await scdlService.restoreBackup(PRODUCER_SIRET);
-            expect(miscScdlGrantPort.applyBackupCollection).toHaveBeenCalledWith(PRODUCER_SIRET);
+            expect(miscScdlGrantAdapter.applyBackupCollection).toHaveBeenCalledWith(PRODUCER_SIRET);
         });
 
         it("calls applyBackupCollection for applicationFlat", async () => {
             await scdlService.restoreBackup(PRODUCER_SIRET);
-            expect(applicationFlatPort.applyBackupCollection).toHaveBeenCalledWith(`scdl-${PRODUCER_SIRET}`);
+            expect(applicationFlatAdapter.applyBackupCollection).toHaveBeenCalledWith(`scdl-${PRODUCER_SIRET}`);
         });
     });
 

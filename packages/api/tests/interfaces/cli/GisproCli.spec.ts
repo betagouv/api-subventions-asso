@@ -1,5 +1,5 @@
 import GisproCli from "../../../src/interfaces/cli/Gispro.cli";
-import gisproPort from "../../../src/dataProviders/db/providers/gispro.port";
+import gisproAdapter from "../../../src/dataProviders/db/providers/gispro.adapter";
 import path from "path";
 
 describe("Gispro Cli", () => {
@@ -12,7 +12,7 @@ describe("Gispro Cli", () => {
         // // too long to run on CI
         it("saves uniformized data from 2023", async () => {
             await cli.parse(FILE_PATH, EXPORT_DATE_STR);
-            const savedData = await gisproPort.findAll();
+            const savedData = await gisproAdapter.findAll();
             const noId = savedData.map(({ _id, ...rest }) => rest);
             expect(noId).toMatchSnapshot();
         }, 50000); // reading xls is very long I don't know why as much

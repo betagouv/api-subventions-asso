@@ -1,11 +1,11 @@
 import path from "path";
 import OsirisCli from "../../../src/interfaces/cli/Osiris.cli";
 import OsirisParser from "../../../src/modules/providers/osiris/osiris.parser";
-import dataLogPort from "../../../src/dataProviders/db/data-log/dataLog.port";
-import { osirisActionPort, osirisRequestPort } from "../../../src/dataProviders/db/providers/osiris";
+import dataLogAdapter from "../../../src/dataProviders/db/data-log/dataLog.adapter";
+import { osirisActionAdapter, osirisRequestAdapter } from "../../../src/dataProviders/db/providers/osiris";
 import { REQUEST_DBO } from "../../../src/modules/providers/osiris/__fixtures__/osiris.request.fixtures";
 import { ACTION_DBO } from "../../../src/modules/providers/osiris/__fixtures__/osiris.action.fixtures";
-import applicationFlatPort from "../../../src/dataProviders/db/applicationFlat/applicationFlat.port";
+import applicationFlatAdapter from "../../../src/dataProviders/db/applicationFlat/applicationFlat.adapter";
 
 describe("OsirisCli", () => {
     const spys: jest.SpyInstance<unknown>[] = [];
@@ -48,7 +48,7 @@ describe("OsirisCli", () => {
             );
             await controller.parse("requests", filePath, "2022");
 
-            const actual = await dataLogPort.findAll();
+            const actual = await dataLogAdapter.findAll();
             expect(actual?.[0]).toMatchObject({
                 editionDate: expect.any(Date),
                 fileName: "SuiviDossiers_test.xls",
@@ -63,7 +63,7 @@ describe("OsirisCli", () => {
                 "../../modules/providers/osiris/__fixtures__/SuiviDossiers_test.xls",
             );
             await controller.parse("requests", filePath, "2022");
-            const requests = await osirisRequestPort.cursorFindRequests().toArray();
+            const requests = await osirisRequestAdapter.cursorFindRequests().toArray();
             expect(
                 requests.map(request => ({ ...request, _id: expect.any(String), updateDate: expect.any(Date) })),
             ).toMatchSnapshot();
@@ -113,7 +113,7 @@ describe("OsirisCli", () => {
             );
             await controller.parse("actions", filePath, "2022");
 
-            const actual = await dataLogPort.findAll();
+            const actual = await dataLogAdapter.findAll();
             expect(actual?.[0]).toMatchObject({
                 editionDate: expect.any(Date),
                 fileName: "SuiviActions_test.xls",
@@ -145,15 +145,15 @@ describe("OsirisCli", () => {
     describe("application flat commands", () => {
         beforeEach(async () => {
             // jest.useFakeTimers().setSystemTime(new Date("2025-08-05"));
-            await osirisRequestPort.add(REQUEST_DBO);
-            await osirisActionPort.add(ACTION_DBO);
+            await osirisRequestAdapter.add(REQUEST_DBO);
+            await osirisActionAdapter.add(ACTION_DBO);
             // jest.useFakeTimers().useRealTimers();
         });
 
         describe("initApplicationFlat", () => {
             it("creates applications flat from requests and actions", async () => {
                 await new OsirisCli().initApplicationFlat();
-                const applications = await applicationFlatPort.findAll();
+                const applications = await applicationFlatAdapter.findAll();
                 expect(applications).toMatchSnapshot();
             });
         });
@@ -161,13 +161,13 @@ describe("OsirisCli", () => {
         describe("syncApplicationFlat", () => {
             it("creates applications flat from requests and actions", async () => {
                 await new OsirisCli().syncApplicationFlat(REQUEST_DBO.providerInformations.exercise);
-                const applications = await applicationFlatPort.findAll();
+                const applications = await applicationFlatAdapter.findAll();
                 expect(applications).toMatchSnapshot();
             });
 
             it("creates no applications flat if given exercise match no requests", async () => {
                 await new OsirisCli().syncApplicationFlat(2000);
-                const applications = await applicationFlatPort.findAll();
+                const applications = await applicationFlatAdapter.findAll();
                 expect(applications).toMatchSnapshot();
             });
         });

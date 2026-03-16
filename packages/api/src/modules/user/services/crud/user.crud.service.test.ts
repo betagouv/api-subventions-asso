@@ -1,12 +1,12 @@
 import userCrudService from "./user.crud.service";
-import userPort from "../../../../dataProviders/db/user/user.port";
+import userAdapter from "../../../../dataProviders/db/user/user.adapter";
 import { USER_EMAIL } from "../../../../../tests/__helpers__/userHelper";
 import { SIGNED_TOKEN, USER_DBO, USER_WITHOUT_SECRET } from "../../__fixtures__/user.fixture";
 import bcrypt from "bcrypt";
 
 jest.mock("bcrypt");
-jest.mock("../../../../dataProviders/db/user/user.port");
-const mockedUserPort = jest.mocked(userPort);
+jest.mock("../../../../dataProviders/db/user/user.adapter");
+const mockedUserAdapter = jest.mocked(userAdapter);
 import userCheckService from "../check/user.check.service";
 
 jest.mock("../check/user.check.service");
@@ -16,15 +16,15 @@ import userActivationService from "../activation/user.activation.service";
 jest.mock("../activation/user.activation.service");
 const mockedUserActivationService = jest.mocked(userActivationService);
 
-import userResetPort from "../../../../dataProviders/db/user/user-reset.port";
+import userResetAdapter from "../../../../dataProviders/db/user/user-reset.adapter";
 
-jest.mock("../../../../dataProviders/db/user/user-reset.port");
-const mockedUserResetPort = jest.mocked(userResetPort);
+jest.mock("../../../../dataProviders/db/user/user-reset.adapter");
+const mockedUserResetAdapter = jest.mocked(userResetAdapter);
 
-import consumerTokenPort from "../../../../dataProviders/db/user/consumer-token.port";
+import consumerTokenAdapter from "../../../../dataProviders/db/user/consumer-token.adapter";
 
-jest.mock("../../../../dataProviders/db/user/consumer-token.port");
-const mockedConsumerTokenPort = jest.mocked(consumerTokenPort);
+jest.mock("../../../../dataProviders/db/user/consumer-token.adapter");
+const mockedConsumerTokenAdapter = jest.mocked(consumerTokenAdapter);
 
 import { NotificationType } from "../../../notify/@types/NotificationType";
 import userAuthService from "../auth/user.auth.service";
@@ -55,11 +55,11 @@ import { ObjectId } from "mongodb";
 
 describe("user crud service", () => {
     describe("find", () => {
-        it("should call userPort.find", async () => {
+        it("should call userAdapter.find", async () => {
             const QUERY = { _id: USER_WITHOUT_SECRET._id };
             const expected = QUERY;
             await userCrudService.find(QUERY);
-            expect(mockedUserPort.find).toHaveBeenCalledWith(expected);
+            expect(mockedUserAdapter.find).toHaveBeenCalledWith(expected);
         });
     });
 
@@ -67,14 +67,14 @@ describe("user crud service", () => {
         it("fetch users by id list", async () => {
             const ID_LIST = [""];
             await userCrudService.findUsersByIdList(ID_LIST);
-            expect(mockedUserPort.findByIds).toHaveBeenCalledWith(ID_LIST);
+            expect(mockedUserAdapter.findByIds).toHaveBeenCalledWith(ID_LIST);
         });
     });
 
     describe("findByEmail", () => {
-        it("should call userPort.findByEmail", async () => {
+        it("should call userAdapter.findByEmail", async () => {
             await userCrudService.findByEmail(USER_EMAIL);
-            expect(mockedUserPort.findByEmail).toHaveBeenCalledWith(USER_EMAIL);
+            expect(mockedUserAdapter.findByEmail).toHaveBeenCalledWith(USER_EMAIL);
         });
     });
 
@@ -100,9 +100,9 @@ describe("user crud service", () => {
             expect(checkFn).toHaveBeenCalledWith(USER_WITHOUT_SECRET.email);
         });
 
-        it("should call userPort.update", async () => {
+        it("should call userAdapter.update", async () => {
             await userCrudService.update(USER_WITHOUT_SECRET);
-            expect(mockedUserPort.update).toHaveBeenCalledWith(USER_WITHOUT_SECRET);
+            expect(mockedUserAdapter.update).toHaveBeenCalledWith(USER_WITHOUT_SECRET);
         });
     });
 
@@ -112,16 +112,16 @@ describe("user crud service", () => {
         beforeAll(() => {
             mockGetUserById = jest.spyOn(userCrudService, "getUserById");
             mockGetUserById.mockResolvedValue(USER_WITHOUT_SECRET);
-            mockedUserPort.delete.mockResolvedValue(true);
-            mockedUserResetPort.removeAllByUserId.mockResolvedValue(true);
-            mockedConsumerTokenPort.deleteAllByUserId.mockResolvedValue(true);
+            mockedUserAdapter.delete.mockResolvedValue(true);
+            mockedUserResetAdapter.removeAllByUserId.mockResolvedValue(true);
+            mockedConsumerTokenAdapter.deleteAllByUserId.mockResolvedValue(true);
         });
 
         afterAll(() => {
             mockGetUserById.mockReset();
-            mockedUserPort.delete.mockReset();
-            mockedUserResetPort.removeAllByUserId.mockReset();
-            mockedConsumerTokenPort.deleteAllByUserId.mockReset();
+            mockedUserAdapter.delete.mockReset();
+            mockedUserResetAdapter.removeAllByUserId.mockReset();
+            mockedConsumerTokenAdapter.deleteAllByUserId.mockReset();
         });
 
         it("gets user", async () => {
@@ -134,36 +134,36 @@ describe("user crud service", () => {
             const expected = false;
             const actual = await userCrudService.delete(USER_WITHOUT_SECRET._id.toString());
             expect(actual).toBe(expected);
-            expect(mockedUserPort.delete).not.toHaveBeenCalled();
-            expect(mockedUserResetPort.removeAllByUserId).not.toHaveBeenCalled();
-            expect(consumerTokenPort.deleteAllByUserId).not.toHaveBeenCalled();
+            expect(mockedUserAdapter.delete).not.toHaveBeenCalled();
+            expect(mockedUserResetAdapter.removeAllByUserId).not.toHaveBeenCalled();
+            expect(consumerTokenAdapter.deleteAllByUserId).not.toHaveBeenCalled();
         });
 
         it.each`
-            method                                   | methodName                                 | arg
-            ${mockedUserPort.delete}                 | ${"mockedUserPort.delete"}                 | ${USER_WITHOUT_SECRET}
-            ${mockedUserResetPort.removeAllByUserId} | ${"mockedUserResetPort.removeAllByUserId"} | ${USER_WITHOUT_SECRET._id}
-            ${consumerTokenPort.deleteAllByUserId}   | ${"consumerTokenPort.deleteAllByUserId"}   | ${USER_WITHOUT_SECRET._id}
+            method                                      | methodName                                 | arg
+            ${mockedUserAdapter.delete}                 | ${"mockedUserPort.delete"}                 | ${USER_WITHOUT_SECRET}
+            ${mockedUserResetAdapter.removeAllByUserId} | ${"mockedUserResetPort.removeAllByUserId"} | ${USER_WITHOUT_SECRET._id}
+            ${consumerTokenAdapter.deleteAllByUserId}   | ${"consumerTokenPort.deleteAllByUserId"}   | ${USER_WITHOUT_SECRET._id}
         `("calls $methodName", async ({ arg, method }) => {
             await userCrudService.delete(USER_WITHOUT_SECRET._id.toString());
             expect(method).toHaveBeenCalledWith(arg);
         });
 
         it("returns false without other calls if mockedUserPort.delete returns false", async () => {
-            mockedUserPort.delete.mockResolvedValueOnce(false);
+            mockedUserAdapter.delete.mockResolvedValueOnce(false);
 
             const expected = false;
             const actual = await userCrudService.delete(USER_WITHOUT_SECRET._id.toString());
             expect(actual).toBe(expected);
 
-            expect(mockedUserResetPort.removeAllByUserId).not.toHaveBeenCalled();
-            expect(consumerTokenPort.deleteAllByUserId).not.toHaveBeenCalled();
+            expect(mockedUserResetAdapter.removeAllByUserId).not.toHaveBeenCalled();
+            expect(consumerTokenAdapter.deleteAllByUserId).not.toHaveBeenCalled();
         });
 
         it.each`
-            method                                   | methodName
-            ${mockedUserResetPort.removeAllByUserId} | ${"mockedUserResetPort.removeAllByUserId"}
-            ${consumerTokenPort.deleteAllByUserId}   | ${"consumerTokenPort.deleteAllByUserId"}
+            method                                      | methodName
+            ${mockedUserResetAdapter.removeAllByUserId} | ${"mockedUserResetPort.removeAllByUserId"}
+            ${consumerTokenAdapter.deleteAllByUserId}   | ${"consumerTokenPort.deleteAllByUserId"}
         `("returns false if $methodName returns false", async ({ method }) => {
             method.mockResolvedValueOnce(false);
             const expected = false;
@@ -188,8 +188,8 @@ describe("user crud service", () => {
 
         beforeAll(() => {
             jest.spyOn(userCrudService, "createUser");
-            jest.mocked(mockedUserPort.create).mockResolvedValue(USER_WITHOUT_SECRET);
-            jest.mocked(mockedUserPort.createAndReturnWithJWT).mockResolvedValue({
+            jest.mocked(mockedUserAdapter.create).mockResolvedValue(USER_WITHOUT_SECRET);
+            jest.mocked(mockedUserAdapter.createAndReturnWithJWT).mockResolvedValue({
                 ...USER_WITHOUT_SECRET,
                 jwt: USER_DBO.jwt,
             });
@@ -200,7 +200,7 @@ describe("user crud service", () => {
         });
 
         afterAll(() => {
-            jest.mocked(mockedUserPort.findByEmail).mockReset();
+            jest.mocked(mockedUserAdapter.findByEmail).mockReset();
             mockedUserCheckService.validateSanitizeUser.mockReset();
             jest.mocked(bcrypt.hash).mockReset();
         });
@@ -218,17 +218,17 @@ describe("user crud service", () => {
             expect(mockedUserCheckService.validateSanitizeUser).toHaveBeenCalledWith(FUTURE_USER);
         });
 
-        it("calls userPort.create()", async () => {
+        it("calls userAdapter.create()", async () => {
             mockedUserCheckService.validateSanitizeUser.mockImplementation(async user => user);
             await userCrudService.createUser({ ...FUTURE_USER });
-            expect(mockedUserPort.create).toHaveBeenCalledTimes(1);
+            expect(mockedUserAdapter.create).toHaveBeenCalledTimes(1);
         });
 
         it("ignores properties that should not be saved", async () => {
             // @ts-expect-error testing purposes
             await userCrudService.createUser({ ...FUTURE_USER, randomProperty: "lalala" });
             const expected = FUTURE_USER;
-            const actual = jest.mocked(mockedUserPort.create).mock.calls[0][0];
+            const actual = jest.mocked(mockedUserAdapter.create).mock.calls[0][0];
             expect(actual).toMatchObject(expected);
         });
 
@@ -239,15 +239,15 @@ describe("user crud service", () => {
                 profileToComplete: true,
                 active: true,
             };
-            const actual = jest.mocked(mockedUserPort.create).mock.calls[0][0];
+            const actual = jest.mocked(mockedUserAdapter.create).mock.calls[0][0];
             expect(actual).toMatchObject(expected);
         });
 
         it("calls alternate port if jwt needed", async () => {
             mockedUserCheckService.validateSanitizeUser.mockImplementation(async user => user);
             await userCrudService.createUser({ ...FUTURE_USER }, true);
-            expect(mockedUserPort.createAndReturnWithJWT).toHaveBeenCalledTimes(1);
-            expect(mockedUserPort.create).not.toHaveBeenCalled();
+            expect(mockedUserAdapter.createAndReturnWithJWT).toHaveBeenCalledTimes(1);
+            expect(mockedUserAdapter.create).not.toHaveBeenCalled();
         });
     });
 
@@ -318,19 +318,19 @@ describe("user crud service", () => {
         const EMAIL = "user@mail.fr";
 
         it("gets user from port", async () => {
-            jest.mocked(userPort.getUserWithSecretsByEmail).mockResolvedValueOnce(USER_DBO);
+            jest.mocked(userAdapter.getUserWithSecretsByEmail).mockResolvedValueOnce(USER_DBO);
             await userCrudService.getUserWithoutSecret(EMAIL);
-            expect(userPort.getUserWithSecretsByEmail).toHaveBeenCalledWith(EMAIL);
+            expect(userAdapter.getUserWithSecretsByEmail).toHaveBeenCalledWith(EMAIL);
         });
 
         it("should call removeSecrets()", async () => {
-            jest.mocked(userPort.getUserWithSecretsByEmail).mockResolvedValueOnce(USER_DBO);
+            jest.mocked(userAdapter.getUserWithSecretsByEmail).mockResolvedValueOnce(USER_DBO);
             await userCrudService.getUserWithoutSecret(EMAIL);
             expect(portHelper.removeSecrets).toHaveBeenCalledTimes(1);
         });
 
         it("throws not found if noe found", async () => {
-            jest.mocked(userPort.getUserWithSecretsByEmail).mockResolvedValueOnce(null);
+            jest.mocked(userAdapter.getUserWithSecretsByEmail).mockResolvedValueOnce(null);
             const test = () => userCrudService.getUserWithoutSecret(EMAIL);
             await expect(test).rejects.toMatchInlineSnapshot(`[Error: User not found]`);
         });
@@ -369,10 +369,10 @@ describe("user crud service", () => {
         });
 
         beforeEach(() => {
-            jest.mocked(userResetPort.findOneByUserId).mockResolvedValueOnce(RESETS[0]);
-            jest.mocked(userResetPort.findOneByUserId).mockResolvedValueOnce(RESETS[1]);
-            jest.mocked(userResetPort.findOneByUserId).mockResolvedValueOnce(RESETS[2]);
-            jest.mocked(userResetPort.findOneByUserId).mockResolvedValueOnce(RESETS[3]);
+            jest.mocked(userResetAdapter.findOneByUserId).mockResolvedValueOnce(RESETS[0]);
+            jest.mocked(userResetAdapter.findOneByUserId).mockResolvedValueOnce(RESETS[1]);
+            jest.mocked(userResetAdapter.findOneByUserId).mockResolvedValueOnce(RESETS[2]);
+            jest.mocked(userResetAdapter.findOneByUserId).mockResolvedValueOnce(RESETS[3]);
 
             jest.mocked(userActivationService.isResetExpired).mockReturnValueOnce(false);
             jest.mocked(userActivationService.isResetExpired).mockReturnValueOnce(false);
@@ -386,10 +386,10 @@ describe("user crud service", () => {
 
         it("gets reset token for each user", async () => {
             await userCrudService.listUsers();
-            expect(userResetPort.findOneByUserId).toHaveBeenCalledWith(1);
-            expect(userResetPort.findOneByUserId).toHaveBeenCalledWith(2);
-            expect(userResetPort.findOneByUserId).toHaveBeenCalledWith(3);
-            expect(userResetPort.findOneByUserId).toHaveBeenCalledWith(4);
+            expect(userResetAdapter.findOneByUserId).toHaveBeenCalledWith(1);
+            expect(userResetAdapter.findOneByUserId).toHaveBeenCalledWith(2);
+            expect(userResetAdapter.findOneByUserId).toHaveBeenCalledWith(3);
+            expect(userResetAdapter.findOneByUserId).toHaveBeenCalledWith(4);
         });
 
         it("controls expiration of each found token", async () => {

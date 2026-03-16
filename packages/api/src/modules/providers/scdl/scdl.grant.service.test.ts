@@ -4,7 +4,7 @@ import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEn
 import { ReadableStream } from "node:stream/web";
 import applicationFlatService from "../../applicationFlat/applicationFlat.service";
 import { ScdlGrantDbo } from "./dbo/ScdlGrantDbo";
-import miscScdlGrantPort from "../../../dataProviders/db/providers/scdl/miscScdlGrant.port";
+import miscScdlGrantAdapter from "../../../dataProviders/db/providers/scdl/miscScdlGrant.adapter";
 import { cursorToStream } from "../../applicationFlat/applicationFlat.helper";
 import { FindCursor } from "mongodb";
 
@@ -17,7 +17,7 @@ jest.mock("./mappers/misc-scdl.mapper");
 jest.mock("@sentry/node");
 jest.mock("../../applicationFlat/applicationFlat.service");
 jest.mock("../../applicationFlat/applicationFlat.helper");
-jest.mock("../../../dataProviders/db/providers/scdl/miscScdlGrant.port");
+jest.mock("../../../dataProviders/db/providers/scdl/miscScdlGrant.adapter");
 
 describe("ScdlGrantService", () => {
     describe("saveDbosToApplicationFlat", () => {
@@ -82,20 +82,20 @@ describe("ScdlGrantService", () => {
         const STREAM = "stream" as unknown as ReadableStream;
 
         beforeAll(() => {
-            jest.mocked(miscScdlGrantPort.findAllCursor).mockReturnValue(CURSOR);
+            jest.mocked(miscScdlGrantAdapter.findAllCursor).mockReturnValue(CURSOR);
             jest.mocked(cursorToStream).mockReturnValue(STREAM);
             spySaveFromStream = jest.spyOn(scdlGrantService, "saveApplicationsFromStream").mockResolvedValue();
         });
 
         afterAll(() => {
-            jest.mocked(miscScdlGrantPort.findAllCursor).mockRestore();
+            jest.mocked(miscScdlGrantAdapter.findAllCursor).mockRestore();
             jest.mocked(cursorToStream).mockRestore();
             spySaveFromStream.mockRestore();
         });
 
         it("get full cursor", async () => {
             await scdlGrantService.initApplicationFlat();
-            expect(miscScdlGrantPort.findAllCursor).toHaveBeenCalled();
+            expect(miscScdlGrantAdapter.findAllCursor).toHaveBeenCalled();
         });
 
         it("calls helper to generate stream", async () => {

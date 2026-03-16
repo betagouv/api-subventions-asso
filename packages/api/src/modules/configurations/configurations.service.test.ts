@@ -1,11 +1,11 @@
 import { BadRequestError, ConflictError } from "core";
 import configurationsService, { ConfigurationsService, CONFIGURATION_NAMES } from "./configurations.service";
-import configurationsPort from "../../dataProviders/db/configurations/configurations.port";
+import configurationsAdapter from "../../dataProviders/db/configurations/configurations.adapter";
 
 describe("ConfigurationService", () => {
     jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
-    const getByNameMock: jest.SpyInstance<unknown> = jest.spyOn(configurationsPort, "getByName");
-    const upsertMock: jest.SpyInstance<unknown> = jest.spyOn(configurationsPort, "upsert");
+    const getByNameMock: jest.SpyInstance<unknown> = jest.spyOn(configurationsAdapter, "getByName");
+    const upsertMock: jest.SpyInstance<unknown> = jest.spyOn(configurationsAdapter, "upsert");
 
     const CONFIG_NAME = "name";
     const DEFAULT_DATA = [];

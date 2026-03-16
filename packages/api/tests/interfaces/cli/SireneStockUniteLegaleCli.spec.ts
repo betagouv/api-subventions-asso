@@ -1,17 +1,17 @@
 import path from "path";
 import fs from "fs";
-import sireneStockUniteLegaleApiPort from "../../../src/dataProviders/api/sirene/sireneStockUniteLegale.port";
-import sireneStockUniteLegaleDbPort from "../../../src/dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.port";
+import sireneStockUniteLegaleApiAdapter from "../../../src/dataProviders/api/sirene/sireneStockUniteLegale.adapter";
+import sireneStockUniteLegaleDbAdapter from "../../../src/dataProviders/db/sirene/stockUniteLegale/sireneStockUniteLegale.adapter";
 import SireneStockUniteLegaleCli from "../../../src/interfaces/cli/SireneStockUniteLegale.cli";
 import { ObjectId } from "mongodb";
-import uniteLegalNamePort from "../../../src/dataProviders/db/uniteLegalName/uniteLegalName.port";
-import uniteLegalEntreprisePort from "../../../src/dataProviders/db/uniteLegalEntreprise/uniteLegalEntreprise.port";
+import uniteLegalNameAdapter from "../../../src/dataProviders/db/uniteLegalName/uniteLegalName.adapter";
+import uniteLegalEntrepriseAdapter from "../../../src/dataProviders/db/uniteLegalEntreprise/uniteLegalEntreprise.adapter";
 
 const ZIP_PATH = path.resolve(__dirname, "../../../src/modules/providers/sirene/__fixtures__");
 
 describe("SireneStockUniteLegaleCli", () => {
     beforeAll(() => {
-        jest.spyOn(sireneStockUniteLegaleApiPort, "getZip").mockImplementation(() =>
+        jest.spyOn(sireneStockUniteLegaleApiAdapter, "getZip").mockImplementation(() =>
             Promise.resolve({
                 data: fs.createReadStream(ZIP_PATH + "/StockUniteLegale_utf8.zip"),
                 status: 200,
@@ -29,7 +29,7 @@ describe("SireneStockUniteLegaleCli", () => {
         it("should persist sirene data", async () => {
             await cli.import();
             // @ts-expect-error: access protected for test
-            const data = (await sireneStockUniteLegaleDbPort.collection.find({}).toArray()).map(object => ({
+            const data = (await sireneStockUniteLegaleDbAdapter.collection.find({}).toArray()).map(object => ({
                 ...object,
                 _id: expect.any(ObjectId),
             }));
@@ -39,7 +39,7 @@ describe("SireneStockUniteLegaleCli", () => {
         it("should persist asso names", async () => {
             await cli.import();
             // @ts-expect-error: access protected for test
-            const data = (await uniteLegalNamePort.collection.find({}).toArray()).map(object => ({
+            const data = (await uniteLegalNameAdapter.collection.find({}).toArray()).map(object => ({
                 ...object,
                 _id: expect.any(ObjectId),
             }));
@@ -49,7 +49,7 @@ describe("SireneStockUniteLegaleCli", () => {
         it("should persist entreprises' siret", async () => {
             await cli.import();
             // @ts-expect-error: access protected for test
-            const data = (await uniteLegalEntreprisePort.collection.find({}).toArray()).map(object => ({
+            const data = (await uniteLegalEntrepriseAdapter.collection.find({}).toArray()).map(object => ({
                 ...object,
                 _id: expect.any(ObjectId),
             }));

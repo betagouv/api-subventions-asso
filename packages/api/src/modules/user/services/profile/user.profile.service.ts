@@ -15,11 +15,11 @@ import { isInObjectValues } from "../../../../shared/Validators";
 import { joinEnum } from "../../../../shared/helpers/ArrayHelper";
 import userCheckService, { UserCheckService } from "../check/user.check.service";
 import { sanitizeToPlainText } from "../../../../shared/helpers/StringHelper";
-import userPort from "../../../../dataProviders/db/user/user.port";
+import userAdapter from "../../../../dataProviders/db/user/user.adapter";
 import { removeSecrets } from "../../../../shared/helpers/PortHelper";
 import notifyService from "../../../notify/notify.service";
 import { NotificationType } from "../../../notify/@types/NotificationType";
-import userResetPort from "../../../../dataProviders/db/user/user-reset.port";
+import userResetAdapter from "../../../../dataProviders/db/user/user-reset.adapter";
 import UserReset from "../../entities/UserReset";
 import userAuthService from "../auth/user.auth.service";
 import UserDbo from "../../../../dataProviders/db/user/UserDbo";
@@ -145,7 +145,7 @@ export class UserProfileService {
 
         const safeUserInfo = userProfileService.sanitizeUserProfileData(data);
         await this.deduceRegion(safeUserInfo);
-        const updatedUser = await userPort.update({ ...user, ...safeUserInfo });
+        const updatedUser = await userAdapter.update({ ...user, ...safeUserInfo });
 
         const safeUpdatedUser = removeSecrets(updatedUser);
         await notifyService.notify(NotificationType.USER_UPDATED, safeUpdatedUser); // await needed in a migration, better management in #2180
@@ -154,7 +154,7 @@ export class UserProfileService {
 
     public async activate(resetToken: string, userInfo: UserActivationInfoDto): Promise<UserDto> {
         // TODO remove if/when unused by consumers
-        const userReset = await userResetPort.findByToken(resetToken);
+        const userReset = await userResetAdapter.findByToken(resetToken);
 
         const tokenValidation = userActivationService.validateResetToken(userReset);
         if (!tokenValidation.valid) throw tokenValidation.error;
@@ -177,7 +177,7 @@ export class UserProfileService {
         // @ts-expect-error -- intermediate type
         delete safeUserInfo.password;
 
-        const activeUser = (await userPort.update(
+        const activeUser = (await userAdapter.update(
             {
                 ...user,
                 ...safeUserInfo,

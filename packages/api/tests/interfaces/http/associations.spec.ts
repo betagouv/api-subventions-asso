@@ -1,5 +1,5 @@
 import { createAndGetAdminToken, createAndGetUserToken } from "../../__helpers__/tokenHelper";
-import osirisRequestPort from "../../../src/dataProviders/db/providers/osiris/osiris.request.port";
+import osirisRequestAdapter from "../../../src/dataProviders/db/providers/osiris/osiris.request.adapter";
 import request from "supertest";
 import {
     OSIRIS_REQUEST_ENTITY,
@@ -7,16 +7,16 @@ import {
 } from "../../modules/providers/osiris/__fixtures__/OsirisEntities";
 import { BadRequestError } from "core";
 import associationsService from "../../../src/modules/associations/associations.service";
-import rnaSirenPort from "../../../src/dataProviders/db/rnaSiren/rnaSiren.port";
+import rnaSirenAdapter from "../../../src/dataProviders/db/rnaSiren/rnaSiren.adapter";
 import { AnyRawGrant, JoinedRawGrant } from "../../../src/modules/grant/@types/rawGrant";
-import demarchesSimplifieesDataPort from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.port";
+import demarchesSimplifieesDataAdapter from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesData.adapter";
 import {
     DATA_ENTITIES as DS_DATA_ENTITIES,
     SCHEMAS as DS_SCHEMAS,
 } from "../../dataProviders/db/__fixtures__/demarchesSimplifiees.fixtures";
-import demarchesSimplifieesSchemaPort from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.port";
+import demarchesSimplifieesSchemaAdapter from "../../../src/dataProviders/db/providers/demarchesSimplifiees/demarchesSimplifieesSchema.adapter";
 
-import miscScdlGrantPort from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.port";
+import miscScdlGrantAdapter from "../../../src/dataProviders/db/providers/scdl/miscScdlGrant.adapter";
 import DEFAULT_ASSOCIATION, {
     API_ASSO_ASSOCIATION_FROM_SIREN,
     API_ASSO_ESTABLISHMENTS_FROM_SIREN,
@@ -25,17 +25,17 @@ import DEFAULT_ASSOCIATION, {
     SIREN_STR,
     SIRET_STR,
 } from "../../__fixtures__/association.fixture";
-import dauphinPort from "../../../src/dataProviders/db/providers/dauphin/dauphin.port";
+import dauphinAdapter from "../../../src/dataProviders/db/providers/dauphin/dauphin.adapter";
 import { DAUPHIN_GISPRO_DBOS } from "../../dataProviders/db/__fixtures__/dauphinGispro.fixtures";
 import { LOCAL_AUTHORITIES, SCDL_GRANT_DBOS } from "../../dataProviders/db/__fixtures__/scdl.fixtures";
 import Rna from "../../../src/identifierObjects/Rna";
-import miscScdlProducersPort from "../../../src/dataProviders/db/providers/scdl/miscScdlProducers.port";
+import miscScdlProducersAdapter from "../../../src/dataProviders/db/providers/scdl/miscScdlProducers.adapter";
 import Siren from "../../../src/identifierObjects/Siren";
-import statsAssociationsVisitPort from "../../../src/dataProviders/db/stats/statsAssociationsVisit.port";
+import statsAssociationsVisitAdapter from "../../../src/dataProviders/db/stats/statsAssociationsVisit.adapter";
 import { App } from "supertest/types";
-import paymentFlatPort from "../../../src/dataProviders/db/paymentFlat/paymentFlat.port";
+import paymentFlatAdapter from "../../../src/dataProviders/db/paymentFlat/paymentFlat.adapter";
 import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
-import applicationFlatPort from "../../../src/dataProviders/db/applicationFlat/applicationFlat.port";
+import applicationFlatAdapter from "../../../src/dataProviders/db/applicationFlat/applicationFlat.adapter";
 import {
     APPLICATION_LINK_TO_CHORUS,
     APPLICATION_LINK_TO_FONJEP,
@@ -44,8 +44,8 @@ import {
     CHORUS_PAYMENT_FLAT_ENTITY,
     FONJEP_PAYMENT_FLAT_ENTITY,
 } from "../../../src/modules/paymentFlat/__fixtures__/paymentFlatEntity.fixture";
-import { osirisActionPort } from "../../../src/dataProviders/db/providers/osiris";
-import fonjepPostesPort from "../../../src/dataProviders/db/providers/fonjep/fonjep.postes.port";
+import { osirisActionAdapter } from "../../../src/dataProviders/db/providers/osiris";
+import fonjepPostesAdapter from "../../../src/dataProviders/db/providers/fonjep/fonjep.postes.adapter";
 import {
     DISPOSITIF_ENTITIES,
     POSTE_ENTITIES,
@@ -53,12 +53,12 @@ import {
     TYPE_POSTE_ENTITIES,
     VERSEMENT_ENTITIES,
 } from "../../../src/modules/providers/fonjep/__fixtures__/fonjepEntities";
-import fonjepDispositifPort from "../../../src/dataProviders/db/providers/fonjep/fonjep.dispositif.port";
-import fonjepTiersPort from "../../../src/dataProviders/db/providers/fonjep/fonjep.tiers.port";
-import fonjepVersementsPort from "../../../src/dataProviders/db/providers/fonjep/fonjep.versements.port";
-import fonjepTypePostePort from "../../../src/dataProviders/db/providers/fonjep/fonjep.typePoste.port";
+import fonjepDispositifAdapter from "../../../src/dataProviders/db/providers/fonjep/fonjep.dispositif.adapter";
+import fonjepTiersAdapter from "../../../src/dataProviders/db/providers/fonjep/fonjep.tiers.adapter";
+import fonjepVersementsAdapter from "../../../src/dataProviders/db/providers/fonjep/fonjep.versements.adapter";
+import fonjepTypePosteAdapter from "../../../src/dataProviders/db/providers/fonjep/fonjep.typePoste.adapter";
 import AssociationIdentifier from "../../../src/identifierObjects/AssociationIdentifier";
-import rechercheEntreprisesPort from "../../../src/dataProviders/api/rechercheEntreprises/rechercheEntreprises.port";
+import rechercheEntreprisesAdapter from "../../../src/dataProviders/api/rechercheEntreprises/rechercheEntreprises.adapter";
 import { RECHERCHE_ENTREPRISES_DTO } from "../../../src/dataProviders/api/rechercheEntreprises/__fixtures__/RechercheEntreprises";
 
 jest.mock("../../../src/modules/provider-request/providerRequest.service");
@@ -67,34 +67,34 @@ const g = global as unknown as { app: App };
 
 const insertData = async (firstTest: boolean) => {
     // data
-    await rnaSirenPort.insert({ siren: new Siren(SIREN_STR), rna: new Rna(RNA_STR) });
+    await rnaSirenAdapter.insert({ siren: new Siren(SIREN_STR), rna: new Rna(RNA_STR) });
 
     // FONJEP
-    await fonjepPostesPort.insertMany(POSTE_ENTITIES);
-    await fonjepDispositifPort.insertMany(DISPOSITIF_ENTITIES);
-    await fonjepTiersPort.insertMany(TIERS_ENTITIES);
-    await fonjepVersementsPort.insertMany(VERSEMENT_ENTITIES);
-    await fonjepTypePostePort.insertMany(TYPE_POSTE_ENTITIES);
+    await fonjepPostesAdapter.insertMany(POSTE_ENTITIES);
+    await fonjepDispositifAdapter.insertMany(DISPOSITIF_ENTITIES);
+    await fonjepTiersAdapter.insertMany(TIERS_ENTITIES);
+    await fonjepVersementsAdapter.insertMany(VERSEMENT_ENTITIES);
+    await fonjepTypePosteAdapter.insertMany(TYPE_POSTE_ENTITIES);
 
     // APPLICATIONS
     // @ts-expect-error: DBO not fully mocked
-    await dauphinPort.upsert(DAUPHIN_GISPRO_DBOS[0]);
-    await osirisRequestPort.add(OSIRIS_REQUEST_ENTITY);
-    await osirisActionPort.add(OSIRIS_ACTION_ENTITY);
-    await demarchesSimplifieesSchemaPort.upsert(DS_SCHEMAS[0]);
-    await demarchesSimplifieesDataPort.upsert(DS_DATA_ENTITIES[0]);
+    await dauphinAdapter.upsert(DAUPHIN_GISPRO_DBOS[0]);
+    await osirisRequestAdapter.add(OSIRIS_REQUEST_ENTITY);
+    await osirisActionAdapter.add(OSIRIS_ACTION_ENTITY);
+    await demarchesSimplifieesSchemaAdapter.upsert(DS_SCHEMAS[0]);
+    await demarchesSimplifieesDataAdapter.upsert(DS_DATA_ENTITIES[0]);
 
     // producer is define for the first test run (needed in config file to init app)
     if (!firstTest) {
-        await miscScdlProducersPort.create(LOCAL_AUTHORITIES[0]);
+        await miscScdlProducersAdapter.create(LOCAL_AUTHORITIES[0]);
     }
 
-    await miscScdlGrantPort.createMany(SCDL_GRANT_DBOS);
+    await miscScdlGrantAdapter.createMany(SCDL_GRANT_DBOS);
 
-    await applicationFlatPort.insertMany([APPLICATION_LINK_TO_CHORUS, APPLICATION_LINK_TO_FONJEP]);
+    await applicationFlatAdapter.insertMany([APPLICATION_LINK_TO_CHORUS, APPLICATION_LINK_TO_FONJEP]);
 
     // PAYMENT FLAT
-    await paymentFlatPort.insertMany([CHORUS_PAYMENT_FLAT_ENTITY, FONJEP_PAYMENT_FLAT_ENTITY]);
+    await paymentFlatAdapter.insertMany([CHORUS_PAYMENT_FLAT_ENTITY, FONJEP_PAYMENT_FLAT_ENTITY]);
 };
 
 describe("/association", () => {
@@ -137,7 +137,7 @@ describe("/association", () => {
                 .set("x-access-token", await createAndGetUserToken())
                 .set("Accept", "application/json");
 
-            const actual = (await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date()))[0];
+            const actual = (await statsAssociationsVisitAdapter.findOnPeriod(beforeRequestTime, new Date()))[0];
 
             expect(actual).toMatchObject({
                 associationIdentifier: OSIRIS_REQUEST_ENTITY.legalInformations.siret.slice(0, 9),
@@ -152,7 +152,7 @@ describe("/association", () => {
                 .set("Accept", "application/json");
             // TODO test differently
 
-            const actual = await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date());
+            const actual = await statsAssociationsVisitAdapter.findOnPeriod(beforeRequestTime, new Date());
             expect(actual).toHaveLength(0);
         });
 
@@ -161,7 +161,7 @@ describe("/association", () => {
             await request(g.app).get(`/associationresponse/${SIREN_STR}`).set("Accept", "application/json");
             // TODO test differently
 
-            const actual = await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date());
+            const actual = await statsAssociationsVisitAdapter.findOnPeriod(beforeRequestTime, new Date());
             expect(actual).toHaveLength(0);
         });
 
@@ -172,7 +172,7 @@ describe("/association", () => {
             });
             await request(g.app).get(`/association/${SIREN_STR}`).set("Accept", "application/json");
 
-            const actual = await statsAssociationsVisitPort.findOnPeriod(beforeRequestTime, new Date());
+            const actual = await statsAssociationsVisitAdapter.findOnPeriod(beforeRequestTime, new Date());
             expect(actual).toHaveLength(0);
             getAssoSpy.mockRestore();
         });
@@ -355,7 +355,7 @@ describe("/association", () => {
         beforeEach(() => {
             spyGetAssociation = jest.spyOn(associationsService, "getAssociation");
             // set Recherche Entreprise to only search for one page
-            jest.spyOn(rechercheEntreprisesPort, "search").mockResolvedValue({
+            jest.spyOn(rechercheEntreprisesAdapter, "search").mockResolvedValue({
                 ...RECHERCHE_ENTREPRISES_DTO,
                 total_pages: 1,
                 page: 1,

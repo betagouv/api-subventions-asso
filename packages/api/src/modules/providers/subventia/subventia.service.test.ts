@@ -2,7 +2,7 @@ import subventiaService from "./subventia.service";
 import SubventiaParser from "./subventia.parser";
 import SubventiaValidator from "./validators/subventia.validator";
 import SubventiaMapper from "./mappers/subventia.mapper";
-import SubventiaPort from "../../../dataProviders/db/providers/subventia/subventia.port";
+import SubventiaAdapter from "../../../dataProviders/db/providers/subventia/subventia.adapter";
 import { SubventiaDbo } from "./@types/subventia.entity";
 import { ApplicationStatus } from "dto";
 import SubventiaDto from "./@types/subventia.dto";
@@ -12,7 +12,7 @@ import { ReadableStream } from "node:stream/web";
 import { APPLICATION_LINK_TO_CHORUS } from "../../applicationFlat/__fixtures__";
 jest.mock("../../applicationFlat/applicationFlat.service");
 jest.mock("./mappers/subventia.mapper");
-jest.mock("../../../dataProviders/db/providers/subventia/subventia.port");
+jest.mock("../../../dataProviders/db/providers/subventia/subventia.adapter");
 
 describe("Subventia Service", () => {
     const filePath = "path/to/file";
@@ -65,10 +65,10 @@ describe("Subventia Service", () => {
     let mockCreate: jest.SpyInstance;
 
     beforeAll(() => {
-        mockFindBySiret = jest.spyOn(SubventiaPort, "findBySiret").mockResolvedValue(applications);
-        mockFindBySiren = jest.spyOn(SubventiaPort, "findBySiren").mockResolvedValue(applications);
+        mockFindBySiret = jest.spyOn(SubventiaAdapter, "findBySiret").mockResolvedValue(applications);
+        mockFindBySiren = jest.spyOn(SubventiaAdapter, "findBySiren").mockResolvedValue(applications);
         //@ts-expect-error : resolved value type not valid
-        mockCreate = jest.spyOn(SubventiaPort, "create").mockResolvedValue("FAKE_ID");
+        mockCreate = jest.spyOn(SubventiaAdapter, "create").mockResolvedValue("FAKE_ID");
     });
 
     afterAll(() => {
@@ -261,7 +261,7 @@ describe("Subventia Service", () => {
         jest.spyOn(ReadableStream, "from").mockReturnValue([APPLICATION_LINK_TO_CHORUS]);
 
         beforeEach(() => {
-            mockFindAll = jest.spyOn(SubventiaPort, "findAll").mockResolvedValue([SUBVENTIA_DBO]);
+            mockFindAll = jest.spyOn(SubventiaAdapter, "findAll").mockResolvedValue([SUBVENTIA_DBO]);
             mockToApplicationFlat = jest
                 .spyOn(SubventiaMapper, "toApplicationFlat")
                 .mockReturnValue(APPLICATION_LINK_TO_CHORUS);
