@@ -3,10 +3,10 @@ import Siret from "../../../../identifierObjects/Siret";
 import Siren from "../../../../identifierObjects/Siren";
 import { DefaultObject } from "../../../../@types";
 import MongoAdapter from "../../MongoAdapter";
-import ChorusLineEntity from "../../../../modules/providers/chorus/entities/ChorusLineEntity";
+import ChorusEntity from "../../../../modules/providers/chorus/entities/ChorusEntity";
 
-export class ChorusLineAdapter extends MongoAdapter<ChorusLineEntity> {
-    readonly collectionName = "chorus-line";
+export class ChorusAdapter extends MongoAdapter<ChorusEntity> {
+    readonly collectionName = "chorus";
 
     public async findOneByEJ(ej: string) {
         return this.collection.findOne({ "indexedInformations.ej": ej });
@@ -26,11 +26,11 @@ export class ChorusLineAdapter extends MongoAdapter<ChorusLineEntity> {
         return this.collection.findOne({ uniqueId: uniqueId });
     }
 
-    public async create(entity: ChorusLineEntity) {
+    public async create(entity: ChorusEntity) {
         await this.collection.insertOne(entity);
     }
 
-    public async upsertMany(entities: ChorusLineEntity[]) {
+    public async upsertMany(entities: ChorusEntity[]) {
         const operations = entities.map(
             e =>
                 ({
@@ -39,25 +39,25 @@ export class ChorusLineAdapter extends MongoAdapter<ChorusLineEntity> {
                         update: { $set: e },
                         upsert: true,
                     },
-                }) as AnyBulkWriteOperation<ChorusLineEntity>,
+                }) as AnyBulkWriteOperation<ChorusEntity>,
         );
         return this.collection.bulkWrite(operations);
     }
 
-    public async update(entity: ChorusLineEntity) {
+    public async update(entity: ChorusEntity) {
         const { _id, ...entityWithoutId } = entity;
 
         await this.collection.updateOne({ uniqueId: entity.uniqueId }, { $set: entityWithoutId });
 
-        return this.collection.findOne({ uniqueId: entity.uniqueId }) as Promise<WithId<ChorusLineEntity>>;
+        return this.collection.findOne({ uniqueId: entity.uniqueId }) as Promise<WithId<ChorusEntity>>;
     }
 
-    public async updateById(id: ObjectId, entity: ChorusLineEntity) {
+    public async updateById(id: ObjectId, entity: ChorusEntity) {
         const { _id, ...entityWithoutId } = entity;
 
         await this.collection.updateOne({ _id: id }, { $set: entityWithoutId });
 
-        return this.collection.findOne({ _id: id }) as Promise<WithId<ChorusLineEntity>>;
+        return this.collection.findOne({ _id: id }) as Promise<WithId<ChorusEntity>>;
     }
 
     public async findBySiret(siret: Siret) {
@@ -94,6 +94,6 @@ export class ChorusLineAdapter extends MongoAdapter<ChorusLineEntity> {
     }
 }
 
-const chorusLineAdapter = new ChorusLineAdapter();
+const chorusAdapter = new ChorusAdapter();
 
-export default chorusLineAdapter;
+export default chorusAdapter;

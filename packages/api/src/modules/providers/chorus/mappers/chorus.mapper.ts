@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/node";
 import { getShortISODate } from "../../../../shared/helpers/DateHelper";
-import ChorusLineEntity from "../entities/ChorusLineEntity";
+import ChorusEntity from "../entities/ChorusEntity";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
 import StateBudgetProgramEntity from "../../../../entities/StateBudgetProgramEntity";
 import MinistryEntity from "../../../../entities/MinistryEntity";
@@ -8,7 +8,7 @@ import DomaineFonctionnelEntity from "../../../../entities/DomaineFonctionnelEnt
 import Siret from "../../../../identifierObjects/Siret";
 import RefProgrammationEntity from "../../../../entities/RefProgrammationEntity";
 import { GenericParser } from "../../../../shared/GenericParser";
-import { ChorusLineDto } from "../@types/ChorusLineDto";
+import { ChorusDto } from "../@types/ChorusDto";
 import { ChorusPaymentFlatEntity, ChorusPaymentFlatRaw } from "../@types/ChorusPaymentFlat";
 import Ridet from "../../../../identifierObjects/Ridet";
 import { EstablishmentIdType } from "../../../../identifierObjects/@types/IdentifierType";
@@ -33,23 +33,23 @@ export default class ChorusMapper {
         return region;
     }
 
-    private static getEstablishmentValueObject(chorusLineDto: ChorusLineDto): EstablishmentIdType {
+    private static getEstablishmentValueObject(chorusDto: ChorusDto): EstablishmentIdType {
         const RIDET_TAHITIET_COLUMN_NAME = "No TVA 3 (COM-RIDET ou TAHITI)";
         const SIRET_COLUMN_NAME = "Code taxe 1";
-        if (chorusLineDto[SIRET_COLUMN_NAME] === "#") {
+        if (chorusDto[SIRET_COLUMN_NAME] === "#") {
             // special case spotted after handling ridet and tahiti in V0.67
             // sometime chorus line doesn't have any siret nor ridet or tahiti
-            if (chorusLineDto[RIDET_TAHITIET_COLUMN_NAME] === "#") {
+            if (chorusDto[RIDET_TAHITIET_COLUMN_NAME] === "#") {
                 throw new Error(
-                    `Not able to retrieve an establishment identifier for chorus line with EJ ${chorusLineDto["N° EJ"]} for exercice ${chorusLineDto["Exercice comptable"]}`,
+                    `Not able to retrieve an establishment identifier for chorus line with EJ ${chorusDto["N° EJ"]} for exercice ${chorusDto["Exercice comptable"]}`,
                 );
             }
-            if (Ridet.isRidet(chorusLineDto[RIDET_TAHITIET_COLUMN_NAME])) {
-                return new Ridet(chorusLineDto[RIDET_TAHITIET_COLUMN_NAME]);
+            if (Ridet.isRidet(chorusDto[RIDET_TAHITIET_COLUMN_NAME])) {
+                return new Ridet(chorusDto[RIDET_TAHITIET_COLUMN_NAME]);
             } else {
-                return new Tahitiet(chorusLineDto[RIDET_TAHITIET_COLUMN_NAME]);
+                return new Tahitiet(chorusDto[RIDET_TAHITIET_COLUMN_NAME]);
             }
-        } else return new Siret(chorusLineDto[SIRET_COLUMN_NAME]);
+        } else return new Siret(chorusDto[SIRET_COLUMN_NAME]);
     }
 
     // TODO: add to ValueObject a getCompanyId that would abstract the notion of siren/rid/tahiti ?
@@ -65,8 +65,8 @@ export default class ChorusMapper {
         }
     }
 
-    private static getAmount(chorusLineDto: ChorusLineDto): number | null {
-        const amount = chorusLineDto["Montant payé"];
+    private static getAmount(chorusDto: ChorusDto): number | null {
+        const amount = chorusDto["Montant payé"];
         if (!amount || typeof amount === "number") return amount;
         if (typeof amount === "string")
             // @ts-expect-error: this should not be a string but was in the original code refactored with #3342
@@ -76,8 +76,8 @@ export default class ChorusMapper {
         else return null;
     }
 
-    private static getOperationDate(chorusLineDto: ChorusLineDto): Date | null {
-        const operationDate = chorusLineDto["Date de dernière opération sur la DP"];
+    private static getOperationDate(chorusDto: ChorusDto): Date | null {
+        const operationDate = chorusDto["Date de dernière opération sur la DP"];
 
         if (!operationDate) return null;
 
@@ -95,7 +95,7 @@ export default class ChorusMapper {
         }
     }
 
-    private static getEntitiesByIdentifierRawData(data: ChorusLineDto): ChorusPaymentFlatRaw {
+    private static getEntitiesByIdentifierRawData(data: ChorusDto): ChorusPaymentFlatRaw {
         const budgetaryYear = data["Exercice comptable"] ? parseInt(data["Exercice comptable"], 10) : null;
         const beneficiaryEstablishmentId = this.getEstablishmentValueObject(data);
         const beneficiaryCompanyId = this.getCompanyId(beneficiaryEstablishmentId);
@@ -126,13 +126,13 @@ export default class ChorusMapper {
     /**
      *   /!\ DO NOT USE THIS DIRECTLY TO PERSIT IN PAYMENT FLAT DATABASE /!\
      *
-     *   Create a PaymentFlatEntity from a ChorusLineEntity
+     *   Create a PaymentFlatEntity from a ChorusEntity
      *
      *   To get a "full" PaymentFlatEntity in order to process persistance in database,
      *   ensure to aggregate all PaymentFlatEntity by uniqueId and merge the amount
      */
     public static toNotAggregatedPaymentFlatEntity(
-        chorusDocument: ChorusLineEntity,
+        chorusDocument: ChorusEntity,
         programs: Record<string, StateBudgetProgramEntity>,
         ministries: Record<string, MinistryEntity>,
         fonctionalDomains: Record<string, DomaineFonctionnelEntity>,
@@ -147,7 +147,7 @@ export default class ChorusMapper {
             domaineFonctEntity,
             refProgrammationEntity,
         } = this.getEntitiesByIdentifierComplementaryData(
-            chorusDocument.data as ChorusLineDto,
+            chorusDocument.data as ChorusDto,
             programs,
             ministries,
             fonctionalDomains,
@@ -158,7 +158,7 @@ export default class ChorusMapper {
             ChorusPaymentFlatEntity,
             "accountingAttachmentRegion" | "paymentId" | "uniqueId"
         > = {
-            ...this.getEntitiesByIdentifierRawData(chorusDocument.data as ChorusLineDto),
+            ...this.getEntitiesByIdentifierRawData(chorusDocument.data as ChorusDto),
             programName: programEntity?.label_programme ?? null,
             programNumber: programCode,
             mission: programEntity?.mission ?? null,
@@ -203,10 +203,7 @@ export default class ChorusMapper {
         return `chorus-${paymentId}-${programNumber}-${actionCode}-${activityCode}-${getShortISODate(operationDate)}-${accountingAttachment}-${financialCenterCode}`;
     }
 
-    private static getProgramCodeAndEntity(
-        chorusDto: ChorusLineDto,
-        programs: Record<string, StateBudgetProgramEntity>,
-    ) {
+    private static getProgramCodeAndEntity(chorusDto: ChorusDto, programs: Record<string, StateBudgetProgramEntity>) {
         // trick to trim 0 at the beginning of the code
         // i.e "0161" => "161"
         const code = parseInt(chorusDto["Domaine fonctionnel CODE"]?.slice(1, 4));
@@ -218,10 +215,7 @@ export default class ChorusMapper {
         return { code, entity };
     }
 
-    private static getActivityCodeAndEntity(
-        chorusDto: ChorusLineDto,
-        programsRef: Record<string, RefProgrammationEntity>,
-    ) {
+    private static getActivityCodeAndEntity(chorusDto: ChorusDto, programsRef: Record<string, RefProgrammationEntity>) {
         const code = chorusDto["Référentiel de programmation CODE"]?.slice(-12);
         const entity = programsRef[code];
         if (!entity) {
@@ -232,7 +226,7 @@ export default class ChorusMapper {
     }
 
     private static getActionCodeAndEntity(
-        chorusDto: ChorusLineDto,
+        chorusDto: ChorusDto,
         fonctionalDomains: Record<string, DomaineFonctionnelEntity>,
     ) {
         const code = chorusDto["Domaine fonctionnel CODE"];
@@ -248,7 +242,7 @@ export default class ChorusMapper {
      *
      * Fetch the complementary data from dataBretagne API / collection
      *
-     * @param chorusDocument A ChorusLineDto object
+     * @param chorusDocument A ChorusDto object
      * @param programs state programs from state-budget-programs collection
      * @param ministries ministries from dataBretagne API
      * @param fonctionalDomains fonctionalDomains from dataBretagne API
@@ -257,7 +251,7 @@ export default class ChorusMapper {
      * @returns Object containing complementary data if found, otherwise null
      */
     private static getEntitiesByIdentifierComplementaryData(
-        chorusDocument: ChorusLineDto,
+        chorusDocument: ChorusDto,
         programs: Record<number, StateBudgetProgramEntity>,
         ministries: Record<string, MinistryEntity>,
         fonctionalDomains: Record<string, DomaineFonctionnelEntity>,

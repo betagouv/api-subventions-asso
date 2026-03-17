@@ -30,7 +30,7 @@ describe("Chorus CLI", () => {
         mockedFs.existsSync.mockReturnValue(true);
         mockedFs.readFileSync.mockReturnValue(FILE_CONTENT);
         mockedFs.writeFileSync.mockImplementation(jest.fn());
-        mockedService.insertBatchChorusLine.mockResolvedValue({ created: 100, rejected: 10 });
+        mockedService.insertBatchChorus.mockResolvedValue({ created: 100, rejected: 10 });
         ChorusParser.parse = jest
             .fn()
             .mockReturnValue({ national: NATIONAL_CHORUS_ENTITIES, european: EUROPEAN_CHORUS_ENTITIES });
@@ -44,10 +44,10 @@ describe("Chorus CLI", () => {
             resyncFlatSpy = jest.spyOn(controller, "resyncPaymentFlatByExercise").mockImplementation(jest.fn());
         });
 
-        it("should call chorusService.insertBatchChorusLine()", async () => {
+        it("should call chorusService.insertBatchChorus()", async () => {
             // @ts-expect-error: test private method
             await controller.persistChorusEntities(NATIONAL_CHORUS_ENTITIES, LOGGER);
-            expect(mockedService.insertBatchChorusLine).toHaveBeenCalledTimes(1);
+            expect(mockedService.insertBatchChorus).toHaveBeenCalledTimes(1);
         });
 
         it("saves paymentFlat entities for each exercise found in file", async () => {

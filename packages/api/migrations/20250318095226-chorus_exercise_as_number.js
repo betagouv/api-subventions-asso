@@ -1,33 +1,33 @@
 module.exports = {
     async up(db) {
         await db
-            .collection("chorus-line")
+            .collection("chorus")
             .aggregate([
                 {
                     $addFields: {
                         "indexedInformations.exercice": { $toInt: "$indexedInformations.exercice" },
                     },
                 },
-                { $out: "chorus-line-nb" },
+                { $out: "chorus-nb" },
             ])
             .toArray();
-        await db.dropCollection("chorus-line");
-        await db.renameCollection("chorus-line-nb", "chorus-line");
+        await db.dropCollection("chorus");
+        await db.renameCollection("chorus-nb", "chorus");
     },
 
     async down(db) {
         await db
-            .collection("chorus-line")
+            .collection("chorus")
             .aggregate([
                 {
                     $addFields: {
                         "indexedInformations.exercice": { $toString: "$indexedInformations.exercice" },
                     },
                 },
-                { $out: "chorus-line-str" },
+                { $out: "chorus-str" },
             ])
             .toArray();
-        await db.dropCollection("chorus-line");
-        await db.renameCollection("chorus-line-str", "chorus-line");
+        await db.dropCollection("chorus");
+        await db.renameCollection("chorus-str", "chorus");
     },
 };

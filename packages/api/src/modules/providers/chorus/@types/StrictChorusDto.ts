@@ -1,4 +1,4 @@
-export interface StrictChorusLineDto {
+export interface StrictChorusDto {
     "N° EJ": string;
     "N° poste EJ": string;
     "Code taxe 1": string;

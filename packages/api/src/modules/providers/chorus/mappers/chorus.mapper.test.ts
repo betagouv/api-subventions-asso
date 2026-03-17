@@ -1,8 +1,8 @@
-import ChorusLineEntity from "../entities/ChorusLineEntity";
+import ChorusEntity from "../entities/ChorusEntity";
 import ChorusMapper from "./chorus.mapper";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
 import { ENTITIES } from "../__fixtures__/ChorusFixtures";
-import { ChorusLineDto } from "../@types/ChorusLineDto";
+import { ChorusDto } from "../@types/ChorusDto";
 import { DATA_BRETAGNE_RECORDS } from "../../dataBretagne/__fixtures__/dataBretagne.fixture";
 import * as Sentry from "@sentry/node";
 import Tahitiet from "../../../../identifierObjects/Tahitiet";
@@ -31,7 +31,7 @@ describe("ChorusMapper", () => {
 
     const CHORUS_LINE_ENTITY = {
         ...ENTITIES[0],
-        data: { ...(ENTITIES[0].data as ChorusLineDto), Société: "BRET" },
+        data: { ...(ENTITIES[0].data as ChorusDto), Société: "BRET" },
     };
 
     describe("toNotAggregatedPaymentFlatEntity", () => {
@@ -66,7 +66,7 @@ describe("ChorusMapper", () => {
                 programEntity: undefined,
             });
             const result = ChorusMapper.toNotAggregatedPaymentFlatEntity(
-                { ...CHORUS_LINE_ENTITY } as unknown as ChorusLineEntity,
+                { ...CHORUS_LINE_ENTITY } as unknown as ChorusEntity,
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
                 DATA_BRETAGNE_RECORDS.fonctionalDomains,
@@ -125,7 +125,7 @@ describe("ChorusMapper", () => {
         it("gets StateBudgetProgramEntity", () => {
             // @ts-expect-error: private method
             ChorusMapper.getEntitiesByIdentifierComplementaryData(
-                CHORUS_DTO as ChorusLineDto,
+                CHORUS_DTO as ChorusDto,
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
                 DATA_BRETAGNE_RECORDS.fonctionalDomains,
@@ -137,7 +137,7 @@ describe("ChorusMapper", () => {
         it("gets MinistryEntity", () => {
             // @ts-expect-error: private method
             ChorusMapper.getEntitiesByIdentifierComplementaryData(
-                CHORUS_DTO as ChorusLineDto,
+                CHORUS_DTO as ChorusDto,
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
                 DATA_BRETAGNE_RECORDS.fonctionalDomains,
@@ -149,7 +149,7 @@ describe("ChorusMapper", () => {
         it("gets DomaineFonctionnelEntity", () => {
             // @ts-expect-error: private method
             ChorusMapper.getEntitiesByIdentifierComplementaryData(
-                CHORUS_DTO as ChorusLineDto,
+                CHORUS_DTO as ChorusDto,
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
                 DATA_BRETAGNE_RECORDS.fonctionalDomains,
@@ -164,7 +164,7 @@ describe("ChorusMapper", () => {
         it("gets RefProgrammationEntity", () => {
             // @ts-expect-error: private method
             ChorusMapper.getEntitiesByIdentifierComplementaryData(
-                CHORUS_DTO as ChorusLineDto,
+                CHORUS_DTO as ChorusDto,
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
                 DATA_BRETAGNE_RECORDS.fonctionalDomains,
@@ -185,7 +185,7 @@ describe("ChorusMapper", () => {
             };
             // @ts-expect-error: private method
             const actual = ChorusMapper.getEntitiesByIdentifierComplementaryData(
-                CHORUS_DTO as ChorusLineDto,
+                CHORUS_DTO as ChorusDto,
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
                 DATA_BRETAGNE_RECORDS.fonctionalDomains,
@@ -249,7 +249,7 @@ describe("ChorusMapper", () => {
                 "Exercice comptable": 2023,
                 "Code taxe 1": "#",
                 "No TVA 3 (COM-RIDET ou TAHITI)": "#",
-            } as ChorusLineDto;
+            } as ChorusDto;
 
             // @ts-expect-error: private method
             expect(() => ChorusMapper.getEstablishmentValueObject(ENTITY)).toThrow(
@@ -269,7 +269,7 @@ describe("ChorusMapper", () => {
             const ENTITY = {
                 "Code taxe 1": siret,
                 "No TVA 3 (COM-RIDET ou TAHITI)": ridetOrTahitiet,
-            } as ChorusLineDto;
+            } as ChorusDto;
             const expected = valueObject;
             // @ts-expect-error: private method
             const actual = ChorusMapper.getEstablishmentValueObject(ENTITY);
@@ -351,7 +351,7 @@ describe("ChorusMapper", () => {
         it("should return amount with value", () => {
             const CHORUS_LINE_DTO = {
                 "Montant payé": 9987,
-            } as ChorusLineDto;
+            } as ChorusDto;
 
             const expected = CHORUS_LINE_DTO["Montant payé"];
             // @ts-expect-error: private method
@@ -363,7 +363,7 @@ describe("ChorusMapper", () => {
             // @ts-expect-error: edge case
             const CHORUS_LINE_DTO = {
                 "Montant payé": "9987,50",
-            } as ChorusLineDto;
+            } as ChorusDto;
 
             const expected = 9987.5;
             // @ts-expect-error: private method
@@ -375,7 +375,7 @@ describe("ChorusMapper", () => {
             // @ts-expect-error: edge case
             const CHORUS_LINE_DTO = {
                 "Montant payé": [9988],
-            } as ChorusLineDto;
+            } as ChorusDto;
             const expected = null;
 
             // @ts-expect-error: private method

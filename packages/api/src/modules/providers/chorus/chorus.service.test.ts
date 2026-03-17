@@ -1,8 +1,8 @@
 import chorusService from "./chorus.service";
-import chorusLineAdapter from "../../../dataProviders/db/providers/chorus/chorus.line.adapter";
+import chorusAdapter from "../../../dataProviders/db/providers/chorus/chorus.adapter";
 
-jest.mock("../../../dataProviders/db/providers/chorus/chorus.line.adapter");
-const mockedChorusLinePort = jest.mocked(chorusLineAdapter);
+jest.mock("../../../dataProviders/db/providers/chorus/chorus.adapter");
+const mockedChorusPort = jest.mocked(chorusAdapter);
 jest.mock("./mappers/chorus.mapper");
 
 jest.mock("../../../shared/helpers/StringHelper");
@@ -30,15 +30,15 @@ describe("chorusService", () => {
     });
 
     describe("cursorFind", () => {
-        it("should call chorusLinePort.cursorFind", () => {
+        it("should call chorusPort.cursorFind", () => {
             chorusService.cursorFind();
-            expect(mockedChorusLinePort.cursorFind).toHaveBeenCalledWith({});
+            expect(mockedChorusPort.cursorFind).toHaveBeenCalledWith({});
         });
 
-        it("should call chorusLinePort.cursorFindOnExercise", () => {
+        it("should call chorusPort.cursorFindOnExercise", () => {
             const exerciceBudgetaire = 2021;
             chorusService.cursorFind(exerciceBudgetaire);
-            expect(mockedChorusLinePort.cursorFindOnExercise).toHaveBeenCalledWith(exerciceBudgetaire);
+            expect(mockedChorusPort.cursorFindOnExercise).toHaveBeenCalledWith(exerciceBudgetaire);
         });
     });
 
@@ -137,7 +137,7 @@ describe("chorusService", () => {
         });
     });
 
-    describe("insertBatchChorusLine", () => {
+    describe("insertBatchChorus", () => {
         const EMPTY_ANSWER = { rejected: 0, created: 0 };
 
         const mockIsAcceptedEntity = jest.spyOn(chorusService, "isAcceptedEntity");
@@ -148,19 +148,19 @@ describe("chorusService", () => {
         });
 
         it("should call upsertMany", async () => {
-            await chorusService.insertBatchChorusLine(ENTITIES);
+            await chorusService.insertBatchChorus(ENTITIES);
         });
 
         it("should return response with only created", async () => {
             const expected = { ...EMPTY_ANSWER, created: ENTITIES.length };
-            const actual = await chorusService.insertBatchChorusLine(ENTITIES);
+            const actual = await chorusService.insertBatchChorus(ENTITIES);
             expect(actual).toEqual(expected);
         });
 
         it("should return response with created and rejected", async () => {
             mockIsAcceptedEntity.mockResolvedValueOnce(false);
             const expected = { ...EMPTY_ANSWER, created: ENTITIES.length - 1, rejected: 1 };
-            const actual = await chorusService.insertBatchChorusLine(ENTITIES);
+            const actual = await chorusService.insertBatchChorus(ENTITIES);
             expect(actual).toEqual(expected);
         });
     });

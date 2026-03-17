@@ -5,12 +5,12 @@ import { getMD5 } from "../../../shared/helpers/StringHelper";
 import { DefaultObject } from "../../../@types";
 import Siret from "../../../identifierObjects/Siret";
 import { GenericParser } from "../../../shared/GenericParser";
-import ChorusLineEntity from "./entities/ChorusLineEntity";
+import ChorusEntity from "./entities/ChorusEntity";
 import type ChorusIndexedInformations from "./@types/ChorusIndexedInformations";
-import { ChorusLineDto } from "./@types/ChorusLineDto";
+import { ChorusDto } from "./@types/ChorusDto";
 import ChorusFseEntity from "./entities/ChorusFseEntity";
 import { ChorusFseMapper } from "./mappers/chorus.fse.mapper";
-import { StrictChorusLineDto } from "./@types/StrictChorusLineDto";
+import { StrictChorusDto } from "./@types/StrictChorusDto";
 
 export default class ChorusParser {
     static parse(content: Buffer) {
@@ -68,7 +68,7 @@ export default class ChorusParser {
     private static europeanDataToEntities(data: { headers: string[]; rows: string[][] }) {
         const { headers, rows } = data;
         return rows.reduce((entities, row) => {
-            const dto = GenericParser.linkHeaderToData(headers, row) as unknown as StrictChorusLineDto;
+            const dto = GenericParser.linkHeaderToData(headers, row) as unknown as StrictChorusDto;
             let entity: ChorusFseEntity;
             try {
                 entity = ChorusFseMapper.dtoToEntity(dto);
@@ -93,7 +93,7 @@ export default class ChorusParser {
 
             const indexedInformations = GenericParser.indexDataByPathObject(
                 // TODO <string|number>
-                ChorusLineEntity.indexedInformationsPath,
+                ChorusEntity.indexedInformationsPath,
                 rowObject,
             ) as unknown as ChorusIndexedInformations;
 
@@ -101,13 +101,13 @@ export default class ChorusParser {
 
             const uniqueId = this.buildUniqueId(indexedInformations);
             entities.push(
-                new ChorusLineEntity(uniqueId, new Date(), indexedInformations, rowObject as unknown as ChorusLineDto),
+                new ChorusEntity(uniqueId, new Date(), indexedInformations, rowObject as unknown as ChorusDto),
             );
 
             CliHelper.printAtSameLine(`${index + 1} entities parsed of ${array.length}`);
 
             return entities;
-        }, [] as ChorusLineEntity[]);
+        }, [] as ChorusEntity[]);
     }
 
     private static buildUniqueId(info: ChorusIndexedInformations) {

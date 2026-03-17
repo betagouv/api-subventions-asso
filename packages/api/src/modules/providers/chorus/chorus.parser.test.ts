@@ -7,7 +7,7 @@ import { GenericParser } from "../../../shared/GenericParser";
 jest.mock("../../../shared/GenericParser");
 const mockedGenericParser = jest.mocked(GenericParser);
 jest.mock("../../../shared/helpers/CliHelper");
-jest.mock("./entities/ChorusLineEntity");
+jest.mock("./entities/ChorusEntity");
 jest.mock("../../../shared/helpers/StringHelper");
 const mockedStringHelper = jest.mocked(StringHelper);
 

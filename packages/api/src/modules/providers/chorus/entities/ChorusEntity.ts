@@ -2,10 +2,10 @@ import { ObjectId } from "mongodb";
 import { ParserInfo } from "../../../../@types";
 import type ChorusIndexedInformations from "../@types/ChorusIndexedInformations";
 import { GenericParser } from "../../../../shared/GenericParser";
-import { ChorusLineDto } from "../@types/ChorusLineDto";
+import { ChorusDto } from "../@types/ChorusDto";
 import { santitizeFloat } from "../../../../shared/helpers/NumberHelper";
 
-export default class ChorusLineEntity {
+export default class ChorusEntity {
     public provider = "Chorus";
 
     public static indexedInformationsPath: { [key: string]: ParserInfo } = {
@@ -47,7 +47,7 @@ export default class ChorusLineEntity {
         public uniqueId: string,
         public updateDate: Date,
         public indexedInformations: ChorusIndexedInformations,
-        public data: ChorusLineDto | unknown, // TODO: remove this unknown ??
+        public data: ChorusDto | unknown, // TODO: remove this unknown ??
         public _id?: ObjectId,
     ) {}
 }

@@ -156,12 +156,12 @@ describe("paymentFlatChorusService", () => {
     });
 
     describe("cursorFindChorusOnly", () => {
-        it("should call chorusLinePort.cursorFindChorusOnly with undefined", () => {
+        it("should call chorusPort.cursorFindChorusOnly with undefined", () => {
             paymentFlatChorusService.cursorFindChorusOnly();
             expect(paymentFlatAdapter.cursorFindChorusOnly).toHaveBeenCalledWith(undefined);
         });
 
-        it("should call chorusLinePort.findData with exerciceBudgetaire", () => {
+        it("should call chorusPort.findData with exerciceBudgetaire", () => {
             const exerciceBudgetaire = 2021;
             paymentFlatChorusService.cursorFindChorusOnly(exerciceBudgetaire);
             expect(paymentFlatAdapter.cursorFindChorusOnly).toHaveBeenCalledWith(exerciceBudgetaire);

@@ -1,8 +1,8 @@
 import { ChorusPayment } from "dto";
-import ChorusLineEntity from "../entities/ChorusLineEntity";
+import ChorusEntity from "../entities/ChorusEntity";
 import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
-import { ChorusLineDto } from "../@types/ChorusLineDto";
-import { StrictChorusLineDto } from "../@types/StrictChorusLineDto";
+import { ChorusDto } from "../@types/ChorusDto";
+import { StrictChorusDto } from "../@types/StrictChorusDto";
 import Siret from "../../../../identifierObjects/Siret";
 import ChorusFseEntity from "../entities/ChorusFseEntity";
 
@@ -168,7 +168,7 @@ export const PAGES = [
     ],
 ];
 
-export const PARSED_DATA: StrictChorusLineDto[] = [
+export const PARSED_DATA: StrictChorusDto[] = [
     {
         "N° EJ": "0001821732",
         "Fournisseur payé (DP)": "1000011111",
@@ -328,7 +328,7 @@ export const ENTITY_WITH_RIDET = {
         "Montant payé": 89988.3,
         "N° poste DP": "1",
         "N° poste EJ": "",
-    } as ChorusLineDto,
+    } as ChorusDto,
     _id: undefined,
     provider: "Chorus",
     updateDate: new Date("2020-01-01"),
@@ -358,7 +358,7 @@ export const CHORUS_FSE_ENTITIES: ChorusFseEntity[] = [
     },
 ];
 
-export const ENTITIES: ChorusLineEntity[] = [
+export const ENTITIES: ChorusEntity[] = [
     {
         uniqueId: "de175292263fdd97b222a754309df07f",
         indexedInformations: {
@@ -399,7 +399,7 @@ export const ENTITIES: ChorusLineEntity[] = [
             "Domaine fonctionnel CODE": "0101-01-02",
             "Domaine fonctionnel": "Appels à projet",
             "Montant payé": 89988.3,
-        } as ChorusLineDto,
+        } as ChorusDto,
         _id: undefined,
         provider: "Chorus",
         updateDate: new Date("2020-01-01"),
@@ -444,7 +444,7 @@ export const ENTITIES: ChorusLineEntity[] = [
             "Domaine fonctionnel CODE": "0101-01-02",
             "Domaine fonctionnel": "DOMAINE FONCTIONNEL LABEL",
             "Montant payé": 89931.9,
-        } as ChorusLineDto,
+        } as ChorusDto,
         _id: undefined,
         provider: "Chorus",
         updateDate: new Date("2020-01-01"),
@@ -489,7 +489,7 @@ export const ENTITIES: ChorusLineEntity[] = [
             "Domaine fonctionnel CODE": "0163-03",
             "Domaine fonctionnel": "Plan inv compétences",
             "Montant payé": 62655.2,
-        } as ChorusLineDto,
+        } as ChorusDto,
         _id: undefined,
         provider: "Chorus",
         updateDate: new Date("2020-01-01"),

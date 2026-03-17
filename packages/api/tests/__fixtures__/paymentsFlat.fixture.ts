@@ -1,15 +1,15 @@
-import ChorusLineEntity from "../../src/modules/providers/chorus/entities/ChorusLineEntity";
+import ChorusEntity from "../../src/modules/providers/chorus/entities/ChorusEntity";
 import { ENTITIES } from "../../src/modules/providers/chorus/__fixtures__/ChorusFixtures";
-import { ChorusLineDto } from "../../src/modules/providers/chorus/@types/ChorusLineDto";
+import { ChorusDto } from "../../src/modules/providers/chorus/@types/ChorusDto";
 export const CHORUS_LAST_UPDATE = new Date("2022-03-12");
 
-export const MOCK_DOCUMENTS: ChorusLineEntity[] = [
+export const MOCK_DOCUMENTS: ChorusEntity[] = [
     // je change le siret pour que je puisse ordonner le snapshot par siret
     // je change l'exercice du première document pour qu'il ne soit pas enregistré lors de resyncExercice(2023)
     {
         ...ENTITIES[0],
         data: {
-            ...(ENTITIES[0].data as ChorusLineDto),
+            ...(ENTITIES[0].data as ChorusDto),
             "Code taxe 1": "12345678901313",
             "Exercice comptable": "2022",
         },
@@ -18,7 +18,7 @@ export const MOCK_DOCUMENTS: ChorusLineEntity[] = [
     {
         ...ENTITIES[1],
         data: {
-            ...(ENTITIES[1].data as ChorusLineDto),
+            ...(ENTITIES[1].data as ChorusDto),
             "N° EJ": "EJ_egale",
             "Domaine fonctionnel CODE": "0143-03-01",
             "Référentiel de programmation CODE": "014303000102",
@@ -28,7 +28,7 @@ export const MOCK_DOCUMENTS: ChorusLineEntity[] = [
     {
         ...ENTITIES[2],
         data: {
-            ...(ENTITIES[2].data as ChorusLineDto),
+            ...(ENTITIES[2].data as ChorusDto),
             "N° EJ": "EJ_egale",
             "Domaine fonctionnel CODE": "0143-03-01",
             "Référentiel de programmation CODE": "014303000102",
@@ -41,7 +41,7 @@ export const MOCK_DOCUMENTS: ChorusLineEntity[] = [
     {
         ...ENTITIES[2],
         uniqueId: "newUniqueId",
-        data: { ...(ENTITIES[2].data as ChorusLineDto), "Code taxe 1": "12345678901414" },
+        data: { ...(ENTITIES[2].data as ChorusDto), "Code taxe 1": "12345678901414" },
     },
 ];
 

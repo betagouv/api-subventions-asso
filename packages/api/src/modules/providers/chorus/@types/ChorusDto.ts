@@ -1,4 +1,4 @@
-export interface ChorusLineDto {
+export interface ChorusDto {
     "N° EJ": string | null;
     "N° poste EJ": string | null;
     "Code taxe 1": string;
