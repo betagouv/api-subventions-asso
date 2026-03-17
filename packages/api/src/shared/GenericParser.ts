@@ -78,26 +78,23 @@ export class GenericParser {
         return value === null || value === undefined || value === "";
     }
 
-    static linkHeaderToData<T = string>(
+    static linkHeaderToData<T = DefaultObject<string | null>, C = string>(
         headers: string[],
-        data: T[],
+        data: C[],
         options: { allowNull: boolean } = { allowNull: false },
-    ) {
-        return headers.reduce(
-            (acc, header, key) => {
-                const value =
-                    typeof data[key] === "string" ? (data[key] as string).replace(/&#32;/g, " ").trim() : data[key];
-                const trimedHeader = typeof header === "string" ? header.trim() : header;
-                // quick fix to keep empty cells value as null
-                if (options.allowNull) acc[trimedHeader] = this.isCellEmpty(value) ? null : value;
-                // Do we really want to keep remplacing empty cells with empty string for all parsed data ?
-                // https://github.com/betagouv/api-subventions-asso/issues/3293
-                else if (value === undefined || value === null) acc[trimedHeader] = "";
-                else acc[trimedHeader] = value;
-                return acc;
-            },
-            {} as DefaultObject<T | string | null>,
-        );
+    ): T {
+        return headers.reduce((acc, header, key) => {
+            const value =
+                typeof data[key] === "string" ? (data[key] as string).replace(/&#32;/g, " ").trim() : data[key];
+            const trimedHeader = typeof header === "string" ? header.trim() : header;
+            // quick fix to keep empty cells value as null
+            if (options.allowNull) acc[trimedHeader] = this.isCellEmpty(value) ? null : value;
+            // Do we really want to keep remplacing empty cells with empty string for all parsed data ?
+            // https://github.com/betagouv/api-subventions-asso/issues/3293
+            else if (value === undefined || value === null) acc[trimedHeader] = "";
+            else acc[trimedHeader] = value;
+            return acc;
+        }, {} as T);
     }
 
     static findFiles(file: string) {
