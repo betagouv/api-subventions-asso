@@ -14,7 +14,6 @@ import ChorusCli from "./Chorus.cli";
 import { ENTITIES } from "../../modules/providers/chorus/__fixtures__/ChorusFixtures";
 import paymentFlatChorusService from "../../modules/paymentFlat/paymentFlat.chorus.service";
 import { ChorusPaymentFlatEntity } from "../../modules/providers/chorus/@types/ChorusPaymentFlat";
-import { FindCursor } from "mongodb";
 jest.mock("../../modules/paymentFlat/paymentFlat.chorus.service");
 
 describe("Chorus CLI", () => {
@@ -117,16 +116,20 @@ describe("Chorus CLI", () => {
     describe("resetPaymentFlat", () => {
         it("checks if collection is empty of chorus results", async () => {
             jest.mocked(paymentFlatChorusService.cursorFindChorusOnly).mockReturnValueOnce({
-                toArray: () => Promise.resolve([1]),
-            } as unknown as FindCursor<ChorusPaymentFlatEntity>);
+                [Symbol.asyncIterator]: async function* () {
+                    yield 1;
+                },
+            } as AsyncIterable<ChorusPaymentFlatEntity>);
             await controller.resetPaymentFlat();
             expect(paymentFlatChorusService.cursorFindChorusOnly).toHaveBeenCalled();
         });
 
         it("calls service init", async () => {
             jest.mocked(paymentFlatChorusService.cursorFindChorusOnly).mockReturnValueOnce({
-                toArray: () => Promise.resolve([1]),
-            } as unknown as FindCursor<ChorusPaymentFlatEntity>);
+                [Symbol.asyncIterator]: async function* () {
+                    yield 1;
+                },
+            } as AsyncIterable<ChorusPaymentFlatEntity>);
             await controller.resetPaymentFlat();
             expect(paymentFlatChorusService.init).toHaveBeenCalledWith();
         });
