@@ -35,7 +35,7 @@ import statsAssociationsVisitAdapter from "../../../src/dataProviders/db/stats/s
 import { App } from "supertest/types";
 import paymentFlatAdapter from "../../../src/dataProviders/db/paymentFlat/paymentFlat.adapter";
 import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
-import applicationFlatAdapter from "../../../src/dataProviders/db/applicationFlat/applicationFlat.adapter";
+import applicationFlatAdapter from "../../../src/dataProviders/db/applicationFlat/application-flat.adapter";
 import {
     APPLICATION_LINK_TO_CHORUS,
     APPLICATION_LINK_TO_FONJEP,

@@ -5,8 +5,9 @@ import Siret from "../../../../identifierObjects/Siret";
 import Siren from "../../../../identifierObjects/Siren";
 import DauphinGisproDbo from "./DauphinGisproDbo";
 import { SimplifiedJoinedDauphinGispro } from "../../../../modules/providers/dauphin-gispro/@types/SimplifiedDauphinGispro";
+import { DauphinPort } from "./dauphin.port";
 
-export class DauphinAdapter extends MongoPort<DauphinGisproDbo> {
+export class DauphinAdapter extends MongoPort<DauphinGisproDbo> implements DauphinPort {
     readonly collectionName = "dauphin";
     readonly simplifiedTempCollectionName = "dauphinSimplified";
     readonly simplifiedTempCollection = this.db.collection(this.simplifiedTempCollectionName);
@@ -21,15 +22,15 @@ export class DauphinAdapter extends MongoPort<DauphinGisproDbo> {
         await this.collection.createIndex({ "dauphin.codeActionProject": 1 });
     }
 
-    async upsert(entity: DauphinGisproDbo) {
-        return this.collection.updateOne(
+    async upsert(entity: DauphinGisproDbo): Promise<void> {
+        await this.collection.updateOne(
             { "dauphin.reference": entity.dauphin.reference },
             { $set: entity as Partial<DauphinGisproDbo> },
             { upsert: true },
         );
     }
 
-    findBySiret(siret: Siret) {
+    findBySiret(siret: Siret): Promise<DauphinGisproDbo[]> {
         return this.collection
             .find({
                 "dauphin.demandeur.SIRET.complet": siret.value,
@@ -47,13 +48,13 @@ export class DauphinAdapter extends MongoPort<DauphinGisproDbo> {
             .toArray();
     }
 
-    findOneByDauphinId(codeDossier: string) {
+    findOneByDauphinId(codeDossier: string): Promise<DauphinGisproDbo | null> {
         return this.collection.findOne({
             "dauphin.codeActionProject": codeDossier,
         });
     }
 
-    async getLastImportDate() {
+    async getLastImportDate(): Promise<Date | null> {
         const result = await this.collection
             .aggregate([
                 { $project: { dateVersion: { $toDate: "$dauphin._document.dateVersion" } } },
@@ -68,7 +69,7 @@ export class DauphinAdapter extends MongoPort<DauphinGisproDbo> {
         return result;
     }
 
-    async migrateDauphinCacheToDauphin(logger: (message: string, writeOnSameLine?: boolean) => void) {
+    async migrateDauphinCacheToDauphin(logger: (message: string, writeOnSameLine?: boolean) => void): Promise<void> {
         const collection: Collection<DauphinGisproDbo> = this.db.collection("dauphin-caches");
         await collection.dropIndexes();
 
@@ -106,7 +107,7 @@ export class DauphinAdapter extends MongoPort<DauphinGisproDbo> {
 
     /* FLAT OPERATIONS */
 
-    async createSimplifiedDauphinBeforeJoin() {
+    async createSimplifiedDauphinBeforeJoin(): Promise<void> {
         console.log("cleaning simplified dauphin...");
         await this.cleanTempCollection();
         console.log("creating simplified dauphin...");
@@ -169,7 +170,7 @@ export class DauphinAdapter extends MongoPort<DauphinGisproDbo> {
         await this.simplifiedTempCollection.createIndex({ referenceAdministrative: 1 });
     }
 
-    async joinGisproToSimplified() {
+    async joinGisproToSimplified(): Promise<void> {
         await this.simplifiedTempCollection
             .aggregate(
                 [
@@ -239,10 +240,11 @@ export class DauphinAdapter extends MongoPort<DauphinGisproDbo> {
     }
 
     findAllTempCursor() {
+        // TODO: add to port
         return this.simplifiedTempCollection.find({}) as unknown as FindCursor<SimplifiedJoinedDauphinGispro>;
     }
 
-    async cleanTempCollection() {
+    async cleanTempCollection(): Promise<void> {
         await this.simplifiedTempCollection.deleteMany({});
     }
 }

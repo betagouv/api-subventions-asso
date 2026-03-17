@@ -2,9 +2,10 @@ import path from "node:path";
 import SubventiaCli from "../../../src/interfaces/cli/Subventia.cli";
 import subventiaAdapter from "../../../src/dataProviders/db/providers/subventia/subventia.adapter";
 import { ObjectId } from "mongodb";
-import dataLogAdapter from "../../../src/dataProviders/db/data-log/dataLog.adapter";
-import applicationFlatAdapter from "../../../src/dataProviders/db/applicationFlat/applicationFlat.adapter";
+import dataLogAdapter from "../../../src/dataProviders/db/data-log/data-log.adapter";
+import applicationFlatAdapter from "../../../src/dataProviders/db/applicationFlat/application-flat.adapter";
 import { SUBVENTIA_DBO } from "../../../src/modules/providers/subventia/__fixtures__/subventia.fixture";
+import { ApplicationFlatEntity } from "../../../src/entities/flats/ApplicationFlatEntity";
 
 describe("Subventia Cli", () => {
     let cli: SubventiaCli;
@@ -50,8 +51,12 @@ describe("Subventia Cli", () => {
         it("creates applications flat from subventia dbos", async () => {
             await subventiaAdapter.create(SUBVENTIA_DBO);
             await cli.initApplicationFlat();
-            const applications = await applicationFlatAdapter.cursorFind().toArray();
-            expect(applications).toMatchSnapshot();
+            const applications = applicationFlatAdapter.cursorFind();
+            const applicationsArray: ApplicationFlatEntity[] = [];
+            for await (const app of applications) {
+                applicationsArray.push(app);
+            }
+            expect(applicationsArray).toMatchSnapshot();
         });
     });
 });

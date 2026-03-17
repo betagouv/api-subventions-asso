@@ -2,8 +2,12 @@ import MongoPort from "../../../../shared/MongoPort";
 import Siren from "../../../../identifierObjects/Siren";
 import Siret from "../../../../identifierObjects/Siret";
 import DemarchesSimplifieesDataEntity from "../../../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesDataEntity";
+import { DemarchesSimplifieesDataProviderPort } from "./demarches-simplifiee-data.port";
 
-export class DemarchesSimplifieesDataAdapter extends MongoPort<DemarchesSimplifieesDataEntity> {
+export class DemarchesSimplifieesDataAdapter
+    extends MongoPort<DemarchesSimplifieesDataEntity>
+    implements DemarchesSimplifieesDataProviderPort
+{
     collectionName = "demarches-simplifiees-data";
 
     async createIndexes() {
@@ -11,7 +15,7 @@ export class DemarchesSimplifieesDataAdapter extends MongoPort<DemarchesSimplifi
         await this.collection.createIndex({ siret: 1 });
     }
 
-    async upsert(entity: DemarchesSimplifieesDataEntity) {
+    async upsert(entity: DemarchesSimplifieesDataEntity): Promise<void> {
         await this.collection.updateOne(
             {
                 "demande.id": entity.demande.id,
@@ -21,17 +25,17 @@ export class DemarchesSimplifieesDataAdapter extends MongoPort<DemarchesSimplifi
         );
     }
 
-    findBySiret(siret: Siret) {
+    findBySiret(siret: Siret): Promise<DemarchesSimplifieesDataEntity[]> {
         return this.collection.find({ siret: siret.value }).toArray();
     }
 
-    findBySiren(siren: Siren) {
+    findBySiren(siren: Siren): Promise<DemarchesSimplifieesDataEntity[]> {
         return this.collection
             .find({ siret: new RegExp(`^${siren.value}\\d{5}`) }, { projection: { _id: 0 } })
             .toArray();
     }
 
-    bulkUpsert(entities: DemarchesSimplifieesDataEntity[]) {
+    async bulkUpsert(entities: DemarchesSimplifieesDataEntity[]): Promise<void> {
         const bulk = entities.map(entity => {
             return {
                 updateOne: {
@@ -41,10 +45,12 @@ export class DemarchesSimplifieesDataAdapter extends MongoPort<DemarchesSimplifi
                 },
             };
         });
-        return bulk.length ? this.collection.bulkWrite(bulk, { ordered: false }) : Promise.resolve();
+        if (!bulk.length) return;
+        await this.collection.bulkWrite(bulk, { ordered: false });
     }
 
     findAllCursor() {
+        // todo: add to port
         return this.collection.find({});
     }
 }

@@ -1,6 +1,6 @@
 import { AgentTypeEnum } from "dto";
 import { BadRequestError } from "core";
-import adminStructureAdapter from "../../dataProviders/db/admin-structure/adminStructure.adapter";
+import adminStructureAdapter from "../../dataProviders/db/admin-structure/admin-structure.adapter";
 import AdminStructureEntity from "./entities/AdminStructureEntity";
 
 export class AdminStructureService {

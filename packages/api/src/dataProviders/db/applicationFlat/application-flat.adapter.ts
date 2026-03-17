@@ -7,8 +7,9 @@ import { ApplicationFlatDbo } from "./ApplicationFlatDbo";
 import { ApplicationFlatEntity } from "../../../entities/flats/ApplicationFlatEntity";
 import { insertStreamByBatch } from "../../../shared/helpers/MongoHelper";
 import { Readable } from "stream";
+import { ApplicationFlatPort } from "./application-flat.port";
 
-export class ApplicationFlatAdapter extends MongoPort<Omit<ApplicationFlatDbo, "_id">> {
+export class ApplicationFlatAdapter extends MongoPort<Omit<ApplicationFlatDbo, "_id">> implements ApplicationFlatPort {
     readonly collectionName = "applications-flat";
     readonly backupCollectionName = this.collectionName + "-backup";
 
@@ -19,21 +20,21 @@ export class ApplicationFlatAdapter extends MongoPort<Omit<ApplicationFlatDbo, "
         await this.collection.createIndex({ idUnique: 1 }, { unique: true });
     }
 
-    public async hasBeenInitialized() {
+    public async hasBeenInitialized(): Promise<boolean> {
         const dbo = await this.collection.findOne({});
         return !!dbo;
     }
 
-    public insertOne(entity: ApplicationFlatEntity) {
-        return this.collection.insertOne(ApplicationFlatMapper.entityToDbo(entity));
+    public async insertOne(entity: ApplicationFlatEntity): Promise<void> {
+        await this.collection.insertOne(ApplicationFlatMapper.entityToDbo(entity));
     }
 
-    public upsertOne(entity: ApplicationFlatEntity) {
+    public async upsertOne(entity: ApplicationFlatEntity): Promise<void> {
         const dbo = ApplicationFlatMapper.entityToDbo(entity);
-        return this.collection.updateOne({ idUnique: dbo.idUnique }, { $set: dbo }, { upsert: true });
+        await this.collection.updateOne({ idUnique: dbo.idUnique }, { $set: dbo }, { upsert: true });
     }
 
-    public upsertMany(entities: ApplicationFlatEntity[]) {
+    public async upsertMany(entities: ApplicationFlatEntity[]): Promise<void> {
         if (!entities.length) return Promise.resolve();
         const bulk = entities.map(entity => {
             const dbo = ApplicationFlatMapper.entityToDbo(entity);
@@ -45,25 +46,28 @@ export class ApplicationFlatAdapter extends MongoPort<Omit<ApplicationFlatDbo, "
                 },
             };
         });
-        return this.collection.bulkWrite(bulk, { ordered: false });
+        await this.collection.bulkWrite(bulk, { ordered: false });
     }
 
-    public insertMany(entities: ApplicationFlatEntity[]) {
-        return this.collection.insertMany(
+    public async insertMany(entities: ApplicationFlatEntity[]): Promise<void> {
+        await this.collection.insertMany(
             entities.map(e => ApplicationFlatMapper.entityToDbo(e)),
             { ordered: false },
         );
     }
 
-    public cursorFind(query: DefaultObject<unknown> = {}, projection: DefaultObject<unknown> = {}) {
+    public cursorFind(
+        query: DefaultObject<unknown> = {},
+        projection: DefaultObject<unknown> = {},
+    ): AsyncIterable<ApplicationFlatEntity> {
         return this.collection.find(query, projection).map(dbo => ApplicationFlatMapper.dboToEntity(dbo));
     }
 
-    public async deleteAll() {
+    public async deleteAll(): Promise<void> {
         await this.collection.deleteMany({});
     }
 
-    public async findBySiret(siret: Siret) {
+    public async findBySiret(siret: Siret): Promise<ApplicationFlatEntity[]> {
         return this.collection
             .find({
                 typeIdEtablissementBeneficiaire: siret.name,
@@ -73,7 +77,7 @@ export class ApplicationFlatAdapter extends MongoPort<Omit<ApplicationFlatDbo, "
             .toArray();
     }
 
-    public async findBySiren(siren: Siren) {
+    public async findBySiren(siren: Siren): Promise<ApplicationFlatEntity[]> {
         return this.collection
             .find({
                 typeIdEtablissementBeneficiaire: Siret.getName(),
@@ -84,7 +88,7 @@ export class ApplicationFlatAdapter extends MongoPort<Omit<ApplicationFlatDbo, "
             .toArray();
     }
 
-    public async findByEJ(ej: string) {
+    public async findByEJ(ej: string): Promise<ApplicationFlatEntity[]> {
         return this.collection
             .find({ ej })
             .map(dbo => ApplicationFlatMapper.dboToEntity(dbo))
@@ -92,13 +96,13 @@ export class ApplicationFlatAdapter extends MongoPort<Omit<ApplicationFlatDbo, "
     }
 
     // we use bulk instead of deleteMany as $in might cause performance issues with large arrays
-    public async bulkFindDeleteByExercises(provider: string, exercises: number[]) {
+    public async bulkFindDeleteByExercises(provider: string, exercises: number[]): Promise<void> {
         const bulk = this.collection.initializeUnorderedBulkOp();
         exercises.forEach(exercise => {
             const query: Partial<ApplicationFlatDbo> = { fournisseur: provider, exerciceBudgetaire: exercise };
             bulk.find(query).delete();
         });
-        return bulk.execute().catch(error => {
+        await bulk.execute().catch(error => {
             throw error;
         });
     }
@@ -107,26 +111,26 @@ export class ApplicationFlatAdapter extends MongoPort<Omit<ApplicationFlatDbo, "
      * Save all given provider data in a backup collection
      * @param provider provider
      */
-    public async createBackupByProvider(provider: string) {
+    public async createBackupByProvider(provider: string): Promise<void> {
         console.log(
             `creating partial backup for provider '${provider}' for applicationFlat collection ${this.backupCollectionName}`,
         );
-        return this.collection.aggregate([{ $match: { provider } }, { $out: this.backupCollectionName }]).toArray();
+        await this.collection.aggregate([{ $match: { provider } }, { $out: this.backupCollectionName }]).toArray();
     }
 
     /**
      * Drop the backup collection
      */
-    public async dropBackupCollection() {
+    public async dropBackupCollection(): Promise<void> {
         console.log(`Dropping backup collection ${this.backupCollectionName}`);
-        return this.db.collection(this.backupCollectionName).drop();
+        await this.db.collection(this.backupCollectionName).drop();
     }
 
     /**
      * Apply backup collection created in createBackupCollection
-     * @param provider scdl-${allocatorSiret}
+     * @param providerId
      */
-    public async applyBackupCollection(providerId: string) {
+    public async applyBackupCollection(providerId: string): Promise<void> {
         await this.collection.deleteMany({ provider: providerId });
         await insertStreamByBatch(
             Readable.toWeb(this.db.collection(this.backupCollectionName).find().stream()),
@@ -136,7 +140,7 @@ export class ApplicationFlatAdapter extends MongoPort<Omit<ApplicationFlatDbo, "
         await this.dropBackupCollection();
     }
 
-    async findAll() {
+    async findAll(): Promise<ApplicationFlatEntity[]> {
         return this.collection
             .find({})
             .map(dbo => ApplicationFlatMapper.dboToEntity(dbo))

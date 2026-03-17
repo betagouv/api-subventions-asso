@@ -1,7 +1,7 @@
 import dauphinAdapter from "../../../src/dataProviders/db/providers/dauphin/dauphin.adapter";
 import gisproAdapter from "../../../src/dataProviders/db/providers/gispro.adapter";
 import DauphinSubventionDto from "../../../src/modules/providers/dauphin-gispro/dto/DauphinSubventionDto";
-import applicationFlatAdapter from "../../../src/dataProviders/db/applicationFlat/applicationFlat.adapter";
+import applicationFlatAdapter from "../../../src/dataProviders/db/applicationFlat/application-flat.adapter";
 import DauphinCli from "../../../src/interfaces/cli/Dauphin.cli";
 import { DAUPHIN_ENTITIES, GISPRO_ENTITIES } from "./__fixtures__/dauphinGispro.fixture";
 

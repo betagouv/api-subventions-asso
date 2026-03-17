@@ -1,34 +1,37 @@
 import MongoPort from "../../../shared/MongoPort";
 import { DataLogEntity } from "../../../modules/data-log/entities/dataLogEntity";
 import { ProducerLogEntity } from "../../../modules/data-log/entities/producerLogEntity";
-import { FindCursor, WithId } from "mongodb";
+import { removeMongoId, removeMongoIds } from "../../../shared/mappers/mongo-document.mapper";
+import { DataLogPort } from "./data-log.port";
 
-class DataLogAdapter extends MongoPort<DataLogEntity> {
+class DataLogAdapter extends MongoPort<DataLogEntity> implements DataLogPort {
     readonly collectionName = "data-log";
 
-    async createIndexes() {
+    async createIndexes(): Promise<void> {
         await this.collection.createIndex({ providerId: 1 });
         await this.collection.createIndex({ editionDate: 1 });
         await this.collection.createIndex({ integrationDate: 1 });
     }
 
-    async insert(entity: DataLogEntity) {
-        return this.collection.insertOne(entity);
+    async insert(entity: DataLogEntity): Promise<void> {
+        await this.collection.insertOne(entity);
     }
 
-    async insertMany(entities: DataLogEntity[]) {
-        return this.collection.insertMany(entities);
+    async insertMany(entities: DataLogEntity[]): Promise<void> {
+        await this.collection.insertMany(entities);
     }
 
-    async findAll() {
-        return this.findAllCursor().toArray();
+    async findAll(): Promise<DataLogEntity[]> {
+        const result = await this.collection.find().toArray();
+        return removeMongoIds(result);
     }
 
-    findAllCursor(): FindCursor<WithId<DataLogEntity>> {
-        return this.collection.find({});
+    findAllCursor(): AsyncIterable<DataLogEntity> {
+        const cursor = this.collection.find({});
+        return cursor.map(removeMongoId);
     }
 
-    async getLastImportByProvider(providerId: string) {
+    async getLastImportByProvider(providerId: string): Promise<Date> {
         return (
             await this.collection
                 .aggregate([

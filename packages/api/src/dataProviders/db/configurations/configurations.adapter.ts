@@ -1,12 +1,14 @@
 import { WithId } from "mongodb";
 import MongoPort from "../../../shared/MongoPort";
 import ConfigurationEntity from "../../../modules/configurations/entities/ConfigurationEntity";
+import { removeMongoId } from "../../../shared/mappers/mongo-document.mapper";
+import { ConfigurationsPort } from "./configurations.port";
 
-export class ConfigurationsAdapter extends MongoPort<ConfigurationEntity> {
+export class ConfigurationsAdapter extends MongoPort<ConfigurationEntity> implements ConfigurationsPort {
     readonly collectionName = "configurations";
 
-    async upsert(name: string, partialEntity: Partial<ConfigurationEntity>) {
-        return this.collection.updateOne(
+    async upsert(name: string, partialEntity: Partial<ConfigurationEntity>): Promise<void> {
+        await this.collection.updateOne(
             {
                 name: name,
             },
@@ -15,8 +17,10 @@ export class ConfigurationsAdapter extends MongoPort<ConfigurationEntity> {
         );
     }
 
-    getByName<T>(name: string) {
-        return this.collection.findOne({ name }) as Promise<WithId<ConfigurationEntity<T>> | null>;
+    async getByName<T>(name: string): Promise<ConfigurationEntity<T> | null> {
+        const result = (await this.collection.findOne({ name })) as WithId<ConfigurationEntity<T>> | null;
+        if (!result) return null;
+        return removeMongoId(result);
     }
 
     async createIndexes() {

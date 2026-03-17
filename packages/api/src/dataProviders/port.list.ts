@@ -21,9 +21,9 @@ import { osirisActionAdapter, osirisRequestAdapter } from "./db/providers/osiris
 import miscScdlGrantAdapter from "./db/providers/scdl/miscScdlGrant.adapter";
 import miscScdlProducersAdapter from "./db/providers/scdl/miscScdlProducers.adapter";
 import sireneStockUniteLegaleAdapter from "./db/sirene/stockUniteLegale/sireneStockUniteLegale.adapter";
-import amountsVsProgramRegionAdapter from "./db/dataViz/amountVSProgramRegion/amountsVsProgramRegion.adapter";
-import dataLogAdapter from "./db/data-log/dataLog.adapter";
-import applicationFlatAdapter from "./db/applicationFlat/applicationFlat.adapter";
+import amountsVsProgramRegionAdapter from "./db/dataViz/amountVSProgramRegion/amounts-vs-program-region.adapter";
+import dataLogAdapter from "./db/data-log/data-log.adapter";
+import applicationFlatAdapter from "./db/applicationFlat/application-flat.adapter";
 import gisproAdapter from "./db/providers/gispro.adapter";
 import depositLogAdapter from "./db/deposit-log/deposit-log.adapter";
 import chorusFseAdapter from "./db/providers/chorus/chorus.fse.adapter";

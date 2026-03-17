@@ -1,5 +1,5 @@
 import { ApplicationFlatDto, DemandeSubvention } from "dto";
-import applicationFlatAdapter from "../../dataProviders/db/applicationFlat/applicationFlat.adapter";
+import applicationFlatAdapter from "../../dataProviders/db/applicationFlat/application-flat.adapter";
 import AssociationIdentifier from "../../identifierObjects/AssociationIdentifier";
 import EstablishmentIdentifier from "../../identifierObjects/EstablishmentIdentifier";
 import { RawApplication } from "../grant/@types/rawGrant";
@@ -90,9 +90,13 @@ export class ApplicationFlatService
         return applicationFlatAdapter.hasBeenInitialized();
     }
 
-    async containsDataFromProvider(provider: string | RegExp) {
+    async containsDataFromProvider(provider: string | RegExp): Promise<boolean> {
         const cursor = applicationFlatAdapter.cursorFind({ fournisseur: provider });
-        return cursor.hasNext();
+
+        for await (const appFlat of cursor) {
+            return true;
+        }
+        return false;
     }
 
     /**

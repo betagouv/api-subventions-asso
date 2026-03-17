@@ -46,7 +46,7 @@ export class DauphinService extends ProviderCore implements DocumentProvider {
 
     async updateApplicationCache() {
         const lastUpdateDate = await dauphinAdapter.getLastImportDate();
-        console.log(`update cache from ${lastUpdateDate.toString()}`);
+        console.log(`update cache from ${lastUpdateDate?.toString()}`);
         const token = await this.getAuthToken();
         let totalToFetch = 0;
         let fetched = 0;

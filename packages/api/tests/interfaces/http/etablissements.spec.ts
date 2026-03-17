@@ -15,7 +15,7 @@ import Siren from "../../../src/identifierObjects/Siren";
 import statsAssociationsVisitAdapter from "../../../src/dataProviders/db/stats/statsAssociationsVisit.adapter";
 import { App } from "supertest/types";
 import apiAssoService from "../../../src/modules/providers/apiAsso/apiAsso.service";
-import applicationFlatAdapter from "../../../src/dataProviders/db/applicationFlat/applicationFlat.adapter";
+import applicationFlatAdapter from "../../../src/dataProviders/db/applicationFlat/application-flat.adapter";
 import paymentFlatAdapter from "../../../src/dataProviders/db/paymentFlat/paymentFlat.adapter";
 import {
     APPLICATION_LINK_TO_CHORUS,
