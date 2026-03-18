@@ -1,29 +1,30 @@
-import { AnyBulkWriteOperation, ObjectId, WithId } from "mongodb";
+import { AnyBulkWriteOperation } from "mongodb";
 import Siret from "../../../../identifierObjects/Siret";
 import Siren from "../../../../identifierObjects/Siren";
 import { DefaultObject } from "../../../../@types";
 import MongoAdapter from "../../MongoAdapter";
 import ChorusEntity from "../../../../modules/providers/chorus/entities/ChorusEntity";
+import { ChorusPort } from "./chorus.port";
 
-export class ChorusAdapter extends MongoAdapter<ChorusEntity> {
+export class ChorusAdapter extends MongoAdapter<ChorusEntity> implements ChorusPort {
     readonly collectionName = "chorus";
 
     public async findOneByEJ(ej: string) {
-        return this.collection.findOne({ "indexedInformations.ej": ej });
+        return this.collection.findOne({ ej: ej }, { projection: { _id: 0 } });
     }
 
     public async findOneBySiret(siret: Siret) {
-        return this.collection.findOne({ "indexedInformations.siret": siret.value });
+        return this.collection.findOne({ siret: siret.value });
     }
 
     public async findOneBySiren(siren: Siren) {
         return this.collection.findOne({
-            "indexedInformations.siret": new RegExp(`^${siren.value}\\d{5}`),
+            siret: new RegExp(`^${siren.value}\\d{5}`),
         });
     }
 
     public async findOneByUniqueId(uniqueId: string) {
-        return this.collection.findOne({ uniqueId: uniqueId });
+        return this.collection.findOne({ uniqueId: uniqueId }, { projection: { _id: 0 } });
     }
 
     public async create(entity: ChorusEntity) {
@@ -41,38 +42,32 @@ export class ChorusAdapter extends MongoAdapter<ChorusEntity> {
                     },
                 }) as AnyBulkWriteOperation<ChorusEntity>,
         );
-        return this.collection.bulkWrite(operations);
+        await this.collection.bulkWrite(operations);
+        return;
     }
 
     public async update(entity: ChorusEntity) {
-        const { _id, ...entityWithoutId } = entity;
-
-        await this.collection.updateOne({ uniqueId: entity.uniqueId }, { $set: entityWithoutId });
-
-        return this.collection.findOne({ uniqueId: entity.uniqueId }) as Promise<WithId<ChorusEntity>>;
-    }
-
-    public async updateById(id: ObjectId, entity: ChorusEntity) {
-        const { _id, ...entityWithoutId } = entity;
-
-        await this.collection.updateOne({ _id: id }, { $set: entityWithoutId });
-
-        return this.collection.findOne({ _id: id }) as Promise<WithId<ChorusEntity>>;
+        await this.collection.updateOne({ uniqueId: entity.uniqueId }, { $set: entity });
+        await this.collection.findOne({ uniqueId: entity.uniqueId }, { projection: { _id: 0 } });
+        return;
     }
 
     public async findBySiret(siret: Siret) {
-        return this.collection.find({ "indexedInformations.siret": siret.value }).toArray();
+        return this.collection.find({ siret: siret.value }, { projection: { _id: 0 } }).toArray();
     }
 
     public async findByEJ(ej: string) {
-        return this.collection.find({ "indexedInformations.ej": ej }).toArray();
+        return this.collection.find({ ej: ej }, { projection: { _id: 0 } }).toArray();
     }
 
     public async findBySiren(siren: Siren) {
         return this.collection
-            .find({
-                "indexedInformations.siret": new RegExp(`^${siren.value}\\d{5}`),
-            })
+            .find(
+                {
+                    siret: new RegExp(`^${siren.value}\\d{5}`),
+                },
+                { projection: { _id: 0 } },
+            )
             .toArray();
     }
 
@@ -82,14 +77,14 @@ export class ChorusAdapter extends MongoAdapter<ChorusEntity> {
 
     public cursorFindOnExercise(exerciceBudgetaire: number) {
         return this.cursorFind({
-            "indexedInformations.exercice": exerciceBudgetaire,
+            exercice: exerciceBudgetaire,
         });
     }
 
     async createIndexes() {
         await this.collection.createIndex({ uniqueId: 1 }, { unique: true });
-        await this.collection.createIndex({ "indexedInformations.ej": 1 });
-        await this.collection.createIndex({ "indexedInformations.siret": 1 });
+        await this.collection.createIndex({ ej: 1 });
+        await this.collection.createIndex({ siret: 1 });
         await this.collection.createIndex({ updated: 1 });
     }
 }

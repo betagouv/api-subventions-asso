@@ -11,7 +11,7 @@ import chorusService from "../../modules/providers/chorus/chorus.service";
 jest.mock("../../modules/providers/chorus/chorus.service");
 const mockedService = jest.mocked(chorusService);
 import ChorusCli from "./Chorus.cli";
-import { ENTITIES } from "../../modules/providers/chorus/__fixtures__/ChorusFixtures";
+import { CHORUS_ENTITIES } from "../../modules/providers/chorus/__fixtures__/ChorusFixtures";
 import paymentFlatChorusService from "../../modules/paymentFlat/paymentFlat.chorus.service";
 import { ChorusPaymentFlatEntity } from "../../modules/providers/chorus/@types/ChorusPaymentFlat";
 jest.mock("../../modules/paymentFlat/paymentFlat.chorus.service");
@@ -21,7 +21,7 @@ describe("Chorus CLI", () => {
 
     const FILE_PATH = "../../file/path";
     const FILE_CONTENT = "HERE_MY_CONTENT";
-    const NATIONAL_CHORUS_ENTITIES = [...ENTITIES];
+    const NATIONAL_CHORUS_ENTITIES = [...CHORUS_ENTITIES];
     const EUROPEAN_CHORUS_ENTITIES = [];
 
     let controller: ChorusCli;

@@ -1,25 +1,21 @@
-import ChorusEntity from "../entities/ChorusEntity";
 import ChorusMapper from "./chorus.mapper";
 import dataBretagneService from "../../dataBretagne/dataBretagne.service";
-import { ENTITIES } from "../__fixtures__/ChorusFixtures";
-import { ChorusDto } from "../@types/ChorusDto";
 import { DATA_BRETAGNE_RECORDS } from "../../dataBretagne/__fixtures__/dataBretagne.fixture";
-import * as Sentry from "@sentry/node";
 import Tahitiet from "../../../../identifierObjects/Tahitiet";
 import Ridet from "../../../../identifierObjects/Ridet";
 import Siret from "../../../../identifierObjects/Siret";
 import Siren from "../../../../identifierObjects/Siren";
 import Tahiti from "../../../../identifierObjects/Tahiti";
 import Rid from "../../../../identifierObjects/Rid";
-import { GenericParser } from "../../../../shared/GenericParser";
-import { CHORUS_PAYMENT_FLAT_ENTITY } from "../../../paymentFlat/__fixtures__/paymentFlatEntity.fixture";
+import { CHORUS_ENTITIES } from "../__fixtures__/ChorusFixtures";
+import DEFAULT_ASSOCIATION from "../../../../../tests/__fixtures__/association.fixture";
 
 jest.mock("@sentry/node", () => ({
     captureException: jest.fn(),
 }));
 
 describe("ChorusMapper", () => {
-    const documentDataReturnedValue = {
+    const COMPLEMENTARY_DATA = {
         programCode: 101,
         activityCode: "077601003222",
         actionCode: "0101-01-02",
@@ -29,28 +25,98 @@ describe("ChorusMapper", () => {
         refProgrammationEntity: DATA_BRETAGNE_RECORDS.programsRef["077601003222"],
     };
 
-    const CHORUS_LINE_ENTITY = {
-        ...ENTITIES[0],
-        data: { ...(ENTITIES[0].data as ChorusDto), Société: "BRET" },
-    };
-
     describe("toNotAggregatedPaymentFlatEntity", () => {
-        let mockgetEntitiesByIdentifierComplementaryData: jest.SpyInstance;
+        const SIREN = new Siren(DEFAULT_ASSOCIATION.siren);
+        const SIRET = new Siret(DEFAULT_ASSOCIATION.siret);
+        let mockBuildComplementaryData: jest.SpyInstance;
+        let mockGetEstablishmentValueObject: jest.SpyInstance;
+        let mockGetCompanyId: jest.SpyInstance;
+        let mockGetRegionAttachementComptable: jest.SpyInstance;
+
         beforeEach(() => {
-            mockgetEntitiesByIdentifierComplementaryData = jest.spyOn(
+            mockBuildComplementaryData = jest.spyOn(
                 ChorusMapper,
                 //@ts-expect-error : test private method
-                "getEntitiesByIdentifierComplementaryData",
+                "buildComplementaryData",
             );
-            mockgetEntitiesByIdentifierComplementaryData.mockReturnValue(documentDataReturnedValue);
-        });
-        afterAll(() => {
-            mockgetEntitiesByIdentifierComplementaryData.mockRestore();
+            mockGetEstablishmentValueObject = jest
+                //@ts-expect-error : test private method
+                .spyOn(ChorusMapper, "getEstablishmentValueObject")
+                //@ts-expect-error : test private method
+                .mockReturnValue(SIRET);
+            mockGetCompanyId = jest
+                //@ts-expect-error : test private method
+                .spyOn(ChorusMapper, "getCompanyId")
+                //@ts-expect-error : test private method
+                .mockReturnValue(SIREN);
+            mockGetRegionAttachementComptable = jest
+                .spyOn(ChorusMapper, "getRegionAttachementComptable")
+                .mockReturnValue("REGION");
+            mockBuildComplementaryData.mockReturnValue(COMPLEMENTARY_DATA);
         });
 
-        it("should return PaymentFlatEntity when data is fully provided", () => {
+        afterAll(() => {
+            [
+                mockBuildComplementaryData,
+                mockGetEstablishmentValueObject,
+                mockGetCompanyId,
+                mockGetRegionAttachementComptable,
+            ].forEach(mock => mock.mockRestore());
+        });
+
+        it("gets complementary data", () => {
+            ChorusMapper.toNotAggregatedPaymentFlatEntity(
+                CHORUS_ENTITIES[0],
+                DATA_BRETAGNE_RECORDS.programs,
+                DATA_BRETAGNE_RECORDS.ministries,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
+            );
+            expect(mockBuildComplementaryData).toHaveBeenCalledWith(
+                CHORUS_ENTITIES[0],
+                DATA_BRETAGNE_RECORDS.programs,
+                DATA_BRETAGNE_RECORDS.ministries,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
+            );
+        });
+
+        it("defines establishment identifier", () => {
+            ChorusMapper.toNotAggregatedPaymentFlatEntity(
+                CHORUS_ENTITIES[0],
+                DATA_BRETAGNE_RECORDS.programs,
+                DATA_BRETAGNE_RECORDS.ministries,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
+            );
+            expect(mockGetEstablishmentValueObject).toHaveBeenCalledWith(CHORUS_ENTITIES[0]);
+        });
+
+        it("defines association identifier", () => {
+            ChorusMapper.toNotAggregatedPaymentFlatEntity(
+                CHORUS_ENTITIES[0],
+                DATA_BRETAGNE_RECORDS.programs,
+                DATA_BRETAGNE_RECORDS.ministries,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
+            );
+            expect(mockGetCompanyId).toHaveBeenCalledWith(SIRET);
+        });
+
+        it("gets region attachement comptable", () => {
+            ChorusMapper.toNotAggregatedPaymentFlatEntity(
+                CHORUS_ENTITIES[0],
+                DATA_BRETAGNE_RECORDS.programs,
+                DATA_BRETAGNE_RECORDS.ministries,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
+            );
+            expect(mockGetRegionAttachementComptable).toHaveBeenCalledWith(CHORUS_ENTITIES[0].codeSociete);
+        });
+
+        it("returns PaymentFlatEntity when data is fully provided", () => {
             const result = ChorusMapper.toNotAggregatedPaymentFlatEntity(
-                CHORUS_LINE_ENTITY,
+                CHORUS_ENTITIES[0],
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
                 DATA_BRETAGNE_RECORDS.fonctionalDomains,
@@ -61,12 +127,12 @@ describe("ChorusMapper", () => {
         });
 
         it("should return PaymentFlatEntity with null when data is not fully provided", () => {
-            mockgetEntitiesByIdentifierComplementaryData.mockReturnValueOnce({
-                ...documentDataReturnedValue,
+            mockBuildComplementaryData.mockReturnValueOnce({
+                ...COMPLEMENTARY_DATA,
                 programEntity: undefined,
             });
             const result = ChorusMapper.toNotAggregatedPaymentFlatEntity(
-                { ...CHORUS_LINE_ENTITY } as unknown as ChorusEntity,
+                { ...CHORUS_ENTITIES[0] },
                 DATA_BRETAGNE_RECORDS.programs,
                 DATA_BRETAGNE_RECORDS.ministries,
                 DATA_BRETAGNE_RECORDS.fonctionalDomains,
@@ -74,206 +140,6 @@ describe("ChorusMapper", () => {
             );
 
             expect(result).toMatchSnapshot();
-        });
-    });
-
-    describe("getEntitiesByIdentifierComplementaryData", () => {
-        const mockGetMinistryEntity = jest.spyOn(dataBretagneService, "getMinistryEntity");
-        // @ts-expect-error: private method
-        const mockGetProgramCodeAndEntity = jest.spyOn(ChorusMapper, "getProgramCodeAndEntity");
-        // @ts-expect-error: private method
-        const mockGetActivityCodeAndEntity = jest.spyOn(ChorusMapper, "getActivityCodeAndEntity");
-        // @ts-expect-error: private method
-        const mockGetActionCodeAndEntity = jest.spyOn(ChorusMapper, "getActionCodeAndEntity");
-
-        const CHORUS_DTO = {
-            // matches one of DATA_BRETAGNE_RECORDS.fonctionalDomains keys
-            "Domaine fonctionnel CODE": "0163AC123",
-            // matches one of DATA_BRETAGNE_RECORDS.programsRef keys
-            "Référentiel de programmation CODE": "AC4560000000",
-        };
-
-        // number must match one of DATA_BRETAGNE.programme keys
-        const PROGRAM = DATA_BRETAGNE_RECORDS.programs[163];
-        const PROG_CODE = PROGRAM.code_programme;
-        // be careful that DATA_BRETAGNE_RECORDS.ministries as an entity which matches PROGRAM.code_ministere
-        const MINISTRY = DATA_BRETAGNE_RECORDS.ministries[PROGRAM.code_ministere];
-        const DOMAINE_FONCT = DATA_BRETAGNE_RECORDS.fonctionalDomains[CHORUS_DTO["Domaine fonctionnel CODE"]];
-        const ACTION_CODE = DOMAINE_FONCT.code_action;
-        const REF_PROG = DATA_BRETAGNE_RECORDS.programsRef[CHORUS_DTO["Référentiel de programmation CODE"]];
-        const ACTIVITY_CODE = REF_PROG.code_activite;
-
-        beforeEach(() => {
-            // @ts-expect-error: mock
-            mockGetProgramCodeAndEntity.mockReturnValue({ code: PROG_CODE, entity: PROGRAM });
-            mockGetMinistryEntity.mockReturnValue(MINISTRY);
-            // @ts-expect-error: mock
-            mockGetActionCodeAndEntity.mockReturnValue({ code: ACTION_CODE, entity: DOMAINE_FONCT });
-            // @ts-expect-error: mock
-            mockGetActivityCodeAndEntity.mockReturnValue({ code: ACTIVITY_CODE, entity: REF_PROG });
-        });
-
-        afterAll(() => {
-            [
-                mockGetActionCodeAndEntity,
-                mockGetMinistryEntity,
-                mockGetActionCodeAndEntity,
-                mockGetActivityCodeAndEntity,
-            ].map(mock => mock.mockRestore());
-        });
-
-        it("gets StateBudgetProgramEntity", () => {
-            // @ts-expect-error: private method
-            ChorusMapper.getEntitiesByIdentifierComplementaryData(
-                CHORUS_DTO as ChorusDto,
-                DATA_BRETAGNE_RECORDS.programs,
-                DATA_BRETAGNE_RECORDS.ministries,
-                DATA_BRETAGNE_RECORDS.fonctionalDomains,
-                DATA_BRETAGNE_RECORDS.programsRef,
-            );
-            expect(mockGetProgramCodeAndEntity).toHaveBeenCalledWith(CHORUS_DTO, DATA_BRETAGNE_RECORDS.programs);
-        });
-
-        it("gets MinistryEntity", () => {
-            // @ts-expect-error: private method
-            ChorusMapper.getEntitiesByIdentifierComplementaryData(
-                CHORUS_DTO as ChorusDto,
-                DATA_BRETAGNE_RECORDS.programs,
-                DATA_BRETAGNE_RECORDS.ministries,
-                DATA_BRETAGNE_RECORDS.fonctionalDomains,
-                DATA_BRETAGNE_RECORDS.programsRef,
-            );
-            expect(mockGetMinistryEntity).toHaveBeenCalledWith(PROGRAM, DATA_BRETAGNE_RECORDS.ministries);
-        });
-
-        it("gets DomaineFonctionnelEntity", () => {
-            // @ts-expect-error: private method
-            ChorusMapper.getEntitiesByIdentifierComplementaryData(
-                CHORUS_DTO as ChorusDto,
-                DATA_BRETAGNE_RECORDS.programs,
-                DATA_BRETAGNE_RECORDS.ministries,
-                DATA_BRETAGNE_RECORDS.fonctionalDomains,
-                DATA_BRETAGNE_RECORDS.programsRef,
-            );
-            expect(mockGetActionCodeAndEntity).toHaveBeenCalledWith(
-                CHORUS_DTO,
-                DATA_BRETAGNE_RECORDS.fonctionalDomains,
-            );
-        });
-
-        it("gets RefProgrammationEntity", () => {
-            // @ts-expect-error: private method
-            ChorusMapper.getEntitiesByIdentifierComplementaryData(
-                CHORUS_DTO as ChorusDto,
-                DATA_BRETAGNE_RECORDS.programs,
-                DATA_BRETAGNE_RECORDS.ministries,
-                DATA_BRETAGNE_RECORDS.fonctionalDomains,
-                DATA_BRETAGNE_RECORDS.programsRef,
-            );
-            expect(mockGetActivityCodeAndEntity).toHaveBeenCalledWith(CHORUS_DTO, DATA_BRETAGNE_RECORDS.programsRef);
-        });
-
-        it("returns complementary data from data bretagne", () => {
-            const expected = {
-                programCode: PROG_CODE,
-                activityCode: ACTIVITY_CODE,
-                actionCode: ACTION_CODE,
-                programEntity: PROGRAM,
-                ministryEntity: MINISTRY,
-                domaineFonctEntity: DOMAINE_FONCT,
-                refProgrammationEntity: REF_PROG,
-            };
-            // @ts-expect-error: private method
-            const actual = ChorusMapper.getEntitiesByIdentifierComplementaryData(
-                CHORUS_DTO as ChorusDto,
-                DATA_BRETAGNE_RECORDS.programs,
-                DATA_BRETAGNE_RECORDS.ministries,
-                DATA_BRETAGNE_RECORDS.fonctionalDomains,
-                DATA_BRETAGNE_RECORDS.programsRef,
-            );
-
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("getRegionAttachementComptable", () => {
-        const testCases = [
-            ["ADCE", "Administration Centrale"],
-            ["DOM1", "DOM-TOM"],
-            ["ALSA", "Grand Est"],
-            ["AQUI", "Nouvelle-Aquitaine"],
-            ["AUVE", "Auvergne-Rhône-Alpes"],
-        ];
-        it.each(testCases)("should return the region for a given valid region code", (regionCode, expected) => {
-            const actual = ChorusMapper.getRegionAttachementComptable(regionCode);
-
-            expect(actual).toEqual(expected);
-        });
-
-        it("returns null when given string doesn't match a region code", () => {
-            const actual = ChorusMapper.getRegionAttachementComptable("INVALID");
-            const expected = null;
-            expect(actual).toBe(expected);
-        });
-
-        it("should call Sentry.captureException for an invalid region code", () => {
-            ChorusMapper.getRegionAttachementComptable("INVALID");
-
-            expect(Sentry.captureException).toHaveBeenCalled();
-        });
-
-        it("should return N/A for a N/A region code", () => {
-            const actual = ChorusMapper.getRegionAttachementComptable("N/A");
-            const expected = "N/A";
-            expect(actual).toBe(expected);
-        });
-    });
-
-    describe("getEstablishmentValueObject", () => {
-        const mockIsRidet = jest.fn().mockReturnValue(true);
-        const mockIsTahitiet = jest.fn().mockReturnValue(true);
-        const mockIsSiret = jest.fn().mockReturnValue(true);
-
-        // Only mock isRidet, isTahitiet and isSiret
-        // If we wanted to be 100% unit testing we should create a mock in __mocks__ folder
-        beforeAll(() => {
-            Ridet.isRidet = mockIsRidet;
-            Siret.isSiret = mockIsSiret;
-            Tahitiet.isTahitiet = mockIsTahitiet;
-        });
-
-        it("throws error if no SIRET or RIDET or TAHITI defined", () => {
-            // @ts-expect-error: partial chorus line dto
-            const ENTITY = {
-                "N° EJ": "123456789",
-                "Exercice comptable": 2023,
-                "Code taxe 1": "#",
-                "No TVA 3 (COM-RIDET ou TAHITI)": "#",
-            } as ChorusDto;
-
-            // @ts-expect-error: private method
-            expect(() => ChorusMapper.getEstablishmentValueObject(ENTITY)).toThrow(
-                `Not able to retrieve an establishment identifier for chorus line with EJ ${ENTITY["N° EJ"]} for exercice ${ENTITY["Exercice comptable"]}`,
-            );
-        });
-
-        it.each`
-            siret               | ridetOrTahitiet | valueObject
-            ${"12345678900018"} | ${"#"}          | ${Siret}
-            ${"#"}              | ${"0482749145"} | ${Ridet}
-            ${"#"}              | ${"A1234569"}   | ${Tahitiet}
-        `("should return $valueObject.name if code taxe is not #", ({ siret, ridetOrTahitiet, valueObject }) => {
-            // When testing Tahitied we must force isRidet to false
-            if (valueObject === Tahitiet) mockIsRidet.mockReturnValueOnce(false);
-
-            const ENTITY = {
-                "Code taxe 1": siret,
-                "No TVA 3 (COM-RIDET ou TAHITI)": ridetOrTahitiet,
-            } as ChorusDto;
-            const expected = valueObject;
-            // @ts-expect-error: private method
-            const actual = ChorusMapper.getEstablishmentValueObject(ENTITY);
-            expect(actual).toBeInstanceOf(expected);
         });
     });
 
@@ -347,152 +213,200 @@ describe("ChorusMapper", () => {
         });
     });
 
-    describe("getAmount", () => {
-        it("should return amount with value", () => {
-            const CHORUS_LINE_DTO = {
-                "Montant payé": 9987,
-            } as ChorusDto;
-
-            const expected = CHORUS_LINE_DTO["Montant payé"];
-            // @ts-expect-error: private method
-            const actual = ChorusMapper.getAmount(CHORUS_LINE_DTO);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return amount with string value", () => {
-            // @ts-expect-error: edge case
-            const CHORUS_LINE_DTO = {
-                "Montant payé": "9987,50",
-            } as ChorusDto;
-
-            const expected = 9987.5;
-            // @ts-expect-error: private method
-            const actual = ChorusMapper.getAmount(CHORUS_LINE_DTO);
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return null if neither string or number", () => {
-            // @ts-expect-error: edge case
-            const CHORUS_LINE_DTO = {
-                "Montant payé": [9988],
-            } as ChorusDto;
-            const expected = null;
-
-            // @ts-expect-error: private method
-            const actual = ChorusMapper.getAmount(CHORUS_LINE_DTO);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe("getOperationDate", () => {
-        const JS_DATE = new Date("2025-02-02");
-        const mockExcelDateToJsDate = jest.spyOn(GenericParser, "ExcelDateToJSDate");
-
-        beforeEach(() => {
-            mockExcelDateToJsDate.mockReturnValue(JS_DATE);
-        });
-
-        afterAll(() => {
-            mockExcelDateToJsDate.mockRestore();
-        });
-
-        it("should return operation date with excel date", () => {
-            // TODO: don't know why I need to mock the GenericParser.ExcelDateToJSDate like this
-            // but it fails if I rely on the mockExcelDateToJsDate (the mock doesn't work only for this test)
-            const originalParser = GenericParser.ExcelDateToJSDate;
-            GenericParser.ExcelDateToJSDate = jest.fn().mockReturnValue(JS_DATE);
-
-            const CHORUS_LINE_DTO = {
-                "Date de dernière opération sur la DP": 46959,
-            };
-            // @ts-expect-error: mock
-            const actual = ChorusMapper.getOperationDate(CHORUS_LINE_DTO);
-            const expected = JS_DATE;
-            expect(actual).toEqual(expected);
-            GenericParser.ExcelDateToJSDate = originalParser;
-        });
-
-        it("should return operation date with DD/MM/YYYY date", () => {
-            const CHORUS_LINE_DTO = {
-                "Date de dernière opération sur la DP": "02/02/2025",
-            };
-            // @ts-expect-error: mock
-            const actual = ChorusMapper.getOperationDate(CHORUS_LINE_DTO);
-            const expected = JS_DATE;
-            expect(actual).toEqual(expected);
-        });
-
-        it("should return null if field is not defined", () => {
-            const CHORUS_LINE_DTO = {};
-            // @ts-expect-error: mock
-            const actual = ChorusMapper.getOperationDate(CHORUS_LINE_DTO);
-            const expected = null;
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    // TODO: test this method
-    describe("getEntitiesByIdentifierRawData", () => {
-        const SIRET_ESTAB = new Siret("12345678900018");
-        const SIREN_ESTAB = new Siren("123456789");
-        const CHORUS_LINE_DTO = CHORUS_LINE_ENTITY.data;
-        // @ts-expect-error: mock private method
-        const mockGetCompanyId = jest.spyOn(ChorusMapper, "getCompanyId");
-        // @ts-expect-error: mock private method
-        const mockGetAmount = jest.spyOn(ChorusMapper, "getAmount");
-        // @ts-expect-error: mock private method
-        const mockGetOperationDate = jest.spyOn(ChorusMapper, "getOperationDate");
-        // @ts-expect-error: mock private method
-        const mockGetEstablishmentValueObject = jest.spyOn(ChorusMapper, "getEstablishmentValueObject");
+    describe("buildComplementaryData", () => {
+        const mockGetMinistryEntity = jest.spyOn(dataBretagneService, "getMinistryEntity");
+        // @ts-expect-error: private method
+        const mockGetProgramCodeAndEntity = jest.spyOn(ChorusMapper, "getProgramCodeAndEntity");
+        // @ts-expect-error: private method
+        const mockGetActivityCodeAndEntity = jest.spyOn(ChorusMapper, "getActivityCodeAndEntity");
+        // @ts-expect-error: private method
+        const mockGetActionCodeAndEntity = jest.spyOn(ChorusMapper, "getActionCodeAndEntity");
 
         beforeEach(() => {
             // @ts-expect-error: mock
-            mockGetEstablishmentValueObject.mockReturnValue(SIRET_ESTAB);
+            mockGetProgramCodeAndEntity.mockReturnValue({
+                code: COMPLEMENTARY_DATA.programCode,
+                entity: COMPLEMENTARY_DATA.programEntity,
+            });
+            mockGetMinistryEntity.mockReturnValue(COMPLEMENTARY_DATA.ministryEntity);
             // @ts-expect-error: mock
-            mockGetCompanyId.mockReturnValue(SIREN_ESTAB);
+            mockGetActionCodeAndEntity.mockReturnValue({
+                code: COMPLEMENTARY_DATA.actionCode,
+                entity: COMPLEMENTARY_DATA.domaineFonctEntity,
+            });
             // @ts-expect-error: mock
-            mockGetAmount.mockReturnValue(1000);
-            // @ts-expect-error: mock
-            mockGetOperationDate.mockReturnValue(new Date("2025-02-02"));
-        });
-
-        afterAll(() => {
-            [mockGetEstablishmentValueObject, mockGetCompanyId, mockGetAmount, mockGetOperationDate].forEach(mock => {
-                mock.mockRestore();
+            mockGetActivityCodeAndEntity.mockReturnValue({
+                code: COMPLEMENTARY_DATA.activityCode,
+                entity: COMPLEMENTARY_DATA.refProgrammationEntity,
             });
         });
 
-        it("should get establishment value object", () => {
-            // @ts-expect-error: private method
-            ChorusMapper.getEntitiesByIdentifierRawData(CHORUS_LINE_DTO);
-            expect(mockGetEstablishmentValueObject).toHaveBeenCalledWith(CHORUS_LINE_DTO);
+        afterAll(() => {
+            [
+                mockGetActionCodeAndEntity,
+                mockGetMinistryEntity,
+                mockGetActionCodeAndEntity,
+                mockGetActivityCodeAndEntity,
+            ].map(mock => mock.mockRestore());
         });
 
-        it("should get company identifier", () => {
+        it("gets StateBudgetProgramEntity", () => {
             // @ts-expect-error: private method
-            ChorusMapper.getEntitiesByIdentifierRawData(CHORUS_LINE_DTO);
-            expect(mockGetCompanyId).toHaveBeenCalledWith(SIRET_ESTAB);
+            ChorusMapper.buildComplementaryData(
+                CHORUS_ENTITIES[0],
+                DATA_BRETAGNE_RECORDS.programs,
+                DATA_BRETAGNE_RECORDS.ministries,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
+            );
+            expect(mockGetProgramCodeAndEntity).toHaveBeenCalledWith(
+                CHORUS_ENTITIES[0],
+                DATA_BRETAGNE_RECORDS.programs,
+            );
         });
 
-        it("should get the amount", () => {
+        it("gets MinistryEntity", () => {
             // @ts-expect-error: private method
-            ChorusMapper.getEntitiesByIdentifierRawData(CHORUS_LINE_DTO);
-            expect(mockGetAmount).toHaveBeenCalledWith(CHORUS_LINE_DTO);
+            ChorusMapper.buildComplementaryData(
+                CHORUS_ENTITIES[0],
+                DATA_BRETAGNE_RECORDS.programs,
+                DATA_BRETAGNE_RECORDS.ministries,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
+            );
+            expect(mockGetMinistryEntity).toHaveBeenCalledWith(
+                COMPLEMENTARY_DATA.programEntity,
+                DATA_BRETAGNE_RECORDS.ministries,
+            );
         });
 
-        it("should return PaymentFlatRawData", () => {
+        it("gets DomaineFonctionnelEntity", () => {
             // @ts-expect-error: private method
-            const actual = ChorusMapper.getEntitiesByIdentifierRawData(CHORUS_LINE_DTO);
-            expect(actual).toMatchSnapshot();
+            ChorusMapper.buildComplementaryData(
+                CHORUS_ENTITIES[0],
+                DATA_BRETAGNE_RECORDS.programs,
+                DATA_BRETAGNE_RECORDS.ministries,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
+            );
+            expect(mockGetActionCodeAndEntity).toHaveBeenCalledWith(
+                CHORUS_ENTITIES[0],
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+            );
+        });
+
+        it("gets RefProgrammationEntity", () => {
+            // @ts-expect-error: private method
+            ChorusMapper.buildComplementaryData(
+                CHORUS_ENTITIES[0],
+                DATA_BRETAGNE_RECORDS.programs,
+                DATA_BRETAGNE_RECORDS.ministries,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
+            );
+            expect(mockGetActivityCodeAndEntity).toHaveBeenCalledWith(
+                CHORUS_ENTITIES[0],
+                DATA_BRETAGNE_RECORDS.programsRef,
+            );
+        });
+
+        it("returns complementary data from data bretagne", () => {
+            const expected = {
+                programCode: COMPLEMENTARY_DATA.programCode,
+                activityCode: COMPLEMENTARY_DATA.activityCode,
+                actionCode: COMPLEMENTARY_DATA.actionCode,
+                programEntity: COMPLEMENTARY_DATA.programEntity,
+                ministryEntity: COMPLEMENTARY_DATA.ministryEntity,
+                domaineFonctEntity: COMPLEMENTARY_DATA.domaineFonctEntity,
+                refProgrammationEntity: COMPLEMENTARY_DATA.refProgrammationEntity,
+            };
+            // @ts-expect-error: private method
+            const actual = ChorusMapper.buildComplementaryData(
+                CHORUS_ENTITIES[0],
+                DATA_BRETAGNE_RECORDS.programs,
+                DATA_BRETAGNE_RECORDS.ministries,
+                DATA_BRETAGNE_RECORDS.fonctionalDomains,
+                DATA_BRETAGNE_RECORDS.programsRef,
+            );
+
+            expect(actual).toEqual(expected);
         });
     });
 
-    describe("buildUniqueId", () => {
-        it("return a uniqueId", () => {
-            const { uniqueId, ...partialPaymentFlat } = CHORUS_PAYMENT_FLAT_ENTITY;
-            // @ts-expect-error: test private method
-            const actual = ChorusMapper.buildFlatUniqueId(partialPaymentFlat);
-            expect(actual).toMatchSnapshot();
+    describe("getRegionAttachementComptable", () => {
+        const testCases = [
+            ["ADCE", "Administration Centrale"],
+            ["DOM1", "DOM-TOM"],
+            ["ALSA", "Grand Est"],
+            ["AQUI", "Nouvelle-Aquitaine"],
+            ["AUVE", "Auvergne-Rhône-Alpes"],
+        ];
+        it.each(testCases)("should return the region for a given valid region code", (regionCode, expected) => {
+            const actual = ChorusMapper.getRegionAttachementComptable(regionCode);
+
+            expect(actual).toEqual(expected);
+        });
+
+        it("returns null when given string doesn't match a region code", () => {
+            const actual = ChorusMapper.getRegionAttachementComptable("INVALID");
+            const expected = null;
+            expect(actual).toBe(expected);
+        });
+
+        it("should return N/A for a N/A region code", () => {
+            const actual = ChorusMapper.getRegionAttachementComptable("N/A");
+            const expected = "N/A";
+            expect(actual).toBe(expected);
+        });
+    });
+
+    describe("getEstablishmentValueObject", () => {
+        const mockIsRidet = jest.fn().mockReturnValue(true);
+        const mockIsTahitiet = jest.fn().mockReturnValue(true);
+        const mockIsSiret = jest.fn().mockReturnValue(true);
+
+        // Only mock isRidet, isTahitiet and isSiret
+        // If we wanted to be 100% unit testing we should create a mock in __mocks__ folder
+        beforeAll(() => {
+            Ridet.isRidet = mockIsRidet;
+            Siret.isSiret = mockIsSiret;
+            Tahitiet.isTahitiet = mockIsTahitiet;
+        });
+
+        it("throws error if no SIRET or RIDET or TAHITI defined", () => {
+            mockIsSiret.mockReturnValueOnce(false);
+            mockIsRidet.mockReturnValueOnce(false);
+            mockIsTahitiet.mockReturnValueOnce(false);
+            expect(() =>
+                // @ts-expect-error: private method
+                ChorusMapper.getEstablishmentValueObject({ ...CHORUS_ENTITIES[0], siret: "#", ridetOrTahitiet: "#" }),
+            ).toThrow(
+                `Not able to retrieve an establishment identifier for chorus entity with EJ ${CHORUS_ENTITIES[0].ej} for exercice ${CHORUS_ENTITIES[0].exercice}`,
+            );
+        });
+
+        it("returns Siret", () => {
+            // @ts-expect-error: test private methode
+            const actual = ChorusMapper.getEstablishmentValueObject({ ...CHORUS_ENTITIES[0] });
+            expect(actual).toEqual(new Siret(CHORUS_ENTITIES[0].siret));
+        });
+        it("returns Ridet", () => {
+            const RIDET = "123456789";
+            mockIsSiret.mockReturnValueOnce(false);
+            // @ts-expect-error: test private methode
+            const actual = ChorusMapper.getEstablishmentValueObject({ ...CHORUS_ENTITIES[0], ridetOrTahitiet: RIDET });
+            expect(actual).toEqual(new Ridet(RIDET));
+        });
+        it("returns Tahitied", () => {
+            const TAHITIET = "A12345678";
+            mockIsSiret.mockReturnValueOnce(false);
+            mockIsRidet.mockReturnValueOnce(false);
+            // @ts-expect-error: test private methode
+            const actual = ChorusMapper.getEstablishmentValueObject({
+                ...CHORUS_ENTITIES[0],
+                ridetOrTahitiet: TAHITIET,
+            });
+            expect(actual).toEqual(new Siret(TAHITIET));
         });
     });
 });

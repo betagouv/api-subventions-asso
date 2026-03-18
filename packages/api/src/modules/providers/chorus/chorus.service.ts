@@ -43,10 +43,10 @@ export class ChorusService extends ProviderCore {
         // there is cases where both siret and ridet/tahiti columns values are #
         // for now we insert all because we don't know the rules behind it
         // and we don't want to lose any information
-        if (entity.indexedInformations.siret === "#") {
+        if (entity.siret === "#") {
             return true;
         } else {
-            const siren = new Siret(entity.indexedInformations.siret).toSiren();
+            const siren = new Siret(entity.siret).toSiren();
 
             const cache = this.sirenBelongAssoCache.get(siren.value);
             if (cache !== null) return cache;
@@ -96,7 +96,7 @@ export class ChorusService extends ProviderCore {
 
     // TODO: unit test this
     public getProgramCode(entity: ChorusEntity) {
-        return parseInt(entity.indexedInformations.codeDomaineFonctionnel.slice(0, 4), 10); // for exemple codeDomaineFonctionnel = "0143-03-01", codeProgramme = 143
+        return parseInt(entity.codeDomaineFonctionnel.slice(0, 4), 10); // for exemple codeDomaineFonctionnel = "0143-03-01", codeProgramme = 143
     }
 
     public async persistEuropeanEntities(entities: ChorusFseEntity[]) {

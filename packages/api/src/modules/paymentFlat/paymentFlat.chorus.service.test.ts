@@ -1,6 +1,6 @@
 import { PAYMENT_FLAT_DBO } from "../../dataProviders/db/paymentFlat/__fixtures__/paymentFlatDbo.fixture";
 import paymentFlatAdapter from "../../dataProviders/db/paymentFlat/paymentFlat.adapter";
-import { ENTITIES } from "../providers/chorus/__fixtures__/ChorusFixtures";
+import { CHORUS_ENTITIES } from "../providers/chorus/__fixtures__/ChorusFixtures";
 import ChorusMapper from "../providers/chorus/mappers/chorus.mapper";
 import chorusService from "../providers/chorus/chorus.service";
 import { DATA_BRETAGNE_RECORDS } from "../providers/dataBretagne/__fixtures__/dataBretagne.fixture";
@@ -177,7 +177,7 @@ describe("paymentFlatChorusService", () => {
         let nDocuments;
 
         beforeEach(() => {
-            mockDocuments = [ENTITIES[1], ENTITIES[0]];
+            mockDocuments = [CHORUS_ENTITIES[1], CHORUS_ENTITIES[0]];
 
             nDocuments = mockDocuments.length;
 

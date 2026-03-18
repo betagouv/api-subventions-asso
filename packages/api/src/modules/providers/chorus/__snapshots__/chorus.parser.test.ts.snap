@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ChorusParser buildEntityFromDto returns partial entity (without uniqueId) 1`] = `
+{
+  "activitee": "Appels a projet",
+  "amount": 89988.3,
+  "branche": "Associations",
+  "centreFinancier": "AA01/0776-C001-4000",
+  "codeActivitee": "BG00/077601000201",
+  "codeBranche": "Z039",
+  "codeCentreFinancier": "UO DGER XXXX-C001",
+  "codeDomaineFonctionnel": "Appels à projet",
+  "codeSociete": "SOCIETY",
+  "dateOperation": undefined,
+  "domaineFonctionnel": "1111-01-02",
+  "ej": "0001821732",
+  "exercice": 2025,
+  "nomStructure": "ASSO 1",
+  "numPosteDP": 23,
+  "numPosteEJ": 2,
+  "numeroDemandePaiement": "000195567",
+  "numeroTier": "1000011111",
+  "ridetOrTahitiet": "#",
+  "siret": "32534654200001",
+  "updateDate": Any<Date>,
+}
+`;

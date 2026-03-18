@@ -65,7 +65,7 @@ describe("chorusPort", () => {
         it("should call cursorFind with filter", () => {
             const exerciceBudgetaire = 2023;
             chorusAdapter.cursorFindOnExercise(exerciceBudgetaire);
-            expect(mockCursorFind).toHaveBeenCalledWith({ "indexedInformations.exercice": exerciceBudgetaire });
+            expect(mockCursorFind).toHaveBeenCalledWith({ exercice: exerciceBudgetaire });
         });
     });
 });

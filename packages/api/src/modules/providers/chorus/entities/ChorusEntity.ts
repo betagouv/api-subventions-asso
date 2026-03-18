@@ -1,53 +1,25 @@
-import { ObjectId } from "mongodb";
-import { ParserInfo } from "../../../../@types";
-import type ChorusIndexedInformations from "../@types/ChorusIndexedInformations";
-import { GenericParser } from "../../../../shared/GenericParser";
-import { ChorusDto } from "../@types/ChorusDto";
-import { santitizeFloat } from "../../../../shared/helpers/NumberHelper";
+import { ProviderDataEntity } from "../../../../@types/ProviderData";
 
-export default class ChorusEntity {
-    public provider = "Chorus";
-
-    public static indexedInformationsPath: { [key: string]: ParserInfo } = {
-        // TODO <string|number>
-        ej: {
-            path: ["N° EJ"],
-        },
-        numPosteEJ: { path: ["N° poste EJ"] },
-        siret: { path: ["Code taxe 1"] },
-        codeBranche: { path: ["Branche CODE"] },
-        branche: { path: ["Branche"] },
-        activitee: { path: ["Référentiel de programmation"] },
-        codeActivitee: { path: ["Référentiel de programmation CODE"] },
-        numeroDemandePaiement: { path: ["N° DP"] },
-        numPosteDP: { path: ["N° poste DP"] },
-        codeSociete: { path: ["Société"] },
-        exercice: {
-            path: ["Exercice comptable"],
-            adapter: santitizeFloat,
-        },
-        numeroTier: { path: ["Fournisseur payé (DP)"] },
-        // TODO: rajouter le nom de la structure (path: ["Nom de la structure"])
-        // anciennement ["Fournisseur payé (DP) CODE"] mais le nom n'était pas bon et pas utilisé
-        centreFinancier: { path: ["Centre financier"] },
-        codeCentreFinancier: { path: ["Centre financier CODE"] },
-        domaineFonctionnel: { path: ["Domaine fonctionnel"] },
-        codeDomaineFonctionnel: { path: ["Domaine fonctionnel CODE"] },
-        amount: {
-            path: [["EUR", "Montant payé"]],
-            adapter: santitizeFloat,
-        },
-        dateOperation: {
-            path: ["Date de dernière opération sur la DP"],
-            adapter: GenericParser.getDateFromXLSX,
-        },
-    };
-
-    constructor(
-        public uniqueId: string,
-        public updateDate: Date,
-        public indexedInformations: ChorusIndexedInformations,
-        public data: ChorusDto | unknown, // TODO: remove this unknown ??
-        public _id?: ObjectId,
-    ) {}
+export default interface ChorusEntity extends ProviderDataEntity {
+    uniqueId: string;
+    ej: string;
+    numPosteEJ: number;
+    siret: string;
+    ridetOrTahitiet: string;
+    codeBranche: string;
+    branche: string;
+    activitee: string;
+    codeActivitee: string;
+    numeroDemandePaiement: string;
+    numPosteDP: number;
+    codeSociete: string;
+    exercice: number;
+    numeroTier: string;
+    nomStructure: string;
+    centreFinancier: string;
+    codeCentreFinancier: string;
+    domaineFonctionnel: string;
+    codeDomaineFonctionnel: string;
+    amount: number;
+    dateOperation: Date;
 }

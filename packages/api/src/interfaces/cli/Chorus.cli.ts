@@ -44,10 +44,7 @@ export default class ChorusCli extends CliController {
 
     private async persistChorusEntities(entities: ChorusEntity[], logger) {
         const totalEntities = entities.length;
-        const exercicesSet = entities.reduce(
-            (set, entity) => set.add(entity.indexedInformations.exercice),
-            new Set<number>(),
-        );
+        const exercicesSet = entities.reduce((set, entity) => set.add(entity.exercice), new Set<number>());
 
         console.info(`\n${totalEntities} valid entities found in file.`);
 
