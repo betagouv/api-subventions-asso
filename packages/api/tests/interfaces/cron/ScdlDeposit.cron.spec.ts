@@ -1,38 +1,68 @@
 import userAdapter from "../../../src/dataProviders/db/user/user.adapter";
 import { ScdlDepositCron } from "../../../src/interfaces/cron/ScdlDeposit.cron";
 import { DEPOSIT_LOG_DBO } from "../../../src/modules/deposit-scdl-process/__fixtures__/depositLog.fixture";
-import brevoMailNotifyPipe from "../../../src/modules/notify/outPipes/BrevoMailNotifyPipe";
 import { USER_DBO } from "../../../src/modules/user/__fixtures__/user.fixture";
-import { addDaysToDate } from "../../../src/shared/helpers/DateHelper";
+import { addDaysToDate, sameDateLastYear } from "../../../src/shared/helpers/DateHelper";
 import depositLogAdapter from "../../../src/dataProviders/db/deposit-log/deposit-log.adapter";
-
-jest.mock("../../../src/modules/notify/outPipes/BrevoMailNotifyPipe");
+import { ENV as _ENV, EnvironmentEnum } from "../../../src/configurations/env.conf";
+import brevoMailNotifyPipe from "../../../src/modules/notify/outPipes/BrevoMailNotifyPipe";
 
 describe("ScdlDeposit CRON", () => {
     let cron: ScdlDepositCron;
 
     beforeEach(() => {
+        // @ts-expect-error: override ENV to enable notification
+        _ENV = EnvironmentEnum.PROD;
         cron = new ScdlDepositCron();
+    });
+
+    afterEach(() => {
+        // @ts-expect-error: override ENV to enable notification
+        _ENV = EnvironmentEnum.TEST;
     });
 
     describe("notifyUsers", () => {
         beforeEach(async () => {
             const TODAY = new Date();
             const twoDaysAgo = addDaysToDate(TODAY, -2);
-            await userAdapter.create({ ...USER_DBO, signupAt: addDaysToDate(TODAY, -10) });
+            const user = await userAdapter.create({ ...USER_DBO, signupAt: addDaysToDate(TODAY, -10) });
             await depositLogAdapter.insertOne({
                 ...DEPOSIT_LOG_DBO,
                 updateDate: twoDaysAgo,
-                userId: USER_DBO._id.toString(),
+                userId: user._id.toString(),
             });
         });
 
-        // TODO: unskip when template will be available
-        it.skip("send mail to users that started deposit 2 days ago", async () => {
+        it("send mail to users that started deposit 2 days ago", async () => {
             await cron.notifyUsers();
             // @ts-expect-error: mocked
             const args = jest.mocked(brevoMailNotifyPipe.apiInstance.sendTransacEmail).mock.calls[0][0];
             expect(args).toMatchSnapshot();
+        });
+    });
+
+    describe("notifyDepositRenewal", () => {
+        const TODAY = new Date();
+        const oneYearAgo = sameDateLastYear(TODAY);
+
+        it("notify user", async () => {
+            const user = await userAdapter.create({ ...USER_DBO, signupAt: oneYearAgo });
+            await depositLogAdapter.insertOne({
+                ...DEPOSIT_LOG_DBO,
+                updateDate: addDaysToDate(oneYearAgo, 1),
+                userId: user._id.toString(),
+            });
+            await cron.notifyDepositRenewal();
+            // @ts-expect-error: access private property
+            const args = jest.mocked(brevoMailNotifyPipe.apiInstance.sendTransacEmail).mock.calls[0][0];
+            expect(args).toMatchSnapshot();
+        });
+
+        it("does not notify when no deposit were made during same month last year", async () => {
+            await cron.notifyDepositRenewal();
+            // @ts-expect-error: access private property
+            const calls = jest.mocked(brevoMailNotifyPipe.apiInstance.sendTransacEmail).mock.calls;
+            expect(calls.length).toEqual(0);
         });
     });
 });

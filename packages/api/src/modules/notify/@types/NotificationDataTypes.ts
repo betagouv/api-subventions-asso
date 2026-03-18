@@ -97,4 +97,7 @@ export interface NotificationDataTypes {
     [NotificationType.MONGO_CONNECTION_LOST]: {
         eventName: string;
     };
+    [NotificationType.BATCH_DEPOSIT_RENEWAL]: {
+        emails: string[];
+    };
 }

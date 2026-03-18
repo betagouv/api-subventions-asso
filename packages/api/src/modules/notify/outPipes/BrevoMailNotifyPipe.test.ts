@@ -64,6 +64,18 @@ describe("BrevoMailNotify", () => {
         });
     });
 
+    describe("batchDepositRenewal", () => {
+        beforeEach(() => (provider.sendMail = mockSendMail));
+        it("send mail for each email in the providen list", async () => {
+            const EMAILS = ["foo.bar@gouv.fr", "fez.booz@gouv.fr"];
+            // @ts-expect-error: test private method
+            await provider.batchDepositRenewal({ emails: EMAILS });
+            EMAILS.forEach((email, index) => {
+                expect(mockSendMail).toHaveBeenNthCalledWith(index + 1, email, {}, TemplateEnum.depositRenewal);
+            });
+        });
+    });
+
     describe("sendMail()", () => {
         const PARAMS = { foo: "bar" };
         const TEMPLATE_ID = 1;

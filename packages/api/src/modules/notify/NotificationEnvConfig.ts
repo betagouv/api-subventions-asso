@@ -22,4 +22,5 @@ export const NOTIFICATION_ENV_CONFIG = {
     [NotificationType.DEPOSIT_SCDL_SUCCESS]: [EnvironmentEnum.PROD, EnvironmentEnum.PREPROD],
     [NotificationType.EXTERNAL_API_ERROR]: [EnvironmentEnum.PROD, EnvironmentEnum.PREPROD],
     [NotificationType.MONGO_CONNECTION_LOST]: [EnvironmentEnum.PROD, EnvironmentEnum.PREPROD],
+    [NotificationType.BATCH_DEPOSIT_RENEWAL]: [EnvironmentEnum.PROD],
 };

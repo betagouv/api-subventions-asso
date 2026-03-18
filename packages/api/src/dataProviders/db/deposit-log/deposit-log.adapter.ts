@@ -25,6 +25,7 @@ class DepositLogAdapter extends MongoPort<DepositScdlLogDbo> implements DepositL
         return DepositLogMapper.dboToEntity(depositLogDbo);
     }
 
+    // @TODO: flat hours process isn't relevant as user only deposit during work time
     /**
      * Returns all deposits from a 24h range since given date
      *
@@ -37,6 +38,11 @@ class DepositLogAdapter extends MongoPort<DepositScdlLogDbo> implements DepositL
         const lowerThan = new Date(greaterThan);
         lowerThan.setDate(lowerThan.getDate() + 1);
         const dbos = await this.collection.find({ updateDate: { $gte: greaterThan, $lt: lowerThan } }).toArray();
+        return dbos.map(dbo => DepositLogMapper.dboToEntity(dbo));
+    }
+
+    async findFromPeriod(start: Date, end: Date) {
+        const dbos = await this.collection.find({ updateDate: { $gte: start, $lte: end } }).toArray();
         return dbos.map(dbo => DepositLogMapper.dboToEntity(dbo));
     }
 

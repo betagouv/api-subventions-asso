@@ -11,6 +11,12 @@ export class ScdlDepositCron implements CronController {
     async notifyUsers() {
         return scdlDepositCronService.notifyUsers();
     }
+    // every second day of each month (second just to avoid timezone problem)
+    @AsyncCron({ cronExpression: "0 0 2 * *" })
+    // notify users to renew their deposit one year later
+    async notifyDepositRenewal() {
+        return scdlDepositCronService.notifyDepositRenewal();
+    }
 
     // every day at 10pm
     @AsyncCron({ cronExpression: "0 23 * * *" })

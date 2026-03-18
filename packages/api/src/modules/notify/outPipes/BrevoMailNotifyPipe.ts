@@ -15,6 +15,7 @@ export enum TemplateEnum {
     activated = 135,
     creationAgentConnect = 171,
     resumeDeposit = 262,
+    depositRenewal = 263,
 }
 
 export class BrevoMailNotifyPipe implements NotifyOutPipe {
@@ -44,6 +45,8 @@ export class BrevoMailNotifyPipe implements NotifyOutPipe {
                 return this.greetActivated(data);
             case NotificationType.BATCH_DEPOSIT_RESUME:
                 return this.batchResumeDepositMail(data);
+            case NotificationType.BATCH_DEPOSIT_RENEWAL:
+                return this.batchDepositRenewal(data);
             default:
                 return Promise.resolve(false);
         }
@@ -77,6 +80,11 @@ export class BrevoMailNotifyPipe implements NotifyOutPipe {
 
     private async batchResumeDepositMail(data: NotificationDataTypes[NotificationType.BATCH_DEPOSIT_RESUME]) {
         const promises = data.emails.map(email => this.sendMail(email, {}, TemplateEnum.resumeDeposit));
+        return (await Promise.all(promises)).every(bool => bool === true); // assert all mails were sent
+    }
+
+    private async batchDepositRenewal(data: NotificationDataTypes[NotificationType.BATCH_DEPOSIT_RENEWAL]) {
+        const promises = data.emails.map(email => this.sendMail(email, {}, TemplateEnum.depositRenewal));
         return (await Promise.all(promises)).every(bool => bool === true); // assert all mails were sent
     }
 

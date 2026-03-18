@@ -19,4 +19,5 @@ export enum NotificationType {
     DEPOSIT_SCDL_SUCCESS,
     EXTERNAL_API_ERROR,
     MONGO_CONNECTION_LOST,
+    BATCH_DEPOSIT_RENEWAL,
 }
