@@ -1,10 +1,10 @@
 import { WithId } from "mongodb";
-import MongoPort from "../../../shared/MongoPort";
+import MongoAdapter from "../MongoAdapter";
 import ConfigurationEntity from "../../../modules/configurations/entities/ConfigurationEntity";
-import { removeMongoId } from "../../../shared/mappers/mongo-document.mapper";
+import { removeMongoId } from "../mongo-document.mapper";
 import { ConfigurationsPort } from "./configurations.port";
 
-export class ConfigurationsAdapter extends MongoPort<ConfigurationEntity> implements ConfigurationsPort {
+export class ConfigurationsAdapter extends MongoAdapter<ConfigurationEntity> implements ConfigurationsPort {
     readonly collectionName = "configurations";
 
     async upsert(name: string, partialEntity: Partial<ConfigurationEntity>): Promise<void> {

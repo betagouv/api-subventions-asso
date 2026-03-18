@@ -1,9 +1,9 @@
-import MongoPort from "../../../../shared/MongoPort";
+import MongoAdapter from "../../MongoAdapter";
 import DemarchesSimplifieesSchema from "../../../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesSchema";
 import { DemarchesSimplifieeSchemaPort } from "./demarches-simplifiee-schema.port";
 
 export class DemarchesSimplifieesSchemaAdapter
-    extends MongoPort<DemarchesSimplifieesSchema>
+    extends MongoAdapter<DemarchesSimplifieesSchema>
     implements DemarchesSimplifieeSchemaPort
 {
     public collectionName = "demarches-simplifiees-schemas";

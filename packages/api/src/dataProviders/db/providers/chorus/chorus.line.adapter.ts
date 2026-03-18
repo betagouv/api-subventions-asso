@@ -2,10 +2,10 @@ import { AnyBulkWriteOperation, ObjectId, WithId } from "mongodb";
 import Siret from "../../../../identifierObjects/Siret";
 import Siren from "../../../../identifierObjects/Siren";
 import { DefaultObject } from "../../../../@types";
-import MongoPort from "../../../../shared/MongoPort";
+import MongoAdapter from "../../MongoAdapter";
 import ChorusLineEntity from "../../../../modules/providers/chorus/entities/ChorusLineEntity";
 
-export class ChorusLineAdapter extends MongoPort<ChorusLineEntity> {
+export class ChorusLineAdapter extends MongoAdapter<ChorusLineEntity> {
     readonly collectionName = "chorus-line";
 
     public async findOneByEJ(ej: string) {

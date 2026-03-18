@@ -1,4 +1,4 @@
-import MongoPort from "../../../shared/MongoPort";
+import MongoAdapter from "../MongoAdapter";
 import Siren from "../../../identifierObjects/Siren";
 import Siret from "../../../identifierObjects/Siret";
 import { DefaultObject } from "../../../@types";
@@ -9,7 +9,10 @@ import { insertStreamByBatch } from "../../../shared/helpers/MongoHelper";
 import { Readable } from "stream";
 import { ApplicationFlatPort } from "./application-flat.port";
 
-export class ApplicationFlatAdapter extends MongoPort<Omit<ApplicationFlatDbo, "_id">> implements ApplicationFlatPort {
+export class ApplicationFlatAdapter
+    extends MongoAdapter<Omit<ApplicationFlatDbo, "_id">>
+    implements ApplicationFlatPort
+{
     readonly collectionName = "applications-flat";
     readonly backupCollectionName = this.collectionName + "-backup";
 

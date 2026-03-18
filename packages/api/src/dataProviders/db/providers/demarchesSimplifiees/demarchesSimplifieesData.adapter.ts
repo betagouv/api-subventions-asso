@@ -1,11 +1,11 @@
-import MongoPort from "../../../../shared/MongoPort";
+import MongoAdapter from "../../MongoAdapter";
 import Siren from "../../../../identifierObjects/Siren";
 import Siret from "../../../../identifierObjects/Siret";
 import DemarchesSimplifieesDataEntity from "../../../../modules/providers/demarchesSimplifiees/entities/DemarchesSimplifieesDataEntity";
 import { DemarchesSimplifieesDataProviderPort } from "./demarches-simplifiee-data.port";
 
 export class DemarchesSimplifieesDataAdapter
-    extends MongoPort<DemarchesSimplifieesDataEntity>
+    extends MongoAdapter<DemarchesSimplifieesDataEntity>
     implements DemarchesSimplifieesDataProviderPort
 {
     collectionName = "demarches-simplifiees-data";

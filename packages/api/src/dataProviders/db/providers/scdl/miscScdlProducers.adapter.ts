@@ -1,7 +1,7 @@
-import MongoPort from "../../../../shared/MongoPort";
+import MongoAdapter from "../../MongoAdapter";
 import MiscScdlProducerEntity from "../../../../modules/providers/scdl/entities/MiscScdlProducerEntity";
 
-export class MiscScdlProducersAdapter extends MongoPort<MiscScdlProducerEntity> {
+export class MiscScdlProducersAdapter extends MongoAdapter<MiscScdlProducerEntity> {
     readonly collectionName = "misc-scdl-producers";
     readonly joinIndexes = {
         miscScdlGrant: "siret",

@@ -93,7 +93,7 @@ export class ApplicationFlatService
     async containsDataFromProvider(provider: string | RegExp): Promise<boolean> {
         const cursor = applicationFlatAdapter.cursorFind({ fournisseur: provider });
 
-        for await (const appFlat of cursor) {
+        for await (const _appFlat of cursor) {
             return true;
         }
         return false;

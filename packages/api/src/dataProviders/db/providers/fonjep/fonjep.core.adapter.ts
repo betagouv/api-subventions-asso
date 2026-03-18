@@ -1,9 +1,9 @@
 import { Document } from "mongodb";
-import MongoPort from "../../../../shared/MongoPort";
+import MongoAdapter from "../../MongoAdapter";
 import { FonjepCorePort } from "./fonjep-core.port";
 
 export abstract class FonjepCoreAdapter<FonjepTypedDocument extends Document>
-    extends MongoPort<FonjepTypedDocument>
+    extends MongoAdapter<FonjepTypedDocument>
     implements FonjepCorePort
 {
     private tmpCollectionEnabled = false;

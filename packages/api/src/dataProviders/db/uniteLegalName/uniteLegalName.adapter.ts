@@ -1,11 +1,11 @@
 import { AnyBulkWriteOperation } from "mongodb";
 import UniteLegalNameEntity from "../../../entities/UniteLegalNameEntity";
-import MongoPort from "../../../shared/MongoPort";
+import MongoAdapter from "../MongoAdapter";
 import Siren from "../../../identifierObjects/Siren";
 import UniteLegalNameMapper from "./unite-legal-name.mapper";
 import UniteLegalNameDbo from "./UniteLegalNameDbo";
 
-export class UniteLegalNameAdapter extends MongoPort<UniteLegalNameDbo> {
+export class UniteLegalNameAdapter extends MongoAdapter<UniteLegalNameDbo> {
     collectionName = "unite-legal-names";
 
     async createIndexes() {

@@ -1,7 +1,7 @@
 import { AgentTypeEnum } from "dto";
 import db from "../../../shared/MongoConnection";
 import AdminStructureEntity from "../../../modules/admin-structure/entities/AdminStructureEntity";
-import { removeMongoIds } from "../../../shared/mappers/mongo-document.mapper";
+import { removeMongoIds } from "../mongo-document.mapper";
 import { AdminStructurePort } from "./admin-structure.port";
 
 export class AdminStructureAdapter implements AdminStructurePort {

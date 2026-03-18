@@ -1,5 +1,5 @@
 import { Collection, FindCursor } from "mongodb";
-import MongoPort from "../../../../shared/MongoPort";
+import MongoAdapter from "../../MongoAdapter";
 import DauphinSubventionDto from "../../../../modules/providers/dauphin-gispro/dto/DauphinSubventionDto";
 import Siret from "../../../../identifierObjects/Siret";
 import Siren from "../../../../identifierObjects/Siren";
@@ -7,7 +7,7 @@ import DauphinGisproDbo from "./DauphinGisproDbo";
 import { SimplifiedJoinedDauphinGispro } from "../../../../modules/providers/dauphin-gispro/@types/SimplifiedDauphinGispro";
 import { DauphinPort } from "./dauphin.port";
 
-export class DauphinAdapter extends MongoPort<DauphinGisproDbo> implements DauphinPort {
+export class DauphinAdapter extends MongoAdapter<DauphinGisproDbo> implements DauphinPort {
     readonly collectionName = "dauphin";
     readonly simplifiedTempCollectionName = "dauphinSimplified";
     readonly simplifiedTempCollection = this.db.collection(this.simplifiedTempCollectionName);

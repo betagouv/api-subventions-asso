@@ -1,11 +1,11 @@
-import MongoPort from "../../../shared/MongoPort";
+import MongoAdapter from "../MongoAdapter";
 import DepositScdlLogDbo from "./DepositScdlLogDbo";
 import { DepositLogPort } from "./deposit-log.port";
 import DepositScdlLogEntity from "../../../modules/deposit-scdl-process/entities/depositScdlLog.entity";
 import DepositLogMapper from "./deposit-log.mapper";
 import { NotFoundError } from "core";
 
-class DepositLogAdapter extends MongoPort<DepositScdlLogDbo> implements DepositLogPort {
+class DepositLogAdapter extends MongoAdapter<DepositScdlLogDbo> implements DepositLogPort {
     collectionName = "deposit-log";
 
     async createIndexes() {

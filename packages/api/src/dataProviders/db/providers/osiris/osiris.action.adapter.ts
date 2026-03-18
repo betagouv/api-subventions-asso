@@ -1,11 +1,11 @@
 import { FindOneAndUpdateOptions } from "mongodb";
 import { MongoCnxError } from "../../../../shared/errors/MongoCnxError";
 import OsirisActionEntity from "../../../../modules/providers/osiris/entities/OsirisActionEntity";
-import MongoPort from "../../../../shared/MongoPort";
+import MongoAdapter from "../../MongoAdapter";
 import Siren from "../../../../identifierObjects/Siren";
 import OsirisActionMapper from "./osiris-action.mapper";
 
-export class OsirisActionAdapter extends MongoPort<OsirisActionEntity> {
+export class OsirisActionAdapter extends MongoAdapter<OsirisActionEntity> {
     collectionName = "osiris-actions";
 
     async createIndexes() {

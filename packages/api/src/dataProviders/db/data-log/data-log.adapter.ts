@@ -1,10 +1,10 @@
-import MongoPort from "../../../shared/MongoPort";
+import MongoAdapter from "../MongoAdapter";
 import { DataLogEntity } from "../../../modules/data-log/entities/dataLogEntity";
 import { ProducerLogEntity } from "../../../modules/data-log/entities/producerLogEntity";
-import { removeMongoId, removeMongoIds } from "../../../shared/mappers/mongo-document.mapper";
+import { removeMongoId, removeMongoIds } from "../mongo-document.mapper";
 import { DataLogPort } from "./data-log.port";
 
-class DataLogAdapter extends MongoPort<DataLogEntity> implements DataLogPort {
+class DataLogAdapter extends MongoAdapter<DataLogEntity> implements DataLogPort {
     readonly collectionName = "data-log";
 
     async createIndexes(): Promise<void> {

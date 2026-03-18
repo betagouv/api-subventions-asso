@@ -1,11 +1,11 @@
 import AmountsVsProgramRegionMapper from "../../../../modules/dataViz/amountsVsProgramRegion/amounts-vs-program-region.mapper";
 import { AmountsVsProgramRegionDbo } from "../../../../modules/dataViz/amountsVsProgramRegion/entitiyAndDbo/amountsVsProgramRegion.dbo";
 import AmountsVsProgramRegionEntity from "../../../../modules/dataViz/amountsVsProgramRegion/entitiyAndDbo/amountsVsProgramRegion.entity";
-import MongoPort from "../../../../shared/MongoPort";
+import MongoAdapter from "../../MongoAdapter";
 import { AmountsVSProgramRegionPort } from "./amounts-vs-program-region.port";
 
 export class AmountsVsProgramRegionAdapter
-    extends MongoPort<Omit<AmountsVsProgramRegionDbo, "_id">>
+    extends MongoAdapter<Omit<AmountsVsProgramRegionDbo, "_id">>
     implements AmountsVSProgramRegionPort
 {
     collectionName = "dv--montant-programme-region";

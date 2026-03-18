@@ -1,9 +1,9 @@
-import MongoPort from "../../../../shared/MongoPort";
+import MongoAdapter from "../../MongoAdapter";
 import MiscScdlGrantEntity from "../../../../modules/providers/scdl/entities/MiscScdlGrantEntity";
 import { buildDuplicateIndexError, isMongoDuplicateError } from "../../../../shared/helpers/MongoHelper";
 import { ScdlGrantDbo } from "../../../../modules/providers/scdl/dbo/ScdlGrantDbo";
 
-export class MiscScdlGrantAdapter extends MongoPort<ScdlGrantDbo> {
+export class MiscScdlGrantAdapter extends MongoAdapter<ScdlGrantDbo> {
     readonly collectionName = "misc-scdl-grant";
     readonly backupCollectionName = this.collectionName + "-backup";
 

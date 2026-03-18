@@ -1,10 +1,10 @@
-import MigrationPort from "../../../shared/MongoPort";
 import ProviderRequestLog from "../../../modules/provider-request/entities/ProviderRequestLog";
 import ProviderRequestLogDbo from "./ProviderRequestLogDbo";
 import ProviderRequestLogMapper from "./provider-request-log.mapper";
 import { ProviderRequestPort } from "./provider-request.port";
+import MongoAdapter from "../MongoAdapter";
 
-class ProviderRequestAdapter extends MigrationPort<ProviderRequestLogDbo> implements ProviderRequestPort {
+class ProviderRequestAdapter extends MongoAdapter<ProviderRequestLogDbo> implements ProviderRequestPort {
     public collectionName = "provider-request-log";
 
     async createIndexes() {
