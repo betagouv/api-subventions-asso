@@ -66,10 +66,10 @@ describe("BrevoMailNotify", () => {
 
     describe("batchDepositRenewal", () => {
         beforeEach(() => (provider.sendMail = mockSendMail));
-        it("send mail for each email in the providen list", () => {
+        it("send mail for each email in the providen list", async () => {
             const EMAILS = ["foo.bar@gouv.fr", "fez.booz@gouv.fr"];
             // @ts-expect-error: test private method
-            provider.batchDepositRenewal({ data: EMAILS });
+            await provider.batchDepositRenewal({ emails: EMAILS });
             EMAILS.forEach((email, index) => {
                 expect(mockSendMail).toHaveBeenNthCalledWith(index + 1, email, {}, TemplateEnum.depositRenewal);
             });
